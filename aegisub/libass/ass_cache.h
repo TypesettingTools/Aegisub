@@ -45,6 +45,7 @@ typedef struct hashmap_s {
     hashmap_item_dtor_t item_dtor;      // a destructor for hashmap key/value pairs
     hashmap_key_compare_t key_compare;
     hashmap_hash_t hash;
+    size_t cache_size;
     // stats
     int hit_count;
     int miss_count;

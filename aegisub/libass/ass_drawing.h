@@ -72,6 +72,6 @@ ass_drawing_t *ass_drawing_new(void *fontconfig_priv, ass_font_t *font,
 void ass_drawing_free(ass_drawing_t* drawing);
 void ass_drawing_add_char(ass_drawing_t* drawing, char symbol);
 void ass_drawing_hash(ass_drawing_t* drawing);
-FT_OutlineGlyph *ass_drawing_parse(ass_drawing_t *drawing);
+FT_OutlineGlyph *ass_drawing_parse(ass_drawing_t *drawing, int raw_mode);
 
 #endif /* LIBASS_DRAWING_H */

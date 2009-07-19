@@ -44,6 +44,8 @@
 #define MAX_BE 127
 #define SUBPIXEL_MASK 63
 #define SUBPIXEL_ACCURACY 7    // d6 mask for subpixel accuracy adjustment
+#define GLYPH_CACHE_MAX 1000
+#define BITMAP_CACHE_MAX_SIZE 50 * 1048576;
 
 static int last_render_id = 0;
 
@@ -58,6 +60,11 @@ typedef struct double_vector_s {
     double x;
     double y;
 } double_vector_t;
+
+typedef struct free_list_s {
+    void *object;
+    struct free_list_s *next;
+} free_list_t;
 
 typedef struct ass_settings_s {
     int frame_width;
@@ -174,6 +181,8 @@ typedef struct render_context_s {
     double shadow_y;
     int drawing_mode;           // not implemented; when != 0 text is discarded, except for style override tags
     ass_drawing_t *drawing;     // current drawing
+    ass_drawing_t *clip_drawing;// clip vector
+    int clip_drawing_mode;      // 0 = regular clip, 1 = inverse clip
 
     effect_t effect_type;
     int effect_timing;
@@ -199,6 +208,8 @@ typedef struct cache_store_s {
     hashmap_t *glyph_cache;
     hashmap_t *bitmap_cache;
     hashmap_t *composite_cache;
+    size_t glyph_max;
+    size_t bitmap_max_size;
 } cache_store_t;
 
 struct ass_renderer_s {
@@ -230,6 +241,9 @@ struct ass_renderer_s {
     render_context_t state;
     text_info_t text_info;
     cache_store_t cache;
+
+    free_list_t *free_head;
+    free_list_t *free_tail;
 };
 
 struct render_priv_s {
@@ -309,6 +323,8 @@ ass_renderer_t *ass_renderer_init(ass_library_t *library)
     priv->cache.bitmap_cache = ass_bitmap_cache_init(library);
     priv->cache.composite_cache = ass_composite_cache_init(library);
     priv->cache.glyph_cache = ass_glyph_cache_init(library);
+    priv->cache.glyph_max = GLYPH_CACHE_MAX;
+    priv->cache.bitmap_max_size = BITMAP_CACHE_MAX_SIZE;
 
     priv->text_info.max_glyphs = MAX_GLYPHS_INITIAL;
     priv->text_info.max_lines = MAX_LINES_INITIAL;
@@ -323,6 +339,28 @@ ass_renderer_t *ass_renderer_init(ass_library_t *library)
         ass_msg(library, MSGL_ERR, "Init failed");
 
     return priv;
+}
+
+void ass_set_cache_limits(ass_renderer_t *render_priv, int glyph_max,
+                          int bitmap_max)
+{
+    render_priv->cache.glyph_max = glyph_max ? glyph_max : GLYPH_CACHE_MAX;
+    render_priv->cache.bitmap_max_size = bitmap_max ? 1048576 * bitmap_max :
+                                         BITMAP_CACHE_MAX_SIZE;
+}
+
+static void free_list_clear(ass_renderer_t *render_priv)
+{
+    if (render_priv->free_head) {
+        free_list_t *item = render_priv->free_head;
+        while(item) {
+            free_list_t *oi = item;
+            free(item->object);
+            item = item->next;
+            free(oi);
+        }
+        render_priv->free_head = NULL;
+    }
 }
 
 void ass_renderer_done(ass_renderer_t *render_priv)
@@ -349,6 +387,8 @@ void ass_renderer_done(ass_renderer_t *render_priv)
 
     free(render_priv->settings.default_font);
     free(render_priv->settings.default_family);
+
+    free_list_clear(render_priv);
 }
 
 /**
@@ -663,6 +703,125 @@ render_overlap(ass_renderer_t *render_priv, ass_image_t **last_tail,
     cache_add_composite(render_priv->cache.composite_cache, &hk, &chv);
 }
 
+static void free_list_add(ass_renderer_t *render_priv, void *object)
+{
+    if (!render_priv->free_head) {
+        render_priv->free_head = calloc(1, sizeof(free_list_t));
+        render_priv->free_head->object = object;
+        render_priv->free_tail = render_priv->free_head;
+    } else {
+        free_list_t *l = calloc(1, sizeof(free_list_t));
+        l->object = object;
+        render_priv->free_tail->next = l;
+        render_priv->free_tail = render_priv->free_tail->next;
+    }
+}
+
+/**
+ * Iterate through a list of bitmaps and blend with clip vector, if
+ * applicable. The blended bitmaps are added to a free list which is freed
+ * at the start of a new frame.
+ */
+static void blend_vector_clip(ass_renderer_t *render_priv,
+                              ass_image_t *head)
+{
+    FT_Glyph glyph;
+    FT_BitmapGlyph clip_bm;
+    ass_image_t *cur;
+    ass_drawing_t *drawing = render_priv->state.clip_drawing;
+
+    if (!drawing)
+        return;
+
+    // Rasterize it
+    FT_Glyph_Copy((FT_Glyph) drawing->glyph, &glyph);
+    FT_Glyph_To_Bitmap(&glyph, FT_RENDER_MODE_NORMAL, 0, 1);
+    clip_bm = (FT_BitmapGlyph) glyph;
+    clip_bm->top = -clip_bm->top;
+
+    assert(clip_bm->bitmap.pitch >= 0);
+
+    // Iterate through bitmaps and blend/clip them
+    for (cur = head; cur; cur = cur->next) {
+        int left, top, right, bottom, apos, bpos, y, x, w, h;
+        int ax, ay, aw, ah, as;
+        int bx, by, bw, bh, bs;
+        int aleft, atop, bleft, btop;
+        unsigned char *abuffer, *bbuffer, *nbuffer;
+
+        abuffer = cur->bitmap;
+        bbuffer = clip_bm->bitmap.buffer;
+        ax = cur->dst_x;
+        ay = cur->dst_y;
+        aw = cur->w;
+        ah = cur->h;
+        as = cur->stride;
+        bx = clip_bm->left;
+        by = clip_bm->top;
+        bw = clip_bm->bitmap.width;
+        bh = clip_bm->bitmap.rows;
+        bs = clip_bm->bitmap.pitch;
+
+        // Calculate overlap coordinates
+        left = (ax > bx) ? ax : bx;
+        top = (ay > by) ? ay : by;
+        right = ((ax + aw) < (bx + bw)) ? (ax + aw) : (bx + bw);
+        bottom = ((ay + ah) < (by + bh)) ? (ay + ah) : (by + bh);
+        aleft = left - ax;
+        atop = top - ay;
+        w = right - left;
+        h = bottom - top;
+        bleft = left - bx;
+        btop = top - by;
+
+        if (render_priv->state.clip_drawing_mode) {
+            // Inverse clip
+            if (ax + aw < bx || ay + ah < by || ax > bx + bw ||
+                ay > by + bh) {
+                continue;
+            }
+
+            // Allocate new buffer and add to free list
+            nbuffer = malloc(as * ah);
+            free_list_add(render_priv, nbuffer);
+
+            // Blend together
+            memcpy(nbuffer, abuffer, as * ah);
+            for (y = 0; y < h; y++)
+                for (x = 0; x < w; x++) {
+                    apos = (atop + y) * as + aleft + x;
+                    bpos = (btop + y) * bs + bleft + x;
+                    nbuffer[apos] = FFMAX(0, abuffer[apos] - bbuffer[bpos]);
+                }
+        } else {
+            // Regular clip
+            if (ax + aw < bx || ay + ah < by || ax > bx + bw ||
+                ay > by + bh) {
+                cur->w = cur->h = 0;
+                continue;
+            }
+
+            // Allocate new buffer and add to free list
+            nbuffer = calloc(as, ah);
+            free_list_add(render_priv, nbuffer);
+
+            // Blend together
+            for (y = 0; y < h; y++)
+                for (x = 0; x < w; x++) {
+                    apos = (atop + y) * as + aleft + x;
+                    bpos = (btop + y) * bs + bleft + x;
+                    nbuffer[apos] = (abuffer[apos] * bbuffer[bpos] + 255) >> 8;
+                }
+        }
+        cur->bitmap = nbuffer;
+    }
+
+    // Free clip vector and its bitmap, we don't need it anymore
+    FT_Done_Glyph(glyph);
+    ass_drawing_free(render_priv->state.clip_drawing);
+    render_priv->state.clip_drawing = 0;
+}
+
 /**
  * \brief Convert text_info_t struct to ass_image_t list
  * Splits glyphs in halves when needed (for \kf karaoke).
@@ -760,6 +919,8 @@ static ass_image_t *render_text(ass_renderer_t *render_priv, int dst_x,
     }
 
     *tail = 0;
+    blend_vector_clip(render_priv, head);
+
     return head;
 }
 
@@ -1018,6 +1179,53 @@ interpolate_alpha(long long now,
     return a;
 }
 
+#define skip_to(x) while ((*p != (x)) && (*p != '}') && (*p != 0)) { ++p;}
+#define skip(x) if (*p == (x)) ++p; else { return p; }
+#define skipopt(x) if (*p == (x)) { ++p; }
+
+/**
+ * Parse a vector clip into an outline, using the proper scaling
+ * parameters.  Translate it to correct for screen borders, if needed.
+ */
+static char *parse_vector_clip(ass_renderer_t *render_priv, char *p)
+{
+    int scale = 1;
+    int res = 0;
+    ass_drawing_t *drawing;
+    render_priv->state.clip_drawing = ass_drawing_new(
+        render_priv->fontconfig_priv,
+        render_priv->state.font,
+        render_priv->settings.hinting,
+        render_priv->ftlibrary);
+    drawing = render_priv->state.clip_drawing;
+    skipopt('(');
+    res = mystrtoi(&p, &scale);
+    skipopt(',')
+    if (!res)
+        scale = 1;
+    drawing->scale = scale;
+    drawing->scale_x = render_priv->font_scale_x * render_priv->font_scale;
+    drawing->scale_y = render_priv->font_scale;
+    while (*p != ')' && *p != '}' && p != 0)
+        ass_drawing_add_char(drawing, *p++);
+    skipopt(')');
+    ass_drawing_parse(drawing, 1);
+    // We need to translate the clip according to screen borders
+    if (render_priv->settings.left_margin != 0 ||
+        render_priv->settings.top_margin != 0) {
+        FT_Vector trans = {
+            .x = int_to_d6(render_priv->settings.left_margin),
+            .y = -int_to_d6(render_priv->settings.top_margin),
+        };
+        FT_Outline_Translate(&drawing->glyph->outline, trans.x, trans.y);
+    }
+    ass_msg(render_priv->library, MSGL_DBG2,
+            "Parsed vector clip: scale %d, scales (%f, %f) string [%s]\n",
+            scale, drawing->scale_x, drawing->scale_y, drawing->text);
+
+    return p;
+}
+
 static void reset_render_context(ass_renderer_t *);
 
 /**
@@ -1027,9 +1235,6 @@ static void reset_render_context(ass_renderer_t *);
  */
 static char *parse_tag(ass_renderer_t *render_priv, char *p, double pwr)
 {
-#define skip_to(x) while ((*p != (x)) && (*p != '}') && (*p != 0)) { ++p;}
-#define skip(x) if (*p == (x)) ++p; else { return p; }
-
     skip_to('\\');
     skip('\\');
     if ((*p == '}') || (*p == 0))
@@ -1081,15 +1286,16 @@ static char *parse_tag(ass_renderer_t *render_priv, char *p, double pwr)
     } else if (mystrcmp(&p, "iclip")) {
         int x0, y0, x1, y1;
         int res = 1;
-        skip('(');
+        char *start = p;
+        skipopt('(');
         res &= mystrtoi(&p, &x0);
-        skip(',');
+        skipopt(',');
         res &= mystrtoi(&p, &y0);
-        skip(',');
+        skipopt(',');
         res &= mystrtoi(&p, &x1);
-        skip(',');
+        skipopt(',');
         res &= mystrtoi(&p, &y1);
-        skip(')');
+        skipopt(')');
         if (res) {
             render_priv->state.clip_x0 =
                 render_priv->state.clip_x0 * (1 - pwr) + x0 * pwr;
@@ -1100,6 +1306,9 @@ static char *parse_tag(ass_renderer_t *render_priv, char *p, double pwr)
             render_priv->state.clip_y1 =
                 render_priv->state.clip_y1 * (1 - pwr) + y1 * pwr;
             render_priv->state.clip_mode = 1;
+        } else if (!render_priv->state.clip_drawing) {
+            p = parse_vector_clip(render_priv, start);
+            render_priv->state.clip_drawing_mode = 1;
         } else
             render_priv->state.clip_mode = 0;
     } else if (mystrcmp(&p, "blur")) {
@@ -1398,17 +1607,18 @@ static char *parse_tag(ass_renderer_t *render_priv, char *p, double pwr)
         skip_to(')');           // in case there is some unknown tag or a comment
         skip(')');
     } else if (mystrcmp(&p, "clip")) {
+        char *start = p;
         int x0, y0, x1, y1;
         int res = 1;
-        skip('(');
+        skipopt('(');
         res &= mystrtoi(&p, &x0);
-        skip(',');
+        skipopt(',');
         res &= mystrtoi(&p, &y0);
-        skip(',');
+        skipopt(',');
         res &= mystrtoi(&p, &x1);
-        skip(',');
+        skipopt(',');
         res &= mystrtoi(&p, &y1);
-        skip(')');
+        skipopt(')');
         if (res) {
             render_priv->state.clip_x0 =
                 render_priv->state.clip_x0 * (1 - pwr) + x0 * pwr;
@@ -1418,6 +1628,10 @@ static char *parse_tag(ass_renderer_t *render_priv, char *p, double pwr)
                 render_priv->state.clip_y0 * (1 - pwr) + y0 * pwr;
             render_priv->state.clip_y1 =
                 render_priv->state.clip_y1 * (1 - pwr) + y1 * pwr;
+        // Might be a vector clip
+        } else if (!render_priv->state.clip_drawing) {
+            p = parse_vector_clip(render_priv, start);
+            render_priv->state.clip_drawing_mode = 0;
         } else {
             render_priv->state.clip_x0 = 0;
             render_priv->state.clip_y0 = 0;
@@ -1556,6 +1770,7 @@ static char *parse_tag(ass_renderer_t *render_priv, char *p, double pwr)
     return p;
 
 #undef skip
+#undef skipopt
 #undef skip_to
 }
 
@@ -1856,7 +2071,7 @@ static void fix_freetype_stroker(FT_OutlineGlyph glyph, int border_x,
 static void stroke_outline_glyph(ass_renderer_t *render_priv,
                                  FT_OutlineGlyph *glyph, int sx, int sy)
 {
-    if (sx <= 0 || sy <= 0)
+    if (sx <= 0 && sy <= 0)
         return;
 
     fix_freetype_stroker(*glyph, sx, sy);
@@ -1948,7 +2163,7 @@ get_outline_glyph(ass_renderer_t *render_priv, int symbol,
     } else {
         glyph_hash_val_t v;
         if (drawing->hash) {
-            ass_drawing_parse(drawing);
+            ass_drawing_parse(drawing, 0);
             FT_Glyph_Copy((FT_Glyph) drawing->glyph, &info->glyph);
         } else {
             info->glyph =
@@ -2078,14 +2293,15 @@ static void measure_text(ass_renderer_t *render_priv)
     text_info_t *text_info = &render_priv->text_info;
     int cur_line = 0;
     double max_asc = 0., max_desc = 0.;
+    glyph_info_t *last = NULL;
     int i;
     int empty_line = 1;
     text_info->height = 0.;
     for (i = 0; i < text_info->length + 1; ++i) {
         if ((i == text_info->length) || text_info->glyphs[i].linebreak) {
-            if (empty_line && cur_line > 0) {
-                max_asc = text_info->lines[cur_line - 1].asc / 2.0;
-                max_desc = text_info->lines[cur_line - 1].desc / 2.0;
+            if (empty_line && cur_line > 0 && last && i < text_info->length) {
+                max_asc = d6_to_double(last->asc) / 2.0;
+                max_desc = d6_to_double(last->desc) / 2.0;
             }
             text_info->lines[cur_line].asc = max_asc;
             text_info->lines[cur_line].desc = max_desc;
@@ -2101,6 +2317,8 @@ static void measure_text(ass_renderer_t *render_priv)
                 max_asc = d6_to_double(cur->asc);
             if (d6_to_double(cur->desc) > max_desc)
                 max_desc = d6_to_double(cur->desc);
+            if (cur->symbol != '\n' && cur->symbol != 0)
+                last = cur;
         }
     }
     text_info->height +=
@@ -2668,6 +2886,7 @@ ass_render_event(ass_renderer_t *render_priv, ass_event_t *event,
         }
     }
 
+
     if (text_info->length == 0) {
         // no valid symbols in the event; this can be smth like {comment}
         free_render_context(render_priv);
@@ -2719,7 +2938,7 @@ ass_render_event(ass_renderer_t *render_priv, ass_event_t *event,
                     last_glyph--;
 
                 width = d6_to_double(
-                    last_glyph->pos.x + last_glyph->advance.x - 
+                    last_glyph->pos.x + last_glyph->advance.x -
                     first_glyph->pos.x);
                 if (halign == HALIGN_LEFT) {    // left aligned, no action
                     shift = 0;
@@ -2769,7 +2988,7 @@ ass_render_event(ass_renderer_t *render_priv, ass_event_t *event,
         } else if (valign == VALIGN_CENTER) {   // midtitle
             double scr_y =
                 y2scr(render_priv, render_priv->track->PlayResY / 2.0);
-            device_y = scr_y - (bbox.yMax - bbox.yMin) / 2.0;
+            device_y = scr_y - (bbox.yMax + bbox.yMin) / 2.0;
         } else {                // subtitle
             double scr_y;
             if (valign != VALIGN_SUB)
@@ -2877,7 +3096,7 @@ ass_render_event(ass_renderer_t *render_priv, ass_event_t *event,
         g->hash_key.advance.x =
             double_to_d6(device_x - (int) device_x +
             d6_to_double(g->pos.x & SUBPIXEL_MASK)) & ~SUBPIXEL_ACCURACY;
-        g->hash_key.advance.y = 
+        g->hash_key.advance.y =
             double_to_d6(device_y - (int) device_y +
             d6_to_double(g->pos.y & SUBPIXEL_MASK)) & ~SUBPIXEL_ACCURACY;
         get_bitmap_glyph(render_priv, text_info->glyphs + i);
@@ -2984,8 +3203,9 @@ void ass_set_line_spacing(ass_renderer_t *priv, double line_spacing)
     priv->settings.line_spacing = line_spacing;
 }
 
-int ass_set_fonts(ass_renderer_t *priv, const char *default_font,
-                  const char *default_family, int fc, const char *config)
+void ass_set_fonts(ass_renderer_t *priv, const char *default_font,
+                   const char *default_family, int fc, const char *config,
+                   int update)
 {
     if (priv->settings.default_font)
         free(priv->settings.default_font);
@@ -3002,9 +3222,12 @@ int ass_set_fonts(ass_renderer_t *priv, const char *default_font,
         fontconfig_done(priv->fontconfig_priv);
     priv->fontconfig_priv =
         fontconfig_init(priv->library, priv->ftlibrary, default_family,
-                        default_font, fc, config);
+                        default_font, fc, config, update);
+}
 
-    return !!priv->fontconfig_priv;
+int ass_fonts_update(ass_renderer_t *render_priv)
+{
+    return fontconfig_update(render_priv->fontconfig_priv);
 }
 
 /**
@@ -3014,14 +3237,17 @@ static int
 ass_start_frame(ass_renderer_t *render_priv, ass_track_t *track,
                 long long now)
 {
-    if (render_priv->library != track->library)
-        return 1;
-
     ass_settings_t *settings_priv = &render_priv->settings;
+    cache_store_t *cache = &render_priv->cache;
 
     if (!render_priv->settings.frame_width
         && !render_priv->settings.frame_height)
         return 1;               // library not initialized
+
+    if (render_priv->library != track->library)
+        return 1;
+
+    free_list_clear(render_priv);
 
     if (track->n_events == 0)
         return 1;               // nothing to do
@@ -3062,6 +3288,24 @@ ass_start_frame(ass_renderer_t *render_priv, ass_track_t *track,
 
     render_priv->prev_images_root = render_priv->images_root;
     render_priv->images_root = 0;
+
+    if (cache->bitmap_cache->cache_size > cache->bitmap_max_size) {
+        ass_msg(render_priv->library, MSGL_V,
+                "Hitting hard bitmap cache limit (was: %ld bytes), "
+                "resetting.", (long) cache->bitmap_cache->cache_size);
+        cache->bitmap_cache = ass_bitmap_cache_reset(cache->bitmap_cache);
+        cache->composite_cache = ass_composite_cache_reset(
+            cache->composite_cache);
+        ass_free_images(render_priv->prev_images_root);
+        render_priv->prev_images_root = 0;
+    }
+
+    if (cache->glyph_cache->count > cache->glyph_max) {
+        ass_msg(render_priv->library, MSGL_V,
+            "Hitting hard glyph cache limit (was: %ld glyphs), resetting.",
+            (long) cache->glyph_cache->count);
+        cache->glyph_cache = ass_glyph_cache_reset(cache->glyph_cache);
+    }
 
     return 0;
 }

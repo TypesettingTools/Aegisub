@@ -91,7 +91,7 @@ LibassSubtitlesProvider::LibassSubtitlesProvider() {
 	const char *config_path = NULL;
 #endif
 
-	ass_set_fonts(ass_renderer, NULL, "Sans", 1, config_path);
+	ass_set_fonts(ass_renderer, NULL, "Sans", 1, config_path, 1);
 }
 
 

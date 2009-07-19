@@ -223,6 +223,12 @@ static void bitmap_hash_dtor(void *key, size_t key_size, void *value,
 void *cache_add_bitmap(hashmap_t *bitmap_cache, bitmap_hash_key_t *key,
                        bitmap_hash_val_t *val)
 {
+    // Note: this is only an approximation
+    if (val->bm_o)
+        bitmap_cache->cache_size += val->bm_o->w * val->bm_o->h * 3;
+    else
+        bitmap_cache->cache_size += val->bm->w * val->bm->h * 3;
+
     return hashmap_insert(bitmap_cache, key, val);
 }
 

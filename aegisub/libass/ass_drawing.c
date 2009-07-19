@@ -106,7 +106,7 @@ static void drawing_prepare(ass_drawing_t *drawing)
  * \brief Finish a drawing.  This only sets the horizontal advance according
  * to the glyph's bbox at the moment.
  */
-static void drawing_finish(ass_drawing_t *drawing)
+static void drawing_finish(ass_drawing_t *drawing, int raw_mode)
 {
     int i, offset;
     FT_BBox bbox;
@@ -127,6 +127,13 @@ static void drawing_finish(ass_drawing_t *drawing)
         printf("contour %d\n", ol->contours[i]);
 #endif
 
+    ass_msg(drawing->library, MSGL_V,
+            "Parsed drawing with %d points and %d contours", ol->n_points,
+            ol->n_contours);
+
+    if (raw_mode)
+        return;
+
     FT_Outline_Get_CBox(&drawing->glyph->outline, &bbox);
     drawing->glyph->root.advance.x = d6_to_d16(bbox.xMax - bbox.xMin);
 
@@ -138,10 +145,6 @@ static void drawing_finish(ass_drawing_t *drawing)
                                                     drawing->scale_y);
     for (i = 0; i < ol->n_points; i++)
         ol->points[i].y += offset;
-
-    ass_msg(drawing->library, MSGL_V,
-            "Parsed drawing with %d points and %d contours", ol->n_points,
-            ol->n_contours);
 }
 
 /*
@@ -361,7 +364,7 @@ ass_drawing_t *ass_drawing_new(void *fontconfig_priv, ass_font_t *font,
     ass_drawing_t* drawing;
 
     drawing = calloc(1, sizeof(*drawing));
-    drawing->text = malloc(DRAWING_INITIAL_SIZE);
+    drawing->text = calloc(1, DRAWING_INITIAL_SIZE);
     drawing->size = DRAWING_INITIAL_SIZE;
 
     drawing->ftlibrary = lib;
@@ -381,6 +384,7 @@ ass_drawing_t *ass_drawing_new(void *fontconfig_priv, ass_font_t *font,
  */
 void ass_drawing_free(ass_drawing_t* drawing)
 {
+    FT_Done_Glyph((FT_Glyph) drawing->glyph);
     free(drawing->text);
     free(drawing);
 }
@@ -411,7 +415,7 @@ void ass_drawing_hash(ass_drawing_t* drawing)
 /*
  * \brief Convert token list to outline.  Calls the line and curve evaluators.
  */
-FT_OutlineGlyph *ass_drawing_parse(ass_drawing_t *drawing)
+FT_OutlineGlyph *ass_drawing_parse(ass_drawing_t *drawing, int raw_mode)
 {
     int started = 0;
     ass_drawing_token_t *token;
@@ -474,9 +478,7 @@ FT_OutlineGlyph *ass_drawing_parse(ass_drawing_t *drawing)
         }
     }
 
-    drawing_finish(drawing);
+    drawing_finish(drawing, raw_mode);
     drawing_free_tokens(drawing->tokens);
     return &drawing->glyph;
 }
-
-

@@ -268,8 +268,9 @@ void ass_font_get_asc_desc(ass_font_t *font, uint32_t ch, int *asc,
     for (i = 0; i < font->n_faces; ++i) {
         FT_Face face = font->faces[i];
         if (FT_Get_Char_Index(face, ch)) {
-            *asc = face->size->metrics.ascender;
-            *desc = -face->size->metrics.descender;
+            int y_scale = face->size->metrics.y_scale;
+            *asc = FT_MulFix(face->ascender, y_scale);
+            *desc = FT_MulFix(-face->descender, y_scale);
             return;
         }
     }
