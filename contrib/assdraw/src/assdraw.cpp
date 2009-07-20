@@ -75,7 +75,7 @@ BEGIN_EVENT_TABLE(ASSDrawFrame, wxFrame)
     //EVT_TOOL(TB_EDITSRC, ASSDrawFrame::OnSelect_EditSrc)
     EVT_TOOL(TB_TRANSFORM, ASSDrawFrame::OnSelect_Transform)
     EVT_TOOL_RANGE(MODE_ARR, MODE_DEL, ASSDrawFrame::OnChoose_Mode)
-    EVT_TOOL_RANGE(DRAG_DWG, DRAG_BOTH, ASSDrawFrame::OnChoose_DragMode)
+//    EVT_TOOL_RANGE(DRAG_DWG, DRAG_BOTH, ASSDrawFrame::OnChoose_DragMode)
     EVT_TOOL_RCLICKED(wxID_ANY, ASSDrawFrame::OnToolRClick)
     EVT_COMMAND(wxID_ANY, wxEVT_SETTINGS_CHANGED, ASSDrawFrame::OnSettingsChanged) 
     EVT_MENU_RANGE(MENU_TB_ALL, MENU_TB_BGIMG, ASSDrawFrame::OnChoose_TBarRClickMenu)
@@ -94,7 +94,7 @@ BEGIN_EVENT_TABLE(ASSDrawFrame, wxFrame)
     EVT_MENU(MENU_BGIMG_REMOVE, ASSDrawFrame::OnSelect_RemoveBG)
     EVT_MENU(MENU_BGIMG_ALPHA, ASSDrawFrame::OnSelect_AlphaBG)
     EVT_MENU_RANGE(MODE_ARR, MODE_NUT_BILINEAR, ASSDrawFrame::OnChoose_Mode)
-    EVT_MENU_RANGE(DRAG_DWG, DRAG_BOTH, ASSDrawFrame::OnChoose_DragMode)
+//    EVT_MENU_RANGE(DRAG_DWG, DRAG_BOTH, ASSDrawFrame::OnChoose_DragMode)
     EVT_MENU_RANGE(MENU_REPOS_TOPLEFT, MENU_REPOS_BOTRIGHT, ASSDrawFrame::OnChoose_Recenter)
     EVT_MENU_RANGE(MENU_REPOS_BGTOPLEFT, MENU_REPOS_BGBOTRIGHT, ASSDrawFrame::OnChoose_RecenterToBG)
 #endif //wxUSE_MENUS
@@ -760,7 +760,7 @@ void ASSDrawFrame::UpdateFrameUI(unsigned level)
 		bgimgMenu->Check(DRAG_DWG, m_canvas->GetDragMode().drawing);
 		bgimgMenu->Check(DRAG_BGIMG, m_canvas->GetDragMode().bgimg);
 		bgimgMenu->Enable(DRAG_BGIMG, hasbg);
-		bgimgMenu->Enable(DRAG_BOTH, hasbg);
+//		bgimgMenu->Enable(DRAG_BOTH, hasbg);
 		bgimgMenu->Enable(MENU_BGIMG_ALPHA, hasbg);
 		bgimgMenu->Enable(MENU_BGIMG_RECENTER, hasbg);
 		bgimgMenu->Enable(MENU_BGIMG_REMOVE, hasbg);
