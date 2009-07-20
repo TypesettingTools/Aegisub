@@ -55,11 +55,6 @@ private:
 	float r2,g2,b2,a2;
 	int lw;
 
-	static void Initialize();
-	static GLhandleARB CreateStandardVertexShader();
-	static GLhandleARB CreateYV12PixelShader();
-	static GLhandleARB CreateShaderProgram(GLhandleARB vertex,GLhandleARB pixel);
-
 public:
 	OpenGLWrapper();
 
@@ -77,10 +72,5 @@ public:
 	void DrawRing(float x,float y,float r1,float r2,float ar=1.0f,float arcStart=0.0f,float arcEnd=0.0f);
 	void DrawTriangle(float x1,float y1,float x2,float y2,float x3,float y3);
 
-	static bool UseShaders();
 	static bool IsExtensionSupported(const char *ext);
-	static bool ShadersAvailable();
-	static void SetShader(GLhandleARB i);
-	static void DestroyShaderProgram(GLhandleARB i);
-	static GLhandleARB CreateYV12Shader(float tw,float th,float tws);
 };

@@ -173,7 +173,6 @@ void OptionsManager::LoadDefaults(bool onlyDefaults,bool doOverride) {
 	#else
 	SetText(_T("Subtitles Provider"),_T(DEFAULT_PROVIDER_SUBTITLE));
 	#endif
-	SetBool(_T("Video Use Pixel Shaders"),false,1700);
 	SetInt(_T("FFmpegSource max cache size"),42);
 	SetInt(_T("FFmpegSource max cache files"),20);
 	SetInt(_T("FFmpegSource always index all tracks"), true);

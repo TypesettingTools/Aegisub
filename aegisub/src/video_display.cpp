@@ -278,7 +278,6 @@ try {
 	// Draw frame
 	glDisable(GL_BLEND);
 	if (glGetError()) throw _T("Error disabling blending.");
-	context->SetShader(true);
 	glBindTexture(GL_TEXTURE_2D, VideoContext::Get()->GetFrameAsTexture(-1));
 	if (glGetError()) throw _T("Error binding texture.");
 	glColor4f(1.0f,1.0f,1.0f,1.0f);
@@ -296,7 +295,6 @@ try {
 		glTexCoord2f(right,top);
 		glVertex2f(sw,0);
 	glEnd();
-	context->SetShader(false);
 	glDisable(GL_TEXTURE_2D);
 
 	// TV effects

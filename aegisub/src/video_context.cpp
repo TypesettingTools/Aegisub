@@ -100,7 +100,6 @@ VideoContext::VideoContext() {
 	ownGlContext = false;
 	lastTex = 0;
 	lastFrame = -1;
-	yv12shader = 0;
 
 	// Set options
 	audio = NULL;
@@ -161,12 +160,6 @@ void VideoContext::Clear() {
 void VideoContext::Reset() {
 	// Reset ?video path
 	StandardPaths::SetPathValue(_T("?video"),_T(""));
-
-	// Reset shader
-	if (yv12shader) {
-		OpenGLWrapper::DestroyShaderProgram(yv12shader);
-		yv12shader = 0;
-	}
 
 	// Clear keyframes
 	KeyFrames.Clear();
@@ -501,7 +494,6 @@ AegiVideoFrame VideoContext::GetFrame(int n,bool raw) {
 
 	// Get available formats
 	int formats = FORMAT_RGB32;
-	if (yv12shader != 0 || OpenGLWrapper::UseShaders()) formats |= FORMAT_YV12;
 
 	// Get frame
 	AegiVideoFrame frame = provider->GetFrame(n,formats);
@@ -596,11 +588,6 @@ GLuint VideoContext::GetFrameAsTexture(int n) {
 		// Set texture
 		//glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_FASTEST);
 		//if (glGetError() != 0) throw _T("Error setting hinting.");
-
-		// Create shader
-		if (frame.format == FORMAT_YV12 && yv12shader == 0 && OpenGLWrapper::UseShaders()) {
-			yv12shader = OpenGLWrapper::CreateYV12Shader(texW,texH,float(frame.pitch[1])/float(tw));
-		}
 
 		// Set priority
 		float priority = 1.0f;
@@ -877,13 +864,6 @@ void VideoContext::SetAspectRatio(int _type, double value) {
 	arType = _type;
 	arValue = value;
 	UpdateDisplays(true);
-}
-
-
-////////////////////////////
-// Enable or disable shader
-void VideoContext::SetShader(bool enabled) {
-	OpenGLWrapper::SetShader(enabled ? yv12shader : 0);
 }
 
 

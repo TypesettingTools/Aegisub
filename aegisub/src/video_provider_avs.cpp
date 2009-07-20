@@ -330,10 +330,8 @@ PClip AvisynthVideoProvider::OpenVideo(Aegisub::String _filename, bool mpeg2dec3
 	}
 
 	// Convert to RGB32
-	if (!OpenGLWrapper::UseShaders()) {
-		script = env->Invoke("ConvertToRGB32", script);
-		AVSTRACE(_T("AvisynthVideoProvider::OpenVideo: Converted to RGB32"));
-	}
+	script = env->Invoke("ConvertToRGB32", script);
+	AVSTRACE(_T("AvisynthVideoProvider::OpenVideo: Converted to RGB32"));
 
 	// Cache
 	AVSTRACE(_T("AvisynthVideoProvider::OpenVideo: Finished opening video, AVS mutex will be released now"));

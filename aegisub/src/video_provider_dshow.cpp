@@ -219,7 +219,6 @@ HRESULT DirectShowVideoProvider::OpenVideo(wxString _filename) {
 
 	// Set allowed types for sink
 	unsigned int types = IVS_RGB24 | IVS_RGB32;
-	if (OpenGLWrapper::UseShaders()) types = types | IVS_YV12;
 	sink->SetAllowedTypes(types);
 
 	// Pass the event to sink, so it gets set when a frame is available
