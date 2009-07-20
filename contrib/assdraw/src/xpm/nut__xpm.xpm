@@ -1,5 +1,5 @@
 /* XPM */
-static char *nut__xpm[] = {
+const char *nut__xpm[] = {
 /* columns rows colors chars-per-pixel */
 "16 15 55 1",
 "  c #7F7F00000000",

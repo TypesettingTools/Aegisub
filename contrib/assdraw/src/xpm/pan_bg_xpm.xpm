@@ -1,5 +1,5 @@
 /* XPM */
-static char *pan_bg_xpm[] = {
+const char *pan_bg_xpm[] = {
 /* columns rows colors chars-per-pixel */
 "24 15 66 1",
 "  c #2A2A35354D4D",

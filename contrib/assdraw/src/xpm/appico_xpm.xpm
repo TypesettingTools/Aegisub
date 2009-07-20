@@ -1,5 +1,5 @@
 /* XPM */
-static char *appico_xpm[] = {
+const char *appico_xpm[] = {
 /* columns rows colors chars-per-pixel */
 "32 32 254 2",
 "   c black",

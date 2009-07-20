@@ -1,5 +1,5 @@
 /* XPM */
-static char *delcross_xpm[] = {
+const char *delcross_xpm[] = {
 /* columns rows colors chars-per-pixel */
 "16 15 85 1",
 "  c #3F3F14141818",

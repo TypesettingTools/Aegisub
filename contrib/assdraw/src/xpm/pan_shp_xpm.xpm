@@ -1,5 +1,5 @@
 /* XPM */
-static char *pan_shp_xpm[] = {
+const char *pan_shp_xpm[] = {
 /* columns rows colors chars-per-pixel */
 "24 15 36 1",
 "  c #0D0D0D0D6767",

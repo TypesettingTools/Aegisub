@@ -1,5 +1,5 @@
 /* XPM */
-static char *assdraw3__xpm[] = {
+const char *assdraw3__xpm[] = {
 /* columns rows colors chars-per-pixel */
 "400 100 256 2",
 "   c #28AB0BFA0F09",
