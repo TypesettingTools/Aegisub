@@ -127,7 +127,11 @@ ASSDrawFrame::ASSDrawFrame( wxApp *app, const wxString& title, const wxPoint& po
 {
 	m_app = app;
     m_mgr.SetManagedWindow(this);
+#ifndef __UNIX__
     m_mgr.SetFlags(m_mgr.GetFlags() | wxAUI_MGR_ALLOW_ACTIVE_PANE);
+#else
+	m_mgr.SetFlags(wxAUI_MGR_ALLOW_FLOATING | wxAUI_MGR_ALLOW_ACTIVE_PANE | wxAUI_MGR_RECTANGLE_HINT);
+#endif
 
     // set the frame icon
     SetIcon(wxICON(appico));
