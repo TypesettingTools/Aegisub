@@ -250,13 +250,6 @@ void VideoContext::SetVideo(const wxString &filename) {
 	if (!filename.IsEmpty()) {
 		try {
 			grid->CommitChanges(true);
-			// double overFps = 0;
-			FrameRate temp;
-
-			// Unload timecodes
-			//int unload = wxYES;
-			//if (VFR_Output.IsLoaded()) unload = wxMessageBox(_("Do you want to unload timecodes, too?"),_("Unload timecodes?"),wxYES_NO | wxICON_QUESTION);
-			//if (unload == wxYES) VFR_Output.Unload();
 
 			// Set GL context
 #ifdef __WXMAC__
