@@ -118,7 +118,7 @@ private:
 	int IndexFile();
 
 public:
-	YUV4MPEGVideoProvider(Aegisub::String filename, double fps);
+	YUV4MPEGVideoProvider(Aegisub::String filename);
 	~YUV4MPEGVideoProvider();
 
 	const AegiVideoFrame GetFrame(int n, int formatType);

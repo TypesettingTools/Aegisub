@@ -105,7 +105,7 @@ private:
 	DWORD                   m_rot_cookie;
 
 public:
-	DirectShowVideoProvider(Aegisub::String _filename, double _fps=0.0);
+	DirectShowVideoProvider(Aegisub::String _filename);
 	~DirectShowVideoProvider();
 
 	void RefreshSubtitles();
@@ -136,7 +136,7 @@ public:
 // Factory
 class DirectShowVideoProviderFactory : public VideoProviderFactory {
 public:
-	VideoProvider *CreateProvider(Aegisub::String video,double fps=0.0) { return new DirectShowVideoProvider(video,fps); }
+	VideoProvider *CreateProvider(Aegisub::String video) { return new DirectShowVideoProvider(video); }
 };
 
 #endif

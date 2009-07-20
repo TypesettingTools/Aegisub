@@ -60,7 +60,7 @@ private:
 	void Create(double fps, int frames, int _width, int _height, const wxColour &colour, bool pattern);
 
 public:
-	DummyVideoProvider(Aegisub::String filename, double fps);
+	DummyVideoProvider(Aegisub::String filename);
 	DummyVideoProvider(double fps, int frames, int _width, int _height, const wxColour &colour, bool pattern);
 	~DummyVideoProvider();
 

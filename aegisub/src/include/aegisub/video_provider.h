@@ -68,10 +68,10 @@ public:
 	// Use this to set any post-loading warnings, such as "being loaded with unreliable seeking"
 	virtual Aegisub::String GetWarning() { return L""; }
 
-	// Name of decoder, e.g. "Avisynth/FFMPegSource"
+	// Name of decoder, e.g. "Avisynth/FFMpegSource"
 	virtual Aegisub::String GetDecoderName() { return L"Unknown"; }
 
-	// How many frames does this provider wants that Aegisub caches? Set to 0 if it doesn't require caching.
+	// How many frames does this provider want Aegisub to cache? Set to 0 if it doesn't require caching.
 	virtual int GetDesiredCacheSize() { return 0; }
 
 	// For providers that are natively time-based (e.g. DirectShow)
@@ -85,5 +85,5 @@ public:
 class VideoProviderFactory {
 public:
 	virtual ~VideoProviderFactory() {}
-	virtual VideoProvider *CreateProvider(Aegisub::String video,double fps=0.0)=0;
+	virtual VideoProvider *CreateProvider(Aegisub::String video)=0;
 };

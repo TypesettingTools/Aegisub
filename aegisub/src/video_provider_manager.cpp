@@ -58,18 +58,18 @@
 
 ////////////////
 // Get provider
-VideoProvider *VideoProviderFactoryManager::GetProvider(wxString video,double fps) {
+VideoProvider *VideoProviderFactoryManager::GetProvider(wxString video) {
 	// First check special case of dummy video
 	if (video.StartsWith(_T("?dummy:"))) {
 #if wxCHECK_VERSION(2,9,0)
-		return new DummyVideoProvider(video.wc_str(), fps);
+		return new DummyVideoProvider(video.wc_str());
 #else
-		return new DummyVideoProvider(video.c_str(), fps);
+		return new DummyVideoProvider(video.c_str());
 #endif
 	}
 
 	try {
-		VideoProvider *y4m_provider = new YUV4MPEGVideoProvider(video.c_str(), fps);
+		VideoProvider *y4m_provider = new YUV4MPEGVideoProvider(video.c_str());
 		if (y4m_provider)
 			y4m_provider = new VideoProviderCache(y4m_provider);
 		return y4m_provider;
@@ -93,9 +93,9 @@ VideoProvider *VideoProviderFactoryManager::GetProvider(wxString video,double fp
 		try {
 			// Create provider
 #if wxCHECK_VERSION(2,9,0)
-			VideoProvider *provider = GetFactory(list[i])->CreateProvider(video.wc_str(),fps);
+			VideoProvider *provider = GetFactory(list[i])->CreateProvider(video.wc_str());
 #else
-			VideoProvider *provider = GetFactory(list[i])->CreateProvider(video.c_str(),fps);
+			VideoProvider *provider = GetFactory(list[i])->CreateProvider(video.c_str());
 #endif
 			if (provider) {
 				// Cache if necessary

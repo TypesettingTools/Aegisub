@@ -56,11 +56,11 @@
 
 ///////////////
 // Constructor
-AvisynthVideoProvider::AvisynthVideoProvider(Aegisub::String _filename, double _fps) {
+AvisynthVideoProvider::AvisynthVideoProvider(Aegisub::String _filename) {
 	AVSTRACE(wxString::Format(_T("AvisynthVideoProvider: Creating new AvisynthVideoProvider: \"%s\", \"%s\""), _filename, _subfilename));
 	bool mpeg2dec3_priority = true;
 	RGB32Video = NULL;
-	fps = _fps;
+	fps = 0;
 	num_frames = 0;
 	last_fnum = -1;
 	byFrame = false;
@@ -223,12 +223,7 @@ PClip AvisynthVideoProvider::OpenVideo(Aegisub::String _filename, bool mpeg2dec3
 				dss2 = false;
 				if (env->FunctionExists("dss2")) {
 					AVSTRACE(_T("AvisynthVideoProvider::OpenVideo: Invoking DSS2"));
-					if (fps == 0.0) script = env->Invoke("DSS2", videoFilename);
-					else {
-						const char *argnames[2] = { 0, "fps" };
-						AVSValue args[2] = { videoFilename, fps };
-						script = env->Invoke("DSS2", AVSValue(args,2), argnames);
-					}
+					script = env->Invoke("DSS2", videoFilename);
 					AVSTRACE(_T("AvisynthVideoProvider::OpenVideo: Successfully opened file with DSS2"));
 					dss2 = true;
 					decoderName = _T("DSS2");
@@ -246,16 +241,9 @@ PClip AvisynthVideoProvider::OpenVideo(Aegisub::String _filename, bool mpeg2dec3
 
 					// Then try using DSS
 					if (env->FunctionExists("DirectShowSource")) {
-						if (fps == 0.0) {
-							const char *argnames[3] = { 0, "video", "audio" };
-							AVSValue args[3] = { videoFilename, true, false };
-							script = env->Invoke("DirectShowSource", AVSValue(args,3), argnames);
-						}
-						else {
-							const char *argnames[4] = { 0, "video", "audio" , "fps" };
-							AVSValue args[4] = { videoFilename, true, false , fps };
-							script = env->Invoke("DirectShowSource", AVSValue(args,4), argnames);
-						}
+						const char *argnames[3] = { 0, "video", "audio" };
+						AVSValue args[3] = { videoFilename, true, false };
+						script = env->Invoke("DirectShowSource", AVSValue(args,3), argnames);
 						AVSTRACE(_T("AvisynthVideoProvider::OpenVideo: Successfully opened file with DSS without audio"));
 						usedDirectShow = true;
 						decoderName = _T("DirectShowSource");

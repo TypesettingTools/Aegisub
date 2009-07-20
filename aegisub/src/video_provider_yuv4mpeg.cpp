@@ -47,7 +47,7 @@
 
 
 
-YUV4MPEGVideoProvider::YUV4MPEGVideoProvider(Aegisub::String filename, double fps) {
+YUV4MPEGVideoProvider::YUV4MPEGVideoProvider(Aegisub::String filename) {
 	sf			= NULL;
 	w			= 0;
 	h			= 0;

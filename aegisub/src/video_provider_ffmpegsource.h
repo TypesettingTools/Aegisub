@@ -66,13 +66,13 @@ private:
 
 	bool COMInited;
 
-	void LoadVideo(Aegisub::String filename, double fps);
+	void LoadVideo(Aegisub::String filename);
 	void Close();
 
 protected:
 
 public:
-	FFmpegSourceVideoProvider(Aegisub::String filename, double fps);
+	FFmpegSourceVideoProvider(Aegisub::String filename);
 	~FFmpegSourceVideoProvider();
 
 	const AegiVideoFrame GetFrame(int n, int formatType);
@@ -96,7 +96,7 @@ public:
 // Factory
 class FFmpegSourceVideoProviderFactory : public VideoProviderFactory {
 public:
-	VideoProvider *CreateProvider(Aegisub::String video,double fps=0.0) { return new FFmpegSourceVideoProvider(video,fps); }
+	VideoProvider *CreateProvider(Aegisub::String video) { return new FFmpegSourceVideoProvider(video); }
 };
 
 
