@@ -492,11 +492,8 @@ AegiVideoFrame VideoContext::GetFrame(int n,bool raw) {
 	// Current frame if -1
 	if (n == -1) n = frame_n;
 
-	// Get available formats
-	int formats = FORMAT_RGB32;
-
 	// Get frame
-	AegiVideoFrame frame = provider->GetFrame(n,formats);
+	AegiVideoFrame frame = provider->GetFrame(n);
 
 	// Raster subtitles if available/necessary
 	if (!raw && subsProvider) {
@@ -532,18 +529,9 @@ GLuint VideoContext::GetFrameAsTexture(int n) {
 	if (glGetError() != 0) throw _T("Error enabling texture.");
 
 	// Image type
-	GLenum format = GL_LUMINANCE;
-	if (frame.format == FORMAT_RGB32) {
-		if (frame.invertChannels) format = GL_BGRA_EXT;
-		else format = GL_RGBA;
-	}
-	else if (frame.format == FORMAT_RGB24) {
-		if (frame.invertChannels) format = GL_BGR_EXT;
-		else format = GL_RGB;
-	}
-	else if (frame.format == FORMAT_YV12) {
-		format = GL_LUMINANCE;
-	}
+	GLenum format;
+	if (frame.invertChannels) format = GL_BGRA_EXT;
+	else format = GL_RGBA;
 	isInverted = frame.flipped;
 
 	if (lastTex == 0) {
@@ -569,7 +557,6 @@ GLuint VideoContext::GetFrameAsTexture(int n) {
 
 		// Allocate texture
 		int height = frame.h;
-		if (frame.format == FORMAT_YV12) height = height * 3 / 2;
 		int tw = SmallestPowerOf2(MAX(frame.pitch[0]/frame.GetBpp(0),frame.pitch[1]+frame.pitch[2]));
 		int th = SmallestPowerOf2(height);
 		glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA8,tw,th,0,format,GL_UNSIGNED_BYTE,NULL);
@@ -598,20 +585,6 @@ GLuint VideoContext::GetFrameAsTexture(int n) {
 	glBindTexture(GL_TEXTURE_2D, lastTex);
 	glTexSubImage2D(GL_TEXTURE_2D,0,0,0,frame.pitch[0]/frame.GetBpp(0),frame.h,format,GL_UNSIGNED_BYTE,frame.data[0]);
 	if (glGetError() != 0) throw _T("Error uploading primary plane");
-
-	// UV planes for YV12
-	if (frame.format == FORMAT_YV12) {
-		int u = 1;
-		int v = 2;
-		if (frame.invertChannels) {
-			u = 2;
-			v = 1;
-		}
-		glTexSubImage2D(GL_TEXTURE_2D,0,0,frame.h,frame.pitch[1],frame.h/2,format,GL_UNSIGNED_BYTE,frame.data[u]);
-		if (glGetError() != 0) throw _T("Error uploading U plane.");
-		glTexSubImage2D(GL_TEXTURE_2D,0,frame.pitch[1],frame.h,frame.pitch[2],frame.h/2,format,GL_UNSIGNED_BYTE,frame.data[v]);
-		if (glGetError() != 0) throw _T("Error uploadinv V plane.");
-	}
 
 	// Return texture number
 	return lastTex;

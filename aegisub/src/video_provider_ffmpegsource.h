@@ -56,8 +56,6 @@ private:
 	std::vector<int> TimecodesVector;
 	FrameRate Timecodes;
 
-	int DstFormat;
-	int LastDstFormat;
 	AegiVideoFrame CurFrame;
 
 	char FFMSErrMsg[1024];
@@ -75,7 +73,7 @@ public:
 	FFmpegSourceVideoProvider(Aegisub::String filename);
 	~FFmpegSourceVideoProvider();
 
-	const AegiVideoFrame GetFrame(int n, int formatType);
+	const AegiVideoFrame GetFrame(int n);
 	int GetPosition();
 	int GetFrameCount();
 

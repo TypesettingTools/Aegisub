@@ -70,8 +70,6 @@ FFmpegSourceVideoProvider::FFmpegSourceVideoProvider(Aegisub::String filename) {
 
 	// clean up variables
 	VideoSource = NULL;
-	DstFormat = FFMS_GetPixFmt("none");
-	LastDstFormat = FFMS_GetPixFmt("none");
 	KeyFramesLoaded = false;
 	FrameNumber = -1;
 	MsgSize = sizeof(FFMSErrMsg);
@@ -217,6 +215,11 @@ void FFmpegSourceVideoProvider::LoadVideo(Aegisub::String filename) {
 	// load video properties
 	VideoInfo = FFMS_GetVideoProperties(VideoSource);
 
+	if (FFMS_SetOutputFormatV(VideoSource, 1 << FFMS_GetPixFmt("bgra"), VideoInfo->Width, VideoInfo->Height, FFMS_RESIZER_BICUBIC, FFMSErrMsg, MsgSize)) {
+		ErrorMsg.Append(wxString::Format(_T("Failed to set output format: %s"), FFMSErrMsg));
+		throw ErrorMsg;
+	}
+
 	// get frame info data
 	FFTrack *FrameData = FFMS_GetTrackFromVideo(VideoSource);
 	if (FrameData == NULL)
@@ -268,8 +271,6 @@ void FFmpegSourceVideoProvider::Close() {
 	FFMS_DestroyVideoSource(VideoSource);
 	VideoSource = NULL;
 
-	DstFormat = FFMS_GetPixFmt("none");
-	LastDstFormat = FFMS_GetPixFmt("none");
 	KeyFramesLoaded = false;
 	KeyFramesList.clear();
 	TimecodesVector.clear();
@@ -280,7 +281,7 @@ void FFmpegSourceVideoProvider::Close() {
 
 ///////////////
 // Get frame
-const AegiVideoFrame FFmpegSourceVideoProvider::GetFrame(int _n, int FormatType) {
+const AegiVideoFrame FFmpegSourceVideoProvider::GetFrame(int _n) {
 	// don't try to seek to insane places
 	int n = _n;
 	if (n < 0)
@@ -296,31 +297,6 @@ const AegiVideoFrame FFmpegSourceVideoProvider::GetFrame(int _n, int FormatType)
 
 	// this is what we'll return eventually
 	AegiVideoFrame &DstFrame = CurFrame;
-	
-	// choose output format
-	if (FormatType & FORMAT_RGB32) {
-		DstFormat		= FFMS_GetPixFmt("bgra");
-		DstFrame.format	= FORMAT_RGB32;
-	} else if (FormatType & FORMAT_RGB24) {
-		DstFormat		= FFMS_GetPixFmt("bgr24");
-		DstFrame.format	= FORMAT_RGB24;
-	} else if (FormatType & FORMAT_YV12) {
-		DstFormat		= FFMS_GetPixFmt("yuv420p");
-		DstFrame.format	= FORMAT_YV12;
-	} else if (FormatType & FORMAT_YUY2) {
-		DstFormat		= FFMS_GetPixFmt("yuyv422"); // may or may not work
-		DstFrame.format	= FORMAT_YUY2;
-	} else 
-		throw _T("FFmpegSource video provider: upstream provider requested unknown or unsupported pixel format");
-
-	// requested format was changed since last time we were called, (re)set output format
-	if (LastDstFormat != DstFormat) {
-		if (FFMS_SetOutputFormatV(VideoSource, 1 << DstFormat, w, h, FFMS_RESIZER_BICUBIC, FFMSErrMsg, MsgSize)) {
-			ErrorMsg.Append(wxString::Format(_T("Failed to set output format: %s"), FFMSErrMsg));
-			throw ErrorMsg;
-		}
-		LastDstFormat = DstFormat;
-	}
 
 	// decode frame
 	const FFAVFrame *SrcFrame = FFMS_GetFrame(VideoSource, n, FFMSErrMsg, MsgSize);
@@ -330,13 +306,11 @@ const AegiVideoFrame FFmpegSourceVideoProvider::GetFrame(int _n, int FormatType)
 	}
 
 	// set some properties
-	DstFrame.w = w;
-	DstFrame.h = h;
+	DstFrame.format	= FORMAT_RGB32;
+	DstFrame.w = VideoInfo->Width;
+	DstFrame.h = VideoInfo->Height;
 	DstFrame.flipped = false;
-	if (DstFrame.format == FORMAT_RGB32 || DstFrame.format == FORMAT_RGB24)
-		DstFrame.invertChannels = true;
-	else
-		DstFrame.invertChannels = false;
+	DstFrame.invertChannels = true;
 
 	// allocate destination
 	for (int i = 0; i < 4; i++)
@@ -345,13 +319,6 @@ const AegiVideoFrame FFmpegSourceVideoProvider::GetFrame(int _n, int FormatType)
 
 	// copy data to destination
 	memcpy(DstFrame.data[0], SrcFrame->Data[0], DstFrame.pitch[0] * DstFrame.h);
-	// if we're dealing with YUV formats we need to copy the U and V planes as well
-	if (DstFrame.format == FORMAT_YUY2 || DstFrame.format == FORMAT_YV12) {
-		// YV12 has half the vertical U/V resolution too because of the subsampling
-		int UVHeight = DstFrame.format == FORMAT_YUY2 ? DstFrame.h : DstFrame.h / 2;
-		memcpy(DstFrame.data[1], SrcFrame->Data[1], DstFrame.pitch[1] * UVHeight);
-		memcpy(DstFrame.data[2], SrcFrame->Data[2], DstFrame.pitch[2] * UVHeight);
-	}
 
 	return DstFrame;
 }

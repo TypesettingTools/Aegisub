@@ -64,7 +64,7 @@ public:
 	DummyVideoProvider(double fps, int frames, int _width, int _height, const wxColour &colour, bool pattern);
 	~DummyVideoProvider();
 
-	const AegiVideoFrame GetFrame(int n, int formatMask);
+	const AegiVideoFrame GetFrame(int n);
 	static wxString MakeFilename(double fps, int frames, int _width, int _height, const wxColour &colour, bool pattern);
 
 	int GetPosition();

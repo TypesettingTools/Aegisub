@@ -40,12 +40,16 @@
 
 //////////////////////
 // Video Frame format
+// All formats use 8 bits per sample.
 enum VideoFrameFormat {
-	FORMAT_NONE = 0,
-	FORMAT_RGB24 = 1,
-	FORMAT_RGB32 = 2,
-	FORMAT_YUY2 = 4,
-	FORMAT_YV12 = 8
+	FORMAT_NONE		= 0x0000,
+	FORMAT_RGB24	= 0x0001, // RGB, interleaved
+	FORMAT_RGB32	= 0x0002, // RGBA, interleaved
+	FORMAT_YUY2		= 0x0004, // YCbCr 4:2:2, planar
+	FORMAT_YV12		= 0x0008, // YCbCr 4:2:0, planar
+	FORMAT_YUV444	= 0x0010, // YCbCr 4:4:4, planar
+	FORMAT_YUV444A	= 0x0020, // YCbCr 4:4:4 plus alpha, planar
+	FORMAT_YUVMONO	= 0x0040, // Y only (greyscale)
 };
 
 
@@ -58,13 +62,13 @@ private:
 
 public:
 	unsigned char *data[4];		// Pointers to the data planes. Interleaved formats only use data[0]
-	VideoFrameFormat format;	// Data format, one of FORMAT_RGB24, FORMAT_RGB32, FORMAT_YUY2 and FORMAT_YV12
+	VideoFrameFormat format;	// Data format
 	unsigned int w;				// Width in pixels
 	unsigned int h;				// Height in pixels
 	unsigned int pitch[4];		// Pitch, that is, the number of bytes used by each row.
 
 	bool flipped;				// First row is actually the bottom one
-	bool invertChannels;		// Invert Red and Blue channels or U and V planes
+	bool invertChannels;		// Swap Red and Blue channels or U and V planes (controls RGB versus BGR ordering etc)
 	bool cppAlloc;				// Allocated with C++'s "new" operator, instead of "malloc"
 
 	AegiVideoFrame();

@@ -271,14 +271,6 @@ HRESULT DirectShowVideoProvider::OpenVideo(wxString _filename) {
 	// Get video duration
 	if (FAILED(hr = ms->GetDuration(&duration))) return hr;
 
-	// Set pixel type
-	//switch (type) {
-	//	case IVS_RGB32: m_vi.pixel_type = VideoInfo::CS_BGR32; break;
-	//	case IVS_YUY2: m_vi.pixel_type = VideoInfo::CS_YUY2; break;
-	//	case IVS_YV12: m_vi.pixel_type = VideoInfo::CS_YV12; break;
-	//	default: return E_FAIL;
-	//}
-
 	// Set FPS and frame duration
 	if (defd == 0) defd = 417083;
 	if (fps != 0.0) defd = int64_t (10000000.0 / fps) + 1;
@@ -398,21 +390,11 @@ void DirectShowVideoProvider::ReadFrame(int64_t timestamp, unsigned format, unsi
 	df->frame.w = width;
 	df->frame.h = height;
 	df->frame.pitch[0] = stride;
-	if (format == IVS_YV12) {
-		df->frame.pitch[1] = stride/2;
-		df->frame.pitch[2] = stride/2;
-	}
 	df->frame.cppAlloc = false;
 	df->frame.invertChannels = true;
 
 	// Set format
-	if (format == IVS_RGB24) df->frame.format = FORMAT_RGB24;
-	else if (format == IVS_RGB32) df->frame.format = FORMAT_RGB32;
-	else if (format == IVS_YV12) {
-		df->frame.format = FORMAT_YV12;
-		df->frame.invertChannels = true;
-	}
-	else if (format == IVS_YUY2) df->frame.format = FORMAT_YUY2;
+	df->frame.format = FORMAT_RGB32;
 
 	// Allocate and copy data
 	df->frame.Allocate();
@@ -473,7 +455,7 @@ int DirectShowVideoProvider::NextFrame(DF &df,int &_fn) {
 
 /////////////
 // Get frame
-const AegiVideoFrame DirectShowVideoProvider::GetFrame(int n,int formatMask) {
+const AegiVideoFrame DirectShowVideoProvider::GetFrame(int n) {
 	// Normalize frame number
 	if (n >= (signed) num_frames) n = num_frames-1;
 	if (n < 0) n = 0;

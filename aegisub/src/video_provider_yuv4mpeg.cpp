@@ -346,7 +346,7 @@ int YUV4MPEGVideoProvider::IndexFile() {
 }
 
 
-const AegiVideoFrame YUV4MPEGVideoProvider::GetFrame(int n, int desired_fmts) {
+const AegiVideoFrame YUV4MPEGVideoProvider::GetFrame(int n) {
 	// don't try to seek to insane places
 	if (n < 0)
 		n = 0;
@@ -356,38 +356,18 @@ const AegiVideoFrame YUV4MPEGVideoProvider::GetFrame(int n, int desired_fmts) {
 	cur_fn = n;
 
 	VideoFrameFormat src_fmt, dst_fmt;
+	dst_fmt = FORMAT_RGB32;
+	int uv_width, uv_height;
 	switch (pixfmt) {
 		case Y4M_PIXFMT_420JPEG:
 		case Y4M_PIXFMT_420MPEG2:
 		case Y4M_PIXFMT_420PALDV:
-			src_fmt = FORMAT_YV12; break;
+			src_fmt = FORMAT_YV12; uv_width = w / 2; uv_height = h / 2; break;
 		case Y4M_PIXFMT_422:
-			src_fmt = FORMAT_YUY2; break; 
+			src_fmt = FORMAT_YUY2; uv_width = w / 2; uv_height = h; break; 
 		// TODO: add support for more pixel formats
 		default:
 			throw wxString(_T("YUV4MPEG video provider: GetFrame: Unsupported source colorspace"));
-	}
-
-	// TODO: fix this terrible piece of crap and implement colorspace conversions
-	// (write a function to select best output format)
-	if ((desired_fmts & FORMAT_YV12) && src_fmt == FORMAT_YV12)
-		dst_fmt = FORMAT_YV12;
-	else if ((desired_fmts & FORMAT_YUY2) && src_fmt == FORMAT_YUY2)
-		dst_fmt = FORMAT_YUY2;
-	else if ((desired_fmts & FORMAT_RGB32) && src_fmt == FORMAT_YV12)
-		dst_fmt = FORMAT_RGB32;
-	else
-		throw wxString(_T("YUV4MPEG video provider: GetFrame: Upstream video provider requested unknown or unsupported color format"));
-
-	int uv_width, uv_height;
-	// TODO: ugh, fix this
-	switch (src_fmt) {
-		case FORMAT_YV12:
-			uv_width = w / 2; uv_height = h / 2; break;
-		case FORMAT_YUY2:
-			uv_width = w / 2; uv_height = h; break;
-		default:
-			throw wxString(_T("YUV4MPEG video provider: GetFrame: sanity check failed"));
 	}
 	
 	AegiVideoFrame tmp_frame;
@@ -415,13 +395,9 @@ const AegiVideoFrame YUV4MPEGVideoProvider::GetFrame(int n, int desired_fmts) {
 	dst_frame.format = dst_fmt;
 	dst_frame.w = w;
 	dst_frame.h = h;
-	if (dst_fmt == FORMAT_RGB32) {
-		dst_frame.invertChannels = true;
-		dst_frame.pitch[0] = w * 4;
-		dst_frame.ConvertFrom(tmp_frame);
-	}
-	else
-		dst_frame.CopyFrom(tmp_frame);
+	dst_frame.invertChannels = true;
+	dst_frame.pitch[0] = w * 4;
+	dst_frame.ConvertFrom(tmp_frame);
 
 	tmp_frame.Clear();
 

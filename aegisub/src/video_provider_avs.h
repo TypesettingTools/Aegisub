@@ -73,7 +73,7 @@ public:
 	AvisynthVideoProvider(Aegisub::String _filename);
 	~AvisynthVideoProvider();
 
-	const AegiVideoFrame GetFrame(int n,int formatMask);
+	const AegiVideoFrame GetFrame(int n);
 	void GetFloatFrame(float* Buffer, int n);
 
 	// properties

@@ -85,7 +85,7 @@ void DVDSubtitleFormat::GetSubPictureList(std::vector<SubPicture> &pics) {
 	int w = 720;
 	int h = 480;
 	VideoProvider *video = new DummyVideoProvider(10,1,w,h,wxColour(255,0,0),false);
-	AegiVideoFrame srcFrame = video->GetFrame(0,FORMAT_RGB32);
+	AegiVideoFrame srcFrame = video->GetFrame(0);
 	delete video;
 
 	// Count and index lines

@@ -121,7 +121,7 @@ public:
 	YUV4MPEGVideoProvider(Aegisub::String filename);
 	~YUV4MPEGVideoProvider();
 
-	const AegiVideoFrame GetFrame(int n, int formatType);
+	const AegiVideoFrame GetFrame(int n);
 	int GetPosition();
 	int GetFrameCount();
 
