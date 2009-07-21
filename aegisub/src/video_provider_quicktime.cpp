@@ -78,6 +78,7 @@ QuickTimeVideoProvider::QuickTimeVideoProvider(Aegisub::String filename) {
 
 
 QuickTimeVideoProvider::~QuickTimeVideoProvider() {
+	Close();
 	ExitMovies();
 #ifdef WIN32
 	TerminateQTML();
