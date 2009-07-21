@@ -10,7 +10,6 @@ assdraw_LDFLAGS = -L../libpropgrid -lpropgrid @WX_LIBS@ @LIBAGG_LIBS@
 assdraw_LDADD = wxAGG/libaggwindow.a xpm/libres.a
 
 assdraw_SOURCES = \
-	wxAGG/AGGWindow.cpp \
 	agg_bcspline.cpp \
 	agg_vcgen_bcspline.cpp \
 	assdraw.cpp \
@@ -27,9 +26,7 @@ assdraw_SOURCES += \
 	agg_bcspline.h \
 	agg_conv_bcspline.h \
 	agg_vcgen_bcspline.h \
-	resource.h \
-	wxAGG/AGGWindow.h \
-	wxAGG/PixelFormatConvertor.h
+	resource.h
 
 EXTRA_DIST = \
 	_common.hpp \
