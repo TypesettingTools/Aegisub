@@ -179,3 +179,8 @@
 // Display trace-level diagnostic messages during startup
 // Only enable for making special builds for end users having trouble with starting Aegisub
 //#define WITH_STARTUPLOG
+
+
+// Enable QuickTime video provider
+// Requires QuickTime SDK and (on Windows) a QuickTime7 (or later) installation
+//#define WITH_QUICKTIME

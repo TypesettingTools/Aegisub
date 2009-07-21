@@ -331,6 +331,7 @@ aegisub_2_2_SOURCES = \
 	video_provider_cache.cpp \
 	video_provider_dummy.cpp \
 	video_provider_manager.cpp \
+	video_provider_quicktime.cpp \
 	video_provider_yuv4mpeg.cpp \
 	video_slider.cpp \
 	visual_feature.cpp \
