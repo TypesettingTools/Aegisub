@@ -174,86 +174,59 @@ PClip AvisynthVideoProvider::OpenVideo(Aegisub::String _filename, bool mpeg2dec3
         		script = env->Invoke("SetPlanarLegacyAlignment", script);
 		}
 
-		// Some other format, such as mkv, mp4, ogm... try FFMpegSource and DirectShowSource
+		// Some other format, such as mkv, mp4, ogm... try both flavors of DirectShowSource
 		else {
-			// Try loading FFMpegSource
 			directshowOpen:
-			bool ffsource = false;
-			if (env->FunctionExists("ffvideosource")) ffsource = true;
-			if (!ffsource) {
-				wxFileName ffsourcepath(StandardPaths::DecodePath(_T("?data/ffms2.dll")));
-				if (ffsourcepath.FileExists()) {
-					AVSTRACE(_T("AvisynthVideoProvider::OpenVideo: Loading FFMpegSource2"));
-					env->Invoke("LoadPlugin",env->SaveString(ffsourcepath.GetFullPath().mb_str(csConvLocal)));
-					AVSTRACE(_T("AvisynthVideoProvider::OpenVideo: Loaded FFMpegSource2"));
-					byFrame = true;
-				}
-			}
-
-			// If FFMpegSource loaded properly, try using it
-			ffsource = false;
-			if (env->FunctionExists("ffvideosource")) {
-				AVSTRACE(_T("AvisynthVideoProvider::OpenVideo: Invoking FFMpegSource2"));
-				const char *argnames[2] = { "source", "cache" };
-				AVSValue args[2] = { videoFilename, false };
-				script = env->Invoke("ffvideosource", AVSValue(args,2), argnames);
-				//script = env->Invoke("ffmpegsource", videoFilename);
-				AVSTRACE(_T("AvisynthVideoProvider::OpenVideo: Successfully opened file with FFMpegSource2"));
-				ffsource = true;
-				decoderName = _T("FFmpegSource2");
-			}
 
 			// DirectShowSource
-			if (!ffsource) {
-				AVSTRACE(_T("AvisynthVideoProvider::OpenVideo: Opening file with DirectShowSource"));
+			AVSTRACE(_T("AvisynthVideoProvider::OpenVideo: Opening file with DirectShowSource"));
 
-				// Try loading DirectShowSource2
-				bool dss2 = false;
-				if (env->FunctionExists("dss2")) dss2 = true;
-				if (!dss2) {
-					wxFileName dss2path(StandardPaths::DecodePath(_T("?data/avss.dll")));
-					if (dss2path.FileExists()) {
-						AVSTRACE(_T("AvisynthVideoProvider::OpenVideo: Loading DirectShowSource2"));
-						env->Invoke("LoadPlugin",env->SaveString(dss2path.GetFullPath().mb_str(csConvLocal)));
-						AVSTRACE(_T("AvisynthVideoProvider::OpenVideo: Loaded DirectShowSource2"));
-					}
+			// Try loading DirectShowSource2
+			bool dss2 = false;
+			if (env->FunctionExists("dss2")) dss2 = true;
+			if (!dss2) {
+				wxFileName dss2path(StandardPaths::DecodePath(_T("?data/avss.dll")));
+				if (dss2path.FileExists()) {
+					AVSTRACE(_T("AvisynthVideoProvider::OpenVideo: Loading DirectShowSource2"));
+					env->Invoke("LoadPlugin",env->SaveString(dss2path.GetFullPath().mb_str(csConvLocal)));
+					AVSTRACE(_T("AvisynthVideoProvider::OpenVideo: Loaded DirectShowSource2"));
+				}
+			}
+
+			// If DSS2 loaded properly, try using it
+			dss2 = false;
+			if (env->FunctionExists("dss2")) {
+				AVSTRACE(_T("AvisynthVideoProvider::OpenVideo: Invoking DSS2"));
+				script = env->Invoke("DSS2", videoFilename);
+				AVSTRACE(_T("AvisynthVideoProvider::OpenVideo: Successfully opened file with DSS2"));
+				dss2 = true;
+				decoderName = _T("DSS2");
+			}
+
+			// Try DirectShowSource
+			if (!dss2) {
+				// Load DirectShowSource.dll from app dir if it exists
+				wxFileName dsspath(StandardPaths::DecodePath(_T("?data/DirectShowSource.dll")));
+				if (dsspath.FileExists()) {
+					AVSTRACE(_T("AvisynthVideoProvider::OpenVideo: Loading DirectShowSource"));
+					env->Invoke("LoadPlugin",env->SaveString(dsspath.GetFullPath().mb_str(csConvLocal)));
+					AVSTRACE(_T("AvisynthVideoProvider::OpenVideo: Loaded DirectShowSource"));
 				}
 
-				// If DSS2 loaded properly, try using it
-				dss2 = false;
-				if (env->FunctionExists("dss2")) {
-					AVSTRACE(_T("AvisynthVideoProvider::OpenVideo: Invoking DSS2"));
-					script = env->Invoke("DSS2", videoFilename);
-					AVSTRACE(_T("AvisynthVideoProvider::OpenVideo: Successfully opened file with DSS2"));
-					dss2 = true;
-					decoderName = _T("DSS2");
+				// Then try using DSS
+				if (env->FunctionExists("DirectShowSource")) {
+					const char *argnames[3] = { 0, "video", "audio" };
+					AVSValue args[3] = { videoFilename, true, false };
+					script = env->Invoke("DirectShowSource", AVSValue(args,3), argnames);
+					AVSTRACE(_T("AvisynthVideoProvider::OpenVideo: Successfully opened file with DSS without audio"));
+					usedDirectShow = true;
+					decoderName = _T("DirectShowSource");
 				}
 
-				// Try DirectShowSource
-				if (!dss2) {
-					// Load DirectShowSource.dll from app dir if it exists
-					wxFileName dsspath(StandardPaths::DecodePath(_T("?data/DirectShowSource.dll")));
-					if (dsspath.FileExists()) {
-						AVSTRACE(_T("AvisynthVideoProvider::OpenVideo: Loading DirectShowSource"));
-						env->Invoke("LoadPlugin",env->SaveString(dsspath.GetFullPath().mb_str(csConvLocal)));
-						AVSTRACE(_T("AvisynthVideoProvider::OpenVideo: Loaded DirectShowSource"));
-					}
-
-					// Then try using DSS
-					if (env->FunctionExists("DirectShowSource")) {
-						const char *argnames[3] = { 0, "video", "audio" };
-						AVSValue args[3] = { videoFilename, true, false };
-						script = env->Invoke("DirectShowSource", AVSValue(args,3), argnames);
-						AVSTRACE(_T("AvisynthVideoProvider::OpenVideo: Successfully opened file with DSS without audio"));
-						usedDirectShow = true;
-						decoderName = _T("DirectShowSource");
-					}
-
-					// Failed to find a suitable function
-					else {
-						AVSTRACE(_T("AvisynthVideoProvider::OpenVideo: DSS function not found"));
-						throw AvisynthError("No function suitable for opening the video found");
-					}
+				// Failed to find a suitable function
+				else {
+					AVSTRACE(_T("AvisynthVideoProvider::OpenVideo: DSS function not found"));
+					throw AvisynthError("No function suitable for opening the video found");
 				}
 			}
 		}
