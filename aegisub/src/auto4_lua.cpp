@@ -574,13 +574,17 @@ namespace Automation4 {
 		lua_pushinteger(L, -1); // active line
 
 		// do call
-		LuaThreadedCall call(L, 3, 1);
-		wxThread::ExitCode code = call.Wait();
-		(void) code;
-		// get result
-		bool result = !!lua_toboolean(L, -1);
+		int err = lua_pcall(L, 3, 1, 0);
+		bool result;
+		if (err) {
+			wxString errmsg(lua_tostring(L, -1), wxConvUTF8);
+			wxLogWarning(_T("Runtime error in Lua macro validation function:\n%s"), errmsg.c_str());
+			result = false;
+		} else {
+			result = !!lua_toboolean(L, -1);
+		}
 
-		// clean up stack
+		// clean up stack (result or error message)
 		lua_pop(L, 1);
 
 		return result;
