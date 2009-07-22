@@ -41,6 +41,7 @@
 // Headers
 #include <wx/wxprec.h>
 #include <wx/string.h>
+#include "include/aegisub/exception.h"
 
 
 //////////////
@@ -57,6 +58,17 @@ enum ASS_EntryType {
 	ENTRY_DIALOGUE,
 	ENTRY_STYLE,
 	ENTRY_ATTACHMENT
+};
+
+
+namespace Aegisub {
+	// Thrown when someone supplies an invalid margin ID to a function expecting one
+	// (Usually limited to range 0..3.)
+	class InvalidMarginIdError : public InternalError {
+	public:
+		InvalidMarginIdError() : InternalError(_T("Invalid margin id"), 0) { }
+		const wxChar *GetName() { return _T("internal_error/invalid_margin_id"); }
+	};
 };
 
 
