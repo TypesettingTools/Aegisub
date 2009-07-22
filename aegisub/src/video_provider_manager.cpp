@@ -64,15 +64,11 @@
 VideoProvider *VideoProviderFactoryManager::GetProvider(wxString video) {
 	// First check special case of dummy video
 	if (video.StartsWith(_T("?dummy:"))) {
-#if wxCHECK_VERSION(2,9,0)
 		return new DummyVideoProvider(video.wc_str());
-#else
-		return new DummyVideoProvider(video.c_str());
-#endif
 	}
 
 	try {
-		VideoProvider *y4m_provider = new YUV4MPEGVideoProvider(video.c_str());
+		VideoProvider *y4m_provider = new YUV4MPEGVideoProvider(video.wc_str());
 		if (y4m_provider)
 			y4m_provider = new VideoProviderCache(y4m_provider);
 		return y4m_provider;
@@ -95,11 +91,7 @@ VideoProvider *VideoProviderFactoryManager::GetProvider(wxString video) {
 	for (unsigned int i=0;i<list.Count();i++) {
 		try {
 			// Create provider
-#if wxCHECK_VERSION(2,9,0)
 			VideoProvider *provider = GetFactory(list[i])->CreateProvider(video.wc_str());
-#else
-			VideoProvider *provider = GetFactory(list[i])->CreateProvider(video.c_str());
-#endif
 			if (provider) {
 				// Cache if necessary
 				if (provider->GetDesiredCacheSize()) {

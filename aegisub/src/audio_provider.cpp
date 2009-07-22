@@ -229,11 +229,7 @@ AudioProvider *AudioProviderFactoryManager::GetAudioProvider(wxString filename, 
 	wxString error;
 	for (unsigned int i=0;i<list.Count();i++) {
 		try {
-#if wxCHECK_VERSION(2,9,0)
 			AudioProvider *prov = GetFactory(list[i])->CreateProvider(filename.wc_str());
-#else
-			AudioProvider *prov = GetFactory(list[i])->CreateProvider(filename.c_str());
-#endif
 			if (prov) {
 				provider = prov;
 				break;
