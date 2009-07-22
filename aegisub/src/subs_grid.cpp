@@ -56,6 +56,7 @@
 #include "ass_override.h"
 #include "dialog_paste_over.h"
 #include "charset_conv.h"
+#include "ass_karaoke.h"
 
 
 ///////////////
@@ -397,11 +398,14 @@ void SubtitlesGrid::OnJoinAsKaraoke (wxCommandEvent &event) {
 void SubtitlesGrid::OnSplitByKaraoke (wxCommandEvent &event) {
 	BeginBatch();
 	wxArrayInt sels = GetSelection();
+	bool didSplit = false;
 	for (int i = sels.size()-1; i >= 0; i--) {
-		SplitLineByKaraoke(sels[i]);
+		didSplit |= SplitLineByKaraoke(sels[i]);
 	}
-	ass->FlagAsModified(_("splitting"));
-	CommitChanges();
+	if (didSplit) {
+		ass->FlagAsModified(_("splitting"));
+		CommitChanges();
+	}
 	EndBatch();
 }
 
@@ -1024,7 +1028,7 @@ void SubtitlesGrid::PasteLines(int n,bool pasteOver) {
 
 /////////////////////////
 // Delete selected lines
-void SubtitlesGrid::DeleteLines(wxArrayInt target) {
+void SubtitlesGrid::DeleteLines(wxArrayInt target, bool flagModified) {
 	// Check if it's wiping file
 	int deleted = 0;
 
@@ -1045,8 +1049,10 @@ void SubtitlesGrid::DeleteLines(wxArrayInt target) {
 	// Update
 	UpdateMaps();
 	AdjustScrollbar();
-	ass->FlagAsModified(_("delete"));
-	CommitChanges();
+	if (flagModified) {
+		ass->FlagAsModified(_("delete"));
+		CommitChanges();
+	}
 
 	// Update selected line
 	int newSelected = MID(0, editBox->linen,GetRows() - 1);
@@ -1322,90 +1328,45 @@ void SubtitlesGrid::SplitLine(int n,int pos,int mode,wxString textIn) {
 // Splits the line into as many new lines as there are karaoke syllables,
 // timed as the syllables.
 // DOES NOT FLAG AS MODIFIED OR COMMIT CHANGES
-void SubtitlesGrid::SplitLineByKaraoke(int lineNumber) {
+// Returns true if changes were made.
+bool SubtitlesGrid::SplitLineByKaraoke(int lineNumber) {
 	AssDialogue *line = GetDialogue(lineNumber);
+
 	line->ParseASSTags();
-
-	AssDialogue *nl = new AssDialogue(line->GetEntryData());
-	nl->Text = _T("");
-	nl->End = nl->Start;
-	nl->UpdateData();
-	int kcount = 0;
-	int start_time = line->Start.GetMS();
-
-	// copying lost of code from automation.cpp here
-	// maybe it should be refactored, since a similar proc is also needed in audio_karaoke ?
-	for (std::vector<AssDialogueBlock*>::iterator block = line->Blocks.begin(); block != line->Blocks.end(); block++) {
-		switch ((*block)->GetType()) {
-			case BLOCK_BASE:
-				throw wxString(_T("BLOCK_BASE found processing dialogue blocks. This should never happen."));
-
-			case BLOCK_PLAIN:
-				nl->Text += (*block)->text;
-				break;
-
-			case BLOCK_DRAWING:
-				nl->Text += (*block)->text;
-				break;
-
-			case BLOCK_OVERRIDE: {
-				bool brackets_open = false;
-				std::vector<AssOverrideTag*> &tags = (*block)->GetAsOverride(*block)->Tags;
-
-				for (std::vector<AssOverrideTag*>::iterator tag = tags.begin(); tag != tags.end(); tag++) {
-					if (!(*tag)->Name.Mid(0,2).CmpNoCase(_T("\\k")) && (*tag)->IsValid()) {
-						// it's a karaoke tag
-						if (brackets_open) {
-							nl->Text += _T("}");
-							brackets_open = false;
-						}
-						if (nl->Text == _T("")) {
-							// don't create blank lines
-							delete nl;
-						} else {
-							InsertLine(nl, lineNumber+kcount, true, false);
-							kcount++;
-						}
-						nl = new AssDialogue(line->GetEntryData());
-						nl->Text = _T("");
-						nl->Start.SetMS(start_time);
-						nl->End.SetMS(start_time + (*tag)->Params[0]->AsInt()*10);
-						nl->UpdateData();
-						start_time = nl->End.GetMS();;
-					} else {
-						if (!brackets_open) {
-							nl->Text += _T("{");
-							brackets_open = true;
-						}
-						nl->Text += (*tag)->ToString();
-					}
-				}
-
-				if (brackets_open) {
-					nl->Text += _T("}");
-				}
-
-				break;}
-
-		}
-	}
-
-	if (nl->Text == _T("")) {
-		// don't create blank lines
-		delete nl;
-	} else {
-		InsertLine(nl, lineNumber+kcount, true, false);
-		kcount++;
-	}
-
-	// POSSIBLE BUG/LEAK! If the above code throws an exception, the blocks are never cleared!!
+	AssKaraokeVector syls;
+	ParseAssKaraokeTags(line, syls);
 	line->ClearBlocks();
 
+	// If there's only 1 or 0 syllables, splitting would be counter-productive.
+	// 1 syllable means there's no karaoke tags in the line at all and that is
+	// the case that triggers bug #929.
+	if (syls.size() < 2) return false;
+
+	// Insert a new line for each syllable
+	int start_ms = line->GetStartMS();
+	int nextpos = lineNumber;
+	for (AssKaraokeVector::iterator syl = syls.begin(); syl != syls.end(); ++syl)
+	{
+		// Skip blank lines
+		if (syl->unstripped_text.IsEmpty()) continue;
+
+		AssDialogue *nl = new AssDialogue(line->GetEntryData());
+		nl->SetStartMS(start_ms);
+		start_ms += syl->duration * 10;
+		nl->SetEndMS(start_ms);
+		nl->Text = syl->unstripped_text;
+		nl->UpdateData();
+		InsertLine(nl, nextpos++, true, false);
+	}
+
+	// Remove the source line
 	{
 		wxArrayInt oia;
 		oia.Add(lineNumber);
-		DeleteLines(oia);
+		DeleteLines(oia, false);
 	}
+
+	return true;
 }
 
 

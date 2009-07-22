@@ -116,7 +116,7 @@ public:
 	void JoinAsKaraoke(int first,int last);
 	void AdjoinLines(int first,int last,bool setStart);
 	void SplitLine(int lineNumber,int splitPosition,int mode,wxString splitText = _T(""));
-	void SplitLineByKaraoke(int lineNumber);
+	bool SplitLineByKaraoke(int lineNumber);
 	void DuplicateLines(int first,int last,bool nextFrame=false);
 
 	void SwapLines(int line1,int line2);
@@ -124,7 +124,7 @@ public:
 	void ShiftLineByFrames(int lineNumber,int len,int type);
 
 	void InsertLine(AssDialogue *line,int position,bool insertAfter,bool update=true);
-	void DeleteLines(wxArrayInt lines);
+	void DeleteLines(wxArrayInt lines, bool flagModified=true);
 
 	void CopyLines(wxArrayInt lines);
 	void CutLines(wxArrayInt lines);
