@@ -129,11 +129,10 @@ public:
 	int GetHeight();
 	double GetFPS();
 	bool AreKeyFramesLoaded() { return false; }
-	wxArrayInt GetKeyFrames() { return wxArrayInt(); };
+	wxArrayInt GetKeyFrames() { return wxArrayInt(); }
 	bool IsVFR() { return false; };
-	FrameRate GetTrueFrameRate() { return FrameRate(); };
+	FrameRate GetTrueFrameRate() { return FrameRate(); }
 	Aegisub::String GetDecoderName() { return L"YUV4MPEG"; }
-	bool IsNativelyByFrames() { return true; }
 	int GetDesiredCacheSize() { return 8; }
 };
 

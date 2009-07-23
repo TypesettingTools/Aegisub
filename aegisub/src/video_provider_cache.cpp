@@ -167,6 +167,9 @@ void VideoProviderCache::OverrideFrameTimeList(Aegisub::IntArray list) {
 bool VideoProviderCache::IsNativelyByFrames() {
 	return master->IsNativelyByFrames();
 }
+bool VideoProviderCache::NeedsVFRHack() {
+	return master->NeedsVFRHack();
+}
 Aegisub::String VideoProviderCache::GetWarning() {
 	return master->GetWarning();
 }

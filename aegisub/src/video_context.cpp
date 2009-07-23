@@ -271,21 +271,23 @@ void VideoContext::SetVideo(const wxString &filename) {
 			else {
 				keyFramesLoaded = false;
 			}
-
-			bool isVfr = provider->IsVFR();
 			
 			// Set frame rate
 			fps = provider->GetFPS();
-			// if the source is vfr and the provider isn't frame-based (i.e. is dshow),
-			// we need to jump through some hoops to make VFR work properly.
-			if (!provider->IsNativelyByFrames() && isVfr) {
-				FrameRate temp = provider->GetTrueFrameRate();
-				provider->OverrideFrameTimeList(temp.GetFrameTimeList());
-			}
-			// source not VFR? set as CFR
-			else if (!isVfr) {
-				VFR_Input.SetCFR(fps);
-				if (VFR_Output.GetFrameRateType() != VFR) VFR_Output.SetCFR(fps);
+			// does this provider need special vfr treatment?
+			if (provider->NeedsVFRHack()) {
+				// FIXME:
+				// Unfortunately, this hack does not actually work for the one
+				// provider that needs it (Avisynth). Go figure.
+				bool isVfr = provider->IsVFR();
+				if (!isVfr || provider->IsNativelyByFrames()) {
+					VFR_Input.SetCFR(fps);
+					if (VFR_Output.GetFrameRateType() != VFR) VFR_Output.SetCFR(fps);
+				}
+				else {
+					FrameRate temp = provider->GetTrueFrameRate();
+					provider->OverrideFrameTimeList(temp.GetFrameTimeList());
+				}
 			}
 
 			// Gather video parameters

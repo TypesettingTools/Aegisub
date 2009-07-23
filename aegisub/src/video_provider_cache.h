@@ -89,6 +89,7 @@ public:
 	virtual FrameRate GetTrueFrameRate();
 	virtual void OverrideFrameTimeList(Aegisub::IntArray list);	// Override the list with the provided one, for VFR handling
 	virtual bool IsNativelyByFrames();
+	virtual bool NeedsVFRHack();
 	virtual Aegisub::String GetWarning();
 	virtual Aegisub::String GetDecoderName();
 };

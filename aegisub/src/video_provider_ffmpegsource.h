@@ -85,7 +85,6 @@ public:
 	bool IsVFR() { return true; };
 	FrameRate GetTrueFrameRate() { return Timecodes; };
 	Aegisub::String GetDecoderName() { return L"FFmpegSource"; }
-	bool IsNativelyByFrames() { return true; }
 	int GetDesiredCacheSize() { return 8; }
 };
 
