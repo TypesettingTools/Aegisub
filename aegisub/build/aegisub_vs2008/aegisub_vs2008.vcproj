@@ -154,7 +154,7 @@
 		<Configuration
 			Name="Release|Win32"
 			ConfigurationType="1"
-			InheritedPropertySheets=".\suffix_release32.vsprops;.\libraries_outdirs.vsprops;.\contrib_includedirs.vsprops;.\aegisub_exe_filename.vsprops;.\ffms2_lib_include_dir.vsprops;.\compiler_options.vsprops;.\svn_rev_header_update.vsprops;.\delayload_ffms2_32.vsprops;.\delayload_portaudio_32.vsprops;.\delayload_openal_32.vsprops;.\delayload_libauto3.vsprops"
+			InheritedPropertySheets=".\suffix_release32.vsprops;.\libraries_outdirs.vsprops;.\contrib_includedirs.vsprops;.\aegisub_exe_filename.vsprops;.\ffms2_lib_include_dir.vsprops;.\compiler_options.vsprops;.\svn_rev_header_update.vsprops;.\delayload_ffms2_32.vsprops;.\delayload_portaudio_32.vsprops;.\delayload_openal_32.vsprops"
 			CharacterSet="1"
 			WholeProgramOptimization="1"
 			>
