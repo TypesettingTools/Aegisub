@@ -37,18 +37,19 @@
 #pragma once
 
 #include "config.h"
-#include <wx/wxprec.h>
 
 #ifdef WITH_QUICKTIME
+#include <wx/wxprec.h>
+#include <wx/thread.h>
+#include "include/aegisub/aegisub.h"
 
+// qt stuff
 #ifdef _MSC_VER
 // avoid conflicts between MSVC's stdint.h and QT's stdint.h
 #define _STDINT_H
 // get MSVC to shut up about a macro redefinition in QT's ConditionalMacros.h
 #pragma warning(disable: 4004)
 #endif
-
-#include "include/aegisub/aegisub.h"
 extern "C" {
 #ifdef WIN32
 #include <QTML.h>
@@ -63,8 +64,14 @@ extern "C" {
 
 class QuickTimeProvider {
 public:
+	void InitQuickTime();
+	void DeInitQuickTime();
 	void wxStringToDataRef(const wxString &string, Handle *dataref, OSType *dataref_type);
+	bool CanOpen(const Handle& dataref, const OSType dataref_type);
 	void QTCheckError(OSErr err, wxString errmsg);
+
+	static int qt_initcount;
+	static GWorldPtr default_gworld;
 
 	virtual ~QuickTimeProvider() {};
 };

@@ -33,12 +33,13 @@
 // Contact: mailto:zeratul@cellosoft.com
 //
 
+#include "video_provider_quicktime.h"
 
 #ifdef WITH_QUICKTIME
-
-#include "video_provider_quicktime.h"
 #include "aegisub_endian.h"
 
+// this function has a different name on win32 because the original name
+// conflicts with a windows api function
 #ifndef WIN32
 #define MacOffsetRect OffsetRect
 #endif
@@ -48,7 +49,6 @@ QuickTimeVideoProvider::QuickTimeVideoProvider(wxString filename) {
 	in_dataref = NULL;
 	movie	= NULL;
 	gw		= NULL;
-	gw_tmp	= NULL;
 	w		= 0;
 	h		= 0;
 	cur_fn	= -1;
@@ -58,14 +58,19 @@ QuickTimeVideoProvider::QuickTimeVideoProvider(wxString filename) {
 	qt_err = noErr;
 	errmsg = _T("QuickTime video provider: ");
 
-#ifdef WIN32
-	qt_err = InitializeQTML(0L);
-	QTCheckError(qt_err, wxString(_T("QuickTime video provider: Failed to initialize QTML (do you have QuickTime installed?)")));
-#endif
+	// try to init quicktime
+	try {
+		InitQuickTime();
+	}
+	catch (wxString temp) {
+		errmsg.Append(temp);
+		throw errmsg;
+	}
+	catch (...) {
+		throw;
+	}
 
-	qt_err = EnterMovies();
-	QTCheckError(qt_err, wxString(_T("QuickTime video provider: EnterMovies() failed")));
-
+	// try loading the file
 	try {
 		LoadVideo(filename);
 	}
@@ -83,10 +88,7 @@ QuickTimeVideoProvider::QuickTimeVideoProvider(wxString filename) {
 
 QuickTimeVideoProvider::~QuickTimeVideoProvider() {
 	Close();
-	ExitMovies();
-#ifdef WIN32
-	TerminateQTML();
-#endif
+	DeInitQuickTime();
 }
 
 
@@ -97,9 +99,6 @@ void QuickTimeVideoProvider::Close() {
 	if (gw)
 		DisposeGWorld(gw);
 	gw = NULL;
-	if (gw_tmp)
-		DisposeGWorld(gw_tmp);
-	gw_tmp = NULL;
 	if (in_dataref)
 		DisposeHandle(in_dataref);
 	in_dataref = NULL;
@@ -109,18 +108,7 @@ void QuickTimeVideoProvider::Close() {
 }
 
 
-bool QuickTimeVideoProvider::CanOpen(const Handle& dataref, const OSType dataref_type) {
-	Boolean can_open;
-	Boolean prefer_img;
-	qt_err = CanQuickTimeOpenDataRef(dataref, dataref_type, NULL, &can_open, &prefer_img, 0);
-	QTCheckError(qt_err, wxString(_T("Checking if file is openable failed")));
 
-	// don't bother trying to open things quicktime considers images
-	if (can_open && !prefer_img)
-		return true;
-	else
-		return false;
-}
 
 
 void QuickTimeVideoProvider::LoadVideo(const wxString _filename) {
@@ -133,18 +121,6 @@ void QuickTimeVideoProvider::LoadVideo(const wxString _filename) {
 	if (!CanOpen(in_dataref, in_dataref_type))
 		throw wxString(_T("QuickTime cannot open file as video"));
 
-	// allocate an offscreen graphics world
-	// we need to do this before we actually open the movie, or quicktime may crash (heh)
-	Rect m_box; // movie render rectangle
-	m_box.top = 0;
-	m_box.left = 0;
-	m_box.bottom = 320;	// pick some random dimensions for now;
-	m_box.right = 240;	// we won't actually use this buffer to render anything
-	QDErr qd_err = NewGWorld(&gw_tmp, 32, &m_box, NULL, NULL, keepLocal);
-	if (qd_err != noErr)
-		throw wxString(_T("Failed to initialize temporary offscreen drawing buffer"));
-	SetGWorld(gw_tmp, NULL);
-
 	// actually open file
 	short res_id = 0;
 	qt_err = NewMovieFromDataRef(&movie, newMovieActive, &res_id, in_dataref, in_dataref_type);
@@ -155,6 +131,7 @@ void QuickTimeVideoProvider::LoadVideo(const wxString _filename) {
 	QTCheckError(qt_err, wxString(_T("Failed to disable visual context")));
 
 	// set offscreen buffer size to actual movie dimensions
+	Rect m_box;
 	GetMovieBox(movie, &m_box);
 	// make sure its top left corner is at (0,0)
 	MacOffsetRect(&m_box, -m_box.left, -m_box.top);
@@ -162,20 +139,12 @@ void QuickTimeVideoProvider::LoadVideo(const wxString _filename) {
 	w = m_box.right;
 	h = m_box.bottom;
 	// allocate a new offscreen rendering buffer with the correct dimensions
-	qd_err = NewGWorld(&gw, 32, &m_box, NULL, NULL, keepLocal);
+	QDErr qd_err = NewGWorld(&gw, 32, &m_box, NULL, NULL, keepLocal);
 	if (qd_err != noErr)
 		throw wxString(_T("Failed to initialize offscreen drawing buffer"));
 	
 	// select our new offscreen render target
-	SetGWorld(gw, NULL); // make sure the old one isn't used, since we're about to kill it
 	SetMovieGWorld(movie, gw, NULL);
-	// Get rid of our old temporary rendering buffer.
-	// All this ridicolous hoop-jumping with two buffers is because no matter what I've tried,
-	// UpdateGWorld() either doesn't update the buffer, or if it does, trying to render to the
-	// updated buffer causes access violations.
-	// :argh: QuickDraw :argh:
-	DisposeGWorld(gw_tmp);
-	gw_tmp = NULL;
 
 	// get timestamps, keyframes and framecount
 	std::vector<int> timecodes = IndexFile();
@@ -216,7 +185,6 @@ std::vector<int> QuickTimeVideoProvider::IndexFile() {
 
 	// get the first frame
 	GetMovieNextInterestingTime(movie, nextTimeMediaSample + nextTimeEdgeOK, 1, v_type, cur_timeval, 0, &cur_timeval, NULL);
-	keyframes.push_back(0); // interesting assumption?
 
 	// first, find timestamps and count frames
 	while (cur_timeval >= 0) {
@@ -233,6 +201,7 @@ std::vector<int> QuickTimeVideoProvider::IndexFile() {
 
 	// next, find keyframes
 	cur_timeval = 0;
+	keyframes.push_back(0); // interesting assumption?
 	while (cur_timeval >= 0) {
 		GetMovieNextInterestingTime(movie, nextTimeSyncSample, 1, v_type, cur_timeval, 0, &cur_timeval, NULL);
 		keyframes.push_back(timestamp_map[cur_timeval]);

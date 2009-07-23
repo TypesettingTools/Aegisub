@@ -34,11 +34,56 @@
 //
 
 
-#include <wx/wxprec.h>
-#include "config.h"
+#include "quicktime_common.h"
 
 #ifdef WITH_QUICKTIME
-#include "quicktime_common.h"
+#include <wx/wxprec.h>
+
+// static fun
+int QuickTimeProvider::qt_initcount = 0;
+GWorldPtr QuickTimeProvider::default_gworld = NULL;
+
+
+void QuickTimeProvider::InitQuickTime() {
+	OSErr qt_err;
+#ifdef WIN32
+	qt_err = InitializeQTML(0L);
+	QTCheckError(qt_err, wxString(_T("Failed to initialize QTML (do you have QuickTime installed?)")));
+#endif
+
+	qt_err = EnterMovies();
+	QTCheckError(qt_err, wxString(_T("EnterMovies() failed")));
+
+	// have we been inited before?
+	if (qt_initcount <= 0) { 
+		// we haven't, allocate an offscreen graphics world
+		// we need to do this before we actually open anything, or quicktime may crash (heh)
+		Rect def_box;
+		def_box.top = 0;
+		def_box.left = 0;
+		def_box.bottom = 320;	// pick some random dimensions for now;
+		def_box.right = 240;	// we won't actually use this buffer to render anything
+		QDErr qd_err = NewGWorld(&default_gworld, 32, &def_box, NULL, NULL, keepLocal);
+		if (qd_err != noErr)
+			throw wxString(_T("Failed to initialize temporary offscreen drawing buffer"));
+		SetGWorld(default_gworld, NULL);
+	}
+
+	qt_initcount++;
+}
+
+
+void QuickTimeProvider::DeInitQuickTime() {
+#ifdef WIN32
+	TerminateQTML();
+#endif
+	qt_initcount--;
+
+	if (qt_initcount <= 0) {
+		ExitMovies();
+		DisposeGWorld(default_gworld);
+	}
+}
 
 
 void QuickTimeProvider::wxStringToDataRef(const wxString &string, Handle *dataref, OSType *dataref_type) {
@@ -53,10 +98,26 @@ void QuickTimeProvider::wxStringToDataRef(const wxString &string, Handle *datare
 }
 
 
+// check if this error code signifies an error, and if it does, throw an exception
 void QuickTimeProvider::QTCheckError(OSErr err, wxString errmsg) {
 	if (err != noErr)
 		throw errmsg;
 	/* CheckError(err, errmsg.c_str()); // I wonder if this actually works on Mac, and if so, what it does */
 }
+
+
+bool QuickTimeProvider::CanOpen(const Handle& dataref, const OSType dataref_type) {
+	Boolean can_open;
+	Boolean prefer_img;
+	OSErr qt_err = CanQuickTimeOpenDataRef(dataref, dataref_type, NULL, &can_open, &prefer_img, 0);
+	QTCheckError(qt_err, wxString(_T("Checking if file is openable failed")));
+
+	// don't bother trying to open things quicktime considers images
+	if (can_open && !prefer_img)
+		return true;
+	else
+		return false;
+}
+
 
 #endif /* WITH_QUICKTIME */

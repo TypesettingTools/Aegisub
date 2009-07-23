@@ -36,22 +36,22 @@
 
 #pragma once
 
-#include <wx/wxprec.h>
+#include "quicktime_common.h"
 
 #ifdef WITH_QUICKTIME
-#include "include/aegisub/video_provider.h"
-#include "quicktime_common.h"
+#include <wx/wxprec.h>
 #include <wx/dynarray.h>
 #include <wx/filename.h>
 #include <vector>
 #include <map>
+#include "include/aegisub/video_provider.h"
 #include "vfr.h"
 
 
 class QuickTimeVideoProvider : public VideoProvider, QuickTimeProvider {
 private:
 	Movie movie;			// source object
-	GWorldPtr gw, gw_tmp;	// render buffers
+	GWorldPtr gw;			// render buffer
 	Handle in_dataref;		// input data handle
 
 	int w, h;				// width/height
@@ -65,7 +65,6 @@ private:
 	OSErr qt_err;			// quicktime error code
 	wxString errmsg;		// aegisub error message
 
-	bool CanOpen(const Handle& dataref, const OSType dataref_type);
 	void LoadVideo(const wxString filename);
 	std::vector<int> IndexFile();
 	void Close();
