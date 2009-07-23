@@ -74,8 +74,9 @@ public:
 	// How many frames does this provider wants that Aegisub caches? Set to 0 if it doesn't require caching.
 	virtual int GetDesiredCacheSize() { return 0; }
 
-	// For providers that are natively time-based (e.g. DirectShow)
-	virtual bool IsNativelyByFrames() { return true; }
+	// For "special" providers that don't deal well with VFR (i.e. Avisynth)
+	virtual bool NeedsVFRHack() { return false; };					// Returns true if provider needs special VFR treatment
+	virtual bool IsNativelyByFrames() { return true; };
 	virtual void OverrideFrameTimeList(Aegisub::IntArray list) {}	// Override the list with the provided one, for VFR handling
 };
 

@@ -125,6 +125,7 @@ public:
 
 	Aegisub::String GetDecoderName() { return L"DirectShow"; }
 	bool IsNativelyByFrames() { return false; }
+	bool NeedsVFRHack() { return true; }
 
 	void OverrideFrameTimeList(Aegisub::IntArray list);
 	int GetDesiredCacheSize() { return 8; }

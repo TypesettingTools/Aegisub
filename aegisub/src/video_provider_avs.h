@@ -89,6 +89,7 @@ public:
 
 	void OverrideFrameTimeList(wxArrayInt list);
 	bool IsNativelyByFrames() { return byFrame; }
+	bool NeedsVFRHack() { return true; }
 	Aegisub::String GetWarning();
 	Aegisub::String GetDecoderName() { return Aegisub::String(L"Avisynth/") + decoderName; }
 };
