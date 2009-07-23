@@ -143,7 +143,6 @@ EXTRA_aegisub_2_2_SOURCES = \
 	audio_player_portaudio.cpp \
 	audio_player_pulse.cpp \
 	audio_provider_avs.cpp \
-	auto4_auto3.cpp \
 	auto4_lua.cpp \
 	auto4_lua_assfile.cpp \
 	auto4_lua_dialog.cpp \
@@ -161,7 +160,6 @@ EXTRA_aegisub_2_2_SOURCES = \
 
 
 aegisub_2_2_SOURCES = \
-	$(AUTO3_LUA) \
 	$(FFMPEG) \
 	$(HUNSPELL) \
 	$(LIBASS) \
