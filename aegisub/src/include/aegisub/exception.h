@@ -34,8 +34,8 @@ namespace Aegisub {
 	// Base class for exceptions
 	// No public creators, all exceptions throws must be specific
 	class Exception {
-		Exception *inner;
 		wxString message;
+		Exception *inner;
 
 	protected:
 		Exception(const wxString &msg, Exception *inr = 0) : message(msg), inner(inr) { }
