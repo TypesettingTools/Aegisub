@@ -26,7 +26,6 @@ m4_define([pulseaudio_required_version], [0.5])
 m4_define([fontconfig_required_version], [2.4])
 m4_define([freetype_required_version], [9.7.0])
 m4_define([pkgconfig_required_version], [0.20])
-m4_define([ruby_required_version], [1.8])
 m4_define([wx_required_version], [2.8.1])
 
 
@@ -761,10 +760,6 @@ AM_CONDITIONAL([HAVE_UNIVCHARDET], [test "$with_univchardet" != "no"])
 # Automation
 ############
 
-############
-## Auto4 LUA
-############
-
 AC_ARG_WITH(lua,
 [  --without-lua           build without lua 5.1 (auto4)], [lua51_disabled="(disabled)"])
 
@@ -805,72 +800,6 @@ fi
 AM_CONDITIONAL([HAVE_AUTO4_LUA], [test "$with_auto4" != "no"])
 AC_SUBST(LUA_CFLAGS)
 AC_SUBST(LUA_LDFLAGS)
-
-
-#############
-## Auto4 Ruby
-#############
-AC_ARG_WITH(ruby, [  --without-ruby          build without Ruby Automation. (default: auto)], ruby_disabled="(disabled)")
-AC_ARG_WITH(ruby-bin, [  --with-ruby-bin=PATH    location of RUBY binary. (default: $PATH)], [WITH_RUBY_BIN="$withval"])
-
-AC_ARG_VAR([RUBY_CFLAGS], [CFLAGS to use for Ruby (default: Config::CONFIG archdir + CFLAGS)])
-AC_ARG_VAR([RUBY_LDFLAGS], [LDFLAGS to use for Ruby (default: Cofig::CONFIG LIBRUBYARG)])
-
-if test "$with_ruby" != "no"; then
-  if test -z "$WITH_RUBY_BIN"; then
-    AC_PATH_PROG([RUBY_BIN],ruby,no)
-  else
-    RUBY_BIN="$WITH_RUBY_BIN"
-  fi
-
-
-  if test "$RUBY_BIN" != "no"; then
-    AC_CACHE_CHECK(
-      [checking for ruby version >= ruby_required_version], [with_cv_ruby],
-      [if $RUBY_BIN -r rbconfig -e 'if Config::CONFIG@<:@"ruby_version"@:>@.to_f >= ruby_required_version  then exit(0) else exit(1) end'; then
-        with_cv_ruby="yes"; else with_cv_ruby="no"; fi])
-
-    if test "$with_cv_ruby" = "yes"; then
-      AC_MSG_CHECKING([checking $RUBY_BIN -r rbconfig archdir, cflags])
-      if test -z "$RUBY_CFLAGS"; then
-        RUBY_CFLAGS=`$RUBY_BIN -r rbconfig -e "printf(\"-I%s %s\", Config::CONFIG@<:@'archdir'@:>@, Config::CONFIG@<:@'CFLAGS'@:>@)"`
-      fi
-      AC_MSG_RESULT([$RUBY_CFLAGS])
-
-      AC_MSG_CHECKING([checking $RUBY_BIN rbconfig libs])
-      if test -z "$RUBY_LDFLAGS"; then
-        RUBY_LDFLAGS=`$RUBY_BIN -r rbconfig -e "print Config::CONFIG@<:@'LIBRUBYARG'@:>@"`
-      fi
-      AC_MSG_RESULT([$RUBY_LDFLAGS])
-
-      AC_AGI_COMPILE([Ruby], [ruby], [$RUBY_CFLAGS], [$RUBY_LDFLAGS],[
-#include <ruby.h>
-int main(void) {
-  /* These supposidly call exit if they fail. */   
-  ruby_init();
-  ruby_init_loadpath();
-  return 0;
-}])
-    fi
-  fi
-fi
-
-if test "$agi_cv_with_ruby" = "no" && test "$with_cv_ruby" = "yes"; then
-  AC_MSG_WARN([Ruby detected, but it doesn't work...])
-  with_cv_ruby="no"
-fi
-
-if test "$agi_cv_with_ruby" = "yes" && test "$with_cv_ruby" = "yes"; then
-  with_automation="yes"
-  AC_DEFINE(WITH_RUBY, 1, [Enable RUBY Automation.])
-else
-  with_cv_ruby="no"
-fi
-
-AM_CONDITIONAL([HAVE_AUTO4_RUBY], [test "$with_cv_ruby" != "no"])
-AC_SUBST(RUBY_CFLAGS)
-AC_SUBST(RUBY_LDFLAGS)
-
 
 # Automation setup
 if test "$with_automation" = "yes"; then

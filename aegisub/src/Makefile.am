@@ -104,14 +104,6 @@ LIBS += @LUA_LDFLAGS@
 aegisub_2_2_LDADD += libauto4_lua.a
 endif
 
-if HAVE_AUTO4_RUBY
-noinst_LIBRARIES += libauto4_ruby.a
-libauto4_ruby_a_SOURCES = auto4_ruby_assfile.cpp auto4_ruby.cpp auto4_ruby_dialog.cpp
-libauto4_ruby_a_CPPFLAGS = @RUBY_CFLAGS@
-aegisub_2_2_LDFLAGS += @RUBY_LDFLAGS@
-aegisub_2_2_LDADD += libauto4_ruby.a
-endif
-
 if HAVE_HUNSPELL
 noinst_LIBRARIES += libmisc_hunspell.a
 libmisc_hunspell_a_SOURCES = spellchecker_hunspell.cpp
@@ -156,9 +148,6 @@ EXTRA_aegisub_2_2_SOURCES = \
 	auto4_lua_assfile.cpp \
 	auto4_lua_dialog.cpp \
 	auto4_lua_scriptreader.cpp \
-	auto4_ruby.cpp \
-	auto4_ruby_assfile.cpp \
-	auto4_ruby_dialog.cpp \
 	avisynth_wrap.cpp \
 	dialog_associations.cpp \
 	osx_bevelButton.cpp \
