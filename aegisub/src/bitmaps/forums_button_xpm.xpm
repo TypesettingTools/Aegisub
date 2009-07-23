@@ -1,0 +1,28 @@
+/* XPM */
+const char *forums_button_xpm[] = {
+/* columns rows colors chars-per-pixel */
+"16 15 7 1",
+"  c black",
+". c #404060604040",
+"X c #606080804040",
+"o c #6060A0A04040",
+"O c yellow",
+"+ c #A0A0E0E08080",
+"@ c None",
+/* pixels */
+"@@@@@      @@@@@",
+"@@@@ +++ooo @@@@",
+"@@@ ++ooooo @@@@",
+"@@@ +o..ooo. @@@",
+"@@@ oXX..o.. @@@",
+"@@@ .XXOOoOO @@@",
+"@@@ .XoXXXX  @@@",
+"@@@ oooX..Xo   @",
+"@@@@ ooooo.oo.  ",
+"@@@@ o... ..... ",
+"@@@  oo.XX     @",
+"@@ oo  XX... @@@",
+"@  .o..      @@@",
+"@ ....o..  @@@@@",
+" o..ooo....  @@@"
+};

@@ -1,0 +1,26 @@
+/* XPM */
+const char *button_audio_goto_xpm[] = {
+/* columns rows colors chars-per-pixel */
+"16 15 5 1",
+"  c black",
+". c #0000BFBFBFBF",
+"X c cyan",
+"o c gray100",
+"O c None",
+/* pixels */
+"OOOOOOOOOOOOOOOO",
+"OOOOOOOOOOOOOOOO",
+"OOOOOOO OOOOOOOO",
+"OOOOOOO  OOOOOOO",
+"OOO     X OOOOOO",
+"OOO XooXXX OOOOO",
+"OOO XoXXXXX OOOO",
+"OOO XXXXXXX. OOO",
+"OOO .XXXX.. OOOO",
+"OOO ...... OOOOO",
+"OOO     . OOOOOO",
+"OOOOOOO  OOOOOOO",
+"OOOOOOO OOOOOOOO",
+"OOOOOOOOOOOOOOOO",
+"OOOOOOOOOOOOOOOO"
+};

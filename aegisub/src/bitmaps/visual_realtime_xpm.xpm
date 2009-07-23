@@ -1,0 +1,26 @@
+/* XPM */
+const char *visual_realtime_xpm[] = {
+/* columns rows colors chars-per-pixel */
+"16 15 5 1",
+"  c black",
+". c #808040400000",
+"X c #E0E080804040",
+"o c #FFFFFBFBF0F0",
+"O c None",
+/* pixels */
+"OOOOOO...OOOOOOO",
+"OOOOOO...OOOOOOO",
+"OOOOOOO.OOOOOOOO",
+"OOOOOOXXXOOOOOOO",
+"OOOOXX...XXOOOOO",
+"OOOX..o o..XOOOO",
+"OOX.ooo ooo.XOOO",
+"OOX.ooo ooo.XOOO",
+"OX.oooo oooo.XOO",
+"OX.ooooo ooo.XOO",
+"OOX.ooooo o.XOOO",
+"OOX.ooooooo.XOOO",
+"OOOX..ooo..XOOOO",
+"OOOOXX...XXOOOOO",
+"OOOOOOXXXOOOOOOO"
+};

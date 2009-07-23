@@ -1,0 +1,29 @@
+/* XPM */
+const char *toggle_audio_spectrum_xpm[] = {
+/* columns rows colors chars-per-pixel */
+"20 15 8 1",
+"  c black",
+". c red",
+"X c #0000BFBF0000",
+"o c green",
+"O c yellow",
+"+ c #00000000BFBF",
+"@ c #0000BFBFBFBF",
+"# c None",
+/* pixels */
+"####################",
+"##                ##",
+"## ++++++++++++++ ##",
+"## +++++++O++++++ ##",
+"## @++++++.O++X++ ##",
+"## @++o+@+.OX+X+@ ##",
+"## @@+X+X+O+++X+X ##",
+"## OX+X+X+OX+X++@ ##",
+"## OX+X+X+XX+@++X ##",
+"## XX+o+X+oo+@++X ##",
+"## Xo+o+ooooOo@+O ##",
+"## oooO+.OOO..O+. ##",
+"## O......O...... ##",
+"##                ##",
+"####################"
+};

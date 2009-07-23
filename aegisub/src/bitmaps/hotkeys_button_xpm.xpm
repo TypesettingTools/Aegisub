@@ -1,0 +1,25 @@
+/* XPM */
+const char *hotkeys_button_xpm[] = {
+/* columns rows colors chars-per-pixel */
+"16 15 4 1",
+"  c black",
+". c #99999999FFFF",
+"X c #CCCCCCCCFFFF",
+"o c None",
+/* pixels */
+"oooo        oooo",
+"ooo XXXXXXXX ooo",
+"oo  XXXXXXXX  oo",
+"oo  XX XX XX  oo",
+"o X XX X XXX . o",
+"o X XX   XXX . o",
+"o X XX XX XX . o",
+"o X XX XX XX . o",
+"o X XXXXXXXX . o",
+"o XX XXXXXX .. o",
+"o X .      . . o",
+"o X ........ . o",
+"o  ..........  o",
+"o  ..........  o",
+"oo            oo"
+};

@@ -1,0 +1,24 @@
+/* XPM */
+const char *visual_vector_clip_insert_xpm[] = {
+/* columns rows colors chars-per-pixel */
+"16 15 3 1",
+"  c #808000000000",
+". c red",
+"X c None",
+/* pixels */
+"XXX.XXX.XXX.XXXX",
+"XXXX.XX.XX.XXXXX",
+"XXXXXXXXXXXXXXXX",
+"XXXXXX...XXXXXXX",
+"XXX..X.X. ..XXXX",
+"XXXXX ...X XXXXX",
+"XXXX XXXXXX XXXX",
+"XXX .XX.XX.X XXX",
+"XXX.XXX.XXX.X XX",
+"XXX XXXXXXXXX XX",
+"XX XXXXXXXXXXX X",
+"XX XXXXXXXXXXX X",
+"X XXXXXXXXXXXX X",
+"X XXXXXXXXXXXX X",
+"XXXXXXXXXXXXXXXX"
+};

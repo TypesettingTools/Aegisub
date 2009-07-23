@@ -1,0 +1,24 @@
+/* XPM */
+const char *visual_move_xpm[] = {
+/* columns rows colors chars-per-pixel */
+"16 15 3 1",
+"  c #000040408080",
+". c #00008080C0C0",
+"X c None",
+/* pixels */
+"XXXXXXX XXXXXXXX",
+"XXXXXX . XXXXXXX",
+"XXXXX ... XXXXXX",
+"XXXXX  .  XXXXXX",
+"XXXXXX . XXXXXXX",
+"XX  XX . XX  XXX",
+"X .    .    . XX",
+" ............. X",
+"X .    .    . XX",
+"XX  XX . XX  XXX",
+"XXXXXX . XXXXXXX",
+"XXXXX  .  XXXXXX",
+"XXXXX ... XXXXXX",
+"XXXXXX . XXXXXXX",
+"XXXXXXX XXXXXXXX"
+};

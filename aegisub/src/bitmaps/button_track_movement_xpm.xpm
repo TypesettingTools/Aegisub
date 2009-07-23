@@ -1,0 +1,24 @@
+/* XPM */
+const char *button_track_movement_xpm[] = {
+/* columns rows colors chars-per-pixel */
+"15 15 3 1",
+"  c black",
+". c red",
+"X c None",
+/* pixels */
+"XXXXXXXXXXXXXXX",
+"XXXXXXXXXXXXXXX",
+"XXXXXXXXXXXXXXX",
+"XX...XXXXXXX XX",
+".......XXXXX XX",
+".........X     ",
+"..........XX X.",
+"..XXX....... ..",
+".XXXXX.........",
+"XXX XXX........",
+"XXX XXXXX.....X",
+"X     XXXXXXXXX",
+"XXX XXXXXXXXXXX",
+"XXX XXXXXXXXXXX",
+"XXXXXXXXXXXXXXX"
+};

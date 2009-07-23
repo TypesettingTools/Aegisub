@@ -1,0 +1,21 @@
+/* XPM */
+const char *button_color_three_xpm[] = {
+/* columns rows colors chars-per-pixel */
+"20 12 3 1",
+"  c black",
+". c red",
+"X c None",
+/* pixels */
+"XXXXXXXXXXXXXXXXXXXX",
+"XXXXXX....X.....XXXX",
+"XXXXX.    .     .XXX",
+"XXXXX.    .      .XX",
+"XXXX.  .  .  ..  .XX",
+"XXXX.     .     .XXX",
+"XXX.      .     .XXX",
+"XXX.  ..  .  ..  .XX",
+"XX.  .X.  .      .XX",
+"XX.  .X.  .     .XXX",
+"XXX..XXX..X.....XXXX",
+"XXXXXXXXXXXXXXXXXXXX"
+};

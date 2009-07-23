@@ -1,0 +1,25 @@
+/* XPM */
+const char *visual_clip_xpm[] = {
+/* columns rows colors chars-per-pixel */
+"16 15 4 1",
+"  c black",
+". c #808000000000",
+"X c red",
+"o c None",
+/* pixels */
+"oooooooooooooooo",
+"o..XX......XX..o",
+"o..XooooooooX..o",
+"o...oooooooo...o",
+"o...oooooooo...o",
+"o...ooooo   ...o",
+"o...oooooooo...o",
+"o...ooooo   ...o",
+"o...oooo  oo...o",
+"o...oooo  oo...o",
+"o...oooo  oo...o",
+"o...ooooo   ...o",
+"o..XooooooooX..o",
+"o..XX......XX..o",
+"oooooooooooooooo"
+};

@@ -1,0 +1,27 @@
+/* XPM */
+const char *toggle_video_autoscroll_xpm[] = {
+/* columns rows colors chars-per-pixel */
+"20 15 6 1",
+"  c black",
+". c blue",
+"X c magenta",
+"o c cyan",
+"O c #A6A6CACAF0F0",
+"+ c None",
+/* pixels */
+"+                +++",
+"+ XXX +++ ++++++ +++",
+"+                +++",
+"+++o++++++++++++++++",
+"+++o+o++++++++++++++",
+"++++oo++++++++++++++",
+"+++ooo++++++++++++++",
+"++++++           +++",
+"+++++ OOOOOOOOOOO ++",
+"+++++ OOOOOO.OOOO ++",
+"+++++ OOOOOO..OOO ++",
+"+++++ OO.......OO ++",
+"+++++ OOOOOO..OOO ++",
+"+++++ OOOOOO.OOOO ++",
+"++++++           +++"
+};

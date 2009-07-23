@@ -1,0 +1,25 @@
+/* XPM */
+const char *select_lines_button_xpm[] = {
+/* columns rows colors chars-per-pixel */
+"16 15 4 1",
+"  c black",
+". c #FFFFCCCC0000",
+"X c #66669999CCCC",
+"o c None",
+/* pixels */
+"oooooooooooooooo",
+"o              o",
+"oo XXX XXXXXX oo",
+"oo XXX XXXXXX oo",
+"o              o",
+"oo ... ...... oo",
+"oo ... ...... oo",
+"o              o",
+"oo XXX XXXXXX oo",
+"oo XXX XXXXXX oo",
+"o              o",
+"oo XXX XXXXXX oo",
+"oo XXX XXXXXX oo",
+"o              o",
+"oooooooooooooooo"
+};

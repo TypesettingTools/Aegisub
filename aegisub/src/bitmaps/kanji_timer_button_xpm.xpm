@@ -1,0 +1,24 @@
+/* XPM */
+const char *kanji_timer_button_xpm[] = {
+/* columns rows colors chars-per-pixel */
+"16 15 3 1",
+"  c black",
+". c yellow",
+"X c None",
+/* pixels */
+"XXXXXXXXX XXXXXX",
+"X     XX . XXXXX",
+" ..... X .      ",
+"    .   ....... ",
+" .. .  .  .   . ",
+" .. . . X .  . X",
+"X   .  XX .  . X",
+"X     XX ...  XX",
+" ..... X . . XXX",
+"    . X .. .. XX",
+" .. . X . X . XX",
+" .. .  .. X .. X",
+"X   .  . XXX . X",
+"XXX     XXXXX  X",
+"XXXXXXXXXXXXXXXX"
+};

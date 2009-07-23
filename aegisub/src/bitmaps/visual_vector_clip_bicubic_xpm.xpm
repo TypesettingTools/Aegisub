@@ -1,0 +1,25 @@
+/* XPM */
+const char *visual_vector_clip_bicubic_xpm[] = {
+/* columns rows colors chars-per-pixel */
+"16 15 4 1",
+"  c #808000000000",
+". c red",
+"X c #E0E080804040",
+"o c None",
+/* pixels */
+"oooooooooooooooo",
+"oooooooooooo...o",
+"ooo..XXXXX  .o.o",
+"ooo..oooo oo...o",
+"oooooooo ooooooo",
+"ooooooo oooooooo",
+"ooooooo oooooooo",
+"ooooooo oooooooo",
+"ooooooo oooooooo",
+"oooooo ooooooooo",
+"oooooo ooooooooo",
+"o...o ooo..ooooo",
+"o.o. XXXX..ooooo",
+"o...oooooooooooo",
+"oooooooooooooooo"
+};

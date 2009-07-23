@@ -1,0 +1,24 @@
+/* XPM */
+const char *find_button_xpm[] = {
+/* columns rows colors chars-per-pixel */
+"16 15 3 1",
+"  c black",
+". c gray100",
+"X c None",
+/* pixels */
+"XXXXXXXXXXXXXXXX",
+"XXX   XXX   XXXX",
+"XXX . XXX . XXXX",
+"XXX   XXX   XXXX",
+"XX     X     XXX",
+"XX .   X .   XXX",
+"X             XX",
+"  .   .  .     X",
+"  .   .  .     X",
+"  .      .     X",
+"       X       X",
+" .   XXXXX .   X",
+" .   XXXXX .   X",
+"     XXXXX     X",
+"XXXXXXXXXXXXXXXX"
+};

@@ -1,0 +1,25 @@
+/* XPM */
+const char *button_playfivehbefore_xpm[] = {
+/* columns rows colors chars-per-pixel */
+"16 15 4 1",
+"  c black",
+". c red",
+"X c blue",
+"o c None",
+/* pixels */
+"oooooooooooooooo",
+"oooooooooooooooo",
+"oooooooooooooooo",
+"oooooooooooooXXo",
+"oooooo ooooooXoo",
+"oooooo  oooooXoo",
+"oo..o.   .o..Xoo",
+"oo..o.    o..Xoo",
+"oo..o.   .o..Xoo",
+"oooooo  oooooXoo",
+"oooooo ooooooXoo",
+"oooooooooooooXXo",
+"oooooooooooooooo",
+"oooooooooooooooo",
+"oooooooooooooooo"
+};

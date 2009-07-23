@@ -1,0 +1,25 @@
+/* XPM */
+const char *translation_toolbutton_xpm[] = {
+/* columns rows colors chars-per-pixel */
+"16 15 4 1",
+"  c black",
+". c #FFFF99993333",
+"X c yellow",
+"o c None",
+/* pixels */
+"oooooooooooooooo",
+"oooooooooooooooo",
+"oooooooooooooooo",
+" ooooo       ooo",
+"   oo ....... oo",
+" .. o ........ o",
+" X.X X.X.X.X  . ",
+" .X.X.X.X.X.  X ",
+" ... .......... ",
+" .. o .. .. .. o",
+"   oo . .. .. oo",
+" ooooo  .    ooo",
+"ooooooo  ooooooo",
+"oooooooooooooooo",
+"oooooooooooooooo"
+};

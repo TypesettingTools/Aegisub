@@ -1,0 +1,31 @@
+/* XPM */
+const char *contents_button_xpm[] = {
+/* columns rows colors chars-per-pixel */
+"17 16 9 1",
+"  c gray25",
+". c #A0A0A0A04040",
+"X c #E0E0E0E04040",
+"o c #A0A04040C0C0",
+"O c #E0E04040C0C0",
+"+ c #A0A0A0A0A4A4",
+"@ c #C0C0DCDCC0C0",
+"# c gray100",
+"$ c None",
+/* pixels */
+"$$$$$$$o $$$$$$$$",
+"$$$$$$o@Oo $$$$$$",
+"$$$$$o@OOOOo $$$$",
+"$$$$o@OO..oOoo $$",
+"$$$o@OOXXX.oOo  $",
+"$$o@OOOOO@Xoo o$$",
+"$o@OOOOXX@.o +o$$",
+"o@OOOX@.oOo +@o $",
+"oooOOooOOo +@#o $",
+"o@+ooOOOo +@#o $$",
+"o@@@+ooO +@#o $$$",
+"o.##@@+o+@#o $$$$",
+"$oo.##@@@#o $$$$$",
+"$$$oo.#@#o $$$$$$",
+"$$$$$oo.o $$$$$$$",
+"$$$$$$$o $$$$$$$$"
+};

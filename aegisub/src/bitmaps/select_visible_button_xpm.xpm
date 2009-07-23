@@ -1,0 +1,26 @@
+/* XPM */
+const char *select_visible_button_xpm[] = {
+/* columns rows colors chars-per-pixel */
+"16 15 5 1",
+"  c black",
+". c red",
+"X c yellow",
+"o c #9999FFFFFFFF",
+"O c None",
+/* pixels */
+"OOO oooooooo OOO",
+"    oooooooo    ",
+" ..          .. ",
+" .  XXXXXXXX  . ",
+" .  XXXXXXXX  . ",
+" .            . ",
+" .  XXXXXXXX  . ",
+" .  XXXXXXXX  . ",
+" ..          .. ",
+"    oooooooo    ",
+"OOO oooooooo OOO",
+"OOO          OOO",
+"OOO oooooooo OOO",
+"OOO oooooooo OOO",
+"OOO          OOO"
+};

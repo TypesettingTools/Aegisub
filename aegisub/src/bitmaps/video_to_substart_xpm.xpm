@@ -1,0 +1,26 @@
+/* XPM */
+const char *video_to_substart_xpm[] = {
+/* columns rows colors chars-per-pixel */
+"16 15 5 1",
+"  c black",
+". c #000080800000",
+"X c green",
+"o c cyan",
+"O c None",
+/* pixels */
+"                ",
+" XXX OOO OOOOOO ",
+"                ",
+"OOoOOOOOOOOOOOOO",
+"OOoOoOOOOOOOOOOO",
+"OOOooOOOOOOOOOOO",
+"OOoooOOOOOOOOOOO",
+"OOOO           O",
+"OOO ........... ",
+"OOO ......X.... ",
+"OOO ......XX... ",
+"OOO ..XXXXXXX.. ",
+"OOO ......XX... ",
+"OOO ......X.... ",
+"OOOO           O"
+};

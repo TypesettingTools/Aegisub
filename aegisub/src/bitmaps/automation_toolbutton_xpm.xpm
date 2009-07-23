@@ -1,0 +1,26 @@
+/* XPM */
+const char *automation_toolbutton_xpm[] = {
+/* columns rows colors chars-per-pixel */
+"16 15 5 1",
+"  c black",
+". c #000040408080",
+"X c #00008080C0C0",
+"o c #A6A6CACAF0F0",
+"O c None",
+/* pixels */
+"OOOOOOOOOOOOO   ",
+"OOOOOOOO  OOO oo",
+"OOOOOOO oo OO oX",
+"OOOOOO XXo OO oX",
+"OOOOOOO XXo  oXX",
+"OOOOOOOO XXoX...",
+"OOO  OO XXX.....",
+"OO oo  oXX...   ",
+"OO XoooXX..  ...",
+"OOO XXXX.. ..XXX",
+"OOOO XX.. .XXX..",
+"OOOO X.. .XXX.  ",
+"    XX.. .XX. OO",
+" oooX.. .XX. OOO",
+" oXXX.. .XX. OOO"
+};

@@ -1,0 +1,25 @@
+/* XPM */
+const char *button_playfivehafter_xpm[] = {
+/* columns rows colors chars-per-pixel */
+"16 15 4 1",
+"  c black",
+". c red",
+"X c blue",
+"o c None",
+/* pixels */
+"oooooooooooooooo",
+"oooooooooooooooo",
+"oooooooooooooooo",
+"oXXooooooooooooo",
+"ooXoooo oooooooo",
+"ooXoooo  ooooooo",
+"ooX..o.   .o..oo",
+"ooX..o.    o..oo",
+"ooX..o.   .o..oo",
+"ooXoooo  ooooooo",
+"ooXoooo oooooooo",
+"oXXooooooooooooo",
+"oooooooooooooooo",
+"oooooooooooooooo",
+"oooooooooooooooo"
+};

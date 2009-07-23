@@ -1,0 +1,25 @@
+/* XPM */
+const char *visual_rotatez_xpm[] = {
+/* columns rows colors chars-per-pixel */
+"16 15 4 1",
+"  c #808000000000",
+". c red",
+"X c #000040408080",
+"o c None",
+/* pixels */
+"ooooooXXoooooooo",
+"oooooXXXXooooooo",
+"ooooXXXXoXXooooo",
+"ooooooXXoooXoooo",
+"ooooooooooooXooo",
+"ooooooooooooXooo",
+"oooooo   ooooXoo",
+"oooooo . ooooXoo",
+"oooooo   ooooXoo",
+"ooXoooooooooXooo",
+"ooXoooooooooXooo",
+"oooXoooooooXoooo",
+"ooooXXoooXXooooo",
+"ooooooXXXooooooo",
+"oooooooooooooooo"
+};

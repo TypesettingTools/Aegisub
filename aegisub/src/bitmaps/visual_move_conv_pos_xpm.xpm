@@ -1,0 +1,24 @@
+/* XPM */
+const char *visual_move_conv_pos_xpm[] = {
+/* columns rows colors chars-per-pixel */
+"30 15 3 1",
+"  c #808000000000",
+". c #E0E080808080",
+"X c None",
+/* pixels */
+"      XXXXXXXXXXXXXXXXXX      ",
+"X ... XXXXXXXXXXXXXXXXXX ... X",
+"XX .. X   XXXXXXXXXX   X .. XX",
+"XX .. X . XXXXXXXXXX . X .. XX",
+"XX .. X . X        X . X .. XX",
+"XX .. X . X ...... X . X .. XX",
+"XX .. X . X ...... X . X .. XX",
+"XX .. X . X ...... X . X .. XX",
+"XX .. X . X ...... X . X .. XX",
+"XX .. X . X ...... X . X .. XX",
+"XX .. X . X        X . X .. XX",
+"XX .. X . XXXXXXXXXX . X .. XX",
+"XX .. X   XXXXXXXXXX   X .. XX",
+"X ... XXXXXXXXXXXXXXXXXX ... X",
+"      XXXXXXXXXXXXXXXXXX      "
+};

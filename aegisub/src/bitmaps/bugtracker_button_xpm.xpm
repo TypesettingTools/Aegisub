@@ -1,0 +1,27 @@
+/* XPM */
+const char *bugtracker_button_xpm[] = {
+/* columns rows colors chars-per-pixel */
+"16 15 6 1",
+"  c black",
+". c #404020200000",
+"X c #A0A020200000",
+"o c red",
+"O c #E0E0A0A0C0C0",
+"+ c None",
+/* pixels */
+"++++++++++ +++++",
+"+++     ++ + +++",
+"++ oOOoo  ++ +++",
+"+ o OO ooX  ++ +",
+"+ oO ooo X +  ++",
+"+ oOo oXXX. ++++",
+"+ o oX X... ++++",
+"+ XXXXX.... ++++",
+"++ X X.... +++++",
+"++ XXX....   +++",
+"  +  ...     ++ ",
+"+++ +   +      +",
+"+  + ++++   ++++",
+"++++ ++++++ ++++",
+"+++ ++++++  ++++"
+};

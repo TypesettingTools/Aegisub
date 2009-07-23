@@ -1,0 +1,24 @@
+/* XPM */
+const char *button_leadout_xpm[] = {
+/* columns rows colors chars-per-pixel */
+"16 15 3 1",
+"  c #0000BFBF0000",
+". c blue",
+"X c None",
+/* pixels */
+"XXXXXXXXXXXXXXXX",
+"XXXXXXXXXXXXXXXX",
+"XXXXXXXXXXXXXXXX",
+"X..XXXXXXXXXXXXX",
+"XX.XXXXXXXXXXXXX",
+"XX.XXXXXXXXXXXXX",
+"XX.  X  X  X  XX",
+"XX.  X  X  X  XX",
+"XX.  X  X  X  XX",
+"XX.XXXXXXXXXXXXX",
+"XX.XXXXXXXXXXXXX",
+"X..XXXXXXXXXXXXX",
+"XXXXXXXXXXXXXXXX",
+"XXXXXXXXXXXXXXXX",
+"XXXXXXXXXXXXXXXX"
+};

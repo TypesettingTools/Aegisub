@@ -1,0 +1,26 @@
+/* XPM */
+const char *properties_toolbutton_xpm[] = {
+/* columns rows colors chars-per-pixel */
+"16 15 5 1",
+"  c black",
+". c #999933330000",
+"X c #FFFF99993333",
+"o c #CCCCCCCCFFFF",
+"O c None",
+/* pixels */
+"OOOOOOOX.OOOOOOO",
+"OOOO   X.   OOOO",
+"OOO ooXX..oo OOO",
+"OOO oooooooo OOO",
+"OOO oooooooo OOO",
+"OOO o  o   o OOO",
+"OOO oooooooo OOO",
+"OOO o   o  o OOO",
+"OOO oooooooo OOO",
+"OOO o  o o o OOO",
+"OOO oooooooo OOO",
+"OOO o    o o OOO",
+"OOO oooooooo OOO",
+"OOOO        OOOO",
+"OOOOOOOOOOOOOOOO"
+};

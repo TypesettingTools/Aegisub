@@ -1,0 +1,25 @@
+/* XPM */
+const char *visual_vector_clip_remove_xpm[] = {
+/* columns rows colors chars-per-pixel */
+"16 15 4 1",
+"  c #808000000000",
+". c red",
+"X c gray100",
+"o c None",
+/* pixels */
+"oooooooooooooooo",
+"oooooooooooooooo",
+"ooooo ooooo oooo",
+"oooo X ooo X ooo",
+"ooo X.X o X.. oo",
+"oooo ..X X.. ooo",
+"ooooo ..... oooo",
+"oooooo ... ooooo",
+"ooooo X.... oooo",
+"oooo X.. ... ooo",
+"ooo ... o ... oo",
+"oooo . ooo . ooo",
+"ooooo ooooo oooo",
+"oooooooooooooooo",
+"oooooooooooooooo"
+};
