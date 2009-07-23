@@ -612,6 +612,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\quicktime_common.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\quicktime_common.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\vfw_wrap.cpp"
 				>
 			</File>
