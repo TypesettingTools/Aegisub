@@ -36,34 +36,11 @@
 
 #pragma once
 
-#include "config.h"
 #include <wx/wxprec.h>
 
 #ifdef WITH_QUICKTIME
-
-#ifdef _MSC_VER
-// avoid conflicts between MSVC's stdint.h and QT's stdint.h
-#define _STDINT_H
-// get MSVC to shut up about a macro redefinition in QT's ConditionalMacros.h
-#pragma warning(disable: 4004)
-#endif
-
-#ifndef WIN32
-#define MacOffsetRect OffsetRect
-#endif
-
-
 #include "include/aegisub/video_provider.h"
-extern "C" {
-#ifdef WIN32
-#include <QTML.h>
-#include <Movies.h>
-#include <Files.h>
-#include <QDOffscreen.h>
-#else
-#include <QuickTime/QuickTime.h> // not sure about this path, someone on mac needs to test it
-#endif
-}
+#include "quicktime_common.h"
 #include <wx/dynarray.h>
 #include <wx/filename.h>
 #include <vector>
@@ -71,7 +48,7 @@ extern "C" {
 #include "vfr.h"
 
 
-class QuickTimeVideoProvider : public VideoProvider {
+class QuickTimeVideoProvider : public VideoProvider, QuickTimeProvider {
 private:
 	Movie movie;			// source object
 	GWorldPtr gw, gw_tmp;	// render buffers
@@ -111,7 +88,6 @@ public:
 	wxArrayInt GetKeyFrames();
 	bool QuickTimeVideoProvider::AreKeyFramesLoaded();
 	wxString GetDecoderName() { return L"QuickTime"; };
-	bool IsNativelyByFrames() { return true; };
 	int GetDesiredCacheSize() { return 8; };
 };
 

@@ -85,12 +85,12 @@ YUV4MPEGVideoProvider::~YUV4MPEGVideoProvider() {
 void YUV4MPEGVideoProvider::LoadVideo(const wxString _filename) {
 	Close();
 
-	wxString filename = wxFileName(wxString(_filename.wc_str(), wxConvFile)).GetShortPath();
+	wxString filename = wxFileName(_filename).GetShortPath();
 
 #ifdef WIN32
 	sf = _wfopen(filename.wc_str(), _T("rb"));
 #else
-	sf = fopen(filename.mb_str(wxConvUTF8), "rb");
+	sf = fopen(filename.utf8_str(), "rb");
 #endif
 
 	if (sf == NULL)

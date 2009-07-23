@@ -122,9 +122,8 @@ void DummyVideoProvider::Create(double _fps, int frames, int _width, int _height
 
 ///////////////////////
 // Parsing constructor
-DummyVideoProvider::DummyVideoProvider(wxString _filename)
+DummyVideoProvider::DummyVideoProvider(wxString filename)
 {
-	wxString filename = _filename.c_str();
 	wxString params;
 	if (!filename.StartsWith(_T("?dummy:"), &params)) {
 		throw _T("Attempted creating dummy video provider with non-dummy filename");

@@ -100,9 +100,9 @@ void FFmpegSourceVideoProvider::LoadVideo(wxString filename) {
 	// make sure we don't have anything messy lying around
 	Close();
 
-	wxString FileNameWX = wxFileName(wxString(filename.wc_str(), wxConvFile)).GetShortPath(); 
+	wxString FileNameShort = wxFileName(filename).GetShortPath(); 
 
-	FFIndexer *Indexer = FFMS_CreateIndexer(FileNameWX.mb_str(wxConvUTF8), FFMSErrMsg, MsgSize);
+	FFIndexer *Indexer = FFMS_CreateIndexer(FileNameShort.utf8_str(), FFMSErrMsg, MsgSize);
 	if (Indexer == NULL) {
 		// error messages that can possibly contain a filename use this method instead of
 		// wxString::Format because they may contain utf8 characters
@@ -125,14 +125,14 @@ void FFmpegSourceVideoProvider::LoadVideo(wxString filename) {
 	}
 
 	// generate a name for the cache file
-	wxString CacheName = GetCacheFilename(filename.c_str());
+	wxString CacheName = GetCacheFilename(filename);
 
 	// try to read index
 	FFIndex *Index = NULL;
-	Index = FFMS_ReadIndex(CacheName.mb_str(wxConvUTF8), FFMSErrMsg, MsgSize);
+	Index = FFMS_ReadIndex(CacheName.utf8_str(), FFMSErrMsg, MsgSize);
 	bool IndexIsValid = false;
 	if (Index != NULL) {
-		if (FFMS_IndexBelongsToFile(Index, FileNameWX.mb_str(wxConvUTF8), FFMSErrMsg, MsgSize)) {
+		if (FFMS_IndexBelongsToFile(Index, FileNameShort.utf8_str(), FFMSErrMsg, MsgSize)) {
 			FFMS_DestroyIndex(Index);
 			Index = NULL;
 		}
@@ -204,7 +204,7 @@ void FFmpegSourceVideoProvider::LoadVideo(wxString filename) {
 	else 
 		SeekMode = FFMS_SEEK_NORMAL;
 
-	VideoSource = FFMS_CreateVideoSource(FileNameWX.mb_str(wxConvUTF8), TrackNumber, Index, "", Threads, SeekMode, FFMSErrMsg, MsgSize);
+	VideoSource = FFMS_CreateVideoSource(FileNameShort.utf8_str(), TrackNumber, Index, "", Threads, SeekMode, FFMSErrMsg, MsgSize);
 	FFMS_DestroyIndex(Index);
 	Index = NULL;
 	if (VideoSource == NULL) {

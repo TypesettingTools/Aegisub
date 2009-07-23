@@ -36,9 +36,13 @@
 
 #ifdef WITH_QUICKTIME
 
-#include "include/aegisub/aegisub.h"
-#include "aegisub_endian.h"
 #include "video_provider_quicktime.h"
+#include "aegisub_endian.h"
+
+#ifndef WIN32
+#define MacOffsetRect OffsetRect
+#endif
+
 
 QuickTimeVideoProvider::QuickTimeVideoProvider(wxString filename) {
 	in_dataref = NULL;
@@ -123,8 +127,8 @@ void QuickTimeVideoProvider::LoadVideo(const wxString _filename) {
 	Close();
 
 	// convert filename, first to a CFStringRef...
-	wxString wx_filename = wxFileName(wxString(_filename.c_str(), wxConvFile)).GetShortPath();
-	CFStringRef qt_filename = CFStringCreateWithCString(NULL, wx_filename.mb_str(wxConvUTF8), kCFStringEncodingUTF8);
+	wxString wx_filename = wxFileName(_filename).GetShortPath();
+	CFStringRef qt_filename = CFStringCreateWithCString(NULL, wx_filename.utf8_str(), kCFStringEncodingUTF8);
 	
 	// and then to a data reference
 	OSType in_dataref_type;

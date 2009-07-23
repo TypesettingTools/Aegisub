@@ -105,7 +105,7 @@ PClip AvisynthVideoProvider::OpenVideo(wxString _filename, bool mpeg2dec3_priori
 	usedDirectShow = false;
 	decoderName = _("Unknown");
 
-	wxString extension = wxString(_filename.c_str()).Right(4);
+	wxString extension = _filename.Right(4);
 	extension.LowerCase();
 
 	try {
