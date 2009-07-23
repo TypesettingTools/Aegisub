@@ -245,11 +245,11 @@ void HunspellSpellChecker::SetLanguage(wxString language) {
 	wxString userPath = StandardPaths::DecodePath(_T("?user/dictionaries/user_"));
 
 	// Get affix and dictionary paths
-	affpath = path + language + _T(".aff");
-	dicpath = path + language + _T(".dic");
-	usrdicpath = userPath + language + _T(".dic");
+	affpath = wxString::Format("%s%s.aff", path, language);
+	dicpath = wxString::Format("%s%s.dic", path, language);
+	usrdicpath = wxString::Format("%s%s.dic", userPath, language);
 
-	printf("Using dictionary %ls for spellchecking\n", dicpath.c_str());
+	wxLogDebug("Using dictionary %ls for spellchecking\n", dicpath);
 
 	// Check if language is available
 	if (!wxFileExists(affpath) || !wxFileExists(dicpath)) return;
