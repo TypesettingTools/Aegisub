@@ -42,9 +42,6 @@
 #ifdef WITH_PERL
 #include "auto4_perl_factory.h"
 #endif
-#ifdef WITH_AUTO3
-#include "auto4_auto3_factory.h"
-#endif
 #ifdef WITH_RUBY
 #include "auto4_ruby_factory.h"
 #endif

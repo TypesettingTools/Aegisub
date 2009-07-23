@@ -528,14 +528,6 @@
 			Name="Automation"
 			>
 			<File
-				RelativePath="..\..\src\auto4_auto3.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\auto4_auto3.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\auto4_base.cpp"
 				>
 			</File>
@@ -1538,7 +1530,7 @@
 			<File
 				RelativePath="..\..\src\video_provider_manager.h"
 				>
-			</File>		
+			</File>
 			<File
 				RelativePath="..\..\src\video_provider_quicktime.cpp"
 				>
@@ -1546,7 +1538,7 @@
 			<File
 				RelativePath="..\..\src\video_provider_quicktime.h"
 				>
-			</File>			
+			</File>
 			<File
 				RelativePath="..\..\src\video_provider_yuv4mpeg.cpp"
 				>

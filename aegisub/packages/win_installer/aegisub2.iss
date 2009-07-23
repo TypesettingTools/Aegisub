@@ -86,8 +86,6 @@ DestDir: {tmp}; Source: src\vcredist_x86.exe; Flags: nocompression deleteafterin
 DestDir: {app}; Source: src\aegisub32.exe; Flags: ignoreversion; Components: main
 DestDir: {app}; Source: src\aegisub32.pdb; Flags: ignoreversion; Components: main/pdb
 DestDir: {app}; Source: license.txt; Flags: ignoreversion; Tasks: ; Languages: ; Components: main
-DestDir: {app}; Source: src\libauto3_32.dll; Flags: ignoreversion; Components: main
-DestDir: {app}; Source: src\libauto3_32.pdb; Flags: ignoreversion; Components: main/pdb
 ; avisynth
 DestDir: {app}; Source: src\devil.dll; Flags: ignoreversion; Components: codec
 DestDir: {app}; Source: src\avisynth.dll; Flags: ignoreversion; Components: codec
@@ -110,17 +108,6 @@ DestDir: {app}\automation\demos; Source: src\automation\demos\future-windy-blur.
 DestDir: {app}\automation\autoload; Source: src\automation\autoload\macro-1-edgeblur.lua; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/lua/samples; Attribs: readonly
 DestDir: {app}\automation\autoload; Source: src\automation\autoload\macro-2-mkfullwitdh.lua; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/lua/samples; Attribs: readonly
 DestDir: {app}\automation\autoload; Source: src\automation\autoload\cleantags-autoload.lua; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/lua/samples; Attribs: readonly
-; auto3
-DestDir: {app}\automation\include; Source: src\automation\include\utils.auto3; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/auto3; Attribs: readonly
-DestDir: {app}\automation\include; Source: src\automation\include\karaskel.auto3; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/auto3; Attribs: readonly
-DestDir: {app}\automation\include; Source: src\automation\include\karaskel-adv.auto3; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/auto3; Attribs: readonly
-DestDir: {app}\automation\include; Source: src\automation\include\karaskel-adv.lua; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/auto3; Attribs: readonly
-DestDir: {app}\automation\include; Source: src\automation\include\karaskel-base.lua; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/auto3; Attribs: readonly
-DestDir: {app}\automation\include; Source: src\automation\include\karaskel-base.auto3; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/auto3; Attribs: readonly
-DestDir: {app}\automation\auto3; Source: src\automation\auto3\line-per-syllable.auto3; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/auto3; Attribs: readonly
-DestDir: {app}\automation\auto3; Source: src\automation\auto3\multi-template.auto3; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/auto3; Attribs: readonly
-DestDir: {app}\automation\auto3; Source: src\automation\auto3\simple-k-replacer.auto3; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/auto3; Attribs: readonly
-DestDir: {app}\automation\docs; Source: src\automation\docs\automation3.txt; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/auto3; Attribs: readonly
 ; dictionaries
 Source: src\dictionaries\en_GB.aff; DestDir: {app}\dictionaries; Flags: skipifsourcedoesntexist ignoreversion solidbreak; Components: dic/en_GB
 Source: src\dictionaries\en_GB.dic; DestDir: {app}\dictionaries; Flags: skipifsourcedoesntexist ignoreversion; Components: dic/en_GB
@@ -226,7 +213,6 @@ Name: codec/vsfilter; Description: VSFilter 2.39e; Types: compact full custom; F
 Name: auto; Description: Automation 4 scripting support; Types: compact full
 Name: auto/lua; Description: Lua; Types: compact full; Flags: checkablealone; Languages: 
 Name: auto/lua/samples; Description: Lua sample scripts; Types: full
-Name: auto/auto3; Description: Automation 3 backwards compatibility; Types: full
 ; Docs
 Name: docs; Description: User manual; Types: custom compact full
 ; Translations (commented out ones are out of date)

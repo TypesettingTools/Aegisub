@@ -60,11 +60,6 @@
 #define WITH_AUTO4_LUA
 
 
-// Enable Automation 3
-// Requires: auto3 dll (in repository), Lua (in repository)
-#define WITH_AUTO3
-
-
 // Enable DirectSound audio player
 // Requires: DirectX SDK
 #define WITH_DIRECTSOUND

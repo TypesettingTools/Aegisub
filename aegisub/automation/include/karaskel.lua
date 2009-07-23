@@ -27,10 +27,4 @@
  POSSIBILITY OF SUCH DAMAGE.
 ]]
 
--- Include the right file, depending on Automation version
--- The Auto4 version has to be in a separate include to avoid parser problems with Lua 5.0
-if aegisub.lua_automation_version < 4 then
-	include "karaskel.auto3"
-else
-	include "karaskel-auto4.lua"
-end
+include "karaskel-auto4.lua"

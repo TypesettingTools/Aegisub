@@ -127,9 +127,6 @@ void PluginManager::RegisterBuiltInPlugins() {
 		perl = new Automation4::PerlScriptFactory();
 		perl->RegisterFactory();
 #endif
-#ifdef WITH_AUTO3
-		auto3 = new Automation4::Auto3ScriptFactory();
-#endif
 #ifdef WITH_RUBY
 		ruby = new Automation4::RubyScriptFactory();
 #endif
