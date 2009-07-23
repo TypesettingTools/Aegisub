@@ -43,7 +43,6 @@
 
 #include "auto4_ruby.h"
 #include "auto4_ruby_factory.h"
-#include "auto4_auto3.h"
 #include "ass_dialogue.h"
 #include "ass_style.h"
 #include "ass_file.h"

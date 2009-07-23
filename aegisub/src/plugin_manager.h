@@ -59,9 +59,6 @@ private:
 #ifdef WITH_PERL
 	Automation4::PerlScriptFactory *perl;
 #endif
-#ifdef WITH_AUTO3
-	Automation4::Auto3ScriptFactory *auto3;
-#endif
 #ifdef WITH_RUBY
 	Automation4::RubyScriptFactory *ruby;
 #endif

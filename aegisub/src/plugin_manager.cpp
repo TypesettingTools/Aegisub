@@ -57,9 +57,6 @@ PluginManager::PluginManager() {
 #ifdef WITH_PERL
 	perl = NULL;
 #endif
-#ifdef WITH_AUTO3
-	auto3 = NULL;
-#endif
 #ifdef WITH_RUBY
 	ruby = NULL;
 #endif
@@ -88,13 +85,6 @@ PluginManager::~PluginManager() {
 		perl->Unregister(perl);
 		delete perl;
 		perl = NULL;
-	}
-#endif
-#ifdef WITH_AUTO3
-	if (auto3) {
-		auto3->Unregister(auto3);
-		delete auto3;
-		auto3 = NULL;
 	}
 #endif
 #ifdef WITH_RUBY
