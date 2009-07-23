@@ -100,7 +100,7 @@ void FFmpegSourceVideoProvider::LoadVideo(Aegisub::String filename) {
 	// make sure we don't have anything messy lying around
 	Close();
 
-	wxString FileNameWX = wxFileName(wxString(filename.c_str(), wxConvFile)).GetShortPath(); 
+	wxString FileNameWX = wxFileName(wxString(filename.wc_str(), wxConvFile)).GetShortPath(); 
 
 	FFIndexer *Indexer = FFMS_CreateIndexer(FileNameWX.mb_str(wxConvUTF8), FFMSErrMsg, MsgSize);
 	if (Indexer == NULL) {

@@ -85,7 +85,7 @@ YUV4MPEGVideoProvider::~YUV4MPEGVideoProvider() {
 void YUV4MPEGVideoProvider::LoadVideo(const Aegisub::String _filename) {
 	Close();
 
-	wxString filename = wxFileName(wxString(_filename.c_str(), wxConvFile)).GetShortPath();
+	wxString filename = wxFileName(wxString(_filename.wc_str(), wxConvFile)).GetShortPath();
 
 #ifdef WIN32
 	sf = _wfopen(filename.wc_str(), _T("rb"));
