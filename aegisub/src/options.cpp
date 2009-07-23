@@ -354,7 +354,7 @@ void OptionsManager::LoadDefaults(bool onlyDefaults,bool doOverride) {
 		SetInt(_T("Fonts Collector Action"),0);
 
 		SetInt(_T("Audio Display Height"),200,1784);
-		SetBool(_T("Audio Spectrum"),false);
+		SetBool(_T("Audio Spectrum"),true);
 		SetInt(_T("Audio Sample Rate"),0);
 
 		SetBool(_T("Video Visual Realtime"),true);
