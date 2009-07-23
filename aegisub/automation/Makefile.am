@@ -2,12 +2,6 @@ automationdir = $(aegisubdatadir)/automation
 share_docdir = $(aegisubdocdir)
 
 # share/
-data_general= \
-	include/Aegisub.pm \
-	include/Aegisub/Progress.pm \
-	include/Aegisub/Script.pm \
-	include/Auto4Utils.pm
-
 data_auto4_lua = \
 	autoload/cleantags-autoload.lua \
 	autoload/kara-templater.lua \
