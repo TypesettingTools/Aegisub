@@ -1,4 +1,5 @@
 #define static
+#include "libresrc.h"
 #include "wxicon_xpm.xpm"
 #include "../bitmaps/shift_times_toolbutton_xpm.xpm"
 #include "../bitmaps/button_track_movement_xpm.xpm"

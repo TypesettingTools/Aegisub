@@ -1836,6 +1836,10 @@
 			RelativePath="..\..\src\res.rc"
 			>
 		</File>
+		<File
+			RelativePath="..\..\src\libresrc\resrc.cpp"
+			>
+		</File>
 	</Files>
 	<Globals>
 	</Globals>
