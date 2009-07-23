@@ -23,15 +23,6 @@ data_auto4_lua = \
 	include/utils-auto4.lua \
 	include/utils.lua
 
-data_auto3_lua = \
-	auto3/line-per-syllable.auto3 \
-	auto3/multi-template.auto3 \
-	auto3/simple-k-replacer.auto3 \
-	include/karaskel-adv.auto3 \
-	include/karaskel-base.auto3 \
-	include/karaskel.auto3 \
-	include/utils.auto3
-
 data_auto4_perl = \
 	autoload/macro-1p-edgeblur.pl \
 	include/Aegisub/PerlConsole.pm
@@ -59,20 +50,6 @@ data_auto4_lua_doc = \
 	demos/future-windy-blur.lua \
 	demos/raytracer.lua
 
-data_auto3_lua_doc = \
-	demos/auto3/readme.txt \
-	demos/auto3/1-minimal.lua \
-	demos/auto3/10-furigana.ass \
-	demos/auto3/10-furigana.lua \
-	demos/auto3/2-dump.lua \
-	demos/auto3/3-include.lua \
-	demos/auto3/4-text_extents.lua \
-	demos/auto3/5-configuration.lua \
-	demos/auto3/6-simple-effect.lua \
-	demos/auto3/7-advanced-effect.lua \
-	demos/auto3/8-skeleton.lua \
-	demos/auto3/9-advanced-skeleton.lua
-
 data_auto4_perl_doc = \
 	demos/perl-console.pl \
 	v4-docs/perl-api.txt
@@ -94,11 +71,6 @@ nobase_automation_DATA += $(data_auto4_lua)
 nobase_share_doc_DATA += $(data_auto4_lua_doc)
 endif
 
-if HAVE_AUTO3_LUA
-nobase_automation_DATA += $(data_auto3_lua)
-nobase_share_doc_DATA += $(data_auto3_lua_doc)
-endif
-
 if HAVE_AUTO4_PERL
 nobase_automation_DATA += $(data_auto4_perl)
 nobase_share_doc_DATA += $(data_auto4_perl_doc)
@@ -113,11 +85,9 @@ endif
 EXTRA_DIST = \
 	$(data_general) \
 	$(data_auto4_lua) \
-	$(data_auto3_lua) \
 	$(data_auto4_perl) \
 	$(data_auto4_ruby) \
 	$(data_general_doc) \
 	$(data_auto4_lua_doc) \
-	$(data_auto3_lua_doc) \
 	$(data_auto4_perl_doc) \
 	$(data_auto4_ruby_doc)

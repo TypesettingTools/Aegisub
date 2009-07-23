@@ -19,7 +19,6 @@ m4_define([libavutil_required_version], [50.3.0])    # (r18642)
 m4_define([libpostproc_required_version], [51.2.0])  # (r18642)
 m4_define([libswscale_required_version], [0.7.1])    # (r18642)
 
-m4_define([lua_auto3_required_version], [5.0])
 m4_define([lua_auto4_required_version], [5.1])
 m4_define([portaudio_required_version], [19])
 m4_define([pulseaudio_required_version], [0.5])
@@ -810,50 +809,6 @@ AC_SUBST(LUA_CFLAGS)
 AC_SUBST(LUA_LDFLAGS)
 
 
-##################
-## Auto3 (LUA 5.0)
-##################
-
-AC_ARG_VAR([LUA50_CFLAGS], [CFLAGS to use for LUA 5.0 (default: CPPFLAGS)])
-AC_ARG_VAR([LUA50_LDFLAGS], [LDFLAGS to use for LUA 5.1 (default: -llua -llualib)])
-if test -z "$LUA50_LDFLAGS"; then
-  LUA50_LDFLAGS="-llua -llualib";
-fi
-
-AC_ARG_WITH(lua50,
-[  --without-lua50         build without lua 5.0 (auto3)], [lua50_disabled="(disabled)"])
-
-if test "$with_lua50" != no; then
-  AC_AGI_COMPILE([Lua 5.0 (auto3)], [lua50], [$LUA50_CFLAGS], [$LUA50_LDFLAGS],[
-extern "C" {
-#include "lua.h"
-#include "lauxlib.h"
-}
-#ifdef lua_open
-#error This is not Lua 5.0
-#endif
-int main() {
-  lua_State *L = lua_open();
-  if (!L) return 1;
-  luaL_newmetatable(L, "test");
-  lua_close(L);
-}])
-fi
-
-if test "$agi_cv_with_lua50" = "yes"; then
-  with_auto3="yes"
-  with_automation="yes"
-  AC_DEFINE(WITH_AUTO3, 1, [Enable Automation (auto3, DEPRECIATED!), requires lua 5.0])
-else
-  with_auto3="no"
-fi
-
-AM_CONDITIONAL([HAVE_AUTO3_LUA], [test "$with_auto3" != "no"])
-AC_SUBST(LUA50_CFLAGS)
-AC_SUBST(LUA50_LDFLAGS)
-
-
-
 #############
 ## Auto4 PERL
 #############
@@ -1272,7 +1227,6 @@ Makefile
 src/Makefile
 src/bitmaps/Makefile
 src/libresrc/Makefile
-src/libauto3/Makefile
 src/libosxutil/Makefile
 universalchardet/Makefile
 libffms/Makefile
@@ -1340,7 +1294,6 @@ Default Settings
   Audio Player:          $default_player_audio
 
 Scripting Engines
-  auto3 Lua:             $with_auto3 $lua50_disabled
   auto4 Lua:             $with_auto4 $lua51_disabled
   auto4 Perl:            $with_cv_perl $perl_disabled
   auto4 Ruby:            $with_cv_ruby $ruby_disabled

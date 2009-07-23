@@ -8,14 +8,9 @@ libosxutil_lib = libosxutil/libosxutil.a
 libosxutil_ldflags = -framework CoreFoundation
 endif
 
-if HAVE_AUTO3_LUA
-libauto3 = libauto3
-endif
-
 SUBDIRS = \
 	bitmaps \
 	libresrc \
-	$(libauto3) \
 	$(libosxutil_subdir)
 
 AM_CXXFLAGS = -DAEGISUB -Iinclude @WX_CPPFLAGS@ @OPENMP_CXXFLAGS@ @LIBAVFORMAT_CFLAGS@ @LIBAVCODEC_CFLAGS@ @LIBSWSCALE_CFLAGS@ @LIBAVUTIL_CFLAGS@ -I../libffms/include
@@ -123,20 +118,6 @@ libauto4_ruby_a_SOURCES = auto4_ruby_assfile.cpp auto4_ruby.cpp auto4_ruby_dialo
 libauto4_ruby_a_CPPFLAGS = @RUBY_CFLAGS@
 aegisub_2_2_LDFLAGS += @RUBY_LDFLAGS@
 aegisub_2_2_LDADD += libauto4_ruby.a
-endif
-
-if BUILD_DARWIN
-AUTO3_LIB = $(srcdir)/libauto3/.libs/libaegisub-auto3-2.2.0.dylib
-else
-AUTO3_LIB = $(srcdir)/libauto3/.libs/libaegisub-auto3-2.2.so
-endif
-
-if HAVE_AUTO3_LUA
-AUTO3_LUA = auto4_auto3.cpp
-# This is a workaround top stop libtool from binging in dependency_libs which
-# causes many link errors due to auto4 (lua 5.1) support.
-#aegisub_2_1_LDADD += -L$(srcdir)/../auto3 -laegisub-auto3-2.2
-aegisub_2_2_LDADD += ${AUTO3_LIB}
 endif
 
 if HAVE_HUNSPELL
