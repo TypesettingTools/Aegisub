@@ -48,11 +48,7 @@
 // Define types used by Aegisub
 namespace Aegisub {
 	// String type
-#ifdef __WINDOWS__
-	typedef std::basic_string<wchar_t> String;
-#else
 	typedef wxString String;
-#endif
 	// String array
 	typedef std::vector<String> StringArray;
 
