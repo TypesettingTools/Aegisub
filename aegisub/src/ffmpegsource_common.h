@@ -67,7 +67,7 @@ public:
 	int AskForTrackSelection(const std::map<int,wxString>& TrackList, FFMS_TrackType Type);
 	wxString GetCacheFilename(const wxString& filename);
 
-	virtual FFmpegSourceProvider::~FFmpegSourceProvider() {}
+	virtual ~FFmpegSourceProvider() {}
 };
 
 
