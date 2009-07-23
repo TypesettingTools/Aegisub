@@ -104,14 +104,6 @@ LIBS += @LUA_LDFLAGS@
 aegisub_2_2_LDADD += libauto4_lua.a
 endif
 
-if HAVE_AUTO4_PERL
-noinst_LIBRARIES += libauto4_perl.a
-libauto4_perl_a_SOURCES = auto4_perl.cpp auto4_perl_script.cpp auto4_perl_dialogs.cpp auto4_perl_ass.cpp auto4_perl_console.cpp auto4_perl.h auto4_perl_console.h
-libauto4_perl_a_CPPFLAGS = @PERL_CFLAGS@
-LIBS += @PERL_LDFLAGS@
-aegisub_2_2_LDADD += libauto4_perl.a
-endif
-
 if HAVE_AUTO4_RUBY
 noinst_LIBRARIES += libauto4_ruby.a
 libauto4_ruby_a_SOURCES = auto4_ruby_assfile.cpp auto4_ruby.cpp auto4_ruby_dialog.cpp
@@ -337,5 +329,3 @@ noinst_HEADERS = \
 	$(srcdir)/*.hxx \
 	osx_bevelButton.h
 
-EXTRA_DIST = \
-	auto4_perldata.inc

@@ -21,10 +21,6 @@ data_auto4_lua = \
 	include/utils-auto4.lua \
 	include/utils.lua
 
-data_auto4_perl = \
-	autoload/macro-1p-edgeblur.pl \
-	include/Aegisub/PerlConsole.pm
-
 data_auto4_ruby = \
 	include/karaoke.rb \
 	include/utils.rb
@@ -47,10 +43,6 @@ data_auto4_lua_doc = \
 	demos/future-windy-blur.lua \
 	demos/raytracer.lua
 
-data_auto4_perl_doc = \
-	demos/perl-console.pl \
-	v4-docs/perl-api.txt
-
 data_auto4_ruby_doc = \
 	demos/k-replacer.rb
 
@@ -68,11 +60,6 @@ nobase_automation_DATA += $(data_auto4_lua)
 nobase_share_doc_DATA += $(data_auto4_lua_doc)
 endif
 
-if HAVE_AUTO4_PERL
-nobase_automation_DATA += $(data_auto4_perl)
-nobase_share_doc_DATA += $(data_auto4_perl_doc)
-endif
-
 if HAVE_AUTO4_RUBY
 nobase_automation_DATA += $(data_auto4_ruby)
 nobase_share_doc_DATA += $(data_auto4_ruby_doc)
@@ -82,9 +69,7 @@ endif
 EXTRA_DIST = \
 	$(data_general) \
 	$(data_auto4_lua) \
-	$(data_auto4_perl) \
 	$(data_auto4_ruby) \
 	$(data_general_doc) \
 	$(data_auto4_lua_doc) \
-	$(data_auto4_perl_doc) \
 	$(data_auto4_ruby_doc)
