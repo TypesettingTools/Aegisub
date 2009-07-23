@@ -45,9 +45,6 @@
 #ifdef WITH_AVISYNTH
 #include "video_provider_avs.h"
 #endif
-#ifdef WITH_DIRECTSHOW
-#include "video_provider_dshow.h"
-#endif
 #ifdef WITH_FFMPEGSOURCE
 #include "video_provider_ffmpegsource.h"
 #endif
@@ -115,9 +112,6 @@ VideoProvider *VideoProviderFactoryManager::GetProvider(wxString video) {
 void VideoProviderFactoryManager::RegisterProviders() {
 #ifdef WITH_AVISYNTH
 	RegisterFactory(new AvisynthVideoProviderFactory(),_T("Avisynth"));
-#endif
-#ifdef WITH_DIRECTSHOW
-	RegisterFactory(new DirectShowVideoProviderFactory(),_T("DirectShow"));
 #endif
 #ifdef WITH_FFMPEGSOURCE
 	RegisterFactory(new FFmpegSourceVideoProviderFactory(),_T("FFmpegSource"));

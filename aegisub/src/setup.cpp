@@ -141,17 +141,6 @@
 #pragma comment(lib,"portaudio_x86.lib")
 #endif
 
-//////////////
-// DirectShow
-#ifdef WITH_DIRECTSHOW
-#pragma comment(lib, "strmiids.lib")
-#ifdef __WXDEBUG__
-#pragma comment(lib, "strmbasdu.lib")
-#else
-#pragma comment(lib, "strmbaseu.lib")
-#endif
-#endif
-
 
 ////////////////
 // Direct Sound

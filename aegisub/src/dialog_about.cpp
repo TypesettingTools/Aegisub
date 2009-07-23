@@ -103,9 +103,6 @@ AboutScreen::AboutScreen(wxWindow *parent)
 #ifdef __WINDOWS__
 	libString += _T("    Matroska Parser - Copyright (c) Mike Matsnev;\n");
 #endif
-#ifdef WITH_DIRECTSHOW
-	libString += _T("    VideoSink - Copyright (c) Mike Matsnev;\n");
-#endif
 #ifdef WITH_FREETYPE2
 	libString += _T("    Freetype - Copyright (c) David Turner, Robert Wilhelm, Werner Lemberg;\n");
 #endif
