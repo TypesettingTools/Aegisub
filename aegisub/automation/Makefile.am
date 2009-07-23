@@ -15,9 +15,7 @@ data_auto4_lua = \
 	autoload/macro-1-edgeblur.lua \
 	autoload/macro-2-mkfullwitdh.lua \
 	include/cleantags.lua \
-	include/karaskel-adv.lua \
 	include/karaskel-auto4.lua \
-	include/karaskel-base.lua \
 	include/karaskel.lua \
 	include/unicode.lua \
 	include/utils-auto4.lua \
@@ -35,7 +33,6 @@ data_auto4_ruby = \
 # share/doc
 
 data_general_doc = \
-	automation3.txt \
 	demos/raytracer-test1.ass \
 	v4-docs/basic-function-interface.txt \
 	v4-docs/configuration-dialogs.txt \
