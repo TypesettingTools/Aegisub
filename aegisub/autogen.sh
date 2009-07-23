@@ -182,25 +182,6 @@ else
     DIE=1
 fi
 
-
-if test -z "$BIN_CONVERT"; then
-  BIN_CONVERT=`which convert`
-fi
-
-$ECHO_N "checking for ImageMagick 'convert' utility ... "
-if test -x "$BIN_CONVERT" && $BIN_CONVERT --version |grep -c ImageMagick > /dev/null; then
-  echo $BIN_CONVERT
-else
-    echo "not found"
-    echo
-    echo "  You must have 'convert' installed from the"
-    echo "  ImageMagick project.  Please set BIN_CONVERT or"
-    echo "  Add 'convert' to your PATH"
-    echo
-    DIE=1
-fi
-
-
 if test -z "$BIN_AWK"; then
   BIN_AWK=`which awk`
 fi
@@ -278,24 +259,6 @@ if test -z "$ACLOCAL_FLAGS"; then
         echo
     fi
 fi
-
-
-
-echo "--- Converting BMP resource files -> XPM ---"
-# BMP -> XPM via src/res.rc
-cat ${srcdir}/src/res.rc | ${BIN_AWK} -f ${srcdir}/scripts/unix-gen-xpm.awk BIN_CONVERT="$BIN_CONVERT" > ${srcdir}/src/bitmaps/Makefile.bitmaps
-cd ${srcdir}/src/bitmaps
-make -f Makefile.bitmaps
-cd ${srcdir}
-
-$BIN_AWK '/BITMAP/ { image[count] = $1; ++count} END { printf("EXTRA_DIST="); for (v in image) printf(" \\\n	%s_xpm.xpm", image[v])}' \
-  ${srcdir}/src/res.rc \
-  > ${srcdir}/src/bitmaps/Makefile.am
-
-echo "--- Generating libresrc/resrc.cpp, libresrc/libresrc.h from res.rc ---"
-$BIN_AWK -f scripts/unix-gen-res.awk ${srcdir}/src/res.rc \
-  RESRC_CPP="${srcdir}/src/libresrc/resrc.cpp" \
-  RESRC_H="${srcdir}/src/libresrc/libresrc.h"
 
 rm -rf autom4te.cache
 
