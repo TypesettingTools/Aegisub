@@ -56,7 +56,7 @@
 
 ///////////////
 // Constructor
-AvisynthVideoProvider::AvisynthVideoProvider(Aegisub::String _filename) {
+AvisynthVideoProvider::AvisynthVideoProvider(wxString _filename) {
 	AVSTRACE(wxString::Format(_T("AvisynthVideoProvider: Creating new AvisynthVideoProvider: \"%s\", \"%s\""), _filename, _subfilename));
 	bool mpeg2dec3_priority = true;
 	RGB32Video = NULL;
@@ -95,7 +95,7 @@ AvisynthVideoProvider::~AvisynthVideoProvider() {
 
 /////////////////////////////////////////
 // Actually open the video into Avisynth
-PClip AvisynthVideoProvider::OpenVideo(Aegisub::String _filename, bool mpeg2dec3_priority) {
+PClip AvisynthVideoProvider::OpenVideo(wxString _filename, bool mpeg2dec3_priority) {
 	AVSTRACE(_T("AvisynthVideoProvider::OpenVideo: Opening video"));
 	wxMutexLocker lock(AviSynthMutex);
 	AVSTRACE(_T("AvisynthVideoProvider::OpenVideo: Got AVS mutex"));
@@ -368,7 +368,7 @@ void AvisynthVideoProvider::OverrideFrameTimeList(wxArrayInt list) {
 
 ///////////////
 // Get warning
-Aegisub::String AvisynthVideoProvider::GetWarning() {
+wxString AvisynthVideoProvider::GetWarning() {
 	if (usedDirectShow) return L"Warning! The file is being opened using Avisynth's DirectShowSource, which has unreliable seeking. Frame numbers might not match the real number. PROCEED AT YOUR OWN RISK!";
 	else return L"";
 }

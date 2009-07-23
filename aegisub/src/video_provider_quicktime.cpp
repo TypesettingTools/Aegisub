@@ -40,7 +40,7 @@
 #include "aegisub_endian.h"
 #include "video_provider_quicktime.h"
 
-QuickTimeVideoProvider::QuickTimeVideoProvider(Aegisub::String filename) {
+QuickTimeVideoProvider::QuickTimeVideoProvider(wxString filename) {
 	in_dataref = NULL;
 	movie	= NULL;
 	gw		= NULL;
@@ -119,7 +119,7 @@ bool QuickTimeVideoProvider::CanOpen(const Handle& dataref, const OSType dataref
 }
 
 
-void QuickTimeVideoProvider::LoadVideo(const Aegisub::String _filename) {
+void QuickTimeVideoProvider::LoadVideo(const wxString _filename) {
 	Close();
 
 	// convert filename, first to a CFStringRef...

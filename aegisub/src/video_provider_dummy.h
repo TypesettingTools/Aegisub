@@ -60,7 +60,7 @@ private:
 	void Create(double fps, int frames, int _width, int _height, const wxColour &colour, bool pattern);
 
 public:
-	DummyVideoProvider(Aegisub::String filename);
+	DummyVideoProvider(wxString filename);
 	DummyVideoProvider(double fps, int frames, int _width, int _height, const wxColour &colour, bool pattern);
 	~DummyVideoProvider();
 
@@ -79,7 +79,7 @@ public:
 	bool IsVFR() { return false; };
 	FrameRate GetTrueFrameRate() { return FrameRate(); };
 
-	Aegisub::String GetDecoderName();
+	wxString GetDecoderName();
 };
 
 #endif

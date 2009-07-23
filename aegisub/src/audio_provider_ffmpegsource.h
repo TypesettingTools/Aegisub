@@ -54,10 +54,10 @@ private:
 	bool COMInited;
 
 	void Close();
-	void LoadAudio(Aegisub::String filename);
+	void LoadAudio(wxString filename);
 
 public:
-	FFmpegSourceAudioProvider(Aegisub::String filename);
+	FFmpegSourceAudioProvider(wxString filename);
 	virtual ~FFmpegSourceAudioProvider();
 
 	// FFMS always delivers samples in machine endian
@@ -72,7 +72,7 @@ public:
 // Factory
 class FFmpegSourceAudioProviderFactory : public AudioProviderFactory {
 public:
-	AudioProvider *CreateProvider(Aegisub::String file) { return new FFmpegSourceAudioProvider(file); }
+	AudioProvider *CreateProvider(wxString file) { return new FFmpegSourceAudioProvider(file); }
 };
 
 #endif /* WITH_FFMPEGSOURCE */

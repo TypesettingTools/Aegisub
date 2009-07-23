@@ -47,7 +47,7 @@
 
 
 
-YUV4MPEGVideoProvider::YUV4MPEGVideoProvider(Aegisub::String filename) {
+YUV4MPEGVideoProvider::YUV4MPEGVideoProvider(wxString filename) {
 	sf			= NULL;
 	w			= 0;
 	h			= 0;
@@ -82,7 +82,7 @@ YUV4MPEGVideoProvider::~YUV4MPEGVideoProvider() {
 }
 
 
-void YUV4MPEGVideoProvider::LoadVideo(const Aegisub::String _filename) {
+void YUV4MPEGVideoProvider::LoadVideo(const wxString _filename) {
 	Close();
 
 	wxString filename = wxFileName(wxString(_filename.wc_str(), wxConvFile)).GetShortPath();

@@ -108,7 +108,7 @@ private:
 
 	wxString errmsg;
 
-	void LoadVideo(const Aegisub::String filename);
+	void LoadVideo(const wxString filename);
 	void Close();
 	
 	void CheckFileFormat();
@@ -118,7 +118,7 @@ private:
 	int IndexFile();
 
 public:
-	YUV4MPEGVideoProvider(Aegisub::String filename);
+	YUV4MPEGVideoProvider(wxString filename);
 	~YUV4MPEGVideoProvider();
 
 	const AegiVideoFrame GetFrame(int n);
@@ -132,7 +132,7 @@ public:
 	wxArrayInt GetKeyFrames() { return wxArrayInt(); }
 	bool IsVFR() { return false; };
 	FrameRate GetTrueFrameRate() { return FrameRate(); }
-	Aegisub::String GetDecoderName() { return L"YUV4MPEG"; }
+	wxString GetDecoderName() { return L"YUV4MPEG"; }
 	int GetDesiredCacheSize() { return 8; }
 };
 

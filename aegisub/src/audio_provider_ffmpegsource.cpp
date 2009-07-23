@@ -50,7 +50,7 @@
 
 ///////////
 // Constructor
-FFmpegSourceAudioProvider::FFmpegSourceAudioProvider(Aegisub::String filename) {
+FFmpegSourceAudioProvider::FFmpegSourceAudioProvider(wxString filename) {
 	COMInited = false;
 #ifdef WIN32
 	HRESULT res;
@@ -78,7 +78,7 @@ FFmpegSourceAudioProvider::FFmpegSourceAudioProvider(Aegisub::String filename) {
 
 ///////////
 // Load audio file
-void FFmpegSourceAudioProvider::LoadAudio(Aegisub::String filename) {
+void FFmpegSourceAudioProvider::LoadAudio(wxString filename) {
 	// clean up
 	Close();
 

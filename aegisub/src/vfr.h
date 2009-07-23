@@ -66,7 +66,7 @@ class FrameRate {
 private:
 	double last_time;
 	int last_frame;
-	Aegisub::IntArray Frame;
+	std::vector<int> Frame;
 
 	// contains the assumed fps for v1 timecodes, average for v2 and actual fps for cfr
 	double AverageFrameRate; 
@@ -102,7 +102,7 @@ public:
 	ASS_FrameRateType GetFrameRateType() { return FrameRateType; };
 	wxString GetFilename() { return vfrFile; };
 
-	Aegisub::IntArray GetFrameTimeList();
+	std::vector<int> GetFrameTimeList();
 	double GetCommonFPS();
 };
 

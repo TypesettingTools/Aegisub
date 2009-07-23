@@ -54,7 +54,7 @@
 
 ///////////////
 // Constructor
-FFmpegSourceVideoProvider::FFmpegSourceVideoProvider(Aegisub::String filename) {
+FFmpegSourceVideoProvider::FFmpegSourceVideoProvider(wxString filename) {
 	COMInited = false;
 #ifdef WIN32
 	HRESULT res;
@@ -96,7 +96,7 @@ FFmpegSourceVideoProvider::~FFmpegSourceVideoProvider() {
 
 ///////////////
 // Open video
-void FFmpegSourceVideoProvider::LoadVideo(Aegisub::String filename) {
+void FFmpegSourceVideoProvider::LoadVideo(wxString filename) {
 	// make sure we don't have anything messy lying around
 	Close();
 

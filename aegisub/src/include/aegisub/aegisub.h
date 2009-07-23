@@ -39,22 +39,7 @@
 
 ///////////////
 // STL Headers
-#include <vector>
-#include <string>
 #include <stdint.h>
-
-
-////////////////////////////////
-// Define types used by Aegisub
-namespace Aegisub {
-	// String type
-	typedef wxString String;
-	// String array
-	typedef std::vector<String> StringArray;
-
-	// Integer array
-	typedef std::vector<int> IntArray;
-};
 
 
 ///////////////////

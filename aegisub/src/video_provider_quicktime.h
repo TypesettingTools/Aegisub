@@ -89,14 +89,14 @@ private:
 	wxString errmsg;		// aegisub error message
 
 	bool CanOpen(const Handle& dataref, const OSType dataref_type);
-	void LoadVideo(const Aegisub::String filename);
+	void LoadVideo(const wxString filename);
 	std::vector<int> IndexFile();
 	void Close();
 
 	void QTCheckError(OSErr err, wxString errmsg);
 
 public:
-	QuickTimeVideoProvider(Aegisub::String filename);
+	QuickTimeVideoProvider(wxString filename);
 	~QuickTimeVideoProvider();
 
 	const AegiVideoFrame GetFrame(int n);
@@ -110,7 +110,7 @@ public:
 	FrameRate GetTrueFrameRate();
 	wxArrayInt GetKeyFrames();
 	bool QuickTimeVideoProvider::AreKeyFramesLoaded();
-	Aegisub::String GetDecoderName() { return L"QuickTime"; };
+	wxString GetDecoderName() { return L"QuickTime"; };
 	bool IsNativelyByFrames() { return true; };
 	int GetDesiredCacheSize() { return 8; };
 };
@@ -118,7 +118,7 @@ public:
 
 class QuickTimeVideoProviderFactory : public VideoProviderFactory {
 public:
-	VideoProvider *CreateProvider(Aegisub::String video) { return new QuickTimeVideoProvider(video); }
+	VideoProvider *CreateProvider(wxString video) { return new QuickTimeVideoProvider(video); }
 };
 
 

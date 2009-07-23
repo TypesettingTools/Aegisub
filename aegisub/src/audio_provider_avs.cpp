@@ -52,7 +52,7 @@
 
 //////////////
 // Constructor
-AvisynthAudioProvider::AvisynthAudioProvider(Aegisub::String _filename) {
+AvisynthAudioProvider::AvisynthAudioProvider(wxString _filename) {
 	filename = _filename.c_str();
 
 	try {
