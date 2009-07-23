@@ -1153,8 +1153,6 @@ Default Settings
 
 Scripting Engines
   auto4 Lua:             $with_auto4 $lua51_disabled
-  auto4 Perl:            $with_cv_perl $perl_disabled
-  auto4 Ruby:            $with_cv_ruby $ruby_disabled
 
 Audio Players
   ALSA:                  $with_alsa $alsa_disabled
