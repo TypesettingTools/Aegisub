@@ -25,7 +25,7 @@ INTLTOOL_REQUIRED_VERSION=0.31
 LIBTOOL_REQUIRED_VERSION=1.5
 
 REQUIRED_M4="fontutil.m4 glib-gettext.m4 intltool.m4 intl.m4 pkg.m4 iconv.m4"
-REQUIRED_M4_WX="wxwin.m4 wxwin28.m4"
+REQUIRED_M4_WX="wxwin29.m4 wxwin.m4"
 
 PROJECT="aegisub"
 

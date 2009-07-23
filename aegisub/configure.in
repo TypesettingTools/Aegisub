@@ -26,7 +26,7 @@ m4_define([pulseaudio_required_version], [0.5])
 m4_define([fontconfig_required_version], [2.4])
 m4_define([freetype_required_version], [9.7.0])
 m4_define([pkgconfig_required_version], [0.20])
-m4_define([wx_required_version], [2.8.1])
+m4_define([wx_required_version], [2.9.0])
 
 
 #######
@@ -812,8 +812,11 @@ AM_CONDITIONAL([HAVE_AUTOMATION], [test "$with_automation" = "yes"])
 ################
 # Widget support
 ################
-AM_OPTIONS_WXCONFIG
-AM_PATH_WXCONFIG(wx_required_version, [have_wxconfig="yes"], [have_wxconfig="no"], [std,gl,stc], [--unicode])
+WX_CONFIG_OPTIONS
+WX_STANDARD_OPTIONS([debug])
+WX_DEBUG=$DEBUG
+WX_UNICODE=$UNICODE
+WX_CONFIG_CHECK([wx_required_version],,,[std,gl,stc],[$WXCONFIG_FLAGS])
 
 if test "$have_wxconfig" = "no"; then
   AC_MSG_FAILURE([wxWidgets detection failed, please set --with-wx* or add the libraries to your LDFLAGS, CXX/CFLAGS.])
