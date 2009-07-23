@@ -70,8 +70,6 @@ private:
 	std::vector<int> IndexFile();
 	void Close();
 
-	void QTCheckError(OSErr err, wxString errmsg);
-
 public:
 	QuickTimeVideoProvider(wxString filename);
 	~QuickTimeVideoProvider();

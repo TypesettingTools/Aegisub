@@ -126,15 +126,8 @@ bool QuickTimeVideoProvider::CanOpen(const Handle& dataref, const OSType dataref
 void QuickTimeVideoProvider::LoadVideo(const wxString _filename) {
 	Close();
 
-	// convert filename, first to a CFStringRef...
-	wxString wx_filename = wxFileName(_filename).GetShortPath();
-	CFStringRef qt_filename = CFStringCreateWithCString(NULL, wx_filename.utf8_str(), kCFStringEncodingUTF8);
-	
-	// and then to a data reference
 	OSType in_dataref_type;
-	qt_err = QTNewDataReferenceFromFullPathCFString(qt_filename, kQTNativeDefaultPathStyle, 0,
-		&in_dataref, &in_dataref_type);
-	QTCheckError(qt_err, wxString(_T("Failed to convert filename to data reference")));
+	wxStringToDataRef(_filename, &in_dataref, &in_dataref_type);
 
 	// verify that file is openable
 	if (!CanOpen(in_dataref, in_dataref_type))
@@ -294,13 +287,6 @@ const AegiVideoFrame QuickTimeVideoProvider::GetFrame(int n) {
 
 ///////////////
 // Utility functions
-
-void QuickTimeVideoProvider::QTCheckError(OSErr err, wxString errmsg) {
-	if (err != noErr)
-		throw errmsg;
-	/* CheckError(err, errmsg.c_str()); // I wonder if this actually works on Mac, and if so, what it does */
-}
-
 int QuickTimeVideoProvider::GetWidth() {
 	return w;
 }
