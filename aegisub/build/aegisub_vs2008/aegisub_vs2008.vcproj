@@ -656,14 +656,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\float_spin.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\float_spin.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\help_button.cpp"
 				>
 			</File>

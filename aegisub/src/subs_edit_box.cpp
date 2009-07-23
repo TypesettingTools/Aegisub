@@ -60,7 +60,6 @@
 #include "utils.h"
 #include "dialog_search_replace.h"
 #include "idle_field_event.h"
-#include "float_spin.h"
 #include "tooltip_manager.h"
 #include "osx_bevelButton.h"
 
@@ -148,7 +147,6 @@ SubsEditBox::SubsEditBox (wxWindow *parent,SubtitlesGrid *gridp) : wxPanel(paren
 
 	// Top sizer
 	TopSizer = new wxBoxSizer(wxHORIZONTAL);
-	//TopSizer->Add(new FloatSpinCtrl(this,-1,wxDefaultPosition,wxSize(40,20),0,-20.0,50.0,0.0,0.5));
 	TopSizer->Add(CommentBox,0,wxRIGHT | wxALIGN_CENTER,5);
 	TopSizer->Add(StyleBox,2,wxRIGHT|wxALIGN_CENTER,5);
 	TopSizer->Add(ActorBox,2,wxRIGHT|wxALIGN_CENTER,5);
