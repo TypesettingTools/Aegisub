@@ -86,7 +86,7 @@ DialogOptions::DialogOptions(wxWindow *parent)
 : wxDialog(parent, -1, _("Options"), wxDefaultPosition, wxDefaultSize)
 {
 	// Set icon
-	SetIcon(BitmapToIcon(wxBITMAP(options_button)));
+	SetIcon(BitmapToIcon(wxBitmap(options_button_xpm)));
 
 	// Create book
 	book = new wxTreebook(this,-1,wxDefaultPosition,wxSize(400,300));

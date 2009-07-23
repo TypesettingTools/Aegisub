@@ -60,8 +60,8 @@ VisualToolDrag::VisualToolDrag(VideoDisplay *_parent,wxToolBar *toolBar)
 : VisualTool(_parent)
 {
 	_parent->ShowCursor(false);
-	//toolBar->AddTool(BUTTON_TOGGLE_MOVE,_T("Toggle Move/Pos"),wxBITMAP(visual_move_conv_move));
-	toggleMove = new wxBitmapButton(toolBar,BUTTON_TOGGLE_MOVE,wxBITMAP(visual_move_conv_move),wxDefaultPosition);
+	//toolBar->AddTool(BUTTON_TOGGLE_MOVE,_T("Toggle Move/Pos"),wxBitmap(visual_move_conv_move_xpm));
+	toggleMove = new wxBitmapButton(toolBar,BUTTON_TOGGLE_MOVE,wxBitmap(visual_move_conv_move_xpm),wxDefaultPosition);
 	ConnectButton(toggleMove);
 	toolBar->AddControl(toggleMove);
 	toggleMoveOnMove = true;
@@ -88,8 +88,8 @@ void VisualToolDrag::UpdateToggleButtons() {
 	if (toMove == toggleMoveOnMove) return;
 
 	// Change bitmap
-	if (toMove) toggleMove->SetBitmapLabel(wxBITMAP(visual_move_conv_move));
-	else toggleMove->SetBitmapLabel(wxBITMAP(visual_move_conv_pos));
+	if (toMove) toggleMove->SetBitmapLabel(wxBitmap(visual_move_conv_move_xpm));
+	else toggleMove->SetBitmapLabel(wxBitmap(visual_move_conv_pos_xpm));
 	toggleMoveOnMove = toMove;
 }
 

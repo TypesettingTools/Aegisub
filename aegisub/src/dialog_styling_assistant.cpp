@@ -62,7 +62,7 @@ DialogStyling::DialogStyling (wxWindow *parent,SubtitlesGrid *_grid) :
 wxDialog (parent, -1, _("Styling assistant"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER | wxMINIMIZE_BOX)
 {
 	// Set icon
-	SetIcon(BitmapToIcon(wxBITMAP(styling_toolbutton)));
+	SetIcon(BitmapToIcon(wxBitmap(styling_toolbutton_xpm)));
 
 	// Variables
 	grid = _grid;

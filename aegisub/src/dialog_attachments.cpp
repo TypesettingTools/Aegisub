@@ -58,7 +58,7 @@ DialogAttachments::DialogAttachments(wxWindow *parent)
 : wxDialog(parent,-1,_("Attachment List"),wxDefaultPosition,wxDefaultSize,wxDEFAULT_DIALOG_STYLE)
 {
 	// Set icon
-	SetIcon(BitmapToIcon(wxBITMAP(attach_button)));
+	SetIcon(BitmapToIcon(wxBitmap(attach_button_xpm)));
 
 	// List view
 	listView = new wxListView(this,ATTACHMENT_LIST,wxDefaultPosition,wxSize(500,200));

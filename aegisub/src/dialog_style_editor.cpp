@@ -99,7 +99,7 @@ DialogStyleEditor::DialogStyleEditor (wxWindow *parent, AssStyle *_style, Subtit
 : wxDialog (parent,-1,_("Style Editor"),wxDefaultPosition,wxDefaultSize,wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER,_T("DialogStyleEditor"))
 {
 	// Set icon
-	SetIcon(BitmapToIcon(wxBITMAP(style_toolbutton)));
+	SetIcon(BitmapToIcon(wxBitmap(style_toolbutton_xpm)));
 
 	// Set variables
 	isLocal = local;

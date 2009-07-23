@@ -53,7 +53,7 @@ AboutScreen::AboutScreen(wxWindow *parent)
 : wxDialog (parent, -1, _("About Aegisub"), wxDefaultPosition, wxSize(300,240), wxCAPTION | wxCLOSE_BOX , _("About Aegisub"))
 {
 	// Get splash
-	wxBitmap splash = wxBITMAP(splash);
+	wxBitmap splash = wxBitmap(splash_xpm);
 	SetOwnBackgroundColour(wxColour(255,255,255));
 	SetForegroundColour(wxColour(0,0,0));
 

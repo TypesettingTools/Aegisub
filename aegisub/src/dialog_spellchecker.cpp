@@ -69,7 +69,7 @@ DialogSpellChecker::DialogSpellChecker(wxFrame *parent)
 : wxDialog(parent, -1, _("Spell Checker"), wxDefaultPosition, wxDefaultSize)
 {
 	// Set icon
-	SetIcon(BitmapToIcon(wxBITMAP(spellcheck_toolbutton)));
+	SetIcon(BitmapToIcon(wxBitmap(spellcheck_toolbutton_xpm)));
 
 	// Get spell checker
 	spellchecker = SpellCheckerFactoryManager::GetSpellChecker();

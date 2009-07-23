@@ -57,7 +57,7 @@ DialogTimingProcessor::DialogTimingProcessor(wxWindow *parent,SubtitlesGrid *_gr
 : wxDialog(parent,-1,_("Timing Post-Processor"),wxDefaultPosition,wxSize(400,250),wxDEFAULT_DIALOG_STYLE)
 {
 	// Set icon
-	SetIcon(BitmapToIcon(wxBITMAP(timing_processor_toolbutton)));
+	SetIcon(BitmapToIcon(wxBitmap(timing_processor_toolbutton_xpm)));
 
 	// Set variables
 	grid = _grid;

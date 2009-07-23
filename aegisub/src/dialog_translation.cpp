@@ -61,7 +61,7 @@ DialogTranslation::DialogTranslation (wxWindow *parent,AssFile *_subs,SubtitlesG
 : wxDialog(parent, -1, _("Translation Assistant"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER | wxMINIMIZE_BOX, _T("TranslationAssistant"))
 {
 	// Set icon
-	SetIcon(BitmapToIcon(wxBITMAP(translation_toolbutton)));
+	SetIcon(BitmapToIcon(wxBitmap(translation_toolbutton_xpm)));
 
 	// Set variables
 	enablePreview = preview;

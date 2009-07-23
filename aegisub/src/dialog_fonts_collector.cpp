@@ -80,7 +80,7 @@ DialogFontsCollector::DialogFontsCollector(wxWindow *parent)
 : wxDialog(parent,-1,_("Fonts Collector"),wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE)
 {
 	// Set icon
-	SetIcon(BitmapToIcon(wxBITMAP(font_collector_button)));
+	SetIcon(BitmapToIcon(wxBitmap(font_collector_button_xpm)));
 
 	// Parent
 	main = (FrameMain*) parent;

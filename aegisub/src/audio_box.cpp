@@ -98,7 +98,7 @@ wxPanel(parent,-1,wxDefaultPosition,wxDefaultSize,wxTAB_TRAVERSAL|wxBORDER_RAISE
 		VolumeBar->SetValue(VerticalZoom->GetValue());
 		VolumeBar->Enable(false);
 	}
-	VerticalLink = new ToggleBitmap(this,Audio_Vertical_Link,wxBITMAP(toggle_audio_link));
+	VerticalLink = new ToggleBitmap(this,Audio_Vertical_Link,wxBitmap(toggle_audio_link_xpm));
 	VerticalLink->SetToolTip(_("Link vertical zoom and volume sliders"));
 	VerticalLink->SetValue(link);
 
@@ -125,69 +125,69 @@ wxPanel(parent,-1,wxDefaultPosition,wxDefaultSize,wxTAB_TRAVERSAL|wxBORDER_RAISE
 	// Buttons sizer
 	wxSizer *ButtonSizer = new wxBoxSizer(wxHORIZONTAL);
 	wxButton *temp;
-	temp = new wxBitmapButton(this,Audio_Button_Prev,wxBITMAP(button_prev),wxDefaultPosition,wxSize(30,-1));
+	temp = new wxBitmapButton(this,Audio_Button_Prev,wxBitmap(button_prev_xpm),wxDefaultPosition,wxSize(30,-1));
 	ToolTipManager::Bind(temp,_("Previous line or syllable (%KEY%/%KEY%)"),_T("Audio Prev Line"),_T("Audio Prev Line Alt"));
 	ButtonSizer->Add(temp,0,wxRIGHT,0);
-	temp = new wxBitmapButton(this,Audio_Button_Next,wxBITMAP(button_next),wxDefaultPosition,wxSize(30,-1));
+	temp = new wxBitmapButton(this,Audio_Button_Next,wxBitmap(button_next_xpm),wxDefaultPosition,wxSize(30,-1));
 	ToolTipManager::Bind(temp,_("Next line/syllable (%KEY%/%KEY%)"),_T("Audio Next Line"),_T("Audio Next Line Alt"));
 	ButtonSizer->Add(temp,0,wxRIGHT,0);
-	temp = new wxBitmapButton(this,Audio_Button_Play,wxBITMAP(button_playsel),wxDefaultPosition,wxSize(30,-1));
+	temp = new wxBitmapButton(this,Audio_Button_Play,wxBitmap(button_playsel_xpm),wxDefaultPosition,wxSize(30,-1));
 	ToolTipManager::Bind(temp,_("Play selection (%KEY%/%KEY%)"),_T("Audio Play"),_T("Audio Play Alt"));
 	ButtonSizer->Add(temp,0,wxRIGHT,0);
-	temp = new wxBitmapButton(this,Audio_Button_Play_Row,wxBITMAP(button_playline),wxDefaultPosition,wxSize(30,-1));
+	temp = new wxBitmapButton(this,Audio_Button_Play_Row,wxBitmap(button_playline_xpm),wxDefaultPosition,wxSize(30,-1));
 	ToolTipManager::Bind(temp,_("Play current line (%KEY%)"),_T("Audio Play Original Line"));
 	ButtonSizer->Add(temp,0,wxRIGHT,0);
-	temp = new wxBitmapButton(this,Audio_Button_Stop,wxBITMAP(button_stop),wxDefaultPosition,wxSize(30,-1));
+	temp = new wxBitmapButton(this,Audio_Button_Stop,wxBitmap(button_stop_xpm),wxDefaultPosition,wxSize(30,-1));
 	ToolTipManager::Bind(temp,_("Stop (%KEY%)"),_T("Audio Stop"));
 	ButtonSizer->Add(temp,0,wxRIGHT,10);
 
-	temp = new wxBitmapButton(this,Audio_Button_Play_500ms_Before,wxBITMAP(button_playfivehbefore),wxDefaultPosition,wxSize(30,-1));
+	temp = new wxBitmapButton(this,Audio_Button_Play_500ms_Before,wxBitmap(button_playfivehbefore_xpm),wxDefaultPosition,wxSize(30,-1));
 	ToolTipManager::Bind(temp,_("Play 500 ms before selection (%KEY%)"),_T("Audio Play 500ms Before"));
 	ButtonSizer->Add(temp,0,wxRIGHT,0);
-	temp = new wxBitmapButton(this,Audio_Button_Play_500ms_After,wxBITMAP(button_playfivehafter),wxDefaultPosition,wxSize(30,-1));
+	temp = new wxBitmapButton(this,Audio_Button_Play_500ms_After,wxBitmap(button_playfivehafter_xpm),wxDefaultPosition,wxSize(30,-1));
 	ToolTipManager::Bind(temp,_("Play 500 ms after selection (%KEY%)"),_T("Audio Play 500ms after"));
 	ButtonSizer->Add(temp,0,wxRIGHT,0);
-	temp = new wxBitmapButton(this,Audio_Button_Play_500ms_First,wxBITMAP(button_playfirstfiveh),wxDefaultPosition,wxSize(30,-1));
+	temp = new wxBitmapButton(this,Audio_Button_Play_500ms_First,wxBitmap(button_playfirstfiveh_xpm),wxDefaultPosition,wxSize(30,-1));
 	ToolTipManager::Bind(temp,_("Play first 500ms of selection (%KEY%)"),_T("Audio Play First 500ms"));
 	ButtonSizer->Add(temp,0,wxRIGHT,0);
-	temp = new wxBitmapButton(this,Audio_Button_Play_500ms_Last,wxBITMAP(button_playlastfiveh),wxDefaultPosition,wxSize(30,-1));
+	temp = new wxBitmapButton(this,Audio_Button_Play_500ms_Last,wxBitmap(button_playlastfiveh_xpm),wxDefaultPosition,wxSize(30,-1));
 	ToolTipManager::Bind(temp,_("Play last 500ms of selection (%KEY%)"),_T("Audio Play Last 500ms"));
 	ButtonSizer->Add(temp,0,wxRIGHT,0);
-	temp = new wxBitmapButton(this,Audio_Button_Play_To_End,wxBITMAP(button_playtoend),wxDefaultPosition,wxSize(30,-1));
+	temp = new wxBitmapButton(this,Audio_Button_Play_To_End,wxBitmap(button_playtoend_xpm),wxDefaultPosition,wxSize(30,-1));
 	ToolTipManager::Bind(temp,_("Play from selection start to end of file (%KEY%)"),_T("Audio Play To End"));
 	ButtonSizer->Add(temp,0,wxRIGHT,10);
 
-	temp = new wxBitmapButton(this,Audio_Button_Leadin,wxBITMAP(button_leadin),wxDefaultPosition,wxSize(30,-1));
+	temp = new wxBitmapButton(this,Audio_Button_Leadin,wxBitmap(button_leadin_xpm),wxDefaultPosition,wxSize(30,-1));
 	ToolTipManager::Bind(temp,_("Add lead in (%KEY%)"),_T("Audio Add Lead In"));
 	ButtonSizer->Add(temp,0,wxRIGHT,0);
-	temp = new wxBitmapButton(this,Audio_Button_Leadout,wxBITMAP(button_leadout),wxDefaultPosition,wxSize(30,-1));
+	temp = new wxBitmapButton(this,Audio_Button_Leadout,wxBitmap(button_leadout_xpm),wxDefaultPosition,wxSize(30,-1));
 	ToolTipManager::Bind(temp,_("Add lead out (%KEY%)"),_T("Audio Add Lead Out"));
 	ButtonSizer->Add(temp,0,wxRIGHT,10);
 
-	temp = new wxBitmapButton(this,Audio_Button_Commit,wxBITMAP(button_audio_commit),wxDefaultPosition,wxSize(30,-1));
+	temp = new wxBitmapButton(this,Audio_Button_Commit,wxBitmap(button_audio_commit_xpm),wxDefaultPosition,wxSize(30,-1));
 	ToolTipManager::Bind(temp,_("Commit changes (%KEY%/%KEY%)"),_T("Audio Commit (Stay)"),_T("Audio Commit Alt"));
 	ButtonSizer->Add(temp,0,wxRIGHT,0);
-	temp = new wxBitmapButton(this,Audio_Button_Goto,wxBITMAP(button_audio_goto),wxDefaultPosition,wxSize(30,-1));
+	temp = new wxBitmapButton(this,Audio_Button_Goto,wxBitmap(button_audio_goto_xpm),wxDefaultPosition,wxSize(30,-1));
 	temp->SetToolTip(_("Go to selection"));
 	ButtonSizer->Add(temp,0,wxRIGHT,10);
 
-	AutoCommit = new ToggleBitmap(this,Audio_Check_AutoCommit,wxBITMAP(toggle_audio_autocommit),wxSize(30,-1));
+	AutoCommit = new ToggleBitmap(this,Audio_Check_AutoCommit,wxBitmap(toggle_audio_autocommit_xpm),wxSize(30,-1));
 	AutoCommit->SetToolTip(_("Automatically commit all changes"));
 	AutoCommit->SetValue(Options.AsBool(_T("Audio Autocommit")));
 	ButtonSizer->Add(AutoCommit,0,wxRIGHT | wxALIGN_CENTER | wxEXPAND,0);
-	NextCommit = new ToggleBitmap(this,Audio_Check_NextCommit,wxBITMAP(toggle_audio_nextcommit),wxSize(30,-1));
+	NextCommit = new ToggleBitmap(this,Audio_Check_NextCommit,wxBitmap(toggle_audio_nextcommit_xpm),wxSize(30,-1));
 	NextCommit->SetToolTip(_("Auto goes to next line on commit"));
 	NextCommit->SetValue(Options.AsBool(_T("Audio Next Line on Commit")));
 	ButtonSizer->Add(NextCommit,0,wxRIGHT | wxALIGN_CENTER | wxEXPAND,0);
-	AutoScroll = new ToggleBitmap(this,Audio_Check_AutoGoto,wxBITMAP(toggle_audio_autoscroll),wxSize(30,-1));
+	AutoScroll = new ToggleBitmap(this,Audio_Check_AutoGoto,wxBitmap(toggle_audio_autoscroll_xpm),wxSize(30,-1));
 	AutoScroll->SetToolTip(_("Auto scrolls audio display to selected line"));
 	AutoScroll->SetValue(Options.AsBool(_T("Audio Autoscroll")));
 	ButtonSizer->Add(AutoScroll,0,wxRIGHT | wxALIGN_CENTER | wxEXPAND,0);
-	SpectrumMode = new ToggleBitmap(this,Audio_Check_Spectrum,wxBITMAP(toggle_audio_spectrum),wxSize(30,-1));
+	SpectrumMode = new ToggleBitmap(this,Audio_Check_Spectrum,wxBitmap(toggle_audio_spectrum_xpm),wxSize(30,-1));
 	SpectrumMode->SetToolTip(_("Spectrum analyzer mode"));
 	SpectrumMode->SetValue(Options.AsBool(_T("Audio Spectrum")));
 	ButtonSizer->Add(SpectrumMode,0,wxRIGHT | wxALIGN_CENTER | wxEXPAND,0);
-	MedusaMode = new ToggleBitmap(this,Audio_Check_Medusa,wxBITMAP(toggle_audio_medusa),wxSize(30,-1));
+	MedusaMode = new ToggleBitmap(this,Audio_Check_Medusa,wxBitmap(toggle_audio_medusa_xpm),wxSize(30,-1));
 	MedusaMode->SetToolTip(_("Enable Medusa-Style Timing Shortcuts"));
 	MedusaMode->SetValue(Options.AsBool(_T("Audio Medusa Timing Hotkeys")));
 	ButtonSizer->Add(MedusaMode,0,wxRIGHT | wxALIGN_CENTER | wxEXPAND,0);

@@ -67,16 +67,16 @@ VisualToolVectorClip::VisualToolVectorClip(VideoDisplay *parent,wxToolBar *_tool
 
 	// Create toolbar
 	toolBar = _toolBar;
-	toolBar->AddTool(BUTTON_DRAG,_("Drag"),wxBITMAP(visual_vector_clip_drag),_("Drag control points."),wxITEM_CHECK);
-	toolBar->AddTool(BUTTON_LINE,_("Line"),wxBITMAP(visual_vector_clip_line),_("Appends a line."),wxITEM_CHECK);
-	toolBar->AddTool(BUTTON_BICUBIC,_("Bicubic"),wxBITMAP(visual_vector_clip_bicubic),_("Appends a bezier bicubic curve."),wxITEM_CHECK);
+	toolBar->AddTool(BUTTON_DRAG,_("Drag"),wxBitmap(visual_vector_clip_drag_xpm),_("Drag control points."),wxITEM_CHECK);
+	toolBar->AddTool(BUTTON_LINE,_("Line"),wxBitmap(visual_vector_clip_line_xpm),_("Appends a line."),wxITEM_CHECK);
+	toolBar->AddTool(BUTTON_BICUBIC,_("Bicubic"),wxBitmap(visual_vector_clip_bicubic_xpm),_("Appends a bezier bicubic curve."),wxITEM_CHECK);
 	toolBar->AddSeparator();
-	toolBar->AddTool(BUTTON_CONVERT,_("Convert"),wxBITMAP(visual_vector_clip_convert),_("Converts a segment between line and bicubic."),wxITEM_CHECK);
-	toolBar->AddTool(BUTTON_INSERT,_("Insert"),wxBITMAP(visual_vector_clip_insert),_("Inserts a control point."),wxITEM_CHECK);
-	toolBar->AddTool(BUTTON_REMOVE,_("Remove"),wxBITMAP(visual_vector_clip_remove),_("Removes a control point."),wxITEM_CHECK);
+	toolBar->AddTool(BUTTON_CONVERT,_("Convert"),wxBitmap(visual_vector_clip_convert_xpm),_("Converts a segment between line and bicubic."),wxITEM_CHECK);
+	toolBar->AddTool(BUTTON_INSERT,_("Insert"),wxBitmap(visual_vector_clip_insert_xpm),_("Inserts a control point."),wxITEM_CHECK);
+	toolBar->AddTool(BUTTON_REMOVE,_("Remove"),wxBitmap(visual_vector_clip_remove_xpm),_("Removes a control point."),wxITEM_CHECK);
 	toolBar->AddSeparator();
-	toolBar->AddTool(BUTTON_FREEHAND,_("Freehand"),wxBITMAP(visual_vector_clip_freehand),_("Draws a freehand shape."),wxITEM_CHECK);
-	toolBar->AddTool(BUTTON_FREEHAND_SMOOTH,_("Freehand smooth"),wxBITMAP(visual_vector_clip_freehand_smooth),_("Draws a smoothed freehand shape."),wxITEM_CHECK);
+	toolBar->AddTool(BUTTON_FREEHAND,_("Freehand"),wxBitmap(visual_vector_clip_freehand_xpm),_("Draws a freehand shape."),wxITEM_CHECK);
+	toolBar->AddTool(BUTTON_FREEHAND_SMOOTH,_("Freehand smooth"),wxBitmap(visual_vector_clip_freehand_smooth_xpm),_("Draws a smoothed freehand shape."),wxITEM_CHECK);
 	toolBar->ToggleTool(BUTTON_DRAG,true);
 	toolBar->Realize();
 	toolBar->Show(true);

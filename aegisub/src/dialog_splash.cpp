@@ -55,7 +55,7 @@ SplashScreen::SplashScreen(wxWindow *parent)
 	par = parent;
 
 	// Get splash
-	splash = wxBITMAP(splash);
+	splash = wxBitmap(splash_xpm);
 
 	#if wxUSE_DISPLAY == 1
 	// Center on current display

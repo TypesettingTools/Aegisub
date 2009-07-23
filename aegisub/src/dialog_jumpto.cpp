@@ -63,7 +63,7 @@ DialogJumpTo::DialogJumpTo (wxWindow *parent)
 : wxDialog(parent, -1, _("Jump to"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE | wxWANTS_CHARS , _T("JumpTo"))
 {
 	// Set icon
-	SetIcon(BitmapToIcon(wxBITMAP(jumpto_button)));
+	SetIcon(BitmapToIcon(wxBitmap(jumpto_button_xpm)));
 
 	// Set initial values
 	ready = false;

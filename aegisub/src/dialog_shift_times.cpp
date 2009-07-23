@@ -64,7 +64,7 @@ DialogShiftTimes::DialogShiftTimes (wxWindow *parent,SubtitlesGrid *_grid)
 : wxDialog(parent, -1, _("Shift Times"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE, _T("JumpTo"))
 {
 	// Set icon
-	SetIcon(BitmapToIcon(wxBITMAP(shift_times_toolbutton)));
+	SetIcon(BitmapToIcon(wxBitmap(shift_times_toolbutton_xpm)));
 
 	// Set initial values
 	ready = true;

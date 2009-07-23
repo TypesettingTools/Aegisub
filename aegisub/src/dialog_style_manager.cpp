@@ -62,7 +62,7 @@ DialogStyleManager::DialogStyleManager (wxWindow *parent,SubtitlesGrid *_grid)
 : wxDialog (parent,-1,_("Styles Manager"),wxDefaultPosition,wxDefaultSize,wxDEFAULT_DIALOG_STYLE,_T("DialogStylesManager"))
 {
 	// Set icon
-	SetIcon(BitmapToIcon(wxBITMAP(style_toolbutton)));
+	SetIcon(BitmapToIcon(wxBitmap(style_toolbutton_xpm)));
 
 	// Vars
 	grid = _grid;
@@ -91,11 +91,11 @@ DialogStyleManager::DialogStyleManager (wxWindow *parent,SubtitlesGrid *_grid)
 	StorageButtons->Add(StorageEdit,1,wxEXPAND | wxRIGHT,5);
 	StorageButtons->Add(StorageCopy,1,wxEXPAND | wxRIGHT,5);
 	StorageButtons->Add(StorageDelete,1,wxEXPAND | wxALL,0);
-	StorageMoveUp = new wxBitmapButton(this, BUTTON_STORAGE_UP, wxBITMAP(arrow_up));
-	StorageMoveDown = new wxBitmapButton(this, BUTTON_STORAGE_DOWN, wxBITMAP(arrow_down));
-	StorageMoveTop = new wxBitmapButton(this, BUTTON_STORAGE_TOP, wxBITMAP(arrow_up_stop));
-	StorageMoveBottom = new wxBitmapButton(this, BUTTON_STORAGE_BOTTOM, wxBITMAP(arrow_down_stop));
-	StorageSort = new wxBitmapButton(this, BUTTON_STORAGE_SORT, wxBITMAP(arrow_sort));
+	StorageMoveUp = new wxBitmapButton(this, BUTTON_STORAGE_UP, wxBitmap(arrow_up_xpm));
+	StorageMoveDown = new wxBitmapButton(this, BUTTON_STORAGE_DOWN, wxBitmap(arrow_down_xpm));
+	StorageMoveTop = new wxBitmapButton(this, BUTTON_STORAGE_TOP, wxBitmap(arrow_up_stop_xpm));
+	StorageMoveBottom = new wxBitmapButton(this, BUTTON_STORAGE_BOTTOM, wxBitmap(arrow_down_stop_xpm));
+	StorageSort = new wxBitmapButton(this, BUTTON_STORAGE_SORT, wxBitmap(arrow_sort_xpm));
 	StorageMoveUp->SetToolTip(_("Move style up."));
 	StorageMoveDown->SetToolTip(_("Move style down."));
 	StorageMoveTop->SetToolTip(_("Move style to top."));
@@ -136,11 +136,11 @@ DialogStyleManager::DialogStyleManager (wxWindow *parent,SubtitlesGrid *_grid)
 	CurrentButtons->Add(CurrentEdit,1,wxEXPAND | wxRIGHT,5);
 	CurrentButtons->Add(CurrentCopy,1,wxEXPAND | wxRIGHT,5);
 	CurrentButtons->Add(CurrentDelete,1,wxEXPAND | wxALL,0);
-	CurrentMoveUp = new wxBitmapButton(this, BUTTON_CURRENT_UP, wxBITMAP(arrow_up));
-	CurrentMoveDown = new wxBitmapButton(this, BUTTON_CURRENT_DOWN, wxBITMAP(arrow_down));
-	CurrentMoveTop = new wxBitmapButton(this, BUTTON_CURRENT_TOP, wxBITMAP(arrow_up_stop));
-	CurrentMoveBottom = new wxBitmapButton(this, BUTTON_CURRENT_BOTTOM, wxBITMAP(arrow_down_stop));
-	CurrentSort = new wxBitmapButton(this, BUTTON_CURRENT_SORT, wxBITMAP(arrow_sort));
+	CurrentMoveUp = new wxBitmapButton(this, BUTTON_CURRENT_UP, wxBitmap(arrow_up_xpm));
+	CurrentMoveDown = new wxBitmapButton(this, BUTTON_CURRENT_DOWN, wxBitmap(arrow_down_xpm));
+	CurrentMoveTop = new wxBitmapButton(this, BUTTON_CURRENT_TOP, wxBitmap(arrow_up_stop_xpm));
+	CurrentMoveBottom = new wxBitmapButton(this, BUTTON_CURRENT_BOTTOM, wxBitmap(arrow_down_stop_xpm));
+	CurrentSort = new wxBitmapButton(this, BUTTON_CURRENT_SORT, wxBitmap(arrow_sort_xpm));
 	CurrentMoveUp->SetToolTip(_("Move style up."));
 	CurrentMoveDown->SetToolTip(_("Move style down."));
 	CurrentMoveTop->SetToolTip(_("Move style to top."));

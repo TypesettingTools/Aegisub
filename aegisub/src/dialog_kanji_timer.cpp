@@ -695,7 +695,7 @@ DialogKanjiTimer::DialogKanjiTimer(wxWindow *parent, SubtitlesGrid *_grid)
 : wxDialog (parent,-1,_("Kanji timing"),wxDefaultPosition)
 {
 	// Set icon
-	SetIcon(BitmapToIcon(wxBITMAP(kanji_timer_button)));
+	SetIcon(BitmapToIcon(wxBitmap(kanji_timer_button_xpm)));
 
 	// Variables
 	subs = AssFile::top;

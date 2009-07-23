@@ -235,15 +235,15 @@ void FrameMain::InitToolbar () {
 	Toolbar = CreateToolBar(wxTB_FLAT | wxTB_HORIZONTAL,-1,_T("Toolbar"));
 
 	// Subtitle control buttons
-	Toolbar->AddTool(Menu_File_New_Subtitles,_("New"),wxBITMAP(new_toolbutton),_("New subtitles"));
-	Toolbar->AddTool(Menu_File_Open_Subtitles,_("Open"),wxBITMAP(open_toolbutton),_("Open subtitles"));
-	Toolbar->AddTool(Menu_File_Save_Subtitles,_("Save"),wxBITMAP(save_toolbutton),_("Save subtitles"));
+	Toolbar->AddTool(Menu_File_New_Subtitles,_("New"),wxBitmap(new_toolbutton_xpm),_("New subtitles"));
+	Toolbar->AddTool(Menu_File_Open_Subtitles,_("Open"),wxBitmap(open_toolbutton_xpm),_("Open subtitles"));
+	Toolbar->AddTool(Menu_File_Save_Subtitles,_("Save"),wxBitmap(save_toolbutton_xpm),_("Save subtitles"));
 	Toolbar->AddSeparator();
 
 	// Video zoom controls
-	Toolbar->AddTool(Menu_Video_JumpTo,_("Jump To..."),wxBITMAP(jumpto_button),wxNullBitmap,wxITEM_NORMAL,_("Jump video to time/frame"));
-	Toolbar->AddTool(Menu_Video_Zoom_In,_("Zoom in"),wxBITMAP(zoom_in_button),wxNullBitmap,wxITEM_NORMAL,_("Zoom video in"));
-	Toolbar->AddTool(Menu_Video_Zoom_Out,_("Zoom out"),wxBITMAP(zoom_out_button),wxNullBitmap,wxITEM_NORMAL,_("Zoom video out"));
+	Toolbar->AddTool(Menu_Video_JumpTo,_("Jump To..."),wxBitmap(jumpto_button_xpm),wxNullBitmap,wxITEM_NORMAL,_("Jump video to time/frame"));
+	Toolbar->AddTool(Menu_Video_Zoom_In,_("Zoom in"),wxBitmap(zoom_in_button_xpm),wxNullBitmap,wxITEM_NORMAL,_("Zoom video in"));
+	Toolbar->AddTool(Menu_Video_Zoom_Out,_("Zoom out"),wxBitmap(zoom_out_button_xpm),wxNullBitmap,wxITEM_NORMAL,_("Zoom video out"));
 	wxArrayString choices;
 	for (int i=1;i<=16;i++) {
 		wxString toAdd = wxString::Format(_T("%i"),int(i*12.5));
@@ -256,45 +256,45 @@ void FrameMain::InitToolbar () {
 	Toolbar->AddSeparator();
 
 	// More video buttons
-	Toolbar->AddTool(Menu_Subs_Snap_Video_To_Start,_("Jump video to start"),wxBITMAP(video_to_substart),_("Jumps the video to the start frame of current subtitle"));
-	Toolbar->AddTool(Menu_Subs_Snap_Video_To_End,_("Jump video to end"),wxBITMAP(video_to_subend),_("Jumps the video to the end frame of current subtitle"));
-	Toolbar->AddTool(Menu_Subs_Snap_Start_To_Video,_("Snap start to video"),wxBITMAP(substart_to_video),_("Set start of selected subtitles to current video frame"));
-	Toolbar->AddTool(Menu_Subs_Snap_End_To_Video,_("Snap end to video"),wxBITMAP(subend_to_video),_("Set end of selected subtitles to current video frame"));
-	Toolbar->AddTool(Menu_Video_Select_Visible,_("Select visible"),wxBITMAP(select_visible_button),_("Selects all lines that are currently visible on video frame"));
-	Toolbar->AddTool(Menu_Video_Snap_To_Scene,_("Snap subtitles to scene"),wxBITMAP(snap_subs_to_scene),_("Snap selected subtitles so they match current scene start/end"));
-	Toolbar->AddTool(Menu_Video_Shift_To_Frame,_("Shift subtitles to frame"),wxBITMAP(shift_to_frame),_("Shift selected subtitles so first selected starts at this frame"));
+	Toolbar->AddTool(Menu_Subs_Snap_Video_To_Start,_("Jump video to start"),wxBitmap(video_to_substart_xpm),_("Jumps the video to the start frame of current subtitle"));
+	Toolbar->AddTool(Menu_Subs_Snap_Video_To_End,_("Jump video to end"),wxBitmap(video_to_subend_xpm),_("Jumps the video to the end frame of current subtitle"));
+	Toolbar->AddTool(Menu_Subs_Snap_Start_To_Video,_("Snap start to video"),wxBitmap(substart_to_video_xpm),_("Set start of selected subtitles to current video frame"));
+	Toolbar->AddTool(Menu_Subs_Snap_End_To_Video,_("Snap end to video"),wxBitmap(subend_to_video_xpm),_("Set end of selected subtitles to current video frame"));
+	Toolbar->AddTool(Menu_Video_Select_Visible,_("Select visible"),wxBitmap(select_visible_button_xpm),_("Selects all lines that are currently visible on video frame"));
+	Toolbar->AddTool(Menu_Video_Snap_To_Scene,_("Snap subtitles to scene"),wxBitmap(snap_subs_to_scene_xpm),_("Snap selected subtitles so they match current scene start/end"));
+	Toolbar->AddTool(Menu_Video_Shift_To_Frame,_("Shift subtitles to frame"),wxBitmap(shift_to_frame_xpm),_("Shift selected subtitles so first selected starts at this frame"));
 	Toolbar->AddSeparator();
 
 	// Property stuff
-	Toolbar->AddTool(Menu_Tools_Styles_Manager,_("Styles Manager"),wxBITMAP(style_toolbutton),_("Open Styles Manager"));
-	Toolbar->AddTool(Menu_Tools_Properties,_("Properties"),wxBITMAP(properties_toolbutton),_("Open Properties"));
-	Toolbar->AddTool(Menu_Tools_Attachments,_("Attachments"),wxBITMAP(attach_button),_("Open Attachment List"));
-	Toolbar->AddTool(Menu_Tools_Fonts_Collector,_("Fonts Collector"),wxBITMAP(font_collector_button),_("Open Fonts Collector"));
+	Toolbar->AddTool(Menu_Tools_Styles_Manager,_("Styles Manager"),wxBitmap(style_toolbutton_xpm),_("Open Styles Manager"));
+	Toolbar->AddTool(Menu_Tools_Properties,_("Properties"),wxBitmap(properties_toolbutton_xpm),_("Open Properties"));
+	Toolbar->AddTool(Menu_Tools_Attachments,_("Attachments"),wxBitmap(attach_button_xpm),_("Open Attachment List"));
+	Toolbar->AddTool(Menu_Tools_Fonts_Collector,_("Fonts Collector"),wxBitmap(font_collector_button_xpm),_("Open Fonts Collector"));
 	Toolbar->AddSeparator();
 
 	// Automation
 #ifdef WITH_AUTOMATION
-	Toolbar->AddTool(Menu_Tools_Automation,_("Automation"),wxBITMAP(automation_toolbutton),_("Open Automation manager"));
+	Toolbar->AddTool(Menu_Tools_Automation,_("Automation"),wxBitmap(automation_toolbutton_xpm),_("Open Automation manager"));
 	Toolbar->AddSeparator();
 #endif
 
 	// Tools
 	if (HasASSDraw()) {
-		Toolbar->AddTool(Menu_Tools_ASSDraw,_T("ASSDraw3"),wxBITMAP(assdraw),_("Launches ai-chan's \"ASSDraw3\" tool for vector drawing."));
+		Toolbar->AddTool(Menu_Tools_ASSDraw,_T("ASSDraw3"),wxBitmap(assdraw_xpm),_("Launches ai-chan's \"ASSDraw3\" tool for vector drawing."));
 		Toolbar->AddSeparator();
 	}
-	Toolbar->AddTool(Menu_Edit_Shift,_("Shift Times"),wxBITMAP(shift_times_toolbutton),_("Open Shift Times Dialogue"));
-	Toolbar->AddTool(Menu_Tools_Styling,_("Styling Assistant"),wxBITMAP(styling_toolbutton),_("Open Styling Assistant"));
-	Toolbar->AddTool(Menu_Tools_Translation,_("Translation Assistant"),wxBITMAP(translation_toolbutton),_("Open Translation Assistant"));
-	Toolbar->AddTool(Menu_Tools_Resample,_("Resample"),wxBITMAP(resample_toolbutton),_("Resample Script Resolution"));
-	Toolbar->AddTool(Menu_Tools_Timing_Processor,_("Timing Post-Processor"),wxBITMAP(timing_processor_toolbutton),_("Open Timing Post-processor dialog"));
-	Toolbar->AddTool(Menu_Tools_Kanji_Timer,_("Kanji Timer"),wxBITMAP(kanji_timer_button),_("Open Kanji Timer dialog"));
-	Toolbar->AddTool(Menu_Tools_SpellCheck,_("Spell Checker"),wxBITMAP(spellcheck_toolbutton),_("Open Spell checker"));
+	Toolbar->AddTool(Menu_Edit_Shift,_("Shift Times"),wxBitmap(shift_times_toolbutton_xpm),_("Open Shift Times Dialogue"));
+	Toolbar->AddTool(Menu_Tools_Styling,_("Styling Assistant"),wxBitmap(styling_toolbutton_xpm),_("Open Styling Assistant"));
+	Toolbar->AddTool(Menu_Tools_Translation,_("Translation Assistant"),wxBitmap(translation_toolbutton_xpm),_("Open Translation Assistant"));
+	Toolbar->AddTool(Menu_Tools_Resample,_("Resample"),wxBitmap(resample_toolbutton_xpm),_("Resample Script Resolution"));
+	Toolbar->AddTool(Menu_Tools_Timing_Processor,_("Timing Post-Processor"),wxBitmap(timing_processor_toolbutton_xpm),_("Open Timing Post-processor dialog"));
+	Toolbar->AddTool(Menu_Tools_Kanji_Timer,_("Kanji Timer"),wxBitmap(kanji_timer_button_xpm),_("Open Kanji Timer dialog"));
+	Toolbar->AddTool(Menu_Tools_SpellCheck,_("Spell Checker"),wxBitmap(spellcheck_toolbutton_xpm),_("Open Spell checker"));
 	Toolbar->AddSeparator();
 
 	// Options
-	Toolbar->AddTool(Menu_Tools_Options,_("Options"),wxBITMAP(options_button),_("Configure Aegisub"));
-	Toolbar->AddTool(Grid_Toggle_Tags,_("Cycle Tag Hidding Mode"),wxBITMAP(toggle_tag_hiding),_("Cycle through tag-hiding modes"));
+	Toolbar->AddTool(Menu_Tools_Options,_("Options"),wxBitmap(options_button_xpm),_("Configure Aegisub"));
+	Toolbar->AddTool(Grid_Toggle_Tags,_("Cycle Tag Hidding Mode"),wxBitmap(toggle_tag_hiding_xpm),_("Cycle through tag-hiding modes"));
 
 	// Update
 	Toolbar->Realize();
@@ -334,43 +334,43 @@ void FrameMain::InitMenu() {
 
 	// Create file menu
 	fileMenu = new wxMenu();
-	AppendBitmapMenuItem(fileMenu,Menu_File_New_Subtitles, MakeHotkeyText(_("&New Subtitles"), _T("New Subtitles")), _("New subtitles"),wxBITMAP(new_toolbutton));
-	AppendBitmapMenuItem(fileMenu,Menu_File_Open_Subtitles, MakeHotkeyText(_("&Open Subtitles..."), _T("Open Subtitles")), _("Opens a subtitles file"),wxBITMAP(open_toolbutton));
-	AppendBitmapMenuItem(fileMenu,Menu_File_Open_Subtitles_Charset, _("&Open Subtitles with Charset..."), _("Opens a subtitles file with a specific charset"),wxBITMAP(open_with_toolbutton));
-	AppendBitmapMenuItem(fileMenu,Menu_File_Save_Subtitles, MakeHotkeyText(_("&Save Subtitles"), _T("Save Subtitles")), _("Saves subtitles"),wxBITMAP(save_toolbutton));
-	AppendBitmapMenuItem(fileMenu,Menu_File_Save_Subtitles_As, _("Save Subtitles as..."), _("Saves subtitles with another name"), wxBITMAP(save_as_toolbutton));
-	AppendBitmapMenuItem(fileMenu,Menu_File_Export_Subtitles, _("Export Subtitles..."), _("Saves a copy of subtitles with processing applied to it."), wxBITMAP(blank_button));
+	AppendBitmapMenuItem(fileMenu,Menu_File_New_Subtitles, MakeHotkeyText(_("&New Subtitles"), _T("New Subtitles")), _("New subtitles"),wxBitmap(new_toolbutton_xpm));
+	AppendBitmapMenuItem(fileMenu,Menu_File_Open_Subtitles, MakeHotkeyText(_("&Open Subtitles..."), _T("Open Subtitles")), _("Opens a subtitles file"),wxBitmap(open_toolbutton_xpm));
+	AppendBitmapMenuItem(fileMenu,Menu_File_Open_Subtitles_Charset, _("&Open Subtitles with Charset..."), _("Opens a subtitles file with a specific charset"),wxBitmap(open_with_toolbutton_xpm));
+	AppendBitmapMenuItem(fileMenu,Menu_File_Save_Subtitles, MakeHotkeyText(_("&Save Subtitles"), _T("Save Subtitles")), _("Saves subtitles"),wxBitmap(save_toolbutton_xpm));
+	AppendBitmapMenuItem(fileMenu,Menu_File_Save_Subtitles_As, _("Save Subtitles as..."), _("Saves subtitles with another name"), wxBitmap(save_as_toolbutton_xpm));
+	AppendBitmapMenuItem(fileMenu,Menu_File_Export_Subtitles, _("Export Subtitles..."), _("Saves a copy of subtitles with processing applied to it."), wxBitmap(blank_button_xpm));
 	wxMenuItem *RecentParent = new wxMenuItem(fileMenu, Menu_File_Recent_Subs_Parent, _("Recent"), _T(""), wxITEM_NORMAL, RecentSubs);
 #ifndef __APPLE__
-	RecentParent->SetBitmap(wxBITMAP(blank_button));
+	RecentParent->SetBitmap(wxBitmap(blank_button_xpm));
 #endif
 	fileMenu->Append(RecentParent);
 	fileMenu->AppendSeparator();
-	AppendBitmapMenuItem (fileMenu,Menu_Tools_Properties, _("&Properties..."), _("Open script properties window"),wxBITMAP(properties_toolbutton));
-	AppendBitmapMenuItem (fileMenu,Menu_Tools_Attachments, _("&Attachments..."), _("Open the attachment list"), wxBITMAP(attach_button));
-	AppendBitmapMenuItem (fileMenu,Menu_Tools_Fonts_Collector, _("&Fonts Collector..."),_("Open fonts collector"), wxBITMAP(font_collector_button));
+	AppendBitmapMenuItem (fileMenu,Menu_Tools_Properties, _("&Properties..."), _("Open script properties window"),wxBitmap(properties_toolbutton_xpm));
+	AppendBitmapMenuItem (fileMenu,Menu_Tools_Attachments, _("&Attachments..."), _("Open the attachment list"), wxBitmap(attach_button_xpm));
+	AppendBitmapMenuItem (fileMenu,Menu_Tools_Fonts_Collector, _("&Fonts Collector..."),_("Open fonts collector"), wxBitmap(font_collector_button_xpm));
 	fileMenu->AppendSeparator();
 #ifndef __APPLE__
 	// Doesn't work on Mac, only one instance is ever allowed there from OS side
-	AppendBitmapMenuItem(fileMenu,Menu_File_New_Window, _("New Window"), _("Open a new application window"),wxBITMAP(blank_button));
+	AppendBitmapMenuItem(fileMenu,Menu_File_New_Window, _("New Window"), _("Open a new application window"),wxBitmap(blank_button_xpm));
 #endif
-	AppendBitmapMenuItem(fileMenu,Menu_File_Exit, MakeHotkeyText(_("E&xit"), _T("Exit")), _("Exit the application"),wxBITMAP(exit_button));
+	AppendBitmapMenuItem(fileMenu,Menu_File_Exit, MakeHotkeyText(_("E&xit"), _T("Exit")), _("Exit the application"),wxBitmap(exit_button_xpm));
 	MenuBar->Append(fileMenu, _("&File"));
 
 	// Create Edit menu
 	// NOTE: Undo and Redo are actually controlled in frame_main_events, OnMenuOpen(). They will always be the first two items.
 	editMenu = new wxMenu();
-	AppendBitmapMenuItem(editMenu,Menu_Edit_Undo, MakeHotkeyText(_("&Undo"), _T("Undo")), _("Undoes last action"),wxBITMAP(undo_button));
-	AppendBitmapMenuItem(editMenu,Menu_Edit_Redo, MakeHotkeyText(_("&Redo"), _T("Redo")), _("Redoes last action"),wxBITMAP(redo_button));
+	AppendBitmapMenuItem(editMenu,Menu_Edit_Undo, MakeHotkeyText(_("&Undo"), _T("Undo")), _("Undoes last action"),wxBitmap(undo_button_xpm));
+	AppendBitmapMenuItem(editMenu,Menu_Edit_Redo, MakeHotkeyText(_("&Redo"), _T("Redo")), _("Redoes last action"),wxBitmap(redo_button_xpm));
 	editMenu->AppendSeparator();
-	AppendBitmapMenuItem(editMenu,Menu_Edit_Cut, MakeHotkeyText(_("Cut Lines"), _T("Cut")), _("Cut subtitles"), wxBITMAP(cut_button));
-	AppendBitmapMenuItem(editMenu,Menu_Edit_Copy, MakeHotkeyText(_("Copy Lines"), _T("Copy")), _("Copy subtitles"), wxBITMAP(copy_button));
-	AppendBitmapMenuItem(editMenu,Menu_Edit_Paste, MakeHotkeyText(_("Paste Lines"), _T("Paste")), _("Paste subtitles"), wxBITMAP(paste_button));
-	AppendBitmapMenuItem(editMenu,Menu_Edit_Paste_Over, MakeHotkeyText(_("Paste Lines Over..."), _T("Paste Over")) , _("Paste subtitles over others"),wxBITMAP(paste_over_button));
+	AppendBitmapMenuItem(editMenu,Menu_Edit_Cut, MakeHotkeyText(_("Cut Lines"), _T("Cut")), _("Cut subtitles"), wxBitmap(cut_button_xpm));
+	AppendBitmapMenuItem(editMenu,Menu_Edit_Copy, MakeHotkeyText(_("Copy Lines"), _T("Copy")), _("Copy subtitles"), wxBitmap(copy_button_xpm));
+	AppendBitmapMenuItem(editMenu,Menu_Edit_Paste, MakeHotkeyText(_("Paste Lines"), _T("Paste")), _("Paste subtitles"), wxBitmap(paste_button_xpm));
+	AppendBitmapMenuItem(editMenu,Menu_Edit_Paste_Over, MakeHotkeyText(_("Paste Lines Over..."), _T("Paste Over")) , _("Paste subtitles over others"),wxBitmap(paste_over_button_xpm));
 	editMenu->AppendSeparator();
-	AppendBitmapMenuItem(editMenu,Menu_Edit_Find, MakeHotkeyText(_("&Find..."), _T("Find")), _("Find words in subtitles"),wxBITMAP(find_button));
-	AppendBitmapMenuItem(editMenu,Menu_Edit_Find_Next, MakeHotkeyText(_("Find Next"), _T("Find Next")), _("Find next match of last word"),wxBITMAP(find_next_button));
-	AppendBitmapMenuItem(editMenu,Menu_Edit_Replace, MakeHotkeyText(_("Search and &Replace..."), _T("Replace")) , _("Find and replace words in subtitles"),wxBITMAP(replace_button));
+	AppendBitmapMenuItem(editMenu,Menu_Edit_Find, MakeHotkeyText(_("&Find..."), _T("Find")), _("Find words in subtitles"),wxBitmap(find_button_xpm));
+	AppendBitmapMenuItem(editMenu,Menu_Edit_Find_Next, MakeHotkeyText(_("Find Next"), _T("Find Next")), _("Find next match of last word"),wxBitmap(find_next_button_xpm));
+	AppendBitmapMenuItem(editMenu,Menu_Edit_Replace, MakeHotkeyText(_("Search and &Replace..."), _T("Replace")) , _("Find and replace words in subtitles"),wxBitmap(replace_button_xpm));
 	MenuBar->Append(editMenu, _("&Edit"));
 
 	// Create subtitles menu
@@ -378,62 +378,62 @@ void FrameMain::InitMenu() {
 	wxMenu *InsertMenu = new wxMenu;
 	wxMenuItem *InsertParent = new wxMenuItem(subtitlesMenu,Menu_Subtitles_Insert,_("&Insert Lines"),_T(""),wxITEM_NORMAL,InsertMenu);
 #ifndef __APPLE__
-	InsertParent->SetBitmap(wxBITMAP(blank_button));
+	InsertParent->SetBitmap(wxBitmap(blank_button_xpm));
 #endif
-	AppendBitmapMenuItem (subtitlesMenu,Menu_Tools_Styles_Manager, _("&Styles Manager..."), _("Open styles manager"), wxBITMAP(style_toolbutton));
-	AppendBitmapMenuItem (subtitlesMenu,Menu_Tools_Styling, _("St&yling Assistant..."), _("Open styling assistant"), wxBITMAP(styling_toolbutton));
-	AppendBitmapMenuItem (subtitlesMenu,Menu_Tools_Translation, _("&Translation Assistant..."),_("Open translation assistant"), wxBITMAP(translation_toolbutton));
-	AppendBitmapMenuItem (subtitlesMenu,Menu_Tools_Resample,_("Resample Resolution..."), _("Changes resolution and modifies subtitles to conform to change"), wxBITMAP(resample_toolbutton));
-	AppendBitmapMenuItem (subtitlesMenu,Menu_Tools_SpellCheck, _("Spe&ll Checker..."),_("Open spell checker"), wxBITMAP(spellcheck_toolbutton));
+	AppendBitmapMenuItem (subtitlesMenu,Menu_Tools_Styles_Manager, _("&Styles Manager..."), _("Open styles manager"), wxBitmap(style_toolbutton_xpm));
+	AppendBitmapMenuItem (subtitlesMenu,Menu_Tools_Styling, _("St&yling Assistant..."), _("Open styling assistant"), wxBitmap(styling_toolbutton_xpm));
+	AppendBitmapMenuItem (subtitlesMenu,Menu_Tools_Translation, _("&Translation Assistant..."),_("Open translation assistant"), wxBitmap(translation_toolbutton_xpm));
+	AppendBitmapMenuItem (subtitlesMenu,Menu_Tools_Resample,_("Resample Resolution..."), _("Changes resolution and modifies subtitles to conform to change"), wxBitmap(resample_toolbutton_xpm));
+	AppendBitmapMenuItem (subtitlesMenu,Menu_Tools_SpellCheck, _("Spe&ll Checker..."),_("Open spell checker"), wxBitmap(spellcheck_toolbutton_xpm));
 	if (HasASSDraw()) {
 		subtitlesMenu->AppendSeparator();
-		AppendBitmapMenuItem (subtitlesMenu,Menu_Tools_ASSDraw,_T("ASSDraw3..."),_("Launches ai-chan's \"ASSDraw3\" tool for vector drawing."), wxBITMAP(assdraw));
+		AppendBitmapMenuItem (subtitlesMenu,Menu_Tools_ASSDraw,_T("ASSDraw3..."),_("Launches ai-chan's \"ASSDraw3\" tool for vector drawing."), wxBitmap(assdraw_xpm));
 	}
 	subtitlesMenu->AppendSeparator();
-	AppendBitmapMenuItem(InsertMenu,MENU_INSERT_BEFORE,_("&Before Current"),_("Inserts a line before current"),wxBITMAP(blank_button));
-	AppendBitmapMenuItem(InsertMenu,MENU_INSERT_AFTER,_("&After Current"),_("Inserts a line after current"),wxBITMAP(blank_button));
-	AppendBitmapMenuItem(InsertMenu,MENU_INSERT_BEFORE_VIDEO,_("Before Current, at Video Time"),_("Inserts a line before current, starting at video time"),wxBITMAP(blank_button));
-	AppendBitmapMenuItem(InsertMenu,MENU_INSERT_AFTER_VIDEO,_("After Current, at Video Time"),_("Inserts a line after current, starting at video time"),wxBITMAP(blank_button));
+	AppendBitmapMenuItem(InsertMenu,MENU_INSERT_BEFORE,_("&Before Current"),_("Inserts a line before current"),wxBitmap(blank_button_xpm));
+	AppendBitmapMenuItem(InsertMenu,MENU_INSERT_AFTER,_("&After Current"),_("Inserts a line after current"),wxBitmap(blank_button_xpm));
+	AppendBitmapMenuItem(InsertMenu,MENU_INSERT_BEFORE_VIDEO,_("Before Current, at Video Time"),_("Inserts a line before current, starting at video time"),wxBitmap(blank_button_xpm));
+	AppendBitmapMenuItem(InsertMenu,MENU_INSERT_AFTER_VIDEO,_("After Current, at Video Time"),_("Inserts a line after current, starting at video time"),wxBitmap(blank_button_xpm));
 	subtitlesMenu->Append(InsertParent);
-	AppendBitmapMenuItem(subtitlesMenu,MENU_DUPLICATE,MakeHotkeyText(_("&Duplicate Lines"), _T("Grid duplicate rows")),_("Duplicate the selected lines"),wxBITMAP(blank_button));
-	AppendBitmapMenuItem(subtitlesMenu,MENU_DUPLICATE_NEXT_FRAME,MakeHotkeyText(_("&Duplicate and Shift by 1 Frame"), _T("Grid duplicate and shift one frame")),_("Duplicate lines and shift by one frame"),wxBITMAP(blank_button));
-	AppendBitmapMenuItem(subtitlesMenu,MENU_DELETE,MakeHotkeyText(_("Delete Lines"), _T("Grid delete rows")),_("Delete currently selected lines"),wxBITMAP(delete_button));
+	AppendBitmapMenuItem(subtitlesMenu,MENU_DUPLICATE,MakeHotkeyText(_("&Duplicate Lines"), _T("Grid duplicate rows")),_("Duplicate the selected lines"),wxBitmap(blank_button_xpm));
+	AppendBitmapMenuItem(subtitlesMenu,MENU_DUPLICATE_NEXT_FRAME,MakeHotkeyText(_("&Duplicate and Shift by 1 Frame"), _T("Grid duplicate and shift one frame")),_("Duplicate lines and shift by one frame"),wxBitmap(blank_button_xpm));
+	AppendBitmapMenuItem(subtitlesMenu,MENU_DELETE,MakeHotkeyText(_("Delete Lines"), _T("Grid delete rows")),_("Delete currently selected lines"),wxBitmap(delete_button_xpm));
 	subtitlesMenu->AppendSeparator();
 	wxMenu *JoinMenu = new wxMenu;
 	wxMenuItem *JoinParent = new wxMenuItem(subtitlesMenu,Menu_Subtitles_Join,_("Join Lines"),_T(""),wxITEM_NORMAL,JoinMenu);
 #ifndef __APPLE__
-	JoinParent->SetBitmap(wxBITMAP(blank_button));
+	JoinParent->SetBitmap(wxBitmap(blank_button_xpm));
 #endif
-	AppendBitmapMenuItem(JoinMenu,MENU_JOIN_CONCAT,_("&Concatenate"),_("Joins selected lines in a single one, concatenating text together"),wxBITMAP(blank_button));
-	AppendBitmapMenuItem(JoinMenu,MENU_JOIN_REPLACE,_("Keep &First"),_("Joins selected lines in a single one, keeping text of first and discarding remaining"),wxBITMAP(blank_button));
-	AppendBitmapMenuItem(JoinMenu,MENU_JOIN_AS_KARAOKE,_("As &Karaoke"),_("Joins selected lines in a single one, as karaoke"),wxBITMAP(blank_button));
+	AppendBitmapMenuItem(JoinMenu,MENU_JOIN_CONCAT,_("&Concatenate"),_("Joins selected lines in a single one, concatenating text together"),wxBitmap(blank_button_xpm));
+	AppendBitmapMenuItem(JoinMenu,MENU_JOIN_REPLACE,_("Keep &First"),_("Joins selected lines in a single one, keeping text of first and discarding remaining"),wxBitmap(blank_button_xpm));
+	AppendBitmapMenuItem(JoinMenu,MENU_JOIN_AS_KARAOKE,_("As &Karaoke"),_("Joins selected lines in a single one, as karaoke"),wxBitmap(blank_button_xpm));
 	subtitlesMenu->Append(JoinParent);
-	AppendBitmapMenuItem(subtitlesMenu,MENU_RECOMBINE,_("Recombine Lines"),_("Recombine subtitles when they have been split and merged"),wxBITMAP(blank_button));
-	AppendBitmapMenuItem(subtitlesMenu,MENU_SPLIT_BY_KARAOKE,_("Split Lines (by karaoke)"),_("Uses karaoke timing to split line into multiple smaller lines"),wxBITMAP(blank_button));
+	AppendBitmapMenuItem(subtitlesMenu,MENU_RECOMBINE,_("Recombine Lines"),_("Recombine subtitles when they have been split and merged"),wxBitmap(blank_button_xpm));
+	AppendBitmapMenuItem(subtitlesMenu,MENU_SPLIT_BY_KARAOKE,_("Split Lines (by karaoke)"),_("Uses karaoke timing to split line into multiple smaller lines"),wxBitmap(blank_button_xpm));
 	subtitlesMenu->AppendSeparator();
-	AppendBitmapMenuItem(subtitlesMenu,MENU_SWAP,_("Swap Lines"),_("Swaps the two selected lines"),wxBITMAP(arrow_sort));
-	AppendBitmapMenuItem (subtitlesMenu,Menu_Edit_Select, MakeHotkeyText(_("Select Lines..."), _T("Select lines")), _("Selects lines based on defined criterea"),wxBITMAP(select_lines_button));
+	AppendBitmapMenuItem(subtitlesMenu,MENU_SWAP,_("Swap Lines"),_("Swaps the two selected lines"),wxBitmap(arrow_sort_xpm));
+	AppendBitmapMenuItem (subtitlesMenu,Menu_Edit_Select, MakeHotkeyText(_("Select Lines..."), _T("Select lines")), _("Selects lines based on defined criterea"),wxBitmap(select_lines_button_xpm));
 	MenuBar->Append(subtitlesMenu, _("&Subtitles"));
 
 	// Create timing menu
 	timingMenu = new wxMenu();
-	AppendBitmapMenuItem(timingMenu,Menu_Edit_Shift, MakeHotkeyText(_("S&hift Times..."), _T("Shift times")), _("Shift subtitles by time or frames"),wxBITMAP(shift_times_toolbutton));
-	AppendBitmapMenuItem(timingMenu,Menu_Edit_Sort, _("Sort by Time"), _("Sort all subtitles by their start times"),wxBITMAP(sort_times_button));
-	AppendBitmapMenuItem(timingMenu,Menu_Tools_Timing_Processor,_("Timing Post-Processor..."), _("Runs a post-processor for timing to deal with lead-ins, lead-outs, scene timing and etc."), wxBITMAP(timing_processor_toolbutton));
-	AppendBitmapMenuItem (timingMenu,Menu_Tools_Kanji_Timer,_("Kanji Timer..."),_("Open Kanji timer"),wxBITMAP(kanji_timer_button));
+	AppendBitmapMenuItem(timingMenu,Menu_Edit_Shift, MakeHotkeyText(_("S&hift Times..."), _T("Shift times")), _("Shift subtitles by time or frames"),wxBitmap(shift_times_toolbutton_xpm));
+	AppendBitmapMenuItem(timingMenu,Menu_Edit_Sort, _("Sort by Time"), _("Sort all subtitles by their start times"),wxBitmap(sort_times_button_xpm));
+	AppendBitmapMenuItem(timingMenu,Menu_Tools_Timing_Processor,_("Timing Post-Processor..."), _("Runs a post-processor for timing to deal with lead-ins, lead-outs, scene timing and etc."), wxBitmap(timing_processor_toolbutton_xpm));
+	AppendBitmapMenuItem (timingMenu,Menu_Tools_Kanji_Timer,_("Kanji Timer..."),_("Open Kanji timer"),wxBitmap(kanji_timer_button_xpm));
 	timingMenu->AppendSeparator();
-	AppendBitmapMenuItem(timingMenu,Menu_Subs_Snap_Start_To_Video, MakeHotkeyText(_("Snap Start to Video"), _T("Set Start To Video")), _("Set start of selected subtitles to current video frame"), wxBITMAP(substart_to_video));
-	AppendBitmapMenuItem(timingMenu,Menu_Subs_Snap_End_To_Video, MakeHotkeyText(_("Snap End to Video"), _T("Set End to Video")), _("Set end of selected subtitles to current video frame"), wxBITMAP(subend_to_video));
-	AppendBitmapMenuItem(timingMenu,Menu_Video_Snap_To_Scene, MakeHotkeyText(_("Snap to Scene"), _T("Snap to Scene")), _("Set start and end of subtitles to the keyframes around current video frame"), wxBITMAP(snap_subs_to_scene));
-	AppendBitmapMenuItem(timingMenu,Menu_Video_Shift_To_Frame, MakeHotkeyText(_("Shift to Current Frame"), _T("Shift by Current Time")), _("Shift selection so first selected line starts at current frame"), wxBITMAP(shift_to_frame));
+	AppendBitmapMenuItem(timingMenu,Menu_Subs_Snap_Start_To_Video, MakeHotkeyText(_("Snap Start to Video"), _T("Set Start To Video")), _("Set start of selected subtitles to current video frame"), wxBitmap(substart_to_video_xpm));
+	AppendBitmapMenuItem(timingMenu,Menu_Subs_Snap_End_To_Video, MakeHotkeyText(_("Snap End to Video"), _T("Set End to Video")), _("Set end of selected subtitles to current video frame"), wxBitmap(subend_to_video_xpm));
+	AppendBitmapMenuItem(timingMenu,Menu_Video_Snap_To_Scene, MakeHotkeyText(_("Snap to Scene"), _T("Snap to Scene")), _("Set start and end of subtitles to the keyframes around current video frame"), wxBitmap(snap_subs_to_scene_xpm));
+	AppendBitmapMenuItem(timingMenu,Menu_Video_Shift_To_Frame, MakeHotkeyText(_("Shift to Current Frame"), _T("Shift by Current Time")), _("Shift selection so first selected line starts at current frame"), wxBitmap(shift_to_frame_xpm));
 	timingMenu->AppendSeparator();
 	wxMenu *ContinuousMenu = new wxMenu;
 	wxMenuItem *ContinuousParent = new wxMenuItem(subtitlesMenu,-1,_("Make Times Continuous"),_T(""),wxITEM_NORMAL,ContinuousMenu);
 #ifndef __APPLE__
-	ContinuousParent->SetBitmap(wxBITMAP(blank_button));
+	ContinuousParent->SetBitmap(wxBitmap(blank_button_xpm));
 #endif
-	AppendBitmapMenuItem(ContinuousMenu,MENU_ADJOIN,_("Change &Start"),_("Changes times of subs so start times begin on previous's end time"),wxBITMAP(blank_button));
-	AppendBitmapMenuItem(ContinuousMenu,MENU_ADJOIN2,_("Change &End"),_("Changes times of subs so end times begin on next's start time"),wxBITMAP(blank_button));
+	AppendBitmapMenuItem(ContinuousMenu,MENU_ADJOIN,_("Change &Start"),_("Changes times of subs so start times begin on previous's end time"),wxBitmap(blank_button_xpm));
+	AppendBitmapMenuItem(ContinuousMenu,MENU_ADJOIN2,_("Change &End"),_("Changes times of subs so end times begin on next's start time"),wxBitmap(blank_button_xpm));
 	timingMenu->Append(ContinuousParent);
 	MenuBar->Append(timingMenu, _("&Timing"));
 
@@ -462,7 +462,7 @@ void FrameMain::InitMenu() {
 	wxMenu *ZoomMenu = new wxMenu;
 	wxMenuItem *ZoomParent = new wxMenuItem(subtitlesMenu,Menu_View_Zoom,_("Set Zoom"),_T(""),wxITEM_NORMAL,ZoomMenu);
 #ifndef __APPLE__
-	ZoomParent->SetBitmap(wxBITMAP(blank_button));
+	ZoomParent->SetBitmap(wxBitmap(blank_button_xpm));
 #endif
 	ZoomMenu->Append(Menu_View_Zoom_50, MakeHotkeyText(_T("&50%"), _T("Zoom 50%")), _("Set zoom to 50%"));
 	ZoomMenu->Append(Menu_View_Zoom_100, MakeHotkeyText(_T("&100%"), _T("Zoom 100%")), _("Set zoom to 100%"));
@@ -471,7 +471,7 @@ void FrameMain::InitMenu() {
 	wxMenu *AspectMenu = new wxMenu;
 	wxMenuItem *AspectParent = new wxMenuItem(subtitlesMenu,Menu_Video_AR,_("Override Aspect Ratio"),_T(""),wxITEM_NORMAL,AspectMenu);
 #ifndef __APPLE__
-	AspectParent->SetBitmap(wxBITMAP(blank_button));
+	AspectParent->SetBitmap(wxBitmap(blank_button_xpm));
 #endif
 	AspectMenu->AppendCheckItem(Menu_Video_AR_Default, _("&Default"), _("Leave video on original aspect ratio"));
 	AspectMenu->AppendCheckItem(Menu_Video_AR_Full, _("&Fullscreen (4:3)"), _("Forces video to 4:3 aspect ratio"));
@@ -481,9 +481,9 @@ void FrameMain::InitMenu() {
 	videoMenu->Append(AspectParent);
 	videoMenu->AppendCheckItem(Menu_Video_Overscan, _("Show Overscan Mask"), _("Show a mask over the video, indicating areas that might get cropped off by overscan on televisions."));
 	videoMenu->AppendSeparator();
-	AppendBitmapMenuItem(videoMenu,Menu_Video_JumpTo, MakeHotkeyText(_("&Jump to..."), _T("Video Jump")), _("Jump to frame or time"), wxBITMAP(jumpto_button));
-	AppendBitmapMenuItem(videoMenu,Menu_Subs_Snap_Video_To_Start, MakeHotkeyText(_("Jump Video to Start"), _T("Jump Video To Start")), _("Jumps the video to the start frame of current subtitle"), wxBITMAP(video_to_substart));
-	AppendBitmapMenuItem(videoMenu,Menu_Subs_Snap_Video_To_End, MakeHotkeyText(_("Jump Video to End"), _T("Jump Video To End")), _("Jumps the video to the end frame of current subtitle"), wxBITMAP(video_to_subend));
+	AppendBitmapMenuItem(videoMenu,Menu_Video_JumpTo, MakeHotkeyText(_("&Jump to..."), _T("Video Jump")), _("Jump to frame or time"), wxBitmap(jumpto_button_xpm));
+	AppendBitmapMenuItem(videoMenu,Menu_Subs_Snap_Video_To_Start, MakeHotkeyText(_("Jump Video to Start"), _T("Jump Video To Start")), _("Jumps the video to the start frame of current subtitle"), wxBitmap(video_to_substart_xpm));
+	AppendBitmapMenuItem(videoMenu,Menu_Subs_Snap_Video_To_End, MakeHotkeyText(_("Jump Video to End"), _T("Jump Video To End")), _("Jumps the video to the end frame of current subtitle"), wxBitmap(video_to_subend_xpm));
 	MenuBar->Append(videoMenu, _("&Video"));
 
 	// Create audio menu
@@ -503,20 +503,20 @@ void FrameMain::InitMenu() {
 	// Create Automation menu
 #ifdef WITH_AUTOMATION
 	automationMenu = new wxMenu();
-	AppendBitmapMenuItem (automationMenu,Menu_Tools_Automation, _("&Automation..."),_("Open automation manager"), wxBITMAP(automation_toolbutton));
+	AppendBitmapMenuItem (automationMenu,Menu_Tools_Automation, _("&Automation..."),_("Open automation manager"), wxBitmap(automation_toolbutton_xpm));
 	automationMenu->AppendSeparator();
 	MenuBar->Append(automationMenu, _("&Automation"));
 #endif
 
 	// Create view menu
 	viewMenu = new wxMenu();
-	AppendBitmapMenuItem(viewMenu,Menu_View_Language, _T("&Language..."), _("Select Aegisub interface language"), wxBITMAP(blank_button));
-	AppendBitmapMenuItem(viewMenu,Menu_Tools_Options, MakeHotkeyText(_("&Options..."), _T("Options")), _("Configure Aegisub"), wxBITMAP(options_button));
+	AppendBitmapMenuItem(viewMenu,Menu_View_Language, _T("&Language..."), _("Select Aegisub interface language"), wxBitmap(blank_button_xpm));
+	AppendBitmapMenuItem(viewMenu,Menu_Tools_Options, MakeHotkeyText(_("&Options..."), _T("Options")), _("Configure Aegisub"), wxBitmap(options_button_xpm));
 #ifdef WIN32
-	AppendBitmapMenuItem(viewMenu,Menu_View_Associations, _("&Associations..."), _("Associate file types with Aegisub"), wxBITMAP(blank_button));
+	AppendBitmapMenuItem(viewMenu,Menu_View_Associations, _("&Associations..."), _("Associate file types with Aegisub"), wxBitmap(blank_button_xpm));
 #endif
 #ifdef __WXDEBUG__
-	AppendBitmapMenuItem(viewMenu,Menu_Tools_Log, _("Lo&g Window..."), _("Open log window"), wxBITMAP(blank_button));
+	AppendBitmapMenuItem(viewMenu,Menu_Tools_Log, _("Lo&g Window..."), _("Open log window"), wxBitmap(blank_button_xpm));
 #endif
 	viewMenu->AppendSeparator();
 	viewMenu->AppendRadioItem(Menu_View_Subs, _("Subs Only View"), _("Display subtitles only"));
@@ -527,19 +527,19 @@ void FrameMain::InitMenu() {
 
 	// Create help menu
 	helpMenu = new wxMenu();
-	AppendBitmapMenuItem (helpMenu,Menu_Help_Contents, MakeHotkeyText(_("&Contents..."), _T("Help")), _("Help topics"), wxBITMAP(contents_button));
+	AppendBitmapMenuItem (helpMenu,Menu_Help_Contents, MakeHotkeyText(_("&Contents..."), _T("Help")), _("Help topics"), wxBitmap(contents_button_xpm));
 	helpMenu->AppendSeparator();
-	AppendBitmapMenuItem(helpMenu,Menu_Help_Website, _("&Website..."), _("Visit Aegisub's official website"),wxBITMAP(website_button));
-	AppendBitmapMenuItem(helpMenu,Menu_Help_Forums, _("&Forums..."), _("Visit Aegisub's forums"),wxBITMAP(forums_button));
-	AppendBitmapMenuItem(helpMenu,Menu_Help_BugTracker, _("&Bug Tracker..."), _("Visit Aegisub's bug tracker to report bugs and request new features"),wxBITMAP(bugtracker_button));
-	AppendBitmapMenuItem (helpMenu,Menu_Help_IRCChannel, _("&IRC Channel..."), _("Visit Aegisub's official IRC channel"), wxBITMAP(irc_button));
+	AppendBitmapMenuItem(helpMenu,Menu_Help_Website, _("&Website..."), _("Visit Aegisub's official website"),wxBitmap(website_button_xpm));
+	AppendBitmapMenuItem(helpMenu,Menu_Help_Forums, _("&Forums..."), _("Visit Aegisub's forums"),wxBitmap(forums_button_xpm));
+	AppendBitmapMenuItem(helpMenu,Menu_Help_BugTracker, _("&Bug Tracker..."), _("Visit Aegisub's bug tracker to report bugs and request new features"),wxBitmap(bugtracker_button_xpm));
+	AppendBitmapMenuItem (helpMenu,Menu_Help_IRCChannel, _("&IRC Channel..."), _("Visit Aegisub's official IRC channel"), wxBitmap(irc_button_xpm));
 #ifndef __WXMAC__
 	helpMenu->AppendSeparator();
 #endif
 #ifdef __WXMSW__
-	AppendBitmapMenuItem(helpMenu,Menu_Help_Check_Updates, _("&Check for Updates..."), _("Check to see if there is a new version of Aegisub available"),wxBITMAP(blank_button));
+	AppendBitmapMenuItem(helpMenu,Menu_Help_Check_Updates, _("&Check for Updates..."), _("Check to see if there is a new version of Aegisub available"),wxBitmap(blank_button_xpm));
 #endif
-	AppendBitmapMenuItem(helpMenu,Menu_Help_About, _("&About..."), _("About Aegisub"),wxBITMAP(about_button));
+	AppendBitmapMenuItem(helpMenu,Menu_Help_About, _("&About..."), _("About Aegisub"),wxBitmap(about_button_xpm));
 	MenuBar->Append(helpMenu, _("&Help"));
 
 	// Set the bar as this frame's

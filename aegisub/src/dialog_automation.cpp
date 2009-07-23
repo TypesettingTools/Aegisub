@@ -54,7 +54,7 @@ DialogAutomation::DialogAutomation(wxWindow *parent, Automation4::ScriptManager 
 : wxDialog(parent, -1, _("Automation Manager"), wxDefaultPosition, wxDefaultSize)
 {
 	// Set icon
-	SetIcon(BitmapToIcon(wxBITMAP(automation_toolbutton)));
+	SetIcon(BitmapToIcon(wxBitmap(automation_toolbutton_xpm)));
 
 	local_manager = _local_manager;
 	global_manager = wxGetApp().global_scripts;

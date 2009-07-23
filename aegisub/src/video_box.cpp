@@ -75,13 +75,13 @@ VideoBox::VideoBox(wxWindow *parent, bool isDetached)
 	visualSubToolBar = new wxToolBar(videoPage,-1,wxDefaultPosition,wxDefaultSize,wxTB_HORIZONTAL | wxTB_BOTTOM | wxTB_FLAT);
 
 	// Buttons
-	wxBitmapButton *VideoPlayButton = new wxBitmapButton(videoPage,Video_Play,wxBITMAP(button_play),wxDefaultPosition,wxSize(25,-1));
+	wxBitmapButton *VideoPlayButton = new wxBitmapButton(videoPage,Video_Play,wxBitmap(button_play_xpm),wxDefaultPosition,wxSize(25,-1));
 	VideoPlayButton->SetToolTip(_("Play video starting on this position"));
-	wxBitmapButton *VideoPlayLineButton = new wxBitmapButton(videoPage,Video_Play_Line,wxBITMAP(button_playline),wxDefaultPosition,wxSize(25,-1));
+	wxBitmapButton *VideoPlayLineButton = new wxBitmapButton(videoPage,Video_Play_Line,wxBitmap(button_playline_xpm),wxDefaultPosition,wxSize(25,-1));
 	VideoPlayLineButton->SetToolTip(_("Play current line"));
-	wxBitmapButton *VideoStopButton = new wxBitmapButton(videoPage,Video_Stop,wxBITMAP(button_pause),wxDefaultPosition,wxSize(25,-1));
+	wxBitmapButton *VideoStopButton = new wxBitmapButton(videoPage,Video_Stop,wxBitmap(button_pause_xpm),wxDefaultPosition,wxSize(25,-1));
 	VideoStopButton->SetToolTip(_("Stop video playback"));
-	AutoScroll = new ToggleBitmap(videoPage,Video_Auto_Scroll,wxBITMAP(toggle_video_autoscroll),wxSize(30,-1));
+	AutoScroll = new ToggleBitmap(videoPage,Video_Auto_Scroll,wxBitmap(toggle_video_autoscroll_xpm),wxSize(30,-1));
 	AutoScroll->SetToolTip(_("Toggle autoscroll of video"));
 	AutoScroll->SetValue(Options.AsBool(_T("Sync video with subs")));
 
@@ -111,17 +111,17 @@ VideoBox::VideoBox(wxWindow *parent, bool isDetached)
 	
 	// Typesetting buttons
 	visualToolBar = new wxToolBar(videoPage,-1,wxDefaultPosition,wxDefaultSize,wxTB_VERTICAL|wxTB_FLAT|wxTB_NODIVIDER);
-	visualToolBar->AddTool(Video_Mode_Standard,_("Standard"),wxBITMAP(visual_standard),_("Standard mode, double click sets position."),wxITEM_RADIO);
-	visualToolBar->AddTool(Video_Mode_Drag,_("Drag"),wxBITMAP(visual_move),_("Drag subtitles."),wxITEM_RADIO);
-	visualToolBar->AddTool(Video_Mode_Rotate_Z,_("Rotate Z"),wxBITMAP(visual_rotatez),_("Rotate subtitles on their Z axis."),wxITEM_RADIO);
-	visualToolBar->AddTool(Video_Mode_Rotate_XY,_("Rotate XY"),wxBITMAP(visual_rotatexy),_("Rotate subtitles on their X and Y axes."),wxITEM_RADIO);
-	visualToolBar->AddTool(Video_Mode_Scale,_("Scale"),wxBITMAP(visual_scale),_("Scale subtitles on X and Y axes."),wxITEM_RADIO);
-	visualToolBar->AddTool(Video_Mode_Clip,_("Clip"),wxBITMAP(visual_clip),_("Clip subtitles to a rectangle."),wxITEM_RADIO);
-	visualToolBar->AddTool(Video_Mode_Vector_Clip,_("Vector Clip"),wxBITMAP(visual_vector_clip),_("Clip subtitles to a vectorial area."),wxITEM_RADIO);
+	visualToolBar->AddTool(Video_Mode_Standard,_("Standard"),wxBitmap(visual_standard_xpm),_("Standard mode, double click sets position."),wxITEM_RADIO);
+	visualToolBar->AddTool(Video_Mode_Drag,_("Drag"),wxBitmap(visual_move_xpm),_("Drag subtitles."),wxITEM_RADIO);
+	visualToolBar->AddTool(Video_Mode_Rotate_Z,_("Rotate Z"),wxBitmap(visual_rotatez_xpm),_("Rotate subtitles on their Z axis."),wxITEM_RADIO);
+	visualToolBar->AddTool(Video_Mode_Rotate_XY,_("Rotate XY"),wxBitmap(visual_rotatexy_xpm),_("Rotate subtitles on their X and Y axes."),wxITEM_RADIO);
+	visualToolBar->AddTool(Video_Mode_Scale,_("Scale"),wxBitmap(visual_scale_xpm),_("Scale subtitles on X and Y axes."),wxITEM_RADIO);
+	visualToolBar->AddTool(Video_Mode_Clip,_("Clip"),wxBitmap(visual_clip_xpm),_("Clip subtitles to a rectangle."),wxITEM_RADIO);
+	visualToolBar->AddTool(Video_Mode_Vector_Clip,_("Vector Clip"),wxBitmap(visual_vector_clip_xpm),_("Clip subtitles to a vectorial area."),wxITEM_RADIO);
 	visualToolBar->AddSeparator();
-	visualToolBar->AddTool(Video_Mode_Realtime,_("Realtime"),wxBITMAP(visual_realtime),_("Toggle realtime display of changes."),wxITEM_CHECK);
+	visualToolBar->AddTool(Video_Mode_Realtime,_("Realtime"),wxBitmap(visual_realtime_xpm),_("Toggle realtime display of changes."),wxITEM_CHECK);
 	visualToolBar->ToggleTool(Video_Mode_Realtime,Options.AsBool(_T("Video Visual Realtime")));
-	visualToolBar->AddTool(Video_Mode_Help,_("Help"),wxBITMAP(visual_help),_("Open the manual page for Visual Typesetting."));
+	visualToolBar->AddTool(Video_Mode_Help,_("Help"),wxBitmap(visual_help_xpm),_("Open the manual page for Visual Typesetting."));
 	visualToolBar->Realize();
 	// Avoid ugly themed background on Vista and possibly also Win7
 	visualToolBar->SetBackgroundStyle(wxBG_STYLE_COLOUR);

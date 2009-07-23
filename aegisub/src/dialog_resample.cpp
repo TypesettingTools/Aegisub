@@ -57,7 +57,7 @@ DialogResample::DialogResample(wxWindow *parent, SubtitlesGrid *_grid)
 : wxDialog (parent,-1,_("Resample resolution"),wxDefaultPosition)
 {
 	// Set icon
-	SetIcon(BitmapToIcon(wxBITMAP(resample_toolbutton)));
+	SetIcon(BitmapToIcon(wxBitmap(resample_toolbutton_xpm)));
 
 	// Variables
 	AssFile *subs = AssFile::top;
