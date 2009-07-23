@@ -1011,14 +1011,6 @@
 				RelativePath="..\..\src\vfr.h"
 				>
 			</File>
-			<File
-				RelativePath="..\..\src\VideoSink.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\VideoSink.h"
-				>
-			</File>
 		</Filter>
 		<Filter
 			Name="Dialogs"
@@ -1441,14 +1433,6 @@
 			</File>
 			<File
 				RelativePath="..\..\src\video_provider_cache.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\video_provider_dshow.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\video_provider_dshow.h"
 				>
 			</File>
 			<File
