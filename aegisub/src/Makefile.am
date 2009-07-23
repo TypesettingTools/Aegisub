@@ -120,9 +120,9 @@ else
 UNIVCHARSET = charset_detect.cpp text_file_reader.cpp
 endif
 
-if BUILD_DARWIN
-  BEVEL_BUTTON = osx_bevelButton.cpp
-endif
+#if BUILD_DARWIN
+#  BEVEL_BUTTON = osx_bevelButton.cpp
+#endif
 
 if FONTLISTER_FREETYPE
   FONT_LISTER = font_file_lister_freetype.cpp
