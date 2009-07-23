@@ -69,12 +69,6 @@ AboutScreen::AboutScreen(wxWindow *parent)
 #ifdef WITH_AUTO4_LUA
 	libString += _T("    Lua - Copyright (c) Lua.org, PUC-Rio;\n");
 #endif
-#ifdef WITH_PERL
-	libString += _T("    Perl - Copyright (c) Larry Wall et al;\n");
-#endif
-#ifdef WITH_RUBY
-	libString += _T("    Ruby - Copyright (c) Yukihiro Matsumoto et al;\n");
-#endif
 #ifdef WITH_HUNSPELL
 	libString += _T("    Hunspell - Copyright (c) Kevin Hendricks;\n");
 #endif

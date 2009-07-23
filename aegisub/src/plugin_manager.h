@@ -39,12 +39,6 @@
 #ifdef WITH_AUTO4_LUA
 #include "auto4_lua_factory.h"
 #endif
-#ifdef WITH_PERL
-#include "auto4_perl_factory.h"
-#endif
-#ifdef WITH_RUBY
-#include "auto4_ruby_factory.h"
-#endif
 
 
 ////////////////////////
@@ -55,12 +49,6 @@ private:
 
 #ifdef WITH_AUTO4_LUA
 	Automation4::LuaScriptFactory *lua;
-#endif
-#ifdef WITH_PERL
-	Automation4::PerlScriptFactory *perl;
-#endif
-#ifdef WITH_RUBY
-	Automation4::RubyScriptFactory *ruby;
 #endif
 
 public:

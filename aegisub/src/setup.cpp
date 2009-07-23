@@ -150,14 +150,6 @@
 #endif
 
 
-////////
-// Ruby
-#ifdef WITH_RUBY
-#pragma comment(lib,"ws2_32.lib")
-#pragma comment(lib,"msvcrt-ruby18-static.lib")
-#endif
-
-
 /////////////
 // FreeType2
 #ifdef WITH_FREETYPE2
@@ -177,13 +169,6 @@
 // Font Config
 #ifdef WITH_FONTCONFIG
 #pragma comment(lib,"libfontconfig.lib")
-#endif
-
-
-////////
-// Perl
-#ifdef WITH_PERL
-#pragma comment(lib,"perl510.lib")
 #endif
 
 

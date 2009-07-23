@@ -54,12 +54,6 @@ PluginManager::PluginManager() {
 #ifdef WITH_AUTO4_LUA
 	lua = NULL;
 #endif
-#ifdef WITH_PERL
-	perl = NULL;
-#endif
-#ifdef WITH_RUBY
-	ruby = NULL;
-#endif
 	
 }
 
@@ -80,20 +74,6 @@ PluginManager::~PluginManager() {
 		lua = NULL;
 	}
 #endif
-#ifdef WITH_PERL
-	if (perl) {
-		perl->Unregister(perl);
-		delete perl;
-		perl = NULL;
-	}
-#endif
-#ifdef WITH_RUBY
-	if (ruby) {
-		ruby->Unregister(ruby);
-		delete ruby;
-		ruby = NULL;
-	}
-#endif
 }
 
 
@@ -112,13 +92,6 @@ void PluginManager::RegisterBuiltInPlugins() {
 #ifdef WITH_AUTO4_LUA
 		lua = new Automation4::LuaScriptFactory();
 		lua->RegisterFactory();
-#endif
-#ifdef WITH_PERL
-		perl = new Automation4::PerlScriptFactory();
-		perl->RegisterFactory();
-#endif
-#ifdef WITH_RUBY
-		ruby = new Automation4::RubyScriptFactory();
 #endif
 	}
 
