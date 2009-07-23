@@ -112,18 +112,6 @@
 
 
 
-/////////////// LOW PRIORITY ////////////
-
-// Enable Perl scripting
-// Requires: perl library (ActivePerl comes with one for Visual C++ under lib\core\)
-//#define WITH_PERL
-
-// Enable PerlConsole (a debug tool for the perl engine)
-// You don't want it
-//#define WITH_PERLCONSOLE
-
-
-
 ///////////// NOT RECOMMENDED /////////////
 
 // Enable FontConfig
@@ -134,11 +122,6 @@
 // Enable libass
 // Requires: libass
 //#define WITH_LIBASS
-
-
-// Enable Ruby support for Automation
-// Requires: Ruby 1.9
-//#define WITH_RUBY
 
 
 // Enable PortAudio audio player

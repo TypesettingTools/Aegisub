@@ -563,62 +563,6 @@
 					>
 				</File>
 			</Filter>
-			<Filter
-				Name="Ruby"
-				>
-				<File
-					RelativePath="..\..\src\auto4_ruby.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\auto4_ruby.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\auto4_ruby_assfile.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\auto4_ruby_dialog.cpp"
-					>
-				</File>
-			</Filter>
-			<Filter
-				Name="Perl"
-				>
-				<File
-					RelativePath="..\..\src\auto4_perl.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\auto4_perl.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\auto4_perl_ass.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\auto4_perl_console.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\auto4_perl_console.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\auto4_perl_dialogs.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\auto4_perl_script.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\auto4_perldata.inc"
-					>
-				</File>
-			</Filter>
 		</Filter>
 		<Filter
 			Name="Wrappers"
