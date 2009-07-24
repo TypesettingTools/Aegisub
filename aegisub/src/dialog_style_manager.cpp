@@ -432,7 +432,7 @@ void DialogStyleManager::OnCatalogNew (wxCommandEvent &event) {
 
 		// Make sure that there is no storage with the same name (case insensitive search since Windows filenames are case insensitive)
 		if (CatalogList->FindString(name, false) != wxNOT_FOUND) {
-			wxMessageBox(_("A catalog with that name already exists."),_("Catalog name conflict"),wxICON_ERROR);
+			wxMessageBox(_("A catalog with that name already exists."),_("Catalog name conflict"),wxICON_ERROR|wxOK);
 			return;
 		}
 

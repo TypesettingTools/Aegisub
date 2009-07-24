@@ -1394,7 +1394,7 @@ void FrameMain::OnSetARCustom (wxCommandEvent &event) {
 	}
 
 	// Sanity check
-	if (numval < 0.5 || numval > 5.0) wxMessageBox(_("Invalid value! Aspect ratio must be between 0.5 and 5.0."),_("Invalid Aspect Ratio"),wxICON_ERROR);
+	if (numval < 0.5 || numval > 5.0) wxMessageBox(_("Invalid value! Aspect ratio must be between 0.5 and 5.0."),_("Invalid Aspect Ratio"),wxICON_ERROR|wxOK);
 
 	// Set value
 	else {

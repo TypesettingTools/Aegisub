@@ -148,7 +148,7 @@ void SubtitlesPreview::UpdateBitmap(int w,int h) {
 		provider = SubtitlesProviderFactoryManager::GetProvider();
 	} 
 	catch (...) {
-		wxMessageBox(_T("Could not get any subtitles provider for the preview box. Make sure that you have a provider installed."),_T("No subtitles provider"),wxICON_ERROR);
+		wxMessageBox(_T("Could not get any subtitles provider for the preview box. Make sure that you have a provider installed."),_T("No subtitles provider"),wxICON_ERROR|wxOK);
 	}
 
 	// Provider OK

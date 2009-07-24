@@ -465,7 +465,7 @@ void OptionsManager::Load() {
 		header = _T("");
 	}
 	if (header != _T("[Config]")) {
-		wxMessageBox(_("Configuration file is either invalid or corrupt. The current file will be backed up and replaced with a default file."),_("Error"),wxCENTRE|wxICON_WARNING);
+		wxMessageBox(_("Configuration file is either invalid or corrupt. The current file will be backed up and replaced with a default file."),_("Error"),wxCENTRE|wxICON_WARNING|wxOK);
 		wxRenameFile(filename,filename + wxString::Format(_T(".%i.backup"),wxGetUTCTime()));
 		modified = true;
 		return;
@@ -480,7 +480,7 @@ void OptionsManager::Load() {
 			curLine = file.ReadLineFromFile();
 		}
 		catch (wxString e) {
-			wxMessageBox(_("Configuration file is either invalid or corrupt. The current file will be backed up and replaced with a default file."),_("Error"),wxCENTRE|wxICON_WARNING);
+			wxMessageBox(_("Configuration file is either invalid or corrupt. The current file will be backed up and replaced with a default file."),_("Error"),wxCENTRE|wxICON_WARNING|wxOK);
 			wxRenameFile(filename,filename + wxString::Format(_T(".%i.backup"),wxGetUTCTime()));
 			modified = true;
 			return;
