@@ -760,7 +760,6 @@ DialogKanjiTimer::DialogKanjiTimer(wxWindow *parent, SubtitlesGrid *_grid)
 
 	// Button sizer
 	wxStdDialogButtonSizer *buttonSizer = new wxStdDialogButtonSizer();
-	buttonSizer->AddButton(CloseKT);
 	buttonSizer->AddButton(new HelpButton(this,_T("Kanji Timer")));
 	buttonSizer->SetAffirmativeButton(CloseKT);
 	buttonSizer->Realize();
