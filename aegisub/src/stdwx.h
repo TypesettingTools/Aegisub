@@ -98,8 +98,4 @@
 #include <list>
 #include <map>
 
-/////////////
-// Resources
-#include "libresrc/libresrc.h"
-
 #endif // C++

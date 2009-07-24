@@ -45,6 +45,7 @@
 #include "ass_dialogue.h"
 #include "utils.h"
 #include "vfr.h"
+#include "libresrc/libresrc.h"
 
 
 ///////

@@ -44,6 +44,7 @@
 #include "dialog_splash.h"
 #include "options.h"
 #include "dialog_tip.h"
+#include "libresrc/libresrc.h"
 
 
 ///////////////

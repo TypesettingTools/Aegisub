@@ -49,6 +49,7 @@
 #include "utils.h"
 #include "subs_edit_box.h"
 #include "help_button.h"
+#include "libresrc/libresrc.h"
 
 
 ///////////////

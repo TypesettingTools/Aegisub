@@ -81,6 +81,7 @@
 #include "auto4_base.h"
 #endif
 #include "charset_conv.h"
+#include "libresrc/libresrc.h"
 
 
 

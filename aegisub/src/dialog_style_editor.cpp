@@ -56,6 +56,7 @@
 #include "subtitles_provider_manager.h"
 #include "ass_style_storage.h"
 #include "help_button.h"
+#include "libresrc/libresrc.h"
 
 
 ///////

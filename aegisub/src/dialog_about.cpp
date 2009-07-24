@@ -45,6 +45,7 @@
 #include "dialog_about.h"
 #include "version.h"
 #include "options.h"
+#include "libresrc/libresrc.h"
 
 
 ///////////////

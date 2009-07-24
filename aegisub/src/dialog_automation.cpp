@@ -48,6 +48,7 @@
 #include <wx/filedlg.h>
 #include <wx/log.h>
 #include <wx/msgdlg.h>
+#include "libresrc/libresrc.h"
 
 
 DialogAutomation::DialogAutomation(wxWindow *parent, Automation4::ScriptManager *_local_manager)

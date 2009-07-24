@@ -50,6 +50,7 @@
 #include "utils.h"
 #include "options.h"
 #include "help_button.h"
+#include "libresrc/libresrc.h"
 
 
 ///////////////

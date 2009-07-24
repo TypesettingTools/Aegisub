@@ -89,6 +89,7 @@
 #include "dialog_video_details.h"
 #include "keyframe.h"
 #include "charset_conv.h"
+#include "libresrc/libresrc.h"
 
 
 ////////////////////

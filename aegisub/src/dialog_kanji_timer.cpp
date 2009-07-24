@@ -52,6 +52,7 @@
 #include "help_button.h"
 #include "ass_karaoke.h"
 #include <wx/string.h>
+#include "libresrc/libresrc.h"
 
 
 

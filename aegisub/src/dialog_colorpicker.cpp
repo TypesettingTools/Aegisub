@@ -53,6 +53,7 @@
 #include "options.h"
 #include "help_button.h"
 #include "utils.h"
+#include "libresrc/libresrc.h"
 
 #include <stdio.h>
 

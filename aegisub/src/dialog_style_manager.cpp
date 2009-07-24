@@ -54,6 +54,7 @@
 #include "subs_grid.h"
 #include "utils.h"
 #include "help_button.h"
+#include "libresrc/libresrc.h"
 
 
 ///////////////

@@ -50,6 +50,7 @@
 #include "video_provider_manager.h"
 #include "utils.h"
 #include "help_button.h"
+#include "libresrc/libresrc.h"
 
 
 ///////////////
