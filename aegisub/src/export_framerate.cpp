@@ -125,7 +125,7 @@ wxWindow *AssTransformFramerateFilter::GetConfigDialogWindow(wxWindow *parent) {
 	OutputSizer->Add(OutputSizerBottom,0,wxLEFT,5);
 
 	// Main window
-	wxSizer *MainSizer = new wxFlexGridSizer(2,2,5,10);
+	wxSizer *MainSizer = new wxFlexGridSizer(3,2,5,10);
 	MainSizer->Add(new wxStaticText(base,-1,_("Input framerate: ")),0,wxEXPAND | wxALIGN_CENTER_VERTICAL,0);
 	MainSizer->Add(InputSizer,0,wxEXPAND,0);
 	MainSizer->Add(new wxStaticText(base,-1,_("Output: ")),0,wxALIGN_CENTER_VERTICAL,0);
