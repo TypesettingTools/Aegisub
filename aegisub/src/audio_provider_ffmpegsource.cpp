@@ -67,6 +67,8 @@ FFmpegSourceAudioProvider::FFmpegSourceAudioProvider(wxString filename) {
 
 	AudioSource = NULL;
 
+	SetLogLevel();
+
 	try {
 		LoadAudio(filename);
 	} catch (...) {

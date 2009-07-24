@@ -75,6 +75,8 @@ FFmpegSourceVideoProvider::FFmpegSourceVideoProvider(wxString filename) {
 	MsgSize = sizeof(FFMSErrMsg);
 	ErrorMsg = _T("FFmpegSource video provider: ");
 
+	SetLogLevel();
+
 	// and here we go
 	try {
 		LoadVideo(filename);
