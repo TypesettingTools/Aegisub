@@ -39,7 +39,8 @@
 #ifdef WITH_QUICKTIME
 #include <wx/wxprec.h>
 
-// static fun
+
+// static init fun
 int QuickTimeProvider::qt_initcount = 0;
 GWorldPtr QuickTimeProvider::default_gworld = NULL;
 
@@ -52,12 +53,12 @@ void QuickTimeProvider::InitQuickTime() {
 #endif
 
 	qt_err = EnterMovies();
-	QTCheckError(qt_err, wxString(_T("EnterMovies() failed")));
+	QTCheckError(qt_err, wxString(_T("EnterMovies failed")));
 
 	// have we been inited before?
 	if (qt_initcount <= 0) { 
-		// we haven't, allocate an offscreen graphics world
-		// we need to do this before we actually open anything, or quicktime may crash (heh)
+		// We haven't, allocate an offscreen render target.
+		// We need to do this before we actually open anything, or quicktime may crash. (heh)
 		Rect def_box;
 		def_box.top = 0;
 		def_box.left = 0;
@@ -75,6 +76,7 @@ void QuickTimeProvider::InitQuickTime() {
 
 void QuickTimeProvider::DeInitQuickTime() {
 #ifdef WIN32
+	// calls to InitializeQTML() must be balanced with an equal number of calls to TerminateQTML()
 	TerminateQTML();
 #endif
 	qt_initcount--;
@@ -86,6 +88,7 @@ void QuickTimeProvider::DeInitQuickTime() {
 }
 
 
+// convert a wxstring containing a filename to a QT data reference
 void QuickTimeProvider::wxStringToDataRef(const wxString &string, Handle *dataref, OSType *dataref_type) {
 	// convert filename, first to a CFStringRef...
 	wxString wx_filename = wxFileName(string).GetShortPath();
@@ -104,8 +107,13 @@ void QuickTimeProvider::QTCheckError(OSErr err, wxString errmsg) {
 		throw errmsg;
 	/* CheckError(err, errmsg.c_str()); // I wonder if this actually works on Mac, and if so, what it does */
 }
+void QuickTimeProvider::QTCheckError(OSStatus err, wxString errmsg) {
+	if (err != noErr)
+		throw errmsg;
+}
 
 
+// return true if QT considers file openable
 bool QuickTimeProvider::CanOpen(const Handle& dataref, const OSType dataref_type) {
 	Boolean can_open;
 	Boolean prefer_img;

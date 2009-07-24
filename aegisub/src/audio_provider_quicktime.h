@@ -36,46 +36,43 @@
 
 #pragma once
 
-#include "config.h"
+#include "quicktime_common.h"
 
 #ifdef WITH_QUICKTIME
 #include <wx/wxprec.h>
-#include <wx/thread.h>
-#include "include/aegisub/aegisub.h"
-
-// QT stuff
-#ifdef _MSC_VER
-#define _STDINT_H				// avoid conflicts between MSVC's stdint.h and QT's stdint.h
-#pragma warning(disable: 4004)	// get MSVC to shut up about a macro redefinition in QT's ConditionalMacros.h
-#endif
-extern "C" {
-#ifdef WIN32
-#include <QTML.h>
-#include <Movies.h>
-#include <Files.h>
-#include <QDOffscreen.h>
-#else
-#include <QuickTime/QuickTime.h> // not sure about this path, someone on mac needs to test it
-#endif
-}
+#include <wx/log.h>
+#include "include/aegisub/audio_provider.h"
 
 
-class QuickTimeProvider {
+class QuickTimeAudioProvider : public AudioProvider, QuickTimeProvider {
+private:
+	Movie movie;			// input file
+	Handle in_dataref;		// input file handle
+	MovieAudioExtractionRef extract_ref; // extraction session object
+
+	bool inited;
+
+	OSErr qt_err;			// quicktime error code
+	OSStatus qt_status;		// another quicktime error code
+	wxString errmsg;		// aegisub error messages
+
+	void Close();
+	void LoadAudio(wxString filename);
+
 public:
-	void InitQuickTime();
-	void DeInitQuickTime();
-	void wxStringToDataRef(const wxString &string, Handle *dataref, OSType *dataref_type);
-	bool CanOpen(const Handle& dataref, const OSType dataref_type);
+	QuickTimeAudioProvider(wxString filename);
+	virtual ~QuickTimeAudioProvider();
 
+	bool AreSamplesNativeEndian() { return true; }
 
-	void QTCheckError(OSErr err, wxString errmsg);
-	void QTCheckError(OSStatus err, wxString errmsg);
-
-	static int qt_initcount;
-	static GWorldPtr default_gworld;
-
-	virtual ~QuickTimeProvider() {};
+	virtual void GetAudio(void *buf, int64_t start, int64_t count);
 };
 
-#endif /* WITH_QUICKTIME */
 
+class QuickTimeAudioProviderFactory : public AudioProviderFactory {
+public:
+	AudioProvider *CreateProvider(wxString file) { return new QuickTimeAudioProvider(file); }
+};
+
+
+#endif /* WITH_QUICKTIME */

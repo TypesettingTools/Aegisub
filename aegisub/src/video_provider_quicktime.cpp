@@ -140,8 +140,7 @@ void QuickTimeVideoProvider::LoadVideo(const wxString _filename) {
 	h = m_box.bottom;
 	// allocate a new offscreen rendering buffer with the correct dimensions
 	QDErr qd_err = NewGWorld(&gw, 32, &m_box, NULL, NULL, keepLocal);
-	if (qd_err != noErr)
-		throw wxString(_T("Failed to initialize offscreen drawing buffer"));
+	QTCheckError(qd_err, wxString(_T("Failed to initialize offscreen drawing buffer")));
 	
 	// select our new offscreen render target
 	SetMovieGWorld(movie, gw, NULL);
