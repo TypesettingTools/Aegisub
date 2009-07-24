@@ -589,7 +589,7 @@ bool FontsCollectorThread::AttachFont(wxString filename) {
 // Get fonts from ass overrides
 void FontsCollectorThread::GetFonts (wxString tagName,int par_n,AssOverrideParameter *param,void *usr) {
 	if (tagName == _T("\\fn")) {
-		instance->AddFont(param->AsText(),1);
+		if (instance) instance->AddFont(param->AsText(),1);
 	}
 }
 

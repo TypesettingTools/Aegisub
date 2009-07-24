@@ -85,15 +85,20 @@ void FontFileLister::GetInstance() {
 // Redirect statics to the instance
 wxArrayString FontFileLister::GetFilesWithFace(wxString facename) {
 	GetInstance();
-	return instance->DoGetFilesWithFace(facename);
+	if (instance)
+		return instance->DoGetFilesWithFace(facename);
+	else {
+		wxArrayString ret;
+		return ret;
+	}
 }
 void FontFileLister::Initialize() {
 	GetInstance();
-	instance->DoInitialize();
+	if (instance) instance->DoInitialize();
 }
 void FontFileLister::ClearData() {
 	GetInstance();
-	instance->DoClearData();
+	if (instance) instance->DoClearData();
 }
 
 
