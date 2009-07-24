@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>StandardOutPath</key>
+	<string>twistd.log</string>
+	<key>StandardErrorPath</key>
+	<string>twistd-err.log</string>
+	<key>EnvironmentVariables</key>
+	<dict>
+		<key>PATH</key>
+		<string>/Users/verm/python/bin:/Users/verm/prefix/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/opt/local/bin</string>
+		<key>PYTHONPATH</key>
+		<string>/Users/verm/python/lib/python2.5/site-packages</string>
+	</dict>
+	<key>GroupName</key>
+	<string>daemon</string>
+	<key>KeepAlive</key>
+	<dict>
+		<key>SuccessfulExit</key>
+		<false/>
+	</dict>
+	<key>Label</key>
+	<string>net.buildbot.buildbot.slave.kokoro</string>
+	<key>ProgramArguments</key>
+	<array>
+		<string>/Users/verm/python/bin/twistd</string>
+		<string>-no</string>
+		<string>-y</string>
+		<string>./buildbot.tac</string>
+	</array>
+	<key>RunAtLoad</key>
+	<true/>
+	<key>UserName</key>
+	<string>verm</string>
+	<key>WorkingDirectory</key>
+	<string>/Users/verm/buildslave</string>
+</dict>
+</plist>
