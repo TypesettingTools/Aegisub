@@ -584,7 +584,6 @@ DialogColorPicker::DialogColorPicker(wxWindow *parent, wxColour initial_color)
 	ass_input_sizer->Add(ass_input, 0);
 	ass_input_sizer->Add(new wxStaticText(this, -1, _T("HTML:"), wxDefaultPosition, colorinput_labelsize), 1, wxALIGN_CENTER_VERTICAL|wxEXPAND);
 	ass_input_sizer->Add(html_input, 0);
-	ass_input_sizer->AddStretchSpacer();
 	ass_input_sizer->AddGrowableCol(0,1);
 	rgb_box->Add(ass_input_sizer, 0, wxALL|wxCENTER|wxEXPAND, 3);
 
