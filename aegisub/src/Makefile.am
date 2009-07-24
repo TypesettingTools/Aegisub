@@ -188,6 +188,7 @@ aegisub_2_2_SOURCES = \
 	audio_provider_downmix.cpp \
 	audio_provider_hd.cpp \
 	audio_provider_pcm.cpp \
+	audio_provider_quicktime.cpp \
 	audio_provider_ram.cpp \
 	audio_provider_stream.cpp \
 	audio_spectrum.cpp \

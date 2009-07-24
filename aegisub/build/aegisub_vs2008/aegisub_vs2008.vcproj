@@ -508,6 +508,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\audio_provider_quicktime.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\audio_provider_quicktime.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\audio_provider_ram.cpp"
 				>
 			</File>
