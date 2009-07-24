@@ -214,7 +214,7 @@ DialogOptions::DialogOptions(wxWindow *parent)
 		wxSizer *editSizer6 = new wxBoxSizer(wxHORIZONTAL);
 		wxFlexGridSizer *editSizer2 = new wxFlexGridSizer(4,2,5,5);
 		wxSizer *editSizer3 = new wxStaticBoxSizer(wxVERTICAL,editPage,_("Style"));
-		wxFlexGridSizer *editSizer4 = new wxFlexGridSizer(9,2,2,2);
+		wxFlexGridSizer *editSizer4 = new wxFlexGridSizer(10,2,2,2);
 		wxSizer *editSizer5 = new wxBoxSizer(wxHORIZONTAL);
 
 		// First static box
@@ -286,7 +286,7 @@ DialogOptions::DialogOptions(wxWindow *parent)
 		wxSizer *gridMainSizer = new wxBoxSizer(wxVERTICAL);
 		wxSizer *gridSizer1 = new wxStaticBoxSizer(wxVERTICAL,gridPage,_("Options"));
 		wxSizer *gridSizer2 = new wxStaticBoxSizer(wxVERTICAL,gridPage,_("Style"));
-		wxFlexGridSizer *gridSizer3 = new wxFlexGridSizer(11,2,2,2);
+		wxFlexGridSizer *gridSizer3 = new wxFlexGridSizer(12,2,2,2);
 		wxSizer *gridSizer4 = new wxBoxSizer(wxHORIZONTAL);
 		wxSizer *gridSizer5 = new wxBoxSizer(wxHORIZONTAL);
 
@@ -524,7 +524,7 @@ DialogOptions::DialogOptions(wxWindow *parent)
 	// Audio advanced page
 	{
 		// Sizers
-		wxFlexGridSizer *audioAdvSizer1 = new wxFlexGridSizer(6,2,5,5);
+		wxFlexGridSizer *audioAdvSizer1 = new wxFlexGridSizer(9,2,5,5);
 		wxSizer *audioAdvSizer2 = new wxStaticBoxSizer(wxVERTICAL,audioAdvPage,_("Advanced - EXPERT USERS ONLY"));
 		wxSizer *audioAdvSizer3 = new wxBoxSizer(wxVERTICAL);
 
@@ -562,7 +562,7 @@ DialogOptions::DialogOptions(wxWindow *parent)
 		// Sizers
 		wxSizer *autoMainSizer = new wxBoxSizer(wxVERTICAL);
 		wxSizer *autoSizer1 = new wxStaticBoxSizer(wxVERTICAL,autoPage,_("Options"));
-		wxFlexGridSizer *autoSizer2 = new wxFlexGridSizer(4,2,5,5);
+		wxFlexGridSizer *autoSizer2 = new wxFlexGridSizer(6,2,5,5);
 
 		// First sizer
 		AddTextControl(autoPage,autoSizer2,_("Base path"),_T("Automation Base Path"));
