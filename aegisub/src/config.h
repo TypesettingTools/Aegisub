@@ -10,6 +10,5 @@
 
 // Unix specific settings and defines.
 #include "config/config_unix.h"
-#include "libresrc/libresrc.h"
 
 #endif // __WINDOWS__
