@@ -348,13 +348,13 @@ function apply_templates(meta, styles, subs, templates)
 	tenv.fxgroup = {}
 	
 	tenv.relayer = function(layer)
-		line.layer = layer
+		tenv.line.layer = layer
 		return ""
 	end
 	
 	tenv.restyle = function(style)
-		line.style = style
-		line.styleref = styles[style]
+		tenv.line.style = style
+		tenv.line.styleref = styles[style]
 		return ""
 	end
 	
