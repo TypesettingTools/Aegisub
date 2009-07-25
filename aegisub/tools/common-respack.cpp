@@ -128,6 +128,10 @@ int main(int argc, const char *argv[]) {
 
 	while (iter.Next(&filename)) {
 		ifstream infile(filename.char_str(), ios::binary);
+		infile.seekg(0, ios::end);
+		int infile_end = infile.tellg();
+		infile.seekg(0, ios::beg);
+
 		wxFileName file(filename);
 		wxString identifier = file.GetName() + "_" + file.GetDirs().Last();
 		nameCleaner.ReplaceAll(&identifier, "_");
@@ -141,8 +145,7 @@ int main(int argc, const char *argv[]) {
 			first = false;
 		}
 		outC << "};" << endl;
-		infile.seekg(ios_base::end);
-		outH << "extern const unsigned char " << identifier << "[" << infile.tellg() << "];" << endl;
+		outH << "extern const unsigned char " << identifier << "[" << infile_end << "];" << endl;
 	}
 
 	return 0;
