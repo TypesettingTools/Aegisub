@@ -57,7 +57,7 @@
 #include "ass_style_storage.h"
 #include "help_button.h"
 #include "libresrc/libresrc.h"
-#include "libresrc/icons.h"
+
 
 
 ///////

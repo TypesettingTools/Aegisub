@@ -88,7 +88,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="$(TargetPath) $(SolutionDir)\..\..\src\libresrc\icons.cpp $(SolutionDir)\..\..\src\bitmaps\16 $(SolutionDir)\..\..\src\bitmaps\24 $(SolutionDir)\..\..\src\bitmaps\misc"
+				CommandLine="$(TargetPath) $(SolutionDir)\..\..\src\libresrc\libresrc.cpp $(SolutionDir)\..\..\src\bitmaps\16 $(SolutionDir)\..\..\src\bitmaps\24 $(SolutionDir)\..\..\src\bitmaps\misc"
 			/>
 		</Configuration>
 		<Configuration
@@ -163,7 +163,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="$(TargetPath) $(SolutionDir)\..\..\src\libresrc\icons.cpp $(SolutionDir)\..\..\src\bitmaps\16 $(SolutionDir)\..\..\src\bitmaps\24 $(SolutionDir)\..\..\src\bitmaps\misc"
+				CommandLine="$(TargetPath) $(SolutionDir)\..\..\src\libresrc\libresrc.cpp $(SolutionDir)\..\..\src\bitmaps\16 $(SolutionDir)\..\..\src\bitmaps\24 $(SolutionDir)\..\..\src\bitmaps\misc"
 			/>
 		</Configuration>
 		<Configuration
@@ -236,7 +236,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="$(TargetPath) $(SolutionDir)\..\..\src\libresrc\icons.cpp $(SolutionDir)\..\..\src\bitmaps\16 $(SolutionDir)\..\..\src\bitmaps\24 $(SolutionDir)\..\..\src\bitmaps\misc"
+				CommandLine="$(TargetPath) $(SolutionDir)\..\..\src\libresrc\libresrc.cpp $(SolutionDir)\..\..\src\bitmaps\16 $(SolutionDir)\..\..\src\bitmaps\24 $(SolutionDir)\..\..\src\bitmaps\misc"
 			/>
 		</Configuration>
 		<Configuration
@@ -312,7 +312,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="$(TargetPath) $(SolutionDir)\..\..\src\libresrc\icons.cpp $(SolutionDir)\..\..\src\bitmaps\16 $(SolutionDir)\..\..\src\bitmaps\24 $(SolutionDir)\..\..\src\bitmaps\misc"
+				CommandLine="$(TargetPath) $(SolutionDir)\..\..\src\libresrc\libresrc.cpp $(SolutionDir)\..\..\src\bitmaps\16 $(SolutionDir)\..\..\src\bitmaps\24 $(SolutionDir)\..\..\src\bitmaps\misc"
 			/>
 		</Configuration>
 	</Configurations>

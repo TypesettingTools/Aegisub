@@ -52,8 +52,8 @@
 #include "hotkeys.h"
 #include "tooltip_manager.h"
 #include "libresrc/libresrc.h"
-#include "libresrc/icons.h"
-#include "libresrc/icons.h"
+
+
 
 //#ifdef __WXMAC__
 //#include "bevelButton.h"

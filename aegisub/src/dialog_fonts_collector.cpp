@@ -58,7 +58,7 @@
 #include "help_button.h"
 #include "scintilla_text_ctrl.h"
 #include "libresrc/libresrc.h"
-#include "libresrc/icons.h"
+
 
 
 ///////

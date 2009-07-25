@@ -53,7 +53,7 @@
 #include "ass_karaoke.h"
 #include <wx/string.h>
 #include "libresrc/libresrc.h"
-#include "libresrc/icons.h"
+
 
 
 

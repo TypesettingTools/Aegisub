@@ -62,7 +62,7 @@
 #include "visual_tool.h"
 #include "help_button.h"
 #include "libresrc/libresrc.h"
-#include "libresrc/icons.h"
+
 
 
 ///////////////

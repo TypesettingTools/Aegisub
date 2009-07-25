@@ -46,7 +46,7 @@
 #include "utils.h"
 #include "vfr.h"
 #include "libresrc/libresrc.h"
-#include "libresrc/icons.h"
+
 
 
 ///////

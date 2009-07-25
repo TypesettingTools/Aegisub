@@ -63,7 +63,7 @@
 #include "tooltip_manager.h"
 #include "osx_bevelButton.h"
 #include "libresrc/libresrc.h"
-#include "libresrc/icons.h"
+
 
 
 ///////////////

@@ -46,7 +46,7 @@
 #include "version.h"
 #include "options.h"
 #include "libresrc/libresrc.h"
-#include "libresrc/icons.h"
+
 
 
 ///////////////

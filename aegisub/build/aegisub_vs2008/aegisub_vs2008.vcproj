@@ -1840,11 +1840,7 @@
 			Name="Resources"
 			>
 			<File
-				RelativePath="..\..\src\libresrc\icons.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\libresrc\icons.h"
+				RelativePath="..\..\src\libresrc\libresrc.cpp"
 				>
 			</File>
 			<File
@@ -1853,10 +1849,6 @@
 			</File>
 			<File
 				RelativePath="..\..\src\res.rc"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\libresrc\resrc.cpp"
 				>
 			</File>
 		</Filter>

@@ -48,7 +48,7 @@
 #include "video_context.h"
 #include "utils.h"
 #include "libresrc/libresrc.h"
-#include "libresrc/icons.h"
+
 
 
 ///////

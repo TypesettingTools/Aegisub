@@ -82,7 +82,7 @@
 #endif
 #include "charset_conv.h"
 #include "libresrc/libresrc.h"
-#include "libresrc/icons.h"
+
 
 
 

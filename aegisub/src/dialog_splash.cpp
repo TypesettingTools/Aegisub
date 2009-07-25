@@ -45,7 +45,7 @@
 #include "options.h"
 #include "dialog_tip.h"
 #include "libresrc/libresrc.h"
-#include "libresrc/icons.h"
+
 
 
 ///////////////

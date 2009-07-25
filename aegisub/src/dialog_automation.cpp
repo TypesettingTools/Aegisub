@@ -49,7 +49,7 @@
 #include <wx/log.h>
 #include <wx/msgdlg.h>
 #include "libresrc/libresrc.h"
-#include "libresrc/icons.h"
+
 
 
 DialogAutomation::DialogAutomation(wxWindow *parent, Automation4::ScriptManager *_local_manager)
