@@ -23,17 +23,17 @@ SUBDIRS = \
 	desktop
 
 osx-bundle:
-	@SHELL@ scripts/osx-bundle.sh "Aegisub (r@SVN_REVISION@-@DARWIN_ARCH@@PACKAGE_DEBUG@)" @AEGISUB_VERSION_DATA@ DICT_DIR=$(DICT_DIR)
+	@SHELL@ tools/osx-bundle.sh "Aegisub (r@SVN_REVISION@-@DARWIN_ARCH@@PACKAGE_DEBUG@)" @AEGISUB_VERSION_DATA@ DICT_DIR=$(DICT_DIR)
 
 
 osx-dmg:
-	@SHELL@ scripts/osx-dmg.sh "Aegisub (r@SVN_REVISION@-@DARWIN_ARCH@@PACKAGE_DEBUG@)" "Aegisub (r@SVN_REVISION@-@DARWIN_ARCH@@PACKAGE_DEBUG@)"
+	@SHELL@ tools/osx-dmg.sh "Aegisub (r@SVN_REVISION@-@DARWIN_ARCH@@PACKAGE_DEBUG@)" "Aegisub (r@SVN_REVISION@-@DARWIN_ARCH@@PACKAGE_DEBUG@)"
 
 osx-tinderbox-bundle:
-	@SHELL@ scripts/osx-bundle.sh "$(T_BUNDLE)" @AEGISUB_VERSION_DATA@ DICT_DIR="$(DICT_DIR)"
+	@SHELL@ tools/osx-bundle.sh "$(T_BUNDLE)" @AEGISUB_VERSION_DATA@ DICT_DIR="$(DICT_DIR)"
 
 osx-tinderbox-dmg:
-	@SHELL@ scripts/osx-dmg.sh "$(T_DMG)" "$(T_BUNDLE)"
+	@SHELL@ tools/osx-dmg.sh "$(T_DMG)" "$(T_BUNDLE)"
 	mv  "$(T_DMG).dmg" bundle.dmg
 
 EXTRA_DIST = \
@@ -60,13 +60,13 @@ EXTRA_DIST += \
 	m4macros/ax_check_gl.m4 \
 	m4macros/ac_flag.m4
 
-# scripts/
+# tools/
 EXTRA_DIST += \
-	scripts/osx-bundle-restart-helper.c \
-	scripts/osx-bundle.sh \
-	scripts/osx-dmg-dsstore.pl \
-	scripts/osx-dmg.sh \
-	scripts/osx-fix-libs.py
+	tools/osx-bundle-restart-helper.c \
+	tools/osx-bundle.sh \
+	tools/osx-dmg-dsstore.pl \
+	tools/osx-dmg.sh \
+	tools/osx-fix-libs.py
 
 # packages/osx_bundle/
 EXTRA_DIST += \
