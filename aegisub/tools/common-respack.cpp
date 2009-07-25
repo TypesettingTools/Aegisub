@@ -110,7 +110,7 @@ int main(int argc, const char *argv[]) {
 	}
 	wxFileName headerFileName(argv[1]);
 	headerFileName.SetExt(L"h");
-	ofstream outH(headerFileName.GetFullPath().wc_str());
+	ofstream outH(headerFileName.GetFullPath().char_str());
 	ofstream outC(argv[1]);
 
 	outC << "/* This is an automatically generated file and should not be modified directly */" << endl;
@@ -127,7 +127,7 @@ int main(int argc, const char *argv[]) {
 	FileIterator iter(argc, argv);
 
 	while (iter.Next(&filename)) {
-		ifstream infile(filename.wc_str(), ios::binary);
+		ifstream infile(filename.char_str(), ios::binary);
 		wxFileName file(filename);
 		wxString identifier = file.GetName() + "_" + file.GetDirs().Last();
 		nameCleaner.ReplaceAll(&identifier, "_");
