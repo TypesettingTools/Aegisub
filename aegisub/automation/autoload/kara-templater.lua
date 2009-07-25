@@ -34,7 +34,7 @@
 script_name = "Karaoke Templater"
 script_description = "Macro and export filter to apply karaoke effects using the template language"
 script_author = "Niels Martin Hansen"
-script_version = "2.1.7"
+script_version = "2.1.8"
 
 
 include("karaskel.lua")
