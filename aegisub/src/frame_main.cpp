@@ -45,6 +45,7 @@
 #include <wx/tokenzr.h>
 #include <wx/image.h>
 #include <wx/statline.h>
+#include <wx/mstream.h>
 
 #include "subs_grid.h"
 #include "frame_main.h"
@@ -82,6 +83,7 @@
 #endif
 #include "charset_conv.h"
 #include "libresrc/libresrc.h"
+#include "resources/icons.h"
 
 
 
@@ -236,13 +238,13 @@ void FrameMain::InitToolbar () {
 	Toolbar = CreateToolBar(wxTB_FLAT | wxTB_HORIZONTAL,-1,_T("Toolbar"));
 
 	// Subtitle control buttons
-	Toolbar->AddTool(Menu_File_New_Subtitles,_("New"),wxBitmap(new_toolbutton_xpm),_("New subtitles"));
-	Toolbar->AddTool(Menu_File_Open_Subtitles,_("Open"),wxBitmap(open_toolbutton_xpm),_("Open subtitles"));
-	Toolbar->AddTool(Menu_File_Save_Subtitles,_("Save"),wxBitmap(save_toolbutton_xpm),_("Save subtitles"));
+	Toolbar->AddTool(Menu_File_New_Subtitles,_("New"), GETIMAGE(new_toolbutton_png), _("New subtitles"));
+	Toolbar->AddTool(Menu_File_Open_Subtitles,_("Open"),GETIMAGE(open_toolbutton_png),_("Open subtitles"));
+	Toolbar->AddTool(Menu_File_Save_Subtitles,_("Save"),GETIMAGE(save_toolbutton_png),_("Save subtitles"));
 	Toolbar->AddSeparator();
 
 	// Video zoom controls
-	Toolbar->AddTool(Menu_Video_JumpTo,_("Jump To..."),wxBitmap(jumpto_button_xpm),wxNullBitmap,wxITEM_NORMAL,_("Jump video to time/frame"));
+	Toolbar->AddTool(Menu_Video_JumpTo,_("Jump To..."),GETIMAGE(jumpto_button_png),wxNullBitmap,wxITEM_NORMAL,_("Jump video to time/frame"));
 	Toolbar->AddTool(Menu_Video_Zoom_In,_("Zoom in"),wxBitmap(zoom_in_button_xpm),wxNullBitmap,wxITEM_NORMAL,_("Zoom video in"));
 	Toolbar->AddTool(Menu_Video_Zoom_Out,_("Zoom out"),wxBitmap(zoom_out_button_xpm),wxNullBitmap,wxITEM_NORMAL,_("Zoom video out"));
 	wxArrayString choices;
@@ -262,20 +264,20 @@ void FrameMain::InitToolbar () {
 	Toolbar->AddTool(Menu_Subs_Snap_Start_To_Video,_("Snap start to video"),wxBitmap(substart_to_video_xpm),_("Set start of selected subtitles to current video frame"));
 	Toolbar->AddTool(Menu_Subs_Snap_End_To_Video,_("Snap end to video"),wxBitmap(subend_to_video_xpm),_("Set end of selected subtitles to current video frame"));
 	Toolbar->AddTool(Menu_Video_Select_Visible,_("Select visible"),wxBitmap(select_visible_button_xpm),_("Selects all lines that are currently visible on video frame"));
-	Toolbar->AddTool(Menu_Video_Snap_To_Scene,_("Snap subtitles to scene"),wxBitmap(snap_subs_to_scene_xpm),_("Snap selected subtitles so they match current scene start/end"));
+	Toolbar->AddTool(Menu_Video_Snap_To_Scene,_("Snap subtitles to scene"),GETIMAGE(snap_subs_to_scene_png),_("Snap selected subtitles so they match current scene start/end"));
 	Toolbar->AddTool(Menu_Video_Shift_To_Frame,_("Shift subtitles to frame"),wxBitmap(shift_to_frame_xpm),_("Shift selected subtitles so first selected starts at this frame"));
 	Toolbar->AddSeparator();
 
 	// Property stuff
-	Toolbar->AddTool(Menu_Tools_Styles_Manager,_("Styles Manager"),wxBitmap(style_toolbutton_xpm),_("Open Styles Manager"));
-	Toolbar->AddTool(Menu_Tools_Properties,_("Properties"),wxBitmap(properties_toolbutton_xpm),_("Open Properties"));
-	Toolbar->AddTool(Menu_Tools_Attachments,_("Attachments"),wxBitmap(attach_button_xpm),_("Open Attachment List"));
-	Toolbar->AddTool(Menu_Tools_Fonts_Collector,_("Fonts Collector"),wxBitmap(font_collector_button_xpm),_("Open Fonts Collector"));
+	Toolbar->AddTool(Menu_Tools_Styles_Manager,_("Styles Manager"),GETIMAGE(style_toolbutton_png),_("Open Styles Manager"));
+	Toolbar->AddTool(Menu_Tools_Properties,_("Properties"),GETIMAGE(properties_toolbutton_png),_("Open Properties"));
+	Toolbar->AddTool(Menu_Tools_Attachments,_("Attachments"),GETIMAGE(attach_button_png),_("Open Attachment List"));
+	Toolbar->AddTool(Menu_Tools_Fonts_Collector,_("Fonts Collector"),GETIMAGE(font_collector_button_png),_("Open Fonts Collector"));
 	Toolbar->AddSeparator();
 
 	// Automation
 #ifdef WITH_AUTOMATION
-	Toolbar->AddTool(Menu_Tools_Automation,_("Automation"),wxBitmap(automation_toolbutton_xpm),_("Open Automation manager"));
+	Toolbar->AddTool(Menu_Tools_Automation,_("Automation"),GETIMAGE(automation_toolbutton_png),_("Open Automation manager"));
 	Toolbar->AddSeparator();
 #endif
 
@@ -284,18 +286,18 @@ void FrameMain::InitToolbar () {
 		Toolbar->AddTool(Menu_Tools_ASSDraw,_T("ASSDraw3"),wxBitmap(assdraw_xpm),_("Launches ai-chan's \"ASSDraw3\" tool for vector drawing."));
 		Toolbar->AddSeparator();
 	}
-	Toolbar->AddTool(Menu_Edit_Shift,_("Shift Times"),wxBitmap(shift_times_toolbutton_xpm),_("Open Shift Times Dialogue"));
+	Toolbar->AddTool(Menu_Edit_Shift,_("Shift Times"),GETIMAGE(shift_times_toolbutton_png),_("Open Shift Times Dialogue"));
 	Toolbar->AddTool(Menu_Tools_Styling,_("Styling Assistant"),wxBitmap(styling_toolbutton_xpm),_("Open Styling Assistant"));
 	Toolbar->AddTool(Menu_Tools_Translation,_("Translation Assistant"),wxBitmap(translation_toolbutton_xpm),_("Open Translation Assistant"));
-	Toolbar->AddTool(Menu_Tools_Resample,_("Resample"),wxBitmap(resample_toolbutton_xpm),_("Resample Script Resolution"));
+	Toolbar->AddTool(Menu_Tools_Resample,_("Resample"),GETIMAGE(resample_toolbutton_png),_("Resample Script Resolution"));
 	Toolbar->AddTool(Menu_Tools_Timing_Processor,_("Timing Post-Processor"),wxBitmap(timing_processor_toolbutton_xpm),_("Open Timing Post-processor dialog"));
-	Toolbar->AddTool(Menu_Tools_Kanji_Timer,_("Kanji Timer"),wxBitmap(kanji_timer_button_xpm),_("Open Kanji Timer dialog"));
-	Toolbar->AddTool(Menu_Tools_SpellCheck,_("Spell Checker"),wxBitmap(spellcheck_toolbutton_xpm),_("Open Spell checker"));
+	Toolbar->AddTool(Menu_Tools_Kanji_Timer,_("Kanji Timer"),GETIMAGE(kanji_timer_button_png),_("Open Kanji Timer dialog"));
+	Toolbar->AddTool(Menu_Tools_SpellCheck,_("Spell Checker"),GETIMAGE(spellcheck_toolbutton_png),_("Open Spell checker"));
 	Toolbar->AddSeparator();
 
 	// Options
-	Toolbar->AddTool(Menu_Tools_Options,_("Options"),wxBitmap(options_button_xpm),_("Configure Aegisub"));
-	Toolbar->AddTool(Grid_Toggle_Tags,_("Cycle Tag Hidding Mode"),wxBitmap(toggle_tag_hiding_xpm),_("Cycle through tag-hiding modes"));
+	Toolbar->AddTool(Menu_Tools_Options,_("Options"),GETIMAGE(options_button_png),_("Configure Aegisub"));
+	Toolbar->AddTool(Grid_Toggle_Tags,_("Cycle Tag Hidding Mode"),GETIMAGE(toggle_tag_hiding_png),_("Cycle through tag-hiding modes"));
 
 	// Update
 	Toolbar->Realize();

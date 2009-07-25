@@ -63,6 +63,7 @@
 #include "tooltip_manager.h"
 #include "osx_bevelButton.h"
 #include "libresrc/libresrc.h"
+#include "resources/icons.h"
 
 
 ///////////////
@@ -117,23 +118,23 @@ SubsEditBox::SubsEditBox (wxWindow *parent,SubtitlesGrid *gridp) : wxPanel(paren
 	MarginV->SetMaxLength(4);
 
 	// Middle-bottom controls
-	Bold = new wxBitmapButton(this,BUTTON_BOLD,wxBitmap(button_bold_xpm),wxDefaultPosition,wxSize(20,20));
+	Bold = new wxBitmapButton(this,BUTTON_BOLD,GETIMAGE(button_bold_png),wxDefaultPosition,wxSize(20,20));
 	Bold->SetToolTip(_("Bold"));
-	Italics = new wxBitmapButton(this,BUTTON_ITALICS,wxBitmap(button_italics_xpm),wxDefaultPosition,wxSize(20,20));
+	Italics = new wxBitmapButton(this,BUTTON_ITALICS,GETIMAGE(button_italics_png),wxDefaultPosition,wxSize(20,20));
 	Italics->SetToolTip(_("Italics"));
-	Underline = new wxBitmapButton(this,BUTTON_UNDERLINE,wxBitmap(button_underline_xpm),wxDefaultPosition,wxSize(20,20));
+	Underline = new wxBitmapButton(this,BUTTON_UNDERLINE,GETIMAGE(button_underline_png),wxDefaultPosition,wxSize(20,20));
 	Underline->SetToolTip(_("Underline"));
-	Strikeout = new wxBitmapButton(this,BUTTON_STRIKEOUT,wxBitmap(button_strikeout_xpm),wxDefaultPosition,wxSize(20,20));
+	Strikeout = new wxBitmapButton(this,BUTTON_STRIKEOUT,GETIMAGE(button_strikeout_png),wxDefaultPosition,wxSize(20,20));
 	Strikeout->SetToolTip(_("Strikeout"));
-	FontName = new wxBitmapButton(this,BUTTON_FONT_NAME,wxBitmap(button_fontname_xpm),wxDefaultPosition,wxSize(30,20));
+	FontName = new wxBitmapButton(this,BUTTON_FONT_NAME,GETIMAGE(button_fontname_png),wxDefaultPosition,wxSize(30,20));
 	FontName->SetToolTip(_("Font Face Name"));
-	Color1 = new wxBitmapButton(this,BUTTON_COLOR1,wxBitmap(button_color_one_xpm),wxDefaultPosition,wxSize(30,20));
+	Color1 = new wxBitmapButton(this,BUTTON_COLOR1,GETIMAGE(button_color_one_png),wxDefaultPosition,wxSize(30,20));
 	Color1->SetToolTip(_("Primary color"));
-	Color2 = new wxBitmapButton(this,BUTTON_COLOR2,wxBitmap(button_color_two_xpm),wxDefaultPosition,wxSize(30,20));
+	Color2 = new wxBitmapButton(this,BUTTON_COLOR2,GETIMAGE(button_color_two_png),wxDefaultPosition,wxSize(30,20));
 	Color2->SetToolTip(_("Secondary color"));
-	Color3 = new wxBitmapButton(this,BUTTON_COLOR3,wxBitmap(button_color_three_xpm),wxDefaultPosition,wxSize(30,20));
+	Color3 = new wxBitmapButton(this,BUTTON_COLOR3,GETIMAGE(button_color_three_png),wxDefaultPosition,wxSize(30,20));
 	Color3->SetToolTip(_("Outline color"));
-	Color4 = new wxBitmapButton(this,BUTTON_COLOR4,wxBitmap(button_color_four_xpm),wxDefaultPosition,wxSize(30,20));
+	Color4 = new wxBitmapButton(this,BUTTON_COLOR4,GETIMAGE(button_color_four_png),wxDefaultPosition,wxSize(30,20));
 	Color4->SetToolTip(_("Shadow color"));
 #ifdef __WXMAC__
 	CommitButton = new wxBevelButton(this,BUTTON_COMMIT,_("Commit"),wxDefaultPosition,wxDefaultSize);
