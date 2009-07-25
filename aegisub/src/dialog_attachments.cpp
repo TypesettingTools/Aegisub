@@ -51,6 +51,7 @@
 #include "options.h"
 #include "help_button.h"
 #include "libresrc/libresrc.h"
+#include "libresrc/icons.h"
 
 
 ///////////////
@@ -59,7 +60,7 @@ DialogAttachments::DialogAttachments(wxWindow *parent)
 : wxDialog(parent,-1,_("Attachment List"),wxDefaultPosition,wxDefaultSize,wxDEFAULT_DIALOG_STYLE)
 {
 	// Set icon
-	SetIcon(BitmapToIcon(wxBitmap(attach_button_xpm)));
+	SetIcon(BitmapToIcon(GETIMAGE(attach_button_24)));
 
 	// List view
 	listView = new wxListView(this,ATTACHMENT_LIST,wxDefaultPosition,wxSize(500,200));

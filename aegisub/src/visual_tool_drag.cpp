@@ -46,6 +46,7 @@
 #include "utils.h"
 #include "vfr.h"
 #include "libresrc/libresrc.h"
+#include "libresrc/icons.h"
 
 
 ///////
@@ -61,8 +62,8 @@ VisualToolDrag::VisualToolDrag(VideoDisplay *_parent,wxToolBar *toolBar)
 : VisualTool(_parent)
 {
 	_parent->ShowCursor(false);
-	//toolBar->AddTool(BUTTON_TOGGLE_MOVE,_T("Toggle Move/Pos"),wxBitmap(visual_move_conv_move_xpm));
-	toggleMove = new wxBitmapButton(toolBar,BUTTON_TOGGLE_MOVE,wxBitmap(visual_move_conv_move_xpm),wxDefaultPosition);
+	//toolBar->AddTool(BUTTON_TOGGLE_MOVE,_T("Toggle Move/Pos"),GETIMAGE(visual_move_conv_move_24));
+	toggleMove = new wxBitmapButton(toolBar,BUTTON_TOGGLE_MOVE,GETIMAGE(visual_move_conv_move_24),wxDefaultPosition);
 	ConnectButton(toggleMove);
 	toolBar->AddControl(toggleMove);
 	toggleMoveOnMove = true;
@@ -89,8 +90,8 @@ void VisualToolDrag::UpdateToggleButtons() {
 	if (toMove == toggleMoveOnMove) return;
 
 	// Change bitmap
-	if (toMove) toggleMove->SetBitmapLabel(wxBitmap(visual_move_conv_move_xpm));
-	else toggleMove->SetBitmapLabel(wxBitmap(visual_move_conv_pos_xpm));
+	if (toMove) toggleMove->SetBitmapLabel(GETIMAGE(visual_move_conv_move_24));
+	else toggleMove->SetBitmapLabel(GETIMAGE(visual_move_conv_pos_24));
 	toggleMoveOnMove = toMove;
 }
 

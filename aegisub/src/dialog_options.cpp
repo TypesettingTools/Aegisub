@@ -67,6 +67,7 @@
 #include "utils.h"
 #include "help_button.h"
 #include "libresrc/libresrc.h"
+#include "libresrc/icons.h"
 
 
 ///////
@@ -87,7 +88,7 @@ DialogOptions::DialogOptions(wxWindow *parent)
 : wxDialog(parent, -1, _("Options"), wxDefaultPosition, wxDefaultSize)
 {
 	// Set icon
-	SetIcon(BitmapToIcon(wxBitmap(options_button_xpm)));
+	SetIcon(BitmapToIcon(GETIMAGE(options_button_24)));
 
 	// Create book
 	book = new wxTreebook(this,-1,wxDefaultPosition,wxSize(400,300));

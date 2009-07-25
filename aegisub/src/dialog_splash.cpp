@@ -45,6 +45,7 @@
 #include "options.h"
 #include "dialog_tip.h"
 #include "libresrc/libresrc.h"
+#include "libresrc/icons.h"
 
 
 ///////////////
@@ -56,7 +57,7 @@ SplashScreen::SplashScreen(wxWindow *parent)
 	par = parent;
 
 	// Get splash
-	splash = wxBitmap(splash_xpm);
+	splash = GETIMAGE(splash_misc);
 
 	#if wxUSE_DISPLAY == 1
 	// Center on current display

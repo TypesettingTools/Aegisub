@@ -57,6 +57,7 @@
 #include "help_button.h"
 #include "charset_conv.h"
 #include "libresrc/libresrc.h"
+#include "libresrc/icons.h"
 
 
 ///////////////
@@ -65,7 +66,7 @@ DialogShiftTimes::DialogShiftTimes (wxWindow *parent,SubtitlesGrid *_grid)
 : wxDialog(parent, -1, _("Shift Times"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE, _T("JumpTo"))
 {
 	// Set icon
-	SetIcon(BitmapToIcon(wxBitmap(shift_times_toolbutton_xpm)));
+	SetIcon(BitmapToIcon(GETIMAGE(shift_times_toolbutton_24)));
 
 	// Set initial values
 	ready = true;

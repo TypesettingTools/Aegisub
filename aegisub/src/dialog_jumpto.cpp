@@ -48,6 +48,7 @@
 #include "video_context.h"
 #include "utils.h"
 #include "libresrc/libresrc.h"
+#include "libresrc/icons.h"
 
 
 ///////
@@ -64,7 +65,7 @@ DialogJumpTo::DialogJumpTo (wxWindow *parent)
 : wxDialog(parent, -1, _("Jump to"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE | wxWANTS_CHARS , _T("JumpTo"))
 {
 	// Set icon
-	SetIcon(BitmapToIcon(wxBitmap(jumpto_button_xpm)));
+	SetIcon(BitmapToIcon(GETIMAGE(jumpto_button_24)));
 
 	// Set initial values
 	ready = false;

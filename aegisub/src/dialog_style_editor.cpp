@@ -57,6 +57,7 @@
 #include "ass_style_storage.h"
 #include "help_button.h"
 #include "libresrc/libresrc.h"
+#include "libresrc/icons.h"
 
 
 ///////
@@ -100,7 +101,7 @@ DialogStyleEditor::DialogStyleEditor (wxWindow *parent, AssStyle *_style, Subtit
 : wxDialog (parent,-1,_("Style Editor"),wxDefaultPosition,wxDefaultSize,wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER,_T("DialogStyleEditor"))
 {
 	// Set icon
-	SetIcon(BitmapToIcon(wxBitmap(style_toolbutton_xpm)));
+	SetIcon(BitmapToIcon(GETIMAGE(style_toolbutton_24)));
 
 	// Set variables
 	isLocal = local;

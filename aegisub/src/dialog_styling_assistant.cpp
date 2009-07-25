@@ -55,6 +55,7 @@
 #include "help_button.h"
 #include "subs_edit_box.h"
 #include "libresrc/libresrc.h"
+#include "libresrc/icons.h"
 
 
 ///////////////
@@ -63,7 +64,7 @@ DialogStyling::DialogStyling (wxWindow *parent,SubtitlesGrid *_grid) :
 wxDialog (parent, -1, _("Styling assistant"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER | wxMINIMIZE_BOX)
 {
 	// Set icon
-	SetIcon(BitmapToIcon(wxBitmap(styling_toolbutton_xpm)));
+	SetIcon(BitmapToIcon(GETIMAGE(styling_toolbutton_24)));
 
 	// Variables
 	grid = _grid;

@@ -54,6 +54,7 @@
 #include "help_button.h"
 #include "utils.h"
 #include "libresrc/libresrc.h"
+#include "libresrc/icons.h"
 
 #include <stdio.h>
 
@@ -550,7 +551,7 @@ DialogColorPicker::DialogColorPicker(wxWindow *parent, wxColour initial_color)
 	recent_box = new ColorPickerRecent(this, SELECTOR_RECENT, 8, 4, 16);
 
 #ifdef __WXMSW__
-	eyedropper_bitmap = wxBitmap(eyedropper_tool_xpm);
+	eyedropper_bitmap = GETIMAGE(eyedropper_tool_24);
 	eyedropper_bitmap.SetMask(new wxMask(eyedropper_bitmap, wxColour(255, 0, 255)));
 	screen_dropper_icon = new wxStaticBitmap(this, SELECTOR_DROPPER, eyedropper_bitmap, wxDefaultPosition, wxDefaultSize, wxRAISED_BORDER);
 	screen_dropper = new ColorPickerScreenDropper(this, SELECTOR_DROPPER_PICK, 7, 7, 8, false);

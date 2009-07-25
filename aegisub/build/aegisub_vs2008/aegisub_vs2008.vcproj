@@ -1836,16 +1836,32 @@
 				>
 			</File>
 		</Filter>
+		<Filter
+			Name="Resources"
+			>
+			<File
+				RelativePath="..\..\src\libresrc\icons.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\libresrc\icons.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\libresrc\libresrc.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\res.rc"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\libresrc\resrc.cpp"
+				>
+			</File>
+		</Filter>
 		<File
 			RelativePath="..\..\src\changelog.txt"
-			>
-		</File>
-		<File
-			RelativePath="..\..\src\res.rc"
-			>
-		</File>
-		<File
-			RelativePath="..\..\src\libresrc\resrc.cpp"
 			>
 		</File>
 	</Files>

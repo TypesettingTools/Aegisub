@@ -54,6 +54,7 @@
 #include "utils.h"
 #include "help_button.h"
 #include "libresrc/libresrc.h"
+#include "libresrc/icons.h"
 
 
 ///////////////
@@ -62,7 +63,7 @@ DialogTranslation::DialogTranslation (wxWindow *parent,AssFile *_subs,SubtitlesG
 : wxDialog(parent, -1, _("Translation Assistant"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER | wxMINIMIZE_BOX, _T("TranslationAssistant"))
 {
 	// Set icon
-	SetIcon(BitmapToIcon(wxBitmap(translation_toolbutton_xpm)));
+	SetIcon(BitmapToIcon(GETIMAGE(translation_toolbutton_24)));
 
 	// Set variables
 	enablePreview = preview;

@@ -50,6 +50,7 @@
 #include "utils.h"
 #include "help_button.h"
 #include "libresrc/libresrc.h"
+#include "libresrc/icons.h"
 
 
 ///////////////
@@ -58,7 +59,7 @@ DialogTimingProcessor::DialogTimingProcessor(wxWindow *parent,SubtitlesGrid *_gr
 : wxDialog(parent,-1,_("Timing Post-Processor"),wxDefaultPosition,wxSize(400,250),wxDEFAULT_DIALOG_STYLE)
 {
 	// Set icon
-	SetIcon(BitmapToIcon(wxBitmap(timing_processor_toolbutton_xpm)));
+	SetIcon(BitmapToIcon(GETIMAGE(timing_processor_toolbutton_24)));
 
 	// Set variables
 	grid = _grid;

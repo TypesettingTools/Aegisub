@@ -49,6 +49,7 @@
 #include "options.h"
 #include "help_button.h"
 #include "libresrc/libresrc.h"
+#include "libresrc/icons.h"
 
 
 ///////
@@ -70,7 +71,7 @@ DialogSpellChecker::DialogSpellChecker(wxFrame *parent)
 : wxDialog(parent, -1, _("Spell Checker"), wxDefaultPosition, wxDefaultSize)
 {
 	// Set icon
-	SetIcon(BitmapToIcon(wxBitmap(spellcheck_toolbutton_xpm)));
+	SetIcon(BitmapToIcon(GETIMAGE(spellcheck_toolbutton_24)));
 
 	// Get spell checker
 	spellchecker = SpellCheckerFactoryManager::GetSpellChecker();

@@ -58,6 +58,7 @@
 #include "help_button.h"
 #include "scintilla_text_ctrl.h"
 #include "libresrc/libresrc.h"
+#include "libresrc/icons.h"
 
 
 ///////
@@ -81,7 +82,7 @@ DialogFontsCollector::DialogFontsCollector(wxWindow *parent)
 : wxDialog(parent,-1,_("Fonts Collector"),wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE)
 {
 	// Set icon
-	SetIcon(BitmapToIcon(wxBitmap(font_collector_button_xpm)));
+	SetIcon(BitmapToIcon(GETIMAGE(font_collector_button_24)));
 
 	// Parent
 	main = (FrameMain*) parent;

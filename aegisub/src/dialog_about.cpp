@@ -46,6 +46,7 @@
 #include "version.h"
 #include "options.h"
 #include "libresrc/libresrc.h"
+#include "libresrc/icons.h"
 
 
 ///////////////
@@ -54,7 +55,7 @@ AboutScreen::AboutScreen(wxWindow *parent)
 : wxDialog (parent, -1, _("About Aegisub"), wxDefaultPosition, wxSize(300,240), wxCAPTION | wxCLOSE_BOX , _("About Aegisub"))
 {
 	// Get splash
-	wxBitmap splash = wxBitmap(splash_xpm);
+	wxBitmap splash = GETIMAGE(splash_misc);
 	SetOwnBackgroundColour(wxColour(255,255,255));
 	SetForegroundColour(wxColour(0,0,0));
 

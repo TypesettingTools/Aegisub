@@ -53,6 +53,7 @@
 #include "ass_karaoke.h"
 #include <wx/string.h>
 #include "libresrc/libresrc.h"
+#include "libresrc/icons.h"
 
 
 
@@ -696,7 +697,7 @@ DialogKanjiTimer::DialogKanjiTimer(wxWindow *parent, SubtitlesGrid *_grid)
 : wxDialog (parent,-1,_("Kanji timing"),wxDefaultPosition)
 {
 	// Set icon
-	SetIcon(BitmapToIcon(wxBitmap(kanji_timer_button_xpm)));
+	SetIcon(BitmapToIcon(GETIMAGE(kanji_timer_button_24)));
 
 	// Variables
 	subs = AssFile::top;

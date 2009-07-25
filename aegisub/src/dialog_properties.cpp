@@ -51,6 +51,7 @@
 #include "utils.h"
 #include "help_button.h"
 #include "libresrc/libresrc.h"
+#include "libresrc/icons.h"
 
 
 ///////////////
@@ -59,7 +60,7 @@ DialogProperties::DialogProperties (wxWindow *parent)
 : wxDialog(parent, -1, _("Script Properties"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE)
 {
 	// Set icon
-	SetIcon(BitmapToIcon(wxBitmap(properties_toolbutton_xpm)));
+	SetIcon(BitmapToIcon(GETIMAGE(properties_toolbutton_24)));
 
 	// Setup
 	AssFile *subs = AssFile::top;

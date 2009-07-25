@@ -50,6 +50,7 @@
 #include "subs_edit_box.h"
 #include "help_button.h"
 #include "libresrc/libresrc.h"
+#include "libresrc/icons.h"
 
 
 ///////////////
@@ -58,7 +59,7 @@ DialogResample::DialogResample(wxWindow *parent, SubtitlesGrid *_grid)
 : wxDialog (parent,-1,_("Resample resolution"),wxDefaultPosition)
 {
 	// Set icon
-	SetIcon(BitmapToIcon(wxBitmap(resample_toolbutton_xpm)));
+	SetIcon(BitmapToIcon(GETIMAGE(resample_toolbutton_24)));
 
 	// Variables
 	AssFile *subs = AssFile::top;
