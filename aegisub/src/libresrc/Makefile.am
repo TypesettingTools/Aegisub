@@ -7,4 +7,4 @@ EXTRA_DIST = \
 	wxicon_xpm.xpm
 
 libresrc.cpp: ../../tools/common-respack
-	../../tools/common-respack libresrc.cpp ../bitmaps/16/* ../bitmaps/24/*
+	../../tools/common-respack libresrc.cpp ../bitmaps/16 ../bitmaps/24 ../bitmaps/misc/splash.png

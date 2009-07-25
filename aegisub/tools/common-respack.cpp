@@ -113,14 +113,20 @@ int main(int argc, const char *argv[]) {
 	ofstream outH(headerFileName.GetFullPath().char_str());
 	ofstream outC(argv[1]);
 
-	outC << "/* This is an automatically generated file and should not be modified directly */" << endl;
-	outC << "#include \"" << headerFileName.GetFullName() << "\"" << endl;
+	outC << "/* This is an automatically generated file and should not be modified directly */" << endl
+	     << "#include \"" << headerFileName.GetFullName() << "\"" << endl
+	     << "wxBitmap " << headerFileName.GetName() << "_getimage(const unsigned char *buff, size_t size) {" << endl
+	     << "	wxMemoryInputStream mem(buff, size);" << endl
+	     << "	wxImage image(mem);" << endl
+	     << "	return wxBitmap(image);" << endl
+	     << "}" << endl;
 
-	outH << "/* This is an automatically generated file and should not be modified directly */" << endl;
-	outH << "#include <wx/mstream.h>" << endl;
-	outH << "#include <wx/bitmap.h>" << endl;
-	outH << "#include <wx/image.h>" << endl;
-	outH << "#define GETIMAGE(a) wxBitmap(wxImage(wxMemoryInputStream(a, sizeof(a))))" << endl;
+	outH << "/* This is an automatically generated file and should not be modified directly */" << endl
+	     << "#include <wx/mstream.h>" << endl
+	     << "#include <wx/bitmap.h>" << endl
+	     << "#include <wx/image.h>" << endl
+	     << "wxBitmap " << headerFileName.GetName() << "_getimage(const unsigned char *image, size_t size);" << endl
+	     << "#define GETIMAGE(a) " << headerFileName.GetName() << "_getimage(a, sizeof(a))" << endl;
 
 	wxRegEx nameCleaner("[^A-Za-z_0-9]");
 	wxString filename;
