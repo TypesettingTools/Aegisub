@@ -35,8 +35,8 @@
 
 // main app icon should always be first
 // (windows explorer uses the first icon resource by default)
-wxicon ICON "bitmaps/icon.ico"
-eyedropper_cursor CURSOR "bitmaps/eyedropper.cur"
+wxicon ICON "bitmaps/windows/icon.ico"
+eyedropper_cursor CURSOR "bitmaps/windows/eyedropper.cur"
 
 // The following define is necessary for Visual Studio
 #define wxUSE_NO_MANIFEST 1
