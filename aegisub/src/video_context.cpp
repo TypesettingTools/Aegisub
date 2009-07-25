@@ -471,13 +471,6 @@ wxGLContext *VideoContext::GetGLContext(wxGLCanvas *canvas) {
 	// Everywhere else, we can just create a wxGLContext using the documented interface
 	// and be over with it after that.
 	// Also see bug #850.
-#if wxCHECK_VERSION(2,9,0)
-#else
-	if (!glContext) {
-		glContext = canvas->GetContext();
-		ownGlContext = false;
-	}
-#endif
 #ifndef __WXMAC__
 	if (!glContext) {
 		glContext = new wxGLContext(canvas);

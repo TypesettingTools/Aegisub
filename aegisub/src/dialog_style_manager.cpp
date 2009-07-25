@@ -889,11 +889,7 @@ void DialogStyleManager::OnCurrentImport(wxCommandEvent &event) {
 
 			// Get selection
 			wxArrayInt selections;
-#if wxCHECK_VERSION(2,9,0)
 			int res = wxGetSelectedChoices(selections,_("Choose styles to import:"),_("Import Styles"),styles);
-#else
-			int res = wxGetMultipleChoices(selections,_("Choose styles to import:"),_("Import Styles"),styles);
-#endif
 			if (res == -1 || selections.Count() == 0) return;
 			bool modified = false;
 

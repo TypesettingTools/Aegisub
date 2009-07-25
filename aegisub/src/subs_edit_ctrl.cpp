@@ -756,11 +756,7 @@ void SubsTextEditCtrl::OnMouseEvent(wxMouseEvent &event) {
 	}
 
 	event.Skip();
-#if wxCHECK_VERSION(2,9,0)
 	GetParent()->GetEventHandler()->ProcessEvent(event);
-#else
-	GetParent()->AddPendingEvent(event);
-#endif
 }
 
 
@@ -802,7 +798,7 @@ void SubsTextEditCtrl::ShowPopupMenu(int activePos) {
 			for (int i=0;i<nSugs;i++) {
 				wxMenuItem *itm;
 				itm = menu.Append(EDIT_MENU_SUGGESTIONS+i,sugs[i]);
-#if wxCHECK_VERSION(2, 8, 0) && defined(__WINDOWS__)
+#ifdef __WINDOWS__
 				itm->SetFont(font);
 #endif
 			}

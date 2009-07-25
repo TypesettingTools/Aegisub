@@ -177,9 +177,5 @@ wxThread::ExitCode DialogProgressThread::Entry() {
 void DialogProgressThread::Close() {
 	wxCommandEvent event(wxEVT_COMMAND_BUTTON_CLICKED,wxID_CANCEL);
 	dialog->canceled = NULL;
-#if wxCHECK_VERSION(2,9,0)
 	dialog->GetEventHandler()->ProcessEvent(event);
-#else
-	dialog->AddPendingEvent(event);
-#endif
 }

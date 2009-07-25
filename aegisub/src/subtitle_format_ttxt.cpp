@@ -97,11 +97,7 @@ void TTXTSubtitleFormat::ReadFile(wxString filename,wxString forceEncoding) {
 	if (doc.GetRoot()->GetName() != _T("TextStream")) throw _T("Invalid TTXT file.");
 
 	// Check version
-#if wxCHECK_VERSION(2,9,0)
 	wxString verStr = doc.GetRoot()->GetAttribute(_T("version"),_T(""));
-#else
-	wxString verStr = doc.GetRoot()->GetPropVal(_T("version"),_T(""));
-#endif
 	version = -1;
 	if (verStr == _T("1.0")) version = 0;
 	else if (verStr == _T("1.1")) version = 1;
@@ -142,11 +138,7 @@ void TTXTSubtitleFormat::ReadFile(wxString filename,wxString forceEncoding) {
 // Process a dialogue line
 bool TTXTSubtitleFormat::ProcessLine(wxXmlNode *node) {
 	// Get time
-#if wxCHECK_VERSION(2,9,0)
 	wxString sampleTime = node->GetAttribute(_T("sampleTime"),_T("00:00:00.000"));
-#else
-	wxString sampleTime = node->GetPropVal(_T("sampleTime"),_T("00:00:00.000"));
-#endif
 	AssTime time;
 	time.ParseASS(sampleTime);
 
@@ -156,11 +148,7 @@ bool TTXTSubtitleFormat::ProcessLine(wxXmlNode *node) {
 
 	// Get text
 	wxString text;
-#if wxCHECK_VERSION(2,9,0)
 	if (version == 0) text = node->GetAttribute(_T("text"),_T(""));
-#else
-	if (version == 0) text = node->GetPropVal(_T("text"),_T(""));
-#endif
 	else text = node->GetNodeContent();
 
 	// Create line
@@ -223,11 +211,7 @@ void TTXTSubtitleFormat::WriteFile(wxString filename,wxString encoding) {
 	// Create XML structure
 	wxXmlDocument doc;
 	wxXmlNode *root = new wxXmlNode(NULL,wxXML_ELEMENT_NODE,_T("TextStream"));
-#if wxCHECK_VERSION(2,9,0)
 	root->AddAttribute(_T("version"),_T("1.1"));
-#else
-	root->AddProperty(_T("version"),_T("1.1"));
-#endif
 	doc.SetRoot(root);
 
 	// Create header
@@ -260,25 +244,16 @@ void TTXTSubtitleFormat::WriteFile(wxString filename,wxString encoding) {
 void TTXTSubtitleFormat::WriteHeader(wxXmlNode *root) {
 	// Write stream header
 	wxXmlNode *node = new wxXmlNode(wxXML_ELEMENT_NODE,_T("TextStreamHeader"));
-#if wxCHECK_VERSION(2,9,0)
 	node->AddAttribute(_T("width"),_T("400"));
 	node->AddAttribute(_T("height"),_T("60"));
 	node->AddAttribute(_T("layer"),_T("0"));
 	node->AddAttribute(_T("translation_x"),_T("0"));
 	node->AddAttribute(_T("translation_y"),_T("0"));
-#else
-	node->AddProperty(_T("width"),_T("400"));
-	node->AddProperty(_T("height"),_T("60"));
-	node->AddProperty(_T("layer"),_T("0"));
-	node->AddProperty(_T("translation_x"),_T("0"));
-	node->AddProperty(_T("translation_y"),_T("0"));
-#endif
 	root->AddChild(node);
 	root = node;
 
 	// Write sample description
 	node = new wxXmlNode(wxXML_ELEMENT_NODE,_T("TextSampleDescription"));
-#if wxCHECK_VERSION(2,9,0)
 	node->AddAttribute(_T("horizontalJustification"),_T("center"));
 	node->AddAttribute(_T("verticalJustification"),_T("bottom"));
 	node->AddAttribute(_T("backColor"),_T("0 0 0 0"));
@@ -286,59 +261,31 @@ void TTXTSubtitleFormat::WriteHeader(wxXmlNode *root) {
 	node->AddAttribute(_T("fillTextRegion"),_T("no"));
 	node->AddAttribute(_T("continuousKaraoke"),_T("no"));
 	node->AddAttribute(_T("scroll"),_T("None"));
-#else
-	node->AddProperty(_T("horizontalJustification"),_T("center"));
-	node->AddProperty(_T("verticalJustification"),_T("bottom"));
-	node->AddProperty(_T("backColor"),_T("0 0 0 0"));
-	node->AddProperty(_T("verticalText"),_T("no"));
-	node->AddProperty(_T("fillTextRegion"),_T("no"));
-	node->AddProperty(_T("continuousKaraoke"),_T("no"));
-	node->AddProperty(_T("scroll"),_T("None"));
-#endif
 	root->AddChild(node);
 	root = node;
 
 	// Write font table
 	node = new wxXmlNode(wxXML_ELEMENT_NODE,_T("FontTable"));
 	wxXmlNode *subNode = new wxXmlNode(wxXML_ELEMENT_NODE,_T("FontTableEntry"));
-#if wxCHECK_VERSION(2,9,0)
 	subNode->AddAttribute(_T("fontName"),_T("Sans"));
 	subNode->AddAttribute(_T("fontID"),_T("1"));
-#else
-	subNode->AddProperty(_T("fontName"),_T("Sans"));
-	subNode->AddProperty(_T("fontID"),_T("1"));
-#endif
 	node->AddChild(subNode);
 	root->AddChild(node);
 	
 	// Write text box
 	node = new wxXmlNode(wxXML_ELEMENT_NODE,_T("TextBox"));
-#if wxCHECK_VERSION(2,9,0)
 	node->AddAttribute(_T("top"),_T("0"));
 	node->AddAttribute(_T("left"),_T("0"));
 	node->AddAttribute(_T("bottom"),_T("60"));
 	node->AddAttribute(_T("right"),_T("400"));
-#else
-	node->AddProperty(_T("top"),_T("0"));
-	node->AddProperty(_T("left"),_T("0"));
-	node->AddProperty(_T("bottom"),_T("60"));
-	node->AddProperty(_T("right"),_T("400"));
-#endif
 	root->AddChild(node);
 
 	// Write style
 	node = new wxXmlNode(wxXML_ELEMENT_NODE,_T("Style"));
-#if wxCHECK_VERSION(2,9,0)
 	node->AddAttribute(_T("styles"),_T("Normal"));
 	node->AddAttribute(_T("fontID"),_T("1"));
 	node->AddAttribute(_T("fontSize"),_T("18"));
 	node->AddAttribute(_T("color"),_T("ff ff ff ff"));
-#else
-	node->AddProperty(_T("styles"),_T("Normal"));
-	node->AddProperty(_T("fontID"),_T("1"));
-	node->AddProperty(_T("fontSize"),_T("18"));
-	node->AddProperty(_T("color"),_T("ff ff ff ff"));
-#endif
 	root->AddChild(node);
 }
 
@@ -350,13 +297,8 @@ void TTXTSubtitleFormat::WriteLine(wxXmlNode *root, AssDialogue *line) {
 	wxXmlNode *node,*subNode;
 	if (prev && prev->End != line->Start) {
 		node = new wxXmlNode(wxXML_ELEMENT_NODE,_T("TextSample"));
-#if wxCHECK_VERSION(2,9,0)
 		node->AddAttribute(_T("sampleTime"),_T("0") + prev->End.GetASSFormated(true));
 		node->AddAttribute(_T("xml:space"),_T("preserve"));
-#else
-		node->AddProperty(_T("sampleTime"),_T("0") + prev->End.GetASSFormated(true));
-		node->AddProperty(_T("xml:space"),_T("preserve"));
-#endif
 		subNode = new wxXmlNode(wxXML_TEXT_NODE,_T(""),_T(""));
 		node->AddChild(subNode);
 		root->AddChild(node);
@@ -364,13 +306,8 @@ void TTXTSubtitleFormat::WriteLine(wxXmlNode *root, AssDialogue *line) {
 
 	// Generate and insert node
 	node = new wxXmlNode(wxXML_ELEMENT_NODE,_T("TextSample"));
-#if wxCHECK_VERSION(2,9,0)
 	node->AddAttribute(_T("sampleTime"),_T("0") + line->Start.GetASSFormated(true));
 	node->AddAttribute(_T("xml:space"),_T("preserve"));
-#else
-	node->AddProperty(_T("sampleTime"),_T("0") + line->Start.GetASSFormated(true));
-	node->AddProperty(_T("xml:space"),_T("preserve"));
-#endif
 	subNode = new wxXmlNode(wxXML_TEXT_NODE,_T(""),line->Text);
 	node->AddChild(subNode);
 	root->AddChild(node);
