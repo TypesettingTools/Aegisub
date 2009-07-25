@@ -14,13 +14,14 @@ ffmpegsource = libffms
 endif
 
 SUBDIRS = \
-	$(univchardet) \
-    $(libass) \
 	$(ffmpegsource) \
+    $(libass) \
+	$(univchardet) \
+	tools \
 	src \
 	automation \
-	po \
-	desktop
+	desktop \
+	po
 
 osx-bundle:
 	@SHELL@ tools/osx-bundle.sh "Aegisub (r@SVN_REVISION@-@DARWIN_ARCH@@PACKAGE_DEBUG@)" @AEGISUB_VERSION_DATA@ DICT_DIR=$(DICT_DIR)
@@ -59,14 +60,6 @@ EXTRA_DIST += \
 	m4macros/ax_openmp.m4 \
 	m4macros/ax_check_gl.m4 \
 	m4macros/ac_flag.m4
-
-# tools/
-EXTRA_DIST += \
-	tools/osx-bundle-restart-helper.c \
-	tools/osx-bundle.sh \
-	tools/osx-dmg-dsstore.pl \
-	tools/osx-dmg.sh \
-	tools/osx-fix-libs.py
 
 # packages/osx_bundle/
 EXTRA_DIST += \

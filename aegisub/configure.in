@@ -1092,12 +1092,13 @@ libass/Makefile
 automation/Makefile
 po/Makefile.in
 desktop/Makefile
+tools/Makefile
 ])
 
 # Files that need substitution.
 AC_CONFIG_FILES([
 desktop/aegisub.desktop
-scripts/osx-bundle.sed
+tools/osx-bundle.sed
 ])
 
 AC_OUTPUT
