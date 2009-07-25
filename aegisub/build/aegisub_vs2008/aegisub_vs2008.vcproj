@@ -1288,10 +1288,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\libresrc\libresrc.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\main.cpp"
 				>
 			</File>
@@ -1313,10 +1309,6 @@
 			</File>
 			<File
 				RelativePath="..\..\src\plugin_manager.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\libresrc\resrc.cpp"
 				>
 			</File>
 			<File
@@ -1844,28 +1836,16 @@
 				>
 			</File>
 		</Filter>
-		<Filter
-			Name="Resources"
-			>
-			<File
-				RelativePath="..\..\src\resources\icons.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\resources\icons.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\res.rc"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\libresrc\resrc.cpp"
-				>
-			</File>
-		</Filter>
 		<File
 			RelativePath="..\..\src\changelog.txt"
+			>
+		</File>
+		<File
+			RelativePath="..\..\src\res.rc"
+			>
+		</File>
+		<File
+			RelativePath="..\..\src\libresrc\resrc.cpp"
 			>
 		</File>
 	</Files>
