@@ -49,16 +49,10 @@
 
 /////////////
 // wxWidgets
+#if wxCHECK_VERSION(2, 9, 0)
 #ifdef __WXDEBUG__
 #pragma comment(lib, "wxzlibd.lib")
 #pragma comment(lib, "wxpngd.lib")
-#else
-#pragma comment(lib, "wxzlib.lib")
-#pragma comment(lib, "wxpng.lib")
-#endif
-
-#if wxCHECK_VERSION(2, 9, 0)
-#ifdef __WXDEBUG__
 #pragma comment(lib, "wxregexud.lib")
 #pragma comment(lib, "wxbase29ud.lib")
 #pragma comment(lib, "wxbase29ud_net.lib")
@@ -71,6 +65,8 @@
 #pragma comment(lib, "wxbase29ud_xml.lib")
 #pragma comment(lib, "wxexpatd.lib")
 #else
+#pragma comment(lib, "wxzlib.lib")
+#pragma comment(lib, "wxpng.lib")
 #pragma comment(lib, "wxregexu.lib")
 #pragma comment(lib, "wxbase29u.lib")
 #pragma comment(lib, "wxbase29u_net.lib")
@@ -84,34 +80,9 @@
 #pragma comment(lib, "wxexpat.lib")
 #endif
 
-#elif wxCHECK_VERSION(2, 8, 0)
-#ifdef __WXDEBUG__
-#pragma comment(lib, "wxregexud.lib")
-#pragma comment(lib, "wxbase28ud.lib")
-#pragma comment(lib, "wxbase28ud_net.lib")
-#pragma comment(lib, "wxmsw28ud_media.lib")
-#pragma comment(lib, "wxmsw28ud_core.lib")
-#pragma comment(lib, "wxmsw28ud_adv.lib")
-#pragma comment(lib, "wxmsw28ud_gl.lib")
-#pragma comment(lib, "wxmsw28ud_stc.lib")
-#pragma comment(lib, "wxbase28ud_xml.lib")
-#pragma comment(lib, "wxexpatd.lib")
-#else
-#pragma comment(lib, "wxregexu.lib")
-#pragma comment(lib, "wxbase28u.lib")
-#pragma comment(lib, "wxbase28u_net.lib")
-#pragma comment(lib, "wxmsw28u_media.lib")
-#pragma comment(lib, "wxmsw28u_core.lib")
-#pragma comment(lib, "wxmsw28u_adv.lib")
-#pragma comment(lib, "wxmsw28u_gl.lib")
-#pragma comment(lib, "wxmsw28u_stc.lib")
-#pragma comment(lib, "wxbase28u_xml.lib")
-#pragma comment(lib, "wxexpat.lib")
-#endif
-
 #else 
 
-#error "Aegisub requires wxWidgets 2.8.0 or superior"
+#error "Aegisub requires wxWidgets 2.9"
 
 #endif // wxWidgets
 
