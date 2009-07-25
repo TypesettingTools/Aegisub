@@ -147,9 +147,13 @@ FrameMain::FrameMain (wxArrayString args)
 
 	// Set icon
 	StartupLog(_T("Set icon"));
+#ifdef _WINDOWS
+	SetIcon(wxICON(wxicon));
+#else
 	wxIcon icon;
 	icon.CopyFromBitmap(GETIMAGE(wxicon_misc));
 	SetIcon(icon);
+#endif
 
 	// Contents
 	showVideo = true;
