@@ -174,7 +174,10 @@ void FFmpegSourceVideoProvider::LoadVideo(wxString filename) {
 	}
 	
 	// update access time of index file so it won't get cleaned away
-	wxFileName(CacheName).Touch();
+	if (!wxFileName(CacheName).Touch()) {
+		// warn user?
+		// FIND OUT WHY IT'S POPPING UP ERROR MESSAGES HERE
+	}
 
 	// we have now read the index and may proceed with cleaning the index cache
 	if (!CleanCache()) {

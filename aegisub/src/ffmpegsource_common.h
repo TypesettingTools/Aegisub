@@ -41,6 +41,7 @@
 #include <wx/wxprec.h>
 #include <wx/thread.h>
 #include "include/aegisub/aegisub.h"
+#define FFMS_BETA_10_COMPAT
 #include <ffms.h>
 #include "dialog_progress.h"
 

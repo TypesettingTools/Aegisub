@@ -96,7 +96,7 @@ FFIndex *FFmpegSourceProvider::DoIndexing(FFIndexer *Indexer, const wxString &Ca
 
 	// write index to disk for later use
 	// ignore write errors for now
-	FFMS_WriteIndex(CacheName.char_str(), Index, FFMSErrMsg, MsgSize);
+	FFMS_WriteIndex(CacheName.utf8_str(), Index, FFMSErrMsg, MsgSize);
 	/*if (FFMS_WriteIndex(CacheName.char_str(), Index, FFMSErrMsg, MsgSize)) {
 		wxString temp(FFMSErrMsg, wxConvUTF8);
 		MsgString << _T("Failed to write index: ") << temp;

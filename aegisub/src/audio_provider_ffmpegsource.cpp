@@ -164,7 +164,9 @@ void FFmpegSourceAudioProvider::LoadAudio(wxString filename) {
 	}
 
 	// update access time of index file so it won't get cleaned away
-	wxFileName(CacheName).Touch();
+	if (!wxFileName(CacheName).Touch()) {
+		// warn user?
+	}
 
 	AudioSource = FFMS_CreateAudioSource(FileNameShort.utf8_str(), TrackNumber, Index, FFMSErrMsg, MsgSize);
 	FFMS_DestroyIndex(Index);
