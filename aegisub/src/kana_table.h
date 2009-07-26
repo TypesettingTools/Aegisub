@@ -50,7 +50,7 @@ public:
 	wxString hepburn;
 
 	KanaEntry() {}
-	KanaEntry(wxString hira,wxString kata,wxString hep) {
+	KanaEntry(const wxString &hira, const wxString &kata, const wxString &hep) {
 		hiragana = hira;
 		katakana = kata;
 		hepburn = hep;
@@ -62,7 +62,7 @@ public:
 // Hiragana/Katakana table
 class KanaTable {
 private:
-	void Insert(wchar_t *hira,wchar_t *kata,wchar_t *hep);
+	void Insert(const wchar_t *hira, const wchar_t *kata, const wchar_t *hep);
 
 public:
 	std::list<KanaEntry> entries;

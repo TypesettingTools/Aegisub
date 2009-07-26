@@ -34,16 +34,13 @@
 //
 
 
-///////////
-// Headers
 #include "config.h"
 
 #include "kana_table.h"
 
 
-///////////////
-// Constructor
-KanaTable::KanaTable() {
+KanaTable::KanaTable()
+{
 
 	// Regular kana usage and combinations
 
@@ -273,10 +270,7 @@ KanaTable::~KanaTable()
 }
 
 
-//////////
-// Insert
-void KanaTable::Insert(wchar_t *hira,wchar_t *kata,wchar_t *hep) {
-#ifdef _UNICODE
+void KanaTable::Insert(const wchar_t *hira, const wchar_t *kata, const wchar_t *hep)
+{
 	entries.push_back(KanaEntry(hira,kata,hep));
-#endif
 }
