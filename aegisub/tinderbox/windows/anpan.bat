@@ -35,7 +35,6 @@ set INCLUDE=%INCLUDE%;%HOME%\Dev\portaudio\include
 set Framework35Version=v3.5
 set FrameworkVersion=v2.0.50727
 set PATHEXT=.COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.MSC;.PY
-set Path=C:\Program Files (x86)\Microsoft Visual Studio 9.0\VC\BIN\amd64;C:\Windows\Microsoft.NET\Framework64\v3.5;C:\Windows\Microsoft.NET\Framework64\v3.5\Microsoft .NET Framework 3.5 (Pre-Release Version);C:\Windows\Microsoft.NET\Framework64\v2.0.50727;C:\Program Files (x86)\Microsoft Visual Studio 9.0\VC\VCPackages;C:\Program Files (x86)\Microsoft Visual Studio 9.0\Common7\IDE;C:\Program Files (x86)\Microsoft Visual Studio 9.0\Common7\Tools;C:\Program Files (x86)\Microsoft Visual Studio 9.0\Common7\Tools\bin;C:\Program Files\Microsoft SDKs\Windows\v6.0A\bin\x64;C:\Program Files\Microsoft SDKs\Windows\v6.0A\bin\win64\x64;C:\Program Files\Microsoft SDKs\Windows\v6.0A\bin;C:\Program Files (x86)\CollabNet Subversion Server;C:\cygwin\bin;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Program Files\TortoiseSVN\bin;C:\Python25;C:\Python25\Scripts
 
 if /i "%2"=="Win32" goto set32
 if /i "%2"=="x64" goto set64
@@ -50,6 +49,7 @@ set LIB=%LIB%;%HOME%\Dev\portaudio\lib
 set LIB=%LIB%;%HOME%\Dev\ffms2\lib
 set FrameworkDir=C:\Windows\Microsoft.NET\Framework
 set LIBPATH=C:\Windows\Microsoft.NET\Framework\v3.5;C:\Windows\Microsoft.NET\Framework\v2.0.50727;C:\Windows\Microsoft.NET\Framework\v3.5;C:\Windows\Microsoft.NET\Framework\v2.0.50727;C:\Program Files (x86)\Microsoft Visual Studio 9.0\VC\ATLMFC\LIB;C:\Program Files (x86)\Microsoft Visual Studio 9.0\VC\LIB;
+set Path=C:\Program Files (x86)\Microsoft Visual Studio 9.0\VC\BIN;C:\Windows\Microsoft.NET\Framework\v3.5;C:\Windows\Microsoft.NET\Framework\v3.5\Microsoft .NET Framework 3.5 (Pre-Release Version);C:\Windows\Microsoft.NET\Framework\v2.0.50727;C:\Program Files (x86)\Microsoft Visual Studio 9.0\VC\VCPackages;C:\Program Files (x86)\Microsoft Visual Studio 9.0\Common7\IDE;C:\Program Files (x86)\Microsoft Visual Studio 9.0\Common7\Tools;C:\Program Files (x86)\Microsoft Visual Studio 9.0\Common7\Tools\bin;C:\Program Files\Microsoft SDKs\Windows\v6.0A\bin;C:\Program Files (x86)\CollabNet Subversion Server;C:\cygwin\bin;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Program Files\TortoiseSVN\bin;C:\Python25;C:\Python25\Scripts
 goto startbuild
 
 :set64
@@ -61,6 +61,9 @@ set LIB=%LIB%;%HOME%\Dev\freetype-2.3.9\objs\win32\vc2008_64
 set LIB=%LIB%;%HOME%\Dev\portaudio\lib
 set FrameworkDir=C:\Windows\Microsoft.NET\Framework64
 set LIBPATH=C:\Windows\Microsoft.NET\Framework64\v3.5;C:\Windows\Microsoft.NET\Framework64\v2.0.50727;C:\Windows\Microsoft.NET\Framework64\v3.5;C:\Windows\Microsoft.NET\Framework64\v2.0.50727;C:\Program Files (x86)\Microsoft Visual Studio 9.0\VC\ATLMFC\LIB\amd64;C:\Program Files (x86)\Microsoft Visual Studio 9.0\VC\LIB\amd64;
+set Path=C:\Program Files (x86)\Microsoft Visual Studio 9.0\VC\BIN\amd64;C:\Windows\Microsoft.NET\Framework64\v3.5;C:\Windows\Microsoft.NET\Framework64\v3.5\Microsoft .NET Framework 3.5 (Pre-Release Version);C:\Windows\Microsoft.NET\Framework64\v2.0.50727;C:\Program Files (x86)\Microsoft Visual Studio 9.0\VC\VCPackages;C:\Program Files (x86)\Microsoft Visual Studio 9.0\Common7\IDE;C:\Program Files (x86)\Microsoft Visual Studio 9.0\Common7\Tools;C:\Program Files (x86)\Microsoft Visual Studio 9.0\Common7\Tools\bin;C:\Program Files\Microsoft SDKs\Windows\v6.0A\bin\x64;C:\Program Files\Microsoft SDKs\Windows\v6.0A\bin\win64\x64;C:\Program Files\Microsoft SDKs\Windows\v6.0A\bin;C:\Program Files (x86)\CollabNet Subversion Server;C:\cygwin\bin;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Program Files\TortoiseSVN\bin;C:\Python25;C:\Python25\Scripts
 goto startbuild
 
-msbuild aegisub\tinderbox\windows\aegisub_vs2008.sln /p:Configuration=%1 /p:Platform=%2 /v:d /nologo /t:rebuild
+:startbuild
+
+vcbuild /nologo /platform:%2 /r /useenv aegisub\tinderbox\windows\aegisub_vs2008.sln %1^|%2
