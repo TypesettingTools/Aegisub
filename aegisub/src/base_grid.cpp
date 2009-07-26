@@ -38,6 +38,7 @@
 // Includes
 #include "config.h"
 
+#include <wx/sizer.h>
 #include "base_grid.h"
 #include "utils.h"
 #include "ass_file.h"
@@ -69,6 +70,12 @@ BaseGrid::BaseGrid(wxWindow* parent, wxWindowID id, const wxPoint& pos, const wx
 	// Set scrollbar
 	scrollBar = new wxScrollBar(this,GRID_SCROLLBAR,wxDefaultPosition,wxDefaultSize,wxSB_VERTICAL);
 	scrollBar->SetScrollbar(0,10,100,10);
+
+	wxBoxSizer *scrollbarpositioner = new wxBoxSizer(wxHORIZONTAL);
+	scrollbarpositioner->AddStretchSpacer();
+	scrollbarpositioner->Add(scrollBar, 0, wxEXPAND, 0);
+
+	SetSizerAndFit(scrollbarpositioner);
 
 	// Set style
 	UpdateStyle();
@@ -769,6 +776,8 @@ void BaseGrid::AdjustScrollbar() {
 /////////////////////
 // Set column widths
 void BaseGrid::SetColumnWidths() {
+	if (!IsShownOnScreen()) return;
+
 	// Width/height
 	int w = 0;
 	int h = 0;
