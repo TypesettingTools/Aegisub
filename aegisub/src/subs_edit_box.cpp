@@ -1035,14 +1035,10 @@ void SubsEditBox::SetOverride (wxString tagname,wxString preValue,int forcePos,b
 	// Default value
 	wxColour startcolor;
 	wxFont startfont;
-	float startangle;
-	float startScale;
 	bool isColor = false;
 	bool isFont = false;
 	bool isGeneric = false;
 	bool isFlag = false;
-	bool isAngle = false;
-	bool isScale = false;
 	bool state = false;
 	AssStyle *style = grid->ass->GetStyle(grid->GetDialogue(linen)->Style);
 	AssStyle defStyle;
@@ -1087,22 +1083,6 @@ void SubsEditBox::SetOverride (wxString tagname,wxString preValue,int forcePos,b
 		startcolor = style->shadow.GetWXColor();
 		isColor = true;
 	}
-	else if (tagname == _T("\\frz")) {
-		startangle = style->angle;
-		isAngle = true;
-	}
-	else if (tagname == _T("\\frx") || tagname == _T("\\fry")) {
-		startangle = 0.0;
-		isAngle = true;
-	}
-	else if (tagname == _T("\\fscx")) {
-		startScale = style->scalex;
-		isScale = true;
-	}
-	else if (tagname == _T("\\fscy")) {
-		startScale = style->scaley;
-		isScale = true;
-	}
 	else isGeneric = true;
 
 	bool hasEnd = isFlag;
@@ -1110,7 +1090,7 @@ void SubsEditBox::SetOverride (wxString tagname,wxString preValue,int forcePos,b
 	// Find current value of style
 	AssDialogueBlockOverride *override;
 	AssOverrideTag *tag;
-	if (isFont || isColor || isFlag || isAngle) {
+	if (isFont || isColor || isFlag) {
 		for (size_t i=0;i<=blockn;i++) {
 			override = AssDialogueBlock::GetAsOverride(line->Blocks.at(i));
 			if (override) {
@@ -1126,8 +1106,6 @@ void SubsEditBox::SetOverride (wxString tagname,wxString preValue,int forcePos,b
 							if (tag->Name == _T("\\i")) startfont.SetStyle(tag->Params.at(0)->AsBool() ? wxFONTSTYLE_ITALIC : wxFONTSTYLE_NORMAL);
 							if (tag->Name == _T("\\u")) startfont.SetUnderlined(tag->Params.at(0)->AsBool());
 						}
-						if (isAngle) startangle = tag->Params.at(0)->AsFloat();
-						if (isScale) startScale = tag->Params.at(0)->AsFloat();
 					}
 				}
 			}
@@ -1209,18 +1187,6 @@ void SubsEditBox::SetOverride (wxString tagname,wxString preValue,int forcePos,b
 
 	// Generic tag
 	if (isGeneric) {
-		insert = tagname + preValue;
-		insertTags.Add(tagname);
-	}
-
-	// Angle
-	if (isAngle) {
-		insert = tagname + preValue;
-		insertTags.Add(tagname);
-	}
-
-	// Scale
-	if (isScale) {
 		insert = tagname + preValue;
 		insertTags.Add(tagname);
 	}
