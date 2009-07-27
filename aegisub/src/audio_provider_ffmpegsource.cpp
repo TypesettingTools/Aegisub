@@ -142,7 +142,9 @@ void FFmpegSourceAudioProvider::LoadAudio(Aegisub::String filename) {
 	}
 
 	// update access time of index file so it won't get cleaned away
-	wxFileName(CacheName).Touch();
+	if (!wxFileName(CacheName).Touch()) {
+		// warn user?
+	}
 
 	// FIXME: provide a way to choose which audio track to load?
 	int TrackNumber = FFMS_GetFirstTrackOfType(Index, FFMS_TYPE_AUDIO, FFMSErrMsg, MsgSize);
