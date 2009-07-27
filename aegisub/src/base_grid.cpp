@@ -66,6 +66,7 @@ BaseGrid::BaseGrid(wxWindow* parent, wxWindowID id, const wxPoint& pos, const wx
 	bmp = NULL;
 	holding = false;
 	byFrame = false;
+	lineHeight = 1; // non-zero to avoid div by 0
 
 	// Set scrollbar
 	scrollBar = new wxScrollBar(this,GRID_SCROLLBAR,wxDefaultPosition,wxDefaultSize,wxSB_VERTICAL);
