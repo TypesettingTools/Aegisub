@@ -82,6 +82,9 @@
 #endif
 #include "charset_conv.h"
 #include "libresrc/libresrc.h"
+#ifdef __WXMAC__
+#include <Carbon/MacWindows.h>
+#endif
 
 
 
