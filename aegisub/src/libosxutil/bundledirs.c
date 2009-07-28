@@ -1,9 +1,9 @@
 /*
   Copyright (c) 2008-2009 Niels Martin Hansen
-  
+
   Redistribution and use in source and binary forms, with or without
   modification, are permitted provided that the following conditions are met:
-  
+
   * Redistributions of source code must retain the above copyright notice,
     this list of conditions and the following disclaimer.
   * Redistributions in binary form must reproduce the above copyright notice,
@@ -26,6 +26,10 @@
   POSSIBILITY OF SUCH DAMAGE.
  */
 
+/** @file bundledirs.c
+    @brief Get various paths from within an OS X bundle.
+ */
+
 #include <string.h>
 #include <sys/param.h>
 #include <CoreFoundation/CFBundle.h>
@@ -34,7 +38,7 @@
 
 #include "libosxutil.h"
 
-
+/** @todo document me. */
 typedef CFURLRef (*GetURLFunc)(CFBundleRef);
 
 static char * GetDir(GetURLFunc GetURL)
@@ -110,17 +114,17 @@ char * OSX_GetBundleAuxillaryExecutablePath(const char *executableName)
 
 	exename_str = CFStringCreateWithCString(NULL, executableName, kCFStringEncodingUTF8);
 	if (!exename_str) return NULL;
-	
+
 	bundle = CFBundleGetMainBundle();
 	if (!bundle) return NULL;
-	
+
 	res_dir_url = CFBundleCopyAuxiliaryExecutableURL(bundle, exename_str);
 	CFRelease(exename_str);
 	if (!res_dir_url) return NULL;
-	
+
 	res = CFURLGetFileSystemRepresentation(res_dir_url, true, (UInt8*)res_dir_str, MAXPATHLEN);
 	CFRelease(res_dir_url);
-	
+
 	if (res == false)
 		return NULL;
 	else
