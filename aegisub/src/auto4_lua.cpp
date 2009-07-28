@@ -732,23 +732,16 @@ namespace Automation4 {
 		// stored options
 		lua_newtable(L); // TODO, nothing for now
 
-		LuaProgressSink *ps = new LuaProgressSink(L, 0, false);
-		ps->SetTitle(GetName());
-
 		// do call
-		LuaThreadedCall call(L, 2, 1);
-
-		ps->ShowModal();
-		wxThread::ExitCode code = call.Wait();
-
-		delete ps;
-
-		
-		if (!code) {
-			// The config dialog table should now be on stack as LuaConfigDialog constructor expects
-			return config_dialog = new LuaConfigDialog(L, false);
-		} else {
+		int err = lua_pcall(L, 2, 1, 0);
+		if (err) {
+			wxString errmsg(lua_tostring(L, -1), wxConvUTF8);
+			wxLogWarning(_T("Runtime error in Lua macro validation function:\n%s"), errmsg.c_str());
+			lua_pop(L, 1); // remove error message
 			return config_dialog = 0;
+		} else {
+			// Create config dialogue from table on top of stack
+			return config_dialog = new LuaConfigDialog(L, false);
 		}
 	}
 
