@@ -77,6 +77,7 @@ public:
 	bool AreKeyFramesLoaded() { return false; };
 	wxArrayInt GetKeyFrames() { return wxArrayInt(); };
 	bool IsVFR() { return false; };
+	bool NeedsVFRHack() { return true; }
 	FrameRate GetTrueFrameRate() { return FrameRate(); };
 
 	Aegisub::String GetDecoderName();
