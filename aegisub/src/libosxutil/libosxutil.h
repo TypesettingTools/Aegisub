@@ -28,6 +28,7 @@
 
 /** @file libosxutil.h
  * @brief OSX utilities
+ * @ingroup libosxutil
  *
  * Utility functions for running regular *NIX libraries inside application
  * bundles on Apple Macintosh OS X.

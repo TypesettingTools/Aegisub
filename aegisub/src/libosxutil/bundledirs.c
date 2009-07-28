@@ -27,6 +27,7 @@
  */
 
 /** @file bundledirs.c
+    @ingroup libosxutil
     @brief Get various paths from within an OS X bundle.
  */
 
