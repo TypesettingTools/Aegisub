@@ -39,9 +39,17 @@
 
 #include "libosxutil.h"
 
-/** @todo document me. */
+/** @brief Type of functions that return a URL from a bundle.
+ *  @internal
+ */
 typedef CFURLRef (*GetURLFunc)(CFBundleRef);
 
+/** @brief Generic implementation to retrieve pathnames inside a bundle.
+ *
+ *  @internal Provide a generic implementation for most of the logic
+ *  in path-retrieval, since what differs for the various functions is
+ *  only the call used to retrieve the actual path inside the bundle.
+ */
 static char * GetDir(GetURLFunc GetURL)
 {
 	CFBundleRef bundle;
