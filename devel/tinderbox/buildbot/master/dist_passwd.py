@@ -6,6 +6,7 @@ passwd = {
 	'anpan': '',
 	'tako': '',
 	'nori': '',
-	'mokona': ''
+	'mokona': '',
+    'shoyu': ''
 }
 
