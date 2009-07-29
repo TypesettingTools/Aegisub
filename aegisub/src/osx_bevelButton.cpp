@@ -4,7 +4,7 @@
 // Author:      David Conrad
 // Modified by:
 // Created:     2006-06-16
-// RCS-ID:      $Id: bevelButton.cpp,v 1.0 2006/06/16 23:29:20 SC Exp $
+// RCS-ID:      $Id$
 // Copyright:   (c) David Conrad
 // Licence:       wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
