@@ -1,0 +1,21 @@
+/* $Id$ */
+
+.note, .warning, .caution {
+    margin: 0.5em;
+    padding: 0.5em 0.5em;
+    word-wrap: break-word;
+}
+
+.note {
+    border: 1px solid #F9FD96;
+    background-color: #FDFEE7;
+}
+
+.caution {
+    border: 1px solid #FF4A66;
+    background-color: #FFF5F6;
+}
+
+.warning {
+    border: 1px solid #FF4A66;
+}

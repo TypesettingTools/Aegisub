@@ -1,0 +1,88 @@
+/**
+@defgroup audio_input  Audio Input
+@defgroup audio_output Audio Output
+@defgroup audio_ui Audio UI
+@defgroup build Files used in building Aegisub.
+@defgroup configuration_ui Configuration Ui
+@defgroup custom_control Custom Control
+@defgroup export Export
+@defgroup ffms FFmpegSource support.
+@defgroup ffms2 FFmpegSource2 support.
+@defgroup font_collector Font collector
+@defgroup kanji_timer Kanji Timer
+@defgroup libosxutil libosxutil
+@defgroup main Main
+@defgroup main_headers Main Headers
+@defgroup main_ui Main UI
+@defgroup matroska Matroska support.
+@defgroup quicktime QuickTime support.
+@defgroup scripting Scripting
+@defgroup secondary_ui Secondary UI
+@defgroup spelling Spelling
+@defgroup style_editor Style Editor
+@defgroup subs_storage Subtitle Storage
+@defgroup subtitle_io Subtitle I/O
+@defgroup subtitle_rendering Subtitle Rendering
+@defgroup thesaurus Thesaurus
+@defgroup tools_ui Tools UI
+@defgroup unused Unused
+@defgroup utility Utility
+@defgroup video Video
+@defgroup video_input Video Input
+@defgroup video_output Video Output
+@defgroup visual_ts Video Typesetting
+@defgroup vobsub VobSub
+
+*/
+
+/**
+ @page srcguide Aegisub Source Guide
+
+Main
+ - @ref main
+ - @ref main_headers
+ - @ref main_ui
+ - @ref configuration_ui
+ - @ref custom_control
+ - @ref export
+ - @ref scripting
+ - @ref secondary_ui
+ - @ref subs_storage
+
+Library
+ - @ref ffms
+ - @ref ffms2
+ - @ref quicktime
+ - @ref matroska
+
+Dialogues
+ - @ref font_collector
+ - @ref kanji_timer
+ - @ref spelling
+ - @ref style_editor
+ - @ref thesaurus
+ - @ref visual_ts
+
+Miscellanous
+ - @ref build
+ - @ref tools_ui
+ - @ref unused
+ - @ref utility
+ - @ref libosxutil
+
+Subtitle
+ - @ref subtitle_io
+ - @ref subtitle_rendering
+ - @ref vobsub
+
+Audio
+ - @ref audio_input
+ - @ref audio_output
+ - @ref audio_ui
+
+Video
+ - @ref video
+ - @ref video_input
+ - @ref video_output
+*/
+
