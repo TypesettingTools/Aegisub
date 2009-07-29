@@ -25,13 +25,14 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 //
-// -----------------------------------------------------------------------------
+// Aegisub Project http://www.aegisub.org/
 //
-// AEGISUB
-//
-// Website: http://aegisub.cellosoft.com
-// Contact: mailto:zeratul@cellosoft.com
-//
+// $Id$
+
+/// @file config/config_windows0.h
+/// @brief Base configuration for Windows builds, to be copied to config_windows.h and edited by the developer
+/// @ingroup build
+///
 
 
 #pragma once
@@ -157,3 +158,4 @@
 // Enable QuickTime video provider
 // Requires QuickTime SDK and (on Windows) a QuickTime7 (or later) installation
 //#define WITH_QUICKTIME
+

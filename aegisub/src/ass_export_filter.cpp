@@ -25,13 +25,14 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 //
-// -----------------------------------------------------------------------------
+// Aegisub Project http://www.aegisub.org/
 //
-// AEGISUB
-//
-// Website: http://aegisub.cellosoft.com
-// Contact: mailto:zeratul@cellosoft.com
-//
+// $Id$
+
+/// @file ass_export_filter.cpp
+/// @brief Baseclass for and management of single export filters
+/// @ingroup export
+///
 
 
 ///////////
@@ -196,3 +197,4 @@ void AssExportFilterChain::PrepareFilters() {
 	}
 	instance->Unprepared.clear();
 }
+

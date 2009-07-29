@@ -25,13 +25,14 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 //
-// -----------------------------------------------------------------------------
+// Aegisub Project http://www.aegisub.org/
 //
-// AEGISUB
-//
-// Website: http://aegisub.cellosoft.com
-// Contact: mailto:zeratul@cellosoft.com
-//
+// $Id$
+
+/// @file video_provider_manager.cpp
+/// @brief Keep track of installed video providers
+/// @ingroup video_input
+///
 
 
 ///////////
@@ -132,3 +133,4 @@ void VideoProviderFactoryManager::ClearProviders() {
 //////////
 // Static
 template <class VideoProviderFactory> std::map<wxString,VideoProviderFactory*>* FactoryManager<VideoProviderFactory>::factories=NULL;
+

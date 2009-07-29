@@ -25,13 +25,14 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 //
-// -----------------------------------------------------------------------------
+// Aegisub Project http://www.aegisub.org/
 //
-// AEGISUB
-//
-// Website: http://aegisub.cellosoft.com
-// Contact: mailto:zeratul@cellosoft.com
-//
+// $Id$
+
+/// @file standard_paths.h
+/// @see standard_paths.cpp
+/// @ingroup utility
+///
 
 
 #pragma once
@@ -65,3 +66,4 @@ public:
 	static wxString EncodePath(const wxString &path) { return GetInstance().DoEncodePath(path); }
 	static void SetPathValue(const wxString &path, const wxString &value) { GetInstance().DoSetPathValue(path,value); }
 };
+

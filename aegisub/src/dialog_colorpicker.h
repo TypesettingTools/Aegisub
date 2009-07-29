@@ -25,13 +25,14 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 //
-// -----------------------------------------------------------------------------
+// Aegisub Project http://www.aegisub.org/
 //
-// AEGISUB
-//
-// Website: http://aegisub.cellosoft.com
-// Contact: mailto:zeratul@cellosoft.com
-//
+// $Id$
+
+/// @file dialog_colorpicker.h
+/// @see dialog_colorpicker.cpp
+/// @ingroup tools_ui
+///
 
 #ifndef DIALOG_COLORPICKER_H
 #define DIALOG_COLORPICKER_H
@@ -232,3 +233,4 @@ enum {
 
 
 #endif
+

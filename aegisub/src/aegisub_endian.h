@@ -24,13 +24,14 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 //
-// -----------------------------------------------------------------------------
+// Aegisub Project http://www.aegisub.org/
 //
-// AEGISUB
-//
-// Website: http://www.aegisub.net
-// Contact: mailto:jiifurusu@gmail.com
-//
+// $Id$
+
+/// @file aegisub_endian.h
+/// @brief Convert numbers between various endianness
+/// @ingroup utility
+///
 
 #pragma once
 
@@ -344,3 +345,4 @@ namespace Endian {
 };
 
 #endif
+

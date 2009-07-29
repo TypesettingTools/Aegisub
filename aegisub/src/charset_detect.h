@@ -25,13 +25,14 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 //
-// -----------------------------------------------------------------------------
+// Aegisub Project http://www.aegisub.org/
 //
-// AEGISUB
-//
-// Website: http://aegisub.cellosoft.com
-// Contact: mailto:zeratul@cellosoft.com
-//
+// $Id$
+
+/// @file charset_detect.h
+/// @see charset_detect.cpp
+/// @ingroup utility
+///
 
 #pragma once
 
@@ -53,3 +54,4 @@ public:
 	wxString GetEncoding(wxString filename);
 	PRBool done() const { return mDone; }
 };
+

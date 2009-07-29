@@ -24,7 +24,16 @@
  * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT 
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF 
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
- *
+//
+// Aegisub Project http://www.aegisub.org/
+//
+// $Id$
+
+/// @file MatroskaParser.c
+/// @brief Haali's low-level Matroska-parsing library
+/// @ingroup video_input
+///
+
  */
 
 #include <stdlib.h>
@@ -3310,3 +3319,4 @@ const char	  *cs_GetLastError(CompressedStream *cs)
   return cs->errmsg;
 }
 #endif
+

@@ -25,13 +25,14 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 //
-// -----------------------------------------------------------------------------
+// Aegisub Project http://www.aegisub.org/
 //
-// AEGISUB
-//
-// Website: http://aegisub.cellosoft.com
-// Contact: mailto:zeratul@cellosoft.com
-//
+// $Id$
+
+/// @file base_grid.cpp
+/// @brief Base for subtitle grid in main UI
+/// @ingroup main_ui
+///
 
 
 ////////////
@@ -1126,3 +1127,4 @@ wxArrayInt BaseGrid::GetRangeArray(int n1,int n2) {
 	}
 	return target;
 }
+

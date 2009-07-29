@@ -25,13 +25,14 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 //
-// -----------------------------------------------------------------------------
+// Aegisub Project http://www.aegisub.org/
 //
-// AEGISUB
-//
-// Website: http://aegisub.cellosoft.com
-// Contact: mailto:zeratul@cellosoft.com
-//
+// $Id$
+
+/// @file video_frame.h
+/// @see video_frame.cpp
+/// @ingroup video
+///
 
 
 #pragma once
@@ -83,3 +84,4 @@ public:
 	void GetFloat(float *buffer) const;
 	int GetBpp(int plane=0) const;
 };
+

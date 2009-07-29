@@ -24,11 +24,15 @@
   CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
   ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
   POSSIBILITY OF SUCH DAMAGE.
- */
+
+  Aegisub Project http://www.aegisub.org/
+
+  $Id$
+*/
 
 /** @file bundledirs.c
-    @ingroup libosxutil
-    @brief Get various paths from within an OS X bundle.
+ *  @brief Obtain paths to directories inside Apple OS X bundles
+ *  @ingroup libosxutil
  */
 
 #include <string.h>
@@ -139,4 +143,5 @@ char * OSX_GetBundleAuxillaryExecutablePath(const char *executableName)
 	else
 		return strdup(res_dir_str);
 }
+
 

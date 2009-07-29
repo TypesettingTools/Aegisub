@@ -25,13 +25,14 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 //
-// -----------------------------------------------------------------------------
+// Aegisub Project http://www.aegisub.org/
 //
-// AEGISUB
-//
-// Website: http://aegisub.cellosoft.com
-// Contact: mailto:zeratul@cellosoft.com
-//
+// $Id$
+
+/// @file video_provider_ffmpegsource.cpp
+/// @brief FFmpegSource2-based video provider
+/// @ingroup video_input ffms
+///
 
 #include "config.h"
 
@@ -353,3 +354,4 @@ double FFmpegSourceVideoProvider::GetFPS() {
 
 
 #endif /* WITH_FFMPEGSOURCE */
+

@@ -25,13 +25,14 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 //
-// -----------------------------------------------------------------------------
+// Aegisub Project http://www.aegisub.org/
 //
-// AEGISUB
-//
-// Website: http://aegisub.cellosoft.com
-// Contact: mailto:zeratul@cellosoft.com
-//
+// $Id$
+
+/// @file dialog_text_import.cpp
+/// @brief Set-up import from plain text files
+/// @ingroup secondary_ui
+///
 
 
 ///////////
@@ -94,3 +95,4 @@ BEGIN_EVENT_TABLE(DialogTextImport,wxDialog)
 	EVT_BUTTON(wxID_OK,DialogTextImport::OnOK)
 	EVT_BUTTON(wxID_CANCEL,DialogTextImport::OnCancel)
 END_EVENT_TABLE()
+

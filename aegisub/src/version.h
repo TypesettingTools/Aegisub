@@ -25,13 +25,14 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 //
-// -----------------------------------------------------------------------------
+// Aegisub Project http://www.aegisub.org/
 //
-// AEGISUB
-//
-// Website: http://aegisub.cellosoft.com
-// Contact: mailto:jiifurusu@gmail.com
-//
+// $Id$
+
+/// @file version.h
+/// @see version.cpp
+/// @ingroup main
+///
 
 class wxString;
 
@@ -49,3 +50,4 @@ bool GetIsOfficialRelease();
 wxString GetVersionNumber();
 // Get SVN revision
 int GetSVNRevision();
+

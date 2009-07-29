@@ -25,13 +25,14 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 //
-// -----------------------------------------------------------------------------
+// Aegisub Project http://www.aegisub.org/
 //
-// AEGISUB
-//
-// Website: http://aegisub.cellosoft.com
-// Contact: mailto:zeratul@cellosoft.com
-//
+// $Id$
+
+/// @file dialog_video_details.cpp
+/// @brief Video Details dialogue box
+/// @ingroup secondary_ui
+///
 
 
 ///////////
@@ -116,3 +117,4 @@ wxString DialogVideoDetails::PrettyTimeStamp(int frames, double fps)
 	int h = tt;
 	return wxString::Format(_T("%d:%02d:%02d.%03d"), h, m, s, cs);
 }
+

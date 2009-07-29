@@ -25,13 +25,14 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 //
-// -----------------------------------------------------------------------------
+// Aegisub Project http://www.aegisub.org/
 //
-// AEGISUB
-//
-// Website: http://aegisub.cellosoft.com
-// Contact: mailto:jiifurusu@gmail.com
-//
+// $Id$
+
+/// @file auto4_lua_dialog.cpp
+/// @brief Lua 5.1-based scripting engine (configuration-dialogue interface)
+/// @ingroup scripting
+///
 
 
 #include "config.h"
@@ -816,3 +817,4 @@ badcontrol:
 };
 
 #endif // WITH_AUTO4_LUA
+

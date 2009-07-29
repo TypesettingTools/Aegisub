@@ -25,13 +25,14 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 //
-// -----------------------------------------------------------------------------
+// Aegisub Project http://www.aegisub.org/
 //
-// AEGISUB
-//
-// Website: http://aegisub.cellosoft.com
-// Contact: mailto:zeratul@cellosoft.com
-//
+// $Id$
+
+/// @file audio_karaoke.cpp
+/// @brief Karaoke table UI in audio box (not in audio display)
+/// @ingroup audio_ui
+///
 
 
 ///////////
@@ -877,5 +878,6 @@ void AudioKaraokeTagMenu::OnSelectItem(wxCommandEvent &event) {
 	//kara->display->Update();
 	kara->SetSelection(firstsel, lastsel);
 }
+
 
 

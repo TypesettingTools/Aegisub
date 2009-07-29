@@ -25,13 +25,14 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 //
-// -----------------------------------------------------------------------------
+// Aegisub Project http://www.aegisub.org/
 //
-// AEGISUB
-//
-// Website: http://aegisub.cellosoft.com
-// Contact: mailto:zeratul@cellosoft.com
-//
+// $Id$
+
+/// @file quicktime_common.h
+/// @see quicktime_common.cpp
+/// @ingroup quicktime
+///
 
 
 #pragma once
@@ -78,4 +79,5 @@ public:
 };
 
 #endif /* WITH_QUICKTIME */
+
 

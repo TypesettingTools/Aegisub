@@ -25,13 +25,14 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 //
-// -----------------------------------------------------------------------------
+// Aegisub Project http://www.aegisub.org/
 //
-// AEGISUB
-//
-// Website: http://aegisub.cellosoft.com
-// Contact: mailto:zeratul@cellosoft.com
-//
+// $Id$
+
+/// @file visual_tool.cpp
+/// @brief Base class for visual typesetting functions
+/// @ingroup visual_ts
+///
 
 
 //////////////
@@ -701,5 +702,6 @@ VisualToolEvent::VisualToolEvent(VisualTool *_tool) {
 void VisualToolEvent::OnButton(wxCommandEvent &event) {
 	tool->OnButton(event);
 }
+
 
 

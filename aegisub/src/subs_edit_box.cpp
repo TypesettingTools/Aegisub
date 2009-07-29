@@ -25,13 +25,14 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 //
-// -----------------------------------------------------------------------------
+// Aegisub Project http://www.aegisub.org/
 //
-// AEGISUB
-//
-// Website: http://aegisub.cellosoft.com
-// Contact: mailto:zeratul@cellosoft.com
-//
+// $Id$
+
+/// @file subs_edit_box.cpp
+/// @brief Main subtitle editing area, including toolbars around the text control
+/// @ingroup main_ui
+///
 
 
 ////////////
@@ -1349,5 +1350,6 @@ void SubsEditBox::OnButtonCommit(wxCommandEvent &event) {
 	Commit(wxGetMouseState().ControlDown());
 #endif
 }
+
 
 

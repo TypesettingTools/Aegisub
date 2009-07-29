@@ -25,13 +25,14 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 //
-// -----------------------------------------------------------------------------
+// Aegisub Project http://www.aegisub.org/
 //
-// AEGISUB
-//
-// Website: http://aegisub.cellosoft.com
-// Contact: mailto:jiifurusu@gmail.com
-//
+// $Id$
+
+/// @file dialog_dummy_video.h
+/// @see dialog_dummy_video.cpp
+/// @ingroup secondary_ui
+///
 
 #ifndef _DIALOG_DUMMY_VIDEO_H
 #define _DIALOG_DUMMY_VIDEO_H
@@ -83,3 +84,4 @@ enum {
 
 
 #endif
+

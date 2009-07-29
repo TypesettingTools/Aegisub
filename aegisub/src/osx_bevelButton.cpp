@@ -72,3 +72,4 @@ wxSize wxBevelButton::DoGetBestSize() const
 }
 
 #endif // __WXMAC__
+

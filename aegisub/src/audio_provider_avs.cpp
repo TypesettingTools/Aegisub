@@ -25,13 +25,14 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 //
-// -----------------------------------------------------------------------------
+// Aegisub Project http://www.aegisub.org/
 //
-// AEGISUB
-//
-// Website: http://aegisub.cellosoft.com
-// Contact: mailto:zeratul@cellosoft.com
-//
+// $Id$
+
+/// @file audio_provider_avs.cpp
+/// @brief Avisynth-based audio provider
+/// @ingroup audio_input
+///
 
 
 ///////////
@@ -206,3 +207,4 @@ void AvisynthAudioProvider::GetAudio(void *buf, int64_t start, int64_t count) {
 }
 
 #endif
+

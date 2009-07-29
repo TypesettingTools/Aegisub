@@ -25,13 +25,14 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 //
-// -----------------------------------------------------------------------------
+// Aegisub Project http://www.aegisub.org/
 //
-// AEGISUB
-//
-// Website: http://aegisub.cellosoft.com
-// Contact: mailto:zeratul@cellosoft.com
-//
+// $Id$
+
+/// @file visual_tool_rotatez.cpp
+/// @brief 2D rotation in Z axis visual typesetting tool
+/// @ingroup visual_ts
+///
 
 
 ///////////
@@ -236,3 +237,4 @@ void VisualToolRotateZ::DoRefresh() {
 	GetLinePosition(line,odx,ody,orgx,orgy);
 	GetLineRotation(line,rx,ry,curAngle);
 }
+

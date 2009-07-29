@@ -25,13 +25,14 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 //
-// -----------------------------------------------------------------------------
+// Aegisub Project http://www.aegisub.org/
 //
-// AEGISUB
-//
-// Website: http://aegisub.cellosoft.com
-// Contact: mailto:zeratul@cellosoft.com
-//
+// $Id$
+
+/// @file quicktime_common.cpp
+/// @brief Common code between QuickTime-based video and audio providers
+/// @ingroup quicktime
+///
 
 
 #include "quicktime_common.h"
@@ -129,3 +130,4 @@ bool QuickTimeProvider::CanOpen(const Handle& dataref, const OSType dataref_type
 
 
 #endif /* WITH_QUICKTIME */
+

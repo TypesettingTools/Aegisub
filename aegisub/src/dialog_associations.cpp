@@ -25,13 +25,14 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 //
-// -----------------------------------------------------------------------------
+// Aegisub Project http://www.aegisub.org/
 //
-// AEGISUB
-//
-// Website: http://aegisub.cellosoft.com
-// Contact: mailto:zeratul@cellosoft.com
-//
+// $Id$
+
+/// @file dialog_associations.cpp
+/// @brief Configure file associations for Aegisub
+/// @ingroup configuration_ui
+///
 
 
 ///////////
@@ -137,3 +138,4 @@ void DialogAssociations::OnOK(wxCommandEvent &event) {
 	if (ListBox->IsChecked(4)) AssociateType(_T("ttxt"));
 	event.Skip();
 }
+

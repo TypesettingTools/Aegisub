@@ -25,13 +25,14 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 //
-// -----------------------------------------------------------------------------
+// Aegisub Project http://www.aegisub.org/
 //
-// AEGISUB
-//
-// Website: http://aegisub.cellosoft.com
-// Contact: mailto:zeratul@cellosoft.com
-//
+// $Id$
+
+/// @file drop.cpp
+/// @brief Drag-drop handling from other applications
+/// @ingroup main_ui
+///
 
 
 ///////////
@@ -55,4 +56,5 @@ AegisubFileDropTarget::AegisubFileDropTarget(FrameMain *par) {
 bool AegisubFileDropTarget::OnDropFiles(wxCoord x, wxCoord y, const wxArrayString& filenames) {
 	return parent->LoadList(filenames);
 }
+
 

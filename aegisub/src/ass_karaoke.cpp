@@ -25,13 +25,14 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 //
-// -----------------------------------------------------------------------------
+// Aegisub Project http://www.aegisub.org/
 //
-// AEGISUB
-//
-// Website: http://aegisub.cellosoft.com
-// Contact: mailto:jiifurusu@gmail.com
-//
+// $Id$
+
+/// @file ass_karaoke.cpp
+/// @brief Parse and manipulate ASSA karaoke tags
+/// @ingroup subs_storage
+///
 
 
 #include "config.h"
@@ -117,4 +118,5 @@ void ParseAssKaraokeTags(const AssDialogue *line, AssKaraokeVector &syls)
 
 	syls.push_back(syl);
 }
+
 

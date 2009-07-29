@@ -25,13 +25,14 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 //
-// -----------------------------------------------------------------------------
+// Aegisub Project http://www.aegisub.org/
 //
-// AEGISUB
-//
-// Website: http://aegisub.cellosoft.com
-// Contact: mailto:zeratul@cellosoft.com
-//
+// $Id$
+
+/// @file tooltip_manager.cpp
+/// @brief Generate tooltips for controls by combining a base text and any hotkeys found for the function
+/// @ingroup custom_control
+///
 
 
 ///////////
@@ -101,3 +102,4 @@ void ToolTipBinding::Update() {
 	}
 	window->SetToolTip(finalTip);
 }
+

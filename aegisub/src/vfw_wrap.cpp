@@ -25,13 +25,14 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 //
-// -----------------------------------------------------------------------------
+// Aegisub Project http://www.aegisub.org/
 //
-// AEGISUB
-//
-// Website: http://aegisub.cellosoft.com
-// Contact: mailto:zeratul@cellosoft.com
-//
+// $Id$
+
+/// @file vfw_wrap.cpp
+/// @brief Reading timecode and keyframe data from AVI files using Video for Windows
+/// @ingroup video_input
+///
 
 
 #pragma once
@@ -120,3 +121,4 @@ wxArrayInt VFWWrapper::GetKeyFrames(wxString filename) {
 
 	return frames;
 }
+

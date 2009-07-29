@@ -25,13 +25,14 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 //
-// -----------------------------------------------------------------------------
+// Aegisub Project http://www.aegisub.org/
 //
-// AEGISUB
-//
-// Website: http://aegisub.cellosoft.com
-// Contact: mailto:zeratul@cellosoft.com
-//
+// $Id$
+
+/// @file dialog_detached_video.cpp
+/// @brief Detached video window
+/// @ingroup main_ui
+///
 
 
 ///////////
@@ -142,3 +143,4 @@ void DialogDetachedVideo::OnMove(wxMoveEvent &event) {
 	Options.SetInt(_T("Detached video last x"),pos.x);
 	Options.SetInt(_T("Detached video last y"),pos.y);
 }
+

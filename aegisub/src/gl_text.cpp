@@ -25,13 +25,14 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 //
-// -----------------------------------------------------------------------------
+// Aegisub Project http://www.aegisub.org/
 //
-// AEGISUB
-//
-// Website: http://aegisub.cellosoft.com
-// Contact: mailto:zeratul@cellosoft.com
-//
+// $Id$
+
+/// @file gl_text.cpp
+/// @brief Create and render text using OpenGL
+/// @ingroup video_output
+///
 
 
 ///////////
@@ -411,3 +412,4 @@ void OpenGLTextGlyph::GetMetrics() {
 		dc.GetTextExtent(str,&w,&h,&desc,&lead);
 	}
 }
+

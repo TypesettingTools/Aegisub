@@ -25,13 +25,14 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 //
-// -----------------------------------------------------------------------------
+// Aegisub Project http://www.aegisub.org/
 //
-// AEGISUB
-//
-// Website: http://aegisub.cellosoft.com
-// Contact: mailto:zeratul@cellosoft.com
-//
+// $Id$
+
+/// @file string_codec.cpp
+/// @brief Encode and decode strings so they can safely be stored inside fields in SSA/ASS files
+/// @ingroup utility
+///
 
 // Functions for inline string encoding.
 // See header file for details.
@@ -79,3 +80,4 @@ wxString inline_string_decode(const wxString &input)
 	}
 	return output;
 }
+

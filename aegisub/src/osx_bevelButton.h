@@ -50,3 +50,4 @@ virtual wxSize DoGetBestSize() const ;
 // _WX_BUTTON_H_
 
 #endif // __WXMAC__
+

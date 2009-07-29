@@ -25,13 +25,14 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 //
-// -----------------------------------------------------------------------------
+// Aegisub Project http://www.aegisub.org/
 //
-// AEGISUB
-//
-// Website: http://aegisub.cellosoft.com
-// Contact: mailto:zeratul@cellosoft.com
-//
+// $Id$
+
+/// @file video_provider_cache.h
+/// @see video_provider_cache.cpp
+/// @ingroup video_input
+///
 
 
 #pragma once
@@ -93,3 +94,4 @@ public:
 	virtual wxString GetWarning();
 	virtual wxString GetDecoderName();
 };
+

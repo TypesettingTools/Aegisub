@@ -25,13 +25,14 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 //
-// -----------------------------------------------------------------------------
+// Aegisub Project http://www.aegisub.org/
 //
-// AEGISUB
-//
-// Website: http://aegisub.cellosoft.com
-// Contact: mailto:zeratul@cellosoft.com
-//
+// $Id$
+
+/// @file export_visible_lines.cpp
+/// @brief Limit to Visible Lines export filter
+/// @ingroup export
+///
 
 
 ///////////
@@ -104,3 +105,4 @@ void AssLimitToVisibleFilter::SetFrame(int _frame) {
 ///////////////////
 // Global instance
 AssLimitToVisibleFilter AssLimitToVisibleFilter::instance;
+

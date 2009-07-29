@@ -25,13 +25,14 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 //
-// -----------------------------------------------------------------------------
+// Aegisub Project http://www.aegisub.org/
 //
-// AEGISUB
-//
-// Website: http://aegisub.cellosoft.com
-// Contact: mailto:zeratul@cellosoft.com
-//
+// $Id$
+
+/// @file subs_preview.cpp
+/// @brief Preview control using a dummy video provider and subtitles provider to render a preview
+/// @ingroup custom_control
+///
 
 
 ////////////
@@ -215,3 +216,4 @@ void SubtitlesPreview::SetColour(wxColour col) {
 	vid = NULL;
 	UpdateBitmap();
 }
+

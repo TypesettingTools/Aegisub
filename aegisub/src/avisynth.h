@@ -748,3 +748,4 @@ IScriptEnvironment* __stdcall CreateScriptEnvironment(int version = AVISYNTH_INT
 #pragma pack(pop)
 
 #endif //__AVISYNTH_H__
+

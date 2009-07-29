@@ -25,13 +25,14 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 //
-// -----------------------------------------------------------------------------
+// Aegisub Project http://www.aegisub.org/
 //
-// AEGISUB
-//
-// Website: http://aegisub.cellosoft.com
-// Contact: mailto:zeratul@cellosoft.com
-//
+// $Id$
+
+/// @file audio_provider_stream.h
+/// @see audio_provider_stream.cpp
+/// @ingroup audio_input
+///
 
 
 #pragma once
@@ -78,3 +79,4 @@ public:
 	void Append(void *buf, int64_t count);
 	void SetParams(int channels,int rate,int bps);
 };
+

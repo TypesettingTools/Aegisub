@@ -25,13 +25,14 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 //
-// -----------------------------------------------------------------------------
+// Aegisub Project http://www.aegisub.org/
 //
-// AEGISUB
-//
-// Website: http://aegisub.cellosoft.com
-// Contact: mailto:zeratul@cellosoft.com
-//
+// $Id$
+
+/// @file audio_provider_ffmpegsource.cpp
+/// @brief ffms2-based audio provider
+/// @ingroup audio_input ffms2
+///
 
 #include "config.h"
 
@@ -227,3 +228,4 @@ void FFmpegSourceAudioProvider::GetAudio(void *Buf, int64_t Start, int64_t Count
 
 
 #endif /* WITH_FFMPEGSOURCE */
+

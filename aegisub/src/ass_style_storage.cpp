@@ -25,13 +25,14 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 //
-// -----------------------------------------------------------------------------
+// Aegisub Project http://www.aegisub.org/
 //
-// AEGISUB
-//
-// Website: http://aegisub.cellosoft.com
-// Contact: mailto:zeratul@cellosoft.com
-//
+// $Id$
+
+/// @file ass_style_storage.cpp
+/// @brief Manage stores of styles
+/// @ingroup style_editor
+///
 
 
 ////////////
@@ -113,3 +114,4 @@ AssStyle *AssStyleStorage::GetStyle(wxString name) {
 	}
 	return NULL;
 }
+

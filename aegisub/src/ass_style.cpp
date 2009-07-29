@@ -25,13 +25,14 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 //
-// -----------------------------------------------------------------------------
+// Aegisub Project http://www.aegisub.org/
 //
-// AEGISUB
-//
-// Website: http://aegisub.cellosoft.com
-// Contact: mailto:zeratul@cellosoft.com
-//
+// $Id$
+
+/// @file ass_style.cpp
+/// @brief Class for style definitions in subtitles
+/// @ingroup subs_storage
+///
 
 ////////////
 // Includes
@@ -592,3 +593,4 @@ void AssStyle::GetEncodings(wxArrayString &encodingStrings) {
 	encodingStrings.Add(wxString(_T("238 - ")) + _("East European"));
 	encodingStrings.Add(wxString(_T("255 - ")) + _("OEM"));
 }
+

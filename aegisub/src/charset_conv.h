@@ -25,13 +25,14 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 //
-// -----------------------------------------------------------------------------
+// Aegisub Project http://www.aegisub.org/
 //
-// AEGISUB
-//
-// Website: http://www.aegisub.net/
-// Contact: mailto:zeratul@cellosoft.com
-//
+// $Id$
+
+/// @file charset_conv.h
+/// @see charset_conv.cpp
+/// @ingroup utility
+///
 
 #ifndef AEGISUB_CHARSET_CONV_H
 #define AEGISUB_CHARSET_CONV_H
@@ -128,3 +129,4 @@ extern AegisubCSConv& csConvLocal;
 #endif
 
 #endif
+

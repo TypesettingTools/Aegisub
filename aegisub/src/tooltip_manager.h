@@ -25,13 +25,14 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 //
-// -----------------------------------------------------------------------------
+// Aegisub Project http://www.aegisub.org/
 //
-// AEGISUB
-//
-// Website: http://aegisub.cellosoft.com
-// Contact: mailto:zeratul@cellosoft.com
-//
+// $Id$
+
+/// @file tooltip_manager.h
+/// @see tooltip_manager.cpp
+/// @ingroup custom_control
+///
 
 
 #pragma once
@@ -80,3 +81,4 @@ public:
 	static void Bind(wxWindow *window,wxString tooltip,wxString hotkey=_T(""));
 	static void Bind(wxWindow *window,wxString tooltip,wxString hotkey1,wxString hotkey2);
 };
+

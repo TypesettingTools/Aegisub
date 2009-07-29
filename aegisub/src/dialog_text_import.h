@@ -25,13 +25,14 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 //
-// -----------------------------------------------------------------------------
+// Aegisub Project http://www.aegisub.org/
 //
-// AEGISUB
-//
-// Website: http://aegisub.cellosoft.com
-// Contact: mailto:zeratul@cellosoft.com
-//
+// $Id$
+
+/// @file dialog_text_import.h
+/// @see dialog_text_import.cpp
+/// @ingroup secondary_ui
+///
 
 #ifndef _DIALOG_TEXT_IMPORT_H
 #define _DIALOG_TEXT_IMPORT_H
@@ -65,3 +66,4 @@ enum {
 	EDIT_COMMENT_STARTER,
 };
 #endif
+

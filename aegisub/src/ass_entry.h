@@ -25,13 +25,14 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 //
-// -----------------------------------------------------------------------------
+// Aegisub Project http://www.aegisub.org/
 //
-// AEGISUB
-//
-// Website: http://aegisub.cellosoft.com
-// Contact: mailto:zeratul@cellosoft.com
-//
+// $Id$
+
+/// @file ass_entry.h
+/// @see ass_entry.cpp
+/// @ingroup subs_storage
+///
 
 
 #pragma once
@@ -106,3 +107,4 @@ public:
 
 // This operator is for sorting
 bool operator < (const AssEntry &t1, const AssEntry &t2);
+

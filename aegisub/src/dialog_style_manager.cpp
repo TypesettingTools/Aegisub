@@ -25,13 +25,14 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 //
-// -----------------------------------------------------------------------------
+// Aegisub Project http://www.aegisub.org/
 //
-// AEGISUB
-//
-// Website: http://aegisub.cellosoft.com
-// Contact: mailto:zeratul@cellosoft.com
-//
+// $Id$
+
+/// @file dialog_style_manager.cpp
+/// @brief Style Manager dialogue box and partial logic
+/// @ingroup style_editor
+///
 
 
 ////////////
@@ -1218,6 +1219,7 @@ END_EVENT_TABLE()
 void DialogStyleManagerEvent::OnKeyDown(wxKeyEvent &event) {
 	control->OnKeyDown(event); //we need to access controls, so rather than make the controls public...
 }
+
 
 
 

@@ -25,13 +25,14 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 //
-// -----------------------------------------------------------------------------
+// Aegisub Project http://www.aegisub.org/
 //
-// AEGISUB
-//
-// Website: http://aegisub.cellosoft.com
-// Contact: mailto:zeratul@cellosoft.com
-//
+// $Id$
+
+/// @file dialog_version_check.cpp
+/// @brief Version Checker dialogue box and logic
+/// @ingroup configuration_ui
+///
 
 
 ///////////
@@ -296,3 +297,4 @@ endThread:
 	fp = NULL;
 	return 0;
 }
+

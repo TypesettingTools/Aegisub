@@ -25,13 +25,14 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 //
-// -----------------------------------------------------------------------------
+// Aegisub Project http://www.aegisub.org/
 //
-// AEGISUB
-//
-// Website: http://aegisub.cellosoft.com
-// Contact: mailto:zeratul@cellosoft.com
-//
+// $Id$
+
+/// @file help_button.h
+/// @see help_button.cpp
+/// @ingroup custom_control
+///
 
 
 #pragma once
@@ -59,3 +60,4 @@ public:
 	static void OpenPage(const wxString page);
 	static void ClearPages();
 };
+

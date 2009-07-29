@@ -25,13 +25,14 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 //
-// -----------------------------------------------------------------------------
+// Aegisub Project http://www.aegisub.org/
 //
-// AEGISUB
-//
-// Website: http://aegisub.cellosoft.com
-// Contact: mailto:zeratul@cellosoft.com
-//
+// $Id$
+
+/// @file subs_grid.cpp
+/// @brief Subtitles grid control in main window
+/// @ingroup main_ui
+///
 
 
 ////////////
@@ -1496,3 +1497,4 @@ void SubtitlesGrid::SetSelectionFromAbsolute(std::vector<int> &selection) {
 		} else selMap[i] = false;
 	}
 }
+

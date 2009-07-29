@@ -25,13 +25,14 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 //
-// -----------------------------------------------------------------------------
+// Aegisub Project http://www.aegisub.org/
 //
-// AEGISUB
-//
-// Website: http://aegisub.cellosoft.com
-// Contact: mailto:zeratul@cellosoft.com
-//
+// $Id$
+
+/// @file vfr.h
+/// @see vfr.cpp
+/// @ingroup video_input
+///
 
 // The FrameRate class stores all times internally as ints in ms precision
 // V1 timecodes are partially expanded to v2 up until their last override line
@@ -111,3 +112,4 @@ public:
 // Globals
 extern FrameRate VFR_Output;
 extern FrameRate VFR_Input;
+

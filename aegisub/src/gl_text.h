@@ -25,13 +25,14 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 //
-// -----------------------------------------------------------------------------
+// Aegisub Project http://www.aegisub.org/
 //
-// AEGISUB
-//
-// Website: http://aegisub.cellosoft.com
-// Contact: mailto:zeratul@cellosoft.com
-//
+// $Id$
+
+/// @file gl_text.h
+/// @see gl_text.cpp
+/// @ingroup video_output
+///
 
 #pragma once
 
@@ -127,3 +128,4 @@ public:
 	static void Print(wxString text,int x,int y) { GetInstance().DoPrint(text,x,y); }
 	static void GetExtent(wxString text,int &w,int &h) { GetInstance().DoGetExtent(text,w,h); }
 };
+

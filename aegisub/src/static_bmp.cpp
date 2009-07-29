@@ -25,13 +25,14 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 //
-// -----------------------------------------------------------------------------
+// Aegisub Project http://www.aegisub.org/
 //
-// AEGISUB
-//
-// Website: http://aegisub.cellosoft.com
-// Contact: mailto:zeratul@cellosoft.com
-//
+// $Id$
+
+/// @file static_bmp.cpp
+/// @brief Control displaying a static bitmapped image
+/// @ingroup custom_control
+///
 
 
 ////////////
@@ -65,3 +66,4 @@ void BitmapControl::OnPaint(wxPaintEvent& event) {
 	wxPaintDC dc(this);
 	dc.DrawBitmap(bmp,0,0);
 }
+

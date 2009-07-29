@@ -25,13 +25,14 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 //
-// -----------------------------------------------------------------------------
+// Aegisub Project http://www.aegisub.org/
 //
-// AEGISUB
-//
-// Website: http://aegisub.cellosoft.com
-// Contact: mailto:zeratul@cellosoft.com
-//
+// $Id$
+
+/// @file mkv_wrap.cpp
+/// @brief High-level interface for obtaining various data from Matroska files
+/// @ingroup video_input
+///
 
 
 ///////////
@@ -595,3 +596,4 @@ MkvStdIO::MkvStdIO(wxString filename) {
 		setvbuf(fp, NULL, _IOFBF, CACHESIZE);
 	}
 }
+

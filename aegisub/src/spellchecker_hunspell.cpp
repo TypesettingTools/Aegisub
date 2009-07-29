@@ -25,13 +25,14 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 //
-// -----------------------------------------------------------------------------
+// Aegisub Project http://www.aegisub.org/
 //
-// AEGISUB
-//
-// Website: http://aegisub.cellosoft.com
-// Contact: mailto:zeratul@cellosoft.com
-//
+// $Id$
+
+/// @file spellchecker_hunspell.cpp
+/// @brief Hunspell-based spell checker implementation
+/// @ingroup spelling
+///
 
 
 ///////////
@@ -281,3 +282,4 @@ void HunspellSpellChecker::SetLanguage(wxString language) {
 }
 
 #endif // WITH_HUNSPELL
+

@@ -25,13 +25,14 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 //
-// -----------------------------------------------------------------------------
+// Aegisub Project http://www.aegisub.org/
 //
-// AEGISUB
-//
-// Website: http://aegisub.cellosoft.com
-// Contact: mailto:zeratul@cellosoft.com
-//
+// $Id$
+
+/// @file audio_provider_manager.h
+/// @brief Manage available audio provider implementations
+/// @ingroup audio_input
+///
 
 
 #pragma once
@@ -53,3 +54,4 @@ public:
 	static AudioProvider *GetAudioProvider(wxString filename, int cache=-1);
 	static void ClearProviders();
 };
+

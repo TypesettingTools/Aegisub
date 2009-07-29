@@ -25,13 +25,14 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 //
-// -----------------------------------------------------------------------------
+// Aegisub Project http://www.aegisub.org/
 //
-// AEGISUB
-//
-// Website: http://aegisub.cellosoft.com
-// Contact: mailto:zeratul@cellosoft.com
-//
+// $Id$
+
+/// @file font_file_lister_freetype.cpp
+/// @brief FreeType based font collector
+/// @ingroup font_collector
+///
 
 
 ////////////
@@ -170,3 +171,4 @@ void FreetypeFontFileLister::DoInitialize() {
 }
 
 #endif WITH_FREETYPE2
+

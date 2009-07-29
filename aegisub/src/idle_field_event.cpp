@@ -25,13 +25,14 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 //
-// -----------------------------------------------------------------------------
+// Aegisub Project http://www.aegisub.org/
 //
-// AEGISUB
-//
-// Website: http://aegisub.cellosoft.com
-// Contact: mailto:zeratul@cellosoft.com
-//
+// $Id$
+
+/// @file idle_field_event.cpp
+/// @brief Unused event, intended to be used for automatic update of other controls after some idle time from the user
+/// @ingroup custom_control
+///
 
 
 ///////////
@@ -163,3 +164,4 @@ void IdleFieldHandler::OnChange(wxCommandEvent &event) {
 	}
 	event.Skip();
 }
+

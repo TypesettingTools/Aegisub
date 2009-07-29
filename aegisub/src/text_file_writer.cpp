@@ -25,13 +25,14 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 //
-// -----------------------------------------------------------------------------
+// Aegisub Project http://www.aegisub.org/
 //
-// AEGISUB
-//
-// Website: http://aegisub.cellosoft.com
-// Contact: mailto:zeratul@cellosoft.com
-//
+// $Id$
+
+/// @file text_file_writer.cpp
+/// @brief Write plain text files line by line
+/// @ingroup utility
+///
 
 #include "config.h"
 
@@ -76,3 +77,4 @@ void TextFileWriter::WriteLineToFile(wxString line, bool addLineBreak) {
 	if (buf.data())
 		file.write(buf.data(), conv->MBBuffLen(buf.data()));
 }
+

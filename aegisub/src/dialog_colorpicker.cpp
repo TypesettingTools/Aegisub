@@ -25,13 +25,14 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 //
-// -----------------------------------------------------------------------------
+// Aegisub Project http://www.aegisub.org/
 //
-// AEGISUB
-//
-// Website: http://aegisub.cellosoft.com
-// Contact: mailto:zeratul@cellosoft.com
-//
+// $Id$
+
+/// @file dialog_colorpicker.cpp
+/// @brief Custom colour-selection dialogue box
+/// @ingroup tools_ui
+///
 
 #include "config.h"
 
@@ -1292,3 +1293,4 @@ void DialogColorPicker::OnRGBAdjust(wxCommandEvent &evt)
 // Static values for last position of the dialog in this Aegisub session
 int DialogColorPicker::lastx = -1;
 int DialogColorPicker::lasty = -1;
+

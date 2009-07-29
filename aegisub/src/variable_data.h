@@ -25,13 +25,14 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 //
-// -----------------------------------------------------------------------------
+// Aegisub Project http://www.aegisub.org/
 //
-// AEGISUB
-//
-// Website: http://aegisub.cellosoft.com
-// Contact: mailto:zeratul@cellosoft.com
-//
+// $Id$
+
+/// @file variable_data.h
+/// @see variable_data.cpp
+/// @ingroup utility subs_storage
+///
 
 
 #pragma once
@@ -102,3 +103,4 @@ public:
 
 	void operator= (const VariableData &param);
 };
+

@@ -25,13 +25,14 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 //
-// -----------------------------------------------------------------------------
+// Aegisub Project http://www.aegisub.org/
 //
-// AEGISUB
-//
-// Website: http://aegisub.cellosoft.com
-// Contact: mailto:jiifurusu@gmail.com
-//
+// $Id$
+
+/// @file audio_provider_pcm.h
+/// @see audio_provider_pcm.cpp
+/// @ingroup audio_input
+///
 
 
 #pragma once
@@ -95,5 +96,6 @@ public:
 
 // Construct the right PCM audio provider (if any) for the file
 AudioProvider *CreatePCMAudioProvider(const wxString &filename);
+
 
 

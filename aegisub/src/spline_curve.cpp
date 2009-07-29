@@ -25,13 +25,14 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 //
-// -----------------------------------------------------------------------------
+// Aegisub Project http://www.aegisub.org/
 //
-// AEGISUB
-//
-// Website: http://aegisub.cellosoft.com
-// Contact: mailto:zeratul@cellosoft.com
-//
+// $Id$
+
+/// @file spline_curve.cpp
+/// @brief Handle bicubic splines (Bezier curves) in vector drawings
+/// @ingroup visual_ts
+///
 
 
 ///////////
@@ -226,3 +227,4 @@ float SplineCurve::GetClosestSegmentDistance(Vector2D pt1,Vector2D pt2,Vector2D 
 	float t = GetClosestSegmentPart(pt1,pt2,pt3);
 	return (pt1*(1.0f-t)+pt2*t-pt3).Len();
 }
+

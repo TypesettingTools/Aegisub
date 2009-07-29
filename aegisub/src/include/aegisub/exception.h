@@ -24,6 +24,15 @@
 // CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
+//
+// Aegisub Project http://www.aegisub.org/
+//
+// $Id$
+
+/// @file exception.h
+/// @brief Base exception classes for structured error handling
+/// @ingroup main_headers
+///
 
 
 #include <wx/string.h>
@@ -118,3 +127,4 @@ namespace Aegisub {
 	// Define new classes if none fit the error you're reporting
 
 };
+

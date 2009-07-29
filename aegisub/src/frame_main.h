@@ -25,13 +25,14 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 //
-// -----------------------------------------------------------------------------
+// Aegisub Project http://www.aegisub.org/
 //
-// AEGISUB
-//
-// Website: http://aegisub.cellosoft.com
-// Contact: mailto:zeratul@cellosoft.com
-//
+// $Id$
+
+/// @file frame_main.h
+/// @see frame_main.cpp
+/// @ingroup main_ui
+///
 
 
 #ifndef FRAME_MAIN_H
@@ -448,3 +449,4 @@ enum {
 
 
 #endif
+

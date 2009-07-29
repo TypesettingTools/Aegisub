@@ -25,32 +25,34 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 //
-// -----------------------------------------------------------------------------
+// Aegisub Project http://www.aegisub.org/
 //
-// AEGISUB
-//
-// Website: http://aegisub.cellosoft.com
-// Contact: mailto:zeratul@cellosoft.com
-//
+// $Id$
 
-// Functions for "inline string encoding" handling,
-// a simple encoding-form used for encoding strings that can't contain control codes and a few other special characters,
-// so they can be stored as part of a field in an ASS line
-
-// Even though the encoding will handle unicode strings, it can only encode ASCII characters.
-// This is not a problem, since only ASCII characters are used for the special purposes.
-
-// The encoding is based on an escape-character followed by a two-digit hexadecimal number, the number being the
-// ASCII code for the encoded character. The escape character is # (ASCII 0x23).
-
-// The following ASCII codes must be escaped:
-// 0x00 .. 0x1F -- Control codes (nonprintable characters, including linebreaks)
-//         0x23 -- Sharp (the escape character itself must be escaped to appear in the literal)
-//         0x2C -- Comma (used for field separator in standard ASS lines)
-//         0x3A -- Colon (used in some custom list formats for name:value pairs)
-//         0x7C -- Pipe (used in some custom lists, as item separator, eg. itemA|itemB)
-
-// The encoded string should be usable in any kind of field in an ASS file.
+/// @file string_codec.h
+/// @see string_codec.cpp
+/// @ingroup utility
+///
+/// Functions for "inline string encoding" handling,
+/// a simple encoding-form used for encoding strings that can't contain control codes and a few other special characters,
+/// so they can be stored as part of a field in an ASS line
+///
+/// Even though the encoding will handle unicode strings, it can only encode ASCII characters.
+/// This is not a problem, since only ASCII characters are used for the special purposes.
+///
+/// The encoding is based on an escape-character followed by a two-digit hexadecimal number, the number being the
+/// ASCII code for the encoded character. The escape character is # (ASCII 0x23).
+///
+/// @verbatium
+/// The following ASCII codes must be escaped:
+/// 0x00 .. 0x1F -- Control codes (nonprintable characters, including linebreaks)
+///         0x23 -- Sharp (the escape character itself must be escaped to appear in the literal)
+///         0x2C -- Comma (used for field separator in standard ASS lines)
+///         0x3A -- Colon (used in some custom list formats for name:value pairs)
+///         0x7C -- Pipe (used in some custom lists, as item separator, eg. itemA|itemB)
+/// @endverbatium
+///
+/// The encoded string should be usable in any kind of field in an ASS file.
 
 #ifndef _STRING_CODEC_H
 #define _STRING_CODEC_H
@@ -62,3 +64,4 @@ wxString inline_string_encode(const wxString &input);
 wxString inline_string_decode(const wxString &input);
 
 #endif
+

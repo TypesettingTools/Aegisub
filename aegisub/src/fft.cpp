@@ -25,19 +25,16 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 //
-// -----------------------------------------------------------------------------
+// Aegisub Project http://www.aegisub.org/
 //
-// AEGISUB
-//
-// Website: http://aegisub.cellosoft.com
-// Contact: mailto:zeratul@cellosoft.com
-//
+// $Id$
 
-
-//
-// Most of this code was taken from http://www.codeproject.com/audio/waveInFFT.asp
-// And rewriten by Rodrigo Braz Monteiro
-//
+/// @file fft.cpp
+/// @brief Fast Fourier-transform implementation
+/// @ingroup utility
+///
+/// Most of this code was taken from http://www.codeproject.com/audio/waveInFFT.asp
+/// And rewriten by Rodrigo Braz Monteiro
 
 
 ///////////
@@ -190,3 +187,4 @@ float FFT::FrequencyAtIndex (unsigned int baseFreq, unsigned int n_samples, unsi
 		return (-(float)(n_samples-index) / (float)n_samples * baseFreq);
 	}
 }
+

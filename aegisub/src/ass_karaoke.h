@@ -25,13 +25,14 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 //
-// -----------------------------------------------------------------------------
+// Aegisub Project http://www.aegisub.org/
 //
-// AEGISUB
-//
-// Website: http://aegisub.cellosoft.com
-// Contact: mailto:jiifurusu@gmail.com
-//
+// $Id$
+
+/// @file ass_karaoke.h
+/// @see ass_karaoke.cpp
+/// @ingroup subs_storage
+///
 
 #pragma once
 
@@ -51,3 +52,4 @@ struct AssKaraokeSyllable {
 typedef std::vector<AssKaraokeSyllable> AssKaraokeVector;
 
 void ParseAssKaraokeTags(const AssDialogue *line, AssKaraokeVector &syls);
+

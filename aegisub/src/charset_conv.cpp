@@ -25,13 +25,14 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 //
-// -----------------------------------------------------------------------------
+// Aegisub Project http://www.aegisub.org/
 //
-// AEGISUB
-//
-// Website: http://www.aegisub.net/
-// Contact: mailto:zeratul@cellosoft.com
-//
+// $Id$
+
+/// @file charset_conv.cpp
+/// @brief Iconv-based implementation of character set conversions
+/// @ingroup utility
+///
 
 #include "charset_conv.h"
 
@@ -436,3 +437,4 @@ wxArrayString AegisubCSConv::GetEncodingsList() {
 }
 static AegisubCSConv localConv(_T("Local"), false);
 AegisubCSConv& csConvLocal(localConv);
+

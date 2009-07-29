@@ -25,13 +25,14 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 //
-// -----------------------------------------------------------------------------
+// Aegisub Project http://www.aegisub.org/
 //
-// AEGISUB
-//
-// Website: http://aegisub.cellosoft.com
-// Contact: mailto:zeratul@cellosoft.com
-//
+// $Id$
+
+/// @file visual_tool_cross.cpp
+/// @brief Crosshair double-click-to-position visual typesetting tool
+/// @ingroup visual_ts
+///
 
 
 ///////////
@@ -140,3 +141,4 @@ void VisualToolCross::Draw() {
 	glPopMatrix();
 	glMatrixMode(GL_MODELVIEW);
 }
+

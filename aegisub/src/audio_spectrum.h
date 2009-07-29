@@ -26,13 +26,14 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 //
-// -----------------------------------------------------------------------------
+// Aegisub Project http://www.aegisub.org/
 //
-// AEGISUB
-//
-// Website: http://aegisub.cellosoft.com
-// Contact: mailto:zeratul@cellosoft.com
-//
+// $Id$
+
+/// @file audio_spectrum.h
+/// @see audio_spectrum.cpp
+/// @ingroup audio_ui
+///
 
 #ifndef AUDIO_SPECTRUM_H
 #define AUDIO_SPECTRUM_H
@@ -75,3 +76,4 @@ public:
 
 
 #endif
+

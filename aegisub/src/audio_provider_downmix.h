@@ -25,13 +25,14 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 //
-// -----------------------------------------------------------------------------
+// Aegisub Project http://www.aegisub.org/
 //
-// AEGISUB
-//
-// Website: http://aegisub.cellosoft.com
-// Contact: mailto:jiifurusu@gmail.com
-//
+// $Id$
+
+/// @file audio_provider_downmix.h
+/// @see audio_provider_downmix.cpp
+/// @ingroup audio_input
+///
 
 #include "include/aegisub/audio_provider.h"
 
@@ -50,4 +51,5 @@ public:
 	void GetAudio(void *buf, int64_t start, int64_t count);
 
 };
+
 

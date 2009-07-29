@@ -25,13 +25,14 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 //
-// -----------------------------------------------------------------------------
+// Aegisub Project http://www.aegisub.org/
 //
-// AEGISUB
-//
-// Website: http://aegisub.cellosoft.com
-// Contact: mailto:zeratul@cellosoft.com
-//
+// $Id$
+
+/// @file aegisub.h
+/// @brief General typedefs for Aegisub
+/// @ingroup main_headers
+///
 
 
 #pragma once
@@ -45,3 +46,4 @@
 ///////////////////
 // Aegisub headers
 //#include "video_frame.h"
+

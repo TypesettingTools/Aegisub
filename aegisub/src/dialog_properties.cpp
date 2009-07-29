@@ -25,13 +25,14 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 //
-// -----------------------------------------------------------------------------
+// Aegisub Project http://www.aegisub.org/
 //
-// AEGISUB
-//
-// Website: http://aegisub.cellosoft.com
-// Contact: mailto:zeratul@cellosoft.com
-//
+// $Id$
+
+/// @file dialog_properties.cpp
+/// @brief Dialogue box to set subtitle meta-data
+/// @ingroup secondary_ui
+///
 
 
 ///////////
@@ -231,3 +232,4 @@ void DialogProperties::OnSetFromVideo(wxCommandEvent &event) {
 	ResY->SetValue(wxString::Format(_T("%i"),VideoContext::Get()->GetHeight()));
 	event.Skip();
 }
+

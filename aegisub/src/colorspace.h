@@ -25,13 +25,14 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 //
-// -----------------------------------------------------------------------------
+// Aegisub Project http://www.aegisub.org/
 //
-// AEGISUB
-//
-// Website: http://aegisub.cellosoft.com
-// Contact: mailto:zeratul@cellosoft.com
-//
+// $Id$
+
+/// @file colorspace.h
+/// @see colorspace.cpp
+/// @ingroup utility
+///
 
 #ifndef COLORSPACE_H
 #define COLORSPACE_H
@@ -80,3 +81,4 @@ wxColour html_to_color(wxString html);
 
 
 #endif
+

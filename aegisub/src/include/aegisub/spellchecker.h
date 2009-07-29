@@ -25,13 +25,14 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 //
-// -----------------------------------------------------------------------------
+// Aegisub Project http://www.aegisub.org/
 //
-// AEGISUB
-//
-// Website: http://aegisub.cellosoft.com
-// Contact: mailto:zeratul@cellosoft.com
-//
+// $Id$
+
+/// @file spellchecker.h
+/// @brief Declaration of base-class for spell checkers
+/// @ingroup main_headers spelling
+///
 
 
 #pragma once
@@ -67,3 +68,4 @@ public:
 	virtual ~SpellCheckerFactory() {}
 	virtual SpellChecker *CreateSpellChecker()=0;
 };
+

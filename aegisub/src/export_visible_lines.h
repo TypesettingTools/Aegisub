@@ -25,13 +25,14 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 //
-// -----------------------------------------------------------------------------
+// Aegisub Project http://www.aegisub.org/
 //
-// AEGISUB
-//
-// Website: http://aegisub.cellosoft.com
-// Contact: mailto:zeratul@cellosoft.com
-//
+// $Id$
+
+/// @file export_visible_lines.h
+/// @see export_visible_lines.cpp
+/// @ingroup export
+///
 
 
 #pragma once
@@ -57,3 +58,4 @@ public:
 
 	void ProcessSubs(AssFile *subs, wxWindow *export_dialog);
 };
+

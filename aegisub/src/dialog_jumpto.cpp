@@ -25,13 +25,14 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 //
-// -----------------------------------------------------------------------------
+// Aegisub Project http://www.aegisub.org/
 //
-// AEGISUB
-//
-// Website: http://aegisub.cellosoft.com
-// Contact: mailto:zeratul@cellosoft.com
-//
+// $Id$
+
+/// @file dialog_jumpto.cpp
+/// @brief Dialogue box to enter a time to seek video to
+/// @ingroup secondary_ui
+///
 
 
 ///////////
@@ -186,3 +187,4 @@ void DialogJumpTo::OnEditFrame (wxCommandEvent &event) {
 	}
 	else event.Skip();
 }
+

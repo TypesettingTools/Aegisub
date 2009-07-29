@@ -25,13 +25,14 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 //
-// -----------------------------------------------------------------------------
+// Aegisub Project http://www.aegisub.org/
 //
-// AEGISUB
-//
-// Website: http://aegisub.cellosoft.com
-// Contact: mailto:zeratul@cellosoft.com
-//
+// $Id$
+
+/// @file audio_player_dsound.cpp
+/// @brief Old DirectSound-based audio output
+/// @ingroup audio_output
+///
 
 
 ///////////
@@ -403,3 +404,4 @@ void DirectSoundPlayerThread::Stop() {
 }
 
 #endif // WITH_DIRECTSOUND
+

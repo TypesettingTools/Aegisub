@@ -24,11 +24,15 @@
   CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
   ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
   POSSIBILITY OF SUCH DAMAGE.
- */
+
+  Aegisub Project http://www.aegisub.org/
+
+  $Id$
+*/
 
 /** @file libosxutil.h
- * @brief OSX utilities
- * @ingroup libosxutil
+ *  @brief Declare all public functions in libosxutil
+ *  @ingroup libosxutil
  *
  * Utility functions for running regular *NIX libraries inside application
  * bundles on Apple Macintosh OS X.
@@ -114,3 +118,4 @@ char * OSX_GetBundleExecutablePath();
  * Pass the basename of the executable to get the path.
  */
 char * OSX_GetBundleAuxillaryExecutablePath(const char *executableName);
+

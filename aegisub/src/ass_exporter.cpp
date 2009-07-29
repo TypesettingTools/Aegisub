@@ -25,13 +25,14 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 //
-// -----------------------------------------------------------------------------
+// Aegisub Project http://www.aegisub.org/
 //
-// AEGISUB
-//
-// Website: http://aegisub.cellosoft.com
-// Contact: mailto:zeratul@cellosoft.com
-//
+// $Id$
+
+/// @file ass_exporter.cpp
+/// @brief Overall set-up and management of export operations
+/// @ingroup export
+///
 
 
 ///////////
@@ -181,3 +182,4 @@ wxString AssExporter::GetDescription(wxString name) {
 	}
 	throw wxString::Format(_T("Filter not found: %s"), name.c_str());
 }
+

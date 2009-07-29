@@ -25,13 +25,14 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 //
-// -----------------------------------------------------------------------------
+// Aegisub Project http://www.aegisub.org/
 //
-// AEGISUB
-//
-// Website: http://aegisub.cellosoft.com
-// Contact: mailto:zeratul@cellosoft.com
-//
+// $Id$
+
+/// @file subs_edit_ctrl.h
+/// @see subs_edit_ctrl.cpp
+/// @ingroup main_ui
+///
 
 
 #pragma once
@@ -118,3 +119,4 @@ enum {
 	EDIT_MENU_THES_LANGUAGE = 1700,
 	EDIT_MENU_THES_LANGS
 };
+

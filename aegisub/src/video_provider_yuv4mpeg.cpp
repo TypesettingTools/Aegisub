@@ -25,13 +25,14 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 //
-// -----------------------------------------------------------------------------
+// Aegisub Project http://www.aegisub.org/
 //
-// AEGISUB
-//
-// Website: http://aegisub.cellosoft.com
-// Contact: mailto:zeratul@cellosoft.com
-//
+// $Id$
+
+/// @file video_provider_yuv4mpeg.cpp
+/// @brief Video provider reading YUV4MPEG files directly without depending on external libraries
+/// @ingroup video_input
+///
 
 
 #include "video_provider_yuv4mpeg.h"
@@ -427,4 +428,5 @@ int YUV4MPEGVideoProvider::GetPosition() {
 double YUV4MPEGVideoProvider::GetFPS() {
 	return double(fps_rat.num) / double(fps_rat.den);
 }
+
 

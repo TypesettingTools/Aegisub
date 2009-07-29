@@ -25,13 +25,14 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 //
-// -----------------------------------------------------------------------------
+// Aegisub Project http://www.aegisub.org/
 //
-// AEGISUB
-//
-// Website: http://aegisub.cellosoft.com
-// Contact: mailto:zeratul@cellosoft.com
-//
+// $Id$
+
+/// @file help_button.cpp
+/// @brief Push-button opening the help file at a specified section
+/// @ingroup custom_control
+///
 
 
 ///////////
@@ -129,3 +130,4 @@ void HelpButton::InitStatic() {
 void HelpButton::ClearPages() {
 	if (pages) delete pages;
 }
+

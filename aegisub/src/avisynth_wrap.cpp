@@ -25,13 +25,14 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 //
-// -----------------------------------------------------------------------------
+// Aegisub Project http://www.aegisub.org/
 //
-// AEGISUB
-//
-// Website: http://aegisub.cellosoft.com
-// Contact: mailto:zeratul@cellosoft.com
-//
+// $Id$
+
+/// @file avisynth_wrap.cpp
+/// @brief Wrapper-layer for Avisynth
+/// @ingroup video_input audio_input
+///
 
 
 ////////////
@@ -136,3 +137,4 @@ IScriptEnvironment *AviSynthWrapper::GetEnv() {
 }
 
 #endif
+

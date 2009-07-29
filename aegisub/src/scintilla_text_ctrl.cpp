@@ -25,13 +25,14 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 //
-// -----------------------------------------------------------------------------
+// Aegisub Project http://www.aegisub.org/
 //
-// AEGISUB
-//
-// Website: http://aegisub.cellosoft.com
-// Contact: mailto:zeratul@cellosoft.com
-//
+// $Id$
+
+/// @file scintilla_text_ctrl.cpp
+/// @brief Customised version of wxStyledTextControl used for main edit box
+/// @ingroup custom_control
+///
 
 
 ////////////
@@ -140,3 +141,4 @@ wxString ScintillaTextCtrl::GetWordAtPosition(int pos) {
 void ScintillaTextCtrl::SetSelectionU(int start, int end) {
 	SetSelection(GetUnicodePosition(start),GetUnicodePosition(end));
 }
+

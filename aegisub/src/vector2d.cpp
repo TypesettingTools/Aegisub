@@ -25,13 +25,14 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 //
-// -----------------------------------------------------------------------------
+// Aegisub Project http://www.aegisub.org/
 //
-// AEGISUB
-//
-// Website: http://aegisub.cellosoft.com
-// Contact: mailto:zeratul@cellosoft.com
-//
+// $Id$
+
+/// @file vector2d.cpp
+/// @brief 2D mathematical vector used in visual typesetting
+/// @ingroup utility visual_ts
+///
 
 
 ///////////
@@ -190,3 +191,4 @@ Vector2D Vector2D::Unit () const {
 	}
 	else return Vector2D(0,0);
 }
+

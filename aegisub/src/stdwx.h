@@ -25,25 +25,20 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 //
-// -----------------------------------------------------------------------------
+// Aegisub Project http://www.aegisub.org/
 //
-// AEGISUB
-//
-// Website: http://aegisub.cellosoft.com
-// Contact: mailto:zeratul@cellosoft.com
-//
+// $Id$
 
-
-//
-// Precompiled Header File
-//
-// In order to use it, set the project to use this header as precompiled and
-// insert it in every source file (under C/C++ -> Advanced -> Force Includes),
-// then set stdwx.cpp to generate the precompiled header
-//
-// Note: make sure that you disable use of precompiled headers on md5.c and
-// MatroskaParser.c, as well as any possible future .c files.
-//
+/// @file stdwx.h
+/// @brief Precompiled headers include file, including all headers that should be precompiled
+/// @ingroup main
+///
+/// In order to use it, set the project to use this header as precompiled and
+/// insert it in every source file (under C/C++ -> Advanced -> Force Includes),
+/// then set stdwx.cpp to generate the precompiled header
+///
+/// @note Make sure that you disable use of precompiled headers on md5.c and
+///       MatroskaParser.c, as well as any possible future .c files.
 
 
 ////////////
@@ -99,3 +94,4 @@
 #include <map>
 
 #endif // C++
+

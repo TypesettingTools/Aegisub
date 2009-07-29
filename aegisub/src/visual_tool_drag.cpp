@@ -25,13 +25,14 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 //
-// -----------------------------------------------------------------------------
+// Aegisub Project http://www.aegisub.org/
 //
-// AEGISUB
-//
-// Website: http://aegisub.cellosoft.com
-// Contact: mailto:zeratul@cellosoft.com
-//
+// $Id$
+
+/// @file visual_tool_drag.cpp
+/// @brief Position all visible subtitles by dragging visual typesetting tool
+/// @ingroup visual_ts
+///
 
 
 ///////////
@@ -314,3 +315,4 @@ void VisualToolDrag::CommitDrag(VisualDraggableFeature &feature) {
 		SetOverride(_T("\\move"),wxString::Format(_T("(%i,%i,%i,%i,%i,%i)"),p1->x,p1->y,p2->x,p2->y,p1->value,p2->value));
 	}
 }
+

@@ -25,13 +25,14 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 //
-// -----------------------------------------------------------------------------
+// Aegisub Project http://www.aegisub.org/
 //
-// AEGISUB
-//
-// Website: http://aegisub.cellosoft.com
-// Contact: mailto:zeratul@cellosoft.com
-//
+// $Id$
+
+/// @file video_slider.cpp
+/// @brief Seek-bar control for video
+/// @ingroup custom_control
+///
 
 
 ////////////
@@ -499,3 +500,4 @@ void VideoSlider::UpdateImage () {
 void VideoSlider::OnFocus(wxFocusEvent &event) {
 	Refresh(false);
 }
+

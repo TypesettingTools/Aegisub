@@ -25,13 +25,14 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 //
-// -----------------------------------------------------------------------------
+// Aegisub Project http://www.aegisub.org/
 //
-// AEGISUB
-//
-// Website: http://aegisub.cellosoft.com
-// Contact: mailto:zeratul@cellosoft.com
-//
+// $Id$
+
+/// @file ass_override.cpp
+/// @brief Parse and modify ASSA style overrides
+/// @ingroup subs_storage
+///
 
 
 ////////////
@@ -812,3 +813,4 @@ wxString AssOverrideTag::ToString() {
 	if (parenthesis) result += _T(")");
 	return result;
 }
+

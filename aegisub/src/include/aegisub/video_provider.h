@@ -25,13 +25,14 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 //
-// -----------------------------------------------------------------------------
+// Aegisub Project http://www.aegisub.org/
 //
-// AEGISUB
-//
-// Website: http://aegisub.cellosoft.com
-// Contact: mailto:zeratul@cellosoft.com
-//
+// $Id$
+
+/// @file video_provider.h
+/// @brief Declaration of base-class for video providers
+/// @ingroup main_headers video_input
+///
 
 
 #pragma once
@@ -88,3 +89,4 @@ public:
 	virtual ~VideoProviderFactory() {}
 	virtual VideoProvider *CreateProvider(wxString video)=0;
 };
+
