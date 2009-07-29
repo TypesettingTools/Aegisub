@@ -48,8 +48,12 @@
 class AssDialogue;
 
 
-/////////////////////
-// ASS reader/writer
+
+/// DOCME
+/// @class ASSSubtitleFormat
+/// @brief DOCME
+///
+/// DOCME
 class ASSSubtitleFormat : public SubtitleFormat {
 public:
 	wxString GetName();
@@ -62,4 +66,5 @@ public:
 	bool CanWriteFile(wxString filename);
 	void WriteFile(wxString filename,wxString encoding);
 };
+
 

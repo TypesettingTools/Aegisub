@@ -43,18 +43,43 @@
 #include "visual_tool.h"
 
 
-///////////////////
-// Clip tool class
+
+/// DOCME
+/// @class VisualToolClip
+/// @brief DOCME
+///
+/// DOCME
 class VisualToolClip : public VisualTool {
 private:
+
+	/// DOCME
+
+	/// DOCME
+
+	/// DOCME
+
+	/// DOCME
+
+	/// DOCME
+
+	/// DOCME
 	int startX,startY,curX1,curY1,curX2,curY2;
+
+	/// DOCME
 	bool inverse;
 
+
+	/// @brief DOCME
+	/// @return 
+	///
 	bool CanHold() { return true; }
 	void InitializeHold();
 	void UpdateHold();
 	void CommitHold();
 
+
+	/// @brief DOCME
+	///
 	bool CanDrag() { return true; }
 	void PopulateFeatureList();
 	void InitializeDrag(VisualDraggableFeature &feature);
@@ -67,4 +92,5 @@ public:
 	void Update();
 	void Draw();
 };
+
 

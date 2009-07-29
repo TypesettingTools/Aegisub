@@ -40,8 +40,12 @@
 #include "text_file_reader.h"
 
 
-/////////
-// Class
+
+/// DOCME
+/// @class KeyFrameFile
+/// @brief DOCME
+///
+/// DOCME
 class KeyFrameFile
 {
 public:
@@ -53,4 +57,5 @@ private:
 	static void OpenDivXKeyFrames(TextFileReader& file, wxArrayInt& keyFrames);
 	static void Openx264KeyFrames(TextFileReader& file, wxArrayInt& keyFrames);
 };
+
 

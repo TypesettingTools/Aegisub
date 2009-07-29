@@ -43,26 +43,57 @@
 #include "subtitle_format.h"
 
 
-//////////////////
-// Helper classes
+
+/// DOCME
 struct SubPicture {
-	//wxImage img;
+
+	/// DOCME
 	std::vector<unsigned char> data[2];
+
+	/// DOCME
+
+	/// DOCME
 	int x,y;
+
+	/// DOCME
+
+	/// DOCME
 	int w,h;
+
+	/// DOCME
+
+	/// DOCME
 	int start,end;
 };
 
+
+/// DOCME
 struct RLEGroup {
+
+	/// DOCME
 	int col;
+
+	/// DOCME
 	int len;
+
+	/// DOCME
 	bool eol;
+
+	/// @brief DOCME
+	/// @param _col 
+	/// @param _len 
+	/// @param _eol 
+	///
 	RLEGroup(int _col,int _len,bool _eol) { col = _col; len = _len; eol = _eol; }
 };
 
 
-//////////////////////////
-// DVD subpictures writer
+
+/// DOCME
+/// @class DVDSubtitleFormat
+/// @brief DOCME
+///
+/// DOCME
 class DVDSubtitleFormat : public SubtitleFormat {
 private:
 	void GetSubPictureList(std::vector<SubPicture> &pics);
@@ -73,4 +104,5 @@ public:
 	bool CanWriteFile(wxString filename);
 	void WriteFile(wxString filename,wxString encoding);
 };
+
 

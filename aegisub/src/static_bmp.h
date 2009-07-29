@@ -45,10 +45,16 @@
 #include <wx/window.h>
 
 
-/////////////////////
-// About image class
+
+/// DOCME
+/// @class BitmapControl
+/// @brief DOCME
+///
+/// DOCME
 class BitmapControl: public wxWindow {
 private:
+
+	/// DOCME
 	wxBitmap bmp;
 	void OnPaint(wxPaintEvent& event);
 
@@ -57,4 +63,5 @@ public:
 	
 	DECLARE_EVENT_TABLE()
 };
+
 

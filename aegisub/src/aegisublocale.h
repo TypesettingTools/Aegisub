@@ -35,6 +35,8 @@
 ///
 
 #ifndef LOCALE_H
+
+/// DOCME
 #define LOCALE_H
 
 
@@ -43,14 +45,22 @@
 class wxLocale;
 
 
-////////////////////////
-// Aegisub locale class
+
+/// DOCME
+/// @class AegisubLocale
+/// @brief DOCME
+///
+/// DOCME
 class AegisubLocale {
 private:
+
+	/// DOCME
 	wxLocale *locale;
 	wxArrayInt GetAvailableLanguages();
 
 public:
+
+	/// DOCME
 	int curCode;
 
 	AegisubLocale();
@@ -61,4 +71,5 @@ public:
 
 
 #endif
+
 

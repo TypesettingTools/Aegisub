@@ -52,26 +52,48 @@ class AssFile;
 class AssEntry;
 
 
-///////////////////
-// Subtitle reader
+
+/// DOCME
+/// @class SubtitleFormat
+/// @brief DOCME
+///
+/// DOCME
 class SubtitleFormat {
 private:
+
+	/// DOCME
 	bool isCopy;
+
+	/// DOCME
 	AssFile *assFile;
 
 	void Register();
 	void Remove();
 
+
+	/// DOCME
 	static std::list<SubtitleFormat*> formats;
+
+	/// DOCME
 	static bool loaded;
 
 protected:
+
+	/// DOCME
 	struct FPSRational {
+
+		/// DOCME
 		int num;
+
+		/// DOCME
 		int den;
+
+		/// DOCME
 		bool smpte_dropframe;
 	};
 
+
+	/// DOCME
 	std::list<AssEntry*> *Line;
 
 	void CreateCopy();
@@ -86,6 +108,10 @@ protected:
 
 	void Clear();
 	void LoadDefault(bool defline=true);
+
+	/// @brief DOCME
+	/// @return 
+	///
 	AssFile *GetAssFile() { return assFile; }
 	int AddLine(wxString data,wxString group,int lasttime,int &version,wxString *outgroup=NULL);
 	FPSRational AskForFPS(bool showSMPTE=false);
@@ -101,9 +127,29 @@ public:
 
 	static wxString GetWildcards(int mode);
 
+
+	/// @brief DOCME
+	/// @param filename 
+	/// @return 
+	///
 	virtual bool CanReadFile(wxString filename) { return false; };
+
+	/// @brief DOCME
+	/// @param filename 
+	/// @return 
+	///
 	virtual bool CanWriteFile(wxString filename) { return false; };
+
+	/// @brief DOCME
+	/// @param filename            
+	/// @param forceEncoding=_T(Ó) 
+	///
 	virtual void ReadFile(wxString filename,wxString forceEncoding=_T("")) { };
+
+	/// @brief DOCME
+	/// @param filename       
+	/// @param encoding=_T(Ó) 
+	///
 	virtual void WriteFile(wxString filename,wxString encoding=_T("")) { };
 
 	static SubtitleFormat *GetReader(wxString filename);
@@ -111,4 +157,5 @@ public:
 	static void LoadFormats();
 	static void DestroyFormats();
 };
+
 

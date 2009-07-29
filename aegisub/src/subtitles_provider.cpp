@@ -49,14 +49,17 @@
 #include "options.h"
 
 
-//////////////
-// Destructor
+
+/// @brief Destructor 
+///
 SubtitlesProvider::~SubtitlesProvider() {
 }
 
 
-////////////////////////////////////////////////////////////////
-// Check if provider available (doesn't verify provider works!)
+
+/// @brief Check if provider available (doesn't verify provider works!) 
+/// @return 
+///
 bool SubtitlesProviderFactoryManager::ProviderAvailable() {
 	// List of providers
 	wxArrayString list = GetFactoryList(Options.AsText(_T("Subtitles provider")));
@@ -66,8 +69,10 @@ bool SubtitlesProviderFactoryManager::ProviderAvailable() {
 }
 
 
-////////////////
-// Get provider
+
+/// @brief Get provider 
+/// @return 
+///
 SubtitlesProvider* SubtitlesProviderFactoryManager::GetProvider() {
 	// List of providers
 	wxArrayString list = GetFactoryList(Options.AsText(_T("Subtitles provider")));
@@ -95,8 +100,9 @@ SubtitlesProvider* SubtitlesProviderFactoryManager::GetProvider() {
 }
 
 
-//////////////////////
-// Register providers
+
+/// @brief Register providers 
+///
 void SubtitlesProviderFactoryManager::RegisterProviders() {
 #ifdef WITH_CSRI
 	CSRISubtitlesProviderFactory *csri = new CSRISubtitlesProviderFactory();
@@ -108,14 +114,16 @@ void SubtitlesProviderFactoryManager::RegisterProviders() {
 }
 
 
-///////////////////
-// Clear providers
+
+/// @brief Clear providers 
+///
 void SubtitlesProviderFactoryManager::ClearProviders() {
 	ClearFactories();
 }
 
 
-//////////
-// Static
+
+/// DOCME
 template <class SubtitlesProviderFactory> std::map<wxString,SubtitlesProviderFactory*>* FactoryManager<SubtitlesProviderFactory>::factories=NULL;
+
 

@@ -47,10 +47,16 @@
 #include "spline_curve.h"
 
 
-/////////////////////////
-// Spline managing class
+
+/// DOCME
+/// @class Spline
+/// @brief DOCME
+///
+/// DOCME
 class Spline {
 public:
+
+	/// DOCME
 	std::list<SplineCurve> curves;
 
 	Spline();
@@ -58,6 +64,10 @@ public:
 	wxString EncodeToASS();
 	void DecodeFromASS(wxString str);
 
+
+	/// @brief DOCME
+	/// @param curve 
+	///
 	void AppendCurve(SplineCurve &curve) { InsertCurve(curve,-1); }
 	void InsertCurve(SplineCurve &curve,int index);
 	void MovePoint(int curveIndex,int point,wxPoint pos);
@@ -70,4 +80,5 @@ public:
 	Vector2D GetClosestPoint(Vector2D reference);
 	Vector2D GetClosestControlPoint(Vector2D reference);
 };
+
 

@@ -49,23 +49,45 @@
 ////////////
 // Typedefs
 #if defined(__WINDOWS__) || defined(__APPLE__)
+
+/// DOCME
 typedef struct FT_LibraryRec_ *FT_Library;
 #endif
+
+/// DOCME
 typedef std::map<wxString,wxArrayString> FontMap;
 
 
-////////////////////
-// Font file lister
+
+/// DOCME
+/// @class FontFileLister
+/// @brief DOCME
+///
+/// DOCME
 class FontFileLister {
 private:
+
+	/// DOCME
 	static FontFileLister *instance;
 	static void GetInstance();
+
+	/// DOCME
 	FontMap fontTable;
+
+	/// DOCME
 	wxArrayString fontFiles;
 
 protected:
+
+	/// @brief DOCME
+	/// @param facename 
+	/// @return 
+	///
 	virtual wxArrayString DoGetFilesWithFace(wxString facename) { return CacheGetFilesWithFace(facename); }
 	virtual void DoInitialize()=0;
+
+	/// @brief DOCME
+	///
 	virtual void DoClearData() { ClearCache(); }
 
 	FontFileLister();
@@ -83,4 +105,5 @@ public:
 	static void Initialize();
 	static void ClearData();
 };
+
 

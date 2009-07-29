@@ -55,8 +55,10 @@
 
 
 
-///////////////
-// Constructor
+
+/// @brief Constructor 
+/// @param parent 
+///
 DialogAttachments::DialogAttachments(wxWindow *parent)
 : wxDialog(parent,-1,_("Attachment List"),wxDefaultPosition,wxDefaultSize,wxDEFAULT_DIALOG_STYLE)
 {
@@ -92,8 +94,9 @@ DialogAttachments::DialogAttachments(wxWindow *parent)
 }
 
 
-///////////////
-// Update list
+
+/// @brief Update list 
+///
 void DialogAttachments::UpdateList() {
 	// Clear list
 	listView->ClearAll();
@@ -119,8 +122,9 @@ void DialogAttachments::UpdateList() {
 }
 
 
-//////////////
-// Destructor
+
+/// @brief Destructor 
+///
 DialogAttachments::~DialogAttachments() {
 }
 
@@ -138,8 +142,11 @@ BEGIN_EVENT_TABLE(DialogAttachments,wxDialog)
 END_EVENT_TABLE()
 
 
-///////////////
-// Attach font
+
+/// @brief Attach font 
+/// @param event 
+/// @return 
+///
 void DialogAttachments::OnAttachFont(wxCommandEvent &event) {
 	// Pick files
 	wxArrayString filenames;
@@ -171,8 +178,11 @@ void DialogAttachments::OnAttachFont(wxCommandEvent &event) {
 }
 
 
-///////////////////
-// Attach graphics
+
+/// @brief Attach graphics 
+/// @param event 
+/// @return 
+///
 void DialogAttachments::OnAttachGraphics(wxCommandEvent &event) {
 	// Pick files
 	wxArrayString filenames;
@@ -204,8 +214,11 @@ void DialogAttachments::OnAttachGraphics(wxCommandEvent &event) {
 }
 
 
-///////////
-// Extract
+
+/// @brief Extract 
+/// @param event 
+/// @return 
+///
 void DialogAttachments::OnExtract(wxCommandEvent &event) {
 	// Check if there's a selection
 	int i = listView->GetFirstSelected();
@@ -237,8 +250,10 @@ void DialogAttachments::OnExtract(wxCommandEvent &event) {
 }
 
 
-//////////
-// Delete
+
+/// @brief Delete 
+/// @param event 
+///
 void DialogAttachments::OnDelete(wxCommandEvent &event) {
 	// Loop through items in list
 	int i = listView->GetFirstSelected();
@@ -252,8 +267,10 @@ void DialogAttachments::OnDelete(wxCommandEvent &event) {
 }
 
 
-//////////////////////////
-// List selection changed
+
+/// @brief List selection changed 
+/// @param event 
+///
 void DialogAttachments::OnListClick(wxListEvent &event) {
 	// Check if any is selected
 	bool hasSel = listView->GetFirstSelected() != -1;
@@ -262,4 +279,5 @@ void DialogAttachments::OnListClick(wxListEvent &event) {
 	extractButton->Enable(hasSel);
 	deleteButton->Enable(hasSel);
 }
+
 

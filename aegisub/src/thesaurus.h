@@ -46,31 +46,50 @@
 #include <vector>
 
 
-/////////////////////////
-// Thesaurus entry class
+
+/// DOCME
+/// @class ThesaurusEntry
+/// @brief DOCME
+///
+/// DOCME
 class ThesaurusEntry {
 public:
+
+	/// DOCME
 	wxString name;
+
+	/// DOCME
 	wxArrayString words;
 };
 
 
-/////////////////////////
-// Thesaurus entry array
+
+/// DOCME
 typedef std::vector<ThesaurusEntry> ThesaurusEntryArray;
 
 
-///////////////////////
-// Thesaurus interface
+
+/// DOCME
+/// @class Thesaurus
+/// @brief DOCME
+///
+/// DOCME
 class Thesaurus {
 public:
 	static Thesaurus *GetThesaurus();
 
+
+	/// @brief DOCME
+	///
 	Thesaurus() {}
+
+	/// @brief DOCME
+	///
 	virtual ~Thesaurus() {}
 
 	virtual void Lookup(wxString word,ThesaurusEntryArray &result)=0;
 	virtual wxArrayString GetLanguageList()=0;
 	virtual void SetLanguage(wxString language)=0;
 };
+
 

@@ -58,8 +58,14 @@
 
 
 
-///////////////
-// Constructor
+
+/// @brief Constructor 
+/// @param parent   
+/// @param _subs    
+/// @param _grid    
+/// @param startrow 
+/// @param preview  
+///
 DialogTranslation::DialogTranslation (wxWindow *parent,AssFile *_subs,SubtitlesGrid *_grid,int startrow,bool preview)
 : wxDialog(parent, -1, _("Translation Assistant"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER | wxMINIMIZE_BOX, _T("TranslationAssistant"))
 {
@@ -164,8 +170,12 @@ DialogTranslation::DialogTranslation (wxWindow *parent,AssFile *_subs,SubtitlesG
 }
 
 
-//////////////////////////
-// Jumps to line at block
+
+/// @brief Jumps to line at block 
+/// @param n     
+/// @param block 
+/// @return 
+///
 bool DialogTranslation::JumpToLine(int n,int block) {
 	using std::vector;
 	AssDialogue *nextLine;
@@ -238,8 +248,10 @@ bool DialogTranslation::JumpToLine(int n,int block) {
 }
 
 
-/////////////////////////
-// Updates video preview
+
+/// @brief Updates video preview 
+/// @return 
+///
 void DialogTranslation::UpdatePreview () {
 	if (enablePreview) {
 		try {
@@ -266,7 +278,10 @@ END_EVENT_TABLE()
 /////////////////
 // Event handler
 
-// Constructor
+
+/// @brief Constructor
+/// @param ctrl 
+///
 DialogTranslationEvent::DialogTranslationEvent(DialogTranslation *ctrl) {
 	control = ctrl;
 }
@@ -277,13 +292,23 @@ BEGIN_EVENT_TABLE(DialogTranslationEvent, wxEvtHandler)
 	EVT_CHECKBOX(PREVIEW_CHECK, DialogTranslationEvent::OnPreviewCheck)
 END_EVENT_TABLE()
 
-// Redirects
+
+/// @brief Redirects
+/// @param event 
+///
 void DialogTranslationEvent::OnPreviewCheck(wxCommandEvent &event) { control->enablePreview = event.IsChecked(); }
+
+/// @brief DOCME
+/// @param event 
+///
 void DialogTranslationEvent::OnTransBoxKey(wxKeyEvent &event) { control->OnTransBoxKey(event); }
 
 
-/////////////////////
-// Key pressed event
+
+/// @brief Key pressed event 
+/// @param event 
+/// @return 
+///
 void DialogTranslation::OnTransBoxKey(wxKeyEvent &event) {
 #ifdef __APPLE__
 	Hotkeys.SetPressed(event.GetKeyCode(),event.m_metaDown,event.m_altDown,event.m_shiftDown);
@@ -402,24 +427,30 @@ void DialogTranslation::OnTransBoxKey(wxKeyEvent &event) {
 }
 
 
-/////////////////////
-// Play video button
+
+/// @brief Play video button 
+/// @param event 
+///
 void DialogTranslation::OnPlayVideoButton(wxCommandEvent &event) {
 	video->PlayLine();
 	TransText->SetFocus();
 }
 
 
-/////////////////////
-// Play audio button
+
+/// @brief Play audio button 
+/// @param event 
+///
 void DialogTranslation::OnPlayAudioButton(wxCommandEvent &event) {
 	audio->Play(current->Start.GetMS(),current->End.GetMS());
 	TransText->SetFocus();
 }
 
 
-/////////
-// Close
+
+/// @brief Close 
+/// @param event 
+///
 void DialogTranslation::OnClose (wxCommandEvent &event) {
 	GetPosition(&lastx, &lasty);
 	TransText->PopEventHandler(true);
@@ -428,8 +459,10 @@ void DialogTranslation::OnClose (wxCommandEvent &event) {
 }
 
 
-////////////
-// Minimize
+
+/// @brief Minimize 
+/// @param event 
+///
 void DialogTranslation::OnMinimize (wxIconizeEvent &event) {
 	//Iconize(true);
 	if (main) ((wxFrame*)main)->Iconize(true);
@@ -437,6 +470,11 @@ void DialogTranslation::OnMinimize (wxIconizeEvent &event) {
 }
 
 
+
+/// DOCME
 int DialogTranslation::lastx = -1;
+
+/// DOCME
 int DialogTranslation::lasty = -1;
+
 

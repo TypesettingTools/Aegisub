@@ -36,6 +36,8 @@
 
 
 #ifndef AUDIO_BOX_H
+
+/// DOCME
 #define AUDIO_BOX_H
 
 
@@ -63,29 +65,67 @@ class wxToggleButton;
 class ToggleBitmap;
 
 
-///////////////////
-// Audio box class
+
+/// DOCME
+/// @class AudioBox
+/// @brief DOCME
+///
+/// DOCME
 class AudioBox : public wxPanel {
 	friend class AudioDisplay;
 
 private:
+
+	/// DOCME
 	wxScrollBar *audioScroll;
+
+	/// DOCME
 	wxSlider *HorizontalZoom;
+
+	/// DOCME
 	wxSlider *VerticalZoom;
+
+	/// DOCME
 	wxSlider *VolumeBar;
+
+	/// DOCME
 	wxSizer *MainSizer;
+
+	/// DOCME
 	wxSizer *TopSizer;
+
+	/// DOCME
 	wxSizer *sashSizer;
+
+	/// DOCME
 	wxSizer *DisplaySizer;
+
+	/// DOCME
 	wxSashWindow *Sash;
+
+	/// DOCME
 	ToggleBitmap *VerticalLink;
 
+
+	/// DOCME
 	wxButton *SplitButton;
+
+	/// DOCME
 	wxButton *JoinButton;
+
+	/// DOCME
 	ToggleBitmap *AutoScroll;
+
+	/// DOCME
 	ToggleBitmap *NextCommit;
+
+	/// DOCME
 	ToggleBitmap *MedusaMode;
+
+	/// DOCME
 	ToggleBitmap *AutoCommit;
+
+	/// DOCME
 	ToggleBitmap *SpectrumMode;
 
 	void OnScrollbar(wxScrollEvent &event);
@@ -120,12 +160,26 @@ private:
 	void OnNextLineCommit(wxCommandEvent &event);
 
 public:
+
+	/// DOCME
 	AudioDisplay *audioDisplay;
+
+	/// DOCME
 	AudioKaraoke *audioKaraoke;
+
+	/// DOCME
 	wxToggleButton *KaraokeButton;
+
+	/// DOCME
 	FrameMain *frameMain;
+
+	/// DOCME
 	wxString audioName;
+
+	/// DOCME
 	bool loaded;
+
+	/// DOCME
 	bool karaokeMode;
 
 	AudioBox(wxWindow *parent);
@@ -138,6 +192,12 @@ public:
 };
 
 
+
+/// DOCME
+/// @class FocusEvent
+/// @brief DOCME
+///
+/// DOCME
 class FocusEvent : public wxEvtHandler {
 	
 private:
@@ -149,38 +209,95 @@ private:
 ///////
 // IDs
 enum {
+
+	/// DOCME
 	Audio_Scrollbar = 1600,
+
+	/// DOCME
 	Audio_Horizontal_Zoom,
+
+	/// DOCME
 	Audio_Vertical_Zoom,
+
+	/// DOCME
 	Audio_Volume,
+
+	/// DOCME
 	Audio_Sash,
+
+	/// DOCME
 	Audio_Vertical_Link,
 
+
+	/// DOCME
 	Audio_Button_Play,
+
+	/// DOCME
 	Audio_Button_Stop,
+
+	/// DOCME
 	Audio_Button_Prev,
+
+	/// DOCME
 	Audio_Button_Next,
+
+	/// DOCME
 	Audio_Button_Play_500ms_Before,
+
+	/// DOCME
 	Audio_Button_Play_500ms_After,
+
+	/// DOCME
 	Audio_Button_Play_500ms_First,
+
+	/// DOCME
 	Audio_Button_Play_500ms_Last,
+
+	/// DOCME
 	Audio_Button_Play_Row,
+
+	/// DOCME
 	Audio_Button_Play_To_End,
+
+	/// DOCME
 	Audio_Button_Commit,
+
+	/// DOCME
 	Audio_Button_Karaoke,
+
+	/// DOCME
 	Audio_Button_Goto,
+
+	/// DOCME
 	Audio_Button_Join,
+
+	/// DOCME
 	Audio_Button_Split,
+
+	/// DOCME
 	Audio_Button_Leadin,
+
+	/// DOCME
 	Audio_Button_Leadout,
 
+
+	/// DOCME
 	Audio_Check_AutoCommit,
+
+	/// DOCME
 	Audio_Check_NextCommit,
+
+	/// DOCME
 	Audio_Check_AutoGoto,
+
+	/// DOCME
 	Audio_Check_Medusa,
+
+	/// DOCME
 	Audio_Check_Spectrum
 };
 
 
 #endif
+
 

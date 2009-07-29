@@ -54,21 +54,31 @@ class DialogExport;
 class AssExporter;
 
 
-////////////
-// Typedefs
+
+/// DOCME
 typedef std::list<AssExportFilter*> FilterList;
 
 
-//////////////////////////////////////
-// Singleton for storing filter chain
+
+/// DOCME
+/// @class AssExportFilterChain
+/// @brief DOCME
+///
+/// DOCME
 class AssExportFilterChain {
 	friend class AssExportFilter;
 	friend class AssExporter;
 
 private:
+
+	/// DOCME
 	FilterList Filters;
+
+	/// DOCME
 	FilterList Unprepared;
 
+
+	/// DOCME
 	static AssExportFilterChain *instance;
 	static FilterList *GetFilterList();
 	static FilterList *GetUnpreparedFilterList();
@@ -78,20 +88,36 @@ public:
 };
 
 
-////////////////////////////
-// Base export filter class
+
+/// DOCME
+/// @class AssExportFilter
+/// @brief DOCME
+///
+/// DOCME
 class AssExportFilter {
 	friend class AssExporter;
 	friend class AssExportFilterChain;
 
 private:
+
+	/// DOCME
 	wxString RegisterName;
+
+	/// DOCME
 	int Priority;
 
 protected:
+
+	/// DOCME
 	bool autoExporter;
+
+	/// DOCME
 	bool hidden;
+
+	/// DOCME
 	bool initialized;
+
+	/// DOCME
 	wxString description;
 
 	void Register(wxString name,int priority=0);				// Register the filter with specific name. Higher priority filters get the file to process first.
@@ -109,4 +135,5 @@ public:
 	virtual wxWindow *GetConfigDialogWindow(wxWindow *parent);	// Draw setup controls - this function may optionally be overridden.
 	virtual void LoadSettings(bool IsDefault);					// Config dialog is done - extract data now.
 };
+
 

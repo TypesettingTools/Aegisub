@@ -52,8 +52,9 @@
 #include "options.h"
 
 
-///////////////
-// Constructor
+
+/// @brief Constructor 
+///
 AlsaPlayer::AlsaPlayer()
 {
 	volume = 1.0f;
@@ -64,16 +65,18 @@ AlsaPlayer::AlsaPlayer()
 }
 
 
-//////////////
-// Destructor
+
+/// @brief Destructor 
+///
 AlsaPlayer::~AlsaPlayer()
 {
 	CloseStream();
 }
 
 
-///////////////
-// Open stream
+
+/// @brief Open stream 
+///
 void AlsaPlayer::OpenStream()
 {
 	CloseStream();
@@ -102,6 +105,9 @@ void AlsaPlayer::OpenStream()
 }
 
 
+
+/// @brief DOCME
+///
 void AlsaPlayer::SetUpHardware()
 {
 	int dir;
@@ -195,6 +201,9 @@ void AlsaPlayer::SetUpHardware()
 }
 
 
+
+/// @brief DOCME
+///
 void AlsaPlayer::SetUpAsync()
 {
 	// Prepare software params struct
@@ -231,8 +240,10 @@ void AlsaPlayer::SetUpAsync()
 }
 
 
-////////////////
-// Close stream
+
+/// @brief Close stream 
+/// @return 
+///
 void AlsaPlayer::CloseStream()
 {
 	if (!open) return;
@@ -250,8 +261,11 @@ void AlsaPlayer::CloseStream()
 }
 
 
-////////
-// Play
+
+/// @brief Play 
+/// @param start 
+/// @param count 
+///
 void AlsaPlayer::Play(int64_t start,int64_t count)
 {
 	if (playing) {
@@ -278,8 +292,11 @@ void AlsaPlayer::Play(int64_t start,int64_t count)
 }
 
 
-////////
-// Stop
+
+/// @brief Stop 
+/// @param timerToo 
+/// @return 
+///
 void AlsaPlayer::Stop(bool timerToo)
 {
 	if (!open) return;
@@ -300,42 +317,60 @@ void AlsaPlayer::Stop(bool timerToo)
 }
 
 
+
+/// @brief DOCME
+/// @return 
+///
 bool AlsaPlayer::IsPlaying()
 {
 	return playing;
 }
 
 
-///////////
-// Set end
+
+/// @brief Set end 
+/// @param pos 
+///
 void AlsaPlayer::SetEndPosition(int64_t pos)
 {
 	end_frame = pos;
 }
 
 
-////////////////////////
-// Set current position
+
+/// @brief Set current position 
+/// @param pos 
+///
 void AlsaPlayer::SetCurrentPosition(int64_t pos)
 {
 	cur_frame = pos;
 }
 
 
+
+/// @brief DOCME
+/// @return 
+///
 int64_t AlsaPlayer::GetStartPosition()
 {
 	return start_frame;
 }
 
 
+
+/// @brief DOCME
+/// @return 
+///
 int64_t AlsaPlayer::GetEndPosition()
 {
 	return end_frame;
 }
 
 
-////////////////////////
-// Get current position
+
+/// @brief Get current position 
+/// @return 
+///
 int64_t AlsaPlayer::GetCurrentPosition()
 {
 	// FIXME: this should be based on not duration played but actual sample being heard
@@ -346,6 +381,10 @@ int64_t AlsaPlayer::GetCurrentPosition()
 }
 
 
+
+/// @brief DOCME
+/// @param pcm_callback 
+///
 void AlsaPlayer::async_write_handler(snd_async_handler_t *pcm_callback)
 {
 	// TODO: check for broken pipes in here and restore as needed
@@ -392,4 +431,5 @@ void AlsaPlayer::async_write_handler(snd_async_handler_t *pcm_callback)
 
 
 #endif // WITH_ALSA
+
 

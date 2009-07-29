@@ -54,45 +54,63 @@ class AssDialogueBlockOverride;
 class AssDialogueBlockDrawing;
 
 
-///////////////////
-// Block type enum
+
+/// DOCME
 enum ASS_BlockType {
+
+	/// DOCME
 	BLOCK_BASE,
+
+	/// DOCME
 	BLOCK_PLAIN,
+
+	/// DOCME
 	BLOCK_OVERRIDE,
+
+	/// DOCME
 	BLOCK_DRAWING
 };
 
 
-//////////////////////
-// AssDialogue Blocks
-// ------------------
-// A block is each group in the text field of an AssDialogue
-// For example:
-//  Yes, I {\i1}am{\i0} here.
-//
-// Gets split in five blocks:
-//  "Yes, I " (Plain)
-//  "\i1"     (Override)
-//  "am"      (Plain)
-//  "\i0"     (Override)
-//  " here."  (Plain)
-//
-// Also note how {}s are discarded.
-// Override blocks are further divided in AssOverrideTag's.
-//
-// The GetText() method generates a new value for the "text" field from
-// the other fields in the specific class, and returns the new value.
-//
+/// DOCME
+/// @class AssDialogueBlock
+
+/// @brief AssDialogue Blocks
+///
+/// A block is each group in the text field of an AssDialogue
+/// @verbatium
+///  Yes, I {\i1}am{\i0} here.
+///
+/// Gets split in five blocks:
+///  "Yes, I " (Plain)
+///  "\i1"     (Override)
+///  "am"      (Plain)
+///  "\i0"     (Override)
+///  " here."  (Plain)
+///
+/// Also note how {}s are discarded.
+/// Override blocks are further divided in AssOverrideTag's.
+///
+/// The GetText() method generates a new value for the "text" field from
+/// the other fields in the specific class, and returns the new value.
+/// @endverbatium
 class AssDialogueBlock {
 public:
+
+	/// DOCME
 	wxString text;
+
+	/// DOCME
 	AssDialogue *parent;
 
 	AssDialogueBlock();
 	virtual ~AssDialogueBlock();
 
 	virtual ASS_BlockType GetType() = 0;
+
+	/// @brief DOCME
+	/// @return 
+	///
 	virtual wxString GetText() { return text; }
 	static AssDialogueBlockPlain *GetAsPlain(AssDialogueBlock *base);		// Returns a block base as a plain block if it is valid, null otherwise
 	static AssDialogueBlockOverride *GetAsOverride(AssDialogueBlock *base);	// Returns a block base as an override block if it is valid, null otherwise
@@ -100,47 +118,64 @@ public:
 };
 
 
-/////////////////////////////
-// Plain dialogue block text
-// -------------------------
-// This is used for standard text
-// type = BLOCK_PLAIN
-// 
+
+/// DOCME
+/// @class AssDialogueBlockPlain
+
+/// @brief DOCME
+///
+/// DOCME
 class AssDialogueBlockPlain : public AssDialogueBlock {
 public:
+
+	/// @brief DOCME
+	/// @return 
+	///
 	ASS_BlockType GetType() { return BLOCK_PLAIN; }
 	AssDialogueBlockPlain();
 };
 
 
-/////////////////////////////
-// Plain dialogue block text
-// -------------------------
-// This is used for drawing commands
-// type = BLOCK_DRAWING
-// 
+
+/// DOCME
+/// @class AssDialogueBlockDrawing
+/// @brief DOCME
+///
+/// DOCME
 class AssDialogueBlockDrawing : public AssDialogueBlock {
 public:
+
+	/// DOCME
 	int Scale;
 
+
+	/// @brief DOCME
+	/// @return 
+	///
 	ASS_BlockType GetType() { return BLOCK_DRAWING; }
 	AssDialogueBlockDrawing();
 	void TransformCoords(int trans_x,int trans_y,double mult_x,double mult_y);
 };
 
 
-//////////////////////
-// Override tag block
-// ------------------
-// Used to store ASS overrides
-// Type = BLOCK_OVERRIDE
-//
+
+/// DOCME
+/// @class AssDialogueBlockOverride
+/// @brief DOCME
+///
+/// DOCME
 class AssDialogueBlockOverride : public AssDialogueBlock {
 public:
 	AssDialogueBlockOverride();
 	~AssDialogueBlockOverride();
+
+	/// DOCME
 	std::vector<AssOverrideTag*> Tags;
 
+
+	/// @brief DOCME
+	/// @return 
+	///
 	ASS_BlockType GetType() { return BLOCK_OVERRIDE; }
 	wxString GetText();
 	void ParseTags();		// Parses tags
@@ -148,25 +183,53 @@ public:
 };
 
 
-////////////////////////////////////////
-// Class for Dialogue and Comment lines
+
+/// DOCME
+/// @class AssDialogue
+/// @brief DOCME
+///
+/// DOCME
 class AssDialogue : public AssEntry {
 private:
 	wxString MakeData();
 
 public:
+
+	/// DOCME
 	std::vector<AssDialogueBlock*> Blocks;	// Contains information about each block of text
 
+
+	/// DOCME
 	bool Comment;					// Is this a comment line?
+
+	/// DOCME
 	int Layer;						// Layer number
+
+	/// DOCME
 	int Margin[4];					// Margins: 0 = Left, 1 = Right, 2 = Top (Vertical), 3 = Bottom
+
+	/// DOCME
 	AssTime Start;					// Starting time
+
+	/// DOCME
 	AssTime End;					// Ending time
+
+	/// DOCME
 	wxString Style;					// Style name
+
+	/// DOCME
 	wxString Actor;					// Actor name
+
+	/// DOCME
 	wxString Effect;				// Effect name
+
+	/// DOCME
 	wxString Text;					// Raw text data
 
+
+	/// @brief DOCME
+	/// @return 
+	///
 	ASS_EntryType GetType() { return ENTRY_DIALOGUE; }
 
 	bool Parse(wxString data,int version=1);	// Parses raw ASS data into everything else
@@ -186,10 +249,29 @@ public:
 	void SetEntryData(wxString newData);
 	void Clear();					// Wipes all data
 
+
+	/// @brief DOCME
+	/// @return 
+	///
 	virtual int GetStartMS() const { return Start.GetMS(); }
+
+	/// @brief DOCME
+	/// @return 
+	///
 	virtual int GetEndMS() const { return End.GetMS(); }
+
+	/// @brief DOCME
+	/// @param newStart 
+	///
 	virtual void SetStartMS(const int newStart) { AssEntry::SetStartMS(newStart); Start.SetMS(newStart); }
+
+	/// @brief DOCME
+	/// @param newEnd 
+	///
 	virtual void SetEndMS(const int newEnd) { End.SetMS(newEnd); }
+
+	/// @brief DOCME
+	///
 	void FixStartMS() { AssEntry::SetStartMS(Start.GetMS()); } // Update StartMS in AssEntry from the Start value here
 
 	void SetMarginString(const wxString value,int which);	// Set string to a margin value (0 = left, 1 = right, 2 = vertical/top, 3 = bottom)
@@ -203,4 +285,5 @@ public:
 	AssDialogue(wxString data,int version=1);
 	~AssDialogue();
 };
+
 

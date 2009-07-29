@@ -36,6 +36,8 @@
 
 
 #ifndef HOTKEY_H
+
+/// DOCME
 #define HOTKEY_H
 
 
@@ -52,12 +54,22 @@
 class DialogOptions;
 
 
-////////////////
-// Hotkey class
+
+/// DOCME
+/// @class HotkeyType
+/// @brief DOCME
+///
+/// DOCME
 class HotkeyType {
 public:
+
+	/// DOCME
 	int flags;
+
+	/// DOCME
 	int keycode;
+
+	/// DOCME
 	wxString origName;
 
 	HotkeyType();
@@ -66,24 +78,40 @@ public:
 	void Parse(wxString text);
 	wxString GetText();
 
+
+	/// DOCME
 	static std::map<int,wxString> keyName;
 	static wxString GetKeyName(int keycode);
 	static void FillMap();
 };
 
 
-/////////////////////////////
-// Class that stores hotkeys
+
+/// DOCME
+/// @class HotkeyManager
+/// @brief DOCME
+///
+/// DOCME
 class HotkeyManager {
 	friend class DialogOptions;
 private:
+
+	/// DOCME
 	bool modified;
+
+	/// DOCME
 	wxString filename;
 
+
+	/// DOCME
 	int lastKey;
+
+	/// DOCME
 	int lastMod;
 
 public:
+
+	/// DOCME
 	std::map<wxString,HotkeyType> key;
 
 	HotkeyManager();
@@ -110,4 +138,5 @@ extern HotkeyManager Hotkeys;
 
 
 #endif
+
 

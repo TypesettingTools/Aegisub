@@ -56,18 +56,42 @@ class AssOverrideParameter;
 class AssDialogue;
 
 
-//////////////////////////////
-// Transform Framerate filter
+
+/// DOCME
+/// @class AssTransformFramerateFilter
+/// @brief DOCME
+///
+/// DOCME
 class AssTransformFramerateFilter : public AssExportFilter {
 private:
+
+	/// DOCME
 	static AssTransformFramerateFilter instance;
+
+	/// DOCME
+
+	/// DOCME
 	FrameRate *Input,*Output;
+
+	/// DOCME
+
+	/// DOCME
 	FrameRate t1,t2;
 
+
+	/// DOCME
 	wxTextCtrl *InputFramerate;
+
+	/// DOCME
 	wxTextCtrl *OutputFramerate;
+
+	/// DOCME
 	wxRadioButton *RadioOutputCFR;
+
+	/// DOCME
 	wxRadioButton *RadioOutputVFR;
+
+	/// DOCME
 	wxCheckBox *Reverse;
 
 	AssTransformFramerateFilter();
@@ -82,13 +106,25 @@ public:
 };
 
 
-//////////////////
-// Linedata class
+
+/// DOCME
+/// @class LineData
+/// @brief DOCME
+///
+/// DOCME
 class LineData {
 public:
+
+	/// DOCME
 	AssDialogue *line;
+
+	/// DOCME
 	int k;
+
+	/// DOCME
 	int kf;
+
+	/// DOCME
 	int ko;
 };
 
@@ -96,6 +132,9 @@ public:
 ///////
 // IDs
 enum {
+
+	/// DOCME
 	Get_Input_From_Video = 2000
 };
+
 

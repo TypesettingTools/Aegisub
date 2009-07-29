@@ -48,8 +48,10 @@
 #include "help_button.h"
 
 
-///////////////
-// Constructor
+
+/// @brief Constructor 
+/// @param parent 
+///
 DialogPasteOver::DialogPasteOver (wxWindow *parent)
 : wxDialog (parent,-1,_("Select Fields to Paste Over"),wxDefaultPosition,wxDefaultSize)
 {
@@ -110,8 +112,9 @@ DialogPasteOver::DialogPasteOver (wxWindow *parent)
 }
 
 
-//////////////
-// Destructor
+
+/// @brief Destructor 
+///
 DialogPasteOver::~DialogPasteOver() {
 }
 
@@ -128,8 +131,10 @@ BEGIN_EVENT_TABLE(DialogPasteOver, wxDialog)
 END_EVENT_TABLE()
 
 
-//////////////
-// OK pressed
+
+/// @brief OK pressed 
+/// @param event 
+///
 void DialogPasteOver::OnOK(wxCommandEvent &event) {
 	// Set options
 	options.SetCount(10);
@@ -144,23 +149,29 @@ void DialogPasteOver::OnOK(wxCommandEvent &event) {
 }
 
 
-//////////////////
-// Cancel pressed
+
+/// @brief Cancel pressed 
+/// @param event 
+///
 void DialogPasteOver::OnCancel(wxCommandEvent &event) {
 	EndModal(0);
 }
 
 
-///////////////
-// Select Text
+
+/// @brief Select Text 
+/// @param event 
+///
 void DialogPasteOver::OnText(wxCommandEvent &event) {
 	for (int i=0;i<9;i++) ListBox->Check(i,false);
 	ListBox->Check(9,true);
 }
 
 
-////////////////
-// Select Times
+
+/// @brief Select Times 
+/// @param event 
+///
 void DialogPasteOver::OnTimes(wxCommandEvent &event) {
 	for (int i=0;i<10;i++) ListBox->Check(i,false);
 	ListBox->Check(1,true);
@@ -168,23 +179,29 @@ void DialogPasteOver::OnTimes(wxCommandEvent &event) {
 }
 
 
-//////////////
-// Select All
+
+/// @brief Select All 
+/// @param event 
+///
 void DialogPasteOver::OnAll(wxCommandEvent &event) {
 	for (int i=0;i<10;i++) ListBox->Check(i,true);
 }
 
 
-///////////////
-// Select None
+
+/// @brief Select None 
+/// @param event 
+///
 void DialogPasteOver::OnNone(wxCommandEvent &event) {
 	for (int i=0;i<10;i++) ListBox->Check(i,false);
 }
 
 
-////////////////
-// Get options
+
+/// @brief Get options 
+///
 wxArrayInt DialogPasteOver::GetOptions() {
 	return options;
 }
+
 

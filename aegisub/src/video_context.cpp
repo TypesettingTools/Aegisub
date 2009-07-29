@@ -77,6 +77,8 @@
 ///////
 // IDs
 enum {
+
+	/// DOCME
 	VIDEO_PLAY_TIMER = 1300
 };
 
@@ -88,13 +90,14 @@ BEGIN_EVENT_TABLE(VideoContext, wxEvtHandler)
 END_EVENT_TABLE()
 
 
-////////////
-// Instance
+
+/// DOCME
 VideoContext *VideoContext::instance = NULL;
 
 
-///////////////
-// Constructor
+
+/// @brief Constructor 
+///
 VideoContext::VideoContext() {
 	// Set GL context
 	glContext = NULL;
@@ -127,8 +130,9 @@ VideoContext::VideoContext() {
 }
 
 
-//////////////
-// Destructor
+
+/// @brief Destructor 
+///
 VideoContext::~VideoContext () {
 	Reset();
 	if (ownGlContext)
@@ -137,8 +141,10 @@ VideoContext::~VideoContext () {
 }
 
 
-////////////////
-// Get Instance
+
+/// @brief Get Instance 
+/// @return 
+///
 VideoContext *VideoContext::Get() {
 	if (!instance) {
 		instance = new VideoContext;
@@ -147,8 +153,9 @@ VideoContext *VideoContext::Get() {
 }
 
 
-/////////
-// Clear
+
+/// @brief Clear 
+///
 void VideoContext::Clear() {
 	instance->audio = NULL;
 	delete instance;
@@ -156,8 +163,9 @@ void VideoContext::Clear() {
 }
 
 
-/////////
-// Reset
+
+/// @brief Reset 
+///
 void VideoContext::Reset() {
 	// Reset ?video path
 	StandardPaths::SetPathValue(_T("?video"),_T(""));
@@ -208,8 +216,9 @@ void VideoContext::Reset() {
 }
 
 
-////////////////
-// Reload video
+
+/// @brief Reload video 
+///
 void VideoContext::Reload() {
 	if (IsLoaded()) {
 		wxString name = videoName;
@@ -221,8 +230,9 @@ void VideoContext::Reload() {
 }
 
 
-//////////////////
-// Unload texture
+
+/// @brief Unload texture 
+///
 void VideoContext::UnloadTexture() {
 	// Remove textures
 	if (lastTex != 0) {
@@ -233,8 +243,10 @@ void VideoContext::UnloadTexture() {
 }
 
 
-///////////////////////
-// Sets video filename
+
+/// @brief Sets video filename 
+/// @param filename 
+///
 void VideoContext::SetVideo(const wxString &filename) {
 	// Unload video
 	Reset();
@@ -318,8 +330,11 @@ void VideoContext::SetVideo(const wxString &filename) {
 }
 
 
-///////////////////
-// Add new display
+
+/// @brief Add new display 
+/// @param display 
+/// @return 
+///
 void VideoContext::AddDisplay(VideoDisplay *display) {
 	for (std::list<VideoDisplay*>::iterator cur=displayList.begin();cur!=displayList.end();cur++) {
 		if ((*cur) == display) return;
@@ -328,15 +343,19 @@ void VideoContext::AddDisplay(VideoDisplay *display) {
 }
 
 
-//////////////////
-// Remove display
+
+/// @brief Remove display 
+/// @param display 
+///
 void VideoContext::RemoveDisplay(VideoDisplay *display) {
 	displayList.remove(display);
 }
 
 
-///////////////////
-// Update displays
+
+/// @brief Update displays 
+/// @param full 
+///
 void VideoContext::UpdateDisplays(bool full) {
 	for (std::list<VideoDisplay*>::iterator cur=displayList.begin();cur!=displayList.end();cur++) {
 		// Get display
@@ -372,8 +391,11 @@ void VideoContext::UpdateDisplays(bool full) {
 }
 
 
-/////////////////////
-// Refresh subtitles
+
+/// @brief Refresh subtitles 
+/// @param video     
+/// @param subtitles 
+///
 void VideoContext::Refresh (bool video, bool subtitles) {
 	// Reset frame
 	lastFrame = -1;
@@ -395,8 +417,11 @@ void VideoContext::Refresh (bool video, bool subtitles) {
 }
 
 
-///////////////////////////////////////
-// Jumps to a frame and update display
+
+/// @brief Jumps to a frame and update display 
+/// @param n 
+/// @return 
+///
 void VideoContext::JumpToFrame(int n) {
 	// Loaded?
 	if (!loaded) return;
@@ -448,8 +473,11 @@ void VideoContext::JumpToFrame(int n) {
 }
 
 
-////////////////////////////
-// Jumps to a specific time
+
+/// @brief Jumps to a specific time 
+/// @param ms    
+/// @param exact 
+///
 void VideoContext::JumpToTime(int ms,bool exact) {
 	int frame;
 	if (exact) frame = VFR_Output.PFrameAtTime(ms);
@@ -458,8 +486,11 @@ void VideoContext::JumpToTime(int ms,bool exact) {
 }
 
 
-//////////////////
-// Get GL context
+
+/// @brief Get GL context 
+/// @param canvas 
+/// @return 
+///
 wxGLContext *VideoContext::GetGLContext(wxGLCanvas *canvas) {
 	// wxGLCanvas and wxGLContext is a funky couple.
 	// On wxMac wxGLContext has a different constructor than everywhere else...
@@ -482,8 +513,12 @@ wxGLContext *VideoContext::GetGLContext(wxGLCanvas *canvas) {
 }
 
 
-////////////////////////
-// Requests a new frame
+
+/// @brief Requests a new frame 
+/// @param n   
+/// @param raw 
+/// @return 
+///
 AegiVideoFrame VideoContext::GetFrame(int n,bool raw) {
 	// Current frame if -1
 	if (n == -1) n = frame_n;
@@ -503,8 +538,11 @@ AegiVideoFrame VideoContext::GetFrame(int n,bool raw) {
 }
 
 
-///////////////////////////
-// Get GL Texture of frame
+
+/// @brief Get GL Texture of frame 
+/// @param n 
+/// @return 
+///
 GLuint VideoContext::GetFrameAsTexture(int n) {
 	// Already uploaded
 	if (n == lastFrame || n == -1) return lastTex;
@@ -587,8 +625,10 @@ GLuint VideoContext::GetFrameAsTexture(int n) {
 }
 
 
-/////////////////
-// Save snapshot
+
+/// @brief Save snapshot 
+/// @param raw 
+///
 void VideoContext::SaveSnapshot(bool raw) {
 	// Get folder
 	wxString option = Options.AsText(_T("Video Screenshot Path"));
@@ -628,15 +668,20 @@ void VideoContext::SaveSnapshot(bool raw) {
 }
 
 
-////////////////////////////
-// Get dimensions of script
+
+/// @brief Get dimensions of script 
+/// @param sw 
+/// @param sh 
+///
 void VideoContext::GetScriptSize(int &sw,int &sh) {
 	grid->ass->GetResolution(sw,sh);
 }
 
 
-////////
-// Play
+
+/// @brief Play 
+/// @return 
+///
 void VideoContext::Play() {
 	// Stop if already playing
 	if (isPlaying) {
@@ -661,8 +706,10 @@ void VideoContext::Play() {
 }
 
 
-/////////////
-// Play line
+
+/// @brief Play line 
+/// @return 
+///
 void VideoContext::PlayLine() {
 	// Get line
 	AssDialogue *curline = grid->GetDialogue(grid->editBox->linen);
@@ -689,8 +736,9 @@ void VideoContext::PlayLine() {
 }
 
 
-////////
-// Stop
+
+/// @brief Stop 
+///
 void VideoContext::Stop() {
 	if (isPlaying) {
 		playback.Stop();
@@ -700,8 +748,11 @@ void VideoContext::Stop() {
 }
 
 
-//////////////
-// Play timer
+
+/// @brief Play timer 
+/// @param event 
+/// @return 
+///
 void VideoContext::OnPlayTimer(wxTimerEvent &event) {
 	// Lock
 	wxMutexError res = playMutex.TryLock();
@@ -753,8 +804,10 @@ void VideoContext::OnPlayTimer(wxTimerEvent &event) {
 }
 
 
-//////////////////////////////
-// Get name of temp work file
+
+/// @brief Get name of temp work file 
+/// @return 
+///
 wxString VideoContext::GetTempWorkFile () {
 	if (tempfile.IsEmpty()) {
 		tempfile = wxFileName::CreateTempFileName(_T("aegisub"));
@@ -765,53 +818,67 @@ wxString VideoContext::GetTempWorkFile () {
 }
 
 
-/////////////////
-// Get keyframes
+
+/// @brief Get keyframes 
+/// @return 
+///
 wxArrayInt VideoContext::GetKeyFrames() {
 	if (OverKeyFramesLoaded()) return overKeyFrames;
 	return KeyFrames;
 }
 
 
-/////////////////
-// Set keyframes
+
+/// @brief Set keyframes 
+/// @param frames 
+///
 void VideoContext::SetKeyFrames(wxArrayInt frames) {
 	KeyFrames = frames;
 }
 
 
-/////////////////////////
-// Set keyframe override
+
+/// @brief Set keyframe override 
+/// @param frames 
+///
 void VideoContext::SetOverKeyFrames(wxArrayInt frames) {
 	overKeyFrames = frames;
 	overKeyFramesLoaded = true;
 }
 
 
-///////////////////
-// Close keyframes
+
+/// @brief Close keyframes 
+///
 void VideoContext::CloseOverKeyFrames() {
 	overKeyFrames.Clear();
 	overKeyFramesLoaded = false;
 }
 
 
-//////////////////////////////////////////
-// Check if override keyframes are loaded
+
+/// @brief Check if override keyframes are loaded 
+/// @return 
+///
 bool VideoContext::OverKeyFramesLoaded() {
 	return overKeyFramesLoaded;
 }
 
 
-/////////////////////////////////
-// Check if keyframes are loaded
+
+/// @brief Check if keyframes are loaded 
+/// @return 
+///
 bool VideoContext::KeyFramesLoaded() {
 	return overKeyFramesLoaded || keyFramesLoaded;
 }
 
 
-//////////////////////////
-// Calculate aspect ratio
+
+/// @brief Calculate aspect ratio 
+/// @param type 
+/// @return 
+///
 double VideoContext::GetARFromType(int type) {
 	if (type == 0) return (double)VideoContext::Get()->GetWidth()/(double)VideoContext::Get()->GetHeight();
 	if (type == 1) return 4.0/3.0;
@@ -821,8 +888,11 @@ double VideoContext::GetARFromType(int type) {
 }
 
 
-/////////////////////
-// Sets aspect ratio
+
+/// @brief Sets aspect ratio 
+/// @param _type 
+/// @param value 
+///
 void VideoContext::SetAspectRatio(int _type, double value) {
 	// Get value
 	if (_type != 4) value = GetARFromType(_type);
@@ -836,8 +906,10 @@ void VideoContext::SetAspectRatio(int _type, double value) {
 }
 
 
-//////////////////////
-// Thread constructor
+
+/// @brief Thread constructor 
+/// @param par 
+///
 VideoContextThread::VideoContextThread(VideoContext *par)
 : wxThread(wxTHREAD_DETACHED)
 {
@@ -845,8 +917,9 @@ VideoContextThread::VideoContextThread(VideoContext *par)
 }
 
 
-//////////////////////
-// Thread entry point
+
+/// @brief Thread entry point 
+///
 wxThread::ExitCode VideoContextThread::Entry() {
 	// Set up thread
 	int frame = parent->threadNextFrame;
@@ -882,4 +955,5 @@ wxThread::ExitCode VideoContextThread::Entry() {
 		}
 	}
 }
+
 

@@ -38,10 +38,18 @@
 #pragma once
 
 
-//////////////////////////////
-// Vector2D class declaration
+
+/// DOCME
+/// @class Vector2D
+/// @brief DOCME
+///
+/// DOCME
 class Vector2D {
 public:
+
+	/// DOCME
+
+	/// DOCME
 	float x,y;
 
 	Vector2D ();
@@ -68,8 +76,15 @@ public:
 	float Dot (const Vector2D param) const;
 
 	float Len () const;
+
+	/// @brief DOCME
+	/// @return 
+	///
 	float Length () const { return Len(); }
 	float SquareLen () const;
+
+	/// @brief DOCME
+	///
 	float SquareLength () const { return SquareLen(); }
 };
 
@@ -78,4 +93,5 @@ public:
 // Global operators
 Vector2D operator * (float f,const Vector2D &v);
 Vector2D operator / (float f,const Vector2D &v);
+
 

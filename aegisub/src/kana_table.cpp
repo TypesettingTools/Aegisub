@@ -40,6 +40,9 @@
 #include "kana_table.h"
 
 
+
+/// @brief DOCME
+///
 KanaTable::KanaTable()
 {
 
@@ -265,14 +268,24 @@ KanaTable::KanaTable()
 	Insert(L"",L"\u30fc",L"o");
 }
 
+
+/// @brief DOCME
+///
 KanaTable::~KanaTable()
 {
 	// Do nothing
 }
 
 
+
+/// @brief DOCME
+/// @param hira 
+/// @param kata 
+/// @param hep  
+///
 void KanaTable::Insert(const wchar_t *hira, const wchar_t *kata, const wchar_t *hep)
 {
 	entries.push_back(KanaEntry(hira,kata,hep));
 }
+
 

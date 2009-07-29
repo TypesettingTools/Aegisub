@@ -46,8 +46,8 @@
 #include <stdint.h>
 
 
-////////////
-// Typedefs
+
+/// DOCME
 typedef std::vector<std::pair<int,int> > IntPairVector;
 
 
@@ -79,29 +79,42 @@ void RestartAegisub();
 //////////
 // Macros
 #ifndef MIN
+
+/// DOCME
 #define MIN(a,b) ((a)<(b))?(a):(b)
 #endif
 
 #ifndef MAX
+
+/// DOCME
 #define MAX(a,b) ((a)>(b))?(a):(b)
 #endif
 
 #ifndef MID
+
+/// DOCME
 #define MID(a,b,c) MAX((a),MIN((b),(c)))
 #endif
 
 #ifndef FORCEINLINE
 #ifdef __VISUALC__
+
+/// DOCME
 #define FORCEINLINE __forceinline
 #else
+
+/// DOCME
 #define FORCEINLINE inline
 // __attribute__((always_inline)) gives me errors on g++ ~amz
 #endif
 #endif
 
 
-///////////
-// Inlines
+
+/// @brief Inlines 
+/// @param a 
+/// @param b 
+///
 static inline void IntSwap(int &a,int &b) {
 	int c = a;
 	a = b;
@@ -109,9 +122,12 @@ static inline void IntSwap(int &a,int &b) {
 }
 
 
-//////////////////////////
-// Clamp integer to range
-// Code taken from http://bob.allegronetwork.com/prog/tricks.html#clamp
+
+/// @brief Code taken from http://bob.allegronetwork.com/prog/tricks.html#clamp Clamp integer to range 
+/// @param x   
+/// @param min 
+/// @param max 
+///
 static FORCEINLINE int ClampSignedInteger32(int x,int min,int max) {
 	x -= min;
 	x &= (~x) >> 31;
@@ -121,4 +137,5 @@ static FORCEINLINE int ClampSignedInteger32(int x,int min,int max) {
 	x += max;
 	return x;
 }
+
 

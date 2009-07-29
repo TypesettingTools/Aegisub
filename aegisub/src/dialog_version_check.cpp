@@ -50,13 +50,17 @@
 #include "main.h"
 
 
-//////////
-// Static
+
+/// DOCME
 bool DialogVersionCheck::dialogRunning = false;
 
 
-///////////////
-// Constructor
+
+/// @brief Constructor 
+/// @param parent 
+/// @param hidden 
+/// @return 
+///
 DialogVersionCheck::DialogVersionCheck(wxWindow *parent,bool hidden)
 : wxDialog(parent,-1,_("Version Checker"),wxDefaultPosition,wxDefaultSize,wxDEFAULT_DIALOG_STYLE)
 {
@@ -97,15 +101,17 @@ DialogVersionCheck::DialogVersionCheck(wxWindow *parent,bool hidden)
 }
 
 
-//////////////
-// Destructor
+
+/// @brief Destructor 
+///
 DialogVersionCheck::~DialogVersionCheck() {
 	dialogRunning = false;
 }
 
 
-/////////////////
-// Check Version
+
+/// @brief Check Version 
+///
 void DialogVersionCheck::CheckVersion() {
 	if (!wxFileSystem::HasHandlerForPath(_T("http://www.aegisub.net/"))) wxFileSystem::AddHandler(new wxInternetFSHandler);
 	thread = new VersionCheckThread(this);
@@ -123,13 +129,19 @@ BEGIN_EVENT_TABLE(DialogVersionCheck,wxDialog)
 END_EVENT_TABLE()
 
 
-////////////
-// On close
+
+/// @brief On close 
+/// @param event 
+///
 void DialogVersionCheck::OnClose(wxCloseEvent &event) {
 	dialogRunning = false;
 	if (thread) thread->alive = false;
 	Destroy();
 }
+
+/// @brief DOCME
+/// @param event 
+///
 void DialogVersionCheck::OnOK(wxCommandEvent &event) {
 	dialogRunning = false;
 	if (thread) thread->alive = false;
@@ -137,8 +149,10 @@ void DialogVersionCheck::OnOK(wxCommandEvent &event) {
 }
 
 
-////////////////
-// On Click URL
+
+/// @brief On Click URL 
+/// @param event 
+///
 void DialogVersionCheck::OnURL(wxTextUrlEvent &event) {
 	wxMouseEvent mEvent = event.GetMouseEvent();
 	if (mEvent.LeftDown()) {
@@ -148,8 +162,10 @@ void DialogVersionCheck::OnURL(wxTextUrlEvent &event) {
 }
 
 
-/////////////////////////////
-// Worker thread constructor
+
+/// @brief Worker thread constructor 
+/// @param par 
+///
 VersionCheckThread::VersionCheckThread(DialogVersionCheck *par)
 : wxThread(wxTHREAD_DETACHED)
 {
@@ -158,8 +174,9 @@ VersionCheckThread::VersionCheckThread(DialogVersionCheck *par)
 }
 
 
-/////////////////
-// Worker thread
+
+/// @brief Worker thread 
+///
 wxThread::ExitCode VersionCheckThread::Entry() {
 	// List of paths
 	wxArrayString paths;
@@ -297,4 +314,5 @@ endThread:
 	fp = NULL;
 	return 0;
 }
+
 

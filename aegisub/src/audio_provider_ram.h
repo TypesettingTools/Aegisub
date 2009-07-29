@@ -43,12 +43,22 @@
 #include "include/aegisub/audio_provider.h"
 
 
-////////////////////////
-// Audio provider class
+
+/// DOCME
+/// @class RAMAudioProvider
+/// @brief DOCME
+///
+/// DOCME
 class RAMAudioProvider : public AudioProvider {
 private:
+
+	/// DOCME
 	char** blockcache;
+
+	/// DOCME
 	int blockcount;
+
+	/// DOCME
 	bool samples_native_endian;
 
 	void Clear();
@@ -57,8 +67,12 @@ public:
 	RAMAudioProvider(AudioProvider *source);
 	~RAMAudioProvider();
 
+
+	/// @brief DOCME
+	///
 	bool AreSamplesNativeEndian() { return samples_native_endian; }
 
 	void GetAudio(void *buf, int64_t start, int64_t count);
 };
+
 

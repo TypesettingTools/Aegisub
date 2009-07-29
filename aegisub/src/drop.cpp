@@ -44,17 +44,24 @@
 #include <wx/filename.h>
 
 
-///////////////
-// Constructor
+
+/// @brief Constructor 
+/// @param par 
+///
 AegisubFileDropTarget::AegisubFileDropTarget(FrameMain *par) {
 	parent = par;
 }
 
 
-//////////////
-// Drop files
+
+/// @brief Drop files 
+/// @param x         
+/// @param y         
+/// @param filenames 
+///
 bool AegisubFileDropTarget::OnDropFiles(wxCoord x, wxCoord y, const wxArrayString& filenames) {
 	return parent->LoadList(filenames);
 }
+
 
 

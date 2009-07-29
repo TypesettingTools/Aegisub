@@ -43,8 +43,12 @@
 #include "subtitle_format.h"
 
 
-//////////////////////
-// TranStation writer
+
+/// DOCME
+/// @class TranStationSubtitleFormat
+/// @brief DOCME
+///
+/// DOCME
 class TranStationSubtitleFormat : public SubtitleFormat {
 private:
 	wxString ConvertLine(AssDialogue *line, FPSRational *fps_rat, int nextl_start);
@@ -55,4 +59,5 @@ public:
 	bool CanWriteFile(wxString filename);
 	void WriteFile(wxString filename,wxString encoding);
 };
+
 

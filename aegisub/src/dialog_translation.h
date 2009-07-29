@@ -36,6 +36,8 @@
 
 
 #ifndef DIALOG_TRANSLATION_H
+
+/// DOCME
 #define DIALOG_TRANSLATION_H
 
 
@@ -53,22 +55,50 @@ class SubtitlesGrid;
 class AudioDisplay;
 class VideoContext;
 
-/////////
-// Class
+
+/// DOCME
+/// @class DialogTranslation
+/// @brief DOCME
+///
+/// DOCME
 class DialogTranslation : public wxDialog {
 private:
+
+	/// DOCME
 	AudioDisplay *audio;
+
+	/// DOCME
 	VideoContext *video;
+
+	/// DOCME
 	AssFile *subs;
+
+	/// DOCME
 	SubtitlesGrid *grid;
+
+	/// DOCME
 	AssDialogue *current;
+
+	/// DOCME
 	wxWindow *main;
+
+	/// DOCME
 	int curline;
+
+	/// DOCME
 	int curblock;
 
+
+	/// DOCME
 	wxStaticText *LineCount;
+
+	/// DOCME
 	ScintillaTextCtrl *OrigText;
+
+	/// DOCME
 	ScintillaTextCtrl *TransText;
+
+	/// DOCME
 	wxCheckBox *PreviewCheck;
 
 	void OnMinimize(wxIconizeEvent &event);
@@ -79,9 +109,15 @@ private:
 	bool JumpToLine(int n,int block);
 	void UpdatePreview();
 
+
+	/// DOCME
+
+	/// DOCME
 	static int lastx, lasty;
 
 public:
+
+	/// DOCME
 	bool enablePreview;
 	DialogTranslation (wxWindow *parent,AssFile *subs,SubtitlesGrid *grid,int startrow=0,bool preview=false);
 
@@ -91,10 +127,16 @@ public:
 };
 
 
-/////////////////
-// Event handler
+
+/// DOCME
+/// @class DialogTranslationEvent
+/// @brief DOCME
+///
+/// DOCME
 class DialogTranslationEvent : public wxEvtHandler {
 private:
+
+	/// DOCME
 	DialogTranslation *control;
 
 	void OnPreviewCheck(wxCommandEvent &event);
@@ -109,13 +151,24 @@ public:
 ///////
 // IDs
 enum {
+
+	/// DOCME
 	TEXT_ORIGINAL = 1100,
+
+	/// DOCME
 	TEXT_TRANS,
+
+	/// DOCME
 	PREVIEW_CHECK,
+
+	/// DOCME
 	BUTTON_TRANS_PLAY_AUDIO,
+
+	/// DOCME
 	BUTTON_TRANS_PLAY_VIDEO
 };
 
 
 #endif
+
 

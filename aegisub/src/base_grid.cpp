@@ -55,8 +55,15 @@
 #include "audio_display.h"
 
 
-///////////////
-// Constructor
+
+/// @brief Constructor 
+/// @param parent 
+/// @param id     
+/// @param pos    
+/// @param size   
+/// @param style  
+/// @param name   
+///
 BaseGrid::BaseGrid(wxWindow* parent, wxWindowID id, const wxPoint& pos, const wxSize& size, long style, const wxString& name)
 : wxWindow(parent, id, pos, size, style, name)
 {
@@ -84,15 +91,17 @@ BaseGrid::BaseGrid(wxWindow* parent, wxWindowID id, const wxPoint& pos, const wx
 }
 
 
-//////////////
-// Destructor
+
+/// @brief Destructor 
+///
 BaseGrid::~BaseGrid() {
 	delete bmp;
 }
 
 
-////////////////
-// Update style
+
+/// @brief Update style 
+///
 void BaseGrid::UpdateStyle() {
 	// Set font
 	wxString fontname = Options.AsText(_T("Grid Font Face"));
@@ -120,8 +129,9 @@ void BaseGrid::UpdateStyle() {
 }
 
 
-///////////////
-// Clears grid
+
+/// @brief Clears grid 
+///
 void BaseGrid::Clear () {
 	diagMap.clear();
 	diagPtrMap.clear();
@@ -131,23 +141,29 @@ void BaseGrid::Clear () {
 }
 
 
-///////////////
-// Begin batch
+
+/// @brief Begin batch 
+///
 void BaseGrid::BeginBatch() {
 	//Freeze();
 }
 
 
-/////////////
-// End batch
+
+/// @brief End batch 
+///
 void BaseGrid::EndBatch() {
 	//Thaw();
 	AdjustScrollbar();
 }
 
 
-//////////////////////
-// Makes cell visible
+
+/// @brief Makes cell visible 
+/// @param row    
+/// @param col    
+/// @param center 
+///
 void BaseGrid::MakeCellVisible(int row, int col,bool center) {
 	// Update last row selection
 	lastRow = row;
@@ -176,8 +192,12 @@ void BaseGrid::MakeCellVisible(int row, int col,bool center) {
 }
 
 
-////////////////
-// Select a row
+
+/// @brief Select a row 
+/// @param row           
+/// @param addToSelected 
+/// @param select        
+///
 void BaseGrid::SelectRow(int row, bool addToSelected, bool select) {
 	// Sanity checking
 	if (row >= GetRows()) row = GetRows()-1;
@@ -203,8 +223,9 @@ void BaseGrid::SelectRow(int row, bool addToSelected, bool select) {
 }
 
 
-/////////////////////////
-// Selects visible lines
+
+/// @brief Selects visible lines 
+///
 void BaseGrid::SelectVisible() {
 	int rows = GetRows();
 	bool selectedOne = false;
@@ -223,8 +244,9 @@ void BaseGrid::SelectVisible() {
 }
 
 
-///////////////////////
-// Unselects all cells
+
+/// @brief Unselects all cells 
+///
 void BaseGrid::ClearSelection() {
 	int rows = selMap.size();
 	for (int i=0;i<rows;i++) {
@@ -234,8 +256,12 @@ void BaseGrid::ClearSelection() {
 }
 
 
-/////////////////////////
-// Is cell in selection?
+
+/// @brief Is cell in selection? 
+/// @param row 
+/// @param col 
+/// @return 
+///
 bool BaseGrid::IsInSelection(int row, int col) const {
 	if (row >= GetRows() || row < 0) return false;
 	(void) col;
@@ -248,8 +274,10 @@ bool BaseGrid::IsInSelection(int row, int col) const {
 }
 
 
-///////////////////////////
-// Number of selected rows
+
+/// @brief Number of selected rows 
+/// @return 
+///
 int BaseGrid::GetNumberSelection() {
 	int count = 0;
 	int rows = selMap.size();
@@ -260,8 +288,10 @@ int BaseGrid::GetNumberSelection() {
 }
 
 
-///////////////////////////
-// Gets first selected row
+
+/// @brief Gets first selected row 
+/// @return 
+///
 int BaseGrid::GetFirstSelRow() {
 	int nrows = GetRows();
 	for (int i=0;i<nrows;i++) {
@@ -273,8 +303,10 @@ int BaseGrid::GetFirstSelRow() {
 }
 
 
-/////////////////////////////////////////////////////
-// Gets last selected row from first block selection
+
+/// @brief Gets last selected row from first block selection 
+/// @return 
+///
 int BaseGrid::GetLastSelRow() {
 	int frow = GetFirstSelRow();
 	while (IsInSelection(frow)) {
@@ -284,8 +316,11 @@ int BaseGrid::GetLastSelRow() {
 }
 
 
-//////////////////////////
-// Gets all selected rows
+
+/// @brief Gets all selected rows 
+/// @param cont 
+/// @return 
+///
 wxArrayInt BaseGrid::GetSelection(bool *cont) {
 	// Prepare
 	int nrows = GetRows();
@@ -308,8 +343,10 @@ wxArrayInt BaseGrid::GetSelection(bool *cont) {
 }
 
 
-//////////////////////
-// Get number of rows
+
+/// @brief Get number of rows 
+/// @return 
+///
 int BaseGrid::GetRows() const {
 	return diagMap.size();
 }
@@ -326,8 +363,10 @@ BEGIN_EVENT_TABLE(BaseGrid,wxWindow)
 END_EVENT_TABLE()
 
 
-///////////////
-// Paint event
+
+/// @brief Paint event 
+/// @param event 
+///
 void BaseGrid::OnPaint (wxPaintEvent &event) {
 	// Prepare
 	wxPaintDC dc(this);
@@ -362,8 +401,10 @@ void BaseGrid::OnPaint (wxPaintEvent &event) {
 }
 
 
-//////////////
-// Draw image
+
+/// @brief Draw image 
+/// @param dc 
+///
 void BaseGrid::DrawImage(wxDC &dc) {
 	// Get size and pos
 	int w = 0;
@@ -578,8 +619,10 @@ void BaseGrid::DrawImage(wxDC &dc) {
 }
 
 
-///////////
-// On size
+
+/// @brief On size 
+/// @param event 
+///
 void BaseGrid::OnSize(wxSizeEvent &event) {
 	AdjustScrollbar();
 	SetColumnWidths();
@@ -587,8 +630,10 @@ void BaseGrid::OnSize(wxSizeEvent &event) {
 }
 
 
-/////////////
-// On scroll
+
+/// @brief On scroll 
+/// @param event 
+///
 void BaseGrid::OnScroll(wxScrollEvent &event) {
 	int newPos = event.GetPosition();
 	if (yPos != newPos) {
@@ -598,8 +643,11 @@ void BaseGrid::OnScroll(wxScrollEvent &event) {
 }
 
 
-////////////////
-// Mouse events
+
+/// @brief Mouse events 
+/// @param event 
+/// @return 
+///
 void BaseGrid::OnMouseEvent(wxMouseEvent &event) {
 	// Window size
 	int w,h;
@@ -733,8 +781,10 @@ void BaseGrid::OnMouseEvent(wxMouseEvent &event) {
 }
 
 
-/////////////
-// Scroll to
+
+/// @brief Scroll to 
+/// @param y 
+///
 void BaseGrid::ScrollTo(int y) {
 	int w,h;
 	GetClientSize(&w,&h);
@@ -747,8 +797,9 @@ void BaseGrid::ScrollTo(int y) {
 }
 
 
-////////////////////
-// Adjust scrollbar
+
+/// @brief Adjust scrollbar 
+///
 void BaseGrid::AdjustScrollbar() {
 	// Variables
 	int w,h,sw,sh;
@@ -775,8 +826,10 @@ void BaseGrid::AdjustScrollbar() {
 }
 
 
-/////////////////////
-// Set column widths
+
+/// @brief Set column widths 
+/// @return 
+///
 void BaseGrid::SetColumnWidths() {
 	if (!IsShownOnScreen()) return;
 
@@ -909,8 +962,11 @@ void BaseGrid::SetColumnWidths() {
 }
 
 
-//////////////////////////
-// Gets dialogue from map
+
+/// @brief Gets dialogue from map 
+/// @param n 
+/// @return 
+///
 AssDialogue *BaseGrid::GetDialogue(int n) {
 	try {
 		if (n < 0) return NULL;
@@ -924,8 +980,11 @@ AssDialogue *BaseGrid::GetDialogue(int n) {
 }
 
 
-////////////////////////////////////
-// Check if line is being displayed
+
+/// @brief Check if line is being displayed 
+/// @param line 
+/// @return 
+///
 bool BaseGrid::IsDisplayed(AssDialogue *line) {
 	if (!VideoContext::Get()->IsLoaded()) return false;
 	int f1 = VFR_Output.GetFrameAtTime(line->Start.GetMS(),true);
@@ -935,8 +994,9 @@ bool BaseGrid::IsDisplayed(AssDialogue *line) {
 }
 
 
-///////////////
-// Update maps
+
+/// @brief Update maps 
+///
 void BaseGrid::UpdateMaps() {
 	// Store old
 	int len = diagMap.size();
@@ -981,8 +1041,11 @@ void BaseGrid::UpdateMaps() {
 }
 
 
-/////////////
-// Key press
+
+/// @brief Key press 
+/// @param event 
+/// @return 
+///
 void BaseGrid::OnKeyPress(wxKeyEvent &event) {
 	// Get size
 	int w,h;
@@ -1099,8 +1162,11 @@ void BaseGrid::OnKeyPress(wxKeyEvent &event) {
 }
 
 
-////////////////////////////////
-// Sets display by frame or not
+
+/// @brief Sets display by frame or not 
+/// @param state 
+/// @return 
+///
 void BaseGrid::SetByFrame (bool state) {
 	// Check if it's already the same
 	if (byFrame == state) return;
@@ -1110,8 +1176,11 @@ void BaseGrid::SetByFrame (bool state) {
 }
 
 
-///////////////////////////////////////////////
-// Generates an array covering inclusive range
+
+/// @brief Generates an array covering inclusive range 
+/// @param n1 
+/// @param n2 
+///
 wxArrayInt BaseGrid::GetRangeArray(int n1,int n2) {
 	// Swap if in wrong order
 	if (n2 < n1) {
@@ -1127,4 +1196,5 @@ wxArrayInt BaseGrid::GetRangeArray(int n1,int n2) {
 	}
 	return target;
 }
+
 

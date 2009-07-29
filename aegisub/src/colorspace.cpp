@@ -40,7 +40,15 @@
 #include "utils.h"
 
 
-// matrix from http://forum.doom9.org/showthread.php?p=684080#post684080
+
+/// @brief matrix from http://forum.doom9.org/showthread.php?p=684080#post684080
+/// @param Y 
+/// @param U 
+/// @param V 
+/// @param R 
+/// @param G 
+/// @param B 
+///
 void yuv_to_rgb(int Y, int U, int V, unsigned char *R, unsigned char *G, unsigned char *B)
 {
 	U = U - 128;
@@ -51,8 +59,16 @@ void yuv_to_rgb(int Y, int U, int V, unsigned char *R, unsigned char *G, unsigne
 }
 
 
-// algorithm from http://130.113.54.154/~monger/hsl-rgb.html
-// making every value into 0..255 range though
+
+/// @brief making every value into 0..255 range though algorithm from http://130.113.54.154/~monger/hsl-rgb.html
+/// @param H 
+/// @param S 
+/// @param L 
+/// @param R 
+/// @param G 
+/// @param B 
+/// @return 
+///
 void hsl_to_rgb(int H, int S, int L, unsigned char *R, unsigned char *G, unsigned char *B)
 {
 	if (S == 0) {
@@ -153,8 +169,16 @@ void hsl_to_rgb(int H, int S, int L, unsigned char *R, unsigned char *G, unsigne
 }
 
 
-// formulas taken from wikipedia: http://en.wikipedia.org/wiki/HSV_color_space
-// the range for H is 0..255 instead of 0..359, so 60 degrees has been translated to 256/6 here
+
+/// @brief the range for H is 0..255 instead of 0..359, so 60 degrees has been translated to 256/6 here formulas taken from wikipedia: http://en.wikipedia.org/wiki/HSV_color_space
+/// @param H 
+/// @param S 
+/// @param V 
+/// @param R 
+/// @param G 
+/// @param B 
+/// @return 
+///
 void hsv_to_rgb(int H, int S, int V, unsigned char *R, unsigned char *G, unsigned char *B)
 {
 	*R = *G = *B = 0;
@@ -257,7 +281,15 @@ void hsv_to_rgb(int H, int S, int V, unsigned char *R, unsigned char *G, unsigne
 }
 
 
-// matrix from http://forum.doom9.org/showthread.php?p=684080#post684080
+
+/// @brief matrix from http://forum.doom9.org/showthread.php?p=684080#post684080
+/// @param R 
+/// @param G 
+/// @param B 
+/// @param Y 
+/// @param U 
+/// @param V 
+///
 void rgb_to_yuv(int R, int G, int B, unsigned char *Y, unsigned char *U, unsigned char *V)
 {
 	*Y = clip_colorval(( int(0.299*65536) * R + int(0.587*65536) * G + int(0.114*65536) * B) / 65536);
@@ -266,8 +298,15 @@ void rgb_to_yuv(int R, int G, int B, unsigned char *Y, unsigned char *U, unsigne
 }
 
 
-// also from http://130.113.54.154/~monger/hsl-rgb.html
-// still keeping everything integer
+
+/// @brief still keeping everything integer also from http://130.113.54.154/~monger/hsl-rgb.html
+/// @param R 
+/// @param G 
+/// @param B 
+/// @param H 
+/// @param S 
+/// @param L 
+///
 void rgb_to_hsl(int R, int G, int B, unsigned char *H, unsigned char *S, unsigned char *L)
 {
 	float r = R/255.f, g = G/255.f, b = B/255.f;
@@ -304,7 +343,15 @@ void rgb_to_hsl(int R, int G, int B, unsigned char *H, unsigned char *S, unsigne
 }
 
 
-// formulas from http://en.wikipedia.org/wiki/HSV_color_space
+
+/// @brief formulas from http://en.wikipedia.org/wiki/HSV_color_space
+/// @param R 
+/// @param G 
+/// @param B 
+/// @param H 
+/// @param S 
+/// @param V 
+///
 void rgb_to_hsv(int R, int G, int B, unsigned char *H, unsigned char *S, unsigned char *V)
 {
 	float r = R/255.f, g = G/255.f, b = B/255.f;
@@ -339,6 +386,15 @@ void rgb_to_hsv(int R, int G, int B, unsigned char *H, unsigned char *S, unsigne
 }
 
 
+
+/// @brief DOCME
+/// @param iH 
+/// @param iS 
+/// @param iV 
+/// @param oH 
+/// @param oS 
+/// @param oL 
+///
 void hsv_to_hsl(int iH, int iS, int iV, unsigned char *oH, unsigned char *oS, unsigned char *oL)
 {
 	int p = iV * (255 - iS);
@@ -354,6 +410,16 @@ void hsv_to_hsl(int iH, int iS, int iV, unsigned char *oH, unsigned char *oS, un
 }
 
 
+
+/// @brief DOCME
+/// @param iH 
+/// @param iS 
+/// @param iL 
+/// @param oH 
+/// @param oS 
+/// @param oV 
+/// @return 
+///
 void hsl_to_hsv(int iH, int iS, int iL, unsigned char *oH, unsigned char *oS, unsigned char *oV)
 {
 	*oH = iH;
@@ -374,12 +440,21 @@ void hsl_to_hsv(int iH, int iS, int iL, unsigned char *oH, unsigned char *oS, un
 }
 
 
+
+/// @brief DOCME
+/// @param color 
+/// @return 
+///
 wxString color_to_html(wxColour color)
 {
 	return wxString::Format(_T("#%02X%02X%02X"), color.Red(), color.Green(), color.Blue());
 }
 
 
+
+/// @brief DOCME
+/// @param html 
+///
 wxColour html_to_color(wxString html)
 {
 	html.Trim(true);
@@ -416,5 +491,6 @@ wxColour html_to_color(wxString html)
 		return wxColour(*wxBLACK);
 	}
 }
+
 
 

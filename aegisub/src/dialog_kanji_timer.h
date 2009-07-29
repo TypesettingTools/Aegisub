@@ -36,6 +36,8 @@
 
 
 #ifndef DIALOG_KANJITIMER_H
+
+/// DOCME
 #define DIALOG_KANJITIMER_H
 
 
@@ -61,18 +63,40 @@ class AssOverrideParameter;
 class KaraokeLineMatchDisplay;
 
 
-/////////
-// Class
+
+/// DOCME
+/// @class DialogKanjiTimer
+/// @brief DOCME
+///
+/// DOCME
 class DialogKanjiTimer : public wxDialog {
+
+	/// DOCME
 	SubtitlesGrid *grid;
+
+	/// DOCME
 	AssFile *subs;
 
+
+	/// DOCME
 	KaraokeLineMatchDisplay *display;
+
+	/// DOCME
+
+	/// DOCME
 	wxComboBox *SourceStyle, *DestStyle;
+
+	/// DOCME
 	wxCheckBox *Interpolate;
 
+
+	/// DOCME
 	std::vector<std::pair<entryIter,wxString> > LinesToChange;
+
+	/// DOCME
 	entryIter currentSourceLine;
+
+	/// DOCME
 	entryIter currentDestinationLine;
 
 	void OnClose(wxCommandEvent &event);
@@ -101,17 +125,36 @@ public:
 ///////
 // IDs
 enum {
+
+	/// DOCME
 	BUTTON_KTSTART = 2500,
+
+	/// DOCME
 	BUTTON_KTLINK,
+
+	/// DOCME
 	BUTTON_KTUNLINK,
+
+	/// DOCME
 	BUTTON_KTSKIPSOURCE,
+
+	/// DOCME
 	BUTTON_KTSKIPDEST,
+
+	/// DOCME
 	BUTTON_KTGOBACK,
+
+	/// DOCME
 	BUTTON_KTACCEPT,
+
+	/// DOCME
 	TEXT_SOURCE,
+
+	/// DOCME
 	TEXT_DEST
 };
 
 
 #endif
+
 

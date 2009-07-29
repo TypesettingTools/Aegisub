@@ -50,13 +50,25 @@ class VideoDisplay;
 class SubtitlesGrid;
 
 
-/////////////////////
-// Class declaration
+
+/// DOCME
+/// @class VideoSlider
+/// @brief DOCME
+///
+/// DOCME
 class VideoSlider: public wxWindow {
 private:
+
+	/// DOCME
 	int val;
+
+	/// DOCME
 	int min;
+
+	/// DOCME
 	int max;
+
+	/// DOCME
 	bool locked;
 
 	int GetValueAtX(int x);
@@ -69,10 +81,18 @@ private:
 	void OnKeyDown(wxKeyEvent &event);
 	void OnPaint(wxPaintEvent &event);
 	void OnFocus(wxFocusEvent &event);
+
+	/// @brief DOCME
+	/// @param event 
+	///
 	void OnEraseBackground(wxEraseEvent &event) {}
 
 public:
+
+	/// DOCME
 	VideoDisplay *Display;
+
+	/// DOCME
 	SubtitlesGrid *grid;
 
 	VideoSlider(wxWindow* parent, wxWindowID id);
@@ -91,7 +111,12 @@ public:
 ///////
 // IDs
 enum {
+
+	/// DOCME
 	NextFrame = 1300,
+
+	/// DOCME
 	PrevFrame
 };
+
 

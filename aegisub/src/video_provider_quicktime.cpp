@@ -42,10 +42,16 @@
 // this function has a different name on win32 because the original name
 // conflicts with a windows api function
 #ifndef WIN32
+
+/// DOCME
 #define MacOffsetRect OffsetRect
 #endif
 
 
+
+/// @brief DOCME
+/// @param filename 
+///
 QuickTimeVideoProvider::QuickTimeVideoProvider(wxString filename) {
 	in_dataref = NULL;
 	movie	= NULL;
@@ -87,12 +93,18 @@ QuickTimeVideoProvider::QuickTimeVideoProvider(wxString filename) {
 }
 
 
+
+/// @brief DOCME
+///
 QuickTimeVideoProvider::~QuickTimeVideoProvider() {
 	Close();
 	DeInitQuickTime();
 }
 
 
+
+/// @brief DOCME
+///
 void QuickTimeVideoProvider::Close() {
 	if (movie)
 		DisposeMovie(movie);
@@ -112,6 +124,10 @@ void QuickTimeVideoProvider::Close() {
 
 
 
+
+/// @brief DOCME
+/// @param _filename 
+///
 void QuickTimeVideoProvider::LoadVideo(const wxString _filename) {
 	Close();
 
@@ -173,6 +189,10 @@ void QuickTimeVideoProvider::LoadVideo(const wxString _filename) {
 }
 
 
+
+/// @brief DOCME
+/// @return 
+///
 std::vector<int> QuickTimeVideoProvider::IndexFile() {
 	TimeScale scale = GetMovieTimeScale(movie);
 	OSType v_type[1];
@@ -211,6 +231,11 @@ std::vector<int> QuickTimeVideoProvider::IndexFile() {
 }
 
 
+
+/// @brief DOCME
+/// @param n 
+/// @return 
+///
 const AegiVideoFrame QuickTimeVideoProvider::GetFrame(int n) {
 	if (n < 0)
 		n = 0;
@@ -254,28 +279,50 @@ const AegiVideoFrame QuickTimeVideoProvider::GetFrame(int n) {
 
 
 
-///////////////
-// Utility functions
+
+/// @brief Utility functions 
+/// @return 
+///
 int QuickTimeVideoProvider::GetWidth() {
 	return w;
 }
 
+
+/// @brief DOCME
+/// @return 
+///
 int QuickTimeVideoProvider::GetHeight() {
 	return h;
 }
 
+
+/// @brief DOCME
+/// @return 
+///
 int QuickTimeVideoProvider::GetFrameCount() {
 	return num_frames;
 }
 
+
+/// @brief DOCME
+/// @return 
+///
 int QuickTimeVideoProvider::GetPosition() {
 	return cur_fn;
 }
 
+
+/// @brief DOCME
+/// @return 
+///
 double QuickTimeVideoProvider::GetFPS() {
 	return assumed_fps;
 }
 
+
+/// @brief DOCME
+/// @return 
+///
 bool QuickTimeVideoProvider::AreKeyFramesLoaded() { 
 	if (keyframes.GetCount() > 0)
 		return true;
@@ -283,14 +330,22 @@ bool QuickTimeVideoProvider::AreKeyFramesLoaded() {
 		return false;
 }
 
+
+/// @brief DOCME
+/// @return 
+///
 wxArrayInt QuickTimeVideoProvider::GetKeyFrames() {
 	return keyframes;
 }
 
+
+/// @brief DOCME
+///
 FrameRate QuickTimeVideoProvider::GetTrueFrameRate() {
 	return vfr_fps; 
 }
 
 
 #endif /* WITH_QUICKTIME */
+
 

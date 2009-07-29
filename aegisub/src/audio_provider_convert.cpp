@@ -44,8 +44,10 @@
 #include "aegisub_endian.h"
 
 
-///////////////
-// Constructor
+
+/// @brief Constructor 
+/// @param src 
+///
 ConvertAudioProvider::ConvertAudioProvider(AudioProvider *src) {
 	source = src;
 	channels = source->GetChannels();
@@ -61,15 +63,20 @@ ConvertAudioProvider::ConvertAudioProvider(AudioProvider *src) {
 }
 
 
-//////////////
-// Destructor
+
+/// @brief Destructor 
+///
 ConvertAudioProvider::~ConvertAudioProvider() {
 	delete source;
 }
 
 
-/////////////////////
-// Convert to 16-bit
+
+/// @brief Convert to 16-bit 
+/// @param src   
+/// @param dst   
+/// @param count 
+///
 void ConvertAudioProvider::Make16Bit(const char *src, short *dst, int64_t count) {
 	for (int64_t i=0;i<count;i++) {
 		dst[i] = (short(src[i])-128)*255;
@@ -82,6 +89,13 @@ void ConvertAudioProvider::Make16Bit(const char *src, short *dst, int64_t count)
 // This requres 16-bit input
 // The SampleConverter is a class overloading operator() with a function from short to short
 template<class SampleConverter>
+
+/// @brief DOCME
+/// @param src       
+/// @param dst       
+/// @param count     
+/// @param converter 
+///
 void ConvertAudioProvider::ChangeSampleRate(const short *src, short *dst, int64_t count, const SampleConverter &converter) {
 	// Upsample by 2
 	if (sampleMult == 2) {
@@ -122,23 +136,39 @@ void ConvertAudioProvider::ChangeSampleRate(const short *src, short *dst, int64_
 }
 
 
-// Do-nothing sample converter for ChangeSampleRate
+
+/// DOCME
 struct NullSampleConverter {
+
+	/// @brief DOCME
+	/// @param val 
+	/// @return 
+	///
 	inline short operator()(const short val) const {
 		return val;
 	}
 };
 
-// Endian-swapping sample converter for ChangeSampleRate
+
+/// DOCME
 struct EndianSwapSampleConverter {
+
+	/// @brief DOCME
+	/// @param val 
+	/// @return 
+	///
 	inline short operator()(const short val) const {
 		return (short)Endian::Reverse((uint16_t)val);
 	};
 };
 
 
-/////////////
-// Get audio
+
+/// @brief Get audio 
+/// @param destination 
+/// @param start       
+/// @param count       
+///
 void ConvertAudioProvider::GetAudio(void *destination, int64_t start, int64_t count) {
 	// Bits per sample
 	int srcBps = source->GetBytesPerSample();
@@ -189,7 +219,10 @@ void ConvertAudioProvider::GetAudio(void *destination, int64_t start, int64_t co
 	}
 }
 
-// See if we need to downmix the number of channels
+
+/// @brief See if we need to downmix the number of channels
+/// @param source_provider 
+///
 AudioProvider *CreateConvertAudioProvider(AudioProvider *source_provider) {
 	AudioProvider *provider = source_provider;
 
@@ -211,4 +244,5 @@ AudioProvider *CreateConvertAudioProvider(AudioProvider *source_provider) {
 
 	return provider;
 }
+
 

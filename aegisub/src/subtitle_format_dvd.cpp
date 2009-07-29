@@ -44,6 +44,8 @@
 #include "subtitles_provider_manager.h"
 #include "ass_dialogue.h"
 #include "ass_file.h"
+
+/// DOCME
 #undef _OPENMP
 #ifdef _OPENMP
 #include <omp.h>
@@ -56,15 +58,19 @@
 //#pragma comment(lib, "tessdll.lib")
 
 
-///////////////
-// Format name
+
+/// @brief Format name 
+/// @return 
+///
 wxString DVDSubtitleFormat::GetName() {
 	return _T("DVD Subpictures");
 }
 
 
-//////////////
-// Extensions
+
+/// @brief Extensions 
+/// @return 
+///
 wxArrayString DVDSubtitleFormat::GetWriteWildcards() {
 	wxArrayString results;
 	results.Add(_T("sup"));
@@ -72,15 +78,20 @@ wxArrayString DVDSubtitleFormat::GetWriteWildcards() {
 }
 
 
-/////////////
-// Can write
+
+/// @brief Can write 
+/// @param filename 
+/// @return 
+///
 bool DVDSubtitleFormat::CanWriteFile(wxString filename) {
 	return (filename.Lower().EndsWith(_T(".sup")));
 }
 
 
-///////////////////////
-// Get subpicture list
+
+/// @brief Get subpicture list 
+/// @param pics 
+///
 void DVDSubtitleFormat::GetSubPictureList(std::vector<SubPicture> &pics) {
 	// Create video frame
 	int w = 720;
@@ -344,8 +355,11 @@ void DVDSubtitleFormat::GetSubPictureList(std::vector<SubPicture> &pics) {
 }
 
 
-///////////////////////
-// Actually write them
+
+/// @brief Actually write them 
+/// @param filename 
+/// @param encoding 
+///
 void DVDSubtitleFormat::WriteFile(wxString filename,wxString encoding) {
 	// Prepare subtitles
 	CreateCopy();
@@ -430,4 +444,5 @@ void DVDSubtitleFormat::WriteFile(wxString filename,wxString encoding) {
 		pos += fp.Write(control,controlLen);
 	}
 }
+
 

@@ -48,30 +48,64 @@
 class OpenGLWrapper;
 
 
-////////////////
-// Feature type
+
+/// DOCME
 enum DraggableFeatureType {
+
+	/// DOCME
 	DRAG_NONE,
+
+	/// DOCME
 	DRAG_BIG_SQUARE,
+
+	/// DOCME
 	DRAG_BIG_CIRCLE,
+
+	/// DOCME
 	DRAG_BIG_TRIANGLE,
+
+	/// DOCME
 	DRAG_SMALL_SQUARE,
+
+	/// DOCME
 	DRAG_SMALL_CIRCLE
 };
 
 
-/////////////////////
-// Drag-able feature
+
+/// DOCME
+/// @class VisualDraggableFeature
+/// @brief DOCME
+///
+/// DOCME
 class VisualDraggableFeature {
 public:
+
+	/// DOCME
 	DraggableFeatureType type;
+
+	/// DOCME
+
+	/// DOCME
 	int x,y;
+
+	/// DOCME
 	int layer;	// Higher = above
+
+	/// DOCME
+
+	/// DOCME
 	int value,value2;
 
+
+	/// DOCME
 	AssDialogue *line;
+
+	/// DOCME
 	int lineN;
 
+
+	/// DOCME
 	int brother[4];
 
 	bool IsMouseOver(int x,int y);
@@ -79,4 +113,5 @@ public:
 
 	VisualDraggableFeature();
 };
+
 

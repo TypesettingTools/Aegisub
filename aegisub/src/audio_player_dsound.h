@@ -54,11 +54,19 @@
 class DirectSoundPlayer;
 
 
-//////////
-// Thread
+
+/// DOCME
+/// @class DirectSoundPlayerThread
+/// @brief DOCME
+///
+/// DOCME
 class DirectSoundPlayerThread : public wxThread {
 private:
+
+	/// DOCME
 	DirectSoundPlayer *parent;
+
+	/// DOCME
 	HANDLE stopnotify;
 
 public:
@@ -85,27 +93,53 @@ All but GetPosition() set appropriate fields and then raise the parameters chang
 */
 
 
-////////////////////
-// Portaudio player
+
+/// DOCME
+/// @class DirectSoundPlayer
+/// @brief DOCME
+///
+/// DOCME
 class DirectSoundPlayer : public AudioPlayer {
 	friend class DirectSoundPlayerThread;
 
 private:
+
+	/// DOCME
 	volatile bool playing;
+
+	/// DOCME
 	float volume;
+
+	/// DOCME
 	int offset;
+
+	/// DOCME
 	DWORD bufSize;
 
+
+	/// DOCME
 	volatile int64_t playPos;
+
+	/// DOCME
 	int64_t startPos;
+
+	/// DOCME
 	volatile int64_t endPos;
+
+	/// DOCME
 	DWORD startTime;
 
+
+	/// DOCME
 	IDirectSound8 *directSound;
+
+	/// DOCME
 	IDirectSoundBuffer8 *buffer;
 
 	bool FillBuffer(bool fill);
 
+
+	/// DOCME
 	DirectSoundPlayerThread *thread;
 
 public:
@@ -117,27 +151,56 @@ public:
 
 	void Play(int64_t start,int64_t count);
 	void Stop(bool timerToo=true);
+
+	/// @brief DOCME
+	/// @return 
+	///
 	bool IsPlaying() { return playing; }
 
+
+	/// @brief DOCME
+	/// @return 
+	///
 	int64_t GetStartPosition() { return startPos; }
+
+	/// @brief DOCME
+	/// @return 
+	///
 	int64_t GetEndPosition() { return endPos; }
 	int64_t GetCurrentPosition();
 	void SetEndPosition(int64_t pos);
 	void SetCurrentPosition(int64_t pos);
 
+
+	/// @brief DOCME
+	/// @param vol 
+	/// @return 
+	///
 	void SetVolume(double vol) { volume = vol; }
+
+	/// @brief DOCME
+	/// @return 
+	///
 	double GetVolume() { return volume; }
 
 	//wxMutex *GetMutex() { return &DSMutex; }
 };
 
 
-///////////
-// Factory
+
+/// DOCME
+/// @class DirectSoundPlayerFactory
+/// @brief DOCME
+///
+/// DOCME
 class DirectSoundPlayerFactory : public AudioPlayerFactory {
 public:
+
+	/// @brief DOCME
+	///
 	AudioPlayer *CreatePlayer() { return new DirectSoundPlayer(); }
 };
 
 #endif
+
 

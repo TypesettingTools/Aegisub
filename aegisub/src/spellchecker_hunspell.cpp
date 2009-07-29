@@ -56,8 +56,9 @@
 #include <wx/txtstrm.h>
 
 
-///////////////
-// Constructor
+
+/// @brief Constructor 
+///
 HunspellSpellChecker::HunspellSpellChecker() {
 	hunspell = NULL;
 	conv = NULL;
@@ -65,15 +66,17 @@ HunspellSpellChecker::HunspellSpellChecker() {
 }
 
 
-//////////////
-// Destructor
+
+/// @brief Destructor 
+///
 HunspellSpellChecker::~HunspellSpellChecker() {
 	Reset();
 }
 
 
-/////////
-// Reset
+
+/// @brief Reset 
+///
 void HunspellSpellChecker::Reset() {
 	delete hunspell;
 	hunspell = NULL;
@@ -84,8 +87,11 @@ void HunspellSpellChecker::Reset() {
 }
 
 
-//////////////////////////
-// Can add to dictionary?
+
+/// @brief Can add to dictionary? 
+/// @param word 
+/// @return 
+///
 bool HunspellSpellChecker::CanAddWord(wxString word) {
 	if (!hunspell) return false;
 	wxCharBuffer buffer = word.mb_str(*conv);
@@ -93,8 +99,11 @@ bool HunspellSpellChecker::CanAddWord(wxString word) {
 }
 
 
-//////////////////////////
-// Add word to dictionary
+
+/// @brief Add word to dictionary 
+/// @param word 
+/// @return 
+///
 void HunspellSpellChecker::AddWord(wxString word) {
 	// Dictionary OK?
 	if (!hunspell) return;
@@ -158,8 +167,11 @@ void HunspellSpellChecker::AddWord(wxString word) {
 }
 
 
-//////////////////////////////
-// Check if the word is valid
+
+/// @brief Check if the word is valid 
+/// @param word 
+/// @return 
+///
 bool HunspellSpellChecker::CheckWord(wxString word) {
 	if (!hunspell) return true;
 	wxCharBuffer buf = word.mb_str(*conv);
@@ -168,8 +180,11 @@ bool HunspellSpellChecker::CheckWord(wxString word) {
 }
 
 
-////////////////////////////
-// Get suggestions for word
+
+/// @brief Get suggestions for word 
+/// @param word 
+/// @return 
+///
 wxArrayString HunspellSpellChecker::GetSuggestions(wxString word) {
 	// Array
 	wxArrayString suggestions;
@@ -200,8 +215,10 @@ wxArrayString HunspellSpellChecker::GetSuggestions(wxString word) {
 }
 
 
-//////////////////////////////////////
-// Get list of available dictionaries
+
+/// @brief Get list of available dictionaries 
+/// @return 
+///
 wxArrayString HunspellSpellChecker::GetLanguageList() {
 	// Get dir name
 	wxString path = StandardPaths::DecodePathMaybeRelative(Options.AsText(_T("Dictionaries path")), _T("?data")) + _T("/");
@@ -233,8 +250,10 @@ wxArrayString HunspellSpellChecker::GetLanguageList() {
 }
 
 
-////////////////
-// Set language
+
+/// @brief Set language 
+/// @param language 
+///
 void HunspellSpellChecker::SetLanguage(wxString language) {
 	// Unload
 	Reset();
@@ -282,4 +301,5 @@ void HunspellSpellChecker::SetLanguage(wxString language) {
 }
 
 #endif // WITH_HUNSPELL
+
 

@@ -46,8 +46,10 @@
 #include "ass_file.h"
 
 
-///////////////
-// Constructor
+
+/// @brief Constructor 
+/// @param _parent 
+///
 VisualToolCross::VisualToolCross(VideoDisplay *_parent)
 : VisualTool(_parent)
 {
@@ -55,15 +57,17 @@ VisualToolCross::VisualToolCross(VideoDisplay *_parent)
 }
 
 
-//////////////
-// Destructor
+
+/// @brief Destructor 
+///
 VisualToolCross::~VisualToolCross() {
 	GetParent()->ShowCursor(true);
 }
 
 
-//////////
-// Update
+
+/// @brief Update 
+///
 void VisualToolCross::Update() {
 	// Position
 	if (leftDClick) {
@@ -81,8 +85,9 @@ void VisualToolCross::Update() {
 }
 
 
-////////
-// Draw
+
+/// @brief Draw 
+///
 void VisualToolCross::Draw() {
 	// Is it outside?
 	if (mouseX == -1 || mouseY == -1) return;
@@ -141,4 +146,5 @@ void VisualToolCross::Draw() {
 	glPopMatrix();
 	glMatrixMode(GL_MODELVIEW);
 }
+
 

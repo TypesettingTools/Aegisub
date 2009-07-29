@@ -43,6 +43,8 @@
 #include <wx/wxprec.h>
 #include "include/aegisub/subtitles_provider.h"
 #ifdef WIN32
+
+/// DOCME
 #define CSRIAPI
 #endif
 
@@ -52,11 +54,19 @@
 #include "csri/csri.h"
 #endif
 
-/////////////////////////////////////////////////
-// Common Subtitles Rendering Interface provider
+
+/// DOCME
+/// @class CSRISubtitlesProvider
+/// @brief DOCME
+///
+/// DOCME
 class CSRISubtitlesProvider : public SubtitlesProvider {
 private:
+
+	/// DOCME
 	wxString subType;
+
+	/// DOCME
 	csri_inst *instance;
 
 public:
@@ -68,13 +78,22 @@ public:
 };
 
 
-///////////
-// Factory
+
+/// DOCME
+/// @class CSRISubtitlesProviderFactory
+/// @brief DOCME
+///
+/// DOCME
 class CSRISubtitlesProviderFactory : public SubtitlesProviderFactory {
 public:
+
+	/// @brief DOCME
+	/// @param subType=_T(Ó) 
+	///
 	SubtitlesProvider *CreateProvider(wxString subType=_T("")) { return new CSRISubtitlesProvider(subType); }
 	wxArrayString GetSubTypes();
 };
 
 #endif
+
 

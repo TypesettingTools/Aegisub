@@ -45,16 +45,24 @@
 #include <vector>
 
 
-///////////
-// Typedef
+
+/// DOCME
 typedef std::vector<unsigned char> DataVec;
 
 
-///////////////////
-// Attachment data
+
+/// DOCME
+/// @class AttachData
+/// @brief DOCME
+///
+/// DOCME
 class AttachData {
 private:
+
+	/// DOCME
 	DataVec data;
+
+	/// DOCME
 	wxString buffer;
 
 public:
@@ -67,11 +75,19 @@ public:
 };
 
 
-//////////////////////////////
-// Class to store attachments
+
+/// DOCME
+/// @class AssAttachment
+/// @brief DOCME
+///
+/// DOCME
 class AssAttachment : public AssEntry {
 private:
+
+	/// DOCME
 	boost::shared_ptr<AttachData> data;
+
+	/// DOCME
 	wxString filename;
 
 public:
@@ -85,10 +101,14 @@ public:
 	wxString GetFileName(bool raw=false);
 
 	const wxString GetEntryData();
+
+	/// @brief DOCME
+	///
 	ASS_EntryType GetType() { return ENTRY_ATTACHMENT; }
 	AssEntry *Clone();
 
 	AssAttachment(wxString name);
 	~AssAttachment();
 };
+
 

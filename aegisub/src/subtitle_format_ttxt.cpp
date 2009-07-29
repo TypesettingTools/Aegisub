@@ -45,15 +45,19 @@
 #include "options.h"
 
 
-///////////////////
-// Get format name
+
+/// @brief Get format name 
+/// @return 
+///
 wxString TTXTSubtitleFormat::GetName() {
 	return _T("MPEG-4 Streaming Text");
 }
 
 
-//////////////////////
-// Get read wildcards
+
+/// @brief Get read wildcards 
+/// @return 
+///
 wxArrayString TTXTSubtitleFormat::GetReadWildcards() {
 	wxArrayString formats;
 	formats.Add(_T("ttxt"));
@@ -61,31 +65,42 @@ wxArrayString TTXTSubtitleFormat::GetReadWildcards() {
 }
 
 
-///////////////////////
-// Get write wildcards
+
+/// @brief Get write wildcards 
+/// @return 
+///
 wxArrayString TTXTSubtitleFormat::GetWriteWildcards() {
 	return GetReadWildcards();
 	//return wxArrayString();
 }
 
 
-////////////////////
-// Can read a file?
+
+/// @brief Can read a file? 
+/// @param filename 
+/// @return 
+///
 bool TTXTSubtitleFormat::CanReadFile(wxString filename) {
 	return (filename.Right(5).Lower() == _T(".ttxt"));
 }
 
 
-/////////////////////
-// Can write a file?
+
+/// @brief Can write a file? 
+/// @param filename 
+/// @return 
+///
 bool TTXTSubtitleFormat::CanWriteFile(wxString filename) {
 	//return false;
 	return (filename.Right(5).Lower() == _T(".ttxt"));
 }
 
 
-///////////////
-// Read a file
+
+/// @brief Read a file 
+/// @param filename      
+/// @param forceEncoding 
+///
 void TTXTSubtitleFormat::ReadFile(wxString filename,wxString forceEncoding) {
 	// Load default
 	LoadDefault(false);
@@ -135,8 +150,11 @@ void TTXTSubtitleFormat::ReadFile(wxString filename,wxString forceEncoding) {
 }
 
 
-///////////////////////////
-// Process a dialogue line
+
+/// @brief Process a dialogue line 
+/// @param node 
+/// @return 
+///
 bool TTXTSubtitleFormat::ProcessLine(wxXmlNode *node) {
 	// Get time
 	wxString sampleTime = node->GetAttribute(_T("sampleTime"),_T("00:00:00.000"));
@@ -195,15 +213,20 @@ bool TTXTSubtitleFormat::ProcessLine(wxXmlNode *node) {
 }
 
 
-//////////////////////
-// Process the header
+
+/// @brief Process the header 
+/// @param node 
+///
 void TTXTSubtitleFormat::ProcessHeader(wxXmlNode *node) {
 	// TODO
 }
 
 
-////////////////
-// Write a file
+
+/// @brief Write a file 
+/// @param filename 
+/// @param encoding 
+///
 void TTXTSubtitleFormat::WriteFile(wxString filename,wxString encoding) {
 	// Convert to TTXT
 	CreateCopy();
@@ -240,8 +263,10 @@ void TTXTSubtitleFormat::WriteFile(wxString filename,wxString encoding) {
 }
 
 
-////////////////
-// Write header
+
+/// @brief Write header 
+/// @param root 
+///
 void TTXTSubtitleFormat::WriteHeader(wxXmlNode *root) {
 	// Write stream header
 	wxXmlNode *node = new wxXmlNode(wxXML_ELEMENT_NODE,_T("TextStreamHeader"));
@@ -291,8 +316,11 @@ void TTXTSubtitleFormat::WriteHeader(wxXmlNode *root) {
 }
 
 
-//////////////
-// Write line
+
+/// @brief Write line 
+/// @param root 
+/// @param line 
+///
 void TTXTSubtitleFormat::WriteLine(wxXmlNode *root, AssDialogue *line) {
 	// If it doesn't start at the end of previous, add blank
 	wxXmlNode *node,*subNode;
@@ -318,8 +346,9 @@ void TTXTSubtitleFormat::WriteLine(wxXmlNode *root, AssDialogue *line) {
 }
 
 
-//////////////////////////////
-// Converts whole file to TTXT
+
+/// @brief Converts whole file to TTXT 
+///
 void TTXTSubtitleFormat::ConvertToTTXT () {
 	// Convert
 	SortLines();
@@ -347,4 +376,5 @@ void TTXTSubtitleFormat::ConvertToTTXT () {
 	diag->Comment = false;
 	Line->push_back(diag);
 }
+
 

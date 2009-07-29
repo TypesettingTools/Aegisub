@@ -45,20 +45,34 @@
 #include <wx/textctrl.h>
 
 
-///////////////
-// Browse type
+
+/// DOCME
 enum BrowseType {
+
+	/// DOCME
 	BROWSE_FILE,
+
+	/// DOCME
 	BROWSE_FOLDER,
+
+	/// DOCME
 	BROWSE_FONT
 };
 
 
-///////////////////////
-// Browse button class
+
+/// DOCME
+/// @class BrowseButton
+/// @brief DOCME
+///
+/// DOCME
 class BrowseButton : public wxButton {
 private:
+
+	/// DOCME
 	wxTextCtrl *ctrl[2];
+
+	/// DOCME
 	BrowseType type;
 
 	void OnPressed(wxCommandEvent &event);
@@ -67,4 +81,5 @@ public:
 	BrowseButton(wxWindow *parent,int id=-1,wxString text=_T(""),BrowseType type=BROWSE_FILE,wxPoint position=wxDefaultPosition,wxSize size=wxDefaultSize);
 	void Bind(wxTextCtrl *control,int pos=0);
 };
+
 

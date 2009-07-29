@@ -53,8 +53,9 @@
 #include "utils.h"
 
 
-///////////////
-// Constructor
+
+/// @brief Constructor 
+///
 OptionsManager::OptionsManager() {
 	modified = false;
 	overriding = false;
@@ -62,23 +63,28 @@ OptionsManager::OptionsManager() {
 }
 
 
-//////////////
-// Destructor
+
+/// @brief Destructor 
+///
 OptionsManager::~OptionsManager() {
 	Clear();
 }
 
 
-/////////
-// Clear
+
+/// @brief Clear 
+///
 void OptionsManager::Clear() {
 	opt.clear();
 	optType.clear();
 }
 
 
-///////////////////////
-// Load default values
+
+/// @brief Load default values 
+/// @param onlyDefaults 
+/// @param doOverride   
+///
 void OptionsManager::LoadDefaults(bool onlyDefaults,bool doOverride) {
 	///// PUBLIC //////
 	// Here go the options that can be edited by the options menu
@@ -410,23 +416,29 @@ void OptionsManager::LoadDefaults(bool onlyDefaults,bool doOverride) {
 }
 
 
-////////////////
-// Set filename
+
+/// @brief Set filename 
+/// @param file 
+///
 void OptionsManager::SetFile(wxString file) {
 	filename = file;
 }
 
 
-////////////////
-// Get filename
+
+/// @brief Get filename 
+/// @return 
+///
 wxString OptionsManager::GetFile() const
 {
 	return filename;
 }
 
 
-////////
-// Save
+
+/// @brief Save 
+/// @return 
+///
 void OptionsManager::Save() {
 	// Check if it's actually modified
 	if (!modified) return;
@@ -445,8 +457,10 @@ void OptionsManager::Save() {
 }
 
 
-////////
-// Load
+
+/// @brief Load 
+/// @return 
+///
 void OptionsManager::Load() {
 	// Check if file exists
 	wxFileName path(filename);
@@ -510,8 +524,13 @@ void OptionsManager::Load() {
 }
 
 
-/////////////
-// Write int
+
+/// @brief Write int 
+/// @param key           
+/// @param param         
+/// @param ifLastVersion 
+/// @return 
+///
 void OptionsManager::SetInt(wxString key,int param,int ifLastVersion) {
 	if (ifLastVersion == -1) {
 		if (overriding) ifLastVersion = 0;
@@ -524,8 +543,13 @@ void OptionsManager::SetInt(wxString key,int param,int ifLastVersion) {
 }
 
 
-///////////////
-// Write float
+
+/// @brief Write float 
+/// @param key           
+/// @param param         
+/// @param ifLastVersion 
+/// @return 
+///
 void OptionsManager::SetFloat(wxString key,double param,int ifLastVersion) {
 	if (ifLastVersion == -1) {
 		if (overriding) ifLastVersion = 0;
@@ -538,8 +562,13 @@ void OptionsManager::SetFloat(wxString key,double param,int ifLastVersion) {
 }
 
 
-////////////////
-// Write string
+
+/// @brief Write string 
+/// @param key           
+/// @param param         
+/// @param ifLastVersion 
+/// @return 
+///
 void OptionsManager::SetText(wxString key,wxString param,int ifLastVersion) {
 	if (ifLastVersion == -1) {
 		if (overriding) ifLastVersion = 0;
@@ -552,8 +581,13 @@ void OptionsManager::SetText(wxString key,wxString param,int ifLastVersion) {
 }
 
 
-/////////////////
-// Write boolean
+
+/// @brief Write boolean 
+/// @param key           
+/// @param param         
+/// @param ifLastVersion 
+/// @return 
+///
 void OptionsManager::SetBool(wxString key,bool param,int ifLastVersion) {
 	if (ifLastVersion == -1) {
 		if (overriding) ifLastVersion = 0;
@@ -566,8 +600,13 @@ void OptionsManager::SetBool(wxString key,bool param,int ifLastVersion) {
 }
 
 
-////////////////
-// Write colour
+
+/// @brief Write colour 
+/// @param key           
+/// @param param         
+/// @param ifLastVersion 
+/// @return 
+///
 void OptionsManager::SetColour(wxString key,wxColour param,int ifLastVersion) {
 	if (ifLastVersion == -1) {
 		if (overriding) ifLastVersion = 0;
@@ -580,16 +619,22 @@ void OptionsManager::SetColour(wxString key,wxColour param,int ifLastVersion) {
 }
 
 
-//////////////
-// Reset with
+
+/// @brief Reset with 
+/// @param key   
+/// @param param 
+///
 void OptionsManager::ResetWith(wxString key,wxString param) {
 	opt[key.Lower()].ResetWith(param);
 	modified = true;
 }
 
 
-//////////
-// As int
+
+/// @brief As int 
+/// @param key 
+/// @return 
+///
 int OptionsManager::AsInt(wxString key) {
 	std::map<wxString,VariableData>::iterator cur;
 	cur = (opt.find(key.Lower()));
@@ -600,8 +645,11 @@ int OptionsManager::AsInt(wxString key) {
 }
 
 
-//////////////
-// As boolean
+
+/// @brief As boolean 
+/// @param key 
+/// @return 
+///
 bool OptionsManager::AsBool(wxString key) {
 	std::map<wxString,VariableData>::iterator cur;
 	cur = (opt.find(key.Lower()));
@@ -612,8 +660,11 @@ bool OptionsManager::AsBool(wxString key) {
 }
 
 
-////////////
-// As float
+
+/// @brief As float 
+/// @param key 
+/// @return 
+///
 double OptionsManager::AsFloat(wxString key) {
 	std::map<wxString,VariableData>::iterator cur;
 	cur = (opt.find(key.Lower()));
@@ -624,8 +675,11 @@ double OptionsManager::AsFloat(wxString key) {
 }
 
 
-/////////////
-// As string
+
+/// @brief As string 
+/// @param key 
+/// @return 
+///
 wxString OptionsManager::AsText(wxString key) {
 	std::map<wxString,VariableData>::iterator cur;
 	cur = (opt.find(key.Lower()));
@@ -636,8 +690,11 @@ wxString OptionsManager::AsText(wxString key) {
 }
 
 
-/////////////
-// As colour
+
+/// @brief As colour 
+/// @param key 
+/// @return 
+///
 wxColour OptionsManager::AsColour(wxString key) {
 	std::map<wxString,VariableData>::iterator cur;
 	cur = (opt.find(key.Lower()));
@@ -648,8 +705,11 @@ wxColour OptionsManager::AsColour(wxString key) {
 }
 
 
-/////////////////////
-// Modification type
+
+/// @brief Modification type 
+/// @param key 
+/// @return 
+///
 ModType OptionsManager::GetModType(wxString key) {
 	std::map<wxString,ModType>::iterator cur;
 	cur = (optType.find(key.Lower()));
@@ -660,8 +720,11 @@ ModType OptionsManager::GetModType(wxString key) {
 }
 
 
-///////////////
-// Is defined?
+
+/// @brief Is defined? 
+/// @param key 
+/// @return 
+///
 bool OptionsManager::IsDefined(wxString key) {
 	std::map<wxString,VariableData>::iterator cur;
 	cur = (opt.find(key.Lower()));
@@ -669,8 +732,11 @@ bool OptionsManager::IsDefined(wxString key) {
 }
 
 
-/////////////////////////////////////
-// Adds an item to a list of recents
+
+/// @brief Adds an item to a list of recents 
+/// @param entry 
+/// @param list  
+///
 void OptionsManager::AddToRecentList (wxString entry,wxString list) {
 	// Find strings already in recent list
 	wxArrayString orig;
@@ -702,8 +768,11 @@ void OptionsManager::AddToRecentList (wxString entry,wxString list) {
 }
 
 
-///////////////////////////////////////////////////////////////
-// Removes an item from a list of recents, if it's in the list
+
+/// @brief Removes an item from a list of recents, if it's in the list 
+/// @param entry 
+/// @param list  
+///
 void OptionsManager::RemoveFromRecentList (wxString entry,wxString list) {
 	// Find strings already in recent list
 	wxArrayString cleaned;
@@ -734,8 +803,11 @@ void OptionsManager::RemoveFromRecentList (wxString entry,wxString list) {
 }
 
 
-///////////////////
-// Get recent list
+
+/// @brief Get recent list 
+/// @param list 
+/// @return 
+///
 wxArrayString OptionsManager::GetRecentList (wxString list) {
 	wxArrayString work;
 	int recentMax = AsInt(list + _T(" max"));
@@ -750,14 +822,17 @@ wxArrayString OptionsManager::GetRecentList (wxString list) {
 }
 
 
-/////////////////////////
-// Set modification type
+
+/// @brief Set modification type 
+/// @param type 
+///
 void OptionsManager::SetModificationType(ModType type) {
 	curModType = type;
 }
 
 
-///////////////////
-// Global instance
+
+/// DOCME
 OptionsManager Options;
+
 

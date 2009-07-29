@@ -54,8 +54,11 @@
 
 
 
-///////////////
-// Constructor
+
+/// @brief Constructor 
+/// @param parent 
+/// @param _grid  
+///
 DialogTimingProcessor::DialogTimingProcessor(wxWindow *parent,SubtitlesGrid *_grid)
 : wxDialog(parent,-1,_("Timing Post-Processor"),wxDefaultPosition,wxSize(400,250),wxDEFAULT_DIALOG_STYLE)
 {
@@ -202,8 +205,9 @@ DialogTimingProcessor::DialogTimingProcessor(wxWindow *parent,SubtitlesGrid *_gr
 }
 
 
-///////////////////
-// Update controls
+
+/// @brief Update controls 
+///
 void DialogTimingProcessor::UpdateControls() {
 	// Boxes
 	leadIn->Enable(hasLeadIn->IsChecked());
@@ -247,15 +251,19 @@ BEGIN_EVENT_TABLE(DialogTimingProcessor,wxDialog)
 END_EVENT_TABLE()
 
 
-////////////////////
-// Checkbox clicked
+
+/// @brief Checkbox clicked 
+/// @param event 
+///
 void DialogTimingProcessor::OnCheckBox(wxCommandEvent &event) {
 	UpdateControls();
 }
 
 
-/////////////////////
-// Select all styles
+
+/// @brief Select all styles 
+/// @param event 
+///
 void DialogTimingProcessor::OnSelectAll(wxCommandEvent &event) {
 	size_t len = StyleList->GetCount();
 	for (size_t i=0;i<len;i++) {
@@ -265,8 +273,10 @@ void DialogTimingProcessor::OnSelectAll(wxCommandEvent &event) {
 }
 
 
-///////////////////////
-// Unselect all styles
+
+/// @brief Unselect all styles 
+/// @param event 
+///
 void DialogTimingProcessor::OnSelectNone(wxCommandEvent &event) {
 	size_t len = StyleList->GetCount();
 	for (size_t i=0;i<len;i++) {
@@ -276,8 +286,10 @@ void DialogTimingProcessor::OnSelectNone(wxCommandEvent &event) {
 }
 
 
-////////////////////////
-// Apply button pressed
+
+/// @brief Apply button pressed 
+/// @param event 
+///
 void DialogTimingProcessor::OnApply(wxCommandEvent &event) {
 	// Save settings
 	long temp = 0;
@@ -329,8 +341,11 @@ void DialogTimingProcessor::OnApply(wxCommandEvent &event) {
 }
 
 
-////////////////////////
-// Get closest keyframe
+
+/// @brief Get closest keyframe 
+/// @param frame 
+/// @return 
+///
 int DialogTimingProcessor::GetClosestKeyFrame(int frame) {
 	// Linear dumb search, not very efficient, but it doesn't really matter
 	int closest = 0;
@@ -344,8 +359,11 @@ int DialogTimingProcessor::GetClosestKeyFrame(int frame) {
 }
 
 
-////////////////////////////
-// Check if style is listed
+
+/// @brief Check if style is listed 
+/// @param styleName 
+/// @return 
+///
 bool DialogTimingProcessor::StyleOK(wxString styleName) {
 	size_t len = StyleList->GetCount();
 	for (size_t i=0;i<len;i++) {
@@ -355,8 +373,9 @@ bool DialogTimingProcessor::StyleOK(wxString styleName) {
 }
 
 
-//////////////////
-// Sort dialogues
+
+/// @brief Sort dialogues 
+///
 void DialogTimingProcessor::SortDialogues() {
 	// Copy from original to temporary list
 	std::list<AssDialogue*> temp;
@@ -383,8 +402,11 @@ void DialogTimingProcessor::SortDialogues() {
 }
 
 
-////////////////////////
-// Gets sorted dialogue
+
+/// @brief Gets sorted dialogue 
+/// @param n 
+/// @return 
+///
 AssDialogue *DialogTimingProcessor::GetSortedDialogue(int n) {
 	try {
 		return Sorted.at(n);
@@ -395,8 +417,9 @@ AssDialogue *DialogTimingProcessor::GetSortedDialogue(int n) {
 }
 
 
-//////////////////////////////
-// Actually process subtitles
+
+/// @brief Actually process subtitles 
+///
 void DialogTimingProcessor::Process() {
 	// Sort rows
 	SortDialogues();
@@ -574,4 +597,5 @@ void DialogTimingProcessor::Process() {
 	grid->ass->FlagAsModified(_("timing processor"));
 	grid->CommitChanges();
 }
+
 

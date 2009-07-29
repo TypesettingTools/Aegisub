@@ -36,6 +36,8 @@
 
 
 #ifndef AVISYNTH_WRAP_H
+
+/// DOCME
 #define AVISYNTH_WRAP_H
 
 
@@ -48,8 +50,8 @@
 #include "avisynth.h"
 
 
-//////////////////////////////////
-// Typedef to make my life easier
+
+/// DOCME
 typedef IScriptEnvironment* __stdcall FUNC(int);
 
 
@@ -57,21 +59,37 @@ typedef IScriptEnvironment* __stdcall FUNC(int);
 // Avisynth debugging stuff
 #ifdef DEBUG_AVISYNTH_CODE
 void DoAvsTrace(const wxString &s);
+
+/// DOCME
 #define AVSTRACE(s) DoAvsTrace(s)
 #else
+
+/// DOCME
 #define AVSTRACE(s)
 #endif
 
 
-///////////////////////////
-// AviSynth wrapping class
+
+/// DOCME
+/// @class AviSynthWrapper
+/// @brief DOCME
+///
+/// DOCME
 class AviSynthWrapper {
 private:
+
+	/// DOCME
 	static int avs_refcount;
+
+	/// DOCME
 	static HINSTANCE hLib;
 protected:
+
+	/// DOCME
 	static IScriptEnvironment *env;
 public:
+
+	/// DOCME
 	static wxMutex AviSynthMutex;
 
 	IScriptEnvironment *GetEnv();
@@ -81,4 +99,5 @@ public:
 
 #endif
 #endif
+
 

@@ -47,8 +47,10 @@
 #include "utils.h"
 
 
-///////////////
-// Constructor
+
+/// @brief Constructor 
+/// @param _parent 
+///
 VisualToolRotateXY::VisualToolRotateXY(VideoDisplay *_parent)
 : VisualTool(_parent)
 {
@@ -57,16 +59,19 @@ VisualToolRotateXY::VisualToolRotateXY(VideoDisplay *_parent)
 }
 
 
-//////////
-// Update
+
+/// @brief Update 
+///
 void VisualToolRotateXY::Update() {
 	// Render parent
 	GetParent()->Render();
 }
 
 
-////////
-// Draw
+
+/// @brief Draw 
+/// @return 
+///
 void VisualToolRotateXY::Draw() {
 	// Get line to draw
 	AssDialogue *line = GetActiveDialogueLine();
@@ -177,8 +182,9 @@ void VisualToolRotateXY::Draw() {
 }
 
 
-/////////////////
-// Start holding
+
+/// @brief Start holding 
+///
 void VisualToolRotateXY::InitializeHold() {
 	GetLinePosition(curDiag,odx,ody,orgx,orgy);
 	GetLineRotation(curDiag,origAngleX,origAngleY,rz);
@@ -191,8 +197,9 @@ void VisualToolRotateXY::InitializeHold() {
 }
 
 
-///////////////
-// Update hold
+
+/// @brief Update hold 
+///
 void VisualToolRotateXY::UpdateHold() {
 	// Find screen angles
 	float screenAngleX = (orgy-mouseY*sh/h)*2.0;
@@ -224,16 +231,18 @@ void VisualToolRotateXY::UpdateHold() {
 }
 
 
-///////////////
-// Commit hold
+
+/// @brief Commit hold 
+///
 void VisualToolRotateXY::CommitHold() {
 	SetOverride(_T("\\frx"),PrettyFloat(wxString::Format(_T("(%0.3f)"),curAngleX)));
 	SetOverride(_T("\\fry"),PrettyFloat(wxString::Format(_T("(%0.3f)"),curAngleY)));
 }
 
 
-//////////////////
-// Get \org pivot
+
+/// @brief Get \org pivot 
+///
 void VisualToolRotateXY::PopulateFeatureList() {
 	// Get line
 	curDiag = GetActiveDialogueLine();
@@ -249,26 +258,32 @@ void VisualToolRotateXY::PopulateFeatureList() {
 }
 
 
-///////////////////////////
-// Update dragging of \org
+
+/// @brief Update dragging of \org 
+/// @param feature 
+///
 void VisualToolRotateXY::UpdateDrag(VisualDraggableFeature &feature) {
 	orgx = feature.x;
 	orgy = feature.y;
 }
 
 
-///////////////////////////
-// Commit dragging of \org
+
+/// @brief Commit dragging of \org 
+/// @param feature 
+///
 void VisualToolRotateXY::CommitDrag(VisualDraggableFeature &feature) {
 	SetOverride(_T("\\org"),wxString::Format(_T("(%i,%i)"),feature.x,feature.y));
 }
 
 
-///////////
-// Refresh
+
+/// @brief Refresh 
+///
 void VisualToolRotateXY::DoRefresh() {
 	AssDialogue *line = GetActiveDialogueLine();
 	GetLinePosition(line,odx,ody,orgx,orgy);
 	GetLineRotation(line,curAngleX,curAngleY,rz);
 }
+
 

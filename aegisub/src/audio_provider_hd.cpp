@@ -51,8 +51,10 @@
 #include "main.h"
 
 
-///////////////
-// Constructor
+
+/// @brief Constructor 
+/// @param source 
+///
 HDAudioProvider::HDAudioProvider(AudioProvider *source) {
 	// Copy parameters
 	bytes_per_sample = source->GetBytesPerSample();
@@ -104,8 +106,9 @@ HDAudioProvider::HDAudioProvider(AudioProvider *source) {
 }
 
 
-//////////////
-// Destructor
+
+/// @brief Destructor 
+///
 HDAudioProvider::~HDAudioProvider() {
 	file_cache.Close();
 	wxRemoveFile(diskCacheFilename);
@@ -113,8 +116,12 @@ HDAudioProvider::~HDAudioProvider() {
 }
 
 
-/////////////
-// Get audio
+
+/// @brief Get audio 
+/// @param buf   
+/// @param start 
+/// @param count 
+///
 void HDAudioProvider::GetAudio(void *buf, int64_t start, int64_t count) {
 	// Requested beyond the length of audio
 	if (start+count > num_samples) {
@@ -145,8 +152,10 @@ void HDAudioProvider::GetAudio(void *buf, int64_t start, int64_t count) {
 }
 
 
-///////////////////////////
-// Get disk cache path
+
+/// @brief Get disk cache path 
+/// @return 
+///
 wxString HDAudioProvider::DiskCachePath() {
 	// Default
 	wxString path = Options.AsText(_T("Audio HD Cache Location"));
@@ -157,8 +166,9 @@ wxString HDAudioProvider::DiskCachePath() {
 }
 
 
-///////////////////////////
-// Get disk cache filename
+
+/// @brief Get disk cache filename 
+///
 wxString HDAudioProvider::DiskCacheName() {
 	// Get pattern
 	wxString pattern = Options.AsText(_T("Audio HD Cache Name"));
@@ -181,4 +191,5 @@ wxString HDAudioProvider::DiskCacheName() {
 	}
 	return _T("");
 }
+
 

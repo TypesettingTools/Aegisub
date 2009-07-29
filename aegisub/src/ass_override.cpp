@@ -45,24 +45,27 @@
 #include <wx/log.h>
 
 
-////////////////////// AssOverrideParameter //////////////////////
-///////////////
-// Constructor
+
+/// @brief Constructor  AssOverrideParameter //////////////////////
+///
 AssOverrideParameter::AssOverrideParameter () {
 	classification = PARCLASS_NORMAL;
 	ommited = false;
 }
 
 
-//////////////
-// Destructor
+
+/// @brief Destructor 
+///
 AssOverrideParameter::~AssOverrideParameter () {
 	DeleteValue();
 }
 
 
-////////
-// Copy
+
+/// @brief Copy 
+/// @param param 
+///
 void AssOverrideParameter::CopyFrom (const AssOverrideParameter &param) {
 	switch(param.GetType()) {
 		case VARDATA_INT: SetInt(param.AsInt()); break;
@@ -77,20 +80,25 @@ void AssOverrideParameter::CopyFrom (const AssOverrideParameter &param) {
 	ommited = param.ommited;
 }
 
+
+/// @brief DOCME
+/// @param param 
+///
 void AssOverrideParameter::operator= (const AssOverrideParameter &param) {
 	CopyFrom(param);
 }
 
 
-////////////////////// AssDialogueBlockOverride //////////////////////
-///////////////
-// Constructor
+
+/// @brief Constructor  AssDialogueBlockOverride //////////////////////
+///
 AssDialogueBlockOverride::AssDialogueBlockOverride () {
 }
 
 
-//////////////
-// Destructor
+
+/// @brief Destructor 
+///
 AssDialogueBlockOverride::~AssDialogueBlockOverride () {
 	for (size_t i=0;i<Tags.size();i++) {
 		delete Tags[i];
@@ -99,8 +107,9 @@ AssDialogueBlockOverride::~AssDialogueBlockOverride () {
 }
 
 
-/////////////
-// Read tags
+
+/// @brief Read tags 
+///
 void AssDialogueBlockOverride::ParseTags () {
 	// Clear current vector
 	for (size_t i=0;i<Tags.size();i++) {
@@ -141,8 +150,10 @@ void AssDialogueBlockOverride::ParseTags () {
 }
 
 
-///////////////////////////
-// Get Text representation
+
+/// @brief Get Text representation 
+/// @return 
+///
 wxString AssDialogueBlockOverride::GetText () {
 	text = _T("");
 	for (std::vector<AssOverrideTag*>::iterator cur=Tags.begin();cur!=Tags.end();cur++) {
@@ -152,8 +163,13 @@ wxString AssDialogueBlockOverride::GetText () {
 }
 
 
-///////////////////////////////////
-// Process parameters via callback
+
+/// @brief Process parameters via callback 
+/// @param (callback)(wxString 
+/// @param int                 
+/// @param )                   
+/// @param userData            
+///
 void AssDialogueBlockOverride::ProcessParameters(void (*callback)(wxString,int,AssOverrideParameter *,void *),void *userData) {
 	AssOverrideTag *curTag;
 	AssOverrideParameter *curPar;
@@ -184,9 +200,12 @@ void AssDialogueBlockOverride::ProcessParameters(void (*callback)(wxString,int,A
 }
 
 
-///////////////////////// AssOverrideParamProto //////////////////////////
-///////////////
-// Constructor
+
+/// @brief Constructor  AssOverrideParamProto //////////////////////////
+/// @param _type  
+/// @param opt    
+/// @param classi 
+///
 AssOverrideParamProto::AssOverrideParamProto (VariableDataType _type,int opt,ASS_ParameterClass classi) {
 	type = _type;
 	optional = opt;
@@ -194,33 +213,39 @@ AssOverrideParamProto::AssOverrideParamProto (VariableDataType _type,int opt,ASS
 }
 
 
-//////////////
-// Destructor
+
+/// @brief Destructor 
+///
 AssOverrideParamProto::~AssOverrideParamProto() {
 }
 
 
-///////////////////////// AssOverrideTagProto //////////////////////////
-///////////////
-// Static vars
+
+/// DOCME
 std::list<AssOverrideTagProto> AssOverrideTagProto::proto;
+
+/// DOCME
 bool AssOverrideTagProto::loaded = false;
 
 
-///////////////
-// Constructor
+
+/// @brief Constructor 
+///
 AssOverrideTagProto::AssOverrideTagProto() {
 }
 
 
-//////////////
-// Destructor
+
+/// @brief Destructor 
+///
 AssOverrideTagProto::~AssOverrideTagProto() {
 }
 
 
-///////////////////
-// Load prototypes
+
+/// @brief Load prototypes 
+/// @return 
+///
 void AssOverrideTagProto::LoadProtos () {
 	if (loaded) return;
 	loaded = true;
@@ -526,23 +551,25 @@ void AssOverrideTagProto::LoadProtos () {
 }
 
 
-//////////////////////// AssOverrideTag //////////////////////////
-///////////////
-// Constructor
+
+/// @brief Constructor  AssOverrideTag //////////////////////////
+///
 AssOverrideTag::AssOverrideTag () {
 	valid = false;
 }
 
 
-//////////////
-// Destructor
+
+/// @brief Destructor 
+///
 AssOverrideTag::~AssOverrideTag () {
 	Clear();
 }
 
 
-/////////
-// Clear
+
+/// @brief Clear 
+///
 void AssOverrideTag::Clear() {
 	for (std::vector<AssOverrideParameter*>::iterator cur=Params.begin();cur!=Params.end();cur++) {
 		delete *cur;
@@ -552,8 +579,10 @@ void AssOverrideTag::Clear() {
 }
 
 
-////////////////////////////
-// Parses text and sets tag
+
+/// @brief Parses text and sets tag 
+/// @param text 
+///
 void AssOverrideTag::SetText (const wxString &text) {
 	// Determine name
 	Name = _T("");
@@ -580,15 +609,19 @@ void AssOverrideTag::SetText (const wxString &text) {
 }
 
 
-/////////////////////////
-// Checks if it is valid
+
+/// @brief Checks if it is valid 
+/// @return 
+///
 bool AssOverrideTag::IsValid() {
 	return valid;
 }
 
 
-/////////////////////
-// Parses parameters
+
+/// @brief Parses parameters 
+/// @param text 
+///
 void AssOverrideTag::ParseParameters(const wxString &text) {
 	// Clear first
 	Clear();
@@ -780,8 +813,9 @@ end_tokenizing:
 }
 
 
-//////////////
-// Get string
+
+/// @brief Get string 
+///
 wxString AssOverrideTag::ToString() {
 	// Start with name
 	wxString result = Name;
@@ -813,4 +847,5 @@ wxString AssOverrideTag::ToString() {
 	if (parenthesis) result += _T(")");
 	return result;
 }
+
 

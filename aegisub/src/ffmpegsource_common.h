@@ -42,36 +42,72 @@
 #include <wx/wxprec.h>
 #include <wx/thread.h>
 #include "include/aegisub/aegisub.h"
+
+/// DOCME
 #define FFMS_BETA_10_COMPAT
 #include <ffms.h>
 #include "dialog_progress.h"
 
 
+
+/// DOCME
 #define FFMS_TRACKMASK_ALL		-1
+
+/// DOCME
 #define FFMS_TRACKMASK_NONE		0
 
 
+
+/// DOCME
+/// @class FFmpegSourceProvider
+/// @brief DOCME
+///
+/// DOCME
 class FFmpegSourceProvider {
 	friend class FFmpegSourceCacheCleaner;
 public:
-	// constants stolen from avutil/log.h
-	// hope the ffmpeg devs don't change them around too much
+
+	/// DOCME
 	enum FFMS_LogLevel {
+
+		/// DOCME
 		FFMS_LOG_QUIET		= -8,
+
+		/// DOCME
 		FFMS_LOG_PANIC		= 0,
+
+		/// DOCME
 		FFMS_LOG_FATAL		= 8,
+
+		/// DOCME
 		FFMS_LOG_ERROR		= 16,
+
+		/// DOCME
 		FFMS_LOG_WARNING	= 24,
+
+		/// DOCME
 		FFMS_LOG_INFO		= 32,
+
+		/// DOCME
 		FFMS_LOG_VERBOSE	= 40,
+
+		/// DOCME
 		FFMS_LOG_DEBUG		= 48,
 	};
 
+
+	/// DOCME
 	struct IndexingProgressDialog {
+
+		/// DOCME
 		volatile bool IndexingCanceled;
+
+		/// DOCME
 		DialogProgress *ProgressDialog;
 	};
 
+
+	/// DOCME
 	static wxMutex CleaningInProgress;
 	bool CleanCache();
 
@@ -83,21 +119,36 @@ public:
 	wxString GetCacheFilename(const wxString& filename);
 	void SetLogLevel();
 
+
+	/// @brief DOCME
+	///
 	virtual ~FFmpegSourceProvider() {}
 };
 
 
+
+/// DOCME
+/// @class FFmpegSourceCacheCleaner
+/// @brief DOCME
+///
+/// DOCME
 class FFmpegSourceCacheCleaner : public wxThread {
 private:
+
+	/// DOCME
 	FFmpegSourceProvider *parent;
 
 public:
 	FFmpegSourceCacheCleaner(FFmpegSourceProvider *par);
+
+	/// @brief DOCME
+	///
 	~FFmpegSourceCacheCleaner() {};
 	wxThread::ExitCode Entry();
 };
 
 
 #endif /* WITH_FFMPEGSOURCE */
+
 
 

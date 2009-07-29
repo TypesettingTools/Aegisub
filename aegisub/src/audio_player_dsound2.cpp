@@ -53,19 +53,32 @@
 #include "audio_player_dsound2.h"
 
 
+
+/// DOCME
 struct COMInitialization {
+
+	/// DOCME
 	bool inited;
 
+
+	/// @brief DOCME
+	///
 	COMInitialization()
 	{
 		inited = false;
 	}
 
+
+	/// @brief DOCME
+	///
 	~COMInitialization()
 	{
 		if (inited) CoUninitialize();
 	}
 
+
+	/// @brief DOCME
+	///
 	void Init()
 	{
 		if (!inited)
@@ -79,24 +92,42 @@ struct COMInitialization {
 
 
 template<class T>
+
+/// DOCME
 struct COMObjectRetainer {
+
+	/// DOCME
 	T *obj;
 
+
+	/// @brief DOCME
+	///
 	COMObjectRetainer()
 	{
 		obj = 0;
 	}
 
+
+	/// @brief DOCME
+	/// @param _obj 
+	///
 	COMObjectRetainer(T *_obj)
 	{
 		obj = _obj;
 	}
 
+
+	/// @brief DOCME
+	///
 	~COMObjectRetainer()
 	{
 		if (obj) obj->Release();
 	}
 
+
+	/// @brief DOCME
+	/// @return 
+	///
 	T * operator -> ()
 	{
 		return obj;
@@ -104,6 +135,12 @@ struct COMObjectRetainer {
 };
 
 
+
+/// DOCME
+/// @class DirectSoundPlayer2Thread
+/// @brief DOCME
+///
+/// DOCME
 class DirectSoundPlayer2Thread {
 	static unsigned int __stdcall ThreadProc(void *parameter);
 	void Run();
@@ -112,32 +149,66 @@ class DirectSoundPlayer2Thread {
 
 	void CheckError();
 
+
+	/// DOCME
 	HANDLE thread_handle;
 
 	// Used to signal state-changes to thread
 	HANDLE
+
+		/// DOCME
 		event_start_playback,
+
+		/// DOCME
 		event_stop_playback,
+
+		/// DOCME
 		event_update_end_time,
+
+		/// DOCME
 		event_set_volume,
+
+		/// DOCME
 		event_kill_self;
 
 	// Thread communicating back
 	HANDLE
+
+		/// DOCME
 		thread_running,
+
+		/// DOCME
 		is_playing,
+
+		/// DOCME
 		error_happened;
 
+
+	/// DOCME
 	wxChar *error_message;
+
+	/// DOCME
 	double volume;
+
+	/// DOCME
 	int64_t start_frame;
+
+	/// DOCME
 	int64_t end_frame;
 
+
+	/// DOCME
 	int wanted_latency;
+
+	/// DOCME
 	int buffer_length;
 
+
+	/// DOCME
 	DWORD last_playback_restart;
 
+
+	/// DOCME
 	AudioProvider *provider;
 
 public:
@@ -158,6 +229,11 @@ public:
 };
 
 
+
+/// @brief DOCME
+/// @param parameter 
+/// @return 
+///
 unsigned int __stdcall DirectSoundPlayer2Thread::ThreadProc(void *parameter)
 {
 	static_cast<DirectSoundPlayer2Thread*>(parameter)->Run();
@@ -165,8 +241,14 @@ unsigned int __stdcall DirectSoundPlayer2Thread::ThreadProc(void *parameter)
 }
 
 
+
+/// @brief DOCME
+/// @return 
+///
 void DirectSoundPlayer2Thread::Run()
 {
+
+/// DOCME
 #define REPORT_ERROR(msg) { error_message = _T("DirectSoundPlayer2Thread: ") _T(msg); SetEvent(error_happened); return; }
 
 	COMInitialization COM_library;
@@ -433,10 +515,22 @@ void DirectSoundPlayer2Thread::Run()
 		}
 	}
 
+
+/// DOCME
 #undef REPORT_ERROR
 }
 
 
+
+/// @brief DOCME
+/// @param buf1        
+/// @param buf1sz      
+/// @param buf2        
+/// @param buf2sz      
+/// @param input_frame 
+/// @param bfr         
+/// @return 
+///
 DWORD DirectSoundPlayer2Thread::FillAndUnlockBuffers(void *buf1, DWORD buf1sz, void *buf2, DWORD buf2sz, int64_t &input_frame, IDirectSoundBuffer8 *bfr)
 {
 	// Assume buffers have been locked and are ready to be filled
@@ -496,6 +590,10 @@ DWORD DirectSoundPlayer2Thread::FillAndUnlockBuffers(void *buf1, DWORD buf1sz, v
 }
 
 
+
+/// @brief DOCME
+/// @return 
+///
 void DirectSoundPlayer2Thread::CheckError()
 {
 	try
@@ -525,6 +623,12 @@ void DirectSoundPlayer2Thread::CheckError()
 }
 
 
+
+/// @brief DOCME
+/// @param provider       
+/// @param _WantedLatency 
+/// @param _BufferLength  
+///
 DirectSoundPlayer2Thread::DirectSoundPlayer2Thread(AudioProvider *provider, int _WantedLatency, int _BufferLength)
 {
 	event_start_playback  = CreateEvent(0, FALSE, FALSE, 0);
@@ -558,6 +662,9 @@ DirectSoundPlayer2Thread::DirectSoundPlayer2Thread(AudioProvider *provider, int 
 }
 
 
+
+/// @brief DOCME
+///
 DirectSoundPlayer2Thread::~DirectSoundPlayer2Thread()
 {
 	SetEvent(event_kill_self);
@@ -565,6 +672,11 @@ DirectSoundPlayer2Thread::~DirectSoundPlayer2Thread()
 }
 
 
+
+/// @brief DOCME
+/// @param start 
+/// @param count 
+///
 void DirectSoundPlayer2Thread::Play(int64_t start, int64_t count)
 {
 	CheckError();
@@ -577,6 +689,9 @@ void DirectSoundPlayer2Thread::Play(int64_t start, int64_t count)
 }
 
 
+
+/// @brief DOCME
+///
 void DirectSoundPlayer2Thread::Stop()
 {
 	CheckError();
@@ -585,6 +700,10 @@ void DirectSoundPlayer2Thread::Stop()
 }
 
 
+
+/// @brief DOCME
+/// @param new_end_frame 
+///
 void DirectSoundPlayer2Thread::SetEndFrame(int64_t new_end_frame)
 {
 	CheckError();
@@ -594,6 +713,10 @@ void DirectSoundPlayer2Thread::SetEndFrame(int64_t new_end_frame)
 }
 
 
+
+/// @brief DOCME
+/// @param new_volume 
+///
 void DirectSoundPlayer2Thread::SetVolume(double new_volume)
 {
 	CheckError();
@@ -603,6 +726,10 @@ void DirectSoundPlayer2Thread::SetVolume(double new_volume)
 }
 
 
+
+/// @brief DOCME
+/// @return 
+///
 bool DirectSoundPlayer2Thread::IsPlaying()
 {
 	CheckError();
@@ -625,6 +752,10 @@ bool DirectSoundPlayer2Thread::IsPlaying()
 }
 
 
+
+/// @brief DOCME
+/// @return 
+///
 int64_t DirectSoundPlayer2Thread::GetStartFrame()
 {
 	CheckError();
@@ -633,6 +764,10 @@ int64_t DirectSoundPlayer2Thread::GetStartFrame()
 }
 
 
+
+/// @brief DOCME
+/// @return 
+///
 int64_t DirectSoundPlayer2Thread::GetCurrentFrame()
 {
 	CheckError();
@@ -645,6 +780,10 @@ int64_t DirectSoundPlayer2Thread::GetCurrentFrame()
 }
 
 
+
+/// @brief DOCME
+/// @return 
+///
 int64_t DirectSoundPlayer2Thread::GetEndFrame()
 {
 	CheckError();
@@ -653,6 +792,10 @@ int64_t DirectSoundPlayer2Thread::GetEndFrame()
 }
 
 
+
+/// @brief DOCME
+/// @return 
+///
 double DirectSoundPlayer2Thread::GetVolume()
 {
 	CheckError();
@@ -661,6 +804,10 @@ double DirectSoundPlayer2Thread::GetVolume()
 }
 
 
+
+/// @brief DOCME
+/// @return 
+///
 bool DirectSoundPlayer2Thread::IsDead()
 {
 	switch (WaitForSingleObject(thread_running, 0))
@@ -676,6 +823,9 @@ bool DirectSoundPlayer2Thread::IsDead()
 
 
 
+
+/// @brief DOCME
+///
 DirectSoundPlayer2::DirectSoundPlayer2()
 {
 	thread = 0;
@@ -692,12 +842,19 @@ DirectSoundPlayer2::DirectSoundPlayer2()
 }
 
 
+
+/// @brief DOCME
+///
 DirectSoundPlayer2::~DirectSoundPlayer2()
 {
 	CloseStream();
 }
 
 
+
+/// @brief DOCME
+/// @return 
+///
 bool DirectSoundPlayer2::IsThreadAlive()
 {
 	if (!thread) return false;
@@ -713,6 +870,10 @@ bool DirectSoundPlayer2::IsThreadAlive()
 }
 
 
+
+/// @brief DOCME
+/// @return 
+///
 void DirectSoundPlayer2::OpenStream()
 {
 	if (IsThreadAlive()) return;
@@ -729,6 +890,10 @@ void DirectSoundPlayer2::OpenStream()
 }
 
 
+
+/// @brief DOCME
+/// @return 
+///
 void DirectSoundPlayer2::CloseStream()
 {
 	if (!IsThreadAlive()) return;
@@ -745,6 +910,10 @@ void DirectSoundPlayer2::CloseStream()
 }
 
 
+
+/// @brief DOCME
+/// @param provider 
+///
 void DirectSoundPlayer2::SetProvider(AudioProvider *provider)
 {
 	try
@@ -764,6 +933,11 @@ void DirectSoundPlayer2::SetProvider(AudioProvider *provider)
 }
 
 
+
+/// @brief DOCME
+/// @param start 
+/// @param count 
+///
 void DirectSoundPlayer2::Play(int64_t start,int64_t count)
 {
 	try
@@ -780,6 +954,10 @@ void DirectSoundPlayer2::Play(int64_t start,int64_t count)
 }
 
 
+
+/// @brief DOCME
+/// @param timerToo 
+///
 void DirectSoundPlayer2::Stop(bool timerToo)
 {
 	try
@@ -797,6 +975,10 @@ void DirectSoundPlayer2::Stop(bool timerToo)
 }
 
 
+
+/// @brief DOCME
+/// @return 
+///
 bool DirectSoundPlayer2::IsPlaying()
 {
 	try
@@ -812,6 +994,10 @@ bool DirectSoundPlayer2::IsPlaying()
 }
 
 
+
+/// @brief DOCME
+/// @return 
+///
 int64_t DirectSoundPlayer2::GetStartPosition()
 {
 	try
@@ -827,6 +1013,10 @@ int64_t DirectSoundPlayer2::GetStartPosition()
 }
 
 
+
+/// @brief DOCME
+/// @return 
+///
 int64_t DirectSoundPlayer2::GetEndPosition()
 {
 	try
@@ -842,6 +1032,10 @@ int64_t DirectSoundPlayer2::GetEndPosition()
 }
 
 
+
+/// @brief DOCME
+/// @return 
+///
 int64_t DirectSoundPlayer2::GetCurrentPosition()
 {
 	try
@@ -857,6 +1051,10 @@ int64_t DirectSoundPlayer2::GetCurrentPosition()
 }
 
 
+
+/// @brief DOCME
+/// @param pos 
+///
 void DirectSoundPlayer2::SetEndPosition(int64_t pos)
 {
 	try
@@ -870,6 +1068,10 @@ void DirectSoundPlayer2::SetEndPosition(int64_t pos)
 }
 
 
+
+/// @brief DOCME
+/// @param pos 
+///
 void DirectSoundPlayer2::SetCurrentPosition(int64_t pos)
 {
 	try
@@ -883,6 +1085,10 @@ void DirectSoundPlayer2::SetCurrentPosition(int64_t pos)
 }
 
 
+
+/// @brief DOCME
+/// @param vol 
+///
 void DirectSoundPlayer2::SetVolume(double vol)
 {
 	try
@@ -896,6 +1102,9 @@ void DirectSoundPlayer2::SetVolume(double vol)
 }
 
 
+
+/// @brief DOCME
+///
 double DirectSoundPlayer2::GetVolume()
 {
 	try
@@ -912,4 +1121,5 @@ double DirectSoundPlayer2::GetVolume()
 
 
 #endif // WITH_DIRECTSOUND
+
 

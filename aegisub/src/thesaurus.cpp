@@ -43,8 +43,9 @@
 #include "thesaurus_myspell.h"
 
 
-/////////////////////
-// Get spell checker
+
+/// @brief Get spell checker 
+///
 Thesaurus *Thesaurus::GetThesaurus() {
 	// Initialize
 	Thesaurus *thes = NULL;
@@ -55,4 +56,5 @@ Thesaurus *Thesaurus::GetThesaurus() {
 	// Return
 	return thes;
 }
+
 

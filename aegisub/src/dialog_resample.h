@@ -36,6 +36,8 @@
 
 
 #ifndef DIALOG_RESAMPLE_H
+
+/// DOCME
 #define DIALOG_RESAMPLE_H
 
 
@@ -54,23 +56,61 @@ class SubtitlesGrid;
 class AssOverrideParameter;
 
 
-/////////
-// Class
+
+/// DOCME
+/// @class DialogResample
+/// @brief DOCME
+///
+/// DOCME
 class DialogResample : public wxDialog {
 private:
+
+	/// DOCME
 	SubtitlesGrid *grid;
+
+	/// DOCME
+
+	/// DOCME
 	wxString ResXValue,ResYValue;
+
+	/// DOCME
 	wxTextCtrl *ResX;
+
+	/// DOCME
 	wxTextCtrl *ResY;
+
+	/// DOCME
 	wxTextCtrl *MarginLeft;
+
+	/// DOCME
 	wxTextCtrl *MarginRight;
+
+	/// DOCME
 	wxTextCtrl *MarginTop;
+
+	/// DOCME
 	wxTextCtrl *MarginBottom;
+
+	/// DOCME
 	wxCheckBox *Anamorphic;
+
+	/// DOCME
 	wxCheckBox *MarginSymmetrical;
 
+
+	/// DOCME
+
+	/// DOCME
+
+	/// DOCME
+
+	/// DOCME
 	double rx,ry,r,ar;
+
+	/// DOCME
 	long m[4];
+
+	/// DOCME
 	static DialogResample *instance;
 
 	void OnResample (wxCommandEvent &event);
@@ -91,15 +131,30 @@ public:
 ///////
 // IDs
 enum {
+
+	/// DOCME
 	BUTTON_DEST_FROM_VIDEO = 1520,
+
+	/// DOCME
 	CHECK_ANAMORPHIC,
+
+	/// DOCME
 	CHECK_SYMMETRICAL,
+
+	/// DOCME
 	TEXT_MARGIN_T,
+
+	/// DOCME
 	TEXT_MARGIN_L,
+
+	/// DOCME
 	TEXT_MARGIN_R,
+
+	/// DOCME
 	TEXT_MARGIN_B
 };
 
 
 #endif
+
 

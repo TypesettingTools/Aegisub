@@ -47,38 +47,67 @@
 #include <list>
 
 
-///////////////////
-// Tooltip binding
+
+/// DOCME
+/// @class ToolTipBinding
+/// @brief DOCME
+///
+/// DOCME
 class ToolTipBinding {
 	friend class ToolTipManager;
 private:
+
+	/// DOCME
 	wxWindow *window;
+
+	/// DOCME
 	wxString toolTip;
+
+	/// DOCME
 	wxArrayString hotkeys;
 
 	void Update();
 };
 
 
-/////////////////////////////
-// Tooltip manager singleton
+
+/// DOCME
+/// @class ToolTipManager
+/// @brief DOCME
+///
+/// DOCME
 class ToolTipManager {
 private:
+
+	/// @brief DOCME
+	///
 	ToolTipManager() {};
 	ToolTipManager(ToolTipManager const&);
 	ToolTipManager& operator=(ToolTipManager const&);
 
 	static ToolTipManager &GetInstance();
 
+
+	/// DOCME
 	std::list<ToolTipBinding> tips;
 
 	void DoUpdate();
 	void AddTips(wxWindow *window,wxString tooltip,wxArrayString hotkeys);
 
 public:
+
+	/// @brief DOCME
+	///
 	static void Update() { GetInstance().DoUpdate(); }
+
+	/// @brief DOCME
+	/// @param window  
+	/// @param tooltip 
+	/// @param hotkeys 
+	///
 	static void Bind(wxWindow *window,wxString tooltip,wxArrayString hotkeys) { GetInstance().AddTips(window,tooltip,hotkeys); }
 	static void Bind(wxWindow *window,wxString tooltip,wxString hotkey=_T(""));
 	static void Bind(wxWindow *window,wxString tooltip,wxString hotkey1,wxString hotkey2);
 };
+
 

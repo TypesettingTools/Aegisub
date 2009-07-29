@@ -41,6 +41,11 @@
 
 #include "string_codec.h"
 
+
+/// @brief DOCME
+/// @param input 
+/// @return 
+///
 wxString inline_string_encode(const wxString &input)
 {
 	const size_t inlen = input.length();
@@ -57,6 +62,10 @@ wxString inline_string_encode(const wxString &input)
 	return output;
 }
 
+
+/// @brief DOCME
+/// @param input 
+///
 wxString inline_string_decode(const wxString &input)
 {
 	const size_t inlen = input.length();
@@ -80,4 +89,5 @@ wxString inline_string_decode(const wxString &input)
 	}
 	return output;
 }
+
 

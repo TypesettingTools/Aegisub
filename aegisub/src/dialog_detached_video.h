@@ -47,11 +47,19 @@ class VideoBox;
 class FrameMain;
 
 
-//////////////////////////////
-// Detached video frame class
+
+/// DOCME
+/// @class DialogDetachedVideo
+/// @brief DOCME
+///
+/// DOCME
 class DialogDetachedVideo : public wxDialog {
 private:
+
+	/// DOCME
 	VideoBox *videoBox;
+
+	/// DOCME
 	FrameMain *parent;
 
 	void OnKey(wxKeyEvent &event);
@@ -64,4 +72,5 @@ public:
 
 	DECLARE_EVENT_TABLE()
 };
+
 

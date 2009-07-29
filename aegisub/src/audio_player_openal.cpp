@@ -69,8 +69,9 @@
 #endif
 
 
-///////////////
-// Constructor
+
+/// @brief Constructor 
+///
 OpenALPlayer::OpenALPlayer()
 {
 	volume = 1.0f;
@@ -81,16 +82,18 @@ OpenALPlayer::OpenALPlayer()
 }
 
 
-//////////////
-// Destructor
+
+/// @brief Destructor 
+///
 OpenALPlayer::~OpenALPlayer()
 {
 	CloseStream();
 }
 
 
-///////////////
-// Open stream
+
+/// @brief Open stream 
+///
 void OpenALPlayer::OpenStream()
 {
 	CloseStream();
@@ -145,8 +148,10 @@ void OpenALPlayer::OpenStream()
 }
 
 
-////////////////
-// Close stream
+
+/// @brief Close stream 
+/// @return 
+///
 void OpenALPlayer::CloseStream()
 {
 	if (!open) return;
@@ -163,8 +168,11 @@ void OpenALPlayer::CloseStream()
 }
 
 
-////////
-// Play
+
+/// @brief Play 
+/// @param start 
+/// @param count 
+///
 void OpenALPlayer::Play(int64_t start,int64_t count)
 {
 	if (playing) {
@@ -197,8 +205,11 @@ void OpenALPlayer::Play(int64_t start,int64_t count)
 }
 
 
-////////
-// Stop
+
+/// @brief Stop 
+/// @param timerToo 
+/// @return 
+///
 void OpenALPlayer::Stop(bool timerToo)
 {
 	if (!open) return;
@@ -221,6 +232,10 @@ void OpenALPlayer::Stop(bool timerToo)
 }
 
 
+
+/// @brief DOCME
+/// @param count 
+///
 void OpenALPlayer::FillBuffers(ALsizei count)
 {
 	wxLogDebug(_T("FillBuffers: count=%d, buffers_free=%d"), count, buffers_free);
@@ -259,6 +274,9 @@ void OpenALPlayer::FillBuffers(ALsizei count)
 }
 
 
+
+/// @brief DOCME
+///
 void OpenALPlayer::Notify()
 {
 	ALsizei newplayed;
@@ -295,42 +313,59 @@ void OpenALPlayer::Notify()
 }
 
 
+
+/// @brief DOCME
+/// @return 
+///
 bool OpenALPlayer::IsPlaying()
 {
 	return playing;
 }
 
 
-///////////
-// Set end
+
+/// @brief Set end 
+/// @param pos 
+///
 void OpenALPlayer::SetEndPosition(int64_t pos)
 {
 	end_frame = pos;
 }
 
 
-////////////////////////
-// Set current position
+
+/// @brief Set current position 
+/// @param pos 
+///
 void OpenALPlayer::SetCurrentPosition(int64_t pos)
 {
 	cur_frame = pos;
 }
 
 
+
+/// @brief DOCME
+/// @return 
+///
 int64_t OpenALPlayer::GetStartPosition()
 {
 	return start_frame;
 }
 
 
+
+/// @brief DOCME
+/// @return 
+///
 int64_t OpenALPlayer::GetEndPosition()
 {
 	return end_frame;
 }
 
 
-////////////////////////
-// Get current position
+
+/// @brief Get current position 
+///
 int64_t OpenALPlayer::GetCurrentPosition()
 {
 	// FIXME: this should be based on not duration played but actual sample being heard
@@ -341,5 +376,6 @@ int64_t OpenALPlayer::GetCurrentPosition()
 
 
 #endif // WITH_OPENAL
+
 
 

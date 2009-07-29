@@ -45,34 +45,46 @@
 #include "ass_entry.h"
 
 
-////////////////////// AssEntry //////////////////////
-///////////////////////
-// Constructs AssEntry
+
+/// @brief Constructs AssEntry  AssEntry //////////////////////
+///
 AssEntry::AssEntry() {
 	Valid = true;
 }
 
+
+/// @brief DOCME
+/// @param _data 
+///
 AssEntry::AssEntry(wxString _data) {
 	data = _data;
 	Valid = true;
 }
 
 
-///////////////////////////
-// Destructor for AssEntry
+
+/// @brief Destructor for AssEntry 
+///
 AssEntry::~AssEntry() {
 }
 
 
-///////////////////////////
-// Comparison for STL Sort
+
+/// @brief Comparison for STL Sort 
+/// @param t1 
+/// @param t2 
+/// @return 
+///
 bool operator < (const AssEntry &t1, const AssEntry &t2) {
 	return (t1.GetStartMS() < t2.GetStartMS());
 }
 
 
-////////////////////////////////////////////////////////////////
-// Returns an entry as dialogue if possible, else, returns NULL
+
+/// @brief Returns an entry as dialogue if possible, else, returns NULL 
+/// @param base 
+/// @return 
+///
 AssDialogue *AssEntry::GetAsDialogue(AssEntry *base) {
 	if (!base) return NULL;
 	if (base->GetType() == ENTRY_DIALOGUE) {
@@ -82,8 +94,11 @@ AssDialogue *AssEntry::GetAsDialogue(AssEntry *base) {
 }
 
 
-/////////////////////////////////////////////////////////////
-// Returns an entry as style if possible, else, returns NULL
+
+/// @brief Returns an entry as style if possible, else, returns NULL 
+/// @param base 
+/// @return 
+///
 AssStyle *AssEntry::GetAsStyle(AssEntry *base) {
 	if (!base) return NULL;
 	if (base->GetType() == ENTRY_STYLE) {
@@ -93,8 +108,11 @@ AssStyle *AssEntry::GetAsStyle(AssEntry *base) {
 }
 
 
-///////////////////////////////////////////////////////////////////
-// Returns an entry as attachment if possible, else, returns NULL
+
+/// @brief Returns an entry as attachment if possible, else, returns NULL 
+/// @param base 
+/// @return 
+///
 AssAttachment *AssEntry::GetAsAttachment(AssEntry *base) {
 	if (!base) return NULL;
 	if (base->GetType() == ENTRY_ATTACHMENT) {
@@ -104,8 +122,10 @@ AssAttachment *AssEntry::GetAsAttachment(AssEntry *base) {
 }
 
 
-//////////////////////
-// Get SSA conversion
+
+/// @brief Get SSA conversion 
+/// @return 
+///
 wxString AssEntry::GetSSAText() {
 	// Special cases
 	if (data.Lower() == _T("[v4+ styles]")) return wxString(_T("[V4 Styles]"));
@@ -118,8 +138,9 @@ wxString AssEntry::GetSSAText() {
 }
 
 
-/////////
-// Clone
+
+/// @brief Clone 
+///
 AssEntry *AssEntry::Clone() const {
 	// Create clone
 	AssEntry *final = new AssEntry();
@@ -133,4 +154,5 @@ AssEntry *AssEntry::Clone() const {
 	// Return
 	return final;
 }
+
 

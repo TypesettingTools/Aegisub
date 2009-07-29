@@ -44,12 +44,22 @@
 #include <wx/bmpbuttn.h>
 
 
-///////////////////////
-// Colour Button class
+
+/// DOCME
+/// @class ColourButton
+/// @brief DOCME
+///
+/// DOCME
 class ColourButton: public wxBitmapButton {
 private:
+
+	/// DOCME
 	wxBitmap bmp;
+
+	/// DOCME
 	wxColour colour;
+
+	/// DOCME
 	wxColour *linkColour;
 
 	void OnClick(wxCommandEvent &event);
@@ -62,4 +72,5 @@ public:
 	wxColour GetColour();
 	void SetLinkColour(wxColour *colour);
 };
+
 

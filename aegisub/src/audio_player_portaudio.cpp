@@ -51,13 +51,14 @@
 // Uncomment to enable debug features.
 //#define PORTAUDIO_DEBUG
 
-/////////////////////
-// Reference counter
+
+/// DOCME
 int PortAudioPlayer::pa_refcount = 0;
 
 
-///////////////
-// Constructor
+
+/// @brief Constructor 
+///
 PortAudioPlayer::PortAudioPlayer() {
 	// Initialize portaudio
 	if (!pa_refcount) {
@@ -80,16 +81,18 @@ PortAudioPlayer::PortAudioPlayer() {
 }
 
 
-//////////////
-// Destructor
+
+/// @brief Destructor 
+///
 PortAudioPlayer::~PortAudioPlayer() {
 	// Deinit portaudio
 	if (!--pa_refcount) Pa_Terminate();
 }
 
 
-///////////////
-// Open stream
+
+/// @brief Open stream 
+///
 void PortAudioPlayer::OpenStream() {
 	// Open stream
 	PaStreamParameters pa_output_p;
@@ -127,8 +130,9 @@ void PortAudioPlayer::OpenStream() {
 }
 
 
-///////////////
-// Close stream
+
+/// @brief Close stream 
+///
 void PortAudioPlayer::CloseStream() {
 	try {
 		Stop(false);
@@ -136,7 +140,10 @@ void PortAudioPlayer::CloseStream() {
 	} catch (...) {}
 }
 
-// Called when the callback has finished.
+
+/// @brief Called when the callback has finished.
+/// @param userData 
+///
 void PortAudioPlayer::paStreamFinishedCallback(void *userData) {
     PortAudioPlayer *player = (PortAudioPlayer *) userData;
 
@@ -150,8 +157,12 @@ void PortAudioPlayer::paStreamFinishedCallback(void *userData) {
 }
 
 
-////////
-// Play
+
+/// @brief Play 
+/// @param start 
+/// @param count 
+/// @return 
+///
 void PortAudioPlayer::Play(int64_t start,int64_t count) {
 	PaError err;
 
@@ -187,8 +198,10 @@ void PortAudioPlayer::Play(int64_t start,int64_t count) {
 }
 
 
-////////
-// Stop
+
+/// @brief Stop 
+/// @param timerToo 
+///
 void PortAudioPlayer::Stop(bool timerToo) {
 	//wxMutexLocker locker(PAMutex);
 	//softStop = false;
@@ -204,8 +217,16 @@ void PortAudioPlayer::Stop(bool timerToo) {
 }
 
 
-//////////////////////
-/// PortAudio callback
+
+/// @brief PortAudio callback 
+/// @param inputBuffer     
+/// @param outputBuffer    
+/// @param framesPerBuffer 
+/// @param timeInfo        
+/// @param statusFlags     
+/// @param userData        
+/// @return 
+///
 int PortAudioPlayer::paCallback(const void *inputBuffer, void *outputBuffer, unsigned long framesPerBuffer, const PaStreamCallbackTimeInfo* timeInfo, PaStreamCallbackFlags statusFlags, void *userData) {
 
 	// Get provider
@@ -238,8 +259,10 @@ int PortAudioPlayer::paCallback(const void *inputBuffer, void *outputBuffer, uns
 }
 
 
-////////////////////////
-/// Get current stream position.
+
+/// @brief Get current stream position. 
+/// @return 
+///
 int64_t PortAudioPlayer::GetCurrentPosition()
 {
 
@@ -261,9 +284,10 @@ int64_t PortAudioPlayer::GetCurrentPosition()
 }
 
 
-///////////////
-/// Return a list of available output devices.
-/// @param Setting from config file.
+
+/// @brief @param Setting from config file. Return a list of available output devices. 
+/// @param favorite 
+///
 wxArrayString PortAudioPlayer::GetOutputDevices(wxString favorite) {
 	wxArrayString list;
 	int devices = Pa_GetDeviceCount();
@@ -283,4 +307,5 @@ wxArrayString PortAudioPlayer::GetOutputDevices(wxString favorite) {
 }
 
 #endif // WITH_PORTAUDIO
+
 

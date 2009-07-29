@@ -53,6 +53,10 @@
 
 
 
+
+/// @brief DOCME
+/// @param filename 
+///
 PCMAudioProvider::PCMAudioProvider(const wxString &filename)
 {
 #ifdef _WINDOWS
@@ -114,6 +118,9 @@ PCMAudioProvider::PCMAudioProvider(const wxString &filename)
 }
 
 
+
+/// @brief DOCME
+///
 PCMAudioProvider::~PCMAudioProvider()
 {
 #ifdef _WINDOWS
@@ -137,6 +144,12 @@ PCMAudioProvider::~PCMAudioProvider()
 }
 
 
+
+/// @brief DOCME
+/// @param range_start  
+/// @param range_length 
+/// @return 
+///
 char * PCMAudioProvider::EnsureRangeAccessible(int64_t range_start, int64_t range_length)
 {
 	if (range_start + range_length > file_size) {
@@ -210,6 +223,12 @@ char * PCMAudioProvider::EnsureRangeAccessible(int64_t range_start, int64_t rang
 }
 
 
+
+/// @brief DOCME
+/// @param buf   
+/// @param start 
+/// @param count 
+///
 void PCMAudioProvider::GetAudio(void *buf, int64_t start, int64_t count)
 {
 	// Read blocks from the file
@@ -254,29 +273,66 @@ void PCMAudioProvider::GetAudio(void *buf, int64_t start, int64_t count)
 // RIFF WAV PCM provider
 // Overview of RIFF WAV: <http://www.sonicspot.com/guide/wavefiles.html>
 
+
+/// DOCME
+/// @class RiffWavPCMAudioProvider
+/// @brief DOCME
+///
+/// DOCME
 class  RiffWavPCMAudioProvider : public PCMAudioProvider {
 private:
+
+	/// DOCME
 	struct ChunkHeader {
+
+		/// DOCME
 		char type[4];
+
+		/// DOCME
 		uint32_t size;
 	};
+
+	/// DOCME
 	struct RIFFChunk {
+
+		/// DOCME
 		ChunkHeader ch;
+
+		/// DOCME
 		char format[4];
 	};
+
+	/// DOCME
 	struct fmtChunk {
-		// Skip the chunk header here, it's processed separately
+
+		/// DOCME
 		uint16_t compression; // compression format used -- 0x0001 = PCM
+
+		/// DOCME
 		uint16_t channels;
+
+		/// DOCME
 		uint32_t samplerate;
+
+		/// DOCME
 		uint32_t avg_bytes_sec; // can't always be trusted
+
+		/// DOCME
 		uint16_t block_align;
+
+		/// DOCME
 		uint16_t significant_bits_sample;
 		// Here was supposed to be some more fields but we don't need them
 		// and just skipping by the size of the struct wouldn't be safe
 		// either way, as the fields can depend on the compression.
 	};
 
+
+	/// @brief DOCME
+	/// @param str1[] 
+	/// @param str2[] 
+	/// @return 
+	///
 	static bool CheckFourcc(const char str1[], const char str2[])
 	{
 		assert(str1);
@@ -289,6 +345,10 @@ private:
 	}
 
 public:
+
+	/// @brief DOCME
+	/// @param _filename 
+	///
 	RiffWavPCMAudioProvider(const wxString &_filename)
 		: PCMAudioProvider(_filename)
 	{
@@ -368,6 +428,10 @@ public:
 	}
 
 
+
+	/// @brief DOCME
+	/// @return 
+	///
 	bool AreSamplesNativeEndian()
 	{
 		// 8 bit samples don't consider endianness
@@ -383,64 +447,128 @@ public:
 // Sony Wave64 audio provider
 // Specs obtained at: <http://www.vcs.de/fileadmin/user_upload/MBS/PDF/Whitepaper/Informations_about_Sony_Wave64.pdf>
 
+
+/// DOCME
 static const uint8_t w64GuidRIFF[16] = {
 	// {66666972-912E-11CF-A5D6-28DB04C10000}
 	0x72, 0x69, 0x66, 0x66, 0x2E, 0x91, 0xCF, 0x11, 0xA5, 0xD6, 0x28, 0xDB, 0x04, 0xC1, 0x00, 0x00
 };
 
+
+/// DOCME
 static const uint8_t w64GuidWAVE[16] = {
 	// {65766177-ACF3-11D3-8CD1-00C04F8EDB8A}
 	0x77, 0x61, 0x76, 0x65, 0xF3, 0xAC, 0xD3, 0x11, 0x8C, 0xD1, 0x00, 0xC0, 0x4F, 0x8E, 0xDB, 0x8A
 };
 
+
+/// DOCME
 static const uint8_t w64Guidfmt[16] = {
 	// {20746D66-ACF3-11D3-8CD1-00C04F8EDB8A}
 	0x66, 0x6D, 0x74, 0x20, 0xF3, 0xAC, 0xD3, 0x11, 0x8C, 0xD1, 0x00, 0xC0, 0x4F, 0x8E, 0xDB, 0x8A
 };
 
+
+/// DOCME
 static const uint8_t w64Guiddata[16] = {
 	// {61746164-ACF3-11D3-8CD1-00C04F8EDB8A}
 	0x64, 0x61, 0x74, 0x61, 0xF3, 0xAC, 0xD3, 0x11, 0x8C, 0xD1, 0x00, 0xC0, 0x4F, 0x8E, 0xDB, 0x8A
 };
 
+
+/// DOCME
+/// @class Wave64AudioProvider
+/// @brief DOCME
+///
+/// DOCME
 class Wave64AudioProvider : public PCMAudioProvider {
 private:
 	// Here's some copy-paste from the FFmpegSource2 code
 
+
+	/// DOCME
 	struct WaveFormatEx { 
+
+		/// DOCME
 		uint16_t wFormatTag; 
+
+		/// DOCME
 		uint16_t nChannels; 
+
+		/// DOCME
 		uint32_t nSamplesPerSec; 
+
+		/// DOCME
 		uint32_t nAvgBytesPerSec; 
+
+		/// DOCME
 		uint16_t nBlockAlign; 
+
+		/// DOCME
 		uint16_t wBitsPerSample; 
+
+		/// DOCME
 		uint16_t cbSize; 
 	};
 
+
+	/// DOCME
 	struct RiffChunk {
+
+		/// DOCME
 		uint8_t riff_guid[16];
+
+		/// DOCME
 		uint64_t file_size;
+
+		/// DOCME
 		uint8_t format_guid[16];
 	};
 
+
+	/// DOCME
 	struct FormatChunk {
+
+		/// DOCME
 		uint8_t chunk_guid[16];
+
+		/// DOCME
 		uint64_t chunk_size;
+
+		/// DOCME
 		WaveFormatEx format;
+
+		/// DOCME
 		uint8_t padding[6];
 	};
 
+
+	/// DOCME
 	struct DataChunk {
+
+		/// DOCME
 		uint8_t chunk_guid[16];
+
+		/// DOCME
 		uint64_t chunk_size;
 	};
 
+
+	/// @brief DOCME
+	/// @param guid1 
+	/// @param guid2 
+	/// @return 
+	///
 	inline bool CheckGuid(const uint8_t *guid1, const uint8_t *guid2)
 	{
 		return memcmp(guid1, guid2, 16) == 0;
 	}
 
 public:
+
+	/// @brief DOCME
+	/// @param _filename 
+	///
 	Wave64AudioProvider(const wxString &_filename)
 		: PCMAudioProvider(_filename)
 	{
@@ -521,6 +649,10 @@ public:
 	}
 
 
+
+	/// @brief DOCME
+	/// @return 
+	///
 	bool AreSamplesNativeEndian()
 	{
 		// 8 bit samples don't consider endianness
@@ -532,6 +664,10 @@ public:
 };
 
 
+
+/// @brief DOCME
+/// @param filename 
+///
 AudioProvider *CreatePCMAudioProvider(const wxString &filename)
 {
 	AudioProvider *provider = 0;
@@ -560,4 +696,5 @@ AudioProvider *CreatePCMAudioProvider(const wxString &filename)
 	// no providers could be created
 	return NULL;
 }
+
 

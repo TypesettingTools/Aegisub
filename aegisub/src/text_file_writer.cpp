@@ -42,6 +42,11 @@
 #include "aegisub_endian.h"
 #include "charset_conv.h"
 
+
+/// @brief DOCME
+/// @param filename 
+/// @param encoding 
+///
 TextFileWriter::TextFileWriter(wxString filename, wxString encoding)
 : conv() {
 #ifdef WIN32
@@ -65,10 +70,18 @@ TextFileWriter::TextFileWriter(wxString filename, wxString encoding)
 	}
 }
 
+
+/// @brief DOCME
+///
 TextFileWriter::~TextFileWriter() {
 	// Explicit empty destructor required with an auto_ptr to an incomplete class
 }
 
+
+/// @brief DOCME
+/// @param line         
+/// @param addLineBreak 
+///
 void TextFileWriter::WriteLineToFile(wxString line, bool addLineBreak) {
 	wxString temp = line;
 	if (addLineBreak) temp += _T("\r\n");
@@ -77,4 +90,5 @@ void TextFileWriter::WriteLineToFile(wxString line, bool addLineBreak) {
 	if (buf.data())
 		file.write(buf.data(), conv->MBBuffLen(buf.data()));
 }
+
 

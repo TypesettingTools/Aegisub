@@ -56,8 +56,11 @@ extern "C" {
 
 
 #ifndef __LINUX__
-//////////////////////////
-// Absolute of 64 bit int
+
+/// @brief Absolute of 64 bit int 
+/// @param input 
+/// @return 
+///
 int64_t abs64(int64_t input) {
 	if (input < 0) return -input;
 	return input;
@@ -65,8 +68,12 @@ int64_t abs64(int64_t input) {
 #endif
 
 
-///////////////////////////////////////
-// Count number of matches of a substr
+
+/// @brief Count number of matches of a substr 
+/// @param parent 
+/// @param child  
+/// @return 
+///
 int CountMatches(wxString parent,wxString child) {
 	size_t pos = wxString::npos;
 	int n = 0;
@@ -75,8 +82,12 @@ int CountMatches(wxString parent,wxString child) {
 }
 
 
-/////////////////////////////////////
-// Make a path relative to reference
+
+/// @brief Make a path relative to reference 
+/// @param _path     
+/// @param reference 
+/// @return 
+///
 wxString MakeRelativePath(wxString _path,wxString reference) {
 	if (_path.IsEmpty()) return _T("");
 	if (_path.Left(1) == _T("?")) return _path;
@@ -87,8 +98,12 @@ wxString MakeRelativePath(wxString _path,wxString reference) {
 }
 
 
-///////////////////////////////////////
-// Extract original path from relative
+
+/// @brief Extract original path from relative 
+/// @param _path     
+/// @param reference 
+/// @return 
+///
 wxString DecodeRelativePath(wxString _path,wxString reference) {
 	if (_path.IsEmpty()) return _T("");
 	if (_path.Left(1) == _T("?")) return _path;
@@ -104,8 +119,11 @@ wxString DecodeRelativePath(wxString _path,wxString reference) {
 }
 
 
-////////////////
-// Pretty float
+
+/// @brief Pretty float 
+/// @param src 
+/// @return 
+///
 wxString PrettyFloat(wxString src) {
 	if (src.Contains(_T("."))) {
 		size_t len = src.Length();
@@ -121,27 +139,45 @@ wxString PrettyFloat(wxString src) {
 	return src;
 }
 
+
+/// @brief DOCME
+/// @param src 
+/// @return 
+///
 wxString PrettyFloatF(float src) { return PrettyFloat(wxString::Format(_T("%f"),src)); }
+
+/// @brief DOCME
+/// @param src 
+/// @return 
+///
 wxString PrettyFloatD(double src) { return PrettyFloat(wxString::Format(_T("%f"),src)); }
 
 
-///////////////////
-// Float to string
+
+/// @brief Float to string 
+/// @param value 
+/// @return 
+///
 wxString AegiFloatToString(double value) {
 	return PrettyFloat(wxString::Format(_T("%f"),value));
 }
 
 
-/////////////////
-// Int to string
+
+/// @brief Int to string 
+/// @param value 
+/// @return 
+///
 wxString AegiIntegerToString(int value) {
 	return wxString::Format(_T("%i"),value);
 }
 
 
-//////////////////////////
-// Pretty reading of size
-// There shall be no kiB, MiB stuff here
+
+/// @brief There shall be no kiB, MiB stuff here Pretty reading of size 
+/// @param bytes 
+/// @return 
+///
 wxString PrettySize(int bytes) {
 	// Suffixes
 	wxArrayString suffix;
@@ -173,8 +209,16 @@ wxString PrettySize(int bytes) {
 }
 
 
-//////////////////////////////////
-// Append a menu item with bitmap
+
+/// @brief Append a menu item with bitmap 
+/// @param parentMenu 
+/// @param id         
+/// @param text       
+/// @param help       
+/// @param bmp        
+/// @param pos        
+/// @return 
+///
 wxMenuItem* AppendBitmapMenuItem (wxMenu* parentMenu,int id,wxString text,wxString help,wxBitmap bmp,int pos) {
 	wxMenuItem *cur = new wxMenuItem(parentMenu,id,text,help);
 	// Mac software does not use icons in menus so we shouldn't either
@@ -187,9 +231,11 @@ wxMenuItem* AppendBitmapMenuItem (wxMenu* parentMenu,int id,wxString text,wxStri
 }
 
 
-///////////////////////////////////////////////////////////////
-// Get the smallest power of two that is greater or equal to x
-// Code from http://bob.allegronetwork.com/prog/tricks.html
+
+/// @brief Code from http://bob.allegronetwork.com/prog/tricks.html Get the smallest power of two that is greater or equal to x 
+/// @param x 
+/// @return 
+///
 int SmallestPowerOf2(int x) {
 	x--;
 	x |= (x >> 1);
@@ -202,8 +248,13 @@ int SmallestPowerOf2(int x) {
 }
 
 
-///////////////////////
-// Get word boundaries
+
+/// @brief Get word boundaries 
+/// @param text    
+/// @param results 
+/// @param start   
+/// @param end     
+///
 void GetWordBoundaries(const wxString text,IntPairVector &results,int start,int end) {
 	// Variables
 	wxChar cur;
@@ -286,8 +337,11 @@ void GetWordBoundaries(const wxString text,IntPairVector &results,int start,int 
 }
 
 
-/////////////////////////////////////////////////////////
-// Determine whether wchar 'c' is a whitespace character
+
+/// @brief Determine whether wchar 'c' is a whitespace character 
+/// @param c 
+/// @return 
+///
 bool IsWhitespace(wchar_t c)
 {
 	const wchar_t whitespaces[] = {
@@ -307,8 +361,11 @@ bool IsWhitespace(wchar_t c)
 }
 
 
-///////////////////////////////////////////////////////////////
-// Returns true if str is empty of consists of only whitespace
+
+/// @brief Returns true if str is empty of consists of only whitespace 
+/// @param str 
+/// @return 
+///
 bool StringEmptyOrWhitespace(const wxString &str)
 {
 	for (size_t i = 0; i < str.size(); ++i)
@@ -319,9 +376,13 @@ bool StringEmptyOrWhitespace(const wxString &str)
 }
 
 
-/////////////////////
-// String to integer
-// wxString::ToLong() is slow and not as flexible
+
+/// @brief wxString::ToLong() is slow and not as flexible String to integer 
+/// @param str   
+/// @param start 
+/// @param end   
+/// @return 
+///
 int AegiStringToInt(const wxString &str,int start,int end) {
 	// Initialize to zero and get length if end set to -1
 	int sign = 1;
@@ -344,8 +405,14 @@ int AegiStringToInt(const wxString &str,int start,int end) {
 
 
 
-/////////////////////////
-// String to fixed point
+
+/// @brief String to fixed point 
+/// @param str           
+/// @param decimalPlaces 
+/// @param start         
+/// @param end           
+/// @return 
+///
 int AegiStringToFix(const wxString &str,size_t decimalPlaces,int start,int end) {
 	// Parts of the number
 	int sign = 1;
@@ -391,9 +458,11 @@ int AegiStringToFix(const wxString &str,size_t decimalPlaces,int start,int end) 
 }
 
 
-////////////////////////////////
-// Convert a wxBitmap to wxIcon
-// This is needed because wxIcon has to be 16x16 to work properly on win32
+
+/// @brief This is needed because wxIcon has to be 16x16 to work properly on win32 Convert a wxBitmap to wxIcon 
+/// @param iconBmp 
+/// @return 
+///
 wxIcon BitmapToIcon(wxBitmap iconBmp) {
 	// Create the icon and background bmp
 	wxIcon ico;
@@ -415,10 +484,9 @@ wxIcon BitmapToIcon(wxBitmap iconBmp) {
 	return ico;
 }
 
-///////////////////////
-// Start Aegisub again
-// It is assumed that something has prepared closing the current instance
-// just before this is called.
+
+/// @brief just before this is called. It is assumed that something has prepared closing the current instance Start Aegisub again 
+///
 void RestartAegisub() {
 #if defined(__WXMSW__)
 	wxStandardPaths stand;
@@ -435,4 +503,5 @@ void RestartAegisub() {
 	wxExecute(stand.GetExecutablePath());
 #endif
 }
+
 

@@ -36,6 +36,8 @@
 
 
 #ifndef DIALOG_SELECTION_H
+
+/// DOCME
 #define DIALOG_SELECTION_H
 
 
@@ -55,21 +57,49 @@ class SubtitlesGrid;
 class AssDialogue;
 
 
-//////////////////////////
-// Selection dialog class
+
+/// DOCME
+/// @class DialogSelection
+/// @brief DOCME
+///
+/// DOCME
 class DialogSelection : public wxDialog {
 private:
+
+	/// DOCME
 	SubtitlesGrid *grid;
+
+	/// DOCME
 	wxTextCtrl *Match;
+
+	/// DOCME
 	wxCheckBox *MatchCase;
+
+	/// DOCME
 	wxCheckBox *MatchDialogues;
+
+	/// DOCME
 	wxCheckBox *MatchComments;
+
+	/// DOCME
 	wxRadioButton *Matches;
+
+	/// DOCME
 	wxRadioButton *DoesntMatch;
+
+	/// DOCME
 	wxRadioBox *Action;
+
+	/// DOCME
 	wxRadioBox *Field;
+
+	/// DOCME
 	wxRadioButton *Exact;
+
+	/// DOCME
 	wxRadioButton *Contains;
+
+	/// DOCME
 	wxRadioButton *RegExp;
 
 	void Process();
@@ -91,9 +121,14 @@ public:
 ///////
 // IDs
 enum {
+
+	/// DOCME
 	MATCH_DIALOGUES_CHECKBOX = 3000,
+
+	/// DOCME
 	MATCH_COMMENTS_CHECKBOX
 };
 
 #endif
+
 

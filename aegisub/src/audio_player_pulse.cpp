@@ -50,8 +50,9 @@
 #include "options.h"
 
 
-///////////////
-// Constructor
+
+/// @brief Constructor 
+///
 PulseAudioPlayer::PulseAudioPlayer()
 : context_notify(0, 1)
 , context_success(0, 1)
@@ -65,16 +66,18 @@ PulseAudioPlayer::PulseAudioPlayer()
 }
 
 
-//////////////
-// Destructor
+
+/// @brief Destructor 
+///
 PulseAudioPlayer::~PulseAudioPlayer()
 {
 	if (open) CloseStream();
 }
 
 
-///////////////
-// Open stream
+
+/// @brief Open stream 
+///
 void PulseAudioPlayer::OpenStream()
 {
 	//printf("Opening PulseAudio stream\n");
@@ -171,8 +174,10 @@ void PulseAudioPlayer::OpenStream()
 }
 
 
-////////////////
-// Close stream
+
+/// @brief Close stream 
+/// @return 
+///
 void PulseAudioPlayer::CloseStream()
 {
 	if (!open) return;
@@ -193,8 +198,11 @@ void PulseAudioPlayer::CloseStream()
 }
 
 
-////////
-// Play
+
+/// @brief Play 
+/// @param start 
+/// @param count 
+///
 void PulseAudioPlayer::Play(int64_t start,int64_t count)
 {
 	//printf("Starting PulseAudio playback\n");
@@ -247,8 +255,11 @@ void PulseAudioPlayer::Play(int64_t start,int64_t count)
 }
 
 
-////////
-// Stop
+
+/// @brief Stop 
+/// @param timerToo 
+/// @return 
+///
 void PulseAudioPlayer::Stop(bool timerToo)
 {
 	if (!is_playing) return;
@@ -281,42 +292,60 @@ void PulseAudioPlayer::Stop(bool timerToo)
 }
 
 
+
+/// @brief DOCME
+/// @return 
+///
 bool PulseAudioPlayer::IsPlaying()
 {
 	return is_playing;
 }
 
 
-///////////
-// Set end
+
+/// @brief Set end 
+/// @param pos 
+///
 void PulseAudioPlayer::SetEndPosition(int64_t pos)
 {
 	end_frame = pos;
 }
 
 
-////////////////////////
-// Set current position
+
+/// @brief Set current position 
+/// @param pos 
+///
 void PulseAudioPlayer::SetCurrentPosition(int64_t pos)
 {
 	cur_frame = pos;
 }
 
 
+
+/// @brief DOCME
+/// @return 
+///
 int64_t PulseAudioPlayer::GetStartPosition()
 {
 	return start_frame;
 }
 
 
+
+/// @brief DOCME
+/// @return 
+///
 int64_t PulseAudioPlayer::GetEndPosition()
 {
 	return end_frame;
 }
 
 
-////////////////////////
-// Get current position
+
+/// @brief Get current position 
+/// @return 
+///
 int64_t PulseAudioPlayer::GetCurrentPosition()
 {
 	if (!is_playing) return 0;
@@ -333,7 +362,12 @@ int64_t PulseAudioPlayer::GetCurrentPosition()
 }
 
 
-// Called by PA to notify about contetxt operation completion
+
+/// @brief Called by PA to notify about contetxt operation completion
+/// @param c       
+/// @param success 
+/// @param thread  
+///
 void PulseAudioPlayer::pa_context_success(pa_context *c, int success, PulseAudioPlayer *thread)
 {
 	thread->context_success_val = success;
@@ -341,7 +375,11 @@ void PulseAudioPlayer::pa_context_success(pa_context *c, int success, PulseAudio
 }
 
 
-// Called by PA to notify about other context-related stuff
+
+/// @brief Called by PA to notify about other context-related stuff
+/// @param c      
+/// @param thread 
+///
 void PulseAudioPlayer::pa_context_notify(pa_context *c, PulseAudioPlayer *thread)
 {
 	thread->cstate = pa_context_get_state(thread->context);
@@ -349,7 +387,12 @@ void PulseAudioPlayer::pa_context_notify(pa_context *c, PulseAudioPlayer *thread
 }
 
 
-// Called by PA when an operation completes
+
+/// @brief Called by PA when an operation completes
+/// @param p       
+/// @param success 
+/// @param thread  
+///
 void PulseAudioPlayer::pa_stream_success(pa_stream *p, int success, PulseAudioPlayer *thread)
 {
 	thread->stream_success_val = success;
@@ -357,7 +400,13 @@ void PulseAudioPlayer::pa_stream_success(pa_stream *p, int success, PulseAudioPl
 }
 
 
-// Called by PA to request more data (and other things?)
+
+/// @brief Called by PA to request more data (and other things?)
+/// @param p      
+/// @param length 
+/// @param thread 
+/// @return 
+///
 void PulseAudioPlayer::pa_stream_write(pa_stream *p, size_t length, PulseAudioPlayer *thread)
 {
 	if (!thread->is_playing) return;
@@ -391,7 +440,11 @@ void PulseAudioPlayer::pa_stream_write(pa_stream *p, size_t length, PulseAudioPl
 }
 
 
-// Called by PA to notify about other stuff
+
+/// @brief Called by PA to notify about other stuff
+/// @param p      
+/// @param thread 
+///
 void PulseAudioPlayer::pa_stream_notify(pa_stream *p, PulseAudioPlayer *thread)
 {
 	thread->sstate = pa_stream_get_state(thread->stream);
@@ -400,4 +453,5 @@ void PulseAudioPlayer::pa_stream_notify(pa_stream *p, PulseAudioPlayer *thread)
 
 
 #endif // WITH_PULSEAUDIO
+
 

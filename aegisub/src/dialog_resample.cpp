@@ -54,8 +54,11 @@
 
 
 
-///////////////
-// Constructor
+
+/// @brief Constructor 
+/// @param parent 
+/// @param _grid  
+///
 DialogResample::DialogResample(wxWindow *parent, SubtitlesGrid *_grid)
 : wxDialog (parent,-1,_("Resample resolution"),wxDefaultPosition)
 {
@@ -141,11 +144,24 @@ BEGIN_EVENT_TABLE(DialogResample,wxDialog)
 END_EVENT_TABLE()
 
 
-/////////////////
-// Resample tags
+
+/// @brief Resample tags 
+/// @param name     
+/// @param n        
+/// @param curParam 
+/// @param _curDiag 
+///
 void DialogResample::ResampleTags (wxString name,int n,AssOverrideParameter *curParam,void *_curDiag) {
 	instance->DoResampleTags(name,n,curParam,_curDiag);
 }
+
+/// @brief DOCME
+/// @param name     
+/// @param n        
+/// @param curParam 
+/// @param _curDiag 
+/// @return 
+///
 void DialogResample::DoResampleTags (wxString name,int n,AssOverrideParameter *curParam,void *_curDiag) {
 	double resizer = 1.0;
 	bool isX = false;
@@ -203,8 +219,11 @@ void DialogResample::DoResampleTags (wxString name,int n,AssOverrideParameter *c
 }
 
 
-////////////
-// Resample
+
+/// @brief Resample 
+/// @param event 
+/// @return 
+///
 void DialogResample::OnResample (wxCommandEvent &event) {
 	// Resolutions
 	AssFile *subs = AssFile::top;
@@ -312,16 +331,20 @@ void DialogResample::OnResample (wxCommandEvent &event) {
 }
 
 
-/////////////////////////////////////////
-// Get destination resolution from video
+
+/// @brief Get destination resolution from video 
+/// @param event 
+///
 void DialogResample::OnGetDestRes (wxCommandEvent &event) {
 	ResX->SetValue(wxString::Format(_T("%i"),VideoContext::Get()->GetWidth()));
 	ResY->SetValue(wxString::Format(_T("%i"),VideoContext::Get()->GetHeight()));
 }
 
 
-////////////////////////////////
-// Symmetrical checkbox clicked
+
+/// @brief Symmetrical checkbox clicked 
+/// @param event 
+///
 void DialogResample::OnSymmetrical (wxCommandEvent &event) {
 	bool state = !MarginSymmetrical->IsChecked();
 	MarginRight->Enable(state);
@@ -333,8 +356,11 @@ void DialogResample::OnSymmetrical (wxCommandEvent &event) {
 }
 
 
-////////////////////////
-// Margin value changed
+
+/// @brief Margin value changed 
+/// @param event 
+/// @return 
+///
 void DialogResample::OnMarginChange (wxCommandEvent &event) {
 	if (!MarginSymmetrical) return;
 	bool state = !MarginSymmetrical->IsChecked();
@@ -345,7 +371,8 @@ void DialogResample::OnMarginChange (wxCommandEvent &event) {
 }
 
 
-////////////////////
-// Static variables
+
+/// DOCME
 DialogResample *DialogResample::instance = NULL;
+
 

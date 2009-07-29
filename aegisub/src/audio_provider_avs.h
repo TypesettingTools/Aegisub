@@ -44,11 +44,19 @@
 #include "avisynth_wrap.h"
 
 
-////////////////////////
-// Audio provider class
+
+/// DOCME
+/// @class AvisynthAudioProvider
+/// @brief DOCME
+///
+/// DOCME
 class AvisynthAudioProvider : public AudioProvider, public AviSynthWrapper {
 private:
+
+	/// DOCME
 	wxString filename;
+
+	/// DOCME
 	PClip clip;
 
 	void LoadFromClip(AVSValue clip);
@@ -62,7 +70,10 @@ public:
 
 	wxString GetFilename();
 
-	// Only exists for x86 Windows, always delivers machine (little) endian
+
+	/// @brief // Only exists for x86 Windows, always delivers machine (little) endian
+	/// @return 
+	///
 	bool AreSamplesNativeEndian() { return true; }
 
 	void GetAudio(void *buf, int64_t start, int64_t count);
@@ -70,12 +81,21 @@ public:
 };
 
 
-///////////
-// Factory
+
+/// DOCME
+/// @class AvisynthAudioProviderFactory
+/// @brief DOCME
+///
+/// DOCME
 class AvisynthAudioProviderFactory : public AudioProviderFactory {
 public:
+
+	/// @brief DOCME
+	/// @param file 
+	///
 	AudioProvider *CreateProvider(wxString file) { return new AvisynthAudioProvider(file); }
 };
 
 #endif
+
 

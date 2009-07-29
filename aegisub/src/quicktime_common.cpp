@@ -41,11 +41,17 @@
 #include <wx/wxprec.h>
 
 
-// static init fun
+
+/// DOCME
 int QuickTimeProvider::qt_initcount = 0;
+
+/// DOCME
 GWorldPtr QuickTimeProvider::default_gworld = NULL;
 
 
+
+/// @brief DOCME
+///
 void QuickTimeProvider::InitQuickTime() {
 	OSErr qt_err;
 #ifdef WIN32
@@ -75,6 +81,9 @@ void QuickTimeProvider::InitQuickTime() {
 }
 
 
+
+/// @brief DOCME
+///
 void QuickTimeProvider::DeInitQuickTime() {
 #ifdef WIN32
 	// calls to InitializeQTML() must be balanced with an equal number of calls to TerminateQTML()
@@ -89,7 +98,12 @@ void QuickTimeProvider::DeInitQuickTime() {
 }
 
 
-// convert a wxstring containing a filename to a QT data reference
+
+/// @brief convert a wxstring containing a filename to a QT data reference
+/// @param string       
+/// @param dataref      
+/// @param dataref_type 
+///
 void QuickTimeProvider::wxStringToDataRef(const wxString &string, Handle *dataref, OSType *dataref_type) {
 	// convert filename, first to a CFStringRef...
 	wxString wx_filename = wxFileName(string).GetShortPath();
@@ -102,19 +116,33 @@ void QuickTimeProvider::wxStringToDataRef(const wxString &string, Handle *datare
 }
 
 
-// check if this error code signifies an error, and if it does, throw an exception
+
+/// @brief check if this error code signifies an error, and if it does, throw an exception
+/// @param err    
+/// @param errmsg 
+///
 void QuickTimeProvider::QTCheckError(OSErr err, wxString errmsg) {
 	if (err != noErr)
 		throw errmsg;
 	/* CheckError(err, errmsg.c_str()); // I wonder if this actually works on Mac, and if so, what it does */
 }
+
+/// @brief DOCME
+/// @param err    
+/// @param errmsg 
+/// @return 
+///
 void QuickTimeProvider::QTCheckError(OSStatus err, wxString errmsg) {
 	if (err != noErr)
 		throw errmsg;
 }
 
 
-// return true if QT considers file openable
+
+/// @brief return true if QT considers file openable
+/// @param dataref      
+/// @param dataref_type 
+///
 bool QuickTimeProvider::CanOpen(const Handle& dataref, const OSType dataref_type) {
 	Boolean can_open;
 	Boolean prefer_img;
@@ -130,4 +158,5 @@ bool QuickTimeProvider::CanOpen(const Handle& dataref, const OSType dataref_type
 
 
 #endif /* WITH_QUICKTIME */
+
 

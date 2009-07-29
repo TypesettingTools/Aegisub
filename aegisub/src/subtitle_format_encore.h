@@ -43,8 +43,12 @@
 #include "subtitle_format.h"
 
 
-///////////////////////
-// Adobe Encore writer
+
+/// DOCME
+/// @class EncoreSubtitleFormat
+/// @brief DOCME
+///
+/// DOCME
 class EncoreSubtitleFormat : public SubtitleFormat {
 public:
 	wxString GetName();
@@ -52,4 +56,5 @@ public:
 	bool CanWriteFile(wxString filename);
 	void WriteFile(wxString filename,wxString encoding);
 };
+
 

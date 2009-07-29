@@ -43,16 +43,22 @@
 #include "font_file_lister.h"
 
 
-////////////
-// Typedefs
+
+/// DOCME
 typedef struct FT_LibraryRec_ *FT_Library;
 
 
-/////////////////////////////
-// Freetype Font file lister
+
+/// DOCME
+/// @class FreetypeFontFileLister
+/// @brief DOCME
+///
+/// DOCME
 class FreetypeFontFileLister : public FontFileLister {
 	friend class FontFileLister;
 private:
+
+	/// DOCME
 	FT_Library ft2lib;
 
 	void DoInitialize();
@@ -60,4 +66,5 @@ private:
 	FreetypeFontFileLister();
 	~FreetypeFontFileLister();
 };
+
 

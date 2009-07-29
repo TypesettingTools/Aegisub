@@ -66,8 +66,11 @@
 
 
 
-///////////////
-// Constructor
+
+/// @brief Constructor 
+/// @param parent     
+/// @param isDetached 
+///
 VideoBox::VideoBox(wxWindow *parent, bool isDetached) 
 : wxPanel (parent,-1)
 {
@@ -181,8 +184,10 @@ BEGIN_EVENT_TABLE(VideoBox, wxPanel)
 END_EVENT_TABLE()
 
 
-//////////////
-// Play video
+
+/// @brief Play video 
+/// @param event 
+///
 void VideoBox::OnVideoPlay(wxCommandEvent &event) {
 	VideoContext *ctx = VideoContext::Get();
 #ifdef __APPLE__
@@ -194,8 +199,10 @@ void VideoBox::OnVideoPlay(wxCommandEvent &event) {
 }
 
 
-///////////////////
-// Play video line
+
+/// @brief Play video line 
+/// @param event 
+///
 void VideoBox::OnVideoPlayLine(wxCommandEvent &event) {
 	VideoContext *ctx = VideoContext::Get();
 #ifdef __APPLE__
@@ -207,48 +214,61 @@ void VideoBox::OnVideoPlayLine(wxCommandEvent &event) {
 }
 
 
-//////////////
-// Stop video
+
+/// @brief Stop video 
+/// @param event 
+///
 void VideoBox::OnVideoStop(wxCommandEvent &event) {
 	VideoContext::Get()->Stop();
 }
 
 
-/////////////////////
-// Toggle autoscroll
+
+/// @brief Toggle autoscroll 
+/// @param event 
+///
 void VideoBox::OnVideoToggleScroll(wxCommandEvent &event) {
 	Options.SetBool(_T("Sync video with subs"),AutoScroll->GetValue());
 	Options.Save();
 }
 
 
-////////////////
-// Mode changed
+
+/// @brief Mode changed 
+/// @param event 
+///
 void VideoBox::OnModeChange(wxCommandEvent &event) {
 	videoDisplay->SetVisualMode(event.GetId() - Video_Mode_Standard);
 }
 
 
-///////////////////////////
-// Sub-tool button pressed
+
+/// @brief Sub-tool button pressed 
+/// @param event 
+///
 void VideoBox::OnSubTool(wxCommandEvent &event) {
 	videoDisplay->visual->OnSubTool(event);
 }
 
 
-///////////////////
-// Realtime toggle
+
+/// @brief Realtime toggle 
+/// @param event 
+///
 void VideoBox::OnToggleRealtime(wxCommandEvent &event) {
 	Options.SetBool(_T("Video Visual Realtime"),event.IsChecked());
 	Options.Save();
 }
 
 
-////////
-// Help
+
+/// @brief Help 
+/// @param event 
+///
 void VideoBox::OnHelp(wxCommandEvent &event) {
 	HelpButton::OpenPage(_T("Visual Typesetting"));
 }
+
 
 
 

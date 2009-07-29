@@ -43,8 +43,11 @@
 #include "utils.h"
 
 
-///////////////
-// Constructor
+
+/// @brief Constructor 
+/// @param dur_ms 
+/// @param _noise 
+///
 DummyAudioProvider::DummyAudioProvider(unsigned long dur_ms, bool _noise) {
 	noise = _noise;
 	channels = 1;
@@ -54,14 +57,19 @@ DummyAudioProvider::DummyAudioProvider(unsigned long dur_ms, bool _noise) {
 }
 
 
-//////////////
-// Destructor
+
+/// @brief Destructor 
+///
 DummyAudioProvider::~DummyAudioProvider() {
 }
 
 
-/////////////
-// Get audio
+
+/// @brief Get audio 
+/// @param buf   
+/// @param start 
+/// @param count 
+///
 void DummyAudioProvider::GetAudio(void *buf, int64_t start, int64_t count) {
 	short *workbuf = (short*)buf;
 
@@ -74,4 +82,5 @@ void DummyAudioProvider::GetAudio(void *buf, int64_t start, int64_t count) {
 			*workbuf++ = 0;
 	}
 }
+
 

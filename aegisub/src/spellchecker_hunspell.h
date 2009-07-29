@@ -46,14 +46,28 @@
 
 
 
-//////////////////
-// Hunspell class
+
+/// DOCME
+/// @class HunspellSpellChecker
+/// @brief DOCME
+///
+/// DOCME
 class HunspellSpellChecker : public SpellChecker {
 private:
+
+	/// DOCME
 	Hunspell *hunspell;
+
+	/// DOCME
 	wxMBConv *conv;
+
+	/// DOCME
 	wxString affpath;
+
+	/// DOCME
 	wxString dicpath;
+
+	/// DOCME
 	wxString usrdicpath;
 
 	void Reset();
@@ -73,12 +87,20 @@ public:
 };
 
 
-///////////
-// Factory
+
+/// DOCME
+/// @class HunspellSpellCheckerFactory
+/// @brief DOCME
+///
+/// DOCME
 class HunspellSpellCheckerFactory : public SpellCheckerFactory {
 public:
+
+	/// @brief DOCME
+	///
 	SpellChecker *CreateSpellChecker() { return new HunspellSpellChecker(); }
 };
 
 #endif
+
 

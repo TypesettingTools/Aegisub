@@ -51,32 +51,37 @@
 #include "ass_time.h"
 
 
-////////////
-// Instance
+
+/// DOCME
 MatroskaWrapper MatroskaWrapper::wrapper;
 
 
-///////////
-// Defines
+
+/// DOCME
 #define	CACHESIZE     65536
 
 
-///////////////
-// Constructor
+
+/// @brief Constructor 
+///
 MatroskaWrapper::MatroskaWrapper() {
 	file = NULL;
 }
 
 
-//////////////
-// Destructor
+
+/// @brief Destructor 
+///
 MatroskaWrapper::~MatroskaWrapper() {
 	Close();
 }
 
 
-/////////////
-// Open file
+
+/// @brief Open file 
+/// @param filename 
+/// @param parse    
+///
 void MatroskaWrapper::Open(wxString filename,bool parse) {
 	// Make sure it's closed first
 	Close();
@@ -105,8 +110,10 @@ void MatroskaWrapper::Open(wxString filename,bool parse) {
 }
 
 
-//////////////
-// Close file
+
+/// @brief Close file 
+/// @return 
+///
 void MatroskaWrapper::Close() {
 	if (file) {
 		mkv_Close(file);
@@ -119,22 +126,29 @@ void MatroskaWrapper::Close() {
 }
 
 
-////////////////////
-// Return keyframes
+
+/// @brief Return keyframes 
+/// @return 
+///
 wxArrayInt MatroskaWrapper::GetKeyFrames() {
 	return keyFrames;
 }
 
 
-///////////////////////
-// Comparison operator
+
+/// @brief Comparison operator 
+/// @param t1 
+/// @param t2 
+/// @return 
+///
 bool operator < (MkvFrame &t1, MkvFrame &t2) { 
 	return t1.time < t2.time;
 }
 
 
-//////////////////
-// Actually parse
+
+/// @brief Actually parse 
+///
 void MatroskaWrapper::Parse() {
 	// Clear keyframes and timecodes
 	keyFrames.Clear();
@@ -242,8 +256,11 @@ void MatroskaWrapper::Parse() {
 }
 
 
-///////////////////////////
-// Set target to timecodes
+
+/// @brief Set target to timecodes 
+/// @param target 
+/// @return 
+///
 void MatroskaWrapper::SetToTimecodes(FrameRate &target) {
 	// Enough frames?
 	int frames = timecodes.size();
@@ -287,8 +304,10 @@ void MatroskaWrapper::SetToTimecodes(FrameRate &target) {
 }
 
 
-/////////////////
-// Get subtitles
+
+/// @brief Get subtitles 
+/// @param target 
+///
 void MatroskaWrapper::GetSubtitles(AssFile *target) {
 	// Get info
 	int tracks = mkv_GetNumTracks(file);
@@ -493,17 +512,35 @@ void MatroskaWrapper::GetSubtitles(AssFile *target) {
 ////////////////////////////// LOTS OF HAALI C CODE DOWN HERE ///////////////////////////////////////
 
 #ifdef __VISUALC__
+
+/// DOCME
 #define std_fread fread
+
+/// DOCME
 #define std_fseek _fseeki64
+
+/// DOCME
 #define std_ftell _ftelli64
 #else
+
+/// DOCME
 #define std_fread fread
+
+/// DOCME
 #define std_fseek fseeko
+
+/// DOCME
 #define std_ftell ftello
 #endif
 
-///////////////
-// STDIO class
+
+/// @brief STDIO class 
+/// @param _st    
+/// @param pos    
+/// @param buffer 
+/// @param count  
+/// @return 
+///
 int StdIoRead(InputStream *_st, ulonglong pos, void *buffer, int count) {
   MkvStdIO *st = (MkvStdIO *) _st;
   size_t  rd;
@@ -523,7 +560,13 @@ int StdIoRead(InputStream *_st, ulonglong pos, void *buffer, int count) {
 
 /* scan for a signature sig(big-endian) starting at file position pos
  * return position of the first byte of signature or -1 if error/not found
- */
+
+/// @brief */
+/// @param _st       
+/// @param start     
+/// @param signature 
+/// @return 
+///
 longlong StdIoScan(InputStream *_st, ulonglong start, unsigned signature) {
   MkvStdIO *st = (MkvStdIO *) _st;
   int	      c;
@@ -542,34 +585,71 @@ longlong StdIoScan(InputStream *_st, ulonglong start, unsigned signature) {
   return -1;
 }
 
-/* return cache size, this is used to limit readahead */
+
+/// @brief This is used to limit readahead.
+/// @param _st 
+/// @return Cache size
+///
 unsigned StdIoGetCacheSize(InputStream *_st) {
   return CACHESIZE;
 }
 
-/* return last error message */
+
+/// @brief Get last error message
+/// @param _st 
+/// @return Last error message
+///
 const char *StdIoGetLastError(InputStream *_st) {
   MkvStdIO *st = (MkvStdIO *) _st;
   return strerror(st->error);
 }
 
-/* memory allocation, this is done via stdlib */
+
+/// @brief Memory allocation, this is done via stdlib
+/// @param _st  
+/// @param size 
+/// @return 
+///
 void  *StdIoMalloc(InputStream *_st, size_t size) {
   return malloc(size);
 }
 
+
+/// @brief DOCME
+/// @param _st  
+/// @param mem  
+/// @param size 
+/// @return 
+///
 void  *StdIoRealloc(InputStream *_st, void *mem, size_t size) {
   return realloc(mem,size);
 }
 
+
+/// @brief DOCME
+/// @param _st 
+/// @param mem 
+///
 void  StdIoFree(InputStream *_st, void *mem) {
   free(mem);
 }
 
+
+/// @brief DOCME
+/// @param _st 
+/// @param cur 
+/// @param max 
+/// @return 
+///
 int   StdIoProgress(InputStream *_st, ulonglong cur, ulonglong max) {
   return 1;
 }
 
+
+/// @brief DOCME
+/// @param _st 
+/// @return 
+///
 longlong StdIoGetFileSize(InputStream *_st) {
 	MkvStdIO *st = (MkvStdIO *) _st;
 	longlong epos = 0;
@@ -580,6 +660,10 @@ longlong StdIoGetFileSize(InputStream *_st) {
 	return epos;
 }
 
+
+/// @brief DOCME
+/// @param filename 
+///
 MkvStdIO::MkvStdIO(wxString filename) {
 	read = StdIoRead;
 	scan = StdIoScan;
@@ -596,4 +680,5 @@ MkvStdIO::MkvStdIO(wxString filename) {
 		setvbuf(fp, NULL, _IOFBF, CACHESIZE);
 	}
 }
+
 

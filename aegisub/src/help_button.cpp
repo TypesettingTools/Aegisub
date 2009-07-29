@@ -49,8 +49,13 @@
 #include "standard_paths.h"
 
 
-///////////////
-// Constructor
+
+/// @brief Constructor 
+/// @param parent   
+/// @param _page    
+/// @param position 
+/// @param size     
+///
 HelpButton::HelpButton(wxWindow *parent,wxString _page,wxPoint position,wxSize size)
 : wxButton (parent,wxID_HELP,_T(""),position,size)
 {
@@ -59,8 +64,11 @@ HelpButton::HelpButton(wxWindow *parent,wxString _page,wxPoint position,wxSize s
 }
 
 
-///////////
-// Pressed
+
+/// @brief Pressed 
+/// @param event 
+/// @return 
+///
 void HelpButton::OnPressed(wxCommandEvent &event) {
 	// Verify if the page is valid
 	if (id.IsEmpty()) {
@@ -73,8 +81,10 @@ void HelpButton::OnPressed(wxCommandEvent &event) {
 }
 
 
-///////////////
-// Open a page
+
+/// @brief Open a page 
+/// @param pageID 
+///
 void HelpButton::OpenPage(const wxString pageID) {
 	// Transcode
 	InitStatic();
@@ -95,10 +105,13 @@ void HelpButton::OpenPage(const wxString pageID) {
 }
 
 
-//////////////
-// Static map
+
+/// DOCME
 std::map<wxString,wxString> *HelpButton::pages = NULL;
 
+
+/// @brief DOCME
+///
 void HelpButton::InitStatic() {
 	if (!pages) {
 		pages = new std::map<wxString,wxString>;
@@ -127,7 +140,11 @@ void HelpButton::InitStatic() {
 	}
 }
 
+
+/// @brief DOCME
+///
 void HelpButton::ClearPages() {
 	if (pages) delete pages;
 }
+
 

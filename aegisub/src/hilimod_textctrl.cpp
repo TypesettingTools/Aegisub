@@ -43,8 +43,17 @@
 #include "options.h"
 
 
-///////////////
-// Constructor
+
+/// @brief Constructor 
+/// @param parent    
+/// @param id        
+/// @param value     
+/// @param pos       
+/// @param size      
+/// @param style     
+/// @param validator 
+/// @param name      
+///
 HiliModTextCtrl::HiliModTextCtrl(wxWindow* parent, wxWindowID id, const wxString& value, const wxPoint& pos, const wxSize& size, long style, const wxValidator& validator, const wxString& name) :
 wxTextCtrl(parent,id,value,pos,size,style,validator,name)
 {
@@ -56,8 +65,11 @@ wxTextCtrl(parent,id,value,pos,size,style,validator,name)
 }
 
 
-//////////////////
-// Modified event
+
+/// @brief Modified event 
+/// @param event 
+/// @return 
+///
 void HiliModTextCtrl::OnModified(wxCommandEvent &event) {
 	if (UpdateLocked) return;
 	Modified();
@@ -65,8 +77,9 @@ void HiliModTextCtrl::OnModified(wxCommandEvent &event) {
 }
 
 
-//////////////////
-// Commited event
+
+/// @brief Commited event 
+///
 void HiliModTextCtrl::Commited() {
 	if (isModified) {
 		orig = GetValue();
@@ -77,8 +90,10 @@ void HiliModTextCtrl::Commited() {
 }
 
 
-/////////////
-// Set value
+
+/// @brief Set value 
+/// @param value 
+///
 void HiliModTextCtrl::SetValue(const wxString& value) {
 	UpdateLocked = true;
 	orig = value;
@@ -88,8 +103,9 @@ void HiliModTextCtrl::SetValue(const wxString& value) {
 }
 
 
-////////////////
-// Was modified
+
+/// @brief Was modified 
+///
 void HiliModTextCtrl::Modified() {
 	bool match = GetValue() == orig;
 
@@ -107,4 +123,5 @@ void HiliModTextCtrl::Modified() {
 		isModified = false;
 	}
 }
+
 

@@ -54,16 +54,24 @@ class AssDialogue;
 class VisualTool;
 
 
-/////////////////////////
-// Visual sub tool range
+
+/// DOCME
 #define VISUAL_SUB_TOOL_START 1300
+
+/// DOCME
 #define VISUAL_SUB_TOOL_END (VISUAL_SUB_TOOL_START+100)
 
 
-////////////////////
-// Event sink class
+
+/// DOCME
+/// @class VisualToolEvent
+/// @brief DOCME
+///
+/// DOCME
 class VisualToolEvent : public wxEvtHandler {
 private:
+
+	/// DOCME
 	VisualTool *tool;
 
 public:
@@ -73,34 +81,88 @@ public:
 };
 
 
-////////////////////////
-// Visual handler class
+
+/// DOCME
+/// @class VisualTool
+/// @brief DOCME
+///
+/// DOCME
 class VisualTool : public OpenGLWrapper {
 	friend class VisualToolEvent;
 
 private:
+
+	/// DOCME
 	VideoDisplay *parent;
+
+	/// DOCME
 	VisualToolEvent eventSink;
 
 protected:
+
+	/// DOCME
 	wxColour colour[4];
 
+
+	/// DOCME
 	bool holding;
+
+	/// DOCME
 	AssDialogue *curDiag;
 
+
+	/// DOCME
 	bool dragging;
+
+	/// DOCME
 	int curFeature;
+
+	/// DOCME
 	std::vector<VisualDraggableFeature> features;
+
+	/// DOCME
+
+	/// DOCME
+
+	/// DOCME
+
+	/// DOCME
 	int dragStartX,dragStartY,dragOrigX,dragOrigY;
+
+	/// DOCME
 	bool dragListOK;
 
+
+	/// DOCME
+
+	/// DOCME
+
+	/// DOCME
+
+	/// DOCME
+
+	/// DOCME
+
+	/// DOCME
 	int w,h,sw,sh,mx,my;
+
+	/// DOCME
 	int frame_n;
 
+
+	/// DOCME
 	bool leftClick;
+
+	/// DOCME
 	bool leftDClick;
+
+	/// DOCME
 	bool shiftDown;
+
+	/// DOCME
 	bool ctrlDown;
+
+	/// DOCME
 	bool altDown;
 
 	void GetLinePosition(AssDialogue *diag,int &x,int &y);
@@ -113,6 +175,10 @@ protected:
 	void FillPositionData();
 	void SetOverride(wxString tag,wxString value);
 
+
+	/// @brief DOCME
+	/// @return 
+	///
 	VideoDisplay *GetParent() { return parent; }
 	AssDialogue *GetActiveDialogueLine();
 	int GetHighlightedFeature();
@@ -120,28 +186,89 @@ protected:
 	void Commit(bool full=false);
 
 	void ConnectButton(wxButton *button);
+
+	/// @brief DOCME
+	/// @param event 
+	/// @return 
+	///
 	virtual void OnButton(wxCommandEvent &event) {}
 
+
+	/// @brief DOCME
+	/// @return 
+	///
 	virtual bool CanHold() { return false; }
+
+	/// @brief DOCME
+	/// @return 
+	///
 	virtual bool HoldEnabled() { return true; }
+
+	/// @brief DOCME
+	///
 	virtual void InitializeHold() {}
+
+	/// @brief DOCME
+	///
 	virtual void UpdateHold() {}
+
+	/// @brief DOCME
+	/// @return 
+	///
 	virtual void CommitHold() {}
 
+
+	/// @brief DOCME
+	/// @return 
+	///
 	virtual bool CanDrag() { return false; }
+
+	/// @brief DOCME
+	/// @return 
+	///
 	virtual bool DragEnabled() { return true; }
+
+	/// @brief DOCME
+	///
 	virtual void PopulateFeatureList() { wxLogMessage(_T("wtf?")); }
+
+	/// @brief DOCME
+	/// @param feature 
+	///
 	virtual void InitializeDrag(VisualDraggableFeature &feature) {}
+
+	/// @brief DOCME
+	/// @param feature 
+	///
 	virtual void UpdateDrag(VisualDraggableFeature &feature) {}
+
+	/// @brief DOCME
+	/// @param feature 
+	///
 	virtual void CommitDrag(VisualDraggableFeature &feature) {}
+
+	/// @brief DOCME
+	/// @param feature 
+	///
 	virtual void ClickedFeature(VisualDraggableFeature &feature) {}
 
+
+	/// @brief DOCME
+	///
 	virtual void DoRefresh() {}
 
 public:
+
+	/// DOCME
+
+	/// DOCME
 	int mouseX,mouseY;
 
 	void OnMouseEvent(wxMouseEvent &event);
+
+	/// @brief DOCME
+	/// @param event 
+	///
 	virtual void OnSubTool(wxCommandEvent &event) {}
 	virtual void Update()=0;
 	virtual void Draw()=0;
@@ -150,6 +277,7 @@ public:
 	VisualTool(VideoDisplay *parent);
 	virtual ~VisualTool();
 };
+
 
 
 

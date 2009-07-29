@@ -47,8 +47,9 @@
 #include "spellchecker_manager.h"
 
 
-///////////////
-// Constructor
+
+/// @brief Constructor 
+///
 PluginManager::PluginManager() {
 	init = false;
 
@@ -59,8 +60,9 @@ PluginManager::PluginManager() {
 }
 
 
-//////////////
-// Destructor
+
+/// @brief Destructor 
+///
 PluginManager::~PluginManager() {
 	VideoProviderFactoryManager::ClearProviders();
 	AudioProviderFactoryManager::ClearProviders();
@@ -78,8 +80,9 @@ PluginManager::~PluginManager() {
 }
 
 
-//////////////////////////////////
-// Registers all built-in plugins
+
+/// @brief Registers all built-in plugins 
+///
 void PluginManager::RegisterBuiltInPlugins() {
 	if (!init) {
 		// Managers
@@ -99,4 +102,5 @@ void PluginManager::RegisterBuiltInPlugins() {
 	// Done
 	init = true;
 }
+
 

@@ -37,6 +37,8 @@
 #pragma once
 
 #ifndef DIALOG_AUTOMATION_H
+
+/// DOCME
 #define DIALOG_AUTOMATION_H
 
 #include <wx/dialog.h>
@@ -44,25 +46,59 @@
 #include <wx/button.h>
 #include <vector>
 
+
+/// DOCME
 namespace Automation4 { class ScriptManager; class Script; };
 
+
+/// DOCME
+/// @class DialogAutomation
+/// @brief DOCME
+///
+/// DOCME
 class DialogAutomation : public wxDialog {
 private:
+
+	/// DOCME
 	struct ExtraScriptInfo {
+
+		/// DOCME
 		Automation4::Script *script;
+
+		/// DOCME
 		bool is_global;
 	};
+
+	/// DOCME
 	std::vector<ExtraScriptInfo> script_info;
 
+
+	/// DOCME
 	Automation4::ScriptManager *local_manager;
+
+	/// DOCME
 	Automation4::AutoloadScriptManager *global_manager;
 
+
+	/// DOCME
 	wxListView *list;
+
+	/// DOCME
 	wxButton *add_button;
+
+	/// DOCME
 	wxButton *remove_button;
+
+	/// DOCME
 	wxButton *reload_button;
+
+	/// DOCME
 	wxButton *info_button;
+
+	/// DOCME
 	wxButton *reload_autoload_button;
+
+	/// DOCME
 	wxButton *close_button;
 
 	void RebuildList();
@@ -83,13 +119,26 @@ public:
 };
 
 enum {
+
+	/// DOCME
 	Automation_List_Box = 1000,
+
+	/// DOCME
 	Automation_Add_Script,
+
+	/// DOCME
 	Automation_Remove_Script,
+
+	/// DOCME
 	Automation_Reload_Script,
+
+	/// DOCME
 	Automation_Show_Info,
+
+	/// DOCME
 	Automation_Reload_Autoload
 };
 
 #endif
+
 

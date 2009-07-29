@@ -36,6 +36,8 @@
 
 
 #ifndef SPLASH_H
+
+/// DOCME
 #define SPLASH_H
 
 
@@ -46,16 +48,26 @@
 #include <wx/timer.h>
 
 
-///////////////////////
-// Splash screen class
+
+/// DOCME
+/// @class SplashScreen
+/// @brief DOCME
+///
+/// DOCME
 class SplashScreen: public wxFrame {
 private:
+
+	/// DOCME
 	wxWindow *par;
+
+	/// DOCME
 	wxBitmap splash;
 
 public:
 	SplashScreen(wxWindow *parent);
 	~SplashScreen();
+
+	/// DOCME
 	wxTimer *autoClose;
 
 	void OnPaint(wxPaintEvent& event);
@@ -67,4 +79,5 @@ public:
 
 
 #endif
+
 

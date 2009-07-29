@@ -45,18 +45,38 @@
 #include <wx/combobox.h>
 
 
-/////////
-// Class
+
+/// DOCME
+/// @class IdleFieldHandler
+/// @brief DOCME
+///
+/// DOCME
 class IdleFieldHandler : public wxEvtHandler {
 private:
+
+	/// DOCME
 	wxComboBox *box;
+
+	/// DOCME
 	wxTextCtrl *text;
+
+	/// DOCME
 	bool overriden;
+
+	/// DOCME
 	bool locked;
+
+	/// DOCME
 	wxColour grey;
+
+	/// DOCME
 	wxColour original;
 
+
+	/// DOCME
 	wxWindow *control;
+
+	/// DOCME
 	wxString name;
 
 	void SetFocus();
@@ -71,4 +91,5 @@ public:
 
 	DECLARE_EVENT_TABLE()
 };
+
 

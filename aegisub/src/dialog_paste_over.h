@@ -45,11 +45,19 @@
 #include <wx/checklst.h>
 
 
-//////////////////////////////////
-// File associations dialog class
+
+/// DOCME
+/// @class DialogPasteOver
+/// @brief DOCME
+///
+/// DOCME
 class DialogPasteOver : public wxDialog {
 private:
+
+	/// DOCME
 	wxCheckListBox *ListBox;
+
+	/// DOCME
 	wxArrayInt options;
 
 	void OnOK(wxCommandEvent &event);
@@ -72,9 +80,18 @@ public:
 ///////
 // IDs
 enum {
+
+	/// DOCME
 	Paste_Over_Times = 1620,
+
+	/// DOCME
 	Paste_Over_Text,
+
+	/// DOCME
 	Paste_Over_All,
+
+	/// DOCME
 	Paste_Over_None
 };
+
 

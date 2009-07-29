@@ -54,30 +54,68 @@
 class SubtitlesGrid;
 
 
-////////////////////
-// Search & Replace singleton
+
+/// DOCME
+/// @class SearchReplaceEngine
+/// @brief DOCME
+///
+/// DOCME
 class SearchReplaceEngine {
 private:
+
+	/// DOCME
 	int curLine;
+
+	/// DOCME
 	size_t pos;
+
+	/// DOCME
 	size_t matchLen;
+
+	/// DOCME
 	size_t replaceLen;
+
+	/// DOCME
 	bool Modified;
+
+	/// DOCME
 	bool LastWasFind;
+
+	/// DOCME
 	bool hasReplace;
 
 	wxString *GetText(int n,int field);
 	
 public:
+
+	/// DOCME
 	SubtitlesGrid *grid;
+
+	/// DOCME
 	bool isReg;
+
+	/// DOCME
 	bool matchCase;
+
+	/// DOCME
 	bool updateVideo;
+
+	/// DOCME
 	bool CanContinue;
+
+	/// DOCME
 	bool hasFocus;
+
+	/// DOCME
 	int field;
+
+	/// DOCME
 	int affect;
+
+	/// DOCME
 	wxString LookFor;
+
+	/// DOCME
 	wxString ReplaceWith;
 
 	void FindNext();
@@ -95,20 +133,40 @@ public:
 extern SearchReplaceEngine Search;
 
 
-//////////////////////////
-// Search & Replace class
+
+/// DOCME
+/// @class DialogSearchReplace
+/// @brief DOCME
+///
+/// DOCME
 class DialogSearchReplace : public wxDialog {
 	friend class SearchReplaceEngine;
 
 private:
+
+	/// DOCME
 	bool hasReplace;
 
+
+	/// DOCME
 	wxComboBox *FindEdit;
+
+	/// DOCME
 	wxComboBox *ReplaceEdit;
+
+	/// DOCME
 	wxCheckBox *CheckMatchCase;
+
+	/// DOCME
 	wxCheckBox *CheckRegExp;
+
+	/// DOCME
 	wxCheckBox *CheckUpdateVideo;
+
+	/// DOCME
 	wxRadioBox *Affect;
+
+	/// DOCME
 	wxRadioBox *Field;
 
 	void UpdateDropDowns();
@@ -134,11 +192,24 @@ public:
 ///////
 // IDs
 enum {
+
+	/// DOCME
 	BUTTON_FIND_NEXT,
+
+	/// DOCME
 	BUTTON_REPLACE_NEXT,
+
+	/// DOCME
 	BUTTON_REPLACE_ALL,
+
+	/// DOCME
 	CHECK_MATCH_CASE,
+
+	/// DOCME
 	CHECK_REGEXP,
+
+	/// DOCME
 	CHECK_UPDATE_VIDEO
 };
+
 

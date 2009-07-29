@@ -59,8 +59,11 @@
 
 
 
-///////////////
-// Constructor
+
+/// @brief Constructor 
+/// @param parent 
+/// @param _grid  
+///
 DialogStyleManager::DialogStyleManager (wxWindow *parent,SubtitlesGrid *_grid)
 : wxDialog (parent,-1,_("Styles Manager"),wxDefaultPosition,wxDefaultSize,wxDEFAULT_DIALOG_STYLE,_T("DialogStylesManager"))
 {
@@ -224,8 +227,9 @@ DialogStyleManager::DialogStyleManager (wxWindow *parent,SubtitlesGrid *_grid)
 }
 
 
-//////////////
-// Destructor
+
+/// @brief Destructor 
+///
 DialogStyleManager::~DialogStyleManager() {
 	int sel = CatalogList->GetSelection();
 	if (sel != wxNOT_FOUND) {
@@ -238,8 +242,9 @@ DialogStyleManager::~DialogStyleManager() {
 }
 
 
-/////////////////////
-// Loads the catalog
+
+/// @brief Loads the catalog 
+///
 void DialogStyleManager::LoadCatalog () {
 	// Clear
 	CatalogList->Clear();
@@ -284,8 +289,10 @@ void DialogStyleManager::LoadCatalog () {
 }
 
 
-////////////////////
-// Loads style list
+
+/// @brief Loads style list 
+/// @param subs 
+///
 void DialogStyleManager::LoadCurrentStyles (AssFile *subs) {
 	using std::list;
 	AssStyle *style;
@@ -307,6 +314,9 @@ void DialogStyleManager::LoadCurrentStyles (AssFile *subs) {
 	UpdateMoveButtons();
 }
 
+
+/// @brief DOCME
+///
 void DialogStyleManager::LoadStorageStyles () {
 	using std::list;
 	AssStyle *style;
@@ -333,8 +343,10 @@ void DialogStyleManager::LoadStorageStyles () {
 }
 
 
-///////////////////////////////////////
-// Enables or disables storage actions
+
+/// @brief Enables or disables storage actions 
+/// @param state 
+///
 void DialogStyleManager::StorageActions (bool state) {
 	StorageList->Enable(state);
 	MoveToLocal->Enable(state);
@@ -389,16 +401,20 @@ END_EVENT_TABLE()
 //////////
 // Events
 
-/////////
-// Close
+
+/// @brief Close 
+/// @param event 
+///
 void DialogStyleManager::OnClose (wxCommandEvent &event) {
 	GetPosition(&lastx, &lasty);
 	Close();
 }
 
 
-////////////////////////
-// Change catalog entry
+
+/// @brief Change catalog entry 
+/// @param event 
+///
 void DialogStyleManager::OnChangeCatalog (wxCommandEvent &event) {
 	int sel = CatalogList->GetSelection();
 	if (sel != wxNOT_FOUND) {
@@ -415,8 +431,11 @@ void DialogStyleManager::OnChangeCatalog (wxCommandEvent &event) {
 }
 
 
-/////////////////////
-// New catalog entry
+
+/// @brief New catalog entry 
+/// @param event 
+/// @return 
+///
 void DialogStyleManager::OnCatalogNew (wxCommandEvent &event) {
 	wxString name = wxGetTextFromUser(_("New storage name:"), _("New catalog entry"), _T(""), this);
 	if (!name.empty()) {
@@ -463,8 +482,10 @@ void DialogStyleManager::OnCatalogNew (wxCommandEvent &event) {
 }
 
 
-//////////////////
-// Catalog delete
+
+/// @brief Catalog delete 
+/// @param event 
+///
 void DialogStyleManager::OnCatalogDelete (wxCommandEvent &event) {
 	int sel = CatalogList->GetSelection();
 	if (sel != wxNOT_FOUND) {
@@ -482,8 +503,10 @@ void DialogStyleManager::OnCatalogDelete (wxCommandEvent &event) {
 }
 
 
-/////////////////////////
-// Edit style on storage
+
+/// @brief Edit style on storage 
+/// @param event 
+///
 void DialogStyleManager::OnStorageEdit (wxCommandEvent &event) {
 	wxArrayInt selections;
 	int n = StorageList->GetSelections(selections);
@@ -504,8 +527,10 @@ void DialogStyleManager::OnStorageEdit (wxCommandEvent &event) {
 }
 
 
-////////////////////////////////
-// Edit style on current script
+
+/// @brief Edit style on current script 
+/// @param event 
+///
 void DialogStyleManager::OnCurrentEdit (wxCommandEvent &event) {
 	wxArrayInt selections;
 	int n = CurrentList->GetSelections(selections);
@@ -524,8 +549,10 @@ void DialogStyleManager::OnCurrentEdit (wxCommandEvent &event) {
 }
 
 
-///////////////////////////////////////
-// Selection on current script changed
+
+/// @brief Selection on current script changed 
+/// @param event 
+///
 void DialogStyleManager::OnCurrentChange (wxCommandEvent &event) {
 	wxArrayInt selections;
 	int n = CurrentList->GetSelections(selections);
@@ -538,8 +565,10 @@ void DialogStyleManager::OnCurrentChange (wxCommandEvent &event) {
 }
 
 
-////////////////////////////////
-// Selection on storage changed
+
+/// @brief Selection on storage changed 
+/// @param event 
+///
 void DialogStyleManager::OnStorageChange (wxCommandEvent &event) {
 	wxArrayInt selections;
 	int n = StorageList->GetSelections(selections);
@@ -552,8 +581,11 @@ void DialogStyleManager::OnStorageChange (wxCommandEvent &event) {
 }
 
 
-///////////////////
-// Copy to Storage
+
+/// @brief Copy to Storage 
+/// @param event 
+/// @return 
+///
 void DialogStyleManager::OnCopyToStorage (wxCommandEvent &event) {
 	// Check if there is actually a storage
 	if (!StorageNew->IsEnabled()) {
@@ -586,8 +618,10 @@ void DialogStyleManager::OnCopyToStorage (wxCommandEvent &event) {
 }
 
 
-///////////////////
-// Copy to Current
+
+/// @brief Copy to Current 
+/// @param event 
+///
 void DialogStyleManager::OnCopyToCurrent (wxCommandEvent &event) {
 	wxArrayInt selections;
 	int n = StorageList->GetSelections(selections);
@@ -616,8 +650,10 @@ void DialogStyleManager::OnCopyToCurrent (wxCommandEvent &event) {
 }
 
 
-/////////////////////
-// Storage make copy
+
+/// @brief Storage make copy 
+/// @param event 
+///
 void DialogStyleManager::OnStorageCopy (wxCommandEvent &event) {
 	wxArrayInt selections;
 	StorageList->GetSelections(selections);
@@ -640,8 +676,10 @@ void DialogStyleManager::OnStorageCopy (wxCommandEvent &event) {
 }
 
 
-/////////////////////
-// Current make copy
+
+/// @brief Current make copy 
+/// @param event 
+///
 void DialogStyleManager::OnCurrentCopy (wxCommandEvent &event) {
 	wxArrayInt selections;
 	CurrentList->GetSelections(selections);
@@ -666,8 +704,11 @@ void DialogStyleManager::OnCurrentCopy (wxCommandEvent &event) {
 }
 
 
-//////////////////////
-// Copy to clipboard
+
+/// @brief Copy to clipboard 
+/// @param list 
+/// @param v    
+///
 void DialogStyleManager::CopyToClipboard (wxListBox *list, std::vector<AssStyle*> v) {
 	wxString data = _T("");
 	AssStyle *s;
@@ -686,8 +727,9 @@ void DialogStyleManager::CopyToClipboard (wxListBox *list, std::vector<AssStyle*
 		wxTheClipboard->Close();
 	}
 }
-////////////////////////
-// Paste from clipboard
+
+/// @brief Paste from clipboard 
+///
 void DialogStyleManager::PasteToCurrent() {
 	wxString data = _T("");
 
@@ -724,6 +766,9 @@ void DialogStyleManager::PasteToCurrent() {
 
 	}
 }
+
+/// @brief DOCME
+///
 void DialogStyleManager::PasteToStorage() {
 	wxString data = _T("");
 
@@ -760,8 +805,10 @@ void DialogStyleManager::PasteToStorage() {
 
 	}
 }
-///////////////
-// Storage new
+
+/// @brief Storage new 
+/// @param event 
+///
 void DialogStyleManager::OnStorageNew (wxCommandEvent &event) {
 	AssStyle *temp = new AssStyle;
 
@@ -777,8 +824,10 @@ void DialogStyleManager::OnStorageNew (wxCommandEvent &event) {
 }
 
 
-///////////////
-// Current new
+
+/// @brief Current new 
+/// @param event 
+///
 void DialogStyleManager::OnCurrentNew (wxCommandEvent &event) {
 	AssStyle *temp = new AssStyle;
 
@@ -793,8 +842,10 @@ void DialogStyleManager::OnCurrentNew (wxCommandEvent &event) {
 }
 
 
-//////////////////
-// Storage delete
+
+/// @brief Storage delete 
+/// @param event 
+///
 void DialogStyleManager::OnStorageDelete (wxCommandEvent &event) {
 	wxArrayInt selections;
 	int n = StorageList->GetSelections(selections);
@@ -827,8 +878,10 @@ void DialogStyleManager::OnStorageDelete (wxCommandEvent &event) {
 }
 
 
-//////////////////
-// Current delete
+
+/// @brief Current delete 
+/// @param event 
+///
 void DialogStyleManager::OnCurrentDelete (wxCommandEvent &event) {
 	wxArrayInt selections;
 	int n = CurrentList->GetSelections(selections);
@@ -863,8 +916,11 @@ void DialogStyleManager::OnCurrentDelete (wxCommandEvent &event) {
 }
 
 
-/////////////////////////////////////
-// Import styles from another script
+
+/// @brief Import styles from another script 
+/// @param event 
+/// @return 
+///
 void DialogStyleManager::OnCurrentImport(wxCommandEvent &event) {
 	// Get file name
 	wxString path = Options.AsText(_T("Last open subtitles path"));	
@@ -931,8 +987,9 @@ void DialogStyleManager::OnCurrentImport(wxCommandEvent &event) {
 }
 
 
-///////////////////////
-// Update move buttons
+
+/// @brief Update move buttons 
+///
 void DialogStyleManager::UpdateMoveButtons() {
 	// Get storage selection
 	wxArrayInt sels;
@@ -995,21 +1052,63 @@ void DialogStyleManager::UpdateMoveButtons() {
 }
 
 
-///////////////
-// Move events
+
+/// @brief Move events 
+/// @param event 
+///
 void DialogStyleManager::OnStorageMoveUp (wxCommandEvent &event) { MoveStyles(true,0); }
+
+/// @brief DOCME
+/// @param event 
+///
 void DialogStyleManager::OnStorageMoveTop (wxCommandEvent &event) { MoveStyles(true,1); }
+
+/// @brief DOCME
+/// @param event 
+///
 void DialogStyleManager::OnStorageMoveDown (wxCommandEvent &event) { MoveStyles(true,2); }
+
+/// @brief DOCME
+/// @param event 
+///
 void DialogStyleManager::OnStorageMoveBottom (wxCommandEvent &event) { MoveStyles(true,3); }
+
+/// @brief DOCME
+/// @param event 
+///
 void DialogStyleManager::OnStorageSort (wxCommandEvent &event) { MoveStyles(true,4); }
+
+/// @brief DOCME
+/// @param event 
+///
 void DialogStyleManager::OnCurrentMoveUp (wxCommandEvent &event) { MoveStyles(false,0); }
+
+/// @brief DOCME
+/// @param event 
+///
 void DialogStyleManager::OnCurrentMoveTop (wxCommandEvent &event) { MoveStyles(false,1); }
+
+/// @brief DOCME
+/// @param event 
+///
 void DialogStyleManager::OnCurrentMoveDown (wxCommandEvent &event) { MoveStyles(false,2); }
+
+/// @brief DOCME
+/// @param event 
+///
 void DialogStyleManager::OnCurrentMoveBottom (wxCommandEvent &event) { MoveStyles(false,3); }
+
+/// @brief DOCME
+/// @param event 
+///
 void DialogStyleManager::OnCurrentSort (wxCommandEvent &event) { MoveStyles(false,4); }
 
-/////////////////
-// Move function
+
+/// @brief Move function 
+/// @param storage 
+/// @param type    
+/// @return 
+///
 void DialogStyleManager::MoveStyles(bool storage, int type) {
 	// Variables
 	AssFile *subs = AssFile::top;
@@ -1149,8 +1248,10 @@ void DialogStyleManager::MoveStyles(bool storage, int type) {
 }
 
 
-//////////////////
-// Keydown event
+
+/// @brief Keydown event 
+/// @param event 
+///
 void DialogStyleManager::OnKeyDown(wxKeyEvent &event) {
 	wxCommandEvent evt;
 	switch(event.GetKeyCode()) {
@@ -1202,23 +1303,32 @@ void DialogStyleManager::OnKeyDown(wxKeyEvent &event) {
 
 	}
 }
-//////////////////
-// I have no clue
+
+/// DOCME
 int DialogStyleManager::lastx = -1;
+
+/// DOCME
 int DialogStyleManager::lasty = -1;
 
 
-/////////////////////////////////
-// DialogStyleManagerEvent stuff
+
+/// @brief DialogStyleManagerEvent stuff 
+/// @param ctrl 
+///
 DialogStyleManagerEvent::DialogStyleManagerEvent(DialogStyleManager *ctrl) {
 	control = ctrl;
 }
 BEGIN_EVENT_TABLE(DialogStyleManagerEvent, wxEvtHandler)
 	EVT_KEY_DOWN(DialogStyleManagerEvent::OnKeyDown)
 END_EVENT_TABLE()
+
+/// @brief DOCME
+/// @param event 
+///
 void DialogStyleManagerEvent::OnKeyDown(wxKeyEvent &event) {
 	control->OnKeyDown(event); //we need to access controls, so rather than make the controls public...
 }
+
 
 
 

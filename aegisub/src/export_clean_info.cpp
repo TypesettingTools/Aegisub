@@ -45,15 +45,18 @@
 #include "ass_override.h"
 
 
-///////////////
-// Constructor
+
+/// @brief Constructor 
+///
 AssTransformCleanInfoFilter::AssTransformCleanInfoFilter() {
 	initialized = false;
 }
 
 
-////////
-// Init
+
+/// @brief Init 
+/// @return 
+///
 void AssTransformCleanInfoFilter::Init() {
 	if (initialized) return;
 	initialized = true;
@@ -63,8 +66,11 @@ void AssTransformCleanInfoFilter::Init() {
 }
 
 
-///////////
-// Process
+
+/// @brief Process 
+/// @param subs          
+/// @param export_dialog 
+///
 void AssTransformCleanInfoFilter::ProcessSubs(AssFile *subs, wxWindow *export_dialog) {
 	using std::list;
 	AssEntry *curEntry;
@@ -100,20 +106,26 @@ void AssTransformCleanInfoFilter::ProcessSubs(AssFile *subs, wxWindow *export_di
 }
 
 
-//////////////
-// Get dialog
+
+/// @brief Get dialog 
+/// @param parent 
+/// @return 
+///
 wxWindow *AssTransformCleanInfoFilter::GetConfigDialogWindow(wxWindow *parent) {
 	return 0;
 }
 
 
-/////////////////
-// Load settings
+
+/// @brief Load settings 
+/// @param IsDefault 
+///
 void AssTransformCleanInfoFilter::LoadSettings(bool IsDefault) {
 }
 
 
-///////////////////
-// Global instance
+
+/// DOCME
 AssTransformCleanInfoFilter AssTransformCleanInfoFilter::instance;
+
 

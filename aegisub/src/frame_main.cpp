@@ -91,14 +91,22 @@
 
 
 #ifdef WITH_STARTUPLOG
+
+/// DOCME
 #define StartupLog(a) MessageBox(0, a, _T("Aegisub startup log"), 0)
 #else
+
+/// DOCME
 #define StartupLog(a)
 #endif
 
 /////////////////////////
 // FrameMain constructor
 
+
+/// @brief DOCME
+/// @param args 
+///
 FrameMain::FrameMain (wxArrayString args)
 : wxFrame ((wxFrame*)NULL,-1,_T(""),wxDefaultPosition,wxSize(920,700),wxDEFAULT_FRAME_STYLE | wxCLIP_CHILDREN)
 {
@@ -229,8 +237,9 @@ FrameMain::FrameMain (wxArrayString args)
 }
 
 
-////////////////////////
-// FrameMain destructor
+
+/// @brief FrameMain destructor 
+///
 FrameMain::~FrameMain () {
 	DeInitContents();
 #ifdef WITH_AUTOMATION
@@ -239,8 +248,9 @@ FrameMain::~FrameMain () {
 }
 
 
-//////////////////////
-// Initialize toolbar
+
+/// @brief Initialize toolbar 
+///
 void FrameMain::InitToolbar () {
 	// Create toolbar
 	wxSystemOptions::SetOption(_T("msw.remap"), 0);
@@ -313,12 +323,19 @@ void FrameMain::InitToolbar () {
 }
 
 
+
+/// @brief DOCME
+/// @param item_text   
+/// @param hotkey_name 
+/// @return 
+///
 wxString MakeHotkeyText(const wxChar *item_text, const wxChar *hotkey_name) {
 	return wxString::Format(_T("%s\t%s"), item_text, Hotkeys.GetText(hotkey_name).c_str());
 }
 
-///////////////////////
-// Initialize menu bar
+
+/// @brief Initialize menu bar 
+///
 void FrameMain::InitMenu() {
 	// Deinit menu if needed
 	if (menuCreated) {
@@ -562,8 +579,9 @@ void FrameMain::InitMenu() {
 }
 
 
-///////////////////////
-// Initialize contents
+
+/// @brief Initialize contents 
+///
 void FrameMain::InitContents() {
 	// Set a background panel
 	StartupLog(_T("Create background panel"));
@@ -629,8 +647,9 @@ void FrameMain::InitContents() {
 }
 
 
-/////////////////////////
-// Deinitialize controls
+
+/// @brief Deinitialize controls 
+///
 void FrameMain::DeInitContents() {
 	if (detachedVideo) detachedVideo->Destroy();
 	if (stylingAssistant) stylingAssistant->Destroy();
@@ -642,8 +661,9 @@ void FrameMain::DeInitContents() {
 }
 
 
-//////////////////
-// Update toolbar
+
+/// @brief Update toolbar 
+///
 void FrameMain::UpdateToolbar() {
 	// Collect flags
 	bool isVideo = VideoContext::Get()->IsLoaded();
@@ -667,8 +687,12 @@ void FrameMain::UpdateToolbar() {
 }
 
 
-//////////////////
-// Open subtitles
+
+/// @brief Open subtitles 
+/// @param filename 
+/// @param charset  
+/// @return 
+///
 void FrameMain::LoadSubtitles (wxString filename,wxString charset) {
 	// First check if there is some loaded
 	if (AssFile::top && AssFile::top->loaded) {
@@ -759,8 +783,12 @@ void FrameMain::LoadSubtitles (wxString filename,wxString charset) {
 }
 
 
-//////////////////
-// Save subtitles
+
+/// @brief Save subtitles 
+/// @param saveas      
+/// @param withCharset 
+/// @return 
+///
 bool FrameMain::SaveSubtitles(bool saveas,bool withCharset) {
 	// Try to get filename from file
 	wxString filename;
@@ -813,8 +841,11 @@ bool FrameMain::SaveSubtitles(bool saveas,bool withCharset) {
 }
 
 
-//////////////////////////
-// Try to close subtitles
+
+/// @brief Try to close subtitles 
+/// @param enableCancel 
+/// @return 
+///
 int FrameMain::TryToCloseSubs(bool enableCancel) {
 	AssFile *ass = AssFile::top;
 	if (ass->IsModified()) {
@@ -832,8 +863,12 @@ int FrameMain::TryToCloseSubs(bool enableCancel) {
 }
 
 
-////////////////////
-// Set display mode
+
+/// @brief Set display mode 
+/// @param _showVid   
+/// @param _showAudio 
+/// @return 
+///
 void FrameMain::SetDisplayMode(int _showVid,int _showAudio) {
 	// Shown?
 	static bool firstRun = true;
@@ -873,8 +908,9 @@ void FrameMain::SetDisplayMode(int _showVid,int _showAudio) {
 }
 
 
-////////////////////
-// Update title bar
+
+/// @brief Update title bar 
+///
 void FrameMain::UpdateTitle() {
 	// Determine if current subs are modified
 	bool subsMod = AssFile::top->IsModified();
@@ -912,8 +948,10 @@ void FrameMain::UpdateTitle() {
 }
 
 
-/////////////////////////////////////////
-// Updates subs with video/whatever data
+
+/// @brief Updates subs with video/whatever data 
+/// @param fromSubs 
+///
 void FrameMain::SynchronizeProject(bool fromSubs) {
 	// Gather current data
 	AssFile *subs = AssFile::top;
@@ -1098,8 +1136,12 @@ void FrameMain::SynchronizeProject(bool fromSubs) {
 }
 
 
-///////////////
-// Loads video
+
+/// @brief Loads video 
+/// @param file     
+/// @param autoload 
+/// @return 
+///
 void FrameMain::LoadVideo(wxString file,bool autoload) {
 	if (blockVideoLoad) return;
 	Freeze();
@@ -1166,8 +1208,12 @@ void FrameMain::LoadVideo(wxString file,bool autoload) {
 }
 
 
-///////////////
-// Loads audio
+
+/// @brief Loads audio 
+/// @param filename  
+/// @param FromVideo 
+/// @return 
+///
 void FrameMain::LoadAudio(wxString filename,bool FromVideo) {
 	if (blockAudioLoad) return;
 	VideoContext::Get()->Stop();
@@ -1191,8 +1237,10 @@ void FrameMain::LoadAudio(wxString filename,bool FromVideo) {
 }
 
 
-/////////////
-// Loads VFR
+
+/// @brief Loads VFR 
+/// @param filename 
+///
 void FrameMain::LoadVFR(wxString filename) {
 	VideoContext::Get()->Stop();
 	if (filename != _T("")) {
@@ -1223,22 +1271,28 @@ void FrameMain::LoadVFR(wxString filename) {
 }
 
 
-/////////////
-// Saves VFR
+
+/// @brief Saves VFR 
+/// @param filename 
+///
 void FrameMain::SaveVFR(wxString filename) {
 	VFR_Output.Save(filename);
 }
 
 
-/////////////
-// Open help
+
+/// @brief Open help 
+/// @param page 
+///
 void FrameMain::OpenHelp(wxString page) {
 	HelpButton::OpenPage(_T("Main"));
 }
 
 
-///////////////////////
-// Detach video window
+
+/// @brief Detach video window 
+/// @param detach 
+///
 void FrameMain::DetachVideo(bool detach) {
 	if (detach) {
 		if (!detachedVideo) {
@@ -1256,8 +1310,11 @@ void FrameMain::DetachVideo(bool detach) {
 }
 
 
-/////////////////////////////////////////////
-// Sets status and clear after n miliseconds
+
+/// @brief Sets status and clear after n miliseconds 
+/// @param text 
+/// @param ms   
+///
 void FrameMain::StatusTimeout(wxString text,int ms) {
 	SetStatusText(text,1);
 	StatusClear.SetOwner(this,StatusClear_Timer);
@@ -1265,8 +1322,9 @@ void FrameMain::StatusTimeout(wxString text,int ms) {
 }
 
 
-///////////////////////////
-// Setup accelerator table
+
+/// @brief Setup accelerator table 
+///
 void FrameMain::SetAccelerators() {
 	std::vector<wxAcceleratorEntry> entry;
 	entry.reserve(32);
@@ -1305,8 +1363,11 @@ void FrameMain::SetAccelerators() {
 }
 
 
-//////////////////////
-// Load list of files
+
+/// @brief Load list of files 
+/// @param list 
+/// @return 
+///
 bool FrameMain::LoadList(wxArrayString list) {
 	// Build list
 	wxArrayString List;
@@ -1393,16 +1454,18 @@ bool FrameMain::LoadList(wxArrayString list) {
 
 
 
-//////////////////////
-// Sets the descriptions for undo/redo
+
+/// @brief Sets the descriptions for undo/redo 
+///
 void FrameMain::SetUndoRedoDesc() {
 	editMenu->SetHelpString(0,_T("Undo ")+AssFile::GetUndoDescription());
 	editMenu->SetHelpString(1,_T("Redo ")+AssFile::GetRedoDescription());
 }
 
 
-/////////////////////////////////
-// Check if ASSDraw is available
+
+/// @brief Check if ASSDraw is available 
+///
 bool FrameMain::HasASSDraw() {
 #ifdef __WINDOWS__
 	wxFileName fn(StandardPaths::DecodePath(_T("?data/ASSDraw3.exe")));
@@ -1411,4 +1474,5 @@ bool FrameMain::HasASSDraw() {
 	return false;
 #endif
 }
+
 

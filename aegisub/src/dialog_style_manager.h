@@ -36,6 +36,8 @@
 
 
 #ifndef DIALOG_STYLE_MANAGER_H
+
+/// DOCME
 #define DIALOG_STYLE_MANAGER_H
 
 
@@ -57,39 +59,97 @@ class AssStyle;
 class SubtitlesGrid;
 
 
-/////////////////
-// Manager Class
+
+/// DOCME
+/// @class DialogStyleManager
+/// @brief DOCME
+///
+/// DOCME
 class DialogStyleManager : public wxDialog {
 private:
+
+	/// DOCME
 	std::vector<AssStyle*> styleMap;
+
+	/// DOCME
 	std::vector<AssStyle*> styleStorageMap;
 
+
+	/// DOCME
 	SubtitlesGrid *grid;
 
+
+	/// DOCME
 	wxComboBox *CatalogList;
+
+	/// DOCME
 	wxListBox *StorageList;
+
+	/// DOCME
 	wxListBox *CurrentList;
+
+	/// DOCME
 	wxButton *MoveToLocal;
+
+	/// DOCME
 	wxButton *StorageNew;
+
+	/// DOCME
 	wxButton *StorageEdit;
+
+	/// DOCME
 	wxButton *StorageCopy;
+
+	/// DOCME
 	wxButton *StorageDelete;
+
+	/// DOCME
 	wxButton *StorageMoveUp;
+
+	/// DOCME
 	wxButton *StorageMoveDown;
+
+	/// DOCME
 	wxButton *StorageMoveTop;
+
+	/// DOCME
 	wxButton *StorageMoveBottom;
+
+	/// DOCME
 	wxButton *StorageSort;
+
+	/// DOCME
 	wxButton *MoveToStorage;
+
+	/// DOCME
 	wxButton *CurrentNew;
+
+	/// DOCME
 	wxButton *CurrentEdit;
+
+	/// DOCME
 	wxButton *CurrentCopy;
+
+	/// DOCME
 	wxButton *CurrentDelete;
+
+	/// DOCME
 	wxButton *CurrentMoveUp;
+
+	/// DOCME
 	wxButton *CurrentMoveDown;
+
+	/// DOCME
 	wxButton *CurrentMoveTop;
+
+	/// DOCME
 	wxButton *CurrentMoveBottom;
+
+	/// DOCME
 	wxButton *CurrentSort;
 
+
+	/// DOCME
 	AssStyleStorage Store;
 
 	void StorageActions (bool state);
@@ -99,9 +159,15 @@ private:
 	void UpdateMoveButtons();
 	void MoveStyles(bool storage,int type);
 
+
+	/// DOCME
+
+	/// DOCME
 	static int lastx, lasty;
 
 public:
+
+	/// DOCME
 	wxSizer *MainSizer;
 
 	DialogStyleManager(wxWindow *parent,SubtitlesGrid *grid);
@@ -147,39 +213,97 @@ public:
 ///////
 // IDs
 enum {
+
+	/// DOCME
 	BUTTON_CATALOG_NEW = 1000,
+
+	/// DOCME
 	BUTTON_CATALOG_DELETE,
+
+	/// DOCME
 	BUTTON_STORAGE_COPYTO,
+
+	/// DOCME
 	BUTTON_STORAGE_NEW,
+
+	/// DOCME
 	BUTTON_STORAGE_EDIT,
+
+	/// DOCME
 	BUTTON_STORAGE_COPY,
+
+	/// DOCME
 	BUTTON_STORAGE_DELETE,
+
+	/// DOCME
 	BUTTON_STORAGE_UP,
+
+	/// DOCME
 	BUTTON_STORAGE_DOWN,
+
+	/// DOCME
 	BUTTON_STORAGE_TOP,
+
+	/// DOCME
 	BUTTON_STORAGE_BOTTOM,
+
+	/// DOCME
 	BUTTON_STORAGE_SORT,
+
+	/// DOCME
 	BUTTON_CURRENT_COPYTO,
+
+	/// DOCME
 	BUTTON_CURRENT_NEW,
+
+	/// DOCME
 	BUTTON_CURRENT_EDIT,
+
+	/// DOCME
 	BUTTON_CURRENT_COPY,
+
+	/// DOCME
 	BUTTON_CURRENT_DELETE,
+
+	/// DOCME
 	BUTTON_CURRENT_IMPORT,
+
+	/// DOCME
 	BUTTON_CURRENT_UP,
+
+	/// DOCME
 	BUTTON_CURRENT_DOWN,
+
+	/// DOCME
 	BUTTON_CURRENT_TOP,
+
+	/// DOCME
 	BUTTON_CURRENT_BOTTOM,
+
+	/// DOCME
 	BUTTON_CURRENT_SORT,
+
+	/// DOCME
 	LIST_CATALOG,
+
+	/// DOCME
 	LIST_STORAGE,
+
+	/// DOCME
 	LIST_CURRENT
 };
 
 
-/////////////////
-// Event handler
+
+/// DOCME
+/// @class DialogStyleManagerEvent
+/// @brief DOCME
+///
+/// DOCME
 class DialogStyleManagerEvent : public wxEvtHandler {
 private:
+
+	/// DOCME
 	DialogStyleManager *control;
 	void OnKeyDown(wxKeyEvent &event);
 
@@ -190,4 +314,5 @@ public:
 
 
 #endif
+
 

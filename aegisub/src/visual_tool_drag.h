@@ -45,13 +45,24 @@
 #include "visual_tool.h"
 
 
-///////////////////
-// Drag tool class
+
+/// DOCME
+/// @class VisualToolDrag
+/// @brief DOCME
+///
+/// DOCME
 class VisualToolDrag : public VisualTool {
 private:
+
+	/// DOCME
 	wxBitmapButton *toggleMove;
+
+	/// DOCME
 	bool toggleMoveOnMove;
 
+
+	/// @brief DOCME
+	///
 	bool CanDrag() { return true; }
 	void PopulateFeatureList();
 	void InitializeDrag(VisualDraggableFeature &feature);
@@ -68,4 +79,5 @@ public:
 	void Update();
 	void Draw();
 };
+
 

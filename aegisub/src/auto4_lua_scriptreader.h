@@ -43,13 +43,24 @@
 #include "lua.hpp"
 #endif
 
+
+/// DOCME
 namespace Automation4 {
 
-	// Manage reading in a Lua script file
+
+	/// DOCME
 	struct LuaScriptReader {
+
+		/// DOCME
 		FILE *f;
+
+		/// DOCME
 		bool first;
+
+		/// DOCME
 		char *databuf;
+
+		/// DOCME
 		static const size_t bufsize = 512;
 		LuaScriptReader(const wxString &filename);
 		~LuaScriptReader();
@@ -57,6 +68,7 @@ namespace Automation4 {
 	};
 
 };
+
 
 
 

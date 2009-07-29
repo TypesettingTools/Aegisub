@@ -57,8 +57,11 @@
 #include "video_provider_yuv4mpeg.h"
 
 
-////////////////
-// Get provider
+
+/// @brief Get provider 
+/// @param video 
+/// @return 
+///
 VideoProvider *VideoProviderFactoryManager::GetProvider(wxString video) {
 	// First check special case of dummy video
 	if (video.StartsWith(_T("?dummy:"))) {
@@ -108,8 +111,9 @@ VideoProvider *VideoProviderFactoryManager::GetProvider(wxString video) {
 }
 
 
-//////////////////////////
-// Register all providers
+
+/// @brief Register all providers 
+///
 void VideoProviderFactoryManager::RegisterProviders() {
 #ifdef WITH_AVISYNTH
 	RegisterFactory(new AvisynthVideoProviderFactory(),_T("Avisynth"));
@@ -123,14 +127,16 @@ void VideoProviderFactoryManager::RegisterProviders() {
 }
 
 
-///////////////////////
-// Clear all providers
+
+/// @brief Clear all providers 
+///
 void VideoProviderFactoryManager::ClearProviders() {
 	ClearFactories();
 }
 
 
-//////////
-// Static
+
+/// DOCME
 template <class VideoProviderFactory> std::map<wxString,VideoProviderFactory*>* FactoryManager<VideoProviderFactory>::factories=NULL;
+
 

@@ -55,8 +55,10 @@
 #include "charset_conv.h"
 
 
-///////////////
-// Constructor
+
+/// @brief Constructor 
+/// @param _filename 
+///
 AvisynthVideoProvider::AvisynthVideoProvider(wxString _filename) {
 	AVSTRACE(wxString::Format(_T("AvisynthVideoProvider: Creating new AvisynthVideoProvider: \"%s\", \"%s\""), _filename, _subfilename));
 	bool mpeg2dec3_priority = true;
@@ -79,8 +81,9 @@ AvisynthVideoProvider::AvisynthVideoProvider(wxString _filename) {
 }
 
 
-//////////////
-// Destructor
+
+/// @brief Destructor 
+///
 AvisynthVideoProvider::~AvisynthVideoProvider() {
 	AVSTRACE(_T("AvisynthVideoProvider: Destroying AvisynthVideoProvider"));
 	RGB32Video = NULL;
@@ -94,8 +97,12 @@ AvisynthVideoProvider::~AvisynthVideoProvider() {
 ////////////////////////////////////// VIDEO PROVIDER //////////////////////////////////////
 
 
-/////////////////////////////////////////
-// Actually open the video into Avisynth
+
+/// @brief Actually open the video into Avisynth 
+/// @param _filename          
+/// @param mpeg2dec3_priority 
+/// @return 
+///
 PClip AvisynthVideoProvider::OpenVideo(wxString _filename, bool mpeg2dec3_priority) {
 	AVSTRACE(_T("AvisynthVideoProvider::OpenVideo: Opening video"));
 	wxMutexLocker lock(AviSynthMutex);
@@ -313,8 +320,11 @@ PClip AvisynthVideoProvider::OpenVideo(wxString _filename, bool mpeg2dec3_priori
 }
 
 
-////////////////////////
-// Actually get a frame
+
+/// @brief Actually get a frame 
+/// @param _n 
+/// @return 
+///
 const AegiVideoFrame AvisynthVideoProvider::GetFrame(int _n) {
 	// Transform n if overriden
 	int n = _n;
@@ -359,20 +369,24 @@ const AegiVideoFrame AvisynthVideoProvider::GetFrame(int _n) {
 	return final;
 }
 
-////////////////////////
-// Override frame times
+
+/// @brief Override frame times 
+/// @param list 
+///
 void AvisynthVideoProvider::OverrideFrameTimeList(wxArrayInt list) {
 	frameTime = list;
 	num_frames = frameTime.Count();
 }
 
 
-///////////////
-// Get warning
+
+/// @brief Get warning 
+///
 wxString AvisynthVideoProvider::GetWarning() {
 	if (usedDirectShow) return L"Warning! The file is being opened using Avisynth's DirectShowSource, which has unreliable seeking. Frame numbers might not match the real number. PROCEED AT YOUR OWN RISK!";
 	else return L"";
 }
 
 #endif
+
 

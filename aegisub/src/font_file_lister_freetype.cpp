@@ -53,22 +53,28 @@
 #include "charset_conv.h"
 
 
-///////////////
-// Constructor
+
+/// @brief Constructor 
+///
 FreetypeFontFileLister::FreetypeFontFileLister() {
 	// Initialize freetype2
 	FT_Init_FreeType(&ft2lib);
 }
 
 
-//////////////
-// Destructor
+
+/// @brief Destructor 
+///
 FreetypeFontFileLister::~FreetypeFontFileLister() {
 }
 
 
-//////////////////////
-// Get name from face
+
+/// @brief Get name from face 
+/// @param face 
+/// @param id   
+/// @return 
+///
 wxArrayString GetName(FT_Face &face,int id) {
 	// Get name
 	wxArrayString final;
@@ -96,8 +102,9 @@ wxArrayString GetName(FT_Face &face,int id) {
 }
 
 
-///////////////////////////
-// Gather data from system
+
+/// @brief Gather data from system 
+///
 void FreetypeFontFileLister::DoInitialize() {
 	// Load cache
 	LoadCache();
@@ -171,4 +178,5 @@ void FreetypeFontFileLister::DoInitialize() {
 }
 
 #endif WITH_FREETYPE2
+
 

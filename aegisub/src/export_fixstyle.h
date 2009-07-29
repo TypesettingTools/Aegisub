@@ -43,10 +43,16 @@
 #include "ass_export_filter.h"
 
 
-//////////////////////////////
-// Transform Framerate filter
+
+/// DOCME
+/// @class AssFixStylesFilter
+/// @brief DOCME
+///
+/// DOCME
 class AssFixStylesFilter : public AssExportFilter {
 private:
+
+	/// DOCME
 	static AssFixStylesFilter instance;
 	AssFixStylesFilter();
 	void Init();
@@ -54,4 +60,5 @@ private:
 public:
 	void ProcessSubs(AssFile *subs, wxWindow *export_dialog);
 };
+
 

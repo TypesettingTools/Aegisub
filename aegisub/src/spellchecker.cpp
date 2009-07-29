@@ -46,8 +46,10 @@
 #include "options.h"
 
 
-/////////////////////
-// Get spell checker
+
+/// @brief Get spell checker 
+/// @return 
+///
 SpellChecker *SpellCheckerFactoryManager::GetSpellChecker() {
 	// List of providers
 	wxArrayString list = GetFactoryList(Options.AsText(_T("Spell Checker")));
@@ -72,8 +74,9 @@ SpellChecker *SpellCheckerFactoryManager::GetSpellChecker() {
 }
 
 
-//////////////////////////
-// Register all providers
+
+/// @brief Register all providers 
+///
 void SpellCheckerFactoryManager::RegisterProviders() {
 #ifdef WITH_HUNSPELL
 	RegisterFactory(new HunspellSpellCheckerFactory(),_T("Hunspell"));
@@ -81,14 +84,16 @@ void SpellCheckerFactoryManager::RegisterProviders() {
 }
 
 
-///////////////////////
-// Clear all providers
+
+/// @brief Clear all providers 
+///
 void SpellCheckerFactoryManager::ClearProviders() {
 	ClearFactories();
 }
 
 
-//////////
-// Static
+
+/// DOCME
 template <class SpellCheckerFactory> std::map<wxString,SpellCheckerFactory*>* FactoryManager<SpellCheckerFactory>::factories=NULL;
+
 

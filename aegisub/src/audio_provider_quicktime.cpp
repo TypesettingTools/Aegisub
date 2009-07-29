@@ -39,6 +39,10 @@
 
 #ifdef WITH_QUICKTIME
 
+
+/// @brief DOCME
+/// @param filename 
+///
 QuickTimeAudioProvider::QuickTimeAudioProvider(wxString filename) {
 	movie		= NULL;
 	in_dataref	= NULL;
@@ -74,12 +78,18 @@ QuickTimeAudioProvider::QuickTimeAudioProvider(wxString filename) {
 }
 
 
+
+/// @brief DOCME
+///
 QuickTimeAudioProvider::~QuickTimeAudioProvider() {
 	Close();
 	DeInitQuickTime();
 }
 
 
+
+/// @brief DOCME
+///
 void QuickTimeAudioProvider::Close() {
 	if (movie)
 		DisposeMovie(movie);
@@ -93,6 +103,10 @@ void QuickTimeAudioProvider::Close() {
 }
 
 
+
+/// @brief DOCME
+/// @param filename 
+///
 void QuickTimeAudioProvider::LoadAudio(wxString filename) {
 	OSType in_dataref_type;
 	wxStringToDataRef(filename, &in_dataref, &in_dataref_type);
@@ -148,6 +162,12 @@ void QuickTimeAudioProvider::LoadAudio(wxString filename) {
 }
 
 
+
+/// @brief DOCME
+/// @param buf   
+/// @param start 
+/// @param count 
+///
 void QuickTimeAudioProvider::GetAudio(void *buf, int64_t start, int64_t count) {
 	TimeRecord trec;
 	trec.scale		= GetMovieTimeScale(movie);
@@ -179,4 +199,5 @@ void QuickTimeAudioProvider::GetAudio(void *buf, int64_t start, int64_t count) {
 
 
 #endif /* WITH_QUICKTIME */
+
 

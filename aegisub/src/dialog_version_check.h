@@ -51,13 +51,21 @@
 class DialogVersionCheck;
 
 
-/////////////////
-// Worker thread
+
+/// DOCME
+/// @class VersionCheckThread
+/// @brief DOCME
+///
+/// DOCME
 class VersionCheckThread : public wxThread {
 private:
+
+	/// DOCME
 	DialogVersionCheck *parent;
 
 public:
+
+	/// DOCME
 	bool alive;
 
 	VersionCheckThread(DialogVersionCheck *parent);
@@ -65,16 +73,28 @@ public:
 };
 
 
-//////////////////////////
-// Version checker dialog
+
+/// DOCME
+/// @class DialogVersionCheck
+/// @brief DOCME
+///
+/// DOCME
 class DialogVersionCheck : public wxDialog {
 	friend class VersionCheckThread;
 
 private:
+
+	/// DOCME
 	static bool dialogRunning;
 
+
+	/// DOCME
 	wxTextCtrl *logBox;
+
+	/// DOCME
 	VersionCheckThread *thread;
+
+	/// DOCME
 	bool visible;
 
 	void CheckVersion();
@@ -93,6 +113,9 @@ public:
 ///////
 // IDs
 enum {
+
+	/// DOCME
 	Log_Box = 1000
 };
+
 

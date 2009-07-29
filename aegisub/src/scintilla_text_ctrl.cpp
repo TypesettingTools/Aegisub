@@ -43,8 +43,17 @@
 #include "utils.h"
 
 
-///////////////
-// Constructor
+
+/// @brief Constructor 
+/// @param parent    
+/// @param id        
+/// @param value     
+/// @param pos       
+/// @param size      
+/// @param style     
+/// @param validator 
+/// @param name      
+///
 ScintillaTextCtrl::ScintillaTextCtrl(wxWindow* parent, wxWindowID id, const wxString& value, const wxPoint& pos, const wxSize& size, long style, const wxValidator& validator, const wxString& name)
 : wxStyledTextCtrl(parent, id, pos, size, 0, value)
 {
@@ -52,14 +61,18 @@ ScintillaTextCtrl::ScintillaTextCtrl(wxWindow* parent, wxWindowID id, const wxSt
 }
 
 
-//////////////
-// Destructor
+
+/// @brief Destructor 
+///
 ScintillaTextCtrl::~ScintillaTextCtrl() {
 }
 
 
-///////////////////////////////////
-// Get unicode-compatible position
+
+/// @brief Get unicode-compatible position 
+/// @param pos 
+/// @return 
+///
 int ScintillaTextCtrl::GetUnicodePosition(int pos) {
 	wxString string = GetText().Left(pos);
 	wxCharBuffer buffer = string.mb_str(wxConvUTF8);
@@ -67,8 +80,11 @@ int ScintillaTextCtrl::GetUnicodePosition(int pos) {
 }
 
 
-///////////////////////////////////////
-// Reverse unicode-compatible position
+
+/// @brief Reverse unicode-compatible position 
+/// @param pos 
+/// @return 
+///
 int ScintillaTextCtrl::GetReverseUnicodePosition(int pos) {
 	// Get UTF8
 	wxCharBuffer buffer = GetText().mb_str(wxConvUTF8);
@@ -88,15 +104,22 @@ int ScintillaTextCtrl::GetReverseUnicodePosition(int pos) {
 }
 
 
-//////////////////////////////
-// Start unicode-safe styling
+
+/// @brief Start unicode-safe styling 
+/// @param start 
+/// @param mask  
+///
 void ScintillaTextCtrl::StartUnicodeStyling(int start,int mask) {
 	StartStyling(GetUnicodePosition(start),mask);
 }
 
 
-////////////////////////
-// Unicode-safe styling
+
+/// @brief Unicode-safe styling 
+/// @param start  
+/// @param length 
+/// @param style  
+///
 void ScintillaTextCtrl::SetUnicodeStyling(int start,int length,int style) {
 	// Get the real length
 	wxString string = GetText().Mid(start,length);
@@ -108,8 +131,13 @@ void ScintillaTextCtrl::SetUnicodeStyling(int start,int length,int style) {
 }
 
 
-//////////////////////////////////////
-// Get boundaries of word at position
+
+/// @brief Get boundaries of word at position 
+/// @param pos    
+/// @param _start 
+/// @param _end   
+/// @return 
+///
 void ScintillaTextCtrl::GetBoundsOfWordAtPosition(int pos,int &_start,int &_end) {
 	// Results
 	IntPairVector results;
@@ -127,8 +155,11 @@ void ScintillaTextCtrl::GetBoundsOfWordAtPosition(int pos,int &_start,int &_end)
 }
 
 
-//////////////////////////////////
-// Get word at specified position
+
+/// @brief Get word at specified position 
+/// @param pos 
+/// @return 
+///
 wxString ScintillaTextCtrl::GetWordAtPosition(int pos) {
 	int start,end;
 	GetBoundsOfWordAtPosition(pos,start,end);
@@ -136,9 +167,13 @@ wxString ScintillaTextCtrl::GetWordAtPosition(int pos) {
 }
 
 
-////////////////////////////////
-// Set selection, unicode-aware
+
+/// @brief Set selection, unicode-aware 
+/// @param start 
+/// @param end   
+///
 void ScintillaTextCtrl::SetSelectionU(int start, int end) {
 	SetSelection(GetUnicodePosition(start),GetUnicodePosition(end));
 }
+
 

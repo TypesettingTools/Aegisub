@@ -36,6 +36,8 @@
 
 
 #ifndef TOGGLE_BITMAP_H
+
+/// DOCME
 #define TOGGLE_BITMAP_H
 
 
@@ -45,11 +47,19 @@
 #include <wx/control.h>
 
 
-/////////
-// Class
+
+/// DOCME
+/// @class ToggleBitmap
+/// @brief DOCME
+///
+/// DOCME
 class ToggleBitmap : public wxControl {
 private:
+
+	/// DOCME
 	wxBitmap img;
+
+	/// DOCME
 	bool state;
 
 	void OnMouseEvent(wxMouseEvent &event);
@@ -66,4 +76,5 @@ public:
 
 
 #endif
+
 

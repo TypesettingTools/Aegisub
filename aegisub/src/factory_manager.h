@@ -48,11 +48,21 @@
 /////////////////
 // Factory class
 template <class T>
+
+/// DOCME
+/// @class FactoryManager
+/// @brief DOCME
+///
+/// DOCME
 class FactoryManager {
 protected:
-	// Static map of all factories
+
+	/// DOCME
 	static std::map<wxString,T*> *factories;
 
+
+	/// @brief DOCME
+	///
 	static void ClearFactories() { 
 		if (factories && !factories->empty()) {
 			typename std::map<wxString,T*>::iterator iter;
@@ -64,7 +74,12 @@ protected:
 		delete factories;
 	}
 
-	// Register one factory type (with possible subtypes)
+
+	/// @brief // Register one factory type (with possible subtypes)
+	/// @param factory                  
+	/// @param name                     
+	/// @param subTypes=wxArrayString() 
+	///
 	static void RegisterFactory(T* factory,wxString name, wxArrayString subTypes=wxArrayString()) {
 		// Create factories if it doesn't exist
 		if (factories == NULL) factories = new std::map<wxString,T*>;
@@ -83,7 +98,11 @@ protected:
 		}
 	}
 
-	// Get a factory with name
+
+	/// @brief // Get a factory with name
+	/// @param name 
+	/// @return 
+	///
 	static T *GetFactory(wxString name) {
 		// No factories
 		if (factories == NULL) {
@@ -102,12 +121,17 @@ protected:
 	}
 
 public:
-	// Virtual destructor
+
+	/// @brief // Virtual destructor
+	///
 	virtual ~FactoryManager() {
 		ClearFactories();
 	};
 
-	// Get list of all factories, with favourite as first
+
+	/// @brief // Get list of all factories, with favourite as first
+	/// @param favourite=_T(Ó) 
+	///
 	static wxArrayString GetFactoryList(wxString favourite=_T("")) {
 		if (factories == NULL) factories = new std::map<wxString,T*>;
 		wxArrayString list;
@@ -119,4 +143,5 @@ public:
 		return list;
 	}
 };
+
 

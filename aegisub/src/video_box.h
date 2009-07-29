@@ -56,8 +56,12 @@ class ToggleBitmap;
 class FrameMain;
 
 
-///////////////////
-// Video box class
+
+/// DOCME
+/// @class VideoBox
+/// @brief DOCME
+///
+/// DOCME
 class VideoBox : public wxPanel {
 private:
 	void OnVideoPlay(wxCommandEvent &event);
@@ -71,17 +75,37 @@ private:
 	void OnHelp(wxCommandEvent &event);
 
 public:
+
+	/// DOCME
 	wxToolBar *visualToolBar;
+
+	/// DOCME
 	wxToolBar *visualSubToolBar;
 	//wxSizer *visualSubToolBar;
 
+
+	/// DOCME
 	ToggleBitmap *AutoScroll;
+
+	/// DOCME
 	wxBoxSizer *VideoSizer;
+
+	/// DOCME
 	wxBoxSizer *videoSliderSizer;
+
+	/// DOCME
 	wxWindow *videoPage;
+
+	/// DOCME
 	wxTextCtrl *VideoPosition;
+
+	/// DOCME
 	wxTextCtrl *VideoSubsPos;
+
+	/// DOCME
 	VideoDisplay *videoDisplay;
+
+	/// DOCME
 	VideoSlider *videoSlider;
 
 	VideoBox (wxWindow *parent, bool isDetached);
@@ -93,19 +117,46 @@ public:
 ///////
 // IDs
 enum {
+
+	/// DOCME
 	Video_Play = 500,
+
+	/// DOCME
 	Video_Play_Line,
+
+	/// DOCME
 	Video_Stop,
+
+	/// DOCME
 	Video_Auto_Scroll,
 
+
+	/// DOCME
 	Video_Mode_Standard,
+
+	/// DOCME
 	Video_Mode_Drag,
+
+	/// DOCME
 	Video_Mode_Rotate_Z,
+
+	/// DOCME
 	Video_Mode_Rotate_XY,
+
+	/// DOCME
 	Video_Mode_Scale,
+
+	/// DOCME
 	Video_Mode_Clip,
+
+	/// DOCME
 	Video_Mode_Vector_Clip,
+
+	/// DOCME
 	Video_Mode_Realtime,
+
+	/// DOCME
 	Video_Mode_Help
 };
+
 

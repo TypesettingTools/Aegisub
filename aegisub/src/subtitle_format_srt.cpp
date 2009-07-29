@@ -46,29 +46,39 @@
 #include "ass_file.h"
 
 
-/////////////
-// Can read?
+
+/// @brief Can read? 
+/// @param filename 
+/// @return 
+///
 bool SRTSubtitleFormat::CanReadFile(wxString filename) {
 	return (filename.Right(4).Lower() == _T(".srt"));
 }
 
 
-//////////////
-// Can write?
+
+/// @brief Can write? 
+/// @param filename 
+/// @return 
+///
 bool SRTSubtitleFormat::CanWriteFile(wxString filename) {
 	return (filename.Right(4).Lower() == _T(".srt"));
 }
 
 
-////////////
-// Get name
+
+/// @brief Get name 
+/// @return 
+///
 wxString SRTSubtitleFormat::GetName() {
 	return _T("SubRip");
 }
 
 
-//////////////////////
-// Get read wildcards
+
+/// @brief Get read wildcards 
+/// @return 
+///
 wxArrayString SRTSubtitleFormat::GetReadWildcards() {
 	wxArrayString formats;
 	formats.Add(_T("srt"));
@@ -76,15 +86,20 @@ wxArrayString SRTSubtitleFormat::GetReadWildcards() {
 }
 
 
-///////////////////////
-// Get write wildcards
+
+/// @brief Get write wildcards 
+/// @return 
+///
 wxArrayString SRTSubtitleFormat::GetWriteWildcards() {
 	return GetReadWildcards();
 }
 
 
-/////////////
-// Read file
+
+/// @brief Read file 
+/// @param filename 
+/// @param encoding 
+///
 void SRTSubtitleFormat::ReadFile(wxString filename,wxString encoding) {
 	using namespace std;
 
@@ -175,8 +190,11 @@ void SRTSubtitleFormat::ReadFile(wxString filename,wxString encoding) {
 }
 
 
-//////////////
-// Write file
+
+/// @brief Write file 
+/// @param _filename 
+/// @param encoding  
+///
 void SRTSubtitleFormat::WriteFile(wxString _filename,wxString encoding) {
 	// Open file
 	TextFileWriter file(_filename,encoding);
@@ -214,4 +232,5 @@ void SRTSubtitleFormat::WriteFile(wxString _filename,wxString encoding) {
 	// Clean up
 	ClearCopy();
 }
+
 

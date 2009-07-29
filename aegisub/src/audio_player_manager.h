@@ -54,8 +54,12 @@
 class AudioProvider;
 
 
-///////////////////
-// Factory Manager
+
+/// DOCME
+/// @class AudioPlayerFactoryManager
+/// @brief DOCME
+///
+/// DOCME
 class AudioPlayerFactoryManager : public FactoryManager<AudioPlayerFactory> {
 public:
 	static AudioPlayer *GetAudioPlayer();
@@ -68,6 +72,7 @@ public:
 /////////
 // Event
 DECLARE_EVENT_TYPE(wxEVT_STOP_AUDIO, -1)
+
 
 
 

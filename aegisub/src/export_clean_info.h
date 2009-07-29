@@ -43,10 +43,16 @@
 #include "ass_export_filter.h"
 
 
-//////////////////////////////
-// Transform Framerate filter
+
+/// DOCME
+/// @class AssTransformCleanInfoFilter
+/// @brief DOCME
+///
+/// DOCME
 class AssTransformCleanInfoFilter : public AssExportFilter {
 private:
+
+	/// DOCME
 	static AssTransformCleanInfoFilter instance;
 
 	AssTransformCleanInfoFilter();
@@ -57,4 +63,5 @@ public:
 	wxWindow *GetConfigDialogWindow(wxWindow *parent);
 	void LoadSettings(bool IsDefault);
 };
+
 

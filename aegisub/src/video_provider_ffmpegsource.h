@@ -44,25 +44,53 @@
 #include <vector>
 
 
-///////////////////////
-// FFmpegSource video provider
+
+/// DOCME
+/// @class FFmpegSourceVideoProvider
+/// @brief DOCME
+///
+/// DOCME
 class FFmpegSourceVideoProvider : public VideoProvider, FFmpegSourceProvider {
 private:
+
+	/// DOCME
 	FFVideo *VideoSource;
+
+	/// DOCME
 	const FFVideoProperties *VideoInfo;
 
+
+	/// DOCME
 	int FrameNumber;
+
+	/// DOCME
 	wxArrayInt KeyFramesList;
+
+	/// DOCME
 	bool KeyFramesLoaded;
+
+	/// DOCME
 	std::vector<int> TimecodesVector;
+
+	/// DOCME
 	FrameRate Timecodes;
 
+
+	/// DOCME
 	AegiVideoFrame CurFrame;
 
+
+	/// DOCME
 	char FFMSErrMsg[1024];
+
+	/// DOCME
 	unsigned MsgSize;
+
+	/// DOCME
 	wxString ErrorMsg;
 
+
+	/// DOCME
 	bool COMInited;
 
 	void LoadVideo(wxString filename);
@@ -81,22 +109,55 @@ public:
 	int GetWidth();
 	int GetHeight();
 	double GetFPS();
+
+	/// @brief DOCME
+	/// @return 
+	///
 	bool AreKeyFramesLoaded() { return KeyFramesLoaded; };
+
+	/// @brief DOCME
+	/// @return 
+	///
 	wxArrayInt GetKeyFrames() { return KeyFramesList; };
+
+	/// @brief DOCME
+	/// @return 
+	///
 	bool IsVFR() { return true; };
+
+	/// @brief DOCME
+	/// @return 
+	///
 	FrameRate GetTrueFrameRate() { return Timecodes; };
+
+	/// @brief DOCME
+	/// @return 
+	///
 	wxString GetDecoderName() { return L"FFmpegSource"; }
+
+	/// @brief DOCME
+	/// @return 
+	///
 	int GetDesiredCacheSize() { return 8; }
 };
 
 
-///////////
-// Factory
+
+/// DOCME
+/// @class FFmpegSourceVideoProviderFactory
+/// @brief DOCME
+///
+/// DOCME
 class FFmpegSourceVideoProviderFactory : public VideoProviderFactory {
 public:
+
+	/// @brief DOCME
+	/// @param video 
+	///
 	VideoProvider *CreateProvider(wxString video) { return new FFmpegSourceVideoProvider(video); }
 };
 
 
 #endif /* WITH_FFMPEGSOURCE */
+
 

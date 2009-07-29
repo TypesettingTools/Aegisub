@@ -43,8 +43,12 @@
 #include "subtitle_format.h"
 
 
-//////////////////////////
-// MicroDVD reader/writer
+
+/// DOCME
+/// @class MicroDVDSubtitleFormat
+/// @brief DOCME
+///
+/// DOCME
 class MicroDVDSubtitleFormat : public SubtitleFormat {
 public:
 	wxString GetName();
@@ -57,4 +61,5 @@ public:
 	bool CanWriteFile(wxString filename);
 	void WriteFile(wxString filename,wxString encoding);
 };
+
 

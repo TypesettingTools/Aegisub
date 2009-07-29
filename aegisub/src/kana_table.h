@@ -42,15 +42,34 @@
 #include <wx/string.h>
 
 
-///////////////////////////
-// Hiragana/katakana entry
+
+/// DOCME
+/// @class KanaEntry
+/// @brief DOCME
+///
+/// DOCME
 class KanaEntry {
 public:
+
+	/// DOCME
 	wxString hiragana;
+
+	/// DOCME
 	wxString katakana;
+
+	/// DOCME
 	wxString hepburn;
 
+
+	/// @brief DOCME
+	///
 	KanaEntry() {}
+
+	/// @brief DOCME
+	/// @param hira 
+	/// @param kata 
+	/// @param hep  
+	///
 	KanaEntry(const wxString &hira, const wxString &kata, const wxString &hep) {
 		hiragana = hira;
 		katakana = kata;
@@ -59,15 +78,22 @@ public:
 };
 
 
-///////////////////////////
-// Hiragana/Katakana table
+
+/// DOCME
+/// @class KanaTable
+/// @brief DOCME
+///
+/// DOCME
 class KanaTable {
 private:
 	void Insert(const wchar_t *hira, const wchar_t *kata, const wchar_t *hep);
 
 public:
+
+	/// DOCME
 	std::list<KanaEntry> entries;
 	KanaTable();
 	~KanaTable();
 };
+
 

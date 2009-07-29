@@ -50,30 +50,70 @@
 #include "options.h"
 
 
-///////////////
-// Alsa player
+
+/// DOCME
+/// @class AlsaPlayer
+/// @brief DOCME
+///
+/// DOCME
 class AlsaPlayer : public AudioPlayer {
 private:
+
+	/// DOCME
 	bool open;
+
+	/// DOCME
 	volatile bool playing;
+
+	/// DOCME
 	volatile float volume;
 
+
+	/// DOCME
 	volatile unsigned long start_frame; // first frame of playback
+
+	/// DOCME
 	volatile unsigned long cur_frame; // last written frame + 1
+
+	/// DOCME
 	volatile unsigned long end_frame; // last frame to play
+
+	/// DOCME
 	unsigned long bpf; // bytes per frame
 
+
+	/// DOCME
 	AudioProvider *provider;
+
+	/// DOCME
 	snd_pcm_t *pcm_handle; // device handle
+
+	/// DOCME
 	snd_pcm_stream_t stream; // stream direction
+
+	/// DOCME
 	snd_async_handler_t *pcm_callback;
 
+
+	/// DOCME
 	snd_pcm_format_t sample_format;
+
+	/// DOCME
 	unsigned int rate; // sample rate of audio
+
+	/// DOCME
 	unsigned int real_rate; // actual sample rate played back
+
+	/// DOCME
 	unsigned int period_len; // length of period in microseconds
+
+	/// DOCME
 	unsigned int buflen; // length of buffer in microseconds
+
+	/// DOCME
 	snd_pcm_uframes_t period; // size of period in frames
+
+	/// DOCME
 	snd_pcm_uframes_t bufsize; // size of buffer in frames
 
 	void SetUpHardware();
@@ -98,18 +138,35 @@ public:
 	void SetEndPosition(int64_t pos);
 	void SetCurrentPosition(int64_t pos);
 
+
+	/// @brief DOCME
+	/// @param vol 
+	/// @return 
+	///
 	void SetVolume(double vol) { volume = vol; }
+
+	/// @brief DOCME
+	/// @return 
+	///
 	double GetVolume() { return volume; }
 };
 
 
 
-///////////
-// Factory
+
+/// DOCME
+/// @class AlsaPlayerFactory
+/// @brief DOCME
+///
+/// DOCME
 class AlsaPlayerFactory : public AudioPlayerFactory {
 public:
+
+	/// @brief DOCME
+	///
 	AudioPlayer *CreatePlayer() { return new AlsaPlayer(); }
 };
 
 #endif
+
 

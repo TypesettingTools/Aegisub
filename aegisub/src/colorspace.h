@@ -35,6 +35,8 @@
 ///
 
 #ifndef COLORSPACE_H
+
+/// DOCME
 #define COLORSPACE_H
 
 #include <wx/wxprec.h>
@@ -42,6 +44,10 @@
 #include <wx/string.h>
 
 
+
+/// @brief DOCME
+/// @param val 
+///
 inline unsigned int clip_colorval(int val)
 {
 	if (val < 0) return 0;
@@ -81,4 +87,5 @@ wxColour html_to_color(wxString html);
 
 
 #endif
+
 

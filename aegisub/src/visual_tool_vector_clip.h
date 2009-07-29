@@ -45,24 +45,47 @@
 #include "spline.h"
 
 
-//////////////////////////
-// Vector clip tool class
+
+/// DOCME
+/// @class VisualToolVectorClip
+/// @brief DOCME
+///
+/// DOCME
 class VisualToolVectorClip : public VisualTool {
 private:
+
+	/// DOCME
 	Spline spline;
+
+	/// DOCME
 	wxToolBar *toolBar;
+
+	/// DOCME
 	int mode;
+
+	/// DOCME
+
+	/// DOCME
 	int lastX,lastY;
+
+	/// DOCME
 	bool inverse;
 
 	void SetMode(int mode);
 	
+
+	/// @brief DOCME
+	/// @return 
+	///
 	bool CanHold() { return true; }
 	bool HoldEnabled();
 	void InitializeHold();
 	void UpdateHold();
 	void CommitHold();
 
+
+	/// @brief DOCME
+	///
 	bool CanDrag() { return true; }
 	bool DragEnabled();
 	void PopulateFeatureList();
@@ -79,4 +102,5 @@ public:
 	void Update();
 	void Draw();
 };
+
 

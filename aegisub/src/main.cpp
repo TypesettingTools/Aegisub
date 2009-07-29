@@ -79,21 +79,42 @@ IMPLEMENT_APP(AegisubApp)
 
 
 #ifdef WITH_STARTUPLOG
+
+/// DOCME
 #define StartupLog(a) MessageBox(0, a, _T("Aegisub startup log"), 0)
 #else
 #define StartupLog(a)
 #endif
 
 #ifdef __VISUALC__
+
+/// DOCME
 #define MS_VC_EXCEPTION 0x406d1388
 
+
+/// DOCME
 typedef struct tagTHREADNAME_INFO {
+
+	/// DOCME
 	DWORD dwType; // must be 0x1000
+
+	/// DOCME
 	LPCSTR szName; // pointer to name (in same addr space)
+
+	/// DOCME
 	DWORD dwThreadID; // thread ID (-1 caller thread)
+
+	/// DOCME
 	DWORD dwFlags; // reserved for future use, most be zero
+
+/// DOCME
 } THREADNAME_INFO;
 
+
+/// @brief DOCME
+/// @param dwThreadID   
+/// @param szThreadName 
+///
 void SetThreadName(DWORD dwThreadID, LPCSTR szThreadName) {
 	THREADNAME_INFO info;
 	info.dwType = 0x1000;
@@ -107,10 +128,10 @@ void SetThreadName(DWORD dwThreadID, LPCSTR szThreadName) {
 }
 #endif
 
-///////////////////////////
-// Initialization function
-// -----------------------
-// Gets called when application starts, creates MainFrame
+
+/// @brief Gets called when application starts, creates MainFrame ----------------------- Initialization function 
+/// @return 
+///
 bool AegisubApp::OnInit() {
 #ifdef __VISUALC__
 	SetThreadName((DWORD) -1,"AegiMain");
@@ -241,8 +262,10 @@ bool AegisubApp::OnInit() {
 }
 
 
-////////
-// Exit
+
+/// @brief Exit 
+/// @return 
+///
 int AegisubApp::OnExit() {
 	SubtitleFormat::DestroyFormats();
 	VideoContext::Clear();
@@ -256,13 +279,16 @@ int AegisubApp::OnExit() {
 
 
 #ifndef _DEBUG
-/////////////////////////////////////////////
-// Message displayed on unhandled exceptions
+
+/// DOCME
 const static wxChar unhandled_exception_message[] = _T("Oops, Aegisub has crashed!\n\nI have tried to emergency-save a copy of your file, and a crash log file has been generated.\n\nYou can find the emergency-saved file in:\n%s\n\nIf you submit the crash log to the Aegisub team, we will investigate the problem and attempt to fix it. You can find the crashlog in:\n%s\n\nAegisub will now close.");
+
+/// DOCME
 const static wxChar unhandled_exception_message_nocrashlog[] = _T("Oops, Aegisub has crashed!\n\nI have tried to emergency-save a copy of your file.\n\nYou can find the emergency-saved file in:\n%s\n\nAegisub will now close.");
 
-///////////////////////
-// Unhandled exception
+
+/// @brief Unhandled exception 
+///
 void AegisubApp::OnUnhandledException() {
 	// Attempt to recover file
 	wxFileName origfile(AssFile::top->filename);
@@ -281,8 +307,9 @@ void AegisubApp::OnUnhandledException() {
 }
 
 
-///////////////////
-// Fatal exception
+
+/// @brief Fatal exception 
+///
 void AegisubApp::OnFatalException() {
 	// Attempt to recover file
 	wxFileName origfile(AssFile::top->filename);
@@ -314,6 +341,10 @@ void AegisubApp::OnFatalException() {
 ////////////////
 // Stack walker
 #if wxUSE_STACKWALKER == 1
+
+/// @brief DOCME
+/// @param frame 
+///
 void StackWalker::OnStackFrame(const wxStackFrame &frame) {
 	wxString dst = wxString::Format(_T("%03i - 0x%08X: "),frame.GetLevel(),frame.GetAddress()) + frame.GetName();
 	if (frame.HasSourceLocation()) dst += _T(" on ") + frame.GetFileName() + wxString::Format(_T(":%i"),frame.GetLine());
@@ -323,6 +354,10 @@ void StackWalker::OnStackFrame(const wxStackFrame &frame) {
 	else wxLogMessage(dst);
 }
 
+
+/// @brief DOCME
+/// @param cause 
+///
 StackWalker::StackWalker(wxString cause) {
 	file.open(wxString(StandardPaths::DecodePath(_T("?user/crashlog.txt"))).mb_str(),std::ios::out | std::ios::app);
 	if (file.is_open()) {
@@ -335,6 +370,9 @@ StackWalker::StackWalker(wxString cause) {
 	}
 }
 
+
+/// @brief DOCME
+///
 StackWalker::~StackWalker() {
 	if (file.is_open()) {
 		char dashes[1024];
@@ -351,8 +389,10 @@ StackWalker::~StackWalker() {
 
 
 
-//////////////////
-// Call main loop
+
+/// @brief Call main loop 
+/// @return 
+///
 int AegisubApp::OnRun() {
 	wxString error;
 
@@ -396,8 +436,9 @@ int AegisubApp::OnRun() {
 }
 
 
-/////////////////////////////////
-// Registry program to filetypes
+
+/// @brief Registry program to filetypes 
+///
 void AegisubApp::RegistryAssociate () {
 #if defined(__WINDOWS__)
 	// Command to open with this
@@ -453,8 +494,10 @@ void AegisubApp::RegistryAssociate () {
 }
 
 
-////////////
-// Open URL
+
+/// @brief Open URL 
+/// @param url 
+///
 void AegisubApp::OpenURL(wxString url) {
 	wxLaunchDefaultBrowser(url, wxBROWSER_NEW_WINDOW);
 }
@@ -463,6 +506,10 @@ void AegisubApp::OpenURL(wxString url) {
 ////////////////
 // Apple events
 #ifdef __WXMAC__
+
+/// @brief DOCME
+/// @param filename 
+///
 void AegisubApp::MacOpenFile(const wxString &filename) {
 	if (frame != NULL && !filename.empty()) {
 		frame->LoadSubtitles(filename);
@@ -481,8 +528,10 @@ BEGIN_EVENT_TABLE(AegisubApp,wxApp)
 END_EVENT_TABLE()
 
 
-/////////////////////
-// Mouse wheel moved
+
+/// @brief Mouse wheel moved 
+/// @param event 
+///
 void AegisubApp::OnMouseWheel(wxMouseEvent &event) {
 	wxPoint pt;
 	wxWindow *target = wxFindWindowAtPointer(pt);
@@ -494,12 +543,15 @@ void AegisubApp::OnMouseWheel(wxMouseEvent &event) {
 }
 
 
-///////////////
-// Key pressed
+
+/// @brief Key pressed 
+/// @param event 
+///
 void AegisubApp::OnKey(wxKeyEvent &event) {
 	//frame->audioBox->audioDisplay->AddPendingEvent(event);
 	if (!event.GetSkipped()) {
 		event.Skip();
 	}
 }
+
 

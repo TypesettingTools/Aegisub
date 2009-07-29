@@ -235,15 +235,21 @@ BEGIN_EVENT_TABLE(FrameMain, wxFrame)
 END_EVENT_TABLE()
 
 
-////////////////////////////////
-// Redirect grid events to grid
+
+/// @brief Redirect grid events to grid 
+/// @param event 
+///
 void FrameMain::OnGridEvent (wxCommandEvent &event) {
 	SubsBox->GetEventHandler()->ProcessEvent(event);
 }
 
 
-///////////////////////
-// Rebuild recent list
+
+/// @brief Rebuild recent list 
+/// @param listName 
+/// @param menu     
+/// @param startID  
+///
 void FrameMain::RebuildRecentList(wxString listName,wxMenu *menu,int startID) {
 	// Wipe previous list
 	int count = (int)menu->GetMenuItemCount();
@@ -269,8 +275,10 @@ void FrameMain::RebuildRecentList(wxString listName,wxMenu *menu,int startID) {
 }
 
 
-////////////////////////
-// Menu is being opened
+
+/// @brief Menu is being opened 
+/// @param event 
+///
 void FrameMain::OnMenuOpen (wxMenuEvent &event) {
 	// Get menu
 	MenuBar->Freeze();
@@ -469,8 +477,12 @@ void FrameMain::OnMenuOpen (wxMenuEvent &event) {
 }
 
 
-//////////////////////////////
-// Macro menu creation helper
+
+/// @brief Macro menu creation helper 
+/// @param menu   
+/// @param macros 
+/// @return 
+///
 int FrameMain::AddMacroMenuItems(wxMenu *menu, const std::vector<Automation4::FeatureMacro*> &macros) {
 #ifdef WITH_AUTOMATION
 	if (macros.empty()) {
@@ -492,8 +504,10 @@ int FrameMain::AddMacroMenuItems(wxMenu *menu, const std::vector<Automation4::Fe
 }
 
 
-///////////////////////////////
-// Open recent subs menu entry
+
+/// @brief Open recent subs menu entry 
+/// @param event 
+///
 void FrameMain::OnOpenRecentSubs(wxCommandEvent &event) {
 	int number = event.GetId()-Menu_File_Recent;
 	wxString key = _T("Recent sub #") + wxString::Format(_T("%i"),number+1);
@@ -501,8 +515,10 @@ void FrameMain::OnOpenRecentSubs(wxCommandEvent &event) {
 }
 
 
-////////////////////////////////
-// Open recent video menu entry
+
+/// @brief Open recent video menu entry 
+/// @param event 
+///
 void FrameMain::OnOpenRecentVideo(wxCommandEvent &event) {
 	int number = event.GetId()-Menu_Video_Recent;
 	wxString key = _T("Recent vid #") + wxString::Format(_T("%i"),number+1);
@@ -510,8 +526,10 @@ void FrameMain::OnOpenRecentVideo(wxCommandEvent &event) {
 }
 
 
-////////////////////////////////
-// Open recent timecodes entry
+
+/// @brief Open recent timecodes entry 
+/// @param event 
+///
 void FrameMain::OnOpenRecentTimecodes(wxCommandEvent &event) {
 	int number = event.GetId()-Menu_Timecodes_Recent;
 	wxString key = _T("Recent timecodes #") + wxString::Format(_T("%i"),number+1);
@@ -519,8 +537,10 @@ void FrameMain::OnOpenRecentTimecodes(wxCommandEvent &event) {
 }
 
 
-////////////////////////////////
-// Open recent Keyframes entry
+
+/// @brief Open recent Keyframes entry 
+/// @param event 
+///
 void FrameMain::OnOpenRecentKeyframes(wxCommandEvent &event) {
 	int number = event.GetId()-Menu_Keyframes_Recent;
 	wxString key = _T("Recent Keyframes #") + wxString::Format(_T("%i"),number+1);
@@ -531,8 +551,10 @@ void FrameMain::OnOpenRecentKeyframes(wxCommandEvent &event) {
 }
 
 
-////////////////////////////////
-// Open recent audio menu entry
+
+/// @brief Open recent audio menu entry 
+/// @param event 
+///
 void FrameMain::OnOpenRecentAudio(wxCommandEvent &event) {
 	int number = event.GetId()-Menu_Audio_Recent;
 	wxString key = _T("Recent aud #") + wxString::Format(_T("%i"),number+1);
@@ -540,8 +562,10 @@ void FrameMain::OnOpenRecentAudio(wxCommandEvent &event) {
 }
 
 
-///////////////////
-// Open new Window
+
+/// @brief Open new Window 
+/// @param event 
+///
 void FrameMain::OnNewWindow(wxCommandEvent& WXUNUSED(event)) {
 	RestartAegisub();
 	//wxStandardPaths stand;
@@ -549,52 +573,66 @@ void FrameMain::OnNewWindow(wxCommandEvent& WXUNUSED(event)) {
 }
 
 
-////////
-// Exit
+
+/// @brief Exit 
+/// @param event 
+///
 void FrameMain::OnExit(wxCommandEvent& WXUNUSED(event)) {
 	Close();
 }
 
 
-//////////////////
-// Open about box
+
+/// @brief Open about box 
+/// @param event 
+///
 void FrameMain::OnAbout(wxCommandEvent &event) {
 	AboutScreen About(this);
 	About.ShowModal();
 }
 
 
-//////////////////////
-// Open check updates
+
+/// @brief Open check updates 
+/// @param event 
+///
 void FrameMain::OnCheckUpdates(wxCommandEvent &event) {
 	DialogVersionCheck *check = new DialogVersionCheck(this,false);
 	(void)check;
 }
 
 
-////////////////////
-// Open help topics
+
+/// @brief Open help topics 
+/// @param event 
+///
 void FrameMain::OnContents(wxCommandEvent& WXUNUSED(event)) {
 	OpenHelp(_T(""));
 }
 
 
-////////////////
-// Open website
+
+/// @brief Open website 
+/// @param event 
+///
 void FrameMain::OnWebsite(wxCommandEvent& WXUNUSED(event)) {
 	AegisubApp::OpenURL(_T("http://www.aegisub.net/"));
 }
 
 
-///////////////
-// Open forums
+
+/// @brief Open forums 
+/// @param event 
+///
 void FrameMain::OnForums(wxCommandEvent& WXUNUSED(event)) {
 	AegisubApp::OpenURL(_T("http://forum.aegisub.net/"));
 }
 
 
-///////////////////
-// Open bugtracker
+
+/// @brief Open bugtracker 
+/// @param event 
+///
 void FrameMain::OnBugTracker(wxCommandEvent& WXUNUSED(event)) {
 	if (wxGetMouseState().CmdDown()) {
 		if (wxGetMouseState().ShiftDown()) {
@@ -611,23 +649,29 @@ void FrameMain::OnBugTracker(wxCommandEvent& WXUNUSED(event)) {
 }
 
 
-////////////////////
-// Open IRC channel
+
+/// @brief Open IRC channel 
+/// @param event 
+///
 void FrameMain::OnIRCChannel(wxCommandEvent& WXUNUSED(event)) {
 	AegisubApp::OpenURL(_T("irc://irc.rizon.net/aegisub"));
 }
 
 
-//////////////
-// Play video
+
+/// @brief Play video 
+/// @param event 
+///
 void FrameMain::OnVideoPlay(wxCommandEvent &event) {
 	VideoContext::Get()->Play();
 }
 
 
 
-//////////////
-// Open video
+
+/// @brief Open video 
+/// @param event 
+///
 void FrameMain::OnOpenVideo(wxCommandEvent& WXUNUSED(event)) {
 	wxString path = Options.AsText(_T("Last open video path"));
 	wxString str = wxString(_("Video Formats")) + _T(" (*.avi,*.mkv,*.mp4,*.avs,*.d2v,*.ogm,*.mpeg,*.mpg,*.vob)|*.avi;*.avs;*.d2v;*.mkv;*.ogm;*.mp4;*.mpeg;*.mpg;*.vob|")
@@ -641,15 +685,19 @@ void FrameMain::OnOpenVideo(wxCommandEvent& WXUNUSED(event)) {
 }
 
 
-///////////////
-// Close video
+
+/// @brief Close video 
+/// @param event 
+///
 void FrameMain::OnCloseVideo(wxCommandEvent& WXUNUSED(event)) {
 	LoadVideo(_T(""));
 }
 
 
-//////////////
-// Open Audio
+
+/// @brief Open Audio 
+/// @param event 
+///
 void FrameMain::OnOpenAudio (wxCommandEvent& WXUNUSED(event)) {
 	wxString path = Options.AsText(_T("Last open audio path"));
 	wxString str = wxString(_("Audio Formats")) + _T(" (*.wav,*.mp3,*.ogg,*.flac,*.mp4,*.ac3,*.aac,*.mka,*.m4a,*.w64)|*.wav;*.mp3;*.ogg;*.flac;*.mp4;*.ac3;*.aac;*.mka;*.m4a;*.w64|")
@@ -664,27 +712,45 @@ void FrameMain::OnOpenAudio (wxCommandEvent& WXUNUSED(event)) {
 }
 
 
+
+/// @brief DOCME
+/// @param event 
+///
 void FrameMain::OnOpenAudioFromVideo (wxCommandEvent& WXUNUSED(event)) {
 	LoadAudio(_T(""),true);
 }
 
 
+
+/// @brief DOCME
+/// @param event 
+///
 void FrameMain::OnCloseAudio (wxCommandEvent& WXUNUSED(event)) {
 	LoadAudio(_T(""));
 }
 
 #ifdef _DEBUG
+
+/// @brief DOCME
+/// @param event 
+///
 void FrameMain::OnOpenDummyAudio (wxCommandEvent& WXUNUSED(event)) {
 	LoadAudio(_T("?dummy"));
 }
+
+/// @brief DOCME
+/// @param event 
+///
 void FrameMain::OnOpenDummyNoiseAudio (wxCommandEvent& WXUNUSED(event)) {
 	LoadAudio(_T("?noise"));
 }
 #endif
 
 
-//////////////////
-// Open subtitles
+
+/// @brief Open subtitles 
+/// @param event 
+///
 void FrameMain::OnOpenSubtitles(wxCommandEvent& WXUNUSED(event)) {
 	wxString path = Options.AsText(_T("Last open subtitles path"));	
 	wxString filename = wxFileSelector(_("Open subtitles file"),path,_T(""),_T(""),AssFile::GetWildcardList(0),wxFD_OPEN | wxFD_FILE_MUST_EXIST);
@@ -697,8 +763,10 @@ void FrameMain::OnOpenSubtitles(wxCommandEvent& WXUNUSED(event)) {
 }
 
 
-////////////////////////////////////////
-// Open subtitles with specific charset
+
+/// @brief Open subtitles with specific charset 
+/// @param event 
+///
 void FrameMain::OnOpenSubtitlesCharset(wxCommandEvent& WXUNUSED(event)) {
 	// Initialize charsets
 	wxArrayString choices = AegisubCSConv::GetEncodingsList();
@@ -717,36 +785,46 @@ void FrameMain::OnOpenSubtitlesCharset(wxCommandEvent& WXUNUSED(event)) {
 }
 
 
-/////////////////////
-// Save subtitles as
+
+/// @brief Save subtitles as 
+/// @param event 
+///
 void FrameMain::OnSaveSubtitlesAs(wxCommandEvent& WXUNUSED(event)) {
 	SaveSubtitles(true);
 }
 
 
-//////////////////
-// Save subtitles
+
+/// @brief Save subtitles 
+/// @param event 
+///
 void FrameMain::OnSaveSubtitles(wxCommandEvent& WXUNUSED(event)) {
 	SaveSubtitles(false);
 }
 
 
-////////////////////////////////////////
-// Save subtitles with specific charset
+
+/// @brief Save subtitles with specific charset 
+/// @param event 
+///
 void FrameMain::OnSaveSubtitlesCharset(wxCommandEvent& WXUNUSED(event)) {
 	SaveSubtitles(true,true);
 }
 
 
-///////////////////
-// Close subtitles
+
+/// @brief Close subtitles 
+/// @param event 
+///
 void FrameMain::OnNewSubtitles(wxCommandEvent& WXUNUSED(event)) {
 	LoadSubtitles(_T(""));
 }
 
 
-////////////////////
-// Export subtitles
+
+/// @brief Export subtitles 
+/// @param event 
+///
 void FrameMain::OnExportSubtitles(wxCommandEvent & WXUNUSED(event)) {
 #ifdef WITH_AUTOMATION
 	int autoreload = Options.AsInt(_T("Automation Autoreload Mode"));
@@ -776,8 +854,10 @@ void FrameMain::OnExportSubtitles(wxCommandEvent & WXUNUSED(event)) {
 }
 
 
-/////////////////
-// Open VFR tags
+
+/// @brief Open VFR tags 
+/// @param event 
+///
 void FrameMain::OnOpenVFR(wxCommandEvent &event) {
 	wxString path = Options.AsText(_T("Last open timecodes path"));
 	wxString str = wxString(_("All Supported Types")) + _T("(*.txt)|*.txt|")
@@ -791,8 +871,10 @@ void FrameMain::OnOpenVFR(wxCommandEvent &event) {
 }
 
 
-/////////////////
-// Save VFR tags
+
+/// @brief Save VFR tags 
+/// @param event 
+///
 void FrameMain::OnSaveVFR(wxCommandEvent &event) {
 	wxString path = Options.AsText(_T("Last open timecodes path"));
 	wxString str = wxString(_("All Supported Types")) + _T("(*.txt)|*.txt|")
@@ -807,15 +889,20 @@ void FrameMain::OnSaveVFR(wxCommandEvent &event) {
 
 
 
-//////////////////
-// Close VFR tags
+
+/// @brief Close VFR tags 
+/// @param event 
+///
 void FrameMain::OnCloseVFR(wxCommandEvent &event) {
 	LoadVFR(_T(""));
 }
 
 
-//////////////////
-// Open keyframes
+
+/// @brief Open keyframes 
+/// @param event 
+/// @return 
+///
 void FrameMain::OnOpenKeyframes (wxCommandEvent &event) {
 	// Pick file
 	wxString path = Options.AsText(_T("Last open keyframes path"));
@@ -832,8 +919,10 @@ void FrameMain::OnOpenKeyframes (wxCommandEvent &event) {
 }
 
 
-///////////////////
-// Close keyframes
+
+/// @brief Close keyframes 
+/// @param event 
+///
 void FrameMain::OnCloseKeyframes (wxCommandEvent &event) {
 	VideoContext::Get()->CloseOverKeyFrames();
 	videoBox->videoSlider->Refresh();
@@ -842,8 +931,11 @@ void FrameMain::OnCloseKeyframes (wxCommandEvent &event) {
 }
 
 
-//////////////////
-// Save keyframes
+
+/// @brief Save keyframes 
+/// @param event 
+/// @return 
+///
 void FrameMain::OnSaveKeyframes (wxCommandEvent &event) {
 	// Pick file
 	wxString path = Options.AsText(_T("Last open keyframes path"));
@@ -857,32 +949,50 @@ void FrameMain::OnSaveKeyframes (wxCommandEvent &event) {
 }
 
 
-///////////////
-// Zoom levels
+
+/// @brief Zoom levels 
+/// @param event 
+///
 void FrameMain::OnSetZoom50(wxCommandEvent& WXUNUSED(event)) {
 	VideoContext::Get()->Stop();
 	videoBox->videoDisplay->zoomBox->SetSelection(3);
 	videoBox->videoDisplay->SetZoomPos(3);
 }
 
+
+/// @brief DOCME
+/// @param event 
+///
 void FrameMain::OnSetZoom100(wxCommandEvent& WXUNUSED(event)) {
 	VideoContext::Get()->Stop();
 	videoBox->videoDisplay->zoomBox->SetSelection(7);
 	videoBox->videoDisplay->SetZoomPos(7);
 }
 
+
+/// @brief DOCME
+/// @param event 
+///
 void FrameMain::OnSetZoom200(wxCommandEvent& WXUNUSED(event)) {
 	VideoContext::Get()->Stop();
 	videoBox->videoDisplay->zoomBox->SetSelection(15);
 	videoBox->videoDisplay->SetZoomPos(15);
 }
 
+
+/// @brief DOCME
+/// @param event 
+///
 void FrameMain::OnZoomIn (wxCommandEvent &event) {
 	VideoContext::Get()->Stop();
 	videoBox->videoDisplay->zoomBox->SetSelection(videoBox->videoDisplay->zoomBox->GetSelection()+1);
 	videoBox->videoDisplay->SetZoomPos(videoBox->videoDisplay->zoomBox->GetSelection());
 }
 
+
+/// @brief DOCME
+/// @param event 
+///
 void FrameMain::OnZoomOut (wxCommandEvent &event) {
 	VideoContext::Get()->Stop();
 	int selTo = videoBox->videoDisplay->zoomBox->GetSelection()-1;
@@ -891,20 +1001,28 @@ void FrameMain::OnZoomOut (wxCommandEvent &event) {
 	videoBox->videoDisplay->SetZoomPos(videoBox->videoDisplay->zoomBox->GetSelection());
 }
 
+
+/// @brief DOCME
+/// @param event 
+///
 void FrameMain::OnSetZoom(wxCommandEvent &event) {
 	videoBox->videoDisplay->SetZoomPos(videoBox->videoDisplay->zoomBox->GetSelection());
 }
 
 
-////////////////
-// Detach video
+
+/// @brief Detach video 
+/// @param event 
+///
 void FrameMain::OnDetachVideo(wxCommandEvent &event) {
 	DetachVideo();
 }
 
 
-///////////////////
-// Use dummy video
+
+/// @brief Use dummy video 
+/// @param event 
+///
 void FrameMain::OnDummyVideo (wxCommandEvent &event) {
 	wxString fn;
 	if (DialogDummyVideo::CreateDummyVideo(this, fn)) {
@@ -913,8 +1031,10 @@ void FrameMain::OnDummyVideo (wxCommandEvent &event) {
 }
 
 
-///////////////////
-// Overscan toggle
+
+/// @brief Overscan toggle 
+/// @param event 
+///
 void FrameMain::OnOverscan (wxCommandEvent &event) {
 	Options.SetBool(_T("Show overscan mask"),event.IsChecked());
 	Options.Save();
@@ -923,8 +1043,10 @@ void FrameMain::OnOverscan (wxCommandEvent &event) {
 }
 
 
-//////////////////////
-// Show video details
+
+/// @brief Show video details 
+/// @param event 
+///
 void FrameMain::OnOpenVideoDetails (wxCommandEvent &event) {
 	VideoContext::Get()->Stop();
 	DialogVideoDetails videodetails(this);
@@ -932,8 +1054,10 @@ void FrameMain::OnOpenVideoDetails (wxCommandEvent &event) {
 }
 
 
-///////////////////////
-// Open jump to dialog
+
+/// @brief Open jump to dialog 
+/// @param event 
+///
 void FrameMain::OnJumpTo(wxCommandEvent& WXUNUSED(event)) {
 	VideoContext::Get()->Stop();
 	if (VideoContext::Get()->IsLoaded()) {
@@ -944,8 +1068,10 @@ void FrameMain::OnJumpTo(wxCommandEvent& WXUNUSED(event)) {
 }
 
 
-/////////////////////
-// Open shift dialog
+
+/// @brief Open shift dialog 
+/// @param event 
+///
 void FrameMain::OnShift(wxCommandEvent& WXUNUSED(event)) {
 	VideoContext::Get()->Stop();
 	DialogShiftTimes Shift(this,SubsBox);
@@ -953,8 +1079,10 @@ void FrameMain::OnShift(wxCommandEvent& WXUNUSED(event)) {
 }
 
 
-///////////////////
-// Open properties
+
+/// @brief Open properties 
+/// @param event 
+///
 void FrameMain::OnOpenProperties (wxCommandEvent &event) {
 	VideoContext::Get()->Stop();
 	DialogProperties Properties(this);
@@ -965,8 +1093,10 @@ void FrameMain::OnOpenProperties (wxCommandEvent &event) {
 }
 
 
-///////////////////////
-// Open styles manager
+
+/// @brief Open styles manager 
+/// @param event 
+///
 void FrameMain::OnOpenStylesManager(wxCommandEvent& WXUNUSED(event)) {
 	VideoContext::Get()->Stop();
 	DialogStyleManager StyleManager(this,SubsBox);
@@ -976,8 +1106,10 @@ void FrameMain::OnOpenStylesManager(wxCommandEvent& WXUNUSED(event)) {
 }
 
 
-////////////////////
-// Open attachments
+
+/// @brief Open attachments 
+/// @param event 
+///
 void FrameMain::OnOpenAttachments(wxCommandEvent& WXUNUSED(event)) {
 	VideoContext::Get()->Stop();
 	DialogAttachments attachments(this);
@@ -985,8 +1117,10 @@ void FrameMain::OnOpenAttachments(wxCommandEvent& WXUNUSED(event)) {
 }
 
 
-//////////////////////////////
-// Open translation assistant
+
+/// @brief Open translation assistant 
+/// @param event 
+///
 void FrameMain::OnOpenTranslation(wxCommandEvent& WXUNUSED(event)) {
 	VideoContext::Get()->Stop();
 	int start = SubsBox->GetFirstSelRow();
@@ -996,8 +1130,10 @@ void FrameMain::OnOpenTranslation(wxCommandEvent& WXUNUSED(event)) {
 }
 
 
-//////////////////////
-// Open Spell Checker
+
+/// @brief Open Spell Checker 
+/// @param event 
+///
 void FrameMain::OnOpenSpellCheck (wxCommandEvent &event) {
 	VideoContext::Get()->Stop();
 	new DialogSpellChecker(this);
@@ -1006,8 +1142,10 @@ void FrameMain::OnOpenSpellCheck (wxCommandEvent &event) {
 }
 
 
-////////////////////////
-// Open Fonts Collector
+
+/// @brief Open Fonts Collector 
+/// @param event 
+///
 void FrameMain::OnOpenFontsCollector (wxCommandEvent &event) {
 	VideoContext::Get()->Stop();
 	DialogFontsCollector Collector(this);
@@ -1015,8 +1153,10 @@ void FrameMain::OnOpenFontsCollector (wxCommandEvent &event) {
 }
 
 
-/////////////////////////////
-// Open Resolution Resampler
+
+/// @brief Open Resolution Resampler 
+/// @param event 
+///
 void FrameMain::OnOpenResample (wxCommandEvent &event) {
 	VideoContext::Get()->Stop();
 	DialogResample diag(this, SubsBox);
@@ -1024,22 +1164,28 @@ void FrameMain::OnOpenResample (wxCommandEvent &event) {
 }
 
 
-/////////////////////////////////////
-// Open Timing post-processor dialog
+
+/// @brief Open Timing post-processor dialog 
+/// @param event 
+///
 void FrameMain::OnOpenTimingProcessor (wxCommandEvent &event) {
 	DialogTimingProcessor timing(this,SubsBox);
 	timing.ShowModal();
 }
-/////////////////////////////////////
-// Open Kanji Timer dialog
+
+/// @brief Open Kanji Timer dialog 
+/// @param event 
+///
 void FrameMain::OnOpenKanjiTimer (wxCommandEvent &event) {
 	DialogKanjiTimer kanjitimer(this,SubsBox);
 	kanjitimer.ShowModal();
 }
 
 
-///////////////////////
-// Open Options dialog
+
+/// @brief Open Options dialog 
+/// @param event 
+///
 void FrameMain::OnOpenOptions (wxCommandEvent &event) {
 	try {
 		DialogOptions options(this);
@@ -1051,22 +1197,28 @@ void FrameMain::OnOpenOptions (wxCommandEvent &event) {
 }
 
 
-//////////////////
-// Open log window
+
+/// @brief Open log window 
+/// @param event 
+///
 void FrameMain::OnOpenLog (wxCommandEvent &event) {
 	LogWindow->Show(true);
 }
 
 
-//////////////////
-// Launch ASSDraw
+
+/// @brief Launch ASSDraw 
+/// @param event 
+///
 void FrameMain::OnOpenASSDraw (wxCommandEvent &event) {
 	wxExecute(_T("\"") + StandardPaths::DecodePath(_T("?data/ASSDraw3.exe")) + _T("\""));
 }
 
 
-///////////////////
-// Open Automation
+
+/// @brief Open Automation 
+/// @param event 
+///
 void FrameMain::OnOpenAutomation (wxCommandEvent &event) {
 #ifdef WITH_AUTOMATION
 #ifdef __APPLE__
@@ -1104,8 +1256,10 @@ void FrameMain::OnOpenAutomation (wxCommandEvent &event) {
 }
 
 
-///////////////////////////////////////////////////////////
-// General handler for all Automation-generated menu items
+
+/// @brief General handler for all Automation-generated menu items 
+/// @param event 
+///
 void FrameMain::OnAutomationMacro (wxCommandEvent &event) {
 #ifdef WITH_AUTOMATION
 	SubsBox->BeginBatch();
@@ -1128,8 +1282,10 @@ void FrameMain::OnAutomationMacro (wxCommandEvent &event) {
 }
 
 
-//////////////////////
-// Snap subs to video
+
+/// @brief Snap subs to video 
+/// @param event 
+///
 void FrameMain::OnSnapSubsStartToVid (wxCommandEvent &event) {
 	if (VideoContext::Get()->IsLoaded()) {
 		wxArrayInt sel = SubsBox->GetSelection();
@@ -1140,6 +1296,10 @@ void FrameMain::OnSnapSubsStartToVid (wxCommandEvent &event) {
 	}
 }
 
+
+/// @brief DOCME
+/// @param event 
+///
 void FrameMain::OnSnapSubsEndToVid (wxCommandEvent &event) {
 	if (VideoContext::Get()->IsLoaded()) {
 		wxArrayInt sel = SubsBox->GetSelection();
@@ -1151,8 +1311,10 @@ void FrameMain::OnSnapSubsEndToVid (wxCommandEvent &event) {
 }
 
 
-//////////////////////
-// Jump video to subs
+
+/// @brief Jump video to subs 
+/// @param event 
+///
 void FrameMain::OnSnapVidToSubsStart (wxCommandEvent &event) {
 	if (VideoContext::Get()->IsLoaded()) {
 		wxArrayInt sel = SubsBox->GetSelection();
@@ -1163,6 +1325,10 @@ void FrameMain::OnSnapVidToSubsStart (wxCommandEvent &event) {
 	}
 }
 
+
+/// @brief DOCME
+/// @param event 
+///
 void FrameMain::OnSnapVidToSubsEnd (wxCommandEvent &event) {
 	if (VideoContext::Get()->IsLoaded()) {
 		wxArrayInt sel = SubsBox->GetSelection();
@@ -1174,8 +1340,10 @@ void FrameMain::OnSnapVidToSubsEnd (wxCommandEvent &event) {
 }
 
 
-/////////////////
-// Snap to scene
+
+/// @brief Snap to scene 
+/// @param event 
+///
 void FrameMain::OnSnapToScene (wxCommandEvent &event) {
 	if (VideoContext::Get()->IsLoaded()) {
 		// Get frames
@@ -1235,8 +1403,11 @@ void FrameMain::OnSnapToScene (wxCommandEvent &event) {
 }
 
 
-//////////////////
-// Shift to frame
+
+/// @brief Shift to frame 
+/// @param event 
+/// @return 
+///
 void FrameMain::OnShiftToFrame (wxCommandEvent &event) {
 	if (VideoContext::Get()->IsLoaded()) {
 		// Get selection
@@ -1267,8 +1438,11 @@ void FrameMain::OnShiftToFrame (wxCommandEvent &event) {
 }
 
 
-////////
-// Undo
+
+/// @brief Undo 
+/// @param event 
+/// @return 
+///
 void FrameMain::OnUndo(wxCommandEvent& WXUNUSED(event)) {
 	// Block if it's on a editbox
 	//wxWindow *focused = wxWindow::FindFocus();
@@ -1281,8 +1455,10 @@ void FrameMain::OnUndo(wxCommandEvent& WXUNUSED(event)) {
 }
 
 
-////////
-// Redo
+
+/// @brief Redo 
+/// @param event 
+///
 void FrameMain::OnRedo(wxCommandEvent& WXUNUSED(event)) {
 	VideoContext::Get()->Stop();
 	AssFile::StackRedo();
@@ -1291,32 +1467,40 @@ void FrameMain::OnRedo(wxCommandEvent& WXUNUSED(event)) {
 }
 
 
-////////
-// Find
+
+/// @brief Find 
+/// @param event 
+///
 void FrameMain::OnFind(wxCommandEvent &event) {
 	VideoContext::Get()->Stop();
 	Search.OpenDialog(false);
 }
 
 
-/////////////
-// Find next
+
+/// @brief Find next 
+/// @param event 
+///
 void FrameMain::OnFindNext(wxCommandEvent &event) {
 	VideoContext::Get()->Stop();
 	Search.FindNext();
 }
 
 
-//////////////////
-// Find & replace
+
+/// @brief Find & replace 
+/// @param event 
+///
 void FrameMain::OnReplace(wxCommandEvent &event) {
 	VideoContext::Get()->Stop();
 	Search.OpenDialog(true);
 }
 
 
-//////////////////////////////////
-// Change aspect ratio to default
+
+/// @brief Change aspect ratio to default 
+/// @param event 
+///
 void FrameMain::OnSetARDefault (wxCommandEvent &event) {
 	VideoContext::Get()->Stop();
 	VideoContext::Get()->SetAspectRatio(0);
@@ -1324,8 +1508,10 @@ void FrameMain::OnSetARDefault (wxCommandEvent &event) {
 }
 
 
-/////////////////////////////////////
-// Change aspect ratio to fullscreen
+
+/// @brief Change aspect ratio to fullscreen 
+/// @param event 
+///
 void FrameMain::OnSetARFull (wxCommandEvent &event) {
 	VideoContext::Get()->Stop();
 	VideoContext::Get()->SetAspectRatio(1);
@@ -1333,8 +1519,10 @@ void FrameMain::OnSetARFull (wxCommandEvent &event) {
 }
 
 
-/////////////////////////////////////
-// Change aspect ratio to widescreen
+
+/// @brief Change aspect ratio to widescreen 
+/// @param event 
+///
 void FrameMain::OnSetARWide (wxCommandEvent &event) {
 	VideoContext::Get()->Stop();
 	VideoContext::Get()->SetAspectRatio(2);
@@ -1342,8 +1530,10 @@ void FrameMain::OnSetARWide (wxCommandEvent &event) {
 }
 
 
-///////////////////////////////
-// Change aspect ratio to 2:35
+
+/// @brief Change aspect ratio to 2:35 
+/// @param event 
+///
 void FrameMain::OnSetAR235 (wxCommandEvent &event) {
 	VideoContext::Get()->Stop();
 	VideoContext::Get()->SetAspectRatio(3);
@@ -1351,8 +1541,11 @@ void FrameMain::OnSetAR235 (wxCommandEvent &event) {
 }
 
 
-/////////////////////////////////////////
-// Change aspect ratio to a custom value
+
+/// @brief Change aspect ratio to a custom value 
+/// @param event 
+/// @return 
+///
 void FrameMain::OnSetARCustom (wxCommandEvent &event) {
 	// Get text
 	VideoContext::Get()->Stop();
@@ -1402,8 +1595,10 @@ void FrameMain::OnSetARCustom (wxCommandEvent &event) {
 }
 
 
-////////////////////////////////////
-// Window is attempted to be closed
+
+/// @brief Window is attempted to be closed 
+/// @param event 
+///
 void FrameMain::OnCloseWindow (wxCloseEvent &event) {
 	// Stop audio and video
 	VideoContext::Get()->Stop();
@@ -1426,8 +1621,11 @@ void FrameMain::OnCloseWindow (wxCloseEvent &event) {
 }
 
 
-//////////////////
-// Cut/copy/paste
+
+/// @brief Cut/copy/paste 
+/// @param event 
+/// @return 
+///
 void FrameMain::OnCut (wxCommandEvent &event) {
 	if (FindFocus() == EditBox->TextEdit) {
 		EditBox->TextEdit->Cut();
@@ -1436,6 +1634,11 @@ void FrameMain::OnCut (wxCommandEvent &event) {
 	SubsBox->CutLines(SubsBox->GetSelection());
 }
 
+
+/// @brief DOCME
+/// @param event 
+/// @return 
+///
 void FrameMain::OnCopy (wxCommandEvent &event) {
 	if (FindFocus() == EditBox->TextEdit) {
 		EditBox->TextEdit->Copy();
@@ -1444,6 +1647,11 @@ void FrameMain::OnCopy (wxCommandEvent &event) {
 	SubsBox->CopyLines(SubsBox->GetSelection());
 }
 
+
+/// @brief DOCME
+/// @param event 
+/// @return 
+///
 void FrameMain::OnPaste (wxCommandEvent &event) {
 	if (FindFocus() == EditBox->TextEdit) {
 		EditBox->TextEdit->Paste();
@@ -1453,23 +1661,29 @@ void FrameMain::OnPaste (wxCommandEvent &event) {
 }
 
 
-//////////////
-// Paste over
+
+/// @brief Paste over 
+/// @param event 
+///
 void FrameMain::OnPasteOver (wxCommandEvent &event) {
 	SubsBox->PasteLines(SubsBox->GetFirstSelRow(),true);
 }
 
 
-////////////////////////
-// Select visible lines
+
+/// @brief Select visible lines 
+/// @param event 
+///
 void FrameMain::OnSelectVisible (wxCommandEvent &event) {
 	VideoContext::Get()->Stop();
 	SubsBox->SelectVisible();
 }
 
 
-//////////////////////
-// Open select dialog
+
+/// @brief Open select dialog 
+/// @param event 
+///
 void FrameMain::OnSelect (wxCommandEvent &event) {
 	VideoContext::Get()->Stop();
 	DialogSelection select(this, SubsBox);
@@ -1477,8 +1691,10 @@ void FrameMain::OnSelect (wxCommandEvent &event) {
 }
 
 
-//////////////////
-// Sort subtitles
+
+/// @brief Sort subtitles 
+/// @param event 
+///
 void FrameMain::OnSort (wxCommandEvent &event) {
 	// Ensure that StartMS is set properly
 	AssEntry *curEntry;
@@ -1499,8 +1715,10 @@ void FrameMain::OnSort (wxCommandEvent &event) {
 }
 
 
-//////////////////////////
-// Open styling assistant
+
+/// @brief Open styling assistant 
+/// @param event 
+///
 void FrameMain::OnOpenStylingAssistant (wxCommandEvent &event) {
 	VideoContext::Get()->Stop();
 	if (!stylingAssistant) stylingAssistant = new DialogStyling(this,SubsBox);
@@ -1508,8 +1726,10 @@ void FrameMain::OnOpenStylingAssistant (wxCommandEvent &event) {
 }
 
 
-///////////////
-// Auto backup
+
+/// @brief Auto backup 
+/// @param event 
+///
 void FrameMain::OnAutoSave(wxTimerEvent &event) {
 	// Auto Save
 	try {
@@ -1547,37 +1767,47 @@ void FrameMain::OnAutoSave(wxTimerEvent &event) {
 }
 
 
-///////////////////
-// Clear statusbar
+
+/// @brief Clear statusbar 
+/// @param event 
+///
 void FrameMain::OnStatusClear(wxTimerEvent &event) {
 	SetStatusText(_T(""),1);
 }
 
 
-////////////
-// Key down
+
+/// @brief Key down 
+/// @param event 
+///
 void FrameMain::OnKeyDown(wxKeyEvent &event) {
 	audioBox->audioDisplay->AddPendingEvent(event);
 	event.Skip();
 }
 
 
-/////////////////////
-// Next frame hotkey
+
+/// @brief Next frame hotkey 
+/// @param event 
+///
 void FrameMain::OnNextFrame(wxCommandEvent &event) {
 	videoBox->videoSlider->NextFrame();
 }
 
 
-/////////////////////////
-// Previous frame hotkey
+
+/// @brief Previous frame hotkey 
+/// @param event 
+///
 void FrameMain::OnPrevFrame(wxCommandEvent &event) {
 	videoBox->videoSlider->PrevFrame();
 }
 
 
-///////////////////////////////////////////////////
-// Toggle focus between seek bar and whatever else
+
+/// @brief Toggle focus between seek bar and whatever else 
+/// @param event 
+///
 void FrameMain::OnFocusSeek(wxCommandEvent &event) {
 	wxWindow *curFocus = wxWindow::FindFocus();
 	if (curFocus == videoBox->videoSlider) {
@@ -1590,8 +1820,11 @@ void FrameMain::OnFocusSeek(wxCommandEvent &event) {
 }
 
 
-////////////////////////
-// Previous line hotkey
+
+/// @brief Previous line hotkey 
+/// @param event 
+/// @return 
+///
 void FrameMain::OnPrevLine(wxCommandEvent &event) {
 	int next = EditBox->linen-1;
 	if (next < 0) return;
@@ -1601,8 +1834,11 @@ void FrameMain::OnPrevLine(wxCommandEvent &event) {
 }
 
 
-////////////////////
-// Next line hotkey
+
+/// @brief Next line hotkey 
+/// @param event 
+/// @return 
+///
 void FrameMain::OnNextLine(wxCommandEvent &event) {
 	int nrows = SubsBox->GetRows();
 	int next = EditBox->linen+1;
@@ -1613,8 +1849,10 @@ void FrameMain::OnNextLine(wxCommandEvent &event) {
 }
 
 
-//////////////////////////////////
-// Cycle through tag hiding modes
+
+/// @brief Cycle through tag hiding modes 
+/// @param event 
+///
 void FrameMain::OnToggleTags(wxCommandEvent &event) {
 	// Read value
 	int tagMode = Options.AsInt(_T("Grid hide overrides"));
@@ -1641,8 +1879,11 @@ void FrameMain::OnToggleTags(wxCommandEvent &event) {
 }
 
 
-/////////////////////////////
-// Commit Edit Box's changes
+
+/// @brief Commit Edit Box's changes 
+/// @param event 
+/// @return 
+///
 void FrameMain::OnEditBoxCommit(wxCommandEvent &event) {
 	// Find focus
 	wxWindow *focus = FindFocus();
@@ -1666,8 +1907,10 @@ void FrameMain::OnEditBoxCommit(wxCommandEvent &event) {
 }
 
 
-///////////////////////////////
-// Choose a different language
+
+/// @brief Choose a different language 
+/// @param event 
+///
 void FrameMain::OnChooseLanguage (wxCommandEvent &event) {
 	// Get language
 	AegisubApp *app = (AegisubApp*) wxTheApp;
@@ -1697,8 +1940,10 @@ void FrameMain::OnChooseLanguage (wxCommandEvent &event) {
 }
 
 
-/////////////////////
-// Pick associations
+
+/// @brief Pick associations 
+/// @param event 
+///
 void FrameMain::OnPickAssociations(wxCommandEvent &event) {
 #ifdef WIN32
 	DialogAssociations diag(NULL);
@@ -1707,44 +1952,61 @@ void FrameMain::OnPickAssociations(wxCommandEvent &event) {
 }
 
 
-/////////////////
-// View standard
+
+/// @brief View standard 
+/// @param event 
+/// @return 
+///
 void FrameMain::OnViewStandard (wxCommandEvent &event) {
 	if (!audioBox->audioDisplay->loaded || !VideoContext::Get()->IsLoaded()) return;
 	SetDisplayMode(1,1);
 }
 
 
-//////////////
-// View video
+
+/// @brief View video 
+/// @param event 
+/// @return 
+///
 void FrameMain::OnViewVideo (wxCommandEvent &event) {
 	if (!VideoContext::Get()->IsLoaded()) return;
 	SetDisplayMode(1,0);
 }
 
 
-//////////////
-// View audio
+
+/// @brief View audio 
+/// @param event 
+/// @return 
+///
 void FrameMain::OnViewAudio (wxCommandEvent &event) {
 	if (!audioBox->audioDisplay->loaded) return;
 	SetDisplayMode(0,1);
 }
 
 
-/////////////
-// View subs
+
+/// @brief View subs 
+/// @param event 
+///
 void FrameMain::OnViewSubs (wxCommandEvent &event) {
 	SetDisplayMode(0,0);
 }
 
 
-////////////////////
-// Medusa shortcuts
+
+/// @brief Medusa shortcuts 
+/// @param event 
+///
 void FrameMain::OnMedusaPlay(wxCommandEvent &event) {
 	int start=0,end=0;
 	audioBox->audioDisplay->GetTimesSelection(start,end);
 	audioBox->audioDisplay->Play(start,end);
 }
+
+/// @brief DOCME
+/// @param event 
+///
 void FrameMain::OnMedusaStop(wxCommandEvent &event) {
 	// Playing, stop
 	if (audioBox->audioDisplay->player->IsPlaying()) {
@@ -1759,47 +2021,84 @@ void FrameMain::OnMedusaStop(wxCommandEvent &event) {
 		audioBox->audioDisplay->Play(end-500,end);
 	}
 }
+
+/// @brief DOCME
+/// @param event 
+///
 void FrameMain::OnMedusaShiftStartForward(wxCommandEvent &event) {
 	audioBox->audioDisplay->curStartMS += 10;
 	audioBox->audioDisplay->Update();
 	audioBox->audioDisplay->wxWindow::Update();
 	audioBox->audioDisplay->UpdateTimeEditCtrls();
 }
+
+/// @brief DOCME
+/// @param event 
+///
 void FrameMain::OnMedusaShiftStartBack(wxCommandEvent &event) {
 	audioBox->audioDisplay->curStartMS -= 10;
 	audioBox->audioDisplay->Update();
 	audioBox->audioDisplay->wxWindow::Update();
 	audioBox->audioDisplay->UpdateTimeEditCtrls();
 }
+
+/// @brief DOCME
+/// @param event 
+///
 void FrameMain::OnMedusaShiftEndForward(wxCommandEvent &event) {
 	audioBox->audioDisplay->curEndMS += 10;
 	audioBox->audioDisplay->Update();
 	audioBox->audioDisplay->wxWindow::Update();
 	audioBox->audioDisplay->UpdateTimeEditCtrls();
 }
+
+/// @brief DOCME
+/// @param event 
+///
 void FrameMain::OnMedusaShiftEndBack(wxCommandEvent &event) {
 	audioBox->audioDisplay->curEndMS -= 10;
 	audioBox->audioDisplay->Update();
 	audioBox->audioDisplay->wxWindow::Update();
 	audioBox->audioDisplay->UpdateTimeEditCtrls();
 }
+
+/// @brief DOCME
+/// @param event 
+///
 void FrameMain::OnMedusaPlayBefore(wxCommandEvent &event) {
 	int start=0,end=0;
 	audioBox->audioDisplay->GetTimesSelection(start,end);
 	audioBox->audioDisplay->Play(start-500,start);
 }
+
+/// @brief DOCME
+/// @param event 
+///
 void FrameMain::OnMedusaPlayAfter(wxCommandEvent &event) {
 	int start=0,end=0;
 	audioBox->audioDisplay->GetTimesSelection(start,end);
 	audioBox->audioDisplay->Play(end,end+500);
 }
+
+/// @brief DOCME
+/// @param event 
+///
 void FrameMain::OnMedusaNext(wxCommandEvent &event) {
 	audioBox->audioDisplay->Next(false);
 }
+
+/// @brief DOCME
+/// @param event 
+///
 void FrameMain::OnMedusaPrev(wxCommandEvent &event) {
 	audioBox->audioDisplay->Prev(false);
 }
+
+/// @brief DOCME
+/// @param event 
+///
 void FrameMain::OnMedusaEnter(wxCommandEvent &event) {
 	audioBox->audioDisplay->CommitChanges(true);
 }
+
 

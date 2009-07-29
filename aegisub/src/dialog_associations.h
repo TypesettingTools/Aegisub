@@ -46,10 +46,16 @@
 #include <wx/slider.h>
 
 
-//////////////////////////////////
-// File associations dialog class
+
+/// DOCME
+/// @class DialogAssociations
+/// @brief DOCME
+///
+/// DOCME
 class DialogAssociations : public wxDialog {
 private:
+
+	/// DOCME
 	wxCheckListBox *ListBox;
 	void OnOK(wxCommandEvent &event);
 
@@ -62,4 +68,5 @@ public:
 
 	DECLARE_EVENT_TABLE()
 };
+
 

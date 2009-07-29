@@ -60,16 +60,18 @@
 #endif
 
 
-///////////////
-// Constructor
+
+/// @brief Constructor 
+///
 AudioPlayer::AudioPlayer() {
 	provider = NULL;
 	displayTimer = NULL;
 }
 
 
-//////////////
-// Destructor
+
+/// @brief Destructor 
+///
 AudioPlayer::~AudioPlayer() {
 	if (displayTimer) {
 		displayTimer->Stop();
@@ -78,36 +80,45 @@ AudioPlayer::~AudioPlayer() {
 }
 
 
-////////////////
-// Set provider
+
+/// @brief Set provider 
+/// @param _provider 
+///
 void AudioPlayer::SetProvider(AudioProvider *_provider) {
 	provider = _provider;
 }
 
 
-////////////////
-// Get provider
+
+/// @brief Get provider 
+/// @return 
+///
 AudioProvider *AudioPlayer::GetProvider() {
 	return provider;
 }
 
 
-/////////////
-// Get mutex
+
+/// @brief Get mutex 
+/// @return 
+///
 wxMutex *AudioPlayer::GetMutex() {
 	return NULL;
 }
 
 
-/////////////
-// Set timer
+
+/// @brief Set timer 
+/// @param timer 
+///
 void AudioPlayer::SetDisplayTimer(wxTimer *timer) {
 	displayTimer = timer;
 }
 
 
-/////////////////////
-// Ask to stop later
+
+/// @brief Ask to stop later 
+///
 void AudioPlayer::RequestStop() {
 	wxCommandEvent event(wxEVT_STOP_AUDIO, 1000);
 	event.SetEventObject(this);
@@ -123,13 +134,19 @@ BEGIN_EVENT_TABLE(AudioPlayer, wxEvtHandler)
 	EVT_COMMAND (1000, wxEVT_STOP_AUDIO, AudioPlayer::OnStopAudio)
 END_EVENT_TABLE()
 
+
+/// @brief DOCME
+/// @param event 
+///
 void AudioPlayer::OnStopAudio(wxCommandEvent &event) {
 	Stop(false);
 }
 
 
-//////////////
-// Get player
+
+/// @brief Get player 
+/// @return 
+///
 AudioPlayer* AudioPlayerFactoryManager::GetAudioPlayer() {
 	// List of providers
 	wxArrayString list = GetFactoryList(Options.AsText(_T("Audio player")));
@@ -154,8 +171,9 @@ AudioPlayer* AudioPlayerFactoryManager::GetAudioPlayer() {
 }
 
 
-//////////////////////////
-// Register all factories
+
+/// @brief Register all factories 
+///
 void AudioPlayerFactoryManager::RegisterProviders() {
 #ifdef WITH_ALSA
 	RegisterFactory(new AlsaPlayerFactory(),_T("ALSA"));
@@ -176,15 +194,17 @@ void AudioPlayerFactoryManager::RegisterProviders() {
 }
 
 
-///////////////////////
-// Clear all factories
+
+/// @brief Clear all factories 
+///
 void AudioPlayerFactoryManager::ClearProviders() {
 	ClearFactories();
 }
 
 
-//////////
-// Static
+
+/// DOCME
 template <class AudioPlayerFactory> std::map<wxString,AudioPlayerFactory*>* FactoryManager<AudioPlayerFactory>::factories=NULL;
+
 
 

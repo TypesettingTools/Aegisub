@@ -49,8 +49,11 @@
 #include "help_button.h"
 
 
-///////////////
-// Constructor
+
+/// @brief Constructor 
+/// @param parent 
+/// @param _grid  
+///
 DialogSelection::DialogSelection(wxWindow *parent, SubtitlesGrid *_grid) :
 wxDialog (parent,-1,_("Select"),wxDefaultPosition,wxDefaultSize,wxCAPTION)
 {
@@ -138,8 +141,11 @@ wxDialog (parent,-1,_("Select"),wxDefaultPosition,wxDefaultSize,wxCAPTION)
 }
 
 
-/////////////////////
-// Matching function
+
+/// @brief Matching function 
+/// @param diag 
+/// @return 
+///
 bool DialogSelection::StringMatches(AssDialogue *diag) {
 	// Variables
 	wxString text;
@@ -208,8 +214,9 @@ bool DialogSelection::StringMatches(AssDialogue *diag) {
 }
 
 
-///////////
-// Process
+
+/// @brief Process 
+///
 void DialogSelection::Process() {
 	// Prepare
 	AssDialogue *current;
@@ -271,8 +278,9 @@ void DialogSelection::Process() {
 }
 
 
-/////////////////
-// Save settings
+
+/// @brief Save settings 
+///
 void DialogSelection::SaveSettings() {
 	// Prepare settings
 	int action = Action->GetSelection();
@@ -308,20 +316,28 @@ END_EVENT_TABLE()
 
 
 
-//////////////////////////////
-// Dialogue/Comment checkboxes
+
+/// @brief Dialogue/Comment checkboxes 
+/// @param event 
+///
 void DialogSelection::OnDialogueCheckbox(wxCommandEvent &event) {
 	if(!event.IsChecked() && !MatchComments->GetValue())
 		MatchComments->SetValue(true);
 }
 
+
+/// @brief DOCME
+/// @param event 
+///
 void DialogSelection::OnCommentCheckbox(wxCommandEvent &event) {
 	if(!event.IsChecked() && !MatchDialogues->GetValue())
 		MatchDialogues->SetValue(true);
 }	
 	
-//////////////
-// OK pressed
+
+/// @brief OK pressed 
+/// @param event 
+///
 void DialogSelection::OnOK(wxCommandEvent &event) {
 	Process();
 	SaveSettings();
@@ -329,10 +345,13 @@ void DialogSelection::OnOK(wxCommandEvent &event) {
 }
 
 
-//////////////////
-// Cancel pressed
+
+/// @brief Cancel pressed 
+/// @param event 
+///
 void DialogSelection::OnCancel(wxCommandEvent &event) {
 	SaveSettings();
 	EndModal(0);
 }
+
 

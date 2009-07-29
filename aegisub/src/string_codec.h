@@ -55,6 +55,8 @@
 /// The encoded string should be usable in any kind of field in an ASS file.
 
 #ifndef _STRING_CODEC_H
+
+/// DOCME
 #define _STRING_CODEC_H
 
 #include <wx/wxprec.h>
@@ -64,4 +66,5 @@ wxString inline_string_encode(const wxString &input);
 wxString inline_string_decode(const wxString &input);
 
 #endif
+
 

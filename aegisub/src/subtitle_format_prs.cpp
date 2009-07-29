@@ -62,8 +62,11 @@
 #include "../prs/prs.h"
 
 
-//////////////////////
-// Can write to file?
+
+/// @brief Can write to file? 
+/// @param filename 
+/// @return 
+///
 bool PRSSubtitleFormat::CanWriteFile(wxString filename) {
 #ifdef __WINDOWS__
 	return false;
@@ -74,15 +77,19 @@ bool PRSSubtitleFormat::CanWriteFile(wxString filename) {
 }
 
 
-////////////
-// Get name
+
+/// @brief Get name 
+/// @return 
+///
 wxString PRSSubtitleFormat::GetName() {
 	return _T("Pre-Rendered Subtitles");
 }
 
 
-///////////////////////
-// Get write wildcards
+
+/// @brief Get write wildcards 
+/// @return 
+///
 wxArrayString PRSSubtitleFormat::GetWriteWildcards() {
 	wxArrayString formats;
 	formats.Add(_T("prs"));
@@ -90,8 +97,12 @@ wxArrayString PRSSubtitleFormat::GetWriteWildcards() {
 }
 
 
-//////////////
-// Write file
+
+/// @brief Write file 
+/// @param filename 
+/// @param encoding 
+/// @return 
+///
 void PRSSubtitleFormat::WriteFile(wxString filename,wxString encoding) {
 #ifdef __WINDOWS__
 	// Video loaded?
@@ -215,8 +226,16 @@ void PRSSubtitleFormat::WriteFile(wxString filename,wxString encoding) {
 }
 
 
-//////////////////////////
-// Insert frame into file
+
+/// @brief Insert frame into file 
+/// @param file     
+/// @param framen   
+/// @param frames   
+/// @param bmp      
+/// @param x        
+/// @param y        
+/// @param maxalpha 
+///
 void PRSSubtitleFormat::InsertFrame(PRSFile &file,int &framen,std::vector<int> &frames,wxImage &bmp,int x,int y,int maxalpha) {
 	// Generic data holder
 	size_t datasize = 0;
@@ -346,8 +365,11 @@ void PRSSubtitleFormat::InsertFrame(PRSFile &file,int &framen,std::vector<int> &
 }
 
 
-///////////////////////////////////
-// Get rectangles of useful glyphs
+
+/// @brief Get rectangles of useful glyphs 
+/// @param image 
+/// @param rects 
+///
 void PRSSubtitleFormat::GetSubPictureRectangles(wxImage &image,std::vector<wxRect> &rects) {
 	// Boundaries
 	int w = image.GetWidth();
@@ -402,8 +424,10 @@ void PRSSubtitleFormat::GetSubPictureRectangles(wxImage &image,std::vector<wxRec
 }
 
 
-////////////////////
-// Get frame ranges
+
+/// @brief Get frame ranges 
+/// @return 
+///
 std::vector<int> PRSSubtitleFormat::GetFrameRanges() {
 	// Loop through subtitles in file
 	std::vector<int> frames;
@@ -485,14 +509,14 @@ std::vector<int> PRSSubtitleFormat::GetFrameRanges() {
 }
 
 
-/////////////////////////////////////////////
-// Optimize the image by tweaking the colors
-// First, a little macro to help the comparisons down there
+
+/// DOCME
 #define IN_ERROR_MARGIN(col1,col2,error) ((col1 > col2 ? ((int)(col1-col2)) : ((int)(col2-col1))) <= (error))
 
-// Now, since I don't expect anyone to be able to decypher this...
-// This "flood fills" the image based on alpha, to make it easier to compress, without affecting visual quality
-// e.g. if you have a pixel with 25% opacity, then a difference of as much as 3 in the color channels won't have a visual impact
+
+/// @brief e.g. if you have a pixel with 25% opacity, then a difference of as much as 3 in the color channels won't have a visual impact This "flood fills" the image based on alpha, to make it easier to compress, without affecting visual quality Now, since I don't expect anyone to be able to decypher this...
+/// @param image 
+///
 void PRSSubtitleFormat::OptimizeImage(wxImage &image) {
 	// Get the raw data
 	unsigned char *data = (unsigned char*) image.GetData();
@@ -650,11 +674,18 @@ void PRSSubtitleFormat::OptimizeImage(wxImage &image) {
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-//////////////////////////////////////////////
-// Generates a 32-bit wxImage from two frames
-// ------------------------------------------
-// Frame 1 should have the image on a BLACK background
-// Frame 2 should have the same image on a WHITE background
+
+/// @brief Frame 2 should have the same image on a WHITE background Frame 1 should have the image on a BLACK background ------------------------------------------ Generates a 32-bit wxImage from two frames 
+/// @param frame1   
+/// @param frame2   
+/// @param w        
+/// @param h        
+/// @param pitch    
+/// @param dstx     
+/// @param dsty     
+/// @param maxalpha 
+/// @return 
+///
 wxImage PRSSubtitleFormat::CalculateAlpha(const unsigned char* frame1, const unsigned char* frame2, int w, int h, int pitch, int *dstx, int *dsty, int *maxalpha) {
 	// Allocate image data
 	unsigned char *data = (unsigned char*) malloc(sizeof(unsigned char)*w*h*3);
@@ -755,9 +786,11 @@ wxImage PRSSubtitleFormat::CalculateAlpha(const unsigned char* frame1, const uns
 }
 
 
-////////////////////////////////////////////////
-// Creates a sub image preserving alpha channel
-// Modified from wx's source
+
+/// @brief Modified from wx's source Creates a sub image preserving alpha channel 
+/// @param source 
+/// @param rect   
+///
 wxImage PRSSubtitleFormat::SubImageWithAlpha (wxImage &source,const wxRect &rect) {
     wxImage image;
     wxCHECK_MSG(source.Ok(), image, wxT("invalid image") );
@@ -798,4 +831,5 @@ wxImage PRSSubtitleFormat::SubImageWithAlpha (wxImage &source,const wxRect &rect
 }
 
 #endif
+
 

@@ -51,8 +51,10 @@
 #include "help_button.h"
 
 
-///////////////
-// Constructor
+
+/// @brief Constructor 
+/// @param parent 
+///
 DialogExport::DialogExport (wxWindow *parent)
 : wxDialog (parent, -1, _("Export"), wxDefaultPosition, wxSize(200,100), wxCAPTION | wxCLOSE_BOX, _T("Export"))
 {
@@ -139,8 +141,9 @@ DialogExport::DialogExport (wxWindow *parent)
 }
 
 
-//////////////
-// Destructor
+
+/// @brief Destructor 
+///
 DialogExport::~DialogExport() {
 	// Set script info data
 	int n = 0;
@@ -160,8 +163,9 @@ DialogExport::~DialogExport() {
 }
 
 
-/////////////////////////////////
-// Refresh displaying of options
+
+/// @brief Refresh displaying of options 
+///
 void DialogExport::RefreshOptions() {
 	int num = FilterList->GetCount();
 	for (int i=0;i<num;i++) {
@@ -186,8 +190,11 @@ BEGIN_EVENT_TABLE(DialogExport,wxDialog)
 END_EVENT_TABLE()
 
 
-/////////////////
-// Process start
+
+/// @brief Process start 
+/// @param event 
+/// @return 
+///
 void DialogExport::OnProcess(wxCommandEvent &event) {
 	// Get destination
 	wxString filename = wxFileSelector(_("Export subtitles file"),_T(""),_T(""),_T(""),AssFile::GetWildcardList(2),wxFD_SAVE | wxFD_OVERWRITE_PROMPT,this);
@@ -219,8 +226,10 @@ void DialogExport::OnProcess(wxCommandEvent &event) {
 }
 
 
-/////////////////////////////
-// Checked or unchecked item
+
+/// @brief Checked or unchecked item 
+/// @param event 
+///
 void DialogExport::OnCheck(wxCommandEvent &event) {
 	int n = event.GetInt();
 	wxSizer *sizer = Export->GetSettingsSizer(FilterList->GetString(n));
@@ -230,8 +239,10 @@ void DialogExport::OnCheck(wxCommandEvent &event) {
 }
 
 
-////////////////
-// Changed item
+
+/// @brief Changed item 
+/// @param event 
+///
 void DialogExport::OnChange(wxCommandEvent &event) {
 	int n = FilterList->GetSelection();
 	if (n != wxNOT_FOUND) {
@@ -242,8 +253,11 @@ void DialogExport::OnChange(wxCommandEvent &event) {
 }
 
 
-///////////
-// Move up
+
+/// @brief Move up 
+/// @param event 
+/// @return 
+///
 void DialogExport::OnMoveUp(wxCommandEvent &event) {
 	int pos = FilterList->GetSelection();
 	if (pos <= 0) return;
@@ -259,8 +273,11 @@ void DialogExport::OnMoveUp(wxCommandEvent &event) {
 }
 
 
-/////////////
-// Move down
+
+/// @brief Move down 
+/// @param event 
+/// @return 
+///
 void DialogExport::OnMoveDown(wxCommandEvent &event) {
 	int pos = FilterList->GetSelection();
 	int n = FilterList->GetCount();
@@ -277,8 +294,10 @@ void DialogExport::OnMoveDown(wxCommandEvent &event) {
 }
 
 
-//////////////
-// Select all
+
+/// @brief Select all 
+/// @param event 
+///
 void DialogExport::OnSelectAll(wxCommandEvent &event) {
 	Freeze();
 	FilterList->Freeze();
@@ -296,8 +315,10 @@ void DialogExport::OnSelectAll(wxCommandEvent &event) {
 }
 
 
-///////////////
-// Select none
+
+/// @brief Select none 
+/// @param event 
+///
 void DialogExport::OnSelectNone(wxCommandEvent &event) {
 	Freeze();
 	FilterList->Freeze();
@@ -313,4 +334,5 @@ void DialogExport::OnSelectNone(wxCommandEvent &event) {
 	Layout();
 	MainSizer->Fit(this);
 }
+
 

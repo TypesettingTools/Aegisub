@@ -43,8 +43,9 @@
 #include "utils.h"
 
 
-/////////
-// Reset
+
+/// @brief Reset 
+///
 void AegiVideoFrame::Reset() {
 	// Note that this function DOES NOT unallocate memory.
 	// Use Clear() for that
@@ -66,15 +67,20 @@ void AegiVideoFrame::Reset() {
 }
 
 
-///////////////
-// Constructor
+
+/// @brief Constructor 
+///
 AegiVideoFrame::AegiVideoFrame() {
 	Reset();
 }
 
 
-//////////////////
-// Create default
+
+/// @brief Create default 
+/// @param width  
+/// @param height 
+/// @param fmt    
+///
 AegiVideoFrame::AegiVideoFrame(int width,int height,VideoFrameFormat fmt) {
 	// Clear
 	Reset();
@@ -98,8 +104,9 @@ AegiVideoFrame::AegiVideoFrame(int width,int height,VideoFrameFormat fmt) {
 }
 
 
-////////////
-// Allocate
+
+/// @brief Allocate 
+///
 void AegiVideoFrame::Allocate() {
 	// Check consistency
 	wxASSERT(pitch[0] > 0 && pitch[0] < 10000);
@@ -139,8 +146,9 @@ void AegiVideoFrame::Allocate() {
 }
 
 
-/////////
-// Clear
+
+/// @brief Clear 
+///
 void AegiVideoFrame::Clear() {
 	// Free memory
 	if (cppAlloc) delete[] data[0];
@@ -163,8 +171,10 @@ void AegiVideoFrame::Clear() {
 }
 
 
-///////////////
-// Create copy
+
+/// @brief Create copy 
+/// @param source 
+///
 void AegiVideoFrame::CopyFrom(const AegiVideoFrame &source) {
 	w = source.w;
 	h = source.h;
@@ -177,10 +187,10 @@ void AegiVideoFrame::CopyFrom(const AegiVideoFrame &source) {
 }
 
 
-///////////////
-// Get wxImage
-// ------
-// This function is only used on screenshots, so it doesn't have to be fast
+
+/// @brief This function is only used on screenshots, so it doesn't have to be fast ------ Get wxImage 
+/// @return 
+///
 wxImage AegiVideoFrame::GetImage() const {
 	// RGB
 	if (format == FORMAT_RGB32 || format == FORMAT_RGB24) {
@@ -228,8 +238,10 @@ wxImage AegiVideoFrame::GetImage() const {
 }
 
 
-/////////////////////////////
-// Get float luminosity data
+
+/// @brief Get float luminosity data 
+/// @param buffer 
+///
 void AegiVideoFrame::GetFloat(float *buffer) const {
 	int Bpp = GetBpp();
 	const unsigned char *src = data[0];
@@ -257,8 +269,11 @@ void AegiVideoFrame::GetFloat(float *buffer) const {
 }
 
 
-///////////////////////
-// Get Bytes per Pixel
+
+/// @brief Get Bytes per Pixel 
+/// @param plane 
+/// @return 
+///
 int AegiVideoFrame::GetBpp(int plane) const {
 	switch (format) {
 		case FORMAT_RGB32: return 4;
@@ -272,8 +287,10 @@ int AegiVideoFrame::GetBpp(int plane) const {
 }
 
 
-//////////////////////////////
-// Convert from another frame
+
+/// @brief Convert from another frame 
+/// @param source 
+///
 void AegiVideoFrame::ConvertFrom(const AegiVideoFrame &source) {
 	// Ensure compatibility
 	if (w != source.w) throw _T("AegiVideoFrame::ConvertFrom: Widths don't match.");
@@ -326,4 +343,5 @@ void AegiVideoFrame::ConvertFrom(const AegiVideoFrame &source) {
 		}
 	}
 }
+
 

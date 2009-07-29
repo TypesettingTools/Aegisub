@@ -46,14 +46,18 @@
 #include "main.h"
 
 
-///////////
-// Defines
+
+/// DOCME
 #define CacheBits ((22))
+
+/// DOCME
 #define CacheBlockSize ((1 << CacheBits))
 
 
-///////////////
-// Constructor
+
+/// @brief Constructor 
+/// @param source 
+///
 RAMAudioProvider::RAMAudioProvider(AudioProvider *source) {
 	// Init
 	blockcache = NULL;
@@ -109,15 +113,17 @@ RAMAudioProvider::RAMAudioProvider(AudioProvider *source) {
 }
 
 
-//////////////
-// Destructor
+
+/// @brief Destructor 
+///
 RAMAudioProvider::~RAMAudioProvider() {
 	Clear();
 }
 
 
-/////////
-// Clear
+
+/// @brief Clear 
+///
 void RAMAudioProvider::Clear() {
 	// Free ram cache
 	if (blockcache) {
@@ -131,8 +137,12 @@ void RAMAudioProvider::Clear() {
 }
 
 
-/////////////
-// Get audio
+
+/// @brief Get audio 
+/// @param buf   
+/// @param start 
+/// @param count 
+///
 void RAMAudioProvider::GetAudio(void *buf, int64_t start, int64_t count) {
 	// Requested beyond the length of audio
 	if (start+count > num_samples) {
@@ -176,4 +186,5 @@ void RAMAudioProvider::GetAudio(void *buf, int64_t start, int64_t count) {
 		}
 	}
 }
+
 

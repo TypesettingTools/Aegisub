@@ -45,12 +45,22 @@
 #include <wx/xml/xml.h>
 
 
-//////////////////////
-// TTXT reader/writer
+
+/// DOCME
+/// @class TTXTSubtitleFormat
+/// @brief DOCME
+///
+/// DOCME
 class TTXTSubtitleFormat : public SubtitleFormat {
 private:
+
+	/// DOCME
 	int version;
+
+	/// DOCME
 	AssDialogue *diag;
+
+	/// DOCME
 	AssDialogue *prev;
 
 	bool ProcessLine(wxXmlNode *node);
@@ -72,4 +82,5 @@ public:
 	bool CanWriteFile(wxString filename);
 	void WriteFile(wxString filename,wxString encoding);
 };
+
 

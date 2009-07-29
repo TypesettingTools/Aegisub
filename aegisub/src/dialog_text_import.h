@@ -35,6 +35,8 @@
 ///
 
 #ifndef _DIALOG_TEXT_IMPORT_H
+
+/// DOCME
 #define _DIALOG_TEXT_IMPORT_H
 
 ///////////
@@ -43,9 +45,19 @@
 #include <wx/textctrl.h>
 
 
+
+/// DOCME
+/// @class DialogTextImport
+/// @brief DOCME
+///
+/// DOCME
 class DialogTextImport : public wxDialog {
 private:
+
+	/// DOCME
 	wxTextCtrl *edit_separator;
+
+	/// DOCME
 	wxTextCtrl *edit_comment;
 
 	void OnOK(wxCommandEvent &event);
@@ -62,8 +74,13 @@ public:
 ///////
 // IDs
 enum {
+
+	/// DOCME
 	EDIT_ACTOR_SEPARATOR = 1480,
+
+	/// DOCME
 	EDIT_COMMENT_STARTER,
 };
 #endif
+
 

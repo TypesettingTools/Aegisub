@@ -40,6 +40,9 @@
 #include "ass_karaoke.h"
 #include "ass_override.h"
 
+
+/// @brief DOCME
+///
 AssKaraokeSyllable::AssKaraokeSyllable()
 {
 	duration = 0;
@@ -49,6 +52,11 @@ AssKaraokeSyllable::AssKaraokeSyllable()
 	tag = 0;
 }
 
+
+/// @brief DOCME
+/// @param line 
+/// @param syls 
+///
 void ParseAssKaraokeTags(const AssDialogue *line, AssKaraokeVector &syls)
 {
 	// Assume line already has tags parsed
@@ -118,5 +126,6 @@ void ParseAssKaraokeTags(const AssDialogue *line, AssKaraokeVector &syls)
 
 	syls.push_back(syl);
 }
+
 
 

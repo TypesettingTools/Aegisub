@@ -51,25 +51,42 @@
 #include "include/aegisub/aegisub.h"
 
 
-///////////////////////
-// Framerate type enum
+
+/// DOCME
 enum ASS_FrameRateType {
+
+	/// DOCME
 	NONE,
+
+	/// DOCME
 	CFR,
+
+	/// DOCME
 	VFR
 };
 
-///////////////////
-// Framerate class
+
+/// DOCME
+/// @class FrameRate
+/// @brief DOCME
+///
+/// DOCME
 class FrameRate {
 	friend class VideoContext;
 
 private:
+
+	/// DOCME
 	double last_time;
+
+	/// DOCME
 	int last_frame;
+
+	/// DOCME
 	std::vector<int> Frame;
 
-	// contains the assumed fps for v1 timecodes, average for v2 and actual fps for cfr
+
+	/// DOCME
 	double AverageFrameRate; 
 
 	void AddFrame(int ms);
@@ -79,8 +96,14 @@ private:
 	int PFrameAtTime(int ms,bool useCeil=false);
 	int PTimeAtFrame(int frame);
 
+
+	/// DOCME
 	ASS_FrameRateType FrameRateType;
+
+	/// DOCME
 	bool loaded;
+
+	/// DOCME
 	wxString vfrFile;
 
 public:
@@ -98,9 +121,24 @@ public:
 	int GetFrameAtTime(int ms,bool start=true);
 	int GetTimeAtFrame(int frame,bool start=true,bool exact=false);
 
+
+	/// @brief DOCME
+	/// @return 
+	///
 	double GetAverage() { return AverageFrameRate; };
+
+	/// @brief DOCME
+	/// @return 
+	///
 	bool IsLoaded() { return loaded; };
+
+	/// @brief DOCME
+	/// @return 
+	///
 	ASS_FrameRateType GetFrameRateType() { return FrameRateType; };
+
+	/// @brief DOCME
+	///
 	wxString GetFilename() { return vfrFile; };
 
 	std::vector<int> GetFrameTimeList();
@@ -112,4 +150,5 @@ public:
 // Globals
 extern FrameRate VFR_Output;
 extern FrameRate VFR_Input;
+
 

@@ -36,6 +36,8 @@
 
 
 #ifndef DIALOG_JUMPTO_H
+
+/// DOCME
 #define DIALOG_JUMPTO_H
 
 
@@ -46,15 +48,29 @@
 #include "timeedit_ctrl.h"
 
 
-/////////
-// Class
+
+/// DOCME
+/// @class DialogJumpTo
+/// @brief DOCME
+///
+/// DOCME
 class DialogJumpTo : public wxDialog {
 private:
+
+	/// DOCME
 	bool ready;
+
+	/// DOCME
 	long jumpframe;
+
+	/// DOCME
 	AssTime jumptime;
 
+
+	/// DOCME
 	TimeEdit *JumpTime;
+
+	/// DOCME
 	wxTextCtrl *JumpFrame;
 
 	void OnKey(wxCommandEvent &event);
@@ -72,4 +88,5 @@ public:
 };
 
 #endif
+
 

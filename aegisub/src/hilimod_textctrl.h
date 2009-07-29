@@ -36,6 +36,8 @@
 
 
 #ifndef HILIMOD_TEXTCTRL
+
+/// DOCME
 #define HILIMOD_TEXTCTRL
 
 
@@ -45,13 +47,23 @@
 #include <wx/textctrl.h>
 
 
-//////////////
-// Main class
+
+/// DOCME
+/// @class HiliModTextCtrl
+/// @brief DOCME
+///
+/// DOCME
 class HiliModTextCtrl : public wxTextCtrl {
 private:
+
+	/// DOCME
 	bool UpdateLocked;
+
+	/// DOCME
 	bool isModified;
 
+
+	/// DOCME
 	wxString orig;
 
 	void OnModified(wxCommandEvent &event);
@@ -63,9 +75,13 @@ public:
 	void Modified();
 	void Commited();
 	void SetValue(const wxString& value);
+
+	/// @brief DOCME
+	///
 	bool HasBeenModified() { return isModified; }
 };
 
 
 #endif
+
 

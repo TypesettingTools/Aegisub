@@ -46,16 +46,19 @@
 #include "vfr.h"
 
 
-///////////////
-// Constructor
+
+/// @brief Constructor 
+///
 AssLimitToVisibleFilter::AssLimitToVisibleFilter() {
 	initialized = false;
 	frame = -1;
 }
 
 
-////////
-// Init
+
+/// @brief Init 
+/// @return 
+///
 void AssLimitToVisibleFilter::Init() {
 	if (initialized) return;
 	initialized = true;
@@ -66,8 +69,12 @@ void AssLimitToVisibleFilter::Init() {
 }
 
 
-///////////
-// Process
+
+/// @brief Process 
+/// @param subs          
+/// @param export_dialog 
+/// @return 
+///
 void AssLimitToVisibleFilter::ProcessSubs(AssFile *subs, wxWindow *export_dialog) {
 	// Nothing to do
 	if (frame == -1) return;
@@ -95,14 +102,17 @@ void AssLimitToVisibleFilter::ProcessSubs(AssFile *subs, wxWindow *export_dialog
 }
 
 
-///////////////////////
-// Set limitation time
+
+/// @brief Set limitation time 
+/// @param _frame 
+///
 void AssLimitToVisibleFilter::SetFrame(int _frame) {
 	instance.frame = _frame;
 }
 
 
-///////////////////
-// Global instance
+
+/// DOCME
 AssLimitToVisibleFilter AssLimitToVisibleFilter::instance;
+
 

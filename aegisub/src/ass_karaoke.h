@@ -39,17 +39,32 @@
 #include "ass_dialogue.h"
 #include <vector>
 
+
+/// DOCME
 struct AssKaraokeSyllable {
+
+	/// DOCME
 	int duration; // centiseconds
+
+	/// DOCME
 	wxString text; // stripped text of syllable
+
+	/// DOCME
 	wxString unstripped_text; // including misc. tags
+
+	/// DOCME
 	wxString type; // highlight type, \k \K \kf \ko (backslash included)
+
+	/// DOCME
 	AssOverrideTag *tag; // parsed override tag for direct modification
 
 	AssKaraokeSyllable();
 };
 
+
+/// DOCME
 typedef std::vector<AssKaraokeSyllable> AssKaraokeVector;
 
 void ParseAssKaraokeTags(const AssDialogue *line, AssKaraokeVector &syls);
+
 

@@ -45,13 +45,21 @@
 #include <stdint.h>
 
 
-/////////////////////////////
-// Class for Ass format time
+
+/// DOCME
+/// @class AssTime
+/// @brief DOCME
+///
+/// DOCME
 class AssTime {
 private:
+
+	/// DOCME
 	int time;		// Miliseconds
 
 public:
+
+	/// DOCME
 	static bool UseMSPrecision;
 
 	AssTime();
@@ -80,17 +88,31 @@ bool operator >= (AssTime &t1, AssTime &t2);
 
 
 
-/////////////////////////////
-// Class for that annoying SMPTE format timecodes stuff
+
+/// DOCME
+/// @class FractionalTime
+/// @brief DOCME
+///
+/// DOCME
 class FractionalTime {
 private:
+
+	/// DOCME
 	int time;		// milliseconds, like in AssTime
+
+	/// DOCME
+
+	/// DOCME
 	int num, den;	// numerator/denominator
+
+	/// DOCME
 	bool drop;		// EVIL
+
+	/// DOCME
 	wxString sep;	// separator; someone might have separators of more than one character :V
 
-	// A period is roughly 10 minutes and is used for the dropframe stuff;
-	// SMPTE dropframe timecodes drops 18 timestamps per 18000, hence the number 17982.
+
+	/// DOCME
 	static const int frames_per_period = 17982;
 
 public:
@@ -105,4 +127,5 @@ public:
 	wxString FromAssTime(AssTime time);
 	wxString FromMillisecs(int64_t msec);
 };
+
 

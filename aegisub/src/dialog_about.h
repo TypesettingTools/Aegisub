@@ -45,11 +45,16 @@
 #include "static_bmp.h"
 
 
-///////////////////////
-// Splash screen class
+
+/// DOCME
+/// @class AboutScreen
+/// @brief DOCME
+///
+/// DOCME
 class AboutScreen: public wxDialog {
 public:
 	AboutScreen(wxWindow *parent);
 	~AboutScreen();
 };
+
 

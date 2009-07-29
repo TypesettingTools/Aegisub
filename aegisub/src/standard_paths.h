@@ -44,12 +44,18 @@
 #include <map>
 
 
-//////////////////////////////////
-// Standard path conversion class
+
+/// DOCME
+/// @class StandardPaths
+/// @brief DOCME
+///
+/// DOCME
 class StandardPaths {
 private:
 	static StandardPaths &GetInstance();
 
+
+	/// DOCME
 	std::map<wxString,wxString> paths;
 
 	StandardPaths();
@@ -61,9 +67,25 @@ private:
 	void DoSetPathValue(const wxString &path, const wxString &value);
 
 public:
+
+	/// @brief DOCME
+	/// @param path 
+	/// @return 
+	///
 	static wxString DecodePath(const wxString &path) { return GetInstance().DoDecodePath(path); }
 	static wxString DecodePathMaybeRelative(const wxString &path, const wxString &relativeTo);
+
+	/// @brief DOCME
+	/// @param path 
+	/// @return 
+	///
 	static wxString EncodePath(const wxString &path) { return GetInstance().DoEncodePath(path); }
+
+	/// @brief DOCME
+	/// @param path  
+	/// @param value 
+	///
 	static void SetPathValue(const wxString &path, const wxString &value) { GetInstance().DoSetPathValue(path,value); }
 };
+
 

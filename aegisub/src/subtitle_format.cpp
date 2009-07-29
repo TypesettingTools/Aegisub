@@ -55,8 +55,9 @@
 #include "vfr.h"
 
 
-///////////////
-// Constructor
+
+/// @brief Constructor 
+///
 SubtitleFormat::SubtitleFormat() {
 	Line = NULL;
 	Register();
@@ -64,21 +65,26 @@ SubtitleFormat::SubtitleFormat() {
 }
 
 
-//////////////
-// Destructor
+
+/// @brief Destructor 
+///
 SubtitleFormat::~SubtitleFormat () {
 	Remove();
 }
 
 
-////////
-// List
+
+/// DOCME
 std::list<SubtitleFormat*> SubtitleFormat::formats;
+
+/// DOCME
 bool SubtitleFormat::loaded = false;
 
 
-//////////////
-// Set target
+
+/// @brief Set target 
+/// @param file 
+///
 void SubtitleFormat::SetTarget(AssFile *file) {
 	ClearCopy();
 	if (!file) Line = NULL;
@@ -87,16 +93,18 @@ void SubtitleFormat::SetTarget(AssFile *file) {
 }
 
 
-///////////////
-// Create copy
+
+/// @brief Create copy 
+///
 void SubtitleFormat::CreateCopy() {
 	SetTarget(new AssFile(*assFile));
 	isCopy = true;
 }
 
 
-//////////////
-// Clear copy
+
+/// @brief Clear copy 
+///
 void SubtitleFormat::ClearCopy() {
 	if (isCopy) {
 		delete assFile;
@@ -106,29 +114,40 @@ void SubtitleFormat::ClearCopy() {
 }
 
 
-///////////////////
-// Clear subtitles
+
+/// @brief Clear subtitles 
+///
 void SubtitleFormat::Clear() {
 	assFile->Clear();
 }
 
 
-////////////////
-// Load default
+
+/// @brief Load default 
+/// @param defline 
+///
 void SubtitleFormat::LoadDefault(bool defline) {
 	assFile->LoadDefault(defline);
 }
 
 
-////////////
-// Add line
+
+/// @brief Add line 
+/// @param data     
+/// @param group    
+/// @param lasttime 
+/// @param version  
+/// @param outgroup 
+/// @return 
+///
 int SubtitleFormat::AddLine(wxString data,wxString group,int lasttime,int &version,wxString *outgroup) {
 	return assFile->AddLine(data,group,lasttime,version,outgroup);
 }
 
 
-///////////////
-// Add formats
+
+/// @brief Add formats 
+///
 void SubtitleFormat::LoadFormats () {
 	if (!loaded) {
 		new ASSSubtitleFormat();
@@ -147,8 +166,9 @@ void SubtitleFormat::LoadFormats () {
 }
 
 
-///////////////////
-// Destroy formats
+
+/// @brief Destroy formats 
+///
 void SubtitleFormat::DestroyFormats () {
 	std::list<SubtitleFormat*>::iterator cur;
 	for (cur=formats.begin();cur!=formats.end();cur = formats.begin()) {
@@ -158,8 +178,11 @@ void SubtitleFormat::DestroyFormats () {
 }
 
 
-/////////////////////////////
-// Get an appropriate reader
+
+/// @brief Get an appropriate reader 
+/// @param filename 
+/// @return 
+///
 SubtitleFormat *SubtitleFormat::GetReader(wxString filename) {
 	LoadFormats();
 	std::list<SubtitleFormat*>::iterator cur;
@@ -172,8 +195,11 @@ SubtitleFormat *SubtitleFormat::GetReader(wxString filename) {
 }
 
 
-/////////////////////////////
-// Get an appropriate writer
+
+/// @brief Get an appropriate writer 
+/// @param filename 
+/// @return 
+///
 SubtitleFormat *SubtitleFormat::GetWriter(wxString filename) {
 	LoadFormats();
 	std::list<SubtitleFormat*>::iterator cur;
@@ -186,8 +212,10 @@ SubtitleFormat *SubtitleFormat::GetWriter(wxString filename) {
 }
 
 
-////////////
-// Register
+
+/// @brief Register 
+/// @return 
+///
 void SubtitleFormat::Register() {
 	std::list<SubtitleFormat*>::iterator cur;
 	for (cur=formats.begin();cur!=formats.end();cur++) {
@@ -197,8 +225,10 @@ void SubtitleFormat::Register() {
 }
 
 
-//////////
-// Remove
+
+/// @brief Remove 
+/// @return 
+///
 void SubtitleFormat::Remove() {
 	std::list<SubtitleFormat*>::iterator cur;
 	for (cur=formats.begin();cur!=formats.end();cur++) {
@@ -210,22 +240,29 @@ void SubtitleFormat::Remove() {
 }
 
 
-//////////////////////
-// Get read wildcards
+
+/// @brief Get read wildcards 
+/// @return 
+///
 wxArrayString SubtitleFormat::GetReadWildcards() {
 	return wxArrayString();
 }
 
 
-///////////////////////
-// Get write wildcards
+
+/// @brief Get write wildcards 
+/// @return 
+///
 wxArrayString SubtitleFormat::GetWriteWildcards() {
 	return wxArrayString();
 }
 
 
-/////////////////////
-// Get wildcard list
+
+/// @brief Get wildcard list 
+/// @param mode 
+/// @return 
+///
 wxString SubtitleFormat::GetWildcards(int mode) {
 	// Ensure it's loaded
 	LoadFormats();
@@ -278,8 +315,11 @@ wxString SubtitleFormat::GetWildcards(int mode) {
 }
 
 
-/////////////////////////////////
-// Ask the user to enter the FPS
+
+/// @brief Ask the user to enter the FPS 
+/// @param showSMPTE 
+/// @return 
+///
 SubtitleFormat::FPSRational SubtitleFormat::AskForFPS(bool showSMPTE) {
 	wxArrayString choices;
 	FPSRational fps_rat;
@@ -365,15 +405,19 @@ SubtitleFormat::FPSRational SubtitleFormat::AskForFPS(bool showSMPTE) {
 }
 
 
-//////////////
-// Sort lines
+
+/// @brief Sort lines 
+///
 void SubtitleFormat::SortLines() {
 	Line->sort(LessByPointedToValue<AssEntry>());
 }
 
 
-////////////////
-// Convert tags
+
+/// @brief Convert tags 
+/// @param format  
+/// @param lineEnd 
+///
 void SubtitleFormat::ConvertTags(int format,wxString lineEnd) {
 	using std::list;
 	list<AssEntry*>::iterator next;
@@ -394,8 +438,9 @@ void SubtitleFormat::ConvertTags(int format,wxString lineEnd) {
 }
 
 
-////////////////////////////
-// Remove all comment lines
+
+/// @brief Remove all comment lines 
+///
 void SubtitleFormat::StripComments() {
 	using std::list;
 	list<AssEntry*>::iterator next;
@@ -413,8 +458,9 @@ void SubtitleFormat::StripComments() {
 }
 
 
-/////////////////////////////////
-// Remove all non-dialogue lines
+
+/// @brief Remove all non-dialogue lines 
+///
 void SubtitleFormat::StripNonDialogue() {
 	using std::list;
 	list<AssEntry*>::iterator next;
@@ -431,8 +477,12 @@ void SubtitleFormat::StripNonDialogue() {
 }
 
 
-///////////////////////////////////////////
-// Helper function for RecombineOverlaps()
+
+/// @brief Helper function for RecombineOverlaps() 
+/// @param list   
+/// @param next   
+/// @param newdlg 
+///
 static void InsertLineSortedIntoList(std::list<AssEntry*> &list, std::list<AssEntry*>::iterator next, AssDialogue *newdlg) {
 	std::list<AssEntry*>::iterator insertpos = next;
 	bool inserted = false;
@@ -450,9 +500,9 @@ static void InsertLineSortedIntoList(std::list<AssEntry*> &list, std::list<AssEn
 	}
 }
 
-///////////////////////////////////////////////////////////
-// Split and merge lines so there are no overlapping lines
-// http://malakith.net/aegiwiki/Split-merge_algorithm_for_converting_to_simple_subtitle_formats
+
+/// @brief http://malakith.net/aegiwiki/Split-merge_algorithm_for_converting_to_simple_subtitle_formats Split and merge lines so there are no overlapping lines 
+///
 void SubtitleFormat::RecombineOverlaps() {
 	using std::list;
 	list<AssEntry*>::iterator next;
@@ -529,8 +579,9 @@ void SubtitleFormat::RecombineOverlaps() {
 }
 
 
-////////////////////////////////////////////////
-// Merge identical lines that follow each other
+
+/// @brief Merge identical lines that follow each other 
+///
 void SubtitleFormat::MergeIdentical() {
 	using std::list;
 	list<AssEntry*>::iterator next;
@@ -555,5 +606,6 @@ void SubtitleFormat::MergeIdentical() {
 		}
 	}
 }
+
 
 

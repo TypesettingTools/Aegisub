@@ -36,6 +36,8 @@
 
 
 #ifndef DIALOG_SHIFT_TIMES_H
+
+/// DOCME
 #define DIALOG_SHIFT_TIMES_H
 
 
@@ -53,23 +55,53 @@
 class SubtitlesGrid;
 
 
-/////////
-// Class
+
+/// DOCME
+/// @class DialogShiftTimes
+/// @brief DOCME
+///
+/// DOCME
 class DialogShiftTimes : public wxDialog {
 private:
+
+	/// DOCME
 	bool ready;
+
+	/// DOCME
 	SubtitlesGrid *grid;
+
+	/// DOCME
 	int shiftframe;
+
+	/// DOCME
 	wxString HistoryFile;
 
+
+	/// DOCME
 	TimeEdit *ShiftTime;
+
+	/// DOCME
 	wxTextCtrl *ShiftFrame;
+
+	/// DOCME
 	wxRadioButton *RadioTime;
+
+	/// DOCME
 	wxRadioButton *RadioFrames;
+
+	/// DOCME
 	wxRadioButton *DirectionForward;
+
+	/// DOCME
 	wxRadioButton *DirectionBackward;
+
+	/// DOCME
 	wxRadioBox *SelChoice;
+
+	/// DOCME
 	wxRadioBox *TimesChoice;
+
+	/// DOCME
 	wxListBox *History;
 
 	void AppendToHistory(wxString text);
@@ -94,15 +126,30 @@ public:
 ///////
 // IDs
 enum {
+
+	/// DOCME
 	TEXT_SHIFT_TIME = 1100,
+
+	/// DOCME
 	TEXT_SHIFT_FRAME,
+
+	/// DOCME
 	RADIO_BACKWARD,
+
+	/// DOCME
 	RADIO_FORWARD,
+
+	/// DOCME
 	RADIO_TIME,
+
+	/// DOCME
 	RADIO_FRAME,
+
+	/// DOCME
 	SHIFT_CLEAR_HISTORY
 };
 
 
 #endif
+
 

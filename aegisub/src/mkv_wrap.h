@@ -54,29 +54,56 @@
 class AssFile;
 
 
-/////////////////////////////
-// STD IO for MatroskaParser
+
+/// DOCME
+/// @class MkvStdIO
+/// @brief DOCME
+///
+/// DOCME
 class MkvStdIO : public InputStream {
 public:
 	MkvStdIO(wxString filename);
+
+	/// DOCME
 	FILE *fp;
+
+	/// DOCME
 	int error;
 };
 
 
-//////////////////
-// MkvFrame class
+
+/// DOCME
+/// @class MkvFrame
+/// @brief DOCME
+///
+/// DOCME
 class MkvFrame {
 public:
+
+	/// DOCME
 	double time;
+
+	/// DOCME
 	bool isKey;
+
+	/// DOCME
 	int64_t filePos;
 
+
+	/// @brief DOCME
+	///
 	MkvFrame() {
 		time = 0;
 		isKey = false;
 		filePos = -1;
 	}
+
+	/// @brief DOCME
+	/// @param keyframe 
+	/// @param timecode 
+	/// @param _filePos 
+	///
 	MkvFrame(bool keyframe,double timecode,int64_t _filePos) {
 		isKey = keyframe;
 		time = timecode;
@@ -87,34 +114,67 @@ public:
 bool operator < (MkvFrame &t1, MkvFrame &t2);
 
 
-//////////////////////////
-// Matroska wrapper class
+
+/// DOCME
+/// @class MatroskaWrapper
+/// @brief DOCME
+///
+/// DOCME
 class MatroskaWrapper {
 private:
+
+	/// DOCME
 	wxArrayInt keyFrames;
+
+	/// DOCME
 	std::vector<double> timecodes;
+
+	/// DOCME
 	wxArrayInt bytePos;
 
 public:
+
+	/// DOCME
 	MkvStdIO *input;
+
+	/// DOCME
 	MatroskaFile *file;
+
+	/// DOCME
 	std::list<MkvFrame> frames;
+
+	/// DOCME
 	std::vector<MkvFrame> rawFrames;
 
 	MatroskaWrapper();
 	~MatroskaWrapper();
 
+
+	/// @brief DOCME
+	/// @return 
+	///
 	bool IsOpen() { return file != NULL; }
 	void Open(wxString filename,bool parse=true);
 	void Close();
 	void Parse();
 
 	void SetToTimecodes(FrameRate &target);
+
+	/// @brief DOCME
+	/// @return 
+	///
 	wxArrayInt GetBytePositions() { return bytePos; }
+
+	/// @brief DOCME
+	/// @return 
+	///
 	unsigned int GetFrameCount() { return timecodes.size(); }
 	wxArrayInt GetKeyFrames();
 	void GetSubtitles(AssFile *target);
 
+
+	/// DOCME
 	static MatroskaWrapper wrapper;
 };
+
 

@@ -61,15 +61,21 @@ class FrameMain;
 class AudioDisplay;
 
 
-////////////
-// Typedefs
+
+/// DOCME
 typedef std::list<AssEntry*>::iterator entryIter;
 
 
-//////////////
-// Main class
+
+/// DOCME
+/// @class SubtitlesGrid
+/// @brief DOCME
+///
+/// DOCME
 class SubtitlesGrid: public BaseGrid {
 private:
+
+	/// DOCME
 	bool ready;
 
 	void OnPopupMenu(bool alternate=false);
@@ -101,6 +107,8 @@ private:
 	void OnShowColMenu(wxCommandEvent &event);
 
 public:
+
+	/// DOCME
 	AssFile *ass;
 
 	SubtitlesGrid(FrameMain* parentFrame,wxWindow *parent, wxWindowID id, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = wxWANTS_CHARS, const wxString& name = wxPanelNameStr);
@@ -141,31 +149,84 @@ public:
 ///////
 // IDs
 enum {
+
+	/// DOCME
 	MENU_GRID_START = 1200,
+
+	/// DOCME
 	MENU_INSERT_BEFORE,
+
+	/// DOCME
 	MENU_INSERT_AFTER,
+
+	/// DOCME
 	MENU_INSERT_BEFORE_VIDEO,
+
+	/// DOCME
 	MENU_INSERT_AFTER_VIDEO,
+
+	/// DOCME
 	MENU_SWAP,
+
+	/// DOCME
 	MENU_DUPLICATE,
+
+	/// DOCME
 	MENU_DUPLICATE_NEXT_FRAME,
+
+	/// DOCME
 	MENU_SPLIT_BY_KARAOKE,
+
+	/// DOCME
 	MENU_COPY,
+
+	/// DOCME
 	MENU_PASTE,
+
+	/// DOCME
 	MENU_CUT,
+
+	/// DOCME
 	MENU_DELETE,
+
+	/// DOCME
 	MENU_JOIN_CONCAT,
+
+	/// DOCME
 	MENU_JOIN_REPLACE,
+
+	/// DOCME
 	MENU_ADJOIN,
+
+	/// DOCME
 	MENU_ADJOIN2,
+
+	/// DOCME
 	MENU_JOIN_AS_KARAOKE,
+
+	/// DOCME
 	MENU_RECOMBINE,
+
+	/// DOCME
 	MENU_SET_START_TO_VIDEO,
+
+	/// DOCME
 	MENU_SET_END_TO_VIDEO,
+
+	/// DOCME
 	MENU_SET_VIDEO_TO_START,
+
+	/// DOCME
 	MENU_SET_VIDEO_TO_END,
+
+	/// DOCME
 	MENU_GRID_END,
+
+	/// DOCME
 	MENU_AUDIOCLIP,
+
+	/// DOCME
 	MENU_SHOW_COL = 1250 // Don't put anything after this
 };
+
 

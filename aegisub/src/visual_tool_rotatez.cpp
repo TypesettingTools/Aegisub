@@ -47,8 +47,10 @@
 #include "utils.h"
 
 
-///////////////
-// Constructor
+
+/// @brief Constructor 
+/// @param _parent 
+///
 VisualToolRotateZ::VisualToolRotateZ(VideoDisplay *_parent)
 : VisualTool(_parent)
 {
@@ -57,16 +59,19 @@ VisualToolRotateZ::VisualToolRotateZ(VideoDisplay *_parent)
 }
 
 
-//////////
-// Update
+
+/// @brief Update 
+///
 void VisualToolRotateZ::Update() {
 	// Render parent
 	GetParent()->Render();
 }
 
 
-////////
-// Draw
+
+/// @brief Draw 
+/// @return 
+///
 void VisualToolRotateZ::Draw() {
 	// Get line to draw
 	AssDialogue *line = GetActiveDialogueLine();
@@ -162,8 +167,9 @@ void VisualToolRotateZ::Draw() {
 }
 
 
-/////////////////
-// Start holding
+
+/// @brief Start holding 
+///
 void VisualToolRotateZ::InitializeHold() {
 	GetLinePosition(curDiag,odx,ody,orgx,orgy);
 	startAngle = atan2(double(orgy-mouseY*sh/h),double(mouseX*sw/w-orgx)) * 180.0 / 3.1415926535897932;
@@ -174,8 +180,9 @@ void VisualToolRotateZ::InitializeHold() {
 }
 
 
-///////////////
-// Update hold
+
+/// @brief Update hold 
+///
 void VisualToolRotateZ::UpdateHold() {
 	// Find angle
 	float screenAngle = atan2(double(orgy-mouseY*sh/h),double(mouseX*sw/w-orgx)) * 180.0 / 3.1415926535897932;
@@ -191,15 +198,17 @@ void VisualToolRotateZ::UpdateHold() {
 }
 
 
-///////////////
-// Commit hold
+
+/// @brief Commit hold 
+///
 void VisualToolRotateZ::CommitHold() {
 	SetOverride(_T("\\frz"),PrettyFloat(wxString::Format(_T("(%0.3f)"),curAngle)));
 }
 
 
-//////////////////
-// Get \org pivot
+
+/// @brief Get \org pivot 
+///
 void VisualToolRotateZ::PopulateFeatureList() {
 	// Get line
 	curDiag = GetActiveDialogueLine();
@@ -215,26 +224,32 @@ void VisualToolRotateZ::PopulateFeatureList() {
 }
 
 
-///////////////////////////
-// Update dragging of \org
+
+/// @brief Update dragging of \org 
+/// @param feature 
+///
 void VisualToolRotateZ::UpdateDrag(VisualDraggableFeature &feature) {
 	orgx = feature.x;
 	orgy = feature.y;
 }
 
 
-///////////////////////////
-// Commit dragging of \org
+
+/// @brief Commit dragging of \org 
+/// @param feature 
+///
 void VisualToolRotateZ::CommitDrag(VisualDraggableFeature &feature) {
 	SetOverride(_T("\\org"),wxString::Format(_T("(%i,%i)"),feature.x,feature.y));
 }
 
 
-///////////
-// Refresh
+
+/// @brief Refresh 
+///
 void VisualToolRotateZ::DoRefresh() {
 	AssDialogue *line = GetActiveDialogueLine();
 	GetLinePosition(line,odx,ody,orgx,orgy);
 	GetLineRotation(line,rx,ry,curAngle);
 }
+
 

@@ -52,12 +52,22 @@ class PRSDisplay;
 class PRSFile;
 
 
-//////////////
-// PRS writer
+
+/// DOCME
+/// @class PRSSubtitleFormat
+/// @brief DOCME
+///
+/// DOCME
 class PRSSubtitleFormat : public SubtitleFormat {
 private:
+
+	/// DOCME
 	PRSDisplay *lastDisplay;
+
+	/// DOCME
 	int id;
+
+	/// DOCME
 	int optimizer;
 
 	void InsertFrame(PRSFile &file,int &framen,std::vector<int> &frames,wxImage &bmp,int x,int y,int maxalpha);
@@ -76,4 +86,5 @@ public:
 };
 
 #endif
+
 

@@ -44,14 +44,28 @@
 #include <wx/file.h>
 
 
-////////////////////////
-// Audio provider class
+
+/// DOCME
+/// @class HDAudioProvider
+/// @brief DOCME
+///
+/// DOCME
 class HDAudioProvider : public AudioProvider {
 private:
+
+	/// DOCME
 	wxMutex diskmutex;
+
+	/// DOCME
 	wxFile file_cache;
+
+	/// DOCME
 	wxString diskCacheFilename;
+
+	/// DOCME
 	bool samples_native_endian;
+
+	/// DOCME
 	char *data;
 
 	static wxString DiskCachePath();
@@ -61,8 +75,12 @@ public:
 	HDAudioProvider(AudioProvider *source);
 	~HDAudioProvider();
 
+
+	/// @brief DOCME
+	///
 	bool AreSamplesNativeEndian() { return samples_native_endian; }
 
 	void GetAudio(void *buf, int64_t start, int64_t count);
 };
+
 

@@ -36,6 +36,8 @@
 
 
 #ifndef VALIDATORS_H
+
+/// DOCME
 #define VALIDATORS_H
 
 
@@ -45,15 +47,29 @@
 #include <wx/validate.h>
 
 
-/////////////////////
-// Numeric validator
+
+/// DOCME
+/// @class NumValidator
+/// @brief DOCME
+///
+/// DOCME
 class NumValidator : public wxValidator {
 private:
+
+	/// DOCME
 	double fValue;
+
+	/// DOCME
 	int iValue;
+
+	/// DOCME
 	wxString* valPtr;
 
+
+	/// DOCME
 	bool isFloat;
+
+	/// DOCME
 	bool isSigned;
 	wxObject* Clone() const;
 	bool Validate(wxWindow* parent);
@@ -73,4 +89,5 @@ public:
 
 
 #endif
+
 

@@ -36,6 +36,8 @@
 
 
 #ifndef TEXT_FILE_WRITER_H
+
+/// DOCME
 #define TEXT_FILE_WRITER_H
 
 #include <wx/wxprec.h>
@@ -45,9 +47,19 @@
 
 class AegisubCSConv;
 
+
+/// DOCME
+/// @class TextFileWriter
+/// @brief DOCME
+///
+/// DOCME
 class TextFileWriter {
 private:
+
+	/// DOCME
 	std::ofstream file;
+
+	/// DOCME
 	std::auto_ptr<AegisubCSConv> conv;
 
 	TextFileWriter(const TextFileWriter&);
@@ -61,4 +73,5 @@ public:
 };
 
 #endif
+
 

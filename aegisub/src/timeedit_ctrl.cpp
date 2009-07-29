@@ -49,13 +49,26 @@
 
 // Use the multiline style only on wxGTK to workaround some wxGTK bugs with the default singleline style
 #ifdef __WXGTK__
+
+/// DOCME
 #define TimeEditWindowStyle wxTE_MULTILINE | wxTE_CENTRE
 #else
+
+/// DOCME
 #define TimeEditWindowStyle wxTE_CENTRE
 #endif
 
-///////////////
-// Constructor
+
+/// @brief Constructor 
+/// @param parent    
+/// @param id        
+/// @param value     
+/// @param pos       
+/// @param size      
+/// @param style     
+/// @param validator 
+/// @param name      
+///
 TimeEdit::TimeEdit(wxWindow* parent, wxWindowID id, const wxString& value, const wxPoint& pos, const wxSize& size, long style, const wxValidator& validator, const wxString& name) :
 wxTextCtrl(parent,id,value,pos,size,TimeEditWindowStyle | style,validator,name)
 {
@@ -108,8 +121,11 @@ BEGIN_EVENT_TABLE(TimeEdit, wxTextCtrl)
 END_EVENT_TABLE()
 
 
-//////////////////
-// Modified event
+
+/// @brief Modified event 
+/// @param event 
+/// @return 
+///
 void TimeEdit::OnModified(wxCommandEvent &event) {
 	event.Skip();
 	if (!ready) return;
@@ -117,8 +133,11 @@ void TimeEdit::OnModified(wxCommandEvent &event) {
 }
 
 
-/////////////////////
-// Modified function
+
+/// @brief Modified function 
+/// @param byUser 
+/// @return 
+///
 void TimeEdit::Modified(bool byUser) {
 	// Lock
 	if (!ready) return;
@@ -139,8 +158,11 @@ void TimeEdit::Modified(bool byUser) {
 }
 
 
-/////////////////////////////
-// Set time and update stuff
+
+/// @brief Set time and update stuff 
+/// @param ms          
+/// @param setModified 
+///
 void TimeEdit::SetTime(int ms,bool setModified) {
 	int oldMs = time.GetMS();
 	time.SetMS(ms);
@@ -149,8 +171,11 @@ void TimeEdit::SetTime(int ms,bool setModified) {
 }
 
 
-/////////////////////////////////////////
-// Toggles between set by frame and time
+
+/// @brief Toggles between set by frame and time 
+/// @param enable 
+/// @return 
+///
 void TimeEdit::SetByFrame(bool enable) {
 	if (enable == byFrame) return;
 
@@ -170,8 +195,9 @@ void TimeEdit::SetByFrame(bool enable) {
 }
 
 
-/////////////////////////////////////
-// Update text to reflect time value
+
+/// @brief Update text to reflect time value 
+///
 void TimeEdit::UpdateText() {
 	ready = false;
 	if (byFrame) {
@@ -183,8 +209,9 @@ void TimeEdit::UpdateText() {
 }
 
 
-//////////
-// Update
+
+/// @brief Update 
+///
 void TimeEdit::Update() {
 	// Update frame
 	if (byFrame) {
@@ -208,8 +235,10 @@ void TimeEdit::Update() {
 }
 
 
-/////////////////////////////////////////////////
-// Reads value from a text control and update it
+
+/// @brief Reads value from a text control and update it 
+/// @param byUser 
+///
 void TimeEdit::UpdateTime(bool byUser) {
 	bool insertion = Options.AsBool(_T("Insert Mode on Time Boxes"));
 	wxString text = GetValue();
@@ -241,8 +270,10 @@ void TimeEdit::UpdateTime(bool byUser) {
 }
 
 
-///////////////
-// Key pressed
+
+/// @brief Key pressed 
+/// @param event 
+///
 void TimeEdit::OnKeyDown(wxKeyEvent &event) {
 	// Get key ID
 	int key = event.GetKeyCode();
@@ -282,8 +313,10 @@ void TimeEdit::OnKeyDown(wxKeyEvent &event) {
 }
 
 
-//////////////
-// Focus lost
+
+/// @brief Focus lost 
+/// @param event 
+///
 void TimeEdit::OnKillFocus(wxFocusEvent &event) {
 	if (!byFrame && !Options.AsBool(_T("Insert Mode on Time Boxes"))) {
 		if (time.GetASSFormated() != GetValue()) {
@@ -297,8 +330,11 @@ void TimeEdit::OnKillFocus(wxFocusEvent &event) {
 
 ///// Mouse/copy/paste events down here /////
 
-///////////////
-// Mouse event
+
+/// @brief Mouse event 
+/// @param event 
+/// @return 
+///
 void TimeEdit::OnMouseEvent(wxMouseEvent &event) {
 	// Right click context menu
 	if (event.RightUp()) {
@@ -316,8 +352,10 @@ void TimeEdit::OnMouseEvent(wxMouseEvent &event) {
 }
 
 
-/////////////
-// Menu Copy
+
+/// @brief Menu Copy 
+/// @param event 
+///
 void TimeEdit::OnCopy(wxCommandEvent &event) {
 	SetFocus();
 	SetSelection(0,GetValue().Length());
@@ -326,8 +364,10 @@ void TimeEdit::OnCopy(wxCommandEvent &event) {
 }
 
 
-//////////////
-// Menu Paste
+
+/// @brief Menu Paste 
+/// @param event 
+///
 void TimeEdit::OnPaste(wxCommandEvent &event) {
 	SetFocus();
 	PasteTime();
@@ -335,8 +375,10 @@ void TimeEdit::OnPaste(wxCommandEvent &event) {
 }
 
 
-/////////////////////
-// Copy to clipboard
+
+/// @brief Copy to clipboard 
+/// @return 
+///
 void TimeEdit::CopyTime() {
 	// Frame
 	if (byFrame) {
@@ -352,8 +394,9 @@ void TimeEdit::CopyTime() {
 }
 
 
-////////////////////////
-// Paste from clipboard
+
+/// @brief Paste from clipboard 
+///
 void TimeEdit::PasteTime() {
 	// Frame
 	if (byFrame) {
@@ -385,4 +428,5 @@ void TimeEdit::PasteTime() {
 		}
 	}
 }
+
 

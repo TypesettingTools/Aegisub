@@ -44,14 +44,21 @@
 #include <wx/stc/stc.h>
 
 
-/////////
-// Class
+
+/// DOCME
+/// @class ScintillaTextCtrl
+/// @brief DOCME
+///
+/// DOCME
 class ScintillaTextCtrl : public wxStyledTextCtrl {
 public:
 	wxString GetWordAtPosition(int pos);
 	void GetBoundsOfWordAtPosition(int pos,int &start,int &end);
 	int GetUnicodePosition(int pos);
 	int GetReverseUnicodePosition(int pos);
+
+	/// @brief DOCME
+	///
 	wxString GetValue() { return GetText(); }
 
 	void StartUnicodeStyling(int start,int mask=31);
@@ -61,4 +68,5 @@ public:
 	ScintillaTextCtrl(wxWindow* parent, wxWindowID id, const wxString& value = _T(""), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = 0, const wxValidator& validator = wxDefaultValidator, const wxString& name = wxTextCtrlNameStr);
 	virtual ~ScintillaTextCtrl();
 };
+
 

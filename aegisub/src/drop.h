@@ -36,6 +36,8 @@
 
 
 #ifndef DROP_H
+
+/// DOCME
 #define DROP_H
 
 
@@ -50,10 +52,16 @@
 class FrameMain;
 
 
-///////////////
-// Drop source
+
+/// DOCME
+/// @class AegisubFileDropTarget
+/// @brief DOCME
+///
+/// DOCME
 class AegisubFileDropTarget : public wxFileDropTarget {
 private:
+
+	/// DOCME
 	FrameMain *parent;
 
 public:
@@ -64,4 +72,5 @@ public:
 };
 
 #endif
+
 

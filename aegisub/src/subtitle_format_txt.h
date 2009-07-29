@@ -48,8 +48,12 @@
 class AssDialogue;
 
 
-//////////////
-// TXT reader
+
+/// DOCME
+/// @class TXTSubtitleFormat
+/// @brief DOCME
+///
+/// DOCME
 class TXTSubtitleFormat : public SubtitleFormat {
 private:
 
@@ -63,4 +67,5 @@ public:
 	void ReadFile(wxString filename,wxString forceEncoding);
 	void WriteFile(wxString filename, wxString encoding = _T(""));
 };
+
 

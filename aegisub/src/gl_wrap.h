@@ -42,23 +42,49 @@
 #else
 #include <GL/gl.h>
 #include <GL/glu.h>
+
+/// DOCME
 typedef GLuint GLhandleARB;
 #endif
 #include <wx/thread.h>
 #include <wx/colour.h>
 
 
-//////////////////
-// OpenGL Wrapper
+
+/// DOCME
+/// @class OpenGLWrapper
+/// @brief DOCME
+///
+/// DOCME
 class OpenGLWrapper {
 private:
+
+	/// DOCME
+
+	/// DOCME
+
+	/// DOCME
+
+	/// DOCME
 	float r1,g1,b1,a1;
+
+	/// DOCME
+
+	/// DOCME
+
+	/// DOCME
+
+	/// DOCME
 	float r2,g2,b2,a2;
+
+	/// DOCME
 	int lw;
 
 public:
 	OpenGLWrapper();
 
+
+	/// DOCME
 	static wxMutex glMutex;
 
 	void SetLineColour(wxColour col,float alpha=1.0f,int width=1);
@@ -68,6 +94,12 @@ public:
 	void DrawLine(float x1,float y1,float x2,float y2);
 	void DrawDashedLine(float x1,float y1,float x2,float y2,float dashLen);
 	void DrawEllipse(float x,float y,float radiusX,float radiusY);
+
+	/// @brief DOCME
+	/// @param x      
+	/// @param y      
+	/// @param radius 
+	///
 	void DrawCircle(float x,float y,float radius) { DrawEllipse(x,y,radius,radius); }
 	void DrawRectangle(float x1,float y1,float x2,float y2);
 	void DrawRing(float x,float y,float r1,float r2,float ar=1.0f,float arcStart=0.0f,float arcEnd=0.0f);
@@ -75,4 +107,5 @@ public:
 
 	static bool IsExtensionSupported(const char *ext);
 };
+
 

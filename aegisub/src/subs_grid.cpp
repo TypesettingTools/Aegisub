@@ -91,8 +91,16 @@ BEGIN_EVENT_TABLE(SubtitlesGrid, BaseGrid)
 END_EVENT_TABLE()
 
 
-///////////////
-// Constructor
+
+/// @brief Constructor 
+/// @param parentFr 
+/// @param parent   
+/// @param id       
+/// @param pos      
+/// @param size     
+/// @param style    
+/// @param name     
+///
 SubtitlesGrid::SubtitlesGrid(FrameMain* parentFr, wxWindow *parent, wxWindowID id, const wxPoint& pos, const wxSize& size, long style, const wxString& name)
                         : BaseGrid(parent,id,pos,size,style,name)
 {
@@ -104,14 +112,18 @@ SubtitlesGrid::SubtitlesGrid(FrameMain* parentFr, wxWindow *parent, wxWindowID i
 }
 
 
-//////////////
-// Destructor
+
+/// @brief Destructor 
+///
 SubtitlesGrid::~SubtitlesGrid() {
 }
 
 
-//////////////
-// Popup menu
+
+/// @brief Popup menu 
+/// @param alternate 
+/// @return 
+///
 void SubtitlesGrid::OnPopupMenu(bool alternate) {
 	// Alternate
 	if (alternate) {
@@ -210,8 +222,10 @@ void SubtitlesGrid::OnPopupMenu(bool alternate) {
 }
 
 
-////////////////////////////////////
-// Process a show/hide column event
+
+/// @brief Process a show/hide column event 
+/// @param event 
+///
 void SubtitlesGrid::OnShowColMenu(wxCommandEvent &event) {
 	// Set width
 	int item = event.GetId()-MENU_SHOW_COL;
@@ -227,8 +241,11 @@ void SubtitlesGrid::OnShowColMenu(wxCommandEvent &event) {
 }
 
 
-///////////////////////////
-// Process keyboard events
+
+/// @brief Process keyboard events 
+/// @param event 
+/// @return 
+///
 void SubtitlesGrid::OnKeyDown(wxKeyEvent &event) {
 	// Get key
 #ifdef __APPLE__
@@ -337,8 +354,10 @@ void SubtitlesGrid::OnDuplicateNextFrame (wxCommandEvent &WXUNUSED(&event)) {
 }
 
 
-/////////////
-// Call swap
+
+/// @brief Call swap 
+/// @param event 
+///
 void SubtitlesGrid::OnSwap (wxCommandEvent &event) {
 	BeginBatch();
 	wxArrayInt sels = GetSelection();
@@ -347,8 +366,10 @@ void SubtitlesGrid::OnSwap (wxCommandEvent &event) {
 }
 
 
-///////////////////////////
-// Call join (concatenate)
+
+/// @brief Call join (concatenate) 
+/// @param event 
+///
 void SubtitlesGrid::OnJoinConcat (wxCommandEvent &event) {
 	BeginBatch();
 	wxArrayInt sels = GetSelection();
@@ -357,8 +378,10 @@ void SubtitlesGrid::OnJoinConcat (wxCommandEvent &event) {
 }
 
 
-///////////////////////
-// Call join (replace)
+
+/// @brief Call join (replace) 
+/// @param event 
+///
 void SubtitlesGrid::OnJoinReplace (wxCommandEvent &event) {
 	BeginBatch();
 	wxArrayInt sels = GetSelection();
@@ -367,8 +390,10 @@ void SubtitlesGrid::OnJoinReplace (wxCommandEvent &event) {
 }
 
 
-////////////////
-// Adjoin lines
+
+/// @brief Adjoin lines 
+/// @param event 
+///
 void SubtitlesGrid::OnAdjoin (wxCommandEvent &event) {
 	BeginBatch();
 	wxArrayInt sels = GetSelection();
@@ -376,6 +401,10 @@ void SubtitlesGrid::OnAdjoin (wxCommandEvent &event) {
 	EndBatch();
 }
 
+
+/// @brief DOCME
+/// @param event 
+///
 void SubtitlesGrid::OnAdjoin2 (wxCommandEvent &event) {
 	BeginBatch();
 	wxArrayInt sels = GetSelection();
@@ -384,8 +413,10 @@ void SubtitlesGrid::OnAdjoin2 (wxCommandEvent &event) {
 }
 
 
-////////////////////////
-// Call join as karaoke
+
+/// @brief Call join as karaoke 
+/// @param event 
+///
 void SubtitlesGrid::OnJoinAsKaraoke (wxCommandEvent &event) {
 	BeginBatch();
 	wxArrayInt sels = GetSelection();
@@ -394,8 +425,10 @@ void SubtitlesGrid::OnJoinAsKaraoke (wxCommandEvent &event) {
 }
 
 
-/////////////////////////
-// Call split by karaoke
+
+/// @brief Call split by karaoke 
+/// @param event 
+///
 void SubtitlesGrid::OnSplitByKaraoke (wxCommandEvent &event) {
 	BeginBatch();
 	wxArrayInt sels = GetSelection();
@@ -411,8 +444,10 @@ void SubtitlesGrid::OnSplitByKaraoke (wxCommandEvent &event) {
 }
 
 
-//////////////////////
-// Call insert before
+
+/// @brief Call insert before 
+/// @param event 
+///
 void SubtitlesGrid::OnInsertBefore (wxCommandEvent &event) {
 	BeginBatch();
 	// Find line
@@ -443,8 +478,10 @@ void SubtitlesGrid::OnInsertBefore (wxCommandEvent &event) {
 }
 
 
-/////////////////////
-// Call insert after
+
+/// @brief Call insert after 
+/// @param event 
+///
 void SubtitlesGrid::OnInsertAfter (wxCommandEvent &event) {
 	BeginBatch();
 	// Find line
@@ -473,8 +510,10 @@ void SubtitlesGrid::OnInsertAfter (wxCommandEvent &event) {
 }
 
 
-/////////////////////////////////
-// Call insert before with video
+
+/// @brief Call insert before with video 
+/// @param event 
+///
 void SubtitlesGrid::OnInsertBeforeVideo (wxCommandEvent &event) {
 	BeginBatch();
 	// Find line
@@ -495,8 +534,10 @@ void SubtitlesGrid::OnInsertBeforeVideo (wxCommandEvent &event) {
 }
 
 
-////////////////////////////////
-// Call insert after with video
+
+/// @brief Call insert after with video 
+/// @param event 
+///
 void SubtitlesGrid::OnInsertAfterVideo (wxCommandEvent &event) {
 	BeginBatch();
 	// Find line
@@ -547,8 +588,10 @@ void SubtitlesGrid::OnDeleteLines (wxCommandEvent &WXUNUSED(&event)) {
 }
 
 
-//////////////////////////
-// Set start to video pos
+
+/// @brief Set start to video pos 
+/// @param event 
+///
 void SubtitlesGrid::OnSetStartToVideo(wxCommandEvent &event) {
 	BeginBatch();
 	SetSubsToVideo(true);
@@ -556,8 +599,10 @@ void SubtitlesGrid::OnSetStartToVideo(wxCommandEvent &event) {
 }
 
 
-////////////////////////
-// Set end to video pos
+
+/// @brief Set end to video pos 
+/// @param event 
+///
 void SubtitlesGrid::OnSetEndToVideo(wxCommandEvent &event) {
 	BeginBatch();
 	SetSubsToVideo(false);
@@ -565,8 +610,10 @@ void SubtitlesGrid::OnSetEndToVideo(wxCommandEvent &event) {
 }
 
 
-//////////////////////////
-// Set video pos to start
+
+/// @brief Set video pos to start 
+/// @param event 
+///
 void SubtitlesGrid::OnSetVideoToStart(wxCommandEvent &event) {
 	BeginBatch();
 	SetVideoToSubs(true);
@@ -574,8 +621,10 @@ void SubtitlesGrid::OnSetVideoToStart(wxCommandEvent &event) {
 }
 
 
-////////////////////////
-// Set video pos to end
+
+/// @brief Set video pos to end 
+/// @param event 
+///
 void SubtitlesGrid::OnSetVideoToEnd(wxCommandEvent &event) {
 	BeginBatch();
 	SetVideoToSubs(false);
@@ -583,8 +632,11 @@ void SubtitlesGrid::OnSetVideoToEnd(wxCommandEvent &event) {
 }
 
 
-//////////////
-// Recombine
+
+/// @brief Recombine 
+/// @param event 
+/// @return 
+///
 void SubtitlesGrid::OnRecombine(wxCommandEvent &event) {
 	// Get selection
 	bool cont;
@@ -664,8 +716,11 @@ void SubtitlesGrid::OnRecombine(wxCommandEvent &event) {
 
 
 
-//////////////
-// Export audio clip of line
+
+/// @brief Export audio clip of line 
+/// @param event 
+/// @return 
+///
 void SubtitlesGrid::OnAudioClip(wxCommandEvent &event) {
 	int64_t num_samples,start=0,end=0,temp;
 	AudioDisplay *audioDisplay = parentFrame->audioBox->audioDisplay;
@@ -743,8 +798,10 @@ void SubtitlesGrid::OnAudioClip(wxCommandEvent &event) {
 		outfile.close();
 	}
 }
-//////////////////////////////////////
-// Clears grid and sets it to default
+
+/// @brief Clears grid and sets it to default 
+/// @param _ass 
+///
 void SubtitlesGrid::LoadDefault (AssFile *_ass) {
 	if (_ass) {
 		ass = _ass;
@@ -754,8 +811,12 @@ void SubtitlesGrid::LoadDefault (AssFile *_ass) {
 }
 
 
-/////////////////////////////////////
-// Read data from ASS file structure
+
+/// @brief Read data from ASS file structure 
+/// @param _ass          
+/// @param keepSelection 
+/// @param dontModify    
+///
 void SubtitlesGrid::LoadFromAss (AssFile *_ass,bool keepSelection,bool dontModify) {
 	// Store selected rows
 	std::vector<int> srows;
@@ -837,8 +898,12 @@ void SubtitlesGrid::LoadFromAss (AssFile *_ass,bool keepSelection,bool dontModif
 }
 
 
-///////////////////
-// Swaps two lines
+
+/// @brief Swaps two lines 
+/// @param n1 
+/// @param n2 
+/// @return 
+///
 void SubtitlesGrid::SwapLines(int n1,int n2) {
 	// Check bounds and get iterators
 	int rows = GetRows();
@@ -859,8 +924,13 @@ void SubtitlesGrid::SwapLines(int n1,int n2) {
 }
 
 
-/////////////////
-// Insert a line
+
+/// @brief Insert a line 
+/// @param line   
+/// @param n      
+/// @param after  
+/// @param update 
+///
 void SubtitlesGrid::InsertLine(AssDialogue *line,int n,bool after,bool update) {
 	// Check bounds and get iterators
 	entryIter pos = diagMap.at(n);
@@ -887,8 +957,10 @@ void SubtitlesGrid::InsertLine(AssDialogue *line,int n,bool after,bool update) {
 }
 
 
-///////////////////////////
-// Copy lines to clipboard
+
+/// @brief Copy lines to clipboard 
+/// @param target 
+///
 void SubtitlesGrid::CopyLines(wxArrayInt target) {
 	// Prepare text
 	wxString data = _T("");
@@ -910,8 +982,10 @@ void SubtitlesGrid::CopyLines(wxArrayInt target) {
 }
 
 
-////////////////////
-// Cut to clipboard
+
+/// @brief Cut to clipboard 
+/// @param target 
+///
 void SubtitlesGrid::CutLines(wxArrayInt target) {
 	BeginBatch();
 	CopyLines(target);
@@ -920,8 +994,12 @@ void SubtitlesGrid::CutLines(wxArrayInt target) {
 }
 
 
-//////////////////////////////
-// Paste lines from clipboard
+
+/// @brief Paste lines from clipboard 
+/// @param n         
+/// @param pasteOver 
+/// @return 
+///
 void SubtitlesGrid::PasteLines(int n,bool pasteOver) {
 	BeginBatch();
 
@@ -1027,8 +1105,11 @@ void SubtitlesGrid::PasteLines(int n,bool pasteOver) {
 }
 
 
-/////////////////////////
-// Delete selected lines
+
+/// @brief Delete selected lines 
+/// @param target       
+/// @param flagModified 
+///
 void SubtitlesGrid::DeleteLines(wxArrayInt target, bool flagModified) {
 	// Check if it's wiping file
 	int deleted = 0;
@@ -1062,8 +1143,12 @@ void SubtitlesGrid::DeleteLines(wxArrayInt target, bool flagModified) {
 }
 
 
-////////////////////////
-// Joins selected lines
+
+/// @brief Joins selected lines 
+/// @param n1     
+/// @param n2     
+/// @param concat 
+///
 void SubtitlesGrid::JoinLines(int n1,int n2,bool concat) {
 	// Initialize
 	int min_ms = 0x0FFFFFFF;
@@ -1118,8 +1203,13 @@ void SubtitlesGrid::JoinLines(int n1,int n2,bool concat) {
 }
 
 
-//////////////////////////
-// Adjoins selected lines
+
+/// @brief Adjoins selected lines 
+/// @param n1       
+/// @param n2       
+/// @param setStart 
+/// @return 
+///
 void SubtitlesGrid::AdjoinLines(int n1,int n2,bool setStart) {
 	// Set start
 	if (setStart) {
@@ -1153,8 +1243,11 @@ void SubtitlesGrid::AdjoinLines(int n1,int n2,bool setStart) {
 }
 
 
-///////////////////////////////////
-// Joins selected lines as karaoke
+
+/// @brief Joins selected lines as karaoke 
+/// @param n1 
+/// @param n2 
+///
 void SubtitlesGrid::JoinAsKaraoke(int n1,int n2) {
 	// Initialize
 	wxString finalText = _T("");
@@ -1202,8 +1295,12 @@ void SubtitlesGrid::JoinAsKaraoke(int n1,int n2) {
 }
 
 
-///////////////////
-// Duplicate lines
+
+/// @brief Duplicate lines 
+/// @param n1        
+/// @param n2        
+/// @param nextFrame 
+///
 void SubtitlesGrid::DuplicateLines(int n1,int n2,bool nextFrame) {
 	AssDialogue *cur;
 	bool update = false;
@@ -1237,14 +1334,16 @@ void SubtitlesGrid::DuplicateLines(int n1,int n2,bool nextFrame) {
 }
 
 
-///////////////////////
-// Shifts line by time
-// -------------------
-// Where type =
-//  0: Start + End
-//  1: Start
-//  2: End
-//
+
+/// @brief  Shifts line by time
+/// @param n    
+/// @param len  
+/// @param type 
+///
+/// Where type =
+///   - 0: Start + End
+///   - 1: Start
+///    - 2: End
 void SubtitlesGrid::ShiftLineByTime(int n,int len,int type) {
 	AssDialogue *cur = GetDialogue(n);
 
@@ -1258,14 +1357,13 @@ void SubtitlesGrid::ShiftLineByTime(int n,int len,int type) {
 }
 
 
-////////////////////////
-// Shifts line by frame
-// -------------------
-// Where type =
-//  0: Start + End
-//  1: Start
-//  2: End
-//
+
+/// @brief  Shifts line by Frame
+/// @param n    
+/// @param len  
+/// @param type 
+///
+/// @see ShiftLineByTime()
 void SubtitlesGrid::ShiftLineByFrames(int n,int len,int type) {
 	AssDialogue *cur = GetDialogue(n);
 
@@ -1279,8 +1377,14 @@ void SubtitlesGrid::ShiftLineByFrames(int n,int len,int type) {
 }
 
 
-//////////////
-// Split line
+
+/// @brief Split line 
+/// @param n      
+/// @param pos    
+/// @param mode   
+/// @param textIn 
+/// @return 
+///
 void SubtitlesGrid::SplitLine(int n,int pos,int mode,wxString textIn) {
 	// Split
 	AssDialogue *n1,*n2;
@@ -1323,13 +1427,11 @@ void SubtitlesGrid::SplitLine(int n,int pos,int mode,wxString textIn) {
 }
 
 
-//////////////////
-// Split line by karaoke
-// ---------------------
-// Splits the line into as many new lines as there are karaoke syllables,
-// timed as the syllables.
-// DOES NOT FLAG AS MODIFIED OR COMMIT CHANGES
-// Returns true if changes were made.
+
+/// @brief Returns true if changes were made. DOES NOT FLAG AS MODIFIED OR COMMIT CHANGES timed as the syllables. Splits the line into as many new lines as there are karaoke syllables, --------------------- Split line by karaoke 
+/// @param lineNumber 
+/// @return 
+///
 bool SubtitlesGrid::SplitLineByKaraoke(int lineNumber) {
 	AssDialogue *line = GetDialogue(lineNumber);
 
@@ -1371,10 +1473,11 @@ bool SubtitlesGrid::SplitLineByKaraoke(int lineNumber) {
 }
 
 
-//////////////////
-// Commit changes
-// --------------
-// This will save the work .ass and refresh it
+
+/// @brief This will save the work .ass and refresh it -------------- Commit changes 
+/// @param force     
+/// @param videoOnly 
+///
 void SubtitlesGrid::CommitChanges(bool force,bool videoOnly) {
 	if (VideoContext::Get()->IsLoaded() || force) {
 		// Check if it's playing
@@ -1409,8 +1512,11 @@ void SubtitlesGrid::CommitChanges(bool force,bool videoOnly) {
 }
 
 
-//////////////////////////
-// Set start to video pos
+
+/// @brief Set start to video pos 
+/// @param start 
+/// @return 
+///
 void SubtitlesGrid::SetSubsToVideo(bool start) {
 	// Check if it's OK to do it
 	if (!VFR_Output.IsLoaded()) return;
@@ -1441,8 +1547,11 @@ void SubtitlesGrid::SetSubsToVideo(bool start) {
 }
 
 
-//////////////////////////////
-// Set video pos to start/end
+
+/// @brief Set video pos to start/end 
+/// @param start 
+/// @return 
+///
 void SubtitlesGrid::SetVideoToSubs(bool start) {
 	wxArrayInt sel = GetSelection();
 	if (sel.Count() == 0) return;
@@ -1456,9 +1565,10 @@ void SubtitlesGrid::SetVideoToSubs(bool start) {
 }
 
 
-/////////////////////////////////////////////////////////////////////
-// Retrieve a list of selected lines in the actual ASS file
-// (ie. not as displayed in the grid but as represented in the file)
+
+/// @brief (ie. not as displayed in the grid but as represented in the file) Retrieve a list of selected lines in the actual ASS file 
+/// @return 
+///
 std::vector<int> SubtitlesGrid::GetAbsoluteSelection() {
 	std::vector<int> result;
 	result.reserve(GetNumberSelection());
@@ -1481,9 +1591,10 @@ std::vector<int> SubtitlesGrid::GetAbsoluteSelection() {
 }
 
 
-/////////////////////////////////////////////////////////////////////
-// Update list of selected lines from absolute selection
-// selection vector must be sorted
+
+/// @brief selection vector must be sorted Update list of selected lines from absolute selection 
+/// @param selection 
+///
 void SubtitlesGrid::SetSelectionFromAbsolute(std::vector<int> &selection) {
 
 	int nrows = GetRows();
@@ -1497,4 +1608,5 @@ void SubtitlesGrid::SetSelectionFromAbsolute(std::vector<int> &selection) {
 		} else selMap[i] = false;
 	}
 }
+
 

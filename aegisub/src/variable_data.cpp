@@ -45,23 +45,27 @@
 #include "utils.h"
 
 
-///////////////
-// Constructor
+
+/// @brief Constructor 
+///
 VariableData::VariableData () {
 	type = VARDATA_NONE;
 	value = NULL;
 }
 
 
-//////////////
-// Destructor
+
+/// @brief Destructor 
+///
 VariableData::~VariableData () {
 	DeleteValue ();
 }
 
 
-////////////////////////////
-// Deletes the stored value
+
+/// @brief Deletes the stored value 
+/// @return 
+///
 void VariableData::DeleteValue () {
 	if (!value) return;
 	if (type == VARDATA_NONE) return;
@@ -79,8 +83,10 @@ void VariableData::DeleteValue () {
 }
 
 
-//////////////////////
-// Sets to an integer
+
+/// @brief Sets to an integer 
+/// @param param 
+///
 void VariableData::SetInt(int param) {
 	DeleteValue();
 	type = VARDATA_INT;
@@ -88,8 +94,10 @@ void VariableData::SetInt(int param) {
 }
 
 
-///////////////////
-// Sets to a float
+
+/// @brief Sets to a float 
+/// @param param 
+///
 void VariableData::SetFloat(double param) {
 	DeleteValue();
 	type = VARDATA_FLOAT;
@@ -97,8 +105,10 @@ void VariableData::SetFloat(double param) {
 }
 
 
-/////////////////////
-// Sets to a boolean
+
+/// @brief Sets to a boolean 
+/// @param param 
+///
 void VariableData::SetBool(bool param) {
 	DeleteValue();
 	type = VARDATA_BOOL;
@@ -106,8 +116,10 @@ void VariableData::SetBool(bool param) {
 }
 
 
-////////////////////
-// Sets to a string
+
+/// @brief Sets to a string 
+/// @param param 
+///
 void VariableData::SetText(wxString param) {
 	DeleteValue();
 	type = VARDATA_TEXT;
@@ -115,8 +127,10 @@ void VariableData::SetText(wxString param) {
 }
 
 
-////////////////////
-// Sets to a colour
+
+/// @brief Sets to a colour 
+/// @param param 
+///
 void VariableData::SetColour(wxColour param) {
 	DeleteValue();
 	type = VARDATA_COLOUR;
@@ -124,8 +138,10 @@ void VariableData::SetColour(wxColour param) {
 }
 
 
-////////////////////
-// Sets to a block
+
+/// @brief Sets to a block 
+/// @param param 
+///
 void VariableData::SetBlock(AssDialogueBlockOverride *param) {
 	DeleteValue();
 	type = VARDATA_BLOCK;
@@ -133,8 +149,10 @@ void VariableData::SetBlock(AssDialogueBlockOverride *param) {
 }
 
 
-/////////////////////////////////////////////////////////
-// Resets a value with a string, preserving current type
+
+/// @brief Resets a value with a string, preserving current type 
+/// @param value 
+///
 void VariableData::ResetWith(wxString value) {
 	switch (type) {
 		case VARDATA_INT: {
@@ -168,8 +186,10 @@ void VariableData::ResetWith(wxString value) {
 }
 
 
-///////////////////
-// Reads as an int
+
+/// @brief Reads as an int 
+/// @return 
+///
 int VariableData::AsInt() const {
 	if (!value) throw _T("Null parameter");
 	if (type == VARDATA_BOOL) return (*value_bool)?1:0;
@@ -180,8 +200,10 @@ int VariableData::AsInt() const {
 }
 
 
-////////////////////
-// Reads as a float
+
+/// @brief Reads as a float 
+/// @return 
+///
 double VariableData::AsFloat() const {
 	if (!value) throw _T("Null parameter");
 	if (type == VARDATA_FLOAT) return *value_float;
@@ -191,8 +213,10 @@ double VariableData::AsFloat() const {
 }
 
 
-///////////////////
-// Reads as a bool
+
+/// @brief Reads as a bool 
+/// @return 
+///
 bool VariableData::AsBool() const {
 	if (!value) throw _T("Null parameter");
 	if (type == VARDATA_BOOL) return *value_bool;
@@ -203,8 +227,10 @@ bool VariableData::AsBool() const {
 }
 
 
-/////////////////////
-// Reads as a colour
+
+/// @brief Reads as a colour 
+/// @return 
+///
 wxColour VariableData::AsColour() const {
 	if (!value) throw _T("Null parameter");
 	if (type == VARDATA_COLOUR)	return *value_colour;
@@ -217,8 +243,10 @@ wxColour VariableData::AsColour() const {
 }
 
 
-////////////////////
-// Reads as a block
+
+/// @brief Reads as a block 
+/// @return 
+///
 AssDialogueBlockOverride *VariableData::AsBlock() const {
 	if (!value) throw _T("Null parameter");
 	if (type != VARDATA_BLOCK) throw _T("Wrong parameter type, should be block");
@@ -226,8 +254,10 @@ AssDialogueBlockOverride *VariableData::AsBlock() const {
 }
 
 
-/////////////////////
-// Reads as a string
+
+/// @brief Reads as a string 
+/// @return 
+///
 wxString VariableData::AsText() const {
 	if (!value) throw _T("Null parameter");
 	if (type != VARDATA_TEXT) {
@@ -245,15 +275,19 @@ wxString VariableData::AsText() const {
 }
 
 
-/////////////
-// Gets type
+
+/// @brief Gets type 
+/// @return 
+///
 VariableDataType VariableData::GetType() const {
 	return type;
 }
 
 
-////////
-// Copy
+
+/// @brief Copy 
+/// @param param 
+///
 void VariableData::operator= (const VariableData &param) {
 	switch(param.GetType()) {
 		case VARDATA_INT: SetInt(param.AsInt()); break;
@@ -265,4 +299,5 @@ void VariableData::operator= (const VariableData &param) {
 		default: DeleteValue();
 	}
 }
+
 

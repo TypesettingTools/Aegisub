@@ -48,11 +48,19 @@
 class MyThes;
 
 
-///////////////////////
-// Thesaurus interface
+
+/// DOCME
+/// @class MySpellThesaurus
+/// @brief DOCME
+///
+/// DOCME
 class MySpellThesaurus: public Thesaurus {
 private:
+
+	/// DOCME
 	MyThes *mythes;
+
+	/// DOCME
 	wxCSConv *conv;
 
 public:
@@ -63,4 +71,5 @@ public:
 	wxArrayString GetLanguageList();
 	void SetLanguage(wxString language);
 };
+
 

@@ -48,8 +48,12 @@
 class AssDialogue;
 
 
-/////////////////////
-// SRT reader/writer
+
+/// DOCME
+/// @class SRTSubtitleFormat
+/// @brief DOCME
+///
+/// DOCME
 class SRTSubtitleFormat : public SubtitleFormat {
 public:
 	wxString GetName();
@@ -62,4 +66,5 @@ public:
 	bool CanWriteFile(wxString filename);
 	void WriteFile(wxString filename,wxString encoding);
 };
+
 

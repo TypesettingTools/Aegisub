@@ -62,11 +62,17 @@
 
 
 
-///////
-// IDs
+
+/// DOCME
 enum IDs {
+
+	/// DOCME
 	START_BUTTON = 1150,
+
+	/// DOCME
 	BROWSE_BUTTON,
+
+	/// DOCME
 	RADIO_BOX
 };
 
@@ -77,8 +83,10 @@ DECLARE_EVENT_TYPE(EVT_ADD_TEXT, -1)
 DEFINE_EVENT_TYPE(EVT_ADD_TEXT)
 
 
-///////////////
-// Constructor
+
+/// @brief Constructor 
+/// @param parent 
+///
 DialogFontsCollector::DialogFontsCollector(wxWindow *parent)
 : wxDialog(parent,-1,_("Fonts Collector"),wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE)
 {
@@ -158,8 +166,9 @@ DialogFontsCollector::DialogFontsCollector(wxWindow *parent)
 }
 
 
-//////////////
-// Destructor
+
+/// @brief Destructor 
+///
 DialogFontsCollector::~DialogFontsCollector() {
 	FontFileLister::ClearData();
 }
@@ -176,8 +185,11 @@ BEGIN_EVENT_TABLE(DialogFontsCollector, wxDialog)
 END_EVENT_TABLE()
 
 
-////////////////////
-// Start processing
+
+/// @brief Start processing 
+/// @param event 
+/// @return 
+///
 void DialogFontsCollector::OnStart(wxCommandEvent &event) {
 	// Clear
 	LogBox->SetReadOnly(false);
@@ -246,15 +258,19 @@ void DialogFontsCollector::OnStart(wxCommandEvent &event) {
 }
 
 
-////////////////
-// Close dialog
+
+/// @brief Close dialog 
+/// @param event 
+///
 void DialogFontsCollector::OnClose(wxCommandEvent &event) {
 	EndModal(0);
 }
 
 
-///////////////////
-// Browse location
+
+/// @brief Browse location 
+/// @param event 
+///
 void DialogFontsCollector::OnBrowse(wxCommandEvent &event) {
 	// Chose file name
 	if (CollectAction->GetSelection()==2) {
@@ -275,15 +291,19 @@ void DialogFontsCollector::OnBrowse(wxCommandEvent &event) {
 }
 
 
-/////////////////////
-// Radio box changed
+
+/// @brief Radio box changed 
+/// @param event 
+///
 void DialogFontsCollector::OnRadio(wxCommandEvent &event) {
 	Update(event.GetInt());
 }
 
 
-///////////////////
-// Update controls
+
+/// @brief Update controls 
+/// @param value 
+///
 void DialogFontsCollector::Update(int value) {
 	// Enable buttons
 	CloseButton->Enable(true);
@@ -335,8 +355,10 @@ void DialogFontsCollector::Update(int value) {
 }
 
 
-////////////
-// Add text
+
+/// @brief Add text 
+/// @param event 
+///
 void DialogFontsCollector::OnAddText(wxCommandEvent &event) {
 	ColourString *str = (ColourString*) event.GetClientData();
 	LogBox->SetReadOnly(false);
@@ -352,15 +374,20 @@ void DialogFontsCollector::OnAddText(wxCommandEvent &event) {
 }
 
 
-///////////////////////
-// Collect font files
+
+/// @brief Collect font files 
+///
 void FontsCollectorThread::CollectFontData () {
 	FontFileLister::Initialize();
 }
 
 
-////////////////////
-// Collector thread
+
+/// @brief Collector thread 
+/// @param _subs        
+/// @param _destination 
+/// @param _collector   
+///
 FontsCollectorThread::FontsCollectorThread(AssFile *_subs,wxString _destination,DialogFontsCollector *_collector)
 : wxThread(wxTHREAD_DETACHED)
 {
@@ -371,8 +398,10 @@ FontsCollectorThread::FontsCollectorThread(AssFile *_subs,wxString _destination,
 }
 
 
-////////////////
-// Thread entry
+
+/// @brief Thread entry 
+/// @return 
+///
 wxThread::ExitCode FontsCollectorThread::Entry() {
 	// Collect
 	Collect();
@@ -386,8 +415,10 @@ wxThread::ExitCode FontsCollectorThread::Entry() {
 }
 
 
-///////////
-// Collect
+
+/// @brief Collect 
+/// @return 
+///
 void FontsCollectorThread::Collect() {
 	// Set destination folder
 	int oper = collector->CollectAction->GetSelection();
@@ -490,8 +521,11 @@ void FontsCollectorThread::Collect() {
 }
 
 
-////////////////
-// Process font
+
+/// @brief Process font 
+/// @param name 
+/// @return 
+///
 bool FontsCollectorThread::ProcessFont(wxString name) {
 	// Action
 	int action = collector->CollectAction->GetSelection();
@@ -543,8 +577,11 @@ bool FontsCollectorThread::ProcessFont(wxString name) {
 }
 
 
-/////////////
-// Copy font
+
+/// @brief Copy font 
+/// @param filename 
+/// @return 
+///
 int FontsCollectorThread::CopyFont(wxString filename) {
 	wxFileName fn(filename);
 	wxString dstName = destFolder + _T("//") + fn.GetFullName();
@@ -553,8 +590,11 @@ int FontsCollectorThread::CopyFont(wxString filename) {
 }
 
 
-////////////////
-// Archive font
+
+/// @brief Archive font 
+/// @param filename 
+/// @return 
+///
 bool FontsCollectorThread::ArchiveFont(wxString filename) {
 	// Open file
 	wxFFileInputStream in(filename);
@@ -574,8 +614,11 @@ bool FontsCollectorThread::ArchiveFont(wxString filename) {
 }
 
 
-///////////////
-// Attach font
+
+/// @brief Attach font 
+/// @param filename 
+/// @return 
+///
 bool FontsCollectorThread::AttachFont(wxString filename) {
 	try {
 		subs->InsertAttachment(filename);
@@ -587,8 +630,13 @@ bool FontsCollectorThread::AttachFont(wxString filename) {
 }
 
 
-////////////////////////////////
-// Get fonts from ass overrides
+
+/// @brief Get fonts from ass overrides 
+/// @param tagName 
+/// @param par_n   
+/// @param param   
+/// @param usr     
+///
 void FontsCollectorThread::GetFonts (wxString tagName,int par_n,AssOverrideParameter *param,void *usr) {
 	if (tagName == _T("\\fn")) {
 		if (instance) instance->AddFont(param->AsText(),1);
@@ -596,8 +644,11 @@ void FontsCollectorThread::GetFonts (wxString tagName,int par_n,AssOverrideParam
 }
 
 
-///////////////
-// Adds a font
+
+/// @brief Adds a font 
+/// @param fontname 
+/// @param mode     
+///
 void FontsCollectorThread::AddFont(wxString fontname,int mode) {
 	// @-fonts (CJK vertical layout variations) should be listed as the non-@ name
 	if (fontname.StartsWith(_T("@"), 0))
@@ -613,8 +664,11 @@ void FontsCollectorThread::AddFont(wxString fontname,int mode) {
 }
 
 
-///////////////
-// Append text
+
+/// @brief Append text 
+/// @param text   
+/// @param colour 
+///
 void FontsCollectorThread::AppendText(wxString text,int colour) {
 	ColourString *str = new ColourString;
 	str->text = text;
@@ -625,7 +679,8 @@ void FontsCollectorThread::AppendText(wxString text,int colour) {
 }
 
 
-///////////////////
-// Static instance
+
+/// DOCME
 FontsCollectorThread *FontsCollectorThread::instance;
+
 

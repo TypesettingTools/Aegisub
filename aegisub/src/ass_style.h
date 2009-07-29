@@ -43,13 +43,25 @@
 #include "ass_entry.h"
 
 
-/////////////////////////
-// Class to store colors
+
+/// DOCME
+/// @class AssColor
+/// @brief DOCME
+///
+/// DOCME
 class AssColor {
 public:
+
+	/// DOCME
 	int r;	// Red component
+
+	/// DOCME
 	int g;	// Green component
+
+	/// DOCME
 	int b;	// Blue component
+
+	/// DOCME
 	int a;	// Alpha component
 
 	AssColor();
@@ -66,36 +78,87 @@ public:
 };
 
 
-/////////////////////////
-// Class to store styles
+
+/// DOCME
+/// @class AssStyle
+/// @brief DOCME
+///
+/// DOCME
 class AssStyle : public AssEntry {
 public:
+
+	/// DOCME
 	wxString name;
+
+	/// DOCME
 	wxString font;
+
+	/// DOCME
 	double fontsize;
 
+
+	/// DOCME
 	AssColor primary;
+
+	/// DOCME
 	AssColor secondary;
+
+	/// DOCME
 	AssColor outline;
+
+	/// DOCME
 	AssColor shadow;
 
+
+	/// DOCME
 	bool bold;
+
+	/// DOCME
 	bool italic;
+
+	/// DOCME
 	bool underline;
+
+	/// DOCME
 	bool strikeout;
 
+
+	/// DOCME
 	double scalex;
+
+	/// DOCME
 	double scaley;
+
+	/// DOCME
 	double spacing;
+
+	/// DOCME
 	double angle;
+
+	/// DOCME
 	int borderstyle;
+
+	/// DOCME
 	double outline_w;
+
+	/// DOCME
 	double shadow_w;
+
+	/// DOCME
 	int alignment;
+
+	/// DOCME
 	int Margin[4];
+
+	/// DOCME
 	int encoding;
+
+	/// DOCME
 	int relativeTo;
 
+
+	/// @brief DOCME
+	///
 	ASS_EntryType GetType() { return ENTRY_STYLE; }
 
 	bool Parse(wxString data,int version=1);	// Parses raw ASS/SSA data into everything else
@@ -113,4 +176,5 @@ public:
 	AssStyle(wxString data,int version=1);
 	~AssStyle();
 };
+
 

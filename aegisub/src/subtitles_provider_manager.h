@@ -46,8 +46,12 @@
 #include "factory_manager.h"
 
 
-///////////////////
-// Factory Manager
+
+/// DOCME
+/// @class SubtitlesProviderFactoryManager
+/// @brief DOCME
+///
+/// DOCME
 class SubtitlesProviderFactoryManager : public FactoryManager<SubtitlesProviderFactory> {
 public:
 	static SubtitlesProvider *GetProvider();
@@ -55,5 +59,6 @@ public:
 	static void ClearProviders();
 	static bool ProviderAvailable();
 };
+
 
 

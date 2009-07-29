@@ -47,22 +47,26 @@
 #include "text_file_writer.h"
 
 
-/////////////////////
-// V2 Clear function
+
+/// @brief V2 Clear function 
+///
 void FrameRate::Clear () {
 	Frame.clear();
 }
 
 
-////////////////
-// V2 Add frame
+
+/// @brief V2 Add frame 
+/// @param ms 
+///
 void FrameRate::AddFrame(int ms) {
 	Frame.push_back(ms);
 }
 
 
-//////////////////
-// V2 Get Average
+
+/// @brief V2 Get Average 
+///
 void FrameRate::CalcAverage() {
 
 	if (Frame.size() <= 1)
@@ -72,23 +76,26 @@ void FrameRate::CalcAverage() {
 }
 
 
-//////////////////////// FrameRate //////////////////////
-///////////////
-// Constructor
+
+/// @brief Constructor  FrameRate //////////////////////
+///
 FrameRate::FrameRate() {
 	Unload();
 }
 
 
-//////////////
-// Destructor
+
+/// @brief Destructor 
+///
 FrameRate::~FrameRate() {
 	Unload();
 }
 
 
-//////////////////
-// Loads VFR file
+
+/// @brief Loads VFR file 
+/// @param filename 
+///
 void FrameRate::Load(wxString filename) {
 	using namespace std;
 	
@@ -231,8 +238,10 @@ void FrameRate::Load(wxString filename) {
 }
 
 
-////////
-// Save
+
+/// @brief Save 
+/// @param filename 
+///
 void FrameRate::Save(wxString filename) {
 	TextFileWriter file(filename,_T("ASCII"));
 	file.WriteLineToFile(_T("# timecode format v2"));
@@ -242,8 +251,9 @@ void FrameRate::Save(wxString filename) {
 }
 
 
-//////////
-// Unload
+
+/// @brief Unload 
+///
 void FrameRate::Unload () {
 	FrameRateType = NONE;
 	AverageFrameRate = 0;
@@ -255,8 +265,10 @@ void FrameRate::Unload () {
 }
 
 
-///////////////
-// Sets to CFR
+
+/// @brief Sets to CFR 
+/// @param fps 
+///
 void FrameRate::SetCFR(double fps) {
 	Unload();
 	loaded = true;
@@ -265,8 +277,10 @@ void FrameRate::SetCFR(double fps) {
 }
 
 
-///////////////
-// Sets to VFR
+
+/// @brief Sets to VFR 
+/// @param newTimes 
+///
 void FrameRate::SetVFR(std::vector<int> newTimes) {
 	// Prepare
 	Unload();
@@ -282,8 +296,12 @@ void FrameRate::SetVFR(std::vector<int> newTimes) {
 }
 
 
-/////////////////////////////
-// Gets frame number at time
+
+/// @brief Gets frame number at time 
+/// @param ms      
+/// @param useceil 
+/// @return 
+///
 int FrameRate::PFrameAtTime(int ms,bool useceil) {
 	// Check if it's loaded
 	if (!loaded) return -1;
@@ -345,8 +363,11 @@ int FrameRate::PFrameAtTime(int ms,bool useceil) {
 }
 
 
-//////////////////////
-// Gets time at frame
+
+/// @brief Gets time at frame 
+/// @param frame 
+/// @return 
+///
 int FrameRate::PTimeAtFrame(int frame) {
 	// Not loaded
 	if (!loaded) return -1;
@@ -373,18 +394,24 @@ int FrameRate::PTimeAtFrame(int frame) {
 }
 
 
-/////////////////////////////
-// Get correct frame at time
-// returns the adjusted time for end frames when start=false
-// otherwise for start frames
+
+/// @brief otherwise for start frames returns the adjusted time for end frames when start=false Get correct frame at time 
+/// @param ms    
+/// @param start 
+/// @return 
+///
 int FrameRate::GetFrameAtTime(int ms,bool start) {
 	return PFrameAtTime(ms,start);
 }
 
 
-/////////////////////////////
-// Get correct time at frame
-// compensates and returns an end time when start=false
+
+/// @brief compensates and returns an end time when start=false Get correct time at frame 
+/// @param frame 
+/// @param start 
+/// @param exact 
+/// @return 
+///
 int FrameRate::GetTimeAtFrame(int frame,bool start,bool exact) {
 	int finalTime;
 
@@ -409,16 +436,19 @@ int FrameRate::GetTimeAtFrame(int frame,bool start,bool exact) {
 }
 
 
-////////////////////////////////////////
-// Get the current list of frames/times
+
+/// @brief Get the current list of frames/times 
+/// @return 
+///
 std::vector<int> FrameRate::GetFrameTimeList() {
 	return Frame;
 }
 
 
-///////////////////////////////////////////
-// Calculate the common FPS for evil stuff
-// e.g., in a mix of 24fps and 30fps, returns 120fps
+
+/// @brief e.g., in a mix of 24fps and 30fps, returns 120fps Calculate the common FPS for evil stuff 
+/// @return 
+///
 double FrameRate::GetCommonFPS() {
 	// Variables
 	int curDist;
@@ -515,8 +545,11 @@ double FrameRate::GetCommonFPS() {
 }
 
 
-///////////
-// Globals
+
+/// DOCME
 FrameRate VFR_Output;
+
+/// DOCME
 FrameRate VFR_Input;
+
 

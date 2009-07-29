@@ -60,8 +60,10 @@
 //#include "bevelButton.h"
 //#endif
 
-///////////////
-// Constructor
+
+/// @brief Constructor 
+/// @param parent 
+///
 AudioBox::AudioBox(wxWindow *parent) :
 wxPanel(parent,-1,wxDefaultPosition,wxDefaultSize,wxTAB_TRAVERSAL|wxBORDER_RAISED)
 {
@@ -229,8 +231,9 @@ wxPanel(parent,-1,wxDefaultPosition,wxDefaultSize,wxTAB_TRAVERSAL|wxBORDER_RAISE
 }
 
 
-//////////////
-// Destructor
+
+/// @brief Destructor 
+///
 AudioBox::~AudioBox() {
 	audioScroll->PopEventHandler(true);
 	HorizontalZoom->PopEventHandler(true);
@@ -239,8 +242,12 @@ AudioBox::~AudioBox() {
 }
 
 
-////////////
-// Set file
+
+/// @brief Set file 
+/// @param file      
+/// @param FromVideo 
+/// @return 
+///
 void AudioBox::SetFile(wxString file,bool FromVideo) {
 	wxLogDebug(_T("AudioBox::SetFile(file=%s, FromVideo=%d)"), file.c_str(), FromVideo?1:0);
 	loaded = false;
@@ -299,22 +306,28 @@ BEGIN_EVENT_TABLE(AudioBox,wxPanel)
 END_EVENT_TABLE()
 
 
-/////////////////////
-// Scrollbar changed
+
+/// @brief Scrollbar changed 
+/// @param event 
+///
 void AudioBox::OnScrollbar(wxScrollEvent &event) {
 	audioDisplay->SetPosition(event.GetPosition()*12);
 }
 
 
-///////////////////////////////
-// Horizontal zoom bar changed
+
+/// @brief Horizontal zoom bar changed 
+/// @param event 
+///
 void AudioBox::OnHorizontalZoom(wxScrollEvent &event) {
 	audioDisplay->SetSamplesPercent(event.GetPosition());
 }
 
 
-/////////////////////////////
-// Vertical zoom bar changed
+
+/// @brief Vertical zoom bar changed 
+/// @param event 
+///
 void AudioBox::OnVerticalZoom(wxScrollEvent &event) {
 	int pos = event.GetPosition();
 	if (pos < 1) pos = 1;
@@ -328,8 +341,10 @@ void AudioBox::OnVerticalZoom(wxScrollEvent &event) {
 }
 
 
-//////////////////////
-// Volume bar changed
+
+/// @brief Volume bar changed 
+/// @param event 
+///
 void AudioBox::OnVolume(wxScrollEvent &event) {
 	if (!VerticalLink->GetValue()) {
 		int pos = event.GetPosition();
@@ -340,8 +355,10 @@ void AudioBox::OnVolume(wxScrollEvent &event) {
 }
 
 
-////////////////////////
-// Bars linked/unlinked
+
+/// @brief Bars linked/unlinked 
+/// @param event 
+///
 void AudioBox::OnVerticalLink(wxCommandEvent &event) {
 	int pos = VerticalZoom->GetValue();
 	if (pos < 1) pos = 1;
@@ -358,8 +375,11 @@ void AudioBox::OnVerticalLink(wxCommandEvent &event) {
 }
 
 
-////////
-// Sash
+
+/// @brief Sash 
+/// @param event 
+/// @return 
+///
 void AudioBox::OnSash(wxSashEvent& event) {
 	// OK?
 	if (event.GetDragStatus() == wxSASH_STATUS_OUT_OF_RANGE) return;
@@ -405,8 +425,10 @@ void AudioBox::OnSash(wxSashEvent& event) {
 }
 
 
-//////////////////
-// Play selection
+
+/// @brief Play selection 
+/// @param event 
+///
 void AudioBox::OnPlaySelection(wxCommandEvent &event) {
 	int start=0,end=0;
 	audioDisplay->SetFocus();
@@ -415,8 +437,10 @@ void AudioBox::OnPlaySelection(wxCommandEvent &event) {
 }
 
 
-/////////////////
-// Play dialogue
+
+/// @brief Play dialogue 
+/// @param event 
+///
 void AudioBox::OnPlayDialogue(wxCommandEvent &event) {
 	int start=0,end=0;
 	audioDisplay->SetFocus();
@@ -426,16 +450,20 @@ void AudioBox::OnPlayDialogue(wxCommandEvent &event) {
 }
 
 
-////////////////
-// Stop Playing
+
+/// @brief Stop Playing 
+/// @param event 
+///
 void AudioBox::OnStop(wxCommandEvent &event) {
 	audioDisplay->SetFocus();
 	audioDisplay->Stop();
 }
 
 
-////////
-// Next
+
+/// @brief Next 
+/// @param event 
+///
 void AudioBox::OnNext(wxCommandEvent &event) {
 	audioDisplay->SetFocus();
 	audioDisplay->Stop();
@@ -443,8 +471,10 @@ void AudioBox::OnNext(wxCommandEvent &event) {
 }
 
 
-////////////
-// Previous
+
+/// @brief Previous 
+/// @param event 
+///
 void AudioBox::OnPrev(wxCommandEvent &event) {
 	audioDisplay->SetFocus();
 	audioDisplay->Stop();
@@ -452,8 +482,10 @@ void AudioBox::OnPrev(wxCommandEvent &event) {
 }
 
 
-/////////////////
-// 500 ms before
+
+/// @brief 500 ms before 
+/// @param event 
+///
 void AudioBox::OnPlay500Before(wxCommandEvent &event) {
 	int start=0,end=0;
 	audioDisplay->SetFocus();
@@ -462,8 +494,10 @@ void AudioBox::OnPlay500Before(wxCommandEvent &event) {
 }
 
 
-////////////////
-// 500 ms after
+
+/// @brief 500 ms after 
+/// @param event 
+///
 void AudioBox::OnPlay500After(wxCommandEvent &event) {
 	int start=0,end=0;
 	audioDisplay->SetFocus();
@@ -472,8 +506,10 @@ void AudioBox::OnPlay500After(wxCommandEvent &event) {
 }
 
 
-////////////////
-// First 500 ms
+
+/// @brief First 500 ms 
+/// @param event 
+///
 void AudioBox::OnPlay500First(wxCommandEvent &event) {
 	int start=0,end=0;
 	audioDisplay->SetFocus();
@@ -484,8 +520,10 @@ void AudioBox::OnPlay500First(wxCommandEvent &event) {
 }
 
 
-///////////////
-// Last 500 ms
+
+/// @brief Last 500 ms 
+/// @param event 
+///
 void AudioBox::OnPlay500Last(wxCommandEvent &event) {
 	int start=0,end=0;
 	audioDisplay->SetFocus();
@@ -496,8 +534,10 @@ void AudioBox::OnPlay500Last(wxCommandEvent &event) {
 }
 
 
-////////////////////////
-// Start to end of file
+
+/// @brief Start to end of file 
+/// @param event 
+///
 void AudioBox::OnPlayToEnd(wxCommandEvent &event) {
 	int start=0,end=0;
 	audioDisplay->SetFocus();
@@ -506,8 +546,11 @@ void AudioBox::OnPlayToEnd(wxCommandEvent &event) {
 }
 
 
-//////////////////
-// Commit changes
+
+/// @brief Commit changes 
+/// @param event 
+/// @return 
+///
 void AudioBox::OnCommit(wxCommandEvent &event) {
 	wxLogDebug(_T("AudioBox::OnCommit"));
 	audioDisplay->SetFocus();
@@ -517,8 +560,11 @@ void AudioBox::OnCommit(wxCommandEvent &event) {
 }
 
 
-//////////////////
-// Toggle karaoke
+
+/// @brief Toggle karaoke 
+/// @param event 
+/// @return 
+///
 void AudioBox::OnKaraoke(wxCommandEvent &event) {
 	wxLogDebug(_T("AudioBox::OnKaraoke"));
 	audioDisplay->SetFocus();
@@ -545,8 +591,9 @@ void AudioBox::OnKaraoke(wxCommandEvent &event) {
 }
 
 
-////////////////////////
-// Sets karaoke buttons
+
+/// @brief Sets karaoke buttons 
+///
 void AudioBox::SetKaraokeButtons() {
 	// What to enable
 	bool join,split;
@@ -573,8 +620,10 @@ void AudioBox::SetKaraokeButtons() {
 }
 
 
-///////////////
-// Join button
+
+/// @brief Join button 
+/// @param event 
+///
 void AudioBox::OnJoin(wxCommandEvent &event) {
 	wxLogDebug(_T("AudioBox::OnJoin"));
 	audioDisplay->SetFocus();
@@ -586,8 +635,10 @@ void AudioBox::OnJoin(wxCommandEvent &event) {
 }
 
 
-////////////////
-// Split button
+
+/// @brief Split button 
+/// @param event 
+///
 void AudioBox::OnSplit(wxCommandEvent &event) {
 	wxLogDebug(_T("AudioBox::OnSplit"));
 	audioDisplay->SetFocus();
@@ -599,16 +650,20 @@ void AudioBox::OnSplit(wxCommandEvent &event) {
 }
 
 
-///////////////
-// Goto button
+
+/// @brief Goto button 
+/// @param event 
+///
 void AudioBox::OnGoto(wxCommandEvent &event) {
 	audioDisplay->SetFocus();
 	audioDisplay->MakeDialogueVisible(true);
 }
 
 
-/////////////
-// Auto Goto
+
+/// @brief Auto Goto 
+/// @param event 
+///
 void AudioBox::OnAutoGoto(wxCommandEvent &event) {
 	audioDisplay->SetFocus();
 	Options.SetBool(_T("Audio Autoscroll"),AutoScroll->GetValue());
@@ -616,8 +671,10 @@ void AudioBox::OnAutoGoto(wxCommandEvent &event) {
 }
 
 
-///////////////
-// Auto Commit
+
+/// @brief Auto Commit 
+/// @param event 
+///
 void AudioBox::OnAutoCommit(wxCommandEvent &event) {
 	audioDisplay->SetFocus();
 	Options.SetBool(_T("Audio Autocommit"),AutoCommit->GetValue());
@@ -625,8 +682,10 @@ void AudioBox::OnAutoCommit(wxCommandEvent &event) {
 }
 
 
-//////////////////////
-// Next line on Commit
+
+/// @brief Next line on Commit 
+/// @param event 
+///
 void AudioBox::OnNextLineCommit(wxCommandEvent &event) {
 	audioDisplay->SetFocus();
 	Options.SetBool(_T("Audio Next Line on Commit"),NextCommit->GetValue());
@@ -634,8 +693,10 @@ void AudioBox::OnNextLineCommit(wxCommandEvent &event) {
 }
 
 
-///////////////
-// Medusa Mode
+
+/// @brief Medusa Mode 
+/// @param event 
+///
 void AudioBox::OnMedusaMode(wxCommandEvent &event) {
 	audioDisplay->SetFocus();
 	Options.SetBool(_T("Audio Medusa Timing Hotkeys"),MedusaMode->GetValue());
@@ -644,8 +705,10 @@ void AudioBox::OnMedusaMode(wxCommandEvent &event) {
 }
 
 
-//////////////////////////
-// Spectrum Analyzer Mode
+
+/// @brief Spectrum Analyzer Mode 
+/// @param event 
+///
 void AudioBox::OnSpectrumMode(wxCommandEvent &event) {
 	Options.SetBool(_T("Audio Spectrum"),SpectrumMode->GetValue());
 	Options.Save();
@@ -655,13 +718,19 @@ void AudioBox::OnSpectrumMode(wxCommandEvent &event) {
 }
 
 
-///////////////
-// Lead in/out
+
+/// @brief Lead in/out 
+/// @param event 
+///
 void AudioBox::OnLeadIn(wxCommandEvent &event) {
 	audioDisplay->SetFocus();
 	audioDisplay->AddLead(true,false);
 }
 
+
+/// @brief DOCME
+/// @param event 
+///
 void AudioBox::OnLeadOut(wxCommandEvent &event) {
 	audioDisplay->SetFocus();
 	audioDisplay->AddLead(false,true);
@@ -674,10 +743,15 @@ BEGIN_EVENT_TABLE(FocusEvent,wxEvtHandler)
 	EVT_SET_FOCUS(FocusEvent::OnSetFocus)
 END_EVENT_TABLE()
 
+
+/// @brief DOCME
+/// @param event 
+///
 void FocusEvent::OnSetFocus(wxFocusEvent &event) {
 	wxWindow *previous = event.GetWindow();
 	if (previous) previous->SetFocus();
 }
+
 
 
 

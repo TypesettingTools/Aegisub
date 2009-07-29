@@ -36,20 +36,33 @@
 
 #include "include/aegisub/audio_provider.h"
 
+
+/// DOCME
+/// @class DownmixingAudioProvider
+/// @brief DOCME
+///
+/// DOCME
 class DownmixingAudioProvider : public AudioProvider {
 private:
+
+	/// DOCME
 	AudioProvider *provider;
+
+	/// DOCME
 	int src_channels;
 
 public:
 	DownmixingAudioProvider(AudioProvider *source);
 	~DownmixingAudioProvider();
 
-	// Downmixing requires samples to be native endian beforehand
+
+	/// @brief // Downmixing requires samples to be native endian beforehand
+	///
 	bool AreSamplesNativeEndian() { return true; }
 
 	void GetAudio(void *buf, int64_t start, int64_t count);
 
 };
+
 
 

@@ -42,13 +42,21 @@
 #endif
 
 
-////////////////////////
-// Plugin manager class
+
+/// DOCME
+/// @class PluginManager
+/// @brief DOCME
+///
+/// DOCME
 class PluginManager {
 private:
+
+	/// DOCME
 	bool init;
 
 #ifdef WITH_AUTO4_LUA
+
+	/// DOCME
 	Automation4::LuaScriptFactory *lua;
 #endif
 
@@ -58,4 +66,5 @@ public:
 
 	void RegisterBuiltInPlugins();
 };
+
 

@@ -48,8 +48,15 @@
 DEFINE_EVENT_TYPE(wxEVT_PROGRESS_UPDATE)
 
 
-///////////////
-// Constructor
+
+/// @brief Constructor 
+/// @param parent  
+/// @param title   
+/// @param cancel  
+/// @param message 
+/// @param cur     
+/// @param max     
+///
 DialogProgress::DialogProgress(wxWindow *parent,wxString title,volatile bool *cancel,wxString message,int cur,int max)
 : wxDialog(parent,-1,title,wxDefaultPosition,wxDefaultSize,wxBORDER_RAISED/* | wxSTAY_ON_TOP*/)
 {
@@ -76,8 +83,12 @@ DialogProgress::DialogProgress(wxWindow *parent,wxString title,volatile bool *ca
 }
 
 
-////////////////
-// Set progress
+
+/// @brief Set progress 
+/// @param cur 
+/// @param max 
+/// @return 
+///
 void DialogProgress::SetProgress(int cur,int max) {
 	// Return if there's nothing to do
 	int value = cur*100/virtualMax;
@@ -104,8 +115,10 @@ void DialogProgress::SetProgress(int cur,int max) {
 }
 
 
-///////////////////
-// Update progress
+
+/// @brief Update progress 
+/// @param event 
+///
 void DialogProgress::OnUpdateProgress(wxCommandEvent &event)
 {
 	int value = event.GetInt();
@@ -115,8 +128,10 @@ void DialogProgress::OnUpdateProgress(wxCommandEvent &event)
 }
 
 
-////////////////
-// Set progress
+
+/// @brief Set progress 
+/// @param setto 
+///
 void DialogProgress::SetText(wxString setto) {
 	// Lock
 	bool isMain = wxIsMainThread();
@@ -138,8 +153,10 @@ BEGIN_EVENT_TABLE(DialogProgress,wxDialog)
 END_EVENT_TABLE()
 
 
-//////////
-// Cancel
+
+/// @brief Cancel 
+/// @param event 
+///
 void DialogProgress::OnCancel(wxCommandEvent &event) {
 	if (canceled) *canceled = true;
 	bool isMain = wxIsMainThread();
@@ -148,8 +165,15 @@ void DialogProgress::OnCancel(wxCommandEvent &event) {
 	if (!isMain) wxMutexGuiLeave();
 }
 
-//////////////////////
-// Thread constructor
+
+/// @brief Thread constructor 
+/// @param parent   
+/// @param title    
+/// @param canceled 
+/// @param message  
+/// @param cur      
+/// @param max      
+///
 DialogProgressThread::DialogProgressThread(wxWindow *parent,wxString title,volatile bool *canceled,wxString message,int cur,int max)
 : wxThread(wxTHREAD_DETACHED)
 {
@@ -157,14 +181,17 @@ DialogProgressThread::DialogProgressThread(wxWindow *parent,wxString title,volat
 }
 
 
-/////////////////////
-// Thread destructor
+
+/// @brief Thread destructor 
+///
 DialogProgressThread::~DialogProgressThread() {
 }
 
 
-//////////////////////
-// Thread entry point
+
+/// @brief Thread entry point 
+/// @return 
+///
 wxThread::ExitCode DialogProgressThread::Entry() {
 	dialog->ShowModal();
 	dialog = NULL;
@@ -173,11 +200,13 @@ wxThread::ExitCode DialogProgressThread::Entry() {
 }
 
 
-/////////
-// Close
+
+/// @brief Close 
+///
 void DialogProgressThread::Close() {
 	wxCommandEvent event(wxEVT_COMMAND_BUTTON_CLICKED,wxID_CANCEL);
 	dialog->canceled = NULL;
 	dialog->GetEventHandler()->ProcessEvent(event);
 }
+
 

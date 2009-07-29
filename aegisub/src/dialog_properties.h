@@ -46,26 +46,60 @@
 #include <wx/checkbox.h>
 
 
-////////////////////
-// Properties class
+
+/// DOCME
+/// @class DialogProperties
+/// @brief DOCME
+///
+/// DOCME
 class DialogProperties : public wxDialog {
 private:
+
+	/// DOCME
 	wxTextCtrl *TitleEdit;
+
+	/// DOCME
 	wxTextCtrl *OrigScriptEdit;
+
+	/// DOCME
 	wxTextCtrl *TranslationEdit;
+
+	/// DOCME
 	wxTextCtrl *EditingEdit;
+
+	/// DOCME
 	wxTextCtrl *TimingEdit;
+
+	/// DOCME
 	wxTextCtrl *SyncEdit;
+
+	/// DOCME
 	wxTextCtrl *UpdatedEdit;
+
+	/// DOCME
 	wxTextCtrl *UpdateDetailsEdit;
 
+
+	/// DOCME
 	wxComboBox *WrapStyle;
+
+	/// DOCME
 	wxComboBox *collision;
+
+	/// DOCME
 	wxTextCtrl *ResX;
+
+	/// DOCME
 	wxTextCtrl *ResY;
+
+	/// DOCME
 	wxCheckBox *ScaleBorder;
 
+
+	/// DOCME
 	wxString ResXValue;
+
+	/// DOCME
 	wxString ResYValue;
 
 	void OnOK(wxCommandEvent &event);
@@ -83,6 +117,9 @@ public:
 ///////
 // IDs
 enum {
+
+	/// DOCME
 	BUTTON_FROM_VIDEO = 1100
 };
+
 

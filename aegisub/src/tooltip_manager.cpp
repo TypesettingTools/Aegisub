@@ -43,8 +43,9 @@
 #include "hotkeys.h"
 
 
-///////////////////
-// Update all tips
+
+/// @brief Update all tips 
+///
 void ToolTipManager::DoUpdate() {
 	for (std::list<ToolTipBinding>::iterator cur=tips.begin();cur!=tips.end();cur++) {
 		(*cur).Update();
@@ -52,8 +53,12 @@ void ToolTipManager::DoUpdate() {
 }
 
 
-/////////////
-// Add a tip
+
+/// @brief Add a tip 
+/// @param window  
+/// @param tooltip 
+/// @param hotkeys 
+///
 void ToolTipManager::AddTips(wxWindow *window,wxString tooltip,wxArrayString hotkeys) {
 	ToolTipBinding tip;
 	tip.hotkeys = hotkeys;
@@ -64,8 +69,12 @@ void ToolTipManager::AddTips(wxWindow *window,wxString tooltip,wxArrayString hot
 }
 
 
-//////////////////////////
-// Single hotkey overload
+
+/// @brief Single hotkey overload 
+/// @param window  
+/// @param tooltip 
+/// @param hotkey  
+///
 void ToolTipManager::Bind(wxWindow *window,wxString tooltip,wxString hotkey) {
 	wxArrayString hotkeys;
 	if (!hotkey.IsEmpty()) hotkeys.Add(hotkey);
@@ -73,8 +82,13 @@ void ToolTipManager::Bind(wxWindow *window,wxString tooltip,wxString hotkey) {
 }
 
 
-////////////////////////
-// Two hotkeys overload
+
+/// @brief Two hotkeys overload 
+/// @param window  
+/// @param tooltip 
+/// @param hotkey1 
+/// @param hotkey2 
+///
 void ToolTipManager::Bind(wxWindow *window,wxString tooltip,wxString hotkey1,wxString hotkey2) {
 	wxArrayString hotkeys;
 	hotkeys.Add(hotkey1);
@@ -83,16 +97,19 @@ void ToolTipManager::Bind(wxWindow *window,wxString tooltip,wxString hotkey1,wxS
 }
 
 
-///////////////////
-// Static instance
+
+/// @brief Static instance 
+/// @return 
+///
 ToolTipManager &ToolTipManager::GetInstance() {
 	static ToolTipManager instance;
 	return instance;
 }
 
 
-////////////////
-// Update a tip
+
+/// @brief Update a tip 
+///
 void ToolTipBinding::Update() {
 	wxString finalTip = toolTip;
 	wxArrayString hotkeysLeft = hotkeys;
@@ -102,4 +119,5 @@ void ToolTipBinding::Update() {
 	}
 	window->SetToolTip(finalTip);
 }
+
 

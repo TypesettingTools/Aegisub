@@ -58,23 +58,42 @@ class AssDialogueBlockPlain;
 class AssEntry;
 
 
-//////////////////////////////////////
-// Class to store the actual ass file
+
+/// DOCME
+/// @class AssFile
+/// @brief DOCME
+///
+/// DOCME
 class AssFile {
 private:
+
+	/// DOCME
 	bool Modified;
 
-	// Stack operations
+
+	/// DOCME
 	static std::list<AssFile*> UndoStack;
+
+	/// DOCME
 	static std::list<AssFile*> RedoStack;
+
+	/// DOCME
 	static bool StackModified;
 	static void StackClear();
 
 public:
+
+	/// DOCME
 	std::list<AssEntry*> Line;
 
+
+	/// DOCME
 	wxString filename;
+
+	/// DOCME
 	wxString undodescription;
+
+	/// DOCME
 	bool loaded;
 
 	AssFile();
@@ -116,23 +135,39 @@ public:
 	static bool IsRedoStackEmpty();			// Checks if undo stack is empty
 	static wxString GetUndoDescription();	// Gets field undodescription from back of UndoStack
 	static wxString GetRedoDescription();	// Gets field undodescription from back of RedoStack
+
+	/// DOCME
 	static bool Popping;					// Flags the stack as popping. You must unset this after popping
+
+	/// DOCME
 	static AssFile *top;					// Current script file. It is "above" the stack.
 };
 
 
-////////////
-// Typedefs
+
+/// DOCME
 typedef std::list<AssEntry*>::iterator entryIter;
 
 
 //////////////////////////////////////////////////////
 // Hack to get STL sort to work on a list of pointers
 template <typename T>
+
+/// DOCME
+/// @class LessByPointedToValue
+/// @brief DOCME
+///
+/// DOCME
 class LessByPointedToValue : std::binary_function<T const *, T const *, bool> {
 public:
+
+	/// @brief DOCME
+	/// @param x 
+	/// @param y 
+	///
 	bool operator()(T const * x, T const * y) const {
 		return std::less<T>()(*x, *y);
 	}
 };
+
 

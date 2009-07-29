@@ -67,8 +67,11 @@
 
 
 
-///////////////
-// Constructor
+
+/// @brief Constructor 
+/// @param parent 
+/// @param gridp  
+///
 SubsEditBox::SubsEditBox (wxWindow *parent,SubtitlesGrid *gridp) : wxPanel(parent, -1, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL | wxRAISED_BORDER, _T("SubsEditBox"))
 {
 	// Setup
@@ -215,8 +218,9 @@ SubsEditBox::SubsEditBox (wxWindow *parent,SubtitlesGrid *gridp) : wxPanel(paren
 }
 
 
-//////////////
-// Destructor
+
+/// @brief Destructor 
+///
 SubsEditBox::~SubsEditBox() {
 	ActorBox->PopEventHandler(true);
 	Effect->PopEventHandler(true);
@@ -224,8 +228,10 @@ SubsEditBox::~SubsEditBox() {
 }
 
 
-/////////////////////////////////
-// Set split or single line mode
+
+/// @brief Set split or single line mode 
+/// @param newSize 
+///
 void SubsEditBox::SetSplitLineMode(wxSize newSize) {
 	// Widths
 	int topWidth;
@@ -257,8 +263,11 @@ void SubsEditBox::SetSplitLineMode(wxSize newSize) {
 }
 
 
-///////////////////
-// Update function
+
+/// @brief Update function 
+/// @param timeOnly 
+/// @param weak     
+///
 void SubsEditBox::Update (bool timeOnly,bool weak) {
 	if (enabled) {
 		AssDialogue *curdiag = grid->GetDialogue(linen);
@@ -308,8 +317,9 @@ void SubsEditBox::Update (bool timeOnly,bool weak) {
 }
 
 
-//////////////////
-// Update globals
+
+/// @brief Update globals 
+///
 void SubsEditBox::UpdateGlobals () {
 	// Styles
 	StyleBox->Clear();
@@ -335,8 +345,11 @@ void SubsEditBox::UpdateGlobals () {
 }
 
 
-//////////////////
-// Jump to a line
+
+/// @brief Jump to a line 
+/// @param n    
+/// @param weak 
+///
 void SubsEditBox::SetToLine(int n,bool weak) {
 	// Set to nothing
 	if (n == -1) {
@@ -415,16 +428,20 @@ BEGIN_EVENT_TABLE(SubsEditBox, wxPanel)
 END_EVENT_TABLE()
 
 
-///////////
-// On size
+
+/// @brief On size 
+/// @param event 
+///
 void SubsEditBox::OnSize(wxSizeEvent &event) {
 	if (setupDone) SetSplitLineMode(event.GetSize());
 	event.Skip();
 }
 
 
-/////////////////////
-// Text edited event
+
+/// @brief Text edited event 
+/// @param event 
+///
 void SubsEditBox::OnEditText(wxStyledTextEvent &event) {
 	int modType = event.GetModificationType();
 	if (modType == (wxSTC_MOD_INSERTTEXT | wxSTC_PERFORMED_USER) || modType == (wxSTC_MOD_DELETETEXT | wxSTC_PERFORMED_USER)) {
@@ -433,15 +450,19 @@ void SubsEditBox::OnEditText(wxStyledTextEvent &event) {
 }
 
 
-//////////////////////////
-// User Interface updated
+
+/// @brief User Interface updated 
+/// @param event 
+///
 void SubsEditBox::OnUpdateUI(wxStyledTextEvent &event) {
 	TextEdit->UpdateCallTip();
 }
 
 
-//////////////
-// Need style
+
+/// @brief Need style 
+/// @param event 
+///
 void SubsEditBox::OnNeedStyle(wxStyledTextEvent &event) {
 	// Check if it needs to fix text
 	wxString text = TextEdit->GetText();
@@ -454,21 +475,27 @@ void SubsEditBox::OnNeedStyle(wxStyledTextEvent &event) {
 }
 
 
-///////////////////
-// Character added
+
+/// @brief Character added 
+/// @param event 
+///
 void SubsEditBox::OnCharAdded(wxStyledTextEvent &event) {
 	//int character = event.GetKey();
 }
 
 
-////////////
-// Key down
+
+/// @brief Key down 
+/// @param event 
+///
 void SubsEditBox::OnKeyDown(wxStyledTextEvent &event) {
 }
 
 
-/////////////////////////////
-// Syntax highlight checkbox
+
+/// @brief Syntax highlight checkbox 
+/// @param event 
+///
 void SubsEditBox::OnSyntaxBox(wxCommandEvent &event) {
 	TextEdit->UpdateStyle();
 	Options.SetBool(_T("Syntax Highlight Enabled"),SyntaxHighlight->GetValue());
@@ -477,8 +504,10 @@ void SubsEditBox::OnSyntaxBox(wxCommandEvent &event) {
 }
 
 
-//////////////////////////
-// Time by frame radiobox
+
+/// @brief Time by frame radiobox 
+/// @param event 
+///
 void SubsEditBox::OnFrameRadio(wxCommandEvent &event) {
 	if (ByFrame->GetValue()) {
 		StartTime->SetByFrame(true);
@@ -490,8 +519,10 @@ void SubsEditBox::OnFrameRadio(wxCommandEvent &event) {
 }
 
 
-//////////////////////////
-// Standard time radiobox
+
+/// @brief Standard time radiobox 
+/// @param event 
+///
 void SubsEditBox::OnTimeRadio(wxCommandEvent &event) {
 	if (ByTime->GetValue()) {
 		StartTime->SetByFrame(false);
@@ -503,8 +534,11 @@ void SubsEditBox::OnTimeRadio(wxCommandEvent &event) {
 }
 
 
-//////////////////////////////////////////////////
-// Sets state (enabled/disabled) for all controls
+
+/// @brief Sets state (enabled/disabled) for all controls 
+/// @param state 
+/// @return 
+///
 void SubsEditBox::SetControlsState (bool state) {
 	if (state == controlState) return;
 	controlState = state;
@@ -557,8 +591,9 @@ void SubsEditBox::SetControlsState (bool state) {
 }
 
 
-////////////////////////////////////
-// Disables or enables frame timing
+
+/// @brief Disables or enables frame timing 
+///
 void SubsEditBox::UpdateFrameTiming () {
 	if (VFR_Output.IsLoaded()) ByFrame->Enable(enabled);
 	else {
@@ -571,8 +606,10 @@ void SubsEditBox::UpdateFrameTiming () {
 }
 
 
-/////////////////
-// Style changed
+
+/// @brief Style changed 
+/// @param event 
+///
 void SubsEditBox::OnStyleChange(wxCommandEvent &event) {
 	grid->BeginBatch();
 	wxArrayInt sel = grid->GetSelection();
@@ -591,8 +628,10 @@ void SubsEditBox::OnStyleChange(wxCommandEvent &event) {
 }
 
 
-/////////////////
-// Style changed
+
+/// @brief Style changed 
+/// @param event 
+///
 void SubsEditBox::OnActorChange(wxCommandEvent &event) {
 	grid->BeginBatch();
 	wxArrayInt sel = grid->GetSelection();
@@ -622,8 +661,10 @@ void SubsEditBox::OnActorChange(wxCommandEvent &event) {
 }
 
 
-///////////////////////////
-// Layer changed with spin
+
+/// @brief Layer changed with spin 
+/// @param event 
+///
 void SubsEditBox::OnLayerChange(wxSpinEvent &event) {
 	// Value
 	long temp = event.GetPosition();
@@ -648,8 +689,10 @@ void SubsEditBox::OnLayerChange(wxSpinEvent &event) {
 }
 
 
-////////////////////////////
-// Layer changed with enter
+
+/// @brief Layer changed with enter 
+/// @param event 
+///
 void SubsEditBox::OnLayerEnter(wxCommandEvent &event) {
 	// Value
 	long temp = Layer->GetValue();
@@ -674,8 +717,10 @@ void SubsEditBox::OnLayerEnter(wxCommandEvent &event) {
 }
 
 
-//////////////////////
-// Start time changed
+
+/// @brief Start time changed 
+/// @param event 
+///
 void SubsEditBox::OnStartTimeChange(wxCommandEvent &event) {
 	if (StartTime->time > EndTime->time) StartTime->SetTime(EndTime->time.GetMS());
 	bool join = Options.AsBool(_T("Link Time Boxes Commit")) && EndTime->HasBeenModified();
@@ -686,8 +731,10 @@ void SubsEditBox::OnStartTimeChange(wxCommandEvent &event) {
 }
 
 
-////////////////////
-// End time changed
+
+/// @brief End time changed 
+/// @param event 
+///
 void SubsEditBox::OnEndTimeChange(wxCommandEvent &event) {
 	if (StartTime->time > EndTime->time) EndTime->SetTime(StartTime->time.GetMS());
 	bool join = Options.AsBool(_T("Link Time Boxes Commit")) && StartTime->HasBeenModified();
@@ -698,8 +745,10 @@ void SubsEditBox::OnEndTimeChange(wxCommandEvent &event) {
 }
 
 
-////////////////////
-// Duration changed
+
+/// @brief Duration changed 
+/// @param event 
+///
 void SubsEditBox::OnDurationChange(wxCommandEvent &event) {
 	EndTime->SetTime(StartTime->time.GetMS() + Duration->time.GetMS());
 	StartTime->Update();
@@ -709,8 +758,14 @@ void SubsEditBox::OnDurationChange(wxCommandEvent &event) {
 }
 
 
-///////////////////////
-// Commit time changes
+
+/// @brief Commit time changes 
+/// @param start     
+/// @param end       
+/// @param fromStart 
+/// @param commit    
+/// @return 
+///
 void SubsEditBox::CommitTimes(bool start,bool end,bool fromStart,bool commit) {
 	// Get selection
 	if (!start && !end) return;
@@ -751,8 +806,10 @@ void SubsEditBox::CommitTimes(bool start,bool end,bool fromStart,bool commit) {
 }
 
 
-////////////////////
-// Margin L changed
+
+/// @brief Margin L changed 
+/// @param event 
+///
 void SubsEditBox::OnMarginLChange(wxCommandEvent &event) {
 	MarginL->Commited();
 	grid->BeginBatch();
@@ -773,8 +830,10 @@ void SubsEditBox::OnMarginLChange(wxCommandEvent &event) {
 }
 
 
-////////////////////
-// Margin R changed
+
+/// @brief Margin R changed 
+/// @param event 
+///
 void SubsEditBox::OnMarginRChange(wxCommandEvent &event) {
 	MarginR->Commited();
 	grid->BeginBatch();
@@ -795,8 +854,10 @@ void SubsEditBox::OnMarginRChange(wxCommandEvent &event) {
 }
 
 
-////////////////////
-// Margin V changed
+
+/// @brief Margin V changed 
+/// @param event 
+///
 void SubsEditBox::OnMarginVChange(wxCommandEvent &event) {
 	MarginV->Commited();
 	grid->BeginBatch();
@@ -818,8 +879,10 @@ void SubsEditBox::OnMarginVChange(wxCommandEvent &event) {
 }
 
 
-//////////////////
-// Effect changed
+
+/// @brief Effect changed 
+/// @param event 
+///
 void SubsEditBox::OnEffectChange(wxCommandEvent &event) {
 	Effect->Commited();
 	grid->BeginBatch();
@@ -839,8 +902,10 @@ void SubsEditBox::OnEffectChange(wxCommandEvent &event) {
 }
 
 
-/////////////////////////
-// Comment state changed
+
+/// @brief Comment state changed 
+/// @param event 
+///
 void SubsEditBox::OnCommentChange(wxCommandEvent &event) {
 	grid->BeginBatch();
 	wxArrayInt sel = grid->GetSelection();
@@ -859,8 +924,10 @@ void SubsEditBox::OnCommentChange(wxCommandEvent &event) {
 }
 
 
-///////////////////////
-// Event handler class
+
+/// @brief Event handler class 
+/// @param _control 
+///
 SubsEditBoxEvent::SubsEditBoxEvent(SubsEditBox *_control) {
 	control = _control;
 }
@@ -869,13 +936,20 @@ BEGIN_EVENT_TABLE(SubsEditBoxEvent, wxEvtHandler)
 	EVT_KEY_DOWN(SubsEditBoxEvent::OnKeyPress)
 END_EVENT_TABLE()
 
+
+/// @brief DOCME
+/// @param event 
+///
 void SubsEditBoxEvent::OnKeyPress(wxKeyEvent &event) {
 	control->DoKeyPress(event);
 }
 
 
-///////////////////////
-// Actual text changed
+
+/// @brief Actual text changed 
+/// @param event 
+/// @return 
+///
 void SubsEditBox::DoKeyPress(wxKeyEvent &event) {
 	int key = event.GetKeyCode();
 
@@ -894,8 +968,11 @@ void SubsEditBox::DoKeyPress(wxKeyEvent &event) {
 }
 
 
-//////////
-// Commit
+
+/// @brief Commit 
+/// @param stay 
+/// @return 
+///
 void SubsEditBox::Commit(bool stay) {
 	// Record pre-commit data
 	wxString oldText = grid->GetDialogue(linen)->Text;
@@ -951,8 +1028,10 @@ void SubsEditBox::Commit(bool stay) {
 }
 
 
-///////////////
-// Commit text
+
+/// @brief Commit text 
+/// @param weak 
+///
 void SubsEditBox::CommitText(bool weak) {
 	AssDialogue *cur = grid->GetDialogue(linen);
 
@@ -980,8 +1059,11 @@ void SubsEditBox::CommitText(bool weak) {
 }
 
 
-//////////////////////////////////////
-// Gets block number at text position
+
+/// @brief Gets block number at text position 
+/// @param pos 
+/// @return 
+///
 int SubsEditBox::BlockAtPos(int pos) {
 	// Prepare
 	int n=0;
@@ -998,8 +1080,14 @@ int SubsEditBox::BlockAtPos(int pos) {
 }
 
 
-////////////////
-// Set override
+
+/// @brief Set override 
+/// @param tagname  
+/// @param preValue 
+/// @param forcePos 
+/// @param getFocus 
+/// @return 
+///
 void SubsEditBox::SetOverride (wxString tagname,wxString preValue,int forcePos,bool getFocus) {
 	// Selection
 	int selstart, selend;
@@ -1278,71 +1366,91 @@ void SubsEditBox::SetOverride (wxString tagname,wxString preValue,int forcePos,b
 }
 
 
-/////////////////////
-// Set primary color
+
+/// @brief Set primary color 
+/// @param event 
+///
 void SubsEditBox::OnButtonColor1(wxCommandEvent &event) {
 	SetOverride(_T("\\1c"));
 }
 
 
-///////////////////////
-// Set secondary color
+
+/// @brief Set secondary color 
+/// @param event 
+///
 void SubsEditBox::OnButtonColor2(wxCommandEvent &event) {
 	SetOverride(_T("\\2c"));
 }
 
 
-/////////////////////
-// Set outline color
+
+/// @brief Set outline color 
+/// @param event 
+///
 void SubsEditBox::OnButtonColor3(wxCommandEvent &event) {
 	SetOverride(_T("\\3c"));
 }
 
 
-////////////////////
-// Set shadow color
+
+/// @brief Set shadow color 
+/// @param event 
+///
 void SubsEditBox::OnButtonColor4(wxCommandEvent &event) {
 	SetOverride(_T("\\4c"));
 }
 
 
-/////////////////
-// Set font face
+
+/// @brief Set font face 
+/// @param event 
+///
 void SubsEditBox::OnButtonFontFace(wxCommandEvent &event) {
 	SetOverride(_T("\\fn"));
 }
 
 
-////////
-// Bold
+
+/// @brief Bold 
+/// @param event 
+///
 void SubsEditBox::OnButtonBold(wxCommandEvent &event) {
 	SetOverride(_T("\\b"));
 }
 
 
-///////////
-// Italics
+
+/// @brief Italics 
+/// @param event 
+///
 void SubsEditBox::OnButtonItalics(wxCommandEvent &event) {
 	SetOverride(_T("\\i"));
 }
 
 
-/////////////
-// Underline
+
+/// @brief Underline 
+/// @param event 
+///
 void SubsEditBox::OnButtonUnderline(wxCommandEvent &event) {
 	SetOverride(_T("\\u"));
 }
 
 
-/////////////
-// Strikeout
+
+/// @brief Strikeout 
+/// @param event 
+///
 void SubsEditBox::OnButtonStrikeout(wxCommandEvent &event) {
 	SetOverride(_T("\\s"));
 }
 
 
-//////////
-// Commit
+
+/// @brief Commit 
+/// @param event 
+///
 void SubsEditBox::OnButtonCommit(wxCommandEvent &event) {
 #ifdef __APPLE__
 	Commit(wxGetMouseState().CmdDown());
@@ -1350,6 +1458,7 @@ void SubsEditBox::OnButtonCommit(wxCommandEvent &event) {
 	Commit(wxGetMouseState().ControlDown());
 #endif
 }
+
 
 
 

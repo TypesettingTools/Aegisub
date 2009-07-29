@@ -49,17 +49,19 @@
 
 
 
-////////////////////// AssTime //////////////////////
-// AssTime constructors
+
+/// @brief AssTime constructors AssTime //////////////////////
+///
 AssTime::AssTime () {
 	time = 0;
 }
 
 
-////////////////////
-// Parses from ASS
-// ---------------
-// Note that this function is atomic, it won't touch the values if it's invalid.
+
+/// @brief Note that this function is atomic, it won't touch the values if it's invalid. --------------- Parses from ASS 
+/// @param text 
+/// @return 
+///
 void AssTime::ParseASS (const wxString text) {
 	// Prepare
 	size_t pos = 0;
@@ -114,8 +116,10 @@ void AssTime::ParseASS (const wxString text) {
 }
 
 
-///////////////////
-// Parses from SRT
+
+/// @brief Parses from SRT 
+/// @param _text 
+///
 void AssTime::ParseSRT (const wxString _text) {
 	// Prepare
 	wxString text = _text;
@@ -144,20 +148,29 @@ void AssTime::ParseSRT (const wxString _text) {
 }
 
 
-//////////////////////////////////////////
-// AssTime conversion to/from miliseconds
+
+/// @brief AssTime conversion to/from miliseconds 
+/// @return 
+///
 int AssTime::GetMS () const {
 	if (!UseMSPrecision) return time/10*10;
 	else return time;
 }
 
+
+/// @brief DOCME
+/// @param _ms 
+///
 void AssTime::SetMS (int _ms) {
 	time = _ms;
 }
 
 
-////////////////
-// ASS Formated
+
+/// @brief ASS Formated 
+/// @param msPrecision 
+/// @return 
+///
 wxString AssTime::GetASSFormated (bool msPrecision) {
 	int h,m,s,ms;
 	int _ms = time;
@@ -202,8 +215,10 @@ wxString AssTime::GetASSFormated (bool msPrecision) {
 }
 
 
-////////////////
-// SRT Formated
+
+/// @brief SRT Formated 
+/// @return 
+///
 wxString AssTime::GetSRTFormated () {
 	int h,m,s,ms;
 	int _ms = time;
@@ -247,51 +262,108 @@ wxString AssTime::GetSRTFormated () {
 }
 
 
-//////////////////////
-// AssTime comparison
+
+/// @brief AssTime comparison 
+/// @param t1 
+/// @param t2 
+/// @return 
+///
 bool operator < (AssTime &t1, AssTime &t2) {
 	return (t1.GetMS() < t2.GetMS());
 }
 
+
+/// @brief DOCME
+/// @param t1 
+/// @param t2 
+/// @return 
+///
 bool operator > (AssTime &t1, AssTime &t2) {
 	return (t1.GetMS() > t2.GetMS());
 }
 
+
+/// @brief DOCME
+/// @param t1 
+/// @param t2 
+/// @return 
+///
 bool operator <= (AssTime &t1, AssTime &t2) {
 	return (t1.GetMS() <= t2.GetMS());
 }
 
+
+/// @brief DOCME
+/// @param t1 
+/// @param t2 
+/// @return 
+///
 bool operator >= (AssTime &t1, AssTime &t2) {
 	return (t1.GetMS() >= t2.GetMS());
 }
 
+
+/// @brief DOCME
+/// @param t1 
+/// @param t2 
+/// @return 
+///
 bool operator == (AssTime &t1, AssTime &t2) {
 	return (t1.GetMS() == t2.GetMS());
 }
 
+
+/// @brief DOCME
+/// @param t1 
+/// @param t2 
+/// @return 
+///
 bool operator != (AssTime &t1, AssTime &t2) {
 	return (t1.GetMS() != t2.GetMS());
 }
 
 
-/////////////////
-// Static option
+
+/// DOCME
 bool AssTime::UseMSPrecision = false;
 
 
-///////
-// Get
+
+/// @brief Get 
+/// @return 
+///
 int AssTime::GetTimeHours() { return time / 3600000; }
+
+/// @brief DOCME
+/// @return 
+///
 int AssTime::GetTimeMinutes() { return (time % 3600000)/60000; }
+
+/// @brief DOCME
+/// @return 
+///
 int AssTime::GetTimeSeconds() { return (time % 60000)/1000; }
+
+/// @brief DOCME
+/// @return 
+///
 int AssTime::GetTimeMiliseconds() { return (time % 1000); }
+
+/// @brief DOCME
+/// @return 
+///
 int AssTime::GetTimeCentiseconds() { return (time % 1000)/10; }
 
 
 
 
-///////
-// Constructor
+
+/// @brief Constructor 
+/// @param separator   
+/// @param numerator   
+/// @param denominator 
+/// @param dropframe   
+///
 FractionalTime::FractionalTime (wxString separator, int numerator, int denominator, bool dropframe) {
 	drop = dropframe;
 	if (drop) {
@@ -311,14 +383,18 @@ FractionalTime::FractionalTime (wxString separator, int numerator, int denominat
 		throw _T("FractionalTime: no separator specified");
 }
 
-///////
-// Destructor
+
+/// @brief Destructor 
+///
 FractionalTime::~FractionalTime () {
 	sep.Clear();
 }
 
-///////
-// SMPTE text string to milliseconds conversion
+
+/// @brief SMPTE text string to milliseconds conversion 
+/// @param _text 
+/// @return 
+///
 int FractionalTime::ToMillisecs (wxString _text) {
 	wxString text = _text;
 	wxString re_str = _T("");
@@ -376,22 +452,30 @@ int FractionalTime::ToMillisecs (wxString _text) {
 	return msecs_f;
 }
 
-///////
-// SMPTE text string to AssTime conversion
+
+/// @brief SMPTE text string to AssTime conversion 
+/// @param _text 
+/// @return 
+///
 AssTime FractionalTime::ToAssTime (wxString _text) {
 	AssTime time;
 	time.SetMS((int)ToMillisecs(_text));
 	return time;
 }
 
-///////
-// AssTime to SMPTE text string conversion
+
+/// @brief AssTime to SMPTE text string conversion 
+/// @param time 
+/// @return 
+///
 wxString FractionalTime::FromAssTime(AssTime time) {
 	return FromMillisecs(time.GetMS());
 }
 
-///////
-// Milliseconds to SMPTE text string conversion
+
+/// @brief Milliseconds to SMPTE text string conversion 
+/// @param msec 
+///
 wxString FractionalTime::FromMillisecs(int64_t msec) {
 	int h=0, m=0, s=0, f=0; // hours, minutes, seconds, fractions
 	int fn = (msec*(int64_t)num) / (1000*den); // frame number
@@ -443,4 +527,5 @@ wxString FractionalTime::FromMillisecs(int64_t msec) {
 RETURN:
 	return wxString::Format(_T("%02i") + sep + _T("%02i") + sep + _T("%02i") + sep + _T("%02i"),h,m,s,f);
 }
+
 

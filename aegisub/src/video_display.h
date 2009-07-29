@@ -62,19 +62,45 @@ class VisualTool;
 class VideoBox;
 
 
-//////////////
-// Main class
+
+/// DOCME
+/// @class VideoDisplay
+/// @brief DOCME
+///
+/// DOCME
 class VideoDisplay: public wxGLCanvas {
 	friend class AudioProvider;
 	friend class VisualTool;
 
 private:
+
+	/// DOCME
 	int visualMode;
 
+
+	/// DOCME
 	wxSize origSize;
+
+	/// DOCME
+
+	/// DOCME
 	int w,h;
+
+	/// DOCME
+
+	/// DOCME
+
+	/// DOCME
+
+	/// DOCME
 	int dx1,dx2,dy1,dy2;
+
+	/// DOCME
+
+	/// DOCME
 	int mouse_x,mouse_y;
+
+	/// DOCME
 	bool locked;
 
 	void DrawTVEffects();
@@ -83,6 +109,10 @@ private:
 	void OnPaint(wxPaintEvent& event);
 	void OnKey(wxKeyEvent &event);
 	void OnMouseEvent(wxMouseEvent& event);
+
+	/// @brief DOCME
+	/// @param event 
+	///
 	void OnEraseBackground(wxEraseEvent &event) {}
 	void OnSizeEvent(wxSizeEvent &event);
 
@@ -93,15 +123,31 @@ private:
 	void OnSaveSnapshotRaw(wxCommandEvent &event);
 
 public:
+
+	/// DOCME
 	VisualTool *visual;
+
+	/// DOCME
 	VideoBox *box;
 
+
+	/// DOCME
 	double zoomValue;
+
+	/// DOCME
 	bool freeSize;
 
+
+	/// DOCME
 	VideoSlider *ControlSlider;
+
+	/// DOCME
 	wxComboBox *zoomBox;
+
+	/// DOCME
 	wxTextCtrl *PositionDisplay;
+
+	/// DOCME
 	wxTextCtrl *SubsPosition;
 
 	VideoDisplay(wxWindow* parent, wxWindowID id, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = 0, const wxString& name = wxPanelNameStr);
@@ -121,6 +167,7 @@ public:
 
 	DECLARE_EVENT_TABLE()
 };
+
 
 
 

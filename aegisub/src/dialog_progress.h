@@ -36,6 +36,8 @@
 
 
 #ifndef DIALOG_PROGRESS_H
+
+/// DOCME
 #define DIALOG_PROGRESS_H
 
 
@@ -47,20 +49,36 @@
 #include <wx/stattext.h>
 
 
-/////////////////////////
-// Progress dialog class
+
+/// DOCME
+/// @class DialogProgress
+/// @brief DOCME
+///
+/// DOCME
 class DialogProgress : public wxDialog {
 private:
+
+	/// DOCME
 	volatile int count;
+
+	/// DOCME
 	int virtualMax;
+
+	/// DOCME
 	wxMutex mutex;
 
+
+	/// DOCME
 	wxGauge *gauge;
+
+	/// DOCME
 	wxStaticText *text;
 	void OnCancel(wxCommandEvent &event);
 	void OnUpdateProgress(wxCommandEvent &event);
 
 public:
+
+	/// DOCME
 	volatile bool *canceled;
 
 	DialogProgress(wxWindow *parent,wxString title,volatile bool *cancel,wxString message,int cur,int max);
@@ -72,15 +90,18 @@ public:
 };
 
 
-//////////////////////////
-// Progress dialog thread
-// ----------------------
-// IGNORE THIS : Probably won't ever be used
-// Probably, that is. Which is why it's still here.
+
+/// DOCME
+/// @class DialogProgressThread
+/// @brief DOCME
+///
+/// DOCME
 class DialogProgressThread : public wxThread {
 	DialogProgressThread(wxWindow *parent,wxString title,volatile bool *canceled,wxString message,int cur,int max);
 
 public:
+
+	/// DOCME
 	DialogProgress *dialog;
 
 	~DialogProgressThread();
@@ -90,4 +111,5 @@ public:
 
 
 #endif
+
 

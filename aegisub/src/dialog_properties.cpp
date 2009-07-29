@@ -55,8 +55,10 @@
 
 
 
-///////////////
-// Constructor
+
+/// @brief Constructor 
+/// @param parent 
+///
 DialogProperties::DialogProperties (wxWindow *parent)
 : wxDialog(parent, -1, _("Script Properties"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE)
 {
@@ -170,8 +172,9 @@ DialogProperties::DialogProperties (wxWindow *parent)
 }
 
 
-//////////////
-// Destructor
+
+/// @brief Destructor 
+///
 DialogProperties::~DialogProperties () {
 }
 
@@ -184,8 +187,10 @@ BEGIN_EVENT_TABLE(DialogProperties,wxDialog)
 END_EVENT_TABLE()
 
 
-/////////////////
-// Apply changes
+
+/// @brief Apply changes 
+/// @param event 
+///
 void DialogProperties::OnOK(wxCommandEvent &event) {
 	// Update details
 	int count = 0;
@@ -210,8 +215,12 @@ void DialogProperties::OnOK(wxCommandEvent &event) {
 }
 
 
-//////////////////////////////////////
-// Only set script info if it changed
+
+/// @brief Only set script info if it changed 
+/// @param key   
+/// @param value 
+/// @return 
+///
 int DialogProperties::SetInfoIfDifferent(wxString key,wxString value) {
 	// Get script
 	AssFile *subs = AssFile::top;
@@ -225,11 +234,14 @@ int DialogProperties::SetInfoIfDifferent(wxString key,wxString value) {
 }
 
 
-//////////////////////////
-// Set res to match video
+
+/// @brief Set res to match video 
+/// @param event 
+///
 void DialogProperties::OnSetFromVideo(wxCommandEvent &event) {
 	ResX->SetValue(wxString::Format(_T("%i"),VideoContext::Get()->GetWidth()));
 	ResY->SetValue(wxString::Format(_T("%i"),VideoContext::Get()->GetHeight()));
 	event.Skip();
 }
+
 

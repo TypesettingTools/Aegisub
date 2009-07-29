@@ -59,48 +59,100 @@
 
 
 
-// These are made with #define in the hope gettext can pick it up for translation then
+
+/// DOCME
 #define TEXT_LABEL_SOURCE _("Source: ")
+
+/// DOCME
 #define TEXT_LABEL_DEST _("Dest: ")
 
 
+
+/// DOCME
+/// @class KaraokeLineMatchDisplay
+/// @brief DOCME
+///
+/// DOCME
 class KaraokeLineMatchDisplay : public wxControl {
+
+	/// DOCME
 	struct MatchSyllable {
+
+		/// DOCME
 		int dur;
+
+		/// DOCME
 		wxString text;
+
+		/// @brief DOCME
+		/// @param _dur  
+		/// @param _text 
+		///
 		MatchSyllable(int _dur, const wxString &_text) : dur(_dur), text(_text) { }
 	};
+
+	/// DOCME
 	struct MatchGroup {
+
+		/// DOCME
 		std::vector<MatchSyllable> src;
+
+		/// DOCME
 		typedef std::vector<MatchSyllable>::iterator SrcIterator;
+
+		/// DOCME
 		wxString dst;
+
+		/// DOCME
 		int duration;
+
+		/// DOCME
 		int last_render_width;
+
+		/// @brief DOCME
+		///
 		MatchGroup() : duration(0), last_render_width(0) { }
 	};
 
-	// Groups matched on current line so far
+
+	/// DOCME
 	std::vector<MatchGroup> matched_groups;
+
+	/// DOCME
 	typedef std::vector<MatchGroup>::iterator MatchedGroupIterator;
-	// Unmatched source syllables
+
+	/// DOCME
 	std::deque<MatchSyllable> unmatched_source;
+
+	/// DOCME
 	typedef std::deque<MatchSyllable>::iterator UnmatchedSourceIterator;
-	// Unmatched destination text
+
+	/// DOCME
 	wxString unmatched_destination;
 
+
+	/// DOCME
 	int last_total_matchgroup_render_width;
 
-	// Length of current selection in the unmatched source and destination
+
+	/// DOCME
 	int source_sel_length;
+
+	/// DOCME
 	int destination_sel_length;
 
-	// Whether source and destination lines are set
+
+	/// DOCME
 	bool has_source, has_destination;
 
 	void OnPaint(wxPaintEvent &event);
 	void OnKeyboard(wxKeyEvent &event);
 	void OnFocusEvent(wxFocusEvent &event);
 
+
+	/// DOCME
+
+	/// DOCME
 	const wxString label_source, label_destination;
 
 public:
@@ -137,6 +189,10 @@ public:
 };
 
 
+
+/// @brief DOCME
+/// @param parent 
+///
 KaraokeLineMatchDisplay::KaraokeLineMatchDisplay(DialogKanjiTimer *parent)
 : wxControl(parent, -1, wxDefaultPosition, wxDefaultSize, wxBORDER_NONE|wxWANTS_CHARS)
 , label_source(TEXT_LABEL_SOURCE)
@@ -150,11 +206,18 @@ KaraokeLineMatchDisplay::KaraokeLineMatchDisplay(DialogKanjiTimer *parent)
 	SetMinSize(best_size);
 }
 
+
+/// @brief DOCME
+///
 KaraokeLineMatchDisplay::~KaraokeLineMatchDisplay()
 {
 	// Nothing to do
 }
 
+
+/// @brief DOCME
+/// @return 
+///
 wxSize KaraokeLineMatchDisplay::GetBestSize()
 {
 	int w_src, h_src, w_dst, h_dst;
@@ -178,6 +241,14 @@ BEGIN_EVENT_TABLE(KaraokeLineMatchDisplay,wxControl)
 END_EVENT_TABLE()
 
 
+
+/// @brief DOCME
+/// @param dc  
+/// @param txt 
+/// @param x   
+/// @param y   
+/// @return 
+///
 int DrawBoxedText(wxDC &dc, const wxString &txt, int x, int y)
 {
 	int tw, th;
@@ -202,6 +273,10 @@ int DrawBoxedText(wxDC &dc, const wxString &txt, int x, int y)
 	}
 }
 
+
+/// @brief DOCME
+/// @param event 
+///
 void KaraokeLineMatchDisplay::OnPaint(wxPaintEvent &event)
 {
 	wxPaintDC dc(this);
@@ -347,17 +422,30 @@ void KaraokeLineMatchDisplay::OnPaint(wxPaintEvent &event)
 		DrawBoxedText(dc, txt, next_x, y_line2);
 }
 
+
+/// @brief DOCME
+/// @param event 
+///
 void KaraokeLineMatchDisplay::OnKeyboard(wxKeyEvent &event)
 {
 	((DialogKanjiTimer*)GetParent())->OnKeyDown(event);
 }
 
+
+/// @brief DOCME
+/// @param event 
+///
 void KaraokeLineMatchDisplay::OnFocusEvent(wxFocusEvent &event)
 {
 	Refresh(true);
 }
 
 
+
+/// @brief DOCME
+/// @param src 
+/// @param dst 
+///
 void KaraokeLineMatchDisplay::SetInputData(const AssDialogue *src, const AssDialogue *dst)
 {
 	has_source = src != 0;
@@ -396,6 +484,10 @@ void KaraokeLineMatchDisplay::SetInputData(const AssDialogue *src, const AssDial
 }
 
 
+
+/// @brief DOCME
+/// @return 
+///
 wxString KaraokeLineMatchDisplay::GetOutputLine()
 {
 	wxString res;
@@ -410,17 +502,28 @@ wxString KaraokeLineMatchDisplay::GetOutputLine()
 }
 
 
+
+/// @brief DOCME
+/// @return 
+///
 int KaraokeLineMatchDisplay::GetRemainingSource()
 {
 	return unmatched_source.size();
 }
 
+
+/// @brief DOCME
+/// @return 
+///
 int KaraokeLineMatchDisplay::GetRemainingDestination()
 {
 	return unmatched_destination.size();
 }
 
 
+
+/// @brief DOCME
+///
 void KaraokeLineMatchDisplay::IncreaseSourceMatch()
 {
 	source_sel_length += 1;
@@ -429,6 +532,9 @@ void KaraokeLineMatchDisplay::IncreaseSourceMatch()
 	Refresh(true);
 }
 
+
+/// @brief DOCME
+///
 void KaraokeLineMatchDisplay::DecreaseSourceMatch()
 {
 	source_sel_length -= 1;
@@ -437,6 +543,9 @@ void KaraokeLineMatchDisplay::DecreaseSourceMatch()
 	Refresh(true);
 }
 
+
+/// @brief DOCME
+///
 void KaraokeLineMatchDisplay::IncreseDestinationMatch()
 {
 	destination_sel_length += 1;
@@ -445,6 +554,9 @@ void KaraokeLineMatchDisplay::IncreseDestinationMatch()
 	Refresh(true);
 }
 
+
+/// @brief DOCME
+///
 void KaraokeLineMatchDisplay::DecreaseDestinationMatch()
 {
 	destination_sel_length -= 1;
@@ -454,9 +566,17 @@ void KaraokeLineMatchDisplay::DecreaseDestinationMatch()
 }
 
 
+
+/// DOCME
 #define KANA_SEARCH_DISTANCE 3 //Kana interpolation, in characters, unset to disable
+
+/// DOCME
 #define ROMAJI_SEARCH_DISTANCE 4 //Romaji interpolation, in karaoke groups, unset to disable
 
+
+/// @brief DOCME
+/// @return 
+///
 void KaraokeLineMatchDisplay::AutoMatchJapanese()
 {
 	if (unmatched_source.size() < 1) return;
@@ -629,6 +749,10 @@ trycatchingmorespaces:
 }
 
 
+
+/// @brief DOCME
+/// @return 
+///
 bool KaraokeLineMatchDisplay::AcceptMatch()
 {
 	MatchGroup match;
@@ -665,6 +789,10 @@ bool KaraokeLineMatchDisplay::AcceptMatch()
 	return true;
 }
 
+
+/// @brief DOCME
+/// @return 
+///
 bool KaraokeLineMatchDisplay::UndoMatch()
 {
 	if (matched_groups.empty())
@@ -693,8 +821,11 @@ bool KaraokeLineMatchDisplay::UndoMatch()
 
 
 
-///////////////
-// Constructor
+
+/// @brief Constructor 
+/// @param parent 
+/// @param _grid  
+///
 DialogKanjiTimer::DialogKanjiTimer(wxWindow *parent, SubtitlesGrid *_grid)
 : wxDialog (parent,-1,_("Kanji timing"),wxDefaultPosition)
 {
@@ -797,6 +928,10 @@ BEGIN_EVENT_TABLE(DialogKanjiTimer,wxDialog)
 	EVT_TEXT_ENTER(TEXT_DEST,DialogKanjiTimer::OnKeyEnter)
 END_EVENT_TABLE()
 
+
+/// @brief DOCME
+/// @param event 
+///
 void DialogKanjiTimer::OnClose(wxCommandEvent &event) {
 	Options.SetBool(_T("kanji timer interpolation"),Interpolate->IsChecked());
 	Options.Save();
@@ -817,6 +952,10 @@ void DialogKanjiTimer::OnClose(wxCommandEvent &event) {
 	Close();
 }
 
+
+/// @brief DOCME
+/// @param event 
+///
 void DialogKanjiTimer::OnStart(wxCommandEvent &event) {
 	if (SourceStyle->GetValue().Len() == 0 || DestStyle->GetValue().Len() == 0)
 		wxMessageBox(_("Select source and destination styles first."),_("Error"),wxICON_EXCLAMATION | wxOK);
@@ -830,6 +969,10 @@ void DialogKanjiTimer::OnStart(wxCommandEvent &event) {
 	LinesToChange.clear();
 }
 
+
+/// @brief DOCME
+/// @param event 
+///
 void DialogKanjiTimer::OnLink(wxCommandEvent &event) {
 	if (display->AcceptMatch())
 		TryAutoMatch();
@@ -837,22 +980,38 @@ void DialogKanjiTimer::OnLink(wxCommandEvent &event) {
 		wxBell();
 }
 
+
+/// @brief DOCME
+/// @param event 
+///
 void DialogKanjiTimer::OnUnlink(wxCommandEvent &event) {
 	if (!display->UndoMatch())
 		wxBell();
 	// Don't auto-match here, undoing sets the selection to the undone match
 }
 
+
+/// @brief DOCME
+/// @param event 
+///
 void DialogKanjiTimer::OnSkipSource(wxCommandEvent &event) {
 	currentSourceLine = FindNextStyleMatch(currentSourceLine, SourceStyle->GetValue());
 	ResetForNewLine();
 }
 
+
+/// @brief DOCME
+/// @param event 
+///
 void DialogKanjiTimer::OnSkipDest(wxCommandEvent &event) {
 	currentDestinationLine = FindNextStyleMatch(currentDestinationLine, DestStyle->GetValue());
 	ResetForNewLine();
 }
 
+
+/// @brief DOCME
+/// @param event 
+///
 void DialogKanjiTimer::OnGoBack(wxCommandEvent &event) {
 	if (LinesToChange.empty()==false)
 		LinesToChange.pop_back(); //If we go back, then take out the modified line we saved.
@@ -862,6 +1021,10 @@ void DialogKanjiTimer::OnGoBack(wxCommandEvent &event) {
 	ResetForNewLine();
 }
 
+
+/// @brief DOCME
+/// @param event 
+///
 void DialogKanjiTimer::OnAccept(wxCommandEvent &event) {
 	if (display->GetRemainingSource() > 0)
 		wxMessageBox(_("Group all of the source text."),_("Error"),wxICON_EXCLAMATION | wxOK);
@@ -876,6 +1039,11 @@ void DialogKanjiTimer::OnAccept(wxCommandEvent &event) {
 	}
 }
 
+
+/// @brief DOCME
+/// @param event 
+/// @return 
+///
 void DialogKanjiTimer::OnKeyDown(wxKeyEvent &event) {
 	wxCommandEvent evt;
 	switch(event.GetKeyCode()) {
@@ -905,6 +1073,10 @@ void DialogKanjiTimer::OnKeyDown(wxKeyEvent &event) {
 	}
 }
 
+
+/// @brief DOCME
+/// @param event 
+///
 void DialogKanjiTimer::OnKeyEnter(wxCommandEvent &event) {
 	wxCommandEvent evt;
 
@@ -919,6 +1091,9 @@ void DialogKanjiTimer::OnKeyEnter(wxCommandEvent &event) {
 }
 
 
+
+/// @brief DOCME
+///
 void DialogKanjiTimer::ResetForNewLine()
 {
 	AssDialogue *src = 0;
@@ -942,12 +1117,21 @@ void DialogKanjiTimer::ResetForNewLine()
 	display->SetFocus();
 }
 
+
+/// @brief DOCME
+///
 void DialogKanjiTimer::TryAutoMatch()
 {
 	if (Interpolate->GetValue())
 		display->AutoMatchJapanese();
 }
 
+
+/// @brief DOCME
+/// @param search_from  
+/// @param search_style 
+/// @return 
+///
 entryIter DialogKanjiTimer::FindNextStyleMatch(entryIter search_from, const wxString &search_style)
 {
 	if (search_from == subs->Line.end()) return search_from;
@@ -962,6 +1146,11 @@ entryIter DialogKanjiTimer::FindNextStyleMatch(entryIter search_from, const wxSt
 	return search_from;
 }
 
+
+/// @brief DOCME
+/// @param search_from  
+/// @param search_style 
+///
 entryIter DialogKanjiTimer::FindPrevStyleMatch(entryIter search_from, const wxString &search_style)
 {
 	if (search_from == subs->Line.begin()) return search_from;
@@ -975,5 +1164,6 @@ entryIter DialogKanjiTimer::FindPrevStyleMatch(entryIter search_from, const wxSt
 
 	return search_from;
 }
+
 
 

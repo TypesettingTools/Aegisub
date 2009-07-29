@@ -43,15 +43,25 @@
 #include "../universalchardet/nsUniversalDetector.h"
 
 
-/////////////////////////////////
-// Character set detection class
+
+/// DOCME
+/// @class CharSetDetect
+/// @brief DOCME
+///
+/// DOCME
 class CharSetDetect : public nsUniversalDetector {
 private:
+
+	/// DOCME
 	wxString result;
 	void Report(const char* aCharset);
 
 public:
 	wxString GetEncoding(wxString filename);
+
+	/// @brief DOCME
+	///
 	PRBool done() const { return mDone; }
 };
+
 

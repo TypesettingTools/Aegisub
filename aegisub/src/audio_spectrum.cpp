@@ -55,21 +55,49 @@
 
 // Audio spectrum FFT data cache
 
-// Spectrum cache basically caches the raw result of FFT
+
+/// DOCME
+/// @class AudioSpectrumCache
+/// @brief DOCME
+///
+/// DOCME
 class AudioSpectrumCache {
 public:
-	// Type of a single FFT result line
+
+	/// DOCME
 	typedef std::vector<float> CacheLine;
 
-	// Types for cache aging
+
+	/// DOCME
 	typedef unsigned int CacheAccessTime;
+
+	/// DOCME
 	struct CacheAgeData {
+
+		/// DOCME
 		CacheAccessTime access_time;
+
+		/// DOCME
 		unsigned long first_line;
+
+		/// DOCME
 		unsigned long num_lines; // includes overlap-lines
+
+		/// @brief DOCME
+		/// @param second 
+		/// @return 
+		///
 		bool operator< (const CacheAgeData& second) const { return access_time < second.access_time; }
+
+		/// @brief DOCME
+		/// @param t     
+		/// @param first 
+		/// @param num   
+		///
 		CacheAgeData(CacheAccessTime t, unsigned long first, unsigned long num) : access_time(t), first_line(first), num_lines(num) { }
 	};
+
+	/// DOCME
 	typedef std::vector<CacheAgeData> CacheAgeList;
 
 	// Get the overlap'th overlapping FFT in FFT group i, generating it if needed
@@ -85,37 +113,73 @@ public:
 	// Return true if the object called on is empty and can safely be deleted too
 	virtual bool KillLine(unsigned long line_id) = 0;
 
-	// Set the FFT size used
+
+	/// @brief // Set the FFT size used
+	/// @param new_length 
+	///
 	static void SetLineLength(unsigned long new_length)
 	{
 		line_length = new_length;
 		null_line.resize(new_length, 0);
 	}
 
+
+	/// @brief DOCME
+	///
 	virtual ~AudioSpectrumCache() {};
 
 protected:
-	// A cache line containing only zero-values
+
+	/// DOCME
 	static CacheLine null_line;
-	// The FFT size
+
+	/// DOCME
 	static unsigned long line_length;
 };
 
+
+/// DOCME
 AudioSpectrumCache::CacheLine AudioSpectrumCache::null_line;
+
+/// DOCME
 unsigned long AudioSpectrumCache::line_length;
 
 
 // Bottom level FFT cache, holds actual power data itself
 
+
+/// DOCME
+/// @class FinalSpectrumCache
+/// @brief DOCME
+///
+/// DOCME
 class FinalSpectrumCache : public AudioSpectrumCache {
 private:
+
+	/// DOCME
 	std::vector<CacheLine> data;
+
+	/// DOCME
+
+	/// DOCME
 	unsigned long start, length; // start and end of range
+
+	/// DOCME
 	unsigned int overlaps;
 
+
+	/// DOCME
 	CacheAccessTime last_access;
 
 public:
+
+	/// @brief DOCME
+	/// @param i           
+	/// @param overlap     
+	/// @param created     
+	/// @param access_time 
+	/// @return 
+	///
 	CacheLine& GetLine(unsigned long i, unsigned int overlap, bool &created, CacheAccessTime access_time)
 	{
 		last_access = access_time;
@@ -127,21 +191,41 @@ public:
 			return null_line;
 	}
 
+
+	/// @brief DOCME
+	/// @return 
+	///
 	size_t GetManagedLineCount()
 	{
 		return data.size();
 	}
 
+
+	/// @brief DOCME
+	/// @param ages 
+	///
 	void GetLineAccessTimes(CacheAgeList &ages)
 	{
 		ages.push_back(CacheAgeData(last_access, start, data.size()));
 	}
 
+
+	/// @brief DOCME
+	/// @param line_id 
+	/// @return 
+	///
 	bool KillLine(unsigned long line_id)
 	{
 		return start == line_id;
 	}
 
+
+	/// @brief DOCME
+	/// @param provider  
+	/// @param _start    
+	/// @param _length   
+	/// @param _overlaps 
+	///
 	FinalSpectrumCache(AudioProvider *provider, unsigned long _start, unsigned long _length, unsigned int _overlaps)
 	{
 		start = _start;
@@ -210,6 +294,9 @@ public:
 		}
 	}
 
+
+	/// @brief DOCME
+	///
 	virtual ~FinalSpectrumCache()
 	{
 	}
@@ -219,16 +306,46 @@ public:
 
 // Non-bottom-level cache, refers to other caches to do the work
 
+
+/// DOCME
+/// @class IntermediateSpectrumCache
+/// @brief DOCME
+///
+/// DOCME
 class IntermediateSpectrumCache : public AudioSpectrumCache {
 private:
+
+	/// DOCME
 	std::vector<AudioSpectrumCache*> sub_caches;
+
+	/// DOCME
+
+	/// DOCME
+
+	/// DOCME
 	unsigned long start, length, subcache_length;
+
+	/// DOCME
 	unsigned int overlaps;
+
+	/// DOCME
 	bool subcaches_are_final;
+
+	/// DOCME
 	int depth;
+
+	/// DOCME
 	AudioProvider *provider;
 
 public:
+
+	/// @brief DOCME
+	/// @param i           
+	/// @param overlap     
+	/// @param created     
+	/// @param access_time 
+	/// @return 
+	///
 	CacheLine &GetLine(unsigned long i, unsigned int overlap, bool &created, CacheAccessTime access_time)
 	{
 		if (i >= start && i-start <= length) {
@@ -251,6 +368,10 @@ public:
 		}
 	}
 
+
+	/// @brief DOCME
+	/// @return 
+	///
 	size_t GetManagedLineCount()
 	{
 		size_t res = 0;
@@ -261,6 +382,10 @@ public:
 		return res;
 	}
 
+
+	/// @brief DOCME
+	/// @param ages 
+	///
 	void GetLineAccessTimes(CacheAgeList &ages)
 	{
 		for (size_t i = 0; i < sub_caches.size(); ++i) {
@@ -269,6 +394,11 @@ public:
 		}
 	}
 
+
+	/// @brief DOCME
+	/// @param line_id 
+	/// @return 
+	///
 	bool KillLine(unsigned long line_id)
 	{
 		int sub_caches_left = 0;
@@ -285,6 +415,14 @@ public:
 		return sub_caches_left == 0;
 	}
 
+
+	/// @brief DOCME
+	/// @param _provider 
+	/// @param _start    
+	/// @param _length   
+	/// @param _overlaps 
+	/// @param _depth    
+	///
 	IntermediateSpectrumCache(AudioProvider *_provider, unsigned long _start, unsigned long _length, unsigned int _overlaps, int _depth)
 	{
 		provider = _provider;
@@ -307,6 +445,9 @@ public:
 		sub_caches.resize(num_subcaches, 0);
 	}
 
+
+	/// @brief DOCME
+	///
 	virtual ~IntermediateSpectrumCache()
 	{
 		for (size_t i = 0; i < sub_caches.size(); ++i)
@@ -318,15 +459,37 @@ public:
 
 
 
+
+/// DOCME
+/// @class AudioSpectrumCacheManager
+/// @brief DOCME
+///
+/// DOCME
 class AudioSpectrumCacheManager {
 private:
+
+	/// DOCME
 	IntermediateSpectrumCache *cache_root;
+
+	/// DOCME
+
+	/// DOCME
 	unsigned long cache_hits, cache_misses;
+
+	/// DOCME
 	AudioSpectrumCache::CacheAccessTime cur_time;
 
+
+	/// DOCME
 	unsigned long max_lines_cached;
 
 public:
+
+	/// @brief DOCME
+	/// @param i       
+	/// @param overlap 
+	/// @return 
+	///
 	AudioSpectrumCache::CacheLine &GetLine(unsigned long i, unsigned int overlap)
 	{
 		bool created = false;
@@ -338,6 +501,10 @@ public:
 		return res;
 	}
 
+
+	/// @brief DOCME
+	/// @return 
+	///
 	void Age()
 	{
 		wxLogDebug(_T("AudioSpectrumCacheManager stats: hits=%u, misses=%u, misses%%=%f, managed lines=%u (max=%u)"), cache_hits, cache_misses, cache_misses/float(cache_hits+cache_misses)*100, cache_root->GetManagedLineCount(), max_lines_cached);
@@ -383,6 +550,13 @@ public:
 		assert(cache_root->GetManagedLineCount() < max_lines_cached);
 	}
 
+
+	/// @brief DOCME
+	/// @param provider     
+	/// @param line_length  
+	/// @param num_lines    
+	/// @param num_overlaps 
+	///
 	AudioSpectrumCacheManager(AudioProvider *provider, unsigned long line_length, unsigned long num_lines, unsigned int num_overlaps)
 	{
 		cache_hits = cache_misses = 0;
@@ -398,6 +572,9 @@ public:
 		max_lines_cached = max_cache_size / line_size;
 	}
 
+
+	/// @brief DOCME
+	///
 	~AudioSpectrumCacheManager()
 	{
 		delete cache_root;
@@ -407,6 +584,10 @@ public:
 
 // AudioSpectrum
 
+
+/// @brief DOCME
+/// @param _provider 
+///
 AudioSpectrum::AudioSpectrum(AudioProvider *_provider)
 {
 	provider = _provider;
@@ -496,12 +677,26 @@ AudioSpectrum::AudioSpectrum(AudioProvider *_provider)
 }
 
 
+
+/// @brief DOCME
+///
 AudioSpectrum::~AudioSpectrum()
 {
 	delete cache;
 }
 
 
+
+/// @brief DOCME
+/// @param range_start 
+/// @param range_end   
+/// @param selected    
+/// @param img         
+/// @param imgleft     
+/// @param imgwidth    
+/// @param imgpitch    
+/// @param imgheight   
+///
 void AudioSpectrum::RenderRange(int64_t range_start, int64_t range_end, bool selected, unsigned char *img, int imgleft, int imgwidth, int imgpitch, int imgheight)
 {
 	unsigned long first_line = (unsigned long)(fft_overlaps * range_start / line_length / 2);
@@ -551,6 +746,8 @@ void AudioSpectrum::RenderRange(int64_t range_start, int64_t range_end, bool sel
 			}
 		}
 
+
+/// DOCME
 #define WRITE_PIXEL \
 	if (intensity < 0) intensity = 0; \
 	if (intensity > 255) intensity = 255; \
@@ -599,6 +796,8 @@ void AudioSpectrum::RenderRange(int64_t range_start, int64_t range_end, bool sel
 			}
 		}
 
+
+/// DOCME
 #undef WRITE_PIXEL
 
 	}
@@ -609,10 +808,15 @@ void AudioSpectrum::RenderRange(int64_t range_start, int64_t range_end, bool sel
 }
 
 
+
+/// @brief DOCME
+/// @param _power_scale 
+///
 void AudioSpectrum::SetScaling(float _power_scale)
 {
 	power_scale = _power_scale;
 }
+
 
 
 

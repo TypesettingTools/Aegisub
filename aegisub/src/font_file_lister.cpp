@@ -48,33 +48,40 @@
 #if defined(__WINDOWS__) || defined(__APPLE__)
 #ifdef WITH_FREETYPE2
 #include "font_file_lister_freetype.h"
+
+/// DOCME
 #define FontListerClass FreetypeFontFileLister
 #endif
 #else
 #include "font_file_lister_fontconfig.h"
+
+/// DOCME
 #define FontListerClass FontConfigFontFileLister
 #endif
 
 
-////////////////////
-// Static instances
+
+/// DOCME
 FontFileLister *FontFileLister::instance = NULL;
 
 
-///////////////
-// Constructor
+
+/// @brief Constructor 
+///
 FontFileLister::FontFileLister() {
 }
 
 
-//////////////
-// Destructor
+
+/// @brief Destructor 
+///
 FontFileLister::~FontFileLister() {
 }
 
 
-////////////////
-// Get instance
+
+/// @brief Get instance 
+///
 void FontFileLister::GetInstance() {
 #ifdef FontListerClass
 	if (!instance) instance = new FontListerClass();
@@ -82,8 +89,11 @@ void FontFileLister::GetInstance() {
 }
 
 
-////////////////////////////////////
-// Redirect statics to the instance
+
+/// @brief Redirect statics to the instance 
+/// @param facename 
+/// @return 
+///
 wxArrayString FontFileLister::GetFilesWithFace(wxString facename) {
 	GetInstance();
 	if (instance)
@@ -93,18 +103,27 @@ wxArrayString FontFileLister::GetFilesWithFace(wxString facename) {
 		return ret;
 	}
 }
+
+/// @brief DOCME
+///
 void FontFileLister::Initialize() {
 	GetInstance();
 	if (instance) instance->DoInitialize();
 }
+
+/// @brief DOCME
+///
 void FontFileLister::ClearData() {
 	GetInstance();
 	if (instance) instance->DoClearData();
 }
 
 
-////////////////////////////////////////////////
-// Get list of files that match a specific face
+
+/// @brief Get list of files that match a specific face 
+/// @param facename 
+/// @return 
+///
 wxArrayString FontFileLister::CacheGetFilesWithFace(wxString facename) {
 	FontMap::iterator iter = fontTable.find(facename);
 	if (iter != fontTable.end()) return iter->second;
@@ -116,16 +135,21 @@ wxArrayString FontFileLister::CacheGetFilesWithFace(wxString facename) {
 }
 
 
-//////////////
-// Clear data
+
+/// @brief Clear data 
+///
 void FontFileLister::ClearCache() {
 	fontFiles.clear();
 	fontTable.clear();
 }
 
 
-////////////
-// Add font
+
+/// @brief Add font 
+/// @param filename 
+/// @param facename 
+/// @return 
+///
 void FontFileLister::AddFont(wxString filename,wxString facename) {
 	// See if it's a valid facename
 	facename.Trim(true).Trim(false);
@@ -143,15 +167,19 @@ void FontFileLister::AddFont(wxString filename,wxString facename) {
 }
 
 
-/////////////////////////////////
-// Check if a filename is cached
+
+/// @brief Check if a filename is cached 
+/// @param filename 
+/// @return 
+///
 bool FontFileLister::IsFilenameCached(wxString filename) {
 	return fontFiles.Index(filename) != wxNOT_FOUND;
 }
 
 
-//////////////
-// Save cache
+
+/// @brief Save cache 
+///
 void FontFileLister::SaveCache() {
 	try {
 		// Open file
@@ -178,8 +206,9 @@ void FontFileLister::SaveCache() {
 }
 
 
-//////////////
-// Load cache
+
+/// @brief Load cache 
+///
 void FontFileLister::LoadCache() {
 	try {
 		// Load cache
@@ -208,4 +237,5 @@ void FontFileLister::LoadCache() {
 	catch (...) {
 	}
 }
+
 

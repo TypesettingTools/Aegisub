@@ -48,15 +48,29 @@
 #include <wx/choicdlg.h>
 
 
+
+/// DOCME
 struct CharDetResult {
+
+	/// DOCME
 	float confidence;
+
+	/// DOCME
 	wxString name;
 
+
+	/// @brief DOCME
+	/// @param par 
+	/// @return 
+	///
 	bool operator < (CharDetResult &par) { return confidence > par.confidence; }
 };
 
-////////////////
-// Get encoding
+
+/// @brief Get encoding 
+/// @param filename 
+/// @return 
+///
 wxString CharSetDetect::GetEncoding(wxString filename) {
 	std::ifstream file;
 #ifdef __WINDOWS__
@@ -148,12 +162,15 @@ wxString CharSetDetect::GetEncoding(wxString filename) {
 	return result;
 }
 
-//////////
-// Report
+
+/// @brief Report 
+/// @param aCharset 
+///
 void CharSetDetect::Report(const char* aCharset) {
 	// Store the result reported
 	result = wxString(aCharset,wxConvUTF8);
 }
 
 #endif // WITH_UNIVCHARDET
+
 

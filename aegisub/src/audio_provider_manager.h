@@ -46,12 +46,17 @@
 #include "include/aegisub/audio_provider.h"
 
 
-///////////////////
-// Factory Manager
+
+/// DOCME
+/// @class AudioProviderFactoryManager
+/// @brief DOCME
+///
+/// DOCME
 class AudioProviderFactoryManager : public FactoryManager<AudioProviderFactory> {
 public:
 	static void RegisterProviders();
 	static AudioProvider *GetAudioProvider(wxString filename, int cache=-1);
 	static void ClearProviders();
 };
+
 

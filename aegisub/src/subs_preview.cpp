@@ -49,8 +49,15 @@
 #include "ass_file.h"
 
 
-///////////////
-// Constructor
+
+/// @brief Constructor 
+/// @param parent   
+/// @param id       
+/// @param pos      
+/// @param size     
+/// @param winStyle 
+/// @param col      
+///
 SubtitlesPreview::SubtitlesPreview(wxWindow *parent,int id,wxPoint pos,wxSize size,int winStyle,wxColour col)
 : wxWindow(parent,id,pos,size,winStyle)
 {
@@ -65,8 +72,9 @@ SubtitlesPreview::SubtitlesPreview(wxWindow *parent,int id,wxPoint pos,wxSize si
 }
 
 
-//////////////
-// Destructor
+
+/// @brief Destructor 
+///
 SubtitlesPreview::~SubtitlesPreview() {
 	delete bmp;
 	bmp = NULL;
@@ -77,8 +85,11 @@ SubtitlesPreview::~SubtitlesPreview() {
 }
 
 
-/////////////
-// Set style
+
+/// @brief Set style 
+/// @param _style 
+/// @return 
+///
 void SubtitlesPreview::SetStyle(AssStyle *_style) {
 	// Prepare style
 	AssStyle *tmpStyle = AssEntry::GetAsStyle(_style->Clone());
@@ -103,8 +114,10 @@ void SubtitlesPreview::SetStyle(AssStyle *_style) {
 }
 
 
-////////////
-// Set text
+
+/// @brief Set text 
+/// @param text 
+///
 void SubtitlesPreview::SetText(wxString text) {
 	if (text != showText) {
 		showText = text;
@@ -113,8 +126,12 @@ void SubtitlesPreview::SetText(wxString text) {
 }
 
 
-////////////////
-// Update image
+
+/// @brief Update image 
+/// @param w 
+/// @param h 
+/// @return 
+///
 void SubtitlesPreview::UpdateBitmap(int w,int h) {
 	// Visible?
 	if (!IsShownOnScreen()) return;
@@ -190,8 +207,10 @@ BEGIN_EVENT_TABLE(SubtitlesPreview,wxWindow)
 END_EVENT_TABLE()
 
 
-///////////////
-// Paint event
+
+/// @brief Paint event 
+/// @param event 
+///
 void SubtitlesPreview::OnPaint(wxPaintEvent &event) {
 	wxPaintDC dc(this);
 	if (!bmp) UpdateBitmap();
@@ -199,8 +218,10 @@ void SubtitlesPreview::OnPaint(wxPaintEvent &event) {
 }
 
 
-//////////////
-// Size event
+
+/// @brief Size event 
+/// @param event 
+///
 void SubtitlesPreview::OnSize(wxSizeEvent &event) {
 	delete vid;
 	vid = NULL;
@@ -208,12 +229,15 @@ void SubtitlesPreview::OnSize(wxSizeEvent &event) {
 }
 
 
-//////////////
-// Set colour
+
+/// @brief Set colour 
+/// @param col 
+///
 void SubtitlesPreview::SetColour(wxColour col) {
 	backColour = col;
 	delete vid;
 	vid = NULL;
 	UpdateBitmap();
 }
+
 

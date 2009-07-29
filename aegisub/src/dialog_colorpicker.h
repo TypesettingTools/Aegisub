@@ -35,6 +35,8 @@
 ///
 
 #ifndef DIALOG_COLORPICKER_H
+
+/// DOCME
 #define DIALOG_COLORPICKER_H
 
 
@@ -49,16 +51,38 @@
 #include <vector>
 
 
+
+/// DOCME
+/// @class ColorPickerSpectrum
+/// @brief DOCME
+///
+/// DOCME
 class ColorPickerSpectrum : public wxControl {
 public:
+
+	/// DOCME
 	enum PickerDirection {
+
+		/// DOCME
 		HorzVert,
+
+		/// DOCME
 		Horz,
+
+		/// DOCME
 		Vert
 	};
 private:
+
+	/// DOCME
+
+	/// DOCME
 	int x, y;
+
+	/// DOCME
 	wxBitmap *background;
+
+	/// DOCME
 	PickerDirection direction;
 
 	void OnPaint(wxPaintEvent &evt);
@@ -77,15 +101,35 @@ public:
 DECLARE_EVENT_TYPE(wxSPECTRUM_CHANGE, -1)
 
 
+
+/// DOCME
+/// @class ColorPickerRecent
+/// @brief DOCME
+///
+/// DOCME
 class ColorPickerRecent : public wxControl {
 private:
+
+	/// DOCME
+
+	/// DOCME
 	int rows, cols;
+
+	/// DOCME
 	int cellsize;
+
+	/// DOCME
 	wxPoint internal_control_offset;
 	
+
+	/// DOCME
 	std::vector<wxColour> colors;
 	
+
+	/// DOCME
 	bool background_valid;
+
+	/// DOCME
 	wxBitmap background;
 
 	void OnClick(wxMouseEvent &evt);
@@ -98,6 +142,11 @@ public:
 	void LoadFromString(const wxString &recent_string);
 	wxString StoreToString();
 	void AddColor(wxColour color);
+
+	/// @brief DOCME
+	/// @param n 
+	/// @return 
+	///
 	wxColour GetColor(int n) { return colors.at(n); }
 
 	DECLARE_EVENT_TABLE()
@@ -106,11 +155,27 @@ public:
 DECLARE_EVENT_TYPE(wxRECENT_SELECT, -1)
 
 
+
+/// DOCME
+/// @class ColorPickerScreenDropper
+/// @brief DOCME
+///
+/// DOCME
 class ColorPickerScreenDropper : public wxControl {
 private:
+
+	/// DOCME
 	wxBitmap capture;
+
+	/// DOCME
+
+	/// DOCME
 	int resx, resy;
+
+	/// DOCME
 	int magnification;
+
+	/// DOCME
 	bool integrated_dropper;
 
 	void OnMouse(wxMouseEvent &evt);
@@ -129,44 +194,98 @@ DECLARE_EVENT_TYPE(wxDROPPER_SELECT, -1)
 
 wxColour GetColorFromUser(wxWindow *parent, wxColour original);
 
+
+/// DOCME
+/// @class DialogColorPicker
+/// @brief DOCME
+///
+/// DOCME
 class DialogColorPicker : public wxDialog {
 private:
+
+	/// DOCME
 	wxColour cur_color;
+
+	/// DOCME
 	bool updating_controls;
+
+	/// DOCME
 	bool spectrum_dirty;
 
+
+	/// DOCME
 	ColorPickerSpectrum *spectrum;
+
+	/// DOCME
 	ColorPickerSpectrum *slider;
+
+	/// DOCME
 	wxChoice *colorspace_choice;
+
+	/// DOCME
 	static const int slider_width = 10; // width in pixels of the color slider control
 
-	// 0 = red, 1 = green, 2 = blue
+
+	/// DOCME
 	wxSpinCtrl *rgb_input[3];
+
+	/// DOCME
 	wxBitmap *rgb_spectrum[3];	// x/y spectrum bitmap where color "i" is excluded from
+
+	/// DOCME
 	wxBitmap *rgb_slider[3];	// z spectrum for color "i"
 
-	// 0 = hue, 1 = saturation, 2 = luminance
+
+	/// DOCME
 	wxSpinCtrl *hsl_input[3];
+
+	/// DOCME
 	wxBitmap *hsl_spectrum;		// h/s spectrum
+
+	/// DOCME
 	wxBitmap *hsl_slider;		// l spectrum
 
-	// 0 = hue, 1 = saturation, 2 = value
+
+	/// DOCME
 	wxSpinCtrl *hsv_input[3];
+
+	/// DOCME
 	wxBitmap *hsv_spectrum;		// s/v spectrum
+
+	/// DOCME
 	wxBitmap *hsv_slider;		// h spectrum
 
+
+	/// DOCME
 	wxBitmap eyedropper_bitmap;
+
+	/// DOCME
 	wxPoint eyedropper_grab_point;
+
+	/// DOCME
 	bool eyedropper_is_grabbed;
 
+
+	/// DOCME
 	wxTextCtrl *ass_input;		// ASS hex format input
+
+	/// DOCME
 	wxTextCtrl *html_input;		// HTML hex format input
 
-	//wxWindow *preview_box;
+
+	/// DOCME
 	wxStaticBitmap *preview_box;
+
+	/// DOCME
 	wxBitmap preview_bitmap;
+
+	/// DOCME
 	ColorPickerRecent *recent_box;
+
+	/// DOCME
 	ColorPickerScreenDropper *screen_dropper;
+
+	/// DOCME
 	wxStaticBitmap *screen_dropper_icon;
 
 	void UpdateFromRGB();			// Update all other controls as a result of modifying an RGB control
@@ -197,6 +316,10 @@ private:
 	void OnRGBAdjust(wxCommandEvent &evt);
 	void OnDropperMouse(wxMouseEvent &evt);
 
+
+	/// DOCME
+
+	/// DOCME
 	static int lastx, lasty;
 
 public:
@@ -211,26 +334,63 @@ public:
 
 
 enum {
+
+	/// DOCME
 	SELECTOR_SPECTRUM = 4000,
+
+	/// DOCME
 	SELECTOR_SLIDER,
+
+	/// DOCME
 	SELECTOR_MODE,
+
+	/// DOCME
 	SELECTOR_RGB_R,
+
+	/// DOCME
 	SELECTOR_RGB_G,
+
+	/// DOCME
 	SELECTOR_RGB_B,
+
+	/// DOCME
 	SELECTOR_HSL_H,
+
+	/// DOCME
 	SELECTOR_HSL_S,
+
+	/// DOCME
 	SELECTOR_HSL_L,
+
+	/// DOCME
 	SELECTOR_HSV_H,
+
+	/// DOCME
 	SELECTOR_HSV_S,
+
+	/// DOCME
 	SELECTOR_HSV_V,
+
+	/// DOCME
 	SELECTOR_ASS_INPUT,
+
+	/// DOCME
 	SELECTOR_HTML_INPUT,
+
+	/// DOCME
 	SELECTOR_RECENT,
+
+	/// DOCME
 	SELECTOR_DROPPER,
+
+	/// DOCME
 	SELECTOR_DROPPER_PICK,
+
+	/// DOCME
 	BUTTON_RGBADJUST
 };
 
 
 #endif
+
 

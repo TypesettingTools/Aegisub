@@ -47,8 +47,15 @@
 #include "standard_paths.h"
 
 
-///////////////
-// Constructor
+
+/// @brief Constructor 
+/// @param parent   
+/// @param id       
+/// @param text     
+/// @param _type    
+/// @param position 
+/// @param size     
+///
 BrowseButton::BrowseButton(wxWindow *parent,int id,wxString text,BrowseType _type,wxPoint position,wxSize size)
 : wxButton (parent,id,text == wxString(_T("")) ? wxString(_("Browse...")) : text,position,size)
 {
@@ -59,15 +66,20 @@ BrowseButton::BrowseButton(wxWindow *parent,int id,wxString text,BrowseType _typ
 }
 
 
-////////
-// Bind
+
+/// @brief Bind 
+/// @param control 
+/// @param pos     
+///
 void BrowseButton::Bind(wxTextCtrl *control,int pos) {
 	ctrl[pos] = control;
 }
 
 
-///////////
-// Pressed
+
+/// @brief Pressed 
+/// @param event 
+///
 void BrowseButton::OnPressed(wxCommandEvent &event) {
 	// Folder
 	if (type == BROWSE_FOLDER) {
@@ -100,6 +112,7 @@ void BrowseButton::OnPressed(wxCommandEvent &event) {
 		}
 	}
 }
+
 
 
 

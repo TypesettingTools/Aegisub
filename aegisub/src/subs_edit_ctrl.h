@@ -51,19 +51,39 @@
 class SubsEditBox;
 
 
-////////////////////
-// SubsTextEditCtrl
+
+/// DOCME
+/// @class SubsTextEditCtrl
+/// @brief DOCME
+///
+/// DOCME
 class SubsTextEditCtrl : public ScintillaTextCtrl {
 private:
+
+	/// DOCME
 	SpellChecker *spellchecker;
+
+	/// DOCME
 	Thesaurus *thesaurus;
 
+
+	/// DOCME
 	wxString currentWord;
+
+	/// DOCME
 	wxArrayString sugs;
+
+	/// DOCME
 	wxArrayString thesSugs;
+
+	/// DOCME
 	int currentWordPos;
 
+
+	/// DOCME
 	wxArrayString proto;
+
+	/// DOCME
 	int tipProtoN;
 
 	void ShowPopupMenu(int activePos=-1);
@@ -84,6 +104,8 @@ private:
 	void OnLoseFocus(wxFocusEvent &event);
 
 public:
+
+	/// DOCME
 	SubsEditBox *control;
 
 	SubsTextEditCtrl(wxWindow* parent, wxWindowID id, const wxString& value = _T(""), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = 0, const wxValidator& validator = wxDefaultValidator, const wxString& name = wxTextCtrlNameStr);
@@ -102,21 +124,54 @@ public:
 ///////
 // IDs
 enum {
+
+	/// DOCME
 	EDIT_MENU_SPLIT_PRESERVE = 1400,
+
+	/// DOCME
 	EDIT_MENU_SPLIT_ESTIMATE,
+
+	/// DOCME
 	EDIT_MENU_CUT,
+
+	/// DOCME
 	EDIT_MENU_COPY,
+
+	/// DOCME
 	EDIT_MENU_PASTE,
+
+	/// DOCME
 	EDIT_MENU_UNDO,
+
+	/// DOCME
 	EDIT_MENU_SELECT_ALL,
+
+	/// DOCME
 	EDIT_MENU_ADD_TO_DICT,
+
+	/// DOCME
 	EDIT_MENU_SUGGESTION,
+
+	/// DOCME
 	EDIT_MENU_SUGGESTIONS,
+
+	/// DOCME
 	EDIT_MENU_THESAURUS = 1450,
+
+	/// DOCME
 	EDIT_MENU_THESAURUS_SUGS,
+
+	/// DOCME
 	EDIT_MENU_DIC_LANGUAGE = 1600,
+
+	/// DOCME
 	EDIT_MENU_DIC_LANGS,
+
+	/// DOCME
 	EDIT_MENU_THES_LANGUAGE = 1700,
+
+	/// DOCME
 	EDIT_MENU_THES_LANGS
 };
+
 

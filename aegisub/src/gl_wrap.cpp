@@ -55,16 +55,23 @@
 //////////////////////////
 // Extension get function
 #ifdef __WIN32__
+
+/// @brief DOCME
+/// @param str 
+/// @return 
+///
 void* glGetProc(const char *str) { return wglGetProcAddress(str); }
 #else
-//void* glGetProc(const char *str) { return glXGetProcAddress((const GLubyte *)str); }
+
+/// DOCME
 #define glGetProc(a) glXGetProcAddress((const GLubyte *)(a))
 #endif
 
 
 
-///////////////
-// Constructor
+
+/// @brief Constructor 
+///
 OpenGLWrapper::OpenGLWrapper() {
 	r1 = g1 = b1 = a1 = 1.0f;
 	r2 = g2 = b2 = a2 = 1.0f;
@@ -72,8 +79,13 @@ OpenGLWrapper::OpenGLWrapper() {
 }
 
 
-/////////////
-// Draw line
+
+/// @brief Draw line 
+/// @param x1 
+/// @param y1 
+/// @param x2 
+/// @param y2 
+///
 void OpenGLWrapper::DrawLine(float x1,float y1,float x2,float y2) {
 	SetModeLine();
 	glBegin(GL_LINES);
@@ -83,8 +95,14 @@ void OpenGLWrapper::DrawLine(float x1,float y1,float x2,float y2) {
 }
 
 
-/////////////
-// Draw line
+
+/// @brief Draw line 
+/// @param x1   
+/// @param y1   
+/// @param x2   
+/// @param y2   
+/// @param step 
+///
 void OpenGLWrapper::DrawDashedLine(float x1,float y1,float x2,float y2,float step) {
 	float dist = sqrt((x2-x1)*(x2-x1) + (y2-y1)*(y2-y1));
 	int steps = (int)((dist-20)/step);
@@ -96,15 +114,25 @@ void OpenGLWrapper::DrawDashedLine(float x1,float y1,float x2,float y2,float ste
 }
 
 
-///////////////
-// Draw circle
+
+/// @brief Draw circle 
+/// @param x       
+/// @param y       
+/// @param radiusX 
+/// @param radiusY 
+///
 void OpenGLWrapper::DrawEllipse(float x,float y,float radiusX,float radiusY) {
 	DrawRing(x,y,radiusY,radiusY,radiusX/radiusY);
 }
 
 
-//////////////////
-// Draw rectangle
+
+/// @brief Draw rectangle 
+/// @param x1 
+/// @param y1 
+/// @param x2 
+/// @param y2 
+///
 void OpenGLWrapper::DrawRectangle(float x1,float y1,float x2,float y2) {
 	// Fill
 	if (a2 != 0.0) {
@@ -130,8 +158,15 @@ void OpenGLWrapper::DrawRectangle(float x1,float y1,float x2,float y2) {
 }
 
 
-/////////////////
-// Draw triangle
+
+/// @brief Draw triangle 
+/// @param x1 
+/// @param y1 
+/// @param x2 
+/// @param y2 
+/// @param x3 
+/// @param y3 
+///
 void OpenGLWrapper::DrawTriangle(float x1,float y1,float x2,float y2,float x3,float y3) {
 	// Fill
 	if (a2 != 0.0) {
@@ -155,8 +190,16 @@ void OpenGLWrapper::DrawTriangle(float x1,float y1,float x2,float y2,float x3,fl
 }
 
 
-///////////////////////
-// Draw ring (annulus)
+
+/// @brief Draw ring (annulus) 
+/// @param x        
+/// @param y        
+/// @param r1       
+/// @param r2       
+/// @param ar       
+/// @param arcStart 
+/// @param arcEnd   
+///
 void OpenGLWrapper::DrawRing(float x,float y,float r1,float r2,float ar,float arcStart,float arcEnd) {
 	// Make r1 bigger
 	if (r2 > r1) {
@@ -247,8 +290,12 @@ void OpenGLWrapper::DrawRing(float x,float y,float r1,float r2,float ar,float ar
 }
 
 
-///////////////////
-// Set line colour
+
+/// @brief Set line colour 
+/// @param col   
+/// @param alpha 
+/// @param width 
+///
 void OpenGLWrapper::SetLineColour(wxColour col,float alpha,int width) {
 	r1 = col.Red()/255.0f;
 	g1 = col.Green()/255.0f;
@@ -258,8 +305,11 @@ void OpenGLWrapper::SetLineColour(wxColour col,float alpha,int width) {
 }
 
 
-///////////////////
-// Set fill colour
+
+/// @brief Set fill colour 
+/// @param col   
+/// @param alpha 
+///
 void OpenGLWrapper::SetFillColour(wxColour col,float alpha) {
 	r2 = col.Red()/255.0f;
 	g2 = col.Green()/255.0f;
@@ -268,8 +318,9 @@ void OpenGLWrapper::SetFillColour(wxColour col,float alpha) {
 }
 
 
-////////
-// Line
+
+/// @brief Line 
+///
 void OpenGLWrapper::SetModeLine() {
 	glColor4f(r1,g1,b1,a1);
 	glEnable(GL_BLEND);
@@ -279,8 +330,9 @@ void OpenGLWrapper::SetModeLine() {
 }
 
 
-////////
-// Fill
+
+/// @brief Fill 
+///
 void OpenGLWrapper::SetModeFill() {
 	glColor4f(r2,g2,b2,a2);
 	if (a2 == 1.0f) glDisable(GL_BLEND);
@@ -291,8 +343,11 @@ void OpenGLWrapper::SetModeFill() {
 }
 
 
-///////////////////////////
-// Is extension supported?
+
+/// @brief Is extension supported? 
+/// @param ext 
+/// @return 
+///
 bool OpenGLWrapper::IsExtensionSupported(const char *ext) {
     char *extList = (char*) glGetString(GL_EXTENSIONS);
 	if (!extList) return false;
@@ -301,7 +356,8 @@ bool OpenGLWrapper::IsExtensionSupported(const char *ext) {
 
 
 
-/////////
-// Mutex
+
+/// DOCME
 wxMutex OpenGLWrapper::glMutex;
+
 

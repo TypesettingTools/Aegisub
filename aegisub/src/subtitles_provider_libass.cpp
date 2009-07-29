@@ -55,8 +55,9 @@ extern "C" {
 }
 #endif
 
-///////////////
-// Constructor
+
+/// @brief Constructor 
+///
 LibassSubtitlesProvider::LibassSubtitlesProvider() {
 	// Initialize library
 	static bool first = true;
@@ -96,14 +97,17 @@ LibassSubtitlesProvider::LibassSubtitlesProvider() {
 }
 
 
-//////////////
-// Destructor
+
+/// @brief Destructor 
+///
 LibassSubtitlesProvider::~LibassSubtitlesProvider() {
 }
 
 
-//////////////////
-// Load subtitles
+
+/// @brief Load subtitles 
+/// @param subs 
+///
 void LibassSubtitlesProvider::LoadSubtitles(AssFile *subs) {
 	// Prepare subtitles
 	std::vector<char> data;
@@ -117,15 +121,25 @@ void LibassSubtitlesProvider::LoadSubtitles(AssFile *subs) {
 }
 
 
-/////////////////////////////
-// Macros to get the colours
+
+/// DOCME
 #define _r(c)  ((c)>>24)
+
+/// DOCME
 #define _g(c)  (((c)>>16)&0xFF)
+
+/// DOCME
 #define _b(c)  (((c)>>8)&0xFF)
+
+/// DOCME
 #define _a(c)  ((c)&0xFF)
 
-//////////////////
-// Draw subtitles
+
+/// @brief Draw subtitles 
+/// @param frame 
+/// @param time  
+/// @return 
+///
 void LibassSubtitlesProvider::DrawSubtitles(AegiVideoFrame &frame,double time) {
 	// Set size
 	ass_set_frame_size(ass_renderer, frame.w, frame.h);
@@ -177,10 +191,11 @@ void LibassSubtitlesProvider::DrawSubtitles(AegiVideoFrame &frame,double time) {
 }
 
 
-//////////
-// Static
+
+/// DOCME
 ass_library_t* LibassSubtitlesProvider::ass_library;
 
 
 #endif // WITH_LIBASS
+
 

@@ -43,14 +43,37 @@
 #include "visual_tool.h"
 
 
-////////////////////
-// Scale tool class
+
+/// DOCME
+/// @class VisualToolScale
+/// @brief DOCME
+///
+/// DOCME
 class VisualToolScale : public VisualTool {
 private:
+
+	/// DOCME
+
+	/// DOCME
+
+	/// DOCME
 	float curScaleX,startScaleX,origScaleX;
+
+	/// DOCME
+
+	/// DOCME
+
+	/// DOCME
 	float curScaleY,startScaleY,origScaleY;
+
+	/// DOCME
+
+	/// DOCME
 	int startX,startY;
 
+
+	/// @brief DOCME
+	///
 	bool CanHold() { return true; }
 	void InitializeHold();
 	void UpdateHold();
@@ -62,4 +85,5 @@ public:
 	void Update();
 	void Draw();
 };
+
 

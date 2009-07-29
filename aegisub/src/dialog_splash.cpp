@@ -49,8 +49,10 @@
 
 
 
-///////////////
-// Constructor
+
+/// @brief Constructor 
+/// @param parent 
+///
 SplashScreen::SplashScreen(wxWindow *parent)
 : wxFrame (parent, -1, _T(""), wxDefaultPosition, wxSize(420,240), wxSTAY_ON_TOP | wxFRAME_NO_TASKBAR , _T("Splash"))
 {
@@ -94,8 +96,9 @@ SplashScreen::SplashScreen(wxWindow *parent)
 }
 
 
-//////////////
-// Destructor
+
+/// @brief Destructor 
+///
 SplashScreen::~SplashScreen () {
 	// Kill timer
 	delete autoClose;
@@ -111,16 +114,20 @@ BEGIN_EVENT_TABLE(SplashScreen, wxFrame)
 END_EVENT_TABLE()
 
 
-///////////
-// OnPaint
+
+/// @brief OnPaint 
+/// @param event 
+///
 void SplashScreen::OnPaint(wxPaintEvent& event) {
 	wxPaintDC dc(this);
 	dc.DrawBitmap(splash,0,0);
 }
 
 
-////////////////
-// Mouse events
+
+/// @brief Mouse events 
+/// @param event 
+///
 void SplashScreen::OnMouseEvent(wxMouseEvent& event) {
 	if (event.ButtonDown()) {
 		// Show tip of the day
@@ -130,11 +137,14 @@ void SplashScreen::OnMouseEvent(wxMouseEvent& event) {
 }
 
 
-/////////
-// Timer
+
+/// @brief Timer 
+/// @param event 
+///
 void SplashScreen::OnTimer(wxTimerEvent &event) {
 	// Show tip of the day
 	Destroy();
 	TipOfTheDay::Show(par);
 }
+
 

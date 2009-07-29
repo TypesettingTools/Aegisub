@@ -58,58 +58,78 @@
 #include "audio_display.h"
 
 
-///////////////
-// Constructor
+
+/// @brief Constructor 
+///
 AudioProvider::AudioProvider() {
 	raw = NULL;
 }
 
 
-//////////////
-// Destructor
+
+/// @brief Destructor 
+///
 AudioProvider::~AudioProvider() {
 	// Clear buffers
 	delete[] raw;
 }
 
 
-//////////////////////////
-// Get number of channels
+
+/// @brief Get number of channels 
+/// @return 
+///
 int AudioProvider::GetChannels() {
 	return channels;
 }
 
 
-//////////////////////////
-// Get number of samples
+
+/// @brief Get number of samples 
+/// @return 
+///
 int64_t AudioProvider::GetNumSamples() {
 	return num_samples;
 }
 
 
-///////////////////
-// Get sample rate
+
+/// @brief Get sample rate 
+/// @return 
+///
 int AudioProvider::GetSampleRate() {
 	return sample_rate;
 }
 
 
-////////////////////////
-// Get bytes per sample
+
+/// @brief Get bytes per sample 
+/// @return 
+///
 int AudioProvider::GetBytesPerSample() {
 	return bytes_per_sample;
 }
 
 
-////////////////
-// Get filename
+
+/// @brief Get filename 
+/// @return 
+///
 wxString AudioProvider::GetFilename() {
 	return filename;
 }
 
 
-////////////////
-// Get waveform
+
+/// @brief Get waveform 
+/// @param min     
+/// @param peak    
+/// @param start   
+/// @param w       
+/// @param h       
+/// @param samples 
+/// @param scale   
+///
 void AudioProvider::GetWaveForm(int *min,int *peak,int64_t start,int w,int h,int samples,float scale) {
 	// Setup
 	int channels = GetChannels();
@@ -173,8 +193,14 @@ void AudioProvider::GetWaveForm(int *min,int *peak,int64_t start,int w,int h,int
 }
 
 
-/////////////////////////
-// Get audio with volume
+
+/// @brief Get audio with volume 
+/// @param buf    
+/// @param start  
+/// @param count  
+/// @param volume 
+/// @return 
+///
 void AudioProvider::GetAudioWithVolume(void *buf, int64_t start, int64_t count, double volume) {
 	try {
 		GetAudio(buf,start,count);
@@ -204,8 +230,12 @@ void AudioProvider::GetAudioWithVolume(void *buf, int64_t start, int64_t count, 
 }
 
 
-////////////////
-// Get provider
+
+/// @brief Get provider 
+/// @param filename 
+/// @param cache    
+/// @return 
+///
 AudioProvider *AudioProviderFactoryManager::GetAudioProvider(wxString filename, int cache) {
 	// Prepare provider
 	AudioProvider *provider = NULL;
@@ -274,8 +304,9 @@ AudioProvider *AudioProviderFactoryManager::GetAudioProvider(wxString filename, 
 }
 
 
-///////////////////////////
-// Register all providers
+
+/// @brief Register all providers 
+///
 void AudioProviderFactoryManager::RegisterProviders() {
 #ifdef WITH_AVISYNTH
 	RegisterFactory(new AvisynthAudioProviderFactory(),_T("Avisynth"));
@@ -289,14 +320,16 @@ void AudioProviderFactoryManager::RegisterProviders() {
 }
 
 
-///////////////////////
-// Clear all providers
+
+/// @brief Clear all providers 
+///
 void AudioProviderFactoryManager::ClearProviders() {
 	ClearFactories();
 }
 
 
-//////////
-// Static
+
+/// DOCME
 template <class AudioProviderFactory> std::map<wxString,AudioProviderFactory*>* FactoryManager<AudioProviderFactory>::factories=NULL;
+
 

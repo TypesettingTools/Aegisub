@@ -44,20 +44,39 @@
 WX_DECLARE_STRING_HASH_MAP(wxString, PrettyNamesHash);
 
 #if wxUSE_THREADS
+
+/// DOCME
 static wxMutex encodingListMutex;
 #endif
 
+
+/// DOCME
 static const iconv_t iconv_invalid = (iconv_t)-1;
+
+/// DOCME
 static const size_t  iconv_failed  = (size_t)-1;
+
+/// DOCME
 #define ICONV_CONST_CAST(a) const_cast<ICONV_CONST char *>(a)
 
 #ifndef ICONV_POSIX
 static int addEncoding(unsigned int namescount, const char * const * names, void* data);
 #endif
+
+/// DOCME
 static wxArrayString   *supportedEncodings = NULL;
+
+/// DOCME
 static wxArrayString   *prettyEncodingList = NULL;
+
+/// DOCME
 static PrettyNamesHash *prettyEncodingHash = NULL;
 
+
+/// @brief DOCME
+/// @param mbEncName   
+/// @param enableSubst 
+///
 AegisubCSConv::AegisubCSConv(const wxChar *mbEncName, bool enableSubst)
 :	mbCharsetName(GetRealEncodingName(mbEncName)), mbNulLen(0), enableSubst(enableSubst)
 {
@@ -85,17 +104,27 @@ AegisubCSConv::AegisubCSConv(const wxChar *mbEncName, bool enableSubst)
 #endif
 	}
 }
+
+/// @brief DOCME
+///
 AegisubCSConv::~AegisubCSConv() {
 	if (m2w != iconv_invalid) iconv_close(m2w);
 	if (w2m != iconv_invalid) iconv_close(w2m);
 }
+
+/// @brief DOCME
+/// @return 
+///
 wxMBConv * AegisubCSConv::Clone() const {
 	AegisubCSConv *c = new AegisubCSConv(mbCharsetName);
 	c->mbNulLen = mbNulLen;
 	return c;
 }
 
-// Calculate the size of NUL in the target encoding via iconv
+
+/// @brief Calculate the size of NUL in the target encoding via iconv
+/// @return 
+///
 size_t AegisubCSConv::GetMBNulLen() const {
 	if (mbNulLen == 0) {
 		const wchar_t nulStr[] = L"";
@@ -115,7 +144,11 @@ size_t AegisubCSConv::GetMBNulLen() const {
 	return mbNulLen;
 }
 
-// Calculate the length (in bytes) of a MB string, not including the terminator
+
+/// @brief Calculate the length (in bytes) of a MB string, not including the terminator
+/// @param str 
+/// @return 
+///
 size_t AegisubCSConv::MBBuffLen(const char * str) const {
 	size_t nulLen = GetMBNulLen();
 	const char *ptr;
@@ -133,6 +166,14 @@ size_t AegisubCSConv::MBBuffLen(const char * str) const {
 	}
 }
 
+
+/// @brief DOCME
+/// @param dst     
+/// @param dstSize 
+/// @param src     
+/// @param srcLen  
+/// @return 
+///
 size_t AegisubCSConv::ToWChar(wchar_t *dst, size_t dstSize, const char *src, size_t srcLen) const {
 	return doConversion(
 		m2w,
@@ -143,6 +184,14 @@ size_t AegisubCSConv::ToWChar(wchar_t *dst, size_t dstSize, const char *src, siz
 	) / sizeof(wchar_t);
 }
 
+
+/// @brief DOCME
+/// @param dst     
+/// @param dstSize 
+/// @param src     
+/// @param srcLen  
+/// @return 
+///
 size_t AegisubCSConv::FromWChar(char *dst, size_t dstSize, const wchar_t *src, size_t srcLen) const {
 	return doConversion(
 		w2m,
@@ -153,6 +202,15 @@ size_t AegisubCSConv::FromWChar(char *dst, size_t dstSize, const wchar_t *src, s
 	);
 }
 
+
+/// @brief DOCME
+/// @param cd      
+/// @param dst     
+/// @param dstSize 
+/// @param src     
+/// @param srcSize 
+/// @return 
+///
 size_t AegisubCSConv::doConversion(iconv_t cd, char *dst, size_t dstSize, char *src, size_t srcSize) const {
 	if (dstSize > 0) {
 		return iconvWrapper(cd, &src, &srcSize, &dst, &dstSize);
@@ -176,6 +234,15 @@ size_t AegisubCSConv::doConversion(iconv_t cd, char *dst, size_t dstSize, char *
 	return charsWritten;
 }
 
+
+/// @brief DOCME
+/// @param cd           
+/// @param inbuf        
+/// @param inbytesleft  
+/// @param outbuf       
+/// @param outbytesleft 
+/// @return 
+///
 size_t AegisubCSConv::iconvWrapper(iconv_t cd, char **inbuf, size_t *inbytesleft,
 							 char **outbuf, size_t *outbytesleft) const {
 
@@ -236,6 +303,16 @@ size_t AegisubCSConv::iconvWrapper(iconv_t cd, char **inbuf, size_t *inbytesleft
 #endif
 }
 
+
+/// @brief DOCME
+/// @param code          
+/// @param buf           
+/// @param buflen        
+/// @param callback_arg) 
+/// @param callback_arg  
+/// @param convPtr       
+/// @return 
+///
 void AegisubCSConv::ucToMbFallback(
 	unsigned int code,
 	void (*callback) (const char *buf, size_t buflen, void* callback_arg),
@@ -253,6 +330,13 @@ void AegisubCSConv::ucToMbFallback(
 }
 
 #ifndef ICONV_POSIX
+
+/// @brief DOCME
+/// @param namescount 
+/// @param names      
+/// @param data       
+/// @return 
+///
 int addEncoding(unsigned int namescount, const char * const * names, void* data) {
 	for (unsigned int i = 0; i < namescount; i++) {
 		supportedEncodings->Add(wxString::FromAscii(names[i]));
@@ -261,6 +345,10 @@ int addEncoding(unsigned int namescount, const char * const * names, void* data)
 }
 #endif
 
+
+/// @brief DOCME
+/// @return 
+///
 wxArrayString AegisubCSConv::GetAllSupportedEncodings() {
 #if wxUSE_THREADS
 	wxMutexLocker lock(encodingListMutex);
@@ -275,7 +363,11 @@ wxArrayString AegisubCSConv::GetAllSupportedEncodings() {
 	return *supportedEncodings;
 }
 
-// Map pretty names to the real encoding names
+
+/// @brief Map pretty names to the real encoding names
+/// @param name 
+/// @return 
+///
 wxString AegisubCSConv::GetRealEncodingName(wxString name) {
 	if (name.Lower() == _T("local")) return wxLocale::GetSystemEncodingName();
 	if (prettyEncodingList == NULL) return name;
@@ -287,6 +379,9 @@ wxString AegisubCSConv::GetRealEncodingName(wxString name) {
 	return name;
 }
 
+
+/// @brief DOCME
+///
 wxArrayString AegisubCSConv::GetEncodingsList() {
 #if wxUSE_THREADS
 	wxMutexLocker lock(encodingListMutex);
@@ -437,4 +532,5 @@ wxArrayString AegisubCSConv::GetEncodingsList() {
 }
 static AegisubCSConv localConv(_T("Local"), false);
 AegisubCSConv& csConvLocal(localConv);
+
 

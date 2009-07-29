@@ -43,25 +43,47 @@
 #include "vector2d.h"
 
 
-///////////////
-// Curve types
+
+/// DOCME
 enum CurveType {
+
+	/// DOCME
 	CURVE_INVALID,
+
+	/// DOCME
 	CURVE_POINT,
+
+	/// DOCME
 	CURVE_LINE,
+
+	/// DOCME
 	CURVE_BICUBIC
 };
 
 
-////////////////
-// Spline curve
+
+/// DOCME
+/// @class SplineCurve
+/// @brief DOCME
+///
+/// DOCME
 class SplineCurve {
 private:
 	float GetClosestSegmentPart(Vector2D p1,Vector2D p2,Vector2D p3) const;
 	float GetClosestSegmentDistance(Vector2D p1,Vector2D p2,Vector2D p3) const;
 
 public:
+
+	/// DOCME
+
+	/// DOCME
+
+	/// DOCME
+
+	/// DOCME
 	Vector2D p1,p2,p3,p4;
+
+	/// DOCME
 	CurveType type;
 
 	SplineCurve();
@@ -75,4 +97,5 @@ public:
 	float GetClosestParam(Vector2D ref) const;
 	float GetQuickDistance(Vector2D ref) const;
 };
+
 

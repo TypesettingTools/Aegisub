@@ -35,18 +35,34 @@
 ///
 
 #ifndef _DIALOG_VIDEO_DETAILS_H
+
+/// DOCME
 #define _DIALOG_VIDEO_DETAILS_H
 
 ///////////
 // Headers
 #include <wx/dialog.h>
 
+
+/// DOCME
+/// @class DialogVideoDetails
+/// @brief DOCME
+///
+/// DOCME
 class DialogVideoDetails : public wxDialog {
 private:
 	wxString PrettyTimeStamp(int frames, double fps);
 	wxString PrettyAR(int width, int height);
 	
+
+	/// DOCME
+
+	/// DOCME
 	int width, height;
+
+	/// DOCME
+
+	/// DOCME
 	int framecount, fps;
 
 public:
@@ -54,4 +70,5 @@ public:
 };
 
 #endif
+
 

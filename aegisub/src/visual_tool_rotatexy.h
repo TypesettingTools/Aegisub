@@ -43,20 +43,53 @@
 #include "visual_tool.h"
 
 
-//////////////////////////
-// XY Rotation tool class
+
+/// DOCME
+/// @class VisualToolRotateXY
+/// @brief DOCME
+///
+/// DOCME
 class VisualToolRotateXY : public VisualTool {
 private:
+
+	/// DOCME
+
+	/// DOCME
+
+	/// DOCME
 	float curAngleX,startAngleX,origAngleX;
+
+	/// DOCME
+
+	/// DOCME
+
+	/// DOCME
 	float curAngleY,startAngleY,origAngleY;
+
+	/// DOCME
+
+	/// DOCME
+
+	/// DOCME
+
+	/// DOCME
 	int orgx,orgy,odx,ody;
+
+	/// DOCME
 	float rz;
 
+
+	/// @brief DOCME
+	/// @return 
+	///
 	bool CanHold() { return true; }
 	void InitializeHold();
 	void UpdateHold();
 	void CommitHold();
 
+
+	/// @brief DOCME
+	///
 	bool CanDrag() { return true; }
 	void PopulateFeatureList();
 	void UpdateDrag(VisualDraggableFeature &feature);
@@ -70,4 +103,5 @@ public:
 	void Update();
 	void Draw();
 };
+
 

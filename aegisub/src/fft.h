@@ -36,13 +36,19 @@
 
 
 #ifndef FFT_H
+
+/// DOCME
 #define FFT_H
 
 
 #include <stdlib.h> // size_t
 
-/////////////
-// FFT class
+
+/// DOCME
+/// @class FFT
+/// @brief DOCME
+///
+/// DOCME
 class FFT {
 private:
 	void DoTransform(size_t n_samples,float *input,float *output_r,float *output_i,bool inverse);
@@ -58,4 +64,5 @@ public:
 
 
 #endif
+
 

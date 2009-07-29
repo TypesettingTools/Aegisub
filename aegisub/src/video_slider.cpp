@@ -51,8 +51,11 @@
 #include "utils.h"
 
 
-///////////////
-// Constructor
+
+/// @brief Constructor 
+/// @param parent 
+/// @param id     
+///
 VideoSlider::VideoSlider (wxWindow* parent, wxWindowID id)
 : wxWindow (parent,id,wxDefaultPosition,wxDefaultSize,wxWANTS_CHARS | wxFULL_REPAINT_ON_RESIZE)
 {
@@ -66,15 +69,20 @@ VideoSlider::VideoSlider (wxWindow* parent, wxWindowID id)
 }
 
 
-/////////////
-// Get value
+
+/// @brief Get value 
+/// @return 
+///
 int VideoSlider::GetValue() {
 	return val;
 }
 
 
-/////////////
-// Set value
+
+/// @brief Set value 
+/// @param value 
+/// @return 
+///
 void VideoSlider::SetValue(int value) {
 	if (locked) return;
 	val = value;
@@ -84,8 +92,11 @@ void VideoSlider::SetValue(int value) {
 }
 
 
-/////////////
-// Set range
+
+/// @brief Set range 
+/// @param from 
+/// @param to   
+///
 void VideoSlider::SetRange(int from,int to) {
 	if (from > to) from = to;
 	locked = false;
@@ -96,8 +107,11 @@ void VideoSlider::SetRange(int from,int to) {
 }
 
 
-//////////////////
-// Get value at X
+
+/// @brief Get value at X 
+/// @param x 
+/// @return 
+///
 int VideoSlider::GetValueAtX(int x) {
 	// Get dimensions
 	int w,h;
@@ -111,8 +125,11 @@ int VideoSlider::GetValueAtX(int x) {
 }
 
 
-//////////////////
-// Get X at value
+
+/// @brief Get X at value 
+/// @param value 
+/// @return 
+///
 int VideoSlider::GetXAtValue(int value) {
 	// Get dimensions
 	int w,h;
@@ -126,8 +143,10 @@ int VideoSlider::GetXAtValue(int value) {
 }
 
 
-/////////////////////
-// Next frame hotkey
+
+/// @brief Next frame hotkey 
+/// @return 
+///
 void VideoSlider::NextFrame() {
 	if (VideoContext::Get()->IsPlaying()) return;
 
@@ -138,8 +157,10 @@ void VideoSlider::NextFrame() {
 }
 
 
-/////////////////////////
-// Previous frame hotkey
+
+/// @brief Previous frame hotkey 
+/// @return 
+///
 void VideoSlider::PrevFrame() {
 	if (VideoContext::Get()->IsPlaying()) return;
 
@@ -162,8 +183,10 @@ BEGIN_EVENT_TABLE(VideoSlider, wxWindow)
 END_EVENT_TABLE()
 
 
-///////////////////
-// Change position
+
+/// @brief Change position 
+/// @return 
+///
 void VideoSlider::UpdateVideo() {
 	if (Display) {
 		if (VideoContext::Get()->IsPlaying()) return;
@@ -174,8 +197,11 @@ void VideoSlider::UpdateVideo() {
 }
 
 
-////////////////
-// Mouse events
+
+/// @brief Mouse events 
+/// @param event 
+/// @return 
+///
 void VideoSlider::OnMouse(wxMouseEvent &event) {
 	// Coordinates
 	int x = event.GetX();
@@ -246,8 +272,11 @@ void VideoSlider::OnMouse(wxMouseEvent &event) {
 }
 
 
-//////////////////
-// Key down event
+
+/// @brief Key down event 
+/// @param event 
+/// @return 
+///
 void VideoSlider::OnKeyDown(wxKeyEvent &event) {
 	if (VideoContext::Get()->IsPlaying()) return;
 
@@ -380,16 +409,20 @@ void VideoSlider::OnKeyDown(wxKeyEvent &event) {
 }
 
 
-///////////////
-// Paint event
+
+/// @brief Paint event 
+/// @param event 
+///
 void VideoSlider::OnPaint(wxPaintEvent &event) {
 	wxPaintDC dc(this);
 	DrawImage(dc);
 }
 
 
-//////////////
-// Draw image
+
+/// @brief Draw image 
+/// @param destdc 
+///
 void VideoSlider::DrawImage(wxDC &destdc) {
 	// Get dimensions
 	int w,h;
@@ -486,8 +519,9 @@ void VideoSlider::DrawImage(wxDC &destdc) {
 }
 
 
-////////////////
-// Update image
+
+/// @brief Update image 
+///
 void VideoSlider::UpdateImage () {
 	//wxClientDC dc(this);
 	//DrawImage(dc);
@@ -495,9 +529,12 @@ void VideoSlider::UpdateImage () {
 }
 
 
-////////////////
-// Focus change
+
+/// @brief Focus change 
+/// @param event 
+///
 void VideoSlider::OnFocus(wxFocusEvent &event) {
 	Refresh(false);
 }
+
 

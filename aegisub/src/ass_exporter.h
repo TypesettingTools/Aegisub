@@ -54,19 +54,33 @@ class AssExportFilter;
 class AssFile;
 
 
-////////////
-// Typedefs
+
+/// DOCME
 typedef std::list<AssExportFilter*> FilterList;
+
+/// DOCME
 typedef std::map<wxString,wxSizer*> SizerMap;
 
 
-//////////////////
-// Exporter class
+
+/// DOCME
+/// @class AssExporter
+/// @brief DOCME
+///
+/// DOCME
 class AssExporter {
 private:
+
+	/// DOCME
 	SizerMap Sizers;
+
+	/// DOCME
 	FilterList Filters;
+
+	/// DOCME
 	AssFile *OriginalSubs;
+
+	/// DOCME
 	bool IsDefault;
 
 public:
@@ -80,7 +94,11 @@ public:
 	void Export(wxString file, wxString charset, wxWindow *export_dialog=NULL);
 	AssFile *ExportTransform(wxWindow *export_dialog=NULL);
 	wxSizer *GetSettingsSizer(wxString name);
+
+	/// @brief DOCME
+	///
 	AssFile *GetOriginalSubs() { return OriginalSubs; }
 	wxString GetDescription(wxString name);
 };
+
 

@@ -44,8 +44,11 @@
 #include <wx/settings.h>
 
 
-///////////////
-// Constructor
+
+/// @brief Constructor 
+/// @param _control 
+/// @param _name    
+///
 IdleFieldHandler::IdleFieldHandler(wxWindow *_control,wxString _name) {
 	control = _control;
 	name = _name;
@@ -85,24 +88,29 @@ BEGIN_EVENT_TABLE(IdleFieldHandler,wxEvtHandler)
 END_EVENT_TABLE()
 
 
-///////////////////
-// Get Focus event
+
+/// @brief Get Focus event 
+/// @param event 
+///
 void IdleFieldHandler::OnSetFocus(wxFocusEvent &event) {
 	SetFocus();
 	event.Skip();
 }
 
 
-///////////////////
-// Lose Focus event
+
+/// @brief Lose Focus event 
+/// @param event 
+///
 void IdleFieldHandler::OnKillFocus(wxFocusEvent &event) {
 	KillFocus();
 	event.Skip();
 }
 
 
-/////////////
-// Get focus
+
+/// @brief Get focus 
+///
 void IdleFieldHandler::SetFocus() {
 	if (overriden) {
 		// Prepare
@@ -124,8 +132,9 @@ void IdleFieldHandler::SetFocus() {
 }
 
 
-//////////////
-// Lose Focus
+
+/// @brief Lose Focus 
+///
 void IdleFieldHandler::KillFocus() {
 	bool modify = false;
 	if (text && text->GetValue().IsEmpty() || box && box->GetValue().IsEmpty()) modify = true;
@@ -150,8 +159,10 @@ void IdleFieldHandler::KillFocus() {
 }
 
 
-//////////////////////////
-// Parent control changed
+
+/// @brief Parent control changed 
+/// @param event 
+///
 void IdleFieldHandler::OnChange(wxCommandEvent &event) {
 	if (locked) return;
 
@@ -164,4 +175,5 @@ void IdleFieldHandler::OnChange(wxCommandEvent &event) {
 	}
 	event.Skip();
 }
+
 

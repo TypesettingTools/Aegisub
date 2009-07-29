@@ -45,11 +45,21 @@
 #include "help_button.h"
 
 
+
+/// DOCME
 struct ResolutionShortcut {
+
+	/// DOCME
 	const wxChar *name;
+
+	/// DOCME
 	int width;
+
+	/// DOCME
 	int height;
 };
+
+/// DOCME
 static ResolutionShortcut resolutions[] = {
 	{_T("640x480 (SD fullscreen)"), 640, 480},
 	{_T("704x480 (SD anamorphic)"), 704, 480},
@@ -64,6 +74,12 @@ static ResolutionShortcut resolutions[] = {
 };
 
 
+
+/// @brief DOCME
+/// @param parent       
+/// @param out_filename 
+/// @return 
+///
 bool DialogDummyVideo::CreateDummyVideo(wxWindow *parent, wxString &out_filename)
 {
 	DialogDummyVideo dlg(parent);
@@ -119,6 +135,10 @@ bool DialogDummyVideo::CreateDummyVideo(wxWindow *parent, wxString &out_filename
 }
 
 
+
+/// @brief DOCME
+/// @param parent 
+///
 DialogDummyVideo::DialogDummyVideo(wxWindow *parent)
 : wxDialog(parent, -1, _("Dummy video options"),wxDefaultPosition,wxDefaultSize)
 {
@@ -199,6 +219,9 @@ DialogDummyVideo::DialogDummyVideo(wxWindow *parent)
 }
 
 
+
+/// @brief DOCME
+///
 DialogDummyVideo::~DialogDummyVideo()
 {
 }
@@ -212,6 +235,10 @@ BEGIN_EVENT_TABLE(DialogDummyVideo,wxDialog)
 END_EVENT_TABLE()
 
 
+
+/// @brief DOCME
+/// @param evt 
+///
 void DialogDummyVideo::OnResolutionShortcut(wxCommandEvent &evt)
 {
 	int rs = resolution_shortcuts->GetSelection();
@@ -220,24 +247,39 @@ void DialogDummyVideo::OnResolutionShortcut(wxCommandEvent &evt)
 }
 
 
+
+/// @brief DOCME
+/// @param evt 
+///
 void DialogDummyVideo::OnFpsChange(wxCommandEvent &evt)
 {
 	UpdateLengthDisplay();
 }
 
 
+
+/// @brief DOCME
+/// @param evt 
+///
 void DialogDummyVideo::OnLengthSpin(wxSpinEvent &evt)
 {
 	UpdateLengthDisplay();
 }
 
 
+
+/// @brief DOCME
+/// @param evt 
+///
 void DialogDummyVideo::OnLengthChange(wxCommandEvent &evt)
 {
 	UpdateLengthDisplay();
 }
 
 
+
+/// @brief DOCME
+///
 void DialogDummyVideo::UpdateLengthDisplay()
 {
 	double fpsval;
@@ -265,4 +307,5 @@ void DialogDummyVideo::UpdateLengthDisplay()
 		ok_button->Disable();
 	}
 }
+
 

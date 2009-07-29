@@ -44,13 +44,21 @@
 #include <vector>
 
 
-////////////////
-// Tip provider
+
+/// DOCME
+/// @class TipOfTheDay
+/// @brief DOCME
+///
+/// DOCME
 class TipOfTheDay: public wxTipProvider {
 private:
+
+	/// DOCME
 	std::vector<wxString> tips;
 
 public:
+
+	/// DOCME
 	static size_t curTip;
 
 	TipOfTheDay(size_t currentTip);
@@ -59,4 +67,5 @@ public:
 	wxString GetTip();
 	static void Show(wxWindow *parent);
 };
+
 

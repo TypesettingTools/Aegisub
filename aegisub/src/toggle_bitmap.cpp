@@ -46,8 +46,13 @@
 #include <wx/dcclient.h>
 
 
-///////////////
-// Constructor
+
+/// @brief Constructor 
+/// @param parent 
+/// @param id     
+/// @param image  
+/// @param size   
+///
 ToggleBitmap::ToggleBitmap(wxWindow *parent,wxWindowID id,const wxBitmap &image,const wxSize &size)
 : wxControl (parent,id,wxDefaultPosition,wxDefaultSize,wxSUNKEN_BORDER)
 {
@@ -67,15 +72,19 @@ ToggleBitmap::ToggleBitmap(wxWindow *parent,wxWindowID id,const wxBitmap &image,
 }
 
 
-/////////////
-// Get state
+
+/// @brief Get state 
+/// @return 
+///
 bool ToggleBitmap::GetValue() {
 	return state;
 }
 
 
-/////////////
-// Set state
+
+/// @brief Set state 
+/// @param _state 
+///
 void ToggleBitmap::SetValue(bool _state) {
 	// Set flag
 	state = _state;
@@ -85,8 +94,10 @@ void ToggleBitmap::SetValue(bool _state) {
 }
 
 
-//////////////
-// Draw image
+
+/// @brief Draw image 
+/// @param dc 
+///
 void ToggleBitmap::DrawImage(wxDC &dc) {
 	// Get size
 	int w,h;
@@ -121,8 +132,10 @@ BEGIN_EVENT_TABLE(ToggleBitmap,wxControl)
 END_EVENT_TABLE()
 
 
-////////////////
-// Mouse events
+
+/// @brief Mouse events 
+/// @param event 
+///
 void ToggleBitmap::OnMouseEvent(wxMouseEvent &event) {
 	// Get mouse position
 	int x = event.GetX();
@@ -145,10 +158,13 @@ void ToggleBitmap::OnMouseEvent(wxMouseEvent &event) {
 }
 
 
-///////////////
-// Paint event
+
+/// @brief Paint event 
+/// @param event 
+///
 void ToggleBitmap::OnPaint(wxPaintEvent &event) {
 	wxPaintDC dc(this);
 	DrawImage(dc);
 }
+
 

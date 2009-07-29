@@ -44,8 +44,13 @@
 #include "dialog_colorpicker.h"
 
 
-///////////////
-// Constructor
+
+/// @brief Constructor 
+/// @param parent 
+/// @param id     
+/// @param size   
+/// @param col    
+///
 ColourButton::ColourButton(wxWindow* parent, wxWindowID id, const wxSize& size, wxColour col) {
 	// Variables
 	linkColour = NULL;
@@ -62,14 +67,17 @@ ColourButton::ColourButton(wxWindow* parent, wxWindowID id, const wxSize& size, 
 }
 
 
-//////////////
-// Destructor
+
+/// @brief Destructor 
+///
 ColourButton::~ColourButton() {
 }
 
 
-//////////////
-// Set colour
+
+/// @brief Set colour 
+/// @param col 
+///
 void ColourButton::SetColour(wxColour col) {
 	// Set colour
 	colour = col;
@@ -90,15 +98,19 @@ void ColourButton::SetColour(wxColour col) {
 }
 
 
-//////////////
-// Get Colour
+
+/// @brief Get Colour 
+/// @return 
+///
 wxColour ColourButton::GetColour() {
 	return colour;
 }
 
 
-/////////
-// Click
+
+/// @brief Click 
+/// @param event 
+///
 void ColourButton::OnClick(wxCommandEvent &event) {
 	DialogColorPicker dlg(GetParent(), colour);
 	if (dlg.ShowModal() == wxID_OK) {
@@ -108,10 +120,13 @@ void ColourButton::OnClick(wxCommandEvent &event) {
 }
 
 
-///////////////////
-// Set Link Colour
+
+/// @brief Set Link Colour 
+/// @param col 
+///
 void ColourButton::SetLinkColour(wxColour *col) {
 	linkColour = col;
 	if (linkColour) SetColour(*linkColour);
 }
+
 

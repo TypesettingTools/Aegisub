@@ -44,8 +44,12 @@
 #include "utils.h"
 
 
-///////////////
-// Constructor
+
+/// @brief Constructor 
+/// @param _valPtr  
+/// @param isfloat  
+/// @param issigned 
+///
 NumValidator::NumValidator(wxString* _valPtr,bool isfloat,bool issigned) {
 	isFloat = isfloat;
 	isSigned = issigned;
@@ -65,8 +69,10 @@ NumValidator::NumValidator(wxString* _valPtr,bool isfloat,bool issigned) {
 }
 
 
-////////////////////
-// Copy constructor
+
+/// @brief Copy constructor 
+/// @param from 
+///
 NumValidator::NumValidator(const NumValidator &from)
 : wxValidator()
 {
@@ -84,16 +90,21 @@ BEGIN_EVENT_TABLE(NumValidator, wxValidator)
 END_EVENT_TABLE()
 
 
-/////////
-// Clone
+
+/// @brief Clone 
+/// @return 
+///
 wxObject* NumValidator::Clone() const {
 	NumValidator *clone = new NumValidator(valPtr,isFloat,isSigned);
 	return clone;
 }
 
 
-////////////
-// Validate
+
+/// @brief Validate 
+/// @param parent 
+/// @return 
+///
 bool NumValidator::Validate(wxWindow* parent) {
 	wxTextCtrl *ctrl = (wxTextCtrl*) GetWindow();
 	wxString value = ctrl->GetValue();
@@ -115,8 +126,14 @@ bool NumValidator::Validate(wxWindow* parent) {
 }
 
 
-///////////////////////////////////////
-// Check if a given character is valid
+
+/// @brief Check if a given character is valid 
+/// @param chr        
+/// @param isFirst    
+/// @param canSign    
+/// @param gotDecimal 
+/// @return 
+///
 bool NumValidator::CheckCharacter(int chr,bool isFirst,bool canSign,bool &gotDecimal) {
 	// Check sign
 	if (chr == _T('-') || chr == _T('+')) {
@@ -142,8 +159,11 @@ bool NumValidator::CheckCharacter(int chr,bool isFirst,bool canSign,bool &gotDec
 }
 
 
-/////////////////////
-// Filter keypresses
+
+/// @brief Filter keypresses 
+/// @param event 
+/// @return 
+///
 void NumValidator::OnChar(wxKeyEvent& event) {
 	wxTextCtrl *ctrl = (wxTextCtrl*) GetWindow();
 	wxString value = ctrl->GetValue();
@@ -185,8 +205,10 @@ void NumValidator::OnChar(wxKeyEvent& event) {
 }
 
 
-//////////////////////
-// Transfer to window
+
+/// @brief Transfer to window 
+/// @return 
+///
 bool NumValidator::TransferToWindow() {
 	wxTextCtrl *ctrl = (wxTextCtrl*) GetWindow();
 	if (isFloat) ctrl->SetValue(PrettyFloatD(fValue));
@@ -196,8 +218,9 @@ bool NumValidator::TransferToWindow() {
 }
 
 
-///////////////////////
-// Receive from window
+
+/// @brief Receive from window 
+///
 bool NumValidator::TransferFromWindow() {
 	wxTextCtrl *ctrl = (wxTextCtrl*) GetWindow();
 	wxString value = ctrl->GetValue();
@@ -218,4 +241,5 @@ bool NumValidator::TransferFromWindow() {
 
 	return true;
 }
+
 

@@ -54,20 +54,42 @@ class wxZipOutputStream;
 class ScintillaTextCtrl;
 
 
-/////////////////
-// Worker thread
+
+/// DOCME
+/// @class FontsCollectorThread
+/// @brief DOCME
+///
+/// DOCME
 class FontsCollectorThread : public wxThread {
 private:
+
+	/// DOCME
 	AssFile *subs;
+
+	/// DOCME
 	AssStyle *curStyle;
+
+	/// DOCME
 	wxString destination;
+
+	/// DOCME
 	DialogFontsCollector *collector;
+
+	/// DOCME
 	wxZipOutputStream *zip;
+
+	/// DOCME
 	int curLine;
+
+	/// DOCME
 	wxString destFolder;
 
+
+	/// DOCME
 	static FontsCollectorThread *instance;
 
+
+	/// DOCME
 	wxArrayString fonts;
 
 	bool ProcessFont(wxString fontname);
@@ -88,19 +110,39 @@ public:
 };
 
 
-////////////////////
-// Class definition
+
+/// DOCME
+/// @class DialogFontsCollector
+/// @brief DOCME
+///
+/// DOCME
 class DialogFontsCollector : public wxDialog {
 	friend class FontsCollectorThread;
 
 private:
+
+	/// DOCME
 	wxTextCtrl *DestBox;
+
+	/// DOCME
 	ScintillaTextCtrl *LogBox;
+
+	/// DOCME
 	wxButton *BrowseButton;
+
+	/// DOCME
 	wxButton *StartButton;
+
+	/// DOCME
 	wxButton *CloseButton;
+
+	/// DOCME
 	wxStaticText *DestLabel;
+
+	/// DOCME
 	wxRadioBox *CollectAction;
+
+	/// DOCME
 	FrameMain *main;
 
 	void OnStart(wxCommandEvent &event);
@@ -118,10 +160,15 @@ public:
 };
 
 
-//////////////////////////////////////
-// Helper class to pass strings along
+
+/// DOCME
 struct ColourString {
+
+	/// DOCME
 	wxString text;
+
+	/// DOCME
 	int colour;
 };
+
 

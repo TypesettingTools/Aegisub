@@ -64,40 +64,104 @@
 ///////
 // IDs
 enum {
+
+	/// DOCME
 	BUTTON_STYLE_FONT = 1050,
+
+	/// DOCME
 	CHECKBOX_STYLE_BOLD,
+
+	/// DOCME
 	CHECKBOX_STYLE_ITALIC,
+
+	/// DOCME
 	CHECKBOX_STYLE_UNDERLINE,
+
+	/// DOCME
 	CHECKBOX_STYLE_STRIKEOUT,
+
+	/// DOCME
 	CHECKBOX_OUTLINE,
+
+	/// DOCME
 	BUTTON_COLOR_1,
+
+	/// DOCME
 	BUTTON_COLOR_2,
+
+	/// DOCME
 	BUTTON_COLOR_3,
+
+	/// DOCME
 	BUTTON_COLOR_4,
+
+	/// DOCME
 	BUTTON_PREVIEW_COLOR,
+
+	/// DOCME
 	RADIO_ALIGNMENT,
+
+	/// DOCME
 	TEXT_FONT_NAME,
+
+	/// DOCME
 	TEXT_FONT_SIZE,
+
+	/// DOCME
 	TEXT_ALPHA_1,
+
+	/// DOCME
 	TEXT_ALPHA_2,
+
+	/// DOCME
 	TEXT_ALPHA_3,
+
+	/// DOCME
 	TEXT_ALPHA_4,
+
+	/// DOCME
 	TEXT_MARGIN_L,
+
+	/// DOCME
 	TEXT_MARGIN_R,
+
+	/// DOCME
 	TEXT_MARGIN_V,
+
+	/// DOCME
 	TEXT_OUTLINE,
+
+	/// DOCME
 	TEXT_SHADOW,
+
+	/// DOCME
 	TEXT_SCALE_X,
+
+	/// DOCME
 	TEXT_SCALE_Y,
+
+	/// DOCME
 	TEXT_ANGLE,
+
+	/// DOCME
 	TEXT_SPACING,
+
+	/// DOCME
 	TEXT_PREVIEW,
+
+	/// DOCME
 	COMBO_ENCODING
 };
 
 
-///////////////
-// Constructor
+
+/// @brief Constructor 
+/// @param parent 
+/// @param _style 
+/// @param _grid  
+/// @param local  
+/// @param _store 
+///
 DialogStyleEditor::DialogStyleEditor (wxWindow *parent, AssStyle *_style, SubtitlesGrid *_grid,bool local,AssStyleStorage *_store)
 : wxDialog (parent,-1,_("Style Editor"),wxDefaultPosition,wxDefaultSize,wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER,_T("DialogStyleEditor"))
 {
@@ -363,8 +427,9 @@ DialogStyleEditor::DialogStyleEditor (wxWindow *parent, AssStyle *_style, Subtit
 }
 
 
-//////////////
-// Destructor
+
+/// @brief Destructor 
+///
 DialogStyleEditor::~DialogStyleEditor () {
 	delete work;
 }
@@ -399,19 +464,50 @@ BEGIN_EVENT_TABLE(DialogStyleEditor, wxDialog)
 END_EVENT_TABLE()
 
 
-/////////////////////
-// Event redirectors
+
+/// @brief Event redirectors 
+/// @param event 
+///
 void DialogStyleEditor::OnApply (wxCommandEvent &event) { Apply(true,false); }
+
+/// @brief DOCME
+/// @param event 
+///
 void DialogStyleEditor::OnOK (wxCommandEvent &event) { SavePosition(); Apply(true,true); }
+
+/// @brief DOCME
+/// @param event 
+///
 void DialogStyleEditor::OnCancel (wxCommandEvent &event) { SavePosition(); Apply(false,true); }
+
+/// @brief DOCME
+/// @param event 
+///
 void DialogStyleEditor::OnSetColor1 (wxCommandEvent &event) { OnSetColor(1); }
+
+/// @brief DOCME
+/// @param event 
+///
 void DialogStyleEditor::OnSetColor2 (wxCommandEvent &event) { OnSetColor(2); }
+
+/// @brief DOCME
+/// @param event 
+///
 void DialogStyleEditor::OnSetColor3 (wxCommandEvent &event) { OnSetColor(3); }
+
+/// @brief DOCME
+/// @param event 
+///
 void DialogStyleEditor::OnSetColor4 (wxCommandEvent &event) { OnSetColor(4); }
 
 
-/////////////////
-// Replace Style
+
+/// @brief Replace Style 
+/// @param tag      
+/// @param n        
+/// @param param    
+/// @param userData 
+///
 void ReplaceStyle(wxString tag,int n,AssOverrideParameter* param,void *userData) {
 	wxArrayString strings = *((wxArrayString*)userData);
 	if (tag == _T("\\r")) {
@@ -424,8 +520,12 @@ void ReplaceStyle(wxString tag,int n,AssOverrideParameter* param,void *userData)
 }
 
 
-//////////
-// Events
+
+/// @brief Events 
+/// @param apply 
+/// @param close 
+/// @return 
+///
 void DialogStyleEditor::Apply (bool apply,bool close) {
 	// Apply
 	if (apply) {
@@ -512,8 +612,9 @@ void DialogStyleEditor::Apply (bool apply,bool close) {
 }
 
 
-/////////////////////
-// Update work style
+
+/// @brief Update work style 
+///
 void DialogStyleEditor::UpdateWorkStyle() {
 	// Font and its size
 	work->font = FontName->GetValue();
@@ -562,8 +663,10 @@ void DialogStyleEditor::UpdateWorkStyle() {
 }
 
 
-///////////////////
-// Choose font box
+
+/// @brief Choose font box 
+/// @param event 
+///
 void DialogStyleEditor::OnChooseFont (wxCommandEvent &event) {
 	wxFont oldfont (int(work->fontsize), wxFONTFAMILY_DEFAULT, (work->italic?wxFONTSTYLE_ITALIC:wxFONTSTYLE_NORMAL), (work->bold?wxFONTWEIGHT_BOLD:wxFONTWEIGHT_NORMAL), work->underline, work->font, wxFONTENCODING_DEFAULT);
 	wxFont newfont = wxGetFontFromUser(this,oldfont);
@@ -589,8 +692,10 @@ void DialogStyleEditor::OnChooseFont (wxCommandEvent &event) {
 }
 
 
-////////////////////////////////////////////////
-// Sets color for one of the four color buttons
+
+/// @brief Sets color for one of the four color buttons 
+/// @param n 
+///
 void DialogStyleEditor::OnSetColor (int n) {
 	AssColor *modify;
 	switch (n) {
@@ -605,8 +710,10 @@ void DialogStyleEditor::OnSetColor (int n) {
 }
 
 
-//////////////////////
-// Child focus change
+
+/// @brief Child focus change 
+/// @param event 
+///
 void DialogStyleEditor::OnChildFocus (wxChildFocusEvent &event) {
 	UpdateWorkStyle();
 	if (SubsPreview) SubsPreview->SetStyle(work);
@@ -614,8 +721,10 @@ void DialogStyleEditor::OnChildFocus (wxChildFocusEvent &event) {
 }
 
 
-////////////////////////
-// Preview text changed
+
+/// @brief Preview text changed 
+/// @param event 
+///
 void DialogStyleEditor::OnPreviewTextChange (wxCommandEvent &event) {
 	if (PreviewText) {
 		if (SubsPreview) SubsPreview->SetText(PreviewText->GetValue());
@@ -624,8 +733,10 @@ void DialogStyleEditor::OnPreviewTextChange (wxCommandEvent &event) {
 }
 
 
-/////////////////////////////////////////
-// Change colour of preview's background
+
+/// @brief Change colour of preview's background 
+/// @param event 
+///
 void DialogStyleEditor::OnPreviewColourChange (wxCommandEvent &event) {
 	if (SubsPreview) SubsPreview->SetColour(previewButton->GetColour());
 	Options.SetColour(_T("Style editor preview background"),previewButton->GetColour());
@@ -633,8 +744,11 @@ void DialogStyleEditor::OnPreviewColourChange (wxCommandEvent &event) {
 }
 
 
-///////////////////////////////////
-// Command event to update preview
+
+/// @brief Command event to update preview 
+/// @param event 
+/// @return 
+///
 void DialogStyleEditor::OnCommandPreviewUpdate (wxCommandEvent &event) {
 	if (!IsShownOnScreen()) return;
 	UpdateWorkStyle();
@@ -643,8 +757,11 @@ void DialogStyleEditor::OnCommandPreviewUpdate (wxCommandEvent &event) {
 }
 
 
-///////////////////////////////////////
-// Converts control value to alignment
+
+/// @brief Converts control value to alignment 
+/// @param n 
+/// @return 
+///
 int DialogStyleEditor::ControlToAlign (int n) {
 	switch (n) {
 		case 0: return 7;
@@ -661,8 +778,11 @@ int DialogStyleEditor::ControlToAlign (int n) {
 }
 
 
-///////////////////////////////////////
-// Converts alignment value to control
+
+/// @brief Converts alignment value to control 
+/// @param n 
+/// @return 
+///
 int DialogStyleEditor::AlignToControl (int n) {
 	switch (n) {
 		case 7: return 0;
@@ -679,12 +799,16 @@ int DialogStyleEditor::AlignToControl (int n) {
 }
 
 
-/////////////////////////////////////////////////
-// Load and save window position for the session
+
+/// @brief Load and save window position for the session 
+///
 void DialogStyleEditor::SavePosition() {
 	use_saved_position = true;
 	saved_position = GetRect();
 }
+
+/// @brief DOCME
+///
 void DialogStyleEditor::LoadPosition() {
 	if (use_saved_position)
 		SetSize(saved_position);
@@ -693,8 +817,11 @@ void DialogStyleEditor::LoadPosition() {
 }
 
 
-/////////////////////////////////////
-// Static class data saving position
+
+/// DOCME
 wxRect DialogStyleEditor::saved_position;
+
+/// DOCME
 bool DialogStyleEditor::use_saved_position = false;
+
 

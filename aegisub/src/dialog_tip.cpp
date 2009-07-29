@@ -46,8 +46,10 @@
 #include "options.h"
 
 
-///////////////
-// Constructor
+
+/// @brief Constructor 
+/// @param currentTip 
+///
 TipOfTheDay::TipOfTheDay (size_t currentTip): wxTipProvider(currentTip) {
 	curTip = currentTip;
 	tips.push_back(_("Aegisub can export subtitles to many different formats, character encodings, and even compensate Variable Frame Rate so you can hardsub them - it's all in the Export option in File menu."));
@@ -70,15 +72,18 @@ TipOfTheDay::TipOfTheDay (size_t currentTip): wxTipProvider(currentTip) {
 }
 
 
-//////////////
-// Destructor
+
+/// @brief Destructor 
+///
 TipOfTheDay::~TipOfTheDay() {
 	tips.clear();
 }
 
 
-////////////////
-// Get next tip
+
+/// @brief Get next tip 
+/// @return 
+///
 wxString TipOfTheDay::GetTip() {
 	curTip = curTip % tips.size();
 	wxString result = tips.at(curTip);
@@ -87,8 +92,10 @@ wxString TipOfTheDay::GetTip() {
 }
 
 
-//////////////////////////////
-// Show tip of the day dialog
+
+/// @brief Show tip of the day dialog 
+/// @param parent 
+///
 void TipOfTheDay::Show(wxWindow *parent) {
 	try {
 		if (Options.AsBool(_T("Tips enabled"))) {
@@ -109,7 +116,8 @@ void TipOfTheDay::Show(wxWindow *parent) {
 }
 
 
-//////////
-// Static
+
+/// DOCME
 size_t TipOfTheDay::curTip;
+
 

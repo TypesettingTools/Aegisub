@@ -45,8 +45,10 @@
 #include "dialog_associations.h"
 
 
-///////////////
-// Constructor
+
+/// @brief Constructor 
+/// @param parent 
+///
 DialogAssociations::DialogAssociations (wxWindow *parent)
 : wxDialog (parent,-1,_("Associate extensions"),wxDefaultPosition,wxDefaultSize)
 {
@@ -86,14 +88,17 @@ DialogAssociations::DialogAssociations (wxWindow *parent)
 }
 
 
-//////////////
-// Destructor
+
+/// @brief Destructor 
+///
 DialogAssociations::~DialogAssociations() {
 }
 
 
-/////////////////////////////////////
-// Associates a type with Aegisub
+
+/// @brief Associates a type with Aegisub 
+/// @param type 
+///
 void DialogAssociations::AssociateType(wxString type) {
 	type.Lower();
 	wxRegKey *key = new wxRegKey(_T("HKEY_CURRENT_USER\\Software\\Classes\\.") + type);
@@ -103,8 +108,11 @@ void DialogAssociations::AssociateType(wxString type) {
 }
 
 
-//////////////////////////////////////////////////
-// Checks if a type is associated with Aegisub
+
+/// @brief Checks if a type is associated with Aegisub 
+/// @param type 
+/// @return 
+///
 bool DialogAssociations::CheckAssociation(wxString type) {
 	type.Lower();
 	wxRegKey *key = new wxRegKey(_T("HKEY_CURRENT_USER\\Software\\Classes\\.") + type);
@@ -128,8 +136,10 @@ BEGIN_EVENT_TABLE(DialogAssociations, wxDialog)
 END_EVENT_TABLE()
 
 
-//////////////
-// OK pressed
+
+/// @brief OK pressed 
+/// @param event 
+///
 void DialogAssociations::OnOK(wxCommandEvent &event) {
 	if (ListBox->IsChecked(0)) AssociateType(_T("ass"));
 	if (ListBox->IsChecked(1)) AssociateType(_T("ssa"));
@@ -138,4 +148,5 @@ void DialogAssociations::OnOK(wxCommandEvent &event) {
 	if (ListBox->IsChecked(4)) AssociateType(_T("ttxt"));
 	event.Skip();
 }
+
 

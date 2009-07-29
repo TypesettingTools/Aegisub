@@ -36,6 +36,8 @@
 
 
 #ifndef AUDIO_DISPLAY_H
+
+/// DOCME
 #define AUDIO_DISPLAY_H
 
 
@@ -61,58 +63,146 @@ class VideoProvider;
 class FrameMain;
 
 
-/////////////////
-// Display class
+
+/// DOCME
+/// @class AudioDisplay
+/// @brief DOCME
+///
+/// DOCME
 class AudioDisplay: public wxWindow {
 	friend class FrameMain;
 private:
+
+	/// DOCME
 	SubtitlesGrid *grid;
+
+	/// DOCME
 	int line_n;
+
+	/// DOCME
 	AssDialogue *dialogue;
 
+
+	/// DOCME
 	AudioSpectrum *spectrumRenderer;
 
+
+	/// DOCME
 	wxBitmap *origImage;
+
+	/// DOCME
 	wxBitmap *spectrumDisplay;
+
+	/// DOCME
 	wxBitmap *spectrumDisplaySelected;
+
+	/// DOCME
 	int64_t PositionSample;
+
+	/// DOCME
 	float scale;
+
+	/// DOCME
 	int samples;
+
+	/// DOCME
 	int64_t Position;
+
+	/// DOCME
 	int samplesPercent;
+
+	/// DOCME
 	int oldCurPos;
+
+	/// DOCME
 	bool hasFocus;
+
+	/// DOCME
 	bool blockUpdate;
+
+	/// DOCME
 	bool dontReadTimes;
+
+	/// DOCME
 	bool playingToEnd;
 
+
+	/// DOCME
 	bool needImageUpdate;
+
+	/// DOCME
 	bool needImageUpdateWeak;
 
+
+	/// DOCME
 	bool hasSel;
+
+	/// DOCME
 	bool hasKaraoke;
+
+	/// DOCME
 	bool diagUpdated;
+
+	/// DOCME
 	bool holding;
+
+	/// DOCME
 	bool draggingScale;
+
+	/// DOCME
 	int64_t selStart;
+
+	/// DOCME
 	int64_t selEnd;
+
+	/// DOCME
 	int64_t lineStart;
+
+	/// DOCME
 	int64_t lineEnd;
+
+	/// DOCME
 	int64_t selStartCap;
+
+	/// DOCME
 	int64_t selEndCap;
+
+	/// DOCME
 	int hold;
+
+	/// DOCME
 	int lastX;
+
+	/// DOCME
 	int lastDragX;
+
+	/// DOCME
 	int curStartMS;
+
+	/// DOCME
 	int curEndMS;
+
+	/// DOCME
 	int holdSyl;
 
+
+	/// DOCME
 	int *peak;
+
+	/// DOCME
 	int *min;
 
+
+	/// DOCME
 	int scrubTime;
+
+	/// DOCME
 	int64_t scrubLastPos;
+
+	/// DOCME
 	bool scrubbing;
+
+	/// DOCME
 	int scrubLastRate;
 
 	void OnPaint(wxPaintEvent &event);
@@ -138,17 +228,41 @@ private:
 	void DoUpdateImage();
 
 public:
+
+	/// DOCME
 	AudioProvider *provider;
+
+	/// DOCME
 	StreamAudioProvider *scrubProvider;
+
+	/// DOCME
 	AudioPlayer *player;
 
+
+	/// DOCME
 	bool NeedCommit;
+
+	/// DOCME
 	bool loaded;
+
+	/// DOCME
 	bool temporary;
+
+	/// DOCME
+
+	/// DOCME
 	int w,h;
+
+	/// DOCME
 	AudioBox *box;
+
+	/// DOCME
 	AudioKaraoke *karaoke;
+
+	/// DOCME
 	wxScrollBar *ScrollBar;
+
+	/// DOCME
 	wxTimer UpdateTimer;
 
 	AudioDisplay(wxWindow *parent);
@@ -197,9 +311,12 @@ public:
 ///////
 // IDs
 enum {
+
+	/// DOCME
 	Audio_Update_Timer = 1700
 };
 
 
 #endif
+
 

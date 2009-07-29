@@ -44,14 +44,17 @@
 #include "utils.h"
 
 
-//////////////////////
-// Spline constructor
+
+/// @brief Spline constructor 
+///
 Spline::Spline() {
 }
 
 
-/////////////////
-// Encode to ASS
+
+/// @brief Encode to ASS 
+/// @return 
+///
 wxString Spline::EncodeToASS() {
 	wxString result;
 	char lastCommand = 0;
@@ -91,8 +94,10 @@ wxString Spline::EncodeToASS() {
 }
 
 
-///////////////////
-// Decode from ASS
+
+/// @brief Decode from ASS 
+/// @param str 
+///
 void Spline::DecodeFromASS(wxString str) {
 	// Clear current
 	curves.clear();
@@ -183,8 +188,11 @@ void Spline::DecodeFromASS(wxString str) {
 }
 
 
-////////////////////////////////
-// Insert a curve to the spline
+
+/// @brief Insert a curve to the spline 
+/// @param curve 
+/// @param index 
+///
 void Spline::InsertCurve(SplineCurve &curve,int index) {
 	if (index == -1) curves.push_back(curve);
 	else {
@@ -196,8 +204,11 @@ void Spline::InsertCurve(SplineCurve &curve,int index) {
 }
 
 
-////////////////////////
-// Get a specific curve
+
+/// @brief Get a specific curve 
+/// @param index 
+/// @return 
+///
 SplineCurve *Spline::GetCurve(int index) {
 	int i=0;
 	for (std::list<SplineCurve>::iterator cur=curves.begin();cur!=curves.end() && i <= index;cur++,i++) {
@@ -207,8 +218,12 @@ SplineCurve *Spline::GetCurve(int index) {
 }
 
 
-////////////////////////////////////////
-// Moves a specific point in the spline
+
+/// @brief Moves a specific point in the spline 
+/// @param curveIndex 
+/// @param point      
+/// @param pos        
+///
 void Spline::MovePoint(int curveIndex,int point,wxPoint pos) {
 	// Curves
 	int i = 0;
@@ -270,8 +285,11 @@ void Spline::MovePoint(int curveIndex,int point,wxPoint pos) {
 }
 
 
-//////////////////////////////////////
-// Gets a list of points in the curve
+
+/// @brief Gets a list of points in the curve 
+/// @param points     
+/// @param pointCurve 
+///
 void Spline::GetPointList(std::vector<Vector2D> &points,std::vector<int> &pointCurve) {
 	// Prepare
 	points.clear();
@@ -324,8 +342,14 @@ void Spline::GetPointList(std::vector<Vector2D> &points,std::vector<int> &pointC
 }
 
 
-///////////////////////////////////////////////////////
-// t value and curve of the point closest to reference
+
+/// @brief t value and curve of the point closest to reference 
+/// @param reference 
+/// @param curve     
+/// @param t         
+/// @param pt        
+/// @return 
+///
 void Spline::GetClosestParametricPoint(Vector2D reference,int &curve,float &t,Vector2D &pt) {
 	// Has at least one curve?
 	curve = -1;
@@ -359,8 +383,11 @@ void Spline::GetClosestParametricPoint(Vector2D reference,int &curve,float &t,Ve
 }
 
 
-//////////////////////////////
-// Point closest to reference
+
+/// @brief Point closest to reference 
+/// @param reference 
+/// @return 
+///
 Vector2D Spline::GetClosestPoint(Vector2D reference) {
 	int curve;
 	float t;
@@ -370,16 +397,21 @@ Vector2D Spline::GetClosestPoint(Vector2D reference) {
 }
 
 
-//////////////////////////////////////
-// Control point closest to reference
+
+/// @brief Control point closest to reference 
+/// @param reference 
+/// @return 
+///
 Vector2D Spline::GetClosestControlPoint(Vector2D reference) {
 	// TODO
 	return Vector2D(-1,-1);
 }
 
 
-///////////////////////
-// Smoothes the spline
+
+/// @brief Smoothes the spline 
+/// @param smooth 
+///
 void Spline::Smooth(float smooth) {
 	// See if there are enough curves
 	if (curves.size() < 3) return;
@@ -400,4 +432,5 @@ void Spline::Smooth(float smooth) {
 		curve1->Smooth(curve0->p1,curve2->p2,smooth);
 	}
 }
+
 

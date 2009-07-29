@@ -45,34 +45,62 @@
 #else
 
 #ifndef BUILD_SVN_REVISION
+
+/// DOCME
 #define BUILD_SVN_REVISION 0
 #endif
 
 #endif
 
+
+/// DOCME
 #define _T_rec(X) _T(X)
+
+/// DOCME
 #define _T_stringize(X) _T(#X)
+
+/// DOCME
 #define _T_int(X) _T_stringize(X)
 
+
+/// DOCME
 #define BUILD_TIMESTAMP _T_rec(__DATE__) _T(" ") _T_rec(__TIME__)
 
 // Define FINAL_RELEASE to mark a build as a "final" version, ie. not pre-release version
 // In that case it won't include the SVN revision information
 
+
+/// DOCME
 struct VersionInfoStruct {
-	// Some raw data
+
+	/// DOCME
 	wxChar *VersionNumber;
+
+	/// DOCME
 	bool IsDebug;
+
+	/// DOCME
 	bool IsRelease;
+
+	/// DOCME
 	int SvnRev;
+
+	/// DOCME
 	wxChar *BuildTime;
+
+	/// DOCME
 	wxChar *BuildCredit;
 
-	// Nice strings for display
+
+	/// DOCME
 	wxString LongVersionString;
+
+	/// DOCME
 	wxString ShortVersionString;
 
-	// Generate the above data
+
+	/// @brief // Generate the above data
+	///
 	VersionInfoStruct() {
 		wxString VersionStr;
 
@@ -134,34 +162,64 @@ struct VersionInfoStruct {
 };
 
 
+
+/// DOCME
 VersionInfoStruct versioninfo;
 
 
+
+/// @brief DOCME
+/// @return 
+///
 wxString GetAegisubLongVersionString() {
 	return versioninfo.LongVersionString;
 }
 
+
+/// @brief DOCME
+/// @return 
+///
 wxString GetAegisubShortVersionString() {
 	return versioninfo.ShortVersionString;
 }
 
+
+/// @brief DOCME
+/// @return 
+///
 wxString GetAegisubBuildTime() {
 	return versioninfo.BuildTime;
 }
 
+
+/// @brief DOCME
+/// @return 
+///
 wxString GetAegisubBuildCredit() {
 	return versioninfo.BuildCredit;
 }
 
+
+/// @brief DOCME
+/// @return 
+///
 bool GetIsOfficialRelease() {
 	return versioninfo.IsRelease;
 }
 
+
+/// @brief DOCME
+/// @return 
+///
 wxString GetVersionNumber() {
 	return versioninfo.VersionNumber;
 }
 
+
+/// @brief DOCME
+///
 int GetSVNRevision() {
 	return versioninfo.SvnRev;
 }
+
 

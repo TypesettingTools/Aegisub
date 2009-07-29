@@ -45,22 +45,28 @@
 #include "frame_main.h"
 
 
-///////////////
-// Constructor
+
+/// @brief Constructor 
+/// @param subs 
+///
 AssExporter::AssExporter (AssFile *subs) {
 	OriginalSubs = subs;
 	IsDefault = true;
 }
 
 
-//////////////
-// Destructor
+
+/// @brief Destructor 
+///
 AssExporter::~AssExporter () {
 }
 
 
-/////////////////////////
-// Draw control settings
+
+/// @brief Draw control settings 
+/// @param parent 
+/// @param AddTo  
+///
 void AssExporter::DrawSettings(wxWindow *parent,wxSizer *AddTo) {
 	IsDefault = false;
 	wxWindow *window;
@@ -85,8 +91,10 @@ void AssExporter::DrawSettings(wxWindow *parent,wxSizer *AddTo) {
 }
 
 
-///////////////////////
-// Add filter to chain
+
+/// @brief Add filter to chain 
+/// @param name 
+///
 void AssExporter::AddFilter(wxString name) {
 	// Get filter
 	AssExportFilter *filter = NULL;
@@ -106,8 +114,9 @@ void AssExporter::AddFilter(wxString name) {
 }
 
 
-///////////////////////////////////////////
-// Adds all autoexporting filters to chain
+
+/// @brief Adds all autoexporting filters to chain 
+///
 void AssExporter::AddAutoFilters() {
 	FilterList::iterator begin = AssExportFilterChain::GetFilterList()->begin();
 	FilterList::iterator end = AssExportFilterChain::GetFilterList()->end();
@@ -119,8 +128,10 @@ void AssExporter::AddAutoFilters() {
 }
 
 
-///////////////////////////
-// Get name of all filters
+
+/// @brief Get name of all filters 
+/// @return 
+///
 wxArrayString AssExporter::GetAllFilterNames() {
 	wxArrayString names;
 	FilterList::iterator begin = AssExportFilterChain::GetFilterList()->begin();
@@ -132,8 +143,11 @@ wxArrayString AssExporter::GetAllFilterNames() {
 }
 
 
-////////////////////////
-// Transform for export
+
+/// @brief Transform for export 
+/// @param export_dialog 
+/// @return 
+///
 AssFile *AssExporter::ExportTransform(wxWindow *export_dialog) {
 	// Copy
 	AssFile *Subs = new AssFile(*OriginalSubs);
@@ -149,8 +163,12 @@ AssFile *AssExporter::ExportTransform(wxWindow *export_dialog) {
 }
 
 
-//////////
-// Export
+
+/// @brief Export 
+/// @param filename      
+/// @param charset       
+/// @param export_dialog 
+///
 void AssExporter::Export(wxString filename, wxString charset, wxWindow *export_dialog) {
 	// Get transformation
 	AssFile *Subs = ExportTransform(export_dialog);
@@ -161,8 +179,11 @@ void AssExporter::Export(wxString filename, wxString charset, wxWindow *export_d
 }
 
 
-///////////////////////////////////
-// Get window associated with name
+
+/// @brief Get window associated with name 
+/// @param name 
+/// @return 
+///
 wxSizer *AssExporter::GetSettingsSizer(wxString name) {
 	SizerMap::iterator pos = Sizers.find(name);
 	if (pos == Sizers.end()) return NULL;
@@ -170,8 +191,10 @@ wxSizer *AssExporter::GetSettingsSizer(wxString name) {
 }
 
 
-/////////////////////////////
-// Get description of filter
+
+/// @brief Get description of filter 
+/// @param name 
+///
 wxString AssExporter::GetDescription(wxString name) {
 	FilterList::iterator begin = AssExportFilterChain::GetFilterList()->begin();
 	FilterList::iterator end = AssExportFilterChain::GetFilterList()->end();
@@ -182,4 +205,5 @@ wxString AssExporter::GetDescription(wxString name) {
 	}
 	throw wxString::Format(_T("Filter not found: %s"), name.c_str());
 }
+
 

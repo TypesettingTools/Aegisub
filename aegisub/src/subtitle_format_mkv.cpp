@@ -45,8 +45,11 @@
 #include "ass_file.h"
 
 
-/////////////
-// Can read?
+
+/// @brief Can read? 
+/// @param filename 
+/// @return 
+///
 bool MKVSubtitleFormat::CanReadFile(wxString filename) {
 	if (filename.Right(4).Lower() == _T(".mkv") || filename.Right(4).Lower() == _T(".mks")
 			|| filename.Right(4).Lower() == _T(".mka"))
@@ -56,15 +59,19 @@ bool MKVSubtitleFormat::CanReadFile(wxString filename) {
 }
 
 
-////////////
-// Get name
+
+/// @brief Get name 
+/// @return 
+///
 wxString MKVSubtitleFormat::GetName() {
 	return _T("Matroska");
 }
 
 
-//////////////////////
-// Get read wildcards
+
+/// @brief Get read wildcards 
+/// @return 
+///
 wxArrayString MKVSubtitleFormat::GetReadWildcards() {
 	wxArrayString formats;
 	formats.Add(_T("mkv"));
@@ -74,8 +81,11 @@ wxArrayString MKVSubtitleFormat::GetReadWildcards() {
 }
 
 
-/////////////
-// Read file
+
+/// @brief Read file 
+/// @param filename 
+/// @param encoding 
+///
 void MKVSubtitleFormat::ReadFile(wxString filename,wxString encoding) {
 	// Open matroska
 	MatroskaWrapper wrap;
@@ -89,15 +99,22 @@ void MKVSubtitleFormat::ReadFile(wxString filename,wxString encoding) {
 }
 
 
-//////////////////////
-// Can write to file?
+
+/// @brief Can write to file? 
+/// @param filename 
+/// @return 
+///
 bool MKVSubtitleFormat::CanWriteFile(wxString filename) {
 	return false;
 }
 
 
-//////////////
-// Write file
+
+/// @brief Write file 
+/// @param _filename 
+/// @param encoding  
+///
 void MKVSubtitleFormat::WriteFile(wxString _filename,wxString encoding) {
 }
+
 

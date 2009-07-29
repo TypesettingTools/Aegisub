@@ -53,12 +53,17 @@
 ///////
 // IDs
 enum {
+
+	/// DOCME
 	BUTTON_TOGGLE_MOVE = VISUAL_SUB_TOOL_START
 };
 
 
-///////////////
-// Constructor
+
+/// @brief Constructor 
+/// @param _parent 
+/// @param toolBar 
+///
 VisualToolDrag::VisualToolDrag(VideoDisplay *_parent,wxToolBar *toolBar)
 : VisualTool(_parent)
 {
@@ -74,8 +79,10 @@ VisualToolDrag::VisualToolDrag(VideoDisplay *_parent,wxToolBar *toolBar)
 }
 
 
-/////////////////////////
-// Update toggle buttons
+
+/// @brief Update toggle buttons 
+/// @return 
+///
 void VisualToolDrag::UpdateToggleButtons() {
 	// Check which bitmap to use
 	bool toMove = true;
@@ -97,8 +104,11 @@ void VisualToolDrag::UpdateToggleButtons() {
 }
 
 
-/////////////////////////
-// Toggle button pressed
+
+/// @brief Toggle button pressed 
+/// @param event 
+/// @return 
+///
 void VisualToolDrag::OnButton(wxCommandEvent &event) {
 	// Get line
 	AssDialogue *line = GetActiveDialogueLine();
@@ -126,22 +136,25 @@ void VisualToolDrag::OnButton(wxCommandEvent &event) {
 }
 
 
-///////////
-// Refresh
+
+/// @brief Refresh 
+///
 void VisualToolDrag::DoRefresh() {
 	UpdateToggleButtons();
 }
 
 
-//////////
-// Update
+
+/// @brief Update 
+///
 void VisualToolDrag::Update() {
 	GetParent()->Render();
 }
 
 
-////////
-// Draw
+
+/// @brief Draw 
+///
 void VisualToolDrag::Draw() {
 	DrawAllFeatures();
 
@@ -196,8 +209,9 @@ void VisualToolDrag::Draw() {
 }
 
 
-/////////////////
-// Populate list
+
+/// @brief Populate list 
+///
 void VisualToolDrag::PopulateFeatureList() {
 	// Clear features
 	features.clear();
@@ -275,14 +289,18 @@ void VisualToolDrag::PopulateFeatureList() {
 }
 
 
-//////////////////
-// Start dragging
+
+/// @brief Start dragging 
+/// @param feature 
+///
 void VisualToolDrag::InitializeDrag(VisualDraggableFeature &feature) {
 }
 
 
-///////////////
-// Update drag
+
+/// @brief Update drag 
+/// @param feature 
+///
 void VisualToolDrag::UpdateDrag(VisualDraggableFeature &feature) {
 	// Update "value" to reflect the time of the frame in which the feature is being dragged
 	int time = VFR_Output.GetTimeAtFrame(frame_n,true,true);
@@ -290,8 +308,10 @@ void VisualToolDrag::UpdateDrag(VisualDraggableFeature &feature) {
 }
 
 
-///////////////
-// Commit drag
+
+/// @brief Commit drag 
+/// @param feature 
+///
 void VisualToolDrag::CommitDrag(VisualDraggableFeature &feature) {
 	// Origin
 	if (feature.type == DRAG_BIG_TRIANGLE) {
@@ -315,4 +335,5 @@ void VisualToolDrag::CommitDrag(VisualDraggableFeature &feature) {
 		SetOverride(_T("\\move"),wxString::Format(_T("(%i,%i,%i,%i,%i,%i)"),p1->x,p1->y,p2->x,p2->y,p1->value,p2->value));
 	}
 }
+
 

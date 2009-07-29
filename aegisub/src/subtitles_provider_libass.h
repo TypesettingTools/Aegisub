@@ -48,12 +48,22 @@ extern "C" {
 #include "../libass/ass.h"
 }
 
-///////////////////
-// libass provider
+
+/// DOCME
+/// @class LibassSubtitlesProvider
+/// @brief DOCME
+///
+/// DOCME
 class LibassSubtitlesProvider : public SubtitlesProvider {
 private:
+
+	/// DOCME
 	static ass_library_t* ass_library;
+
+	/// DOCME
 	ass_renderer_t* ass_renderer;
+
+	/// DOCME
 	ass_track_t* ass_track;
 
 public:
@@ -65,12 +75,21 @@ public:
 };
 
 
-///////////
-// Factory
+
+/// DOCME
+/// @class LibassSubtitlesProviderFactory
+/// @brief DOCME
+///
+/// DOCME
 class LibassSubtitlesProviderFactory : public SubtitlesProviderFactory {
 public:
+
+	/// @brief DOCME
+	/// @param subType=_T(Ó) 
+	///
 	SubtitlesProvider *CreateProvider(wxString subType=_T("")) { return new LibassSubtitlesProvider(); }
 };
 
 #endif
+
 

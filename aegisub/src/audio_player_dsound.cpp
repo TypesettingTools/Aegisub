@@ -48,8 +48,9 @@
 #include "audio_player_dsound.h"
 
 
-///////////////
-// Constructor
+
+/// @brief Constructor 
+///
 DirectSoundPlayer::DirectSoundPlayer() {
 	playing = false;
 	volume = 1.0f;
@@ -64,15 +65,17 @@ DirectSoundPlayer::DirectSoundPlayer() {
 }
 
 
-//////////////
-// Destructor
+
+/// @brief Destructor 
+///
 DirectSoundPlayer::~DirectSoundPlayer() {
 	CloseStream();
 }
 
 
-///////////////
-// Open stream
+
+/// @brief Open stream 
+///
 void DirectSoundPlayer::OpenStream() {
 	// Get provider
 	AudioProvider *provider = GetProvider();
@@ -123,8 +126,9 @@ void DirectSoundPlayer::OpenStream() {
 }
 
 
-////////////////
-// Close stream
+
+/// @brief Close stream 
+///
 void DirectSoundPlayer::CloseStream() {
 	// Stop it
 	Stop();
@@ -143,8 +147,11 @@ void DirectSoundPlayer::CloseStream() {
 }
 
 
-///////////////
-// Fill buffer
+
+/// @brief Fill buffer 
+/// @param fill 
+/// @return 
+///
 bool DirectSoundPlayer::FillBuffer(bool fill) {
 	if (playPos >= endPos) return false;
 
@@ -231,8 +238,11 @@ RetryLock:
 }
 
 
-////////
-// Play
+
+/// @brief Play 
+/// @param start 
+/// @param count 
+///
 void DirectSoundPlayer::Play(int64_t start,int64_t count) {
 	// Make sure that it's stopped
 	Stop();
@@ -272,8 +282,10 @@ void DirectSoundPlayer::Play(int64_t start,int64_t count) {
 }
 
 
-////////
-// Stop
+
+/// @brief Stop 
+/// @param timerToo 
+///
 void DirectSoundPlayer::Stop(bool timerToo) {
 	// Stop the thread
 	if (thread) {
@@ -302,23 +314,29 @@ void DirectSoundPlayer::Stop(bool timerToo) {
 }
 
 
-///////////
-// Set end
+
+/// @brief Set end 
+/// @param pos 
+///
 void DirectSoundPlayer::SetEndPosition(int64_t pos) {
 	if (playing) endPos = pos;
 }
 
 
-////////////////////////
-// Set current position
+
+/// @brief Set current position 
+/// @param pos 
+///
 void DirectSoundPlayer::SetCurrentPosition(int64_t pos) {
 	startPos = playPos = pos;
 	startTime = GetTickCount();
 }
 
 
-////////////////////////
-// Get current position
+
+/// @brief Get current position 
+/// @return 
+///
 int64_t DirectSoundPlayer::GetCurrentPosition() {
 	// Check if buffer is loaded
 	if (!buffer || !playing) return 0;
@@ -331,23 +349,28 @@ int64_t DirectSoundPlayer::GetCurrentPosition() {
 }
 
 
-//////////////////////
-// Thread constructor
+
+/// @brief Thread constructor 
+/// @param par 
+///
 DirectSoundPlayerThread::DirectSoundPlayerThread(DirectSoundPlayer *par) : wxThread(wxTHREAD_JOINABLE) {
 	parent = par;
 	stopnotify = CreateEvent(NULL, true, false, NULL);
 }
 
 
-/////////////////////
-// Thread destructor
+
+/// @brief Thread destructor 
+///
 DirectSoundPlayerThread::~DirectSoundPlayerThread() {
 	CloseHandle(stopnotify);
 }
 
 
-//////////////////////
-// Thread entry point
+
+/// @brief Thread entry point 
+/// @return 
+///
 wxThread::ExitCode DirectSoundPlayerThread::Entry() {
 	CoInitialize(0);
 
@@ -396,12 +419,14 @@ wxThread::ExitCode DirectSoundPlayerThread::Entry() {
 }
 
 
-////////////////////////
-// Stop playback thread
+
+/// @brief Stop playback thread 
+///
 void DirectSoundPlayerThread::Stop() {
 	// Increase the stopnotify by one, causing a wait for it to succeed
 	SetEvent(stopnotify);
 }
 
 #endif // WITH_DIRECTSOUND
+
 

@@ -42,12 +42,20 @@
 // (yes, really)
 // With cstdio it's at least possible to work around the problem...
 #ifdef _MSC_VER
+
+/// DOCME
 #define fseeko _fseeki64
+
+/// DOCME
 #define ftello _ftelli64
 #endif
 
 
 
+
+/// @brief DOCME
+/// @param filename 
+///
 YUV4MPEGVideoProvider::YUV4MPEGVideoProvider(wxString filename) {
 	sf			= NULL;
 	w			= 0;
@@ -78,11 +86,18 @@ YUV4MPEGVideoProvider::YUV4MPEGVideoProvider(wxString filename) {
 }
 
 
+
+/// @brief DOCME
+///
 YUV4MPEGVideoProvider::~YUV4MPEGVideoProvider() {
 	Close();
 }
 
 
+
+/// @brief DOCME
+/// @param _filename 
+///
 void YUV4MPEGVideoProvider::LoadVideo(const wxString _filename) {
 	Close();
 
@@ -134,6 +149,9 @@ void YUV4MPEGVideoProvider::LoadVideo(const wxString _filename) {
 }
 
 
+
+/// @brief DOCME
+///
 void YUV4MPEGVideoProvider::Close() {
 	seek_table.clear();
 	if (sf)
@@ -142,7 +160,10 @@ void YUV4MPEGVideoProvider::Close() {
 }
 
 
-// verify that the file is actually a YUV4MPEG file
+
+/// @brief verify that the file is actually a YUV4MPEG file
+/// @return 
+///
 void YUV4MPEGVideoProvider::CheckFileFormat() {
 	char buf[10];
 	if (fread(buf, 10, 1, sf) != 1)
@@ -154,7 +175,12 @@ void YUV4MPEGVideoProvider::CheckFileFormat() {
 }
 
 
-// read a frame or file header and return a list of its parameters
+
+/// @brief read a frame or file header and return a list of its parameters
+/// @param startpos  
+/// @param reset_pos 
+/// @return 
+///
 std::vector<wxString> YUV4MPEGVideoProvider::ReadHeader(int64_t startpos, bool reset_pos) {
 	int64_t oldpos = ftello(sf);
 	std::vector<wxString> tags;
@@ -204,7 +230,10 @@ std::vector<wxString> YUV4MPEGVideoProvider::ReadHeader(int64_t startpos, bool r
 }
 
 
-// parse a file header and set file properties
+
+/// @brief parse a file header and set file properties
+/// @param tags 
+///
 void YUV4MPEGVideoProvider::ParseFileHeader(const std::vector<wxString>& tags) {
 	if (tags.size() <= 1)
 		throw wxString(_T("ParseFileHeader: contentless header"));
@@ -296,7 +325,11 @@ void YUV4MPEGVideoProvider::ParseFileHeader(const std::vector<wxString>& tags) {
 }
 
 
-// parse a frame header (currently unused)
+
+/// @brief parse a frame header (currently unused)
+/// @param tags 
+/// @return 
+///
 YUV4MPEGVideoProvider::Y4M_FrameFlags YUV4MPEGVideoProvider::ParseFrameHeader(const std::vector<wxString>& tags) {
 	if (tags.front().Cmp(_("FRAME")))
 		throw wxString(_T("ParseFrameHeader: malformed frame header (bad magic)"));
@@ -307,7 +340,10 @@ YUV4MPEGVideoProvider::Y4M_FrameFlags YUV4MPEGVideoProvider::ParseFrameHeader(co
 }
 
 
-// index the file, i.e. find all frames and their flags
+
+/// @brief index the file, i.e. find all frames and their flags
+/// @return 
+///
 int YUV4MPEGVideoProvider::IndexFile() {
 	int framecount = 0;
 	int64_t curpos = ftello(sf);
@@ -347,6 +383,11 @@ int YUV4MPEGVideoProvider::IndexFile() {
 }
 
 
+
+/// @brief DOCME
+/// @param n 
+/// @return 
+///
 const AegiVideoFrame YUV4MPEGVideoProvider::GetFrame(int n) {
 	// don't try to seek to insane places
 	if (n < 0)
@@ -407,26 +448,44 @@ const AegiVideoFrame YUV4MPEGVideoProvider::GetFrame(int n) {
 
 
 
-///////////////
-// Utility functions
+
+/// @brief Utility functions 
+/// @return 
+///
 int YUV4MPEGVideoProvider::GetWidth() {
 	return w;
 }
 
+
+/// @brief DOCME
+/// @return 
+///
 int YUV4MPEGVideoProvider::GetHeight() {
 	return h;
 }
 
+
+/// @brief DOCME
+/// @return 
+///
 int YUV4MPEGVideoProvider::GetFrameCount() {
 	return num_frames;
 }
 
+
+/// @brief DOCME
+/// @return 
+///
 int YUV4MPEGVideoProvider::GetPosition() {
 	return cur_fn;
 }
 
+
+/// @brief DOCME
+///
 double YUV4MPEGVideoProvider::GetFPS() {
 	return double(fps_rat.num) / double(fps_rat.den);
 }
+
 
 

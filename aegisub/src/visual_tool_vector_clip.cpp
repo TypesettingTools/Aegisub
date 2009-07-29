@@ -48,20 +48,41 @@
 ///////
 // IDs
 enum {
+
+	/// DOCME
 	BUTTON_DRAG = VISUAL_SUB_TOOL_START,
+
+	/// DOCME
 	BUTTON_LINE,
+
+	/// DOCME
 	BUTTON_BICUBIC,
+
+	/// DOCME
 	BUTTON_CONVERT,
+
+	/// DOCME
 	BUTTON_INSERT,
+
+	/// DOCME
 	BUTTON_REMOVE,
+
+	/// DOCME
 	BUTTON_FREEHAND,
+
+	/// DOCME
 	BUTTON_FREEHAND_SMOOTH,
+
+	/// DOCME
 	BUTTON_LAST		// Leave this at the end and don't use it
 };
 
 
-///////////////
-// Constructor
+
+/// @brief Constructor 
+/// @param parent   
+/// @param _toolBar 
+///
 VisualToolVectorClip::VisualToolVectorClip(VideoDisplay *parent,wxToolBar *_toolBar)
 : VisualTool(parent)
 {
@@ -90,15 +111,19 @@ VisualToolVectorClip::VisualToolVectorClip(VideoDisplay *parent,wxToolBar *_tool
 }
 
 
-////////////////////
-// Sub-tool pressed
+
+/// @brief Sub-tool pressed 
+/// @param event 
+///
 void VisualToolVectorClip::OnSubTool(wxCommandEvent &event) {
 	SetMode(event.GetId() - BUTTON_DRAG);
 }
 
 
-////////////
-// Set mode
+
+/// @brief Set mode 
+/// @param _mode 
+///
 void VisualToolVectorClip::SetMode(int _mode) {
 	// Make sure clicked is checked and everything else isn't. (Yes, this is radio behavior, but the separators won't let me use it)
 	for (int i=BUTTON_DRAG;i<BUTTON_LAST;i++) {
@@ -108,15 +133,18 @@ void VisualToolVectorClip::SetMode(int _mode) {
 }
 
 
-//////////
-// Update
+
+/// @brief Update 
+///
 void VisualToolVectorClip::Update() {
 	GetParent()->Render();
 }
 
 
-////////
-// Draw
+
+/// @brief Draw 
+/// @return 
+///
 void VisualToolVectorClip::Draw() {
 	// Get line
 	AssDialogue *line = GetActiveDialogueLine();
@@ -200,8 +228,9 @@ void VisualToolVectorClip::Draw() {
 }
 
 
-/////////////////////////
-// Populate feature list
+
+/// @brief Populate feature list 
+///
 void VisualToolVectorClip::PopulateFeatureList() {
 	// Clear
 	features.clear();
@@ -262,22 +291,28 @@ void VisualToolVectorClip::PopulateFeatureList() {
 }
 
 
-/////////////
-// Can drag?
+
+/// @brief Can drag? 
+/// @return 
+///
 bool VisualToolVectorClip::DragEnabled() {
 	return mode <= 4;
 }
 
 
-//////////
-// Update
+
+/// @brief Update 
+/// @param feature 
+///
 void VisualToolVectorClip::UpdateDrag(VisualDraggableFeature &feature) {
 	spline.MovePoint(feature.value,feature.value2,wxPoint(feature.x,feature.y));
 }
 
 
-//////////
-// Commit
+
+/// @brief Commit 
+/// @param feature 
+///
 void VisualToolVectorClip::CommitDrag(VisualDraggableFeature &feature) {
 	if (inverse)
 		SetOverride(_T("\\iclip"),_T("(") + spline.EncodeToASS() + _T(")"));
@@ -286,8 +321,11 @@ void VisualToolVectorClip::CommitDrag(VisualDraggableFeature &feature) {
 }
 
 
-/////////////////////
-// Clicked a feature
+
+/// @brief Clicked a feature 
+/// @param feature 
+/// @return 
+///
 void VisualToolVectorClip::ClickedFeature(VisualDraggableFeature &feature) {
 	// Delete a control point
 	if (mode == 5) {
@@ -316,15 +354,19 @@ void VisualToolVectorClip::ClickedFeature(VisualDraggableFeature &feature) {
 }
 
 
-/////////////
-// Can hold?
+
+/// @brief Can hold? 
+/// @return 
+///
 bool VisualToolVectorClip::HoldEnabled() {
 	return mode <= 4 || mode == 6 || mode == 7;
 }
 
 
-///////////////////
-// Initialize hold
+
+/// @brief Initialize hold 
+/// @return 
+///
 void VisualToolVectorClip::InitializeHold() {
 	// Insert line/bicubic
 	if (mode == 1 || mode == 2) {
@@ -418,8 +460,10 @@ void VisualToolVectorClip::InitializeHold() {
 }
 
 
-///////////////
-// Update hold
+
+/// @brief Update hold 
+/// @return 
+///
 void VisualToolVectorClip::UpdateHold() {
 	// Insert line
 	if (mode == 1) {
@@ -468,8 +512,9 @@ void VisualToolVectorClip::UpdateHold() {
 }
 
 
-///////////////
-// Commit hold
+
+/// @brief Commit hold 
+///
 void VisualToolVectorClip::CommitHold() {
 	// Smooth spline
 	if (!holding && mode == 7) spline.Smooth();
@@ -487,8 +532,9 @@ void VisualToolVectorClip::CommitHold() {
 }
 
 
-///////////
-// Refresh
+
+/// @brief Refresh 
+///
 void VisualToolVectorClip::DoRefresh() {
 	if (!dragging) {
 		// Get line
@@ -504,4 +550,5 @@ void VisualToolVectorClip::DoRefresh() {
 		PopulateFeatureList();
 	}
 }
+
 

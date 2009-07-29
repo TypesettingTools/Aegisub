@@ -48,8 +48,10 @@
 #endif
 
 
-/////////////////////
-// Get keyframe list
+
+/// @brief Get keyframe list 
+/// @param filename 
+///
 wxArrayInt VFWWrapper::GetKeyFrames(wxString filename) {
 	wxArrayInt frames;
 
@@ -121,4 +123,5 @@ wxArrayInt VFWWrapper::GetKeyFrames(wxString filename) {
 
 	return frames;
 }
+
 

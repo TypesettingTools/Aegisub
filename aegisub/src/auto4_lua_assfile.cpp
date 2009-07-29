@@ -56,10 +56,16 @@
 #include <assert.h>
 #include <algorithm>
 
+
+/// DOCME
 namespace Automation4 {
 
 	// LuaAssFile
 
+
+	/// @brief DOCME
+	/// @return 
+	///
 	void LuaAssFile::CheckAllowModify()
 	{
 		if (can_modify)
@@ -68,6 +74,11 @@ namespace Automation4 {
 		lua_error(L);
 	}
 
+
+	/// @brief DOCME
+	/// @param L 
+	/// @param e 
+	///
 	void LuaAssFile::AssEntryToLua(lua_State *L, AssEntry *e)
 	{
 		lua_newtable(L);
@@ -231,6 +242,11 @@ namespace Automation4 {
 		lua_setfield(L, -2, "class");
 	}
 
+
+	/// @brief DOCME
+	/// @param L 
+	/// @return 
+	///
 	AssEntry *LuaAssFile::LuaToAssEntry(lua_State *L)
 	{
 		// assume an assentry table is on the top of the stack
@@ -254,6 +270,8 @@ namespace Automation4 {
 
 		AssEntry *result;
 
+
+/// DOCME
 #define GETSTRING(varname, fieldname, lineclass)		\
 	lua_getfield(L, -1, fieldname);						\
 	if (!lua_isstring(L, -1)) {							\
@@ -263,6 +281,8 @@ namespace Automation4 {
 	}													\
 	wxString varname (lua_tostring(L, -1), wxConvUTF8);	\
 	lua_pop(L, 1);
+
+/// DOCME
 #define GETFLOAT(varname, fieldname, lineclass)			\
 	lua_getfield(L, -1, fieldname);						\
 	if (!lua_isnumber(L, -1)) {							\
@@ -272,6 +292,8 @@ namespace Automation4 {
 	}													\
 	float varname = lua_tonumber(L, -1);				\
 	lua_pop(L, 1);
+
+/// DOCME
 #define GETINT(varname, fieldname, lineclass)			\
 	lua_getfield(L, -1, fieldname);						\
 	if (!lua_isnumber(L, -1)) {							\
@@ -281,6 +303,8 @@ namespace Automation4 {
 	}													\
 	int varname = lua_tointeger(L, -1);					\
 	lua_pop(L, 1);
+
+/// DOCME
 #define GETBOOL(varname, fieldname, lineclass)			\
 	lua_getfield(L, -1, fieldname);						\
 	if (!lua_isboolean(L, -1)) {						\
@@ -418,15 +442,27 @@ namespace Automation4 {
 			return 0;
 		}
 
+
+/// DOCME
 #undef GETSTRING
+
+/// DOCME
 #undef GETFLOAT
+
+/// DOCME
 #undef GETINT
+
+/// DOCME
 #undef GETBOOL
 
 		//lua_pop(L, 1); // the function shouldn't eat the table it converted
 		return result;
 	}
 
+
+	/// @brief DOCME
+	/// @param n 
+	///
 	void LuaAssFile::GetAssEntry(int n)
 	{
 		entryIter e;
@@ -460,6 +496,11 @@ namespace Automation4 {
 		}
 	}
 
+
+	/// @brief DOCME
+	/// @param L 
+	/// @return 
+	///
 	int LuaAssFile::ObjectIndexRead(lua_State *L)
 	{
 		LuaAssFile *laf = GetObjPointer(L, 1);
@@ -538,6 +579,11 @@ namespace Automation4 {
 		return 0;
 	}
 
+
+	/// @brief DOCME
+	/// @param L 
+	/// @return 
+	///
 	int LuaAssFile::ObjectIndexWrite(lua_State *L)
 	{
 		// instead of implementing everything twice, just call the other modification-functions from here
@@ -593,6 +639,11 @@ namespace Automation4 {
 		}
 	}
 
+
+	/// @brief DOCME
+	/// @param L 
+	/// @return 
+	///
 	int LuaAssFile::ObjectGetLen(lua_State *L)
 	{
 		LuaAssFile *laf = GetObjPointer(L, 1);
@@ -600,6 +651,11 @@ namespace Automation4 {
 		return 1;
 	}
 
+
+	/// @brief DOCME
+	/// @param L 
+	/// @return 
+	///
 	int LuaAssFile::ObjectDelete(lua_State *L)
 	{
 		LuaAssFile *laf = GetObjPointer(L, lua_upvalueindex(1));
@@ -648,6 +704,11 @@ namespace Automation4 {
 		return 0;
 	}
 
+
+	/// @brief DOCME
+	/// @param L 
+	/// @return 
+	///
 	int LuaAssFile::ObjectDeleteRange(lua_State *L)
 	{
 		LuaAssFile *laf = GetObjPointer(L, lua_upvalueindex(1));
@@ -687,6 +748,11 @@ namespace Automation4 {
 		return 0;
 	}
 
+
+	/// @brief DOCME
+	/// @param L 
+	/// @return 
+	///
 	int LuaAssFile::ObjectAppend(lua_State *L)
 	{
 		LuaAssFile *laf = GetObjPointer(L, lua_upvalueindex(1));
@@ -709,6 +775,11 @@ namespace Automation4 {
 		return 0;
 	}
 
+
+	/// @brief DOCME
+	/// @param L 
+	/// @return 
+	///
 	int LuaAssFile::ObjectInsert(lua_State *L)
 	{
 		LuaAssFile *laf = GetObjPointer(L, lua_upvalueindex(1));
@@ -736,6 +807,11 @@ namespace Automation4 {
 		return 0;
 	}
 
+
+	/// @brief DOCME
+	/// @param L 
+	/// @return 
+	///
 	int LuaAssFile::ObjectGarbageCollect(lua_State *L)
 	{
 		LuaAssFile *laf = GetObjPointer(L, 1);
@@ -744,6 +820,11 @@ namespace Automation4 {
 		return 0;
 	}
 
+
+	/// @brief DOCME
+	/// @param L 
+	/// @return 
+	///
 	int LuaAssFile::LuaParseTagData(lua_State *L)
 	{
 		lua_newtable(L);
@@ -751,6 +832,11 @@ namespace Automation4 {
 		return 1;
 	}
 
+
+	/// @brief DOCME
+	/// @param L 
+	/// @return 
+	///
 	int LuaAssFile::LuaUnparseTagData(lua_State *L)
 	{
 		lua_pushstring(L, "");
@@ -758,6 +844,11 @@ namespace Automation4 {
 		return 1;
 	}
 
+
+	/// @brief DOCME
+	/// @param L 
+	/// @return 
+	///
 	int LuaAssFile::LuaParseKaraokeData(lua_State *L)
 	{
 		AssEntry *e = LuaToAssEntry(L);
@@ -887,6 +978,11 @@ namespace Automation4 {
 		return 1;
 	}
 
+
+	/// @brief DOCME
+	/// @param L 
+	/// @return 
+	///
 	int LuaAssFile::LuaSetUndoPoint(lua_State *L)
 	{
 		LuaAssFile *laf = GetObjPointer(L, lua_upvalueindex(1));
@@ -907,6 +1003,12 @@ namespace Automation4 {
 		return 0;
 	}
 
+
+	/// @brief DOCME
+	/// @param L   
+	/// @param idx 
+	/// @return 
+	///
 	LuaAssFile *LuaAssFile::GetObjPointer(lua_State *L, int idx)
 	{
 		assert(lua_type(L, idx) == LUA_TUSERDATA);
@@ -914,10 +1016,20 @@ namespace Automation4 {
 		return *((LuaAssFile**)ud);
 	}
 
+
+	/// @brief DOCME
+	///
 	LuaAssFile::~LuaAssFile()
 	{
 	}
 
+
+	/// @brief DOCME
+	/// @param _L            
+	/// @param _ass          
+	/// @param _can_modify   
+	/// @param _can_set_undo 
+	///
 	LuaAssFile::LuaAssFile(lua_State *_L, AssFile *_ass, bool _can_modify, bool _can_set_undo)
 		: ass(_ass)
 		, L(_L)
@@ -969,5 +1081,6 @@ namespace Automation4 {
 };
 
 #endif // WITH_AUTO4_LUA
+
 
 

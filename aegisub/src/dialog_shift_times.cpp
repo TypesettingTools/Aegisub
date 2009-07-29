@@ -61,8 +61,11 @@
 
 
 
-///////////////
-// Constructor
+
+/// @brief Constructor 
+/// @param parent 
+/// @param _grid  
+///
 DialogShiftTimes::DialogShiftTimes (wxWindow *parent,SubtitlesGrid *_grid)
 : wxDialog(parent, -1, _("Shift Times"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE, _T("JumpTo"))
 {
@@ -188,22 +191,29 @@ BEGIN_EVENT_TABLE(DialogShiftTimes, wxDialog)
 END_EVENT_TABLE()
 
 
-/////////////////
-// Clear History
+
+/// @brief Clear History 
+/// @param event 
+///
 void DialogShiftTimes::OnClear(wxCommandEvent &event) {
 	wxRemoveFile(StandardPaths::DecodePath(_T("?user/shift_history.txt")));
 	History->Clear();
 }
 
-//////////
-// Cancel
+
+/// @brief Cancel 
+/// @param event 
+///
 void DialogShiftTimes::OnClose(wxCommandEvent &event) {
 	EndModal(0);
 }
 
 
-/////////
-// Apply
+
+/// @brief Apply 
+/// @param event 
+/// @return 
+///
 void DialogShiftTimes::OnOK(wxCommandEvent &event) {
 	// General values
 	int type = TimesChoice->GetSelection();
@@ -308,8 +318,10 @@ void DialogShiftTimes::OnOK(wxCommandEvent &event) {
 }
 
 
-///////////////
-// Set to time
+
+/// @brief Set to time 
+/// @param event 
+///
 void DialogShiftTimes::OnRadioTime(wxCommandEvent &event) {
 	ShiftTime->Enable(true);
 	ShiftFrame->Enable(false);
@@ -317,8 +329,10 @@ void DialogShiftTimes::OnRadioTime(wxCommandEvent &event) {
 }
 
 
-////////////////
-// Set to frame
+
+/// @brief Set to frame 
+/// @param event 
+///
 void DialogShiftTimes::OnRadioFrame(wxCommandEvent &event) {
 	ShiftTime->Enable(false);
 	ShiftFrame->Enable(true);
@@ -326,8 +340,11 @@ void DialogShiftTimes::OnRadioFrame(wxCommandEvent &event) {
 }
 
 
-/////////////////////////////
-// Appends a line to history
+
+/// @brief Appends a line to history 
+/// @param text 
+/// @return 
+///
 void DialogShiftTimes::AppendToHistory(wxString text) {
 	// Open file
 	if (HistoryFile.IsEmpty()) return;
@@ -346,8 +363,10 @@ void DialogShiftTimes::AppendToHistory(wxString text) {
 }
 
 
-///////////////////////////
-// Loads history from disk
+
+/// @brief Loads history from disk 
+/// @param filename 
+///
 void DialogShiftTimes::LoadHistory(wxString filename) {
 	// Open file
 	using namespace std;
@@ -377,4 +396,5 @@ void DialogShiftTimes::LoadHistory(wxString filename) {
 	// Close
 	file.close();
 }
+
 

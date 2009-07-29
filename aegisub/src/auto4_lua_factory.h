@@ -37,13 +37,22 @@
 #pragma once
 
 #ifndef _AUTO4_LUA_FACTORY_H
+
+/// DOCME
 #define _AUTO4_LUA_FACTORY_H
 
 #include "auto4_base.h"
 
+
+/// DOCME
 namespace Automation4 {
 
-	// Factory class for Lua scripts
+
+	/// DOCME
+	/// @class LuaScriptFactory
+	/// @brief DOCME
+	///
+	/// DOCME
 	class LuaScriptFactory : public ScriptFactory {
 	public:
 		LuaScriptFactory();
@@ -55,4 +64,5 @@ namespace Automation4 {
 };
 
 #endif
+
 

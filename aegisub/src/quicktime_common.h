@@ -46,6 +46,8 @@
 
 // QT stuff
 #ifdef _MSC_VER
+
+/// DOCME
 #define _STDINT_H				// avoid conflicts between MSVC's stdint.h and QT's stdint.h
 #pragma warning(disable: 4004)	// get MSVC to shut up about a macro redefinition in QT's ConditionalMacros.h
 #endif
@@ -61,6 +63,12 @@ extern "C" {
 }
 
 
+
+/// DOCME
+/// @class QuickTimeProvider
+/// @brief DOCME
+///
+/// DOCME
 class QuickTimeProvider {
 public:
 	void InitQuickTime();
@@ -72,12 +80,20 @@ public:
 	void QTCheckError(OSErr err, wxString errmsg);
 	void QTCheckError(OSStatus err, wxString errmsg);
 
+
+	/// DOCME
 	static int qt_initcount;
+
+	/// DOCME
 	static GWorldPtr default_gworld;
 
+
+	/// @brief DOCME
+	///
 	virtual ~QuickTimeProvider() {};
 };
 
 #endif /* WITH_QUICKTIME */
+
 
 

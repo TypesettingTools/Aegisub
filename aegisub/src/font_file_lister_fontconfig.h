@@ -45,12 +45,20 @@
 #include "font_file_lister.h"
 
 
-/////////////////////////////
-// Freetype Font file lister
+
+/// DOCME
+/// @class FontConfigFontFileLister
+/// @brief DOCME
+///
+/// DOCME
 class FontConfigFontFileLister : public FontFileLister {
 	friend class FontFileLister;
 private:
+
+	/// DOCME
 	FcConfig *fontconf;
+
+	/// DOCME
 	FcPattern *aux;
 	
 	FontConfigFontFileLister();
@@ -59,4 +67,5 @@ private:
 	void DoInitialize();
 	void DoClearData();
 };
+
 

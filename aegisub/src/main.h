@@ -36,6 +36,8 @@
 
 
 #ifndef MAIN_H
+
+/// DOCME
 #define MAIN_H
 
 
@@ -53,25 +55,43 @@
 // Prototypes
 class FrameMain;
 class PluginManager;
+
+/// DOCME
 namespace Automation4 { class AutoloadScriptManager; }
 
 
-////////////////////////////////
-// Application class definition
+
+/// DOCME
+/// @class AegisubApp
+/// @brief DOCME
+///
+/// DOCME
 class AegisubApp: public wxApp {
 private:
+
+	/// DOCME
 	PluginManager *plugins;
 
 	void OnMouseWheel(wxMouseEvent &event);
 	void OnKey(wxKeyEvent &key);
 
 public:
+
+	/// DOCME
 	AegisubLocale locale;
+
+	/// DOCME
 	FrameMain *frame;
 #ifdef WITH_AUTOMATION
+
+	/// DOCME
 	Automation4::AutoloadScriptManager *global_scripts;
 #endif
 
+
+	/// @brief DOCME
+	/// @return 
+	///
 	static AegisubApp* Get() { return (AegisubApp*) wxTheApp; }
 	static void OpenURL(wxString url);
 
@@ -102,9 +122,19 @@ DECLARE_APP(AegisubApp)
 ////////////////
 // Stack walker
 #if wxUSE_STACKWALKER == 1
+
+/// DOCME
+/// @class StackWalker
+/// @brief DOCME
+///
+/// DOCME
 class StackWalker: public wxStackWalker {
 private:
+
+	/// DOCME
 	std::ofstream file;
+
+	/// DOCME
 	int formatLen;
 
 public:
@@ -116,4 +146,5 @@ public:
 
 
 #endif
+
 

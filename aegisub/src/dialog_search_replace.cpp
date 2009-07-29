@@ -53,8 +53,12 @@
 #include "main.h"
 
 
-///////////////
-// Constructor
+
+/// @brief Constructor 
+/// @param parent      
+/// @param _hasReplace 
+/// @param name        
+///
 DialogSearchReplace::DialogSearchReplace (wxWindow *parent,bool _hasReplace,wxString name)
 : wxDialog(parent, -1, name, wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE, _T("SearchReplace"))
 {
@@ -139,16 +143,18 @@ DialogSearchReplace::DialogSearchReplace (wxWindow *parent,bool _hasReplace,wxSt
 }
 
 
-//////////////
-// Destructor
+
+/// @brief Destructor 
+///
 DialogSearchReplace::~DialogSearchReplace() {
 	// Save options
 	UpdateSettings();
 }
 
 
-/////////////////
-// Update search
+
+/// @brief Update search 
+///
 void DialogSearchReplace::UpdateSettings() {
 	Search.isReg = CheckRegExp->IsChecked() && CheckRegExp->IsEnabled();
 	Search.matchCase = CheckMatchCase->IsChecked();
@@ -174,8 +180,10 @@ BEGIN_EVENT_TABLE(DialogSearchReplace,wxDialog)
 END_EVENT_TABLE()
 
 	
-/////////
-// Close
+
+/// @brief Close 
+/// @param event 
+///
 void DialogSearchReplace::OnClose (wxCommandEvent &event) {
 	Search.OnDialogClose();
 	// Just hide
@@ -183,8 +191,10 @@ void DialogSearchReplace::OnClose (wxCommandEvent &event) {
 }
 
 
-///////
-// Key
+
+/// @brief Key 
+/// @param event 
+///
 void DialogSearchReplace::OnKeyDown (wxKeyEvent &event) {
 	//if (event.GetKeyCode() == WXK_ESCAPE) {
 	//	Search.OnDialogClose();
@@ -195,8 +205,11 @@ void DialogSearchReplace::OnKeyDown (wxKeyEvent &event) {
 }
 
 
-///////////////////
-// Find or replace
+
+/// @brief Find or replace 
+/// @param mode 
+/// @return 
+///
 void DialogSearchReplace::FindReplace(int mode) {
 	// Check mode
 	if (mode < 0 || mode > 2) return;
@@ -239,29 +252,36 @@ void DialogSearchReplace::FindReplace(int mode) {
 }
 
 
-/////////////
-// Find next
+
+/// @brief Find next 
+/// @param event 
+///
 void DialogSearchReplace::OnFindNext (wxCommandEvent &event) {
 	FindReplace(0);
 }
 
 
-////////////////
-// Replace next
+
+/// @brief Replace next 
+/// @param event 
+///
 void DialogSearchReplace::OnReplaceNext (wxCommandEvent &event) {
 	FindReplace(1);
 }
 
 
-///////////////
-// Replace all
+
+/// @brief Replace all 
+/// @param event 
+///
 void DialogSearchReplace::OnReplaceAll (wxCommandEvent &event) {
 	FindReplace(2);
 }
 
 
-//////////////////////////
-// Update drop down boxes
+
+/// @brief Update drop down boxes 
+///
 void DialogSearchReplace::UpdateDropDowns() {
 	// Find
 	FindEdit->Freeze();
@@ -281,32 +301,44 @@ void DialogSearchReplace::UpdateDropDowns() {
 }
 
 
+
+/// @brief DOCME
+/// @param event 
+///
 void DialogSearchReplace::OnSetFocus (wxFocusEvent &event) {
 	Search.hasFocus = true;
 }
 
+
+/// @brief DOCME
+/// @param event 
+///
 void DialogSearchReplace::OnKillFocus (wxFocusEvent &event) {
 	Search.hasFocus = false;
 }
 
 
-/////////////////////// SearchReplaceEngine ///////////////////////
-///////////////
-// Constructor
+
+/// @brief Constructor  SearchReplaceEngine ///////////////////////
+///
 SearchReplaceEngine::SearchReplaceEngine () {
 	CanContinue = false;
 }
 
 
-//////////////////////
-// Find next instance
+
+/// @brief Find next instance 
+///
 void SearchReplaceEngine::FindNext() {
 	ReplaceNext(false);
 }
 
 
-////////////////////////////////
-// Find & Replace next instance
+
+/// @brief Find & Replace next instance 
+/// @param DoReplace 
+/// @return 
+///
 void SearchReplaceEngine::ReplaceNext(bool DoReplace) {
 	// Check if it's OK to go on
 	if (!CanContinue) {
@@ -440,8 +472,9 @@ void SearchReplaceEngine::ReplaceNext(bool DoReplace) {
 }
 
 
-/////////////////////////
-// Replace all instances
+
+/// @brief Replace all instances 
+///
 void SearchReplaceEngine::ReplaceAll() {
 	// Setup
 	wxString *Text;
@@ -536,8 +569,9 @@ void SearchReplaceEngine::ReplaceAll() {
 }
 
 
-////////////////////////
-// Search dialog opened
+
+/// @brief Search dialog opened 
+///
 void SearchReplaceEngine::OnDialogOpen() {
 	// Set curline
 	wxArrayInt sels = grid->GetSelection();
@@ -553,15 +587,19 @@ void SearchReplaceEngine::OnDialogOpen() {
 }
 
 
-////////////////////////
-// Search dialog closed
+
+/// @brief Search dialog closed 
+///
 void SearchReplaceEngine::OnDialogClose() {
 	if (Modified) grid->CommitChanges();
 }
 
 
-///////////////
-// Open dialog
+
+/// @brief Open dialog 
+/// @param replace 
+/// @return 
+///
 void SearchReplaceEngine::OpenDialog (bool replace) {
 	static DialogSearchReplace *diag = NULL;
 	wxString title = replace? _("Replace") : _("Find");
@@ -586,8 +624,12 @@ void SearchReplaceEngine::OpenDialog (bool replace) {
 }
 
 
-////////////////////
-// Get text pointer
+
+/// @brief Get text pointer 
+/// @param n     
+/// @param field 
+/// @return 
+///
 wxString *SearchReplaceEngine::GetText(int n,int field) {
 	AssDialogue *cur = grid->GetDialogue(n);
 	if (field == 0) return &cur->Text;
@@ -598,7 +640,8 @@ wxString *SearchReplaceEngine::GetText(int n,int field) {
 }
 
 
-///////////////////
-// Global instance
+
+/// DOCME
 SearchReplaceEngine Search;
+
 

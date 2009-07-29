@@ -66,6 +66,8 @@
 #include <assert.h>
 #include <algorithm>
 
+
+/// DOCME
 namespace Automation4 {
 
 	// LuaStackcheck
@@ -104,10 +106,26 @@ namespace Automation4 {
 		~LuaStackcheck() { check_stack(0); }
 	};
 #else
+
+	/// DOCME
 	struct LuaStackcheck {
+
+		/// @brief DOCME
+		/// @param additional 
+		///
 		void check_stack(int additional) { }
+
+		/// @brief DOCME
+		///
 		void dump() { }
+
+		/// @brief DOCME
+		/// @param L 
+		///
 		LuaStackcheck(lua_State *L) { }
+
+		/// @brief DOCME
+		///
 		~LuaStackcheck() { }
 	};
 #endif
@@ -115,6 +133,10 @@ namespace Automation4 {
 
 	// LuaScript
 
+
+	/// @brief DOCME
+	/// @param filename 
+	///
 	LuaScript::LuaScript(const wxString &filename)
 		: Script(filename)
 		, L(0)
@@ -122,11 +144,17 @@ namespace Automation4 {
 		Create();
 	}
 
+
+	/// @brief DOCME
+	///
 	LuaScript::~LuaScript()
 	{
 		if (L) Destroy();
 	}
 
+
+	/// @brief DOCME
+	///
 	void LuaScript::Create()
 	{
 		Destroy();
@@ -265,6 +293,10 @@ namespace Automation4 {
 		}
 	}
 
+
+	/// @brief DOCME
+	/// @return 
+	///
 	void LuaScript::Destroy()
 	{
 		// Assume the script object is clean if there's no Lua state
@@ -284,12 +316,20 @@ namespace Automation4 {
 		loaded = false;
 	}
 
+
+	/// @brief DOCME
+	///
 	void LuaScript::Reload()
 	{
 		Destroy();
 		Create();
 	}
 
+
+	/// @brief DOCME
+	/// @param L 
+	/// @return 
+	///
 	LuaScript* LuaScript::GetScriptObject(lua_State *L)
 	{
 		lua_getfield(L, LUA_REGISTRYINDEX, "aegisub");
@@ -298,6 +338,11 @@ namespace Automation4 {
 		return (LuaScript*)ptr;
 	}
 
+
+	/// @brief DOCME
+	/// @param L 
+	/// @return 
+	///
 	int LuaScript::LuaTextExtents(lua_State *L)
 	{
 		if (!lua_istable(L, 1)) {
@@ -336,6 +381,11 @@ namespace Automation4 {
 		return 4;
 	}
 
+
+	/// @brief DOCME
+	/// @param L 
+	/// @return 
+	///
 	int LuaScript::LuaInclude(lua_State *L)
 	{
 		LuaScript *s = GetScriptObject(L);
@@ -374,6 +424,11 @@ namespace Automation4 {
 		return lua_gettop(L) - pretop;
 	}
 
+
+	/// @brief DOCME
+	/// @param L 
+	/// @return 
+	///
 	int LuaScript::LuaFrameFromMs(lua_State *L)
 	{
 		int ms = (int)lua_tonumber(L, -1);
@@ -387,6 +442,11 @@ namespace Automation4 {
 		}
 	}
 
+
+	/// @brief DOCME
+	/// @param L 
+	/// @return 
+	///
 	int LuaScript::LuaMsFromFrame(lua_State *L)
 	{
 		int frame = (int)lua_tonumber(L, -1);
@@ -400,6 +460,11 @@ namespace Automation4 {
 		}
 	}
 
+
+	/// @brief DOCME
+	/// @param L 
+	/// @return 
+	///
 	int LuaScript::LuaVideoSize(lua_State *L)
 	{
 		VideoContext *ctx = VideoContext::Get();
@@ -418,6 +483,12 @@ namespace Automation4 {
 
 	// LuaThreadedCall
 
+
+	/// @brief DOCME
+	/// @param _L        
+	/// @param _nargs    
+	/// @param _nresults 
+	///
 	LuaThreadedCall::LuaThreadedCall(lua_State *_L, int _nargs, int _nresults)
 		: wxThread(wxTHREAD_JOINABLE)
 		, L(_L)
@@ -434,6 +505,10 @@ namespace Automation4 {
 		Run();
 	}
 
+
+	/// @brief DOCME
+	/// @return 
+	///
 	wxThread::ExitCode LuaThreadedCall::Entry()
 	{
 		int result = lua_pcall(L, nargs, nresults, 0);
@@ -466,12 +541,21 @@ namespace Automation4 {
 
 	// LuaFeature
 
+
+	/// @brief DOCME
+	/// @param _L            
+	/// @param _featureclass 
+	/// @param _name         
+	///
 	LuaFeature::LuaFeature(lua_State *_L, ScriptFeatureClass _featureclass, const wxString &_name)
 		: Feature(_featureclass, _name)
 		, L(_L)
 	{
 	}
 
+
+	/// @brief DOCME
+	///
 	void LuaFeature::RegisterFeature()
 	{
 		// get the LuaScript objects
@@ -493,6 +577,10 @@ namespace Automation4 {
 		lua_pop(L, 1);
 	}
 
+
+	/// @brief DOCME
+	/// @param functionid 
+	///
 	void LuaFeature::GetFeatureFunction(int functionid)
 	{
 		// get feature table
@@ -505,6 +593,10 @@ namespace Automation4 {
 		lua_remove(L, -2);
 	}
 
+
+	/// @brief DOCME
+	/// @param ints 
+	///
 	void LuaFeature::CreateIntegerArray(const std::vector<int> &ints)
 	{
 		// create an array-style table with an integer vector in it
@@ -516,6 +608,9 @@ namespace Automation4 {
 		}
 	}
 
+
+	/// @brief DOCME
+	///
 	void LuaFeature::ThrowError()
 	{
 		wxString err(lua_tostring(L, -1), wxConvUTF8);
@@ -526,6 +621,11 @@ namespace Automation4 {
 
 	// LuaFeatureMacro
 
+
+	/// @brief DOCME
+	/// @param L 
+	/// @return 
+	///
 	int LuaFeatureMacro::LuaRegister(lua_State *L)
 	{
 		wxString _name(lua_tostring(L, 1), wxConvUTF8);
@@ -537,6 +637,12 @@ namespace Automation4 {
 		return 0;
 	}
 
+
+	/// @brief DOCME
+	/// @param _name        
+	/// @param _description 
+	/// @param _L           
+	///
 	LuaFeatureMacro::LuaFeatureMacro(const wxString &_name, const wxString &_description, lua_State *_L)
 		: Feature(SCRIPTFEATURE_MACRO, _name)
 		, FeatureMacro(_name, _description)
@@ -561,6 +667,13 @@ namespace Automation4 {
 		lua_pop(L, 1);
 	}
 
+
+	/// @brief DOCME
+	/// @param subs     
+	/// @param selected 
+	/// @param active   
+	/// @return 
+	///
 	bool LuaFeatureMacro::Validate(AssFile *subs, const std::vector<int> &selected, int active)
 	{
 		if (no_validate)
@@ -591,6 +704,14 @@ namespace Automation4 {
 		return result;
 	}
 
+
+	/// @brief DOCME
+	/// @param subs            
+	/// @param selected        
+	/// @param active          
+	/// @param progress_parent 
+	/// @return 
+	///
 	void LuaFeatureMacro::Process(AssFile *subs, std::vector<int> &selected, int active, wxWindow * const progress_parent)
 	{
 		GetFeatureFunction(1); // 1 = processing function
@@ -636,6 +757,13 @@ namespace Automation4 {
 
 	// LuaFeatureFilter
 
+
+	/// @brief DOCME
+	/// @param _name        
+	/// @param _description 
+	/// @param merit        
+	/// @param _L           
+	///
 	LuaFeatureFilter::LuaFeatureFilter(const wxString &_name, const wxString &_description, int merit, lua_State *_L)
 		: Feature(SCRIPTFEATURE_FILTER, _name)
 		, FeatureFilter(_name, _description, merit)
@@ -656,11 +784,19 @@ namespace Automation4 {
 		lua_pop(L, 1);
 	}
 
+
+	/// @brief DOCME
+	///
 	void LuaFeatureFilter::Init()
 	{
 		// Don't think there's anything to do here... (empty in auto3)
 	}
 
+
+	/// @brief DOCME
+	/// @param L 
+	/// @return 
+	///
 	int LuaFeatureFilter::LuaRegister(lua_State *L)
 	{
 		wxString _name(lua_tostring(L, 1), wxConvUTF8);
@@ -673,6 +809,11 @@ namespace Automation4 {
 		return 0;
 	}
 
+
+	/// @brief DOCME
+	/// @param subs          
+	/// @param export_dialog 
+	///
 	void LuaFeatureFilter::ProcessSubs(AssFile *subs, wxWindow *export_dialog)
 	{
 		LuaStackcheck stackcheck(L);
@@ -719,6 +860,11 @@ namespace Automation4 {
 		delete ps;
 	}
 
+
+	/// @brief DOCME
+	/// @param parent 
+	/// @return 
+	///
 	ScriptConfigDialog* LuaFeatureFilter::GenerateConfigDialog(wxWindow *parent)
 	{
 		if (!has_config)
@@ -749,6 +895,12 @@ namespace Automation4 {
 
 	// LuaProgressSink
 
+
+	/// @brief DOCME
+	/// @param _L                  
+	/// @param parent              
+	/// @param allow_config_dialog 
+	///
 	LuaProgressSink::LuaProgressSink(lua_State *_L, wxWindow *parent, bool allow_config_dialog)
 		: ProgressSink(parent)
 		, L(_L)
@@ -802,6 +954,9 @@ namespace Automation4 {
 		lua_pop(L, 2);
 	}
 
+
+	/// @brief DOCME
+	///
 	LuaProgressSink::~LuaProgressSink()
 	{
 		// remove progress reporting stuff
@@ -815,6 +970,12 @@ namespace Automation4 {
 		lua_setfield(L, LUA_REGISTRYINDEX, "progress_sink");
 	}
 
+
+	/// @brief DOCME
+	/// @param L   
+	/// @param idx 
+	/// @return 
+	///
 	LuaProgressSink* LuaProgressSink::GetObjPointer(lua_State *L, int idx)
 	{
 		assert(lua_type(L, idx) == LUA_TUSERDATA);
@@ -822,6 +983,11 @@ namespace Automation4 {
 		return *((LuaProgressSink**)ud);
 	}
 
+
+	/// @brief DOCME
+	/// @param L 
+	/// @return 
+	///
 	int LuaProgressSink::LuaSetProgress(lua_State *L)
 	{
 		LuaProgressSink *ps = GetObjPointer(L, lua_upvalueindex(1));
@@ -830,6 +996,11 @@ namespace Automation4 {
 		return 0;
 	}
 
+
+	/// @brief DOCME
+	/// @param L 
+	/// @return 
+	///
 	int LuaProgressSink::LuaSetTask(lua_State *L)
 	{
 		LuaProgressSink *ps = GetObjPointer(L, lua_upvalueindex(1));
@@ -838,6 +1009,11 @@ namespace Automation4 {
 		return 0;
 	}
 
+
+	/// @brief DOCME
+	/// @param L 
+	/// @return 
+	///
 	int LuaProgressSink::LuaSetTitle(lua_State *L)
 	{
 		LuaProgressSink *ps = GetObjPointer(L, lua_upvalueindex(1));
@@ -846,6 +1022,11 @@ namespace Automation4 {
 		return 0;
 	}
 
+
+	/// @brief DOCME
+	/// @param L 
+	/// @return 
+	///
 	int LuaProgressSink::LuaGetCancelled(lua_State *L)
 	{
 		LuaProgressSink *ps = GetObjPointer(L, lua_upvalueindex(1));
@@ -853,6 +1034,11 @@ namespace Automation4 {
 		return 1;
 	}
 
+
+	/// @brief DOCME
+	/// @param L 
+	/// @return 
+	///
 	int LuaProgressSink::LuaDebugOut(lua_State *L)
 	{
 		LuaProgressSink *ps = GetObjPointer(L, lua_upvalueindex(1));
@@ -887,6 +1073,11 @@ namespace Automation4 {
 		return 0;
 	}
 
+
+	/// @brief DOCME
+	/// @param L 
+	/// @return 
+	///
 	int LuaProgressSink::LuaDisplayDialog(lua_State *L)
 	{
 		LuaProgressSink *ps = GetObjPointer(L, lua_upvalueindex(1));
@@ -919,10 +1110,18 @@ namespace Automation4 {
 		return dlg.LuaReadBack(L);
 	}
 
-	// Factory methods
+
+	/// @brief // Factory methods
+	///
 	LuaScriptFactory::LuaScriptFactory() {}
+
+	/// @brief DOCME
+	///
 	LuaScriptFactory::~LuaScriptFactory() {}
 
+
+	/// @brief DOCME
+	///
 	void LuaScriptFactory::RegisterFactory ()
 	{
 		engine_name = _T("Lua");
@@ -930,6 +1129,10 @@ namespace Automation4 {
 		Register(this);
 	}
 
+
+	/// @brief DOCME
+	/// @param filename 
+	///
 	Script* LuaScriptFactory::Produce(const wxString &filename) const
 	{
 		// Just check if file extension is .lua
@@ -944,4 +1147,5 @@ namespace Automation4 {
 };
 
 #endif // WITH_AUTO4_LUA
+
 

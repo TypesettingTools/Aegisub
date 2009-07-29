@@ -40,9 +40,14 @@
 
 #include "auto4_lua_scriptreader.h"
 
+
+/// DOCME
 namespace Automation4 {
 
-	// LuaScriptReader
+
+	/// @brief // LuaScriptReader
+	/// @param filename 
+	///
 	LuaScriptReader::LuaScriptReader(const wxString &filename)
 	{
 #ifdef WIN32
@@ -56,6 +61,9 @@ namespace Automation4 {
 		databuf = new char[bufsize];
 	}
 
+
+	/// @brief DOCME
+	///
 	LuaScriptReader::~LuaScriptReader()
 	{
 		if (databuf)
@@ -63,6 +71,12 @@ namespace Automation4 {
 		fclose(f);
 	}
 
+
+	/// @brief DOCME
+	/// @param L    
+	/// @param data 
+	/// @param size 
+	///
 	const char* LuaScriptReader::reader_func(lua_State *L, void *data, size_t *size)
 	{
 		LuaScriptReader *self = (LuaScriptReader*)(data);
@@ -112,4 +126,5 @@ namespace Automation4 {
 };
 
 #endif // WITH_AUTO4_LUA
+
 

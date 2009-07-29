@@ -67,13 +67,19 @@
 
 
 #ifdef __WXMAC__
+
+/// DOCME
 # define AudioDisplayWindowStyle wxWANTS_CHARS
 #else
+
+/// DOCME
 # define AudioDisplayWindowStyle wxSUNKEN_BORDER | wxWANTS_CHARS
 #endif
 
-///////////////
-// Constructor
+
+/// @brief Constructor 
+/// @param parent 
+///
 AudioDisplay::AudioDisplay(wxWindow *parent)
 : wxWindow (parent, -1, wxDefaultPosition, wxSize(200,Options.AsInt(_T("Audio Display Height"))), AudioDisplayWindowStyle , _T("Audio Display"))
 {
@@ -125,8 +131,9 @@ AudioDisplay::AudioDisplay(wxWindow *parent)
 }
 
 
-//////////////
-// Destructor
+
+/// @brief Destructor 
+///
 AudioDisplay::~AudioDisplay() {
 	if (player) player->CloseStream();
 	delete provider;
@@ -148,8 +155,9 @@ AudioDisplay::~AudioDisplay() {
 }
 
 
-/////////
-// Reset
+
+/// @brief Reset 
+///
 void AudioDisplay::Reset() {
 	wxLogDebug(_T("AudioDisplay::Reset"));
 	hasSel = false;
@@ -163,8 +171,10 @@ void AudioDisplay::Reset() {
 }
 
 
-////////////////
-// Update image
+
+/// @brief Update image 
+/// @param weak 
+///
 void AudioDisplay::UpdateImage(bool weak) {
 	// Update samples
 	UpdateSamples();
@@ -177,6 +187,10 @@ void AudioDisplay::UpdateImage(bool weak) {
 	Refresh(false);
 }
 
+
+/// @brief DOCME
+/// @return 
+///
 void AudioDisplay::DoUpdateImage() {
 	// Loaded?
 	if (!loaded || !provider) return;
@@ -397,8 +411,11 @@ void AudioDisplay::DoUpdateImage() {
 }
 
 
-///////////////////////
-// Draw Inactive Lines
+
+/// @brief Draw Inactive Lines 
+/// @param dc 
+/// @return 
+///
 void AudioDisplay::DrawInactiveLines(wxDC &dc) {
 	// Check if there is anything to do
 	int shadeType = Options.AsInt(_T("Audio Inactive Lines Display Mode"));
@@ -471,8 +488,10 @@ void AudioDisplay::DrawInactiveLines(wxDC &dc) {
 }
 
 
-//////////////////
-// Draw keyframes
+
+/// @brief Draw keyframes 
+/// @param dc 
+///
 void AudioDisplay::DrawKeyframes(wxDC &dc) {
 	wxArrayInt KeyFrames = VideoContext::Get()->GetKeyFrames();
 	int nKeys = (int)KeyFrames.Count();
@@ -494,8 +513,10 @@ void AudioDisplay::DrawKeyframes(wxDC &dc) {
 }
 
 
-//////////////////
-// Draw timescale
+
+/// @brief Draw timescale 
+/// @param dc 
+///
 void AudioDisplay::DrawTimescale(wxDC &dc) {
 	// Set size
 	int timelineHeight = Options.AsBool(_T("Audio Draw Timeline")) ? 20 : 0;
@@ -559,8 +580,11 @@ void AudioDisplay::DrawTimescale(wxDC &dc) {
 }
 
 
-////////////
-// Waveform
+
+/// @brief Waveform 
+/// @param dc   
+/// @param weak 
+///
 void AudioDisplay::DrawWaveform(wxDC &dc,bool weak) {
 	// Prepare Waveform
 	if (!weak || peak == NULL || min == NULL) {
@@ -601,8 +625,11 @@ void AudioDisplay::DrawWaveform(wxDC &dc,bool weak) {
 }
 
 
-//////////////////////////
-// Draw spectrum analyzer
+
+/// @brief Draw spectrum analyzer 
+/// @param finaldc 
+/// @param weak    
+///
 void AudioDisplay::DrawSpectrum(wxDC &finaldc,bool weak) {
 	if (!weak || !spectrumDisplay || spectrumDisplay->GetWidth() != w || spectrumDisplay->GetHeight() != h) {
 		if (spectrumDisplay) {
@@ -653,8 +680,12 @@ void AudioDisplay::DrawSpectrum(wxDC &finaldc,bool weak) {
 	}
 }
 
-//////////////////////////
-// Get selection position
+
+/// @brief Get selection position 
+/// @param selStart 
+/// @param selEnd   
+/// @param cap      
+///
 void AudioDisplay::GetDialoguePos(int64_t &selStart,int64_t &selEnd, bool cap) {
 	selStart = GetXAtMS(curStartMS);
 	selEnd = GetXAtMS(curEndMS);
@@ -668,8 +699,12 @@ void AudioDisplay::GetDialoguePos(int64_t &selStart,int64_t &selEnd, bool cap) {
 }
 
 
-////////////////////////
-// Get karaoke position
+
+/// @brief Get karaoke position 
+/// @param karStart 
+/// @param karEnd   
+/// @param cap      
+///
 void AudioDisplay::GetKaraokePos(int64_t &karStart,int64_t &karEnd, bool cap) {
 	try {
 		// Wrap around
@@ -698,8 +733,10 @@ void AudioDisplay::GetKaraokePos(int64_t &karStart,int64_t &karEnd, bool cap) {
 }
 
 
-//////////
-// Update
+
+/// @brief Update 
+/// @return 
+///
 void AudioDisplay::Update() {
 	if (blockUpdate) return;
 	if (loaded) {
@@ -711,8 +748,9 @@ void AudioDisplay::Update() {
 }
 
 
-//////////////////////
-// Recreate the image
+
+/// @brief Recreate the image 
+///
 void AudioDisplay::RecreateImage() {
 	GetClientSize(&w,&h);
 	h -= Options.AsBool(_T("Audio Draw Timeline")) ? 20 : 0;
@@ -722,8 +760,10 @@ void AudioDisplay::RecreateImage() {
 }
 
 
-/////////////////////////
-// Make dialogue visible
+
+/// @brief Make dialogue visible 
+/// @param force 
+///
 void AudioDisplay::MakeDialogueVisible(bool force) {
 	wxLogDebug(_T("AudioDisplay::MakeDialogueVisible(force=%d)"), force?1:0);
 	// Variables
@@ -756,8 +796,10 @@ void AudioDisplay::MakeDialogueVisible(bool force) {
 }
 
 
-////////////////
-// Set position
+
+/// @brief Set position 
+/// @param pos 
+///
 void AudioDisplay::SetPosition(int pos) {
 	wxLogDebug(_T("AudioDisplay::SetPosition(pos=%d)"), pos);
 	Position = pos;
@@ -766,8 +808,12 @@ void AudioDisplay::SetPosition(int pos) {
 }
 
 
-///////////////////
-// Update position
+
+/// @brief Update position 
+/// @param pos      
+/// @param IsSample 
+/// @return 
+///
 void AudioDisplay::UpdatePosition (int pos,bool IsSample) {
 	// Safeguards
 	if (!provider) return;
@@ -783,9 +829,13 @@ void AudioDisplay::UpdatePosition (int pos,bool IsSample) {
 }
 
 
-/////////////////////////////
-// Set samples in percentage
-// Note: aka Horizontal Zoom
+
+/// @brief Note: aka Horizontal Zoom Set samples in percentage 
+/// @param percent 
+/// @param update  
+/// @param pivot   
+/// @return 
+///
 void AudioDisplay::SetSamplesPercent(int percent,bool update,float pivot) {
 	// Calculate
 	if (percent < 1) percent = 1;
@@ -810,8 +860,10 @@ void AudioDisplay::SetSamplesPercent(int percent,bool update,float pivot) {
 }
 
 
-//////////////////
-// Update samples
+
+/// @brief Update samples 
+/// @return 
+///
 void AudioDisplay::UpdateSamples() {
 	// Set samples
 	if (!provider) return;
@@ -836,8 +888,11 @@ void AudioDisplay::UpdateSamples() {
 }
 
 
-/////////////
-// Set scale
+
+/// @brief Set scale 
+/// @param _scale 
+/// @return 
+///
 void AudioDisplay::SetScale(float _scale) {
 	if (scale == _scale) return;
 	scale = _scale;
@@ -845,8 +900,11 @@ void AudioDisplay::SetScale(float _scale) {
 }
 
 
-//////////////////
-// Load from file
+
+/// @brief Load from file 
+/// @param file 
+/// @return 
+///
 void AudioDisplay::SetFile(wxString file) {
 	wxLogDebug(_T("AudioDisplay::SetFile(file=%s)"), file.c_str());
 	// Unload
@@ -956,8 +1014,9 @@ void AudioDisplay::SetFile(wxString file) {
 }
 
 
-///////////////////
-// Load from video
+
+/// @brief Load from video 
+///
 void AudioDisplay::SetFromVideo() {
 	wxLogDebug(_T("AudioDisplay::SetFromVideo"));
 	if (VideoContext::Get()->IsLoaded()) {
@@ -969,16 +1028,19 @@ void AudioDisplay::SetFromVideo() {
 }
 
 
-////////////////
-// Reload audio
+
+/// @brief Reload audio 
+///
 void AudioDisplay::Reload() {
 	wxLogDebug(_T("AudioDisplay::Reload"));
 	if (provider) SetFile(provider->GetFilename());
 }
 
 
-////////////////////
-// Update scrollbar
+
+/// @brief Update scrollbar 
+/// @return 
+///
 void AudioDisplay::UpdateScrollbar() {
 	if (!provider) return;
 	int page = w/12;
@@ -988,50 +1050,72 @@ void AudioDisplay::UpdateScrollbar() {
 }
 
 
-//////////////////////////////////////////////
-// Gets the sample number at the x coordinate
+
+/// @brief Gets the sample number at the x coordinate 
+/// @param x 
+/// @return 
+///
 int64_t AudioDisplay::GetSampleAtX(int x) {
 	return (x+Position)*samples;
 }
 
 
-/////////////////////////////////////////////////
-// Gets the x coordinate corresponding to sample
+
+/// @brief Gets the x coordinate corresponding to sample 
+/// @param n 
+/// @return 
+///
 int AudioDisplay::GetXAtSample(int64_t n) {
 	return samples ? (n/samples)-Position : 0;
 }
 
 
-/////////////////
-// Get MS from X
+
+/// @brief Get MS from X 
+/// @param x 
+/// @return 
+///
 int AudioDisplay::GetMSAtX(int64_t x) {
 	return (PositionSample+(x*samples)) * 1000 / provider->GetSampleRate();
 }
 
 
-/////////////////
-// Get X from MS
+
+/// @brief Get X from MS 
+/// @param ms 
+/// @return 
+///
 int AudioDisplay::GetXAtMS(int64_t ms) {
 	return ((ms * provider->GetSampleRate() / 1000)-PositionSample)/samples;
 }
 
 
-////////////////////
-// Get MS At sample
+
+/// @brief Get MS At sample 
+/// @param x 
+/// @return 
+///
 int AudioDisplay::GetMSAtSample(int64_t x) {
 	return x * 1000 / provider->GetSampleRate();
 }
 
 
-////////////////////
-// Get Sample at MS
+
+/// @brief Get Sample at MS 
+/// @param ms 
+/// @return 
+///
 int64_t AudioDisplay::GetSampleAtMS(int64_t ms) {
 	return ms * provider->GetSampleRate() / 1000;
 }
 
 
-////////
-// Play
+
+/// @brief Play 
+/// @param start 
+/// @param end   
+/// @return 
+///
 void AudioDisplay::Play(int start,int end) {
 	wxLogDebug(_T("AudioDisplay::Play"));
 	Stop();
@@ -1092,8 +1176,9 @@ void AudioDisplay::Play(int start,int end) {
 }
 
 
-////////
-// Stop
+
+/// @brief Stop 
+///
 void AudioDisplay::Stop() {
 	wxLogDebug(_T("AudioDisplay::Stop"));
 	if (VideoContext::Get()->IsPlaying()) VideoContext::Get()->Stop();
@@ -1101,8 +1186,12 @@ void AudioDisplay::Stop() {
 }
 
 
-///////////////////////////
-// Get samples of dialogue
+
+/// @brief Get samples of dialogue 
+/// @param start 
+/// @param end   
+/// @return 
+///
 void AudioDisplay::GetTimesDialogue(int &start,int &end) {
 	wxLogDebug(_T("AudioDisplay::GetTimesDialogue"));
 	if (!dialogue) {
@@ -1116,8 +1205,12 @@ void AudioDisplay::GetTimesDialogue(int &start,int &end) {
 }
 
 
-////////////////////////////
-// Get samples of selection
+
+/// @brief Get samples of selection 
+/// @param start 
+/// @param end   
+/// @return 
+///
 void AudioDisplay::GetTimesSelection(int &start,int &end) {
 	wxLogDebug(_T("AudioDisplay::GetTimesSelection"));
 	start = 0;
@@ -1140,8 +1233,11 @@ void AudioDisplay::GetTimesSelection(int &start,int &end) {
 }
 
 
-/////////////////////////////
-// Set the current selection
+
+/// @brief Set the current selection 
+/// @param start 
+/// @param end   
+///
 void AudioDisplay::SetSelection(int start, int end) {
 	wxLogDebug(_T("AudioDisplay::SetSelection(start=%d, end=%d)"), start, end);
 	curStartMS = start;
@@ -1150,8 +1246,13 @@ void AudioDisplay::SetSelection(int start, int end) {
 }
 
 
-////////////////
-// Set dialogue
+
+/// @brief Set dialogue 
+/// @param _grid 
+/// @param diag  
+/// @param n     
+/// @return 
+///
 void AudioDisplay::SetDialogue(SubtitlesGrid *_grid,AssDialogue *diag,int n) {
 	wxLogDebug(_T("AudioDisplay::SetDialogue"));
 	// Actual parameters
@@ -1197,8 +1298,11 @@ void AudioDisplay::SetDialogue(SubtitlesGrid *_grid,AssDialogue *diag,int n) {
 }
 
 
-//////////////////
-// Commit changes
+
+/// @brief Commit changes 
+/// @param nextLine 
+/// @return 
+///
 void AudioDisplay::CommitChanges (bool nextLine) {
 	wxLogDebug(_T("AudioDisplay::CommitChanges(nextLine=%d)"), nextLine?1:0);
 	// Loaded?
@@ -1311,8 +1415,11 @@ void AudioDisplay::CommitChanges (bool nextLine) {
 }
 
 
-////////////
-// Add lead
+
+/// @brief Add lead 
+/// @param in  
+/// @param out 
+///
 void AudioDisplay::AddLead(bool in,bool out) {
 	// Lead in
 	if (in) {
@@ -1346,8 +1453,11 @@ BEGIN_EVENT_TABLE(AudioDisplay, wxWindow)
 END_EVENT_TABLE()
 
 
-/////////
-// Paint
+
+/// @brief Paint 
+/// @param event 
+/// @return 
+///
 void AudioDisplay::OnPaint(wxPaintEvent& event) {
 	if (w == 0 || h == 0) return;
 	DoUpdateImage();
@@ -1357,8 +1467,11 @@ void AudioDisplay::OnPaint(wxPaintEvent& event) {
 }
 
 
-///////////////
-// Mouse event
+
+/// @brief Mouse event 
+/// @param event 
+/// @return 
+///
 void AudioDisplay::OnMouseEvent(wxMouseEvent& event) {
 	// Get x,y
 	int64_t x = event.GetX();
@@ -1764,8 +1877,14 @@ void AudioDisplay::OnMouseEvent(wxMouseEvent& event) {
 }
 
 
-////////////////////////
-// Get snap to boundary
+
+/// @brief Get snap to boundary 
+/// @param ms        
+/// @param rangeX    
+/// @param shiftHeld 
+/// @param start     
+/// @return 
+///
 int AudioDisplay::GetBoundarySnap(int ms,int rangeX,bool shiftHeld,bool start) {
 	// Range?
 	if (rangeX <= 0) return ms;
@@ -1954,8 +2073,10 @@ int AudioDisplay::GetBoundarySnap(int ms,int rangeX,bool shiftHeld,bool start) {
 */
 
 
-//////////////
-// Size event
+
+/// @brief Size event 
+/// @param event 
+///
 void AudioDisplay::OnSize(wxSizeEvent &event) {
 	// Set size
 	GetClientSize(&w,&h);
@@ -1973,8 +2094,11 @@ void AudioDisplay::OnSize(wxSizeEvent &event) {
 }
 
 
-///////////////
-// Timer event
+
+/// @brief Timer event 
+/// @param event 
+/// @return 
+///
 void AudioDisplay::OnUpdateTimer(wxTimerEvent &event) {
 	if (!origImage)
 		return;
@@ -2060,8 +2184,10 @@ void AudioDisplay::OnUpdateTimer(wxTimerEvent &event) {
 }
 
 
-////////////
-// Key down
+
+/// @brief Key down 
+/// @param event 
+///
 void AudioDisplay::OnKeyDown(wxKeyEvent &event) {
 	int key = event.GetKeyCode();
 #ifdef __APPLE__
@@ -2229,8 +2355,12 @@ void AudioDisplay::OnKeyDown(wxKeyEvent &event) {
 }
 
 
-///////////////
-// Change line
+
+/// @brief Change line 
+/// @param delta 
+/// @param block 
+/// @return 
+///
 void AudioDisplay::ChangeLine(int delta, bool block) {
 	wxLogDebug(_T("AudioDisplay::ChangeLine(delta=%d)"), delta);
 	if (dialogue) {
@@ -2258,8 +2388,11 @@ void AudioDisplay::ChangeLine(int delta, bool block) {
 }
 
 
-////////
-// Next
+
+/// @brief Next 
+/// @param play 
+/// @return 
+///
 void AudioDisplay::Next(bool play) {
 	wxLogDebug(_T("AudioDisplay::Next"));
 	// Karaoke
@@ -2313,8 +2446,11 @@ void AudioDisplay::Next(bool play) {
 }
 
 
-////////////
-// Previous
+
+/// @brief Previous 
+/// @param play 
+/// @return 
+///
 void AudioDisplay::Prev(bool play) {
 	wxLogDebug(_T("AudioDisplay::Prev"));
 	// Karaoke
@@ -2366,8 +2502,11 @@ void AudioDisplay::Prev(bool play) {
 }
 
 
-///////////////////////////////
-// Gets syllable at x position
+
+/// @brief Gets syllable at x position 
+/// @param x 
+/// @return 
+///
 int AudioDisplay::GetSyllableAtX(int x) {
 	if (!karaoke->enabled) return -1;
 	int ms = GetMSAtX(x);
@@ -2386,8 +2525,10 @@ int AudioDisplay::GetSyllableAtX(int x) {
 }
 
 
-////////////////
-// Focus events
+
+/// @brief Focus events 
+/// @param event 
+///
 void AudioDisplay::OnGetFocus(wxFocusEvent &event) {
 	if (!hasFocus) {
 		hasFocus = true;
@@ -2395,6 +2536,10 @@ void AudioDisplay::OnGetFocus(wxFocusEvent &event) {
 	}
 }
 
+
+/// @brief DOCME
+/// @param event 
+///
 void AudioDisplay::OnLoseFocus(wxFocusEvent &event) {
 	if (hasFocus && loaded) {
 		hasFocus = false;
@@ -2404,11 +2549,13 @@ void AudioDisplay::OnLoseFocus(wxFocusEvent &event) {
 }
 
 
-//////////////////////////////
-// Update time edit controls
+
+/// @brief Update time edit controls 
+///
 void AudioDisplay::UpdateTimeEditCtrls() {
 	grid->editBox->StartTime->SetTime(curStartMS,true);
 	grid->editBox->EndTime->SetTime(curEndMS,true);
 	grid->editBox->Duration->SetTime(curEndMS-curStartMS,true);
 }
+
 

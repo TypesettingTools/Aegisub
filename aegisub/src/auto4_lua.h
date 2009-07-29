@@ -37,6 +37,8 @@
 #pragma once
 
 #ifndef _AUTO4_LUA_H
+
+/// DOCME
 #define _AUTO4_LUA_H
 
 #include "auto4_base.h"
@@ -52,20 +54,38 @@
 
 class wxWindow;
 
+
+/// DOCME
 namespace Automation4 {
 
-	// Provides access to an AssFile object (and all lines contained) for a Lua script
+
+	/// DOCME
+	/// @class LuaAssFile
+	/// @brief DOCME
+	///
+	/// DOCME
 	class LuaAssFile {
 	private:
+
+		/// DOCME
 		AssFile *ass;
+
+		/// DOCME
 		lua_State *L;
 
+
+		/// DOCME
 		bool can_modify;
+
+		/// DOCME
 		bool can_set_undo;
 		void CheckAllowModify(); // throws an error if modification is disallowed
 
-		// keep a cursor of last accessed item to avoid walking over the entire file on every access
+
+		/// DOCME
 		std::list<AssEntry*>::iterator last_entry_ptr;
+
+		/// DOCME
 		int last_entry_id;
 		void GetAssEntry(int n); // set last_entry_ptr to point to item n
 
@@ -94,9 +114,16 @@ namespace Automation4 {
 	};
 
 
-	// Provides progress UI and control functions for a Lua script
+
+	/// DOCME
+	/// @class LuaProgressSink
+	/// @brief DOCME
+	///
+	/// DOCME
 	class LuaProgressSink : public ProgressSink {
 	private:
+
+		/// DOCME
 		lua_State *L;
 
 		static int LuaSetProgress(lua_State *L);
@@ -114,38 +141,96 @@ namespace Automation4 {
 	};
 
 
-	// Provides Config UI functions for a Lua script
+
+	/// DOCME
+	/// @class LuaConfigDialogControl
+	/// @brief DOCME
+	///
+	/// DOCME
 	class LuaConfigDialogControl {
 	public:
+
+		/// DOCME
 		wxControl *cw; // control window
+
+		/// DOCME
+
+		/// DOCME
 		wxString name, hint;
+
+		/// DOCME
+
+		/// DOCME
+
+		/// DOCME
+
+		/// DOCME
 		int x, y, width, height;
 
 		virtual wxControl *Create(wxWindow *parent) = 0;
 		virtual void ControlReadBack() = 0;
 		virtual void LuaReadBack(lua_State *L) = 0;
 
+
+		/// @brief DOCME
+		/// @return 
+		///
 		virtual bool CanSerialiseValue() { return false; }
+
+		/// @brief DOCME
+		/// @return 
+		///
 		virtual wxString SerialiseValue() { return _T(""); }
+
+		/// @brief DOCME
+		/// @param serialised 
+		///
 		virtual void UnserialiseValue(const wxString &serialised) { }
 
 		LuaConfigDialogControl(lua_State *L);
+
+		/// @brief DOCME
+		///
 		virtual ~LuaConfigDialogControl() { }
 	};
 
+
+	/// DOCME
+	/// @class LuaConfigDialog
+	/// @brief DOCME
+	///
+	/// DOCME
 	class LuaConfigDialog : public ScriptConfigDialog {
 	private:
+
+		/// DOCME
 		std::vector<LuaConfigDialogControl*> controls;
+
+		/// DOCME
 		std::vector<wxString> buttons;
+
+		/// DOCME
 		bool use_buttons;
 
+
+		/// DOCME
+		/// @class ButtonEventHandler
+		/// @brief DOCME
+		///
+		/// DOCME
 		class ButtonEventHandler : public wxEvtHandler {
 		public:
+
+			/// DOCME
 			int *button_pushed;
 			void OnButtonPush(wxCommandEvent &evt);
 		};
 
+
+		/// DOCME
 		ButtonEventHandler *button_event;
+
+		/// DOCME
 		int button_pushed;
 
 	protected:
@@ -163,10 +248,19 @@ namespace Automation4 {
 	};
 
 
-	// Second base-class for Lua implemented Features
+
+	/// DOCME
+	/// @class LuaFeature
+	/// @brief DOCME
+	///
+	/// DOCME
 	class LuaFeature : public virtual Feature {
 	protected:
+
+		/// DOCME
 		lua_State *L;
+
+		/// DOCME
 		int myid;
 
 		LuaFeature(lua_State *_L, ScriptFeatureClass _featureclass, const wxString &_name);
@@ -179,11 +273,18 @@ namespace Automation4 {
 	};
 
 
-	// Class of Lua scripts
+
+	/// DOCME
+	/// @class LuaScript
+	/// @brief DOCME
+	///
+	/// DOCME
 	class LuaScript : public Script {
 		friend class LuaFeature;
 
 	private:
+
+		/// DOCME
 		lua_State *L;
 
 		void Create(); // load script and create internal structures etc.
@@ -205,12 +306,22 @@ namespace Automation4 {
 	};
 
 
-	// A single call to a Lua function, run inside a separate thread.
-	// This object should be created on the stack in the function that does the call.
+
+	/// DOCME
+	/// @class LuaThreadedCall
+	/// @brief DOCME
+	///
+	/// DOCME
 	class LuaThreadedCall : public wxThread {
 	private:
+
+		/// DOCME
 		lua_State *L;
+
+		/// DOCME
 		int nargs;
+
+		/// DOCME
 		int nresults;
 	public:
 		LuaThreadedCall(lua_State *_L, int _nargs, int _nresults);
@@ -218,14 +329,24 @@ namespace Automation4 {
 	};
 
 
-	// Implementation of the Macro Feature for Lua scripts
+
+	/// DOCME
+	/// @class LuaFeatureMacro
+	/// @brief DOCME
+	///
+	/// DOCME
 	class LuaFeatureMacro : public FeatureMacro, LuaFeature {
 	private:
+
+		/// DOCME
 		bool no_validate;
 	protected:
 		LuaFeatureMacro(const wxString &_name, const wxString &_description, lua_State *_L);
 	public:
 		static int LuaRegister(lua_State *L);
+
+		/// @brief DOCME
+		///
 		virtual ~LuaFeatureMacro() { }
 
 		virtual bool Validate(AssFile *subs, const std::vector<int> &selected, int active);
@@ -233,10 +354,19 @@ namespace Automation4 {
 	};
 
 
-	// Implementation of the Export Filter Feature for Lua scripts
+
+	/// DOCME
+	/// @class LuaFeatureFilter
+	/// @brief DOCME
+	///
+	/// DOCME
 	class LuaFeatureFilter : public FeatureFilter, LuaFeature {
 	private:
+
+		/// DOCME
 		bool has_config;
+
+		/// DOCME
 		LuaConfigDialog *config_dialog;
 
 	protected:
@@ -248,6 +378,9 @@ namespace Automation4 {
 	public:
 		static int LuaRegister(lua_State *L);
 
+
+		/// @brief DOCME
+		///
 		virtual ~LuaFeatureFilter() { }
 
 		void ProcessSubs(AssFile *subs, wxWindow *export_dialog);
@@ -256,4 +389,5 @@ namespace Automation4 {
 };
 
 #endif
+
 

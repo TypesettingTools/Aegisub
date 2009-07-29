@@ -44,8 +44,10 @@
 #include "ass_attachment.h"
 
 
-///////////////
-// Constructor
+
+/// @brief Constructor 
+/// @param _name 
+///
 AssAttachment::AssAttachment(wxString _name) {
 	// Parse name
 	filename = _name;
@@ -63,14 +65,17 @@ AssAttachment::AssAttachment(wxString _name) {
 }
 
 
-//////////////
-// Destructor
+
+/// @brief Destructor 
+///
 AssAttachment::~AssAttachment() {
 }
 
 
-/////////
-// Clone
+
+/// @brief Clone 
+/// @return 
+///
 AssEntry *AssAttachment::Clone() {
 	// New object
 	AssAttachment *clone = new AssAttachment(filename);
@@ -83,29 +88,36 @@ AssEntry *AssAttachment::Clone() {
 }
 
 
-////////////
-// Get data
+
+/// @brief Get data 
+/// @return 
+///
 const DataVec &AssAttachment::GetData() {
 	return data->GetData();
 }
 
 
-/////////////////
-// Add more data
+
+/// @brief Add more data 
+/// @param _data 
+///
 void AssAttachment::AddData(wxString _data) {
 	data->AddData(_data);
 }
 
 
-//////////////////////
-// Finish adding data
+
+/// @brief Finish adding data 
+///
 void AssAttachment::Finish() {
 	data->Finish();
 }
 
 
-/////////////////////////////////////
-// Get encoded data to write on file
+
+/// @brief Get encoded data to write on file 
+/// @return 
+///
 const wxString AssAttachment::GetEntryData() {
 	// Get data
 	const DataVec &dat = data->GetData();
@@ -162,8 +174,11 @@ const wxString AssAttachment::GetEntryData() {
 }
 
 
-/////////////////////
-// Extract as a file
+
+/// @brief Extract as a file 
+/// @param filename 
+/// @return 
+///
 void AssAttachment::Extract(wxString filename) {
 	// Open file
 	wxFileOutputStream fp(filename);
@@ -172,8 +187,10 @@ void AssAttachment::Extract(wxString filename) {
 }
 
 
-/////////////////////////////
-// Read a file as attachment
+
+/// @brief Read a file as attachment 
+/// @param filename 
+///
 void AssAttachment::Import(wxString filename) {
 	// Data
 	DataVec &datavec = data->GetData();
@@ -190,8 +207,11 @@ void AssAttachment::Import(wxString filename) {
 }
 
 
-////////////////
-// Get filename
+
+/// @brief Get filename 
+/// @param raw 
+/// @return 
+///
 wxString AssAttachment::GetFileName(bool raw) {
 	// Raw
 	if (raw || filename.Right(4).Lower() != _T(".ttf")) return filename;
@@ -212,35 +232,41 @@ wxString AssAttachment::GetFileName(bool raw) {
 
 
 
-/////////////////// Attachment //////////////////
-///////////////
-// Constructor
+
+/// @brief Constructor  Attachment //////////////////
+///
 AttachData::AttachData() {
 }
 
 
-//////////////
-// Destructor
+
+/// @brief Destructor 
+///
 AttachData::~AttachData() {
 }
 
 
-////////////
-// Get data
+
+/// @brief Get data 
+/// @return 
+///
 DataVec &AttachData::GetData() {
 	return data;
 }
 
 
-////////////
-// Add data
+
+/// @brief Add data 
+/// @param data 
+///
 void AttachData::AddData(wxString data) {
 	buffer += data;
 }
 
 
-//////////
-// Finish
+
+/// @brief Finish 
+///
 void AttachData::Finish() {
 	// Source and dest buffers
 	unsigned char src[4];
@@ -288,4 +314,5 @@ void AttachData::Finish() {
 	buffer.Clear();
 	buffer.Shrink();
 }
+
 

@@ -55,35 +55,76 @@ class PulseAudioPlayer;
 
 
 
-//////////////////////
-// Pulse Audio player
+
+/// DOCME
+/// @class PulseAudioPlayer
+/// @brief DOCME
+///
+/// DOCME
 class PulseAudioPlayer : public AudioPlayer {
 private:
+
+	/// DOCME
 	float volume;
+
+	/// DOCME
 	bool open;
+
+	/// DOCME
 	bool is_playing;
 
-	// Audio data info
+
+	/// DOCME
 	volatile unsigned long start_frame;
+
+	/// DOCME
 	volatile unsigned long cur_frame;
+
+	/// DOCME
 	volatile unsigned long end_frame;
+
+	/// DOCME
 	unsigned long bpf; // bytes per frame
 
-	// Used for synchronising with async events
+
+	/// DOCME
 	wxSemaphore context_notify;
+
+	/// DOCME
 	wxSemaphore context_success;
+
+	/// DOCME
 	volatile int context_success_val;
+
+	/// DOCME
 	wxSemaphore stream_notify;
+
+	/// DOCME
 	wxSemaphore stream_success;
+
+	/// DOCME
 	volatile int stream_success_val;
 
-	// PulseAudio data
+
+	/// DOCME
 	pa_threaded_mainloop *mainloop; // pulseaudio mainloop handle
+
+	/// DOCME
 	pa_context *context; // connection context
+
+	/// DOCME
 	volatile pa_context_state_t cstate;
+
+	/// DOCME
 	pa_stream *stream;
+
+	/// DOCME
 	volatile pa_stream_state_t sstate;
+
+	/// DOCME
 	volatile pa_usec_t play_start_time; // timestamp when playback was started
+
+	/// DOCME
 	int paerror;
 
 	// Called by PA to notify about contetxt operation completion
@@ -114,18 +155,35 @@ public:
 	void SetEndPosition(int64_t pos);
 	void SetCurrentPosition(int64_t pos);
 
+
+	/// @brief DOCME
+	/// @param vol 
+	/// @return 
+	///
 	void SetVolume(double vol) { volume = vol; }
+
+	/// @brief DOCME
+	/// @return 
+	///
 	double GetVolume() { return volume; }
 };
 
 
 
-///////////
-// Factory
+
+/// DOCME
+/// @class PulseAudioPlayerFactory
+/// @brief DOCME
+///
+/// DOCME
 class PulseAudioPlayerFactory : public AudioPlayerFactory {
 public:
+
+	/// @brief DOCME
+	///
 	AudioPlayer *CreatePlayer() { return new PulseAudioPlayer(); }
 };
 
 #endif
+
 

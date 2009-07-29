@@ -51,8 +51,8 @@
 #include <map>
 
 
-////////////
-// Typedefs
+
+/// DOCME
 typedef std::map<wxString,wxSizer*> SizerMap;
 
 
@@ -61,17 +61,37 @@ typedef std::map<wxString,wxSizer*> SizerMap;
 class AssExporter;
 
 
-///////////////////////
-// Export dialog Class
+
+/// DOCME
+/// @class DialogExport
+/// @brief DOCME
+///
+/// DOCME
 class DialogExport : public wxDialog {
 private:
+
+	/// DOCME
 	AssExporter *Export;
+
+	/// DOCME
 	SizerMap SetupMap;
+
+	/// DOCME
 	wxTextCtrl *Description;
+
+	/// DOCME
 	wxCheckListBox *FilterList;
+
+	/// DOCME
 	wxChoice *CharsetList;
+
+	/// DOCME
 	wxSizer *MainSizer;
+
+	/// DOCME
 	wxSizer *HorizSizer;
+
+	/// DOCME
 	wxSizer *OptionsSizer;
 
 	void OnProcess(wxCommandEvent &event);
@@ -94,12 +114,27 @@ public:
 ///////
 // IDs
 enum {
+
+	/// DOCME
 	Button_Process = 1400,
+
+	/// DOCME
 	Button_Move_Up,
+
+	/// DOCME
 	Button_Move_Down,
+
+	/// DOCME
 	Button_Select_All,
+
+	/// DOCME
 	Button_Select_None,
+
+	/// DOCME
 	Filter_List_Box,
+
+	/// DOCME
 	Charset_List_Box
 };
+
 

@@ -59,8 +59,11 @@
 
 
 
-///////////////
-// Constructor
+
+/// @brief Constructor 
+/// @param parent 
+/// @param _grid  
+///
 DialogStyling::DialogStyling (wxWindow *parent,SubtitlesGrid *_grid) :
 wxDialog (parent, -1, _("Styling assistant"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER | wxMINIMIZE_BOX)
 {
@@ -160,8 +163,9 @@ wxDialog (parent, -1, _("Styling assistant"), wxDefaultPosition, wxDefaultSize, 
 }
 
 
-//////////////
-// Destructor
+
+/// @brief Destructor 
+///
 DialogStyling::~DialogStyling () {
 	GetPosition(&lastx, &lasty);
 	if (needCommit) {
@@ -171,8 +175,11 @@ DialogStyling::~DialogStyling () {
 }
 
 
-////////////////
-// Jump to line
+
+/// @brief Jump to line 
+/// @param n 
+/// @return 
+///
 void DialogStyling::JumpToLine(int n) {
 	// Check stuff
 	if (n == -1) return;
@@ -210,8 +217,11 @@ void DialogStyling::JumpToLine(int n) {
 }
 
 
-/////////////////////////////
-// Set style of current line
+
+/// @brief Set style of current line 
+/// @param curName 
+/// @param jump    
+///
 void DialogStyling::SetStyle (wxString curName, bool jump) {
 	// Get line
 	AssDialogue *line = grid->GetDialogue(linen);
@@ -246,8 +256,11 @@ BEGIN_EVENT_TABLE(DialogStyling,wxDialog)
 END_EVENT_TABLE()
 
 
-///////////////////////////
-// Dialog was De/Activated
+
+/// @brief Dialog was De/Activated 
+/// @param event 
+/// @return 
+///
 void DialogStyling::OnActivate(wxActivateEvent &event) {
 	// Dialog lost focus
 	if (!event.GetActive()) {
@@ -271,8 +284,10 @@ void DialogStyling::OnActivate(wxActivateEvent &event) {
 }
 
 
-///////////////
-// Key pressed
+
+/// @brief Key pressed 
+/// @param event 
+///
 void DialogStyling::OnKeyDown(wxKeyEvent &event) {
 	int keycode = event.GetKeyCode();
 
@@ -290,8 +305,11 @@ void DialogStyling::OnKeyDown(wxKeyEvent &event) {
 }
 
 
-////////////////////
-// Edit box changed
+
+/// @brief Edit box changed 
+/// @param event 
+/// @return 
+///
 void DialogStyling::OnStyleBoxModified (wxCommandEvent &event) {
 	// Recursion guard
 	static wxRecursionGuardFlag s_flag;
@@ -332,15 +350,19 @@ void DialogStyling::OnStyleBoxModified (wxCommandEvent &event) {
 }
 
 
-/////////////////
-// Enter pressed
+
+/// @brief Enter pressed 
+/// @param event 
+///
 void DialogStyling::OnStyleBoxEnter (wxCommandEvent &event) {
 
 }
 
 
-//////////////////////
-// Style list clicked
+
+/// @brief Style list clicked 
+/// @param event 
+///
 void DialogStyling::OnListClicked(wxCommandEvent &event) {
 	int n = event.GetInt();
 	SetStyle(Styles->GetString(n));
@@ -348,23 +370,29 @@ void DialogStyling::OnListClicked(wxCommandEvent &event) {
 	TypeBox->SetFocus();
 }
 
-/////////////////////
-// Play video button
+
+/// @brief Play video button 
+/// @param event 
+///
 void DialogStyling::OnPlayVideoButton(wxCommandEvent &event) {
 	video->PlayLine();
 	TypeBox->SetFocus();
 }
 
-/////////////////////
-// Play audio button
+
+/// @brief Play audio button 
+/// @param event 
+///
 void DialogStyling::OnPlayAudioButton(wxCommandEvent &event) {
 	audio->Play(line->Start.GetMS(),line->End.GetMS());
 	TypeBox->SetFocus();
 }
 
 
-//////////////////////////////
-// Style edit box constructor
+
+/// @brief Style edit box constructor 
+/// @param parent 
+///
 StyleEditBox::StyleEditBox(DialogStyling *parent)
 : wxTextCtrl(parent,ENTER_STYLE_BOX,_T(""),wxDefaultPosition,wxSize(180,-1),wxTE_PROCESS_ENTER)
 {
@@ -379,8 +407,11 @@ BEGIN_EVENT_TABLE(StyleEditBox,wxTextCtrl)
 END_EVENT_TABLE()
 
 
-///////////////
-// Key pressed
+
+/// @brief Key pressed 
+/// @param event 
+/// @return 
+///
 void StyleEditBox::OnKeyDown(wxKeyEvent &event) {
 	//int keycode = event.GetKeyCode();
 #ifdef __APPLE__
@@ -453,6 +484,11 @@ void StyleEditBox::OnKeyDown(wxKeyEvent &event) {
 }
 
 
+
+/// DOCME
 int DialogStyling::lastx = -1;
+
+/// DOCME
 int DialogStyling::lasty = -1;
+
 

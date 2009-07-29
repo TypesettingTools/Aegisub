@@ -42,19 +42,45 @@
 #include <fstream>
 #include <iconv.h>
 
+
+/// DOCME
+/// @class TextFileReader
+/// @brief DOCME
+///
+/// DOCME
 class TextFileReader {
 private:
+
+	/// DOCME
 	wxString encoding;
+
+	/// DOCME
 	std::ifstream file;
+
+	/// DOCME
 	iconv_t conv;
+
+	/// DOCME
 	bool trim;
+
+	/// DOCME
 	bool readComplete;
 
+
+	/// DOCME
 	wchar_t outbuf[256];
+
+	/// DOCME
 	wchar_t *currout;
+
+	/// DOCME
 	wchar_t *outptr;
+
+	/// DOCME
 	size_t  outbytesleft;
 
+
+	/// DOCME
 	unsigned int currentLine;
 
 	wchar_t GetWChar();
@@ -73,4 +99,5 @@ public:
 	wxString GetCurrentEncoding();
 	static wxString GetEncoding(const wxString filename);
 };
+
 

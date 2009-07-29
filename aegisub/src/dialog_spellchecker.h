@@ -51,24 +51,54 @@
 class SpellChecker;
 
 
-//////////////////////////////
-// Spell checker dialog class
+
+/// DOCME
+/// @class DialogSpellChecker
+/// @brief DOCME
+///
+/// DOCME
 class DialogSpellChecker : public wxDialog {
 private:
+
+	/// DOCME
 	SpellChecker *spellchecker;
 
+
+	/// DOCME
 	std::map<wxString,wxString> autoReplace;
+
+	/// DOCME
 	wxArrayString autoIgnore;
+
+	/// DOCME
 	wxArrayString langCodes;
 
+
+	/// DOCME
+
+	/// DOCME
 	int wordStart,wordEnd;
+
+	/// DOCME
 	int lastLine;
+
+	/// DOCME
 	int lastPos;
+
+	/// DOCME
 	int firstLine;
 
+
+	/// DOCME
 	wxTextCtrl *origWord;
+
+	/// DOCME
 	wxTextCtrl *replaceWord;
+
+	/// DOCME
 	wxListBox *suggestList;
+
+	/// DOCME
 	wxComboBox *language;
 
 	bool FindOrDie();
@@ -94,4 +124,5 @@ public:
 
 	DECLARE_EVENT_TABLE()
 };
+
 

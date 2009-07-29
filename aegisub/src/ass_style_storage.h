@@ -36,6 +36,8 @@
 
 
 #ifndef ASS_STYLE_STORAGE_H
+
+/// DOCME
 #define ASS_STYLE_STORAGE_H
 
 
@@ -51,10 +53,16 @@
 class AssStyle;
 
 
-/////////////////
-// Storage class
+
+/// DOCME
+/// @class AssStyleStorage
+/// @brief DOCME
+///
+/// DOCME
 class AssStyleStorage {
 public:
+
+	/// DOCME
 	std::list<AssStyle*> style;
 
 	wxArrayString GetNames();
@@ -66,4 +74,5 @@ public:
 
 
 #endif
+
 

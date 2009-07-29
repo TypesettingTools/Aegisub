@@ -61,33 +61,77 @@
 #endif
 
 
-/////////////////
-// OpenAL player
+
+/// DOCME
+/// @class OpenALPlayer
+/// @brief DOCME
+///
+/// DOCME
 class OpenALPlayer : public AudioPlayer, wxTimer {
 private:
+
+	/// DOCME
 	bool open;
+
+	/// DOCME
 	volatile bool playing;
+
+	/// DOCME
 	volatile float volume;
 
+
+	/// DOCME
 	static const ALsizei num_buffers = 8;
+
+	/// DOCME
 	ALsizei buffer_length;
+
+	/// DOCME
 	ALsizei samplerate;
 
+
+	/// DOCME
 	volatile unsigned long start_frame; // first frame of playback
+
+	/// DOCME
 	volatile unsigned long cur_frame; // last written frame + 1
+
+	/// DOCME
 	volatile unsigned long end_frame; // last frame to play
+
+	/// DOCME
 	unsigned long bpf; // bytes per frame
 
+
+	/// DOCME
 	AudioProvider *provider;
+
+	/// DOCME
 	ALCdevice *device; // device handle
+
+	/// DOCME
 	ALCcontext *context; // sound context
+
+	/// DOCME
 	ALuint buffers[num_buffers]; // sound buffers
+
+	/// DOCME
 	ALuint source; // playback source
 
+
+	/// DOCME
 	ALsizei buf_first_free; // index into buffers, first free (unqueued) buffer
+
+	/// DOCME
 	ALsizei buf_first_queued; // index into buffers, first queued (non-free) buffer
+
+	/// DOCME
 	ALsizei buffers_free; // number of free buffers
+
+	/// DOCME
 	ALsizei buffers_played;
+
+	/// DOCME
 	wxStopWatch playback_segment_timer;
 
 	void FillBuffers(ALsizei count);
@@ -112,18 +156,35 @@ public:
 	void SetEndPosition(int64_t pos);
 	void SetCurrentPosition(int64_t pos);
 
+
+	/// @brief DOCME
+	/// @param vol 
+	/// @return 
+	///
 	void SetVolume(double vol) { volume = vol; }
+
+	/// @brief DOCME
+	/// @return 
+	///
 	double GetVolume() { return volume; }
 };
 
 
 
-///////////
-// Factory
+
+/// DOCME
+/// @class OpenALPlayerFactory
+/// @brief DOCME
+///
+/// DOCME
 class OpenALPlayerFactory : public AudioPlayerFactory {
 public:
+
+	/// @brief DOCME
+	///
 	AudioPlayer *CreatePlayer() { return new OpenALPlayer(); }
 };
 
 #endif
+
 

@@ -68,8 +68,20 @@
 #include FT_FREETYPE_H
 #endif
 
+
+/// DOCME
 namespace Automation4 {
 
+
+	/// @brief DOCME
+	/// @param style   
+	/// @param text    
+	/// @param width   
+	/// @param height  
+	/// @param descent 
+	/// @param extlead 
+	/// @return 
+	///
 	bool CalculateTextExtents(AssStyle *style, wxString &text, double &width, double &height, double &descent, double &extlead)
 	{
 		width = height = descent = extlead = 0;
@@ -183,6 +195,11 @@ namespace Automation4 {
 
 	// Feature
 
+
+	/// @brief DOCME
+	/// @param _featureclass 
+	/// @param _name         
+	///
 	Feature::Feature(ScriptFeatureClass _featureclass, const wxString &_name)
 		: featureclass(_featureclass)
 		, name(_name)
@@ -190,11 +207,19 @@ namespace Automation4 {
 		// nothing to do
 	}
 
+
+	/// @brief DOCME
+	/// @return 
+	///
 	ScriptFeatureClass Feature::GetClass() const
 	{
 		return featureclass;
 	}
 
+
+	/// @brief DOCME
+	/// @return 
+	///
 	FeatureMacro* Feature::AsMacro()
 	{
 		if (featureclass == SCRIPTFEATURE_MACRO)
@@ -203,6 +228,10 @@ namespace Automation4 {
 		return 0;
 	}
 
+
+	/// @brief DOCME
+	/// @return 
+	///
 	FeatureFilter* Feature::AsFilter()
 	{
 		if (featureclass == SCRIPTFEATURE_FILTER)
@@ -210,6 +239,10 @@ namespace Automation4 {
 		return 0;
 	}
 
+
+	/// @brief DOCME
+	/// @return 
+	///
 	FeatureSubtitleFormat* Feature::AsSubFormat()
 	{
 		if (featureclass == SCRIPTFEATURE_SUBFORMAT)
@@ -217,6 +250,10 @@ namespace Automation4 {
 		return 0;
 	}
 
+
+	/// @brief DOCME
+	/// @return 
+	///
 	const wxString& Feature::GetName() const
 	{
 		return name;
@@ -225,6 +262,11 @@ namespace Automation4 {
 
 	// FeatureMacro
 
+
+	/// @brief DOCME
+	/// @param _name        
+	/// @param _description 
+	///
 	FeatureMacro::FeatureMacro(const wxString &_name, const wxString &_description)
 		: Feature(SCRIPTFEATURE_MACRO, _name)
 		, description(_description)
@@ -232,6 +274,10 @@ namespace Automation4 {
 		// nothing to do
 	}
 
+
+	/// @brief DOCME
+	/// @return 
+	///
 	const wxString& FeatureMacro::GetDescription() const
 	{
 		return description;
@@ -240,6 +286,12 @@ namespace Automation4 {
 
 	// FeatureFilter
 
+
+	/// @brief DOCME
+	/// @param _name        
+	/// @param _description 
+	/// @param _priority    
+	///
 	FeatureFilter::FeatureFilter(const wxString &_name, const wxString &_description, int _priority)
 		: Feature(SCRIPTFEATURE_FILTER, _name)
 		, AssExportFilter()
@@ -249,16 +301,28 @@ namespace Automation4 {
 		Register(_name, _priority);
 	}
 
+
+	/// @brief DOCME
+	///
 	FeatureFilter::~FeatureFilter()
 	{
 		Unregister();
 	}
 
+
+	/// @brief DOCME
+	/// @return 
+	///
 	wxString FeatureFilter::GetScriptSettingsIdentifier()
 	{
 		return inline_string_encode(wxString::Format(_T("Automation Settings %s"), GetName().c_str()));
 	}
 
+
+	/// @brief DOCME
+	/// @param parent 
+	/// @return 
+	///
 	wxWindow* FeatureFilter::GetConfigDialogWindow(wxWindow *parent) {
 		if (config_dialog) {
 			delete config_dialog;
@@ -275,6 +339,10 @@ namespace Automation4 {
 		}
 	}
 
+
+	/// @brief DOCME
+	/// @param IsDefault 
+	///
 	void FeatureFilter::LoadSettings(bool IsDefault) {
 		if (config_dialog) {
 			config_dialog->ReadBack();
@@ -289,6 +357,11 @@ namespace Automation4 {
 
 	// FeatureSubtitleFormat
 
+
+	/// @brief DOCME
+	/// @param _name      
+	/// @param _extension 
+	///
 	FeatureSubtitleFormat::FeatureSubtitleFormat(const wxString &_name, const wxString &_extension)
 		: Feature(SCRIPTFEATURE_SUBFORMAT, _name)
 		, extension(_extension)
@@ -296,16 +369,30 @@ namespace Automation4 {
 		// nothing to do
 	}
 
+
+	/// @brief DOCME
+	/// @return 
+	///
 	const wxString& FeatureSubtitleFormat::GetExtension() const
 	{
 		return extension;
 	}
 
+
+	/// @brief DOCME
+	/// @param filename 
+	/// @return 
+	///
 	bool FeatureSubtitleFormat::CanWriteFile(wxString filename)
 	{
 		return !filename.Right(extension.Length()).CmpNoCase(extension);
 	}
 
+
+	/// @brief DOCME
+	/// @param filename 
+	/// @return 
+	///
 	bool FeatureSubtitleFormat::CanReadFile(wxString filename)
 	{
 		return !filename.Right(extension.Length()).CmpNoCase(extension);
@@ -314,23 +401,37 @@ namespace Automation4 {
 
 	// ShowConfigDialogEvent
 
+
+	/// DOCME
 	const wxEventType EVT_SHOW_CONFIG_DIALOG_t = wxNewEventType();
 
 
 	// ScriptConfigDialog
 
+
+	/// @brief DOCME
+	/// @param parent 
+	/// @return 
+	///
 	wxWindow* ScriptConfigDialog::GetWindow(wxWindow *parent)
 	{
 		if (win) return win;
 		return win = CreateWindow(parent);
 	}
 
+
+	/// @brief DOCME
+	///
 	void ScriptConfigDialog::DeleteWindow()
 	{
 		if (win) delete win;
 		win = 0;
 	}
 
+
+	/// @brief DOCME
+	/// @return 
+	///
 	wxString ScriptConfigDialog::Serialise()
 	{
 		return _T("");
@@ -339,6 +440,10 @@ namespace Automation4 {
 
 	// ProgressSink
 
+
+	/// @brief DOCME
+	/// @param parent 
+	///
 	ProgressSink::ProgressSink(wxWindow *parent)
 		: wxDialog(parent, -1, _T("Automation"), wxDefaultPosition, wxDefaultSize, wxBORDER_RAISED)
 		, debug_visible(false)
@@ -384,11 +489,18 @@ namespace Automation4 {
 		trace_level = Options.AsInt(_T("Automation Trace Level"));
 	}
 
+
+	/// @brief DOCME
+	///
 	ProgressSink::~ProgressSink()
 	{
 		delete update_timer;
 	}
 
+
+	/// @brief DOCME
+	/// @param evt 
+	///
 	void ProgressSink::OnIdle(wxIdleEvent &evt)
 	{
 		// The big glossy "update display" event
@@ -406,6 +518,10 @@ namespace Automation4 {
 		}
 	}
 
+
+	/// @brief DOCME
+	/// @return 
+	///
 	void ProgressSink::DoUpdateDisplay()
 	{
 		// If debug output isn't handled before the test for script_finished later,
@@ -434,6 +550,10 @@ namespace Automation4 {
 		data_updated = false;
 	}
 
+
+	/// @brief DOCME
+	/// @param _progress 
+	///
 	void ProgressSink::SetProgress(float _progress)
 	{
 		wxMutexLocker lock(data_mutex);
@@ -441,6 +561,10 @@ namespace Automation4 {
 		data_updated = true;
 	}
 
+
+	/// @brief DOCME
+	/// @param _task 
+	///
 	void ProgressSink::SetTask(const wxString &_task)
 	{
 		wxMutexLocker lock(data_mutex);
@@ -448,6 +572,10 @@ namespace Automation4 {
 		data_updated = true;
 	}
 
+
+	/// @brief DOCME
+	/// @param _title 
+	///
 	void ProgressSink::SetTitle(const wxString &_title)
 	{
 		wxMutexLocker lock(data_mutex);
@@ -455,6 +583,10 @@ namespace Automation4 {
 		data_updated = true;
 	}
 
+
+	/// @brief DOCME
+	/// @param msg 
+	///
 	void ProgressSink::AddDebugOutput(const wxString &msg)
 	{
 		wxMutexLocker lock(data_mutex);
@@ -469,11 +601,19 @@ namespace Automation4 {
 		EVT_SHOW_CONFIG_DIALOG(ProgressSink::OnConfigDialog)
 	END_EVENT_TABLE()
 
+
+	/// @brief DOCME
+	/// @param evt 
+	///
 	void ProgressSink::OnInit(wxInitDialogEvent &evt)
 	{
 		has_inited = true;
 	}
 
+
+	/// @brief DOCME
+	/// @param evt 
+	///
 	void ProgressSink::OnCancel(wxCommandEvent &evt)
 	{
 		if (!script_finished) {
@@ -484,6 +624,10 @@ namespace Automation4 {
 		}
 	}
 
+
+	/// @brief DOCME
+	/// @param evt 
+	///
 	void ProgressSink::OnConfigDialog(ShowConfigDialogEvent &evt)
 	{
 		// assume we're in the GUI thread here
@@ -514,6 +658,10 @@ namespace Automation4 {
 
 	// Script
 
+
+	/// @brief DOCME
+	/// @param _filename 
+	///
 	Script::Script(const wxString &_filename)
 		: filename(_filename)
 		, name(_T(""))
@@ -536,6 +684,9 @@ namespace Automation4 {
 		}
 	}
 
+
+	/// @brief DOCME
+	///
 	Script::~Script()
 	{
 		for (std::vector<Feature*>::iterator f = features.begin(); f != features.end(); ++f) {
@@ -543,42 +694,74 @@ namespace Automation4 {
 		}
 	}
 
+
+	/// @brief DOCME
+	/// @return 
+	///
 	wxString Script::GetPrettyFilename() const
 	{
 		wxFileName fn(filename);
 		return fn.GetFullName();
 	}
 
+
+	/// @brief DOCME
+	/// @return 
+	///
 	const wxString& Script::GetFilename() const
 	{
 		return filename;
 	}
 
+
+	/// @brief DOCME
+	/// @return 
+	///
 	const wxString& Script::GetName() const
 	{
 		return name;
 	}
 
+
+	/// @brief DOCME
+	/// @return 
+	///
 	const wxString& Script::GetDescription() const
 	{
 		return description;
 	}
 
+
+	/// @brief DOCME
+	/// @return 
+	///
 	const wxString& Script::GetAuthor() const
 	{
 		return author;
 	}
 
+
+	/// @brief DOCME
+	/// @return 
+	///
 	const wxString& Script::GetVersion() const
 	{
 		return version;
 	}
 
+
+	/// @brief DOCME
+	/// @return 
+	///
 	bool Script::GetLoadedState() const
 	{
 		return loaded;
 	}
 
+
+	/// @brief DOCME
+	/// @return 
+	///
 	std::vector<Feature*>& Script::GetFeatures()
 	{
 		return features;
@@ -587,16 +770,27 @@ namespace Automation4 {
 
 	// ScriptManager
 
+
+	/// @brief DOCME
+	///
 	ScriptManager::ScriptManager()
 	{
 		// do nothing...?
 	}
 
+
+	/// @brief DOCME
+	///
 	ScriptManager::~ScriptManager()
 	{
 		RemoveAll();
 	}
 
+
+	/// @brief DOCME
+	/// @param script 
+	/// @return 
+	///
 	void ScriptManager::Add(Script *script)
 	{
 		for (std::vector<Script*>::iterator i = scripts.begin(); i != scripts.end(); ++i) {
@@ -605,6 +799,11 @@ namespace Automation4 {
 		scripts.push_back(script);
 	}
 
+
+	/// @brief DOCME
+	/// @param script 
+	/// @return 
+	///
 	void ScriptManager::Remove(Script *script)
 	{
 		for (std::vector<Script*>::iterator i = scripts.begin(); i != scripts.end(); ++i) {
@@ -616,6 +815,9 @@ namespace Automation4 {
 		}
 	}
 
+
+	/// @brief DOCME
+	///
 	void ScriptManager::RemoveAll()
 	{
 		for (std::vector<Script*>::iterator i = scripts.begin(); i != scripts.end(); ++i) {
@@ -624,11 +826,19 @@ namespace Automation4 {
 		scripts.clear();
 	}
 
+
+	/// @brief DOCME
+	/// @return 
+	///
 	const std::vector<Script*>& ScriptManager::GetScripts() const
 	{
 		return scripts;
 	}
 
+
+	/// @brief DOCME
+	/// @return 
+	///
 	const std::vector<FeatureMacro*>& ScriptManager::GetMacros()
 	{
 		macros.clear();
@@ -646,12 +856,19 @@ namespace Automation4 {
 
 	// AutoloadScriptManager
 
+
+	/// @brief DOCME
+	/// @param _path 
+	///
 	AutoloadScriptManager::AutoloadScriptManager(const wxString &_path)
 		: path(_path)
 	{
 		Reload();
 	}
 
+
+	/// @brief DOCME
+	///
 	void AutoloadScriptManager::Reload()
 	{
 		RemoveAll();
@@ -704,18 +921,32 @@ namespace Automation4 {
 
 	// ScriptFactory
 
+
+	/// DOCME
 	std::vector<ScriptFactory*> *ScriptFactory::factories = 0;
 
+
+	/// @brief DOCME
+	/// @return 
+	///
 	const wxString& ScriptFactory::GetEngineName() const
 	{
 		return engine_name;
 	}
 
+
+	/// @brief DOCME
+	/// @return 
+	///
 	const wxString& ScriptFactory::GetFilenamePattern() const
 	{
 		return filename_pattern;
 	}
 
+
+	/// @brief DOCME
+	/// @param factory 
+	///
 	void ScriptFactory::Register(ScriptFactory *factory)
 	{
 		if (!factories)
@@ -729,6 +960,11 @@ namespace Automation4 {
 		factories->push_back(factory);
 	}
 
+
+	/// @brief DOCME
+	/// @param factory 
+	/// @return 
+	///
 	void ScriptFactory::Unregister(ScriptFactory *factory)
 	{
 		if (!factories)
@@ -743,6 +979,12 @@ namespace Automation4 {
 		}
 	}
 
+
+	/// @brief DOCME
+	/// @param filename   
+	/// @param log_errors 
+	/// @return 
+	///
 	Script* ScriptFactory::CreateFromFile(const wxString &filename, bool log_errors)
 	{
 		if (!factories)
@@ -771,6 +1013,11 @@ namespace Automation4 {
 		return new UnknownScript(filename);
 	}
 
+
+	/// @brief DOCME
+	/// @param filename 
+	/// @return 
+	///
 	bool ScriptFactory::CanHandleScriptFormat(const wxString &filename)
 	{
 		// Just make this always return true to bitch about unknown script formats in autoload
@@ -786,6 +1033,10 @@ namespace Automation4 {
 		return false;
 	}
 
+
+	/// @brief DOCME
+	/// @return 
+	///
 	const std::vector<ScriptFactory*>& ScriptFactory::GetFactories()
 	{
 		if (!factories)
@@ -797,6 +1048,10 @@ namespace Automation4 {
 
 	// UnknownScript
 
+
+	/// @brief DOCME
+	/// @param filename 
+	///
 	UnknownScript::UnknownScript(const wxString &filename)
 		: Script(filename)
 	{
@@ -809,4 +1064,5 @@ namespace Automation4 {
 };
 
 #endif // WITH_AUTOMATION
+
 

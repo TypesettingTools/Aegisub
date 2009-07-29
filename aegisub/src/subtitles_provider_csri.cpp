@@ -48,24 +48,29 @@
 #include "video_context.h"
 
 
-///////////////
-// Constructor
+
+/// @brief Constructor 
+/// @param type 
+///
 CSRISubtitlesProvider::CSRISubtitlesProvider(wxString type) {
 	subType = type;
 	instance = NULL;
 }
 
 
-//////////////
-// Destructor
+
+/// @brief Destructor 
+///
 CSRISubtitlesProvider::~CSRISubtitlesProvider() {
 	if (instance) csri_close(instance);
 	instance = NULL;
 }
 
 
-//////////////////
-// Load subtitles
+
+/// @brief Load subtitles 
+/// @param subs 
+///
 void CSRISubtitlesProvider::LoadSubtitles(AssFile *subs) {
 	// Close
 	if (instance) csri_close(instance);
@@ -114,8 +119,12 @@ void CSRISubtitlesProvider::LoadSubtitles(AssFile *subs) {
 }
 
 
-//////////////////
-// Draw subtitles
+
+/// @brief Draw subtitles 
+/// @param dst  
+/// @param time 
+/// @return 
+///
 void CSRISubtitlesProvider::DrawSubtitles(AegiVideoFrame &dst,double time) {
 	// Check if CSRI loaded properly
 	if (!instance) return;
@@ -151,8 +160,9 @@ void CSRISubtitlesProvider::DrawSubtitles(AegiVideoFrame &dst,double time) {
 }
 
 
-/////////////////////
-// Get CSRI subtypes
+
+/// @brief Get CSRI subtypes 
+///
 wxArrayString CSRISubtitlesProviderFactory::GetSubTypes() {
 	csri_info *info;
 	wxArrayString final;
@@ -175,4 +185,5 @@ wxArrayString CSRISubtitlesProviderFactory::GetSubTypes() {
 
 
 #endif // WITH_CSRI
+
 

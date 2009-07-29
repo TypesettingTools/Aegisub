@@ -43,8 +43,9 @@
 #include "gl_wrap.h"
 
 
-///////////////
-// Constructor
+
+/// @brief Constructor 
+///
 VisualDraggableFeature::VisualDraggableFeature() {
 	type = DRAG_NONE;
 	x = -1;
@@ -57,8 +58,12 @@ VisualDraggableFeature::VisualDraggableFeature() {
 }
 
 
-/////////////////////
-// Is mouse over it?
+
+/// @brief Is mouse over it? 
+/// @param mx 
+/// @param my 
+/// @return 
+///
 bool VisualDraggableFeature::IsMouseOver(int mx,int my) {
 	// Square
 	if (type == DRAG_BIG_SQUARE) {
@@ -102,8 +107,10 @@ bool VisualDraggableFeature::IsMouseOver(int mx,int my) {
 }
 
 
-////////////////
-// Draw feature
+
+/// @brief Draw feature 
+/// @param gl 
+///
 void VisualDraggableFeature::Draw(OpenGLWrapper *gl) {
 	wxASSERT(gl);
 
@@ -139,4 +146,5 @@ void VisualDraggableFeature::Draw(OpenGLWrapper *gl) {
 		gl->DrawCircle(x,y,4);
 	}
 }
+
 

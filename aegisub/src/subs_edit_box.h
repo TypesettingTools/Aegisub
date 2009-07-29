@@ -55,54 +55,134 @@ class HiliModTextCtrl;
 class wxStyledTextCtrl;
 
 
-//////////////////
-// Edit box class
+
+/// DOCME
+/// @class SubsEditBox
+/// @brief DOCME
+///
+/// DOCME
 class SubsEditBox : public wxPanel {
 	friend class SubsTextEditHandler;
 	friend class SubsTextEditCtrl;
 	friend class AudioDisplay;
 
 private:
+
+	/// DOCME
 	bool splitLineMode;
+
+	/// DOCME
 	bool setupDone;
+
+	/// DOCME
 	bool enabled;
+
+	/// DOCME
 	bool textEditReady;
+
+	/// DOCME
 	bool controlState;
+
+	/// DOCME
 	wxColour origBgColour;
+
+	/// DOCME
 	wxColour disabledBgColour;
 
+
+	/// DOCME
 	SubtitlesGrid *grid;
+
+	/// DOCME
 	wxCheckBox *CommentBox;
+
+	/// DOCME
 	wxComboBox *StyleBox;
+
+	/// DOCME
 	wxComboBox *ActorBox;
+
+	/// DOCME
 	TimeEdit *StartTime;
+
+	/// DOCME
 	TimeEdit *EndTime;
+
+	/// DOCME
 	TimeEdit *Duration;
+
+	/// DOCME
 	wxSpinCtrl *Layer;
+
+	/// DOCME
 	HiliModTextCtrl *MarginL;
+
+	/// DOCME
 	HiliModTextCtrl *MarginR;
+
+	/// DOCME
 	HiliModTextCtrl *MarginV;
+
+	/// DOCME
 	HiliModTextCtrl *Effect;
+
+	/// DOCME
 	wxRadioButton *ByTime;
+
+	/// DOCME
 	wxRadioButton *ByFrame;
+
+	/// DOCME
 	wxCheckBox *SyntaxHighlight;
 
+
+	/// DOCME
 	wxButton *Bold;
+
+	/// DOCME
 	wxButton *Italics;
+
+	/// DOCME
 	wxButton *Underline;
+
+	/// DOCME
 	wxButton *Strikeout;
+
+	/// DOCME
 	wxButton *FontName;
+
+	/// DOCME
 	wxButton *Color1;
+
+	/// DOCME
 	wxButton *Color2;
+
+	/// DOCME
 	wxButton *Color3;
+
+	/// DOCME
 	wxButton *Color4;
+
+	/// DOCME
 	wxButton *CommitButton;
 
+
+	/// DOCME
 	wxSizer *TopSizer;
+
+	/// DOCME
 	wxSizer *MiddleBotSizer;
+
+	/// DOCME
 	wxSizer *MiddleSizer;
+
+	/// DOCME
 	wxSizer *MainSizer;
+
+	/// DOCME
 	wxSizer *DummySizer;
+
+	/// DOCME
 	wxSizer *BottomSizer;
 
 	void SetControlsState(bool state);
@@ -145,8 +225,14 @@ private:
 	void OnSize(wxSizeEvent &event);
 
 public:
+
+	/// DOCME
 	int linen;
+
+	/// DOCME
 	AudioDisplay *audio;
+
+	/// DOCME
 	SubsTextEditCtrl *TextEdit;
 
 	SubsEditBox(wxWindow *parent,SubtitlesGrid *gridp);
@@ -168,10 +254,16 @@ public:
 };
 
 
-/////////////////
-// Event handler
+
+/// DOCME
+/// @class SubsEditBoxEvent
+/// @brief DOCME
+///
+/// DOCME
 class SubsEditBoxEvent : public wxEvtHandler {
 private:
+
+	/// DOCME
 	SubsEditBox *control;
 	void OnKeyPress(wxKeyEvent &event);
 
@@ -184,31 +276,82 @@ public:
 ///////
 // IDs
 enum {
+
+	/// DOCME
 	EDIT_BOX = 1300,
+
+	/// DOCME
 	SYNTAX_BOX,
+
+	/// DOCME
 	RADIO_TIME_BY_FRAME,
+
+	/// DOCME
 	RADIO_TIME_BY_TIME,
+
+	/// DOCME
 	STYLE_COMBOBOX,
+
+	/// DOCME
 	ACTOR_COMBOBOX,
+
+	/// DOCME
 	LAYER_BOX,
+
+	/// DOCME
 	STARTTIME_BOX,
+
+	/// DOCME
 	ENDTIME_BOX,
+
+	/// DOCME
 	DURATION_BOX,
+
+	/// DOCME
 	MARGINL_BOX,
+
+	/// DOCME
 	MARGINR_BOX,
+
+	/// DOCME
 	MARGINV_BOX,
+
+	/// DOCME
 	EFFECT_BOX,
+
+	/// DOCME
 	COMMENT_CHECKBOX,
 
+
+	/// DOCME
 	BUTTON_BOLD,
+
+	/// DOCME
 	BUTTON_ITALICS,
+
+	/// DOCME
 	BUTTON_UNDERLINE,
+
+	/// DOCME
 	BUTTON_STRIKEOUT,
+
+	/// DOCME
 	BUTTON_FONT_NAME,
+
+	/// DOCME
 	BUTTON_COLOR1,
+
+	/// DOCME
 	BUTTON_COLOR2,
+
+	/// DOCME
 	BUTTON_COLOR3,
+
+	/// DOCME
 	BUTTON_COLOR4,
+
+	/// DOCME
 	BUTTON_COMMIT
 };
+
 

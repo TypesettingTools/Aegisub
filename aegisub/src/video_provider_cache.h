@@ -45,22 +45,42 @@
 #include "vfr.h"
 
 
-////////////////
-// Cached frame
+
+/// DOCME
+/// @class CachedFrame
+/// @brief DOCME
+///
+/// DOCME
 class CachedFrame {
 public:
+
+	/// DOCME
 	AegiVideoFrame frame;
+
+	/// DOCME
 	int n;
 };
 
 
-////////////////////////////
-// Video Provider interface
+
+/// DOCME
+/// @class VideoProviderCache
+/// @brief DOCME
+///
+/// DOCME
 class VideoProviderCache : public VideoProvider {
 private:
+
+	/// DOCME
 	VideoProvider *master;
+
+	/// DOCME
 	unsigned int cacheMax;
+
+	/// DOCME
 	std::list<CachedFrame> cache;
+
+	/// DOCME
 	int pos;
 
 	void Cache(int n,const AegiVideoFrame frame);
@@ -94,4 +114,5 @@ public:
 	virtual wxString GetWarning();
 	virtual wxString GetDecoderName();
 };
+
 

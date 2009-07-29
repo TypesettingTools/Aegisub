@@ -45,15 +45,18 @@
 #include "ass_style.h"
 
 
-///////////////
-// Constructor
+
+/// @brief Constructor 
+///
 AssFixStylesFilter::AssFixStylesFilter() {
 	initialized = false;
 }
 
 
-////////
-// Init
+
+/// @brief Init 
+/// @return 
+///
 void AssFixStylesFilter::Init() {
 	if (initialized) return;
 	initialized = true;
@@ -63,8 +66,11 @@ void AssFixStylesFilter::Init() {
 }
 
 
-///////////
-// Process
+
+/// @brief Process 
+/// @param subs          
+/// @param export_dialog 
+///
 void AssFixStylesFilter::ProcessSubs(AssFile *subs, wxWindow *export_dialog) {
 	// Build styles list
 	wxArrayString styles = subs->GetStyles();
@@ -93,7 +99,8 @@ void AssFixStylesFilter::ProcessSubs(AssFile *subs, wxWindow *export_dialog) {
 }
 
 
-///////////////////
-// Global instance
+
+/// DOCME
 AssFixStylesFilter AssFixStylesFilter::instance;
+
 

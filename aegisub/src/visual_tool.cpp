@@ -62,8 +62,10 @@
 #include "utils.h"
 
 
-///////////////
-// Constructor
+
+/// @brief Constructor 
+/// @param par 
+///
 VisualTool::VisualTool(VideoDisplay *par) : eventSink(this) {
 	// Config
 	parent = par;
@@ -95,14 +97,18 @@ VisualTool::VisualTool(VideoDisplay *par) : eventSink(this) {
 }
 
 
-//////////////
-// Destructor
+
+/// @brief Destructor 
+///
 VisualTool::~VisualTool() {
 }
 
 
-///////////////
-// Mouse event
+
+/// @brief Mouse event 
+/// @param event 
+/// @return 
+///
 void VisualTool::OnMouseEvent (wxMouseEvent &event) {
 	// General variables
 	mouseX = event.GetX();
@@ -268,8 +274,11 @@ void VisualTool::OnMouseEvent (wxMouseEvent &event) {
 }
 
 
-//////////
-// Commit
+
+/// @brief Commit 
+/// @param full 
+/// @return 
+///
 void VisualTool::Commit(bool full) {
 	// Get grid
 	SubtitlesGrid *grid = VideoContext::Get()->grid;
@@ -288,8 +297,10 @@ void VisualTool::Commit(bool full) {
 }
 
 
-////////////////////////////
-// Get active dialogue line
+
+/// @brief Get active dialogue line 
+/// @return 
+///
 AssDialogue* VisualTool::GetActiveDialogueLine() {
 	SubtitlesGrid *grid = VideoContext::Get()->grid;
 	AssDialogue *diag = grid->GetDialogue(grid->editBox->linen);
@@ -307,8 +318,10 @@ AssDialogue* VisualTool::GetActiveDialogueLine() {
 }
 
 
-///////////////////////////
-// Get feature under mouse
+
+/// @brief Get feature under mouse 
+/// @return 
+///
 int VisualTool::GetHighlightedFeature() {
 	int highestLayerFound = -99999;
 	int bestMatch = -1;
@@ -322,8 +335,9 @@ int VisualTool::GetHighlightedFeature() {
 }
 
 
-/////////////////////
-// Draw all features
+
+/// @brief Draw all features 
+///
 void VisualTool::DrawAllFeatures() {
 	// Populate list, if needed
 	if (!dragListOK) {
@@ -344,8 +358,9 @@ void VisualTool::DrawAllFeatures() {
 }
 
 
-///////////
-// Refresh
+
+/// @brief Refresh 
+///
 void VisualTool::Refresh() {
 	frame_n = VideoContext::Get()->GetFrameN();
 	if (!dragging) dragListOK = false;
@@ -353,12 +368,25 @@ void VisualTool::Refresh() {
 }
 
 
-////////////////////////
-// Get position of line
+
+/// @brief Get position of line 
+/// @param diag 
+/// @param x    
+/// @param y    
+///
 void VisualTool::GetLinePosition(AssDialogue *diag,int &x, int &y) {
 	int orgx=0,orgy=0;
 	GetLinePosition(diag,x,y,orgx,orgy);
 }
+
+/// @brief DOCME
+/// @param diag 
+/// @param x    
+/// @param y    
+/// @param orgx 
+/// @param orgy 
+/// @return 
+///
 void VisualTool::GetLinePosition(AssDialogue *diag,int &x, int &y, int &orgx, int &orgy) {
 	// No dialogue
 	if (!diag) {
@@ -479,8 +507,18 @@ void VisualTool::GetLinePosition(AssDialogue *diag,int &x, int &y, int &orgx, in
 }
 
 
-///////////////////////////////////////
-// Get the destination of move, if any
+
+/// @brief Get the destination of move, if any 
+/// @param diag    
+/// @param hasMove 
+/// @param x1      
+/// @param y1      
+/// @param x2      
+/// @param y2      
+/// @param t1      
+/// @param t2      
+/// @return 
+///
 void VisualTool::GetLineMove(AssDialogue *diag,bool &hasMove,int &x1,int &y1,int &x2,int &y2,int &t1,int &t2) {
 	// Parse tags
 	hasMove = false;
@@ -516,8 +554,14 @@ void VisualTool::GetLineMove(AssDialogue *diag,bool &hasMove,int &x1,int &y1,int
 }
 
 
-///////////////////////
-// Get line's rotation
+
+/// @brief Get line's rotation 
+/// @param diag 
+/// @param rx   
+/// @param ry   
+/// @param rz   
+/// @return 
+///
 void VisualTool::GetLineRotation(AssDialogue *diag,float &rx,float &ry,float &rz) {
 	// Default values
 	rx = ry = rz = 0.0f;
@@ -555,8 +599,13 @@ void VisualTool::GetLineRotation(AssDialogue *diag,float &rx,float &ry,float &rz
 }
 
 
-////////////////////
-// Get line's scale
+
+/// @brief Get line's scale 
+/// @param diag  
+/// @param scalX 
+/// @param scalY 
+/// @return 
+///
 void VisualTool::GetLineScale(AssDialogue *diag,float &scalX,float &scalY) {
 	// Default values
 	scalX = scalY = 100.0f;
@@ -588,8 +637,16 @@ void VisualTool::GetLineScale(AssDialogue *diag,float &scalX,float &scalY) {
 }
 
 
-///////////////////
-// Get line's clip
+
+/// @brief Get line's clip 
+/// @param diag    
+/// @param x1      
+/// @param y1      
+/// @param x2      
+/// @param y2      
+/// @param inverse 
+/// @return 
+///
 void VisualTool::GetLineClip(AssDialogue *diag,int &x1,int &y1,int &x2,int &y2,bool &inverse) {
 	// Default values
 	x1 = y1 = 0;
@@ -634,8 +691,13 @@ void VisualTool::GetLineClip(AssDialogue *diag,int &x1,int &y1,int &x2,int &y2,b
 }
 
 
-//////////////////////////////////////
-// Get line vector clip, if it exists
+
+/// @brief Get line vector clip, if it exists 
+/// @param diag    
+/// @param scale   
+/// @param inverse 
+/// @return 
+///
 wxString VisualTool::GetLineVectorClip(AssDialogue *diag,int &scale,bool &inverse) {
 	// Prepare overrides
 	wxString result;
@@ -679,29 +741,41 @@ wxString VisualTool::GetLineVectorClip(AssDialogue *diag,int &scale,bool &invers
 }
 
 
-////////////////
-// Set override
+
+/// @brief Set override 
+/// @param tag   
+/// @param value 
+///
 void VisualTool::SetOverride(wxString tag,wxString value) {
 	VideoContext::Get()->grid->editBox->SetOverride(tag,value,0,false);
 	parent->SetFocus();
 }
 
 
-//////////////////
-// Connect button
+
+/// @brief Connect button 
+/// @param button 
+///
 void VisualTool::ConnectButton(wxButton *button) {
 	button->Connect(wxEVT_COMMAND_BUTTON_CLICKED,wxCommandEventHandler(VisualToolEvent::OnButton),NULL,&eventSink);
 }
 
 
-//////////////
-// Event sink
+
+/// @brief Event sink 
+/// @param _tool 
+///
 VisualToolEvent::VisualToolEvent(VisualTool *_tool) {
 	tool = _tool;
 }
+
+/// @brief DOCME
+/// @param event 
+///
 void VisualToolEvent::OnButton(wxCommandEvent &event) {
 	tool->OnButton(event);
 }
+
 
 
 

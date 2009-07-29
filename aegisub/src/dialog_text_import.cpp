@@ -45,8 +45,9 @@
 #include "options.h"
 
 
-///////////////
-// Constructor
+
+/// @brief Constructor 
+///
 DialogTextImport::DialogTextImport()
 : wxDialog(NULL , -1, _("Text import options"),wxDefaultPosition,wxDefaultSize)
 {
@@ -68,12 +69,17 @@ DialogTextImport::DialogTextImport()
 	SetSizer(main_sizer);
 }
 
-//////////////
-// Destructor
+
+/// @brief Destructor 
+///
 DialogTextImport::~DialogTextImport()
 {
 }
 
+
+/// @brief DOCME
+/// @param event 
+///
 void DialogTextImport::OnOK(wxCommandEvent &event)
 {
 	// Set options
@@ -84,6 +90,10 @@ void DialogTextImport::OnOK(wxCommandEvent &event)
 	EndModal(wxID_OK);
 }
 
+
+/// @brief DOCME
+/// @param event 
+///
 void DialogTextImport::OnCancel(wxCommandEvent &event)
 {
 	EndModal(wxID_CANCEL);
@@ -95,4 +105,5 @@ BEGIN_EVENT_TABLE(DialogTextImport,wxDialog)
 	EVT_BUTTON(wxID_OK,DialogTextImport::OnOK)
 	EVT_BUTTON(wxID_CANCEL,DialogTextImport::OnCancel)
 END_EVENT_TABLE()
+
 

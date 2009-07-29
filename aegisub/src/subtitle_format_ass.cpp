@@ -45,22 +45,29 @@
 #include "ass_dialogue.h"
 
 
-/////////////
-// Can read?
+
+/// @brief Can read? 
+/// @param filename 
+/// @return 
+///
 bool ASSSubtitleFormat::CanReadFile(wxString filename) {
 	return (filename.Right(4).Lower() == _T(".ass") || filename.Right(4).Lower() == _T(".ssa"));
 }
 
 
-////////////
-// Get name
+
+/// @brief Get name 
+/// @return 
+///
 wxString ASSSubtitleFormat::GetName() {
 	return _T("Advanced Substation Alpha");
 }
 
 
-//////////////////////
-// Get read wildcards
+
+/// @brief Get read wildcards 
+/// @return 
+///
 wxArrayString ASSSubtitleFormat::GetReadWildcards() {
 	wxArrayString formats;
 	formats.Add(_T("ass"));
@@ -69,8 +76,10 @@ wxArrayString ASSSubtitleFormat::GetReadWildcards() {
 }
 
 
-///////////////////////
-// Get write wildcards
+
+/// @brief Get write wildcards 
+/// @return 
+///
 wxArrayString ASSSubtitleFormat::GetWriteWildcards() {
 	wxArrayString formats;
 	formats.Add(_T("ass"));
@@ -79,8 +88,11 @@ wxArrayString ASSSubtitleFormat::GetWriteWildcards() {
 }
 
 
-/////////////
-// Read file
+
+/// @brief Read file 
+/// @param filename 
+/// @param encoding 
+///
 void ASSSubtitleFormat::ReadFile(wxString filename,wxString encoding) {
 	using namespace std;
 
@@ -151,15 +163,21 @@ void ASSSubtitleFormat::ReadFile(wxString filename,wxString encoding) {
 }
 
 
-//////////////////////
-// Can write to file?
+
+/// @brief Can write to file? 
+/// @param filename 
+/// @return 
+///
 bool ASSSubtitleFormat::CanWriteFile(wxString filename) {
 	return (filename.Right(4).Lower() == _T(".ass") || filename.Right(4).Lower() == _T(".ssa"));
 }
 
 
-//////////////
-// Write file
+
+/// @brief Write file 
+/// @param _filename 
+/// @param encoding  
+///
 void ASSSubtitleFormat::WriteFile(wxString _filename,wxString encoding) {
 	// Open file
 	TextFileWriter file(_filename,encoding);
@@ -181,4 +199,5 @@ void ASSSubtitleFormat::WriteFile(wxString _filename,wxString encoding) {
 		else file.WriteLineToFile(entry->GetEntryData(),lineBreak);
 	}
 }
+
 

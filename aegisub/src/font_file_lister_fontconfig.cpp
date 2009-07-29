@@ -45,8 +45,11 @@
 #include "charset_conv.h"
 
 
-///////////////////////////////////
-// Get files that contain the face
+
+/// @brief Get files that contain the face 
+/// @param facename 
+/// @return 
+///
 wxArrayString FontConfigFontFileLister::DoGetFilesWithFace(wxString facename) {
 	wxArrayString results;
 
@@ -80,24 +83,27 @@ wxArrayString FontConfigFontFileLister::DoGetFilesWithFace(wxString facename) {
 }
 
 
-///////////////
-// Constructor
+
+/// @brief Constructor 
+///
 FontConfigFontFileLister::FontConfigFontFileLister()
 : fontconf(0), aux(0)
 {
 }
 
 
-//////////////
-// Initialize
+
+/// @brief Initialize 
+///
 void FontConfigFontFileLister::DoInitialize() {
 	fontconf = FcInitLoadConfigAndFonts();
 	aux = FcPatternCreate();
 }
 
 
-////////////
-// Clean up
+
+/// @brief Clean up 
+///
 void FontConfigFontFileLister::DoClearData() {
 	if (aux) FcPatternDestroy(aux);
 #ifdef HAVE_FCFINI
@@ -106,4 +112,5 @@ void FontConfigFontFileLister::DoClearData() {
 }
 
 #endif
+
 

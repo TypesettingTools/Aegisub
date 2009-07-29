@@ -54,8 +54,15 @@ public:
 } registerDummyVideo; */
 
 
-///////////////
-// Constructor
+
+/// @brief Constructor 
+/// @param _fps    
+/// @param frames  
+/// @param _width  
+/// @param _height 
+/// @param colour  
+/// @param pattern 
+///
 void DummyVideoProvider::Create(double _fps, int frames, int _width, int _height, const wxColour &colour, bool pattern) {
 	lastFrame = -1;
 	framecount = frames;
@@ -121,8 +128,10 @@ void DummyVideoProvider::Create(double _fps, int frames, int _width, int _height
 }
 
 
-///////////////////////
-// Parsing constructor
+
+/// @brief Parsing constructor 
+/// @param filename 
+///
 DummyVideoProvider::DummyVideoProvider(wxString filename)
 {
 	wxString params;
@@ -183,74 +192,105 @@ DummyVideoProvider::DummyVideoProvider(wxString filename)
 }
 
 
-//////////////////////
-// Direct constructor
+
+/// @brief Direct constructor 
+/// @param _fps    
+/// @param frames  
+/// @param _width  
+/// @param _height 
+/// @param colour  
+/// @param pattern 
+///
 DummyVideoProvider::DummyVideoProvider(double _fps, int frames, int _width, int _height, const wxColour &colour, bool pattern) {
 	Create(_fps, frames, _width, _height, colour, pattern);
 }
 
 
-//////////////
-// Destructor
+
+/// @brief Destructor 
+///
 DummyVideoProvider::~DummyVideoProvider() {
 	frame.Clear();
 }
 
 
-//////////////////////////////////////////////////
-// Construct a fake filename describing the video
+
+/// @brief Construct a fake filename describing the video 
+/// @param fps     
+/// @param frames  
+/// @param _width  
+/// @param _height 
+/// @param colour  
+/// @param pattern 
+/// @return 
+///
 wxString DummyVideoProvider::MakeFilename(double fps, int frames, int _width, int _height, const wxColour &colour, bool pattern) {
 	return wxString::Format(_T("?dummy:%f:%d:%d:%d:%d:%d:%d:%s"), fps, frames, _width, _height, colour.Red(), colour.Green(), colour.Blue(), pattern?_T("c"):_T(""));
 }
 
 
-/////////////
-// Get frame
+
+/// @brief Get frame 
+/// @param n 
+/// @return 
+///
 const AegiVideoFrame DummyVideoProvider::GetFrame(int n) {
 	lastFrame = n;
 	return frame;
 }
 
 
-////////////////
-// Get position
+
+/// @brief Get position 
+/// @return 
+///
 int DummyVideoProvider::GetPosition() {
 	return lastFrame;
 }
 
 
-///////////////////
-// Get frame count
+
+/// @brief Get frame count 
+/// @return 
+///
 int DummyVideoProvider::GetFrameCount() {
 	return framecount;
 }
 
 
-/////////////
-// Get width
+
+/// @brief Get width 
+/// @return 
+///
 int DummyVideoProvider::GetWidth() {
 	return width;
 }
 
 
-//////////////
-// Get height
+
+/// @brief Get height 
+/// @return 
+///
 int DummyVideoProvider::GetHeight() {
 	return height;
 }
 
 
-///////////
-// Get FPS
+
+/// @brief Get FPS 
+/// @return 
+///
 double DummyVideoProvider::GetFPS() {
 	return fps;
 }
 
 
-////////////////////
-// Get decoder name
+
+/// @brief Get decoder name 
+///
 wxString DummyVideoProvider::GetDecoderName() {
 	return L"Dummy Video Provider";
 }
+
 
 

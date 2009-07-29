@@ -47,8 +47,10 @@
 #include "utils.h"
 
 
-///////////////
-// Constructor
+
+/// @brief Constructor 
+/// @param parent 
+///
 DialogVideoDetails::DialogVideoDetails(wxWindow *parent)
 : wxDialog(parent , -1, _("Video Details"),wxDefaultPosition,wxDefaultSize)
 {
@@ -91,8 +93,12 @@ DialogVideoDetails::DialogVideoDetails(wxWindow *parent)
 }
 
 
-////////////
-// PrettyAR
+
+/// @brief PrettyAR 
+/// @param width  
+/// @param height 
+/// @return 
+///
 wxString DialogVideoDetails::PrettyAR(int width, int height)
 {
 	int limit = (int)ceil(sqrt(double(MIN(width, height))));
@@ -106,8 +112,11 @@ wxString DialogVideoDetails::PrettyAR(int width, int height)
 }
 
 
-///////////////////
-// PrettyTimeStamp
+
+/// @brief PrettyTimeStamp 
+/// @param frames 
+/// @param fps    
+///
 wxString DialogVideoDetails::PrettyTimeStamp(int frames, double fps)
 {
 	int tt = int(frames / fps * 1000);
@@ -117,4 +126,5 @@ wxString DialogVideoDetails::PrettyTimeStamp(int frames, double fps)
 	int h = tt;
 	return wxString::Format(_T("%d:%02d:%02d.%03d"), h, m, s, cs);
 }
+
 

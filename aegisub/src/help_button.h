@@ -44,13 +44,21 @@
 #include <wx/button.h>
 
 
-///////////////////////
-// Browse button class
+
+/// DOCME
+/// @class HelpButton
+/// @brief DOCME
+///
+/// DOCME
 class HelpButton : public wxButton {
 private:
+
+	/// DOCME
 	wxString id;
 	void OnPressed(wxCommandEvent &event);
 
+
+	/// DOCME
 	static std::map<wxString,wxString> *pages;
 	static void InitStatic();
 
@@ -60,4 +68,5 @@ public:
 	static void OpenPage(const wxString page);
 	static void ClearPages();
 };
+
 

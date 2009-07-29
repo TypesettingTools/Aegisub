@@ -35,6 +35,8 @@
 ///
 
 #ifndef _DIALOG_DUMMY_VIDEO_H
+
+/// DOCME
 #define _DIALOG_DUMMY_VIDEO_H
 
 #include <wx/dialog.h>
@@ -46,21 +48,46 @@
 #include "video_provider_dummy.h"
 #include "colour_button.h"
 
+
+/// DOCME
+/// @class DialogDummyVideo
+/// @brief DOCME
+///
+/// DOCME
 class DialogDummyVideo : public wxDialog {
 private:
 	DialogDummyVideo(wxWindow *parent);
 	virtual ~DialogDummyVideo();
 
+
+	/// DOCME
 	wxComboBox *resolution_shortcuts;
+
+	/// DOCME
 	wxTextCtrl *width;
+
+	/// DOCME
 	wxTextCtrl *height;
+
+	/// DOCME
 	ColourButton *colour;
+
+	/// DOCME
 	wxCheckBox *pattern;
-	//wxComboBox *fps;
+
+	/// DOCME
 	wxTextCtrl *fps;
+
+	/// DOCME
 	wxSpinCtrl *length;
+
+	/// DOCME
 	wxStaticText *length_display;
+
+	/// DOCME
 	wxButton *ok_button;
+
+	/// DOCME
 	wxButton *cancel_button;
 
 	void OnResolutionShortcut(wxCommandEvent &evt);
@@ -77,11 +104,18 @@ public:
 };
 
 enum {
+
+	/// DOCME
 	Dummy_Video_Resolution_Shortcut = 1700,
+
+	/// DOCME
 	Dummy_Video_FPS,
+
+	/// DOCME
 	Dummy_Video_Length,
 };
 
 
 #endif
+
 

@@ -48,22 +48,29 @@
 
 
 
-/////////////////////////////// HotkeyType //////////////////////////////////
-////////////////
-// Constructors
+
+/// @brief Constructors  HotkeyType //////////////////////////////////
+///
 HotkeyType::HotkeyType() {
 	flags = 0;
 	keycode = 0;
 }
 
+
+/// @brief DOCME
+/// @param text 
+/// @param name 
+///
 HotkeyType::HotkeyType(wxString text,wxString name) {
 	Parse(text);
 	origName = name;
 }
 
 
-////////////////////////
-// Get string of hotkey
+
+/// @brief Get string of hotkey 
+/// @return 
+///
 wxString HotkeyType::GetText() {
 	wxString text;
 
@@ -79,8 +86,10 @@ wxString HotkeyType::GetText() {
 }
 
 
-//////////////////////////
-// Parse text into hotkey
+
+/// @brief Parse text into hotkey 
+/// @param text 
+///
 void HotkeyType::Parse(wxString text) {
 	// Reset
 	flags = 0;
@@ -139,9 +148,14 @@ void HotkeyType::Parse(wxString text) {
 }
 
 
-//////////////////////////
-// Get name from Key code
+
+/// DOCME
 std::map<int,wxString> HotkeyType::keyName;
+
+/// @brief DOCME
+/// @param keycode 
+/// @return 
+///
 wxString HotkeyType::GetKeyName(int keycode) {
 	// Fill map
 	FillMap();
@@ -156,8 +170,10 @@ wxString HotkeyType::GetKeyName(int keycode) {
 }
 
 
-////////////
-// Fill map
+
+/// @brief Fill map 
+/// @return 
+///
 void HotkeyType::FillMap() {
 	if (keyName.empty()) {
 		keyName[WXK_BACK] = _T("Backspace");
@@ -216,28 +232,31 @@ void HotkeyType::FillMap() {
 }
 
 
-////////////////////////////// HotkeyManager ////////////////////////////////
-//////////////
-// Definition
+
+/// DOCME
 HotkeyManager Hotkeys;
 
 
-///////////////
-// Constructor
+
+/// @brief Constructor 
+///
 HotkeyManager::HotkeyManager() {
 	modified = false;
 }
 
 
-//////////////
-// Destructor
+
+/// @brief Destructor 
+///
 HotkeyManager::~HotkeyManager() {
 	key.clear();
 }
 
 
-////////
-// Save
+
+/// @brief Save 
+/// @return 
+///
 void HotkeyManager::Save() {
 	// Check if it's actually modified
 	if (!modified) return;
@@ -257,8 +276,10 @@ void HotkeyManager::Save() {
 }
 
 
-////////
-// Load
+
+/// @brief Load 
+/// @return 
+///
 void HotkeyManager::Load() {
 	// Load defaults
 	LoadDefaults();
@@ -330,17 +351,20 @@ void HotkeyManager::Load() {
 }
 
 
-/////////////////
-// Load defaults
+
+/// @brief Load defaults 
+///
 void HotkeyManager::LoadDefaults() {
 	modified = true;
 
-	// NOTE!!
-	// _() is used here instead of _T(). This is done so the strings can be extracted.
-	// However, since this function is called before locale is set, it won't ever be translated.
-	// Keep this in mind: THESE CANNOT BE TRANSLATED HERE!
-	// As a safeguard, _() is undefined here
+
+	/// @note () is used here instead of _T(). This is done so the strings can be extracted.
+	///       However, since this function is called before locale is set, it won't ever be translated.
+	///       Keep this in mind: THESE CANNOT BE TRANSLATED HERE!
+	///       As a safeguard, _() is undefined here
 	#undef _
+
+	/// DOCME
 	#define _(a) _T(a)
 
 	SetHotkey(_("New subtitles"),_T("Ctrl-N"));
@@ -469,28 +493,41 @@ void HotkeyManager::LoadDefaults() {
 }
 
 
-//////////////
-// Set hotkey
+
+/// @brief Set hotkey 
+/// @param function 
+/// @param hotkey   
+///
 void HotkeyManager::SetHotkey(wxString function,HotkeyType hotkey) {
 	key[function.Lower()] = hotkey;
 	modified = true;
 }
 
+
+/// @brief DOCME
+/// @param function 
+/// @param hotkey   
+///
 void HotkeyManager::SetHotkey(wxString function,wxString hotkey) {
 	key[function.Lower()] = HotkeyType(hotkey,function);
 	modified = true;
 }
 
 
-////////////
-// Set file
+
+/// @brief Set file 
+/// @param file 
+///
 void HotkeyManager::SetFile(wxString file) {
 	filename = file;
 }
 
 
-//////////////////////
-// Get hotkey as text
+
+/// @brief Get hotkey as text 
+/// @param function 
+/// @return 
+///
 wxString HotkeyManager::GetText(wxString function) {
 	std::map<wxString,HotkeyType>::iterator cur = key.find(function.Lower());
 	if (cur != key.end()) {
@@ -500,8 +537,12 @@ wxString HotkeyManager::GetText(wxString function) {
 }
 
 
-///////////////////////////////////
-// Get hotkey as accelerator entry
+
+/// @brief Get hotkey as accelerator entry 
+/// @param function 
+/// @param id       
+/// @return 
+///
 wxAcceleratorEntry HotkeyManager::GetAccelerator(wxString function,int id) {
 	std::map<wxString,HotkeyType>::iterator cur = key.find(function.Lower());
 	if (cur != key.end()) {
@@ -514,8 +555,13 @@ wxAcceleratorEntry HotkeyManager::GetAccelerator(wxString function,int id) {
 }
 
 
-////////////////////////
-// Set last key pressed
+
+/// @brief Set last key pressed 
+/// @param keypress 
+/// @param ctrl     
+/// @param alt      
+/// @param shift    
+///
 void HotkeyManager::SetPressed(int keypress,bool ctrl,bool alt,bool shift) {
 	lastKey = keypress;
     lastMod = 0;
@@ -525,8 +571,11 @@ void HotkeyManager::SetPressed(int keypress,bool ctrl,bool alt,bool shift) {
 }
 
 
-///////////////
-// Is pressed?
+
+/// @brief Is pressed? 
+/// @param function 
+/// @return 
+///
 bool HotkeyManager::IsPressed(wxString function) {
 	std::map<wxString,HotkeyType>::iterator cur = key.find(function.Lower());
 	if (cur != key.end()) {
@@ -537,8 +586,11 @@ bool HotkeyManager::IsPressed(wxString function) {
 }
 
 
-///////////////////////
-// Search for a hotkey
+
+/// @brief Search for a hotkey 
+/// @param keycode 
+/// @param mod     
+///
 HotkeyType *HotkeyManager::Find(int keycode,int mod) {
 	for (std::map<wxString,HotkeyType>::iterator cur = key.begin();cur != key.end();cur++) {
 		if (cur->second.keycode == keycode && cur->second.flags == mod) {
@@ -548,4 +600,5 @@ HotkeyType *HotkeyManager::Find(int keycode,int mod) {
 
 	return NULL;
 }
+
 

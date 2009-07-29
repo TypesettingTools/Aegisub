@@ -49,8 +49,9 @@
 #include "utils.h"
 
 
-///////////////
-// Constructor
+
+/// @brief Constructor 
+///
 MySpellThesaurus::MySpellThesaurus() {
 	conv = NULL;
 	mythes = NULL;
@@ -58,8 +59,9 @@ MySpellThesaurus::MySpellThesaurus() {
 }
 
 
-//////////////
-// Destructor
+
+/// @brief Destructor 
+///
 MySpellThesaurus::~MySpellThesaurus() {
 	delete mythes;
 	mythes = NULL;
@@ -68,8 +70,12 @@ MySpellThesaurus::~MySpellThesaurus() {
 }
 
 
-///////////////////
-// Get suggestions
+
+/// @brief Get suggestions 
+/// @param word   
+/// @param result 
+/// @return 
+///
 void MySpellThesaurus::Lookup(wxString word,ThesaurusEntryArray &result) {
 	// Loaded?
 	if (!mythes) return;
@@ -93,8 +99,10 @@ void MySpellThesaurus::Lookup(wxString word,ThesaurusEntryArray &result) {
 }
 
 
-/////////////////////
-// Get language list
+
+/// @brief Get language list 
+/// @return 
+///
 wxArrayString MySpellThesaurus::GetLanguageList() {
 	// Get dir name
 	wxString path = StandardPaths::DecodePathMaybeRelative(Options.AsText(_T("Dictionaries path")), _T("?data")) + _T("/");
@@ -128,8 +136,10 @@ wxArrayString MySpellThesaurus::GetLanguageList() {
 }
 
 
-////////////////
-// Set language
+
+/// @brief Set language 
+/// @param language 
+///
 void MySpellThesaurus::SetLanguage(wxString language) {
 	// Unload
 	delete mythes;
@@ -155,4 +165,5 @@ void MySpellThesaurus::SetLanguage(wxString language) {
 	conv = NULL;
 	if (mythes) conv = new wxCSConv(wxString(mythes->get_th_encoding(),wxConvUTF8));
 }
+
 

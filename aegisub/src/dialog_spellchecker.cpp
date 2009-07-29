@@ -56,18 +56,35 @@
 ///////
 // IDs
 enum {
+
+	/// DOCME
 	BUTTON_REPLACE = 1720,
+
+	/// DOCME
 	BUTTON_IGNORE,
+
+	/// DOCME
 	BUTTON_REPLACE_ALL,
+
+	/// DOCME
 	BUTTON_IGNORE_ALL,
+
+	/// DOCME
 	BUTTON_ADD,
+
+	/// DOCME
 	LIST_SUGGESTIONS,
+
+	/// DOCME
 	LIST_LANGUAGES
 };
 
 
-///////////////
-// Constructor
+
+/// @brief Constructor 
+/// @param parent 
+/// @return 
+///
 DialogSpellChecker::DialogSpellChecker(wxFrame *parent)
 : wxDialog(parent, -1, _("Spell Checker"), wxDefaultPosition, wxDefaultSize)
 {
@@ -155,15 +172,20 @@ DialogSpellChecker::DialogSpellChecker(wxFrame *parent)
 }
 
 
-//////////////
-// Destructor
+
+/// @brief Destructor 
+///
 DialogSpellChecker::~DialogSpellChecker() {
 	if (spellchecker) delete spellchecker;
 }
 
 
-///////////////////
-// Find next match
+
+/// @brief Find next match 
+/// @param startLine 
+/// @param startPos  
+/// @return 
+///
 bool DialogSpellChecker::FindNext(int startLine,int startPos) {
 	// Set start
 	if (startLine != -1) lastLine = startLine;
@@ -226,8 +248,10 @@ bool DialogSpellChecker::FindNext(int startLine,int startPos) {
 }
 
 
-////////////
-// Set word
+
+/// @brief Set word 
+/// @param word 
+///
 void DialogSpellChecker::SetWord(wxString word) {
 	// Get list of suggestions
 	wxArrayString sugs = spellchecker->GetSuggestions(word);
@@ -267,23 +291,29 @@ BEGIN_EVENT_TABLE(DialogSpellChecker,wxDialog)
 END_EVENT_TABLE()
 
 
-/////////
-// Close
+
+/// @brief Close 
+/// @param event 
+///
 void DialogSpellChecker::OnClose(wxCommandEvent &event) {
 	Destroy();
 }
 
 
-///////////
-// Replace
+
+/// @brief Replace 
+/// @param event 
+///
 void DialogSpellChecker::OnReplace(wxCommandEvent &event) {
 	Replace();
 	FindOrDie();
 }
 
 
-//////////////////////
-// Replace all errors
+
+/// @brief Replace all errors 
+/// @param event 
+///
 void DialogSpellChecker::OnReplaceAll(wxCommandEvent &event) {
 	// Add word to autoreplace list
 	autoReplace[origWord->GetValue()] = replaceWord->GetValue();
@@ -294,16 +324,20 @@ void DialogSpellChecker::OnReplaceAll(wxCommandEvent &event) {
 }
 
 
-/////////////////////
-// Ignore this error
+
+/// @brief Ignore this error 
+/// @param event 
+///
 void DialogSpellChecker::OnIgnore(wxCommandEvent &event) {
 	// Next
 	FindOrDie();
 }
 
 
-/////////////////////
-// Ignore all errors
+
+/// @brief Ignore all errors 
+/// @param event 
+///
 void DialogSpellChecker::OnIgnoreAll(wxCommandEvent &event) {
 	// Add word to autoignore list
 	autoIgnore.Add(origWord->GetValue());
@@ -313,16 +347,20 @@ void DialogSpellChecker::OnIgnoreAll(wxCommandEvent &event) {
 }
 
 
-/////////////////////
-// Add to dictionary
+
+/// @brief Add to dictionary 
+/// @param event 
+///
 void DialogSpellChecker::OnAdd(wxCommandEvent &event) {
 	spellchecker->AddWord(origWord->GetValue());
 	FindOrDie();
 }
 
 
-///////////////////////////////////////////////
-// Goes to next... if it can't find one, close
+
+/// @brief Goes to next... if it can't find one, close 
+/// @return 
+///
 bool DialogSpellChecker::FindOrDie() {
 	if (!FindNext()) {
 		wxMessageBox(_("Aegisub has finished checking spelling of this script."),_("Spell checking complete."));
@@ -333,8 +371,9 @@ bool DialogSpellChecker::FindOrDie() {
 }
 
 
-///////////
-// Replace
+
+/// @brief Replace 
+///
 void DialogSpellChecker::Replace() {
 	// Get dialog
 	SubtitlesGrid *grid = ((FrameMain*)GetParent())->SubsBox;
@@ -350,8 +389,10 @@ void DialogSpellChecker::Replace() {
 }
 
 
-///////////////////
-// Change language
+
+/// @brief Change language 
+/// @param event 
+///
 void DialogSpellChecker::OnChangeLanguage(wxCommandEvent &event) {
 	// Change language code
 	wxString code = langCodes[language->GetSelection()];
@@ -364,15 +405,19 @@ void DialogSpellChecker::OnChangeLanguage(wxCommandEvent &event) {
 }
 
 
-/////////////////////
-// Change suggestion
+
+/// @brief Change suggestion 
+/// @param event 
+///
 void DialogSpellChecker::OnChangeSuggestion(wxCommandEvent &event) {
 	replaceWord->SetValue(suggestList->GetStringSelection());
 }
 
 
-/////////////////////////////////
-// Suggestion box double clicked
+
+/// @brief Suggestion box double clicked 
+/// @param event 
+///
 void DialogSpellChecker::OnTakeSuggestion(wxCommandEvent &event) {
 	// First line should be unnecessary due to event above, but you never know...
 	replaceWord->SetValue(suggestList->GetStringSelection());
@@ -381,8 +426,9 @@ void DialogSpellChecker::OnTakeSuggestion(wxCommandEvent &event) {
 }
 
 
-///////////////
-// First match
+
+/// @brief First match 
+///
 bool DialogSpellChecker::GetFirstMatch() {
 	// Get selection
 	SubtitlesGrid *grid = ((FrameMain*)GetParent())->SubsBox;
@@ -400,4 +446,5 @@ bool DialogSpellChecker::GetFirstMatch() {
 	// OK
 	return true;
 }
+
 

@@ -35,6 +35,8 @@
 ///
 
 #ifndef AEGISUB_CHARSET_CONV_H
+
+/// DOCME
 #define AEGISUB_CHARSET_CONV_H
 
 #include <iconv.h>
@@ -47,9 +49,17 @@
 #include "aegisub_endian.h"
 
 #if !defined(_LIBICONV_VERSION) || _LIBICONV_VERSION < 0x010A || defined(LIBICONV_PLUG)
+
+/// DOCME
 #define ICONV_POSIX
 #endif
 
+
+/// DOCME
+/// @class AegisubCSConv
+/// @brief DOCME
+///
+/// DOCME
 class AegisubCSConv : public wxMBConv {
 public:
 	// By default, any conversion that would be lossy will fail
@@ -76,12 +86,24 @@ public:
 	static wxString GetRealEncodingName(wxString name);
 
 protected:
+
+	/// DOCME
+
+	/// DOCME
 	iconv_t m2w, w2m;
 
 private:
+
+	/// DOCME
 	wxString wcCharsetName;
+
+	/// DOCME
 	wxString mbCharsetName;
+
+	/// DOCME
 	size_t   mbNulLen;
+
+	/// DOCME
 	bool     enableSubst;
 
 	size_t doConversion(iconv_t cd, char *dst, size_t dstSize, char *src, size_t srcSize) const;
@@ -92,15 +114,22 @@ private:
 		void (*callback) (const char *buf, size_t buflen, void* callback_arg),
 		void *callback_arg,
 		void *convPtr);
+
+	/// DOCME
 	char invalidRep[8];
+
+	/// DOCME
 	size_t invalidRepSize;
 
 #ifndef ICONV_POSIX
+
+	/// DOCME
 	iconv_fallbacks fallbacks;
 #endif
 
 #if wxUSE_THREADS
-	// While iconv itself is thread-safe, using the same iconv_t on multiple threads is not
+
+	/// DOCME
 	wxMutex iconvMutex;
 #endif
 };
@@ -110,23 +139,36 @@ extern AegisubCSConv& csConvLocal;
 
 #ifdef HAVE_BIG_ENDIAN
 #	if SIZEOF_WCHAR_T == 4
+
+/// DOCME
 #		define WCHAR_T_ENCODING "UTF-32BE"
 #	elif SIZEOF_WCHAR_T == 2
+
+/// DOCME
 #		define WCHAR_T_ENCODING "UTF-16BE"
 #	endif
 #elif defined(HAVE_LITTLE_ENDIAN)
 #	if SIZEOF_WCHAR_T == 4
+
+/// DOCME
 #		define WCHAR_T_ENCODING "UTF-32LE"
 #	elif SIZEOF_WCHAR_T == 2
+
+/// DOCME
 #		define WCHAR_T_ENCODING "UTF-16LE"
 #	endif
 #else
 #	if SIZEOF_WCHAR_T == 4
+
+/// DOCME
 #		define WCHAR_T_ENCODING ((Endian::MachineToBig((uint32_t)1) == 1) ? "UTF-32BE" : "UTF-32LE")
 #	elif SIZEOF_WCHAR_T == 2
+
+/// DOCME
 #		define WCHAR_T_ENCODING ((Endian::MachineToBig((uint32_t)1) == 1) ? "UTF-16BE" : "UTF-16LE")
 #	endif
 #endif
 
 #endif
+
 

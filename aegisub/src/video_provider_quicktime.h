@@ -49,21 +49,53 @@
 #include "vfr.h"
 
 
+
+/// DOCME
+/// @class QuickTimeVideoProvider
+/// @brief DOCME
+///
+/// DOCME
 class QuickTimeVideoProvider : public VideoProvider, QuickTimeProvider {
 private:
+
+	/// DOCME
 	Movie movie;			// source object
+
+	/// DOCME
 	GWorldPtr gw;			// render buffer
+
+	/// DOCME
 	Handle in_dataref;		// input data handle
 
+
+	/// DOCME
+
+	/// DOCME
 	int w, h;				// width/height
+
+	/// DOCME
 	int num_frames;			// length of file in frames
+
+	/// DOCME
 	int cur_fn;				// current frame number
+
+	/// DOCME
 	FrameRate vfr_fps;		// vfr framerate
+
+	/// DOCME
 	double assumed_fps;		// average framerate
+
+	/// DOCME
 	wxArrayInt keyframes;	// list of keyframes
+
+	/// DOCME
 	std::vector<int> qt_timestamps;	 // qt timestamps (used for seeking)
 
+
+	/// DOCME
 	OSErr qt_err;			// quicktime error code
+
+	/// DOCME
 	wxString errmsg;		// aegisub error message
 
 	void LoadVideo(const wxString filename);
@@ -81,20 +113,43 @@ public:
 	int GetWidth();
 	int GetHeight();
 	double GetFPS();
+
+	/// @brief DOCME
+	/// @return 
+	///
 	bool IsVFR() { return true; };
 	FrameRate GetTrueFrameRate();
 	wxArrayInt GetKeyFrames();
 	bool QuickTimeVideoProvider::AreKeyFramesLoaded();
+
+	/// @brief DOCME
+	/// @return 
+	///
 	wxString GetDecoderName() { return L"QuickTime"; };
+
+	/// @brief DOCME
+	/// @return 
+	///
 	int GetDesiredCacheSize() { return 8; };
 };
 
 
+
+/// DOCME
+/// @class QuickTimeVideoProviderFactory
+/// @brief DOCME
+///
+/// DOCME
 class QuickTimeVideoProviderFactory : public VideoProviderFactory {
 public:
+
+	/// @brief DOCME
+	/// @param video 
+	///
 	VideoProvider *CreateProvider(wxString video) { return new QuickTimeVideoProvider(video); }
 };
 
 
 #endif /* WITH_QUICKTIME */
+
 

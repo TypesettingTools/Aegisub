@@ -43,18 +43,28 @@
 #include "include/aegisub/audio_provider.h"
 
 
-////////////////////////
-// Audio provider class
+
+/// DOCME
+/// @class DummyAudioProvider
+/// @brief DOCME
+///
+/// DOCME
 class DummyAudioProvider : public AudioProvider {
 private:
+
+	/// DOCME
 	bool noise;
 
 public:
 	DummyAudioProvider(unsigned long dur_ms, bool _noise);
 	~DummyAudioProvider();
 
+
+	/// @brief DOCME
+	///
 	bool AreSamplesNativeEndian() { return true; }
 
 	void GetAudio(void *buf, int64_t start, int64_t count);
 };
+
 

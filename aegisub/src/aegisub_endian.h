@@ -36,6 +36,8 @@
 #pragma once
 
 #ifndef _AEGISUB_ENDIAN_H
+
+/// DOCME
 #define _AEGISUB_ENDIAN_H
 
 
@@ -48,15 +50,23 @@
 // But this is an OS X system building a universal binary
 // Apple's GCC defines _BIG_ENDIAN when building for PPC
 #   ifdef _BIG_ENDIAN
+
+/// DOCME
 #    define HAVE_BIG_ENDIAN
 #   else
+
+/// DOCME
 #    define HAVE_LITTLE_ENDIAN
 #   endif
+
+/// DOCME
 #   undef HAVE_DYNAMIC_ENDIAN
 #  else // !HAVE_UNIVERSAL_ENDIAN
 // We aren't building an OS X universal binary
 // Use the dynamic endian code
 #   ifndef HAVE_DYNAMIC_ENDIAN
+
+/// DOCME
 #    define HAVE_DYNAMIC_ENDIAN
 #   endif
 #  endif //HAVE_UNIVERSAL_ENDIAN
@@ -73,6 +83,8 @@
 #include <stdint.h>
 
 
+
+/// DOCME
 namespace Endian {
 
 	// Unconditionally reverse endianness
@@ -80,6 +92,11 @@ namespace Endian {
 	// These are only defined for unsigned ints,
 	// Use reinterpret_cast on the values if you need signed values.
 
+
+	/// @brief DOCME
+	/// @param val 
+	/// @return 
+	///
 	inline uint16_t Reverse(uint16_t val)
 	{
 		return
@@ -87,6 +104,11 @@ namespace Endian {
 			((val & 0xFF00) >> 8);
 	}
 
+
+	/// @brief DOCME
+	/// @param val 
+	/// @return 
+	///
 	inline uint32_t Reverse(uint32_t val)
 	{
 		return
@@ -96,6 +118,11 @@ namespace Endian {
 			((val & 0xFF000000) >> 24);
 	}
 
+
+	/// @brief DOCME
+	/// @param val 
+	/// @return 
+	///
 	inline uint64_t Reverse(uint64_t val)
 	{
 		return
@@ -116,6 +143,11 @@ namespace Endian {
 	// Regular, fast, templatized conditional reversing
 
 	template <class T>
+
+	/// @brief DOCME
+	/// @param val 
+	/// @return 
+	///
 	inline T LittleToMachine(T val)
 	{
 #ifdef HAVE_BIG_ENDIAN
@@ -128,6 +160,11 @@ namespace Endian {
 	}
 
 	template <class T>
+
+	/// @brief DOCME
+	/// @param val 
+	/// @return 
+	///
 	inline T BigToMachine(T val)
 	{
 #ifdef HAVE_LITTLE_ENDIAN
@@ -140,6 +177,11 @@ namespace Endian {
 	}
 
 	template <class T>
+
+	/// @brief DOCME
+	/// @param val 
+	/// @return 
+	///
 	inline T MachineToLittle(T val)
 	{
 #ifdef HAVE_BIG_ENDIAN
@@ -152,6 +194,11 @@ namespace Endian {
 	}
 
 	template <class T>
+
+	/// @brief DOCME
+	/// @param val 
+	/// @return 
+	///
 	inline T MachineToBig(T val)
 	{
 #ifdef HAVE_LITTLE_ENDIAN
@@ -179,22 +226,45 @@ namespace Endian {
 
 	// Unions to pack together ints and get their physical bytes
 
+
+	/// DOCME
 	union bytes16 {
+
+		/// DOCME
 		uint8_t byte[2];
+
+		/// DOCME
 		uint16_t word;
 	};
+
+	/// DOCME
 	union bytes32 {
+
+		/// DOCME
 		uint8_t byte[4];
+
+		/// DOCME
 		uint32_t word;
 	};
+
+	/// DOCME
 	union bytes64 {
+
+		/// DOCME
 		uint8_t byte[8];
+
+		/// DOCME
 		uint64_t word;
 	};
 
 
 	// 16 bit words
 
+
+	/// @brief DOCME
+	/// @param val 
+	/// @return 
+	///
 	inline uint16_t MachineToBig(uint16_t val)
 	{
 		bytes16 pack;
@@ -205,6 +275,11 @@ namespace Endian {
 		return pack.word;
 	}
 
+
+	/// @brief DOCME
+	/// @param val 
+	/// @return 
+	///
 	inline uint16_t MachineToLittle(uint16_t val)
 	{
 		bytes16 pack;
@@ -215,6 +290,11 @@ namespace Endian {
 		return pack.word;
 	}
 
+
+	/// @brief DOCME
+	/// @param val 
+	/// @return 
+	///
 	inline uint16_t BigToMachine(uint16_t val)
 	{
 		bytes16 pack;
@@ -224,6 +304,11 @@ namespace Endian {
 		return uint16_t(pack.byte[1]) | (uint16_t(pack.byte[0]) << 8);
 	}
 
+
+	/// @brief DOCME
+	/// @param val 
+	/// @return 
+	///
 	inline uint16_t LittleToMachine(uint16_t val)
 	{
 		bytes16 pack;
@@ -236,6 +321,11 @@ namespace Endian {
 
 	// 32 bit words
 
+
+	/// @brief DOCME
+	/// @param val 
+	/// @return 
+	///
 	inline uint32_t MachineToBig(uint32_t val)
 	{
 		bytes32 pack;
@@ -246,6 +336,11 @@ namespace Endian {
 		return pack.word;
 	}
 
+
+	/// @brief DOCME
+	/// @param val 
+	/// @return 
+	///
 	inline uint32_t MachineToLittle(uint32_t val)
 	{
 		bytes32 pack;
@@ -256,6 +351,11 @@ namespace Endian {
 		return pack.word;
 	}
 
+
+	/// @brief DOCME
+	/// @param val 
+	/// @return 
+	///
 	inline uint32_t BigToMachine(uint32_t val)
 	{
 		bytes32 pack;
@@ -267,6 +367,11 @@ namespace Endian {
 			 uint32_t(pack.byte[3]);
 	}
 
+
+	/// @brief DOCME
+	/// @param val 
+	/// @return 
+	///
 	inline uint32_t LittleToMachine(uint32_t val)
 	{
 		bytes32 pack;
@@ -281,6 +386,11 @@ namespace Endian {
 
 	// 64 bit words
 
+
+	/// @brief DOCME
+	/// @param val 
+	/// @return 
+	///
 	inline uint64_t MachineToBig(uint64_t val)
 	{
 		bytes64 pack;
@@ -295,6 +405,11 @@ namespace Endian {
 		return pack.word;
 	}
 
+
+	/// @brief DOCME
+	/// @param val 
+	/// @return 
+	///
 	inline uint64_t MachineToLittle(uint64_t val)
 	{
 		bytes64 pack;
@@ -309,6 +424,11 @@ namespace Endian {
 		return pack.word;
 	}
 
+
+	/// @brief DOCME
+	/// @param val 
+	/// @return 
+	///
 	inline uint64_t BigToMachine(uint64_t val)
 	{
 		bytes64 pack;
@@ -324,6 +444,10 @@ namespace Endian {
 			 uint64_t(pack.byte[7]);
 	}
 
+
+	/// @brief DOCME
+	/// @param val 
+	///
 	inline uint64_t LittleToMachine(uint64_t val)
 	{
 		bytes64 pack;
@@ -345,4 +469,5 @@ namespace Endian {
 };
 
 #endif
+
 

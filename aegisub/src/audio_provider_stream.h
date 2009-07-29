@@ -45,24 +45,49 @@
 #include "include/aegisub/audio_provider.h"
 
 
-////////////////////////
-// Audio provider class
+
+/// DOCME
+/// @class StreamAudioProvider
+/// @brief DOCME
+///
+/// DOCME
 class StreamAudioProvider : public AudioProvider {
 private:
-	// Buffer chunk subclass
+
+	/// DOCME
+	/// @class BufferChunk
+	/// @brief DOCME
+	///
+	/// DOCME
 	class BufferChunk {
 	public:
+
+		/// DOCME
 		std::vector<short> buf;
+
+		/// DOCME
 		bool isFree;
 		BufferChunk();
 	};
 
+
+	/// DOCME
 	std::list<BufferChunk*> buffer;
+
+	/// DOCME
 	int startPos;
+
+	/// DOCME
 	int endPos;
+
+	/// DOCME
 	int bufLen;
 
+
+	/// DOCME
 	int buffered;
+
+	/// DOCME
 	bool hasBuf;
 
 public:
@@ -79,4 +104,5 @@ public:
 	void Append(void *buf, int64_t count);
 	void SetParams(int channels,int rate,int bps);
 };
+
 

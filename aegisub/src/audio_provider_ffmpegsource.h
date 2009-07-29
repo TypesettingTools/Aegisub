@@ -42,16 +42,30 @@
 #include "ffmpegsource_common.h"
 
 
-///////////////////////
-// FFmpegSource audio provider
+
+/// DOCME
+/// @class FFmpegSourceAudioProvider
+/// @brief DOCME
+///
+/// DOCME
 class FFmpegSourceAudioProvider : public AudioProvider, FFmpegSourceProvider {
 private:
+
+	/// DOCME
 	FFAudio *AudioSource;
 
+
+	/// DOCME
 	char FFMSErrMsg[1024];
+
+	/// DOCME
 	unsigned MsgSize;
+
+	/// DOCME
 	wxString ErrorMsg;
 
+
+	/// DOCME
 	bool COMInited;
 
 	void Close();
@@ -61,7 +75,10 @@ public:
 	FFmpegSourceAudioProvider(wxString filename);
 	virtual ~FFmpegSourceAudioProvider();
 
-	// FFMS always delivers samples in machine endian
+
+	/// @brief // FFMS always delivers samples in machine endian
+	/// @return 
+	///
 	bool AreSamplesNativeEndian() { return true; }
 
 	virtual void GetAudio(void *buf, int64_t start, int64_t count);
@@ -69,13 +86,22 @@ public:
 };
 
 
-///////////////////////
-// Factory
+
+/// DOCME
+/// @class FFmpegSourceAudioProviderFactory
+/// @brief DOCME
+///
+/// DOCME
 class FFmpegSourceAudioProviderFactory : public AudioProviderFactory {
 public:
+
+	/// @brief DOCME
+	/// @param file 
+	///
 	AudioProvider *CreateProvider(wxString file) { return new FFmpegSourceAudioProvider(file); }
 };
 
 #endif /* WITH_FFMPEGSOURCE */
+
 
 

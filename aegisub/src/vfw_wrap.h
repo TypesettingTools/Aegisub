@@ -43,10 +43,15 @@
 #include <wx/wxprec.h>
 
 
-/////////////////////
-// VFW wrapper class
+
+/// DOCME
+/// @class VFWWrapper
+/// @brief DOCME
+///
+/// DOCME
 class VFWWrapper {
 public:
 	static wxArrayInt GetKeyFrames(wxString filename);
 };
+
 

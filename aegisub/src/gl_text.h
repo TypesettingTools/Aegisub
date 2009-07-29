@@ -50,16 +50,38 @@
 #include <vector>
 
 
-/////////////////////
-// Glyph information
+
+/// DOCME
+/// @class OpenGLTextGlyph
+/// @brief DOCME
+///
+/// DOCME
 class OpenGLTextGlyph {
 private:
+
+	/// DOCME
 	static wxBitmap *tempBmp;
 
 public:
+
+	/// DOCME
 	int value;
+
+	/// DOCME
 	int tex;
+
+	/// DOCME
+
+	/// DOCME
+
+	/// DOCME
+
+	/// DOCME
 	float x1,y1,x2,y2;
+
+	/// DOCME
+
+	/// DOCME
 	int w,h;
 
 	void GetMetrics();
@@ -68,19 +90,37 @@ public:
 	~OpenGLTextGlyph();
 };
 
+
+/// DOCME
 typedef std::map<int,OpenGLTextGlyph> glyphMap;
 
 
-///////////////
-// Texture map
+
+/// DOCME
+/// @class OpenGLTextTexture
+/// @brief DOCME
+///
+/// DOCME
 class OpenGLTextTexture {
 private:
+
+	/// DOCME
+
+	/// DOCME
+
+	/// DOCME
 	int x,y,nextY;
+
+	/// DOCME
+
+	/// DOCME
 	int width,height;
 
 	void Insert(OpenGLTextGlyph &glyph);
 
 public:
+
+	/// DOCME
 	GLuint tex;
 
 	bool TryToInsert(OpenGLTextGlyph &glyph);
@@ -90,19 +130,47 @@ public:
 };
 
 
-/////////////////////////////
-// OpenGL Text Drawing class
+
+/// DOCME
+/// @class OpenGLText
+/// @brief DOCME
+///
+/// DOCME
 class OpenGLText {
 private:
+
+	/// DOCME
+
+	/// DOCME
+
+	/// DOCME
+
+	/// DOCME
 	float r,g,b,a;
+
+	/// DOCME
 	int lineHeight;
+
+	/// DOCME
 	int fontSize;
+
+	/// DOCME
 	bool fontBold;
+
+	/// DOCME
 	bool fontItalics;
+
+	/// DOCME
 	wxString fontFace;
+
+	/// DOCME
 	wxFont font;
 
+
+	/// DOCME
 	glyphMap glyphs;
+
+	/// DOCME
 	std::vector <OpenGLTextTexture*> textures;
 
 	OpenGLText();
@@ -122,10 +190,39 @@ private:
 	void DoGetExtent(wxString text,int &w,int &h);
 
 public:
+
+	/// @brief DOCME
+	/// @return 
+	///
 	static wxFont GetFont() { return GetInstance().font; }
+
+	/// @brief DOCME
+	/// @param face=_T(Ó)    
+	/// @param size=10       
+	/// @param bold=true     
+	/// @param italics=false 
+	///
 	static void SetFont(wxString face=_T("Verdana"),int size=10,bool bold=true,bool italics=false) { GetInstance().DoSetFont(face,size,bold,italics); }
+
+	/// @brief DOCME
+	/// @param col        
+	/// @param alpha=1.0f 
+	///
 	static void SetColour(wxColour col,float alpha=1.0f) { GetInstance().DoSetColour(col,alpha); }
+
+	/// @brief DOCME
+	/// @param text 
+	/// @param x    
+	/// @param y    
+	///
 	static void Print(wxString text,int x,int y) { GetInstance().DoPrint(text,x,y); }
+
+	/// @brief DOCME
+	/// @param text 
+	/// @param w    
+	/// @param h    
+	///
 	static void GetExtent(wxString text,int &w,int &h) { GetInstance().DoGetExtent(text,w,h); }
 };
+
 

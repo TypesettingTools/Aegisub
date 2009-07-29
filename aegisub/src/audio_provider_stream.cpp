@@ -43,11 +43,14 @@
 #include "utils.h"
 
 
+
+/// DOCME
 #define BUFSIZE 65536
 
 
-///////////////
-// Constructor
+
+/// @brief Constructor 
+///
 StreamAudioProvider::StreamAudioProvider() {
 	bufLen = 8192;
 	startPos = 0;
@@ -58,8 +61,9 @@ StreamAudioProvider::StreamAudioProvider() {
 }
 
 
-//////////////
-// Destructor
+
+/// @brief Destructor 
+///
 StreamAudioProvider::~StreamAudioProvider() {
 	for (std::list<BufferChunk*>::iterator cur=buffer.begin();cur!=buffer.end();cur++) {
 		delete *cur;
@@ -68,8 +72,12 @@ StreamAudioProvider::~StreamAudioProvider() {
 }
 
 
-/////////////
-// Get audio
+
+/// @brief Get audio 
+/// @param buf   
+/// @param start 
+/// @param count 
+///
 void StreamAudioProvider::GetAudio(void *buf, int64_t start, int64_t count) {
 	// Write
 	int64_t left = count;
@@ -111,8 +119,11 @@ void StreamAudioProvider::GetAudio(void *buf, int64_t start, int64_t count) {
 }
 
 
-//////////////////////////
-// Append audio to stream
+
+/// @brief Append audio to stream 
+/// @param voidptr 
+/// @param count   
+///
 void StreamAudioProvider::Append(void *voidptr, int64_t count) {
 	// Read
 	int64_t left = count;
@@ -140,8 +151,12 @@ void StreamAudioProvider::Append(void *voidptr, int64_t count) {
 }
 
 
-//////////////////
-// Set parameters
+
+/// @brief Set parameters 
+/// @param chan 
+/// @param rate 
+/// @param bps  
+///
 void StreamAudioProvider::SetParams(int chan,int rate,int bps) {
 	channels = chan;
 	sample_rate = rate;
@@ -149,10 +164,12 @@ void StreamAudioProvider::SetParams(int chan,int rate,int bps) {
 }
 
 
-////////////////////////////
-// Buffer chunk constructor
+
+/// @brief Buffer chunk constructor 
+///
 StreamAudioProvider::BufferChunk::BufferChunk() {
 	buf.resize(BUFSIZE);
 	isFree = true;
 }
+
 

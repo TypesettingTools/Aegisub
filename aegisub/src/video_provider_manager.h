@@ -46,12 +46,17 @@
 #include "factory_manager.h"
 
 
-///////////////////
-// Factory Manager
+
+/// DOCME
+/// @class VideoProviderFactoryManager
+/// @brief DOCME
+///
+/// DOCME
 class VideoProviderFactoryManager : public FactoryManager<VideoProviderFactory> {
 public:
 	static void RegisterProviders();
 	static VideoProvider *GetProvider(wxString video);
 	static void ClearProviders();
 };
+
 

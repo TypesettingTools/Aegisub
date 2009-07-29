@@ -42,54 +42,78 @@
 #include "vector2d.h"
 
 
-////////////////////
-// Null constructor
+
+/// @brief Null constructor 
+///
 Vector2D::Vector2D () {
 	x = y = 0;
 }
 
 
-////////////////////////
-// Standard constructor
+
+/// @brief Standard constructor 
+/// @param _x 
+/// @param _y 
+///
 Vector2D::Vector2D (float _x,float _y) {
 	x = _x;
 	y = _y;
 }
 
 
-////////////////////////////////////
-// Construction from another vector
+
+/// @brief Construction from another vector 
+/// @param vec 
+///
 Vector2D::Vector2D (const Vector2D &vec) {
 	x = vec.x;
 	y = vec.y;
 }
 
 
-//////////////
-// Assignment
+
+/// @brief Assignment 
+/// @param param 
+///
 void Vector2D::operator = (const Vector2D param) {
 	x = param.x;
 	y = param.y;
 }
 
 
-//////////////
-// Comparison
+
+/// @brief Comparison 
+/// @param param 
+/// @return 
+///
 bool Vector2D::operator == (const Vector2D param) const {
 	return ((x == param.x) && (y == param.y));
 }
 
+
+/// @brief DOCME
+/// @param param 
+/// @return 
+///
 bool Vector2D::operator != (const Vector2D param) const {
 	return ((x != param.x) || (y == param.y));
 }
 
 
-///////////
-// Adition
+
+/// @brief Adition 
+/// @param param 
+/// @return 
+///
 Vector2D Vector2D::operator + (const Vector2D param) const {
 	return Vector2D(x + param.x,y + param.y);
 }
 
+
+/// @brief DOCME
+/// @param param 
+/// @return 
+///
 Vector2D Vector2D::operator += (const Vector2D param) {
 	x += param.x;
 	y += param.y;
@@ -97,12 +121,20 @@ Vector2D Vector2D::operator += (const Vector2D param) {
 }
 
 
-///////////////
-// Subtraction
+
+/// @brief Subtraction 
+/// @param param 
+/// @return 
+///
 Vector2D Vector2D::operator - (const Vector2D param) const {
 	return Vector2D(x - param.x,y - param.y);
 }
 
+
+/// @brief DOCME
+/// @param param 
+/// @return 
+///
 Vector2D Vector2D::operator -= (const Vector2D param) {
 	x -= param.x;
 	y -= param.y;
@@ -110,77 +142,118 @@ Vector2D Vector2D::operator -= (const Vector2D param) {
 }
 
 
-//////////
-// Negate
+
+/// @brief Negate 
+/// @return 
+///
 Vector2D Vector2D::operator - () const {
 	return Vector2D(-x,-y);
 }
 
 
-////////////////////////////
-// Multiplication by scalar
+
+/// @brief Multiplication by scalar 
+/// @param param 
+/// @return 
+///
 Vector2D Vector2D::operator * (float param) const {
 	return Vector2D(x * param,y * param);
 }
 
+
+/// @brief DOCME
+/// @param param 
+/// @return 
+///
 Vector2D Vector2D::operator *= (float param) {
 	x *= param;
 	y *= param;
 	return *this;
 }
 
+
+/// @brief DOCME
+/// @param f 
+/// @param v 
+/// @return 
+///
 Vector2D operator * (float f,const Vector2D &v) {
 	return Vector2D(v.x * f,v.y * f);
 }
 
 
-//////////////////////
-// Division by scalar
+
+/// @brief Division by scalar 
+/// @param param 
+/// @return 
+///
 Vector2D Vector2D::operator / (float param) const {
 	return Vector2D(x / param,y / param);
 }
 
+
+/// @brief DOCME
+/// @param param 
+/// @return 
+///
 Vector2D Vector2D::operator /= (float param) {
 	x /= param;
 	y /= param;
 	return *this;
 }
 
+
+/// @brief DOCME
+/// @param f 
+/// @param v 
+/// @return 
+///
 Vector2D operator / (float f,const Vector2D &v) {
 	return Vector2D(v.x / f,v.y / f);
 }
 
 
-/////////////////
-// Cross product
+
+/// @brief Cross product 
+/// @param param 
+/// @return 
+///
 float Vector2D::Cross (const Vector2D param) const {
 	return x * param.y - y * param.x;
 }
 
 
-///////////////
-// Dot product
+
+/// @brief Dot product 
+/// @param param 
+/// @return 
+///
 float Vector2D::Dot (const Vector2D param) const {
 	return (x * param.x) + (y * param.y);
 }
 
 
-//////////
-// Length
+
+/// @brief Length 
+/// @return 
+///
 float Vector2D::Len () const {
 	return sqrt(x*x + y*y);
 }
 
 
-//////////////////
-// Squared Length
+
+/// @brief Squared Length 
+/// @return 
+///
 float Vector2D::SquareLen () const {
 	return x*x + y*y;
 }
 
 
-///////////
-// Unitary
+
+/// @brief Unitary 
+///
 Vector2D Vector2D::Unit () const {
 	float l = Len();
 	if (l != 0) {
@@ -191,4 +264,5 @@ Vector2D Vector2D::Unit () const {
 	}
 	else return Vector2D(0,0);
 }
+
 

@@ -46,15 +46,18 @@
 #include "ass_override.h"
 
 
-///////////////
-// Constructor
+
+/// @brief Constructor 
+///
 AssTransformFramerateFilter::AssTransformFramerateFilter() {
 	initialized = false;
 }
 
 
-////////
-// Init
+
+/// @brief Init 
+/// @return 
+///
 void AssTransformFramerateFilter::Init() {
 	if (initialized) return;
 	initialized = true;
@@ -66,8 +69,11 @@ void AssTransformFramerateFilter::Init() {
 }
 
 
-///////////
-// Process
+
+/// @brief Process 
+/// @param subs          
+/// @param export_dialog 
+///
 void AssTransformFramerateFilter::ProcessSubs(AssFile *subs, wxWindow *export_dialog) {
 	// Transform frame rate
 	if (Input->IsLoaded() && Output->IsLoaded()) {
@@ -78,8 +84,11 @@ void AssTransformFramerateFilter::ProcessSubs(AssFile *subs, wxWindow *export_di
 }
 
 
-//////////////
-// Get dialog
+
+/// @brief Get dialog 
+/// @param parent 
+/// @return 
+///
 wxWindow *AssTransformFramerateFilter::GetConfigDialogWindow(wxWindow *parent) {
 	wxWindow *base = new wxPanel(parent, -1);
 
@@ -139,8 +148,10 @@ wxWindow *AssTransformFramerateFilter::GetConfigDialogWindow(wxWindow *parent) {
 }
 
 
-/////////////////
-// Load settings
+
+/// @brief Load settings 
+/// @param IsDefault 
+///
 void AssTransformFramerateFilter::LoadSettings(bool IsDefault) {
 	if (IsDefault) {
 		Input = &VFR_Input;
@@ -168,8 +179,14 @@ void AssTransformFramerateFilter::LoadSettings(bool IsDefault) {
 }
 
 
-///////////////////////////////
-// Transform framerate in tags
+
+/// @brief Transform framerate in tags 
+/// @param name     
+/// @param n        
+/// @param curParam 
+/// @param curData  
+/// @return 
+///
 void AssTransformFramerateFilter::TransformTimeTags (wxString name,int n,AssOverrideParameter *curParam,void *curData) {
 	// Only modify anything if this is a number
 	VariableDataType type = curParam->GetType();
@@ -249,8 +266,10 @@ void AssTransformFramerateFilter::TransformTimeTags (wxString name,int n,AssOver
 }
 
 
-///////////////////////
-// Transform framerate
+
+/// @brief Transform framerate 
+/// @param subs 
+///
 void AssTransformFramerateFilter::TransformFrameRate(AssFile *subs) {
 	int n=0;
 
@@ -286,7 +305,8 @@ void AssTransformFramerateFilter::TransformFrameRate(AssFile *subs) {
 }
 
 
-///////////////////
-// Global instance
+
+/// DOCME
 AssTransformFramerateFilter AssTransformFramerateFilter::instance;
+
 

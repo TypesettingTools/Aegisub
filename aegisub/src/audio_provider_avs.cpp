@@ -51,8 +51,10 @@
 #include "charset_conv.h"
 
 
-//////////////
-// Constructor
+
+/// @brief Constructor 
+/// @param _filename 
+///
 AvisynthAudioProvider::AvisynthAudioProvider(wxString _filename) {
 	filename = _filename;
 
@@ -66,23 +68,26 @@ AvisynthAudioProvider::AvisynthAudioProvider(wxString _filename) {
 }
 
 
-//////////////
-// Destructor
+
+/// @brief Destructor 
+///
 AvisynthAudioProvider::~AvisynthAudioProvider() {
 	Unload();
 }
 
 
-////////////////
-// Unload audio
+
+/// @brief Unload audio 
+///
 void AvisynthAudioProvider::Unload() {
 	// Clean up avisynth
 	clip = NULL;
 }
 
 
-////////////////////////////
-// Load audio from avisynth
+
+/// @brief Load audio from avisynth 
+///
 void AvisynthAudioProvider::OpenAVSAudio() {
 	// Set variables
 	AVSValue script;
@@ -129,8 +134,10 @@ void AvisynthAudioProvider::OpenAVSAudio() {
 }
 
 
-/////////////////////////
-// Read from environment
+
+/// @brief Read from environment 
+/// @param _clip 
+///
 void AvisynthAudioProvider::LoadFromClip(AVSValue _clip) {	
 	// Prepare avisynth
 	AVSValue script;
@@ -171,14 +178,20 @@ void AvisynthAudioProvider::LoadFromClip(AVSValue _clip) {
 }
 
 
-////////////////
-// Get filename
+
+/// @brief Get filename 
+/// @return 
+///
 wxString AvisynthAudioProvider::GetFilename() {
 	return filename;
 }
 
-/////////////
-// Get audio
+
+/// @brief Get audio 
+/// @param buf   
+/// @param start 
+/// @param count 
+///
 void AvisynthAudioProvider::GetAudio(void *buf, int64_t start, int64_t count) {
 	// Requested beyond the length of audio
 	if (start+count > num_samples) {
@@ -207,4 +220,5 @@ void AvisynthAudioProvider::GetAudio(void *buf, int64_t start, int64_t count) {
 }
 
 #endif
+
 

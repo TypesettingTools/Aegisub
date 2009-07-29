@@ -43,8 +43,12 @@
 #include "static_bmp.h"
 
 
-///////////////
-// Constructor
+
+/// @brief Constructor 
+/// @param parent 
+/// @param _bmp   
+/// @param style  
+///
 BitmapControl::BitmapControl(wxWindow *parent,wxBitmap _bmp,int style) :
 wxWindow(parent, -1, wxDefaultPosition, wxDefaultSize, style)
 {
@@ -60,10 +64,13 @@ BEGIN_EVENT_TABLE(BitmapControl, wxWindow)
 END_EVENT_TABLE()
 
 
-///////////
-// OnPaint
+
+/// @brief OnPaint 
+/// @param event 
+///
 void BitmapControl::OnPaint(wxPaintEvent& event) {
 	wxPaintDC dc(this);
 	dc.DrawBitmap(bmp,0,0);
 }
+
 

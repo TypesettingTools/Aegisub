@@ -49,6 +49,13 @@
 #include "charset_detect.h"
 #endif
 
+
+/// @brief DOCME
+/// @param filename 
+/// @param enc      
+/// @param trim     
+/// @return 
+///
 TextFileReader::TextFileReader(wxString filename, wxString enc, bool trim)
 : encoding(enc), conv((iconv_t)-1), trim(trim), readComplete(false), currout(0), outptr(0), currentLine(0) {
 #ifdef __WINDOWS__
@@ -66,10 +73,18 @@ TextFileReader::TextFileReader(wxString filename, wxString enc, bool trim)
 	conv = iconv_open(WCHAR_T_ENCODING, encoding.ToAscii());
 }
 
+
+/// @brief DOCME
+///
 TextFileReader::~TextFileReader() {
 	if (conv != (iconv_t)-1) iconv_close(conv);
 }
 
+
+/// @brief DOCME
+/// @param filename 
+/// @return 
+///
 wxString TextFileReader::GetEncoding(const wxString filename) {
 	// Prepare
 	unsigned char b[4];
@@ -116,6 +131,10 @@ wxString TextFileReader::GetEncoding(const wxString filename) {
 #endif
 }
 
+
+/// @brief DOCME
+/// @return 
+///
 wchar_t TextFileReader::GetWChar() {
 	// If there's already some converted characters waiting, return the next one
 	if (++currout < outptr) {
@@ -165,6 +184,10 @@ wchar_t TextFileReader::GetWChar() {
 	throw wxString::Format(_T("Invalid input character found near line %u"), currentLine);
 }
 
+
+/// @brief DOCME
+/// @return 
+///
 wxString TextFileReader::ReadLineFromFile() {
 	wxString buffer;
 	size_t bufAlloc = 1024;
@@ -198,10 +221,19 @@ wxString TextFileReader::ReadLineFromFile() {
 	return buffer;
 }
 
+
+/// @brief DOCME
+/// @return 
+///
 bool TextFileReader::HasMoreLines() {
 	return !readComplete;
 }
 
+
+/// @brief DOCME
+/// @param enc 
+/// @return 
+///
 void TextFileReader::EnsureValid(wxString enc) {
 	if (enc == _T("binary")) return;
 
@@ -214,7 +246,11 @@ void TextFileReader::EnsureValid(wxString enc) {
 	}
 }
 
+
+/// @brief DOCME
+///
 wxString TextFileReader::GetCurrentEncoding() {
 	return encoding;
 }
+
 

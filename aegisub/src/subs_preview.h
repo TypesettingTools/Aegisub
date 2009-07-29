@@ -51,14 +51,28 @@ class AssStyle;
 class VideoProvider;
 
 
-/////////////////////////
-// Subtitles preview box
+
+/// DOCME
+/// @class SubtitlesPreview
+/// @brief DOCME
+///
+/// DOCME
 class SubtitlesPreview : public wxWindow {
 private:
+
+	/// DOCME
 	wxBitmap *bmp;
+
+	/// DOCME
 	AssStyle *style;
+
+	/// DOCME
 	wxString showText;
+
+	/// DOCME
 	VideoProvider *vid;
+
+	/// DOCME
 	wxColour backColour;
 
 	void UpdateBitmap(int w=-1,int h=-1);
@@ -69,6 +83,9 @@ public:
 	void SetStyle(AssStyle *style);
 	void SetText(wxString text);
 	void SetColour(wxColour col);
+
+	/// @brief DOCME
+	///
 	void Update() { UpdateBitmap(); }
 
 	SubtitlesPreview(wxWindow *parent,int id,wxPoint pos,wxSize size,int style,wxColour colour);
@@ -76,4 +93,5 @@ public:
 
 	DECLARE_EVENT_TABLE()
 };
+
 

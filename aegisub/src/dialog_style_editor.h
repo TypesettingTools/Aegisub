@@ -36,6 +36,8 @@
 
 
 #ifndef DIALOG_STYLE_EDITOR_H
+
+/// DOCME
 #define DIALOG_STYLE_EDITOR_H
 
 
@@ -57,51 +59,133 @@ class SubtitlesPreview;
 class AssStyleStorage;
 
 
-/////////
-// Class
+
+/// DOCME
+/// @class DialogStyleEditor
+/// @brief DOCME
+///
+/// DOCME
 class DialogStyleEditor : public wxDialog {
 private:
+
+	/// DOCME
 	bool isLocal;
+
+	/// DOCME
 	AssStyle *style;
+
+	/// DOCME
 	AssStyle *work;
+
+	/// DOCME
 	SubtitlesGrid *grid;
+
+	/// DOCME
 	AssStyleStorage *store;
 
+
+	/// DOCME
 	wxString FontSizeValue;
+
+	/// DOCME
 	wxString AlignmentValue;
+
+	/// DOCME
 	wxString OutlineValue;
+
+	/// DOCME
 	wxString ShadowValue;
+
+	/// DOCME
 	wxString ScaleXValue;
+
+	/// DOCME
 	wxString ScaleYValue;
+
+	/// DOCME
 	wxString AngleValue;
+
+	/// DOCME
 	wxString EncodingValue;
+
+	/// DOCME
 	wxString SpacingValue;
 
+
+	/// DOCME
 	wxTextCtrl *StyleName;
+
+	/// DOCME
 	wxComboBox *FontName;
+
+	/// DOCME
 	wxTextCtrl *FontSize;
+
+	/// DOCME
 	wxCheckBox *BoxBold;
+
+	/// DOCME
 	wxCheckBox *BoxItalic;
+
+	/// DOCME
 	wxCheckBox *BoxUnderline;
+
+	/// DOCME
 	wxCheckBox *BoxStrikeout;
+
+	/// DOCME
 	ColourButton *colorButton[4];
+
+	/// DOCME
 	wxSpinCtrl *colorAlpha[4];
+
+	/// DOCME
 	wxSpinCtrl *margin[4];
+
+	/// DOCME
 	wxRadioBox *Alignment;
+
+	/// DOCME
 	wxTextCtrl *Outline;
+
+	/// DOCME
 	wxTextCtrl *Shadow;
+
+	/// DOCME
 	wxCheckBox *OutlineType;
+
+	/// DOCME
 	wxTextCtrl *ScaleX;
+
+	/// DOCME
 	wxTextCtrl *ScaleY;
+
+	/// DOCME
 	wxTextCtrl *Angle;
+
+	/// DOCME
 	wxComboBox *Encoding;
+
+	/// DOCME
 	wxTextCtrl *Spacing;
+
+	/// DOCME
 	wxTextCtrl *PreviewText;
+
+	/// DOCME
 	SubtitlesPreview *SubsPreview;
+
+	/// DOCME
 	ColourButton *previewButton;
+
+	/// DOCME
 	wxSizer *MainSizer;
 
+
+	/// DOCME
 	static wxRect saved_position;
+
+	/// DOCME
 	static bool use_saved_position;
 	void SavePosition();
 	void LoadPosition();
@@ -121,6 +205,10 @@ private:
 	void OnSetColor4 (wxCommandEvent &event);
 	void OnChildFocus (wxChildFocusEvent &event);
 	void OnCommandPreviewUpdate (wxCommandEvent &event);
+
+	/// @brief DOCME
+	/// @param event 
+	///
 	void OnSpinPreviewUpdate (wxSpinEvent &event) { OnCommandPreviewUpdate(event); }
 	void OnPreviewTextChange (wxCommandEvent &event);
 	void OnPreviewColourChange (wxCommandEvent &event);
@@ -137,4 +225,5 @@ public:
 
 
 #endif
+
 

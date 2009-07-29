@@ -52,8 +52,9 @@
 #include <algorithm>
 
 
-/////////////////////
-// Empty constructor
+
+/// @brief Empty constructor 
+///
 AudioKaraokeSyllable::AudioKaraokeSyllable()
 : AssKaraokeSyllable()
 , start_time(0), selected(false)
@@ -61,8 +62,10 @@ AudioKaraokeSyllable::AudioKaraokeSyllable()
 {
 }
 
-//////////////////////////////
-// Copy-from-base constructor
+
+/// @brief Copy-from-base constructor 
+/// @param base 
+///
 AudioKaraokeSyllable::AudioKaraokeSyllable(const AssKaraokeSyllable &base)
 : AssKaraokeSyllable(base)
 , start_time(0), selected(false)
@@ -72,8 +75,10 @@ AudioKaraokeSyllable::AudioKaraokeSyllable(const AssKaraokeSyllable &base)
 
 
 
-///////////////
-// Constructor
+
+/// @brief Constructor 
+/// @param parent 
+///
 AudioKaraoke::AudioKaraoke(wxWindow *parent)
 : wxWindow (parent,-1,wxDefaultPosition,wxSize(10,5),wxTAB_TRAVERSAL|wxBORDER_SUNKEN)
 {
@@ -87,15 +92,19 @@ AudioKaraoke::AudioKaraoke(wxWindow *parent)
 }
 
 
-//////////////
-// Destructor
+
+/// @brief Destructor 
+///
 AudioKaraoke::~AudioKaraoke() {
 	delete workDiag;
 }
 
 
-//////////////////////
-// Load from dialogue
+
+/// @brief Load from dialogue 
+/// @param _diag 
+/// @return 
+///
 bool AudioKaraoke::LoadFromDialogue(AssDialogue *_diag) {
 	wxLogDebug(_T("AudioKaraoke::LoadFromDialogue(diag=%p)"), _diag);
 	// Make sure we're not in splitting-mode
@@ -137,8 +146,10 @@ bool AudioKaraoke::LoadFromDialogue(AssDialogue *_diag) {
 }
 
 
-////////////////////
-// Writes line back
+
+/// @brief Writes line back 
+/// @return 
+///
 void AudioKaraoke::Commit() {
 	wxLogDebug(_T("AudioKaraoke::Commit"));
 	if (splitting) {
@@ -182,8 +193,10 @@ void AudioKaraoke::Commit() {
 }
 
 
-//////////////////
-// Autosplit line
+
+/// @brief Autosplit line 
+/// @return 
+///
 void AudioKaraoke::AutoSplit() {
 	wxLogDebug(_T("AudioKaraoke::AutoSplit"));
 
@@ -237,8 +250,11 @@ void AudioKaraoke::AutoSplit() {
 }
 
 
-//////////////////////////////////
-// Parses text to extract karaoke
+
+/// @brief Parses text to extract karaoke 
+/// @param curDiag 
+/// @return 
+///
 bool AudioKaraoke::ParseDialogue(AssDialogue *curDiag) {
 	// parse the tagdata
 	AssKaraokeVector tempsyls;
@@ -268,8 +284,11 @@ bool AudioKaraoke::ParseDialogue(AssDialogue *curDiag) {
 }
 
 
-////////////////
-// Set syllable
+
+/// @brief Set syllable 
+/// @param n 
+/// @return 
+///
 void AudioKaraoke::SetSyllable(int n) {
 	wxLogDebug(_T("AudioKaraoke::SetSyllable(n=%d)"), n);
 	if (n == -1) n = syllables.size()-1;
@@ -291,8 +310,10 @@ BEGIN_EVENT_TABLE(AudioKaraoke,wxWindow)
 END_EVENT_TABLE()
 
 
-///////////////
-// Paint event
+
+/// @brief Paint event 
+/// @param event 
+///
 void AudioKaraoke::OnPaint(wxPaintEvent &event) {
 	// Get dimensions
 	int w,h;
@@ -401,15 +422,20 @@ void AudioKaraoke::OnPaint(wxPaintEvent &event) {
 }
 
 
-//////////////
-// Size event
+
+/// @brief Size event 
+/// @param event 
+///
 void AudioKaraoke::OnSize(wxSizeEvent &event) {
 	Refresh(false);
 }
 
 
-///////////////
-// Mouse event
+
+/// @brief Mouse event 
+/// @param event 
+/// @return 
+///
 void AudioKaraoke::OnMouse(wxMouseEvent &event) {
 	// Get coordinates
 	int x = event.GetX();
@@ -542,8 +568,11 @@ void AudioKaraoke::OnMouse(wxMouseEvent &event) {
 }
 
 
-//////////////////////////////
-// Get Syllable at position X
+
+/// @brief Get Syllable at position X 
+/// @param x 
+/// @return 
+///
 int AudioKaraoke::GetSylAtX(int x) {
 	int dx,dw;
 	size_t syln = syllables.size();
@@ -558,8 +587,11 @@ int AudioKaraoke::GetSylAtX(int x) {
 }
 
 
-/////////////////
-// Set selection
+
+/// @brief Set selection 
+/// @param start 
+/// @param end   
+///
 void AudioKaraoke::SetSelection(int start,int end) {
 	wxLogDebug(_T("AudioKaraoke::SetSelection(start=%d, end=%d)"), start, end);
 	// Default end
@@ -593,8 +625,10 @@ void AudioKaraoke::SetSelection(int start,int end) {
 }
 
 
-//////////////////
-// Join syllables
+
+/// @brief Join syllables 
+/// @return 
+///
 void AudioKaraoke::Join() {
 	wxLogDebug(_T("AudioKaraoke::Join"));
 	// Variables
@@ -638,8 +672,9 @@ void AudioKaraoke::Join() {
 }
 
 
-////////////////////////
-// Enter splitting-mode
+
+/// @brief Enter splitting-mode 
+///
 void AudioKaraoke::BeginSplit() {
 	wxLogDebug(_T("AudioKaraoke::BeginSplit"));
 	splitting = true;
@@ -650,8 +685,11 @@ void AudioKaraoke::BeginSplit() {
 }
 
 
-////////////////////////////////////////////
-// Leave splitting-mode, committing changes
+
+/// @brief Leave splitting-mode, committing changes 
+/// @param commit 
+/// @return 
+///
 void AudioKaraoke::EndSplit(bool commit) {
 	wxLogDebug(_T("AudioKaraoke::EndSplit(commit=%d)"), commit?1:0);
 	splitting = false;
@@ -686,8 +724,11 @@ void AudioKaraoke::EndSplit(bool commit) {
 }
 
 
-/////////////////////////////////////////////////
-// Split a syllable using the pending_slits data
+
+/// @brief Split a syllable using the pending_slits data 
+/// @param n 
+/// @return 
+///
 int AudioKaraoke::SplitSyl (unsigned int n) {
 	wxLogDebug(_T("AudioKaraoke::SplitSyl(n=%u)"), n);
 
@@ -755,8 +796,13 @@ int AudioKaraoke::SplitSyl (unsigned int n) {
 }
 
 
-//////////////////////////////////
-// Apply delta length to syllable
+
+/// @brief Apply delta length to syllable 
+/// @param n     
+/// @param delta 
+/// @param mode  
+/// @return 
+///
 bool AudioKaraoke::SyllableDelta(int n,int delta,int mode) {
 	wxLogDebug(_T("AudioKaraoke::SyllableDelta(n=%d, delta=%d, mode=%d)"), n, delta, mode);
 	// Get syllable and next
@@ -806,8 +852,10 @@ bool AudioKaraoke::SyllableDelta(int n,int delta,int mode) {
 }
 
 
-////////////////////////////////
-// Karaoke tag menu constructor
+
+/// @brief Karaoke tag menu constructor 
+/// @param _kara 
+///
 AudioKaraokeTagMenu::AudioKaraokeTagMenu(AudioKaraoke *_kara)
 : wxMenu(_("Karaoke tag"))
 , kara(_kara)
@@ -833,8 +881,9 @@ AudioKaraokeTagMenu::AudioKaraokeTagMenu(AudioKaraoke *_kara)
 }
 
 
-///////////////////////////////
-// Karaoke tag menu destructor
+
+/// @brief Karaoke tag menu destructor 
+///
 AudioKaraokeTagMenu::~AudioKaraokeTagMenu() {
 }
 
@@ -846,8 +895,10 @@ BEGIN_EVENT_TABLE(AudioKaraokeTagMenu,wxMenu)
 END_EVENT_TABLE()
 
 
-//////////////////////////////////
-// Karaoke tag menu event handler
+
+/// @brief Karaoke tag menu event handler 
+/// @param event 
+///
 void AudioKaraokeTagMenu::OnSelectItem(wxCommandEvent &event) {
 	// Select the new tag for the syllables
 	wxString newtag;
@@ -878,6 +929,7 @@ void AudioKaraokeTagMenu::OnSelectItem(wxCommandEvent &event) {
 	//kara->display->Update();
 	kara->SetSelection(firstsel, lastsel);
 }
+
 
 
 

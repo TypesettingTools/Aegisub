@@ -36,6 +36,8 @@
 
 
 #ifndef DIALOG_STYLING_ASSISTANT_H
+
+/// DOCME
 #define DIALOG_STYLING_ASSISTANT_H
 
 
@@ -59,10 +61,16 @@ class AudioDisplay;
 class VideoContext;
 
 
-/////////////////
-// Editbox class
+
+/// DOCME
+/// @class StyleEditBox
+/// @brief DOCME
+///
+/// DOCME
 class StyleEditBox : public wxTextCtrl {
 private:
+
+	/// DOCME
 	DialogStyling *diag;
 	void OnKeyDown(wxKeyEvent &event);
 
@@ -73,21 +81,43 @@ public:
 };
 
 
-/////////
-// Class
+
+/// DOCME
+/// @class DialogStyling
+/// @brief DOCME
+///
+/// DOCME
 class DialogStyling : public wxDialog {
 	friend class StyleEditBox;
 
 private:
+
+	/// DOCME
 	SubtitlesGrid *grid;
+
+	/// DOCME
 	wxColour origColour;
+
+	/// DOCME
 	bool needCommit;
 
+
+	/// DOCME
 	wxTextCtrl *CurLine;
+
+	/// DOCME
 	wxListBox *Styles;
+
+	/// DOCME
 	StyleEditBox *TypeBox;
+
+	/// DOCME
 	wxCheckBox *PreviewCheck;
+
+	/// DOCME
 	wxButton *PlayVideoButton;
+
+	/// DOCME
 	wxButton *PlayAudioButton;
 
 	void OnStyleBoxModified (wxCommandEvent &event);
@@ -100,12 +130,24 @@ private:
 
 	void SetStyle (wxString curName,bool jump=true);
 
+
+	/// DOCME
+
+	/// DOCME
 	static int lastx, lasty;
 
 public:
+
+	/// DOCME
 	int linen;
+
+	/// DOCME
 	AssDialogue *line;
+
+	/// DOCME
 	AudioDisplay *audio;
+
+	/// DOCME
 	VideoContext *video;
 
 	DialogStyling (wxWindow *parent,SubtitlesGrid *grid);
@@ -120,12 +162,21 @@ public:
 ///////
 // IDs
 enum {
+
+	/// DOCME
 	ENTER_STYLE_BOX,
+
+	/// DOCME
 	STYLE_LIST,
+
+	/// DOCME
 	BUTTON_PLAY_VIDEO,
+
+	/// DOCME
 	BUTTON_PLAY_AUDIO
 };
 
 
 #endif
+
 

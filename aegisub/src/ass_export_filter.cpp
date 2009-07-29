@@ -43,8 +43,9 @@
 #include "ass_file.h"
 
 
-///////////////
-// Constructor
+
+/// @brief Constructor 
+///
 AssExportFilter::AssExportFilter() {
 	hidden = false;
 	autoExporter = false;
@@ -54,8 +55,9 @@ AssExportFilter::AssExportFilter() {
 }
 
 
-//////////////
-// Destructor
+
+/// @brief Destructor 
+///
 AssExportFilter::~AssExportFilter() {
 	try {
 		Unregister();
@@ -66,8 +68,11 @@ AssExportFilter::~AssExportFilter() {
 }
 
 
-////////////
-// Register
+
+/// @brief Register 
+/// @param name     
+/// @param priority 
+///
 void AssExportFilter::Register (wxString name,int priority) {
 	// Check if it's registered
 	//   Changed this to an assert, since this kind of error should really only happen during dev. -jfs
@@ -114,8 +119,9 @@ try_new_name:
 }
 
 
-//////////////
-// Unregister
+
+/// @brief Unregister 
+///
 void AssExportFilter::Unregister () {
 	// Check if it's registered
 	if (!IsRegistered()) throw wxString::Format(_T("Unregister export filter: name \"%s\" is not registered."), RegisterName.c_str());
@@ -126,8 +132,10 @@ void AssExportFilter::Unregister () {
 }
 
 
-/////////////////////////////
-// Checks if it's registered
+
+/// @brief Checks if it's registered 
+/// @return 
+///
 bool AssExportFilter::IsRegistered() {
 	// Check name
 	if (RegisterName.IsEmpty()) {
@@ -148,53 +156,66 @@ bool AssExportFilter::IsRegistered() {
 }
 
 
-/////////////
-// Get sizer
+
+/// @brief Get sizer 
+/// @param parent 
+/// @return 
+///
 wxWindow *AssExportFilter::GetConfigDialogWindow(wxWindow *parent) {
 	return NULL;
 }
 
 
-////////////////////
-// Config dialog OK
+
+/// @brief Config dialog OK 
+/// @param IsDefault 
+///
 void AssExportFilter::LoadSettings(bool IsDefault) {
 }
 
 
-//////////////////////
-// Description reader
+
+/// @brief Description reader 
+/// @return 
+///
 const wxString& AssExportFilter::GetDescription() const {
 	return description;
 }
 
 
-///////////////
-// Static list
+
+/// DOCME
 AssExportFilterChain *AssExportFilterChain::instance=NULL;
 
 
-////////////
-// Get list
+
+/// @brief Get list 
+/// @return 
+///
 FilterList *AssExportFilterChain::GetFilterList() {
 	if (instance == NULL) instance = new AssExportFilterChain();
 	return &(instance->Filters);
 }
 
 
-///////////////////////
-// Get unprepared list
+
+/// @brief Get unprepared list 
+/// @return 
+///
 FilterList *AssExportFilterChain::GetUnpreparedFilterList() {
 	if (instance == NULL) instance = new AssExportFilterChain();
 	return &(instance->Unprepared);
 }
 
 
-///////////////////
-// Prepare filters
+
+/// @brief Prepare filters 
+///
 void AssExportFilterChain::PrepareFilters() {
 	for (FilterList::iterator cur=instance->Unprepared.begin();cur!=instance->Unprepared.end();cur++) {
 		(*cur)->Init();
 	}
 	instance->Unprepared.clear();
 }
+
 

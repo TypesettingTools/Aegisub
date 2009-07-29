@@ -43,19 +43,48 @@
 #include "visual_tool.h"
 
 
-/////////////////////////
-// Z Rotation tool class
+
+/// DOCME
+/// @class VisualToolRotateZ
+/// @brief DOCME
+///
+/// DOCME
 class VisualToolRotateZ : public VisualTool {
 private:
+
+	/// DOCME
+
+	/// DOCME
+
+	/// DOCME
 	float curAngle,startAngle,origAngle;
+
+	/// DOCME
+
+	/// DOCME
+
+	/// DOCME
+
+	/// DOCME
 	int orgx,orgy,odx,ody;
+
+	/// DOCME
+
+	/// DOCME
 	float rx,ry;
 
+
+	/// @brief DOCME
+	/// @return 
+	///
 	bool CanHold() { return true; }
 	void InitializeHold();
 	void UpdateHold();
 	void CommitHold();
 
+
+	/// @brief DOCME
+	///
 	bool CanDrag() { return true; }
 	void PopulateFeatureList();
 	void UpdateDrag(VisualDraggableFeature &feature);
@@ -69,4 +98,5 @@ public:
 	void Update();
 	void Draw();
 };
+
 

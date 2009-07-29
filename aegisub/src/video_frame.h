@@ -39,37 +39,74 @@
 #include <wx/image.h>
 
 
-//////////////////////
-// Video Frame format
-// All formats use 8 bits per sample.
+
+/// DOCME
 enum VideoFrameFormat {
+
+	/// DOCME
 	FORMAT_NONE		= 0x0000,
+
+	/// DOCME
 	FORMAT_RGB24	= 0x0001, // RGB, interleaved
+
+	/// DOCME
 	FORMAT_RGB32	= 0x0002, // RGBA, interleaved
+
+	/// DOCME
 	FORMAT_YUY2		= 0x0004, // YCbCr 4:2:2, planar
+
+	/// DOCME
 	FORMAT_YV12		= 0x0008, // YCbCr 4:2:0, planar
+
+	/// DOCME
 	FORMAT_YUV444	= 0x0010, // YCbCr 4:4:4, planar
+
+	/// DOCME
 	FORMAT_YUV444A	= 0x0020, // YCbCr 4:4:4 plus alpha, planar
+
+	/// DOCME
 	FORMAT_YUVMONO	= 0x0040, // Y only (greyscale)
 };
 
 
-/////////////////////
-// Video Frame class
+
+/// DOCME
+/// @class AegiVideoFrame
+/// @brief DOCME
+///
+/// DOCME
 class AegiVideoFrame {
 private:
+
+	/// DOCME
 	unsigned int memSize;
 	void Reset();
 
 public:
+
+	/// DOCME
 	unsigned char *data[4];		// Pointers to the data planes. Interleaved formats only use data[0]
+
+	/// DOCME
 	VideoFrameFormat format;	// Data format
+
+	/// DOCME
 	unsigned int w;				// Width in pixels
+
+	/// DOCME
 	unsigned int h;				// Height in pixels
+
+	/// DOCME
 	unsigned int pitch[4];		// Pitch, that is, the number of bytes used by each row.
 
+
+	/// DOCME
 	bool flipped;				// First row is actually the bottom one
+
+	/// DOCME
 	bool invertChannels;		// Swap Red and Blue channels or U and V planes (controls RGB versus BGR ordering etc)
+
+	/// DOCME
 	bool cppAlloc;				// Allocated with C++'s "new" operator, instead of "malloc"
 
 	AegiVideoFrame();
@@ -84,4 +121,5 @@ public:
 	void GetFloat(float *buffer) const;
 	int GetBpp(int plane=0) const;
 };
+
 

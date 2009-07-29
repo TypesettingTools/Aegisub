@@ -43,11 +43,19 @@
 #include "ass_export_filter.h"
 
 
-/////////////////////////////////
-// Limit to visible lines filter
+
+/// DOCME
+/// @class AssLimitToVisibleFilter
+/// @brief DOCME
+///
+/// DOCME
 class AssLimitToVisibleFilter : public AssExportFilter {
 private:
+
+	/// DOCME
 	static AssLimitToVisibleFilter instance;
+
+	/// DOCME
 	int frame;
 
 	AssLimitToVisibleFilter();
@@ -58,4 +66,5 @@ public:
 
 	void ProcessSubs(AssFile *subs, wxWindow *export_dialog);
 };
+
 

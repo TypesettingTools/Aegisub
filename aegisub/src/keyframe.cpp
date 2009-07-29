@@ -47,8 +47,10 @@
 #include "vfr.h"
 
 
-//////////////////
-// Load Keyframes
+
+/// @brief Load Keyframes 
+/// @param filename 
+///
 void KeyFrameFile::Load(wxString filename) {
 	// Load
 	try {
@@ -83,8 +85,10 @@ void KeyFrameFile::Load(wxString filename) {
 }
 
 
-//////////////////
-// Save Keyframes
+
+/// @brief Save Keyframes 
+/// @param filename 
+///
 void KeyFrameFile::Save(wxString filename) {
 	// Get keyframes
 	wxArrayInt keyFrames = VideoContext::Get()->GetKeyFrames();
@@ -104,8 +108,11 @@ void KeyFrameFile::Save(wxString filename) {
 }
 
 
-//////////////////////////
-// Aegisub keyframes file
+
+/// @brief Aegisub keyframes file 
+/// @param file      
+/// @param keyFrames 
+///
 void KeyFrameFile::OpenAegiKeyFrames(TextFileReader& file, wxArrayInt& keyFrames)
 {
 	double fps;
@@ -136,8 +143,11 @@ void KeyFrameFile::OpenAegiKeyFrames(TextFileReader& file, wxArrayInt& keyFrames
 }
 
 
-///////////////////
-// XviD stats file
+
+/// @brief XviD stats file 
+/// @param file      
+/// @param keyFrames 
+///
 void KeyFrameFile::OpenXviDKeyFrames(TextFileReader& file, wxArrayInt& keyFrames)
 {
 	wxString cur = file.ReadLineFromFile();
@@ -156,8 +166,11 @@ void KeyFrameFile::OpenXviDKeyFrames(TextFileReader& file, wxArrayInt& keyFrames
 	}
 }
 
-///////////////////
-// DivX stats file
+
+/// @brief DivX stats file 
+/// @param file      
+/// @param keyFrames 
+///
 void KeyFrameFile::OpenDivXKeyFrames(TextFileReader& file, wxArrayInt& keyFrames)
 {
 	wxString cur = file.ReadLineFromFile();
@@ -177,8 +190,11 @@ void KeyFrameFile::OpenDivXKeyFrames(TextFileReader& file, wxArrayInt& keyFrames
 	}
 }
 
-///////////////////
-// x264 stats file
+
+/// @brief x264 stats file 
+/// @param file      
+/// @param keyFrames 
+///
 void KeyFrameFile::Openx264KeyFrames(TextFileReader& file, wxArrayInt& keyFrames)
 {
 	wxString cur = file.ReadLineFromFile();
@@ -199,4 +215,5 @@ void KeyFrameFile::Openx264KeyFrames(TextFileReader& file, wxArrayInt& keyFrames
 		cur = file.ReadLineFromFile();
 	}
 }
+
 

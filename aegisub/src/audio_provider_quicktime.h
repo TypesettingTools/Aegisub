@@ -45,16 +45,36 @@
 #include "include/aegisub/audio_provider.h"
 
 
+
+/// DOCME
+/// @class QuickTimeAudioProvider
+/// @brief DOCME
+///
+/// DOCME
 class QuickTimeAudioProvider : public AudioProvider, QuickTimeProvider {
 private:
+
+	/// DOCME
 	Movie movie;			// input file
+
+	/// DOCME
 	Handle in_dataref;		// input file handle
+
+	/// DOCME
 	MovieAudioExtractionRef extract_ref; // extraction session object
 
+
+	/// DOCME
 	bool inited;
 
+
+	/// DOCME
 	OSErr qt_err;			// quicktime error code
+
+	/// DOCME
 	OSStatus qt_status;		// another quicktime error code
+
+	/// DOCME
 	wxString errmsg;		// aegisub error messages
 
 	void Close();
@@ -64,17 +84,32 @@ public:
 	QuickTimeAudioProvider(wxString filename);
 	virtual ~QuickTimeAudioProvider();
 
+
+	/// @brief DOCME
+	/// @return 
+	///
 	bool AreSamplesNativeEndian() { return true; }
 
 	virtual void GetAudio(void *buf, int64_t start, int64_t count);
 };
 
 
+
+/// DOCME
+/// @class QuickTimeAudioProviderFactory
+/// @brief DOCME
+///
+/// DOCME
 class QuickTimeAudioProviderFactory : public AudioProviderFactory {
 public:
+
+	/// @brief DOCME
+	/// @param file 
+	///
 	AudioProvider *CreateProvider(wxString file) { return new QuickTimeAudioProvider(file); }
 };
 
 
 #endif /* WITH_QUICKTIME */
+
 

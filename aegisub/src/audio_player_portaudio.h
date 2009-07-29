@@ -49,21 +49,44 @@ extern "C" {
 
 
 
-////////////////////
-// Portaudio player
+
+/// DOCME
+/// @class PortAudioPlayer
+/// @brief DOCME
+///
+/// DOCME
 class PortAudioPlayer : public AudioPlayer {
 private:
+
+	/// DOCME
 	static int pa_refcount;
+
+	/// DOCME
 	wxMutex PAMutex;
+
+	/// DOCME
 	volatile bool stopping;
-	//bool softStop;
+
+	/// DOCME
 	bool playing;
+
+	/// DOCME
 	float volume;
 
+
+	/// DOCME
 	volatile int64_t playPos;
+
+	/// DOCME
 	volatile int64_t startPos;
+
+	/// DOCME
 	volatile int64_t endPos;
+
+	/// DOCME
 	void *stream;
+
+	/// DOCME
 	PaTime paStart;
 
 	static int paCallback(
@@ -87,28 +110,69 @@ public:
 
 	void Play(int64_t start,int64_t count);
 	void Stop(bool timerToo=true);
+
+	/// @brief DOCME
+	/// @return 
+	///
 	bool IsPlaying() { return playing; }
 
+
+	/// @brief DOCME
+	/// @return 
+	///
 	int64_t GetStartPosition() { return startPos; }
+
+	/// @brief DOCME
+	/// @return 
+	///
 	int64_t GetEndPosition() { return endPos; }
 	int64_t GetCurrentPosition();
+
+	/// @brief DOCME
+	/// @param pos 
+	///
 	void SetEndPosition(int64_t pos) { endPos = pos; }
+
+	/// @brief DOCME
+	/// @param pos 
+	///
 	void SetCurrentPosition(int64_t pos) { playPos = pos; }
 
+
+	/// @brief DOCME
+	/// @param vol 
+	/// @return 
+	///
 	void SetVolume(double vol) { volume = vol; }
+
+	/// @brief DOCME
+	/// @return 
+	///
 	double GetVolume() { return volume; }
 
 	wxArrayString GetOutputDevices(wxString favorite);
+
+	/// @brief DOCME
+	/// @return 
+	///
 	wxMutex *GetMutex() { return &PAMutex; }
 };
 
 
-///////////
-// Factory
+
+/// DOCME
+/// @class PortAudioPlayerFactory
+/// @brief DOCME
+///
+/// DOCME
 class PortAudioPlayerFactory : public AudioPlayerFactory {
 public:
+
+	/// @brief DOCME
+	///
 	AudioPlayer *CreatePlayer() { return new PortAudioPlayer(); }
 };
 
 #endif //ifdef WITH_PORTAUDIO
+
 

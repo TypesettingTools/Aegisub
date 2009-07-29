@@ -47,7 +47,13 @@
 #ifdef DEBUG_AVISYNTH_CODE
 #include "main.h"
 #include "wx/textfile.h"
+
+/// DOCME
 wxTextFile avs_trace_file;
+
+/// @brief DOCME
+/// @param s 
+///
 void DoAvsTrace(const wxString &s)
 {
 	if (!avs_trace_file.IsOpened()) {
@@ -63,16 +69,23 @@ void DoAvsTrace(const wxString &s)
 #endif
 
 
-///////////////////////////////
-// Static field initialization
+
+/// DOCME
 int AviSynthWrapper::avs_refcount = 0;
+
+/// DOCME
 HINSTANCE AviSynthWrapper::hLib = NULL;
+
+/// DOCME
 IScriptEnvironment *AviSynthWrapper::env = NULL;
+
+/// DOCME
 wxMutex AviSynthWrapper::AviSynthMutex;
 
 
-////////////////////////
-// AviSynth constructor
+
+/// @brief AviSynth constructor 
+///
 AviSynthWrapper::AviSynthWrapper() {
 	if (!avs_refcount) {
 		AVSTRACE(_T("Avisynth not loaded, trying to load it now..."));
@@ -116,8 +129,9 @@ AviSynthWrapper::AviSynthWrapper() {
 }
 
 
-///////////////////////
-// AviSynth destructor
+
+/// @brief AviSynth destructor 
+///
 AviSynthWrapper::~AviSynthWrapper() {
 	AVSTRACE(_T("Decreasing reference count"));
 	if (!--avs_refcount) {
@@ -130,11 +144,13 @@ AviSynthWrapper::~AviSynthWrapper() {
 }
 
 
-///////////////////
-// Get environment
+
+/// @brief Get environment 
+///
 IScriptEnvironment *AviSynthWrapper::GetEnv() {
 	return env;
 }
 
 #endif
+
 

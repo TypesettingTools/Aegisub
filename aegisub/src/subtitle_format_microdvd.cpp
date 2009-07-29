@@ -48,15 +48,19 @@
 #include <wx/regex.h>
 
 
-///////////////////
-// Get format name
+
+/// @brief Get format name 
+/// @return 
+///
 wxString MicroDVDSubtitleFormat::GetName() {
 	return _T("MicroDVD");
 }
 
 
-//////////////////////
-// Get read wildcards
+
+/// @brief Get read wildcards 
+/// @return 
+///
 wxArrayString MicroDVDSubtitleFormat::GetReadWildcards() {
 	wxArrayString formats;
 	formats.Add(_T("sub"));
@@ -64,15 +68,20 @@ wxArrayString MicroDVDSubtitleFormat::GetReadWildcards() {
 }
 
 
-///////////////////////
-// Get write wildcards
+
+/// @brief Get write wildcards 
+/// @return 
+///
 wxArrayString MicroDVDSubtitleFormat::GetWriteWildcards() {
 	return GetReadWildcards();
 }
 
 
-////////////////////
-// Can read a file?
+
+/// @brief Can read a file? 
+/// @param filename 
+/// @return 
+///
 bool MicroDVDSubtitleFormat::CanReadFile(wxString filename) {
 	// Return false immediately if extension is wrong
 	if (filename.Right(4).Lower() != _T(".sub")) return false;
@@ -88,15 +97,22 @@ bool MicroDVDSubtitleFormat::CanReadFile(wxString filename) {
 }
 
 
-/////////////////////
-// Can write a file?
+
+/// @brief Can write a file? 
+/// @param filename 
+/// @return 
+///
 bool MicroDVDSubtitleFormat::CanWriteFile(wxString filename) {
 	return (filename.Right(4).Lower() == _T(".sub"));
 }
 
 
-///////////////
-// Read a file
+
+/// @brief Read a file 
+/// @param filename      
+/// @param forceEncoding 
+/// @return 
+///
 void MicroDVDSubtitleFormat::ReadFile(wxString filename,wxString forceEncoding) {
 	// Load and prepare regexp
 	TextFileReader file(filename);
@@ -167,8 +183,11 @@ void MicroDVDSubtitleFormat::ReadFile(wxString filename,wxString forceEncoding) 
 }
 
 
-////////////////
-// Write a file
+
+/// @brief Write a file 
+/// @param filename 
+/// @param encoding 
+///
 void MicroDVDSubtitleFormat::WriteFile(wxString filename,wxString encoding) {
 	// Set FPS
 	FrameRate cfr;
@@ -212,4 +231,5 @@ void MicroDVDSubtitleFormat::WriteFile(wxString filename,wxString encoding) {
 	// Clean up
 	ClearCopy();
 }
+
 

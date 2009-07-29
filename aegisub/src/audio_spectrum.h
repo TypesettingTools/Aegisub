@@ -36,6 +36,8 @@
 ///
 
 #ifndef AUDIO_SPECTRUM_H
+
+/// DOCME
 #define AUDIO_SPECTRUM_H
 
 #include <wx/wxprec.h>
@@ -47,22 +49,46 @@
 class AudioSpectrumCacheManager;
 
 
+
+/// DOCME
+/// @class AudioSpectrum
+/// @brief DOCME
+///
+/// DOCME
 class AudioSpectrum {
 private:
-	// Data provider
+
+	/// DOCME
 	AudioSpectrumCacheManager *cache;
 
-	// Colour pallettes
+
+	/// DOCME
 	unsigned char colours_normal[256*3];
+
+	/// DOCME
 	unsigned char colours_selected[256*3];
 
+
+	/// DOCME
 	AudioProvider *provider;
 
+
+	/// DOCME
 	unsigned long line_length; // number of frequency components per line (half of number of samples)
+
+	/// DOCME
 	unsigned long num_lines; // number of lines needed for the audio
+
+	/// DOCME
 	unsigned int fft_overlaps; // number of overlaps used in FFT
+
+	/// DOCME
 	float power_scale; // amplification of displayed power
+
+	/// DOCME
 	int minband; // smallest frequency band displayed
+
+	/// DOCME
 	int maxband; // largest frequency band displayed
 
 public:
@@ -76,4 +102,5 @@ public:
 
 
 #endif
+
 

@@ -36,6 +36,8 @@
 
 
 #ifndef AUDIO_KARAOKE_H
+
+/// DOCME
 #define AUDIO_KARAOKE_H
 
 
@@ -59,32 +61,60 @@ class AudioDisplay;
 class AudioBox;
 class AudioKaraokeTagMenu;
 
-///////////////////////////////////
-// Karaoke syllable with more info
+
+/// DOCME
 struct AudioKaraokeSyllable : AssKaraokeSyllable {
+
+	/// DOCME
 	int start_time; // centiseconds
+
+	/// DOCME
 	bool selected;
+
+	/// DOCME
 	std::vector<int> pending_splits;
+
+	/// DOCME
 	int display_w;
+
+	/// DOCME
 	int display_x;
 
 	AudioKaraokeSyllable();
 	AudioKaraokeSyllable(const AssKaraokeSyllable &base);
 };
+
+/// DOCME
 typedef std::vector<AudioKaraokeSyllable> AudioKaraokeVector;
 
 
-/////////
-// Class
+
+/// DOCME
+/// @class AudioKaraoke
+/// @brief DOCME
+///
+/// DOCME
 class AudioKaraoke : public wxWindow {
 	friend class AudioKaraokeTagMenu;
 private:
+
+	/// DOCME
 	AssDialogue *diag;
+
+	/// DOCME
 	AssDialogue *workDiag;
+
+	/// DOCME
 	int startClickSyl;
+
+	/// DOCME
 	bool must_rebuild;
 
+
+	/// DOCME
 	int split_cursor_syl;
+
+	/// DOCME
 	int split_cursor_x;
 
 	void AutoSplit();
@@ -98,13 +128,27 @@ private:
 	void OnMouse(wxMouseEvent &event);
 
 public:
+
+	/// DOCME
 	AudioDisplay *display;
+
+	/// DOCME
 	AudioBox *box;
 
+
+	/// DOCME
 	int curSyllable;
+
+	/// DOCME
 	int selectionCount;
+
+	/// DOCME
 	bool enabled;
+
+	/// DOCME
 	bool splitting;
+
+	/// DOCME
 	AudioKaraokeVector syllables;
 
 	AudioKaraoke(wxWindow *parent);
@@ -124,10 +168,16 @@ public:
 };
 
 
-///////////////
-// Helper menu
+
+/// DOCME
+/// @class AudioKaraokeTagMenu
+/// @brief DOCME
+///
+/// DOCME
 class AudioKaraokeTagMenu : public wxMenu {
 private:
+
+	/// DOCME
 	AudioKaraoke *kara;
 
 	void OnSelectItem(wxCommandEvent &event);
@@ -140,4 +190,5 @@ public:
 
 
 #endif
+
 

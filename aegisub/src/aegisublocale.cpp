@@ -49,19 +49,25 @@
 #include "standard_paths.h"
 #include <wx/stdpaths.h>
 
-///////////////
-// Constructor
+
+/// @brief Constructor 
+///
 AegisubLocale::AegisubLocale () {
 	locale = NULL;
 	curCode = -1;
 }
 
+
+/// @brief DOCME
+///
 AegisubLocale::~AegisubLocale() {
 	delete locale;
 }
 
-//////////////
-// Initialize
+
+/// @brief Initialize 
+/// @param language 
+///
 void AegisubLocale::Init(int language) {
 	if (language == -1) language = wxLANGUAGE_ENGLISH;
 	if (locale) delete locale;
@@ -86,8 +92,10 @@ void AegisubLocale::Init(int language) {
 }
 
 
-///////////////////
-// Pick a language
+
+/// @brief Pick a language 
+/// @return 
+///
 int AegisubLocale::PickLanguage() {
 	// Get list
 	wxArrayInt langs = GetAvailableLanguages();
@@ -120,8 +128,9 @@ int AegisubLocale::PickLanguage() {
 }
 
 
-///////////////////////////////////
-// Get list of available languages
+
+/// @brief Get list of available languages 
+///
 wxArrayInt AegisubLocale::GetAvailableLanguages() {
 	wxArrayInt final;
 
@@ -176,4 +185,5 @@ wxArrayInt AegisubLocale::GetAvailableLanguages() {
 
 	return final;
 }
+
 

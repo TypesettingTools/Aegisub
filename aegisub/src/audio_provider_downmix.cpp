@@ -42,8 +42,10 @@
 #include "audio_provider_downmix.h"
 
 
-//////////////////
-// Constructor
+
+/// @brief Constructor 
+/// @param source 
+///
 DownmixingAudioProvider::DownmixingAudioProvider(AudioProvider *source) {
 	filename = source->GetFilename();
 	channels = 1; // target
@@ -61,14 +63,19 @@ DownmixingAudioProvider::DownmixingAudioProvider(AudioProvider *source) {
 		throw _T("Downmixing Audio Provider: Source must have machine endian samples");
 }
 
-/////////////////
-// Destructor
+
+/// @brief Destructor 
+///
 DownmixingAudioProvider::~DownmixingAudioProvider()	{
 		delete provider;
 }
 
-////////////////
-// Actual work happens here
+
+/// @brief Actual work happens here 
+/// @param buf   
+/// @param start 
+/// @param count 
+///
 void DownmixingAudioProvider::GetAudio(void *buf, int64_t start, int64_t count) {
 	if (count == 0) return;
 
@@ -122,4 +129,5 @@ void DownmixingAudioProvider::GetAudio(void *buf, int64_t start, int64_t count) 
 	// Done downmixing, free the work buffer
 	delete[] tmp;
 }
+
 

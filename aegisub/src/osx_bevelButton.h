@@ -12,6 +12,8 @@
 #ifdef __WXMAC__
 
 #ifndef _WX_BEVEL_BUTTON_H_
+
+/// DOCME
 #define _WX_BEVEL_BUTTON_H_
 
 #include "wx/control.h"
@@ -19,12 +21,31 @@
 
 //WXDLLEXPORT_DATA(extern const wxChar*) wxButtonNameStr;
 
-// Pushbutton
+
+/// DOCME
+/// @class wxBevelButton
+/// @brief DOCME
+///
+/// DOCME
 class WXDLLEXPORT wxBevelButton: public wxButton
 {
 	DECLARE_DYNAMIC_CLASS(wxButton)
 public:
+
+	/// @brief DOCME
+	///
 	inline wxBevelButton() {}
+
+	/// @brief DOCME
+	/// @param parent             
+	/// @param id                 
+	/// @param wxEmptyString      
+	/// @param wxDefaultPosition  
+	/// @param wxDefaultSize      
+	/// @param 0                  
+	/// @param wxDefaultValidator 
+	/// @param wxButtonNameStr    
+	///
 	inline wxBevelButton(wxWindow *parent, wxWindowID id,
 						 const wxString& label = wxEmptyString,
 						 const wxPoint& pos = wxDefaultPosition,
@@ -50,4 +71,5 @@ virtual wxSize DoGetBestSize() const ;
 // _WX_BUTTON_H_
 
 #endif // __WXMAC__
+
 

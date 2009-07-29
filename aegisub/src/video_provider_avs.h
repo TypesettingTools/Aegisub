@@ -43,29 +43,63 @@
 #include "include/aegisub/video_provider.h"
 
 
-////////////
-// Provider
+
+/// DOCME
+/// @class AvisynthVideoProvider
+/// @brief DOCME
+///
+/// DOCME
 class AvisynthVideoProvider: public VideoProvider, AviSynthWrapper {
 private:
+
+	/// DOCME
 	VideoInfo vi;
+
+	/// DOCME
 	AegiVideoFrame iframe;
 
+
+	/// DOCME
 	bool usedDirectShow;
+
+	/// DOCME
 	wxString rendererCallString;
+
+	/// DOCME
 	wxString decoderName;
 
+
+	/// DOCME
 	int num_frames;
+
+	/// DOCME
 	int last_fnum;
 
+
+	/// DOCME
 	double fps;
+
+	/// DOCME
 	wxArrayInt frameTime;
+
+	/// DOCME
 	bool byFrame;
 
+
+	/// DOCME
 	wxArrayInt KeyFrames;
+
+	/// DOCME
 	bool keyFramesLoaded;
+
+	/// DOCME
 	bool isVfr;
+
+	/// DOCME
 	FrameRate trueFrameRate;
 
+
+	/// DOCME
 	PClip RGB32Video;
 
 	PClip OpenVideo(wxString _filename, bool mpeg2dec3_priority = true);
@@ -77,32 +111,88 @@ public:
 	const AegiVideoFrame GetFrame(int n);
 	void GetFloatFrame(float* Buffer, int n);
 
-	// properties
+
+	/// @brief // properties
+	/// @return 
+	///
 	int GetPosition() { return last_fnum; };
+
+	/// @brief DOCME
+	/// @return 
+	///
 	int GetFrameCount() { return num_frames? num_frames: vi.num_frames; };
+
+	/// @brief DOCME
+	/// @return 
+	///
 	double GetFPS() { return (double)vi.fps_numerator/(double)vi.fps_denominator; };
+
+	/// @brief DOCME
+	/// @return 
+	///
 	int GetWidth() { return vi.width; };
+
+	/// @brief DOCME
+	/// @return 
+	///
 	int GetHeight() { return vi.height; };
+
+	/// @brief DOCME
+	/// @return 
+	///
 	bool AreKeyFramesLoaded() { return keyFramesLoaded; };
+
+	/// @brief DOCME
+	/// @return 
+	///
 	wxArrayInt GetKeyFrames() { return KeyFrames; };
+
+	/// @brief DOCME
+	/// @return 
+	///
 	bool IsVFR() { return isVfr; };
+
+	/// @brief DOCME
+	/// @return 
+	///
 	FrameRate GetTrueFrameRate() { return isVfr? trueFrameRate: FrameRate(); };
 
 	void OverrideFrameTimeList(wxArrayInt list);
+
+	/// @brief DOCME
+	/// @return 
+	///
 	bool IsNativelyByFrames() { return byFrame; }
+
+	/// @brief DOCME
+	/// @return 
+	///
 	bool NeedsVFRHack() { return true; }
 	wxString GetWarning();
+
+	/// @brief DOCME
+	/// @return 
+	///
 	wxString GetDecoderName() { return wxString(L"Avisynth/") + decoderName; }
 };
 
 
-///////////
-// Factory
+
+/// DOCME
+/// @class AvisynthVideoProviderFactory
+/// @brief DOCME
+///
+/// DOCME
 class AvisynthVideoProviderFactory : public VideoProviderFactory {
 public:
+
+	/// @brief DOCME
+	/// @param video 
+	///
 	VideoProvider *CreateProvider(wxString video) { return new AvisynthVideoProvider(video); }
 };
 
 
 #endif
+
 

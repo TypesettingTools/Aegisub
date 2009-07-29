@@ -48,8 +48,11 @@
 #include "standard_paths.h"
 
 
-///////////////////////
-// Save styles to disk
+
+/// @brief Save styles to disk 
+/// @param name 
+/// @return 
+///
 void AssStyleStorage::Save(wxString name) {
 	if (name.IsEmpty()) return;
 
@@ -61,8 +64,11 @@ void AssStyleStorage::Save(wxString name) {
 }
 
 
-/////////////////////////
-// Load styles from disk
+
+/// @brief Load styles from disk 
+/// @param name 
+/// @return 
+///
 void AssStyleStorage::Load(wxString name) {
 	if (name.IsEmpty()) return;
 	Clear();
@@ -84,8 +90,9 @@ void AssStyleStorage::Load(wxString name) {
 }
 
 
-/////////
-// Clear
+
+/// @brief Clear 
+///
 void AssStyleStorage::Clear () {
 	using std::list;
 	for (list<AssStyle*>::iterator cur=style.begin();cur!=style.end();cur++) {
@@ -95,8 +102,10 @@ void AssStyleStorage::Clear () {
 }
 
 
-/////////////
-// Get names
+
+/// @brief Get names 
+/// @return 
+///
 wxArrayString AssStyleStorage::GetNames() {
 	wxArrayString names;
 	for (std::list<AssStyle*>::iterator cur=style.begin();cur!=style.end();cur++) {
@@ -106,12 +115,15 @@ wxArrayString AssStyleStorage::GetNames() {
 }
 
 
-///////////////////////
-// Get a style by name
+
+/// @brief Get a style by name 
+/// @param name 
+///
 AssStyle *AssStyleStorage::GetStyle(wxString name) {
 	for (std::list<AssStyle*>::iterator cur=style.begin();cur!=style.end();cur++) {
 		if ((*cur)->name == name) return *cur;
 	}
 	return NULL;
 }
+
 

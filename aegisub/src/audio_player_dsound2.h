@@ -43,11 +43,23 @@
 
 class DirectSoundPlayer2Thread;
 
+
+/// DOCME
+/// @class DirectSoundPlayer2
+/// @brief DOCME
+///
+/// DOCME
 class DirectSoundPlayer2 : public AudioPlayer {
+
+	/// DOCME
 	DirectSoundPlayer2Thread *thread;
 
 protected:
+
+	/// DOCME
 	int WantedLatency;
+
+	/// DOCME
 	int BufferLength;
 
 	bool IsThreadAlive();
@@ -76,10 +88,20 @@ public:
 };
 
 
+
+/// DOCME
+/// @class DirectSoundPlayer2Factory
+/// @brief DOCME
+///
+/// DOCME
 class DirectSoundPlayer2Factory : public AudioPlayerFactory {
 public:
+
+	/// @brief DOCME
+	///
 	AudioPlayer *CreatePlayer() { return new DirectSoundPlayer2(); }
 };
 
 #endif
+
 

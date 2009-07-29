@@ -51,12 +51,18 @@
 #include <map>
 
 
-// lookit dis here static storage
+
+/// DOCME
 wxMutex FFmpegSourceProvider::CleaningInProgress;
 
 
-///////////////
-// Update indexing progress
+
+/// @brief Update indexing progress 
+/// @param Current 
+/// @param Total   
+/// @param Private 
+/// @return 
+///
 int FFMS_CC FFmpegSourceProvider::UpdateIndexingProgress(int64_t Current, int64_t Total, void *Private) {
 	IndexingProgressDialog *Progress = (IndexingProgressDialog *)Private;
 
@@ -70,8 +76,14 @@ int FFMS_CC FFmpegSourceProvider::UpdateIndexingProgress(int64_t Current, int64_
 }
 
 
-///////////
-// Do indexing
+
+/// @brief Do indexing 
+/// @param Indexer            
+/// @param CacheName          
+/// @param Trackmask          
+/// @param IgnoreDecodeErrors 
+/// @return 
+///
 FFIndex *FFmpegSourceProvider::DoIndexing(FFIndexer *Indexer, const wxString &CacheName, int Trackmask, bool IgnoreDecodeErrors) {
 	char FFMSErrMsg[1024];
 	unsigned MsgSize = sizeof(FFMSErrMsg);
@@ -108,8 +120,12 @@ FFIndex *FFmpegSourceProvider::DoIndexing(FFIndexer *Indexer, const wxString &Ca
 }
 
 
-///////////
-// Find all tracks of the given typo and return their track numbers and respective codec names
+
+/// @brief Find all tracks of the given typo and return their track numbers and respective codec names 
+/// @param Indexer 
+/// @param Type    
+/// @return 
+///
 std::map<int,wxString> FFmpegSourceProvider::GetTracksOfType(FFIndexer *Indexer, FFMS_TrackType Type) {
 	std::map<int,wxString> TrackList;
 	int NumTracks = FFMS_GetNumTracksI(Indexer);
@@ -125,8 +141,13 @@ std::map<int,wxString> FFmpegSourceProvider::GetTracksOfType(FFIndexer *Indexer,
 }
 
 
-///////////
-// Ask user for which track he wants to load
+
+/// @brief Ask user for which track he wants to load 
+/// @param std::map<int 
+/// @param TrackList    
+/// @param Type         
+/// @return 
+///
 int FFmpegSourceProvider::AskForTrackSelection(const std::map<int,wxString> &TrackList, FFMS_TrackType Type) {
 	std::vector<int> TrackNumbers;
 	wxArrayString Choices;
@@ -151,8 +172,9 @@ int FFmpegSourceProvider::AskForTrackSelection(const std::map<int,wxString> &Tra
 }
 
 
-///////////
-// Set ffms2 log level according to setting in config.dat
+
+/// @brief Set ffms2 log level according to setting in config.dat 
+///
 void FFmpegSourceProvider::SetLogLevel() {
 	wxString LogLevel = Options.AsText(_T("FFmpegSource log level"));
 
@@ -175,9 +197,11 @@ void FFmpegSourceProvider::SetLogLevel() {
 }
 
 
-/////////////////////
-// Creates a name for the ffmpegsource2 index and prepares the folder if it doesn't exist
-// method by amz
+
+/// @brief method by amz Creates a name for the ffmpegsource2 index and prepares the folder if it doesn't exist 
+/// @param filename 
+/// @return 
+///
 wxString FFmpegSourceProvider::GetCacheFilename(const wxString& filename)
 {
 	// Get the size of the file to be hashed
@@ -214,8 +238,10 @@ wxString FFmpegSourceProvider::GetCacheFilename(const wxString& filename)
 	return dirfn.GetShortPath() + _T("/") + fn.GetFullName();
 }
 
-/////////////////////
-// fire and forget cleaning thread (well, almost)
+
+/// @brief fire and forget cleaning thread (well, almost) 
+/// @return 
+///
 bool FFmpegSourceProvider::CleanCache() {
 	wxLogDebug(_T("FFmpegSourceCacheCleaner: attempting to start thread"));
 
@@ -239,14 +265,17 @@ bool FFmpegSourceProvider::CleanCache() {
 }
 
 
-/////////////////////
-// constructor
+
+/// @brief constructor 
+/// @param par 
+///
 FFmpegSourceCacheCleaner::FFmpegSourceCacheCleaner(FFmpegSourceProvider *par) : wxThread(wxTHREAD_DETACHED) {
 	parent = par;
 }
 
-/////////////////////
-// all actual work happens here because I was too lazy to write more functions
+
+/// @brief all actual work happens here because I was too lazy to write more functions 
+///
 wxThread::ExitCode FFmpegSourceCacheCleaner::Entry() {
 	wxMutexLocker lock(FFmpegSourceProvider::CleaningInProgress);
 	if (!lock.IsOk()) {
@@ -335,4 +364,5 @@ wxThread::ExitCode FFmpegSourceCacheCleaner::Entry() {
 
 
 #endif // WITH_FFMPEGSOURCE
+
 

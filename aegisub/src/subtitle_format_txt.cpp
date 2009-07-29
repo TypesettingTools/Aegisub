@@ -48,29 +48,39 @@
 #include "dialog_text_import.h"
 
 
-/////////////
-// Can read?
+
+/// @brief Can read? 
+/// @param filename 
+/// @return 
+///
 bool TXTSubtitleFormat::CanReadFile(wxString filename) {
 	return (filename.Right(4).Lower() == _T(".txt"));
 }
 
 
-//////////////
-// Can write?
+
+/// @brief Can write? 
+/// @param filename 
+/// @return 
+///
 bool TXTSubtitleFormat::CanWriteFile(wxString filename) {
 	return (filename.Right(4).Lower() == _T(".txt") && filename.Right(11).Lower() != _T(".encore.txt") && filename.Right(16).Lower() != _T(".transtation.txt"));
 }
 
 
-////////////
-// Get name
+
+/// @brief Get name 
+/// @return 
+///
 wxString TXTSubtitleFormat::GetName() {
 	return _T("Plain-Text");
 }
 
 
-//////////////////////
-// Get read wildcards
+
+/// @brief Get read wildcards 
+/// @return 
+///
 wxArrayString TXTSubtitleFormat::GetReadWildcards() {
 	wxArrayString formats;
 	formats.Add(_T("txt"));
@@ -78,15 +88,21 @@ wxArrayString TXTSubtitleFormat::GetReadWildcards() {
 }
 
 
-///////////////////////
-// Get write wildcards
+
+/// @brief Get write wildcards 
+/// @return 
+///
 wxArrayString TXTSubtitleFormat::GetWriteWildcards() {
 	return GetReadWildcards();
 }
 
 
-/////////////
-// Read file
+
+/// @brief Read file 
+/// @param filename 
+/// @param encoding 
+/// @return 
+///
 void TXTSubtitleFormat::ReadFile(wxString filename,wxString encoding) {	using namespace std;
 	// Import options
 	DialogTextImport dlg;
@@ -175,8 +191,11 @@ void TXTSubtitleFormat::ReadFile(wxString filename,wxString encoding) {	using na
 }
 
 
-/////////////
-// Write file
+
+/// @brief Write file 
+/// @param filename 
+/// @param encoding 
+///
 void TXTSubtitleFormat::WriteFile(wxString filename,wxString encoding) {	using namespace std;
 	size_t num_actor_names = 0, num_dialogue_lines = 0;
 
@@ -238,4 +257,5 @@ void TXTSubtitleFormat::WriteFile(wxString filename,wxString encoding) {	using n
 		}
 	}
 }
+
 

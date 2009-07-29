@@ -43,8 +43,12 @@
 #include "visual_tool.h"
 
 
-////////////////////////
-// Crosshair tool class
+
+/// DOCME
+/// @class VisualToolCross
+/// @brief DOCME
+///
+/// DOCME
 class VisualToolCross : public VisualTool {
 public:
 	VisualToolCross(VideoDisplay *parent);
@@ -53,4 +57,5 @@ public:
 	void Update();
 	void Draw();
 };
+
 

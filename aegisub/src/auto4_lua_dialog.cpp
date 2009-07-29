@@ -61,11 +61,17 @@
 #include "colour_button.h"
 #include "ass_style.h"
 
+
+/// DOCME
 namespace Automation4 {
 
 
 	// LuaConfigDialogControl
 
+
+	/// @brief DOCME
+	/// @param L 
+	///
 	LuaConfigDialogControl::LuaConfigDialogControl(lua_State *L)
 	{
 		// Assume top of stack is a control table (don't do checking)
@@ -125,14 +131,28 @@ namespace Automation4 {
 		wxLogDebug(_T("created control: '%s', (%d,%d)(%d,%d), '%s'"), name.c_str(), x, y, width, height, hint.c_str());
 	}
 
+
+	/// DOCME
 	namespace LuaControl {
 
 		// Label
 
+
+		/// DOCME
+		/// @class Label
+		/// @brief DOCME
+		///
+		/// DOCME
 		class Label : public LuaConfigDialogControl {
 		public:
+
+			/// DOCME
 			wxString label;
 
+
+			/// @brief DOCME
+			/// @param L 
+			///
 			Label(lua_State *L)
 				: LuaConfigDialogControl(L)
 			{
@@ -141,20 +161,35 @@ namespace Automation4 {
 				lua_pop(L, 1);
 			}
 
+
+			/// @brief DOCME
+			///
 			virtual ~Label() { }
 
 			// Doesn't have a serialisable value so don't implement that sub-interface
 
+
+			/// @brief DOCME
+			/// @param parent 
+			/// @return 
+			///
 			wxControl *Create(wxWindow *parent)
 			{
 				return cw = new wxStaticText(parent, -1, label);
 			}
 
+
+			/// @brief DOCME
+			///
 			void ControlReadBack()
 			{
 				// Nothing here
 			}
 
+
+			/// @brief DOCME
+			/// @param L 
+			///
 			void LuaReadBack(lua_State *L)
 			{
 				// Label doesn't produce output, so let it be nil
@@ -165,10 +200,22 @@ namespace Automation4 {
 
 		// Basic edit
 
+
+		/// DOCME
+		/// @class Edit
+		/// @brief DOCME
+		///
+		/// DOCME
 		class Edit : public LuaConfigDialogControl {
 		public:
+
+			/// DOCME
 			wxString text;
 
+
+			/// @brief DOCME
+			/// @param L 
+			///
 			Edit(lua_State *L)
 				: LuaConfigDialogControl(L)
 			{
@@ -185,23 +232,43 @@ namespace Automation4 {
 				lua_pop(L, 1);
 			}
 
+
+			/// @brief DOCME
+			///
 			virtual ~Edit() { }
 
+
+			/// @brief DOCME
+			/// @return 
+			///
 			bool CanSerialiseValue()
 			{
 				return true;
 			}
 
+
+			/// @brief DOCME
+			/// @return 
+			///
 			wxString SerialiseValue()
 			{
 				return inline_string_encode(text);
 			}
 
+
+			/// @brief DOCME
+			/// @param serialised 
+			///
 			void UnserialiseValue(const wxString &serialised)
 			{
 				text = inline_string_decode(serialised);
 			}
 
+
+			/// @brief DOCME
+			/// @param parent 
+			/// @return 
+			///
 			wxControl *Create(wxWindow *parent)
 			{
 				cw = new wxTextCtrl(parent, -1, text, wxDefaultPosition, wxDefaultSize, 0);
@@ -209,11 +276,18 @@ namespace Automation4 {
 				return cw;
 			}
 
+
+			/// @brief DOCME
+			///
 			void ControlReadBack()
 			{
 				text = ((wxTextCtrl*)cw)->GetValue();
 			}
 
+
+			/// @brief DOCME
+			/// @param L 
+			///
 			void LuaReadBack(lua_State *L)
 			{
 				lua_pushstring(L, text.mb_str(wxConvUTF8));
@@ -222,10 +296,22 @@ namespace Automation4 {
 		};
 
 
+
+		/// DOCME
+		/// @class Color
+		/// @brief DOCME
+		///
+		/// DOCME
 		class Color : public LuaConfigDialogControl {
 		public:
+
+			/// DOCME
 			wxString text;
 
+
+			/// @brief DOCME
+			/// @param L 
+			///
 			Color(lua_State *L)
 				: LuaConfigDialogControl(L)
 			{
@@ -234,23 +320,43 @@ namespace Automation4 {
 				lua_pop(L, 1);
 			}
 
+
+			/// @brief DOCME
+			///
 			virtual ~Color() { }
 
+
+			/// @brief DOCME
+			/// @return 
+			///
 			bool CanSerialiseValue()
 			{
 				return true;
 			}
 
+
+			/// @brief DOCME
+			/// @return 
+			///
 			wxString SerialiseValue()
 			{
 				return inline_string_encode(text);
 			}
 
+
+			/// @brief DOCME
+			/// @param serialised 
+			///
 			void UnserialiseValue(const wxString &serialised)
 			{
 				text = inline_string_decode(serialised);
 			}
 
+
+			/// @brief DOCME
+			/// @param parent 
+			/// @return 
+			///
 			wxControl *Create(wxWindow *parent)
 			{
 				AssColor colour;
@@ -260,11 +366,18 @@ namespace Automation4 {
 				return cw;
 			}
 
+
+			/// @brief DOCME
+			///
 			void ControlReadBack()
 			{
 				text = ((ColourButton*)cw)->GetColour().GetAsString(wxC2S_HTML_SYNTAX);
 			}
 
+
+			/// @brief DOCME
+			/// @param L 
+			///
 			void LuaReadBack(lua_State *L)
 			{
 				lua_pushstring(L, text.mb_str(wxConvUTF8));
@@ -276,19 +389,37 @@ namespace Automation4 {
 		
 		// Multiline edit
 
+
+		/// DOCME
+		/// @class Textbox
+		/// @brief DOCME
+		///
+		/// DOCME
 		class Textbox : public Edit {
 		public:
 
+
+			/// @brief DOCME
+			/// @param L 
+			///
 			Textbox(lua_State *L)
 				: Edit(L)
 			{
 				// Nothing more
 			}
 
+
+			/// @brief DOCME
+			///
 			virtual ~Textbox() { }
 
 			// Same serialisation interface as single-line edit
 
+
+			/// @brief DOCME
+			/// @param parent 
+			/// @return 
+			///
 			wxControl *Create(wxWindow *parent)
 			{
 				cw = new wxTextCtrl(parent, -1, text, wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE);
@@ -302,12 +433,30 @@ namespace Automation4 {
 
 		// Integer only edit
 
+
+		/// DOCME
+		/// @class IntEdit
+		/// @brief DOCME
+		///
+		/// DOCME
 		class IntEdit : public Edit {
 		public:
+
+			/// DOCME
 			int value;
+
+			/// DOCME
 			bool hasspin;
+
+			/// DOCME
+
+			/// DOCME
 			int min, max;
 
+
+			/// @brief DOCME
+			/// @param L 
+			///
 			IntEdit(lua_State *L)
 				: Edit(L)
 			{
@@ -341,18 +490,33 @@ nospin:
 				}
 			}
 
+
+			/// @brief DOCME
+			///
 			virtual ~IntEdit() { }
 
+
+			/// @brief DOCME
+			/// @return 
+			///
 			bool CanSerialiseValue()
 			{
 				return true;
 			}
 
+
+			/// @brief DOCME
+			/// @return 
+			///
 			wxString SerialiseValue()
 			{
 				return wxString::Format(_T("%d"), value);
 			}
 
+
+			/// @brief DOCME
+			/// @param serialised 
+			///
 			void UnserialiseValue(const wxString &serialised)
 			{
 				long tmp;
@@ -360,6 +524,11 @@ nospin:
 					value = tmp;
 			}
 
+
+			/// @brief DOCME
+			/// @param parent 
+			/// @return 
+			///
 			wxControl *Create(wxWindow *parent)
 			{
 				wxSpinCtrl *scw = new wxSpinCtrl(parent, -1, wxString::Format(_T("%d"), value), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, min, max, value);
@@ -368,11 +537,18 @@ nospin:
 				return cw;
 			}
 
+
+			/// @brief DOCME
+			///
 			void ControlReadBack()
 			{
 				value = ((wxSpinCtrl*)cw)->GetValue();
 			}
 
+
+			/// @brief DOCME
+			/// @param L 
+			///
 			void LuaReadBack(lua_State *L)
 			{
 				lua_pushinteger(L, value);
@@ -383,13 +559,31 @@ nospin:
 
 		// Float only edit
 
+
+		/// DOCME
+		/// @class FloatEdit
+		/// @brief DOCME
+		///
+		/// DOCME
 		class FloatEdit : public Edit {
 		public:
+
+			/// DOCME
 			float value;
+
+			/// DOCME
 			bool hasspin;
+
+			/// DOCME
+
+			/// DOCME
 			float min, max;
 			// FIXME: Can't support spin button atm
 
+
+			/// @brief DOCME
+			/// @param L 
+			///
 			FloatEdit(lua_State *L)
 				: Edit(L)
 			{
@@ -400,18 +594,33 @@ nospin:
 				// TODO: spin button support
 			}
 
+
+			/// @brief DOCME
+			///
 			virtual ~FloatEdit() { }
 
+
+			/// @brief DOCME
+			/// @return 
+			///
 			bool CanSerialiseValue()
 			{
 				return true;
 			}
 
+
+			/// @brief DOCME
+			/// @return 
+			///
 			wxString SerialiseValue()
 			{
 				return PrettyFloatF(value);
 			}
 
+
+			/// @brief DOCME
+			/// @param serialised 
+			///
 			void UnserialiseValue(const wxString &serialised)
 			{
 				double tmp;
@@ -419,7 +628,14 @@ nospin:
 					value = (float)tmp;
 			}
 
+
+			/// DOCME
 			typedef wxValidator FloatTextValidator;
+
+			/// @brief DOCME
+			/// @param parent 
+			/// @return 
+			///
 			wxControl *Create(wxWindow *parent)
 			{
 				cw = new wxTextCtrl(parent, -1, PrettyFloatF(value), wxDefaultPosition, wxDefaultSize, 0); //, FloatTextValidator());
@@ -427,6 +643,9 @@ nospin:
 				return cw;
 			}
 
+
+			/// @brief DOCME
+			///
 			void ControlReadBack()
 			{
 				double newval;
@@ -436,6 +655,10 @@ nospin:
 				}
 			}
 
+
+			/// @brief DOCME
+			/// @param L 
+			///
 			void LuaReadBack(lua_State *L)
 			{
 				lua_pushnumber(L, value);
@@ -446,11 +669,25 @@ nospin:
 
 		// Dropdown
 
+
+		/// DOCME
+		/// @class Dropdown
+		/// @brief DOCME
+		///
+		/// DOCME
 		class Dropdown : public LuaConfigDialogControl {
 		public:
+
+			/// DOCME
 			wxArrayString items;
+
+			/// DOCME
 			wxString value;
 
+
+			/// @brief DOCME
+			/// @param L 
+			///
 			Dropdown(lua_State *L)
 				: LuaConfigDialogControl(L)
 			{
@@ -469,23 +706,43 @@ nospin:
 				lua_pop(L, 1);
 			}
 
+
+			/// @brief DOCME
+			///
 			virtual ~Dropdown() { }
 
+
+			/// @brief DOCME
+			/// @return 
+			///
 			bool CanSerialiseValue()
 			{
 				return true;
 			}
 
+
+			/// @brief DOCME
+			/// @return 
+			///
 			wxString SerialiseValue()
 			{
 				return inline_string_encode(value);
 			}
 
+
+			/// @brief DOCME
+			/// @param serialised 
+			///
 			void UnserialiseValue(const wxString &serialised)
 			{
 				value = inline_string_decode(serialised);
 			}
 
+
+			/// @brief DOCME
+			/// @param parent 
+			/// @return 
+			///
 			wxControl *Create(wxWindow *parent)
 			{
 				cw = new wxComboBox(parent, -1, value, wxDefaultPosition, wxDefaultSize, items, wxCB_READONLY);
@@ -493,11 +750,18 @@ nospin:
 				return cw;
 			}
 
+
+			/// @brief DOCME
+			///
 			void ControlReadBack()
 			{
 				value = ((wxComboBox*)cw)->GetValue();
 			}
 
+
+			/// @brief DOCME
+			/// @param L 
+			///
 			void LuaReadBack(lua_State *L)
 			{
 				lua_pushstring(L, value.mb_str(wxConvUTF8));
@@ -508,11 +772,25 @@ nospin:
 
 		// Checkbox
 
+
+		/// DOCME
+		/// @class Checkbox
+		/// @brief DOCME
+		///
+		/// DOCME
 		class Checkbox : public LuaConfigDialogControl {
 		public:
+
+			/// DOCME
 			wxString label;
+
+			/// DOCME
 			bool value;
 
+
+			/// @brief DOCME
+			/// @param L 
+			///
 			Checkbox(lua_State *L)
 				: LuaConfigDialogControl(L)
 			{
@@ -525,24 +803,44 @@ nospin:
 				lua_pop(L, 1);
 			}
 
+
+			/// @brief DOCME
+			///
 			virtual ~Checkbox() { }
 
+
+			/// @brief DOCME
+			/// @return 
+			///
 			bool CanSerialiseValue()
 			{
 				return true;
 			}
 
+
+			/// @brief DOCME
+			/// @return 
+			///
 			wxString SerialiseValue()
 			{
 				return value ? _T("1") : _T("0");
 			}
 
+
+			/// @brief DOCME
+			/// @param serialised 
+			///
 			void UnserialiseValue(const wxString &serialised)
 			{
 				// fixme? should this allow more different "false" values?
 				value = (serialised == _T("0")) ? false : true;
 			}
 
+
+			/// @brief DOCME
+			/// @param parent 
+			/// @return 
+			///
 			wxControl *Create(wxWindow *parent)
 			{
 				cw = new wxCheckBox(parent, -1, label);
@@ -551,11 +849,18 @@ nospin:
 				return cw;
 			}
 
+
+			/// @brief DOCME
+			///
 			void ControlReadBack()
 			{
 				value = ((wxCheckBox*)cw)->GetValue();
 			}
 
+
+			/// @brief DOCME
+			/// @param L 
+			///
 			void LuaReadBack(lua_State *L)
 			{
 				lua_pushboolean(L, value);
@@ -568,6 +873,11 @@ nospin:
 
 	// LuaConfigDialog
 
+
+	/// @brief DOCME
+	/// @param L               
+	/// @param include_buttons 
+	///
 	LuaConfigDialog::LuaConfigDialog(lua_State *L, bool include_buttons)
 		: use_buttons(include_buttons)
 	{
@@ -653,12 +963,20 @@ badcontrol:
 		}
 	}
 
+
+	/// @brief DOCME
+	///
 	LuaConfigDialog::~LuaConfigDialog()
 	{
 		for (size_t i = 0; i < controls.size(); ++i)
 			delete controls[i];
 	}
 
+
+	/// @brief DOCME
+	/// @param parent 
+	/// @return 
+	///
 	wxWindow* LuaConfigDialog::CreateWindow(wxWindow *parent)
 	{
 		wxWindow *w = new wxPanel(parent);
@@ -706,6 +1024,11 @@ badcontrol:
 		return w;
 	}
 
+
+	/// @brief DOCME
+	/// @param L 
+	/// @return 
+	///
 	int LuaConfigDialog::LuaReadBack(lua_State *L)
 	{
 		// First read back which button was pressed, if any
@@ -740,6 +1063,10 @@ badcontrol:
 		}
 	}
 
+
+	/// @brief DOCME
+	/// @return 
+	///
 	wxString LuaConfigDialog::Serialise()
 	{
 		if (controls.size() == 0)
@@ -763,6 +1090,10 @@ badcontrol:
 		return res;
 	}
 
+
+	/// @brief DOCME
+	/// @param serialised 
+	///
 	void LuaConfigDialog::Unserialise(const wxString &serialised)
 	{
 		// Split by pipe
@@ -782,6 +1113,9 @@ badcontrol:
 		}
 	}
 
+
+	/// @brief DOCME
+	///
 	void LuaConfigDialog::ReadBack()
 	{
 		for (size_t i = 0; i < controls.size(); ++i) {
@@ -789,6 +1123,10 @@ badcontrol:
 		}
 	}
 
+
+	/// @brief DOCME
+	/// @param evt 
+	///
 	void LuaConfigDialog::ButtonEventHandler::OnButtonPush(wxCommandEvent &evt)
 	{
 		// Let button_pushed == 0 mean "cancelled", such that pushing Cancel or closing the dialog
@@ -817,4 +1155,5 @@ badcontrol:
 };
 
 #endif // WITH_AUTO4_LUA
+
 

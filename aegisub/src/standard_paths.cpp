@@ -44,16 +44,19 @@
 #include "standard_paths.h"
 
 
-////////////////
-// Get instance
+
+/// @brief Get instance 
+/// @return 
+///
 StandardPaths &StandardPaths::GetInstance() {
 	static StandardPaths instance;
 	return instance;
 }
 
 
-///////////////
-// Constructor
+
+/// @brief Constructor 
+///
 StandardPaths::StandardPaths() {
    wxStandardPathsBase &paths = wxStandardPaths::Get();
 
@@ -87,8 +90,11 @@ StandardPaths::StandardPaths() {
 }
 
 
-///////////////
-// Decode path
+
+/// @brief Decode path 
+/// @param path 
+/// @return 
+///
 wxString StandardPaths::DoDecodePath(wxString path) {
 	// Decode
 	if (path[0] == _T('?')) {
@@ -118,27 +124,37 @@ wxString StandardPaths::DoDecodePath(wxString path) {
 }
 
 
-///////////////
-// Encode path
+
+/// @brief Encode path 
+/// @param path 
+/// @return 
+///
 wxString StandardPaths::DoEncodePath(const wxString &path) {
 	// TODO
 	return path;
 }
 
 
-/////////////////////////
-// Set value of a ? path
+
+/// @brief Set value of a ? path 
+/// @param path  
+/// @param value 
+///
 void StandardPaths::DoSetPathValue(const wxString &path, const wxString &value) {
 	paths[path] = value;
 }
 
 
-///////////////////////////////////////////////////////////////////////////
-// Decode a path that for legacy reasons might be relative to another path
+
+/// @brief Decode a path that for legacy reasons might be relative to another path 
+/// @param path       
+/// @param relativeTo 
+///
 wxString StandardPaths::DecodePathMaybeRelative(const wxString &path, const wxString &relativeTo) {
 	wxFileName res(DecodePath(path));
 	if (res.IsRelative())
 		res.Assign(DecodePath(relativeTo + _T("/") + path));
 	return res.GetFullPath();
 }
+
 

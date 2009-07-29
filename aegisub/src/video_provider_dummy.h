@@ -37,6 +37,8 @@
 // The dummy video provider needs a header, since it needs to be created directly as a special case
 
 #ifndef _VIDEO_PROVIDER_DUMMY_H
+
+/// DOCME
 #define _VIDEO_PROVIDER_DUMMY_H
 
 
@@ -47,15 +49,31 @@
 #include "vfr.h"
 
 
-////////////////////////
-// Dummy video provider
+
+/// DOCME
+/// @class DummyVideoProvider
+/// @brief DOCME
+///
+/// DOCME
 class DummyVideoProvider : public VideoProvider {
 private:
+
+	/// DOCME
 	int lastFrame;
+
+	/// DOCME
 	int framecount;
+
+	/// DOCME
 	double fps;
+
+	/// DOCME
 	int width;
+
+	/// DOCME
 	int height;
+
+	/// DOCME
 	AegiVideoFrame frame;
 
 	void Create(double fps, int frames, int _width, int _height, const wxColour &colour, bool pattern);
@@ -75,14 +93,34 @@ public:
 	int GetHeight();
 	double GetFPS();
 
+
+	/// @brief DOCME
+	/// @return 
+	///
 	bool AreKeyFramesLoaded() { return false; };
+
+	/// @brief DOCME
+	/// @return 
+	///
 	wxArrayInt GetKeyFrames() { return wxArrayInt(); };
+
+	/// @brief DOCME
+	/// @return 
+	///
 	bool IsVFR() { return false; };
+
+	/// @brief DOCME
+	/// @return 
+	///
 	bool NeedsVFRHack() { return true; }
+
+	/// @brief DOCME
+	///
 	FrameRate GetTrueFrameRate() { return FrameRate(); };
 
 	wxString GetDecoderName();
 };
 
 #endif
+
 

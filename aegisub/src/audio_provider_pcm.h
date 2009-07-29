@@ -50,18 +50,29 @@
 #endif
 
 
-/////////////////////////////
-// Audio provider base class
+
+/// DOCME
+/// @class PCMAudioProvider
+/// @brief DOCME
+///
+/// DOCME
 class PCMAudioProvider : public AudioProvider {
 private:
 #ifdef _WINDOWS
-	// File handle and file mapping handle from Win32
+
+	/// DOCME
 	HANDLE file_handle;
+
+	/// DOCME
 	HANDLE file_mapping;
-	// Pointer to current area mapped into memory
+
+	/// DOCME
 	void *current_mapping;
-	// Byte indices in the file that the current mapping covers
+
+	/// DOCME
 	int64_t mapping_start;
+
+	/// DOCME
 	size_t mapping_length;
 #else
 	int file_handle;
@@ -75,19 +86,28 @@ protected:
 	virtual ~PCMAudioProvider(); // Closes the file mapping
 	char * EnsureRangeAccessible(int64_t range_start, int64_t range_length); // Ensure that the given range of bytes are accessible in the file mapping and return a pointer to the first byte of the requested range
 
+
+	/// DOCME
 	int64_t file_size; // Size of the opened file
 
-	// Hold data for an index point,
-	// to support files where audio data are
-	// split into multiple blocks.
-	// Using int64_t's should be safe on most compilers,
-	// wx defines wxFileOffset as int64 when possible
+
+	/// DOCME
 	struct IndexPoint {
+
+		/// DOCME
 		int64_t start_byte;
+
+		/// DOCME
 		int64_t start_sample;
+
+		/// DOCME
 		int64_t num_samples;
 	};
+
+	/// DOCME
 	typedef std::vector<IndexPoint> IndexVector;
+
+	/// DOCME
 	IndexVector index_points;
 
 public:
@@ -96,6 +116,7 @@ public:
 
 // Construct the right PCM audio provider (if any) for the file
 AudioProvider *CreatePCMAudioProvider(const wxString &filename);
+
 
 
 

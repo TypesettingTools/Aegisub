@@ -45,31 +45,67 @@
 #include "variable_data.h"
 
 
-//////////////////////
-// Modification types
+
+/// DOCME
 enum ModType {
+
+	/// DOCME
 	MOD_OFF = -1,
+
+	/// DOCME
 	MOD_AUTOMATIC,
+
+	/// DOCME
 	MOD_RESTART,
+
+	/// DOCME
 	MOD_EDIT_BOX,
+
+	/// DOCME
 	MOD_GRID,
+
+	/// DOCME
 	MOD_VIDEO,
+
+	/// DOCME
 	MOD_VIDEO_RELOAD,
+
+	/// DOCME
 	MOD_AUDIO,
+
+	/// DOCME
 	MOD_AUDIO_RELOAD
 };
 
 
-/////////////////////////////
-// Class that stores options
+
+/// DOCME
+/// @class OptionsManager
+/// @brief DOCME
+///
+/// DOCME
 class OptionsManager {
 private:
+
+	/// DOCME
 	ModType curModType;
+
+	/// DOCME
 	bool modified;
+
+	/// DOCME
 	bool overriding;
+
+	/// DOCME
 	wxString filename;
+
+	/// DOCME
 	std::map<wxString,VariableData> opt;
+
+	/// DOCME
 	std::map<wxString,ModType> optType;
+
+	/// DOCME
 	int lastVersion;
 
 	void SetModificationType(ModType type);
@@ -109,4 +145,5 @@ public:
 ///////////////////
 // Global instance
 extern OptionsManager Options;
+
 

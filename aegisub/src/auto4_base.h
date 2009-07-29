@@ -37,6 +37,8 @@
 #pragma once
 
 #ifndef _AUTO4_BASE_H
+
+/// DOCME
 #define _AUTO4_BASE_H
 
 #include <wx/string.h>
@@ -62,18 +64,29 @@ class wxPathList;
 DECLARE_EVENT_TYPE(wxEVT_AUTOMATION_SCRIPT_COMPLETED, -1)
 
 
+
+/// DOCME
 namespace Automation4 {
 
 	// Calculate the extents of a text string given a style
 	bool CalculateTextExtents(AssStyle *style, wxString &text, double &width, double &height, double &descent, double &extlead);
 
 
-	// The class of a Feature...
+
+	/// DOCME
 	enum ScriptFeatureClass {
+
+		/// DOCME
 		SCRIPTFEATURE_MACRO = 0,
+
+		/// DOCME
 		SCRIPTFEATURE_FILTER,
+
+		/// DOCME
 		SCRIPTFEATURE_SUBFORMAT,
 
+
+		/// DOCME
 		SCRIPTFEATURE_MAX // must be last
 	};
 
@@ -83,15 +96,28 @@ namespace Automation4 {
 	class FeatureMacro;
 	class FeatureFilter;
 	class FeatureSubtitleFormat;
+
+	/// DOCME
+	/// @class Feature
+	/// @brief DOCME
+	///
+	/// DOCME
 	class Feature {
 	private:
+
+		/// DOCME
 		ScriptFeatureClass featureclass;
+
+		/// DOCME
 		wxString name;
 
 	protected:
 		Feature(ScriptFeatureClass _featureclass, const wxString &_name);
 
 	public:
+
+		/// @brief DOCME
+		///
 		virtual ~Feature() { }
 
 		ScriptFeatureClass GetClass() const;
@@ -103,15 +129,25 @@ namespace Automation4 {
 	};
 
 
-	// The Macro feature; adds a menu item that runs script code
+
+	/// DOCME
+	/// @class FeatureMacro
+	/// @brief DOCME
+	///
+	/// DOCME
 	class FeatureMacro : public virtual Feature {
 	private:
+
+		/// DOCME
 		wxString description;
 
 	protected:
 		FeatureMacro(const wxString &_name, const wxString &_description);
 
 	public:
+
+		/// @brief DOCME
+		///
 		virtual ~FeatureMacro() { }
 
 		const wxString& GetDescription() const;
@@ -122,9 +158,16 @@ namespace Automation4 {
 
 
 	class ScriptConfigDialog;
-	// The Export Filter feature; adds a new export filter
+
+	/// DOCME
+	/// @class FeatureFilter
+	/// @brief DOCME
+	///
+	/// DOCME
 	class FeatureFilter : public virtual Feature, public AssExportFilter {
 	private:
+
+		/// DOCME
 		ScriptConfigDialog *config_dialog;
 
 	protected:
@@ -146,15 +189,26 @@ namespace Automation4 {
 	};
 
 
-	// The Subtitle Format feature; adds new subtitle format readers/writers
+
+	/// DOCME
+	/// @class FeatureSubtitleFormat
+	/// @brief DOCME
+	///
+	/// DOCME
 	class FeatureSubtitleFormat : public virtual Feature, public SubtitleFormat {
 	private:
+
+		/// DOCME
 		wxString extension;
 
 	protected:
 		FeatureSubtitleFormat(const wxString &_name, const wxString &_extension);
 
 	public:
+
+		/// @brief DOCME
+		/// @return 
+		///
 		virtual ~FeatureSubtitleFormat() { }
 
 		const wxString& GetExtension() const;
@@ -169,22 +223,39 @@ namespace Automation4 {
 	};
 
 
-	// Base class for script-provided config dialogs
+
+	/// DOCME
+	/// @class ScriptConfigDialog
+	/// @brief DOCME
+	///
+	/// DOCME
 	class ScriptConfigDialog {
 	private:
+
+		/// DOCME
 		wxWindow *win;
 
 	protected:
 		virtual wxWindow* CreateWindow(wxWindow *parent) = 0;
 
 	public:
+
+		/// @brief DOCME
+		///
 		ScriptConfigDialog() : win(0) { }
+
+		/// @brief DOCME
+		///
 		virtual ~ScriptConfigDialog() { }
 		wxWindow* GetWindow(wxWindow *parent);
 		void DeleteWindow();
 		virtual void ReadBack() = 0;
 
 		virtual wxString Serialise();
+
+		/// @brief DOCME
+		/// @param serialised 
+		///
 		virtual void Unserialise(const wxString &serialised) { }
 	};
 
@@ -192,51 +263,99 @@ namespace Automation4 {
 	// Config dialog event class and related stuff (wx </3)
 	extern const wxEventType EVT_SHOW_CONFIG_DIALOG_t;
 
+
+	/// DOCME
+	/// @class ShowConfigDialogEvent
+	/// @brief DOCME
+	///
+	/// DOCME
 	class ShowConfigDialogEvent : public wxCommandEvent {
 	public:
+
+		/// @brief DOCME
+		/// @param EVT_SHOW_CONFIG_DIALOG_t 
+		/// @return 
+		///
 		ShowConfigDialogEvent(const wxEventType &event = EVT_SHOW_CONFIG_DIALOG_t)
 			: wxCommandEvent(event)
 			, config_dialog(0)
 			, sync_sema(0) { };
 
+
+		/// @brief DOCME
+		/// @return 
+		///
 		virtual wxEvent *Clone() const { return new ShowConfigDialogEvent(*this); }
 
+
+		/// DOCME
 		ScriptConfigDialog *config_dialog;
-		// Synchronisation for config dialog events:
-		// You don't want the script asynchronically continue executing while the dialog
-		// is displaying, so a synchronisation mechanism is used.
-		// The poster of the event should supply a semaphore object with an initial count
-		// of zero. After posting the event, the poster should wait for the semaphore.
-		// When the dialog is finished, the semaphore is posted, and the poster can
-		// continue.
-		// The poster is responsible for cleaning up the semaphore.
+
+		/// DOCME
 		wxSemaphore *sync_sema;
 	};
 
+
+	/// DOCME
 	typedef void (wxEvtHandler::*ShowConfigDialogEventFunction)(ShowConfigDialogEvent&);
 
+
+/// DOCME
 #define EVT_SHOW_CONFIG_DIALOG(fn) DECLARE_EVENT_TABLE_ENTRY( EVT_SHOW_CONFIG_DIALOG_t, -1, -1, (wxObjectEventFunction)(wxEventFunction)(ShowConfigDialogEventFunction)&fn, (wxObject*)0 ),
 
 
-	// Base class for progress reporting/other output
+
+	/// DOCME
+	/// @class ProgressSink
+	/// @brief DOCME
+	///
+	/// DOCME
 	class ProgressSink : public wxDialog {
 	private:
+
+		/// DOCME
 		wxBoxSizer *sizer;
+
+		/// DOCME
 		wxGauge *progress_display;
+
+		/// DOCME
 		wxButton *cancel_button;
+
+		/// DOCME
 		wxStaticText *title_display;
+
+		/// DOCME
 		wxStaticText *task_display;
+
+		/// DOCME
 		wxTextCtrl *debug_output;
 
+
+		/// DOCME
 		volatile bool debug_visible;
+
+		/// DOCME
 		volatile bool data_updated;
 
+
+		/// DOCME
 		float progress;
+
+		/// DOCME
 		wxString task;
+
+		/// DOCME
 		wxString title;
+
+		/// DOCME
 		wxString pending_debug_output;
+
+		/// DOCME
 		wxMutex data_mutex;
 
+
+		/// DOCME
 		wxTimer *update_timer;
 
 		void OnCancel(wxCommandEvent &evt);
@@ -247,7 +366,11 @@ namespace Automation4 {
 		void DoUpdateDisplay();
 
 	protected:
+
+		/// DOCME
 		volatile bool cancelled;
+
+		/// DOCME
 		int trace_level;
 
 		ProgressSink(wxWindow *parent);
@@ -259,27 +382,52 @@ namespace Automation4 {
 		void SetTitle(const wxString &_title);
 		void AddDebugOutput(const wxString &msg);
 
+
+		/// DOCME
 		volatile bool has_inited;
+
+		/// DOCME
 		volatile bool script_finished;
 
 		DECLARE_EVENT_TABLE()
 	};
 
 
-	// Base class for Scripts
+
+	/// DOCME
+	/// @class Script
+	/// @brief DOCME
+	///
+	/// DOCME
 	class Script {
 	private:
+
+		/// DOCME
 		wxString filename;
 
 	protected:
+
+		/// DOCME
 		wxString name;
+
+		/// DOCME
 		wxString description;
+
+		/// DOCME
 		wxString author;
+
+		/// DOCME
 		wxString version;
+
+		/// DOCME
 		bool loaded; // is the script properly loaded?
 
+
+		/// DOCME
 		wxPathList include_path;
 
+
+		/// DOCME
 		std::vector<Feature*> features;
 
 		Script(const wxString &_filename);
@@ -301,13 +449,20 @@ namespace Automation4 {
 	};
 
 
-	// Manages loaded scripts; for whatever reason, multiple managers might be instantiated. In truth, this is more
-	// like a macro manager at the moment, since Export Filter and Subtitle Format are already managed by other
-	// classes.
+
+	/// DOCME
+	/// @class ScriptManager
+	/// @brief DOCME
+	///
+	/// DOCME
 	class ScriptManager {
 	private:
+
+		/// DOCME
 		std::vector<Script*> scripts;
 
+
+		/// DOCME
 		std::vector<FeatureMacro*> macros;
 
 	public:
@@ -325,9 +480,16 @@ namespace Automation4 {
 	};
 
 
-	// Scans a directory for scripts and attempts to load all of them
+
+	/// DOCME
+	/// @class AutoloadScriptManager
+	/// @brief DOCME
+	///
+	/// DOCME
 	class AutoloadScriptManager : public ScriptManager {
 	private:
+
+		/// DOCME
 		wxString path;
 	public:
 		AutoloadScriptManager(const wxString &_path);
@@ -335,15 +497,31 @@ namespace Automation4 {
 	};
 
 
-	// Script factory; each scripting engine should create exactly one instance of this object and register it.
-	// This is used to create Script objects from a file.
+
+	/// DOCME
+	/// @class ScriptFactory
+	/// @brief DOCME
+	///
+	/// DOCME
 	class ScriptFactory {
 	private:
+
+		/// DOCME
 		static std::vector<ScriptFactory*> *factories;
 	protected:
+
+		/// @brief DOCME
+		///
 		ScriptFactory() { }
+
+		/// @brief DOCME
+		///
 		virtual ~ScriptFactory() { }
+
+		/// DOCME
 		wxString engine_name;
+
+		/// DOCME
 		wxString filename_pattern;
 	public:
 		virtual Script* Produce(const wxString &filename) const = 0;
@@ -357,14 +535,23 @@ namespace Automation4 {
 		static const std::vector<ScriptFactory*>& GetFactories();
 	};
 
-	// Dummy class for scripts that could not be loaded by the ScriptFactory
+
+	/// DOCME
+	/// @class UnknownScript
+	/// @brief DOCME
+	///
+	/// DOCME
 	class UnknownScript : public Script {
 	public:
 		UnknownScript(const wxString &filename);
+
+		/// @brief DOCME
+		///
 		void Reload() { };
 	};
 
 };
 
 #endif
+
 

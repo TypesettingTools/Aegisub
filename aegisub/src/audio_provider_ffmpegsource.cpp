@@ -49,8 +49,10 @@
 #endif
 
 
-///////////
-// Constructor
+
+/// @brief Constructor 
+/// @param filename 
+///
 FFmpegSourceAudioProvider::FFmpegSourceAudioProvider(wxString filename) {
 	COMInited = false;
 #ifdef WIN32
@@ -79,8 +81,10 @@ FFmpegSourceAudioProvider::FFmpegSourceAudioProvider(wxString filename) {
 }
 
 
-///////////
-// Load audio file
+
+/// @brief Load audio file 
+/// @param filename 
+///
 void FFmpegSourceAudioProvider::LoadAudio(wxString filename) {
 	// clean up
 	Close();
@@ -198,8 +202,9 @@ void FFmpegSourceAudioProvider::LoadAudio(wxString filename) {
 }
 
 
-///////////
-// Destructor
+
+/// @brief Destructor 
+///
 FFmpegSourceAudioProvider::~FFmpegSourceAudioProvider() {
 	Close();
 #ifdef WIN32
@@ -209,16 +214,21 @@ FFmpegSourceAudioProvider::~FFmpegSourceAudioProvider() {
 }
 
 
-///////////
-// Clean up
+
+/// @brief Clean up 
+///
 void FFmpegSourceAudioProvider::Close() {
 	FFMS_DestroyAudioSource(AudioSource);
 	AudioSource = NULL;
 }
 
 
-///////////
-// Get audio
+
+/// @brief Get audio 
+/// @param Buf   
+/// @param Start 
+/// @param Count 
+///
 void FFmpegSourceAudioProvider::GetAudio(void *Buf, int64_t Start, int64_t Count) {
 	if (FFMS_GetAudio(AudioSource, Buf, Start, Count, FFMSErrMsg, MsgSize)) {
 		ErrorMsg.Append(wxString::Format(_T("Failed to get audio samples: %s"), FFMSErrMsg));
@@ -228,4 +238,5 @@ void FFmpegSourceAudioProvider::GetAudio(void *Buf, int64_t Start, int64_t Count
 
 
 #endif /* WITH_FFMPEGSOURCE */
+
 

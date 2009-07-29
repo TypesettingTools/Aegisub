@@ -52,20 +52,42 @@ class AssEntry;
 class AssDialogue;
 class SubsEditBox;
 class FrameMain;
+
+/// DOCME
 typedef std::list<AssEntry*>::iterator entryIter;
 
 
-///////////////////
-// Base grid class
+
+/// DOCME
+/// @class BaseGrid
+/// @brief DOCME
+///
+/// DOCME
 class BaseGrid : public wxWindow {
 private:
+
+	/// DOCME
 	int lineHeight;
+
+	/// DOCME
 	int colWidth[16];
+
+	/// DOCME
 	int lastRow;
+
+	/// DOCME
 	int extendRow;
+
+	/// DOCME
 	bool holding;
+
+	/// DOCME
 	wxFont font;
+
+	/// DOCME
 	wxScrollBar *scrollBar;
+
+	/// DOCME
 	wxBitmap *bmp;
 
 	void OnPaint(wxPaintEvent &event);
@@ -77,19 +99,39 @@ private:
 	void DrawImage(wxDC &dc);
 
 protected:
+
+	/// DOCME
 	FrameMain *parentFrame;
+
+	/// DOCME
 	bool showCol[16];
 
+
+	/// @brief DOCME
+	/// @param alternate=false 
+	///
 	virtual void OnPopupMenu(bool alternate=false) {}
 	void ScrollTo(int y);
+
+	/// DOCME
 	int yPos;
 
 public:
+
+	/// DOCME
 	SubsEditBox *editBox;
 
+
+	/// DOCME
 	bool byFrame;
+
+	/// DOCME
 	std::vector<entryIter> diagMap;
+
+	/// DOCME
 	std::vector<AssDialogue *> diagPtrMap;
+
+	/// DOCME
 	std::vector<bool> selMap;
 
 	void AdjustScrollbar();
@@ -128,6 +170,9 @@ public:
 ///////
 // IDs
 enum {
+
+	/// DOCME
 	GRID_SCROLLBAR = 1730
 };
+
 

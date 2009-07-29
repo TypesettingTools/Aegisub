@@ -53,8 +53,10 @@
 #endif
 
 
-///////////////
-// Constructor
+
+/// @brief Constructor 
+/// @param filename 
+///
 FFmpegSourceVideoProvider::FFmpegSourceVideoProvider(wxString filename) {
 	COMInited = false;
 #ifdef WIN32
@@ -87,8 +89,9 @@ FFmpegSourceVideoProvider::FFmpegSourceVideoProvider(wxString filename) {
 	}
 }
 
-///////////////
-// Destructor
+
+/// @brief Destructor 
+///
 FFmpegSourceVideoProvider::~FFmpegSourceVideoProvider() {
 	Close();
 #ifdef WIN32
@@ -97,8 +100,10 @@ FFmpegSourceVideoProvider::~FFmpegSourceVideoProvider() {
 #endif
 }
 
-///////////////
-// Open video
+
+/// @brief Open video 
+/// @param filename 
+///
 void FFmpegSourceVideoProvider::LoadVideo(wxString filename) {
 	// make sure we don't have anything messy lying around
 	Close();
@@ -271,8 +276,9 @@ void FFmpegSourceVideoProvider::LoadVideo(wxString filename) {
 	FrameNumber = 0;
 }
 
-///////////////
-// Close video
+
+/// @brief Close video 
+///
 void FFmpegSourceVideoProvider::Close() {
 	FFMS_DestroyVideoSource(VideoSource);
 	VideoSource = NULL;
@@ -285,8 +291,11 @@ void FFmpegSourceVideoProvider::Close() {
 }
 
 
-///////////////
-// Get frame
+
+/// @brief Get frame 
+/// @param _n 
+/// @return 
+///
 const AegiVideoFrame FFmpegSourceVideoProvider::GetFrame(int _n) {
 	// don't try to seek to insane places
 	int n = _n;
@@ -330,28 +339,46 @@ const AegiVideoFrame FFmpegSourceVideoProvider::GetFrame(int _n) {
 }
 
 
-///////////////
-// Utility functions
+
+/// @brief Utility functions 
+/// @return 
+///
 int FFmpegSourceVideoProvider::GetWidth() {
 	return VideoInfo->Width;
 }
 
+
+/// @brief DOCME
+/// @return 
+///
 int FFmpegSourceVideoProvider::GetHeight() {
 	return VideoInfo->Height;
 }
 
+
+/// @brief DOCME
+/// @return 
+///
 int FFmpegSourceVideoProvider::GetFrameCount() {
 	return VideoInfo->NumFrames;
 }
 
+
+/// @brief DOCME
+/// @return 
+///
 int FFmpegSourceVideoProvider::GetPosition() {
 	return FrameNumber;
 }
 
+
+/// @brief DOCME
+///
 double FFmpegSourceVideoProvider::GetFPS() {
 	return double(VideoInfo->FPSNumerator) / double(VideoInfo->FPSDenominator);
 }
 
 
 #endif /* WITH_FFMPEGSOURCE */
+
 

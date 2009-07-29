@@ -28,9 +28,25 @@ IMPLEMENT_DYNAMIC_CLASS(wxBevelButton, wxControl)
 #include "wx/mac/uma.h"
 // Button
 
+
+/// DOCME
 static const int kMacOSXHorizontalBorder = 2 ;
+
+/// DOCME
 static const int kMacOSXVerticalBorder = 4 ;
 
+
+/// @brief DOCME
+/// @param parent    
+/// @param id        
+/// @param lbl       
+/// @param pos       
+/// @param size      
+/// @param style     
+/// @param validator 
+/// @param name      
+/// @return 
+///
 bool wxBevelButton::Create(wxWindow *parent, wxWindowID id, const wxString& lbl,
 						   const wxPoint& pos,
 						   const wxSize& size, long style,
@@ -59,6 +75,9 @@ bool wxBevelButton::Create(wxWindow *parent, wxWindowID id, const wxString& lbl,
 	return TRUE;
 }
 
+
+/// @brief DOCME
+///
 wxSize wxBevelButton::DoGetBestSize() const
 {
     int wBtn = 70 ; 
@@ -72,4 +91,5 @@ wxSize wxBevelButton::DoGetBestSize() const
 }
 
 #endif // __WXMAC__
+
 

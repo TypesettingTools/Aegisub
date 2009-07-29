@@ -50,27 +50,54 @@
 class AssDialogueBlockOverride;
 
 
-// Enum of parameter classification
-// This is used for things like checking which tags VFR needs to update
+
+/// DOCME
 enum ASS_ParameterClass {
+
+	/// DOCME
 	PARCLASS_NORMAL,
+
+	/// DOCME
 	PARCLASS_ABSOLUTE_SIZE,
+
+	/// DOCME
 	PARCLASS_ABSOLUTE_POS_X,
+
+	/// DOCME
 	PARCLASS_ABSOLUTE_POS_Y,
+
+	/// DOCME
 	PARCLASS_RELATIVE_SIZE_X,
+
+	/// DOCME
 	PARCLASS_RELATIVE_SIZE_Y,
+
+	/// DOCME
 	PARCLASS_RELATIVE_TIME_START,
+
+	/// DOCME
 	PARCLASS_RELATIVE_TIME_END,
-	//PARCLASS_RELATIVE_TIME_START_CENTI,
-	//PARCLASS_RELATIVE_TIME_END_CENTI,
+
+	/// DOCME
 	PARCLASS_KARAOKE,
+
+	/// DOCME
 	PARCLASS_DRAWING
 };
 
-// Actual class
+
+/// DOCME
+/// @class AssOverrideParameter
+/// @brief DOCME
+///
+/// DOCME
 class AssOverrideParameter : public VariableData {
 public:
+
+	/// DOCME
 	ASS_ParameterClass classification;
+
+	/// DOCME
 	bool ommited;
 
 	AssOverrideParameter();
@@ -81,18 +108,24 @@ public:
 };
 
 
-///////////////////////////
-// Class for override tags
-// -----------------------
-//
-// GetText() returns the text representation of the tag
-//
+
+/// DOCME
+/// @class AssOverrideTag
+/// @brief DOCME
+///
+/// DOCME
 class AssOverrideTag {
 private:
+
+	/// DOCME
 	bool valid;
 
 public:
+
+	/// DOCME
 	wxString Name;
+
+	/// DOCME
 	std::vector <AssOverrideParameter*> Params;
 
 	AssOverrideTag();
@@ -106,40 +139,87 @@ public:
 };
 
 
-///////////////////////////
-// Override tags prototype
+
+/// DOCME
 enum ASS_ParameterOptional {
+
+	/// DOCME
 	NOT_OPTIONAL = 0xFF,
+
+	/// DOCME
 	OPTIONAL_0 = 0x00,
+
+	/// DOCME
 	OPTIONAL_1 = 0x01,
+
+	/// DOCME
 	OPTIONAL_2 = 0x02,
+
+	/// DOCME
 	OPTIONAL_3 = 0x04,
+
+	/// DOCME
 	OPTIONAL_4 = 0x08,
+
+	/// DOCME
 	OPTIONAL_5 = 0x10,
+
+	/// DOCME
 	OPTIONAL_6 = 0x20,
+
+	/// DOCME
 	OPTIONAL_7 = 0x40
 };
 
+
+/// DOCME
+/// @class AssOverrideParamProto
+/// @brief DOCME
+///
+/// DOCME
 class AssOverrideParamProto {
 public:
+
+	/// DOCME
 	int optional;
+
+	/// DOCME
 	VariableDataType type;
+
+	/// DOCME
 	AssOverrideParameter defaultValue;
+
+	/// DOCME
 	ASS_ParameterClass classification;
 
 	AssOverrideParamProto (VariableDataType _type,int opt=NOT_OPTIONAL,ASS_ParameterClass classi=PARCLASS_NORMAL);
 	~AssOverrideParamProto();
 };
 
+
+/// DOCME
+/// @class AssOverrideTagProto
+/// @brief DOCME
+///
+/// DOCME
 class AssOverrideTagProto {
 public:
+
+	/// DOCME
 	wxString name;
+
+	/// DOCME
 	std::vector<AssOverrideParamProto> params;
+
+	/// DOCME
 	static std::list<AssOverrideTagProto> proto;
+
+	/// DOCME
 	static bool loaded;
 	static void LoadProtos();
 
 	AssOverrideTagProto();
 	~AssOverrideTagProto();
 };
+
 

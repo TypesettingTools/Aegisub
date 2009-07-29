@@ -57,42 +57,79 @@ class DialogInputHotkey;
 class wxTreebook;
 #else
 #include <wx/choicebk.h>
+
+/// DOCME
 typedef wxChoicebook wxTreebook;
 #endif
 
 
-/////////////
-// Bind pair
+
+/// DOCME
+/// @class OptionsBind
+/// @brief DOCME
+///
+/// DOCME
 class OptionsBind {
 public:
+
+	/// DOCME
 	wxControl *ctrl;
+
+	/// DOCME
 	wxString option;
+
+	/// DOCME
 	int param;
 };
 
 
-//////////////////
-// TextCtrl types
+
+/// DOCME
 enum TextType {
+
+	/// DOCME
 	TEXT_TYPE_PLAIN,
+
+	/// DOCME
 	TEXT_TYPE_NUMBER,
+
+	/// DOCME
 	TEXT_TYPE_FILE,
+
+	/// DOCME
 	TEXT_TYPE_FOLDER,
+
+	/// DOCME
 	TEXT_TYPE_FONT
 };
 
-////////////////////////
-// Options screen class
+
+/// DOCME
+/// @class DialogOptions
+/// @brief DOCME
+///
+/// DOCME
 class DialogOptions: public wxDialog {
 private:
+
+	/// DOCME
 	bool needsRestart;
 
+
+	/// DOCME
 	wxTreebook *book;
+
+	/// DOCME
 	std::vector<OptionsBind> binds;
 
-	// Hotkeys
+
+	/// DOCME
 	std::map<wxString,HotkeyType> origKeys;
+
+	/// DOCME
 	wxListView *Shortcuts;
+
+	/// DOCME
 	bool hotkeysModified;
 
 	void Bind(wxControl *ctrl,wxString option,int param=0);
@@ -121,10 +158,16 @@ public:
 };
 
 
-/////////////////////
-// Capture key class
+
+/// DOCME
+/// @class CaptureKey
+/// @brief DOCME
+///
+/// DOCME
 class CaptureKey : public wxTextCtrl {
 private:
+
+	/// DOCME
 	DialogInputHotkey *parent;
 	void OnKeyDown(wxKeyEvent &event);
 	void OnLoseFocus(wxFocusEvent &event);
@@ -136,17 +179,28 @@ public:
 };
 
 
-//////////////////////
-// Input dialog class
+
+/// DOCME
+/// @class DialogInputHotkey
+/// @brief DOCME
+///
+/// DOCME
 class DialogInputHotkey : public wxDialog {
 	friend class CaptureKey;
 
 private:
+
+	/// DOCME
 	CaptureKey *capture;
+
+	/// DOCME
 	HotkeyType *key;
+
+	/// DOCME
 	wxListView *shortcuts;
 
 public:
 	DialogInputHotkey(HotkeyType *key,wxString name,wxListView *Shortcuts);
 };
+
 

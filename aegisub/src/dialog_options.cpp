@@ -43,6 +43,8 @@
 #if wxUSE_TREEBOOK && !__WXMAC__
 #include <wx/treebook.h>
 #else
+
+/// DOCME
 #define AddSubPage(page,text,select) AddPage(page,wxString::Format(_T("\t%s"),text),select)
 #endif
 #include "options.h"
@@ -74,17 +76,31 @@
 ///////
 // IDs
 enum {
+
+	 /// DOCME
 	 BUTTON_DEFAULTS = 2500,
+
+	 /// DOCME
 	 HOTKEY_LIST,
+
+	 /// DOCME
 	 BUTTON_HOTKEY_SET,
+
+	 /// DOCME
 	 BUTTON_HOTKEY_CLEAR,
+
+	 /// DOCME
 	 BUTTON_HOTKEY_DEFAULT,
+
+	 /// DOCME
 	 BUTTON_HOTKEY_DEFAULT_ALL
 };
 
 
-///////////////
-// Constructor
+
+/// @brief Constructor 
+/// @param parent 
+///
 DialogOptions::DialogOptions(wxWindow *parent)
 : wxDialog(parent, -1, _("Options"), wxDefaultPosition, wxDefaultSize)
 {
@@ -663,14 +679,19 @@ DialogOptions::DialogOptions(wxWindow *parent)
 }
 
 
-//////////////
-// Destructor
+
+/// @brief Destructor 
+///
 DialogOptions::~DialogOptions() {
 }
 
 
-//////////////////////////
-// Bind control to option
+
+/// @brief Bind control to option 
+/// @param ctrl   
+/// @param option 
+/// @param param  
+///
 void DialogOptions::Bind(wxControl *ctrl, wxString option,int param) {
 	OptionsBind bind;
 	bind.ctrl = ctrl;
@@ -680,8 +701,14 @@ void DialogOptions::Bind(wxControl *ctrl, wxString option,int param) {
 }
 
 
-////////////////////
-// Add a wxTextCtrl
+
+/// @brief Add a wxTextCtrl 
+/// @param parent 
+/// @param sizer  
+/// @param label  
+/// @param option 
+/// @param type   
+///
 void DialogOptions::AddTextControl(wxWindow *parent,wxSizer *sizer,wxString label,wxString option,TextType type) {
 	sizer->Add(new wxStaticText(parent,-1,label + wxString(_T(": "))),0,wxALIGN_CENTER_VERTICAL | wxRIGHT,10);
 	wxTextCtrl *control;
@@ -692,8 +719,16 @@ void DialogOptions::AddTextControl(wxWindow *parent,wxSizer *sizer,wxString labe
 }
 
 
-////////////////////
-// Add a wxComboBox
+
+/// @brief Add a wxComboBox 
+/// @param parent    
+/// @param sizer     
+/// @param label     
+/// @param option    
+/// @param choices   
+/// @param readOnly  
+/// @param bindParam 
+///
 void DialogOptions::AddComboControl(wxWindow *parent,wxSizer *sizer,wxString label,wxString option,wxArrayString choices,bool readOnly,int bindParam) {
 	sizer->Add(new wxStaticText(parent,-1,label + wxString(_T(": "))),0,wxALIGN_CENTER_VERTICAL | wxRIGHT,10);
 	int flags = wxCB_DROPDOWN;
@@ -704,8 +739,13 @@ void DialogOptions::AddComboControl(wxWindow *parent,wxSizer *sizer,wxString lab
 }
 
 
-//////////////////
-// Add a checkbox
+
+/// @brief Add a checkbox 
+/// @param parent 
+/// @param sizer  
+/// @param label  
+/// @param option 
+///
 void DialogOptions::AddCheckBox(wxWindow *parent,wxSizer *sizer,wxString label,wxString option) {
 	wxControl *control = new wxCheckBox(parent,-1,label);
 	Bind(control,option);
@@ -727,8 +767,10 @@ BEGIN_EVENT_TABLE(DialogOptions,wxDialog)
 END_EVENT_TABLE()
 
 
-//////
-// OK
+
+/// @brief OK 
+/// @param event 
+///
 void DialogOptions::OnOK(wxCommandEvent &event) {
 	Options.SetInt(_T("Options page"),book->GetSelection());
 	WriteToOptions();
@@ -749,16 +791,20 @@ void DialogOptions::OnOK(wxCommandEvent &event) {
 }
 
 
-/////////
-// Apply
+
+/// @brief Apply 
+/// @param event 
+///
 void DialogOptions::OnApply(wxCommandEvent &event) {
 	Options.SetInt(_T("Options page"),book->GetSelection());
 	WriteToOptions(true);
 }
 
 
-//////////
-// Cancel
+
+/// @brief Cancel 
+/// @param event 
+///
 void DialogOptions::OnCancel(wxCommandEvent &event) {
 	// Undo hotkeys
 	if (hotkeysModified) Hotkeys.key = origKeys;
@@ -783,8 +829,10 @@ void DialogOptions::OnCancel(wxCommandEvent &event) {
 }
 
 
-////////////////////
-// Restore defaults
+
+/// @brief Restore defaults 
+/// @param event 
+///
 void DialogOptions::OnDefaults(wxCommandEvent &event) {
 	int result = wxMessageBox(_("Are you sure that you want to restore the defaults? All your settings will be overriden."),_("Restore defaults?"),wxYES_NO);
 	if (result == wxYES) {
@@ -795,8 +843,10 @@ void DialogOptions::OnDefaults(wxCommandEvent &event) {
 }
 
 
-////////////////////
-// Write to options
+
+/// @brief Write to options 
+/// @param justApply 
+///
 void DialogOptions::WriteToOptions(bool justApply) {
 	// Flags
 	bool mustRestart = false;
@@ -960,8 +1010,9 @@ void DialogOptions::WriteToOptions(bool justApply) {
 }
 
 
-/////////////////////
-// Read form options
+
+/// @brief Read form options 
+///
 void DialogOptions::ReadFromOptions() {
 	for (unsigned int i=0;i<binds.size();i++) {
 		// Checkbox
@@ -1009,8 +1060,11 @@ void DialogOptions::ReadFromOptions() {
 }
 
 
-/////////////////
-// Edit a hotkey
+
+/// @brief Edit a hotkey 
+/// @param event 
+/// @return 
+///
 void DialogOptions::OnEditHotkey(wxCommandEvent &event) {
 	// Get selection
 	int sel = Shortcuts->GetFirstSelected();
@@ -1033,8 +1087,10 @@ void DialogOptions::OnEditHotkey(wxCommandEvent &event) {
 }
 
 
-//////////////////
-// Clear a hotkey
+
+/// @brief Clear a hotkey 
+/// @param event 
+///
 void DialogOptions::OnClearHotkey(wxCommandEvent &event) {
 	for (int item=-1;true;) {
 		item = Shortcuts->GetNextItem(item,wxLIST_NEXT_ALL,wxLIST_STATE_SELECTED);
@@ -1051,8 +1107,10 @@ void DialogOptions::OnClearHotkey(wxCommandEvent &event) {
 }
 
 
-///////////////////////////
-// Reset hotkey to default
+
+/// @brief Reset hotkey to default 
+/// @param event 
+///
 void DialogOptions::OnDefaultHotkey(wxCommandEvent &event) {
 	// Load defaults
 	HotkeyManager defs;
@@ -1084,8 +1142,10 @@ void DialogOptions::OnDefaultHotkey(wxCommandEvent &event) {
 }
 
 
-////////////////////////////////
-// Reset all hotkeys to default
+
+/// @brief Reset all hotkeys to default 
+/// @param event 
+///
 void DialogOptions::OnDefaultAllHotkey(wxCommandEvent &event) {
 	Hotkeys.LoadDefaults();
 	Shortcuts->Freeze();
@@ -1107,8 +1167,12 @@ void DialogOptions::OnDefaultAllHotkey(wxCommandEvent &event) {
 }
 
 
-/////////////////////
-// Input constructor
+
+/// @brief Input constructor 
+/// @param _key   
+/// @param name   
+/// @param shorts 
+///
 DialogInputHotkey::DialogInputHotkey(HotkeyType *_key,wxString name,wxListView *shorts)
 : wxDialog(NULL, -1, _("Press Key"), wxDefaultPosition, wxSize(200,50), wxCAPTION | wxWANTS_CHARS , _T("Press key"))
 {
@@ -1130,8 +1194,10 @@ DialogInputHotkey::DialogInputHotkey(HotkeyType *_key,wxString name,wxListView *
 }
 
 
-////////////////////////
-// Capturer constructor
+
+/// @brief Capturer constructor 
+/// @param _parent 
+///
 CaptureKey::CaptureKey(DialogInputHotkey *_parent)
 : wxTextCtrl(_parent,-1,_T(""),wxDefaultPosition,wxSize(0,0),wxTE_PROCESS_ENTER | wxTE_PROCESS_TAB)
 {
@@ -1148,8 +1214,11 @@ BEGIN_EVENT_TABLE(CaptureKey,wxTextCtrl)
 END_EVENT_TABLE()
 
 
-///////////////
-// On key down
+
+/// @brief On key down 
+/// @param event 
+/// @return 
+///
 void CaptureKey::OnKeyDown(wxKeyEvent &event) {
 	// Get key
 	int keycode = event.GetKeyCode();
@@ -1190,9 +1259,12 @@ void CaptureKey::OnKeyDown(wxKeyEvent &event) {
 }
 
 
-//////////////
-// Keep focus
+
+/// @brief Keep focus 
+/// @param event 
+///
 void CaptureKey::OnLoseFocus(wxFocusEvent &event) {
 	SetFocus();
 }
+
 

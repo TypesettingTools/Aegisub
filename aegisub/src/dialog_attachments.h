@@ -49,12 +49,22 @@ class wxListView;
 class wxListEvent;
 
 
-//////////////////////
-// Attachments window
+
+/// DOCME
+/// @class DialogAttachments
+/// @brief DOCME
+///
+/// DOCME
 class DialogAttachments : public wxDialog {
 private:
+
+	/// DOCME
 	wxListView *listView;
+
+	/// DOCME
 	wxButton *extractButton;
+
+	/// DOCME
 	wxButton *deleteButton;
 
 	void OnAttachFont(wxCommandEvent &event);
@@ -76,10 +86,21 @@ public:
 ///////
 // IDs
 enum {
+
+	/// DOCME
 	BUTTON_ATTACH_FONT = 1300,
+
+	/// DOCME
 	BUTTON_ATTACH_GRAPHICS,
+
+	/// DOCME
 	BUTTON_EXTRACT,
+
+	/// DOCME
 	BUTTON_DELETE,
+
+	/// DOCME
 	ATTACHMENT_LIST
 };
+
 

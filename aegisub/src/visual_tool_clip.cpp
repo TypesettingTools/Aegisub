@@ -47,8 +47,10 @@
 #include "utils.h"
 
 
-///////////////
-// Constructor
+
+/// @brief Constructor 
+/// @param _parent 
+///
 VisualToolClip::VisualToolClip(VideoDisplay *_parent)
 : VisualTool(_parent)
 {
@@ -64,16 +66,19 @@ VisualToolClip::VisualToolClip(VideoDisplay *_parent)
 }
 
 
-//////////
-// Update
+
+/// @brief Update 
+///
 void VisualToolClip::Update() {
 	// Render parent
 	GetParent()->Render();
 }
 
 
-////////
-// Draw
+
+/// @brief Draw 
+/// @return 
+///
 void VisualToolClip::Draw() {
 	// Get current line
 	AssDialogue *line = GetActiveDialogueLine();
@@ -117,8 +122,9 @@ void VisualToolClip::Draw() {
 }
 
 
-/////////////////
-// Start holding
+
+/// @brief Start holding 
+///
 void VisualToolClip::InitializeHold() {
 	startX = mouseX;
 	startY = mouseY;
@@ -127,8 +133,9 @@ void VisualToolClip::InitializeHold() {
 }
 
 
-///////////////
-// Update hold
+
+/// @brief Update hold 
+///
 void VisualToolClip::UpdateHold() {
 	// Coordinates
 	curX1 = startX * sw / w;
@@ -151,8 +158,9 @@ void VisualToolClip::UpdateHold() {
 }
 
 
-///////////////
-// Commit hold
+
+/// @brief Commit hold 
+///
 void VisualToolClip::CommitHold() {
 	if (inverse)
 		SetOverride(_T("\\iclip"),wxString::Format(_T("(%i,%i,%i,%i)"),curX1,curY1,curX2,curY2));
@@ -161,8 +169,9 @@ void VisualToolClip::CommitHold() {
 }
 
 
-/////////////////////////
-// Populate feature list
+
+/// @brief Populate feature list 
+///
 void VisualToolClip::PopulateFeatureList() {
 	// Clear
 	if (features.size() != 4) {
@@ -209,8 +218,10 @@ void VisualToolClip::PopulateFeatureList() {
 }
 
 
-//////////////
-// Initialize
+
+/// @brief Initialize 
+/// @param feature 
+///
 void VisualToolClip::InitializeDrag(VisualDraggableFeature &feature) {
 	curDiag = GetActiveDialogueLine();
 	curDiag->StripTag(_T("\\clip"));
@@ -218,8 +229,10 @@ void VisualToolClip::InitializeDrag(VisualDraggableFeature &feature) {
 }
 
 
-///////////////
-// Update drag
+
+/// @brief Update drag 
+/// @param feature 
+///
 void VisualToolClip::UpdateDrag(VisualDraggableFeature &feature) {
 	// Update brothers
 	features[feature.brother[0]].y = feature.y;
@@ -237,9 +250,12 @@ void VisualToolClip::UpdateDrag(VisualDraggableFeature &feature) {
 }
 
 
-/////////////////
-// Done dragging
+
+/// @brief Done dragging 
+/// @param feature 
+///
 void VisualToolClip::CommitDrag(VisualDraggableFeature &feature) {
 	CommitHold();
 }
+
 

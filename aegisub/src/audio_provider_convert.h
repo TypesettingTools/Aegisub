@@ -43,12 +43,20 @@
 #include "include/aegisub/audio_provider.h"
 
 
-////////////////////////
-// Audio provider class
+
+/// DOCME
+/// @class ConvertAudioProvider
+/// @brief DOCME
+///
+/// DOCME
 class ConvertAudioProvider : public AudioProvider {
 private:
+
+	/// DOCME
 	int sampleMult;
 
+
+	/// DOCME
 	AudioProvider *source;
 	void Make16Bit(const char *src, short *dst, int64_t count);
 	template<class SampleConverter>
@@ -58,14 +66,20 @@ public:
 	ConvertAudioProvider(AudioProvider *source);
 	~ConvertAudioProvider();
 
-	// By its nature, the ConvertAudioProvider always delivers machine endian:
-	// That's one of the points of it!
+
+	/// @brief // That's one of the points of it! // By its nature, the ConvertAudioProvider always delivers machine endian:
+	/// @return 
+	///
 	bool AreSamplesNativeEndian() { return true; }
 
 	void GetAudio(void *buf, int64_t start, int64_t count);
+
+	/// @brief DOCME
+	///
 	wxString GetFilename() { return source->GetFilename(); }
 };
 
 AudioProvider *CreateConvertAudioProvider(AudioProvider *source_provider);
+
 
 

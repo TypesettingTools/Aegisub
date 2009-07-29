@@ -45,38 +45,49 @@
 #include "utils.h"
 
 
-///////////////
-// Constructor
+
+/// @brief Constructor 
+///
 OpenGLText::OpenGLText() {
 	r = g = b = a = 1.0f;
 }
 
 
-//////////////
-// Destructor
+
+/// @brief Destructor 
+///
 OpenGLText::~OpenGLText() {
 	Reset();
 }
 
 
-/////////
-// Reset
+
+/// @brief Reset 
+///
 void OpenGLText::Reset() {
 	textures.clear();
 	glyphs.clear();
 }
 
 
-////////////////
-// Get instance
+
+/// @brief Get instance 
+/// @return 
+///
 OpenGLText& OpenGLText::GetInstance() {
 	static OpenGLText instance;
 	return instance;
 }
 
 
-////////////
-// Set font
+
+/// @brief Set font 
+/// @param face    
+/// @param size    
+/// @param bold    
+/// @param italics 
+/// @return 
+///
 void OpenGLText::DoSetFont(wxString face,int size,bool bold,bool italics) {
 	// No change required
 	if (size == fontSize && face == fontFace && bold == fontBold && italics == fontItalics) return;
@@ -95,8 +106,11 @@ void OpenGLText::DoSetFont(wxString face,int size,bool bold,bool italics) {
 }
 
 
-//////////////
-// Set colour
+
+/// @brief Set colour 
+/// @param col   
+/// @param alpha 
+///
 void OpenGLText::DoSetColour(wxColour col,float alpha) {
 	r = col.Red() / 255.0f;
 	g = col.Green() / 255.0f;
@@ -105,8 +119,12 @@ void OpenGLText::DoSetColour(wxColour col,float alpha) {
 }
 
 
-/////////
-// Print
+
+/// @brief Print 
+/// @param text 
+/// @param x    
+/// @param y    
+///
 void OpenGLText::DoPrint(wxString text,int x,int y) {
 	// Set OpenGL
 	glEnable(GL_BLEND);
@@ -129,8 +147,13 @@ void OpenGLText::DoPrint(wxString text,int x,int y) {
 }
 
 
-/////////////////
-// Draw a string
+
+/// @brief Draw a string 
+/// @param text 
+/// @param x    
+/// @param y    
+/// @return 
+///
 void OpenGLText::DrawString(wxString text,int x,int y) {
 	// Variables
 	size_t len = text.Length();
@@ -160,8 +183,13 @@ void OpenGLText::DrawString(wxString text,int x,int y) {
 }
 
 
-/////////////////////////
-// Calculate text extent
+
+/// @brief Calculate text extent 
+/// @param text 
+/// @param w    
+/// @param h    
+/// @return 
+///
 void OpenGLText::DoGetExtent(wxString text,int &w,int &h) {
 	// Variables
 	size_t len = text.Length();
@@ -198,8 +226,11 @@ void OpenGLText::DoGetExtent(wxString text,int &w,int &h) {
 }
 
 
-///////////////
-// Get a glyph
+
+/// @brief Get a glyph 
+/// @param i 
+/// @return 
+///
 OpenGLTextGlyph OpenGLText::GetGlyph(int i) {
 	glyphMap::iterator res = glyphs.find(i);
 
@@ -211,8 +242,11 @@ OpenGLTextGlyph OpenGLText::GetGlyph(int i) {
 }
 
 
-//////////////////
-// Create a glyph
+
+/// @brief Create a glyph 
+/// @param n 
+/// @return 
+///
 OpenGLTextGlyph OpenGLText::CreateGlyph(int n) {
 	// Create glyph
 	OpenGLTextGlyph glyph;
@@ -240,8 +274,11 @@ OpenGLTextGlyph OpenGLText::CreateGlyph(int n) {
 }
 
 
-///////////////////////
-// Texture constructor
+
+/// @brief Texture constructor 
+/// @param w 
+/// @param h 
+///
 OpenGLTextTexture::OpenGLTextTexture(int w,int h) {
 	// Properties
 	x = y = nextY = 0;
@@ -265,8 +302,9 @@ OpenGLTextTexture::OpenGLTextTexture(int w,int h) {
 }
 
 
-//////////////////////
-// Texture destructor
+
+/// @brief Texture destructor 
+///
 OpenGLTextTexture::~OpenGLTextTexture() {
 	if (tex) {
 		glDeleteTextures(1,&tex);
@@ -275,8 +313,11 @@ OpenGLTextTexture::~OpenGLTextTexture() {
 }
 
 
-//////////////////////////
-// Can fit a glyph in it?
+
+/// @brief Can fit a glyph in it? 
+/// @param glyph 
+/// @return 
+///
 bool OpenGLTextTexture::TryToInsert(OpenGLTextGlyph &glyph) {
 	// Get size
 	int w = glyph.w;
@@ -304,8 +345,10 @@ bool OpenGLTextTexture::TryToInsert(OpenGLTextGlyph &glyph) {
 }
 
 
-//////////
-// Insert
+
+/// @brief Insert 
+/// @param glyph 
+///
 void OpenGLTextTexture::Insert(OpenGLTextGlyph &glyph) {
 	// Glyph data
 	wxString str = wxChar(glyph.value);
@@ -355,8 +398,11 @@ void OpenGLTextTexture::Insert(OpenGLTextGlyph &glyph) {
 }
 
 
-////////////////
-// Draw a glyph
+
+/// @brief Draw a glyph 
+/// @param x 
+/// @param y 
+///
 void OpenGLTextGlyph::Draw(int x,int y) {
 	// Store matrix and translate
 	glPushMatrix();
@@ -386,17 +432,21 @@ void OpenGLTextGlyph::Draw(int x,int y) {
 }
 
 
-////////////////////
-// Glyph Destructor
+
+/// @brief Glyph Destructor 
+///
 OpenGLTextGlyph::~OpenGLTextGlyph() {
 	if (tempBmp) delete tempBmp;
 	tempBmp = NULL;
 }
 
 
-/////////////////////
-// Get glyph metrics
+
+/// DOCME
 wxBitmap *OpenGLTextGlyph::tempBmp = NULL;
+
+/// @brief DOCME
+///
 void OpenGLTextGlyph::GetMetrics() {
 	// Glyph data
 	wxCoord desc,lead;
@@ -412,4 +462,5 @@ void OpenGLTextGlyph::GetMetrics() {
 		dc.GetTextExtent(str,&w,&h,&desc,&lead);
 	}
 }
+
 

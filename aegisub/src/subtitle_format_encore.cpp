@@ -44,15 +44,19 @@
 #include "text_file_writer.h"
 
 
-////////
-// Name
+
+/// @brief Name 
+/// @return 
+///
 wxString EncoreSubtitleFormat::GetName() {
 	return _T("Adobe Encore");
 }
 
 
-/////////////
-// Wildcards
+
+/// @brief Wildcards 
+/// @return 
+///
 wxArrayString EncoreSubtitleFormat::GetWriteWildcards() {
 	wxArrayString formats;
 	formats.Add(_T("encore.txt"));
@@ -60,15 +64,21 @@ wxArrayString EncoreSubtitleFormat::GetWriteWildcards() {
 }
 
 
-///////////////////
-// Can write file?
+
+/// @brief Can write file? 
+/// @param filename 
+/// @return 
+///
 bool EncoreSubtitleFormat::CanWriteFile(wxString filename) {
 	return (filename.Right(11).Lower() == _T(".encore.txt"));
 }
 
 
-//////////////
-// Write file
+
+/// @brief Write file 
+/// @param _filename 
+/// @param encoding  
+///
 void EncoreSubtitleFormat::WriteFile(wxString _filename,wxString encoding) {
 	// Get FPS
 	FPSRational fps_rat = AskForFPS(true);
@@ -103,4 +113,5 @@ void EncoreSubtitleFormat::WriteFile(wxString _filename,wxString encoding) {
 	// Clean up
 	ClearCopy();
 }
+
 

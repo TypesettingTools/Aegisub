@@ -49,8 +49,18 @@
 #include "ass_dialogue.h"
 
 
-////////////////////////
-// Edit box constructor
+
+/// @brief Edit box constructor 
+/// @param parent    
+/// @param id        
+/// @param value     
+/// @param pos       
+/// @param wsize     
+/// @param style     
+/// @param validator 
+/// @param name      
+/// @return 
+///
 SubsTextEditCtrl::SubsTextEditCtrl(wxWindow* parent, wxWindowID id, const wxString& value, const wxPoint& pos, const wxSize& wsize, long style, const wxValidator& validator, const wxString& name)
 : ScintillaTextCtrl(parent, id, value, pos, wsize, style, validator, name)
 {
@@ -142,8 +152,9 @@ SubsTextEditCtrl::SubsTextEditCtrl(wxWindow* parent, wxWindowID id, const wxStri
 }
 
 
-//////////////
-// Destructor
+
+/// @brief Destructor 
+///
 SubsTextEditCtrl::~SubsTextEditCtrl() {
 	delete spellchecker;
 	spellchecker = NULL;
@@ -173,16 +184,19 @@ BEGIN_EVENT_TABLE(SubsTextEditCtrl,wxStyledTextCtrl)
 END_EVENT_TABLE()
 
 
-//////////////
-// Lose focus
+
+/// @brief Lose focus 
+/// @param event 
+///
 void SubsTextEditCtrl::OnLoseFocus(wxFocusEvent &event) {
 	CallTipCancel();
 	event.Skip();
 }
 
 
-//////////////
-// Set styles
+
+/// @brief Set styles 
+///
 void SubsTextEditCtrl::SetStyles() {
 	// Styles
 	wxFont font = wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT);
@@ -241,8 +255,12 @@ void SubsTextEditCtrl::SetStyles() {
 }
 
 
-/////////////////
-// Style a range
+
+/// @brief Style a range 
+/// @param start   
+/// @param _length 
+/// @return 
+///
 void SubsTextEditCtrl::UpdateStyle(int start, int _length) {
 	// Styling enabled?
 	if (Options.AsBool(_T("Syntax Highlight Enabled")) == 0) return;
@@ -458,8 +476,10 @@ void SubsTextEditCtrl::UpdateStyle(int start, int _length) {
 }
 
 
-///////////////////
-// Update call tip
+
+/// @brief Update call tip 
+/// @return 
+///
 void SubsTextEditCtrl::UpdateCallTip() {
 	// Enabled?
 	if (!Options.AsBool(_T("Call tips enabled"))) return;
@@ -675,8 +695,12 @@ void SubsTextEditCtrl::UpdateCallTip() {
 }
 
 
-///////////////
-// Spell check
+
+/// @brief Spell check 
+/// @param start 
+/// @param len   
+/// @return 
+///
 void SubsTextEditCtrl::StyleSpellCheck(int start, int len) {
 	// See if it has a spellchecker
 	if (!spellchecker) return;
@@ -712,8 +736,10 @@ void SubsTextEditCtrl::StyleSpellCheck(int start, int len) {
 }
 
 
-///////////////////////////
-// Set text to a new value
+
+/// @brief Set text to a new value 
+/// @param _text 
+///
 void SubsTextEditCtrl::SetTextTo(const wxString _text) {
 	// Setup
 	control->textEditReady = false;
@@ -744,8 +770,11 @@ void SubsTextEditCtrl::SetTextTo(const wxString _text) {
 }
 
 
-///////////////
-// Mouse event
+
+/// @brief Mouse event 
+/// @param event 
+/// @return 
+///
 void SubsTextEditCtrl::OnMouseEvent(wxMouseEvent &event) {
 	// Right click
 	if (event.ButtonUp(wxMOUSE_BTN_RIGHT)) {
@@ -761,8 +790,10 @@ void SubsTextEditCtrl::OnMouseEvent(wxMouseEvent &event) {
 }
 
 
-///////////////////
-// Show popup menu
+
+/// @brief Show popup menu 
+/// @param activePos 
+///
 void SubsTextEditCtrl::ShowPopupMenu(int activePos) {
 	// Menu
 	wxMenu menu;
@@ -957,8 +988,10 @@ void SubsTextEditCtrl::ShowPopupMenu(int activePos) {
 }
 
 
-///////////////////////////////
-// Split line preserving times
+
+/// @brief Split line preserving times 
+/// @param event 
+///
 void SubsTextEditCtrl::OnSplitLinePreserve (wxCommandEvent &event) {
 	int from,to;
 	GetSelection(&from, &to);
@@ -970,8 +1003,10 @@ void SubsTextEditCtrl::OnSplitLinePreserve (wxCommandEvent &event) {
 }
 
 
-///////////////////////////////
-// Split line estimating times
+
+/// @brief Split line estimating times 
+/// @param event 
+///
 void SubsTextEditCtrl::OnSplitLineEstimate (wxCommandEvent &event) {
 	int from,to;
 	GetSelection(&from, &to);
@@ -983,43 +1018,55 @@ void SubsTextEditCtrl::OnSplitLineEstimate (wxCommandEvent &event) {
 }
 
 
-///////
-// Cut
+
+/// @brief Cut 
+/// @param event 
+///
 void SubsTextEditCtrl::OnCut(wxCommandEvent &event) {
 	Cut();
 }
 
 
-////////
-// Copy
+
+/// @brief Copy 
+/// @param event 
+///
 void SubsTextEditCtrl::OnCopy(wxCommandEvent &event) {
 	Copy();
 }
 
 
-/////////
-// Paste
+
+/// @brief Paste 
+/// @param event 
+///
 void SubsTextEditCtrl::OnPaste(wxCommandEvent &event) {
 	Paste();
 }
 
 
-////////
-// Undo
+
+/// @brief Undo 
+/// @param event 
+///
 void SubsTextEditCtrl::OnUndo(wxCommandEvent &event) {
 	Undo();
 }
 
 
-//////////////
-// Select All
+
+/// @brief Select All 
+/// @param event 
+///
 void SubsTextEditCtrl::OnSelectAll(wxCommandEvent &event) {
 	SelectAll();
 }
 
 
-//////////////////////////
-// Add word to dictionary
+
+/// @brief Add word to dictionary 
+/// @param event 
+///
 void SubsTextEditCtrl::OnAddToDictionary(wxCommandEvent &event) {
 	if (spellchecker) spellchecker->AddWord(currentWord);
 	UpdateStyle();
@@ -1027,8 +1074,10 @@ void SubsTextEditCtrl::OnAddToDictionary(wxCommandEvent &event) {
 }
 
 
-//////////////////
-// Use suggestion
+
+/// @brief Use suggestion 
+/// @param event 
+///
 void SubsTextEditCtrl::OnUseSuggestion(wxCommandEvent &event) {
 	// Get suggestion
 	wxString suggestion = sugs[event.GetId()-EDIT_MENU_SUGGESTIONS];
@@ -1048,8 +1097,10 @@ void SubsTextEditCtrl::OnUseSuggestion(wxCommandEvent &event) {
 
 
 
-////////////////////////////
-// Use thesaurus suggestion
+
+/// @brief Use thesaurus suggestion 
+/// @param event 
+///
 void SubsTextEditCtrl::OnUseThesaurusSuggestion(wxCommandEvent &event) {
 	// Get suggestion
 	wxString suggestion = thesSugs[event.GetId()-EDIT_MENU_THESAURUS_SUGS];
@@ -1074,8 +1125,10 @@ void SubsTextEditCtrl::OnUseThesaurusSuggestion(wxCommandEvent &event) {
 }
 
 
-///////////////////////////
-// Set dictionary language
+
+/// @brief Set dictionary language 
+/// @param event 
+///
 void SubsTextEditCtrl::OnSetDicLanguage(wxCommandEvent &event) {
 	// Get language list
 	wxArrayString langs = spellchecker->GetLanguageList();
@@ -1093,8 +1146,10 @@ void SubsTextEditCtrl::OnSetDicLanguage(wxCommandEvent &event) {
 }
 
 
-//////////////////////////
-// Set thesaurus language
+
+/// @brief Set thesaurus language 
+/// @param event 
+///
 void SubsTextEditCtrl::OnSetThesLanguage(wxCommandEvent &event) {
 	// Get language list
 	wxArrayString langs = thesaurus->GetLanguageList();
@@ -1110,4 +1165,5 @@ void SubsTextEditCtrl::OnSetThesLanguage(wxCommandEvent &event) {
 	// Update styling
 	UpdateStyle();
 }
+
 

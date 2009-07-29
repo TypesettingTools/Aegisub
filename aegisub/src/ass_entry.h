@@ -52,36 +52,70 @@ class AssStyle;
 class AssAttachment;
 
 
-///////////////////
-// Entry type enum
+
+/// DOCME
 enum ASS_EntryType {
+
+	/// DOCME
 	ENTRY_BASE,
+
+	/// DOCME
 	ENTRY_DIALOGUE,
+
+	/// DOCME
 	ENTRY_STYLE,
+
+	/// DOCME
 	ENTRY_ATTACHMENT
 };
 
 
+
+/// DOCME
 namespace Aegisub {
-	// Thrown when someone supplies an invalid margin ID to a function expecting one
-	// (Usually limited to range 0..3.)
+
+	/// DOCME
+	/// @class InvalidMarginIdError
+	/// @brief DOCME
+	///
+	/// DOCME
 	class InvalidMarginIdError : public InternalError {
 	public:
+
+		/// @brief DOCME
+		/// @return 
+		///
 		InvalidMarginIdError() : InternalError(_T("Invalid margin id"), 0) { }
+
+		/// @brief DOCME
+		/// @return 
+		///
 		const wxChar *GetName() { return _T("internal_error/invalid_margin_id"); }
 	};
 };
 
 
-////////////////////////////////////
-// Base class for each line in file
+
+/// DOCME
+/// @class AssEntry
+/// @brief DOCME
+///
+/// DOCME
 class AssEntry {
 private:
+
+	/// DOCME
 	wxString data;		// Raw data, exactly the same line that appears on the .ass (note that this will be in ass even if source wasn't)
+
+	/// DOCME
 	int StartMS;		// This is only stored for sorting issues, in order to keep non-dialogue lines aligned
 
 public:
+
+	/// DOCME
 	bool Valid;			// Flags as valid or not
+
+	/// DOCME
 	wxString group;		// Group it belongs to, e.g. "[Events]"
 
 	AssEntry();
@@ -90,13 +124,42 @@ public:
 
 	virtual AssEntry *Clone() const;
 
+
+	/// @brief DOCME
+	/// @return 
+	///
 	virtual int GetStartMS() const { return StartMS; }
+
+	/// @brief DOCME
+	/// @return 
+	///
 	virtual int GetEndMS() const { return StartMS; }
+
+	/// @brief DOCME
+	/// @param newStart 
+	///
 	virtual void SetStartMS(const int newStart) { StartMS = newStart; }
+
+	/// @brief DOCME
+	/// @param newEnd 
+	/// @return 
+	///
 	virtual void SetEndMS(const int newEnd) { /* do nothing */ (void)newEnd; }
 
+
+	/// @brief DOCME
+	/// @return 
+	///
 	virtual ASS_EntryType GetType() { return ENTRY_BASE; }
+
+	/// @brief DOCME
+	/// @return 
+	///
 	virtual const wxString GetEntryData() { return data; }
+
+	/// @brief DOCME
+	/// @param newData 
+	///
 	virtual void SetEntryData(wxString newData) { if (newData.IsEmpty()) data.Clear(); else data = newData; }
 
 	virtual wxString GetSSAText();
@@ -107,4 +170,5 @@ public:
 
 // This operator is for sorting
 bool operator < (const AssEntry &t1, const AssEntry &t2);
+
 

@@ -48,15 +48,19 @@
 #include <stdio.h>
 
 
-////////
-// Name
+
+/// @brief Name 
+/// @return 
+///
 wxString TranStationSubtitleFormat::GetName() {
 	return _T("TranStation");
 }
 
 
-/////////////
-// Wildcards
+
+/// @brief Wildcards 
+/// @return 
+///
 wxArrayString TranStationSubtitleFormat::GetWriteWildcards() {
 	wxArrayString formats;
 	formats.Add(_T("transtation.txt"));
@@ -64,15 +68,22 @@ wxArrayString TranStationSubtitleFormat::GetWriteWildcards() {
 }
 
 
-///////////////////
-// Can write file?
+
+/// @brief Can write file? 
+/// @param filename 
+/// @return 
+///
 bool TranStationSubtitleFormat::CanWriteFile(wxString filename) {
 	return (filename.Right(16).Lower() == _T(".transtation.txt"));
 }
 
 
-//////////////
-// Write file
+
+/// @brief Write file 
+/// @param _filename 
+/// @param encoding  
+/// @return 
+///
 void TranStationSubtitleFormat::WriteFile(wxString _filename,wxString encoding) {
 	// Get FPS
 	FPSRational fps_rat = AskForFPS(true);
@@ -114,6 +125,12 @@ void TranStationSubtitleFormat::WriteFile(wxString _filename,wxString encoding) 
 	ClearCopy();
 }
 
+
+/// @brief DOCME
+/// @param current     
+/// @param fps_rat     
+/// @param nextl_start 
+///
 wxString TranStationSubtitleFormat::ConvertLine(AssDialogue *current, FPSRational *fps_rat, int nextl_start) {
 	// Get line data
 	AssStyle *style = GetAssFile()->GetStyle(current->Style);
@@ -155,3 +172,4 @@ wxString TranStationSubtitleFormat::ConvertLine(AssDialogue *current, FPSRationa
 
 	return header + current->Text;
 }
+

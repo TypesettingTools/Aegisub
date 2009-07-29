@@ -43,15 +43,20 @@
 #include "utils.h"
 
 
-/////////////////////
-// Curve constructor
+
+/// @brief Curve constructor 
+///
 SplineCurve::SplineCurve() {
 	type = CURVE_INVALID;
 }
 
 
-/////////////////////////////////////////////////////////
-// Split a curve in two using the de Casteljau algorithm
+
+/// @brief Split a curve in two using the de Casteljau algorithm 
+/// @param c1 
+/// @param c2 
+/// @param t  
+///
 void SplineCurve::Split(SplineCurve &c1,SplineCurve &c2,float t) {
 	// Split a line
 	if (type == CURVE_LINE) {
@@ -90,9 +95,13 @@ void SplineCurve::Split(SplineCurve &c1,SplineCurve &c2,float t) {
 }
 
 
-//////////////////////
-// Smoothes the curve
-// Based on http://antigrain.com/research/bezier_interpolation/index.html
+
+/// @brief Based on http://antigrain.com/research/bezier_interpolation/index.html Smoothes the curve 
+/// @param P0     
+/// @param P3     
+/// @param smooth 
+/// @return 
+///
 void SplineCurve::Smooth(Vector2D P0,Vector2D P3,float smooth) {
 	// Validate
 	if (type != CURVE_LINE) return;
@@ -123,8 +132,11 @@ void SplineCurve::Smooth(Vector2D P0,Vector2D P3,float smooth) {
 }
 
 
-///////////////
-// Get a point
+
+/// @brief Get a point 
+/// @param t 
+/// @return 
+///
 Vector2D SplineCurve::GetPoint(float t) const {
 	// Point
 	if (type == CURVE_POINT) return p1;
@@ -144,11 +156,17 @@ Vector2D SplineCurve::GetPoint(float t) const {
 }
 
 
-///////////////////////
-// Get start/end point
+
+/// @brief Get start/end point 
+/// @return 
+///
 Vector2D SplineCurve::GetStartPoint() const {
 	return p1;
 }
+
+/// @brief DOCME
+/// @return 
+///
 Vector2D SplineCurve::GetEndPoint() const {
 	switch (type) {
 		case CURVE_POINT: return p1;
@@ -159,15 +177,21 @@ Vector2D SplineCurve::GetEndPoint() const {
 }
 
 
-//////////////////////////////////
-// Get point closest to reference
+
+/// @brief Get point closest to reference 
+/// @param ref 
+/// @return 
+///
 Vector2D SplineCurve::GetClosestPoint(Vector2D ref) const {
 	return GetPoint(GetClosestParam(ref));
 }
 
 
-///////////////////////////////////////////
-// Get value of parameter closest to point
+
+/// @brief Get value of parameter closest to point 
+/// @param ref 
+/// @return 
+///
 float SplineCurve::GetClosestParam(Vector2D ref) const {
 	// Line
 	if (type == CURVE_LINE) {
@@ -195,8 +219,11 @@ float SplineCurve::GetClosestParam(Vector2D ref) const {
 }
 
 
-//////////////////
-// Quick distance
+
+/// @brief Quick distance 
+/// @param ref 
+/// @return 
+///
 float SplineCurve::GetQuickDistance(Vector2D ref) const {
 	// Bicubic
 	if (type == CURVE_BICUBIC) {
@@ -214,17 +241,27 @@ float SplineCurve::GetQuickDistance(Vector2D ref) const {
 }
 
 
-//////////////////////////////////////////
-// Closest t in segment p1-p2 to point p3
+
+/// @brief Closest t in segment p1-p2 to point p3 
+/// @param pt1 
+/// @param pt2 
+/// @param pt3 
+/// @return 
+///
 float SplineCurve::GetClosestSegmentPart(Vector2D pt1,Vector2D pt2,Vector2D pt3) const {
 	return MID(0.0f,(pt3-pt1).Dot(pt2-pt1)/(pt2-pt1).SquareLen(),1.0f);
 }
 
 
-/////////////////////////////////////////////////
-// Closest distance between p3 and segment p1-p2
+
+/// @brief Closest distance between p3 and segment p1-p2 
+/// @param pt1 
+/// @param pt2 
+/// @param pt3 
+///
 float SplineCurve::GetClosestSegmentDistance(Vector2D pt1,Vector2D pt2,Vector2D pt3) const {
 	float t = GetClosestSegmentPart(pt1,pt2,pt3);
 	return (pt1*(1.0f-t)+pt2*t-pt3).Len();
 }
+
 

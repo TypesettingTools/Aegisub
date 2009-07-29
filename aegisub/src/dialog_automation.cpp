@@ -53,6 +53,11 @@
 
 
 
+
+/// @brief DOCME
+/// @param parent         
+/// @param _local_manager 
+///
 DialogAutomation::DialogAutomation(wxWindow *parent, Automation4::ScriptManager *_local_manager)
 : wxDialog(parent, -1, _("Automation Manager"), wxDefaultPosition, wxDefaultSize)
 {
@@ -111,6 +116,9 @@ DialogAutomation::DialogAutomation(wxWindow *parent, Automation4::ScriptManager 
 }
 
 
+
+/// @brief DOCME
+///
 void DialogAutomation::RebuildList()
 {
 	script_info.clear();
@@ -135,6 +143,10 @@ void DialogAutomation::RebuildList()
 }
 
 
+
+/// @brief DOCME
+/// @param ei 
+///
 void DialogAutomation::AddScript(ExtraScriptInfo &ei)
 {
 	script_info.push_back(ei);
@@ -157,6 +169,9 @@ void DialogAutomation::AddScript(ExtraScriptInfo &ei)
 }
 
 
+
+/// @brief DOCME
+///
 void DialogAutomation::UpdateDisplay()
 {
 	int i = list->GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
@@ -186,6 +201,10 @@ BEGIN_EVENT_TABLE(DialogAutomation, wxDialog)
 END_EVENT_TABLE()
 
 
+
+/// @brief DOCME
+/// @param evt 
+///
 void DialogAutomation::OnAdd(wxCommandEvent &evt)
 {
 	// build filename filter list
@@ -237,6 +256,11 @@ void DialogAutomation::OnAdd(wxCommandEvent &evt)
 	}
 }
 
+
+/// @brief DOCME
+/// @param evt 
+/// @return 
+///
 void DialogAutomation::OnRemove(wxCommandEvent &evt)
 {
 	int i = list->GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
@@ -249,6 +273,11 @@ void DialogAutomation::OnRemove(wxCommandEvent &evt)
 	list->Select(i);
 }
 
+
+/// @brief DOCME
+/// @param evt 
+/// @return 
+///
 void DialogAutomation::OnReload(wxCommandEvent &evt)
 {
 	int i = list->GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
@@ -273,6 +302,10 @@ void DialogAutomation::OnReload(wxCommandEvent &evt)
 	}
 }
 
+
+/// @brief DOCME
+/// @param evt 
+///
 void DialogAutomation::OnInfo(wxCommandEvent &evt)
 {
 	int i = list->GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
@@ -318,6 +351,10 @@ void DialogAutomation::OnInfo(wxCommandEvent &evt)
 	wxMessageBox(info, _("Automation Script Info"));
 }
 
+
+/// @brief DOCME
+/// @param evt 
+///
 void DialogAutomation::OnReloadAutoload(wxCommandEvent &evt)
 {
 	global_manager->Reload();
@@ -325,10 +362,15 @@ void DialogAutomation::OnReloadAutoload(wxCommandEvent &evt)
 	UpdateDisplay();
 }
 
+
+/// @brief DOCME
+/// @param evt 
+///
 void DialogAutomation::OnSelectionChange(wxListEvent &evt)
 {
 	UpdateDisplay();
 }
 
 #endif // WITH_AUTOMATION
+
 

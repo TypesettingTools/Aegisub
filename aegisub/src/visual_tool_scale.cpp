@@ -47,8 +47,10 @@
 #include "utils.h"
 
 
-///////////////
-// Constructor
+
+/// @brief Constructor 
+/// @param _parent 
+///
 VisualToolScale::VisualToolScale(VideoDisplay *_parent)
 : VisualTool(_parent)
 {
@@ -56,16 +58,19 @@ VisualToolScale::VisualToolScale(VideoDisplay *_parent)
 }
 
 
-//////////
-// Update
+
+/// @brief Update 
+///
 void VisualToolScale::Update() {
 	// Render parent
 	GetParent()->Render();
 }
 
 
-////////
-// Draw
+
+/// @brief Draw 
+/// @return 
+///
 void VisualToolScale::Draw() {
 	// Get line to draw
 	AssDialogue *line = GetActiveDialogueLine();
@@ -135,8 +140,9 @@ void VisualToolScale::Draw() {
 }
 
 
-/////////////////
-// Start holding
+
+/// @brief Start holding 
+///
 void VisualToolScale::InitializeHold() {
 	startX = mouseX;
 	startY = mouseY;
@@ -148,8 +154,9 @@ void VisualToolScale::InitializeHold() {
 }
 
 
-///////////////
-// Update hold
+
+/// @brief Update hold 
+///
 void VisualToolScale::UpdateHold() {
 	// Deltas
 	int deltaX = mouseX - startX;
@@ -173,10 +180,12 @@ void VisualToolScale::UpdateHold() {
 }
 
 
-///////////////
-// Commit hold
+
+/// @brief Commit hold 
+///
 void VisualToolScale::CommitHold() {
 	SetOverride(_T("\\fscx"),PrettyFloat(wxString::Format(_T("(%0.3f)"),curScaleX)));
 	SetOverride(_T("\\fscy"),PrettyFloat(wxString::Format(_T("(%0.3f)"),curScaleY)));
 }
+
 

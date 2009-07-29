@@ -83,10 +83,20 @@
 ///////
 // IDs
 enum {
+
+	/// DOCME
 	VIDEO_MENU_COPY_COORDS = 1230,
+
+	/// DOCME
 	VIDEO_MENU_COPY_TO_CLIPBOARD,
+
+	/// DOCME
 	VIDEO_MENU_COPY_TO_CLIPBOARD_RAW,
+
+	/// DOCME
 	VIDEO_MENU_SAVE_SNAPSHOT,
+
+	/// DOCME
 	VIDEO_MENU_SAVE_SNAPSHOT_RAW
 };
 
@@ -108,12 +118,19 @@ BEGIN_EVENT_TABLE(VideoDisplay, wxGLCanvas)
 END_EVENT_TABLE()
 
 
-//////////////
-// Parameters
+
+/// DOCME
 int attribList[] = { WX_GL_RGBA , WX_GL_DOUBLEBUFFER, WX_GL_STENCIL_SIZE, 8, 0 };
 
-///////////////
-// Constructor
+
+/// @brief Constructor 
+/// @param parent 
+/// @param id     
+/// @param pos    
+/// @param size   
+/// @param style  
+/// @param name   
+///
 VideoDisplay::VideoDisplay(wxWindow* parent, wxWindowID id, const wxPoint& pos, const wxSize& size, long style, const wxString& name)
 #ifdef __WXMAC__
 : wxGLCanvas (parent, id, pos, size, style, name, attribList)
@@ -138,8 +155,9 @@ VideoDisplay::VideoDisplay(wxWindow* parent, wxWindowID id, const wxPoint& pos, 
 }
 
 
-//////////////
-// Destructor
+
+/// @brief Destructor 
+///
 VideoDisplay::~VideoDisplay () {
 	delete visual;
 	visual = NULL;
@@ -147,8 +165,10 @@ VideoDisplay::~VideoDisplay () {
 }
 
 
-///////////////
-// Show cursor
+
+/// @brief Show cursor 
+/// @param show 
+///
 void VideoDisplay::ShowCursor(bool show) {
 	// Show
 	if (show) SetCursor(wxNullCursor);
@@ -167,8 +187,10 @@ void VideoDisplay::ShowCursor(bool show) {
 }
 
 
-//////////
-// Render
+
+/// @brief Render 
+/// @return 
+///
 void VideoDisplay::Render()
 // Yes it's legal C++ to replace the body of a function with one huge try..catch statement
 try {
@@ -326,8 +348,9 @@ catch (...) {
 }
 
 
-///////////////////////////////////
-// TV effects (overscan and so on)
+
+/// @brief TV effects (overscan and so on) 
+///
 void VideoDisplay::DrawTVEffects() {
 	// Get coordinates
 	int sw,sh;
@@ -356,8 +379,13 @@ void VideoDisplay::DrawTVEffects() {
 }
 
 
-//////////////////////
-// Draw overscan mask
+
+/// @brief Draw overscan mask 
+/// @param sizeH  
+/// @param sizeV  
+/// @param colour 
+/// @param alpha  
+///
 void VideoDisplay::DrawOverscanMask(int sizeH,int sizeV,wxColour colour,double alpha) {
 	// Parameters
 	int sw,sh;
@@ -390,8 +418,10 @@ void VideoDisplay::DrawOverscanMask(int sizeH,int sizeV,wxColour colour,double a
 }
 
 
-///////////////
-// Update size
+
+/// @brief Update size 
+/// @return 
+///
 void VideoDisplay::UpdateSize() {
 	// Don't do anything if it's a free sizing display
 	//if (freeSize) return;
@@ -436,8 +466,10 @@ void VideoDisplay::UpdateSize() {
 }
 
 
-//////////
-// Resets
+
+/// @brief Resets 
+/// @return 
+///
 void VideoDisplay::Reset() {
 	// Only calculate sizes if it's visible
 	if (!IsShownOnScreen()) return;
@@ -454,16 +486,20 @@ void VideoDisplay::Reset() {
 }
 
 
-///////////////
-// Paint event
+
+/// @brief Paint event 
+/// @param event 
+///
 void VideoDisplay::OnPaint(wxPaintEvent& event) {
 	wxPaintDC dc(this);
 	Render();
 }
 
 
-//////////////
-// Size Event
+
+/// @brief Size Event 
+/// @param event 
+///
 void VideoDisplay::OnSizeEvent(wxSizeEvent &event) {
 	//Refresh(false);
 	if (freeSize) {
@@ -473,8 +509,11 @@ void VideoDisplay::OnSizeEvent(wxSizeEvent &event) {
 }
 
 
-///////////////
-// Mouse stuff
+
+/// @brief Mouse stuff 
+/// @param event 
+/// @return 
+///
 void VideoDisplay::OnMouseEvent(wxMouseEvent& event) {
 	// Locked?
 	if (locked) return;
@@ -517,8 +556,10 @@ void VideoDisplay::OnMouseEvent(wxMouseEvent& event) {
 }
 
 
-/////////////
-// Key event
+
+/// @brief Key event 
+/// @param event 
+///
 void VideoDisplay::OnKey(wxKeyEvent &event) {
 	// FIXME: should these be configurable?
 	// Think of the frenchmen and other people not using qwerty layout
@@ -534,16 +575,20 @@ void VideoDisplay::OnKey(wxKeyEvent &event) {
 
 
 
-///////////////////
-// Sets zoom level
+
+/// @brief Sets zoom level 
+/// @param value 
+///
 void VideoDisplay::SetZoom(double value) {
 	zoomValue = value;
 	UpdateSize();
 }
 
 
-//////////////////////
-// Sets zoom position
+
+/// @brief Sets zoom position 
+/// @param value 
+///
 void VideoDisplay::SetZoomPos(int value) {
 	if (value < 0) value = 0;
 	if (value > 15) value = 15;
@@ -552,8 +597,9 @@ void VideoDisplay::SetZoomPos(int value) {
 }
 
 
-////////////////////////////
-// Updates position display
+
+/// @brief Updates position display 
+///
 void VideoDisplay::UpdatePositionDisplay() {
 	// Update position display control
 	if (!PositionDisplay) {
@@ -595,8 +641,9 @@ void VideoDisplay::UpdatePositionDisplay() {
 }
 
 
-////////////////////////////////////////////////////
-// Updates box with subs position relative to frame
+
+/// @brief Updates box with subs position relative to frame 
+///
 void VideoDisplay::UpdateSubsRelativeTime() {
 	// Set variables
 	wxString startSign;
@@ -627,8 +674,10 @@ void VideoDisplay::UpdateSubsRelativeTime() {
 }
 
 
-/////////////////////
-// Copy to clipboard
+
+/// @brief Copy to clipboard 
+/// @param event 
+///
 void VideoDisplay::OnCopyToClipboard(wxCommandEvent &event) {
 	if (wxTheClipboard->Open()) {
 		wxTheClipboard->SetData(new wxBitmapDataObject(wxBitmap(VideoContext::Get()->GetFrame(-1).GetImage(),24)));
@@ -637,8 +686,10 @@ void VideoDisplay::OnCopyToClipboard(wxCommandEvent &event) {
 }
 
 
-//////////////////////////
-// Copy to clipboard (raw)
+
+/// @brief Copy to clipboard (raw) 
+/// @param event 
+///
 void VideoDisplay::OnCopyToClipboardRaw(wxCommandEvent &event) {
 	if (wxTheClipboard->Open()) {
 		wxTheClipboard->SetData(new wxBitmapDataObject(wxBitmap(VideoContext::Get()->GetFrame(-1,true).GetImage(),24)));
@@ -647,22 +698,28 @@ void VideoDisplay::OnCopyToClipboardRaw(wxCommandEvent &event) {
 }
 
 
-/////////////////
-// Save snapshot
+
+/// @brief Save snapshot 
+/// @param event 
+///
 void VideoDisplay::OnSaveSnapshot(wxCommandEvent &event) {
 	VideoContext::Get()->SaveSnapshot(false);
 }
 
 
-//////////////////////
-// Save snapshot (raw)
+
+/// @brief Save snapshot (raw) 
+/// @param event 
+///
 void VideoDisplay::OnSaveSnapshotRaw(wxCommandEvent &event) {
 	VideoContext::Get()->SaveSnapshot(true);
 }
 
 
-/////////////////////
-// Copy coordinates
+
+/// @brief Copy coordinates 
+/// @param event 
+///
 void VideoDisplay::OnCopyCoords(wxCommandEvent &event) {
 	if (wxTheClipboard->Open()) {
 		int sw,sh;
@@ -675,8 +732,11 @@ void VideoDisplay::OnCopyCoords(wxCommandEvent &event) {
 }
 
 
-/////////////////////////////
-// Convert mouse coordinates
+
+/// @brief Convert mouse coordinates 
+/// @param x 
+/// @param y 
+///
 void VideoDisplay::ConvertMouseCoords(int &x,int &y) {
 	int w,h;
 	GetClientSize(&w,&h);
@@ -689,8 +749,10 @@ void VideoDisplay::ConvertMouseCoords(int &x,int &y) {
 }
 
 
-////////////
-// Set mode
+
+/// @brief Set mode 
+/// @param mode 
+///
 void VideoDisplay::SetVisualMode(int mode) {
 	// Set visual
 	if (visualMode != mode) {
@@ -725,4 +787,5 @@ void VideoDisplay::SetVisualMode(int mode) {
 	// Render
 	Render();
 }
+
 

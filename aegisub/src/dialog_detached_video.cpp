@@ -50,8 +50,11 @@
 #include "options.h"
 
 
-///////////////
-// Constructor
+
+/// @brief Constructor 
+/// @param par                
+/// @param initialDisplaySize 
+///
 DialogDetachedVideo::DialogDetachedVideo(FrameMain *par, const wxSize &initialDisplaySize)
 //: wxFrame(par,-1,_("Detached Video"))
 : wxDialog(par,-1,_T("Detached Video"),wxDefaultPosition,wxSize(400,300),wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER | wxMAXIMIZE_BOX | wxMINIMIZE_BOX | wxWANTS_CHARS)
@@ -99,8 +102,9 @@ DialogDetachedVideo::DialogDetachedVideo(FrameMain *par, const wxSize &initialDi
 }
 
 
-/////////////
-// Destructor
+
+/// @brief Destructor 
+///
 DialogDetachedVideo::~DialogDetachedVideo() {
 	Options.SetBool(_T("Detached video maximized"),IsMaximized());
 	Options.Save();
@@ -116,8 +120,10 @@ BEGIN_EVENT_TABLE(DialogDetachedVideo,wxDialog)
 END_EVENT_TABLE()
 
 
-////////////
-// Key down
+
+/// @brief Key down 
+/// @param event 
+///
 void DialogDetachedVideo::OnKey(wxKeyEvent &event) {
 	// Send to parent... except that it doesn't work
 	event.Skip();
@@ -125,8 +131,10 @@ void DialogDetachedVideo::OnKey(wxKeyEvent &event) {
 }
 
 
-////////////////
-// Close window
+
+/// @brief Close window 
+/// @param event 
+///
 void DialogDetachedVideo::OnClose(wxCloseEvent &event) {
 	FrameMain *par = parent;
 	Options.SetBool(_T("Detached video"),false);
@@ -136,11 +144,14 @@ void DialogDetachedVideo::OnClose(wxCloseEvent &event) {
 }
 
 
-///////////////
-// Move window
+
+/// @brief Move window 
+/// @param event 
+///
 void DialogDetachedVideo::OnMove(wxMoveEvent &event) {
 	wxPoint pos = event.GetPosition();
 	Options.SetInt(_T("Detached video last x"),pos.x);
 	Options.SetInt(_T("Detached video last y"),pos.y);
 }
+
 

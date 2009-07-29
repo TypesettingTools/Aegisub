@@ -44,20 +44,27 @@
 #include "utils.h"
 #include <ctype.h>
 
-///////////////////////// AssColor //////////////////////////
-////////////////
-// Constructors
+
+/// @brief Constructors  AssColor //////////////////////////
+///
 AssColor::AssColor () {
 	r=g=b=a=0;
 }
 
+
+/// @brief DOCME
+/// @param color 
+///
 AssColor::AssColor (wxColour &color) {
 	SetWXColor(color);
 }
 
 
-//////////////////
-// Parse from SSA/ASS
+
+/// @brief Parse from SSA/ASS 
+/// @param value 
+/// @return 
+///
 void AssColor::Parse(const wxString value) {
 	if (value.Len() > 0 && value[0] == _T('#')) {
 		// HTML colour
@@ -91,15 +98,19 @@ void AssColor::Parse(const wxString value) {
 }
 
 
-///////////////////
-// Gets a wxColour
+
+/// @brief Gets a wxColour 
+/// @return 
+///
 wxColour AssColor::GetWXColor() {
 	return wxColour(r,g,b,255-a);
 }
 
 
-//////////////////////
-// Sets color from wx
+
+/// @brief Sets color from wx 
+/// @param color 
+///
 void AssColor::SetWXColor(const wxColor &color) {
 	r = color.Red();
 	g = color.Green();
@@ -108,8 +119,13 @@ void AssColor::SetWXColor(const wxColor &color) {
 }
 
 
-///////////////////////////////
-// Get formatted in ASS format
+
+/// @brief Get formatted in ASS format 
+/// @param alpha    
+/// @param stripped 
+/// @param isStyle  
+/// @return 
+///
 wxString AssColor::GetASSFormatted (bool alpha,bool stripped,bool isStyle) {
 	wxString work;
 	if (!stripped) work += _T("&H");
@@ -120,8 +136,10 @@ wxString AssColor::GetASSFormatted (bool alpha,bool stripped,bool isStyle) {
 }
 
 
-/////////////////////////
-// Get decimal formatted
+
+/// @brief Get decimal formatted 
+/// @return 
+///
 wxString AssColor::GetSSAFormatted () {
 	long color = (a<<24)+(b<<16)+(g<<8)+r;
 	wxString output=wxString::Format(_T("%i"),(long)color);
@@ -129,20 +147,28 @@ wxString AssColor::GetSSAFormatted () {
 }
 
 
-/////////////
-// Operators
+
+/// @brief Operators 
+/// @param col 
+/// @return 
+///
 bool AssColor::operator==(AssColor &col) const {
 	return r==col.r && g==col.g && b==col.b && a==col.a;
 }
+
+/// @brief DOCME
+/// @param col 
+/// @return 
+///
 bool AssColor::operator!=(AssColor &col) const {
 	return r!=col.r || g!=col.g || b!=col.b || a!=col.a;
 }
 
 
 
-///////////////////////// AssStyle /////////////////////////
-///////////////////////
-// Default Constructor
+
+/// @brief Default Constructor  AssStyle /////////////////////////
+///
 AssStyle::AssStyle() {
 	group = _T("[V4+ Styles]");
 	
@@ -191,8 +217,11 @@ AssStyle::AssStyle() {
 }
 
 
-///////////////
-// Constructor
+
+/// @brief Constructor 
+/// @param _data   
+/// @param version 
+///
 AssStyle::AssStyle(wxString _data,int version) {
 	Valid = Parse(_data,version);
 	if (!Valid) {
@@ -202,14 +231,19 @@ AssStyle::AssStyle(wxString _data,int version) {
 }
 
 
-//////////////
-// Destructor
+
+/// @brief Destructor 
+///
 AssStyle::~AssStyle() {
 }
 
 
-//////////////////////////////
-// Parses value from ASS data
+
+/// @brief Parses value from ASS data 
+/// @param rawData 
+/// @param version 
+/// @return 
+///
 bool AssStyle::Parse(wxString rawData,int version) {
 	// Tokenize
 	wxString temp;
@@ -412,8 +446,9 @@ bool AssStyle::Parse(wxString rawData,int version) {
 }
 
 
-///////////////////////////////////////
-// Writes data back to ASS (v4+) format
+
+/// @brief Writes data back to ASS (v4+) format 
+///
 void AssStyle::UpdateData() {
 	wxString final;
 
@@ -437,8 +472,11 @@ void AssStyle::UpdateData() {
 }
 
 
-/////////////////////////////
-// Sets margin from a string
+
+/// @brief Sets margin from a string 
+/// @param str   
+/// @param which 
+///
 void AssStyle::SetMarginString(const wxString str,int which) {
 	if (which < 0 || which >= 4) throw new Aegisub::InvalidMarginIdError;
 	if (!str.IsNumber()) throw _T("Invalid margin value");
@@ -451,8 +489,11 @@ void AssStyle::SetMarginString(const wxString str,int which) {
 }
 
 
-//////////////////////////
-// Gets string for margin
+
+/// @brief Gets string for margin 
+/// @param which 
+/// @return 
+///
 wxString AssStyle::GetMarginString(int which) {
 	if (which < 0 || which >= 4) throw new Aegisub::InvalidMarginIdError;
 	wxString result = wxString::Format(_T("%04i"),Margin[which]);
@@ -460,8 +501,10 @@ wxString AssStyle::GetMarginString(int which) {
 }
 
 
-///////////////////////////////
-// Convert style to SSA string
+
+/// @brief Convert style to SSA string 
+/// @return 
+///
 wxString AssStyle::GetSSAText() {
 	wxString output;
 	int align = 0;
@@ -492,8 +535,10 @@ wxString AssStyle::GetSSAText() {
 }
 
 
-/////////
-// Clone
+
+/// @brief Clone 
+/// @return 
+///
 AssEntry *AssStyle::Clone() const {
 	// Create clone
 	AssStyle *final = new AssStyle();
@@ -534,8 +579,11 @@ AssEntry *AssStyle::Clone() const {
 }
 
 
-///////////////////////////
-// Equal to another style?
+
+/// @brief Equal to another style? 
+/// @param style 
+/// @return 
+///
 bool AssStyle::IsEqualTo(AssStyle *style) {
 	// memcmp won't work because strings won't match
 	if (style->alignment != alignment || 
@@ -569,8 +617,10 @@ bool AssStyle::IsEqualTo(AssStyle *style) {
 }
 
 
-/////////////////////////////////////
-// Get a list of valid ASS encodings
+
+/// @brief Get a list of valid ASS encodings 
+/// @param encodingStrings 
+///
 void AssStyle::GetEncodings(wxArrayString &encodingStrings) {
 	encodingStrings.Clear();
 	encodingStrings.Add(wxString(_T("0 - ")) + _("ANSI"));
@@ -593,4 +643,5 @@ void AssStyle::GetEncodings(wxArrayString &encodingStrings) {
 	encodingStrings.Add(wxString(_T("238 - ")) + _("East European"));
 	encodingStrings.Add(wxString(_T("255 - ")) + _("OEM"));
 }
+
 

@@ -55,13 +55,19 @@
 ///////
 // IDs
 enum {
+
+	/// DOCME
 	TEXT_JUMP_TIME = 1100,
+
+	/// DOCME
 	TEXT_JUMP_FRAME
 };
 
 
-///////////////
-// Constructor
+
+/// @brief Constructor 
+/// @param parent 
+///
 DialogJumpTo::DialogJumpTo (wxWindow *parent)
 : wxDialog(parent, -1, _("Jump to"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE | wxWANTS_CHARS , _T("JumpTo"))
 {
@@ -122,14 +128,22 @@ BEGIN_EVENT_TABLE(DialogJumpTo, wxDialog)
 END_EVENT_TABLE()
 
 
-/////////
-// Close
+
+/// @brief Close 
+/// @param event 
+///
 void DialogJumpTo::OnCloseButton (wxCommandEvent &event) { OnClose(false); }
+
+/// @brief DOCME
+/// @param event 
+///
 void DialogJumpTo::OnOK (wxCommandEvent &event) { OnClose(true); }
 
 
-//////////////////
-// On Key pressed
+
+/// @brief On Key pressed 
+/// @param event 
+///
 void DialogJumpTo::OnKey(wxCommandEvent &event) {
 	EndModal(0);
 	if (jumpframe > VideoContext::Get()->GetLength()-1) jumpframe = VideoContext::Get()->GetLength()-1;
@@ -137,8 +151,10 @@ void DialogJumpTo::OnKey(wxCommandEvent &event) {
 }
 
 
-////////////////////////
-// On OK button pressed
+
+/// @brief On OK button pressed 
+/// @param ok 
+///
 void DialogJumpTo::OnClose(bool ok) {
 	EndModal(0);
 	if (jumpframe > VideoContext::Get()->GetLength()-1) jumpframe = VideoContext::Get()->GetLength()-1;
@@ -146,8 +162,10 @@ void DialogJumpTo::OnClose(bool ok) {
 }
 
 
-////////////////////////
-// Time editbox changed
+
+/// @brief Time editbox changed 
+/// @param event 
+///
 void DialogJumpTo::OnEditTime (wxCommandEvent &event) {
 	if (ready) {
 		ready = false;
@@ -165,8 +183,10 @@ void DialogJumpTo::OnEditTime (wxCommandEvent &event) {
 }
 
 
-/////////////////////////
-// Frame editbox changed
+
+/// @brief Frame editbox changed 
+/// @param event 
+///
 void DialogJumpTo::OnEditFrame (wxCommandEvent &event) {
 	if (ready) {
 		ready = false;
@@ -187,4 +207,5 @@ void DialogJumpTo::OnEditFrame (wxCommandEvent &event) {
 	}
 	else event.Skip();
 }
+
 
