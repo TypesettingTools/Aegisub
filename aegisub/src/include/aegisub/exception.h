@@ -59,7 +59,7 @@ namespace Aegisub {
 
 		/// @brief DOCME
 		/// @param msg 
-		/// @param 0   
+		/// @param inr 
 		///
 		Exception(const wxString &msg, Exception *inr = 0) : message(msg), inner(inr) { }
 		Exception(); // not implemented, not wanted
