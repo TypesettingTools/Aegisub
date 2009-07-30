@@ -78,14 +78,14 @@ enum ASS_BlockType {
 /// @brief AssDialogue Blocks
 ///
 /// A block is each group in the text field of an AssDialogue
-/// @verbatium
+/// @verbatim
 ///  Yes, I {\i1}am{\i0} here.
 ///
 /// Gets split in five blocks:
 ///  "Yes, I " (Plain)
-///  "\i1"     (Override)
+///  "\\i1"     (Override)
 ///  "am"      (Plain)
-///  "\i0"     (Override)
+///  "\\i0"     (Override)
 ///  " here."  (Plain)
 ///
 /// Also note how {}s are discarded.
@@ -93,7 +93,7 @@ enum ASS_BlockType {
 ///
 /// The GetText() method generates a new value for the "text" field from
 /// the other fields in the specific class, and returns the new value.
-/// @endverbatium
+/// @endverbatim
 class AssDialogueBlock {
 public:
 

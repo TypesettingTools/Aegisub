@@ -141,14 +141,14 @@ public:
 	virtual bool CanWriteFile(wxString filename) { return false; };
 
 	/// @brief DOCME
-	/// @param filename            
-	/// @param forceEncoding=_T(Ó) 
+	/// @param filename      
+	/// @param forceEncoding 
 	///
 	virtual void ReadFile(wxString filename,wxString forceEncoding=_T("")) { };
 
 	/// @brief DOCME
-	/// @param filename       
-	/// @param encoding=_T(Ó) 
+	/// @param filename 
+	/// @param encoding 
 	///
 	virtual void WriteFile(wxString filename,wxString encoding=_T("")) { };
 

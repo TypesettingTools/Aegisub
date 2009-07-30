@@ -575,7 +575,6 @@ void FrameMain::OnNewWindow(wxCommandEvent& WXUNUSED(event)) {
 
 
 /// @brief Exit 
-/// @param event 
 ///
 void FrameMain::OnExit(wxCommandEvent& WXUNUSED(event)) {
 	Close();

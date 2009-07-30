@@ -241,7 +241,7 @@ void VisualToolRotateXY::CommitHold() {
 
 
 
-/// @brief Get \org pivot 
+/// @brief Get \\org pivot 
 ///
 void VisualToolRotateXY::PopulateFeatureList() {
 	// Get line
@@ -259,7 +259,7 @@ void VisualToolRotateXY::PopulateFeatureList() {
 
 
 
-/// @brief Update dragging of \org 
+/// @brief Update dragging of \\org 
 /// @param feature 
 ///
 void VisualToolRotateXY::UpdateDrag(VisualDraggableFeature &feature) {
@@ -269,7 +269,7 @@ void VisualToolRotateXY::UpdateDrag(VisualDraggableFeature &feature) {
 
 
 
-/// @brief Commit dragging of \org 
+/// @brief Commit dragging of \\org 
 /// @param feature 
 ///
 void VisualToolRotateXY::CommitDrag(VisualDraggableFeature &feature) {

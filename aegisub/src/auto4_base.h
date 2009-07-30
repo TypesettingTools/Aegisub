@@ -273,7 +273,7 @@ namespace Automation4 {
 	public:
 
 		/// @brief DOCME
-		/// @param EVT_SHOW_CONFIG_DIALOG_t 
+		/// @param event
 		/// @return 
 		///
 		ShowConfigDialogEvent(const wxEventType &event = EVT_SHOW_CONFIG_DIALOG_t)

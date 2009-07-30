@@ -207,7 +207,7 @@ void VisualToolRotateZ::CommitHold() {
 
 
 
-/// @brief Get \org pivot 
+/// @brief Get \\org pivot 
 ///
 void VisualToolRotateZ::PopulateFeatureList() {
 	// Get line
@@ -225,7 +225,7 @@ void VisualToolRotateZ::PopulateFeatureList() {
 
 
 
-/// @brief Update dragging of \org 
+/// @brief Update dragging of \\org 
 /// @param feature 
 ///
 void VisualToolRotateZ::UpdateDrag(VisualDraggableFeature &feature) {
@@ -235,7 +235,7 @@ void VisualToolRotateZ::UpdateDrag(VisualDraggableFeature &feature) {
 
 
 
-/// @brief Commit dragging of \org 
+/// @brief Commit dragging of \\org 
 /// @param feature 
 ///
 void VisualToolRotateZ::CommitDrag(VisualDraggableFeature &feature) {

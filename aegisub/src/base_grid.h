@@ -108,7 +108,7 @@ protected:
 
 
 	/// @brief DOCME
-	/// @param alternate=false 
+	/// @param alternate
 	///
 	virtual void OnPopupMenu(bool alternate=false) {}
 	void ScrollTo(int y);

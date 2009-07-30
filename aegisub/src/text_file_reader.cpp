@@ -231,7 +231,7 @@ bool TextFileReader::HasMoreLines() {
 
 
 /// @brief DOCME
-/// @param enc 
+/// @param encoding
 /// @return 
 ///
 void TextFileReader::EnsureValid(wxString enc) {

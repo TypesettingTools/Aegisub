@@ -305,12 +305,10 @@ size_t AegisubCSConv::iconvWrapper(iconv_t cd, char **inbuf, size_t *inbytesleft
 
 
 /// @brief DOCME
-/// @param code          
-/// @param buf           
-/// @param buflen        
-/// @param callback_arg) 
-/// @param callback_arg  
-/// @param convPtr       
+/// @param code         
+/// @param callback     
+/// @param callback_arg 
+/// @param convPtr      
 /// @return 
 ///
 void AegisubCSConv::ucToMbFallback(

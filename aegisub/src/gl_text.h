@@ -197,16 +197,16 @@ public:
 	static wxFont GetFont() { return GetInstance().font; }
 
 	/// @brief DOCME
-	/// @param face=_T(Ó)    
-	/// @param size=10       
-	/// @param bold=true     
-	/// @param italics=false 
+	/// @param face    
+	/// @param size    
+	/// @param bold    
+	/// @param italics 
 	///
 	static void SetFont(wxString face=_T("Verdana"),int size=10,bool bold=true,bool italics=false) { GetInstance().DoSetFont(face,size,bold,italics); }
 
 	/// @brief DOCME
-	/// @param col        
-	/// @param alpha=1.0f 
+	/// @param col   
+	/// @param alpha 
 	///
 	static void SetColour(wxColour col,float alpha=1.0f) { GetInstance().DoSetColour(col,alpha); }
 

@@ -77,7 +77,7 @@ AssFile::~AssFile() {
 
 
 /// @brief Load generic subs 
-/// @param _filename   
+/// @param file
 /// @param charset     
 /// @param addToRecent 
 ///

@@ -285,7 +285,7 @@ public:
 
 
 	/// @brief DOCME
-	/// @param true 
+	/// @param sync 
 	/// @return 
 	///
 	void EnableAudioSync(bool sync = true) { keepAudioSync = sync; }

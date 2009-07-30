@@ -76,9 +76,9 @@ protected:
 
 
 	/// @brief // Register one factory type (with possible subtypes)
-	/// @param factory                  
-	/// @param name                     
-	/// @param subTypes=wxArrayString() 
+	/// @param factory  
+	/// @param name     
+	/// @param subTypes 
 	///
 	static void RegisterFactory(T* factory,wxString name, wxArrayString subTypes=wxArrayString()) {
 		// Create factories if it doesn't exist
@@ -130,7 +130,7 @@ public:
 
 
 	/// @brief // Get list of all factories, with favourite as first
-	/// @param favourite=_T(Ó) 
+	/// @param favourite 
 	///
 	static wxArrayString GetFactoryList(wxString favourite=_T("")) {
 		if (factories == NULL) factories = new std::map<wxString,T*>;
