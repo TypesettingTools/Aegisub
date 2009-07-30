@@ -95,7 +95,7 @@ RECURSIVE              = YES
 EXCLUDE                = 
 EXCLUDE_SYMLINKS       = NO
 EXCLUDE_PATTERNS       = */.svn* */.deps* */.libs* */boost/* */scripts/* */gl/* */msvc/* */libresrc/* \
-						*/libosxutil/bundledirs-test.c
+						*/libosxutil/bundledirs-test.c */avisynth.h */MatroskaParser.? */md5.?
 EXCLUDE_SYMBOLS        = 
 EXAMPLE_PATH           = ../../
 EXAMPLE_PATTERNS       = 
