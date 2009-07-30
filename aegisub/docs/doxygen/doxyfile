@@ -5,7 +5,7 @@
 #---------------------------------------------------------------------------
 DOXYFILE_ENCODING      = UTF-8
 PROJECT_NAME           = Aegisub
-PROJECT_NUMBER         = 1
+PROJECT_NUMBER         = trunk
 OUTPUT_DIRECTORY       = $(OUTPUT_DIR)
 CREATE_SUBDIRS         = NO
 OUTPUT_LANGUAGE        = English
@@ -25,6 +25,8 @@ INHERIT_DOCS           = YES
 SEPARATE_MEMBER_PAGES  = NO
 TAB_SIZE               = 4
 ALIASES                = 
+ALIASES                += ticket{1}="<a href='http://devel.aegisub.org/ticket/\1' class='el'>#\1</a>"
+ALIASES                += revision{1}="<a href='http://devel.aegisub.org/changeset/\1' class='el'>r\1</a>"
 OPTIMIZE_OUTPUT_FOR_C  = NO
 OPTIMIZE_OUTPUT_JAVA   = NO
 OPTIMIZE_FOR_FORTRAN   = NO
@@ -95,7 +97,7 @@ EXCLUDE_SYMLINKS       = NO
 EXCLUDE_PATTERNS       = */.svn* */.deps* */.libs* */boost/* */scripts/* */gl/* */msvc/* */libresrc/* \
 						*/libosxutil/bundledirs-test.c
 EXCLUDE_SYMBOLS        = 
-EXAMPLE_PATH           = 
+EXAMPLE_PATH           = ../../
 EXAMPLE_PATTERNS       = 
 EXAMPLE_RECURSIVE      = NO
 IMAGE_PATH             = 
