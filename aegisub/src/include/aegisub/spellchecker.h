@@ -43,14 +43,33 @@
 #include "aegisub.h"
 
 
-///////////////////////////
-// Spellchecking interface
+
+/// @class SpellChecker
+/// @brief DOCME
+///
+/// DOCME
 class SpellChecker {
 public:
+
+	/// @brief DOCME
+	///
 	SpellChecker() {}
+
+	/// @brief DOCME
+	///
 	virtual ~SpellChecker() {}
 
+
+	/// @brief DOCME
+	/// @param word 
+	/// @return 
+	///
 	virtual void AddWord(wxString word) {}
+
+	/// @brief DOCME
+	/// @param word 
+	/// @return 
+	///
 	virtual bool CanAddWord(wxString word) { return false; }
 
 	virtual bool CheckWord(wxString word)=0;
@@ -61,11 +80,18 @@ public:
 };
 
 
-///////////
-// Factory
+
+/// @class SpellCheckerFactory
+/// @brief DOCME
+///
+/// DOCME
 class SpellCheckerFactory {
 public:
+
+	/// @brief DOCME
+	///
 	virtual ~SpellCheckerFactory() {}
 	virtual SpellChecker *CreateSpellChecker()=0;
 };
+
 

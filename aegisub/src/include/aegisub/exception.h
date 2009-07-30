@@ -38,55 +38,94 @@
 #include <wx/string.h>
 
 
+
+/// DOCME
 namespace Aegisub {
 
-	// Base class for exceptions
-	// No public creators, all exceptions throws must be specific
+
+	/// @class Exception
+	/// @brief DOCME
+	///
+	/// DOCME
 	class Exception {
+
+		/// DOCME
 		wxString message;
+
+		/// DOCME
 		Exception *inner;
 
 	protected:
+
+		/// @brief DOCME
+		/// @param msg 
+		/// @param 0   
+		///
 		Exception(const wxString &msg, Exception *inr = 0) : message(msg), inner(inr) { }
 		Exception(); // not implemented, not wanted
+
+		/// @brief DOCME
+		/// @return 
+		///
 		virtual ~Exception() { if (inner) delete inner; }
 
 	public:
-		// Error message for outer exception
+
+		/// @brief // Error message for outer exception
+		/// @return 
+		///
 		virtual wxString GetMessage() const { return message; }
-		// Error message for outer exception, and chained message for inner exception
+
+		/// @brief // Error message for outer exception, and chained message for inner exception
+		/// @return 
+		///
 		wxString GetChainedMessage() const { if (inner) return inner->GetChainedMessage() + _T("\r\n") + GetMessage(); else return GetMessage(); }
 		// Name of exception class, should only be implemented by specific classes
 		virtual const wxChar * GetName() const = 0;
 
+
+		/// @brief DOCME
+		/// @return 
+		///
 		operator const wxChar * () { return GetMessage().c_str(); }
+
+		/// @brief DOCME
+		/// @return 
+		///
 		operator wxString () { return GetMessage(); }
 	};
 
 
-	// Macro to quickly add location information to an error message
+
+/// DOCME
 #define AG_WHERE _T(" (at ") _T(__FILE__) _T(":") _T(#__LINE__) _T(")")
 
 
-	// Macros to define basic exception classes that do nothing fancy
-	// These should always be used inside the Aegisub namespace
+
+/// DOCME
 #define DEFINE_SIMPLE_EXCEPTION_NOINNER(classname,baseclass,displayname)             \
 	class classname : public baseclass {                                             \
 	public:                                                                          \
 		classname(const wxString &msg) : baseclass(msg) { }                          \
 		const wxChar * GetName() const { return _T(displayname); }                   \
 	};
+
+/// DOCME
 #define DEFINE_SIMPLE_EXCEPTION(classname,baseclass,displayname)                     \
 	class classname : public baseclass {                                             \
 	public:                                                                          \
 		classname(const wxString &msg, Exception *inner) : baseclass(msg, inner) { } \
 		const wxChar * GetName() const { return _T(displayname); }                   \
 	};
+
+/// DOCME
 #define DEFINE_BASE_EXCEPTION_NOINNER(classname,baseclass)                           \
 	class classname : public baseclass {                                             \
 	public:                                                                          \
 		classname(const wxString &msg) : baseclass(msg) { }                          \
 	};
+
+/// DOCME
 #define DEFINE_BASE_EXCEPTION(classname,baseclass)                                   \
 	class classname : public baseclass {                                             \
 	public:                                                                          \
@@ -111,10 +150,23 @@ namespace Aegisub {
 	// A file can't be accessed for some reason
 	DEFINE_SIMPLE_EXCEPTION_NOINNER(FileNotAccessibleError,FileSystemError,"filesystem/not_accessible")
 
-	// A file isn't accessible because it doesn't exist
+
+	/// DOCME
+	/// @class FileNotFoundError
+	/// @brief DOCME
+	///
+	/// DOCME
 	class FileNotFoundError : public FileNotAccessibleError {
 	public:
+
+		/// @brief DOCME
+		/// @param filename 
+		/// @return 
+		///
 		FileNotFoundError(const wxString &filename) : FileNotAccessibleError(wxString(_T("File not found: ")) + filename) { }
+
+		/// @brief DOCME
+		///
 		const wxChar * GetName() const { return _T("filesystem/not_accessible/not_found"); }
 	};
 
@@ -127,4 +179,3 @@ namespace Aegisub {
 	// Define new classes if none fit the error you're reporting
 
 };
-

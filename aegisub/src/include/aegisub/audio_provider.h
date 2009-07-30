@@ -48,19 +48,36 @@
 class VideoProvider;
 
 
-////////////////////////
-// Audio provider class
+
+/// @class AudioProvider
+/// @brief DOCME
+///
+/// DOCME
 class AudioProvider {
 private:
+
+	/// DOCME
 	char *raw;
+
+	/// DOCME
 	int raw_len;
 
 protected:
+
+	/// DOCME
 	int channels;
+
+	/// DOCME
 	int64_t num_samples; // for one channel, ie. number of PCM frames
+
+	/// DOCME
 	int sample_rate;
+
+	/// DOCME
 	int bytes_per_sample;
 
+
+	/// DOCME
 	wxString filename;
 
 public:
@@ -81,11 +98,16 @@ public:
 };
 
 
-///////////
-// Factory
+
+/// @class AudioProviderFactory
+/// @brief DOCME
+///
+/// DOCME
 class AudioProviderFactory {
 public:
+
+	/// @brief DOCME
+	///
 	virtual ~AudioProviderFactory() {}
 	virtual AudioProvider *CreateProvider(wxString filename)=0;
 };
-

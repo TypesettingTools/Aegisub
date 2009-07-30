@@ -45,11 +45,17 @@
 #include "aegisub.h"
 #include "vfr.h"
 
-////////////////////////////
-// Video Provider interface
+
+/// @class VideoProvider
+/// @brief DOCME
+///
+/// DOCME
 class VideoProvider {
 public:
-	// Virtual destructor
+
+	/// @brief // Virtual destructor
+	/// @return 
+	///
 	virtual ~VideoProvider() {}
 
 	// Override this method to actually get frames
@@ -66,27 +72,54 @@ public:
 	virtual wxArrayInt GetKeyFrames()=0;		// Returns list of keyframes
 	virtual FrameRate GetTrueFrameRate()=0;		// Returns magic VFR stuff
 
-	// Use this to set any post-loading warnings, such as "being loaded with unreliable seeking"
+
+	/// @brief // Use this to set any post-loading warnings, such as "being loaded with unreliable seeking"
+	/// @return 
+	///
 	virtual wxString GetWarning() { return L""; }
 
-	// Name of decoder, e.g. "Avisynth/FFMpegSource"
+
+	/// @brief // Name of decoder, e.g. "Avisynth/FFMpegSource"
+	/// @return 
+	///
 	virtual wxString GetDecoderName() { return L"Unknown"; }
 
-	// How many frames does this provider want Aegisub to cache? Set to 0 if it doesn't require caching.
+
+	/// @brief // How many frames does this provider want Aegisub to cache? Set to 0 if it doesn't require caching.
+	/// @return 
+	///
 	virtual int GetDesiredCacheSize() { return 0; }
 
-	// For "special" providers that don't deal well with VFR (i.e. Avisynth)
+
+	/// @brief // For "special" providers that don't deal well with VFR (i.e. Avisynth)
+	/// @return 
+	///
 	virtual bool NeedsVFRHack() { return false; };					// Returns true if provider needs special VFR treatment
+
+	/// @brief DOCME
+	/// @return 
+	///
 	virtual bool IsNativelyByFrames() { return true; };
+
+	/// @brief DOCME
+	/// @param list 
+	///
 	virtual void OverrideFrameTimeList(std::vector<int> list) {}	// Override the list with the provided one, for VFR handling
 };
 
 
-///////////
-// Factory
+
+/// @class VideoProviderFactory
+/// @brief DOCME
+///
+/// DOCME
 class VideoProviderFactory {
 public:
+
+	/// @brief DOCME
+	///
 	virtual ~VideoProviderFactory() {}
 	virtual VideoProvider *CreateProvider(wxString video)=0;
 };
+
 

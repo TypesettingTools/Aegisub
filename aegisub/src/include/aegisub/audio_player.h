@@ -52,21 +52,34 @@
 class AudioProvider;
 
 
-///////////////////////////
-// Audio Player base class
+
+/// @class AudioPlayer
+/// @brief DOCME
+///
+/// DOCME
 class AudioPlayer : public wxEvtHandler {
 private:
 	void OnStopAudio(wxCommandEvent &event);
 
 protected:
+
+	/// DOCME
 	AudioProvider *provider;
+
+	/// DOCME
 	wxTimer *displayTimer;
 
 public:
 	AudioPlayer();
 	virtual ~AudioPlayer();
 
+
+	/// @brief DOCME
+	///
 	virtual void OpenStream() {}
+
+	/// @brief DOCME
+	///
 	virtual void CloseStream() {}
 
 	virtual void Play(int64_t start,int64_t count)=0;	// Play sample range
@@ -94,11 +107,16 @@ public:
 };
 
 
-///////////
-// Factory
+
+/// @class AudioPlayerFactory
+/// @brief DOCME
+///
+/// DOCME
 class AudioPlayerFactory {
 public:
+
+	/// @brief DOCME
+	///
 	virtual ~AudioPlayerFactory() {}
 	virtual AudioPlayer *CreatePlayer()=0;
 };
-

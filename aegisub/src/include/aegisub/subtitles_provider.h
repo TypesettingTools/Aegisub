@@ -49,22 +49,37 @@
 class AssFile;
 
 
-////////////////////////////////
-// Subtitles provider interface
+
+/// @class SubtitlesProvider
+/// @brief DOCME
+///
+/// DOCME
 class SubtitlesProvider {
 public:
 	virtual ~SubtitlesProvider();
 
 	virtual void LoadSubtitles(AssFile *subs)=0;
+
+	/// @brief DOCME
+	/// @param dst  
+	/// @param time 
+	///
 	virtual void DrawSubtitles(AegiVideoFrame &dst,double time) {}
 };
 
 
-///////////
-// Factory
+
+/// @class SubtitlesProviderFactory
+/// @brief DOCME
+///
+/// DOCME
 class SubtitlesProviderFactory {
 public:
+
+	/// @brief DOCME
+	///
 	virtual ~SubtitlesProviderFactory() {}
 	virtual SubtitlesProvider *CreateProvider(wxString subType=_T(""))=0;
 };
+
 
