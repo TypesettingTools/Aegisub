@@ -7,7 +7,6 @@
 @defgroup custom_control Custom Control
 @defgroup export Export
 @defgroup ffms FFmpegSource support.
-@defgroup ffms2 FFmpegSource2 support.
 @defgroup font_collector Font collector
 @defgroup kanji_timer Kanji Timer
 @defgroup libosxutil libosxutil

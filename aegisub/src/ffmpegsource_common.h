@@ -31,7 +31,7 @@
 
 /// @file ffmpegsource_common.h
 /// @see ffmpegsource_common.cpp
-/// @ingroup video_input audio_input ffms2
+/// @ingroup video_input audio_input ffms
 ///
 
 #pragma once

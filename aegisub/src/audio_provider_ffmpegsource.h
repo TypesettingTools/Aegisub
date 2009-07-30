@@ -31,7 +31,7 @@
 
 /// @file audio_provider_ffmpegsource.h
 /// @see audio_provider_ffmpegsource.cpp
-/// @ingroup audio_input ffms2
+/// @ingroup audio_input ffms
 ///
 
 ///////////

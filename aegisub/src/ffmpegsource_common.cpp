@@ -30,8 +30,8 @@
 // $Id$
 
 /// @file ffmpegsource_common.cpp
-/// @brief Shared code for ffms2 video and audio providers
-/// @ingroup video_input audio_input ffms2
+/// @brief Shared code for ffms video and audio providers
+/// @ingroup video_input audio_input ffms
 ///
 
 #include "config.h"

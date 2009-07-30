@@ -31,7 +31,7 @@
 
 /// @file audio_provider_ffmpegsource.cpp
 /// @brief ffms2-based audio provider
-/// @ingroup audio_input ffms2
+/// @ingroup audio_input ffms
 ///
 
 #include "config.h"
