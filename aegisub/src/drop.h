@@ -37,7 +37,7 @@
 
 #ifndef DROP_H
 
-/// DOCME
+/// Inclusion guard
 #define DROP_H
 
 
@@ -53,15 +53,13 @@ class FrameMain;
 
 
 
-/// DOCME
 /// @class AegisubFileDropTarget
-/// @brief DOCME
+/// @brief Handle files DnD'd onto Aegisub
 ///
-/// DOCME
 class AegisubFileDropTarget : public wxFileDropTarget {
 private:
 
-	/// DOCME
+	/// Parent frame
 	FrameMain *parent;
 
 public:
@@ -72,5 +70,3 @@ public:
 };
 
 #endif
-
-

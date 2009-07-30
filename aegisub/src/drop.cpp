@@ -45,8 +45,8 @@
 
 
 
-/// @brief Constructor 
-/// @param par 
+/// @brief Constructor
+/// @param par Parent frame
 ///
 AegisubFileDropTarget::AegisubFileDropTarget(FrameMain *par) {
 	parent = par;
@@ -54,10 +54,11 @@ AegisubFileDropTarget::AegisubFileDropTarget(FrameMain *par) {
 
 
 
-/// @brief Drop files 
-/// @param x         
-/// @param y         
-/// @param filenames 
+/// @brief Handle dropped files.
+/// @param x         X drop co-ordinate.
+/// @param y         Y drop co-ordinate
+/// @param filenames List of files dropped.
+/// @return Whether handling dropped files was sucessful
 ///
 bool AegisubFileDropTarget::OnDropFiles(wxCoord x, wxCoord y, const wxArrayString& filenames) {
 	return parent->LoadList(filenames);
