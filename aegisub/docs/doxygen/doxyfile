@@ -85,15 +85,15 @@ WARN_LOGFILE           = doxygen.log
 #---------------------------------------------------------------------------
 # configuration options related to the input files
 #---------------------------------------------------------------------------
-INPUT                  = ../../
+INPUT                  = ../../src/
 INPUT_ENCODING         = UTF-8
 FILE_PATTERNS          = *.h *.cpp *.c *.dox
 RECURSIVE              = YES
 #EXCLUDE                = .svn .deps .libs boost gl msvc libass universalchardet
 EXCLUDE                = 
 EXCLUDE_SYMLINKS       = NO
-EXCLUDE_PATTERNS       = */.svn* */.deps* */.libs* */boost/* */scripts/* */gl/* */msvc/* */libass/* */universalchardet/* */packages/* */po/* */build/* */libffms/* */tools/* */libresrc/* */tinderbox/* \
-						*/libosxutil/bundledirs-test.c acconf.h	
+EXCLUDE_PATTERNS       = */.svn* */.deps* */.libs* */boost/* */scripts/* */gl/* */msvc/* */libresrc/* \
+						*/libosxutil/bundledirs-test.c
 EXCLUDE_SYMBOLS        = 
 EXAMPLE_PATH           = 
 EXAMPLE_PATTERNS       = 
