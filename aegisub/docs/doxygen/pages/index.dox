@@ -1,5 +1,50 @@
 /** @mainpage
 
-Main page contents go here.
+Main
+ - @ref main
+ - @ref main_headers
+ - @ref main_ui
+ - @ref configuration_ui
+ - @ref custom_control
+ - @ref export
+ - @ref scripting
+ - @ref secondary_ui
+ - @ref subs_storage
+
+Library
+ - @ref ffms
+ - @ref ffms2
+ - @ref quicktime
+ - @ref matroska
+
+Dialogues
+ - @ref font_collector
+ - @ref kanji_timer
+ - @ref spelling
+ - @ref style_editor
+ - @ref thesaurus
+ - @ref visual_ts
+
+Miscellanous
+ - @ref build
+ - @ref tools_ui
+ - @ref unused
+ - @ref utility
+ - @ref libosxutil
+
+Subtitle
+ - @ref subtitle_io
+ - @ref subtitle_rendering
+ - @ref vobsub
+
+Audio
+ - @ref audio_input
+ - @ref audio_output
+ - @ref audio_ui
+
+Video
+ - @ref video
+ - @ref video_input
+ - @ref video_output
 
 */

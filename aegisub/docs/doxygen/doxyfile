@@ -85,7 +85,7 @@ WARN_LOGFILE           = doxygen.log
 #---------------------------------------------------------------------------
 # configuration options related to the input files
 #---------------------------------------------------------------------------
-INPUT                  = ../../src/
+INPUT                  = ../../src/ .
 INPUT_ENCODING         = UTF-8
 FILE_PATTERNS          = *.h *.cpp *.c *.dox
 RECURSIVE              = YES
