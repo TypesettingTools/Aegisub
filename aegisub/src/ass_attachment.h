@@ -51,11 +51,8 @@ typedef std::vector<unsigned char> DataVec;
 
 
 
-/// DOCME
 /// @class AttachData
 /// @brief DOCME
-///
-/// DOCME
 class AttachData {
 private:
 
@@ -76,11 +73,8 @@ public:
 
 
 
-/// DOCME
 /// @class AssAttachment
 /// @brief DOCME
-///
-/// DOCME
 class AssAttachment : public AssEntry {
 private:
 
