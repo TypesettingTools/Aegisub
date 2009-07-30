@@ -48,17 +48,16 @@
 #include "utils.h"
 #include "charset_conv.h"
 
-// Uncomment to enable debug features.
+/// @define PORTAUDIO_DEBUG Enable debugging?
 //#define PORTAUDIO_DEBUG
 
 
-/// DOCME
+/// Reference counter
 int PortAudioPlayer::pa_refcount = 0;
 
 
 
-/// @brief Constructor 
-///
+/// @brief Constructor
 PortAudioPlayer::PortAudioPlayer() {
 	// Initialize portaudio
 	if (!pa_refcount) {
@@ -82,8 +81,7 @@ PortAudioPlayer::PortAudioPlayer() {
 
 
 
-/// @brief Destructor 
-///
+/// @brief Destructor
 PortAudioPlayer::~PortAudioPlayer() {
 	// Deinit portaudio
 	if (!--pa_refcount) Pa_Terminate();
@@ -91,8 +89,7 @@ PortAudioPlayer::~PortAudioPlayer() {
 
 
 
-/// @brief Open stream 
-///
+/// @brief Open stream
 void PortAudioPlayer::OpenStream() {
 	// Open stream
 	PaStreamParameters pa_output_p;
@@ -131,8 +128,7 @@ void PortAudioPlayer::OpenStream() {
 
 
 
-/// @brief Close stream 
-///
+/// @brief Close stream
 void PortAudioPlayer::CloseStream() {
 	try {
 		Stop(false);
@@ -142,8 +138,7 @@ void PortAudioPlayer::CloseStream() {
 
 
 /// @brief Called when the callback has finished.
-/// @param userData 
-///
+/// @param userData Local data to be handed to the callback.
 void PortAudioPlayer::paStreamFinishedCallback(void *userData) {
     PortAudioPlayer *player = (PortAudioPlayer *) userData;
 
@@ -158,11 +153,9 @@ void PortAudioPlayer::paStreamFinishedCallback(void *userData) {
 
 
 
-/// @brief Play 
-/// @param start 
-/// @param count 
-/// @return 
-///
+/// @brief Play audio.
+/// @param start Start position.
+/// @param count Frame count
 void PortAudioPlayer::Play(int64_t start,int64_t count) {
 	PaError err;
 
@@ -199,8 +192,8 @@ void PortAudioPlayer::Play(int64_t start,int64_t count) {
 
 
 
-/// @brief Stop 
-/// @param timerToo 
+/// @brief Stop Playback
+/// @param timerToo Stop display timer?
 ///
 void PortAudioPlayer::Stop(bool timerToo) {
 	//wxMutexLocker locker(PAMutex);
@@ -218,14 +211,14 @@ void PortAudioPlayer::Stop(bool timerToo) {
 
 
 
-/// @brief PortAudio callback 
-/// @param inputBuffer     
-/// @param outputBuffer    
-/// @param framesPerBuffer 
-/// @param timeInfo        
-/// @param statusFlags     
-/// @param userData        
-/// @return 
+/// @brief PortAudio callback
+/// @param inputBuffer     Input buffer.
+/// @param outputBuffer    Output buffer.
+/// @param framesPerBuffer Frames per buffer.
+/// @param timeInfo        PortAudio time information.
+/// @param statusFlags     Status flags
+/// @param userData        Local data to hand callback
+/// @return Whether to stop playback.
 ///
 int PortAudioPlayer::paCallback(const void *inputBuffer, void *outputBuffer, unsigned long framesPerBuffer, const PaStreamCallbackTimeInfo* timeInfo, PaStreamCallbackFlags statusFlags, void *userData) {
 
@@ -260,9 +253,8 @@ int PortAudioPlayer::paCallback(const void *inputBuffer, void *outputBuffer, uns
 
 
 
-/// @brief Get current stream position. 
-/// @return 
-///
+/// @brief Get current stream position.
+/// @return Stream position
 int64_t PortAudioPlayer::GetCurrentPosition()
 {
 
@@ -285,9 +277,9 @@ int64_t PortAudioPlayer::GetCurrentPosition()
 
 
 
-/// @brief @param Setting from config file. Return a list of available output devices. 
-/// @param favorite 
-///
+/// @brief @param Setting from config file.
+/// @param favorite Favorite output device
+/// @return List of available output devices.
 wxArrayString PortAudioPlayer::GetOutputDevices(wxString favorite) {
 	wxArrayString list;
 	int devices = Pa_GetDeviceCount();
@@ -307,5 +299,3 @@ wxArrayString PortAudioPlayer::GetOutputDevices(wxString favorite) {
 }
 
 #endif // WITH_PORTAUDIO
-
-
