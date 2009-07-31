@@ -302,9 +302,7 @@ void AssOverrideTagProto::LoadProtos () {
 	proto.back().params.push_back(AssOverrideParamProto(VARDATA_FLOAT,NOT_OPTIONAL,PARCLASS_ABSOLUTE_POS_X));
 	proto.back().params.push_back(AssOverrideParamProto(VARDATA_FLOAT,NOT_OPTIONAL,PARCLASS_ABSOLUTE_POS_Y));
 	proto.back().params.push_back(AssOverrideParamProto(VARDATA_INT,OPTIONAL_6,PARCLASS_RELATIVE_TIME_START));
-	proto.back().params.back().defaultValue.SetInt(0);
 	proto.back().params.push_back(AssOverrideParamProto(VARDATA_INT,OPTIONAL_6,PARCLASS_RELATIVE_TIME_START));
-	proto.back().params.back().defaultValue.SetInt(0);
 
 	// \clip(<x1>,<y1>,<x2>,<y2>)
 	proto.push_back(AssOverrideTagProto());
@@ -619,14 +617,12 @@ bool AssOverrideTag::IsValid() {
 
 
 
-/// @brief Parses parameters 
-/// @param text 
+/// @brief Parses the parameters for the ass override tag
+/// @param text All text between the name and the next \ or the end of the override block
 ///
 void AssOverrideTag::ParseParameters(const wxString &text) {
 	// Clear first
 	Clear();
-
-	// text is all text following the name until the next \ or the end of the override block
 
 	// Tokenize text, attempting to find all parameters
 	wxArrayString paramList;
@@ -748,51 +744,46 @@ end_tokenizing:
 			curPar--;
 		}
 
-		if (isDefault == false) {
+		if (isDefault == false && curtok.length() > 0) {
 			wxChar firstChar = curtok[0];
-			bool notAuto4 = firstChar != _T('!') && firstChar != _T('$') && firstChar != _T('%');
-
+			bool auto4 = (firstChar == _T('!') || firstChar == _T('$') || firstChar == _T('%')) && curproto->type != VARDATA_BLOCK;
+			if (auto4) {
+				newparam->SetText(curtok);
+			}
+			else {
 			// Determine parameter type and set value
-			switch (curproto->type) {
-				case VARDATA_INT: {
-					if (notAuto4) {
+				switch (curproto->type) {
+					case VARDATA_INT: {
 						long temp = 0;
 						curtok.ToLong(&temp);
 						newparam->SetInt(temp);
+						break;
 					}
-					else newparam->SetText(curtok);
-					break;
-				}
-				case VARDATA_FLOAT: {
-					if (notAuto4) {
+					case VARDATA_FLOAT: {
 						double temp = 0.0;
 						curtok.ToDouble(&temp);
 						newparam->SetFloat(temp);
+						break;
 					}
-					else newparam->SetText(curtok);
-					break;
-				}
-				case VARDATA_TEXT: {
-					newparam->SetText(curtok);
-					break;
-				}
-				case VARDATA_BOOL: {
-					if (notAuto4) {
+					case VARDATA_TEXT:
+						newparam->SetText(curtok);
+						break;
+					case VARDATA_BOOL: {
 						long temp = false;
 						curtok.ToLong(&temp);
 						newparam->SetBool(temp != 0);
+						break;
 					}
-					else newparam->SetText(curtok);
-					break;
+					case VARDATA_BLOCK: {
+						AssDialogueBlockOverride *temp = new AssDialogueBlockOverride;
+						temp->text = curtok;
+						temp->ParseTags();
+						newparam->SetBlock(temp);
+						break;
+					}
+					default:
+						break;
 				}
-				case VARDATA_BLOCK: {
-					AssDialogueBlockOverride *temp = new AssDialogueBlockOverride;
-					temp->text = curtok;
-					temp->ParseTags();
-					newparam->SetBlock(temp);
-					break;
-				}
-				default: break;
 			}
 
 			// Get next actual parameter
