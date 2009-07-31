@@ -302,7 +302,9 @@ void AssOverrideTagProto::LoadProtos () {
 	proto.back().params.push_back(AssOverrideParamProto(VARDATA_FLOAT,NOT_OPTIONAL,PARCLASS_ABSOLUTE_POS_X));
 	proto.back().params.push_back(AssOverrideParamProto(VARDATA_FLOAT,NOT_OPTIONAL,PARCLASS_ABSOLUTE_POS_Y));
 	proto.back().params.push_back(AssOverrideParamProto(VARDATA_INT,OPTIONAL_6,PARCLASS_RELATIVE_TIME_START));
+	proto.back().params.back().defaultValue.SetInt(0);
 	proto.back().params.push_back(AssOverrideParamProto(VARDATA_INT,OPTIONAL_6,PARCLASS_RELATIVE_TIME_START));
+	proto.back().params.back().defaultValue.SetInt(0);
 
 	// \clip(<x1>,<y1>,<x2>,<y2>)
 	proto.push_back(AssOverrideTagProto());
