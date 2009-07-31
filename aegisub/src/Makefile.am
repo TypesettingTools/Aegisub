@@ -120,10 +120,6 @@ else
 UNIVCHARSET = charset_detect.cpp text_file_reader.cpp
 endif
 
-#if BUILD_DARWIN
-#  BEVEL_BUTTON = osx_bevelButton.cpp
-#endif
-
 if FONTLISTER_FREETYPE
   FONT_LISTER = font_file_lister_freetype.cpp
 endif
@@ -149,7 +145,6 @@ EXTRA_aegisub_2_2_SOURCES = \
 	auto4_lua_scriptreader.cpp \
 	avisynth_wrap.cpp \
 	dialog_associations.cpp \
-	osx_bevelButton.cpp \
 	setup.cpp \
 	spellchecker_hunspell.cpp \
 	stdwx.cpp \
@@ -164,7 +159,6 @@ aegisub_2_2_SOURCES = \
 	$(HUNSPELL) \
 	$(LIBASS) \
 	$(UNIVCHARSET) \
-	$(BEVEL_BUTTON) \
 	font_file_lister.cpp \
 	$(FONT_LISTER) \
 	MatroskaParser.c \
@@ -314,6 +308,4 @@ aegisub_2_2_SOURCES += \
 noinst_HEADERS = \
 	$(srcdir)/boost/*.hpp \
 	gl/glext.h \
-	$(srcdir)/*.hxx \
-	osx_bevelButton.h
-
+	$(srcdir)/*.hxx
