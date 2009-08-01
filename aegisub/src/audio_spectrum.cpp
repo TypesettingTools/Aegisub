@@ -53,70 +53,82 @@
 #include <wx/log.h>
 
 
-// Audio spectrum FFT data cache
-
-
-/// DOCME
 /// @class AudioSpectrumCache
-/// @brief DOCME
+/// @brief Base class for the frequency-power cache tree.
 ///
-/// DOCME
+/// The cached frequency-power are kept in a shallow tree-structure composed of
+/// intermediate branches and final leaves, both accessed through a common
+/// interface, which is this class.
+///
+/// The term "cache line" here means the frequency-power data derived from
+/// some range of audio samples, calculated by a single FFT.
 class AudioSpectrumCache {
 public:
 
-	/// DOCME
+	/// The type of frequency-power data at one point in time.
 	typedef std::vector<float> CacheLine;
 
 
-	/// DOCME
+	/// The type of timestamps for last access.
 	typedef unsigned int CacheAccessTime;
 
-	/// DOCME
+	/// Holds last-access data for a range of range of cache lines.
+	/// Ranges can overlap, in case overlapping FFT's are used to increase precision.
 	struct CacheAgeData {
-
-		/// DOCME
+		/// Last time this range of cache lines were accessed.
 		CacheAccessTime access_time;
-
-		/// DOCME
+		/// First line in the range.
 		unsigned long first_line;
+		/// Number of lines in the range.
+		unsigned long num_lines;
 
-		/// DOCME
-		unsigned long num_lines; // includes overlap-lines
-
-		/// @brief DOCME
-		/// @param second 
-		/// @return 
-		///
+		/// @brief Comparison operator for sorting age data by last access time.
+		/// @param second The age data structure to compare against.
+		/// @return Returns true if last access time of this range is less than that of the other.
 		bool operator< (const CacheAgeData& second) const { return access_time < second.access_time; }
 
-		/// @brief DOCME
-		/// @param t     
-		/// @param first 
-		/// @param num   
+		/// @brief Constructor.
+		/// @param t     Initial access time to set.
+		/// @param first First line in the range.
+		/// @param num   Number of lines in the range.
 		///
 		CacheAgeData(CacheAccessTime t, unsigned long first, unsigned long num) : access_time(t), first_line(first), num_lines(num) { }
 	};
 
-	/// DOCME
+	/// Type of a list of cache age data.
 	typedef std::vector<CacheAgeData> CacheAgeList;
 
-	// Get the overlap'th overlapping FFT in FFT group i, generating it if needed
+	/// @brief Retrieve frequency-power data.
+	/// @param i       Index of the block to get the line from.
+	/// @param overlap Index of the overlap in the block to get the line for.
+	/// @param created [out] Set to true if the data had to be calculated, false if the data
+	///                was found in cache.
+	/// @param access_time Timestamp to mark the cache data as accessed at.
+	/// @return Returns a reference to the frequency-power data requested.
+	///
+	/// The data are fetched from the cache if they are cached, otherwise the required
+	/// audio data are retrieved, the FFT derived, and power data calculated.
 	virtual CacheLine& GetLine(unsigned long i, unsigned int overlap, bool &created, CacheAccessTime access_time) = 0;
 
-	// Get the total number of cache lines currently stored in this cache node's sub tree
+	/// @brief Get the size of the cache subtree.
+	/// @return Number of lines stored in all nodes below this one in the tree.
 	virtual size_t GetManagedLineCount() = 0;
 
-	// Append to a list of last access times to the cache
+	/// @brief Retrieve cache access times.
+	/// @param ages [in,out] List to append age data of managed lines to.
+	///
+	/// Existing contents of the list is kept, new entries are added to the end.
 	virtual void GetLineAccessTimes(CacheAgeList &ages) = 0;
 
-	// Delete the cache storage starting with the given line id
-	// Return true if the object called on is empty and can safely be deleted too
+	/// @brief Remove data from the cache.
+	/// @param line_id Index of the block the cache node to remove starts at.
+	/// @return Returns true if the object the method was called on no longer manages
+	//          any cache lines and can safely be deleted.
 	virtual bool KillLine(unsigned long line_id) = 0;
 
 
-	/// @brief // Set the FFT size used
-	/// @param new_length 
-	///
+	/// @brief Set the FFT size used globally.
+	/// @param new_length Number of audio samples to use in calculation.
 	static void SetLineLength(unsigned long new_length)
 	{
 		line_length = new_length;
@@ -124,62 +136,50 @@ public:
 	}
 
 
-	/// @brief DOCME
-	///
+	/// @brief Destructor, does nothing in base class.
 	virtual ~AudioSpectrumCache() {};
 
 protected:
 
-	/// DOCME
+	/// Global template for cache lines.
 	static CacheLine null_line;
-
-	/// DOCME
+	/// Number of audio samples used for power calculation, determining the
+	/// frequency resolution of the frequency-power data.
 	static unsigned long line_length;
 };
 
-
-/// DOCME
+// Actual variables allocating memory for the static class members
 AudioSpectrumCache::CacheLine AudioSpectrumCache::null_line;
-
-/// DOCME
 unsigned long AudioSpectrumCache::line_length;
 
 
-// Bottom level FFT cache, holds actual power data itself
 
-
-/// DOCME
 /// @class FinalSpectrumCache
-/// @brief DOCME
+/// @brief Leaf node in frequency-power cache tree, holds actual data.
 ///
-/// DOCME
+/// This class stores frequency-power data and is responsible for calculating it as well.
 class FinalSpectrumCache : public AudioSpectrumCache {
 private:
 
-	/// DOCME
+	/// The stored data.
 	std::vector<CacheLine> data;
 
-	/// DOCME
+	unsigned long start,   ///< Start of block range
+	              length;  ///< Number of blocks
+	unsigned int overlaps; ///< How many lines per block
 
-	/// DOCME
-	unsigned long start, length; // start and end of range
-
-	/// DOCME
-	unsigned int overlaps;
-
-
-	/// DOCME
+	/// Last access time for cache management.
 	CacheAccessTime last_access;
 
 public:
 
-	/// @brief DOCME
-	/// @param i           
-	/// @param overlap     
-	/// @param created     
-	/// @param access_time 
-	/// @return 
-	///
+	/// @brief Returns stored frequency-power data.
+	/// @param i       Index of the block to get the line from.
+	/// @param overlap Index of the overlap in the block to get the line for.
+	/// @param created [out] Set to true if the data had to be calculated, false if the data
+	///                was found in cache.
+	/// @param access_time Timestamp to mark the cache data as accessed at.
+	/// @return Returns a reference to the frequency-power data requested.
 	CacheLine& GetLine(unsigned long i, unsigned int overlap, bool &created, CacheAccessTime access_time)
 	{
 		last_access = access_time;
@@ -192,40 +192,42 @@ public:
 	}
 
 
-	/// @brief DOCME
-	/// @return 
-	///
+	/// @brief Get number of lines in cache.
+	/// @return Number of lines stored at this leaf.
 	size_t GetManagedLineCount()
 	{
 		return data.size();
 	}
 
 
-	/// @brief DOCME
-	/// @param ages 
+	/// @brief Add own cache age data to list of age data.
+	/// @param ages [in,out] List to add cache age data to.
 	///
+	/// Produces a single cache age data object, representing the entire node,
+	/// and adds it to the list.
 	void GetLineAccessTimes(CacheAgeList &ages)
 	{
 		ages.push_back(CacheAgeData(last_access, start, data.size()));
 	}
 
 
-	/// @brief DOCME
-	/// @param line_id 
-	/// @return 
+	/// @brief Return true if this is the line to remove.
+	/// @param line_id Index of the block the cache node to remove starts at.
+	/// @return Returns true if this is the cache block to remove.
 	///
+	/// This function won't actually delete anything, instead it is the responsibility
+	/// of the caller to delete the cache node if this function returns true.
 	bool KillLine(unsigned long line_id)
 	{
 		return start == line_id;
 	}
 
 
-	/// @brief DOCME
-	/// @param provider  
-	/// @param _start    
-	/// @param _length   
-	/// @param _overlaps 
-	///
+	/// @brief Constructor, derives FFT and calculates frequency-power data.
+	/// @param provider  Audio provider to get audio from.
+	/// @param _start    Index of first block to calculate data for.
+	/// @param _length   Number of blocks to calculate data for.
+	/// @param _overlaps Number of lines to calculate per block.
 	FinalSpectrumCache(AudioProvider *provider, unsigned long _start, unsigned long _length, unsigned int _overlaps)
 	{
 		start = _start;
@@ -295,8 +297,10 @@ public:
 	}
 
 
-	/// @brief DOCME
+	/// @brief Destructor, does nothing.
 	///
+	/// All data is managed by C++ types and gets deleted when those types'
+	/// destructors are implicitly run.
 	virtual ~FinalSpectrumCache()
 	{
 	}
@@ -304,48 +308,37 @@ public:
 };
 
 
-// Non-bottom-level cache, refers to other caches to do the work
-
-
-/// DOCME
 /// @class IntermediateSpectrumCache
-/// @brief DOCME
+/// @brief Intermediate node in the spectrum cache tree.
 ///
-/// DOCME
+/// References further nodes in the spectrum cache tree and delegates operations to them.
 class IntermediateSpectrumCache : public AudioSpectrumCache {
 private:
 
-	/// DOCME
+	/// The child-nodes in the cache tree.
 	std::vector<AudioSpectrumCache*> sub_caches;
 
-	/// DOCME
+	unsigned long start,           ///< DOCME
+	              length,          ///< DOCME
+	              subcache_length; ///< DOCME
+	unsigned int overlaps;         ///< Number of overlaps used.
+	bool subcaches_are_final;      ///< Are the children leaf nodes?
+	int depth;                     ///< How deep is this in the tree.
 
-	/// DOCME
-
-	/// DOCME
-	unsigned long start, length, subcache_length;
-
-	/// DOCME
-	unsigned int overlaps;
-
-	/// DOCME
-	bool subcaches_are_final;
-
-	/// DOCME
-	int depth;
-
-	/// DOCME
+	/// Audio provider to pass on to child nodes.
 	AudioProvider *provider;
 
 public:
 
-	/// @brief DOCME
-	/// @param i           
-	/// @param overlap     
-	/// @param created     
-	/// @param access_time 
-	/// @return 
+	/// @brief Delegate line retrieval to a child node.
+	/// @param i       Index of the block to get the line from.
+	/// @param overlap Index of the overlap in the block to get the line for.
+	/// @param created [out] Set to true if the data had to be calculated, false if the data
+	///                was found in cache.
+	/// @param access_time Timestamp to mark the cache data as accessed at.
+	/// @return Returns a reference to the frequency-power data requested.
 	///
+	/// Will create the required child node if it doesn't exist yet.
 	CacheLine &GetLine(unsigned long i, unsigned int overlap, bool &created, CacheAccessTime access_time)
 	{
 		if (i >= start && i-start <= length) {
@@ -369,9 +362,8 @@ public:
 	}
 
 
-	/// @brief DOCME
-	/// @return 
-	///
+	/// @brief Iterate all direct children and return the sum of their managed line count.
+	/// @return Returns the sum of the managed line count of all children.
 	size_t GetManagedLineCount()
 	{
 		size_t res = 0;
@@ -383,9 +375,8 @@ public:
 	}
 
 
-	/// @brief DOCME
-	/// @param ages 
-	///
+	/// @brief Get access time data for all child nodes in cache tree.
+	/// @param ages [in,out] List for child nodes to add their data to.
 	void GetLineAccessTimes(CacheAgeList &ages)
 	{
 		for (size_t i = 0; i < sub_caches.size(); ++i) {
@@ -395,10 +386,14 @@ public:
 	}
 
 
-	/// @brief DOCME
-	/// @param line_id 
-	/// @return 
+	/// @brief Remove block with given index from cache.
+	/// @param line_id Index of the block the cache node to remove starts at.
+	/// @return Returns true if this node has no more live childs, false if
+	///         there is a least one line child.
 	///
+	/// Iterates the child nodes, calls the method recursively on all live
+	/// nodes, deletes any node returning true, and counts number of nodes
+	/// still alive, returning true if any are alive.
 	bool KillLine(unsigned long line_id)
 	{
 		int sub_caches_left = 0;
@@ -416,13 +411,15 @@ public:
 	}
 
 
-	/// @brief DOCME
-	/// @param _provider 
-	/// @param _start    
-	/// @param _length   
-	/// @param _overlaps 
-	/// @param _depth    
+	/// @brief Constructor.
+	/// @param _provider Audio provider to pass to child nodes.
+	/// @param _start    Index of first block to manage.
+	/// @param _length   Number of blocks to manage.
+	/// @param _overlaps Number of lines per block.
+	/// @param _depth    Number of levels in the tree above this node.
 	///
+	/// Determine how many sub-caches are required, how big they
+	/// should be and allocates memory to store their pointers.
 	IntermediateSpectrumCache(AudioProvider *_provider, unsigned long _start, unsigned long _length, unsigned int _overlaps, int _depth)
 	{
 		provider = _provider;
@@ -446,8 +443,7 @@ public:
 	}
 
 
-	/// @brief DOCME
-	///
+	/// @brief Destructor, deletes all still-live sub caches.
 	virtual ~IntermediateSpectrumCache()
 	{
 		for (size_t i = 0; i < sub_caches.size(); ++i)
@@ -460,35 +456,32 @@ public:
 
 
 
-/// DOCME
 /// @class AudioSpectrumCacheManager
-/// @brief DOCME
+/// @brief Manages a frequency-power cache tree.
 ///
-/// DOCME
+/// The primary task of this class is to manage the amount of memory consumed by
+/// the cache and delete items when it grows too large.
 class AudioSpectrumCacheManager {
 private:
 
-	/// DOCME
+	/// Root node of the cache tree.
 	IntermediateSpectrumCache *cache_root;
 
-	/// DOCME
+	unsigned long cache_hits,   ///< Number of times the cache was used to retrieve data
+	              cache_misses; ///< Number of times data had to be calculated
 
-	/// DOCME
-	unsigned long cache_hits, cache_misses;
-
-	/// DOCME
+	/// Current time, used for cache aging purposes.
 	AudioSpectrumCache::CacheAccessTime cur_time;
 
-
-	/// DOCME
+	/// Maximum number of lines to keep in cache.
 	unsigned long max_lines_cached;
 
 public:
 
-	/// @brief DOCME
-	/// @param i       
-	/// @param overlap 
-	/// @return 
+	/// @brief Wrapper around cache tree, to get frequency-power data
+	/// @param i       Block to get data from.
+	/// @param overlap Line in block to get data from.
+	/// @return Returns a reference to the requested line.
 	///
 	AudioSpectrumCache::CacheLine &GetLine(unsigned long i, unsigned int overlap)
 	{
@@ -502,9 +495,10 @@ public:
 	}
 
 
-	/// @brief DOCME
-	/// @return 
+	/// @brief Remove old data from the cache.
 	///
+	/// Ages the cache by finding the least recently accessed data and removing cache data
+	/// until the total number of lines stored in the tree is less than the maximum.
 	void Age()
 	{
 		wxLogDebug(_T("AudioSpectrumCacheManager stats: hits=%u, misses=%u, misses%%=%f, managed lines=%u (max=%u)"), cache_hits, cache_misses, cache_misses/float(cache_hits+cache_misses)*100, cache_root->GetManagedLineCount(), max_lines_cached);
@@ -551,12 +545,14 @@ public:
 	}
 
 
-	/// @brief DOCME
-	/// @param provider     
-	/// @param line_length  
-	/// @param num_lines    
-	/// @param num_overlaps 
+	/// @brief Constructor
+	/// @param provider     Audio provider to pass to cache tree nodes.
+	/// @param line_length  Number of audio samples to use per block.
+	/// @param num_lines    Number of blocks to produce in total from the audio.
+	/// @param num_overlaps Number of overlaps per block.
 	///
+	/// Initialises the cache tree root and calculates the maximum number of cache lines
+	/// to keep based on the Audio Spectrum Memory Max configuration setting.
 	AudioSpectrumCacheManager(AudioProvider *provider, unsigned long line_length, unsigned long num_lines, unsigned int num_overlaps)
 	{
 		cache_hits = cache_misses = 0;
@@ -573,8 +569,7 @@ public:
 	}
 
 
-	/// @brief DOCME
-	///
+	/// @brief Destructor, deletes the cache tree root node.
 	~AudioSpectrumCacheManager()
 	{
 		delete cache_root;
@@ -582,12 +577,9 @@ public:
 };
 
 
-// AudioSpectrum
+// AudioSpectrum, documented in .h file
 
 
-/// @brief DOCME
-/// @param _provider 
-///
 AudioSpectrum::AudioSpectrum(AudioProvider *_provider)
 {
 	provider = _provider;
@@ -677,26 +669,12 @@ AudioSpectrum::AudioSpectrum(AudioProvider *_provider)
 }
 
 
-
-/// @brief DOCME
-///
 AudioSpectrum::~AudioSpectrum()
 {
 	delete cache;
 }
 
 
-
-/// @brief DOCME
-/// @param range_start 
-/// @param range_end   
-/// @param selected    
-/// @param img         
-/// @param imgleft     
-/// @param imgwidth    
-/// @param imgpitch    
-/// @param imgheight   
-///
 void AudioSpectrum::RenderRange(int64_t range_start, int64_t range_end, bool selected, unsigned char *img, int imgleft, int imgwidth, int imgpitch, int imgheight)
 {
 	unsigned long first_line = (unsigned long)(fft_overlaps * range_start / line_length / 2);
@@ -746,8 +724,7 @@ void AudioSpectrum::RenderRange(int64_t range_start, int64_t range_end, bool sel
 			}
 		}
 
-
-/// DOCME
+/// @internal Macro that stores pixel data, depends on local variables in AudioSpectrum::RenderRange
 #define WRITE_PIXEL \
 	if (intensity < 0) intensity = 0; \
 	if (intensity > 255) intensity = 255; \
@@ -796,8 +773,7 @@ void AudioSpectrum::RenderRange(int64_t range_start, int64_t range_end, bool sel
 			}
 		}
 
-
-/// DOCME
+/// @internal The WRITE_PIXEL macro is only defined inside AudioSpectrum::RenderRange
 #undef WRITE_PIXEL
 
 	}
@@ -808,10 +784,6 @@ void AudioSpectrum::RenderRange(int64_t range_start, int64_t range_end, bool sel
 }
 
 
-
-/// @brief DOCME
-/// @param _power_scale 
-///
 void AudioSpectrum::SetScaling(float _power_scale)
 {
 	power_scale = _power_scale;
