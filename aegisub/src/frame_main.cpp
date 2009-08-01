@@ -84,7 +84,7 @@
 #include "charset_conv.h"
 #include "libresrc/libresrc.h"
 #ifdef __WXMAC__
-#include <Carbon/MacWindows.h>
+#include <Carbon/Carbon.h>
 #endif
 
 
@@ -935,10 +935,10 @@ void FrameMain::UpdateTitle() {
 	}
 	else newTitle << _T("untitled");
 #endif
-	
+
 #ifdef __WXMAC__
 	// On Mac, set the mark in the close button
-	WindowRef wnd = (WindowRef)MacGetWindowRef();
+	WindowRef wnd = (WindowRef)GetHandle();
 	SetWindowModified(wnd, subsMod);
 #endif
 
