@@ -57,8 +57,7 @@
 
 
 
-/// @brief Constructor 
-///
+/// @brief Constructor
 HunspellSpellChecker::HunspellSpellChecker() {
 	hunspell = NULL;
 	conv = NULL;
@@ -67,16 +66,14 @@ HunspellSpellChecker::HunspellSpellChecker() {
 
 
 
-/// @brief Destructor 
-///
+/// @brief Destructor
 HunspellSpellChecker::~HunspellSpellChecker() {
 	Reset();
 }
 
 
 
-/// @brief Reset 
-///
+/// @brief Reset spelling library
 void HunspellSpellChecker::Reset() {
 	delete hunspell;
 	hunspell = NULL;
@@ -88,9 +85,9 @@ void HunspellSpellChecker::Reset() {
 
 
 
-/// @brief Can add to dictionary? 
-/// @param word 
-/// @return 
+/// @brief Can add to dictionary?
+/// @param word Word to check.
+/// @return Whether word can be added or not.
 ///
 bool HunspellSpellChecker::CanAddWord(wxString word) {
 	if (!hunspell) return false;
@@ -100,9 +97,8 @@ bool HunspellSpellChecker::CanAddWord(wxString word) {
 
 
 
-/// @brief Add word to dictionary 
-/// @param word 
-/// @return 
+/// @brief Add word to dictionary
+/// @param word Word to add.
 ///
 void HunspellSpellChecker::AddWord(wxString word) {
 	// Dictionary OK?
@@ -157,7 +153,7 @@ void HunspellSpellChecker::AddWord(wxString word) {
 
 	// Not added yet
 	if (!added) dic.Add(word);
-	
+
 	// Write back to disk
 	wxFileOutputStream out(usrdicpath);
 	if (!out.IsOk()) return;
@@ -168,9 +164,9 @@ void HunspellSpellChecker::AddWord(wxString word) {
 
 
 
-/// @brief Check if the word is valid 
-/// @param word 
-/// @return 
+/// @brief Check if the word is valid.
+/// @param word Word to check
+/// @return Whether word is valid or not.
 ///
 bool HunspellSpellChecker::CheckWord(wxString word) {
 	if (!hunspell) return true;
@@ -181,9 +177,9 @@ bool HunspellSpellChecker::CheckWord(wxString word) {
 
 
 
-/// @brief Get suggestions for word 
-/// @param word 
-/// @return 
+/// @brief Get suggestions for word.
+/// @param word Word to get suggestions for
+/// @return List of suggestions
 ///
 wxArrayString HunspellSpellChecker::GetSuggestions(wxString word) {
 	// Array
@@ -216,8 +212,8 @@ wxArrayString HunspellSpellChecker::GetSuggestions(wxString word) {
 
 
 
-/// @brief Get list of available dictionaries 
-/// @return 
+/// @brief Get list of available dictionaries.
+/// @return List of available dictionaries
 ///
 wxArrayString HunspellSpellChecker::GetLanguageList() {
 	// Get dir name
@@ -251,8 +247,8 @@ wxArrayString HunspellSpellChecker::GetLanguageList() {
 
 
 
-/// @brief Set language 
-/// @param language 
+/// @brief Set language.
+/// @param language Language to set
 ///
 void HunspellSpellChecker::SetLanguage(wxString language) {
 	// Unload
@@ -301,5 +297,3 @@ void HunspellSpellChecker::SetLanguage(wxString language) {
 }
 
 #endif // WITH_HUNSPELL
-
-
