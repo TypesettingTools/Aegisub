@@ -629,7 +629,7 @@ void AudioDisplay::DrawWaveform(wxDC &dc,bool weak) {
 /// @param weak    False if the visible portion of the display has changed.
 ///
 /// @bug Slow when non-weak and the selection has to be drawn, see:
-/// @issue 951 Spectrum view scrolls/updates considerably slower when selection is visible
+/// @ticket{951} Spectrum view scrolls/updates considerably slower when selection is visible
 void AudioDisplay::DrawSpectrum(wxDC &finaldc,bool weak) {
 	if (!weak || !spectrumDisplay || spectrumDisplay->GetWidth() != w || spectrumDisplay->GetHeight() != h) {
 		if (spectrumDisplay) {
