@@ -774,14 +774,7 @@ wxString AssDialogue::GetMarginString(int which,bool pad) {
 
 
 
-/// @brief Process parameters via callback 
-/// @param tagName   
-/// @param par_n     
-/// @param param     
-/// @param userData) 
-/// @param userData  
-///
-void AssDialogue::ProcessParameters(void (*callback)(wxString tagName,int par_n,AssOverrideParameter *param,void *userData),void *userData) {
+void AssDialogue::ProcessParameters(AssDialogueBlockOverride::ProcessParametersCallback callback,void *userData) {
 	// Apply for all override blocks
 	AssDialogueBlockOverride *curBlock;
 	//ParseASSTags();

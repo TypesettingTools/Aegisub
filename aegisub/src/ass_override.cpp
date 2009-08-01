@@ -163,12 +163,7 @@ wxString AssDialogueBlockOverride::GetText () {
 }
 
 
-
-/// @brief Process parameters via callback 
-/// @param callback 
-/// @param userData 
-///
-void AssDialogueBlockOverride::ProcessParameters(void (*callback)(wxString,int,AssOverrideParameter *,void *),void *userData) {
+void AssDialogueBlockOverride::ProcessParameters(AssDialogueBlockOverride::ProcessParametersCallback callback,void *userData) {
 	AssOverrideTag *curTag;
 	AssOverrideParameter *curPar;
 

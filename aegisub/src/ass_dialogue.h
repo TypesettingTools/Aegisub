@@ -179,7 +179,13 @@ public:
 	ASS_BlockType GetType() { return BLOCK_OVERRIDE; }
 	wxString GetText();
 	void ParseTags();		// Parses tags
-	void ProcessParameters(void (*callback)(wxString,int,AssOverrideParameter*,void *),void *userData);
+
+	/// Type of callback function passed to ProcessParameters
+	typedef void (*ProcessParametersCallback)(wxString,int,AssOverrideParameter*,void *);
+	/// @brief Process parameters via callback 
+	/// @param callback The callback function to call per tag paramer
+	/// @param userData User data to pass to callback function
+	void ProcessParameters(ProcessParametersCallback callback,void *userData);
 };
 
 
@@ -237,7 +243,10 @@ public:
 	void ParseSRTTags();			// Converts tags to ass format and calls ParseASSTags+UpdateData
 	void ClearBlocks();				// Clear all blocks, ALWAYS call this after you're done processing tags
 
-	void ProcessParameters(void (*callback)(wxString,int,AssOverrideParameter*,void *userData),void *userData=NULL);	// Callback to process parameters
+	/// @brief Process parameters via callback 
+	/// @param callback The callback function to call per tag paramer
+	/// @param userData User data to pass to callback function
+	void ProcessParameters(AssDialogueBlockOverride::ProcessParametersCallback callback,void *userData=NULL);	// Callback to process parameters
 	void ConvertTagsToSRT();		// Converts tags to SRT format
 	void StripTags();				// Strips all tags from the text
 	void StripTag(wxString tagName);// Strips a specific tag from the text
