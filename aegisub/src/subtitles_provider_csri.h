@@ -88,7 +88,7 @@ class CSRISubtitlesProviderFactory : public SubtitlesProviderFactory {
 public:
 
 	/// @brief DOCME
-	/// @param subType=_T(Ó) 
+	/// @param subType
 	///
 	SubtitlesProvider *CreateProvider(wxString subType=_T("")) { return new CSRISubtitlesProvider(subType); }
 	wxArrayString GetSubTypes();

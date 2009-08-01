@@ -143,9 +143,8 @@ std::map<int,wxString> FFmpegSourceProvider::GetTracksOfType(FFIndexer *Indexer,
 
 
 /// @brief Ask user for which track he wants to load 
-/// @param std::map<int 
-/// @param TrackList    
-/// @param Type         
+/// @param TrackList 
+/// @param Type      
 /// @return 
 ///
 int FFmpegSourceProvider::AskForTrackSelection(const std::map<int,wxString> &TrackList, FFMS_TrackType Type) {

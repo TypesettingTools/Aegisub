@@ -48,7 +48,6 @@
 #include "utils.h"
 #include "charset_conv.h"
 
-/// @define PORTAUDIO_DEBUG Enable debugging?
 //#define PORTAUDIO_DEBUG
 
 
@@ -277,9 +276,9 @@ int64_t PortAudioPlayer::GetCurrentPosition()
 
 
 
-/// @brief @param Setting from config file.
+/// @brief Get list of available output devices
 /// @param favorite Favorite output device
-/// @return List of available output devices.
+/// @return List of available output devices with the 'favorite' being first in the list.
 wxArrayString PortAudioPlayer::GetOutputDevices(wxString favorite) {
 	wxArrayString list;
 	int devices = Pa_GetDeviceCount();
