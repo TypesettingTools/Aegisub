@@ -51,8 +51,8 @@
 
 
 
-/// @brief Constructor 
-/// @param parent 
+/// @brief Constructor
+/// @param parent Parent frame.
 ///
 AboutScreen::AboutScreen(wxWindow *parent)
 : wxDialog (parent, -1, _("About Aegisub"), wxDefaultPosition, wxSize(300,240), wxCAPTION | wxCLOSE_BOX , _("About Aegisub"))
@@ -187,8 +187,7 @@ AboutScreen::AboutScreen(wxWindow *parent)
 }
 
 
-
-/// @brief Destructor 
+/// @brief Destructor
 ///
 AboutScreen::~AboutScreen () {
 }

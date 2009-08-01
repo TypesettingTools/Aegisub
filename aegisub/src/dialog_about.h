@@ -46,11 +46,8 @@
 
 
 
-/// DOCME
 /// @class AboutScreen
-/// @brief DOCME
-///
-/// DOCME
+/// @brief About dialogue.
 class AboutScreen: public wxDialog {
 public:
 	AboutScreen(wxWindow *parent);
