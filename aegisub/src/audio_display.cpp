@@ -188,9 +188,10 @@ void AudioDisplay::UpdateImage(bool weak) {
 }
 
 
-/// @brief DOCME
-/// @return 
+/// @brief Actually update the image on the display
 ///
+/// This is where most actual drawing of the audio display happens, or other functions
+/// to draw specific parts are called from.
 void AudioDisplay::DoUpdateImage() {
 	// Loaded?
 	if (!loaded || !provider) return;
@@ -412,10 +413,10 @@ void AudioDisplay::DoUpdateImage() {
 
 
 
-/// @brief Draw Inactive Lines 
-/// @param dc 
-/// @return 
+/// @brief Draw other lines than the current active
+/// @param dc The DC to draw to.
 ///
+/// Draws markers for inactive lines, eg. the previous line, per configuration.
 void AudioDisplay::DrawInactiveLines(wxDC &dc) {
 	// Check if there is anything to do
 	int shadeType = Options.AsInt(_T("Audio Inactive Lines Display Mode"));
@@ -489,9 +490,8 @@ void AudioDisplay::DrawInactiveLines(wxDC &dc) {
 
 
 
-/// @brief Draw keyframes 
-/// @param dc 
-///
+/// @brief Draw keyframe markers
+/// @param dc The DC to draw to.
 void AudioDisplay::DrawKeyframes(wxDC &dc) {
 	wxArrayInt KeyFrames = VideoContext::Get()->GetKeyFrames();
 	int nKeys = (int)KeyFrames.Count();
@@ -514,9 +514,8 @@ void AudioDisplay::DrawKeyframes(wxDC &dc) {
 
 
 
-/// @brief Draw timescale 
-/// @param dc 
-///
+/// @brief Draw timescale at bottom of audio display
+/// @param dc The DC to draw to.
 void AudioDisplay::DrawTimescale(wxDC &dc) {
 	// Set size
 	int timelineHeight = Options.AsBool(_T("Audio Draw Timeline")) ? 20 : 0;
@@ -581,10 +580,9 @@ void AudioDisplay::DrawTimescale(wxDC &dc) {
 
 
 
-/// @brief Waveform 
-/// @param dc   
-/// @param weak 
-///
+/// @brief Draw audio waveform
+/// @param dc   The DC to draw to.
+/// @param weak False if the visible portion of the display has changed.
 void AudioDisplay::DrawWaveform(wxDC &dc,bool weak) {
 	// Prepare Waveform
 	if (!weak || peak == NULL || min == NULL) {
@@ -627,9 +625,11 @@ void AudioDisplay::DrawWaveform(wxDC &dc,bool weak) {
 
 
 /// @brief Draw spectrum analyzer 
-/// @param finaldc 
-/// @param weak    
+/// @param finaldc The DC to draw to.
+/// @param weak    False if the visible portion of the display has changed.
 ///
+/// @bug Slow when non-weak and the selection has to be drawn, see:
+/// @issue 951 Spectrum view scrolls/updates considerably slower when selection is visible
 void AudioDisplay::DrawSpectrum(wxDC &finaldc,bool weak) {
 	if (!weak || !spectrumDisplay || spectrumDisplay->GetWidth() != w || spectrumDisplay->GetHeight() != h) {
 		if (spectrumDisplay) {
