@@ -45,7 +45,7 @@
 // Headers
 #include <wx/wxprec.h>
 
-#ifdef __WINDOWS__
+#ifdef WITH_AVISYNTH
 #include <windows.h>
 #include "avisynth.h"
 

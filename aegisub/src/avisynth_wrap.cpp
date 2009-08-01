@@ -69,17 +69,10 @@ void DoAvsTrace(const wxString &s)
 #endif
 
 
-
-/// DOCME
+// Allocate storage for and initialise static members
 int AviSynthWrapper::avs_refcount = 0;
-
-/// DOCME
 HINSTANCE AviSynthWrapper::hLib = NULL;
-
-/// DOCME
 IScriptEnvironment *AviSynthWrapper::env = NULL;
-
-/// DOCME
 wxMutex AviSynthWrapper::AviSynthMutex;
 
 
