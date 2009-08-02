@@ -1726,8 +1726,8 @@ void FrameMain::OnOpenStylingAssistant (wxCommandEvent &event) {
 
 
 
-/// @brief Auto backup 
-/// @param event 
+/// @brief Autosave the currently open file, if any
+/// @param event Unused
 ///
 void FrameMain::OnAutoSave(wxTimerEvent &event) {
 	// Auto Save
@@ -1739,19 +1739,33 @@ void FrameMain::OnAutoSave(wxTimerEvent &event) {
 			if (path.IsEmpty()) path = origfile.GetPath();
 			wxFileName dstpath(path);
 			if (!dstpath.IsAbsolute()) path = StandardPaths::DecodePathMaybeRelative(path, _T("?user/"));
-			path += _T("/");
-			dstpath.Assign(path);
+			dstpath.AssignDir(path);
 			if (!dstpath.DirExists()) wxMkdir(path);
 
-			// Save
 			wxString name = origfile.GetName();
-			wxString backup = path;
-			if (name.IsEmpty()) backup += _T("Untitled.AUTOSAVE.ass");
-			else backup += origfile.GetName() + _T(".AUTOSAVE.ass");
-			AssFile::top->Save(backup,false,false);
+			if (name.IsEmpty()) {
+				dstpath.SetFullName("Untitled.AUTOSAVE.ass");
+			}
+			else {
+				dstpath.SetFullName(name + L".AUTOSAVE.ass");
+			}
+
+			// If the autosave file already exists, make a temporary copy of it in case the autosave fails
+			wxFileName backup;
+			if (dstpath.FileExists()) {
+				backup = dstpath;
+				backup.SetName(backup.GetName() + ".backup");
+				wxRenameFile(dstpath.GetFullPath(), backup.GetFullPath());
+			}
+
+			AssFile::top->Save(dstpath.GetFullPath(),false,false);
+
+			if (backup.FileExists()) {
+				wxRemoveFile(backup.GetFullPath());
+			}
 
 			// Set status bar
-			StatusTimeout(_("File backup saved as \"") + backup + _T("\"."));
+			StatusTimeout(_("File backup saved as \"") + dstpath.GetFullPath() + _T("\"."));
 		}
 	}
 	catch (wxString err) {
