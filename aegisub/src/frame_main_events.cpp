@@ -1750,19 +1750,11 @@ void FrameMain::OnAutoSave(wxTimerEvent &event) {
 				dstpath.SetFullName(name + L".AUTOSAVE.ass");
 			}
 
-			// If the autosave file already exists, make a temporary copy of it in case the autosave fails
-			wxFileName backup;
-			if (dstpath.FileExists()) {
-				backup = dstpath;
-				backup.SetName(backup.GetName() + ".backup");
-				wxRenameFile(dstpath.GetFullPath(), backup.GetFullPath());
-			}
+			wxFileName temp = dstpath;
+			temp.SetName(dstpath.GetName() + ".temp");
 
-			AssFile::top->Save(dstpath.GetFullPath(),false,false);
-
-			if (backup.FileExists()) {
-				wxRemoveFile(backup.GetFullPath());
-			}
+			AssFile::top->Save(temp.GetFullPath(),false,false);
+			wxRenameFile(temp.GetFullPath(), dstpath.GetFullPath());
 
 			// Set status bar
 			StatusTimeout(_("File backup saved as \"") + dstpath.GetFullPath() + _T("\"."));
