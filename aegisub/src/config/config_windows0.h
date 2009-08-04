@@ -126,13 +126,8 @@
 
 
 // Enable PortAudio audio player
-// Requires PortAudio release 18
-//#define WITH_PORTAUDIO
-
-
-// Enable PortAudio audio player version 2
 // Requires PortAudio release 19
-//#define WITH_PORTAUDIO2
+//#define WITH_PORTAUDIO
 
 
 // Enable ALSA audio player
