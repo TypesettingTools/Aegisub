@@ -29,8 +29,8 @@
 //
 // $Id$
 
-/// @file dialog_kanji_timer.h
-/// @see dialog_kanji_timer.cpp
+/// @file dialog_kara_timing_copy.h
+/// @see dialog_kara_timing_copy.cpp
 /// @ingroup tools_ui kanji_timer
 ///
 

@@ -1104,11 +1104,11 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\dialog_kanji_timer.cpp"
+				RelativePath="..\..\src\dialog_kara_timing_copy.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\dialog_kanji_timer.h"
+				RelativePath="..\..\src\dialog_kara_timing_copy.h"
 				>
 			</File>
 			<File

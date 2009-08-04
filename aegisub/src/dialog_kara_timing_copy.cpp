@@ -30,7 +30,7 @@
 //
 // $Id$
 
-/// @file dialog_kanji_timer.cpp
+/// @file dialog_kara_timing_copy.cpp
 /// @brief Kanji timer dialogue box and logic
 /// @ingroup tools_ui kanji_timer
 ///
@@ -42,7 +42,7 @@
 
 #include <vector>
 #include <deque>
-#include "dialog_kanji_timer.h"
+#include "dialog_kara_timing_copy.h"
 #include "ass_file.h"
 #include "ass_dialogue.h"
 #include "ass_style.h"
@@ -1164,6 +1164,5 @@ entryIter DialogKanjiTimer::FindPrevStyleMatch(entryIter search_from, const wxSt
 
 	return search_from;
 }
-
 
 

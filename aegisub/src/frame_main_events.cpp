@@ -71,7 +71,7 @@
 #include "dialog_selection.h"
 #include "dialog_styling_assistant.h"
 #include "dialog_resample.h"
-#include "dialog_kanji_timer.h"
+#include "dialog_kara_timing_copy.h"
 #include "audio_display.h"
 #include "toggle_bitmap.h"
 #include "dialog_timing_processor.h"
