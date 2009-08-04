@@ -31,14 +31,14 @@
 
 /// @file dialog_kara_timing_copy.h
 /// @see dialog_kara_timing_copy.cpp
-/// @ingroup tools_ui kanji_timer
+/// @ingroup tools_ui kara_timing_copy
 ///
 
 
-#ifndef DIALOG_KANJITIMER_H
+#ifndef DIALOG_KARA_TIMING_COPY_H
 
 /// DOCME
-#define DIALOG_KANJITIMER_H
+#define DIALOG_KARA_TIMING_COPY_H
 
 
 ///////////

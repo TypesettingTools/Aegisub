@@ -30,8 +30,8 @@
 // $Id$
 
 /// @file kana_table.cpp
-/// @brief Data about the Japanese kana syllabary used by kanji timer
-/// @ingroup kanji_timer
+/// @brief Data about the Japanese kana syllabary used by kanji karaoke timing copying
+/// @ingroup kara_timing_copy
 ///
 
 

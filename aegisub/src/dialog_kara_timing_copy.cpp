@@ -31,8 +31,8 @@
 // $Id$
 
 /// @file dialog_kara_timing_copy.cpp
-/// @brief Kanji timer dialogue box and logic
-/// @ingroup tools_ui kanji_timer
+/// @brief Karaoke timing copier dialogue box and logic
+/// @ingroup tools_ui kara_timing_copy
 ///
 
 

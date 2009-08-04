@@ -31,7 +31,7 @@
 
 /// @file kana_table.h
 /// @see kana_table.cpp
-/// @ingroup kanji_timer
+/// @ingroup kara_timing_copy
 ///
 
 
