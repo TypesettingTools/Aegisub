@@ -478,7 +478,7 @@ void AssStyle::UpdateData() {
 /// @param which 
 ///
 void AssStyle::SetMarginString(const wxString str,int which) {
-	if (which < 0 || which >= 4) throw new Aegisub::InvalidMarginIdError;
+	if (which < 0 || which >= 4) throw Aegisub::InvalidMarginIdError();
 	if (!str.IsNumber()) throw _T("Invalid margin value");
 	long value;
 	str.ToLong(&value);
@@ -495,7 +495,7 @@ void AssStyle::SetMarginString(const wxString str,int which) {
 /// @return 
 ///
 wxString AssStyle::GetMarginString(int which) {
-	if (which < 0 || which >= 4) throw new Aegisub::InvalidMarginIdError;
+	if (which < 0 || which >= 4) throw Aegisub::InvalidMarginIdError();
 	wxString result = wxString::Format(_T("%04i"),Margin[which]);
 	return result;
 }

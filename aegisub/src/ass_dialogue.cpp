@@ -754,7 +754,7 @@ void AssDialogue::SetMarginString(const wxString origvalue,int which) {
 	if (value > 9999) value = 9999;
 
 	// Assign
-	if (which < 0 || which >= 4) throw new Aegisub::InvalidMarginIdError;
+	if (which < 0 || which >= 4) throw Aegisub::InvalidMarginIdError();
 	Margin[which] = value;
 }
 
@@ -766,7 +766,7 @@ void AssDialogue::SetMarginString(const wxString origvalue,int which) {
 /// @return 
 ///
 wxString AssDialogue::GetMarginString(int which,bool pad) {
-	if (which < 0 || which >= 4) throw new Aegisub::InvalidMarginIdError;
+	if (which < 0 || which >= 4) throw Aegisub::InvalidMarginIdError();
 	int value = Margin[which];
 	if (pad) return wxString::Format(_T("%04i"),value);
 	else return wxString::Format(_T("%i"),value);
