@@ -44,65 +44,135 @@ namespace Aegisub {
 
 
 	/// @class Exception
-	/// @brief DOCME
+	/// @brief Base class for all exceptions in Aegisub.
 	///
-	/// DOCME
+	/// All exceptions thrown by Aegisub should derive from this class.
+	/// It is incorrect to throw anything that is not a subclass of this.
+	///
+	/// However, there are no public constructors for this class, it should
+	/// not be instantiated and thrown directly. Throw instances of a
+	/// relevant sub class, declare a new one if necessary. It is allowed to
+	/// declare sub classes of Exception and derivates in private headers
+	/// and even inside source files, as long as a caller has a chance to
+	/// catch the exception thrown.
+	///
+	/// When throwing exceptions, throw temporaries, not heap allocated
+	/// objects. (C++ FAQ Lite 17.6.) I.e. this is correct:
+	/// @code
+	/// throw Aegisub::SomeException(_T("Message for exception"));
+	/// @endcode
+	/// This is wrong:
+	/// @code
+	/// throw new Aegisub::SomeException(_T("Remember this is the wrong way!"));
+	/// @endcode
+	/// Exceptions must not be allocated on heap, because of the risks of
+	/// leaking memory that way. (C++ FAQ Lite 17.8.)
+	///
+	/// When catching exceptions, make sure you catch them by reference,
+	/// otherwise polymorphism will not work. (The C++ Programming
+	/// Language Special Edition 14.2.1, C++ FAQ Lite 17.7.)
+	///
+	/// Catch like this:
+	/// @code
+	/// try {
+	///     /* ... */
+	/// }
+	/// catch (Aegisub::UserCancelException &e) {
+	///     /* handle the fact that the user cancelled */
+	/// }
+	/// catch (Aegisub::VideoInputException &e) {
+	///     /* handle the video provider failing */
+	/// }
+	/// @endcode
+	/// Don't always handle all exceptions the code you're protected might
+	/// throw, sometimes it's better to let an exception slip through and
+	/// let code further out handle it. Sometimes you might want to catch and
+	/// package an exception into something else, for example to represent
+	/// cases such as "subtitle file could not be read @e because the file
+	/// could not be opened for reading". This is the purpose of the "inner"
+	/// exceptions.
 	class Exception {
 
-		/// DOCME
+		/// The error message
 		wxString message;
 
-		/// DOCME
+		/// An inner exception, the cause of this exception
 		Exception *inner;
 
 	protected:
 
-		/// @brief DOCME
-		/// @param msg 
-		/// @param inr 
+		/// @brief Protected constructor initialising members
+		/// @param msg The error message
+		/// @param inr The inner exception, optional
 		///
+		/// Deriving classes should always use this constructor for initialising
+		/// the base class.
 		Exception(const wxString &msg, Exception *inr = 0) : message(msg), inner(inr) { }
-		Exception(); // not implemented, not wanted
 
-		/// @brief DOCME
-		/// @return 
+		/// @brief Default constructor, not implemented
 		///
-		virtual ~Exception() { if (inner) delete inner; }
+		/// The default constructor is not implemented because it must not be used,
+		/// as it leaves the members un-initialised.
+		Exception();
+
+		/// @brief Destructor
+		///
+		/// The inner exception is expected to live on the stack or a similar place
+		/// and it must not be deleted.
+		virtual ~Exception() { }
 
 	public:
 
-		/// @brief // Error message for outer exception
-		/// @return 
-		///
+		/// @brief Get the outer exception error message
+		/// @return Error message
 		virtual wxString GetMessage() const { return message; }
 
-		/// @brief // Error message for outer exception, and chained message for inner exception
-		/// @return 
+		/// @brief Get error messages for chained exceptions
+		/// @return Chained error message
 		///
+		/// If there is an inner exception, prepend its chained error message to
+		/// our error message, with a CRLF between. Returns our own error message
+		/// alone if there is no inner exception.
 		wxString GetChainedMessage() const { if (inner) return inner->GetChainedMessage() + _T("\r\n") + GetMessage(); else return GetMessage(); }
-		// Name of exception class, should only be implemented by specific classes
+		
+		/// @brief Exception class printable name
+		///
+		/// Sub classes should implement this to return a constant character string
+		/// naming their exception in a hierarchic manner.
+		///
+		/// Exception classes inheriting directly from Exception define a top-level
+		/// name for their sub-tree, further sub-classes add further levels, each
+		/// level is separated by a slash. Characters allowed in the name for a
+		/// level are [a-z0-9_].
 		virtual const wxChar * GetName() const = 0;
 
 
-		/// @brief DOCME
-		/// @return 
-		///
+		/// @brief Convert to wxChar array as the error message
+		/// @return The error message
 		operator const wxChar * () { return GetMessage().c_str(); }
 
-		/// @brief DOCME
-		/// @return 
-		///
+		/// @brief Convert to wxString as the error message
+		/// @return The error message
 		operator wxString () { return GetMessage(); }
 	};
 
 
 
-/// DOCME
+/// @brief Convenience macro to include the current location in code
+///
+/// Intended for use in error messages where it can sometimes be convenient to
+/// indicate the exact position the error occurred at.
 #define AG_WHERE _T(" (at ") _T(__FILE__) _T(":") _T(#__LINE__) _T(")")
 
 
 
-/// DOCME
+/// @brief Convenience macro for declaring exceptions with no support for inner exception
+/// @param classname   Name of the exception class to declare
+/// @param baseclass   Class to derive from
+/// @param displayname The printable name of the exception (return of GetName())
+///
+/// This macro covers most cases of exception classes where support for inner
+/// exceptions is not relevant/wanted.
 #define DEFINE_SIMPLE_EXCEPTION_NOINNER(classname,baseclass,displayname)             \
 	class classname : public baseclass {                                             \
 	public:                                                                          \
@@ -110,7 +180,13 @@ namespace Aegisub {
 		const wxChar * GetName() const { return _T(displayname); }                   \
 	};
 
-/// DOCME
+/// @brief Convenience macro for declaring exceptions supporting inner exceptions
+/// @param classname   Name of the exception class to declare
+/// @param baseclass   Class to derive from
+/// @param displayname The printable name of the exception (return of GetName())
+///
+/// This macro covers most cases of exception classes that should support
+/// inner exceptions.
 #define DEFINE_SIMPLE_EXCEPTION(classname,baseclass,displayname)                     \
 	class classname : public baseclass {                                             \
 	public:                                                                          \
@@ -118,14 +194,27 @@ namespace Aegisub {
 		const wxChar * GetName() const { return _T(displayname); }                   \
 	};
 
-/// DOCME
+/// @brief Macro for declaring non-instantiable exception base classes
+/// @param classname Name of the exception class to declare
+/// @param baseclass Class to derive from
+///
+/// Declares an exception class that does not implement the GetName() function
+/// and as such (unless a base class implements it) is not constructable.
+/// Classes declared by this macro do not support inner exceptions.
 #define DEFINE_BASE_EXCEPTION_NOINNER(classname,baseclass)                           \
 	class classname : public baseclass {                                             \
 	public:                                                                          \
 		classname(const wxString &msg) : baseclass(msg) { }                          \
 	};
 
-/// DOCME
+/// @brief Macro for declaring non-instantiable exception base classes with inner
+///        exception support
+/// @param classname Name of the exception class to declare
+/// @param baseclass Class to derive from
+///
+/// Declares an exception class that does not implement the GetName() function
+/// and as such (unless a base class implements it) is not constructable.
+/// Classes declared by this macro do support inner exceptions.
 #define DEFINE_BASE_EXCEPTION(classname,baseclass)                                   \
 	class classname : public baseclass {                                             \
 	public:                                                                          \
@@ -133,49 +222,65 @@ namespace Aegisub {
 	};
 
 
-	// Exception for "user cancel" events
-	// I.e. when we want to abort an operation because the user requested that we do so
-	// Not actually an error and should not be handled as such
+	/// @class Aegisub::UserCancelException
+	/// @extends Aegisub::Exception
+	/// @brief Exception for "user cancel" events
+	///
+	/// I.e. when we want to abort an operation because the user requested that we do so.
+	/// Not actually an error and should not be handled as such.
+	///
+	/// This is intended to signal that an operation should be completely aborted at the
+	/// request of the user, and should usually be handled as close to the main UI as
+	/// possible, user cancel exceptions should unwind anything that was going on at the
+	/// moment. For this to work, RAII methodology has to be used consequently in the
+	/// code in question.
 	DEFINE_SIMPLE_EXCEPTION_NOINNER(UserCancelException,Exception,"nonerror/user_cancel")
 
 
-	// Errors that should never happen and point to some invalid assumption in the code
+	/// @class Aegisub::InternalError
+	/// @extends Aegisub::Exception
+	/// @brief Errors that should never happen and point to some invalid assumption in the code
+	///
+	/// Throw an internal error when a sanity check fails, and the insanity should have
+	/// been caught and handled at an earlier stage, i.e. when something seems to
+	/// have become inconsistent. All internal errors are of the type "this should never
+	/// happen", most often you'll want this kind of error unwind all the way past the main UI
+	/// and eventually cause an abort().
 	DEFINE_SIMPLE_EXCEPTION(InternalError, Exception, "internal_error")
 
 
-	// Some error related to the filesystem
-	// These should always be original causes and as such do not support inner exceptions
+	/// @class Aegisub::FileSystemError
+	/// @extends Aegisub::Exception
+	/// @brief Base class for errors related to the file system
+	///
+	/// This base class can not be instantiated.
+	/// File system errors do not support inner exceptions, as they are always originating
+	/// causes for errors.
 	DEFINE_BASE_EXCEPTION_NOINNER(FileSystemError,Exception)
 
-	// A file can't be accessed for some reason
+	/// @class Aegisub::FileNotAccessibleError
+	/// @extends Aegisub::FileSystemError
+	/// @brief A file can't be accessed for some reason
 	DEFINE_SIMPLE_EXCEPTION_NOINNER(FileNotAccessibleError,FileSystemError,"filesystem/not_accessible")
 
 
-	/// DOCME
 	/// @class FileNotFoundError
-	/// @brief DOCME
-	///
-	/// DOCME
+	/// @brief A file can't be accessed because there's no file by the given name
 	class FileNotFoundError : public FileNotAccessibleError {
 	public:
 
-		/// @brief DOCME
-		/// @param filename 
-		/// @return 
-		///
+		/// @brief Constructor, automatically builds the error message
+		/// @param filename Name of the file that could not be found
 		FileNotFoundError(const wxString &filename) : FileNotAccessibleError(wxString(_T("File not found: ")) + filename) { }
 
-		/// @brief DOCME
-		///
+		// Not documented, see  Aegisub::Exception class
 		const wxChar * GetName() const { return _T("filesystem/not_accessible/not_found"); }
 	};
 
 
-	// A problem with some input data
+	/// @class Aegisub::InvalidInputException
+	/// @extends Aegisub::Exception
+	/// @brief Some input data were invalid and could not be processed
 	DEFINE_BASE_EXCEPTION(InvalidInputException,Exception)
-
-
-	// There is no "generic exception" class, everything must be a specific one
-	// Define new classes if none fit the error you're reporting
 
 };
