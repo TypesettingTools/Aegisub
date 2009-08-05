@@ -30,6 +30,9 @@ extern "C" {
 
 
 
+extern bool HasHaaliMPEG;
+extern bool HasHaaliOGG;
+
 struct IndexHeader {
 	uint32_t Id;
 	uint32_t Version;
@@ -102,7 +105,7 @@ TFrameInfo TFrameInfo::AudioFrameInfo(int64_t DTS, int64_t SampleStart, bool Key
 	return TFrameInfo(DTS, SampleStart, 0, KeyFrame, FilePos, FrameSize);
 }
 
-int FFTrack::WriteTimecodes(const char *TimecodeFile, char *ErrorMsg, unsigned MsgSize) {
+int FFMS_Track::WriteTimecodes(const char *TimecodeFile, char *ErrorMsg, unsigned MsgSize) {
 	ffms_fstream Timecodes(TimecodeFile, std::ios::out | std::ios::trunc);
 
 	if (!Timecodes.is_open()) {
@@ -118,14 +121,14 @@ int FFTrack::WriteTimecodes(const char *TimecodeFile, char *ErrorMsg, unsigned M
 	return 0;
 }
 
-int FFTrack::FrameFromDTS(int64_t DTS) {
+int FFMS_Track::FrameFromDTS(int64_t DTS) {
 	for (int i = 0; i < static_cast<int>(size()); i++)
 		if (at(i).DTS == DTS)
 			return i;
 	return -1;
 }
 
-int FFTrack::ClosestFrameFromDTS(int64_t DTS) {
+int FFMS_Track::ClosestFrameFromDTS(int64_t DTS) {
 	int Frame = 0; 
 	int64_t BestDiff = 0xFFFFFFFFFFFFFFLL; // big number
 	for (int i = 0; i < static_cast<int>(size()); i++) {
@@ -139,7 +142,7 @@ int FFTrack::ClosestFrameFromDTS(int64_t DTS) {
 	return Frame;
 }
 
-int FFTrack::FindClosestVideoKeyFrame(int Frame) {
+int FFMS_Track::FindClosestVideoKeyFrame(int Frame) {
 	Frame = FFMIN(FFMAX(Frame, 0), static_cast<int>(size()) - 1);
 	for (int i = Frame; i > 0; i--)
 		if (at(i).KeyFrame)
@@ -147,7 +150,7 @@ int FFTrack::FindClosestVideoKeyFrame(int Frame) {
 	return 0;
 }
 
-int FFTrack::FindClosestAudioKeyFrame(int64_t Sample) {
+int FFMS_Track::FindClosestAudioKeyFrame(int64_t Sample) {
 	for (size_t i = 0; i < size(); i++) {
 		if (at(i).SampleStart == Sample && at(i).KeyFrame)
 			return i;
@@ -157,19 +160,19 @@ int FFTrack::FindClosestAudioKeyFrame(int64_t Sample) {
 	return size() - 1;
 }
 
-FFTrack::FFTrack() {
+FFMS_Track::FFMS_Track() {
 	this->TT = FFMS_TYPE_UNKNOWN;
 	this->TB.Num = 0; 
 	this->TB.Den = 0;
 }
 
-FFTrack::FFTrack(int64_t Num, int64_t Den, FFMS_TrackType TT) {
+FFMS_Track::FFMS_Track(int64_t Num, int64_t Den, FFMS_TrackType TT) {
 	this->TT = TT;
 	this->TB.Num = Num; 
 	this->TB.Den = Den;
 }
 
-int FFIndex::CalculateFileSignature(const char *Filename, int64_t *Filesize, uint8_t Digest[20], char *ErrorMsg, unsigned MsgSize) {
+int FFMS_Index::CalculateFileSignature(const char *Filename, int64_t *Filesize, uint8_t Digest[20], char *ErrorMsg, unsigned MsgSize) {
 	// use cstdio because Microsoft's implementation of std::fstream doesn't support files >4GB.
 	// please kill me now.
 	FILE *SFile = ffms_fopen(Filename,"rb");
@@ -179,7 +182,7 @@ int FFIndex::CalculateFileSignature(const char *Filename, int64_t *Filesize, uin
 		return 1;
 	}
 
-	const int BlockSize = 2*1024*1024;
+	const int BlockSize = 1024*1024;
 	std::vector<uint8_t> FileBuffer(BlockSize);
 	std::vector<uint8_t> ctxmem(av_sha1_size);
 	AVSHA1 *ctx = (AVSHA1 *)&ctxmem[0];
@@ -224,12 +227,12 @@ static bool DTSComparison(TFrameInfo FI1, TFrameInfo FI2) {
 	return FI1.DTS < FI2.DTS;
 }
 
-void FFIndex::Sort() {
-	for (FFIndex::iterator Cur=begin(); Cur!=end(); Cur++)
+void FFMS_Index::Sort() {
+	for (FFMS_Index::iterator Cur=begin(); Cur!=end(); Cur++)
 		std::sort(Cur->begin(), Cur->end(), DTSComparison);
 }
 
-int FFIndex::CompareFileSignature(const char *Filename, char *ErrorMsg, unsigned MsgSize) {
+int FFMS_Index::CompareFileSignature(const char *Filename, char *ErrorMsg, unsigned MsgSize) {
 	int64_t CFilesize;
 	uint8_t CDigest[20];
 	CalculateFileSignature(Filename, &CFilesize, CDigest, ErrorMsg, MsgSize);
@@ -242,7 +245,7 @@ int FFIndex::CompareFileSignature(const char *Filename, char *ErrorMsg, unsigned
 	return 0;
 }
 
-int FFIndex::WriteIndex(const char *IndexFile, char *ErrorMsg, unsigned MsgSize) {
+int FFMS_Index::WriteIndex(const char *IndexFile, char *ErrorMsg, unsigned MsgSize) {
 	ffms_fstream IndexStream(IndexFile, std::ios::out | std::ios::binary | std::ios::trunc);
 
 	if (!IndexStream.is_open()) {
@@ -276,14 +279,14 @@ int FFIndex::WriteIndex(const char *IndexFile, char *ErrorMsg, unsigned MsgSize)
 		int64_t Frames = at(i).size();
 		IndexStream.write(reinterpret_cast<char *>(&Frames), sizeof(Frames));
 
-		for (FFTrack::iterator Cur=at(i).begin(); Cur!=at(i).end(); Cur++)
+		for (FFMS_Track::iterator Cur=at(i).begin(); Cur!=at(i).end(); Cur++)
 			IndexStream.write(reinterpret_cast<char *>(&*Cur), sizeof(TFrameInfo));
 	}
 
 	return 0;
 }
 
-int FFIndex::ReadIndex(const char *IndexFile, char *ErrorMsg, unsigned MsgSize) {
+int FFMS_Index::ReadIndex(const char *IndexFile, char *ErrorMsg, unsigned MsgSize) {
 	ffms_fstream Index(IndexFile, std::ios::in | std::ios::binary);
 
 	if (!Index.is_open()) {
@@ -311,6 +314,11 @@ int FFIndex::ReadIndex(const char *IndexFile, char *ErrorMsg, unsigned MsgSize) 
 		return 4;
 	}
 
+	if (!(IH.Decoder & FFMS_GetEnabledSources())) {
+		snprintf(ErrorMsg, MsgSize, "The source which this index was created with is not available");
+		return 5;
+	}
+
 	Decoder = IH.Decoder;
 	Filesize = IH.FileSize;
 	memcpy(Digest, IH.FileSignature, sizeof(Digest));
@@ -327,7 +335,7 @@ int FFIndex::ReadIndex(const char *IndexFile, char *ErrorMsg, unsigned MsgSize) 
 			Index.read(reinterpret_cast<char *>(&Den), sizeof(Den));
 			int64_t Frames;
 			Index.read(reinterpret_cast<char *>(&Frames), sizeof(Frames));
-			push_back(FFTrack(Num, Den, static_cast<FFMS_TrackType>(TT)));
+			push_back(FFMS_Track(Num, Den, static_cast<FFMS_TrackType>(TT)));
 
 			TFrameInfo FI = TFrameInfo::VideoFrameInfo(0, 0, false);
 			for (size_t j = 0; j < Frames; j++) {
@@ -338,44 +346,44 @@ int FFIndex::ReadIndex(const char *IndexFile, char *ErrorMsg, unsigned MsgSize) 
 
 	} catch (...) {
 		snprintf(ErrorMsg, MsgSize, "Unknown error while reading index information in '%s'", IndexFile);	
-		return 5;
+		return 6;
 	}
 
 	return 0;
 }
 
-FFIndex::FFIndex() {
+FFMS_Index::FFMS_Index() {
 	// this comment documents nothing
 }
 
-FFIndex::FFIndex(int64_t Filesize, uint8_t Digest[20]) {
+FFMS_Index::FFMS_Index(int64_t Filesize, uint8_t Digest[20]) {
 	this->Filesize = Filesize;
 	memcpy(this->Digest, Digest, sizeof(this->Digest));
 }
 
-void FFIndexer::SetIndexMask(int IndexMask) {
+void FFMS_Indexer::SetIndexMask(int IndexMask) {
 	this->IndexMask = IndexMask;
 }
 
-void FFIndexer::SetDumpMask(int DumpMask) {
+void FFMS_Indexer::SetDumpMask(int DumpMask) {
 	this->DumpMask = DumpMask;
 }
 
-void FFIndexer::SetIgnoreDecodeErrors(bool IgnoreDecodeErrors) {
+void FFMS_Indexer::SetIgnoreDecodeErrors(bool IgnoreDecodeErrors) {
 	this->IgnoreDecodeErrors = IgnoreDecodeErrors;
 }
 
-void FFIndexer::SetProgressCallback(TIndexCallback IC, void *ICPrivate) {
+void FFMS_Indexer::SetProgressCallback(TIndexCallback IC, void *ICPrivate) {
 	this->IC = IC; 
 	this->ICPrivate = ICPrivate;
 }
 
-void FFIndexer::SetAudioNameCallback(TAudioNameCallback ANC, void *ANCPrivate) {
+void FFMS_Indexer::SetAudioNameCallback(TAudioNameCallback ANC, void *ANCPrivate) {
 	this->ANC = ANC;
 	this->ANCPrivate = ANCPrivate;
 }
 
-FFIndexer *FFIndexer::CreateFFIndexer(const char *Filename, char *ErrorMsg, unsigned MsgSize) {
+FFMS_Indexer *FFMS_Indexer::CreateIndexer(const char *Filename, char *ErrorMsg, unsigned MsgSize) {
 	AVFormatContext *FormatContext = NULL;
 
 	if (av_open_input_file(&FormatContext, Filename, NULL, 0, NULL) != 0) {
@@ -391,12 +399,12 @@ FFIndexer *FFIndexer::CreateFFIndexer(const char *Filename, char *ErrorMsg, unsi
 
 #ifdef HAALISOURCE
 	// Do haali ts indexing instead?
-	if (!strcmp(FormatContext->iformat->name, "mpeg") || !strcmp(FormatContext->iformat->name, "mpegts")) {
+	if (HasHaaliMPEG && !strcmp(FormatContext->iformat->name, "mpeg") || !strcmp(FormatContext->iformat->name, "mpegts")) {
 		av_close_input_file(FormatContext);
 		return new FFHaaliIndexer(Filename, 0, ErrorMsg, MsgSize);
 	}
 
-	if (!strcmp(FormatContext->iformat->name, "ogg")) {
+	if (HasHaaliOGG && !strcmp(FormatContext->iformat->name, "ogg")) {
 		av_close_input_file(FormatContext);
 		return new FFHaaliIndexer(Filename, 1, ErrorMsg, MsgSize);
 	}
@@ -405,20 +413,20 @@ FFIndexer *FFIndexer::CreateFFIndexer(const char *Filename, char *ErrorMsg, unsi
 	return new FFLAVFIndexer(Filename, FormatContext, ErrorMsg, MsgSize);
 }
 
-FFIndexer::FFIndexer(const char *Filename, char *ErrorMsg, unsigned MsgSize) : DecodingBuffer(AVCODEC_MAX_AUDIO_FRAME_SIZE * 5) {
-	if (FFIndex::CalculateFileSignature(Filename, &Filesize, Digest, ErrorMsg, MsgSize))
+FFMS_Indexer::FFMS_Indexer(const char *Filename, char *ErrorMsg, unsigned MsgSize) : DecodingBuffer(AVCODEC_MAX_AUDIO_FRAME_SIZE * 5) {
+	if (FFMS_Index::CalculateFileSignature(Filename, &Filesize, Digest, ErrorMsg, MsgSize))
 		throw ErrorMsg;
 }
 
-FFIndexer::~FFIndexer() {
+FFMS_Indexer::~FFMS_Indexer() {
 
 }
 
-bool FFIndexer::WriteAudio(SharedAudioContext &AudioContext, FFIndex *Index, int Track, int DBSize, char *ErrorMsg, unsigned MsgSize) {
+bool FFMS_Indexer::WriteAudio(SharedAudioContext &AudioContext, FFMS_Index *Index, int Track, int DBSize, char *ErrorMsg, unsigned MsgSize) {
 	// Delay writer creation until after an audio frame has been decoded. This ensures that all parameters are known when writing the headers.
 	if (DBSize > 0) {
 		if (!AudioContext.W64Writer) {
-			FFAudioProperties AP;
+			FFMS_AudioProperties AP;
 			FillAP(AP, AudioContext.CodecContext, (*Index)[Track]);
 			int FNSize = (*ANC)(SourceFile, Track, &AP, NULL, 0, ANCPrivate);
 			std::vector<char> WName(FNSize);

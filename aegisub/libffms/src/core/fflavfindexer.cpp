@@ -22,7 +22,7 @@
 
 
 
-FFLAVFIndexer::FFLAVFIndexer(const char *Filename, AVFormatContext *FormatContext, char *ErrorMsg, unsigned MsgSize) : FFIndexer(Filename, ErrorMsg, MsgSize) {
+FFLAVFIndexer::FFLAVFIndexer(const char *Filename, AVFormatContext *FormatContext, char *ErrorMsg, unsigned MsgSize) : FFMS_Indexer(Filename, ErrorMsg, MsgSize) {
 	SourceFile = Filename;
 	this->FormatContext = FormatContext;
 	
@@ -37,15 +37,15 @@ FFLAVFIndexer::~FFLAVFIndexer() {
 	av_close_input_file(FormatContext);
 }
 
-FFIndex *FFLAVFIndexer::DoIndexing(char *ErrorMsg, unsigned MsgSize) {
+FFMS_Index *FFLAVFIndexer::DoIndexing(char *ErrorMsg, unsigned MsgSize) {
 	std::vector<SharedAudioContext> AudioContexts(FormatContext->nb_streams, SharedAudioContext(false));
 	std::vector<SharedVideoContext> VideoContexts(FormatContext->nb_streams, SharedVideoContext(false));
 
-	std::auto_ptr<FFIndex> TrackIndices(new FFIndex(Filesize, Digest));
-	TrackIndices->Decoder = 0;
+	std::auto_ptr<FFMS_Index> TrackIndices(new FFMS_Index(Filesize, Digest));
+	TrackIndices->Decoder = FFMS_SOURCE_LAVF;
 
 	for (unsigned int i = 0; i < FormatContext->nb_streams; i++) {
-		TrackIndices->push_back(FFTrack((int64_t)FormatContext->streams[i]->time_base.num * 1000, 
+		TrackIndices->push_back(FFMS_Track((int64_t)FormatContext->streams[i]->time_base.num * 1000, 
 			FormatContext->streams[i]->time_base.den,
 			static_cast<FFMS_TrackType>(FormatContext->streams[i]->codec->codec_type)));
 

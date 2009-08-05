@@ -21,6 +21,9 @@
 #ifndef FFMS_H
 #define FFMS_H
 
+// Version format: major - minor - micro
+#define FFMS_VERSION ((2 << 16) | (0 << 8) | 11)
+
 #include <stdint.h>
 
 #ifdef __cplusplus
@@ -43,11 +46,18 @@
 #	define FFMS_API(ret) EXTERN_C ret FFMS_CC
 #endif
 
-FFMS_CLASS_TYPE FFVideo;
-FFMS_CLASS_TYPE FFAudio;
-FFMS_CLASS_TYPE FFIndexer;
-FFMS_CLASS_TYPE FFIndex;
-FFMS_CLASS_TYPE FFTrack;
+FFMS_CLASS_TYPE FFMS_VideoSource;
+FFMS_CLASS_TYPE FFMS_AudioSource;
+FFMS_CLASS_TYPE FFMS_Indexer;
+FFMS_CLASS_TYPE FFMS_Index;
+FFMS_CLASS_TYPE FFMS_Track;
+
+enum FFMS_Sources {
+	FFMS_SOURCE_LAVF		= 0x00,
+	FFMS_SOURCE_MATROSKA	= 0x01,
+	FFMS_SOURCE_HAALIMPEG	= 0x02,
+	FFMS_SOURCE_HAALIOGG	= 0x04
+};
 
 enum FFMS_CPUFeatures {
 	FFMS_CPU_CAPS_MMX		= 0x01,
@@ -119,7 +129,7 @@ enum FFMS_Resizers {
 	FFMS_RESIZER_SPLINE			= 0x400
 };
 
-struct FFAVFrame {
+struct FFMS_Frame {
 	uint8_t *Data[4];
 	int Linesize[4];
 	int EncodedWidth;
@@ -135,18 +145,18 @@ struct FFAVFrame {
 	char PictType;
 };
 
-struct FFTrackTimeBase {
+struct FFMS_TrackTimeBase {
 	int64_t Num;
 	int64_t Den;
 };
 
 #define FFMS_FRAMEINFO_COMMON int64_t DTS; int RepeatPict; bool KeyFrame;
 
-struct FFFrameInfo {
+struct FFMS_FrameInfo {
 	FFMS_FRAMEINFO_COMMON
 };
 
-struct FFVideoProperties {
+struct FFMS_VideoProperties {
 	int Width;
 	int Height;
 	int FPSDenominator;
@@ -165,7 +175,7 @@ struct FFVideoProperties {
 	double LastTime;
 };
 
-struct FFAudioProperties {
+struct FFMS_AudioProperties {
 	int SampleFormat;
 	int SampleRate;
 	int BitsPerSample;
@@ -176,48 +186,63 @@ struct FFAudioProperties {
 	double LastTime;
 };
 
+#ifdef FFMS_BETA_10_COMPAT
+typedef FFMS_VideoSource FFVideo;
+typedef FFMS_AudioSource FFAudio;
+typedef FFMS_Indexer FFIndexer;
+typedef FFMS_Index FFIndex;
+typedef FFMS_Track FFTrack;
+typedef FFMS_Frame FFAVFrame;
+typedef FFMS_TrackTimeBase FFTrackTimeBase;
+typedef FFMS_FrameInfo FFFrameInfo;
+typedef FFMS_VideoProperties FFVideoProperties;
+typedef FFMS_AudioProperties FFAudioProperties;
+#endif
+
 typedef int (FFMS_CC *TIndexCallback)(int64_t Current, int64_t Total, void *ICPrivate);
-typedef int (FFMS_CC *TAudioNameCallback)(const char *SourceFile, int Track, const FFAudioProperties *AP, char *FileName, int FNSize, void *Private);
+typedef int (FFMS_CC *TAudioNameCallback)(const char *SourceFile, int Track, const FFMS_AudioProperties *AP, char *FileName, int FNSize, void *Private);
 
 // Most functions return 0 on success
 // Functions without error message output can be assumed to never fail in a graceful way
 FFMS_API(void) FFMS_Init(int CPUFeatures);
 FFMS_API(int) FFMS_GetLogLevel();
 FFMS_API(void) FFMS_SetLogLevel(int Level);
-FFMS_API(FFVideo *) FFMS_CreateVideoSource(const char *SourceFile, int Track, FFIndex *Index, const char *PP, int Threads, int SeekMode, char *ErrorMsg, unsigned MsgSize);
-FFMS_API(FFAudio *) FFMS_CreateAudioSource(const char *SourceFile, int Track, FFIndex *Index, char *ErrorMsg, unsigned MsgSize);
-FFMS_API(void) FFMS_DestroyVideoSource(FFVideo *V);
-FFMS_API(void) FFMS_DestroyAudioSource(FFAudio *A);
-FFMS_API(const FFVideoProperties *) FFMS_GetVideoProperties(FFVideo *V);
-FFMS_API(const FFAudioProperties *) FFMS_GetAudioProperties(FFAudio *A);
-FFMS_API(const FFAVFrame *) FFMS_GetFrame(FFVideo *V, int n, char *ErrorMsg, unsigned MsgSize);
-FFMS_API(const FFAVFrame *) FFMS_GetFrameByTime(FFVideo *V, double Time, char *ErrorMsg, unsigned MsgSize);
-FFMS_API(int) FFMS_GetAudio(FFAudio *A, void *Buf, int64_t Start, int64_t Count, char *ErrorMsg, unsigned MsgSize);
-FFMS_API(int) FFMS_SetOutputFormatV(FFVideo *V, int64_t TargetFormats, int Width, int Height, int Resizer, char *ErrorMsg, unsigned MsgSize);
-FFMS_API(void) FFMS_ResetOutputFormatV(FFVideo *V);
-FFMS_API(void) FFMS_DestroyIndex(FFIndex *Index);
-FFMS_API(int) FFMS_GetFirstTrackOfType(FFIndex *Index, int TrackType, char *ErrorMsg, unsigned MsgSize);
-FFMS_API(int) FFMS_GetFirstIndexedTrackOfType(FFIndex *Index, int TrackType, char *ErrorMsg, unsigned MsgSize);
-FFMS_API(int) FFMS_GetNumTracks(FFIndex *Index);
-FFMS_API(int) FFMS_GetNumTracksI(FFIndexer *Indexer);
-FFMS_API(int) FFMS_GetTrackType(FFTrack *T);
-FFMS_API(int) FFMS_GetTrackTypeI(FFIndexer *Indexer, int Track);
-FFMS_API(const char *) FFMS_GetCodecNameI(FFIndexer *Indexer, int Track);
-FFMS_API(int) FFMS_GetNumFrames(FFTrack *T);
-FFMS_API(const FFFrameInfo *) FFMS_GetFrameInfo(FFTrack *T, int Frame);
-FFMS_API(FFTrack *) FFMS_GetTrackFromIndex(FFIndex *Index, int Track);
-FFMS_API(FFTrack *) FFMS_GetTrackFromVideo(FFVideo *V);
-FFMS_API(FFTrack *) FFMS_GetTrackFromAudio(FFAudio *A);
-FFMS_API(const FFTrackTimeBase *) FFMS_GetTimeBase(FFTrack *T);
-FFMS_API(int) FFMS_WriteTimecodes(FFTrack *T, const char *TimecodeFile, char *ErrorMsg, unsigned MsgSize);
-FFMS_API(FFIndex *) FFMS_MakeIndex(const char *SourceFile, int IndexMask, int DumpMask, TAudioNameCallback ANC, void *ANCPrivate, bool IgnoreDecodeErrors, TIndexCallback IC, void *ICPrivate, char *ErrorMsg, unsigned MsgSize);
-FFMS_API(int) FFMS_DefaultAudioFilename(const char *SourceFile, int Track, const FFAudioProperties *AP, char *FileName, int FNSize, void *Private);
-FFMS_API(FFIndexer *) FFMS_CreateIndexer(const char *SourceFile, char *ErrorMsg, unsigned MsgSize);
-FFMS_API(FFIndex *) FFMS_DoIndexing(FFIndexer *Indexer, int IndexMask, int DumpMask, TAudioNameCallback ANC, void *ANCPrivate, bool IgnoreDecodeErrors, TIndexCallback IC, void *ICPrivate, char *ErrorMsg, unsigned MsgSize);
-FFMS_API(void) FFMS_CancelIndexing(FFIndexer *Indexer);
-FFMS_API(FFIndex *) FFMS_ReadIndex(const char *IndexFile, char *ErrorMsg, unsigned MsgSize);
-FFMS_API(int) FFMS_IndexBelongsToFile(FFIndex *Index, const char *SourceFile, char *ErrorMsg, unsigned MsgSize);
-FFMS_API(int) FFMS_WriteIndex(const char *IndexFile, FFIndex *Index, char *ErrorMsg, unsigned MsgSize);
+FFMS_API(FFMS_VideoSource *) FFMS_CreateVideoSource(const char *SourceFile, int Track, FFMS_Index *Index, const char *PP, int Threads, int SeekMode, char *ErrorMsg, unsigned MsgSize);
+FFMS_API(FFMS_AudioSource *) FFMS_CreateAudioSource(const char *SourceFile, int Track, FFMS_Index *Index, char *ErrorMsg, unsigned MsgSize);
+FFMS_API(void) FFMS_DestroyVideoSource(FFMS_VideoSource *V);
+FFMS_API(void) FFMS_DestroyAudioSource(FFMS_AudioSource *A);
+FFMS_API(const FFMS_VideoProperties *) FFMS_GetVideoProperties(FFMS_VideoSource *V);
+FFMS_API(const FFMS_AudioProperties *) FFMS_GetAudioProperties(FFMS_AudioSource *A);
+FFMS_API(const FFMS_Frame *) FFMS_GetFrame(FFMS_VideoSource *V, int n, char *ErrorMsg, unsigned MsgSize);
+FFMS_API(const FFMS_Frame *) FFMS_GetFrameByTime(FFMS_VideoSource *V, double Time, char *ErrorMsg, unsigned MsgSize);
+FFMS_API(int) FFMS_GetAudio(FFMS_AudioSource *A, void *Buf, int64_t Start, int64_t Count, char *ErrorMsg, unsigned MsgSize);
+FFMS_API(int) FFMS_SetOutputFormatV(FFMS_VideoSource *V, int64_t TargetFormats, int Width, int Height, int Resizer, char *ErrorMsg, unsigned MsgSize);
+FFMS_API(void) FFMS_ResetOutputFormatV(FFMS_VideoSource *V);
+FFMS_API(void) FFMS_DestroyIndex(FFMS_Index *Index);
+FFMS_API(int) FFMS_GetFirstTrackOfType(FFMS_Index *Index, int TrackType, char *ErrorMsg, unsigned MsgSize);
+FFMS_API(int) FFMS_GetFirstIndexedTrackOfType(FFMS_Index *Index, int TrackType, char *ErrorMsg, unsigned MsgSize);
+FFMS_API(int) FFMS_GetNumTracks(FFMS_Index *Index);
+FFMS_API(int) FFMS_GetNumTracksI(FFMS_Indexer *Indexer);
+FFMS_API(int) FFMS_GetTrackType(FFMS_Track *T);
+FFMS_API(int) FFMS_GetTrackTypeI(FFMS_Indexer *Indexer, int Track);
+FFMS_API(const char *) FFMS_GetCodecNameI(FFMS_Indexer *Indexer, int Track);
+FFMS_API(int) FFMS_GetNumFrames(FFMS_Track *T);
+FFMS_API(const FFMS_FrameInfo *) FFMS_GetFrameInfo(FFMS_Track *T, int Frame);
+FFMS_API(FFMS_Track *) FFMS_GetTrackFromIndex(FFMS_Index *Index, int Track);
+FFMS_API(FFMS_Track *) FFMS_GetTrackFromVideo(FFMS_VideoSource *V);
+FFMS_API(FFMS_Track *) FFMS_GetTrackFromAudio(FFMS_AudioSource *A);
+FFMS_API(const FFMS_TrackTimeBase *) FFMS_GetTimeBase(FFMS_Track *T);
+FFMS_API(int) FFMS_WriteTimecodes(FFMS_Track *T, const char *TimecodeFile, char *ErrorMsg, unsigned MsgSize);
+FFMS_API(FFMS_Index *) FFMS_MakeIndex(const char *SourceFile, int IndexMask, int DumpMask, TAudioNameCallback ANC, void *ANCPrivate, bool IgnoreDecodeErrors, TIndexCallback IC, void *ICPrivate, char *ErrorMsg, unsigned MsgSize);
+FFMS_API(int) FFMS_DefaultAudioFilename(const char *SourceFile, int Track, const FFMS_AudioProperties *AP, char *FileName, int FNSize, void *Private);
+FFMS_API(FFMS_Indexer *) FFMS_CreateIndexer(const char *SourceFile, char *ErrorMsg, unsigned MsgSize);
+FFMS_API(FFMS_Index *) FFMS_DoIndexing(FFMS_Indexer *Indexer, int IndexMask, int DumpMask, TAudioNameCallback ANC, void *ANCPrivate, bool IgnoreDecodeErrors, TIndexCallback IC, void *ICPrivate, char *ErrorMsg, unsigned MsgSize);
+FFMS_API(void) FFMS_CancelIndexing(FFMS_Indexer *Indexer);
+FFMS_API(FFMS_Index *) FFMS_ReadIndex(const char *IndexFile, char *ErrorMsg, unsigned MsgSize);
+FFMS_API(int) FFMS_IndexBelongsToFile(FFMS_Index *Index, const char *SourceFile, char *ErrorMsg, unsigned MsgSize);
+FFMS_API(int) FFMS_WriteIndex(const char *IndexFile, FFMS_Index *Index, char *ErrorMsg, unsigned MsgSize);
 FFMS_API(int) FFMS_GetPixFmt(const char *Name);
+FFMS_API(int) FFMS_GetPresentSources();
+FFMS_API(int) FFMS_GetEnabledSources();
 
 #endif

@@ -27,9 +27,9 @@ void FFLAVFAudio::Free(bool CloseCodec) {
 		av_close_input_file(FormatContext);
 }
 
-FFLAVFAudio::FFLAVFAudio(const char *SourceFile, int Track, FFIndex *Index,
+FFLAVFAudio::FFLAVFAudio(const char *SourceFile, int Track, FFMS_Index *Index,
 						 char *ErrorMsg, unsigned MsgSize)
-						 : FFAudio(SourceFile, Index, ErrorMsg, MsgSize){
+						 : FFMS_AudioSource(SourceFile, Index, ErrorMsg, MsgSize){
 	FormatContext = NULL;
 	AVCodec *Codec = NULL;
 	AudioTrack = Track;

@@ -45,7 +45,7 @@ extern "C" {
 #	include "guids.h"
 #endif
 
-class FFVideo {
+class FFMS_VideoSource {
 private:
 	pp_context_t *PPContext;
 	pp_mode_t *PPMode;
@@ -60,31 +60,31 @@ private:
 	AVPicture PPFrame;
 	AVPicture SWSFrame;
 protected:
-	FFVideoProperties VP;
-	FFAVFrame LocalFrame;
+	FFMS_VideoProperties VP;
+	FFMS_Frame LocalFrame;
 	AVFrame *DecodeFrame;
 	int LastFrameNum;
-	FFTrack Frames;
+	FFMS_Track Frames;
 	int VideoTrack;
 	int	CurrentFrame;
 	AVCodecContext *CodecContext;
 
-	FFVideo(const char *SourceFile, FFIndex *Index, char *ErrorMsg, unsigned MsgSize);
+	FFMS_VideoSource(const char *SourceFile, FFMS_Index *Index, char *ErrorMsg, unsigned MsgSize);
 	int InitPP(const char *PP, char *ErrorMsg, unsigned MsgSize);
 	int ReAdjustPP(PixelFormat VPixelFormat, int Width, int Height, char *ErrorMsg, unsigned MsgSize);
-	FFAVFrame *OutputFrame(AVFrame *Frame, char *ErrorMsg, unsigned MsgSize);
+	FFMS_Frame *OutputFrame(AVFrame *Frame, char *ErrorMsg, unsigned MsgSize);
 public:
-	virtual ~FFVideo();
-	const FFVideoProperties& GetFFVideoProperties() { return VP; }
-	FFTrack *GetFFTrack() { return &Frames; }
-	virtual FFAVFrame *GetFrame(int n, char *ErrorMsg, unsigned MsgSize) = 0;
-	FFAVFrame *GetFrameByTime(double Time, char *ErrorMsg, unsigned MsgSize);
+	virtual ~FFMS_VideoSource();
+	const FFMS_VideoProperties& GetVideoProperties() { return VP; }
+	FFMS_Track *GetFFTrack() { return &Frames; }
+	virtual FFMS_Frame *GetFrame(int n, char *ErrorMsg, unsigned MsgSize) = 0;
+	FFMS_Frame *GetFrameByTime(double Time, char *ErrorMsg, unsigned MsgSize);
 	int SetOutputFormat(int64_t TargetFormats, int Width, int Height, int Resizer, char *ErrorMsg, unsigned MsgSize);
 	int ReAdjustOutputFormat(int64_t TargetFormats, int Width, int Height, int Resizer, char *ErrorMsg, unsigned MsgSize);
 	void ResetOutputFormat();
 };
 
-class FFLAVFVideo : public FFVideo {
+class FFLAVFVideo : public FFMS_VideoSource {
 private:
 	AVFormatContext *FormatContext;
 	int SeekMode;
@@ -92,12 +92,12 @@ private:
 	void Free(bool CloseCodec);
 	int DecodeNextFrame(int64_t *DTS, char *ErrorMsg, unsigned MsgSize);
 public:
-	FFLAVFVideo(const char *SourceFile, int Track, FFIndex *Index, const char *PP, int Threads, int SeekMode, char *ErrorMsg, unsigned MsgSize);
+	FFLAVFVideo(const char *SourceFile, int Track, FFMS_Index *Index, const char *PP, int Threads, int SeekMode, char *ErrorMsg, unsigned MsgSize);
 	~FFLAVFVideo();
-	FFAVFrame *GetFrame(int n, char *ErrorMsg, unsigned MsgSize);
+	FFMS_Frame *GetFrame(int n, char *ErrorMsg, unsigned MsgSize);
 };
 
-class FFMatroskaVideo : public FFVideo {
+class FFMatroskaVideo : public FFMS_VideoSource {
 private:
 	MatroskaFile *MF;
 	MatroskaReaderContext MC;
@@ -107,14 +107,14 @@ private:
 	void Free(bool CloseCodec);
 	int DecodeNextFrame(int64_t *AFirstStartTime, char *ErrorMsg, unsigned MsgSize);
 public:
-	FFMatroskaVideo(const char *SourceFile, int Track, FFIndex *Index, const char *PP, int Threads, char *ErrorMsg, unsigned MsgSize);
+	FFMatroskaVideo(const char *SourceFile, int Track, FFMS_Index *Index, const char *PP, int Threads, char *ErrorMsg, unsigned MsgSize);
 	~FFMatroskaVideo();
-    FFAVFrame *GetFrame(int n, char *ErrorMsg, unsigned MsgSize);
+    FFMS_Frame *GetFrame(int n, char *ErrorMsg, unsigned MsgSize);
 };
 
 #ifdef HAALISOURCE
 
-class FFHaaliVideo : public FFVideo {
+class FFHaaliVideo : public FFMS_VideoSource {
 private:
 	CComPtr<IMMContainer> pMMC;
 	std::vector<uint8_t> CodecPrivate;
@@ -123,9 +123,9 @@ private:
 	void Free(bool CloseCodec);
 	int DecodeNextFrame(int64_t *AFirstStartTime, char *ErrorMsg, unsigned MsgSize);
 public:
-	FFHaaliVideo(const char *SourceFile, int Track, FFIndex *Index, const char *PP, int Threads, int SourceMode, char *ErrorMsg, unsigned MsgSize);
+	FFHaaliVideo(const char *SourceFile, int Track, FFMS_Index *Index, const char *PP, int Threads, int SourceMode, char *ErrorMsg, unsigned MsgSize);
 	~FFHaaliVideo();
-    FFAVFrame *GetFrame(int n, char *ErrorMsg, unsigned MsgSize);
+    FFMS_Frame *GetFrame(int n, char *ErrorMsg, unsigned MsgSize);
 };
 
 #endif // HAALISOURCE

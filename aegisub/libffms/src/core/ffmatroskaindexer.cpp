@@ -23,7 +23,7 @@
 
 
 
-FFMatroskaIndexer::FFMatroskaIndexer(const char *Filename, char *ErrorMsg, unsigned MsgSize) : FFIndexer(Filename, ErrorMsg, MsgSize) {
+FFMatroskaIndexer::FFMatroskaIndexer(const char *Filename, char *ErrorMsg, unsigned MsgSize) : FFMS_Indexer(Filename, ErrorMsg, MsgSize) {
 	memset(Codec, 0, sizeof(Codec));
 	SourceFile = Filename;
 	char ErrorMessage[256];
@@ -55,17 +55,17 @@ FFMatroskaIndexer::~FFMatroskaIndexer() {
 	fclose(MC.ST.fp);
 }
 
-FFIndex *FFMatroskaIndexer::DoIndexing(char *ErrorMsg, unsigned MsgSize) {
+FFMS_Index *FFMatroskaIndexer::DoIndexing(char *ErrorMsg, unsigned MsgSize) {
 	char ErrorMessage[256];
 	std::vector<SharedAudioContext> AudioContexts(mkv_GetNumTracks(MF), SharedAudioContext(true));
 	std::vector<SharedVideoContext> VideoContexts(mkv_GetNumTracks(MF), SharedVideoContext(true));
 
-	std::auto_ptr<FFIndex> TrackIndices(new FFIndex(Filesize, Digest));
-	TrackIndices->Decoder = 1;
+	std::auto_ptr<FFMS_Index> TrackIndices(new FFMS_Index(Filesize, Digest));
+	TrackIndices->Decoder = FFMS_SOURCE_MATROSKA;
 
 	for (unsigned int i = 0; i < mkv_GetNumTracks(MF); i++) {
 		TrackInfo *TI = mkv_GetTrackInfo(MF, i);
-		TrackIndices->push_back(FFTrack(mkv_TruncFloat(mkv_GetTrackInfo(MF, i)->TimecodeScale), 1000000, HaaliTrackTypeToFFTrackType(mkv_GetTrackInfo(MF, i)->Type)));
+		TrackIndices->push_back(FFMS_Track(mkv_TruncFloat(mkv_GetTrackInfo(MF, i)->TimecodeScale), 1000000, HaaliTrackTypeToFFTrackType(mkv_GetTrackInfo(MF, i)->Type)));
 
 		if (HaaliTrackTypeToFFTrackType(TI->Type) == FFMS_TYPE_VIDEO && Codec[i] && (VideoContexts[i].Parser = av_parser_init(Codec[i]->id))) {
 

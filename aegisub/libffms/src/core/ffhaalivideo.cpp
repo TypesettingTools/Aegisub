@@ -31,9 +31,9 @@ void FFHaaliVideo::Free(bool CloseCodec) {
 }
 
 FFHaaliVideo::FFHaaliVideo(const char *SourceFile, int Track,
-	FFIndex *Index, const char *PP,
+	FFMS_Index *Index, const char *PP,
 	int Threads, int SourceMode, char *ErrorMsg, unsigned MsgSize)
-	: FFVideo(SourceFile, Index, ErrorMsg, MsgSize) {
+	: FFMS_VideoSource(SourceFile, Index, ErrorMsg, MsgSize) {
 
 	BitStreamFilter = NULL;
 	AVCodec *Codec = NULL;
@@ -46,9 +46,9 @@ FFHaaliVideo::FFHaaliVideo(const char *SourceFile, int Track,
 		throw ErrorMsg;
 	}
 
-	CLSID clsid = HAALI_TS_Parser;
+	CLSID clsid = HAALI_MPEG_PARSER;
 	if (SourceMode == 1)
-		clsid = HAALI_OGM_Parser;
+		clsid = HAALI_OGG_PARSER;
 
 	if (FAILED(pMMC.CoCreateInstance(clsid))) {
 		snprintf(ErrorMsg, MsgSize, "Can't create parser");
@@ -249,10 +249,9 @@ Done:
 	return 0;
 }
 
-FFAVFrame *FFHaaliVideo::GetFrame(int n, char *ErrorMsg, unsigned MsgSize) {
-	// PPFrame always holds frame LastFrameNum even if no PP is applied
+FFMS_Frame *FFHaaliVideo::GetFrame(int n, char *ErrorMsg, unsigned MsgSize) {
 	if (LastFrameNum == n)
-		return OutputFrame(DecodeFrame, ErrorMsg, MsgSize);
+		return &LocalFrame;
 
 	bool HasSeeked = false;
 	int SeekOffset = 0;

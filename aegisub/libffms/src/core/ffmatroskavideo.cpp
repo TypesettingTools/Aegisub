@@ -20,6 +20,8 @@
 
 #include "ffvideosource.h"
 
+
+
 void FFMatroskaVideo::Free(bool CloseCodec) {
 	if (CS)
 		cs_Destroy(CS);
@@ -33,9 +35,9 @@ void FFMatroskaVideo::Free(bool CloseCodec) {
 }
 
 FFMatroskaVideo::FFMatroskaVideo(const char *SourceFile, int Track,
-	FFIndex *Index, const char *PP,
+	FFMS_Index *Index, const char *PP,
 	int Threads, char *ErrorMsg, unsigned MsgSize)
-	: FFVideo(SourceFile, Index, ErrorMsg, MsgSize) {
+	: FFMS_VideoSource(SourceFile, Index, ErrorMsg, MsgSize) {
 
 	AVCodec *Codec = NULL;
 	CodecContext = NULL;
@@ -195,10 +197,9 @@ Done:
 	return 0;
 }
 
-FFAVFrame *FFMatroskaVideo::GetFrame(int n, char *ErrorMsg, unsigned MsgSize) {
-	// PPFrame always holds frame LastFrameNum even if no PP is applied
+FFMS_Frame *FFMatroskaVideo::GetFrame(int n, char *ErrorMsg, unsigned MsgSize) {
 	if (LastFrameNum == n)
-		return OutputFrame(DecodeFrame, ErrorMsg, MsgSize);
+		return &LocalFrame;
 
 	bool HasSeeked = false;
 

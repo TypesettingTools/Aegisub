@@ -20,7 +20,7 @@
 
 #include "ffvideosource.h"
 
-int FFVideo::InitPP(const char *PP, char *ErrorMsg, unsigned MsgSize) {
+int FFMS_VideoSource::InitPP(const char *PP, char *ErrorMsg, unsigned MsgSize) {
 	if (PP == NULL || !strcmp(PP, ""))
 		return 0;
 
@@ -33,7 +33,7 @@ int FFVideo::InitPP(const char *PP, char *ErrorMsg, unsigned MsgSize) {
 	return 0;
 }
 
-int FFVideo::ReAdjustPP(PixelFormat VPixelFormat, int Width, int Height, char *ErrorMsg, unsigned MsgSize) {
+int FFMS_VideoSource::ReAdjustPP(PixelFormat VPixelFormat, int Width, int Height, char *ErrorMsg, unsigned MsgSize) {
 	if (!PPMode)
 		return 0;
 
@@ -59,14 +59,14 @@ int FFVideo::ReAdjustPP(PixelFormat VPixelFormat, int Width, int Height, char *E
 	return 0;
 }
 
-static void CopyAVPictureFields(AVPicture &Picture, FFAVFrame &Dst) {
+static void CopyAVPictureFields(AVPicture &Picture, FFMS_Frame &Dst) {
 	for (int i = 0; i < 4; i++) {
 		Dst.Data[i] = Picture.data[i];
 		Dst.Linesize[i] = Picture.linesize[i];
 	}
 }
 
-FFAVFrame *FFVideo::OutputFrame(AVFrame *Frame, char *ErrorMsg, unsigned MsgSize) {
+FFMS_Frame *FFMS_VideoSource::OutputFrame(AVFrame *Frame, char *ErrorMsg, unsigned MsgSize) {
 	if (LastFrameWidth != CodecContext->width || LastFrameHeight != CodecContext->height || LastFramePixelFormat != CodecContext->pix_fmt) {
 		if (ReAdjustPP(CodecContext->pix_fmt, CodecContext->width, CodecContext->height, ErrorMsg, MsgSize))
 			return NULL;
@@ -115,7 +115,7 @@ FFAVFrame *FFVideo::OutputFrame(AVFrame *Frame, char *ErrorMsg, unsigned MsgSize
 	return &LocalFrame;
 }
 
-FFVideo::FFVideo(const char *SourceFile, FFIndex *Index, char *ErrorMsg, unsigned MsgSize) {
+FFMS_VideoSource::FFMS_VideoSource(const char *SourceFile, FFMS_Index *Index, char *ErrorMsg, unsigned MsgSize) {
 	if (Index->CompareFileSignature(SourceFile, ErrorMsg, MsgSize))
 		throw ErrorMsg;
 
@@ -140,7 +140,7 @@ FFVideo::FFVideo(const char *SourceFile, FFIndex *Index, char *ErrorMsg, unsigne
 	avpicture_alloc(&SWSFrame, PIX_FMT_GRAY8, 16, 16);
 }
 
-FFVideo::~FFVideo() {
+FFMS_VideoSource::~FFMS_VideoSource() {
 	if (PPMode)
 		pp_free_mode(PPMode);
 
@@ -155,12 +155,12 @@ FFVideo::~FFVideo() {
 	av_freep(&DecodeFrame);
 }
 
-FFAVFrame *FFVideo::GetFrameByTime(double Time, char *ErrorMsg, unsigned MsgSize) {
+FFMS_Frame *FFMS_VideoSource::GetFrameByTime(double Time, char *ErrorMsg, unsigned MsgSize) {
 	int Frame = Frames.ClosestFrameFromDTS(static_cast<int64_t>((Time * 1000 * Frames.TB.Den) / Frames.TB.Num));
 	return GetFrame(Frame, ErrorMsg, MsgSize);
 }
 
-int FFVideo::SetOutputFormat(int64_t TargetFormats, int Width, int Height, int Resizer, char *ErrorMsg, unsigned MsgSize) {
+int FFMS_VideoSource::SetOutputFormat(int64_t TargetFormats, int Width, int Height, int Resizer, char *ErrorMsg, unsigned MsgSize) {
 	this->TargetWidth = Width;
 	this->TargetHeight = Height;
 	this->TargetPixelFormats = TargetFormats;
@@ -168,7 +168,7 @@ int FFVideo::SetOutputFormat(int64_t TargetFormats, int Width, int Height, int R
 	return ReAdjustOutputFormat(TargetFormats, Width, Height, Resizer, ErrorMsg, MsgSize);
 }
 
-int FFVideo::ReAdjustOutputFormat(int64_t TargetFormats, int Width, int Height, int Resizer, char *ErrorMsg, unsigned MsgSize) {
+int FFMS_VideoSource::ReAdjustOutputFormat(int64_t TargetFormats, int Width, int Height, int Resizer, char *ErrorMsg, unsigned MsgSize) {
 	if (SWS) {
 		sws_freeContext(SWS);
 		SWS = NULL;
@@ -203,7 +203,7 @@ int FFVideo::ReAdjustOutputFormat(int64_t TargetFormats, int Width, int Height, 
 	return 0;
 }
 
-void FFVideo::ResetOutputFormat() {
+void FFMS_VideoSource::ResetOutputFormat() {
 	if (SWS) {
 		sws_freeContext(SWS);
 		SWS = NULL;

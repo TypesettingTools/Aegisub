@@ -93,15 +93,15 @@ int64_t TAudioCache::FillRequest(int64_t Start, int64_t Samples, uint8_t *Dst) {
 	return FFMIN(Ret, Start + Samples);
 }
 
-/* FFAudio base class */
+/* FFMS_AudioSource base class */
 
-FFAudio::FFAudio(const char *SourceFile, FFIndex *Index, char *ErrorMsg, unsigned MsgSize) : DecodingBuffer(AVCODEC_MAX_AUDIO_FRAME_SIZE * 10) {
+FFMS_AudioSource::FFMS_AudioSource(const char *SourceFile, FFMS_Index *Index, char *ErrorMsg, unsigned MsgSize) : DecodingBuffer(AVCODEC_MAX_AUDIO_FRAME_SIZE * 10) {
 	if (Index->CompareFileSignature(SourceFile, ErrorMsg, MsgSize))
 		throw ErrorMsg;
 
 	CurrentSample = 0;
 }
 
-FFAudio::~FFAudio() {
+FFMS_AudioSource::~FFMS_AudioSource() {
 
 }

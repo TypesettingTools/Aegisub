@@ -28,9 +28,9 @@ void FFLAVFVideo::Free(bool CloseCodec) {
 	av_close_input_file(FormatContext);
 }
 
-FFLAVFVideo::FFLAVFVideo(const char *SourceFile, int Track, FFIndex *Index,
+FFLAVFVideo::FFLAVFVideo(const char *SourceFile, int Track, FFMS_Index *Index,
 	const char *PP, int Threads, int SeekMode, char *ErrorMsg, unsigned MsgSize)
-	: FFVideo(SourceFile, Index, ErrorMsg, MsgSize) {
+	: FFMS_VideoSource(SourceFile, Index, ErrorMsg, MsgSize) {
 
 	FormatContext = NULL;
 	AVCodec *Codec = NULL;
@@ -170,10 +170,9 @@ Done:
 	return 0;
 }
 
-FFAVFrame *FFLAVFVideo::GetFrame(int n, char *ErrorMsg, unsigned MsgSize) {
-	// PPFrame always holds frame LastFrameNum even if no PP is applied
+FFMS_Frame *FFLAVFVideo::GetFrame(int n, char *ErrorMsg, unsigned MsgSize) {
 	if (LastFrameNum == n)
-		return OutputFrame(DecodeFrame, ErrorMsg, MsgSize);
+		return &LocalFrame;
 
 	bool HasSeeked = false;
 	int SeekOffset = 0;

@@ -83,9 +83,9 @@ Done:
 	return Ret;
 }
 
-FFHaaliAudio::FFHaaliAudio(const char *SourceFile, int Track, FFIndex *Index, 
+FFHaaliAudio::FFHaaliAudio(const char *SourceFile, int Track, FFMS_Index *Index, 
 						   int SourceMode, char *ErrorMsg, unsigned MsgSize)
-						   : FFAudio(SourceFile, Index, ErrorMsg, MsgSize) {
+						   : FFMS_AudioSource(SourceFile, Index, ErrorMsg, MsgSize) {
 	AVCodec *Codec = NULL;
 	CodecContext = NULL;
 	AudioTrack = Track;
@@ -96,9 +96,9 @@ FFHaaliAudio::FFHaaliAudio(const char *SourceFile, int Track, FFIndex *Index,
 		throw ErrorMsg;
 	}
 
-	CLSID clsid = HAALI_TS_Parser;
+	CLSID clsid = HAALI_MPEG_PARSER;
 	if (SourceMode == 1)
-		clsid = HAALI_OGM_Parser;
+		clsid = HAALI_OGG_PARSER;
 
 	if (FAILED(pMMC.CoCreateInstance(clsid))) {
 		snprintf(ErrorMsg, MsgSize, "Can't create parser");
