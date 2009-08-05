@@ -71,7 +71,7 @@ enum ASS_EntryType {
 
 
 
-/// DOCME
+/// @see aegisub.h
 namespace Aegisub {
 
 	/// DOCME

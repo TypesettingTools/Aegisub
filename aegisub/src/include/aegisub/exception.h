@@ -39,7 +39,7 @@
 
 
 
-/// DOCME
+/// @see aegisub.h
 namespace Aegisub {
 
 

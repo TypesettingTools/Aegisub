@@ -30,7 +30,7 @@
 // $Id$
 
 /// @file aegisub.h
-/// @brief General typedefs for Aegisub
+/// @brief General declarations for Aegisub
 /// @ingroup main_headers
 ///
 
@@ -38,12 +38,11 @@
 #pragma once
 
 
-///////////////
-// STL Headers
 #include <stdint.h>
 
 
-///////////////////
-// Aegisub headers
-//#include "video_frame.h"
-
+/// @brief Namespace for Aegisub internals
+namespace Aegisub {
+	// Empty here for now...
+	// We don't know what to put here in this file?!
+};
