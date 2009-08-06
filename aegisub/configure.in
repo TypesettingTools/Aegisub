@@ -160,7 +160,8 @@ fi
 AC_DEFINE_UNQUOTED([INSTALL_PREFIX], ["$prefix"], [Default install prefix, or --prefix.])
 
 # Build credit
-AC_ARG_WITH(build-credit, [  --with-build-credit=NAME  Build credit shown in the program title.], [use_build_credit="yes"])
+AC_ARG_WITH(build-credit, [  --with-build-credit=NAME
+                          Build credit shown in the program title.], [use_build_credit="yes"])
 AC_MSG_CHECKING([whether BUILD_CREDIT has been set])
 if test "$use_build_credit" = "yes"; then
   if test "$with_build_credit" = "yes" || test -z "$with_build_credit"; then
@@ -450,7 +451,7 @@ AC_SUBST(ALSA_LDFLAGS)
 ## PortAudio
 ############
 
-AC_ARG_WITH(portaudio,[  --without-portaudio    build without PortAudio v19 audio provider.
+AC_ARG_WITH(portaudio,[  --without-portaudio     build without PortAudio v19 audio provider.
                           (default: auto)], pulseaudio_disabled="(disabled)")
 if test "$with_portaudio" != "no"; then
   PKG_CHECK_MODULES(PORTAUDIO, portaudio-2.0 >= portaudio_required_version, [with_portaudio="yes"], [with_portaudio="no"])
@@ -862,7 +863,7 @@ fi
 ############################
 
 AC_MSG_CHECKING([whether to use precompiled headers])
-AC_ARG_ENABLE(gcc-prec, [  --enable-gcc-prec          enable GCC precompiled headers (default=no)])
+AC_ARG_ENABLE(gcc-prec, [  --enable-gcc-prec       enable GCC precompiled headers (default=no)])
 AM_CONDITIONAL([PRECOMPILED_HEADER], [test "$enable_gcc_prec" = "yes"])
 
 
