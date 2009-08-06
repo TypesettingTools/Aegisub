@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+<svg
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   version="1.0"
+   width="64"
+   height="64"
+   id="svg2385">
+  <defs
+     id="defs2387">
+    <linearGradient
+       id="linearGradient3192">
+      <stop
+         id="stop3194"
+         style="stop-color:#003380;stop-opacity:1"
+         offset="0" />
+      <stop
+         id="stop3200"
+         style="stop-color:#0066ff;stop-opacity:1"
+         offset="0.37077829" />
+      <stop
+         id="stop3196"
+         style="stop-color:#aaccff;stop-opacity:1"
+         offset="1" />
+    </linearGradient>
+    <linearGradient
+       x1="30"
+       y1="19"
+       x2="34"
+       y2="15"
+       id="linearGradient3198"
+       xlink:href="#linearGradient3192"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(2,4)" />
+  </defs>
+  <path
+     d="M 57.5,41 L 45,53 L 20,29 L 7.5,41"
+     id="path3208"
+     style="fill:none;stroke:#803300;stroke-width:2;stroke-linecap:round;stroke-linejoin:round" />
+  <path
+     d="M 45.75,36.5 L 45.25,37 L 57.5,41 L 57,40.5 L 45.75,36.5 z"
+     id="path3184"
+     style="fill:#ff6600;stroke:none;stroke-width:0.5;stroke-linecap:round;stroke-linejoin:round" />
+  <path
+     d="M 49.118062,33.126505 L 57,40.5 L 45.75,36.5 L 49.118062,33.126505 z"
+     id="rect3181"
+     style="fill:#ffcc00;stroke:none;stroke-width:1;stroke-linecap:round;stroke-linejoin:round" />
+  <path
+     d="M 20,12 C 17,9 21,5 24,8 L 49,33 L 45,37 L 20,12 z"
+     id="rect3178"
+     style="fill:url(#linearGradient3198);stroke:#002255;stroke-width:0.5;stroke-linecap:round;stroke-linejoin:round" />
+</svg>

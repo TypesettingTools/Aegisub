@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+<svg
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   version="1.0"
+   width="64"
+   height="64"
+   id="svg2385">
+  <defs
+     id="defs2387">
+    <linearGradient
+       id="linearGradient2418">
+      <stop
+         id="stop2420"
+         style="stop-color:#ffffff;stop-opacity:1"
+         offset="0" />
+      <stop
+         id="stop2422"
+         style="stop-color:#003380;stop-opacity:1"
+         offset="1" />
+    </linearGradient>
+    <radialGradient
+       cx="62.208862"
+       cy="31.68339"
+       r="14.5"
+       fx="62.208862"
+       fy="31.68339"
+       id="radialGradient2424"
+       xlink:href="#linearGradient2418"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0.9655172,0.965517,-0.9655158,0.9655186,6.5270863,-70.654618)" />
+  </defs>
+  <path
+     d="M 40,8 C 31,8 24,15 24,24 C 24,33 31,40 40,40 C 49,40 56,33 56,24 C 56,15 49,8 40,8 z M 40,10 C 47.5,10 54,16.5 54,24 C 54,31.5 47.5,38 40,38 C 32.5,38 26,31.5 26,24 C 26,16.5 32.5,10 40,10 z"
+     id="path2382"
+     style="fill:#808080;stroke:#4d4d4d;stroke-width:1;stroke-linecap:round;stroke-linejoin:round" />
+  <path
+     d="M 54,24 C 54,31.5 47.5,38 40,38 C 32.5,38 26,31.5 26,24 C 26,16.5 32.5,10 40,10 C 47.5,10 54,16.5 54,24 z"
+     id="path2389"
+     style="opacity:0.7;fill:url(#radialGradient2424);stroke:none;stroke-width:1;stroke-linecap:round;stroke-linejoin:round" />
+  <path
+     d="M 10,58 C 11.5,56.5 7.5,52.5 6,54"
+     id="path2400"
+     style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round" />
+  <path
+     d="M 26.5,33.5 L 6,54 C 4.5,55.5 8.5,59.5 10,58 L 30.5,37.5 C 29.5,37 27,34.5 26.5,33.5 z"
+     id="path2380"
+     style="fill:#803300;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round" />
+  <path
+     d="M 32,24 L 48,24 L 32,24 z"
+     id="path3198"
+     style="fill:none;stroke:#000000;stroke-width:3;stroke-linecap:round;stroke-linejoin:round" />
+</svg>
