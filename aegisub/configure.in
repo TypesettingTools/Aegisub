@@ -856,6 +856,16 @@ if test "$with_agi_cv_wxstc" = "no" || test "$enable_check_wx_stc:" = "yes"; the
 fi
 
 
+############################
+# Precompiled Header Support
+# Only works with gcc!
+############################
+
+AC_MSG_CHECKING([whether to use precompiled headers])
+AC_ARG_ENABLE(gcc-prec, [  --enable-gcc-prec          enable GCC precompiled headers (default=no)])
+AM_CONDITIONAL([PRECOMPILED_HEADER], [test "$enable_gcc_prec" = "yes"])
+
+
 ######################################################
 # Debugging support
 # This is added last so it doesn't slow down configure

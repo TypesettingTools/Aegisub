@@ -1,6 +1,7 @@
 AUTOMAKE_OPTIONS = foreign
 SUFFIXES = .c .cpp .rc
 noinst_LIBRARIES= 
+AM_CXXFLAGS = 
 
 if BUILD_DARWIN
 libosxutil_subdir = libosxutil
@@ -8,18 +9,31 @@ libosxutil_lib = libosxutil/libosxutil.a
 libosxutil_ldflags = -framework CoreFoundation
 endif
 
+if PRECOMPILED_HEADER
+BUILT_SOURCES = stdwx.h.gch
+precompiled_header = stdwx.h
+AM_CXXFLAGS += -Winvalid-pch -fpch-deps -fpch-preprocess -include stdwx.h
+nodist_aegisub_2_2_SOURCES = stdwx.h.gch
+endif
+
 SUBDIRS = \
 	bitmaps \
 	libresrc \
 	$(libosxutil_subdir)
 
-AM_CXXFLAGS = -DAEGISUB -Iinclude -I../libffms/include @WX_CPPFLAGS@ @OPENMP_CXXFLAGS@ @LIBAVFORMAT_CFLAGS@ @LIBAVCODEC_CFLAGS@ @LIBSWSCALE_CFLAGS@ @LIBAVUTIL_CFLAGS@
+AM_CXXFLAGS += -DAEGISUB -Iinclude -I../libffms/include @WX_CPPFLAGS@ @OPENMP_CXXFLAGS@ @LIBAVFORMAT_CFLAGS@ @LIBAVCODEC_CFLAGS@ @LIBSWSCALE_CFLAGS@ @LIBAVUTIL_CFLAGS@
 
 bin_PROGRAMS = aegisub-2.2
 aegisub_2_2_LDADD = libresrc/libresrc.a $(libosxutil_lib)
 aegisub_2_2_CPPFLAGS = @FREETYPE_CFLAGS@
 aegisub_2_2_LDFLAGS = @DEBUG_FLAGS@ @PROFILE_FLAGS@ @GL_LIBS@ @PTHREAD_LIBS@ @WX_LIBS@ @ICONV_LDFLAGS@ $(libosxutil_ldflags) @CCMALLOC_LDFLAGS@ @EFENCE_LDFLAGS@
 LIBS += @FREETYPE_LIBS@ @FONTCONFIG_LIBS@ @CCMALLOC_LIBS@
+
+if PRECOMPILED_HEADER
+# This doesn't depend on Makefile on purpose, you should already know what you're doing when using this.
+stdwx.h.gch: stdwx.h
+	@CXX@ -include ../acconf.h $(DEFAULT_INCLUDES) @CXXFLAGS@ $(AM_CXXFLAGS) @DEBUG_FLAGS@ @PROFILE_FLAGS@ stdwx.h
+endif
 
 if BUILD_DARWIN
 aegisub_2_2_LDFLAGS += -L/System/Library/Frameworks/OpenGL.framework/Versions/A/Libraries
@@ -132,6 +146,7 @@ endif
 ## These aren't built, but are listed here so 'make dist' can always find all the sources
 ## This should also list all Win32 specific files
 EXTRA_aegisub_2_2_SOURCES = \
+	$(precompiled_header) \
 	font_file_lister.cpp \
 	$(FONT_LISTER) \
 	audio_player_dsound.cpp \
