@@ -41,13 +41,11 @@
 
 
 
-/// @brief DOCME
-///
+/// @brief Constructor
 KanaTable::KanaTable()
 {
 
 	// Regular kana usage and combinations
-
 	Insert(L"\u3042",L"\u30a2",L"a");
 	Insert(L"\u3044",L"\u30a4",L"i");
 	Insert(L"\u3046",L"\u30a6",L"u");
@@ -142,7 +140,7 @@ KanaTable::KanaTable()
 	Insert(L"\u3057\u3083",L"\u30b7\u30e3",L"sha");
 	Insert(L"\u3057\u3085",L"\u30b7\u30e5",L"shu");
 	Insert(L"\u3057\u3087",L"\u30b7\u30e7",L"sho");
-	
+
 	Insert(L"\u3061\u3083",L"\u30c1\u30e3",L"cha");
 	Insert(L"\u3061\u3085",L"\u30c1\u30e5",L"chu");
 	Insert(L"\u3061\u3087",L"\u30c1\u30e7",L"cho");
@@ -170,7 +168,7 @@ KanaTable::KanaTable()
 	Insert(L"\u3058\u3083",L"\u30b8\u30e3",L"ja");
 	Insert(L"\u3058\u3085",L"\u30b8\u30e5",L"ju");
 	Insert(L"\u3058\u3087",L"\u30b8\u30e7",L"jo");
-	
+
 	Insert(L"\u3062\u3083",L"\u30c2\u30e3",L"ja");
 	Insert(L"\u3062\u3085",L"\u30c2\u30e5",L"ju");
 	Insert(L"\u3062\u3087",L"\u30c2\u30e7",L"jo");
@@ -269,8 +267,7 @@ KanaTable::KanaTable()
 }
 
 
-/// @brief DOCME
-///
+/// @brief Destructor
 KanaTable::~KanaTable()
 {
 	// Do nothing
@@ -278,14 +275,12 @@ KanaTable::~KanaTable()
 
 
 
-/// @brief DOCME
-/// @param hira 
-/// @param kata 
-/// @param hep  
+/// @brief Add Hiragana, Katakana and hepburn romaji tuple.
+/// @param hira Hiragana to add.
+/// @param kata Katakana to add.
+/// @param hep Hepburn romaji to add.
 ///
 void KanaTable::Insert(const wchar_t *hira, const wchar_t *kata, const wchar_t *hep)
 {
 	entries.push_back(KanaEntry(hira,kata,hep));
 }
-
-

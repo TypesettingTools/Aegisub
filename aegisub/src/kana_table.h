@@ -43,33 +43,24 @@
 
 
 
-/// DOCME
 /// @class KanaEntry
-/// @brief DOCME
-///
-/// DOCME
+/// @brief Base class for Kana + Romaji tuples.
 class KanaEntry {
 public:
 
-	/// DOCME
+	/// Hiragana
 	wxString hiragana;
 
-	/// DOCME
+	/// Katakana
 	wxString katakana;
 
-	/// DOCME
+	/// Hepburn romaji.
 	wxString hepburn;
 
 
-	/// @brief DOCME
-	///
+	/// @brief Constructor
 	KanaEntry() {}
 
-	/// @brief DOCME
-	/// @param hira 
-	/// @param kata 
-	/// @param hep  
-	///
 	KanaEntry(const wxString &hira, const wxString &kata, const wxString &hep) {
 		hiragana = hira;
 		katakana = kata;
@@ -79,21 +70,17 @@ public:
 
 
 
-/// DOCME
 /// @class KanaTable
-/// @brief DOCME
+/// @brief Table of Hiragana, Katakana and Hepburn romaji tuples.
 ///
-/// DOCME
 class KanaTable {
 private:
 	void Insert(const wchar_t *hira, const wchar_t *kata, const wchar_t *hep);
 
 public:
 
-	/// DOCME
+	/// Memory list.
 	std::list<KanaEntry> entries;
 	KanaTable();
 	~KanaTable();
 };
-
-
