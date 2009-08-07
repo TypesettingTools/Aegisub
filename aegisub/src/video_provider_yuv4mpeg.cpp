@@ -42,20 +42,15 @@
 // (yes, really)
 // With cstdio it's at least possible to work around the problem...
 #ifdef _MSC_VER
-
-/// DOCME
 #define fseeko _fseeki64
-
-/// DOCME
 #define ftello _ftelli64
 #endif
 
 
 
 
-/// @brief DOCME
-/// @param filename 
-///
+/// @brief Constructor
+/// @param filename The filename to open
 YUV4MPEGVideoProvider::YUV4MPEGVideoProvider(wxString filename) {
 	sf			= NULL;
 	w			= 0;
@@ -86,18 +81,14 @@ YUV4MPEGVideoProvider::YUV4MPEGVideoProvider(wxString filename) {
 }
 
 
-
-/// @brief DOCME
-///
+/// @brief Destructor
 YUV4MPEGVideoProvider::~YUV4MPEGVideoProvider() {
 	Close();
 }
 
 
-
-/// @brief DOCME
-/// @param _filename 
-///
+/// @brief Open a video file
+/// @param _filename	The video file to open
 void YUV4MPEGVideoProvider::LoadVideo(const wxString _filename) {
 	Close();
 
@@ -128,17 +119,19 @@ void YUV4MPEGVideoProvider::LoadVideo(const wxString _filename) {
 	if (imode == Y4M_ILACE_NOTSET)
 		imode = Y4M_ILACE_UNKNOWN;
 
+	luma_sz = w * h;
 	switch (pixfmt) {
 		case Y4M_PIXFMT_420JPEG:
 		case Y4M_PIXFMT_420MPEG2:
 		case Y4M_PIXFMT_420PALDV:
-			frame_sz = (w * h * 3) / 2; break;
+			chroma_sz	= (w * h) / 2; break;
 		case Y4M_PIXFMT_422:
-			frame_sz = (w * h * 2); break; 
-		// TODO: add support for more pixel formats
+			chroma_sz	= (w / 2) * h; break; // should be safe to assume that width is mod2
+		/// @todo add support for more pixel formats
 		default:
-			throw wxString(_T("Unsupported colorspace"));
+			throw wxString(_T("Unsupported pixel format"));
 	}
+	frame_sz	= luma_sz + chroma_sz*2; 
 
 	num_frames = IndexFile();
 	if (num_frames <= 0 || seek_table.empty())
@@ -149,9 +142,7 @@ void YUV4MPEGVideoProvider::LoadVideo(const wxString _filename) {
 }
 
 
-
-/// @brief DOCME
-///
+/// @brief Closes the currently open file (if any) and resets reader state
 void YUV4MPEGVideoProvider::Close() {
 	seek_table.clear();
 	if (sf)
@@ -160,10 +151,9 @@ void YUV4MPEGVideoProvider::Close() {
 }
 
 
-
-/// @brief verify that the file is actually a YUV4MPEG file
-/// @return 
-///
+/// @brief Checks if the file is an YUV4MPEG file or not
+/// Note that it reports the error by throwing an exception,
+/// not by returning a false value.
 void YUV4MPEGVideoProvider::CheckFileFormat() {
 	char buf[10];
 	if (fread(buf, 10, 1, sf) != 1)
@@ -175,12 +165,10 @@ void YUV4MPEGVideoProvider::CheckFileFormat() {
 }
 
 
-
-/// @brief read a frame or file header and return a list of its parameters
-/// @param startpos  
-/// @param reset_pos 
-/// @return 
-///
+/// @brief Read a frame or file header at a given file position
+/// @param startpos		The byte offset at where to start reading
+/// @param reset_pos	If true, the function will reset the file position to what it was before the function call before returning
+/// @return				A list of parameters
 std::vector<wxString> YUV4MPEGVideoProvider::ReadHeader(int64_t startpos, bool reset_pos) {
 	int64_t oldpos = ftello(sf);
 	std::vector<wxString> tags;
@@ -230,10 +218,8 @@ std::vector<wxString> YUV4MPEGVideoProvider::ReadHeader(int64_t startpos, bool r
 }
 
 
-
-/// @brief parse a file header and set file properties
-/// @param tags 
-///
+/// @brief Parses a list of parameters and sets reader state accordingly
+/// @param tags	The list of parameters to parse
 void YUV4MPEGVideoProvider::ParseFileHeader(const std::vector<wxString>& tags) {
 	if (tags.size() <= 1)
 		throw wxString(_T("ParseFileHeader: contentless header"));
@@ -318,32 +304,32 @@ void YUV4MPEGVideoProvider::ParseFileHeader(const std::vector<wxString>& tags) {
 		h = t_h;
 		fps_rat.num = t_fps_num;
 		fps_rat.den = t_fps_den;
-		pixfmt		= t_pixfmt != Y4M_PIXFMT_NONE ? t_pixfmt : Y4M_PIXFMT_420JPEG;
-		imode		= t_imode != Y4M_ILACE_NOTSET ? t_imode : Y4M_ILACE_UNKNOWN;
+		pixfmt		= t_pixfmt	!= Y4M_PIXFMT_NONE	? t_pixfmt	: Y4M_PIXFMT_420JPEG;
+		imode		= t_imode	!= Y4M_ILACE_NOTSET	? t_imode	: Y4M_ILACE_UNKNOWN;
 		inited = true;
 	}
 }
 
 
-
-/// @brief parse a frame header (currently unused)
-/// @param tags 
-/// @return 
-///
+/// @brief Parses a frame header
+/// @param tags	The list of parameters to parse
+/// @return	The flags set, as a binary mask
+///	This function is currently unimplemented (it will always return Y4M_FFLAG_NONE).
 YUV4MPEGVideoProvider::Y4M_FrameFlags YUV4MPEGVideoProvider::ParseFrameHeader(const std::vector<wxString>& tags) {
 	if (tags.front().Cmp(_("FRAME")))
 		throw wxString(_T("ParseFrameHeader: malformed frame header (bad magic)"));
 
-	// TODO: implement parsing of rff flags etc
+	/// @todo implement parsing of frame flags
 
 	return Y4M_FFLAG_NONE;
 }
 
 
-
-/// @brief index the file, i.e. find all frames and their flags
-/// @return 
-///
+/// @brief Indexes the file
+/// @return The number of frames found in the file
+/// This function goes through the file, finds and parses all file and frame headers,
+/// and creates a seek table that lists the byte positions of all frames so seeking
+/// can easily be done.
 int YUV4MPEGVideoProvider::IndexFile() {
 	int framecount = 0;
 	int64_t curpos = ftello(sf);
@@ -375,7 +361,7 @@ int YUV4MPEGVideoProvider::IndexFile() {
 				throw wxString::Format(_T("IndexFile: failed seeking to position %d"), curpos + frame_sz);
 		}
 		else {
-			// TODO: implement this
+			/// @todo implement rff flags etc
 		}
 	}
 
@@ -384,10 +370,9 @@ int YUV4MPEGVideoProvider::IndexFile() {
 
 
 
-/// @brief DOCME
-/// @param n 
-/// @return 
-///
+/// @brief	Gets a given frame
+/// @param n	The frame number to return
+/// @return		The video frame
 const AegiVideoFrame YUV4MPEGVideoProvider::GetFrame(int n) {
 	// don't try to seek to insane places
 	if (n < 0)
@@ -399,15 +384,15 @@ const AegiVideoFrame YUV4MPEGVideoProvider::GetFrame(int n) {
 
 	VideoFrameFormat src_fmt, dst_fmt;
 	dst_fmt = FORMAT_RGB32;
-	int uv_width, uv_height;
+	int uv_width;
 	switch (pixfmt) {
 		case Y4M_PIXFMT_420JPEG:
 		case Y4M_PIXFMT_420MPEG2:
 		case Y4M_PIXFMT_420PALDV:
-			src_fmt = FORMAT_YV12; uv_width = w / 2; uv_height = h / 2; break;
+			src_fmt = FORMAT_YV12; uv_width = w / 2; break;
 		case Y4M_PIXFMT_422:
-			src_fmt = FORMAT_YUY2; uv_width = w / 2; uv_height = h; break; 
-		// TODO: add support for more pixel formats
+			src_fmt = FORMAT_YUY2; uv_width = w / 2; break; 
+		/// @todo add support for more pixel formats
 		default:
 			throw wxString(_T("YUV4MPEG video provider: GetFrame: Unsupported source colorspace"));
 	}
@@ -419,16 +404,17 @@ const AegiVideoFrame YUV4MPEGVideoProvider::GetFrame(int n) {
 	tmp_frame.h = h;
 	tmp_frame.invertChannels = false;
 	tmp_frame.pitch[0] = w;
-	for (int i=1;i<=2;i++) tmp_frame.pitch[i] = uv_width;
+	for (int i=1;i<=2;i++)
+		tmp_frame.pitch[i] = uv_width;
 	tmp_frame.Allocate();
 
 	fseeko(sf, seek_table[n], SEEK_SET);
 	size_t ret;
-	ret = fread(tmp_frame.data[0], w * h, 1, sf);
+	ret = fread(tmp_frame.data[0], luma_sz, 1, sf);
 	if (ret != 1 || feof(sf) || ferror(sf))
 		throw wxString(_T("YUV4MPEG video provider: GetFrame: failed to read luma plane"));
 	for (int i = 1; i <= 2; i++) {
-		ret = fread(tmp_frame.data[i], uv_width * uv_height, 1, sf);
+		ret = fread(tmp_frame.data[i], chroma_sz, 1, sf);
 		if (ret != 1 || feof(sf) || ferror(sf))
 			throw wxString(_T("YUV4MPEG video provider: GetFrame: failed to read chroma planes"));
 	}
@@ -448,44 +434,24 @@ const AegiVideoFrame YUV4MPEGVideoProvider::GetFrame(int n) {
 
 
 
-
-/// @brief Utility functions 
-/// @return 
-///
+// Utility functions
 int YUV4MPEGVideoProvider::GetWidth() {
 	return w;
 }
 
-
-/// @brief DOCME
-/// @return 
-///
 int YUV4MPEGVideoProvider::GetHeight() {
 	return h;
 }
 
-
-/// @brief DOCME
-/// @return 
-///
 int YUV4MPEGVideoProvider::GetFrameCount() {
 	return num_frames;
 }
 
-
-/// @brief DOCME
-/// @return 
-///
 int YUV4MPEGVideoProvider::GetPosition() {
 	return cur_fn;
 }
 
-
-/// @brief DOCME
-///
 double YUV4MPEGVideoProvider::GetFPS() {
 	return double(fps_rat.num) / double(fps_rat.den);
 }
-
-
 

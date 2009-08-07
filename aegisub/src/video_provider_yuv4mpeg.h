@@ -45,163 +45,95 @@
 #include <vector>
 
 
-/// DOCME
+/// the maximum allowed header length, in bytes
 #define YUV4MPEG_HEADER_MAXLEN 128
 
 
 
 /// @class YUV4MPEGVideoProvider
-/// @brief DOCME
-///
-/// DOCME
+/// @brief Implements reading of YUV4MPEG uncompressed video files
 class YUV4MPEGVideoProvider : public VideoProvider {
 private:
-
-	/// DOCME
+	/// Pixel formats
 	enum Y4M_PixelFormat {
+		Y4M_PIXFMT_NONE		= -1,	/// not set/unknown
 
-		/// DOCME
-		Y4M_PIXFMT_NONE		= -1,
+		/// 4:2:0 sampling variants.
+		/// afaict the only difference between these three
+		/// is the chroma sample location, and nobody cares about that. 
+		Y4M_PIXFMT_420JPEG,		/// 4:2:0, H/V centered, for JPEG/MPEG-1
+		Y4M_PIXFMT_420MPEG2,	/// 4:2:0, H cosited, for MPEG-2
+		Y4M_PIXFMT_420PALDV,	/// 4:2:0, alternating Cb/Cr, for PAL-DV
 
-		/// DOCME
-		Y4M_PIXFMT_420JPEG,			// afaict the only difference between
+		Y4M_PIXFMT_411,			/// 4:1:1, H cosited
+		Y4M_PIXFMT_422,			/// 4:2:2, H cosited
+		Y4M_PIXFMT_444,			/// 4:4:4, i.e. no chroma subsampling
+		Y4M_PIXFMT_444ALPHA,	/// 4:4:4 plus alpha channel
 
-		/// DOCME
-		Y4M_PIXFMT_420MPEG2,		// these three is the chroma sample location,
-
-		/// DOCME
-		Y4M_PIXFMT_420PALDV,		// and nobody cares about that.
-
-		/// DOCME
-		Y4M_PIXFMT_411,
-
-		/// DOCME
-		Y4M_PIXFMT_422,
-
-		/// DOCME
-		Y4M_PIXFMT_444,
-
-		/// DOCME
-		Y4M_PIXFMT_444ALPHA,
-
-		/// DOCME
-		Y4M_PIXFMT_MONO,
+		Y4M_PIXFMT_MONO,		/// luma only (grayscale)
 	};
 
 
-	/// DOCME
+	/// Interlacing mode for an entire stream
 	enum Y4M_InterlacingMode {
+		Y4M_ILACE_NOTSET = -1,	/// undefined
+		Y4M_ILACE_PROGRESSIVE,	/// progressive (no interlacing)
 
-		/// DOCME
-		Y4M_ILACE_NOTSET = -1, // not to be confused with Y4M_ILACE_UNKNOWN
+		Y4M_ILACE_TFF,			/// interlaced, top field first
+		Y4M_ILACE_BFF,			/// interlaced, bottom field first
 
-		/// DOCME
-		Y4M_ILACE_PROGRESSIVE,
-
-		/// DOCME
-		Y4M_ILACE_TFF,
-
-		/// DOCME
-		Y4M_ILACE_BFF,
-
-		/// DOCME
-		Y4M_ILACE_MIXED,
-
-		/// DOCME
-		Y4M_ILACE_UNKNOWN,
+		Y4M_ILACE_MIXED,		/// mixed interlaced/progressive, possibly with RFF flags
+		Y4M_ILACE_UNKNOWN,		/// unknown interlacing mode (not the same as undefined)
 	};
 
 
-	/// DOCME
+	/// Frame information flags
 	enum Y4M_FrameFlags {
+		Y4M_FFLAG_NOTSET	= -1,		/// undefined
+		Y4M_FFLAG_NONE		= 0x0000,	/// no flags set
 
-		/// DOCME
-		Y4M_FFLAG_NOTSET	= -1,
+		/// field order/repeat field flags
+		Y4M_FFLAG_R_TFF		= 0x0001,	/// top field first
+		Y4M_FFLAG_R_TFF_R	= 0x0002,	/// top field first, and repeat that field
+		Y4M_FFLAG_R_BFF		= 0x0004,	/// bottom field first
+		Y4M_FFLAG_R_BFF_R	= 0x0008,	/// bottom field first, and repeat that field
+		Y4M_FFLAG_R_P		= 0x0010,	/// progressive
+		Y4M_FFLAG_R_P_R		= 0x0020,	/// progressive, and repeat frame once
+		Y4M_FFLAG_R_P_RR	= 0x0040,	/// progressive, and repeat frame twice
 
-		/// DOCME
-		Y4M_FFLAG_NONE		= 0x0000,
+		/// temporal sampling flags
+		Y4M_FFLAG_T_P		= 0x0080,	/// progressive (fields sampled at the same time)
+		Y4M_FFLAG_T_I		= 0x0100,	/// interlaced (fields sampled at different times)
 
-		/// DOCME
-		Y4M_FFLAG_R_TFF		= 0x0001, // TFF
-
-		/// DOCME
-		Y4M_FFLAG_R_TFF_R	= 0x0002, // TFF and repeat
-
-		/// DOCME
-		Y4M_FFLAG_R_BFF		= 0x0004, // BFF
-
-		/// DOCME
-		Y4M_FFLAG_R_BFF_R	= 0x0008, // BFF and repeat
-
-		/// DOCME
-		Y4M_FFLAG_R_P		= 0x0010, // progressive
-
-		/// DOCME
-		Y4M_FFLAG_R_P_R		= 0x0020, // progressive and repeat once
-
-		/// DOCME
-		Y4M_FFLAG_R_P_RR	= 0x0040, // progressive and repeat twice
-
-		/// DOCME
-		Y4M_FFLAG_T_P		= 0x0080, // progressive (fields sampled at the same time)
-
-		/// DOCME
-		Y4M_FFLAG_T_I		= 0x0100, // interlaced (fields sampled at different times)
-
-		/// DOCME
-		Y4M_FFLAG_C_P		= 0x0200, // progressive (whole frame subsampled)
-
-		/// DOCME
-		Y4M_FFLAG_C_I		= 0x0400, // interlaced (fields subsampled independently)
-
-		/// DOCME
-		Y4M_FFLAG_C_UNKNOWN = 0x0800, // unknown (only allowed for non-4:2:0 sampling)
+		/// chroma subsampling flags
+		Y4M_FFLAG_C_P		= 0x0200,	/// progressive (whole frame subsampled)
+		Y4M_FFLAG_C_I		= 0x0400,	/// interlaced (fields subsampled independently)
+		Y4M_FFLAG_C_UNKNOWN = 0x0800,	/// unknown (only allowed for non-4:2:0 sampling)
 	};
 
 
-	/// DOCME
-	FILE *sf;		// source file
+	FILE *sf;		/// source file
+	bool inited;	/// initialization state
 
-	/// DOCME
-	bool inited;
+	int w, h;		/// frame width/height
+	int num_frames; /// length of file in frames
+	int frame_sz;	/// size of each frame in bytes
+	int luma_sz;	/// size of the luma plane of each frame, in bytes
+	int chroma_sz;	/// size of one of the two chroma planes of each frame, in bytes	
+	int cur_fn;		/// current frame number
 
-	/// DOCME
-
-	/// DOCME
-	int w, h;		// width/height
-
-	/// DOCME
-	int num_frames; // length of file in frames
-
-	/// DOCME
-	int frame_sz;	// size of each frame in bytes
-
-	/// DOCME
-	Y4M_PixelFormat pixfmt; // colorspace/pixel format
-
-	/// DOCME
-	Y4M_InterlacingMode imode; // interlacing mode
+	Y4M_PixelFormat pixfmt;		/// colorspace/pixel format
+	Y4M_InterlacingMode imode;	/// interlacing mode (for the entire stream)
 	struct {
+		int num;	/// numerator
+		int den;	/// denominator
+	} fps_rat;		/// framerate
 
-		/// DOCME
-		int num;
+	/// a list of byte positions detailing where in the file
+	/// each frame header can be found
+	std::vector<int64_t> seek_table;
 
-		/// DOCME
-		int den;
-
-	/// DOCME
-	} fps_rat;		// framerate
-
-
-	/// DOCME
-	std::vector<int64_t> seek_table;	// the position in the file of each frame, in bytes
-
-	/// DOCME
-	int cur_fn;							// current frame number
-
-
-	/// DOCME
-	wxString errmsg;
+	wxString errmsg;	/// error message
 
 	void LoadVideo(const wxString filename);
 	void Close();
@@ -224,33 +156,11 @@ public:
 	int GetHeight();
 	double GetFPS();
 
-	/// @brief DOCME
-	/// @return 
-	///
 	bool AreKeyFramesLoaded() { return false; }
-
-	/// @brief DOCME
-	/// @return 
-	///
 	wxArrayInt GetKeyFrames() { return wxArrayInt(); }
-
-	/// @brief DOCME
-	/// @return 
-	///
 	bool IsVFR() { return false; };
-
-	/// @brief DOCME
-	/// @return 
-	///
 	FrameRate GetTrueFrameRate() { return FrameRate(); }
-
-	/// @brief DOCME
-	/// @return 
-	///
 	wxString GetDecoderName() { return L"YUV4MPEG"; }
-
-	/// @brief DOCME
-	///
 	int GetDesiredCacheSize() { return 8; }
 };
 
