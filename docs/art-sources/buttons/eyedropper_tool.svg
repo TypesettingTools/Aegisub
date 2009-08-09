@@ -12,19 +12,19 @@
   <path
      d="M 11,51 C 12,50 14,52 13,53"
      id="path3185"
-     style="fill:none;stroke:#333333;stroke-width:0.5;stroke-linecap:round;stroke-linejoin:round" />
+     style="fill:none;stroke:#333333;stroke-width:1;stroke-linecap:round;stroke-linejoin:round" />
   <path
      d="M 47,12 C 51,8 56,13 52,17 L 48,21 L 43,16 L 47,12 z"
      id="path3183"
-     style="fill:#666666;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round" />
+     style="fill:#808080;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round" />
   <path
-     d="M 46,18 C 49.903229,21.903229 51.5,26.5 49.5,28.5 L 45.5,32.5 L 31.5,18.5 L 35.5,14.5 C 37.5,12.5 42.096771,14.09677 46,18 z"
+     d="M 46,18 C 50,22 51.5,26.5 49.5,28.5 L 45.5,32.5 L 31.5,18.5 L 35.5,14.5 C 37.5,12.5 42,14 46,18 z"
      id="path2403"
-     style="fill:#666666;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round" />
+     style="fill:#808080;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round" />
   <path
-     d="M 42,22 C 45.903229,25.90323 47.451615,30.548385 45.5,32.5 C 43.548385,34.451615 38.90323,32.903229 35,29 C 31.096771,25.09677 29.548385,20.451615 31.5,18.5 C 33.451615,16.548385 38.09677,18.096771 42,22 z"
+     d="M 42,22 C 46,26 47.5,30.5 45.5,32.5 C 43.5,34.5 39,33 35,29 C 31,25 29.5,20.5 31.5,18.5 C 33.5,16.5 38,18 42,22 z"
      id="path2380"
-     style="fill:#333333;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round" />
+     style="fill:#4d4d4d;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round" />
   <path
      d="M 33,18 C 31.5,19.5 34.5,24.5 37,27 C 39.5,29.5 44.5,32.5 46,31"
      id="path2405"
@@ -32,5 +32,5 @@
   <path
      d="M 38,22 C 40,22 42,24 42,26 L 20,48 C 18,50 16,49.5 13,53 C 12,54 10,52 11,51 C 14.5,48 14,46 16,44 L 38,22 z"
      id="path3181"
-     style="fill:#ffffff;fill-opacity:0.5;stroke:#333333;stroke-width:0.5;stroke-linecap:round;stroke-linejoin:round" />
+     style="fill:#ffffff;fill-opacity:0.5;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round" />
 </svg>

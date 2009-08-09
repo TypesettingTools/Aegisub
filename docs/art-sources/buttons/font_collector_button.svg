@@ -10,27 +10,27 @@
   <defs
      id="defs2387" />
   <path
-     d="M 8,10 L 34,10 L 34,46 L 8,46 L 8,10 z"
+     d="M 6,6 L 32,6 L 32,42 L 6,42 L 6,6 z"
      id="path3161"
-     style="fill:#ffffff;stroke:#002255;stroke-width:1;stroke-linecap:round;stroke-linejoin:round" />
+     style="fill:#ffffff;stroke:#002255;stroke-width:2;stroke-linecap:round;stroke-linejoin:round" />
   <path
-     d="M 12,14 L 38,14 L 38,50 L 12,50 L 12,14 z"
+     d="M 12,12 L 38,12 L 38,48 L 12,48 L 12,12 z"
      id="rect2382"
-     style="fill:#ffffff;stroke:#003380;stroke-width:1;stroke-linecap:round;stroke-linejoin:round" />
+     style="fill:#ffffff;stroke:#003380;stroke-width:2;stroke-linecap:round;stroke-linejoin:round" />
   <path
-     d="M 16,18 L 42,18 L 42,54 L 16,54 L 16,18 z"
+     d="M 18,18 L 44,18 L 44,54 L 18,54 L 18,18 z"
      id="path3165"
-     style="fill:#ffffff;stroke:#0055d4;stroke-width:1;stroke-linecap:round;stroke-linejoin:round" />
+     style="fill:#ffffff;stroke:#0055d4;stroke-width:2;stroke-linecap:round;stroke-linejoin:round" />
   <path
-     d="M 37,26 L 37,30.5 L 36.5,30.5 C 36.5,26.5 33.5,27 30.5,27 L 30.5,42 C 30.5,44 31.5,44.5 33.5,44.5 L 33.5,45 L 24.5,45 L 24.5,44.5 C 26.5,44.5 27.5,44 27.5,42 L 27.5,27 C 24.5,27 21.5,26.5 21.5,30.5 L 21,30.5 L 21,26 L 37,26 z"
+     d="M 39,26 L 39,30.5 L 38.5,30.5 C 38.5,26.5 35.5,27 32.5,27 L 32.5,42 C 32.5,44 33.5,44.5 35.5,44.5 L 35.5,45 L 26.5,45 L 26.5,44.5 C 28.5,44.5 29.5,44 29.5,42 L 29.5,27 C 26.5,27 23.5,26.5 23.5,30.5 L 23,30.5 L 23,26 L 39,26 z"
      id="path3167"
      style="fill:#0055d4;stroke:#0055d4;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4" />
   <path
-     d="M 42,33 L 42,36.5 C 43.932,36.5 45.5,38.068 45.5,40 C 45.5,41.932 43.932,43.5 42,43.5 C 40.413,43.5 39.084713,42.448677 38.65625,41 L 35.09375,41 C 35.581309,44.388751 38.476998,47 42,47 C 45.173187,47 47.861108,44.896212 48.71875,42 L 58,42 L 58,38 L 48.71875,38 C 47.861108,35.103788 45.173187,33 42,33 z"
+     d="M 44,33 L 44,36.5 C 45.932,36.5 47.5,38.068 47.5,40 C 47.5,41.932 45.932,43.5 44,43.5 C 42.413,43.5 41.084713,42.448677 40.65625,41 L 37.09375,41 C 37.581309,44.388751 40.476998,47 44,47 C 47.173187,47 49.861108,44.896212 50.71875,42 L 60,42 L 60,38 L 50.71875,38 C 49.861108,35.103788 47.173187,33 44,33 z"
      id="path3192"
-     style="fill:#808080;stroke:#333333;stroke-width:1;stroke-linecap:butt;stroke-linejoin:round" />
+     style="fill:#999999;stroke:#333333;stroke-width:1;stroke-linecap:butt;stroke-linejoin:round" />
   <path
-     d="M 42,32 L 42,38"
+     d="M 44,32 L 44,38"
      id="path3203"
-     style="fill:none;stroke:#0055d4;stroke-width:1;stroke-linecap:round;stroke-linejoin:round" />
+     style="fill:none;stroke:#0055d4;stroke-width:2;stroke-linecap:round;stroke-linejoin:round" />
 </svg>

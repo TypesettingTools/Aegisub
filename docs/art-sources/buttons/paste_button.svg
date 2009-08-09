@@ -10,27 +10,23 @@
   <defs
      id="defs2387" />
   <path
-     d="M 21.5,10 L 20,14 L 36,14 L 34.5,10 L 21.5,10 z"
-     id="path2409"
-     style="opacity:1;fill:#ffcc00;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:round;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:inline;overflow:visible;enable-background:accumulate" />
-  <path
-     d="M 14,12 L 42,12 C 44.082585,12 46,13.917415 46,16 L 46,54 C 46,56.082585 44.082585,58 42,58 L 14,58 C 11.917415,58 10,56.082585 10,54 L 10,16 C 10,13.917415 11.917415,12 14,12 z"
+     d="M 14,10 L 42,10 C 44,10 46,12 46,14 L 46,56 C 46,58 44,60 42,60 L 14,60 C 12,60 10,58 10,56 L 10,14 C 10,12 12,10 14,10 z"
      id="rect2383"
-     style="fill:#a05a2c;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:round;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:inline;overflow:visible;enable-background:accumulate" />
+     style="fill:#a05a2c;stroke:#000000;stroke-width:2;stroke-linecap:round;stroke-linejoin:round" />
   <path
-     d="M 31,20 L 50,20 L 50,27 L 56,27 L 56,52 L 31,52 L 31,20 z"
-     id="path3467"
-     style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:#003380;stroke-width:1;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
-  <path
-     d="M 35.5,27 L 45.5,27 L 35.5,27 z M 35.5,31 L 45.5,31 L 35.5,31 z M 35.5,35 L 51.5,35 L 35.5,35 z M 35.5,39 L 51.5,39 L 35.5,39 z M 35.5,43 L 51.5,43 L 35.5,43 z M 35.5,47 L 51.5,47 L 35.5,47 z"
-     id="path3469"
-     style="opacity:1;fill:none;fill-opacity:1;fill-rule:nonzero;stroke:#003380;stroke-width:1;stroke-linecap:butt;stroke-linejoin:round;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:inline;overflow:visible;enable-background:accumulate" />
-  <path
-     d="M 50,20 L 56,27 L 50,27 L 50,20 z"
-     id="path3471"
-     style="fill:#cccccc;fill-opacity:1;fill-rule:nonzero;stroke:#003380;stroke-width:1;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
-  <path
-     d="M 25,3 C 23,3 22,4 22,6 L 20,6 L 15,17 L 40.751836,17 L 36,6 L 34,6 C 34,4 33,3 31,3 L 25,3 z M 26.5,5.5 L 29.5,5.5 C 31,5.5 32,6.5 32,8 L 24,8 C 24,6.5 25,5.5 26.5,5.5 z M 21.5,10 L 34.5,10 L 36,14 L 20,14 L 21.5,10 z"
+     d="M 18,8 L 13,15 L 43,15 L 38,8 L 32,8 C 32,5.5 30.5,4 28,4 C 25.5,4 24,5.5 24,8 L 18,8 z"
      id="path2388"
-     style="opacity:1;fill:#ffcc00;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:round;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:inline;overflow:visible;enable-background:accumulate" />
+     style="fill:#ffcc00;stroke:#000000;stroke-width:2;stroke-linecap:round;stroke-linejoin:round" />
+  <path
+     d="M 29,19 L 48,19 L 48,28 L 56,28 L 56,56 L 29,56 L 29,19 z"
+     id="path2463"
+     style="fill:#ffffff;stroke:#003380;stroke-width:2;stroke-linecap:round;stroke-linejoin:round" />
+  <path
+     d="M 34.5,25.5 L 44,25.5 L 34.5,25.5 z M 34.5,30.5 L 44,30.5 L 34.5,30.5 z M 34.5,35.5 L 50.5,35.5 L 34.5,35.5 z M 34.5,40.5 L 50.5,40.5 L 34.5,40.5 z M 34.5,45.5 L 50.5,45.5 L 34.5,45.5 z M 34.5,50.5 L 50.5,50.5 L 34.5,50.5 z"
+     id="path2465"
+     style="fill:none;stroke:#003380;stroke-width:1;stroke-linecap:round;stroke-linejoin:round" />
+  <path
+     d="M 48,19 L 56,28 L 48,28 L 48,19 z"
+     id="path2467"
+     style="fill:#cccccc;stroke:#003380;stroke-width:2;stroke-linecap:round;stroke-linejoin:round" />
 </svg>

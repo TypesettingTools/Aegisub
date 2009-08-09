@@ -10,7 +10,7 @@
   <defs
      id="defs5" />
   <path
-     d="M 52,32 C 52,43 43,52 32,52 C 21,52 12,43 12,32 C 12,21 21,12 32,12 C 43,12 52,21 52,32 z"
+     d="M 52,32 C 52,58.5 12,58.5 12,32 C 12,5.5 52,5.5 52,32 z"
      id="path2698"
-     style="fill:#ff0000;stroke:#800000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:round" />
+     style="fill:#ff0000;stroke:#800000;stroke-width:2;stroke-linecap:round;stroke-linejoin:round" />
 </svg>

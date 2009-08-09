@@ -10,35 +10,27 @@
   <defs
      id="defs2387" />
   <path
-     d="M 8,30 L 9.5,31 L 9.5,39 L 8,40 L 8,30 z"
+     d="M 3,29 L 4.5,30 L 4.5,40 L 3,41 L 3,29 z"
      id="rect3182"
-     style="fill:#550044;stroke:#550044;stroke-width:1;stroke-linecap:round;stroke-linejoin:round" />
+     style="fill:#002255;stroke:#002255;stroke-width:2;stroke-linecap:round;stroke-linejoin:round" />
   <path
-     d="M 38,20 L 58,34 L 28,54 L 8,40 L 38,20 z"
+     d="M 37,17 L 61,35 L 27,59 L 3,41 L 37,17 z"
      id="path2398"
-     style="fill:#ff55dd;stroke:#550044;stroke-width:1;stroke-linecap:round;stroke-linejoin:round" />
+     style="fill:#2a7fff;stroke:#002255;stroke-width:2;stroke-linecap:round;stroke-linejoin:round" />
   <path
-     d="M 9.5,31.5 L 28,44.5 L 56,26 L 56,34 L 28,52.5 L 9.5,39.5 L 9.5,31.5 z"
+     d="M 4.5,30.5 L 27,45.5 L 59,25 L 59,35 L 27,57.5 L 4.5,40.5 L 4.5,30.5 z"
      id="rect3179"
-     style="fill:#ffffff;stroke:#808080;stroke-width:0.25;stroke-linecap:round;stroke-linejoin:round" />
+     style="fill:#ffffff;stroke:#808080;stroke-width:1;stroke-linecap:round;stroke-linejoin:round" />
   <path
-     d="M 38,10 L 58,24 L 28,44 L 8,30 L 38,10 z"
-     id="rect2395"
-     style="fill:#ff55dd;stroke:#550044;stroke-width:1;stroke-linecap:round;stroke-linejoin:round" />
-  <path
-     d="M 9.5,34 L 28,47 L 56,28.5"
-     id="path2385"
-     style="fill:none;stroke:#808080;stroke-width:0.25;stroke-linecap:round;stroke-linejoin:round" />
-  <path
-     d="M 9.5,37 L 28,50 L 56,31.5"
-     id="path2387"
-     style="fill:none;stroke:#808080;stroke-width:0.25;stroke-linecap:round;stroke-linejoin:round" />
-  <path
-     d="M 35.4375,17.625 C 34.7665,17.696271 34.159252,17.911743 33.78125,18.40625 C 33.22835,19.20867 33.576192,20.333504 34.6875,20.6875 C 36.118095,21.190168 37.986945,21.037982 39,22.15625 C 39.800909,22.869714 40.67212,23.971828 39.875,24.90625 C 38.553666,26.249801 36.214272,26.345041 34.25,26.46875 C 33.71189,26.507181 32.906904,26.53688 32.53125,26.5625 C 30.282139,26.631025 27.760998,26.72751 26,28 C 25.564026,28.315043 25.123473,28.622456 24.6875,28.9375 C 25.730665,29.861394 26.769335,30.794855 27.8125,31.71875 C 28.71014,31.105112 29.616731,30.412166 30.75,30.09375 C 32.753706,29.935908 34.922209,29.901103 36.96875,29.625 C 39.200722,29.298008 41.709665,28.972805 43.28125,27.53125 C 45.127506,26.017075 45.170861,23.580582 44,21.78125 C 42.789029,19.691436 40.242783,18.221137 37.46875,17.71875 C 36.851057,17.617278 36.1085,17.553729 35.4375,17.625 z M 23,30 C 21.5,30 20,31 20,32.5 C 20,34 21.5,35 23,35 C 24.5,35 26,34 26,32.5 C 26,31 24.5,30 23,30 z"
-     id="text2395"
-     style="fill:#ffff00;stroke:#ff55dd;stroke-width:0.75;stroke-linecap:round;stroke-linejoin:round" />
-  <path
-     d="M 28,44.5 L 28,52.5"
+     d="M 27,47.5 L 27,57.5"
      id="path2452"
-     style="fill:none;stroke:#808080;stroke-width:0.25;stroke-linecap:round;stroke-linejoin:round" />
+     style="fill:none;stroke:#808080;stroke-width:1;stroke-linecap:round;stroke-linejoin:round" />
+  <path
+     d="M 37,5 L 61,23 L 27,47 L 3,29 L 37,5 z"
+     id="rect2395"
+     style="fill:#2a7fff;stroke:#002255;stroke-width:2;stroke-linecap:round;stroke-linejoin:round" />
+  <path
+     d="M 37.1,14.2 C 35.1,14.2 33.5,15.9 35.5,17.5 C 37.5,19 42,19 41,22 C 40.5,23.5 37.5,23 35.5,23 C 32.5,23 30,23.5 28.5,24 C 27,24.5 26,25.5 25.5,26 L 28.5,28.5 C 29.5,27.5 30,27.5 32,27 C 36,26.5 41.5,27.5 44.5,24.5 C 49,20 42.5,16 38.5,14.5 C 38,14.3 37.6,14.2 37.1,14.2 z M 22,29 C 20.5,29 19,30 19,31.5 C 19,33 20.5,34 22,34 C 23.5,34 25,33 25,31.5 C 25,30 23.5,29 22,29 z"
+     id="path3312"
+     style="fill:#ffff00;stroke:#ffff00;stroke-width:2;stroke-linecap:round;stroke-linejoin:round" />
 </svg>

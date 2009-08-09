@@ -10,11 +10,11 @@
   <defs
      id="defs5" />
   <path
-     d="M 14,38 C -2,12 34,12 50,38"
-     id="path2426"
+     d="M 13,39 C -3,13 33,13 49,39"
+     id="path2388"
      style="fill:none;stroke:#002060;stroke-width:5;stroke-linecap:round;stroke-linejoin:round" />
   <path
-     d="M 40,45.5 L 58,45.5 L 58,27.5 L 40,45.5 z"
-     id="path3198"
+     d="M 39,46.5 L 57,46.5 L 57,28.5 L 39,46.5 z"
+     id="path2390"
      style="fill:#002060;stroke:#002060;stroke-width:1;stroke-linecap:round;stroke-linejoin:round" />
 </svg>
