@@ -10,7 +10,11 @@
   <defs
      id="defs2385" />
   <path
-     d="M 49.5,10 L 24,43 L 14.5,34 C 11.5,31.158 7,34.667 9.5,38 L 21.5,54 C 23,56 25.117,56 26.5,54 L 54.5,13.5 C 57,9.884 52.205,6.5 49.5,10 z"
+     d="M 46,6.5 L 25.5,32.5 L 18,25.5 C 15.5,23 12,26 14,29 L 23.5,41.5 C 24.5,43 26.5,43 27.5,41.5 L 50,9 C 52,6 48,3.5 46,6.5 z"
      id="path2383"
-     style="fill:#00ff00;stroke:#000000;stroke-width:2;stroke-linecap:round;stroke-linejoin:round" />
+     style="fill:#00ff00;stroke:#000000;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round" />
+  <path
+     d="M 10.5,54 L 13.5,54 L 12,50 L 10.5,54 z M 11,46 L 13,46 L 18,60 L 15.5,60 L 14,56 L 10,56 L 8.5,60 L 6,60 L 11,46 z M 19.5,46 L 22,46 L 22,55 C 22,58.5 28,58.5 28,55 L 28,46 L 30.5,46 L 30.5,55 C 30.5,62 19.5,62 19.5,55 L 19.5,46 z M 36.5,60 L 36.5,48.5 L 32.5,48.5 L 32.5,46 L 43,46 L 43,48.5 L 39,48.5 L 39,60 L 36.5,60 z M 51,57.5 C 57,57.5 57,48.5 51,48.5 C 45,48.5 45,57.5 51,57.5 z M 51,46 C 60.5,46 60.5,60 51,60 C 41.5,60 41.5,46 51,46 z"
+     id="text2381"
+     style="fill:#0000ff;stroke:#0000ff;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4" />
 </svg>

@@ -18,38 +18,30 @@
          offset="0" />
       <stop
          id="stop2422"
-         style="stop-color:#003380;stop-opacity:1"
+         style="stop-color:#5985c7;stop-opacity:1"
          offset="1" />
     </linearGradient>
     <radialGradient
-       cx="62.208862"
+       cx="60.137436"
        cy="31.68339"
        r="14.5"
-       fx="62.208862"
+       fx="60.137436"
        fy="31.68339"
        id="radialGradient2424"
        xlink:href="#linearGradient2418"
        gradientUnits="userSpaceOnUse"
-       gradientTransform="matrix(0.9655172,0.965517,-0.9655158,0.9655186,6.5270863,-70.654618)" />
+       gradientTransform="matrix(0.9655172,0.965517,-0.9655158,0.9655186,8.527086,-72.654618)" />
   </defs>
   <path
-     d="M 40,8 C 31,8 24,15 24,24 C 24,33 31,40 40,40 C 49,40 56,33 56,24 C 56,15 49,8 40,8 z M 40,10 C 47.5,10 54,16.5 54,24 C 54,31.5 47.5,38 40,38 C 32.5,38 26,31.5 26,24 C 26,16.5 32.5,10 40,10 z"
+     d="M 42,6 C 33,6 26,13 26,22 C 26,31 33,38 42,38 C 51,38 58,31 58,22 C 58,13 51,6 42,6 z"
      id="path2382"
-     style="fill:#808080;stroke:#4d4d4d;stroke-width:1;stroke-linecap:round;stroke-linejoin:round" />
+     style="fill:url(#radialGradient2424);stroke:#4d4d4d;stroke-width:2;stroke-linecap:round;stroke-linejoin:round" />
   <path
-     d="M 54,24 C 54,31.5 47.5,38 40,38 C 32.5,38 26,31.5 26,24 C 26,16.5 32.5,10 40,10 C 47.5,10 54,16.5 54,24 z"
-     id="path2389"
-     style="opacity:0.7;fill:url(#radialGradient2424);stroke:none;stroke-width:1;stroke-linecap:round;stroke-linejoin:round" />
-  <path
-     d="M 10,58 C 11.5,56.5 7.5,52.5 6,54"
-     id="path2400"
-     style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round" />
-  <path
-     d="M 26.5,33.5 L 6,54 C 4.5,55.5 8.5,59.5 10,58 L 30.5,37.5 C 29.5,37 27,34.5 26.5,33.5 z"
-     id="path2380"
-     style="fill:#803300;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round" />
-  <path
-     d="M 32,24 L 48,24 L 32,24 z"
+     d="M 32,22 L 52,22 L 32,22 z"
      id="path3198"
      style="fill:none;stroke:#000000;stroke-width:3;stroke-linecap:round;stroke-linejoin:round" />
+  <path
+     d="M 28,30.5 L 7,51 C 4.5,53 10.5,59.5 13,57 L 33.5,36 C 32,35.5 28.5,32 28,30.5 z"
+     id="path2380"
+     style="fill:#803300;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round" />
 </svg>
