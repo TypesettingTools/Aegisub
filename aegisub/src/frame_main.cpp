@@ -310,7 +310,7 @@ void FrameMain::InitToolbar () {
 	Toolbar->AddTool(Menu_Tools_Translation,_("Translation Assistant"),GETIMAGE(translation_toolbutton_24),_("Open Translation Assistant"));
 	Toolbar->AddTool(Menu_Tools_Resample,_("Resample"),GETIMAGE(resample_toolbutton_24),_("Resample Script Resolution"));
 	Toolbar->AddTool(Menu_Tools_Timing_Processor,_("Timing Post-Processor"),GETIMAGE(timing_processor_toolbutton_24),_("Open Timing Post-processor dialog"));
-	Toolbar->AddTool(Menu_Tools_Kanji_Timer,_("Kanji Timer"),GETIMAGE(kanji_timer_button_24),_("Open Kanji Timer dialog"));
+	Toolbar->AddTool(Menu_Tools_Kanji_Timer,_("Kanji Timer"),GETIMAGE(kara_timing_copier_24),_("Open Kanji Timer dialog"));
 	Toolbar->AddTool(Menu_Tools_SpellCheck,_("Spell Checker"),GETIMAGE(spellcheck_toolbutton_24),_("Open Spell checker"));
 	Toolbar->AddSeparator();
 
@@ -449,7 +449,7 @@ void FrameMain::InitMenu() {
 	AppendBitmapMenuItem(timingMenu,Menu_Edit_Shift, MakeHotkeyText(_("S&hift Times..."), _T("Shift times")), _("Shift subtitles by time or frames"),GETIMAGE(shift_times_toolbutton_16));
 	AppendBitmapMenuItem(timingMenu,Menu_Edit_Sort, _("Sort by Time"), _("Sort all subtitles by their start times"),GETIMAGE(sort_times_button_16));
 	AppendBitmapMenuItem(timingMenu,Menu_Tools_Timing_Processor,_("Timing Post-Processor..."), _("Runs a post-processor for timing to deal with lead-ins, lead-outs, scene timing and etc."), GETIMAGE(timing_processor_toolbutton_16));
-	AppendBitmapMenuItem (timingMenu,Menu_Tools_Kanji_Timer,_("Kanji Timer..."),_("Open Kanji timer"),GETIMAGE(kanji_timer_button_16));
+	AppendBitmapMenuItem (timingMenu,Menu_Tools_Kanji_Timer,_("Kanji Timer..."),_("Open Kanji timer"),GETIMAGE(kara_timing_copier_16));
 	timingMenu->AppendSeparator();
 	AppendBitmapMenuItem(timingMenu,Menu_Subs_Snap_Start_To_Video, MakeHotkeyText(_("Snap Start to Video"), _T("Set Start To Video")), _("Set start of selected subtitles to current video frame"), GETIMAGE(substart_to_video_16));
 	AppendBitmapMenuItem(timingMenu,Menu_Subs_Snap_End_To_Video, MakeHotkeyText(_("Snap End to Video"), _T("Set End to Video")), _("Set end of selected subtitles to current video frame"), GETIMAGE(subend_to_video_16));
