@@ -168,7 +168,7 @@ public:
 	AudioKaraoke *audioKaraoke;
 
 	/// DOCME
-	wxToggleButton *KaraokeButton;
+	wxBitmapToggleButton *KaraokeButton;
 
 	/// DOCME
 	FrameMain *frameMain;

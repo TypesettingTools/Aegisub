@@ -200,12 +200,12 @@ wxPanel(parent,-1,wxDefaultPosition,wxDefaultSize,wxTAB_TRAVERSAL|wxBORDER_RAISE
 	audioKaraoke->box = this;
 	audioKaraoke->display = audioDisplay;
 	audioDisplay->karaoke = audioKaraoke;
-	KaraokeButton = new wxToggleButton(this,Audio_Button_Karaoke,_("Karaoke"),wxDefaultPosition,wxSize(-1,-1));
+	KaraokeButton = new wxBitmapToggleButton(this,Audio_Button_Karaoke,GETIMAGE(kara_mode_24),wxDefaultPosition,wxSize(33,30));
 	KaraokeButton->SetToolTip(_("Toggle karaoke mode"));
 	karaokeSizer->Add(KaraokeButton,0,wxRIGHT|wxEXPAND,0);
-	JoinButton = new wxButton(this,Audio_Button_Join,_T(""),wxDefaultPosition,wxSize(-1,10));
+	JoinButton = new wxBitmapButton(this,Audio_Button_Join,GETIMAGE(kara_join_24),wxDefaultPosition,wxSize(33,30));
 	karaokeSizer->Add(JoinButton,0,wxRIGHT|wxEXPAND,0);
-	SplitButton = new wxButton(this,Audio_Button_Split,_T(""),wxDefaultPosition,wxSize(-1,-1));
+	SplitButton = new wxBitmapButton(this,Audio_Button_Split,GETIMAGE(kara_split_24),wxDefaultPosition,wxSize(33,30));
 	karaokeSizer->Add(SplitButton,0,wxRIGHT|wxEXPAND,5);
 	karaokeSizer->Add(audioKaraoke,1,wxEXPAND,0);
 	SetKaraokeButtons(); // labels, hints and enabled-ness for join/split buttons set here
