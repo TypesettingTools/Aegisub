@@ -1860,10 +1860,6 @@
 				>
 			</File>
 		</Filter>
-		<File
-			RelativePath="..\..\src\changelog.txt"
-			>
-		</File>
 	</Files>
 	<Globals>
 	</Globals>
