@@ -1792,6 +1792,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\audio_renderer.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\audio_renderer.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\audio_spectrum.cpp"
 				>
 			</File>
