@@ -30,7 +30,7 @@
 //
 // $Id$
 
-/// @file audio_spectrum.cpp
+/// @file audio_renderer_spectrum.cpp
 /// @brief Caching frequency-power spectrum renderer for audio display
 /// @ingroup audio_ui
 ///

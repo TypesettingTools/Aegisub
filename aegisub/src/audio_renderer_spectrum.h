@@ -30,8 +30,8 @@
 //
 // $Id$
 
-/// @file audio_spectrum.h
-/// @see audio_spectrum.cpp
+/// @file audio_renderer_spectrum.h
+/// @see audio_renderer_spectrum.cpp
 /// @ingroup audio_ui
 ///
 /// Calculate and render a frequency-power spectrum for PCM audio data.
