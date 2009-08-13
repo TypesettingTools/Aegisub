@@ -64,7 +64,7 @@ echo "--- Generating /Volumes/${PKG_NAME_VOLUME}/.DS_Store ----"
 
 echo
 echo "---- Detaching ----"
-/usr/bin/hdiutil detach "${DEV_NAME}" || exit $?
+/usr/bin/hdiutil detach "${DEV_NAME}" -force || exit $?
 
 echo
 echo "---- Compressing ----"
