@@ -201,7 +201,7 @@ aegisub_2_2_SOURCES = \
 	audio_provider_ram.cpp \
 	audio_provider_stream.cpp \
 	audio_renderer.cpp \
-	audio_spectrum.cpp \
+	audio_renderer_spectrum.cpp \
 	auto4_base.cpp \
 	avisynth_wrap.cpp \
 	base_grid.cpp \

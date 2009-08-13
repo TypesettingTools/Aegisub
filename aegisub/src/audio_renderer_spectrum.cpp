@@ -45,7 +45,7 @@
 #ifdef _OPENMP
 #include <omp.h>
 #endif
-#include "audio_spectrum.h"
+#include "audio_renderer_spectrum.h"
 #include "fft.h"
 #include "colorspace.h"
 #include "options.h"

@@ -1800,11 +1800,11 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\audio_spectrum.cpp"
+				RelativePath="..\..\src\audio_renderer_spectrum.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\audio_spectrum.h"
+				RelativePath="..\..\src\audio_renderer_spectrum.h"
 				>
 			</File>
 		</Filter>
