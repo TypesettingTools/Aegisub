@@ -191,6 +191,12 @@ protected:
 	virtual void OnSetSamplesPerPixel() { }
 
 public:
+	/// @brief Constructor
+	AudioRendererBitmapProvider() : provider(0), pixel_samples(0) { };
+
+	/// @brief Destructor
+	~AudioRendererBitmapProvider() { }
+
 	/// @brief Rendering function
 	/// @param bmp      Bitmap to render to
 	/// @param start    First pixel from beginning of the audio stream to render
