@@ -60,7 +60,7 @@ SetFile -a C "/Volumes/${PKG_NAME_VOLUME}" || exit $?
 
 echo
 echo "--- Generating /Volumes/${PKG_NAME_VOLUME}/.DS_Store ----"
-/usr/bin/perl scripts/osx-dmg-dsstore.pl "/Volumes/${PKG_NAME_VOLUME}/.DS_Store" "${PKG_DIR}" "/Volumes/${PKG_NAME_VOLUME}/.background/background.png" || exit $?
+/usr/bin/perl tools/osx-dmg-dsstore.pl "/Volumes/${PKG_NAME_VOLUME}/.DS_Store" "${PKG_DIR}" "/Volumes/${PKG_NAME_VOLUME}/.background/background.png" || exit $?
 
 echo
 echo "---- Detaching ----"
