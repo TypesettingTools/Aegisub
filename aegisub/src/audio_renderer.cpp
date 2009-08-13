@@ -349,3 +349,25 @@ void AudioRenderer::Render(wxDC &dc, wxPoint origin, int start, int length, bool
 		bitmaps_normal->Age(cache_maxsize);
 }
 
+
+
+
+void AudioRendererBitmapProvider::SetProvider(AudioProvider *_provider)
+{
+	if (provider == _provider) return;
+
+	provider = _provider;
+
+	OnSetProvider();
+}
+
+
+void AudioRendererBitmapProvider::SetSamplesPerPixel(int _pixel_samples)
+{
+	if (pixel_samples == _pixel_samples) return;
+
+	pixel_samples = _pixel_samples;
+
+	OnSetSamplesPerPixel();
+}
+
