@@ -36,7 +36,7 @@
 
 #include "audio_renderer.h"
 #include <wx/bitmap.h>
-#include <set>
+#include <map>
 
 
 /// @class AudioRendererBitmapCache
