@@ -258,11 +258,7 @@ void VideoContext::SetVideo(const wxString &filename) {
 			grid->CommitChanges(true);
 
 			// Set GL context
-#ifdef __WXMAC__
-			GetGLContext(displayList.front())->SetCurrent();
-#else
 			GetGLContext(displayList.front())->SetCurrent(*displayList.front());
-#endif
 
 			// Choose a provider
 			provider = VideoProviderFactoryManager::GetProvider(filename);
@@ -554,11 +550,7 @@ GLuint VideoContext::GetFrameAsTexture(int n) {
 	lastFrame = n;
 
 	// Set context
-#ifdef __APPLE__
-	GetGLContext(displayList.front())->SetCurrent();
-#else
 	GetGLContext(displayList.front())->SetCurrent(*displayList.front());
-#endif
 	glEnable(GL_TEXTURE_2D);
 	if (glGetError() != 0) throw _T("Error enabling texture.");
 

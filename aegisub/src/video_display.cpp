@@ -206,11 +206,7 @@ try {
 
 	// Set GL context
 	//wxMutexLocker glLock(OpenGLWrapper::glMutex);
-#ifdef __WXMAC__
-	SetCurrent();
-#else
 	SetCurrent(*context->GetGLContext(this));
-#endif
 
 	// Get sizes
 	int w,h,sw,sh,pw,ph;
