@@ -352,7 +352,7 @@ void HotkeyManager::Load() {
 
 
 
-/// @brief Load defaults 
+/// @brief Set all hotkeys to the default values
 ///
 void HotkeyManager::LoadDefaults() {
 	modified = true;
@@ -490,6 +490,14 @@ void HotkeyManager::LoadDefaults() {
 	SetHotkey(_("Styling Assistant Prev"),_T("PgUp"));
 	SetHotkey(_("Styling Assistant Accept"),_T("Enter"));
 	SetHotkey(_("Styling Assistant Preview"),_T("F8"));
+
+	SetHotkey(_("Visual Tool Default"), _T("A"));
+	SetHotkey(_("Visual Tool Drag"), _T("S"));
+	SetHotkey(_("Visual Tool Rotate Z"), _T("D"));
+	SetHotkey(_("Visual Tool Rotate X/Y"), _T("F"));
+	SetHotkey(_("Visual Tool Scale"), _T("G"));
+	SetHotkey(_("Visual Tool Rectangular Clip"), _T("H"));
+	SetHotkey(_("Visual Tool Vector Clip"), _T("J"));
 }
 
 

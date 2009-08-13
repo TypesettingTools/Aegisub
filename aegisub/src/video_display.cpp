@@ -78,6 +78,7 @@
 #include "visual_tool_clip.h"
 #include "visual_tool_vector_clip.h"
 #include "visual_tool_drag.h"
+#include "hotkeys.h"
 
 
 ///////
@@ -557,15 +558,20 @@ void VideoDisplay::OnMouseEvent(wxMouseEvent& event) {
 /// @param event 
 ///
 void VideoDisplay::OnKey(wxKeyEvent &event) {
-	// FIXME: should these be configurable?
-	// Think of the frenchmen and other people not using qwerty layout
-	if (event.GetKeyCode() == 'A') SetVisualMode(0);
-	if (event.GetKeyCode() == 'S') SetVisualMode(1);
-	if (event.GetKeyCode() == 'D') SetVisualMode(2);
-	if (event.GetKeyCode() == 'F') SetVisualMode(3);
-	if (event.GetKeyCode() == 'G') SetVisualMode(4);
-	if (event.GetKeyCode() == 'H') SetVisualMode(5);
-	if (event.GetKeyCode() == 'J') SetVisualMode(6);
+	int key = event.GetKeyCode();
+#ifdef __APPLE__
+	Hotkeys.SetPressed(key,event.m_metaDown,event.m_altDown,event.m_shiftDown);
+#else
+	Hotkeys.SetPressed(key,event.m_controlDown,event.m_altDown,event.m_shiftDown);
+#endif
+
+	if (Hotkeys.IsPressed(_T("Visual Tool Default")))               SetVisualMode(0);
+	else if (Hotkeys.IsPressed(_T("Visual Tool Drag")))             SetVisualMode(1);
+	else if (Hotkeys.IsPressed(_T("Visual Tool Rotate Z")))         SetVisualMode(2);
+	else if (Hotkeys.IsPressed(_T("Visual Tool Rotate X/Y")))       SetVisualMode(3);
+	else if (Hotkeys.IsPressed(_T("Visual Tool Scale")))            SetVisualMode(4);
+	else if (Hotkeys.IsPressed(_T("Visual Tool Rectangular Clip"))) SetVisualMode(5);
+	else if (Hotkeys.IsPressed(_T("Visual Tool Vector Clip")))      SetVisualMode(6);
 	event.Skip();
 }
 
