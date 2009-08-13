@@ -36,6 +36,7 @@
 
 #include "audio_renderer.h"
 #include <wx/bitmap.h>
+#include <wx/dcmemory.h>
 #include <map>
 
 
