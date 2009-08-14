@@ -210,9 +210,9 @@ wxPanel(parent,-1,wxDefaultPosition,wxDefaultSize,wxTAB_TRAVERSAL|wxBORDER_RAISE
 
 	CancelAcceptSizer = new wxBoxSizer(wxHORIZONTAL);
 	CancelButton = new wxBitmapButton(this,Audio_Button_Cancel,GETIMAGE(kara_split_accept_24),wxDefaultPosition,wxSize(33,30));
-	CancelButton->SetToolTip(_("Discard all splits and leave split-mode"));
+	CancelButton->SetToolTip(_("Commit splits and leave split-mode"));
 	AcceptButton = new wxBitmapButton(this,Audio_Button_Accept,GETIMAGE(kara_split_cancel_24),wxDefaultPosition,wxSize(33,30));
-	AcceptButton->SetToolTip(_("Commit splits and leave split-mode"));
+	AcceptButton->SetToolTip(_("Discard all splits and leave split-mode"));
 	CancelAcceptSizer->Add(CancelButton,0,wxRIGHT|wxEXPAND,0);
 	CancelAcceptSizer->Add(AcceptButton,0,wxRIGHT|wxEXPAND,0);
 
