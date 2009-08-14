@@ -139,7 +139,7 @@ AboutScreen::AboutScreen(wxWindow *parent)
 	aboutString += _T("    Niels Martin Hansen\n");
 	aboutString += _T("    Rodrigo Braz Monteiro\n");
 	aboutString += _T("Icons by:\n");
-	aboutString += _T("    Philip Cash");
+	aboutString += _T("    Philip Cash\n");
 	aboutString += _T("Additional thanks to:\n");
 	aboutString += _T("    Mentar\n");
 	aboutString += _T("    Sigurd Tao Lyngse\n");
