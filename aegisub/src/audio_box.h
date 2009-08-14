@@ -106,12 +106,26 @@ private:
 	/// DOCME
 	ToggleBitmap *VerticalLink;
 
+	/// Karaoke box sizer
+	wxSizer *karaokeSizer;
 
-	/// DOCME
+	/// Karaoke mode join syllabel button.
+	wxButton *JoinButton;
+
+	/// Karaoke mode split word button.
 	wxButton *SplitButton;
 
-	/// DOCME
-	wxButton *JoinButton;
+	/// Karaoke mode split/join cancel button.
+	wxButton *CancelButton;
+
+	/// Karaoke mode split/join accept button.
+	wxButton *AcceptButton;
+
+	/// Join/Split button sizer.
+	wxSizer *JoinSplitSizer;
+
+	/// Cancel/Accept sizer.
+	wxSizer *CancelAcceptSizer;
 
 	/// DOCME
 	ToggleBitmap *AutoScroll;
@@ -149,6 +163,8 @@ private:
 	void OnKaraoke(wxCommandEvent &event);
 	void OnJoin(wxCommandEvent &event);
 	void OnSplit(wxCommandEvent &event);
+	void OnCancel(wxCommandEvent &event);
+	void OnAccept(wxCommandEvent &event);
 	void OnGoto(wxCommandEvent &event);
 	void OnLeadIn(wxCommandEvent &event);
 	void OnLeadOut(wxCommandEvent &event);
@@ -228,7 +244,6 @@ enum {
 	/// DOCME
 	Audio_Vertical_Link,
 
-
 	/// DOCME
 	Audio_Button_Play,
 
@@ -268,11 +283,10 @@ enum {
 	/// DOCME
 	Audio_Button_Goto,
 
-	/// DOCME
-	Audio_Button_Join,
-
-	/// DOCME
-	Audio_Button_Split,
+	Audio_Button_Join,		/// Karaoke -> Enter join mode.
+	Audio_Button_Split,		/// Karaoke -> Enter split mode.
+	Audio_Button_Accept,	/// Karaoke -> Split/Join mode -> Accept.
+	Audio_Button_Cancel,	/// KAraoke -> Split/Join mode -> Cancel.
 
 	/// DOCME
 	Audio_Button_Leadin,

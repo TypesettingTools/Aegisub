@@ -195,20 +195,37 @@ wxPanel(parent,-1,wxDefaultPosition,wxDefaultSize,wxTAB_TRAVERSAL|wxBORDER_RAISE
 	ButtonSizer->AddStretchSpacer(1);
 
 	// Karaoke sizer
-	wxSizer *karaokeSizer = new wxBoxSizer(wxHORIZONTAL);
+	karaokeSizer = new wxBoxSizer(wxHORIZONTAL);
+	KaraokeButton = new wxBitmapToggleButton(this,Audio_Button_Karaoke,GETIMAGE(kara_mode_24),wxDefaultPosition,wxSize(33,30));
+	KaraokeButton->SetToolTip(_("Toggle karaoke mode"));
+	karaokeSizer->Add(KaraokeButton,0,wxRIGHT|wxEXPAND,0);
+
+	JoinSplitSizer = new wxBoxSizer(wxHORIZONTAL);
+	JoinButton = new wxBitmapButton(this,Audio_Button_Join,GETIMAGE(kara_join_24),wxDefaultPosition,wxSize(33,30));
+	JoinButton->SetToolTip(_("Join selected syllables"));
+	SplitButton = new wxBitmapButton(this,Audio_Button_Split,GETIMAGE(kara_split_24),wxDefaultPosition,wxSize(33,30));
+	SplitButton->SetToolTip(_("Enter split-mode"));
+	JoinSplitSizer->Add(JoinButton,0,wxRIGHT|wxEXPAND,0);
+	JoinSplitSizer->Add(SplitButton,0,wxRIGHT|wxEXPAND,0);
+
+	CancelAcceptSizer = new wxBoxSizer(wxHORIZONTAL);
+	CancelButton = new wxBitmapButton(this,Audio_Button_Cancel,GETIMAGE(kara_split_accept_24),wxDefaultPosition,wxSize(33,30));
+	CancelButton->SetToolTip(_("Discard all splits and leave split-mode"));
+	AcceptButton = new wxBitmapButton(this,Audio_Button_Accept,GETIMAGE(kara_split_cancel_24),wxDefaultPosition,wxSize(33,30));
+	AcceptButton->SetToolTip(_("Commit splits and leave split-mode"));
+	CancelAcceptSizer->Add(CancelButton,0,wxRIGHT|wxEXPAND,0);
+	CancelAcceptSizer->Add(AcceptButton,0,wxRIGHT|wxEXPAND,0);
+
+	karaokeSizer->Add(JoinSplitSizer,0,wxRIGHT|wxEXPAND,0);
+	karaokeSizer->Add(CancelAcceptSizer,0,wxRIGHT|wxEXPAND,0);
+
 	audioKaraoke = new AudioKaraoke(this);
 	audioKaraoke->box = this;
 	audioKaraoke->display = audioDisplay;
 	audioDisplay->karaoke = audioKaraoke;
-	KaraokeButton = new wxBitmapToggleButton(this,Audio_Button_Karaoke,GETIMAGE(kara_mode_24),wxDefaultPosition,wxSize(33,30));
-	KaraokeButton->SetToolTip(_("Toggle karaoke mode"));
-	karaokeSizer->Add(KaraokeButton,0,wxRIGHT|wxEXPAND,0);
-	JoinButton = new wxBitmapButton(this,Audio_Button_Join,GETIMAGE(kara_join_24),wxDefaultPosition,wxSize(33,30));
-	karaokeSizer->Add(JoinButton,0,wxRIGHT|wxEXPAND,0);
-	SplitButton = new wxBitmapButton(this,Audio_Button_Split,GETIMAGE(kara_split_24),wxDefaultPosition,wxSize(33,30));
-	karaokeSizer->Add(SplitButton,0,wxRIGHT|wxEXPAND,5);
 	karaokeSizer->Add(audioKaraoke,1,wxEXPAND,0);
-	SetKaraokeButtons(); // labels, hints and enabled-ness for join/split buttons set here
+
+	SetKaraokeButtons(); // Decide which one to show or hide.
 
 	// Main sizer
 	MainSizer = new wxBoxSizer(wxVERTICAL);
@@ -218,6 +235,7 @@ wxPanel(parent,-1,wxDefaultPosition,wxDefaultSize,wxTAB_TRAVERSAL|wxBORDER_RAISE
 	MainSizer->Add(karaokeSizer,0,wxEXPAND,0);
 	//MainSizer->SetSizeHints(this);
 	SetSizer(MainSizer);
+
 }
 
 
@@ -283,6 +301,8 @@ BEGIN_EVENT_TABLE(AudioBox,wxPanel)
 	EVT_BUTTON(Audio_Button_Goto, AudioBox::OnGoto)
 	EVT_BUTTON(Audio_Button_Join,AudioBox::OnJoin)
 	EVT_BUTTON(Audio_Button_Split,AudioBox::OnSplit)
+	EVT_BUTTON(Audio_Button_Cancel,AudioBox::OnCancel)
+	EVT_BUTTON(Audio_Button_Accept,AudioBox::OnAccept)
 	EVT_BUTTON(Audio_Button_Leadin,AudioBox::OnLeadIn)
 	EVT_BUTTON(Audio_Button_Leadout,AudioBox::OnLeadOut)
 
@@ -575,6 +595,7 @@ void AudioBox::OnKaraoke(wxCommandEvent &event) {
 		audioKaraoke->enabled = true;
 		audioDisplay->SetDialogue();
 	}
+
 	SetKaraokeButtons();
 
 	wxLogDebug(_T("AudioBox::OnKaraoke: returning"));
@@ -597,48 +618,51 @@ void AudioBox::SetKaraokeButtons() {
 	JoinButton->Enable(join);
 	SplitButton->Enable(split);
 	if (audioKaraoke->splitting) {
-		JoinButton->SetLabel(_("Cancel Split"));
-		JoinButton->SetToolTip(_("Discard all splits and leave split-mode"));
-		SplitButton->SetLabel(_("Accept Split"));
-		SplitButton->SetToolTip(_("Commit splits and leave split-mode"));
+		karaokeSizer->Show(CancelAcceptSizer);
+		karaokeSizer->Hide(JoinSplitSizer);
+		karaokeSizer->Layout();
 	} else {
-		JoinButton->SetLabel(_("Join"));
-		JoinButton->SetToolTip(_("Join selected syllables"));
-		SplitButton->SetLabel(_("Split"));
-		SplitButton->SetToolTip(_("Enter split-mode"));
+		karaokeSizer->Hide(CancelAcceptSizer);
+		karaokeSizer->Show(JoinSplitSizer);
+		karaokeSizer->Layout();
 	}
 }
 
-
-
-/// @brief Join button 
-/// @param event 
+/// @brief Join button in karaoke mode
+/// @param event wxEvent
 ///
 void AudioBox::OnJoin(wxCommandEvent &event) {
 	wxLogDebug(_T("AudioBox::OnJoin"));
 	audioDisplay->SetFocus();
-	if (!audioKaraoke->splitting) {
-		audioKaraoke->Join();
-	} else {
-		audioKaraoke->EndSplit(false);
-	}
+	audioKaraoke->Join();
 }
 
-
-
-/// @brief Split button 
-/// @param event 
+/// @brief Split button in karaoke mode
+/// @param event wxEvent
 ///
 void AudioBox::OnSplit(wxCommandEvent &event) {
 	wxLogDebug(_T("AudioBox::OnSplit"));
 	audioDisplay->SetFocus();
-	if (!audioKaraoke->splitting) {
 		audioKaraoke->BeginSplit();
-	} else {
-		audioKaraoke->EndSplit(true);
-	}
 }
 
+/// @brief Cancel join/split in karaoke mode.
+/// @param event wxEvent
+///
+void AudioBox::OnCancel(wxCommandEvent &event) {
+	wxLogDebug(_T("AudioBox::OnCancel"));
+	audioDisplay->SetFocus();
+	audioKaraoke->EndSplit(true);
+}
+
+/// @brief Accept join/split button in karaoke mode.
+/// @param event wxEvent
+///
+void AudioBox::OnAccept(wxCommandEvent &event) {
+	wxLogDebug(_T("AudioBox::OnAccept"));
+	audioDisplay->SetFocus();
+	audioKaraoke->EndSplit(false);
+}
 
 
 /// @brief Goto button 
@@ -741,7 +765,3 @@ void FocusEvent::OnSetFocus(wxFocusEvent &event) {
 	wxWindow *previous = event.GetWindow();
 	if (previous) previous->SetFocus();
 }
-
-
-
-
