@@ -12,9 +12,9 @@
   <path
      d="M 43,18 L 43,30 L 38,30 L 38,24 L 34,24 L 34,30 L 29,30 L 29,24 L 25,24 L 25,30 L 20,30 L 20,24 L 16,24 L 16,30 L 10,30 L 10,34 L 16,34 L 16,40 L 20,40 L 20,34 L 25,34 L 25,40 L 29,40 L 29,34 L 34,34 L 34,40 L 38,40 L 38,34 L 43,34 L 43,46 L 58,32 L 43,18 z"
      id="path2416"
-     style="fill:#ff0000;stroke:none" />
+     style="fill:#ff0000;stroke:#ff0000;stroke-width:2;stroke-linecap:round;stroke-linejoin:round" />
   <path
      d="M 14,14 L 14,18 L 10,18 L 10,46 L 14,46 L 14,50 L 6,50 L 6,14 L 14,14 z"
      id="path3138"
-     style="fill:#0000ff;stroke:none" />
+     style="fill:#0000ff;stroke:#0000ff;stroke-width:2;stroke-linecap:round;stroke-linejoin:round" />
 </svg>

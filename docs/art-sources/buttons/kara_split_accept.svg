@@ -12,17 +12,21 @@
   <path
      d="M 2,40 L 24,40 L 24,62 L 2,62 L 2,40 z"
      id="path2391"
-     style="fill:#ffffff;stroke:#000000;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round" />
+     style="opacity:0.5;fill:#ffffff;stroke:#000000;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round" />
   <path
      d="M 21,2 L 21,24 L 43,24 L 43,2 L 21,2 z M 40,40 L 40,62 L 62,62 L 62,40 L 40,40 z"
      id="path2389"
-     style="fill:#afdde9;stroke:#000000;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round" />
+     style="opacity:0.5;fill:#afdde9;stroke:#000000;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round" />
   <path
      d="M 23.5,7 L 23.5,19 L 26,19 L 26,11 C 26,9.5 30.5,11 30.5,8.5 C 30.5,7.5 30,7 28.5,7 C 28,7 27,7 26,7.5 L 26,7 L 23.5,7 z M 36,7 C 33.5,7 31,9 31,13.5 C 31.5,21.5 39,19.5 41,17.5 L 39.5,15.5 C 37.5,17 33.5,17.5 33.5,13.5 L 41,13.5 C 41.5,9 38.5,7 36,7 z M 36,9.5 C 37,9.5 38,10 38,11 L 34,11 C 34,10 35,9.5 36,9.5 z M 10.5,45 L 10.5,57 L 13,57 L 13,49 C 13,47.5 17.5,49 17.5,46.5 C 17.5,45.5 17,45 15.5,45 C 15,45 14,45 13,45.5 L 13,45 L 10.5,45 z M 50.5,45 C 48,45 45.5,47 45.5,51.5 C 46,59.5 53.5,57.5 55.5,55.5 L 54,53.5 C 52,55 48,55.5 48,51.5 L 55.5,51.5 C 56,47 53,45 50.5,45 z M 50.5,47.5 C 51.5,47.5 52.5,48 52.5,49 L 48.5,49 C 48.5,48 49.5,47.5 50.5,47.5 z"
      id="path2403"
-     style="fill:#000000;stroke:none" />
+     style="opacity:0.5;fill:#000000;stroke:none" />
   <path
      d="M 31,26.5 C 29,28.5 27,30.5 24.5,30.5 C 22,30.5 18.5,30 16.5,32.5 L 12,28 L 12,38 L 22,38 L 17.5,33.5 C 19.5,31.5 22,32 24.5,32 C 27,32 30.5,30 32,27.5 C 33.5,30 37,32 39.5,32 C 42,32 44.5,31.5 46.5,33.5 L 42,38 L 52,38 L 52,28 L 47.5,32.5 C 45.5,30 42,30.5 39.5,30.5 C 37,30.5 35,28.5 33,26.5 C 32.5,26 31.5,26 31,26.5 z"
      id="path2470"
-     style="fill:#0000ff;stroke:#0000ff;stroke-width:1;stroke-linecap:round;stroke-linejoin:round" />
+     style="opacity:0.5;fill:#0000ff;stroke:#0000ff;stroke-width:1;stroke-linecap:round;stroke-linejoin:round" />
+  <path
+     d="M 49.5,10 L 24,43 L 14.5,34 C 11.5,31.158 7,34.667 9.5,38 L 21.5,54 C 23,56 25.117,56 26.5,54 L 54.5,13.5 C 57,9.884 52.205,6.5 49.5,10 z"
+     id="path2383"
+     style="fill:#00ff00;stroke:#000000;stroke-width:2;stroke-linecap:round;stroke-linejoin:round" />
 </svg>

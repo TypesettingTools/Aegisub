@@ -10,15 +10,11 @@
   <defs
      id="defs2387" />
   <path
-     d="M 16,8 L 56,8 L 56,48 L 16,48 L 16,8 z"
+     d="M 8,8 L 56,8 L 56,56 L 8,56 L 8,8 z"
      id="rect2391"
-     style="fill:#55ddff;stroke:#000000;stroke-width:2;stroke-linecap:round;stroke-linejoin:round" />
+     style="fill:none;stroke:#000000;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:6, 6;stroke-dashoffset:3" />
   <path
-     d="M 16,8 L 7,37 L 16,8 z M 56,8 L 27,37 L 56,8 z M 56,48 L 27,57 L 56,48 z"
-     id="path3169"
-     style="fill:none;stroke:#808080;stroke-width:2;stroke-linecap:round;stroke-linejoin:round" />
-  <path
-     d="M 7,37 L 27,37 L 27,57 L 7,57 L 7,37 z"
+     d="M 22,22 L 42,22 L 42,42 L 22,42 L 22,22 z"
      id="rect2387"
      style="fill:#5f8dd3;stroke:#000000;stroke-width:2;stroke-linecap:round;stroke-linejoin:round" />
 </svg>
