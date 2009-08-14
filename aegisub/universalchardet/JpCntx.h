@@ -52,6 +52,7 @@ class JapaneseContextAnalysis
 {
 public:
   JapaneseContextAnalysis() {Reset();};
+  virtual ~JapaneseContextAnalysis() {};
 
   void HandleData(const char* aBuf, PRUint32 aLen);
 

@@ -46,6 +46,7 @@ class CharDistributionAnalysis
 {
 public:
   CharDistributionAnalysis() {Reset();};
+  virtual ~CharDistributionAnalysis() {};
 
   //feed a block of data and do distribution analysis
   void HandleData(const char* aBuf, PRUint32 aLen) {};
