@@ -1,0 +1,45 @@
+Template Based B+ Tree Implementation
+=====================================
+
+Description
+-----------
+
+B+ Tree is a type of tree, which represents sorted data in a way that allows for efficient insertion, 
+retrieval and removal of records, each of which is identified by a key. 
+It is a dynamic, multilevel index, with maximum and minimum bounds on the number of keys in each index 
+segment (usually called a 'block' or 'node'). In a B+ tree, in contrast to a B-tree, 
+all records are stored at the lowest level of the tree; only keys are stored in interior blocks.
+
+more info: http://en.wikipedia.org/wiki/B+_tree
+
+Installation
+------------
+
+For installation or compiling instructions, see the INSTALL file.
+
+
+License
+-------
+
+This program is licensed under permissive BSD license.
+See the license files for more information.
+
+
+Date: October 16th, 2007
+
+Project Maintainers:
+  Yuriy Soroka
+  ysoroka@scalingweb.com
+
+  Anton Fedoruk
+  afedoruk@scalingweb.com
+
+  http://www.scalingweb.com/
+
+
+How you can help
+----------------
+
+  Comments, patches, bug reports are welcome.
+
+
