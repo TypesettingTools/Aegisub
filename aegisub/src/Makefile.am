@@ -315,11 +315,11 @@ aegisub_2_2_SOURCES = \
 	visual_tool_scale.cpp \
 	visual_tool_vector_clip.cpp
 
+
 aegisub_2_2_SOURCES += \
 	$(srcdir)/*.h \
 	$(srcdir)/include/aegisub/*.h \
-    $(srcdir)/config/*.h \
-	$(srcdir)/btree/*.h
+    $(srcdir)/config/*.h
 
 noinst_HEADERS = \
 	$(srcdir)/boost/*.hpp \
