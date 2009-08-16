@@ -91,7 +91,7 @@ typedef DataBlockCache<wxBitmap, 8, AudioRendererBitmapCacheBitmapFactory> Audio
 ///
 /// To implement a new audio renderer, see AudioRendererBitmapProvider.
 class AudioRenderer {
-	friend AudioRendererBitmapCacheBitmapFactory;
+	friend struct AudioRendererBitmapCacheBitmapFactory;
 
 	/// Horizontal zoom level, samples per pixel
 	int pixel_samples;
