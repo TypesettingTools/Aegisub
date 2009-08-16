@@ -368,7 +368,7 @@ void FrameMain::InitMenu() {
 	AppendBitmapMenuItem(fileMenu,Menu_File_Open_Subtitles_Charset, _("&Open Subtitles with Charset..."), _("Opens a subtitles file with a specific charset"),GETIMAGE(open_with_toolbutton_16));
 	AppendBitmapMenuItem(fileMenu,Menu_File_Save_Subtitles, MakeHotkeyText(_("&Save Subtitles"), _T("Save Subtitles")), _("Saves subtitles"),GETIMAGE(save_toolbutton_16));
 	AppendBitmapMenuItem(fileMenu,Menu_File_Save_Subtitles_As, _("Save Subtitles as..."), _("Saves subtitles with another name"), GETIMAGE(save_as_toolbutton_16));
-	AppendBitmapMenuItem(fileMenu,Menu_File_Export_Subtitles, _("Export Subtitles..."), _("Saves a copy of subtitles with processing applied to it."), GETIMAGE(blank_button_16));
+	AppendBitmapMenuItem(fileMenu,Menu_File_Export_Subtitles, _("Export Subtitles..."), _("Saves a copy of subtitles with processing applied to it."), GETIMAGE(export_menu_16));
 	wxMenuItem *RecentParent = new wxMenuItem(fileMenu, Menu_File_Recent_Subs_Parent, _("Recent"), _T(""), wxITEM_NORMAL, RecentSubs);
 #ifndef __APPLE__
 	RecentParent->SetBitmap(GETIMAGE(blank_button_16));
@@ -381,7 +381,7 @@ void FrameMain::InitMenu() {
 	fileMenu->AppendSeparator();
 #ifndef __APPLE__
 	// Doesn't work on Mac, only one instance is ever allowed there from OS side
-	AppendBitmapMenuItem(fileMenu,Menu_File_New_Window, _("New Window"), _("Open a new application window"),GETIMAGE(blank_button_16));
+	AppendBitmapMenuItem(fileMenu,Menu_File_New_Window, _("New Window"), _("Open a new application window"),GETIMAGE(new_window_menu_16));
 #endif
 	AppendBitmapMenuItem(fileMenu,Menu_File_Exit, MakeHotkeyText(_("E&xit"), _T("Exit")), _("Exit the application"),GETIMAGE(exit_button_16));
 	MenuBar->Append(fileMenu, _("&File"));
@@ -475,7 +475,7 @@ void FrameMain::InitMenu() {
 	videoMenu->Append(Menu_Video_Dummy, _("Use Dummy Video..."), _("Opens a video clip with solid colour"));
 	videoMenu->Append(Menu_Video_Details, _("Show Video Details..."), _("Shows video details"));
 	videoMenu->AppendSeparator();
-	videoMenu->Append(Menu_File_Open_VFR, _("Open Timecodes File..."), _("Opens a VFR timecodes v1 or v2 file"));
+	AppendBitmapMenuItem(videoMenu, Menu_File_Open_VFR, _("Open Timecodes File..."), _("Opens a VFR timecodes v1 or v2 file"), GETIMAGE(open_timecodes_menu_16));
 	videoMenu->Append(Menu_File_Save_VFR, _("Save Timecodes File..."), _("Saves a VFR timecodes v2 file"));
 	videoMenu->Append(Menu_File_Close_VFR, _("Close Timecodes File"), _("Closes the currently open timecodes file"))->Enable(false);
 	wxMenuItem *RecentTimesParent = new wxMenuItem(videoMenu, Menu_File_Recent_Timecodes_Parent, _("Recent"), _T(""), wxITEM_NORMAL, RecentTimecodes);
@@ -491,7 +491,7 @@ void FrameMain::InitMenu() {
 	wxMenu *ZoomMenu = new wxMenu;
 	wxMenuItem *ZoomParent = new wxMenuItem(subtitlesMenu,Menu_View_Zoom,_("Set Zoom"),_T(""),wxITEM_NORMAL,ZoomMenu);
 #ifndef __APPLE__
-	ZoomParent->SetBitmap(GETIMAGE(blank_button_16));
+	ZoomParent->SetBitmap(GETIMAGE(set_zoom_menu_16));
 #endif
 	ZoomMenu->Append(Menu_View_Zoom_50, MakeHotkeyText(_T("&50%"), _T("Zoom 50%")), _("Set zoom to 50%"));
 	ZoomMenu->Append(Menu_View_Zoom_100, MakeHotkeyText(_T("&100%"), _T("Zoom 100%")), _("Set zoom to 100%"));
@@ -500,7 +500,7 @@ void FrameMain::InitMenu() {
 	wxMenu *AspectMenu = new wxMenu;
 	wxMenuItem *AspectParent = new wxMenuItem(subtitlesMenu,Menu_Video_AR,_("Override Aspect Ratio"),_T(""),wxITEM_NORMAL,AspectMenu);
 #ifndef __APPLE__
-	AspectParent->SetBitmap(GETIMAGE(blank_button_16));
+	AspectParent->SetBitmap(GETIMAGE(override_aspect_menu_16));
 #endif
 	AspectMenu->AppendCheckItem(Menu_Video_AR_Default, _("&Default"), _("Leave video on original aspect ratio"));
 	AspectMenu->AppendCheckItem(Menu_Video_AR_Full, _("&Fullscreen (4:3)"), _("Forces video to 4:3 aspect ratio"));
