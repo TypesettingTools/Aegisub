@@ -54,7 +54,7 @@
 ///
 /// Custom block factories could use a large internally pre-allocated buffer to create the
 /// requested blocks in to avoid the default allocator.
-template <class BlockT>
+template <typename BlockT>
 struct BasicDataBlockFactory {
 	/// @brief Allocates a block and returns it
 	/// @param i Index of the block to allocate
@@ -96,9 +96,9 @@ struct BasicDataBlockFactory {
 /// @tparam MacroblockExponent Controls the number of blocks per macroblock, for tuning memory usage
 /// @tparam BlockFactoryT      Type of block factory, see BasicDataBlockFactory class for detail on these
 template <
-	class BlockT,
+	typename BlockT,
 	int MacroblockExponent = 6,
-	class BlockFactoryT = BasicDataBlockFactory<BlockT>
+	typename BlockFactoryT = BasicDataBlockFactory<BlockT>
 >
 class DataBlockCache {
 
@@ -218,7 +218,7 @@ public:
 		// Get a list of macro blocks sorted by access count
 		std::vector<AccessData> access_data;
 		access_data.reserve(data.size());
-		for (MacroBlockArray::iterator mb = data.begin(); mb != data.end(); ++mb)
+		for (typename MacroBlockArray::iterator mb = data.begin(); mb != data.end(); ++mb)
 			access_data.push_back(AccessData(&*mb));
 		std::sort(access_data.begin(), access_data.end());
 
