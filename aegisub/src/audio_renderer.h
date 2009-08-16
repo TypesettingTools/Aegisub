@@ -168,6 +168,16 @@ public:
 	/// depends on the bitmap provider used.)
 	void SetAmplitudeScale(float amplitude_scale);
 
+	/// @brief Set the maximum allowed cache size
+	/// @param max_size Size in bytes that may be used for caching
+	///
+	/// The given max size is not a hard limit and does generally not include overhead
+	/// added by the cache management. The allowed size might be distributed among
+	/// several separate objects.
+	///
+	/// Changing the max cache size does not trigger cache aging.
+	void SetCacheMaxSize(size_t max_size);
+
 	/// @brief Get horizontal zoom
 	/// @return Audio samples per pixel rendering at
 	int GetSamplesPerPixel() const { return pixel_samples; }
@@ -292,4 +302,11 @@ public:
 	/// @brief Change vertical zoom
 	/// @param amplitude_scale Scaling factor to zoom to
 	void SetAmplitudeScale(float amplitude_scale);
+
+	/// @brief Age any caches the renderer might keep
+	/// @param max_size Maximum size in bytes the caches should be
+	///
+	/// Deriving classes should override this method if they implement any
+	/// kind of caching.
+	virtual void AgeCache(size_t max_size) { }
 };

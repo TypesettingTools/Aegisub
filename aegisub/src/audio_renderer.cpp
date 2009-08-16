@@ -159,6 +159,12 @@ void AudioRenderer::SetAudioProvider(AudioProvider *_provider)
 }
 
 
+void AudioRenderer::SetCacheMaxSize(size_t max_size)
+{
+	cache_maxsize = max_size;
+}
+
+
 void AudioRenderer::ResetBlockCount()
 {
 	if (provider)
@@ -255,9 +261,10 @@ void AudioRenderer::Render(wxDC &dc, wxPoint origin, int start, int length, bool
 	}
 
 	if (selected)
-		bitmaps_selected.Age(cache_maxsize);
+		bitmaps_selected.Age(cache_maxsize / 8);
 	else
-		bitmaps_normal.Age(cache_maxsize);
+		bitmaps_normal.Age(cache_maxsize / 8);
+	renderer->AgeCache(3 * cache_maxsize / 4);
 }
 
 
