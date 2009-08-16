@@ -218,8 +218,9 @@ public:
 		// Get a list of macro blocks sorted by access count
 		std::vector<AccessData> access_data;
 		access_data.reserve(data.size());
-		for (typename MacroBlockArray::iterator mb = data.begin(); mb != data.end(); ++mb)
-			access_data.push_back(AccessData(&*mb));
+		// For whatever reason, G++ pukes if I try using iterators here...
+		for (size_t mbi = 0; mbi != data.size(); ++mbi)
+			access_data.push_back(AccessData(&data[mbi]));
 		std::sort(access_data.begin(), access_data.end());
 
 		// Sum up data size until we hit the max
