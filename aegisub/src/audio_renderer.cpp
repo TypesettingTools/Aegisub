@@ -35,161 +35,35 @@
 
 
 #include "audio_renderer.h"
+#include "include/aegisub/audio_provider.h"
 #include <wx/bitmap.h>
 #include <wx/dcmemory.h>
-#include <map>
-
-
-/// @class AudioRendererBitmapCache
-/// @brief Caches bitmaps of rendered audio at a specific resolution
-///
-/// Used internally by the AudioRenderer class.
-class AudioRendererBitmapCache {
-	/// Width of cached bitmaps
-	int width;
-	/// Height of cached bitmaps
-	int height;
-
-	/// Memory size of each cached image, for cache management
-	size_t bytes_per_image;
-
-	// Cached bitmaps
-	// Intentionally not doxygened, too internal
-	struct CachedBitmap {
-		// The bitmap itself
-		wxBitmap bmp;
-		// "Timestamp" of last access (not necessarily related to any clocks)
-		int last_access;
-
-		CachedBitmap(wxBitmap bmp = wxBitmap()) : bmp(bmp), last_access(0) { }
-		~CachedBitmap() { }
-
-		bool operator < (const CachedBitmap &other) const { return last_access < other.last_access; }
-	};
-
-	typedef std::map<int, CachedBitmap> CacheType;
-	CacheType cache;
-
-public:
-	/// @brief Constructor
-	///
-	/// Does nothing.
-	AudioRendererBitmapCache();
-
-	/// @brief Destructor
-	///
-	/// Does nothing.
-	~AudioRendererBitmapCache();
-
-	/// @brief Age the cache, purging old items
-	/// @param max_size Maximum allowed cache size, in bytes
-	///
-	/// Purges the least recently used bitmaps to bring the cache size below max_size.
-	/// Aging is a somewhat expensive operation and should only be done once in a while.
-	///
-	/// If max_size is specified to 0, the cache will be entirely cleared in a fast manner.
-	void Age(size_t max_size);
-
-	/// @brief Change the size of cached images
-	/// @param new_width  New width of images to cache
-	/// @param new_height New height of images to cache
-	///
-	/// Clears and re-initialises the cache.
-	void Resize(int new_width, int new_height);
-
-	/// @brief Retrieve an image from cache
-	/// @param bmp       [out] Bitmap to return the image in
-	/// @param key       Key to request the image for
-	/// @param timestamp Timestamp to use for cache age management
-	/// @return Returns false if the image had to be created in cache; if the return is
-	///         false, the consumer must draw into the returned bitmap.
-	///
-	/// Example:
-	/// @code
-	///     wxBitmap bmp;
-	///     if (!cache->Get(bmp, key, timestamp))
-	///         RenderBitmap(bmp);
-	///     // Use bmp
-	/// @endcode
-	///
-	/// The timestamp passed should never decrease between calls to the same cache.
-	///
-	/// The key has no inherent meaning to the cache.
-	bool Get(wxBitmap &bmp, int key, int timestamp);
-};
 
 
 
-
-AudioRendererBitmapCache::AudioRendererBitmapCache()
+AudioRendererBitmapCacheBitmapFactory::AudioRendererBitmapCacheBitmapFactory(AudioRenderer *_renderer)
 {
-	Resize(0, 0);
+	assert(_renderer != 0);
+	renderer = _renderer;
 }
 
 
-AudioRendererBitmapCache::~AudioRendererBitmapCache()
+wxBitmap *AudioRendererBitmapCacheBitmapFactory::ProduceBlock(int i)
 {
-	// Nothing to do
+	(void)i;
+	return new wxBitmap(renderer->cache_bitmap_width, renderer->pixel_height, 32);
 }
 
 
-void AudioRendererBitmapCache::Age(size_t max_size)
+void AudioRendererBitmapCacheBitmapFactory::DisposeBlock(wxBitmap *bmp)
 {
-	if (max_size == 0)
-	{
-		cache.clear();
-		return;
-	}
-
-	/// @todo Make this faster than O(n^2)
-
-	size_t max_items = max_size / bytes_per_image;
-	
-	while (cache.size() > max_items)
-	{
-		// Find the oldest item and remove it
-		CacheType::iterator next = cache.begin();
-		CacheType::iterator oldest = next;
-		while (++next != cache.end())
-		{
-			if (next->second.last_access < oldest->second.last_access)
-				oldest = next;
-		}
-		cache.erase(oldest);
-	}
+	delete bmp;
 }
 
 
-void AudioRendererBitmapCache::Resize(int new_width, int new_height)
+size_t AudioRendererBitmapCacheBitmapFactory::GetBlockSize() const
 {
-	Age(0);
-
-	width = new_width;
-	height = new_height;
-
-	// Assuming 32 bpp
-	// This probably isn't completely accurate, but just a reasonable  approximation
-	bytes_per_image = sizeof(CachedBitmap) + width*height*4;
-}
-
-
-bool AudioRendererBitmapCache::Get(wxBitmap &bmp, int key, int timestamp)
-{
-	CacheType::iterator item = cache.find(key);
-	bool found = true;
-
-	if (item == cache.end())
-	{
-		cache[key] = CachedBitmap(wxBitmap(width, height, 32));
-		item = cache.find(key);
-		assert(item != cache.end());
-		found = false;
-	}
-
-	item->second.last_access = timestamp;
-	bmp = item->second.bmp;
-
-	return found;
+	return sizeof(wxBitmap) + renderer->cache_bitmap_width * renderer->pixel_height * 4;
 }
 
 
@@ -197,9 +71,8 @@ bool AudioRendererBitmapCache::Get(wxBitmap &bmp, int key, int timestamp)
 
 AudioRenderer::AudioRenderer()
 : cache_bitmap_width(32) // arbitrary value for now
-, bitmaps_normal(new AudioRendererBitmapCache)
-, bitmaps_selected(new AudioRendererBitmapCache)
-, cache_clock(0)
+, bitmaps_normal(256, AudioRendererBitmapCacheBitmapFactory(this))
+, bitmaps_selected(256, AudioRendererBitmapCacheBitmapFactory(this))
 , cache_maxsize(0)
 , renderer(0)
 , provider(0)
@@ -218,7 +91,14 @@ AudioRenderer::~AudioRenderer()
 
 void AudioRenderer::SetSamplesPerPixel(int _pixel_samples)
 {
+	if (pixel_samples == _pixel_samples) return;
+
 	pixel_samples = _pixel_samples;
+
+	if (renderer)
+		renderer->SetSamplesPerPixel(pixel_samples);
+
+	ResetBlockCount();
 }
 
 
@@ -227,8 +107,22 @@ void AudioRenderer::SetHeight(int _pixel_height)
 	if (pixel_height == _pixel_height) return;
 
 	pixel_height = _pixel_height;
-	bitmaps_normal->Resize(cache_bitmap_width, pixel_height);
-	bitmaps_selected->Resize(cache_bitmap_width, pixel_height);
+	Invalidate();
+}
+
+
+void AudioRenderer::SetAmplitudeScale(float _amplitude_scale)
+{
+	if (amplitude_scale == _amplitude_scale) return;
+
+	// A scaling of 0 or a negative scaling makes no sense
+	assert(_amplitude_scale > 0);
+
+	amplitude_scale = _amplitude_scale;
+
+	if (renderer)
+		renderer->SetAmplitudeScale(amplitude_scale);
+	Invalidate();
 }
 
 
@@ -240,11 +134,14 @@ void AudioRenderer::SetRenderer(AudioRendererBitmapProvider *_renderer)
 		renderer->SetProvider(0);
 
 	renderer = _renderer;
-	bitmaps_normal->Age(0);
-	bitmaps_selected->Age(0);
+	Invalidate();
 
 	if (renderer)
+	{
 		renderer->SetProvider(provider);
+		renderer->SetAmplitudeScale(amplitude_scale);
+		renderer->SetSamplesPerPixel(pixel_samples);
+	}
 }
 
 
@@ -253,11 +150,23 @@ void AudioRenderer::SetAudioProvider(AudioProvider *_provider)
 	if (provider == _provider) return;
 
 	provider = _provider;
-	bitmaps_normal->Age(0);
-	bitmaps_selected->Age(0);
+	Invalidate();
 
 	if (renderer)
 		renderer->SetProvider(provider);
+
+	ResetBlockCount();
+}
+
+
+void AudioRenderer::ResetBlockCount()
+{
+	if (provider)
+	{
+		size_t num_bitmaps = (size_t)((provider->GetNumSamples() + pixel_samples - 1) / pixel_samples);
+		bitmaps_normal.SetBlockCount(num_bitmaps);
+		bitmaps_selected.SetBlockCount(num_bitmaps);
+	}
 }
 
 
@@ -267,16 +176,18 @@ wxBitmap AudioRenderer::GetCachedBitmap(int i, bool selected)
 	assert(renderer);
 
 	// Pick the cache to use
-	AudioRendererBitmapCache *cache = (selected ? bitmaps_selected : bitmaps_normal).get();
+	AudioRendererBitmapCache *cache = selected ? &bitmaps_selected : &bitmaps_normal;
 
-	wxBitmap bmp;
-	if (!cache->Get(bmp, i, cache_clock))
+	bool created = false;
+	wxBitmap *bmp = cache->Get(i, &created);
+	assert(bmp);
+	if (created)
 	{
-		renderer->Render(bmp, i*cache_bitmap_width, selected);
+		renderer->Render(*bmp, i*cache_bitmap_width, selected);
 	}
 
-	assert(bmp.IsOk());
-	return bmp;
+	assert(bmp->IsOk());
+	return *bmp;
 }
 
 
@@ -344,9 +255,16 @@ void AudioRenderer::Render(wxDC &dc, wxPoint origin, int start, int length, bool
 	}
 
 	if (selected)
-		bitmaps_selected->Age(cache_maxsize);
+		bitmaps_selected.Age(cache_maxsize);
 	else
-		bitmaps_normal->Age(cache_maxsize);
+		bitmaps_normal.Age(cache_maxsize);
+}
+
+
+void AudioRenderer::Invalidate()
+{
+	bitmaps_normal.Age(0);
+	bitmaps_selected.Age(0);
 }
 
 
@@ -369,5 +287,15 @@ void AudioRendererBitmapProvider::SetSamplesPerPixel(int _pixel_samples)
 	pixel_samples = _pixel_samples;
 
 	OnSetSamplesPerPixel();
+}
+
+
+void AudioRendererBitmapProvider::SetAmplitudeScale(float _amplitude_scale)
+{
+	if (amplitude_scale == _amplitude_scale) return;
+
+	amplitude_scale = _amplitude_scale;
+
+	OnSetAmplitudeScale();
 }
 

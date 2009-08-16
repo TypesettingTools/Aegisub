@@ -37,17 +37,51 @@
 
 
 #include <wx/dc.h>
-#include <wx/image.h>
 #include <wx/gdicmn.h>
 #include <memory>
+#include "block_cache.h"
 
 
 // Some forward declarations for outside stuff
 class AudioProvider;
 
 // Forwards declarations for internal stuff
-class AudioRendererBitmapCache;
 class AudioRendererBitmapProvider;
+class AudioRenderer;
+
+
+
+/// @class AudioRendererBitmapCacheBitmapFactory
+/// @brief Produces wxBitmap objects for DataBlockCache storage for the audio renderer
+struct AudioRendererBitmapCacheBitmapFactory {
+	/// The audio renderer we're producing bitmaps for
+	AudioRenderer *renderer;
+
+	/// @brief Constructor
+	/// @param renderer The audio renderer to produce bitmaps for
+	AudioRendererBitmapCacheBitmapFactory(AudioRenderer *renderer);
+
+	/// @brief Create a new bitmap
+	/// @param i Unused
+	/// @return A fresh wxBitmap
+	///
+	/// Produces a wxBitmap with dimensions pulled from our master AudioRenderer.
+	wxBitmap *ProduceBlock(int i);
+
+	/// @brief Delete a bitmap
+	/// @param bmp The bitmap to delete
+	///
+	/// Deletes said bitmap.
+	void DisposeBlock(wxBitmap *bmp);
+
+	/// @brief Calculate the size of bitmaps
+	/// @return The size of bitmaps created
+	size_t GetBlockSize() const;
+};
+
+/// The type of a bitmap cache
+typedef DataBlockCache<wxBitmap, 8, AudioRendererBitmapCacheBitmapFactory> AudioRendererBitmapCache;
+
 
 
 /// @class AudioRenderer
@@ -57,20 +91,22 @@ class AudioRendererBitmapProvider;
 ///
 /// To implement a new audio renderer, see AudioRendererBitmapProvider.
 class AudioRenderer {
+	friend AudioRendererBitmapCacheBitmapFactory;
+
 	/// Horizontal zoom level, samples per pixel
 	int pixel_samples;
-	/// Vertical zoom level, height in pixels
+	/// Rendering height in pixels
 	int pixel_height;
+	/// Vertical zoom level/amplitude scale
+	float amplitude_scale;
 
 	/// Width of bitmaps to store in cache
 	const int cache_bitmap_width;
 
 	/// Cached bitmaps for normal audio ranges
-	std::auto_ptr<AudioRendererBitmapCache> bitmaps_normal;
+	AudioRendererBitmapCache bitmaps_normal;
 	/// Cached bitmaps for marked (selected) audio ranges
-	std::auto_ptr<AudioRendererBitmapCache> bitmaps_selected;
-	/// The "clock" used for cache aging, increased on each render operation
-	int cache_clock;
+	AudioRendererBitmapCache bitmaps_selected;
 	/// The maximum allowed size of the cache, in bytes
 	size_t cache_maxsize;
 
@@ -88,6 +124,13 @@ class AudioRenderer {
 	/// Will attempt retrieving the requested bitmap from the cache, creating it
 	/// if the cache doesn't have it.
 	wxBitmap GetCachedBitmap(int i, bool selected);
+
+	/// @brief Update the block count in the bitmap caches
+	///
+	/// Should be called when the width of the virtual bitmap has changed, i.e.
+	/// when the samples-per-pixel resolution or the number of audio samples
+	/// has changed.
+	void ResetBlockCount();
 
 public:
 	/// @brief Constructor
@@ -108,19 +151,34 @@ public:
 	/// Changing the zoom level invalidates all cached bitmaps.
 	void SetSamplesPerPixel(int pixel_samples);
 
-	/// @brief Set vertical zoom
+	/// @brief Set rendering height
 	/// @param pixel_height Height in pixels to render at
 	///
-	/// Changing the zoom level invalidates all cached bitmaps.
+	/// Changing the rendering height invalidates all cached bitmaps.
 	void SetHeight(int pixel_height);
+
+	/// @brief Set vertical zoom
+	/// @param amplitude_scale Scaling factor
+	///
+	/// Changing the scaling factor invalidates all cached bitmaps.
+	///
+	/// A scaling factor of 1.0 is no scaling, a factor of 0.5 causes the audio to be
+	/// rendered as if it had half its actual amplitude, a factor of 2 causes the audio
+	/// to be rendered as if it had double amplitude. (The exact meaning of the scaling
+	/// depends on the bitmap provider used.)
+	void SetAmplitudeScale(float amplitude_scale);
 
 	/// @brief Get horizontal zoom
 	/// @return Audio samples per pixel rendering at
 	int GetSamplesPerPixel() const { return pixel_samples; }
 
-	/// @brief Get vertical zoom
+	/// @brief Get rendering height
 	/// @return Height in pixels rendering at
 	int GetHeight() const { return pixel_height; }
+
+	/// @brief Get vertical zoom
+	/// @return The amplitude scaling factor
+	float GetAmplitudeScale() const { return amplitude_scale; }
 
 	/// @brief Change renderer
 	/// @param renderer New renderer to use
@@ -166,6 +224,16 @@ public:
 	/// The first audio sample rendered is start*pixel_samples, and the number
 	/// of audio samples rendered is length*pixel_samples.
 	void Render(wxDC &dc, wxPoint origin, int start, int length, bool selected);
+
+	/// @brief Invalidate all cached data
+	///
+	/// Invalidates all cached bitmaps for another reason, usually as a signal that
+	/// implementation-defined data in the bitmap provider have been changed.
+	///
+	/// If the consumer of audio rendering changes properties of the bitmap renderer
+	/// that will affect the rendered images, it should call this function to ensure
+	/// the cache is kept consistent.
+	void Invalidate();
 };
 
 
@@ -179,6 +247,8 @@ protected:
 	AudioProvider *provider;
 	/// Horizontal zoom in samples per pixel
 	int pixel_samples;
+	/// Vertical zoom/amplitude scale factor
+	float amplitude_scale;
 
 	/// @brief Called when the audio provider changes
 	///
@@ -189,6 +259,11 @@ protected:
 	///
 	/// Implementations can override this method to do something when the horizontal zoom is changed
 	virtual void OnSetSamplesPerPixel() { }
+
+	/// @brief Called when vertical zoom changes
+	///
+	/// Implementations can override this method to do something when the vertical zoom is changed
+	virtual void OnSetAmplitudeScale() { }
 
 public:
 	/// @brief Constructor
@@ -209,7 +284,12 @@ public:
 	/// @brief Change audio provider
 	/// @param provider Audio provider to change to
 	void SetProvider(AudioProvider *provider);
+
 	/// @brief Change horizontal zoom
 	/// @param pixel_samples Samples per pixel to zoom to
 	void SetSamplesPerPixel(int pixel_samples);
+
+	/// @brief Change vertical zoom
+	/// @param amplitude_scale Scaling factor to zoom to
+	void SetAmplitudeScale(float amplitude_scale);
 };

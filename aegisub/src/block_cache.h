@@ -40,6 +40,7 @@
 
 
 #include <vector>
+#include <algorithm>
 
 
 
@@ -104,8 +105,11 @@ class DataBlockCache {
 	/// Type of an array of blocks
 	typedef std::vector<BlockT*> BlockArray;
 
+	/// DOCME
 	struct MacroBlock {
+		/// How many times data in the macroblock has been accessed
 		int access_count;
+		/// The blocks contained in the macroblock
 		BlockArray blocks;
 	};
 
@@ -131,7 +135,7 @@ class DataBlockCache {
 		MacroBlock &mb = data[mb_index];
 		mb.access_count = 0;
 
-		for (size_t bi = 0; bi < blocks.size(); ++bi)
+		for (size_t bi = 0; bi < mb.blocks.size(); ++bi)
 		{
 			BlockT *b = mb.blocks[bi];
 			if (!b)
@@ -153,11 +157,7 @@ public:
 	DataBlockCache(size_t block_count, BlockFactoryT factory = BlockFactoryT())
 		: factory(factory)
 	{
-		macroblock_size = 1 << MacroblockExponent;
-
-		macroblock_index_mask = ~(((~0) >> MacroblockExponent) << MacroblockExponent);
-
-		data.resize( (block_count + macroblock_size - 1) >> MacroblockExponent );
+		SetBlockCount(block_count);
 	}
 
 
@@ -168,6 +168,23 @@ public:
 	{
 		// Clear all blocks by aging to zero bytes
 		Age(0);
+	}
+
+
+	/// @brief Change the number of blocks in cache
+	/// @param block_count New number of blocks to hold
+	///
+	/// This will completely de-allocate the cache and re-allocate it with the new block count.
+	void SetBlockCount(size_t block_count)
+	{
+		if (data.size() > 0)
+			Age(0);
+
+		macroblock_size = 1 << MacroblockExponent;
+
+		macroblock_index_mask = ~(((~0) >> MacroblockExponent) << MacroblockExponent);
+
+		data.resize( (block_count + macroblock_size - 1) >> MacroblockExponent );
 	}
 
 
@@ -202,7 +219,7 @@ public:
 		access_data.reserve(data.size());
 		for (MacroBlockArray::iterator mb = data.begin(); mb != data.end(); ++mb)
 			access_data.push_back(AccessData(mb));
-		access_data.sort();
+		std::sort(access_data.begin(), access_data.end());
 
 		// Sum up data size until we hit the max
 		size_t cur_size = 0;
