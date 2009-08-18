@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+<svg
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   version="1.0"
+   width="64"
+   height="64"
+   id="svg2385">
+  <defs
+     id="defs2387" />
+  <path
+     d="M 8,22 L 8,42 L 16,42 L 26,56 L 26,8 L 16,22 L 8,22 z"
+     id="path2382"
+     style="opacity:0.75;fill:#999999;stroke:#000000;stroke-width:2;stroke-linecap:round;stroke-linejoin:round" />
+  <path
+     d="M 44,3 L 42,5.5 C 49.5,12 54.5,21 54.5,32 C 54.5,43 49.5,52 42,58.5 L 44,61 C 52.5,54 57.5,43.5 57.5,32 C 57.5,20.5 52.5,10 44,3 z M 38.5,8.5 L 36.5,11 C 42.5,16 46.5,23.5 46.5,32 C 46.5,40.5 42.5,47.5 36.5,52.5 L 38.5,55 C 45,49.5 49.5,41.5 49.5,32 C 49.5,22.5 45,14 38.5,8.5 z M 33,15 L 31,17.5 C 35.5,21 38.5,26 38.5,32 C 38.5,38 35.5,43 31,46.5 L 33,49 C 38,45 41.5,39 41.5,32 C 41.5,25 38,19 33,15 z"
+     id="path2390"
+     style="opacity:0.75;fill:#0000ff;stroke:#0000ff;stroke-width:1;stroke-linecap:round;stroke-linejoin:round" />
+  <path
+     d="M 59,37 L 50,46 L 59,55 L 55,59 L 46,50 L 37,59 L 33,55 L 42,46 L 33,37 L 37,33 L 46,42 L 55,33 L 59,37 z"
+     id="rect2386"
+     style="fill:#ff0000;stroke:#803300;stroke-width:2;stroke-linecap:round;stroke-linejoin:round" />
+</svg>

@@ -6,11 +6,23 @@
    version="1.0"
    width="64"
    height="64"
-   id="svg2383">
+   id="svg2385">
   <defs
-     id="defs2385" />
+     id="defs2387" />
   <path
-     d="M 55,17 L 40,32 L 55,47 L 47,55 L 32,40 L 17,55 L 9,47 L 24,32 L 9,17 L 17,9 L 32,24 L 47,9 L 55,17 z"
-     id="rect2386"
+     d="M 54,54 L 22,24 L 54,10"
+     id="path3227"
+     style="fill:none;stroke:#803300;stroke-width:3;stroke-linecap:round;stroke-linejoin:round" />
+  <path
+     d="M 15.5,17.5 L 15.5,30.5 L 28.5,30.5 L 28.5,17.5 L 15.5,17.5 z"
+     id="path3232"
+     style="fill:none;stroke:#000000;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:2, 4;stroke-dashoffset:4" />
+  <path
+     d="M 6,40 L 14,48 L 6,56 L 10,60 L 18,52 L 26,60 L 30,56 L 22,48 L 30,40 L 26,36 L 18,44 L 10,36 L 6,40 z"
+     id="path3159"
      style="fill:#ff0000;stroke:#803300;stroke-width:2;stroke-linecap:round;stroke-linejoin:round" />
+  <path
+     d="M 49.5,5.5 L 49.5,14.5 L 58.5,14.5 L 58.5,5.5 L 49.5,5.5 z M 49.5,49.5 L 49.5,58.5 L 58.5,58.5 L 58.5,49.5 L 49.5,49.5 z"
+     id="path2386"
+     style="fill:#ffffff;stroke:#ff0000;stroke-width:3;stroke-linecap:round;stroke-linejoin:round" />
 </svg>

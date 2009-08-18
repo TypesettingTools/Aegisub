@@ -12,11 +12,11 @@
   <path
      d="M 12,12 L 52,12 L 52,52 L 12,52 L 12,12 z"
      id="rect2391"
-     style="fill:#80b3ff;stroke:#803300;stroke-width:4;stroke-linecap:round;stroke-linejoin:round" />
+     style="fill:#aaccff;stroke:#803300;stroke-width:4;stroke-linecap:round;stroke-linejoin:round" />
   <path
-     d="M 46,50 L 50,50 L 50,46 M 18,50 L 14,50 L 14,46 M 18,14 L 14,14 L 14,18 M 50,18 L 50,14 L 46,14"
+     d="M 56.5,47.5 L 47.5,47.5 L 47.5,56.5 L 56.5,56.5 L 56.5,47.5 z M 7.5,47.5 L 16.5,47.5 L 16.5,56.5 L 7.5,56.5 L 7.5,47.5 z M 7.5,16.5 L 16.5,16.5 L 16.5,7.5 L 7.5,7.5 L 7.5,16.5 z M 47.5,7.5 L 47.5,16.5 L 56.5,16.5 L 56.5,7.5 L 47.5,7.5 z"
      id="path2391"
-     style="fill:none;stroke:#ff0000;stroke-width:3;stroke-linecap:round;stroke-linejoin:round" />
+     style="fill:#ffffff;stroke:#ff0000;stroke-width:3;stroke-linecap:round;stroke-linejoin:round" />
   <path
      d="M 40.5,24.5 C 41,25.75 41.5,27.25 42,28.5 C 44,26 48,24.5 50,26.5 L 50,22 C 46.5,21 43,22.5 40.5,24.5 z M 50,28.5 C 47.5,29 45.5,29.5 43,31 C 38,34 39.5,41 45,42.5 C 47,43 48,42.5 50,41.5 L 50,36 C 49,37.5 48,38 46.5,38.5 C 44,39.5 41.5,36.5 45,34.5 C 47.5,32.95 49,33 50,33.5 L 50,28.5 z"
      id="text2385"
