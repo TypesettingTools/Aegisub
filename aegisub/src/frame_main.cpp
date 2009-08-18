@@ -398,8 +398,8 @@ void FrameMain::InitMenu() {
 	AppendBitmapMenuItem(editMenu,Menu_Edit_Paste_Over, MakeHotkeyText(_("Paste Lines Over..."), _T("Paste Over")) , _("Paste subtitles over others"),GETIMAGE(paste_over_button_16));
 	editMenu->AppendSeparator();
 	AppendBitmapMenuItem(editMenu,Menu_Edit_Find, MakeHotkeyText(_("&Find..."), _T("Find")), _("Find words in subtitles"),GETIMAGE(find_button_16));
-	AppendBitmapMenuItem(editMenu,Menu_Edit_Find_Next, MakeHotkeyText(_("Find Next"), _T("Find Next")), _("Find next match of last word"),GETIMAGE(find_next_button_16));
-	AppendBitmapMenuItem(editMenu,Menu_Edit_Replace, MakeHotkeyText(_("Search and &Replace..."), _T("Replace")) , _("Find and replace words in subtitles"),GETIMAGE(replace_button_16));
+	AppendBitmapMenuItem(editMenu,Menu_Edit_Find_Next, MakeHotkeyText(_("Find Next"), _T("Find Next")), _("Find next match of last word"),GETIMAGE(find_next_menu_16));
+	AppendBitmapMenuItem(editMenu,Menu_Edit_Replace, MakeHotkeyText(_("Search and &Replace..."), _T("Replace")) , _("Find and replace words in subtitles"),GETIMAGE(find_replace_menu_16));
 	MenuBar->Append(editMenu, _("&Edit"));
 
 	// Create subtitles menu
@@ -469,7 +469,7 @@ void FrameMain::InitMenu() {
 	// Create video menu
 	videoMenu = new wxMenu();
 	videoMenu->Append(Menu_File_Open_Video, _("&Open Video..."), _("Opens a video file"));
-	videoMenu->Append(Menu_File_Close_Video, _("&Close Video"), _("Closes the currently open video file"));
+	AppendBitmapMenuItem(videoMenu, Menu_File_Close_Video, _("&Close Video"), _("Closes the currently open video file"), GETIMAGE(close_video_menu_16));
 	wxMenuItem *RecentVidParent = new wxMenuItem(videoMenu, Menu_File_Recent_Vids_Parent, _("Recent"), _T(""), wxITEM_NORMAL, RecentVids);
 	videoMenu->Append(RecentVidParent);
 	videoMenu->Append(Menu_Video_Dummy, _("Use Dummy Video..."), _("Opens a video clip with solid colour"));
@@ -517,9 +517,9 @@ void FrameMain::InitMenu() {
 
 	// Create audio menu
 	audioMenu = new wxMenu();
-	audioMenu->Append(Menu_Audio_Open_File, _("&Open Audio File..."), _("Opens an audio file"));
-	audioMenu->Append(Menu_Audio_Open_From_Video, _("Open Audio from &Video"), _("Opens the audio from the current video file"));
-	audioMenu->Append(Menu_Audio_Close, _("&Close Audio"), _("Closes the currently open audio file"));
+	AppendBitmapMenuItem(audioMenu, Menu_Audio_Open_File, _("&Open Audio File..."), _("Opens an audio file"), GETIMAGE(open_audio_menu_16));
+	AppendBitmapMenuItem(audioMenu, Menu_Audio_Open_From_Video, _("Open Audio from &Video"), _("Opens the audio from the current video file"), GETIMAGE(open_audio_from_video_menu_16));
+	AppendBitmapMenuItem(audioMenu, Menu_Audio_Close, _("&Close Audio"), _("Closes the currently open audio file"), GETIMAGE(close_audio_menu_16));
 	wxMenuItem *RecentAudParent = new wxMenuItem(audioMenu, Menu_File_Recent_Auds_Parent, _("Recent"), _T(""), wxITEM_NORMAL, RecentAuds);
 	audioMenu->Append(RecentAudParent);
 #ifdef _DEBUG
