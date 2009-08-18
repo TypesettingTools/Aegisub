@@ -3,22 +3,41 @@
 <svg
    xmlns:svg="http://www.w3.org/2000/svg"
    xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
    version="1.0"
    width="64"
    height="64"
    id="svg2385">
   <defs
-     id="defs2387" />
+     id="defs2387">
+    <linearGradient
+       id="linearGradient2425">
+      <stop
+         id="stop2427"
+         style="stop-color:#ffffff;stop-opacity:1"
+         offset="0" />
+      <stop
+         id="stop2429"
+         style="stop-color:#0044aa;stop-opacity:1"
+         offset="1" />
+    </linearGradient>
+    <radialGradient
+       cx="-50"
+       cy="25"
+       r="29"
+       fx="-50"
+       fy="25"
+       id="radialGradient2431"
+       xlink:href="#linearGradient2425"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(-1.6,2,-1.9,-1.5,-19.1,157.2)" />
+  </defs>
   <path
      d="M 8,10 L 56,10 C 58,10 60,12 60,14 L 60,50 C 60,52 58,54 56,54 L 8,54 C 6,54 4,52 4,50 L 4,14 C 4,12 6,10 8,10 z"
      id="rect2433"
-     style="fill:#80b3ff;stroke:#000000;stroke-width:2;stroke-linecap:round;stroke-linejoin:round" />
+     style="fill:url(#radialGradient2431);stroke:#000000;stroke-width:2;stroke-linecap:round;stroke-linejoin:round" />
   <path
-     d="M 8,50 L 8,32 L 15,39 L 45,21 L 38,14 L 56,14 L 56,32 L 49,25 L 19,43 L 26,50 L 8,50 z"
-     id="path2436"
-     style="fill:#ffff00;stroke:#000000;stroke-width:2;stroke-linecap:round;stroke-linejoin:round" />
-  <path
-     d="M 16,14 C 14,14 12,15 12,16 C 12,17 14,18 16,18 C 18,18 20,17 20,16 C 20,15 18,14 16,14 z M 10,18 C 9,18 8,20 8,22 C 8,24 9,26 10,26 C 11,26 12,24 12,22 C 12,20 11,18 10,18 z"
-     id="path2444"
-     style="fill:#ffffff;stroke:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round" />
+     d="M 10,23.5 L 15,40.5 L 18,40.5 L 21.5,29 L 25,40.5 L 28,40.5 L 33,23.5 L 30,23.5 L 26.5,35 L 23,23.5 L 20,23.5 L 16.5,35 L 13,23.5 L 10,23.5 z M 40,23.5 L 40,40.5 L 43,40.5 L 43,33 L 50,33 L 50,40.5 L 53,40.5 L 53,23.5 L 50,23.5 L 50,30 L 43,30 L 43,23.5 L 40,23.5 z M 34.5,28.5 C 34.5,30.5 37.5,30.5 37.5,28.5 C 37.5,26.5 34.5,26.5 34.5,28.5 z M 34.5,35.5 C 34.5,37.5 37.5,37.5 37.5,35.5 C 37.5,33.5 34.5,33.5 34.5,35.5 z"
+     id="path2392"
+     style="fill:#000000;stroke:none" />
 </svg>

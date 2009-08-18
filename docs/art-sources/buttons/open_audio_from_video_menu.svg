@@ -3,20 +3,49 @@
 <svg
    xmlns:svg="http://www.w3.org/2000/svg"
    xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
    version="1.0"
    width="64"
    height="64"
    id="svg2385">
   <defs
-     id="defs2387" />
+     id="defs2387">
+    <radialGradient
+       cx="-50"
+       cy="25"
+       r="29"
+       fx="-50"
+       fy="25"
+       id="radialGradient2431"
+       xlink:href="#linearGradient2425"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(-1.6,2,-1.9,-1.5,-19.1,157.2)" />
+    <linearGradient
+       id="linearGradient2425">
+      <stop
+         id="stop2427"
+         style="stop-color:#ffffff;stop-opacity:1"
+         offset="0" />
+      <stop
+         id="stop2429"
+         style="stop-color:#0044aa;stop-opacity:1"
+         offset="1" />
+    </linearGradient>
+    <radialGradient
+       cx="-50"
+       cy="25"
+       r="29"
+       fx="-50"
+       fy="25"
+       id="radialGradient2479"
+       xlink:href="#linearGradient2425"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(-1.6,2,-1.9,-1.5,-19.1,157.2)" />
+  </defs>
   <path
      d="M 8,10 L 56,10 C 58,10 60,12 60,14 L 60,50 C 60,52 58,54 56,54 L 8,54 C 6,54 4,52 4,50 L 4,14 C 4,12 6,10 8,10 z"
-     id="rect2433"
-     style="fill:#80b3ff;stroke:#000000;stroke-width:2;stroke-linecap:round;stroke-linejoin:round" />
-  <path
-     d="M 16,14 C 14,14 12,15 12,16 C 12,17 14,18 16,18 C 18,18 20,17 20,16 C 20,15 18,14 16,14 z M 10,18 C 9,18 8,20 8,22 C 8,24 9,26 10,26 C 11,26 12,24 12,22 C 12,20 11,18 10,18 z"
-     id="path2444"
-     style="fill:#ffffff;stroke:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round" />
+     id="path2474"
+     style="fill:url(#radialGradient2479);stroke:#000000;stroke-width:2;stroke-linecap:round;stroke-linejoin:round" />
   <path
      d="M 14.5,25.5 L 14.5,38.5 L 19.5,38.5 L 25.5,48.5 L 25.5,15.5 L 19.5,25.5 L 14.5,25.5 z"
      id="path2382"
