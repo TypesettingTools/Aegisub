@@ -10,16 +10,6 @@
    id="svg2385">
   <defs
      id="defs2387">
-    <radialGradient
-       cx="-50"
-       cy="25"
-       r="29"
-       fx="-50"
-       fy="25"
-       id="radialGradient2431"
-       xlink:href="#linearGradient2425"
-       gradientUnits="userSpaceOnUse"
-       gradientTransform="matrix(-1.6,2,-1.9,-1.5,-19.1,157.2)" />
     <linearGradient
        id="linearGradient2425">
       <stop

@@ -3,34 +3,45 @@
 <svg
    xmlns:svg="http://www.w3.org/2000/svg"
    xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
    version="1.0"
    width="64"
    height="64"
    id="svg2385">
   <defs
-     id="defs2387" />
+     id="defs2387">
+    <linearGradient
+       id="linearGradient2425">
+      <stop
+         id="stop2427"
+         style="stop-color:#ffffff;stop-opacity:1"
+         offset="0" />
+      <stop
+         id="stop2429"
+         style="stop-color:#0044aa;stop-opacity:1"
+         offset="1" />
+    </linearGradient>
+    <radialGradient
+       cx="-49"
+       cy="22"
+       r="29"
+       fx="-49"
+       fy="22"
+       id="radialGradient2431"
+       xlink:href="#linearGradient2425"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(-1.6,2,-1.9,-1.5,-25.1,137.2)" />
+  </defs>
   <path
-     d="M 20,30 L 20,20.5 L 16.5,24 L 15,22 L 15,14 L 11,14 L 11,23 L 13.5,26.5 L 10,30 L 20,30 z"
-     id="path3170"
-     style="fill:#00ffff;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round" />
-  <path
-     d="M 24,28 L 52,28 C 55.5,28 58,30.5 58,34 L 58,52 C 58,55.5 55.5,58 52,58 L 24,58 C 20.5,58 18,55.5 18,52 L 18,34 C 18,30.5 20.5,28 24,28 z"
+     d="M 18,8 L 46,8 C 49.5,8 52,10.5 52,14 L 52,32 C 52,35.5 49.5,38 46,38 L 18,38 C 14.5,38 12,35.5 12,32 L 12,14 C 12,10.5 14.5,8 18,8 z"
      id="rect2380"
-     style="fill:#80b3ff;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round" />
+     style="fill:url(#radialGradient2431);stroke:#000000;stroke-width:2;stroke-linecap:round;stroke-linejoin:round" />
   <path
-     d="M 6,6 L 58,6 L 58,14 L 6,14 L 6,6 z"
-     id="rect2383"
-     style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round" />
-  <path
-     d="M 6,6 L 20,6 L 20,14 L 6,14 L 6,6 z"
-     id="rect3167"
-     style="fill:#ff00ff;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round" />
-  <path
-     d="M 50,43 L 41,34 L 41,40 L 26,40 L 26,46 L 41,46 L 41,52 L 50,43 z"
+     d="M 44,23 L 35,14 L 35,20 L 20,20 L 20,26 L 35,26 L 35,32 L 44,23 z"
      id="path3251"
-     style="fill:#0055d4;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round" />
+     style="fill:#00ccff;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round" />
   <path
-     d="M 34,6 L 34,14"
-     id="path3293"
-     style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round" />
+     d="M 10.5,54 L 13.5,54 L 12,50 L 10.5,54 z M 11,46 L 13,46 L 18,60 L 15.5,60 L 14,56 L 10,56 L 8.5,60 L 6,60 L 11,46 z M 19.5,46 L 22,46 L 22,55 C 22,58.5 28,58.5 28,55 L 28,46 L 30.5,46 L 30.5,55 C 30.5,62 19.5,62 19.5,55 L 19.5,46 z M 36.5,60 L 36.5,48.5 L 32.5,48.5 L 32.5,46 L 43,46 L 43,48.5 L 39,48.5 L 39,60 L 36.5,60 z M 51,57.5 C 57,57.5 57,48.5 51,48.5 C 45,48.5 45,57.5 51,57.5 z M 51,46 C 60.5,46 60.5,60 51,60 C 41.5,60 41.5,46 51,46 z"
+     id="text2381"
+     style="fill:#0000ff;stroke:#0000ff;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4" />
 </svg>

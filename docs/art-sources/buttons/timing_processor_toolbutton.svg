@@ -12,15 +12,15 @@
   <path
      d="M 32,3 C 28.5,3 26,4 26,5 C 26,6 27.5,6.5 30,7 L 30,9 C 18,9.5 6,20 6,35 C 6,50 17,61 32,61 C 47,61 58,50 58,35 C 58,20 46,9.5 34,9 L 34,7 C 36.5,6.5 38,6 38,5 C 38,4 35.5,3 32,3 z"
      id="path2382"
-     style="fill:#999999;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round" />
+     style="fill:#ffcc00;stroke:#ff6600;stroke-width:2;stroke-linecap:round;stroke-linejoin:round" />
   <path
      d="M 54,35 C 54,47 44,57 32,57 C 20,57 10,47 10,35 C 10,23 20,13 32,13 C 44,13 54,23 54,35 z"
      id="path2391"
-     style="fill:#0066ff;stroke:#003380;stroke-width:1;stroke-linecap:round;stroke-linejoin:round" />
+     style="fill:#803300;stroke:#552200;stroke-width:1;stroke-linecap:round;stroke-linejoin:round" />
   <path
      d="M 50,35 C 50,45 42,53 32,53 C 22,53 14,45 14,35 C 14,25 22,17 32,17 C 42,17 50,25 50,35 z"
      id="path2394"
-     style="fill:#ffffff;stroke:#808080;stroke-width:1;stroke-linecap:round;stroke-linejoin:round" />
+     style="fill:#ffffff;stroke:#552200;stroke-width:1;stroke-linecap:round;stroke-linejoin:round" />
   <path
      d="M 42,30 L 32,35 L 32,20"
      id="path2401"

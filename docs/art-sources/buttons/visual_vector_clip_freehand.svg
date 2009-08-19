@@ -12,7 +12,7 @@
   <path
      d="M 56,44 L 44,56 L 20,32 L 8,44"
      id="path2432"
-     style="fill:none;stroke:#803300;stroke-width:3" />
+     style="fill:none;stroke:#803300;stroke-width:3;stroke-linecap:round;stroke-linejoin:round" />
   <path
      d="M 48,32 L 42,38 L 56,44 L 48,32 z"
      id="path3184"

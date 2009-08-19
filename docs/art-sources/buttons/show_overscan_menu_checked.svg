@@ -22,34 +22,26 @@
          offset="1" />
     </linearGradient>
     <radialGradient
-       cx="-46"
-       cy="26"
+       cx="-50"
+       cy="25"
        r="29"
-       fx="-46"
-       fy="26"
+       fx="-50"
+       fy="25"
        id="radialGradient2431"
        xlink:href="#linearGradient2425"
        gradientUnits="userSpaceOnUse"
        gradientTransform="matrix(-1.6,2,-1.9,-1.5,-19.1,157.2)" />
   </defs>
   <path
-     d="M 6,6 L 58,6 L 58,14 L 6,14 L 6,6 z"
-     id="rect2383"
-     style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round" />
-  <path
-     d="M 20,6 L 34,6 L 34,14 L 20,14 L 20,6 z"
-     id="rect3167"
-     style="fill:#ff0000;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round" />
-  <path
-     d="M 27,28 L 34,21 L 29,21 L 29,14 L 25,14 L 25,21 L 20,21 L 27,28 z"
-     id="path3170"
-     style="fill:#00ccff;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round" />
-  <path
-     d="M 12,28 L 40,28 C 43.5,28 46,30.5 46,34 L 46,52 C 46,55.5 43.5,58 40,58 L 12,58 C 8.5,58 6,55.5 6,52 L 6,34 C 6,30.5 8.5,28 12,28 z"
-     id="rect2380"
+     d="M 8,10 L 56,10 C 58,10 60,12 60,14 L 60,50 C 60,52 58,54 56,54 L 8,54 C 6,54 4,52 4,50 L 4,14 C 4,12 6,10 8,10 z"
+     id="rect2433"
      style="fill:url(#radialGradient2431);stroke:#000000;stroke-width:2;stroke-linecap:round;stroke-linejoin:round" />
   <path
-     d="M 38,43 L 29,34 L 29,40 L 14,40 L 14,46 L 29,46 L 29,52 L 38,43 z"
-     id="path3251"
-     style="fill:#00ccff;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round" />
+     d="M 8,9 C 5.5,9 3,11.5 3,14 L 3,50 C 3,52.5 5.5,55 8,55 L 56,55 C 58.5,55 61,52.5 61,50 L 61,16 C 61,13.5 58.5,9 56,9 L 8,9 z M 14,16 L 50,16 C 52,16 54,18 54,20 L 54,44 C 54,46 52,48 50,48 L 14,48 C 12,48 10,46 10,44 L 10,20 C 10,18 12,16 14,16 z"
+     id="path3186"
+     style="opacity:0.4;fill:#000000;stroke:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round" />
+  <path
+     d="M 8,9 C 5.5,9 3,11.5 3,14 L 3,50 C 3,52.5 5.5,55 8,55 L 56,55 C 58.5,55 61,52.5 61,50 L 61,14 C 61,11.5 58.5,9 56,9 L 8,9 z M 20,22 L 44,22 C 46,22 48,24 48,26 L 48,38 C 48,40 46,42 44,42 L 20,42 C 18,42 16,40 16,38 L 16,26 C 16,24 18,22 20,22 z"
+     id="path3193"
+     style="opacity:0.2;fill:#000000;stroke:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round" />
 </svg>

@@ -10,16 +10,6 @@
    id="svg2385">
   <defs
      id="defs2387">
-    <radialGradient
-       cx="-50"
-       cy="25"
-       r="29"
-       fx="-50"
-       fy="25"
-       id="radialGradient2431"
-       xlink:href="#linearGradient2425"
-       gradientUnits="userSpaceOnUse"
-       gradientTransform="matrix(-1.6,2,-1.9,-1.5,-19.1,157.2)" />
     <linearGradient
        id="linearGradient2425">
       <stop
@@ -32,22 +22,22 @@
          offset="1" />
     </linearGradient>
     <radialGradient
-       cx="-50"
-       cy="25"
+       cx="-46"
+       cy="26"
        r="29"
-       fx="-50"
-       fy="25"
-       id="radialGradient2483"
+       fx="-46"
+       fy="26"
+       id="radialGradient2669"
        xlink:href="#linearGradient2425"
        gradientUnits="userSpaceOnUse"
-       gradientTransform="matrix(-1.6,2,-1.9,-1.5,-19.1,157.2)" />
+       gradientTransform="matrix(-1.6,2,-1.9,-1.5,-13.1,146.2)" />
   </defs>
   <path
-     d="M 16,18 L 48,18 C 50,18 52,20 52,22 L 52,42 C 52,44 50,46 48,46 L 16,46 C 14,46 12,44 12,42 L 12,22 C 12,20 14,18 16,18 z"
-     id="path2478"
-     style="fill:url(#radialGradient2483);stroke:#000000;stroke-width:2;stroke-linecap:round;stroke-linejoin:round" />
+     d="M 18,17 L 46,17 C 49.5,17 52,19.5 52,23 L 52,41 C 52,44.5 49.5,47 46,47 L 18,47 C 14.5,47 12,44.5 12,41 L 12,23 C 12,19.5 14.5,17 18,17 z"
+     id="rect2380"
+     style="fill:url(#radialGradient2669);stroke:#000000;stroke-width:2;stroke-linecap:round;stroke-linejoin:round" />
   <path
-     d="M 8,10 L 56,10 C 58,10 60,12 60,14 L 60,50 C 60,52 58,54 56,54 L 8,54 C 6,54 4,52 4,50 L 4,14 C 4,12 6,10 8,10 z"
-     id="path2503"
-     style="fill:none;stroke:#000000;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:8, 8;stroke-dashoffset:4" />
+     d="M 12,9 L 52,9 C 57,9 60,12 60,17 L 60,47 C 60,52 57,55 52,55 L 12,55 C 7,55 4,52 4,47 L 4,17 C 4,12 7,9 12,9 z"
+     id="path2694"
+     style="fill:none;stroke:#000000;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:8, 8;stroke-dashoffset:8" />
 </svg>
