@@ -487,7 +487,7 @@ void FrameMain::InitMenu() {
 	wxMenuItem *RecentKeyframesParent = new wxMenuItem(videoMenu, Menu_File_Recent_Keyframes_Parent, _("Recent"), _T(""), wxITEM_NORMAL, RecentKeyframes);
 	videoMenu->Append(RecentKeyframesParent);
 	videoMenu->AppendSeparator();
-	videoMenu->Append(Menu_Video_Detach, _("Detach Video"), _("Detach video, displaying it in a separate Window."));
+	AppendBitmapMenuItem(videoMenu, Menu_Video_Detach, _("Detach Video"), _("Detach video, displaying it in a separate Window."), GETIMAGE(detach_video_menu_16));
 	wxMenu *ZoomMenu = new wxMenu;
 	wxMenuItem *ZoomParent = new wxMenuItem(subtitlesMenu,Menu_View_Zoom,_("Set Zoom"),_T(""),wxITEM_NORMAL,ZoomMenu);
 #ifndef __APPLE__
@@ -509,6 +509,8 @@ void FrameMain::InitMenu() {
 	AspectMenu->AppendCheckItem(Menu_Video_AR_Custom, _("Custom..."), _("Forces video to a custom aspect ratio"));
 	videoMenu->Append(AspectParent);
 	videoMenu->AppendCheckItem(Menu_Video_Overscan, _("Show Overscan Mask"), _("Show a mask over the video, indicating areas that might get cropped off by overscan on televisions."));
+//  This is broken as you can't use Check() on a menu item that has a bitmap.
+//	AppendBitmapMenuItem(videoMenu, Menu_Video_Overscan, _("Show Overscan Mask"), _("Show a mask over the video, indicating areas that might get cropped off by overscan on televisions."), GETIMAGE(show_overscan_menu_checked_16));
 	videoMenu->AppendSeparator();
 	AppendBitmapMenuItem(videoMenu,Menu_Video_JumpTo, MakeHotkeyText(_("&Jump to..."), _T("Video Jump")), _("Jump to frame or time"), GETIMAGE(jumpto_button_16));
 	AppendBitmapMenuItem(videoMenu,Menu_Subs_Snap_Video_To_Start, MakeHotkeyText(_("Jump Video to Start"), _T("Jump Video To Start")), _("Jumps the video to the start frame of current subtitle"), GETIMAGE(video_to_substart_16));
