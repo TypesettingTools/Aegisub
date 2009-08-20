@@ -438,6 +438,7 @@ void FrameMain::OnMenuOpen (wxMenuEvent &event) {
 		
 		bool can_paste = true;
 		if (wxTheClipboard->Open()) {
+			wxTheClipboard->UsePrimarySelection(true);
 			can_paste = wxTheClipboard->IsSupported(wxDF_TEXT);
 			wxTheClipboard->Close();
 		}

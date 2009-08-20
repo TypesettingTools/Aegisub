@@ -976,6 +976,7 @@ void SubtitlesGrid::CopyLines(wxArrayInt target) {
 
 	// Send to clipboard
 	if (wxTheClipboard->Open()) {
+		wxTheClipboard->UsePrimarySelection(true);
 		wxTheClipboard->SetData(new wxTextDataObject(data));
 		wxTheClipboard->Close();
 	}
