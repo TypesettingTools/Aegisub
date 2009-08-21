@@ -10,13 +10,13 @@
   <defs
      id="defs2387" />
   <path
-     d="M 10,4 L 10,60 L 54,60 L 54,18 L 40,4 L 10,4 z"
-     id="path2406"
+     d="M 10,4 L 40,4 L 54,18 L 54,60 L 10,60 L 10,4 z"
+     id="rect2392"
      style="fill:#ffffff;stroke:#000000;stroke-width:2;stroke-linecap:round;stroke-linejoin:round" />
   <path
-     d="M 40,4 L 54,18 L 40,18 L 40,4 z"
-     id="path2408"
-     style="fill:#cccccc;stroke:#000000;stroke-width:2;stroke-linecap:round;stroke-linejoin:round" />
+     d="M 54,18 L 40,18 L 40,4"
+     id="rect3182"
+     style="fill:none;stroke:#000000;stroke-width:2;stroke-linecap:round;stroke-linejoin:round" />
   <path
      d="M 14.5,32.5 L 14.5,45.5 L 19.5,45.5 L 25.5,55.5 L 25.5,22.5 L 19.5,32.5 L 14.5,32.5 z"
      id="path2382"

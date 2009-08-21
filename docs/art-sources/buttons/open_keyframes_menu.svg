@@ -18,15 +18,7 @@
      id="rect3182"
      style="fill:none;stroke:#000000;stroke-width:2;stroke-linecap:round;stroke-linejoin:round" />
   <path
-     d="M 32,18.5 C 21.5,18.5 13,27 13,37.5 C 13,48 21.5,56.5 32,56.5 C 42.5,56.5 51,48 51,37.5 C 51,27 42.5,18.5 32,18.5 z"
-     id="path2382"
-     style="fill:#808080;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round" />
-  <path
-     d="M 45,37.5 C 45,45 39.5,50.5 32,50.5 C 24.5,50.5 19,45 19,37.5 C 19,30 24.5,24.5 32,24.5 C 39.5,24.5 45,30 45,37.5 z"
-     id="path2391"
-     style="fill:#ffffff;stroke:#0066ff;stroke-width:4" />
-  <path
-     d="M 38.5,35.5 L 32,37.5 L 32,28"
-     id="path2401"
-     style="fill:none;stroke:#000000;stroke-width:2;stroke-linecap:round;stroke-linejoin:round" />
+     d="M 24,15 C 11,15 11,35 24,35 C 25.5,35 26,35 29,34 L 34,39 L 30,43 L 34,47 L 38,43 L 42,47 L 38,51 L 42,55 L 50,47 L 33,30 C 36,22.5 31.5,15 24,15 z M 24,21 C 26.5,21 28,22.5 28,25 C 28,27.5 26.5,29 24,29 C 21.5,29 20,27.5 20,25 C 20,22.5 21.5,21 24,21 z"
+     id="path2388"
+     style="fill:#ffa800;stroke:#552200;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round" />
 </svg>

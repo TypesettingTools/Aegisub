@@ -10,27 +10,19 @@
   <defs
      id="defs2387" />
   <path
-     d="M 9,9 L 28,9 L 28,18 L 36,18 L 36,46 L 9,46 L 9,9 z"
-     id="path2395"
+     d="M 6,6 L 32,6 L 42,16 L 42,54 L 6,54 L 6,6 z"
+     id="rect2392"
      style="fill:#ffffff;stroke:#000000;stroke-width:2;stroke-linecap:round;stroke-linejoin:round" />
   <path
-     d="M 14.5,15.5 L 24,15.5 L 14.5,15.5 z M 14.5,20.5 L 24,20.5 L 14.5,20.5 z M 14.5,25.5 L 30.5,25.5 L 14.5,25.5 z M 14.5,30.5 L 30.5,30.5 L 14.5,30.5 z M 14.5,35.5 L 30.5,35.5 L 14.5,35.5 z M 14.5,40.5 L 30.5,40.5 L 14.5,40.5 z"
-     id="path2397"
-     style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round" />
+     d="M 13.5,17.5 L 26,17.5 L 13.5,17.5 z M 13.5,24.5 L 34.5,24.5 L 13.5,24.5 z M 13.5,31.5 L 34.5,31.5 L 13.5,31.5 z M 13.5,38.5 L 34.5,38.5 L 13.5,38.5 z M 13.5,45.5 L 34.5,45.5 L 13.5,45.5 z M 42,16 L 32,16 L 32,6"
+     id="path3469"
+     style="fill:none;stroke:#000000;stroke-width:2;stroke-linecap:round;stroke-linejoin:round" />
   <path
-     d="M 28,9 L 36,18 L 28,18 L 28,9 z"
-     id="path2399"
-     style="fill:#cccccc;stroke:#000000;stroke-width:2;stroke-linecap:round;stroke-linejoin:round" />
-  <path
-     d="M 28,18 L 47,18 L 47,27 L 55,27 L 55,55 L 28,55 L 28,18 z"
-     id="path3467"
+     d="M 22,12 L 48,12 L 58,22 L 58,60 L 22,60 L 22,12 z"
+     id="path3193"
      style="fill:#ffffff;stroke:#003380;stroke-width:2;stroke-linecap:round;stroke-linejoin:round" />
   <path
-     d="M 33.5,24.5 L 43,24.5 L 33.5,24.5 z M 33.5,29.5 L 43,29.5 L 33.5,29.5 z M 33.5,34.5 L 49.5,34.5 L 33.5,34.5 z M 33.5,39.5 L 49.5,39.5 L 33.5,39.5 z M 33.5,44.5 L 49.5,44.5 L 33.5,44.5 z M 33.5,49.5 L 49.5,49.5 L 33.5,49.5 z"
-     id="path3469"
-     style="fill:none;stroke:#003380;stroke-width:1;stroke-linecap:round;stroke-linejoin:round" />
-  <path
-     d="M 47,18 L 55,27 L 47,27 L 47,18 z"
-     id="path3471"
-     style="fill:#cccccc;stroke:#003380;stroke-width:2;stroke-linecap:round;stroke-linejoin:round" />
+     d="M 29.5,23.5 L 42,23.5 L 29.5,23.5 z M 29.5,30.5 L 50.5,30.5 L 29.5,30.5 z M 29.5,37.5 L 50.5,37.5 L 29.5,37.5 z M 29.5,44.5 L 50.5,44.5 L 29.5,44.5 z M 29.5,51.5 L 50.5,51.5 L 29.5,51.5 z M 58,22 L 48,22 L 48,12"
+     id="path3195"
+     style="fill:none;stroke:#003380;stroke-width:2;stroke-linecap:round;stroke-linejoin:round" />
 </svg>

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+<svg
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   version="1.0"
+   width="64"
+   height="64"
+   id="svg2385">
+  <defs
+     id="defs2387" />
+  <path
+     d="M 23,44 L 23,54 L 32,54 L 32,44 L 23,44 z"
+     id="path2450"
+     style="fill:#330080;stroke:none" />
+  <path
+     d="M 14,44 L 14,54 L 23,54 L 23,44 L 14,44 z"
+     id="path2448"
+     style="fill:#ffffff;stroke:none" />
+  <path
+     d="M 4,44 L 4,52 L 6,54 L 14,54 L 14,44 L 4,44 z"
+     id="path2446"
+     style="fill:#162d50;stroke:none" />
+  <path
+     d="M 32,44 L 32,54 L 58,54 L 60,52 L 60,44 L 32,44 z"
+     id="path2444"
+     style="fill:#000000;stroke:none" />
+  <path
+     d="M 52,10 L 52,40 L 60,40 L 60,12 L 58,10 L 52,10 z M 4,40 L 4,44 L 12,44 L 12,40 L 4,40 z"
+     id="path2425"
+     style="fill:#0000ff;stroke:none" />
+  <path
+     d="M 12,40 L 12,44 L 20,44 L 20,40 L 12,40 z M 28,40 L 28,44 L 36,44 L 36,40 L 28,40 z M 44,40 L 44,44 L 52,44 L 52,40 L 44,40 z"
+     id="path2427"
+     style="fill:#000000;stroke:none" />
+  <path
+     d="M 36,10 L 36,40 L 44,40 L 44,10 L 36,10 z M 20,40 L 20,44 L 28,44 L 28,40 L 20,40 z"
+     id="path2429"
+     style="fill:#ff00ff;stroke:none" />
+  <path
+     d="M 6,10 L 4,12 L 4,40 L 12,40 L 12,10 L 6,10 z M 52,40 L 52,44 L 60,44 L 60,40 L 52,40 z"
+     id="path2433"
+     style="fill:#ffffff;stroke:none" />
+  <path
+     d="M 20,10 L 20,40 L 28,40 L 28,10 L 20,10 z M 36,40 L 36,44 L 44,44 L 44,40 L 36,40 z"
+     id="path2435"
+     style="fill:#00ffff;stroke:none" />
+  <path
+     d="M 12,10 L 20,10 L 20,40 L 12,40 L 12,10 z"
+     id="path2411"
+     style="fill:#ffff00;stroke:none" />
+  <path
+     d="M 28,10 L 36,10 L 36,40 L 28,40 L 28,10 z"
+     id="path2417"
+     style="fill:#00ff00;stroke:none" />
+  <path
+     d="M 44,10 L 52,10 L 52,40 L 44,40 L 44,10 z"
+     id="path2423"
+     style="fill:#ff0000;stroke:none" />
+  <path
+     d="M 8,10 L 56,10 C 58,10 60,12 60,14 L 60,50 C 60,52 58,54 56,54 L 8,54 C 6,54 4,52 4,50 L 4,14 C 4,12 6,10 8,10 z"
+     id="rect2433"
+     style="fill:none;stroke:#000000;stroke-width:2;stroke-linecap:round;stroke-linejoin:round" />
+</svg>

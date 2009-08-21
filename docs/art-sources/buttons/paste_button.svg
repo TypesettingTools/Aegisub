@@ -10,23 +10,19 @@
   <defs
      id="defs2387" />
   <path
-     d="M 14,10 L 42,10 C 44,10 46,12 46,14 L 46,56 C 46,58 44,60 42,60 L 14,60 C 12,60 10,58 10,56 L 10,14 C 10,12 12,10 14,10 z"
+     d="M 13.5,8 L 45.5,8 C 47.5,8 49.5,10 49.5,12 L 49.5,58 C 49.5,60 47.5,62 45.5,62 L 13.5,62 C 11.5,62 9.5,60 9.5,58 L 9.5,12 C 9.5,10 11.5,8 13.5,8 z"
      id="rect2383"
      style="fill:#a05a2c;stroke:#000000;stroke-width:2;stroke-linecap:round;stroke-linejoin:round" />
   <path
-     d="M 18,8 L 13,15 L 43,15 L 38,8 L 32,8 C 32,5.5 30.5,4 28,4 C 25.5,4 24,5.5 24,8 L 18,8 z"
+     d="M 17.5,6 L 12.5,13 L 46.5,13 L 41.5,6 L 33.5,6 C 33.5,3.5 32,2 29.5,2 C 27,2 25.5,3.5 25.5,6 L 17.5,6 z"
      id="path2388"
      style="fill:#ffcc00;stroke:#000000;stroke-width:2;stroke-linecap:round;stroke-linejoin:round" />
   <path
-     d="M 29,19 L 48,19 L 48,28 L 56,28 L 56,56 L 29,56 L 29,19 z"
-     id="path2463"
-     style="fill:#ffffff;stroke:#003380;stroke-width:2;stroke-linecap:round;stroke-linejoin:round" />
+     d="M 28,19 L 47.5,19 L 55,26.5 L 55,55 L 28,55 L 28,19 z"
+     id="path3193"
+     style="fill:#ffffff;stroke:#003380;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round" />
   <path
-     d="M 34.5,25.5 L 44,25.5 L 34.5,25.5 z M 34.5,30.5 L 44,30.5 L 34.5,30.5 z M 34.5,35.5 L 50.5,35.5 L 34.5,35.5 z M 34.5,40.5 L 50.5,40.5 L 34.5,40.5 z M 34.5,45.5 L 50.5,45.5 L 34.5,45.5 z M 34.5,50.5 L 50.5,50.5 L 34.5,50.5 z"
-     id="path2465"
-     style="fill:none;stroke:#003380;stroke-width:1;stroke-linecap:round;stroke-linejoin:round" />
-  <path
-     d="M 48,19 L 56,28 L 48,28 L 48,19 z"
-     id="path2467"
-     style="fill:#cccccc;stroke:#003380;stroke-width:2;stroke-linecap:round;stroke-linejoin:round" />
+     d="M 33.5,27.5 L 43,27.5 L 33.5,27.5 z M 33.5,33 L 49.5,33 L 33.5,33 z M 33.5,38.5 L 49.5,38.5 L 33.5,38.5 z M 33.5,44 L 49.5,44 L 33.5,44 z M 33.5,49.5 L 49.5,49.5 L 33.5,49.5 z M 55,26.5 L 47.5,26.5 L 47.5,19"
+     id="path3195"
+     style="fill:none;stroke:#003380;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round" />
 </svg>

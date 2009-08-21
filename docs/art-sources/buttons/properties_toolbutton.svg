@@ -10,19 +10,19 @@
   <defs
      id="defs2387" />
   <path
-     d="M 50,12 L 50,58 L 14,58 L 14,12 L 50,12 z"
-     id="rect2383"
+     d="M 10,5 L 54,5 L 54,61 L 10,61 L 10,5 z"
+     id="rect2392"
      style="fill:#ffffff;stroke:#003380;stroke-width:2;stroke-linecap:round;stroke-linejoin:round" />
   <path
-     d="M 24,10 L 24,18 L 40,18 L 40,10 L 24,10 z"
+     d="M 24,3 L 24,11 L 40,11 L 40,3 L 24,3 z"
      id="path2388"
      style="fill:#000000;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round" />
   <path
-     d="M 20,28.25 L 27,28.25 L 20,28.25 z M 32,28.25 L 36,28.25 L 32,28.25 z M 41,28.25 L 44,28.25 L 41,28.25 z M 20,36.25 L 24,36.25 L 20,36.25 z M 29,36.25 L 33,36.25 L 29,36.25 z M 38,36.25 L 44,36.25 L 38,36.25 z M 20,44.25 L 27,44.25 L 20,44.25 z M 32,44.25 L 44,44.25 L 32,44.25 z M 20,52.25 L 33,52.25 L 20,52.25 z M 38,52.25 L 44,52.25 L 38,52.25 z"
+     d="M 42,53 L 46,53 M 30,53 L 38,53 M 18,21 L 27,21 L 18,21 z M 32,21 L 36,21 L 32,21 z M 41,21 L 46,21 L 41,21 z M 18,29 L 29,29 L 18,29 z M 34,29 L 46,29 L 34,29 z M 18,37 L 24,37 L 18,37 z M 29,37 L 33,37 L 29,37 z M 38,37 L 46,37 L 38,37 z M 18,45 L 33,45 L 18,45 z M 38,45 L 46,45 L 38,45 z M 18,53 L 26,53"
      id="path2395"
      style="fill:none;stroke:#003380;stroke-width:2;stroke-linecap:round;stroke-linejoin:round" />
   <path
-     d="M 27,9 L 30.5,19.5 C 29.5,20.5 29,21 29,22 C 29,23.5 30.5,25 32,25 C 33.5,25 35,23.5 35,22 C 35,21 34.5,20.5 33.5,19.5 L 37,9"
+     d="M 27,2 L 30.5,12.5 C 29.5,13.5 29,14 29,15 C 29,16.5 30.5,18 32,18 C 33.5,18 35,16.5 35,15 C 35,14 34.5,13.5 33.5,12.5 L 37,2"
      id="path3232"
      style="fill:none;stroke:#808080;stroke-width:2;stroke-linecap:round;stroke-linejoin:round" />
 </svg>

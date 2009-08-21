@@ -29,4 +29,16 @@
      d="M 38.5,35.5 L 32,37.5 L 32,28"
      id="path2401"
      style="fill:none;stroke:#000000;stroke-width:2;stroke-linecap:round;stroke-linejoin:round" />
+  <path
+     d="M 32,60 L 10,60 L 6,57 L 6,34 L 32,34 L 32,60 z"
+     id="rect2386"
+     style="fill:#2a7fff;stroke:#000000;stroke-width:2;stroke-linecap:round;stroke-linejoin:round" />
+  <path
+     d="M 26,48 L 12,48 L 12,35 L 26,35 L 26,48 z"
+     id="path2546"
+     style="fill:#ffffff;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round" />
+  <path
+     d="M 12,52 L 12,60 L 22,60 L 22,52 L 12,52 z M 14.5,54 L 16.5,54 L 16.5,58 L 14.5,58 L 14.5,54 z"
+     id="path2548"
+     style="fill:#999999;stroke:#666666;stroke-width:1;stroke-linecap:round;stroke-linejoin:round" />
 </svg>
