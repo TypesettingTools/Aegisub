@@ -47,35 +47,28 @@ extern "C" {
 #include <portaudio.h>
 }
 
-
-
-
 /// @class PortAudioPlayer
 /// @brief PortAudio Player
 ///
 class PortAudioPlayer : public AudioPlayer {
 private:
 
-	/// DOCME
+	/// Initialisation reference counter.
 	static int pa_refcount;
 
 	/// Current volume level.
 	float volume;
 
-	/// Playback position.
-	volatile int64_t playPos;
+	/// @brief Stream playback position info.
+	typedef struct PositionInfo {
+		volatile int64_t current;	/// Current position.
+		volatile int64_t start;		/// Start position.
+		volatile int64_t end;		/// End position.
+		PaTime pa_start;			/// PortAudio internal start position.
+	};
+    PositionInfo pos;
 
-	/// Playback start position.
-	volatile int64_t startPos;
-
-	/// Playback end position.
-	volatile int64_t endPos;
-
-	/// Audio Stream
 	void *stream;
-
-	/// PortAudio internal start position.
-	PaTime paStart;
 
 	static int paCallback(
 		const void *inputBuffer,
@@ -105,20 +98,20 @@ public:
 
 	/// @brief Position audio will be played from.
 	/// @return Start position.
-	int64_t GetStartPosition() { return startPos; }
+	int64_t GetStartPosition() { return pos.start; }
 
 	/// @brief End position playback will stop at.
 	/// @return End position.
-	int64_t GetEndPosition() { return endPos; }
+	int64_t GetEndPosition() { return pos.end; }
 	int64_t GetCurrentPosition();
 
 	/// @brief Set end position of playback
 	/// @param pos End position
-	void SetEndPosition(int64_t pos) { endPos = pos; }
+	void SetEndPosition(int64_t position) { pos.end = position; }
 
 	/// @brief Set current position of playback.
 	/// @param pos Current position
-	void SetCurrentPosition(int64_t pos) { playPos = pos; }
+	void SetCurrentPosition(int64_t position) { pos.current = position; }
 
 
 	/// @brief Set volume level
@@ -131,7 +124,6 @@ public:
 
 	wxArrayString GetOutputDevices(wxString favorite);
 };
-
 
 
 /// @class PortAudioPlayerFactory

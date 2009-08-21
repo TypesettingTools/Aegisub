@@ -73,7 +73,7 @@ PortAudioPlayer::PortAudioPlayer() {
 
 	// Variables
 	volume = 1.0f;
-	paStart = 0.0;
+	pos.pa_start = 0.0;
 }
 
 
@@ -153,9 +153,9 @@ void PortAudioPlayer::Play(int64_t start,int64_t count) {
 	PaError err;
 
 	// Set values
-	endPos = start + count;
-	playPos = start;
-	startPos = start;
+	pos.end = start + count;
+	pos.current = start;
+	pos.start = start;
 
 	// Start playing
 	if (!IsPlaying()) {
@@ -173,7 +173,7 @@ void PortAudioPlayer::Play(int64_t start,int64_t count) {
 			return;
 		}
 	}
-	paStart = Pa_GetStreamTime(stream);
+	pos.pa_start = Pa_GetStreamTime(stream);
 
 	// Update timer
 	if (displayTimer && !displayTimer->IsRunning()) displayTimer->Start(15);
@@ -218,21 +218,21 @@ int PortAudioPlayer::paCallback(
 	AudioProvider *provider = player->GetProvider();
 
 #ifdef PORTAUDIO_DEBUG
-	printf("paCallBack: playPos: %lld  startPos: %lld  paStart: %f Pa_GetStreamTime: %f  AdcTime: %f  DacTime: %f  framesPerBuffer: %lu  CPU: %f\n", 
-	player->playPos, player->startPos, player->paStart, Pa_GetStreamTime(player->stream),
+	printf("paCallBack: pos.current: %lld  pos.start: %lld  paStart: %f Pa_GetStreamTime: %f  AdcTime: %f  DacTime: %f  framesPerBuffer: %lu  CPU: %f\n", 
+	player->pos.current, player->pos.start, player->paStart, Pa_GetStreamTime(player->stream),
 	timeInfo->inputBufferAdcTime, timeInfo->outputBufferDacTime,  framesPerBuffer, Pa_GetStreamCpuLoad(player->stream));
 #endif
 
 	// Calculate how much left
-	int64_t lenAvailable = (player->endPos - player->playPos) > 0 ? framesPerBuffer : 0;
+	int64_t lenAvailable = (player->pos.end - player->pos.current) > 0 ? framesPerBuffer : 0;
 
 
 	// Play something
 	if (lenAvailable > 0) {
-		provider->GetAudioWithVolume(outputBuffer, player->playPos, lenAvailable, player->GetVolume());
+		provider->GetAudioWithVolume(outputBuffer, player->pos.current, lenAvailable, player->GetVolume());
 
 		// Set play position
-		player->playPos += framesPerBuffer;
+		player->pos.current += framesPerBuffer;
 
 		// Continue as normal
 		return 0;
@@ -255,14 +255,14 @@ int64_t PortAudioPlayer::GetCurrentPosition()
 
 #ifdef PORTAUDIO_DEBUG
 	PaTime pa_getstream = Pa_GetStreamTime(stream);
-	int64_t real = ((pa_getstream - paStart) * streamInfo->sampleRate) + startPos;
-	printf("GetCurrentPosition: Pa_GetStreamTime: %f  startPos: %lld  playPos: %lld  paStart: %f  real: %lld  diff: %f\n",
-	pa_getstream, startPos, playPos, paStart, real, pa_getstream-paStart);
+	int64_t real = ((pa_getstream - paStart) * streamInfo->sampleRate) + pos.start;
+	printf("GetCurrentPosition: Pa_GetStreamTime: %f  pos.start: %lld  pos.current: %lld  paStart: %f  real: %lld  diff: %f\n",
+	pa_getstream, pos.start, pos.current, paStart, real, pa_getstream-paStart);
 
 	return real;
-#else
-	return ((Pa_GetStreamTime(stream) - paStart) * streamInfo->sampleRate) + startPos;
 #endif
+
+	return ((Pa_GetStreamTime(stream) - pos.pa_start) * streamInfo->sampleRate) + pos.start;
 
 }
 
