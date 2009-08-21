@@ -72,7 +72,6 @@ PortAudioPlayer::PortAudioPlayer() {
 	}
 
 	// Variables
-	playing = false;
 	stopping = false;
 	volume = 1.0f;
 	paStart = 0.0;
@@ -129,10 +128,8 @@ void PortAudioPlayer::OpenStream() {
 
 /// @brief Close stream
 void PortAudioPlayer::CloseStream() {
-	try {
-		Stop(false);
-		Pa_CloseStream(stream);
-	} catch (...) {}
+	Stop(false);
+	Pa_CloseStream(stream);
 }
 
 
@@ -140,8 +137,6 @@ void PortAudioPlayer::CloseStream() {
 /// @param userData Local data to be handed to the callback.
 void PortAudioPlayer::paStreamFinishedCallback(void *userData) {
     PortAudioPlayer *player = (PortAudioPlayer *) userData;
-
-	player->playing = false;
 
 	if (player->displayTimer) {
 		player->displayTimer->Stop();
@@ -167,7 +162,7 @@ void PortAudioPlayer::Play(int64_t start,int64_t count) {
 	startPos = start;
 
 	// Start playing
-	if (!playing) {
+	if (!IsPlaying()) {
 
 		err = Pa_SetStreamFinishedCallback(stream, paStreamFinishedCallback);
 
@@ -182,7 +177,6 @@ void PortAudioPlayer::Play(int64_t start,int64_t count) {
 			return;
 		}
 	}
-	playing = true;
 	paStart = Pa_GetStreamTime(stream);
 
 	// Update timer
@@ -199,7 +193,6 @@ void PortAudioPlayer::Stop(bool timerToo) {
 	//softStop = false;
 
 	// Stop stream
-	playing = false;
 	Pa_StopStream (stream);
 
 	// Stop timer
@@ -219,7 +212,13 @@ void PortAudioPlayer::Stop(bool timerToo) {
 /// @param userData        Local data to hand callback
 /// @return Whether to stop playback.
 ///
-int PortAudioPlayer::paCallback(const void *inputBuffer, void *outputBuffer, unsigned long framesPerBuffer, const PaStreamCallbackTimeInfo* timeInfo, PaStreamCallbackFlags statusFlags, void *userData) {
+int PortAudioPlayer::paCallback(
+	const void *inputBuffer,
+	void *outputBuffer,
+	unsigned long framesPerBuffer,
+	const PaStreamCallbackTimeInfo* timeInfo,
+	PaStreamCallbackFlags statusFlags,
+	void *userData) {
 
 	// Get provider
 	PortAudioPlayer *player = (PortAudioPlayer *) userData;
@@ -227,7 +226,7 @@ int PortAudioPlayer::paCallback(const void *inputBuffer, void *outputBuffer, uns
 
 #ifdef PORTAUDIO_DEBUG
 	printf("paCallBack: playPos: %lld  startPos: %lld  paStart: %f Pa_GetStreamTime: %f  AdcTime: %f  DacTime: %f  framesPerBuffer: %lu  CPU: %f\n", 
-	player->playPos, player->startPos, player->paStart, Pa_GetStreamTime(player->stream), 
+	player->playPos, player->startPos, player->paStart, Pa_GetStreamTime(player->stream),
 	timeInfo->inputBufferAdcTime, timeInfo->outputBufferDacTime,  framesPerBuffer, Pa_GetStreamCpuLoad(player->stream));
 #endif
 
@@ -257,7 +256,7 @@ int PortAudioPlayer::paCallback(const void *inputBuffer, void *outputBuffer, uns
 int64_t PortAudioPlayer::GetCurrentPosition()
 {
 
-	if (!playing) return 0;
+	if (!IsPlaying()) return 0;
 
 	const PaStreamInfo* streamInfo = Pa_GetStreamInfo(stream);
 
@@ -295,6 +294,10 @@ wxArrayString PortAudioPlayer::GetOutputDevices(wxString favorite) {
 	}
 
 	return list;
+}
+
+bool PortAudioPlayer::IsPlaying() {
+	return Pa_IsStreamActive(stream);
 }
 
 #endif // WITH_PORTAUDIO

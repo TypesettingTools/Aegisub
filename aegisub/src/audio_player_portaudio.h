@@ -65,12 +65,8 @@ private:
 	/// Is playback being stopped?
 	volatile bool stopping;
 
-	/// Currently Playing?
-	bool playing;
-
 	/// Current volume level.
 	float volume;
-
 
 	/// Playback position.
 	volatile int64_t playPos;
@@ -111,8 +107,7 @@ public:
 
 	/// @brief Whether audio is currently being played.
 	/// @return Status
-	bool IsPlaying() { return playing; }
-
+	bool IsPlaying();
 
 	/// @brief Position audio will be played from.
 	/// @return Start position.
