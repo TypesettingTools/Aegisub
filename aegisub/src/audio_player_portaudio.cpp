@@ -72,7 +72,6 @@ PortAudioPlayer::PortAudioPlayer() {
 	}
 
 	// Variables
-	stopping = false;
 	volume = 1.0f;
 	paStart = 0.0;
 }
@@ -153,9 +152,6 @@ void PortAudioPlayer::paStreamFinishedCallback(void *userData) {
 void PortAudioPlayer::Play(int64_t start,int64_t count) {
 	PaError err;
 
-	// Stop if it's already playing
-	wxMutexLocker locker(PAMutex);
-
 	// Set values
 	endPos = start + count;
 	playPos = start;
@@ -189,9 +185,6 @@ void PortAudioPlayer::Play(int64_t start,int64_t count) {
 /// @param timerToo Stop display timer?
 ///
 void PortAudioPlayer::Stop(bool timerToo) {
-	//wxMutexLocker locker(PAMutex);
-	//softStop = false;
-
 	// Stop stream
 	Pa_StopStream (stream);
 

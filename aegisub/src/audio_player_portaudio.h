@@ -59,12 +59,6 @@ private:
 	/// DOCME
 	static int pa_refcount;
 
-	/// PortAudio Mutex
-	wxMutex PAMutex;
-
-	/// Is playback being stopped?
-	volatile bool stopping;
-
 	/// Current volume level.
 	float volume;
 
@@ -136,11 +130,6 @@ public:
 	double GetVolume() { return volume; }
 
 	wxArrayString GetOutputDevices(wxString favorite);
-
-	/// @brief Get Mutex
-	/// @return Current Mutex
-	///
-	wxMutex *GetMutex() { return &PAMutex; }
 };
 
 
