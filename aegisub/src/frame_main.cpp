@@ -541,7 +541,7 @@ void FrameMain::InitMenu() {
 
 	// Create view menu
 	viewMenu = new wxMenu();
-	AppendBitmapMenuItem(viewMenu,Menu_View_Language, _T("&Language..."), _("Select Aegisub interface language"), GETIMAGE(blank_button_16));
+	AppendBitmapMenuItem(viewMenu,Menu_View_Language, _T("&Language..."), _("Select Aegisub interface language"), GETIMAGE(languages_menu_16));
 	AppendBitmapMenuItem(viewMenu,Menu_Tools_Options, MakeHotkeyText(_("&Options..."), _T("Options")), _("Configure Aegisub"), GETIMAGE(options_button_16));
 #ifdef WIN32
 	AppendBitmapMenuItem(viewMenu,Menu_View_Associations, _("&Associations..."), _("Associate file types with Aegisub"), GETIMAGE(blank_button_16));
