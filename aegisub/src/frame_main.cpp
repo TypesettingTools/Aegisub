@@ -468,22 +468,22 @@ void FrameMain::InitMenu() {
 
 	// Create video menu
 	videoMenu = new wxMenu();
-	videoMenu->Append(Menu_File_Open_Video, _("&Open Video..."), _("Opens a video file"));
+	AppendBitmapMenuItem(videoMenu, Menu_File_Open_Video, _("&Open Video..."), _("Opens a video file"), GETIMAGE(open_video_menu_16));
 	AppendBitmapMenuItem(videoMenu, Menu_File_Close_Video, _("&Close Video"), _("Closes the currently open video file"), GETIMAGE(close_video_menu_16));
 	wxMenuItem *RecentVidParent = new wxMenuItem(videoMenu, Menu_File_Recent_Vids_Parent, _("Recent"), _T(""), wxITEM_NORMAL, RecentVids);
 	videoMenu->Append(RecentVidParent);
-	videoMenu->Append(Menu_Video_Dummy, _("Use Dummy Video..."), _("Opens a video clip with solid colour"));
-	videoMenu->Append(Menu_Video_Details, _("Show Video Details..."), _("Shows video details"));
+	AppendBitmapMenuItem(videoMenu, Menu_Video_Dummy, _("Use Dummy Video..."), _("Opens a video clip with solid colour"), GETIMAGE(use_dummy_video_menu_16));
+	AppendBitmapMenuItem(videoMenu, Menu_Video_Details, _("Show Video Details..."), _("Shows video details"), GETIMAGE(show_video_details_menu_16));
 	videoMenu->AppendSeparator();
 	AppendBitmapMenuItem(videoMenu, Menu_File_Open_VFR, _("Open Timecodes File..."), _("Opens a VFR timecodes v1 or v2 file"), GETIMAGE(open_timecodes_menu_16));
-	videoMenu->Append(Menu_File_Save_VFR, _("Save Timecodes File..."), _("Saves a VFR timecodes v2 file"));
-	videoMenu->Append(Menu_File_Close_VFR, _("Close Timecodes File"), _("Closes the currently open timecodes file"))->Enable(false);
+	AppendBitmapMenuItem(videoMenu, Menu_File_Save_VFR, _("Save Timecodes File..."), _("Saves a VFR timecodes v2 file"), GETIMAGE(save_timecodes_menu_16));
+	AppendBitmapMenuItem(videoMenu, Menu_File_Close_VFR, _("Close Timecodes File"), _("Closes the currently open timecodes file"), GETIMAGE(close_timecodes_menu_16))->Enable(false);
 	wxMenuItem *RecentTimesParent = new wxMenuItem(videoMenu, Menu_File_Recent_Timecodes_Parent, _("Recent"), _T(""), wxITEM_NORMAL, RecentTimecodes);
 	videoMenu->Append(RecentTimesParent);
 	videoMenu->AppendSeparator();
-	videoMenu->Append(Menu_Video_Load_Keyframes, _("Open Keyframes..."), _("Opens a keyframe list file"));
-	videoMenu->Append(Menu_Video_Save_Keyframes, _("Save Keyframes..."), _("Saves the current keyframe list"))->Enable(false);
-	videoMenu->Append(Menu_Video_Close_Keyframes, _("Close Keyframes"), _("Closes the currently open keyframes list"))->Enable(false);
+	AppendBitmapMenuItem(videoMenu, Menu_Video_Load_Keyframes, _("Open Keyframes..."), _("Opens a keyframe list file"), GETIMAGE(open_keyframes_menu_16));
+	AppendBitmapMenuItem(videoMenu, Menu_Video_Save_Keyframes, _("Save Keyframes..."), _("Saves the current keyframe list"), GETIMAGE(save_keyframes_menu_16))->Enable(false);
+	AppendBitmapMenuItem(videoMenu, Menu_Video_Close_Keyframes, _("Close Keyframes"), _("Closes the currently open keyframes list"), GETIMAGE(close_keyframes_menu_16))->Enable(false);
 	wxMenuItem *RecentKeyframesParent = new wxMenuItem(videoMenu, Menu_File_Recent_Keyframes_Parent, _("Recent"), _T(""), wxITEM_NORMAL, RecentKeyframes);
 	videoMenu->Append(RecentKeyframesParent);
 	videoMenu->AppendSeparator();
@@ -570,7 +570,7 @@ void FrameMain::InitMenu() {
 #ifdef __WXMSW__
 	AppendBitmapMenuItem(helpMenu,Menu_Help_Check_Updates, _("&Check for Updates..."), _("Check to see if there is a new version of Aegisub available"),GETIMAGE(blank_button_16));
 #endif
-	AppendBitmapMenuItem(helpMenu,Menu_Help_About, _("&About..."), _("About Aegisub"),GETIMAGE(about_button_16));
+	AppendBitmapMenuItem(helpMenu,Menu_Help_About, _("&About..."), _("About Aegisub"),GETIMAGE(about_menu_16));
 	MenuBar->Append(helpMenu, _("&Help"));
 
 	// Set the bar as this frame's
