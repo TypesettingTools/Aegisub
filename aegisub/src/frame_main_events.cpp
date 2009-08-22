@@ -1549,8 +1549,8 @@ void FrameMain::OnSetAR235 (wxCommandEvent &event) {
 void FrameMain::OnSetARCustom (wxCommandEvent &event) {
 	// Get text
 	VideoContext::Get()->Stop();
-	
-	wxString value = wxGetTextFromUser(_("Enter aspect ratio in either decimal (e.g. 2.35) or fractional (e.g. 16:9) form. Enter a value like 853x480 to set a specific resolution."),_("Enter aspect ratio"),AegiFloatToString(VideoContext::Get()->GetAspectRatioValue()));
+
+	wxString value = wxGetTextFromUser(_("Enter aspect ratio in either:\n  decimal (e.g. 2.35)\n  fractional (e.g. 16:9)\n  specific resolution (e.g. 853x480)"),_("Enter aspect ratio"),AegiFloatToString(VideoContext::Get()->GetAspectRatioValue()));
 	if (value.IsEmpty()) return;
 
 	value.MakeLower();
@@ -1564,7 +1564,7 @@ void FrameMain::OnSetARCustom (wxCommandEvent &event) {
 		double a,b;
 		int pos=0;
 		bool scale=false;
-		
+
 		//Why bloat using Contains when we can just check the output of Find?
 		pos = value.Find(':');
 		if (pos==wxNOT_FOUND) pos = value.Find('/');
