@@ -40,7 +40,6 @@
 #ifdef WITH_PORTAUDIO
 
 
-///////////
 // Headers
 #include "audio_player_portaudio.h"
 #include "audio_provider_manager.h"
@@ -49,11 +48,6 @@
 #include "charset_conv.h"
 
 //#define PORTAUDIO_DEBUG
-
-
-/// Reference counter
-int PortAudioPlayer::pa_refcount = 0;
-
 
 
 /// @brief Constructor
@@ -67,15 +61,12 @@ PortAudioPlayer::PortAudioPlayer() {
 			swprintf(errormsg, 2048, L"Failed opening PortAudio: %s", Pa_GetErrorText(err));
 			throw (const wchar_t *)errormsg;
 		}
-
 		pa_refcount++;
 	}
 
-	// Variables
 	volume = 1.0f;
 	pos.pa_start = 0.0;
 }
-
 
 
 /// @brief Destructor
@@ -83,7 +74,6 @@ PortAudioPlayer::~PortAudioPlayer() {
 	// Deinit portaudio
 	if (!--pa_refcount) Pa_Terminate();
 }
-
 
 
 /// @brief Open stream
@@ -124,7 +114,6 @@ void PortAudioPlayer::OpenStream() {
 }
 
 
-
 /// @brief Close stream
 void PortAudioPlayer::CloseStream() {
 	Stop(false);
@@ -145,7 +134,6 @@ void PortAudioPlayer::paStreamFinishedCallback(void *userData) {
 }
 
 
-
 /// @brief Play audio.
 /// @param start Start position.
 /// @param count Frame count
@@ -163,13 +151,14 @@ void PortAudioPlayer::Play(int64_t start,int64_t count) {
 		err = Pa_SetStreamFinishedCallback(stream, paStreamFinishedCallback);
 
 		if (err != paNoError) {
-			wxLogDebug(_T("PortAudioPlayer::Play Could not set FinishedCallback\n"));
+			wxLogDebug(_T("PortAudioPlayer::Play Could not set FinishedCallback.\n"));
 			return;
 		}
 
 		err = Pa_StartStream(stream);
 
 		if (err != paNoError) {
+			wxLogDebug(_T("PortAudioPlayer::Play Error playing stream.\n"));
 			return;
 		}
 	}
@@ -178,7 +167,6 @@ void PortAudioPlayer::Play(int64_t start,int64_t count) {
 	// Update timer
 	if (displayTimer && !displayTimer->IsRunning()) displayTimer->Start(15);
 }
-
 
 
 /// @brief Stop Playback
@@ -195,8 +183,7 @@ void PortAudioPlayer::Stop(bool timerToo) {
 }
 
 
-
-/// @brief PortAudio callback
+/// @brief PortAudio callback, used to fill buffer for playback, and prime the playback buffer.
 /// @param inputBuffer     Input buffer.
 /// @param outputBuffer    Output buffer.
 /// @param framesPerBuffer Frames per buffer.
@@ -225,7 +212,6 @@ int PortAudioPlayer::paCallback(
 
 	// Calculate how much left
 	int64_t lenAvailable = (player->pos.end - player->pos.current) > 0 ? framesPerBuffer : 0;
-
 
 	// Play something
 	if (lenAvailable > 0) {
@@ -265,7 +251,6 @@ int64_t PortAudioPlayer::GetCurrentPosition()
 	return ((Pa_GetStreamTime(stream) - pos.pa_start) * streamInfo->sampleRate) + pos.start;
 
 }
-
 
 
 /// @brief Get list of available output devices

@@ -68,6 +68,7 @@ private:
 	};
     PositionInfo pos;
 
+	/// PortAudio stream.
 	void *stream;
 
 	static int paCallback(
@@ -81,6 +82,9 @@ private:
 		void *userData);
 
 	static void paStreamFinishedCallback(void *userData);
+
+	/// Reference counter
+	int PortAudioPlayer::pa_refcount = 0;
 
 public:
 	PortAudioPlayer();
