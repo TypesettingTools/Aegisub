@@ -49,6 +49,8 @@
 
 //#define PORTAUDIO_DEBUG
 
+// Init reference counter
+int PortAudioPlayer::pa_refcount = 0;
 
 /// @brief Constructor
 PortAudioPlayer::PortAudioPlayer() {

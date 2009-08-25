@@ -53,7 +53,7 @@ extern "C" {
 class PortAudioPlayer : public AudioPlayer {
 private:
 
-	/// Initialisation reference counter.
+	/// PortAudio initilisation reference counter.
 	static int pa_refcount;
 
 	/// Current volume level.
@@ -82,9 +82,6 @@ private:
 		void *userData);
 
 	static void paStreamFinishedCallback(void *userData);
-
-	/// Reference counter
-	int PortAudioPlayer::pa_refcount = 0;
 
 public:
 	PortAudioPlayer();
