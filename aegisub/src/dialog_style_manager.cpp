@@ -723,7 +723,6 @@ void DialogStyleManager::CopyToClipboard (wxListBox *list, std::vector<AssStyle*
 	}
 
 	if (wxTheClipboard->Open()) {
-		wxTheClipboard->UsePrimarySelection(true);
 		wxTheClipboard->SetData(new wxTextDataObject(data));
 		wxTheClipboard->Close();
 	}

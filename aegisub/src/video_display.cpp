@@ -682,7 +682,6 @@ void VideoDisplay::UpdateSubsRelativeTime() {
 ///
 void VideoDisplay::OnCopyToClipboard(wxCommandEvent &event) {
 	if (wxTheClipboard->Open()) {
-		wxTheClipboard->UsePrimarySelection(true);
 		wxTheClipboard->SetData(new wxBitmapDataObject(wxBitmap(VideoContext::Get()->GetFrame(-1).GetImage(),24)));
 		wxTheClipboard->Close();
 	}

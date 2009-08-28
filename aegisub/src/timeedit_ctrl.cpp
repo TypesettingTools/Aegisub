@@ -388,7 +388,6 @@ void TimeEdit::CopyTime() {
 
 	// Time
 	if (wxTheClipboard->Open()) {
-		wxTheClipboard->UsePrimarySelection(true);
 		wxTheClipboard->SetData(new wxTextDataObject(GetStringSelection()));
 		wxTheClipboard->Close();
 	}

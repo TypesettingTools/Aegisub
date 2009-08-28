@@ -1483,7 +1483,6 @@ void DialogColorPicker::OnRGBAdjust(wxCommandEvent &evt)
 	wxString data = wxString(_T("rgbadjust(")) + PrettyFloatD(r) + _T(",") + PrettyFloatD(g) + _T(",") + PrettyFloatD(b) + _T(")");
 
 	if (wxTheClipboard->Open())	{
-		wxTheClipboard->UsePrimarySelection(true);
 		wxTheClipboard->SetData(new wxTextDataObject(data));
 		wxTheClipboard->Close();
 	}
