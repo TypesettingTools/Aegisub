@@ -1787,7 +1787,7 @@ void FrameMain::OnStatusClear(wxTimerEvent &event) {
 /// @param event 
 ///
 void FrameMain::OnKeyDown(wxKeyEvent &event) {
-	audioBox->audioDisplay->AddPendingEvent(event);
+	audioBox->audioDisplay->GetEventHandler()->ProcessEvent(event);
 	event.Skip();
 }
 
