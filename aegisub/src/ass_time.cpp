@@ -89,14 +89,14 @@ void AssTime::ParseASS (const wxString text) {
 	try {
 		// Hours
 		if (colons == 2) {
-			while (text[end++] != _T(':'));
+			while (text[end++] != _T(':')) {};
 			th = AegiStringToInt(text,pos,end);
 			pos = end;
 		}
 
 		// Minutes
 		if (colons >= 1) {
-			while (text[end++] != _T(':'));
+			while (text[end++] != _T(':')) {};
 			tm = AegiStringToInt(text,pos,end);
 			pos = end;
 		}
