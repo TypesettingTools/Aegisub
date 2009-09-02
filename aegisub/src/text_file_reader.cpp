@@ -160,7 +160,7 @@ wchar_t TextFileReader::GetWChar() {
 		return 0;
 
 	do {
-		size_t ret = iconv(conv, &inptr, &inbytesleft, reinterpret_cast<char **>(&outptr), &outbytesleft);
+		size_t ret = iconv(conv, (const char**)&inptr, &inbytesleft, reinterpret_cast<char **>(&outptr), &outbytesleft);
 		if (ret != (size_t)-1) break;
 
 		int err = errno;
