@@ -279,12 +279,8 @@ int AegisubApp::OnExit() {
 
 
 #if !defined(_DEBUG) || defined(WITH_EXCEPTIONS)
-/// DOCME
-const static wxChar unhandled_exception_message[] = _T("Oops, Aegisub has crashed!\n\nI have tried to emergency-save a copy of your file, and a crash log file has been generated.\n\nYou can find the emergency-saved file in:\n%s\n\nIf you submit the crash log to the Aegisub team, we will investigate the problem and attempt to fix it. You can find the crashlog in:\n%s\n\nAegisub will now close.");
-
-/// DOCME
-const static wxChar unhandled_exception_message_nocrashlog[] = _T("Oops, Aegisub has crashed!\n\nI have tried to emergency-save a copy of your file.\n\nYou can find the emergency-saved file in:\n%s\n\nAegisub will now close.");
-
+/// Message displayed when an exception has occurred.
+const static wxString exception_message = _("Oops, Aegisub has crashed!\n\nAn attempt has been made to save a copy of your file to:\n\n%s\n\nAegisub will now close.");
 
 /// @brief Unhandled exception 
 ///
@@ -302,7 +298,7 @@ void AegisubApp::OnUnhandledException() {
 	AssFile::top->Save(filename,false,false);
 
 	// Inform user of crash
-	wxMessageBox(wxString::Format(unhandled_exception_message, filename.c_str(), StandardPaths::DecodePath(_T("?user/crashlog.txt")).c_str()), _T("Unhandled exception"), wxOK | wxICON_ERROR, NULL);
+	wxMessageBox(wxString::Format(exception_message, filename.c_str()), _("Program error"), wxOK | wxICON_ERROR, NULL);
 }
 
 
@@ -326,13 +322,9 @@ void AegisubApp::OnFatalException() {
 	// Stack walk
 	StackWalker walker(_T("Fatal exception"));
 	walker.WalkFromException();
-
-	// Inform user of crash
-	wxMessageBox(wxString::Format(unhandled_exception_message, filename.c_str(), StandardPaths::DecodePath(_T("?user/crashlog.txt")).c_str()), _T("Fatal exception"), wxOK | wxICON_ERROR, NULL);
-#else
-	// Inform user of crash
-	wxMessageBox(wxString::Format(unhandled_exception_message_nocrashlog, filename.c_str()), _T("Fatal exception"), wxOK | wxICON_ERROR, NULL);
 #endif
+	// Inform user of crash
+	wxMessageBox(wxString::Format(exception_message, filename.c_str()), _("Program error"), wxOK | wxICON_ERROR, NULL);
 }
 #endif
 
