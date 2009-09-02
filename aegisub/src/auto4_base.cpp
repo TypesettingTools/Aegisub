@@ -176,7 +176,7 @@ namespace Automation4 {
 			}
 		} else {
 			// If the inter-character spacing should be zero, kerning info can (and must) be used, so calculate everything in one go
-			long lwidth, lheight, ldescent, lextlead;
+			wxCoord lwidth, lheight, ldescent, lextlead;
 			thedc.GetTextExtent(text, &lwidth, &lheight, &ldescent, &lextlead);
 			double scaling = fontsize / (double)(lheight>0?lheight:1); // semi-workaround for missing OS/2 table data for scaling
 			width = lwidth*scaling; height = lheight*scaling; descent = ldescent*scaling; extlead = lextlead*scaling;
