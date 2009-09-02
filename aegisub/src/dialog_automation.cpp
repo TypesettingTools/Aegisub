@@ -100,7 +100,7 @@ DialogAutomation::DialogAutomation(wxWindow *parent, Automation4::ScriptManager 
 	// main layout
 	wxSizer *main_box = new wxBoxSizer(wxVERTICAL);
 	main_box->Add(list, 1, wxEXPAND|wxALL, 5);
-	main_box->Add(button_box, 0, wxEXPAND|wxALL&~wxTOP, 5);
+	main_box->Add(button_box, 0, wxEXPAND|(wxALL&~wxTOP), 5);
 	main_box->SetSizeHints(this);
 	SetSizer(main_box);
 	Center();
