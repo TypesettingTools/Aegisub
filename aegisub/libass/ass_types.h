@@ -30,8 +30,14 @@
 #define HALIGN_CENTER 2
 #define HALIGN_RIGHT 3
 
+/* Opaque objects internally used by libass.  Contents are private. */
+typedef struct ass_renderer ASS_Renderer;
+typedef struct render_priv ASS_RenderPriv;
+typedef struct parser_priv ASS_ParserPriv;
+typedef struct ass_library ASS_Library;
+
 /* ASS Style: line */
-typedef struct ass_style_s {
+typedef struct ass_style {
     char *Name;
     char *FontName;
     double FontSize;
@@ -56,15 +62,13 @@ typedef struct ass_style_s {
     int MarginV;
     int Encoding;
     int treat_fontname_as_pattern;
-} ass_style_t;
-
-typedef struct render_priv_s render_priv_t;
+} ASS_Style;
 
 /*
- * ass_event_t corresponds to a single Dialogue line;
+ * ASS_Event corresponds to a single Dialogue line;
  * text is stored as-is, style overrides will be parsed later.
  */
-typedef struct ass_event_s {
+typedef struct ass_event {
     long long Start;            // ms
     long long Duration;         // ms
 
@@ -78,24 +82,21 @@ typedef struct ass_event_s {
     char *Effect;
     char *Text;
 
-    render_priv_t *render_priv;
-} ass_event_t;
-
-typedef struct parser_priv_s parser_priv_t;
-typedef struct ass_library_s ass_library_t;
+    ASS_RenderPriv *render_priv;
+} ASS_Event;
 
 /*
  * ass track represent either an external script or a matroska subtitle stream
  * (no real difference between them); it can be used in rendering after the
  * headers are parsed (i.e. events format line read).
  */
-typedef struct ass_track_s {
+typedef struct ass_track {
     int n_styles;           // amount used
     int max_styles;         // amount allocated
     int n_events;
     int max_events;
-    ass_style_t *styles;    // array of styles, max_styles length, n_styles used
-    ass_event_t *events;    // the same as styles
+    ASS_Style *styles;    // array of styles, max_styles length, n_styles used
+    ASS_Event *events;    // the same as styles
 
     char *style_format;     // style format line (everything after "Format: ")
     char *event_format;     // event format line
@@ -111,14 +112,13 @@ typedef struct ass_track_s {
     int PlayResY;
     double Timer;
     int WrapStyle;
-    char ScaledBorderAndShadow;
-
+    int ScaledBorderAndShadow;
 
     int default_style;      // index of default style
     char *name;             // file name in case of external subs, 0 for streams
 
-    ass_library_t *library;
-    parser_priv_t *parser_priv;
-} ass_track_t;
+    ASS_Library *library;
+    ASS_ParserPriv *parser_priv;
+} ASS_Track;
 
 #endif /* LIBASS_TYPES_H */

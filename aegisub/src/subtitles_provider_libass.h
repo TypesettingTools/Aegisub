@@ -58,13 +58,13 @@ class LibassSubtitlesProvider : public SubtitlesProvider {
 private:
 
 	/// DOCME
-	static ass_library_t* ass_library;
+	static ASS_Library* ass_library;
 
 	/// DOCME
-	ass_renderer_t* ass_renderer;
+	ASS_Renderer* ass_renderer;
 
 	/// DOCME
-	ass_track_t* ass_track;
+	ASS_Track* ass_track;
 
 public:
 	LibassSubtitlesProvider();
@@ -91,5 +91,3 @@ public:
 };
 
 #endif
-
-

@@ -56,7 +56,7 @@ extern "C" {
 #endif
 
 
-/// @brief Constructor 
+/// @brief Constructor
 ///
 LibassSubtitlesProvider::LibassSubtitlesProvider() {
 	// Initialize library
@@ -64,12 +64,12 @@ LibassSubtitlesProvider::LibassSubtitlesProvider() {
 	if (first) {
 		ass_library = ass_library_init();
 		if (!ass_library) throw _T("ass_library_init failed");
-		
+
 		wxString fonts_dir = StandardPaths::DecodePath(_T("?user/libass_fonts/"));
 		if (!wxDirExists(fonts_dir))
 			// It's only one level below the user dir, and we assume the user dir already exists at this point.
 			wxMkdir(fonts_dir);
-		
+
 		ass_set_fonts_dir(ass_library, fonts_dir.mb_str(wxConvFile));
 		ass_set_extract_fonts(ass_library, 0);
 		ass_set_style_overrides(ass_library, NULL);
@@ -98,15 +98,15 @@ LibassSubtitlesProvider::LibassSubtitlesProvider() {
 
 
 
-/// @brief Destructor 
+/// @brief Destructor
 ///
 LibassSubtitlesProvider::~LibassSubtitlesProvider() {
 }
 
 
 
-/// @brief Load subtitles 
-/// @param subs 
+/// @brief Load subtitles
+/// @param subs
 ///
 void LibassSubtitlesProvider::LoadSubtitles(AssFile *subs) {
 	// Prepare subtitles
@@ -135,17 +135,17 @@ void LibassSubtitlesProvider::LoadSubtitles(AssFile *subs) {
 #define _a(c)  ((c)&0xFF)
 
 
-/// @brief Draw subtitles 
-/// @param frame 
-/// @param time  
-/// @return 
+/// @brief Draw subtitles
+/// @param frame
+/// @param time
+/// @return
 ///
 void LibassSubtitlesProvider::DrawSubtitles(AegiVideoFrame &frame,double time) {
 	// Set size
 	ass_set_frame_size(ass_renderer, frame.w, frame.h);
 
 	// Get frame
-	ass_image_t* img = ass_render_frame(ass_renderer, ass_track, int(time * 1000), NULL);
+	ASS_Image* img = ass_render_frame(ass_renderer, ass_track, int(time * 1000), NULL);
 
 	// libass actually returns several alpha-masked monochrome images.
 	// Here, we loop through their linked list, get the colour of the current, and blend into the frame.
@@ -193,9 +193,7 @@ void LibassSubtitlesProvider::DrawSubtitles(AegiVideoFrame &frame,double time) {
 
 
 /// DOCME
-ass_library_t* LibassSubtitlesProvider::ass_library;
+ASS_Library* LibassSubtitlesProvider::ass_library;
 
 
 #endif // WITH_LIBASS
-
-

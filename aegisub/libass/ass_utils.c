@@ -74,11 +74,12 @@ int mystrtod(char **p, double *res)
         return 0;
 }
 
-int strtocolor(ass_library_t *library, char **q, uint32_t *res)
+int strtocolor(ASS_Library *library, char **q, uint32_t *res, int hex)
 {
     uint32_t color = 0;
     int result;
     char *p = *q;
+    int base = hex ? 16 : 10;
 
     if (*p == '&')
         ++p;
@@ -89,7 +90,7 @@ int strtocolor(ass_library_t *library, char **q, uint32_t *res)
         ++p;
         result = mystrtou32(&p, 16, &color);
     } else {
-        result = mystrtou32(&p, 0, &color);
+        result = mystrtou32(&p, base, &color);
     }
 
     {
@@ -122,11 +123,11 @@ char parse_bool(char *str)
     return 0;
 }
 
-void ass_msg(ass_library_t *priv, int lvl, char *fmt, ...)
+void ass_msg(ASS_Library *priv, int lvl, char *fmt, ...)
 {
     va_list va;
     va_start(va, fmt);
-    priv->msg_callback(lvl, fmt, &va, priv->msg_callback_data);
+    priv->msg_callback(lvl, fmt, va, priv->msg_callback_data);
     va_end(va);
 }
 
@@ -161,7 +162,7 @@ unsigned ass_utf8_get_char(char **str)
 }
 
 #ifdef CONFIG_ENCA
-void *ass_guess_buffer_cp(ass_library_t *library, unsigned char *buffer,
+void *ass_guess_buffer_cp(ASS_Library *library, unsigned char *buffer,
                           int buflen, char *preferred_language,
                           char *fallback)
 {
