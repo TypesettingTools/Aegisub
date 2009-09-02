@@ -131,7 +131,7 @@ size_t AegisubCSConv::GetMBNulLen() const {
 		char outBuff[8];
 		size_t inLen  = sizeof(wchar_t);
 		size_t outLen = sizeof(outBuff);
-		const char * inPtr  = (char *)nulStr;
+		char * inPtr  = (char *)nulStr;
 		char * outPtr = outBuff;
 
 		size_t res = iconv(w2m, &inPtr, &inLen, &outPtr, &outLen);
@@ -211,7 +211,7 @@ size_t AegisubCSConv::FromWChar(char *dst, size_t dstSize, const wchar_t *src, s
 /// @param srcSize 
 /// @return 
 ///
-size_t AegisubCSConv::doConversion(iconv_t cd, char *dst, size_t dstSize, const char *src, size_t srcSize) const {
+size_t AegisubCSConv::doConversion(iconv_t cd, char *dst, size_t dstSize, char *src, size_t srcSize) const {
 	if (dstSize > 0) {
 		return iconvWrapper(cd, &src, &srcSize, &dst, &dstSize);
 	}
@@ -243,7 +243,7 @@ size_t AegisubCSConv::doConversion(iconv_t cd, char *dst, size_t dstSize, const 
 /// @param outbytesleft 
 /// @return 
 ///
-size_t AegisubCSConv::iconvWrapper(iconv_t cd, const char **inbuf, size_t *inbytesleft,
+size_t AegisubCSConv::iconvWrapper(iconv_t cd, char **inbuf, size_t *inbytesleft,
 							 char **outbuf, size_t *outbytesleft) const {
 
 #if wxUSE_THREADS

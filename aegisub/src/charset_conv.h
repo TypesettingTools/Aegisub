@@ -106,8 +106,8 @@ private:
 	/// DOCME
 	bool     enableSubst;
 
-	size_t doConversion(iconv_t cd, char *dst, size_t dstSize, const char *src, size_t srcSize) const;
-	size_t iconvWrapper(iconv_t cd, const char **inbuf, size_t *inbytesleft, char **outbuf, size_t *outbytesleft) const;
+	size_t doConversion(iconv_t cd, char *dst, size_t dstSize, char *src, size_t srcSize) const;
+	size_t iconvWrapper(iconv_t cd, char **inbuf, size_t *inbytesleft, char **outbuf, size_t *outbytesleft) const;
 
 	static void ucToMbFallback(
 		unsigned int code,
