@@ -15,7 +15,7 @@ else
   BIN_MAKE="make"
 fi
 
-ACLOCAL_FLAGS="-I ${HOME}/build/wx/share/aclocal" ./autogen.sh ${CONFIGURE_ARGS} || exit $?
+ACLOCAL_FLAGS="-I /home/verm/build/wx/share/aclocal" ./autogen.sh ${CONFIGURE_ARGS} || exit $?
 
 # XXX: Work around ancient versions of intltool (cough DEBIAN)
 touch intltool-update.in intltool-merge.in intltool-extract.in
