@@ -135,8 +135,8 @@ wxString TranStationSubtitleFormat::ConvertLine(AssDialogue *current, FPSRationa
 	// Get line data
 	AssStyle *style = GetAssFile()->GetStyle(current->Style);
 	int valign = 0;
-	wxChar *halign = _T(" "); // default is centered
-	wxChar *type = _T("N"); // no special style
+	const wxChar *halign = _T(" "); // default is centered
+	const wxChar *type = _T("N"); // no special style
 	if (style) {
 		if (style->alignment >= 4) valign = 4;
 		if (style->alignment >= 7) valign = 9;
@@ -168,7 +168,7 @@ wxString TranStationSubtitleFormat::ConvertLine(AssDialogue *current, FPSRationa
 	current->Text.Replace(_T("\\h"),_T(" "),true);
 	current->Text.Replace(_T("\\n"),lineEnd,true);
 	current->Text.Replace(_T("\\N"),lineEnd,true);
-	while (current->Text.Replace(lineEnd+lineEnd,lineEnd,true));
+	while (current->Text.Replace(lineEnd+lineEnd,lineEnd,true)) {};
 
 	return header + current->Text;
 }
