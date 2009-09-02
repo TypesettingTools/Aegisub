@@ -60,7 +60,7 @@ private:
 	float volume;
 
 	/// @brief Stream playback position info.
-	typedef struct PositionInfo {
+	struct PositionInfo {
 		volatile int64_t current;	/// Current position.
 		volatile int64_t start;		/// Start position.
 		volatile int64_t end;		/// End position.
