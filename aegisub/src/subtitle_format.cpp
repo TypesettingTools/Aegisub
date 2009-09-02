@@ -432,7 +432,7 @@ void SubtitleFormat::ConvertTags(int format,wxString lineEnd) {
 			current->Text.Replace(_T("\\h"),_T(" "),true);
 			current->Text.Replace(_T("\\n"),lineEnd,true);
 			current->Text.Replace(_T("\\N"),lineEnd,true);
-			while (current->Text.Replace(lineEnd+lineEnd,lineEnd,true));
+			while (current->Text.Replace(lineEnd+lineEnd,lineEnd,true)) {};
 		}
 	}
 }
