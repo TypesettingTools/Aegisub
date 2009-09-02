@@ -74,7 +74,7 @@
 struct VersionInfoStruct {
 
 	/// DOCME
-	wxChar *VersionNumber;
+	const wxChar *VersionNumber;
 
 	/// DOCME
 	bool IsDebug;
@@ -86,10 +86,10 @@ struct VersionInfoStruct {
 	int SvnRev;
 
 	/// DOCME
-	wxChar *BuildTime;
+	const wxChar *BuildTime;
 
 	/// DOCME
-	wxChar *BuildCredit;
+	const wxChar *BuildCredit;
 
 
 	/// DOCME
