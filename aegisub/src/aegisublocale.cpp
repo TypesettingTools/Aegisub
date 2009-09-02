@@ -157,7 +157,7 @@ wxArrayInt AegisubLocale::GetAvailableLanguages() {
 
 #else
 
-	wchar_t* langs[] = {
+	const wchar_t* langs[] = {
 		_T("ca"),
 		_T("da"),
 		_T("de"),
