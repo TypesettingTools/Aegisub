@@ -116,7 +116,7 @@ void LibassSubtitlesProvider::LoadSubtitles(AssFile *subs) {
 
 	// Load file
 	if (ass_track) ass_free_track(ass_track);
-	ass_track = ass_read_memory(ass_library, &data[0], data.size(),"UTF-8");
+	ass_track = ass_read_memory(ass_library, &data[0], data.size(),(char *)"UTF-8");
 	if (!ass_track) throw _T("libass failed to load subtitles.");
 }
 
