@@ -569,7 +569,7 @@ static void   readbytes(MatroskaFile *mf,void *buffer,int len) {
 }
 
 static void   skipbytes(MatroskaFile *mf,ulonglong len) {
-  int	    nb = mf->buflen - mf->bufpos;
+  unsigned int	    nb = mf->buflen - mf->bufpos;
 
   if (nb > len)
     nb = (int)len;
@@ -840,7 +840,7 @@ shift:
 }
 
 static void readString(MatroskaFile *mf,ulonglong len,char *buffer,int buflen) {
-  int	  nread;
+  unsigned int	  nread;
 
   if (buflen<1)
     errorjmp(mf,"Invalid buffer size in readString: %d",buflen);
@@ -913,6 +913,7 @@ static void readLangCC(MatroskaFile *mf, ulonglong len, char lcc[4]) {
 #define	STRGETA(f,v,len)  STRGETF(f,v,len,myalloca)
 #define	STRGETM(f,v,len)  STRGETF(f,v,len,f->cache->memalloc)
 
+/* Removed because it's not used.
 static int  IsWritingApp(MatroskaFile *mf,const char *str) {
   const char  *cp = mf->Seg.WritingApp;
   if (!cp)
@@ -922,7 +923,7 @@ static int  IsWritingApp(MatroskaFile *mf,const char *str) {
 
   return !*str;
 }
-
+*/
 static void parseEBML(MatroskaFile *mf,ulonglong toplen) {
   ulonglong v;
   char	    buf[32];
