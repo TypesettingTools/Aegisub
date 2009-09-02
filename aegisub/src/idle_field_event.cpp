@@ -137,7 +137,7 @@ void IdleFieldHandler::SetFocus() {
 ///
 void IdleFieldHandler::KillFocus() {
 	bool modify = false;
-	if (text && (text->GetValue().IsEmpty() || box) && box->GetValue().IsEmpty()) modify = true;
+	if ((text && text->GetValue().IsEmpty()) || (box && box->GetValue().IsEmpty())) modify = true;
 
 	if (modify) {
 		// Prepare
