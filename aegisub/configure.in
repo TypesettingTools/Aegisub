@@ -864,6 +864,11 @@ fi
 
 AC_MSG_CHECKING([whether to use precompiled headers])
 AC_ARG_ENABLE(gcc-prec, [  --enable-gcc-prec       enable GCC precompiled headers (default=no)])
+if test "$enable_gcc_prec" = "yes"; then
+  AC_MSG_RESULT([yes])
+else
+  AC_MSG_RESULT([no])
+fi
 AM_CONDITIONAL([PRECOMPILED_HEADER], [test "$enable_gcc_prec" = "yes"])
 
 
@@ -901,6 +906,17 @@ if test "$enable_debug" = "yes"; then
   PACKAGE_DEBUG="-debug"
 fi
 AC_SUBST(PACKAGE_DEBUG)
+
+
+AC_MSG_CHECKING([whether to use exception handling in debug mode])
+AC_ARG_ENABLE(debug-exceptions, [  --enable-debug-exceptions
+                          enable exception handling in debug mode (default=no)])
+if test "$enable_debug_exceptions" = "yes"; then
+  AC_DEFINE(WITH_EXCEPTIONS, 1, [Enable exception handling in debug mode. (--enable-debug)  This is always enabled when debug mode is off.])
+  AC_MSG_RESULT([yes])
+else
+  AC_MSG_RESULT([no])
+fi
 
 
 ###########

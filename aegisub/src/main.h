@@ -107,7 +107,7 @@ public:
 	virtual void MacOpenFile(const wxString &filename);
 #endif
 
-#ifndef _DEBUG
+#if !defined(_DEBUG) || defined(WITH_EXCEPTIONS)
 	void OnUnhandledException();
 	void OnFatalException();
 #endif
