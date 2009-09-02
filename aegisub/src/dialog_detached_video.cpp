@@ -69,7 +69,7 @@ DialogDetachedVideo::DialogDetachedVideo(FrameMain *par, const wxSize &initialDi
 	if (Options.AsBool(_T("Detached video maximized"))) Maximize();
 
 	// Set obscure stuff
-	SetExtraStyle(GetExtraStyle() & (~wxWS_EX_BLOCK_EVENTS) | wxWS_EX_PROCESS_UI_UPDATES);
+	SetExtraStyle((GetExtraStyle() & ~wxWS_EX_BLOCK_EVENTS) | wxWS_EX_PROCESS_UI_UPDATES);
 
 	// Set title
 	wxFileName fn(VideoContext::Get()->videoName);
