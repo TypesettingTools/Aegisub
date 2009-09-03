@@ -25,7 +25,7 @@
 #include <wx/progdlg.h>
 #endif
 
-#include "report.h"
+#include "view.h"
 
 /// @brief Reporter
 class Reporter : public wxApp {

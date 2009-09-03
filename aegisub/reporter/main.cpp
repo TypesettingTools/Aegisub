@@ -35,7 +35,6 @@
 #include <locale.h>
 
 #include "main.h"
-#include "view.h"
 #include "upload.h"
 
 /// @brief Init the reporter.

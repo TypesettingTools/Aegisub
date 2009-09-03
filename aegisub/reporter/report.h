@@ -24,7 +24,6 @@
 
 #include <map>
 
-#pragma once
 class Report {
 
 public:
