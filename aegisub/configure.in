@@ -22,7 +22,7 @@ m4_define([libswscale_required_version], [0.7.1])    # (r18642)
 m4_define([lua_auto4_required_version], [5.1])
 m4_define([portaudio_required_version], [19])
 m4_define([pulseaudio_required_version], [0.5])
-
+m4_define([curl_required_version], [7.19.2])
 m4_define([fontconfig_required_version], [2.4])
 m4_define([freetype_required_version], [9.7.0])
 m4_define([pkgconfig_required_version], [0.20])
@@ -331,6 +331,22 @@ int main(void) {
 
 if test "$agi_cv_with_openglu" = "no" && test "$build_darwin" != "yes"; then
 	AC_MSG_FAILURE([Please install a working OpenGL GLU library.])
+fi
+
+#######
+## cURL
+#######
+PKG_CHECK_MODULES(LIBCURL, libcurl >= curl_required_version,,
+  [AC_MSG_FAILURE([aegisub requires >= cURL curl_required_version])])
+
+AC_AGI_COMPILE([cURL], [curl], [$LIBCURL_CFLAGS], [$LIBCURL_LIBS],[
+#include <curl/curl.h>
+int main(void) {
+  CURL *handle = curl_easy_init();
+}])
+
+if test "$agi_cv_with_curl" = "no"; then
+    AC_MSG_FAILURE([Please install a working cURL library.])
 fi
 
 
@@ -1109,17 +1125,18 @@ AM_CONDITIONAL([FOUND_VIDEO_PROVIDER], [test "$found_video_provider" = "yes"])
 # Makefiles
 AC_CONFIG_FILES([
 Makefile
+automation/Makefile
+desktop/Makefile
+libass/Makefile
+libffms/Makefile
+po/Makefile.in
+reporter/Makefile
 src/Makefile
 src/bitmaps/Makefile
-src/libresrc/Makefile
 src/libosxutil/Makefile
-universalchardet/Makefile
-libffms/Makefile
-libass/Makefile
-automation/Makefile
-po/Makefile.in
-desktop/Makefile
+src/libresrc/Makefile
 tools/Makefile
+universalchardet/Makefile
 ])
 
 # Files that need substitution.

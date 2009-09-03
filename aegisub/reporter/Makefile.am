@@ -1,0 +1,38 @@
+AUTOMAKE_OPTIONS = foreign
+AM_CXXFLAGS =
+
+bin_PROGRAMS = reporter
+
+if PRECOMPILED_HEADER
+BUILT_SOURCES = wx_pre.h.gch
+AM_CXXFLAGS += -include wx_pre.h -Winvalid-pch -fpch-deps -fpch-preprocess
+nodist_reporter_SOURCES = wx_prec.h.gch
+endif
+
+reporter_CPPFLAGS = -Iinclude @LIBCURL_CFLAGS@ @WX_CPPFLAGS@
+reporter_LDFLAGS = @WX_LIBS@ @LIBCURL_LIBS@
+
+if PRECOMPILED_HEADER
+# This doesn't depend on Makefile on purpose, you should already know what you're doing when using this.
+wx_pre.h.gch: wx_pre.h
+	@CXX@ @WX_CPPFLAGS@ @CXXFLAGS@ @DEBUG_FLAGS@ wx_pre.h
+endif
+
+
+reporter_SOURCES = \
+	aegisub.cpp \
+	main.cpp \
+	name_map.cpp \
+	platform.cpp \
+	platform_unix.cpp \
+	platform_unix_bsd.cpp \
+	progress.cpp \
+	report.cpp \
+	upload.cpp \
+	view.cpp
+
+
+reporter_SOURCES += \
+	*.h \
+	include/*.h
+
