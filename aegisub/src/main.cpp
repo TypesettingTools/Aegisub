@@ -326,7 +326,7 @@ void AegisubApp::OnFatalException() {
 #endif
 
 
-#ifdef wxUSE_STACKWALKER
+#if wxUSE_STACKWALKER == 1
 
 /// @brief Callback to format a single frame
 /// @param frame frame to parse.
