@@ -194,14 +194,6 @@ DialogOptions::DialogOptions(wxWindow *parent)
 		browse = new BrowseButton(filePage,-1,_T(""),BROWSE_FOLDER);
 		browse->Bind(edit);
 		fileSizer4->Add(browse,0,wxEXPAND);
-
-		fileSizer4->Add(new wxStaticText(filePage,-1,_("Crash recovery path:")),0,wxRIGHT | wxALIGN_CENTRE_VERTICAL,5);
-		edit = new wxTextCtrl(filePage,-1);
-		Bind(edit,_T("Auto recovery path"));
-		fileSizer4->Add(edit,1,wxEXPAND);
-		browse = new BrowseButton(filePage,-1,_T(""),BROWSE_FOLDER);
-		browse->Bind(edit);
-		fileSizer4->Add(browse,0,wxEXPAND);
 		fileSizer4->AddGrowableCol(1,1);
 
 		// Third static box

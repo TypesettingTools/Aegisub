@@ -116,7 +116,6 @@ void OptionsManager::LoadDefaults(bool onlyDefaults,bool doOverride) {
 	SetText(_T("Auto save path"),_T("?user/autosave"));
 	SetBool(_T("Auto backup"),true);
 	SetText(_T("Auto backup path"),_T("?user/autoback"));
-	SetText(_T("Auto recovery path"),_T("?user/recovered"));
 	SetInt(_T("Autoload linked files"),2);
 	SetText(_T("Text actor separator"),_T(":"));
 	SetText(_T("Text comment starter"),_T("#"));

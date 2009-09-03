@@ -282,40 +282,36 @@ int AegisubApp::OnExit() {
 /// Message displayed when an exception has occurred.
 const static wxString exception_message = _("Oops, Aegisub has crashed!\n\nAn attempt has been made to save a copy of your file to:\n\n%s\n\nAegisub will now close.");
 
-/// @brief Unhandled exception 
-///
+/// @brief Called during an unhandled exception
 void AegisubApp::OnUnhandledException() {
-	// Attempt to recover file
-	wxFileName origfile(AssFile::top->filename);
-	wxString path = Options.AsText(_T("Auto recovery path"));
-	if (path.IsEmpty()) path = StandardPaths::DecodePath(_T("?user/"));
-	wxFileName dstpath(path);
-	if (!dstpath.IsAbsolute()) path = StandardPaths::DecodePathMaybeRelative(path, _T("?user/"));
-	path += _T("/");
-	dstpath.Assign(path);
-	if (!dstpath.DirExists()) wxMkdir(path);
-	wxString filename = path + origfile.GetName() + _T(".RECOVER.ass");
+	// Current filename if any.
+	wxFileName file(AssFile::top->filename);
+	if (!file.HasName()) file.SetName(_T("untitled"));
+
+	// Set path and create if it doesn't exist.
+	file.SetPath(StandardPaths::DecodePath(_T("?user/recovered")));
+	if (!file.DirExists()) file.Mkdir();
+
+	// Save file
+	wxString filename = wxString::Format("%s/%s_%s.ass", file.GetPath(), wxDateTime::Now().Format("%Y-%m-%d-%H%M%S"), file.GetName());
 	AssFile::top->Save(filename,false,false);
 
-	// Inform user of crash
+	// Inform user of crash.
 	wxMessageBox(wxString::Format(exception_message, filename.c_str()), _("Program error"), wxOK | wxICON_ERROR, NULL);
 }
 
-
-
-/// @brief Fatal exception 
-///
+/// @brief Called during a fatal exception.
 void AegisubApp::OnFatalException() {
-	// Attempt to recover file
-	wxFileName origfile(AssFile::top->filename);
-	wxString path = Options.AsText(_T("Auto recovery path"));
-	if (path.IsEmpty()) path = StandardPaths::DecodePath(_T("?user/"));
-	wxFileName dstpath(path);
-	if (!dstpath.IsAbsolute()) path = StandardPaths::DecodePathMaybeRelative(path, _T("?user/"));
-	path += _T("/");
-	dstpath.Assign(path);
-	if (!dstpath.DirExists()) wxMkdir(path);
-	wxString filename = path + origfile.GetName() + _T(".RECOVER.ass");
+	// Current filename if any.
+	wxFileName file(AssFile::top->filename);
+	if (!file.HasName()) file.SetName(_T("untitled"));
+
+	// Set path and create if it doesn't exist.
+	file.SetPath(StandardPaths::DecodePath(_T("?user/recovered")));
+	if (!file.DirExists()) file.Mkdir();
+
+	// Save file
+	wxString filename = wxString::Format("%s/%s_%s.ass", file.GetPath(), wxDateTime::Now().Format("%Y-%m-%d-%H%M%S"), file.GetName());
 	AssFile::top->Save(filename,false,false);
 
 #if wxUSE_STACKWALKER == 1
@@ -323,18 +319,17 @@ void AegisubApp::OnFatalException() {
 	StackWalker walker(_T("Fatal exception"));
 	walker.WalkFromException();
 #endif
+
 	// Inform user of crash
-	wxMessageBox(wxString::Format(exception_message, filename.c_str()), _("Program error"), wxOK | wxICON_ERROR, NULL);
+	wxMessageBox(wxString::Format(exception_message, filename.c_str()), _("Program error"), wxOK | wxICON_ERROR | wxSTAY_ON_TOP, NULL);
 }
 #endif
 
 
-////////////////
-// Stack walker
-#if wxUSE_STACKWALKER == 1
+#ifdef wxUSE_STACKWALKER
 
-/// @brief DOCME
-/// @param frame 
+/// @brief Callback to format a single frame
+/// @param frame frame to parse.
 ///
 void StackWalker::OnStackFrame(const wxStackFrame &frame) {
 	wxString dst = wxString::Format(_T("%03i - 0x%08X: "),frame.GetLevel(),frame.GetAddress()) + frame.GetName();
@@ -346,8 +341,8 @@ void StackWalker::OnStackFrame(const wxStackFrame &frame) {
 }
 
 
-/// @brief DOCME
-/// @param cause 
+/// @brief Called at the start of walking the stack.
+/// @param cause cause of the crash.
 ///
 StackWalker::StackWalker(wxString cause) {
 	file.open(wxString(StandardPaths::DecodePath(_T("?user/crashlog.txt"))).mb_str(),std::ios::out | std::ios::app);
@@ -362,8 +357,7 @@ StackWalker::StackWalker(wxString cause) {
 }
 
 
-/// @brief DOCME
-///
+/// @brief Called at the end of walking the stack.
 StackWalker::~StackWalker() {
 	if (file.is_open()) {
 		char dashes[1024];
