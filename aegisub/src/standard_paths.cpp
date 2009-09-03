@@ -146,10 +146,11 @@ void StandardPaths::DoSetPathValue(const wxString &path, const wxString &value) 
 
 
 
-/// @brief Decode a path that for legacy reasons might be relative to another path 
-/// @param path       
-/// @param relativeTo 
-///
+/// @brief Decode a path that for legacy reasons might be relative to another path
+/// @param path       parent path.
+/// @param relativeTo relative path.
+/// @returns absolute path
+/// @depreciated Older aegisub versions allowed people to put in single directory names w/out a full path this isn't an issue with 2.2 as preferences will be redone.
 wxString StandardPaths::DecodePathMaybeRelative(const wxString &path, const wxString &relativeTo) {
 	wxFileName res(DecodePath(path));
 	if (res.IsRelative())
