@@ -488,23 +488,10 @@ void VideoContext::JumpToTime(int ms,bool exact) {
 /// @return 
 ///
 wxGLContext *VideoContext::GetGLContext(wxGLCanvas *canvas) {
-	// wxGLCanvas and wxGLContext is a funky couple.
-	// On wxMac wxGLContext has a different constructor than everywhere else...
-	// But wxMac is also the only implementation that creates and initialises a context
-	// in the canvas constructor, meaning a wxGLCanvas on wxMac comes with a context
-	// for free, while we have to create our own everywhere else.
-	// So let's first see if the canvas might already have a context of its own and
-	// get that if we lack one.
-	// That should always succeed on wxMac...
-	// Everywhere else, we can just create a wxGLContext using the documented interface
-	// and be over with it after that.
-	// Also see bug #850.
-#ifndef __WXMAC__
 	if (!glContext) {
 		glContext = new wxGLContext(canvas);
 		ownGlContext = true;
 	}
-#endif
 	return glContext;
 }
 
