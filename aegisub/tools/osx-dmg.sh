@@ -43,7 +43,7 @@ cp -v packages/osx_bundle/Contents/Resources/Aegisub.icns "${TMP_DMG}/.VolumeIco
 
 echo
 echo "--- Generating /Volumes/${PKG_NAME_VOLUME}/.DS_Store ----"
-/usr/bin/perl tools/osx-dmg-dsstore.pl "${TMP_DMG}/.DS_Store" "${PKG_DIR}" "${TMP_DMG}/.background/background.png" || exit $?
+#/usr/bin/perl tools/osx-dmg-dsstore.pl "${TMP_DMG}/.DS_Store" "${PKG_DIR}" "${TMP_DMG}/.background/background.png" || exit $?
 
 echo
 echo "---- Creating image ----"
