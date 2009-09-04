@@ -42,6 +42,10 @@ cp -v packages/osx_dmg/dmg_background.png "${TMP_DMG}/.background/background.png
 cp -v packages/osx_bundle/Contents/Resources/Aegisub.icns "${TMP_DMG}/.VolumeIcon.icns"
 
 echo
+echo "--- Generating /Volumes/${PKG_NAME_VOLUME}/.DS_Store ----"
+/usr/bin/perl tools/osx-dmg-dsstore.pl "${TMP_DMG}/.DS_Store" "${PKG_DIR}" "${TMP_DMG}/.background/background.png" || exit $?
+
+echo
 echo "---- Creating image ----"
 /usr/bin/hdiutil create -srcfolder "${TMP_DMG}" -volname "${PKG_NAME}" -fs HFS+ -fsargs "-c c=64,a=16,e=16" -format UDRW "${PKG_NAME_RW}" || exit $?
 
@@ -57,10 +61,6 @@ bless -openfolder "/Volumes/${PKG_NAME_VOLUME}" || exit $?
 echo
 echo "---- Setting root icon using SetFile ----"
 SetFile -a C "/Volumes/${PKG_NAME_VOLUME}" || exit $?
-
-echo
-echo "--- Generating /Volumes/${PKG_NAME_VOLUME}/.DS_Store ----"
-/usr/bin/perl tools/osx-dmg-dsstore.pl "/Volumes/${PKG_NAME_VOLUME}/.DS_Store" "${PKG_DIR}" "/Volumes/${PKG_NAME_VOLUME}/.background/background.png" || exit $?
 
 echo
 echo "---- Detaching ----"
