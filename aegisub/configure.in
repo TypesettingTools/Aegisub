@@ -265,9 +265,6 @@ fi
 # Check for X include/lib.
 ##########################
 AC_PATH_XTRA
-if test -z "$X_CFLAGS" || test -z "$X_LIBS"; then
-  AC_MSG_FAILURE("You must have a working copy of X and Imake installed.")
-fi
 
 
 ######################################
