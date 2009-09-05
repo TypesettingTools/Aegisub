@@ -38,11 +38,16 @@
 #include "ass_utils.h"
 #include "ass_library.h"
 
-typedef enum { PST_UNKNOWN =
-        0, PST_INFO, PST_STYLES, PST_EVENTS, PST_FONTS } parser_state_t;
+typedef enum {
+    PST_UNKNOWN = 0,
+    PST_INFO,
+    PST_STYLES,
+    PST_EVENTS,
+    PST_FONTS
+} ParserState;
 
-struct parser_priv_s {
-    parser_state_t state;
+struct parser_priv {
+    ParserState state;
     char *fontname;
     char *fontdata;
     int fontdata_size;
@@ -52,7 +57,7 @@ struct parser_priv_s {
 #define ASS_STYLES_ALLOC 20
 #define ASS_EVENTS_ALLOC 200
 
-void ass_free_track(ass_track_t *track)
+void ass_free_track(ASS_Track *track)
 {
     int i;
 
@@ -77,12 +82,14 @@ void ass_free_track(ass_track_t *track)
             ass_free_event(track, i);
         free(track->events);
     }
+    free(track->name);
+    free(track);
 }
 
 /// \brief Allocate a new style struct
 /// \param track track
 /// \return style id
-int ass_alloc_style(ass_track_t *track)
+int ass_alloc_style(ASS_Track *track)
 {
     int sid;
 
@@ -91,20 +98,20 @@ int ass_alloc_style(ass_track_t *track)
     if (track->n_styles == track->max_styles) {
         track->max_styles += ASS_STYLES_ALLOC;
         track->styles =
-            (ass_style_t *) realloc(track->styles,
-                                    sizeof(ass_style_t) *
-                                    track->max_styles);
+            (ASS_Style *) realloc(track->styles,
+                                  sizeof(ASS_Style) *
+                                  track->max_styles);
     }
 
     sid = track->n_styles++;
-    memset(track->styles + sid, 0, sizeof(ass_style_t));
+    memset(track->styles + sid, 0, sizeof(ASS_Style));
     return sid;
 }
 
 /// \brief Allocate a new event struct
 /// \param track track
 /// \return event id
-int ass_alloc_event(ass_track_t *track)
+int ass_alloc_event(ASS_Track *track)
 {
     int eid;
 
@@ -113,19 +120,19 @@ int ass_alloc_event(ass_track_t *track)
     if (track->n_events == track->max_events) {
         track->max_events += ASS_EVENTS_ALLOC;
         track->events =
-            (ass_event_t *) realloc(track->events,
-                                    sizeof(ass_event_t) *
-                                    track->max_events);
+            (ASS_Event *) realloc(track->events,
+                                  sizeof(ASS_Event) *
+                                  track->max_events);
     }
 
     eid = track->n_events++;
-    memset(track->events + eid, 0, sizeof(ass_event_t));
+    memset(track->events + eid, 0, sizeof(ASS_Event));
     return eid;
 }
 
-void ass_free_event(ass_track_t *track, int eid)
+void ass_free_event(ASS_Track *track, int eid)
 {
-    ass_event_t *event = track->events + eid;
+    ASS_Event *event = track->events + eid;
     if (event->Name)
         free(event->Name);
     if (event->Effect)
@@ -136,9 +143,9 @@ void ass_free_event(ass_track_t *track, int eid)
         free(event->render_priv);
 }
 
-void ass_free_style(ass_track_t *track, int sid)
+void ass_free_style(ASS_Track *track, int sid)
 {
-    ass_style_t *style = track->styles + sid;
+    ASS_Style *style = track->styles + sid;
     if (style->Name)
         free(style->Name);
     if (style->FontName)
@@ -171,7 +178,7 @@ static void rskip_spaces(char **str, char *limit)
  * Returnes 0 if no styles found => expects at least 1 style.
  * Parsing code always adds "Default" style in the end.
  */
-static int lookup_style(ass_track_t *track, char *name)
+static int lookup_style(ASS_Track *track, char *name)
 {
     int i;
     if (*name == '*')
@@ -188,14 +195,14 @@ static int lookup_style(ass_track_t *track, char *name)
     return i;                   // use the first style
 }
 
-static uint32_t string2color(ass_library_t *library, char *p)
+static uint32_t string2color(ASS_Library *library, char *p)
 {
     uint32_t tmp;
-    (void) strtocolor(library, &p, &tmp);
+    (void) strtocolor(library, &p, &tmp, 0);
     return tmp;
 }
 
-static long long string2timecode(ass_library_t *library, char *p)
+static long long string2timecode(ASS_Library *library, char *p)
 {
     unsigned h, m, s, ms;
     long long tm;
@@ -292,14 +299,14 @@ static char *next_token(char **str)
  * \param str string to parse, zero-terminated
  * \param n_ignored number of format options to skip at the beginning
 */
-static int process_event_tail(ass_track_t *track, ass_event_t *event,
+static int process_event_tail(ASS_Track *track, ASS_Event *event,
                               char *str, int n_ignored)
 {
     char *token;
     char *tname;
     char *p = str;
     int i;
-    ass_event_t *target = event;
+    ASS_Event *target = event;
 
     char *format = strdup(track->event_format);
     char *q = format;           // format scanning pointer
@@ -355,10 +362,10 @@ static int process_event_tail(ass_track_t *track, ass_event_t *event,
  * \param track track to apply overrides to
  * The format for overrides is [StyleName.]Field=Value
  */
-void ass_process_force_style(ass_track_t *track)
+void ass_process_force_style(ASS_Track *track)
 {
     char **fs, *eq, *dt, *style, *tname, *token;
-    ass_style_t *target;
+    ASS_Style *target;
     int sid;
     char **list = track->library->style_overrides;
 
@@ -434,7 +441,7 @@ void ass_process_force_style(ass_track_t *track)
  * \param str string to parse, zero-terminated
  * Allocates a new style struct.
 */
-static int process_style(ass_track_t *track, char *str)
+static int process_style(ASS_Track *track, char *str)
 {
 
     char *token;
@@ -443,8 +450,8 @@ static int process_style(ass_track_t *track, char *str)
     char *format;
     char *q;                    // format scanning pointer
     int sid;
-    ass_style_t *style;
-    ass_style_t *target;
+    ASS_Style *style;
+    ASS_Style *target;
 
     if (!track->style_format) {
         // no style format header
@@ -472,15 +479,14 @@ static int process_style(ass_track_t *track, char *str)
 
     style = track->styles + sid;
     target = style;
-// fill style with some default values
+
+    // fill style with some default values
     style->ScaleX = 100.;
     style->ScaleY = 100.;
 
     while (1) {
         NEXT(q, tname);
         NEXT(p, token);
-
-//              ALIAS(TertiaryColour,OutlineColour) // ignore TertiaryColour; it appears only in SSA, and is overridden by BackColour
 
         if (0) {                // cool ;)
             STRVAL(Name)
@@ -537,7 +543,7 @@ static int process_style(ass_track_t *track, char *str)
 
 }
 
-static int process_styles_line(ass_track_t *track, char *str)
+static int process_styles_line(ASS_Track *track, char *str)
 {
     if (!strncmp(str, "Format:", 7)) {
         char *p = str + 7;
@@ -553,7 +559,7 @@ static int process_styles_line(ass_track_t *track, char *str)
     return 0;
 }
 
-static int process_info_line(ass_track_t *track, char *str)
+static int process_info_line(ASS_Track *track, char *str)
 {
     if (!strncmp(str, "PlayResX:", 9)) {
         track->PlayResX = atoi(str + 9);
@@ -569,7 +575,7 @@ static int process_info_line(ass_track_t *track, char *str)
     return 0;
 }
 
-static void event_format_fallback(ass_track_t *track)
+static void event_format_fallback(ASS_Track *track)
 {
     track->parser_priv->state = PST_EVENTS;
     if (track->track_type == TRACK_TYPE_SSA)
@@ -582,7 +588,7 @@ static void event_format_fallback(ass_track_t *track)
             "No event format found, using fallback");
 }
 
-static int process_events_line(ass_track_t *track, char *str)
+static int process_events_line(ASS_Track *track, char *str)
 {
     if (!strncmp(str, "Format:", 7)) {
         char *p = str + 7;
@@ -594,7 +600,7 @@ static int process_events_line(ass_track_t *track, char *str)
         // They have slightly different format and are parsed in ass_process_chunk,
         // called directly from demuxer
         int eid;
-        ass_event_t *event;
+        ASS_Event *event;
 
         str += 9;
         skip_spaces(&str);
@@ -634,7 +640,7 @@ static unsigned char *decode_chars(unsigned char c1, unsigned char c2,
     return dst;
 }
 
-static int decode_font(ass_track_t *track)
+static int decode_font(ASS_Track *track)
 {
     unsigned char *p;
     unsigned char *q;
@@ -682,7 +688,7 @@ static int decode_font(ass_track_t *track)
     return 0;
 }
 
-static int process_fonts_line(ass_track_t *track, char *str)
+static int process_fonts_line(ASS_Track *track, char *str)
 {
     int len;
 
@@ -728,7 +734,7 @@ static int process_fonts_line(ass_track_t *track, char *str)
  * \param track track
  * \param str string to parse, zero-terminated
 */
-static int process_line(ass_track_t *track, char *str)
+static int process_line(ASS_Track *track, char *str)
 {
     if (!strncasecmp(str, "[Script Info]", 13)) {
         track->parser_priv->state = PST_INFO;
@@ -769,7 +775,7 @@ static int process_line(ass_track_t *track, char *str)
     return 0;
 }
 
-static int process_text(ass_track_t *track, char *str)
+static int process_text(ASS_Track *track, char *str)
 {
     char *p = str;
     while (1) {
@@ -802,7 +808,7 @@ static int process_text(ass_track_t *track, char *str)
  * \param data string to parse
  * \param size length of data
 */
-void ass_process_data(ass_track_t *track, char *data, int size)
+void ass_process_data(ASS_Track *track, char *data, int size)
 {
     char *str = malloc(size + 1);
 
@@ -821,7 +827,7 @@ void ass_process_data(ass_track_t *track, char *data, int size)
  * \param size length of data
  CodecPrivate section contains [Stream Info] and [V4+ Styles] ([V4 Styles] for SSA) sections
 */
-void ass_process_codec_private(ass_track_t *track, char *data, int size)
+void ass_process_codec_private(ASS_Track *track, char *data, int size)
 {
     ass_process_data(track, data, size);
 
@@ -833,7 +839,7 @@ void ass_process_codec_private(ass_track_t *track, char *data, int size)
     ass_process_force_style(track);
 }
 
-static int check_duplicate_event(ass_track_t *track, int ReadOrder)
+static int check_duplicate_event(ASS_Track *track, int ReadOrder)
 {
     int i;
     for (i = 0; i < track->n_events - 1; ++i)   // ignoring last event, it is the one we are comparing with
@@ -850,14 +856,14 @@ static int check_duplicate_event(ass_track_t *track, int ReadOrder)
  * \param timecode starting time of the event (milliseconds)
  * \param duration duration of the event (milliseconds)
 */
-void ass_process_chunk(ass_track_t *track, char *data, int size,
+void ass_process_chunk(ASS_Track *track, char *data, int size,
                        long long timecode, long long duration)
 {
     char *str;
     int eid;
     char *p;
     char *token;
-    ass_event_t *event;
+    ASS_Event *event;
 
     if (!track->event_format) {
         ass_msg(track->library, MSGL_WARN, "Event format header missing");
@@ -906,7 +912,7 @@ void ass_process_chunk(ass_track_t *track, char *data, int size,
  * \param size buffer size
  * \return a pointer to recoded buffer, caller is responsible for freeing it
 **/
-static char *sub_recode(ass_library_t *library, char *data, size_t size,
+static char *sub_recode(ASS_Library *library, char *data, size_t size,
                         char *codepage)
 {
     iconv_t icdsc;
@@ -985,7 +991,7 @@ static char *sub_recode(ass_library_t *library, char *data, size_t size,
  * \param bufsize out: file size
  * \return pointer to file contents. Caller is responsible for its deallocation.
  */
-static char *read_file(ass_library_t *library, char *fname, size_t *bufsize)
+static char *read_file(ASS_Library *library, char *fname, size_t *bufsize)
 {
     int res;
     long sz;
@@ -1044,9 +1050,9 @@ static char *read_file(ass_library_t *library, char *fname, size_t *bufsize)
 /*
  * \param buf pointer to subtitle text in utf-8
  */
-static ass_track_t *parse_memory(ass_library_t *library, char *buf)
+static ASS_Track *parse_memory(ASS_Library *library, char *buf)
 {
-    ass_track_t *track;
+    ASS_Track *track;
     int i;
 
     track = ass_new_track(library);
@@ -1080,10 +1086,10 @@ static ass_track_t *parse_memory(ass_library_t *library, char *buf)
  * \param codepage recode buffer contents from given codepage
  * \return newly allocated track
 */
-ass_track_t *ass_read_memory(ass_library_t *library, char *buf,
-                             size_t bufsize, char *codepage)
+ASS_Track *ass_read_memory(ASS_Library *library, char *buf,
+                           size_t bufsize, char *codepage)
 {
-    ass_track_t *track;
+    ASS_Track *track;
     int need_free = 0;
 
     if (!buf)
@@ -1109,7 +1115,7 @@ ass_track_t *ass_read_memory(ass_library_t *library, char *buf,
     return track;
 }
 
-static char *read_file_recode(ass_library_t *library, char *fname,
+static char *read_file_recode(ASS_Library *library, char *fname,
                               char *codepage, size_t *size)
 {
     char *buf;
@@ -1138,11 +1144,11 @@ static char *read_file_recode(ass_library_t *library, char *fname,
  * \param codepage recode buffer contents from given codepage
  * \return newly allocated track
 */
-ass_track_t *ass_read_file(ass_library_t *library, char *fname,
-                           char *codepage)
+ASS_Track *ass_read_file(ASS_Library *library, char *fname,
+                         char *codepage)
 {
     char *buf;
-    ass_track_t *track;
+    ASS_Track *track;
     size_t bufsize;
 
     buf = read_file_recode(library, fname, codepage, &bufsize);
@@ -1165,10 +1171,10 @@ ass_track_t *ass_read_file(ass_library_t *library, char *fname,
 /**
  * \brief read styles from file into already initialized track
  */
-int ass_read_styles(ass_track_t *track, char *fname, char *codepage)
+int ass_read_styles(ASS_Track *track, char *fname, char *codepage)
 {
     char *buf;
-    parser_state_t old_state;
+    ParserState old_state;
     size_t sz;
 
     buf = read_file(track->library, fname, &sz);
@@ -1193,7 +1199,7 @@ int ass_read_styles(ass_track_t *track, char *fname, char *codepage)
     return 0;
 }
 
-long long ass_step_sub(ass_track_t *track, long long now, int movement)
+long long ass_step_sub(ASS_Track *track, long long now, int movement)
 {
     int i;
 
@@ -1225,11 +1231,11 @@ long long ass_step_sub(ass_track_t *track, long long now, int movement)
     return ((long long) track->events[i].Start) - now;
 }
 
-ass_track_t *ass_new_track(ass_library_t *library)
+ASS_Track *ass_new_track(ASS_Library *library)
 {
-    ass_track_t *track = calloc(1, sizeof(ass_track_t));
+    ASS_Track *track = calloc(1, sizeof(ASS_Track));
     track->library = library;
     track->ScaledBorderAndShadow = 1;
-    track->parser_priv = calloc(1, sizeof(parser_priv_t));
+    track->parser_priv = calloc(1, sizeof(ASS_ParserPriv));
     return track;
 }

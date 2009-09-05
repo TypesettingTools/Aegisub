@@ -51,9 +51,9 @@ extern "C" {
 // libass provider
 class LibassSubtitlesProvider : public SubtitlesProvider {
 private:
-	static ass_library_t* ass_library;
-	ass_renderer_t* ass_renderer;
-	ass_track_t* ass_track;
+	static ASS_Library* ass_library;
+	ASS_Renderer* ass_renderer;
+	ASS_Track* ass_track;
 
 public:
 	LibassSubtitlesProvider();

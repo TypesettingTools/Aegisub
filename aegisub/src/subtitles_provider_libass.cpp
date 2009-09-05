@@ -62,12 +62,12 @@ LibassSubtitlesProvider::LibassSubtitlesProvider() {
 	if (first) {
 		ass_library = ass_library_init();
 		if (!ass_library) throw _T("ass_library_init failed");
-		
+
 		wxString fonts_dir = StandardPaths::DecodePath(_T("?user/libass_fonts/"));
 		if (!wxDirExists(fonts_dir))
 			// It's only one level below the user dir, and we assume the user dir already exists at this point.
 			wxMkdir(fonts_dir);
-		
+
 		ass_set_fonts_dir(ass_library, fonts_dir.mb_str(wxConvFile));
 		ass_set_extract_fonts(ass_library, 0);
 		ass_set_style_overrides(ass_library, NULL);
@@ -91,7 +91,7 @@ LibassSubtitlesProvider::LibassSubtitlesProvider() {
 	const char *config_path = NULL;
 #endif
 
-	ass_set_fonts(ass_renderer, NULL, "Sans", 1, config_path);
+	ass_set_fonts(ass_renderer, NULL, "Sans", 1, config_path, 1);
 }
 
 
@@ -130,7 +130,7 @@ void LibassSubtitlesProvider::DrawSubtitles(AegiVideoFrame &frame,double time) {
 	ass_set_frame_size(ass_renderer, frame.w, frame.h);
 
 	// Get frame
-	ass_image_t* img = ass_render_frame(ass_renderer, ass_track, int(time * 1000), NULL);
+	ASS_Image* img = ass_render_frame(ass_renderer, ass_track, int(time * 1000), NULL);
 
 	// libass actually returns several alpha-masked monochrome images.
 	// Here, we loop through their linked list, get the colour of the current, and blend into the frame.
@@ -178,7 +178,7 @@ void LibassSubtitlesProvider::DrawSubtitles(AegiVideoFrame &frame,double time) {
 
 //////////
 // Static
-ass_library_t* LibassSubtitlesProvider::ass_library;
+ASS_Library* LibassSubtitlesProvider::ass_library;
 
 
 #endif // WITH_LIBASS

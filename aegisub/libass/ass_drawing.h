@@ -26,7 +26,7 @@
 
 #define DRAWING_INITIAL_SIZE 256
 
-enum ass_token_type {
+typedef enum {
     TOKEN_MOVE,
     TOKEN_MOVE_NC,
     TOKEN_LINE,
@@ -35,16 +35,16 @@ enum ass_token_type {
     TOKEN_B_SPLINE,
     TOKEN_EXTEND_SPLINE,
     TOKEN_CLOSE
-};
+} ASS_TokenType;
 
-typedef struct ass_drawing_token_s {
-    enum ass_token_type type;
+typedef struct ass_drawing_token {
+    ASS_TokenType type;
     FT_Vector point;
-    struct ass_drawing_token_s *next;
-    struct ass_drawing_token_s *prev;
-} ass_drawing_token_t;
+    struct ass_drawing_token *next;
+    struct ass_drawing_token *prev;
+} ASS_DrawingToken;
 
-typedef struct ass_drawing_s {
+typedef struct {
     char *text; // drawing string
     int i;      // text index
     int scale;  // scale (1-64) for subpixel accuracy
@@ -58,20 +58,20 @@ typedef struct ass_drawing_s {
 
     // private
     FT_Library ftlibrary;   // FT library instance, needed for font ops
-    ass_library_t *library;
+    ASS_Library *library;
     int size;           // current buffer size
-    ass_drawing_token_t *tokens;    // tokenized drawing
+    ASS_DrawingToken *tokens;    // tokenized drawing
     int max_points;     // current maximum size
     int max_contours;
     double point_scale_x;
     double point_scale_y;
-} ass_drawing_t;
+} ASS_Drawing;
 
-ass_drawing_t *ass_drawing_new(void *fontconfig_priv, ass_font_t *font,
-                               ass_hinting_t hint, FT_Library lib);
-void ass_drawing_free(ass_drawing_t* drawing);
-void ass_drawing_add_char(ass_drawing_t* drawing, char symbol);
-void ass_drawing_hash(ass_drawing_t* drawing);
-FT_OutlineGlyph *ass_drawing_parse(ass_drawing_t *drawing);
+ASS_Drawing *ass_drawing_new(void *fontconfig_priv, ASS_Font *font,
+                             ASS_Hinting hint, FT_Library lib);
+void ass_drawing_free(ASS_Drawing* drawing);
+void ass_drawing_add_char(ASS_Drawing* drawing, char symbol);
+void ass_drawing_hash(ASS_Drawing* drawing);
+FT_OutlineGlyph *ass_drawing_parse(ASS_Drawing *drawing, int raw_mode);
 
 #endif /* LIBASS_DRAWING_H */

@@ -26,16 +26,16 @@
 
 #include "ass.h"
 
-typedef struct ass_synth_priv_s ass_synth_priv_t;
+typedef struct ass_synth_priv ASS_SynthPriv;
 
-ass_synth_priv_t *ass_synth_init(double);
-void ass_synth_done(ass_synth_priv_t *priv);
+ASS_SynthPriv *ass_synth_init(double);
+void ass_synth_done(ASS_SynthPriv *priv);
 
-typedef struct bitmap_s {
+typedef struct {
     int left, top;
     int w, h;                   // width, height
     unsigned char *buffer;      // w x h buffer
-} bitmap_t;
+} Bitmap;
 
 /**
  * \brief perform glyph rendering
@@ -46,11 +46,12 @@ typedef struct bitmap_s {
  * \param bm_g out: pointer to the bitmap of glyph shadow is returned here
  * \param be 1 = produces blurred bitmaps, 0 = normal bitmaps
  */
-int glyph_to_bitmap(ass_library_t *library, ass_synth_priv_t *priv_blur,
+int glyph_to_bitmap(ASS_Library *library, ASS_SynthPriv *priv_blur,
                     FT_Glyph glyph, FT_Glyph outline_glyph,
-                    bitmap_t **bm_g, bitmap_t **bm_o, bitmap_t **bm_s,
-                    int be, double blur_radius, FT_Vector shadow_offset);
+                    Bitmap **bm_g, Bitmap **bm_o, Bitmap **bm_s,
+                    int be, double blur_radius, FT_Vector shadow_offset,
+                    int border_style);
 
-void ass_free_bitmap(bitmap_t *bm);
+void ass_free_bitmap(Bitmap *bm);
 
 #endif                          /* LIBASS_BITMAP_H */
