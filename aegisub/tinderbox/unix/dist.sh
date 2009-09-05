@@ -10,7 +10,7 @@ fi
 # On FreeBSD "make" is PMake, so we need to use 'gmake'
 if test "${UNAME_S}" = "FreeBSD"; then
   BIN_MAKE="gmake"
-  CONFIGURE_ARGS="--with-wx-config=/usr/local/bin/wxgtk2u-2.8-config"
+  CONFIGURE_ARGS="--with-wx-config=/usr/home/verm/build/wx/lib/wx/config/gtk2-unicode-debug-2.9"
 else
   BIN_MAKE="make"
 fi
