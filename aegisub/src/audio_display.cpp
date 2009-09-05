@@ -1463,7 +1463,7 @@ void AudioDisplay::OnPaint(wxPaintEvent& event) {
 	DoUpdateImage();
 
 	wxPaintDC dc(this);
-	dc.DrawBitmap(*origImage,0,0);
+	if (origImage) dc.DrawBitmap(*origImage,0,0);
 }
 
 
@@ -1556,7 +1556,7 @@ void AudioDisplay::OnMouseEvent(wxMouseEvent& event) {
 	if (player && !player->IsPlaying() && origImage) {
 		// Draw bg
 		wxClientDC dc(this);
-		dc.DrawBitmap(*origImage,0,0);
+		if (origImage) dc.DrawBitmap(*origImage,0,0);
 
 		if (inside) {
 			// Draw cursor
