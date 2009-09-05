@@ -229,9 +229,7 @@ AC_SUBST(BUILD_DATE)
 ###################################################
 # Check for pthreads and setup variables / compiler
 ###################################################
-ACX_PTHREAD([], [AC_MSG_FAILURE([aegisub requires pthreads])])
-#LIBS="$PTHREAD_LIBS $LIBS";
-#CFLAGS="$CFLAGS $PTHREAD_CFLAGS";
+ACX_PTHREAD([], [AC_MSG_FAILURE([You must have working pthreads.])])
 CC="$PTHREAD_CC";
 
 
@@ -262,10 +260,19 @@ if test "$enable_compiler_flags" != "no"; then
   fi
 fi
 
+
+##########################
+# Check for X include/lib.
+##########################
+AC_PATH_XTRA
+if test -z "$X_CFLAGS" || test -z "$X_LIBS"; then
+  AC_MSG_FAILURE("You must have a working copy of X and Imake installed.")
+fi
+
+
 ######################################
 # Check Headers / Features / Libraries
 ######################################
-AC_PATH_XTRA
 AC_HEADER_STDC
 AC_HEADER_STDBOOL
 AC_C_CONST
