@@ -423,7 +423,8 @@ int AegisubApp::OnRun() {
 
 
 /// @brief Registry program to filetypes 
-///
+/// @note On UNIX this is handled by desktop/.
+/// @todo Add something for OSX?
 void AegisubApp::RegistryAssociate () {
 #if defined(__WINDOWS__)
 	// Command to open with this
@@ -466,15 +467,6 @@ void AegisubApp::RegistryAssociate () {
 			Options.Save();
 		}
 	}
-#elif defined(__APPLE__)
-	// This is totally untested and pure guesswork
-	// I don't know if it should be ".ass" or just "ass"
-	wxFileName::MacRegisterDefaultTypeAndCreator(_T(".ass"), 0x41535341 /*ASSA*/, 0x41475355 /*AGSU*/);
-	// Technically .ssa isn't ASSA but it makes it so much easier ;)
-	wxFileName::MacRegisterDefaultTypeAndCreator(_T(".ssa"), 0x53534134 /*SSA4*/, 0x41475355 /*AGSU*/);
-	// Not touching .srt yet, there might be some type already registered for it which we should probably use then
-#else
-	// Is there anything like this for other POSIX compatible systems?
 #endif
 }
 
