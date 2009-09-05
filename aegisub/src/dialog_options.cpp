@@ -40,7 +40,7 @@
 #include "config.h"
 
 #include "dialog_options.h"
-#if wxUSE_TREEBOOK && !__WXMAC__
+#if wxUSE_TREEBOOK
 #include <wx/treebook.h>
 #else
 

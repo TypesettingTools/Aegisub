@@ -133,11 +133,7 @@ int attribList[] = { WX_GL_RGBA , WX_GL_DOUBLEBUFFER, WX_GL_STENCIL_SIZE, 8, 0 }
 /// @param name   
 ///
 VideoDisplay::VideoDisplay(wxWindow* parent, wxWindowID id, const wxPoint& pos, const wxSize& size, long style, const wxString& name)
-#ifdef __WXMAC__
-: wxGLCanvas (parent, id, pos, size, style, name, attribList)
-#else
 : wxGLCanvas (parent, id, attribList, pos, size, style, name)
-#endif
 {
 	// Set options
 	box = NULL;
