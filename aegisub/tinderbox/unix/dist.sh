@@ -13,6 +13,7 @@ if test "${UNAME_S}" = "FreeBSD"; then
   CONFIGURE_ARGS="--with-wx-config=/usr/home/verm/build/wx/lib/wx/config/gtk2-unicode-debug-2.9"
 else
   BIN_MAKE="make"
+  CONFIGURE_ARGS="--with-wx-config=/home/verm/build/wx/lib/wx/config/gtk2-unicode-debug-2.9"
 fi
 
 ACLOCAL_FLAGS="-I /home/verm/build/wx/share/aclocal" ./autogen.sh ${CONFIGURE_ARGS} || exit $?
