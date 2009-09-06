@@ -222,9 +222,7 @@ wxString PrettySize(int bytes) {
 wxMenuItem* AppendBitmapMenuItem (wxMenu* parentMenu,int id,wxString text,wxString help,wxBitmap bmp,int pos) {
 	wxMenuItem *cur = new wxMenuItem(parentMenu,id,text,help);
 	// Mac software does not use icons in menus so we shouldn't either
-#ifndef __APPLE__
 	cur->SetBitmap(bmp);
-#endif
 	if (pos == -1) parentMenu->Append(cur);
 	else parentMenu->Insert(pos,cur);
 	return cur;
