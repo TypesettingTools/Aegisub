@@ -75,6 +75,12 @@ aegisub_2_2_LDFLAGS += @OPENAL_LIBS@
 aegisub_2_2_LDADD += libaudio_openal.a
 endif
 
+if HAVE_OSS
+noinst_LIBRARIES += libaudio_oss.a
+libaudio_oss_a_SOURCES = audio_player_oss.cpp
+aegisub_2_2_LDADD += libaudio_oss.a
+endif
+
 if HAVE_FFMPEG
 aegisub_2_2_LDFLAGS += @LIBAVFORMAT_LIBS@ @LIBAVCODEC_LIBS@ @LIBSWSCALE_LIBS@ @LIBAVUTIL_LIBS@
 endif
@@ -153,6 +159,7 @@ EXTRA_aegisub_2_2_SOURCES = \
 	audio_player_dsound2.cpp \
 	audio_player_portaudio.cpp \
 	audio_player_pulse.cpp \
+	audio_player_oss.cpp \
 	audio_provider_avs.cpp \
 	auto4_lua.cpp \
 	auto4_lua_assfile.cpp \

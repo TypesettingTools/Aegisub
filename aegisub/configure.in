@@ -573,6 +573,28 @@ fi
 AM_CONDITIONAL([HAVE_OPENAL], [test "$with_openal" != "no"])
 
 
+######
+## OSS
+######
+AC_ARG_WITH(oss,[  --without-oss           build without OSS audio provider.
+                          (default: auto)], oss_disabled="(disabled)")
+if test "$with_oss" != "no"; then
+  if test -f "/etc/oss.conf"; then
+    . /etc/oss.conf
+    CPPFLAGS="$CPPFLAGS -I${OSSLIBDIR}/include/sys"
+  fi
+  AC_CHECK_HEADERS([soundcard.h sys/soundcard.h], [with_oss=yes], [with_oss=no])
+  # XXX: maybe check if OSS works
+fi
+
+if test "$with_oss" != "no"; then
+  found_audio_player="yes"
+  AC_DEFINE(WITH_OSS, 1, [Enable OSS support])
+fi
+
+AM_CONDITIONAL([HAVE_OSS], [test "$with_oss" != "no"])
+
+
 #########################
 # Video / Audio Providers
 #########################
@@ -1206,6 +1228,7 @@ Scripting Engines
 Audio Players
   ALSA:                  $with_alsa $alsa_disabled
   OpenAL:                $with_openal $openal_disabled
+  OSS:                   $with_oss $oss_disabled
   PortAudio:             $with_portaudio $portaudio_disabled
   PulseAudio:            $with_pulseaudio $pulseaudio_disabled
 
