@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Aegisub CVS\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2008-10-27 22:39-0200\n"
-"PO-Revision-Date: 2009-07-18 22:21+0100\n"
+"PO-Revision-Date: 2009-09-02 10:36+0100\n"
 "Last-Translator: Sebastian Billau <sebastian_billau@web.de>\n"
 "Language-Team: David Lamparter <dl@diac24.net>\n"
 "MIME-Version: 1.0\n"
@@ -3364,7 +3364,7 @@ msgstr "Automationsmanager öffnen"
 #: frame_main.cpp:258
 #: frame_main.cpp:364
 msgid "Launches ai-chan's \"ASSDraw3\" tool for vector drawing."
-msgstr "Startet ai-chan's \"ASSDraw3\"-Werkzeg für Vektorgrafik."
+msgstr "Startet ai-chan's \"ASSDraw3\"-Werkzeug für Vektorgrafik."
 
 #: frame_main.cpp:261
 msgid "Open Shift Times Dialogue"
@@ -5472,3 +5472,4 @@ msgstr "Zeichnet eine Freihand-Kurve"
 #~ msgstr "Rekombiniere (1+2, 2) als (1, 2)"
 #~ msgid "Recombine (1, 1+2, 2) into (1, 2)"
 #~ msgstr "Rekombiniere (1, 1+2, 2) als (1, 2)"
+
