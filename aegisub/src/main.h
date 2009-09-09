@@ -46,7 +46,7 @@
 #include <wx/wxprec.h>
 #include <wx/app.h>
 #include <wx/stackwalk.h>
-#include <fstream>
+#include <wx/file.h>
 #include "aegisublocale.h"
 
 
@@ -131,11 +131,8 @@ DECLARE_APP(AegisubApp)
 class StackWalker: public wxStackWalker {
 private:
 
-	/// DOCME
-	std::ofstream file;
-
-	/// DOCME
-	int formatLen;
+	wxFile *crash_text;	// FP to the crash text file.
+	wxFile *crash_xml;	// FP to the crash xml file.
 
 public:
 	StackWalker(wxString cause);

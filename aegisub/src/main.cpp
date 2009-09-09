@@ -300,6 +300,7 @@ void AegisubApp::OnUnhandledException() {
 	wxMessageBox(wxString::Format(exception_message, filename.c_str()), _("Program error"), wxOK | wxICON_ERROR, NULL);
 }
 
+
 /// @brief Called during a fatal exception.
 void AegisubApp::OnFatalException() {
 	// Current filename if any.
@@ -327,52 +328,76 @@ void AegisubApp::OnFatalException() {
 
 
 #if wxUSE_STACKWALKER == 1
+/// @brief Called at the start of walking the stack.
+/// @param cause cause of the crash.
+///
+StackWalker::StackWalker(wxString cause) {
+
+	wxFileName report_dir("");
+	report_dir.SetPath(StandardPaths::DecodePath(_T("?user/reporter")));
+	if (!report_dir.DirExists()) report_dir.Mkdir();
+
+	crash_text = new wxFile(StandardPaths::DecodePath("?user/crashlog.txt"), wxFile::write_append);
+	crash_xml = new wxFile(StandardPaths::DecodePath("?user/reporter/crash.xml"), wxFile::write);
+
+	if ((crash_text->IsOpened()) && (crash_xml->IsOpened())) {
+		wxDateTime time = wxDateTime::Now();
+
+		crash_text->Write(wxString::Format("--- %s ------------------\n", time.FormatISOCombined()));
+		crash_text->Write(wxString::Format("VER - %s\n", GetAegisubLongVersionString()));
+		crash_text->Write(wxString::Format("FTL - Begining stack dump for \"%s\":\n", cause));
+
+		crash_xml->Write(                 "<crash>\n");
+		crash_xml->Write(                 "  <info>\n");
+		crash_xml->Write(wxString::Format("    <cause>%s</cause>\n", cause));
+		crash_xml->Write(wxString::Format("    <time>%s</time>\n", time.FormatISOCombined()));
+		crash_xml->Write(wxString::Format("    <version>%s</version>\n", GetAegisubLongVersionString()));
+		crash_xml->Write(                 "  </info>\n");
+		crash_xml->Write(                 "  <trace>\n");
+	}
+}
+
 
 /// @brief Callback to format a single frame
 /// @param frame frame to parse.
 ///
 void StackWalker::OnStackFrame(const wxStackFrame &frame) {
-	wxString dst = wxString::Format(_T("%03i - 0x%08X: "),frame.GetLevel(),frame.GetAddress()) + frame.GetName();
-	if (frame.HasSourceLocation()) dst += _T(" on ") + frame.GetFileName() + wxString::Format(_T(":%i"),frame.GetLine());
-	if (file.is_open()) {
-		file << dst.mb_str() << std::endl;
-	}
-	else wxLogMessage(dst);
-}
 
+	if ((crash_text->IsOpened()) && (crash_xml->IsOpened())) {
 
-/// @brief Called at the start of walking the stack.
-/// @param cause cause of the crash.
-///
-StackWalker::StackWalker(wxString cause) {
-	file.open(wxString(StandardPaths::DecodePath(_T("?user/crashlog.txt"))).mb_str(),std::ios::out | std::ios::app);
-	if (file.is_open()) {
-		wxDateTime time = wxDateTime::Now();
-		wxString timeStr = _T("---") + time.FormatISODate() + _T(" ") + time.FormatISOTime() + _T("------------------");
-		formatLen = timeStr.Length();
-		file << std::endl << timeStr.mb_str(csConvLocal);
-		file << "\nVER - " << GetAegisubLongVersionString().mb_str(wxConvUTF8);
-		file << "\nFTL - Begining stack dump for \"" << cause.mb_str(wxConvUTF8) <<"\":\n";
+		wxString dst = wxString::Format("%03i - 0x%08X: ",frame.GetLevel(),frame.GetAddress()) + frame.GetName();
+		if (frame.HasSourceLocation())
+			dst = wxString::Format("%s on %s:%d", dst, frame.GetFileName(), frame.GetLine());
+
+		crash_text->Write(wxString::Format("%s\n", dst));
+
+		crash_xml->Write(wxString::Format("    <frame id='%i' loc='%X'>\n", frame.GetLevel(), frame.GetAddress()));
+		crash_xml->Write(wxString::Format("      <name>%s</name>\n", frame.GetName()));
+		if (frame.HasSourceLocation())
+		crash_xml->Write(wxString::Format("      <file line='%d'>%s</file>>%s</name>\n", frame.GetLine(), frame.GetFileName()));
+		crash_xml->Write(wxString::Format("      <module><![CDATA[%s]]></module>\n", frame.GetModule()));
+		crash_xml->Write(                 "    </frame>\n");
 	}
 }
 
 
 /// @brief Called at the end of walking the stack.
 StackWalker::~StackWalker() {
-	if (file.is_open()) {
-		char dashes[1024];
-		int i = 0;
-		for (i=0;i<formatLen;i++) dashes[i] = '-';
-		dashes[i] = 0;
-		file << "End of stack dump.\n";
-		file << dashes;
-		file << "\n";
-		file.close();
+
+	if ((crash_text->IsOpened()) && (crash_xml->IsOpened())) {
+
+		crash_text->Write("End of stack dump.\n");
+		crash_text->Write("----------------------------------------\n\n");
+
+		crash_text->Close();
+
+		crash_xml->Write("  </trace>\n");
+		crash_xml->Write("</crash>\n");
+
+		crash_xml->Close();
 	}
 }
 #endif
-
-
 
 
 /// @brief Call main loop 
