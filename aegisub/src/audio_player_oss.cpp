@@ -90,6 +90,12 @@ void OSSPlayer::OpenStream()
         throw _T("OSS player: opening device failed");
     }
 
+    // Use a reasonable buffer policy for low latency (OSS4)
+#ifdef SNDCTL_DSP_POLICY
+    int policy = 3;
+    ioctl(dspdev, SNDCTL_DSP_POLICY, &policy);
+#endif
+
     // Set number of channels
     int channels = provider->GetChannels();
     if (ioctl(dspdev, SNDCTL_DSP_CHANNELS, &channels) < 0) {
@@ -214,6 +220,13 @@ bool OSSPlayer::IsPlaying()
 void OSSPlayer::SetEndPosition(int64_t pos)
 {
     end_frame = pos;
+
+    if (end_frame <= GetCurrentPosition()) {
+        ioctl(dspdev, SNDCTL_DSP_RESET, NULL);
+        if (thread && thread->IsAlive())
+            thread->Delete();
+    }
+
 }
 
 
