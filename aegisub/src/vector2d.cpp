@@ -40,7 +40,7 @@
 #include "config.h"
 
 #include "vector2d.h"
-
+#include <math.h>
 
 
 /// @brief Null constructor 

@@ -44,6 +44,7 @@
 #include "aegisub_endian.h"
 #include <stdint.h>
 #include <assert.h>
+#include <wx/log.h>
 
 #ifndef _WINDOWS
 #include <sys/mman.h>

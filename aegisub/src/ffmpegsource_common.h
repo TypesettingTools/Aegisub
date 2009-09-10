@@ -39,10 +39,11 @@
 
 ///////////
 // Headers
-#include <wx/wxprec.h>
 #include <wx/thread.h>
 #include "include/aegisub/aegisub.h"
 #include <ffms.h>
+#include <map>
+#include <wx/filename.h>
 #include "dialog_progress.h"
 
 

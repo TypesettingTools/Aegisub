@@ -42,6 +42,8 @@
 // Headers
 #include "aegisub.h"
 
+#include <wx/string.h>
+#include <wx/arrstr.h>
 
 
 /// @class SpellChecker

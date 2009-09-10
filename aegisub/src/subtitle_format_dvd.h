@@ -41,7 +41,7 @@
 ///////////
 // Headers
 #include "subtitle_format.h"
-
+#include <vector>
 
 
 /// DOCME

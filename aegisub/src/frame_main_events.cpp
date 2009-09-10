@@ -46,6 +46,7 @@
 #include <wx/rawbmp.h>
 #include <wx/stdpaths.h>
 #include <wx/sysopt.h>
+#include <wx/clipbrd.h>
 #include "subs_grid.h"
 #include "frame_main.h"
 #include "video_display.h"

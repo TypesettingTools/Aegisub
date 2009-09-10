@@ -41,6 +41,7 @@
 #include <wx/datetime.h>
 #include <wx/sizer.h>
 #include <wx/log.h>
+#include <wx/statline.h>
 #include "options.h"
 #include "help_button.h"
 

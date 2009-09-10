@@ -54,7 +54,7 @@
 #include <wx/slider.h>
 #include <wx/sizer.h>
 #include <wx/textctrl.h>
-
+#include <wx/tglbtn.h>
 
 //////////////
 // Prototypes

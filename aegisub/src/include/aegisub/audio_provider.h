@@ -40,8 +40,8 @@
 
 ///////////
 // Headers
+#include <wx/string.h>
 #include "aegisub.h"
-
 
 //////////////
 // Prototypes

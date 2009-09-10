@@ -40,12 +40,15 @@
 #include "config.h"
 
 #ifdef WITH_UNIVCHARDET
+#include <list>
 #include <wx/wxprec.h>
+#include <wx/intl.h>
+#include <wx/choicdlg.h>
+
 #include "text_file_reader.h"
 #include "charset_detect.h"
 #include "../universalchardet/nsCharSetProber.h"
-#include <wx/intl.h>
-#include <wx/choicdlg.h>
+
 
 
 
