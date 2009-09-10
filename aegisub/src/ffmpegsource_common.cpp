@@ -43,6 +43,9 @@
 #ifndef AGI_PRE
 #include <map>
 
+/// Force wx to use Choice Dialogue
+/// @todo Find out why this is needed.
+#define wxUSE_CHOICEDLG 1
 #include <wx/choicdlg.h>
 #include <wx/dir.h>
 #endif
