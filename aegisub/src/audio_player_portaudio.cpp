@@ -43,9 +43,10 @@
 // Headers
 #include "audio_player_portaudio.h"
 #include "audio_provider_manager.h"
+#include "charset_conv.h"
 #include "options.h"
 #include "utils.h"
-#include "charset_conv.h"
+#include <wx/log.h>
 
 //#define PORTAUDIO_DEBUG
 
