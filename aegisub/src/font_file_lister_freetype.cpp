@@ -43,13 +43,10 @@
 #ifdef WITH_FREETYPE2
 
 #ifndef AGI_PRE
-#ifdef __WINDOWS__
-#include <shlobj.h>
-#endif
-
 #include <wx/dir.h>
 #endif
 
+#include <shlobj.h>
 #include <ft2build.h>
 #include FT_FREETYPE_H
 #include FT_GLYPH_H

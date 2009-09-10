@@ -89,16 +89,15 @@
 #include <wchar.h>
 
 #ifdef _WIN32
+// "Lean and mean" causes windows.h to include less stuff, mostly rarely-used things.
+// We can't build without being "lean and mean", some of the things included by it has
+// macros that clash with variable names around Aegisub causing strange build errors.
 #define WIN32_LEAN_AND_MEAN
+// Windows.h must always be the first one, it defines a load of important things
 #include <windows.h>
+#include <objbase.h>
 #include <mmsystem.h>
-#include <dsound.h>
-#include <process.h>
-//#include <objbase.h>
-#include <shlobj.h>
-#include <tchar.h>
-#include <vfw.h>
-//#include <windef.h>
+//#include <process.h> // Currently only used in audio_player_dsound2.cpp
 
 #else
 

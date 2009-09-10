@@ -42,10 +42,10 @@
 #ifdef WITH_DIRECTSOUND
 
 #ifndef AGI_PRE
-#include <dsound.h>
 #include <mmsystem.h>
-#include <process.h>
 #endif
+#include <process.h>
+#include <dsound.h>
 
 #include "audio_player_dsound2.h"
 #include "frame_main.h"

@@ -42,11 +42,7 @@
 // Headers
 #include "config.h"
 
-#ifndef AGI_PRE
-#ifdef __WINDOWS__
 #include <vfw.h>
-#endif
-#endif
 
 #include "vfw_wrap.h"
 
