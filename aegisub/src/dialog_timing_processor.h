@@ -42,7 +42,6 @@
 
 ///////////
 // Headers
-#include <wx/wxprec.h>
 #include <wx/dialog.h>
 #include <wx/sizer.h>
 #include <wx/checkbox.h>

@@ -41,7 +41,6 @@
 
 #ifdef WITH_DIRECTSOUND
 
-#include <wx/wxprec.h>
 #include <mmsystem.h>
 #include <dsound.h>
 #include <process.h>

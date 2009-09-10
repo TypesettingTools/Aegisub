@@ -40,8 +40,8 @@
 
 ////////////
 // Includes
-#include <wx/wxprec.h>
 #include <wx/grid.h>
+#include <wx/scrolbar.h>
 #include <list>
 #include <vector>
 

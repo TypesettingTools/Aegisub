@@ -43,11 +43,11 @@
 
 ////////////
 // Includes
-#include <wx/wxprec.h>
 #include <wx/spinctrl.h>
 #include <wx/combobox.h>
 #include <wx/checkbox.h>
 #include <wx/radiobox.h>
+#include <wx/textctrl.h>
 #include "colour_button.h"
 
 

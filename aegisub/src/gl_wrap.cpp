@@ -39,7 +39,6 @@
 // Headers
 #include "config.h"
 
-#include <wx/wxprec.h>
 #include <wx/msgdlg.h>
 #ifdef __APPLE__
 #include <OpenGL/GL.h>

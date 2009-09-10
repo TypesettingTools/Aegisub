@@ -40,7 +40,6 @@
 
 ///////////
 // Headers
-#include <wx/wxprec.h>
 #include "include/aegisub/subtitles_provider.h"
 #include "video_frame.h"
 #include "factory_manager.h"

@@ -106,8 +106,14 @@
 
 /////////////////////
 // wxWidgets headers
-#include <wx/wxprec.h>
+#include <wx/wxprec.h> // Leave this first.
 
+// Windows
+#ifdef __WXMSW__
+#include <wx/msw/registry.h>
+#endif
+
+// All platforms.
 #include <wx/accel.h>
 #include <wx/app.h>
 #include <wx/arrstr.h>
@@ -125,6 +131,7 @@
 #include <wx/combobox.h>
 #include <wx/config.h>
 #include <wx/control.h>
+#include <wx/dataobj.h>
 #include <wx/datetime.h>
 #include <wx/dc.h>
 #include <wx/dcclient.h>
@@ -154,6 +161,7 @@
 #include <wx/glcanvas.h>
 #include <wx/grid.h>
 #include <wx/hashmap.h>
+#include <wx/icon.h>
 #include <wx/image.h>
 #include <wx/intl.h>
 #include <wx/laywin.h>
@@ -165,9 +173,6 @@
 #include <wx/mimetype.h>
 #include <wx/msgdlg.h>
 #include <wx/mstream.h>
-#ifdef __WXMSW__
-#include <wx/msw/registry.h>
-#endif
 #include <wx/notebook.h>
 #include <wx/panel.h>
 #include <wx/radiobox.h>
@@ -207,8 +212,6 @@
 #include <wx/valtext.h>
 #include <wx/wfstream.h>
 #include <wx/window.h>
-#include <wx/wx.h>
-#include <wx/wxprec.h>
 #include <wx/xml/xml.h>
 #include <wx/zipstrm.h>
 

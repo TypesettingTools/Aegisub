@@ -48,6 +48,7 @@
 #include <wx/dcscreen.h>
 #include <wx/settings.h>
 #include <wx/clipbrd.h>
+#include <wx/dataobj.h>
 #include "dialog_colorpicker.h"
 #include "colorspace.h"
 #include "ass_style.h"

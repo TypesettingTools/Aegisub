@@ -43,9 +43,9 @@
 
 ///////////
 // Headers
-#include <wx/wxprec.h>
 #include <wx/window.h>
 #include <wx/bitmap.h>
+#include <wx/scrolbar.h>
 #include <stdint.h>
 #include "audio_provider_manager.h"
 #include "audio_player_manager.h"

@@ -39,7 +39,7 @@
 // Includes
 #include "config.h"
 
-#include <wx/wxprec.h>
+#include <wx/string.h>
 #include <wx/display.h>
 #include <wx/dcclient.h>
 #include "dialog_splash.h"

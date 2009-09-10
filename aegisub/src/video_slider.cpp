@@ -39,7 +39,6 @@
 // Includes
 #include "config.h"
 
-#include <wx/wxprec.h>
 #include <wx/settings.h>
 #include "video_slider.h"
 #include "video_display.h"

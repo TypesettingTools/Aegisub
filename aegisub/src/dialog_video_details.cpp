@@ -39,6 +39,7 @@
 // Headers
 #include "config.h"
 
+#include <wx/stattext.h>
 #include "dialog_video_details.h"
 #include "video_context.h"
 #include "video_provider_manager.h"

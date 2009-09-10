@@ -43,7 +43,6 @@
 
 ///////////
 // Headers
-#include <wx/wxprec.h>
 #include "ass_time.h"
 #include "timeedit_ctrl.h"
 

@@ -40,7 +40,6 @@
 
 ////////////
 // Includes
-#include <wx/wxprec.h>
 #include <wx/stc/stc.h>
 
 

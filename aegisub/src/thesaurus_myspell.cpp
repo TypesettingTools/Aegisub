@@ -39,7 +39,6 @@
 // Headers
 #include "config.h"
 
-#include <wx/wxprec.h>
 #include <wx/dir.h>
 #include <wx/filename.h>
 #include "thesaurus_myspell.h"

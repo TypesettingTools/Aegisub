@@ -59,7 +59,6 @@
 /// DOCME
 #define _STRING_CODEC_H
 
-#include <wx/wxprec.h>
 #include <wx/string.h>
 
 wxString inline_string_encode(const wxString &input);

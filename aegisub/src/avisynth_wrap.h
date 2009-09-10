@@ -43,7 +43,6 @@
 
 ///////////
 // Headers
-#include <wx/wxprec.h>
 
 #ifdef WITH_AVISYNTH
 #include <windows.h>

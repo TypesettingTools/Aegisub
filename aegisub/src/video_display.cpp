@@ -46,6 +46,9 @@
 #include <GL/glu.h>
 #endif
 #include <wx/clipbrd.h>
+#include <wx/dcclient.h>
+#include <wx/menu.h>
+#include <wx/dataobj.h>
 #include "utils.h"
 #include "video_display.h"
 #include "video_provider_manager.h"

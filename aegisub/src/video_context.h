@@ -41,7 +41,6 @@
 ///////////
 // Headers
 #include <time.h>
-#include <wx/wxprec.h>
 #include <wx/glcanvas.h>
 #include <wx/timer.h>
 #include <wx/stopwatch.h>

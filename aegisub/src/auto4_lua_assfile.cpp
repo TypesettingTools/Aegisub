@@ -53,6 +53,7 @@
 #include "lauxlib.h"
 #endif
 
+#include <wx/log.h>
 #include <assert.h>
 #include <algorithm>
 

@@ -40,7 +40,6 @@
 
 ///////////
 // Headers
-#include <wx/wxprec.h>
 
 
 //////////////

@@ -40,7 +40,6 @@
 #include "quicktime_common.h"
 
 #ifdef WITH_QUICKTIME
-#include <wx/wxprec.h>
 #include <wx/log.h>
 #include "include/aegisub/audio_provider.h"
 

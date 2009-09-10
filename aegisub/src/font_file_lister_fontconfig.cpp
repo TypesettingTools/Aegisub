@@ -39,7 +39,6 @@
 // Includes
 #include "config.h"
 
-#include <wx/wxprec.h>
 #ifndef WIN32
 #include "font_file_lister_fontconfig.h"
 #include "charset_conv.h"

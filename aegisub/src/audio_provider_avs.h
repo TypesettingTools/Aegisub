@@ -37,7 +37,6 @@
 
 ///////////
 // Headers
-#include <wx/wxprec.h>
 #ifdef WITH_AVISYNTH
 #include <Mmreg.h>
 #include "include/aegisub/audio_provider.h"

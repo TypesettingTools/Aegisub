@@ -40,7 +40,6 @@
 #include "config.h"
 
 #include "toggle_bitmap.h"
-#include <wx/wxprec.h>
 #include <wx/tglbtn.h>
 #include <wx/settings.h>
 #include <wx/dcclient.h>

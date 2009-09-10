@@ -38,7 +38,6 @@
 #include "quicktime_common.h"
 
 #ifdef WITH_QUICKTIME
-#include <wx/wxprec.h>
 
 
 

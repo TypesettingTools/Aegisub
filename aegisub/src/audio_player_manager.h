@@ -40,7 +40,6 @@
 
 ///////////
 // Headers
-#include <wx/wxprec.h>
 #include <wx/event.h>
 #include <wx/timer.h>
 #include <wx/thread.h>

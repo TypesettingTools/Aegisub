@@ -37,7 +37,6 @@
 
 ///////////
 // Headers
-#include <wx/wxprec.h>
 #ifdef WITH_AVISYNTH
 #include "avisynth_wrap.h"
 #include "include/aegisub/video_provider.h"

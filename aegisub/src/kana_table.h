@@ -38,7 +38,6 @@
 ///////////
 // Headers
 #include <list>
-#include <wx/wxprec.h>
 #include <wx/string.h>
 
 

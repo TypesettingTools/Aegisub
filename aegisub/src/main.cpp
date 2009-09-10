@@ -48,7 +48,6 @@
 #include <wx/msgdlg.h>
 #include <wx/stdpaths.h>
 #include <wx/utils.h>
-#include <wx/wxprec.h>
 #endif
 
 #include "main.h"

@@ -42,7 +42,6 @@
 #include <wx/app.h>
 #include <wx/file.h>
 #include <wx/stackwalk.h>
-#include <wx/wxprec.h>
 #endif
 
 #include "aegisublocale.h"

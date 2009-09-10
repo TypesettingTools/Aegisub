@@ -36,7 +36,6 @@
 
 ///////////
 // Headers
-#include <wx/wxprec.h>
 #ifdef WITH_FFMPEGSOURCE
 #include "include/aegisub/audio_provider.h"
 #include "ffmpegsource_common.h"

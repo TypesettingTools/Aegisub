@@ -42,7 +42,6 @@
 /// Include guard for audio_spectrum.h
 #define AUDIO_SPECTRUM_H
 
-#include <wx/wxprec.h>
 #include <stdint.h>
 #include "audio_provider_manager.h"
 

@@ -40,7 +40,6 @@
 /// DOCME
 #define TEXT_FILE_WRITER_H
 
-#include <wx/wxprec.h>
 #include <wx/string.h>
 #include <fstream>
 #include <memory>

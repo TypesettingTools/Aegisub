@@ -43,8 +43,8 @@
 
 ///////////
 // Headers
-#include <wx/wxprec.h>
 #include <wx/control.h>
+#include <wx/bitmap.h>
 
 
 

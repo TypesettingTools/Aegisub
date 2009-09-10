@@ -42,6 +42,7 @@
 // Headers
 #include <wx/utils.h>
 #include <wx/choicdlg.h>
+#include <wx/msgdlg.h>
 #include <map>
 #include "include/aegisub/aegisub.h"
 #include "video_provider_ffmpegsource.h"

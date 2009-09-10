@@ -39,7 +39,6 @@
 
 ///////////
 // Headers
-#include <wx/wxprec.h>
 #include "../universalchardet/nsUniversalDetector.h"
 
 

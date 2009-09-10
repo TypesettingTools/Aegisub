@@ -36,9 +36,9 @@
 
 #pragma once
 
-#include <wx/wxprec.h>
 #include <wx/glcanvas.h>
 #include <wx/combobox.h>
+#include <wx/textctrl.h>
 
 // Prototypes
 class VideoSlider;

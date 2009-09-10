@@ -45,7 +45,6 @@
 #else
 #include <GL/gl.h>
 #endif
-#include <wx/wxprec.h>
 #include "visual_tool.h"
 #include "video_display.h"
 #include "video_context.h"

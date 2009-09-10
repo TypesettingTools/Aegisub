@@ -43,7 +43,10 @@
 
 ///////////
 // Headers
-#include <wx/wxprec.h>
+#include <wx/stattext.h>
+#include <wx/checkbox.h>
+#include <wx/dialog.h>
+
 #include "scintilla_text_ctrl.h"
 
 

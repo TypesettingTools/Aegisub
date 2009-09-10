@@ -40,7 +40,6 @@
 
 ///////////
 // Headers
-#include <wx/wxprec.h>
 #include <wx/panel.h>
 #include <wx/tglbtn.h>
 #include <wx/sizer.h>

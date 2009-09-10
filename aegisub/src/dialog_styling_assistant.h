@@ -43,7 +43,6 @@
 
 ///////////
 // Headers
-#include <wx/wxprec.h>
 #include <wx/dialog.h>
 #include <wx/colour.h>
 #include <wx/textctrl.h>

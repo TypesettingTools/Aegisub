@@ -43,7 +43,6 @@
 
 ///////////
 // Headers
-#include <wx/wxprec.h>
 #include <wx/window.h>
 #include <wx/log.h>
 #include <wx/menu.h>

@@ -39,7 +39,6 @@
 // Headers
 #include "config.h"
 
-#include <wx/wxprec.h>
 #ifdef WITH_AVISYNTH
 #include <wx/filename.h>
 #include <wx/msw/registry.h>

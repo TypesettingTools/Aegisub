@@ -40,11 +40,10 @@
 
 ///////////
 // Headers
-#include <wx/wxprec.h>
 #include <fstream>
 #include <list>
 #include <vector>
-
+#include <wx/arrstr.h>
 
 //////////////
 // Prototypes

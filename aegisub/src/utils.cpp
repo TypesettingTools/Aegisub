@@ -39,7 +39,6 @@
 // Headers
 #include "config.h"
 
-#include <wx/wxprec.h>
 #include <wx/filename.h>
 #include <wx/menu.h>
 #include <wx/dcmemory.h>

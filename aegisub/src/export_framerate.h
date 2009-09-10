@@ -46,6 +46,7 @@
 #include <wx/button.h>
 #include <wx/panel.h>
 #include <wx/stattext.h>
+#include <wx/checkbox.h>
 #include "ass_export_filter.h"
 #include "vfr.h"
 

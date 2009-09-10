@@ -45,6 +45,7 @@
 #include <wx/spinctrl.h>
 #include <wx/combobox.h>
 #include <wx/checkbox.h>
+#include <wx/textctrl.h>
 #include "video_provider_dummy.h"
 #include "colour_button.h"
 

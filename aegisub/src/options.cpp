@@ -46,6 +46,9 @@
 #include <wx/settings.h>
 #include <wx/filefn.h>
 #include <wx/utils.h>
+#include <wx/msgdlg.h>
+#include <wx/stopwatch.h>
+
 #include "options.h"
 #include "text_file_reader.h"
 #include "text_file_writer.h"

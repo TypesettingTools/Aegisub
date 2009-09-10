@@ -40,7 +40,6 @@
 
 ///////////
 // Headers
-#include <wx/wxprec.h>
 #include <stdint.h>
 #include "factory_manager.h"
 #include "include/aegisub/audio_provider.h"

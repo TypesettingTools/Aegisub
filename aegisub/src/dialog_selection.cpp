@@ -39,7 +39,6 @@
 // Headers
 #include "config.h"
 
-#include <wx/wxprec.h>
 #include <wx/string.h>
 #include <wx/regex.h>
 #include "dialog_selection.h"

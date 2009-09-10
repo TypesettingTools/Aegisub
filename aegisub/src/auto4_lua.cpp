@@ -63,6 +63,7 @@
 #include <wx/filename.h>
 #include <wx/filefn.h>
 #include <wx/window.h>
+#include <wx/log.h>
 #include <assert.h>
 #include <algorithm>
 

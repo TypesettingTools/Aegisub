@@ -57,6 +57,11 @@
 #include <wx/button.h>
 #include <wx/validate.h>
 #include <wx/tokenzr.h>
+#include <wx/combobox.h>
+#include <wx/checkbox.h>
+#include <wx/log.h>
+#include <wx/panel.h>
+
 #include <assert.h>
 #include "colour_button.h"
 #include "ass_style.h"

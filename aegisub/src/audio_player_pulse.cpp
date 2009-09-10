@@ -42,7 +42,6 @@
 
 ///////////
 // Headers
-#include <wx/wxprec.h>
 #include <stdio.h>
 #include "audio_player_pulse.h"
 #include "audio_provider_manager.h"

@@ -39,7 +39,6 @@
 // Headers
 #include "config.h"
 
-#include <wx/wxprec.h>
 #include <wx/window.h>
 #include <wx/msgdlg.h>
 #include "dialog_tip.h"

@@ -40,8 +40,8 @@
 
 ///////////
 // Headers
-#include <wx/wxprec.h>
 #include <wx/dir.h>
+#include <wx/choicdlg.h>
 #include "ffmpegsource_common.h"
 #include "md5.h"
 #include "standard_paths.h"

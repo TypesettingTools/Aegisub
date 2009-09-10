@@ -40,7 +40,6 @@
 
 ///////////
 // Headers
-#include <wx/wxprec.h>
 #include <wx/dialog.h>
 #include <wx/checklst.h>
 #include <wx/slider.h>

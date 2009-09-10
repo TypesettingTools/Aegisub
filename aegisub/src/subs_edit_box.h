@@ -40,8 +40,14 @@
 
 ////////////
 // Includes
-#include <wx/wxprec.h>
 #include <wx/spinctrl.h>
+#include <wx/dcmemory.h>
+#include <wx/dcclient.h>
+#include <wx/radiobut.h>
+#include <wx/checkbox.h>
+#include <wx/combobox.h>
+#include <wx/panel.h>
+#include <wx/button.h>
 #include "subs_edit_ctrl.h"
 
 

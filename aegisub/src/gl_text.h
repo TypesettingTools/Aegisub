@@ -38,7 +38,6 @@
 
 ///////////
 // Headers
-#include <wx/wxprec.h>
 #include <wx/bitmap.h>
 #include <wx/font.h>
 #ifdef __APPLE__

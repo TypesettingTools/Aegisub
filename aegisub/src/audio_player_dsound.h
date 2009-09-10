@@ -39,7 +39,6 @@
 // Headers
 #ifdef WITH_DIRECTSOUND
 
-#include <wx/wxprec.h>
 #include "include/aegisub/audio_player.h"
 #include "include/aegisub/audio_provider.h"
 #include "utils.h"

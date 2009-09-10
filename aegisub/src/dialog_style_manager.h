@@ -43,7 +43,6 @@
 
 ////////////
 // Includes
-#include <wx/wxprec.h>
 #include <wx/dialog.h>
 #include <wx/combobox.h>
 #include <wx/listbox.h>

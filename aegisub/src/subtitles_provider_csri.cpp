@@ -42,7 +42,6 @@
 
 #ifdef WITH_CSRI
 
-#include <wx/wxprec.h>
 #include "subtitles_provider_csri.h"
 #include "ass_file.h"
 #include "video_context.h"

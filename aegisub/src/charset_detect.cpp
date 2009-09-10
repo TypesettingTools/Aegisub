@@ -41,7 +41,6 @@
 
 #ifdef WITH_UNIVCHARDET
 #include <list>
-#include <wx/wxprec.h>
 #include <wx/intl.h>
 #include <wx/choicdlg.h>
 

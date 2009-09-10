@@ -45,6 +45,7 @@
 #include "text_file_writer.h"
 #include <wx/filename.h>
 #include <wx/accel.h>
+#include <wx/log.h>
 
 
 

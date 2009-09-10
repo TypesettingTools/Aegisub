@@ -46,7 +46,7 @@
 
 #ifdef DEBUG_AVISYNTH_CODE
 #include "main.h"
-#include "wx/textfile.h"
+#include <wx/textfile.h>
 
 /// DOCME
 wxTextFile avs_trace_file;

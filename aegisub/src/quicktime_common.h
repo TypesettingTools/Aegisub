@@ -40,7 +40,6 @@
 #include "config.h"
 
 #ifdef WITH_QUICKTIME
-#include <wx/wxprec.h>
 #include <wx/thread.h>
 #include "include/aegisub/aegisub.h"
 

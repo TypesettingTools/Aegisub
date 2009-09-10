@@ -40,7 +40,6 @@
 
 //////////
 // Headers
-#include <wx/wxprec.h>
 #include "video_frame.h"
 #include "aegisub.h"
 #include "vfr.h"

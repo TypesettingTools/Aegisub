@@ -36,7 +36,8 @@
 
 #pragma once
 
-#include <wx/wxprec.h>
+#include <wx/string.h>
+
 #ifdef __WINDOWS__
 #include "../../contrib/lua51/src/lua.h"
 #else

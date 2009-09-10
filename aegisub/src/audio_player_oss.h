@@ -41,7 +41,6 @@
 
 ///////////
 // Headers
-#include <wx/wxprec.h>
 #include <fcntl.h>
 #include <sys/ioctl.h>
 #ifdef HAVE_SOUNDCARD_H

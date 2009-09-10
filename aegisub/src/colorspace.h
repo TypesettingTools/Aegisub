@@ -39,7 +39,6 @@
 /// DOCME
 #define COLORSPACE_H
 
-#include <wx/wxprec.h>
 #include <wx/colour.h>
 #include <wx/string.h>
 

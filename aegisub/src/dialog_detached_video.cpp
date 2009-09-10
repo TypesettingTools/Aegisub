@@ -39,7 +39,6 @@
 // Headers
 #include "config.h"
 
-#include <wx/wxprec.h>
 #include <wx/filename.h>
 #include "dialog_detached_video.h"
 #include "video_box.h"

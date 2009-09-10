@@ -41,7 +41,6 @@
 
 #ifdef WITH_DIRECTSOUND
 
-#include <wx/wxprec.h>
 #include "utils.h"
 #include "main.h"
 #include "frame_main.h"

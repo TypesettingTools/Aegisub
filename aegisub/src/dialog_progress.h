@@ -43,7 +43,6 @@
 
 ///////////
 // Headers
-#include <wx/wxprec.h>
 #include <wx/dialog.h>
 #include <wx/gauge.h>
 #include <wx/stattext.h>

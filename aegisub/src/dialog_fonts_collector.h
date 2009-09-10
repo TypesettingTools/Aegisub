@@ -40,9 +40,12 @@
 
 ////////////
 // Includes
-#include <wx/wxprec.h>
 #include <wx/stc/stc.h>
-
+#include <wx/button.h>
+#include <wx/stattext.h>
+#include <wx/textctrl.h>
+#include <wx/dialog.h>
+#include <wx/radiobox.h>
 
 //////////////
 // Prototypes
