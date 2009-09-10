@@ -39,8 +39,11 @@
 // Includes
 #include "config.h"
 
-#include <wx/wfstream.h>
+#ifndef WX_PRE
 #include <wx/filename.h>
+#include <wx/wfstream.h>
+#endif
+
 #include "ass_attachment.h"
 
 

@@ -35,9 +35,6 @@
 ///
 
 
-#pragma once
-
-
 ////////////
 // Includes
 #include <vector>
@@ -294,5 +291,3 @@ public:
 	AssDialogue(wxString data,int version=1);
 	~AssDialogue();
 };
-
-

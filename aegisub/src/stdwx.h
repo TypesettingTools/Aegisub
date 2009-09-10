@@ -77,6 +77,7 @@
 #include <wx/event.h>
 #include <wx/stc/stc.h>
 #include <wx/string.h>
+#include <wx/regex.h>
 #ifdef HAVE_APPLE_OPENGL_FRAMEWORK
 #include <OpenGL/GL.h>
 #include <OpenGL/glu.h>

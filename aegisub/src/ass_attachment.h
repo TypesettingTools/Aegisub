@@ -35,9 +35,6 @@
 ///
 
 
-#pragma once
-
-
 ///////////
 // Headers
 #include "ass_entry.h"
@@ -104,5 +101,3 @@ public:
 	AssAttachment(wxString name);
 	~AssAttachment();
 };
-
-

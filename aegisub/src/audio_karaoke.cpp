@@ -42,7 +42,6 @@
 #include "audio_karaoke.h"
 #include "audio_display.h"
 #include "audio_box.h"
-#include "ass_dialogue.h"
 #include "ass_override.h"
 #include <wx/tokenzr.h>
 #include <wx/menu.h>

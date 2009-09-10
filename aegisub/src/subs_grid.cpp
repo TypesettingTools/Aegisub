@@ -45,7 +45,6 @@
 #include <wx/filename.h>
 #include "subs_grid.h"
 #include "ass_file.h"
-#include "ass_dialogue.h"
 #include "ass_style.h"
 #include "video_display.h"
 #include "video_context.h"

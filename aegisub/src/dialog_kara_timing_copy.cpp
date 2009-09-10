@@ -44,7 +44,6 @@
 #include <deque>
 #include "dialog_kara_timing_copy.h"
 #include "ass_file.h"
-#include "ass_dialogue.h"
 #include "ass_style.h"
 #include "ass_override.h"
 #include "subs_grid.h"

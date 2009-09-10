@@ -39,7 +39,6 @@
 #include <fstream>
 #include "text_file_writer.h"
 #include "options.h"
-#include "aegisub_endian.h"
 #include "charset_conv.h"
 
 

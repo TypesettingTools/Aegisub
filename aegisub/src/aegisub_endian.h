@@ -33,13 +33,6 @@
 /// @ingroup utility
 ///
 
-#pragma once
-
-#ifndef _AEGISUB_ENDIAN_H
-
-/// DOCME
-#define _AEGISUB_ENDIAN_H
-
 
 // Sanity check
 
@@ -467,7 +460,4 @@ namespace Endian {
 #endif
 
 };
-
-#endif
-
 
