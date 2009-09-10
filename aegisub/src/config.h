@@ -1,3 +1,5 @@
+#ifndef WX_PRE
+
 #ifdef _WIN32
 
 // Windows specific settings
@@ -13,3 +15,4 @@
 
 #endif // __WINDOWS__
 
+#endif // WX_PRE
