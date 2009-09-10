@@ -62,10 +62,47 @@
 
 ///////////////
 // STD headers
-#include <vector>
+#include <algorithm>
+#include <deque>
+#include <fstream>
+#include <iostream>
 #include <list>
 #include <map>
+#include <memory>
+#include <string>
+#include <utility>
+#include <vector>
 
+// General headers
+#include <assert.h>
+#include <ctype.h>
+#include <errno.h>
+#include <fcntl.h>
+#include <iconv.h>
+#include <locale.h>
+#include <math.h>
+#include <omp.h>
+#include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/fcntl.h>
+#include <sys/ioctl.h>
+#include <sys/mman.h>
+#include <sys/param.h>
+#include <sys/stat.h>
+#include <time.h>
+#include <unistd.h>
+#include <wchar.h>
+
+#ifdef __WINDOWS__
+#include <process.h>
+#include <mmsystem.h>
+#include <objbase.h>
+#include <tchar.h>
+#include <windef.h>
+#include <windows.h>
+#endif
 
 /////////////////////
 // wxWidgets headers
