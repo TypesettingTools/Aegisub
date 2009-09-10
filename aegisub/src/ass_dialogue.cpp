@@ -39,12 +39,12 @@
 // Includes
 #include "config.h"
 
-#ifndef WX_PRE
+#ifndef AGI_PRE
+#include <fstream>
 #include <wx/regex.h>
 #include <wx/tokenzr.h>
 #endif
 
-#include <fstream>
 #include "ass_dialogue.h"
 #include "ass_override.h"
 #include "vfr.h"

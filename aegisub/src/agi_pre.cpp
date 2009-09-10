@@ -29,7 +29,7 @@
 //
 // $Id$
 
-/// @file stdwx.cpp
+/// @file agi_pre.cpp
 /// @brief Precompiled headers control file, including stdwx.h only to generate precompiled header data
 /// @ingroup main
 ///
@@ -38,7 +38,7 @@
 //
 // Precompiled Header Source File
 //
-// In order to use it, set the project to use stdwx.h as precompiled header and
+// In order to use it, set the project to use agi_pre.h as precompiled header and
 // insert it in every source file (under C/C++ -> Advanced -> Force Includes),
 // then set this file to generate the precompiled header
 //
@@ -48,5 +48,5 @@
 
 #include "config.h"
 
-#include "stdwx.h"
+#include "agi_pre.h"
 

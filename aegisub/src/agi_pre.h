@@ -29,7 +29,7 @@
 //
 // $Id$
 
-/// @file stdwx.h
+/// @file agi_pre.h
 /// @brief Precompiled headers include file, including all headers that should be precompiled
 /// @ingroup main
 ///
@@ -49,13 +49,16 @@
 
 /////////
 // Setup
+#define WIN32_LEAN_AND_MEAN
+#define AGI_PRE
+
+// Block msvc from complaining about not using msvc-specific versions for
+// insecure C functions.
 #ifdef _CRT_SECURE_NO_WARNINGS
 #define _CRT_SECURE_NO_WARNINGS_DEFINED
 #else
 #define _CRT_SECURE_NO_WARNINGS
 #endif
-#define WIN32_LEAN_AND_MEAN
-#define WX_PRE
 
 ///////////////
 // STD headers

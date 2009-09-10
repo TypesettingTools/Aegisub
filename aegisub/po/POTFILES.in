@@ -6,6 +6,9 @@ aegisub_endian.h
 aegisublocale.cpp
 aegisublocale.cpp
 aegisublocale.h
+agi_pre.cpp
+agi_pre.cpp
+agi_pre.h
 ass_attachment.cpp
 ass_attachment.cpp
 ass_attachment.h
@@ -345,9 +348,6 @@ standard_paths.h
 static_bmp.cpp
 static_bmp.cpp
 static_bmp.h
-stdwx.cpp
-stdwx.cpp
-stdwx.h
 string_codec.cpp
 string_codec.cpp
 string_codec.h

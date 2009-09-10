@@ -1,4 +1,4 @@
-#ifndef WX_PRE
+#ifndef AGI_PRE
 
 #ifdef _WIN32
 
@@ -15,4 +15,4 @@
 
 #endif // __WINDOWS__
 
-#endif // WX_PRE
+#endif // AGI_PRE

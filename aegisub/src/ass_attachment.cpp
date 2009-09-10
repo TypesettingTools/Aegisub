@@ -39,7 +39,7 @@
 // Includes
 #include "config.h"
 
-#ifndef WX_PRE
+#ifndef AGI_PRE
 #include <wx/filename.h>
 #include <wx/wfstream.h>
 #endif

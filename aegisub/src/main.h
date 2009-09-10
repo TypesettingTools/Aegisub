@@ -38,7 +38,7 @@
 ///////////////////
 // Include headers
 
-#ifndef WX_PRE
+#ifndef AGI_PRE
 #include <wx/app.h>
 #include <wx/file.h>
 #include <wx/stackwalk.h>

@@ -39,7 +39,7 @@
 // Includes
 #include "config.h"
 
-#ifndef WX_PRE
+#ifndef AGI_PRE
 #include <wx/config.h>
 #include <wx/datetime.h>
 #include <wx/filefn.h>

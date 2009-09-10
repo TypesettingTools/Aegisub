@@ -46,9 +46,9 @@
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS"
 				MinimalRebuild="true"
 				UsePrecompiledHeader="2"
-				PrecompiledHeaderThrough="stdwx.h"
+				PrecompiledHeaderThrough="agi_pre.h"
 				DisableSpecificWarnings="4267"
-				ForcedIncludeFiles="stdwx.h"
+				ForcedIncludeFiles="agi_pre.h"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -112,9 +112,9 @@
 				PreprocessorDefinitions="WIN32;WIN64;_DEBUG;_WINDOWS"
 				MinimalRebuild="true"
 				UsePrecompiledHeader="2"
-				PrecompiledHeaderThrough="stdwx.h"
+				PrecompiledHeaderThrough="agi_pre.h"
 				DisableSpecificWarnings="4267"
-				ForcedIncludeFiles="stdwx.h"
+				ForcedIncludeFiles="agi_pre.h"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -178,10 +178,10 @@
 				AdditionalOptions="/MP"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS"
 				UsePrecompiledHeader="2"
-				PrecompiledHeaderThrough="stdwx.h"
+				PrecompiledHeaderThrough="agi_pre.h"
 				ProgramDataBaseFileName="$(IntDir)\vc90.pdb"
 				DisableSpecificWarnings="4267"
-				ForcedIncludeFiles="stdwx.h"
+				ForcedIncludeFiles="agi_pre.h"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -247,9 +247,9 @@
 				Name="VCCLCompilerTool"
 				PreprocessorDefinitions="WIN32;WIN64;NDEBUG;_WINDOWS"
 				UsePrecompiledHeader="2"
-				PrecompiledHeaderThrough="stdwx.h"
+				PrecompiledHeaderThrough="agi_pre.h"
 				DisableSpecificWarnings="4267"
-				ForcedIncludeFiles="stdwx.h"
+				ForcedIncludeFiles="agi_pre.h"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -1316,7 +1316,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\stdwx.cpp"
+				RelativePath="..\..\src\agi_pre.cpp"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
@@ -1352,7 +1352,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\..\src\stdwx.h"
+				RelativePath="..\..\src\agi_pre.h"
 				>
 			</File>
 			<File

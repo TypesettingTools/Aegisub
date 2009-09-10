@@ -10,10 +10,10 @@ libosxutil_ldflags = -framework CoreFoundation
 endif
 
 if PRECOMPILED_HEADER
-BUILT_SOURCES = stdwx.h.gch
-precompiled_header = stdwx.h
-AM_CXXFLAGS += -Winvalid-pch -fpch-deps -fpch-preprocess -include stdwx.h
-nodist_aegisub_2_2_SOURCES = stdwx.h.gch
+BUILT_SOURCES = agi_pre.h.gch
+precompiled_header = agi_pre.h
+AM_CXXFLAGS += -Winvalid-pch -fpch-deps -fpch-preprocess -include agi_pre.h
+nodist_aegisub_2_2_SOURCES = agi_pre.h.gch
 endif
 
 SUBDIRS = \
@@ -31,8 +31,8 @@ LIBS += @FREETYPE_LIBS@ @FONTCONFIG_LIBS@ @CCMALLOC_LIBS@
 
 if PRECOMPILED_HEADER
 # This doesn't depend on Makefile on purpose, you should already know what you're doing when using this.
-stdwx.h.gch: stdwx.h
-	@CXX@ -include ../acconf.h $(DEFAULT_INCLUDES) @CXXFLAGS@ $(AM_CXXFLAGS) @DEBUG_FLAGS@ @PROFILE_FLAGS@ stdwx.h
+agi_pre.h.gch: agi_pre.h
+	@CXX@ -include ../acconf.h $(DEFAULT_INCLUDES) @CXXFLAGS@ $(AM_CXXFLAGS) @DEBUG_FLAGS@ @PROFILE_FLAGS@ agi_pre.h
 endif
 
 if BUILD_DARWIN
@@ -169,7 +169,6 @@ EXTRA_aegisub_2_2_SOURCES = \
 	dialog_associations.cpp \
 	setup.cpp \
 	spellchecker_hunspell.cpp \
-	stdwx.cpp \
 	subtitle_format_prs.cpp \
 	subtitles_provider_csri.cpp \
 	subtitles_provider_libass.cpp \
