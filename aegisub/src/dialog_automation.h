@@ -48,7 +48,7 @@
 
 
 /// DOCME
-namespace Automation4 { class ScriptManager; class Script; };
+namespace Automation4 { class ScriptManager; class Script; class AutoloadScriptManager; };
 
 
 /// DOCME
