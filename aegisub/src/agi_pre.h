@@ -49,7 +49,6 @@
 
 /////////
 // Setup
-#define WIN32_LEAN_AND_MEAN
 #define AGI_PRE
 
 // Block msvc from complaining about not using msvc-specific versions for
@@ -86,32 +85,29 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <sys/fcntl.h>
-#include <sys/ioctl.h>
-#include <sys/mman.h>
-#include <sys/param.h>
-#include <sys/stat.h>
 #include <time.h>
-#include <unistd.h>
 #include <wchar.h>
 
-#ifdef __WINDOWS__
-#include <Mmreg.h>
+#ifdef _WIN32
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
+#include <mmsystem.h>
 #include <dsound.h>
 #include <process.h>
-#include <mmsystem.h>
-#include <objbase.h>
+//#include <objbase.h>
 #include <shlobj.h>
 #include <tchar.h>
 #include <vfw.h>
-#include <windef.h>
-#include <windows.h>
+//#include <windef.h>
 
 #else
 
 #include <sys/fcntl.h>
 #include <sys/mman.h>
 #include <sys/stat.h>
+#include <sys/ioctl.h>
+#include <sys/param.h>
+#include <unistd.h>
 #endif
 
 /////////////////////
