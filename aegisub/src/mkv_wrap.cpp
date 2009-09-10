@@ -45,9 +45,9 @@
 
 #include <algorithm>
 
-#include <wx/choicdlg.h>
 #include <wx/filename.h>
 #include <wx/tokenzr.h>
+#include <wx/choicdlg.h> // Keep this last so wxUSE_CHOICEDLG is set.
 #endif
 
 #include "ass_file.h"

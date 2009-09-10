@@ -40,8 +40,8 @@
 #include "config.h"
 
 #ifndef AGI_PRE
-#include <wx/choicdlg.h>
 #include <wx/intl.h>
+#include <wx/choicdlg.h> // Keep this last so wxUSE_CHOICEDLG is set.
 #endif
 
 #include "ass_file.h"

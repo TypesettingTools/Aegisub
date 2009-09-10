@@ -42,6 +42,7 @@
 // Headers
 #include "include/aegisub/audio_provider.h"
 #include <wx/file.h>
+#include <wx/thread.h>
 
 
 

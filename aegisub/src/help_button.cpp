@@ -40,8 +40,6 @@
 #include "config.h"
 
 #ifndef AGI_PRE
-#include <map>
-
 #include <wx/filename.h>
 #include <wx/log.h>
 #include <wx/mimetype.h>

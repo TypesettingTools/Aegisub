@@ -40,6 +40,8 @@
 
 ////////////
 // Includes
+#include <map>
+
 #include <wx/button.h>
 
 

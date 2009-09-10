@@ -42,10 +42,10 @@
 #ifndef AGI_PRE
 #include <math.h>
 
-#include <wx/laywin.h>
 #include <wx/recguard.h>
 #include <wx/statline.h>
 #include <wx/tglbtn.h>
+#include <wx/laywin.h> // Keep this last so wxSW_3D is set.
 #endif
 
 #include "audio_box.h"

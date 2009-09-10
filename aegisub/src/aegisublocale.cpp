@@ -42,11 +42,11 @@
 #ifndef AGI_PRE
 #include <locale.h>
 
-#include <wx/choicdlg.h>
 #include <wx/dir.h>
 #include <wx/filename.h>
 #include <wx/intl.h>
 #include <wx/stdpaths.h>
+#include <wx/choicdlg.h> // Keep this last so wxUSE_CHOICEDLG is set.
 #endif
 
 #include "aegisublocale.h"

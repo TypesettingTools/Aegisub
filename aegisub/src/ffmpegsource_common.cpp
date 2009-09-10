@@ -42,12 +42,8 @@
 // Headers
 #ifndef AGI_PRE
 #include <map>
-
-/// Force wx to use Choice Dialogue
-/// @todo Find out why this is needed.
-#define wxUSE_CHOICEDLG 1
-#include <wx/choicdlg.h>
 #include <wx/dir.h>
+#include <wx/choicdlg.h> // Keep this last so wxUSE_CHOICEDLG is set.
 #endif
 
 #include "ffmpegsource_common.h"

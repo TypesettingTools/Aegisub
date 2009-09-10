@@ -40,12 +40,12 @@
 #include "config.h"
 
 #ifndef AGI_PRE
-#include <wx/choicdlg.h>
 #include <wx/clipbrd.h>
 #include <wx/filedlg.h>
 #include <wx/filename.h>
 #include <wx/intl.h>
 #include <wx/tokenzr.h>
+#include <wx/choicdlg.h> // Keep this last so wxUSE_CHOICEDLG is set.
 #endif
 
 #include "ass_dialogue.h"

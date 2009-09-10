@@ -40,9 +40,9 @@
 #include "config.h"
 
 #ifndef AGI_PRE
-#include <wx/dirdlg.h>
 #include <wx/filedlg.h>
 #include <wx/fontdlg.h>
+#include <wx/dirdlg.h> // Keep this last so wxDirDialog is set.
 #endif
 
 #include "browse_button.h"
