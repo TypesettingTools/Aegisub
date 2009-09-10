@@ -42,12 +42,14 @@
 
 ///////////
 // Headers
+#ifndef AGI_PRE
 #include <stdio.h>
+#endif
+
 #include "audio_player_pulse.h"
 #include "audio_provider_manager.h"
-#include "utils.h"
 #include "options.h"
-
+#include "utils.h"
 
 
 /// @brief Constructor 

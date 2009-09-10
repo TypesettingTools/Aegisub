@@ -39,21 +39,23 @@
 // Headers
 #include "config.h"
 
-#include <wx/intl.h>
+#ifndef AGI_PRE
 #include <wx/choicdlg.h>
+#include <wx/intl.h>
+#endif
+
+#include "ass_file.h"
 #include "subtitle_format.h"
 #include "subtitle_format_ass.h"
-#include "subtitle_format_srt.h"
-#include "subtitle_format_txt.h"
-#include "subtitle_format_ttxt.h"
-#include "subtitle_format_mkv.h"
-#include "subtitle_format_microdvd.h"
-#include "subtitle_format_encore.h"
-#include "subtitle_format_transtation.h"
 #include "subtitle_format_dvd.h"
-#include "ass_file.h"
+#include "subtitle_format_encore.h"
+#include "subtitle_format_microdvd.h"
+#include "subtitle_format_mkv.h"
+#include "subtitle_format_srt.h"
+#include "subtitle_format_transtation.h"
+#include "subtitle_format_ttxt.h"
+#include "subtitle_format_txt.h"
 #include "vfr.h"
-
 
 
 /// @brief Constructor 

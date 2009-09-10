@@ -36,18 +36,20 @@
 
 #include "config.h"
 
-#include <fstream>
-#include <algorithm>
-#include <string>
+#ifndef AGI_PRE
 #include <assert.h>
 #include <errno.h>
-#include "text_file_reader.h"
+
+#include <algorithm>
+#include <fstream>
+#include <string>
+#endif
+
 #include "charset_conv.h"
-
-
 #ifdef WITH_UNIVCHARDET
 #include "charset_detect.h"
 #endif
+#include "text_file_reader.h"
 
 
 /// @brief DOCME

@@ -39,10 +39,13 @@
 // Includes
 #include "config.h"
 
+#ifndef AGI_PRE
 #include <wx/dcmemory.h>
-#include "colour_button.h"
-#include "dialog_colorpicker.h"
+#endif
 
+#include "colour_button.h"
+#include "config.h"
+#include "dialog_colorpicker.h"
 
 
 /// @brief Constructor 

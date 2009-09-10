@@ -39,34 +39,39 @@
 
 #ifdef WITH_AUTOMATION
 
-#include "auto4_base.h"
-#include "ass_style.h"
-#include "options.h"
-#include "string_codec.h"
-#include "ass_file.h"
-#include "standard_paths.h"
-#include <wx/filename.h>
-#include <wx/dir.h>
-#include <wx/dialog.h>
-#include <wx/gauge.h>
+#ifndef AGI_PRE
+#ifdef __WINDOWS__
+#include <tchar.h>
+#include <windows.h>
+#endif
+
 #include <wx/button.h>
+#include <wx/dcmemory.h>
+#include <wx/dialog.h>
+#include <wx/dir.h>
+#include <wx/filefn.h>
+#include <wx/filename.h>
+#include <wx/gauge.h>
+#include <wx/log.h>
+#include <wx/msgdlg.h>
+#include <wx/sizer.h>
 #include <wx/stattext.h>
 #include <wx/thread.h>
-#include <wx/sizer.h>
-#include <wx/filefn.h>
 #include <wx/tokenzr.h>
-#include <wx/dcmemory.h>
-#include <wx/msgdlg.h>
-#include <wx/log.h>
+#endif
 
-
-#ifdef WIN32
-#include <windows.h>
-#include <tchar.h>
-#else
+#ifndef __WINDOWS__
 #include <ft2build.h>
 #include FT_FREETYPE_H
 #endif
+
+#include "ass_file.h"
+#include "ass_style.h"
+#include "auto4_base.h"
+#include "options.h"
+#include "standard_paths.h"
+#include "string_codec.h"
+
 
 
 /// DOCME

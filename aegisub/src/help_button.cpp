@@ -39,14 +39,17 @@
 // Headers
 #include "config.h"
 
-#include <wx/mimetype.h>
-#include <wx/log.h>
-#include <wx/filename.h>
+#ifndef AGI_PRE
 #include <map>
-#include "help_button.h"
-#include "utils.h"
-#include "standard_paths.h"
 
+#include <wx/filename.h>
+#include <wx/log.h>
+#include <wx/mimetype.h>
+#endif
+
+#include "help_button.h"
+#include "standard_paths.h"
+#include "utils.h"
 
 
 /// @brief Constructor 

@@ -40,15 +40,19 @@
 
 ///////////
 // Headers
-#include <wx/dir.h>
-#include <wx/choicdlg.h>
-#include "ffmpegsource_common.h"
-#include "md5.h"
-#include "standard_paths.h"
-#include "main.h"
-#include "frame_main.h"
-#include "options.h"
+#ifndef AGI_PRE
 #include <map>
+
+#include <wx/choicdlg.h>
+#include <wx/dir.h>
+#endif
+
+#include "ffmpegsource_common.h"
+#include "frame_main.h"
+#include "main.h"
+#include "md5.h"
+#include "options.h"
+#include "standard_paths.h"
 
 
 wxMutex FFmpegSourceProvider::CleaningInProgress;

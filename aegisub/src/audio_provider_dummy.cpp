@@ -43,7 +43,6 @@
 #include "utils.h"
 
 
-
 /// @brief Constructor 
 /// @param dur_ms 
 /// @param _noise 

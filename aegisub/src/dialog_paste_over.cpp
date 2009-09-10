@@ -39,14 +39,16 @@
 // Headers
 #include "config.h"
 
-#include <wx/config.h>
-#include <wx/stattext.h>
-#include <wx/sizer.h>
+#ifndef AGI_PRE
 #include <wx/button.h>
-#include "dialog_paste_over.h"
-#include "options.h"
-#include "help_button.h"
+#include <wx/config.h>
+#include <wx/sizer.h>
+#include <wx/stattext.h>
+#endif
 
+#include "dialog_paste_over.h"
+#include "help_button.h"
+#include "options.h"
 
 
 /// @brief Constructor 

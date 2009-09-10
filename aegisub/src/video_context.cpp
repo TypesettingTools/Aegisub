@@ -39,6 +39,15 @@
 // Includes
 #include "config.h"
 
+#ifndef AGI_PRE
+#include <string.h>
+
+#include <wx/clipbrd.h>
+#include <wx/config.h>
+#include <wx/filename.h>
+#include <wx/image.h>
+#endif
+
 #ifdef __APPLE__
 #include <OpenGL/GL.h>
 #include <OpenGL/glu.h>
@@ -46,32 +55,27 @@
 #include <GL/gl.h>
 #include <GL/glu.h>
 #endif
-#include <wx/image.h>
-#include <string.h>
-#include <wx/clipbrd.h>
-#include <wx/filename.h>
-#include <wx/config.h>
-#include "utils.h"
-#include "video_display.h"
-#include "video_context.h"
-#include "video_provider_manager.h"
-#include "visual_tool.h"
-#include "subtitles_provider_manager.h"
-#include "vfr.h"
-#include "ass_file.h"
-#include "ass_exporter.h"
-#include "ass_time.h"
+
 #include "ass_dialogue.h"
+#include "ass_exporter.h"
+#include "ass_file.h"
 #include "ass_style.h"
-#include "subs_grid.h"
-#include "options.h"
-#include "subs_edit_box.h"
+#include "ass_time.h"
 #include "audio_display.h"
-#include "video_slider.h"
-#include "video_box.h"
-#include "utils.h"
 #include "gl_wrap.h"
+#include "options.h"
 #include "standard_paths.h"
+#include "subs_edit_box.h"
+#include "subs_grid.h"
+#include "subtitles_provider_manager.h"
+#include "utils.h"
+#include "vfr.h"
+#include "video_box.h"
+#include "video_context.h"
+#include "video_display.h"
+#include "video_provider_manager.h"
+#include "video_slider.h"
+#include "visual_tool.h"
 
 
 ///////

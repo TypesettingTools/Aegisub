@@ -39,10 +39,12 @@
 // Headers
 #include "config.h"
 
+#ifndef AGI_PRE
 #include <wx/textctrl.h>
-#include "validators.h"
-#include "utils.h"
+#endif
 
+#include "utils.h"
+#include "validators.h"
 
 
 /// @brief Constructor 

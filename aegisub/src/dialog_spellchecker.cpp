@@ -38,19 +38,21 @@
 // Headers
 #include "config.h"
 
+#ifndef AGI_PRE
 #include <wx/intl.h>
-#include "dialog_spellchecker.h"
-#include "spellchecker_manager.h"
-#include "subs_grid.h"
-#include "frame_main.h"
-#include "ass_file.h"
+#endif
+
 #include "ass_dialogue.h"
-#include "utils.h"
-#include "subs_edit_box.h"
-#include "options.h"
+#include "ass_file.h"
+#include "dialog_spellchecker.h"
+#include "frame_main.h"
 #include "help_button.h"
 #include "libresrc/libresrc.h"
-
+#include "options.h"
+#include "spellchecker_manager.h"
+#include "subs_edit_box.h"
+#include "subs_grid.h"
+#include "utils.h"
 
 
 ///////

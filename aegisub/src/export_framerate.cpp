@@ -39,12 +39,11 @@
 // Headers
 #include "config.h"
 
+#include "ass_dialogue.h"
+#include "ass_file.h"
+#include "ass_override.h"
 #include "export_framerate.h"
 #include "vfr.h"
-#include "ass_file.h"
-#include "ass_dialogue.h"
-#include "ass_override.h"
-
 
 
 /// @brief Constructor 

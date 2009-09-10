@@ -39,17 +39,19 @@
 // Includes
 #include "config.h"
 
+#ifndef AGI_PRE
 #include <wx/settings.h>
-#include "video_slider.h"
-#include "video_display.h"
-#include "video_context.h"
-#include "subs_grid.h"
-#include "ass_dialogue.h"
-#include "vfr.h"
-#include "subs_edit_box.h"
-#include "options.h"
-#include "utils.h"
+#endif
 
+#include "ass_dialogue.h"
+#include "options.h"
+#include "subs_edit_box.h"
+#include "subs_grid.h"
+#include "utils.h"
+#include "vfr.h"
+#include "video_context.h"
+#include "video_display.h"
+#include "video_slider.h"
 
 
 /// @brief Constructor 

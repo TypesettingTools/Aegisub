@@ -39,10 +39,12 @@
 // Headers
 #include "config.h"
 
-#include <wx/stdpaths.h>
+#ifndef AGI_PRE
 #include <wx/filename.h>
-#include "standard_paths.h"
+#include <wx/stdpaths.h>
+#endif
 
+#include "standard_paths.h"
 
 
 /// @brief Get instance 

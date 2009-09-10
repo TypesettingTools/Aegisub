@@ -96,12 +96,22 @@
 #include <wchar.h>
 
 #ifdef __WINDOWS__
+#include <Mmreg.h>
+#include <dsound.h>
 #include <process.h>
 #include <mmsystem.h>
 #include <objbase.h>
+#include <shlobj.h>
 #include <tchar.h>
+#include <vfw.h>
 #include <windef.h>
 #include <windows.h>
+
+#else
+
+#include <sys/fcntl.h>
+#include <sys/mman.h>
+#include <sys/stat.h>
 #endif
 
 /////////////////////

@@ -39,17 +39,20 @@
 // Headers
 #include "config.h"
 
-#include "audio_karaoke.h"
-#include "audio_display.h"
-#include "audio_box.h"
-#include "ass_override.h"
-#include <wx/tokenzr.h>
-#include <wx/menu.h>
-#include <wx/log.h>
-#include <wx/dcclient.h>
-#include <wx/settings.h>
+#ifndef AGI_PRE
 #include <algorithm>
 
+#include <wx/dcclient.h>
+#include <wx/log.h>
+#include <wx/menu.h>
+#include <wx/settings.h>
+#include <wx/tokenzr.h>
+#endif
+
+#include "ass_override.h"
+#include "audio_box.h"
+#include "audio_display.h"
+#include "audio_karaoke.h"
 
 
 /// @brief Empty constructor 

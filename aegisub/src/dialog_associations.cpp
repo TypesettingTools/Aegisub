@@ -39,11 +39,13 @@
 // Headers
 #include "config.h"
 
-#include <wx/sizer.h>
+#ifndef AGI_PRE
 #include <wx/button.h>
 #include <wx/config.h>
-#include "dialog_associations.h"
+#include <wx/sizer.h>
+#endif
 
+#include "dialog_associations.h"
 
 
 /// @brief Constructor 

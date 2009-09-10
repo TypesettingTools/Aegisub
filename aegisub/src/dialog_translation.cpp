@@ -39,23 +39,24 @@
 // Headers
 #include "config.h"
 
+#ifndef AGI_PRE
 #include <wx/settings.h>
-#include "dialog_translation.h"
+#endif
+
 #include "ass_dialogue.h"
 #include "ass_file.h"
-#include "subs_grid.h"
-#include "video_display.h"
-#include "video_context.h"
-#include "subs_edit_box.h"
-#include "options.h"
 #include "audio_display.h"
+#include "dialog_translation.h"
 #include "frame_main.h"
-#include "hotkeys.h"
-#include "utils.h"
 #include "help_button.h"
+#include "hotkeys.h"
 #include "libresrc/libresrc.h"
-
-
+#include "options.h"
+#include "subs_edit_box.h"
+#include "subs_grid.h"
+#include "utils.h"
+#include "video_context.h"
+#include "video_display.h"
 
 
 /// @brief Constructor 

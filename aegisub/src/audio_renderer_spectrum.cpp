@@ -37,20 +37,25 @@
 
 #include "config.h"
 
+#ifndef AGI_PRE
 #include <assert.h>
-#include <vector>
-#include <list>
-#include <utility>
-#include <algorithm>
 #ifdef _OPENMP
 #include <omp.h>
 #endif
+
+#include <algorithm>
+#include <list>
+#include <utility>
+#include <vector>
+
+#include <wx/log.h>
+#endif
+
 #include "audio_renderer_spectrum.h"
-#include "fft.h"
 #include "colorspace.h"
+#include "fft.h"
 #include "options.h"
 #include "utils.h"
-#include <wx/log.h>
 
 
 /// @class AudioSpectrumCache

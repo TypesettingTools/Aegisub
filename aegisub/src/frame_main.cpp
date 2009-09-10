@@ -39,55 +39,56 @@
 // Include headers
 #include "config.h"
 
-#include <wx/sysopt.h>
-#include <wx/mimetype.h>
+#ifndef AGI_PRE
 #include <wx/filename.h>
-#include <wx/tokenzr.h>
 #include <wx/image.h>
+#include <wx/mimetype.h>
 #include <wx/statline.h>
+#include <wx/sysopt.h>
+#include <wx/tokenzr.h>
+#endif
 
-#include "subs_grid.h"
-#include "frame_main.h"
-#ifdef WITH_AVISYNTH
-#include "avisynth_wrap.h"
-#endif
-#include "video_display.h"
-#include "video_context.h"
-#include "video_provider_manager.h"
-#include "video_slider.h"
-#include "ass_file.h"
-#include "dialog_search_replace.h"
-#include "vfr.h"
-#include "subs_edit_box.h"
-#include "options.h"
-#include "main.h"
-#include "version.h"
-#include "dialog_splash.h"
-#include "dialog_tip.h"
-#include "audio_box.h"
-#include "audio_display.h"
-#include "video_box.h"
-#include "drop.h"
-#include "hotkeys.h"
-#include "utils.h"
-#include "text_file_reader.h"
-#include "text_file_writer.h"
-#include "dialog_version_check.h"
-#include "dialog_detached_video.h"
-#include "standard_paths.h"
-#include "keyframe.h"
-#include "help_button.h"
-#include "dialog_styling_assistant.h"
-#ifdef WITH_AUTOMATION
-#include "auto4_base.h"
-#endif
-#include "charset_conv.h"
-#include "libresrc/libresrc.h"
 #ifdef __WXMAC__
 #include <Carbon/Carbon.h>
 #endif
 
-
+#include "ass_file.h"
+#include "audio_box.h"
+#include "audio_display.h"
+#ifdef WITH_AUTOMATION
+#include "auto4_base.h"
+#endif
+#ifdef WITH_AVISYNTH
+#include "avisynth_wrap.h"
+#endif
+#include "charset_conv.h"
+#include "dialog_detached_video.h"
+#include "dialog_search_replace.h"
+#include "dialog_splash.h"
+#include "dialog_styling_assistant.h"
+#include "dialog_tip.h"
+#include "dialog_version_check.h"
+#include "drop.h"
+#include "frame_main.h"
+#include "help_button.h"
+#include "hotkeys.h"
+#include "keyframe.h"
+#include "libresrc/libresrc.h"
+#include "main.h"
+#include "options.h"
+#include "standard_paths.h"
+#include "subs_edit_box.h"
+#include "subs_grid.h"
+#include "text_file_reader.h"
+#include "text_file_writer.h"
+#include "utils.h"
+#include "version.h"
+#include "vfr.h"
+#include "video_box.h"
+#include "video_context.h"
+#include "video_display.h"
+#include "video_provider_manager.h"
+#include "video_slider.h"
 
 
 #ifdef WITH_STARTUPLOG

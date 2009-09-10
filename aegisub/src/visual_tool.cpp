@@ -39,28 +39,31 @@
 // Headers
 #include "config.h"
 
+#ifndef AGI_PRE
 #include <wx/glcanvas.h>
+#endif
+
 #ifdef __APPLE__
 #include <OpenGL/GL.h>
 #else
 #include <GL/gl.h>
 #endif
-#include "visual_tool.h"
-#include "video_display.h"
-#include "video_context.h"
-#include "video_provider_manager.h"
-#include "vfr.h"
-#include "ass_file.h"
-#include "ass_time.h"
+
 #include "ass_dialogue.h"
+#include "ass_file.h"
 #include "ass_override.h"
 #include "ass_style.h"
-#include "subs_grid.h"
+#include "ass_time.h"
+#include "export_visible_lines.h"
 #include "options.h"
 #include "subs_edit_box.h"
-#include "export_visible_lines.h"
+#include "subs_grid.h"
 #include "utils.h"
-
+#include "vfr.h"
+#include "video_context.h"
+#include "video_display.h"
+#include "video_provider_manager.h"
+#include "visual_tool.h"
 
 
 /// @brief Constructor 

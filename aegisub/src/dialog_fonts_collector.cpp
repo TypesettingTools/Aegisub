@@ -39,27 +39,27 @@
 // Includes
 #include "config.h"
 
+#ifndef AGI_PRE
 #include <wx/config.h>
 #include <wx/filename.h>
+#include <wx/fontenum.h>
 #include <wx/wfstream.h>
 #include <wx/zipstrm.h>
-#include <wx/fontenum.h>
-#include "ass_override.h"
-#include "ass_file.h"
+#endif
+
 #include "ass_dialogue.h"
+#include "ass_file.h"
+#include "ass_override.h"
 #include "ass_style.h"
 #include "dialog_fonts_collector.h"
-#include "utils.h"
-#include "options.h"
-#include "frame_main.h"
-#include "subs_grid.h"
 #include "font_file_lister.h"
-#include "utils.h"
+#include "frame_main.h"
 #include "help_button.h"
-#include "scintilla_text_ctrl.h"
 #include "libresrc/libresrc.h"
-
-
+#include "options.h"
+#include "scintilla_text_ctrl.h"
+#include "subs_grid.h"
+#include "utils.h"
 
 
 /// DOCME

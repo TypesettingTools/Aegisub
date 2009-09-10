@@ -39,14 +39,16 @@
 // Includes
 #include "config.h"
 
+#ifndef AGI_PRE
 #include <fstream>
-#include "ass_style_storage.h"
-#include "ass_style.h"
+#endif
+
 #include "ass_file.h"
+#include "ass_style.h"
+#include "ass_style_storage.h"
+#include "standard_paths.h"
 #include "text_file_reader.h"
 #include "text_file_writer.h"
-#include "standard_paths.h"
-
 
 
 /// @brief Save styles to disk 

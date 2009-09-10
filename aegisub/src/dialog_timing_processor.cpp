@@ -38,22 +38,20 @@
 // Includes
 #include "config.h"
 
-#include "dialog_timing_processor.h"
-#include "subs_grid.h"
-#include "ass_file.h"
-#include "options.h"
-#include "validators.h"
-#include "video_display.h"
-#include "video_box.h"
 #include "ass_dialogue.h"
+#include "ass_file.h"
 #include "ass_time.h"
-#include "vfr.h"
-#include "utils.h"
+#include "dialog_timing_processor.h"
 #include "help_button.h"
-#include "video_context.h"
 #include "libresrc/libresrc.h"
-
-
+#include "options.h"
+#include "subs_grid.h"
+#include "utils.h"
+#include "validators.h"
+#include "vfr.h"
+#include "video_box.h"
+#include "video_context.h"
+#include "video_display.h"
 
 
 /// @brief Constructor 

@@ -40,18 +40,23 @@
 
 ///////////
 // Headers
-#include <wx/utils.h>
-#include <wx/choicdlg.h>
-#include <wx/msgdlg.h>
-#include <map>
-#include "include/aegisub/aegisub.h"
-#include "video_provider_ffmpegsource.h"
-#include "video_context.h"
-#include "options.h"
-#include "aegisub_endian.h"
-#ifdef WIN32
+#ifndef AGI_PRE
+#ifdef __WINDOWS__
 #include <objbase.h>
 #endif
+
+#include <map>
+
+#include <wx/choicdlg.h>
+#include <wx/msgdlg.h>
+#include <wx/utils.h>
+#endif
+
+#include "aegisub_endian.h"
+#include "include/aegisub/aegisub.h"
+#include "options.h"
+#include "video_context.h"
+#include "video_provider_ffmpegsource.h"
 
 
 

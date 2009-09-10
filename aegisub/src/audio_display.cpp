@@ -39,30 +39,35 @@
 // Headers
 #include "config.h"
 
-#include <wx/tglbtn.h>
-#include <wx/filename.h>
+#ifndef AGI_PRE
 #include <math.h>
+
 #include <vector>
-#include "audio_display.h"
-#include "audio_provider_stream.h"
-//#include "ass_dialogue.h"
-#include "subs_grid.h"
+
+#include <wx/filename.h>
+#include <wx/tglbtn.h>
+#endif
+
 #include "ass_file.h"
-#include "subs_edit_box.h"
-#include "options.h"
-#include "audio_karaoke.h"
 #include "audio_box.h"
-#include "fft.h"
-#include "video_context.h"
-#include "vfr.h"
-#include "colorspace.h"
-#include "hotkeys.h"
-#include "utils.h"
-#include "timeedit_ctrl.h"
-#include "standard_paths.h"
+#include "audio_display.h"
+#include "audio_karaoke.h"
 #ifdef _DEBUG
 #include "audio_provider_dummy.h"
 #endif
+#include "audio_provider_stream.h"
+#include "colorspace.h"
+#include "fft.h"
+#include "hotkeys.h"
+#include "options.h"
+#include "standard_paths.h"
+#include "subs_edit_box.h"
+#include "subs_grid.h"
+#include "timeedit_ctrl.h"
+#include "utils.h"
+#include "vfr.h"
+#include "video_context.h"
+
 
 
 #ifdef __WXMAC__

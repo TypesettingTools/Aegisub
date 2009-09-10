@@ -39,14 +39,13 @@
 // Headers
 #include "config.h"
 
+#include "ass_dialogue.h"
+#include "dialog_text_import.h"
+#include "options.h"
 #include "subtitle_format_txt.h"
 #include "text_file_reader.h"
 #include "text_file_writer.h"
-#include "ass_dialogue.h"
-#include "options.h"
 #include "version.h"
-#include "dialog_text_import.h"
-
 
 
 /// @brief Can read? 

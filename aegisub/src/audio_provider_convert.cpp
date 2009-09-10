@@ -39,10 +39,9 @@
 // Headers
 #include "config.h"
 
+#include "aegisub_endian.h"
 #include "audio_provider_convert.h"
 #include "audio_provider_downmix.h"
-#include "aegisub_endian.h"
-
 
 
 /// @brief Constructor 

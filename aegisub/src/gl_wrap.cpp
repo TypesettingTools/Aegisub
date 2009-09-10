@@ -39,7 +39,13 @@
 // Headers
 #include "config.h"
 
+#ifndef AGI_PRE
 #include <wx/msgdlg.h>
+#endif
+
+#include "gl_wrap.h"
+#include "options.h"
+
 #ifdef __APPLE__
 #include <OpenGL/GL.h>
 #include <OpenGL/glext.h>
@@ -47,8 +53,6 @@
 #include <GL/gl.h>
 #include "gl/glext.h"
 #endif
-#include "gl_wrap.h"
-#include "options.h"
 
 
 //////////////////////////

@@ -36,10 +36,13 @@
 
 #include "charset_conv.h"
 
-#include <stdint.h>
+#ifndef AGI_PRE
 #include <errno.h>
+#include <stdint.h>
+
 #include <wx/hashmap.h>
 #include <wx/intl.h>
+#endif
 
 WX_DECLARE_STRING_HASH_MAP(wxString, PrettyNamesHash);
 

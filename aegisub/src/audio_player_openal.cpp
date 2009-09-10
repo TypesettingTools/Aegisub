@@ -43,11 +43,11 @@
 ///////////
 // Headers
 #include "audio_player_manager.h"
-#include "audio_provider_manager.h"
-#include "utils.h"
-#include "frame_main.h"
 #include "audio_player_openal.h"
+#include "audio_provider_manager.h"
+#include "frame_main.h"
 #include "options.h"
+#include "utils.h"
 
 #ifdef __WINDOWS__
 #include <al.h>

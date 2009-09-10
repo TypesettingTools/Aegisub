@@ -39,10 +39,12 @@
 // Headers
 #include "config.h"
 
+#ifndef AGI_PRE
+#include <wx/filename.h>
+#endif
+
 #include "drop.h"
 #include "frame_main.h"
-#include <wx/filename.h>
-
 
 
 /// @brief Constructor

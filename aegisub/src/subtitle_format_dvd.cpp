@@ -39,11 +39,12 @@
 // Headers
 #include "config.h"
 
-#include "subtitle_format_dvd.h"
-#include "video_provider_dummy.h"
-#include "subtitles_provider_manager.h"
 #include "ass_dialogue.h"
 #include "ass_file.h"
+#include "subtitle_format_dvd.h"
+#include "subtitles_provider_manager.h"
+#include "video_provider_dummy.h"
+
 
 /// DOCME
 #undef _OPENMP

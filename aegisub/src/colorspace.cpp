@@ -40,7 +40,6 @@
 #include "utils.h"
 
 
-
 /// @brief matrix from http://forum.doom9.org/showthread.php?p=684080#post684080
 /// @param Y 
 /// @param U 

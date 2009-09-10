@@ -41,7 +41,6 @@
 
 #include "string_codec.h"
 
-
 /// @brief DOCME
 /// @param input 
 /// @return 

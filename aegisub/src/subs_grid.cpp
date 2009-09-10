@@ -39,25 +39,29 @@
 // Includes
 #include "config.h"
 
+#ifndef AGI_PRE
 #include <algorithm>
+
 #include <wx/clipbrd.h>
-#include <wx/tokenzr.h>
 #include <wx/filename.h>
-#include "subs_grid.h"
+#include <wx/tokenzr.h>
+#endif
+
 #include "ass_file.h"
+#include "ass_karaoke.h"
+#include "ass_override.h"
 #include "ass_style.h"
-#include "video_display.h"
-#include "video_context.h"
-#include "vfr.h"
-#include "subs_edit_box.h"
-#include "options.h"
+#include "charset_conv.h"
+#include "dialog_paste_over.h"
 #include "frame_main.h"
 #include "hotkeys.h"
+#include "options.h"
+#include "subs_edit_box.h"
+#include "subs_grid.h"
 #include "utils.h"
-#include "ass_override.h"
-#include "dialog_paste_over.h"
-#include "charset_conv.h"
-#include "ass_karaoke.h"
+#include "vfr.h"
+#include "video_context.h"
+#include "video_display.h"
 
 
 ///////////////

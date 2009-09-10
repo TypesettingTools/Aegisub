@@ -39,17 +39,16 @@
 // Headers
 #include "config.h"
 
-#include "visual_tool_drag.h"
-#include "subs_grid.h"
-#include "subs_edit_box.h"
-#include "ass_file.h"
 #include "ass_dialogue.h"
+#include "ass_file.h"
+#include "libresrc/libresrc.h"
+#include "subs_edit_box.h"
+#include "subs_grid.h"
 #include "utils.h"
 #include "vfr.h"
-#include "libresrc/libresrc.h"
 #include "video_context.h"
 #include "video_display.h"
-
+#include "visual_tool_drag.h"
 
 
 ///////

@@ -39,17 +39,20 @@
 // Headers
 #include "config.h"
 
-#include <wx/filename.h>
+
+#ifndef AGI_PRE
 #include <wx/file.h>
 #include <wx/filefn.h>
-#include "dialog_progress.h"
+#include <wx/filename.h>
+#endif
+
 #include "audio_provider_hd.h"
-#include "standard_paths.h"
-#include "options.h"
-#include "utils.h"
+#include "dialog_progress.h"
 #include "frame_main.h"
 #include "main.h"
-
+#include "options.h"
+#include "standard_paths.h"
+#include "utils.h"
 
 
 /// @brief Constructor 

@@ -37,14 +37,16 @@
 
 #include "config.h"
 
-#include "dialog_dummy_video.h"
+#ifndef AGI_PRE
 #include <wx/datetime.h>
-#include <wx/sizer.h>
 #include <wx/log.h>
+#include <wx/sizer.h>
 #include <wx/statline.h>
-#include "options.h"
-#include "help_button.h"
+#endif
 
+#include "dialog_dummy_video.h"
+#include "help_button.h"
+#include "options.h"
 
 
 /// DOCME

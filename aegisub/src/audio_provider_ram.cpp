@@ -39,12 +39,11 @@
 // Headers
 #include "config.h"
 
-#include "dialog_progress.h"
 #include "audio_provider_ram.h"
-#include "utils.h"
+#include "dialog_progress.h"
 #include "frame_main.h"
 #include "main.h"
-
+#include "utils.h"
 
 
 /// DOCME

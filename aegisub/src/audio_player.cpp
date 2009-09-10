@@ -39,8 +39,6 @@
 // Headers
 #include "config.h"
 
-#include "audio_player_manager.h"
-#include "options.h"
 #ifdef WITH_ALSA
 #include "audio_player_alsa.h"
 #endif
@@ -48,8 +46,12 @@
 #include "audio_player_dsound.h"
 #include "audio_player_dsound2.h"
 #endif
+#include "audio_player_manager.h"
 #ifdef WITH_OPENAL
 #include "audio_player_openal.h"
+#endif
+#ifdef WITH_OSS
+#include "audio_player_oss.h"
 #endif
 #ifdef WITH_PORTAUDIO
 #include "audio_player_portaudio.h"
@@ -57,9 +59,7 @@
 #ifdef WITH_PULSEAUDIO
 #include "audio_player_pulse.h"
 #endif
-#ifdef WITH_OSS
-#include "audio_player_oss.h"
-#endif
+#include "options.h"
 
 
 

@@ -40,23 +40,24 @@
 // Headers
 #include "config.h"
 
-#include <vector>
+#ifndef AGI_PRE
 #include <deque>
-#include "dialog_kara_timing_copy.h"
+#include <vector>
+
+#include <wx/string.h>
+#endif
+
 #include "ass_file.h"
-#include "ass_style.h"
+#include "ass_karaoke.h"
 #include "ass_override.h"
+#include "ass_style.h"
+#include "dialog_kara_timing_copy.h"
+#include "help_button.h"
+#include "libresrc/libresrc.h"
 #include "subs_grid.h"
+#include "utils.h"
 #include "validators.h"
 #include "video_context.h"
-#include "utils.h"
-#include "help_button.h"
-#include "ass_karaoke.h"
-#include <wx/string.h>
-#include "libresrc/libresrc.h"
-
-
-
 
 
 /// DOCME

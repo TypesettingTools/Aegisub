@@ -39,19 +39,20 @@
 
 #ifdef WITH_AUTOMATION
 
-#include "main.h"
-#include "dialog_automation.h"
-#include "auto4_base.h"
-#include "options.h"
-#include "utils.h"
-#include "help_button.h"
-#include <wx/filename.h>
+#ifndef AGI_PRE
 #include <wx/filedlg.h>
+#include <wx/filename.h>
 #include <wx/log.h>
 #include <wx/msgdlg.h>
+#endif
+
+#include "auto4_base.h"
+#include "dialog_automation.h"
+#include "help_button.h"
 #include "libresrc/libresrc.h"
-
-
+#include "main.h"
+#include "options.h"
+#include "utils.h"
 
 
 /// @brief DOCME

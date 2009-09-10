@@ -38,14 +38,16 @@
 // Headers
 #include "config.h"
 
+#ifndef AGI_PRE
 #include <wx/msgdlg.h>
-#include "video_context.h"
+#endif
+
 #include "keyframe.h"
+#include "options.h"
 #include "text_file_reader.h"
 #include "text_file_writer.h"
-#include "options.h"
 #include "vfr.h"
-
+#include "video_context.h"
 
 
 /// @brief Load Keyframes 

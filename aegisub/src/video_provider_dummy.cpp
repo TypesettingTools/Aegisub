@@ -39,9 +39,12 @@
 // Headers
 #include "config.h"
 
-#include "video_provider_dummy.h"
-#include "colorspace.h"
+#ifndef AGI_PRE
 #include <wx/tokenzr.h>
+#endif
+
+#include "colorspace.h"
+#include "video_provider_dummy.h"
 
 
 ///////////

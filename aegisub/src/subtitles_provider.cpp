@@ -39,15 +39,14 @@
 // Headers
 #include "config.h"
 
-#include "subtitles_provider_manager.h"
+#include "options.h"
 #ifdef WITH_CSRI
 #include "subtitles_provider_csri.h"
 #endif
 #ifdef WITH_LIBASS
 #include "subtitles_provider_libass.h"
 #endif
-#include "options.h"
-
+#include "subtitles_provider_manager.h"
 
 
 /// @brief Destructor 

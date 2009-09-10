@@ -39,14 +39,13 @@
 // Headers
 #include "config.h"
 
-#include "visual_tool_clip.h"
-#include "subs_grid.h"
-#include "subs_edit_box.h"
-#include "ass_file.h"
 #include "ass_dialogue.h"
+#include "ass_file.h"
+#include "subs_edit_box.h"
+#include "subs_grid.h"
 #include "utils.h"
 #include "video_display.h"
-
+#include "visual_tool_clip.h"
 
 
 /// @brief Constructor 

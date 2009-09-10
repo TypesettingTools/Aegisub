@@ -39,10 +39,12 @@
 // Headers
 #include "config.h"
 
+#ifndef AGI_PRE
 #include <wx/tokenzr.h>
+#endif
+
 #include "spline.h"
 #include "utils.h"
-
 
 
 /// @brief Spline constructor 

@@ -41,16 +41,18 @@
 
 #ifdef WITH_DIRECTSOUND
 
-#include <mmsystem.h>
+#ifndef AGI_PRE
 #include <dsound.h>
+#include <mmsystem.h>
 #include <process.h>
-#include "include/aegisub/audio_provider.h"
-#include "utils.h"
-#include "main.h"
-#include "frame_main.h"
-#include "options.h"
-#include "audio_player_dsound2.h"
+#endif
 
+#include "audio_player_dsound2.h"
+#include "frame_main.h"
+#include "include/aegisub/audio_provider.h"
+#include "main.h"
+#include "options.h"
+#include "utils.h"
 
 
 /// DOCME

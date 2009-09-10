@@ -43,7 +43,6 @@
 #include "options.h"
 
 
-
 /// @brief Constructor 
 /// @param parent    
 /// @param id        

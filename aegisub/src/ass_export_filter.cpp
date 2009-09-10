@@ -43,7 +43,6 @@
 #include "ass_file.h"
 
 
-
 /// @brief Constructor 
 ///
 AssExportFilter::AssExportFilter() {

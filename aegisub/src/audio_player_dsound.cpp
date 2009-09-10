@@ -41,11 +41,11 @@
 
 #ifdef WITH_DIRECTSOUND
 
-#include "utils.h"
-#include "main.h"
-#include "frame_main.h"
-#include "audio_player_dsound.h"
 
+#include "audio_player_dsound.h"
+#include "frame_main.h"
+#include "main.h"
+#include "utils.h"
 
 
 /// @brief Constructor 

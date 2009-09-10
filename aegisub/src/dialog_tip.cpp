@@ -39,11 +39,13 @@
 // Headers
 #include "config.h"
 
-#include <wx/window.h>
+#ifndef AGI_PRE
 #include <wx/msgdlg.h>
+#include <wx/window.h>
+#endif
+
 #include "dialog_tip.h"
 #include "options.h"
-
 
 
 /// @brief Constructor 

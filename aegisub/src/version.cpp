@@ -36,8 +36,11 @@
 
 #include "config.h"
 
-#include <wx/string.h>
+#ifndef AGI_PRE
 #include <wx/datetime.h>
+#include <wx/string.h>
+#endif
+
 #include "version.h"
 
 #ifdef __WINDOWS__

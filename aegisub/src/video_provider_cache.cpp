@@ -42,7 +42,6 @@
 #include "video_provider_cache.h"
 
 
-
 /// @brief Constructor 
 /// @param parent 
 ///

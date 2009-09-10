@@ -39,22 +39,24 @@
 // Includes
 #include "config.h"
 
-#include <string>
-#include <wx/filename.h>
+#ifndef AGI_PRE
 #include <fstream>
-#include <wx/intl.h>
-#include <wx/settings.h>
-#include <wx/filefn.h>
-#include <wx/utils.h>
-#include <wx/msgdlg.h>
-#include <wx/stopwatch.h>
+#include <string>
 
+#include <wx/filefn.h>
+#include <wx/filename.h>
+#include <wx/intl.h>
+#include <wx/msgdlg.h>
+#include <wx/settings.h>
+#include <wx/stopwatch.h>
+#include <wx/utils.h>
+#endif
+
+#include "colorspace.h"
 #include "options.h"
 #include "text_file_reader.h"
 #include "text_file_writer.h"
-#include "colorspace.h"
 #include "utils.h"
-
 
 
 /// @brief Constructor 

@@ -40,13 +40,16 @@
 #include "config.h"
 
 #ifdef WITH_UNIVCHARDET
+#ifndef AGI_PRE
 #include <list>
-#include <wx/intl.h>
-#include <wx/choicdlg.h>
 
-#include "text_file_reader.h"
-#include "charset_detect.h"
+#include <wx/choicdlg.h>
+#include <wx/intl.h>
+#endif
+
 #include "../universalchardet/nsCharSetProber.h"
+#include "charset_detect.h"
+#include "text_file_reader.h"
 
 
 

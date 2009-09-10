@@ -39,39 +39,42 @@
 // Headers
 #include "config.h"
 
-#include "dialog_options.h"
-#if wxUSE_TREEBOOK
-#include <wx/treebook.h>
-#else
-
-/// DOCME
-#define AddSubPage(page,text,select) AddPage(page,wxString::Format(_T("\t%s"),text),select)
-#endif
-#include "options.h"
+#ifndef AGI_PRE
+#include <wx/filefn.h>
 #include <wx/spinctrl.h>
 #include <wx/stdpaths.h>
-#include <wx/filefn.h>
-#include "frame_main.h"
-#include "standard_paths.h"
-#include "validators.h"
+#if wxUSE_TREEBOOK
+#include <wx/treebook.h>
+#endif
+#endif
+
+#include "audio_box.h"
+#include "audio_display.h"
+#include "browse_button.h"
 #include "colour_button.h"
+#include "dialog_options.h"
+#include "frame_main.h"
+#include "help_button.h"
+#include "libresrc/libresrc.h"
+#include "options.h"
+#include "standard_paths.h"
 #include "subs_edit_box.h"
 #include "subs_edit_ctrl.h"
 #include "subs_grid.h"
-#include "video_box.h"
-#include "video_slider.h"
-#include "video_provider_manager.h"
 #include "subtitles_provider_manager.h"
-#include "audio_box.h"
-#include "audio_display.h"
-#include "video_context.h"
-#include "browse_button.h"
 #include "tooltip_manager.h"
 #include "utils.h"
-#include "help_button.h"
-#include "libresrc/libresrc.h"
+#include "validators.h"
+#include "video_box.h"
+#include "video_context.h"
+#include "video_provider_manager.h"
+#include "video_slider.h"
 
 
+#if wxUSE_TREEBOOK
+/// DOCME
+#define AddSubPage(page,text,select) AddPage(page,wxString::Format(_T("\t%s"),text),select)
+#endif
 
 ///////
 // IDs

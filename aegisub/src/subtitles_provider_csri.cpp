@@ -42,10 +42,9 @@
 
 #ifdef WITH_CSRI
 
-#include "subtitles_provider_csri.h"
 #include "ass_file.h"
+#include "subtitles_provider_csri.h"
 #include "video_context.h"
-
 
 
 /// @brief Constructor 

@@ -39,25 +39,27 @@
 // Includes
 #include "config.h"
 
-#include <list>
+#ifndef AGI_PRE
 #include <fstream>
+#include <list>
+
 #include <wx/filename.h>
 #include <wx/log.h>
 #include <wx/msgdlg.h>
-#include "ass_file.h"
-#include "ass_dialogue.h"
-#include "ass_style.h"
+#endif
+
 #include "ass_attachment.h"
-#include "ass_override.h"
+#include "ass_dialogue.h"
 #include "ass_exporter.h"
-#include "vfr.h"
+#include "ass_file.h"
+#include "ass_override.h"
+#include "ass_style.h"
 #include "options.h"
+#include "subtitle_format.h"
 #include "text_file_reader.h"
 #include "text_file_writer.h"
 #include "version.h"
-#include "subtitle_format.h"
-
-
+#include "vfr.h"
 
 /// @brief AssFile constructor  AssFile //////////////////////
 ///

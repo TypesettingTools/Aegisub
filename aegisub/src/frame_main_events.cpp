@@ -39,60 +39,62 @@
 // Include headers
 #include "config.h"
 
-#include <wx/mimetype.h>
+#ifndef AGI_PRE
+#include <wx/clipbrd.h>
 #include <wx/filename.h>
-#include <wx/tglbtn.h>
+#include <wx/mimetype.h>
 #include <wx/rawbmp.h>
 #include <wx/stdpaths.h>
 #include <wx/sysopt.h>
-#include <wx/clipbrd.h>
-#include "subs_grid.h"
-#include "frame_main.h"
-#include "video_display.h"
-#include "video_context.h"
-#include "video_slider.h"
-#include "video_box.h"
-#include "ass_file.h"
+#include <wx/tglbtn.h>
+#endif
+
 #include "ass_dialogue.h"
-#include "dialog_style_manager.h"
-#include "dialog_translation.h"
-#include "dialog_jumpto.h"
-#include "dialog_shift_times.h"
-#include "dialog_search_replace.h"
-#include "vfr.h"
-#include "subs_edit_box.h"
-#include "options.h"
-#include "dialog_properties.h"
-#include "dialog_attachments.h"
-#include "main.h"
-#include "dialog_fonts_collector.h"
-#include "dialog_about.h"
-#include "dialog_export.h"
+#include "ass_file.h"
 #include "audio_box.h"
-#include "dialog_selection.h"
-#include "dialog_styling_assistant.h"
-#include "dialog_resample.h"
-#include "dialog_kara_timing_copy.h"
 #include "audio_display.h"
-#include "toggle_bitmap.h"
-#include "dialog_timing_processor.h"
-#include "dialog_progress.h"
-#include "dialog_options.h"
-#include "utils.h"
 #ifdef WITH_AUTOMATION
 #include "auto4_base.h"
 #endif
-#include "dialog_automation.h"
-#include "dialog_version_check.h"
-#include "dialog_dummy_video.h"
-#include "dialog_spellchecker.h"
-#include "dialog_associations.h"
-#include "standard_paths.h"
-#include "dialog_video_details.h"
-#include "keyframe.h"
 #include "charset_conv.h"
+#include "dialog_about.h"
+#include "dialog_associations.h"
+#include "dialog_attachments.h"
+#include "dialog_automation.h"
+#include "dialog_dummy_video.h"
+#include "dialog_export.h"
+#include "dialog_fonts_collector.h"
+#include "dialog_jumpto.h"
+#include "dialog_kara_timing_copy.h"
+#include "dialog_options.h"
+#include "dialog_progress.h"
+#include "dialog_properties.h"
+#include "dialog_resample.h"
+#include "dialog_search_replace.h"
+#include "dialog_selection.h"
+#include "dialog_shift_times.h"
+#include "dialog_spellchecker.h"
+#include "dialog_style_manager.h"
+#include "dialog_styling_assistant.h"
+#include "dialog_timing_processor.h"
+#include "dialog_translation.h"
+#include "dialog_version_check.h"
+#include "dialog_video_details.h"
+#include "frame_main.h"
+#include "keyframe.h"
 #include "libresrc/libresrc.h"
-
+#include "main.h"
+#include "options.h"
+#include "standard_paths.h"
+#include "subs_edit_box.h"
+#include "subs_grid.h"
+#include "toggle_bitmap.h"
+#include "utils.h"
+#include "vfr.h"
+#include "video_box.h"
+#include "video_context.h"
+#include "video_display.h"
+#include "video_slider.h"
 
 
 ////////////////////

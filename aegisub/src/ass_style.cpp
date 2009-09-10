@@ -38,11 +38,15 @@
 // Includes
 #include "config.h"
 
-#include <wx/tokenzr.h>
+#ifndef AGI_PRE
+#include <ctype.h>
+
 #include <wx/intl.h>
+#include <wx/tokenzr.h>
+#endif
+
 #include "ass_style.h"
 #include "utils.h"
-#include <ctype.h>
 
 
 /// @brief Constructors  AssColor //////////////////////////

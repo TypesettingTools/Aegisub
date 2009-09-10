@@ -39,13 +39,15 @@
 // Headers
 #include "config.h"
 
-#include <wx/filedlg.h>
+#ifndef AGI_PRE
 #include <wx/dirdlg.h>
+#include <wx/filedlg.h>
 #include <wx/fontdlg.h>
-#include "browse_button.h"
-#include "utils.h"
-#include "standard_paths.h"
+#endif
 
+#include "browse_button.h"
+#include "standard_paths.h"
+#include "utils.h"
 
 
 /// @brief Constructor 

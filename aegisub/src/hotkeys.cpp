@@ -39,15 +39,17 @@
 // Headers
 #include "config.h"
 
-#include "hotkeys.h"
+#ifndef AGI_PRE
 #include <fstream>
+
+#include <wx/accel.h>
+#include <wx/filename.h>
+#include <wx/log.h>
+#endif
+
+#include "hotkeys.h"
 #include "text_file_reader.h"
 #include "text_file_writer.h"
-#include <wx/filename.h>
-#include <wx/accel.h>
-#include <wx/log.h>
-
-
 
 
 /// @brief Constructors  HotkeyType //////////////////////////////////

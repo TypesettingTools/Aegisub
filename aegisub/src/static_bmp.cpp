@@ -39,9 +39,11 @@
 // Includes
 #include "config.h"
 
+#ifndef AGI_PRE
 #include <wx/dcclient.h>
-#include "static_bmp.h"
+#endif
 
+#include "static_bmp.h"
 
 
 /// @brief Constructor 

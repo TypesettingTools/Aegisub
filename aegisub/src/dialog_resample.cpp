@@ -39,20 +39,18 @@
 // Headers
 #include "config.h"
 
-#include "dialog_resample.h"
-#include "ass_file.h"
 #include "ass_dialogue.h"
-#include "ass_style.h"
+#include "ass_file.h"
 #include "ass_override.h"
-#include "subs_grid.h"
-#include "validators.h"
-#include "video_context.h"
-#include "utils.h"
-#include "subs_edit_box.h"
+#include "ass_style.h"
+#include "dialog_resample.h"
 #include "help_button.h"
 #include "libresrc/libresrc.h"
-
-
+#include "subs_edit_box.h"
+#include "subs_grid.h"
+#include "utils.h"
+#include "validators.h"
+#include "video_context.h"
 
 
 /// @brief Constructor 

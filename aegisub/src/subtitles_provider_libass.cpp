@@ -41,19 +41,23 @@
 
 #ifdef WITH_LIBASS
 
-#include "subtitles_provider_libass.h"
-#include "ass_file.h"
-#include "video_context.h"
-#include "utils.h"
-#include "standard_paths.h"
+#ifndef AGI_PRE
 #include <wx/filefn.h>
+#endif
 
 #ifdef __APPLE__
 extern "C" {
-#include "libosxutil/libosxutil.h"
 #include <sys/param.h>
+#include "libosxutil/libosxutil.h"
 }
 #endif
+
+#include "ass_file.h"
+#include "standard_paths.h"
+#include "subtitles_provider_libass.h"
+#include "utils.h"
+#include "video_context.h"
+
 
 
 /// @brief Constructor

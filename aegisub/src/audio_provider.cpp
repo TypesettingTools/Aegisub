@@ -39,22 +39,26 @@
 // Headers
 #include "config.h"
 
+#ifndef AGI_PRE
 #include <wx/thread.h>
-#include "audio_provider_ram.h"
-#include "audio_provider_hd.h"
-#include "audio_provider_pcm.h"
-#include "audio_provider_convert.h"
+#endif
+
+#include "audio_display.h"
 #ifdef WITH_AVISYNTH
 #include "audio_provider_avs.h"
 #endif
+#include "audio_provider_convert.h"
 #ifdef WITH_FFMPEGSOURCE
 #include "audio_provider_ffmpegsource.h"
 #endif
+#include "audio_provider_hd.h"
+#include "audio_provider_pcm.h"
 #ifdef WITH_QUICKTIME
 #include "audio_provider_quicktime.h"
 #endif
+#include "audio_provider_ram.h"
 #include "options.h"
-#include "audio_display.h"
+
 
 
 

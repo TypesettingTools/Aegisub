@@ -39,26 +39,28 @@
 // Includes
 #include "config.h"
 
-#include <wx/fontdlg.h>
+#ifndef AGI_PRE
 #include <wx/colordlg.h>
+#include <wx/fontdlg.h>
 #include <wx/fontenum.h>
-#include "dialog_style_editor.h"
+#endif
+
 #include "ass_dialogue.h"
-#include "ass_style.h"
 #include "ass_file.h"
 #include "ass_override.h"
-#include "validators.h"
-#include "subs_grid.h"
-#include "utils.h"
-#include "dialog_colorpicker.h"
-#include "colour_button.h"
-#include "subs_preview.h"
-#include "options.h"
-#include "subtitles_provider_manager.h"
+#include "ass_style.h"
 #include "ass_style_storage.h"
+#include "colour_button.h"
+#include "dialog_colorpicker.h"
+#include "dialog_style_editor.h"
 #include "help_button.h"
 #include "libresrc/libresrc.h"
-
+#include "options.h"
+#include "subs_grid.h"
+#include "subs_preview.h"
+#include "subtitles_provider_manager.h"
+#include "utils.h"
+#include "validators.h"
 
 
 ///////

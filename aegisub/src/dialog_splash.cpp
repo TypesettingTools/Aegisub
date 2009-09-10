@@ -39,15 +39,16 @@
 // Includes
 #include "config.h"
 
-#include <wx/string.h>
-#include <wx/display.h>
+#ifndef AGI_PRE
 #include <wx/dcclient.h>
+#include <wx/display.h>
+#include <wx/string.h>
+#endif
+
 #include "dialog_splash.h"
-#include "options.h"
 #include "dialog_tip.h"
 #include "libresrc/libresrc.h"
-
-
+#include "options.h"
 
 
 /// @brief Constructor 

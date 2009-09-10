@@ -39,31 +39,31 @@
 // Includes
 #include "config.h"
 
-#include <wx/mimetype.h>
+#ifndef AGI_PRE
 #include <wx/filename.h>
-#include <wx/tglbtn.h>
-#include <wx/statline.h>
+#include <wx/mimetype.h>
 #include <wx/rawbmp.h>
-#include "video_box.h"
-#include "video_display.h"
-#include "video_context.h"
-#include "video_slider.h"
-#include "frame_main.h"
-#include "toggle_bitmap.h"
-#include "options.h"
-#include "subs_grid.h"
-#include "video_provider_manager.h"
-#include "ass_file.h"
+#include <wx/statline.h>
+#include <wx/tglbtn.h>
+#endif
+
 #include "ass_dialogue.h"
-#include "vfr.h"
-#include "subs_edit_box.h"
-#include "utils.h"
-#include "toggle_bitmap.h"
-#include "visual_tool.h"
+#include "ass_file.h"
+#include "frame_main.h"
 #include "help_button.h"
 #include "libresrc/libresrc.h"
-
-
+#include "options.h"
+#include "subs_edit_box.h"
+#include "subs_grid.h"
+#include "toggle_bitmap.h"
+#include "utils.h"
+#include "vfr.h"
+#include "video_box.h"
+#include "video_context.h"
+#include "video_display.h"
+#include "video_provider_manager.h"
+#include "video_slider.h"
+#include "visual_tool.h"
 
 
 /// @brief Constructor 

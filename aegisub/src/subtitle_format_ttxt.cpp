@@ -39,11 +39,10 @@
 // Headers
 #include "config.h"
 
-#include "subtitle_format_ttxt.h"
-#include "ass_time.h"
 #include "ass_file.h"
+#include "ass_time.h"
 #include "options.h"
-
+#include "subtitle_format_ttxt.h"
 
 
 /// @brief Get format name 

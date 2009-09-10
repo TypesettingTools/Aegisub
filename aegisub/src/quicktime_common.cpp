@@ -35,10 +35,8 @@
 ///
 
 
-#include "quicktime_common.h"
-
 #ifdef WITH_QUICKTIME
-
+#include "quicktime_common.h"
 
 
 /// DOCME

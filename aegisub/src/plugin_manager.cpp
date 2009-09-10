@@ -39,13 +39,12 @@
 // Headers
 #include "config.h"
 
-#include "plugin_manager.h"
-#include "video_provider_manager.h"
-#include "audio_provider_manager.h"
 #include "audio_player_manager.h"
-#include "subtitles_provider_manager.h"
+#include "audio_provider_manager.h"
+#include "plugin_manager.h"
 #include "spellchecker_manager.h"
-
+#include "subtitles_provider_manager.h"
+#include "video_provider_manager.h"
 
 
 /// @brief Constructor 

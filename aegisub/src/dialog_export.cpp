@@ -39,17 +39,19 @@
 // Headers
 #include "config.h"
 
-#include <wx/tokenzr.h>
+#ifndef AGI_PRE
 #include <wx/button.h>
-#include <wx/stattext.h>
 #include <wx/filedlg.h>
 #include <wx/msgdlg.h>
-#include "dialog_export.h"
-#include "ass_file.h"
-#include "ass_exporter.h"
-#include "charset_conv.h"
-#include "help_button.h"
+#include <wx/stattext.h>
+#include <wx/tokenzr.h>
+#endif
 
+#include "ass_exporter.h"
+#include "ass_file.h"
+#include "charset_conv.h"
+#include "dialog_export.h"
+#include "help_button.h"
 
 
 /// @brief Constructor 

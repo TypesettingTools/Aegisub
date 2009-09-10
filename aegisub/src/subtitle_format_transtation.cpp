@@ -39,14 +39,16 @@
 // Headers
 #include "config.h"
 
+#ifndef AGI_PRE
+#include <stdio.h>
+#endif
+
 #include "ass_dialogue.h"
 #include "ass_file.h"
 #include "ass_style.h"
 #include "ass_time.h"
 #include "subtitle_format_transtation.h"
 #include "text_file_writer.h"
-#include <stdio.h>
-
 
 
 /// @brief Name 

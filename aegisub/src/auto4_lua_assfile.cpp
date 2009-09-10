@@ -38,24 +38,29 @@
 
 #ifdef WITH_AUTO4_LUA
 
-#include "auto4_lua.h"
+#ifndef AGI_PRE
+#include <assert.h>
+
+#include <algorithm>
+
+#include <wx/log.h>
+#endif
+
 #include "ass_dialogue.h"
-#include "ass_style.h"
 #include "ass_file.h"
 #include "ass_override.h"
+#include "ass_style.h"
+#include "auto4_lua.h"
 #include "utils.h"
 
+// This must be below the headers above.
 #ifdef __WINDOWS__
 #include "../../contrib/lua51/src/lualib.h"
 #include "../../contrib/lua51/src/lauxlib.h"
 #else
-#include "lualib.h"
-#include "lauxlib.h"
+#include <lualib.h>
+#include <lauxlib.h>
 #endif
-
-#include <wx/log.h>
-#include <assert.h>
-#include <algorithm>
 
 
 /// DOCME

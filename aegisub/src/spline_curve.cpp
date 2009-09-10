@@ -43,7 +43,6 @@
 #include "utils.h"
 
 
-
 /// @brief Curve constructor 
 ///
 SplineCurve::SplineCurve() {

@@ -39,18 +39,19 @@
 // Includes
 #include "config.h"
 
-#include <wx/statline.h>
-#include <wx/stattext.h>
-#include <wx/sizer.h>
+#ifndef AGI_PRE
 #include <wx/button.h>
 #include <wx/panel.h>
+#include <wx/sizer.h>
+#include <wx/statline.h>
+#include <wx/stattext.h>
 #include <wx/textctrl.h>
+#endif
+
 #include "dialog_about.h"
-#include "version.h"
-#include "options.h"
 #include "libresrc/libresrc.h"
-
-
+#include "options.h"
+#include "version.h"
 
 
 /// @brief Constructor

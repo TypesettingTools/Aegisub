@@ -39,17 +39,19 @@
 // Headers
 #include "config.h"
 
+#ifndef AGI_PRE
+#include <wx/button.h>
 #include <wx/dialog.h>
+#include <wx/sizer.h>
 #include <wx/stattext.h>
 #include <wx/textctrl.h>
-#include <wx/sizer.h>
-#include <wx/button.h>
+#endif
+
 #include "dialog_jumpto.h"
+#include "libresrc/libresrc.h"
+#include "utils.h"
 #include "vfr.h"
 #include "video_context.h"
-#include "utils.h"
-#include "libresrc/libresrc.h"
-
 
 
 ///////

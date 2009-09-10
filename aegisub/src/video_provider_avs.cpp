@@ -40,19 +40,20 @@
 #include "config.h"
 
 #ifdef WITH_AVISYNTH
+#ifndef AGI_PRE
 #include <wx/filename.h>
 #include <wx/msw/registry.h>
-#include <wx/filename.h>
-#include "video_provider_avs.h"
-#include "video_context.h"
+#endif
+
+#include "charset_conv.h"
+#include "gl_wrap.h"
+#include "mkv_wrap.h"
 #include "options.h"
 #include "standard_paths.h"
 #include "vfr.h"
-#include "gl_wrap.h"
-#include "mkv_wrap.h"
 #include "vfw_wrap.h"
-#include "charset_conv.h"
-
+#include "video_context.h"
+#include "video_provider_avs.h"
 
 
 /// @brief Constructor 

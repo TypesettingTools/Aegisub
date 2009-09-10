@@ -42,7 +42,6 @@
 #include "audio_provider_downmix.h"
 
 
-
 /// @brief Constructor 
 /// @param source 
 ///

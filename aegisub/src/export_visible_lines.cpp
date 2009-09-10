@@ -39,12 +39,11 @@
 // Headers
 #include "config.h"
 
-#include "export_visible_lines.h"
-#include "ass_file.h"
 #include "ass_dialogue.h"
+#include "ass_file.h"
 #include "ass_override.h"
+#include "export_visible_lines.h"
 #include "vfr.h"
-
 
 
 /// @brief Constructor 

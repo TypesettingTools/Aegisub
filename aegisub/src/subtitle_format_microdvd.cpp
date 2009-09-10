@@ -39,14 +39,16 @@
 // Headers
 #include "config.h"
 
-#include "subtitle_format_microdvd.h"
+#ifndef AGI_PRE
+#include <wx/regex.h>
+#endif
+
 #include "ass_dialogue.h"
 #include "ass_time.h"
+#include "subtitle_format_microdvd.h"
 #include "text_file_reader.h"
 #include "text_file_writer.h"
 #include "vfr.h"
-#include <wx/regex.h>
-
 
 
 /// @brief Get format name 

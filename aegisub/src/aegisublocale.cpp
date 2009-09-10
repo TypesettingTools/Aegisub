@@ -39,15 +39,18 @@
 // Headers
 #include "config.h"
 
-#include <wx/intl.h>
+#ifndef AGI_PRE
 #include <locale.h>
+
+#include <wx/choicdlg.h>
 #include <wx/dir.h>
 #include <wx/filename.h>
-#include <wx/choicdlg.h>
+#include <wx/intl.h>
+#include <wx/stdpaths.h>
+#endif
+
 #include "aegisublocale.h"
 #include "standard_paths.h"
-#include <wx/stdpaths.h>
-
 
 /// @brief Constructor 
 ///

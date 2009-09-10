@@ -39,18 +39,20 @@
 // Headers
 #include "config.h"
 
-#include <wx/string.h>
+#ifndef AGI_PRE
 #include <wx/regex.h>
-#include "dialog_search_replace.h"
-#include "ass_file.h"
+#include <wx/string.h>
+#endif
+
 #include "ass_dialogue.h"
-#include "subs_grid.h"
-#include "options.h"
-#include "subs_edit_box.h"
-#include "video_display.h"
+#include "ass_file.h"
+#include "dialog_search_replace.h"
 #include "frame_main.h"
 #include "main.h"
-
+#include "options.h"
+#include "subs_edit_box.h"
+#include "subs_grid.h"
+#include "video_display.h"
 
 
 /// @brief Constructor 

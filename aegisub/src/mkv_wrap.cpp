@@ -39,17 +39,21 @@
 // Headers
 #include "config.h"
 
-#include <algorithm>
+#ifndef AGI_PRE
 #include <errno.h>
 #include <stdint.h>
-#include <wx/tokenzr.h>
+
+#include <algorithm>
+
 #include <wx/choicdlg.h>
 #include <wx/filename.h>
-#include "mkv_wrap.h"
-#include "dialog_progress.h"
+#include <wx/tokenzr.h>
+#endif
+
 #include "ass_file.h"
 #include "ass_time.h"
-
+#include "dialog_progress.h"
+#include "mkv_wrap.h"
 
 
 /// DOCME

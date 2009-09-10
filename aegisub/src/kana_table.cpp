@@ -40,7 +40,6 @@
 #include "kana_table.h"
 
 
-
 /// @brief Constructor
 KanaTable::KanaTable()
 {

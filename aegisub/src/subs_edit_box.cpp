@@ -39,33 +39,34 @@
 // Includes
 #include "config.h"
 
+#ifndef AGI_PRE
 #include <wx/colordlg.h>
 #include <wx/fontdlg.h>
+#endif
+
+#include "ass_dialogue.h"
+#include "ass_file.h"
+#include "ass_override.h"
+#include "ass_style.h"
+#include "audio_display.h"
+#include "dialog_colorpicker.h"
+#include "dialog_search_replace.h"
+#include "frame_main.h"
+#include "hilimod_textctrl.h"
+#include "idle_field_event.h"
+#include "libresrc/libresrc.h"
+#include "main.h"
+#include "options.h"
 #include "subs_edit_box.h"
 #include "subs_edit_ctrl.h"
 #include "subs_grid.h"
-#include "ass_file.h"
-#include "ass_dialogue.h"
-#include "ass_style.h"
-#include "ass_override.h"
 #include "timeedit_ctrl.h"
-#include "vfr.h"
-#include "options.h"
-#include "audio_display.h"
-#include "hilimod_textctrl.h"
-#include "video_display.h"
-#include "video_context.h"
-#include "validators.h"
-#include "dialog_colorpicker.h"
-#include "main.h"
-#include "frame_main.h"
-#include "utils.h"
-#include "dialog_search_replace.h"
-#include "idle_field_event.h"
 #include "tooltip_manager.h"
-#include "libresrc/libresrc.h"
-
-
+#include "utils.h"
+#include "validators.h"
+#include "vfr.h"
+#include "video_context.h"
+#include "video_display.h"
 
 
 /// @brief Constructor 

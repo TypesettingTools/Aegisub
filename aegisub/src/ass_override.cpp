@@ -39,11 +39,13 @@
 // Includes
 #include "config.h"
 
+#ifndef AGI_PRE
+#include <wx/log.h>
+#include <wx/tokenzr.h>
+#endif
+
 #include "ass_dialogue.h"
 #include "ass_override.h"
-#include <wx/tokenzr.h>
-#include <wx/log.h>
-
 
 
 /// @brief Constructor  AssOverrideParameter //////////////////////

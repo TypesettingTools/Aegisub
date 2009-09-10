@@ -40,14 +40,17 @@
 
 ///////////
 // Headers
-#include "include/aegisub/aegisub.h"
-#include "audio_provider_ffmpegsource.h"
-#include "options.h"
-#include <map>
+#ifndef AGI_PRE
 #ifdef WIN32
 #include <objbase.h>
 #endif
 
+#include <map>
+#endif
+
+#include "audio_provider_ffmpegsource.h"
+#include "include/aegisub/aegisub.h"
+#include "options.h"
 
 
 /// @brief Constructor 

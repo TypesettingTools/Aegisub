@@ -43,7 +43,6 @@
 #include "thesaurus_myspell.h"
 
 
-
 /// @brief Get spell checker 
 ///
 Thesaurus *Thesaurus::GetThesaurus() {

@@ -39,14 +39,16 @@
 // Headers
 #include "config.h"
 
+#ifndef AGI_PRE
 #include <wx/button.h>
 #include <wx/sizer.h>
+#endif
+
 #include "dialog_progress.h"
 #include "utils.h"
 
 
 DEFINE_EVENT_TYPE(wxEVT_PROGRESS_UPDATE)
-
 
 
 /// @brief Constructor 

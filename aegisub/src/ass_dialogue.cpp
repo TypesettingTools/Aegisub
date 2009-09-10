@@ -41,16 +41,15 @@
 
 #ifndef AGI_PRE
 #include <fstream>
+
 #include <wx/regex.h>
 #include <wx/tokenzr.h>
 #endif
 
 #include "ass_dialogue.h"
 #include "ass_override.h"
-#include "vfr.h"
 #include "utils.h"
-
-
+#include "vfr.h"
 
 /// @brief Constructs AssDialogue AssDialogue //////////////////////
 ///

@@ -36,10 +36,13 @@
 
 #include "config.h"
 
+#ifndef AGI_PRE
 #include <fstream>
-#include "text_file_writer.h"
-#include "options.h"
+#endif
+
 #include "charset_conv.h"
+#include "options.h"
+#include "text_file_writer.h"
 
 
 /// @brief DOCME

@@ -39,21 +39,24 @@
 // Headers
 #include "config.h"
 
+#ifndef AGI_PRE
 #include <math.h>
-#include <wx/tglbtn.h>
-#include <wx/statline.h>
+
 #include <wx/laywin.h>
 #include <wx/recguard.h>
+#include <wx/statline.h>
+#include <wx/tglbtn.h>
+#endif
+
 #include "audio_box.h"
 #include "audio_display.h"
 #include "audio_karaoke.h"
 #include "frame_main.h"
+#include "hotkeys.h"
+#include "libresrc/libresrc.h"
 #include "options.h"
 #include "toggle_bitmap.h"
-#include "hotkeys.h"
 #include "tooltip_manager.h"
-#include "libresrc/libresrc.h"
-
 
 
 /// @brief Constructor 

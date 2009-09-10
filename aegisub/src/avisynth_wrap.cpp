@@ -45,8 +45,10 @@
 #include "options.h"
 
 #ifdef DEBUG_AVISYNTH_CODE
-#include "main.h"
+#ifndef AGI_PRE
 #include <wx/textfile.h>
+#endif
+#include "main.h"
 
 /// DOCME
 wxTextFile avs_trace_file;

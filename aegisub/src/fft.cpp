@@ -41,9 +41,11 @@
 // Headers
 #include "config.h"
 
-#include "fft.h"
+#ifndef AGI_PRE
 #include <math.h>
+#endif
 
+#include "fft.h"
 
 
 /// @brief Transform 

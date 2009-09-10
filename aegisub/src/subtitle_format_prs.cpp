@@ -40,27 +40,29 @@
 #include "config.h"
 
 #if USE_PRS == 1
+#ifndef AGI_PRE
+#include <wx/docview.h>
+#include <wx/filename.h>
 #include <wx/image.h>
 #include <wx/mstream.h>
-#include <wx/filename.h>
-#include <wx/docview.h>
-#include "subtitle_format_prs.h"
-#include "ass_file.h"
+#endif
+
+#include "../prs/prs.h"
 #include "ass_dialogue.h"
+#include "ass_file.h"
 #include "ass_override.h"
 #include "avisynth_wrap.h"
+#include "charset_conv.h"
+#include "dialog_progress.h"
+#include "frame_main.h"
+#include "main.h"
+#include "md5.h"
+#include "subtitle_format_prs.h"
+#include "utils.h"
+#include "vfr.h"
 #include "video_box.h"
 #include "video_display.h"
 #include "video_provider.h"
-#include "main.h"
-#include "frame_main.h"
-#include "vfr.h"
-#include "utils.h"
-#include "md5.h"
-#include "dialog_progress.h"
-#include "charset_conv.h"
-#include "../prs/prs.h"
-
 
 
 /// @brief Can write to file? 

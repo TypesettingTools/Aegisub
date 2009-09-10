@@ -36,29 +36,31 @@
 
 #include "config.h"
 
-#include <wx/image.h>
-#include <wx/statbox.h>
-#include <wx/stattext.h>
-#include <wx/sizer.h>
-#include <wx/gbsizer.h>
-#include <wx/event.h>
-#include <wx/tokenzr.h>
+#ifndef AGI_PRE
+#include <stdio.h>
+
+#include <wx/clipbrd.h>
+#include <wx/dataobj.h>
 #include <wx/dcclient.h>
 #include <wx/dcmemory.h>
 #include <wx/dcscreen.h>
+#include <wx/event.h>
+#include <wx/gbsizer.h>
+#include <wx/image.h>
 #include <wx/settings.h>
-#include <wx/clipbrd.h>
-#include <wx/dataobj.h>
-#include "dialog_colorpicker.h"
-#include "colorspace.h"
+#include <wx/sizer.h>
+#include <wx/statbox.h>
+#include <wx/stattext.h>
+#include <wx/tokenzr.h>
+#endif
+
 #include "ass_style.h"
-#include "options.h"
+#include "colorspace.h"
+#include "dialog_colorpicker.h"
 #include "help_button.h"
-#include "utils.h"
 #include "libresrc/libresrc.h"
-
-
-#include <stdio.h>
+#include "options.h"
+#include "utils.h"
 
 
 #ifdef WIN32

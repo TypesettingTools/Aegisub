@@ -34,10 +34,10 @@
 /// @ingroup video_input quicktime
 ///
 
-#include "video_provider_quicktime.h"
 
 #ifdef WITH_QUICKTIME
 #include "aegisub_endian.h"
+#include "video_provider_quicktime.h"
 
 // this function has a different name on win32 because the original name
 // conflicts with a windows api function

@@ -39,11 +39,10 @@
 // Headers
 #include "config.h"
 
-#include "ass_dialogue.h"
-#include "ass_style.h"
 #include "ass_attachment.h"
+#include "ass_dialogue.h"
 #include "ass_entry.h"
-
+#include "ass_style.h"
 
 
 /// @brief Constructs AssEntry  AssEntry //////////////////////

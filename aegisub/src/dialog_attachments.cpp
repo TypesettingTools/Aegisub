@@ -39,21 +39,22 @@
 // Headers
 #include "config.h"
 
-#include <wx/listctrl.h>
+#ifndef AGI_PRE
+#include <wx/button.h>
 #include <wx/dirdlg.h>
 #include <wx/filedlg.h>
 #include <wx/filename.h>
-#include <wx/button.h>
+#include <wx/listctrl.h>
 #include <wx/sizer.h>
-#include "dialog_attachments.h"
-#include "ass_file.h"
+#endif
+
 #include "ass_attachment.h"
-#include "utils.h"
-#include "options.h"
+#include "ass_file.h"
+#include "dialog_attachments.h"
 #include "help_button.h"
 #include "libresrc/libresrc.h"
-
-
+#include "options.h"
+#include "utils.h"
 
 
 /// @brief Constructor 

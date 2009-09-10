@@ -39,32 +39,35 @@
 
 #ifdef WITH_AUTO4_LUA
 
-#include "auto4_lua.h"
+#ifndef AGI_PRE
+#include <assert.h>
 
+#include <wx/button.h>
+#include <wx/checkbox.h>
+#include <wx/combobox.h>
+#include <wx/gbsizer.h>
+#include <wx/log.h>
+#include <wx/panel.h>
+#include <wx/spinctrl.h>
+#include <wx/tokenzr.h>
+#include <wx/validate.h>
+#include <wx/window.h>
+#endif
+
+#include "ass_style.h"
+#include "auto4_lua.h"
+#include "colour_button.h"
+#include "string_codec.h"
+#include "utils.h"
+
+// These must be after the headers above.
 #ifdef __WINDOWS__
 #include "../../contrib/lua51/src/lualib.h"
 #include "../../contrib/lua51/src/lauxlib.h"
 #else
-#include "lualib.h"
-#include "lauxlib.h"
+#include <lualib.h>
+#include <lauxlib.h>
 #endif
-
-#include "string_codec.h"
-#include "utils.h"
-#include <wx/window.h>
-#include <wx/spinctrl.h>
-#include <wx/gbsizer.h>
-#include <wx/button.h>
-#include <wx/validate.h>
-#include <wx/tokenzr.h>
-#include <wx/combobox.h>
-#include <wx/checkbox.h>
-#include <wx/log.h>
-#include <wx/panel.h>
-
-#include <assert.h>
-#include "colour_button.h"
-#include "ass_style.h"
 
 
 /// DOCME

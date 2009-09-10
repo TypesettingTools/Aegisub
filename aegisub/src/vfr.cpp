@@ -39,13 +39,15 @@
 // Headers
 #include "config.h"
 
+#ifndef AGI_PRE
 #include <wx/filename.h>
+#endif
+
 #include "options.h"
-#include "vfr.h"
-#include "utils.h"
 #include "text_file_reader.h"
 #include "text_file_writer.h"
-
+#include "utils.h"
+#include "vfr.h"
 
 
 /// @brief V2 Clear function 

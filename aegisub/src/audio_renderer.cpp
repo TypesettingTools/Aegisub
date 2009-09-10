@@ -34,11 +34,14 @@
 /// @ingroup audio_ui
 
 
-#include "audio_renderer.h"
-#include "include/aegisub/audio_provider.h"
+// Headers
+#ifndef AGI_PRE
 #include <wx/bitmap.h>
 #include <wx/dcmemory.h>
+#endif
 
+#include "audio_renderer.h"
+#include "include/aegisub/audio_provider.h"
 
 
 AudioRendererBitmapCacheBitmapFactory::AudioRendererBitmapCacheBitmapFactory(AudioRenderer *_renderer)

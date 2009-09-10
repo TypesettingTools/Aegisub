@@ -42,17 +42,21 @@
 
 #ifdef WITH_HUNSPELL
 
+#ifndef AGI_PRE
+#include <wx/dir.h>
+#include <wx/filename.h>
+#include <wx/log.h>
+#include <wx/txtstrm.h>
+#include <wx/wfstream.h>
+#endif
+
+#include <hunspell/hunspell.hxx>
+
+#include "charset_conv.h"
+#include "options.h"
 #include "spellchecker_hunspell.h"
 #include "standard_paths.h"
 #include "utils.h"
-#include "options.h"
-#include "charset_conv.h"
-#include <hunspell/hunspell.hxx>
-#include <wx/dir.h>
-#include <wx/filename.h>
-#include <wx/wfstream.h>
-#include <wx/txtstrm.h>
-#include <wx/log.h>
 
 
 /// @brief Constructor

@@ -50,28 +50,28 @@
 #include <wx/utils.h>
 #endif
 
-#include "main.h"
-#include "frame_main.h"
-#include "options.h"
-#include "hotkeys.h"
-#include "dialog_associations.h"
+#include "ass_dialogue.h"
+#include "ass_export_filter.h"
 #include "ass_file.h"
+#include "ass_time.h"
 #include "audio_box.h"
 #include "audio_display.h"
-#include "export_framerate.h"
-#include "ass_export_filter.h"
-#include "ass_time.h"
-#include "ass_dialogue.h"
-#include "subs_grid.h"
-#include "subtitle_format.h"
-#include "video_context.h"
-#include "standard_paths.h"
 #ifdef WITH_AUTOMATION
 #include "auto4_base.h"
 #endif
-#include "version.h"
-#include "plugin_manager.h"
 #include "charset_conv.h"
+#include "dialog_associations.h"
+#include "export_framerate.h"
+#include "frame_main.h"
+#include "hotkeys.h"
+#include "main.h"
+#include "options.h"
+#include "plugin_manager.h"
+#include "standard_paths.h"
+#include "subs_grid.h"
+#include "subtitle_format.h"
+#include "version.h"
+#include "video_context.h"
 
 
 ///////////////////

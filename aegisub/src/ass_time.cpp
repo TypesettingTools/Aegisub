@@ -37,17 +37,18 @@
 
 ////////////
 // Includes
-#include "config.h"
+#ifndef AGI_PRE
+#include <math.h>
+
+#include <algorithm>
+#include <fstream>
 
 #include <wx/regex.h>
-#include <math.h>
-#include <fstream>
-#include <algorithm>
+#endif
+
 #include "ass_time.h"
-#include "vfr.h"
 #include "utils.h"
-
-
+#include "vfr.h"
 
 
 /// @brief AssTime constructors AssTime //////////////////////

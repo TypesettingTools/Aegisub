@@ -42,13 +42,12 @@
 
 ///////////
 // Headers
+#include "audio_player_alsa.h"
 #include "audio_player_manager.h"
 #include "audio_provider_manager.h"
-#include "utils.h"
 #include "frame_main.h"
-#include "audio_player_alsa.h"
 #include "options.h"
-
+#include "utils.h"
 
 
 /// @brief Constructor 

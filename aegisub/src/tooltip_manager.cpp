@@ -39,9 +39,8 @@
 // Headers
 #include "config.h"
 
-#include "tooltip_manager.h"
 #include "hotkeys.h"
-
+#include "tooltip_manager.h"
 
 
 /// @brief Update all tips 

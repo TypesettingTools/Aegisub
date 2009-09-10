@@ -40,15 +40,20 @@
 #include "config.h"
 
 #ifdef WITH_AVISYNTH
-#include <wx/filename.h>
+
+
+#ifndef AGI_PRE
 #include <Mmreg.h>
 #include <time.h>
+
+#include <wx/filename.h>
+#endif
+
 #include "audio_provider_avs.h"
-#include "utils.h"
+#include "charset_conv.h"
 #include "options.h"
 #include "standard_paths.h"
-#include "charset_conv.h"
-
+#include "utils.h"
 
 
 /// @brief Constructor 

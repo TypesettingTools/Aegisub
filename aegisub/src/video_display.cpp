@@ -37,7 +37,14 @@
 // Includes
 #include "config.h"
 
+#ifndef AGI_PRE
+#include <wx/clipbrd.h>
+#include <wx/dataobj.h>
+#include <wx/dcclient.h>
 #include <wx/glcanvas.h>
+#include <wx/menu.h>
+#endif
+
 #ifdef __APPLE__
 #include <OpenGL/GL.h>
 #include <OpenGL/glu.h>
@@ -45,28 +52,26 @@
 #include <GL/gl.h>
 #include <GL/glu.h>
 #endif
-#include <wx/clipbrd.h>
-#include <wx/dcclient.h>
-#include <wx/menu.h>
-#include <wx/dataobj.h>
-#include "utils.h"
-#include "video_display.h"
-#include "video_provider_manager.h"
-#include "vfr.h"
+
 #include "ass_dialogue.h"
+#include "gl_wrap.h"
+#include "hotkeys.h"
 #include "options.h"
+#include "utils.h"
+#include "vfr.h"
 #include "video_box.h"
 #include "video_context.h"
-#include "gl_wrap.h"
+#include "video_display.h"
+#include "video_provider_manager.h"
 #include "visual_tool.h"
-#include "visual_tool_cross.h"
-#include "visual_tool_rotatez.h"
-#include "visual_tool_rotatexy.h"
-#include "visual_tool_scale.h"
 #include "visual_tool_clip.h"
-#include "visual_tool_vector_clip.h"
+#include "visual_tool_cross.h"
 #include "visual_tool_drag.h"
-#include "hotkeys.h"
+#include "visual_tool_rotatexy.h"
+#include "visual_tool_rotatez.h"
+#include "visual_tool_scale.h"
+#include "visual_tool_vector_clip.h"
+
 
 // Menu item IDs
 enum {

@@ -39,11 +39,10 @@
 // Headers
 #include "config.h"
 
+#include "ass_dialogue.h"
 #include "subtitle_format_ass.h"
 #include "text_file_reader.h"
 #include "text_file_writer.h"
-#include "ass_dialogue.h"
-
 
 
 /// @brief Can read? 

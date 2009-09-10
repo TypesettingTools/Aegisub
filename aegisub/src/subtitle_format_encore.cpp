@@ -44,7 +44,6 @@
 #include "text_file_writer.h"
 
 
-
 /// @brief Name 
 /// @return 
 ///

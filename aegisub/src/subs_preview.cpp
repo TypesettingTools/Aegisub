@@ -39,15 +39,17 @@
 // Includes
 #include "config.h"
 
-#include <wx/msgdlg.h>
+#ifndef AGI_PRE
 #include <wx/dcclient.h>
 #include <wx/dcmemory.h>
+#include <wx/msgdlg.h>
+#endif
+
+#include "ass_file.h"
 #include "ass_style.h"
 #include "subs_preview.h"
-#include "video_provider_dummy.h"
 #include "subtitles_provider_manager.h"
-#include "ass_file.h"
-
+#include "video_provider_dummy.h"
 
 
 /// @brief Constructor 

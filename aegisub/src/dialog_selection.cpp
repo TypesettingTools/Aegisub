@@ -39,14 +39,16 @@
 // Headers
 #include "config.h"
 
-#include <wx/string.h>
+#ifndef AGI_PRE
 #include <wx/regex.h>
-#include "dialog_selection.h"
-#include "subs_grid.h"
-#include "ass_dialogue.h"
-#include "options.h"
-#include "help_button.h"
+#include <wx/string.h>
+#endif
 
+#include "ass_dialogue.h"
+#include "dialog_selection.h"
+#include "help_button.h"
+#include "options.h"
+#include "subs_grid.h"
 
 
 /// @brief Constructor 

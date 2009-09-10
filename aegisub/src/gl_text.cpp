@@ -39,11 +39,13 @@
 // Headers
 #include "config.h"
 
+#ifndef AGI_PRE
 #include <wx/dcmemory.h>
 #include <wx/image.h>
+#endif
+
 #include "gl_text.h"
 #include "utils.h"
-
 
 
 /// @brief Constructor 

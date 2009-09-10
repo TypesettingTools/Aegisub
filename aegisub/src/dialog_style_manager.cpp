@@ -39,26 +39,26 @@
 // Includes
 #include "config.h"
 
-#include <wx/filename.h>
-#include <wx/filedlg.h>
+#ifndef AGI_PRE
 #include <wx/choicdlg.h>
-#include <wx/intl.h>
 #include <wx/clipbrd.h>
+#include <wx/filedlg.h>
+#include <wx/filename.h>
+#include <wx/intl.h>
 #include <wx/tokenzr.h>
-#include "dialog_style_manager.h"
-#include "dialog_style_editor.h"
-#include "ass_style.h"
-#include "ass_file.h"
+#endif
+
 #include "ass_dialogue.h"
-#include "standard_paths.h"
-#include "options.h"
-#include "subs_grid.h"
-#include "utils.h"
+#include "ass_file.h"
+#include "ass_style.h"
+#include "dialog_style_editor.h"
+#include "dialog_style_manager.h"
 #include "help_button.h"
 #include "libresrc/libresrc.h"
-
-
-
+#include "options.h"
+#include "standard_paths.h"
+#include "subs_grid.h"
+#include "utils.h"
 
 /// @brief Constructor 
 /// @param parent 

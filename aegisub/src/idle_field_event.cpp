@@ -39,10 +39,12 @@
 // Headers
 #include "config.h"
 
-#include "idle_field_event.h"
+#ifndef AGI_PRE
 #include <wx/event.h>
 #include <wx/settings.h>
+#endif
 
+#include "idle_field_event.h"
 
 
 /// @brief Constructor 

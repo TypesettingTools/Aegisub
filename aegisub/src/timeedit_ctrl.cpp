@@ -39,23 +39,25 @@
 // Includes
 #include "config.h"
 
+#ifndef AGI_PRE
 #include <wx/clipbrd.h>
-#include <wx/valtext.h>
-#include <wx/menu.h>
 #include <wx/dataobj.h>
-#include "timeedit_ctrl.h"
+#include <wx/menu.h>
+#include <wx/valtext.h>
+#endif
+
 #include "ass_time.h"
-#include "vfr.h"
 #include "options.h"
+#include "timeedit_ctrl.h"
+#include "vfr.h"
 
-// Use the multiline style only on wxGTK to workaround some wxGTK bugs with the default singleline style
+
 #ifdef __WXGTK__
-
-/// DOCME
+/// Use the multiline style only on wxGTK to workaround some wxGTK bugs with the default singleline style.
 #define TimeEditWindowStyle wxTE_MULTILINE | wxTE_CENTRE
 #else
 
-/// DOCME
+/// All other platforms than wxGTK.
 #define TimeEditWindowStyle wxTE_CENTRE
 #endif
 

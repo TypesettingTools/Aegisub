@@ -39,23 +39,21 @@
 // Headers
 #include "config.h"
 
-#include "video_provider_manager.h"
-#include "video_provider_dummy.h"
 #include "options.h"
 #include "vfr.h"
 #ifdef WITH_AVISYNTH
 #include "video_provider_avs.h"
 #endif
+#include "video_provider_cache.h"
+#include "video_provider_dummy.h"
 #ifdef WITH_FFMPEGSOURCE
 #include "video_provider_ffmpegsource.h"
 #endif
+#include "video_provider_manager.h"
 #ifdef WITH_QUICKTIME
 #include "video_provider_quicktime.h"
 #endif
-#include "video_provider_dummy.h"
-#include "video_provider_cache.h"
 #include "video_provider_yuv4mpeg.h"
-
 
 
 /// @brief Get provider 

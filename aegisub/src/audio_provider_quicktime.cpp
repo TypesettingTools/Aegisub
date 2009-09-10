@@ -35,9 +35,9 @@
 ///
 
 
-#include "audio_provider_quicktime.h"
-
 #ifdef WITH_QUICKTIME
+
+#include "audio_provider_quicktime.h"
 
 
 /// @brief DOCME

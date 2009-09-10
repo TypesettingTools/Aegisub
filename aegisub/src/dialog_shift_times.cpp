@@ -39,27 +39,29 @@
 // Headers
 #include "config.h"
 
-#include <fstream>
+#ifndef AGI_PRE
 #include <algorithm>
+#include <fstream>
 #include <string>
-#include <wx/filename.h>
+
 #include <wx/filefn.h>
-#include "dialog_shift_times.h"
-#include "video_display.h"
-#include "vfr.h"
-#include "subs_grid.h"
-#include "options.h"
-#include "standard_paths.h"
+#include <wx/filename.h>
+#endif
+
+#include "ass_dialogue.h"
 #include "ass_file.h"
 #include "ass_time.h"
-#include "ass_dialogue.h"
-#include "subs_edit_box.h"
-#include "utils.h"
-#include "help_button.h"
 #include "charset_conv.h"
+#include "dialog_shift_times.h"
+#include "help_button.h"
 #include "libresrc/libresrc.h"
-
-
+#include "options.h"
+#include "standard_paths.h"
+#include "subs_edit_box.h"
+#include "subs_grid.h"
+#include "utils.h"
+#include "vfr.h"
+#include "video_display.h"
 
 
 /// @brief Constructor 

@@ -39,14 +39,16 @@
 // Headers
 #include "config.h"
 
+#ifndef AGI_PRE
 #include <wx/dir.h>
 #include <wx/filename.h>
-#include "thesaurus_myspell.h"
-#include "mythes.hxx"
-#include "standard_paths.h"
-#include "options.h"
-#include "utils.h"
+#endif
 
+#include "mythes.hxx"
+#include "options.h"
+#include "standard_paths.h"
+#include "thesaurus_myspell.h"
+#include "utils.h"
 
 
 /// @brief Constructor 

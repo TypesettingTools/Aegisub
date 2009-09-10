@@ -45,7 +45,6 @@
 #include "ass_style.h"
 
 
-
 /// @brief Constructor 
 ///
 AssFixStylesFilter::AssFixStylesFilter() {

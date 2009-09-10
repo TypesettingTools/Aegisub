@@ -39,22 +39,23 @@
 // Headers
 #include "config.h"
 
-#include <wx/dialog.h>
-#include <wx/stattext.h>
-#include <wx/sizer.h>
+#ifndef AGI_PRE
 #include <wx/button.h>
-#include "dialog_properties.h"
-#include "options.h"
+#include <wx/dialog.h>
+#include <wx/sizer.h>
+#include <wx/stattext.h>
+#endif
+
 #include "ass_file.h"
-#include "video_display.h"
-#include "validators.h"
-#include "video_provider_manager.h"
-#include "utils.h"
+#include "dialog_properties.h"
 #include "help_button.h"
 #include "libresrc/libresrc.h"
+#include "options.h"
+#include "utils.h"
+#include "validators.h"
 #include "video_context.h"
-
-
+#include "video_display.h"
+#include "video_provider_manager.h"
 
 
 /// @brief Constructor 

@@ -39,21 +39,22 @@
 // Headers
 #include "config.h"
 
-#include <wx/filesys.h>
-#include <wx/fs_inet.h>
-#include <wx/txtstrm.h>
-#include <wx/tokenzr.h>
+#ifndef AGI_PRE
 #include <wx/button.h>
 #include <wx/event.h>
-#include "dialog_version_check.h"
-#include "version.h"
-#include "main.h"
+#include <wx/filesys.h>
+#include <wx/fs_inet.h>
+#include <wx/tokenzr.h>
+#include <wx/txtstrm.h>
+#endif
 
+#include "dialog_version_check.h"
+#include "main.h"
+#include "version.h"
 
 
 /// DOCME
 bool DialogVersionCheck::dialogRunning = false;
-
 
 
 /// @brief Constructor 

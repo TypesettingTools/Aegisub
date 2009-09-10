@@ -40,31 +40,30 @@
 
 #include "config.h"
 
+#ifndef AGI_PRE
 #include <wx/tokenzr.h>
-#include "font_file_lister.h"
-#include "text_file_writer.h"
-#include "text_file_reader.h"
-#include "standard_paths.h"
+#endif
+
 #if defined(__WINDOWS__) || defined(__APPLE__)
 #ifdef WITH_FREETYPE2
 #include "font_file_lister_freetype.h"
-
 /// DOCME
 #define FontListerClass FreetypeFontFileLister
-#endif
+#endif // WITH_FREETYPE2
 #else
 #include "font_file_lister_fontconfig.h"
-
 /// DOCME
 #define FontListerClass FontConfigFontFileLister
 #endif
 
+#include "font_file_lister.h"
+#include "standard_paths.h"
+#include "text_file_reader.h"
+#include "text_file_writer.h"
 
 
 /// DOCME
 FontFileLister *FontFileLister::instance = NULL;
-
-
 
 /// @brief Constructor 
 ///

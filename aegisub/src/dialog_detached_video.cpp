@@ -39,15 +39,17 @@
 // Headers
 #include "config.h"
 
+#ifndef AGI_PRE
 #include <wx/filename.h>
+#endif
+
 #include "dialog_detached_video.h"
-#include "video_box.h"
-#include "video_slider.h"
-#include "video_context.h"
-#include "video_display.h"
 #include "frame_main.h"
 #include "options.h"
-
+#include "video_box.h"
+#include "video_context.h"
+#include "video_display.h"
+#include "video_slider.h"
 
 
 /// @brief Constructor 

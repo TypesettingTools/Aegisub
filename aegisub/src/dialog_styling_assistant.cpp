@@ -39,25 +39,26 @@
 // Headers
 #include "config.h"
 
+#ifndef AGI_PRE
 #include <wx/recguard.h>
-#include "dialog_styling_assistant.h"
-#include "subs_grid.h"
+#endif
+
+#include "ass_dialogue.h"
 #include "ass_file.h"
 #include "ass_style.h"
-#include "ass_dialogue.h"
-#include "video_display.h"
-#include "video_context.h"
-#include "vfr.h"
-#include "frame_main.h"
-#include "audio_display.h"
 #include "audio_box.h"
-#include "hotkeys.h"
-#include "utils.h"
+#include "audio_display.h"
+#include "dialog_styling_assistant.h"
+#include "frame_main.h"
 #include "help_button.h"
-#include "subs_edit_box.h"
+#include "hotkeys.h"
 #include "libresrc/libresrc.h"
-
-
+#include "subs_edit_box.h"
+#include "subs_grid.h"
+#include "utils.h"
+#include "vfr.h"
+#include "video_context.h"
+#include "video_display.h"
 
 
 /// @brief Constructor 

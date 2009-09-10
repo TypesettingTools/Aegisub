@@ -39,11 +39,13 @@
 // Headers
 #include "config.h"
 
-#include "dialog_text_import.h"
+#ifndef AGI_PRE
 #include <wx/sizer.h>
 #include <wx/stattext.h>
-#include "options.h"
+#endif
 
+#include "dialog_text_import.h"
+#include "options.h"
 
 
 /// @brief Constructor 

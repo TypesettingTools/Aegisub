@@ -39,19 +39,24 @@
 // Headers
 #include "config.h"
 
-#include <wx/filename.h>
-#include <wx/menu.h>
-#include <wx/dcmemory.h>
-#include <wx/stdpaths.h>
-#include "utils.h"
+#ifndef AGI_PRE
 #ifdef __UNIX__
 #include <unistd.h>
 #endif
+
+#include <wx/dcmemory.h>
+#include <wx/filename.h>
+#include <wx/menu.h>
+#include <wx/stdpaths.h>
+#endif
+
 #ifdef __APPLE__
 extern "C" {
 #include "libosxutil/libosxutil.h"
 }
 #endif
+
+#include "utils.h"
 
 
 #ifndef __LINUX__

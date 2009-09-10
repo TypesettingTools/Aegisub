@@ -39,11 +39,13 @@
 // Headers
 #include "config.h"
 
-#include "toggle_bitmap.h"
-#include <wx/tglbtn.h>
-#include <wx/settings.h>
+#ifndef AGI_PRE
 #include <wx/dcclient.h>
+#include <wx/settings.h>
+#include <wx/tglbtn.h>
+#endif
 
+#include "toggle_bitmap.h"
 
 
 /// @brief Constructor 

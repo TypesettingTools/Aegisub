@@ -37,22 +37,23 @@
 
 #include "config.h"
 
-#include <wx/filename.h>
-#include <wx/file.h>
-#include "audio_provider_pcm.h"
-#include "utils.h"
-#include "aegisub_endian.h"
-#include <stdint.h>
+#ifndef AGI_PRE
 #include <assert.h>
-#include <wx/log.h>
-
-#ifndef _WINDOWS
-#include <sys/mman.h>
+#include <stdint.h>
+#ifndef __WINDOWS__
 #include <sys/fcntl.h>
+#include <sys/mman.h>
 #include <sys/stat.h>
 #endif
 
+#include <wx/file.h>
+#include <wx/filename.h>
+#include <wx/log.h>
+#endif
 
+#include "aegisub_endian.h"
+#include "audio_provider_pcm.h"
+#include "utils.h"
 
 
 /// @brief DOCME

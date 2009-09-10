@@ -39,8 +39,11 @@
 // Headers
 #include "config.h"
 
-#include "vector2d.h"
+#ifndef AGI_PRE
 #include <math.h>
+#endif
+
+#include "vector2d.h"
 
 
 /// @brief Null constructor 

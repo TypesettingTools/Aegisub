@@ -38,34 +38,38 @@
 
 #ifdef WITH_AUTO4_LUA
 
+#ifndef AGI_PRE
+#include <assert.h>
+
+#include <algorithm>
+
+#include <wx/filefn.h>
+#include <wx/filename.h>
+#include <wx/log.h>
+#include <wx/msgdlg.h>
+#include <wx/window.h>
+#endif
+
+#include "ass_dialogue.h"
+#include "ass_file.h"
+#include "ass_override.h"
+#include "ass_style.h"
 #include "auto4_lua.h"
 #include "auto4_lua_factory.h"
 #include "auto4_lua_scriptreader.h"
-#include "ass_dialogue.h"
-#include "ass_style.h"
-#include "ass_file.h"
-#include "ass_override.h"
-#include "text_file_reader.h"
 #include "options.h"
-
+#include "text_file_reader.h"
 #include "vfr.h"
 #include "video_context.h"
 
+// This must be below the headers above.
 #ifdef __WINDOWS__
 #include "../../contrib/lua51/src/lualib.h"
 #include "../../contrib/lua51/src/lauxlib.h"
 #else
-#include "lualib.h"
-#include "lauxlib.h"
+#include <lualib.h>
+#include <lauxlib.h>
 #endif
-
-#include <wx/msgdlg.h>
-#include <wx/filename.h>
-#include <wx/filefn.h>
-#include <wx/window.h>
-#include <wx/log.h>
-#include <assert.h>
-#include <algorithm>
 
 
 /// DOCME
