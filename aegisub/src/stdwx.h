@@ -48,36 +48,44 @@
 /////////
 // Setup
 #define WIN32_LEAN_AND_MEAN
-
 #define WX_PRE
 
 #include "config.h"
+
+///////////////
+// STD headers
+#include <vector>
+#include <list>
+#include <map>
 
 
 /////////////////////
 // wxWidgets headers
 #include <wx/wxprec.h>
-#include <wx/notebook.h>
-#include <wx/statline.h>
-#include <wx/tglbtn.h>
-#include <wx/tokenzr.h>
-#include <wx/wfstream.h>
-#include <wx/filename.h>
-#include <wx/sashwin.h>
+
+#include <wx/clipbrd.h>
+#include <wx/event.h>
 #include <wx/file.h>
 #include <wx/filedlg.h>
-#include <wx/grid.h>
+#include <wx/filename.h>
 #include <wx/fontdlg.h>
-#include <wx/clipbrd.h>
+#include <wx/glcanvas.h>
+#include <wx/grid.h>
 #include <wx/msgdlg.h>
-#include <wx/stackwalk.h>
+#include <wx/notebook.h>
+#include <wx/regex.h>
+#include <wx/sashwin.h>
 #include <wx/spinctrl.h>
-#include <wx/wfstream.h>
-#include <wx/tipdlg.h>
-#include <wx/event.h>
+#include <wx/stackwalk.h>
+#include <wx/statline.h>
 #include <wx/stc/stc.h>
 #include <wx/string.h>
-#include <wx/regex.h>
+#include <wx/tglbtn.h>
+#include <wx/tipdlg.h>
+#include <wx/tokenzr.h>
+#include <wx/wfstream.h>
+#include <wx/wfstream.h>
+
 #ifdef HAVE_APPLE_OPENGL_FRAMEWORK
 #include <OpenGL/GL.h>
 #include <OpenGL/glu.h>
@@ -85,15 +93,6 @@
 #include <GL/gl.h>
 #include <GL/glu.h>
 #endif
-#include <wx/glcanvas.h>
-
-
-
-///////////////
-// STD headers
-#include <vector>
-#include <list>
-#include <map>
 
 #endif // C++
 
