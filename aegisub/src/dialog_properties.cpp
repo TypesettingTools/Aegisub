@@ -52,6 +52,7 @@
 #include "utils.h"
 #include "help_button.h"
 #include "libresrc/libresrc.h"
+#include "video_context.h"
 
 
 

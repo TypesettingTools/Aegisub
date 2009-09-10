@@ -47,6 +47,7 @@
 #include <wx/rawbmp.h>
 #include "video_box.h"
 #include "video_display.h"
+#include "video_context.h"
 #include "video_slider.h"
 #include "frame_main.h"
 #include "toggle_bitmap.h"
@@ -103,18 +104,6 @@ VideoBox::VideoBox(wxWindow *parent, bool isDetached)
 	VideoSubsPos = new wxTextCtrl(videoPage,-1,_T(""),wxDefaultPosition,wxSize(110,20),wxTE_READONLY);
 	VideoSubsPos->SetToolTip(_("Time of this frame relative to start and end of current subs."));
 
-	// Display
-	videoDisplay = new VideoDisplay(videoPage,-1,wxDefaultPosition,wxDefaultSize,wxSUNKEN_BORDER);
-	videoDisplay->ControlSlider = videoSlider;
-	videoDisplay->PositionDisplay = VideoPosition;
-	videoDisplay->SubsPosition = VideoSubsPos;
-	videoDisplay->box = this;
-	VideoContext::Get()->AddDisplay(videoDisplay);
-	videoDisplay->Reset();
-
-	// Set display
-	videoSlider->Display = videoDisplay;
-	
 	// Typesetting buttons
 	visualToolBar = new wxToolBar(videoPage,-1,wxDefaultPosition,wxDefaultSize,wxTB_VERTICAL|wxTB_FLAT|wxTB_NODIVIDER);
 	visualToolBar->AddTool(Video_Mode_Standard,_("Standard"),GETIMAGE(visual_standard_24),_("Standard mode, double click sets position."),wxITEM_RADIO);
@@ -132,6 +121,17 @@ VideoBox::VideoBox(wxWindow *parent, bool isDetached)
 	// Avoid ugly themed background on Vista and possibly also Win7
 	visualToolBar->SetBackgroundStyle(wxBG_STYLE_COLOUR);
 	visualToolBar->SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNFACE));
+
+	// Display
+	videoDisplay = new VideoDisplay(videoPage,-1,this,wxDefaultPosition,wxDefaultSize,wxSUNKEN_BORDER);
+	videoDisplay->ControlSlider = videoSlider;
+	videoDisplay->PositionDisplay = VideoPosition;
+	videoDisplay->SubsPosition = VideoSubsPos;
+	VideoContext::Get()->AddDisplay(videoDisplay);
+	videoDisplay->Reset();
+
+	// Set display
+	videoSlider->Display = videoDisplay;
 
 	// Top sizer
 	// Detached and attached video needs different flags, see bugs #742 and #853
@@ -167,7 +167,6 @@ VideoBox::VideoBox(wxWindow *parent, bool isDetached)
 		VideoSizer->AddStretchSpacer(1);
 	SetSizer(VideoSizer);
 }
-
 
 ///////////////
 // Event table

@@ -81,8 +81,6 @@ public:
 
 	/// DOCME
 	wxToolBar *visualSubToolBar;
-	//wxSizer *visualSubToolBar;
-
 
 	/// DOCME
 	ToggleBitmap *AutoScroll;

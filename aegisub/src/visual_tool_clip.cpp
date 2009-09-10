@@ -45,6 +45,7 @@
 #include "ass_file.h"
 #include "ass_dialogue.h"
 #include "utils.h"
+#include "video_display.h"
 
 
 

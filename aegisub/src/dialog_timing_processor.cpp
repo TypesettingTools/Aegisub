@@ -50,6 +50,7 @@
 #include "vfr.h"
 #include "utils.h"
 #include "help_button.h"
+#include "video_context.h"
 #include "libresrc/libresrc.h"
 
 

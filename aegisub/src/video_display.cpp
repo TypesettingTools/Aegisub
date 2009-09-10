@@ -34,8 +34,6 @@
 /// @ingroup video main_ui
 ///
 
-
-////////////
 // Includes
 #include "config.h"
 
@@ -47,28 +45,15 @@
 #include <GL/gl.h>
 #include <GL/glu.h>
 #endif
-#include <wx/image.h>
-#include <string.h>
 #include <wx/clipbrd.h>
-#include <wx/filename.h>
-#include <wx/config.h>
 #include "utils.h"
 #include "video_display.h"
 #include "video_provider_manager.h"
 #include "vfr.h"
-#include "ass_file.h"
-#include "ass_time.h"
 #include "ass_dialogue.h"
-#include "ass_style.h"
-#include "subs_grid.h"
-#include "vfw_wrap.h"
-#include "mkv_wrap.h"
 #include "options.h"
-#include "subs_edit_box.h"
-#include "audio_display.h"
-#include "main.h"
-#include "video_slider.h"
 #include "video_box.h"
+#include "video_context.h"
 #include "gl_wrap.h"
 #include "visual_tool.h"
 #include "visual_tool_cross.h"
@@ -80,29 +65,20 @@
 #include "visual_tool_drag.h"
 #include "hotkeys.h"
 
-
-///////
-// IDs
+// Menu item IDs
 enum {
-
-	/// DOCME
+	/// Copy mouse coordinates to clipboard
 	VIDEO_MENU_COPY_COORDS = 1230,
-
-	/// DOCME
+	/// Copy frame to clipboard with subtitles
 	VIDEO_MENU_COPY_TO_CLIPBOARD,
-
-	/// DOCME
+	/// Copy frame to clipboard without subtitles
 	VIDEO_MENU_COPY_TO_CLIPBOARD_RAW,
-
-	/// DOCME
+	/// Save frame with subtitles
 	VIDEO_MENU_SAVE_SNAPSHOT,
-
-	/// DOCME
+	/// Save frame without subtitles
 	VIDEO_MENU_SAVE_SNAPSHOT_RAW
 };
 
-
-///////////////
 // Event table
 BEGIN_EVENT_TABLE(VideoDisplay, wxGLCanvas)
 	EVT_MOUSE_EVENTS(VideoDisplay::OnMouseEvent)
@@ -120,23 +96,20 @@ END_EVENT_TABLE()
 
 
 
-/// DOCME
+/// Attribute list for gl canvases; set the canvases to doublebuffered rgba with an 8 bit stencil buffer
 int attribList[] = { WX_GL_RGBA , WX_GL_DOUBLEBUFFER, WX_GL_STENCIL_SIZE, 8, 0 };
 
 
-/// @brief Constructor 
-/// @param parent 
-/// @param id     
-/// @param pos    
-/// @param size   
-/// @param style  
-/// @param name   
-///
-VideoDisplay::VideoDisplay(wxWindow* parent, wxWindowID id, const wxPoint& pos, const wxSize& size, long style, const wxString& name)
-: wxGLCanvas (parent, id, attribList, pos, size, style, name)
+/// @brief Constructor
+/// @param parent Pointer to a parent window.
+/// @param id     Window identifier. If -1, will automatically create an identifier.
+/// @param pos    Window position. wxDefaultPosition is (-1, -1) which indicates that wxWidgets should generate a default position for the window.
+/// @param size   Window size. wxDefaultSize is (-1, -1) which indicates that wxWidgets should generate a default size for the window. If no suitable size can be found, the window will be sized to 20x20 pixels so that the window is visible but obviously not correctly sized.
+/// @param style  Window style.
+/// @param name   Window name.
+VideoDisplay::VideoDisplay(wxWindow* parent, wxWindowID id, VideoBox *box, const wxPoint& pos, const wxSize& size, long style, const wxString& name)
+: wxGLCanvas (parent, id, attribList, pos, size, style, name), box(box)
 {
-	// Set options
-	box = NULL;
 	locked = false;
 	ControlSlider = NULL;
 	PositionDisplay = NULL;
@@ -151,43 +124,24 @@ VideoDisplay::VideoDisplay(wxWindow* parent, wxWindowID id, const wxPoint& pos, 
 	SetVisualMode(0);
 }
 
-
-
 /// @brief Destructor 
-///
 VideoDisplay::~VideoDisplay () {
 	delete visual;
 	visual = NULL;
 	VideoContext::Get()->RemoveDisplay(this);
 }
 
-
-
-/// @brief Show cursor 
-/// @param show 
-///
+/// @brief Set the cursor to either default or blank
+/// @param Whether or not the cursor should be visible
 void VideoDisplay::ShowCursor(bool show) {
-	// Show
 	if (show) SetCursor(wxNullCursor);
-
-	// Hide
 	else {
-		// Bleeeh! Hate this 'solution':
-		#if __WXGTK__
-		static char cursor_image[] = {0};
-		wxCursor cursor(cursor_image, 8, 1, -1, -1, cursor_image);
-		#else
 		wxCursor cursor(wxCURSOR_BLANK);
-		#endif // __WXGTK__
 		SetCursor(cursor);
 	}
 }
 
-
-
-/// @brief Render 
-/// @return 
-///
+/// @brief Render the currently visible frame
 void VideoDisplay::Render()
 // Yes it's legal C++ to replace the body of a function with one huge try..catch statement
 try {
@@ -342,8 +296,7 @@ catch (...) {
 
 
 
-/// @brief TV effects (overscan and so on) 
-///
+/// @brief Draw the appropriate overscan masks for the current aspect ratio
 void VideoDisplay::DrawTVEffects() {
 	// Get coordinates
 	int sw,sh;
@@ -351,9 +304,8 @@ void VideoDisplay::DrawTVEffects() {
 	context->GetScriptSize(sw,sh);
 	bool drawOverscan = Options.AsBool(_T("Show Overscan Mask"));
 
-	// Draw overscan mask
 	if (drawOverscan) {
-		// Get aspect ration
+		// Get aspect ratio
 		double ar = context->GetAspectRatioValue();
 
 		// Based on BBC's guidelines: http://www.bbc.co.uk/guidelines/dq/pdf/tv/tv_standards_london.pdf
@@ -371,14 +323,11 @@ void VideoDisplay::DrawTVEffects() {
 	}
 }
 
-
-
-/// @brief Draw overscan mask 
-/// @param sizeH  
-/// @param sizeV  
-/// @param colour 
-/// @param alpha  
-///
+/// @brief Draw an overscan mask 
+/// @param sizeH  The amount of horizontal overscan on one side
+/// @param sizeV  The amount of vertical overscan on one side
+/// @param colour The color of the mask
+/// @param alpha  The alpha of the mask
 void VideoDisplay::DrawOverscanMask(int sizeH,int sizeV,wxColour colour,double alpha) {
 	// Parameters
 	int sw,sh;
@@ -410,15 +359,8 @@ void VideoDisplay::DrawOverscanMask(int sizeH,int sizeV,wxColour colour,double a
 	glDisable(GL_BLEND);
 }
 
-
-
-/// @brief Update size 
-/// @return 
-///
+/// @brief Update the size of the display
 void VideoDisplay::UpdateSize() {
-	// Don't do anything if it's a free sizing display
-	//if (freeSize) return;
-
 	// Loaded?
 	VideoContext *con = VideoContext::Get();
 	wxASSERT(con);
@@ -458,11 +400,7 @@ void VideoDisplay::UpdateSize() {
 	Refresh(false);
 }
 
-
-
-/// @brief Resets 
-/// @return 
-///
+/// @brief Reset the size of the display to the video size
 void VideoDisplay::Reset() {
 	// Only calculate sizes if it's visible
 	if (!IsShownOnScreen()) return;
@@ -478,35 +416,22 @@ void VideoDisplay::Reset() {
 	SetSizeHints(_w,_h,_w,_h);
 }
 
-
-
 /// @brief Paint event 
 /// @param event 
-///
 void VideoDisplay::OnPaint(wxPaintEvent& event) {
 	wxPaintDC dc(this);
 	Render();
 }
 
-
-
-/// @brief Size Event 
-/// @param event 
-///
+/// @brief Handle resize events
+/// @param event
 void VideoDisplay::OnSizeEvent(wxSizeEvent &event) {
-	//Refresh(false);
-	if (freeSize) {
-		UpdateSize();
-	}
+	if (freeSize) UpdateSize();
 	event.Skip();
 }
 
-
-
-/// @brief Mouse stuff 
+/// @brief Handle mouse events
 /// @param event 
-/// @return 
-///
 void VideoDisplay::OnMouseEvent(wxMouseEvent& event) {
 	// Locked?
 	if (locked) return;
@@ -548,11 +473,8 @@ void VideoDisplay::OnMouseEvent(wxMouseEvent& event) {
 	if (visual) visual->OnMouseEvent(event);
 }
 
-
-
-/// @brief Key event 
-/// @param event 
-///
+/// @brief Handle keypress events for switching visual typesetting modes
+/// @param event
 void VideoDisplay::OnKey(wxKeyEvent &event) {
 	int key = event.GetKeyCode();
 #ifdef __APPLE__
@@ -571,22 +493,15 @@ void VideoDisplay::OnKey(wxKeyEvent &event) {
 	event.Skip();
 }
 
-
-
-
-/// @brief Sets zoom level 
-/// @param value 
-///
+/// @brief Set the zoom level
+/// @param value The new zoom level
 void VideoDisplay::SetZoom(double value) {
 	zoomValue = value;
 	UpdateSize();
 }
 
-
-
-/// @brief Sets zoom position 
-/// @param value 
-///
+/// @brief Set the position of the zoom dropdown and switch to that zoom
+/// @param value The new zoom position
 void VideoDisplay::SetZoomPos(int value) {
 	if (value < 0) value = 0;
 	if (value > 15) value = 15;
@@ -594,10 +509,7 @@ void VideoDisplay::SetZoomPos(int value) {
 	if (zoomBox->GetSelection() != value) zoomBox->SetSelection(value);
 }
 
-
-
-/// @brief Updates position display 
-///
+/// @brief Update the absolute frame time display
 void VideoDisplay::UpdatePositionDisplay() {
 	// Update position display control
 	if (!PositionDisplay) {
@@ -638,12 +550,8 @@ void VideoDisplay::UpdatePositionDisplay() {
 	UpdateSubsRelativeTime();
 }
 
-
-
-/// @brief Updates box with subs position relative to frame 
-///
+/// @brief Update the relative-to-subs time display
 void VideoDisplay::UpdateSubsRelativeTime() {
-	// Set variables
 	wxString startSign;
 	wxString endSign;
 	int startOff,endOff;
@@ -673,9 +581,8 @@ void VideoDisplay::UpdateSubsRelativeTime() {
 
 
 
-/// @brief Copy to clipboard 
-/// @param event 
-///
+/// @brief Copy the currently display frame to the clipboard, with subtitles
+/// @param event Unused
 void VideoDisplay::OnCopyToClipboard(wxCommandEvent &event) {
 	if (wxTheClipboard->Open()) {
 		wxTheClipboard->SetData(new wxBitmapDataObject(wxBitmap(VideoContext::Get()->GetFrame(-1).GetImage(),24)));
@@ -685,9 +592,8 @@ void VideoDisplay::OnCopyToClipboard(wxCommandEvent &event) {
 
 
 
-/// @brief Copy to clipboard (raw) 
-/// @param event 
-///
+/// @brief Copy the currently display frame to the clipboard, without subtitles
+/// @param event Unused
 void VideoDisplay::OnCopyToClipboardRaw(wxCommandEvent &event) {
 	if (wxTheClipboard->Open()) {
 		wxTheClipboard->SetData(new wxBitmapDataObject(wxBitmap(VideoContext::Get()->GetFrame(-1,true).GetImage(),24)));
@@ -697,27 +603,24 @@ void VideoDisplay::OnCopyToClipboardRaw(wxCommandEvent &event) {
 
 
 
-/// @brief Save snapshot 
-/// @param event 
-///
+/// @brief Save the currently display frame to a file, with subtitles
+/// @param event Unused
 void VideoDisplay::OnSaveSnapshot(wxCommandEvent &event) {
 	VideoContext::Get()->SaveSnapshot(false);
 }
 
 
 
-/// @brief Save snapshot (raw) 
-/// @param event 
-///
+/// @brief Save the currently display frame to a file, without subtitles
+/// @param event Unused
 void VideoDisplay::OnSaveSnapshotRaw(wxCommandEvent &event) {
 	VideoContext::Get()->SaveSnapshot(true);
 }
 
 
 
-/// @brief Copy coordinates 
-/// @param event 
-///
+/// @brief Copy coordinates of the mouse to the clipboard
+/// @param event Unused
 void VideoDisplay::OnCopyCoords(wxCommandEvent &event) {
 	if (wxTheClipboard->Open()) {
 		int sw,sh;
@@ -731,10 +634,9 @@ void VideoDisplay::OnCopyCoords(wxCommandEvent &event) {
 
 
 
-/// @brief Convert mouse coordinates 
-/// @param x 
-/// @param y 
-///
+/// @brief Convert mouse coordinates relative to the display to coordinates relative to the video
+/// @param x X coordinate
+/// @param y Y coordinate
 void VideoDisplay::ConvertMouseCoords(int &x,int &y) {
 	int w,h;
 	GetClientSize(&w,&h);
@@ -748,20 +650,20 @@ void VideoDisplay::ConvertMouseCoords(int &x,int &y) {
 
 
 
-/// @brief Set mode 
-/// @param mode 
-///
+/// @brief Set the current visual typesetting mode
+/// @param mode The new mode
 void VideoDisplay::SetVisualMode(int mode) {
 	// Set visual
 	if (visualMode != mode) {
-		// Get toolbar
 		wxToolBar *toolBar = NULL;
 		if (box) {
 			toolBar = box->visualSubToolBar;
 			toolBar->ClearTools();
 			toolBar->Realize();
 			toolBar->Show(false);
-			if (!box->visualToolBar->GetToolState(mode + Video_Mode_Standard)) box->visualToolBar->ToggleTool(mode + Video_Mode_Standard,true);
+			if (!box->visualToolBar->GetToolState(mode + Video_Mode_Standard)) {
+				box->visualToolBar->ToggleTool(mode + Video_Mode_Standard,true);
+			}
 		}
 
 		// Replace mode
@@ -778,12 +680,8 @@ void VideoDisplay::SetVisualMode(int mode) {
 			default: visual = NULL;
 		}
 
-		// Update size to reflect toolbar changes
+		// Update size as the new typesetting tool may have changed the subtoolbar size
 		UpdateSize();
 	}
-
-	// Render
 	Render();
 }
-
-

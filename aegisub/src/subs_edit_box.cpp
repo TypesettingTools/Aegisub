@@ -54,6 +54,7 @@
 #include "audio_display.h"
 #include "hilimod_textctrl.h"
 #include "video_display.h"
+#include "video_context.h"
 #include "validators.h"
 #include "dialog_colorpicker.h"
 #include "main.h"

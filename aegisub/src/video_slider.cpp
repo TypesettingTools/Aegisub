@@ -43,6 +43,7 @@
 #include <wx/settings.h>
 #include "video_slider.h"
 #include "video_display.h"
+#include "video_context.h"
 #include "subs_grid.h"
 #include "ass_dialogue.h"
 #include "vfr.h"

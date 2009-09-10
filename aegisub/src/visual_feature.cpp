@@ -41,6 +41,7 @@
 
 #include "visual_feature.h"
 #include "gl_wrap.h"
+#include "ass_dialogue.h"
 
 
 

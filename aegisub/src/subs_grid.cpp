@@ -48,6 +48,7 @@
 #include "ass_dialogue.h"
 #include "ass_style.h"
 #include "video_display.h"
+#include "video_context.h"
 #include "vfr.h"
 #include "subs_edit_box.h"
 #include "options.h"

@@ -47,6 +47,8 @@
 #include "utils.h"
 #include "vfr.h"
 #include "libresrc/libresrc.h"
+#include "video_context.h"
+#include "video_display.h"
 
 
 

@@ -37,15 +37,10 @@
 
 #pragma once
 
-
-///////////
-// Headers
-#include "ass_dialogue.h"
-
-
 //////////////
 // Prototypes
 class OpenGLWrapper;
+class AssDialogue;
 
 
 

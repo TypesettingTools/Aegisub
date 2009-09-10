@@ -34,34 +34,16 @@
 /// @ingroup video main_ui
 ///
 
-
 #pragma once
 
-
-///////////
-// Headers
 #include <wx/wxprec.h>
-#ifdef __WINDOWS__
-#include <windows.h>
-#endif
-#include <time.h>
 #include <wx/glcanvas.h>
 #include <wx/combobox.h>
-#include "video_context.h"
 
-
-//////////////
 // Prototypes
-class SubtitlesGrid;
 class VideoSlider;
-class AudioProvider;
-class AudioDisplay;
-class AssDialogue;
-class VideoProvider;
 class VisualTool;
 class VideoBox;
-
-
 
 /// DOCME
 /// @class VideoDisplay
@@ -69,38 +51,37 @@ class VideoBox;
 ///
 /// DOCME
 class VideoDisplay: public wxGLCanvas {
-	friend class AudioProvider;
-	friend class VisualTool;
-
 private:
-
-	/// DOCME
+	/// The current visual typesetting mode
 	int visualMode;
 
-
-	/// DOCME
+	/// The unscaled size of the displayed video
 	wxSize origSize;
 
-	/// DOCME
+	/// The width of the display
+	int w;
+	/// The height of the display
+	int h;
 
-	/// DOCME
-	int w,h;
+	/// The x-coordinate of the top left of the area containing video.
+	/// Always zero unless the display is detatched and is wider than the video.
+	int dx1;
+	/// The x-coordinate of the bottom right of the area containing video.
+	/// Always equal to the width of the video unless the display is detatched and is wider than the video.
+	int dx2;
+	/// The y-coordinate of the top left of the area containing video.
+	/// Always zero unless the display is detatched and is taller than the video.
+	int dy1;
+	/// The y-coordinate of the bottom of the area containing video.
+	/// Always equal to the height of the video unless the display is detatched and is taller than the video.
+	int dy2;
 
-	/// DOCME
+	/// The x position of the mouse
+	int mouse_x;
+	/// The y position of the mouse
+	int mouse_y;
 
-	/// DOCME
-
-	/// DOCME
-
-	/// DOCME
-	int dx1,dx2,dy1,dy2;
-
-	/// DOCME
-
-	/// DOCME
-	int mouse_x,mouse_y;
-
-	/// DOCME
+	/// Lock to disable mouse updates during resize operations
 	bool locked;
 
 	void DrawTVEffects();
@@ -110,9 +91,8 @@ private:
 	void OnKey(wxKeyEvent &event);
 	void OnMouseEvent(wxMouseEvent& event);
 
-	/// @brief DOCME
-	/// @param event 
-	///
+	/// @brief NOP event handler
+	/// @param event Unused
 	void OnEraseBackground(wxEraseEvent &event) {}
 	void OnSizeEvent(wxSizeEvent &event);
 
@@ -122,35 +102,32 @@ private:
 	void OnCopyToClipboardRaw(wxCommandEvent &event);
 	void OnSaveSnapshotRaw(wxCommandEvent &event);
 
-public:
-
-	/// DOCME
-	VisualTool *visual;
-
-	/// DOCME
-	VideoBox *box;
-
-
-	/// DOCME
+	/// The current zoom level, where 1.0 = 100%
 	double zoomValue;
 
-	/// DOCME
+	/// The VideoBox this display is contained in
+	VideoBox *box;
+
+public:
+	/// The current visual typesetting tool
+	VisualTool *visual;
+
+	/// Whether the display can be freely resized by the user
 	bool freeSize;
 
-
-	/// DOCME
+	/// The video position slider; not used by VideoDisplay
 	VideoSlider *ControlSlider;
 
-	/// DOCME
+	/// The dropdown box for selecting zoom levels
 	wxComboBox *zoomBox;
 
-	/// DOCME
+	/// The display for the absolute time of the video position
 	wxTextCtrl *PositionDisplay;
 
-	/// DOCME
+	/// The display for the the video position relative to the current subtitle line
 	wxTextCtrl *SubsPosition;
 
-	VideoDisplay(wxWindow* parent, wxWindowID id, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = 0, const wxString& name = wxPanelNameStr);
+	VideoDisplay(wxWindow* parent, wxWindowID id, VideoBox *box, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = 0, const wxString& name = wxPanelNameStr);
 	~VideoDisplay();
 	void Reset();
 
@@ -167,7 +144,3 @@ public:
 
 	DECLARE_EVENT_TABLE()
 };
-
-
-
-
