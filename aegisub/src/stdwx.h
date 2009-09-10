@@ -47,6 +47,11 @@
 
 /////////
 // Setup
+#ifdef _CRT_SECURE_NO_WARNINGS
+#define _CRT_SECURE_NO_WARNINGS_DEFINED
+#else
+#define _CRT_SECURE_NO_WARNINGS
+#endif
 #define WIN32_LEAN_AND_MEAN
 #define WX_PRE
 
@@ -173,6 +178,10 @@
 #else
 #include <GL/gl.h>
 #include <GL/glu.h>
+#endif
+
+#ifndef _CRT_SECURE_NO_WARNINGS
+#undef _CRT_SECURE_NO_WARNINGS
 #endif
 
 #endif // C++
