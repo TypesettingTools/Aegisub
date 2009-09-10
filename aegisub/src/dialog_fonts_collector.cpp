@@ -53,7 +53,6 @@
 #include "options.h"
 #include "frame_main.h"
 #include "subs_grid.h"
-#include "main.h"
 #include "font_file_lister.h"
 #include "utils.h"
 #include "help_button.h"

@@ -45,7 +45,6 @@
 #include <vector>
 #include "audio_display.h"
 #include "audio_provider_stream.h"
-#include "main.h"
 #include "ass_dialogue.h"
 #include "subs_grid.h"
 #include "ass_file.h"

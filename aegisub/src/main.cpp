@@ -39,15 +39,17 @@
 // Includes
 #include "config.h"
 
-#include <wx/wxprec.h>
+#ifndef WX_PRE
 #include <wx/config.h>
-#include <wx/filename.h>
-#include <wx/msgdlg.h>
-#include <wx/mimetype.h>
-#include <wx/utils.h>
-#include <wx/stdpaths.h>
-#include <wx/filefn.h>
 #include <wx/datetime.h>
+#include <wx/filefn.h>
+#include <wx/filename.h>
+#include <wx/mimetype.h>
+#include <wx/msgdlg.h>
+#include <wx/stdpaths.h>
+#include <wx/utils.h>
+#include <wx/wxprec.h>
+#endif
 
 #include "main.h"
 #include "frame_main.h"

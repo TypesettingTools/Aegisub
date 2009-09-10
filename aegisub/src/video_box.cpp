@@ -59,7 +59,6 @@
 #include "vfr.h"
 #include "subs_edit_box.h"
 #include "utils.h"
-#include "main.h"
 #include "toggle_bitmap.h"
 #include "visual_tool.h"
 #include "help_button.h"

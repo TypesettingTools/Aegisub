@@ -35,18 +35,16 @@
 ///
 
 
-#ifndef MAIN_H
-
-/// DOCME
-#define MAIN_H
-
-
 ///////////////////
 // Include headers
-#include <wx/wxprec.h>
+
+#ifndef WX_PRE
 #include <wx/app.h>
-#include <wx/stackwalk.h>
 #include <wx/file.h>
+#include <wx/stackwalk.h>
+#include <wx/wxprec.h>
+#endif
+
 #include "aegisublocale.h"
 
 
@@ -101,7 +99,7 @@ public:
 	bool OnInit();
 	int OnExit();
 	int OnRun();
-	
+
 #ifdef __WXMAC__
 	// Apple events
 	virtual void MacOpenFile(const wxString &filename);
@@ -139,9 +137,4 @@ public:
 	~StackWalker();
 	void OnStackFrame(const wxStackFrame& frame);
 };
-#endif
-
-
-#endif
-
-
+#endif // wxUSE_STACKWALKER

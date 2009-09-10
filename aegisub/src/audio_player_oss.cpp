@@ -43,7 +43,6 @@
 #include "audio_player_manager.h"
 #include "audio_provider_manager.h"
 #include "utils.h"
-#include "main.h"
 #include "frame_main.h"
 #include "audio_player_oss.h"
 #include "options.h"
