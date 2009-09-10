@@ -45,6 +45,8 @@
 // C++ only
 #ifdef __cplusplus
 
+#include "config.h"
+
 /////////
 // Setup
 #ifdef _CRT_SECURE_NO_WARNINGS
@@ -54,8 +56,6 @@
 #endif
 #define WIN32_LEAN_AND_MEAN
 #define WX_PRE
-
-#include "config.h"
 
 ///////////////
 // STD headers
