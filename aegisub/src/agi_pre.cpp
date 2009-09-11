@@ -36,7 +36,7 @@
 
 
 //
-// Precompiled Header Source File
+// Precompiled Header Source File for MSVC
 //
 // In order to use it, set the project to use agi_pre.h as precompiled header and
 // insert it in every source file (under C/C++ -> Advanced -> Force Includes),
@@ -46,6 +46,11 @@
 // MatroskaParser.c, as well as any possible future .c files.
 //
 
+// Generally agi_pre.h is set as a forced include for everything, including this file.
+// So unless we protect it by this, it gets included twice during production of precompiled
+// headers, which can cause problems with local includes.
+#ifndef AGI_PRE
 #include "config.h"
 
 #include "agi_pre.h"
+#endif
