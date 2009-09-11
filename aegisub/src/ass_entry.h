@@ -42,7 +42,10 @@
 // Headers
 #ifndef AGI_PRE
 #include <wx/string.h>
+
+#include "include/aegisub/exception.h"
 #endif
+
 
 //////////////
 // Prototypes
