@@ -108,7 +108,13 @@ namespace Aegisub {
 		///
 		/// Deriving classes should always use this constructor for initialising
 		/// the base class.
-		Exception(const wxString &msg, Exception *inr = 0) : message(msg), inner(inr) { }
+		Exception(const wxString &msg, const Exception *inr = 0)
+			: message(msg)
+			, inner(0)
+		{
+			if (inr)
+				inner = inr->Copy();
+		}
 
 		/// @brief Default constructor, not implemented
 		///
@@ -118,9 +124,12 @@ namespace Aegisub {
 
 		/// @brief Destructor
 		///
-		/// The inner exception is expected to live on the stack or a similar place
-		/// and it must not be deleted.
-		virtual ~Exception() { }
+		/// The inner exception is expected to have been duplicated in our constructor
+		/// and thus be owned by us.
+		virtual ~Exception()
+		{
+			delete inner;
+		}
 
 	public:
 
@@ -155,6 +164,13 @@ namespace Aegisub {
 		/// @brief Convert to wxString as the error message
 		/// @return The error message
 		operator wxString () { return GetMessage(); }
+
+		/// @brief Create a copy of the exception allocated on the heap
+		/// @return A heap-allocated exception object
+		///
+		/// All deriving classes must implement this explicitly to avoid losing
+		/// information in the duplication.
+		virtual Exception *Copy() const = 0;
 	};
 
 
@@ -179,6 +195,7 @@ namespace Aegisub {
 	public:                                                                          \
 		classname(const wxString &msg) : baseclass(msg) { }                          \
 		const wxChar * GetName() const { return _T(displayname); }                   \
+		Exception * Copy() const { return new classname(*this); }                    \
 	};
 
 /// @brief Convenience macro for declaring exceptions supporting inner exceptions
@@ -193,6 +210,7 @@ namespace Aegisub {
 	public:                                                                          \
 		classname(const wxString &msg, Exception *inner) : baseclass(msg, inner) { } \
 		const wxChar * GetName() const { return _T(displayname); }                   \
+		Exception * Copy() const { return new classname(*this); }                    \
 	};
 
 /// @brief Macro for declaring non-instantiable exception base classes
@@ -276,6 +294,9 @@ namespace Aegisub {
 
 		// Not documented, see  Aegisub::Exception class
 		const wxChar * GetName() const { return _T("filesystem/not_accessible/not_found"); }
+
+		// Not documented, see  Aegisub::Exception class
+		Exception * Copy() const { return new FileNotFoundError(*this); }                    \
 	};
 
 
