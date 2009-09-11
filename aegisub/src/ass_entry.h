@@ -44,9 +44,6 @@
 #include <wx/string.h>
 #endif
 
-#include "include/aegisub/exception.h"
-
-
 //////////////
 // Prototypes
 class AssDialogue;
