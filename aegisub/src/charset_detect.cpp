@@ -41,6 +41,7 @@
 
 #ifdef WITH_UNIVCHARDET
 #ifndef AGI_PRE
+#include <fstream>
 #include <list>
 
 #include <wx/choicdlg.h>
