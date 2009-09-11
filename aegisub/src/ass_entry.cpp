@@ -39,6 +39,10 @@
 // Headers
 #include "config.h"
 
+#ifndef AGI_PRE
+#include "include/aegisub/exception.h"
+#endif
+
 #include "ass_attachment.h"
 #include "ass_dialogue.h"
 #include "ass_entry.h"

@@ -80,7 +80,10 @@
 #include <iconv.h>
 #include <locale.h>
 #include <math.h>
+#ifdef _OPENMP
+// Not all compilers have <omp.h> (example: MSVC Express)
 #include <omp.h>
+#endif
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -231,5 +234,9 @@
 #ifndef _CRT_SECURE_NO_WARNINGS
 #undef _CRT_SECURE_NO_WARNINGS
 #endif
+
+///////////////////
+// Aegisub headers
+#include "include/aegisub/exception.h"
 
 #endif // C++
