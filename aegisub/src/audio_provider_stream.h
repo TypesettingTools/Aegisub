@@ -35,9 +35,6 @@
 ///
 
 
-#pragma once
-
-
 ///////////
 // Headers
 #ifndef AGI_PRE

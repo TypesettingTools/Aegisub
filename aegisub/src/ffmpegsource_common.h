@@ -34,7 +34,6 @@
 /// @ingroup video_input audio_input ffms
 ///
 
-#pragma once
 #ifdef WITH_FFMPEGSOURCE
 
 ///////////

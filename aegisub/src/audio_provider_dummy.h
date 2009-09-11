@@ -35,9 +35,6 @@
 ///
 
 
-#pragma once
-
-
 ///////////
 // Headers
 #include "include/aegisub/audio_provider.h"

@@ -35,9 +35,6 @@
 ///
 
 
-#pragma once
-
-
 ///////////
 // Headers
 #include "config.h"

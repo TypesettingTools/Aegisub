@@ -34,7 +34,6 @@
 /// @ingroup secondary_ui
 ///
 
-#pragma once
 
 #ifndef DIALOG_AUTOMATION_H
 

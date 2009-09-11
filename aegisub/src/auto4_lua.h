@@ -34,7 +34,6 @@
 /// @ingroup scripting
 ///
 
-#pragma once
 
 #ifndef _AUTO4_LUA_H
 

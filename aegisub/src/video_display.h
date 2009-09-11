@@ -34,7 +34,6 @@
 /// @ingroup video main_ui
 ///
 
-#pragma once
 
 #ifndef AGI_PRE
 #include <wx/glcanvas.h>

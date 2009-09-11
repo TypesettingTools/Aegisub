@@ -34,7 +34,6 @@
 /// @ingroup scripting
 ///
 
-#pragma once
 
 #include <wx/string.h>
 

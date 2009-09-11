@@ -34,7 +34,6 @@
 /// @ingroup video_output
 ///
 
-#pragma once
 
 ///////////
 // Headers

@@ -35,7 +35,6 @@
 ///
 
 
-#pragma once
 
 #ifdef WITH_AUTO4_LUA
 #include "auto4_lua_factory.h"

@@ -34,7 +34,6 @@
 /// @ingroup utility
 ///
 
-#pragma once
 
 
 ///////////

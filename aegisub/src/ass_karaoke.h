@@ -34,7 +34,6 @@
 /// @ingroup subs_storage
 ///
 
-#pragma once
 
 #ifndef AGI_PRE
 #include <vector>

@@ -34,7 +34,6 @@
 /// @ingroup unused spelling
 ///
 
-#pragma once
 
 ///////////
 // Headers

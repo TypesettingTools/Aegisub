@@ -35,7 +35,6 @@
 ///
 
 
-#pragma once
 
 #include "quicktime_common.h"
 
