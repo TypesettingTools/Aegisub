@@ -40,8 +40,11 @@
 
 ///////////
 // Headers
+#ifndef AGI_PRE
 #include <list>
 #include <vector>
+#endif
+
 #include "variable_data.h"
 
 

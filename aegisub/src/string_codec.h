@@ -59,7 +59,9 @@
 /// DOCME
 #define _STRING_CODEC_H
 
+#ifndef AGI_PRE
 #include <wx/string.h>
+#endif
 
 wxString inline_string_encode(const wxString &input);
 wxString inline_string_decode(const wxString &input);

@@ -40,10 +40,12 @@
 
 ///////////
 // Headers
+#ifndef AGI_PRE
 #include <wx/toolbar.h>
+#endif
+
 #include "visual_tool.h"
 #include "spline.h"
-
 
 
 /// DOCME

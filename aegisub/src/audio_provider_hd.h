@@ -40,9 +40,12 @@
 
 ///////////
 // Headers
-#include "include/aegisub/audio_provider.h"
+#ifndef AGI_PRE
 #include <wx/file.h>
 #include <wx/thread.h>
+#endif
+
+#include "include/aegisub/audio_provider.h"
 
 
 

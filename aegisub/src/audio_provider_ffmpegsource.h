@@ -41,7 +41,6 @@
 #include "ffmpegsource_common.h"
 
 
-
 /// DOCME
 /// @class FFmpegSourceAudioProvider
 /// @brief DOCME

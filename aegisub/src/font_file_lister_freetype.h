@@ -43,7 +43,6 @@
 #include "font_file_lister.h"
 
 
-
 /// DOCME
 typedef struct FT_LibraryRec_ *FT_Library;
 

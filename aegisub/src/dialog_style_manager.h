@@ -43,11 +43,15 @@
 
 ////////////
 // Includes
-#include <wx/dialog.h>
-#include <wx/combobox.h>
-#include <wx/listbox.h>
-#include <wx/button.h>
+#ifndef AGI_PRE
 #include <vector>
+
+#include <wx/button.h>
+#include <wx/combobox.h>
+#include <wx/dialog.h>
+#include <wx/listbox.h>
+#endif
+
 #include "ass_style_storage.h"
 
 

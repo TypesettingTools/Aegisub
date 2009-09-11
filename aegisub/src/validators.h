@@ -40,11 +40,11 @@
 /// DOCME
 #define VALIDATORS_H
 
-
 ///////////
 // Headers
+#ifndef AGI_PRE
 #include <wx/validate.h>
-
+#endif
 
 
 /// DOCME

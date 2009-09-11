@@ -43,12 +43,16 @@
 
 ///////////
 // Headers
-#include <wx/window.h>
+#ifndef AGI_PRE
+#include <stdint.h>
+
 #include <wx/bitmap.h>
 #include <wx/scrolbar.h>
-#include <stdint.h>
-#include "audio_provider_manager.h"
+#include <wx/window.h>
+#endif
+
 #include "audio_player_manager.h"
+#include "audio_provider_manager.h"
 #include "audio_renderer_spectrum.h"
 
 

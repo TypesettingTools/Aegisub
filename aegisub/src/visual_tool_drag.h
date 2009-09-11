@@ -40,10 +40,12 @@
 
 ///////////
 // Headers
+#ifndef AGI_PRE
 #include <wx/bmpbuttn.h>
 #include <wx/toolbar.h>
-#include "visual_tool.h"
+#endif
 
+#include "visual_tool.h"
 
 
 /// DOCME

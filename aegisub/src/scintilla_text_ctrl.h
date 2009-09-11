@@ -40,8 +40,9 @@
 
 ////////////
 // Includes
+#ifndef AGI_PRE
 #include <wx/stc/stc.h>
-
+#endif
 
 
 /// DOCME

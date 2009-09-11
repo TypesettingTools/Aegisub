@@ -40,9 +40,13 @@
 /// DOCME
 #define TEXT_FILE_WRITER_H
 
-#include <wx/string.h>
+#ifndef AGI_PRE
 #include <fstream>
 #include <memory>
+
+#include <wx/string.h>
+#endif
+
 
 class AegisubCSConv;
 

@@ -40,13 +40,16 @@
 
 ///////////
 // Headers
-#include <wx/textctrl.h>
-#include <wx/sizer.h>
-#include <wx/radiobut.h>
+#ifndef AGI_PRE
 #include <wx/button.h>
-#include <wx/panel.h>
-#include <wx/stattext.h>
 #include <wx/checkbox.h>
+#include <wx/panel.h>
+#include <wx/radiobut.h>
+#include <wx/sizer.h>
+#include <wx/stattext.h>
+#include <wx/textctrl.h>
+#endif
+
 #include "ass_export_filter.h"
 #include "vfr.h"
 

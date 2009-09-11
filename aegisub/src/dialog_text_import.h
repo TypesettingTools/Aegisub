@@ -41,9 +41,10 @@
 
 ///////////
 // Headers
+#ifndef AGI_PRE
 #include <wx/dialog.h>
 #include <wx/textctrl.h>
-
+#endif
 
 
 /// DOCME

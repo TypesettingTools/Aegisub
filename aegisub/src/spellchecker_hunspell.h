@@ -40,10 +40,9 @@
 
 #ifdef WITH_HUNSPELL
 
-#include "include/aegisub/spellchecker.h"
 #include <hunspell/hunspell.hxx>
 
-
+#include "include/aegisub/spellchecker.h"
 
 
 /// @class HunspellSpellChecker

@@ -40,14 +40,20 @@
 
 ///////////
 // Headers
+#ifndef AGI_PRE
 #include <time.h>
+
+#include <list>
+
 #include <wx/glcanvas.h>
 #include <wx/timer.h>
 #include <wx/stopwatch.h>
+#endif
+
 #if ! wxUSE_GLCANVAS
 #error "Aegisub requires wxWidgets to be compiled with OpenGL support."
 #endif
-#include <list>
+
 #ifdef __APPLE__
 #include <OpenGL/GL.h>
 #include <OpenGL/glu.h>
@@ -58,6 +64,7 @@
 /// DOCME
 typedef GLuint GLhandleARB;
 #endif
+
 #include "video_frame.h"
 
 

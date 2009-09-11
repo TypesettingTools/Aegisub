@@ -39,14 +39,18 @@
 /// DOCME
 #define AEGISUB_CHARSET_CONV_H
 
+#ifndef AGI_PRE
 #include <iconv.h>
 #include <wchar.h>
+
 #include <wx/arrstr.h>
-#include <wx/thread.h>
 #include <wx/string.h>
 #include <wx/strconv.h>
+#include <wx/thread.h>
+#endif
 
 #include "aegisub_endian.h"
+
 
 #if !defined(_LIBICONV_VERSION) || _LIBICONV_VERSION < 0x010A || defined(LIBICONV_PLUG)
 

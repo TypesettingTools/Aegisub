@@ -39,15 +39,18 @@
 /// DOCME
 #define _DIALOG_DUMMY_VIDEO_H
 
-#include <wx/dialog.h>
-#include <wx/string.h>
-#include <wx/stattext.h>
-#include <wx/spinctrl.h>
-#include <wx/combobox.h>
+#ifndef AGI_PRE
 #include <wx/checkbox.h>
+#include <wx/combobox.h>
+#include <wx/dialog.h>
+#include <wx/spinctrl.h>
+#include <wx/stattext.h>
+#include <wx/string.h>
 #include <wx/textctrl.h>
-#include "video_provider_dummy.h"
+#endif
+
 #include "colour_button.h"
+#include "video_provider_dummy.h"
 
 
 /// DOCME

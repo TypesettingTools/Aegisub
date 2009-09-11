@@ -40,9 +40,12 @@
 
 ///////////
 // Headers
-#include <wx/string.h>
-#include <wx/arrstr.h>
+#ifndef AGI_PRE
 #include <list>
+
+#include <wx/arrstr.h>
+#include <wx/string.h>
+#endif
 
 
 //////////////

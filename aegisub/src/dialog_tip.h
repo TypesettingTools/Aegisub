@@ -40,9 +40,11 @@
 
 ///////////
 // Headers
-#include <wx/tipdlg.h>
+#ifndef AGI_PRE
 #include <vector>
 
+#include <wx/tipdlg.h>
+#endif
 
 
 /// DOCME

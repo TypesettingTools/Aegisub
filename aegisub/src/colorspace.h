@@ -39,9 +39,10 @@
 /// DOCME
 #define COLORSPACE_H
 
+#ifndef AGI_PRE
 #include <wx/colour.h>
 #include <wx/string.h>
-
+#endif
 
 
 /// @brief DOCME

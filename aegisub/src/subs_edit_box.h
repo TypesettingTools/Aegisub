@@ -40,14 +40,17 @@
 
 ////////////
 // Includes
-#include <wx/spinctrl.h>
-#include <wx/dcmemory.h>
-#include <wx/dcclient.h>
-#include <wx/radiobut.h>
+#ifndef AGI_PRE
+#include <wx/button.h>
 #include <wx/checkbox.h>
 #include <wx/combobox.h>
+#include <wx/dcclient.h>
+#include <wx/dcmemory.h>
 #include <wx/panel.h>
-#include <wx/button.h>
+#include <wx/radiobut.h>
+#include <wx/spinctrl.h>
+#endif
+
 #include "subs_edit_ctrl.h"
 
 

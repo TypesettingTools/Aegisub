@@ -43,7 +43,6 @@
 #include "include/aegisub/audio_provider.h"
 
 
-
 /// DOCME
 /// @class ConvertAudioProvider
 /// @brief DOCME

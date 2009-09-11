@@ -43,9 +43,10 @@
 
 ///////////
 // Headers
-#include <wx/control.h>
+#ifndef AGI_PRE
 #include <wx/bitmap.h>
-
+#include <wx/control.h>
+#endif
 
 
 /// DOCME

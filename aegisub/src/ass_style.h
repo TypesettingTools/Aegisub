@@ -39,7 +39,10 @@
 
 ///////////
 // Headers
+#ifndef AGI_PRE
 #include <wx/colour.h>
+#endif
+
 #include "ass_entry.h"
 
 

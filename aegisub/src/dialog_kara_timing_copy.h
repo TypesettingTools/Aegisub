@@ -43,16 +43,20 @@
 
 ///////////
 // Headers
+#ifndef AGI_PRE
+#include <vector>
+
+#include <wx/checkbox.h>
+#include <wx/combobox.h>
+#include <wx/dialog.h>
 #include <wx/listctrl.h>
 #include <wx/regex.h>
-#include <wx/checkbox.h>
-#include <wx/dialog.h>
-#include <wx/combobox.h>
-#include <vector>
-#include "options.h"
-#include "kana_table.h"
-#include "ass_file.h"
+#endif
+
 #include "ass_entry.h"
+#include "ass_file.h"
+#include "kana_table.h"
+#include "options.h"
 
 
 //////////////

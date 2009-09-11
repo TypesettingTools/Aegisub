@@ -40,8 +40,12 @@
 
 ///////////
 // Headers
+#ifndef AGI_PRE
 #include <wx/string.h>
+#endif
+
 #include "aegisub.h"
+
 
 //////////////
 // Prototypes

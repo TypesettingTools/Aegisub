@@ -42,7 +42,6 @@
 #endif
 
 
-
 /// DOCME
 /// @class PluginManager
 /// @brief DOCME

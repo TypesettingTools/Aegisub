@@ -40,11 +40,13 @@
 
 ///////////
 // Headers
+#ifndef AGI_PRE
 #include <wx/panel.h>
-#include <wx/tglbtn.h>
 #include <wx/sizer.h>
 #include <wx/textctrl.h>
+#include <wx/tglbtn.h>
 #include <wx/toolbar.h>
+#endif
 
 
 //////////////

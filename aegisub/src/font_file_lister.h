@@ -40,9 +40,12 @@
 
 ////////////
 // Includes
-#include <wx/string.h>
-#include <wx/arrstr.h>
+#ifndef AGI_PRE
 #include <map>
+
+#include <wx/arrstr.h>
+#include <wx/string.h>
+#endif
 
 
 ////////////

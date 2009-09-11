@@ -38,7 +38,6 @@
 #pragma once
 
 
-
 /// DOCME
 /// @class Vector2D
 /// @brief DOCME

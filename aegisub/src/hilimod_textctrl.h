@@ -43,8 +43,9 @@
 
 ////////////
 // Includes
+#ifndef AGI_PRE
 #include <wx/textctrl.h>
-
+#endif
 
 
 /// DOCME

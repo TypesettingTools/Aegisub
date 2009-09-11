@@ -40,8 +40,9 @@
 /// DOCME
 #define FFT_H
 
-
+#ifndef AGI_PRE
 #include <stdlib.h> // size_t
+#endif
 
 
 /// DOCME

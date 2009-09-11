@@ -40,9 +40,10 @@
 
 ////////////
 // Includes
+#ifndef AGI_PRE
 #include <wx/button.h>
 #include <wx/textctrl.h>
-
+#endif
 
 
 /// DOCME

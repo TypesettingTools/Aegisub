@@ -40,8 +40,9 @@
 
 ///////////
 // Headers
+#ifndef AGI_PRE
 #include <map>
-
+#endif
 
 
 /// DOCME

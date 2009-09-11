@@ -40,11 +40,14 @@
 
 ///////////
 // Headers
-#include <wx/string.h>
-#include <wx/sizer.h>
+#ifndef AGI_PRE
 #include <wx/arrstr.h>
+#include <wx/sizer.h>
+#include <wx/string.h>
+
 #include <list>
 #include <map>
+#endif
 
 
 //////////////

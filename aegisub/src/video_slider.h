@@ -40,7 +40,9 @@
 
 ////////////
 // Includes
+#ifndef AGI_PRE
 #include <wx/window.h>
+#endif
 
 
 ////////////////////

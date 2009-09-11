@@ -40,12 +40,15 @@
 
 ////////////
 // Includes
-#include <wx/stc/stc.h>
+#ifndef AGI_PRE
 #include <wx/button.h>
-#include <wx/stattext.h>
-#include <wx/textctrl.h>
 #include <wx/dialog.h>
 #include <wx/radiobox.h>
+#include <wx/stattext.h>
+#include <wx/stc/stc.h>
+#include <wx/textctrl.h>
+#endif
+
 
 //////////////
 // Prototypes

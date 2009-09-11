@@ -38,11 +38,14 @@
 
 ///////////
 // Headers
-#include <wx/dialog.h>
-#include <wx/textctrl.h>
-#include <wx/listbox.h>
-#include <wx/combobox.h>
+#ifndef AGI_PRE
 #include <map>
+
+#include <wx/dialog.h>
+#include <wx/combobox.h>
+#include <wx/listbox.h>
+#include <wx/textctrl.h>
+#endif
 
 
 //////////////

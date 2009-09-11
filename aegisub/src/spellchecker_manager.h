@@ -44,7 +44,6 @@
 #include "include/aegisub/spellchecker.h"
 
 
-
 /// DOCME
 /// @class SpellCheckerFactoryManager
 /// @brief DOCME

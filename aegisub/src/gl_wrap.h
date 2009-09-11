@@ -36,6 +36,7 @@
 
 
 #pragma once
+
 #ifdef __APPLE__
 #include <OpenGL/GL.h>
 #include <OpenGL/glu.h>
@@ -46,9 +47,11 @@
 /// DOCME
 typedef GLuint GLhandleARB;
 #endif
+
+#ifndef AGI_PRE
 #include <wx/thread.h>
 #include <wx/colour.h>
-
+#endif
 
 
 /// DOCME

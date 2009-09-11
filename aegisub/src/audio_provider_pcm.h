@@ -40,15 +40,18 @@
 
 ///////////
 // Headers
-#include "include/aegisub/audio_provider.h"
+#ifndef AGI_PRE
+#include <vector>
+
 #include <wx/file.h>
 #include <wx/thread.h>
-#include <vector>
+#endif
 
 #ifdef _WINDOWS
 #include <windows.h>
 #endif
 
+#include "include/aegisub/audio_provider.h"
 
 
 /// DOCME

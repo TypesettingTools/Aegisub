@@ -40,10 +40,12 @@
 
 ///////////
 // Headers
+#ifndef AGI_PRE
+#include <wx/xml/xml.h>
+#endif
+
 #include "ass_dialogue.h"
 #include "subtitle_format.h"
-#include <wx/xml/xml.h>
-
 
 
 /// DOCME

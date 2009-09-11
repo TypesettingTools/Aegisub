@@ -43,7 +43,6 @@
 #include "ass_export_filter.h"
 
 
-
 /// DOCME
 /// @class AssTransformCleanInfoFilter
 /// @brief DOCME

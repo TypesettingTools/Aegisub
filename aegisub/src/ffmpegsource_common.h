@@ -39,12 +39,17 @@
 
 ///////////
 // Headers
-#include <wx/thread.h>
-#include "include/aegisub/aegisub.h"
-#include <ffms.h>
+#ifndef AGI_PRE
 #include <map>
+
 #include <wx/filename.h>
+#include <wx/thread.h>
+#endif
+
+#include <ffms.h>
+
 #include "dialog_progress.h"
+#include "include/aegisub/aegisub.h"
 
 
 /// Index all tracks

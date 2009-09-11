@@ -43,10 +43,11 @@
 
 ///////////
 // Headers
+#ifndef AGI_PRE
 #include <wx/dialog.h>
 #include <wx/gauge.h>
 #include <wx/stattext.h>
-
+#endif
 
 
 /// DOCME

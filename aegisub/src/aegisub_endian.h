@@ -72,9 +72,9 @@
 # endif
 #endif
 
-
+#ifndef AGI_PRE
 #include <stdint.h>
-
+#endif
 
 
 /// DOCME

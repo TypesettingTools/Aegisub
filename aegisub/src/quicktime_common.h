@@ -40,8 +40,13 @@
 #include "config.h"
 
 #ifdef WITH_QUICKTIME
+
+#ifndef AGI_PRE
 #include <wx/thread.h>
+#endif
+
 #include "include/aegisub/aegisub.h"
+
 
 // QT stuff
 #ifdef _MSC_VER

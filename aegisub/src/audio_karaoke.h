@@ -43,10 +43,14 @@
 
 ///////////
 // Headers
-#include <wx/window.h>
+#ifndef AGI_PRE
+#include <vector>
+
 #include <wx/log.h>
 #include <wx/menu.h>
-#include <vector>
+#include <wx/window.h>
+#endif
+
 #include "ass_karaoke.h"
 
 

@@ -41,17 +41,21 @@
 /// DOCME
 #define _AUTO4_BASE_H
 
-#include <wx/string.h>
-#include <wx/sizer.h>
-#include <wx/gauge.h>
-#include <wx/timer.h>
-#include <wx/stattext.h>
-#include <wx/dialog.h>
-#include <wx/textctrl.h>
+#ifndef AGI_PRE
 #include <vector>
+
+#include <wx/dialog.h>
+#include <wx/gauge.h>
+#include <wx/sizer.h>
+#include <wx/stattext.h>
+#include <wx/string.h>
+#include <wx/textctrl.h>
+#include <wx/timer.h>
+#endif
 
 #include "ass_export_filter.h"
 #include "subtitle_format.h"
+
 
 class AssFile;
 class AssStyle;

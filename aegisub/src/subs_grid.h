@@ -40,16 +40,21 @@
 
 ////////////
 // Includes
-#include <wx/wx.h>
-#include <wx/grid.h>
-#include <vector>
+#ifndef AGI_PRE
+#include <fstream>
+#include <iostream>
 #include <list>
-#include "base_grid.h"
+#include <vector>
+
+#include <wx/grid.h>
+#include <wx/wx.h>
+#endif
+
+#include "audio_box.h"
 #include "audio_display.h"
 #include "audio_provider_manager.h"
-#include "audio_box.h"
-#include <iostream>
-#include <fstream>
+#include "base_grid.h"
+
 
 //////////////
 // Prototypes

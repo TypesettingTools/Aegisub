@@ -40,12 +40,16 @@
 
 ////////////
 // Includes
+#ifndef AGI_PRE
+#include <map>
+#include <vector>
+
 #include <wx/dialog.h>
 #include <wx/listctrl.h>
-#include <vector>
-#include <map>
-#include "options.h"
+#endif
+
 #include "hotkeys.h"
+#include "options.h"
 
 
 //////////////

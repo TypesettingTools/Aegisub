@@ -37,9 +37,11 @@
 
 ///////////
 // Headers
+#ifndef AGI_PRE
 #include <list>
-#include <wx/string.h>
 
+#include <wx/string.h>
+#endif
 
 
 /// @class KanaEntry

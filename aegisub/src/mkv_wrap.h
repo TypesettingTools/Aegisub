@@ -40,10 +40,14 @@
 
 ///////////
 // Headers
-#include <stdio.h>
-#include <vector>
-#include <list>
+#ifndef AGI_PRE
 #include <stdint.h>
+#include <stdio.h>
+
+#include <list>
+#include <vector>
+#endif
+
 #include "MatroskaParser.h"
 #include "vfr.h"
 

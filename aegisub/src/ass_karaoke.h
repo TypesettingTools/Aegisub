@@ -36,8 +36,11 @@
 
 #pragma once
 
-#include "ass_dialogue.h"
+#ifndef AGI_PRE
 #include <vector>
+#endif
+
+#include "ass_dialogue.h"
 
 
 /// DOCME

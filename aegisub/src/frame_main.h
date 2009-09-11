@@ -43,15 +43,17 @@
 
 ///////////////////
 // Include headers
-#include <wx/frame.h>
-#include <wx/menu.h>
-#include <wx/log.h>
-#include <wx/timer.h>
-#include <wx/combobox.h>
-#include <wx/sizer.h>
-#include <wx/panel.h>
+#ifndef AGI_PRE
 #include <vector>
 
+#include <wx/combobox.h>
+#include <wx/frame.h>
+#include <wx/log.h>
+#include <wx/menu.h>
+#include <wx/panel.h>
+#include <wx/sizer.h>
+#include <wx/timer.h>
+#endif
 
 
 ////////////////////

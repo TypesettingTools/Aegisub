@@ -43,10 +43,12 @@
 
 ///////////
 // Headers
+#ifndef AGI_PRE
+#include <wx/checkbox.h>
 #include <wx/dialog.h>
 #include <wx/string.h>
 #include <wx/textctrl.h>
-#include <wx/checkbox.h>
+#endif
 
 
 //////////////

@@ -40,10 +40,12 @@
 
 ///////////
 // Headers
+#ifndef AGI_PRE
 #include <list>
 #include <vector>
-#include "include/aegisub/audio_provider.h"
+#endif
 
+#include "include/aegisub/audio_provider.h"
 
 
 /// DOCME

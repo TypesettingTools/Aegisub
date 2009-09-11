@@ -43,9 +43,10 @@
 
 ////////////
 // Includes
+#ifndef AGI_PRE
 #include <wx/frame.h>
 #include <wx/timer.h>
-
+#endif
 
 
 /// DOCME

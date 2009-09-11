@@ -40,11 +40,13 @@
 
 //////////
 // Headers
+#ifndef AGI_PRE
 #include <wx/intl.h>
+#endif
+
+#include "factory_manager.h"
 #include "include/aegisub/video_provider.h"
 #include "video_frame.h"
-#include "factory_manager.h"
-
 
 
 /// DOCME

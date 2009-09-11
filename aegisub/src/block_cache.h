@@ -39,9 +39,10 @@
 #define BLOCK_CACHE_H
 
 
-#include <vector>
+#ifndef AGI_PRE
 #include <algorithm>
-
+#include <vector>
+#endif
 
 
 /// @class BasicDataBlockFactory

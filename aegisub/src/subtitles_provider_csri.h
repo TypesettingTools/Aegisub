@@ -50,7 +50,7 @@
 #ifdef __WINDOWS__
 #include "../../contrib/csri/include/csri/csri.h"
 #else
-#include "csri/csri.h"
+#include <csri/csri.h>
 #endif
 
 

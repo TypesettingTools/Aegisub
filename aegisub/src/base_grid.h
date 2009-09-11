@@ -40,10 +40,13 @@
 
 ////////////
 // Includes
-#include <wx/grid.h>
-#include <wx/scrolbar.h>
+#ifndef AGI_PRE
 #include <list>
 #include <vector>
+
+#include <wx/grid.h>
+#include <wx/scrolbar.h>
+#endif
 
 
 //////////////

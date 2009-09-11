@@ -40,12 +40,16 @@
 
 ///////////
 // Headers
+#ifndef AGI_PRE
 #include <stdio.h>
+#endif
+
+#include <pulse/pulseaudio.h>
+
 #include "include/aegisub/audio_player.h"
 #include "include/aegisub/audio_provider.h"
-#include "utils.h"
 #include "options.h"
-#include <pulse/pulseaudio.h>
+#include "utils.h"
 
 
 //////////////

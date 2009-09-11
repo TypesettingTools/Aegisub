@@ -40,10 +40,11 @@
 
 ///////////
 // Headers
+#ifndef AGI_PRE
 #include <map>
+#endif
+
 #include "variable_data.h"
-
-
 
 /// DOCME
 enum ModType {

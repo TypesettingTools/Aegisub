@@ -40,13 +40,17 @@
 #include "quicktime_common.h"
 
 #ifdef WITH_QUICKTIME
+#ifndef AGI_PRE
+#include <map>
+#include <vector>
+
 #include <wx/dynarray.h>
 #include <wx/filename.h>
-#include <vector>
-#include <map>
+#endif
+
+
 #include "include/aegisub/video_provider.h"
 #include "vfr.h"
-
 
 
 /// DOCME

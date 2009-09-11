@@ -48,7 +48,6 @@
 class MyThes;
 
 
-
 /// DOCME
 /// @class MySpellThesaurus
 /// @brief DOCME

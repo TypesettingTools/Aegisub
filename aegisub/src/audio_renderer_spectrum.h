@@ -42,7 +42,10 @@
 /// Include guard for audio_spectrum.h
 #define AUDIO_SPECTRUM_H
 
+#ifndef AGI_PRE
 #include <stdint.h>
+#endif
+
 #include "audio_provider_manager.h"
 
 

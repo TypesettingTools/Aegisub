@@ -38,10 +38,14 @@
 #pragma once
 
 #include "include/aegisub/video_provider.h"
+#ifndef AGI_PRE
+#include <stdio.h>
+
+#include <vector>
+
 #include <wx/filename.h>
 #include <wx/log.h>
-#include <stdio.h>
-#include <vector>
+#endif
 
 
 /// the maximum allowed header length, in bytes

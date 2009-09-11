@@ -44,10 +44,12 @@
 
 ///////////
 // Headers
-#include "include/aegisub/video_provider.h"
+#ifndef AGI_PRE
 #include <wx/colour.h>
-#include "vfr.h"
+#endif
 
+#include "include/aegisub/video_provider.h"
+#include "vfr.h"
 
 
 /// DOCME

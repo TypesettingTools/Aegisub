@@ -47,7 +47,6 @@
 #include "timeedit_ctrl.h"
 
 
-
 /// DOCME
 /// @class DialogJumpTo
 /// @brief DOCME

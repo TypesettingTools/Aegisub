@@ -41,8 +41,11 @@
 
 ///////////
 // Headers
-#include <fcntl.h>
+#ifndef AGI_PRE
 #include <sys/ioctl.h>
+#endif
+
+#include <fcntl.h>
 #ifdef HAVE_SOUNDCARD_H
 #   include <soundcard.h>
 #else
@@ -50,11 +53,13 @@
 #       include <sys/soundcard.h>
 #   endif
 #endif
+
+
+#include "frame_main.h"
 #include "include/aegisub/audio_player.h"
 #include "include/aegisub/audio_provider.h"
-#include "utils.h"
-#include "frame_main.h"
 #include "options.h"
+#include "utils.h"
 
 
 //////////////

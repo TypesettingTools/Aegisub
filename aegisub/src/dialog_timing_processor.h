@@ -42,14 +42,17 @@
 
 ///////////
 // Headers
+#ifndef AGI_PRE
+#include <vector>
+
+#include <wx/button.h>
+#include <wx/checkbox.h>
+#include <wx/checklst.h>
 #include <wx/dialog.h>
 #include <wx/sizer.h>
-#include <wx/checkbox.h>
-#include <wx/textctrl.h>
 #include <wx/slider.h>
-#include <wx/checklst.h>
-#include <wx/button.h>
-#include <vector>
+#include <wx/textctrl.h>
+#endif
 
 
 //////////////

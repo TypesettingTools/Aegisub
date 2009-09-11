@@ -42,7 +42,6 @@
 #include "include/aegisub/video_provider.h"
 
 
-
 /// DOCME
 /// @class AvisynthVideoProvider
 /// @brief DOCME

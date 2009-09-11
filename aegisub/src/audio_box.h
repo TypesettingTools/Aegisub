@@ -43,17 +43,20 @@
 
 ///////////
 // Headers
-#include <wx/string.h>
-#include <wx/panel.h>
-#include <wx/menu.h>
-#include <wx/scrolbar.h>
-#include <wx/button.h>
+#ifndef AGI_PRE
 #include <wx/bmpbuttn.h>
+#include <wx/button.h>
+#include <wx/menu.h>
+#include <wx/panel.h>
 #include <wx/sashwin.h>
-#include <wx/slider.h>
+#include <wx/scrolbar.h>
 #include <wx/sizer.h>
+#include <wx/slider.h>
+#include <wx/string.h>
 #include <wx/textctrl.h>
 #include <wx/tglbtn.h>
+#endif
+
 
 //////////////
 // Prototypes

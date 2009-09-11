@@ -43,7 +43,6 @@
 #include "visual_tool.h"
 
 
-
 /// DOCME
 /// @class VisualToolRotateXY
 /// @brief DOCME

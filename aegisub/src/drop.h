@@ -43,7 +43,9 @@
 
 ///////////
 // Headers
+#ifndef AGI_PRE
 #include <wx/dnd.h>
+#endif
 
 
 //////////////

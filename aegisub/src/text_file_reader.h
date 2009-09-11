@@ -36,10 +36,14 @@
 
 #pragma once
 
+#ifndef AGI_PRE
+#include <fstream>
+
+#include <iconv.h>
+
 #include <wx/dynarray.h>
 #include <wx/string.h>
-#include <fstream>
-#include <iconv.h>
+#endif
 
 
 /// DOCME

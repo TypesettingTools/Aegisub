@@ -40,12 +40,15 @@
 
 ///////////
 // Headers
-#include <wx/menuitem.h>
-#include <wx/icon.h>
-#include <vector>
-#include <utility>
+#ifndef AGI_PRE
 #include <stdint.h>
 
+#include <utility>
+#include <vector>
+
+#include <wx/icon.h>
+#include <wx/menuitem.h>
+#endif
 
 
 /// DOCME

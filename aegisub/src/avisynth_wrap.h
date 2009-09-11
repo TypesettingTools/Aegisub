@@ -45,7 +45,10 @@
 // Headers
 
 #ifdef WITH_AVISYNTH
+#ifndef AGI_PRE
 #include <windows.h>
+#endif
+
 #include "avisynth.h"
 
 

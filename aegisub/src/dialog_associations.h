@@ -40,10 +40,11 @@
 
 ///////////
 // Headers
+#ifndef AGI_PRE
 #include <wx/dialog.h>
 #include <wx/checklst.h>
 #include <wx/slider.h>
-
+#endif
 
 
 /// DOCME

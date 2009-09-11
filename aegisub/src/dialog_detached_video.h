@@ -38,8 +38,9 @@
 #pragma once
 
 
+#ifndef AGI_PRE
 #include <wx/dialog.h>
-
+#endif
 
 //////////////
 // Prototypes

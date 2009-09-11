@@ -40,10 +40,14 @@
 
 ///////////
 // Headers
+#ifndef AGI_PRE
 #include <vector>
+
 #include <wx/log.h>
 #include <wx/event.h>
 #include <wx/button.h>
+#endif
+
 #include "gl_wrap.h"
 #include "visual_feature.h"
 

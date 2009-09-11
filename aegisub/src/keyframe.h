@@ -40,7 +40,6 @@
 #include "text_file_reader.h"
 
 
-
 /// DOCME
 /// @class KeyFrameFile
 /// @brief DOCME

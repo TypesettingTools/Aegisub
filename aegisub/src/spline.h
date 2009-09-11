@@ -40,11 +40,14 @@
 
 ///////////
 // Headers
-#include <wx/gdicmn.h>
+#ifndef AGI_PRE
 #include <list>
 #include <vector>
-#include "spline_curve.h"
 
+#include <wx/gdicmn.h>
+#endif
+
+#include "spline_curve.h"
 
 
 /// DOCME

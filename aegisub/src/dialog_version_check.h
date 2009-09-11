@@ -40,9 +40,11 @@
 
 ///////////
 // Headers
+#ifndef AGI_PRE
 #include <wx/dialog.h>
-#include <wx/textctrl.h>
 #include <wx/sizer.h>
+#include <wx/textctrl.h>
+#endif
 
 
 //////////////

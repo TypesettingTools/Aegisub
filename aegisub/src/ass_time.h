@@ -40,9 +40,11 @@
 
 ///////////
 // Headers
-#include <wx/string.h>
+#ifndef AGI_PRE
 #include <stdint.h>
 
+#include <wx/string.h>
+#endif
 
 
 /// DOCME

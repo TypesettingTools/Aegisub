@@ -40,9 +40,11 @@
 
 ////////////
 // Includes
+#ifndef AGI_PRE
 #include <wx/dialog.h>
-#include "static_bmp.h"
+#endif
 
+#include "static_bmp.h"
 
 
 /// @class AboutScreen

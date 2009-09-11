@@ -40,10 +40,12 @@
 
 ///////////
 // Headers
-#include "aegisub.h"
-
-#include <wx/string.h>
+#ifndef AGI_PRE
 #include <wx/arrstr.h>
+#include <wx/string.h>
+#endif
+
+#include "aegisub.h"
 
 
 /// @class SpellChecker

@@ -37,7 +37,6 @@
 
 ///////////////////
 // Include headers
-
 #ifndef AGI_PRE
 #include <wx/app.h>
 #include <wx/file.h>
@@ -45,7 +44,6 @@
 #endif
 
 #include "aegisublocale.h"
-
 
 
 //////////////

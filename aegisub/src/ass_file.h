@@ -40,10 +40,14 @@
 
 ///////////
 // Headers
+#ifndef AGI_PRE
 #include <fstream>
 #include <list>
 #include <vector>
+
 #include <wx/arrstr.h>
+#endif
+
 
 //////////////
 // Prototypes

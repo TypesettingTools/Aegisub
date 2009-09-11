@@ -40,10 +40,11 @@
 
 ///////////
 // Headers
-#include <wx/event.h>
+#ifndef AGI_PRE
 #include <wx/combobox.h>
+#include <wx/event.h>
 #include <wx/textctrl.h>
-
+#endif
 
 
 /// DOCME

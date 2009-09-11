@@ -40,10 +40,9 @@
 
 ///////////
 // Headers
+#include "factory_manager.h"
 #include "include/aegisub/subtitles_provider.h"
 #include "video_frame.h"
-#include "factory_manager.h"
-
 
 
 /// DOCME

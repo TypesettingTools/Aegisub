@@ -41,8 +41,12 @@
 ///////////
 // Headers
 #if USE_PRS == 1
-#include "subtitle_format.h"
+
+#ifndef AGI_PRE
 #include <vector>
+#endif
+
+#include "subtitle_format.h"
 
 
 //////////////

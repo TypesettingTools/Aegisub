@@ -40,9 +40,12 @@
 
 ///////////
 // Headers
+#ifndef AGI_PRE
 #include <wx/event.h>
-#include <wx/timer.h>
 #include <wx/thread.h>
+#include <wx/timer.h>
+#endif
+
 #include "aegisub.h"
 
 

@@ -43,7 +43,6 @@
 #include "subtitle_format.h"
 
 
-
 /// DOCME
 /// @class TranStationSubtitleFormat
 /// @brief DOCME

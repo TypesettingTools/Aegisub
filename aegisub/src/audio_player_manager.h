@@ -40,10 +40,14 @@
 
 ///////////
 // Headers
-#include <wx/event.h>
-#include <wx/timer.h>
-#include <wx/thread.h>
+#ifndef AGI_PRE
 #include <stdint.h>
+
+#include <wx/event.h>
+#include <wx/thread.h>
+#include <wx/timer.h>
+#endif
+
 #include "factory_manager.h"
 #include "include/aegisub/audio_player.h"
 

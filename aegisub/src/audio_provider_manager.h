@@ -40,10 +40,12 @@
 
 ///////////
 // Headers
+#ifndef AGI_PRE
 #include <stdint.h>
-#include "factory_manager.h"
-#include "include/aegisub/audio_provider.h"
+#endif
 
+#include "include/aegisub/audio_provider.h"
+#include "factory_manager.h"
 
 
 /// DOCME

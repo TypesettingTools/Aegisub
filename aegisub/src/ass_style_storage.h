@@ -43,8 +43,11 @@
 
 ////////////
 // Includes
-#include <wx/arrstr.h>
+#ifndef AGI_PRE
 #include <list>
+
+#include <wx/arrstr.h>
+#endif
 
 
 //////////////

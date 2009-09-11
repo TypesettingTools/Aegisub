@@ -43,7 +43,6 @@
 #include "vector2d.h"
 
 
-
 /// DOCME
 enum CurveType {
 

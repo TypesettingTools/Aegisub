@@ -37,7 +37,11 @@
 
 ////////////
 // Includes
+
+#ifndef AGI_PRE
 #include <vector>
+#endif
+
 #include "ass_entry.h"
 #include "ass_time.h"
 

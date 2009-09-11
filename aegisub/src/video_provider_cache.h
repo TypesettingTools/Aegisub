@@ -40,10 +40,12 @@
 
 //////////
 // Headers
+#ifndef AGI_PRE
 #include <list>
+#endif
+
 #include "include/aegisub/video_provider.h"
 #include "vfr.h"
-
 
 
 /// DOCME

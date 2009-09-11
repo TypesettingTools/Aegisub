@@ -39,12 +39,16 @@
 // Headers
 #ifdef WITH_DIRECTSOUND
 
+#ifndef AGI_PRE
+#include <mmsystem.h>
+#endif
+
+#include <dsound.h>
+
+#include "frame_main.h"
 #include "include/aegisub/audio_player.h"
 #include "include/aegisub/audio_provider.h"
 #include "utils.h"
-#include "frame_main.h"
-#include <mmsystem.h>
-#include <dsound.h>
 
 
 //////////////

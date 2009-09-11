@@ -43,10 +43,13 @@
 
 ///////////
 // Headers
+#ifndef AGI_PRE
 #include <wx/dialog.h>
-#include <wx/radiobut.h>
-#include <wx/radiobox.h>
 #include <wx/listbox.h>
+#include <wx/radiobox.h>
+#include <wx/radiobut.h>
+#endif
+
 #include "timeedit_ctrl.h"
 
 

@@ -38,16 +38,20 @@
 
 ///////////
 // Headers
+
+#ifndef AGI_PRE
+#include <map>
+#include <vector>
+
 #include <wx/bitmap.h>
 #include <wx/font.h>
+#endif
+
 #ifdef __APPLE__
 #include <OpenGL/GL.h>
 #else
 #include <GL/gl.h>
 #endif
-#include <map>
-#include <vector>
-
 
 
 /// DOCME

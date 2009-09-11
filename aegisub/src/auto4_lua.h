@@ -41,15 +41,18 @@
 /// DOCME
 #define _AUTO4_LUA_H
 
-#include "auto4_base.h"
-#include <wx/thread.h>
+#ifndef AGI_PRE
 #include <wx/event.h>
+#include <wx/thread.h>
+#endif
+
+#include "auto4_base.h"
 
 #ifdef __WINDOWS__
 #include "../../contrib/lua51/src/lua.h"
 #include "../../contrib/lua51/src/lauxlib.h"
 #else
-#include "lua.hpp"
+#include <lua.hpp>
 #endif
 
 class wxWindow;

@@ -43,7 +43,6 @@
 #include "avisynth_wrap.h"
 
 
-
 /// DOCME
 /// @class AvisynthAudioProvider
 /// @brief DOCME

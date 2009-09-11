@@ -42,8 +42,8 @@
 // Includes
 #include <fontconfig/fontconfig.h>
 #include <fontconfig/fcfreetype.h>
-#include "font_file_lister.h"
 
+#include "font_file_lister.h"
 
 
 /// DOCME

@@ -37,11 +37,13 @@
 ///////////
 // Headers
 #ifdef WITH_FFMPEGSOURCE
-#include "include/aegisub/video_provider.h"
-#include "ffmpegsource_common.h"
-#include "vfr.h"
+#ifndef AGI_PRE
 #include <vector>
+#endif
 
+#include "ffmpegsource_common.h"
+#include "include/aegisub/video_provider.h"
+#include "vfr.h"
 
 
 /// DOCME

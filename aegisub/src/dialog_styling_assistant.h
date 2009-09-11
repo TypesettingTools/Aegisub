@@ -43,11 +43,13 @@
 
 ///////////
 // Headers
-#include <wx/dialog.h>
-#include <wx/colour.h>
-#include <wx/textctrl.h>
-#include <wx/listbox.h>
+#ifndef AGI_PRE
 #include <wx/checkbox.h>
+#include <wx/colour.h>
+#include <wx/dialog.h>
+#include <wx/listbox.h>
+#include <wx/textctrl.h>
+#endif
 
 
 //////////////

@@ -43,9 +43,11 @@
 
 ///////////
 // Headers
-#include <wx/stattext.h>
+#ifndef AGI_PRE
 #include <wx/checkbox.h>
 #include <wx/dialog.h>
+#include <wx/stattext.h>
+#endif
 
 #include "scintilla_text_ctrl.h"
 

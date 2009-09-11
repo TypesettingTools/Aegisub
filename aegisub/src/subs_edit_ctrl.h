@@ -40,9 +40,9 @@
 
 ////////////
 // Includes
+#include "scintilla_text_ctrl.h"
 #include "spellchecker_manager.h"
 #include "thesaurus.h"
-#include "scintilla_text_ctrl.h"
 
 
 //////////////

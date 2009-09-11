@@ -40,9 +40,10 @@
 
 ////////////
 // Includes
+#ifndef AGI_PRE
 #include <wx/bitmap.h>
 #include <wx/window.h>
-
+#endif
 
 
 /// DOCME

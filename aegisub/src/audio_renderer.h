@@ -36,9 +36,13 @@
 /// Base classes for audio renderers (spectrum, waveform, ...)
 
 
+#ifndef AGI_PRE
+#include <memory>
+
 #include <wx/dc.h>
 #include <wx/gdicmn.h>
-#include <memory>
+#endif
+
 #include "block_cache.h"
 
 

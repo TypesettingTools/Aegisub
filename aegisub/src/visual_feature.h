@@ -43,7 +43,6 @@ class OpenGLWrapper;
 class AssDialogue;
 
 
-
 /// DOCME
 enum DraggableFeatureType {
 

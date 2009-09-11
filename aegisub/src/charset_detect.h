@@ -42,7 +42,6 @@
 #include "../universalchardet/nsUniversalDetector.h"
 
 
-
 /// DOCME
 /// @class CharSetDetect
 /// @brief DOCME

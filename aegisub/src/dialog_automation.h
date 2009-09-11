@@ -41,14 +41,17 @@
 /// DOCME
 #define DIALOG_AUTOMATION_H
 
+#ifndef AGI_PRE
+#include <vector>
+
+#include <wx/button.h>
 #include <wx/dialog.h>
 #include <wx/listctrl.h>
-#include <wx/button.h>
-#include <vector>
+#endif
 
 
 /// DOCME
-namespace Automation4 { class ScriptManager; class Script; class AutoloadScriptManager; };
+namespace Automation4 { class ScriptManager; class Script; };
 
 
 /// DOCME

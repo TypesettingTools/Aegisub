@@ -39,17 +39,18 @@
 /// DOCME
 #define DIALOG_COLORPICKER_H
 
-
-#include <wx/dialog.h>
-#include <wx/spinctrl.h>
-#include <wx/colour.h>
-#include <wx/bitmap.h>
-#include <wx/textctrl.h>
-#include <wx/button.h>
-#include <wx/choice.h>
-#include <wx/statbmp.h>
+#ifndef AGI_PRE
 #include <vector>
 
+#include <wx/bitmap.h>
+#include <wx/button.h>
+#include <wx/choice.h>
+#include <wx/colour.h>
+#include <wx/dialog.h>
+#include <wx/spinctrl.h>
+#include <wx/statbmp.h>
+#include <wx/textctrl.h>
+#endif
 
 
 /// DOCME

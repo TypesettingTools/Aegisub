@@ -37,15 +37,16 @@
 
 ///////////
 // Headers
+#ifndef AGI_PRE
+#include <vector>
+#endif
+
 #include "ass_entry.h"
 #include "boost/shared_ptr.hpp"
-#include <vector>
-
 
 
 /// DOCME
 typedef std::vector<unsigned char> DataVec;
-
 
 
 /// @class AttachData

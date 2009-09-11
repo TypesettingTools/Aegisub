@@ -43,9 +43,12 @@
 
 ///////////
 // Headers
-#include <wx/string.h>
-#include <wx/accel.h>
+#ifndef AGI_PRE
 #include <map>
+
+#include <wx/accel.h>
+#include <wx/string.h>
+#endif
 
 
 //////////////

@@ -48,7 +48,6 @@
 class AssDialogue;
 
 
-
 /// DOCME
 /// @class MKVSubtitleFormat
 /// @brief DOCME

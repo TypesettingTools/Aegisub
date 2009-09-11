@@ -40,10 +40,11 @@
 
 ////////////
 // Includes
+#ifndef AGI_PRE
 #include <map>
 
 #include <wx/button.h>
-
+#endif
 
 
 /// DOCME
