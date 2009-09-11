@@ -46,11 +46,14 @@
 #include <wx/dir.h>
 #endif
 
-#include <shlobj.h>
 #include <ft2build.h>
 #include FT_FREETYPE_H
 #include FT_GLYPH_H
 #include FT_SFNT_NAMES_H
+
+#ifdef WIN32
+#include <shlobj.h>
+#endif
 
 #include "charset_conv.h"
 #include "font_file_lister_freetype.h"
