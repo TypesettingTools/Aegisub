@@ -48,6 +48,7 @@
 #include <wx/combobox.h>
 #include <wx/dialog.h>
 #include <wx/radiobox.h>
+#include <wx/radiobut.h>
 #include <wx/string.h>
 #include <wx/textctrl.h>
 #endif

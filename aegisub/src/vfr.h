@@ -44,16 +44,16 @@
 
 ///////////
 // Headers
-#ifndef AGI_PRE
 
+#ifndef AGI_PRE
 #include <list>
 #include <vector>
 
 #include <wx/dynarray.h>
+#include <wx/string.h>
 #endif
 
 #include "include/aegisub/aegisub.h"
-
 
 
 /// DOCME
