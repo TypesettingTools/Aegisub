@@ -39,7 +39,6 @@
 // Headers
 #include "config.h"
 
-#include "thesaurus.h"
 #include "thesaurus_myspell.h"
 
 

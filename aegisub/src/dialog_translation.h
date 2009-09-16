@@ -31,8 +31,7 @@
 
 /// @file dialog_translation.h
 /// @see dialog_translation.cpp
-/// @ingroup tools_ui
-///
+/// @ingroup tools_ui///
 
 
 #ifndef DIALOG_TRANSLATION_H

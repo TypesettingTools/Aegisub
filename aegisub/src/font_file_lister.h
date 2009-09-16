@@ -35,9 +35,6 @@
 ///
 
 
-#pragma once
-
-
 ////////////
 // Includes
 #ifndef AGI_PRE

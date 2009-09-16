@@ -50,7 +50,6 @@
 #include "ass_override.h"
 #include "ass_style.h"
 #include "ass_style_storage.h"
-#include "colour_button.h"
 #include "dialog_colorpicker.h"
 #include "dialog_style_editor.h"
 #include "help_button.h"

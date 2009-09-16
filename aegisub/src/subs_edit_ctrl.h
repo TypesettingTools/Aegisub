@@ -35,9 +35,6 @@
 ///
 
 
-#pragma once
-
-
 ////////////
 // Includes
 #include "scintilla_text_ctrl.h"

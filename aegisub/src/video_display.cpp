@@ -54,7 +54,6 @@
 #endif
 
 #include "ass_dialogue.h"
-#include "gl_wrap.h"
 #include "hotkeys.h"
 #include "options.h"
 #include "utils.h"

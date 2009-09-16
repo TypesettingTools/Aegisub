@@ -59,7 +59,6 @@
 #include "options.h"
 #include "standard_paths.h"
 #include "subs_edit_box.h"
-#include "subs_edit_ctrl.h"
 #include "subs_grid.h"
 #include "subtitles_provider_manager.h"
 #include "tooltip_manager.h"
