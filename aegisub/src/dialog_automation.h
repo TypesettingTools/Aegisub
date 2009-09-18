@@ -35,10 +35,8 @@
 ///
 
 
-#ifndef DIALOG_AUTOMATION_H
+#pragma once
 
-/// DOCME
-#define DIALOG_AUTOMATION_H
 
 #ifndef AGI_PRE
 #include <vector>
@@ -140,7 +138,3 @@ enum {
 	/// DOCME
 	Automation_Reload_Autoload
 };
-
-#endif
-
-

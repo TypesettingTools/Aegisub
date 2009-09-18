@@ -35,10 +35,7 @@
 ///
 
 
-#ifndef DIALOG_RESAMPLE_H
-
-/// DOCME
-#define DIALOG_RESAMPLE_H
+#pragma once
 
 
 ///////////
@@ -154,8 +151,3 @@ enum {
 	/// DOCME
 	TEXT_MARGIN_B
 };
-
-
-#endif
-
-

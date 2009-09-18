@@ -35,10 +35,7 @@
 ///
 
 
-#ifndef DIALOG_PROGRESS_H
-
-/// DOCME
-#define DIALOG_PROGRESS_H
+#pragma once
 
 
 ///////////
@@ -108,8 +105,3 @@ public:
 	wxThread::ExitCode Entry();
 	void Close();
 };
-
-
-#endif
-
-

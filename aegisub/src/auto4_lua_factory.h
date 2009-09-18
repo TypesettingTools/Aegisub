@@ -35,10 +35,8 @@
 ///
 
 
-#ifndef _AUTO4_LUA_FACTORY_H
+#pragma once
 
-/// DOCME
-#define _AUTO4_LUA_FACTORY_H
 
 #include "auto4_base.h"
 
@@ -61,7 +59,3 @@ namespace Automation4 {
 	};
 
 };
-
-#endif
-
-

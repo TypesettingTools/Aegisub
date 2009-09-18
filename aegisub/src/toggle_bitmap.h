@@ -35,10 +35,7 @@
 ///
 
 
-#ifndef TOGGLE_BITMAP_H
-
-/// DOCME
-#define TOGGLE_BITMAP_H
+#pragma once
 
 
 ///////////
@@ -74,8 +71,3 @@ public:
 
 	DECLARE_EVENT_TABLE()
 };
-
-
-#endif
-
-

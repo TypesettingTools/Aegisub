@@ -35,10 +35,8 @@
 ///
 
 
-#ifndef _AUTO4_LUA_H
+#pragma once
 
-/// DOCME
-#define _AUTO4_LUA_H
 
 #ifndef AGI_PRE
 #include <wx/event.h>
@@ -389,7 +387,3 @@ namespace Automation4 {
 	};
 
 };
-
-#endif
-
-

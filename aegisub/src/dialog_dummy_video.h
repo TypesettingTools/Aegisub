@@ -34,10 +34,9 @@
 /// @ingroup secondary_ui
 ///
 
-#ifndef _DIALOG_DUMMY_VIDEO_H
 
-/// DOCME
-#define _DIALOG_DUMMY_VIDEO_H
+#pragma once
+
 
 #ifndef AGI_PRE
 #include <wx/checkbox.h>
@@ -118,8 +117,3 @@ enum {
 	/// DOCME
 	Dummy_Video_Length,
 };
-
-
-#endif
-
-

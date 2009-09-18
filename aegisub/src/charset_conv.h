@@ -34,10 +34,9 @@
 /// @ingroup utility
 ///
 
-#ifndef AEGISUB_CHARSET_CONV_H
 
-/// DOCME
-#define AEGISUB_CHARSET_CONV_H
+#pragma once
+
 
 #ifndef AGI_PRE
 #include <iconv.h>
@@ -172,7 +171,3 @@ extern AegisubCSConv& csConvLocal;
 #		define WCHAR_T_ENCODING ((Endian::MachineToBig((uint32_t)1) == 1) ? "UTF-16BE" : "UTF-16LE")
 #	endif
 #endif
-
-#endif
-
-

@@ -35,10 +35,7 @@
 ///
 
 
-#ifndef HOTKEY_H
-
-/// DOCME
-#define HOTKEY_H
+#pragma once
 
 
 ///////////
@@ -137,8 +134,3 @@ public:
 ///////////////////
 // Global instance
 extern HotkeyManager Hotkeys;
-
-
-#endif
-
-

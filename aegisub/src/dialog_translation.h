@@ -34,10 +34,7 @@
 /// @ingroup tools_ui///
 
 
-#ifndef DIALOG_TRANSLATION_H
-
-/// DOCME
-#define DIALOG_TRANSLATION_H
+#pragma once
 
 
 ///////////
@@ -171,8 +168,3 @@ enum {
 	/// DOCME
 	BUTTON_TRANS_PLAY_VIDEO
 };
-
-
-#endif
-
-

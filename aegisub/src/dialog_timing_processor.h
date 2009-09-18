@@ -34,10 +34,8 @@
 /// @ingroup tools_ui
 ///
 
-#ifndef DIALOG_TIMING_PROCESSOR
 
-/// DOCME
-#define DIALOG_TIMING_PROCESSOR
+#pragma once
 
 
 ///////////
@@ -193,8 +191,3 @@ enum {
 	/// DOCME
 	TIMING_STYLE_LIST
 };
-
-
-#endif
-
-

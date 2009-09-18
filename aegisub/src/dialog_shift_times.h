@@ -35,10 +35,7 @@
 ///
 
 
-#ifndef DIALOG_SHIFT_TIMES_H
-
-/// DOCME
-#define DIALOG_SHIFT_TIMES_H
+#pragma once
 
 
 ///////////
@@ -151,8 +148,3 @@ enum {
 	/// DOCME
 	SHIFT_CLEAR_HISTORY
 };
-
-
-#endif
-
-

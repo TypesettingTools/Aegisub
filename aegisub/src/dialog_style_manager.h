@@ -35,10 +35,7 @@
 ///
 
 
-#ifndef DIALOG_STYLE_MANAGER_H
-
-/// DOCME
-#define DIALOG_STYLE_MANAGER_H
+#pragma once
 
 
 ////////////
@@ -314,8 +311,3 @@ public:
 	DialogStyleManagerEvent(DialogStyleManager *control);
 	DECLARE_EVENT_TABLE()
 };
-
-
-#endif
-
-

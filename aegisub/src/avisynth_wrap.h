@@ -35,10 +35,7 @@
 ///
 
 
-#ifndef AVISYNTH_WRAP_H
-
-/// DOCME
-#define AVISYNTH_WRAP_H
+#pragma once
 
 
 ///////////
@@ -100,6 +97,3 @@ public:
 };
 
 #endif
-#endif
-
-

@@ -35,10 +35,8 @@
 ///
 
 
-#ifndef _AUTO4_BASE_H
+#pragma once
 
-/// DOCME
-#define _AUTO4_BASE_H
 
 #ifndef AGI_PRE
 #include <vector>
@@ -554,7 +552,3 @@ namespace Automation4 {
 	};
 
 };
-
-#endif
-
-

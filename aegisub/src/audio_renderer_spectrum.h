@@ -37,10 +37,8 @@
 /// Calculate and render a frequency-power spectrum for PCM audio data.
 
 
-#ifndef AUDIO_SPECTRUM_H
+#pragma once
 
-/// Include guard for audio_spectrum.h
-#define AUDIO_SPECTRUM_H
 
 #ifndef AGI_PRE
 #include <stdint.h>
@@ -109,8 +107,3 @@ public:
 	/// @param _power_scale Amplification factor to use.
 	void SetScaling(float _power_scale);
 };
-
-
-#endif
-
-

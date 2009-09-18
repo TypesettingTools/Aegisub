@@ -35,10 +35,7 @@
 ///
 
 
-#ifndef SPLASH_H
-
-/// DOCME
-#define SPLASH_H
+#pragma once
 
 
 ////////////
@@ -76,8 +73,3 @@ public:
 
 	DECLARE_EVENT_TABLE()
 };
-
-
-#endif
-
-

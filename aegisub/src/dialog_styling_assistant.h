@@ -35,10 +35,7 @@
 ///
 
 
-#ifndef DIALOG_STYLING_ASSISTANT_H
-
-/// DOCME
-#define DIALOG_STYLING_ASSISTANT_H
+#pragma once
 
 
 ///////////
@@ -176,8 +173,3 @@ enum {
 	/// DOCME
 	BUTTON_PLAY_AUDIO
 };
-
-
-#endif
-
-

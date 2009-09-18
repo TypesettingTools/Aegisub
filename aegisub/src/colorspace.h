@@ -34,10 +34,9 @@
 /// @ingroup utility
 ///
 
-#ifndef COLORSPACE_H
 
-/// DOCME
-#define COLORSPACE_H
+#pragma once
+
 
 #ifndef AGI_PRE
 #include <wx/colour.h>
@@ -84,8 +83,3 @@ wxString color_to_html(wxColour color);
 
 // Convert a HTML hex string to a wxColour
 wxColour html_to_color(wxString html);
-
-
-#endif
-
-

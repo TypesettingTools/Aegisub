@@ -35,10 +35,7 @@
 ///
 
 
-#ifndef ASS_STYLE_STORAGE_H
-
-/// DOCME
-#define ASS_STYLE_STORAGE_H
+#pragma once
 
 
 ////////////
@@ -73,8 +70,3 @@ public:
 	void Save(wxString name);
 	void Load(wxString name);
 };
-
-
-#endif
-
-

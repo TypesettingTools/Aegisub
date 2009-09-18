@@ -34,10 +34,8 @@
 /// @ingroup secondary_ui
 ///
 
-#ifndef _DIALOG_TEXT_IMPORT_H
+#pragma once
 
-/// DOCME
-#define _DIALOG_TEXT_IMPORT_H
 
 ///////////
 // Headers
@@ -82,6 +80,3 @@ enum {
 	/// DOCME
 	EDIT_COMMENT_STARTER,
 };
-#endif
-
-

@@ -35,10 +35,7 @@
 ///
 
 
-#ifndef DIALOG_STYLE_EDITOR_H
-
-/// DOCME
-#define DIALOG_STYLE_EDITOR_H
+#pragma once
 
 
 ////////////
@@ -225,8 +222,3 @@ public:
 
 	DECLARE_EVENT_TABLE()
 };
-
-
-#endif
-
-

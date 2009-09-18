@@ -35,10 +35,7 @@
 ///
 
 
-#ifndef AUDIO_BOX_H
-
-/// DOCME
-#define AUDIO_BOX_H
+#pragma once
 
 
 ///////////
@@ -312,8 +309,3 @@ enum {
 	/// DOCME
 	Audio_Check_Spectrum
 };
-
-
-#endif
-
-

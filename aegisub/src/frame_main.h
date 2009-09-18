@@ -35,10 +35,7 @@
 ///
 
 
-#ifndef FRAME_MAIN_H
-
-/// DOCME
-#define FRAME_MAIN_H
+#pragma once
 
 
 ///////////////////
@@ -793,8 +790,3 @@ enum {
 	/// DOCME
 	Menu_Automation_Macro = 2700
 };
-
-
-#endif
-
-

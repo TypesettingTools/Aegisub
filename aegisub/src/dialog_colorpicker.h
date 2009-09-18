@@ -34,10 +34,9 @@
 /// @ingroup tools_ui
 ///
 
-#ifndef DIALOG_COLORPICKER_H
 
-/// DOCME
-#define DIALOG_COLORPICKER_H
+#pragma once
+
 
 #ifndef AGI_PRE
 #include <vector>
@@ -390,8 +389,3 @@ enum {
 	/// DOCME
 	BUTTON_RGBADJUST
 };
-
-
-#endif
-
-

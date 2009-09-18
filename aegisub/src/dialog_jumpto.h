@@ -35,10 +35,7 @@
 ///
 
 
-#ifndef DIALOG_JUMPTO_H
-
-/// DOCME
-#define DIALOG_JUMPTO_H
+#pragma once
 
 
 ///////////
@@ -84,7 +81,3 @@ public:
 
 	DECLARE_EVENT_TABLE()
 };
-
-#endif
-
-

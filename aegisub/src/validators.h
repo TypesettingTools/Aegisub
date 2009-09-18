@@ -35,10 +35,8 @@
 ///
 
 
-#ifndef VALIDATORS_H
+#pragma once
 
-/// DOCME
-#define VALIDATORS_H
 
 ///////////
 // Headers
@@ -85,8 +83,3 @@ public:
 
 	DECLARE_EVENT_TABLE();
 };
-
-
-#endif
-
-

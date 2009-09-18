@@ -36,10 +36,8 @@
 
 // The dummy video provider needs a header, since it needs to be created directly as a special case
 
-#ifndef _VIDEO_PROVIDER_DUMMY_H
 
-/// DOCME
-#define _VIDEO_PROVIDER_DUMMY_H
+#pragma once
 
 
 ///////////
@@ -122,7 +120,3 @@ public:
 
 	wxString GetDecoderName();
 };
-
-#endif
-
-

@@ -34,11 +34,8 @@
 /// @ingroup utility
 ///
 
+#pragma once
 
-#ifndef TEXT_FILE_WRITER_H
-
-/// DOCME
-#define TEXT_FILE_WRITER_H
 
 #ifndef AGI_PRE
 #include <fstream>
@@ -74,7 +71,3 @@ public:
 
 	void WriteLineToFile(wxString line, bool addLineBreak=true);
 };
-
-#endif
-
-

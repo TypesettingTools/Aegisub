@@ -35,10 +35,7 @@
 ///
 
 
-#ifndef AUDIO_DISPLAY_H
-
-/// DOCME
-#define AUDIO_DISPLAY_H
+#pragma once
 
 
 ///////////
@@ -319,8 +316,3 @@ enum {
 	/// DOCME
 	Audio_Update_Timer = 1700
 };
-
-
-#endif
-
-

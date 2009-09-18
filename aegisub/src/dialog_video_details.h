@@ -34,10 +34,8 @@
 /// @ingroup secondary_ui
 ///
 
-#ifndef _DIALOG_VIDEO_DETAILS_H
+#pragma once
 
-/// DOCME
-#define _DIALOG_VIDEO_DETAILS_H
 
 ///////////
 // Headers
@@ -70,7 +68,3 @@ private:
 public:
 	DialogVideoDetails(wxWindow *parent);
 };
-
-#endif
-
-

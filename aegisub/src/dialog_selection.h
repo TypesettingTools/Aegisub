@@ -35,10 +35,7 @@
 ///
 
 
-#ifndef DIALOG_SELECTION_H
-
-/// DOCME
-#define DIALOG_SELECTION_H
+#pragma once
 
 
 ///////////
@@ -131,7 +128,3 @@ enum {
 	/// DOCME
 	MATCH_COMMENTS_CHECKBOX
 };
-
-#endif
-
-

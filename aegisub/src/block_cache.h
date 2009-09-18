@@ -34,9 +34,7 @@
 /// @brief Template class for creating caches for blocks of data
 
 
-// Include guard
-#ifndef BLOCK_CACHE_H
-#define BLOCK_CACHE_H
+#pragma once
 
 
 #ifndef AGI_PRE
@@ -310,8 +308,3 @@ public:
 		return 0;
 	}
 };
-
-
-// Include guard
-#endif
-

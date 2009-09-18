@@ -35,10 +35,7 @@
 ///
 
 
-#ifndef DROP_H
-
-/// Inclusion guard
-#define DROP_H
+#pragma once
 
 
 ///////////
@@ -69,5 +66,3 @@ public:
 	bool OnDropFiles(wxCoord x, wxCoord y, const wxArrayString& filenames);
 	//wxDragResult OnEnter(wxCoord x, wxCoord y, wxDragResult def);
 };
-
-#endif

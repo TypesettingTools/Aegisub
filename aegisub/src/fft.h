@@ -35,10 +35,8 @@
 ///
 
 
-#ifndef FFT_H
+#pragma once
 
-/// DOCME
-#define FFT_H
 
 #ifndef AGI_PRE
 #include <stdlib.h> // size_t
@@ -62,8 +60,3 @@ public:
 	unsigned int ReverseBits(unsigned int index, unsigned int bits);
 	float FrequencyAtIndex(unsigned int baseFreq, unsigned int n_samples, unsigned int index);
 };
-
-
-#endif
-
-

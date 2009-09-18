@@ -35,10 +35,7 @@
 ///
 
 
-#ifndef DIALOG_KARA_TIMING_COPY_H
-
-/// DOCME
-#define DIALOG_KARA_TIMING_COPY_H
+#pragma once
 
 
 ///////////
@@ -156,8 +153,3 @@ enum {
 	/// DOCME
 	TEXT_DEST
 };
-
-
-#endif
-
-

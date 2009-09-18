@@ -34,10 +34,8 @@
 /// @ingroup utility
 ///
 
-#ifndef LOCALE_H
 
-/// DOCME
-#define LOCALE_H
+#pragma once
 
 
 //////////////
@@ -68,8 +66,3 @@ public:
 	void Init(int language);
 	int PickLanguage();
 };
-
-
-#endif
-
-

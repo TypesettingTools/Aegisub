@@ -35,10 +35,7 @@
 ///
 
 
-#ifndef AUDIO_KARAOKE_H
-
-/// DOCME
-#define AUDIO_KARAOKE_H
+#pragma once
 
 
 ///////////
@@ -190,8 +187,3 @@ public:
 
 	DECLARE_EVENT_TABLE()
 };
-
-
-#endif
-
-
