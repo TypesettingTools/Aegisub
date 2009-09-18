@@ -34,7 +34,6 @@
 /// @brief Template class for creating caches for blocks of data
 
 
-#pragma once
 
 
 #ifndef AGI_PRE

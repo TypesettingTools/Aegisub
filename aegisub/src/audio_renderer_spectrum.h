@@ -37,7 +37,6 @@
 /// Calculate and render a frequency-power spectrum for PCM audio data.
 
 
-#pragma once
 
 
 #ifndef AGI_PRE

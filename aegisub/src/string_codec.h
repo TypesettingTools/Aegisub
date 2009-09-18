@@ -54,7 +54,6 @@
 ///
 /// The encoded string should be usable in any kind of field in an ASS file.
 
-#pragma once
 
 #ifndef AGI_PRE
 #include <wx/string.h>

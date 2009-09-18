@@ -37,7 +37,6 @@
 // The dummy video provider needs a header, since it needs to be created directly as a special case
 
 
-#pragma once
 
 
 ///////////

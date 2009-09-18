@@ -34,7 +34,6 @@
 /// @ingroup tools_ui///
 
 
-#pragma once
 
 
 ///////////
