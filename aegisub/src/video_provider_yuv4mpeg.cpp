@@ -123,9 +123,9 @@ void YUV4MPEGVideoProvider::LoadVideo(const wxString _filename) {
 		case Y4M_PIXFMT_420JPEG:
 		case Y4M_PIXFMT_420MPEG2:
 		case Y4M_PIXFMT_420PALDV:
-			chroma_sz	= (w * h) / 2; break;
+			chroma_sz	= (w * h) >> 2; break;
 		case Y4M_PIXFMT_422:
-			chroma_sz	= (w / 2) * h; break; // should be safe to assume that width is mod2
+			chroma_sz	= (w * h) >> 1; break;
 		/// @todo add support for more pixel formats
 		default:
 			throw wxString(_T("Unsupported pixel format"));
