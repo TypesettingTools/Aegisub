@@ -278,7 +278,7 @@ wxArrayString PortAudioPlayer::GetOutputDevices(wxString favorite) {
 }
 
 bool PortAudioPlayer::IsPlaying() {
-	return Pa_IsStreamActive(stream);
+	return Pa_IsStreamActive(stream) ? true : false;
 }
 
 #endif // WITH_PORTAUDIO
