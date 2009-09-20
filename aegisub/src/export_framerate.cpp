@@ -278,7 +278,11 @@ void AssTransformFramerateFilter::TransformFrameRate(AssFile *subs) {
 	AssDialogue *curDialogue;
 	for (entryIter cur=subs->Line.begin();cur!=subs->Line.end();cur++) {
 		curEntry = *cur;
-		curEntry->SetStartMS(Input->GetTimeAtFrame(Output->GetFrameAtTime(curEntry->GetStartMS(),true),true));
+		// why the christ was this ever done to begin with?
+		// yes, let's framerate compensate the start timestamp and then use the changed value to
+		// compensate it AGAIN 20 lines down? I DO NOT GET IT
+		// -Fluff
+		//curEntry->SetStartMS(Input->GetTimeAtFrame(Output->GetFrameAtTime(curEntry->GetStartMS(),true),true));
 		curDialogue = AssEntry::GetAsDialogue(curEntry);
 
 		// Update dialogue entries
