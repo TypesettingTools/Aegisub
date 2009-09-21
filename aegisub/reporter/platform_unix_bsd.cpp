@@ -16,19 +16,21 @@
 
 /// @@file platform_unix_bsd.cpp
 /// @brief BSD Platform extensions.
+
 #ifndef R_PRECOMP
 #include <wx/string.h>
 #endif
-
-#include "include/platform.h"
-#include "platform_unix.h"
-#include "platform_unix_bsd.h"
 
 extern "C" {
 #include <sys/utsname.h>
 #include <sys/types.h>
 #include <sys/sysctl.h>
 }
+
+#include "include/platform.h"
+#include "platform_unix.h"
+#include "platform_unix_bsd.h"
+
 
 wxString PlatformUnixBSD::CPUId() {
 	char id[300];

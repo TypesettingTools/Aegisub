@@ -19,33 +19,45 @@
 
 #define R_PRECOMP
 
-#include <wx/wxprec.h>
+// C + System.
+#include <locale.h>
+#include <stdint.h>
 
+// C++ std
+#include <map>
+
+// 3rd party packages.
+#include <curl/curl.h>
+
+
+// WX headers
+#include <wx/wxprec.h>
 #include <wx/app.h>
+#include <wx/apptrait.h>
 #include <wx/button.h>
+#include <wx/clipbrd.h>
 #include <wx/cmdline.h>
 #include <wx/dialog.h>
 #include <wx/event.h>
+#include <wx/file.h>
+#include <wx/fileconf.h>
 #include <wx/font.h>
 #include <wx/frame.h>
 #include <wx/gdicmn.h>
 #include <wx/intl.h>
+#include <wx/listctrl.h>
 #include <wx/log.h>
 #include <wx/panel.h>
+#include <wx/progdlg.h>
 #include <wx/sizer.h>
 #include <wx/stattext.h>
+#include <wx/stdpaths.h>
 #include <wx/string.h>
+#include <wx/textctrl.h>
 #include <wx/version.h>
+#include <wx/wfstream.h>
 #include <wx/window.h>
 #include <wx/wx.h>
 #include <wx/wxchar.h>
+#include <wx/wxprec.h>
 #include <wx/xml/xml.h>
-#include <wx/listctrl.h>
-#include <wx/clipbrd.h>
-#include <wx/intl.h>
-#include <wx/file.h>
-#include <wx/progdlg.h>
-#include <wx/fileconf.h>
-#include <wx/wfstream.h>
-#include <wx/apptrait.h>
-#include <wx/stdpaths.h>

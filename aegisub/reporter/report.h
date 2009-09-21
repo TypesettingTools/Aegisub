@@ -18,11 +18,12 @@
 /// @see report.cpp
 
 #ifndef R_PRECOMP
+#include <map>
+
 #include <wx/xml/xml.h>
 #include <wx/listctrl.h>
 #endif
 
-#include <map>
 
 class Report {
 

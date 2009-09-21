@@ -18,9 +18,11 @@
 /// @see upload.cpp
 
 #ifndef R_PRECMP
+#include <curl/curl.h>
+
 #include <wx/file.h>
 #endif
-#include <curl/curl.h>
+
 #include "progress.h"
 
 /// @class Upload

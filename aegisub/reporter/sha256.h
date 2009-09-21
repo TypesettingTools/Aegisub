@@ -30,7 +30,9 @@
 #ifndef _SHA256_H_
 #define _SHA256_H_
 
+#ifndef R_PRECOMP
 #include <stdint.h>
+#endif
 
 typedef struct SHA256Context {
 	uint32_t state[8];

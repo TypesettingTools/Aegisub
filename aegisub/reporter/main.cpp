@@ -18,6 +18,8 @@
 /// @brief Main loop
 
 #ifndef R_PRECOMP
+#include <locale.h>
+
 #include <wx/app.h>
 #include <wx/window.h>
 #include <wx/log.h>
@@ -31,8 +33,6 @@
 #include <wx/textctrl.h>
 #include <wx/intl.h>
 #endif
-
-#include <locale.h>
 
 #include "main.h"
 #include "upload.h"
