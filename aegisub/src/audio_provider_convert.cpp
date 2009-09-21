@@ -232,6 +232,10 @@ AudioProvider *CreateConvertAudioProvider(AudioProvider *source_provider) {
 		provider->GetSampleRate() < 32000 ||
 		!provider->AreSamplesNativeEndian())
 	{
+		// @todo add support for more bitdepths (i.e. 24- and 32-bit audio)
+		if (provider->GetBytesPerSample() > 2)
+			throw _T("Audio format converter: audio with bitdepths greater than 16 bits/sample is currently unsupported");
+
 		provider = new ConvertAudioProvider(provider);
 	}
 
