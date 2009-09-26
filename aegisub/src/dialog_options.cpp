@@ -462,14 +462,7 @@ DialogOptions::DialogOptions(wxWindow *parent)
 		AddTextControl(audioPage,audioSizer4,_("Default lead-in length"),_T("Audio lead in"),TEXT_TYPE_NUMBER);
 		AddTextControl(audioPage,audioSizer4,_("Default lead-out length"),_T("Audio lead out"),TEXT_TYPE_NUMBER);
 		AddComboControl(audioPage,audioSizer4,_("Show inactive lines"),_T("Audio Inactive Lines Display Mode"),wxArrayString(3,choices1));
-		/*
-		 * Option not in dialogue because it breaks the documentation.
-		 * The default should be good enough for most people and it can still be edited manually.
-		 * This should be enabled when we can raise the UI/feature freeze towards 2.2.0.
-		 *   -jfs
-		 *
 		AddTextControl(audioPage,audioSizer4,_("Start-marker drag sensitivity"),_T("Audio Start Drag Sensitivity"),TEXT_TYPE_NUMBER);
-		*/
 		audioSizer4->AddGrowableCol(0,1);
 
 		// Sizers
