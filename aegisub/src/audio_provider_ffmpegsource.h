@@ -41,30 +41,16 @@
 #include "ffmpegsource_common.h"
 
 
-/// DOCME
 /// @class FFmpegSourceAudioProvider
-/// @brief DOCME
-///
-/// DOCME
+/// @brief Implents audio loading with the FFMS library.
 class FFmpegSourceAudioProvider : public AudioProvider, FFmpegSourceProvider {
 private:
+	FFMS_AudioSource *AudioSource;	/// audio source object
+	bool COMInited;					/// COM initialization state
 
-	/// DOCME
-	FFAudio *AudioSource;
-
-
-	/// DOCME
-	char FFMSErrMsg[1024];
-
-	/// DOCME
-	unsigned MsgSize;
-
-	/// DOCME
-	wxString ErrorMsg;
-
-
-	/// DOCME
-	bool COMInited;
+	char FFMSErrMsg[1024];			/// FFMS error message
+	FFMS_ErrorInfo ErrInfo;			/// FFMS error codes/messages
+	wxString ErrorMsg;				/// wx-ified error message
 
 	void Close();
 	void LoadAudio(wxString filename);
@@ -73,29 +59,23 @@ public:
 	FFmpegSourceAudioProvider(wxString filename);
 	virtual ~FFmpegSourceAudioProvider();
 
-
-	/// @brief // FFMS always delivers samples in machine endian
-	/// @return 
-	///
+	/// @brief Checks sample endianness
+	/// @return Returns true.
+	/// FFMS always delivers native endian samples.
 	bool AreSamplesNativeEndian() { return true; }
 
 	virtual void GetAudio(void *buf, int64_t start, int64_t count);
-
 };
 
 
 
-/// DOCME
 /// @class FFmpegSourceAudioProviderFactory
-/// @brief DOCME
-///
-/// DOCME
+/// @brief Creates a FFmpegSource audio provider.
 class FFmpegSourceAudioProviderFactory : public AudioProviderFactory {
 public:
-
-	/// @brief DOCME
-	/// @param file 
-	///
+	/// @brief Creates a FFmpegSource audio provider.
+	/// @param video The audio filename to open.
+	/// @return Returns the audio provider.
 	AudioProvider *CreateProvider(wxString file) { return new FFmpegSourceAudioProvider(file); }
 };
 

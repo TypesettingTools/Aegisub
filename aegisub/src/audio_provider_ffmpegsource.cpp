@@ -68,7 +68,10 @@ FFmpegSourceAudioProvider::FFmpegSourceAudioProvider(wxString filename) {
 #endif
 	FFMS_Init(0);
 
-	MsgSize = sizeof(FFMSErrMsg);
+	ErrInfo.Buffer		= FFMSErrMsg;
+	ErrInfo.BufferSize	= sizeof(FFMSErrMsg);
+	ErrInfo.ErrorType	= FFMS_ERROR_SUCCESS;
+	ErrInfo.SubType		= FFMS_ERROR_SUCCESS;
 	ErrorMsg = _T("FFmpegSource audio provider: ");
 
 	AudioSource = NULL;
@@ -94,11 +97,11 @@ void FFmpegSourceAudioProvider::LoadAudio(wxString filename) {
 
 	wxString FileNameShort = wxFileName(filename).GetShortPath();
 
-	FFIndexer *Indexer = FFMS_CreateIndexer(FileNameShort.utf8_str(), FFMSErrMsg, MsgSize);
+	FFMS_Indexer *Indexer = FFMS_CreateIndexer(FileNameShort.utf8_str(), &ErrInfo);
 	if (Indexer == NULL) {
 		// error messages that can possibly contain a filename use this method instead of
 		// wxString::Format because they may contain utf8 characters
-		ErrorMsg.Append(_T("Failed to create indexer: ")).Append(wxString(FFMSErrMsg, wxConvUTF8));
+		ErrorMsg.Append(_T("Failed to create indexer: ")).Append(wxString(ErrInfo.Buffer, wxConvUTF8));
 		throw ErrorMsg;
 	}
 
@@ -120,11 +123,11 @@ void FFmpegSourceAudioProvider::LoadAudio(wxString filename) {
 	wxString CacheName = GetCacheFilename(filename);
 
 	// try to read index
-	FFIndex *Index = NULL;
-	Index = FFMS_ReadIndex(CacheName.utf8_str(), FFMSErrMsg, MsgSize);
+	FFMS_Index *Index = NULL;
+	Index = FFMS_ReadIndex(CacheName.utf8_str(), &ErrInfo);
 	bool IndexIsValid = false;
 	if (Index != NULL) {
-		if (FFMS_IndexBelongsToFile(Index, FileNameShort.utf8_str(), FFMSErrMsg, MsgSize)) {
+		if (FFMS_IndexBelongsToFile(Index, FileNameShort.utf8_str(), &ErrInfo)) {
 			FFMS_DestroyIndex(Index);
 			Index = NULL;
 		}
@@ -136,17 +139,17 @@ void FFmpegSourceAudioProvider::LoadAudio(wxString filename) {
 	if (IndexIsValid) {
 		// track number not set? just grab the first track
 		if (TrackNumber < 0)
-			TrackNumber = FFMS_GetFirstTrackOfType(Index, FFMS_TYPE_AUDIO, FFMSErrMsg, MsgSize);
+			TrackNumber = FFMS_GetFirstTrackOfType(Index, FFMS_TYPE_AUDIO, &ErrInfo);
 		if (TrackNumber < 0) {
 			FFMS_DestroyIndex(Index);
 			Index = NULL;
-			ErrorMsg.Append(wxString::Format(_T("Couldn't find any audio tracks: %s"), FFMSErrMsg));
+			ErrorMsg.Append(wxString::Format(_T("Couldn't find any audio tracks: %s"), ErrInfo.Buffer));
 			throw ErrorMsg;
 		}
 
 		// index is valid and track number is now set,
 		// but do we have indexing info for the desired audio track?
-		FFTrack *TempTrackData = FFMS_GetTrackFromIndex(Index, TrackNumber);
+		FFMS_Track *TempTrackData = FFMS_GetTrackFromIndex(Index, TrackNumber);
 		if (FFMS_GetNumFrames(TempTrackData) <= 0) {
 			IndexIsValid = false;
 			FFMS_DestroyIndex(Index);
@@ -176,15 +179,15 @@ void FFmpegSourceAudioProvider::LoadAudio(wxString filename) {
 		// warn user?
 	}
 
-	AudioSource = FFMS_CreateAudioSource(FileNameShort.utf8_str(), TrackNumber, Index, FFMSErrMsg, MsgSize);
+	AudioSource = FFMS_CreateAudioSource(FileNameShort.utf8_str(), TrackNumber, Index, &ErrInfo);
 	FFMS_DestroyIndex(Index);
 	Index = NULL;
 	if (!AudioSource) {
-		ErrorMsg.Append(wxString::Format(_T("Failed to open audio track: %s"), FFMSErrMsg));
+		ErrorMsg.Append(wxString::Format(_T("Failed to open audio track: %s"), ErrInfo.Buffer));
 		throw ErrorMsg;
 	}
 		
-	const FFAudioProperties AudioInfo = *FFMS_GetAudioProperties(AudioSource);
+	const FFMS_AudioProperties AudioInfo = *FFMS_GetAudioProperties(AudioSource);
 
 	channels	= AudioInfo.Channels;
 	sample_rate	= AudioInfo.SampleRate;
@@ -233,8 +236,8 @@ void FFmpegSourceAudioProvider::Close() {
 /// @param Count 
 ///
 void FFmpegSourceAudioProvider::GetAudio(void *Buf, int64_t Start, int64_t Count) {
-	if (FFMS_GetAudio(AudioSource, Buf, Start, Count, FFMSErrMsg, MsgSize)) {
-		ErrorMsg.Append(wxString::Format(_T("Failed to get audio samples: %s"), FFMSErrMsg));
+	if (FFMS_GetAudio(AudioSource, Buf, Start, Count, &ErrInfo)) {
+		ErrorMsg.Append(wxString::Format(_T("Failed to get audio samples: %s"), ErrInfo.Buffer));
 		throw ErrorMsg;
 	}
 }

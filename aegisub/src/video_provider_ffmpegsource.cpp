@@ -61,8 +61,7 @@
 
 
 /// @brief Constructor 
-/// @param filename 
-///
+/// @param filename The filename to open
 FFmpegSourceVideoProvider::FFmpegSourceVideoProvider(wxString filename) {
 	COMInited = false;
 #ifdef WIN32
@@ -81,7 +80,10 @@ FFmpegSourceVideoProvider::FFmpegSourceVideoProvider(wxString filename) {
 	VideoSource = NULL;
 	KeyFramesLoaded = false;
 	FrameNumber = -1;
-	MsgSize = sizeof(FFMSErrMsg);
+	ErrInfo.Buffer		= FFMSErrMsg;
+	ErrInfo.BufferSize	= sizeof(FFMSErrMsg);
+	ErrInfo.ErrorType	= FFMS_ERROR_SUCCESS;
+	ErrInfo.SubType		= FFMS_ERROR_SUCCESS;
 	ErrorMsg = _T("FFmpegSource video provider: ");
 
 	SetLogLevel();
@@ -97,7 +99,6 @@ FFmpegSourceVideoProvider::FFmpegSourceVideoProvider(wxString filename) {
 
 
 /// @brief Destructor 
-///
 FFmpegSourceVideoProvider::~FFmpegSourceVideoProvider() {
 	Close();
 #ifdef WIN32
@@ -107,20 +108,19 @@ FFmpegSourceVideoProvider::~FFmpegSourceVideoProvider() {
 }
 
 
-/// @brief Open video 
-/// @param filename 
-///
+/// @brief Opens video 
+/// @param filename The filename to open
 void FFmpegSourceVideoProvider::LoadVideo(wxString filename) {
 	// make sure we don't have anything messy lying around
 	Close();
 
 	wxString FileNameShort = wxFileName(filename).GetShortPath(); 
 
-	FFIndexer *Indexer = FFMS_CreateIndexer(FileNameShort.utf8_str(), FFMSErrMsg, MsgSize);
+	FFMS_Indexer *Indexer = FFMS_CreateIndexer(FileNameShort.utf8_str(), &ErrInfo);
 	if (Indexer == NULL) {
 		// error messages that can possibly contain a filename use this method instead of
 		// wxString::Format because they may contain utf8 characters
-		ErrorMsg.Append(_T("Failed to create indexer: ")).Append(wxString(FFMSErrMsg, wxConvUTF8));
+		ErrorMsg.Append(_T("Failed to create indexer: ")).Append(wxString(ErrInfo.Buffer, wxConvUTF8));
 		throw ErrorMsg;
 	}
 
@@ -142,11 +142,11 @@ void FFmpegSourceVideoProvider::LoadVideo(wxString filename) {
 	wxString CacheName = GetCacheFilename(filename);
 
 	// try to read index
-	FFIndex *Index = NULL;
-	Index = FFMS_ReadIndex(CacheName.utf8_str(), FFMSErrMsg, MsgSize);
+	FFMS_Index *Index = NULL;
+	Index = FFMS_ReadIndex(CacheName.utf8_str(), &ErrInfo);
 	bool IndexIsValid = false;
 	if (Index != NULL) {
-		if (FFMS_IndexBelongsToFile(Index, FileNameShort.utf8_str(), FFMSErrMsg, MsgSize)) {
+		if (FFMS_IndexBelongsToFile(Index, FileNameShort.utf8_str(), &ErrInfo)) {
 			FFMS_DestroyIndex(Index);
 			Index = NULL;
 		}
@@ -158,7 +158,7 @@ void FFmpegSourceVideoProvider::LoadVideo(wxString filename) {
 	// technically this isn't really needed since all video tracks should always be indexed,
 	// but a bit of sanity checking never hurt anyone
 	if (IndexIsValid && TrackNumber >= 0) {
-		FFTrack *TempTrackData = FFMS_GetTrackFromIndex(Index, TrackNumber);
+		FFMS_Track *TempTrackData = FFMS_GetTrackFromIndex(Index, TrackNumber);
 		if (FFMS_GetNumFrames(TempTrackData) <= 0) {
 			IndexIsValid = false;
 			FFMS_DestroyIndex(Index);
@@ -181,10 +181,7 @@ void FFmpegSourceVideoProvider::LoadVideo(wxString filename) {
 	}
 	
 	// update access time of index file so it won't get cleaned away
-	if (!wxFileName(CacheName).Touch()) {
-		// warn user?
-		// FIND OUT WHY IT'S POPPING UP ERROR MESSAGES HERE
-	}
+	wxFileName(CacheName).Touch();
 
 	// we have now read the index and may proceed with cleaning the index cache
 	if (!CleanCache()) {
@@ -194,11 +191,11 @@ void FFmpegSourceVideoProvider::LoadVideo(wxString filename) {
 	// track number still not set?
 	if (TrackNumber < 0) {
 		// just grab the first track
-		TrackNumber = FFMS_GetFirstIndexedTrackOfType(Index, FFMS_TYPE_VIDEO, FFMSErrMsg, MsgSize);
+		TrackNumber = FFMS_GetFirstIndexedTrackOfType(Index, FFMS_TYPE_VIDEO, &ErrInfo);
 		if (TrackNumber < 0) {
 			FFMS_DestroyIndex(Index);
 			Index = NULL;
-			ErrorMsg.Append(wxString::Format(_T("Couldn't find any video tracks: %s"), FFMSErrMsg));
+			ErrorMsg.Append(wxString::Format(_T("Couldn't find any video tracks: %s"), ErrInfo.Buffer));
 			throw ErrorMsg;	
 		}
 	}
@@ -216,31 +213,39 @@ void FFmpegSourceVideoProvider::LoadVideo(wxString filename) {
 	else 
 		SeekMode = FFMS_SEEK_NORMAL;
 
-	VideoSource = FFMS_CreateVideoSource(FileNameShort.utf8_str(), TrackNumber, Index, "", Threads, SeekMode, FFMSErrMsg, MsgSize);
+	VideoSource = FFMS_CreateVideoSource(FileNameShort.utf8_str(), TrackNumber, Index, Threads, SeekMode, &ErrInfo);
 	FFMS_DestroyIndex(Index);
 	Index = NULL;
 	if (VideoSource == NULL) {
-		ErrorMsg.Append(wxString::Format(_T("Failed to open video track: %s"), FFMSErrMsg));
+		ErrorMsg.Append(wxString::Format(_T("Failed to open video track: %s"), ErrInfo.Buffer));
 		throw ErrorMsg;
 	}
 
 	// load video properties
 	VideoInfo = FFMS_GetVideoProperties(VideoSource);
 
-	if (FFMS_SetOutputFormatV(VideoSource, 1 << FFMS_GetPixFmt("bgra"), VideoInfo->Width, VideoInfo->Height, FFMS_RESIZER_BICUBIC, FFMSErrMsg, MsgSize)) {
-		ErrorMsg.Append(wxString::Format(_T("Failed to set output format: %s"), FFMSErrMsg));
+	const FFMS_Frame *TempFrame = FFMS_GetFrame(VideoSource, 0, &ErrInfo);
+	if (TempFrame == NULL) {
+		ErrorMsg.Append(wxString::Format(_T("Failed to decode first frame: %s"), ErrInfo.Buffer));
+		throw ErrorMsg;
+	}
+	Width	= TempFrame->EncodedWidth;
+	Height	= TempFrame->EncodedHeight;
+
+	if (FFMS_SetOutputFormatV(VideoSource, 1 << FFMS_GetPixFmt("bgra"), Width, Height, FFMS_RESIZER_BICUBIC, &ErrInfo)) {
+		ErrorMsg.Append(wxString::Format(_T("Failed to set output format: %s"), ErrInfo.Buffer));
 		throw ErrorMsg;
 	}
 
 	// get frame info data
-	FFTrack *FrameData = FFMS_GetTrackFromVideo(VideoSource);
+	FFMS_Track *FrameData = FFMS_GetTrackFromVideo(VideoSource);
 	if (FrameData == NULL)
 		throw _T("FFmpegSource video provider: failed to get frame data");
-	const FFTrackTimeBase *TimeBase = FFMS_GetTimeBase(FrameData);
+	const FFMS_TrackTimeBase *TimeBase = FFMS_GetTimeBase(FrameData);
 	if (TimeBase == NULL)
 		throw _T("FFmpegSource video provider: failed to get track time base");
 
-	const FFFrameInfo *CurFrameData;
+	const FFMS_FrameInfo *CurFrameData;
 
 	// build list of keyframes and timecodes
 	for (int CurFrameNum = 0; CurFrameNum < VideoInfo->NumFrames; CurFrameNum++) {
@@ -306,25 +311,21 @@ const AegiVideoFrame FFmpegSourceVideoProvider::GetFrame(int _n) {
 		n = GetFrameCount()-1;
 	// set position
 	FrameNumber = n;
-	
-	// these are for convenience
-//	int w = VideoInfo->Width;
-//	int h = VideoInfo->Height;
 
 	// this is what we'll return eventually
 	AegiVideoFrame &DstFrame = CurFrame;
 
 	// decode frame
-	const FFAVFrame *SrcFrame = FFMS_GetFrame(VideoSource, n, FFMSErrMsg, MsgSize);
+	const FFMS_Frame *SrcFrame = FFMS_GetFrame(VideoSource, n, &ErrInfo);
 	if (SrcFrame == NULL) {
-		ErrorMsg.Append(wxString::Format(_T("Failed to retrieve frame: %s"), FFMSErrMsg));
+		ErrorMsg.Append(wxString::Format(_T("Failed to retrieve frame: %s"), ErrInfo.Buffer));
 		throw ErrorMsg;
 	}
 
 	// set some properties
 	DstFrame.format	= FORMAT_RGB32;
-	DstFrame.w = VideoInfo->Width;
-	DstFrame.h = VideoInfo->Height;
+	DstFrame.w = Width;
+	DstFrame.h = Height;
 	DstFrame.flipped = false;
 	DstFrame.invertChannels = true;
 
@@ -345,7 +346,7 @@ const AegiVideoFrame FFmpegSourceVideoProvider::GetFrame(int _n) {
 /// @return 
 ///
 int FFmpegSourceVideoProvider::GetWidth() {
-	return VideoInfo->Width;
+	return Width;
 }
 
 
@@ -353,7 +354,7 @@ int FFmpegSourceVideoProvider::GetWidth() {
 /// @return 
 ///
 int FFmpegSourceVideoProvider::GetHeight() {
-	return VideoInfo->Height;
+	return Height;
 }
 
 

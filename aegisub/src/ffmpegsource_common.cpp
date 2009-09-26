@@ -84,9 +84,13 @@ int FFMS_CC FFmpegSourceProvider::UpdateIndexingProgress(int64_t Current, int64_
 /// @param IgnoreDecodeErrors	True if audio decoding errors will be tolerated, false otherwise
 /// @return				Returns the index object on success, NULL otherwise
 ///
-FFIndex *FFmpegSourceProvider::DoIndexing(FFIndexer *Indexer, const wxString &CacheName, int Trackmask, bool IgnoreDecodeErrors) {
-	char FFMSErrMsg[1024];
-	unsigned MsgSize = sizeof(FFMSErrMsg);
+FFMS_Index *FFmpegSourceProvider::DoIndexing(FFMS_Indexer *Indexer, const wxString &CacheName, int Trackmask, bool IgnoreDecodeErrors) {
+	char FFMSErrMsg[1024]; 
+	FFMS_ErrorInfo ErrInfo;
+	ErrInfo.Buffer		= FFMSErrMsg;
+	ErrInfo.BufferSize	= sizeof(FFMSErrMsg);
+	ErrInfo.ErrorType	= FFMS_ERROR_SUCCESS;
+	ErrInfo.SubType		= FFMS_ERROR_SUCCESS;
 	wxString MsgString;
 
 	// set up progress dialog callback
@@ -97,19 +101,21 @@ FFIndex *FFmpegSourceProvider::DoIndexing(FFIndexer *Indexer, const wxString &Ca
 	Progress.ProgressDialog->Show();
 	Progress.ProgressDialog->SetProgress(0,1);
 
+	int ErrHandling = IgnoreDecodeErrors ? FFMS_IEH_IGNORE : FFMS_IEH_STOP_TRACK;
+
 	// index all audio tracks
-	FFIndex *Index = FFMS_DoIndexing(Indexer, Trackmask, FFMS_TRACKMASK_NONE, NULL, NULL, IgnoreDecodeErrors,
-		FFmpegSourceProvider::UpdateIndexingProgress, &Progress, FFMSErrMsg, MsgSize);
+	FFMS_Index *Index = FFMS_DoIndexing(Indexer, Trackmask, FFMS_TRACKMASK_NONE, NULL, NULL, ErrHandling,
+		FFmpegSourceProvider::UpdateIndexingProgress, &Progress, &ErrInfo);
 	if (Index == NULL) {
 		Progress.ProgressDialog->Destroy();
-		MsgString.Append(_T("Failed to index: ")).Append(wxString(FFMSErrMsg, wxConvUTF8));
+		MsgString.Append(_T("Failed to index: ")).Append(wxString(ErrInfo.Buffer, wxConvUTF8));
 		throw MsgString;
 	}
 	Progress.ProgressDialog->Destroy();
 
 	// write index to disk for later use
 	// ignore write errors for now
-	FFMS_WriteIndex(CacheName.utf8_str(), Index, FFMSErrMsg, MsgSize);
+	FFMS_WriteIndex(CacheName.utf8_str(), Index, &ErrInfo);
 	/*if (FFMS_WriteIndex(CacheName.char_str(), Index, FFMSErrMsg, MsgSize)) {
 		wxString temp(FFMSErrMsg, wxConvUTF8);
 		MsgString << _T("Failed to write index: ") << temp;
@@ -125,7 +131,7 @@ FFIndex *FFmpegSourceProvider::DoIndexing(FFIndexer *Indexer, const wxString &Ca
 /// @param Indexer	The indexer object representing the source file
 /// @param Type		The track type to look for
 /// @return			Returns a std::map with the track numbers as keys and the codec names as values.
-std::map<int,wxString> FFmpegSourceProvider::GetTracksOfType(FFIndexer *Indexer, FFMS_TrackType Type) {
+std::map<int,wxString> FFmpegSourceProvider::GetTracksOfType(FFMS_Indexer *Indexer, FFMS_TrackType Type) {
 	std::map<int,wxString> TrackList;
 	int NumTracks = FFMS_GetNumTracksI(Indexer);
 

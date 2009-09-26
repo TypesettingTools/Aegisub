@@ -46,58 +46,30 @@
 #include "vfr.h"
 
 
-/// DOCME
 /// @class FFmpegSourceVideoProvider
-/// @brief DOCME
-///
-/// DOCME
+/// @brief Implements video loading through the FFMS library.
 class FFmpegSourceVideoProvider : public VideoProvider, FFmpegSourceProvider {
 private:
+	FFMS_VideoSource *VideoSource;			/// video source object
+	const FFMS_VideoProperties *VideoInfo;	/// video properties
 
-	/// DOCME
-	FFVideo *VideoSource;
-
-	/// DOCME
-	const FFVideoProperties *VideoInfo;
-
-
-	/// DOCME
-	int FrameNumber;
-
-	/// DOCME
-	wxArrayInt KeyFramesList;
-
-	/// DOCME
-	bool KeyFramesLoaded;
-
-	/// DOCME
-	std::vector<int> TimecodesVector;
-
-	/// DOCME
-	FrameRate Timecodes;
-
-
-	/// DOCME
-	AegiVideoFrame CurFrame;
-
-
-	/// DOCME
-	char FFMSErrMsg[1024];
-
-	/// DOCME
-	unsigned MsgSize;
-
-	/// DOCME
-	wxString ErrorMsg;
-
-
-	/// DOCME
-	bool COMInited;
+	int Width;					/// width in pixels
+	int Height;					/// height in pixels
+	int FrameNumber;			/// current framenumber
+	wxArrayInt KeyFramesList;	/// list of keyframes
+	bool KeyFramesLoaded;		/// keyframe loading state
+	std::vector<int> TimecodesVector;	/// list of timestamps
+	FrameRate Timecodes;		/// vfr object
+	bool COMInited;				/// COM initialization state
+	
+	AegiVideoFrame CurFrame;	/// current video frame
+	
+	char FFMSErrMsg[1024];		/// FFMS error message
+	FFMS_ErrorInfo ErrInfo;		/// FFMS error codes/messages
+	wxString ErrorMsg;			/// wx-ified error message
 
 	void LoadVideo(wxString filename);
 	void Close();
-
-protected:
 
 public:
 	FFmpegSourceVideoProvider(wxString filename);
@@ -111,50 +83,35 @@ public:
 	int GetHeight();
 	double GetFPS();
 
-	/// @brief DOCME
-	/// @return 
-	///
+	/// @brief Reports keyframe status
+	/// @return	Returns true if keyframes are loaded, false otherwise.
 	bool AreKeyFramesLoaded() { return KeyFramesLoaded; };
-
-	/// @brief DOCME
-	/// @return 
-	///
+	/// @brief Gets a list of keyframes
+	/// @return	Returns a wxArrayInt of keyframes.
 	wxArrayInt GetKeyFrames() { return KeyFramesList; };
-
-	/// @brief DOCME
-	/// @return 
-	///
+	/// @brief Checks if source is VFR
+	/// @return	Returns true.
 	bool IsVFR() { return true; };
-
-	/// @brief DOCME
-	/// @return 
-	///
+	/// @brief Gets a VFR framerate object
+	/// @return Returns the framerate object.
 	FrameRate GetTrueFrameRate() { return Timecodes; };
-
-	/// @brief DOCME
-	/// @return 
-	///
+	/// @brief Gets the name of the provider
+	/// @return Returns "FFmpegSource".
 	wxString GetDecoderName() { return L"FFmpegSource"; }
-
-	/// @brief DOCME
-	/// @return 
-	///
+	/// @brief Gets the number of frames to cache.
+	/// @return Returns 8.
 	int GetDesiredCacheSize() { return 8; }
 };
 
 
 
-/// DOCME
 /// @class FFmpegSourceVideoProviderFactory
-/// @brief DOCME
-///
-/// DOCME
+/// @brief Creates a FFmpegSource video provider.
 class FFmpegSourceVideoProviderFactory : public VideoProviderFactory {
 public:
-
-	/// @brief DOCME
-	/// @param video 
-	///
+	/// @brief Creates a FFmpegSource video provider.
+	/// @param video The video filename to open.
+	/// @return Returns the video provider.
 	VideoProvider *CreateProvider(wxString video) { return new FFmpegSourceVideoProvider(video); }
 };
 
