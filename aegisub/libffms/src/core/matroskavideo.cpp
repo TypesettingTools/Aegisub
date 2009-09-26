@@ -96,8 +96,13 @@ FFMatroskaVideo::FFMatroskaVideo(const char *SourceFile, int Track,
 	VP.RFFNumerator = CodecContext->time_base.den;
 	VP.NumFrames = Frames.size();
 	VP.TopFieldFirst = DecodeFrame->top_field_first;
-//	VP.ColorSpace = CodecContext->colorspace;
-//	VP.ColorRange = CodecContext->color_range;
+#ifdef FFMS_HAVE_FFMPEG_COLORSPACE_INFO
+	VP.ColorSpace = CodecContext->colorspace;
+	VP.ColorRange = CodecContext->color_range;
+#else
+	VP.ColorSpace = 0;
+	VP.ColorRange = 0;
+#endif
 	VP.FirstTime = ((Frames.front().DTS * Frames.TB.Num) / (double)Frames.TB.Den) / 1000;
 	VP.LastTime = ((Frames.back().DTS * Frames.TB.Num) / (double)Frames.TB.Den) / 1000;
 

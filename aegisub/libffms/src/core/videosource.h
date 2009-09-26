@@ -28,6 +28,9 @@ extern "C" {
 #include <libpostproc/postprocess.h>
 }
 
+// must be included after ffmpeg headers
+#include "ffmscompat.h"
+
 #include <vector>
 #include "indexing.h"
 #include "utils.h"
