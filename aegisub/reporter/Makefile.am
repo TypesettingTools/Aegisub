@@ -25,11 +25,18 @@ reporter_SOURCES = \
 	name_map.cpp \
 	platform.cpp \
 	platform_unix.cpp \
-	platform_unix_bsd.cpp \
 	progress.cpp \
 	report.cpp \
 	upload.cpp \
 	view.cpp
+
+if BUILD_BSD
+reporter_SOURCES += platform_unix_bsd.cpp
+endif
+
+if BUILD_LINUX
+reporter_SOURCES += platform_unix_linux.cpp
+endif
 
 
 reporter_SOURCES += \

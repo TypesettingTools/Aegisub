@@ -61,6 +61,10 @@ case "$target_or_host" in
     build_linux="yes"
   ;;
 
+  *-*-*bsd*)
+    build_bsd="yes"
+  ;;
+
   *)
     build_default="yes"
     ;;
@@ -95,6 +99,9 @@ fi
 
 # Used for universalchardet.
 AC_AGI_MDCPUCFG($target_or_host)
+
+AM_CONDITIONAL([BUILD_BSD], [test "$build_bsd" = "yes"])
+AM_CONDITIONAL([BUILD_LINUX], [test "$build_linux" = "yes"])
 
 # For conditional file building and options in Makefile(s).
 AM_CONDITIONAL([BUILD_DARWIN], [test "$build_darwin" = "yes"])
