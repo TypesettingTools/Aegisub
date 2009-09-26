@@ -6,22 +6,22 @@ AM_CPPFLAGS = -I../src -Icore -Iinclude -D__UNIX__ -DFFMS_EXPORTS -DHAVE_STRLCPY
 
 
 libffmpegsource_aegisub_a_SOURCES = \
-	src/core/ffaudiosource.cpp \
-	src/core/ffhaaliaudio.cpp \
-	src/core/ffhaaliindexer.cpp \
-	src/core/ffhaalivideo.cpp \
-	src/core/fflavfaudio.cpp \
-	src/core/fflavfindexer.cpp \
-	src/core/fflavfvideo.cpp \
-	src/core/ffmatroskaaudio.cpp \
-	src/core/ffmatroskaindexer.cpp \
-	src/core/ffmatroskavideo.cpp \
+	src/core/audiosource.cpp \
 	src/core/ffms.cpp \
-	src/core/ffvideosource.cpp \
+	src/core/haaliaudio.cpp \
+	src/core/haaliindexer.cpp \
+	src/core/haalivideo.cpp \
 	src/core/indexing.cpp \
+	src/core/lavfaudio.cpp \
+	src/core/lavfindexer.cpp \
+	src/core/lavfvideo.cpp \
+	src/core/matroskaaudio.cpp \
+	src/core/matroskaindexer.cpp \
 	src/core/matroskaparser.c \
+	src/core/matroskavideo.cpp \
 	src/core/stdiostream.c \
 	src/core/utils.cpp \
+	src/core/videosource.cpp \
 	src/core/wave64writer.cpp
 
 libffmpegsource_aegisub_a_SOURCES += \
