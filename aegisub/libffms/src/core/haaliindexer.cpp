@@ -24,51 +24,17 @@
 
 
 
-FFHaaliIndexer::FFHaaliIndexer(const char *Filename, int SourceMode, char *ErrorMsg, unsigned MsgSize) : FFIndexer(Filename, ErrorMsg, MsgSize) {
-	SourceFile = Filename;
+FFHaaliIndexer::FFHaaliIndexer(const char *Filename, enum FFMS_Sources SourceMode) : FFMS_Indexer(Filename) {
 	this->SourceMode = SourceMode;
-	memset(TrackType, FFMS_TYPE_UNKNOWN, sizeof(TrackType));
-	memset(Codec, 0, sizeof(Codec));
-	memset(CodecPrivate, 0, sizeof(CodecPrivate));
-	memset(CodecPrivateSize, 0, sizeof(CodecPrivateSize));
+	SourceFile = Filename;
 	Duration = 0;
-
-	CLSID clsid = HAALI_TS_Parser;
-	if (SourceMode == 1)
-		clsid = HAALI_OGM_Parser;
-
-	if (FAILED(pMMC.CoCreateInstance(clsid))) {
-		snprintf(ErrorMsg, MsgSize, "Can't create parser");
-		throw ErrorMsg;
+	for (int i = 0; i < 32; i++) {
+		TrackType[i] = FFMS_TYPE_UNKNOWN;
+		Codec[i] = NULL;
+		CodecPrivateSize[i] = 0;
 	}
 
-	CComPtr<IMemAlloc> pMA;
-	if (FAILED(pMA.CoCreateInstance(CLSID_MemAlloc))) {
-		snprintf(ErrorMsg, MsgSize, "Can't create memory allocator");
-		throw ErrorMsg;
-	}
-
-	CComPtr<IMMStream> pMS;
-	if (FAILED(pMS.CoCreateInstance(CLSID_DiskFile))) {
-		snprintf(ErrorMsg, MsgSize, "Can't create disk file reader");
-		throw ErrorMsg;
-	}
-
-	WCHAR WSourceFile[2048];
-	ffms_mbstowcs(WSourceFile, SourceFile, 2000);
-	CComQIPtr<IMMStreamOpen> pMSO(pMS);
-	if (FAILED(pMSO->Open(WSourceFile))) {
-		snprintf(ErrorMsg, MsgSize, "Can't open file");
-		throw ErrorMsg;
-	}
-
-	if (FAILED(pMMC->Open(pMS, 0, NULL, pMA))) {
-		if (SourceMode == 0)
-			snprintf(ErrorMsg, MsgSize, "Can't parse file, most likely a transport stream not cut at packet boundaries");
-		else if (SourceMode == 1)
-			snprintf(ErrorMsg, MsgSize, "Can't parse file");
-		throw ErrorMsg;
-	}
+	pMMC = HaaliOpenFile(SourceFile, SourceMode);
 
 	CComQIPtr<IPropertyBag> pBag2 = pMMC;
 	CComVariant pV2;
@@ -99,14 +65,42 @@ FFHaaliIndexer::FFHaaliIndexer(const char *Filename, int SourceMode, char *Error
 				}
 
 				pV.Clear();
-				if (SUCCEEDED(pBag->Read(L"FOURCC", &pV, NULL)) && SUCCEEDED(pV.ChangeType(VT_UI4)))
+				if (SUCCEEDED(pBag->Read(L"FOURCC", &pV, NULL)) && SUCCEEDED(pV.ChangeType(VT_UI4))) {
 					FourCC = pV.uintVal;
+					
+					// Reconstruct the missing codec private part for VC1
+					std::vector<uint8_t> bihvect;
+					bihvect.resize(sizeof(FFMS_BITMAPINFOHEADER));
+					FFMS_BITMAPINFOHEADER *bih = reinterpret_cast<FFMS_BITMAPINFOHEADER *>(FFMS_GET_VECTOR_PTR(bihvect));
+					memset(bih, 0, sizeof(FFMS_BITMAPINFOHEADER));
+					bih->biSize = sizeof(FFMS_BITMAPINFOHEADER) + CodecPrivateSize[NumTracks];
+					bih->biCompression = FourCC;
+					bih->biBitCount = 24;
+					bih->biPlanes = 1;
+
+					pV.Clear();
+					if (SUCCEEDED(pBag->Read(L"Video.PixelWidth", &pV, NULL)) && SUCCEEDED(pV.ChangeType(VT_UI4)))
+						bih->biWidth = pV.uintVal;
+
+					pV.Clear();
+					if (SUCCEEDED(pBag->Read(L"Video.PixelHeight", &pV, NULL)) && SUCCEEDED(pV.ChangeType(VT_UI4)))
+						bih->biHeight = pV.uintVal;
+
+					CodecPrivate[NumTracks].insert(CodecPrivate[NumTracks].begin(), bihvect.begin(), bihvect.end());
+					CodecPrivateSize[NumTracks] += sizeof(FFMS_BITMAPINFOHEADER);
+				}
 
 				pV.Clear();
 				if (SUCCEEDED(pBag->Read(L"CodecID", &pV, NULL)) && SUCCEEDED(pV.ChangeType(VT_BSTR))) {
-					char CodecID[2048];
-					wcstombs(CodecID, pV.bstrVal, 2000);
-					Codec[NumTracks] = avcodec_find_decoder(MatroskaToFFCodecID(CodecID, FFMS_GET_VECTOR_PTR(CodecPrivate[NumTracks]), FourCC));
+					char CodecStr[2048];
+					wcstombs(CodecStr, pV.bstrVal, 2000);
+
+					int BitDepth = 0;
+					pV.Clear();
+					if (SUCCEEDED(pBag->Read(L"Audio.BitDepth", &pV, NULL)) && SUCCEEDED(pV.ChangeType(VT_UI4)))
+						BitDepth = pV.uintVal;
+
+					Codec[NumTracks] = avcodec_find_decoder(MatroskaToFFCodecID(CodecStr, FFMS_GET_VECTOR_PTR(CodecPrivate[NumTracks]), FourCC, BitDepth));
 				}
 			}
 
@@ -116,17 +110,17 @@ FFHaaliIndexer::FFHaaliIndexer(const char *Filename, int SourceMode, char *Error
 	}
 }
 
-FFIndex *FFHaaliIndexer::DoIndexing(char *ErrorMsg, unsigned MsgSize) {
+FFMS_Index *FFHaaliIndexer::DoIndexing() {
 	std::vector<SharedAudioContext> AudioContexts(NumTracks, SharedAudioContext(true));
 	std::vector<SharedVideoContext> VideoContexts(NumTracks, SharedVideoContext(true));
 
-	std::auto_ptr<FFIndex> TrackIndices(new FFIndex(Filesize, Digest));
-	TrackIndices->Decoder = 2;
-	if (SourceMode == 1)
-		TrackIndices->Decoder = 3;
+	std::auto_ptr<FFMS_Index> TrackIndices(new FFMS_Index(Filesize, Digest));
+	TrackIndices->Decoder = FFMS_SOURCE_HAALIMPEG;
+	if (SourceMode == FFMS_SOURCE_HAALIOGG)
+		TrackIndices->Decoder = FFMS_SOURCE_HAALIOGG;
 
 	for (int i = 0; i < NumTracks; i++) {
-		TrackIndices->push_back(FFTrack(1, 1000000, TrackType[i]));
+		TrackIndices->push_back(FFMS_Track(1, 1000000, TrackType[i]));
 		
 		if (TrackType[i] == FFMS_TYPE_VIDEO && Codec[i] && (VideoContexts[i].Parser = av_parser_init(Codec[i]->id))) {
 
@@ -138,8 +132,8 @@ FFIndex *FFHaaliIndexer::DoIndexing(char *ErrorMsg, unsigned MsgSize) {
 
 			if (avcodec_open(CodecContext, Codec[i]) < 0) {
 				av_freep(&CodecContext);
-				snprintf(ErrorMsg, MsgSize, "Could not open video codec");
-				return NULL;
+				throw FFMS_Exception(FFMS_ERROR_CODEC, FFMS_ERROR_DECODING,
+					"Could not open video codec");
 			}
 
 			VideoContexts[i].CodecContext = CodecContext;
@@ -147,10 +141,9 @@ FFIndex *FFHaaliIndexer::DoIndexing(char *ErrorMsg, unsigned MsgSize) {
 		}
 
 		if (IndexMask & (1 << i) && TrackType[i] == FFMS_TYPE_AUDIO) {
-			if (Codec[i] == NULL) {
-				snprintf(ErrorMsg, MsgSize, "Audio codec not found");
-				return NULL;
-			}
+			if (Codec[i] == NULL)	
+				throw FFMS_Exception(FFMS_ERROR_CODEC, FFMS_ERROR_UNSUPPORTED,
+					"Audio codec not found");
 
 			AVCodecContext *CodecContext = avcodec_alloc_context();
 			CodecContext->extradata = FFMS_GET_VECTOR_PTR(CodecPrivate[i]);
@@ -160,8 +153,8 @@ FFIndex *FFHaaliIndexer::DoIndexing(char *ErrorMsg, unsigned MsgSize) {
 			if (avcodec_open(CodecContext, Codec[i]) < 0) {
 				av_freep(&CodecContext);
 				AudioContexts[i].CodecContext = NULL;
-				snprintf(ErrorMsg, MsgSize, "Could not open audio codec");
-				return NULL;
+				throw FFMS_Exception(FFMS_ERROR_CODEC, FFMS_ERROR_DECODING,
+					"Could not open audio codec");
 			}
 		} else {
 			IndexMask &= ~(1 << i);
@@ -170,7 +163,7 @@ FFIndex *FFHaaliIndexer::DoIndexing(char *ErrorMsg, unsigned MsgSize) {
 //
 
 	AVPacket TempPacket;
-	InitNullPacket(&TempPacket);
+	InitNullPacket(TempPacket);
 
 	for (;;) {
 		CComPtr<IMMFrame> pMMF;
@@ -183,16 +176,14 @@ FFIndex *FFHaaliIndexer::DoIndexing(char *ErrorMsg, unsigned MsgSize) {
 		if (IC) {
 			if (Duration > 0) {
 				if (SUCCEEDED(hr)) {
-					if ((*IC)(Ts, Duration, ICPrivate)) {
-						snprintf(ErrorMsg, MsgSize, "Cancelled by user");
-						return NULL;
-					}
+					if ((*IC)(Ts, Duration, ICPrivate))	
+						throw FFMS_Exception(FFMS_ERROR_CANCELLED, FFMS_ERROR_USER,
+							"Cancelled by user");
 				}
 			} else {
-				if ((*IC)(0, 1, ICPrivate)) {
-					snprintf(ErrorMsg, MsgSize, "Cancelled by user");
-					return NULL;
-				}
+				if ((*IC)(0, 1, ICPrivate))	
+					throw FFMS_Exception(FFMS_ERROR_CANCELLED, FFMS_ERROR_USER,
+						"Cancelled by user");
 			}
 		}
 
@@ -213,7 +204,7 @@ FFIndex *FFHaaliIndexer::DoIndexing(char *ErrorMsg, unsigned MsgSize) {
 
 			(*TrackIndices)[Track].push_back(TFrameInfo::VideoFrameInfo(Ts, RepeatPict, pMMF->IsSyncPoint() == S_OK));
 		} else if (TrackType[Track] == FFMS_TYPE_AUDIO && (IndexMask & (1 << Track))) {
-			(*TrackIndices)[Track].push_back(TFrameInfo::AudioFrameInfo(Ts, AudioContexts[Track].CurrentSample, pMMF->IsSyncPoint() == S_OK));
+			int64_t StartSample = AudioContexts[Track].CurrentSample;
 			AVCodecContext *AudioCodecContext = AudioContexts[Track].CodecContext;
 
 			if (pMMF->IsSyncPoint() == S_OK)
@@ -225,13 +216,18 @@ FFIndex *FFHaaliIndexer::DoIndexing(char *ErrorMsg, unsigned MsgSize) {
 				int dbsize = AVCODEC_MAX_AUDIO_FRAME_SIZE*10;
 				int Ret = avcodec_decode_audio3(AudioCodecContext, &DecodingBuffer[0], &dbsize, &TempPacket);
 				if (Ret < 0) {
-					if (IgnoreDecodeErrors) {
+					if (ErrorHandling == FFMS_IEH_ABORT) {
+						throw FFMS_Exception(FFMS_ERROR_CODEC, FFMS_ERROR_DECODING,
+							"Audio decoding error");
+					} else if (ErrorHandling == FFMS_IEH_CLEAR_TRACK) {
 						(*TrackIndices)[Track].clear();
 						IndexMask &= ~(1 << Track);					
 						break;
-					} else {
-						snprintf(ErrorMsg, MsgSize, "Audio decoding error");
-						return NULL;
+					} else if (ErrorHandling == FFMS_IEH_STOP_TRACK) {
+						IndexMask &= ~(1 << Track);					
+						break;
+					} else if (ErrorHandling == FFMS_IEH_IGNORE) {
+						break;
 					}
 				}
 
@@ -244,8 +240,11 @@ FFIndex *FFHaaliIndexer::DoIndexing(char *ErrorMsg, unsigned MsgSize) {
 					AudioContexts[Track].CurrentSample += (dbsize * 8) / (av_get_bits_per_sample_format(AudioCodecContext->sample_fmt) * AudioCodecContext->channels);
 
 				if (DumpMask & (1 << Track))
-					WriteAudio(AudioContexts[Track], TrackIndices.get(), Track, dbsize, ErrorMsg, MsgSize);
+					WriteAudio(AudioContexts[Track], TrackIndices.get(), Track, dbsize);
 			}
+
+			(*TrackIndices)[Track].push_back(TFrameInfo::AudioFrameInfo(Ts, StartSample,
+				static_cast<unsigned int>(AudioContexts[Track].CurrentSample - StartSample), pMMF->IsSyncPoint() == S_OK));
 		}
 	}
 
@@ -263,7 +262,7 @@ FFMS_TrackType FFHaaliIndexer::GetTrackType(int Track) {
 
 const char *FFHaaliIndexer::GetTrackCodec(int Track) {
 	if (Codec[Track])
-		return Codec[Track]->long_name;
+		return Codec[Track]->name;
 	else
 		return "Unsupported codec/Unknown codec name";
 }

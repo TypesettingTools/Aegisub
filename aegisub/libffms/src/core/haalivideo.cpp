@@ -18,9 +18,11 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
 
-#include "ffvideosource.h"
-
 #ifdef HAALISOURCE
+
+#include "videosource.h"
+
+
 
 void FFHaaliVideo::Free(bool CloseCodec) {
 	if (CloseCodec)
@@ -31,9 +33,8 @@ void FFHaaliVideo::Free(bool CloseCodec) {
 }
 
 FFHaaliVideo::FFHaaliVideo(const char *SourceFile, int Track,
-	FFIndex *Index, const char *PP,
-	int Threads, int SourceMode, char *ErrorMsg, unsigned MsgSize)
-	: FFVideo(SourceFile, Index, ErrorMsg, MsgSize) {
+	FFMS_Index *Index, int Threads, enum FFMS_Sources SourceMode)
+	: Res(FFSourceResources<FFMS_VideoSource>(this)), FFMS_VideoSource(SourceFile, Index, Track) {
 
 	BitStreamFilter = NULL;
 	AVCodec *Codec = NULL;
@@ -41,44 +42,7 @@ FFHaaliVideo::FFHaaliVideo(const char *SourceFile, int Track,
 	VideoTrack = Track;
 	Frames = (*Index)[VideoTrack];
 
-	if (Frames.size() == 0) {
-		snprintf(ErrorMsg, MsgSize, "Video track contains no frames");
-		throw ErrorMsg;
-	}
-
-	CLSID clsid = HAALI_TS_Parser;
-	if (SourceMode == 1)
-		clsid = HAALI_OGM_Parser;
-
-	if (FAILED(pMMC.CoCreateInstance(clsid))) {
-		snprintf(ErrorMsg, MsgSize, "Can't create parser");
-		throw ErrorMsg;
-	}
-
-	CComPtr<IMemAlloc> pMA;
-	if (FAILED(pMA.CoCreateInstance(CLSID_MemAlloc))) {
-		snprintf(ErrorMsg, MsgSize, "Can't create memory allocator");
-		throw ErrorMsg;
-	}
-
-	CComPtr<IMMStream> pMS;
-	if (FAILED(pMS.CoCreateInstance(CLSID_DiskFile))) {
-		snprintf(ErrorMsg, MsgSize, "Can't create disk file reader");
-		throw ErrorMsg;
-	}
-
-	WCHAR WSourceFile[2048];
-	ffms_mbstowcs(WSourceFile, SourceFile, 2000);
-	CComQIPtr<IMMStreamOpen> pMSO(pMS);
-	if (FAILED(pMSO->Open(WSourceFile))) {
-		snprintf(ErrorMsg, MsgSize, "Can't open file");
-		throw ErrorMsg;
-	}
-
-	if (FAILED(pMMC->Open(pMS, 0, NULL, pMA))) {
-		snprintf(ErrorMsg, MsgSize, "Can't parse file");
-		throw ErrorMsg;
-	}
+	pMMC = HaaliOpenFile(SourceFile, SourceMode);
 
 	int CodecPrivateSize = 0;
 	int CurrentTrack = 0;
@@ -102,8 +66,30 @@ FFHaaliVideo::FFHaaliVideo(const char *SourceFile, int Track,
 					}
 
 					pV.Clear();
-					if (SUCCEEDED(pBag->Read(L"FOURCC", &pV, NULL)) && SUCCEEDED(pV.ChangeType(VT_UI4)))
+					if (SUCCEEDED(pBag->Read(L"FOURCC", &pV, NULL)) && SUCCEEDED(pV.ChangeType(VT_UI4))) {
 						FourCC = pV.uintVal;
+						
+						// Reconstruct the missing codec private part for VC1
+						std::vector<uint8_t> bihvect;
+						bihvect.resize(sizeof(FFMS_BITMAPINFOHEADER));
+						FFMS_BITMAPINFOHEADER *bih = reinterpret_cast<FFMS_BITMAPINFOHEADER *>(FFMS_GET_VECTOR_PTR(bihvect));
+						memset(bih, 0, sizeof(FFMS_BITMAPINFOHEADER));
+						bih->biSize = sizeof(FFMS_BITMAPINFOHEADER) + CodecPrivateSize;
+						bih->biCompression = FourCC;
+						bih->biBitCount = 24;
+						bih->biPlanes = 1;
+
+						pV.Clear();
+						if (SUCCEEDED(pBag->Read(L"Video.PixelWidth", &pV, NULL)) && SUCCEEDED(pV.ChangeType(VT_UI4)))
+							bih->biWidth = pV.uintVal;
+
+						pV.Clear();
+						if (SUCCEEDED(pBag->Read(L"Video.PixelHeight", &pV, NULL)) && SUCCEEDED(pV.ChangeType(VT_UI4)))
+							bih->biHeight = pV.uintVal;
+
+						CodecPrivate.insert(CodecPrivate.begin(), bihvect.begin(), bihvect.end());
+						CodecPrivateSize += sizeof(FFMS_BITMAPINFOHEADER);
+					}
 
 					pV.Clear();
 					if (SUCCEEDED(pBag->Read(L"CodecID", &pV, NULL)) && SUCCEEDED(pV.ChangeType(VT_BSTR))) {
@@ -122,51 +108,39 @@ FFHaaliVideo::FFHaaliVideo(const char *SourceFile, int Track,
 	CodecContext->extradata_size = CodecPrivateSize;
 	CodecContext->thread_count = Threads;
 
-	if (Codec == NULL) {
-		Free(false);
-		snprintf(ErrorMsg, MsgSize, "Video codec not found");
-		throw ErrorMsg;
-	}
+	if (Codec == NULL)
+		throw FFMS_Exception(FFMS_ERROR_DECODING, FFMS_ERROR_CODEC,
+			"Video codec not found");
 
 	InitializeCodecContextFromHaaliInfo(pBag, CodecContext);
 
-	if (avcodec_open(CodecContext, Codec) < 0) {
-		Free(false);
-		snprintf(ErrorMsg, MsgSize, "Could not open video codec");
-		throw ErrorMsg;
-	}
+	if (avcodec_open(CodecContext, Codec) < 0)
+		throw FFMS_Exception(FFMS_ERROR_DECODING, FFMS_ERROR_CODEC,
+			"Could not open video codec");
 
-	if (Codec->id == CODEC_ID_H264 && SourceMode == 0)
+	if (Codec->id == CODEC_ID_H264 && SourceMode == FFMS_SOURCE_HAALIMPEG)
 		BitStreamFilter = av_bitstream_filter_init("h264_mp4toannexb");
+
+	Res.CloseCodec(true);
 
 	// Always try to decode a frame to make sure all required parameters are known
 	int64_t Dummy;
-	if (DecodeNextFrame(&Dummy, ErrorMsg, MsgSize)) {
-		Free(true);
-		throw ErrorMsg;
-	}
+	DecodeNextFrame(&Dummy);
 
-	VP.Width = CodecContext->width;
-	VP.Height = CodecContext->height;;
 	VP.FPSDenominator = 1;
 	VP.FPSNumerator = 30;
 	VP.RFFDenominator = CodecContext->time_base.num;
 	VP.RFFNumerator = CodecContext->time_base.den;
 	VP.NumFrames = Frames.size();
-	VP.VPixelFormat = CodecContext->pix_fmt;
+	VP.TopFieldFirst = DecodeFrame->top_field_first;
+	VP.ColorSpace = CodecContext->colorspace;
+	VP.ColorRange = CodecContext->color_range;
 	VP.FirstTime = ((Frames.front().DTS * Frames.TB.Num) / (double)Frames.TB.Den) / 1000;
 	VP.LastTime = ((Frames.back().DTS * Frames.TB.Num) / (double)Frames.TB.Den) / 1000;
 
-	if (VP.Width <= 0 || VP.Height <= 0) {
-		Free(true);
-		snprintf(ErrorMsg, MsgSize, "Codec returned zero size video");
-		throw ErrorMsg;
-	}
-
-	if (InitPP(PP, ErrorMsg, MsgSize)) {
-		Free(true);
-		throw ErrorMsg;
-	}
+	if (CodecContext->width <= 0 || CodecContext->height <= 0)
+		throw FFMS_Exception(FFMS_ERROR_DECODING, FFMS_ERROR_CODEC,
+			"Codec returned zero size video");
 
 	// Calculate the average framerate
 	if (Frames.size() >= 2) {
@@ -176,10 +150,7 @@ FFHaaliVideo::FFHaaliVideo(const char *SourceFile, int Track,
 	}
 
 	// Output the already decoded frame so it isn't wasted
-	if (!OutputFrame(DecodeFrame, ErrorMsg, MsgSize)) {
-		Free(true);
-		throw ErrorMsg;
-	}
+	OutputFrame(DecodeFrame);
 
 	// Set AR variables
 	CComVariant pV;
@@ -192,15 +163,11 @@ FFHaaliVideo::FFHaaliVideo(const char *SourceFile, int Track,
 		VP.SARDen = pV.uiVal;
 }
 
-FFHaaliVideo::~FFHaaliVideo() {
-	Free(true);
-}
-
-int FFHaaliVideo::DecodeNextFrame(int64_t *AFirstStartTime, char *ErrorMsg, unsigned MsgSize) {
+void FFHaaliVideo::DecodeNextFrame(int64_t *AFirstStartTime) {
 	int FrameFinished = 0;
 	*AFirstStartTime = -1;
 	AVPacket Packet;
-	InitNullPacket(&Packet);
+	InitNullPacket(Packet);
 
 	for (;;) {
 		CComPtr<IMMFrame> pMMF;
@@ -227,6 +194,9 @@ int FFHaaliVideo::DecodeNextFrame(int64_t *AFirstStartTime, char *ErrorMsg, unsi
 				av_bitstream_filter_filter(BitStreamFilter, CodecContext, NULL,
 				&Packet.data, &Packet.size, Data, pMMF->GetActualDataLength(), !!Packet.flags);
 
+			if (CodecContext->codec_id == CODEC_ID_MPEG4 && IsNVOP(Packet))
+				goto Done;
+
 			avcodec_decode_video2(CodecContext, DecodeFrame, &FrameFinished, &Packet);
 
 			if (FrameFinished)
@@ -237,7 +207,7 @@ int FFHaaliVideo::DecodeNextFrame(int64_t *AFirstStartTime, char *ErrorMsg, unsi
 	// Flush the last frames
 	if (CodecContext->has_b_frames) {
 		AVPacket NullPacket;
-		InitNullPacket(&NullPacket);
+		InitNullPacket(NullPacket);
 		avcodec_decode_video2(CodecContext, DecodeFrame, &FrameFinished, &NullPacket);
 	}
 
@@ -245,14 +215,14 @@ int FFHaaliVideo::DecodeNextFrame(int64_t *AFirstStartTime, char *ErrorMsg, unsi
 		goto Error;
 
 Error:
-Done:
-	return 0;
+Done:;
 }
 
-FFAVFrame *FFHaaliVideo::GetFrame(int n, char *ErrorMsg, unsigned MsgSize) {
-	// PPFrame always holds frame LastFrameNum even if no PP is applied
+FFMS_Frame *FFHaaliVideo::GetFrame(int n) {
+	GetFrameCheck(n);
+
 	if (LastFrameNum == n)
-		return OutputFrame(DecodeFrame, ErrorMsg, MsgSize);
+		return &LocalFrame;
 
 	bool HasSeeked = false;
 	int SeekOffset = 0;
@@ -266,18 +236,16 @@ ReSeek:
 
 	do {
 		int64_t StartTime;
-		if (DecodeNextFrame(&StartTime, ErrorMsg, MsgSize))
-				return NULL;
+		DecodeNextFrame(&StartTime);
 
 		if (HasSeeked) {
 			HasSeeked = false;
 
 			if (StartTime < 0 || (CurrentFrame = Frames.FrameFromDTS(StartTime)) < 0) {
 				// No idea where we are so go back a bit further
-				if (n + SeekOffset == 0) {
-					snprintf(ErrorMsg, MsgSize, "Frame accurate seeking is not possible in this file\n");
-					return NULL;
-				}
+				if (n + SeekOffset == 0)
+					throw FFMS_Exception(FFMS_ERROR_DECODING, FFMS_ERROR_CODEC,
+						"Frame accurate seeking is not possible in this file");
 
 				SeekOffset -= FFMIN(20, n + SeekOffset);
 				goto ReSeek;
@@ -288,7 +256,7 @@ ReSeek:
 	} while (CurrentFrame <= n);
 
 	LastFrameNum = n;
-	return OutputFrame(DecodeFrame, ErrorMsg, MsgSize);
+	return OutputFrame(DecodeFrame);
 }
 
 #endif // HAALISOURCE

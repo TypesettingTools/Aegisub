@@ -18,7 +18,7 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
 
-#include "ffvideosource.h"
+#include "videosource.h"
 
 
 
@@ -28,9 +28,9 @@ void FFLAVFVideo::Free(bool CloseCodec) {
 	av_close_input_file(FormatContext);
 }
 
-FFLAVFVideo::FFLAVFVideo(const char *SourceFile, int Track, FFIndex *Index,
-	const char *PP, int Threads, int SeekMode, char *ErrorMsg, unsigned MsgSize)
-	: FFVideo(SourceFile, Index, ErrorMsg, MsgSize) {
+FFLAVFVideo::FFLAVFVideo(const char *SourceFile, int Track, FFMS_Index *Index,
+	int Threads, int SeekMode)
+	: Res(FFSourceResources<FFMS_VideoSource>(this)), FFMS_VideoSource(SourceFile, Index, Track) {
 
 	FormatContext = NULL;
 	AVCodec *Codec = NULL;
@@ -38,78 +38,50 @@ FFLAVFVideo::FFLAVFVideo(const char *SourceFile, int Track, FFIndex *Index,
 	VideoTrack = Track;
 	Frames = (*Index)[VideoTrack];
 
-	if (Frames.size() == 0) {
-		snprintf(ErrorMsg, MsgSize, "Video track contains no frames");
-		throw ErrorMsg;
-	}
+	LAVFOpenFile(SourceFile, FormatContext);
 
-	if (av_open_input_file(&FormatContext, SourceFile, NULL, 0, NULL) != 0) {
-		snprintf(ErrorMsg, MsgSize, "Couldn't open '%s'", SourceFile);
-		throw ErrorMsg;
-	}
-	
-	if (av_find_stream_info(FormatContext) < 0) {
-		Free(false);
-		snprintf(ErrorMsg, MsgSize, "Couldn't find stream information");
-		throw ErrorMsg;
-	}
-
-	if (SeekMode >= 0 && av_seek_frame(FormatContext, VideoTrack, Frames[0].DTS, AVSEEK_FLAG_BACKWARD) < 0) {
-		Free(false);
-		snprintf(ErrorMsg, MsgSize, "Video track is unseekable");
-		throw ErrorMsg;
-	}
+	if (SeekMode >= 0 && av_seek_frame(FormatContext, VideoTrack, Frames[0].DTS, AVSEEK_FLAG_BACKWARD) < 0)
+		throw FFMS_Exception(FFMS_ERROR_DECODING, FFMS_ERROR_CODEC,
+			"Video track is unseekable");
 
 	CodecContext = FormatContext->streams[VideoTrack]->codec;
 	CodecContext->thread_count = Threads;
 
 	Codec = avcodec_find_decoder(CodecContext->codec_id);
-	if (Codec == NULL) {
-		Free(false);
-		snprintf(ErrorMsg, MsgSize, "Video codec not found");
-		throw ErrorMsg;
-	}
+	if (Codec == NULL)
+		throw FFMS_Exception(FFMS_ERROR_DECODING, FFMS_ERROR_CODEC,
+			"Video codec not found");
 
-	if (avcodec_open(CodecContext, Codec) < 0) {
-		Free(false);
-		snprintf(ErrorMsg, MsgSize, "Could not open video codec");
-		throw ErrorMsg;
-	}
+	if (avcodec_open(CodecContext, Codec) < 0)
+		throw FFMS_Exception(FFMS_ERROR_DECODING, FFMS_ERROR_CODEC,
+			"Could not open video codec");
+
+	Res.CloseCodec(true);
 
 	// Always try to decode a frame to make sure all required parameters are known
 	int64_t Dummy;
-	if (DecodeNextFrame(&Dummy, ErrorMsg, MsgSize)) {
-		Free(true);
-		throw ErrorMsg;
-	}
+	DecodeNextFrame(&Dummy);
 
 	//VP.image_type = VideoInfo::IT_TFF;
-	VP.Width = CodecContext->width;
-	VP.Height = CodecContext->height;
 	VP.FPSDenominator = FormatContext->streams[VideoTrack]->time_base.num;
 	VP.FPSNumerator = FormatContext->streams[VideoTrack]->time_base.den;
 	VP.RFFDenominator = CodecContext->time_base.num;
 	VP.RFFNumerator = CodecContext->time_base.den;
 	VP.NumFrames = Frames.size();
-	VP.VPixelFormat = CodecContext->pix_fmt;
+	VP.TopFieldFirst = DecodeFrame->top_field_first;
+	VP.ColorSpace = CodecContext->colorspace;
+	VP.ColorRange = CodecContext->color_range;
 	VP.FirstTime = ((Frames.front().DTS * Frames.TB.Num) / (double)Frames.TB.Den) / 1000;
 	VP.LastTime = ((Frames.back().DTS * Frames.TB.Num) / (double)Frames.TB.Den) / 1000;
 
-	if (VP.Width <= 0 || VP.Height <= 0) {
-		Free(true);
-		snprintf(ErrorMsg, MsgSize, "Codec returned zero size video");
-		throw ErrorMsg;
-	}
+	if (CodecContext->width <= 0 || CodecContext->height <= 0)
+		throw FFMS_Exception(FFMS_ERROR_DECODING, FFMS_ERROR_CODEC,
+			"Codec returned zero size video");
 
 	// sanity check framerate
 	if (VP.FPSDenominator > VP.FPSNumerator || VP.FPSDenominator <= 0 || VP.FPSNumerator <= 0) {
 		VP.FPSDenominator = 1;
 		VP.FPSNumerator = 30;
-	}
-
-	if (InitPP(PP, ErrorMsg, MsgSize)) {
-			Free(true);
-			throw ErrorMsg;
 	}
 
 	// Adjust framerate to match the duration of the first frame
@@ -120,23 +92,16 @@ FFLAVFVideo::FFLAVFVideo(const char *SourceFile, int Track, FFIndex *Index,
 
 	// Cannot "output" to PPFrame without doing all other initialization
 	// This is the additional mess required for seekmode=-1 to work in a reasonable way
-	if (!OutputFrame(DecodeFrame, ErrorMsg, MsgSize)) {
-		Free(true);
-		throw ErrorMsg;
-	}
+	OutputFrame(DecodeFrame);
 
 	// Set AR variables
 	VP.SARNum = CodecContext->sample_aspect_ratio.num;
 	VP.SARDen = CodecContext->sample_aspect_ratio.den;
 }
 
-FFLAVFVideo::~FFLAVFVideo() {
-	Free(true);
-}
-
-int FFLAVFVideo::DecodeNextFrame(int64_t *AStartTime, char *ErrorMsg, unsigned MsgSize) {
+void FFLAVFVideo::DecodeNextFrame(int64_t *AStartTime) {
 	AVPacket Packet;
-	InitNullPacket(&Packet);
+	InitNullPacket(Packet);
 	int FrameFinished = 0;
 	*AStartTime = -1;
 
@@ -144,6 +109,11 @@ int FFLAVFVideo::DecodeNextFrame(int64_t *AStartTime, char *ErrorMsg, unsigned M
         if (Packet.stream_index == VideoTrack) {
 			if (*AStartTime < 0)
 				*AStartTime = Packet.dts;
+
+			if (CodecContext->codec_id == CODEC_ID_MPEG4 && IsNVOP(Packet)) {
+				av_free_packet(&Packet);
+				goto Done;
+			}
 
 			avcodec_decode_video2(CodecContext, DecodeFrame, &FrameFinished, &Packet);
         }
@@ -157,23 +127,22 @@ int FFLAVFVideo::DecodeNextFrame(int64_t *AStartTime, char *ErrorMsg, unsigned M
 	// Flush the last frames
 	if (CodecContext->has_b_frames) {
 		AVPacket NullPacket;
-		InitNullPacket(&NullPacket);
+		InitNullPacket(NullPacket);
 		avcodec_decode_video2(CodecContext, DecodeFrame, &FrameFinished, &NullPacket);
 	}
 
 	if (!FrameFinished)
 		goto Error;
 
-// Ignore errors for now
 Error:
-Done:
-	return 0;
+Done:;
 }
 
-FFAVFrame *FFLAVFVideo::GetFrame(int n, char *ErrorMsg, unsigned MsgSize) {
-	// PPFrame always holds frame LastFrameNum even if no PP is applied
+FFMS_Frame *FFLAVFVideo::GetFrame(int n) {
+	GetFrameCheck(n);
+
 	if (LastFrameNum == n)
-		return OutputFrame(DecodeFrame, ErrorMsg, MsgSize);
+		return &LocalFrame;
 
 	bool HasSeeked = false;
 	int SeekOffset = 0;
@@ -200,14 +169,13 @@ ReSeek:
 			}
 		}
 	} else if (n < CurrentFrame) {
-		snprintf(ErrorMsg, MsgSize, "Non-linear access attempted");
-		return NULL;
+		throw FFMS_Exception(FFMS_ERROR_SEEKING, FFMS_ERROR_INVALID_ARGUMENT,
+			"Non-linear access attempted");
 	}
 
 	do {
 		int64_t StartTime;
-		if (DecodeNextFrame(&StartTime, ErrorMsg, MsgSize))
-			return NULL;
+		DecodeNextFrame(&StartTime);
 
 		if (HasSeeked) {
 			HasSeeked = false;
@@ -217,10 +185,10 @@ ReSeek:
 				switch (SeekMode) {
 					case 1:
 						// No idea where we are so go back a bit further
-						if (ClosestKF + SeekOffset == 0) {
-							snprintf(ErrorMsg, MsgSize, "Frame accurate seeking is not possible in this file\n");
-							return NULL;
-						}
+						if (ClosestKF + SeekOffset == 0)
+							throw FFMS_Exception(FFMS_ERROR_DECODING, FFMS_ERROR_CODEC,
+								"Frame accurate seeking is not possible in this file");
+
 
 						SeekOffset -= FFMIN(10, ClosestKF + SeekOffset);
 						goto ReSeek;
@@ -229,8 +197,8 @@ ReSeek:
 						CurrentFrame = Frames.ClosestFrameFromDTS(StartTime);
 						break;
 					default:
-						snprintf(ErrorMsg, MsgSize, "Failed assertion");
-						return NULL;
+						throw FFMS_Exception(FFMS_ERROR_SEEKING, FFMS_ERROR_UNKNOWN,
+							"Failed assertion");
 				}	
 			}
 		}
@@ -239,5 +207,5 @@ ReSeek:
 	} while (CurrentFrame <= n);
 
 	LastFrameNum = n;
-	return OutputFrame(DecodeFrame, ErrorMsg, MsgSize);
+	return OutputFrame(DecodeFrame);
 }

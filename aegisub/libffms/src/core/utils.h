@@ -23,7 +23,8 @@
 
 #include <vector>
 #include <fstream>
-#include <stdio.h>
+#include <cstdio>
+#include <boost/format.hpp>
 #include "ffms.h"
 #include "matroskaparser.h"
 
@@ -50,17 +51,73 @@ extern "C" {
 #	include "guids.h"
 #endif
 
-
-
 #define FFMS_GET_VECTOR_PTR(v) (((v).size() ? &(v)[0] : NULL))
 
 const int64_t ffms_av_nopts_value = static_cast<int64_t>(1) << 63;
+
+// used for matroska<->ffmpeg codec ID mapping to avoid Win32 dependency
+typedef struct FFMS_BITMAPINFOHEADER {
+        uint32_t      biSize;
+        int32_t       biWidth;
+        int32_t       biHeight;
+        uint16_t      biPlanes;
+        uint16_t      biBitCount;
+        uint32_t      biCompression;
+        uint32_t      biSizeImage;
+        int32_t       biXPelsPerMeter;
+        int32_t       biYPelsPerMeter;
+        uint32_t      biClrUsed;
+        uint32_t      biClrImportant;
+} FFMS_BITMAPINFOHEADER;
+
+class FFMS_Exception : public std::exception {
+private:
+	std::string _Message;
+	int _ErrorType;
+	int _SubType;
+public:
+	FFMS_Exception(int ErrorType, int SubType, const char *Message = "");
+	FFMS_Exception(int ErrorType, int SubType, const std::string &Message);
+	FFMS_Exception(int ErrorType, int SubType, const boost::format &Message);
+	~FFMS_Exception() throw ();
+	const std::string &GetErrorMessage() const;
+	int CopyOut(FFMS_ErrorInfo *ErrorInfo) const;
+};
+
+template<class T>
+class FFSourceResources {
+private:
+	T *_PrivClass;
+	bool _Enabled;
+	bool _Arg;
+public:
+	FFSourceResources(T *Target) : _PrivClass(Target), _Enabled(true), _Arg(false) {
+	}
+
+	~FFSourceResources() {
+		if (_Enabled)
+			_PrivClass->Free(_Arg);
+	}
+
+	void SetEnabled(bool Enabled) {
+		_Enabled = Enabled;
+	}
+
+	void SetArg(bool Arg) {
+		_Arg = Arg;
+	}
+
+	void CloseCodec(bool Arg) {
+		_Arg = Arg;
+	}
+};
 
 struct MatroskaReaderContext {
 public:
 	StdIoStream ST;
 	uint8_t *Buffer;
 	unsigned int BufferSize;
+	char CSBuffer[4096];
 
 	MatroskaReaderContext() {
 		InitStdIoStream(&ST);
@@ -81,19 +138,25 @@ public:
 
 int GetSWSCPUFlags();
 int GetPPCPUFlags();
+void ClearErrorInfo(FFMS_ErrorInfo *ErrorInfo);
 FFMS_TrackType HaaliTrackTypeToFFTrackType(int TT);
-int ReadFrame(uint64_t FilePos, unsigned int &FrameSize, CompressedStream *CS, MatroskaReaderContext &Context, char *ErrorMsg, unsigned MsgSize);
+void ReadFrame(uint64_t FilePos, unsigned int &FrameSize, CompressedStream *CS, MatroskaReaderContext &Context);
 bool AudioFMTIsFloat(SampleFormat FMT);
-void InitNullPacket(AVPacket *pkt);
-void FillAP(FFAudioProperties &AP, AVCodecContext *CTX, FFTrack &Frames);
+void InitNullPacket(AVPacket &pkt);
+bool IsNVOP(AVPacket &pkt);
+void FillAP(FFMS_AudioProperties &AP, AVCodecContext *CTX, FFMS_Track &Frames);
 #ifdef HAALISOURCE
 unsigned vtSize(VARIANT &vt);
 void vtCopy(VARIANT& vt,void *dest);
 void InitializeCodecContextFromHaaliInfo(CComQIPtr<IPropertyBag> pBag, AVCodecContext *CodecContext);
 #endif
 void InitializeCodecContextFromMatroskaTrackInfo(TrackInfo *TI, AVCodecContext *CodecContext);
-CodecID MatroskaToFFCodecID(char *Codec, void *CodecPrivate, unsigned int FourCC = 0);
+CodecID MatroskaToFFCodecID(char *Codec, void *CodecPrivate, unsigned int FourCC = 0, unsigned int BitsPerSample = 0);
 FILE *ffms_fopen(const char *filename, const char *mode);
 size_t ffms_mbstowcs (wchar_t *wcstr, const char *mbstr, size_t max);
+#ifdef HAALISOURCE
+CComPtr<IMMContainer> HaaliOpenFile(const char *SourceFile, enum FFMS_Sources SourceMode);
+#endif
+void LAVFOpenFile(const char *SourceFile, AVFormatContext *&FormatContext);
 
 #endif

@@ -18,24 +18,52 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
 
-#include "ffvideosource.h"
+#include "videosource.h"
 
-int FFVideo::InitPP(const char *PP, char *ErrorMsg, unsigned MsgSize) {
-	if (PP == NULL || !strcmp(PP, ""))
-		return 0;
-
-	PPMode = pp_get_mode_by_name_and_quality(PP, PP_QUALITY_MAX);
-	if (!PPMode) {
-		snprintf(ErrorMsg, MsgSize, "Invalid postprocesing settings");
-		return 1;
-	}
-
-	return 0;
+void FFMS_VideoSource::GetFrameCheck(int n) {
+	if (n < 0 || n >= VP.NumFrames)
+		throw FFMS_Exception(FFMS_ERROR_DECODING, FFMS_ERROR_INVALID_ARGUMENT,
+			"Out of bounds frame requested");
 }
 
-int FFVideo::ReAdjustPP(PixelFormat VPixelFormat, int Width, int Height, char *ErrorMsg, unsigned MsgSize) {
+void FFMS_VideoSource::SetPP(const char *PP) {
+	if (PPMode)
+		pp_free_mode(PPMode);
+	PPMode = NULL;
+
+	if (PP != NULL && strcmp(PP, "")) {
+		PPMode = pp_get_mode_by_name_and_quality(PP, PP_QUALITY_MAX);
+		if (!PPMode) {
+			ResetPP();
+			throw FFMS_Exception(FFMS_ERROR_POSTPROCESSING, FFMS_ERROR_INVALID_ARGUMENT,
+				"Invalid postprocesing settings");
+		}
+		
+	}
+
+	ReAdjustPP(CodecContext->pix_fmt, CodecContext->width, CodecContext->height);
+	OutputFrame(DecodeFrame);
+}
+
+void FFMS_VideoSource::ResetPP() {
+	if (PPContext)
+		pp_free_context(PPContext);
+	PPContext = NULL;
+
+	if (PPMode)
+		pp_free_mode(PPMode);
+	PPMode = NULL;
+
+	OutputFrame(DecodeFrame);
+}
+
+void FFMS_VideoSource::ReAdjustPP(PixelFormat VPixelFormat, int Width, int Height) {
+	if (PPContext)
+		pp_free_context(PPContext);
+	PPContext = NULL;
+
 	if (!PPMode)
-		return 0;
+		return;
 
 	int Flags =  GetPPCPUFlags();
 
@@ -45,34 +73,30 @@ int FFVideo::ReAdjustPP(PixelFormat VPixelFormat, int Width, int Height, char *E
 		case PIX_FMT_YUV411P: Flags |= PP_FORMAT_411; break;
 		case PIX_FMT_YUV444P: Flags |= PP_FORMAT_444; break;
 		default:
-			snprintf(ErrorMsg, MsgSize, "Input format is not supported for postprocessing");
-			return 1;
+			ResetPP();
+			throw FFMS_Exception(FFMS_ERROR_POSTPROCESSING, FFMS_ERROR_UNSUPPORTED,
+				"The video does not have a colorspace suitable for postprocessing");
 	}
 
-	if (PPContext)
-		pp_free_context(PPContext);
 	PPContext = pp_get_context(Width, Height, Flags);
 
 	avpicture_free(&PPFrame);
 	avpicture_alloc(&PPFrame, VPixelFormat, Width, Height);
-
-	return 0;
 }
 
-static void CopyAVPictureFields(AVPicture &Picture, FFAVFrame &Dst) {
+static void CopyAVPictureFields(AVPicture &Picture, FFMS_Frame &Dst) {
 	for (int i = 0; i < 4; i++) {
 		Dst.Data[i] = Picture.data[i];
 		Dst.Linesize[i] = Picture.linesize[i];
 	}
 }
 
-FFAVFrame *FFVideo::OutputFrame(AVFrame *Frame, char *ErrorMsg, unsigned MsgSize) {
+FFMS_Frame *FFMS_VideoSource::OutputFrame(AVFrame *Frame) {
 	if (LastFrameWidth != CodecContext->width || LastFrameHeight != CodecContext->height || LastFramePixelFormat != CodecContext->pix_fmt) {
-		if (ReAdjustPP(CodecContext->pix_fmt, CodecContext->width, CodecContext->height, ErrorMsg, MsgSize))
-			return NULL;
+		ReAdjustPP(CodecContext->pix_fmt, CodecContext->width, CodecContext->height);
+
 		if (TargetHeight > 0 && TargetWidth > 0 && TargetPixelFormats != 0)
-			if (ReAdjustOutputFormat(TargetPixelFormats, TargetWidth, TargetHeight, TargetResizer, ErrorMsg, MsgSize))
-				return NULL;
+			ReAdjustOutputFormat(TargetPixelFormats, TargetWidth, TargetHeight, TargetResizer);
 	}
 
 	if (PPMode) {
@@ -99,9 +123,9 @@ FFAVFrame *FFVideo::OutputFrame(AVFrame *Frame, char *ErrorMsg, unsigned MsgSize
 	LocalFrame.EncodedWidth = CodecContext->width;
 	LocalFrame.EncodedHeight = CodecContext->height;
 	LocalFrame.EncodedPixelFormat = CodecContext->pix_fmt;
-	LocalFrame.ScaledWidth = VP.Width;
-	LocalFrame.ScaledHeight = VP.Height;
-	LocalFrame.ConvertedPixelFormat = VP.VPixelFormat;
+	LocalFrame.ScaledWidth = TargetWidth;
+	LocalFrame.ScaledHeight = TargetHeight;
+	LocalFrame.ConvertedPixelFormat = OutputFormat;
 	LocalFrame.KeyFrame = Frame->key_frame;
 	LocalFrame.PictType = av_get_pict_type_char(Frame->pict_type);
 	LocalFrame.RepeatPict = Frame->repeat_pict;
@@ -115,9 +139,22 @@ FFAVFrame *FFVideo::OutputFrame(AVFrame *Frame, char *ErrorMsg, unsigned MsgSize
 	return &LocalFrame;
 }
 
-FFVideo::FFVideo(const char *SourceFile, FFIndex *Index, char *ErrorMsg, unsigned MsgSize) {
-	if (Index->CompareFileSignature(SourceFile, ErrorMsg, MsgSize))
-		throw ErrorMsg;
+FFMS_VideoSource::FFMS_VideoSource(const char *SourceFile, FFMS_Index *Index, int Track) {
+	if (Track < 0 || Track >= static_cast<int>(Index->size()))
+		throw FFMS_Exception(FFMS_ERROR_INDEX, FFMS_ERROR_INVALID_ARGUMENT,
+			"Out of bounds track index selected");
+
+	if (Index->at(Track).TT != FFMS_TYPE_VIDEO)
+		throw FFMS_Exception(FFMS_ERROR_INDEX, FFMS_ERROR_INVALID_ARGUMENT,
+			"Not a video track");
+
+	if (Index[Track].size() == 0)
+		throw FFMS_Exception(FFMS_ERROR_INDEX, FFMS_ERROR_INVALID_ARGUMENT,
+			"Video track contains no frames");
+
+	if (!Index->CompareFileSignature(SourceFile))
+		throw FFMS_Exception(FFMS_ERROR_INDEX, FFMS_ERROR_FILE_MISMATCH,
+			"The index does not match the source file");
 
 	memset(&VP, 0, sizeof(VP));
 	PPContext = NULL;
@@ -133,6 +170,7 @@ FFVideo::FFVideo(const char *SourceFile, FFIndex *Index, char *ErrorMsg, unsigne
 	TargetWidth = -1;
 	TargetPixelFormats = 0;
 	TargetResizer = 0;
+	OutputFormat = PIX_FMT_NONE;
 	DecodeFrame = avcodec_alloc_frame();
 
 	// Dummy allocations so the unallocated case doesn't have to be handled later
@@ -140,7 +178,7 @@ FFVideo::FFVideo(const char *SourceFile, FFIndex *Index, char *ErrorMsg, unsigne
 	avpicture_alloc(&SWSFrame, PIX_FMT_GRAY8, 16, 16);
 }
 
-FFVideo::~FFVideo() {
+FFMS_VideoSource::~FFMS_VideoSource() {
 	if (PPMode)
 		pp_free_mode(PPMode);
 
@@ -155,32 +193,33 @@ FFVideo::~FFVideo() {
 	av_freep(&DecodeFrame);
 }
 
-FFAVFrame *FFVideo::GetFrameByTime(double Time, char *ErrorMsg, unsigned MsgSize) {
+FFMS_Frame *FFMS_VideoSource::GetFrameByTime(double Time) {
 	int Frame = Frames.ClosestFrameFromDTS(static_cast<int64_t>((Time * 1000 * Frames.TB.Den) / Frames.TB.Num));
-	return GetFrame(Frame, ErrorMsg, MsgSize);
+	return GetFrame(Frame);
 }
 
-int FFVideo::SetOutputFormat(int64_t TargetFormats, int Width, int Height, int Resizer, char *ErrorMsg, unsigned MsgSize) {
+void FFMS_VideoSource::SetOutputFormat(int64_t TargetFormats, int Width, int Height, int Resizer) {
 	this->TargetWidth = Width;
 	this->TargetHeight = Height;
 	this->TargetPixelFormats = TargetFormats;
 	this->TargetResizer = Resizer;
-	return ReAdjustOutputFormat(TargetFormats, Width, Height, Resizer, ErrorMsg, MsgSize);
+	ReAdjustOutputFormat(TargetFormats, Width, Height, Resizer);
+	OutputFrame(DecodeFrame);
 }
 
-int FFVideo::ReAdjustOutputFormat(int64_t TargetFormats, int Width, int Height, int Resizer, char *ErrorMsg, unsigned MsgSize) {
+void FFMS_VideoSource::ReAdjustOutputFormat(int64_t TargetFormats, int Width, int Height, int Resizer) {
 	if (SWS) {
 		sws_freeContext(SWS);
 		SWS = NULL;
 	}
 
 	int Loss;
-	PixelFormat OutputFormat = avcodec_find_best_pix_fmt(TargetFormats,
+	OutputFormat = avcodec_find_best_pix_fmt(TargetFormats,
 		CodecContext->pix_fmt, 1 /* Required to prevent pointless RGB32 => RGB24 conversion */, &Loss);
 	if (OutputFormat == PIX_FMT_NONE) {
 		ResetOutputFormat();
-		snprintf(ErrorMsg, MsgSize, "No suitable output format found");
-		return 1;
+		throw FFMS_Exception(FFMS_ERROR_SCALING, FFMS_ERROR_INVALID_ARGUMENT,
+			"No suitable output format found");
 	}
 
 	if (CodecContext->pix_fmt != OutputFormat || Width != CodecContext->width || Height != CodecContext->height) {
@@ -188,22 +227,16 @@ int FFVideo::ReAdjustOutputFormat(int64_t TargetFormats, int Width, int Height, 
 			OutputFormat, GetSWSCPUFlags() | Resizer, NULL, NULL, NULL);
 		if (SWS == NULL) {
 			ResetOutputFormat();
-			snprintf(ErrorMsg, MsgSize, "Failed to allocate SWScale context");
-			return 1;
+			throw FFMS_Exception(FFMS_ERROR_SCALING, FFMS_ERROR_INVALID_ARGUMENT,
+				"Failed to allocate SWScale context");
 		}
 	}
 
-	VP.VPixelFormat = OutputFormat;
-	VP.Height = Height;
-	VP.Width = Width;
-
 	avpicture_free(&SWSFrame);
 	avpicture_alloc(&SWSFrame, OutputFormat, Width, Height);
-
-	return 0;
 }
 
-void FFVideo::ResetOutputFormat() {
+void FFMS_VideoSource::ResetOutputFormat() {
 	if (SWS) {
 		sws_freeContext(SWS);
 		SWS = NULL;
@@ -212,8 +245,7 @@ void FFVideo::ResetOutputFormat() {
 	TargetWidth = -1;
 	TargetHeight = -1;
 	TargetPixelFormats = 0;
-
-	VP.Height = CodecContext->height;
-	VP.Width = CodecContext->width;
-	VP.VPixelFormat = CodecContext->pix_fmt;
+	OutputFormat = PIX_FMT_NONE;
+	
+	OutputFrame(DecodeFrame);
 }

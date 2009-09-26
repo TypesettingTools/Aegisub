@@ -46,6 +46,38 @@ extern const AVCodecTag ff_codec_wav_tags[];
 
 extern int CPUFeatures;
 
+
+
+FFMS_Exception::FFMS_Exception(int ErrorType, int SubType, const char *Message) : _ErrorType(ErrorType), _SubType(SubType), _Message(Message) {
+}
+
+FFMS_Exception::FFMS_Exception(int ErrorType, int SubType, const std::string &Message) : _ErrorType(ErrorType), _SubType(SubType), _Message(Message) {
+}
+
+FFMS_Exception::FFMS_Exception(int ErrorType, int SubType, const boost::format &Message) : _ErrorType(ErrorType), _SubType(SubType), _Message(Message.str()) {
+}
+
+FFMS_Exception::~FFMS_Exception() throw () {
+}
+
+const std::string &FFMS_Exception::GetErrorMessage() const {
+	return _Message;
+}
+
+int FFMS_Exception::CopyOut(FFMS_ErrorInfo *ErrorInfo) const {
+	if (ErrorInfo) {
+		ErrorInfo->ErrorType = _ErrorType;
+		ErrorInfo->SubType = _SubType;
+		
+		if (ErrorInfo->BufferSize > 0) {
+			memset(ErrorInfo->Buffer, 0, ErrorInfo->BufferSize);
+			_Message.copy(ErrorInfo->Buffer, ErrorInfo->BufferSize - 1);
+		}
+	}
+
+	return (_ErrorType << 16) | _SubType;
+}
+
 int GetSWSCPUFlags() {
 	int Flags = 0;
 
@@ -78,6 +110,16 @@ int GetPPCPUFlags() {
 	return Flags;
 }
 
+void ClearErrorInfo(FFMS_ErrorInfo *ErrorInfo) {
+	if (ErrorInfo) {
+		ErrorInfo->ErrorType = FFMS_ERROR_SUCCESS;
+		ErrorInfo->SubType = FFMS_ERROR_SUCCESS;
+
+		if (ErrorInfo->BufferSize > 0)
+			ErrorInfo->Buffer[0] = 0;
+	}
+}
+
 FFMS_TrackType HaaliTrackTypeToFFTrackType(int TT) {
 	switch (TT) {
 		case TT_VIDEO: return FFMS_TYPE_VIDEO; break;
@@ -87,90 +129,92 @@ FFMS_TrackType HaaliTrackTypeToFFTrackType(int TT) {
 	}
 }
 
-int ReadFrame(uint64_t FilePos, unsigned int &FrameSize, CompressedStream *CS, MatroskaReaderContext &Context, char *ErrorMsg, unsigned MsgSize) {
+void ReadFrame(uint64_t FilePos, unsigned int &FrameSize, CompressedStream *CS, MatroskaReaderContext &Context) {
 	if (CS) {
-		char CSBuffer[4096];
-
 		unsigned int DecompressedFrameSize = 0;
 
 		cs_NextFrame(CS, FilePos, FrameSize);
 
 		for (;;) {
-			int ReadBytes = cs_ReadData(CS, CSBuffer, sizeof(CSBuffer));
-			if (ReadBytes < 0) {
-				snprintf(ErrorMsg, MsgSize, "Error decompressing data: %s", cs_GetLastError(CS));
-				return 1;
-			}
+			int ReadBytes = cs_ReadData(CS, Context.CSBuffer, sizeof(Context.CSBuffer));
+			if (ReadBytes < 0)
+				throw FFMS_Exception(FFMS_ERROR_PARSER, FFMS_ERROR_FILE_READ,
+					boost::format("Error decompressing data: %1%") % cs_GetLastError(CS));
+
 			if (ReadBytes == 0) {
 				FrameSize = DecompressedFrameSize;
-				return 0;
+				memset(Context.Buffer + DecompressedFrameSize, 0,
+					Context.BufferSize  + FF_INPUT_BUFFER_PADDING_SIZE - DecompressedFrameSize);
+				return;
 			}
 
 			if (Context.BufferSize < DecompressedFrameSize + ReadBytes) {
-				Context.BufferSize = FrameSize;
-				Context.Buffer = (uint8_t *)realloc(Context.Buffer, Context.BufferSize + 16);
-				if (Context.Buffer == NULL)  {
-					snprintf(ErrorMsg, MsgSize, "Out of memory");
-					return 2;
-				}
+				Context.BufferSize = DecompressedFrameSize + ReadBytes;
+				Context.Buffer = (uint8_t *)realloc(Context.Buffer, Context.BufferSize + FF_INPUT_BUFFER_PADDING_SIZE);
+				if (Context.Buffer == NULL)
+					throw FFMS_Exception(FFMS_ERROR_PARSER, FFMS_ERROR_ALLOCATION_FAILED,
+					"Out of memory");
 			}
 
-			memcpy(Context.Buffer + DecompressedFrameSize, CSBuffer, ReadBytes);
+			memcpy(Context.Buffer + DecompressedFrameSize, Context.CSBuffer, ReadBytes);
 			DecompressedFrameSize += ReadBytes;
 		}
 	} else {
-		if (fseeko(Context.ST.fp, FilePos, SEEK_SET)) {
-			snprintf(ErrorMsg, MsgSize, "fseek(): %s", strerror(errno));
-			return 3;
-		}
+		if (fseeko(Context.ST.fp, FilePos, SEEK_SET))
+			throw FFMS_Exception(FFMS_ERROR_PARSER, FFMS_ERROR_SEEKING,
+				boost::format("fseek(): %1%") % strerror(errno));
 
 		if (Context.BufferSize < FrameSize) {
 			Context.BufferSize = FrameSize;
 			Context.Buffer = (uint8_t *)realloc(Context.Buffer, Context.BufferSize + 16);
-			if (Context.Buffer == NULL) {
-				snprintf(ErrorMsg, MsgSize, "Out of memory");
-				return 4;
-			}
+			if (Context.Buffer == NULL)
+				throw FFMS_Exception(FFMS_ERROR_PARSER, FFMS_ERROR_ALLOCATION_FAILED,
+					"Out of memory");
 		}
 
 		size_t ReadBytes = fread(Context.Buffer, 1, FrameSize, Context.ST.fp);
 		if (ReadBytes != FrameSize) {
 			if (ReadBytes == 0) {
 				if (feof(Context.ST.fp)) {
-					snprintf(ErrorMsg, MsgSize, "Unexpected EOF while reading frame");
-					return 5;
+					throw FFMS_Exception(FFMS_ERROR_PARSER, FFMS_ERROR_FILE_READ,
+						"Unexpected EOF while reading frame");
 				} else {
-					snprintf(ErrorMsg, MsgSize, "Error reading frame: %s", strerror(errno));
-					return 6;
+					throw FFMS_Exception(FFMS_ERROR_PARSER, FFMS_ERROR_SEEKING,
+						boost::format("Error reading frame: %1%") % strerror(errno));
 				}
 			} else {
-				snprintf(ErrorMsg, MsgSize, "Short read while reading frame");
-				return 7;
+				throw FFMS_Exception(FFMS_ERROR_PARSER, FFMS_ERROR_FILE_READ,
+					"Short read while reading frame");
 			}
-			snprintf(ErrorMsg, MsgSize, "Unknown read error");
-			return 8;
+			throw FFMS_Exception(FFMS_ERROR_PARSER, FFMS_ERROR_FILE_READ,
+				"Unknown read error");
 		}
 
-		return 0;
+		return;
 	}
 }
 
-void InitNullPacket(AVPacket *pkt) {
-	av_init_packet(pkt);
-	pkt->data = NULL;
-	pkt->size = 0;
+void InitNullPacket(AVPacket &pkt) {
+	av_init_packet(&pkt);
+	pkt.data = NULL;
+	pkt.size = 0;
 }
 
-void FillAP(FFAudioProperties &AP, AVCodecContext *CTX, FFTrack &Frames) {
+bool IsNVOP(AVPacket &pkt) {
+	const uint8_t MPEG4NVOP[] = { 0x00, 0x00, 0x01, 0xB6 };
+	return pkt.size == 7 && !memcmp(pkt.data, MPEG4NVOP, 4);
+}
+
+void FillAP(FFMS_AudioProperties &AP, AVCodecContext *CTX, FFMS_Track &Frames) {
 	AP.SampleFormat = static_cast<FFMS_SampleFormat>(CTX->sample_fmt);
 	AP.BitsPerSample = av_get_bits_per_sample_format(CTX->sample_fmt);
-	if (CTX->sample_fmt == SAMPLE_FMT_S32)
+	if (CTX->sample_fmt == SAMPLE_FMT_S32 && CTX->bits_per_raw_sample)
 		AP.BitsPerSample = CTX->bits_per_raw_sample;
 
 	AP.Channels = CTX->channels;;
 	AP.ChannelLayout = CTX->channel_layout;
 	AP.SampleRate = CTX->sample_rate;
-	AP.NumSamples = (Frames.back()).SampleStart;
+	AP.NumSamples = (Frames.back()).SampleStart + (Frames.back()).SampleCount;
 	AP.FirstTime = ((Frames.front().DTS * Frames.TB.Num) / (double)Frames.TB.Den) / 1000;
 	AP.LastTime = ((Frames.back().DTS * Frames.TB.Num) / (double)Frames.TB.Den) / 1000;
 }
@@ -198,35 +242,37 @@ void vtCopy(VARIANT& vt,void *dest) {
 	}
 }
 
-#else
-
-// used for matroska<->ffmpeg codec ID mapping to avoid Win32 dependency
-typedef struct BITMAPINFOHEADER {
-        uint32_t      biSize;
-        int32_t       biWidth;
-        int32_t       biHeight;
-        uint16_t      biPlanes;
-        uint16_t      biBitCount;
-        uint32_t      biCompression;
-        uint32_t      biSizeImage;
-        int32_t       biXPelsPerMeter;
-        int32_t       biYPelsPerMeter;
-        uint32_t      biClrUsed;
-        uint32_t      biClrImportant;
-} BITMAPINFOHEADER;
-
-#define MAKEFOURCC(ch0, ch1, ch2, ch3)\
-	((uint32_t)(uint8_t)(ch0) | ((uint32_t)(uint8_t)(ch1) << 8) |\
-	((uint32_t)(uint8_t)(ch2) << 16) | ((uint32_t)(uint8_t)(ch3) << 24 ))
-
 #endif
 
-CodecID MatroskaToFFCodecID(char *Codec, void *CodecPrivate, unsigned int FourCC) {
+CodecID MatroskaToFFCodecID(char *Codec, void *CodecPrivate, unsigned int FourCC, unsigned int BitsPerSample) {
 /* Look up native codecs */
 	for(int i = 0; ff_mkv_codec_tags[i].id != CODEC_ID_NONE; i++){
 		if(!strncmp(ff_mkv_codec_tags[i].str, Codec,
-			strlen(ff_mkv_codec_tags[i].str))){
-				return ff_mkv_codec_tags[i].id;
+			strlen(ff_mkv_codec_tags[i].str))) {
+
+				// Uncompressed and exotic format fixup
+				// This list is incomplete
+				CodecID CID = ff_mkv_codec_tags[i].id;
+				switch (CID) {
+					case CODEC_ID_PCM_S16LE:
+						switch (BitsPerSample) {
+							case 8: CID = CODEC_ID_PCM_S8; break;
+							case 16: CID = CODEC_ID_PCM_S16LE; break;
+							case 24: CID = CODEC_ID_PCM_S24LE; break;
+							case 32: CID = CODEC_ID_PCM_S32LE; break;
+						}	
+						break;
+					case CODEC_ID_PCM_S16BE:
+						switch (BitsPerSample) {
+							case 8: CID = CODEC_ID_PCM_S8; break;
+							case 16: CID = CODEC_ID_PCM_S16BE; break;
+							case 24: CID = CODEC_ID_PCM_S24BE; break;
+							case 32: CID = CODEC_ID_PCM_S32BE; break;
+						}	
+						break;
+				}
+				
+				return CID;
 			}
 	}
 
@@ -234,7 +280,7 @@ CodecID MatroskaToFFCodecID(char *Codec, void *CodecPrivate, unsigned int FourCC
 	const AVCodecTag *const tags[] = { ff_codec_bmp_tags, 0 };
 
 	if (!strcmp(Codec, "V_MS/VFW/FOURCC")) {
-		BITMAPINFOHEADER *b = reinterpret_cast<BITMAPINFOHEADER *>(CodecPrivate);
+		FFMS_BITMAPINFOHEADER *b = reinterpret_cast<FFMS_BITMAPINFOHEADER *>(CodecPrivate);
 		return av_codec_get_id(tags, b->biCompression);
 	}
 
@@ -361,4 +407,61 @@ void ffms_fstream::open(const char *filename, std::ios_base::openmode mode) {
 
 ffms_fstream::ffms_fstream(const char *filename, std::ios_base::openmode mode) {
 	open(filename, mode);
+}
+
+#ifdef HAALISOURCE
+
+CComPtr<IMMContainer> HaaliOpenFile(const char *SourceFile, enum FFMS_Sources SourceMode) {
+	CComPtr<IMMContainer> pMMC;
+
+	CLSID clsid = HAALI_MPEG_PARSER;
+	if (SourceMode == FFMS_SOURCE_HAALIOGG)
+		clsid = HAALI_OGG_PARSER;
+
+	if (FAILED(pMMC.CoCreateInstance(clsid)))
+		throw FFMS_Exception(FFMS_ERROR_PARSER, FFMS_ERROR_ALLOCATION_FAILED,
+			"Can't create parser");
+
+	CComPtr<IMemAlloc> pMA;
+	if (FAILED(pMA.CoCreateInstance(CLSID_MemAlloc)))
+		throw FFMS_Exception(FFMS_ERROR_PARSER, FFMS_ERROR_ALLOCATION_FAILED,
+			"Can't create memory allocator");
+
+	CComPtr<IMMStream> pMS;
+	if (FAILED(pMS.CoCreateInstance(CLSID_DiskFile)))
+		throw FFMS_Exception(FFMS_ERROR_PARSER, FFMS_ERROR_ALLOCATION_FAILED,
+			"Can't create disk file reader");
+
+	WCHAR WSourceFile[2048];
+	ffms_mbstowcs(WSourceFile, SourceFile, 2000);
+	CComQIPtr<IMMStreamOpen> pMSO(pMS);
+	if (FAILED(pMSO->Open(WSourceFile)))
+		throw FFMS_Exception(FFMS_ERROR_PARSER, FFMS_ERROR_FILE_READ,
+			"Can't open file");
+
+	if (FAILED(pMMC->Open(pMS, 0, NULL, pMA))) {
+		if (SourceMode == FFMS_SOURCE_HAALIMPEG)
+			throw FFMS_Exception(FFMS_ERROR_PARSER, FFMS_ERROR_INVALID_ARGUMENT,
+				"Can't parse file, most likely a transport stream not cut at packet boundaries");
+		else
+			throw FFMS_Exception(FFMS_ERROR_PARSER, FFMS_ERROR_INVALID_ARGUMENT,
+				"Can't parse file");
+	}
+
+	return pMMC;
+}
+
+#endif
+
+void LAVFOpenFile(const char *SourceFile, AVFormatContext *&FormatContext) {
+	if (av_open_input_file(&FormatContext, SourceFile, NULL, 0, NULL) != 0)
+		throw FFMS_Exception(FFMS_ERROR_PARSER, FFMS_ERROR_FILE_READ,
+			boost::format("Couldn't open '%1'") % SourceFile);
+	
+	if (av_find_stream_info(FormatContext) < 0) {
+		av_close_input_file(FormatContext);
+		FormatContext = NULL;
+		throw FFMS_Exception(FFMS_ERROR_PARSER, FFMS_ERROR_FILE_READ,
+			"Couldn't find stream information");
+	}
 }
