@@ -170,6 +170,7 @@ public:
 	/// CPU Features2
 	/// @return Features set 2
 	/// @retval CPU-specific features
+	/// @note "EST,TM2" on my P-M, or "SYSCALL,NX,MMX+,LM,3DNow!+,3DNow!" on an Opteron
 	virtual wxString CPUFeatures2()=0;
 
 	/// System memory
