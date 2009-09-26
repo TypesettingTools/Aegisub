@@ -16,6 +16,7 @@
 
 /// @file view.cpp
 /// @brief View report in a human readable way.
+/// @ingroup base
 
 #ifndef R_PRECOMP
 #include <wx/window.h>

@@ -16,6 +16,7 @@
 
 /// @file platform_unix.cpp
 /// @brief Unix Platform extension.
+/// @ingroup unix
 
 #ifndef R_PRECOMP
 #include <wx/string.h>

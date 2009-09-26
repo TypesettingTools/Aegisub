@@ -16,6 +16,7 @@
 
 /// @file upload.cpp
 /// @brief Handle uploading of data.
+/// @ingroup base io
 
 #ifndef R_PRECOMP
 #include <wx/file.h>

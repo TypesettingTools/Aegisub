@@ -16,6 +16,7 @@
 
 /// @file platform_unix.h
 /// @see platform_unix.cpp
+/// @ingroup unix
 
 class Platform;
 

@@ -16,6 +16,7 @@
 
 /// @file report.h
 /// @see report.cpp
+/// @ingroup base
 
 #ifndef R_PRECOMP
 #include <map>

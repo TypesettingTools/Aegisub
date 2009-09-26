@@ -17,6 +17,7 @@
 /// @file platform.h
 /// @brief API for gathering platform information.
 /// @see platform.cpp
+/// @ingroup base
 
 #ifndef R_PRECOMP
 #include <wx/platinfo.h>

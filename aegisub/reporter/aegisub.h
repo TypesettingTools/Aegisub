@@ -16,6 +16,7 @@
 
 /// @file aegisub.h
 /// @see aegisub.cpp
+/// @ingroup base
 
 /// @class Aegisub
 /// @brief Gather Aegisub information from the config file or otherwise.

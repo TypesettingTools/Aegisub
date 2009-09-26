@@ -16,6 +16,7 @@
 
 /// @file platform_unix_bsd.cpp
 /// @brief BSD Platform extensions.
+/// @ingroup unix
 
 #ifndef R_PRECOMP
 #include <wx/string.h>

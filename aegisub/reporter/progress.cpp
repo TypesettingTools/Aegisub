@@ -16,6 +16,7 @@
 
 /// @file progress.cpp
 /// @brief Progress bar when uploading data.
+/// @ingroup base
 
 #include "progress.h"
 

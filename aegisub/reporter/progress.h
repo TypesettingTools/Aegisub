@@ -16,6 +16,7 @@
 
 /// @file progress.h
 /// @see progress.cpp
+/// @ingroup base io
 
 /// @class Progress
 /// @brief Progress bar.

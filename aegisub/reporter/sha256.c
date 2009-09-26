@@ -29,6 +29,7 @@
 
 /** @file sha256.c
  *  @brief Generate SHA256 hashes.
+ *  @ingroup base
  */
 
 /** @class SHA256Context

@@ -16,6 +16,7 @@
 
 /// @file platform_unix_bsd.h
 /// @see platform_unix_bsd.cpp
+/// @ingroup unix
 
 class Platform;
 

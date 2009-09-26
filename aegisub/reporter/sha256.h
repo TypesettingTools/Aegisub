@@ -27,6 +27,11 @@
  * $Id$
  */
 
+/** @file sha256.h
+ *  @see sha256.c
+ *  @ingroup base
+ */
+
 #ifndef _SHA256_H_
 #define _SHA256_H_
 

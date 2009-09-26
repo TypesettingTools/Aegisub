@@ -16,6 +16,7 @@
 
 /// @file main.cpp
 /// @brief Main loop
+/// @ingroup base
 
 #ifndef R_PRECOMP
 #include <locale.h>

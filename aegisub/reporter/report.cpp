@@ -16,6 +16,7 @@
 
 /// @file report.cpp
 /// @brief Generation and manipulation of reports.
+/// @ingroup base
 
 #ifndef R_PRECOMP
 #include <wx/intl.h>

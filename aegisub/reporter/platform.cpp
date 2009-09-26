@@ -16,6 +16,7 @@
 
 /// @file platform.cpp
 /// @brief Base functions for the Platform class.
+/// @ingroup base
 
 #ifndef R_PRECOMP
 #include <wx/gdicmn.h>	// Display* functions.

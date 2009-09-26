@@ -16,6 +16,7 @@
 
 /// @file upload.h
 /// @see upload.cpp
+/// @ingroup base io
 
 #ifndef R_PRECMP
 #include <curl/curl.h>

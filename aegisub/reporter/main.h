@@ -16,6 +16,7 @@
 
 /// @file main.h
 /// @see main.cpp
+/// @ingroup base
 
 #ifndef R_PRECOMP
 #include <wx/frame.h>

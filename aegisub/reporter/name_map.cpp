@@ -16,6 +16,7 @@
 
 /// @file name_map.cpp
 /// @brief XML element -> human readable name mappings.
+/// @ingroup base
 
 #include "report.h"
 

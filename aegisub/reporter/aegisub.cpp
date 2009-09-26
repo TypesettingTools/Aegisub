@@ -16,6 +16,7 @@
 
 /// @file aegisub.cpp
 /// @brief Aegisub specific configuration options and properties.
+/// @ingroup base
 
 #ifndef R_PRECOMP
 #include <wx/fileconf.h>

@@ -16,6 +16,7 @@
 
 /// @file wx_pre.h
 /// @brief Precompiled header.
+/// @ingroup base
 
 #define R_PRECOMP
 
