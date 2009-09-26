@@ -14,7 +14,7 @@
 //
 // $Id$
 
-/// @@file view.h
+/// @file view.h
 /// @see view.cpp
 
 #ifndef R_PRECOMP
@@ -26,6 +26,8 @@
 
 #include "report.h"
 
+/// @class View
+/// @brief View the stored report.
 class View: public wxDialog {
 public:
 	View(wxWindow *frame, Report *r);

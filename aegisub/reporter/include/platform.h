@@ -14,7 +14,7 @@
 //
 // $Id$
 
-/// @@file platform.h
+/// @file platform.h
 /// @brief API for gathering platform information.
 /// @see platform.cpp
 

@@ -14,7 +14,7 @@
 //
 // $Id$
 
-/// @@file wx_pre.h
+/// @file wx_pre.h
 /// @brief Precompiled header.
 
 #define R_PRECOMP

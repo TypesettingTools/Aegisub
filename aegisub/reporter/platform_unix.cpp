@@ -14,7 +14,7 @@
 //
 // $Id$
 
-/// @@file platform_unix.cpp
+/// @file platform_unix.cpp
 /// @brief Unix Platform extension.
 
 #ifndef R_PRECOMP

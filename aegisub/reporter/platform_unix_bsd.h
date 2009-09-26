@@ -14,8 +14,8 @@
 //
 // $Id$
 
-/// @@file platform_unix_bsd.h
-/// @brief @see platform_unix_bsd.cpp
+/// @file platform_unix_bsd.h
+/// @see platform_unix_bsd.cpp
 
 class Platform;
 

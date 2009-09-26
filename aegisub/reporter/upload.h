@@ -14,7 +14,7 @@
 //
 // $Id$
 
-/// @@file upload.h
+/// @file upload.h
 /// @see upload.cpp
 
 #ifndef R_PRECMP

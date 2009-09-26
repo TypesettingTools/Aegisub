@@ -14,7 +14,7 @@
 //
 // $Id$
 
-/// @@file view.cpp
+/// @file view.cpp
 /// @brief View report in a human readable way.
 
 #ifndef R_PRECOMP

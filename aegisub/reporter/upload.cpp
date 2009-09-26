@@ -14,7 +14,7 @@
 //
 // $Id$
 
-/// @@file upload.cpp
+/// @file upload.cpp
 /// @brief Handle uploading of data.
 
 #ifndef R_PRECOMP

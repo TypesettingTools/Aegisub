@@ -27,6 +27,14 @@
  * $Id$
  */
 
+/** @file sha256.c
+ *  @brief Generate SHA256 hashes.
+ */
+
+/** @class SHA256Context
+ *  @brief Generate SHA256 hashes.
+ */
+
 #include <string.h>
 
 #include "sha256.h"

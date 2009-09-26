@@ -14,7 +14,7 @@
 //
 // $Id$
 
-/// @@file platform.cpp
+/// @file platform.cpp
 /// @brief Base functions for the Platform class.
 
 #ifndef R_PRECOMP

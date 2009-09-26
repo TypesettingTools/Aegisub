@@ -14,7 +14,7 @@
 //
 // $Id$
 
-/// @@file report.cpp
+/// @file report.cpp
 /// @brief Generation and manipulation of reports.
 
 #ifndef R_PRECOMP

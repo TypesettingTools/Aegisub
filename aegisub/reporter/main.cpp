@@ -14,7 +14,7 @@
 //
 // $Id$
 
-/// @@file main.cpp
+/// @file main.cpp
 /// @brief Main loop
 
 #ifndef R_PRECOMP

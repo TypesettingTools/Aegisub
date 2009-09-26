@@ -14,9 +14,11 @@
 //
 // $Id$
 
-/// @@file aegisub.h
+/// @file aegisub.h
 /// @see aegisub.cpp
 
+/// @class Aegisub
+/// @brief Gather Aegisub information from the config file or otherwise.
 class Aegisub {
 private:
 	wxFileConfig *conf;

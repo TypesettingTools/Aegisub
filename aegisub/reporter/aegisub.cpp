@@ -14,7 +14,7 @@
 //
 // $Id$
 
-/// @@file aegisub.cpp
+/// @file aegisub.cpp
 /// @brief Aegisub specific configuration options and properties.
 
 #ifndef R_PRECOMP

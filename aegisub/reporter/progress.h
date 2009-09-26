@@ -14,7 +14,7 @@
 //
 // $Id$
 
-/// @@file progress.h
+/// @file progress.h
 /// @see progress.cpp
 
 /// @class Progress

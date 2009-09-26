@@ -14,7 +14,7 @@
 //
 // $Id$
 
-/// @@file report.h
+/// @file report.h
 /// @see report.cpp
 
 #ifndef R_PRECOMP
@@ -24,7 +24,8 @@
 #include <wx/listctrl.h>
 #endif
 
-
+/// @class Report
+/// @brief Report generator.
 class Report {
 
 public:
@@ -35,12 +36,18 @@ public:
 	wxString AsText();
 
 private:
+	/// Comparison callback for nameMap.
 	struct lst_comp {
 		bool operator() (const wxString &a, const wxString &b) { return a.Cmp(b) < 0; }
 	};
+
+	/// Map of internal XML elements to human readable names.
 	typedef std::map<std::string, std::string, lst_comp> nameMap;
+
+	/// element->human name pairs.
 	typedef std::pair<std::string, std::string> nPair;
 
+	/// Struct to hold generatex XML Report.
 	struct XMLReport {
 		wxXmlDocument *doc;		/// Parent document.
 		wxXmlNode *report;		/// Root node.

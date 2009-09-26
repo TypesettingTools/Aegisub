@@ -14,7 +14,7 @@
 //
 // $Id$
 
-/// @@file name_map.cpp
+/// @file name_map.cpp
 /// @brief XML element -> human readable name mappings.
 
 #include "report.h"

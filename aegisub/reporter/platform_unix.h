@@ -14,8 +14,8 @@
 //
 // $Id$
 
-/// @@file platform_unix.h
-/// @brief @see platform_unix.cpp
+/// @file platform_unix.h
+/// @see platform_unix.cpp
 
 class Platform;
 

@@ -14,7 +14,7 @@
 //
 // $Id$
 
-/// @@file main.h
+/// @file main.h
 /// @see main.cpp
 
 #ifndef R_PRECOMP

@@ -14,7 +14,7 @@
 //
 // $Id$
 
-/// @@file platform_unix_bsd.cpp
+/// @file platform_unix_bsd.cpp
 /// @brief BSD Platform extensions.
 
 #ifndef R_PRECOMP

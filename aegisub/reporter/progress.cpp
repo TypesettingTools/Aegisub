@@ -14,7 +14,7 @@
 //
 // $Id$
 
-/// @@file progress.cpp
+/// @file progress.cpp
 /// @brief Progress bar when uploading data.
 
 #include "progress.h"
