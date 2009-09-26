@@ -43,10 +43,10 @@ private:
 	};
 
 	/// Map of internal XML elements to human readable names.
-	typedef std::map<std::string, std::string, lst_comp> nameMap;
+	typedef std::map<wxString, wxString, lst_comp> nameMap;
 
 	/// element->human name pairs.
-	typedef std::pair<std::string, std::string> nPair;
+	typedef std::pair<wxString, wxString> nPair;
 
 	/// Struct to hold generatex XML Report.
 	struct XMLReport {

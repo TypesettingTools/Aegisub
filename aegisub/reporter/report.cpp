@@ -153,7 +153,7 @@ void Report::ProcessNode(wxXmlNode *node, wxString *text, wxListView *listView) 
 	while (child) {
 		wxString name = child->GetName();
 
-		if ((names = nMap.find(std::string(name.utf8_str()))) != nMap.end()) {
+		if ((names = nMap.find(name)) != nMap.end()) {
 			node_name = locale->GetString(names->second);
 		} else {
 			wxLogDebug("Report::ProcessNode Unknown node found: \"%s\" (add it to nMap)\n", name);
