@@ -8,6 +8,8 @@ if test -z "$1" || test -z "$2"; then
 	exit;
 fi
 
+SRC_PWD=`pwd|sed "s|/docs/doxygen||"`
+
 case "$1" in
 	"aegisub")
 		TRIM="${SRC_PWD}/src/"
@@ -20,10 +22,8 @@ esac
 export OUTPUT_DIR="$2"
 export SRC_TRIM="${TRIM}"
 
-
 mkdir -vp "$2"
 cp -v css.css "$2"
 
-SRC_PWD=`pwd|sed "s|/docs/doxygen||"`
 
 doxygen "doxyfile_$1"
