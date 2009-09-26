@@ -1,6 +1,6 @@
 /**
 @defgroup base		Base
-@defgroup Unix		Unix
+@defgroup unix		Unix
 @defgroup windows	Windows
 @defgroup osx		OS X
 @defgroup io		File I/O
