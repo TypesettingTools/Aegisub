@@ -27,6 +27,7 @@
 #include "include/platform.h"
 #include "platform_unix.h"
 #include "platform_unix_bsd.h"
+#include "platform_unix_linux.h"
 
 /// @brief Constructor.
 Platform* Platform::GetPlatform() {
@@ -35,7 +36,11 @@ Platform* Platform::GetPlatform() {
 #   ifdef __FREEBSD__
 		Platform *p = new PlatformUnixBSD;
 #   else
+#       ifdef __LINUX__
+		Platform *p = new PlatformUnixLinux;
+#       else
 		Platform *p = new PlatformUnix;
+#       endif
 #   endif
 #endif // __UNIX__
 	p->Init();
