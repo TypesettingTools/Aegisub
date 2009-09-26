@@ -83,7 +83,7 @@ wxString PlatformUnixLinux::UnixLibraries() {
 
 /**
  * @brief Parse a /proc "key: value" style text file and extract a value.
- * The last valid value will be returned.
+ * @return The last valid value
  */
 wxString PlatformUnixLinux::getProcValue(const wxString path, const wxString key) {
     const wxString prefix = wxString(key) + ":";
