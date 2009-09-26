@@ -33,14 +33,12 @@
 Platform* Platform::GetPlatform() {
 
 #ifdef __UNIX__
-#   ifdef __FREEBSD__
+#   if defined(__FREEBSD__)
 		Platform *p = new PlatformUnixBSD;
-#   else
-#       ifdef __LINUX__
+#   elif defined(__LINUX__)
 		Platform *p = new PlatformUnixLinux;
-#       else
+#   else
 		Platform *p = new PlatformUnix;
-#       endif
 #   endif
 #endif // __UNIX__
 	p->Init();
