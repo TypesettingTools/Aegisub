@@ -4,7 +4,7 @@
 # Project related configuration options
 #---------------------------------------------------------------------------
 DOXYFILE_ENCODING      = UTF-8
-PROJECT_NAME           = Aegisub
+#PROJECT_NAME           = 
 PROJECT_NUMBER         = trunk
 OUTPUT_DIRECTORY       = $(OUTPUT_DIR)
 CREATE_SUBDIRS         = NO
@@ -87,15 +87,14 @@ WARN_LOGFILE           = doxygen.log
 #---------------------------------------------------------------------------
 # configuration options related to the input files
 #---------------------------------------------------------------------------
-INPUT                  = ../../src/ .
+#INPUT                  = 
 INPUT_ENCODING         = UTF-8
 FILE_PATTERNS          = *.h *.cpp *.c *.dox
 RECURSIVE              = YES
-#EXCLUDE                = .svn .deps .libs boost gl msvc libass universalchardet
+#EXCLUDE                = 
 EXCLUDE                = 
 EXCLUDE_SYMLINKS       = NO
-EXCLUDE_PATTERNS       = */.svn* */.deps* */.libs* */boost/* */scripts/* */gl/* */msvc/* */libresrc/* \
-						*/libosxutil/bundledirs-test.c */avisynth.h */MatroskaParser.? */md5.?
+#EXCLUDE_PATTERNS       =
 EXCLUDE_SYMBOLS        = 
 EXAMPLE_PATH           = ../../
 EXAMPLE_PATTERNS       = 
@@ -215,29 +214,7 @@ EXPAND_ONLY_PREDEF     = YES
 SEARCH_INCLUDES        = YES
 INCLUDE_PATH           = 
 INCLUDE_FILE_PATTERNS  = 
-PREDEFINED             =
-PREDEFINED             +=	\
-							WITH_PORTAUDIO \
-							WITH_ALSA \
-							WITH_AUTO4_LUA \
-							WITH_AUTOMATION \
-							WITH_AVISYNTH \
-							WITH_CSRI \
-							WITH_DIRECTSOUND \
-							WITH_FFMPEGSOURCE \
-							WITH_FONTCONFIG \
-							WITH_FREETYPE2 \
-							WITH_HUNSPELL \
-							WITH_LIBASS \
-							WITH_OLD_HUNSPELL \
-							WITH_OPENAL \
-							WITH_PORTAUDIO \
-							WITH_PORTAUDIO2 \
-							WITH_PULSEAUDIO \
-							WITH_QUICKTIME \
-							WITH_STARTUPLOG \
-							WITH_UNIVCHARDET
-
+#PREDEFINED             =
 PREDEFINED             += WXUNUSED(x)= 
 EXPAND_AS_DEFINED      = 
 SKIP_FUNCTION_MACROS   = YES

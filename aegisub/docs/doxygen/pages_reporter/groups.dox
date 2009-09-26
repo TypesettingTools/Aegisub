@@ -1,0 +1,7 @@
+/**
+@defgroup base		Base
+@defgroup Unix		Unix
+@defgroup windows	Windows
+@defgroup osx		OS X
+@defgroup io		File I/O
+*/

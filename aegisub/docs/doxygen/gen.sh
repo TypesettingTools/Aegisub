@@ -3,16 +3,27 @@
 # $Id$
 #
 
-if test -z "$1"; then
-	export OUTPUT_DIR="./output"
-else
-	export OUTPUT_DIR="$1"
+if test -z "$1" || test -z "$2"; then
+	echo "You must provide a project and output dir."
+	exit;
 fi
 
-mkdir -vp "${OUTPUT_DIR}"
-cp -v css.css "${OUTPUT_DIR}"
+case "$1" in
+	"aegisub")
+		TRIM="${SRC_PWD}/src/"
+	;;
+	"reporter")
+		TRIM="${SRC_PWD}/reporter/"
+	;;
+esac
+
+export OUTPUT_DIR="$2"
+export SRC_TRIM="${TRIM}"
+
+
+mkdir -vp "$2"
+cp -v css.css "$2"
 
 SRC_PWD=`pwd|sed "s|/docs/doxygen||"`
-export SRC_TRIM="${SRC_PWD}/src/"
 
-doxygen doxyfile
+doxygen "doxyfile_$1"
