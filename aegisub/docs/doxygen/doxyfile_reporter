@@ -1,6 +1,6 @@
 @INCLUDE = doxyfile_base
 
-PROJECT_NAME           = Aegisub Reporter
+PROJECT_NAME           = "Aegisub Reporter"
 
 INPUT                  = ../../reporter/ ./pages_reporter
 
