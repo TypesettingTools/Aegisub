@@ -23,7 +23,6 @@
 #endif
 
 extern "C" {
-#include <sys/utsname.h>
 #include <sys/types.h>
 #include <sys/sysctl.h>
 }
