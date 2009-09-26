@@ -23,6 +23,7 @@
 #include <wx/sizer.h>
 #include <wx/button.h>
 #include <wx/clipbrd.h>
+#include <wx/dataobj.h>
 #endif
 
 #include "view.h"

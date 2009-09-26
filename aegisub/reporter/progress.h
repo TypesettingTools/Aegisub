@@ -18,6 +18,10 @@
 /// @see progress.cpp
 /// @ingroup base io
 
+#ifndef R_PRECOMP
+#include <wx/progdlg.h>
+#endif
+
 /// @class Progress
 /// @brief Progress bar.
 /// @note The Constructor decleration is in main.cpp

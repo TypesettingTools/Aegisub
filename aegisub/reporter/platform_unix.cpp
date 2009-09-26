@@ -20,6 +20,7 @@
 
 #ifndef R_PRECOMP
 #include <wx/string.h>
+#include <wx/app.h>
 #include <wx/apptrait.h>
 #endif
 

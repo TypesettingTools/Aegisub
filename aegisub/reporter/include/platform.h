@@ -22,6 +22,7 @@
 #ifndef R_PRECOMP
 #include <wx/platinfo.h>
 #include <wx/string.h>
+#include <wx/intl.h>
 #endif
 
 /// @brief Grab platform-specific information.

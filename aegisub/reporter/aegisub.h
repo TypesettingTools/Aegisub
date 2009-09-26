@@ -18,6 +18,10 @@
 /// @see aegisub.cpp
 /// @ingroup base
 
+#ifndef R_PRECOMP
+#include <wx/fileconf.h>
+#endif
+
 /// @class Aegisub
 /// @brief Gather Aegisub information from the config file or otherwise.
 class Aegisub {
