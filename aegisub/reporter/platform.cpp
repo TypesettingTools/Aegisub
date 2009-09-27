@@ -65,26 +65,36 @@ Platform* Platform::GetPlatform() {
 void Platform::Init() {
 	locale = new wxLocale();
 	locale->Init();
-	GetVideoInfo();
 }
 
 /**
  * @brief Gather video adapter information via OpenGL
  *
  */
-void Platform::GetVideoInfo() {
+wxString Platform::GetVideoInfo(enum Platform::VideoInfo which) {
 	int attList[] = { WX_GL_RGBA, WX_GL_DOUBLEBUFFER, 0 };
 	wxGLCanvas *glc = new wxGLCanvas(wxTheApp->GetTopWindow(), wxID_ANY, attList, wxDefaultPosition, wxDefaultSize);
 	wxGLContext *ctx = new wxGLContext(glc, 0);
 	wxGLCanvas &cr = *glc;
 	ctx->SetCurrent(cr);
 
-	vendor = wxString(glGetString(GL_VENDOR));
-	renderer = wxString(glGetString(GL_RENDERER));
-	version = wxString(glGetString(GL_VERSION));
+	wxString value;
+
+	switch (which) {
+		case VIDEO_RENDERER:
+			value = wxString(glGetString(GL_RENDERER));
+		break;
+		case VIDEO_VENDOR:
+			value = wxString(glGetString(GL_VENDOR));
+		break;
+		case VIDEO_VERSION:
+			value = wxString(glGetString(GL_VERSION));
+	}
 
 	delete ctx;
 	delete glc;
+
+	return value;
 }
 
 wxString Platform::ArchName() {
@@ -152,15 +162,15 @@ wxString Platform::DesktopEnvironment() {
 }
 
 wxString Platform::VideoVendor() {
-	return vendor;
+	return GetVideoInfo(VIDEO_VENDOR);
 }
 
 wxString Platform::VideoRenderer() {
-	return renderer;
+	return GetVideoInfo(VIDEO_RENDERER);
 }
 
 wxString Platform::VideoVersion() {
-	return version;
+	return GetVideoInfo(VIDEO_VERSION);
 }
 
 #ifdef __APPLE__

@@ -287,22 +287,20 @@ public:
 #endif
 	//@}
 
+	// Available video information.
+	enum VideoInfo {
+		VIDEO_RENDERER,	///< Renderer
+		VIDEO_VENDOR,	///< Vendor
+		VIDEO_VERSION	///< Version
+	};
+
 private:
 	void Init();
-	void GetVideoInfo();
+	wxString GetVideoInfo(enum Platform::VideoInfo which);
 
 	/// wxPlatformInfo struct.
 	const wxPlatformInfo plat;
 
 	/// wxLocale instance.
 	wxLocale *locale;
-
-	/// Video vendor
-	wxString vendor;
-
-	/// Video renderer
-	wxString renderer;
-
-	/// Video API/driver version
-	wxString version;
 };
