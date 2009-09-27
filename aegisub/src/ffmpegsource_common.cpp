@@ -203,17 +203,20 @@ void FFmpegSourceProvider::SetLogLevel() {
 /// @brief	Generates an unique name for the ffms2 index file and prepares the cache folder if it doesn't exist 
 /// @param filename	The name of the source file
 /// @return			Returns the generated filename.
-wxString FFmpegSourceProvider::GetCacheFilename(const wxString& filename)
+wxString FFmpegSourceProvider::GetCacheFilename(const wxString& _filename)
 {
 	// Get the size of the file to be hashed
 	wxFileOffset len = 0;
 	{
-		wxFile file(filename,wxFile::read);
+		wxFile file(_filename,wxFile::read);
 		if (file.IsOpened()) len = file.Length();
 	}
 
+	wxFileName filename(_filename);
+
 	// Generate string to be hashed
-	wxString toHash = filename + wxString::Format(_T(":%i"),len);
+	wxString toHash = filename.GetFullName() + wxString::Format(_T(":%i"),len)
+		+ wxString::Format(_T(":%i"), filename.GetModificationTime().GetTicks());
 
 	// Get the MD5 digest of the string
 	const wchar_t *tmp = toHash.wc_str();
