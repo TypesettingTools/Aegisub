@@ -8,9 +8,6 @@ AM_CPPFLAGS = -Icore -Iinclude -D__UNIX__ -DFFMS_EXPORTS -DHAVE_STRLCPY @LIBAVFO
 libffmpegsource_aegisub_a_SOURCES = \
 	src/core/audiosource.cpp \
 	src/core/ffms.cpp \
-	src/core/haaliaudio.cpp \
-	src/core/haaliindexer.cpp \
-	src/core/haalivideo.cpp \
 	src/core/indexing.cpp \
 	src/core/lavfaudio.cpp \
 	src/core/lavfindexer.cpp \
