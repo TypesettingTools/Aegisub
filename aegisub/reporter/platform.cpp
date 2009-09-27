@@ -118,6 +118,8 @@ wxString Platform::DesktopEnvironment() {
 	return "";
 }
 
+#ifdef __APPLE__
+
 wxString Platform::PatchLevel() {
 	return "";
 }
@@ -129,3 +131,5 @@ wxString Platform::QuickTimeExt() {
 wxString Platform::HardwareModel() {
 	return "";
 }
+
+#endif
