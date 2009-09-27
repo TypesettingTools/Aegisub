@@ -79,10 +79,9 @@ const Report::nameMap Report::HumanNames() {
 	nMap.insert(nPair("syslang",		_TT("System Language")));
 	nMap.insert(nPair("thesauruslang",	_TT("Thesaurus Language")));
 	nMap.insert(nPair("unix",			_TT("Unix")));
-	nMap.insert(nPair("video",			_TT("Video")));
-	nMap.insert(nPair("videovendor",	_TT("Video Vendor")));
-	nMap.insert(nPair("videorenderer",	_TT("Video Renderer")));
-	nMap.insert(nPair("videoversion",	_TT("Video Version")));
+	nMap.insert(nPair("vendor",			_TT("Vendor")));
+	nMap.insert(nPair("renderer",		_TT("Renderer")));
+	nMap.insert(nPair("version",		_TT("Version")));
 	nMap.insert(nPair("videoprovider",	_TT("Video Provider")));
 	nMap.insert(nPair("windows",		_TT("Windows")));
 	nMap.insert(nPair("wxversion",		_TT("wx Version")));

@@ -179,11 +179,6 @@ public:
 	virtual wxString Memory()=0;
 
 	/// Video card
-	/// @return Video card description
-	/// @retval Any
-	virtual wxString Video();
-
-	/// Video card
 	/// @return Video card vendor
 	/// @retval Any
 	virtual wxString VideoVendor();

@@ -34,7 +34,6 @@ public:
 	virtual wxString CPUFeatures();
 	virtual wxString CPUFeatures2();
 	virtual wxString Memory();
-	virtual wxString Video();
 
 	virtual wxString PatchLevel();
 	virtual wxString QuickTimeExt();

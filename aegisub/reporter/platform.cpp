@@ -151,10 +151,6 @@ wxString Platform::DesktopEnvironment() {
 	return "";
 }
 
-wxString Platform::Video() {
-	return wxString::Format("%s %s (%s)", vendor, renderer, version);
-}
-
 wxString Platform::VideoVendor() {
 	return vendor;
 }
