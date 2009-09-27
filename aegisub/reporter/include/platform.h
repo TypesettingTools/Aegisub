@@ -253,7 +253,7 @@ public:
 
 	/// @name OS X
 	//@{
-#ifdef __OSX__
+#ifdef __APPLE__
 
 	/// OS patch level
 	/// @return Patch level

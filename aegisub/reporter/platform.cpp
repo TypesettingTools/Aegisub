@@ -28,6 +28,7 @@
 #include "platform_unix.h"
 #include "platform_unix_bsd.h"
 #include "platform_unix_linux.h"
+#include "platform_unix_osx.h"
 
 /// @brief Constructor.
 Platform* Platform::GetPlatform() {
@@ -37,6 +38,8 @@ Platform* Platform::GetPlatform() {
 		Platform *p = new PlatformUnixBSD;
 #   elif defined(__LINUX__)
 		Platform *p = new PlatformUnixLinux;
+#   elif defined(__APPLE__)
+		Platform *p = new PlatformUnixOSX;
 #   else
 		Platform *p = new PlatformUnix;
 #   endif
@@ -112,5 +115,17 @@ wxString Platform::Signature() {
 }
 
 wxString Platform::DesktopEnvironment() {
+	return "";
+}
+
+wxString Platform::PatchLevel() {
+	return "";
+}
+
+wxString Platform::QuickTimeExt() {
+	return "";
+}
+
+wxString Platform::HardwareModel() {
 	return "";
 }

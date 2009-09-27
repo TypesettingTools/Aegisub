@@ -38,6 +38,10 @@ if BUILD_LINUX
 reporter_2_2_SOURCES += platform_unix_linux.cpp
 endif
 
+if BUILD_DARWIN
+reporter_2_2_SOURCES += platform_unix_osx.cpp
+endif
+
 
 reporter_2_2_SOURCES += \
 	*.h \

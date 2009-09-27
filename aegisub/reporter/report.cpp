@@ -119,9 +119,9 @@ Report::XMLReport Report::ReportCreate() {
 #ifdef __APPLE__
 	doc.osx = new wxXmlNode(wxXML_ELEMENT_NODE, "osx");
 	doc.report->AddChild(doc.osx);
-	Add(doc.osx, "patch", p->PatchLevel);
-	Add(doc.osx, "quicktimeext", p->QuickTimeExt);
-	Add(doc.osx, "model", p->HardwareModel);
+	Add(doc.osx, "patch", p->PatchLevel());
+	Add(doc.osx, "quicktimeext", p->QuickTimeExt());
+	Add(doc.osx, "model", p->HardwareModel());
 
 #endif
 
