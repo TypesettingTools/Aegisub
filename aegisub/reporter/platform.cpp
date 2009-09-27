@@ -81,6 +81,9 @@ wxString Platform::GetVideoInfo(enum Platform::VideoInfo which) {
 	wxString value;
 
 	switch (which) {
+		case VIDEO_EXT:
+			value = wxString(glGetString(GL_EXTENSIONS));
+		break;
 		case VIDEO_RENDERER:
 			value = wxString(glGetString(GL_RENDERER));
 		break;
@@ -171,6 +174,10 @@ wxString Platform::VideoRenderer() {
 
 wxString Platform::VideoVersion() {
 	return GetVideoInfo(VIDEO_VERSION);
+}
+
+wxString Platform::VideoExt() {
+	return GetVideoInfo(VIDEO_EXT);
 }
 
 #ifdef __APPLE__

@@ -95,6 +95,7 @@ Report::XMLReport Report::ReportCreate() {
 		Add(display, "vendor", p->VideoVendor());
 		Add(display, "renderer", p->VideoRenderer());
 		Add(display, "version", p->VideoVersion());
+		Add(display, "extensions", p->VideoExt());
 		Add(display, "depth", p->DisplayDepth());
 		Add(display, "colour", p->DisplayColour());
 		Add(display, "size", p->DisplaySize());

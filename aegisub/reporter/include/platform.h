@@ -192,6 +192,11 @@ public:
 	/// @return Video card renderer version
 	/// @retval Any
 	virtual wxString VideoVersion();
+
+	/// Video card OpenGL extensions
+	/// @return List of extensions
+	/// @retval Space delimited list of extensions
+	virtual wxString VideoExt();
 	//@}
 
 	/// @name Windows
@@ -301,7 +306,8 @@ private:
 	enum VideoInfo {
 		VIDEO_RENDERER,	///< Renderer
 		VIDEO_VENDOR,	///< Vendor
-		VIDEO_VERSION	///< Version
+		VIDEO_VERSION,	///< Version
+		VIDEO_EXT		///< Extensions
 	};
 
 	/// Retrieve OpenGL video information.

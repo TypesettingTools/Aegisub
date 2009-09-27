@@ -44,6 +44,7 @@ const Report::nameMap Report::HumanNames() {
 	nMap.insert(nPair("dll",			_TT("DLL")));
 	nMap.insert(nPair("dshowfilter",	_TT("DirectShow Filters")));
 	nMap.insert(nPair("editfontsize",	_TT("Edit Font Size")));
+	nMap.insert(nPair("extensions"	,	_TT("Extensions")));
 	nMap.insert(nPair("features",		_TT("Features")));
 	nMap.insert(nPair("features2",		_TT("Features2")));
 	nMap.insert(nPair("firewall",		_TT("Firewall Installed")));
