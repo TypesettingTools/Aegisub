@@ -45,6 +45,7 @@
 #include <wx/font.h>
 #include <wx/frame.h>
 #include <wx/gdicmn.h>
+#include <wx/glcanvas.h>
 #include <wx/intl.h>
 #include <wx/listctrl.h>
 #include <wx/log.h>

@@ -22,6 +22,7 @@
 #include <wx/string.h>
 #include <wx/app.h>
 #include <wx/apptrait.h>
+#include <wx/glcanvas.h>
 #endif
 
 #include "include/platform.h"
@@ -29,62 +30,37 @@
 
 extern "C" {
 #include <sys/utsname.h>
-#include "GL/glx.h"
-#include "GL/gl.h"
+#ifdef __WXMAC__
+#include "OpenGL/glu.h"
+#include "OpenGL/gl.h"
+#else
+#include <GL/glu.h>
+#include <GL/gl.h>
+#endif
 }
+
+
 
 PlatformUnix::PlatformUnix() {
 	GetVideoInfo();
 }
 
 /**
- * @brief Gather video adapter information via OpenGL/GLX.
+ * @brief Gather video adapter information via OpenGL
  *
  */
 void PlatformUnix::GetVideoInfo() {
-	Display *dpy;
-	XVisualInfo *vi;
-	GLXContext cx;
-	Window root, win;
-	XSetWindowAttributes attr;
-	unsigned long mask;
-	int attList[] = { GLX_RGBA, GLX_DOUBLEBUFFER, None };
-
-	vendor = wxString();
-	renderer = wxString();
-	version = wxString();
-
-	// Like in glxinfo.c, but somewhat simpler and shorter.
-	dpy = XOpenDisplay(0);
-	if (!dpy) return;
-	vi = glXChooseVisual(dpy, DefaultScreen(dpy), attList);
-	if (!vi) return;
-	cx = glXCreateContext(dpy, vi, 0, GL_TRUE);
-	if (!cx) return;
-
-	root = RootWindow(dpy, DefaultScreen(dpy));
-	attr.background_pixel = 0;
-	attr.border_pixel = 0;
-	attr.colormap = XCreateColormap(dpy, root, vi->visual, AllocNone);
-	attr.event_mask = StructureNotifyMask | ExposureMask;
-	mask = CWBackPixel | CWBorderPixel | CWColormap | CWEventMask;
-	win = XCreateWindow(dpy, root, 0, 0, 100, 100, 0, vi->depth,
-						InputOutput, vi->visual, mask, &attr);
-
-	if (!glXMakeCurrent(dpy, win, cx)) {
-		glXDestroyContext(dpy, cx);
-		XDestroyWindow(dpy, win);
-		XCloseDisplay(dpy);
-		return;
-	}
+	int attList[] = { WX_GL_RGBA, WX_GL_DOUBLEBUFFER, 0 };
+	wxGLCanvas *glc = new wxGLCanvas(wxTheApp->GetTopWindow(), wxID_ANY, attList, wxDefaultPosition, wxDefaultSize);
+	wxGLContext *ctx = new wxGLContext(glc, 0);
+	ctx->SetCurrent(glc);
 
 	vendor = wxString(glGetString(GL_VENDOR));
 	renderer = wxString(glGetString(GL_RENDERER));
 	version = wxString(glGetString(GL_VERSION));
 
-	glXDestroyContext(dpy, cx);
-	XDestroyWindow(dpy, win);
-	XCloseDisplay(dpy);
+	delete ctx;
+	delete glc;
 }
 
 wxString PlatformUnix::OSVersion() {
