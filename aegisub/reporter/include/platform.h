@@ -181,22 +181,22 @@ public:
 	/// Video card
 	/// @return Video card description
 	/// @retval Any
-	virtual wxString Video()=0;
+	virtual wxString Video();
 
 	/// Video card
 	/// @return Video card vendor
 	/// @retval Any
-	virtual wxString VideoVendor()=0;
+	virtual wxString VideoVendor();
 
 	/// Video card renderer
 	/// @return Video card renderer name
 	/// @retval Any
-	virtual wxString VideoRenderer()=0;
+	virtual wxString VideoRenderer();
 
 	/// Video card version
 	/// @return Video card renderer version
 	/// @retval Any
-	virtual wxString VideoVersion()=0;
+	virtual wxString VideoVersion();
 	//@}
 
 	/// @name Windows
@@ -294,10 +294,20 @@ public:
 
 private:
 	void Init();
+	void GetVideoInfo();
 
 	/// wxPlatformInfo struct.
 	const wxPlatformInfo plat;
 
 	/// wxLocale instance.
 	wxLocale *locale;
+
+	/// Video vendor
+	wxString vendor;
+
+	/// Video renderer
+	wxString renderer;
+
+	/// Video API/driver version
+	wxString version;
 };

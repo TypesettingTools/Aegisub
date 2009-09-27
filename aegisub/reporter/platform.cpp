@@ -19,9 +19,12 @@
 /// @ingroup base
 
 #ifndef R_PRECOMP
+#include <wx/string.h>
+#include <wx/app.h>
 #include <wx/gdicmn.h>	// Display* functions.
 #include <wx/version.h>	// Version info.
 #include <wx/intl.h>	// Locale info.
+#include <wx/glcanvas.h>
 #endif
 
 #include "include/platform.h"
@@ -29,6 +32,16 @@
 #include "platform_unix_bsd.h"
 #include "platform_unix_linux.h"
 #include "platform_unix_osx.h"
+
+extern "C" {
+#ifdef __WXMAC__
+#include "OpenGL/glu.h"
+#include "OpenGL/gl.h"
+#else
+#include <GL/glu.h>
+#include <GL/gl.h>
+#endif
+}
 
 /// @brief Constructor.
 Platform* Platform::GetPlatform() {
@@ -52,6 +65,26 @@ Platform* Platform::GetPlatform() {
 void Platform::Init() {
 	locale = new wxLocale();
 	locale->Init();
+	GetVideoInfo();
+}
+
+/**
+ * @brief Gather video adapter information via OpenGL
+ *
+ */
+void Platform::GetVideoInfo() {
+	int attList[] = { WX_GL_RGBA, WX_GL_DOUBLEBUFFER, 0 };
+	wxGLCanvas *glc = new wxGLCanvas(wxTheApp->GetTopWindow(), wxID_ANY, attList, wxDefaultPosition, wxDefaultSize);
+	wxGLContext *ctx = new wxGLContext(glc, 0);
+	wxGLCanvas &cr = *glc;
+	ctx->SetCurrent(cr);
+
+	vendor = wxString(glGetString(GL_VENDOR));
+	renderer = wxString(glGetString(GL_RENDERER));
+	version = wxString(glGetString(GL_VERSION));
+
+	delete ctx;
+	delete glc;
 }
 
 wxString Platform::ArchName() {
@@ -116,6 +149,22 @@ wxString Platform::Signature() {
 
 wxString Platform::DesktopEnvironment() {
 	return "";
+}
+
+wxString Platform::Video() {
+	return wxString::Format("%s %s (%s)", vendor, renderer, version);
+}
+
+wxString Platform::VideoVendor() {
+	return vendor;
+}
+
+wxString Platform::VideoRenderer() {
+	return renderer;
+}
+
+wxString Platform::VideoVersion() {
+	return version;
 }
 
 #ifdef __APPLE__

@@ -22,7 +22,6 @@
 #include <wx/string.h>
 #include <wx/app.h>
 #include <wx/apptrait.h>
-#include <wx/glcanvas.h>
 #endif
 
 #include "include/platform.h"
@@ -30,38 +29,8 @@
 
 extern "C" {
 #include <sys/utsname.h>
-#ifdef __WXMAC__
-#include "OpenGL/glu.h"
-#include "OpenGL/gl.h"
-#else
-#include <GL/glu.h>
-#include <GL/gl.h>
-#endif
 }
 
-
-
-PlatformUnix::PlatformUnix() {
-	GetVideoInfo();
-}
-
-/**
- * @brief Gather video adapter information via OpenGL
- *
- */
-void PlatformUnix::GetVideoInfo() {
-	int attList[] = { WX_GL_RGBA, WX_GL_DOUBLEBUFFER, 0 };
-	wxGLCanvas *glc = new wxGLCanvas(wxTheApp->GetTopWindow(), wxID_ANY, attList, wxDefaultPosition, wxDefaultSize);
-	wxGLContext *ctx = new wxGLContext(glc, 0);
-	ctx->SetCurrent(glc);
-
-	vendor = wxString(glGetString(GL_VENDOR));
-	renderer = wxString(glGetString(GL_RENDERER));
-	version = wxString(glGetString(GL_VERSION));
-
-	delete ctx;
-	delete glc;
-}
 
 wxString PlatformUnix::OSVersion() {
 	struct utsname name;
@@ -101,22 +70,6 @@ wxString PlatformUnix::CPUFeatures2() {
 
 wxString PlatformUnix::Memory() {
 	return "";
-};
-
-wxString PlatformUnix::Video() {
-	return wxString::Format("%s %s (%s)", vendor, renderer, version);
-}
-
-wxString PlatformUnix::VideoVendor() {
-	return vendor;
-};
-
-wxString PlatformUnix::VideoRenderer() {
-	return renderer;
-};
-
-wxString PlatformUnix::VideoVersion() {
-	return version;
 };
 
 wxString PlatformUnix::UnixLibraries() {
