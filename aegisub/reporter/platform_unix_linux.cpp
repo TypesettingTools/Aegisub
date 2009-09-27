@@ -24,12 +24,6 @@
 #include <wx/log.h>
 #endif
 
-extern "C" {
-#include <sys/utsname.h>
-#include <sys/types.h>
-#include <sys/sysctl.h>
-}
-
 #include "include/platform.h"
 #include "platform_unix.h"
 #include "platform_unix_linux.h"
@@ -43,6 +37,11 @@ wxString PlatformUnixLinux::CPUSpeed() {
     return getProcValue("/proc/cpuinfo", "cpu MHz\t\t");
 };
 
+// Linux doesn't report the number of real CPUs or physical CPU cores,
+// but instead the number of "logical" CPUs; this also includes logical cores
+// due to SMT/HyperThreading.
+// For now report the logical CPU count and no number of cores; this seems
+// to make the most sense.
 wxString PlatformUnixLinux::CPUCores() {
     return "";
 };
@@ -52,7 +51,7 @@ wxString PlatformUnixLinux::CPUCount() {
     // Increment and return as string.
     wxString procIndex = getProcValue("/proc/cpuinfo", "processor\t");
     if (procIndex.IsNumber()) {
-        long val;
+        long val = 0;
         procIndex.ToLong(&val);
         return wxString::Format("%ld", val + 1);
     }
@@ -70,7 +69,15 @@ wxString PlatformUnixLinux::CPUFeatures2() {
 };
 
 wxString PlatformUnixLinux::Memory() {
-    return getProcValue("/proc/meminfo", "MemTotal");
+    wxString memKb = getProcValue("/proc/meminfo", "MemTotal");
+    memKb = memKb.BeforeFirst(' ');
+    if (memKb.IsNumber()) {
+        long val = 0;
+        memKb.ToLong(&val);
+        return wxString::Format("%ld", val * 1024);
+    }
+
+    return "";
 };
 
 wxString PlatformUnixLinux::Video() {
@@ -99,6 +106,7 @@ wxString PlatformUnixLinux::getProcValue(const wxString path, const wxString key
         }
     }
 
+    file->Close();
     delete file;
     return val;
 };
