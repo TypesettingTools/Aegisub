@@ -33,8 +33,13 @@ public:
 	Report();
 	~Report() {};
 
+	/// Fill wxListView with report contents.
+	/// @param text pointer to text buffer
+	/// @param listview wxListview to fill
 	void Fill(wxString *text, wxListView *listView);
-	wxString AsText();
+
+	/// Save XML report to a file.
+	void Save(wxString file);
 
 private:
 	/// Comparison callback for nameMap.

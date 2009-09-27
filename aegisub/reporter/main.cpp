@@ -41,26 +41,34 @@
 /// @brief Init the reporter.
 bool Reporter::OnInit()
 {
-	if ( !wxApp::OnInit() )
-		return false;
+//	if ( !wxApp::OnInit() )
+//		return false;
 
 	wxApp::CheckBuildOptions(WX_BUILD_OPTIONS_SIGNATURE, _("Reporter"));
 
+
 	static const wxCmdLineEntryDesc cmdLineDesc[] = {
-		{ wxCMD_LINE_SWITCH, "c", "crash",      "Launch in crash mode.",    wxCMD_LINE_VAL_NONE, NULL },
-		{ wxCMD_LINE_SWITCH, "r", "report",     "Launch in Report mode.",   wxCMD_LINE_VAL_NONE, NULL },
-		{ wxCMD_LINE_SWITCH, "h", "help",       "This help message",    wxCMD_LINE_VAL_NONE, wxCMD_LINE_OPTION_HELP },
+		{ wxCMD_LINE_SWITCH, "c", "crash",      "Launch in crash mode.",	wxCMD_LINE_VAL_NONE, NULL },
+		{ wxCMD_LINE_SWITCH, "r", "report",     "Launch in Report mode.",	wxCMD_LINE_VAL_NONE, NULL },
+		{ wxCMD_LINE_SWITCH, "x", "xml",		"Dump XML file",			wxCMD_LINE_VAL_NONE, NULL },
+		{ wxCMD_LINE_SWITCH, "h", "help",       "This help message",		wxCMD_LINE_VAL_NONE, wxCMD_LINE_OPTION_HELP },
 		{ wxCMD_LINE_NONE, NULL, NULL, NULL, wxCMD_LINE_VAL_NONE, NULL}
 	};
 
+
 	wxCmdLineParser parser(cmdLineDesc, argc, argv);
+
+	parser.SetLogo("Aegisub Reporter version x.x");
+	parser.SetCmdLine(argc, argv);
 	switch ( parser.Parse() ) {
 		case -1:
+			return false;
 			break; // Help
 		case  0:
 			break; // OK
 		default:
 			wxLogMessage(_T("Syntax error."));
+			return false;
 		break;
 	}
 
@@ -78,10 +86,19 @@ bool Reporter::OnInit()
 	setlocale(LC_NUMERIC, "C");
 	setlocale(LC_CTYPE, "C");
 
+
 	mFrame *frame = new mFrame(_("Aegisub Reporter"));
+	Report *r = new Report;
+
+	if (parser.Found("x")) {
+		r->Save("report.xml");
+		wxPrintf("Report saved to report.xml\n");
+		return false;
+	}
+
+
 	SetTopWindow(frame);
 
-	Report *r = new Report;
 	frame->SetReport(r);
 
 	return true;

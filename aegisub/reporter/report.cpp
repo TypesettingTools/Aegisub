@@ -186,15 +186,11 @@ void Report::ProcessNode(wxXmlNode *node, wxString *text, wxListView *listView) 
 	}
 }
 
-/// @brief Fill wxListView with report contents.
-/// @param listview wxListview to fill.
+
 void Report::Fill(wxString *text, wxListView *listView) {
 
 	listView->InsertColumn(0, _("Entry"), wxLIST_FORMAT_RIGHT);
     listView->InsertColumn(1, _("Text"), wxLIST_FORMAT_LEFT, 100);
-
-
-//wxString *text = new wxString();
 
 	ProcessNode(doc.report, text, listView);
 
@@ -204,6 +200,6 @@ void Report::Fill(wxString *text, wxListView *listView) {
 }
 
 /// @brief Return Report as Text for the Clipboard.
-wxString Report::AsText() {
-	return "not implimented.";
+void Report::Save(wxString file) {
+	doc.doc->Save(file);
 }
