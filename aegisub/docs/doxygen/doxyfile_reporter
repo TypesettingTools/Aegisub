@@ -4,28 +4,9 @@ PROJECT_NAME           = "Aegisub Reporter"
 
 INPUT                  = ../../reporter/ ./pages_reporter
 
-
-EXCLUDE_PATTERNS       = */.svn* */.deps* */.libs* */boost/* */scripts/* */gl/* */msvc/* */libresrc/* \
-                        */libosxutil/bundledirs-test.c */avisynth.h */MatroskaParser.? */md5.?
+EXCLUDE_PATTERNS       = */.svn* */.deps* */.libs*
 
 PREDEFINED             +=	\
-							WITH_PORTAUDIO \
-							WITH_ALSA \
-							WITH_AUTO4_LUA \
-							WITH_AUTOMATION \
-							WITH_AVISYNTH \
-							WITH_CSRI \
-							WITH_DIRECTSOUND \
-							WITH_FFMPEGSOURCE \
-							WITH_FONTCONFIG \
-							WITH_FREETYPE2 \
-							WITH_HUNSPELL \
-							WITH_LIBASS \
-							WITH_OLD_HUNSPELL \
-							WITH_OPENAL \
-							WITH_PORTAUDIO \
-							WITH_PORTAUDIO2 \
-							WITH_PULSEAUDIO \
-							WITH_QUICKTIME \
-							WITH_STARTUPLOG \
-							WITH_UNIVCHARDET
+							__WINDOWS__ \
+							__UNIX__ \
+							__OSX__
