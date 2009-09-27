@@ -23,7 +23,7 @@ class Platform;
 /// @brief General Unix functions.
 class PlatformUnix : public Platform {
 public:
-	PlatformUnix() {};
+	PlatformUnix();
 	virtual ~PlatformUnix() {};
 	wxString OSVersion();
 	wxString DesktopEnvironment();
@@ -37,7 +37,16 @@ public:
 	virtual wxString CPUFeatures2();
 	virtual wxString Memory();
 	virtual wxString Video();
+	virtual wxString VideoVendor();
+	virtual wxString VideoRenderer();
+	virtual wxString VideoVersion();
 
 	// Unix Specific
 	virtual wxString UnixLibraries();
+
+private:
+	virtual void GetVideoInfo();
+	wxString vendor;
+	wxString renderer;
+	wxString version;
 };

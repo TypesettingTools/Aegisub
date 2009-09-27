@@ -80,10 +80,6 @@ wxString PlatformUnixLinux::Memory() {
     return "";
 };
 
-wxString PlatformUnixLinux::Video() {
-    return "";
-};
-
 wxString PlatformUnixLinux::UnixLibraries() {
     return "";
 };

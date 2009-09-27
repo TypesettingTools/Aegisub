@@ -179,9 +179,24 @@ public:
 	virtual wxString Memory()=0;
 
 	/// Video card
-	/// @return Video card
+	/// @return Video card description
 	/// @retval Any
 	virtual wxString Video()=0;
+
+	/// Video card
+	/// @return Video card vendor
+	/// @retval Any
+	virtual wxString VideoVendor()=0;
+
+	/// Video card renderer
+	/// @return Video card renderer name
+	/// @retval Any
+	virtual wxString VideoRenderer()=0;
+
+	/// Video card version
+	/// @return Video card renderer version
+	/// @retval Any
+	virtual wxString VideoVersion()=0;
 	//@}
 
 	/// @name Windows

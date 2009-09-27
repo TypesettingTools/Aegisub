@@ -70,10 +70,6 @@ wxString PlatformUnixBSD::Memory() {
 	return "";
 };
 
-wxString PlatformUnixBSD::Video() {
-	return "";
-};
-
 wxString PlatformUnixBSD::UnixLibraries() {
 	return "";
 };

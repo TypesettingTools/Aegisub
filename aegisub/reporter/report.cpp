@@ -97,6 +97,9 @@ Report::XMLReport Report::ReportCreate() {
 		Add(display, "colour", p->DisplayColour());
 		Add(display, "size", p->DisplaySize());
 		Add(display, "ppi", p->DisplayPPI());
+		Add(doc.hardware, "videovendor", p->VideoVendor());
+		Add(doc.hardware, "videorenderer", p->VideoRenderer());
+		Add(doc.hardware, "videoversion", p->VideoVersion());
 
 #ifdef __WINDOWS__
 	doc.windows = new wxXmlNode(wxXML_ELEMENT_NODE, "windows");
