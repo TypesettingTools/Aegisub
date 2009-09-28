@@ -35,12 +35,15 @@ extern "C" {
 wxString PlatformUnixOSX::CPUId() {
 	char id[300];
 	size_t len = sizeof(id);
-	sysctlbyname("hw.model", &id, &len, NULL, 0);
+	sysctlbyname("machdep.cpu.brand_string", &id, &len, NULL, 0);
 	return wxString::Format("%s", id);
 };
 
 wxString PlatformUnixOSX::CPUSpeed() {
-	return "";
+	uint64_t speed;
+	size_t len = sizeof(speed);
+	sysctlbyname("hw.cpufrequency_max", &speed, &len, NULL, 0);
+	return wxString::Format("%d", speed / (1000*1000));
 };
 
 wxString PlatformUnixOSX::CPUCores() {
@@ -55,19 +58,25 @@ wxString PlatformUnixOSX::CPUCount() {
 };
 
 wxString PlatformUnixOSX::CPUFeatures() {
-	return "";
+	char feat[300];
+	size_t len = sizeof(feat);
+	sysctlbyname("machdep.cpu.features", &feat, &len, NULL, 0);
+	return wxString::Format("%s", feat);
 };
 
 wxString PlatformUnixOSX::CPUFeatures2() {
+	char feat[128];
+	size_t len = sizeof(feat);
+	sysctlbyname("machdep.cpu.extfeatures", &feat, &len, NULL, 0);
+	return wxString::Format("%s", feat);
 	return "";
 };
 
 wxString PlatformUnixOSX::Memory() {
 	uint64_t memory;
 	size_t len = sizeof(memory);
-	sysctlbyname("hw.physmem", &memory, &len, NULL, 0);
-	return wxString::Format("%d", memory);
-	return "";
+	sysctlbyname("hw.memsize", &memory, &len, NULL, 0);
+	return wxString::Format("%llu", memory);
 };
 
 wxString PlatformUnixOSX::UnixLibraries() {
@@ -83,6 +92,9 @@ wxString PlatformUnixOSX::QuickTimeExt() {
 }
 
 wxString PlatformUnixOSX::HardwareModel() {
-	return "";
+	char model[300];
+	size_t len = sizeof(model);
+	sysctlbyname("hw.model", &model, &len, NULL, 0);
+	return wxString::Format("%s", model);
 }
 
