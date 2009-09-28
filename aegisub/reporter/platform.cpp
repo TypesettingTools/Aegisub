@@ -164,19 +164,19 @@ wxString Platform::DesktopEnvironment() {
 	return "";
 }
 
-wxString Platform::VideoVendor() {
+wxString Platform::OpenGLVendor() {
 	return GetVideoInfo(VIDEO_VENDOR);
 }
 
-wxString Platform::VideoRenderer() {
+wxString Platform::OpenGLRenderer() {
 	return GetVideoInfo(VIDEO_RENDERER);
 }
 
-wxString Platform::VideoVersion() {
+wxString Platform::OpenGLVersion() {
 	return GetVideoInfo(VIDEO_VERSION);
 }
 
-wxString Platform::VideoExt() {
+wxString Platform::OpenGLExt() {
 	return GetVideoInfo(VIDEO_EXT);
 }
 

@@ -178,25 +178,25 @@ public:
 	/// @retval Integer in bytes
 	virtual wxString Memory()=0;
 
-	/// Video card
-	/// @return Video card vendor
+	/// OpenGL vendor
+	/// @return Vendor
 	/// @retval Any
-	virtual wxString VideoVendor();
+	virtual wxString OpenGLVendor();
 
-	/// Video card renderer
-	/// @return Video card renderer name
+	/// OpenGL renderer
+	/// @return Renderer
 	/// @retval Any
-	virtual wxString VideoRenderer();
+	virtual wxString OpenGLRenderer();
 
-	/// Video card version
-	/// @return Video card renderer version
+	/// OpenGL version
+	/// @return Renderer version
 	/// @retval Any
-	virtual wxString VideoVersion();
+	virtual wxString OpenGLVersion();
 
-	/// Video card OpenGL extensions
-	/// @return List of extensions
+	/// OpenGL extensions
+	/// @return OpenGL extensions
 	/// @retval Space delimited list of extensions
-	virtual wxString VideoExt();
+	virtual wxString OpenGLExt();
 	//@}
 
 	/// @name Windows

@@ -92,14 +92,18 @@ Report::XMLReport Report::ReportCreate() {
 
 		wxXmlNode *display = new wxXmlNode(wxXML_ELEMENT_NODE, "display");
 		doc.hardware->AddChild(display);
-		Add(display, "vendor", p->VideoVendor());
-		Add(display, "renderer", p->VideoRenderer());
-		Add(display, "version", p->VideoVersion());
-		Add(display, "extensions", p->VideoExt());
 		Add(display, "depth", p->DisplayDepth());
 		Add(display, "colour", p->DisplayColour());
 		Add(display, "size", p->DisplaySize());
 		Add(display, "ppi", p->DisplayPPI());
+
+		wxXmlNode *display_gl = new wxXmlNode(wxXML_ELEMENT_NODE, "opengl");
+		display->AddChild(display_gl);
+
+		Add(display_gl, "vendor", p->OpenGLVendor());
+		Add(display_gl, "renderer", p->OpenGLRenderer());
+		Add(display_gl, "version", p->OpenGLVersion());
+		Add(display_gl, "extensions", p->OpenGLExt());
 
 #ifdef __WINDOWS__
 	doc.windows = new wxXmlNode(wxXML_ELEMENT_NODE, "windows");
@@ -168,8 +172,8 @@ void Report::ProcessNode(wxXmlNode *node, wxString *text, wxListView *listView) 
 		int depth = child->GetDepth();
 
 		if (child->GetChildren()->GetType() == wxXML_ELEMENT_NODE) {
-			int font_size = 15 - (round(depth * 2.5));
-			int bgcolour = 185 + (depth * 25);
+			int font_size = 15 - (round(depth * 2));
+			int bgcolour = 155 + (depth * 20);
 			listView->InsertItem(row,node_name);
 			listView->SetItemFont(row, wxFont(font_size, wxFONTFAMILY_SWISS, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD));
 			listView->SetItemBackgroundColour(row, wxColour(bgcolour,bgcolour,bgcolour, wxALPHA_OPAQUE));

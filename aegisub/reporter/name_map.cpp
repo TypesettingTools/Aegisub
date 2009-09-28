@@ -60,6 +60,7 @@ const Report::nameMap Report::HumanNames() {
 	nMap.insert(nPair("medusakeys",		_TT("Medusa Hotkeys Enabled")));
 	nMap.insert(nPair("memory",			_TT("Memory")));
 	nMap.insert(nPair("model",			_TT("Model")));
+	nMap.insert(nPair("opengl",			_TT("OpenGL")));
 	nMap.insert(nPair("osendian",		_TT("Endian")));
 	nMap.insert(nPair("osfamily",		_TT("OS Family")));
 	nMap.insert(nPair("osname",			_TT("OS Name")));
