@@ -123,9 +123,9 @@ mFrame::mFrame(const wxString &window_title)
 	msgSizer->Add(msg, 1, wxALL, 5);
 
 	wxStaticText *notice = new wxStaticText(this, -1,_("This information is completely anonymous, no personal information is sent along it is strictly used for targeting new features and the future direction of Aegisub."));
-	notice->Wrap(325);
 	msgSizer->Add(notice, 1, wxALL, 5);
 	notice->SetFont(wxFont(11, wxFONTFAMILY_SWISS, wxFONTSTYLE_ITALIC, wxFONTWEIGHT_NORMAL));
+	notice->Wrap(325);
 	msgSizer->Add(new wxButton(this, 42, "View Report"), 0, wxALL, 10 );
 
 
@@ -138,7 +138,6 @@ mFrame::mFrame(const wxString &window_title)
 	this->SetSizerAndFit(topSizer);
 
 	// Is there a better way to do this?
-	this->SetMinSize(wxSize(360,-1));
 	this->SetMaxSize(this->GetEffectiveMinSize());
 	this->SetMinSize(this->GetEffectiveMinSize());
 
