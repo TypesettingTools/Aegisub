@@ -49,6 +49,8 @@
 #include "font_file_lister_freetype.h"
 /// DOCME
 #define FontListerClass FreetypeFontFileLister
+#else
+#include "font_file_lister.h"
 #endif // WITH_FREETYPE2
 #else
 #include "font_file_lister_fontconfig.h"
@@ -59,7 +61,6 @@
 #include "standard_paths.h"
 #include "text_file_reader.h"
 #include "text_file_writer.h"
-
 
 /// DOCME
 FontFileLister *FontFileLister::instance = NULL;
