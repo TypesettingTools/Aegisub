@@ -111,8 +111,8 @@ Report::XMLReport Report::ReportCreate() {
 	Add(doc.windows, "sp", p->ServicePack());
 	Add(doc.windows, "graphicsver", p->DriverGraphicsVersion());
 	Add(doc.windows, "dshowfilter", p->DirectShowFilters());
-	//Add(doc.windows, "antivirus", p->());
-	//Add(doc.windows, "firewall", p->());
+	Add(doc.windows, "antivirus", p->AntiVirus());
+	Add(doc.windows, "firewall", p->Firewall());
 	Add(doc.windows, "dll", p->DLLVersions());
 #endif
 

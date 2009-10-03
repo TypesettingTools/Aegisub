@@ -28,6 +28,7 @@
 #endif
 
 #include "include/platform.h"
+#include "platform_windows.h"
 #include "platform_unix.h"
 #include "platform_unix_bsd.h"
 #include "platform_unix_linux.h"
@@ -45,7 +46,9 @@ extern "C" {
 
 /// @brief Constructor.
 Platform* Platform::GetPlatform() {
-#ifdef __UNIX__
+#if defined(__WINDOWS__)
+	Platform *p = new PlatformWindows;
+#elif defined(__UNIX__)
 #   if defined(__FREEBSD__)
 		Platform *p = new PlatformUnixBSD;
 #   elif defined(__LINUX__)
