@@ -24,7 +24,7 @@
 #endif
 
 #include "report.h"
-#include "platform.h"
+#include "include/platform.h"
 #include "aegisub.h"
 
 /// @brief Contstructor
@@ -43,7 +43,7 @@ Report::XMLReport Report::ReportCreate() {
 
 	doc.report = new wxXmlNode(wxXML_ELEMENT_NODE, "report");
 	doc.doc->SetRoot(doc.report);
-    Platform *p = Platform::GetPlatform();
+	Platform *p = Platform::GetPlatform();
 
 	doc.general = new wxXmlNode(doc.report, wxXML_ELEMENT_NODE, "general");
 	Add(doc.general, "signature", p->Signature());
@@ -61,7 +61,7 @@ Report::XMLReport Report::ReportCreate() {
 	doc.aegisub = new wxXmlNode(wxXML_ELEMENT_NODE, "aegisub");
 	doc.report->AddChild(doc.aegisub);
 
-	Aegisub *config = new Aegisub::Aegisub();
+	Aegisub *config = new Aegisub();
 	Add(doc.aegisub, "lastversion", config->Read("Config/last version"));
 	Add(doc.aegisub, "spelllang", config->Read("Config/spell checker language"));
 	Add(doc.aegisub, "thesauruslang", config->Read("Config/thesaurus language"));
@@ -81,29 +81,29 @@ Report::XMLReport Report::ReportCreate() {
 	doc.report->AddChild(doc.hardware);
 	Add(doc.hardware, "memory", p->Memory());
 
-		wxXmlNode *cpu = new wxXmlNode(wxXML_ELEMENT_NODE, "cpu");
-		doc.hardware->AddChild(cpu);
-		Add(cpu, "id", p->CPUId());
-		Add(cpu, "speed", p->CPUSpeed());
-		Add(cpu, "count", p->CPUCount());
-		Add(cpu, "cores", p->CPUCores());
-		Add(cpu, "features", p->CPUFeatures());
-		Add(cpu, "features2", p->CPUFeatures2());
+	wxXmlNode *cpu = new wxXmlNode(wxXML_ELEMENT_NODE, "cpu");
+	doc.hardware->AddChild(cpu);
+	Add(cpu, "id", p->CPUId());
+	Add(cpu, "speed", p->CPUSpeed());
+	Add(cpu, "count", p->CPUCount());
+	Add(cpu, "cores", p->CPUCores());
+	Add(cpu, "features", p->CPUFeatures());
+	Add(cpu, "features2", p->CPUFeatures2());
 
-		wxXmlNode *display = new wxXmlNode(wxXML_ELEMENT_NODE, "display");
-		doc.hardware->AddChild(display);
-		Add(display, "depth", p->DisplayDepth());
-		Add(display, "colour", p->DisplayColour());
-		Add(display, "size", p->DisplaySize());
-		Add(display, "ppi", p->DisplayPPI());
+	wxXmlNode *display = new wxXmlNode(wxXML_ELEMENT_NODE, "display");
+	doc.hardware->AddChild(display);
+	Add(display, "depth", p->DisplayDepth());
+	Add(display, "colour", p->DisplayColour());
+	Add(display, "size", p->DisplaySize());
+	Add(display, "ppi", p->DisplayPPI());
 
-		wxXmlNode *display_gl = new wxXmlNode(wxXML_ELEMENT_NODE, "opengl");
-		display->AddChild(display_gl);
+	wxXmlNode *display_gl = new wxXmlNode(wxXML_ELEMENT_NODE, "opengl");
+	display->AddChild(display_gl);
 
-		Add(display_gl, "vendor", p->OpenGLVendor());
-		Add(display_gl, "renderer", p->OpenGLRenderer());
-		Add(display_gl, "version", p->OpenGLVersion());
-		Add(display_gl, "extensions", p->OpenGLExt());
+	Add(display_gl, "vendor", p->OpenGLVendor());
+	Add(display_gl, "renderer", p->OpenGLRenderer());
+	Add(display_gl, "version", p->OpenGLVersion());
+	Add(display_gl, "extensions", p->OpenGLExt());
 
 #ifdef __WINDOWS__
 	doc.windows = new wxXmlNode(wxXML_ELEMENT_NODE, "windows");
@@ -111,8 +111,8 @@ Report::XMLReport Report::ReportCreate() {
 	Add(doc.windows, "sp", p->ServicePack());
 	Add(doc.windows, "graphicsver", p->DriverGraphicsVersion());
 	Add(doc.windows, "dshowfilter", p->DirectShowFilters());
-	Add(doc.windows, "antivirus", p->());
-	Add(doc.windows, "firewall", p->());
+	//Add(doc.windows, "antivirus", p->());
+	//Add(doc.windows, "firewall", p->());
 	Add(doc.windows, "dll", p->DLLVersions());
 #endif
 
@@ -143,7 +143,7 @@ void Report::Add(wxXmlNode *parent, wxString node, wxString text) {
 	// Using AddChild() keeps the nodes in their natural order. It's slower but our
 	// document is pretty small.  Doing it the faster way results in reverse-ordered nodes.
 	wxXmlNode *tmp = new wxXmlNode(wxXML_ELEMENT_NODE, node);
-    tmp->AddChild(new wxXmlNode(wxXML_TEXT_NODE, node, text));
+	tmp->AddChild(new wxXmlNode(wxXML_TEXT_NODE, node, text));
 	parent->AddChild(tmp);
 }
 
@@ -172,7 +172,7 @@ void Report::ProcessNode(wxXmlNode *node, wxString *text, wxListView *listView) 
 		int depth = child->GetDepth();
 
 		if (child->GetChildren()->GetType() == wxXML_ELEMENT_NODE) {
-			int font_size = 15 - (round(depth * 2));
+			int font_size = 15 - floor(depth * 2 + 0.5);
 			int bgcolour = 155 + (depth * 20);
 			listView->InsertItem(row,node_name);
 			listView->SetItemFont(row, wxFont(font_size, wxFONTFAMILY_SWISS, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD));
@@ -195,7 +195,7 @@ void Report::ProcessNode(wxXmlNode *node, wxString *text, wxListView *listView) 
 void Report::Fill(wxString *text, wxListView *listView) {
 
 	listView->InsertColumn(0, _("Entry"), wxLIST_FORMAT_RIGHT);
-    listView->InsertColumn(1, _("Text"), wxLIST_FORMAT_LEFT, 100);
+	listView->InsertColumn(1, _("Text"), wxLIST_FORMAT_LEFT, 100);
 
 	ProcessNode(doc.report, text, listView);
 

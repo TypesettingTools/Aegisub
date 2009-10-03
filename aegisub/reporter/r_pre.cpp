@@ -12,24 +12,12 @@
 // ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 // OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 //
-// $Id$
+// $Id: r_pre.h 3591 2009-09-27 03:12:17Z greg $
 
-/// @file aegisub.h
-/// @see aegisub.cpp
+/// @file wx_pre.h
+/// @brief Precompiled header.
 /// @ingroup base
 
-#ifndef R_PRECOMP
-#include <wx/fileconf.h>
+#ifndef R_PRE
+#include "r_pre.h"
 #endif
-
-/// @class Aegisub
-/// @brief Gather Aegisub information from the config file or otherwise.
-class Aegisub {
-private:
-	wxFileConfig *conf;
-public:
-	Aegisub();
-	~Aegisub();
-	void Config(wxString config);
-	wxString Read(wxString key);
-};

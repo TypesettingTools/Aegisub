@@ -25,7 +25,12 @@
 #endif
 
 #include "aegisub.h"
+
+#ifdef __WINDOWS__
+#include "../src/config.h"
+#else
 #include "../acconf.h"
+#endif
 
 Aegisub::Aegisub() {
 	wxStandardPathsBase &paths = wxStandardPaths::Get();

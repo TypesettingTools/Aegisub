@@ -45,7 +45,6 @@ extern "C" {
 
 /// @brief Constructor.
 Platform* Platform::GetPlatform() {
-
 #ifdef __UNIX__
 #   if defined(__FREEBSD__)
 		Platform *p = new PlatformUnixBSD;
@@ -56,6 +55,8 @@ Platform* Platform::GetPlatform() {
 #   else
 		Platform *p = new PlatformUnix;
 #   endif
+#else
+	Platform *p = NULL;
 #endif // __UNIX__
 	p->Init();
 	return p;
@@ -160,9 +161,11 @@ wxString Platform::Signature() {
 	return "";
 }
 
+#ifdef __UNIX__
 wxString Platform::DesktopEnvironment() {
 	return "";
 }
+#endif
 
 wxString Platform::OpenGLVendor() {
 	return GetVideoInfo(VIDEO_VENDOR);

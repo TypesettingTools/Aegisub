@@ -18,7 +18,11 @@
 /// @brief Precompiled header.
 /// @ingroup base
 
+#ifdef __cplusplus
+
 #define R_PRECOMP
+
+#define _CRT_SECURE_NO_WARNINGS
 
 // C + System.
 #include <locale.h>
@@ -63,3 +67,5 @@
 #include <wx/wxchar.h>
 #include <wx/wxprec.h>
 #include <wx/xml/xml.h>
+
+#endif

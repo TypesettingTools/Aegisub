@@ -44,7 +44,7 @@ public:
 private:
 	/// Comparison callback for nameMap.
 	struct lst_comp {
-		bool operator() (const wxString &a, const wxString &b) { return a.Cmp(b) < 0; }
+		bool operator() (const wxString &a, const wxString &b) const { return a.Cmp(b) < 0; }
 	};
 
 	/// Map of internal XML elements to human readable names.

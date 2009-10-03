@@ -77,7 +77,7 @@ bool Reporter::OnInit()
 	wxLocale *locale = new wxLocale();
 	locale->Init(wxLANGUAGE_ENGLISH);
 #ifdef __WINDOWS__
-	locale->AddCatalogLookupPathPrefix(StandardPaths::DecodePath(_T("?data/locale")));
+	//locale->AddCatalogLookupPathPrefix(Aegisub::DecodePath(_T("?data/locale")));
 	locale->AddCatalog(_T("reporter"));
 #else
 	locale->AddCatalog("reporter");
@@ -85,7 +85,6 @@ bool Reporter::OnInit()
 	locale->AddCatalog(_T("wxstd"));
 	setlocale(LC_NUMERIC, "C");
 	setlocale(LC_CTYPE, "C");
-
 
 	mFrame *frame = new mFrame(_("Aegisub Reporter"));
 	Report *r = new Report;
@@ -95,7 +94,6 @@ bool Reporter::OnInit()
 		wxPrintf("Report saved to report.xml\n");
 		return false;
 	}
-
 
 	SetTopWindow(frame);
 
@@ -158,8 +156,8 @@ void mFrame::Cancel(wxCommandEvent& WXUNUSED(event)) {
 
 /// @brief Submit report
 void mFrame::Submit(wxCommandEvent& WXUNUSED(event)) {
-	Progress *progress = new Progress::Progress(this);
-	Upload *upload = new Upload::Upload(progress);
+	Progress *progress = new Progress(this);
+	Upload *upload = new Upload(progress);
 	upload->Report(_("./test.xml"));
 }
 

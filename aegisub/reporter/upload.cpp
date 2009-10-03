@@ -63,11 +63,11 @@ int Upload::CBProgress(void *p, double dlt, double dln, double ult, double uln) 
 	if (uln > 0) {
 		Progress *progress = (Progress*) p;
 		// Update returns false if the user has hit abort.
-		if (progress->Update(round(ult / uln) * 100) == false)
+		if (!progress->Update(floor(ult / uln + 0.5) * 100))
 			// Returning non-zero will cause curl to abort the transfer.
 			return 1;
 	}
-    return 0;
+	return 0;
 }
 
 
