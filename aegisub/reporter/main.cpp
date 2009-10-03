@@ -77,7 +77,8 @@ bool Reporter::OnInit()
 	wxLocale *locale = new wxLocale();
 	locale->Init(wxLANGUAGE_ENGLISH);
 #ifdef __WINDOWS__
-	//locale->AddCatalogLookupPathPrefix(Aegisub::DecodePath(_T("?data/locale")));
+	wxStandardPathsBase &paths = wxStandardPaths::Get();
+	locale->AddCatalogLookupPathPrefix(wxString::Format("%s/locale", paths.GetDataDir()));
 	locale->AddCatalog(_T("reporter"));
 #else
 	locale->AddCatalog("reporter");
