@@ -344,6 +344,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\reporter\platform_windows.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\reporter\progress.cpp"
 				>
 			</File>
@@ -435,6 +439,10 @@
 			</File>
 			<File
 				RelativePath="..\..\reporter\include\platform.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\reporter\platform_windows.h"
 				>
 			</File>
 			<File
