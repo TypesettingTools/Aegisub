@@ -172,9 +172,6 @@ function HSV_to_RGB(H,S,V)
 		end
 	end
 	
-	r = math.floor(r)
-	g = math.floor(g)
-	b = math.floor(b)
 	return r,g,b
 end
 
@@ -238,10 +235,6 @@ function HSL_to_RGB(H, S, L)
 		b = get_component(Tb)
 
 	end
-
-	r = math.floor(r * 255)
-	g = math.floor(g * 255)
-	b = math.floor(b * 255)
 
 	return r, g, b
 end
