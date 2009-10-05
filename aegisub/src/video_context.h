@@ -91,13 +91,11 @@ class VideoContext : public wxEvtHandler {
 	friend class VideoContextThread;
 
 private:
-
 	/// DOCME
 	static VideoContext *instance;
 
 	/// DOCME
 	std::list<VideoDisplay*> displayList;
-
 
 	/// DOCME
 	GLuint lastTex;
@@ -255,89 +253,71 @@ public:
 	void SaveSnapshot(bool raw);
 
 	wxGLContext *GetGLContext(wxGLCanvas *canvas);
-	GLuint GetFrameAsTexture(int n);
 
 	/// @brief DOCME
 	/// @return 
-	///
 	float GetTexW() { return texW; }
 
 	/// @brief DOCME
 	/// @return 
-	///
 	float GetTexH() { return texH; }
 
 	/// @brief DOCME
 	/// @return 
-	///
 	VideoFrameFormat GetFormat() { return vidFormat; }
-
 
 	/// @brief DOCME
 	/// @return 
-	///
 	bool IsLoaded() { return loaded; }
 
 	/// @brief DOCME
 	/// @return 
-	///
 	bool IsPlaying() { return isPlaying; }
 
 	/// @brief DOCME
 	/// @return 
-	///
 	bool IsInverted() { return isInverted; }
-
 
 	/// @brief DOCME
 	/// @param sync 
 	/// @return 
-	///
 	void EnableAudioSync(bool sync = true) { keepAudioSync = sync; }
 
 
 	/// @brief DOCME
 	/// @return 
-	///
 	int GetWidth() { return w; }
 
 	/// @brief DOCME
 	/// @return 
-	///
 	int GetHeight() { return h; }
 
 	/// @brief DOCME
 	/// @return 
-	///
 	int GetLength() { return length; }
 
 	/// @brief DOCME
 	/// @return 
-	///
 	int GetFrameN() { return frame_n; }
 
 	/// @brief DOCME
 	/// @return 
-	///
 	double GetFPS() { return fps; }
 
 	/// @brief DOCME
 	/// @param _fps 
 	/// @return 
-	///
-	void SetFPS(double _fps) { fps = _fps; }
+	void SetFPS(double fps) { this->fps = fps; }
 
 	double GetARFromType(int type);
 	void SetAspectRatio(int type,double value=1.0);
 
 	/// @brief DOCME
 	/// @return 
-	///
 	int GetAspectRatioType() { return arType; }
 
 	/// @brief DOCME
 	/// @return 
-	///
 	double GetAspectRatioValue() { return arValue; }
 
 	void SetVideo(const wxString &filename);

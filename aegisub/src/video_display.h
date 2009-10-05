@@ -46,6 +46,7 @@
 class VideoSlider;
 class VisualTool;
 class VideoBox;
+class VideoOutGL;
 
 /// DOCME
 /// @class VideoDisplay
@@ -59,6 +60,9 @@ private:
 
 	/// The unscaled size of the displayed video
 	wxSize origSize;
+
+	/// The frame number currently being displayed
+	int currentFrame;
 
 	/// The width of the display
 	int w;
@@ -107,42 +111,49 @@ private:
 	/// The current zoom level, where 1.0 = 100%
 	double zoomValue;
 
-	/// The VideoBox this display is contained in
-	VideoBox *box;
-
-public:
-	/// The current visual typesetting tool
-	VisualTool *visual;
-
-	/// Whether the display can be freely resized by the user
-	bool freeSize;
-
-	/// The video position slider; not used by VideoDisplay
+	/// The video position slider
 	VideoSlider *ControlSlider;
-
-	/// The dropdown box for selecting zoom levels
-	wxComboBox *zoomBox;
-
-	/// The display for the absolute time of the video position
-	wxTextCtrl *PositionDisplay;
 
 	/// The display for the the video position relative to the current subtitle line
 	wxTextCtrl *SubsPosition;
 
-	VideoDisplay(wxWindow* parent, wxWindowID id, VideoBox *box, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = 0, const wxString& name = wxPanelNameStr);
+	/// The display for the absolute time of the video position
+	wxTextCtrl *PositionDisplay;
+
+	/// The current visual typesetting tool
+	VisualTool *visual;
+
+	/// The video renderer
+	VideoOutGL *videoOut;
+
+public:
+	/// The VideoBox this display is contained in
+	VideoBox *box;
+
+	/// The dropdown box for selecting zoom levels
+	wxComboBox *zoomBox;
+
+	/// Whether the display can be freely resized by the user
+	bool freeSize;
+
+	VideoDisplay(VideoBox *box, VideoSlider *ControlSlider, wxTextCtrl *PositionDisplay, wxTextCtrl *SubsPosition, wxWindow* parent, wxWindowID id, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = 0, const wxString& name = wxPanelNameStr);
 	~VideoDisplay();
 	void Reset();
 
-	void Render();
+	void SetFrame(int frameNumber);
+	int GetFrame() const { return currentFrame; }
+	void SetFrameRange(int from, int to);
+
+	void Render(int frameNumber = -1);
 
 	void ShowCursor(bool show);
 	void ConvertMouseCoords(int &x,int &y);
-	void UpdatePositionDisplay();
 	void UpdateSize();
 	void SetZoom(double value);
 	void SetZoomPos(int pos);
-	void UpdateSubsRelativeTime();
-	void SetVisualMode(int mode);
+	void SetVisualMode(int mode, bool render = false);
+
+	void OnSubTool(wxCommandEvent &event);
 
 	DECLARE_EVENT_TABLE()
 };

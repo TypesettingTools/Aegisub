@@ -1082,7 +1082,7 @@ void FrameMain::SynchronizeProject(bool fromSubs) {
 		wxString ar = _T("0");
 		wxString zoom = _T("6");
 		if (VideoContext::Get()->IsLoaded()) {
-			seekpos = wxString::Format(_T("%i"),videoBox->videoDisplay->ControlSlider->GetValue());
+			seekpos = wxString::Format(_T("%i"),videoBox->videoDisplay->GetFrame());
 			zoom = wxString::Format(_T("%i"),videoBox->videoDisplay->zoomBox->GetSelection()+1);
 
 			int arType = VideoContext::Get()->GetAspectRatioType();

@@ -269,10 +269,9 @@ void AegiVideoFrame::GetFloat(float *buffer) const {
 
 
 
-/// @brief Get Bytes per Pixel 
+/// @brief Get bytes per pixel for the current frame format
 /// @param plane 
 /// @return 
-///
 int AegiVideoFrame::GetBpp(int plane) const {
 	switch (format) {
 		case FORMAT_RGB32: return 4;

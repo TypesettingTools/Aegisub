@@ -305,6 +305,7 @@ aegisub_2_2_SOURCES = \
 	video_context.cpp \
 	video_display.cpp \
 	video_frame.cpp \
+	video_out_gl.ccp \
 	video_provider_cache.cpp \
 	video_provider_dummy.cpp \
 	video_provider_manager.cpp \

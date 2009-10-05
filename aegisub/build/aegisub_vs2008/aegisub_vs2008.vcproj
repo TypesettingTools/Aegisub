@@ -1836,6 +1836,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\video_out_gl.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\video_out_gl.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\video_slider.cpp"
 				>
 			</File>

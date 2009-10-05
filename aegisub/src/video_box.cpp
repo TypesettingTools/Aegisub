@@ -121,10 +121,7 @@ VideoBox::VideoBox(wxWindow *parent, bool isDetached)
 	visualToolBar->SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNFACE));
 
 	// Display
-	videoDisplay = new VideoDisplay(videoPage,-1,this,wxDefaultPosition,wxDefaultSize,wxSUNKEN_BORDER);
-	videoDisplay->ControlSlider = videoSlider;
-	videoDisplay->PositionDisplay = VideoPosition;
-	videoDisplay->SubsPosition = VideoSubsPos;
+	videoDisplay = new VideoDisplay(this,videoSlider,VideoPosition,VideoSubsPos,videoPage,-1,wxDefaultPosition,wxDefaultSize,wxSUNKEN_BORDER);
 	VideoContext::Get()->AddDisplay(videoDisplay);
 	videoDisplay->Reset();
 
@@ -244,7 +241,7 @@ void VideoBox::OnModeChange(wxCommandEvent &event) {
 /// @param event 
 ///
 void VideoBox::OnSubTool(wxCommandEvent &event) {
-	videoDisplay->visual->OnSubTool(event);
+	videoDisplay->OnSubTool(event);
 }
 
 
