@@ -27,7 +27,7 @@
 //
 // Aegisub Project http://www.aegisub.org/
 //
-// $Id: video_out_gl.cpp 3613 2009-10-05 00:06:11Z plorkyeran $
+// $Id$
 
 /// @file video_out_gl.cpp
 /// @brief OpenGL based video renderer
