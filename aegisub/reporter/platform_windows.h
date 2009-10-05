@@ -20,7 +20,7 @@
 
 class Platform;
 
-/// @brief General Unix functions.
+/// @brief General Windows functions.
 class PlatformWindows : public Platform {
 public:
 	PlatformWindows() {};
@@ -36,6 +36,12 @@ public:
 	virtual wxString CPUFeatures();
 	virtual wxString CPUFeatures2();
 	virtual wxString Memory();
+
+	// OpenGL
+	virtual wxString OpenGLVendor();
+	virtual wxString OpenGLRenderer();
+	virtual wxString OpenGLVersion();
+	virtual wxString OpenGLExt();
 
 	// Windows Specific
 	virtual wxString ServicePack();

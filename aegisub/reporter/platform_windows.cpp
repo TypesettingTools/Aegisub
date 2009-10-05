@@ -82,3 +82,18 @@ wxString PlatformWindows::AntiVirus() {
 wxString PlatformWindows::Firewall() {
 	return "";
 };
+wxString PlatformWindows::OpenGLVendor() {
+	return "";
+};
+
+wxString PlatformWindows::OpenGLRenderer() {
+	return "";
+};
+
+wxString PlatformWindows::OpenGLVersion() {
+	return "";
+};
+
+wxString PlatformWindows::OpenGLExt() {
+	return "";
+};
