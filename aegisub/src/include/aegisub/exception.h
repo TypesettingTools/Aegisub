@@ -34,6 +34,7 @@
 /// @ingroup main_headers
 ///
 
+#pragma once
 
 #ifndef AGI_PRE
 #include <wx/string.h>
