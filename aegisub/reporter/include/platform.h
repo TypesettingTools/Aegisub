@@ -231,7 +231,7 @@ public:
 	/// Firewall installed
 	/// @return true/false
 	/// @retval 1,0
-	virtual wxString FireWall()=0;
+	virtual wxString Firewall()=0;
 
 	/// DLL versions used
 	/// @return wxXmlNode of DLLs used

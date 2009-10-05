@@ -45,8 +45,8 @@ public:
 
 	// Windows Specific
 	virtual wxString ServicePack();
-	virtual wxString GraphicsVersion();
-	virtual wxString DShowFilters();
+	virtual wxString DriverGraphicsVersion();
+	virtual wxString DirectShowFilters();
 	virtual wxString AntiVirus();
 	virtual wxString Firewall();
 	virtual wxString DLLVersions();

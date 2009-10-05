@@ -67,11 +67,11 @@ wxString PlatformWindows::ServicePack() {
 	return "";
 };
 
-wxString PlatformWindows::GraphicsVersion() {
+wxString PlatformWindows::DriverGraphicsVersion() {
 	return "";
 };
 
-wxString PlatformWindows::DShowFilters() {
+wxString PlatformWindows::DirectShowFilters() {
 	return "";
 };
 
@@ -82,6 +82,11 @@ wxString PlatformWindows::AntiVirus() {
 wxString PlatformWindows::Firewall() {
 	return "";
 };
+
+wxString PlatformWindows::DLLVersions() {
+	return "";
+};
+
 wxString PlatformWindows::OpenGLVendor() {
 	return "";
 };
