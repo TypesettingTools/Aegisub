@@ -233,11 +233,17 @@ void VideoOutGL::DisplayFrame(AegiVideoFrame frame, int sw, int sh) {
 
 		glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 		if (GLenum err = glGetError()) throw VideoOutOpenGLException(L"glColor4f", err);
+		float top = 0.0f;
+		float bottom = ti.texH;
+		if (frame.flipped) {
+			top = ti.texH;
+			bottom = 0.0f;
+		}
 		glBegin(GL_QUADS);
-			glTexCoord2f(0.0, 0.0);         glVertex2f(destX, destY);
-			glTexCoord2f(ti.texW, 0.0);     glVertex2f(destX + destW, destY);
-			glTexCoord2f(ti.texW, ti.texH); glVertex2f(destX + destW, destY + destH);
-			glTexCoord2f(0.0, ti.texH);     glVertex2f(destX, destY + destH);
+			glTexCoord2f(0.0f, top);        glVertex2f(destX, destY);
+			glTexCoord2f(ti.texW, top);     glVertex2f(destX + destW, destY);
+			glTexCoord2f(ti.texW, bottom);  glVertex2f(destX + destW, destY + destH);
+			glTexCoord2f(0.0f, bottom);     glVertex2f(destX, destY + destH);
 		glEnd();
 		if (GLenum err = glGetError()) throw VideoOutOpenGLException(L"GL_QUADS", err);
 	}
