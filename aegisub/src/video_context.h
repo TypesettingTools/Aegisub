@@ -91,19 +91,10 @@ private:
 	std::list<VideoDisplay*> displayList;
 
 	/// DOCME
-	GLuint lastTex;
-
-	/// DOCME
-	int lastFrame;
-
-	/// DOCME
 	bool ownGlContext;
 
 	/// DOCME
 	wxGLContext *glContext;
-
-	/// DOCME
-	VideoFrameFormat vidFormat;
 
 	/// DOCME
 	AegiVideoFrame tempFrame;
@@ -117,7 +108,6 @@ private:
 
 	/// DOCME
 	SubtitlesProvider *subsProvider;
-
 
 	/// DOCME
 	bool keyFramesLoaded;
@@ -133,7 +123,6 @@ private:
 
 	/// DOCME
 	wxString keyFramesFilename;
-
 
 	/// DOCME
 	wxMutex playMutex;
@@ -160,19 +149,10 @@ private:
 	bool loaded;
 
 	/// DOCME
-	bool isInverted;
-
-	/// DOCME
 	bool isPlaying;
 
 	/// DOCME
 	bool keepAudioSync;
-
-
-	/// DOCME
-
-	/// DOCME
-	float texW,texH;
 
 	/// DOCME
 
@@ -188,18 +168,15 @@ private:
 	/// DOCME
 	double fps;
 
-
 	/// DOCME
 	double arValue;
 
 	/// DOCME
 	int arType;
 
-	void UnloadTexture();
 	void OnPlayTimer(wxTimerEvent &event);
 
 public:
-
 	/// DOCME
 	SubtitlesGrid *grid;
 
@@ -232,27 +209,11 @@ public:
 
 	/// @brief DOCME
 	/// @return 
-	float GetTexW() { return texW; }
-
-	/// @brief DOCME
-	/// @return 
-	float GetTexH() { return texH; }
-
-	/// @brief DOCME
-	/// @return 
-	VideoFrameFormat GetFormat() { return vidFormat; }
-
-	/// @brief DOCME
-	/// @return 
 	bool IsLoaded() { return loaded; }
 
 	/// @brief DOCME
 	/// @return 
 	bool IsPlaying() { return isPlaying; }
-
-	/// @brief DOCME
-	/// @return 
-	bool IsInverted() { return isInverted; }
 
 	/// @brief DOCME
 	/// @param sync 

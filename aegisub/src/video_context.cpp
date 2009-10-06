@@ -100,8 +100,6 @@ VideoContext::VideoContext() {
 	// Set GL context
 	glContext = NULL;
 	ownGlContext = false;
-	lastTex = 0;
-	lastFrame = -1;
 
 	// Set options
 	audio = NULL;
@@ -179,9 +177,6 @@ void VideoContext::Reset() {
 	// Update displays
 	UpdateDisplays(true);
 
-	// Remove textures
-	UnloadTexture();
-
 	// Clean up video data
 	wxRemoveFile(tempfile);
 	tempfile = _T("");
@@ -207,17 +202,6 @@ void VideoContext::Reload() {
 		SetVideo(name);
 		JumpToFrame(n);
 	}
-}
-
-/// @brief Unload texture 
-///
-void VideoContext::UnloadTexture() {
-	// Remove textures
-	if (lastTex != 0) {
-		glDeleteTextures(1,&lastTex);
-		lastTex = 0;
-	}
-	lastFrame = -1;
 }
 
 /// @brief Sets video filename 
@@ -345,9 +329,6 @@ void VideoContext::UpdateDisplays(bool full) {
 /// @param subtitles 
 ///
 void VideoContext::Refresh (bool video, bool subtitles) {
-	// Reset frame
-	lastFrame = -1;
-
 	// Update subtitles
 	if (subtitles && subsProvider) {
 		// Re-export
