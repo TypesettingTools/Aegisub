@@ -268,7 +268,7 @@ void FrameMain::InitToolbar () {
 	Toolbar->AddTool(Menu_Video_Zoom_In,_("Zoom in"),GETIMAGE(zoom_in_button_24),wxNullBitmap,wxITEM_NORMAL,_("Zoom video in"));
 	Toolbar->AddTool(Menu_Video_Zoom_Out,_("Zoom out"),GETIMAGE(zoom_out_button_24),wxNullBitmap,wxITEM_NORMAL,_("Zoom video out"));
 	wxArrayString choices;
-	for (int i=1;i<=16;i++) {
+	for (int i=1;i<=24;i++) {
 		wxString toAdd = wxString::Format(_T("%i"),int(i*12.5));
 		if (i%2) toAdd += _T(".5");
 		toAdd += _T("%");

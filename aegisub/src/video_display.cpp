@@ -531,7 +531,7 @@ void VideoDisplay::SetZoom(double value) {
 /// @param value The new zoom position
 void VideoDisplay::SetZoomPos(int value) {
 	if (value < 0) value = 0;
-	if (value > 15) value = 15;
+	if (value > 23) value = 23;
 	SetZoom(double(value+1)/8.0);
 	if (zoomBox->GetSelection() != value) zoomBox->SetSelection(value);
 }
