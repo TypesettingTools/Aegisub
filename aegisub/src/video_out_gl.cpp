@@ -108,6 +108,7 @@ VideoOutGL::VideoOutGL()
 void VideoOutGL::InitTextures(int width, int height, GLenum format, int bpp) {
 	// Do nothing if the frame size and format are unchanged
 	if (width == frameWidth && height == frameHeight && format == frameFormat) return;
+	wxLogDebug("VideoOutGL::InitTextures: Video size: %dx%d\n", width, height);
 
 	frameWidth  = width;
 	frameHeight = height;
@@ -189,6 +190,7 @@ void VideoOutGL::InitTextures(int width, int height, GLenum format, int bpp) {
 			glBindTexture(GL_TEXTURE_2D, ti.textureID);
 			if (GLenum err = glGetError()) throw VideoOutOpenGLException(L"glBindTexture", err);
 			glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, w, h, 0, format, GL_UNSIGNED_BYTE, NULL);
+			wxLogDebug("VideoOutGL::InitTextures: Using texture size: %dx%d\n", w, h);
 			if (GLenum err = glGetError()) throw VideoOutOpenGLException(L"glTexImage2D", err);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 			if (GLenum err = glGetError()) throw VideoOutOpenGLException(L"glTexParameteri(GL_TEXTURE_MIN_FILTER)", err);
