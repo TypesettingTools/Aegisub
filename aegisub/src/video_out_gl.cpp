@@ -34,6 +34,14 @@
 /// @ingroup video
 ///
 
+#ifndef AGI_PRE
+#include <wx/log.h>
+#endif
+
+#include "video_out_gl.h"
+#include "utils.h"
+#include "video_frame.h"
+
 #ifdef __APPLE__
 #include <OpenGL/GL.h>
 #include <OpenGL/glu.h>
@@ -41,11 +49,6 @@
 #include <GL/gl.h>
 #include <GL/glu.h>
 #endif
-
-#include "video_out_gl.h"
-
-#include "utils.h"
-#include "video_frame.h"
 
 #ifndef GL_CLAMP_TO_EDGE
 #define GL_CLAMP_TO_EDGE 0x812F
