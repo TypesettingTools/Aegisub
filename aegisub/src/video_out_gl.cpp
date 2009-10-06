@@ -79,6 +79,8 @@ namespace {
 		glGetTexLevelParameteriv(GL_PROXY_TEXTURE_2D, 0, GL_TEXTURE_INTERNAL_FORMAT, &format);
 		glDeleteTextures(1, &texture);
 		while (glGetError()) { } // Silently swallow all errors as we don't care why it failed if it did
+
+		wxLogDebug("VideoOutGL::TestTexture: %dx%d\n", width, height);
 		return format != 0;
 	}
 }
