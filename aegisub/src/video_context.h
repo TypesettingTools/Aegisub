@@ -34,9 +34,6 @@
 /// @ingroup video
 ///
 
-
-
-
 ///////////
 // Headers
 #ifndef AGI_PRE
@@ -76,9 +73,6 @@ class AssDialogue;
 class VideoProvider;
 class VideoDisplay;
 class SubtitlesProvider;
-class VideoContextThread;
-
-
 
 /// DOCME
 /// @class VideoContext
@@ -88,7 +82,6 @@ class VideoContextThread;
 class VideoContext : public wxEvtHandler {
 	friend class AudioProvider;
 	friend class VisualTool;
-	friend class VideoContextThread;
 
 private:
 	/// DOCME
@@ -162,23 +155,6 @@ private:
 
 	/// DOCME
 	int nextFrame;
-
-
-	/// DOCME
-	bool threaded;
-
-	/// DOCME
-	bool threadLocked;
-
-	/// DOCME
-	int threadNextFrame;
-
-	/// DOCME
-	wxMutex vidMutex;
-
-	/// DOCME
-	wxThread *thread;
-
 
 	/// DOCME
 	bool loaded;
@@ -359,23 +335,3 @@ public:
 
 	DECLARE_EVENT_TABLE()
 };
-
-
-
-/// DOCME
-/// @class VideoContextThread
-/// @brief DOCME
-///
-/// DOCME
-class VideoContextThread : public wxThread {
-private:
-
-	/// DOCME
-	VideoContext *parent;
-
-public:
-	VideoContextThread(VideoContext *parent);
-	wxThread::ExitCode Entry();
-};
-
-

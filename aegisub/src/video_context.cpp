@@ -91,12 +91,8 @@ BEGIN_EVENT_TABLE(VideoContext, wxEvtHandler)
 	EVT_TIMER(VIDEO_PLAY_TIMER,VideoContext::OnPlayTimer)
 END_EVENT_TABLE()
 
-
-
 /// DOCME
 VideoContext *VideoContext::instance = NULL;
-
-
 
 /// @brief Constructor 
 ///
@@ -123,15 +119,7 @@ VideoContext::VideoContext() {
 	isPlaying = false;
 	nextFrame = -1;
 	keepAudioSync = true;
-
-	// Threads
-	//threaded = Options.AsBool(_T("Threaded Video"));
-	threaded = false;
-	threadLocked = false;
-	threadNextFrame = -1;
 }
-
-
 
 /// @brief Destructor 
 ///
@@ -141,8 +129,6 @@ VideoContext::~VideoContext () {
 		delete glContext;
 	glContext = NULL;
 }
-
-
 
 /// @brief Get Instance 
 /// @return 
@@ -154,8 +140,6 @@ VideoContext *VideoContext::Get() {
 	return instance;
 }
 
-
-
 /// @brief Clear 
 ///
 void VideoContext::Clear() {
@@ -163,8 +147,6 @@ void VideoContext::Clear() {
 	delete instance;
 	instance = NULL;
 }
-
-
 
 /// @brief Reset 
 ///
@@ -215,8 +197,6 @@ void VideoContext::Reset() {
 	subsProvider = NULL;
 }
 
-
-
 /// @brief Reload video 
 ///
 void VideoContext::Reload() {
@@ -229,8 +209,6 @@ void VideoContext::Reload() {
 	}
 }
 
-
-
 /// @brief Unload texture 
 ///
 void VideoContext::UnloadTexture() {
@@ -242,16 +220,13 @@ void VideoContext::UnloadTexture() {
 	lastFrame = -1;
 }
 
-
-
 /// @brief Sets video filename 
 /// @param filename 
 ///
 void VideoContext::SetVideo(const wxString &filename) {
 	// Unload video
 	Reset();
-	threaded = Options.AsBool(_T("Threaded Video"));
-	
+
 	// Load video
 	if (!filename.IsEmpty()) {
 		try {
@@ -325,8 +300,6 @@ void VideoContext::SetVideo(const wxString &filename) {
 	loaded = provider != NULL;
 }
 
-
-
 /// @brief Add new display 
 /// @param display 
 /// @return 
@@ -338,16 +311,12 @@ void VideoContext::AddDisplay(VideoDisplay *display) {
 	displayList.push_back(display);
 }
 
-
-
 /// @brief Remove display 
 /// @param display 
 ///
 void VideoContext::RemoveDisplay(VideoDisplay *display) {
 	displayList.remove(display);
 }
-
-
 
 /// @brief Update displays 
 /// @param full 
@@ -395,8 +364,6 @@ void VideoContext::Refresh (bool video, bool subtitles) {
 	JumpToFrame(frame_n);
 }
 
-
-
 /// @brief Jumps to a frame and update display 
 /// @param n 
 /// @return 
@@ -408,45 +375,30 @@ void VideoContext::JumpToFrame(int n) {
 	// Prevent intervention during playback
 	if (isPlaying && n != playNextFrame) return;
 
-	// Threaded
-	if (threaded && false) {	// Doesn't work, so it's disabled
-		wxMutexLocker lock(vidMutex);
-		threadNextFrame = n;
-		if (!threadLocked) {
-			threadLocked = true;
-			thread = new VideoContextThread(this);
-			thread->Create();
-			thread->Run();
-		}
+	try {
+		// Set frame number
+		frame_n = n;
+
+		// Display
+		UpdateDisplays(false);
+
+		// Update grid
+		if (!isPlaying && Options.AsBool(_T("Highlight subs in frame"))) grid->Refresh(false);
 	}
-
-	// Not threaded
-	else {
-		try {
-			// Set frame number
-			frame_n = n;
-
-			// Display
-			UpdateDisplays(false);
-
-			// Update grid
-			if (!isPlaying && Options.AsBool(_T("Highlight subs in frame"))) grid->Refresh(false);
-		}
-		catch (const wxChar *err) {
-			wxLogError(
-				_T("Failed seeking video. The video will be closed because of this.\n")
-				_T("If you get this error regardless of which video file you use, and also if you use dummy video, Aegisub might not work with your graphics card's OpenGL driver.\n")
-				_T("Error message reported: %s"),
-				err);
-			Reset();
-		}
-		catch (...) {
-			wxLogError(
-				_T("Failed seeking video. The video will be closed because of this.\n")
-				_T("If you get this error regardless of which video file you use, and also if you use dummy video, Aegisub might not work with your graphics card's OpenGL driver.\n")
-				_T("No further error message given."));
-			Reset();
-		}
+	catch (const wxChar *err) {
+		wxLogError(
+			_T("Failed seeking video. The video will be closed because of this.\n")
+			_T("If you get this error regardless of which video file you use, and also if you use dummy video, Aegisub might not work with your graphics card's OpenGL driver.\n")
+			_T("Error message reported: %s"),
+			err);
+		Reset();
+	}
+	catch (...) {
+		wxLogError(
+			_T("Failed seeking video. The video will be closed because of this.\n")
+			_T("If you get this error regardless of which video file you use, and also if you use dummy video, Aegisub might not work with your graphics card's OpenGL driver.\n")
+			_T("No further error message given."));
+		Reset();
 	}
 }
 
@@ -543,8 +495,6 @@ void VideoContext::SaveSnapshot(bool raw) {
 	GetFrame(frame_n,raw).GetImage().SaveFile(path,wxBITMAP_TYPE_PNG);
 }
 
-
-
 /// @brief Get dimensions of script 
 /// @param sw 
 /// @param sh 
@@ -552,8 +502,6 @@ void VideoContext::SaveSnapshot(bool raw) {
 void VideoContext::GetScriptSize(int &sw,int &sh) {
 	grid->ass->GetResolution(sw,sh);
 }
-
-
 
 /// @brief Play 
 /// @return 
@@ -580,8 +528,6 @@ void VideoContext::Play() {
 	playback.SetOwner(this,VIDEO_PLAY_TIMER);
 	playback.Start(10);
 }
-
-
 
 /// @brief Play line 
 /// @return 
@@ -611,8 +557,6 @@ void VideoContext::PlayLine() {
 	playback.Start(10);
 }
 
-
-
 /// @brief Stop 
 ///
 void VideoContext::Stop() {
@@ -622,8 +566,6 @@ void VideoContext::Stop() {
 		audio->Stop();
 	}
 }
-
-
 
 /// @brief Play timer 
 /// @param event 
@@ -679,8 +621,6 @@ void VideoContext::OnPlayTimer(wxTimerEvent &event) {
 	}
 }
 
-
-
 /// @brief Get name of temp work file 
 /// @return 
 ///
@@ -693,8 +633,6 @@ wxString VideoContext::GetTempWorkFile () {
 	return tempfile;
 }
 
-
-
 /// @brief Get keyframes 
 /// @return 
 ///
@@ -703,16 +641,12 @@ wxArrayInt VideoContext::GetKeyFrames() {
 	return KeyFrames;
 }
 
-
-
 /// @brief Set keyframes 
 /// @param frames 
 ///
 void VideoContext::SetKeyFrames(wxArrayInt frames) {
 	KeyFrames = frames;
 }
-
-
 
 /// @brief Set keyframe override 
 /// @param frames 
@@ -722,16 +656,12 @@ void VideoContext::SetOverKeyFrames(wxArrayInt frames) {
 	overKeyFramesLoaded = true;
 }
 
-
-
 /// @brief Close keyframes 
 ///
 void VideoContext::CloseOverKeyFrames() {
 	overKeyFrames.Clear();
 	overKeyFramesLoaded = false;
 }
-
-
 
 /// @brief Check if override keyframes are loaded 
 /// @return 
@@ -740,16 +670,12 @@ bool VideoContext::OverKeyFramesLoaded() {
 	return overKeyFramesLoaded;
 }
 
-
-
 /// @brief Check if keyframes are loaded 
 /// @return 
 ///
 bool VideoContext::KeyFramesLoaded() {
 	return overKeyFramesLoaded || keyFramesLoaded;
 }
-
-
 
 /// @brief Calculate aspect ratio 
 /// @param type 
@@ -762,8 +688,6 @@ double VideoContext::GetARFromType(int type) {
 	if (type == 3) return 2.35;
 	return 1.0;  //error
 }
-
-
 
 /// @brief Sets aspect ratio 
 /// @param _type 
@@ -780,55 +704,3 @@ void VideoContext::SetAspectRatio(int _type, double value) {
 	arValue = value;
 	UpdateDisplays(true);
 }
-
-
-
-/// @brief Thread constructor 
-/// @param par 
-///
-VideoContextThread::VideoContextThread(VideoContext *par)
-: wxThread(wxTHREAD_DETACHED)
-{
-	parent = par;
-}
-
-
-
-/// @brief Thread entry point 
-///
-wxThread::ExitCode VideoContextThread::Entry() {
-	// Set up thread
-	int frame = parent->threadNextFrame;
-	int curFrame = parent->frame_n;
-	bool highSubs = Options.AsBool(_T("Highlight subs in frame"));
-
-	// Loop while there is work to do
-	while (true) {
-		// Get frame and set frame number
-		{
-			wxMutexLocker glLock(OpenGLWrapper::glMutex);
-			parent->frame_n = frame;
-		}
-
-		// Display
-		parent->UpdateDisplays(false);
-
-		// Update grid
-		if (!parent->isPlaying && highSubs) parent->grid->Refresh(false);
-
-		// Get lock and check if there is more to do
-		wxMutexLocker lock(parent->vidMutex);
-		curFrame = parent->frame_n;
-		frame = parent->threadNextFrame;
-
-		// Work done, kill thread and release context
-		if (curFrame == frame) {
-			parent->threadLocked = false;
-			parent->threadNextFrame = -1;
-			Delete();
-			return 0;
-		}
-	}
-}
-
-
