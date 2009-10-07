@@ -27,6 +27,7 @@ m4_define([fontconfig_required_version], [2.4])
 m4_define([freetype_required_version], [9.7.0])
 m4_define([pkgconfig_required_version], [0.20])
 m4_define([wx_required_version], [2.9.0])
+m4_define([boost_required_version], [1.34])
 
 
 #######
@@ -712,9 +713,17 @@ else
   with_provider_ffmpegsource="no"
 fi
 
+BOOST_REQUIRE([boost_required_version])
+BOOST_FIND_HEADER([boost/format.hpp], [found_boost="no"; with_provider_ffmpegsource="no"])
+
+if test "$found_boost" = "no"; then
+  AC_MSG_WARN([Boost is required for FFmpegSource support.])
+fi
+
 AM_CONDITIONAL([HAVE_PROVIDER_FFMPEGSOURCE], [test "$with_provider_ffmpegsource" = "yes"])
 AC_SUBST(LIBPOSTPROC_LIBS)
 AC_SUBST(LIBPOSTPROC_CFLAGS)
+
 
 
 ###################
