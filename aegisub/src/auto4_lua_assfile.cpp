@@ -332,7 +332,7 @@ namespace Automation4 {
 			GETBOOL(strikeout, "strikeout", "style")
 			GETFLOAT(scale_x, "scale_x", "style")
 			GETFLOAT(scale_y, "scale_y", "style")
-			GETINT(spacing, "spacing", "style")
+			GETFLOAT(spacing, "spacing", "style")
 			GETFLOAT(angle, "angle", "style")
 			GETINT(borderstyle, "borderstyle", "style")
 			GETFLOAT(outline, "outline", "style")
