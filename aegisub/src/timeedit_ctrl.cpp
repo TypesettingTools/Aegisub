@@ -108,7 +108,6 @@ wxTextCtrl(parent,id,value,pos,size,TimeEditWindowStyle | style,validator,name)
 	isEnd = false;
 	modified = false;
 	showModified = false;
-	UpdateTime();
 	Connect(wxEVT_COMMAND_TEXT_UPDATED,wxCommandEventHandler(TimeEdit::OnModified));
 	Connect(wxEVT_KILL_FOCUS,wxFocusEventHandler(TimeEdit::OnKillFocus));
 }
