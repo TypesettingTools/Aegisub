@@ -34,6 +34,8 @@
 /// @ingroup utility
 ///
 
+#include "config.h"
+
 #include "charset_conv.h"
 
 #ifndef AGI_PRE

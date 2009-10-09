@@ -35,6 +35,8 @@
 
 
 // Headers
+#include "config.h"
+
 #ifndef AGI_PRE
 #include <wx/bitmap.h>
 #include <wx/dcmemory.h>

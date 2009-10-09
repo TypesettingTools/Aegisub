@@ -34,6 +34,8 @@
 /// @ingroup video
 ///
 
+#include "config.h"
+
 #ifndef AGI_PRE
 #include <wx/log.h>
 #endif

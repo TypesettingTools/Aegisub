@@ -35,6 +35,8 @@
 ///
 
 
+#include "config.h"
+
 #ifdef WITH_QUICKTIME
 #include "aegisub_endian.h"
 #include "video_provider_quicktime.h"

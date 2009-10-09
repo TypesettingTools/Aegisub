@@ -37,6 +37,8 @@
 
 ////////////
 // Includes
+#include "config.h"
+
 #ifndef AGI_PRE
 #include <math.h>
 

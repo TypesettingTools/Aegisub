@@ -34,6 +34,8 @@
 /// @ingroup video_input
 ///
 
+#include "config.h"
+
 #include "video_provider_yuv4mpeg.h"
 
 // All of this cstdio bogus is because of one reason and one reason only:

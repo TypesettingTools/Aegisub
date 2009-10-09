@@ -35,6 +35,8 @@
 ///
 
 
+#include "config.h"
+
 #ifdef WITH_QUICKTIME
 
 #include "audio_provider_quicktime.h"

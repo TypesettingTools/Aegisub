@@ -35,6 +35,8 @@
 ///
 
 
+#include "config.h"
+
 #ifdef WITH_QUICKTIME
 #include "quicktime_common.h"
 
