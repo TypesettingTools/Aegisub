@@ -177,7 +177,7 @@ void DialogJumpTo::OnEditFrame (wxCommandEvent &event) {
 		int newtime = VFR_Output.GetTimeAtFrame(jumpframe,true,true);
 		if (jumptime.GetMS() != newtime) {
 			jumptime.SetMS(newtime);
-			JumpTime->SetValue(jumptime.GetASSFormated());
+			JumpTime->ChangeValue(jumptime.GetASSFormated());
 		}
 
 		ready = true;
