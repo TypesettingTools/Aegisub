@@ -45,14 +45,14 @@
 
 class nsEscCharSetProber: public nsCharSetProber {
 public:
-  nsEscCharSetProber(void);
+  nsEscCharSetProber(PRUint32 aLanguageFilter);
   virtual ~nsEscCharSetProber(void);
   nsProbingState HandleData(const char* aBuf, PRUint32 aLen);
-  const char* GetCharSetName() {return mDetectedCharset;};
-  nsProbingState GetState(void) {return mState;};
+  const char* GetCharSetName() {return mDetectedCharset;}
+  nsProbingState GetState(void) {return mState;}
   void      Reset(void);
-  float     GetConfidence(void){return (float)0.99;};
-  void      SetOpion() {};
+  float     GetConfidence(void){return (float)0.99;}
+  void      SetOpion() {}
 
 protected:
   void      GetDistribution(PRUint32 aCharLen, const char* aStr);

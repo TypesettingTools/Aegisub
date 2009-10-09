@@ -106,17 +106,14 @@ wxString CharSetDetect::GetEncoding(wxString filename) {
 	bool gotLocal = false;
 	for (int i=0;i<NUM_OF_CHARSET_PROBERS;i++) {
 		if (mCharSetProbers[i]) {
-			int probes = mCharSetProbers[i]->GetProbeCount();
-			for (int j=0;j<probes;j++) {
-				float conf = mCharSetProbers[i]->GetConfidence(j);
+			float conf = mCharSetProbers[i]->GetConfidence();
 
-				// Only bother with those whose confidence is at least 1%
-				wxString curName = wxString(mCharSetProbers[i]->GetCharSetName(j),wxConvUTF8);
-				if (conf > 0.01f || curName == local) {
-					results.push_back(CharDetResult());
-					results.back().name = curName;
-					results.back().confidence = mCharSetProbers[i]->GetConfidence(j);
-				}
+			// Only bother with those whose confidence is at least 1%
+			wxString curName = wxString(mCharSetProbers[i]->GetCharSetName(),wxConvUTF8);
+			if (conf > 0.01f || curName == local) {
+				results.push_back(CharDetResult());
+				results.back().name = curName;
+				results.back().confidence = conf;
 			}
 		}
 	}

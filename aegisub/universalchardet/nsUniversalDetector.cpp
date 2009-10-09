@@ -44,9 +44,8 @@
 #include "nsSBCSGroupProber.h"
 #include "nsEscCharsetProber.h"
 #include "nsLatin1Prober.h"
-#include "nsError.h"
 
-nsUniversalDetector::nsUniversalDetector()
+nsUniversalDetector::nsUniversalDetector(PRUint32 aLanguageFilter)
 {
   mDone = PR_FALSE;
   mBestGuess = -1;   //illegal value as signal
@@ -58,6 +57,7 @@ nsUniversalDetector::nsUniversalDetector()
   mGotData = PR_FALSE;
   mInputState = ePureAscii;
   mLastChar = '\0';
+  mLanguageFilter = aLanguageFilter;
 
   PRUint32 i;
   for (i = 0; i < NUM_OF_CHARSET_PROBERS; i++)
@@ -125,12 +125,12 @@ nsresult nsUniversalDetector::HandleData(const char* aBuf, PRUint32 aLen)
             mDetectedCharset = "X-ISO-10646-UCS-4-3412";
           else if ('\xFF' == aBuf[1])
             // FE FF  UTF-16, big endian BOM
-            mDetectedCharset = "UTF-16BE";
+            mDetectedCharset = "UTF-16";
         break;
         case '\x00':
           if (('\x00' == aBuf[1]) && ('\xFE' == aBuf[2]) && ('\xFF' == aBuf[3]))
             // 00 00 FE FF  UTF-32, big-endian BOM
-            mDetectedCharset = "UTF-32BE";
+            mDetectedCharset = "UTF-32";
           else if (('\x00' == aBuf[1]) && ('\xFF' == aBuf[2]) && ('\xFE' == aBuf[3]))
             // 00 00 FF FE  UCS-4, unusual octet order BOM (2143)
             mDetectedCharset = "X-ISO-10646-UCS-4-2143";
@@ -138,10 +138,10 @@ nsresult nsUniversalDetector::HandleData(const char* aBuf, PRUint32 aLen)
         case '\xFF':
           if (('\xFE' == aBuf[1]) && ('\x00' == aBuf[2]) && ('\x00' == aBuf[3]))
             // FF FE 00 00  UTF-32, little-endian BOM
-            mDetectedCharset = "UTF-32LE";
+            mDetectedCharset = "UTF-32";
           else if ('\xFE' == aBuf[1])
             // FF FE  UTF-16, little endian BOM
-            mDetectedCharset = "UTF-16LE";
+            mDetectedCharset = "UTF-16";
         break;
       }  // switch
 
@@ -172,16 +172,24 @@ nsresult nsUniversalDetector::HandleData(const char* aBuf, PRUint32 aLen)
 
         //start multibyte and singlebyte charset prober
         if (nsnull == mCharSetProbers[0])
-          mCharSetProbers[0] = new nsMBCSGroupProber;
-        if (nsnull == mCharSetProbers[1])
-          mCharSetProbers[1] = new nsSBCSGroupProber;
-        if (nsnull == mCharSetProbers[2])
-          mCharSetProbers[2] = new nsLatin1Prober; 
-
-        if ((nsnull == mCharSetProbers[0]) ||
-            (nsnull == mCharSetProbers[1]) ||
-            (nsnull == mCharSetProbers[2]))
+        {
+          mCharSetProbers[0] = new nsMBCSGroupProber(mLanguageFilter);
+          if (nsnull == mCharSetProbers[0])
             return NS_ERROR_OUT_OF_MEMORY;
+        }
+        if (nsnull == mCharSetProbers[1] &&
+            (mLanguageFilter & NS_FILTER_NON_CJK))
+        {
+          mCharSetProbers[1] = new nsSBCSGroupProber;
+          if (nsnull == mCharSetProbers[1])
+            return NS_ERROR_OUT_OF_MEMORY;
+        }
+        if (nsnull == mCharSetProbers[2])
+        {
+          mCharSetProbers[2] = new nsLatin1Prober; 
+          if (nsnull == mCharSetProbers[2])
+            return NS_ERROR_OUT_OF_MEMORY;
+        }
       }
     }
     else
@@ -202,7 +210,7 @@ nsresult nsUniversalDetector::HandleData(const char* aBuf, PRUint32 aLen)
   {
   case eEscAscii:
     if (nsnull == mEscCharSetProber) {
-      mEscCharSetProber = new nsEscCharSetProber;
+      mEscCharSetProber = new nsEscCharSetProber(mLanguageFilter);
       if (nsnull == mEscCharSetProber)
         return NS_ERROR_OUT_OF_MEMORY;
     }
@@ -216,12 +224,15 @@ nsresult nsUniversalDetector::HandleData(const char* aBuf, PRUint32 aLen)
   case eHighbyte:
     for (i = 0; i < NUM_OF_CHARSET_PROBERS; i++)
     {
-      st = mCharSetProbers[i]->HandleData(aBuf, aLen);
-      if (st == eFoundIt) 
+      if (mCharSetProbers[i])
       {
-        mDone = PR_TRUE;
-        mDetectedCharset = mCharSetProbers[i]->GetCharSetName();
-        return NS_OK;
+        st = mCharSetProbers[i]->HandleData(aBuf, aLen);
+        if (st == eFoundIt) 
+        {
+          mDone = PR_TRUE;
+          mDetectedCharset = mCharSetProbers[i]->GetCharSetName();
+          return NS_OK;
+        }
       } 
     }
     break;
@@ -260,11 +271,14 @@ void nsUniversalDetector::DataEnd()
 
       for (PRInt32 i = 0; i < NUM_OF_CHARSET_PROBERS; i++)
       {
-        proberConfidence = mCharSetProbers[i]->GetConfidence();
-        if (proberConfidence > maxProberConfidence)
+        if (mCharSetProbers[i])
         {
-          maxProberConfidence = proberConfidence;
-          maxProber = i;
+          proberConfidence = mCharSetProbers[i]->GetConfidence();
+          if (proberConfidence > maxProberConfidence)
+          {
+            maxProberConfidence = proberConfidence;
+            maxProber = i;
+          }
         }
       }
       //do not report anything because we are not confident of it, that's in fact a negative answer

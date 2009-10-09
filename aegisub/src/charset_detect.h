@@ -38,7 +38,9 @@
 
 ///////////
 // Headers
+#include "../universalchardet/nscore.h"
 #include "../universalchardet/nsUniversalDetector.h"
+#include "../universalchardet/nsMBCSGroupProber.h"
 
 
 /// DOCME
@@ -54,6 +56,7 @@ private:
 	void Report(const char* aCharset);
 
 public:
+	CharSetDetect() : nsUniversalDetector(NS_FILTER_ALL) { };
 	wxString GetEncoding(wxString filename);
 
 	/// @brief DOCME

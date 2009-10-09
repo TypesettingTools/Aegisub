@@ -59,10 +59,7 @@ typedef struct
 
 class nsCodingStateMachine {
 public:
-  nsCodingStateMachine(SMModel* sm){
-          mCurrentState = eStart;
-          mModel = sm;
-        };
+  nsCodingStateMachine(const SMModel* sm) : mModel(sm) { mCurrentState = eStart; }
   nsSMState NextState(char c){
     //for each byte we get its class , if it is first byte, we also get byte length
     PRUint32 byteCls = GETCLASS(c);
@@ -76,33 +73,32 @@ public:
                                        mModel->stateTable);
     mCurrentBytePos++;
     return mCurrentState;
-  };
-  PRUint32  GetCurrentCharLen(void) {return mCurrentCharLen;};
-  void      Reset(void) {mCurrentState = eStart;};
-  const char * GetCodingStateMachine() {return mModel->name;};
+  }
+  PRUint32  GetCurrentCharLen(void) {return mCurrentCharLen;}
+  void      Reset(void) {mCurrentState = eStart;}
+  const char * GetCodingStateMachine() {return mModel->name;}
 
 protected:
   nsSMState mCurrentState;
   PRUint32 mCurrentCharLen;
   PRUint32 mCurrentBytePos;
 
-  SMModel *mModel;
+  const SMModel *mModel;
 };
 
-extern SMModel UTF8SMModel;
-extern SMModel Big5SMModel;
-extern SMModel EUCJPSMModel;
-extern SMModel EUCKRSMModel;
-extern SMModel EUCTWSMModel;
-extern SMModel GB18030SMModel;
-extern SMModel SJISSMModel;
-extern SMModel UCS2BESMModel;
+extern const SMModel UTF8SMModel;
+extern const SMModel Big5SMModel;
+extern const SMModel EUCJPSMModel;
+extern const SMModel EUCKRSMModel;
+extern const SMModel EUCTWSMModel;
+extern const SMModel GB18030SMModel;
+extern const SMModel SJISSMModel;
 
 
-extern SMModel HZSMModel;
-extern SMModel ISO2022CNSMModel;
-extern SMModel ISO2022JPSMModel;
-extern SMModel ISO2022KRSMModel;
+extern const SMModel HZSMModel;
+extern const SMModel ISO2022CNSMModel;
+extern const SMModel ISO2022JPSMModel;
+extern const SMModel ISO2022KRSMModel;
 
 #endif /* nsCodingStateMachine_h__ */
 
