@@ -46,13 +46,12 @@
 #define MAX_REL_THRESHOLD     1000
 
 //hiragana frequency category table
-extern const char jp2CharContext[83][83];
+extern const PRUint8 jp2CharContext[83][83];
 
 class JapaneseContextAnalysis
 {
 public:
-  JapaneseContextAnalysis() {Reset();};
-  virtual ~JapaneseContextAnalysis() {};
+  JapaneseContextAnalysis() {Reset();}
 
   void HandleData(const char* aBuf, PRUint32 aLen);
 

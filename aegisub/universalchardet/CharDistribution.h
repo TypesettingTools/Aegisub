@@ -45,11 +45,10 @@
 class CharDistributionAnalysis
 {
 public:
-  CharDistributionAnalysis() {Reset();};
-  virtual ~CharDistributionAnalysis() {};
+  CharDistributionAnalysis() {Reset();}
 
   //feed a block of data and do distribution analysis
-  void HandleData(const char* aBuf, PRUint32 aLen) {};
+  void HandleData(const char* aBuf, PRUint32 aLen) {}
   
   //Feed a character with known length
   void HandleOneChar(const char* aStr, PRUint32 aCharLen)
