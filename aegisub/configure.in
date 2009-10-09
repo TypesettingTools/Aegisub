@@ -680,12 +680,12 @@ else
   with_provider_ffmpegsource="no"
 fi
 
-BOOST_REQUIRE([boost_required_version])
-BOOST_FIND_HEADER([boost/format.hpp], [found_boost="no"; with_provider_ffmpegsource="no"])
+#BOOST_REQUIRE([boost_required_version])
+#BOOST_FIND_HEADER([boost/format.hpp], [found_boost="no"; with_provider_ffmpegsource="no"])
 
-if test "$found_boost" = "no"; then
-  AC_MSG_WARN([Boost is required for FFmpegSource support.])
-fi
+#if test "$found_boost" = "no"; then
+#  AC_MSG_WARN([Boost is required for FFmpegSource support.])
+#fi
 
 AM_CONDITIONAL([HAVE_PROVIDER_FFMPEGSOURCE], [test "$with_provider_ffmpegsource" = "yes"])
 AC_SUBST(LIBPOSTPROC_LIBS)
