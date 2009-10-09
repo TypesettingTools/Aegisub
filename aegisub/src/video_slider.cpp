@@ -407,6 +407,12 @@ void VideoSlider::OnKeyDown(wxKeyEvent &event) {
 		return;
 	}
 
+	// Forward other keys to video display
+	if (Display) {
+		Display->GetEventHandler()->ProcessEvent(event);
+		return;
+	}
+
 	event.Skip();
 }
 
