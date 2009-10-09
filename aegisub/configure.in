@@ -804,8 +804,9 @@ aegisub_save_LIBS="$LIBS"
 LIBS="$LUA_LDFLAGS"
 if test "$with_lua" != no; then
   AC_AGI_COMPILE([Lua 5.1 (auto4)], [lua], [$LUA_CFLAGS], [],[
+#include <lua.hpp>
+
 extern "C" {
-#include <lua.h>
 #include <lauxlib.h>
 }
 
