@@ -312,22 +312,23 @@ void FrameMain::OnMenuOpen (wxMenuEvent &event) {
 	// Video menu
 	else if (curMenu == videoMenu) {
 		bool state = VideoContext::Get()->IsLoaded();
+		bool attached = state && !detachedVideo;
 
 		// Set states
 		MenuBar->Enable(Menu_Video_JumpTo,state);
 		MenuBar->Enable(Menu_Subs_Snap_Video_To_Start,state);
 		MenuBar->Enable(Menu_Subs_Snap_Video_To_End,state);
-		MenuBar->Enable(Menu_View_Zoom,state);
-		MenuBar->Enable(Menu_View_Zoom_50,state);
-		MenuBar->Enable(Menu_View_Zoom_100,state);
-		MenuBar->Enable(Menu_View_Zoom_200,state);
+		MenuBar->Enable(Menu_View_Zoom,attached);
+		MenuBar->Enable(Menu_View_Zoom_50,attached);
+		MenuBar->Enable(Menu_View_Zoom_100,attached);
+		MenuBar->Enable(Menu_View_Zoom_200,attached);
 		MenuBar->Enable(Menu_File_Close_Video,state);
-		MenuBar->Enable(Menu_Video_AR,state);
-		MenuBar->Enable(Menu_Video_AR_Default,state);
-		MenuBar->Enable(Menu_Video_AR_Full,state);
-		MenuBar->Enable(Menu_Video_AR_Wide,state);
-		MenuBar->Enable(Menu_Video_AR_235,state);
-		MenuBar->Enable(Menu_Video_AR_Custom,state);
+		MenuBar->Enable(Menu_Video_AR,attached);
+		MenuBar->Enable(Menu_Video_AR_Default,attached);
+		MenuBar->Enable(Menu_Video_AR_Full,attached);
+		MenuBar->Enable(Menu_Video_AR_Wide,attached);
+		MenuBar->Enable(Menu_Video_AR_235,attached);
+		MenuBar->Enable(Menu_Video_AR_Custom,attached);
 		MenuBar->Enable(Menu_Video_Detach,state && !detachedVideo);
 		MenuBar->Enable(Menu_File_Save_VFR,VFR_Output.GetFrameRateType() == VFR);
 		MenuBar->Enable(Menu_File_Close_VFR,VFR_Output.GetFrameRateType() == VFR);

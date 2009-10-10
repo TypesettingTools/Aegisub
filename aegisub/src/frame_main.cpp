@@ -676,9 +676,9 @@ void FrameMain::UpdateToolbar() {
 	// Update
 	wxToolBar* toolbar = GetToolBar();
 	toolbar->FindById(Menu_Video_JumpTo)->Enable(isVideo);
-	toolbar->FindById(Menu_Video_Zoom_In)->Enable(isVideo);
-	toolbar->FindById(Menu_Video_Zoom_Out)->Enable(isVideo);
-	ZoomBox->Enable(isVideo);
+	toolbar->FindById(Menu_Video_Zoom_In)->Enable(isVideo && !detachedVideo);
+	toolbar->FindById(Menu_Video_Zoom_Out)->Enable(isVideo && !detachedVideo);
+	ZoomBox->Enable(isVideo && !detachedVideo);
 	toolbar->FindById(Menu_Subs_Snap_Start_To_Video)->Enable(isVideo && selRows > 0);
 	toolbar->FindById(Menu_Subs_Snap_End_To_Video)->Enable(isVideo && selRows > 0);
 	toolbar->FindById(Menu_Subs_Snap_Video_To_Start)->Enable(isVideo && selRows == 1);
@@ -1310,6 +1310,7 @@ void FrameMain::DetachVideo(bool detach) {
 			detachedVideo = NULL;
 		}
 	}
+	UpdateToolbar();
 }
 
 
