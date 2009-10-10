@@ -105,8 +105,6 @@ BEGIN_EVENT_TABLE(FrameMain, wxFrame)
 
 	EVT_CLOSE(FrameMain::OnCloseWindow)
 
-	EVT_KEY_DOWN(FrameMain::OnKeyDown)
-
 	EVT_MENU_OPEN(FrameMain::OnMenuOpen)
 	EVT_MENU_RANGE(Menu_File_Recent,Menu_File_Recent+99, FrameMain::OnOpenRecentSubs)
 	EVT_MENU_RANGE(Menu_Video_Recent,Menu_Video_Recent+99, FrameMain::OnOpenRecentVideo)
@@ -1782,18 +1780,6 @@ void FrameMain::OnAutoSave(wxTimerEvent &event) {
 void FrameMain::OnStatusClear(wxTimerEvent &event) {
 	SetStatusText(_T(""),1);
 }
-
-
-
-/// @brief Key down 
-/// @param event 
-///
-void FrameMain::OnKeyDown(wxKeyEvent &event) {
-	audioBox->audioDisplay->GetEventHandler()->ProcessEvent(event);
-	event.Skip();
-}
-
-
 
 /// @brief Next frame hotkey 
 /// @param event 

@@ -115,23 +115,9 @@ DialogDetachedVideo::~DialogDetachedVideo() {
 ///////////////
 // Event table
 BEGIN_EVENT_TABLE(DialogDetachedVideo,wxDialog)
-	EVT_KEY_DOWN(DialogDetachedVideo::OnKey)
 	EVT_CLOSE(DialogDetachedVideo::OnClose)
 	EVT_MOVE(DialogDetachedVideo::OnMove)
 END_EVENT_TABLE()
-
-
-
-/// @brief Key down 
-/// @param event 
-///
-void DialogDetachedVideo::OnKey(wxKeyEvent &event) {
-	// Send to parent... except that it doesn't work
-	event.Skip();
-	GetParent()->GetEventHandler()->ProcessEvent(event);
-}
-
-
 
 /// @brief Close window 
 /// @param event 

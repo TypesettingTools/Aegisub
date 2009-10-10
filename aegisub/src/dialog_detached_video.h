@@ -62,7 +62,6 @@ private:
 	/// DOCME
 	FrameMain *parent;
 
-	void OnKey(wxKeyEvent &event);
 	void OnClose(wxCloseEvent &event);
 	void OnMove(wxMoveEvent &event);
 
