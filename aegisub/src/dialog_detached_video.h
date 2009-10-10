@@ -34,18 +34,12 @@
 /// @ingroup main_ui
 ///
 
-
-
-
 #ifndef AGI_PRE
 #include <wx/dialog.h>
 #endif
 
-//////////////
-// Prototypes
 class VideoBox;
 class FrameMain;
-
 
 
 /// DOCME
@@ -71,5 +65,3 @@ public:
 
 	DECLARE_EVENT_TABLE()
 };
-
-

@@ -34,9 +34,6 @@
 /// @ingroup main_ui
 ///
 
-
-///////////
-// Headers
 #include "config.h"
 
 #ifndef AGI_PRE
@@ -52,15 +49,12 @@
 #include "video_slider.h"
 
 
-/// @brief Constructor 
-/// @param par                
-/// @param initialDisplaySize 
-///
+/// @brief Constructor
+/// @param par FrameMain this was spawned from
+/// @param initialDisplaySize Initial size of the window
 DialogDetachedVideo::DialogDetachedVideo(FrameMain *par, const wxSize &initialDisplaySize)
-//: wxFrame(par,-1,_("Detached Video"))
 : wxDialog(par,-1,_T("Detached Video"),wxDefaultPosition,wxSize(400,300),wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER | wxMAXIMIZE_BOX | wxMINIMIZE_BOX | wxWANTS_CHARS)
 {
-	// Set parent
 	parent = par;
 
 	// Set up window
@@ -100,29 +94,27 @@ DialogDetachedVideo::DialogDetachedVideo(FrameMain *par, const wxSize &initialDi
 	parent->SetDisplayMode(0,-1);
 	Options.SetBool(_T("Detached video"),true);
 	Options.Save();
+
+	// Copy the main accelerator table to this dialog
+	wxAcceleratorTable *table = par->GetAcceleratorTable();
+	SetAcceleratorTable(*table);
 }
 
-
-
-/// @brief Destructor 
-///
+/// @brief Destructor
 DialogDetachedVideo::~DialogDetachedVideo() {
 	Options.SetBool(_T("Detached video maximized"),IsMaximized());
 	Options.Save();
 }
 
-
-///////////////
 // Event table
 BEGIN_EVENT_TABLE(DialogDetachedVideo,wxDialog)
 	EVT_CLOSE(DialogDetachedVideo::OnClose)
 	EVT_MOVE(DialogDetachedVideo::OnMove)
 END_EVENT_TABLE()
 
-/// @brief Close window 
-/// @param event 
-///
-void DialogDetachedVideo::OnClose(wxCloseEvent &event) {
+/// @brief Close window
+/// @param event UNUSED
+void DialogDetachedVideo::OnClose(wxCloseEvent &WXUNUSED(event)) {
 	FrameMain *par = parent;
 	Options.SetBool(_T("Detached video"),false);
 	Destroy();
@@ -130,15 +122,10 @@ void DialogDetachedVideo::OnClose(wxCloseEvent &event) {
 	par->SetDisplayMode(-1,-1);
 }
 
-
-
 /// @brief Move window 
 /// @param event 
-///
 void DialogDetachedVideo::OnMove(wxMoveEvent &event) {
 	wxPoint pos = event.GetPosition();
 	Options.SetInt(_T("Detached video last x"),pos.x);
 	Options.SetInt(_T("Detached video last y"),pos.y);
 }
-
-
