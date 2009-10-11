@@ -91,7 +91,7 @@ DialogDetachedVideo::DialogDetachedVideo(FrameMain *par, const wxSize &initialDi
 	SetMinSize(wxSize(1,1));
 
 	// Update
-	parent->SetDisplayMode(0,-1);
+	parent->SetDisplayMode(0, -1);
 	Options.SetBool(_T("Detached video"),true);
 	Options.Save();
 
@@ -119,7 +119,7 @@ void DialogDetachedVideo::OnClose(wxCloseEvent &WXUNUSED(event)) {
 	Options.SetBool(_T("Detached video"),false);
 	Destroy();
 	par->detachedVideo = NULL;
-	par->SetDisplayMode(-1,-1);
+	par->SetDisplayMode(1,-1);
 }
 
 /// @brief Move window 
