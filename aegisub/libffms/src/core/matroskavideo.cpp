@@ -47,17 +47,20 @@ FFMatroskaVideo::FFMatroskaVideo(const char *SourceFile, int Track,
 	Frames = (*Index)[VideoTrack];
 
 	MC.ST.fp = ffms_fopen(SourceFile, "rb");
-	if (MC.ST.fp == NULL)
-		throw FFMS_Exception(FFMS_ERROR_PARSER, FFMS_ERROR_FILE_READ,
-			boost::format("Can't open '%1%': %2%") % SourceFile % strerror(errno));
+	if (MC.ST.fp == NULL) {
+		std::ostringstream buf;
+		buf << "Can't open '" << SourceFile << "': " << strerror(errno);
+		throw FFMS_Exception(FFMS_ERROR_PARSER, FFMS_ERROR_FILE_READ, buf.str());
+	}
 
 	setvbuf(MC.ST.fp, NULL, _IOFBF, CACHESIZE);
 
 	MF = mkv_OpenEx(&MC.ST.base, 0, 0, ErrorMessage, sizeof(ErrorMessage));
 	if (MF == NULL) {
 		fclose(MC.ST.fp);
-		throw FFMS_Exception(FFMS_ERROR_PARSER, FFMS_ERROR_FILE_READ,
-			boost::format("Can't parse Matroska file: %1%") % ErrorMessage);
+		std::ostringstream buf;
+		buf << "Can't parse Matroska file: " << ErrorMessage;
+		throw FFMS_Exception(FFMS_ERROR_PARSER, FFMS_ERROR_FILE_READ, buf.str());
 	}
 
 	TI = mkv_GetTrackInfo(MF, VideoTrack);
@@ -66,8 +69,9 @@ FFMatroskaVideo::FFMatroskaVideo(const char *SourceFile, int Track,
 		CS = cs_Create(MF, VideoTrack, ErrorMessage, sizeof(ErrorMessage));
 		if (CS == NULL) {
 			Free(false);
-			throw FFMS_Exception(FFMS_ERROR_CODEC, FFMS_ERROR_UNSUPPORTED,
-				boost::format("Can't create decompressor: %1%") % ErrorMessage);
+			std::ostringstream buf;
+			buf << "Can't create decompressor: " << ErrorMessage;
+			throw FFMS_Exception(FFMS_ERROR_PARSER, FFMS_ERROR_FILE_READ, buf.str());
 		}
 	}
 

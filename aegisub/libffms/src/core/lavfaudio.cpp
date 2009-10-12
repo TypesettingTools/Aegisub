@@ -20,6 +20,8 @@
 
 #include "audiosource.h"
 
+
+
 void FFLAVFAudio::Free(bool CloseCodec) {
 	if (CloseCodec)
 		avcodec_close(CodecContext);
@@ -124,11 +126,14 @@ void FFLAVFAudio::GetAudio(void *Buf, int64_t Start, int64_t Count) {
 		return;
 
 	size_t CurrentAudioBlock;
-	// Is seeking required to decode the requested samples?
-//	if (!(CurrentSample >= Start && CurrentSample <= CacheEnd)) {
 	if (CurrentSample != CacheEnd) {
 		PreDecBlocks = 15;
 		CurrentAudioBlock = FFMAX((int64_t)Frames.FindClosestAudioKeyFrame(CacheEnd) - PreDecBlocks - 20, (int64_t)0);
+
+		if (CurrentAudioBlock <= PreDecBlocks) {
+			CurrentAudioBlock = 0;
+			PreDecBlocks = 0;
+		}
 
 		// Did the seeking fail?
 		if (av_seek_frame(FormatContext, AudioTrack, Frames[CurrentAudioBlock].DTS, AVSEEK_FLAG_BACKWARD) < 0)
@@ -136,30 +141,33 @@ void FFLAVFAudio::GetAudio(void *Buf, int64_t Start, int64_t Count) {
 
 		avcodec_flush_buffers(CodecContext);
 
-		AVPacket Packet;
-		InitNullPacket(Packet);
+		// Pretend we got to the first audio frame when PreDecBlocks = 0
+		if (PreDecBlocks > 0) {
+			AVPacket Packet;
+			InitNullPacket(Packet);
 
-		// Establish where we actually are
-		// Trigger on packet dts difference since groups can otherwise be indistinguishable
-		int64_t LastDTS = - 1;
-		while (av_read_frame(FormatContext, &Packet) >= 0) {
-			if (Packet.stream_index == AudioTrack) {
-				if (LastDTS < 0) {
-					LastDTS = Packet.dts;
-				} else if (LastDTS != Packet.dts) {
-					for (size_t i = 0; i < Frames.size(); i++)
-						if (Frames[i].DTS == Packet.dts) {
-							// The current match was consumed
-							CurrentAudioBlock = i + 1;
-							break;
-						}
+			// Establish where we actually are
+			// Trigger on packet dts difference since groups can otherwise be indistinguishable
+			int64_t LastDTS = - 1;
+			while (av_read_frame(FormatContext, &Packet) >= 0) {
+				if (Packet.stream_index == AudioTrack) {
+					if (LastDTS < 0) {
+						LastDTS = Packet.dts;
+					} else if (LastDTS != Packet.dts) {
+						for (size_t i = 0; i < Frames.size(); i++)
+							if (Frames[i].DTS == Packet.dts) {
+								// The current match was consumed
+								CurrentAudioBlock = i + 1;
+								break;
+							}
 
-					av_free_packet(&Packet);
-					break;
+						av_free_packet(&Packet);
+						break;
+					}
 				}
-			}
 
-			av_free_packet(&Packet);
+				av_free_packet(&Packet);
+			}
 		}
 	} else {
 		CurrentAudioBlock = Frames.FindClosestAudioKeyFrame(CurrentSample);

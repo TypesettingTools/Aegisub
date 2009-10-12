@@ -32,22 +32,25 @@ FFMatroskaIndexer::FFMatroskaIndexer(const char *Filename) : FFMS_Indexer(Filena
 
 	InitStdIoStream(&MC.ST);
 	MC.ST.fp = ffms_fopen(SourceFile, "rb");
-	if (MC.ST.fp == NULL)
-		throw FFMS_Exception(FFMS_ERROR_PARSER, FFMS_ERROR_FILE_READ,
-			boost::format("Can't open '%1%': %2%") % SourceFile % strerror(errno));
+	if (MC.ST.fp == NULL) {
+		std::ostringstream buf;
+		buf << "Can't open '" << SourceFile << "': " << strerror(errno);
+		throw FFMS_Exception(FFMS_ERROR_PARSER, FFMS_ERROR_FILE_READ, buf.str());
+	}
 
 	setvbuf(MC.ST.fp, NULL, _IOFBF, CACHESIZE);
 
 	MF = mkv_OpenEx(&MC.ST.base, 0, 0, ErrorMessage, sizeof(ErrorMessage));
 	if (MF == NULL) {
 		fclose(MC.ST.fp);
-		throw FFMS_Exception(FFMS_ERROR_PARSER, FFMS_ERROR_FILE_READ,
-			boost::format("Can't parse Matroska file: %1%") % ErrorMessage);
+		std::ostringstream buf;
+		buf << "Can't parse Matroska file: " << ErrorMessage;
+		throw FFMS_Exception(FFMS_ERROR_PARSER, FFMS_ERROR_FILE_READ, buf.str());
 	}
 
 	for (unsigned int i = 0; i < mkv_GetNumTracks(MF); i++) {
 		TrackInfo *TI = mkv_GetTrackInfo(MF, i);
-		Codec[i] = avcodec_find_decoder(MatroskaToFFCodecID(TI->CodecID, TI->CodecPrivate));
+		Codec[i] = avcodec_find_decoder(MatroskaToFFCodecID(TI->CodecID, TI->CodecPrivate, 0, TI->AV.Audio.BitDepth));
 	}
 }
 
@@ -82,9 +85,11 @@ FFMS_Index *FFMatroskaIndexer::DoIndexing() {
 
 			if (TI->CompEnabled) {
 				VideoContexts[i].CS = cs_Create(MF, i, ErrorMessage, sizeof(ErrorMessage));
-				if (VideoContexts[i].CS == NULL)
-					throw FFMS_Exception(FFMS_ERROR_CODEC, FFMS_ERROR_UNSUPPORTED,
-						boost::format("Can't create decompressor: %1%") % ErrorMessage);
+				if (VideoContexts[i].CS == NULL) {
+					std::ostringstream buf;
+					buf << "Can't create decompressor: " << ErrorMessage;
+					throw FFMS_Exception(FFMS_ERROR_PARSER, FFMS_ERROR_FILE_READ, buf.str());
+				}
 			}
 
 			VideoContexts[i].CodecContext = CodecContext;
@@ -93,8 +98,7 @@ FFMS_Index *FFMatroskaIndexer::DoIndexing() {
 
 		if (IndexMask & (1 << i) && TI->Type == TT_AUDIO) {
 			AVCodecContext *AudioCodecContext = avcodec_alloc_context();
-			AudioCodecContext->extradata = (uint8_t *)TI->CodecPrivate;
-			AudioCodecContext->extradata_size = TI->CodecPrivateSize;
+			InitializeCodecContextFromMatroskaTrackInfo(TI, AudioCodecContext);
 			AudioContexts[i].CodecContext = AudioCodecContext;
 
 			if (TI->CompEnabled) {
@@ -102,8 +106,9 @@ FFMS_Index *FFMatroskaIndexer::DoIndexing() {
 				if (AudioContexts[i].CS == NULL) {
 					av_freep(&AudioCodecContext);
 					AudioContexts[i].CodecContext = NULL;
-					throw FFMS_Exception(FFMS_ERROR_CODEC, FFMS_ERROR_UNSUPPORTED,
-						boost::format("Can't create decompressor: %1%") % ErrorMessage);
+					std::ostringstream buf;
+					buf << "Can't create decompressor: " << ErrorMessage;
+					throw FFMS_Exception(FFMS_ERROR_PARSER, FFMS_ERROR_FILE_READ, buf.str());
 				}
 			}
 

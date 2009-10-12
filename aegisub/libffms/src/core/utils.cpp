@@ -54,9 +54,6 @@ FFMS_Exception::FFMS_Exception(int ErrorType, int SubType, const char *Message) 
 FFMS_Exception::FFMS_Exception(int ErrorType, int SubType, const std::string &Message) : _ErrorType(ErrorType), _SubType(SubType), _Message(Message) {
 }
 
-FFMS_Exception::FFMS_Exception(int ErrorType, int SubType, const boost::format &Message) : _ErrorType(ErrorType), _SubType(SubType), _Message(Message.str()) {
-}
-
 FFMS_Exception::~FFMS_Exception() throw () {
 }
 
@@ -137,9 +134,11 @@ void ReadFrame(uint64_t FilePos, unsigned int &FrameSize, CompressedStream *CS, 
 
 		for (;;) {
 			int ReadBytes = cs_ReadData(CS, Context.CSBuffer, sizeof(Context.CSBuffer));
-			if (ReadBytes < 0)
-				throw FFMS_Exception(FFMS_ERROR_PARSER, FFMS_ERROR_FILE_READ,
-					boost::format("Error decompressing data: %1%") % cs_GetLastError(CS));
+			if (ReadBytes < 0) {
+				std::ostringstream buf;
+				buf << "Error decompressing data: " << cs_GetLastError(CS);
+				throw FFMS_Exception(FFMS_ERROR_PARSER, FFMS_ERROR_FILE_READ, buf.str());
+			}
 
 			if (ReadBytes == 0) {
 				FrameSize = DecompressedFrameSize;
@@ -160,9 +159,11 @@ void ReadFrame(uint64_t FilePos, unsigned int &FrameSize, CompressedStream *CS, 
 			DecompressedFrameSize += ReadBytes;
 		}
 	} else {
-		if (fseeko(Context.ST.fp, FilePos, SEEK_SET))
-			throw FFMS_Exception(FFMS_ERROR_PARSER, FFMS_ERROR_SEEKING,
-				boost::format("fseek(): %1%") % strerror(errno));
+		if (fseeko(Context.ST.fp, FilePos, SEEK_SET)) {
+			std::ostringstream buf;
+			buf << "fseek(): " << strerror(errno);
+			throw FFMS_Exception(FFMS_ERROR_PARSER, FFMS_ERROR_SEEKING, buf.str());
+		}
 
 		if (Context.BufferSize < FrameSize) {
 			Context.BufferSize = FrameSize;
@@ -179,8 +180,9 @@ void ReadFrame(uint64_t FilePos, unsigned int &FrameSize, CompressedStream *CS, 
 					throw FFMS_Exception(FFMS_ERROR_PARSER, FFMS_ERROR_FILE_READ,
 						"Unexpected EOF while reading frame");
 				} else {
-					throw FFMS_Exception(FFMS_ERROR_PARSER, FFMS_ERROR_SEEKING,
-						boost::format("Error reading frame: %1%") % strerror(errno));
+					std::ostringstream buf;
+					buf << "Error reading frame: " << strerror(errno);
+					throw FFMS_Exception(FFMS_ERROR_PARSER, FFMS_ERROR_SEEKING, buf.str());
 				}
 			} else {
 				throw FFMS_Exception(FFMS_ERROR_PARSER, FFMS_ERROR_FILE_READ,
@@ -202,7 +204,7 @@ void InitNullPacket(AVPacket &pkt) {
 
 bool IsNVOP(AVPacket &pkt) {
 	const uint8_t MPEG4NVOP[] = { 0x00, 0x00, 0x01, 0xB6 };
-	return pkt.size == 7 && !memcmp(pkt.data, MPEG4NVOP, 4);
+	return (pkt.size >= 4 && pkt.size <= 8) && !memcmp(pkt.data, MPEG4NVOP, 4);
 }
 
 void FillAP(FFMS_AudioProperties &AP, AVCodecContext *CTX, FFMS_Track &Frames) {
@@ -454,9 +456,11 @@ CComPtr<IMMContainer> HaaliOpenFile(const char *SourceFile, enum FFMS_Sources So
 #endif
 
 void LAVFOpenFile(const char *SourceFile, AVFormatContext *&FormatContext) {
-	if (av_open_input_file(&FormatContext, SourceFile, NULL, 0, NULL) != 0)
-		throw FFMS_Exception(FFMS_ERROR_PARSER, FFMS_ERROR_FILE_READ,
-			boost::format("Couldn't open '%1'") % SourceFile);
+	if (av_open_input_file(&FormatContext, SourceFile, NULL, 0, NULL) != 0) {
+		std::ostringstream buf;
+		buf << "Couldn't open '" << SourceFile << "'";
+		throw FFMS_Exception(FFMS_ERROR_PARSER, FFMS_ERROR_FILE_READ, buf.str());
+	}
 	
 	if (av_find_stream_info(FormatContext) < 0) {
 		av_close_input_file(FormatContext);

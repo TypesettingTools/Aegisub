@@ -28,6 +28,7 @@ extern "C" {
 
 #include <vector>
 #include <list>
+#include <sstream>
 #include <memory>
 #include "indexing.h"
 #include "utils.h"

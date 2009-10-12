@@ -22,9 +22,9 @@
 #define UTILS_H
 
 #include <vector>
+#include <sstream>
 #include <fstream>
 #include <cstdio>
-#include <boost/format.hpp>
 #include "ffms.h"
 #include "matroskaparser.h"
 
@@ -78,7 +78,6 @@ private:
 public:
 	FFMS_Exception(int ErrorType, int SubType, const char *Message = "");
 	FFMS_Exception(int ErrorType, int SubType, const std::string &Message);
-	FFMS_Exception(int ErrorType, int SubType, const boost::format &Message);
 	~FFMS_Exception() throw ();
 	const std::string &GetErrorMessage() const;
 	int CopyOut(FFMS_ErrorInfo *ErrorInfo) const;

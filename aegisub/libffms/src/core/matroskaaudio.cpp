@@ -42,17 +42,20 @@ FFMatroskaAudio::FFMatroskaAudio(const char *SourceFile, int Track, FFMS_Index *
 	Frames = (*Index)[Track];
 
 	MC.ST.fp = ffms_fopen(SourceFile, "rb");
-	if (MC.ST.fp == NULL)
-		throw FFMS_Exception(FFMS_ERROR_PARSER, FFMS_ERROR_FILE_READ,
-			boost::format("Can't open '%1%': %2%") % SourceFile % strerror(errno));
+	if (MC.ST.fp == NULL) {
+		std::ostringstream buf;
+		buf << "Can't open '" << SourceFile << "': " << strerror(errno);
+		throw FFMS_Exception(FFMS_ERROR_PARSER, FFMS_ERROR_FILE_READ, buf.str());
+	}
 
 	setvbuf(MC.ST.fp, NULL, _IOFBF, CACHESIZE);
 
 	MF = mkv_OpenEx(&MC.ST.base, 0, 0, ErrorMessage, sizeof(ErrorMessage));
 	if (MF == NULL) {
 		fclose(MC.ST.fp);
-		throw FFMS_Exception(FFMS_ERROR_PARSER, FFMS_ERROR_FILE_READ,
-			boost::format("Can't parse Matroska file: %1%") % ErrorMessage);
+		std::ostringstream buf;
+		buf << "Can't parse Matroska file: " << ErrorMessage;
+		throw FFMS_Exception(FFMS_ERROR_PARSER, FFMS_ERROR_FILE_READ, buf.str());
 	}
 
 
@@ -62,14 +65,15 @@ FFMatroskaAudio::FFMatroskaAudio(const char *SourceFile, int Track, FFMS_Index *
 		CS = cs_Create(MF, Track, ErrorMessage, sizeof(ErrorMessage));
 		if (CS == NULL) {
 			Free(false);
-			throw FFMS_Exception(FFMS_ERROR_CODEC, FFMS_ERROR_UNSUPPORTED,
-				boost::format("Can't create decompressor: %1%") % ErrorMessage);
+			std::ostringstream buf;
+			buf << "Can't create decompressor: " << ErrorMessage;
+			throw FFMS_Exception(FFMS_ERROR_PARSER, FFMS_ERROR_FILE_READ, buf.str());
 		}
 	}
 
 	CodecContext = avcodec_alloc_context();
 
-	Codec = avcodec_find_decoder(MatroskaToFFCodecID(TI->CodecID, TI->CodecPrivate));
+	Codec = avcodec_find_decoder(MatroskaToFFCodecID(TI->CodecID, TI->CodecPrivate, 0, TI->AV.Audio.BitDepth));
 	if (Codec == NULL)
 		throw FFMS_Exception(FFMS_ERROR_DECODING, FFMS_ERROR_CODEC,
 			"Audio codec not found");
@@ -112,11 +116,15 @@ void FFMatroskaAudio::GetAudio(void *Buf, int64_t Start, int64_t Count) {
 	if (CacheEnd == Start + Count)
 		return;
 
-	// Is seeking required to decode the requested samples?
-//	if (!(CurrentSample >= Start && CurrentSample <= CacheEnd)) {
 	if (CurrentSample != CacheEnd) {
 		PreDecBlocks = 15;
-		PacketNumber = FFMAX((int64_t)Frames.FindClosestAudioKeyFrame(CacheEnd) - PreDecBlocks, (int64_t)0);;
+		PacketNumber = FFMAX((int64_t)Frames.FindClosestAudioKeyFrame(CacheEnd) - PreDecBlocks, (int64_t)0);
+		
+		if (PacketNumber <= PreDecBlocks) {
+			PacketNumber = 0;
+			PreDecBlocks = 0;
+		}
+
 		avcodec_flush_buffers(CodecContext);
 	} 
 

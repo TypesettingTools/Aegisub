@@ -32,6 +32,7 @@ extern "C" {
 #include "ffmscompat.h"
 
 #include <vector>
+#include <sstream>
 #include "indexing.h"
 #include "utils.h"
 #include "ffms.h"

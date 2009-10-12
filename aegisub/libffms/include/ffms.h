@@ -22,7 +22,7 @@
 #define FFMS_H
 
 // Version format: major - minor - micro - bump
-#define FFMS_VERSION ((2 << 24) | (11 << 16)| (0 << 8) | 5)
+#define FFMS_VERSION ((2 << 24) | (13 << 16)| (0 << 8) | 1)
 
 #include <stdint.h>
 
@@ -195,7 +195,7 @@ struct FFMS_TrackTimeBase {
 	int64_t Den;
 };
 
-#define FFMS_FRAMEINFO_COMMON int64_t DTS; int RepeatPict; bool KeyFrame;
+#define FFMS_FRAMEINFO_COMMON int64_t DTS; int RepeatPict; int KeyFrame;
 
 struct FFMS_FrameInfo {
 	FFMS_FRAMEINFO_COMMON
