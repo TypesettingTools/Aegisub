@@ -127,7 +127,7 @@ FrameMain::FrameMain (wxArrayString args)
 	AegisubApp::Get()->frame = this;
 
 	StartupLog(_T("Create log window"));
-	LogWindow = new wxLogWindow(this, _T("Aegisub log window"), false);
+	LogWindow = new wxLogWindow(this, _T("Aegisub log window"), false, false);
 
 	// Initialize flags
 	HasSelection = false;
