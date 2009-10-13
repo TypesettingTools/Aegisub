@@ -103,8 +103,6 @@ BEGIN_EVENT_TABLE(VideoDisplay, wxGLCanvas)
 	EVT_MENU(VIDEO_MENU_SAVE_SNAPSHOT_RAW,VideoDisplay::OnSaveSnapshotRaw)
 END_EVENT_TABLE()
 
-
-
 /// Attribute list for gl canvases; set the canvases to doublebuffered rgba with an 8 bit stencil buffer
 int attribList[] = { WX_GL_RGBA , WX_GL_DOUBLEBUFFER, WX_GL_STENCIL_SIZE, 8, 0 };
 
@@ -129,10 +127,10 @@ VideoDisplay::VideoDisplay(VideoBox *box, VideoSlider *ControlSlider, wxTextCtrl
 , SubsPosition(SubsPosition)
 , PositionDisplay(PositionDisplay)
 , visual(NULL)
+, videoOut(new VideoOutGL())
 , box(box)
 , freeSize(false)
 {
-	videoOut = new VideoOutGL();
 	SetCursor(wxNullCursor);
 }
 
@@ -192,13 +190,10 @@ void VideoDisplay::SetFrame(int frameNumber) {
 	// Set the text box for time relative to active subtitle line
 	SubsPosition->SetValue(wxString::Format(_T("%s%ims; %s%ims"), startSign.c_str(), startOff, endSign.c_str(), endOff));
 
-	if (IsShownOnScreen()) {
-		// Update the visual typesetting tools
-		if (visual) visual->Refresh();
+	if (IsShownOnScreen() && visual) visual->Refresh();
 
-		// Render the new frame
-		Render(frameNumber);
-	}
+	// Render the new frame
+	Render(frameNumber);
 
 	currentFrame = frameNumber;
 }
@@ -320,8 +315,6 @@ catch (...) {
 		_T("No further error message given."));
 	VideoContext::Get()->Reset();
 }
-
-
 
 /// @brief Draw the appropriate overscan masks for the current aspect ratio
 void VideoDisplay::DrawTVEffects() {
@@ -528,8 +521,6 @@ void VideoDisplay::OnCopyToClipboard(wxCommandEvent &event) {
 	}
 }
 
-
-
 /// @brief Copy the currently display frame to the clipboard, without subtitles
 /// @param event Unused
 void VideoDisplay::OnCopyToClipboardRaw(wxCommandEvent &event) {
@@ -539,23 +530,17 @@ void VideoDisplay::OnCopyToClipboardRaw(wxCommandEvent &event) {
 	}
 }
 
-
-
 /// @brief Save the currently display frame to a file, with subtitles
 /// @param event Unused
 void VideoDisplay::OnSaveSnapshot(wxCommandEvent &event) {
 	VideoContext::Get()->SaveSnapshot(false);
 }
 
-
-
 /// @brief Save the currently display frame to a file, without subtitles
 /// @param event Unused
 void VideoDisplay::OnSaveSnapshotRaw(wxCommandEvent &event) {
 	VideoContext::Get()->SaveSnapshot(true);
 }
-
-
 
 /// @brief Copy coordinates of the mouse to the clipboard
 /// @param event Unused
@@ -570,8 +555,6 @@ void VideoDisplay::OnCopyCoords(wxCommandEvent &event) {
 	}
 }
 
-
-
 /// @brief Convert mouse coordinates relative to the display to coordinates relative to the video
 /// @param x X coordinate
 /// @param y Y coordinate
@@ -585,8 +568,6 @@ void VideoDisplay::ConvertMouseCoords(int &x,int &y) {
 	x = (x-dx1)*w/dx2;
 	y = (y-dy1)*h/dy2;
 }
-
-
 
 /// @brief Set the current visual typesetting mode
 /// @param mode The new mode
@@ -621,6 +602,7 @@ void VideoDisplay::SetVisualMode(int mode, bool render) {
 
 		// Update size as the new typesetting tool may have changed the subtoolbar size
 		UpdateSize();
+		ControlSlider->Refresh(false);
 	}
 	if (render) Render();
 }

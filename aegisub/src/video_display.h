@@ -39,6 +39,7 @@
 #include <wx/glcanvas.h>
 #include <wx/combobox.h>
 #include <wx/textctrl.h>
+#include <memory>
 #endif
 
 
@@ -124,7 +125,7 @@ private:
 	VisualTool *visual;
 
 	/// The video renderer
-	VideoOutGL *videoOut;
+	std::auto_ptr<VideoOutGL> videoOut;
 
 public:
 	/// The VideoBox this display is contained in
