@@ -110,6 +110,7 @@ DialogDetachedVideo::~DialogDetachedVideo() {
 BEGIN_EVENT_TABLE(DialogDetachedVideo,wxDialog)
 	EVT_CLOSE(DialogDetachedVideo::OnClose)
 	EVT_MOVE(DialogDetachedVideo::OnMove)
+	EVT_ICONIZE(DialogDetachedVideo::OnMinimize)
 END_EVENT_TABLE()
 
 /// @brief Close window
@@ -128,4 +129,15 @@ void DialogDetachedVideo::OnMove(wxMoveEvent &event) {
 	wxPoint pos = event.GetPosition();
 	Options.SetInt(_T("Detached video last x"),pos.x);
 	Options.SetInt(_T("Detached video last y"),pos.y);
+}
+
+/// @brief Minimize event handler
+/// @param event
+void DialogDetachedVideo::OnMinimize(wxIconizeEvent &event) {
+	if (event.IsIconized()) {
+		// Force the video display to repaint as otherwise the last displayed
+		// frame stays visible even though the dialog is minimized
+		Hide();
+		Show();
+	}
 }

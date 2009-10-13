@@ -58,6 +58,7 @@ private:
 
 	void OnClose(wxCloseEvent &event);
 	void OnMove(wxMoveEvent &event);
+	void OnMinimize(wxIconizeEvent &event);
 
 public:
 	DialogDetachedVideo(FrameMain *parent, const wxSize &initialDisplaySize);
