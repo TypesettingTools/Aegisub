@@ -116,10 +116,6 @@ void VideoOutGL::InitTextures(int width, int height, GLenum format, int bpp) {
 	if (width == frameWidth && height == frameHeight && format == frameFormat) return;
 	wxLogDebug("VideoOutGL::InitTextures: Video size: %dx%d\n", width, height);
 
-	frameWidth  = width;
-	frameHeight = height;
-	frameFormat = format;
-
 	// If nessesary, detect what the user's OpenGL supports
 	if (maxTextureSize == 0) {
 		// Test for supported internalformats
@@ -161,8 +157,8 @@ void VideoOutGL::InitTextures(int width, int height, GLenum format, int bpp) {
 
 		int sourceH = maxTextureSize;
 		// If the last row doesn't need a full texture, shrink it to the smallest one possible
-		if (i == textureRows - 1 && frameHeight % maxTextureSize > 0) {
-			sourceH = frameHeight % maxTextureSize;
+		if (i == textureRows - 1 && height % maxTextureSize > 0) {
+			sourceH = height % maxTextureSize;
 		}
 		for (int j = 0; j < textureCols; j++) {
 			TextureInfo& ti = textureList[i * textureCols + j];
@@ -174,8 +170,8 @@ void VideoOutGL::InitTextures(int width, int height, GLenum format, int bpp) {
 
 			ti.sourceW = maxTextureSize;
 			// If the last column doesn't need a full texture, shrink it to the smallest one possible
-			if (j == textureCols - 1 && frameWidth % maxTextureSize > 0) {
-				ti.sourceW = frameWidth % maxTextureSize;
+			if (j == textureCols - 1 && width % maxTextureSize > 0) {
+				ti.sourceW = width % maxTextureSize;
 			}
 
 			int w = SmallestPowerOf2(ti.sourceW);
@@ -186,11 +182,11 @@ void VideoOutGL::InitTextures(int width, int height, GLenum format, int bpp) {
 			ti.texH = float(ti.sourceH) / h;
 
 			// destW/H is the percent of the output which this texture covers
-			ti.destW = float(ti.sourceW) / frameWidth;
-			ti.destH = float(ti.sourceH) / frameHeight;
+			ti.destW = float(ti.sourceW) / width;
+			ti.destH = float(ti.sourceH) / height;
 
 			ti.textureID = textureIdList[i * textureCols + j];
-			ti.dataOffset = sourceY * frameWidth * bpp + sourceX * bpp;
+			ti.dataOffset = sourceY * width * bpp + sourceX * bpp;
 
 			// Actually create the texture and set the scaling mode
 			glBindTexture(GL_TEXTURE_2D, ti.textureID);
@@ -202,17 +198,25 @@ void VideoOutGL::InitTextures(int width, int height, GLenum format, int bpp) {
 			if (GLenum err = glGetError()) throw VideoOutOpenGLException(L"glTexParameteri(GL_TEXTURE_MIN_FILTER)", err);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 			if (GLenum err = glGetError()) throw VideoOutOpenGLException(L"glTexParameteri(GL_TEXTURE_MAG_FILTER)", err);
+
+			// GL_CLAMP_TO_EDGE was added in OpenGL 1.2, and W7's emulation only supports 1.1
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+			if (glGetError()) glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 			if (GLenum err = glGetError()) throw VideoOutOpenGLException(L"glTexParameteri(GL_TEXTURE_WRAP_S)", err);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+			if (glGetError()) glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 			if (GLenum err = glGetError()) throw VideoOutOpenGLException(L"glTexParameteri(GL_TEXTURE_WRAP_T)", err);
 
 			destX += ti.destW;
 			sourceX += ti.sourceW;
 		}
-		destY += float(sourceH) / frameHeight;
+		destY += float(sourceH) / height;
 		sourceY += sourceH;
 	}
+
+	frameWidth  = width;
+	frameHeight = height;
+	frameFormat = format;
 }
 
 void VideoOutGL::DisplayFrame(AegiVideoFrame frame, int sw, int sh) {
