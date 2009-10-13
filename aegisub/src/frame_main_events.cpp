@@ -184,7 +184,6 @@ BEGIN_EVENT_TABLE(FrameMain, wxFrame)
 	EVT_MENU(Menu_Tools_Timing_Processor, FrameMain::OnOpenTimingProcessor)
 	EVT_MENU(Menu_Tools_Kanji_Timer, FrameMain::OnOpenKanjiTimer)
 	EVT_MENU(Menu_Tools_Options, FrameMain::OnOpenOptions)
-	EVT_MENU(Menu_Tools_Log, FrameMain::OnOpenLog)
 	EVT_MENU(Menu_Tools_ASSDraw, FrameMain::OnOpenASSDraw)
 	
 	EVT_MENU(Menu_Subs_Snap_Start_To_Video, FrameMain::OnSnapSubsStartToVid)
@@ -1195,15 +1194,6 @@ void FrameMain::OnOpenOptions (wxCommandEvent &event) {
 	catch (const wxChar *e) {
 		wxLogError(e);
 	}
-}
-
-
-
-/// @brief Open log window 
-/// @param event 
-///
-void FrameMain::OnOpenLog (wxCommandEvent &event) {
-	LogWindow->Show(true);
 }
 
 

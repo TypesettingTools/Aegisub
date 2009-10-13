@@ -172,9 +172,6 @@ private:
 	/// DOCME
 	wxWindow *PreviousFocus;
 
-	/// DOCME
-	wxLogWindow *LogWindow;
-
 #ifdef WITH_AUTOMATION
 
 	/// DOCME
@@ -295,7 +292,6 @@ private:
 	void OnOpenASSDraw (wxCommandEvent &event);
 
 	void OnOpenOptions (wxCommandEvent &event);
-	void OnOpenLog (wxCommandEvent &event);
 	void OnGridEvent (wxCommandEvent &event);
 
 	void OnOpenAutomation (wxCommandEvent &event);
@@ -655,9 +651,6 @@ enum {
 
 	/// DOCME
 	Menu_Tools_Options,
-
-	/// DOCME
-	Menu_Tools_Log,
 
 	/// DOCME
 	Menu_Tools_ASSDraw,
