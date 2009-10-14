@@ -68,6 +68,8 @@ private:
 	/// The number of columns of textures
 	int textureCols;
 
+	bool openGL11;
+
 	void InitTextures(int width, int height, GLenum format, int bpp);
 
 	VideoOutGL(const VideoOutGL &);

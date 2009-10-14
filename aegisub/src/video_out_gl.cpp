@@ -102,7 +102,8 @@ VideoOutGL::VideoOutGL()
 	textureList(NULL),
 	textureCount(0),
 	textureRows(0),
-	textureCols(0)
+	textureCols(0),
+	openGL11(false)
 { }
 
 
@@ -129,6 +130,11 @@ void VideoOutGL::InitTextures(int width, int height, GLenum format, int bpp) {
 
 		// Test for rectangular texture support
 		supportsRectangularTextures = TestTexture(maxTextureSize, maxTextureSize >> 1, internalFormat);
+
+		// Check OpenGL version
+		if (strncmp((const char *)glGetString(GL_VERSION), "1.1", 3) == 0) {
+			openGL11 = true;
+		}
 	}
 
 	// Clean up old textures
@@ -200,11 +206,10 @@ void VideoOutGL::InitTextures(int width, int height, GLenum format, int bpp) {
 			if (GLenum err = glGetError()) throw VideoOutOpenGLException(L"glTexParameteri(GL_TEXTURE_MAG_FILTER)", err);
 
 			// GL_CLAMP_TO_EDGE was added in OpenGL 1.2, and W7's emulation only supports 1.1
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-			if (glGetError()) glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+			GLint mode = openGL11 ? GL_REPEAT : GL_CLAMP_TO_EDGE;
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, mode);
 			if (GLenum err = glGetError()) throw VideoOutOpenGLException(L"glTexParameteri(GL_TEXTURE_WRAP_S)", err);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-			if (glGetError()) glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, mode);
 			if (GLenum err = glGetError()) throw VideoOutOpenGLException(L"glTexParameteri(GL_TEXTURE_WRAP_T)", err);
 
 			destX += ti.destW;
@@ -249,18 +254,30 @@ void VideoOutGL::DisplayFrame(AegiVideoFrame frame, int sw, int sh) {
 		if (GLenum err = glGetError()) throw VideoOutOpenGLException(L"glColor4f", err);
 		float top = 0.0f;
 		float bottom = ti.texH;
+		float left = 0.0f;
+		float right = 1.0f;
+
+		// Slightly stretch the texture under opengl 1.1 to make up for the lack of GL_CLAMP_TO_EDGE
+		if (openGL11) {
+			top = 0.01f;
+			bottom -= 0.01f;
+			left = 0.01f;
+			right -= 0.01f;
+		}
 		if (frame.flipped) {
-			top = ti.texH;
-			bottom = 0.0f;
+			float t = top;
+			top = bottom;
+			bottom = t;
 		}
 		glBegin(GL_QUADS);
-			glTexCoord2f(0.0f, top);        glVertex2f(destX, destY);
-			glTexCoord2f(ti.texW, top);     glVertex2f(destX + destW, destY);
-			glTexCoord2f(ti.texW, bottom);  glVertex2f(destX + destW, destY + destH);
-			glTexCoord2f(0.0f, bottom);     glVertex2f(destX, destY + destH);
+			glTexCoord2f(left,  top);     glVertex2f(destX, destY);
+			glTexCoord2f(right, top);     glVertex2f(destX + destW, destY);
+			glTexCoord2f(right, bottom);  glVertex2f(destX + destW, destY + destH);
+			glTexCoord2f(left,  bottom);  glVertex2f(destX, destY + destH);
 		glEnd();
 		if (GLenum err = glGetError()) throw VideoOutOpenGLException(L"GL_QUADS", err);
 	}
+
 	glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
 	if (GLenum err = glGetError()) throw VideoOutOpenGLException(L"glPixelStorei(GL_UNPACK_ROW_LENGTH, default)", err);
 
