@@ -36,6 +36,10 @@
 
 #include "include/aegisub/exception.h"
 
+#ifndef AGI_PRE
+#include <vector>
+#endif
+
 class AegiVideoFrame;
 namespace {
 	struct TextureInfo;
@@ -58,9 +62,9 @@ private:
 	/// The frame format which the texture grid has been set up for
 	GLenum frameFormat;
 	/// List of OpenGL texture ids used in the grid
-	GLuint *textureIdList;
+	std::vector<GLuint> textureIdList;
 	/// List of precalculated texture display information
-	TextureInfo *textureList;
+	std::vector<TextureInfo> textureList;
 	/// The total texture count
 	int textureCount;
 	/// The number of rows of textures

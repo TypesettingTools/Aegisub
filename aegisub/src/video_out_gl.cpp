@@ -98,8 +98,8 @@ VideoOutGL::VideoOutGL()
 	frameWidth(0),
 	frameHeight(0),
 	frameFormat(0),
-	textureIdList(NULL),
-	textureList(NULL),
+	textureIdList(),
+	textureList(),
 	textureCount(0),
 	textureRows(0),
 	textureCols(0),
@@ -138,21 +138,19 @@ void VideoOutGL::InitTextures(int width, int height, GLenum format, int bpp) {
 	}
 
 	// Clean up old textures
-	if (textureList != NULL) {
-		glDeleteTextures(textureCount, textureIdList);
+	if (textureIdList.size() > 0) {
+		glDeleteTextures(textureIdList.size(), &textureIdList[0]);
 		if (GLenum err = glGetError()) throw VideoOutOpenGLException(L"glDeleteTextures", err);
-		delete textureIdList;
-		delete textureList;
-		textureCount = 0;
-		textureList = NULL;
+		textureIdList.clear();
+		textureList.clear();
 	}
 
 	textureRows  = (int)ceil(double(height) / maxTextureSize);
 	textureCols  = (int)ceil(double(width) / maxTextureSize);
-	textureCount = textureRows * textureCols;
-	textureIdList  = static_cast<GLuint *>(calloc(textureCount, sizeof(GLint)));
-	glGenTextures(textureCount, textureIdList);
-	textureList = new TextureInfo[textureCount];
+	textureIdList.resize(textureRows * textureCols);
+	textureList.resize(textureRows * textureCols);
+	glGenTextures(textureIdList.size(), &textureIdList[0]);
+	if (GLenum err = glGetError()) throw VideoOutOpenGLException(L"glGenTextures", err);
 
 	// Calculate the position information for each texture
 	int sourceY = 0;
@@ -162,9 +160,11 @@ void VideoOutGL::InitTextures(int width, int height, GLenum format, int bpp) {
 		float destX = 0.0f;
 
 		int sourceH = maxTextureSize;
+		int textureH = maxTextureSize;
 		// If the last row doesn't need a full texture, shrink it to the smallest one possible
 		if (i == textureRows - 1 && height % maxTextureSize > 0) {
 			sourceH = height % maxTextureSize;
+			textureH = SmallestPowerOf2(sourceH);
 		}
 		for (int j = 0; j < textureCols; j++) {
 			TextureInfo& ti = textureList[i * textureCols + j];
@@ -175,21 +175,23 @@ void VideoOutGL::InitTextures(int width, int height, GLenum format, int bpp) {
 			ti.sourceH = sourceH;
 
 			ti.sourceW = maxTextureSize;
+			int textureW = maxTextureSize;
 			// If the last column doesn't need a full texture, shrink it to the smallest one possible
 			if (j == textureCols - 1 && width % maxTextureSize > 0) {
 				ti.sourceW = width % maxTextureSize;
+				textureW = SmallestPowerOf2(ti.sourceW);
 			}
 
-			int w = SmallestPowerOf2(ti.sourceW);
-			int h = SmallestPowerOf2(ti.sourceH);
+			int w = textureW;
+			int h = textureH;
 			if (!supportsRectangularTextures) w = h = MAX(w, h);
 			// Calculate what percent of the texture is actually used
 			ti.texW = float(ti.sourceW) / w;
 			ti.texH = float(ti.sourceH) / h;
 
 			// destW/H is the percent of the output which this texture covers
-			ti.destW = float(ti.sourceW) / width;
-			ti.destH = float(ti.sourceH) / height;
+			ti.destW = float(w) / width;
+			ti.destH = float(h) / height;
 
 			ti.textureID = textureIdList[i * textureCols + j];
 			ti.dataOffset = sourceY * width * bpp + sourceX * bpp;
@@ -237,7 +239,7 @@ void VideoOutGL::DisplayFrame(AegiVideoFrame frame, int sw, int sh) {
 	glPixelStorei(GL_UNPACK_ROW_LENGTH, frame.w);
 	if (GLenum err = glGetError()) throw VideoOutOpenGLException(L"glPixelStorei(GL_UNPACK_ROW_LENGTH, FrameWidth)", err);
 
-	for (int i = 0; i < textureCount; i++) {
+	for (unsigned i = 0; i < textureList.size(); i++) {
 		TextureInfo& ti = textureList[i];
 
 		float destX = ti.destX * sw;
@@ -286,11 +288,7 @@ void VideoOutGL::DisplayFrame(AegiVideoFrame frame, int sw, int sh) {
 }
 
 VideoOutGL::~VideoOutGL() {
-	if (textureList != NULL) {
-		glDeleteTextures(textureCount, textureIdList);
-		delete textureIdList;
-		delete textureList;
-		textureCount = 0;
-		textureList = NULL;
+	if (textureIdList.size() > 0) {
+		glDeleteTextures(textureIdList.size(), &textureIdList[0]);
 	}
 }
