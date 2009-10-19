@@ -53,8 +53,11 @@ private:
 	int maxTextureSize;
 	/// Whether rectangular textures are supported by the user's graphics card
 	bool supportsRectangularTextures;
+	/// Whether GL_CLAMP_TO_EDGE is supported by the user's drivers
+	bool supportsGlClampToEdge;
 	/// The internalformat to use
 	int internalFormat;
+
 	/// The frame height which the texture grid has been set up for
 	int frameWidth;
 	/// The frame width which the texture grid has been set up for
@@ -72,8 +75,7 @@ private:
 	/// The number of columns of textures
 	int textureCols;
 
-	bool openGL11;
-
+	void DetectOpenGLCapabilities();
 	void InitTextures(int width, int height, GLenum format, int bpp);
 
 	VideoOutGL(const VideoOutGL &);

@@ -53,6 +53,7 @@
 #include "utils.h"
 #include "video_frame.h"
 
+// Windows only has headers for OpenGL 1.1 and GL_CLAMP_TO_EDGE is 1.2
 #ifndef GL_CLAMP_TO_EDGE
 #define GL_CLAMP_TO_EDGE 0x812F
 #endif
@@ -66,12 +67,19 @@ namespace {
 		int dataOffset;
 		int sourceH;
 		int sourceW;
+
+		int textureH;
+		int textureW;
+
 		float destH;
 		float destW;
 		float destX;
 		float destY;
-		float texH;
-		float texW;
+
+		float texTop;
+		float texBottom;
+		float texLeft;
+		float texRight;
 	};
 	/// @brief Test if a texture can be created
 	/// @param width The width of the texture
@@ -94,6 +102,7 @@ namespace {
 VideoOutGL::VideoOutGL()
 :	maxTextureSize(0),
 	supportsRectangularTextures(false),
+	supportsGlClampToEdge(false),
 	internalFormat(0),
 	frameWidth(0),
 	frameHeight(0),
@@ -102,10 +111,40 @@ VideoOutGL::VideoOutGL()
 	textureList(),
 	textureCount(0),
 	textureRows(0),
-	textureCols(0),
-	openGL11(false)
+	textureCols(0)
 { }
 
+/// @brief Runtime detection of required OpenGL capabilities
+void VideoOutGL::DetectOpenGLCapabilities() {
+	if (maxTextureSize != 0) return;
+
+	// Test for supported internalformats
+	if (TestTexture(64, 64, GL_RGBA8)) internalFormat = GL_RGBA8;
+	else if (TestTexture(64, 64, GL_RGBA)) internalFormat = GL_RGBA;
+	else throw VideoOutUnsupportedException(L"Could not create a 64x64 RGB texture in any format.");
+
+	// Test for the maximum supported texture size
+	glGetIntegerv(GL_MAX_TEXTURE_SIZE, &maxTextureSize);
+	while (maxTextureSize > 64 && !TestTexture(maxTextureSize, maxTextureSize, internalFormat)) maxTextureSize >>= 1;
+	wxLogDebug("VideoOutGL::DetectOpenGLCapabilities: Maximum texture size is %dx%d\n", maxTextureSize, maxTextureSize);
+
+	// Test for rectangular texture support
+	supportsRectangularTextures = TestTexture(maxTextureSize, maxTextureSize >> 1, internalFormat);
+
+	// Test GL_CLAMP_TO_EDGE support
+	GLuint texture;
+	glGenTextures(1, &texture);
+	glTexImage2D(GL_PROXY_TEXTURE_2D, 0, GL_RGBA8, 64, 64, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	if (glGetError()) {
+		supportsGlClampToEdge = false;
+		wxLogDebug("VideoOutGL::DetectOpenGLCapabilities: Using GL_CLAMP\n");
+	}
+	else {
+		supportsGlClampToEdge = true;
+		wxLogDebug("VideoOutGL::DetectOpenGLCapabilities: Using GL_CLAMP_TO_EDGE\n");
+	}
+}
 
 /// @brief If needed, create the grid of textures for displaying frames of the given format
 /// @param width The frame's width
@@ -117,25 +156,7 @@ void VideoOutGL::InitTextures(int width, int height, GLenum format, int bpp) {
 	if (width == frameWidth && height == frameHeight && format == frameFormat) return;
 	wxLogDebug("VideoOutGL::InitTextures: Video size: %dx%d\n", width, height);
 
-	// If nessesary, detect what the user's OpenGL supports
-	if (maxTextureSize == 0) {
-		// Test for supported internalformats
-		if (TestTexture(64, 64, GL_RGBA8)) internalFormat = GL_RGBA8;
-		else if (TestTexture(64, 64, GL_RGBA)) internalFormat = GL_RGBA;
-		else throw VideoOutUnsupportedException(L"Could not create a 64x64 RGB texture in any format.");
-
-		// Test for the maximum supported texture size
-		glGetIntegerv(GL_MAX_TEXTURE_SIZE, &maxTextureSize);
-		while (maxTextureSize > 64 && !TestTexture(maxTextureSize, maxTextureSize, internalFormat)) maxTextureSize >>= 1;
-
-		// Test for rectangular texture support
-		supportsRectangularTextures = TestTexture(maxTextureSize, maxTextureSize >> 1, internalFormat);
-
-		// Check OpenGL version
-		if (strncmp((const char *)glGetString(GL_VERSION), "1.1", 3) == 0) {
-			openGL11 = true;
-		}
-	}
+	DetectOpenGLCapabilities();
 
 	// Clean up old textures
 	if (textureIdList.size() > 0) {
@@ -145,6 +166,7 @@ void VideoOutGL::InitTextures(int width, int height, GLenum format, int bpp) {
 		textureList.clear();
 	}
 
+	// Create the textures
 	textureRows  = (int)ceil(double(height) / maxTextureSize);
 	textureCols  = (int)ceil(double(width) / maxTextureSize);
 	textureIdList.resize(textureRows * textureCols);
@@ -185,9 +207,20 @@ void VideoOutGL::InitTextures(int width, int height, GLenum format, int bpp) {
 			int w = textureW;
 			int h = textureH;
 			if (!supportsRectangularTextures) w = h = MAX(w, h);
+
+			if (supportsGlClampToEdge) {
+				ti.texLeft = 0.0f;
+				ti.texTop = 0.0f;
+			}
+			else {
+				// Stretch the texture a half pixel in each direction to eliminate the border
+				ti.texLeft = 1.0f / (2 * w);
+				ti.texTop = 1.0f / (2 * h);
+			}
+
 			// Calculate what percent of the texture is actually used
-			ti.texW = float(ti.sourceW) / w;
-			ti.texH = float(ti.sourceH) / h;
+			ti.texRight = float(ti.sourceW) / w - ti.texLeft;
+			ti.texBottom = float(ti.sourceH) / h - ti.texTop;
 
 			// destW/H is the percent of the output which this texture covers
 			ti.destW = float(w) / width;
@@ -207,8 +240,7 @@ void VideoOutGL::InitTextures(int width, int height, GLenum format, int bpp) {
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 			if (GLenum err = glGetError()) throw VideoOutOpenGLException(L"glTexParameteri(GL_TEXTURE_MAG_FILTER)", err);
 
-			// GL_CLAMP_TO_EDGE was added in OpenGL 1.2, and W7's emulation only supports 1.1
-			GLint mode = openGL11 ? GL_REPEAT : GL_CLAMP_TO_EDGE;
+			GLint mode = supportsGlClampToEdge ? GL_CLAMP_TO_EDGE : GL_CLAMP;
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, mode);
 			if (GLenum err = glGetError()) throw VideoOutOpenGLException(L"glTexParameteri(GL_TEXTURE_WRAP_S)", err);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, mode);
@@ -221,6 +253,7 @@ void VideoOutGL::InitTextures(int width, int height, GLenum format, int bpp) {
 		sourceY += sourceH;
 	}
 
+	// Store the information needed to know when the grid must be recreated
 	frameWidth  = width;
 	frameHeight = height;
 	frameFormat = format;
@@ -249,33 +282,28 @@ void VideoOutGL::DisplayFrame(AegiVideoFrame frame, int sw, int sh) {
 
 		glBindTexture(GL_TEXTURE_2D, ti.textureID);
 		if (GLenum err = glGetError()) throw VideoOutOpenGLException(L"glBindTexture", err);
+
 		glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, ti.sourceW, ti.sourceH, format, GL_UNSIGNED_BYTE, frame.data[0] + ti.dataOffset);
 		if (GLenum err = glGetError()) throw VideoOutOpenGLException(L"glTexSubImage2D", err);
 
 		glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 		if (GLenum err = glGetError()) throw VideoOutOpenGLException(L"glColor4f", err);
-		float top = 0.0f;
-		float bottom = ti.texH;
-		float left = 0.0f;
-		float right = 1.0f;
 
-		// Slightly stretch the texture under opengl 1.1 to make up for the lack of GL_CLAMP_TO_EDGE
-		if (openGL11) {
-			top = 0.01f;
-			bottom -= 0.01f;
-			left = 0.01f;
-			right -= 0.01f;
-		}
+		float top, bottom;
 		if (frame.flipped) {
-			float t = top;
-			top = bottom;
-			bottom = t;
+			top = ti.texBottom;
+			bottom = ti.texTop;
 		}
+		else {
+			top = ti.texTop;
+			bottom = ti.texBottom;
+		}
+
 		glBegin(GL_QUADS);
-			glTexCoord2f(left,  top);     glVertex2f(destX, destY);
-			glTexCoord2f(right, top);     glVertex2f(destX + destW, destY);
-			glTexCoord2f(right, bottom);  glVertex2f(destX + destW, destY + destH);
-			glTexCoord2f(left,  bottom);  glVertex2f(destX, destY + destH);
+			glTexCoord2f(ti.texLeft,  top);     glVertex2f(destX, destY);
+			glTexCoord2f(ti.texRight, top);     glVertex2f(destX + destW, destY);
+			glTexCoord2f(ti.texRight, bottom);  glVertex2f(destX + destW, destY + destH);
+			glTexCoord2f(ti.texLeft,  bottom);  glVertex2f(destX, destY + destH);
 		glEnd();
 		if (GLenum err = glGetError()) throw VideoOutOpenGLException(L"GL_QUADS", err);
 	}
