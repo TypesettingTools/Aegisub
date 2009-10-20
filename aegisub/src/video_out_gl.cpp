@@ -111,7 +111,8 @@ VideoOutGL::VideoOutGL()
 	textureList(),
 	textureCount(0),
 	textureRows(0),
-	textureCols(0)
+	textureCols(0),
+	lastFrame(-1)
 { }
 
 /// @brief Runtime detection of required OpenGL capabilities
@@ -218,9 +219,8 @@ void VideoOutGL::InitTextures(int width, int height, GLenum format, int bpp) {
 				ti.texTop = 1.0f / (2 * h);
 			}
 
-			// Calculate what percent of the texture is actually used
-			ti.texRight = float(ti.sourceW) / w - ti.texLeft;
-			ti.texBottom = float(ti.sourceH) / h - ti.texTop;
+			ti.texRight = 1.0f - ti.texLeft;
+			ti.texBottom = 1.0f - ti.texTop;
 
 			// destW/H is the percent of the output which this texture covers
 			ti.destW = float(w) / width;
@@ -259,8 +259,10 @@ void VideoOutGL::InitTextures(int width, int height, GLenum format, int bpp) {
 	frameFormat = format;
 }
 
-void VideoOutGL::DisplayFrame(AegiVideoFrame frame, int sw, int sh) {
+void VideoOutGL::DisplayFrame(AegiVideoFrame frame, int frameNumber, int sw, int sh) {
 	if (frame.h == 0 || frame.w == 0) return;
+
+	if (frameNumber == -1) frameNumber = lastFrame;
 
 	glEnable(GL_TEXTURE_2D);
 	if (GLenum err = glGetError()) throw VideoOutOpenGLException(L"glEnable(GL_TEXTURE_2d)", err);
@@ -283,8 +285,10 @@ void VideoOutGL::DisplayFrame(AegiVideoFrame frame, int sw, int sh) {
 		glBindTexture(GL_TEXTURE_2D, ti.textureID);
 		if (GLenum err = glGetError()) throw VideoOutOpenGLException(L"glBindTexture", err);
 
-		glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, ti.sourceW, ti.sourceH, format, GL_UNSIGNED_BYTE, frame.data[0] + ti.dataOffset);
-		if (GLenum err = glGetError()) throw VideoOutOpenGLException(L"glTexSubImage2D", err);
+		if (lastFrame != frameNumber) {
+			glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, ti.sourceW, ti.sourceH, format, GL_UNSIGNED_BYTE, frame.data[0] + ti.dataOffset);
+			if (GLenum err = glGetError()) throw VideoOutOpenGLException(L"glTexSubImage2D", err);
+		}
 
 		glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 		if (GLenum err = glGetError()) throw VideoOutOpenGLException(L"glColor4f", err);
@@ -313,6 +317,8 @@ void VideoOutGL::DisplayFrame(AegiVideoFrame frame, int sw, int sh) {
 
 	glDisable(GL_TEXTURE_2D);
 	if (GLenum err = glGetError()) throw VideoOutOpenGLException(L"glDisable(GL_TEXTURE_2d)", err);
+
+	lastFrame = frameNumber;
 }
 
 VideoOutGL::~VideoOutGL() {

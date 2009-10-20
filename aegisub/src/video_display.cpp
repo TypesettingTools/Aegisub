@@ -193,6 +193,7 @@ void VideoDisplay::SetFrame(int frameNumber) {
 	if (IsShownOnScreen() && visual) visual->Refresh();
 
 	// Render the new frame
+	videoOut->InvalidateFrame();
 	Render(frameNumber);
 
 	currentFrame = frameNumber;
@@ -274,7 +275,7 @@ void VideoDisplay::Render(int frameNumber) try {
 	glDisable(GL_BLEND);
 	if (glGetError()) throw _T("Error disabling blending.");
 
-	videoOut->DisplayFrame(context->GetFrame(frameNumber), sw, sh);
+	videoOut->DisplayFrame(context->GetFrame(frameNumber), frameNumber, sw, sh);
 
 	DrawTVEffects();
 

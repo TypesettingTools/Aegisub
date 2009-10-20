@@ -74,6 +74,8 @@ private:
 	int textureRows;
 	/// The number of columns of textures
 	int textureCols;
+	/// The frame currently displayed
+	int lastFrame;
 
 	void DetectOpenGLCapabilities();
 	void InitTextures(int width, int height, GLenum format, int bpp);
@@ -83,9 +85,13 @@ private:
 public:
 	/// @brief Render a frame
 	/// @param frame The frame to be displayed
+	/// @param frameNumber The frame number of the frame to be displayed
 	/// @param sw The current script width
 	/// @param sh The current script height
-	void DisplayFrame(AegiVideoFrame frame, int sw, int sh);
+	void DisplayFrame(AegiVideoFrame frame, int frameNumber, int sw, int sh);
+
+	/// @brief Force the redisplay of the frame the next time DisplayFrame is called even if the frame number has not changed
+	void InvalidateFrame() { lastFrame = -1; }
 
 	/// @brief Constructor
 	VideoOutGL();
