@@ -994,18 +994,25 @@ fi
 # gcov
 ######
 
-AC_ARG_VAR([GCOV_FLAGS], [gcov flag(s) to use with --enable-gcov (default: -ftest-coverage -fprofile-arcs)])
+AC_ARG_VAR([GCOV_CFLAGS], [gcov cflag(s) to use with --enable-gcov (default: -ftest-coverage -fprofile-arcs)])
+AC_ARG_VAR([GCOV_LDFLAGS], [gcov ldflag(s) to use with --enable-gcov (default: -lgcov)])
 
 AC_MSG_CHECKING([whether to turn on gcov])
 AC_ARG_ENABLE(gcov, [  --enable-gcov           enable gcov (default=no)])
 
 if test "$enable_gcov" = "yes"; then
-  if test -z "$GCOV_FLAGS"; then
-    GCOV_FLAGS="-fprofile-arcs -ftest-coverage";
+  if test -z "$GCOV_CFLAGS"; then
+    GCOV_CFLAGS="-fprofile-arcs -ftest-coverage";
   fi
+
+  if test -z "$GCOV_LDFLAGS"; then
+    GCOV_LDFLAGS="-lgcov";
+  fi
+
   AC_MSG_RESULT([yes ($GCOV_FLAGS)])
-  CFLAGS="$CFLAGS $GCOV_FLAGS"
-  CPPFLAGS="$CPPFLAGS $GCOV_FLAGS"
+  CFLAGS="$CFLAGS $GCOV_CFLAGS"
+  LDFLAGS="$LDFLAGS $GCOV_LDFLAGS"
+  CPPFLAGS="$CPPFLAGS $GCOV_CFLAGS"
 else
   enable_gcov="no"
   AC_MSG_RESULT([no])
