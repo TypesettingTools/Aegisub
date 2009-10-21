@@ -344,11 +344,6 @@ const AegiVideoFrame AvisynthVideoProvider::GetFrame(int _n) {
 
 	// Aegisub's video frame
 	AegiVideoFrame &final = iframe;
-	final.flipped = false;
-	final.cppAlloc = true;
-	final.invertChannels = false;
-
-	// Format
 	final.format = FORMAT_RGB32;
 	final.flipped = true;
 	final.invertChannels = true;

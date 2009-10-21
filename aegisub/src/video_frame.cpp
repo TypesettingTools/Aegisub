@@ -61,7 +61,6 @@ void AegiVideoFrame::Reset() {
 	// Set properties
 	format = FORMAT_NONE;
 	flipped = false;
-	cppAlloc = true;
 	invertChannels = true;
 }
 
@@ -126,8 +125,7 @@ void AegiVideoFrame::Allocate() {
 	// Reallocate, if necessary
 	if (memSize != size) {
 		if (data[0]) {
-			if (cppAlloc) delete[] data[0];
-			else free(data[0]);
+			delete[] data[0];
 		}
 		data[0] = new unsigned char[size];
 		for (int i=1;i<4;i++) data[i] = NULL;
@@ -138,20 +136,12 @@ void AegiVideoFrame::Allocate() {
 			data[1] = data[0] + (pitch[0]*height);
 			data[2] = data[0] + (pitch[0]*height+pitch[1]*height/2);
 		}
-
-		// Flag as allocated by C++
-		cppAlloc = true;
 	}
 }
 
-
-
 /// @brief Clear 
-///
 void AegiVideoFrame::Clear() {
-	// Free memory
-	if (cppAlloc) delete[] data[0];
-	else free(data[0]);
+	delete[] data[0];
 
 	// Zero variables
 	for (int i=0;i<4;i++) {
@@ -165,7 +155,6 @@ void AegiVideoFrame::Clear() {
 	// Reset properties
 	format = FORMAT_NONE;
 	flipped = false;
-	cppAlloc = true;
 	invertChannels = true;
 }
 

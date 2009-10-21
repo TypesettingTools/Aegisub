@@ -99,15 +99,11 @@ public:
 	// Pitch, that is, the number of bytes used by each row.
 	unsigned int pitch[4];
 
-
 	/// First row is actually the bottom one
 	bool flipped;
 
 	/// Swap Red and Blue channels or U and V planes (controls RGB versus BGR ordering etc)
 	bool invertChannels;
-
-	/// Allocated with C++'s "new" operator, instead of "malloc"
-	bool cppAlloc;
 
 	AegiVideoFrame();
 	AegiVideoFrame(int width,int height,VideoFrameFormat format=FORMAT_RGB32);
