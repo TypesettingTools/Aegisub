@@ -236,39 +236,6 @@ wxImage AegiVideoFrame::GetImage() const {
 	}
 }
 
-
-
-/// @brief Get float luminosity data 
-/// @param buffer 
-///
-void AegiVideoFrame::GetFloat(float *buffer) const {
-	int Bpp = GetBpp();
-	const unsigned char *src = data[0];
-	float *dst = buffer;
-	float temp;
-
-	// Convert
-	if (format == FORMAT_RGB32 || format == FORMAT_RGB24) {
-		int delta = 4-Bpp;
-		for (unsigned int y=0;y<h;y++) {
-			dst = buffer + y*w;
-			if (flipped) src = data[0] + (h-y-1)*pitch[0];	// I think that it requires flipped data - amz
-			else src = data[0] + y*pitch[0];
-			for (unsigned int x=0;x<w;x++) {
-				//temp = (*src++)*0.3 + (*src++)*0.4 + (*src++)*0.3;	
-				temp = (*src++)*0.3;
-				temp += (*src++)*0.4;
-				temp += (*src++)*0.3;
-	
-				src += delta;
-				*dst++ = temp;
-			}
-		}
-	}
-}
-
-
-
 /// @brief Get bytes per pixel for the current frame format
 /// @param plane 
 /// @return 

@@ -88,19 +88,6 @@ const AegiVideoFrame VideoProviderCache::GetFrame(int n) {
 	return *srcFrame;
 }
 
-
-
-/// @brief Get as float 
-/// @param buffer 
-/// @param n      
-///
-void VideoProviderCache::GetFloatFrame(float* buffer, int n) {
-	const AegiVideoFrame frame = GetFrame(n);
-	frame.GetFloat(buffer);
-}
-
-
-
 /// @brief Set maximum cache size 
 /// @param n 
 ///

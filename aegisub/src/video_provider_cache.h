@@ -94,7 +94,6 @@ protected:
 
 public:
 	// Base methods
-	void GetFloatFrame(float* Buffer, int n);	// Get frame as float
 	const AegiVideoFrame GetFrame(int n);
 	VideoProviderCache(VideoProvider *master);
 	virtual ~VideoProviderCache();

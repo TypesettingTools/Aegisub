@@ -107,8 +107,6 @@ public:
 	~AvisynthVideoProvider();
 
 	const AegiVideoFrame GetFrame(int n);
-	void GetFloatFrame(float* Buffer, int n);
-
 
 	/// @brief // properties
 	/// @return 
