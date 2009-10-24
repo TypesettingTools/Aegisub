@@ -77,12 +77,13 @@ enum VideoFrameFormat {
 /// DOCME
 class AegiVideoFrame {
 private:
-
-	/// DOCME
-	unsigned int memSize;
+	unsigned int memSize; /// The size in bytes of the frame buffer
+	/// Whether the object owns its buffer. If this is false, **data should never be modified
+	bool ownMem;
 	void Reset();
 
 public:
+	void Allocate();
 
 	/// Pointers to the data planes. Interleaved formats only use data[0]
 	unsigned char *data[4];
@@ -108,10 +109,11 @@ public:
 	AegiVideoFrame();
 	AegiVideoFrame(int width,int height,VideoFrameFormat format=FORMAT_RGB32);
 
-	void Allocate();
 	void Clear();
 	void CopyFrom(const AegiVideoFrame &source);
-	void ConvertFrom(const AegiVideoFrame &source);
+	void ConvertFrom(const AegiVideoFrame &source, VideoFrameFormat newFormat=FORMAT_RGB32);
+	void SetTo(const unsigned char *const source[], int width, int height, const int pitch[4], VideoFrameFormat format);
+
 
 	wxImage GetImage() const;
 	int GetBpp(int plane=0) const;

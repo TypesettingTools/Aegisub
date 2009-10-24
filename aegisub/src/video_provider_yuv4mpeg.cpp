@@ -421,12 +421,8 @@ const AegiVideoFrame YUV4MPEGVideoProvider::GetFrame(int n) {
 	}
 
 	AegiVideoFrame dst_frame;
-	dst_frame.format = dst_fmt;
-	dst_frame.w = w;
-	dst_frame.h = h;
 	dst_frame.invertChannels = true;
-	dst_frame.pitch[0] = w * 4;
-	dst_frame.ConvertFrom(tmp_frame);
+	dst_frame.ConvertFrom(tmp_frame, dst_fmt);
 
 	tmp_frame.Clear();
 

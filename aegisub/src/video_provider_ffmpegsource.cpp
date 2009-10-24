@@ -312,9 +312,6 @@ const AegiVideoFrame FFmpegSourceVideoProvider::GetFrame(int _n) {
 	// set position
 	FrameNumber = n;
 
-	// this is what we'll return eventually
-	AegiVideoFrame &DstFrame = CurFrame;
-
 	// decode frame
 	const FFMS_Frame *SrcFrame = FFMS_GetFrame(VideoSource, n, &ErrInfo);
 	if (SrcFrame == NULL) {
@@ -322,22 +319,8 @@ const AegiVideoFrame FFmpegSourceVideoProvider::GetFrame(int _n) {
 		throw ErrorMsg;
 	}
 
-	// set some properties
-	DstFrame.format	= FORMAT_RGB32;
-	DstFrame.w = Width;
-	DstFrame.h = Height;
-	DstFrame.flipped = false;
-	DstFrame.invertChannels = true;
-
-	// allocate destination
-	for (int i = 0; i < 4; i++)
-		DstFrame.pitch[i] = SrcFrame->Linesize[i];
-	DstFrame.Allocate();
-
-	// copy data to destination
-	memcpy(DstFrame.data[0], SrcFrame->Data[0], DstFrame.pitch[0] * DstFrame.h);
-
-	return DstFrame;
+	CurFrame.SetTo(SrcFrame->Data, Width, Height, SrcFrame->Linesize, FORMAT_RGB32);
+	return CurFrame;
 }
 
 

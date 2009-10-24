@@ -259,7 +259,7 @@ void VideoOutGL::InitTextures(int width, int height, GLenum format, int bpp) {
 	frameFormat = format;
 }
 
-void VideoOutGL::DisplayFrame(AegiVideoFrame frame, int frameNumber, int sw, int sh) {
+void VideoOutGL::DisplayFrame(const AegiVideoFrame& frame, int frameNumber, int sw, int sh) {
 	if (frame.h == 0 || frame.w == 0) return;
 
 	if (frameNumber == -1) frameNumber = lastFrame;

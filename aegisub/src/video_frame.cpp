@@ -34,21 +34,17 @@
 /// @ingroup video
 ///
 
-
-///////////
-// Headers
 #include "config.h"
 
 #include "utils.h"
 #include "video_frame.h"
 
 
-/// @brief Reset 
+/// @brief Reset values to the defaults
 ///
+/// Note that this function DOES NOT unallocate memory.
+/// Use Clear() for that
 void AegiVideoFrame::Reset() {
-	// Note that this function DOES NOT unallocate memory.
-	// Use Clear() for that
-
 	// Zero variables
 	for (int i=0;i<4;i++) {
 		data[i] = NULL;
@@ -62,25 +58,19 @@ void AegiVideoFrame::Reset() {
 	format = FORMAT_NONE;
 	flipped = false;
 	invertChannels = true;
+	ownMem = true;
 }
 
-
-
 /// @brief Constructor 
-///
 AegiVideoFrame::AegiVideoFrame() {
 	Reset();
 }
 
-
-
-/// @brief Create default 
+/// @brief Create a solid black frame of the request size and format
 /// @param width  
 /// @param height 
 /// @param fmt    
-///
 AegiVideoFrame::AegiVideoFrame(int width,int height,VideoFrameFormat fmt) {
-	// Clear
 	Reset();
 
 	// Set format
@@ -93,7 +83,6 @@ AegiVideoFrame::AegiVideoFrame(int width,int height,VideoFrameFormat fmt) {
 		pitch[2] = w/2;
 	}
 
-	// Allocate
 	Allocate();
 
 	// Clear data
@@ -101,12 +90,9 @@ AegiVideoFrame::AegiVideoFrame(int width,int height,VideoFrameFormat fmt) {
 	memset(data[0],0,size);
 }
 
-
-
-/// @brief Allocate 
-///
+/// @brief Allocate memory if needed
 void AegiVideoFrame::Allocate() {
-	// Check consistency
+	// Check for sanity
 	wxASSERT(pitch[0] > 0 && pitch[0] < 10000);
 	wxASSERT(w > 0 && w < 10000);
 	wxASSERT(h > 0 && h < 10000);
@@ -123,8 +109,8 @@ void AegiVideoFrame::Allocate() {
 	else size = pitch[0] * height;
 
 	// Reallocate, if necessary
-	if (memSize != size) {
-		if (data[0]) {
+	if (memSize != size || !ownMem) {
+		if (data[0] && ownMem) {
 			delete[] data[0];
 		}
 		data[0] = new unsigned char[size];
@@ -137,32 +123,19 @@ void AegiVideoFrame::Allocate() {
 			data[2] = data[0] + (pitch[0]*height+pitch[1]*height/2);
 		}
 	}
+
+	ownMem = true;
 }
 
 /// @brief Clear 
 void AegiVideoFrame::Clear() {
-	delete[] data[0];
+	if (ownMem) delete[] data[0];
 
-	// Zero variables
-	for (int i=0;i<4;i++) {
-		data[i] = NULL;
-		pitch[i] = 0;
-	}
-	memSize = 0;
-	w = 0;
-	h = 0;
-
-	// Reset properties
-	format = FORMAT_NONE;
-	flipped = false;
-	invertChannels = true;
+	Reset();
 }
 
-
-
-/// @brief Create copy 
-/// @param source 
-///
+/// @brief Copy from an AegiVideoFrame
+/// @param source The frame to copy from
 void AegiVideoFrame::CopyFrom(const AegiVideoFrame &source) {
 	w = source.w;
 	h = source.h;
@@ -174,20 +147,40 @@ void AegiVideoFrame::CopyFrom(const AegiVideoFrame &source) {
 	invertChannels = source.invertChannels;
 }
 
+/// @brief Set the frame to an externally allocated block of memory
+/// @param source Target frame data
+/// @param width The frame width in pixels
+/// @param height The frame height in pixels
+/// @param pitch The frame's pitch
+/// @param format The fram'e format
+void AegiVideoFrame::SetTo(const unsigned char *const source[], int width, int height, const int pitch[4], VideoFrameFormat format) {
+	wxASSERT(pitch[0] > 0 && pitch[0] < 10000);
+	wxASSERT(width    > 0 && width    < 10000);
+	wxASSERT(height   > 0 && height   < 10000);
+	wxASSERT(format != FORMAT_NONE);
 
+	ownMem = false;
+	w = width;
+	h = height;
+	this->format = format;
+
+	for (int i = 0; i < 4; i++) {
+		// Note that despite this cast, the contents of data should still never be modified
+		data[i] = const_cast<unsigned char*>(source[i]);
+		this->pitch[i] = pitch[i];
+	}
+	
+}
 
 /// @brief This function is only used on screenshots, so it doesn't have to be fast ------ Get wxImage 
 /// @return 
-///
 wxImage AegiVideoFrame::GetImage() const {
-	// RGB
 	if (format == FORMAT_RGB32 || format == FORMAT_RGB24) {
 		// Create
 		unsigned char *buf = (unsigned char*)malloc(w*h*3);
 		const unsigned char *src = data[0];
 		unsigned char *dst = buf;
 
-		// Bytes per pixel
 		int Bpp = GetBpp();
 
 		// Convert
@@ -208,18 +201,11 @@ wxImage AegiVideoFrame::GetImage() const {
 		img.SetData(buf);
 		return img;
 	}
-
-	// YV12
 	else if (format == FORMAT_YV12) {
-		 AegiVideoFrame temp;
-		 temp.w = w;
-		 temp.h = h;
-		 temp.pitch[0] = w*4;
-		 temp.format = FORMAT_RGB32;
-		 temp.ConvertFrom(*this);
-		 return temp.GetImage();
+		AegiVideoFrame temp;
+		temp.ConvertFrom(*this);
+		return temp.GetImage();
 	}
-
 	else {
 		return wxImage(w,h);
 	}
@@ -240,19 +226,18 @@ int AegiVideoFrame::GetBpp(int plane) const {
 	}
 }
 
-
-
 /// @brief Convert from another frame 
-/// @param source 
-///
-void AegiVideoFrame::ConvertFrom(const AegiVideoFrame &source) {
-	// Ensure compatibility
-	if (w != source.w) throw _T("AegiVideoFrame::ConvertFrom: Widths don't match.");
-	if (h != source.h) throw _T("AegiVideoFrame::ConvertFrom: Heights don't match.");
-	if (format != FORMAT_RGB32) throw _T("AegiVideoFrame::ConvertFrom: Unsupported destination format.");
-	if (source.format != FORMAT_YV12) throw _T("AegiVideoFrame::ConvertFrom: Unsupported source format.");
+/// @param source The frame to convert from
+/// @param newFormat The format to convert to
+void AegiVideoFrame::ConvertFrom(const AegiVideoFrame &source, VideoFrameFormat newFormat) {
+	if (newFormat     != FORMAT_RGB32) throw _T("AegiVideoFrame::ConvertFrom: Unsupported destination format.");
+	if (source.format != FORMAT_YV12)  throw _T("AegiVideoFrame::ConvertFrom: Unsupported source format.");
 
-	// Allocate
+	w = source.w;
+	h = source.h;
+	format = newFormat;
+	pitch[0] = w * 4;
+
 	Allocate();
 
 	// Set up pointers
@@ -297,5 +282,3 @@ void AegiVideoFrame::ConvertFrom(const AegiVideoFrame &source) {
 		}
 	}
 }
-
-
