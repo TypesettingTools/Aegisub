@@ -96,6 +96,13 @@ void ASSSubtitleFormat::ReadFile(wxString filename,wxString encoding) {
 		// Reads line
 		wxbuffer = file.ReadLineFromFile();
 
+		// Make sure that the first non-blank non-comment non-group-header line
+		// is really [Script Info]
+		if (curgroup.IsEmpty() && !wxbuffer.IsEmpty() && wxbuffer[0] != _T(';') && wxbuffer[0] != _T('[')) {
+			curgroup = _T("[Script Info]");
+			lasttime = AddLine(curgroup,curgroup,lasttime,version,&curgroup);
+		}
+
 		// Convert v4 styles to v4+ styles
 		if (!wxbuffer.IsEmpty() && wxbuffer[0] == _T('[')) {
 			// Ugly hacks to allow intermixed v4 and v4+ style sections
