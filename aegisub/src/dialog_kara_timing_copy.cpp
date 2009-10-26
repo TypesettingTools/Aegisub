@@ -835,7 +835,9 @@ DialogKanjiTimer::DialogKanjiTimer(wxWindow *parent, SubtitlesGrid *_grid)
 	// Variables
 	subs = AssFile::top;
 	grid = _grid;
-	
+	currentSourceLine = subs->Line.begin();
+	currentDestinationLine = subs->Line.begin();
+
 	//Sizers
 	wxSizer *DisplayBoxSizer = new wxStaticBoxSizer(wxVERTICAL,this,_("Text"));
 	wxSizer *StylesBoxSizer = new wxStaticBoxSizer(wxVERTICAL,this,_("Styles"));
@@ -845,7 +847,6 @@ DialogKanjiTimer::DialogKanjiTimer(wxWindow *parent, SubtitlesGrid *_grid)
 	wxSizer *MainStackSizer = new wxBoxSizer(wxVERTICAL);
 	wxSizer *BottomShelfSizer = new wxBoxSizer(wxHORIZONTAL);
 	wxSizer *BottomLeftStackSizer = new wxBoxSizer(wxVERTICAL);
-
 
 	display = new KaraokeLineMatchDisplay(this);
 
