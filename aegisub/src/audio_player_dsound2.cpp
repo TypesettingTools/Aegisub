@@ -328,6 +328,13 @@ void DirectSoundPlayer2Thread::Run()
 					ResetEvent(is_playing);
 					playback_should_be_running = false;
 				}
+				else
+				{
+					// If the user is dragging the start or end point in the audio display
+					// the set end frame events might come in faster than the timeouts happen
+					// and then new data never get filled into the buffer. See bug #915.
+					goto do_fill_buffer;
+				}
 				break;
 			}
 
@@ -337,7 +344,7 @@ void DirectSoundPlayer2Thread::Run()
 				// We aren't thread safe right now, filling the buffers grabs volume directly
 				// from the field set by the controlling thread, but it shouldn't be a major
 				// problem if race conditions do occur, just some momentary distortion.
-				break;
+				goto do_fill_buffer;
 			}
 
 		case WAIT_OBJECT_0+4:
@@ -351,6 +358,7 @@ void DirectSoundPlayer2Thread::Run()
 			}
 
 		case WAIT_TIMEOUT:
+do_fill_buffer:
 			{
 				// Time to fill more into buffer
 
