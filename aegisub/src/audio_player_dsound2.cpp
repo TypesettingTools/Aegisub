@@ -127,7 +127,7 @@ class DirectSoundPlayer2Thread {
 		is_playing,
 		error_happened;
 
-	wxChar *error_message;
+	const wxChar *error_message;
 	double volume;
 	int64_t start_frame;
 	int64_t end_frame;
@@ -386,28 +386,46 @@ do_fill_buffer:
 				int bytes_needed = (int)play_cursor - (int)buffer_offset;
 				if (bytes_needed < 0) bytes_needed += (int)bufSize;
 
+				// Requesting zero buffer makes Windows cry, and zero buffer seemed to be
+				// a common request on Windows 7. (Maybe related to the new timer coalescing?)
+				// We'll probably get non-zero bytes requested on the next iteration.
+				if (bytes_needed == 0)
+					break;
+
 				DWORD buf1sz, buf2sz;
 				void *buf1, *buf2;
 
+				assert(buffer_offset < bufSize);
+				assert(bytes_needed <= bufSize);
+
 				HRESULT res = bfr->Lock(buffer_offset, bytes_needed, &buf1, &buf1sz, &buf2, &buf2sz, 0);
-				while (FAILED(res)) // yes, while, so I can break out of it without a goto!
+				switch (res)
 				{
-					if (res == DSERR_BUFFERLOST)
+				case DSERR_BUFFERLOST:
+					// Try to regain the buffer
+					// When the buffer was lost the entire contents was lost too, so we have to start over
+					if (SUCCEEDED(bfr->Restore()) &&
+					    SUCCEEDED(bfr->Lock(0, bufSize, &buf1, &buf1sz, &buf2, &buf2sz, 0)) &&
+					    SUCCEEDED(bfr->Play(0, 0, DSBPLAY_LOOPING)))
 					{
-						// Try to regain the buffer
-						// When the buffer was lost the entire contents was lost too, so we have to start over
-						if (SUCCEEDED(bfr->Restore()) &&
-						    SUCCEEDED(bfr->Lock(0, bufSize, &buf1, &buf1sz, &buf2, &buf2sz, 0)) &&
-						    SUCCEEDED(bfr->Play(0, 0, DSBPLAY_LOOPING)))
-						{
-							wxLogDebug(_T("DirectSoundPlayer2: Lost and restored buffer"));
-							break;
-						}
-
-						REPORT_ERROR("Lost buffer and could not restore it.")
+						wxLogDebug(_T("DirectSoundPlayer2: Lost and restored buffer"));
+						break;
 					}
+					REPORT_ERROR("Lost buffer and could not restore it.")
 
-					REPORT_ERROR("Could not lock buffer for filling.")
+				case DSERR_INVALIDPARAM:
+					REPORT_ERROR("Invalid parameters to IDirectSoundBuffer8::Lock().")
+
+				case DSERR_INVALIDCALL:
+					REPORT_ERROR("Invalid call to IDirectSoundBuffer8::Lock().")
+
+				case DSERR_PRIOLEVELNEEDED:
+					REPORT_ERROR("Incorrect priority level set on DirectSoundBuffer8 object.")
+
+				default:
+					if (FAILED(res))
+						REPORT_ERROR("Could not lock audio buffer, unknown error.")
+					break;
 				}
 
 				DWORD bytes_filled = FillAndUnlockBuffers(buf1, buf1sz, buf2, buf2sz, next_input_frame, bfr.obj);
