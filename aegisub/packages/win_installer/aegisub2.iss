@@ -96,7 +96,7 @@ DestDir: {app}; Source: src\DirectShowSource.dll; Flags: ignoreversion; Componen
 DestDir: {app}; Source: src\ffms2.dll; Flags: ignoreversion; Components: codec
 DestDir: {app}; Source: src\ffms2.pdb; Flags: ignoreversion; Components: codec and main/pdb
 ; vsfilter
-DestDir: {app}\csri; Source: src\csri\VSFilter.dll; Flags: ignoreversion; Components: codec/vsfilter
+DestDir: {app}\csri; Source: src\csri\VSFilter-Aegisub.dll; Flags: ignoreversion; Components: codec/vsfilter
 ; auto4 main
 DestDir: {app}\automation\include; Source: src\automation\include\utils.lua; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/lua; Attribs: readonly
 DestDir: {app}\automation\include; Source: src\automation\include\utils-auto4.lua; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/lua; Attribs: readonly
