@@ -46,6 +46,7 @@
 #include <time.h>
 #include <wx/glcanvas.h>
 #include <wx/combobox.h>
+#include <memory>
 #include "video_context.h"
 
 
@@ -59,6 +60,7 @@ class AssDialogue;
 class VideoProvider;
 class VisualTool;
 class VideoBox;
+class VideoOutGL;
 
 
 //////////////
@@ -74,6 +76,8 @@ private:
 	int w,h;
 	int dx1,dx2,dy1,dy2;
 	int mouse_x,mouse_y;
+
+	int currentFrame;
 	bool locked;
 
 	void DrawTVEffects();
@@ -97,6 +101,7 @@ public:
 
 	double zoomValue;
 	bool freeSize;
+	std::auto_ptr<VideoOutGL> videoOut;
 
 	VideoSlider *ControlSlider;
 	wxComboBox *zoomBox;
@@ -107,15 +112,16 @@ public:
 	~VideoDisplay();
 	void Reset();
 
+	void SetFrame(int frameNumber);
+	int GetFrame() const { return currentFrame; }
+
 	void Render();
 
 	void ShowCursor(bool show);
 	void ConvertMouseCoords(int &x,int &y);
-	void UpdatePositionDisplay();
 	void UpdateSize();
 	void SetZoom(double value);
 	void SetZoomPos(int pos);
-	void UpdateSubsRelativeTime();
 	void SetVisualMode(int mode);
 
 	DECLARE_EVENT_TABLE()

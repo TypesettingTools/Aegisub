@@ -63,12 +63,12 @@
 #include "vfw_wrap.h"
 #include "mkv_wrap.h"
 #include "options.h"
-#include "subs_edit_box.h"
-#include "audio_display.h"
-#include "main.h"
-#include "video_slider.h"
+#include "utils.h"
+#include "video_out_gl.h"
+#include "vfr.h"
 #include "video_box.h"
 #include "gl_wrap.h"
+#include "video_slider.h"
 #include "visual_tool.h"
 #include "visual_tool_cross.h"
 #include "visual_tool_rotatez.h"
@@ -119,6 +119,7 @@ VideoDisplay::VideoDisplay(wxWindow* parent, wxWindowID id, const wxPoint& pos, 
 #else
 : wxGLCanvas (parent, id, attribList, pos, size, style, name)
 #endif
+, videoOut(new VideoOutGL())
 {
 	// Set options
 	box = NULL;
@@ -165,36 +166,77 @@ void VideoDisplay::ShowCursor(bool show) {
 	}
 }
 
+void VideoDisplay::SetFrame(int frameNumber) {
+	VideoContext *context = VideoContext::Get();
+	ControlSlider->SetValue(frameNumber);
+
+	// Get time for frame
+	int time = VFR_Output.GetTimeAtFrame(frameNumber, true, true);
+	int h = time / 3600000;
+	int m = time % 3600000 / 60000;
+	int s = time % 60000 / 1000;
+	int ms = time % 1000;
+
+	// Set the text box for frame number and time
+	PositionDisplay->SetValue(wxString::Format(_T("%01i:%02i:%02i.%03i - %i"), h, m, s, ms, frameNumber));
+	if (context->GetKeyFrames().Index(frameNumber) != wxNOT_FOUND) {
+		// Set the background color to indicate this is a keyframe
+		PositionDisplay->SetBackgroundColour(Options.AsColour(_T("Grid selection background")));
+		PositionDisplay->SetForegroundColour(Options.AsColour(_T("Grid selection foreground")));
+	}
+	else {
+		PositionDisplay->SetBackgroundColour(wxNullColour);
+		PositionDisplay->SetForegroundColour(wxNullColour);
+	}
+
+	wxString startSign;
+	wxString endSign;
+	int startOff = 0;
+	int endOff = 0;
+
+	if (AssDialogue *curLine = context->curLine) {
+		startOff = time - curLine->Start.GetMS();
+		endOff = time - curLine->End.GetMS();
+	}
+
+	// Positive signs
+	if (startOff > 0) startSign = _T("+");
+	if (endOff > 0) endSign = _T("+");
+
+	// Set the text box for time relative to active subtitle line
+	SubsPosition->SetValue(wxString::Format(_T("%s%ims; %s%ims"), startSign.c_str(), startOff, endSign.c_str(), endOff));
+
+	if (IsShownOnScreen() && visual) visual->Refresh();
+
+	// Render the new frame
+	if (context->IsLoaded()) {
+		AegiVideoFrame frame = context->GetFrame(frameNumber);
+		videoOut->UploadFrameData(frame);
+	}
+	Render();
+
+	currentFrame = frameNumber;
+}
 
 //////////
 // Render
-void VideoDisplay::Render()
-// Yes it's legal C++ to replace the body of a function with one huge try..catch statement
-try {
-
-	// Is shown?
+void VideoDisplay::Render() try {
 	if (!IsShownOnScreen()) return;
 	if (!wxIsMainThread()) throw _T("Error: trying to render from non-primary thread");
 
-	// Get video context
 	VideoContext *context = VideoContext::Get();
 	wxASSERT(context);
 	if (!context->IsLoaded()) return;
 
 	// Set GL context
-	//wxMutexLocker glLock(OpenGLWrapper::glMutex);
-#ifdef __WXMAC__
-	SetCurrent();
-#else
 	SetCurrent(*context->GetGLContext(this));
-#endif
 
 	// Get sizes
-	int w,h,sw,sh,pw,ph;
-	GetClientSize(&w,&h);
+	int w, h, sw, sh, pw, ph;
+	GetClientSize(&w, &h);
 	wxASSERT(w > 0);
 	wxASSERT(h > 0);
-	context->GetScriptSize(sw,sh);
+	context->GetScriptSize(sw, sh);
 	pw = context->GetWidth();
 	ph = context->GetHeight();
 	wxASSERT(pw > 0);
@@ -216,9 +258,7 @@ try {
 	if (freeSize) {
 		// Set aspect ratio
 		float thisAr = float(w)/float(h);
-		float vidAr;
-		if (context->GetAspectRatioType() == 0) vidAr = float(pw)/float(ph);
-		else vidAr = context->GetAspectRatioValue();
+		float vidAr = context->GetAspectRatioType() == 0 ? float(pw)/float(ph) : context->GetAspectRatioValue();
 
 		// Window is wider than video, blackbox left/right
 		if (thisAr - vidAr > 0.01f) {
@@ -236,8 +276,6 @@ try {
 	}
 
 	// Set viewport
-	glEnable(GL_TEXTURE_2D);
-	if (glGetError()) throw _T("Error enabling texturing.");
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	glViewport(dx1,dy1,dx2,dy2);
@@ -249,66 +287,33 @@ try {
 	if (glGetError()) throw _T("Error setting up matrices (wtf?).");
 	glShadeModel(GL_FLAT);
 
-	// Texture mode
-	if (w != pw || h != ph) {
-		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
-		if (glGetError()) throw _T("Error setting texture parameter min filter.");
-		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
-		if (glGetError()) throw _T("Error setting texture parameter mag filter.");
-	}
-	else {
-		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
-		if (glGetError()) throw _T("Error setting texture parameter min filter.");
-		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
-		if (glGetError()) throw _T("Error setting texture parameter mag filter.");
-	}
-
-	// Texture coordinates
-	float top = 0.0f;
-	float bot = context->GetTexH();
-	wxASSERT(bot != 0.0f);
-	if (context->IsInverted()) {
-		top = context->GetTexH();
-		bot = 0.0f;
-	}
-	float left = 0.0;
-	float right = context->GetTexW();
-	wxASSERT(right != 0.0f);
-
-	// Draw frame
 	glDisable(GL_BLEND);
 	if (glGetError()) throw _T("Error disabling blending.");
-	context->SetShader(true);
-	glBindTexture(GL_TEXTURE_2D, VideoContext::Get()->GetFrameAsTexture(-1));
-	if (glGetError()) throw _T("Error binding texture.");
-	glColor4f(1.0f,1.0f,1.0f,1.0f);
-	glBegin(GL_QUADS);
-		// Top-left
-		glTexCoord2f(left,top);
-		glVertex2f(0,0);
-		// Bottom-left
-		glTexCoord2f(left,bot);
-		glVertex2f(0,sh);
-		// Bottom-right
-		glTexCoord2f(right,bot);
-		glVertex2f(sw,sh);
-		// Top-right
-		glTexCoord2f(right,top);
-		glVertex2f(sw,0);
-	glEnd();
-	context->SetShader(false);
-	glDisable(GL_TEXTURE_2D);
 
-	// TV effects
+	videoOut->Render(sw, sh);
+
 	DrawTVEffects();
 
-	// Draw overlay
-	if (visual) visual->Draw();
+	visual->Draw();
 
-	// Swap buffers
 	glFinish();
-	//if (glGetError()) throw _T("Error finishing gl operation.");
 	SwapBuffers();
+}
+catch (const VideoOutUnsupportedException &err) {
+		wxLogError(
+		_T("An error occurred trying to render the video frame to screen.\n")
+		_T("Your graphics card does not appear to have a functioning OpenGL driver.\n")
+		_T("Error message reported: %s"),
+		err.GetMessage());
+	VideoContext::Get()->Reset();
+}
+catch (const VideoOutException &err) {
+		wxLogError(
+		_T("An error occurred trying to render the video frame to screen.\n")
+		_T("If you get this error regardless of which video file you use, and also if you use dummy video, Aegisub might not work with your graphics card's OpenGL driver.\n")
+		_T("Error message reported: %s"),
+		err.GetMessage());
+	VideoContext::Get()->Reset();
 }
 catch (const wxChar *err) {
 	wxLogError(
@@ -551,82 +556,6 @@ void VideoDisplay::SetZoomPos(int value) {
 	SetZoom(double(value+1)/8.0);
 	if (zoomBox->GetSelection() != value) zoomBox->SetSelection(value);
 }
-
-
-////////////////////////////
-// Updates position display
-void VideoDisplay::UpdatePositionDisplay() {
-	// Update position display control
-	if (!PositionDisplay) {
-		throw _T("Position Display not set!");
-	}
-
-	// Get time
-	int frame_n = VideoContext::Get()->GetFrameN();
-	int time = VFR_Output.GetTimeAtFrame(frame_n,true,true);
-	int temp = time;
-	int h=0, m=0, s=0, ms=0;
-	while (temp >= 3600000) {
-		temp -= 3600000;
-		h++;
-	}
-	while (temp >= 60000) {
-		temp -= 60000;
-		m++;
-	}
-	while (temp >= 1000) {
-		temp -= 1000;
-		s++;
-	}
-	ms = temp;
-
-	// Position display update
-	PositionDisplay->SetValue(wxString::Format(_T("%01i:%02i:%02i.%03i - %i"),h,m,s,ms,frame_n));
-	if (VideoContext::Get()->GetKeyFrames().Index(frame_n) != wxNOT_FOUND) {
-		PositionDisplay->SetBackgroundColour(Options.AsColour(_T("Grid selection background")));
-		PositionDisplay->SetForegroundColour(Options.AsColour(_T("Grid selection foreground")));
-	}
-	else {
-		PositionDisplay->SetBackgroundColour(wxNullColour);
-		PositionDisplay->SetForegroundColour(wxNullColour);
-	}
-
-	// Subs position display update
-	UpdateSubsRelativeTime();
-}
-
-
-////////////////////////////////////////////////////
-// Updates box with subs position relative to frame
-void VideoDisplay::UpdateSubsRelativeTime() {
-	// Set variables
-	wxString startSign;
-	wxString endSign;
-	int startOff,endOff;
-	int frame_n = VideoContext::Get()->GetFrameN();
-	AssDialogue *curLine = VideoContext::Get()->curLine;
-
-	// Set start/end
-	if (curLine) {
-		int time = VFR_Output.GetTimeAtFrame(frame_n,true,true);
-		startOff = time - curLine->Start.GetMS();
-		endOff = time - curLine->End.GetMS();
-	}
-
-	// Fallback to zero
-	else {
-		startOff = 0;
-		endOff = 0;
-	}
-
-	// Positive signs
-	if (startOff > 0) startSign = _T("+");
-	if (endOff > 0) endSign = _T("+");
-
-	// Update line
-	SubsPosition->SetValue(wxString::Format(_T("%s%ims; %s%ims"),startSign.c_str(),startOff,endSign.c_str(),endOff));
-}
-
 
 /////////////////////
 // Copy to clipboard

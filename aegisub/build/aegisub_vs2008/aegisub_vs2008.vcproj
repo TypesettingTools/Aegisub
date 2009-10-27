@@ -1828,6 +1828,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\include\aegisub\exception.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\include\aegisub\spellchecker.h"
 				>
 			</File>
@@ -1901,6 +1905,14 @@
 			</File>
 			<File
 				RelativePath="..\..\src\video_display.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\video_out_gl.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\video_out_gl.h"
 				>
 			</File>
 			<File

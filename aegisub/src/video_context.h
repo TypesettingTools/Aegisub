@@ -150,7 +150,6 @@ public:
 	void SaveSnapshot(bool raw);
 
 	wxGLContext *GetGLContext(wxGLCanvas *canvas);
-	GLuint GetFrameAsTexture(int n);
 	float GetTexW() { return texW; }
 	float GetTexH() { return texH; }
 	VideoFrameFormat GetFormat() { return vidFormat; }
@@ -217,3 +216,4 @@ public:
 	VideoContextThread(VideoContext *parent);
 	wxThread::ExitCode Entry();
 };
+

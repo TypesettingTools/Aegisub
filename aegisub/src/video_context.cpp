@@ -352,28 +352,13 @@ void VideoContext::RemoveDisplay(VideoDisplay *display) {
 // Update displays
 void VideoContext::UpdateDisplays(bool full) {
 	for (std::list<VideoDisplay*>::iterator cur=displayList.begin();cur!=displayList.end();cur++) {
-		// Get display
 		VideoDisplay *display = *cur;
 
-		// Update slider
 		if (full) {
 			display->UpdateSize();
 			display->ControlSlider->SetRange(0,GetLength()-1);
 		}
-		display->ControlSlider->SetValue(GetFrameN());
-		//display->ControlSlider->Update();
-		display->UpdatePositionDisplay();
-
-		// If not shown, don't update the display itself
-		if (!display->IsShownOnScreen()) continue;
-
-		// Update visual controls
-		if (display->visual) display->visual->Refresh();
-
-		// Update controls
-		//display->Refresh();
-		//display->Update();
-		display->Render();
+		display->SetFrame(GetFrameN());
 	}
 
 	// Update audio display
@@ -383,7 +368,6 @@ void VideoContext::UpdateDisplays(bool full) {
 		}
 	}
 }
-
 
 /////////////////////
 // Refresh subtitles
@@ -434,7 +418,6 @@ void VideoContext::JumpToFrame(int n) {
 		try {
 			// Set frame number
 			frame_n = n;
-			GetFrameAsTexture(n);
 
 			// Display
 			UpdateDisplays(false);
@@ -526,122 +509,9 @@ AegiVideoFrame VideoContext::GetFrame(int n,bool raw) {
 	else return frame;
 }
 
-
-///////////////////////////
-// Get GL Texture of frame
-GLuint VideoContext::GetFrameAsTexture(int n) {
-	// Already uploaded
-	if (n == lastFrame || n == -1) return lastTex;
-
-	// Get frame
-	AegiVideoFrame frame = GetFrame(n);
-
-	// Set frame
-	lastFrame = n;
-
-	// Set context
-#ifdef __APPLE__
-	GetGLContext(displayList.front())->SetCurrent();
-#else
-	GetGLContext(displayList.front())->SetCurrent(*displayList.front());
-#endif
-	glEnable(GL_TEXTURE_2D);
-	if (glGetError() != 0) throw _T("Error enabling texture.");
-
-	// Image type
-	GLenum format = GL_LUMINANCE;
-	if (frame.format == FORMAT_RGB32) {
-		if (frame.invertChannels) format = GL_BGRA_EXT;
-		else format = GL_RGBA;
-	}
-	else if (frame.format == FORMAT_RGB24) {
-		if (frame.invertChannels) format = GL_BGR_EXT;
-		else format = GL_RGB;
-	}
-	else if (frame.format == FORMAT_YV12) {
-		format = GL_LUMINANCE;
-	}
-	isInverted = frame.flipped;
-
-	if (lastTex == 0) {
-		// Enable
-		glShadeModel(GL_FLAT);
-
-		// Generate texture with GL
-		//glActiveTexture(GL_TEXTURE0);
-		glGenTextures(1, &lastTex);
-		if (glGetError() != 0) throw _T("Error generating texture.");
-		glBindTexture(GL_TEXTURE_2D, lastTex);
-		if (glGetError() != 0) throw _T("Error binding texture.");
-
-		// Texture parameters
-		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
-		if (glGetError() != 0) throw _T("Error setting min_filter texture parameter.");
-		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
-		if (glGetError() != 0) throw _T("Error setting mag_filter texture parameter.");
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
-		if (glGetError() != 0) throw _T("Error setting wrap_s texture parameter.");
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
-		if (glGetError() != 0) throw _T("Error setting wrap_t texture parameter.");
-
-		// Allocate texture
-		int height = frame.h;
-		if (frame.format == FORMAT_YV12) height = height * 3 / 2;
-		int tw = SmallestPowerOf2(MAX(frame.pitch[0]/frame.GetBpp(0),frame.pitch[1]+frame.pitch[2]));
-		int th = SmallestPowerOf2(height);
-		glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA8,tw,th,0,format,GL_UNSIGNED_BYTE,NULL);
-		if (glGetError() != 0) {
-			tw = MAX(tw,th);
-			th = tw;
-			glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA8,tw,th,0,format,GL_UNSIGNED_BYTE,NULL);
-			if (glGetError() != 0) {
-				glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA,tw,th,0,format,GL_UNSIGNED_BYTE,NULL);
-				if (glGetError() != 0) throw _T("Error allocating texture.");
-			}
-		}
-		texW = float(frame.w)/float(tw);
-		texH = float(frame.h)/float(th);
-
-		// Set texture
-		//glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_FASTEST);
-		//if (glGetError() != 0) throw _T("Error setting hinting.");
-
-		// Create shader
-		if (frame.format == FORMAT_YV12 && yv12shader == 0 && OpenGLWrapper::UseShaders()) {
-			yv12shader = OpenGLWrapper::CreateYV12Shader(texW,texH,float(frame.pitch[1])/float(tw));
-		}
-
-		// Set priority
-		float priority = 1.0f;
-		glPrioritizeTextures(1,&lastTex,&priority);
-	}
-	
-	// Load texture data
-	glBindTexture(GL_TEXTURE_2D, lastTex);
-	glTexSubImage2D(GL_TEXTURE_2D,0,0,0,frame.pitch[0]/frame.GetBpp(0),frame.h,format,GL_UNSIGNED_BYTE,frame.data[0]);
-	if (glGetError() != 0) throw _T("Error uploading primary plane");
-
-	// UV planes for YV12
-	if (frame.format == FORMAT_YV12) {
-		int u = 1;
-		int v = 2;
-		if (frame.invertChannels) {
-			u = 2;
-			v = 1;
-		}
-		glTexSubImage2D(GL_TEXTURE_2D,0,0,frame.h,frame.pitch[1],frame.h/2,format,GL_UNSIGNED_BYTE,frame.data[u]);
-		if (glGetError() != 0) throw _T("Error uploading U plane.");
-		glTexSubImage2D(GL_TEXTURE_2D,0,frame.pitch[1],frame.h,frame.pitch[2],frame.h/2,format,GL_UNSIGNED_BYTE,frame.data[v]);
-		if (glGetError() != 0) throw _T("Error uploadinv V plane.");
-	}
-
-	// Return texture number
-	return lastTex;
-}
-
-
-/////////////////
-// Save snapshot
+/// @brief Save snapshot 
+/// @param raw 
+///
 void VideoContext::SaveSnapshot(bool raw) {
 	// Get folder
 	wxString option = Options.AsText(_T("Video Screenshot Path"));
@@ -918,7 +788,6 @@ wxThread::ExitCode VideoContextThread::Entry() {
 		// Get frame and set frame number
 		{
 			wxMutexLocker glLock(OpenGLWrapper::glMutex);
-			parent->GetFrameAsTexture(frame);
 			parent->frame_n = frame;
 		}
 
