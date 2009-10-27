@@ -1,4 +1,3 @@
-Aegisub.exe
 Aegisub.pdb
 aegisub32.exe
 aegisub32.pdb

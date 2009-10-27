@@ -310,10 +310,15 @@ begin
   // Check for uninstall entry for runtimes, don't bother installing if it can be uninstalled now
   // HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\{9A25302D-30C0-39D9-BD6F-21E6EC160475}
   // Check: DisplayVersion = "9.0.30729"
-  DisplayVersion := '';
-  Result := RegQueryStringValue(HKLM, 'SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\{9A25302D-30C0-39D9-BD6F-21E6EC160475}',
-      'DisplayVersion', DisplayVersion);
-  Result := Result and (DisplayVersion = '9.0.30729');
+  try
+    DisplayVersion := '';
+    Result := RegQueryStringValue(HKLM, 'SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\{9A25302D-30C0-39D9-BD6F-21E6EC160475}',
+        'DisplayVersion', DisplayVersion);
+    Result := Result and (DisplayVersion = '9.0.30729');
+  except
+    // If the check fails take the safe route
+    Result := False;
+  end;
   
   Result := not Result;
 end;
@@ -333,27 +338,27 @@ begin
   // Thanks to ender for the following snippets
   
   // Fix bitmaps for small/large fonts
-	if WizardForm.WizardBitmapImage.Height < 386 then //use smaller image when not using Large Fonts
-	begin
-		try
-			ExtractTemporaryFile('welcome.bmp');
-			SmallBitmap := TFileStream.Create(ExpandConstant('{tmp}\welcome.bmp'),fmOpenRead);
-			WizardForm.WizardBitmapImage.Bitmap.LoadFromStream(SmallBitmap);
-			WizardForm.WizardBitmapImage2.Bitmap := WizardForm.WizardBitmapImage.Bitmap;
-			SmallBitmap.Free;
-			
-			ExtractTemporaryFile('aegisub.bmp');
-			SmallBitmap := TFileStream.Create(ExpandConstant('{tmp}\aegisub.bmp'),fmOpenRead);
-			WizardForm.WizardSmallBitmapImage.Bitmap.LoadFromStream(SmallBitmap);
-		except
-			Log('Error loading bitmaps: ' + GetExceptionMessage);
-		finally
-			SmallBitmap.Free;
-		end;
-	end;
-	
-	// Endow install dir edit box with autocomplete
-	try
+  if WizardForm.WizardBitmapImage.Height < 386 then //use smaller image when not using Large Fonts
+  begin
+    try
+      ExtractTemporaryFile('welcome.bmp');
+      SmallBitmap := TFileStream.Create(ExpandConstant('{tmp}\welcome.bmp'),fmOpenRead);
+      WizardForm.WizardBitmapImage.Bitmap.LoadFromStream(SmallBitmap);
+      WizardForm.WizardBitmapImage2.Bitmap := WizardForm.WizardBitmapImage.Bitmap;
+      SmallBitmap.Free;
+      
+      ExtractTemporaryFile('aegisub.bmp');
+      SmallBitmap := TFileStream.Create(ExpandConstant('{tmp}\aegisub.bmp'),fmOpenRead);
+      WizardForm.WizardSmallBitmapImage.Bitmap.LoadFromStream(SmallBitmap);
+  	except
+      Log('Error loading bitmaps: ' + GetExceptionMessage);
+    finally
+      SmallBitmap.Free;
+    end;
+  end;
+  
+  // Endow install dir edit box with autocomplete
+  try
     SHAutoComplete(WizardForm.DirEdit.Handle, SHACF_FILESYSTEM);
   except
     Log('Could not add autocomplete to dir edit box');
@@ -369,20 +374,26 @@ end;
 
 function InitializeSetup: Boolean;
 begin
-  HasLegacyVersion := RegValueExists(HKLM, 'SOFTWARE\Aegisub\info', 'InstVer');
-  Log(Format('Legacy version found: %s', [BoolToStr(HasLegacyVersion)]));
-
   LegacyStartMenuFolder := 'Aegisub';
-  if RegQueryStringValue(HKLM, 'SOFTWARE\Aegisub\info', 'StartMenuDir', LegacyStartMenuFolder) then
-    LegacyStartMenuFolder := ExpandConstant('{userprograms}\') + LegacyStartMenuFolder;
-  Log(Format('Legacy version Start menu folder: %s', [LegacyStartMenuFolder]));
-
   LegacyInstallFolder := ExpandConstant('{pf}\Aegisub');
-  RegQueryStringValue(HKLM, 'SOFTWARE\Aegisub\info', 'InstallDir', LegacyInstallFolder);
-  Log(Format('Legacy version install folder: %s', [LegacyInstallFolder]));
-  
   LegacyVersionNumber := '1.x';
-  RegQueryStringValue(HKLM, 'SOFTWARE\Aegisub\info', 'InstVer', LegacyVersionNumber);
+
+  try
+    HasLegacyVersion := RegValueExists(HKLM, 'SOFTWARE\Aegisub\info', 'InstVer');
+    Log(Format('Legacy version found: %s', [BoolToStr(HasLegacyVersion)]));
+
+    if RegQueryStringValue(HKLM, 'SOFTWARE\Aegisub\info', 'StartMenuDir', LegacyStartMenuFolder) then
+      LegacyStartMenuFolder := ExpandConstant('{userprograms}\') + LegacyStartMenuFolder;
+    Log(Format('Legacy version Start menu folder: %s', [LegacyStartMenuFolder]));
+
+    RegQueryStringValue(HKLM, 'SOFTWARE\Aegisub\info', 'InstallDir', LegacyInstallFolder);
+    Log(Format('Legacy version install folder: %s', [LegacyInstallFolder]));
+
+    RegQueryStringValue(HKLM, 'SOFTWARE\Aegisub\info', 'InstVer', LegacyVersionNumber);
+  except
+    Log('An exception occurred while trying to detect a legacy installation of Aegisub. Assuming there isn''t one.');
+    HasLegacyVersion := False;
+  end;
 
   Result := True;
   if HasLegacyVersion then
@@ -396,33 +407,37 @@ var
   NewCatalogDir: string;
   search: TFindRec;
 begin
-  // Upgrade an 1.x style-catalog by moving it to {appdata}
-  OldCatalogDir := OldInstallFolder('') + '\Catalog\';
-  Log('-- Migrate style catalogs --');
-  if DirExists(OldCatalogDir) then
-  begin
-    NewCatalogDir := ExpandConstant('{userappdata}\Aegisub\catalog\');
-    ForceDirectories(NewCatalogDir);
-    Log('Old style catalog dir: ' + OldCatalogDir);
-    Log('New catalog dir: ' + NewCatalogDir);
-    if FindFirst(OldCatalogDir + '*', search) then
-    try
-      repeat
-        Log('Found style catalog: ' + OldCatalogDir + search.Name);
-        if FileCopy(OldCatalogDir+search.Name, NewCatalogDir+search.Name, True) then
-        begin
-          Log('Copied catalog to: ' + NewCatalogDir+search.Name);
-          DeleteFile(OldCatalogDir+search.Name);
-        end;
-      until not FindNext(search);
-    finally
-      FindClose(search);
-      Log('Done migrating styles');
-    end;
-    RemoveDir(OldCatalogDir);
-  end
-  else
-    Log('No existing style catalog collection found');
+  try
+    // Upgrade an 1.x style-catalog by moving it to {appdata}
+    OldCatalogDir := OldInstallFolder('') + '\Catalog\';
+    Log('-- Migrate style catalogs --');
+    if DirExists(OldCatalogDir) then
+    begin
+      NewCatalogDir := ExpandConstant('{userappdata}\Aegisub\catalog\');
+      ForceDirectories(NewCatalogDir);
+      Log('Old style catalog dir: ' + OldCatalogDir);
+      Log('New catalog dir: ' + NewCatalogDir);
+      if FindFirst(OldCatalogDir + '*', search) then
+      try
+        repeat
+          Log('Found style catalog: ' + OldCatalogDir + search.Name);
+          if FileCopy(OldCatalogDir+search.Name, NewCatalogDir+search.Name, True) then
+          begin
+            Log('Copied catalog to: ' + NewCatalogDir+search.Name);
+            DeleteFile(OldCatalogDir+search.Name);
+          end;
+        until not FindNext(search);
+      finally
+        FindClose(search);
+        Log('Done migrating styles');
+      end;
+      RemoveDir(OldCatalogDir);
+    end
+    else
+      Log('No existing style catalog collection found');
+  except
+    Log('An exception occurred while trying to migrate style catalogues.');
+  end;
 end;
 
 
@@ -520,6 +535,9 @@ begin
     page.SetText('Uninstallation complete', '');
     page.SetProgress(totalitems, totalitems);
 
+  except
+    Log('An exception occurred while trying to uninstall a legacy version');
+	
   finally
     shortcut_list.Free;
     file_list.Free;
@@ -565,8 +583,10 @@ begin
     dir_list := TStringList.Create;
     dir_list.LoadFromFile(ExpandConstant('{tmp}\old_dirlist.txt'));
     itemsdone := 0;
-    totalitems := file_list.Count + dir_list.Count + shortcut_list.Count + locale_list.Count + 1;
-    // One extra for the start menu folder
+    totalitems := file_list.Count + dir_list.Count + shortcut_list.Count + locale_list.Count + 2;
+    // Two extra:
+    // - Start menu folder
+    // - Renaming Aegisub.exe to aegiub32.exe
 
     StartMenuFolder := ExpandConstant('{commonprograms}\Aegisub\');
     for i := 0 to shortcut_list.Count-1 do
@@ -595,6 +615,13 @@ begin
       if not DeleteFile(curname) then Log('* Deletion failed');
       itemsdone := itemsdone + 1;
     end;
+    
+    // This moving is done to help Windows' link tracking code be able to fix shortcuts
+    page.SetText('Moving EXE file to new name', 'Aegisub.exe');
+    page.SetProgress(itemsdone, totalitems);
+    Log('Rename Aegisub.exe to aegisub32.exe');
+    RenameFile(InstallFolder+'Aegisub.exe', InstallFolder+'aegisub32.exe');
+    itemsdone := itemsdone + 1;
 
     for i := 0 to locale_list.Count-1 do
     begin
@@ -619,6 +646,9 @@ begin
     page.SetText('Uninstallation complete', '');
     page.SetProgress(totalitems, totalitems);
 
+  except
+    Log('An exception occurred while trying to clean up an older version');
+
   finally
     shortcut_list.Free;
     file_list.Free;
@@ -631,14 +661,14 @@ end;
 
 procedure CurStepChanged(CurStep: TSetupStep);
 begin
-	if CurStep = ssInstall then
-	begin
-	  if HasLegacyVersion then
-	  begin
+  if CurStep = ssInstall then
+  begin
+    if HasLegacyVersion then
+    begin
       MigrateStyleCatalogs;
       UninstallLegacyVersion;
-    end
+    end;
     CleanUpOldVersion;
-	end;
+  end;
 end;
 
