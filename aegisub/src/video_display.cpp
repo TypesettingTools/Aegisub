@@ -152,6 +152,7 @@ void VideoDisplay::ShowCursor(bool show) {
 }
 
 void VideoDisplay::SetFrame(int frameNumber) {
+	VideoContext *context = VideoContext::Get();
 	ControlSlider->SetValue(frameNumber);
 
 	// Get time for frame
@@ -163,7 +164,7 @@ void VideoDisplay::SetFrame(int frameNumber) {
 
 	// Set the text box for frame number and time
 	PositionDisplay->SetValue(wxString::Format(_T("%01i:%02i:%02i.%03i - %i"), h, m, s, ms, frameNumber));
-	if (VideoContext::Get()->GetKeyFrames().Index(frameNumber) != wxNOT_FOUND) {
+	if (context->GetKeyFrames().Index(frameNumber) != wxNOT_FOUND) {
 		// Set the background color to indicate this is a keyframe
 		PositionDisplay->SetBackgroundColour(Options.AsColour(_T("Grid selection background")));
 		PositionDisplay->SetForegroundColour(Options.AsColour(_T("Grid selection foreground")));
@@ -178,7 +179,7 @@ void VideoDisplay::SetFrame(int frameNumber) {
 	int startOff = 0;
 	int endOff = 0;
 
-	if (AssDialogue *curLine = VideoContext::Get()->curLine) {
+	if (AssDialogue *curLine = context->curLine) {
 		startOff = time - curLine->Start.GetMS();
 		endOff = time - curLine->End.GetMS();
 	}
@@ -193,8 +194,11 @@ void VideoDisplay::SetFrame(int frameNumber) {
 	if (IsShownOnScreen() && visual) visual->Refresh();
 
 	// Render the new frame
-	videoOut->InvalidateFrame();
-	Render(frameNumber);
+	if (context->IsLoaded()) {
+		AegiVideoFrame frame = context->GetFrame(frameNumber);
+		videoOut->UploadFrameData(frame);
+	}
+	Render();
 
 	currentFrame = frameNumber;
 }
@@ -205,7 +209,7 @@ void VideoDisplay::SetFrameRange(int from, int to) {
 
 
 /// @brief Render the currently visible frame
-void VideoDisplay::Render(int frameNumber) try {
+void VideoDisplay::Render() try {
 	if (!IsShownOnScreen()) return;
 	if (!wxIsMainThread()) throw _T("Error: trying to render from non-primary thread");
 
@@ -275,7 +279,7 @@ void VideoDisplay::Render(int frameNumber) try {
 	glDisable(GL_BLEND);
 	if (glGetError()) throw _T("Error disabling blending.");
 
-	videoOut->DisplayFrame(context->GetFrame(frameNumber), frameNumber, sw, sh);
+	videoOut->Render(sw, sh);
 
 	DrawTVEffects();
 

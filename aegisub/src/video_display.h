@@ -145,7 +145,7 @@ public:
 	int GetFrame() const { return currentFrame; }
 	void SetFrameRange(int from, int to);
 
-	void Render(int frameNumber = -1);
+	void Render();
 
 	void ShowCursor(bool show);
 	void ConvertMouseCoords(int &x,int &y);
