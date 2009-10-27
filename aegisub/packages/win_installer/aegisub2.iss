@@ -36,8 +36,8 @@
 [Setup]
 AppID={{24BC8B57-716C-444F-B46B-A3349B9164C5}
 AppName=Aegisub
-AppVerName=Aegisub 2.1.7
-AppVersion=2.1.7
+AppVerName=Aegisub 2.1.8
+AppVersion=2.1.8
 AppPublisher=Aegisub Team
 AppPublisherURL=http://www.aegisub.org/
 AppSupportURL=http://forum.aegisub.org/
@@ -46,7 +46,7 @@ DefaultDirName={pf}\Aegisub
 DefaultGroupName=Aegisub
 AllowNoIcons=true
 OutputDir=output
-OutputBaseFilename=Aegisub-2.1.7-setup
+OutputBaseFilename=Aegisub-2.1.8-setup
 Compression=lzma/ultra64
 SolidCompression=true
 MinVersion=0,5.0
@@ -275,7 +275,7 @@ Name: assdraw; Description: ai-chan's ASSDraw3 for ASS vector drawing; Types: fu
 
 [Messages]
 ; Replacement for License page, no need to bother the user with legal mumbo-jumbo
-WelcomeLabel2=This will install Aegisub 2.1.7 on your computer.%n%nAegisub is covered by the GNU General Public License version 2. This means you may use the application for any purpose without charge, but that no warranties of any kind are given either.%n%nSee the Aegisub website for information on obtaining the source code.
+WelcomeLabel2=This will install Aegisub 2.1.8 on your computer.%n%nAegisub is covered by the GNU General Public License version 2. This means you may use the application for any purpose without charge, but that no warranties of any kind are given either.%n%nSee the Aegisub website for information on obtaining the source code.
 
 
 [Code]
