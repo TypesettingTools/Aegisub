@@ -64,6 +64,8 @@ private:
 	int frameHeight;
 	/// The frame format which the texture grid has been set up for
 	GLenum frameFormat;
+	/// Whether the grid is set up for flipped video
+	bool frameFlipped;
 	/// List of OpenGL texture ids used in the grid
 	std::vector<GLuint> textureIdList;
 	/// List of precalculated texture display information

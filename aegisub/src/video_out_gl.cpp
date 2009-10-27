@@ -107,6 +107,7 @@ VideoOutGL::VideoOutGL()
 	frameWidth(0),
 	frameHeight(0),
 	frameFormat(0),
+	frameFlipped(false),
 	textureIdList(),
 	textureList(),
 	textureCount(0),
@@ -153,7 +154,7 @@ void VideoOutGL::DetectOpenGLCapabilities() {
 /// @param bpp The frame's bytes per pixel
 void VideoOutGL::InitTextures(int width, int height, GLenum format, int bpp, bool flipped) {
 	// Do nothing if the frame size and format are unchanged
-	if (width == frameWidth && height == frameHeight && format == frameFormat) return;
+	if (width == frameWidth && height == frameHeight && format == frameFormat && flipped == frameFlipped) return;
 	wxLogDebug("VideoOutGL::InitTextures: Video size: %dx%d\n", width, height);
 
 	DetectOpenGLCapabilities();
@@ -218,21 +219,20 @@ void VideoOutGL::InitTextures(int width, int height, GLenum format, int bpp, boo
 				ti.texTop = 1.0f / (2 * h);
 			}
 
-			ti.texRight = 1.0f - ti.texLeft;
-			ti.texBottom = 1.0f - ti.texTop;
-
-			if (flipped) {
-				float t = ti.texTop;
-				ti.texTop = ti.texBottom;
-				ti.texBottom = ti.texTop;
-			}
-
-			// destW/H is the percent of the output which this texture covers
 			ti.destW = float(w) / width;
 			ti.destH = float(h) / height;
 
 			ti.textureID = textureIdList[i * textureCols + j];
 			ti.dataOffset = sourceY * width * bpp + sourceX * bpp;
+
+			ti.texRight = 1.0f - ti.texLeft;
+			ti.texBottom = 1.0f - ti.texTop;
+			if (flipped) {
+				ti.texBottom = ti.texTop - float(h - ti.sourceH) / h;
+				ti.texTop = 1.0f - ti.texTop - float(h - ti.sourceH) / h;
+
+				ti.dataOffset = (height - sourceY - ti.sourceH) * width * bpp + sourceX * bpp;
+			}
 
 			// Actually create the texture and set the scaling mode
 			glBindTexture(GL_TEXTURE_2D, ti.textureID);
