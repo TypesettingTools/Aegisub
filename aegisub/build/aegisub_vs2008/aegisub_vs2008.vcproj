@@ -1572,14 +1572,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\subtitle_format_prs.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\subtitle_format_prs.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\subtitle_format_srt.cpp"
 				>
 			</File>
