@@ -138,7 +138,7 @@ bool AegisubApp::OnInit() {
 #endif
 
 		// Crash handling
-#ifndef _DEBUG
+#if !defined(_DEBUG) || defined(WITH_EXCEPTIONS)
 		StartupLog(_T("Install exception handler"));
 		wxHandleFatalExceptions(true);
 #endif
@@ -205,7 +205,7 @@ bool AegisubApp::OnInit() {
 		AssExportFilterChain::PrepareFilters();
 
 		// Set association
-#ifndef _DEBUG
+#if !defined(_DEBUG) || defined(WITH_EXCEPTIONS)
 		StartupLog(_T("Install file type associations"));
 		if (!Options.AsBool(_T("Local config")))
 			RegistryAssociate();
@@ -253,7 +253,7 @@ int AegisubApp::OnExit() {
 }
 
 
-#ifndef _DEBUG
+#if !defined(_DEBUG) || defined(WITH_EXCEPTIONS)
 /////////////////////////////////////////////
 // Message displayed on unhandled exceptions
 const static wxChar unhandled_exception_message[] = _T("Oops, Aegisub has crashed!\n\nI have tried to emergency-save a copy of your file, and a crash log file has been generated.\n\nYou can find the emergency-saved file in:\n%s\n\nIf you submit the crash log to the Aegisub team, we will investigate the problem and attempt to fix it. You can find the crashlog in:\n%s\n\nAegisub will now close.");
