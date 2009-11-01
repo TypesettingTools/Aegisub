@@ -801,6 +801,10 @@ DialogColorPicker::~DialogColorPicker()
 	delete rgb_slider[2];
 	delete hsl_slider;
 	delete hsv_slider;
+
+#ifdef __WXMSW__
+	if (screen_dropper_icon->HasCapture()) screen_dropper_icon->ReleaseMouse();
+#endif
 }
 
 
