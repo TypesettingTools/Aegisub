@@ -58,7 +58,6 @@
 #endif
 #include "charset_conv.h"
 #include "dialog_about.h"
-#include "dialog_associations.h"
 #include "dialog_attachments.h"
 #include "dialog_automation.h"
 #include "dialog_dummy_video.h"
@@ -202,7 +201,6 @@ BEGIN_EVENT_TABLE(FrameMain, wxFrame)
 	EVT_MENU(Menu_Help_About, FrameMain::OnAbout)
 
 	EVT_MENU(Menu_View_Language, FrameMain::OnChooseLanguage)
-	EVT_MENU(Menu_View_Associations, FrameMain::OnPickAssociations)
 	EVT_MENU(Menu_View_Standard, FrameMain::OnViewStandard)
 	EVT_MENU(Menu_View_Audio, FrameMain::OnViewAudio)
 	EVT_MENU(Menu_View_Video, FrameMain::OnViewVideo)
@@ -1922,18 +1920,6 @@ void FrameMain::OnChooseLanguage (wxCommandEvent &event) {
 			}
 		}
 	}
-}
-
-
-
-/// @brief Pick associations 
-/// @param event 
-///
-void FrameMain::OnPickAssociations(wxCommandEvent &event) {
-#ifdef WIN32
-	DialogAssociations diag(NULL);
-	diag.ShowModal();
-#endif
 }
 
 

@@ -166,7 +166,6 @@ EXTRA_aegisub_2_2_SOURCES = \
 	auto4_lua_dialog.cpp \
 	auto4_lua_scriptreader.cpp \
 	avisynth_wrap.cpp \
-	dialog_associations.cpp \
 	setup.cpp \
 	spellchecker_hunspell.cpp \
 	subtitle_format_prs.cpp \

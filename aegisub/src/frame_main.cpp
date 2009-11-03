@@ -541,9 +541,6 @@ void FrameMain::InitMenu() {
 	viewMenu = new wxMenu();
 	AppendBitmapMenuItem(viewMenu,Menu_View_Language, _T("&Language..."), _("Select Aegisub interface language"), GETIMAGE(languages_menu_16));
 	AppendBitmapMenuItem(viewMenu,Menu_Tools_Options, MakeHotkeyText(_("&Options..."), _T("Options")), _("Configure Aegisub"), GETIMAGE(options_button_16));
-#ifdef WIN32
-	AppendBitmapMenuItem(viewMenu,Menu_View_Associations, _("&Associations..."), _("Associate file types with Aegisub"), GETIMAGE(blank_button_16));
-#endif
 	viewMenu->AppendSeparator();
 	viewMenu->AppendRadioItem(Menu_View_Subs, _("Subs Only View"), _("Display subtitles only"));
 	viewMenu->AppendRadioItem(Menu_View_Video, _("Video+Subs View"), _("Display video and subtitles only"));

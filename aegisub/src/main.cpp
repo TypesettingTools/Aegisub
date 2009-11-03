@@ -60,7 +60,6 @@
 #include "auto4_base.h"
 #endif
 #include "charset_conv.h"
-#include "dialog_associations.h"
 #include "export_framerate.h"
 #include "frame_main.h"
 #include "hotkeys.h"
@@ -227,13 +226,6 @@ bool AegisubApp::OnInit() {
 		// Load export filters
 		StartupLog(_T("Prepare export filters"));
 		AssExportFilterChain::PrepareFilters();
-
-		// Set association
-#ifndef _DEBUG
-		StartupLog(_T("Install file type associations"));
-		if (!Options.AsBool(_T("Local config")))
-			RegistryAssociate();
-#endif
 
 		// Get parameter subs
 		StartupLog(_T("Parse command line"));
@@ -444,56 +436,6 @@ int AegisubApp::OnRun() {
 
 	ExitMainLoop();
 	return 1;
-}
-
-
-
-/// @brief Registry program to filetypes 
-/// @note On UNIX this is handled by desktop/.
-/// @todo Add something for OSX?
-void AegisubApp::RegistryAssociate () {
-#if defined(__WINDOWS__)
-	// Command to open with this
-	wxString command;
-	wxStandardPaths stand;
-	wxString fullPath = stand.GetExecutablePath();
-	command = _T("\"") + fullPath + _T("\" \"%1\"");
-
-	// Main program association
-	wxRegKey *key = new wxRegKey(_T("HKEY_CURRENT_USER\\Software\\Classes\\Aegisub"));
-	if (!key->Exists()) key->Create();
-	key->SetValue(_T(""),_T("Aegisub Subtitle Script"));
-	delete key;
-	key = new wxRegKey(_T("HKEY_CURRENT_USER\\Software\\Classes\\Aegisub\\DefaultIcon"));
-	if (!key->Exists()) key->Create();
-	key->SetValue(_T(""),fullPath);
-	delete key;
-	key = new wxRegKey(_T("HKEY_CURRENT_USER\\Software\\Classes\\Aegisub\\Shell"));
-	if (!key->Exists()) key->Create();
-	key->SetValue(_T(""),_T("open"));
-	delete key;
-	key = new wxRegKey(_T("HKEY_CURRENT_USER\\Software\\Classes\\Aegisub\\Shell\\Open"));
-	if (!key->Exists()) key->Create();
-	key->SetValue(_T(""),_T("&Open with Aegisub"));
-	delete key;
-	key = new wxRegKey(_T("HKEY_CURRENT_USER\\Software\\Classes\\Aegisub\\Shell\\Open\\Command"));
-	if (!key->Exists()) key->Create();
-	key->SetValue(_T(""),command);
-	delete key;
-
-	// Check associations
-	if (Options.AsBool(_T("Show associations"))) {
-		bool gotAll = DialogAssociations::CheckAssociation(_T("ass")) && DialogAssociations::CheckAssociation(_T("ssa")) &&
-					  DialogAssociations::CheckAssociation(_T("srt")) && DialogAssociations::CheckAssociation(_T("sub")) &&
-					  DialogAssociations::CheckAssociation(_T("ttxt"));
-		if (!gotAll) {
-			DialogAssociations diag(NULL);
-			diag.ShowModal();
-			Options.SetBool(_T("Show associations"),false);
-			Options.Save();
-		}
-	}
-#endif
 }
 
 

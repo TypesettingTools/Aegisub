@@ -90,9 +90,6 @@ public:
 	static AegisubApp* Get() { return (AegisubApp*) wxTheApp; }
 	static void OpenURL(wxString url);
 
-	void RegistryAssociate();
-	void AssociateType(wxString type);
-
 	bool OnInit();
 	int OnExit();
 	int OnRun();

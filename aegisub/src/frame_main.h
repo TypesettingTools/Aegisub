@@ -250,7 +250,6 @@ private:
 #endif
 
 	void OnChooseLanguage (wxCommandEvent &event);
-	void OnPickAssociations (wxCommandEvent &event);
 	void OnViewStandard (wxCommandEvent &event);
 	void OnViewVideo (wxCommandEvent &event);
 	void OnViewAudio (wxCommandEvent &event);
@@ -589,9 +588,6 @@ enum {
 
 	/// DOCME
 	Menu_View_Language,
-
-	/// DOCME
-	Menu_View_Associations,
 
 	/// DOCME
 	Menu_View_Standard,
