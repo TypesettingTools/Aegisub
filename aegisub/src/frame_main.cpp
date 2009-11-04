@@ -865,7 +865,7 @@ void FrameMain::UpdateTitle() {
 		wxFileName file (AssFile::top->filename);
 		newTitle << file.GetFullName();
 	}
-	else newTitle << _T("Untitled");
+	else newTitle << _("Untitled");
 	newTitle << _T(" - Aegisub ") << GetAegisubLongVersionString();
 #else
 	// Apple HIG says "untitled" should not be capitalised
@@ -875,7 +875,7 @@ void FrameMain::UpdateTitle() {
 		wxFileName file (AssFile::top->filename);
 		newTitle << file.GetFullName();
 	}
-	else newTitle << _T("untitled");
+	else newTitle << _("untitled");
 #endif
 	
 #ifdef __WXMAC__
