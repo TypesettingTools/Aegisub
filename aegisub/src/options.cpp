@@ -335,7 +335,7 @@ void OptionsManager::LoadDefaults(bool onlyDefaults,bool doOverride) {
 		SetBool(_T("Shift Times Direction"),true);
 
 		SetInt(_T("Tips current"),0);
-		SetBool(_T("Show associations"),true,1700);
+		SetBool(_T("Show associations"),true,3757);
 		SetBool(_T("Maximized"),false);
 
 		SetBool(_T("Find Match Case"),false);

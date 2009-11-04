@@ -1700,10 +1700,7 @@ void FrameMain::OnChooseLanguage (wxCommandEvent &event) {
 /////////////////////
 // Pick associations
 void FrameMain::OnPickAssociations(wxCommandEvent &event) {
-#ifdef WIN32
-	DialogAssociations diag(NULL);
-	diag.ShowModal();
-#endif
+	ShowAssociationsDialog(this);
 }
 
 

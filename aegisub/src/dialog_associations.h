@@ -37,27 +37,10 @@
 #pragma once
 
 
-///////////
-// Headers
-#include <wx/wxprec.h>
-#include <wx/dialog.h>
-#include <wx/checklst.h>
-#include <wx/slider.h>
+// Function to show the associations dialogue box or call the system UI for it
+void ShowAssociationsDialog(wxWindow *parent);
 
+// Checks whether Aegisub is the default subtitle editor and offers the user to
+// change associations back to Aegisub if it isn't
+void CheckFileAssociations(wxWindow *parent);
 
-//////////////////////////////////
-// File associations dialog class
-class DialogAssociations : public wxDialog {
-private:
-	wxCheckListBox *ListBox;
-	void OnOK(wxCommandEvent &event);
-
-public:
-	DialogAssociations(wxWindow *parent);
-	~DialogAssociations();
-
-	static bool CheckAssociation(wxString type);
-	static void AssociateType(wxString type);
-
-	DECLARE_EVENT_TABLE()
-};

@@ -512,7 +512,8 @@ void FrameMain::InitMenu() {
 	AppendBitmapMenuItem(viewMenu,Menu_View_Language, _T("&Language..."), _("Select Aegisub interface language"), wxBITMAP(blank_button));
 	AppendBitmapMenuItem(viewMenu,Menu_Tools_Options, MakeHotkeyText(_("&Options..."), _T("Options")), _("Configure Aegisub"), wxBITMAP(options_button));
 #ifdef WIN32
-	AppendBitmapMenuItem(viewMenu,Menu_View_Associations, _("&Associations..."), _("Associate file types with Aegisub"), wxBITMAP(blank_button));
+	if (!Options.AsBool(_T("Local config")))
+		AppendBitmapMenuItem(viewMenu,Menu_View_Associations, _("&Associations..."), _("Associate file types with Aegisub"), wxBITMAP(blank_button));
 #endif
 #ifdef __WXDEBUG__
 	AppendBitmapMenuItem(viewMenu,Menu_Tools_Log, _("Lo&g Window..."), _("Open log window"), wxBITMAP(blank_button));

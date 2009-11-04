@@ -114,6 +114,7 @@ DialogOptions::DialogOptions(wxWindow *parent)
 		AddCheckBox(generalPage,genSizer4,_("Show Splash Screen"),_T("Show splash"));
 #ifdef __WXMSW__
 		AddCheckBox(generalPage,genSizer4,_("Auto Check for Updates"),_T("Auto check for updates"));
+		AddCheckBox(generalPage,genSizer4,_("Check File Associations on Start"),_T("Show Associations"));
 #endif
 		genSizer4->AddGrowableCol(0,1);
 

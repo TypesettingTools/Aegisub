@@ -206,9 +206,8 @@ bool AegisubApp::OnInit() {
 
 		// Set association
 #if !defined(_DEBUG) || defined(WITH_EXCEPTIONS)
-		StartupLog(_T("Install file type associations"));
-		if (!Options.AsBool(_T("Local config")))
-			RegistryAssociate();
+		StartupLog(_T("Check file type associations"));
+		CheckFileAssociations(0);
 #endif
 
 		// Get parameter subs
@@ -391,63 +390,6 @@ int AegisubApp::OnRun() {
 
 	ExitMainLoop();
 	return 1;
-}
-
-
-/////////////////////////////////
-// Registry program to filetypes
-void AegisubApp::RegistryAssociate () {
-#if defined(__WINDOWS__)
-	// Command to open with this
-	wxString command;
-	wxStandardPaths stand;
-	wxString fullPath = stand.GetExecutablePath();
-	command = _T("\"") + fullPath + _T("\" \"%1\"");
-
-	// Main program association
-	wxRegKey *key = new wxRegKey(_T("HKEY_CURRENT_USER\\Software\\Classes\\Aegisub"));
-	if (!key->Exists()) key->Create();
-	key->SetValue(_T(""),_T("Aegisub Subtitle Script"));
-	delete key;
-	key = new wxRegKey(_T("HKEY_CURRENT_USER\\Software\\Classes\\Aegisub\\DefaultIcon"));
-	if (!key->Exists()) key->Create();
-	key->SetValue(_T(""),fullPath);
-	delete key;
-	key = new wxRegKey(_T("HKEY_CURRENT_USER\\Software\\Classes\\Aegisub\\Shell"));
-	if (!key->Exists()) key->Create();
-	key->SetValue(_T(""),_T("open"));
-	delete key;
-	key = new wxRegKey(_T("HKEY_CURRENT_USER\\Software\\Classes\\Aegisub\\Shell\\Open"));
-	if (!key->Exists()) key->Create();
-	key->SetValue(_T(""),_T("&Open with Aegisub"));
-	delete key;
-	key = new wxRegKey(_T("HKEY_CURRENT_USER\\Software\\Classes\\Aegisub\\Shell\\Open\\Command"));
-	if (!key->Exists()) key->Create();
-	key->SetValue(_T(""),command);
-	delete key;
-
-	// Check associations
-	if (Options.AsBool(_T("Show associations"))) {
-		bool gotAll = DialogAssociations::CheckAssociation(_T("ass")) && DialogAssociations::CheckAssociation(_T("ssa")) &&
-					  DialogAssociations::CheckAssociation(_T("srt")) && DialogAssociations::CheckAssociation(_T("sub")) &&
-					  DialogAssociations::CheckAssociation(_T("ttxt"));
-		if (!gotAll) {
-			DialogAssociations diag(NULL);
-			diag.ShowModal();
-			Options.SetBool(_T("Show associations"),false);
-			Options.Save();
-		}
-	}
-#elif defined(__APPLE__)
-	// This is totally untested and pure guesswork
-	// I don't know if it should be ".ass" or just "ass"
-	wxFileName::MacRegisterDefaultTypeAndCreator(_T(".ass"), 0x41535341 /*ASSA*/, 0x41475355 /*AGSU*/);
-	// Technically .ssa isn't ASSA but it makes it so much easier ;)
-	wxFileName::MacRegisterDefaultTypeAndCreator(_T(".ssa"), 0x53534134 /*SSA4*/, 0x41475355 /*AGSU*/);
-	// Not touching .srt yet, there might be some type already registered for it which we should probably use then
-#else
-	// Is there anything like this for other POSIX compatible systems?
-#endif
 }
 
 

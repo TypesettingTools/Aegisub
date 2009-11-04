@@ -38,102 +38,515 @@
 // Headers
 #include "config.h"
 
+#ifdef WIN32
+#include <windows.h>
+#include <commctrl.h>
+#include <shobjidl.h>
+typedef HRESULT (WINAPI *PTaskDialogIndirect)(const TASKDIALOGCONFIG *pTaskConfig, __out_opt int *pnButton, __out_opt int *pnRadioButton, __out_opt BOOL *pfVerificationFlagChecked);
+typedef HRESULT (WINAPI *PSHCreateAssociationRegistration)(REFIID riid, void **ppv);
+#endif
+
+
+#include <wx/wxprec.h>
 #include <wx/sizer.h>
 #include <wx/button.h>
 #include <wx/config.h>
+#include <wx/dialog.h>
+#include <wx/checklst.h>
+#include <wx/slider.h>
+#include <vector>
+#include <string>
+#include <algorithm>
+
 #include "dialog_associations.h"
+#include "options.h"
 
 
-///////////////
-// Constructor
-DialogAssociations::DialogAssociations (wxWindow *parent)
-: wxDialog (parent,-1,_("Associate extensions"),wxDefaultPosition,wxDefaultSize)
+
+#ifdef WIN32
+class OldRegistrationChecker {
+public:
+	struct FileType {
+		std::wstring ext;
+		std::wstring progid;
+		std::wstring typedesc;
+		FileType(const std::wstring &_ext, const std::wstring &_progid, const std::wstring &_typedesc)
+			: ext(_ext)
+			, progid(_progid)
+			, typedesc(_typedesc)
+		{ }
+	};
+
+private:
+	std::vector<FileType> types;
+
+	HKEY hkey_user_classes;
+	HKEY hkey_explorer_fileexts;
+
+public:
+	OldRegistrationChecker();
+	~OldRegistrationChecker();
+
+	size_t GetTypeCount() const { return types.size(); }
+	const FileType& GetType(size_t index) const { return types.at(index); }
+
+	bool HasType(const FileType &type) const;
+	bool HasAllTypes() const;
+	void TakeType(const FileType &type) const;
+	void TakeAllTypes() const;
+};
+
+
+class DialogAssociations : public wxDialog {
+private:
+	wxCheckListBox *list;
+
+	void OnOK(wxCommandEvent &event);
+
+	struct FileTypeIndexMapping {
+		wxString display_name;
+		size_t reg_index;
+		bool operator < (const FileTypeIndexMapping &other) { return display_name < other.display_name; }
+	};
+	std::vector<FileTypeIndexMapping> mapping;
+
+	OldRegistrationChecker reg;
+
+public:
+	DialogAssociations(wxWindow *parent);
+	~DialogAssociations();
+
+	DECLARE_EVENT_TABLE()
+};
+
+
+
+OldRegistrationChecker::OldRegistrationChecker()
 {
-	// List box
-	wxArrayString choices;
-	choices.Add(_T("Advanced Substation Alpha (.ass)"));
-	choices.Add(_T("Substation Alpha (.ssa)"));
-	choices.Add(_T("SubRip (.srt)"));
-	choices.Add(_T("MicroDVD (.sub)"));
-	choices.Add(_T("MPEG-4 Timed Text (.ttxt)"));
-	ListBox = new wxCheckListBox(this,-1,wxDefaultPosition,wxSize(200,80), choices);
-	ListBox->Check(0,CheckAssociation(_T("ass")));
-	ListBox->Check(1,CheckAssociation(_T("ssa")));
-	ListBox->Check(2,CheckAssociation(_T("srt")));
-	ListBox->Check(3,CheckAssociation(_T("sub")));
-	ListBox->Check(4,CheckAssociation(_T("ttxt")));
+	// Read the registration data written for Vista+ systems into HKLM
+	// We can just as well re-use the data the installer already writes!
+	HKEY hkey_caps = 0;
+	HKEY hkey_machine_classes = 0;
 
-	// Label and list sizer
-	wxStaticText *label = new wxStaticText(this,-1,_("Please select the formats you want to\nassociate with Aegisub:"),wxDefaultPosition,wxDefaultSize);
-	wxSizer *ListSizer = new wxStaticBoxSizer(wxVERTICAL,this,_("Associations"));
-	ListSizer->Add(label,0,0,0);
-	ListSizer->Add(ListBox,0,wxTOP,5);
+	if (RegOpenKeyExW(HKEY_LOCAL_MACHINE, L"SOFTWARE\\Aegisub\\Capabilities\\FileAssociations", 0, KEY_READ, &hkey_caps) == ERROR_SUCCESS &&
+		RegOpenKeyExW(HKEY_LOCAL_MACHINE, L"SOFTWARE\\Classes", 0, KEY_READ, &hkey_machine_classes) == ERROR_SUCCESS)
+	{
+		int enum_index = 0;
+		const size_t alloc_value_size = 256;
+		wchar_t *value_ext = new wchar_t[alloc_value_size];
+		wchar_t *value_pid = new wchar_t[alloc_value_size];
+		wchar_t *value_dsc = new wchar_t[alloc_value_size];
 
-	// Buttons
-	wxButton *ok = new wxButton(this, wxID_OK);
-	wxSizer *ButtonSizer = new wxBoxSizer(wxHORIZONTAL);
-	ButtonSizer->AddStretchSpacer(1);
-	ButtonSizer->Add(ok,0,0,0);
+		LRESULT enumres = ERROR_SUCCESS;
+		while (enumres == ERROR_SUCCESS)
+		{
+			DWORD value_ext_size = (DWORD)alloc_value_size;
+			// Find next listed file extension
+			enumres = RegEnumValueW(hkey_caps, enum_index, value_ext, &value_ext_size, 0, 0, 0, 0);
 
-	// Main sizer
-	wxSizer *MainSizer = new wxBoxSizer(wxVERTICAL);
-	MainSizer->Add(ListSizer,0,wxLEFT | wxRIGHT,5);
-	MainSizer->Add(ButtonSizer,0,wxALL | wxEXPAND,5);
-	SetSizer(MainSizer);
-	MainSizer->SetSizeHints(this);
-	Center();
-}
+			if (enumres != ERROR_SUCCESS) break;
 
+			DWORD value_pid_size = (DWORD)alloc_value_size*2;
+			DWORD value_type = REG_NONE;
+			// Grab the ProgID for that extension
+			if (RegQueryValueExW(hkey_caps, value_ext, 0, &value_type, (LPBYTE)value_pid, &value_pid_size) == ERROR_SUCCESS &&
+				value_type == REG_SZ)
+			{
+				DWORD value_dsc_size = (DWORD)alloc_value_size*2;
+				// And find the human-readable name for that ProgID
+				if (RegQueryValueW(hkey_machine_classes, value_pid, value_dsc, (PLONG)&value_dsc_size) == ERROR_SUCCESS)
+				{
+					// And dump it all into our table
+					types.push_back(FileType(
+						std::wstring(value_ext, value_ext_size),
+						std::wstring(value_pid, value_pid_size/2),
+						std::wstring(value_dsc, value_dsc_size/2)));
+				}
+			}
 
-//////////////
-// Destructor
-DialogAssociations::~DialogAssociations() {
-}
+			enum_index += 1;
+		}
 
-
-/////////////////////////////////////
-// Associates a type with Aegisub
-void DialogAssociations::AssociateType(wxString type) {
-	type.Lower();
-	wxRegKey *key = new wxRegKey(_T("HKEY_CURRENT_USER\\Software\\Classes\\.") + type);
-	if (!key->Exists()) key->Create();
-	key->SetValue(_T(""),_T("Aegisub"));
-	delete key;
-}
-
-
-//////////////////////////////////////////////////
-// Checks if a type is associated with Aegisub
-bool DialogAssociations::CheckAssociation(wxString type) {
-	type.Lower();
-	wxRegKey *key = new wxRegKey(_T("HKEY_CURRENT_USER\\Software\\Classes\\.") + type);
-	if (!key->Exists()) {
-		delete key;
-		return false;
+		delete[] value_ext;
+		delete[] value_pid;
+		delete[] value_dsc;
 	}
-	else {
-		wxString value;
-		key->QueryValue(_T(""),value);
-		delete key;
-		return (value == _T("Aegisub"));
+
+	if (hkey_caps)
+		RegCloseKey(hkey_caps);
+	if (hkey_machine_classes)
+		RegCloseKey(hkey_machine_classes);
+
+	if (RegOpenKeyExW(HKEY_CURRENT_USER, L"Software\\Classes", 0, KEY_READ|KEY_WRITE, &hkey_user_classes) != ERROR_SUCCESS)
+		hkey_user_classes = 0;
+	if (RegOpenKeyExW(HKEY_CURRENT_USER, L"Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\FileExts", 0, KEY_READ|KEY_WRITE, &hkey_explorer_fileexts) != ERROR_SUCCESS)
+		hkey_explorer_fileexts = 0;
+}
+
+
+OldRegistrationChecker::~OldRegistrationChecker()
+{
+	if (hkey_user_classes)
+		RegCloseKey(hkey_user_classes);
+	if (hkey_explorer_fileexts)
+		RegCloseKey(hkey_explorer_fileexts);
+}
+
+
+bool OldRegistrationChecker::HasAllTypes() const
+{
+	bool res = true;
+	for (size_t i = 0; i < types.size(); ++i)
+	{
+		res &= HasType(types[i]);
+	}
+	return res;
+}
+
+
+void OldRegistrationChecker::TakeAllTypes() const
+{
+	for (size_t i = 0; i < types.size(); ++i)
+	{
+		TakeType(types[i]);
 	}
 }
 
 
-///////////////
-// Event table
+bool OldRegistrationChecker::HasType(const FileType &type) const
+{
+	// Checks to perform:
+	// 1. Check hkey_explorer_fileexts\<ext> for value "Progid":
+	//    * If the value data is our <progid> then we have the type
+	//    * If the value data is something else, we don't have the type
+	//    * If the value doesn't exist, continue
+	// 2. Check hkey_explorer_fileexts\<ext> for value "Application":
+	//    * If the value data is "aegisub32.exe" then we have the type
+	//    * If the value data is something else, we don't have the type
+	//    * If the value doesn't exist, continue
+	// 3. Check the default value of HKEY_CLASSES_ROOT\<ext>:
+	//    * If it is our <progid> then we have the type
+	//    * If it is something else, we don't have the type
+	//    * If the value doesn't exist, we don't have the type
+
+	const DWORD alloc_size = 260;
+	wchar_t *data = new wchar_t[alloc_size];
+	DWORD data_type, data_size;
+
+	HKEY hkey_fileext;
+	if (RegOpenKeyExW(hkey_explorer_fileexts, type.ext.c_str(), 0, KEY_READ, &hkey_fileext) == ERROR_SUCCESS)
+	{
+		// Step 1
+		data_type = REG_NONE;
+		data_size = alloc_size*sizeof(wchar_t);
+		if (RegQueryValueExW(hkey_fileext, L"Progid", 0, &data_type, (LPBYTE)data, &data_size) == ERROR_SUCCESS &&
+			data_type == REG_SZ)
+		{
+			std::wstring cur_progid(data, data_size/2);
+
+			RegCloseKey(hkey_fileext);
+			delete[] data;
+
+			return type.progid.compare(cur_progid) == 0;
+		}
+
+		// Step 2
+		data_type = REG_NONE;
+		data_size = alloc_size*sizeof(wchar_t);
+		if (RegQueryValueExW(hkey_fileext, L"Application", 0, &data_type, (LPBYTE)data, &data_size) == ERROR_SUCCESS &&
+			data_type == REG_SZ)
+		{
+			std::wstring cur_app(data, data_size/2);
+
+			RegCloseKey(hkey_fileext);
+			delete[] data;
+
+			return cur_app.compare(L"aegisub32.exe") == 0; // this seriously shouldn't happen...
+		}
+
+		RegCloseKey(hkey_fileext);
+	}
+
+	// Step 3
+	bool res = false;
+	data_size = alloc_size*sizeof(wchar_t);
+	if (RegQueryValueW(HKEY_CLASSES_ROOT, type.ext.c_str(), data, (PLONG)&data_size) == ERROR_SUCCESS)
+	{
+		std::wstring cur_progid(data, data_size/2);
+		res = type.progid.compare(cur_progid) == 0;
+	}
+
+	delete[] data;
+	return res;
+}
+
+
+void OldRegistrationChecker::TakeType(const FileType &type) const
+{
+	// Making sure we have the type:
+	// 1. From hkey_explorer_fileexts\<ext> delete any "Application" value
+	// 2. From hkey_explorer_fileexts\<ext> delete any "Progid" value
+	// 3. Read HKCR\<ext> default value:
+	//    * If it is our <progid>, we are done
+	//    * If there is no value, continue to step 4
+	//    * If the value is something else, write a value with that as name to
+	//      hkey_user_classes\<ext>\Progids with blank data and continue
+	// 4. Set default value of hkey_user_classes\<ext> to our <progid>
+	// First two removes any customisation the user has done in Explorer, last two
+	// override anything set in HKLM\SOFTWARE\Classes\<ext>.
+
+	HKEY hkey_fileext;
+	if (RegOpenKeyExW(hkey_explorer_fileexts, type.ext.c_str(), 0, KEY_READ|KEY_WRITE, &hkey_fileext) == ERROR_SUCCESS)
+	{
+		// Step 1 and 2
+		RegDeleteValueW(hkey_fileext, L"Application");
+		RegDeleteValueW(hkey_fileext, L"Progid");
+		RegCloseKey(hkey_fileext);
+	}
+
+	// Step 3
+	DWORD old_progid_size = 260*2;
+	wchar_t *old_progid = new wchar_t[old_progid_size];
+	if (RegQueryValueW(HKEY_CLASSES_ROOT, type.ext.c_str(), old_progid, (PLONG)&old_progid_size) == ERROR_SUCCESS)
+	{
+		std::wstring old_progid_str(old_progid, old_progid_size/2);
+		// Check if existing progid matches ours
+		if (type.progid.compare(old_progid_str) == 0)
+		{
+			// It does, we're done
+			delete[] old_progid;
+			return;
+		}
+		else if (old_progid_str.size() != 0)
+		{
+			// Not our progid and not blank, make sure it's present for Open With
+			HKEY hkey_user_ext = 0;
+			HKEY hkey_progids = 0;
+			if (RegOpenKeyExW(hkey_user_classes, type.ext.c_str(), 0, KEY_WRITE, &hkey_user_ext) == ERROR_SUCCESS &&
+				RegOpenKeyExW(hkey_user_ext, L"OpenWithProgids", 0, KEY_WRITE, &hkey_progids) == ERROR_SUCCESS)
+			{
+				RegSetValueExW(hkey_progids, old_progid_str.c_str(), 0, REG_NONE, 0, 0);
+			}
+
+			if (hkey_progids)
+				RegCloseKey(hkey_progids);
+			if (hkey_user_ext)
+				RegCloseKey(hkey_user_ext);
+		}
+	}
+	delete[] old_progid;
+
+	// Step 4
+	RegSetValueW(hkey_user_classes, type.ext.c_str(), REG_SZ, type.progid.c_str(), (type.progid.size()+1)*sizeof(wchar_t));
+}
+
+
+DialogAssociations::DialogAssociations (wxWindow *parent)
+: wxDialog (parent,-1,_("Associate file types"),wxDefaultPosition,wxDefaultSize)
+, reg()
+{
+	size_t reg_max_index = reg.GetTypeCount();
+	for (size_t i = 0; i < reg_max_index; ++i)
+	{
+		const OldRegistrationChecker::FileType &type = reg.GetType(i);
+		if (reg.HasType(type))
+			continue;
+
+		FileTypeIndexMapping entry;
+		entry.display_name = wxString::Format(_T("%s (%s)"), type.ext.c_str(), type.typedesc.c_str());
+		entry.reg_index = i;
+		mapping.push_back(entry);
+	}
+	std::sort(mapping.begin(), mapping.end());
+
+	wxArrayString list_items;
+	for (size_t i = 0; i < mapping.size(); ++i)
+	{
+		list_items.Add(mapping[i].display_name);
+	}
+	list = new wxCheckListBox(this, -1, wxDefaultPosition, wxSize(-1, 120), list_items);
+
+	wxStaticText *helptext;
+
+	if (mapping.size() > 0)
+		helptext = new wxStaticText(this, -1, _("Aegisub can take over the following file types.\n\nIf you want Aegisub to no longer be associated with a file type, you must tell another program to take over the file type."));
+	else
+		helptext = new wxStaticText(this, -1, _("Aegisub is already associated with all supported file types.\n\nIf you want Aegisub to no longer be associated with a file type, you must tell another program to take over the file type."));
+	helptext->Wrap(340);
+
+	wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
+	sizer->Add(helptext, 0, wxALL, 12);
+	sizer->Add(list, 1, wxEXPAND|wxALL&(~wxTOP), 12);
+	if (mapping.size() > 0)
+	{
+		sizer->Add(CreateButtonSizer(wxOK|wxCANCEL), 0, wxEXPAND|wxALL&(~wxTOP), 12);
+	}
+	else
+	{
+		sizer->Hide(list);
+		sizer->Add(CreateButtonSizer(wxOK), 0, wxEXPAND|wxALL&(~wxTOP), 12);
+	}
+
+	SetSizerAndFit(sizer);
+	CentreOnParent();
+}
+
+
+DialogAssociations::~DialogAssociations()
+{
+	// Do nothing
+}
+
+
 BEGIN_EVENT_TABLE(DialogAssociations, wxDialog)
 	EVT_BUTTON(wxID_OK,DialogAssociations::OnOK)
 END_EVENT_TABLE()
 
 
-//////////////
-// OK pressed
-void DialogAssociations::OnOK(wxCommandEvent &event) {
-	if (ListBox->IsChecked(0)) AssociateType(_T("ass"));
-	if (ListBox->IsChecked(1)) AssociateType(_T("ssa"));
-	if (ListBox->IsChecked(2)) AssociateType(_T("srt"));
-	if (ListBox->IsChecked(3)) AssociateType(_T("sub"));
-	if (ListBox->IsChecked(4)) AssociateType(_T("ttxt"));
+void DialogAssociations::OnOK(wxCommandEvent &event)
+{
+	for (size_t i = 0; i < mapping.size(); ++i)
+	{
+		if (list->IsChecked(i))
+		{
+			const OldRegistrationChecker::FileType &type = reg.GetType(mapping[i].reg_index);
+			reg.TakeType(type);
+		}
+	}
+
 	event.Skip();
 }
+#endif
+
+
+
+void ShowAssociationsDialog(wxWindow *parent)
+{
+#ifdef WIN32
+	HRESULT res;
+	IApplicationAssociationRegistrationUI *aarui;
+	res = CoCreateInstance(
+		CLSID_ApplicationAssociationRegistrationUI, 0,
+		CLSCTX_INPROC_SERVER,
+		IID_IApplicationAssociationRegistrationUI, (LPVOID*)&aarui);
+
+	if (SUCCEEDED(res) && aarui != 0)
+	{
+		// We can call the Vista-style UI for registrations
+		aarui->LaunchAdvancedAssociationUI(L"Aegisub");
+		aarui->Release();
+	}
+	else
+	{
+		// Use the old way of a custom dialogue
+		DialogAssociations dlg(parent);
+		dlg.ShowModal();
+	}
+#endif
+}
+
+
+void CheckFileAssociations(wxWindow *parent)
+{
+	// Portable configurations don't use associations
+	if (Options.AsBool(_T("Local Config"))) return;
+	// The user has opted out for the check
+	if (!Options.AsBool(_T("Show Associations"))) return;
+
+#ifdef WIN32
+	HMODULE shell32 = LoadLibraryW(L"shell32.dll");
+	HMODULE comctl32 = LoadLibraryW(L"comctl32.dll");
+	if (!(shell32 && comctl32)) return; // this is serious failure, don't bother the user
+
+	PSHCreateAssociationRegistration SHCreateAssociationRegistration =
+		(PSHCreateAssociationRegistration)GetProcAddress(shell32, "SHCreateAssociationRegistration");
+	PTaskDialogIndirect TaskDialogIndirect =
+		(PTaskDialogIndirect)GetProcAddress(comctl32, "TaskDialogIndirect");
+
+	const wchar_t *dialog_title = _("Aegisub");
+	const wchar_t *dialog_bigtext = _("Make Aegisub default editor for subtitles?");
+	const wchar_t *dialog_maintext = _("Aegisub is not your default editor for subtitle files. Do you want to make Aegisub your default editor for subtitle files?");
+	const wchar_t *dialog_checkboxtext = _("Always perform this check when Aegisub starts");
+
+	if (SHCreateAssociationRegistration && TaskDialogIndirect)
+	{
+		// We're on Vista or later, do new-style type registration
+		HRESULT res;
+		IApplicationAssociationRegistration *car;
+		res = SHCreateAssociationRegistration(IID_IApplicationAssociationRegistration, (LPVOID*)&car);
+
+		if (SUCCEEDED(res))
+		{
+			BOOL is_default = FALSE;
+			res = car->QueryAppIsDefaultAll(AL_EFFECTIVE, L"Aegisub", &is_default);
+
+			if (SUCCEEDED(res) && !is_default)
+			{
+				TASKDIALOGCONFIG tdc = {sizeof(TASKDIALOGCONFIG)};
+				tdc.hwndParent = (HWND)(parent ? parent->GetHandle() : 0);
+				tdc.pszWindowTitle = dialog_title;
+				tdc.pszMainInstruction = dialog_bigtext;
+				tdc.pszContent = dialog_maintext;
+				tdc.dwFlags = TDF_VERIFICATION_FLAG_CHECKED;
+				tdc.pszVerificationText = dialog_checkboxtext;
+				tdc.dwCommonButtons = TDCBF_YES_BUTTON | TDCBF_NO_BUTTON;
+
+				int btn = 0;
+				BOOL show_again = TRUE;
+				res = TaskDialogIndirect(&tdc, &btn, 0, &show_again);
+
+				if (SUCCEEDED(res))
+				{
+					if (btn == IDYES)
+					{
+						car->SetAppAsDefaultAll(L"Aegisub");
+					}
+
+					Options.SetBool(_T("Show Associations"), show_again==TRUE);
+				}
+			}
+
+			car->Release();
+		}
+	}
+	else
+	{
+		// We're on XP or something similar old, do classic type registration
+		OldRegistrationChecker checker;
+		if (!checker.HasAllTypes())
+		{
+			wxDialog dlg(parent, -1, dialog_title, wxDefaultPosition, wxDefaultSize, wxCAPTION);
+			wxStaticText *maintext = new wxStaticText(&dlg, -1, dialog_maintext);
+			maintext->Wrap(360);
+			wxCheckBox *check = new wxCheckBox(&dlg, -1, dialog_checkboxtext);
+			check->SetValue(true);
+			wxStdDialogButtonSizer *buttons = new wxStdDialogButtonSizer();
+			buttons->AddButton(new wxButton(&dlg, wxID_OK, _("&Yes")));
+			buttons->AddButton(new wxButton(&dlg, wxID_CANCEL, _("&No")));
+			buttons->Realize();
+			wxBoxSizer *dlgsizer = new wxBoxSizer(wxVERTICAL);
+			dlgsizer->Add(maintext, 0, wxALL, 12);
+			dlgsizer->Add(check, 0, wxEXPAND|wxALL&(~wxTOP), 12);
+			dlgsizer->Add(buttons, 0, wxEXPAND|wxALL&(~wxTOP), 12);
+			dlg.SetSizerAndFit(dlgsizer);
+			dlg.CentreOnParent();
+
+			int modalres = dlg.ShowModal();
+			if (modalres == wxID_OK)
+			{
+				checker.TakeAllTypes();
+			}
+
+			Options.SetBool(_T("Show Associations"), check->GetValue());
+		}
+	}
+
+	FreeLibrary(comctl32);
+	FreeLibrary(shell32);
+
+#else
+	// Do nothing
+#endif
+}
+
+
