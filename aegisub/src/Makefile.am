@@ -168,7 +168,6 @@ EXTRA_aegisub_2_2_SOURCES = \
 	avisynth_wrap.cpp \
 	setup.cpp \
 	spellchecker_hunspell.cpp \
-	subtitle_format_prs.cpp \
 	subtitles_provider_csri.cpp \
 	subtitles_provider_libass.cpp \
 	video_provider_avs.cpp
