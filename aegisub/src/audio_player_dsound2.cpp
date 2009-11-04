@@ -478,8 +478,9 @@ do_fill_buffer:
 				DWORD buf1sz, buf2sz;
 				void *buf1, *buf2;
 
+				assert(bytes_needed > 0);
 				assert(buffer_offset < bufSize);
-				assert(bytes_needed <= bufSize);
+				assert((DWORD)bytes_needed <= bufSize);
 
 				HRESULT res = bfr->Lock(buffer_offset, bytes_needed, &buf1, &buf1sz, &buf2, &buf2sz, 0);
 				switch (res)
