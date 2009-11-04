@@ -41,9 +41,13 @@
 #ifdef WIN32
 #include <windows.h>
 #include <commctrl.h>
+#include <shlwapi.h>
 #include <shobjidl.h>
+// Typedefs for some functions we link dynamically because they only exist on Vista+
+// and we need to check for their presence
 typedef HRESULT (WINAPI *PTaskDialogIndirect)(const TASKDIALOGCONFIG *pTaskConfig, __out_opt int *pnButton, __out_opt int *pnRadioButton, __out_opt BOOL *pfVerificationFlagChecked);
 typedef HRESULT (WINAPI *PSHCreateAssociationRegistration)(REFIID riid, void **ppv);
+#pragma comment(lib,"shlwapi")
 #endif
 
 
@@ -261,7 +265,7 @@ bool OldRegistrationChecker::HasType(const FileType &type) const
 			RegCloseKey(hkey_fileext);
 			delete[] data;
 
-			return cur_app.compare(L"aegisub32.exe") == 0; // this seriously shouldn't happen...
+			return cur_app.compare(L"aegisub32.exe") == 0; // aegisub should't get registrations like this, but better safe than sorry...
 		}
 
 		RegCloseKey(hkey_fileext);
@@ -446,12 +450,17 @@ void ShowAssociationsDialog(wxWindow *parent)
 }
 
 
+void FixOldAssociations();
+
 void CheckFileAssociations(wxWindow *parent)
 {
 	// Portable configurations don't use associations
 	if (Options.AsBool(_T("Local Config"))) return;
 	// The user has opted out for the check
 	if (!Options.AsBool(_T("Show Associations"))) return;
+
+	// Clean up any old associations the user has lying around
+	FixOldAssociations();
 
 #ifdef WIN32
 	HMODULE shell32 = LoadLibraryW(L"shell32.dll");
@@ -550,3 +559,101 @@ void CheckFileAssociations(wxWindow *parent)
 }
 
 
+// Check whether any old (2.1.7 and earlier) associations are in place, and migrate
+// them to the new associations
+void FixOldAssociations()
+{
+#ifdef WIN32
+	// 1. Check if new style associations (progids) are set up, stop if they are not
+	// 2. Check if old style associations ("Aegisub" progid) are set up, stop if not
+	// 3. Check progids for these extensions, for each that is "Aegisub" change to:
+	//    * .ass  -> Aegisub.ASSA.1
+	//    * .ssa  -> Aegisub.SSA.1
+	//    * .srt  -> Aegisub.SRT.1
+	//    * .sub  -> Aegisub.Subtitle.1
+	//    * .ttxt -> Aegisub.TTXT.1
+
+	// The new progids we use
+	const wchar_t *new_progids[] = {
+		L"Aegisub.ASSA.1",
+		L"Aegisub.SSA.1",
+		L"Aegisub.SRT.1",
+		L"Aegisub.Subtitle.1",
+		L"Aegisub.TTXT.1",
+		0
+	};
+	// File extensions from old associations in the order of the new progids above
+	// so we can match one to the other
+	const wchar_t *extensions[] = {
+		L".ass",
+		L".ssa",
+		L".srt",
+		L".sub",
+		L".ttxt",
+		0
+	};
+
+	// 1. Check for new progids
+	HKEY hkey_machine_classes;
+	if (RegOpenKeyExW(HKEY_LOCAL_MACHINE, L"SOFTWARE\\Classes", 0, KEY_READ, &hkey_machine_classes) != ERROR_SUCCESS)
+		// Can't access machine classes
+		return;
+	for (size_t i = 0; new_progids[i] != 0; ++i)
+	{
+		HKEY temp;
+		if (RegOpenKeyExW(hkey_machine_classes, new_progids[i], 0, KEY_READ, &temp) == ERROR_SUCCESS)
+		{
+			RegCloseKey(temp);
+		}
+		else
+		{
+			// Missing a new progid, can't change associations
+			RegCloseKey(hkey_machine_classes);
+			return;
+		}
+	}
+	RegCloseKey(hkey_machine_classes);
+
+	// Check for old progid and delete it.
+	// Make sure to explicitly check HKCU classes
+	HKEY hkey_aegisub_progid;
+	if (RegOpenKeyExW(HKEY_CURRENT_USER, L"Software\\Classes\\Aegisub", 0, KEY_READ|KEY_WRITE, &hkey_aegisub_progid) == ERROR_SUCCESS)
+	{
+		// Exists, remove subkeys
+		RegCloseKey(hkey_aegisub_progid);
+		// Let's use a Shell API function for this, because RegDeleteTree() was only introduced
+		// in Windows 6.0, but this Shell API has been around since IE 4. Makes perfect sense!
+		if (SHDeleteKeyW(HKEY_CURRENT_USER, L"Software\\Classes\\Aegisub") != ERROR_SUCCESS)
+			// argh!
+			return;
+	}
+	else
+	{
+		// Missing old progid, can't have old associations
+		return;
+	}
+
+	// Reset associations to new progids
+	HKEY hkey_user_classes;
+	if (RegOpenKey(HKEY_CURRENT_USER, L"Software\\Classes", &hkey_user_classes) != ERROR_SUCCESS)
+		return;
+	for (size_t i = 0; new_progids[i] != 0; ++i)
+	{
+		const wchar_t *new_progid = new_progids[i];
+		const wchar_t *extension = extensions[i];
+		wchar_t old_progid[260] = {0};
+		DWORD old_progid_size = sizeof(old_progid);
+		DWORD old_progid_type = REG_NONE;
+		if (SHGetValueW(HKEY_CLASSES_ROOT, extension, 0, &old_progid_type, old_progid, &old_progid_size) == ERROR_SUCCESS &&
+			old_progid_type == REG_SZ &&
+			wcscmp(L"Aegisub", old_progid) == 0) // safe even if old_progid doesn't have 0-termination, because L"Aegisub" has termination and the buffer is longer
+		{
+			SHSetValueW(hkey_user_classes, extension, 0, REG_SZ, (LPCVOID)new_progid, (wcslen(new_progid)+1)*sizeof(wchar_t));
+		}
+	}
+	RegCloseKey(hkey_user_classes);
+
+#else
+	// Do nothing
+#endif
+}
