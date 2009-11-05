@@ -265,6 +265,7 @@ aegisub_2_1_SOURCES = \
 	colorspace.cpp \
 	colour_button.cpp \
 	dialog_about.cpp \
+	dialog_associations.cpp \
 	dialog_attachments.cpp \
 	dialog_automation.cpp \
 	dialog_colorpicker.cpp \
