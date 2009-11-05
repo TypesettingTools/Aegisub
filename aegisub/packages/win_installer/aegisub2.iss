@@ -42,6 +42,7 @@ AppPublisher=Aegisub Team
 AppPublisherURL=http://www.aegisub.org/
 AppSupportURL=http://forum.aegisub.org/
 AppCopyright=© 2005-2009 The Aegisub Team
+VersionInfoVersion=2.1.8
 DefaultDirName={pf}\Aegisub
 DefaultGroupName=Aegisub
 AllowNoIcons=true
