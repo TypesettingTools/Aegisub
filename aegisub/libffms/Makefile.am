@@ -25,4 +25,5 @@ libffmpegsource_aegisub_a_SOURCES = \
 	src/core/wave64writer.cpp
 
 libffmpegsource_aegisub_a_SOURCES += \
-	src/core/*.h
+	src/core/*.h \
+	include/*.h
