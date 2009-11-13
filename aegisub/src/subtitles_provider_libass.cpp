@@ -126,6 +126,10 @@ void LibassSubtitlesProvider::LoadSubtitles(AssFile *subs) {
 //////////////////
 // Draw subtitles
 void LibassSubtitlesProvider::DrawSubtitles(AegiVideoFrame &frame,double time) {
+
+	// libass doesn't like null tracks.
+	if (!ass_track) return;
+
 	// Set size
 	ass_set_frame_size(ass_renderer, frame.w, frame.h);
 
