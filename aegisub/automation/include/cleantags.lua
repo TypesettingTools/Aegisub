@@ -23,8 +23,8 @@ OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ]]
 
-cleantags_version = "1.300"
-cleantags_modified = "27 February 2009"
+cleantags_version = "1.301"
+cleantags_modified = "13 November 2009"
 
 ktag = "\\[kK][fo]?%d+"
 
@@ -98,7 +98,7 @@ function cleantags(text)
 
 	--[[ Remove any spaces within parenteses within override blocks except for \clip tags ]]
 	local comb = function(a,b,c,d,e) 
-		if c ~= "\\clip" or d:sub(-1):find("[,%({]") or e:sub(1,1):find("[,%)}]") then return a..b..d..e 
+		if c ~= "\\i?clip" or d:sub(-1):find("[,%({]") or e:sub(1,1):find("[,%)}]") then return a..b..d..e 
 		else return a..b..d..string.char(2)..e end 
 	end
     repeat
