@@ -39,7 +39,9 @@
 #include "config.h"
 
 #include <wx/wxprec.h>
+#include <wx/display.h>
 #include <wx/filename.h>
+#include <wx/settings.h>
 #include "dialog_detached_video.h"
 #include "video_box.h"
 #include "video_slider.h"
