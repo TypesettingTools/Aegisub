@@ -37,9 +37,9 @@
 #include "config.h"
 
 #ifndef AGI_PRE
-#include <wx/display.h>
 #include <wx/filename.h>
 #include <wx/settings.h>
+#include <wx/display.h> /// Must be included last.
 #endif
 
 #include "dialog_detached_video.h"
