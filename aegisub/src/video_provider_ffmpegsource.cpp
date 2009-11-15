@@ -292,8 +292,8 @@ const AegiVideoFrame FFmpegSourceVideoProvider::GetFrame(int _n) {
 	FrameNumber = n;
 	
 	// these are for convenience
-	int w = VideoInfo->Width;
-	int h = VideoInfo->Height;
+//	int w = VideoInfo->Width;
+//	int h = VideoInfo->Height;
 
 	// this is what we'll return eventually
 	AegiVideoFrame &DstFrame = CurFrame;
