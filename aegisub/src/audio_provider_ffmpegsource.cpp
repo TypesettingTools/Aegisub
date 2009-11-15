@@ -84,9 +84,9 @@ void FFmpegSourceAudioProvider::LoadAudio(wxString filename) {
 	// clean up
 	Close();
 
-	wxString FileNameWX = wxFileName(wxString(filename.wc_str(), wxConvFile)).GetShortPath();
+	wxString FileNameShort = wxFileName(filename).GetShortPath();
 
-	FFIndexer *Indexer = FFMS_CreateIndexer(FileNameWX.mb_str(wxConvUTF8), FFMSErrMsg, MsgSize);
+	FFIndexer *Indexer = FFMS_CreateIndexer(FileNameShort.utf8_str(), FFMSErrMsg, MsgSize);
 	if (Indexer == NULL) {
 		// error messages that can possibly contain a filename use this method instead of
 		// wxString::Format because they may contain utf8 characters
@@ -109,14 +109,14 @@ void FFmpegSourceAudioProvider::LoadAudio(wxString filename) {
 	}
 
 	// generate a name for the cache file
-	wxString CacheName = GetCacheFilename(filename.c_str());
+	wxString CacheName = GetCacheFilename(filename);
 
 	// try to read index
 	FFIndex *Index = NULL;
-	Index = FFMS_ReadIndex(CacheName.mb_str(wxConvUTF8), FFMSErrMsg, MsgSize);
+	Index = FFMS_ReadIndex(CacheName.utf8_str(), FFMSErrMsg, MsgSize);
 	bool IndexIsValid = false;
 	if (Index != NULL) {
-		if (FFMS_IndexBelongsToFile(Index, FileNameWX.mb_str(wxConvUTF8), FFMSErrMsg, MsgSize)) {
+		if (FFMS_IndexBelongsToFile(Index, FileNameShort.utf8_str(), FFMSErrMsg, MsgSize)) {
 			FFMS_DestroyIndex(Index);
 			Index = NULL;
 		}
@@ -168,7 +168,7 @@ void FFmpegSourceAudioProvider::LoadAudio(wxString filename) {
 		// warn user?
 	}
 
-	AudioSource = FFMS_CreateAudioSource(FileNameWX.mb_str(wxConvUTF8), TrackNumber, Index, FFMSErrMsg, MsgSize);
+	AudioSource = FFMS_CreateAudioSource(FileNameShort.utf8_str(), TrackNumber, Index, FFMSErrMsg, MsgSize);
 	FFMS_DestroyIndex(Index);
 	Index = NULL;
 	if (!AudioSource) {
