@@ -45,13 +45,12 @@
 // FFmpegSource audio provider
 class FFmpegSourceAudioProvider : public AudioProvider, FFmpegSourceProvider {
 private:
-	FFAudio *AudioSource;
+	FFMS_AudioSource *AudioSource;	/// audio source object
+	bool COMInited;					/// COM initialization state
 
-	char FFMSErrMsg[1024];
-	unsigned MsgSize;
-	wxString ErrorMsg;
-
-	bool COMInited;
+	char FFMSErrMsg[1024];			/// FFMS error message
+	FFMS_ErrorInfo ErrInfo;			/// FFMS error codes/messages
+	wxString ErrorMsg;				/// wx-ified error message
 
 	void Close();
 	void LoadAudio(wxString filename);
@@ -64,7 +63,6 @@ public:
 	bool AreSamplesNativeEndian() { return true; }
 
 	virtual void GetAudio(void *buf, int64_t start, int64_t count);
-
 };
 
 

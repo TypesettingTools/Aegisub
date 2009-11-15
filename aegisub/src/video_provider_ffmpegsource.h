@@ -47,27 +47,26 @@
 // FFmpegSource video provider
 class FFmpegSourceVideoProvider : public VideoProvider, FFmpegSourceProvider {
 private:
-	FFVideo *VideoSource;
-	const FFVideoProperties *VideoInfo;
+	FFMS_VideoSource *VideoSource;			/// video source object
+	const FFMS_VideoProperties *VideoInfo;	/// video properties
 
-	int FrameNumber;
-	wxArrayInt KeyFramesList;
-	bool KeyFramesLoaded;
-	std::vector<int> TimecodesVector;
-	FrameRate Timecodes;
-
-	AegiVideoFrame CurFrame;
-
-	char FFMSErrMsg[1024];
-	unsigned MsgSize;
-	wxString ErrorMsg;
-
-	bool COMInited;
+	int Width;					/// width in pixels
+	int Height;					/// height in pixels
+	int FrameNumber;			/// current framenumber
+	wxArrayInt KeyFramesList;	/// list of keyframes
+	bool KeyFramesLoaded;		/// keyframe loading state
+	std::vector<int> TimecodesVector;	/// list of timestamps
+	FrameRate Timecodes;		/// vfr object
+	bool COMInited;				/// COM initialization state
+	
+	AegiVideoFrame CurFrame;	/// current video frame
+	
+	char FFMSErrMsg[1024];		/// FFMS error message
+	FFMS_ErrorInfo ErrInfo;		/// FFMS error codes/messages
+	wxString ErrorMsg;			/// wx-ified error message
 
 	void LoadVideo(wxString filename);
 	void Close();
-
-protected:
 
 public:
 	FFmpegSourceVideoProvider(wxString filename);
