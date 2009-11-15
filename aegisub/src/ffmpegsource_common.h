@@ -46,8 +46,8 @@
 #include "dialog_progress.h"
 
 
-#define FFMS_TRACKMASK_ALL		0
-#define FFMS_TRACKMASK_NONE		-1
+#define FFMS_TRACKMASK_ALL		-1
+#define FFMS_TRACKMASK_NONE		0
 
 
 class FFmpegSourceProvider {
