@@ -145,12 +145,12 @@ void FFmpegSourceAudioProvider::LoadAudio(Aegisub::String filename) {
 	}
 	// no valid index exists and the file only has one audio track, index all tracks
 	else if (TrackNumber < 0) 
-		TrackNumber = FFMSTrackMaskAll;
+		TrackNumber = FFMS_TRACKMASK_ALL;
 	// else: do nothing (keep track mask as it is)
 	
 	// moment of truth
 	if (!IndexIsValid) {
-		int TrackMask = Options.AsBool(_T("FFmpegSource always index all tracks")) ? FFMSTrackMaskAll : 1 << TrackNumber;
+		int TrackMask = Options.AsBool(_T("FFmpegSource always index all tracks")) ? FFMS_TRACKMASK_ALL : 1 << TrackNumber;
 		try {
 			Index = DoIndexing(Indexer, CacheName, TrackMask, false);
 		} catch (wxString temp) {

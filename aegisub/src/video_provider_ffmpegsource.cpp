@@ -156,14 +156,14 @@ void FFmpegSourceVideoProvider::LoadVideo(Aegisub::String filename, double fps) 
 	
 	// moment of truth
 	if (!IndexIsValid) {
-		int TrackMask = Options.AsBool(_T("FFmpegSource always index all tracks")) ? FFMSTrackMaskAll : FFMSTrackMaskNone;
+		int TrackMask = Options.AsBool(_T("FFmpegSource always index all tracks")) ? FFMS_TRACKMASK_ALL : FFMS_TRACKMASK_NONE;
 		try {
 			try {
 				// ignore audio decoding errors here, we don't care right now
 				Index = DoIndexing(Indexer, CacheName, TrackMask, true);
 			} catch (...) {
 				// something borked, try if it works without audio
-				Index = DoIndexing(Indexer, CacheName, FFMSTrackMaskNone, true);
+				Index = DoIndexing(Indexer, CacheName, FFMS_TRACKMASK_NONE, true);
 			}
 		} catch (wxString temp) {
 			ErrorMsg.Append(temp);

@@ -85,7 +85,7 @@ FFIndex *FFmpegSourceProvider::DoIndexing(FFIndexer *Indexer, const wxString &Ca
 	Progress.ProgressDialog->SetProgress(0,1);
 
 	// index all audio tracks
-	FFIndex *Index = FFMS_DoIndexing(Indexer, Trackmask, FFMSTrackMaskNone, NULL, NULL, IgnoreDecodeErrors,
+	FFIndex *Index = FFMS_DoIndexing(Indexer, Trackmask, FFMS_TRACKMASK_NONE, NULL, NULL, IgnoreDecodeErrors,
 		FFmpegSourceProvider::UpdateIndexingProgress, &Progress, FFMSErrMsg, MsgSize);
 	if (Index == NULL) {
 		Progress.ProgressDialog->Destroy();
