@@ -410,9 +410,6 @@ DialogOptions::DialogOptions(wxWindow *parent)
 		//control = new wxCheckBox(videoPage,-1,_("Threaded video"));
 		//Bind(control,_T("Threaded video"));
 		//videoSizer4->Add(control,1,wxEXPAND);
-		//control = new wxCheckBox(videoPage,-1,_("Use pixel shaders if available"));
-		//Bind(control,_T("Video use pixel shaders"));
-		//videoSizer4->Add(control,1,wxEXPAND);
 		control = new wxCheckBox(videoPage,-1,_("Allow pre-2.56a Avisynth"));
 		Bind(control,_T("Allow Ancient Avisynth"));
 		videoSizer4->Add(control,1,wxEXPAND);

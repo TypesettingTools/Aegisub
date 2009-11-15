@@ -100,7 +100,6 @@ VideoContext::VideoContext() {
 	ownGlContext = false;
 	lastTex = 0;
 	lastFrame = -1;
-	yv12shader = 0;
 
 	// Set options
 	audio = NULL;
@@ -161,12 +160,6 @@ void VideoContext::Clear() {
 void VideoContext::Reset() {
 	// Reset ?video path
 	StandardPaths::SetPathValue(_T("?video"),_T(""));
-
-	// Reset shader
-	if (yv12shader) {
-		OpenGLWrapper::DestroyShaderProgram(yv12shader);
-		yv12shader = 0;
-	}
 
 	// Clear keyframes
 	KeyFrames.Clear();
@@ -491,12 +484,8 @@ AegiVideoFrame VideoContext::GetFrame(int n,bool raw) {
 	// Current frame if -1
 	if (n == -1) n = frame_n;
 
-	// Get available formats
-	int formats = FORMAT_RGB32;
-	if (yv12shader != 0 || OpenGLWrapper::UseShaders()) formats |= FORMAT_YV12;
-
 	// Get frame
-	AegiVideoFrame frame = provider->GetFrame(n,formats);
+	AegiVideoFrame frame = provider->GetFrame(n);
 
 	// Raster subtitles if available/necessary
 	if (!raw && subsProvider) {
@@ -756,13 +745,6 @@ void VideoContext::SetAspectRatio(int _type, double value) {
 	arType = _type;
 	arValue = value;
 	UpdateDisplays(true);
-}
-
-
-////////////////////////////
-// Enable or disable shader
-void VideoContext::SetShader(bool enabled) {
-	OpenGLWrapper::SetShader(enabled ? yv12shader : 0);
 }
 
 

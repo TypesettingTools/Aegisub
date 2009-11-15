@@ -83,7 +83,6 @@ private:
 	std::list<VideoDisplay*> displayList;
 
 	GLuint lastTex;
-	GLhandleARB yv12shader;
 	int lastFrame;
 	bool ownGlContext;
 	wxGLContext *glContext;
@@ -153,7 +152,6 @@ public:
 	float GetTexW() { return texW; }
 	float GetTexH() { return texH; }
 	VideoFrameFormat GetFormat() { return vidFormat; }
-	void SetShader(bool enabled);
 
 	bool IsLoaded() { return loaded; }
 	bool IsPlaying() { return isPlaying; }

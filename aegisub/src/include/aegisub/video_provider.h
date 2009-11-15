@@ -52,7 +52,7 @@ public:
 	virtual ~VideoProvider() {}
 
 	// Override this method to actually get frames
-	virtual const AegiVideoFrame GetFrame(int n, int formatMask)=0;
+	virtual const AegiVideoFrame GetFrame(int n)=0;
 
 	// Override the following methods to get video information:
 	virtual int GetPosition()=0;				// Get the number of the last frame loaded

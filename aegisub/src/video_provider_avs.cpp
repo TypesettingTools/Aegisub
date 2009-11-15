@@ -329,10 +329,8 @@ PClip AvisynthVideoProvider::OpenVideo(Aegisub::String _filename, bool mpeg2dec3
 	}
 
 	// Convert to RGB32
-	if (!OpenGLWrapper::UseShaders()) {
-		script = env->Invoke("ConvertToRGB32", script);
-		AVSTRACE(_T("AvisynthVideoProvider::OpenVideo: Converted to RGB32"));
-	}
+	script = env->Invoke("ConvertToRGB32", script);
+	AVSTRACE(_T("AvisynthVideoProvider::OpenVideo: Converted to RGB32"));
 
 	// Cache
 	AVSTRACE(_T("AvisynthVideoProvider::OpenVideo: Finished opening video, AVS mutex will be released now"));
@@ -342,7 +340,7 @@ PClip AvisynthVideoProvider::OpenVideo(Aegisub::String _filename, bool mpeg2dec3
 
 ////////////////////////
 // Actually get a frame
-const AegiVideoFrame AvisynthVideoProvider::GetFrame(int _n,int formatMask) {
+const AegiVideoFrame AvisynthVideoProvider::GetFrame(int _n) {
 	// Transform n if overriden
 	int n = _n;
 	if (frameTime.Count()) {
@@ -366,25 +364,12 @@ const AegiVideoFrame AvisynthVideoProvider::GetFrame(int _n,int formatMask) {
 	final.invertChannels = false;
 
 	// Format
-	if (vi.IsRGB32()) {
-		final.format = FORMAT_RGB32;
-		final.flipped = true;
-		final.invertChannels = true;
-	}
-	else if (vi.IsRGB24()) {
-		final.format = FORMAT_RGB24;
-		final.flipped = true;
-		final.invertChannels = true;
-	}
-	else if (vi.IsYV12()) final.format = FORMAT_YV12;
-	else if (vi.IsYUY2()) final.format = FORMAT_YUY2;
+	final.format = FORMAT_RGB32;
+	final.flipped = true;
+	final.invertChannels = true;
 
 	// Set size properties
-	int uvpitch = 0;
-	if (final.format == FORMAT_YV12) uvpitch = frame->GetPitch(PLANAR_U);
 	final.pitch[0] = frame->GetPitch();
-	final.pitch[1] = uvpitch;
-	final.pitch[2] = uvpitch;
 	final.w = frame->GetRowSize() / Bpp;
 	final.h = frame->GetHeight();
 
@@ -393,13 +378,6 @@ const AegiVideoFrame AvisynthVideoProvider::GetFrame(int _n,int formatMask) {
 
 	// Copy
 	memcpy(final.data[0],frame->GetReadPtr(),final.pitch[0] * final.h);
-
-	// Copy second and third planes for YV12
-	if (final.format == FORMAT_YV12) {
-		int uvh = frame->GetHeight(PLANAR_U);
-		memcpy(final.data[1],frame->GetReadPtr(PLANAR_U),uvpitch * uvh);
-		memcpy(final.data[2],frame->GetReadPtr(PLANAR_V),uvpitch * uvh);
-	}
 
 	// Set last number
 	last_fnum = n;
