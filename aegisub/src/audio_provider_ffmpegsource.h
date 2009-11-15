@@ -64,6 +64,7 @@ public:
 	bool AreSamplesNativeEndian() { return true; }
 
 	virtual void GetAudio(void *buf, int64_t start, int64_t count);
+
 };
 
 

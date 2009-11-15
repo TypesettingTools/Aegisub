@@ -67,6 +67,8 @@ private:
 	void LoadVideo(wxString filename);
 	void Close();
 
+protected:
+
 public:
 	FFmpegSourceVideoProvider(wxString filename);
 	~FFmpegSourceVideoProvider();
