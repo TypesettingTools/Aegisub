@@ -82,7 +82,7 @@ public:
 	wxString GetCacheFilename(const wxString& filename);
 	void SetLogLevel();
 
-	virtual FFmpegSourceProvider::~FFmpegSourceProvider() {}
+	virtual ~FFmpegSourceProvider() {}
 };
 
 
