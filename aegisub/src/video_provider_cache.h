@@ -87,9 +87,9 @@ public:
 	virtual bool IsVFR();
 	virtual wxArrayInt GetKeyFrames();
 	virtual FrameRate GetTrueFrameRate();
-	virtual void OverrideFrameTimeList(Aegisub::IntArray list);	// Override the list with the provided one, for VFR handling
+	virtual void OverrideFrameTimeList(std::vector<int> list);	// Override the list with the provided one, for VFR handling
 	virtual bool IsNativelyByFrames();
 	virtual bool NeedsVFRHack();
-	virtual Aegisub::String GetWarning();
-	virtual Aegisub::String GetDecoderName();
+	virtual wxString GetWarning();
+	virtual wxString GetDecoderName();
 };

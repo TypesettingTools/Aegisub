@@ -64,13 +64,13 @@ private:
 
 	bool COMInited;
 
-	void LoadVideo(Aegisub::String filename);
+	void LoadVideo(wxString filename);
 	void Close();
 
 protected:
 
 public:
-	FFmpegSourceVideoProvider(Aegisub::String filename);
+	FFmpegSourceVideoProvider(wxString filename);
 	~FFmpegSourceVideoProvider();
 
 	const AegiVideoFrame GetFrame(int n);
@@ -84,7 +84,7 @@ public:
 	wxArrayInt GetKeyFrames() { return KeyFramesList; };
 	bool IsVFR() { return true; };
 	FrameRate GetTrueFrameRate() { return Timecodes; };
-	Aegisub::String GetDecoderName() { return L"FFmpegSource"; }
+	wxString GetDecoderName() { return L"FFmpegSource"; }
 	int GetDesiredCacheSize() { return 8; }
 };
 
@@ -93,7 +93,7 @@ public:
 // Factory
 class FFmpegSourceVideoProviderFactory : public VideoProviderFactory {
 public:
-	VideoProvider *CreateProvider(Aegisub::String video) { return new FFmpegSourceVideoProvider(video); }
+	VideoProvider *CreateProvider(wxString video) { return new FFmpegSourceVideoProvider(video); }
 };
 
 

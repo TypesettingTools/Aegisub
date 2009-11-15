@@ -410,7 +410,7 @@ int FrameRate::GetTimeAtFrame(int frame,bool start,bool exact) {
 
 ////////////////////////////////////////
 // Get the current list of frames/times
-Aegisub::IntArray FrameRate::GetFrameTimeList() {
+std::vector<int> FrameRate::GetFrameTimeList() {
 	return Frame;
 }
 

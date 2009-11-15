@@ -161,7 +161,7 @@ wxArrayInt VideoProviderCache::GetKeyFrames() {
 FrameRate VideoProviderCache::GetTrueFrameRate() {
 	return master->GetTrueFrameRate();
 }
-void VideoProviderCache::OverrideFrameTimeList(Aegisub::IntArray list) {
+void VideoProviderCache::OverrideFrameTimeList(std::vector<int> list) {
 	master->OverrideFrameTimeList(list);
 }
 bool VideoProviderCache::IsNativelyByFrames() {
@@ -170,9 +170,9 @@ bool VideoProviderCache::IsNativelyByFrames() {
 bool VideoProviderCache::NeedsVFRHack() {
 	return master->NeedsVFRHack();
 }
-Aegisub::String VideoProviderCache::GetWarning() {
+wxString VideoProviderCache::GetWarning() {
 	return master->GetWarning();
 }
-Aegisub::String VideoProviderCache::GetDecoderName() {
+wxString VideoProviderCache::GetDecoderName() {
 	return master->GetDecoderName();
 }

@@ -66,10 +66,10 @@ public:
 	virtual FrameRate GetTrueFrameRate()=0;		// Returns magic VFR stuff
 
 	// Use this to set any post-loading warnings, such as "being loaded with unreliable seeking"
-	virtual Aegisub::String GetWarning() { return L""; }
+	virtual wxString GetWarning() { return L""; }
 
 	// Name of decoder, e.g. "Avisynth/FFMpegSource"
-	virtual Aegisub::String GetDecoderName() { return L"Unknown"; }
+	virtual wxString GetDecoderName() { return L"Unknown"; }
 
 	// How many frames does this provider want Aegisub to cache? Set to 0 if it doesn't require caching.
 	virtual int GetDesiredCacheSize() { return 0; }
@@ -77,7 +77,7 @@ public:
 	// For "special" providers that don't deal well with VFR (i.e. Avisynth)
 	virtual bool NeedsVFRHack() { return false; };					// Returns true if provider needs special VFR treatment
 	virtual bool IsNativelyByFrames() { return true; };
-	virtual void OverrideFrameTimeList(Aegisub::IntArray list) {}	// Override the list with the provided one, for VFR handling
+	virtual void OverrideFrameTimeList(std::vector<int> list) {}	// Override the list with the provided one, for VFR handling
 };
 
 
@@ -86,5 +86,5 @@ public:
 class VideoProviderFactory {
 public:
 	virtual ~VideoProviderFactory() {}
-	virtual VideoProvider *CreateProvider(Aegisub::String video)=0;
+	virtual VideoProvider *CreateProvider(wxString video)=0;
 };

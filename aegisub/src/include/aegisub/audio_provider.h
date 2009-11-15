@@ -85,5 +85,5 @@ public:
 class AudioProviderFactory {
 public:
 	virtual ~AudioProviderFactory() {}
-	virtual AudioProvider *CreateProvider(Aegisub::String filename)=0;
+	virtual AudioProvider *CreateProvider(wxString filename)=0;
 };

@@ -50,8 +50,8 @@ private:
 	AegiVideoFrame iframe;
 
 	bool usedDirectShow;
-	Aegisub::String rendererCallString;
-	Aegisub::String decoderName;
+	wxString rendererCallString;
+	wxString decoderName;
 
 	int num_frames;
 	int last_fnum;
@@ -67,10 +67,10 @@ private:
 
 	PClip RGB32Video;
 
-	PClip OpenVideo(Aegisub::String _filename, bool mpeg2dec3_priority = true);
+	PClip OpenVideo(wxString _filename, bool mpeg2dec3_priority = true);
 
 public:
-	AvisynthVideoProvider(Aegisub::String _filename);
+	AvisynthVideoProvider(wxString _filename);
 	~AvisynthVideoProvider();
 
 	const AegiVideoFrame GetFrame(int n);
@@ -90,8 +90,8 @@ public:
 	void OverrideFrameTimeList(wxArrayInt list);
 	bool IsNativelyByFrames() { return byFrame; }
 	bool NeedsVFRHack() { return true; }
-	Aegisub::String GetWarning();
-	Aegisub::String GetDecoderName() { return Aegisub::String(L"Avisynth/") + decoderName; }
+	wxString GetWarning();
+	wxString GetDecoderName() { return wxString(L"Avisynth/") + decoderName; }
 };
 
 
@@ -99,7 +99,7 @@ public:
 // Factory
 class AvisynthVideoProviderFactory : public VideoProviderFactory {
 public:
-	VideoProvider *CreateProvider(Aegisub::String video) { return new AvisynthVideoProvider(video); }
+	VideoProvider *CreateProvider(wxString video) { return new AvisynthVideoProvider(video); }
 };
 
 

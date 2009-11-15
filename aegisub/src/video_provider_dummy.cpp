@@ -122,7 +122,7 @@ void DummyVideoProvider::Create(double _fps, int frames, int _width, int _height
 
 ///////////////////////
 // Parsing constructor
-DummyVideoProvider::DummyVideoProvider(Aegisub::String _filename)
+DummyVideoProvider::DummyVideoProvider(wxString _filename)
 {
 	wxString filename = _filename.c_str();
 	wxString params;
@@ -249,7 +249,7 @@ double DummyVideoProvider::GetFPS() {
 
 ////////////////////
 // Get decoder name
-Aegisub::String DummyVideoProvider::GetDecoderName() {
+wxString DummyVideoProvider::GetDecoderName() {
 	return L"Dummy Video Provider";
 }
 
