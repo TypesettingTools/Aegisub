@@ -1,4 +1,4 @@
-// Copyright (c) 2008, Karl Blomster
+// Copyright (c) 2008-2009, Karl Blomster
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -60,8 +60,8 @@ private:
 	int LastDstFormat;
 	AegiVideoFrame CurFrame;
 
-	char FFMSErrorMessage[1024];
-	unsigned MessageSize;
+	char FFMSErrMsg[1024];
+	unsigned MsgSize;
 	wxString ErrorMsg;
 
 	bool COMInited;

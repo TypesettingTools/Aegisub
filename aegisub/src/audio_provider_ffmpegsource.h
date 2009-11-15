@@ -1,4 +1,4 @@
-// Copyright (c) 2008, Karl Blomster
+// Copyright (c) 2008-2009, Karl Blomster
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -49,7 +49,7 @@ private:
 
 	char FFMSErrMsg[1024];
 	unsigned MsgSize;
-	wxString MsgString;
+	wxString ErrorMsg;
 
 	bool COMInited;
 

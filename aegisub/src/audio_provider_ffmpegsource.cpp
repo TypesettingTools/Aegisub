@@ -1,4 +1,4 @@
-// Copyright (c) 2008, Karl Blomster
+// Copyright (c) 2008-2009, Karl Blomster
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -41,6 +41,8 @@
 // Headers
 #include "include/aegisub/aegisub.h"
 #include "audio_provider_ffmpegsource.h"
+#include "options.h"
+#include <map>
 #ifdef WIN32
 #include <objbase.h>
 #endif
@@ -61,7 +63,7 @@ FFmpegSourceAudioProvider::FFmpegSourceAudioProvider(Aegisub::String filename) {
 	FFMS_Init(0);
 
 	MsgSize = sizeof(FFMSErrMsg);
-	MsgString = _T("FFmpegSource audio provider: ");
+	ErrorMsg = _T("FFmpegSource audio provider: ");
 
 	AudioSource = NULL;
 
@@ -82,60 +84,78 @@ void FFmpegSourceAudioProvider::LoadAudio(Aegisub::String filename) {
 
 	wxString FileNameWX = wxFileName(wxString(filename.c_str(), wxConvFile)).GetShortPath();
 
-	// generate a default name for the cache file
+	FFIndexer *Indexer = FFMS_CreateIndexer(FileNameWX.mb_str(wxConvUTF8), FFMSErrMsg, MsgSize);
+	if (Indexer == NULL) {
+		// error messages that can possibly contain a filename use this method instead of
+		// wxString::Format because they may contain utf8 characters
+		ErrorMsg.Append(_T("Failed to create indexer: ")).Append(wxString(FFMSErrMsg, wxConvUTF8));
+		throw ErrorMsg;
+	}
+
+	std::map<int,wxString> TrackList = GetTracksOfType(Indexer, FFMS_TYPE_AUDIO);
+	if (TrackList.size() <= 0)
+		throw _T("FFmpegSource audio provider: no audio tracks found");
+
+	// initialize the track number to an invalid value so we can detect later on
+	// whether the user actually had to choose a track or not
+	int TrackNumber = -1;
+	if (TrackList.size() > 1) {
+		TrackNumber = AskForTrackSelection(TrackList, FFMS_TYPE_AUDIO);
+		// if it's still -1 here, user pressed cancel
+		if (TrackNumber == -1)
+			throw _T("FFmpegSource audio provider: audio loading cancelled by user");
+	}
+
+	// generate a name for the cache file
 	wxString CacheName = GetCacheFilename(filename.c_str());
 
+	// try to read index
 	FFIndex *Index = NULL;
-	bool ReIndex = false;
 	Index = FFMS_ReadIndex(CacheName.mb_str(wxConvUTF8), FFMSErrMsg, MsgSize);
-	if (Index == NULL) {
-		ReIndex = true;
-	}
-	// index exists, but is it the index we think it is?
-	else if (FFMS_IndexBelongsToFile(Index, FileNameWX.mb_str(wxConvUTF8), FFMSErrMsg, MsgSize)) {
-		FFMS_DestroyIndex(Index);
-		Index = NULL;
-		ReIndex = true;
-	}
-	// it is, but does it have indexing info for the audio track(s)?
-	else {
-		int NumTracks = FFMS_GetNumTracks(Index);
-		// sanity check
-		if (NumTracks <= 0) {
+	bool IndexIsValid = false;
+	if (Index != NULL) {
+		if (FFMS_IndexBelongsToFile(Index, FileNameWX.mb_str(wxConvUTF8), FFMSErrMsg, MsgSize)) {
 			FFMS_DestroyIndex(Index);
 			Index = NULL;
-			throw _T("FFmpegSource audio provider: no tracks found in index file");
 		}
-
-		for (int i = 0; i < NumTracks; i++) {
-			FFTrack *TrackData = FFMS_GetTrackFromIndex(Index, i);
-			// more sanity checking
-			if (TrackData == NULL) {
-				FFMS_DestroyIndex(Index);
-				Index = NULL;
-				wxString temp(FFMSErrMsg, wxConvUTF8);
-				MsgString << _T("Couldn't get track data: ") << temp;
-				throw MsgString;
-			}
-
-			// does the track have any indexed frames?
-			if (FFMS_GetNumFrames(TrackData) <= 0 && (FFMS_GetTrackType(TrackData) == FFMS_TYPE_AUDIO)) {
-				// found an unindexed audio track, we'll need to reindex
-				FFMS_DestroyIndex(Index);
-				Index = NULL;
-				ReIndex = true;
-				break;
-			}
-		}
+		else
+			IndexIsValid = true;
 	}
 	
-	// index didn't exist or was invalid, we'll have to (re)create it
-	if (ReIndex) {
+	// index valid but track number still not set?
+	if (IndexIsValid) {
+		// track number not set? just grab the first track
+		if (TrackNumber < 0)
+			TrackNumber = FFMS_GetFirstTrackOfType(Index, FFMS_TYPE_AUDIO, FFMSErrMsg, MsgSize);
+		if (TrackNumber < 0) {
+			FFMS_DestroyIndex(Index);
+			Index = NULL;
+			ErrorMsg.Append(wxString::Format(_T("Couldn't find any audio tracks: %s"), FFMSErrMsg));
+			throw ErrorMsg;
+		}
+
+		// index is valid and track number is now set,
+		// but do we have indexing info for the desired audio track?
+		FFTrack *TempTrackData = FFMS_GetTrackFromIndex(Index, TrackNumber);
+		if (FFMS_GetNumFrames(TempTrackData) <= 0) {
+			IndexIsValid = false;
+			FFMS_DestroyIndex(Index);
+			Index = NULL;
+		}
+	}
+	// no valid index exists and the file only has one audio track, index all tracks
+	else if (TrackNumber < 0) 
+		TrackNumber = FFMSTrackMaskAll;
+	// else: do nothing (keep track mask as it is)
+	
+	// moment of truth
+	if (!IndexIsValid) {
+		int TrackMask = Options.AsBool(_T("FFmpegSource always index all tracks")) ? FFMSTrackMaskAll : 1 << TrackNumber;
 		try {
-			Index = DoIndexing(Index, FileNameWX, CacheName, FFMSTrackMaskAll, false);
+			Index = DoIndexing(Indexer, CacheName, TrackMask, false);
 		} catch (wxString temp) {
-			MsgString << temp;
-			throw MsgString;
+			ErrorMsg.Append(temp);
+			throw ErrorMsg;
 		} catch (...) {
 			throw;
 		}
@@ -146,23 +166,12 @@ void FFmpegSourceAudioProvider::LoadAudio(Aegisub::String filename) {
 		// warn user?
 	}
 
-	// FIXME: provide a way to choose which audio track to load?
-	int TrackNumber = FFMS_GetFirstTrackOfType(Index, FFMS_TYPE_AUDIO, FFMSErrMsg, MsgSize);
-	if (TrackNumber < 0) {
-		FFMS_DestroyIndex(Index);
-		Index = NULL;
-		wxString temp(FFMSErrMsg, wxConvUTF8);
-		MsgString << _T("Couldn't find any audio tracks: ") << temp;
-		throw MsgString;
-	}
-
 	AudioSource = FFMS_CreateAudioSource(FileNameWX.mb_str(wxConvUTF8), TrackNumber, Index, FFMSErrMsg, MsgSize);
 	FFMS_DestroyIndex(Index);
 	Index = NULL;
 	if (!AudioSource) {
-			wxString temp(FFMSErrMsg, wxConvUTF8);
-			MsgString << _T("Failed to open audio track: ") << temp;
-			throw MsgString;
+		ErrorMsg.Append(wxString::Format(_T("Failed to open audio track: %s"), FFMSErrMsg));
+		throw ErrorMsg;
 	}
 		
 	const FFAudioProperties AudioInfo = *FFMS_GetAudioProperties(AudioSource);
@@ -173,7 +182,7 @@ void FFmpegSourceAudioProvider::LoadAudio(Aegisub::String filename) {
 	if (channels <= 0 || sample_rate <= 0 || num_samples <= 0)
 		throw _T("FFmpegSource audio provider: sanity check failed, consult your local psychiatrist");
 
-	// FIXME: use 
+	// FIXME: use the actual sample format too?
 	// why not just bits_per_sample/8? maybe there's some oddball format with half bytes out there somewhere...
 	switch (AudioInfo.BitsPerSample) {
 		case 8:		bytes_per_sample = 1; break;
@@ -209,9 +218,8 @@ void FFmpegSourceAudioProvider::Close() {
 // Get audio
 void FFmpegSourceAudioProvider::GetAudio(void *Buf, int64_t Start, int64_t Count) {
 	if (FFMS_GetAudio(AudioSource, Buf, Start, Count, FFMSErrMsg, MsgSize)) {
-		wxString temp(FFMSErrMsg, wxConvUTF8);
-		MsgString << _T("Failed to get audio samples: ") << temp;
-		throw MsgString;
+		ErrorMsg.Append(wxString::Format(_T("Failed to get audio samples: %s"), FFMSErrMsg));
+		throw ErrorMsg;
 	}
 }
 

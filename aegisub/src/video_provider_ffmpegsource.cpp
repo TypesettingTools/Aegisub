@@ -1,4 +1,4 @@
-// Copyright (c) 2008, Karl Blomster
+// Copyright (c) 2008-2009, Karl Blomster
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -40,6 +40,8 @@
 ///////////
 // Headers
 #include <wx/utils.h>
+#include <wx/choicdlg.h>
+#include <map>
 #include "include/aegisub/aegisub.h"
 #include "video_provider_ffmpegsource.h"
 #include "video_context.h"
@@ -72,7 +74,7 @@ FFmpegSourceVideoProvider::FFmpegSourceVideoProvider(Aegisub::String filename, d
 	LastDstFormat = FFMS_GetPixFmt("none");
 	KeyFramesLoaded = false;
 	FrameNumber = -1;
-	MessageSize = sizeof(FFMSErrorMessage);
+	MsgSize = sizeof(FFMSErrMsg);
 	ErrorMsg = _T("FFmpegSource video provider: ");
 
 	// and here we go
@@ -102,40 +104,75 @@ void FFmpegSourceVideoProvider::LoadVideo(Aegisub::String filename, double fps) 
 
 	wxString FileNameWX = wxFileName(wxString(filename.c_str(), wxConvFile)).GetShortPath(); 
 
+	FFIndexer *Indexer = FFMS_CreateIndexer(FileNameWX.mb_str(wxConvUTF8), FFMSErrMsg, MsgSize);
+	if (Indexer == NULL) {
+		// error messages that can possibly contain a filename use this method instead of
+		// wxString::Format because they may contain utf8 characters
+		ErrorMsg.Append(_T("Failed to create indexer: ")).Append(wxString(FFMSErrMsg, wxConvUTF8));
+		throw ErrorMsg;
+	}
+
+	std::map<int,wxString> TrackList = GetTracksOfType(Indexer, FFMS_TYPE_VIDEO);
+	if (TrackList.size() <= 0)
+		throw _T("FFmpegSource video provider: no video tracks found");
+
+	// initialize the track number to an invalid value so we can detect later on
+	// whether the user actually had to choose a track or not
+	int TrackNumber = -1;
+	if (TrackList.size() > 1) {
+		TrackNumber = AskForTrackSelection(TrackList, FFMS_TYPE_VIDEO);
+		// if it's still -1 here, user pressed cancel
+		if (TrackNumber == -1)
+			throw _T("FFmpegSource video provider: video loading cancelled by user");
+	}
+
 	// generate a name for the cache file
 	wxString CacheName = GetCacheFilename(filename.c_str());
 
 	// try to read index
 	FFIndex *Index = NULL;
-	Index = FFMS_ReadIndex(CacheName.mb_str(wxConvUTF8), FFMSErrorMessage, MessageSize);
-	bool ReIndex = false;
-	if (Index == NULL) {
-		ReIndex = true;
-	}
-	else if (FFMS_IndexBelongsToFile(Index, FileNameWX.mb_str(wxConvUTF8), FFMSErrorMessage, MessageSize)) {
-		FFMS_DestroyIndex(Index);
-		Index = NULL;
-		ReIndex = true;
+	Index = FFMS_ReadIndex(CacheName.mb_str(wxConvUTF8), FFMSErrMsg, MsgSize);
+	bool IndexIsValid = false;
+	if (Index != NULL) {
+		if (FFMS_IndexBelongsToFile(Index, FileNameWX.mb_str(wxConvUTF8), FFMSErrMsg, MsgSize)) {
+			FFMS_DestroyIndex(Index);
+			Index = NULL;
+		}
+		else
+			IndexIsValid = true;
 	}
 
-	// index didn't exist or was invalid, we'll have to (re)create it
-	if (ReIndex) {
+	// time to examine the index and check if the track we want is indexed
+	// technically this isn't really needed since all video tracks should always be indexed,
+	// but a bit of sanity checking never hurt anyone
+	if (IndexIsValid && TrackNumber >= 0) {
+		FFTrack *TempTrackData = FFMS_GetTrackFromIndex(Index, TrackNumber);
+		if (FFMS_GetNumFrames(TempTrackData) <= 0) {
+			IndexIsValid = false;
+			FFMS_DestroyIndex(Index);
+			Index = NULL;
+		}
+	}
+	
+	// moment of truth
+	if (!IndexIsValid) {
+		int TrackMask = Options.AsBool(_T("FFmpegSource always index all tracks")) ? FFMSTrackMaskAll : FFMSTrackMaskNone;
 		try {
 			try {
 				// ignore audio decoding errors here, we don't care right now
-				Index = DoIndexing(Index, FileNameWX, CacheName, FFMSTrackMaskAll, true);
+				Index = DoIndexing(Indexer, CacheName, TrackMask, true);
 			} catch (...) {
-				// Try without audio
-				Index = DoIndexing(Index, FileNameWX, CacheName, FFMSTrackMaskNone, true);
+				// something borked, try if it works without audio
+				Index = DoIndexing(Indexer, CacheName, FFMSTrackMaskNone, true);
 			}
 		} catch (wxString temp) {
-			ErrorMsg << temp;
+			ErrorMsg.Append(temp);
 			throw ErrorMsg;
 		} catch (...) {
 			throw;
 		}
 	}
-
+	
 	// update access time of index file so it won't get cleaned away
 	if (!wxFileName(CacheName).Touch()) {
 		// warn user?
@@ -145,6 +182,18 @@ void FFmpegSourceVideoProvider::LoadVideo(Aegisub::String filename, double fps) 
 	// we have now read the index and may proceed with cleaning the index cache
 	if (!CleanCache()) {
 		//do something?
+	}
+
+	// track number still not set?
+	if (TrackNumber < 0) {
+		// just grab the first track
+		TrackNumber = FFMS_GetFirstIndexedTrackOfType(Index, FFMS_TYPE_VIDEO, FFMSErrMsg, MsgSize);
+		if (TrackNumber < 0) {
+			FFMS_DestroyIndex(Index);
+			Index = NULL;
+			ErrorMsg.Append(wxString::Format(_T("Couldn't find any video tracks: %s"), FFMSErrMsg));
+			throw ErrorMsg;	
+		}
 	}
 
 	// set thread count
@@ -160,22 +209,11 @@ void FFmpegSourceVideoProvider::LoadVideo(Aegisub::String filename, double fps) 
 	else 
 		SeekMode = FFMS_SEEK_NORMAL;
 
-	// FIXME: provide a way to choose which audio track to load?
-	int TrackNumber = FFMS_GetFirstTrackOfType(Index, FFMS_TYPE_VIDEO, FFMSErrorMessage, MessageSize);
-	if (TrackNumber < 0) {
-		FFMS_DestroyIndex(Index);
-		Index = NULL;
-		wxString temp(FFMSErrorMessage, wxConvUTF8);
-		ErrorMsg << _T("Couldn't find any video tracks: ") << temp;
-		throw ErrorMsg;
-	}
-
-	VideoSource = FFMS_CreateVideoSource(FileNameWX.mb_str(wxConvUTF8), TrackNumber, Index, "", Threads, SeekMode, FFMSErrorMessage, MessageSize);
+	VideoSource = FFMS_CreateVideoSource(FileNameWX.mb_str(wxConvUTF8), TrackNumber, Index, "", Threads, SeekMode, FFMSErrMsg, MsgSize);
 	FFMS_DestroyIndex(Index);
 	Index = NULL;
 	if (VideoSource == NULL) {
-		wxString temp(FFMSErrorMessage, wxConvUTF8);
-		ErrorMsg << _T("Failed to open video track: ") << temp;
+		ErrorMsg.Append(wxString::Format(_T("Failed to open video track: %s"), FFMSErrMsg));
 		throw ErrorMsg;
 	}
 
@@ -196,8 +234,7 @@ void FFmpegSourceVideoProvider::LoadVideo(Aegisub::String filename, double fps) 
 	for (int CurFrameNum = 0; CurFrameNum < VideoInfo->NumFrames; CurFrameNum++) {
 		CurFrameData = FFMS_GetFrameInfo(FrameData, CurFrameNum);
 		if (CurFrameData == NULL) {
-			wxString temp(FFMSErrorMessage, wxConvUTF8);
-			ErrorMsg << _T("Couldn't get framedata for frame ") << CurFrameNum << _T(": ") << temp;
+			ErrorMsg.Append(wxString::Format(_T("Couldn't get info about frame %d"), CurFrameNum));
 			throw ErrorMsg;
 		}
 
@@ -281,19 +318,17 @@ const AegiVideoFrame FFmpegSourceVideoProvider::GetFrame(int _n, int FormatType)
 
 	// requested format was changed since last time we were called, (re)set output format
 	if (LastDstFormat != DstFormat) {
-		if (FFMS_SetOutputFormatV(VideoSource, 1 << DstFormat, w, h, FFMS_RESIZER_BICUBIC, FFMSErrorMessage, MessageSize)) {
-			wxString temp(FFMSErrorMessage, wxConvUTF8);
-			ErrorMsg << _T("Failed to set output format: ") << temp;
+		if (FFMS_SetOutputFormatV(VideoSource, 1 << DstFormat, w, h, FFMS_RESIZER_BICUBIC, FFMSErrMsg, MsgSize)) {
+			ErrorMsg.Append(wxString::Format(_T("Failed to set output format: %s"), FFMSErrMsg));
 			throw ErrorMsg;
 		}
 		LastDstFormat = DstFormat;
 	}
 
 	// decode frame
-	const FFAVFrame *SrcFrame = FFMS_GetFrame(VideoSource, n, FFMSErrorMessage, MessageSize);
+	const FFAVFrame *SrcFrame = FFMS_GetFrame(VideoSource, n, FFMSErrMsg, MsgSize);
 	if (SrcFrame == NULL) {
-		wxString temp(FFMSErrorMessage, wxConvUTF8);
-		ErrorMsg << _T("Failed to retrieve frame: ") << temp;
+		ErrorMsg.Append(wxString::Format(_T("Failed to retrieve frame: %s"), FFMSErrMsg));
 		throw ErrorMsg;
 	}
 
