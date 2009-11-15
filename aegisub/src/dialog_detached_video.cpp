@@ -25,41 +25,41 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 //
-// -----------------------------------------------------------------------------
+// Aegisub Project http://www.aegisub.org/
 //
-// AEGISUB
-//
-// Website: http://aegisub.cellosoft.com
-// Contact: mailto:zeratul@cellosoft.com
-//
+// $Id$
 
+/// @file dialog_detached_video.cpp
+/// @brief Detached video window
+/// @ingroup main_ui
+///
 
-///////////
-// Headers
 #include "config.h"
 
-#include <wx/wxprec.h>
-#include <wx/display.h>
+#ifndef AGI_PRE
 #include <wx/filename.h>
 #include <wx/settings.h>
+#include <wx/display.h> /// Must be included last.
+#endif
+
 #include "dialog_detached_video.h"
-#include "video_box.h"
-#include "video_slider.h"
-#include "video_context.h"
-#include "video_display.h"
 #include "frame_main.h"
 #include "options.h"
+#include "video_box.h"
+#include "video_context.h"
+#include "video_display.h"
+#include "video_slider.h"
 
 #undef min
 #undef max
 
-///////////////
-// Constructor
+
+/// @brief Constructor
+/// @param par FrameMain this was spawned from
+/// @param initialDisplaySize Initial size of the window
 DialogDetachedVideo::DialogDetachedVideo(FrameMain *par, const wxSize &initialDisplaySize)
-//: wxFrame(par,-1,_("Detached Video"))
 : wxDialog(par,-1,_T("Detached Video"),wxDefaultPosition,wxSize(400,300),wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER | wxMAXIMIZE_BOX | wxMINIMIZE_BOX | wxWANTS_CHARS)
 {
-	// Set parent
 	parent = par;
 
 	// Set up window
@@ -69,7 +69,7 @@ DialogDetachedVideo::DialogDetachedVideo(FrameMain *par, const wxSize &initialDi
 	if (Options.AsBool(_T("Detached video maximized"))) Maximize();
 
 	// Set obscure stuff
-	SetExtraStyle(GetExtraStyle() & (~wxWS_EX_BLOCK_EVENTS) | wxWS_EX_PROCESS_UI_UPDATES);
+	SetExtraStyle((GetExtraStyle() & ~wxWS_EX_BLOCK_EVENTS) | wxWS_EX_PROCESS_UI_UPDATES);
 
 	// Set title
 	wxFileName fn(VideoContext::Get()->videoName);
@@ -125,60 +125,56 @@ DialogDetachedVideo::DialogDetachedVideo(FrameMain *par, const wxSize &initialDi
 	}
 
 	// Update
-	parent->SetDisplayMode(0,-1);
+	parent->SetDisplayMode(0, -1);
 	GetPosition(&x, &y);
 	Options.SetInt(_T("Detached video last x"), x);
 	Options.SetInt(_T("Detached video last y"), y);
 	Options.SetBool(_T("Detached video"),true);
 	Options.Save();
+
+	// Copy the main accelerator table to this dialog
+	wxAcceleratorTable *table = par->GetAcceleratorTable();
+	SetAcceleratorTable(*table);
 }
 
-
-/////////////
-// Destructor
+/// @brief Destructor
 DialogDetachedVideo::~DialogDetachedVideo() {
 	Options.SetBool(_T("Detached video maximized"),IsMaximized());
 	Options.Save();
 }
 
-
-///////////////
 // Event table
 BEGIN_EVENT_TABLE(DialogDetachedVideo,wxDialog)
-	EVT_KEY_DOWN(DialogDetachedVideo::OnKey)
 	EVT_CLOSE(DialogDetachedVideo::OnClose)
 	EVT_MOVE(DialogDetachedVideo::OnMove)
+	EVT_ICONIZE(DialogDetachedVideo::OnMinimize)
 END_EVENT_TABLE()
 
-
-////////////
-// Key down
-void DialogDetachedVideo::OnKey(wxKeyEvent &event) {
-	// Send to parent... except that it doesn't work
-	event.Skip();
-#if wxCHECK_VERSION(2,9,0)
-	GetParent()->GetEventHandler()->ProcessEvent(event);
-#else
-	GetParent()->AddPendingEvent(event);
-#endif
-}
-
-
-////////////////
-// Close window
-void DialogDetachedVideo::OnClose(wxCloseEvent &event) {
+/// @brief Close window
+/// @param event UNUSED
+void DialogDetachedVideo::OnClose(wxCloseEvent &WXUNUSED(event)) {
 	FrameMain *par = parent;
 	Options.SetBool(_T("Detached video"),false);
 	Destroy();
 	par->detachedVideo = NULL;
-	par->SetDisplayMode(-1,-1);
+	par->SetDisplayMode(1,-1);
 }
 
-
-///////////////
-// Move window
+/// @brief Move window 
+/// @param event 
 void DialogDetachedVideo::OnMove(wxMoveEvent &event) {
 	wxPoint pos = event.GetPosition();
 	Options.SetInt(_T("Detached video last x"),pos.x);
 	Options.SetInt(_T("Detached video last y"),pos.y);
+}
+
+/// @brief Minimize event handler
+/// @param event
+void DialogDetachedVideo::OnMinimize(wxIconizeEvent &event) {
+	if (event.IsIconized()) {
+		// Force the video display to repaint as otherwise the last displayed
+		// frame stays visible even though the dialog is minimized
+		Hide();
+		Show();
+	}
 }
