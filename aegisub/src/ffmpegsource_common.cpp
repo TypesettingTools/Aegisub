@@ -106,6 +106,7 @@ FFIndex *FFmpegSourceProvider::DoIndexing(FFIndexer *Indexer, const wxString &Ca
 	return Index;
 }
 
+
 ///////////
 // Find all tracks of the given typo and return their track numbers and respective codec names
 std::map<int,wxString> FFmpegSourceProvider::GetTracksOfType(FFIndexer *Indexer, FFMS_TrackType Type) {
@@ -121,6 +122,7 @@ std::map<int,wxString> FFmpegSourceProvider::GetTracksOfType(FFIndexer *Indexer,
 	
 	return TrackList;
 }
+
 
 ///////////
 // Ask user for which track he wants to load
@@ -146,6 +148,31 @@ int FFmpegSourceProvider::AskForTrackSelection(const std::map<int,wxString> &Tra
 	else
 		return TrackNumbers[Choice];
 }
+
+
+///////////
+// Set ffms2 log level according to setting in config.dat
+void FFmpegSourceProvider::SetLogLevel() {
+	wxString LogLevel = Options.AsText(_T("FFmpegSource log level"));
+
+	if (!LogLevel.CmpNoCase(_T("panic")))
+		FFMS_SetLogLevel(FFMS_LOG_PANIC);
+	else if (!LogLevel.CmpNoCase(_T("fatal")))
+		FFMS_SetLogLevel(FFMS_LOG_FATAL);
+	else if (!LogLevel.CmpNoCase(_T("error")))
+		FFMS_SetLogLevel(FFMS_LOG_ERROR);
+	else if (!LogLevel.CmpNoCase(_T("warning")))
+		FFMS_SetLogLevel(FFMS_LOG_WARNING);
+	else if (!LogLevel.CmpNoCase(_T("info")))
+		FFMS_SetLogLevel(FFMS_LOG_INFO);
+	else if (!LogLevel.CmpNoCase(_T("verbose")))
+		FFMS_SetLogLevel(FFMS_LOG_VERBOSE);
+	else if (!LogLevel.CmpNoCase(_T("debug")))
+		FFMS_SetLogLevel(FFMS_LOG_DEBUG);
+	else
+		FFMS_SetLogLevel(FFMS_LOG_QUIET);
+}
+
 
 /////////////////////
 // Creates a name for the ffmpegsource2 index and prepares the folder if it doesn't exist

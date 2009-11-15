@@ -67,6 +67,8 @@ FFmpegSourceAudioProvider::FFmpegSourceAudioProvider(Aegisub::String filename) {
 
 	AudioSource = NULL;
 
+	SetLogLevel();
+
 	try {
 		LoadAudio(filename);
 	} catch (...) {

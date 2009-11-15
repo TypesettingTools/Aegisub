@@ -53,6 +53,19 @@
 class FFmpegSourceProvider {
 	friend class FFmpegSourceCacheCleaner;
 public:
+	// constants stolen from avutil/log.h
+	// hope the ffmpeg devs don't change them around too much
+	enum FFMS_LogLevel {
+		FFMS_LOG_QUIET		= -8,
+		FFMS_LOG_PANIC		= 0,
+		FFMS_LOG_FATAL		= 8,
+		FFMS_LOG_ERROR		= 16,
+		FFMS_LOG_WARNING	= 24,
+		FFMS_LOG_INFO		= 32,
+		FFMS_LOG_VERBOSE	= 40,
+		FFMS_LOG_DEBUG		= 48,
+	};
+
 	struct IndexingProgressDialog {
 		volatile bool IndexingCanceled;
 		DialogProgress *ProgressDialog;
@@ -67,6 +80,7 @@ public:
 	std::map<int,wxString> GetTracksOfType(FFIndexer *Indexer, FFMS_TrackType Type);
 	int AskForTrackSelection(const std::map<int,wxString>& TrackList, FFMS_TrackType Type);
 	wxString GetCacheFilename(const wxString& filename);
+	void SetLogLevel();
 
 	virtual FFmpegSourceProvider::~FFmpegSourceProvider() {}
 };
