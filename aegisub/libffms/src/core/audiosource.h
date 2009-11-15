@@ -28,6 +28,7 @@ extern "C" {
 
 #include <vector>
 #include <list>
+#include <sstream>
 #include <memory>
 #include "indexing.h"
 #include "utils.h"
@@ -69,6 +70,7 @@ public:
 };
 
 class FFMS_AudioSource {
+friend class FFSourceResources<FFMS_AudioSource>;
 protected:
 	TAudioCache AudioCache;
 	int64_t CurrentSample;
@@ -77,24 +79,27 @@ protected:
 	AVCodecContext *CodecContext;
 	int AudioTrack;
 	FFMS_AudioProperties AP;
+
+	virtual void Free(bool CloseCodec) = 0;
 public:
-	FFMS_AudioSource(const char *SourceFile, FFMS_Index *Index, char *ErrorMsg, unsigned MsgSize);
+	FFMS_AudioSource(const char *SourceFile, FFMS_Index *Index, int Track);
 	virtual ~FFMS_AudioSource();
-	FFMS_Track *GetFFTrack() { return &Frames; }
+	FFMS_Track *GetTrack() { return &Frames; }
 	const FFMS_AudioProperties& GetAudioProperties() { return AP; }
-	virtual int GetAudio(void *Buf, int64_t Start, int64_t Count, char *ErrorMsg, unsigned MsgSize) = 0;
+	virtual void GetAudio(void *Buf, int64_t Start, int64_t Count) = 0;
+	void GetAudioCheck(int64_t Start, int64_t Count);
 };
 
 class FFLAVFAudio : public FFMS_AudioSource {
 private:
 	AVFormatContext *FormatContext;
+	FFSourceResources<FFMS_AudioSource> Res;
 
-	int DecodeNextAudioBlock(int64_t *Count, char *ErrorMsg, unsigned MsgSize);
+	void DecodeNextAudioBlock(int64_t *Count);
 	void Free(bool CloseCodec);
 public:
-	FFLAVFAudio(const char *SourceFile, int Track, FFMS_Index *Index, char *ErrorMsg, unsigned MsgSize);
-	~FFLAVFAudio();
-	int GetAudio(void *Buf, int64_t Start, int64_t Count, char *ErrorMsg, unsigned MsgSize);
+	FFLAVFAudio(const char *SourceFile, int Track, FFMS_Index *Index);
+	void GetAudio(void *Buf, int64_t Start, int64_t Count);
 };
 
 class FFMatroskaAudio : public FFMS_AudioSource {
@@ -103,13 +108,14 @@ private:
 	MatroskaReaderContext MC;
     CompressedStream *CS;
 	char ErrorMessage[256];
+	FFSourceResources<FFMS_AudioSource> Res;
+	size_t PacketNumber;
 
-	int DecodeNextAudioBlock(int64_t *Count, int AudioBlock, char *ErrorMsg, unsigned MsgSize);
+	void DecodeNextAudioBlock(int64_t *Count);
 	void Free(bool CloseCodec);
 public:
-	FFMatroskaAudio(const char *SourceFile, int Track, FFMS_Index *Index, char *ErrorMsg, unsigned MsgSize);
-	~FFMatroskaAudio();
-	int GetAudio(void *Buf, int64_t Start, int64_t Count, char *ErrorMsg, unsigned MsgSize);
+	FFMatroskaAudio(const char *SourceFile, int Track, FFMS_Index *Index);
+	void GetAudio(void *Buf, int64_t Start, int64_t Count);
 };
 
 #ifdef HAALISOURCE
@@ -118,13 +124,13 @@ class FFHaaliAudio : public FFMS_AudioSource {
 private:
 	CComPtr<IMMContainer> pMMC;
 	std::vector<uint8_t> CodecPrivate;
+	FFSourceResources<FFMS_AudioSource> Res;
 
+	void DecodeNextAudioBlock(int64_t *AFirstStartTime, int64_t *Count);
 	void Free(bool CloseCodec);
-	int DecodeNextAudioBlock(int64_t *AFirstStartTime, int64_t *Count, char *ErrorMsg, unsigned MsgSize);
 public:
-	FFHaaliAudio(const char *SourceFile, int Track, FFMS_Index *Index, int SourceMode, char *ErrorMsg, unsigned MsgSize);
-	~FFHaaliAudio();
-	int GetAudio(void *Buf, int64_t Start, int64_t Count, char *ErrorMsg, unsigned MsgSize);
+	FFHaaliAudio(const char *SourceFile, int Track, FFMS_Index *Index, enum FFMS_Sources SourceMode);
+	void GetAudio(void *Buf, int64_t Start, int64_t Count);
 };
 
 #endif // HAALISOURCE

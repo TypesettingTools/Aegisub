@@ -28,7 +28,11 @@ extern "C" {
 #include <libpostproc/postprocess.h>
 }
 
+// must be included after ffmpeg headers
+#include "ffmscompat.h"
+
 #include <vector>
+#include <sstream>
 #include "indexing.h"
 #include "utils.h"
 #include "ffms.h"
@@ -46,6 +50,7 @@ extern "C" {
 #endif
 
 class FFMS_VideoSource {
+friend class FFSourceResources<FFMS_VideoSource>;
 private:
 	pp_context_t *PPContext;
 	pp_mode_t *PPMode;
@@ -57,6 +62,7 @@ private:
 	int TargetWidth;
 	int64_t TargetPixelFormats;
 	int TargetResizer;
+	PixelFormat OutputFormat;
 	AVPicture PPFrame;
 	AVPicture SWSFrame;
 protected:
@@ -69,18 +75,21 @@ protected:
 	int	CurrentFrame;
 	AVCodecContext *CodecContext;
 
-	FFMS_VideoSource(const char *SourceFile, FFMS_Index *Index, char *ErrorMsg, unsigned MsgSize);
-	int InitPP(const char *PP, char *ErrorMsg, unsigned MsgSize);
-	int ReAdjustPP(PixelFormat VPixelFormat, int Width, int Height, char *ErrorMsg, unsigned MsgSize);
-	FFMS_Frame *OutputFrame(AVFrame *Frame, char *ErrorMsg, unsigned MsgSize);
+	FFMS_VideoSource(const char *SourceFile, FFMS_Index *Index, int Track);
+	void ReAdjustPP(PixelFormat VPixelFormat, int Width, int Height);
+	void ReAdjustOutputFormat(int64_t TargetFormats, int Width, int Height, int Resizer);
+	FFMS_Frame *OutputFrame(AVFrame *Frame);
+	virtual void Free(bool CloseCodec) = 0;
 public:
 	virtual ~FFMS_VideoSource();
 	const FFMS_VideoProperties& GetVideoProperties() { return VP; }
-	FFMS_Track *GetFFTrack() { return &Frames; }
-	virtual FFMS_Frame *GetFrame(int n, char *ErrorMsg, unsigned MsgSize) = 0;
-	FFMS_Frame *GetFrameByTime(double Time, char *ErrorMsg, unsigned MsgSize);
-	int SetOutputFormat(int64_t TargetFormats, int Width, int Height, int Resizer, char *ErrorMsg, unsigned MsgSize);
-	int ReAdjustOutputFormat(int64_t TargetFormats, int Width, int Height, int Resizer, char *ErrorMsg, unsigned MsgSize);
+	FFMS_Track *GetTrack() { return &Frames; }
+	virtual FFMS_Frame *GetFrame(int n) = 0;
+	void GetFrameCheck(int n);
+	FFMS_Frame *GetFrameByTime(double Time);
+	void SetPP(const char *PP);
+	void ResetPP();
+	void SetOutputFormat(int64_t TargetFormats, int Width, int Height, int Resizer);
 	void ResetOutputFormat();
 };
 
@@ -88,13 +97,14 @@ class FFLAVFVideo : public FFMS_VideoSource {
 private:
 	AVFormatContext *FormatContext;
 	int SeekMode;
+	FFSourceResources<FFMS_VideoSource> Res;
 
+	void DecodeNextFrame(int64_t *DTS);
+protected:
 	void Free(bool CloseCodec);
-	int DecodeNextFrame(int64_t *DTS, char *ErrorMsg, unsigned MsgSize);
 public:
-	FFLAVFVideo(const char *SourceFile, int Track, FFMS_Index *Index, const char *PP, int Threads, int SeekMode, char *ErrorMsg, unsigned MsgSize);
-	~FFLAVFVideo();
-	FFMS_Frame *GetFrame(int n, char *ErrorMsg, unsigned MsgSize);
+	FFLAVFVideo(const char *SourceFile, int Track, FFMS_Index *Index, int Threads, int SeekMode);
+	FFMS_Frame *GetFrame(int n);
 };
 
 class FFMatroskaVideo : public FFMS_VideoSource {
@@ -103,13 +113,15 @@ private:
 	MatroskaReaderContext MC;
     CompressedStream *CS;
 	char ErrorMessage[256];
+	FFSourceResources<FFMS_VideoSource> Res;
+	size_t PacketNumber;
 
+	void DecodeNextFrame();
+protected:
 	void Free(bool CloseCodec);
-	int DecodeNextFrame(int64_t *AFirstStartTime, char *ErrorMsg, unsigned MsgSize);
 public:
-	FFMatroskaVideo(const char *SourceFile, int Track, FFMS_Index *Index, const char *PP, int Threads, char *ErrorMsg, unsigned MsgSize);
-	~FFMatroskaVideo();
-    FFMS_Frame *GetFrame(int n, char *ErrorMsg, unsigned MsgSize);
+	FFMatroskaVideo(const char *SourceFile, int Track, FFMS_Index *Index, int Threads);
+    FFMS_Frame *GetFrame(int n);
 };
 
 #ifdef HAALISOURCE
@@ -119,13 +131,14 @@ private:
 	CComPtr<IMMContainer> pMMC;
 	std::vector<uint8_t> CodecPrivate;
 	AVBitStreamFilterContext *BitStreamFilter;
+	FFSourceResources<FFMS_VideoSource> Res;
 
+	void DecodeNextFrame(int64_t *AFirstStartTime);
+protected:
 	void Free(bool CloseCodec);
-	int DecodeNextFrame(int64_t *AFirstStartTime, char *ErrorMsg, unsigned MsgSize);
 public:
-	FFHaaliVideo(const char *SourceFile, int Track, FFMS_Index *Index, const char *PP, int Threads, int SourceMode, char *ErrorMsg, unsigned MsgSize);
-	~FFHaaliVideo();
-    FFMS_Frame *GetFrame(int n, char *ErrorMsg, unsigned MsgSize);
+	FFHaaliVideo(const char *SourceFile, int Track, FFMS_Index *Index, int Threads, enum FFMS_Sources SourceMode);
+    FFMS_Frame *GetFrame(int n);
 };
 
 #endif // HAALISOURCE

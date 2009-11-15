@@ -104,13 +104,13 @@ longlong StdIoGetFileSize(StdIoStream *st) {
 
 void InitStdIoStream(StdIoStream *st) {
 	memset(st,0,sizeof(StdIoStream));
-	st->base.read = StdIoRead;
-	st->base.scan = StdIoScan;
-	st->base.getcachesize = StdIoGetCacheSize;
-	st->base.geterror = StdIoGetLastError;
-	st->base.memalloc = StdIoMalloc;
-	st->base.memrealloc = StdIoRealloc;
-	st->base.memfree = StdIoFree;
-	st->base.progress = StdIoProgress;
-	st->base.getfilesize = StdIoGetFileSize;
+	st->base.read = (int (*)(InputStream *,ulonglong,void *,int))StdIoRead;
+	st->base.scan = (longlong (*)(InputStream *,ulonglong,unsigned int))StdIoScan;
+	st->base.getcachesize =  (unsigned int (*)(InputStream *))StdIoGetCacheSize;
+	st->base.geterror = (const char *(*)(InputStream *))StdIoGetLastError;
+	st->base.memalloc = (void *(*)(InputStream *,size_t))StdIoMalloc;
+	st->base.memrealloc = (void *(*)(InputStream *,void *,size_t))StdIoRealloc;
+	st->base.memfree = (void (*)(InputStream *,void *))StdIoFree;
+	st->base.progress = (int (*)(InputStream *,ulonglong,ulonglong))StdIoProgress;
+	st->base.getfilesize = (longlong (*)(InputStream *))StdIoGetFileSize;
 }

@@ -18,7 +18,7 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
 
-#include "ffvideosource.h"
+#include "videosource.h"
 
 
 
@@ -35,26 +35,22 @@ void FFMatroskaVideo::Free(bool CloseCodec) {
 }
 
 FFMatroskaVideo::FFMatroskaVideo(const char *SourceFile, int Track,
-	FFMS_Index *Index, const char *PP,
-	int Threads, char *ErrorMsg, unsigned MsgSize)
-	: FFMS_VideoSource(SourceFile, Index, ErrorMsg, MsgSize) {
+	FFMS_Index *Index, int Threads)
+	: Res(FFSourceResources<FFMS_VideoSource>(this)), FFMS_VideoSource(SourceFile, Index, Track) {
 
 	AVCodec *Codec = NULL;
 	CodecContext = NULL;
 	TrackInfo *TI = NULL;
 	CS = NULL;
+	PacketNumber = 0;
 	VideoTrack = Track;
 	Frames = (*Index)[VideoTrack];
 
-	if (Frames.size() == 0) {
-		snprintf(ErrorMsg, MsgSize, "Video track contains no frames");
-		throw ErrorMsg;
-	}
-
 	MC.ST.fp = ffms_fopen(SourceFile, "rb");
 	if (MC.ST.fp == NULL) {
-		snprintf(ErrorMsg, MsgSize, "Can't open '%s': %s", SourceFile, strerror(errno));
-		throw ErrorMsg;
+		std::ostringstream buf;
+		buf << "Can't open '" << SourceFile << "': " << strerror(errno);
+		throw FFMS_Exception(FFMS_ERROR_PARSER, FFMS_ERROR_FILE_READ, buf.str());
 	}
 
 	setvbuf(MC.ST.fp, NULL, _IOFBF, CACHESIZE);
@@ -62,19 +58,20 @@ FFMatroskaVideo::FFMatroskaVideo(const char *SourceFile, int Track,
 	MF = mkv_OpenEx(&MC.ST.base, 0, 0, ErrorMessage, sizeof(ErrorMessage));
 	if (MF == NULL) {
 		fclose(MC.ST.fp);
-		snprintf(ErrorMsg, MsgSize, "Can't parse Matroska file: %s", ErrorMessage);
-		throw ErrorMsg;
+		std::ostringstream buf;
+		buf << "Can't parse Matroska file: " << ErrorMessage;
+		throw FFMS_Exception(FFMS_ERROR_PARSER, FFMS_ERROR_FILE_READ, buf.str());
 	}
 
-	mkv_SetTrackMask(MF, ~(1 << VideoTrack));
 	TI = mkv_GetTrackInfo(MF, VideoTrack);
 
 	if (TI->CompEnabled) {
 		CS = cs_Create(MF, VideoTrack, ErrorMessage, sizeof(ErrorMessage));
 		if (CS == NULL) {
 			Free(false);
-			snprintf(ErrorMsg, MsgSize, "Can't create decompressor: %s", ErrorMessage);
-			throw ErrorMsg;
+			std::ostringstream buf;
+			buf << "Can't create decompressor: " << ErrorMessage;
+			throw FFMS_Exception(FFMS_ERROR_PARSER, FFMS_ERROR_FILE_READ, buf.str());
 		}
 	}
 
@@ -82,48 +79,40 @@ FFMatroskaVideo::FFMatroskaVideo(const char *SourceFile, int Track,
 	CodecContext->thread_count = Threads;
 
 	Codec = avcodec_find_decoder(MatroskaToFFCodecID(TI->CodecID, TI->CodecPrivate));
-	if (Codec == NULL) {
-		Free(false);
-		snprintf(ErrorMsg, MsgSize, "Video codec not found");
-		throw ErrorMsg;
-	}
+	if (Codec == NULL)
+		throw FFMS_Exception(FFMS_ERROR_DECODING, FFMS_ERROR_CODEC,
+			"Video codec not found");
 
 	InitializeCodecContextFromMatroskaTrackInfo(TI, CodecContext);
 
-	if (avcodec_open(CodecContext, Codec) < 0) {
-		Free(false);
-		snprintf(ErrorMsg, MsgSize, "Could not open video codec");
-		throw ErrorMsg;
-	}
+	if (avcodec_open(CodecContext, Codec) < 0)
+		throw FFMS_Exception(FFMS_ERROR_DECODING, FFMS_ERROR_CODEC,
+			"Could not open video codec");
+
+	Res.CloseCodec(true);
 
 	// Always try to decode a frame to make sure all required parameters are known
-	int64_t Dummy;
-	if (DecodeNextFrame(&Dummy, ErrorMsg, MsgSize)) {
-		Free(true);
-		throw ErrorMsg;
-	}
+	DecodeNextFrame();
 
-	VP.Width = CodecContext->width;
-	VP.Height = CodecContext->height;;
 	VP.FPSDenominator = 1;
 	VP.FPSNumerator = 30;
 	VP.RFFDenominator = CodecContext->time_base.num;
 	VP.RFFNumerator = CodecContext->time_base.den;
 	VP.NumFrames = Frames.size();
-	VP.VPixelFormat = CodecContext->pix_fmt;
+	VP.TopFieldFirst = DecodeFrame->top_field_first;
+#ifdef FFMS_HAVE_FFMPEG_COLORSPACE_INFO
+	VP.ColorSpace = CodecContext->colorspace;
+	VP.ColorRange = CodecContext->color_range;
+#else
+	VP.ColorSpace = 0;
+	VP.ColorRange = 0;
+#endif
 	VP.FirstTime = ((Frames.front().DTS * Frames.TB.Num) / (double)Frames.TB.Den) / 1000;
 	VP.LastTime = ((Frames.back().DTS * Frames.TB.Num) / (double)Frames.TB.Den) / 1000;
 
-	if (VP.Width <= 0 || VP.Height <= 0) {
-		Free(true);
-		snprintf(ErrorMsg, MsgSize, "Codec returned zero size video");
-		throw ErrorMsg;
-	}
-
-	if (InitPP(PP, ErrorMsg, MsgSize)) {
-		Free(true);
-		throw ErrorMsg;
-	}
+	if (CodecContext->width <= 0 || CodecContext->height <= 0)
+		throw FFMS_Exception(FFMS_ERROR_DECODING, FFMS_ERROR_CODEC,
+			"Codec returned zero size video");
 
 	// Calculate the average framerate
 	if (Frames.size() >= 2) {
@@ -133,10 +122,7 @@ FFMatroskaVideo::FFMatroskaVideo(const char *SourceFile, int Track,
 	}
 
 	// Output the already decoded frame so it isn't wasted
-	if (!OutputFrame(DecodeFrame, ErrorMsg, MsgSize)) {
-		Free(true);
-		throw ErrorMsg;
-	}
+	OutputFrame(DecodeFrame);
 
 	// Set AR variables
 	VP.SARNum = TI->AV.Video.DisplayWidth * TI->AV.Video.PixelHeight;
@@ -149,32 +135,32 @@ FFMatroskaVideo::FFMatroskaVideo(const char *SourceFile, int Track,
 	VP.CropBottom = TI->AV.Video.CropB;
 }
 
-FFMatroskaVideo::~FFMatroskaVideo() {
-	Free(true);
-}
-
-int FFMatroskaVideo::DecodeNextFrame(int64_t *AFirstStartTime, char *ErrorMsg, unsigned MsgSize) {
+void FFMatroskaVideo::DecodeNextFrame() {
 	int FrameFinished = 0;
-	*AFirstStartTime = -1;
 	AVPacket Packet;
-	InitNullPacket(&Packet);
+	InitNullPacket(Packet);
 
-	ulonglong StartTime, EndTime, FilePos;
-	unsigned int Track, FrameFlags, FrameSize;
+	unsigned int FrameSize;
 	
-	while (mkv_ReadFrame(MF, 0, &Track, &StartTime, &EndTime, &FilePos, &FrameSize, &FrameFlags) == 0) {
-		if (*AFirstStartTime < 0)
-			*AFirstStartTime = StartTime;
-
-		if (ReadFrame(FilePos, FrameSize, CS, MC, ErrorMsg, MsgSize))
-			return 1;
+	while (PacketNumber < Frames.size()) {
+		// The additional indirection is because the packets are stored in
+		// presentation order and not decoding order, this is unnoticable
+		// in the other sources where less is done manually
+		const TFrameInfo &FI = Frames[Frames[PacketNumber].OriginalPos];
+		FrameSize = FI.FrameSize;
+		ReadFrame(FI.FilePos, FrameSize, CS, MC);
 
 		Packet.data = MC.Buffer;
 		Packet.size = FrameSize;
-		if (FrameFlags & FRAME_KF)
+		if (FI.KeyFrame)
 			Packet.flags = AV_PKT_FLAG_KEY;
 		else
 			Packet.flags = 0;
+
+		PacketNumber++;
+
+		if (CodecContext->codec_id == CODEC_ID_MPEG4 && IsNVOP(Packet))
+			goto Done;
 
 		avcodec_decode_video2(CodecContext, DecodeFrame, &FrameFinished, &Packet);
 
@@ -185,7 +171,7 @@ int FFMatroskaVideo::DecodeNextFrame(int64_t *AFirstStartTime, char *ErrorMsg, u
 	// Flush the last frames
 	if (CodecContext->has_b_frames) {
 		AVPacket NullPacket;
-		InitNullPacket(&NullPacket);
+		InitNullPacket(NullPacket);
 		avcodec_decode_video2(CodecContext, DecodeFrame, &FrameFinished, &NullPacket);
 	}
 
@@ -193,39 +179,27 @@ int FFMatroskaVideo::DecodeNextFrame(int64_t *AFirstStartTime, char *ErrorMsg, u
 		goto Error;
 
 Error:
-Done:
-	return 0;
+Done:;
 }
 
-FFMS_Frame *FFMatroskaVideo::GetFrame(int n, char *ErrorMsg, unsigned MsgSize) {
+FFMS_Frame *FFMatroskaVideo::GetFrame(int n) {
+	GetFrameCheck(n);
+
 	if (LastFrameNum == n)
 		return &LocalFrame;
 
-	bool HasSeeked = false;
-
-	if (n < CurrentFrame || Frames.FindClosestVideoKeyFrame(n) > CurrentFrame) {
-		mkv_Seek(MF, Frames[n].DTS, MKVF_SEEK_TO_PREV_KEYFRAME_STRICT);
+	int ClosestKF = Frames.FindClosestVideoKeyFrame(n);
+	if (CurrentFrame > n || ClosestKF > CurrentFrame + 10) {
+		PacketNumber = ClosestKF;
+		CurrentFrame = ClosestKF;
 		avcodec_flush_buffers(CodecContext);
-		HasSeeked = true;
 	}
 
 	do {
-		int64_t StartTime;
-		if (DecodeNextFrame(&StartTime, ErrorMsg, MsgSize))
-				return NULL;
-
-		if (HasSeeked) {
-			HasSeeked = false;
-
-			if (StartTime < 0 || (CurrentFrame = Frames.FrameFromDTS(StartTime)) < 0) {
-				snprintf(ErrorMsg, MsgSize, "Frame accurate seeking is not possible in this file");
-				return NULL;
-			}
-		}
-
+		DecodeNextFrame();
 		CurrentFrame++;
 	} while (CurrentFrame <= n);
 
 	LastFrameNum = n;
-	return OutputFrame(DecodeFrame, ErrorMsg, MsgSize);
+	return OutputFrame(DecodeFrame);
 }
