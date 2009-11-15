@@ -70,7 +70,7 @@ private:
 	PClip OpenVideo(Aegisub::String _filename, bool mpeg2dec3_priority = true);
 
 public:
-	AvisynthVideoProvider(Aegisub::String _filename, double fps=0.0);
+	AvisynthVideoProvider(Aegisub::String _filename);
 	~AvisynthVideoProvider();
 
 	const AegiVideoFrame GetFrame(int n,int formatMask);
@@ -99,7 +99,7 @@ public:
 // Factory
 class AvisynthVideoProviderFactory : public VideoProviderFactory {
 public:
-	VideoProvider *CreateProvider(Aegisub::String video,double fps=0.0) { return new AvisynthVideoProvider(video,fps); }
+	VideoProvider *CreateProvider(Aegisub::String video) { return new AvisynthVideoProvider(video); }
 };
 
 

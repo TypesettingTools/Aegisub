@@ -122,7 +122,7 @@ void DummyVideoProvider::Create(double _fps, int frames, int _width, int _height
 
 ///////////////////////
 // Parsing constructor
-DummyVideoProvider::DummyVideoProvider(Aegisub::String _filename, double _fps)
+DummyVideoProvider::DummyVideoProvider(Aegisub::String _filename)
 {
 	wxString filename = _filename.c_str();
 	wxString params;
@@ -135,16 +135,14 @@ DummyVideoProvider::DummyVideoProvider(Aegisub::String _filename, double _fps)
 		throw _T("Too few fields in dummy video parameter list");
 	}
 
-	double parsedfps;
+	double fps;
 	long _frames, _width, _height, red, green, blue;
 	bool pattern = false;
 
 	wxString field = t.GetNextToken();
-	if (!field.ToDouble(&parsedfps)) {
+	if (!field.ToDouble(&fps)) {
 		throw _T("Unable to parse fps field in dummy video parameter list");
 	}
-	if (_fps == 0.0)
-		_fps = parsedfps;
 
 	field = t.GetNextToken();
 	if (!field.ToLong(&_frames)) {
@@ -181,7 +179,7 @@ DummyVideoProvider::DummyVideoProvider(Aegisub::String _filename, double _fps)
 		pattern = true;
 	}
 
-	Create(_fps, _frames, _width, _height, wxColour(red, green, blue), pattern);
+	Create(fps, _frames, _width, _height, wxColour(red, green, blue), pattern);
 }
 
 

@@ -65,8 +65,8 @@
 ///////////////
 // Constructor
 // Based on Haali's code for DirectShowSource2
-DirectShowVideoProvider::DirectShowVideoProvider(Aegisub::String _filename, double _fps) {
-	fps = _fps;
+DirectShowVideoProvider::DirectShowVideoProvider(Aegisub::String _filename) {
+	fps = 0;
 	m_registered = false;
 	m_hFrameReady = CreateEvent(NULL, FALSE, FALSE, NULL);
 	HRESULT hr = OpenVideo(_filename);

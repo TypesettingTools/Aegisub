@@ -54,7 +54,7 @@
 
 ///////////////
 // Constructor
-FFmpegSourceVideoProvider::FFmpegSourceVideoProvider(Aegisub::String filename, double fps) {
+FFmpegSourceVideoProvider::FFmpegSourceVideoProvider(Aegisub::String filename) {
 	COMInited = false;
 #ifdef WIN32
 	HRESULT res;
@@ -79,7 +79,7 @@ FFmpegSourceVideoProvider::FFmpegSourceVideoProvider(Aegisub::String filename, d
 
 	// and here we go
 	try {
-		LoadVideo(filename, fps);
+		LoadVideo(filename);
 	} catch (...) {
 		Close();
 		throw;
@@ -98,7 +98,7 @@ FFmpegSourceVideoProvider::~FFmpegSourceVideoProvider() {
 
 ///////////////
 // Open video
-void FFmpegSourceVideoProvider::LoadVideo(Aegisub::String filename, double fps) {
+void FFmpegSourceVideoProvider::LoadVideo(Aegisub::String filename) {
 	// make sure we don't have anything messy lying around
 	Close();
 
