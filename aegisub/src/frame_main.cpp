@@ -847,7 +847,7 @@ void FrameMain::SetDisplayMode(int video, int audio) {
 	MainSizer->Layout();
 	Layout();
 	Show(true);
-	VideoContext::Get()->UpdateDisplays(true);
+	if (showVideo) VideoContext::Get()->UpdateDisplays(true);
 	Thaw();
 }
 
@@ -1222,6 +1222,7 @@ void FrameMain::DetachVideo(bool detach) {
 		if (!detachedVideo) {
 			detachedVideo = new DialogDetachedVideo(this, videoBox->videoDisplay->GetClientSize());
 			detachedVideo->Show();
+			VideoContext::Get()->UpdateDisplays(true);
 		}
 	}
 	else if (detachedVideo) {
