@@ -1276,12 +1276,8 @@ void FrameMain::OnAutomationMacro (wxCommandEvent &event) {
 /// @param event 
 ///
 void FrameMain::OnSnapSubsStartToVid (wxCommandEvent &event) {
-	if (VideoContext::Get()->IsLoaded()) {
-		wxArrayInt sel = SubsBox->GetSelection();
-		if (sel.Count() > 0) {
-			wxCommandEvent dummy;
-			SubsBox->SetSubsToVideo(true);
-		}
+	if (VideoContext::Get()->IsLoaded() && SubsBox->GetSelection().Count() > 0) {
+		SubsBox->SetSubsToVideo(true);
 	}
 }
 
@@ -1290,12 +1286,8 @@ void FrameMain::OnSnapSubsStartToVid (wxCommandEvent &event) {
 /// @param event 
 ///
 void FrameMain::OnSnapSubsEndToVid (wxCommandEvent &event) {
-	if (VideoContext::Get()->IsLoaded()) {
-		wxArrayInt sel = SubsBox->GetSelection();
-		if (sel.Count() > 0) {
-			wxCommandEvent dummy;
-			SubsBox->SetSubsToVideo(false);
-		}
+	if (VideoContext::Get()->IsLoaded() && SubsBox->GetSelection().Count() > 0) {
+		SubsBox->SetSubsToVideo(false);
 	}
 }
 
@@ -1305,12 +1297,8 @@ void FrameMain::OnSnapSubsEndToVid (wxCommandEvent &event) {
 /// @param event 
 ///
 void FrameMain::OnSnapVidToSubsStart (wxCommandEvent &event) {
-	if (VideoContext::Get()->IsLoaded()) {
-		wxArrayInt sel = SubsBox->GetSelection();
-		if (sel.Count() > 0) {
-			wxCommandEvent dummy;
-			SubsBox->SetVideoToSubs(true);
-		}
+	if (VideoContext::Get()->IsLoaded() && SubsBox->GetSelection().Count() > 0) {
+		SubsBox->SetVideoToSubs(true);
 	}
 }
 
@@ -1319,12 +1307,8 @@ void FrameMain::OnSnapVidToSubsStart (wxCommandEvent &event) {
 /// @param event 
 ///
 void FrameMain::OnSnapVidToSubsEnd (wxCommandEvent &event) {
-	if (VideoContext::Get()->IsLoaded()) {
-		wxArrayInt sel = SubsBox->GetSelection();
-		if (sel.Count() > 0) {
-			wxCommandEvent dummy;
-			SubsBox->SetVideoToSubs(false);
-		}
+	if (VideoContext::Get()->IsLoaded() && SubsBox->GetSelection().Count() > 0) {
+		SubsBox->SetVideoToSubs(false);
 	}
 }
 
