@@ -133,11 +133,11 @@ AboutScreen::AboutScreen(wxWindow *parent)
 	aboutString += _T("    Muhammad Lukman Nasaruddin\n");
 	aboutString += _T("    Niels Martin Hansen\n");
 	aboutString += _T("    Patryk Pomykalski\n");
+	aboutString += _T("    Ravi Pinjala\n");
 	aboutString += _T("    Rodrigo Braz Monteiro\n");
 	aboutString += _T("    Simone Cociancich\n");
 	aboutString += _T("    Thomas Goyne\n");
 	aboutString += _T("    2points\n");
-	aboutString += _T("    p-static\n");
 	aboutString += _T("User manual written by:\n");
 	aboutString += _T("    Karl Blomster\n");
 	aboutString += _T("    Niels Martin Hansen\n");
