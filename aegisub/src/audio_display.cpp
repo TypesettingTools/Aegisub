@@ -1348,7 +1348,7 @@ END_EVENT_TABLE()
 /////////
 // Paint
 void AudioDisplay::OnPaint(wxPaintEvent& event) {
-	if (w == 0 || h == 0) return;
+	if (w == 0 || h == 0 || !origImage) return;
 	DoUpdateImage();
 
 	wxPaintDC dc(this);

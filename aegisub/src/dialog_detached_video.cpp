@@ -34,8 +34,6 @@
 //
 
 
-///////////
-// Headers
 #include "config.h"
 
 #include <wx/wxprec.h>
@@ -53,13 +51,12 @@
 #undef min
 #undef max
 
-///////////////
-// Constructor
+/// @brief Constructor
+/// @param par FrameMain this was spawned from
+/// @param initialDisplaySize Initial size of the window
 DialogDetachedVideo::DialogDetachedVideo(FrameMain *par, const wxSize &initialDisplaySize)
-//: wxFrame(par,-1,_("Detached Video"))
 : wxDialog(par,-1,_T("Detached Video"),wxDefaultPosition,wxSize(400,300),wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER | wxMAXIMIZE_BOX | wxMINIMIZE_BOX | wxWANTS_CHARS)
 {
-	// Set parent
 	parent = par;
 
 	// Set up window
@@ -125,58 +122,42 @@ DialogDetachedVideo::DialogDetachedVideo(FrameMain *par, const wxSize &initialDi
 	}
 
 	// Update
-	parent->SetDisplayMode(0,-1);
+	parent->SetDisplayMode(0, -1);
 	GetPosition(&x, &y);
 	Options.SetInt(_T("Detached video last x"), x);
 	Options.SetInt(_T("Detached video last y"), y);
 	Options.SetBool(_T("Detached video"),true);
 	Options.Save();
+
+	// Copy the main accelerator table to this dialog
+	wxAcceleratorTable *table = par->GetAcceleratorTable();
+	SetAcceleratorTable(*table);
 }
 
-
-/////////////
-// Destructor
+/// @brief Destructor
 DialogDetachedVideo::~DialogDetachedVideo() {
 	Options.SetBool(_T("Detached video maximized"),IsMaximized());
 	Options.Save();
 }
 
-
-///////////////
 // Event table
 BEGIN_EVENT_TABLE(DialogDetachedVideo,wxDialog)
-	EVT_KEY_DOWN(DialogDetachedVideo::OnKey)
 	EVT_CLOSE(DialogDetachedVideo::OnClose)
 	EVT_MOVE(DialogDetachedVideo::OnMove)
 END_EVENT_TABLE()
 
-
-////////////
-// Key down
-void DialogDetachedVideo::OnKey(wxKeyEvent &event) {
-	// Send to parent... except that it doesn't work
-	event.Skip();
-#if wxCHECK_VERSION(2,9,0)
-	GetParent()->GetEventHandler()->ProcessEvent(event);
-#else
-	GetParent()->AddPendingEvent(event);
-#endif
-}
-
-
-////////////////
-// Close window
-void DialogDetachedVideo::OnClose(wxCloseEvent &event) {
+/// @brief Close window
+/// @param event UNUSED
+void DialogDetachedVideo::OnClose(wxCloseEvent &WXUNUSED(event)) {
 	FrameMain *par = parent;
 	Options.SetBool(_T("Detached video"),false);
 	Destroy();
 	par->detachedVideo = NULL;
-	par->SetDisplayMode(-1,-1);
+	par->SetDisplayMode(1,-1);
 }
 
-
-///////////////
-// Move window
+/// @brief Move window 
+/// @param event 
 void DialogDetachedVideo::OnMove(wxMoveEvent &event) {
 	wxPoint pos = event.GetPosition();
 	Options.SetInt(_T("Detached video last x"),pos.x);
