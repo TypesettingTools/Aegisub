@@ -32,41 +32,12 @@
 ; Contact: mailto:nielsm@indvikleren.dk
 ;
 
-#include "fragment_setupbase.iss"
+[Files]
+; documentation
+Source: src\docs\*; DestDir: {app}\docs; Flags: ignoreversion recursesubdirs solidbreak; Components: docs; Excludes: *svn
 
-[Setup]
-OutputBaseFilename=Aegisub-2.1.8-setup
-VersionInfoDescription=Aegisub 2.1.8 setup
+[Components]
+; Docs
+Name: docs; Description: User manual; Types: custom compact full
 
-
-#include "fragment_mainprogram.iss"
-#include "fragment_associations.iss"
-#include "fragment_runtimes.iss"
-#include "fragment_codecs.iss"
-#include "fragment_automation.iss"
-#include "fragment_translations.iss"
-#include "fragment_spelling.iss"
-#include "fragment_docs.iss"
-#include "fragment_assdraw.iss"
-
-
-[Code]
-#include "fragment_runtimes_code.iss"
-#include "fragment_migrate_code.iss"
-#include "fragment_beautify_code.iss"
-
-procedure InitializeWizard;
-begin
-  InitializeWizardBeautify;
-end;
-
-function InitializeSetup: Boolean;
-begin
-  Result := InitializeSetupMigration;
-end;
-
-procedure CurStepChanged(CurStep: TSetupStep);
-begin
-  CurStepChangedMigration(CurStep);
-end;
 

@@ -32,41 +32,16 @@
 ; Contact: mailto:nielsm@indvikleren.dk
 ;
 
-#include "fragment_setupbase.iss"
 
-[Setup]
-OutputBaseFilename=Aegisub-2.1.8-setup
-VersionInfoDescription=Aegisub 2.1.8 setup
+[Files]
+; ASSDraw3
+Source: src\ASSDraw3.exe; DestDir: {app}; Flags: ignoreversion nocompression solidbreak; Components: assdraw
+Source: src\ASSDraw3.chm; DestDir: {app}; Flags: ignoreversion; Components: assdraw and docs
 
+[Icons]
+Name: {commonprograms}\ASSDraw3; Filename: {app}\ASSDraw3.exe; WorkingDir: {app}; IconIndex: 0; Components: main/icons and assdraw; Flags: createonlyiffileexists; Comment: Create vector drawings for ASS-format subtitles
 
-#include "fragment_mainprogram.iss"
-#include "fragment_associations.iss"
-#include "fragment_runtimes.iss"
-#include "fragment_codecs.iss"
-#include "fragment_automation.iss"
-#include "fragment_translations.iss"
-#include "fragment_spelling.iss"
-#include "fragment_docs.iss"
-#include "fragment_assdraw.iss"
-
-
-[Code]
-#include "fragment_runtimes_code.iss"
-#include "fragment_migrate_code.iss"
-#include "fragment_beautify_code.iss"
-
-procedure InitializeWizard;
-begin
-  InitializeWizardBeautify;
-end;
-
-function InitializeSetup: Boolean;
-begin
-  Result := InitializeSetupMigration;
-end;
-
-procedure CurStepChanged(CurStep: TSetupStep);
-begin
-  CurStepChangedMigration(CurStep);
-end;
+[Components]
+; AssDraw
+Name: assdraw; Description: ai-chan's ASSDraw3 for ASS vector drawing; Types: full
 

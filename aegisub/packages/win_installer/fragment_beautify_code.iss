@@ -1,3 +1,5 @@
+[Code]
+(*
 ; Copyright (c) 2007-2009, Niels Martin Hansen
 ;
 ; Redistribution and use in source and binary forms, with or without
@@ -31,42 +33,47 @@
 ; Website: http://www.aegisub.org/
 ; Contact: mailto:nielsm@indvikleren.dk
 ;
-
-#include "fragment_setupbase.iss"
-
-[Setup]
-OutputBaseFilename=Aegisub-2.1.8-setup
-VersionInfoDescription=Aegisub 2.1.8 setup
+*)
 
 
-#include "fragment_mainprogram.iss"
-#include "fragment_associations.iss"
-#include "fragment_runtimes.iss"
-#include "fragment_codecs.iss"
-#include "fragment_automation.iss"
-#include "fragment_translations.iss"
-#include "fragment_spelling.iss"
-#include "fragment_docs.iss"
-#include "fragment_assdraw.iss"
+function SHAutoComplete(hWnd: Integer; dwFlags: DWORD): Integer;
+external 'SHAutoComplete@shlwapi.dll stdcall delayload';
+const
+	SHACF_FILESYSTEM = $1;
+	SHACF_FILESYS_ONLY = $10;
+	SHACF_FILESYS_DIRS = $20;
 
-
-[Code]
-#include "fragment_runtimes_code.iss"
-#include "fragment_migrate_code.iss"
-#include "fragment_beautify_code.iss"
-
-procedure InitializeWizard;
+procedure InitializeWizardBeautify;
+var
+  SmallBitmap: TFileStream;
 begin
-  InitializeWizardBeautify;
-end;
+  // Thanks to ender for the following snippets
 
-function InitializeSetup: Boolean;
-begin
-  Result := InitializeSetupMigration;
-end;
+  // Fix bitmaps for small/large fonts
+  if WizardForm.WizardBitmapImage.Height < 386 then //use smaller image when not using Large Fonts
+  begin
+    try
+      ExtractTemporaryFile('welcome.bmp');
+      SmallBitmap := TFileStream.Create(ExpandConstant('{tmp}\welcome.bmp'),fmOpenRead);
+      WizardForm.WizardBitmapImage.Bitmap.LoadFromStream(SmallBitmap);
+      WizardForm.WizardBitmapImage2.Bitmap := WizardForm.WizardBitmapImage.Bitmap;
+      SmallBitmap.Free;
 
-procedure CurStepChanged(CurStep: TSetupStep);
-begin
-  CurStepChangedMigration(CurStep);
+      ExtractTemporaryFile('aegisub.bmp');
+      SmallBitmap := TFileStream.Create(ExpandConstant('{tmp}\aegisub.bmp'),fmOpenRead);
+      WizardForm.WizardSmallBitmapImage.Bitmap.LoadFromStream(SmallBitmap);
+  	except
+      Log('Error loading bitmaps: ' + GetExceptionMessage);
+    finally
+      SmallBitmap.Free;
+    end;
+  end;
+
+  // Endow install dir edit box with autocomplete
+  try
+    SHAutoComplete(WizardForm.DirEdit.Handle, SHACF_FILESYSTEM);
+  except
+    Log('Could not add autocomplete to dir edit box');
+  end;
 end;
 

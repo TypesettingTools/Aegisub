@@ -32,41 +32,16 @@
 ; Contact: mailto:nielsm@indvikleren.dk
 ;
 
-#include "fragment_setupbase.iss"
 
-[Setup]
-OutputBaseFilename=Aegisub-2.1.8-setup
-VersionInfoDescription=Aegisub 2.1.8 setup
+; This file implements checking for and installing runtime libraries for Aegisub
 
+[Files]
+; redist
+DestDir: {tmp}; Source: src\vcredist_x86.exe; Flags: nocompression deleteafterinstall; Check: RuntimesRequired
 
-#include "fragment_mainprogram.iss"
-#include "fragment_associations.iss"
-#include "fragment_runtimes.iss"
-#include "fragment_codecs.iss"
-#include "fragment_automation.iss"
-#include "fragment_translations.iss"
-#include "fragment_spelling.iss"
-#include "fragment_docs.iss"
-#include "fragment_assdraw.iss"
+[Components]
+Name: main/runtime; Description: Runtime libraries; Check: RuntimesRequired; Flags: fixed; Types: custom compact full; ExtraDiskSpaceRequired: 4630528
 
-
-[Code]
-#include "fragment_runtimes_code.iss"
-#include "fragment_migrate_code.iss"
-#include "fragment_beautify_code.iss"
-
-procedure InitializeWizard;
-begin
-  InitializeWizardBeautify;
-end;
-
-function InitializeSetup: Boolean;
-begin
-  Result := InitializeSetupMigration;
-end;
-
-procedure CurStepChanged(CurStep: TSetupStep);
-begin
-  CurStepChangedMigration(CurStep);
-end;
+[Run]
+Filename: {tmp}\vcredist_x86.exe; StatusMsg: Installing runtime libraries...; Check: RuntimesRequired; Components: main/runtime; Parameters: "/q"
 

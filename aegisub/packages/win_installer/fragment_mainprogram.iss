@@ -32,41 +32,29 @@
 ; Contact: mailto:nielsm@indvikleren.dk
 ;
 
-#include "fragment_setupbase.iss"
 
-[Setup]
-OutputBaseFilename=Aegisub-2.1.8-setup
-VersionInfoDescription=Aegisub 2.1.8 setup
+[Components]
+; Actual program
+Name: main; Description: Aegisub; Types: compact full custom; Languages: ; Flags: fixed
+Name: main/pdb; Description: Debug database (helps diagnose crashes); Types: full
+Name: main/icons; Description: Start menu icon; Types: custom compact full
+Name: main/qcklnch; Description: Quick launch icon; Types: custom compact full
 
+[Files]
+; main
+DestDir: {app}; Source: src\aegisub32.exe; Flags: ignoreversion solidbreak; Components: main
+DestDir: {app}; Source: src\aegisub32.pdb; Flags: ignoreversion; Components: main/pdb
+DestDir: {app}; Source: license.txt; Flags: ignoreversion; Tasks: ; Languages: ; Components: main
 
-#include "fragment_mainprogram.iss"
-#include "fragment_associations.iss"
-#include "fragment_runtimes.iss"
-#include "fragment_codecs.iss"
-#include "fragment_automation.iss"
-#include "fragment_translations.iss"
-#include "fragment_spelling.iss"
-#include "fragment_docs.iss"
-#include "fragment_assdraw.iss"
+[Icons]
+Name: {commonprograms}\Aegisub; Filename: {app}\aegisub32.exe; WorkingDir: {app}; IconIndex: 0; Components: main/icons; Comment: Create and edit subtitle files
+Name: {userappdata}\Microsoft\Internet Explorer\Quick Launch\Aegisub; Filename: {app}\aegisub32.exe; WorkingDir: {app}; IconIndex: 0; Components: main/qcklnch; Comment: Create and edit subtitle files
 
+[Registry]
+; Register in App Paths so the user can conveniently enter 'aegisub' in their Run box
+Root: HKLM; Subkey: "SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\aegisub32.exe"; ValueType: string; ValueName: ""; ValueData: "{app}\aegisub32.exe"; Flags: uninsdeletekey
+Root: HKLM; Subkey: "SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\aegisub.exe"; ValueType: string; ValueName: ""; ValueData: "{app}\aegisub32.exe"; Flags: uninsdeletekey
 
-[Code]
-#include "fragment_runtimes_code.iss"
-#include "fragment_migrate_code.iss"
-#include "fragment_beautify_code.iss"
-
-procedure InitializeWizard;
-begin
-  InitializeWizardBeautify;
-end;
-
-function InitializeSetup: Boolean;
-begin
-  Result := InitializeSetupMigration;
-end;
-
-procedure CurStepChanged(CurStep: TSetupStep);
-begin
-  CurStepChangedMigration(CurStep);
-end;
+[Run]
+Filename: {app}\aegisub32.exe; Description: {cm:LaunchProgram,Aegisub}; Flags: nowait postinstall skipifsilent
 

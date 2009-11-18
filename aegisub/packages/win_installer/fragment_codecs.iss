@@ -32,41 +32,20 @@
 ; Contact: mailto:nielsm@indvikleren.dk
 ;
 
-#include "fragment_setupbase.iss"
 
-[Setup]
-OutputBaseFilename=Aegisub-2.1.8-setup
-VersionInfoDescription=Aegisub 2.1.8 setup
+[Files]
+; avisynth
+DestDir: {app}; Source: src\devil.dll; Flags: ignoreversion solidbreak; Components: codec
+DestDir: {app}; Source: src\avisynth.dll; Flags: ignoreversion; Components: codec
+DestDir: {app}; Source: src\DirectShowSource.dll; Flags: ignoreversion; Components: codec
+; ffmpegsource
+DestDir: {app}; Source: src\ffms2.dll; Flags: ignoreversion; Components: codec
+DestDir: {app}; Source: src\ffms2.pdb; Flags: ignoreversion; Components: codec and main/pdb
+; vsfilter
+DestDir: {app}\csri; Source: src\csri\VSFilter-Aegisub.dll; Flags: ignoreversion; Components: codec/vsfilter
 
+[Components]
+Name: codec; Description: Media formats support; Flags: fixed; Types: custom compact full
+Name: codec/vsfilter; Description: VSFilter 2.39e; Types: compact full custom; Flags: fixed
 
-#include "fragment_mainprogram.iss"
-#include "fragment_associations.iss"
-#include "fragment_runtimes.iss"
-#include "fragment_codecs.iss"
-#include "fragment_automation.iss"
-#include "fragment_translations.iss"
-#include "fragment_spelling.iss"
-#include "fragment_docs.iss"
-#include "fragment_assdraw.iss"
-
-
-[Code]
-#include "fragment_runtimes_code.iss"
-#include "fragment_migrate_code.iss"
-#include "fragment_beautify_code.iss"
-
-procedure InitializeWizard;
-begin
-  InitializeWizardBeautify;
-end;
-
-function InitializeSetup: Boolean;
-begin
-  Result := InitializeSetupMigration;
-end;
-
-procedure CurStepChanged(CurStep: TSetupStep);
-begin
-  CurStepChangedMigration(CurStep);
-end;
 

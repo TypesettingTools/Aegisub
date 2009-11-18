@@ -1,3 +1,5 @@
+[Code]
+(*
 ; Copyright (c) 2007-2009, Niels Martin Hansen
 ;
 ; Redistribution and use in source and binary forms, with or without
@@ -31,42 +33,25 @@
 ; Website: http://www.aegisub.org/
 ; Contact: mailto:nielsm@indvikleren.dk
 ;
+*)
 
-#include "fragment_setupbase.iss"
-
-[Setup]
-OutputBaseFilename=Aegisub-2.1.8-setup
-VersionInfoDescription=Aegisub 2.1.8 setup
-
-
-#include "fragment_mainprogram.iss"
-#include "fragment_associations.iss"
-#include "fragment_runtimes.iss"
-#include "fragment_codecs.iss"
-#include "fragment_automation.iss"
-#include "fragment_translations.iss"
-#include "fragment_spelling.iss"
-#include "fragment_docs.iss"
-#include "fragment_assdraw.iss"
-
-
-[Code]
-#include "fragment_runtimes_code.iss"
-#include "fragment_migrate_code.iss"
-#include "fragment_beautify_code.iss"
-
-procedure InitializeWizard;
+function RuntimesRequired: Boolean;
+var
+  DisplayVersion: string;
 begin
-  InitializeWizardBeautify;
-end;
+  // Check for uninstall entry for runtimes, don't bother installing if it can be uninstalled now
+  // HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\{9A25302D-30C0-39D9-BD6F-21E6EC160475}
+  // Check: DisplayVersion = "9.0.30729"
+  try
+    DisplayVersion := '';
+    Result := RegQueryStringValue(HKLM, 'SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\{9A25302D-30C0-39D9-BD6F-21E6EC160475}',
+        'DisplayVersion', DisplayVersion);
+    Result := Result and (DisplayVersion = '9.0.30729');
+  except
+    // If the check fails take the safe route
+    Result := False;
+  end;
 
-function InitializeSetup: Boolean;
-begin
-  Result := InitializeSetupMigration;
-end;
-
-procedure CurStepChanged(CurStep: TSetupStep);
-begin
-  CurStepChangedMigration(CurStep);
+  Result := not Result;
 end;
 
