@@ -241,8 +241,8 @@ begin
 end;
 
 
-function SetFileAttributes(lpFileName: PChar; dwFileAttributes: Longint): Boolean;
-external 'SetFileAttributesA@kernel32.dll stdcall';
+function SetFileAttributes(lpFileName: WideString; dwFileAttributes: Longint): Boolean;
+external 'SetFileAttributesW@kernel32.dll stdcall';
 
 procedure CleanUpOldVersion;
 var
@@ -364,4 +364,6 @@ begin
     CleanUpOldVersion;
   end;
 end;
+
+
 
