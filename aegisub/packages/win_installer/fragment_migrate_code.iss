@@ -170,12 +170,23 @@ begin
 
     for i := 0 to shortcut_list.Count-1 do
     begin
-      curname := LegacyStartMenuFolder + '\' + shortcut_list.Strings[i];
-      page.SetText('Removing shortcuts', curname);
-      page.SetProgress(itemsdone, totalitems);
-      Log('Remove shortcut: ' + curname);
-      if not DeleteFile(curname) then Log('* Deletion failed');
-      itemsdone := itemsdone + 1;
+      try
+        curname := LegacyStartMenuFolder + '\' + shortcut_list.Strings[i];
+        // Check that the link points to somewhere in the dir we're installing to so we don't
+        // delete a shortcut to something else
+        page.SetText('Removing shortcuts', curname);
+        if Pos(LegacyInstallFolder, RemoveQuotes(ReadShellLink(curname))) = 1 then
+        begin
+          page.SetProgress(itemsdone, totalitems);
+          Log('Remove shortcut: ' + curname);
+          if not DeleteFile(curname) then Log('* Deletion failed');
+          itemsdone := itemsdone + 1;
+        end
+        else
+          Log('Not deleting shortcut, not to old installation: ' + curname);
+      except
+        Log('Exception removing shortcut: ' + curname);
+      end;
     end;
     page.SetText('Removing Start menu folder', LegacyStartMenuFolder);
     page.SetProgress(itemsdone, totalitems);
@@ -253,7 +264,7 @@ var
   shortcut_list: TStringList;
   locale_list: TStringList;
   itemsdone, totalitems, i: Integer;
-  curname: string;
+  curname, linktarget: string;
 begin
   // Clean up from previous Aegisub 2.x installs
   Log('-- Clean up old versions --');
@@ -282,14 +293,30 @@ begin
     // - Renaming Aegisub.exe to aegiub32.exe
 
     StartMenuFolder := ExpandConstant('{commonprograms}\Aegisub\');
+    InstallFolder := ExpandConstant('{app}\');
     for i := 0 to shortcut_list.Count-1 do
     begin
-      curname := StartMenuFolder + shortcut_list.Strings[i];
-      page.SetText('Removing shortcuts', curname);
-      page.SetProgress(itemsdone, totalitems);
-      Log('Remove shortcut: ' + curname);
-      if not DeleteFile(curname) then Log('* Deletion failed');
-      itemsdone := itemsdone + 1;
+      try
+        curname := StartMenuFolder + '\' + shortcut_list.Strings[i];
+        // Check that the link points to somewhere in the dir we're installing to so we don't
+        // delete a shortcut to something else
+        page.SetText('Removing shortcuts', curname);
+        linktarget := ReadShellLink(curname);
+        if Pos(InstallFolder, RemoveQuotes(linktarget)) = 1 then
+        begin
+          page.SetProgress(itemsdone, totalitems);
+          Log('Remove shortcut: ' + curname);
+          if not DeleteFile(curname) then Log('* Deletion failed');
+          itemsdone := itemsdone + 1;
+        end
+        else
+        begin
+          Log('Not deleting shortcut, not to old installation: ' + curname);
+          Log('Link target: "' + linktarget + '"; Install folder: "' + InstallFolder + '"');
+        end;
+      except
+        Log('Exception removing shortcut: ' + curname);
+      end;
     end;
     page.SetText('Removing Start menu folder', StartMenuFolder);
     page.SetProgress(itemsdone, totalitems);
@@ -297,7 +324,6 @@ begin
     if not RemoveDir(StartMenuFolder) then Log('* Directory deletion failed');
     itemsdone := itemsdone + 1;
 
-    InstallFolder := ExpandConstant('{app}\');
     for i := 0 to file_list.Count-1 do
     begin
       curname := InstallFolder + file_list.Strings[i];
@@ -364,6 +390,9 @@ begin
     CleanUpOldVersion;
   end;
 end;
+
+
+
 
 
 
