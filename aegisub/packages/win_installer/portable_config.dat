@@ -1,0 +1,5 @@
+[Config]
+local config=1
+auto check for updates=0
+show splash=0
+show associations=0
