@@ -74,10 +74,10 @@ public:
 	size_t OriginalPos;
 
 	TFrameInfo();
-	static TFrameInfo VideoFrameInfo(int64_t DTS, int RepeatPict, bool KeyFrame, int64_t FilePos = 0, unsigned int FrameSize = 0);
-	static TFrameInfo AudioFrameInfo(int64_t DTS, int64_t SampleStart, unsigned int SampleCount, bool KeyFrame, int64_t FilePos = 0, unsigned int FrameSize = 0);
+	static TFrameInfo VideoFrameInfo(int64_t PTS, int RepeatPict, bool KeyFrame, int64_t FilePos = 0, unsigned int FrameSize = 0);
+	static TFrameInfo AudioFrameInfo(int64_t PTS, int64_t SampleStart, unsigned int SampleCount, bool KeyFrame, int64_t FilePos = 0, unsigned int FrameSize = 0);
 private:
-	TFrameInfo(int64_t DTS, int64_t SampleStart, unsigned int SampleCount, int RepeatPict, bool KeyFrame, int64_t FilePos, unsigned int FrameSize);
+	TFrameInfo(int64_t PTS, int64_t SampleStart, unsigned int SampleCount, int RepeatPict, bool KeyFrame, int64_t FilePos, unsigned int FrameSize);
 };
 
 class FFMS_Track : public std::vector<TFrameInfo> {
@@ -87,8 +87,8 @@ public:
 
 	int FindClosestVideoKeyFrame(int Frame);
 	int FindClosestAudioKeyFrame(int64_t Sample);
-	int FrameFromDTS(int64_t DTS);
-	int ClosestFrameFromDTS(int64_t DTS);
+	int FrameFromPTS(int64_t PTS);
+	int ClosestFrameFromPTS(int64_t PTS);
 	void WriteTimecodes(const char *TimecodeFile);
 
 	FFMS_Track();

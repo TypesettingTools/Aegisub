@@ -55,8 +55,8 @@ FFLAVFAudio::FFLAVFAudio(const char *SourceFile, int Track, FFMS_Index *Index)
 	int64_t Dummy;
 	DecodeNextAudioBlock(&Dummy);
 
-	if (av_seek_frame(FormatContext, AudioTrack, Frames[0].DTS, AVSEEK_FLAG_BACKWARD) < 0)
-		av_seek_frame(FormatContext, AudioTrack, Frames[0].DTS, AVSEEK_FLAG_BACKWARD | AVSEEK_FLAG_ANY);
+	if (av_seek_frame(FormatContext, AudioTrack, Frames[0].PTS, AVSEEK_FLAG_BACKWARD) < 0)
+		av_seek_frame(FormatContext, AudioTrack, Frames[0].PTS, AVSEEK_FLAG_BACKWARD | AVSEEK_FLAG_ANY);
 	avcodec_flush_buffers(CodecContext);
 
 	FillAP(AP, CodecContext, Frames);
@@ -116,7 +116,7 @@ void FFLAVFAudio::GetAudio(void *Buf, int64_t Start, int64_t Count) {
 	const int64_t SizeConst = (av_get_bits_per_sample_format(CodecContext->sample_fmt) * CodecContext->channels) / 8;
 	memset(Buf, 0, static_cast<size_t>(SizeConst * Count));
 
-	int PreDecBlocks = 0;
+	unsigned int PreDecBlocks = 0;
 	uint8_t *DstBuf = static_cast<uint8_t *>(Buf);
 
 	// Fill with everything in the cache
@@ -136,8 +136,8 @@ void FFLAVFAudio::GetAudio(void *Buf, int64_t Start, int64_t Count) {
 		}
 
 		// Did the seeking fail?
-		if (av_seek_frame(FormatContext, AudioTrack, Frames[CurrentAudioBlock].DTS, AVSEEK_FLAG_BACKWARD) < 0)
-			av_seek_frame(FormatContext, AudioTrack, Frames[CurrentAudioBlock].DTS, AVSEEK_FLAG_BACKWARD | AVSEEK_FLAG_ANY);
+		if (av_seek_frame(FormatContext, AudioTrack, Frames[CurrentAudioBlock].PTS, AVSEEK_FLAG_BACKWARD) < 0)
+			av_seek_frame(FormatContext, AudioTrack, Frames[CurrentAudioBlock].PTS, AVSEEK_FLAG_BACKWARD | AVSEEK_FLAG_ANY);
 
 		avcodec_flush_buffers(CodecContext);
 
@@ -147,15 +147,15 @@ void FFLAVFAudio::GetAudio(void *Buf, int64_t Start, int64_t Count) {
 			InitNullPacket(Packet);
 
 			// Establish where we actually are
-			// Trigger on packet dts difference since groups can otherwise be indistinguishable
-			int64_t LastDTS = - 1;
+			// Trigger on packet PTS difference since groups can otherwise be indistinguishable
+			int64_t LastPTS = - 1;
 			while (av_read_frame(FormatContext, &Packet) >= 0) {
 				if (Packet.stream_index == AudioTrack) {
-					if (LastDTS < 0) {
-						LastDTS = Packet.dts;
-					} else if (LastDTS != Packet.dts) {
+					if (LastPTS < 0) {
+						LastPTS = Packet.dts;
+					} else if (LastPTS != Packet.dts) {
 						for (size_t i = 0; i < Frames.size(); i++)
-							if (Frames[i].DTS == Packet.dts) {
+							if (Frames[i].PTS == Packet.dts) {
 								// The current match was consumed
 								CurrentAudioBlock = i + 1;
 								break;

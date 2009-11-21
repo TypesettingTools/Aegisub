@@ -194,7 +194,7 @@ FFMS_VideoSource::~FFMS_VideoSource() {
 }
 
 FFMS_Frame *FFMS_VideoSource::GetFrameByTime(double Time) {
-	int Frame = Frames.ClosestFrameFromDTS(static_cast<int64_t>((Time * 1000 * Frames.TB.Den) / Frames.TB.Num));
+	int Frame = Frames.ClosestFrameFromPTS(static_cast<int64_t>((Time * 1000 * Frames.TB.Den) / Frames.TB.Num));
 	return GetFrame(Frame);
 }
 
