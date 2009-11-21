@@ -1348,11 +1348,11 @@ END_EVENT_TABLE()
 /////////
 // Paint
 void AudioDisplay::OnPaint(wxPaintEvent& event) {
-	if (w == 0 || h == 0 || !origImage) return;
+	if (w == 0 || h == 0) return;
 	DoUpdateImage();
 
 	wxPaintDC dc(this);
-	dc.DrawBitmap(*origImage,0,0);
+	if (origImage) dc.DrawBitmap(*origImage,0,0);
 }
 
 
