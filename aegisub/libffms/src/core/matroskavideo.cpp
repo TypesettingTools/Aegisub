@@ -107,8 +107,8 @@ FFMatroskaVideo::FFMatroskaVideo(const char *SourceFile, int Track,
 	VP.ColorSpace = 0;
 	VP.ColorRange = 0;
 #endif
-	VP.FirstTime = ((Frames.front().DTS * Frames.TB.Num) / (double)Frames.TB.Den) / 1000;
-	VP.LastTime = ((Frames.back().DTS * Frames.TB.Num) / (double)Frames.TB.Den) / 1000;
+	VP.FirstTime = ((Frames.front().PTS * Frames.TB.Num) / (double)Frames.TB.Den) / 1000;
+	VP.LastTime = ((Frames.back().PTS * Frames.TB.Num) / (double)Frames.TB.Den) / 1000;
 
 	if (CodecContext->width <= 0 || CodecContext->height <= 0)
 		throw FFMS_Exception(FFMS_ERROR_DECODING, FFMS_ERROR_CODEC,
@@ -116,8 +116,8 @@ FFMatroskaVideo::FFMatroskaVideo(const char *SourceFile, int Track,
 
 	// Calculate the average framerate
 	if (Frames.size() >= 2) {
-		double DTSDiff = (double)(Frames.back().DTS - Frames.front().DTS);
-		VP.FPSDenominator = (unsigned int)(DTSDiff * mkv_TruncFloat(TI->TimecodeScale) / (double)1000 / (double)(VP.NumFrames - 1) + 0.5);
+		double PTSDiff = (double)(Frames.back().PTS - Frames.front().PTS);
+		VP.FPSDenominator = (unsigned int)(PTSDiff * mkv_TruncFloat(TI->TimecodeScale) / (double)1000 / (double)(VP.NumFrames - 1) + 0.5);
 		VP.FPSNumerator = 1000000; 
 	}
 

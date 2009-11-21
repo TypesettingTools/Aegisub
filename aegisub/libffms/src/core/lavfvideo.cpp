@@ -40,7 +40,7 @@ FFLAVFVideo::FFLAVFVideo(const char *SourceFile, int Track, FFMS_Index *Index,
 
 	LAVFOpenFile(SourceFile, FormatContext);
 
-	if (SeekMode >= 0 && av_seek_frame(FormatContext, VideoTrack, Frames[0].DTS, AVSEEK_FLAG_BACKWARD) < 0)
+	if (SeekMode >= 0 && av_seek_frame(FormatContext, VideoTrack, Frames[0].PTS, AVSEEK_FLAG_BACKWARD) < 0)
 		throw FFMS_Exception(FFMS_ERROR_DECODING, FFMS_ERROR_CODEC,
 			"Video track is unseekable");
 
@@ -76,8 +76,8 @@ FFLAVFVideo::FFLAVFVideo(const char *SourceFile, int Track, FFMS_Index *Index,
 	VP.ColorSpace = 0;
 	VP.ColorRange = 0;
 #endif
-	VP.FirstTime = ((Frames.front().DTS * Frames.TB.Num) / (double)Frames.TB.Den) / 1000;
-	VP.LastTime = ((Frames.back().DTS * Frames.TB.Num) / (double)Frames.TB.Den) / 1000;
+	VP.FirstTime = ((Frames.front().PTS * Frames.TB.Num) / (double)Frames.TB.Den) / 1000;
+	VP.LastTime = ((Frames.back().PTS * Frames.TB.Num) / (double)Frames.TB.Den) / 1000;
 
 	if (CodecContext->width <= 0 || CodecContext->height <= 0)
 		throw FFMS_Exception(FFMS_ERROR_DECODING, FFMS_ERROR_CODEC,
@@ -91,8 +91,8 @@ FFLAVFVideo::FFLAVFVideo(const char *SourceFile, int Track, FFMS_Index *Index,
 
 	// Adjust framerate to match the duration of the first frame
 	if (Frames.size() >= 2) {
-		unsigned int DTSDiff = (unsigned int)FFMAX(Frames[1].DTS - Frames[0].DTS, 1);
-		VP.FPSDenominator *= DTSDiff;
+		unsigned int PTSDiff = (unsigned int)FFMAX(Frames[1].PTS - Frames[0].PTS, 1);
+		VP.FPSDenominator *= PTSDiff;
 	}
 
 	// Cannot "output" to PPFrame without doing all other initialization
@@ -158,7 +158,7 @@ FFMS_Frame *FFLAVFVideo::GetFrame(int n) {
 
 		if (SeekMode == 0) {
 			if (n < CurrentFrame) {
-				av_seek_frame(FormatContext, VideoTrack, Frames[0].DTS, AVSEEK_FLAG_BACKWARD);
+				av_seek_frame(FormatContext, VideoTrack, Frames[0].PTS, AVSEEK_FLAG_BACKWARD);
 				avcodec_flush_buffers(CodecContext);
 				CurrentFrame = 0;
 			}
@@ -167,7 +167,7 @@ FFMS_Frame *FFLAVFVideo::GetFrame(int n) {
 			if (n < CurrentFrame || ClosestKF > CurrentFrame + 10 || (SeekMode == 3 && n > CurrentFrame + 10)) {
 ReSeek:
 				av_seek_frame(FormatContext, VideoTrack,
-					(SeekMode == 3) ? Frames[n].DTS : Frames[ClosestKF + SeekOffset].DTS,
+					(SeekMode == 3) ? Frames[n].PTS : Frames[ClosestKF + SeekOffset].PTS,
 					AVSEEK_FLAG_BACKWARD);
 				avcodec_flush_buffers(CodecContext);
 				HasSeeked = true;
@@ -186,7 +186,7 @@ ReSeek:
 			HasSeeked = false;
 
 			// Is the seek destination time known? Does it belong to a frame?
-			if (StartTime < 0 || (CurrentFrame = Frames.FrameFromDTS(StartTime)) < 0) {
+			if (StartTime < 0 || (CurrentFrame = Frames.FrameFromPTS(StartTime)) < 0) {
 				switch (SeekMode) {
 					case 1:
 						// No idea where we are so go back a bit further
@@ -199,7 +199,7 @@ ReSeek:
 						goto ReSeek;
 					case 2:
 					case 3:
-						CurrentFrame = Frames.ClosestFrameFromDTS(StartTime);
+						CurrentFrame = Frames.ClosestFrameFromPTS(StartTime);
 						break;
 					default:
 						throw FFMS_Exception(FFMS_ERROR_SEEKING, FFMS_ERROR_UNKNOWN,

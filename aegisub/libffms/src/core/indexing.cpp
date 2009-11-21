@@ -97,8 +97,8 @@ SharedAudioContext::~SharedAudioContext() {
 TFrameInfo::TFrameInfo() {
 }
 
-TFrameInfo::TFrameInfo(int64_t DTS, int64_t SampleStart, unsigned int SampleCount, int RepeatPict, bool KeyFrame, int64_t FilePos, unsigned int FrameSize) {
-	this->DTS = DTS;
+TFrameInfo::TFrameInfo(int64_t PTS, int64_t SampleStart, unsigned int SampleCount, int RepeatPict, bool KeyFrame, int64_t FilePos, unsigned int FrameSize) {
+	this->PTS = PTS;
 	this->RepeatPict = RepeatPict;
 	this->KeyFrame = KeyFrame;
 	this->SampleStart = SampleStart;
@@ -108,12 +108,12 @@ TFrameInfo::TFrameInfo(int64_t DTS, int64_t SampleStart, unsigned int SampleCoun
 	this->OriginalPos = 0;
 }
 
-TFrameInfo TFrameInfo::VideoFrameInfo(int64_t DTS, int RepeatPict, bool KeyFrame, int64_t FilePos, unsigned int FrameSize) {
-	return TFrameInfo(DTS, 0, 0, RepeatPict, KeyFrame, FilePos, FrameSize);
+TFrameInfo TFrameInfo::VideoFrameInfo(int64_t PTS, int RepeatPict, bool KeyFrame, int64_t FilePos, unsigned int FrameSize) {
+	return TFrameInfo(PTS, 0, 0, RepeatPict, KeyFrame, FilePos, FrameSize);
 }
 
-TFrameInfo TFrameInfo::AudioFrameInfo(int64_t DTS, int64_t SampleStart, unsigned int SampleCount, bool KeyFrame, int64_t FilePos, unsigned int FrameSize) {
-	return TFrameInfo(DTS, SampleStart, SampleCount, 0, KeyFrame, FilePos, FrameSize);
+TFrameInfo TFrameInfo::AudioFrameInfo(int64_t PTS, int64_t SampleStart, unsigned int SampleCount, bool KeyFrame, int64_t FilePos, unsigned int FrameSize) {
+	return TFrameInfo(PTS, SampleStart, SampleCount, 0, KeyFrame, FilePos, FrameSize);
 }
 
 void FFMS_Track::WriteTimecodes(const char *TimecodeFile) {
@@ -128,21 +128,21 @@ void FFMS_Track::WriteTimecodes(const char *TimecodeFile) {
 	Timecodes << "# timecode format v2\n";
 
 	for (iterator Cur=begin(); Cur!=end(); Cur++)
-		Timecodes << std::fixed << ((Cur->DTS * TB.Num) / (double)TB.Den) << "\n";
+		Timecodes << std::fixed << ((Cur->PTS * TB.Num) / (double)TB.Den) << "\n";
 }
 
-int FFMS_Track::FrameFromDTS(int64_t DTS) {
+int FFMS_Track::FrameFromPTS(int64_t PTS) {
 	for (int i = 0; i < static_cast<int>(size()); i++)
-		if (at(i).DTS == DTS)
+		if (at(i).PTS == PTS)
 			return i;
 	return -1;
 }
 
-int FFMS_Track::ClosestFrameFromDTS(int64_t DTS) {
+int FFMS_Track::ClosestFrameFromPTS(int64_t PTS) {
 	int Frame = 0; 
 	int64_t BestDiff = 0xFFFFFFFFFFFFFFLL; // big number
 	for (int i = 0; i < static_cast<int>(size()); i++) {
-		int64_t CurrentDiff = FFABS(at(i).DTS - DTS);
+		int64_t CurrentDiff = FFABS(at(i).PTS - PTS);
 		if (CurrentDiff < BestDiff) {
 			BestDiff = CurrentDiff;
 			Frame = i;
@@ -234,8 +234,8 @@ void FFMS_Index::CalculateFileSignature(const char *Filename, int64_t *Filesize,
 	av_sha1_final(ctx, Digest);
 }
 
-static bool DTSComparison(TFrameInfo FI1, TFrameInfo FI2) {
-	return FI1.DTS < FI2.DTS;
+static bool PTSComparison(TFrameInfo FI1, TFrameInfo FI2) {
+	return FI1.PTS < FI2.PTS;
 }
 
 void FFMS_Index::Sort() {
@@ -244,7 +244,7 @@ void FFMS_Index::Sort() {
 		for (size_t i = 0; i < Cur->size(); i++)
 			Cur->at(i).OriginalPos = i;
 
-		std::sort(Cur->begin(), Cur->end(), DTSComparison);
+		std::sort(Cur->begin(), Cur->end(), PTSComparison);
 
 		std::vector<size_t> ReorderTemp;
 		ReorderTemp.resize(Cur->size());

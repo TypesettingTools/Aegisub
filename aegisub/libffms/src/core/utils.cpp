@@ -217,8 +217,8 @@ void FillAP(FFMS_AudioProperties &AP, AVCodecContext *CTX, FFMS_Track &Frames) {
 	AP.ChannelLayout = CTX->channel_layout;
 	AP.SampleRate = CTX->sample_rate;
 	AP.NumSamples = (Frames.back()).SampleStart + (Frames.back()).SampleCount;
-	AP.FirstTime = ((Frames.front().DTS * Frames.TB.Num) / (double)Frames.TB.Den) / 1000;
-	AP.LastTime = ((Frames.back().DTS * Frames.TB.Num) / (double)Frames.TB.Den) / 1000;
+	AP.FirstTime = ((Frames.front().PTS * Frames.TB.Num) / (double)Frames.TB.Den) / 1000;
+	AP.LastTime = ((Frames.back().PTS * Frames.TB.Num) / (double)Frames.TB.Den) / 1000;
 }
 
 #ifdef HAALISOURCE

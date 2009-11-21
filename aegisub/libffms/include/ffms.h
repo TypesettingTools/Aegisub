@@ -46,18 +46,18 @@
 #	define FFMS_API(ret) EXTERN_C ret FFMS_CC
 #endif
 
-struct FFMS_ErrorInfo {
+typedef struct {
 	int ErrorType;
 	int SubType;
 	int BufferSize;
 	char *Buffer;
-};
+} FFMS_ErrorInfo;
 
-FFMS_CLASS_TYPE FFMS_VideoSource;
-FFMS_CLASS_TYPE FFMS_AudioSource;
-FFMS_CLASS_TYPE FFMS_Indexer;
-FFMS_CLASS_TYPE FFMS_Index;
-FFMS_CLASS_TYPE FFMS_Track;
+typedef FFMS_CLASS_TYPE FFMS_VideoSource FFMS_VideoSource;
+typedef FFMS_CLASS_TYPE FFMS_AudioSource FFMS_AudioSource;
+typedef FFMS_CLASS_TYPE FFMS_Indexer FFMS_Indexer;
+typedef FFMS_CLASS_TYPE FFMS_Index FFMS_Index;
+typedef FFMS_CLASS_TYPE FFMS_Track FFMS_Track;
 
 enum FFMS_Errors {
 	// No error
@@ -174,7 +174,7 @@ enum FFMS_Resizers {
 	FFMS_RESIZER_SPLINE			= 0x0400
 };
 
-struct FFMS_Frame {
+typedef struct {
 	uint8_t *Data[4];
 	int Linesize[4];
 	int EncodedWidth;
@@ -188,20 +188,20 @@ struct FFMS_Frame {
 	int InterlacedFrame;
 	int TopFieldFirst;
 	char PictType;
-};
+} FFMS_Frame;
 
-struct FFMS_TrackTimeBase {
+typedef struct {
 	int64_t Num;
 	int64_t Den;
-};
+} FFMS_TrackTimeBase;
 
-#define FFMS_FRAMEINFO_COMMON int64_t DTS; int RepeatPict; int KeyFrame;
+#define FFMS_FRAMEINFO_COMMON int64_t PTS; int RepeatPict; int KeyFrame;
 
-struct FFMS_FrameInfo {
+typedef struct {
 	FFMS_FRAMEINFO_COMMON
-};
+} FFMS_FrameInfo;
 
-struct FFMS_VideoProperties {
+typedef struct {
 	int FPSDenominator;
 	int FPSNumerator;
 	int RFFDenominator;
@@ -218,9 +218,9 @@ struct FFMS_VideoProperties {
 	int ColorRange; // 0=unspecified, 1=16-235, 2=0-255
 	double FirstTime;
 	double LastTime;
-};
+} FFMS_VideoProperties;
 
-struct FFMS_AudioProperties {
+typedef struct {
 	int SampleFormat;
 	int SampleRate;
 	int BitsPerSample;
@@ -229,7 +229,7 @@ struct FFMS_AudioProperties {
 	int64_t NumSamples;
 	double FirstTime;
 	double LastTime;
-};
+} FFMS_AudioProperties;
 
 typedef int (FFMS_CC *TIndexCallback)(int64_t Current, int64_t Total, void *ICPrivate);
 typedef int (FFMS_CC *TAudioNameCallback)(const char *SourceFile, int Track, const FFMS_AudioProperties *AP, char *FileName, int FNSize, void *Private);
