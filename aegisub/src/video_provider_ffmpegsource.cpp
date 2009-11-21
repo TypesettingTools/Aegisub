@@ -251,7 +251,7 @@ void FFmpegSourceVideoProvider::LoadVideo(wxString filename) {
 			KeyFramesList.Add(CurFrameNum);
 
 		// calculate timestamp and add to timecodes vector
-		int Timestamp = (int)((CurFrameData->DTS * TimeBase->Num) / TimeBase->Den);
+		int Timestamp = (int)((CurFrameData->PTS * TimeBase->Num) / TimeBase->Den);
 		TimecodesVector.push_back(Timestamp);
 	}
 	KeyFramesLoaded = true;
