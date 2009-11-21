@@ -156,14 +156,19 @@ void FFmpegSourceAudioProvider::LoadAudio(wxString filename) {
 			Index = NULL;
 		}
 	}
-	// no valid index exists and the file only has one audio track, index all tracks
+	// no valid index exists and the file only has one audio track, index it
 	else if (TrackNumber < 0) 
 		TrackNumber = FFMS_TRACKMASK_ALL;
 	// else: do nothing (keep track mask as it is)
 	
 	// moment of truth
 	if (!IndexIsValid) {
-		int TrackMask = Options.AsBool(_T("FFmpegSource always index all tracks")) ? FFMS_TRACKMASK_ALL : 1 << TrackNumber;
+		int TrackMask;
+		if (Options.AsBool(_T("FFmpegSource always index all tracks")) || TrackNumber == FFMS_TRACKMASK_ALL)
+			TrackMask = FFMS_TRACKMASK_ALL;
+		else
+			TrackMask = (1 << TrackNumber);
+
 		try {
 			Index = DoIndexing(Indexer, CacheName, TrackMask, false);
 		} catch (wxString temp) {
@@ -172,6 +177,10 @@ void FFmpegSourceAudioProvider::LoadAudio(wxString filename) {
 		} catch (...) {
 			throw;
 		}
+
+		// if tracknumber still isn't set we need to set it now
+		if (TrackNumber == FFMS_TRACKMASK_ALL)
+			TrackNumber = FFMS_GetFirstTrackOfType(Index, FFMS_TYPE_AUDIO, &ErrInfo);
 	}
 
 	// update access time of index file so it won't get cleaned away
