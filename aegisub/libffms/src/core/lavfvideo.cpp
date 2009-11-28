@@ -67,6 +67,12 @@ FFLAVFVideo::FFLAVFVideo(const char *SourceFile, int Track, FFMS_Index *Index,
 	VP.FPSNumerator = FormatContext->streams[VideoTrack]->time_base.den;
 	VP.RFFDenominator = CodecContext->time_base.num;
 	VP.RFFNumerator = CodecContext->time_base.den;
+	if (CodecContext->codec_id == CODEC_ID_H264) {
+		if (VP.RFFNumerator & 1)
+			VP.RFFDenominator *= 2;
+		else
+			VP.RFFNumerator /= 2;
+	}
 	VP.NumFrames = Frames.size();
 	VP.TopFieldFirst = DecodeFrame->top_field_first;
 #ifdef FFMS_HAVE_FFMPEG_COLORSPACE_INFO
@@ -115,12 +121,18 @@ void FFLAVFVideo::DecodeNextFrame(int64_t *AStartTime) {
 			if (*AStartTime < 0)
 				*AStartTime = Packet.dts;
 
-			if (CodecContext->codec_id == CODEC_ID_MPEG4 && IsNVOP(Packet)) {
-				av_free_packet(&Packet);
-				goto Done;
-			}
-
 			avcodec_decode_video2(CodecContext, DecodeFrame, &FrameFinished, &Packet);
+
+			if (CodecContext->codec_id == CODEC_ID_MPEG4) {
+				if (IsPackedFrame(Packet)) {
+					MPEG4Counter++;
+				} else if (IsNVOP(Packet) && MPEG4Counter && FrameFinished) {
+					MPEG4Counter--;
+				} else if (IsNVOP(Packet) && !MPEG4Counter && !FrameFinished) {
+					av_free_packet(&Packet);
+					goto Done;
+				}
+			}
         }
 
         av_free_packet(&Packet);
@@ -184,6 +196,7 @@ ReSeek:
 
 		if (HasSeeked) {
 			HasSeeked = false;
+			MPEG4Counter = 0;
 
 			// Is the seek destination time known? Does it belong to a frame?
 			if (StartTime < 0 || (CurrentFrame = Frames.FrameFromPTS(StartTime)) < 0) {

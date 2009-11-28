@@ -73,6 +73,7 @@ protected:
 	FFMS_Track Frames;
 	int VideoTrack;
 	int	CurrentFrame;
+	int MPEG4Counter;
 	AVCodecContext *CodecContext;
 
 	FFMS_VideoSource(const char *SourceFile, FFMS_Index *Index, int Track);

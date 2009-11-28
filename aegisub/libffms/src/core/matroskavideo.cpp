@@ -98,6 +98,12 @@ FFMatroskaVideo::FFMatroskaVideo(const char *SourceFile, int Track,
 	VP.FPSNumerator = 30;
 	VP.RFFDenominator = CodecContext->time_base.num;
 	VP.RFFNumerator = CodecContext->time_base.den;
+	if (CodecContext->codec_id == CODEC_ID_H264) {
+		if (VP.RFFNumerator & 1)
+			VP.RFFDenominator *= 2;
+		else
+			VP.RFFNumerator /= 2;
+	}
 	VP.NumFrames = Frames.size();
 	VP.TopFieldFirst = DecodeFrame->top_field_first;
 #ifdef FFMS_HAVE_FFMPEG_COLORSPACE_INFO
@@ -159,10 +165,17 @@ void FFMatroskaVideo::DecodeNextFrame() {
 
 		PacketNumber++;
 
-		if (CodecContext->codec_id == CODEC_ID_MPEG4 && IsNVOP(Packet))
-			goto Done;
-
 		avcodec_decode_video2(CodecContext, DecodeFrame, &FrameFinished, &Packet);
+
+		if (CodecContext->codec_id == CODEC_ID_MPEG4) {
+			if (IsPackedFrame(Packet)) {
+				MPEG4Counter++;
+			} else if (IsNVOP(Packet) && MPEG4Counter && FrameFinished) {
+				MPEG4Counter--;
+			} else if (IsNVOP(Packet) && !MPEG4Counter && !FrameFinished) {
+				goto Done;
+			}
+		}
 
 		if (FrameFinished)
 			goto Done;
@@ -190,6 +203,7 @@ FFMS_Frame *FFMatroskaVideo::GetFrame(int n) {
 
 	int ClosestKF = Frames.FindClosestVideoKeyFrame(n);
 	if (CurrentFrame > n || ClosestKF > CurrentFrame + 10) {
+		MPEG4Counter = 0;
 		PacketNumber = ClosestKF;
 		CurrentFrame = ClosestKF;
 		avcodec_flush_buffers(CodecContext);

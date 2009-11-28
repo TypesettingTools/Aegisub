@@ -162,6 +162,7 @@ FFMS_VideoSource::FFMS_VideoSource(const char *SourceFile, FFMS_Index *Index, in
 	SWS = NULL;
 	LastFrameNum = 0;
 	CurrentFrame = 1;
+	MPEG4Counter = 0;
 	CodecContext = NULL;
 	LastFrameHeight = -1;
 	LastFrameWidth = -1;
