@@ -84,7 +84,7 @@ int FFMS_CC FFmpegSourceProvider::UpdateIndexingProgress(int64_t Current, int64_
 /// @param IgnoreDecodeErrors	True if audio decoding errors will be tolerated, false otherwise
 /// @return				Returns the index object on success, NULL otherwise
 ///
-FFMS_Index *FFmpegSourceProvider::DoIndexing(FFMS_Indexer *Indexer, const wxString &CacheName, int Trackmask, bool IgnoreDecodeErrors) {
+FFMS_Index *FFmpegSourceProvider::DoIndexing(FFMS_Indexer *Indexer, const wxString &CacheName, int Trackmask, FFMS_IndexErrorHandling IndexEH) {
 	char FFMSErrMsg[1024]; 
 	FFMS_ErrorInfo ErrInfo;
 	ErrInfo.Buffer		= FFMSErrMsg;
@@ -101,10 +101,8 @@ FFMS_Index *FFmpegSourceProvider::DoIndexing(FFMS_Indexer *Indexer, const wxStri
 	Progress.ProgressDialog->Show();
 	Progress.ProgressDialog->SetProgress(0,1);
 
-	int ErrHandling = IgnoreDecodeErrors ? FFMS_IEH_IGNORE : FFMS_IEH_STOP_TRACK;
-
 	// index all audio tracks
-	FFMS_Index *Index = FFMS_DoIndexing(Indexer, Trackmask, FFMS_TRACKMASK_NONE, NULL, NULL, ErrHandling,
+	FFMS_Index *Index = FFMS_DoIndexing(Indexer, Trackmask, FFMS_TRACKMASK_NONE, NULL, NULL, IndexEH,
 		FFmpegSourceProvider::UpdateIndexingProgress, &Progress, &ErrInfo);
 	if (Index == NULL) {
 		Progress.ProgressDialog->Destroy();
@@ -198,6 +196,21 @@ void FFmpegSourceProvider::SetLogLevel() {
 		FFMS_SetLogLevel(FFMS_LOG_QUIET);
 }
 
+
+FFMS_IndexErrorHandling FFmpegSourceProvider::GetErrorHandlingMode() {
+	wxString Mode = Options.AsText(_T("FFmpegSource audio decoding error handling"));
+
+	if (!Mode.CmpNoCase(_T("ignore")))
+		return FFMS_IEH_IGNORE;
+	else if (!Mode.CmpNoCase(_T("clear")))
+		return FFMS_IEH_CLEAR_TRACK;
+	else if (!Mode.CmpNoCase(_T("stop")))
+		return FFMS_IEH_STOP_TRACK;
+	else if (!Mode.CmpNoCase(_T("abort")))
+		return FFMS_IEH_ABORT;
+	else
+		return FFMS_IEH_STOP_TRACK; // questionable default?
+}
 
 
 /// @brief	Generates an unique name for the ffms2 index file and prepares the cache folder if it doesn't exist 

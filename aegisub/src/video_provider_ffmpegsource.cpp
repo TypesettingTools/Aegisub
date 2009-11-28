@@ -171,7 +171,7 @@ void FFmpegSourceVideoProvider::LoadVideo(wxString filename) {
 		int TrackMask = Options.AsBool(_T("FFmpegSource always index all tracks")) ? FFMS_TRACKMASK_ALL : FFMS_TRACKMASK_NONE;
 		try {
 			// ignore audio decoding errors here, we don't care right now
-			Index = DoIndexing(Indexer, CacheName, TrackMask, true);
+			Index = DoIndexing(Indexer, CacheName, TrackMask, FFMS_IEH_IGNORE);
 		} catch (wxString temp) {
 			ErrorMsg.Append(temp);
 			throw ErrorMsg;

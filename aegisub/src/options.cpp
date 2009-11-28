@@ -188,6 +188,7 @@ void OptionsManager::LoadDefaults(bool onlyDefaults,bool doOverride) {
 	SetInt(_T("FFmpegSource max cache files"),20);
 	SetInt(_T("FFmpegSource always index all tracks"), true);
 	SetText(_T("FFmpegSource log level"), _T("quiet"));
+	SetText(_T("FFmpegSource audio decoding error handling"), _T("stop"));
 
 	// Audio Options
 	SetModificationType(MOD_AUTOMATIC);

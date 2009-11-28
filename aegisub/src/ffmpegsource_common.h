@@ -87,11 +87,12 @@ public:
 
 	static int FFMS_CC UpdateIndexingProgress(int64_t Current, int64_t Total, void *Private);
 	
-	FFMS_Index *DoIndexing(FFMS_Indexer *Indexer, const wxString& Cachename, int Trackmask, bool IgnoreDecodeErrors);
+	FFMS_Index *DoIndexing(FFMS_Indexer *Indexer, const wxString& Cachename, int Trackmask, FFMS_IndexErrorHandling IndexEH);
 	std::map<int,wxString> GetTracksOfType(FFMS_Indexer *Indexer, FFMS_TrackType Type);
 	int AskForTrackSelection(const std::map<int,wxString>& TrackList, FFMS_TrackType Type);
 	wxString GetCacheFilename(const wxString& filename);
 	void SetLogLevel();
+	FFMS_IndexErrorHandling GetErrorHandlingMode();
 
 	virtual ~FFmpegSourceProvider() {}
 };

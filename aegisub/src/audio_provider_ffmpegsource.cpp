@@ -170,7 +170,7 @@ void FFmpegSourceAudioProvider::LoadAudio(wxString filename) {
 			TrackMask = (1 << TrackNumber);
 
 		try {
-			Index = DoIndexing(Indexer, CacheName, TrackMask, false);
+			Index = DoIndexing(Indexer, CacheName, TrackMask, GetErrorHandlingMode());
 		} catch (wxString temp) {
 			ErrorMsg.Append(temp);
 			throw ErrorMsg;
