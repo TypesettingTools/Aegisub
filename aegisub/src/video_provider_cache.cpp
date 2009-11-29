@@ -38,6 +38,7 @@
 ///////////
 // Headers
 #include "config.h"
+#include "options.h"
 
 #include "video_provider_cache.h"
 
@@ -92,8 +93,10 @@ const AegiVideoFrame VideoProviderCache::GetFrame(int n) {
 /// @param n 
 ///
 void VideoProviderCache::SetCacheMax(int n) {
-	if (n < 0) n = 0;
-	cacheMax = n;
+	if (n <= 0)
+		cacheMax = 0;
+	else
+		cacheMax = Options.AsInt(_T("Video cache size")) << 20; // convert MB to bytes
 }
 
 
@@ -108,7 +111,7 @@ void VideoProviderCache::Cache(int n,const AegiVideoFrame frame) {
 	if (cacheMax == 0) return;
 
 	// Cache full, use frame at front
-	if (cache.size() >= cacheMax) {
+	if (GetCurCacheSize() >= cacheMax) {
 		cache.push_back(cache.front());
 		cache.pop_front();
 	}
@@ -134,6 +137,13 @@ void VideoProviderCache::ClearCache() {
 	}
 }
 
+
+unsigned VideoProviderCache::GetCurCacheSize() {
+	int sz = 0;
+	for (std::list<CachedFrame>::iterator i = cache.begin(); i != cache.end(); i++)
+		sz += i->frame.memSize;
+	return sz;
+}
 
 
 /// @brief Wrapper methods 

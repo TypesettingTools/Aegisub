@@ -77,13 +77,14 @@ enum VideoFrameFormat {
 /// DOCME
 class AegiVideoFrame {
 private:
-	unsigned int memSize; /// The size in bytes of the frame buffer
 	/// Whether the object owns its buffer. If this is false, **data should never be modified
 	bool ownMem;
 	void Reset();
 
 public:
 	void Allocate();
+
+	unsigned int memSize; /// The size in bytes of the frame buffer
 
 	/// Pointers to the data planes. Interleaved formats only use data[0]
 	unsigned char *data[4];

@@ -63,7 +63,6 @@ public:
 };
 
 
-
 /// DOCME
 /// @class VideoProviderCache
 /// @brief DOCME
@@ -90,6 +89,7 @@ private:
 protected:
 	// Cache functions
 	void SetCacheMax(int n_frames);
+	unsigned GetCurCacheSize();
 	void ClearCache();
 
 public:
