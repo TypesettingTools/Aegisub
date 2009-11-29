@@ -84,9 +84,8 @@ public:
 	virtual wxString GetDecoderName() { return L"Unknown"; }
 
 
-	/// @brief // How many frames does this provider want Aegisub to cache? Set to 0 if it doesn't require caching.
-	/// @return 
-	///
+	/// @brief Does this provider want Aegisub to cache video frames?
+	/// @return Returns true if caching is desired, false otherwise.
 	virtual bool WantsCaching() { return false; }
 
 

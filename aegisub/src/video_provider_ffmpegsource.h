@@ -98,8 +98,8 @@ public:
 	/// @brief Gets the name of the provider
 	/// @return Returns "FFmpegSource".
 	wxString GetDecoderName() { return L"FFmpegSource"; }
-	/// @brief Gets the number of frames to cache.
-	/// @return Returns 8.
+	/// @brief Gets the desired cache behavior.
+	/// @return Returns true.
 	bool WantsCaching() { return true; }
 };
 
