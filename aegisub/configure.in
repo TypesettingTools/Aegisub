@@ -304,7 +304,6 @@ AM_CONDITIONAL([HAVE_OPENMP], [test "$with_openmp" != "no"])
 AC_SUBST(OPENMP_CXXFLAGS)
 
 
-
 ##############################
 # Program Support and Features
 ##############################
@@ -408,7 +407,6 @@ AC_SUBST(FONTCONFIG_CFLAGS)
 AC_SUBST(FONTCONFIG_LIBS)
 
 
-
 ########
 ## iconv
 ########
@@ -438,7 +436,6 @@ int main(void) {
 
 AC_SUBST(ICONV_LDFLAGS)
 AC_SUBST(ICONV_CFLAGS)
-
 
 
 ###############
