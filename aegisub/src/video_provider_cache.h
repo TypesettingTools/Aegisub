@@ -88,7 +88,6 @@ private:
 
 protected:
 	// Cache functions
-	void SetCacheMax(int n_frames);
 	unsigned GetCurCacheSize();
 	void ClearCache();
 

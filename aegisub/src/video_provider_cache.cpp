@@ -49,7 +49,10 @@
 VideoProviderCache::VideoProviderCache(VideoProvider *parent) {
 	master = parent;
 	cacheMax = 0;
-	parent->WantsCaching() ? SetCacheMax(1) : SetCacheMax(0);
+	if (parent->WantsCaching())
+		cacheMax = Options.AsInt(_T("Video cache size")) << 20; // convert MB to bytes
+	else
+		cacheMax = 0;
 }
 
 
@@ -88,17 +91,6 @@ const AegiVideoFrame VideoProviderCache::GetFrame(int n) {
 	Cache(n,*srcFrame);
 	return *srcFrame;
 }
-
-/// @brief Set maximum cache size 
-/// @param n 
-///
-void VideoProviderCache::SetCacheMax(int n) {
-	if (n <= 0)
-		cacheMax = 0;
-	else
-		cacheMax = Options.AsInt(_T("Video cache size")) << 20; // convert MB to bytes
-}
-
 
 
 /// @brief Add to cache 
