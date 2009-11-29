@@ -100,7 +100,7 @@ public:
 	wxString GetDecoderName() { return L"FFmpegSource"; }
 	/// @brief Gets the number of frames to cache.
 	/// @return Returns 8.
-	int GetDesiredCacheSize() { return 8; }
+	bool WantsCaching() { return true; }
 };
 
 

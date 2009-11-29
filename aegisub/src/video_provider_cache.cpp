@@ -49,7 +49,7 @@
 VideoProviderCache::VideoProviderCache(VideoProvider *parent) {
 	master = parent;
 	cacheMax = 0;
-	SetCacheMax(parent->GetDesiredCacheSize());
+	parent->WantsCaching() ? SetCacheMax(1) : SetCacheMax(0);
 }
 
 

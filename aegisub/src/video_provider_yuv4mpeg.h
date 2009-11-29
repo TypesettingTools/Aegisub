@@ -163,7 +163,7 @@ public:
 	bool IsVFR() { return false; };
 	FrameRate GetTrueFrameRate() { return FrameRate(); }
 	wxString GetDecoderName() { return L"YUV4MPEG"; }
-	int GetDesiredCacheSize() { return 8; }
+	bool WantsCaching() { return true; }
 };
 
 

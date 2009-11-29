@@ -87,7 +87,7 @@ public:
 	/// @brief // How many frames does this provider want Aegisub to cache? Set to 0 if it doesn't require caching.
 	/// @return 
 	///
-	virtual int GetDesiredCacheSize() { return 0; }
+	virtual bool WantsCaching() { return false; }
 
 
 	/// @brief // For "special" providers that don't deal well with VFR (i.e. Avisynth)

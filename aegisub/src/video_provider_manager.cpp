@@ -93,7 +93,7 @@ VideoProvider *VideoProviderFactoryManager::GetProvider(wxString video) {
 			VideoProvider *provider = GetFactory(list[i])->CreateProvider(video.wc_str());
 			if (provider) {
 				// Cache if necessary
-				if (provider->GetDesiredCacheSize()) {
+				if (provider->WantsCaching()) {
 					provider = new VideoProviderCache(provider);
 				}
 				return provider;

@@ -132,7 +132,7 @@ public:
 	/// @brief DOCME
 	/// @return 
 	///
-	int GetDesiredCacheSize() { return 8; };
+	bool WantsCaching() { return true; };
 };
 
 
