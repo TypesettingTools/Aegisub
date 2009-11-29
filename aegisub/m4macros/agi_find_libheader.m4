@@ -36,7 +36,7 @@ AC_DEFUN([AGI_FIND_LIB],[
 
   for lib in $2; do
     vlib=`echo $lib | $as_tr_sh`
-    LDFLAGS="$LDDIR -l$lib"
+    LDFLAGS="$LDDIR -l$lib $4"
     AC_CACHE_CHECK(
       [for -l${lib}],
       [agi_cv_lib_${vlib}],

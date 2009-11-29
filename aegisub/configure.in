@@ -44,6 +44,7 @@ AC_GNU_SOURCE
 AC_CANONICAL_HOST
 AM_PROG_CC_C_O
 
+
 ###########################
 # Check target architecture
 ###########################
@@ -793,11 +794,16 @@ AM_CONDITIONAL([HAVE_UNIVCHARDET], [test "$with_univchardet" != "no"])
 AC_ARG_WITH(lua,
 [  --without-lua           build without lua 5.1 (auto4)], [lua51_disabled="(disabled)"])
 
-AC_ARG_VAR([LUA_CFLAGS], [CFLAGS to use for LUA 5.1 (default: CPPFLAGS)])
-AC_ARG_VAR([LUA_LDFLAGS], [LDFLAGS to use for LUA 5.1 (default: -llua)])
+AC_ARG_VAR([LUA_CFLAGS], [CFLAGS to use for LUA 5.1 (default: autodetect)])
+AC_ARG_VAR([LUA_LDFLAGS], [LDFLAGS to use for LUA 5.1 (default: autodetect)])
+AC_ARG_VAR([LUA_LIBDIR], [Location of LUA 5.1 library. (default: none)])
+
+if test -z "$LUA_CFLAGS"; then
+  AGI_FIND_HEADER([LUA], [lua.h], [/usr/include/lua5.1 /usr/include/lua51 /usr/local/include/lua51 /usr/local/include/lua5.1 /usr/include /usr/local/include])
+fi
 
 if test -z "$LUA_LDFLAGS"; then
-  LUA_LDFLAGS="-llua";
+  AGI_FIND_LIB([LUA], [lua51 lua-5.1 lua5.1 lua], [$LUA_LIBDIR])
 fi
 
 aegisub_save_LIBS="$LIBS"
@@ -837,17 +843,24 @@ AC_SUBST(LUA_LDFLAGS)
 ## Auto3 (LUA 5.0)
 ##################
 
-AC_ARG_VAR([LUA50_CFLAGS], [CFLAGS to use for LUA 5.0 (default: CPPFLAGS)])
-AC_ARG_VAR([LUA50_LDFLAGS], [LDFLAGS to use for LUA 5.1 (default: -llua -llualib)])
-if test -z "$LUA50_LDFLAGS"; then
-  LUA50_LDFLAGS="-llua -llualib";
-fi
-
 AC_ARG_WITH(lua50,
 [  --without-lua50         build without lua 5.0 (auto3)], [lua50_disabled="(disabled)"])
 
+AC_ARG_VAR([LUA50_CFLAGS], [CFLAGS to use for LUA 5.1 (default: autodetect)])
+AC_ARG_VAR([LUA50_LDFLAGS], [LDFLAGS to use for LUA 5.1 (default: autodetect)])
+AC_ARG_VAR([LUA50_LIBDIR], [Location of LUA 5.1 library. (default: none)])
+
+if test -z "$LUA50_CFLAGS"; then
+  AGI_FIND_HEADER([LUA50], [lua.h], [/usr/include/lua5.0 /usr/include/lua50 /usr/local/include/lua50 /usr/local/include/lua5.0 /usr/include /usr/local/include])
+fi
+
+if test -z "$LUA50_LDFLAGS"; then
+  AGI_FIND_LIB([LUA50], [lua50 lua-5.0 lua5.0 lua], [$LUA50_LIBDIR])
+  AGI_FIND_LIB([LUALIB50], [lualib50 lualib-5.0 lualib5.0 lualib], [$LUA50_LIBDIR], [$LUA50_LDFLAGS])
+fi
+
 if test "$with_lua50" != no; then
-  AC_AGI_COMPILE([Lua 5.0 (auto3)], [lua50], [$LUA50_CFLAGS], [$LUA50_LDFLAGS],[
+  AC_AGI_COMPILE([Lua 5.0 (auto3)], [lua50], [$LUA50_CFLAGS], [$LUA50_LDFLAGS $LUALIB50_LDFLAGS],[
 extern "C" {
 #include "lua.h"
 #include "lauxlib.h"
@@ -874,6 +887,7 @@ fi
 AM_CONDITIONAL([HAVE_AUTO3_LUA], [test "$with_auto3" != "no"])
 AC_SUBST(LUA50_CFLAGS)
 AC_SUBST(LUA50_LDFLAGS)
+AC_SUBST(LUALIB50_LDFLAGS)
 
 
 
