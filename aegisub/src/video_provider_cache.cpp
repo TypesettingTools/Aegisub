@@ -137,7 +137,8 @@ void VideoProviderCache::ClearCache() {
 	}
 }
 
-
+/// @brief Get the current size of the cache
+/// @return Returns the size in bytes
 unsigned VideoProviderCache::GetCurCacheSize() {
 	int sz = 0;
 	for (std::list<CachedFrame>::iterator i = cache.begin(); i != cache.end(); i++)
