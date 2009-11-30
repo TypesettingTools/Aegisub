@@ -44,6 +44,7 @@
 #include <wx/tokenzr.h>
 #include <wx/button.h>
 #include <wx/event.h>
+#include <wx/platinfo.h> 
 #include "dialog_version_check.h"
 #include "version.h"
 #include "main.h"
@@ -157,6 +158,63 @@ VersionCheckThread::VersionCheckThread(DialogVersionCheck *par)
 }
 
 
+static const wxChar * GetOSShortName()
+{
+	int osver_maj, osver_min;
+	wxOperatingSystemId osid = wxGetOsVersion(&osver_maj, &osver_min);
+
+	if (osid & wxOS_WINDOWS_NT)
+	{
+		if (osver_maj == 5 && osver_min == 0)
+			return _T("win2k");
+		else if (osver_maj == 5 && osver_min == 1)
+			return _T("winxp");
+		else if (osver_maj == 5 && osver_min == 2)
+			return _T("win2k3");
+		else if (osver_maj == 6 && osver_min == 0)
+			return _T("win60"); // vista and server 2008
+		else if (osver_maj == 6 && osver_min == 1)
+			return _T("win61"); // 7 and server 2008r2
+		else
+			return _T("windows"); // future proofing? I doubt we run on nt4
+	}
+	else if (osid & wxOS_MAC_OSX_DARWIN && osver_maj == 10)
+	{
+		if (osver_min == 4)
+			return _T("osx4");
+		else if (osver_min == 5)
+			return _T("osx5");
+		else if (osver_min == 6)
+			return _T("osx6");
+		else
+			return _T("osx");
+		// lump anyone who manages to build us on a non-osx version into "unknown"
+	}
+	else if (osid & wxOS_UNIX_LINUX)
+		return _T("linux");
+	else if (osid & wxOS_UNIX_FREEBSD)
+		return _T("freebsd");
+	else if (osid & wxOS_UNIX_OPENBSD)
+		return _T("openbsd");
+	else if (osid & wxOS_UNIX_NETBSD)
+		return _T("netbsd");
+	else if (osid & wxOS_UNIX_SOLARIS)
+		return _T("solaris");
+	else if (osid & wxOS_UNIX_AIX)
+		return _T("aix");
+	else if (osid & wxOS_UNIX_HPUX)
+		return _T("hpux");
+	else if (osid & wxOS_UNIX)
+		return _T("unix");
+	else if (osid & wxOS_OS2)
+		return _T("os2");
+	else if (osid & wxOS_DOS)
+		return _T("dos");
+	else
+		return _T("unknown");
+}
+
+
 /////////////////
 // Worker thread
 wxThread::ExitCode VersionCheckThread::Entry() {
@@ -165,11 +223,12 @@ wxThread::ExitCode VersionCheckThread::Entry() {
 	paths.Add(_T("http://updates.aegisub.org/latest.txt"));
 	paths.Add(_T("http://files.aegisub.net/latest.txt"));
 	wxFSFile *fp = NULL;
+	wxString querytail = wxString::Format(_T("?rev=%d&ver=2.1.8&rel=%d&os=%s"), GetSVNRevision(), GetIsOfficialRelease()?1:0, GetOSShortName());
 	
 	// Try each path until it finds one that works
 	for (unsigned int i=0;i<paths.Count();i++) {
 		// Get path and make sure that it has a handle for it
-		wxString path = wxString::Format(_T("%s?current=%d"), paths[i].c_str(), GetSVNRevision());
+		wxString path = paths[i] + querytail;
 		wxMutexGuiEnter();
 		if (!alive) goto endThread;
 		if (!wxFileSystem::HasHandlerForPath(path)) {
