@@ -149,6 +149,7 @@ void VideoContext::Clear() {
 /// @brief Reset 
 ///
 void VideoContext::Reset() {
+	loaded = false;
 	StandardPaths::SetPathValue(_T("?video"),_T(""));
 
 	KeyFrames.Clear();
@@ -164,7 +165,6 @@ void VideoContext::Reset() {
 	}
 
 	// Remove video data
-	loaded = false;
 	frame_n = 0;
 	length = 0;
 	fps = 0;
@@ -221,7 +221,6 @@ void VideoContext::SetVideo(const wxString &filename) {
 
 			// Choose a provider
 			provider = VideoProviderFactoryManager::GetProvider(filename);
-			loaded = provider != NULL;
 
 			// Get subtitles provider
 			try {
@@ -356,31 +355,14 @@ void VideoContext::JumpToFrame(int n) {
 	// Prevent intervention during playback
 	if (isPlaying && n != playNextFrame) return;
 
-	try {
-		// Set frame number
-		frame_n = n;
+	// Set frame number
+	frame_n = n;
 
-		// Display
-		UpdateDisplays(false);
+	// Display
+	UpdateDisplays(false);
 
-		// Update grid
-		if (!isPlaying && Options.AsBool(_T("Highlight subs in frame"))) grid->Refresh(false);
-	}
-	catch (const wxChar *err) {
-		wxLogError(
-			_T("Failed seeking video. The video will be closed because of this.\n")
-			_T("If you get this error regardless of which video file you use, and also if you use dummy video, Aegisub might not work with your graphics card's OpenGL driver.\n")
-			_T("Error message reported: %s"),
-			err);
-		Reset();
-	}
-	catch (...) {
-		wxLogError(
-			_T("Failed seeking video. The video will be closed because of this.\n")
-			_T("If you get this error regardless of which video file you use, and also if you use dummy video, Aegisub might not work with your graphics card's OpenGL driver.\n")
-			_T("No further error message given."));
-		Reset();
-	}
+	// Update grid
+	if (!isPlaying && Options.AsBool(_T("Highlight subs in frame"))) grid->Refresh(false);
 }
 
 

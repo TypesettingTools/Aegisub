@@ -102,22 +102,26 @@ public:
 /// @brief Base class for all exceptions thrown by VideoOutGL
 DEFINE_BASE_EXCEPTION_NOINNER(VideoOutException, Aegisub::Exception)
 
-/// @class VideoOutUnsupportedException
+/// @class VideoOutRenderException
 /// @extends VideoOutException
-/// @brief The user's video card does not support OpenGL to any usable extent
-DEFINE_SIMPLE_EXCEPTION_NOINNER(VideoOutUnsupportedException, VideoOutException, "videoout/unsupported")
-
-/// @class VideoOutOpenGLException
-/// @extends VideoOutException
-/// @brief An OpenGL error occured.
-///
-/// Unlike VideoOutUnsupportedException, these errors are likely to be video-specific
-/// and/or due to an Aegisub bug.
-class VideoOutOpenGLException : public VideoOutException {
+/// @brief An OpenGL error occured while uploading or displaying a frame
+class VideoOutRenderException : public VideoOutException {
 public:
-	VideoOutOpenGLException(const wxChar *func, int err)
+	VideoOutRenderException(const wxChar *func, int err)
 		: VideoOutException(wxString::Format("%s failed with error code %d", func, err))
 	{ }
-	const wxChar * GetName() const { return L"videoout/opengl"; }
-	Exception * Copy() const { return new VideoOutOpenGLException(*this); }
+	const wxChar * GetName() const { return L"videoout/opengl/render"; }
+	Exception * Copy() const { return new VideoOutRenderException(*this); }
+};
+/// @class VideoOutOpenGLException
+/// @extends VideoOutException
+/// @brief An OpenGL error occured while setting up the video display
+class VideoOutInitException : public VideoOutException {
+public:
+	VideoOutInitException(const wxChar *func, int err)
+		: VideoOutException(wxString::Format("%s failed with error code %d", func, err))
+	{ }
+	VideoOutInitException(const wxChar *err) : VideoOutException(err) { }
+	const wxChar * GetName() const { return L"videoout/opengl/init"; }
+	Exception * Copy() const { return new VideoOutInitException(*this); }
 };
