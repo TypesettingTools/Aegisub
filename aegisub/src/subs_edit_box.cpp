@@ -80,12 +80,12 @@ SubsEditBox::SubsEditBox (wxWindow *parent,SubtitlesGrid *gridp) : wxPanel(paren
 
 	// Top controls
 	wxArrayString styles;
-	styles.Add(_T(""));
+	styles.Add(_T("Default"));
 	CommentBox = new wxCheckBox(this,COMMENT_CHECKBOX,_("Comment"));
 	CommentBox->SetToolTip(_("Comment this line out. Commented lines don't show up on screen."));
-	StyleBox = new wxComboBox(this,STYLE_COMBOBOX,_T(""),wxDefaultPosition,wxSize(110,-1),styles,wxCB_READONLY | wxTE_PROCESS_ENTER);
+	StyleBox = new wxComboBox(this,STYLE_COMBOBOX,_T("Default"),wxDefaultPosition,wxSize(110,-1),styles,wxCB_READONLY | wxTE_PROCESS_ENTER);
 	StyleBox->SetToolTip(_("Style for this line."));
-	ActorBox = new wxComboBox(this,ACTOR_COMBOBOX,_T(""),wxDefaultPosition,wxSize(110,-1),styles,wxCB_DROPDOWN | wxTE_PROCESS_ENTER);
+	ActorBox = new wxComboBox(this,ACTOR_COMBOBOX,_T("Actor"),wxDefaultPosition,wxSize(110,-1),styles,wxCB_DROPDOWN | wxTE_PROCESS_ENTER);
 	ActorBox->SetToolTip(_("Actor name for this speech. This is only for reference, and is mainly useless."));
 	ActorBox->PushEventHandler(new IdleFieldHandler(ActorBox,_("Actor")));
 	Effect = new HiliModTextCtrl(this,EFFECT_BOX,_T(""),wxDefaultPosition,wxSize(80,-1),wxTE_PROCESS_ENTER);
@@ -325,6 +325,8 @@ void SubsEditBox::UpdateGlobals () {
 	wxString actor;
 	for (int i=0;i<nrows;i++) {
 		actor = grid->GetDialogue(i)->Actor;
+		// OSX doesn't like combo boxes that are empty.
+		if (actor == "") actor = _T("Actor");
 		if (ActorBox->FindString(actor) == wxNOT_FOUND) {
 			ActorBox->Append(actor);
 		}
