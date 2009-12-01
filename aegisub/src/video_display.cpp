@@ -210,8 +210,37 @@ void VideoDisplay::SetFrame(int frameNumber) {
 
 	// Render the new frame
 	if (context->IsLoaded()) {
-		AegiVideoFrame frame = context->GetFrame(frameNumber);
-		videoOut->UploadFrameData(frame);
+		AegiVideoFrame frame;
+		try {
+			frame = context->GetFrame(frameNumber);
+		}
+		catch (const wxChar *err) {
+			wxLogError(
+				_T("Failed seeking video. The video file may be corrupt or incomplete.\n")
+				_T("Error message reported: %s"),
+				err);
+		}
+		catch (...) {
+			wxLogError(
+				_T("Failed seeking video. The video file may be corrupt or incomplete.\n")
+				_T("No further error message given."));
+		}
+		try {
+			videoOut->UploadFrameData(frame);
+		}
+		catch (const VideoOutInitException& err) {
+			wxLogError(
+				L"Failed to initialize video display. Closing other running programs and updating your video card drivers may fix this.\n"
+				L"Error message reported: %s",
+				err.GetMessage());
+			context->Reset();
+		}
+		catch (const VideoOutRenderException& err) {
+			wxLogError(
+				L"Could not upload video frame to graphics card.\n"
+				L"Error message reported: %s",
+				err.GetMessage());
+		}
 	}
 	Render();
 
@@ -299,18 +328,9 @@ void VideoDisplay::Render() try {
 	glFinish();
 	SwapBuffers();
 }
-catch (const VideoOutUnsupportedException &err) {
-		wxLogError(
-		_T("An error occurred trying to render the video frame to screen.\n")
-		_T("Your graphics card does not appear to have a functioning OpenGL driver.\n")
-		_T("Error message reported: %s"),
-		err.GetMessage());
-	VideoContext::Get()->Reset();
-}
 catch (const VideoOutException &err) {
-		wxLogError(
-		_T("An error occurred trying to render the video frame to screen.\n")
-		_T("If you get this error regardless of which video file you use, and also if you use dummy video, Aegisub might not work with your graphics card's OpenGL driver.\n")
+	wxLogError(
+		_T("An error occurred trying to render the video frame on the screen.\n")
 		_T("Error message reported: %s"),
 		err.GetMessage());
 	VideoContext::Get()->Reset();
@@ -318,7 +338,6 @@ catch (const VideoOutException &err) {
 catch (const wxChar *err) {
 	wxLogError(
 		_T("An error occurred trying to render the video frame to screen.\n")
-		_T("If you get this error regardless of which video file you use, and also if you use dummy video, Aegisub might not work with your graphics card's OpenGL driver.\n")
 		_T("Error message reported: %s"),
 		err);
 	VideoContext::Get()->Reset();
@@ -326,7 +345,6 @@ catch (const wxChar *err) {
 catch (...) {
 	wxLogError(
 		_T("An error occurred trying to render the video frame to screen.\n")
-		_T("If you get this error regardless of which video file you use, and also if you use dummy video, Aegisub might not work with your graphics card's OpenGL driver.\n")
 		_T("No further error message given."));
 	VideoContext::Get()->Reset();
 }
