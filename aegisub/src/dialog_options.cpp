@@ -130,7 +130,7 @@ DialogOptions::DialogOptions(wxWindow *parent)
 	{
 		wxSizer *genMainSizer = new wxBoxSizer(wxVERTICAL);
 		wxSizer *genSizer1 = new wxStaticBoxSizer(wxHORIZONTAL,generalPage,_("Startup"));
-		wxFlexGridSizer *genSizer4 = new wxFlexGridSizer(2,2,5,5);
+		wxFlexGridSizer *genSizer4 = new wxFlexGridSizer(2,5,5);
 
 		AddCheckBox(generalPage,genSizer4,_("Show Splash Screen"),_T("Show splash"));
 #ifdef __WXMSW__
@@ -140,7 +140,7 @@ DialogOptions::DialogOptions(wxWindow *parent)
 
 		genSizer1->Add(genSizer4,1,wxEXPAND|wxALL,5);
 		wxSizer *genSizer2 = new wxStaticBoxSizer(wxVERTICAL,generalPage,_("Limits for levels and recent files"));
-		wxFlexGridSizer *genSizer3 = new wxFlexGridSizer(8,2,5,5);
+		wxFlexGridSizer *genSizer3 = new wxFlexGridSizer(2,5,5);
 		wxString options[8] = { _T("Undo levels"), _T("Recent timecodes max"), _T("Recent keyframes max"), _T("Recent sub max"), _T("Recent vid max"), _T("Recent aud max"), _T("Recent find max"), _T("Recent replace max") };
 		wxString labels[8] = { _("Maximum undo levels"), _("Maximum recent timecode files"), _("Maximum recent keyframe files"), _("Maximum recent subtitle files"), _("Maximum recent video files"), _("Maximum recent audio files"), _("Maximum recent find strings"), _("Maximum recent replace strings") };
 		for (int i=0;i<8;i++) {
@@ -165,9 +165,9 @@ DialogOptions::DialogOptions(wxWindow *parent)
 		wxSizer *fileSizer1 = new wxStaticBoxSizer(wxVERTICAL,filePage,_("Auto-save"));
 		wxSizer *fileSizer2 = new wxBoxSizer(wxHORIZONTAL);
 		wxSizer *fileSizer3 = new wxStaticBoxSizer(wxHORIZONTAL,filePage,_("File paths"));
-		wxFlexGridSizer *fileSizer4 = new wxFlexGridSizer(3,3,5,5);
+		wxFlexGridSizer *fileSizer4 = new wxFlexGridSizer(3,5,5);
 		wxSizer *fileSizer5 = new wxStaticBoxSizer(wxHORIZONTAL,filePage,_("Miscellanea"));
-		wxFlexGridSizer *fileSizer6 = new wxFlexGridSizer(3,2,5,5);
+		wxFlexGridSizer *fileSizer6 = new wxFlexGridSizer(2,5,5);
 
 		// First static box
 		wxCheckBox *check = new wxCheckBox(filePage,-1,_("Auto-backup"));
@@ -224,9 +224,9 @@ DialogOptions::DialogOptions(wxWindow *parent)
 		wxSizer *editMainSizer = new wxBoxSizer(wxVERTICAL);
 		wxSizer *editSizer1 = new wxStaticBoxSizer(wxVERTICAL,editPage,_("Options"));
 		wxSizer *editSizer6 = new wxBoxSizer(wxHORIZONTAL);
-		wxFlexGridSizer *editSizer2 = new wxFlexGridSizer(4,2,5,5);
+		wxFlexGridSizer *editSizer2 = new wxFlexGridSizer(2,5,5);
 		wxSizer *editSizer3 = new wxStaticBoxSizer(wxVERTICAL,editPage,_("Style"));
-		wxFlexGridSizer *editSizer4 = new wxFlexGridSizer(10,2,2,2);
+		wxFlexGridSizer *editSizer4 = new wxFlexGridSizer(2,2,2);
 		wxSizer *editSizer5 = new wxBoxSizer(wxHORIZONTAL);
 
 		// First static box
@@ -298,7 +298,7 @@ DialogOptions::DialogOptions(wxWindow *parent)
 		wxSizer *gridMainSizer = new wxBoxSizer(wxVERTICAL);
 		wxSizer *gridSizer1 = new wxStaticBoxSizer(wxVERTICAL,gridPage,_("Options"));
 		wxSizer *gridSizer2 = new wxStaticBoxSizer(wxVERTICAL,gridPage,_("Style"));
-		wxFlexGridSizer *gridSizer3 = new wxFlexGridSizer(12,2,2,2);
+		wxFlexGridSizer *gridSizer3 = new wxFlexGridSizer(2,2,2);
 		wxSizer *gridSizer4 = new wxBoxSizer(wxHORIZONTAL);
 		wxSizer *gridSizer5 = new wxBoxSizer(wxHORIZONTAL);
 
@@ -367,8 +367,8 @@ DialogOptions::DialogOptions(wxWindow *parent)
 		wxSizer *videoMainSizer = new wxBoxSizer(wxVERTICAL);
 		wxSizer *videoSizer1 = new wxStaticBoxSizer(wxVERTICAL,videoPage,_("Options"));
 		wxSizer *videoSizer2 = new wxStaticBoxSizer(wxVERTICAL,videoPage,_("Advanced - EXPERT USERS ONLY"));
-		wxFlexGridSizer *videoSizer3 = new wxFlexGridSizer(5,2,5,5);
-		wxFlexGridSizer *videoSizer4 = new wxFlexGridSizer(5,2,5,5);
+		wxFlexGridSizer *videoSizer3 = new wxFlexGridSizer(2,5,5);
+		wxFlexGridSizer *videoSizer4 = new wxFlexGridSizer(2,5,5);
 		wxControl *control;
 
 		// First sizer
@@ -444,8 +444,8 @@ DialogOptions::DialogOptions(wxWindow *parent)
 		// Sizers
 		wxSizer *audioMainSizer = new wxBoxSizer(wxVERTICAL);
 		wxSizer *audioSizer1 = new wxStaticBoxSizer(wxVERTICAL,audioPage,_("Options"));
-		wxFlexGridSizer *audioSizer3 = new wxFlexGridSizer(3,2,5,5);
-		wxFlexGridSizer *audioSizer4 = new wxFlexGridSizer(4,2,5,5);
+		wxFlexGridSizer *audioSizer3 = new wxFlexGridSizer(2,5,5);
+		wxFlexGridSizer *audioSizer4 = new wxFlexGridSizer(2,5,5);
 
 		// First sizer
 		AddCheckBox(audioPage,audioSizer3,_("Grab times from line upon selection"),_T("Audio grab times on select"));
@@ -480,8 +480,8 @@ DialogOptions::DialogOptions(wxWindow *parent)
 		wxSizer *displayMainSizer = new wxBoxSizer(wxVERTICAL);
 		wxSizer *displaySizer1 = new wxStaticBoxSizer(wxVERTICAL,displayPage,_("Options"));
 		wxSizer *displaySizer2 = new wxStaticBoxSizer(wxVERTICAL,displayPage,_("Style"));
-		wxFlexGridSizer *displaySizer3 = new wxFlexGridSizer(3,2,2,2);
-		wxFlexGridSizer *displaySizer4 = new wxFlexGridSizer(14,2,2,2);
+		wxFlexGridSizer *displaySizer3 = new wxFlexGridSizer(2,2,2);
+		wxFlexGridSizer *displaySizer4 = new wxFlexGridSizer(2,2,2);
 
 		// First sizer
 		wxString labels1[6] = { _("Draw secondary lines"), _("Draw selection background"), _("Draw timeline"),
@@ -529,7 +529,7 @@ DialogOptions::DialogOptions(wxWindow *parent)
 	// Audio advanced page
 	{
 		// Sizers
-		wxFlexGridSizer *audioAdvSizer1 = new wxFlexGridSizer(9,2,5,5);
+		wxFlexGridSizer *audioAdvSizer1 = new wxFlexGridSizer(2,5,5);
 		wxSizer *audioAdvSizer2 = new wxStaticBoxSizer(wxVERTICAL,audioAdvPage,_("Advanced - EXPERT USERS ONLY"));
 		wxSizer *audioAdvSizer3 = new wxBoxSizer(wxVERTICAL);
 
@@ -567,7 +567,7 @@ DialogOptions::DialogOptions(wxWindow *parent)
 		// Sizers
 		wxSizer *autoMainSizer = new wxBoxSizer(wxVERTICAL);
 		wxSizer *autoSizer1 = new wxStaticBoxSizer(wxVERTICAL,autoPage,_("Options"));
-		wxFlexGridSizer *autoSizer2 = new wxFlexGridSizer(6,2,5,5);
+		wxFlexGridSizer *autoSizer2 = new wxFlexGridSizer(2,5,5);
 
 		// First sizer
 		AddTextControl(autoPage,autoSizer2,_("Base path"),_T("Automation Base Path"));
