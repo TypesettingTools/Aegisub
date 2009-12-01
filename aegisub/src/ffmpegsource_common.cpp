@@ -196,11 +196,13 @@ wxString FFmpegSourceProvider::GetCacheFilename(const wxString& filename)
 	wxString toHash = filename + wxString::Format(_T(":%i"),len);
 
 	// Get the MD5 digest of the string
+	const wchar_t *tmp = toHash.wc_str();
 	md5_state_t state;
 	md5_byte_t digest[16];
 	md5_init(&state);
+
 #if wxCHECK_VERSION(2,9,0)
-	md5_append(&state,(md5_byte_t*)toHash.wc_str(),toHash.Length()*sizeof(wxChar));
+	md5_append(&state,(md5_byte_t*)tmp,toHash.Length()*sizeof(wchar_t));
 #else
 	md5_append(&state,(md5_byte_t*)toHash.c_str(),toHash.Length()*sizeof(wxChar));
 #endif
@@ -342,4 +344,4 @@ wxThread::ExitCode FFmpegSourceCacheCleaner::Entry() {
 }
 
 
-#endif WITH_FFMPEGSOURCE
+#endif // WITH_FFMPEGSOURCE
