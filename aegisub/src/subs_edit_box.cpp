@@ -326,7 +326,9 @@ void SubsEditBox::UpdateGlobals () {
 	for (int i=0;i<nrows;i++) {
 		actor = grid->GetDialogue(i)->Actor;
 		// OSX doesn't like combo boxes that are empty.
+#if wxCHECK_VERSION(2,9,0)
 		if (actor == "") actor = _T("Actor");
+#endif
 		if (ActorBox->FindString(actor) == wxNOT_FOUND) {
 			ActorBox->Append(actor);
 		}
