@@ -50,7 +50,7 @@ if test -z "${DICT_DIR}"; then
 fi
 
 if test -d "${DICT_DIR}"; then
-  cp -v "${DICT_DIR}/*" "${PKG_DIR}/Contents/SharedSupport/dictionaries"
+  cp -v ${DICT_DIR}/* "${PKG_DIR}/Contents/SharedSupport/dictionaries"
 else
   echo "WARNING: Dictionaries not found, please set $$DICT_DIR to a directiory"
   echo "         where the *.aff and *.dic files can be found"
@@ -95,7 +95,7 @@ echo "---- Binaries ----"
 if test src/${AEGISUB_BIN} -nt src/.libs/${AEGISUB_BIN}; then
   cp -v src/${AEGISUB_BIN} "${PKG_DIR}/Contents/MacOS/aegisub"
 else
-  cp -v src/.libs/${AEGISUB_BIN} "${PKG_DIR}/Contents/MacOS/aegisub"
+  cp -v src/.libs/${AEGISUB_BIN} "${PKG_DIR}/Contents/MacOS/aegisub" || exit $?
 fi
 
 echo cc -o "${PKG_DIR}/Contents/MacOS/restart-helper scripts/osx-bundle-restart-helper.c"

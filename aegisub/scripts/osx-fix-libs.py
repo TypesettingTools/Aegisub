@@ -4,6 +4,7 @@ import re
 import sys
 import os
 import shutil
+import stat
 
 is_bad_lib = re.compile(r'(/usr/local|/opt)').match
 is_sys_lib = re.compile(r'(/usr|/System)').match
@@ -28,15 +29,27 @@ def collectlibs(lib, masterlist, targetdir):
 			sys.exit("Linking with library in blacklisted location: " + l)
 		if not is_sys_lib(l) and not l in masterlist:
 			locallist.append(l)
-			print "found ", l,
-			shutil.copy(l, targetdir)
-			print " ...copied to target"
+			print "found %s:" % l
+
+			check = l
+			while check:
+				if os.path.isfile(check) and not os.path.islink(check):
+					os.system("cp '%s' '%s'" % (check, targetdir))
+					print "    FILE %s ... copied to target" % check
+					break
+					
+				if os.path.islink(check):
+					os.system("cp -fR '%s' '%s'" % (check, targetdir))
+					print "    LINK %s ... copied to target" % check
+					check = os.path.dirname(check) + "/" + os.readlink(check)
+
 		elif not l in goodlist and not l in masterlist:
 			goodlist.append(l)
 	masterlist.extend(locallist)
 	for l in locallist:
 		collectlibs(l, masterlist, targetdir)
 
+exit;
 binname = sys.argv[1]
 targetdir = os.path.dirname(binname)
 print "Searching for libraries in ", binname, "..."
