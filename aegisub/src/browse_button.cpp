@@ -71,14 +71,12 @@ void BrowseButton::OnPressed(wxCommandEvent &event) {
 	// Folder
 	if (type == BROWSE_FOLDER) {
 		// For some reason I can't make this work on Mac... -jfs
-#ifndef __WXMAC__
 		wxString def = StandardPaths::DecodePathMaybeRelative(ctrl[0]->GetValue(), _T("?user/"));
 		wxDirDialog dlg(0, _("Please choose the folder:"), def);
 		if (dlg.ShowModal() == wxID_OK) {
 			wxString dir = StandardPaths::EncodePath(dlg.GetPath());
 			if (dir != _T("")) ctrl[0]->SetValue(dir);
 		}
-#endif
 	}
 
 	// File
