@@ -446,10 +446,21 @@ void AssOverrideTagProto::LoadProtos () {
 	proto.back().name = _T("\\fn");
 	proto.back().params.push_back(AssOverrideParamProto(VARDATA_TEXT,NOT_OPTIONAL,PARCLASS_NORMAL));
 
+	// \fs+<size>
+	proto.push_back(AssOverrideTagProto());
+	proto.back().name = _T("\\fs+");
+	proto.back().params.push_back(AssOverrideParamProto(VARDATA_FLOAT,NOT_OPTIONAL,PARCLASS_NORMAL));
+
+	// \fs-<size>
+	proto.push_back(AssOverrideTagProto());
+	proto.back().name = _T("\\fs-");
+	proto.back().params.push_back(AssOverrideParamProto(VARDATA_FLOAT,NOT_OPTIONAL,PARCLASS_NORMAL));
+
 	// \fs<size>
 	proto.push_back(AssOverrideTagProto());
 	proto.back().name = _T("\\fs");
 	proto.back().params.push_back(AssOverrideParamProto(VARDATA_FLOAT,NOT_OPTIONAL,PARCLASS_ABSOLUTE_SIZE));
+
 
 	// \an<alignment>
 	proto.push_back(AssOverrideTagProto());

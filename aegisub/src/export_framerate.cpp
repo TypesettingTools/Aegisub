@@ -183,16 +183,12 @@ void AssTransformFramerateFilter::TransformTimeTags (wxString name,int n,AssOver
 	int value;
 	switch (curParam->classification) {
 		case PARCLASS_RELATIVE_TIME_START:
-			start = true;
-			mult = 1;
 			break;
 		case PARCLASS_RELATIVE_TIME_END:
 			start = false;
-			mult = 1;
 			break;
 		case PARCLASS_KARAOKE:
 			karaoke = true;
-			start = true;
 			mult = 10;
 			break;
 		default:
@@ -227,6 +223,11 @@ void AssTransformFramerateFilter::TransformTimeTags (wxString name,int n,AssOver
 		int newStart = instance.Input->GetTimeAtFrame(instance.Output->GetFrameAtTime(curDiag->Start.GetMS()));
 		int absTime = curDiag->Start.GetMS() + parVal;
 		value = instance.Input->GetTimeAtFrame(instance.Output->GetFrameAtTime(absTime)) - newStart;
+		
+		// An end time of 0 is actually the end time of the line, so ensure nonzero is never converted to 0
+		// Needed in the start case as well as the end one due to \t, whose end time needs the start time
+		// behavior
+		if (value == 0 && parVal != 0) value = 1;
 	}
 
 	// End time
@@ -234,6 +235,7 @@ void AssTransformFramerateFilter::TransformTimeTags (wxString name,int n,AssOver
 		int newEnd = instance.Input->GetTimeAtFrame(instance.Output->GetFrameAtTime(curDiag->End.GetMS()));
 		int absTime = curDiag->End.GetMS() - parVal;
 		value = newEnd - instance.Input->GetTimeAtFrame(instance.Output->GetFrameAtTime(absTime));
+		if (value == 0 && parVal != 0) value = 1;
 	}
 
 	// Karaoke postprocess
