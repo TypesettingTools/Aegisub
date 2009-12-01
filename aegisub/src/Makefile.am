@@ -372,8 +372,7 @@ aegisub_2_1_SOURCES += \
 noinst_HEADERS = \
 	$(srcdir)/boost/*.hpp \
 	gl/glext.h \
-	$(srcdir)/*.hxx \
-	osx_bevelButton.h
+	$(srcdir)/*.hxx
 
 EXTRA_DIST = \
 	auto4_perldata.inc \
