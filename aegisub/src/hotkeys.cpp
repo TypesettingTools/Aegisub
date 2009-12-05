@@ -74,7 +74,7 @@ HotkeyType::HotkeyType(wxString text,wxString name) {
 /// @brief Get string of hotkey 
 /// @return 
 ///
-wxString HotkeyType::GetText() {
+wxString HotkeyType::GetText() const {
 	wxString text;
 
 	// Modifiers
@@ -539,10 +539,10 @@ void HotkeyManager::SetFile(wxString file) {
 /// @param function 
 /// @return 
 ///
-wxString HotkeyManager::GetText(wxString function) {
-	std::map<wxString,HotkeyType>::iterator cur = key.find(function.Lower());
+const wxString HotkeyManager::GetText(wxString function) const {
+	std::map<wxString,HotkeyType>::const_iterator cur = key.find(function.Lower());
 	if (cur != key.end()) {
-		return (*cur).second.GetText();
+		return cur->second.GetText();
 	}
 	else throw _T("Hotkey not defined");
 }
@@ -554,10 +554,10 @@ wxString HotkeyManager::GetText(wxString function) {
 /// @param id       
 /// @return 
 ///
-wxAcceleratorEntry HotkeyManager::GetAccelerator(wxString function,int id) {
-	std::map<wxString,HotkeyType>::iterator cur = key.find(function.Lower());
+wxAcceleratorEntry HotkeyManager::GetAccelerator(wxString function,int id) const {
+	std::map<wxString,HotkeyType>::const_iterator cur = key.find(function.Lower());
 	if (cur != key.end()) {
-		HotkeyType *hotkey = &(*cur).second;
+		const HotkeyType *hotkey = &(*cur).second;
 		wxAcceleratorEntry entry;
 		entry.Set(hotkey->flags,hotkey->keycode,id);
 		return entry;
@@ -587,10 +587,10 @@ void HotkeyManager::SetPressed(int keypress,bool ctrl,bool alt,bool shift) {
 /// @param function 
 /// @return 
 ///
-bool HotkeyManager::IsPressed(wxString function) {
-	std::map<wxString,HotkeyType>::iterator cur = key.find(function.Lower());
+bool HotkeyManager::IsPressed(wxString function) const {
+	std::map<wxString,HotkeyType>::const_iterator cur = key.find(function.Lower());
 	if (cur != key.end()) {
-		HotkeyType *hotkey = &(*cur).second;
+		const HotkeyType *hotkey = &(*cur).second;
 		return (hotkey->keycode == lastKey && hotkey->flags == lastMod);
 	}
 	else throw _T("Hotkey not defined");
@@ -611,5 +611,3 @@ HotkeyType *HotkeyManager::Find(int keycode,int mod) {
 
 	return NULL;
 }
-
-

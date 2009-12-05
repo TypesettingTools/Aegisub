@@ -74,7 +74,7 @@ public:
 	HotkeyType(wxString text,wxString name);
 	
 	void Parse(wxString text);
-	wxString GetText();
+	wxString GetText() const;
 
 
 	/// DOCME
@@ -123,9 +123,9 @@ public:
 	void LoadDefaults();
 	HotkeyType *Find(int keycode,int mod);
 
-	wxString GetText(wxString function);
-	wxAcceleratorEntry GetAccelerator(wxString function,int id);
-	bool IsPressed(wxString function);
+	const wxString GetText(wxString function) const;
+	wxAcceleratorEntry GetAccelerator(wxString function,int id) const;
+	bool IsPressed(wxString function) const;
 	void SetPressed(int key,bool ctrl=false,bool alt=false,bool shift=false);
 };
 
