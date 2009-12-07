@@ -131,7 +131,7 @@ class DataBlockCache {
 		MacroBlock *mb;
 		AccessData(MacroBlock *_mb) : mb(_mb) { }
 		// Sort in decreasing order: most accesses first
-		bool operator < (const AccessData &other) { return mb->access_count > other.mb->access_count; }
+		bool operator < (const AccessData &other) const { return mb->access_count > other.mb->access_count; }
 	};
 
 	/// @brief Dispose of all blocks in a macroblock and mark it empty
