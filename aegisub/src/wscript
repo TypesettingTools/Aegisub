@@ -1,0 +1,63 @@
+#! /usr/bin/env python
+# encoding: utf-8
+#
+# Copyright (c) 2009, Kevin Ollivier <kollivier@aegisub.org>
+#
+# Permission to use, copy, modify, and distribute this software for any
+# purpose with or without fee is hereby granted, provided that the above
+# copyright notice and this permission notice appear in all copies.
+#
+# THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+# WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+# MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+# ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+# WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+# ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+# OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+
+import sys
+
+import Options
+import distutils.dir_util
+
+def build(bld):
+    subdirs = ['libresrc']
+    uselib_local = []
+    includes = ['#', '.']
+    
+    if Options.options.with_provider_video == 'ffmpegsource' or Options.options.with_provider_audio == 'ffmpegsource':
+        uselib_local.append('ffmpegsource_aegisub')
+        includes.append('../libffms/include')
+    
+    if Options.options.with_provider_subtitle == 'libass':
+        uselib_local.append('ass_aegisub')
+    
+    bld.add_subdirs(subdirs)
+    
+    excludes = []
+    
+    if not sys.platform.startswith('win'):
+        excludes.append('vfw_wrap.cpp')
+
+    dirs = ["."]
+    
+    obj = bld.new_task_gen(
+        features = 'cc cxx cprogram',
+        target = 'aegisub',
+        includes = includes,
+        source = 'libresrc/libresrc.cpp',
+        defines = '',
+        uselib = 'GL CURL FONTCONFIG FREETYPE2 WX',
+        uselib_local = uselib_local)
+
+    if sys.platform.startswith('darwin'):
+        excludes.append('bundledirs-test.c')
+        dirs.append('libosxutil')
+        obj.mac_app = True
+        bld.add_post_fun(copy_mac_bundle_files)
+        
+    obj.find_sources_in_dirs(dirs, excludes=excludes)
+
+def copy_mac_bundle_files(bld):
+    distutils.dir_util.copy_tree('packages/osx_bundle/Contents', 'build/default/src/aegisub.app/Contents', '')
+        
