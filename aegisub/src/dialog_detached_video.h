@@ -33,22 +33,27 @@
 // Contact: mailto:zeratul@cellosoft.com
 //
 
+
+#pragma once
+
+
 #include <wx/dialog.h>
 
+
+//////////////
+// Prototypes
 class VideoBox;
 class FrameMain;
 
 
-/// DOCME
-/// @class DialogDetachedVideo
-/// @brief DOCME
-///
-/// DOCME
+//////////////////////////////
+// Detached video frame class
 class DialogDetachedVideo : public wxDialog {
 private:
 	VideoBox *videoBox;
 	FrameMain *parent;
 
+	void OnKey(wxKeyEvent &event);
 	void OnClose(wxCloseEvent &event);
 	void OnMove(wxMoveEvent &event);
 

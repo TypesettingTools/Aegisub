@@ -286,7 +286,7 @@ void FrameMain::OnMenuOpen (wxMenuEvent &event) {
 	else if (curMenu == viewMenu) {
 		// Flags
 		bool aud = audioBox->audioDisplay->loaded;
-		bool vid = VideoContext::Get()->IsLoaded() && !detachedVideo;
+		bool vid = VideoContext::Get()->IsLoaded();
 
 		// Set states
 		MenuBar->Enable(Menu_View_Audio,aud);
@@ -303,24 +303,23 @@ void FrameMain::OnMenuOpen (wxMenuEvent &event) {
 	// Video menu
 	else if (curMenu == videoMenu) {
 		bool state = VideoContext::Get()->IsLoaded();
-		bool attached = state && !detachedVideo;
 
 		// Set states
 		MenuBar->Enable(Menu_Video_JumpTo,state);
 		MenuBar->Enable(Menu_Subs_Snap_Video_To_Start,state);
 		MenuBar->Enable(Menu_Subs_Snap_Video_To_End,state);
-		MenuBar->Enable(Menu_View_Zoom,attached);
-		MenuBar->Enable(Menu_View_Zoom_50,attached);
-		MenuBar->Enable(Menu_View_Zoom_100,attached);
-		MenuBar->Enable(Menu_View_Zoom_200,attached);
+		MenuBar->Enable(Menu_View_Zoom,state);
+		MenuBar->Enable(Menu_View_Zoom_50,state);
+		MenuBar->Enable(Menu_View_Zoom_100,state);
+		MenuBar->Enable(Menu_View_Zoom_200,state);
 		MenuBar->Enable(Menu_File_Close_Video,state);
-		MenuBar->Enable(Menu_Video_AR,attached);
-		MenuBar->Enable(Menu_Video_AR_Default,attached);
-		MenuBar->Enable(Menu_Video_AR_Full,attached);
-		MenuBar->Enable(Menu_Video_AR_Wide,attached);
-		MenuBar->Enable(Menu_Video_AR_235,attached);
-		MenuBar->Enable(Menu_Video_AR_Custom,attached);
-		MenuBar->Enable(Menu_Video_Detach,state);
+		MenuBar->Enable(Menu_Video_AR,state);
+		MenuBar->Enable(Menu_Video_AR_Default,state);
+		MenuBar->Enable(Menu_Video_AR_Full,state);
+		MenuBar->Enable(Menu_Video_AR_Wide,state);
+		MenuBar->Enable(Menu_Video_AR_235,state);
+		MenuBar->Enable(Menu_Video_AR_Custom,state);
+		MenuBar->Enable(Menu_Video_Detach,state && !detachedVideo);
 		MenuBar->Enable(Menu_File_Save_VFR,VFR_Output.GetFrameRateType() == VFR);
 		MenuBar->Enable(Menu_File_Close_VFR,VFR_Output.GetFrameRateType() == VFR);
 		MenuBar->Enable(Menu_Video_Close_Keyframes,VideoContext::Get()->OverKeyFramesLoaded());
@@ -900,7 +899,7 @@ void FrameMain::OnSetZoom(wxCommandEvent &event) {
 ////////////////
 // Detach video
 void FrameMain::OnDetachVideo(wxCommandEvent &event) {
-	DetachVideo(!detachedVideo);
+	DetachVideo();
 }
 
 
@@ -1321,7 +1320,7 @@ void FrameMain::OnReplace(wxCommandEvent &event) {
 void FrameMain::OnSetARDefault (wxCommandEvent &event) {
 	VideoContext::Get()->Stop();
 	VideoContext::Get()->SetAspectRatio(0);
-	SetDisplayMode(1,-1);
+	SetDisplayMode(-1,-2);
 }
 
 
@@ -1330,7 +1329,7 @@ void FrameMain::OnSetARDefault (wxCommandEvent &event) {
 void FrameMain::OnSetARFull (wxCommandEvent &event) {
 	VideoContext::Get()->Stop();
 	VideoContext::Get()->SetAspectRatio(1);
-	SetDisplayMode(1,-1);
+	SetDisplayMode(-1,-2);
 }
 
 
@@ -1339,7 +1338,7 @@ void FrameMain::OnSetARFull (wxCommandEvent &event) {
 void FrameMain::OnSetARWide (wxCommandEvent &event) {
 	VideoContext::Get()->Stop();
 	VideoContext::Get()->SetAspectRatio(2);
-	SetDisplayMode(1,-1);
+	SetDisplayMode(-1,-2);
 }
 
 
@@ -1348,7 +1347,7 @@ void FrameMain::OnSetARWide (wxCommandEvent &event) {
 void FrameMain::OnSetAR235 (wxCommandEvent &event) {
 	VideoContext::Get()->Stop();
 	VideoContext::Get()->SetAspectRatio(3);
-	SetDisplayMode(1,-1);
+	SetDisplayMode(-1,-2);
 }
 
 
@@ -1398,7 +1397,7 @@ void FrameMain::OnSetARCustom (wxCommandEvent &event) {
 	// Set value
 	else {
 		VideoContext::Get()->SetAspectRatio(4,numval);
-		SetDisplayMode(1,-1);
+		SetDisplayMode(-1,-1);
 	}
 }
 
@@ -1708,6 +1707,7 @@ void FrameMain::OnPickAssociations(wxCommandEvent &event) {
 /////////////////
 // View standard
 void FrameMain::OnViewStandard (wxCommandEvent &event) {
+	if (!audioBox->audioDisplay->loaded || !VideoContext::Get()->IsLoaded()) return;
 	SetDisplayMode(1,1);
 }
 
@@ -1715,6 +1715,7 @@ void FrameMain::OnViewStandard (wxCommandEvent &event) {
 //////////////
 // View video
 void FrameMain::OnViewVideo (wxCommandEvent &event) {
+	if (!VideoContext::Get()->IsLoaded()) return;
 	SetDisplayMode(1,0);
 }
 
@@ -1722,6 +1723,7 @@ void FrameMain::OnViewVideo (wxCommandEvent &event) {
 //////////////
 // View audio
 void FrameMain::OnViewAudio (wxCommandEvent &event) {
+	if (!audioBox->audioDisplay->loaded) return;
 	SetDisplayMode(0,1);
 }
 
