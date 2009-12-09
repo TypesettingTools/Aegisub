@@ -32,44 +32,37 @@
 ; Contact: mailto:nielsm@indvikleren.dk
 ;
 
-#include "fragment_setupbase.iss"
 
-[Setup]
-OutputBaseFilename=Aegisub-2.1.8-setup
-VersionInfoDescription=Aegisub 2.1.8 setup
+; Check whether the user has a possibly redundant OPENGL32.DLL file in his program folder and offer to remove it
 
+[InstallDelete]
+Type: files; Name: {app}\opengl32.dll; Tasks: RemoveRedundantOpenGL
+Type: files; Name: {app}\opengl32.txt; Tasks: RemoveRedundantOpenGL
+Type: files; Name: {app}\opengl32.lib; Tasks: RemoveRedundantOpenGL
 
-#include "fragment_mainprogram.iss"
-#include "fragment_associations.iss"
-#include "fragment_runtimes.iss"
-#include "fragment_codecs.iss"
-#include "fragment_automation.iss"
-#include "fragment_translations.iss"
-#include "fragment_spelling.iss"
-#include "fragment_docs.iss"
-#include "fragment_assdraw.iss"
-#include "fragment_opengl.iss"
+[Tasks]
+Name: RemoveRedundantOpenGL; Description: Remove OPENGL32.DLL from Aegisub folder; Check: OpenGLdllPresent
 
+[Messages]
+WizardSelectTasks=Select Additional Tasks
+SelectTasksDesc=Which additional tasks should be performed?
+SelectTasksLabel2=You appear to have a Mesa3D OPENGL32.DLL file installed in your Aegisub directory. This file has previously helped make video display more stable, but is no longer needed because Aegisub's code has been made more robust.%nThis file will be removed by default, but if you want to keep it you can unselect the option below.
 
 [Code]
-#include "fragment_shell_code.iss"
-#include "fragment_migrate_code.iss"
-#include "fragment_beautify_code.iss"
-
-procedure InitializeWizard;
+function OpenGLdllPresent: Boolean;
 begin
-  InitializeWizardBeautify;
+  try
+    Result :=
+      FileExists(ExpandConstant('{app}\opengl32.dll'))
+      // MD5 hash of the DLL distributed on Aegisub's forum
+      and (GetMD5OfFile(ExpandConstant('{app}\opengl32.dll')) = 'f928a03f4b265658589be951cbd09a27')
+      ;
+  except
+    Result := False;
+  end;
 end;
+[/Code]
 
-function InitializeSetup: Boolean;
-begin
-  Result := InitializeSetupMigration;
-end;
-
-procedure CurStepChanged(CurStep: TSetupStep);
-begin
-  CurStepChangedMigration(CurStep);
-end;
 
 
 

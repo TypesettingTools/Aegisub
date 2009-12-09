@@ -45,6 +45,7 @@ DisableDirPage=yes
 #include "fragment_codecs.iss"
 #include "fragment_automation.iss"
 #include "fragment_translations.iss"
+#include "fragment_opengl.iss"
 
 
 [InstallDelete]
@@ -99,4 +100,5 @@ end;
 procedure CurStepChanged(CurStep: TSetupStep);
 begin
 end;
+
 
