@@ -36,7 +36,6 @@
 ; This file implements checking for and installing runtime libraries for Aegisub
 
 [Files]
-; redist
 DestDir: {tmp}; Source: src\vcredist_x86.exe; Flags: nocompression deleteafterinstall; Check: RuntimesRequired
 
 [Components]
@@ -44,4 +43,26 @@ Name: main/runtime; Description: Runtime libraries; Check: RuntimesRequired; Fla
 
 [Run]
 Filename: {tmp}\vcredist_x86.exe; StatusMsg: Installing runtime libraries...; Check: RuntimesRequired; Components: main/runtime; Parameters: "/q"
+
+[Code]
+function RuntimesRequired: Boolean;
+var
+  DisplayVersion: string;
+begin
+  // Check for uninstall entry for runtimes, don't bother installing if it can be uninstalled now
+  // HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\{9A25302D-30C0-39D9-BD6F-21E6EC160475}
+  // Check: DisplayVersion = "9.0.30729"
+  try
+    DisplayVersion := '';
+    Result := RegQueryStringValue(HKLM, 'SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\{9A25302D-30C0-39D9-BD6F-21E6EC160475}',
+        'DisplayVersion', DisplayVersion);
+    Result := Result and (DisplayVersion = '9.0.30729');
+  except
+    // If the check fails take the safe route
+    Result := False;
+  end;
+
+  Result := not Result;
+end;
+[/Code]
 

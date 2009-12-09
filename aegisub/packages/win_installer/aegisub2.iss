@@ -52,7 +52,6 @@ VersionInfoDescription=Aegisub 2.1.8 setup
 
 [Code]
 #include "fragment_shell_code.iss"
-#include "fragment_runtimes_code.iss"
 #include "fragment_migrate_code.iss"
 #include "fragment_beautify_code.iss"
 
