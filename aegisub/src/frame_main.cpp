@@ -1159,11 +1159,22 @@ void FrameMain::LoadVideo(wxString file,bool autoload) {
 		wxMessageBox(_T("Unknown error"), _T("Error opening video file"), wxOK | wxICON_ERROR, this);
 	}
 
-	// Check that the video size matches the script video size specified
 	if (VideoContext::Get()->IsLoaded()) {
+		int vidx = VideoContext::Get()->GetWidth(), vidy = VideoContext::Get()->GetHeight();
+
+		// Set zoom level based on video resolution and window size
+		int target_zoom = 7; // 100%
+		wxSize windowSize = GetSize();
+		if (vidx*3 > windowSize.GetX()*2 || vidy*4 > windowSize.GetY()*3)
+			target_zoom = 3; // 50%
+		if (vidx*3 > windowSize.GetX()*4 || vidy*4 > windowSize.GetY()*6)
+			target_zoom = 1; // 25%
+		videoBox->videoDisplay->zoomBox->SetSelection(target_zoom);
+		videoBox->videoDisplay->SetZoomPos(target_zoom);
+
+		// Check that the video size matches the script video size specified
 		int scriptx = SubsBox->ass->GetScriptInfoAsInt(_T("PlayResX"));
 		int scripty = SubsBox->ass->GetScriptInfoAsInt(_T("PlayResY"));
-		int vidx = VideoContext::Get()->GetWidth(), vidy = VideoContext::Get()->GetHeight();
 		if (scriptx != vidx || scripty != vidy) {
 			switch (Options.AsInt(_T("Video Check Script Res"))) {
 				case 1:
