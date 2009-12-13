@@ -228,14 +228,14 @@ void VideoDisplay::SetFrame(int frameNumber) {
 			wxLogError(
 				L"Failed to initialize video display. Closing other running programs and updating your video card drivers may fix this.\n"
 				L"Error message reported: %s",
-				err.GetMessage());
+				err.GetMessage().c_str());
 			context->Reset();
 		}
 		catch (const VideoOutRenderException& err) {
 			wxLogError(
 				L"Could not upload video frame to graphics card.\n"
 				L"Error message reported: %s",
-				err.GetMessage());
+				err.GetMessage().c_str());
 		}
 	}
 	Render();
@@ -328,7 +328,7 @@ catch (const VideoOutException &err) {
 	wxLogError(
 		_T("An error occurred trying to render the video frame on the screen.\n")
 		_T("Error message reported: %s"),
-		err.GetMessage());
+		err.GetMessage().c_str());
 	VideoContext::Get()->Reset();
 }
 catch (const wxChar *err) {
