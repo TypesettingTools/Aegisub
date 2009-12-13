@@ -41,14 +41,13 @@
 #endif
 
 class AegiVideoFrame;
-namespace {
-	struct TextureInfo;
-}
 
 /// @class VideoOutGL
 /// @brief OpenGL based video renderer
 class VideoOutGL {
 private:
+	struct TextureInfo;
+
 	/// The maximum texture size supported by the user's graphics card
 	int maxTextureSize;
 	/// Whether rectangular textures are supported by the user's graphics card

@@ -61,45 +61,41 @@
 #define CHECK_INIT_ERROR(cmd) cmd; if (GLenum err = glGetError()) throw VideoOutInitException(_T(#cmd), err)
 #define CHECK_ERROR(cmd) cmd; if (GLenum err = glGetError()) throw VideoOutRenderException(_T(#cmd), err)
 
-namespace {
-	/// @brief Structure tracking all precomputable information about a subtexture
-	struct TextureInfo {
-		/// The OpenGL texture id this is for
-		GLuint textureID;
-		/// The byte offset into the frame's data block
-		int dataOffset;
-		int sourceH;
-		int sourceW;
+/// @brief Structure tracking all precomputable information about a subtexture
+struct VideoOutGL::TextureInfo {
+	/// The OpenGL texture id this is for
+	GLuint textureID;
+	/// The byte offset into the frame's data block
+	int dataOffset;
+	int sourceH;
+	int sourceW;
 
-		int textureH;
-		int textureW;
+	int textureH;
+	int textureW;
 
-		float destH;
-		float destW;
-		float destX;
-		float destY;
+	float destH;
+	float destW;
+	float destX;
+	float destY;
 
-		float texTop;
-		float texBottom;
-		float texLeft;
-		float texRight;
-	};
-	/// @brief Test if a texture can be created
-	/// @param width The width of the texture
-	/// @param height The height of the texture
-	/// @param format The texture's format
-	/// @return Whether the texture could be created.
-	bool TestTexture(int width, int height, GLint format) {
-		GLuint texture;
-		glGenTextures(1, &texture);
-		glTexImage2D(GL_PROXY_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
-		glGetTexLevelParameteriv(GL_PROXY_TEXTURE_2D, 0, GL_TEXTURE_INTERNAL_FORMAT, &format);
-		glDeleteTextures(1, &texture);
-		while (glGetError()) { } // Silently swallow all errors as we don't care why it failed if it did
+	float texTop;
+	float texBottom;
+	float texLeft;
+	float texRight;
+};
 
-		wxLogDebug("VideoOutGL::TestTexture: %dx%d\n", width, height);
-		return format != 0;
-	}
+/// @brief Test if a texture can be created
+/// @param width The width of the texture
+/// @param height The height of the texture
+/// @param format The texture's format
+/// @return Whether the texture could be created.
+static bool TestTexture(int width, int height, GLint format) {
+	glTexImage2D(GL_PROXY_TEXTURE_2D, 0, format, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+	glGetTexLevelParameteriv(GL_PROXY_TEXTURE_2D, 0, GL_TEXTURE_INTERNAL_FORMAT, &format);
+	while (glGetError()) { } // Silently swallow all errors as we don't care why it failed if it did
+
+	wxLogDebug("VideoOutGL::TestTexture: %dx%d\n", width, height);
+	return format != 0;
 }
 
 VideoOutGL::VideoOutGL()
@@ -136,8 +132,6 @@ void VideoOutGL::DetectOpenGLCapabilities() {
 	supportsRectangularTextures = TestTexture(maxTextureSize, maxTextureSize >> 1, internalFormat);
 
 	// Test GL_CLAMP_TO_EDGE support
-	GLuint texture;
-	glGenTextures(1, &texture);
 	glTexImage2D(GL_PROXY_TEXTURE_2D, 0, GL_RGBA8, 64, 64, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 	if (glGetError()) {
