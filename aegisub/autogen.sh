@@ -9,10 +9,10 @@
 # tools and you shouldn't use this script.  Just call ./configure
 # directly.
 
-ACLOCAL=${ACLOCAL-aclocal-1.9}
+ACLOCAL=${ACLOCAL-aclocal-1.10}
 LIBTOOLIZE=${LIBTOOLIZE-libtoolize}
 AUTOHEADER=${AUTOHEADER-autoheader}
-AUTOMAKE=${AUTOMAKE-automake-1.9}
+AUTOMAKE=${AUTOMAKE-automake-1.10}
 AUTOCONF=${AUTOCONF-autoconf}
 GETTEXTIZE=${GETTEXTIZE-glib-gettextize}
 INTLTOOLIZE=${INTLTOOLIZE-intltoolize}
@@ -20,7 +20,7 @@ INTLTOOLIZE=${INTLTOOLIZE-intltoolize}
 
 GLIB_REQUIRED_VERSION=2.10.0
 AUTOCONF_REQUIRED_VERSION=2.54
-AUTOMAKE_REQUIRED_VERSION=1.9
+AUTOMAKE_REQUIRED_VERSION=1.10
 INTLTOOL_REQUIRED_VERSION=0.31
 LIBTOOL_REQUIRED_VERSION=1.5
 
@@ -127,6 +127,7 @@ else
 fi
 
 
+# 1.11 comes after 1.10 beacuse 1.11 isn't fully supported.
 $ECHO_N "checking for automake >= $AUTOMAKE_REQUIRED_VERSION ... "
 if ($AUTOMAKE --version) < /dev/null > /dev/null 2>&1; then
    AUTOMAKE=$AUTOMAKE
@@ -134,6 +135,9 @@ if ($AUTOMAKE --version) < /dev/null > /dev/null 2>&1; then
 elif (automake-1.10 --version) < /dev/null > /dev/null 2>&1; then
    AUTOMAKE=automake-1.10
    ACLOCAL=aclocal-1.10
+elif (automake-1.11 --version) < /dev/null > /dev/null 2>&1; then
+   AUTOMAKE=automake-1.11
+   ACLOCAL=aclocal-1.11
 elif (automake-1.9 --version) < /dev/null > /dev/null 2>&1; then
    AUTOMAKE=automake-1.9
    ACLOCAL=aclocal-1.9
