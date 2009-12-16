@@ -54,6 +54,8 @@ extern "C" {
 }
 #endif
 
+#define STUB_MSG _("Please wait, caching fonts...");
+
 ///////////////
 // Constructor
 LibassSubtitlesProvider::LibassSubtitlesProvider() {
