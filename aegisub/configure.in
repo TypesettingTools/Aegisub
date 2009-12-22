@@ -818,7 +818,7 @@ AC_ARG_VAR([LUA_LDFLAGS], [LDFLAGS to use for LUA 5.1 (default: autodetect)])
 AC_ARG_VAR([LUA_LIBDIR], [Location of LUA 5.1 library. (default: none)])
 
 if test -z "$LUA_CFLAGS"; then
-  AGI_FIND_HEADER([LUA], [lua.h], [/usr/include/lua5.1 /usr/include/lua51 /usr/local/include/lua51 /usr/local/include/lua5.1 /usr/include /usr/local/include])
+  AGI_FIND_HEADER([LUA], [lua.hpp], [/usr/include/lua5.1 /usr/include/lua51 /usr/local/include/lua51 /usr/local/include/lua5.1 /usr/include /usr/local/include])
 fi
 
 if test -z "$LUA_LDFLAGS"; then
@@ -830,10 +830,6 @@ LIBS="$LUA_LDFLAGS"
 if test "$with_lua" != no; then
   AC_AGI_COMPILE([Lua 5.1 (auto4)], [lua], [$LUA_CFLAGS], [],[
 #include <lua.hpp>
-
-extern "C" {
-#include <lauxlib.h>
-}
 
 int main () {
   lua_State *L = luaL_newstate();
