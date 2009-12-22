@@ -30,7 +30,7 @@ AC_DEFUN([AGI_FIND_HEADER],[
 AC_DEFUN([AGI_FIND_LIB],[
   aegisub_save_LDFLAGS="$LDFLAGS"
 
-  if test -n $3; then
+  if test -n "$3"; then
     LDDIR="-L$3"
   fi
 
