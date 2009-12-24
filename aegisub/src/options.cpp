@@ -130,7 +130,11 @@ void OptionsManager::LoadDefaults(bool onlyDefaults,bool doOverride) {
 
 	// Edit Box
 	SetModificationType(MOD_RESTART);
+#if defined(__WINDOWS__) || defined(__APPLE__)
 	SetText(_T("Dictionaries path"),_T("?data/dictionaries"));
+#else
+	SetText(_T("Dictionaries path"),wxString::Format(_T("%s/%s"), _T(INSTALL_PREFIX),_T("/share/myspell")));
+#endif
 	SetText(_T("Spell Checker"),_T("hunspell"));
 	SetModificationType(MOD_AUTOMATIC);
 	SetBool(_T("Link time boxes commit"),true);
