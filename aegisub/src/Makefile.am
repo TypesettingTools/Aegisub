@@ -93,6 +93,14 @@ aegisub_2_2_LDADD += libaudiovideo_ffmpegsource.a ../libffms/libffmpegsource_aeg
 aegisub_2_2_LDFLAGS += @LIBPOSTPROC_LIBS@
 endif
 
+if HAVE_QUICKTIME
+noinst_LIBRARIES += libaudiovideo_quicktime.a
+libaudiovideo_quicktime_a_SOURCES = audio_provider_quicktime.cpp quicktime_common.cpp video_provider_quicktime.cpp
+libaudiovideo_quicktime_a_CPPFLAGS = -I/Developer/SDKs/MacOSX10.5.sdk/System/Library/Frameworks/QuickTime.framework/Versions/A/Headers
+aegisub_2_2_LDADD += libaudiovideo_quicktime.a
+aegisub_2_2_LDFLAGS += -framework QuickTime
+endif
+
 noinst_LIBRARIES += libsubtitle_provider.a
 libsubtitle_provider_a_SOURCES = subtitles_provider.cpp
 libsubtitle_provider_a_CPPFLAGS = @CSRI_CFLAGS@
@@ -201,7 +209,6 @@ aegisub_2_2_SOURCES = \
 	audio_provider_downmix.cpp \
 	audio_provider_hd.cpp \
 	audio_provider_pcm.cpp \
-	audio_provider_quicktime.cpp \
 	audio_provider_ram.cpp \
 	audio_provider_stream.cpp \
 	audio_renderer.cpp \
@@ -265,7 +272,6 @@ aegisub_2_2_SOURCES = \
 	mythes.cxx \
 	options.cpp \
 	plugin_manager.cpp \
-	quicktime_common.cpp \
 	scintilla_text_ctrl.cpp \
 	spellchecker.cpp \
 	spline.cpp \
@@ -307,7 +313,6 @@ aegisub_2_2_SOURCES = \
 	video_provider_cache.cpp \
 	video_provider_dummy.cpp \
 	video_provider_manager.cpp \
-	video_provider_quicktime.cpp \
 	video_provider_yuv4mpeg.cpp \
 	video_slider.cpp \
 	visual_feature.cpp \

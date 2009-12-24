@@ -716,6 +716,17 @@ AC_SUBST(LIBPOSTPROC_LIBS)
 AC_SUBST(LIBPOSTPROC_CFLAGS)
 
 
+###################
+# QuickTime Support
+# (mac/windows only)
+###################
+
+AM_CONDITIONAL([HAVE_QUICKTIME], [test "$build_darwin" = "yes"])
+
+if test "$build_darwin" = "yes"; then
+  AC_DEFINE([WITH_QUICKTIME], [1], [QuickTime support.]),
+fi
+
 
 ###################
 # Subtitle Provider
