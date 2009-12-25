@@ -11,4 +11,4 @@ EXTRA_DIST= bundledirs-test.c
 
 bundledirs-test: libosxutil.a
 	$(CC) -c bundledirs-test.c
-	$(CC) -o bundledirs-test -framework CoreFoundation libosxutil_a-bundledirs.o libosxutil_a-launch.o libosxutil.a 
+	$(CC) -o bundledirs-test -framework CoreFoundation bundledirs-test.c libosxutil.a 
