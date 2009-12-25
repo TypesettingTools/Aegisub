@@ -205,6 +205,7 @@ private:
 	void OnAbout (wxCommandEvent &event);
 	void OnCheckUpdates (wxCommandEvent &event);
 	void OnContents (wxCommandEvent &event);
+	void OnFiles (wxCommandEvent &event);
 	void OnWebsite (wxCommandEvent &event);
 	void OnForums (wxCommandEvent &event);
 	void OnBugTracker (wxCommandEvent &event);
@@ -654,6 +655,9 @@ enum {
 
 	/// DOCME
 	Menu_Help_Contents,
+
+	/// DOCME
+	Menu_Help_Files,
 
 	/// DOCME
 	Menu_Help_IRCChannel,

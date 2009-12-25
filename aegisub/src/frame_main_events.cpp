@@ -95,6 +95,11 @@
 #include "video_display.h"
 #include "video_slider.h"
 
+#ifdef __APPLE__
+extern "C" {
+#include "libosxutil/libosxutil.h"
+}
+#endif
 
 ////////////////////
 // Menu event table
@@ -193,6 +198,7 @@ BEGIN_EVENT_TABLE(FrameMain, wxFrame)
 	EVT_MENU(Menu_Video_Shift_To_Frame, FrameMain::OnShiftToFrame)
 
 	EVT_MENU(Menu_Help_Contents, FrameMain::OnContents)
+	EVT_MENU(Menu_Help_Files, FrameMain::OnFiles)
 	EVT_MENU(Menu_Help_Website, FrameMain::OnWebsite)
 	EVT_MENU(Menu_Help_Forums, FrameMain::OnForums)
 	EVT_MENU(Menu_Help_BugTracker, FrameMain::OnBugTracker)
@@ -606,6 +612,17 @@ void FrameMain::OnCheckUpdates(wxCommandEvent &event) {
 ///
 void FrameMain::OnContents(wxCommandEvent& WXUNUSED(event)) {
 	OpenHelp(_T(""));
+}
+
+/// @brief Open help files on OSX.
+/// @param event
+///
+void FrameMain::OnFiles(wxCommandEvent& WXUNUSED(event)) {
+#ifdef __WXMAC__
+	char *shared_path = OSX_GetBundleSharedSupportDirectory();
+	wxString help_path = wxString::Format(_T("%s/doc"), wxString(shared_path, wxConvUTF8).c_str());
+	OSX_OpenLocation(help_path.c_str());
+#endif
 }
 
 
