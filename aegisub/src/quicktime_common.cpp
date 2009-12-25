@@ -38,8 +38,13 @@
 #include "config.h"
 
 #ifdef WITH_QUICKTIME
-#include "quicktime_common.h"
 
+#ifndef AGI_PRE
+#include <wx/filename.h>
+#include <wx/string.h>
+#endif
+
+#include "quicktime_common.h"
 
 /// DOCME
 int QuickTimeProvider::qt_initcount = 0;

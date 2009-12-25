@@ -38,6 +38,11 @@
 #include "config.h"
 
 #ifdef WITH_QUICKTIME
+
+#ifndef AGI_PRE
+#include <wx/msgdlg.h>
+#endif
+
 #include "aegisub_endian.h"
 #include "video_provider_quicktime.h"
 
