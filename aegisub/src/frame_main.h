@@ -140,6 +140,7 @@ private:
 	void OnAbout (wxCommandEvent &event);
 	void OnCheckUpdates (wxCommandEvent &event);
 	void OnContents (wxCommandEvent &event);
+	void OnFiles (wxCommandEvent &event);
 	void OnWebsite (wxCommandEvent &event);
 	void OnForums (wxCommandEvent &event);
 	void OnBugTracker (wxCommandEvent &event);
@@ -400,6 +401,9 @@ enum {
 	Menu_Tools_ASSDraw,
 
 	Menu_Help_Contents,
+	Menu_Help_Files,
+
+	/// DOCME
 	Menu_Help_IRCChannel,
 	Menu_Help_Website,
 	Menu_Help_Forums,

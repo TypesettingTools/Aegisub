@@ -73,3 +73,10 @@ char * OSX_GetBundleExecutablePath();
 /* Get the path of an auxillary exetutable within the bundle.
    Pass the basename of the exetutable to get the path of. */
 char * OSX_GetBundleAuxillaryExecutablePath(const char *executableName);
+
+/** @brief Open a URI using the Launcher.
+ *  @param location URI of file
+ *  @note If this is a FILE or DIRECTORY the path must be ABSOLUTE no 'file://'
+ *  @return Error code.
+ */
+void OSX_OpenLocation(const char *location);

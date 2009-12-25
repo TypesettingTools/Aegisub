@@ -531,6 +531,9 @@ void FrameMain::InitMenu() {
 	// Create help menu
 	helpMenu = new wxMenu();
 	AppendBitmapMenuItem (helpMenu,Menu_Help_Contents, MakeHotkeyText(_("&Contents..."), _T("Help")), _("Help topics"), wxBITMAP(contents_button));
+#ifdef __WXMAC__
+	AppendBitmapMenuItem (helpMenu,Menu_Help_Files, MakeHotkeyText(_("&All Files") + _T("..."), _T("Help")), _("Help topics"), wxBITMAP(contents_button));
+#endif
 	helpMenu->AppendSeparator();
 	AppendBitmapMenuItem(helpMenu,Menu_Help_Website, _("&Website..."), _("Visit Aegisub's official website"),wxBITMAP(website_button));
 	AppendBitmapMenuItem(helpMenu,Menu_Help_Forums, _("&Forums..."), _("Visit Aegisub's forums"),wxBITMAP(forums_button));
