@@ -416,13 +416,11 @@ void VideoDisplay::UpdateSize() {
 	// Don't do anything if it's a free sizing display
 	//if (freeSize) return;
 
-	// Loaded?
 	VideoContext *con = VideoContext::Get();
 	wxASSERT(con);
 	if (!con->IsLoaded()) return;
 	if (!IsShownOnScreen()) return;
 
-	// Get size
 	if (freeSize) {
 		GetClientSize(&w,&h);
 	}
@@ -430,28 +428,13 @@ void VideoDisplay::UpdateSize() {
 		if (con->GetAspectRatioType() == 0) w = int(con->GetWidth() * zoomValue);
 		else w = int(con->GetHeight() * zoomValue * con->GetAspectRatioValue());
 		h = int(con->GetHeight() * zoomValue);
+		SetSizeHints(w,h,w,h);
+
+		locked = true;
+		box->VideoSizer->Fit(box);
+		box->GetParent()->Layout();
+		locked = false;
 	}
-	int _w,_h;
-	if (w <= 1 || h <= 1) return;
-	locked = true;
-
-	// Set the size for this control
-	SetSizeHints(w,h,w,h);
-	SetClientSize(w,h);
-	GetSize(&_w,&_h);
-	wxASSERT(_w > 0);
-	wxASSERT(_h > 0);
-	SetSizeHints(_w,_h,_w,_h);
-	box->VideoSizer->Fit(box);
-
-	// Layout
-	box->GetParent()->Layout();
-	SetClientSize(w,h);
-	GetSize(&_w,&_h);
-	SetMaxSize(wxSize(_w,_h));
-
-	// Refresh
-	locked = false;
 	Refresh(false);
 }
 
