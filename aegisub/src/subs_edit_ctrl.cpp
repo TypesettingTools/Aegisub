@@ -185,6 +185,7 @@ void SubsTextEditCtrl::OnLoseFocus(wxFocusEvent &event) {
 void SubsTextEditCtrl::SetStyles() {
 	// Styles
 	wxFont font = wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT);
+	font.SetEncoding(wxFONTENCODING_DEFAULT); // this solves problems with some fonts not working properly
 	wxString fontname = Options.AsText(_T("Edit Font Face"));
 	if (fontname != _T("")) font.SetFaceName(fontname);
 	int size = Options.AsInt(_T("Edit Font Size"));
