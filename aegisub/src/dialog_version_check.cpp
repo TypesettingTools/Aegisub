@@ -1,4 +1,4 @@
-// Copyright (c) 2007, Rodrigo Braz Monteiro
+// Copyright (c) 2009, Niels Martin Hansen
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -29,132 +29,160 @@
 //
 // AEGISUB
 //
-// Website: http://aegisub.cellosoft.com
-// Contact: mailto:zeratul@cellosoft.com
+// Website: http://www.aegisub.org/
+// Contact: mailto:nielsm@aegisub.org
 //
 
 
-///////////
-// Headers
+
 #include "config.h"
 
-#include <wx/filesys.h>
-#include <wx/fs_inet.h>
-#include <wx/txtstrm.h>
-#include <wx/tokenzr.h>
-#include <wx/button.h>
-#include <wx/event.h>
-#include <wx/platinfo.h> 
 #include "dialog_version_check.h"
+#include "options.h"
+#include "include/aegisub/exception.h"
+#include "string_codec.h"
 #include "version.h"
-#include "main.h"
+
+#ifdef WIN32
+// Congratulation wx, you forgot to include a header somewhere
+#include <winsock2.h>
+#endif
+
+#include <wx/string.h>
+#include <wx/event.h>
+#include <wx/thread.h>
+#include <wx/protocol/http.h>
+#include <wx/txtstrm.h>
+#include <wx/platinfo.h>
+#include <wx/tokenzr.h>
+#include <wx/hyperlink.h>
+#include <memory>
 
 
-//////////
-// Static
-bool DialogVersionCheck::dialogRunning = false;
+/* *** Public API is implemented here *** */
 
+// Allocate global lock mutex declared in header
+wxMutex VersionCheckLock;
 
-///////////////
-// Constructor
-DialogVersionCheck::DialogVersionCheck(wxWindow *parent,bool hidden)
-: wxDialog(parent,-1,_("Version Checker"),wxDefaultPosition,wxDefaultSize,wxDEFAULT_DIALOG_STYLE)
+class AegisubVersionCheckerThread : public wxThread {
+	bool interactive;
+	void DoCheck();
+	void PostErrorEvent(const wxString &error_text);
+public:
+	AegisubVersionCheckerThread(bool interactive);
+	virtual ExitCode Entry();
+};
+
+// Public API for version checker
+void PerformVersionCheck(bool interactive)
 {
-	// Is already running?
-	if (dialogRunning) {
-		Destroy();
-		return;
+	new AegisubVersionCheckerThread(interactive);
+}
+
+
+
+/* *** The actual implementation begins here *** */
+
+
+
+// A new event class for reporting the result of checking
+
+DEFINE_EVENT_TYPE(AEGISUB_EVENT_VERSIONCHECK_RESULT)
+
+struct AegisubUpdateDescription {
+	wxString url;
+	wxString friendly_name;
+	wxString description;
+};
+
+class AegisubVersionCheckResultEvent : public wxEvent {
+	wxString main_text;
+	std::vector<AegisubUpdateDescription> updates;
+
+public:
+	AegisubVersionCheckResultEvent()
+		: wxEvent(0, AEGISUB_EVENT_VERSIONCHECK_RESULT)
+	{ }
+
+	virtual wxEvent *Clone() const
+	{
+		return new AegisubVersionCheckResultEvent(*this);
 	}
-	dialogRunning = true;
 
-	// Controls
-	wxSizer *controlSizer = new wxStaticBoxSizer(wxVERTICAL,this,_("Log"));
-	logBox = new wxTextCtrl(this,Log_Box,_T(""),wxDefaultPosition,wxSize(400,150),wxTE_MULTILINE | wxTE_READONLY | wxTE_RICH | wxTE_AUTO_URL);
-	controlSizer->Add(logBox,1,wxEXPAND,0);
+	const wxString & GetMainText() const { return main_text; }
+	void SetMainText(const wxString &new_text) { main_text = new_text; }
 
-	// Buttons
-	wxSizer *buttonSizer = new wxBoxSizer(wxHORIZONTAL);
-	buttonSizer->AddStretchSpacer(1);
-	buttonSizer->Add(new wxButton(this,wxID_OK),0,0,0);
-
-	// Sizer
-	wxSizer *mainSizer = new wxBoxSizer(wxVERTICAL);
-	mainSizer->Add(controlSizer,1,wxEXPAND | wxALL,5);
-	mainSizer->Add(buttonSizer,0,wxEXPAND | wxALL,5);
-	mainSizer->SetSizeHints(this);
-	SetSizer(mainSizer);
-
-	// Show
-	visible = false;
-	if (!hidden) {
-		Show();
-		CenterOnParent();
-		visible = true;
+	// If there are no updates in the list, either none were found or an error occurred,
+	// either way it means "failure" if it's empty
+	const std::vector<AegisubUpdateDescription> & GetUpdates() const { return updates; }
+	void AddUpdate(const wxString &url, const wxString &friendly_name, const wxString &description)
+	{
+		updates.push_back(AegisubUpdateDescription());
+		AegisubUpdateDescription &desc = updates.back();
+		desc.url = url;
+		desc.friendly_name = friendly_name;
+		desc.description = description;
 	}
 
-	// Check version
-	CheckVersion();
-}
+};
+
+DEFINE_SIMPLE_EXCEPTION_NOINNER(VersionCheckError, Aegisub::Exception, "versioncheck")
 
 
-//////////////
-// Destructor
-DialogVersionCheck::~DialogVersionCheck() {
-	dialogRunning = false;
-}
+class AegisubVersionCheckEventHandler : public wxEvtHandler {
+public:
+	void OnUpdateResult(AegisubVersionCheckResultEvent &evt);
+
+	static void EnsureHandlerIsRegistered();
+};
 
 
-/////////////////
-// Check Version
-void DialogVersionCheck::CheckVersion() {
-	if (!wxFileSystem::HasHandlerForPath(_T("http://www.aegisub.net/"))) wxFileSystem::AddHandler(new wxInternetFSHandler);
-	thread = new VersionCheckThread(this);
-	thread->Create();
-	thread->Run();
-}
 
-
-///////////////
-// Event table
-BEGIN_EVENT_TABLE(DialogVersionCheck,wxDialog)
-	EVT_BUTTON (wxID_OK, DialogVersionCheck::OnOK)
-	EVT_CLOSE (DialogVersionCheck::OnClose)
-	EVT_TEXT_URL(Log_Box,DialogVersionCheck::OnURL)
-END_EVENT_TABLE()
-
-
-////////////
-// On close
-void DialogVersionCheck::OnClose(wxCloseEvent &event) {
-	dialogRunning = false;
-	if (thread) thread->alive = false;
-	Destroy();
-}
-void DialogVersionCheck::OnOK(wxCommandEvent &event) {
-	dialogRunning = false;
-	if (thread) thread->alive = false;
-	Destroy();
-}
-
-
-////////////////
-// On Click URL
-void DialogVersionCheck::OnURL(wxTextUrlEvent &event) {
-	wxMouseEvent mEvent = event.GetMouseEvent();
-	if (mEvent.LeftDown()) {
-		wxString url = logBox->GetValue().Mid(event.GetURLStart(),event.GetURLEnd()-event.GetURLStart()+1);
-		AegisubApp::OpenURL(url);
-	}
-}
-
-
-/////////////////////////////
-// Worker thread constructor
-VersionCheckThread::VersionCheckThread(DialogVersionCheck *par)
+AegisubVersionCheckerThread::AegisubVersionCheckerThread(bool interactive)
 : wxThread(wxTHREAD_DETACHED)
+, interactive(interactive)
 {
-	parent = par;
-	alive = true;
+	AegisubVersionCheckEventHandler::EnsureHandlerIsRegistered();
+
+	if (!wxSocketBase::IsInitialized())
+		wxSocketBase::Initialize();
+
+	Create();
+	Run();
+}
+
+
+wxThread::ExitCode AegisubVersionCheckerThread::Entry()
+{
+	if (!interactive && !Options.AsBool(_T("auto check for updates"))) return 0;
+
+	if (VersionCheckLock.TryLock() != wxMUTEX_NO_ERROR) return 0;
+
+	try {
+		DoCheck();
+	}
+	catch (const Aegisub::Exception &e) {
+		PostErrorEvent(wxString::Format(
+			_("There was an error checking for updates to Aegisub:\n%s\n\nIf other applications can access the Internet fine, this is probably a temporary server problem on our end."),
+			e.GetMessage().c_str()));
+	}
+	catch (...) {
+		PostErrorEvent(_("An unknown error occurred while checking for updates to Aegisub."));
+	}
+
+	VersionCheckLock.Unlock();
+
+	return 0;
+}
+
+
+void AegisubVersionCheckerThread::PostErrorEvent(const wxString &error_text)
+{
+	if (!interactive) return;
+
+	AegisubVersionCheckResultEvent evt;
+	evt.SetMainText(error_text);
+	wxTheApp->AddPendingEvent(evt);
 }
 
 
@@ -170,7 +198,7 @@ static const wxChar * GetOSShortName()
 		else if (osver_maj == 5 && osver_min == 1)
 			return _T("winxp");
 		else if (osver_maj == 5 && osver_min == 2)
-			return _T("win2k3");
+			return _T("win2k3"); // this is also xp64
 		else if (osver_maj == 6 && osver_min == 0)
 			return _T("win60"); // vista and server 2008
 		else if (osver_maj == 6 && osver_min == 1)
@@ -215,143 +243,198 @@ static const wxChar * GetOSShortName()
 }
 
 
-/////////////////
-// Worker thread
-wxThread::ExitCode VersionCheckThread::Entry() {
-	// List of paths
-	wxArrayString paths;
-	paths.Add(_T("http://updates.aegisub.org/latest.txt"));
-	paths.Add(_T("http://files.aegisub.net/latest.txt"));
-	wxFSFile *fp = NULL;
-	wxString querytail = wxString::Format(_T("?rev=%d&ver=2.1.8&rel=%d&os=%s"), GetSVNRevision(), GetIsOfficialRelease()?1:0, GetOSShortName());
-	
-	// Try each path until it finds one that works
-	for (unsigned int i=0;i<paths.Count();i++) {
-		// Get path and make sure that it has a handle for it
-		wxString path = paths[i] + querytail;
-		wxMutexGuiEnter();
-		if (!alive) goto endThread;
-		if (!wxFileSystem::HasHandlerForPath(path)) {
-			parent->logBox->AppendText(_("Could not open Internet File system. Aborting.\n"));
-			goto endThread;
+void AegisubVersionCheckerThread::DoCheck()
+{
+	const wxString servername = _T("updates.aegisub.org");
+	const wxString base_updates_path = _T("/2.1.8");
+
+	wxString querystring = wxString::Format(
+		_T("?rev=%d&rel=%d&os=%s"),
+		GetSVNRevision(),
+		GetIsOfficialRelease()?1:0,
+		GetOSShortName());
+
+	wxString path = base_updates_path + querystring;
+
+	wxHTTP http;
+	http.SetHeader(_T("Connection"), _T("Close"));
+
+	if (!http.Connect(servername))
+		throw VersionCheckError(_("Could not connect to updates server."));
+
+	std::auto_ptr<wxInputStream> stream(http.GetInputStream(path));
+
+	if (http.GetResponse() < 200 || http.GetResponse() >= 300)
+		throw VersionCheckError(wxString::Format(_("HTTP request failed, got HTTP response %d."), http.GetResponse()));
+
+	wxTextInputStream text(*stream);
+
+	AegisubVersionCheckResultEvent result_event;
+
+	while (!stream->Eof())
+	{
+		wxString line = text.ReadLine();
+		wxStringTokenizer tkn(line, _T("|"), wxTOKEN_RET_EMPTY_ALL);
+		wxArrayString parsed;
+		while (tkn.HasMoreTokens()) {
+			parsed.Add(tkn.GetNextToken());
 		}
-		wxMutexGuiLeave();
+		if (parsed.Count() != 6) continue;
 
-		// Open file
-#ifdef __WXDEBUG__
-		wxMutexGuiEnter();
-		if (!alive) goto endThread;
-		parent->logBox->AppendText(wxString::Format(_("Attempting to open \"%s\"..."), path.c_str()));
-		wxMutexGuiLeave();
-#endif
-		wxFileSystem fs;
-		fp = fs.OpenFile(path);
+		wxString line_type = parsed[0];
+		wxString line_revision = parsed[1];
+		wxString line_platform = parsed[2];
+		wxString line_url = inline_string_decode(parsed[3]);
+		wxString line_friendlyname = inline_string_decode(parsed[4]);
+		wxString line_description = inline_string_decode(parsed[5]);
 
-		// Failed?
-		if (!fp) {
-#ifdef __WXDEBUG__
-			wxMutexGuiEnter();
-			if (!alive) goto endThread;
-			parent->logBox->AppendText(_("Failed.\n"));
-			wxMutexGuiLeave();
-#endif
+		if ((line_type == _T("branch") || line_type == _T("dev")) && GetIsOfficialRelease())
+		{
+			// stable runners don't want unstable, not interesting, skip
 			continue;
 		}
 
-		// OK
-#ifdef __WXDEBUG__
-		wxMutexGuiEnter();
-		if (!alive) goto endThread;
-		parent->logBox->AppendText(_("OK.\n"));
-		wxMutexGuiLeave();
-#endif
+		// check if the OS is right
+		wxOperatingSystemId osid = wxGetOsVersion();
+		if (line_platform == _T("windows") && !(osid & wxOS_WINDOWS_NT))
+		{
+			continue;
+		}
+		if (line_platform == _T("mac") && !(osid & wxOS_MAC_OSX_DARWIN))
+		{
+			continue;
+		}
+		if (line_platform == _T("source") && (osid & wxOS_WINDOWS_NT || osid & wxOS_MAC_OSX_DARWIN))
+		{
+			// TODO: support interested-in-source-releases flag
+			continue;
+		}
+		if (!(line_platform  == _T("windows") || line_platform == _T("mac") || line_platform == _T("source") || line_platform == _T("all")))
+		{
+			continue;
+		}
 
-		// Get text input stream
-		wxInputStream *fstream = fp->GetStream();
-		wxTextInputStream text(*fstream);
-		wxString contents;
-
-		// What kind of version is this?
-		wxString versionKind;
-		double versionN;
-		int svnRev = GetSVNRevision();
-		wxString temp = GetVersionNumber();
-		temp.ToDouble(&versionN);
-		if (GetIsOfficialRelease()) versionKind = _T("release");
-		else versionKind = _T("svn");
-		
-		// Read lines
-		while (!fstream->Eof()) {
-			// Parse
-			contents = text.ReadLine();
-			wxStringTokenizer tkn(contents,_T(";"),wxTOKEN_RET_EMPTY_ALL);
-			wxArrayString parsed;
-			while (tkn.HasMoreTokens()) {
-				parsed.Add(tkn.GetNextToken());
-			}
-			if (parsed.Count() != 4) continue;
-
-			// See if it's interesting
-			if (parsed[0] == versionKind || parsed[0] == _T("release")) {
-				bool newer = false;
-				
-				// Check
-				if (parsed[0] == _T("svn")) {
-					long temp;
-					parsed[1].ToLong(&temp);
-					if (temp > svnRev) newer = true;
-				}
-				else {
-					int pos = parsed[1].Find(_T('-'));
-					wxString vName = parsed[1].Left(pos);
-					wxString svnName = parsed[1].Mid(pos+1);
-					if (versionKind == _T("svn")) {
-						long temp;
-						svnName.ToLong(&temp);
-						if (temp >= svnRev) newer = true;
-					}
-					else {
-						double temp;
-						vName.ToDouble(&temp);
-						if (temp > versionN) newer = true;
-					}
-				}
-
-				// Is newer?
-				if (newer) {
-					wxMutexGuiEnter();
-					if (!alive) goto endThread;
-					parent->logBox->AppendText(_("New version found!\n"));
-					parent->logBox->AppendText(parsed[3] + _T("\n"));
-					parent->logBox->AppendText(wxString::Format(_("Please go to the following URL to download it: %s\n"), parsed[2].c_str()));
-					if (!parent->visible) {
-						parent->Show();
-						parent->Raise();
-						parent->visible = true;
-					}
-					goto endThread;
-				}
+		if (line_type == _T("upgrade") || line_type == _T("bugfix"))
+		{
+			// de facto interesting
+		}
+		else
+		{
+			// maybe interesting, check revision
+			
+			long new_revision = 0;
+			if (!line_revision.ToLong(&new_revision)) continue;
+			if (new_revision <= GetSVNRevision()) 
+			{
+				// too old, not interesting, skip
+				continue;
 			}
 		}
 
-		// No new updates
-		wxMutexGuiEnter();
-		if (!alive) goto endThread;
-		parent->logBox->AppendText(_("No new version has been found.\n"));
-		wxMutexGuiLeave();
-
-		// Delete file
-		delete fp;
-		fp = NULL;
-		break;
+		// it's interesting!
+		result_event.AddUpdate(line_url, line_friendlyname, line_description);
 	}
 
-	// Finish thread
-	wxMutexGuiEnter();
-endThread:
-	if (alive && !parent->visible) parent->Destroy();
-	wxMutexGuiLeave();
-	delete fp;
-	fp = NULL;
-	return 0;
+	if (result_event.GetUpdates().size() == 1)
+	{
+		result_event.SetMainText(_("An update to Aegisub was found."));
+	}
+	else if (result_event.GetUpdates().size() > 1)
+	{
+		result_event.SetMainText(_("Several possible updates to Aegisub were found."));
+	}
+	else
+	{
+		result_event.SetMainText(_("There are no updates to Aegisub."));
+	}
+
+	if (result_event.GetUpdates().size() > 0 || interactive)
+	{
+		wxTheApp->AddPendingEvent(result_event);
+	}
 }
+
+
+
+class VersionCheckerResultDialog : public wxDialog {
+	void OnCloseButton(wxCommandEvent &evt);
+
+public:
+	VersionCheckerResultDialog(const wxString &main_text, const std::vector<AegisubUpdateDescription> &updates);
+
+	DECLARE_EVENT_TABLE()
+};
+
+BEGIN_EVENT_TABLE(VersionCheckerResultDialog, wxDialog)
+	EVT_BUTTON(wxID_OK, VersionCheckerResultDialog::OnCloseButton)
+END_EVENT_TABLE()
+
+
+VersionCheckerResultDialog::VersionCheckerResultDialog(const wxString &main_text, const std::vector<AegisubUpdateDescription> &updates)
+: wxDialog(0, -1, _("Version Checker"))
+{
+	wxSizer *main_sizer = new wxBoxSizer(wxVERTICAL);
+
+	wxStaticText *text = new wxStaticText(this, -1, main_text);
+	main_sizer->Add(text, 0, wxBOTTOM|wxEXPAND, 6);
+
+	std::vector<AegisubUpdateDescription>::const_iterator upd_iterator = updates.begin();
+	for (; upd_iterator != updates.end(); ++upd_iterator)
+	{
+		main_sizer->Add(new wxStaticLine(this), 0, wxEXPAND|wxALL, 6);
+
+		text = new wxStaticText(this, -1, upd_iterator->friendly_name);
+		wxFont boldfont = text->GetFont();
+		boldfont.SetWeight(wxFONTWEIGHT_BOLD);
+		text->SetFont(boldfont);
+		main_sizer->Add(text, 0, wxEXPAND|wxBOTTOM, 6);
+
+		wxTextCtrl *descbox = new wxTextCtrl(this, -1, upd_iterator->description, wxDefaultPosition, wxSize(350,60), wxTE_MULTILINE|wxTE_READONLY);
+		main_sizer->Add(descbox, 0, wxEXPAND|wxBOTTOM, 6);
+
+		main_sizer->Add(new wxHyperlinkCtrl(this, -1, upd_iterator->url, upd_iterator->url), 0, wxALIGN_LEFT|wxBOTTOM, 6);
+	}
+
+	wxButton *close_button = new wxButton(this, wxID_OK, _T("&Close"));
+
+	main_sizer->Add(new wxStaticLine(this), 0, wxEXPAND|wxALL, 6);
+	main_sizer->Add(close_button, 0, wxALIGN_CENTRE, 0);
+
+	wxSizer *outer_sizer = new wxBoxSizer(wxVERTICAL);
+	outer_sizer->Add(main_sizer, 0, wxALL|wxEXPAND, 12);
+
+	SetSizerAndFit(outer_sizer);
+	Centre();
+}
+
+
+void VersionCheckerResultDialog::OnCloseButton(wxCommandEvent &evt)
+{
+	Destroy();
+}
+
+
+
+void AegisubVersionCheckEventHandler::OnUpdateResult(AegisubVersionCheckResultEvent &evt)
+{
+	VersionCheckerResultDialog *dlg = new VersionCheckerResultDialog(evt.GetMainText(), evt.GetUpdates());
+	dlg->Show();
+}
+
+void AegisubVersionCheckEventHandler::EnsureHandlerIsRegistered()
+{
+	static bool is_registered = false;
+	static AegisubVersionCheckEventHandler evt_handler_object;
+
+	if (is_registered) return;
+
+	wxTheApp->Connect(
+		-1, -1,
+		AEGISUB_EVENT_VERSIONCHECK_RESULT,
+		(wxObjectEventFunction)&OnUpdateResult,
+		0,
+		&evt_handler_object);
+
+	is_registered = true;
+}
+

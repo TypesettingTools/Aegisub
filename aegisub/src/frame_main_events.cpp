@@ -573,8 +573,7 @@ void FrameMain::OnAbout(wxCommandEvent &event) {
 //////////////////////
 // Open check updates
 void FrameMain::OnCheckUpdates(wxCommandEvent &event) {
-	DialogVersionCheck *check = new DialogVersionCheck(this,false);
-	(void)check;
+	PerformVersionCheck(true);
 }
 
 

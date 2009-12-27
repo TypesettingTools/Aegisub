@@ -1,4 +1,4 @@
-// Copyright (c) 2007, Rodrigo Braz Monteiro
+// Copyright (c) 2009, Niels Martin Hansen
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -29,68 +29,26 @@
 //
 // AEGISUB
 //
-// Website: http://aegisub.cellosoft.com
-// Contact: mailto:zeratul@cellosoft.com
+// Website: http://www.aegisub.org/
+// Contact: mailto:nielsm@aegisub.org
 //
 
 
 #pragma once
 
-
-///////////
-// Headers
-#include <wx/wxprec.h>
-#include <wx/dialog.h>
-#include <wx/textctrl.h>
-#include <wx/sizer.h>
+#include <wx/thread.h>
 
 
-//////////////
-// Prototypes
-class DialogVersionCheck;
+/// @brief Check whether a newer version is available and report to the user if there is
+/// @param interactive If true, always check and report all results, both success and failure.
+///                    If false, only check if auto-checking is enabled, and only report if a
+///                    new version actually exists.
+void PerformVersionCheck(bool interactive);
 
 
-/////////////////
-// Worker thread
-class VersionCheckThread : public wxThread {
-private:
-	DialogVersionCheck *parent;
-
-public:
-	bool alive;
-
-	VersionCheckThread(DialogVersionCheck *parent);
-	wxThread::ExitCode Entry();
-};
-
-
-//////////////////////////
-// Version checker dialog
-class DialogVersionCheck : public wxDialog {
-	friend class VersionCheckThread;
-
-private:
-	static bool dialogRunning;
-
-	wxTextCtrl *logBox;
-	VersionCheckThread *thread;
-	bool visible;
-
-	void CheckVersion();
-	void OnClose(wxCloseEvent &event);
-	void OnOK(wxCommandEvent &event);
-	void OnURL(wxTextUrlEvent &event);
-
-public:
-	DialogVersionCheck(wxWindow *parent,bool hidden);
-	~DialogVersionCheck();
-
-	DECLARE_EVENT_TABLE()
-};
-
-
-///////
-// IDs
-enum {
-	Log_Box = 1000
-};
+/// @brief Mutex that is taken while version checking is being performed.
+///
+/// A new version check can't be performed while this mutex is locked, checking whether
+/// it is locked is a way to disable UI to invoke a version check while one is being
+/// performed.
+extern wxMutex VersionCheckLock;
