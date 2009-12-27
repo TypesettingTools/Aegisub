@@ -384,6 +384,8 @@ class VersionCheckerResultDialog : public wxDialog {
 public:
 	VersionCheckerResultDialog(const wxString &main_text, const std::vector<AegisubUpdateDescription> &updates);
 
+	bool ShouldPreventAppExit() const { return false; }
+
 	DECLARE_EVENT_TABLE()
 };
 
