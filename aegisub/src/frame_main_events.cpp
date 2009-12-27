@@ -471,6 +471,13 @@ void FrameMain::OnMenuOpen (wxMenuEvent &event) {
 	}
 #endif
 
+	// Help menu
+	else if (curMenu == helpMenu) {
+		bool isCheckingUpdates = VersionCheckLock.TryLock() != wxMUTEX_NO_ERROR;
+		if (!isCheckingUpdates) VersionCheckLock.Unlock();
+		MenuBar->Enable(Menu_Help_Check_Updates, !isCheckingUpdates);
+	}
+
 	MenuBar->Thaw();
 }
 
