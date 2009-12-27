@@ -154,7 +154,17 @@ AegisubVersionCheckerThread::AegisubVersionCheckerThread(bool interactive)
 
 wxThread::ExitCode AegisubVersionCheckerThread::Entry()
 {
-	if (!interactive && !Options.AsBool(_T("auto check for updates"))) return 0;
+	if (!interactive)
+	{
+		// Automatic checking enabled?
+		if (!Options.AsBool(_T("auto check for updates")))
+			return 0;
+
+		// At least a week since last check?
+		time_t last_check = Options.AsInt(_T("Updates Last Check Time"));
+		if ((time_t)(last_check + 7*24*60*60) > wxDateTime::GetTimeNow())
+			return 0;
+	}
 
 	if (VersionCheckLock.TryLock() != wxMUTEX_NO_ERROR) return 0;
 
@@ -171,6 +181,15 @@ wxThread::ExitCode AegisubVersionCheckerThread::Entry()
 	}
 
 	VersionCheckLock.Unlock();
+
+	// While Options isn't perfectly thread safe, this should still be okay.
+	// Traversing the std::map to find the key-value pair doesn't modify any data as long as
+	// the key already exists (which it does at this point), and modifying the value only
+	// touches that specific key-value pair and will never cause a rebalancing of the tree,
+	// because the tree only depends on the keys.
+	// Lastly, writing options to disk only happens when Options.Save() is called.
+	time_t new_last_check_time = wxDateTime::Today().GetTicks();
+	Options.SetInt(_T("Updates Last Check Time"), (int)new_last_check_time);
 
 	return 0;
 }
@@ -358,6 +377,9 @@ void AegisubVersionCheckerThread::DoCheck()
 
 class VersionCheckerResultDialog : public wxDialog {
 	void OnCloseButton(wxCommandEvent &evt);
+	void OnClose(wxCloseEvent &evt);
+
+	wxCheckBox *automatic_check_checkbox;
 
 public:
 	VersionCheckerResultDialog(const wxString &main_text, const std::vector<AegisubUpdateDescription> &updates);
@@ -367,15 +389,19 @@ public:
 
 BEGIN_EVENT_TABLE(VersionCheckerResultDialog, wxDialog)
 	EVT_BUTTON(wxID_OK, VersionCheckerResultDialog::OnCloseButton)
+	EVT_CLOSE(VersionCheckerResultDialog::OnClose)
 END_EVENT_TABLE()
 
 
 VersionCheckerResultDialog::VersionCheckerResultDialog(const wxString &main_text, const std::vector<AegisubUpdateDescription> &updates)
 : wxDialog(0, -1, _("Version Checker"))
 {
+	const int controls_width = 350;
+
 	wxSizer *main_sizer = new wxBoxSizer(wxVERTICAL);
 
 	wxStaticText *text = new wxStaticText(this, -1, main_text);
+	text->Wrap(controls_width);
 	main_sizer->Add(text, 0, wxBOTTOM|wxEXPAND, 6);
 
 	std::vector<AegisubUpdateDescription>::const_iterator upd_iterator = updates.begin();
@@ -389,15 +415,25 @@ VersionCheckerResultDialog::VersionCheckerResultDialog(const wxString &main_text
 		text->SetFont(boldfont);
 		main_sizer->Add(text, 0, wxEXPAND|wxBOTTOM, 6);
 
-		wxTextCtrl *descbox = new wxTextCtrl(this, -1, upd_iterator->description, wxDefaultPosition, wxSize(350,60), wxTE_MULTILINE|wxTE_READONLY);
+		wxTextCtrl *descbox = new wxTextCtrl(this, -1, upd_iterator->description, wxDefaultPosition, wxSize(controls_width,60), wxTE_MULTILINE|wxTE_READONLY);
 		main_sizer->Add(descbox, 0, wxEXPAND|wxBOTTOM, 6);
 
 		main_sizer->Add(new wxHyperlinkCtrl(this, -1, upd_iterator->url, upd_iterator->url), 0, wxALIGN_LEFT|wxBOTTOM, 6);
 	}
 
-	wxButton *close_button = new wxButton(this, wxID_OK, _T("&Close"));
+	automatic_check_checkbox = new wxCheckBox(this, -1, _("Auto Check for Updates"));
+	automatic_check_checkbox->SetValue(Options.AsBool(_T("Auto check for updates")));
+
+	text = new wxStaticText(this, -1, _("Automatic version checks happen every 7 days."));
+	text->Wrap(controls_width);
+
+	wxButton *close_button = new wxButton(this, wxID_OK, _("&Close"));
+	SetAffirmativeId(wxID_OK);
+	SetEscapeId(wxID_OK);
 
 	main_sizer->Add(new wxStaticLine(this), 0, wxEXPAND|wxALL, 6);
+	main_sizer->Add(automatic_check_checkbox, 0, wxEXPAND|wxBOTTOM, 6);
+	main_sizer->Add(text, 0, wxEXPAND|wxBOTTOM, 12);
 	main_sizer->Add(close_button, 0, wxALIGN_CENTRE, 0);
 
 	wxSizer *outer_sizer = new wxBoxSizer(wxVERTICAL);
@@ -410,6 +446,12 @@ VersionCheckerResultDialog::VersionCheckerResultDialog(const wxString &main_text
 
 void VersionCheckerResultDialog::OnCloseButton(wxCommandEvent &evt)
 {
+	Close();
+}
+
+void VersionCheckerResultDialog::OnClose(wxCloseEvent &evt)
+{
+	Options.SetBool(_T("Auto check for updates"), automatic_check_checkbox->GetValue());
 	Destroy();
 }
 
