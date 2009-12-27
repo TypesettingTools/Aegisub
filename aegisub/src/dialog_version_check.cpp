@@ -160,9 +160,9 @@ wxThread::ExitCode AegisubVersionCheckerThread::Entry()
 		if (!Options.AsBool(_T("auto check for updates")))
 			return 0;
 
-		// At least a week since last check?
-		time_t last_check = Options.AsInt(_T("Updates Last Check Time"));
-		if ((time_t)(last_check + 7*24*60*60) > wxDateTime::GetTimeNow())
+		// Is it actually time for a check?
+		time_t next_check = Options.AsInt(_T("Updates Next Check Time"));
+		if ((time_t)next_check > wxDateTime::GetTimeNow())
 			return 0;
 	}
 
@@ -188,8 +188,8 @@ wxThread::ExitCode AegisubVersionCheckerThread::Entry()
 	// touches that specific key-value pair and will never cause a rebalancing of the tree,
 	// because the tree only depends on the keys.
 	// Lastly, writing options to disk only happens when Options.Save() is called.
-	time_t new_last_check_time = wxDateTime::Today().GetTicks();
-	Options.SetInt(_T("Updates Last Check Time"), (int)new_last_check_time);
+	time_t new_next_check_time = wxDateTime::GetTimeNow() + 60*60; // in one hour
+	Options.SetInt(_T("Updates Next Check Time"), (int)new_next_check_time);
 
 	return 0;
 }
@@ -377,6 +377,7 @@ void AegisubVersionCheckerThread::DoCheck()
 
 class VersionCheckerResultDialog : public wxDialog {
 	void OnCloseButton(wxCommandEvent &evt);
+	void OnRemindMeLater(wxCommandEvent &evt);
 	void OnClose(wxCloseEvent &evt);
 
 	wxCheckBox *automatic_check_checkbox;
@@ -391,6 +392,7 @@ public:
 
 BEGIN_EVENT_TABLE(VersionCheckerResultDialog, wxDialog)
 	EVT_BUTTON(wxID_OK, VersionCheckerResultDialog::OnCloseButton)
+	EVT_BUTTON(wxID_NO, VersionCheckerResultDialog::OnRemindMeLater)
 	EVT_CLOSE(VersionCheckerResultDialog::OnClose)
 END_EVENT_TABLE()
 
@@ -426,8 +428,9 @@ VersionCheckerResultDialog::VersionCheckerResultDialog(const wxString &main_text
 	automatic_check_checkbox = new wxCheckBox(this, -1, _("Auto Check for Updates"));
 	automatic_check_checkbox->SetValue(Options.AsBool(_T("Auto check for updates")));
 
-	text = new wxStaticText(this, -1, _("Automatic version checks happen every 7 days."));
-	text->Wrap(controls_width);
+	wxButton *remind_later_button = 0;
+	if (updates.size() > 0)
+		remind_later_button = new wxButton(this, wxID_NO, _("Remind me again in a &week"));
 
 	wxButton *close_button = new wxButton(this, wxID_OK, _("&Close"));
 	SetAffirmativeId(wxID_OK);
@@ -435,8 +438,13 @@ VersionCheckerResultDialog::VersionCheckerResultDialog(const wxString &main_text
 
 	main_sizer->Add(new wxStaticLine(this), 0, wxEXPAND|wxALL, 6);
 	main_sizer->Add(automatic_check_checkbox, 0, wxEXPAND|wxBOTTOM, 6);
-	main_sizer->Add(text, 0, wxEXPAND|wxBOTTOM, 12);
-	main_sizer->Add(close_button, 0, wxALIGN_CENTRE, 0);
+
+	wxStdDialogButtonSizer *button_sizer = new wxStdDialogButtonSizer();
+	button_sizer->AddButton(close_button);
+	if (remind_later_button)
+		button_sizer->AddButton(remind_later_button);
+	button_sizer->Realize();
+	main_sizer->Add(button_sizer, 0, wxEXPAND, 0);
 
 	wxSizer *outer_sizer = new wxBoxSizer(wxVERTICAL);
 	outer_sizer->Add(main_sizer, 0, wxALL|wxEXPAND, 12);
@@ -450,6 +458,17 @@ void VersionCheckerResultDialog::OnCloseButton(wxCommandEvent &evt)
 {
 	Close();
 }
+
+
+void VersionCheckerResultDialog::OnRemindMeLater(wxCommandEvent &evt)
+{
+	// In one week
+	time_t new_next_check_time = wxDateTime::Today().GetTicks() + 7*24*60*60;
+	Options.SetInt(_T("Updates Next Check Time"), (int)new_next_check_time);
+
+	Close();
+}
+
 
 void VersionCheckerResultDialog::OnClose(wxCloseEvent &evt)
 {

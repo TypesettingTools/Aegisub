@@ -407,7 +407,7 @@ void OptionsManager::LoadDefaults(bool onlyDefaults,bool doOverride) {
 		SetText(_T("Style editor preview text"),previewText);
 		SetColour(_T("Style editor preview background"),wxColour(125,153,176));
 
-		SetInt(_T("Updates Last Check Time"), 0);
+		SetInt(_T("Updates Next Check Time"), 0);
 	}
 
 	lastVersion = -1;
