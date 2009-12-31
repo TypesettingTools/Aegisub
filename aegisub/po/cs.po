@@ -5,9 +5,9 @@ msgstr ""
 "Project-Id-Version: cs\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2009-12-30 23:16-0500\n"
-"PO-Revision-Date: 2009-12-25 03:43+0100\n"
-"Last-Translator: Mandarinka <false@anon.cz>\n"
-"Language-Team:  <cs@li.org>\n"
+"PO-Revision-Date: 2009-12-31 08:04+0100\n"
+"Last-Translator: Christof <christof@totan.cz>\n"
+"Language-Team:  <en@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -104,8 +104,7 @@ msgstr "Použít ve stylech"
 
 #: dialog_timing_processor.cpp:76
 msgid "Select styles to process. Unchecked ones will be ignored."
-msgstr ""
-"Zvolte styly, jejichž řádky chcete upravit. Neoznačené budou ignorovány."
+msgstr "Zvolte styly, jejichž řádky chcete upravit. Neoznačené budou ignorovány."
 
 #: dialog_timing_processor.cpp:77 dialog_paste_over.cpp:89
 msgid "All"
@@ -174,8 +173,7 @@ msgstr "Povolit"
 msgid ""
 "Enable snapping of subtitles together if they are within a certain distance "
 "of each other."
-msgstr ""
-"Povolí navazování titulků na sebe, pokud jsou od sebe do určité vzdálenosti."
+msgstr "Povolí navazování titulků na sebe, pokud jsou od sebe do určité vzdálenosti."
 
 #: dialog_timing_processor.cpp:111
 msgid "Threshold:"
@@ -1468,8 +1466,7 @@ msgstr "Stopa %02d: %s"
 #: ffmpegsource_common.cpp:149
 #, c-format
 msgid "Multiple %s tracks detected, please choose the one you wish to load:"
-msgstr ""
-"Byla nalezena více než jedna %s stopa, zvolte prosím, která má být načtena:"
+msgstr "Byla nalezena více než jedna %s stopa, zvolte prosím, která má být načtena:"
 
 #: ffmpegsource_common.cpp:150
 #, c-format
@@ -1627,8 +1624,7 @@ msgstr "O aplikaci Aegisub"
 
 #: dialog_about.cpp:114
 msgid "Translated into LANGUAGE by PERSON\n"
-msgstr ""
-"Překlad do četšiny: ToTan Translations, jmenovitě hintzu, Jarník a Christof\n"
+msgstr "Překlad do četšiny: ToTan Translations, jmenovitě hintzu, Jarník a Christof\n"
 
 #: dialog_about.cpp:152
 msgid ""
@@ -2116,8 +2112,7 @@ msgstr "Styl tohoto řádku"
 msgid ""
 "Actor name for this speech. This is only for reference, and is mainly "
 "useless."
-msgstr ""
-"Jméno mluvčího tohoto titulku. Zpřesňující informace, většinou zbytečná."
+msgstr "Jméno mluvčího tohoto titulku. Zpřesňující informace, většinou zbytečná."
 
 #: subs_edit_box.cpp:92
 msgid ""
@@ -2340,8 +2335,7 @@ msgstr "Neznámý"
 msgid ""
 "You already have timecodes loaded. Replace them with the timecodes from the "
 "Matroska file?"
-msgstr ""
-"Již máte načteny časové kódy. Chcete je nahradit těmi z Martoska kontejneru?"
+msgstr "Již máte načteny časové kódy. Chcete je nahradit těmi z Martoska kontejneru?"
 
 #: video_provider_avs.cpp:289 video_provider_dshow.cpp:311
 #: video_provider_ffmpegsource.cpp:263 video_provider_lavc.cpp:149
@@ -2510,8 +2504,7 @@ msgstr "Skript zkompletován"
 #: auto4_base.cpp:755
 #, c-format
 msgid "An Automation script failed to load. File name: '%s', error reported:"
-msgstr ""
-"Skript Automatizace se nepovedlo načíst. Jméno souboru '%s', nahlášená chyba:"
+msgstr "Skript Automatizace se nepovedlo načíst. Jméno souboru '%s', nahlášená chyba:"
 
 #: auto4_base.cpp:768
 #, c-format
@@ -2551,8 +2544,7 @@ msgid "Change aspect ratio"
 msgstr "Změnit poměr stran"
 
 #: dialog_resample.cpp:221
-msgid ""
-"Invalid resolution: destination resolution cannot be 0 on either dimension."
+msgid "Invalid resolution: destination resolution cannot be 0 on either dimension."
 msgstr ""
 "Neplatné rozlišení: cílové rozlišení nesmí mit nulovou hodnotu v žádném "
 "směru."
@@ -2570,31 +2562,35 @@ msgid ""
 "If other applications can access the Internet fine, this is probably a "
 "temporary server problem on our end."
 msgstr ""
+"Při kontrole aktualizace Aegisubu došlo k chybě:\n"
+"%s\n"
+"\n"
+"Pokud jiné aplikace nemají potíže s přístupem na Internet, nejspíš je to jen dočasná chyba našeho serveru."
 
 #: dialog_version_check.cpp:180
 msgid "An unknown error occurred while checking for updates to Aegisub."
-msgstr ""
+msgstr "Při kontrole aktualizace Aegisubu došlo k neznámé chybě."
 
 #: dialog_version_check.cpp:283
 msgid "Could not connect to updates server."
-msgstr ""
+msgstr "Nelze se připojit k aktualizačnímu serveru."
 
 #: dialog_version_check.cpp:288
 #, c-format
 msgid "HTTP request failed, got HTTP response %d."
-msgstr ""
+msgstr "HTTP požadavek selhal, HTTP odpověď %d."
 
 #: dialog_version_check.cpp:360
 msgid "An update to Aegisub was found."
-msgstr ""
+msgstr "Je k dispozici aktualizace Aegisubu."
 
 #: dialog_version_check.cpp:364
 msgid "Several possible updates to Aegisub were found."
-msgstr ""
+msgstr "Je k dispozici několik možných aktualizací Aegisubu."
 
 #: dialog_version_check.cpp:368
 msgid "There are no updates to Aegisub."
-msgstr ""
+msgstr "Žádné nové aktualizace Aegisubu."
 
 #: dialog_version_check.cpp:402
 msgid "Version Checker"
@@ -2602,7 +2598,7 @@ msgstr "Kontrola nových verzí"
 
 #: dialog_version_check.cpp:434
 msgid "Remind me again in a &week"
-msgstr ""
+msgstr "Znovu připomenout za týden"
 
 #: dialog_properties.cpp:58
 msgid "Script Properties"
@@ -2731,8 +2727,7 @@ msgid "Please wait, caching fonts..."
 msgstr "Vyčkejte prosím, probíhá načítání fontů do vyrovnávací paměti..."
 
 #: audio_display.cpp:2278 audio_display.cpp:2333
-msgid ""
-"Do you want to commit your changes? If you choose No, they will be discarded."
+msgid "Do you want to commit your changes? If you choose No, they will be discarded."
 msgstr "Přejete si provést změny? Pokud zvolíte Ne, budou zrušeny."
 
 #: audio_display.cpp:2278 audio_display.cpp:2333
@@ -2857,8 +2852,7 @@ msgstr "Přichytit titulek ke scéně"
 
 #: frame_main.cpp:260
 msgid "Snap selected subtitles so they match current scene start/end"
-msgstr ""
-"Nastaví počátek a konec daného titulku tak, aby odpovídal zvolené scéně videa"
+msgstr "Nastaví počátek a konec daného titulku tak, aby odpovídal zvolené scéně videa"
 
 #: frame_main.cpp:261
 msgid "Shift subtitles to frame"
@@ -2866,8 +2860,7 @@ msgstr "Posunout titulky na snímek"
 
 #: frame_main.cpp:261
 msgid "Shift selected subtitles so first selected starts at this frame"
-msgstr ""
-"Posune vybrané titulky tak, aby první z nich začínal na zvoleném snímku videa"
+msgstr "Posune vybrané titulky tak, aby první z nich začínal na zvoleném snímku videa"
 
 #: frame_main.cpp:265
 msgid "Open Styles Manager"
@@ -3309,10 +3302,8 @@ msgid "Snap to Scene"
 msgstr "Navázat na scénu"
 
 #: frame_main.cpp:423
-msgid ""
-"Set start and end of subtitles to the keyframes around current video frame"
-msgstr ""
-"Navázat počátek a konec titulku na klíčové snímky kolem aktuáního snímku"
+msgid "Set start and end of subtitles to the keyframes around current video frame"
+msgstr "Navázat počátek a konec titulku na klíčové snímky kolem aktuáního snímku"
 
 #: frame_main.cpp:424
 msgid "Shift to Current Frame"
@@ -3320,8 +3311,7 @@ msgstr "Posunout na aktuální snímek"
 
 #: frame_main.cpp:424
 msgid "Shift selection so first selected line starts at current frame"
-msgstr ""
-"Posunout vybrané řádky tak, aby počátek prvního odpovídal aktuálnímu snímku."
+msgstr "Posunout vybrané řádky tak, aby počátek prvního odpovídal aktuálnímu snímku."
 
 #: frame_main.cpp:427
 msgid "Make Times Continuous"
@@ -3629,11 +3619,11 @@ msgstr "Témata nápovědy"
 
 #: frame_main.cpp:529
 msgid "&Resource Files..."
-msgstr ""
+msgstr "Datové soubory..."
 
 #: frame_main.cpp:529
 msgid "Resource files distributed with Aegisub"
-msgstr ""
+msgstr "Datové soubory distribuované s Aegisub"
 
 #: frame_main.cpp:532
 msgid "&Website..."
@@ -3911,8 +3901,7 @@ msgstr "Vzdálenost titulku od pravého okraje, v pixelech."
 
 #: dialog_style_editor.cpp:179
 msgid "Distance from top/bottom edge, in pixels."
-msgstr ""
-"Vzdálenost titulku od horního/spodního okraje (podle zarovnání), v pixelech."
+msgstr "Vzdálenost titulku od horního/spodního okraje (podle zarovnání), v pixelech."
 
 #: dialog_style_editor.cpp:180
 msgid ""
@@ -4273,8 +4262,7 @@ msgstr ""
 "zvládá kompenzovat VFR - vše naleznete v možnostech Exportu, v menu Soubor."
 
 #: dialog_tip.cpp:53
-msgid ""
-"You can easily translate subtitle files using the translation assistant."
+msgid "You can easily translate subtitle files using the translation assistant."
 msgstr "Můžete snadno překládat titulky za použití Překladatelova pomocníka."
 
 #: dialog_tip.cpp:54
@@ -5391,94 +5379,3 @@ msgstr "Zjednodušené zobrazení"
 msgid "hide tags."
 msgstr "Bez zobrazení"
 
-#~ msgid "Could not open Internet File system. Aborting.\n"
-#~ msgstr "Nepodařilo se otevřít Souborový systém Internetu. To je konec :(\n"
-
-#~ msgid "Attempting to open \"%s\"..."
-#~ msgstr "Zkouším otevřít \"%s\"..."
-
-#~ msgid "Failed.\n"
-#~ msgstr "Selhání.\n"
-
-#~ msgid "OK.\n"
-#~ msgstr "OK.\n"
-
-#~ msgid "New version found!\n"
-#~ msgstr "Nalezena nová verze!\n"
-
-#~ msgid "Please go to the following URL to download it: %s\n"
-#~ msgstr "Prosím otevřete následující URL a stáhněte si ji: %s\n"
-
-#~ msgid "No new version has been found.\n"
-#~ msgstr "Nová verze nenalezena.\n"
-
-#~ msgid "This build of Aegisub uses the following C/C++ libraries:\n"
-#~ msgstr "Tento build Aegisubu používá následující C/C++ knihovny:\n"
-
-#~ msgid "Programmers:"
-#~ msgstr "Programátoři:"
-
-#~ msgid "Manual by:"
-#~ msgstr "Tvůrci manuálu:"
-
-#~ msgid "Forum and wiki hosting by:"
-#~ msgstr "Hosting fóra a wiki:"
-
-#~ msgid "SVN hosting by:"
-#~ msgstr "Hosting SVN:"
-
-#~ msgid "Bug tracker hosting by:"
-#~ msgstr "Hosting bug trackeru:"
-
-#~ msgid "Associate extensions"
-#~ msgstr "Asociace přípon"
-
-#~ msgid ""
-#~ "Please select the formats you want to\n"
-#~ "associate with Aegisub:"
-#~ msgstr "Prosím zvolte formáty, které chcete asociovat s aplikací Aegisub:"
-
-#~ msgid "Associations"
-#~ msgstr "Asociace"
-
-#~ msgid "Groups"
-#~ msgstr "Skupiny"
-
-#~ msgid "Select source text first."
-#~ msgstr "Nejprve zvolte zdrojový text."
-
-#~ msgid ""
-#~ "The source line contains text before the first karaoke block.\n"
-#~ "Do you want to carry it over to the destination?\n"
-#~ "It will be ignored otherwise."
-#~ msgstr ""
-#~ "Zdrojový řádek obsahuje text před prvním karaoke tagem.\n"
-#~ "Přejete si jej zachovat do cílového řádku?\n"
-#~ "V opačném případě bude zahozen."
-
-#~ msgid "Kanji timer"
-#~ msgstr "Časovač kanji"
-
-#~ msgid "Possible error parsing source line"
-#~ msgstr "Možná chyba při rozboru zdrojového řádku"
-
-#~ msgid "Group some text first."
-#~ msgstr "Nejprve seskupte část textu."
-
-#~ msgid "Show Tip of the Day"
-#~ msgstr "Zobrazovat tipy dne"
-
-#~ msgid "Save config.dat locally"
-#~ msgstr "Ukládat config.dat lokálně"
-
-#~ msgid "Avisynth renders its own subs"
-#~ msgstr "Povolit vykreslování vlastních titulků Avisynthem"
-
-#~ msgid "Recommended Formats"
-#~ msgstr "Doporučené formáty"
-
-#~ msgid "Other supported formats"
-#~ msgstr "Další podporované formáty"
-
-#~ msgid "Video Screenshot Path"
-#~ msgstr "Video Screenshot Path"
