@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Aegisub Finnish v1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-12-13 12:31-0500\n"
+"POT-Creation-Date: 2009-12-30 23:16-0500\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Jeremi Roivas <jeremi.roivas@turkunet.fi>\n"
 "Language-Team: Anime-Fan <jeremi.roivas@pp.inet.fi>\n"
@@ -56,8 +56,7 @@ msgstr "asettelu"
 msgid "Video Details"
 msgstr "Videon ominaisuudet"
 
-#: dialog_video_details.cpp:57
-#: dialog_options.cpp:628
+#: dialog_video_details.cpp:57 dialog_options.cpp:628
 msgid "Video"
 msgstr "Video"
 
@@ -93,8 +92,7 @@ msgstr ""
 msgid "Choose character set"
 msgstr "Valitse merkistö"
 
-#: dialog_timing_processor.cpp:57
-#: frame_main.cpp:292
+#: dialog_timing_processor.cpp:57 frame_main.cpp:286
 msgid "Timing Post-Processor"
 msgstr "Ajoituksen Jälkiprosessori"
 
@@ -106,8 +104,7 @@ msgstr "Hyväksy tyyleihin"
 msgid "Select styles to process. Unchecked ones will be ignored."
 msgstr "Valitse tyylit prosessointiin. Valitsemattomille ei tehdä mitään."
 
-#: dialog_timing_processor.cpp:77
-#: dialog_paste_over.cpp:89
+#: dialog_timing_processor.cpp:77 dialog_paste_over.cpp:89
 msgid "All"
 msgstr "Valitse kaikki"
 
@@ -115,8 +112,7 @@ msgstr "Valitse kaikki"
 msgid "Select all styles."
 msgstr "Valitse kaikki tyylit."
 
-#: dialog_timing_processor.cpp:79
-#: dialog_paste_over.cpp:90
+#: dialog_timing_processor.cpp:79 dialog_paste_over.cpp:90
 msgid "None"
 msgstr "Poista kaikki"
 
@@ -124,18 +120,10 @@ msgstr "Poista kaikki"
 msgid "Deselect all styles."
 msgstr "Poista kaikkien tyylin valinta."
 
-#: dialog_timing_processor.cpp:83
-#: dialog_options.cpp:86
-#: dialog_options.cpp:213
-#: dialog_options.cpp:287
-#: dialog_options.cpp:356
-#: dialog_options.cpp:434
-#: dialog_options.cpp:476
-#: dialog_options.cpp:564
-#: dialog_properties.cpp:119
-#: frame_main.cpp:298
-#: hotkeys.cpp:333
-#: hotkeys.cpp:337
+#: dialog_timing_processor.cpp:83 dialog_options.cpp:86 dialog_options.cpp:213
+#: dialog_options.cpp:287 dialog_options.cpp:356 dialog_options.cpp:434
+#: dialog_options.cpp:476 dialog_options.cpp:564 dialog_properties.cpp:119
+#: frame_main.cpp:292 hotkeys.cpp:333 hotkeys.cpp:337
 msgid "Options"
 msgstr "Asetukset"
 
@@ -175,26 +163,39 @@ msgstr "Jälkiaika, joka lisätään, millisekunneissa."
 msgid "Make adjacent subtitles continuous"
 msgstr "Jaksota läheiset rivit yhtäjaksoisiksi"
 
-#: dialog_timing_processor.cpp:108
-#: dialog_timing_processor.cpp:126
+#: dialog_timing_processor.cpp:108 dialog_timing_processor.cpp:126
 msgid "Enable"
 msgstr "Mahdollista"
 
 #: dialog_timing_processor.cpp:109
-msgid "Enable snapping of subtitles together if they are within a certain distance of each other."
-msgstr "Mahdollista rivien nappaus peräkkäin, jos rivit ovat tietyn ajan päässä toisistaan."
+msgid ""
+"Enable snapping of subtitles together if they are within a certain distance "
+"of each other."
+msgstr ""
+"Mahdollista rivien nappaus peräkkäin, jos rivit ovat tietyn ajan päässä "
+"toisistaan."
 
 #: dialog_timing_processor.cpp:111
 msgid "Threshold:"
 msgstr "Alaraja:"
 
 #: dialog_timing_processor.cpp:113
-msgid "Maximum difference between start and end time for two subtitles to be made continuous, in milliseconds."
-msgstr "Maksimi väli kahden rivin loppu- ja alkuaikojen välissä, jolloin rivit yhtäjaksotetaan."
+msgid ""
+"Maximum difference between start and end time for two subtitles to be made "
+"continuous, in milliseconds."
+msgstr ""
+"Maksimi väli kahden rivin loppu- ja alkuaikojen välissä, jolloin rivit "
+"yhtäjaksotetaan."
 
 #: dialog_timing_processor.cpp:115
-msgid "Sets how to set the adjoining of lines. If set totally to left, it will extend start time of the second line; if totally to right, it will extend the end time of the first line."
-msgstr "Asettaa miten rivit yhtäjaksotetaan. Jos asetettu täysin vasempaan, jälkimmäisen rivin alkuaikaa lisätään; jos asetettu täysin oikealle, ensimmäisen rivin loppuaikaa lisätään."
+msgid ""
+"Sets how to set the adjoining of lines. If set totally to left, it will "
+"extend start time of the second line; if totally to right, it will extend "
+"the end time of the first line."
+msgstr ""
+"Asettaa miten rivit yhtäjaksotetaan. Jos asetettu täysin vasempaan, "
+"jälkimmäisen rivin alkuaikaa lisätään; jos asetettu täysin oikealle, "
+"ensimmäisen rivin loppuaikaa lisätään."
 
 #: dialog_timing_processor.cpp:119
 msgid "Bias: Start <- "
@@ -209,40 +210,60 @@ msgid "Keyframe snapping"
 msgstr "Avainkuviin kiinnitys"
 
 #: dialog_timing_processor.cpp:127
-msgid "Enable snapping of subtitles to nearest keyframe, if distance is within threshold."
-msgstr "Mahdollista aikojen kiinnityksen avainkuviin, jos etäisyys on alarajan sisällä."
+msgid ""
+"Enable snapping of subtitles to nearest keyframe, if distance is within "
+"threshold."
+msgstr ""
+"Mahdollista aikojen kiinnityksen avainkuviin, jos etäisyys on alarajan "
+"sisällä."
 
 #: dialog_timing_processor.cpp:129
 msgid "Starts before thres.:"
 msgstr "Alkaa ennen alarajaa:"
 
 #: dialog_timing_processor.cpp:131
-msgid "Threshold for 'before start' distance, that is, how many frames a subtitle must start before a keyframe to snap to it."
-msgstr "Alaraja ennen alkua, kuinka monta kuvaa ennen täytyy rivin alkaa, jotta aika kiinnitetään avainkuvaan."
+msgid ""
+"Threshold for 'before start' distance, that is, how many frames a subtitle "
+"must start before a keyframe to snap to it."
+msgstr ""
+"Alaraja ennen alkua, kuinka monta kuvaa ennen täytyy rivin alkaa, jotta aika "
+"kiinnitetään avainkuvaan."
 
 #: dialog_timing_processor.cpp:132
 msgid "Starts after thres.:"
 msgstr "Alkaa alarajan jälkeen:"
 
 #: dialog_timing_processor.cpp:134
-msgid "Threshold for 'after start' distance, that is, how many frames a subtitle must start after a keyframe to snap to it."
-msgstr "Alaraja alun jälkeen, kuinka monta kuvaa jälkeen täytyy rivin alkaa, jotta aika kiinnitetään avainkuvaan."
+msgid ""
+"Threshold for 'after start' distance, that is, how many frames a subtitle "
+"must start after a keyframe to snap to it."
+msgstr ""
+"Alaraja alun jälkeen, kuinka monta kuvaa jälkeen täytyy rivin alkaa, jotta "
+"aika kiinnitetään avainkuvaan."
 
 #: dialog_timing_processor.cpp:135
 msgid "Ends before thres.:"
 msgstr "Loppuu ennnen alarajaa:"
 
 #: dialog_timing_processor.cpp:137
-msgid "Threshold for 'before end' distance, that is, how many frames a subtitle must end before a keyframe to snap to it."
-msgstr "Alaraja ennen loppua, kuinka monta kuvaa ennen täytyy rivin loppua, jotta aika kiinnitetään avainkuvaan."
+msgid ""
+"Threshold for 'before end' distance, that is, how many frames a subtitle "
+"must end before a keyframe to snap to it."
+msgstr ""
+"Alaraja ennen loppua, kuinka monta kuvaa ennen täytyy rivin loppua, jotta "
+"aika kiinnitetään avainkuvaan."
 
 #: dialog_timing_processor.cpp:138
 msgid "Ends after thres.:"
 msgstr "Loppuu alarajan jälkeen:"
 
 #: dialog_timing_processor.cpp:140
-msgid "Threshold for 'after end' distance, that is, how many frames a subtitle must end after a keyframe to snap to it."
-msgstr "Alaraja lopun jälkeen, kuinka monta kuvaa jälkeen täytyy rivin loppua, jotta aika kiinnitetään avainkuvaan."
+msgid ""
+"Threshold for 'after end' distance, that is, how many frames a subtitle must "
+"end after a keyframe to snap to it."
+msgstr ""
+"Alaraja lopun jälkeen, kuinka monta kuvaa jälkeen täytyy rivin loppua, jotta "
+"aika kiinnitetään avainkuvaan."
 
 #: dialog_timing_processor.cpp:322
 #, c-format
@@ -293,8 +314,7 @@ msgstr "Sijainti"
 msgid "Standard mode, double click sets position."
 msgstr "Kaksoisnäpäytys asettaa tekstin sijainnin"
 
-#: video_box.cpp:115
-#: visual_tool_vector_clip.cpp:70
+#: video_box.cpp:115 visual_tool_vector_clip.cpp:70
 msgid "Drag"
 msgstr "Raahaa"
 
@@ -350,9 +370,7 @@ msgstr "Välitön"
 msgid "Toggle realtime display of changes."
 msgstr "Välitön ruudunpäivitys rivejä muokatessa"
 
-#: video_box.cpp:124
-#: hotkeys.cpp:332
-#: hotkeys.cpp:336
+#: video_box.cpp:124 hotkeys.cpp:332 hotkeys.cpp:336
 msgid "Help"
 msgstr "Ohje"
 
@@ -360,23 +378,23 @@ msgstr "Ohje"
 msgid "Open the manual page for Visual Typesetting."
 msgstr "Ohjekirjan artikkeli: Näkyvä tekstinasettelu"
 
-#: video_display.cpp:513
+#: video_display.cpp:496
 msgid "Save PNG snapshot"
 msgstr "PNG kuvankaappaus"
 
-#: video_display.cpp:514
+#: video_display.cpp:497
 msgid "Copy image to Clipboard"
 msgstr "Kopioi"
 
-#: video_display.cpp:516
+#: video_display.cpp:499
 msgid "Save PNG snapshot (no subtitles)"
 msgstr "PNG kuvankaappaus (ei tekstityksiä)"
 
-#: video_display.cpp:517
+#: video_display.cpp:500
 msgid "Copy image to Clipboard (no subtitles)"
 msgstr "Kopioi (ei tekstityksiä)"
 
-#: video_display.cpp:519
+#: video_display.cpp:502
 msgid "Copy coordinates to Clipboard"
 msgstr "Kopioi koordinaatit"
 
@@ -392,8 +410,7 @@ msgstr "Luetaan avainkuvia videosta"
 msgid "Styling assistant"
 msgstr "Tyyliavustaja"
 
-#: dialog_styling_assistant.cpp:75
-#: dialog_styling_assistant.cpp:76
+#: dialog_styling_assistant.cpp:75 dialog_styling_assistant.cpp:76
 msgid "Current line"
 msgstr "Nykyinen rivi"
 
@@ -405,47 +422,37 @@ msgstr "Tyylejä saatavilla"
 msgid "Set style"
 msgstr "Aseta tyyli"
 
-#: dialog_styling_assistant.cpp:87
-#: dialog_translation.cpp:99
+#: dialog_styling_assistant.cpp:87 dialog_translation.cpp:99
 msgid "Keys"
 msgstr "Napit"
 
-#: dialog_styling_assistant.cpp:88
-#: dialog_translation.cpp:122
+#: dialog_styling_assistant.cpp:88 dialog_translation.cpp:122
 msgid "Actions"
 msgstr "Toiminnot"
 
-#: dialog_styling_assistant.cpp:96
-#: dialog_translation.cpp:102
+#: dialog_styling_assistant.cpp:96 dialog_translation.cpp:102
 msgid "Accept changes"
 msgstr "Hyväksy muutokset"
 
-#: dialog_styling_assistant.cpp:98
-#: dialog_translation.cpp:104
+#: dialog_styling_assistant.cpp:98 dialog_translation.cpp:104
 msgid "Preview changes"
 msgstr "Esikatsele muutokset"
 
-#: dialog_styling_assistant.cpp:100
-#: dialog_translation.cpp:106
+#: dialog_styling_assistant.cpp:100 dialog_translation.cpp:106
 msgid "Previous line"
 msgstr "Edellinen rivi"
 
-#: dialog_styling_assistant.cpp:102
-#: dialog_translation.cpp:108
+#: dialog_styling_assistant.cpp:102 dialog_translation.cpp:108
 msgid "Next line"
 msgstr "Seuraava rivi"
 
-#: dialog_styling_assistant.cpp:104
-#: dialog_styling_assistant.cpp:118
-#: dialog_translation.cpp:112
-#: dialog_translation.cpp:123
+#: dialog_styling_assistant.cpp:104 dialog_styling_assistant.cpp:118
+#: dialog_translation.cpp:112 dialog_translation.cpp:123
 msgid "Play Video"
 msgstr "Toista Video"
 
-#: dialog_styling_assistant.cpp:106
-#: dialog_styling_assistant.cpp:119
-#: dialog_translation.cpp:114
-#: dialog_translation.cpp:124
+#: dialog_styling_assistant.cpp:106 dialog_styling_assistant.cpp:119
+#: dialog_translation.cpp:114 dialog_translation.cpp:124
 msgid "Play Audio"
 msgstr "Toista ääniraita"
 
@@ -465,8 +472,7 @@ msgstr "Mahdollista esikatselu (hidas)"
 msgid "style changes"
 msgstr "tyylimuutokset"
 
-#: dialog_styling_assistant.cpp:223
-#: dialog_styling_assistant.cpp:252
+#: dialog_styling_assistant.cpp:223 dialog_styling_assistant.cpp:252
 msgid "styling assistant"
 msgstr "tyyliavustaja"
 
@@ -490,8 +496,7 @@ msgstr "Vastaavia"
 msgid "Doesn't Match"
 msgstr "Ei vastaavia"
 
-#: dialog_selection.cpp:68
-#: dialog_search_replace.cpp:81
+#: dialog_selection.cpp:68 dialog_search_replace.cpp:81
 msgid "Match case"
 msgstr "Osumatapaus"
 
@@ -507,46 +512,29 @@ msgstr "Sisältää hakusanan"
 msgid "Regular Expression match"
 msgstr "Vastaa säännöllistä lauseketta"
 
-#: dialog_selection.cpp:75
-#: dialog_kanji_timer.cpp:707
-#: dialog_search_replace.cpp:95
-#: base_grid.cpp:442
-#: dialog_paste_over.cpp:80
+#: dialog_selection.cpp:75 dialog_kanji_timer.cpp:707
+#: dialog_search_replace.cpp:95 base_grid.cpp:442 dialog_paste_over.cpp:80
 #: dialog_paste_over.cpp:92
 msgid "Text"
 msgstr "Teksti"
 
-#: dialog_selection.cpp:76
-#: dialog_options.cpp:216
-#: dialog_options.cpp:288
-#: dialog_options.cpp:477
-#: subs_grid.cpp:122
-#: dialog_search_replace.cpp:96
-#: base_grid.cpp:436
-#: dialog_paste_over.cpp:68
+#: dialog_selection.cpp:76 dialog_options.cpp:216 dialog_options.cpp:288
+#: dialog_options.cpp:477 subs_grid.cpp:122 dialog_search_replace.cpp:96
+#: base_grid.cpp:436 dialog_paste_over.cpp:68
 msgid "Style"
 msgstr "Tyyli"
 
-#: dialog_selection.cpp:77
-#: subs_grid.cpp:123
-#: subs_edit_box.cpp:90
-#: dialog_search_replace.cpp:97
-#: base_grid.cpp:437
-#: dialog_paste_over.cpp:69
+#: dialog_selection.cpp:77 subs_grid.cpp:123 subs_edit_box.cpp:90
+#: dialog_search_replace.cpp:97 base_grid.cpp:437 dialog_paste_over.cpp:69
 msgid "Actor"
 msgstr "Esittäjä"
 
-#: dialog_selection.cpp:78
-#: subs_grid.cpp:124
-#: subs_edit_box.cpp:93
-#: dialog_search_replace.cpp:98
-#: base_grid.cpp:438
-#: dialog_paste_over.cpp:79
+#: dialog_selection.cpp:78 subs_grid.cpp:124 subs_edit_box.cpp:93
+#: dialog_search_replace.cpp:98 base_grid.cpp:438 dialog_paste_over.cpp:79
 msgid "Effect"
 msgstr "Efekti"
 
-#: dialog_selection.cpp:79
-#: dialog_search_replace.cpp:102
+#: dialog_selection.cpp:79 dialog_search_replace.cpp:102
 msgid "In Field"
 msgstr "Alueesta, josta etsitään"
 
@@ -583,9 +571,7 @@ msgstr "Toiminto"
 msgid "Selection was set to %i lines"
 msgstr "Valinnat asetettiin %i riville "
 
-#: dialog_selection.cpp:267
-#: dialog_selection.cpp:268
-#: dialog_selection.cpp:269
+#: dialog_selection.cpp:267 dialog_selection.cpp:268 dialog_selection.cpp:269
 msgid "Selection"
 msgstr "Valinta"
 
@@ -599,8 +585,7 @@ msgstr "%i riviä lisättiin valinttaan"
 msgid "%i lines were removed from selection"
 msgstr "%i riviä poistettiin valinnasta"
 
-#: dialog_style_manager.cpp:62
-#: frame_main.cpp:271
+#: dialog_style_manager.cpp:62 frame_main.cpp:265
 msgid "Styles Manager"
 msgstr "Tyylien hallinta"
 
@@ -608,17 +593,13 @@ msgstr "Tyylien hallinta"
 msgid "Catalog of available storages"
 msgstr "Talletuskansiot"
 
-#: dialog_style_manager.cpp:73
-#: dialog_style_manager.cpp:86
-#: dialog_style_manager.cpp:131
-#: frame_main.cpp:240
+#: dialog_style_manager.cpp:73 dialog_style_manager.cpp:86
+#: dialog_style_manager.cpp:131 frame_main.cpp:234
 msgid "New"
 msgstr "Uusi"
 
-#: dialog_style_manager.cpp:74
-#: dialog_style_manager.cpp:89
-#: dialog_style_manager.cpp:134
-#: subs_grid.cpp:204
+#: dialog_style_manager.cpp:74 dialog_style_manager.cpp:89
+#: dialog_style_manager.cpp:134 subs_grid.cpp:204
 msgid "Delete"
 msgstr "Poista"
 
@@ -630,39 +611,31 @@ msgstr "Talletuskansio"
 msgid "Copy to current script ->"
 msgstr "Kopioi nykyiseen tekstiystiedostoon ->"
 
-#: dialog_style_manager.cpp:87
-#: dialog_style_manager.cpp:132
+#: dialog_style_manager.cpp:87 dialog_style_manager.cpp:132
 msgid "Edit"
 msgstr "Muokkaa"
 
-#: dialog_style_manager.cpp:88
-#: dialog_style_manager.cpp:133
-#: hotkeys.cpp:357
+#: dialog_style_manager.cpp:88 dialog_style_manager.cpp:133 hotkeys.cpp:357
 msgid "Copy"
 msgstr "Kopioi"
 
-#: dialog_style_manager.cpp:99
-#: dialog_style_manager.cpp:144
+#: dialog_style_manager.cpp:99 dialog_style_manager.cpp:144
 msgid "Move style up."
 msgstr "Siirrä ylös"
 
-#: dialog_style_manager.cpp:100
-#: dialog_style_manager.cpp:145
+#: dialog_style_manager.cpp:100 dialog_style_manager.cpp:145
 msgid "Move style down."
 msgstr "Siirrä alas."
 
-#: dialog_style_manager.cpp:101
-#: dialog_style_manager.cpp:146
+#: dialog_style_manager.cpp:101 dialog_style_manager.cpp:146
 msgid "Move style to top."
 msgstr "Siirrä ylimmäksi."
 
-#: dialog_style_manager.cpp:102
-#: dialog_style_manager.cpp:147
+#: dialog_style_manager.cpp:102 dialog_style_manager.cpp:147
 msgid "Move style to bottom."
 msgstr "Siirrä alimmaksi."
 
-#: dialog_style_manager.cpp:103
-#: dialog_style_manager.cpp:148
+#: dialog_style_manager.cpp:103 dialog_style_manager.cpp:148
 msgid "Sort styles alphabetically."
 msgstr "Jäjestä alkukirjaimen mukaan."
 
@@ -697,10 +670,12 @@ msgstr "Tallenne nimi ristiriita"
 #: dialog_style_manager.cpp:440
 #, c-format
 msgid ""
-"The specified catalog name contains one or more illegal characters. They have been replaced with underscores instead.\n"
+"The specified catalog name contains one or more illegal characters. They "
+"have been replaced with underscores instead.\n"
 "The catalog has been renamed to \"%s\"."
 msgstr ""
-"Määritetty tallenne nimi sisältää yhden tai useamman laittoman kirjaimen. Ne korvattiin alaviivalla.\n"
+"Määritetty tallenne nimi sisältää yhden tai useamman laittoman kirjaimen. Ne "
+"korvattiin alaviivalla.\n"
 "Tallenne nimi muutettiin muotoon:  \"%s\""
 
 #: dialog_style_manager.cpp:440
@@ -710,19 +685,18 @@ msgstr "Laittomia kirjaimia."
 #: dialog_style_manager.cpp:469
 #, c-format
 msgid "Are you sure you want to delete the storage \"%s\" from the catalog?"
-msgstr "Oletko varma, että tahdot poistaa tallenteen \"%s\" tallennuskansiosta?"
+msgstr ""
+"Oletko varma, että tahdot poistaa tallenteen \"%s\" tallennuskansiosta?"
 
 #: dialog_style_manager.cpp:470
 msgid "Confirm delete"
 msgstr "Hyväksy poisto"
 
-#: dialog_style_manager.cpp:610
-#: dialog_style_manager.cpp:660
+#: dialog_style_manager.cpp:610 dialog_style_manager.cpp:660
 msgid "style copy"
 msgstr "tyylin kopiointi"
 
-#: dialog_style_manager.cpp:623
-#: dialog_style_manager.cpp:647
+#: dialog_style_manager.cpp:623 dialog_style_manager.cpp:647
 #: dialog_style_editor.cpp:449
 msgid "Copy of "
 msgstr "Kopio "
@@ -731,25 +705,20 @@ msgstr "Kopio "
 msgid "style paste"
 msgstr "tyylin liittäminen"
 
-#: dialog_style_manager.cpp:716
-#: dialog_style_manager.cpp:719
-#: dialog_style_manager.cpp:752
-#: dialog_style_manager.cpp:755
+#: dialog_style_manager.cpp:716 dialog_style_manager.cpp:719
+#: dialog_style_manager.cpp:752 dialog_style_manager.cpp:755
 msgid "Could not parse style"
 msgstr "Ei voitu jäsentää tyyliä"
 
-#: dialog_style_manager.cpp:801
-#: dialog_style_manager.cpp:835
+#: dialog_style_manager.cpp:801 dialog_style_manager.cpp:835
 msgid "Are you sure you want to delete these "
 msgstr "Oletko varma, että tahdot poistaa nämä "
 
-#: dialog_style_manager.cpp:803
-#: dialog_style_manager.cpp:837
+#: dialog_style_manager.cpp:803 dialog_style_manager.cpp:837
 msgid " styles?"
 msgstr " tyylit?"
 
-#: dialog_style_manager.cpp:805
-#: dialog_style_manager.cpp:839
+#: dialog_style_manager.cpp:805 dialog_style_manager.cpp:839
 msgid "Are you sure you want to delete this style?"
 msgstr "Oletko varma, että tahdot poistaa tämän tyylin?"
 
@@ -765,9 +734,8 @@ msgstr "Hyväksy poisto nykyisestä"
 msgid "style delete"
 msgstr "tyylin poisto"
 
-#: dialog_style_manager.cpp:868
-#: frame_main_events.cpp:690
-#: frame_main_events.cpp:708
+#: dialog_style_manager.cpp:868 frame_main_events.cpp:715
+#: frame_main_events.cpp:733
 msgid "Open subtitles file"
 msgstr "Avaa tekstitystiedosto"
 
@@ -779,13 +747,11 @@ msgstr "Valittu tiedostolla ei ole tyylejä."
 msgid "Error Importing Styles"
 msgstr "Virhe tuodessa Tyylejä"
 
-#: dialog_style_manager.cpp:891
-#: dialog_style_manager.cpp:893
+#: dialog_style_manager.cpp:891 dialog_style_manager.cpp:893
 msgid "Choose styles to import:"
 msgstr "Valitse tyyli, joka tuodaan:"
 
-#: dialog_style_manager.cpp:891
-#: dialog_style_manager.cpp:893
+#: dialog_style_manager.cpp:891 dialog_style_manager.cpp:893
 msgid "Import Styles"
 msgstr "Tuo Tyylejä"
 
@@ -813,7 +779,7 @@ msgstr "Käynnistys"
 msgid "Show Splash Screen"
 msgstr "Näytä käynnistyksessä esittelykuva"
 
-#: dialog_options.cpp:116
+#: dialog_options.cpp:115 dialog_version_check.cpp:429
 msgid "Auto Check for Updates"
 msgstr "Tarkista päivitykset automaattisesti"
 
@@ -897,18 +863,15 @@ msgstr "Palautustallennuksien polku:"
 msgid "Auto-load linked files:"
 msgstr "Avaa automaattisesti käytetyt video/ääniraita tiedostot:"
 
-#: dialog_options.cpp:191
-#: dialog_options.cpp:364
+#: dialog_options.cpp:191 dialog_options.cpp:364
 msgid "Never"
 msgstr "Ei koskaan"
 
-#: dialog_options.cpp:191
-#: dialog_options.cpp:364
+#: dialog_options.cpp:191 dialog_options.cpp:364
 msgid "Always"
 msgstr "Aina"
 
-#: dialog_options.cpp:191
-#: dialog_options.cpp:364
+#: dialog_options.cpp:191 dialog_options.cpp:364
 msgid "Ask"
 msgstr "Kysy"
 
@@ -932,9 +895,7 @@ msgstr "Aika laatikoita voidaan ylikirjoittaa"
 msgid "Path to dictionary files:"
 msgstr "Sanakirjojen polku:"
 
-#: dialog_options.cpp:240
-#: dialog_options.cpp:572
-#: dialog_properties.cpp:133
+#: dialog_options.cpp:240 dialog_options.cpp:572 dialog_properties.cpp:133
 msgid "Normal"
 msgstr "Normaali"
 
@@ -954,19 +915,11 @@ msgstr "Yliajomerkit"
 msgid "Parameters"
 msgstr "Parametrit"
 
-#: dialog_options.cpp:241
-#: options.cpp:461
-#: dialog_kanji_timer.cpp:820
-#: dialog_kanji_timer.cpp:822
-#: dialog_kanji_timer.cpp:865
-#: subs_grid.cpp:686
-#: subs_grid.cpp:690
-#: subs_grid.cpp:736
-#: dialog_resample.cpp:217
-#: dialog_resample.cpp:221
-#: dialog_fonts_collector.cpp:195
-#: dialog_fonts_collector.cpp:204
-#: dialog_fonts_collector.cpp:213
+#: dialog_options.cpp:241 options.cpp:467 dialog_kanji_timer.cpp:820
+#: dialog_kanji_timer.cpp:822 dialog_kanji_timer.cpp:865 subs_grid.cpp:686
+#: subs_grid.cpp:690 subs_grid.cpp:736 dialog_resample.cpp:217
+#: dialog_resample.cpp:221 dialog_fonts_collector.cpp:195
+#: dialog_fonts_collector.cpp:204 dialog_fonts_collector.cpp:213
 msgid "Error"
 msgstr "Virhe"
 
@@ -990,8 +943,7 @@ msgstr "Muutettu tausta"
 msgid "Syntax highlighter - "
 msgstr "Syntaksin korostin - "
 
-#: dialog_options.cpp:259
-#: dialog_options.cpp:323
+#: dialog_options.cpp:259 dialog_options.cpp:323
 msgid "Font: "
 msgstr "Fontti:"
 
@@ -1015,8 +967,7 @@ msgstr "Normaali tausta"
 msgid "Selection foreground"
 msgstr "Valitun rivin fontti"
 
-#: dialog_options.cpp:305
-#: dialog_options.cpp:494
+#: dialog_options.cpp:305 dialog_options.cpp:494
 msgid "Selection background"
 msgstr "Valitun rivin tausta"
 
@@ -1056,8 +1007,7 @@ msgstr "Rivit"
 msgid "Replace override tags with: "
 msgstr "Korvaa yliajomerkit tällä:"
 
-#: dialog_options.cpp:357
-#: dialog_options.cpp:528
+#: dialog_options.cpp:357 dialog_options.cpp:528
 msgid "Advanced - EXPERT USERS ONLY"
 msgstr "Kehittyneet - VAIN KEHITTYNEILLE KÄYTTÄJILLE"
 
@@ -1097,14 +1047,14 @@ msgstr "Avisynthin muistiraja: "
 msgid "Allow pre-2.56a Avisynth"
 msgstr "Salli pre-2.56a Avisynth"
 
-#: dialog_options.cpp:421
-#: dialog_options.cpp:552
+#: dialog_options.cpp:421 dialog_options.cpp:552
 msgid ""
 "WARNING: Changing these settings might result in bugs,\n"
 "crashes, glitches and/or movax.\n"
 "Don't touch these unless you know what you're doing."
 msgstr ""
-"VAROITUS: Näiden asetusten muuttaminen saattaa aiheuttaa virheitä, kaatumisia, häiriöitä jne. \n"
+"VAROITUS: Näiden asetusten muuttaminen saattaa aiheuttaa virheitä, "
+"kaatumisia, häiriöitä jne. \n"
 "Älä koske asetuksiin ellet tiedä tarkalleen mitä olet tekemässä."
 
 #: dialog_options.cpp:439
@@ -1371,13 +1321,11 @@ msgstr "Prosessin tärkeys"
 msgid "Autoreload on Export"
 msgstr "Autopäivitys viennille"
 
-#: dialog_options.cpp:595
-#: dialog_options.cpp:1091
+#: dialog_options.cpp:595 dialog_options.cpp:1091
 msgid "Function"
 msgstr "Funktio"
 
-#: dialog_options.cpp:596
-#: dialog_options.cpp:1092
+#: dialog_options.cpp:596 dialog_options.cpp:1092
 msgid "Key"
 msgstr "Nappi"
 
@@ -1389,8 +1337,7 @@ msgstr "Aseta..."
 msgid "Clear Hotkey"
 msgstr "Tyhjennä"
 
-#: dialog_options.cpp:612
-#: ass_style.cpp:576
+#: dialog_options.cpp:612 ass_style.cpp:576
 msgid "Default"
 msgstr "Oletus"
 
@@ -1426,8 +1373,7 @@ msgstr "Näkymä"
 msgid "Advanced"
 msgstr "Kehittyneet asetukset"
 
-#: dialog_options.cpp:632
-#: frame_main.cpp:279
+#: dialog_options.cpp:632 frame_main.cpp:273
 msgid "Automation"
 msgstr "Automaatio"
 
@@ -1439,21 +1385,23 @@ msgstr "Pikanapit"
 msgid "Restore Defaults"
 msgstr "Palauta oletukset"
 
-#: dialog_options.cpp:737
-#: dialog_options.cpp:771
-#: dialog_options.cpp:911
+#: dialog_options.cpp:737 dialog_options.cpp:771 dialog_options.cpp:911
 msgid "Aegisub must restart for the changes to take effect. Restart now?"
-msgstr "Aegisub pitää käynnistää uudestaa muutoksien vuoksi. Käynnistetäänko uudelleen nyt?"
+msgstr ""
+"Aegisub pitää käynnistää uudestaa muutoksien vuoksi. Käynnistetäänko "
+"uudelleen nyt?"
 
-#: dialog_options.cpp:737
-#: dialog_options.cpp:771
-#: dialog_options.cpp:911
+#: dialog_options.cpp:737 dialog_options.cpp:771 dialog_options.cpp:911
 msgid "Restart Aegisub"
 msgstr "Käynnistä uudelleen"
 
 #: dialog_options.cpp:787
-msgid "Are you sure that you want to restore the defaults? All your settings will be overriden."
-msgstr "Oletko varma että tahdot palauttaa oletukset? Kaikki omat asetuksesi kirjoitetaan yli."
+msgid ""
+"Are you sure that you want to restore the defaults? All your settings will "
+"be overriden."
+msgstr ""
+"Oletko varma että tahdot palauttaa oletukset? Kaikki omat asetuksesi "
+"kirjoitetaan yli."
 
 #: dialog_options.cpp:787
 msgid "Restore defaults?"
@@ -1470,8 +1418,12 @@ msgstr "Paina nappia asettaaksesi \"%s\"  tai ESC peruuttaaksesi."
 
 #: dialog_options.cpp:1169
 #, c-format
-msgid "The hotkey %s is already mapped to %s. If you proceed, that hotkey will be cleared. Proceed?"
-msgstr "Pikanappi %s on jo asetettu %s:lle. Jos jatkat, pikanappi pyyhitään. Jatketaanko?"
+msgid ""
+"The hotkey %s is already mapped to %s. If you proceed, that hotkey will be "
+"cleared. Proceed?"
+msgstr ""
+"Pikanappi %s on jo asetettu %s:lle. Jos jatkat, pikanappi pyyhitään. "
+"Jatketaanko?"
 
 #: dialog_options.cpp:1169
 msgid "Hotkey conflict"
@@ -1580,8 +1532,7 @@ msgstr "Valitse sopiva kuvaa/s tekstitystiedostolle:"
 msgid "FPS"
 msgstr "Kuvaa/s"
 
-#: dialog_spellchecker.cpp:69
-#: frame_main.cpp:294
+#: dialog_spellchecker.cpp:69 frame_main.cpp:288
 msgid "Spell Checker"
 msgstr "Kieliasun tarkistus"
 
@@ -1597,14 +1548,11 @@ msgstr "korvaa:"
 msgid "Misspelled word:"
 msgstr "Väärin kirjoitettu sana:"
 
-#: dialog_spellchecker.cpp:113
-#: dialog_search_replace.cpp:74
+#: dialog_spellchecker.cpp:113 dialog_search_replace.cpp:74
 msgid "Replace with:"
 msgstr "Korvaa:"
 
-#: dialog_spellchecker.cpp:122
-#: dialog_search_replace.cpp:566
-#: hotkeys.cpp:351
+#: dialog_spellchecker.cpp:122 dialog_search_replace.cpp:566 hotkeys.cpp:351
 #: hotkeys.cpp:354
 msgid "Replace"
 msgstr "Korvaa"
@@ -1629,8 +1577,7 @@ msgstr "Lisää sanakirjaan"
 msgid "Aegisub has finished checking spelling of this script."
 msgstr "Aegisub on tarkistanut tekstityksen kieliasun."
 
-#: dialog_spellchecker.cpp:325
-#: dialog_spellchecker.cpp:392
+#: dialog_spellchecker.cpp:325 dialog_spellchecker.cpp:392
 msgid "Spell checking complete."
 msgstr "Kieliasun tarkistus valmis."
 
@@ -1642,8 +1589,7 @@ msgstr "Kieliasun tarkistus korvaa"
 msgid "Aegisub has found no spelling mistakes in this script."
 msgstr "Aegisub on löytänyt kielioppivirheitä tästä tekstityksestä."
 
-#: mkv_wrap.cpp:171
-#: mkv_wrap.cpp:399
+#: mkv_wrap.cpp:171 mkv_wrap.cpp:399
 msgid "Parsing Matroska"
 msgstr "Käsitellään Matroska tiedostoa"
 
@@ -1655,8 +1601,7 @@ msgstr "Luetaan avainkuvat ja aikakoodit Matroska tiedostosta."
 msgid "Reading subtitles from Matroska file."
 msgstr "Luetaan tekstitystiedostoja Matroska tiedostosta."
 
-#: visual_tool.cpp:285
-#: visual_tool_drag.cpp:117
+#: visual_tool.cpp:285 visual_tool_drag.cpp:117
 msgid "visual typesetting"
 msgstr "näkyvä tekstinasettelu"
 
@@ -1665,11 +1610,12 @@ msgid "Fix Styles"
 msgstr "Korjaa tyylit"
 
 #: export_fixstyle.cpp:61
-msgid "Fixes styles by replacing any style that isn't available on file with Default."
+msgid ""
+"Fixes styles by replacing any style that isn't available on file with "
+"Default."
 msgstr "Korvaa kaikki tyylit, joita ei ole saatavilla Oletus -tyylillä."
 
-#: dialog_about.cpp:53
-#: frame_main.cpp:545
+#: dialog_about.cpp:53 frame_main.cpp:540
 msgid "About Aegisub"
 msgstr "Tietoa Aegisubista"
 
@@ -1690,9 +1636,13 @@ msgstr ""
 msgid "Built by %s on %s."
 msgstr "Ohjelmaversion luonut:  %s %s."
 
-#: options.cpp:461
-msgid "Configuration file is either invalid or corrupt. The current file will be backed up and replaced with a default file."
-msgstr "Asetustiedosto on joko laiton tai korruptoitunut. Nykyinen tiedosto varmuuskopioidaan ja korvataan alkuperäisellä."
+#: options.cpp:467
+msgid ""
+"Configuration file is either invalid or corrupt. The current file will be "
+"backed up and replaced with a default file."
+msgstr ""
+"Asetustiedosto on joko laiton tai korruptoitunut. Nykyinen tiedosto "
+"varmuuskopioidaan ja korvataan alkuperäisellä."
 
 #: browse_button.cpp:52
 msgid "Browse..."
@@ -1726,7 +1676,7 @@ msgstr "Näytä &info"
 msgid "Re&scan Autoload Dir"
 msgstr "&Skannaa uudestaan autoload kansio"
 
-#: dialog_automation.cpp:69
+#: dialog_automation.cpp:69 dialog_version_check.cpp:436
 #: dialog_attachments.cpp:80
 msgid "&Close"
 msgstr "&Sulje"
@@ -1897,8 +1847,7 @@ msgstr "Rivi taaksepäin"
 msgid "Accept Line"
 msgstr "Hyväksy"
 
-#: dialog_kanji_timer.cpp:737
-#: auto4_base.cpp:401
+#: dialog_kanji_timer.cpp:737 auto4_base.cpp:401
 msgid "Close"
 msgstr "Sulje"
 
@@ -1922,36 +1871,27 @@ msgstr "Ryhmitä kaikki lähdetekstistä."
 msgid "Line Number"
 msgstr "Rivi numero"
 
-#: subs_grid.cpp:119
-#: dialog_paste_over.cpp:65
+#: subs_grid.cpp:119 dialog_paste_over.cpp:65
 msgid "Layer"
 msgstr "Taso"
 
-#: subs_grid.cpp:120
-#: base_grid.cpp:434
+#: subs_grid.cpp:120 base_grid.cpp:434
 msgid "Start"
 msgstr "Alku"
 
-#: subs_grid.cpp:121
-#: base_grid.cpp:435
+#: subs_grid.cpp:121 base_grid.cpp:435
 msgid "End"
 msgstr "Loppu"
 
-#: subs_grid.cpp:125
-#: base_grid.cpp:439
-#: dialog_style_editor.cpp:247
+#: subs_grid.cpp:125 base_grid.cpp:439 dialog_style_editor.cpp:247
 msgid "Left"
 msgstr "Vasen"
 
-#: subs_grid.cpp:126
-#: base_grid.cpp:440
-#: dialog_style_editor.cpp:247
+#: subs_grid.cpp:126 base_grid.cpp:440 dialog_style_editor.cpp:247
 msgid "Right"
 msgstr "Oikea"
 
-#: subs_grid.cpp:127
-#: base_grid.cpp:441
-#: dialog_style_editor.cpp:247
+#: subs_grid.cpp:127 base_grid.cpp:441 dialog_style_editor.cpp:247
 msgid "Vert"
 msgstr "Pysty"
 
@@ -1975,8 +1915,7 @@ msgstr "Lisää jälkeen, kuvan ajoilla"
 msgid "&Duplicate"
 msgstr "&Monista"
 
-#: subs_grid.cpp:167
-#: frame_main.cpp:400
+#: subs_grid.cpp:167 frame_main.cpp:394
 msgid "Duplicate the selected lines"
 msgstr "Monistaa valitut rivit"
 
@@ -1984,8 +1923,7 @@ msgstr "Monistaa valitut rivit"
 msgid "&Duplicate and shift by 1 frame"
 msgstr "&Monista ja siirrä 1 kuvalla"
 
-#: subs_grid.cpp:168
-#: frame_main.cpp:401
+#: subs_grid.cpp:168 frame_main.cpp:395
 msgid "Duplicate lines and shift by one frame"
 msgstr "Monistaa rivit ja siirtää niden ajotusta yhdellä kuvalla"
 
@@ -1993,8 +1931,7 @@ msgstr "Monistaa rivit ja siirtää niden ajotusta yhdellä kuvalla"
 msgid "Split (by karaoke)"
 msgstr "Erota (karaokena)"
 
-#: subs_grid.cpp:169
-#: frame_main.cpp:414
+#: subs_grid.cpp:169 frame_main.cpp:408
 msgid "Uses karaoke timing to split line into multiple smaller lines"
 msgstr "Käyttää karaoke yliajomerkkejä muodostaen niistä monia pieniä rivejä"
 
@@ -2002,8 +1939,7 @@ msgstr "Käyttää karaoke yliajomerkkejä muodostaen niistä monia pieniä rive
 msgid "&Swap"
 msgstr "&Vaihda"
 
-#: subs_grid.cpp:173
-#: frame_main.cpp:416
+#: subs_grid.cpp:173 frame_main.cpp:410
 msgid "Swaps the two selected lines"
 msgstr "Vaihtaa rivien paikkoja"
 
@@ -2011,8 +1947,7 @@ msgstr "Vaihtaa rivien paikkoja"
 msgid "&Join (concatenate)"
 msgstr "&Yhdistä yhteen"
 
-#: subs_grid.cpp:177
-#: frame_main.cpp:409
+#: subs_grid.cpp:177 frame_main.cpp:403
 msgid "Joins selected lines in a single one, concatenating text together"
 msgstr "Yhdistää rivit ja liittää jälkimmäisen tekstin ensimmäisen perään"
 
@@ -2020,9 +1955,10 @@ msgstr "Yhdistää rivit ja liittää jälkimmäisen tekstin ensimmäisen perä�
 msgid "Join (keep first)"
 msgstr "Yhdistä pidä ensimmäinen"
 
-#: subs_grid.cpp:178
-#: frame_main.cpp:410
-msgid "Joins selected lines in a single one, keeping text of first and discarding remaining"
+#: subs_grid.cpp:178 frame_main.cpp:404
+msgid ""
+"Joins selected lines in a single one, keeping text of first and discarding "
+"remaining"
 msgstr "Yhdistää rivit ja pitää vain ensimmäisen tekstin"
 
 #: subs_grid.cpp:179
@@ -2030,15 +1966,16 @@ msgid "Join (as Karaoke)"
 msgstr "Yhdistä karaokena"
 
 #: subs_grid.cpp:179
-msgid "Joins selected lines in a single one, making each line into a karaoke syllable"
+msgid ""
+"Joins selected lines in a single one, making each line into a karaoke "
+"syllable"
 msgstr "Liittää valitut rivit yhteen, tehden kaikista sanoista karaoke tavuja"
 
 #: subs_grid.cpp:183
 msgid "&Make times continuous (change start)"
 msgstr "&Yhtäjaksoita, siirrä alkua"
 
-#: subs_grid.cpp:183
-#: frame_main.cpp:437
+#: subs_grid.cpp:183 frame_main.cpp:431
 msgid "Changes times of subs so start times begin on previous's end time"
 msgstr "Muuttaa ajat siten, että rivien alku alkaa edellisen rivin lopusta"
 
@@ -2046,18 +1983,16 @@ msgstr "Muuttaa ajat siten, että rivien alku alkaa edellisen rivin lopusta"
 msgid "&Make times continuous (change end)"
 msgstr "&Yhtäjaksoita, siirrä loppua"
 
-#: subs_grid.cpp:184
-#: frame_main.cpp:438
+#: subs_grid.cpp:184 frame_main.cpp:432
 msgid "Changes times of subs so end times begin on next's start time"
-msgstr "Muuttaa ajat siten, että rivien loppu siirretään seuraavan rivin alkuun"
+msgstr ""
+"Muuttaa ajat siten, että rivien loppu siirretään seuraavan rivin alkuun"
 
-#: subs_grid.cpp:188
-#: frame_main.cpp:413
+#: subs_grid.cpp:188 frame_main.cpp:407
 msgid "Recombine Lines"
 msgstr "Koosta"
 
-#: subs_grid.cpp:188
-#: frame_main.cpp:413
+#: subs_grid.cpp:188 frame_main.cpp:407
 msgid "Recombine subtitles when they have been split and merged"
 msgstr "Koostaa rivit uudelleen, kun ne ovat erotettu ja muokattu"
 
@@ -2069,8 +2004,7 @@ msgstr "Luo ääniraita"
 msgid "Create an audio clip of the selected line"
 msgstr "Luo ääniraidan valitun rivin ajoituksesta"
 
-#: subs_grid.cpp:198
-#: subs_edit_ctrl.cpp:948
+#: subs_grid.cpp:198 subs_edit_ctrl.cpp:949
 msgid "&Copy"
 msgstr "&Kopioi"
 
@@ -2086,8 +2020,7 @@ msgstr "&Leikkaa"
 msgid "Cuts selected lines to clipboard"
 msgstr "Leikkaa valitut rivit leikepöydälle"
 
-#: subs_grid.cpp:200
-#: subs_edit_ctrl.cpp:949
+#: subs_grid.cpp:200 subs_edit_ctrl.cpp:950
 msgid "&Paste"
 msgstr "Lii&tä"
 
@@ -2095,8 +2028,7 @@ msgstr "Lii&tä"
 msgid "Paste lines from clipboard"
 msgstr "Liittää rivejä leikepöydältä"
 
-#: subs_grid.cpp:204
-#: frame_main.cpp:402
+#: subs_grid.cpp:204 frame_main.cpp:396
 msgid "Delete currently selected lines"
 msgstr "Poistaa valitut rivit"
 
@@ -2124,8 +2056,7 @@ msgstr "Tallenna ääniraita"
 msgid "Couldn't allocate memory."
 msgstr "Ei voitu määrittää muistia."
 
-#: subs_grid.cpp:813
-#: subs_grid.cpp:814
+#: subs_grid.cpp:813 subs_grid.cpp:814
 msgid "load"
 msgstr "lataa"
 
@@ -2170,12 +2101,20 @@ msgid "Style for this line."
 msgstr "Tämän rivin tyyli"
 
 #: subs_edit_box.cpp:89
-msgid "Actor name for this speech. This is only for reference, and is mainly useless."
-msgstr "Videon esittäjän nimi esim. tyyliavustajaa varten. Tähän voi myös kommentoida esim. kielioppia tai ajoitusta."
+msgid ""
+"Actor name for this speech. This is only for reference, and is mainly "
+"useless."
+msgstr ""
+"Videon esittäjän nimi esim. tyyliavustajaa varten. Tähän voi myös "
+"kommentoida esim. kielioppia tai ajoitusta."
 
 #: subs_edit_box.cpp:92
-msgid "Effect for this line. This can be used to store extra information for karaoke scripts, or for the effects supported by the renderer."
-msgstr "Tämän rivin efekti. Tätä voidaan käyttää ylimääräisen tiedon antamiseen karaoke skripteissä tai tehdä efektejä joita renderöijä tukee."
+msgid ""
+"Effect for this line. This can be used to store extra information for "
+"karaoke scripts, or for the effects supported by the renderer."
+msgstr ""
+"Tämän rivin efekti. Tätä voidaan käyttää ylimääräisen tiedon antamiseen "
+"karaoke skripteissä tai tehdä efektejä joita renderöijä tukee."
 
 #: subs_edit_box.cpp:97
 msgid "Layer number"
@@ -2205,8 +2144,7 @@ msgstr "Oikea marginaali (Oletus = 0)"
 msgid "Vertical Margin (0 = default)"
 msgstr "Pysty marginaali (Oletus = 0)"
 
-#: subs_edit_box.cpp:120
-#: dialog_style_editor.cpp:144
+#: subs_edit_box.cpp:120 dialog_style_editor.cpp:144
 msgid "Bold"
 msgstr "Lihavointi"
 
@@ -2214,13 +2152,11 @@ msgstr "Lihavointi"
 msgid "Italics"
 msgstr "Kursivointi"
 
-#: subs_edit_box.cpp:124
-#: dialog_style_editor.cpp:146
+#: subs_edit_box.cpp:124 dialog_style_editor.cpp:146
 msgid "Underline"
 msgstr "Alleviivaus"
 
-#: subs_edit_box.cpp:126
-#: dialog_style_editor.cpp:147
+#: subs_edit_box.cpp:126 dialog_style_editor.cpp:147
 msgid "Strikeout"
 msgstr "Yliviivaus"
 
@@ -2250,7 +2186,9 @@ msgstr "Hyväksy"
 
 #: subs_edit_box.cpp:138
 msgid "Commits the text (Enter). Hold Ctrl to stay in line (%KEY%)."
-msgstr "Hyväksyy tekstin (Enter). Paina samalla CTRL, jos tahdot pysyä rivillä (%KEY%)."
+msgstr ""
+"Hyväksyy tekstin (Enter). Paina samalla CTRL, jos tahdot pysyä rivillä (%KEY"
+"%)."
 
 #: subs_edit_box.cpp:139
 msgid "Time"
@@ -2268,8 +2206,7 @@ msgstr "Kuva"
 msgid "Time by frame number"
 msgstr "Ajoita kuvalukuina"
 
-#: subs_edit_box.cpp:595
-#: dialog_style_editor.cpp:486
+#: subs_edit_box.cpp:595 dialog_style_editor.cpp:486
 msgid "style change"
 msgstr "tyyli muutos"
 
@@ -2277,8 +2214,7 @@ msgstr "tyyli muutos"
 msgid "actor change"
 msgstr "esittäjämuutos"
 
-#: subs_edit_box.cpp:653
-#: subs_edit_box.cpp:679
+#: subs_edit_box.cpp:653 subs_edit_box.cpp:679
 msgid "layer change"
 msgstr "tasomuutos"
 
@@ -2391,15 +2327,16 @@ msgstr "Video: %s"
 msgid "Unknown"
 msgstr "Tuntematon"
 
-#: video_provider_avs.cpp:289
-#: video_provider_dshow.cpp:311
-msgid "You already have timecodes loaded. Replace them with the timecodes from the Matroska file?"
-msgstr "Sinulla on jo auki aikakoodit. Korvataanko ne tämän Matroska tiedoston aikakoodeilla?"
+#: video_provider_avs.cpp:289 video_provider_dshow.cpp:311
+msgid ""
+"You already have timecodes loaded. Replace them with the timecodes from the "
+"Matroska file?"
+msgstr ""
+"Sinulla on jo auki aikakoodit. Korvataanko ne tämän Matroska tiedoston "
+"aikakoodeilla?"
 
-#: video_provider_avs.cpp:289
-#: video_provider_dshow.cpp:311
-#: video_provider_ffmpegsource.cpp:263
-#: video_provider_lavc.cpp:149
+#: video_provider_avs.cpp:289 video_provider_dshow.cpp:311
+#: video_provider_ffmpegsource.cpp:263 video_provider_lavc.cpp:149
 msgid "Replace timecodes?"
 msgstr "Korvataanko aikakoodit?"
 
@@ -2415,13 +2352,11 @@ msgstr "Käytä säännöllisiä lausekkeita"
 msgid "Update Video (slow)"
 msgstr "Päivitä videota (hidas)"
 
-#: dialog_search_replace.cpp:100
-#: dialog_shift_times.cpp:108
+#: dialog_search_replace.cpp:100 dialog_shift_times.cpp:108
 msgid "All rows"
 msgstr "Kaikkiin"
 
-#: dialog_search_replace.cpp:101
-#: dialog_shift_times.cpp:108
+#: dialog_search_replace.cpp:101 dialog_shift_times.cpp:108
 msgid "Selected rows"
 msgstr "Valittuihin"
 
@@ -2441,8 +2376,7 @@ msgstr "Korvaa seuraava"
 msgid "Replace all"
 msgstr "Korvaa kaikki"
 
-#: dialog_search_replace.cpp:411
-#: dialog_search_replace.cpp:523
+#: dialog_search_replace.cpp:411 dialog_search_replace.cpp:523
 msgid "replace"
 msgstr "korvaa"
 
@@ -2455,8 +2389,7 @@ msgstr "%i vastaavaa sanaa korvattiin"
 msgid "No matches found."
 msgstr "Ei löydetty vastaavia sanoja."
 
-#: dialog_search_replace.cpp:566
-#: hotkeys.cpp:348
+#: dialog_search_replace.cpp:566 hotkeys.cpp:348
 msgid "Find"
 msgstr "Etsi"
 
@@ -2525,21 +2458,32 @@ msgid "Clean Script Info"
 msgstr "Siivoa tekstityksen tiedot"
 
 #: export_clean_info.cpp:61
-msgid "Removes all but the absolutely required fields from the Script Info section. You might want to run this on files that you plan to distribute in original form."
-msgstr "Poistaa kaiken paitsi tarpeelliset tiedot tekstitystiedoston Tiedot osasta. Tahdot varmaan käyttää tätä, jos aiot esittää tekstitystiedoston jollakin toisella tekstitysformaatilla."
+msgid ""
+"Removes all but the absolutely required fields from the Script Info section. "
+"You might want to run this on files that you plan to distribute in original "
+"form."
+msgstr ""
+"Poistaa kaiken paitsi tarpeelliset tiedot tekstitystiedoston Tiedot osasta. "
+"Tahdot varmaan käyttää tätä, jos aiot esittää tekstitystiedoston jollakin "
+"toisella tekstitysformaatilla."
 
 #: auto4_perl_script.cpp:99
 msgid "Perl script"
 msgstr "Perl skripti"
 
 #: auto4_perl_script.cpp:188
-msgid "Unable to add the automation include path(s) to @INC: the script's code may not compile or execute properly."
-msgstr "Ei voitu lisätä automaatioskriptiin polkuja @INC:lle: Skripti ei välttämättä käänny tai suorita oikein."
+msgid ""
+"Unable to add the automation include path(s) to @INC: the script's code may "
+"not compile or execute properly."
+msgstr ""
+"Ei voitu lisätä automaatioskriptiin polkuja @INC:lle: Skripti ei välttämättä "
+"käänny tai suorita oikein."
 
 #: auto4_perl_script.cpp:229
 #, c-format
 msgid "Reloading %s because the file on disk (%s) changed."
-msgstr "Tuodaan uudestaan %s, koska kovalevyllä ollutta tiedostoa (%s) on muutettu."
+msgstr ""
+"Tuodaan uudestaan %s, koska kovalevyllä ollutta tiedostoa (%s) on muutettu."
 
 #: auto4_perl_script.cpp:451
 msgid "Saving changes"
@@ -2560,7 +2504,9 @@ msgstr "Skripti valmistunut"
 #: auto4_base.cpp:755
 #, c-format
 msgid "An Automation script failed to load. File name: '%s', error reported:"
-msgstr "Automaatioskriptin tuominen epäonnistui. Tiedsto: '%s', raportoi virhesanoman:"
+msgstr ""
+"Automaatioskriptin tuominen epäonnistui. Tiedsto: '%s', raportoi "
+"virhesanoman:"
 
 #: auto4_base.cpp:768
 #, c-format
@@ -2583,8 +2529,7 @@ msgstr "Marginaali asetukset"
 msgid "Symmetrical"
 msgstr "Symmetrinen"
 
-#: dialog_resample.cpp:90
-#: dialog_properties.cpp:105
+#: dialog_resample.cpp:90 dialog_properties.cpp:105
 msgid "Resolution"
 msgstr "Resoluutio"
 
@@ -2592,8 +2537,7 @@ msgstr "Resoluutio"
 msgid "x"
 msgstr "x"
 
-#: dialog_resample.cpp:99
-#: dialog_properties.cpp:111
+#: dialog_resample.cpp:99 dialog_properties.cpp:111
 msgid "From video"
 msgstr "Videosta"
 
@@ -2602,51 +2546,58 @@ msgid "Change aspect ratio"
 msgstr "Muuta kuvasuhdetta"
 
 #: dialog_resample.cpp:221
-msgid "Invalid resolution: destination resolution cannot be 0 on either dimension."
-msgstr "Epäkelpo resoluutio: määrätty resoluutio ei voi olla 0 kummassakaan ulottovuudessa"
+msgid ""
+"Invalid resolution: destination resolution cannot be 0 on either dimension."
+msgstr ""
+"Epäkelpo resoluutio: määrätty resoluutio ei voi olla 0 kummassakaan "
+"ulottovuudessa"
 
 #: dialog_resample.cpp:305
 msgid "resolution resampling"
 msgstr "resoluution määritys"
 
-#: dialog_version_check.cpp:61
+#: dialog_version_check.cpp:176
+#, c-format
+msgid ""
+"There was an error checking for updates to Aegisub:\n"
+"%s\n"
+"\n"
+"If other applications can access the Internet fine, this is probably a "
+"temporary server problem on our end."
+msgstr ""
+
+#: dialog_version_check.cpp:180
+msgid "An unknown error occurred while checking for updates to Aegisub."
+msgstr ""
+
+#: dialog_version_check.cpp:283
+msgid "Could not connect to updates server."
+msgstr ""
+
+#: dialog_version_check.cpp:288
+#, c-format
+msgid "HTTP request failed, got HTTP response %d."
+msgstr ""
+
+#: dialog_version_check.cpp:360
+msgid "An update to Aegisub was found."
+msgstr ""
+
+#: dialog_version_check.cpp:364
+msgid "Several possible updates to Aegisub were found."
+msgstr ""
+
+#: dialog_version_check.cpp:368
+msgid "There are no updates to Aegisub."
+msgstr ""
+
+#: dialog_version_check.cpp:402
 msgid "Version Checker"
 msgstr "Version tarkistaja"
 
-#: dialog_version_check.cpp:71
-#: dialog_fonts_collector.cpp:127
-msgid "Log"
-msgstr "Loki"
-
-#: dialog_version_check.cpp:235
-msgid "Could not open Internet File system. Aborting.\n"
-msgstr "Ei voitu avata internet tiedostonhallintaa. Keskeytetään.\n"
-
-#: dialog_version_check.cpp:244
-#, c-format
-msgid "Attempting to open \"%s\"..."
-msgstr "Yritetään avata \"%s\"..."
-
-#: dialog_version_check.cpp:255
-msgid "Failed.\n"
-msgstr "Epäonnistui.\n"
-
-#: dialog_version_check.cpp:265
-msgid "OK.\n"
-msgstr "OK.\n"
-
-#: dialog_version_check.cpp:324
-msgid "New version found!\n"
-msgstr "Uusi versio löytyi!\n"
-
-#: dialog_version_check.cpp:326
-#, c-format
-msgid "Please go to the following URL to download it: %s\n"
-msgstr "Tästä osoitteesta voit ladata sen: %s\n"
-
-#: dialog_version_check.cpp:340
-msgid "No new version has been found.\n"
-msgstr "Aegisubista ei löytynyt uutta versiota.\n"
+#: dialog_version_check.cpp:434
+msgid "Remind me again in a &week"
+msgstr ""
 
 #: dialog_properties.cpp:58
 msgid "Script Properties"
@@ -2697,12 +2648,8 @@ msgid "1: End-of-line word wrapping, only \\N breaks"
 msgstr "1: Rivin loppuun rivitys, vain \\N vaihtaa riviä"
 
 #: dialog_properties.cpp:124
-msgid ""
-"2: No word wrapping, both \\n"
-" and \\N break"
-msgstr ""
-"2. Ei rivitystä, niin \\n"
-" kuin \\N vaihtaa riviä"
+msgid "2: No word wrapping, both \\n and \\N break"
+msgstr "2. Ei rivitystä, niin \\n kuin \\N vaihtaa riviä"
 
 #: dialog_properties.cpp:125
 msgid "3: Smart wrapping, bottom line is wider"
@@ -2725,15 +2672,19 @@ msgid "Scale Border and Shadow"
 msgstr "Skaalaa reunaviivaa ja varjoa"
 
 #: dialog_properties.cpp:142
-msgid "Scale border and shadow together with script/render resolution. If this is unchecked, relative border and shadow size will depend on renderer."
-msgstr "Skaalaa reunaviivaa ja varjoa yhdessä tekstiystiedoston resoluution kanssa. Jos tämä asetus ei ole valittu, suhteellinen reunaviivan ja varjon koko riippuu renderöijästä."
+msgid ""
+"Scale border and shadow together with script/render resolution. If this is "
+"unchecked, relative border and shadow size will depend on renderer."
+msgstr ""
+"Skaalaa reunaviivaa ja varjoa yhdessä tekstiystiedoston resoluution kanssa. "
+"Jos tämä asetus ei ole valittu, suhteellinen reunaviivan ja varjon koko "
+"riippuu renderöijästä."
 
 #: dialog_properties.cpp:204
 msgid "property changes"
 msgstr "omistus muutokset"
 
-#: dialog_translation.cpp:61
-#: frame_main.cpp:290
+#: dialog_translation.cpp:61 frame_main.cpp:284
 msgid "Translation Assistant"
 msgstr "Käännösavustaja"
 
@@ -2770,17 +2721,16 @@ msgstr "käännösavustaja"
 msgid "No more lines to translate."
 msgstr "Ei enää rivejä käännettävänä."
 
-#: subtitles_provider_libass.cpp:59
+#: subtitles_provider_libass.cpp:57
 msgid "Please wait, caching fonts..."
 msgstr "Pieni hetki, avataan fontteja tietovarastoon..."
 
-#: audio_display.cpp:2278
-#: audio_display.cpp:2333
-msgid "Do you want to commit your changes? If you choose No, they will be discarded."
+#: audio_display.cpp:2278 audio_display.cpp:2333
+msgid ""
+"Do you want to commit your changes? If you choose No, they will be discarded."
 msgstr "Tahdotko hyväksyä muutoksesi? Jos et, muutokset hylätään."
 
-#: audio_display.cpp:2278
-#: audio_display.cpp:2333
+#: audio_display.cpp:2278 audio_display.cpp:2333
 msgid "Commit?"
 msgstr "Hyväksytäänkö?"
 
@@ -2800,982 +2750,981 @@ msgstr "Vaihda karaoke yliajomerkiksi \\kf"
 msgid "Change karaoke tag to \\ko"
 msgstr "Vaihda karaoke yliajomerkiksi \\ko"
 
-#: frame_main.cpp:205
-msgid "Do you want Aegisub to check for updates whenever it starts? You can still do it manually via the Help menu."
-msgstr "Tahdotko Aegisubin tarkistavan päivitykset aina kun se käynnistyy? Voit silti tarkistaa ne manuaalisesti Apua valikosta."
+#: frame_main.cpp:204
+msgid ""
+"Do you want Aegisub to check for updates whenever it starts? You can still "
+"do it manually via the Help menu."
+msgstr ""
+"Tahdotko Aegisubin tarkistavan päivitykset aina kun se käynnistyy? Voit "
+"silti tarkistaa ne manuaalisesti Apua valikosta."
 
-#: frame_main.cpp:205
+#: frame_main.cpp:204
 msgid "Check for updates?"
 msgstr "Tarkistetaanko päivitykset?"
 
-#: frame_main.cpp:240
-#: frame_main.cpp:339
-#: hotkeys.cpp:327
+#: frame_main.cpp:234 frame_main.cpp:333 hotkeys.cpp:327
 msgid "New subtitles"
 msgstr "Uusi tekstitystiedosto"
 
-#: frame_main.cpp:241
+#: frame_main.cpp:235
 msgid "Open"
 msgstr "Avaa"
 
-#: frame_main.cpp:241
-#: hotkeys.cpp:328
+#: frame_main.cpp:235 hotkeys.cpp:328
 msgid "Open subtitles"
 msgstr "Avaa tekstitystiedosto"
 
-#: frame_main.cpp:242
+#: frame_main.cpp:236
 msgid "Save"
 msgstr "Tallenna"
 
-#: frame_main.cpp:242
-#: hotkeys.cpp:329
+#: frame_main.cpp:236 hotkeys.cpp:329
 msgid "Save subtitles"
 msgstr "Tallenna tekstitystiedosto"
 
-#: frame_main.cpp:246
+#: frame_main.cpp:240
 msgid "Jump To..."
 msgstr "Hyppää..."
 
-#: frame_main.cpp:246
+#: frame_main.cpp:240
 msgid "Jump video to time/frame"
 msgstr "Hyppää video aikaan/kuvaan"
 
-#: frame_main.cpp:247
+#: frame_main.cpp:241
 msgid "Zoom in"
 msgstr "Lähennä"
 
-#: frame_main.cpp:247
+#: frame_main.cpp:241
 msgid "Zoom video in"
 msgstr "Lähennä videota"
 
-#: frame_main.cpp:248
+#: frame_main.cpp:242
 msgid "Zoom out"
 msgstr "Loitonna"
 
-#: frame_main.cpp:248
+#: frame_main.cpp:242
 msgid "Zoom video out"
 msgstr "Loitonna videota"
 
-#: frame_main.cpp:261
+#: frame_main.cpp:255
 msgid "Jump video to start"
 msgstr "Hyppää video alkuun"
 
-#: frame_main.cpp:261
-#: frame_main.cpp:487
+#: frame_main.cpp:255 frame_main.cpp:481
 msgid "Jumps the video to the start frame of current subtitle"
 msgstr "Hyppää video valitun tekstitysrivin aloituskuvaan"
 
-#: frame_main.cpp:262
+#: frame_main.cpp:256
 msgid "Jump video to end"
 msgstr "Hyppää video loppuun"
 
-#: frame_main.cpp:262
-#: frame_main.cpp:488
+#: frame_main.cpp:256 frame_main.cpp:482
 msgid "Jumps the video to the end frame of current subtitle"
 msgstr "Hyppää video valitun rivin lopetuskuvaan"
 
-#: frame_main.cpp:263
+#: frame_main.cpp:257
 msgid "Snap start to video"
 msgstr "Kaappaa alku videokuvasta"
 
-#: frame_main.cpp:263
-#: frame_main.cpp:427
+#: frame_main.cpp:257 frame_main.cpp:421
 msgid "Set start of selected subtitles to current video frame"
 msgstr "Kaappaa valituille riville videokuvasta alku"
 
-#: frame_main.cpp:264
+#: frame_main.cpp:258
 msgid "Snap end to video"
 msgstr "Kaappaa loppu videokuvasta"
 
-#: frame_main.cpp:264
-#: frame_main.cpp:428
+#: frame_main.cpp:258 frame_main.cpp:422
 msgid "Set end of selected subtitles to current video frame"
 msgstr "Kaappaa valituille riville videokuvasta loppu"
 
-#: frame_main.cpp:265
+#: frame_main.cpp:259
 msgid "Select visible"
 msgstr "Valitse näkyvä"
 
-#: frame_main.cpp:265
+#: frame_main.cpp:259
 msgid "Selects all lines that are currently visible on video frame"
 msgstr "Valitsee kaikki rivit, jotka näkyvät tällä hetkellä videokuvassa"
 
-#: frame_main.cpp:266
+#: frame_main.cpp:260
 msgid "Snap subtitles to scene"
 msgstr "Kaappaa videon kohtauksesta alun ja lopun"
 
-#: frame_main.cpp:266
+#: frame_main.cpp:260
 msgid "Snap selected subtitles so they match current scene start/end"
 msgstr "Kaappaa ajat siten, että ne täsmää nykyisen kohtauksen alkua ja loppua"
 
-#: frame_main.cpp:267
+#: frame_main.cpp:261
 msgid "Shift subtitles to frame"
 msgstr "Siirrä videokuvasta alkaen"
 
-#: frame_main.cpp:267
+#: frame_main.cpp:261
 msgid "Shift selected subtitles so first selected starts at this frame"
-msgstr "Siirtää valittuja rivejä siten, että ensimmäinen rivi alkaa täsä kuvasta"
+msgstr ""
+"Siirtää valittuja rivejä siten, että ensimmäinen rivi alkaa täsä kuvasta"
 
-#: frame_main.cpp:271
+#: frame_main.cpp:265
 msgid "Open Styles Manager"
 msgstr "Avaa tyylien hallinnan"
 
-#: frame_main.cpp:272
+#: frame_main.cpp:266
 msgid "Properties"
 msgstr "Asetukset"
 
-#: frame_main.cpp:272
+#: frame_main.cpp:266
 msgid "Open Properties"
 msgstr "Avaa tekstitystiedoston asetukset"
 
-#: frame_main.cpp:273
+#: frame_main.cpp:267
 msgid "Attachments"
 msgstr "Liitokset"
 
-#: frame_main.cpp:273
+#: frame_main.cpp:267
 msgid "Open Attachment List"
 msgstr "Avaa tekstitystiedostoon liitettyjen tiedostojen listan"
 
-#: frame_main.cpp:274
-#: dialog_fonts_collector.cpp:80
+#: frame_main.cpp:268 dialog_fonts_collector.cpp:80
 msgid "Fonts Collector"
 msgstr "Fonttikerääjä"
 
-#: frame_main.cpp:274
+#: frame_main.cpp:268
 msgid "Open Fonts Collector"
 msgstr "Avaa fonttikerääjän"
 
-#: frame_main.cpp:279
+#: frame_main.cpp:273
 msgid "Open Automation manager"
 msgstr "Avaa automaatiohallinnan"
 
-#: frame_main.cpp:285
-#: frame_main.cpp:392
+#: frame_main.cpp:279 frame_main.cpp:386
 msgid "Launches ai-chan's \"ASSDraw3\" tool for vector drawing."
 msgstr "Käynnistää ai-chanin \"ASSDraw3\" työkalun vektoreiden piirtämiseen."
 
-#: frame_main.cpp:288
-#: dialog_shift_times.cpp:63
-#: hotkeys.cpp:347
+#: frame_main.cpp:282 dialog_shift_times.cpp:63 hotkeys.cpp:347
 msgid "Shift Times"
 msgstr "Siirrä aikoja"
 
-#: frame_main.cpp:288
+#: frame_main.cpp:282
 msgid "Open Shift Times Dialogue"
 msgstr "Avaa siirrä aikoja"
 
-#: frame_main.cpp:289
+#: frame_main.cpp:283
 msgid "Styling Assistant"
 msgstr "Tyylitavustaja"
 
-#: frame_main.cpp:289
+#: frame_main.cpp:283
 msgid "Open Styling Assistant"
 msgstr "Avaa tyyliavustajan"
 
-#: frame_main.cpp:290
+#: frame_main.cpp:284
 msgid "Open Translation Assistant"
 msgstr "Avaa käännösavustajan"
 
-#: frame_main.cpp:291
+#: frame_main.cpp:285
 msgid "Resample"
 msgstr "Ota uudestaan"
 
-#: frame_main.cpp:291
+#: frame_main.cpp:285
 msgid "Resample Script Resolution"
 msgstr "Muuta tekstiystiedoston resoluutiota"
 
-#: frame_main.cpp:292
+#: frame_main.cpp:286
 msgid "Open Timing Post-processor dialog"
 msgstr "Avaa ajoitusten jälkiprosessoinnin"
 
-#: frame_main.cpp:293
+#: frame_main.cpp:287
 msgid "Kanji Timer"
 msgstr "Kanjiajoittaja"
 
-#: frame_main.cpp:293
+#: frame_main.cpp:287
 msgid "Open Kanji Timer dialog"
 msgstr "Avaa kanjiajoittajan"
 
-#: frame_main.cpp:294
+#: frame_main.cpp:288
 msgid "Open Spell checker"
 msgstr "Avaa kieliasun tarkistuksen"
 
-#: frame_main.cpp:298
-#: frame_main.cpp:516
+#: frame_main.cpp:292 frame_main.cpp:510
 msgid "Configure Aegisub"
 msgstr "Muokkaa Aegisubia"
 
-#: frame_main.cpp:299
+#: frame_main.cpp:293
 msgid "Cycle Tag Hidding Mode"
 msgstr "Yliajomerkkien piilotus, kuvio tai näyttö "
 
-#: frame_main.cpp:299
+#: frame_main.cpp:293
 msgid "Cycle through tag-hiding modes"
 msgstr "Yliajomerkkien piilotus, kuvio tai näyttö"
 
-#: frame_main.cpp:324
-#: frame_main.cpp:546
+#: frame_main.cpp:318 frame_main.cpp:541
 msgid "&Help"
 msgstr "Oh&je"
 
-#: frame_main.cpp:339
+#: frame_main.cpp:333
 msgid "&New Subtitles"
 msgstr "&Uusi"
 
-#: frame_main.cpp:340
+#: frame_main.cpp:334
 msgid "&Open Subtitles..."
 msgstr "&Avaa..."
 
-#: frame_main.cpp:340
+#: frame_main.cpp:334
 msgid "Opens a subtitles file"
 msgstr "Avaa tekstitystiedoston"
 
-#: frame_main.cpp:341
+#: frame_main.cpp:335
 msgid "&Open Subtitles with Charset..."
 msgstr "&Avaa merkistöllä..."
 
-#: frame_main.cpp:341
+#: frame_main.cpp:335
 msgid "Opens a subtitles file with a specific charset"
 msgstr "Avaa tekstitystiedoston tietyllä merkistöllä"
 
-#: frame_main.cpp:342
+#: frame_main.cpp:336
 msgid "&Save Subtitles"
 msgstr "&Tallenna"
 
-#: frame_main.cpp:342
+#: frame_main.cpp:336
 msgid "Saves subtitles"
 msgstr "Tallentaa tekstitystiedoston"
 
-#: frame_main.cpp:343
+#: frame_main.cpp:337
 msgid "Save Subtitles as..."
 msgstr "Tallenna nimellä..."
 
-#: frame_main.cpp:343
+#: frame_main.cpp:337
 msgid "Saves subtitles with another name"
 msgstr "Tallentaa tekstityksen toisella nimellä"
 
-#: frame_main.cpp:344
+#: frame_main.cpp:338
 msgid "Export Subtitles..."
 msgstr "Vie..."
 
-#: frame_main.cpp:344
+#: frame_main.cpp:338
 msgid "Saves a copy of subtitles with processing applied to it."
 msgstr "Vie tekstitys toiseen tekstitysformaattiin"
 
-#: frame_main.cpp:345
-#: frame_main.cpp:446
-#: frame_main.cpp:454
-#: frame_main.cpp:460
-#: frame_main.cpp:496
+#: frame_main.cpp:339 frame_main.cpp:440 frame_main.cpp:448 frame_main.cpp:454
+#: frame_main.cpp:490
 msgid "Recent"
 msgstr "Viimeisimmät"
 
-#: frame_main.cpp:351
+#: frame_main.cpp:345
 msgid "&Properties..."
 msgstr "&Tekstitystiedoston asetukset..."
 
-#: frame_main.cpp:351
+#: frame_main.cpp:345
 msgid "Open script properties window"
 msgstr "Avaa tekstitystiedoston tekijät ja asetukset"
 
-#: frame_main.cpp:352
+#: frame_main.cpp:346
 msgid "&Attachments..."
 msgstr "&Liitteet..."
 
-#: frame_main.cpp:352
+#: frame_main.cpp:346
 msgid "Open the attachment list"
 msgstr "Avaa tekstitystiedostoon liitettyjen tiedostojen listan"
 
-#: frame_main.cpp:353
+#: frame_main.cpp:347
 msgid "&Fonts Collector..."
 msgstr "&Fonttikerääjä..."
 
-#: frame_main.cpp:353
+#: frame_main.cpp:347
 msgid "Open fonts collector"
 msgstr "Avaa fonttikerääjän"
 
-#: frame_main.cpp:357
+#: frame_main.cpp:351
 msgid "New Window"
 msgstr "Uusi ohjelmaikkuna"
 
-#: frame_main.cpp:357
+#: frame_main.cpp:351
 msgid "Open a new application window"
 msgstr "Avaa uuden ohjelmaikkunan"
 
-#: frame_main.cpp:359
+#: frame_main.cpp:353
 msgid "E&xit"
 msgstr "&Sulje"
 
-#: frame_main.cpp:359
+#: frame_main.cpp:353
 msgid "Exit the application"
 msgstr "Sulkee ohjelman"
 
-#: frame_main.cpp:360
+#: frame_main.cpp:354
 msgid "&File"
 msgstr "&Tiedosto"
 
-#: frame_main.cpp:365
-#: subs_edit_ctrl.cpp:945
-#: frame_main_events.cpp:424
+#: frame_main.cpp:359 subs_edit_ctrl.cpp:946 frame_main_events.cpp:430
 msgid "&Undo"
 msgstr "&Kumoa"
 
-#: frame_main.cpp:365
-#: frame_main_events.cpp:424
+#: frame_main.cpp:359 frame_main_events.cpp:430
 msgid "Undoes last action"
 msgstr "Kumoaa tehdyn toiminnon"
 
-#: frame_main.cpp:366
-#: frame_main_events.cpp:425
+#: frame_main.cpp:360 frame_main_events.cpp:431
 msgid "&Redo"
 msgstr "&Toista"
 
-#: frame_main.cpp:366
-#: frame_main_events.cpp:425
+#: frame_main.cpp:360 frame_main_events.cpp:431
 msgid "Redoes last action"
 msgstr "Toistaa viimeisen toiminnon"
 
-#: frame_main.cpp:368
+#: frame_main.cpp:362
 msgid "Cut Lines"
 msgstr "Leikkaa"
 
-#: frame_main.cpp:368
+#: frame_main.cpp:362
 msgid "Cut subtitles"
 msgstr "Leikkaa rivejä"
 
-#: frame_main.cpp:369
+#: frame_main.cpp:363
 msgid "Copy Lines"
 msgstr "Kopioi"
 
-#: frame_main.cpp:369
+#: frame_main.cpp:363
 msgid "Copy subtitles"
 msgstr "Kopioi rivejä"
 
-#: frame_main.cpp:370
+#: frame_main.cpp:364
 msgid "Paste Lines"
 msgstr "Liitä"
 
-#: frame_main.cpp:370
+#: frame_main.cpp:364
 msgid "Paste subtitles"
 msgstr "Liittää rivejä"
 
-#: frame_main.cpp:371
+#: frame_main.cpp:365
 msgid "Paste Lines Over..."
 msgstr "Liitä päälle..."
 
-#: frame_main.cpp:371
+#: frame_main.cpp:365
 msgid "Paste subtitles over others"
 msgstr "Liittää rivejä toisten rivien päälle"
 
-#: frame_main.cpp:373
+#: frame_main.cpp:367
 msgid "&Find..."
 msgstr "&Etsi..."
 
-#: frame_main.cpp:373
+#: frame_main.cpp:367
 msgid "Find words in subtitles"
 msgstr "Etsi sanoja riveistä"
 
-#: frame_main.cpp:374
-#: hotkeys.cpp:350
-#: hotkeys.cpp:353
+#: frame_main.cpp:368 hotkeys.cpp:350 hotkeys.cpp:353
 msgid "Find Next"
 msgstr "Etsi seuraava"
 
-#: frame_main.cpp:374
+#: frame_main.cpp:368
 msgid "Find next match of last word"
 msgstr "Etsii seuraavan osuman"
 
-#: frame_main.cpp:375
+#: frame_main.cpp:369
 msgid "Search and &Replace..."
 msgstr "Etsi ja &korvaa..."
 
-#: frame_main.cpp:375
+#: frame_main.cpp:369
 msgid "Find and replace words in subtitles"
 msgstr "Etsii ja korvaa sanoja riveistä"
 
-#: frame_main.cpp:376
+#: frame_main.cpp:370
 msgid "&Edit"
 msgstr "&Muokkaa"
 
-#: frame_main.cpp:381
+#: frame_main.cpp:375
 msgid "&Insert Lines"
 msgstr "&Lisää rivi"
 
-#: frame_main.cpp:385
+#: frame_main.cpp:379
 msgid "&Styles Manager..."
 msgstr "&Tyylien hallinta..."
 
-#: frame_main.cpp:385
+#: frame_main.cpp:379
 msgid "Open styles manager"
 msgstr "Avaa tyylien hallinan"
 
-#: frame_main.cpp:386
+#: frame_main.cpp:380
 msgid "St&yling Assistant..."
 msgstr "T&yyliavustaja..."
 
-#: frame_main.cpp:386
+#: frame_main.cpp:380
 msgid "Open styling assistant"
 msgstr "Avaa tyyliavustaja"
 
-#: frame_main.cpp:387
+#: frame_main.cpp:381
 msgid "&Translation Assistant..."
 msgstr "&Käännösavustaja..."
 
-#: frame_main.cpp:387
+#: frame_main.cpp:381
 msgid "Open translation assistant"
 msgstr "Avaa käännösavustajan"
 
-#: frame_main.cpp:388
+#: frame_main.cpp:382
 msgid "Resample Resolution..."
 msgstr "Muuta resoluutio..."
 
-#: frame_main.cpp:388
+#: frame_main.cpp:382
 msgid "Changes resolution and modifies subtitles to conform to change"
-msgstr "Muuttaa tekstitystiedoston resoluution ja näyttää fonttikoon sen mukaisesti"
+msgstr ""
+"Muuttaa tekstitystiedoston resoluution ja näyttää fonttikoon sen mukaisesti"
 
-#: frame_main.cpp:389
+#: frame_main.cpp:383
 msgid "Spe&ll Checker..."
 msgstr "Kie&liasun tarkistus..."
 
-#: frame_main.cpp:389
+#: frame_main.cpp:383
 msgid "Open spell checker"
 msgstr "Avaa kieliasun tarkistuksen"
 
-#: frame_main.cpp:395
+#: frame_main.cpp:389
 msgid "&Before Current"
 msgstr "&Ennen"
 
-#: frame_main.cpp:395
+#: frame_main.cpp:389
 msgid "Inserts a line before current"
 msgstr "Lisää uuden rivin ennen valittua riviä"
 
-#: frame_main.cpp:396
+#: frame_main.cpp:390
 msgid "&After Current"
 msgstr "&Jälkeen"
 
-#: frame_main.cpp:396
+#: frame_main.cpp:390
 msgid "Inserts a line after current"
 msgstr "Lisää rivin valitun rivin jälkeen"
 
-#: frame_main.cpp:397
+#: frame_main.cpp:391
 msgid "Before Current, at Video Time"
 msgstr "Ennen, videokuvan ajalla"
 
-#: frame_main.cpp:397
+#: frame_main.cpp:391
 msgid "Inserts a line before current, starting at video time"
 msgstr "Lisää rivin ennen valittua, videon ajalla"
 
-#: frame_main.cpp:398
+#: frame_main.cpp:392
 msgid "After Current, at Video Time"
 msgstr "Jälkeen, videokuvan ajalla"
 
-#: frame_main.cpp:398
+#: frame_main.cpp:392
 msgid "Inserts a line after current, starting at video time"
 msgstr "Lisää rivin valitun jälkeen, videon ajalla"
 
-#: frame_main.cpp:400
+#: frame_main.cpp:394
 msgid "&Duplicate Lines"
 msgstr "&Monista"
 
-#: frame_main.cpp:401
+#: frame_main.cpp:395
 msgid "&Duplicate and Shift by 1 Frame"
 msgstr "&Monista ja siirrä 1 kuvalla"
 
-#: frame_main.cpp:402
+#: frame_main.cpp:396
 msgid "Delete Lines"
 msgstr "Poista"
 
-#: frame_main.cpp:405
+#: frame_main.cpp:399
 msgid "Join Lines"
 msgstr "Yhdistä"
 
-#: frame_main.cpp:409
+#: frame_main.cpp:403
 msgid "&Concatenate"
 msgstr "&Yhteen"
 
-#: frame_main.cpp:410
+#: frame_main.cpp:404
 msgid "Keep &First"
 msgstr "&Pidä ensimmäinen"
 
-#: frame_main.cpp:411
+#: frame_main.cpp:405
 msgid "As &Karaoke"
 msgstr "&Karaokena"
 
-#: frame_main.cpp:411
+#: frame_main.cpp:405
 msgid "Joins selected lines in a single one, as karaoke"
 msgstr "Yhdistää rivit yhteen karaoke tavuttaen sanat"
 
-#: frame_main.cpp:414
+#: frame_main.cpp:408
 msgid "Split Lines (by karaoke)"
 msgstr "Erota karaoketavuista"
 
-#: frame_main.cpp:416
+#: frame_main.cpp:410
 msgid "Swap Lines"
 msgstr "Vaihda"
 
-#: frame_main.cpp:417
+#: frame_main.cpp:411
 msgid "Select Lines..."
 msgstr "Valitse rivejä..."
 
-#: frame_main.cpp:417
+#: frame_main.cpp:411
 msgid "Selects lines based on defined criterea"
 msgstr "Valitsee rivit annettujen tietojen perusteella"
 
-#: frame_main.cpp:418
+#: frame_main.cpp:412
 msgid "&Subtitles"
 msgstr "&Tekstitysrivistö"
 
-#: frame_main.cpp:422
+#: frame_main.cpp:416
 msgid "S&hift Times..."
 msgstr "Siirrä &aikoja..."
 
-#: frame_main.cpp:422
+#: frame_main.cpp:416
 msgid "Shift subtitles by time or frames"
 msgstr "Siirtää käännöksien ajoituksia ajan tai kuvien mukaan"
 
-#: frame_main.cpp:423
+#: frame_main.cpp:417
 msgid "Sort by Time"
 msgstr "Järjestä rivit"
 
-#: frame_main.cpp:423
+#: frame_main.cpp:417
 msgid "Sort all subtitles by their start times"
 msgstr "Järjestää rivit aikojen mukaan"
 
-#: frame_main.cpp:424
+#: frame_main.cpp:418
 msgid "Timing Post-Processor..."
 msgstr "Aikojen jälkiprosessori..."
 
-#: frame_main.cpp:424
-msgid "Runs a post-processor for timing to deal with lead-ins, lead-outs, scene timing and etc."
-msgstr "Prosessoi ajoituksen jälkeen aikoja kuten etuaikaa, jälkiaikaa, kohtauskiinnitykset jne."
+#: frame_main.cpp:418
+msgid ""
+"Runs a post-processor for timing to deal with lead-ins, lead-outs, scene "
+"timing and etc."
+msgstr ""
+"Prosessoi ajoituksen jälkeen aikoja kuten etuaikaa, jälkiaikaa, "
+"kohtauskiinnitykset jne."
 
-#: frame_main.cpp:425
+#: frame_main.cpp:419
 msgid "Kanji Timer..."
 msgstr "Kanjiajoittaja..."
 
-#: frame_main.cpp:425
+#: frame_main.cpp:419
 msgid "Open Kanji timer"
 msgstr "Avaa kanjiajoittajan"
 
-#: frame_main.cpp:427
+#: frame_main.cpp:421
 msgid "Snap Start to Video"
 msgstr "Kaappaa alku videosta"
 
-#: frame_main.cpp:428
+#: frame_main.cpp:422
 msgid "Snap End to Video"
 msgstr "Kaappaa loppu videosta"
 
-#: frame_main.cpp:429
-#: hotkeys.cpp:371
+#: frame_main.cpp:423 hotkeys.cpp:371
 msgid "Snap to Scene"
 msgstr "Kaappaa kohtaus"
 
-#: frame_main.cpp:429
-msgid "Set start and end of subtitles to the keyframes around current video frame"
+#: frame_main.cpp:423
+msgid ""
+"Set start and end of subtitles to the keyframes around current video frame"
 msgstr "Laittaa alun ja lopun avainkuviin nykyisen kuvan ympärillä"
 
-#: frame_main.cpp:430
+#: frame_main.cpp:424
 msgid "Shift to Current Frame"
 msgstr "Siirrä nykyiseen kuvaan"
 
-#: frame_main.cpp:430
+#: frame_main.cpp:424
 msgid "Shift selection so first selected line starts at current frame"
 msgstr "Siirtää valinnan siten, että ensimmäinen rivi alkaa nykyisestä kuvasta"
 
-#: frame_main.cpp:433
+#: frame_main.cpp:427
 msgid "Make Times Continuous"
 msgstr "Yhtäjaksoita"
 
-#: frame_main.cpp:437
+#: frame_main.cpp:431
 msgid "Change &Start"
 msgstr "Siirrä &alkua"
 
-#: frame_main.cpp:438
+#: frame_main.cpp:432
 msgid "Change &End"
 msgstr "Siirrä &loppua"
 
-#: frame_main.cpp:440
+#: frame_main.cpp:434
 msgid "&Timing"
 msgstr "&Ajoitus"
 
-#: frame_main.cpp:444
+#: frame_main.cpp:438
 msgid "&Open Video..."
 msgstr "&Avaa..."
 
-#: frame_main.cpp:444
+#: frame_main.cpp:438
 msgid "Opens a video file"
 msgstr "Avaa videotiedoston"
 
-#: frame_main.cpp:445
+#: frame_main.cpp:439
 msgid "&Close Video"
 msgstr "&Sulje"
 
-#: frame_main.cpp:445
+#: frame_main.cpp:439
 msgid "Closes the currently open video file"
 msgstr "Sulkee avatun videon"
 
-#: frame_main.cpp:448
+#: frame_main.cpp:442
 msgid "Use Dummy Video..."
 msgstr "Käytä videotonta kuvaa..."
 
-#: frame_main.cpp:448
+#: frame_main.cpp:442
 msgid "Opens a video clip with solid colour"
-msgstr "Avaa videottoman kuvan yhdellä värillä, jotta voit esikatsella tekstityksiä"
+msgstr ""
+"Avaa videottoman kuvan yhdellä värillä, jotta voit esikatsella tekstityksiä"
 
-#: frame_main.cpp:449
+#: frame_main.cpp:443
 msgid "Show Video Details..."
 msgstr "Näytä videon tiedot..."
 
-#: frame_main.cpp:449
+#: frame_main.cpp:443
 msgid "Shows video details"
 msgstr "Näyttää videon tiedot"
 
-#: frame_main.cpp:451
+#: frame_main.cpp:445
 msgid "Open Timecodes File..."
 msgstr "Avaa aikakoodit..."
 
-#: frame_main.cpp:451
+#: frame_main.cpp:445
 msgid "Opens a VFR timecodes v1 or v2 file"
 msgstr "Avaa VFR aikakoodit v1 tai v2 tiedoston"
 
-#: frame_main.cpp:452
+#: frame_main.cpp:446
 msgid "Save Timecodes File..."
 msgstr "Tallenna aikakoodit..."
 
-#: frame_main.cpp:452
+#: frame_main.cpp:446
 msgid "Saves a VFR timecodes v2 file"
 msgstr "Tallentaa VFR aikakoodi v2 tiedoston"
 
-#: frame_main.cpp:453
+#: frame_main.cpp:447
 msgid "Close Timecodes File"
 msgstr "Sulje aikakoodit"
 
-#: frame_main.cpp:453
+#: frame_main.cpp:447
 msgid "Closes the currently open timecodes file"
 msgstr "Sulkee avatun aikakooditiedoston"
 
-#: frame_main.cpp:457
+#: frame_main.cpp:451
 msgid "Open Keyframes..."
 msgstr "Avaa avainkuvat..."
 
-#: frame_main.cpp:457
+#: frame_main.cpp:451
 msgid "Opens a keyframe list file"
 msgstr "Avaa avainkuvalistan"
 
-#: frame_main.cpp:458
+#: frame_main.cpp:452
 msgid "Save Keyframes..."
 msgstr "Tallenna avainkuvat..."
 
-#: frame_main.cpp:458
+#: frame_main.cpp:452
 msgid "Saves the current keyframe list"
 msgstr "Tallentaa nykyisen avainkuvalistan"
 
-#: frame_main.cpp:459
+#: frame_main.cpp:453
 msgid "Close Keyframes"
 msgstr "Sulje avainkuvat"
 
-#: frame_main.cpp:459
+#: frame_main.cpp:453
 msgid "Closes the currently open keyframes list"
 msgstr "Sulkee avatun avainkuvalistan"
 
-#: frame_main.cpp:463
+#: frame_main.cpp:457
 msgid "Detach Video"
 msgstr "Irrota video"
 
-#: frame_main.cpp:463
+#: frame_main.cpp:457
 msgid "Detach video, displaying it in a separate Window."
 msgstr "Irroittaa videon omaksi ikkunakseen."
 
-#: frame_main.cpp:465
+#: frame_main.cpp:459
 msgid "Set Zoom"
 msgstr "Kuvan koko"
 
-#: frame_main.cpp:469
+#: frame_main.cpp:463
 msgid "Set zoom to 50%"
 msgstr "Aseta kuvan koko 50%"
 
-#: frame_main.cpp:470
+#: frame_main.cpp:464
 msgid "Set zoom to 100%"
 msgstr "Aseta kuvan koko 100%"
 
-#: frame_main.cpp:471
+#: frame_main.cpp:465
 msgid "Set zoom to 200%"
 msgstr "Aseta kuvan koko 200%"
 
-#: frame_main.cpp:474
+#: frame_main.cpp:468
 msgid "Override Aspect Ratio"
 msgstr "Pakota kuvasuhde"
 
-#: frame_main.cpp:478
+#: frame_main.cpp:472
 msgid "&Default"
 msgstr "&Oletus"
 
-#: frame_main.cpp:478
+#: frame_main.cpp:472
 msgid "Leave video on original aspect ratio"
 msgstr "Jätä alkuperäinen kuvasuhde videolle"
 
-#: frame_main.cpp:479
+#: frame_main.cpp:473
 msgid "&Fullscreen (4:3)"
 msgstr "&Kokoruutu (4:3)"
 
-#: frame_main.cpp:479
+#: frame_main.cpp:473
 msgid "Forces video to 4:3 aspect ratio"
 msgstr "Pakottaa videon 4:3 kuvasuhteeseen"
 
-#: frame_main.cpp:480
+#: frame_main.cpp:474
 msgid "&Widescreen (16:9)"
 msgstr "&Laajakuva (16:9)"
 
-#: frame_main.cpp:480
+#: frame_main.cpp:474
 msgid "Forces video to 16:9 aspect ratio"
 msgstr "Pakottaa videon 16:9 kuvasuhteeseen"
 
-#: frame_main.cpp:481
+#: frame_main.cpp:475
 msgid "&Cinematic (2.35)"
 msgstr "&Elokuvateatterimainen (2.35)"
 
-#: frame_main.cpp:481
+#: frame_main.cpp:475
 msgid "Forces video to 2.35 aspect ratio"
 msgstr "Pakottaa videon 2.35 kuvasuhteeseen"
 
-#: frame_main.cpp:482
+#: frame_main.cpp:476
 msgid "Custom..."
 msgstr "Erikoinen..."
 
-#: frame_main.cpp:482
+#: frame_main.cpp:476
 msgid "Forces video to a custom aspect ratio"
 msgstr "Pakottaa videon erikoiseen kuvasuhteeseen"
 
-#: frame_main.cpp:484
+#: frame_main.cpp:478
 msgid "Show Overscan Mask"
 msgstr "Näytä \"overscan\" peite"
 
-#: frame_main.cpp:484
-msgid "Show a mask over the video, indicating areas that might get cropped off by overscan on televisions."
-msgstr "Peittää videon päältä alueita viitaten alueisiin jotka mahdollisesti menee ruudun ylitse Overscannin takia televisioissa."
+#: frame_main.cpp:478
+msgid ""
+"Show a mask over the video, indicating areas that might get cropped off by "
+"overscan on televisions."
+msgstr ""
+"Peittää videon päältä alueita viitaten alueisiin jotka mahdollisesti menee "
+"ruudun ylitse Overscannin takia televisioissa."
 
-#: frame_main.cpp:486
+#: frame_main.cpp:480
 msgid "&Jump to..."
 msgstr "&Hyppää..."
 
-#: frame_main.cpp:486
+#: frame_main.cpp:480
 msgid "Jump to frame or time"
 msgstr "Hyppää kuvaan tai aikaan"
 
-#: frame_main.cpp:487
-#: hotkeys.cpp:367
+#: frame_main.cpp:481 hotkeys.cpp:367
 msgid "Jump Video to Start"
 msgstr "Hyppää video alkuun"
 
-#: frame_main.cpp:488
-#: hotkeys.cpp:368
+#: frame_main.cpp:482 hotkeys.cpp:368
 msgid "Jump Video to End"
 msgstr "Hyppää video loppuun"
 
-#: frame_main.cpp:489
+#: frame_main.cpp:483
 msgid "&Video"
 msgstr "&Video"
 
-#: frame_main.cpp:493
+#: frame_main.cpp:487
 msgid "&Open Audio File..."
 msgstr "&Avaa..."
 
-#: frame_main.cpp:493
+#: frame_main.cpp:487
 msgid "Opens an audio file"
 msgstr "Avaa ääniraidan tiedostosta"
 
-#: frame_main.cpp:494
+#: frame_main.cpp:488
 msgid "Open Audio from &Video"
 msgstr "Avaa &videosta"
 
-#: frame_main.cpp:494
+#: frame_main.cpp:488
 msgid "Opens the audio from the current video file"
 msgstr "Avaa ääniraidan avatusta videosta."
 
-#: frame_main.cpp:495
+#: frame_main.cpp:489
 msgid "&Close Audio"
 msgstr "&Sulje"
 
-#: frame_main.cpp:495
+#: frame_main.cpp:489
 msgid "Closes the currently open audio file"
 msgstr "Sulkee avatun ääniraidan"
 
-#: frame_main.cpp:503
+#: frame_main.cpp:497
 msgid "&Audio"
 msgstr "&Ääniraita"
 
-#: frame_main.cpp:508
+#: frame_main.cpp:502
 msgid "&Automation..."
 msgstr "&Automaatio..."
 
-#: frame_main.cpp:508
+#: frame_main.cpp:502
 msgid "Open automation manager"
 msgstr "Avaa automaatiohallinta"
 
-#: frame_main.cpp:510
+#: frame_main.cpp:504
 msgid "&Automation"
 msgstr "&Automaatio"
 
-#: frame_main.cpp:515
+#: frame_main.cpp:509
 msgid "Select Aegisub interface language"
 msgstr "Valitse Aegisubin kieli"
 
-#: frame_main.cpp:516
+#: frame_main.cpp:510
 msgid "&Options..."
 msgstr "&Asetukset..."
 
-#: frame_main.cpp:519
+#: frame_main.cpp:513
 msgid "&Associations..."
 msgstr "&Tiedostokytkennät..."
 
-#: frame_main.cpp:519
+#: frame_main.cpp:513
 msgid "Associate file types with Aegisub"
 msgstr "Eri formaattien kytkennät Aegisubille"
 
-#: frame_main.cpp:522
+#: frame_main.cpp:516
 msgid "Lo&g Window..."
 msgstr "Lo&ki Ikkuna..."
 
-#: frame_main.cpp:522
+#: frame_main.cpp:516
 msgid "Open log window"
 msgstr "Avaa Loki -ikkunan"
 
-#: frame_main.cpp:525
+#: frame_main.cpp:519
 msgid "Subs Only View"
 msgstr "Tekstitysnäkymä"
 
-#: frame_main.cpp:525
+#: frame_main.cpp:519
 msgid "Display subtitles only"
 msgstr "Näyttää näkymässä vain tekstityksen"
 
-#: frame_main.cpp:526
+#: frame_main.cpp:520
 msgid "Video+Subs View"
 msgstr "Videonäkymä"
 
-#: frame_main.cpp:526
+#: frame_main.cpp:520
 msgid "Display video and subtitles only"
 msgstr "Näyttää näkymässä videon ja tekstitykset"
 
-#: frame_main.cpp:527
+#: frame_main.cpp:521
 msgid "Audio+Subs View"
 msgstr "Ääniraitanäkymä"
 
-#: frame_main.cpp:527
+#: frame_main.cpp:521
 msgid "Display audio and subtitles only"
 msgstr "Näyttää näkymässä ääniraidan ja tekstitykset"
 
-#: frame_main.cpp:528
+#: frame_main.cpp:522
 msgid "Full view"
 msgstr "Kokonaisnäkymä"
 
-#: frame_main.cpp:528
+#: frame_main.cpp:522
 msgid "Display audio, video and subtitles"
 msgstr "Näyttää näkymässä kaikki eli videon, ääniraidan ja tekstitykset"
 
-#: frame_main.cpp:529
+#: frame_main.cpp:523
 msgid "Vie&w"
 msgstr "Nä&ytä"
 
-#: frame_main.cpp:533
+#: frame_main.cpp:527
 msgid "&Contents..."
 msgstr "&Ohjekirja"
 
-#: frame_main.cpp:533
+#: frame_main.cpp:527
 msgid "Help topics"
 msgstr "Ohjeen aiheet"
 
-#: frame_main.cpp:535
+#: frame_main.cpp:529
+msgid "&Resource Files..."
+msgstr ""
+
+#: frame_main.cpp:529
+msgid "Resource files distributed with Aegisub"
+msgstr ""
+
+#: frame_main.cpp:532
 msgid "&Website..."
 msgstr "&Kotisivu..."
 
-#: frame_main.cpp:535
+#: frame_main.cpp:532
 msgid "Visit Aegisub's official website"
 msgstr "Käy tutustumassa Aegisubin viralliseen kotisivustoon"
 
-#: frame_main.cpp:536
+#: frame_main.cpp:533
 msgid "&Forums..."
 msgstr "K&eskustelu..."
 
-#: frame_main.cpp:536
+#: frame_main.cpp:533
 msgid "Visit Aegisub's forums"
 msgstr "Tutustu Aegisubin Keskustelualueeseen"
 
-#: frame_main.cpp:537
+#: frame_main.cpp:534
 msgid "&Bug Tracker..."
 msgstr "&Bugitrakkeri..."
 
-#: frame_main.cpp:537
+#: frame_main.cpp:534
 msgid "Visit Aegisub's bug tracker to report bugs and request new features"
-msgstr "Tutustu Aegisubin bugitrakkeriin kertoaksesi bugeista tai ehdottaaksesi uusia ominaisuuksia"
+msgstr ""
+"Tutustu Aegisubin bugitrakkeriin kertoaksesi bugeista tai ehdottaaksesi "
+"uusia ominaisuuksia"
 
-#: frame_main.cpp:538
+#: frame_main.cpp:535
 msgid "&IRC Channel..."
 msgstr "&IRC kanava..."
 
-#: frame_main.cpp:538
+#: frame_main.cpp:535
 msgid "Visit Aegisub's official IRC channel"
 msgstr "Tule käymään Aegisubin virallisella IRC kanavalla"
 
-#: frame_main.cpp:543
+#: frame_main.cpp:539
 msgid "&Check for Updates..."
 msgstr "&Tarkista päivitykset... "
 
-#: frame_main.cpp:543
+#: frame_main.cpp:539
 msgid "Check to see if there is a new version of Aegisub available"
 msgstr "Katso, onko uusia versioita Aegisubista saatavilla"
 
-#: frame_main.cpp:545
+#: frame_main.cpp:540
 msgid "&About..."
 msgstr "&Tietoa Aegisubista..."
 
-#: frame_main.cpp:755
+#: frame_main.cpp:750
 msgid "Save subtitles file"
 msgstr "Tallenna tekstitystiedosto"
 
-#: frame_main.cpp:774
-#: frame_main_events.cpp:710
+#: frame_main.cpp:769 frame_main_events.cpp:735
 msgid "Choose charset code:"
 msgstr "Valitse merkistökoodi:"
 
-#: frame_main.cpp:804
+#: frame_main.cpp:799
 msgid "Save before continuing?"
 msgstr "Tallennetaanko muutokset ennen Aegisubin sulkemista?"
 
-#: frame_main.cpp:804
+#: frame_main.cpp:799
 msgid "Unsaved changes"
 msgstr "Tallentamattomia muutoksia"
 
-#: frame_main.cpp:871
+#: frame_main.cpp:866
 msgid "Untitled"
 msgstr "Nimetön"
 
-#: frame_main.cpp:881
+#: frame_main.cpp:876
 msgid "untitled"
 msgstr "nimetön"
 
-#: frame_main.cpp:947
+#: frame_main.cpp:942
 msgid "Do you want to load/unload the associated files?"
 msgstr ""
 "Tahdotko avata tähän tekstitystiedostoon kytketyn videon ja/tai ääniraidan?\n"
 "\n"
 "Kytkennät poistetaan tästä tekstitystiedostosta, jos valitset \"Ei\"."
 
-#: frame_main.cpp:947
+#: frame_main.cpp:942
 msgid "(Un)Load files?"
 msgstr "Tekstitystiedostoon kytketyt tiedostot... "
 
-#: frame_main.cpp:1092
+#: frame_main.cpp:1087
 msgid "You have timecodes loaded currently. Would you like to unload them?"
 msgstr "Sinulla on avattuna aikokoodit tällähetkellä. Tahdotko sulkea ne?"
 
-#: frame_main.cpp:1092
+#: frame_main.cpp:1087
 msgid "Unload timecodes?"
 msgstr "Suljetaanko aikakoodit?"
 
-#: frame_main.cpp:1123
+#: frame_main.cpp:1129
 #, c-format
 msgid ""
-"The resolution of the loaded video and the resolution specified for the subtitles don't match.\n"
+"The resolution of the loaded video and the resolution specified for the "
+"subtitles don't match.\n"
 "\n"
 "Video resolution:\t%d x %d\n"
 "Script resolution:\t%d x %d\n"
@@ -3789,11 +3738,11 @@ msgstr ""
 "\n"
 "Muutetaanko tekstitystiedoston resoluutio vastaamaan videota?"
 
-#: frame_main.cpp:1123
+#: frame_main.cpp:1129
 msgid "Resolution mismatch"
 msgstr "Resoluutio poikkeavuus"
 
-#: frame_main.cpp:1130
+#: frame_main.cpp:1136
 msgid "Change script resolution"
 msgstr "Muuta tekstitystiedoston resoluutiota"
 
@@ -3802,8 +3751,15 @@ msgid "Transform Framerate"
 msgstr "Muuta kuvataajuutta"
 
 #: export_framerate.cpp:62
-msgid "Transform subtitles times, including those in override tags, from input to output. This is most useful to convert CFR to VFR for hardsubbing. You usually DO NOT want to check this filter for softsubbing."
-msgstr "Muuttaa tekstityksen ajotukset (sisältäen ajat yliajomerkeissä) alkuperäisestä vientiin. Tämä on tarpeellisin toiminto muuttaessa CFR ajoitus VFR videolle hardsubbausta varten. Et tarvitse tätä toimintoa softsubeille."
+msgid ""
+"Transform subtitles times, including those in override tags, from input to "
+"output. This is most useful to convert CFR to VFR for hardsubbing. You "
+"usually DO NOT want to check this filter for softsubbing."
+msgstr ""
+"Muuttaa tekstityksen ajotukset (sisältäen ajat yliajomerkeissä) "
+"alkuperäisestä vientiin. Tämä on tarpeellisin toiminto muuttaessa CFR "
+"ajoitus VFR videolle hardsubbausta varten. Et tarvitse tätä toimintoa "
+"softsubeille."
 
 #: export_framerate.cpp:88
 msgid "From Video"
@@ -3842,8 +3798,12 @@ msgid "Not enough parameters for Aegisub::text_extents()"
 msgstr "Ei tarpeeksi parametrejä Aegisubille::text_extents()"
 
 #: auto4_perl.cpp:315
-msgid "Tried to register PerlConsole, but support for it was disabled in this version."
-msgstr "Yritettiin yhdistää Perl -konsoliin, mutta tuki sille on suljettu tässä versiossa."
+msgid ""
+"Tried to register PerlConsole, but support for it was disabled in this "
+"version."
+msgstr ""
+"Yritettiin yhdistää Perl -konsoliin, mutta tuki sille on suljettu tässä "
+"versiossa."
 
 #: auto4_perl.cpp:383
 msgid "Fatal error: "
@@ -3889,8 +3849,7 @@ msgstr "Värit"
 msgid "Margins"
 msgstr "Marginaalit"
 
-#: dialog_style_editor.cpp:136
-#: dialog_style_editor.cpp:235
+#: dialog_style_editor.cpp:136 dialog_style_editor.cpp:235
 msgid "Outline"
 msgstr "Reunaviiva"
 
@@ -3959,7 +3918,9 @@ msgid "Distance from top/bottom edge, in pixels."
 msgstr "Etäisyys ylä/alareunasta, pikseleissä."
 
 #: dialog_style_editor.cpp:180
-msgid "When selected, display an opaque box behind the subtitles instead of an outline around the text."
+msgid ""
+"When selected, display an opaque box behind the subtitles instead of an "
+"outline around the text."
 msgstr "Kun valittu, fontin takana näkyy laatikko varjon sijasta."
 
 #: dialog_style_editor.cpp:181
@@ -3983,8 +3944,12 @@ msgid "Angle to rotate in Z axis, in degrees."
 msgstr "Pyörityskulma Z akselilla, asteissa."
 
 #: dialog_style_editor.cpp:186
-msgid "Encoding, only useful in unicode if the font doesn't have the proper unicode mapping."
-msgstr "Koodaukseen. Ainostaan hyödyllinen, jos unicode fontilla ei ole kunnollisia unicode karttaa."
+msgid ""
+"Encoding, only useful in unicode if the font doesn't have the proper unicode "
+"mapping."
+msgstr ""
+"Koodaukseen. Ainostaan hyödyllinen, jos unicode fontilla ei ole kunnollisia "
+"unicode karttaa."
 
 #: dialog_style_editor.cpp:187
 msgid "Character spacing, in pixels."
@@ -4051,8 +4016,12 @@ msgid "No subtitle providers available. Cannot preview subs."
 msgstr "Ei tekstitystiedoston avaajaa saatavilla. Ei voida esikatsella."
 
 #: dialog_style_editor.cpp:452
-msgid "Do you want to change all instances of this style in the script to this new name?"
-msgstr "Tahdotko muuttaa kaikki tapaukset tästä tyylistä skriptissä tähän uuteen nimeen?"
+msgid ""
+"Do you want to change all instances of this style in the script to this new "
+"name?"
+msgstr ""
+"Tahdotko muuttaa kaikki tapaukset tästä tyylistä skriptissä tähän uuteen "
+"nimeen?"
 
 #: dialog_style_editor.cpp:452
 msgid "Update script?"
@@ -4060,13 +4029,18 @@ msgstr "Päivitetäänkö skripti?"
 
 #: dialog_style_editor.cpp:583
 msgid ""
-"You have chosen to use the \"Comic Sans\" font. As the programmer and a typesetter,\n"
-"I must urge you to reconsider. Comic Sans is the most abused font in the history\n"
+"You have chosen to use the \"Comic Sans\" font. As the programmer and a "
+"typesetter,\n"
+"I must urge you to reconsider. Comic Sans is the most abused font in the "
+"history\n"
 "of computing, so please avoid using it unless it's REALLY suitable. Thanks."
 msgstr ""
-"Olet valinnut \"Comic Sans\" fontin käyttöösi. Koska koodaajana ja tekstinasettelijana,\n"
-"Minun on pyydettävä sinua miettimään uudelleen. Comic Sans on vihatuin fontti tietojen\n"
-"käsittelyn historiassa, joten varo käyttämästä sitä ellei se todellakin sovi käyttötarkoitukseen. Kiitos."
+"Olet valinnut \"Comic Sans\" fontin käyttöösi. Koska koodaajana ja "
+"tekstinasettelijana,\n"
+"Minun on pyydettävä sinua miettimään uudelleen. Comic Sans on vihatuin "
+"fontti tietojen\n"
+"käsittelyn historiassa, joten varo käyttämästä sitä ellei se todellakin sovi "
+"käyttötarkoitukseen. Kiitos."
 
 #: dialog_style_editor.cpp:583
 msgid "Warning"
@@ -4080,8 +4054,7 @@ msgstr "Siirrä"
 msgid "History"
 msgstr "Historia"
 
-#: dialog_shift_times.cpp:78
-#: dialog_jumpto.cpp:76
+#: dialog_shift_times.cpp:78 dialog_jumpto.cpp:76
 msgid "Time: "
 msgstr "Aika:"
 
@@ -4114,12 +4087,20 @@ msgid "Backward"
 msgstr "Taaksepäin"
 
 #: dialog_shift_times.cpp:99
-msgid "Shifts subs forward, making them appear later. Use if they are appearing too soon."
-msgstr "Siirtää rivit eteenpäin, tuoden ne ruutuun myöhemmin. Käytä, jos tekstit tulevat ruutuun lian aikaisin."
+msgid ""
+"Shifts subs forward, making them appear later. Use if they are appearing too "
+"soon."
+msgstr ""
+"Siirtää rivit eteenpäin, tuoden ne ruutuun myöhemmin. Käytä, jos tekstit "
+"tulevat ruutuun lian aikaisin."
 
 #: dialog_shift_times.cpp:100
-msgid "Shifts subs backward, making them appear earlier. Use if they are appearing too late."
-msgstr "Siirtää rivejä taaksepäin, tuoden ne ruutuun aikaisemmin. Käytä, jos rivit tulevat ruutuun lian myöhään."
+msgid ""
+"Shifts subs backward, making them appear earlier. Use if they are appearing "
+"too late."
+msgstr ""
+"Siirtää rivejä taaksepäin, tuoden ne ruutuun aikaisemmin. Käytä, jos rivit "
+"tulevat ruutuun lian myöhään."
 
 #: dialog_shift_times.cpp:108
 msgid "Selection onward"
@@ -4141,8 +4122,7 @@ msgstr "Alkua"
 msgid "End times only"
 msgstr "Loppua"
 
-#: dialog_shift_times.cpp:113
-#: dialog_paste_over.cpp:91
+#: dialog_shift_times.cpp:113 dialog_paste_over.cpp:91
 msgid "Times"
 msgstr "Ajoitukset"
 
@@ -4260,8 +4240,7 @@ msgstr "Koko"
 msgid "Group"
 msgstr "Ryhmä"
 
-#: dialog_attachments.cpp:145
-#: dialog_attachments.cpp:178
+#: dialog_attachments.cpp:145 dialog_attachments.cpp:178
 msgid "Choose file to be attached"
 msgstr "Valitse tiedosto liitettäväksi"
 
@@ -4281,70 +4260,152 @@ msgstr "Hyppää"
 msgid "Frame: "
 msgstr "Kuva:"
 
-#: video_provider_ffmpegsource.cpp:263
-#: video_provider_lavc.cpp:149
-msgid "You already have timecodes loaded. Would you like to replace them with timecodes from the video file?"
-msgstr "Sinulla on aikakoodit jo avattuna. Korvataanko ne tämän videotiedoston aikakoodeilla?"
+#: video_provider_ffmpegsource.cpp:263 video_provider_lavc.cpp:149
+msgid ""
+"You already have timecodes loaded. Would you like to replace them with "
+"timecodes from the video file?"
+msgstr ""
+"Sinulla on aikakoodit jo avattuna. Korvataanko ne tämän videotiedoston "
+"aikakoodeilla?"
 
 #: dialog_tip.cpp:52
-msgid "Aegisub can export subtitles to many different formats, character encodings, and even compensate Variable Frame Rate so you can hardsub them - it's all in the Export option in File menu."
-msgstr "Aegisub voi viedä tekstityksen usealle eri tekstitysformaatille, eri kirjasinkoodauksilla ja jopa mukauttaa kuvaa per sekuntia, jotta voit hardsubata ne - Tämä kaikki löytyy \"Tiedosto -> Vie...\" valinnasta."
+msgid ""
+"Aegisub can export subtitles to many different formats, character encodings, "
+"and even compensate Variable Frame Rate so you can hardsub them - it's all "
+"in the Export option in File menu."
+msgstr ""
+"Aegisub voi viedä tekstityksen usealle eri tekstitysformaatille, eri "
+"kirjasinkoodauksilla ja jopa mukauttaa kuvaa per sekuntia, jotta voit "
+"hardsubata ne - Tämä kaikki löytyy \"Tiedosto -> Vie...\" valinnasta."
 
 #: dialog_tip.cpp:53
-msgid "You can easily translate subtitle files using the translation assistant."
-msgstr "Voit helposti kääntää valmiin erikielisen tekstitystiedoston käyttäen Käännösavustajaa."
+msgid ""
+"You can easily translate subtitle files using the translation assistant."
+msgstr ""
+"Voit helposti kääntää valmiin erikielisen tekstitystiedoston käyttäen "
+"Käännösavustajaa."
 
 #: dialog_tip.cpp:54
-msgid "Styles can be stored in different storages, so that you can keep your projects organized."
-msgstr "Tyylit voidaan tallentaa eri nimisiin tallennuskansiohin, jotta voit organisoida eri tekstitysprojektit helposti."
+msgid ""
+"Styles can be stored in different storages, so that you can keep your "
+"projects organized."
+msgstr ""
+"Tyylit voidaan tallentaa eri nimisiin tallennuskansiohin, jotta voit "
+"organisoida eri tekstitysprojektit helposti."
 
 #: dialog_tip.cpp:55
-msgid "Use keyboard shortcuts! They make your life easier, for example, Ctrl+Enter updates changes on current line without going to next. Check the manual for a complete list."
-msgstr "Käytä pikanappuloita! Ne tekevät elämästäsi helpompaa. Esimerkiksi: CTRL+ENTER päivittää valitun rivin ilman siirtymistä seuraavaan riviin. Katso manuaalista täydellinen lista pikanappuloista. Voit myös muokata pikanappuloita Aegisubin ominaisuuksista."
+msgid ""
+"Use keyboard shortcuts! They make your life easier, for example, Ctrl+Enter "
+"updates changes on current line without going to next. Check the manual for "
+"a complete list."
+msgstr ""
+"Käytä pikanappuloita! Ne tekevät elämästäsi helpompaa. Esimerkiksi: CTRL"
+"+ENTER päivittää valitun rivin ilman siirtymistä seuraavaan riviin. Katso "
+"manuaalista täydellinen lista pikanappuloista. Voit myös muokata "
+"pikanappuloita Aegisubin ominaisuuksista."
 
 #: dialog_tip.cpp:56
-msgid "There is no reason to use the SSA format (as opposed to ASS). ASS is very similar, but adds some important functionality. Most importantly, however, is that only ASS supports certain override tags (such as \\pos and \\t). Those only work on SSA files because VSFilter/Textsub is merciful."
-msgstr "Ei ole syytä käyttää vanhaa SSA formaattia. ASS on formaatin isoveli, joka lisää formaattiin erittäin tärkeitä uusia toimintoja. Esimerkiksi ainostaan ASS tukee tiettyjä yliajomerkkejä (kuten \\pos ja \\t). Nämä toimii kuitenkin SSA:n kanssa, koska VSFilter/Textsub on armollinen."
+msgid ""
+"There is no reason to use the SSA format (as opposed to ASS). ASS is very "
+"similar, but adds some important functionality. Most importantly, however, "
+"is that only ASS supports certain override tags (such as \\pos and \\t). "
+"Those only work on SSA files because VSFilter/Textsub is merciful."
+msgstr ""
+"Ei ole syytä käyttää vanhaa SSA formaattia. ASS on formaatin isoveli, joka "
+"lisää formaattiin erittäin tärkeitä uusia toimintoja. Esimerkiksi ainostaan "
+"ASS tukee tiettyjä yliajomerkkejä (kuten \\pos ja \\t). Nämä toimii "
+"kuitenkin SSA:n kanssa, koska VSFilter/Textsub on armollinen."
 
 #: dialog_tip.cpp:57
 msgid "DON'T PANIC!"
 msgstr "ÄLÄ PANIKOI!"
 
 #: dialog_tip.cpp:58
-msgid "Aegisub has several features to make sure you will never lose your work. It will periodically save your subtitles to autosave folder, and will create a copy of subs whenever you open them, to autoback folder. Also, if it crashes, it will attempt to save a restore file."
-msgstr "Aegisubilla on useita ominaisuuksia varmistaen, ettet menettäisi milloinkaan työtäsi. Se tallentaa ajoittain tekstityksen automaattisesti ja varmuuskopioi tekstityksen aina kun avaat sen. Aegisubin kaatuessa se yrittää myös luoda palautustiedoston."
+msgid ""
+"Aegisub has several features to make sure you will never lose your work. It "
+"will periodically save your subtitles to autosave folder, and will create a "
+"copy of subs whenever you open them, to autoback folder. Also, if it "
+"crashes, it will attempt to save a restore file."
+msgstr ""
+"Aegisubilla on useita ominaisuuksia varmistaen, ettet menettäisi milloinkaan "
+"työtäsi. Se tallentaa ajoittain tekstityksen automaattisesti ja "
+"varmuuskopioi tekstityksen aina kun avaat sen. Aegisubin kaatuessa se "
+"yrittää myös luoda palautustiedoston."
 
 #: dialog_tip.cpp:59
-msgid "The styling assistant is a practical way to set styles to each line, when each actor has a different style assigned to it."
-msgstr "Tyyliavustaja on käytännöllinen väline asettaa fonttityylit eri riveille, kun jokaiselle esittäjälle on luotu oma fonttityyli."
+msgid ""
+"The styling assistant is a practical way to set styles to each line, when "
+"each actor has a different style assigned to it."
+msgstr ""
+"Tyyliavustaja on käytännöllinen väline asettaa fonttityylit eri riveille, "
+"kun jokaiselle esittäjälle on luotu oma fonttityyli."
 
 #: dialog_tip.cpp:60
-msgid "The fonts collector is one of the most useful features, which resumes the boring task of hunting down fonts into a matter of a few clicks."
-msgstr "Fonttikerääjä on yksi tarpeellisimmista ominaisuuksista, mikä poistaa tylsän homman etsiä fontit erikseen, kun tarvitaan fontit joita kännöksessä käytetään."
+msgid ""
+"The fonts collector is one of the most useful features, which resumes the "
+"boring task of hunting down fonts into a matter of a few clicks."
+msgstr ""
+"Fonttikerääjä on yksi tarpeellisimmista ominaisuuksista, mikä poistaa tylsän "
+"homman etsiä fontit erikseen, kun tarvitaan fontit joita kännöksessä "
+"käytetään."
 
 #: dialog_tip.cpp:61
-msgid "When you are done with your subtitles and ready to distribute them, remember: say no to MP4, OGM or AVI. Matroska is your friend."
-msgstr "Kun olet saanut valmiiksi tekstitystiedostosi ja aiot julkaista sen, muista sanoa ei MP4, OGM tai AVI. Matroska (MKV) on sinun ystäväsi."
+msgid ""
+"When you are done with your subtitles and ready to distribute them, "
+"remember: say no to MP4, OGM or AVI. Matroska is your friend."
+msgstr ""
+"Kun olet saanut valmiiksi tekstitystiedostosi ja aiot julkaista sen, muista "
+"sanoa ei MP4, OGM tai AVI. Matroska (MKV) on sinun ystäväsi."
 
 #: dialog_tip.cpp:62
-msgid "Much like anything loaded via DirectShow, certain files may have a strange structure (such as h.264 into AVI or XviD will null frames) which may cause unreliable seeking (that is, video frames might be off by one frame). This is not an Aegisub bug - you may consider reencoding those videos before working with them."
-msgstr "Melkein kaikilla tiedostoilla mitä tuodaan DriectShown kautta voi olla omituisia struktuureja (esim. H.264 AVI:ssa tai Xvid nollakuvilla), mitkä voi aiheuttaa epäluotettavaa etsinselausta (video voi olla väärin yhdellä kuvalla). Tämä ei ole Aegisub bugi - Voit miettiä video pätkän uudelleen koodausta, ennenkuin teet työtä niiden kanssa."
+msgid ""
+"Much like anything loaded via DirectShow, certain files may have a strange "
+"structure (such as h.264 into AVI or XviD will null frames) which may cause "
+"unreliable seeking (that is, video frames might be off by one frame). This "
+"is not an Aegisub bug - you may consider reencoding those videos before "
+"working with them."
+msgstr ""
+"Melkein kaikilla tiedostoilla mitä tuodaan DriectShown kautta voi olla "
+"omituisia struktuureja (esim. H.264 AVI:ssa tai Xvid nollakuvilla), mitkä "
+"voi aiheuttaa epäluotettavaa etsinselausta (video voi olla väärin yhdellä "
+"kuvalla). Tämä ei ole Aegisub bugi - Voit miettiä video pätkän uudelleen "
+"koodausta, ennenkuin teet työtä niiden kanssa."
 
 #: dialog_tip.cpp:63
-msgid "Try the spectrum mode for the audio display, it can make it much easier to spot where the important points in the audio are."
-msgstr "Koita ääniraidan värinämallia ääniraitanäkymässä. Se voi tehdä helpommaksi löytää tärkeät kohdat, jotka ovat raidassa."
+msgid ""
+"Try the spectrum mode for the audio display, it can make it much easier to "
+"spot where the important points in the audio are."
+msgstr ""
+"Koita ääniraidan värinämallia ääniraitanäkymässä. Se voi tehdä helpommaksi "
+"löytää tärkeät kohdat, jotka ovat raidassa."
 
 #: dialog_tip.cpp:64
-msgid "If you decode your audio to a PCM WAV file before loading it in Aegisub, you don't have to wait for it to be decoded before you can use it."
-msgstr "Jos purat ääniraidan PCM WAV tiedostoksi ennen kuin avaat sen Aegisubiin, sinun ei tarvitse odottaa raidan purkausta, ennenkuin voit käyttää sitä."
+msgid ""
+"If you decode your audio to a PCM WAV file before loading it in Aegisub, you "
+"don't have to wait for it to be decoded before you can use it."
+msgstr ""
+"Jos purat ääniraidan PCM WAV tiedostoksi ennen kuin avaat sen Aegisubiin, "
+"sinun ei tarvitse odottaa raidan purkausta, ennenkuin voit käyttää sitä."
 
 #: dialog_tip.cpp:65
-msgid "Having video open is often more a nuisance than a help when timing subtitles. Timing with only audio open is often much easier. You can always adjust the subtitles to match the video later on."
-msgstr "Videon avaaminen ajoitusta varten on enemmän harmi kuin apu. Pelkän ääniraidan kanssa ajoitus on usein paljon helpompaa. Voit aina hienosäätää tekstitysten aikoja jälkikäteen esim. kohtausvuodot."
+msgid ""
+"Having video open is often more a nuisance than a help when timing "
+"subtitles. Timing with only audio open is often much easier. You can always "
+"adjust the subtitles to match the video later on."
+msgstr ""
+"Videon avaaminen ajoitusta varten on enemmän harmi kuin apu. Pelkän "
+"ääniraidan kanssa ajoitus on usein paljon helpompaa. Voit aina hienosäätää "
+"tekstitysten aikoja jälkikäteen esim. kohtausvuodot."
 
 #: dialog_tip.cpp:66
-msgid "If the audio doesn't seem to work properly during video playback, try loading audio separately. Just select Audio->Load from video, that usually makes the audio much more reliable."
-msgstr "Jos ääniraita ei toimi kunnolla videon toistossa, voit koittaa ladata ääniraidan erikseen. Valitse vain Audio-> Avaa videosta, joka tekee ääniraidan toistosta paljon luotettavamman yleensä."
+msgid ""
+"If the audio doesn't seem to work properly during video playback, try "
+"loading audio separately. Just select Audio->Load from video, that usually "
+"makes the audio much more reliable."
+msgstr ""
+"Jos ääniraita ei toimi kunnolla videon toistossa, voit koittaa ladata "
+"ääniraidan erikseen. Valitse vain Audio-> Avaa videosta, joka tekee "
+"ääniraidan toistosta paljon luotettavamman yleensä."
 
 #: dialog_tip.cpp:67
 msgid "If anything goes wrong, blame movax."
@@ -4354,8 +4415,7 @@ msgstr "Jos jokin menee vikaan, syytä Movaxia."
 msgid "&Browse..."
 msgstr "&Selaa..."
 
-#: dialog_fonts_collector.cpp:98
-#: dialog_fonts_collector.cpp:309
+#: dialog_fonts_collector.cpp:98 dialog_fonts_collector.cpp:309
 msgid ""
 "Choose the folder where the fonts will be collected to.\n"
 "It will be created if it doesn't exist."
@@ -4386,6 +4446,10 @@ msgstr "Liitä fontit tekstitystiedostoon"
 #: dialog_fonts_collector.cpp:112
 msgid "DEBUG: Verify all fonts in system"
 msgstr "Virheiden etsintä: Todenna kaikki järjestelmän fontit "
+
+#: dialog_fonts_collector.cpp:127
+msgid "Log"
+msgstr "Loki"
 
 #: dialog_fonts_collector.cpp:131
 msgid "&Start!"
@@ -4428,8 +4492,14 @@ msgid "Invalid destination directory."
 msgstr "Laiton kohdekansio."
 
 #: dialog_fonts_collector.cpp:406
-msgid "Collecting font data from system. This might take a while, depending on the number of fonts installed. Results are cached and subsequent executions will be faster...\n"
-msgstr "Luetaan tietoja järjestelmän fonteista. Tämä voi kestää hetken riippuen siitä, kuinka monta fonttia on asennettu. Tulos viedään välimuistiin, jolloin myöhemmät suoritukset ovat nopeampia...\n"
+msgid ""
+"Collecting font data from system. This might take a while, depending on the "
+"number of fonts installed. Results are cached and subsequent executions will "
+"be faster...\n"
+msgstr ""
+"Luetaan tietoja järjestelmän fonteista. Tämä voi kestää hetken riippuen "
+"siitä, kuinka monta fonttia on asennettu. Tulos viedään välimuistiin, "
+"jolloin myöhemmät suoritukset ovat nopeampia...\n"
 
 #: dialog_fonts_collector.cpp:408
 msgid "Done collecting font data."
@@ -4526,59 +4596,58 @@ msgstr "\"%s\" löytyi tekstitysrivillä \"%d\".\n"
 msgid "\"%s\" found.\n"
 msgstr "\"%s\" löytyi.\n"
 
-#: subs_edit_ctrl.cpp:799
+#: subs_edit_ctrl.cpp:800
 msgid "No correction suggestions"
 msgstr "Ei korjausehdotuksia"
 
-#: subs_edit_ctrl.cpp:811
+#: subs_edit_ctrl.cpp:812
 #, c-format
 msgid "Add \"%s\" to dictionary"
 msgstr "Lisää \"%s\" sanakirjaan"
 
-#: subs_edit_ctrl.cpp:817
+#: subs_edit_ctrl.cpp:818
 msgid "No spell checker suggestions"
 msgstr "Ei kieliopin korjausehdotuksia"
 
-#: subs_edit_ctrl.cpp:824
+#: subs_edit_ctrl.cpp:825
 #, c-format
 msgid "Spell checker suggestions for \"%s\""
 msgstr "Kieliopin korjausehdotuksia \"%s\":lle"
 
-#: subs_edit_ctrl.cpp:844
-#: subs_edit_ctrl.cpp:927
+#: subs_edit_ctrl.cpp:845 subs_edit_ctrl.cpp:928
 msgid "Disable"
 msgstr "Päältä"
 
-#: subs_edit_ctrl.cpp:857
+#: subs_edit_ctrl.cpp:858
 msgid "Spell checker language"
 msgstr "Kielioppi kieli"
 
-#: subs_edit_ctrl.cpp:908
+#: subs_edit_ctrl.cpp:909
 #, c-format
 msgid "Thesaurus suggestions for \"%s\""
 msgstr "Thesaurus ehdotukset \"%s\":lle"
 
-#: subs_edit_ctrl.cpp:912
+#: subs_edit_ctrl.cpp:913
 msgid "No thesaurus suggestions"
 msgstr "Ei thesaurus ehdotuksia"
 
-#: subs_edit_ctrl.cpp:940
+#: subs_edit_ctrl.cpp:941
 msgid "Thesaurus language"
 msgstr "Thesaurus kieli"
 
-#: subs_edit_ctrl.cpp:947
+#: subs_edit_ctrl.cpp:948
 msgid "Cu&t"
 msgstr "&Leikkaa"
 
-#: subs_edit_ctrl.cpp:951
+#: subs_edit_ctrl.cpp:952
 msgid "Select &All"
 msgstr "Valitse &kaikki"
 
-#: subs_edit_ctrl.cpp:955
+#: subs_edit_ctrl.cpp:956
 msgid "Split at cursor (preserve times)"
 msgstr "Erota kursorista (samat ajat)"
 
-#: subs_edit_ctrl.cpp:956
+#: subs_edit_ctrl.cpp:957
 msgid "Split at cursor (estimate times)"
 msgstr "Erota kursorista (arvioi ajoitukset)"
 
@@ -4718,8 +4787,7 @@ msgstr "Tavuta"
 msgid "Enter split-mode"
 msgstr "Tavuta lausetta lisää"
 
-#: hotkeys.cpp:331
-#: hotkeys.cpp:335
+#: hotkeys.cpp:331 hotkeys.cpp:335
 msgid "Exit"
 msgstr "Poistu"
 
@@ -4731,8 +4799,7 @@ msgstr "Kirjoituslaatikko hyväksy"
 msgid "Undo"
 msgstr "Kumoa"
 
-#: hotkeys.cpp:343
-#: hotkeys.cpp:345
+#: hotkeys.cpp:343 hotkeys.cpp:345
 msgid "Redo"
 msgstr "Toista"
 
@@ -4752,8 +4819,7 @@ msgstr "Liitä"
 msgid "Paste Over"
 msgstr "Liitä päälle"
 
-#: hotkeys.cpp:363
-#: hotkeys.cpp:365
+#: hotkeys.cpp:363 hotkeys.cpp:365
 msgid "Video Jump"
 msgstr "Video hyppyaskel"
 
@@ -4825,8 +4891,7 @@ msgstr "Tekstitysrivistö siirry rivi alaspäin"
 msgid "Grid move row up"
 msgstr "Tekstitysrivistö siirry rivi ylöspäin"
 
-#: hotkeys.cpp:390
-#: hotkeys.cpp:392
+#: hotkeys.cpp:390 hotkeys.cpp:392
 msgid "Grid delete rows"
 msgstr "Tekstitysrivistö poista rivejä"
 
@@ -5046,21 +5111,25 @@ msgstr "Tiedostotyypien kytkennät"
 msgid ""
 "Aegisub can take over the following file types.\n"
 "\n"
-"If you want Aegisub to no longer be associated with a file type, you must tell another program to take over the file type."
+"If you want Aegisub to no longer be associated with a file type, you must "
+"tell another program to take over the file type."
 msgstr ""
 "Aegisub voidaan kytkeä seuraaviin tiedostopäätteisiin.\n"
 "\n"
-"Jos tahdot poistaa tiedoston kytkennän Aegisubiin, sinun pitää kytkeä tiedostotyyppi jollakin toisella sovelluksella siihen."
+"Jos tahdot poistaa tiedoston kytkennän Aegisubiin, sinun pitää kytkeä "
+"tiedostotyyppi jollakin toisella sovelluksella siihen."
 
 #: dialog_associations.cpp:378
 msgid ""
 "Aegisub is already associated with all supported file types.\n"
 "\n"
-"If you want Aegisub to no longer be associated with a file type, you must tell another program to take over the file type."
+"If you want Aegisub to no longer be associated with a file type, you must "
+"tell another program to take over the file type."
 msgstr ""
 "Aegisub on kytketty jo kaikkiin tuettuihin tiedostotyyppeihin. \n"
 "\n"
-"Jos tahdot poistaa tiedoston kytkennän Aegisubiin, sinun pitää kytkeä tiedostotyyppi jollakin toisella sovelluksella siihen."
+"Jos tahdot poistaa tiedoston kytkennän Aegisubiin, sinun pitää kytkeä "
+"tiedostotyyppi jollakin toisella sovelluksella siihen."
 
 #: dialog_associations.cpp:475
 msgid "Aegisub"
@@ -5071,8 +5140,12 @@ msgid "Make Aegisub default editor for subtitles?"
 msgstr "Kytketäänkö Aegisub oletus editoriksi teksitystiedostoille?"
 
 #: dialog_associations.cpp:477
-msgid "Aegisub is not your default editor for subtitle files. Do you want to make Aegisub your default editor for subtitle files?"
-msgstr "Aegisub ei ole oletus editori tekstiystiedostoille. Tahdotko tehdä Aegisubista oletus editorin tekstitystiedostoille?"
+msgid ""
+"Aegisub is not your default editor for subtitle files. Do you want to make "
+"Aegisub your default editor for subtitle files?"
+msgstr ""
+"Aegisub ei ole oletus editori tekstiystiedostoille. Tahdotko tehdä "
+"Aegisubista oletus editorin tekstitystiedostoille?"
 
 #: dialog_associations.cpp:478
 msgid "Always perform this check when Aegisub starts"
@@ -5194,13 +5267,11 @@ msgstr "Vihreä:"
 msgid "Blue:"
 msgstr "Sininen:"
 
-#: dialog_colorpicker.cpp:591
-#: dialog_colorpicker.cpp:601
+#: dialog_colorpicker.cpp:591 dialog_colorpicker.cpp:601
 msgid "Hue:"
 msgstr "Sävy:"
 
-#: dialog_colorpicker.cpp:593
-#: dialog_colorpicker.cpp:603
+#: dialog_colorpicker.cpp:593 dialog_colorpicker.cpp:603
 msgid "Sat.:"
 msgstr "Kylläisyys:"
 
@@ -5220,140 +5291,173 @@ msgstr "Värivalitsin"
 msgid "No timecodes to average"
 msgstr "Ei aikakoodeja vertaamiseen"
 
-#: frame_main_events.cpp:268
+#: frame_main_events.cpp:274
 msgid "Empty"
 msgstr "Tyhjä"
 
-#: frame_main_events.cpp:462
+#: frame_main_events.cpp:468
 msgid "No Automation macros loaded"
 msgstr "Ei Automaatiomakroja ladattu"
 
-#: frame_main_events.cpp:633
-#: frame_main_events.cpp:656
+#: frame_main_events.cpp:658 frame_main_events.cpp:681
 msgid "Video Formats"
 msgstr "Video Formaatit"
 
-#: frame_main_events.cpp:634
-#: frame_main_events.cpp:784
-#: frame_main_events.cpp:799
+#: frame_main_events.cpp:659 frame_main_events.cpp:809
+#: frame_main_events.cpp:824
 msgid "All Files"
 msgstr "Kaikki tiedostot"
 
-#: frame_main_events.cpp:635
+#: frame_main_events.cpp:660
 msgid "Open video file"
 msgstr "Avaa videotiedosto"
 
-#: frame_main_events.cpp:655
+#: frame_main_events.cpp:680
 msgid "Audio Formats"
 msgstr "Ääniformaatit"
 
-#: frame_main_events.cpp:657
+#: frame_main_events.cpp:682
 msgid "All files"
 msgstr "Kaikki tiedostot"
 
-#: frame_main_events.cpp:658
+#: frame_main_events.cpp:683
 msgid "Open audio file"
 msgstr "Avaa ääniraita"
 
-#: frame_main_events.cpp:710
+#: frame_main_events.cpp:735
 msgid "Charset"
 msgstr "Merkistö"
 
-#: frame_main_events.cpp:783
-#: frame_main_events.cpp:798
+#: frame_main_events.cpp:808 frame_main_events.cpp:823
 msgid "All Supported Types"
 msgstr "Kaikki tuetut"
 
-#: frame_main_events.cpp:785
+#: frame_main_events.cpp:810
 msgid "Open timecodes file"
 msgstr "Avaa aikakooditiedosto"
 
-#: frame_main_events.cpp:800
+#: frame_main_events.cpp:825
 msgid "Save timecodes file"
 msgstr "Tallenna aikakooditiedosto"
 
-#: frame_main_events.cpp:1092
+#: frame_main_events.cpp:1117
 msgid "Reloaded all Automation scripts"
 msgstr "Uudelleen ladattu kaikki Automaatio skriptit"
 
-#: frame_main_events.cpp:1095
+#: frame_main_events.cpp:1120
 msgid "Reloaded autoload Automation scripts"
 msgstr "Uudelleen ladattu autoload Automaatio skriptit"
 
-#: frame_main_events.cpp:1232
+#: frame_main_events.cpp:1257
 msgid "snap to scene"
 msgstr "Kaappaa kohtaukseen"
 
-#: frame_main_events.cpp:1263
+#: frame_main_events.cpp:1288
 msgid "shift to frame"
 msgstr "siirrä kuvaan"
 
-#: frame_main_events.cpp:1360
-msgid "Enter aspect ratio in either decimal (e.g. 2.35) or fractional (e.g. 16:9) form. Enter a value like 853x480 to set a specific resolution."
-msgstr "Syötä kuvasuhde joku desimaalisessa (esim 2.35) tai suhteellisessa (esim 16:9) muodossa. Syötä arvo kuten 853:480 aseettaaksesi erityisen resoluution."
+#: frame_main_events.cpp:1385
+msgid ""
+"Enter aspect ratio in either decimal (e.g. 2.35) or fractional (e.g. 16:9) "
+"form. Enter a value like 853x480 to set a specific resolution."
+msgstr ""
+"Syötä kuvasuhde joku desimaalisessa (esim 2.35) tai suhteellisessa (esim "
+"16:9) muodossa. Syötä arvo kuten 853:480 aseettaaksesi erityisen resoluution."
 
-#: frame_main_events.cpp:1360
+#: frame_main_events.cpp:1385
 msgid "Enter aspect ratio"
 msgstr "Syötä kuvasuhde"
 
-#: frame_main_events.cpp:1395
+#: frame_main_events.cpp:1420
 msgid "Invalid value! Aspect ratio must be between 0.5 and 5.0."
 msgstr "Laiton arvo! Kuvasuhde pitää olla 0.5 ja 5.0 välillä."
 
-#: frame_main_events.cpp:1395
+#: frame_main_events.cpp:1420
 msgid "Invalid Aspect Ratio"
 msgstr "Laiton Kuvasuhde"
 
-#: frame_main_events.cpp:1496
+#: frame_main_events.cpp:1521
 msgid "sort"
 msgstr "järjestä"
 
-#: frame_main_events.cpp:1535
+#: frame_main_events.cpp:1560
 msgid "File backup saved as \""
 msgstr "Tiedoston varmuuskopio on tallennettu nimellä \""
 
-#: frame_main_events.cpp:1629
+#: frame_main_events.cpp:1654
 msgid "ASS Override Tag mode set to "
 msgstr "ASS yliajomerkki moodi asetettu"
 
-#: frame_main_events.cpp:1630
+#: frame_main_events.cpp:1655
 msgid "show full tags."
 msgstr "näytä täydet yliajomerkit"
 
-#: frame_main_events.cpp:1631
+#: frame_main_events.cpp:1656
 msgid "simplify tags."
 msgstr "yksinkertaista yliajomerkit."
 
-#: frame_main_events.cpp:1632
+#: frame_main_events.cpp:1657
 msgid "hide tags."
 msgstr "piilota yliajomerkit."
 
+#~ msgid "Could not open Internet File system. Aborting.\n"
+#~ msgstr "Ei voitu avata internet tiedostonhallintaa. Keskeytetään.\n"
+
+#~ msgid "Attempting to open \"%s\"..."
+#~ msgstr "Yritetään avata \"%s\"..."
+
+#~ msgid "Failed.\n"
+#~ msgstr "Epäonnistui.\n"
+
+#~ msgid "OK.\n"
+#~ msgstr "OK.\n"
+
+#~ msgid "New version found!\n"
+#~ msgstr "Uusi versio löytyi!\n"
+
+#~ msgid "Please go to the following URL to download it: %s\n"
+#~ msgstr "Tästä osoitteesta voit ladata sen: %s\n"
+
+#~ msgid "No new version has been found.\n"
+#~ msgstr "Aegisubista ei löytynyt uutta versiota.\n"
+
 #~ msgid "This build of Aegisub uses the following C/C++ libraries:\n"
 #~ msgstr "Tämä versio Aegisubista käyttää seuraavia C/C++ kirjastoja:\n"
+
 #~ msgid "Programmers:"
 #~ msgstr "Ohjelmoijat:"
+
 #~ msgid "Manual by:"
 #~ msgstr "Ohjekirjan luoja:"
+
 #~ msgid "Forum and wiki hosting by:"
 #~ msgstr "Keskustelualueen ja Wikin ylläpito:"
+
 #~ msgid "SVN hosting by:"
 #~ msgstr "SVN sivuston ylläpito:"
+
 #~ msgid "Bug tracker hosting by:"
 #~ msgstr "Bugitrakkerin ylläpito:"
+
 #~ msgid "Associate extensions"
 #~ msgstr "Tiedostokytkennät"
+
 #~ msgid ""
 #~ "Please select the formats you want to\n"
 #~ "associate with Aegisub:"
 #~ msgstr ""
 #~ "Valitse tekstitysformaatit, \n"
 #~ "jotka tahdot kytkeä Aegisubille:"
+
 #~ msgid "Associations"
 #~ msgstr "Tiedostokytkennät"
+
 #~ msgid "Groups"
 #~ msgstr "Ryhmät"
+
 #~ msgid "Select source text first."
 #~ msgstr "Valitse ensin lähdeteksti."
+
 #~ msgid ""
 #~ "The source line contains text before the first karaoke block.\n"
 #~ "Do you want to carry it over to the destination?\n"
@@ -5362,22 +5466,30 @@ msgstr "piilota yliajomerkit."
 #~ "Lähderivi sisältää tekstiä ennen ensimäistä karaoke tavua. \n"
 #~ "Tahdotko kantaa sen mukaan kohderiviin?\n"
 #~ "Muutoin sitä ei huomioida kohderivissä."
+
 #~ msgid "Kanji timer"
 #~ msgstr "Kanjiajoittaja"
+
 #~ msgid "Possible error parsing source line"
 #~ msgstr "Mahdollinen virhe parsErotaessa lähderiviä"
+
 #~ msgid "Group some text first."
 #~ msgstr "Ryhmitä jotakin tekstiä ensin."
+
 #~ msgid "Show Tip of the Day"
 #~ msgstr "Näytä päivän vinkit"
+
 #~ msgid "Save config.dat locally"
 #~ msgstr "Tallenna config.dat paikallisesti"
+
 #~ msgid "Avisynth renders its own subs"
 #~ msgstr "Avisynth renderöi omien skriptiensä tekstitystiedostot"
+
 #~ msgid "Recommended Formats"
 #~ msgstr "Suositellut formaatit"
+
 #~ msgid "Other supported formats"
 #~ msgstr "Muut tuetut formaatit"
+
 #~ msgid "Video Screenshot Path"
 #~ msgstr "Kuvankaappauspolku"
-
