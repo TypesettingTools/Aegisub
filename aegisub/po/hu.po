@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Aegisub Hungarian translation\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2009-12-30 23:16-0500\n"
-"PO-Revision-Date: 2009-12-22 14:56+0100\n"
+"PO-Revision-Date: 2009-12-31 12:19+0100\n"
 "Last-Translator: \n"
 "Language-Team: Yuri <yurielvtars@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -57,7 +57,8 @@ msgstr "elhelyezés"
 msgid "Video Details"
 msgstr "Videó adatai"
 
-#: dialog_video_details.cpp:57 dialog_options.cpp:628
+#: dialog_video_details.cpp:57
+#: dialog_options.cpp:628
 msgid "Video"
 msgstr "Videó"
 
@@ -93,7 +94,8 @@ msgstr ""
 msgid "Choose character set"
 msgstr "Karakterkódolás kiválasztása"
 
-#: dialog_timing_processor.cpp:57 frame_main.cpp:286
+#: dialog_timing_processor.cpp:57
+#: frame_main.cpp:286
 msgid "Timing Post-Processor"
 msgstr "Időzítési utómunkák"
 
@@ -103,11 +105,10 @@ msgstr "Stílusokra alkalmaz"
 
 #: dialog_timing_processor.cpp:76
 msgid "Select styles to process. Unchecked ones will be ignored."
-msgstr ""
-"Válassza ki a feldolgozni kívánt stílusokat. A jelöletleneket nem veszi "
-"figyelembe."
+msgstr "Válassza ki a feldolgozni kívánt stílusokat. A jelöletleneket nem veszi figyelembe."
 
-#: dialog_timing_processor.cpp:77 dialog_paste_over.cpp:89
+#: dialog_timing_processor.cpp:77
+#: dialog_paste_over.cpp:89
 msgid "All"
 msgstr "Mindet"
 
@@ -115,7 +116,8 @@ msgstr "Mindet"
 msgid "Select all styles."
 msgstr "Minden stílus kiválasztása"
 
-#: dialog_timing_processor.cpp:79 dialog_paste_over.cpp:90
+#: dialog_timing_processor.cpp:79
+#: dialog_paste_over.cpp:90
 msgid "None"
 msgstr "Semmit"
 
@@ -123,10 +125,18 @@ msgstr "Semmit"
 msgid "Deselect all styles."
 msgstr "Egy sílust sem választ ki"
 
-#: dialog_timing_processor.cpp:83 dialog_options.cpp:86 dialog_options.cpp:213
-#: dialog_options.cpp:287 dialog_options.cpp:356 dialog_options.cpp:434
-#: dialog_options.cpp:476 dialog_options.cpp:564 dialog_properties.cpp:119
-#: frame_main.cpp:292 hotkeys.cpp:333 hotkeys.cpp:337
+#: dialog_timing_processor.cpp:83
+#: dialog_options.cpp:86
+#: dialog_options.cpp:213
+#: dialog_options.cpp:287
+#: dialog_options.cpp:356
+#: dialog_options.cpp:434
+#: dialog_options.cpp:476
+#: dialog_options.cpp:564
+#: dialog_properties.cpp:119
+#: frame_main.cpp:292
+#: hotkeys.cpp:333
+#: hotkeys.cpp:337
 msgid "Options"
 msgstr "Beállítások"
 
@@ -166,38 +176,26 @@ msgstr "Érték megadása ezredmásodpercben."
 msgid "Make adjacent subtitles continuous"
 msgstr "Feliratsorok folytonossá tétele"
 
-#: dialog_timing_processor.cpp:108 dialog_timing_processor.cpp:126
+#: dialog_timing_processor.cpp:108
+#: dialog_timing_processor.cpp:126
 msgid "Enable"
 msgstr "Bekapcsol"
 
 #: dialog_timing_processor.cpp:109
-msgid ""
-"Enable snapping of subtitles together if they are within a certain distance "
-"of each other."
-msgstr ""
-"Folytonossá teszi azokat a sorokat, amik egy bizonyos távolságra vannak "
-"egymástól."
+msgid "Enable snapping of subtitles together if they are within a certain distance of each other."
+msgstr "Folytonossá teszi azokat a sorokat, amik egy bizonyos távolságra vannak egymástól."
 
 #: dialog_timing_processor.cpp:111
 msgid "Threshold:"
 msgstr "Határérték:"
 
 #: dialog_timing_processor.cpp:113
-msgid ""
-"Maximum difference between start and end time for two subtitles to be made "
-"continuous, in milliseconds."
-msgstr ""
-"Maximális távolság két feliratsor (első vége, második eleje) között, "
-"ezredmásodpercben megadva."
+msgid "Maximum difference between start and end time for two subtitles to be made continuous, in milliseconds."
+msgstr "Maximális távolság két feliratsor (első vége, második eleje) között, ezredmásodpercben megadva."
 
 #: dialog_timing_processor.cpp:115
-msgid ""
-"Sets how to set the adjoining of lines. If set totally to left, it will "
-"extend start time of the second line; if totally to right, it will extend "
-"the end time of the first line."
-msgstr ""
-"Beállítja a folytonossági arányt. Balra tolva a második sor kezdeti idejét, "
-"jobbra tolva az első sor végének az idejét fogja változtatni."
+msgid "Sets how to set the adjoining of lines. If set totally to left, it will extend start time of the second line; if totally to right, it will extend the end time of the first line."
+msgstr "Beállítja a folytonossági arányt. Balra tolva a második sor kezdeti idejét, jobbra tolva az első sor végének az idejét fogja változtatni."
 
 #: dialog_timing_processor.cpp:119
 msgid "Bias: Start <- "
@@ -212,60 +210,40 @@ msgid "Keyframe snapping"
 msgstr "Kulcskockához igazítás"
 
 #: dialog_timing_processor.cpp:127
-msgid ""
-"Enable snapping of subtitles to nearest keyframe, if distance is within "
-"threshold."
-msgstr ""
-"Hozzáilleszti a feliratsort a legközelebbi kulcskockához, ha az benne van a "
-"megadott határértéken belül."
+msgid "Enable snapping of subtitles to nearest keyframe, if distance is within threshold."
+msgstr "Hozzáilleszti a feliratsort a legközelebbi kulcskockához, ha az benne van a megadott határértéken belül."
 
 #: dialog_timing_processor.cpp:129
 msgid "Starts before thres.:"
 msgstr "Kezdet levágása:"
 
 #: dialog_timing_processor.cpp:131
-msgid ""
-"Threshold for 'before start' distance, that is, how many frames a subtitle "
-"must start before a keyframe to snap to it."
-msgstr ""
-"Ha ezen számon belülre esik a sor kezdetének képkocka értéke, akkor az "
-"levágásra kerül, hogy elérje a legközelebbi kulcskockát."
+msgid "Threshold for 'before start' distance, that is, how many frames a subtitle must start before a keyframe to snap to it."
+msgstr "Ha ezen számon belülre esik a sor kezdetének képkocka értéke, akkor az levágásra kerül, hogy elérje a legközelebbi kulcskockát."
 
 #: dialog_timing_processor.cpp:132
 msgid "Starts after thres.:"
 msgstr "Kezdet növelése:"
 
 #: dialog_timing_processor.cpp:134
-msgid ""
-"Threshold for 'after start' distance, that is, how many frames a subtitle "
-"must start after a keyframe to snap to it."
-msgstr ""
-"Ha ezen számon belülre esik a sor kezdetének képkocka értéke, akkor az "
-"növelésre kerül, hogy elérje a legközelebbi kulcskockát."
+msgid "Threshold for 'after start' distance, that is, how many frames a subtitle must start after a keyframe to snap to it."
+msgstr "Ha ezen számon belülre esik a sor kezdetének képkocka értéke, akkor az növelésre kerül, hogy elérje a legközelebbi kulcskockát."
 
 #: dialog_timing_processor.cpp:135
 msgid "Ends before thres.:"
 msgstr "Vége levágása:"
 
 #: dialog_timing_processor.cpp:137
-msgid ""
-"Threshold for 'before end' distance, that is, how many frames a subtitle "
-"must end before a keyframe to snap to it."
-msgstr ""
-"Ha ezen számon belülre esik a sor végének képkocka értéke, akkor az "
-"levágásra kerül, hogy elérje a legközelebbi kulcskockát."
+msgid "Threshold for 'before end' distance, that is, how many frames a subtitle must end before a keyframe to snap to it."
+msgstr "Ha ezen számon belülre esik a sor végének képkocka értéke, akkor az levágásra kerül, hogy elérje a legközelebbi kulcskockát."
 
 #: dialog_timing_processor.cpp:138
 msgid "Ends after thres.:"
 msgstr "Vége növelése:"
 
 #: dialog_timing_processor.cpp:140
-msgid ""
-"Threshold for 'after end' distance, that is, how many frames a subtitle must "
-"end after a keyframe to snap to it."
-msgstr ""
-"Ha ezen számon belülre esik a sor végének képkocka értéke, akkor az "
-"növelésre kerül, hogy elérje a legközelebbi kulcskockát."
+msgid "Threshold for 'after end' distance, that is, how many frames a subtitle must end after a keyframe to snap to it."
+msgstr "Ha ezen számon belülre esik a sor végének képkocka értéke, akkor az növelésre kerül, hogy elérje a legközelebbi kulcskockát."
 
 #: dialog_timing_processor.cpp:322
 #, c-format
@@ -306,9 +284,7 @@ msgstr "Aktuális idő és képkocka szám"
 
 #: video_box.cpp:98
 msgid "Time of this frame relative to start and end of current subs."
-msgstr ""
-"Az aktuális képkocka relatív távolsága a kijelölt feliratsor kezdeti- és "
-"végidőpontjától."
+msgstr "Az aktuális képkocka relatív távolsága a kijelölt feliratsor kezdeti- és végidőpontjától."
 
 #: video_box.cpp:114
 msgid "Standard"
@@ -318,7 +294,8 @@ msgstr "Hagyományos"
 msgid "Standard mode, double click sets position."
 msgstr "Hagyományos elhelyezés, duplaklikk a helyzetberakáshoz"
 
-#: video_box.cpp:115 visual_tool_vector_clip.cpp:70
+#: video_box.cpp:115
+#: visual_tool_vector_clip.cpp:70
 msgid "Drag"
 msgstr "Elhelyezés"
 
@@ -374,7 +351,9 @@ msgstr "Valós idejű"
 msgid "Toggle realtime display of changes."
 msgstr "Változások valós idejű megjelenítése"
 
-#: video_box.cpp:124 hotkeys.cpp:332 hotkeys.cpp:336
+#: video_box.cpp:124
+#: hotkeys.cpp:332
+#: hotkeys.cpp:336
 msgid "Help"
 msgstr "Súgó"
 
@@ -414,7 +393,8 @@ msgstr "Kulcskockák kiolvasása a videóból"
 msgid "Styling assistant"
 msgstr "Dekoráló segéd"
 
-#: dialog_styling_assistant.cpp:75 dialog_styling_assistant.cpp:76
+#: dialog_styling_assistant.cpp:75
+#: dialog_styling_assistant.cpp:76
 msgid "Current line"
 msgstr "Jelenlegi sor"
 
@@ -426,37 +406,47 @@ msgstr "Elérhető sílusok"
 msgid "Set style"
 msgstr "Beállít erre"
 
-#: dialog_styling_assistant.cpp:87 dialog_translation.cpp:99
+#: dialog_styling_assistant.cpp:87
+#: dialog_translation.cpp:99
 msgid "Keys"
 msgstr "Gyorsgombok"
 
-#: dialog_styling_assistant.cpp:88 dialog_translation.cpp:122
+#: dialog_styling_assistant.cpp:88
+#: dialog_translation.cpp:122
 msgid "Actions"
 msgstr "Események"
 
-#: dialog_styling_assistant.cpp:96 dialog_translation.cpp:102
+#: dialog_styling_assistant.cpp:96
+#: dialog_translation.cpp:102
 msgid "Accept changes"
 msgstr "Elfogad és tovább"
 
-#: dialog_styling_assistant.cpp:98 dialog_translation.cpp:104
+#: dialog_styling_assistant.cpp:98
+#: dialog_translation.cpp:104
 msgid "Preview changes"
 msgstr "Elfogad és marad"
 
-#: dialog_styling_assistant.cpp:100 dialog_translation.cpp:106
+#: dialog_styling_assistant.cpp:100
+#: dialog_translation.cpp:106
 msgid "Previous line"
 msgstr "Előző sor"
 
-#: dialog_styling_assistant.cpp:102 dialog_translation.cpp:108
+#: dialog_styling_assistant.cpp:102
+#: dialog_translation.cpp:108
 msgid "Next line"
 msgstr "Következő sor"
 
-#: dialog_styling_assistant.cpp:104 dialog_styling_assistant.cpp:118
-#: dialog_translation.cpp:112 dialog_translation.cpp:123
+#: dialog_styling_assistant.cpp:104
+#: dialog_styling_assistant.cpp:118
+#: dialog_translation.cpp:112
+#: dialog_translation.cpp:123
 msgid "Play Video"
 msgstr "Videó lejátszása"
 
-#: dialog_styling_assistant.cpp:106 dialog_styling_assistant.cpp:119
-#: dialog_translation.cpp:114 dialog_translation.cpp:124
+#: dialog_styling_assistant.cpp:106
+#: dialog_styling_assistant.cpp:119
+#: dialog_translation.cpp:114
+#: dialog_translation.cpp:124
 msgid "Play Audio"
 msgstr "Audió lejátszása"
 
@@ -476,7 +466,8 @@ msgstr "Előnézet (lassú)"
 msgid "style changes"
 msgstr "stílus változások"
 
-#: dialog_styling_assistant.cpp:223 dialog_styling_assistant.cpp:252
+#: dialog_styling_assistant.cpp:223
+#: dialog_styling_assistant.cpp:252
 msgid "styling assistant"
 msgstr "dekoráló segéd"
 
@@ -500,7 +491,8 @@ msgstr "Egyezik"
 msgid "Doesn't Match"
 msgstr "Nem egyezik"
 
-#: dialog_selection.cpp:68 dialog_search_replace.cpp:81
+#: dialog_selection.cpp:68
+#: dialog_search_replace.cpp:81
 msgid "Match case"
 msgstr "Egyezés"
 
@@ -516,29 +508,46 @@ msgstr "Tartalmazza"
 msgid "Regular Expression match"
 msgstr "Reguláris kifejezés egyezés (RegEx)"
 
-#: dialog_selection.cpp:75 dialog_kanji_timer.cpp:707
-#: dialog_search_replace.cpp:95 base_grid.cpp:442 dialog_paste_over.cpp:80
+#: dialog_selection.cpp:75
+#: dialog_kanji_timer.cpp:707
+#: dialog_search_replace.cpp:95
+#: base_grid.cpp:442
+#: dialog_paste_over.cpp:80
 #: dialog_paste_over.cpp:92
 msgid "Text"
 msgstr "Szöveg"
 
-#: dialog_selection.cpp:76 dialog_options.cpp:216 dialog_options.cpp:288
-#: dialog_options.cpp:477 subs_grid.cpp:122 dialog_search_replace.cpp:96
-#: base_grid.cpp:436 dialog_paste_over.cpp:68
+#: dialog_selection.cpp:76
+#: dialog_options.cpp:216
+#: dialog_options.cpp:288
+#: dialog_options.cpp:477
+#: subs_grid.cpp:122
+#: dialog_search_replace.cpp:96
+#: base_grid.cpp:436
+#: dialog_paste_over.cpp:68
 msgid "Style"
 msgstr "Stílus"
 
-#: dialog_selection.cpp:77 subs_grid.cpp:123 subs_edit_box.cpp:90
-#: dialog_search_replace.cpp:97 base_grid.cpp:437 dialog_paste_over.cpp:69
+#: dialog_selection.cpp:77
+#: subs_grid.cpp:123
+#: subs_edit_box.cpp:90
+#: dialog_search_replace.cpp:97
+#: base_grid.cpp:437
+#: dialog_paste_over.cpp:69
 msgid "Actor"
 msgstr "Színész"
 
-#: dialog_selection.cpp:78 subs_grid.cpp:124 subs_edit_box.cpp:93
-#: dialog_search_replace.cpp:98 base_grid.cpp:438 dialog_paste_over.cpp:79
+#: dialog_selection.cpp:78
+#: subs_grid.cpp:124
+#: subs_edit_box.cpp:93
+#: dialog_search_replace.cpp:98
+#: base_grid.cpp:438
+#: dialog_paste_over.cpp:79
 msgid "Effect"
 msgstr "Effekt"
 
-#: dialog_selection.cpp:79 dialog_search_replace.cpp:102
+#: dialog_selection.cpp:79
+#: dialog_search_replace.cpp:102
 msgid "In Field"
 msgstr "Mező típusa"
 
@@ -575,7 +584,9 @@ msgstr "Esemény"
 msgid "Selection was set to %i lines"
 msgstr "%i sor került kijelölésre."
 
-#: dialog_selection.cpp:267 dialog_selection.cpp:268 dialog_selection.cpp:269
+#: dialog_selection.cpp:267
+#: dialog_selection.cpp:268
+#: dialog_selection.cpp:269
 msgid "Selection"
 msgstr "Kijelölés"
 
@@ -589,7 +600,8 @@ msgstr "%i sor hozzáadva a kijelöltekhez."
 msgid "%i lines were removed from selection"
 msgstr "%i sor eltávolítva a kijelöltekből."
 
-#: dialog_style_manager.cpp:62 frame_main.cpp:265
+#: dialog_style_manager.cpp:62
+#: frame_main.cpp:265
 msgid "Styles Manager"
 msgstr "Stíluskezelő"
 
@@ -597,13 +609,17 @@ msgstr "Stíluskezelő"
 msgid "Catalog of available storages"
 msgstr "Elérhető tárolók"
 
-#: dialog_style_manager.cpp:73 dialog_style_manager.cpp:86
-#: dialog_style_manager.cpp:131 frame_main.cpp:234
+#: dialog_style_manager.cpp:73
+#: dialog_style_manager.cpp:86
+#: dialog_style_manager.cpp:131
+#: frame_main.cpp:234
 msgid "New"
 msgstr "Új"
 
-#: dialog_style_manager.cpp:74 dialog_style_manager.cpp:89
-#: dialog_style_manager.cpp:134 subs_grid.cpp:204
+#: dialog_style_manager.cpp:74
+#: dialog_style_manager.cpp:89
+#: dialog_style_manager.cpp:134
+#: subs_grid.cpp:204
 msgid "Delete"
 msgstr "Törlés"
 
@@ -615,31 +631,39 @@ msgstr "Tároló"
 msgid "Copy to current script ->"
 msgstr "Másolja a mostani feliratba ->"
 
-#: dialog_style_manager.cpp:87 dialog_style_manager.cpp:132
+#: dialog_style_manager.cpp:87
+#: dialog_style_manager.cpp:132
 msgid "Edit"
 msgstr "Szerkeszt"
 
-#: dialog_style_manager.cpp:88 dialog_style_manager.cpp:133 hotkeys.cpp:357
+#: dialog_style_manager.cpp:88
+#: dialog_style_manager.cpp:133
+#: hotkeys.cpp:357
 msgid "Copy"
 msgstr "Másol"
 
-#: dialog_style_manager.cpp:99 dialog_style_manager.cpp:144
+#: dialog_style_manager.cpp:99
+#: dialog_style_manager.cpp:144
 msgid "Move style up."
 msgstr "Felfelé"
 
-#: dialog_style_manager.cpp:100 dialog_style_manager.cpp:145
+#: dialog_style_manager.cpp:100
+#: dialog_style_manager.cpp:145
 msgid "Move style down."
 msgstr "Lefelé"
 
-#: dialog_style_manager.cpp:101 dialog_style_manager.cpp:146
+#: dialog_style_manager.cpp:101
+#: dialog_style_manager.cpp:146
 msgid "Move style to top."
 msgstr "Tetejére"
 
-#: dialog_style_manager.cpp:102 dialog_style_manager.cpp:147
+#: dialog_style_manager.cpp:102
+#: dialog_style_manager.cpp:147
 msgid "Move style to bottom."
 msgstr "Aljára"
 
-#: dialog_style_manager.cpp:103 dialog_style_manager.cpp:148
+#: dialog_style_manager.cpp:103
+#: dialog_style_manager.cpp:148
 msgid "Sort styles alphabetically."
 msgstr "Rendezés név szerint"
 
@@ -674,12 +698,10 @@ msgstr "Tárolónév hiba"
 #: dialog_style_manager.cpp:440
 #, c-format
 msgid ""
-"The specified catalog name contains one or more illegal characters. They "
-"have been replaced with underscores instead.\n"
+"The specified catalog name contains one or more illegal characters. They have been replaced with underscores instead.\n"
 "The catalog has been renamed to \"%s\"."
 msgstr ""
-"A megadott tárolónévben egy vagy több tiltott karaktert tartalmaz. Ezek "
-"alsóvonallal lettek helyettesítve.\n"
+"A megadott tárolónévben egy vagy több tiltott karaktert tartalmaz. Ezek alsóvonallal lettek helyettesítve.\n"
 "A tároló új neve: \"%s\"."
 
 #: dialog_style_manager.cpp:440
@@ -695,11 +717,13 @@ msgstr "Biztos, hogy törölni akarja a(z) \"%s\" nevű letárolt stíluslistát
 msgid "Confirm delete"
 msgstr "Törlés megerősítése"
 
-#: dialog_style_manager.cpp:610 dialog_style_manager.cpp:660
+#: dialog_style_manager.cpp:610
+#: dialog_style_manager.cpp:660
 msgid "style copy"
 msgstr "stílus másolás"
 
-#: dialog_style_manager.cpp:623 dialog_style_manager.cpp:647
+#: dialog_style_manager.cpp:623
+#: dialog_style_manager.cpp:647
 #: dialog_style_editor.cpp:449
 msgid "Copy of "
 msgstr "Másolat: "
@@ -708,20 +732,25 @@ msgstr "Másolat: "
 msgid "style paste"
 msgstr "stílus beillesztés"
 
-#: dialog_style_manager.cpp:716 dialog_style_manager.cpp:719
-#: dialog_style_manager.cpp:752 dialog_style_manager.cpp:755
+#: dialog_style_manager.cpp:716
+#: dialog_style_manager.cpp:719
+#: dialog_style_manager.cpp:752
+#: dialog_style_manager.cpp:755
 msgid "Could not parse style"
 msgstr "Stílus nem beilleszthető"
 
-#: dialog_style_manager.cpp:801 dialog_style_manager.cpp:835
+#: dialog_style_manager.cpp:801
+#: dialog_style_manager.cpp:835
 msgid "Are you sure you want to delete these "
 msgstr "Biztos, hogy törölni akarja ezt a(z) "
 
-#: dialog_style_manager.cpp:803 dialog_style_manager.cpp:837
+#: dialog_style_manager.cpp:803
+#: dialog_style_manager.cpp:837
 msgid " styles?"
 msgstr " stílust?"
 
-#: dialog_style_manager.cpp:805 dialog_style_manager.cpp:839
+#: dialog_style_manager.cpp:805
+#: dialog_style_manager.cpp:839
 msgid "Are you sure you want to delete this style?"
 msgstr "Biztos, hogy törölni akarja ezt a stílust?"
 
@@ -737,7 +766,8 @@ msgstr "A jelenlegi feliratból való törlés megerősítése"
 msgid "style delete"
 msgstr "stílus törlés"
 
-#: dialog_style_manager.cpp:868 frame_main_events.cpp:715
+#: dialog_style_manager.cpp:868
+#: frame_main_events.cpp:715
 #: frame_main_events.cpp:733
 msgid "Open subtitles file"
 msgstr "Feliratfájl megnyitása"
@@ -750,11 +780,13 @@ msgstr "A kiválasztott fájlban nincsenek elérhető stílusok."
 msgid "Error Importing Styles"
 msgstr "Hiba a stílusok importálásakor"
 
-#: dialog_style_manager.cpp:891 dialog_style_manager.cpp:893
+#: dialog_style_manager.cpp:891
+#: dialog_style_manager.cpp:893
 msgid "Choose styles to import:"
 msgstr "Válassza ki az importálni kívánt stílusokat:"
 
-#: dialog_style_manager.cpp:891 dialog_style_manager.cpp:893
+#: dialog_style_manager.cpp:891
+#: dialog_style_manager.cpp:893
 msgid "Import Styles"
 msgstr "Stílusok importálása"
 
@@ -782,7 +814,8 @@ msgstr "Indítás"
 msgid "Show Splash Screen"
 msgstr "Üdvözlőkép mutatása"
 
-#: dialog_options.cpp:115 dialog_version_check.cpp:429
+#: dialog_options.cpp:115
+#: dialog_version_check.cpp:429
 msgid "Auto Check for Updates"
 msgstr "Frissítések automatikus keresése"
 
@@ -866,15 +899,18 @@ msgstr "Helyreállítás:"
 msgid "Auto-load linked files:"
 msgstr "Csatolt fájlok betöltése:"
 
-#: dialog_options.cpp:191 dialog_options.cpp:364
+#: dialog_options.cpp:191
+#: dialog_options.cpp:364
 msgid "Never"
 msgstr "Soha"
 
-#: dialog_options.cpp:191 dialog_options.cpp:364
+#: dialog_options.cpp:191
+#: dialog_options.cpp:364
 msgid "Always"
 msgstr "Mindig"
 
-#: dialog_options.cpp:191 dialog_options.cpp:364
+#: dialog_options.cpp:191
+#: dialog_options.cpp:364
 msgid "Ask"
 msgstr "Rákérdez"
 
@@ -898,7 +934,9 @@ msgstr "Időpont értékek felülírása"
 msgid "Path to dictionary files:"
 msgstr "Szótárfájlok elérési útvonala:"
 
-#: dialog_options.cpp:240 dialog_options.cpp:572 dialog_properties.cpp:133
+#: dialog_options.cpp:240
+#: dialog_options.cpp:572
+#: dialog_properties.cpp:133
 msgid "Normal"
 msgstr "normál"
 
@@ -918,11 +956,19 @@ msgstr "címkék"
 msgid "Parameters"
 msgstr "paraméterek"
 
-#: dialog_options.cpp:241 options.cpp:467 dialog_kanji_timer.cpp:820
-#: dialog_kanji_timer.cpp:822 dialog_kanji_timer.cpp:865 subs_grid.cpp:686
-#: subs_grid.cpp:690 subs_grid.cpp:736 dialog_resample.cpp:217
-#: dialog_resample.cpp:221 dialog_fonts_collector.cpp:195
-#: dialog_fonts_collector.cpp:204 dialog_fonts_collector.cpp:213
+#: dialog_options.cpp:241
+#: options.cpp:467
+#: dialog_kanji_timer.cpp:820
+#: dialog_kanji_timer.cpp:822
+#: dialog_kanji_timer.cpp:865
+#: subs_grid.cpp:686
+#: subs_grid.cpp:690
+#: subs_grid.cpp:736
+#: dialog_resample.cpp:217
+#: dialog_resample.cpp:221
+#: dialog_fonts_collector.cpp:195
+#: dialog_fonts_collector.cpp:204
+#: dialog_fonts_collector.cpp:213
 msgid "Error"
 msgstr "Hiba"
 
@@ -946,7 +992,8 @@ msgstr "Időmódosítás utáni háttér"
 msgid "Syntax highlighter - "
 msgstr "Szintaxis kiemelő - "
 
-#: dialog_options.cpp:259 dialog_options.cpp:323
+#: dialog_options.cpp:259
+#: dialog_options.cpp:323
 msgid "Font: "
 msgstr "Betűtípus:"
 
@@ -970,7 +1017,8 @@ msgstr "Általános háttér"
 msgid "Selection foreground"
 msgstr "Kijelölés betűszíne"
 
-#: dialog_options.cpp:305 dialog_options.cpp:494
+#: dialog_options.cpp:305
+#: dialog_options.cpp:494
 msgid "Selection background"
 msgstr "Kijelölés háttere"
 
@@ -1010,7 +1058,8 @@ msgstr "Normál sor körvonala"
 msgid "Replace override tags with: "
 msgstr "Felülíró címkék helyettesítése:"
 
-#: dialog_options.cpp:357 dialog_options.cpp:528
+#: dialog_options.cpp:357
+#: dialog_options.cpp:528
 msgid "Advanced - EXPERT USERS ONLY"
 msgstr "Haladó beállítások - CSAK HOZZÁÉRTŐ FELHASZNÁLÓKNAK"
 
@@ -1050,7 +1099,8 @@ msgstr "Avisynth memóriakorlát: "
 msgid "Allow pre-2.56a Avisynth"
 msgstr "2.56a előtti Avisynth-ek engedélyezése"
 
-#: dialog_options.cpp:421 dialog_options.cpp:552
+#: dialog_options.cpp:421
+#: dialog_options.cpp:552
 msgid ""
 "WARNING: Changing these settings might result in bugs,\n"
 "crashes, glitches and/or movax.\n"
@@ -1324,11 +1374,13 @@ msgstr "Szál prioritása"
 msgid "Autoreload on Export"
 msgstr "Exportáláskor újratölt"
 
-#: dialog_options.cpp:595 dialog_options.cpp:1091
+#: dialog_options.cpp:595
+#: dialog_options.cpp:1091
 msgid "Function"
 msgstr "Funkció"
 
-#: dialog_options.cpp:596 dialog_options.cpp:1092
+#: dialog_options.cpp:596
+#: dialog_options.cpp:1092
 msgid "Key"
 msgstr "Gomb"
 
@@ -1340,7 +1392,8 @@ msgstr "Gyorsgomb beállítása..."
 msgid "Clear Hotkey"
 msgstr "Gyorsgomb törlése"
 
-#: dialog_options.cpp:612 ass_style.cpp:576
+#: dialog_options.cpp:612
+#: ass_style.cpp:576
 msgid "Default"
 msgstr "Alapértelmezett"
 
@@ -1376,7 +1429,8 @@ msgstr "Képi megjelenítés"
 msgid "Advanced"
 msgstr "Haladó"
 
-#: dialog_options.cpp:632 frame_main.cpp:273
+#: dialog_options.cpp:632
+#: frame_main.cpp:273
 msgid "Automation"
 msgstr "Automatizáció"
 
@@ -1388,23 +1442,21 @@ msgstr "Gyorsgombok"
 msgid "Restore Defaults"
 msgstr "Alapértelmezések visszaállítása"
 
-#: dialog_options.cpp:737 dialog_options.cpp:771 dialog_options.cpp:911
+#: dialog_options.cpp:737
+#: dialog_options.cpp:771
+#: dialog_options.cpp:911
 msgid "Aegisub must restart for the changes to take effect. Restart now?"
-msgstr ""
-"A változások érvénybe lépéséhez újra kell indítani az Aegisubot. Újraindítja "
-"most?"
+msgstr "A változások érvénybe lépéséhez újra kell indítani az Aegisubot. Újraindítja most?"
 
-#: dialog_options.cpp:737 dialog_options.cpp:771 dialog_options.cpp:911
+#: dialog_options.cpp:737
+#: dialog_options.cpp:771
+#: dialog_options.cpp:911
 msgid "Restart Aegisub"
 msgstr "Az Aegisub újraindítása"
 
 #: dialog_options.cpp:787
-msgid ""
-"Are you sure that you want to restore the defaults? All your settings will "
-"be overriden."
-msgstr ""
-"Biztos, hogy vissza akarja állítani az alapértelmezett értékeket? Minden "
-"mostani beállítás felül fog íródni."
+msgid "Are you sure that you want to restore the defaults? All your settings will be overriden."
+msgstr "Biztos, hogy vissza akarja állítani az alapértelmezett értékeket? Minden mostani beállítás felül fog íródni."
 
 #: dialog_options.cpp:787
 msgid "Restore defaults?"
@@ -1417,18 +1469,12 @@ msgstr "Gyorsgomb beállítás"
 #: dialog_options.cpp:1118
 #, c-format
 msgid "Press key to bind to \"%s\" or Esc to cancel."
-msgstr ""
-"Gomb hozzárendelése a(z) \"%s\" funkcióhoz vagy nyomja meg az Esc gombot a "
-"kilépéshez."
+msgstr "Gomb hozzárendelése a(z) \"%s\" funkcióhoz vagy nyomja meg az Esc gombot a kilépéshez."
 
 #: dialog_options.cpp:1169
 #, c-format
-msgid ""
-"The hotkey %s is already mapped to %s. If you proceed, that hotkey will be "
-"cleared. Proceed?"
-msgstr ""
-"A %s gomb már hozzá van rendelve a(z) %s funkcióhoz. Ha folytatja, akkor az "
-"előző hozzárendelés törlődni fog. Folytatja?"
+msgid "The hotkey %s is already mapped to %s. If you proceed, that hotkey will be cleared. Proceed?"
+msgstr "A %s gomb már hozzá van rendelve a(z) %s funkcióhoz. Ha folytatja, akkor az előző hozzárendelés törlődni fog. Folytatja?"
 
 #: dialog_options.cpp:1169
 msgid "Hotkey conflict"
@@ -1537,7 +1583,8 @@ msgstr "Válassza ki a feliratnak megfelelő FPS értéket:"
 msgid "FPS"
 msgstr "FPS"
 
-#: dialog_spellchecker.cpp:69 frame_main.cpp:288
+#: dialog_spellchecker.cpp:69
+#: frame_main.cpp:288
 msgid "Spell Checker"
 msgstr "Helyesírás-ellenőrző"
 
@@ -1553,11 +1600,14 @@ msgstr "cserélve"
 msgid "Misspelled word:"
 msgstr "Hibás szó:"
 
-#: dialog_spellchecker.cpp:113 dialog_search_replace.cpp:74
+#: dialog_spellchecker.cpp:113
+#: dialog_search_replace.cpp:74
 msgid "Replace with:"
 msgstr "Csere:"
 
-#: dialog_spellchecker.cpp:122 dialog_search_replace.cpp:566 hotkeys.cpp:351
+#: dialog_spellchecker.cpp:122
+#: dialog_search_replace.cpp:566
+#: hotkeys.cpp:351
 #: hotkeys.cpp:354
 msgid "Replace"
 msgstr "Csere"
@@ -1582,7 +1632,8 @@ msgstr "Felvétel a szótárba"
 msgid "Aegisub has finished checking spelling of this script."
 msgstr "Az Aegisub befejezte a feliratfájl helyesírás-ellenőrzését."
 
-#: dialog_spellchecker.cpp:325 dialog_spellchecker.cpp:392
+#: dialog_spellchecker.cpp:325
+#: dialog_spellchecker.cpp:392
 msgid "Spell checking complete."
 msgstr "Helyesírás-ellenőrzés befejezve"
 
@@ -1594,7 +1645,8 @@ msgstr "helyesírás-ellenőrző csere"
 msgid "Aegisub has found no spelling mistakes in this script."
 msgstr "Az Aegisub nem talált helyesírási hibákat a feliratfájlban."
 
-#: mkv_wrap.cpp:171 mkv_wrap.cpp:399
+#: mkv_wrap.cpp:171
+#: mkv_wrap.cpp:399
 msgid "Parsing Matroska"
 msgstr "Matroska elemzése"
 
@@ -1606,7 +1658,8 @@ msgstr "Kulcskockák és időkódok kiolvasása a Matroska fájlból..."
 msgid "Reading subtitles from Matroska file."
 msgstr "Felirat beolvasása a Matroska fájlból..."
 
-#: visual_tool.cpp:285 visual_tool_drag.cpp:117
+#: visual_tool.cpp:285
+#: visual_tool_drag.cpp:117
 msgid "visual typesetting"
 msgstr "vizuális szerkesztés"
 
@@ -1615,12 +1668,11 @@ msgid "Fix Styles"
 msgstr "Stílusok javítása"
 
 #: export_fixstyle.cpp:61
-msgid ""
-"Fixes styles by replacing any style that isn't available on file with "
-"Default."
+msgid "Fixes styles by replacing any style that isn't available on file with Default."
 msgstr "A nem elérhető stílusokat a \"Default\" stílussal helyettesíti."
 
-#: dialog_about.cpp:53 frame_main.cpp:540
+#: dialog_about.cpp:53
+#: frame_main.cpp:540
 msgid "About Aegisub"
 msgstr "Az Aegisub névjegye"
 
@@ -1642,13 +1694,8 @@ msgid "Built by %s on %s."
 msgstr "Összeállítva %s által. Dátum: %s."
 
 #: options.cpp:467
-msgid ""
-"Configuration file is either invalid or corrupt. The current file will be "
-"backed up and replaced with a default file."
-msgstr ""
-"A konfigurációs fájl érvénytelen vagy hibás. A jelenlegi fájlról biztonsági "
-"mentés készül, majd lecserélődik egy alapértelmezéseket tartalmazó "
-"konfigurációs fájlra."
+msgid "Configuration file is either invalid or corrupt. The current file will be backed up and replaced with a default file."
+msgstr "A konfigurációs fájl érvénytelen vagy hibás. A jelenlegi fájlról biztonsági mentés készül, majd lecserélődik egy alapértelmezéseket tartalmazó konfigurációs fájlra."
 
 #: browse_button.cpp:52
 msgid "Browse..."
@@ -1682,7 +1729,8 @@ msgstr "&Információk"
 msgid "Re&scan Autoload Dir"
 msgstr "Autoload mappa ú&jraolvasása"
 
-#: dialog_automation.cpp:69 dialog_version_check.cpp:436
+#: dialog_automation.cpp:69
+#: dialog_version_check.cpp:436
 #: dialog_attachments.cpp:80
 msgid "&Close"
 msgstr "&Bezárás"
@@ -1853,7 +1901,8 @@ msgstr "Egy sorral vissza"
 msgid "Accept Line"
 msgstr "Sor elfogadása"
 
-#: dialog_kanji_timer.cpp:737 auto4_base.cpp:401
+#: dialog_kanji_timer.cpp:737
+#: auto4_base.cpp:401
 msgid "Close"
 msgstr "Bezárás"
 
@@ -1877,27 +1926,36 @@ msgstr "Rendezze csoportba az egész forrásszöveget."
 msgid "Line Number"
 msgstr "Sorszám"
 
-#: subs_grid.cpp:119 dialog_paste_over.cpp:65
+#: subs_grid.cpp:119
+#: dialog_paste_over.cpp:65
 msgid "Layer"
 msgstr "Réteg"
 
-#: subs_grid.cpp:120 base_grid.cpp:434
+#: subs_grid.cpp:120
+#: base_grid.cpp:434
 msgid "Start"
 msgstr "Kezdet"
 
-#: subs_grid.cpp:121 base_grid.cpp:435
+#: subs_grid.cpp:121
+#: base_grid.cpp:435
 msgid "End"
 msgstr "Vége"
 
-#: subs_grid.cpp:125 base_grid.cpp:439 dialog_style_editor.cpp:247
+#: subs_grid.cpp:125
+#: base_grid.cpp:439
+#: dialog_style_editor.cpp:247
 msgid "Left"
 msgstr "Bal"
 
-#: subs_grid.cpp:126 base_grid.cpp:440 dialog_style_editor.cpp:247
+#: subs_grid.cpp:126
+#: base_grid.cpp:440
+#: dialog_style_editor.cpp:247
 msgid "Right"
 msgstr "Jobb"
 
-#: subs_grid.cpp:127 base_grid.cpp:441 dialog_style_editor.cpp:247
+#: subs_grid.cpp:127
+#: base_grid.cpp:441
+#: dialog_style_editor.cpp:247
 msgid "Vert"
 msgstr "Függ."
 
@@ -1921,7 +1979,8 @@ msgstr "Videó idejével beszúr (mögé)"
 msgid "&Duplicate"
 msgstr "&Ismétlés"
 
-#: subs_grid.cpp:167 frame_main.cpp:394
+#: subs_grid.cpp:167
+#: frame_main.cpp:394
 msgid "Duplicate the selected lines"
 msgstr "Ismételje meg a kiválasztott sort, sorokat."
 
@@ -1929,7 +1988,8 @@ msgstr "Ismételje meg a kiválasztott sort, sorokat."
 msgid "&Duplicate and shift by 1 frame"
 msgstr "Ismétlés és egy képkockával &eltolja"
 
-#: subs_grid.cpp:168 frame_main.cpp:395
+#: subs_grid.cpp:168
+#: frame_main.cpp:395
 msgid "Duplicate lines and shift by one frame"
 msgstr "Megismétli a kiválasztott sort, sorokat és egy képkockával eltolja."
 
@@ -1937,7 +1997,8 @@ msgstr "Megismétli a kiválasztott sort, sorokat és egy képkockával eltolja.
 msgid "Split (by karaoke)"
 msgstr "Szétválasztás (karaokevel)"
 
-#: subs_grid.cpp:169 frame_main.cpp:408
+#: subs_grid.cpp:169
+#: frame_main.cpp:408
 msgid "Uses karaoke timing to split line into multiple smaller lines"
 msgstr "A karaoke időzítését felhasználva választja szét a sorokat."
 
@@ -1945,7 +2006,8 @@ msgstr "A karaoke időzítését felhasználva választja szét a sorokat."
 msgid "&Swap"
 msgstr "&Felcserélés"
 
-#: subs_grid.cpp:173 frame_main.cpp:410
+#: subs_grid.cpp:173
+#: frame_main.cpp:410
 msgid "Swaps the two selected lines"
 msgstr "Felcseréli a két kiválasztott sort."
 
@@ -1953,7 +2015,8 @@ msgstr "Felcseréli a két kiválasztott sort."
 msgid "&Join (concatenate)"
 msgstr "Ö&sszeillesztés (összefűzés)"
 
-#: subs_grid.cpp:177 frame_main.cpp:403
+#: subs_grid.cpp:177
+#: frame_main.cpp:403
 msgid "Joins selected lines in a single one, concatenating text together"
 msgstr "Összeilleszti a kiválasztott sorokat tartalmuk összevonásával."
 
@@ -1961,30 +2024,25 @@ msgstr "Összeilleszti a kiválasztott sorokat tartalmuk összevonásával."
 msgid "Join (keep first)"
 msgstr "Összeillesztés (előző megtartása)"
 
-#: subs_grid.cpp:178 frame_main.cpp:404
-msgid ""
-"Joins selected lines in a single one, keeping text of first and discarding "
-"remaining"
-msgstr ""
-"Összeilleszti a kiválasztott sorokat megtartva az első tartalmát és törölve "
-"a többiét."
+#: subs_grid.cpp:178
+#: frame_main.cpp:404
+msgid "Joins selected lines in a single one, keeping text of first and discarding remaining"
+msgstr "Összeilleszti a kiválasztott sorokat megtartva az első tartalmát és törölve a többiét."
 
 #: subs_grid.cpp:179
 msgid "Join (as Karaoke)"
 msgstr "Összeillesztés (karaokeként)"
 
 #: subs_grid.cpp:179
-msgid ""
-"Joins selected lines in a single one, making each line into a karaoke "
-"syllable"
-msgstr ""
-"Összeilleszti a kiválasztott sorokat, és minden sort karaoke címkével lát el."
+msgid "Joins selected lines in a single one, making each line into a karaoke syllable"
+msgstr "Összeilleszti a kiválasztott sorokat, és minden sort karaoke címkével lát el."
 
 #: subs_grid.cpp:183
 msgid "&Make times continuous (change start)"
 msgstr "Idők folytonossá tétele (k&ezdet illesztése)"
 
-#: subs_grid.cpp:183 frame_main.cpp:431
+#: subs_grid.cpp:183
+#: frame_main.cpp:431
 msgid "Changes times of subs so start times begin on previous's end time"
 msgstr "A sor kezdeti idejét az előző végének az idejével teszi egyenlővé."
 
@@ -1992,15 +2050,18 @@ msgstr "A sor kezdeti idejét az előző végének az idejével teszi egyenlőv�
 msgid "&Make times continuous (change end)"
 msgstr "Idők folytonossá tétele (&vége illesztése)"
 
-#: subs_grid.cpp:184 frame_main.cpp:432
+#: subs_grid.cpp:184
+#: frame_main.cpp:432
 msgid "Changes times of subs so end times begin on next's start time"
 msgstr "A sor végének az idejét a következő kezdeti idejével teszi egyenlővé."
 
-#: subs_grid.cpp:188 frame_main.cpp:407
+#: subs_grid.cpp:188
+#: frame_main.cpp:407
 msgid "Recombine Lines"
 msgstr "Sorok egyesítése"
 
-#: subs_grid.cpp:188 frame_main.cpp:407
+#: subs_grid.cpp:188
+#: frame_main.cpp:407
 msgid "Recombine subtitles when they have been split and merged"
 msgstr "Szétválasztás és összeillesztés után egyesíti a feliratsorokat."
 
@@ -2012,7 +2073,8 @@ msgstr "Audióklip készítése"
 msgid "Create an audio clip of the selected line"
 msgstr "Audióklipet készít a kiválasztott sorhoz."
 
-#: subs_grid.cpp:198 subs_edit_ctrl.cpp:949
+#: subs_grid.cpp:198
+#: subs_edit_ctrl.cpp:949
 msgid "&Copy"
 msgstr "&Másolás"
 
@@ -2028,7 +2090,8 @@ msgstr "&Kivágás"
 msgid "Cuts selected lines to clipboard"
 msgstr "Kiválasztott sorok kivágása a Vágólapra"
 
-#: subs_grid.cpp:200 subs_edit_ctrl.cpp:950
+#: subs_grid.cpp:200
+#: subs_edit_ctrl.cpp:950
 msgid "&Paste"
 msgstr "&Beillesztés"
 
@@ -2036,7 +2099,8 @@ msgstr "&Beillesztés"
 msgid "Paste lines from clipboard"
 msgstr "Sorok beillesztése a Vágólapról"
 
-#: subs_grid.cpp:204 frame_main.cpp:396
+#: subs_grid.cpp:204
+#: frame_main.cpp:396
 msgid "Delete currently selected lines"
 msgstr "Törli a kijelölt sort, sorokat."
 
@@ -2064,7 +2128,8 @@ msgstr "Audióklip mentése"
 msgid "Couldn't allocate memory."
 msgstr "Nem tudtam memóriaterületet lefoglalni."
 
-#: subs_grid.cpp:813 subs_grid.cpp:814
+#: subs_grid.cpp:813
+#: subs_grid.cpp:814
 msgid "load"
 msgstr "betöltés"
 
@@ -2102,27 +2167,19 @@ msgstr "Megjegyzés"
 
 #: subs_edit_box.cpp:85
 msgid "Comment this line out. Commented lines don't show up on screen."
-msgstr ""
-"Megjegyzés hozzáfűzése a sorhoz. A megjegyzések nem jelennek meg a képernyőn."
+msgstr "Megjegyzés hozzáfűzése a sorhoz. A megjegyzések nem jelennek meg a képernyőn."
 
 #: subs_edit_box.cpp:87
 msgid "Style for this line."
 msgstr "Stílus beállítása a sorhoz."
 
 #: subs_edit_box.cpp:89
-msgid ""
-"Actor name for this speech. This is only for reference, and is mainly "
-"useless."
-msgstr ""
-"A sorohoz tartozó szereplő. Csak jelzésértéke van, fölösleges kitölteni."
+msgid "Actor name for this speech. This is only for reference, and is mainly useless."
+msgstr "A sorohoz tartozó szereplő. Csak jelzésértéke van, fölösleges kitölteni."
 
 #: subs_edit_box.cpp:92
-msgid ""
-"Effect for this line. This can be used to store extra information for "
-"karaoke scripts, or for the effects supported by the renderer."
-msgstr ""
-"A sorhoz tartozó effekt. Extra adatokat tárol a karaoke scripteknek vagy a "
-"felirat megjelenítőnek."
+msgid "Effect for this line. This can be used to store extra information for karaoke scripts, or for the effects supported by the renderer."
+msgstr "A sorhoz tartozó effekt. Extra adatokat tárol a karaoke scripteknek vagy a felirat megjelenítőnek."
 
 #: subs_edit_box.cpp:97
 msgid "Layer number"
@@ -2152,7 +2209,8 @@ msgstr "Jobb margó (0 = alapértelmezett)"
 msgid "Vertical Margin (0 = default)"
 msgstr "Függőleges margó (0 = alapértelmezett)"
 
-#: subs_edit_box.cpp:120 dialog_style_editor.cpp:144
+#: subs_edit_box.cpp:120
+#: dialog_style_editor.cpp:144
 msgid "Bold"
 msgstr "Félkövér"
 
@@ -2160,11 +2218,13 @@ msgstr "Félkövér"
 msgid "Italics"
 msgstr "Dőlt"
 
-#: subs_edit_box.cpp:124 dialog_style_editor.cpp:146
+#: subs_edit_box.cpp:124
+#: dialog_style_editor.cpp:146
 msgid "Underline"
 msgstr "Aláhúzott"
 
-#: subs_edit_box.cpp:126 dialog_style_editor.cpp:147
+#: subs_edit_box.cpp:126
+#: dialog_style_editor.cpp:147
 msgid "Strikeout"
 msgstr "Áthúzott"
 
@@ -2194,8 +2254,7 @@ msgstr "Elfogad"
 
 #: subs_edit_box.cpp:138
 msgid "Commits the text (Enter). Hold Ctrl to stay in line (%KEY%)."
-msgstr ""
-"Változások elfogadása (Enter). A Ctrl lenyomásakor a sorban marad (%KEY%)."
+msgstr "Változások elfogadása (Enter). A Ctrl lenyomásakor a sorban marad (%KEY%)."
 
 #: subs_edit_box.cpp:139
 msgid "Time"
@@ -2213,7 +2272,8 @@ msgstr "Képkocka"
 msgid "Time by frame number"
 msgstr "Idő képkockák alapján."
 
-#: subs_edit_box.cpp:595 dialog_style_editor.cpp:486
+#: subs_edit_box.cpp:595
+#: dialog_style_editor.cpp:486
 msgid "style change"
 msgstr "stílus változtatása"
 
@@ -2221,7 +2281,8 @@ msgstr "stílus változtatása"
 msgid "actor change"
 msgstr "színész változtatása"
 
-#: subs_edit_box.cpp:653 subs_edit_box.cpp:679
+#: subs_edit_box.cpp:653
+#: subs_edit_box.cpp:679
 msgid "layer change"
 msgstr "réteg változtatása"
 
@@ -2334,16 +2395,15 @@ msgstr "Videó: %s"
 msgid "Unknown"
 msgstr "Ismeretlen"
 
-#: video_provider_avs.cpp:289 video_provider_dshow.cpp:311
-msgid ""
-"You already have timecodes loaded. Replace them with the timecodes from the "
-"Matroska file?"
-msgstr ""
-"Az időkódok már betöltésre kerültek. Lecseréli ezeket a Matroska fájlban "
-"lévőkre?"
+#: video_provider_avs.cpp:289
+#: video_provider_dshow.cpp:311
+msgid "You already have timecodes loaded. Replace them with the timecodes from the Matroska file?"
+msgstr "Az időkódok már betöltésre kerültek. Lecseréli ezeket a Matroska fájlban lévőkre?"
 
-#: video_provider_avs.cpp:289 video_provider_dshow.cpp:311
-#: video_provider_ffmpegsource.cpp:263 video_provider_lavc.cpp:149
+#: video_provider_avs.cpp:289
+#: video_provider_dshow.cpp:311
+#: video_provider_ffmpegsource.cpp:263
+#: video_provider_lavc.cpp:149
 msgid "Replace timecodes?"
 msgstr "Lecseréli az időkódokat?"
 
@@ -2359,11 +2419,13 @@ msgstr "Reguláris kifejezések használata (RegEx)"
 msgid "Update Video (slow)"
 msgstr "Videó frissítése (lassú)"
 
-#: dialog_search_replace.cpp:100 dialog_shift_times.cpp:108
+#: dialog_search_replace.cpp:100
+#: dialog_shift_times.cpp:108
 msgid "All rows"
 msgstr "Minden sor"
 
-#: dialog_search_replace.cpp:101 dialog_shift_times.cpp:108
+#: dialog_search_replace.cpp:101
+#: dialog_shift_times.cpp:108
 msgid "Selected rows"
 msgstr "Kijelölt sor"
 
@@ -2383,7 +2445,8 @@ msgstr "Csere"
 msgid "Replace all"
 msgstr "Mindet cserél"
 
-#: dialog_search_replace.cpp:411 dialog_search_replace.cpp:523
+#: dialog_search_replace.cpp:411
+#: dialog_search_replace.cpp:523
 msgid "replace"
 msgstr "csere"
 
@@ -2396,7 +2459,8 @@ msgstr "%i egyezés cserélésre került."
 msgid "No matches found."
 msgstr "Nincs egyezés."
 
-#: dialog_search_replace.cpp:566 hotkeys.cpp:348
+#: dialog_search_replace.cpp:566
+#: hotkeys.cpp:348
 msgid "Find"
 msgstr "Keres"
 
@@ -2465,25 +2529,16 @@ msgid "Clean Script Info"
 msgstr "Tiszta feliratadatok"
 
 #: export_clean_info.cpp:61
-msgid ""
-"Removes all but the absolutely required fields from the Script Info section. "
-"You might want to run this on files that you plan to distribute in original "
-"form."
-msgstr ""
-"Eltávolít minden fölösleges adatot a fájl Script Info részéből. Nyilvános "
-"megjelenés előtt érdemes lefuttatni."
+msgid "Removes all but the absolutely required fields from the Script Info section. You might want to run this on files that you plan to distribute in original form."
+msgstr "Eltávolít minden fölösleges adatot a fájl Script Info részéből. Nyilvános megjelenés előtt érdemes lefuttatni."
 
 #: auto4_perl_script.cpp:99
 msgid "Perl script"
 msgstr "Perl script"
 
 #: auto4_perl_script.cpp:188
-msgid ""
-"Unable to add the automation include path(s) to @INC: the script's code may "
-"not compile or execute properly."
-msgstr ""
-"Nem sikerült hozzáadni az automatizációs include-okat az @INC-hez. A script "
-"lehet, hogy nem fog működni vagy hibásan fog lefutni."
+msgid "Unable to add the automation include path(s) to @INC: the script's code may not compile or execute properly."
+msgstr "Nem sikerült hozzáadni az automatizációs include-okat az @INC-hez. A script lehet, hogy nem fog működni vagy hibásan fog lefutni."
 
 #: auto4_perl_script.cpp:229
 #, c-format
@@ -2509,8 +2564,7 @@ msgstr "Script lefuttatva."
 #: auto4_base.cpp:755
 #, c-format
 msgid "An Automation script failed to load. File name: '%s', error reported:"
-msgstr ""
-"Az automatizációs script nem tudott betöltődni. Fájlnév: '%s' A hiba oka:"
+msgstr "Az automatizációs script nem tudott betöltődni. Fájlnév: '%s' A hiba oka:"
 
 #: auto4_base.cpp:768
 #, c-format
@@ -2533,7 +2587,8 @@ msgstr "Margó eltolás"
 msgid "Symmetrical"
 msgstr "Szimmetrikus"
 
-#: dialog_resample.cpp:90 dialog_properties.cpp:105
+#: dialog_resample.cpp:90
+#: dialog_properties.cpp:105
 msgid "Resolution"
 msgstr "Felbontás"
 
@@ -2541,7 +2596,8 @@ msgstr "Felbontás"
 msgid "x"
 msgstr "x"
 
-#: dialog_resample.cpp:99 dialog_properties.cpp:111
+#: dialog_resample.cpp:99
+#: dialog_properties.cpp:111
 msgid "From video"
 msgstr "Videóból"
 
@@ -2550,8 +2606,7 @@ msgid "Change aspect ratio"
 msgstr "Képarány módosítása"
 
 #: dialog_resample.cpp:221
-msgid ""
-"Invalid resolution: destination resolution cannot be 0 on either dimension."
+msgid "Invalid resolution: destination resolution cannot be 0 on either dimension."
 msgstr "Érvénytelen felbontás. A megadott érték sehol sem lehet nulla."
 
 #: dialog_resample.cpp:305
@@ -2564,34 +2619,37 @@ msgid ""
 "There was an error checking for updates to Aegisub:\n"
 "%s\n"
 "\n"
-"If other applications can access the Internet fine, this is probably a "
-"temporary server problem on our end."
+"If other applications can access the Internet fine, this is probably a temporary server problem on our end."
 msgstr ""
+"Hiba történt az Aegisub frissítésének ellenőrzésekor:\n"
+"%s\n"
+"\n"
+"Ha más alkalmazások elérik az Internetet, akkor ez csak egy ideiglenes szerverprobléma lehet a részünkről."
 
 #: dialog_version_check.cpp:180
 msgid "An unknown error occurred while checking for updates to Aegisub."
-msgstr ""
+msgstr "Ismeretlen hiba az Aegisub frissebb verziójának ellenőrzésekor."
 
 #: dialog_version_check.cpp:283
 msgid "Could not connect to updates server."
-msgstr ""
+msgstr "Nem tudtam kapcsolódni a frissítéskezelő szerverhez."
 
 #: dialog_version_check.cpp:288
 #, c-format
 msgid "HTTP request failed, got HTTP response %d."
-msgstr ""
+msgstr "A HTTP kérés sikertelen, ezt a HTTP választ kaptam: %d."
 
 #: dialog_version_check.cpp:360
 msgid "An update to Aegisub was found."
-msgstr ""
+msgstr "Egy frissebb Aegisub verziót találtam."
 
 #: dialog_version_check.cpp:364
 msgid "Several possible updates to Aegisub were found."
-msgstr ""
+msgstr "Számos lehetséges Aegisub frissítést találtam."
 
 #: dialog_version_check.cpp:368
 msgid "There are no updates to Aegisub."
-msgstr ""
+msgstr "Nem találtam frissebb Aegisub verziót."
 
 #: dialog_version_check.cpp:402
 msgid "Version Checker"
@@ -2599,7 +2657,7 @@ msgstr "Frissítéskereső"
 
 #: dialog_version_check.cpp:434
 msgid "Remind me again in a &week"
-msgstr ""
+msgstr "Emlékeztessen egy &hét múlva"
 
 #: dialog_properties.cpp:58
 msgid "Script Properties"
@@ -2650,8 +2708,12 @@ msgid "1: End-of-line word wrapping, only \\N breaks"
 msgstr "1: Sor végén, csak az \\N tör"
 
 #: dialog_properties.cpp:124
-msgid "2: No word wrapping, both \\n and \\N break"
-msgstr "2: Nincs sotörés, \\n és \\N is tör"
+msgid ""
+"2: No word wrapping, both \\n"
+" and \\N break"
+msgstr ""
+"2: Nincs sotörés, \\n"
+" és \\N is tör"
 
 #: dialog_properties.cpp:125
 msgid "3: Smart wrapping, bottom line is wider"
@@ -2674,19 +2736,15 @@ msgid "Scale Border and Shadow"
 msgstr "Körvonal és árnyék méretezése"
 
 #: dialog_properties.cpp:142
-msgid ""
-"Scale border and shadow together with script/render resolution. If this is "
-"unchecked, relative border and shadow size will depend on renderer."
-msgstr ""
-"A körvonalat és az árnyékot is méretezze a felirat/render felbontásával. Ha "
-"nem jelöli be, akkor a körvonal és az árnyék relatív mérete a renderertől "
-"fog függeni."
+msgid "Scale border and shadow together with script/render resolution. If this is unchecked, relative border and shadow size will depend on renderer."
+msgstr "A körvonalat és az árnyékot is méretezze a felirat/render felbontásával. Ha nem jelöli be, akkor a körvonal és az árnyék relatív mérete a renderertől fog függeni."
 
 #: dialog_properties.cpp:204
 msgid "property changes"
 msgstr "tulajdonság változtatása"
 
-#: dialog_translation.cpp:61 frame_main.cpp:284
+#: dialog_translation.cpp:61
+#: frame_main.cpp:284
 msgid "Translation Assistant"
 msgstr "Fordító segéd"
 
@@ -2727,14 +2785,15 @@ msgstr "Nincs több fordítható sor."
 msgid "Please wait, caching fonts..."
 msgstr "Betűtípusok gyorsítótárba helyezése, kérem várjon..."
 
-#: audio_display.cpp:2278 audio_display.cpp:2333
-msgid ""
-"Do you want to commit your changes? If you choose No, they will be discarded."
+#: audio_display.cpp:2278
+#: audio_display.cpp:2333
+msgid "Do you want to commit your changes? If you choose No, they will be discarded."
 msgstr ""
 "El akarja menteni a változásokat? \n"
 "Ha nem, akkor az eddigi munkája el fog veszni."
 
-#: audio_display.cpp:2278 audio_display.cpp:2333
+#: audio_display.cpp:2278
+#: audio_display.cpp:2333
 msgid "Commit?"
 msgstr "Elfogad?"
 
@@ -2755,18 +2814,16 @@ msgid "Change karaoke tag to \\ko"
 msgstr "Karaoke címke változtatása erre: \\ko"
 
 #: frame_main.cpp:204
-msgid ""
-"Do you want Aegisub to check for updates whenever it starts? You can still "
-"do it manually via the Help menu."
-msgstr ""
-"Szeretné, ha az Aegisub minden indításkor a program frissebb verziója után "
-"keresne? Ezt kézzel is megteheti a Súgó menüponton keresztül."
+msgid "Do you want Aegisub to check for updates whenever it starts? You can still do it manually via the Help menu."
+msgstr "Szeretné, ha az Aegisub minden indításkor a program frissebb verziója után keresne? Ezt kézzel is megteheti a Súgó menüponton keresztül."
 
 #: frame_main.cpp:204
 msgid "Check for updates?"
 msgstr "Frissítések keresése?"
 
-#: frame_main.cpp:234 frame_main.cpp:333 hotkeys.cpp:327
+#: frame_main.cpp:234
+#: frame_main.cpp:333
+#: hotkeys.cpp:327
 msgid "New subtitles"
 msgstr "Új felirat"
 
@@ -2774,7 +2831,8 @@ msgstr "Új felirat"
 msgid "Open"
 msgstr "Megnyitás"
 
-#: frame_main.cpp:235 hotkeys.cpp:328
+#: frame_main.cpp:235
+#: hotkeys.cpp:328
 msgid "Open subtitles"
 msgstr "Felirat megnyitása"
 
@@ -2782,7 +2840,8 @@ msgstr "Felirat megnyitása"
 msgid "Save"
 msgstr "Mentés"
 
-#: frame_main.cpp:236 hotkeys.cpp:329
+#: frame_main.cpp:236
+#: hotkeys.cpp:329
 msgid "Save subtitles"
 msgstr "Felirat mentése"
 
@@ -2814,7 +2873,8 @@ msgstr "Kicsinyíti a videót."
 msgid "Jump video to start"
 msgstr "Ugrás a sor kezdetéhez"
 
-#: frame_main.cpp:255 frame_main.cpp:481
+#: frame_main.cpp:255
+#: frame_main.cpp:481
 msgid "Jumps the video to the start frame of current subtitle"
 msgstr "A feliratsor kezdetére ugrik a videóban."
 
@@ -2822,7 +2882,8 @@ msgstr "A feliratsor kezdetére ugrik a videóban."
 msgid "Jump video to end"
 msgstr "Ugrás a sor végéhez"
 
-#: frame_main.cpp:256 frame_main.cpp:482
+#: frame_main.cpp:256
+#: frame_main.cpp:482
 msgid "Jumps the video to the end frame of current subtitle"
 msgstr "A feliratsor végére ugrik a videóban."
 
@@ -2830,7 +2891,8 @@ msgstr "A feliratsor végére ugrik a videóban."
 msgid "Snap start to video"
 msgstr "Kezdet illesztése a videóhoz"
 
-#: frame_main.cpp:257 frame_main.cpp:421
+#: frame_main.cpp:257
+#: frame_main.cpp:421
 msgid "Set start of selected subtitles to current video frame"
 msgstr "A feliratsor kezdetét az aktuális képkockához illeszti."
 
@@ -2838,7 +2900,8 @@ msgstr "A feliratsor kezdetét az aktuális képkockához illeszti."
 msgid "Snap end to video"
 msgstr "Vége illesztése a videóhoz"
 
-#: frame_main.cpp:258 frame_main.cpp:422
+#: frame_main.cpp:258
+#: frame_main.cpp:422
 msgid "Set end of selected subtitles to current video frame"
 msgstr "A feliratsor végét az aktuális képkockához illeszti."
 
@@ -2856,9 +2919,7 @@ msgstr "Illesztés a jelenethez"
 
 #: frame_main.cpp:260
 msgid "Snap selected subtitles so they match current scene start/end"
-msgstr ""
-"A kijelölt feliratsorok kezdetét és végét az aktuális jelenet kulcskocka "
-"határaihoz illeszti."
+msgstr "A kijelölt feliratsorok kezdetét és végét az aktuális jelenet kulcskocka határaihoz illeszti."
 
 #: frame_main.cpp:261
 msgid "Shift subtitles to frame"
@@ -2866,9 +2927,7 @@ msgstr "Sorokat a képkockához tolja"
 
 #: frame_main.cpp:261
 msgid "Shift selected subtitles so first selected starts at this frame"
-msgstr ""
-"A kijelölt feliratsorokat eltolja úgy, hogy az első kezdetét az aktuális "
-"képkockával indítja."
+msgstr "A kijelölt feliratsorokat eltolja úgy, hogy az első kezdetét az aktuális képkockával indítja."
 
 #: frame_main.cpp:265
 msgid "Open Styles Manager"
@@ -2890,7 +2949,8 @@ msgstr "Mellékletek"
 msgid "Open Attachment List"
 msgstr "Mellékletkezelő megnyitása"
 
-#: frame_main.cpp:268 dialog_fonts_collector.cpp:80
+#: frame_main.cpp:268
+#: dialog_fonts_collector.cpp:80
 msgid "Fonts Collector"
 msgstr "Betűtípus összegyűjtő"
 
@@ -2902,11 +2962,14 @@ msgstr "Betűtípus összegyűjtő megnyitása"
 msgid "Open Automation manager"
 msgstr "Automatizáció megnyitása"
 
-#: frame_main.cpp:279 frame_main.cpp:386
+#: frame_main.cpp:279
+#: frame_main.cpp:386
 msgid "Launches ai-chan's \"ASSDraw3\" tool for vector drawing."
 msgstr "Elindítja ai-chan ASSDraw3 nevű vektorgrafikus rajzprogramját."
 
-#: frame_main.cpp:282 dialog_shift_times.cpp:63 hotkeys.cpp:347
+#: frame_main.cpp:282
+#: dialog_shift_times.cpp:63
+#: hotkeys.cpp:347
 msgid "Shift Times"
 msgstr "Időeltolás"
 
@@ -2950,7 +3013,8 @@ msgstr "Kandzsi időzítő megnyitása"
 msgid "Open Spell checker"
 msgstr "Helyesírás-ellenőrző megnyitása"
 
-#: frame_main.cpp:292 frame_main.cpp:510
+#: frame_main.cpp:292
+#: frame_main.cpp:510
 msgid "Configure Aegisub"
 msgstr "Az Aegisub beállításai"
 
@@ -2962,7 +3026,8 @@ msgstr "Címkék megjelenítése"
 msgid "Cycle through tag-hiding modes"
 msgstr "Címkék megjelenítési lehetőségei közül válogat."
 
-#: frame_main.cpp:318 frame_main.cpp:541
+#: frame_main.cpp:318
+#: frame_main.cpp:541
 msgid "&Help"
 msgstr "&Súgó"
 
@@ -3010,7 +3075,10 @@ msgstr "Felirat exportálása..."
 msgid "Saves a copy of subtitles with processing applied to it."
 msgstr "Különböző szempontok szerint elmenti a felirat másolatát."
 
-#: frame_main.cpp:339 frame_main.cpp:440 frame_main.cpp:448 frame_main.cpp:454
+#: frame_main.cpp:339
+#: frame_main.cpp:440
+#: frame_main.cpp:448
+#: frame_main.cpp:454
 #: frame_main.cpp:490
 msgid "Recent"
 msgstr "Mostanában megnyitott"
@@ -3059,19 +3127,24 @@ msgstr "Kilép a programból."
 msgid "&File"
 msgstr "&Fájl"
 
-#: frame_main.cpp:359 subs_edit_ctrl.cpp:946 frame_main_events.cpp:430
+#: frame_main.cpp:359
+#: subs_edit_ctrl.cpp:946
+#: frame_main_events.cpp:430
 msgid "&Undo"
 msgstr "&Visszavonás"
 
-#: frame_main.cpp:359 frame_main_events.cpp:430
+#: frame_main.cpp:359
+#: frame_main_events.cpp:430
 msgid "Undoes last action"
 msgstr "Visszavonja a legutóbbi tevékenységet."
 
-#: frame_main.cpp:360 frame_main_events.cpp:431
+#: frame_main.cpp:360
+#: frame_main_events.cpp:431
 msgid "&Redo"
 msgstr "&Mégis"
 
-#: frame_main.cpp:360 frame_main_events.cpp:431
+#: frame_main.cpp:360
+#: frame_main_events.cpp:431
 msgid "Redoes last action"
 msgstr "Mégis meghagyja az előző tevékenységet."
 
@@ -3115,7 +3188,9 @@ msgstr "&Keresés..."
 msgid "Find words in subtitles"
 msgstr "Szavak keresése a feliratfájlban."
 
-#: frame_main.cpp:368 hotkeys.cpp:350 hotkeys.cpp:353
+#: frame_main.cpp:368
+#: hotkeys.cpp:350
+#: hotkeys.cpp:353
 msgid "Find Next"
 msgstr "Következőt keres"
 
@@ -3169,9 +3244,7 @@ msgstr "Felbontás módosítása..."
 
 #: frame_main.cpp:382
 msgid "Changes resolution and modifies subtitles to conform to change"
-msgstr ""
-"Megváltoztatja a felirat felbontását és megfelelően módosítja a tőle függő "
-"értékeket."
+msgstr "Megváltoztatja a felirat felbontását és megfelelően módosítja a tőle függő értékeket."
 
 #: frame_main.cpp:383
 msgid "Spe&ll Checker..."
@@ -3286,9 +3359,7 @@ msgid "Timing Post-Processor..."
 msgstr "Időzítési utómunkák..."
 
 #: frame_main.cpp:418
-msgid ""
-"Runs a post-processor for timing to deal with lead-ins, lead-outs, scene "
-"timing and etc."
+msgid "Runs a post-processor for timing to deal with lead-ins, lead-outs, scene timing and etc."
 msgstr "Utólagos időzítési javításokra vagy módosításokra ad lehetőséget."
 
 #: frame_main.cpp:419
@@ -3307,16 +3378,14 @@ msgstr "Kezdet illesztése a videóhoz"
 msgid "Snap End to Video"
 msgstr "Vége illesztése a videóhoz"
 
-#: frame_main.cpp:423 hotkeys.cpp:371
+#: frame_main.cpp:423
+#: hotkeys.cpp:371
 msgid "Snap to Scene"
 msgstr "Illesztés a jelenethez"
 
 #: frame_main.cpp:423
-msgid ""
-"Set start and end of subtitles to the keyframes around current video frame"
-msgstr ""
-"A kijelölt feliratsorok kezdetét és végét az aktuális jelenet kulcskocka "
-"határaihoz illeszti."
+msgid "Set start and end of subtitles to the keyframes around current video frame"
+msgstr "A kijelölt feliratsorok kezdetét és végét az aktuális jelenet kulcskocka határaihoz illeszti."
 
 #: frame_main.cpp:424
 msgid "Shift to Current Frame"
@@ -3324,9 +3393,7 @@ msgstr "Sorokat a képkockához tolja"
 
 #: frame_main.cpp:424
 msgid "Shift selection so first selected line starts at current frame"
-msgstr ""
-"A kijelölt feliratsorokat eltolja úgy, hogy az első kezdetét az aktuális "
-"képkockával indítja."
+msgstr "A kijelölt feliratsorokat eltolja úgy, hogy az első kezdetét az aktuális képkockával indítja."
 
 #: frame_main.cpp:427
 msgid "Make Times Continuous"
@@ -3497,12 +3564,8 @@ msgid "Show Overscan Mask"
 msgstr "Túlskálázási maszk megjelenítése"
 
 #: frame_main.cpp:478
-msgid ""
-"Show a mask over the video, indicating areas that might get cropped off by "
-"overscan on televisions."
-msgstr ""
-"A televíziók túlskálázási eljárása miatt esetlegesen levágásra kerülő részek "
-"megjelölése."
+msgid "Show a mask over the video, indicating areas that might get cropped off by overscan on televisions."
+msgstr "A televíziók túlskálázási eljárása miatt esetlegesen levágásra kerülő részek megjelölése."
 
 #: frame_main.cpp:480
 msgid "&Jump to..."
@@ -3512,11 +3575,13 @@ msgstr "&Ugrás..."
 msgid "Jump to frame or time"
 msgstr "A megadott időhöz vagy képkockához ugrik."
 
-#: frame_main.cpp:481 hotkeys.cpp:367
+#: frame_main.cpp:481
+#: hotkeys.cpp:367
 msgid "Jump Video to Start"
 msgstr "Ugrás a sor kezdetére"
 
-#: frame_main.cpp:482 hotkeys.cpp:368
+#: frame_main.cpp:482
+#: hotkeys.cpp:368
 msgid "Jump Video to End"
 msgstr "Ugrás a sor végére"
 
@@ -3634,11 +3699,11 @@ msgstr "Súgó témakörök megjelenítése."
 
 #: frame_main.cpp:529
 msgid "&Resource Files..."
-msgstr ""
+msgstr "F&orrásfájlok..."
 
 #: frame_main.cpp:529
 msgid "Resource files distributed with Aegisub"
-msgstr ""
+msgstr "Az Aegisub által használt forrásfájlok helye."
 
 #: frame_main.cpp:532
 msgid "&Website..."
@@ -3662,9 +3727,7 @@ msgstr "&Programhibák jelentése..."
 
 #: frame_main.cpp:534
 msgid "Visit Aegisub's bug tracker to report bugs and request new features"
-msgstr ""
-"Az Aegisub bug trackere, ahol programhibákat jelenthet vagy új funkciók "
-"beépítését kérheti."
+msgstr "Az Aegisub bug trackere, ahol programhibákat jelenthet vagy új funkciók beépítését kérheti."
 
 #: frame_main.cpp:535
 msgid "&IRC Channel..."
@@ -3690,7 +3753,8 @@ msgstr "&Névjegy..."
 msgid "Save subtitles file"
 msgstr "Feliratfájl mentése"
 
-#: frame_main.cpp:769 frame_main_events.cpp:735
+#: frame_main.cpp:769
+#: frame_main_events.cpp:735
 msgid "Choose charset code:"
 msgstr "Karakterkódolás kiválasztása:"
 
@@ -3729,8 +3793,7 @@ msgstr "Bezárja az időkódokat?"
 #: frame_main.cpp:1129
 #, c-format
 msgid ""
-"The resolution of the loaded video and the resolution specified for the "
-"subtitles don't match.\n"
+"The resolution of the loaded video and the resolution specified for the subtitles don't match.\n"
 "\n"
 "Video resolution:\t%d x %d\n"
 "Script resolution:\t%d x %d\n"
@@ -3757,15 +3820,10 @@ msgid "Transform Framerate"
 msgstr "Képkocka-szám módosítása"
 
 #: export_framerate.cpp:62
-msgid ""
-"Transform subtitles times, including those in override tags, from input to "
-"output. This is most useful to convert CFR to VFR for hardsubbing. You "
-"usually DO NOT want to check this filter for softsubbing."
+msgid "Transform subtitles times, including those in override tags, from input to output. This is most useful to convert CFR to VFR for hardsubbing. You usually DO NOT want to check this filter for softsubbing."
 msgstr ""
-"A feliratfájlban található összes időt (a felülíró címkékben lévőket is) "
-"módosítja, hogy passzoljon a kimenetnél megadott kép/mp-hez.\n"
-"Felirat beégetésénél van értelme, CFR-VFR konverziónál. Külön mellékelt "
-"feliratfájlhoz NEM használatos."
+"A feliratfájlban található összes időt (a felülíró címkékben lévőket is) módosítja, hogy passzoljon a kimenetnél megadott kép/mp-hez.\n"
+"Felirat beégetésénél van értelme, CFR-VFR konverziónál. Külön mellékelt feliratfájlhoz NEM használatos."
 
 #: export_framerate.cpp:88
 msgid "From Video"
@@ -3804,12 +3862,8 @@ msgid "Not enough parameters for Aegisub::text_extents()"
 msgstr "Nincs elég paraméter az Aegisub::text_extents() számára"
 
 #: auto4_perl.cpp:315
-msgid ""
-"Tried to register PerlConsole, but support for it was disabled in this "
-"version."
-msgstr ""
-"Megpróbáltam bejegyezni a PerlConsole-t, de a jelenlegi verzió ezt nem "
-"támogatja."
+msgid "Tried to register PerlConsole, but support for it was disabled in this version."
+msgstr "Megpróbáltam bejegyezni a PerlConsole-t, de a jelenlegi verzió ezt nem támogatja."
 
 #: auto4_perl.cpp:383
 msgid "Fatal error: "
@@ -3855,7 +3909,8 @@ msgstr "Színek"
 msgid "Margins"
 msgstr "Margók"
 
-#: dialog_style_editor.cpp:136 dialog_style_editor.cpp:235
+#: dialog_style_editor.cpp:136
+#: dialog_style_editor.cpp:235
 msgid "Outline"
 msgstr "Körvonal"
 
@@ -3924,11 +3979,8 @@ msgid "Distance from top/bottom edge, in pixels."
 msgstr "Távolság az alsó/felső széltől, pixelekben"
 
 #: dialog_style_editor.cpp:180
-msgid ""
-"When selected, display an opaque box behind the subtitles instead of an "
-"outline around the text."
-msgstr ""
-"Jelölje be, ha körvonal helyett teljesen kitöltött hátteret szeretne látni."
+msgid "When selected, display an opaque box behind the subtitles instead of an outline around the text."
+msgstr "Jelölje be, ha körvonal helyett teljesen kitöltött hátteret szeretne látni."
 
 #: dialog_style_editor.cpp:181
 msgid "Outline width, in pixels."
@@ -3951,12 +4003,8 @@ msgid "Angle to rotate in Z axis, in degrees."
 msgstr "Forgatás a Z tengely mentén, fokokban"
 
 #: dialog_style_editor.cpp:186
-msgid ""
-"Encoding, only useful in unicode if the font doesn't have the proper unicode "
-"mapping."
-msgstr ""
-"A kódolás beállítása csak akkor használatos, ha a megadott betűtípusnak "
-"nincs megfelelő unicode leképezése."
+msgid "Encoding, only useful in unicode if the font doesn't have the proper unicode mapping."
+msgstr "A kódolás beállítása csak akkor használatos, ha a megadott betűtípusnak nincs megfelelő unicode leképezése."
 
 #: dialog_style_editor.cpp:187
 msgid "Character spacing, in pixels."
@@ -4023,11 +4071,8 @@ msgid "No subtitle providers available. Cannot preview subs."
 msgstr "Nincs elérhető felirat megjelenítő. Az előnézet így nem működik."
 
 #: dialog_style_editor.cpp:452
-msgid ""
-"Do you want to change all instances of this style in the script to this new "
-"name?"
-msgstr ""
-"Meg akarja változtatni a felirat minden elemét erre az újonan megadott névre?"
+msgid "Do you want to change all instances of this style in the script to this new name?"
+msgstr "Meg akarja változtatni a felirat minden elemét erre az újonan megadott névre?"
 
 #: dialog_style_editor.cpp:452
 msgid "Update script?"
@@ -4035,15 +4080,12 @@ msgstr "Felirat frissítése?"
 
 #: dialog_style_editor.cpp:583
 msgid ""
-"You have chosen to use the \"Comic Sans\" font. As the programmer and a "
-"typesetter,\n"
-"I must urge you to reconsider. Comic Sans is the most abused font in the "
-"history\n"
+"You have chosen to use the \"Comic Sans\" font. As the programmer and a typesetter,\n"
+"I must urge you to reconsider. Comic Sans is the most abused font in the history\n"
 "of computing, so please avoid using it unless it's REALLY suitable. Thanks."
 msgstr ""
 "Ön a \"Comic Sans\" betűtípust választotta. Mint programozó és feliratozó \n"
-"arra kérem önt, hogy döntsön máshogy. A Comic Sans az egyik legjobban "
-"elítélt betűtípus\n"
+"arra kérem önt, hogy döntsön máshogy. A Comic Sans az egyik legjobban elítélt betűtípus\n"
 "a számítástechnika történelmében. Kerülje el mindenképpen! Köszönöm."
 
 #: dialog_style_editor.cpp:583
@@ -4058,7 +4100,8 @@ msgstr "Eltolás"
 msgid "History"
 msgstr "Előzmények"
 
-#: dialog_shift_times.cpp:78 dialog_jumpto.cpp:76
+#: dialog_shift_times.cpp:78
+#: dialog_jumpto.cpp:76
 msgid "Time: "
 msgstr "Idő: "
 
@@ -4091,15 +4134,11 @@ msgid "Backward"
 msgstr "Hátra"
 
 #: dialog_shift_times.cpp:99
-msgid ""
-"Shifts subs forward, making them appear later. Use if they are appearing too "
-"soon."
+msgid "Shifts subs forward, making them appear later. Use if they are appearing too soon."
 msgstr "Sorok előretolása, így később jelennek meg."
 
 #: dialog_shift_times.cpp:100
-msgid ""
-"Shifts subs backward, making them appear earlier. Use if they are appearing "
-"too late."
+msgid "Shifts subs backward, making them appear earlier. Use if they are appearing too late."
 msgstr "Sorok hátratolása, így előbb jelennek meg."
 
 #: dialog_shift_times.cpp:108
@@ -4122,7 +4161,8 @@ msgstr "Csak a kezdőidőpontot"
 msgid "End times only"
 msgstr "Csak a végidőpontot"
 
-#: dialog_shift_times.cpp:113 dialog_paste_over.cpp:91
+#: dialog_shift_times.cpp:113
+#: dialog_paste_over.cpp:91
 msgid "Times"
 msgstr "Idők"
 
@@ -4240,7 +4280,8 @@ msgstr "Méret"
 msgid "Group"
 msgstr "Csoport"
 
-#: dialog_attachments.cpp:145 dialog_attachments.cpp:178
+#: dialog_attachments.cpp:145
+#: dialog_attachments.cpp:178
 msgid "Choose file to be attached"
 msgstr "Válassza ki a csatolni kívánt fájlt"
 
@@ -4260,152 +4301,70 @@ msgstr "Ugrás"
 msgid "Frame: "
 msgstr "Képkocka: "
 
-#: video_provider_ffmpegsource.cpp:263 video_provider_lavc.cpp:149
-msgid ""
-"You already have timecodes loaded. Would you like to replace them with "
-"timecodes from the video file?"
-msgstr ""
-"Az időkódok már betöltésre kerültek. Lecseréli ezeket a videófájlban lévőkre?"
+#: video_provider_ffmpegsource.cpp:263
+#: video_provider_lavc.cpp:149
+msgid "You already have timecodes loaded. Would you like to replace them with timecodes from the video file?"
+msgstr "Az időkódok már betöltésre kerültek. Lecseréli ezeket a videófájlban lévőkre?"
 
 #: dialog_tip.cpp:52
-msgid ""
-"Aegisub can export subtitles to many different formats, character encodings, "
-"and even compensate Variable Frame Rate so you can hardsub them - it's all "
-"in the Export option in File menu."
-msgstr ""
-"Az Aegisub különböző formátumokba tud exportálni. Kiválasztható a "
-"karakterkódolás, sőt még a változó képkocka-számmal (VFR) rendelkező "
-"videókat is tudja kezeli. Mindez elérhető a Fájl menüpont, Felirat "
-"exportálása parancs alatt."
+msgid "Aegisub can export subtitles to many different formats, character encodings, and even compensate Variable Frame Rate so you can hardsub them - it's all in the Export option in File menu."
+msgstr "Az Aegisub különböző formátumokba tud exportálni. Kiválasztható a karakterkódolás, sőt még a változó képkocka-számmal (VFR) rendelkező videókat is tudja kezeli. Mindez elérhető a Fájl menüpont, Felirat exportálása parancs alatt."
 
 #: dialog_tip.cpp:53
-msgid ""
-"You can easily translate subtitle files using the translation assistant."
-msgstr ""
-"Könnyedén le tud fordítani egy feliratot a Fordító segéd használatával."
+msgid "You can easily translate subtitle files using the translation assistant."
+msgstr "Könnyedén le tud fordítani egy feliratot a Fordító segéd használatával."
 
 #: dialog_tip.cpp:54
-msgid ""
-"Styles can be stored in different storages, so that you can keep your "
-"projects organized."
-msgstr ""
-"A stílusokat el tudja raktározni tárolókba, hogy projektjeit mindig "
-"rendezett állapotban tarthassa."
+msgid "Styles can be stored in different storages, so that you can keep your projects organized."
+msgstr "A stílusokat el tudja raktározni tárolókba, hogy projektjeit mindig rendezett állapotban tarthassa."
 
 #: dialog_tip.cpp:55
-msgid ""
-"Use keyboard shortcuts! They make your life easier, for example, Ctrl+Enter "
-"updates changes on current line without going to next. Check the manual for "
-"a complete list."
-msgstr ""
-"Használja a gyorsgombokat! Egyszerűbbé teszi a munkát. Példának okáért a Ctrl"
-"+Enter kombinációval frissíteni tudja az aktuális sort anélkül, hogy "
-"továbbugorna a következő sorra. A teljes gyorsgomb listához tanulmányozza a "
-"kézikönyvet."
+msgid "Use keyboard shortcuts! They make your life easier, for example, Ctrl+Enter updates changes on current line without going to next. Check the manual for a complete list."
+msgstr "Használja a gyorsgombokat! Egyszerűbbé teszi a munkát. Példának okáért a Ctrl+Enter kombinációval frissíteni tudja az aktuális sort anélkül, hogy továbbugorna a következő sorra. A teljes gyorsgomb listához tanulmányozza a kézikönyvet."
 
 #: dialog_tip.cpp:56
-msgid ""
-"There is no reason to use the SSA format (as opposed to ASS). ASS is very "
-"similar, but adds some important functionality. Most importantly, however, "
-"is that only ASS supports certain override tags (such as \\pos and \\t). "
-"Those only work on SSA files because VSFilter/Textsub is merciful."
-msgstr ""
-"Semmi értelme tovább használni az SSA formátumot. Az ASS nagyon hasonlít rá, "
-"de sokkal több funkcióval bír, amit az SSA nem támogat, mint például a \\pos "
-"és \\t címkék. Csak azért működnek az SSA-ban, mert a VSFilter/Textsub "
-"fejlesztői nagylelkűek voltak."
+msgid "There is no reason to use the SSA format (as opposed to ASS). ASS is very similar, but adds some important functionality. Most importantly, however, is that only ASS supports certain override tags (such as \\pos and \\t). Those only work on SSA files because VSFilter/Textsub is merciful."
+msgstr "Semmi értelme tovább használni az SSA formátumot. Az ASS nagyon hasonlít rá, de sokkal több funkcióval bír, amit az SSA nem támogat, mint például a \\pos és \\t címkék. Csak azért működnek az SSA-ban, mert a VSFilter/Textsub fejlesztői nagylelkűek voltak."
 
 #: dialog_tip.cpp:57
 msgid "DON'T PANIC!"
 msgstr "NE ESS PÁNIKBA!"
 
 #: dialog_tip.cpp:58
-msgid ""
-"Aegisub has several features to make sure you will never lose your work. It "
-"will periodically save your subtitles to autosave folder, and will create a "
-"copy of subs whenever you open them, to autoback folder. Also, if it "
-"crashes, it will attempt to save a restore file."
-msgstr ""
-"Az Aegisub számos olyan funkcióval rendelkezik, amik a munkája biztonságát "
-"garantálják. Megadott időközönként biztonsági mentéseket hajt végre és "
-"minden egyes felirat megnyitásakor lementi az eredetit egy külön mappába. "
-"Lefagyás esetén is megpróbálja helyreállítani a fájlt."
+msgid "Aegisub has several features to make sure you will never lose your work. It will periodically save your subtitles to autosave folder, and will create a copy of subs whenever you open them, to autoback folder. Also, if it crashes, it will attempt to save a restore file."
+msgstr "Az Aegisub számos olyan funkcióval rendelkezik, amik a munkája biztonságát garantálják. Megadott időközönként biztonsági mentéseket hajt végre és minden egyes felirat megnyitásakor lementi az eredetit egy külön mappába. Lefagyás esetén is megpróbálja helyreállítani a fájlt."
 
 #: dialog_tip.cpp:59
-msgid ""
-"The styling assistant is a practical way to set styles to each line, when "
-"each actor has a different style assigned to it."
-msgstr ""
-"A Dekoráló segéd segítségével egyszerűen tud stílusokat hozzáadni a felirat "
-"soraihoz, főleg amikor minden színészhez egyedi stílust akarunk "
-"hozzárendelni."
+msgid "The styling assistant is a practical way to set styles to each line, when each actor has a different style assigned to it."
+msgstr "A Dekoráló segéd segítségével egyszerűen tud stílusokat hozzáadni a felirat soraihoz, főleg amikor minden színészhez egyedi stílust akarunk hozzárendelni."
 
 #: dialog_tip.cpp:60
-msgid ""
-"The fonts collector is one of the most useful features, which resumes the "
-"boring task of hunting down fonts into a matter of a few clicks."
-msgstr ""
-"A Betűtípus összegyűjtő egy remek kiegészítője a programnak, ami leveszi a "
-"betűtípusok unalmas összevadászásának a munkáját a felhasználó válláról."
+msgid "The fonts collector is one of the most useful features, which resumes the boring task of hunting down fonts into a matter of a few clicks."
+msgstr "A Betűtípus összegyűjtő egy remek kiegészítője a programnak, ami leveszi a betűtípusok unalmas összevadászásának a munkáját a felhasználó válláról."
 
 #: dialog_tip.cpp:61
-msgid ""
-"When you are done with your subtitles and ready to distribute them, "
-"remember: say no to MP4, OGM or AVI. Matroska is your friend."
-msgstr ""
-"Ha befejezte a munkát és készen áll arra, hogy nyilvánosan is bemutassa, "
-"jusson eszébe: az MP4, OGM és AVI konténerek rossz választások. Használjon "
-"Matroskát."
+msgid "When you are done with your subtitles and ready to distribute them, remember: say no to MP4, OGM or AVI. Matroska is your friend."
+msgstr "Ha befejezte a munkát és készen áll arra, hogy nyilvánosan is bemutassa, jusson eszébe: az MP4, OGM és AVI konténerek rossz választások. Használjon Matroskát."
 
 #: dialog_tip.cpp:62
-msgid ""
-"Much like anything loaded via DirectShow, certain files may have a strange "
-"structure (such as h.264 into AVI or XviD will null frames) which may cause "
-"unreliable seeking (that is, video frames might be off by one frame). This "
-"is not an Aegisub bug - you may consider reencoding those videos before "
-"working with them."
-msgstr ""
-"Néhány betöltött fájlnak érdekes felépítése lehet, például h.264-es film AVI "
-"konténerben vagy üres képkockás XviD kódolás, amik megnehezíthetik a "
-"videóban való pontos keresést (nem mindig a pontos képkockát mutatják). Ez "
-"nem az Aegisub hibája. Munka előtt érdemes átkódolni az ilyen fájlokat."
+msgid "Much like anything loaded via DirectShow, certain files may have a strange structure (such as h.264 into AVI or XviD will null frames) which may cause unreliable seeking (that is, video frames might be off by one frame). This is not an Aegisub bug - you may consider reencoding those videos before working with them."
+msgstr "Néhány betöltött fájlnak érdekes felépítése lehet, például h.264-es film AVI konténerben vagy üres képkockás XviD kódolás, amik megnehezíthetik a videóban való pontos keresést (nem mindig a pontos képkockát mutatják). Ez nem az Aegisub hibája. Munka előtt érdemes átkódolni az ilyen fájlokat."
 
 #: dialog_tip.cpp:63
-msgid ""
-"Try the spectrum mode for the audio display, it can make it much easier to "
-"spot where the important points in the audio are."
-msgstr ""
-"Próbálja ki a spektrum analizátor hangmegjelenítési módot, amivel sokkal "
-"könnyebben észrevehetőek a fontos hangrészletek."
+msgid "Try the spectrum mode for the audio display, it can make it much easier to spot where the important points in the audio are."
+msgstr "Próbálja ki a spektrum analizátor hangmegjelenítési módot, amivel sokkal könnyebben észrevehetőek a fontos hangrészletek."
 
 #: dialog_tip.cpp:64
-msgid ""
-"If you decode your audio to a PCM WAV file before loading it in Aegisub, you "
-"don't have to wait for it to be decoded before you can use it."
-msgstr ""
-"Ha betöltés előtt PCM WAV fájlba kódolja át a hangot, akkor azonnal "
-"használatba veheti, mert a programnak nem kell előtte dekódolnia."
+msgid "If you decode your audio to a PCM WAV file before loading it in Aegisub, you don't have to wait for it to be decoded before you can use it."
+msgstr "Ha betöltés előtt PCM WAV fájlba kódolja át a hangot, akkor azonnal használatba veheti, mert a programnak nem kell előtte dekódolnia."
 
 #: dialog_tip.cpp:65
-msgid ""
-"Having video open is often more a nuisance than a help when timing "
-"subtitles. Timing with only audio open is often much easier. You can always "
-"adjust the subtitles to match the video later on."
-msgstr ""
-"A videóval való felirat időzítése sokszor elég kellemetlen. Jóval "
-"egyszerűbb, ha valaki csak hang alapján időzít. Később még mindig össze "
-"lehet vetni a videóval."
+msgid "Having video open is often more a nuisance than a help when timing subtitles. Timing with only audio open is often much easier. You can always adjust the subtitles to match the video later on."
+msgstr "A videóval való felirat időzítése sokszor elég kellemetlen. Jóval egyszerűbb, ha valaki csak hang alapján időzít. Később még mindig össze lehet vetni a videóval."
 
 #: dialog_tip.cpp:66
-msgid ""
-"If the audio doesn't seem to work properly during video playback, try "
-"loading audio separately. Just select Audio->Load from video, that usually "
-"makes the audio much more reliable."
-msgstr ""
-"Ha videólejátszáskor nem működne megfelelően a hang lejátszása, akkor "
-"próbálja meg azt külön betölteni. Válassza ki az Audió menüpont, Audió "
-"megnyitása videóból parancsot. A hang alapján való keresés sokkal "
-"megbízhatóbb lesz."
+msgid "If the audio doesn't seem to work properly during video playback, try loading audio separately. Just select Audio->Load from video, that usually makes the audio much more reliable."
+msgstr "Ha videólejátszáskor nem működne megfelelően a hang lejátszása, akkor próbálja meg azt külön betölteni. Válassza ki az Audió menüpont, Audió megnyitása videóból parancsot. A hang alapján való keresés sokkal megbízhatóbb lesz."
 
 #: dialog_tip.cpp:67
 msgid "If anything goes wrong, blame movax."
@@ -4415,7 +4374,8 @@ msgstr "Ha valami nem működne, vádold movaxot."
 msgid "&Browse..."
 msgstr "&Tallózás..."
 
-#: dialog_fonts_collector.cpp:98 dialog_fonts_collector.cpp:309
+#: dialog_fonts_collector.cpp:98
+#: dialog_fonts_collector.cpp:309
 msgid ""
 "Choose the folder where the fonts will be collected to.\n"
 "It will be created if it doesn't exist."
@@ -4492,14 +4452,8 @@ msgid "Invalid destination directory."
 msgstr "Érvénytelen célmappa."
 
 #: dialog_fonts_collector.cpp:406
-msgid ""
-"Collecting font data from system. This might take a while, depending on the "
-"number of fonts installed. Results are cached and subsequent executions will "
-"be faster...\n"
-msgstr ""
-"Betűtípusadatok összegyűjtése a rendszerből. A telepített betűtípusok "
-"mennyiségétől függően, ez eltarhat egy darabig. Az eredmények tárolódnak, az "
-"újbóli ellenőrzés már sokkal gyorsabb lesz.\n"
+msgid "Collecting font data from system. This might take a while, depending on the number of fonts installed. Results are cached and subsequent executions will be faster...\n"
+msgstr "Betűtípusadatok összegyűjtése a rendszerből. A telepített betűtípusok mennyiségétől függően, ez eltarhat egy darabig. Az eredmények tárolódnak, az újbóli ellenőrzés már sokkal gyorsabb lesz.\n"
 
 #: dialog_fonts_collector.cpp:408
 msgid "Done collecting font data."
@@ -4614,7 +4568,8 @@ msgstr "Nincs helyesírás-ellenőrzői javaslat"
 msgid "Spell checker suggestions for \"%s\""
 msgstr "Helyesírás-ellenőrző javaslatok erre: \"%s\""
 
-#: subs_edit_ctrl.cpp:845 subs_edit_ctrl.cpp:928
+#: subs_edit_ctrl.cpp:845
+#: subs_edit_ctrl.cpp:928
 msgid "Disable"
 msgstr "Kikapcsolva"
 
@@ -4787,7 +4742,8 @@ msgstr "Szétválaszt"
 msgid "Enter split-mode"
 msgstr "Szavak szétválasztása szótagokká"
 
-#: hotkeys.cpp:331 hotkeys.cpp:335
+#: hotkeys.cpp:331
+#: hotkeys.cpp:335
 msgid "Exit"
 msgstr "Kilépés"
 
@@ -4799,7 +4755,8 @@ msgstr "Feliratszerkesztés elfogad és marad"
 msgid "Undo"
 msgstr "Visszavonás"
 
-#: hotkeys.cpp:343 hotkeys.cpp:345
+#: hotkeys.cpp:343
+#: hotkeys.cpp:345
 msgid "Redo"
 msgstr "Mégis"
 
@@ -4819,7 +4776,8 @@ msgstr "Beillesztés"
 msgid "Paste Over"
 msgstr "Irányított beillesztés"
 
-#: hotkeys.cpp:363 hotkeys.cpp:365
+#: hotkeys.cpp:363
+#: hotkeys.cpp:365
 msgid "Video Jump"
 msgstr "Videó ugrás"
 
@@ -4891,7 +4849,8 @@ msgstr "Táblázat egy sor lefele"
 msgid "Grid move row up"
 msgstr "Táblázat egy sor felfele"
 
-#: hotkeys.cpp:390 hotkeys.cpp:392
+#: hotkeys.cpp:390
+#: hotkeys.cpp:392
 msgid "Grid delete rows"
 msgstr "Táblázat sor törlése"
 
@@ -5111,25 +5070,21 @@ msgstr "Társítások"
 msgid ""
 "Aegisub can take over the following file types.\n"
 "\n"
-"If you want Aegisub to no longer be associated with a file type, you must "
-"tell another program to take over the file type."
+"If you want Aegisub to no longer be associated with a file type, you must tell another program to take over the file type."
 msgstr ""
 "Az Aegisub az alábbi fájltípusokhoz tudja magát hozzárendelni.\n"
 "\n"
-"Ha a továbbiakban már nem szeretné, hogy az Aegisub kezelje ezen "
-"fájltípusokat, akkor társítson hozzá egy másik programot."
+"Ha a továbbiakban már nem szeretné, hogy az Aegisub kezelje ezen fájltípusokat, akkor társítson hozzá egy másik programot."
 
 #: dialog_associations.cpp:378
 msgid ""
 "Aegisub is already associated with all supported file types.\n"
 "\n"
-"If you want Aegisub to no longer be associated with a file type, you must "
-"tell another program to take over the file type."
+"If you want Aegisub to no longer be associated with a file type, you must tell another program to take over the file type."
 msgstr ""
 "Az Aegisub már minden támogatott fájltípushoz hozzá lett rendelve.\n"
 "\n"
-"Ha a továbbiakban már nem szeretné, hogy az Aegisub kezelje ezen "
-"fájltípusokat, akkor társítson hozzá egy másik programot."
+"Ha a továbbiakban már nem szeretné, hogy az Aegisub kezelje ezen fájltípusokat, akkor társítson hozzá egy másik programot."
 
 #: dialog_associations.cpp:475
 msgid "Aegisub"
@@ -5140,12 +5095,8 @@ msgid "Make Aegisub default editor for subtitles?"
 msgstr "Legyen az Aegisub az alapértelmezett feliratszerkesztő?"
 
 #: dialog_associations.cpp:477
-msgid ""
-"Aegisub is not your default editor for subtitle files. Do you want to make "
-"Aegisub your default editor for subtitle files?"
-msgstr ""
-"Jelenleg nem az Aegisub az alapértelmezett feliratszerkesztő. Szeretné "
-"alapértelmezett feliratszerkesztővé tenni?"
+msgid "Aegisub is not your default editor for subtitle files. Do you want to make Aegisub your default editor for subtitle files?"
+msgstr "Jelenleg nem az Aegisub az alapértelmezett feliratszerkesztő. Szeretné alapértelmezett feliratszerkesztővé tenni?"
 
 #: dialog_associations.cpp:478
 msgid "Always perform this check when Aegisub starts"
@@ -5267,11 +5218,13 @@ msgstr "Zöld:"
 msgid "Blue:"
 msgstr "Kék:"
 
-#: dialog_colorpicker.cpp:591 dialog_colorpicker.cpp:601
+#: dialog_colorpicker.cpp:591
+#: dialog_colorpicker.cpp:601
 msgid "Hue:"
 msgstr "Árnyal.:"
 
-#: dialog_colorpicker.cpp:593 dialog_colorpicker.cpp:603
+#: dialog_colorpicker.cpp:593
+#: dialog_colorpicker.cpp:603
 msgid "Sat.:"
 msgstr "Telített.:"
 
@@ -5299,11 +5252,13 @@ msgstr "Üres"
 msgid "No Automation macros loaded"
 msgstr "Automatizációs makrók nem kerültek betöltésre."
 
-#: frame_main_events.cpp:658 frame_main_events.cpp:681
+#: frame_main_events.cpp:658
+#: frame_main_events.cpp:681
 msgid "Video Formats"
 msgstr "Videó formátumok"
 
-#: frame_main_events.cpp:659 frame_main_events.cpp:809
+#: frame_main_events.cpp:659
+#: frame_main_events.cpp:809
 #: frame_main_events.cpp:824
 msgid "All Files"
 msgstr "Minden fájl"
@@ -5328,7 +5283,8 @@ msgstr "Audiófájl megnyitása"
 msgid "Charset"
 msgstr "Karakterkódolás"
 
-#: frame_main_events.cpp:808 frame_main_events.cpp:823
+#: frame_main_events.cpp:808
+#: frame_main_events.cpp:823
 msgid "All Supported Types"
 msgstr "Minden támogatott formátum"
 
@@ -5357,12 +5313,9 @@ msgid "shift to frame"
 msgstr "képkockához igazítás"
 
 #: frame_main_events.cpp:1385
-msgid ""
-"Enter aspect ratio in either decimal (e.g. 2.35) or fractional (e.g. 16:9) "
-"form. Enter a value like 853x480 to set a specific resolution."
+msgid "Enter aspect ratio in either decimal (e.g. 2.35) or fractional (e.g. 16:9) form. Enter a value like 853x480 to set a specific resolution."
 msgstr ""
-"Adja meg a képarányt tizedestört (pl. 2.35) vagy hagyományos tört (pl.16:9) "
-"alakban.\n"
+"Adja meg a képarányt tizedestört (pl. 2.35) vagy hagyományos tört (pl.16:9) alakban.\n"
 "Felbontást is megadhat (pl. 853x480)."
 
 #: frame_main_events.cpp:1385
@@ -5371,8 +5324,7 @@ msgstr "Képarány megadása"
 
 #: frame_main_events.cpp:1420
 msgid "Invalid value! Aspect ratio must be between 0.5 and 5.0."
-msgstr ""
-"Érvénytelen érték! A képaránynak 0.5 és 5.0 közötti értéknek kell lennie."
+msgstr "Érvénytelen érték! A képaránynak 0.5 és 5.0 közötti értéknek kell lennie."
 
 #: frame_main_events.cpp:1420
 msgid "Invalid Aspect Ratio"
@@ -5404,63 +5356,45 @@ msgstr "elrejtve."
 
 #~ msgid "Could not open Internet File system. Aborting.\n"
 #~ msgstr "Nem tudtam elérni az Internetet. Leállás.\n"
-
 #~ msgid "Attempting to open \"%s\"..."
 #~ msgstr "Megnyitás: \"%s\""
-
 #~ msgid "Failed.\n"
 #~ msgstr "Sikertelen.\n"
-
 #~ msgid "OK.\n"
 #~ msgstr "Rendben.\n"
-
 #~ msgid "New version found!\n"
 #~ msgstr "Frissebb verziót találtam!\n"
-
 #~ msgid "Please go to the following URL to download it: %s\n"
 #~ msgstr "A letöltéshez kattintson erre az URL-re: %s\n"
-
 #~ msgid "No new version has been found.\n"
 #~ msgstr "Nem találtam frissebb verziót.\n"
-
 #~ msgid "This build of Aegisub uses the following C/C++ libraries:\n"
 #~ msgstr ""
 #~ "Az Aegisub ezen verziója a következő C/C++ könyvtárakat használja:\n"
-
 #~ msgid "Programmers:"
 #~ msgstr "Programozók:"
-
 #~ msgid "Manual by:"
 #~ msgstr "Kézikönyv:"
-
 #~ msgid "Forum and wiki hosting by:"
 #~ msgstr "Fórum és wiki üzemeltetés:"
-
 #~ msgid "SVN hosting by:"
 #~ msgstr "SVN üzemeltetés:"
-
 #~ msgid "Bug tracker hosting by:"
 #~ msgstr "Bug tracker üzemeltetés:"
-
 #~ msgid "Associate extensions"
 #~ msgstr "Kiterjesztések társítása"
-
 #~ msgid ""
 #~ "Please select the formats you want to\n"
 #~ "associate with Aegisub:"
 #~ msgstr ""
 #~ "Válassza ki, hogy melyik fájlt szeretné\n"
 #~ "társítani az Aegisubhoz:"
-
 #~ msgid "Associations"
 #~ msgstr "Társítások"
-
 #~ msgid "Groups"
 #~ msgstr "Csoportok"
-
 #~ msgid "Select source text first."
 #~ msgstr "Először a forrás szövegét kell kijelölnie."
-
 #~ msgid ""
 #~ "The source line contains text before the first karaoke block.\n"
 #~ "Do you want to carry it over to the destination?\n"
@@ -5469,34 +5403,24 @@ msgstr "elrejtve."
 #~ "A forrássor az első karaoke blokk előtt még tartalmaz szöveget.\n"
 #~ "Át karaja ezt vinni a célsorba?\n"
 #~ "Máskülönben nem lesz figyelembe véve."
-
 #~ msgid "Kanji timer"
 #~ msgstr "Kandzsi időzítő"
-
 #~ msgid "Possible error parsing source line"
 #~ msgstr "Lehetséges hiba a forrássor elemzésekor"
-
 #~ msgid "Group some text first."
 #~ msgstr "Előbb csoportba kell rendeznie a szöveget."
-
 #~ msgid "Show Tip of the Day"
 #~ msgstr "Nap tippje mutatása"
-
 #~ msgid "Save config.dat locally"
 #~ msgstr "config.dat helyi mentése"
-
 #~ msgid "Avisynth renders its own subs"
 #~ msgstr "Felirat megjelenítése Avisynth-en keresztül"
-
 #~ msgid "Recommended Formats"
 #~ msgstr "Ajánlott formátumok"
-
 #~ msgid "Other supported formats"
 #~ msgstr "Egyéb támogatott formátumok"
-
 #~ msgid "Video Screenshot Path"
 #~ msgstr "Videó képernyőkép útvonala"
-
 #~ msgid ""
 #~ "Warning! The file is being opened using Avisynth's DirectShowSource, "
 #~ "which has unreliable seeking. Frame numbers might not match the real "
@@ -5505,16 +5429,12 @@ msgstr "elrejtve."
 #~ "Figyelem! A fájlt az Avisynth DirectShowSource nyitja meg, aminek "
 #~ "megbízhatatlan a fájlon belüli keresése. A képkockaszámok nem biztos, "
 #~ "hogy egyeznek a valódi értékekkel. CSAK SAJÁT FELELŐSSÉGRE!"
-
 #~ msgid "DirectShow"
 #~ msgstr "DirectShow"
-
 #~ msgid "Dummy Video Provider"
 #~ msgstr "Próbavideó megjelenítő"
-
 #~ msgid " by ArchMage ZeratuL.\n"
 #~ msgstr " by ArchMage ZeratuL.\n"
-
 #~ msgid ""
 #~ "Recommended Formats (*.avi,*.avs,*.d2v)|*.avi;*.avs;*.d2v|Other supported "
 #~ "formats (*.mkv,*.ogm,*.mp4,*.mpeg,*.mpg,*.vob)|*.mkv;*.ogm;*.mp4;*.mpeg;*."
@@ -5523,7 +5443,6 @@ msgstr "elrejtve."
 #~ "Ajánlott formátumok (*.avi,*.avs,*.d2v)|*.avi;*.avs;*.d2v|Egyéb "
 #~ "támogatott formátumok (*.mkv,*.ogm,*.mp4,*.mpeg,*.mpg,*.vob)|*.mkv;*.ogm;"
 #~ "*.mp4;*.mpeg;*.mpg;*.vob|Minden fájl (*.*)|*.*"
-
 #~ msgid ""
 #~ "Audio Formats (*.wav,*.mp3,*.ogg,*.flac,*.mp4,*.ac3,*.aac,*.mka,*.m4a)|*."
 #~ "wav;*.mp3;*.ogg;*.flac;*.mp4;*.ac3;*.aac;*.mka;*.m4a|Video Formats (*.avi,"
@@ -5534,51 +5453,37 @@ msgstr "elrejtve."
 #~ "*.wav;*.mp3;*.ogg;*.flac;*.mp4;*.ac3;*.aac;*.mka;*.m4a|Videó formátumok "
 #~ "(*.avi,*.mkv,*.ogm,*.mpg,*.mpeg)|*.avi;*.mkv;*.ogm;*.mp4;*.mpeg;*.mpg|"
 #~ "Minden fájl (*.*)|*.*"
-
 #~ msgid "All Supported Types (*.txt)|*.txt|All Files (*.*)|*.*"
 #~ msgstr "Minden támogatott típus (*.txt)|*.txt|Minden fájl (*.*)|*.*"
-
 #~ msgid "Detached Video"
 #~ msgstr "Leválasztott videó"
-
 #~ msgid "Question"
 #~ msgstr "Kérdés"
-
 #~ msgid "%s{\\k%i}"
 #~ msgstr "%s{\\k%i}"
-
 #~ msgid "%s{\\k%i}%s"
 #~ msgstr "%s{\\k%i}%s"
-
 #~ msgid "selection background"
 #~ msgstr "kijelölés háttere"
-
 #~ msgid "Use pixel shaders if available"
 #~ msgstr "Pixel shaderek használata, ha elérhető"
-
 #~ msgid ""
 #~ "List of all hotkeys (shortcuts) available in Aegisub.\n"
 #~ "Double click on any item to reassign it."
 #~ msgstr ""
 #~ "Az Aeigsubban használatos gyorsgombok listája. Duplaklikkel változtatható."
-
 #~ msgid "Defaults"
 #~ msgstr "Alapértelmezések"
-
 #~ msgid "\" from the catalog?"
 #~ msgstr "\"-t a tárolóból?"
-
 #~ msgid "Find Next\t"
 #~ msgstr "Következőt keres\t"
-
 #~ msgid "Jump video to start\t"
 #~ msgstr "Ugrás a kezdethez\t"
-
 #~ msgid "Jump video to end\t"
 #~ msgstr "Ugrás a végéhez\t"
-
 #~ msgid "Visit Aegisub's bug tracker"
 #~ msgstr "Jelentse az Aegisub esetleges programhibáit."
-
 #~ msgid "%i"
 #~ msgstr "%i"
+
