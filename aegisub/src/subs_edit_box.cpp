@@ -261,10 +261,11 @@ void SubsEditBox::SetSplitLineMode(wxSize newSize) {
 
 
 /// @brief Update function 
-/// @param timeOnly 
-/// @param weak     
+/// @param timeOnly If true, only update the time fields
+/// @param weak     ?
+/// @param video    If true, update the video display
 ///
-void SubsEditBox::Update (bool timeOnly,bool weak) {
+void SubsEditBox::Update (bool timeOnly,bool weak,bool video) {
 	if (enabled) {
 		AssDialogue *curdiag = grid->GetDialogue(linen);
 		if (curdiag) {
@@ -300,7 +301,7 @@ void SubsEditBox::Update (bool timeOnly,bool weak) {
 
 			// Video
 			VideoContext::Get()->curLine = curdiag;
-			VideoContext::Get()->UpdateDisplays(false);
+			if (video) VideoContext::Get()->UpdateDisplays(false);
 
 			TextEdit->EmptyUndoBuffer();
 		}
@@ -352,10 +353,12 @@ void SubsEditBox::SetToLine(int n,bool weak) {
 	// Set to nothing
 	if (n == -1) {
 		enabled = false;
+		SetControlsState(false);
+		return;
 	}
 
 	// Set line
-	else if (grid->GetDialogue(n)) {
+	if (grid->GetDialogue(n)) {
 		enabled = true;
 		if (n != linen) {
 			linen = n;
@@ -366,7 +369,7 @@ void SubsEditBox::SetToLine(int n,bool weak) {
 	}
 
 	// Update controls
-	Update();
+	Update(false, false, false);
 
 	// Set video
 	if (VideoContext::Get()->IsLoaded() && !weak) {
@@ -374,7 +377,7 @@ void SubsEditBox::SetToLine(int n,bool weak) {
 		if (Search.hasFocus) sync = _T("Find update video");
 		else sync = _T("Sync video with subs");
 		
-		if (Options.AsBool(sync) == true) {
+		if (Options.AsBool(sync)) {
 			VideoContext::Get()->Stop();
 			AssDialogue *cur = grid->GetDialogue(n);
 			if (cur) VideoContext::Get()->JumpToFrame(VFR_Output.GetFrameAtTime(cur->Start.GetMS(),true));
