@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: aegisub 2\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2009-12-30 23:16-0500\n"
-"PO-Revision-Date: 2009-12-17 02:56+0200\n"
+"PO-Revision-Date: 2010-01-02 06:16+0200\n"
 "Last-Translator: z0rc <z0rc3r@gmail.com>\n"
 "Language-Team: #FT & Kuroyami <yukos@haruhi.ru>\n"
 "MIME-Version: 1.0\n"
@@ -60,7 +60,8 @@ msgstr "позиционирование"
 msgid "Video Details"
 msgstr "Информация о видео"
 
-#: dialog_video_details.cpp:57 dialog_options.cpp:628
+#: dialog_video_details.cpp:57
+#: dialog_options.cpp:628
 msgid "Video"
 msgstr "Видео"
 
@@ -96,7 +97,8 @@ msgstr ""
 msgid "Choose character set"
 msgstr "Выбрать кодировку"
 
-#: dialog_timing_processor.cpp:57 frame_main.cpp:286
+#: dialog_timing_processor.cpp:57
+#: frame_main.cpp:286
 msgid "Timing Post-Processor"
 msgstr "Пост-обработка тайминга"
 
@@ -108,7 +110,8 @@ msgstr "Применить к стилям"
 msgid "Select styles to process. Unchecked ones will be ignored."
 msgstr "Выбрать стили для обработки. Невыбранные игнорируются."
 
-#: dialog_timing_processor.cpp:77 dialog_paste_over.cpp:89
+#: dialog_timing_processor.cpp:77
+#: dialog_paste_over.cpp:89
 msgid "All"
 msgstr "Все"
 
@@ -116,7 +119,8 @@ msgstr "Все"
 msgid "Select all styles."
 msgstr "Выделить все стили"
 
-#: dialog_timing_processor.cpp:79 dialog_paste_over.cpp:90
+#: dialog_timing_processor.cpp:79
+#: dialog_paste_over.cpp:90
 msgid "None"
 msgstr "Ничего"
 
@@ -124,10 +128,18 @@ msgstr "Ничего"
 msgid "Deselect all styles."
 msgstr "Отменить выделение стилей"
 
-#: dialog_timing_processor.cpp:83 dialog_options.cpp:86 dialog_options.cpp:213
-#: dialog_options.cpp:287 dialog_options.cpp:356 dialog_options.cpp:434
-#: dialog_options.cpp:476 dialog_options.cpp:564 dialog_properties.cpp:119
-#: frame_main.cpp:292 hotkeys.cpp:333 hotkeys.cpp:337
+#: dialog_timing_processor.cpp:83
+#: dialog_options.cpp:86
+#: dialog_options.cpp:213
+#: dialog_options.cpp:287
+#: dialog_options.cpp:356
+#: dialog_options.cpp:434
+#: dialog_options.cpp:476
+#: dialog_options.cpp:564
+#: dialog_properties.cpp:119
+#: frame_main.cpp:292
+#: hotkeys.cpp:333
+#: hotkeys.cpp:337
 msgid "Options"
 msgstr "Параметры"
 
@@ -167,40 +179,28 @@ msgstr "Окончание в миллисекундах"
 msgid "Make adjacent subtitles continuous"
 msgstr "Сделать соседние субтитры непрерывными"
 
-#: dialog_timing_processor.cpp:108 dialog_timing_processor.cpp:126
+#: dialog_timing_processor.cpp:108
+#: dialog_timing_processor.cpp:126
 msgid "Enable"
 msgstr "Включить"
 
 #: dialog_timing_processor.cpp:109
-msgid ""
-"Enable snapping of subtitles together if they are within a certain distance "
-"of each other."
-msgstr ""
-"Включить подгон субтитров друг к другу, если они в пределах определённого "
-"расстояния"
+msgid "Enable snapping of subtitles together if they are within a certain distance of each other."
+msgstr "Включить подгон субтитров друг к другу, если они в пределах определённого расстояния"
 
 #: dialog_timing_processor.cpp:111
 msgid "Threshold:"
 msgstr "Порог:"
 
 #: dialog_timing_processor.cpp:113
-msgid ""
-"Maximum difference between start and end time for two subtitles to be made "
-"continuous, in milliseconds."
-msgstr ""
-"Максимальная разница в миллисекундах между началом и концом показа двух "
-"субтитров, которые будут идти непрерывно"
+msgid "Maximum difference between start and end time for two subtitles to be made continuous, in milliseconds."
+msgstr "Максимальная разница в миллисекундах между началом и концом показа двух субтитров, которые будут идти непрерывно"
 
 #: dialog_timing_processor.cpp:115
-msgid ""
-"Sets how to set the adjoining of lines. If set totally to left, it will "
-"extend start time of the second line; if totally to right, it will extend "
-"the end time of the first line."
+msgid "Sets how to set the adjoining of lines. If set totally to left, it will extend start time of the second line; if totally to right, it will extend the end time of the first line."
 msgstr ""
-"Выставляет позицию между двух событий, к которой будут установлены конец "
-"предыдущего и начало следующего.\n"
-"Крайнее левое положение означает, то будет уставнолено только начало (конец "
-"не изменится), крайнее правое — только конец."
+"Выставляет позицию между двух событий, к которой будут установлены конец предыдущего и начало следующего.\n"
+"Крайнее левое положение означает, то будет уставнолено только начало (конец не изменится), крайнее правое — только конец."
 
 #: dialog_timing_processor.cpp:119
 msgid "Bias: Start <- "
@@ -215,67 +215,45 @@ msgid "Keyframe snapping"
 msgstr "Подгон по ключкадрам"
 
 #: dialog_timing_processor.cpp:127
-msgid ""
-"Enable snapping of subtitles to nearest keyframe, if distance is within "
-"threshold."
-msgstr ""
-"Включить подгон субтитров к ближайшему ключкадру, если расстояние меньше "
-"порогового"
+msgid "Enable snapping of subtitles to nearest keyframe, if distance is within threshold."
+msgstr "Включить подгон субтитров к ближайшему ключкадру, если расстояние меньше порогового"
 
 #: dialog_timing_processor.cpp:129
 msgid "Starts before thres.:"
 msgstr "Порог до начала:"
 
 #: dialog_timing_processor.cpp:131
-msgid ""
-"Threshold for 'before start' distance, that is, how many frames a subtitle "
-"must start before a keyframe to snap to it."
-msgstr ""
-"Пороговое количество кадров между началом субтитра и ближайшим ключкадром "
-"слева, при котором время начала субтитра будет сдвинуто к этому ключкадру"
+msgid "Threshold for 'before start' distance, that is, how many frames a subtitle must start before a keyframe to snap to it."
+msgstr "Пороговое количество кадров между началом субтитра и ближайшим ключкадром слева, при котором время начала субтитра будет сдвинуто к этому ключкадру"
 
 #: dialog_timing_processor.cpp:132
 msgid "Starts after thres.:"
 msgstr "Порог после начала:"
 
 #: dialog_timing_processor.cpp:134
-msgid ""
-"Threshold for 'after start' distance, that is, how many frames a subtitle "
-"must start after a keyframe to snap to it."
-msgstr ""
-"Пороговое количество кадров между началом субтитра и ближайшим ключкадром "
-"справа, при котором время начала субтитра будет сдвинуто к этому ключкадру"
+msgid "Threshold for 'after start' distance, that is, how many frames a subtitle must start after a keyframe to snap to it."
+msgstr "Пороговое количество кадров между началом субтитра и ближайшим ключкадром справа, при котором время начала субтитра будет сдвинуто к этому ключкадру"
 
 #: dialog_timing_processor.cpp:135
 msgid "Ends before thres.:"
 msgstr "Порог до конца:"
 
 #: dialog_timing_processor.cpp:137
-msgid ""
-"Threshold for 'before end' distance, that is, how many frames a subtitle "
-"must end before a keyframe to snap to it."
-msgstr ""
-"Пороговое количество кадров между концом субтитра и ближайшим ключкадром "
-"справа, при котором время конца субтитра будет сдвинуто к этому ключкадру"
+msgid "Threshold for 'before end' distance, that is, how many frames a subtitle must end before a keyframe to snap to it."
+msgstr "Пороговое количество кадров между концом субтитра и ближайшим ключкадром справа, при котором время конца субтитра будет сдвинуто к этому ключкадру"
 
 #: dialog_timing_processor.cpp:138
 msgid "Ends after thres.:"
 msgstr "Порог после конца:"
 
 #: dialog_timing_processor.cpp:140
-msgid ""
-"Threshold for 'after end' distance, that is, how many frames a subtitle must "
-"end after a keyframe to snap to it."
-msgstr ""
-"Пороговое количество кадров между концом субтитра и ближайшим ключкадром "
-"слева, при котором время конца субтитра будет сдвинуто к этому ключкадру"
+msgid "Threshold for 'after end' distance, that is, how many frames a subtitle must end after a keyframe to snap to it."
+msgstr "Пороговое количество кадров между концом субтитра и ближайшим ключкадром слева, при котором время конца субтитра будет сдвинуто к этому ключкадру"
 
 #: dialog_timing_processor.cpp:322
 #, c-format
 msgid "One of the lines in the file (%i) has negative duration. Aborting."
-msgstr ""
-"Одно из событий в файле (%i) имеет отрицательную длительность. Прекращение "
-"процесса."
+msgstr "Одно из событий в файле (%i) имеет отрицательную длительность. Прекращение процесса."
 
 #: dialog_timing_processor.cpp:322
 msgid "Invalid script"
@@ -321,7 +299,8 @@ msgstr "Стандартный"
 msgid "Standard mode, double click sets position."
 msgstr "Режим измерения координат"
 
-#: video_box.cpp:115 visual_tool_vector_clip.cpp:70
+#: video_box.cpp:115
+#: visual_tool_vector_clip.cpp:70
 msgid "Drag"
 msgstr "Переместить"
 
@@ -377,7 +356,9 @@ msgstr "Показывать изменения"
 msgid "Toggle realtime display of changes."
 msgstr "Мометальное отображение изменений"
 
-#: video_box.cpp:124 hotkeys.cpp:332 hotkeys.cpp:336
+#: video_box.cpp:124
+#: hotkeys.cpp:332
+#: hotkeys.cpp:336
 msgid "Help"
 msgstr "Помощь"
 
@@ -417,7 +398,8 @@ msgstr "Чтение ключкадров из файла"
 msgid "Styling assistant"
 msgstr "Ассистент стилей"
 
-#: dialog_styling_assistant.cpp:75 dialog_styling_assistant.cpp:76
+#: dialog_styling_assistant.cpp:75
+#: dialog_styling_assistant.cpp:76
 msgid "Current line"
 msgstr "Текущее событие"
 
@@ -429,37 +411,47 @@ msgstr "Доступные стили"
 msgid "Set style"
 msgstr "Установить"
 
-#: dialog_styling_assistant.cpp:87 dialog_translation.cpp:99
+#: dialog_styling_assistant.cpp:87
+#: dialog_translation.cpp:99
 msgid "Keys"
 msgstr "Клавиши"
 
-#: dialog_styling_assistant.cpp:88 dialog_translation.cpp:122
+#: dialog_styling_assistant.cpp:88
+#: dialog_translation.cpp:122
 msgid "Actions"
 msgstr "Действия"
 
-#: dialog_styling_assistant.cpp:96 dialog_translation.cpp:102
+#: dialog_styling_assistant.cpp:96
+#: dialog_translation.cpp:102
 msgid "Accept changes"
 msgstr "Принять изменения"
 
-#: dialog_styling_assistant.cpp:98 dialog_translation.cpp:104
+#: dialog_styling_assistant.cpp:98
+#: dialog_translation.cpp:104
 msgid "Preview changes"
 msgstr "Просмотр изменений"
 
-#: dialog_styling_assistant.cpp:100 dialog_translation.cpp:106
+#: dialog_styling_assistant.cpp:100
+#: dialog_translation.cpp:106
 msgid "Previous line"
 msgstr "Предыдущее событие"
 
-#: dialog_styling_assistant.cpp:102 dialog_translation.cpp:108
+#: dialog_styling_assistant.cpp:102
+#: dialog_translation.cpp:108
 msgid "Next line"
 msgstr "Следующее событие"
 
-#: dialog_styling_assistant.cpp:104 dialog_styling_assistant.cpp:118
-#: dialog_translation.cpp:112 dialog_translation.cpp:123
+#: dialog_styling_assistant.cpp:104
+#: dialog_styling_assistant.cpp:118
+#: dialog_translation.cpp:112
+#: dialog_translation.cpp:123
 msgid "Play Video"
 msgstr "Воспроизвести видео"
 
-#: dialog_styling_assistant.cpp:106 dialog_styling_assistant.cpp:119
-#: dialog_translation.cpp:114 dialog_translation.cpp:124
+#: dialog_styling_assistant.cpp:106
+#: dialog_styling_assistant.cpp:119
+#: dialog_translation.cpp:114
+#: dialog_translation.cpp:124
 msgid "Play Audio"
 msgstr "Воспроизвести аудио"
 
@@ -479,7 +471,8 @@ msgstr "Включить предпросмотр (медленно)"
 msgid "style changes"
 msgstr "изменение стиля"
 
-#: dialog_styling_assistant.cpp:223 dialog_styling_assistant.cpp:252
+#: dialog_styling_assistant.cpp:223
+#: dialog_styling_assistant.cpp:252
 msgid "styling assistant"
 msgstr "ассистент стилей"
 
@@ -503,7 +496,8 @@ msgstr "Совпадает"
 msgid "Doesn't Match"
 msgstr "Не совпадает"
 
-#: dialog_selection.cpp:68 dialog_search_replace.cpp:81
+#: dialog_selection.cpp:68
+#: dialog_search_replace.cpp:81
 msgid "Match case"
 msgstr "Учитывать регистр"
 
@@ -519,29 +513,46 @@ msgstr "Содержит"
 msgid "Regular Expression match"
 msgstr "Совпадение по регулярному выражению"
 
-#: dialog_selection.cpp:75 dialog_kanji_timer.cpp:707
-#: dialog_search_replace.cpp:95 base_grid.cpp:442 dialog_paste_over.cpp:80
+#: dialog_selection.cpp:75
+#: dialog_kanji_timer.cpp:707
+#: dialog_search_replace.cpp:95
+#: base_grid.cpp:442
+#: dialog_paste_over.cpp:80
 #: dialog_paste_over.cpp:92
 msgid "Text"
 msgstr "Текст"
 
-#: dialog_selection.cpp:76 dialog_options.cpp:216 dialog_options.cpp:288
-#: dialog_options.cpp:477 subs_grid.cpp:122 dialog_search_replace.cpp:96
-#: base_grid.cpp:436 dialog_paste_over.cpp:68
+#: dialog_selection.cpp:76
+#: dialog_options.cpp:216
+#: dialog_options.cpp:288
+#: dialog_options.cpp:477
+#: subs_grid.cpp:122
+#: dialog_search_replace.cpp:96
+#: base_grid.cpp:436
+#: dialog_paste_over.cpp:68
 msgid "Style"
 msgstr "Стиль"
 
-#: dialog_selection.cpp:77 subs_grid.cpp:123 subs_edit_box.cpp:90
-#: dialog_search_replace.cpp:97 base_grid.cpp:437 dialog_paste_over.cpp:69
+#: dialog_selection.cpp:77
+#: subs_grid.cpp:123
+#: subs_edit_box.cpp:90
+#: dialog_search_replace.cpp:97
+#: base_grid.cpp:437
+#: dialog_paste_over.cpp:69
 msgid "Actor"
 msgstr "Актёр"
 
-#: dialog_selection.cpp:78 subs_grid.cpp:124 subs_edit_box.cpp:93
-#: dialog_search_replace.cpp:98 base_grid.cpp:438 dialog_paste_over.cpp:79
+#: dialog_selection.cpp:78
+#: subs_grid.cpp:124
+#: subs_edit_box.cpp:93
+#: dialog_search_replace.cpp:98
+#: base_grid.cpp:438
+#: dialog_paste_over.cpp:79
 msgid "Effect"
 msgstr "Эффект"
 
-#: dialog_selection.cpp:79 dialog_search_replace.cpp:102
+#: dialog_selection.cpp:79
+#: dialog_search_replace.cpp:102
 msgid "In Field"
 msgstr "В поле"
 
@@ -578,7 +589,9 @@ msgstr "Действие"
 msgid "Selection was set to %i lines"
 msgstr "Выделение установлено на %i событий"
 
-#: dialog_selection.cpp:267 dialog_selection.cpp:268 dialog_selection.cpp:269
+#: dialog_selection.cpp:267
+#: dialog_selection.cpp:268
+#: dialog_selection.cpp:269
 msgid "Selection"
 msgstr "Выделение"
 
@@ -592,7 +605,8 @@ msgstr "%i событий добавлено к выделению"
 msgid "%i lines were removed from selection"
 msgstr "%i убрано из выделения"
 
-#: dialog_style_manager.cpp:62 frame_main.cpp:265
+#: dialog_style_manager.cpp:62
+#: frame_main.cpp:265
 msgid "Styles Manager"
 msgstr "Менеджер стилей"
 
@@ -600,13 +614,17 @@ msgstr "Менеджер стилей"
 msgid "Catalog of available storages"
 msgstr "Каталог доступных наборов"
 
-#: dialog_style_manager.cpp:73 dialog_style_manager.cpp:86
-#: dialog_style_manager.cpp:131 frame_main.cpp:234
+#: dialog_style_manager.cpp:73
+#: dialog_style_manager.cpp:86
+#: dialog_style_manager.cpp:131
+#: frame_main.cpp:234
 msgid "New"
 msgstr "Создать"
 
-#: dialog_style_manager.cpp:74 dialog_style_manager.cpp:89
-#: dialog_style_manager.cpp:134 subs_grid.cpp:204
+#: dialog_style_manager.cpp:74
+#: dialog_style_manager.cpp:89
+#: dialog_style_manager.cpp:134
+#: subs_grid.cpp:204
 msgid "Delete"
 msgstr "Удалить"
 
@@ -618,31 +636,39 @@ msgstr "Набор"
 msgid "Copy to current script ->"
 msgstr "Копировать в текущий скрипт ->"
 
-#: dialog_style_manager.cpp:87 dialog_style_manager.cpp:132
+#: dialog_style_manager.cpp:87
+#: dialog_style_manager.cpp:132
 msgid "Edit"
 msgstr "Изменить"
 
-#: dialog_style_manager.cpp:88 dialog_style_manager.cpp:133 hotkeys.cpp:357
+#: dialog_style_manager.cpp:88
+#: dialog_style_manager.cpp:133
+#: hotkeys.cpp:357
 msgid "Copy"
 msgstr "Копировать"
 
-#: dialog_style_manager.cpp:99 dialog_style_manager.cpp:144
+#: dialog_style_manager.cpp:99
+#: dialog_style_manager.cpp:144
 msgid "Move style up."
 msgstr "Переместить стиль вверх"
 
-#: dialog_style_manager.cpp:100 dialog_style_manager.cpp:145
+#: dialog_style_manager.cpp:100
+#: dialog_style_manager.cpp:145
 msgid "Move style down."
 msgstr "Переместить стиль вниз"
 
-#: dialog_style_manager.cpp:101 dialog_style_manager.cpp:146
+#: dialog_style_manager.cpp:101
+#: dialog_style_manager.cpp:146
 msgid "Move style to top."
 msgstr "Переместить стиль к верху"
 
-#: dialog_style_manager.cpp:102 dialog_style_manager.cpp:147
+#: dialog_style_manager.cpp:102
+#: dialog_style_manager.cpp:147
 msgid "Move style to bottom."
 msgstr "Переместить стиль к низу"
 
-#: dialog_style_manager.cpp:103 dialog_style_manager.cpp:148
+#: dialog_style_manager.cpp:103
+#: dialog_style_manager.cpp:148
 msgid "Sort styles alphabetically."
 msgstr "Сортировать стили по алфавиту"
 
@@ -677,12 +703,10 @@ msgstr "Конфликт имён наборов"
 #: dialog_style_manager.cpp:440
 #, c-format
 msgid ""
-"The specified catalog name contains one or more illegal characters. They "
-"have been replaced with underscores instead.\n"
+"The specified catalog name contains one or more illegal characters. They have been replaced with underscores instead.\n"
 "The catalog has been renamed to \"%s\"."
 msgstr ""
-"Указанный набор содержит один или несколько запрещённых символов. Они были "
-"заменены на подчёркивания.\n"
+"Указанный набор содержит один или несколько запрещённых символов. Они были заменены на подчёркивания.\n"
 "Набор переименован в «%s»."
 
 #: dialog_style_manager.cpp:440
@@ -698,11 +722,13 @@ msgstr "Вы уверены, что хотите удалить набор «%s�
 msgid "Confirm delete"
 msgstr "Подтверждение удаления"
 
-#: dialog_style_manager.cpp:610 dialog_style_manager.cpp:660
+#: dialog_style_manager.cpp:610
+#: dialog_style_manager.cpp:660
 msgid "style copy"
 msgstr "копирование стиля"
 
-#: dialog_style_manager.cpp:623 dialog_style_manager.cpp:647
+#: dialog_style_manager.cpp:623
+#: dialog_style_manager.cpp:647
 #: dialog_style_editor.cpp:449
 msgid "Copy of "
 msgstr "Копия "
@@ -711,20 +737,25 @@ msgstr "Копия "
 msgid "style paste"
 msgstr "вставку стиля"
 
-#: dialog_style_manager.cpp:716 dialog_style_manager.cpp:719
-#: dialog_style_manager.cpp:752 dialog_style_manager.cpp:755
+#: dialog_style_manager.cpp:716
+#: dialog_style_manager.cpp:719
+#: dialog_style_manager.cpp:752
+#: dialog_style_manager.cpp:755
 msgid "Could not parse style"
 msgstr "Невозможно прочитать стиль"
 
-#: dialog_style_manager.cpp:801 dialog_style_manager.cpp:835
+#: dialog_style_manager.cpp:801
+#: dialog_style_manager.cpp:835
 msgid "Are you sure you want to delete these "
 msgstr "Хотите удалить эти"
 
-#: dialog_style_manager.cpp:803 dialog_style_manager.cpp:837
+#: dialog_style_manager.cpp:803
+#: dialog_style_manager.cpp:837
 msgid " styles?"
 msgstr " стили?"
 
-#: dialog_style_manager.cpp:805 dialog_style_manager.cpp:839
+#: dialog_style_manager.cpp:805
+#: dialog_style_manager.cpp:839
 msgid "Are you sure you want to delete this style?"
 msgstr "Хотите удалить этот стиль?"
 
@@ -740,7 +771,8 @@ msgstr "Подтверждение удаления из текущего скр
 msgid "style delete"
 msgstr "удаление стиля"
 
-#: dialog_style_manager.cpp:868 frame_main_events.cpp:715
+#: dialog_style_manager.cpp:868
+#: frame_main_events.cpp:715
 #: frame_main_events.cpp:733
 msgid "Open subtitles file"
 msgstr "Открыть файл субтитров"
@@ -753,11 +785,13 @@ msgstr "В выбранном файле нет доступных стилей.
 msgid "Error Importing Styles"
 msgstr "Ошибка импорта стилей"
 
-#: dialog_style_manager.cpp:891 dialog_style_manager.cpp:893
+#: dialog_style_manager.cpp:891
+#: dialog_style_manager.cpp:893
 msgid "Choose styles to import:"
 msgstr "Вебрите стили для импорта:"
 
-#: dialog_style_manager.cpp:891 dialog_style_manager.cpp:893
+#: dialog_style_manager.cpp:891
+#: dialog_style_manager.cpp:893
 msgid "Import Styles"
 msgstr "Импорт стилей"
 
@@ -785,7 +819,8 @@ msgstr "Запуск"
 msgid "Show Splash Screen"
 msgstr "Показывать заставку при запуске программы"
 
-#: dialog_options.cpp:115 dialog_version_check.cpp:429
+#: dialog_options.cpp:115
+#: dialog_version_check.cpp:429
 msgid "Auto Check for Updates"
 msgstr "Автоматически проверять обновления"
 
@@ -869,15 +904,18 @@ msgstr "Путь восстановления:"
 msgid "Auto-load linked files:"
 msgstr "Автозагрузка связанных файлов:"
 
-#: dialog_options.cpp:191 dialog_options.cpp:364
+#: dialog_options.cpp:191
+#: dialog_options.cpp:364
 msgid "Never"
 msgstr "Никогда"
 
-#: dialog_options.cpp:191 dialog_options.cpp:364
+#: dialog_options.cpp:191
+#: dialog_options.cpp:364
 msgid "Always"
 msgstr "Всегда"
 
-#: dialog_options.cpp:191 dialog_options.cpp:364
+#: dialog_options.cpp:191
+#: dialog_options.cpp:364
 msgid "Ask"
 msgstr "Спросить"
 
@@ -901,7 +939,9 @@ msgstr "Вставка при вводе в поля времени"
 msgid "Path to dictionary files:"
 msgstr "Путь к словарям:"
 
-#: dialog_options.cpp:240 dialog_options.cpp:572 dialog_properties.cpp:133
+#: dialog_options.cpp:240
+#: dialog_options.cpp:572
+#: dialog_properties.cpp:133
 msgid "Normal"
 msgstr "Стандарт"
 
@@ -921,11 +961,19 @@ msgstr "Теги"
 msgid "Parameters"
 msgstr "Параметры"
 
-#: dialog_options.cpp:241 options.cpp:467 dialog_kanji_timer.cpp:820
-#: dialog_kanji_timer.cpp:822 dialog_kanji_timer.cpp:865 subs_grid.cpp:686
-#: subs_grid.cpp:690 subs_grid.cpp:736 dialog_resample.cpp:217
-#: dialog_resample.cpp:221 dialog_fonts_collector.cpp:195
-#: dialog_fonts_collector.cpp:204 dialog_fonts_collector.cpp:213
+#: dialog_options.cpp:241
+#: options.cpp:467
+#: dialog_kanji_timer.cpp:820
+#: dialog_kanji_timer.cpp:822
+#: dialog_kanji_timer.cpp:865
+#: subs_grid.cpp:686
+#: subs_grid.cpp:690
+#: subs_grid.cpp:736
+#: dialog_resample.cpp:217
+#: dialog_resample.cpp:221
+#: dialog_fonts_collector.cpp:195
+#: dialog_fonts_collector.cpp:204
+#: dialog_fonts_collector.cpp:213
 msgid "Error"
 msgstr "Ошибка"
 
@@ -949,7 +997,8 @@ msgstr "Фон изменения"
 msgid "Syntax highlighter - "
 msgstr "Подсветка синтаксиса - "
 
-#: dialog_options.cpp:259 dialog_options.cpp:323
+#: dialog_options.cpp:259
+#: dialog_options.cpp:323
 msgid "Font: "
 msgstr "Шрифт:"
 
@@ -973,7 +1022,8 @@ msgstr "Фон"
 msgid "Selection foreground"
 msgstr "Цвет шрифта выделенных событий"
 
-#: dialog_options.cpp:305 dialog_options.cpp:494
+#: dialog_options.cpp:305
+#: dialog_options.cpp:494
 msgid "Selection background"
 msgstr "Фон выделенных событий"
 
@@ -1013,7 +1063,8 @@ msgstr "События"
 msgid "Replace override tags with: "
 msgstr "Заменить теги на:"
 
-#: dialog_options.cpp:357 dialog_options.cpp:528
+#: dialog_options.cpp:357
+#: dialog_options.cpp:528
 msgid "Advanced - EXPERT USERS ONLY"
 msgstr "Расширенные - ТОЛЬКО ДЛЯ ОПЫТНЫХ ПОЛЬЗОВАТЕЛЕЙ"
 
@@ -1053,7 +1104,8 @@ msgstr "Выделение памяти для Avisynth (МБ):"
 msgid "Allow pre-2.56a Avisynth"
 msgstr "Разрешить Avisynth версии ниже 2.56a"
 
-#: dialog_options.cpp:421 dialog_options.cpp:552
+#: dialog_options.cpp:421
+#: dialog_options.cpp:552
 msgid ""
 "WARNING: Changing these settings might result in bugs,\n"
 "crashes, glitches and/or movax.\n"
@@ -1328,11 +1380,13 @@ msgstr "Приоритет потока"
 msgid "Autoreload on Export"
 msgstr "Автоматически перезагружать при экспорте"
 
-#: dialog_options.cpp:595 dialog_options.cpp:1091
+#: dialog_options.cpp:595
+#: dialog_options.cpp:1091
 msgid "Function"
 msgstr "Функция"
 
-#: dialog_options.cpp:596 dialog_options.cpp:1092
+#: dialog_options.cpp:596
+#: dialog_options.cpp:1092
 msgid "Key"
 msgstr "Клавиша"
 
@@ -1344,7 +1398,8 @@ msgstr "Установить горячую клавишу..."
 msgid "Clear Hotkey"
 msgstr "Удалить горячую клавишу"
 
-#: dialog_options.cpp:612 ass_style.cpp:576
+#: dialog_options.cpp:612
+#: ass_style.cpp:576
 msgid "Default"
 msgstr "По умолчанию"
 
@@ -1380,7 +1435,8 @@ msgstr "Отображение"
 msgid "Advanced"
 msgstr "Расширеные настройки"
 
-#: dialog_options.cpp:632 frame_main.cpp:273
+#: dialog_options.cpp:632
+#: frame_main.cpp:273
 msgid "Automation"
 msgstr "Автоматизация"
 
@@ -1392,23 +1448,21 @@ msgstr "Горячие клавиши"
 msgid "Restore Defaults"
 msgstr "Восстановить умолчания"
 
-#: dialog_options.cpp:737 dialog_options.cpp:771 dialog_options.cpp:911
+#: dialog_options.cpp:737
+#: dialog_options.cpp:771
+#: dialog_options.cpp:911
 msgid "Aegisub must restart for the changes to take effect. Restart now?"
-msgstr ""
-"Необходимо перезапустить Aegisub, чтобы применить настройки. Перезагрузить "
-"сейчас?"
+msgstr "Необходимо перезапустить Aegisub, чтобы применить настройки. Перезагрузить сейчас?"
 
-#: dialog_options.cpp:737 dialog_options.cpp:771 dialog_options.cpp:911
+#: dialog_options.cpp:737
+#: dialog_options.cpp:771
+#: dialog_options.cpp:911
 msgid "Restart Aegisub"
 msgstr "Перезапустить Aegisub"
 
 #: dialog_options.cpp:787
-msgid ""
-"Are you sure that you want to restore the defaults? All your settings will "
-"be overriden."
-msgstr ""
-"Вы уверены, что хотите восстановить настройки по умолчанию? Все ваши "
-"настройки будет сброшены."
+msgid "Are you sure that you want to restore the defaults? All your settings will be overriden."
+msgstr "Вы уверены, что хотите восстановить настройки по умолчанию? Все ваши настройки будет сброшены."
 
 #: dialog_options.cpp:787
 msgid "Restore defaults?"
@@ -1425,12 +1479,8 @@ msgstr "Нажмите клавишу для переопределения на
 
 #: dialog_options.cpp:1169
 #, c-format
-msgid ""
-"The hotkey %s is already mapped to %s. If you proceed, that hotkey will be "
-"cleared. Proceed?"
-msgstr ""
-"Горячая клавиша %s уже привязана к %s. Привязка к прошлой функции будет "
-"убрана. Продолжить?"
+msgid "The hotkey %s is already mapped to %s. If you proceed, that hotkey will be cleared. Proceed?"
+msgstr "Горячая клавиша %s уже привязана к %s. Привязка к прошлой функции будет убрана. Продолжить?"
 
 #: dialog_options.cpp:1169
 msgid "Hotkey conflict"
@@ -1472,9 +1522,7 @@ msgstr "Дорожка %02d: %s"
 #: ffmpegsource_common.cpp:149
 #, c-format
 msgid "Multiple %s tracks detected, please choose the one you wish to load:"
-msgstr ""
-"Обнаружено несколько %s дорожек, пожалуйста выберите ту, которую хотите "
-"загрузить:"
+msgstr "Обнаружено несколько %s дорожек, пожалуйста выберите ту, которую хотите загрузить:"
 
 #: ffmpegsource_common.cpp:150
 #, c-format
@@ -1541,7 +1589,8 @@ msgstr "Пожалуйста, выберите частоту кадров дл�
 msgid "FPS"
 msgstr "кард/с"
 
-#: dialog_spellchecker.cpp:69 frame_main.cpp:288
+#: dialog_spellchecker.cpp:69
+#: frame_main.cpp:288
 msgid "Spell Checker"
 msgstr "Проверка орфографии"
 
@@ -1557,11 +1606,14 @@ msgstr "заменить на"
 msgid "Misspelled word:"
 msgstr "Слово с ошибкой:"
 
-#: dialog_spellchecker.cpp:113 dialog_search_replace.cpp:74
+#: dialog_spellchecker.cpp:113
+#: dialog_search_replace.cpp:74
 msgid "Replace with:"
 msgstr "Заменить на:"
 
-#: dialog_spellchecker.cpp:122 dialog_search_replace.cpp:566 hotkeys.cpp:351
+#: dialog_spellchecker.cpp:122
+#: dialog_search_replace.cpp:566
+#: hotkeys.cpp:351
 #: hotkeys.cpp:354
 msgid "Replace"
 msgstr "Заменить"
@@ -1586,7 +1638,8 @@ msgstr "Добавить в словарь"
 msgid "Aegisub has finished checking spelling of this script."
 msgstr "Aegisub закончил проверять орфографию в скрипте."
 
-#: dialog_spellchecker.cpp:325 dialog_spellchecker.cpp:392
+#: dialog_spellchecker.cpp:325
+#: dialog_spellchecker.cpp:392
 msgid "Spell checking complete."
 msgstr "Проверка орфографии завершена."
 
@@ -1598,7 +1651,8 @@ msgstr "Замена"
 msgid "Aegisub has found no spelling mistakes in this script."
 msgstr "Aegisub не нашёл ошибок в этом скрипте."
 
-#: mkv_wrap.cpp:171 mkv_wrap.cpp:399
+#: mkv_wrap.cpp:171
+#: mkv_wrap.cpp:399
 msgid "Parsing Matroska"
 msgstr "Анализ матрёшки"
 
@@ -1610,7 +1664,8 @@ msgstr "Считывание ключевых кадров и временных
 msgid "Reading subtitles from Matroska file."
 msgstr "Считывание субтитров из матрёшки"
 
-#: visual_tool.cpp:285 visual_tool_drag.cpp:117
+#: visual_tool.cpp:285
+#: visual_tool_drag.cpp:117
 msgid "visual typesetting"
 msgstr "визуальное оформление"
 
@@ -1619,12 +1674,11 @@ msgid "Fix Styles"
 msgstr "Коррекция стилей"
 
 #: export_fixstyle.cpp:61
-msgid ""
-"Fixes styles by replacing any style that isn't available on file with "
-"Default."
+msgid "Fixes styles by replacing any style that isn't available on file with Default."
 msgstr "Корректирует стили, заменяя недоступные стили в файле на Default."
 
-#: dialog_about.cpp:53 frame_main.cpp:540
+#: dialog_about.cpp:53
+#: frame_main.cpp:540
 msgid "About Aegisub"
 msgstr "О программе"
 
@@ -1646,12 +1700,8 @@ msgid "Built by %s on %s."
 msgstr "Сборка от %s от %s."
 
 #: options.cpp:467
-msgid ""
-"Configuration file is either invalid or corrupt. The current file will be "
-"backed up and replaced with a default file."
-msgstr ""
-"Файл настроек повреждён или содержит ошибки. Текущий файл будет сохранён в "
-"папку бэкапа и заменён на файл с настройками по умолчанию."
+msgid "Configuration file is either invalid or corrupt. The current file will be backed up and replaced with a default file."
+msgstr "Файл настроек повреждён или содержит ошибки. Текущий файл будет сохранён в папку бэкапа и заменён на файл с настройками по умолчанию."
 
 #: browse_button.cpp:52
 msgid "Browse..."
@@ -1685,7 +1735,8 @@ msgstr "Показать &информацию"
 msgid "Re&scan Autoload Dir"
 msgstr "&Обновить директорию автозагрузки"
 
-#: dialog_automation.cpp:69 dialog_version_check.cpp:436
+#: dialog_automation.cpp:69
+#: dialog_version_check.cpp:436
 #: dialog_attachments.cpp:80
 msgid "&Close"
 msgstr "&Закрыть"
@@ -1857,7 +1908,8 @@ msgstr "Вернуться на строку назад"
 msgid "Accept Line"
 msgstr "Принять изменения"
 
-#: dialog_kanji_timer.cpp:737 auto4_base.cpp:401
+#: dialog_kanji_timer.cpp:737
+#: auto4_base.cpp:401
 msgid "Close"
 msgstr "Закрыть"
 
@@ -1881,27 +1933,36 @@ msgstr "Сгруппируйте весь текст исходника."
 msgid "Line Number"
 msgstr "Номер события"
 
-#: subs_grid.cpp:119 dialog_paste_over.cpp:65
+#: subs_grid.cpp:119
+#: dialog_paste_over.cpp:65
 msgid "Layer"
 msgstr "Слой"
 
-#: subs_grid.cpp:120 base_grid.cpp:434
+#: subs_grid.cpp:120
+#: base_grid.cpp:434
 msgid "Start"
 msgstr "Начало"
 
-#: subs_grid.cpp:121 base_grid.cpp:435
+#: subs_grid.cpp:121
+#: base_grid.cpp:435
 msgid "End"
 msgstr "Конец"
 
-#: subs_grid.cpp:125 base_grid.cpp:439 dialog_style_editor.cpp:247
+#: subs_grid.cpp:125
+#: base_grid.cpp:439
+#: dialog_style_editor.cpp:247
 msgid "Left"
 msgstr "Лев"
 
-#: subs_grid.cpp:126 base_grid.cpp:440 dialog_style_editor.cpp:247
+#: subs_grid.cpp:126
+#: base_grid.cpp:440
+#: dialog_style_editor.cpp:247
 msgid "Right"
 msgstr "Прав"
 
-#: subs_grid.cpp:127 base_grid.cpp:441 dialog_style_editor.cpp:247
+#: subs_grid.cpp:127
+#: base_grid.cpp:441
+#: dialog_style_editor.cpp:247
 msgid "Vert"
 msgstr "Верт"
 
@@ -1925,7 +1986,8 @@ msgstr "Вставить по времени видео (после)"
 msgid "&Duplicate"
 msgstr "&Дублировать"
 
-#: subs_grid.cpp:167 frame_main.cpp:394
+#: subs_grid.cpp:167
+#: frame_main.cpp:394
 msgid "Duplicate the selected lines"
 msgstr "Дублирует выделенные события"
 
@@ -1933,7 +1995,8 @@ msgstr "Дублирует выделенные события"
 msgid "&Duplicate and shift by 1 frame"
 msgstr "&Дублировать и сдвинуть на 1 кадр"
 
-#: subs_grid.cpp:168 frame_main.cpp:395
+#: subs_grid.cpp:168
+#: frame_main.cpp:395
 msgid "Duplicate lines and shift by one frame"
 msgstr "Дублирует события и сдвигает их на один кадр"
 
@@ -1941,7 +2004,8 @@ msgstr "Дублирует события и сдвигает их на один
 msgid "Split (by karaoke)"
 msgstr "Разбить (как караоке)"
 
-#: subs_grid.cpp:169 frame_main.cpp:408
+#: subs_grid.cpp:169
+#: frame_main.cpp:408
 msgid "Uses karaoke timing to split line into multiple smaller lines"
 msgstr "Использует тайминг караоке, чтобы разбить собятия на несколько"
 
@@ -1949,7 +2013,8 @@ msgstr "Использует тайминг караоке, чтобы разб�
 msgid "&Swap"
 msgstr "Об&менять"
 
-#: subs_grid.cpp:173 frame_main.cpp:410
+#: subs_grid.cpp:173
+#: frame_main.cpp:410
 msgid "Swaps the two selected lines"
 msgstr "Обменивает два выбранных события"
 
@@ -1957,7 +2022,8 @@ msgstr "Обменивает два выбранных события"
 msgid "&Join (concatenate)"
 msgstr "&Объединить"
 
-#: subs_grid.cpp:177 frame_main.cpp:403
+#: subs_grid.cpp:177
+#: frame_main.cpp:403
 msgid "Joins selected lines in a single one, concatenating text together"
 msgstr "Объединяет выбранные события в одно, текст тоже объединяется"
 
@@ -1965,48 +2031,44 @@ msgstr "Объединяет выбранные события в одно, те
 msgid "Join (keep first)"
 msgstr "Объединить (оставить первую)"
 
-#: subs_grid.cpp:178 frame_main.cpp:404
-msgid ""
-"Joins selected lines in a single one, keeping text of first and discarding "
-"remaining"
-msgstr ""
-"Объединяет выбранные события в одно, сохраняя только текст первого события"
+#: subs_grid.cpp:178
+#: frame_main.cpp:404
+msgid "Joins selected lines in a single one, keeping text of first and discarding remaining"
+msgstr "Объединяет выбранные события в одно, сохраняя только текст первого события"
 
 #: subs_grid.cpp:179
 msgid "Join (as Karaoke)"
 msgstr "Объединить (как караоке)"
 
 #: subs_grid.cpp:179
-msgid ""
-"Joins selected lines in a single one, making each line into a karaoke "
-"syllable"
+msgid "Joins selected lines in a single one, making each line into a karaoke syllable"
 msgstr "Объединяет выбранные события в одно, разбивая текст тегами караоке"
 
 #: subs_grid.cpp:183
 msgid "&Make times continuous (change start)"
 msgstr "Сделать &непрерывным (изменить начало)"
 
-#: subs_grid.cpp:183 frame_main.cpp:431
+#: subs_grid.cpp:183
+#: frame_main.cpp:431
 msgid "Changes times of subs so start times begin on previous's end time"
-msgstr ""
-"Изменяет тайминг событий так, что начало следующего события совпадёт в "
-"концом предыдущего"
+msgstr "Изменяет тайминг событий так, что начало следующего события совпадёт в концом предыдущего"
 
 #: subs_grid.cpp:184
 msgid "&Make times continuous (change end)"
 msgstr "Сделать &непрерывным (изменить конец)"
 
-#: subs_grid.cpp:184 frame_main.cpp:432
+#: subs_grid.cpp:184
+#: frame_main.cpp:432
 msgid "Changes times of subs so end times begin on next's start time"
-msgstr ""
-"Изменяет тайминг событий так, что конец предыдущего события совпадёт с "
-"началом следующего"
+msgstr "Изменяет тайминг событий так, что конец предыдущего события совпадёт с началом следующего"
 
-#: subs_grid.cpp:188 frame_main.cpp:407
+#: subs_grid.cpp:188
+#: frame_main.cpp:407
 msgid "Recombine Lines"
 msgstr "Рекомбинировать события"
 
-#: subs_grid.cpp:188 frame_main.cpp:407
+#: subs_grid.cpp:188
+#: frame_main.cpp:407
 msgid "Recombine subtitles when they have been split and merged"
 msgstr "Рекомбинирует субтитры после того, как их разделили и объединили"
 
@@ -2018,7 +2080,8 @@ msgstr "Создать отрезок аудио"
 msgid "Create an audio clip of the selected line"
 msgstr "Создать аудиофайл на основе выделения"
 
-#: subs_grid.cpp:198 subs_edit_ctrl.cpp:949
+#: subs_grid.cpp:198
+#: subs_edit_ctrl.cpp:949
 msgid "&Copy"
 msgstr "&Копировать"
 
@@ -2034,7 +2097,8 @@ msgstr "&Вырезать"
 msgid "Cuts selected lines to clipboard"
 msgstr "Вырезает выбранные события в буфер обмена"
 
-#: subs_grid.cpp:200 subs_edit_ctrl.cpp:950
+#: subs_grid.cpp:200
+#: subs_edit_ctrl.cpp:950
 msgid "&Paste"
 msgstr "В&ставить"
 
@@ -2042,7 +2106,8 @@ msgstr "В&ставить"
 msgid "Paste lines from clipboard"
 msgstr "Вставляет события из буфера обмена"
 
-#: subs_grid.cpp:204 frame_main.cpp:396
+#: subs_grid.cpp:204
+#: frame_main.cpp:396
 msgid "Delete currently selected lines"
 msgstr "Удаляет выделенные события"
 
@@ -2070,7 +2135,8 @@ msgstr "Сохранить отрезок аудио"
 msgid "Couldn't allocate memory."
 msgstr "Невозможно выделить память."
 
-#: subs_grid.cpp:813 subs_grid.cpp:814
+#: subs_grid.cpp:813
+#: subs_grid.cpp:814
 msgid "load"
 msgstr "загрузку"
 
@@ -2115,18 +2181,12 @@ msgid "Style for this line."
 msgstr "Стиль события"
 
 #: subs_edit_box.cpp:89
-msgid ""
-"Actor name for this speech. This is only for reference, and is mainly "
-"useless."
+msgid "Actor name for this speech. This is only for reference, and is mainly useless."
 msgstr "Имя актёра, произносящего речь. Служебная не отображаемая информация."
 
 #: subs_edit_box.cpp:92
-msgid ""
-"Effect for this line. This can be used to store extra information for "
-"karaoke scripts, or for the effects supported by the renderer."
-msgstr ""
-"Эффекты этого события. Можно использовать для сохранения дополнительной "
-"информации, либо для эффектов рендерера."
+msgid "Effect for this line. This can be used to store extra information for karaoke scripts, or for the effects supported by the renderer."
+msgstr "Эффекты этого события. Можно использовать для сохранения дополнительной информации, либо для эффектов рендерера."
 
 #: subs_edit_box.cpp:97
 msgid "Layer number"
@@ -2156,7 +2216,8 @@ msgstr "Правый отступ (0 = по установкам стиля)"
 msgid "Vertical Margin (0 = default)"
 msgstr "Вертикальный отступ (0 = по установкам стиля)"
 
-#: subs_edit_box.cpp:120 dialog_style_editor.cpp:144
+#: subs_edit_box.cpp:120
+#: dialog_style_editor.cpp:144
 msgid "Bold"
 msgstr "Жирный"
 
@@ -2164,11 +2225,13 @@ msgstr "Жирный"
 msgid "Italics"
 msgstr "Курсив"
 
-#: subs_edit_box.cpp:124 dialog_style_editor.cpp:146
+#: subs_edit_box.cpp:124
+#: dialog_style_editor.cpp:146
 msgid "Underline"
 msgstr "Подчёркнутый"
 
-#: subs_edit_box.cpp:126 dialog_style_editor.cpp:147
+#: subs_edit_box.cpp:126
+#: dialog_style_editor.cpp:147
 msgid "Strikeout"
 msgstr "Зачёркнутый"
 
@@ -2198,9 +2261,7 @@ msgstr "Принять"
 
 #: subs_edit_box.cpp:138
 msgid "Commits the text (Enter). Hold Ctrl to stay in line (%KEY%)."
-msgstr ""
-"Сохранить текст (Enter). Удерживайте Ctrl, чтобы остаться на этом событии (%"
-"KEY%)."
+msgstr "Сохранить текст (Enter). Удерживайте Ctrl, чтобы остаться на этом событии (%KEY%)."
 
 #: subs_edit_box.cpp:139
 msgid "Time"
@@ -2218,7 +2279,8 @@ msgstr "Кадры"
 msgid "Time by frame number"
 msgstr "Время по номеру кадра"
 
-#: subs_edit_box.cpp:595 dialog_style_editor.cpp:486
+#: subs_edit_box.cpp:595
+#: dialog_style_editor.cpp:486
 msgid "style change"
 msgstr "изменение стиля"
 
@@ -2226,7 +2288,8 @@ msgstr "изменение стиля"
 msgid "actor change"
 msgstr "изменение актёра"
 
-#: subs_edit_box.cpp:653 subs_edit_box.cpp:679
+#: subs_edit_box.cpp:653
+#: subs_edit_box.cpp:679
 msgid "layer change"
 msgstr "изменение слоя"
 
@@ -2339,15 +2402,15 @@ msgstr "Видео: %s"
 msgid "Unknown"
 msgstr "Неизвестный"
 
-#: video_provider_avs.cpp:289 video_provider_dshow.cpp:311
-msgid ""
-"You already have timecodes loaded. Replace them with the timecodes from the "
-"Matroska file?"
-msgstr ""
-"Временные метки уже загружены. Хотите заменить их на метки из матрёшки?"
+#: video_provider_avs.cpp:289
+#: video_provider_dshow.cpp:311
+msgid "You already have timecodes loaded. Replace them with the timecodes from the Matroska file?"
+msgstr "Временные метки уже загружены. Хотите заменить их на метки из матрёшки?"
 
-#: video_provider_avs.cpp:289 video_provider_dshow.cpp:311
-#: video_provider_ffmpegsource.cpp:263 video_provider_lavc.cpp:149
+#: video_provider_avs.cpp:289
+#: video_provider_dshow.cpp:311
+#: video_provider_ffmpegsource.cpp:263
+#: video_provider_lavc.cpp:149
 msgid "Replace timecodes?"
 msgstr "Заменить временные метки?"
 
@@ -2363,11 +2426,13 @@ msgstr "Использовать регулярные выражения"
 msgid "Update Video (slow)"
 msgstr "Обновлять видео (медленно)"
 
-#: dialog_search_replace.cpp:100 dialog_shift_times.cpp:108
+#: dialog_search_replace.cpp:100
+#: dialog_shift_times.cpp:108
 msgid "All rows"
 msgstr "Все события"
 
-#: dialog_search_replace.cpp:101 dialog_shift_times.cpp:108
+#: dialog_search_replace.cpp:101
+#: dialog_shift_times.cpp:108
 msgid "Selected rows"
 msgstr "Выбранные события"
 
@@ -2387,7 +2452,8 @@ msgstr "Заменить далее"
 msgid "Replace all"
 msgstr "Заменить всё"
 
-#: dialog_search_replace.cpp:411 dialog_search_replace.cpp:523
+#: dialog_search_replace.cpp:411
+#: dialog_search_replace.cpp:523
 msgid "replace"
 msgstr "замену"
 
@@ -2400,7 +2466,8 @@ msgstr "%i совпадений заменено."
 msgid "No matches found."
 msgstr "Совпадения не найдены."
 
-#: dialog_search_replace.cpp:566 hotkeys.cpp:348
+#: dialog_search_replace.cpp:566
+#: hotkeys.cpp:348
 msgid "Find"
 msgstr "Найти"
 
@@ -2469,25 +2536,16 @@ msgid "Clean Script Info"
 msgstr "Очистить информацию о скрипте"
 
 #: export_clean_info.cpp:61
-msgid ""
-"Removes all but the absolutely required fields from the Script Info section. "
-"You might want to run this on files that you plan to distribute in original "
-"form."
-msgstr ""
-"Убирает всё кроме обязательных полей из секции Script Info. Вы можете "
-"применить этот фильтр на файлы, предназначенные для распространения."
+msgid "Removes all but the absolutely required fields from the Script Info section. You might want to run this on files that you plan to distribute in original form."
+msgstr "Убирает всё кроме обязательных полей из секции Script Info. Вы можете применить этот фильтр на файлы, предназначенные для распространения."
 
 #: auto4_perl_script.cpp:99
 msgid "Perl script"
 msgstr "Perl скрипт"
 
 #: auto4_perl_script.cpp:188
-msgid ""
-"Unable to add the automation include path(s) to @INC: the script's code may "
-"not compile or execute properly."
-msgstr ""
-"Невозможно добавить путь к заголовочным файлам в @INC: скрипты могут "
-"выполняться с ошибками или не выполняться вобще."
+msgid "Unable to add the automation include path(s) to @INC: the script's code may not compile or execute properly."
+msgstr "Невозможно добавить путь к заголовочным файлам в @INC: скрипты могут выполняться с ошибками или не выполняться вобще."
 
 #: auto4_perl_script.cpp:229
 #, c-format
@@ -2536,7 +2594,8 @@ msgstr "Cмещение границ рабочей области"
 msgid "Symmetrical"
 msgstr "Симметрично"
 
-#: dialog_resample.cpp:90 dialog_properties.cpp:105
+#: dialog_resample.cpp:90
+#: dialog_properties.cpp:105
 msgid "Resolution"
 msgstr "Разрешение"
 
@@ -2544,7 +2603,8 @@ msgstr "Разрешение"
 msgid "x"
 msgstr "x"
 
-#: dialog_resample.cpp:99 dialog_properties.cpp:111
+#: dialog_resample.cpp:99
+#: dialog_properties.cpp:111
 msgid "From video"
 msgstr "Из видео"
 
@@ -2553,8 +2613,7 @@ msgid "Change aspect ratio"
 msgstr "Изменить соотношение сторон"
 
 #: dialog_resample.cpp:221
-msgid ""
-"Invalid resolution: destination resolution cannot be 0 on either dimension."
+msgid "Invalid resolution: destination resolution cannot be 0 on either dimension."
 msgstr "Неверное разрешение: оно не может быть равно нулю."
 
 #: dialog_resample.cpp:305
@@ -2567,34 +2626,37 @@ msgid ""
 "There was an error checking for updates to Aegisub:\n"
 "%s\n"
 "\n"
-"If other applications can access the Internet fine, this is probably a "
-"temporary server problem on our end."
+"If other applications can access the Internet fine, this is probably a temporary server problem on our end."
 msgstr ""
+"Произошла ошибка при проверке обновлений Aegisub:\n"
+"%s\n"
+"\n"
+"Если у других приложений нет проблем с доступом к Интернет, то скорее всего это временная проблема с нашей стороны."
 
 #: dialog_version_check.cpp:180
 msgid "An unknown error occurred while checking for updates to Aegisub."
-msgstr ""
+msgstr "Произошла неизвестная ошибка при проверке обновлений Aegisub."
 
 #: dialog_version_check.cpp:283
 msgid "Could not connect to updates server."
-msgstr ""
+msgstr "Невозможно подключиться к северу обновлений."
 
 #: dialog_version_check.cpp:288
 #, c-format
 msgid "HTTP request failed, got HTTP response %d."
-msgstr ""
+msgstr "Ошибка HTTP запроса, получен ответ HTTP %d."
 
 #: dialog_version_check.cpp:360
 msgid "An update to Aegisub was found."
-msgstr ""
+msgstr "Было найдено обновление Aegisub."
 
 #: dialog_version_check.cpp:364
 msgid "Several possible updates to Aegisub were found."
-msgstr ""
+msgstr "Было найдено несколько обновлений Aegisub."
 
 #: dialog_version_check.cpp:368
 msgid "There are no updates to Aegisub."
-msgstr ""
+msgstr "Обновлений Aegisub нет."
 
 #: dialog_version_check.cpp:402
 msgid "Version Checker"
@@ -2602,7 +2664,7 @@ msgstr "Проверка обновлений"
 
 #: dialog_version_check.cpp:434
 msgid "Remind me again in a &week"
-msgstr ""
+msgstr "Напомнить через &неделю"
 
 #: dialog_properties.cpp:58
 msgid "Script Properties"
@@ -2653,8 +2715,12 @@ msgid "1: End-of-line word wrapping, only \\N breaks"
 msgstr "1: Перенос по концу слов, только \\N учитывается"
 
 #: dialog_properties.cpp:124
-msgid "2: No word wrapping, both \\n and \\N break"
-msgstr "2: Без переноса слов, \\n и \\N учитываются"
+msgid ""
+"2: No word wrapping, both \\n"
+" and \\N break"
+msgstr ""
+"2: Без переноса слов, \\n"
+" и \\N учитываются"
 
 #: dialog_properties.cpp:125
 msgid "3: Smart wrapping, bottom line is wider"
@@ -2677,18 +2743,15 @@ msgid "Scale Border and Shadow"
 msgstr "Подогнать контур и тень"
 
 #: dialog_properties.cpp:142
-msgid ""
-"Scale border and shadow together with script/render resolution. If this is "
-"unchecked, relative border and shadow size will depend on renderer."
-msgstr ""
-"Подогнать тень и контур к разрешению скрипта. Если флажок не установлен, их "
-"размер будет зависеть от рендерера."
+msgid "Scale border and shadow together with script/render resolution. If this is unchecked, relative border and shadow size will depend on renderer."
+msgstr "Подогнать тень и контур к разрешению скрипта. Если флажок не установлен, их размер будет зависеть от рендерера."
 
 #: dialog_properties.cpp:204
 msgid "property changes"
 msgstr "изменение свойств"
 
-#: dialog_translation.cpp:61 frame_main.cpp:284
+#: dialog_translation.cpp:61
+#: frame_main.cpp:284
 msgid "Translation Assistant"
 msgstr "Ассистент перевода"
 
@@ -2729,12 +2792,13 @@ msgstr "Больше нет событий для перевода."
 msgid "Please wait, caching fonts..."
 msgstr "Пожалуйста подождите, кешировние шрифтов..."
 
-#: audio_display.cpp:2278 audio_display.cpp:2333
-msgid ""
-"Do you want to commit your changes? If you choose No, they will be discarded."
+#: audio_display.cpp:2278
+#: audio_display.cpp:2333
+msgid "Do you want to commit your changes? If you choose No, they will be discarded."
 msgstr "Хотите фиксировать изменения? Если выберите «Нет», они будут отменены."
 
-#: audio_display.cpp:2278 audio_display.cpp:2333
+#: audio_display.cpp:2278
+#: audio_display.cpp:2333
 msgid "Commit?"
 msgstr "Фиксировать?"
 
@@ -2755,18 +2819,16 @@ msgid "Change karaoke tag to \\ko"
 msgstr "Изменить тег караоке на \\ko"
 
 #: frame_main.cpp:204
-msgid ""
-"Do you want Aegisub to check for updates whenever it starts? You can still "
-"do it manually via the Help menu."
-msgstr ""
-"Проверять обновления при запуске? В любом случае вы сможете сделать это "
-"самостоятельно, выбрав пункт в меню «Помощь»."
+msgid "Do you want Aegisub to check for updates whenever it starts? You can still do it manually via the Help menu."
+msgstr "Проверять обновления при запуске? В любом случае вы сможете сделать это самостоятельно, выбрав пункт в меню «Помощь»."
 
 #: frame_main.cpp:204
 msgid "Check for updates?"
 msgstr "Проверить обновления?"
 
-#: frame_main.cpp:234 frame_main.cpp:333 hotkeys.cpp:327
+#: frame_main.cpp:234
+#: frame_main.cpp:333
+#: hotkeys.cpp:327
 msgid "New subtitles"
 msgstr "Новые субтитры"
 
@@ -2774,7 +2836,8 @@ msgstr "Новые субтитры"
 msgid "Open"
 msgstr "Открыть"
 
-#: frame_main.cpp:235 hotkeys.cpp:328
+#: frame_main.cpp:235
+#: hotkeys.cpp:328
 msgid "Open subtitles"
 msgstr "Открыть субтитры"
 
@@ -2782,7 +2845,8 @@ msgstr "Открыть субтитры"
 msgid "Save"
 msgstr "Сохранить"
 
-#: frame_main.cpp:236 hotkeys.cpp:329
+#: frame_main.cpp:236
+#: hotkeys.cpp:329
 msgid "Save subtitles"
 msgstr "Сохранить субтитры"
 
@@ -2814,7 +2878,8 @@ msgstr "Уменьшить масштаб видео"
 msgid "Jump video to start"
 msgstr "Перемотка видео к началу"
 
-#: frame_main.cpp:255 frame_main.cpp:481
+#: frame_main.cpp:255
+#: frame_main.cpp:481
 msgid "Jumps the video to the start frame of current subtitle"
 msgstr "Перемотка видео к начальному кадру текущего события"
 
@@ -2822,7 +2887,8 @@ msgstr "Перемотка видео к начальному кадру тек�
 msgid "Jump video to end"
 msgstr "Перемотка видео к концу"
 
-#: frame_main.cpp:256 frame_main.cpp:482
+#: frame_main.cpp:256
+#: frame_main.cpp:482
 msgid "Jumps the video to the end frame of current subtitle"
 msgstr "Перемотка видео к конечному кадру текущего события"
 
@@ -2830,7 +2896,8 @@ msgstr "Перемотка видео к конечному кадру теку�
 msgid "Snap start to video"
 msgstr "Привязка начала к видео"
 
-#: frame_main.cpp:257 frame_main.cpp:421
+#: frame_main.cpp:257
+#: frame_main.cpp:421
 msgid "Set start of selected subtitles to current video frame"
 msgstr "Привязка начала выделенных субтитров к текущему кадру видео"
 
@@ -2838,7 +2905,8 @@ msgstr "Привязка начала выделенных субтитров к
 msgid "Snap end to video"
 msgstr "Привязка конца к видео"
 
-#: frame_main.cpp:258 frame_main.cpp:422
+#: frame_main.cpp:258
+#: frame_main.cpp:422
 msgid "Set end of selected subtitles to current video frame"
 msgstr "Привязка конца выделенных субтитров к текущему кадру видео"
 
@@ -2856,8 +2924,7 @@ msgstr "Подгон субтитров к сцене"
 
 #: frame_main.cpp:260
 msgid "Snap selected subtitles so they match current scene start/end"
-msgstr ""
-"Установка времени выделенных событий так, что оно совпадёт с текущей сценой"
+msgstr "Установка времени выделенных событий так, что оно совпадёт с текущей сценой"
 
 #: frame_main.cpp:261
 msgid "Shift subtitles to frame"
@@ -2887,7 +2954,8 @@ msgstr "Прикреплённые файлы"
 msgid "Open Attachment List"
 msgstr "Прикреплённые файлы"
 
-#: frame_main.cpp:268 dialog_fonts_collector.cpp:80
+#: frame_main.cpp:268
+#: dialog_fonts_collector.cpp:80
 msgid "Fonts Collector"
 msgstr "Сборщик шрифтов"
 
@@ -2899,11 +2967,14 @@ msgstr "Сборщик шрифтов"
 msgid "Open Automation manager"
 msgstr "Менеджер автоматизации"
 
-#: frame_main.cpp:279 frame_main.cpp:386
+#: frame_main.cpp:279
+#: frame_main.cpp:386
 msgid "Launches ai-chan's \"ASSDraw3\" tool for vector drawing."
 msgstr "Программа векторного рисования «ASSDraw3» от ai-chan’а"
 
-#: frame_main.cpp:282 dialog_shift_times.cpp:63 hotkeys.cpp:347
+#: frame_main.cpp:282
+#: dialog_shift_times.cpp:63
+#: hotkeys.cpp:347
 msgid "Shift Times"
 msgstr "Временной сдвиг"
 
@@ -2947,7 +3018,8 @@ msgstr "Кандзи-таймер"
 msgid "Open Spell checker"
 msgstr "Проверка орфографии"
 
-#: frame_main.cpp:292 frame_main.cpp:510
+#: frame_main.cpp:292
+#: frame_main.cpp:510
 msgid "Configure Aegisub"
 msgstr "Настройка"
 
@@ -2959,7 +3031,8 @@ msgstr "Режим показа тегов"
 msgid "Cycle through tag-hiding modes"
 msgstr "Переключить режим показа тегов"
 
-#: frame_main.cpp:318 frame_main.cpp:541
+#: frame_main.cpp:318
+#: frame_main.cpp:541
 msgid "&Help"
 msgstr "&Помощь"
 
@@ -3007,7 +3080,10 @@ msgstr "Экспорт субтитров..."
 msgid "Saves a copy of subtitles with processing applied to it."
 msgstr "Сохраняет копию субтитров с дополнительной обработкой."
 
-#: frame_main.cpp:339 frame_main.cpp:440 frame_main.cpp:448 frame_main.cpp:454
+#: frame_main.cpp:339
+#: frame_main.cpp:440
+#: frame_main.cpp:448
+#: frame_main.cpp:454
 #: frame_main.cpp:490
 msgid "Recent"
 msgstr "Недавние"
@@ -3056,19 +3132,24 @@ msgstr "Выход из приложения"
 msgid "&File"
 msgstr "Файл"
 
-#: frame_main.cpp:359 subs_edit_ctrl.cpp:946 frame_main_events.cpp:430
+#: frame_main.cpp:359
+#: subs_edit_ctrl.cpp:946
+#: frame_main_events.cpp:430
 msgid "&Undo"
 msgstr "&Отменить"
 
-#: frame_main.cpp:359 frame_main_events.cpp:430
+#: frame_main.cpp:359
+#: frame_main_events.cpp:430
 msgid "Undoes last action"
 msgstr "Отменяет последнее действие"
 
-#: frame_main.cpp:360 frame_main_events.cpp:431
+#: frame_main.cpp:360
+#: frame_main_events.cpp:431
 msgid "&Redo"
 msgstr "&Повторить"
 
-#: frame_main.cpp:360 frame_main_events.cpp:431
+#: frame_main.cpp:360
+#: frame_main_events.cpp:431
 msgid "Redoes last action"
 msgstr "Повторяет последнее действие"
 
@@ -3112,7 +3193,9 @@ msgstr "&Найти..."
 msgid "Find words in subtitles"
 msgstr "Ищет слова в субтитрах"
 
-#: frame_main.cpp:368 hotkeys.cpp:350 hotkeys.cpp:353
+#: frame_main.cpp:368
+#: hotkeys.cpp:350
+#: hotkeys.cpp:353
 msgid "Find Next"
 msgstr "Найти далее"
 
@@ -3281,12 +3364,8 @@ msgid "Timing Post-Processor..."
 msgstr "Пост-обработка тайминга..."
 
 #: frame_main.cpp:418
-msgid ""
-"Runs a post-processor for timing to deal with lead-ins, lead-outs, scene "
-"timing and etc."
-msgstr ""
-"Запуск пост-обработки тайминга для задания вступлений, окончаний, сцен-"
-"тайминга и т.п."
+msgid "Runs a post-processor for timing to deal with lead-ins, lead-outs, scene timing and etc."
+msgstr "Запуск пост-обработки тайминга для задания вступлений, окончаний, сцен-тайминга и т.п."
 
 #: frame_main.cpp:419
 msgid "Kanji Timer..."
@@ -3304,16 +3383,14 @@ msgstr "Привязка начала к видео"
 msgid "Snap End to Video"
 msgstr "Привязка конца к видео"
 
-#: frame_main.cpp:423 hotkeys.cpp:371
+#: frame_main.cpp:423
+#: hotkeys.cpp:371
 msgid "Snap to Scene"
 msgstr "Привязка к сцене"
 
 #: frame_main.cpp:423
-msgid ""
-"Set start and end of subtitles to the keyframes around current video frame"
-msgstr ""
-"Задание начала и конца показа событий к ключкадрам по обе стороны от "
-"текущего кадра"
+msgid "Set start and end of subtitles to the keyframes around current video frame"
+msgstr "Задание начала и конца показа событий к ключкадрам по обе стороны от текущего кадра"
 
 #: frame_main.cpp:424
 msgid "Shift to Current Frame"
@@ -3321,9 +3398,7 @@ msgstr "Смещение к текущему кадру"
 
 #: frame_main.cpp:424
 msgid "Shift selection so first selected line starts at current frame"
-msgstr ""
-"Сдвинуть выделение так, что первое выделенное событие начинается с текущего "
-"кадра"
+msgstr "Сдвинуть выделение так, что первое выделенное событие начинается с текущего кадра"
 
 #: frame_main.cpp:427
 msgid "Make Times Continuous"
@@ -3494,9 +3569,7 @@ msgid "Show Overscan Mask"
 msgstr "Границы отсечения"
 
 #: frame_main.cpp:478
-msgid ""
-"Show a mask over the video, indicating areas that might get cropped off by "
-"overscan on televisions."
+msgid "Show a mask over the video, indicating areas that might get cropped off by overscan on televisions."
 msgstr "Границы, не отображаемые на ЭЛТ-телевизоре"
 
 #: frame_main.cpp:480
@@ -3507,11 +3580,13 @@ msgstr "&Перейти к..."
 msgid "Jump to frame or time"
 msgstr "Переход к кадру или времени"
 
-#: frame_main.cpp:481 hotkeys.cpp:367
+#: frame_main.cpp:481
+#: hotkeys.cpp:367
 msgid "Jump Video to Start"
 msgstr "Перемотка видео к началу"
 
-#: frame_main.cpp:482 hotkeys.cpp:368
+#: frame_main.cpp:482
+#: hotkeys.cpp:368
 msgid "Jump Video to End"
 msgstr "Перемотка видео к концу"
 
@@ -3629,11 +3704,11 @@ msgstr "Разделы помощи"
 
 #: frame_main.cpp:529
 msgid "&Resource Files..."
-msgstr ""
+msgstr "Файлы &ресурсов..."
 
 #: frame_main.cpp:529
 msgid "Resource files distributed with Aegisub"
-msgstr ""
+msgstr "Файлы ресурсов, распространяемые с Aegisub"
 
 #: frame_main.cpp:532
 msgid "&Website..."
@@ -3683,7 +3758,8 @@ msgstr "&О программе..."
 msgid "Save subtitles file"
 msgstr "Сохранить файл субтитров"
 
-#: frame_main.cpp:769 frame_main_events.cpp:735
+#: frame_main.cpp:769
+#: frame_main_events.cpp:735
 msgid "Choose charset code:"
 msgstr "Выбрать кодировку:"
 
@@ -3722,8 +3798,7 @@ msgstr "Выгрузить временные метки?"
 #: frame_main.cpp:1129
 #, c-format
 msgid ""
-"The resolution of the loaded video and the resolution specified for the "
-"subtitles don't match.\n"
+"The resolution of the loaded video and the resolution specified for the subtitles don't match.\n"
 "\n"
 "Video resolution:\t%d x %d\n"
 "Script resolution:\t%d x %d\n"
@@ -3750,14 +3825,8 @@ msgid "Transform Framerate"
 msgstr "Изменить частоту кадров"
 
 #: export_framerate.cpp:62
-msgid ""
-"Transform subtitles times, including those in override tags, from input to "
-"output. This is most useful to convert CFR to VFR for hardsubbing. You "
-"usually DO NOT want to check this filter for softsubbing."
-msgstr ""
-"Изменить тайминг субтитров по заданной частоте кадров. Наиболее полезно при "
-"преобразовании из CFR в VFR для хардсаба. Обычно НЕ нужно использовать этот "
-"фильтр для софтсаба. "
+msgid "Transform subtitles times, including those in override tags, from input to output. This is most useful to convert CFR to VFR for hardsubbing. You usually DO NOT want to check this filter for softsubbing."
+msgstr "Изменить тайминг субтитров по заданной частоте кадров. Наиболее полезно при преобразовании из CFR в VFR для хардсаба. Обычно НЕ нужно использовать этот фильтр для софтсаба. "
 
 #: export_framerate.cpp:88
 msgid "From Video"
@@ -3796,12 +3865,8 @@ msgid "Not enough parameters for Aegisub::text_extents()"
 msgstr "Недостаточно параметров в Aegisub::text_extents()"
 
 #: auto4_perl.cpp:315
-msgid ""
-"Tried to register PerlConsole, but support for it was disabled in this "
-"version."
-msgstr ""
-"Была выполнена попытка регистрации PerlConsole, но её поддержка отключена в "
-"этой версии."
+msgid "Tried to register PerlConsole, but support for it was disabled in this version."
+msgstr "Была выполнена попытка регистрации PerlConsole, но её поддержка отключена в этой версии."
 
 #: auto4_perl.cpp:383
 msgid "Fatal error: "
@@ -3847,7 +3912,8 @@ msgstr "Цвета"
 msgid "Margins"
 msgstr "Отступы"
 
-#: dialog_style_editor.cpp:136 dialog_style_editor.cpp:235
+#: dialog_style_editor.cpp:136
+#: dialog_style_editor.cpp:235
 msgid "Outline"
 msgstr "Контур"
 
@@ -3916,11 +3982,8 @@ msgid "Distance from top/bottom edge, in pixels."
 msgstr "Отступ в пикселях от верхнего/нижнего края"
 
 #: dialog_style_editor.cpp:180
-msgid ""
-"When selected, display an opaque box behind the subtitles instead of an "
-"outline around the text."
-msgstr ""
-"Если установлен флажок, вместо контура за субтитрами появится прямоугольник"
+msgid "When selected, display an opaque box behind the subtitles instead of an outline around the text."
+msgstr "Если установлен флажок, вместо контура за субтитрами появится прямоугольник"
 
 #: dialog_style_editor.cpp:181
 msgid "Outline width, in pixels."
@@ -3943,12 +4006,8 @@ msgid "Angle to rotate in Z axis, in degrees."
 msgstr "Вращение по оси Z в градусах"
 
 #: dialog_style_editor.cpp:186
-msgid ""
-"Encoding, only useful in unicode if the font doesn't have the proper unicode "
-"mapping."
-msgstr ""
-"При юникоде задние кодировки используется, только если шрифт не имеет набора "
-"символов юникода."
+msgid "Encoding, only useful in unicode if the font doesn't have the proper unicode mapping."
+msgstr "При юникоде задние кодировки используется, только если шрифт не имеет набора символов юникода."
 
 #: dialog_style_editor.cpp:187
 msgid "Character spacing, in pixels."
@@ -4015,9 +4074,7 @@ msgid "No subtitle providers available. Cannot preview subs."
 msgstr "Нет доступных провайдеров субтитров. Предпросмотр невозможен."
 
 #: dialog_style_editor.cpp:452
-msgid ""
-"Do you want to change all instances of this style in the script to this new "
-"name?"
+msgid "Do you want to change all instances of this style in the script to this new name?"
 msgstr "Сменить имя стиля во всех событиях, где он используется?"
 
 #: dialog_style_editor.cpp:452
@@ -4026,16 +4083,13 @@ msgstr "Обновить скрипт?"
 
 #: dialog_style_editor.cpp:583
 msgid ""
-"You have chosen to use the \"Comic Sans\" font. As the programmer and a "
-"typesetter,\n"
-"I must urge you to reconsider. Comic Sans is the most abused font in the "
-"history\n"
+"You have chosen to use the \"Comic Sans\" font. As the programmer and a typesetter,\n"
+"I must urge you to reconsider. Comic Sans is the most abused font in the history\n"
 "of computing, so please avoid using it unless it's REALLY suitable. Thanks."
 msgstr ""
 "Вы выбрали шрифт «Comic Sans». Как программист и тайпсеттер,\n"
 "я прошу вас передумать. Это самый часто используемый шрифт во всей\n"
-"компьютерной истории, так что, пожалуйста, избегайте его использования. "
-"Спасибо. "
+"компьютерной истории, так что, пожалуйста, избегайте его использования. Спасибо. "
 
 #: dialog_style_editor.cpp:583
 msgid "Warning"
@@ -4049,7 +4103,8 @@ msgstr "Сдвиг на"
 msgid "History"
 msgstr "История"
 
-#: dialog_shift_times.cpp:78 dialog_jumpto.cpp:76
+#: dialog_shift_times.cpp:78
+#: dialog_jumpto.cpp:76
 msgid "Time: "
 msgstr "Время:"
 
@@ -4082,17 +4137,12 @@ msgid "Backward"
 msgstr "Назад"
 
 #: dialog_shift_times.cpp:99
-msgid ""
-"Shifts subs forward, making them appear later. Use if they are appearing too "
-"soon."
+msgid "Shifts subs forward, making them appear later. Use if they are appearing too soon."
 msgstr "Сдвиг субтитров вперёд. Используйте, если они появляются слишком рано."
 
 #: dialog_shift_times.cpp:100
-msgid ""
-"Shifts subs backward, making them appear earlier. Use if they are appearing "
-"too late."
-msgstr ""
-"Сдвиг субтитров назад. Используйте, если они появляются слишком поздно."
+msgid "Shifts subs backward, making them appear earlier. Use if they are appearing too late."
+msgstr "Сдвиг субтитров назад. Используйте, если они появляются слишком поздно."
 
 #: dialog_shift_times.cpp:108
 msgid "Selection onward"
@@ -4114,7 +4164,8 @@ msgstr "Только начальное время"
 msgid "End times only"
 msgstr "Только конечное время"
 
-#: dialog_shift_times.cpp:113 dialog_paste_over.cpp:91
+#: dialog_shift_times.cpp:113
+#: dialog_paste_over.cpp:91
 msgid "Times"
 msgstr "Метки"
 
@@ -4232,7 +4283,8 @@ msgstr "Размер"
 msgid "Group"
 msgstr "Группа"
 
-#: dialog_attachments.cpp:145 dialog_attachments.cpp:178
+#: dialog_attachments.cpp:145
+#: dialog_attachments.cpp:178
 msgid "Choose file to be attached"
 msgstr "Выбрать прикрепляемый файл"
 
@@ -4252,149 +4304,70 @@ msgstr "Перейти к"
 msgid "Frame: "
 msgstr "Кадр:"
 
-#: video_provider_ffmpegsource.cpp:263 video_provider_lavc.cpp:149
-msgid ""
-"You already have timecodes loaded. Would you like to replace them with "
-"timecodes from the video file?"
-msgstr ""
-"Временные метки уже загружены. Хотите заменить их на метки из видеофайла?"
+#: video_provider_ffmpegsource.cpp:263
+#: video_provider_lavc.cpp:149
+msgid "You already have timecodes loaded. Would you like to replace them with timecodes from the video file?"
+msgstr "Временные метки уже загружены. Хотите заменить их на метки из видеофайла?"
 
 #: dialog_tip.cpp:52
-msgid ""
-"Aegisub can export subtitles to many different formats, character encodings, "
-"and even compensate Variable Frame Rate so you can hardsub them - it's all "
-"in the Export option in File menu."
-msgstr ""
-"Aegisub может экпортировать субтитры в другие форматы, изменять кодировку и "
-"даже компенсировать тайминг для видео с переменной частотой кадров для "
-"хардсаба — всё это в меню «Файл», пункт «Экспорт» ."
+msgid "Aegisub can export subtitles to many different formats, character encodings, and even compensate Variable Frame Rate so you can hardsub them - it's all in the Export option in File menu."
+msgstr "Aegisub может экпортировать субтитры в другие форматы, изменять кодировку и даже компенсировать тайминг для видео с переменной частотой кадров для хардсаба — всё это в меню «Файл», пункт «Экспорт» ."
 
 #: dialog_tip.cpp:53
-msgid ""
-"You can easily translate subtitle files using the translation assistant."
+msgid "You can easily translate subtitle files using the translation assistant."
 msgstr "Вы легко можете переводить субтитры, используя ассистент перевода."
 
 #: dialog_tip.cpp:54
-msgid ""
-"Styles can be stored in different storages, so that you can keep your "
-"projects organized."
-msgstr ""
-"Стили можно сохранить в разных наборах, это облегчит организацию ваших "
-"проектов."
+msgid "Styles can be stored in different storages, so that you can keep your projects organized."
+msgstr "Стили можно сохранить в разных наборах, это облегчит организацию ваших проектов."
 
 #: dialog_tip.cpp:55
-msgid ""
-"Use keyboard shortcuts! They make your life easier, for example, Ctrl+Enter "
-"updates changes on current line without going to next. Check the manual for "
-"a complete list."
-msgstr ""
-"Используйте горячие клавиши! Они упростят вашу работу. Например, нажмите Ctrl"
-"+Enter, чтобы принять изменения текущего события без перехода на следующее. "
-"Полный список горячих клавиш приведён в документации к программе."
+msgid "Use keyboard shortcuts! They make your life easier, for example, Ctrl+Enter updates changes on current line without going to next. Check the manual for a complete list."
+msgstr "Используйте горячие клавиши! Они упростят вашу работу. Например, нажмите Ctrl+Enter, чтобы принять изменения текущего события без перехода на следующее. Полный список горячих клавиш приведён в документации к программе."
 
 #: dialog_tip.cpp:56
-msgid ""
-"There is no reason to use the SSA format (as opposed to ASS). ASS is very "
-"similar, but adds some important functionality. Most importantly, however, "
-"is that only ASS supports certain override tags (such as \\pos and \\t). "
-"Those only work on SSA files because VSFilter/Textsub is merciful."
-msgstr ""
-"Нет необходимости использовать формат SSA. Формат ASS очень похож на него, "
-"но включает несколько важных дополнительных особенностей. Только формат АSS "
-"поддерживает такие теги как \\pos и \\t. Последние работают в SSA файлах в "
-"VSFilter/Textsub только по милости Габеста."
+msgid "There is no reason to use the SSA format (as opposed to ASS). ASS is very similar, but adds some important functionality. Most importantly, however, is that only ASS supports certain override tags (such as \\pos and \\t). Those only work on SSA files because VSFilter/Textsub is merciful."
+msgstr "Нет необходимости использовать формат SSA. Формат ASS очень похож на него, но включает несколько важных дополнительных особенностей. Только формат АSS поддерживает такие теги как \\pos и \\t. Последние работают в SSA файлах в VSFilter/Textsub только по милости Габеста."
 
 #: dialog_tip.cpp:57
 msgid "DON'T PANIC!"
 msgstr "Не паникуйте!"
 
 #: dialog_tip.cpp:58
-msgid ""
-"Aegisub has several features to make sure you will never lose your work. It "
-"will periodically save your subtitles to autosave folder, and will create a "
-"copy of subs whenever you open them, to autoback folder. Also, if it "
-"crashes, it will attempt to save a restore file."
-msgstr ""
-"Aegisub использует несколько особенностей для сохранения результатов вашей "
-"работы. С определённой периодичностью программа сохраняет субтитры в папку "
-"автосохранения, и, каждый раз когда вы открываете файл субтитров, создаёт их "
-"копию в папке бэкапа. В случае сбоя программы она пытается сохранить файл "
-"для восстановления. "
+msgid "Aegisub has several features to make sure you will never lose your work. It will periodically save your subtitles to autosave folder, and will create a copy of subs whenever you open them, to autoback folder. Also, if it crashes, it will attempt to save a restore file."
+msgstr "Aegisub использует несколько особенностей для сохранения результатов вашей работы. С определённой периодичностью программа сохраняет субтитры в папку автосохранения, и, каждый раз когда вы открываете файл субтитров, создаёт их копию в папке бэкапа. В случае сбоя программы она пытается сохранить файл для восстановления. "
 
 #: dialog_tip.cpp:59
-msgid ""
-"The styling assistant is a practical way to set styles to each line, when "
-"each actor has a different style assigned to it."
-msgstr ""
-"Ассистент стилей — удобный метод выбора стиля каждого события, когда каждому "
-"актёру назначен свой стиль. "
+msgid "The styling assistant is a practical way to set styles to each line, when each actor has a different style assigned to it."
+msgstr "Ассистент стилей — удобный метод выбора стиля каждого события, когда каждому актёру назначен свой стиль. "
 
 #: dialog_tip.cpp:60
-msgid ""
-"The fonts collector is one of the most useful features, which resumes the "
-"boring task of hunting down fonts into a matter of a few clicks."
-msgstr ""
-"Сборщик шрифтов — одно из наболее полезных средств, позволяющее свести "
-"рутинный отлов шрифтов к нескольким кликам."
+msgid "The fonts collector is one of the most useful features, which resumes the boring task of hunting down fonts into a matter of a few clicks."
+msgstr "Сборщик шрифтов — одно из наболее полезных средств, позволяющее свести рутинный отлов шрифтов к нескольким кликам."
 
 #: dialog_tip.cpp:61
-msgid ""
-"When you are done with your subtitles and ready to distribute them, "
-"remember: say no to MP4, OGM or AVI. Matroska is your friend."
-msgstr ""
-"Когда вы закончили редактирование субтитров, то помните: решительное «нет» "
-"форматам MP4, OGM и AVI. Ваш лучший друг — Матрёшка (MKV). "
+msgid "When you are done with your subtitles and ready to distribute them, remember: say no to MP4, OGM or AVI. Matroska is your friend."
+msgstr "Когда вы закончили редактирование субтитров, то помните: решительное «нет» форматам MP4, OGM и AVI. Ваш лучший друг — Матрёшка (MKV). "
 
 #: dialog_tip.cpp:62
-msgid ""
-"Much like anything loaded via DirectShow, certain files may have a strange "
-"structure (such as h.264 into AVI or XviD will null frames) which may cause "
-"unreliable seeking (that is, video frames might be off by one frame). This "
-"is not an Aegisub bug - you may consider reencoding those videos before "
-"working with them."
-msgstr ""
-"Как и при загрузке через DirectShow, некоторые файлы с необычной структурой "
-"(h.264 в AVI контейнере либо XviD с нуль-фреймами) могут вызвать не точную "
-"перемотку видео (номера видео кадров при просмотре могут на единицу "
-"отличаться от фактических). Это не ошибка в программе Aegisub, вы можете "
-"попробовать перекодировать эти видеопотоки в другой формат перед тем, как "
-"заняться таймингом."
+msgid "Much like anything loaded via DirectShow, certain files may have a strange structure (such as h.264 into AVI or XviD will null frames) which may cause unreliable seeking (that is, video frames might be off by one frame). This is not an Aegisub bug - you may consider reencoding those videos before working with them."
+msgstr "Как и при загрузке через DirectShow, некоторые файлы с необычной структурой (h.264 в AVI контейнере либо XviD с нуль-фреймами) могут вызвать не точную перемотку видео (номера видео кадров при просмотре могут на единицу отличаться от фактических). Это не ошибка в программе Aegisub, вы можете попробовать перекодировать эти видеопотоки в другой формат перед тем, как заняться таймингом."
 
 #: dialog_tip.cpp:63
-msgid ""
-"Try the spectrum mode for the audio display, it can make it much easier to "
-"spot where the important points in the audio are."
-msgstr ""
-"Попробуйте использовать режим показа спектра, так будет значительно проще "
-"отмечать важные моменты аудио."
+msgid "Try the spectrum mode for the audio display, it can make it much easier to spot where the important points in the audio are."
+msgstr "Попробуйте использовать режим показа спектра, так будет значительно проще отмечать важные моменты аудио."
 
 #: dialog_tip.cpp:64
-msgid ""
-"If you decode your audio to a PCM WAV file before loading it in Aegisub, you "
-"don't have to wait for it to be decoded before you can use it."
-msgstr ""
-"Если вы разожмёте аудио в формат PCM WAV перед загрузкой в Aegisub, то вам "
-"не придётся ждать, пока оно декодируется при загрузке."
+msgid "If you decode your audio to a PCM WAV file before loading it in Aegisub, you don't have to wait for it to be decoded before you can use it."
+msgstr "Если вы разожмёте аудио в формат PCM WAV перед загрузкой в Aegisub, то вам не придётся ждать, пока оно декодируется при загрузке."
 
 #: dialog_tip.cpp:65
-msgid ""
-"Having video open is often more a nuisance than a help when timing "
-"subtitles. Timing with only audio open is often much easier. You can always "
-"adjust the subtitles to match the video later on."
-msgstr ""
-"Совсем не обязательно держать видео открытым при создании тайминга "
-"субтитров. Создание тайминга только при открытом аудио значительно проще. Вы "
-"всегда можете подогнать субтитры под аудио позже."
+msgid "Having video open is often more a nuisance than a help when timing subtitles. Timing with only audio open is often much easier. You can always adjust the subtitles to match the video later on."
+msgstr "Совсем не обязательно держать видео открытым при создании тайминга субтитров. Создание тайминга только при открытом аудио значительно проще. Вы всегда можете подогнать субтитры под аудио позже."
 
 #: dialog_tip.cpp:66
-msgid ""
-"If the audio doesn't seem to work properly during video playback, try "
-"loading audio separately. Just select Audio->Load from video, that usually "
-"makes the audio much more reliable."
-msgstr ""
-"Если аудио воспроизводится некорректно при проигрывании видео, то попробуйте "
-"загрузить его отдельно. Просто выберите «Аудио»->«Загрузить из видео», обычно "
-"это помогает."
+msgid "If the audio doesn't seem to work properly during video playback, try loading audio separately. Just select Audio->Load from video, that usually makes the audio much more reliable."
+msgstr "Если аудио воспроизводится некорректно при проигрывании видео, то попробуйте загрузить его отдельно. Просто выберите «Аудио»->«Загрузить из видео», обычно это помогает."
 
 #: dialog_tip.cpp:67
 msgid "If anything goes wrong, blame movax."
@@ -4404,7 +4377,8 @@ msgstr "Если что-то не так, виноват movax."
 msgid "&Browse..."
 msgstr "&Обзор..."
 
-#: dialog_fonts_collector.cpp:98 dialog_fonts_collector.cpp:309
+#: dialog_fonts_collector.cpp:98
+#: dialog_fonts_collector.cpp:309
 msgid ""
 "Choose the folder where the fonts will be collected to.\n"
 "It will be created if it doesn't exist."
@@ -4481,14 +4455,8 @@ msgid "Invalid destination directory."
 msgstr "Неверная папка назначения."
 
 #: dialog_fonts_collector.cpp:406
-msgid ""
-"Collecting font data from system. This might take a while, depending on the "
-"number of fonts installed. Results are cached and subsequent executions will "
-"be faster...\n"
-msgstr ""
-"Получение информации о шрифтах. Это может занять некоторое время в "
-"зависимости от их количества в системе. Результаты кэшируются, и последующие "
-"выполнения команды будут быстрее...\n"
+msgid "Collecting font data from system. This might take a while, depending on the number of fonts installed. Results are cached and subsequent executions will be faster...\n"
+msgstr "Получение информации о шрифтах. Это может занять некоторое время в зависимости от их количества в системе. Результаты кэшируются, и последующие выполнения команды будут быстрее...\n"
 
 #: dialog_fonts_collector.cpp:408
 msgid "Done collecting font data."
@@ -4603,7 +4571,8 @@ msgstr "Нет вариантов"
 msgid "Spell checker suggestions for \"%s\""
 msgstr "Варианты для «%s»"
 
-#: subs_edit_ctrl.cpp:845 subs_edit_ctrl.cpp:928
+#: subs_edit_ctrl.cpp:845
+#: subs_edit_ctrl.cpp:928
 msgid "Disable"
 msgstr "Отключить"
 
@@ -4776,7 +4745,8 @@ msgstr "Разбить"
 msgid "Enter split-mode"
 msgstr "Включить режим разбиения"
 
-#: hotkeys.cpp:331 hotkeys.cpp:335
+#: hotkeys.cpp:331
+#: hotkeys.cpp:335
 msgid "Exit"
 msgstr "Выход"
 
@@ -4788,7 +4758,8 @@ msgstr "Фиксировать ввод"
 msgid "Undo"
 msgstr "Отменить"
 
-#: hotkeys.cpp:343 hotkeys.cpp:345
+#: hotkeys.cpp:343
+#: hotkeys.cpp:345
 msgid "Redo"
 msgstr "Повторить"
 
@@ -4808,7 +4779,8 @@ msgstr "Вставить"
 msgid "Paste Over"
 msgstr "Вставить поверх"
 
-#: hotkeys.cpp:363 hotkeys.cpp:365
+#: hotkeys.cpp:363
+#: hotkeys.cpp:365
 msgid "Video Jump"
 msgstr "Переход видео"
 
@@ -4880,7 +4852,8 @@ msgstr "Сдвинуть событие по таблице вниз"
 msgid "Grid move row up"
 msgstr "Сдвинуть событие таблице вверх"
 
-#: hotkeys.cpp:390 hotkeys.cpp:392
+#: hotkeys.cpp:390
+#: hotkeys.cpp:392
 msgid "Grid delete rows"
 msgstr "Удалить события"
 
@@ -5100,25 +5073,21 @@ msgstr "Файловые ассоциации"
 msgid ""
 "Aegisub can take over the following file types.\n"
 "\n"
-"If you want Aegisub to no longer be associated with a file type, you must "
-"tell another program to take over the file type."
+"If you want Aegisub to no longer be associated with a file type, you must tell another program to take over the file type."
 msgstr ""
 "Aegisub может быть ассоциирован со следующими типами файлов.\n"
 "\n"
-"Если вы хотите, чтобы Aegisub более не был ассоциирован с каким-либо типом "
-"файлов, надо назначить этот тип файлов другой программе."
+"Если вы хотите, чтобы Aegisub более не был ассоциирован с каким-либо типом файлов, надо назначить этот тип файлов другой программе."
 
 #: dialog_associations.cpp:378
 msgid ""
 "Aegisub is already associated with all supported file types.\n"
 "\n"
-"If you want Aegisub to no longer be associated with a file type, you must "
-"tell another program to take over the file type."
+"If you want Aegisub to no longer be associated with a file type, you must tell another program to take over the file type."
 msgstr ""
 "Aegisub уже ассоциирован со всеми поддерживаемыми типами файлов.\n"
 "\n"
-"Если вы хотите, чтобы Aegisub более не был ассоциирован с каким-либо типом "
-"файлов, надо назначить этот тип файлов другой программе."
+"Если вы хотите, чтобы Aegisub более не был ассоциирован с каким-либо типом файлов, надо назначить этот тип файлов другой программе."
 
 #: dialog_associations.cpp:475
 msgid "Aegisub"
@@ -5129,11 +5098,8 @@ msgid "Make Aegisub default editor for subtitles?"
 msgstr "Сделать Aegisub редактором субтитров по умолчанию?"
 
 #: dialog_associations.cpp:477
-msgid ""
-"Aegisub is not your default editor for subtitle files. Do you want to make "
-"Aegisub your default editor for subtitle files?"
-msgstr ""
-"Aegisub не выбран как редактор субтитров по умолчанию. Сделать его таковым?"
+msgid "Aegisub is not your default editor for subtitle files. Do you want to make Aegisub your default editor for subtitle files?"
+msgstr "Aegisub не выбран как редактор субтитров по умолчанию. Сделать его таковым?"
 
 #: dialog_associations.cpp:478
 msgid "Always perform this check when Aegisub starts"
@@ -5255,11 +5221,13 @@ msgstr "Зелёный:"
 msgid "Blue:"
 msgstr "Синий:"
 
-#: dialog_colorpicker.cpp:591 dialog_colorpicker.cpp:601
+#: dialog_colorpicker.cpp:591
+#: dialog_colorpicker.cpp:601
 msgid "Hue:"
 msgstr "Отт.:"
 
-#: dialog_colorpicker.cpp:593 dialog_colorpicker.cpp:603
+#: dialog_colorpicker.cpp:593
+#: dialog_colorpicker.cpp:603
 msgid "Sat.:"
 msgstr "Нас.:"
 
@@ -5287,11 +5255,13 @@ msgstr "Пусто"
 msgid "No Automation macros loaded"
 msgstr "Нет загруженных макросов"
 
-#: frame_main_events.cpp:658 frame_main_events.cpp:681
+#: frame_main_events.cpp:658
+#: frame_main_events.cpp:681
 msgid "Video Formats"
 msgstr "Форматы видео"
 
-#: frame_main_events.cpp:659 frame_main_events.cpp:809
+#: frame_main_events.cpp:659
+#: frame_main_events.cpp:809
 #: frame_main_events.cpp:824
 msgid "All Files"
 msgstr "Все файлы"
@@ -5316,7 +5286,8 @@ msgstr "Открыть аудиофайл"
 msgid "Charset"
 msgstr "Кодировка"
 
-#: frame_main_events.cpp:808 frame_main_events.cpp:823
+#: frame_main_events.cpp:808
+#: frame_main_events.cpp:823
 msgid "All Supported Types"
 msgstr "Все поддерживаемые типы"
 
@@ -5345,12 +5316,8 @@ msgid "shift to frame"
 msgstr "сдвиг к кадру"
 
 #: frame_main_events.cpp:1385
-msgid ""
-"Enter aspect ratio in either decimal (e.g. 2.35) or fractional (e.g. 16:9) "
-"form. Enter a value like 853x480 to set a specific resolution."
-msgstr ""
-"Введите отношение сторон в десятичном (2.35) или дробном (16:9) виде. "
-"Введите значение наподобие 853х480 для точного разрешения."
+msgid "Enter aspect ratio in either decimal (e.g. 2.35) or fractional (e.g. 16:9) form. Enter a value like 853x480 to set a specific resolution."
+msgstr "Введите отношение сторон в десятичном (2.35) или дробном (16:9) виде. Введите значение наподобие 853х480 для точного разрешения."
 
 #: frame_main_events.cpp:1385
 msgid "Enter aspect ratio"
@@ -5390,62 +5357,44 @@ msgstr "не показываются."
 
 #~ msgid "Could not open Internet File system. Aborting.\n"
 #~ msgstr "Ошибка подключения. Загрузка прервана.\n"
-
 #~ msgid "Attempting to open \"%s\"..."
 #~ msgstr "Попытка открыть «%s»..."
-
 #~ msgid "Failed.\n"
 #~ msgstr "Ошибка.\n"
-
 #~ msgid "OK.\n"
 #~ msgstr "OK.\n"
-
 #~ msgid "New version found!\n"
 #~ msgstr "Вышла новая версия!\n"
-
 #~ msgid "Please go to the following URL to download it: %s\n"
 #~ msgstr "Пожалуйста, пройдите по этой ссылке: %s\n"
-
 #~ msgid "No new version has been found.\n"
 #~ msgstr "Обновлений нет.\n"
-
 #~ msgid "This build of Aegisub uses the following C/C++ libraries:\n"
 #~ msgstr "Эта сборка Aegisub использует следующие библиотеки C/C++:\n"
-
 #~ msgid "Programmers:"
 #~ msgstr "Программисты:"
-
 #~ msgid "Manual by:"
 #~ msgstr "Документация:"
-
 #~ msgid "Forum and wiki hosting by:"
 #~ msgstr "Хостинг форума и вики:"
-
 #~ msgid "SVN hosting by:"
 #~ msgstr "Хостинг SVN:"
-
 #~ msgid "Bug tracker hosting by:"
 #~ msgstr "Хостинг трекера ошибок:"
-
 #~ msgid "Associate extensions"
 #~ msgstr "Ассоциировать расширения"
-
 #~ msgid ""
 #~ "Please select the formats you want to\n"
 #~ "associate with Aegisub:"
 #~ msgstr ""
 #~ "Пожалуйста, выберите форматы, которые вы\n"
 #~ "хотите ассоциировать с Aegisub:"
-
 #~ msgid "Associations"
 #~ msgstr "Ассоциации"
-
 #~ msgid "Groups"
 #~ msgstr "Группы"
-
 #~ msgid "Select source text first."
 #~ msgstr "Сначала выберите исходный текст."
-
 #~ msgid ""
 #~ "The source line contains text before the first karaoke block.\n"
 #~ "Do you want to carry it over to the destination?\n"
@@ -5454,34 +5403,24 @@ msgstr "не показываются."
 #~ "Строка исходника содержит текст до первого блока караоке.\n"
 #~ "Перенести его в строку назначения?\n"
 #~ "Иначе он будет проигнорирован."
-
 #~ msgid "Kanji timer"
 #~ msgstr "Кандзи-таймер"
-
 #~ msgid "Possible error parsing source line"
 #~ msgstr "Возможно произошла ошибка при обработке исходной строки"
-
 #~ msgid "Group some text first."
 #~ msgstr "Сначала сгруппируйте текст."
-
 #~ msgid "Show Tip of the Day"
 #~ msgstr "Показывать совет дня"
-
 #~ msgid "Save config.dat locally"
 #~ msgstr "Сохранять конфигурационный файл локально"
-
 #~ msgid "Avisynth renders its own subs"
 #~ msgstr "Avisynth обрабатывает отдельные субтитры"
-
 #~ msgid "Recommended Formats"
 #~ msgstr "Рекомендуемые форматы"
-
 #~ msgid "Other supported formats"
 #~ msgstr "Другие поддерживаемые форматы"
-
 #~ msgid "Video Screenshot Path"
 #~ msgstr "Путь сохранения снимков экрана"
-
 #~ msgid " by ArchMage ZeratuL.\n"
 #~ msgstr "ArchMage ZeratuL.\n"
 
@@ -5500,214 +5439,152 @@ msgstr "не показываются."
 #~ msgstr ""
 #~ "Список всех горячих клавиш в Aegisub. Для их изменения двойной клик на "
 #~ "пункте списка."
-
 #~ msgid "\" from the catalog?"
 #~ msgstr "\" из каталога?"
 
 #, fuzzy
 #~ msgid "Find Next\t"
 #~ msgstr "Найти след."
-
 #~ msgid "Jump video to start\t"
 #~ msgstr "Переход видео к началу\t"
-
 #~ msgid "Jump video to end\t"
 #~ msgstr "Переход видео к концу\t"
-
 #~ msgid "Visit Aegisub's bug tracker"
 #~ msgstr "Посетить официальный трекер багов Aegisub"
-
 #~ msgid ""
 #~ "Copyright (c) 2005-2006 - Rodrigo Braz Monteiro.\n"
 #~ "\n"
 #~ msgstr ""
 #~ "Copyright (c) 2005-2006 - Rodrigo Braz Monteiro.\n"
 #~ "\n"
-
 #~ msgid ""
 #~ "Automation module is Copyright (c) 2005-2006 Niels Martin Hansen (aka "
 #~ "jfs).\n"
 #~ msgstr ""
 #~ "Модуль автоматизации copyright (c) 2005-2006 Niels Martin Hansen (или "
 #~ "jfs).\n"
-
 #~ msgid ""
 #~ "Motion tracker module is Copyright (c) 2006 Hajo Krabbenhoeft (aka "
 #~ "Tentacle).\n"
 #~ msgstr ""
 #~ "Модуль трекера движения copyright (c) 2006 Hajo Krabbenhoeft (или "
 #~ "Tentacle).\n"
-
 #~ msgid ""
 #~ "Coding by ArchMageZeratuL, jfs, Myrsloik, equinox, Tentacle and nmap.\n"
 #~ msgstr ""
 #~ "Программирование ArchMageZeratuL, jfs, Myrsloik, equinox, Tentacle и "
 #~ "nmap.\n"
-
 #~ msgid "Manual by ArchMage ZeratuL, jfs, movax, Kobi, TheFluff and Jcubed.\n"
 #~ msgstr ""
 #~ "Документация: ArchMage ZeratuL, jfs, movax, Kobi, TheFluff и Jcubed.\n"
-
 #~ msgid "SVN hosting by BerliOS and Mentar.\n"
 #~ msgstr "Хостинг SVN BerliOS и Mentar.\n"
-
 #~ msgid "Stop"
 #~ msgstr "Стоп"
-
 #~ msgid ""
 #~ "Substation Alpha Mode - Left click sets start and right click sets end"
 #~ msgstr ""
 #~ "Режим Substation Alpha - Левой кнопкой отмечается начало, правой -- конец"
-
 #~ msgid "&Create..."
 #~ msgstr "&Cоздать..."
-
 #~ msgid "&Apply now"
 #~ msgstr "Применить (&A)"
-
 #~ msgid "&Edit..."
 #~ msgstr "Редактировать (&E)"
-
 #~ msgid "C&lose"
 #~ msgstr "Закрыть (&l)"
-
 #~ msgid "Script name"
 #~ msgstr "Имя скрипта"
-
 #~ msgid "Tracker configuration"
 #~ msgstr "Конфигурация трекера"
-
 #~ msgid "Number of points to track:"
 #~ msgstr "Количество точек в треке:"
-
 #~ msgid "Minimal (squared) distance between two points:  "
 #~ msgstr "Минимальное расстояние (в квадрате) между двумя точками:"
-
 #~ msgid "Maximum feature movement:"
 #~ msgstr "Максимальное движение функции:"
-
 #~ msgid "Maximum feature appearance change:"
 #~ msgstr "Максимальное изменение параметра функции:"
-
 #~ msgid "How much CPU per feature?"
 #~ msgstr "Сколько процентов процессора на функцию?"
-
 #~ msgid "Edge detect filter size:"
 #~ msgstr "Размер фильтра обнаружения краёв:"
-
 #~ msgid "Feature comparison width:"
 #~ msgstr "Ширина сравнения функций:"
-
 #~ msgid "Feature comparison height:"
 #~ msgstr "Высота сравнения функций:"
-
 #~ msgid "Minimal determinant:"
 #~ msgstr "Минимальный определитель:"
-
 #~ msgid "Minimal displacement per iteration:"
 #~ msgstr "Минимальное вытеснение на итерацию:"
-
 #~ msgid "Go!"
 #~ msgstr "ОК!"
-
 #~ msgid "Choose"
 #~ msgstr "Выбрать"
-
 #~ msgid "Angle:"
 #~ msgstr "Угол:"
-
 #~ msgid "FexTracker"
 #~ msgstr "Трэкер Fex"
-
 #~ msgid "Add points to movement"
 #~ msgstr "Добавить точки к движению"
-
 #~ msgid "Generate movement from points"
 #~ msgstr "Выдать движение по точкам"
-
 #~ msgid "FexMovement"
 #~ msgstr "Движение Fex"
-
 #~ msgid "Generate empty movement"
 #~ msgstr "Генерировать пустое движение"
-
 #~ msgid "Move subtitle (this frame and preceeding frames)"
 #~ msgstr "Двинуть субтитр (этот и пред. кадры)"
-
 #~ msgid "Move subtitle (this frame)"
 #~ msgstr "Сдвиг субтитров (этот кадр)"
-
 #~ msgid "Move subtitle (this frame and following frames)"
 #~ msgstr "Двинуть субтитр (этот и послед. кадры)"
-
 #~ msgid "Split line for movement"
 #~ msgstr "Разбить строку на кадры движения"
-
 #~ msgid "Link movement file"
 #~ msgstr "Связать файл с движениями"
-
 #~ msgid "Link name:"
 #~ msgstr "Имя ссылки:"
-
 #~ msgid "Link line to movement file"
 #~ msgstr "Связать строку с файлом движений"
-
 #~ msgid "Invalid folder"
 #~ msgstr "Неправильная папка"
-
 #~ msgid "Could not find font "
 #~ msgstr "Не могу найти шрифт"
-
 #~ msgid "&Undo\t"
 #~ msgstr "Откат (&U)\t"
-
 #~ msgid "Find next\t"
 #~ msgstr "Найти следующее\t"
-
 #~ msgid "Copy...\t"
 #~ msgstr "Копировать...\t"
-
 #~ msgid "Zoom &50%\t"
 #~ msgstr "Показ &50%\t"
-
 #~ msgid "Zoom &100%\t"
 #~ msgstr "Показ &100%\t"
-
 #~ msgid "Zoom &200%\t"
 #~ msgstr "Показ &200%\t"
-
 #~ msgid "Snap start to video\t"
 #~ msgstr "Подгон начала по видео\t"
-
 #~ msgid "Snap end to video\t"
 #~ msgstr "Подгон конца по видео\t"
-
 #~ msgid "&Default Aspect Ratio"
 #~ msgstr "Аспект по умолчанию (&D)"
-
 #~ msgid "Forces video to fullscreen aspect ratio"
 #~ msgstr "Установить полноэкранный аспект"
-
 #~ msgid "Forces video to widescreen aspect ratio"
 #~ msgstr "Устанавливает широкоэкранный аспект"
-
 #~ msgid "&2.35 Aspect Ratio"
 #~ msgstr "Аспект 2.35"
-
 #~ msgid "Custom Aspect Ratio..."
 #~ msgstr "Аспект ...  (&D)"
-
 #~ msgid "&Tools"
 #~ msgstr "Инструментарий (&T)"
-
 #~ msgid "Save file"
 #~ msgstr "Сохранить файл"
-
 #~ msgid "Recombine (1, 1+2) into (1, 2)"
 #~ msgstr "Рекомбинация (1, 1+2) в (1, 2)"
-
 #~ msgid "Recombine (1+2, 2) into (1, 2)"
 #~ msgstr "Рекомбинация (1+2, 2) в (1, 2)"
-
 #~ msgid "Recombine (1, 1+2, 2) into (1, 2)"
 #~ msgstr "Рекомбинация (1, 1+2, 2) в (1, 2)"
+
