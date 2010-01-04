@@ -1,0 +1,5350 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Aegisub Tiếng Việt\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2009-12-30 23:16-0500\n"
+"PO-Revision-Date: \n"
+"Last-Translator: Hung. NGUYEN Manh <loveleeyoungae@yahoo.com>\n"
+"Language-Team: OnEsChi <oneschi@yahoo.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Poedit-Language: Vietnamese\n"
+"X-Poedit-Country: VIET NAM\n"
+
+#: dialog_export.cpp:56
+msgid "Export"
+msgstr "Xuất"
+
+#: dialog_export.cpp:59
+msgid "Filters"
+msgstr "Bộ lọc"
+
+#: dialog_export.cpp:90
+msgid "Move up"
+msgstr "Di chuyển lên"
+
+#: dialog_export.cpp:91
+msgid "Move down"
+msgstr "Di chuyển xuống"
+
+#: dialog_export.cpp:92
+msgid "Select all"
+msgstr "Chọn tất cả"
+
+#: dialog_export.cpp:93
+msgid "Select none"
+msgstr "Không chọn"
+
+#: dialog_export.cpp:99
+msgid "Text encoding:"
+msgstr "Bảng mã:"
+
+#: dialog_export.cpp:116
+msgid "Export..."
+msgstr "Xuất..."
+
+#: dialog_export.cpp:192
+msgid "Export subtitles file"
+msgstr "Xuất tập tin phụ đề"
+
+#: visual_tool_cross.cpp:74
+msgid "positioning"
+msgstr "định vị"
+
+#: dialog_video_details.cpp:52
+msgid "Video Details"
+msgstr "Chi tiết Đoạn phim"
+
+#: dialog_video_details.cpp:57
+#: dialog_options.cpp:628
+msgid "Video"
+msgstr "Phim"
+
+#: dialog_video_details.cpp:71
+msgid "File name:"
+msgstr "Tên tập tin:"
+
+#: dialog_video_details.cpp:73
+msgid "FPS:"
+msgstr "FPS:"
+
+#: dialog_video_details.cpp:75
+msgid "Resolution:"
+msgstr "Độ phân giải:"
+
+#: dialog_video_details.cpp:77
+msgid "Length:"
+msgstr "Độ dài:"
+
+#: dialog_video_details.cpp:79
+msgid "Decoder:"
+msgstr "Bộ giải mã:"
+
+#: charset_detect.cpp:128
+msgid ""
+"Aegisub could not narrow down the character set to a single one.\n"
+"Please pick one below:"
+msgstr ""
+"Aegisub không thể giới hạn bộ kí tự thành một bộ đơn.\n"
+"Vui lòng chọn một cái bên dưới:"
+
+#: charset_detect.cpp:128
+msgid "Choose character set"
+msgstr "Chọn bộ kí tự"
+
+#: dialog_timing_processor.cpp:57
+#: frame_main.cpp:286
+msgid "Timing Post-Processor"
+msgstr "Xử lí Hậu kì việc Chỉnh giờ"
+
+#: dialog_timing_processor.cpp:73
+msgid "Apply to styles"
+msgstr "Áp dụng vào kiểu dáng"
+
+#: dialog_timing_processor.cpp:76
+msgid "Select styles to process. Unchecked ones will be ignored."
+msgstr "Chọn kiểu dáng để xử lí. Những cái không được chọn sẽ bị bỏ qua."
+
+#: dialog_timing_processor.cpp:77
+#: dialog_paste_over.cpp:89
+msgid "All"
+msgstr "Tất cả"
+
+#: dialog_timing_processor.cpp:78
+msgid "Select all styles."
+msgstr "Chọn tất cả các kiểu."
+
+#: dialog_timing_processor.cpp:79
+#: dialog_paste_over.cpp:90
+msgid "None"
+msgstr "Không"
+
+#: dialog_timing_processor.cpp:80
+msgid "Deselect all styles."
+msgstr "Bỏ chọn tất cả các kiểu."
+
+#: dialog_timing_processor.cpp:83
+#: dialog_options.cpp:86
+#: dialog_options.cpp:213
+#: dialog_options.cpp:287
+#: dialog_options.cpp:356
+#: dialog_options.cpp:434
+#: dialog_options.cpp:476
+#: dialog_options.cpp:564
+#: dialog_properties.cpp:119
+#: frame_main.cpp:292
+#: hotkeys.cpp:333
+#: hotkeys.cpp:337
+msgid "Options"
+msgstr "Tùy chọn"
+
+#: dialog_timing_processor.cpp:84
+msgid "Affect selection only"
+msgstr "Chỉ ảnh hưởng đoạn được chọn"
+
+#: dialog_timing_processor.cpp:89
+msgid "Lead-in/Lead-out"
+msgstr "Lead-in/Lead-out"
+
+#: dialog_timing_processor.cpp:90
+msgid "Add lead in:"
+msgstr "Thêm lead-in:"
+
+#: dialog_timing_processor.cpp:91
+msgid "Enable adding of lead-ins to lines."
+msgstr "Kích hoạt việc thêm lead-in vào dòng."
+
+#: dialog_timing_processor.cpp:94
+msgid "Lead in to be added, in milliseconds."
+msgstr "Lead-in được thêm, tính theo giây."
+
+#: dialog_timing_processor.cpp:95
+msgid "Add lead out:"
+msgstr "Thêm lead-out:"
+
+#: dialog_timing_processor.cpp:96
+msgid "Enable adding of lead-outs to lines."
+msgstr "Kích hoạt việc thêm lead-out vào dòng."
+
+#: dialog_timing_processor.cpp:99
+msgid "Lead out to be added, in milliseconds."
+msgstr "Lead-out được thêm, tính theo giây."
+
+#: dialog_timing_processor.cpp:107
+msgid "Make adjacent subtitles continuous"
+msgstr "Làm phụ đề cận kề tiếp diễn"
+
+#: dialog_timing_processor.cpp:108
+#: dialog_timing_processor.cpp:126
+msgid "Enable"
+msgstr "Kích hoạt"
+
+#: dialog_timing_processor.cpp:109
+msgid "Enable snapping of subtitles together if they are within a certain distance of each other."
+msgstr "Kích hoạt việc nắm kéo phụ đề với nhau nếu chúng ở trong cùng một khoảng nào đó của nhau."
+
+#: dialog_timing_processor.cpp:111
+msgid "Threshold:"
+msgstr "Ngưỡng:"
+
+#: dialog_timing_processor.cpp:113
+msgid "Maximum difference between start and end time for two subtitles to be made continuous, in milliseconds."
+msgstr "Khác biệt tối đa giữa thời gian bắt đầu và kết thúc để cho hai phụ đề được tạo tiếp tục, tính bằng giây."
+
+#: dialog_timing_processor.cpp:115
+msgid "Sets how to set the adjoining of lines. If set totally to left, it will extend start time of the second line; if totally to right, it will extend the end time of the first line."
+msgstr "Thiết lập cách thiết lập việc nối dòng. Nếu thiết lập hoàn toàn sang trái, nó sẽ mở rộng thời gian bắt đầu của dòng thứ hai; nếu thiết lập hoàn toàn sanh phải, nó sẽ mở rộng thời gian kết thúc của dòng thứ nhất."
+
+#: dialog_timing_processor.cpp:119
+msgid "Bias: Start <- "
+msgstr "Độ xiên: Bắt đầu <- "
+
+#: dialog_timing_processor.cpp:121
+msgid " -> End"
+msgstr " -> Kết thúc"
+
+#: dialog_timing_processor.cpp:124
+msgid "Keyframe snapping"
+msgstr "Nắm kéo keyframe"
+
+#: dialog_timing_processor.cpp:127
+msgid "Enable snapping of subtitles to nearest keyframe, if distance is within threshold."
+msgstr "Kích hoạt việc nắm kéo phụ đề tới keyframe gần nhất, nếu khoảng cách vẫn trong ngưỡng."
+
+#: dialog_timing_processor.cpp:129
+msgid "Starts before thres.:"
+msgstr "Bắt đầu trước ngưỡng:"
+
+#: dialog_timing_processor.cpp:131
+msgid "Threshold for 'before start' distance, that is, how many frames a subtitle must start before a keyframe to snap to it."
+msgstr "Ngưỡng cho khoảng cách 'trước bắt đầu', có nghĩa là, bao nhiêu khung hình mà một phụ đề phải bắt đầu trước một keyframe để nắm kéo nó."
+
+#: dialog_timing_processor.cpp:132
+msgid "Starts after thres.:"
+msgstr "Bắt đầu sau ngưỡng:"
+
+#: dialog_timing_processor.cpp:134
+msgid "Threshold for 'after start' distance, that is, how many frames a subtitle must start after a keyframe to snap to it."
+msgstr "Ngưỡng cho khoảng cách 'sau bắt đầu', có nghĩa là, bao nhiêu khung hình mà một phụ đề phải bắt đầu sau một keyframe để nắm kéo nó."
+
+#: dialog_timing_processor.cpp:135
+msgid "Ends before thres.:"
+msgstr "Kết thúc trước ngưỡng:"
+
+#: dialog_timing_processor.cpp:137
+msgid "Threshold for 'before end' distance, that is, how many frames a subtitle must end before a keyframe to snap to it."
+msgstr "Ngưỡng cho khoảng cách 'trước kết thúc', có nghĩa là, bao nhiêu khung hình mà một phụ đề phải kết thúc trước một keyframe để nắm kéo nó."
+
+#: dialog_timing_processor.cpp:138
+msgid "Ends after thres.:"
+msgstr "Kết thúc sau ngưỡng:"
+
+#: dialog_timing_processor.cpp:140
+msgid "Threshold for 'after end' distance, that is, how many frames a subtitle must end after a keyframe to snap to it."
+msgstr "Ngưỡng cho khoảng cách 'sau kết thúc', có nghĩa là, bao nhiêu khung hình mà một phụ đề phải kết thúc sau một keyframe để nắm kéo nó."
+
+#: dialog_timing_processor.cpp:322
+#, c-format
+msgid "One of the lines in the file (%i) has negative duration. Aborting."
+msgstr "Một trong các dòng của tập tin (%i) có khoảng thời gian âm. Hủy bỏ."
+
+#: dialog_timing_processor.cpp:322
+msgid "Invalid script"
+msgstr "Script không hợp lệ"
+
+#: dialog_timing_processor.cpp:571
+msgid "timing processor"
+msgstr "xử lí chỉnh giờ"
+
+#: video_box.cpp:79
+msgid "Play video starting on this position"
+msgstr "Phát phim bắt đầu từ vị trí này"
+
+#: video_box.cpp:81
+msgid "Play current line"
+msgstr "Phát dòng hiện tại"
+
+#: video_box.cpp:83
+msgid "Stop video playback"
+msgstr "Dừng phát phim"
+
+#: video_box.cpp:85
+msgid "Toggle autoscroll of video"
+msgstr "Bật tắt việc tự động cuộn phim"
+
+#: video_box.cpp:90
+msgid "Seek video."
+msgstr "Truy tìm phim."
+
+#: video_box.cpp:94
+msgid "Current frame time and number."
+msgstr "Số và thời gian khung hình hiện tại."
+
+#: video_box.cpp:98
+msgid "Time of this frame relative to start and end of current subs."
+msgstr "Thời gian của khung hình này liên quan với bắt đầu và kết thúc của phụ đề hiện tại."
+
+#: video_box.cpp:114
+msgid "Standard"
+msgstr "Chuẩn"
+
+#: video_box.cpp:114
+msgid "Standard mode, double click sets position."
+msgstr "Chế độ chuẩn, nhấp đôi sẽ thiết lập vị trí."
+
+#: video_box.cpp:115
+#: visual_tool_vector_clip.cpp:70
+msgid "Drag"
+msgstr "Kéo"
+
+#: video_box.cpp:115
+msgid "Drag subtitles."
+msgstr "Kéo phụ đề."
+
+#: video_box.cpp:116
+msgid "Rotate Z"
+msgstr "Xoay Z"
+
+#: video_box.cpp:116
+msgid "Rotate subtitles on their Z axis."
+msgstr "Xoay phụ đề trên trục Z của chúng."
+
+#: video_box.cpp:117
+msgid "Rotate XY"
+msgstr "Xoay XY"
+
+#: video_box.cpp:117
+msgid "Rotate subtitles on their X and Y axes."
+msgstr "Xoay phụ đề trên trục XY của chúng."
+
+#: video_box.cpp:118
+msgid "Scale"
+msgstr "Tỉ lệ"
+
+#: video_box.cpp:118
+msgid "Scale subtitles on X and Y axes."
+msgstr "Chỉnh tỉ lệ phụ đề trên trục X và Y."
+
+#: video_box.cpp:119
+msgid "Clip"
+msgstr "Co kéo"
+
+#: video_box.cpp:119
+msgid "Clip subtitles to a rectangle."
+msgstr "Co kéo phụ đề cho vừa trong một hình chữ nhật."
+
+#: video_box.cpp:120
+msgid "Vector Clip"
+msgstr "Co kéo Véctơ"
+
+#: video_box.cpp:120
+msgid "Clip subtitles to a vectorial area."
+msgstr "Co kéo phụ đề cho vừa trong một vùng véctơ."
+
+#: video_box.cpp:122
+msgid "Realtime"
+msgstr "Thời gian thực"
+
+#: video_box.cpp:122
+msgid "Toggle realtime display of changes."
+msgstr "Bật-tắt hiển thị thay đổi theo thời gian thực."
+
+#: video_box.cpp:124
+#: hotkeys.cpp:332
+#: hotkeys.cpp:336
+msgid "Help"
+msgstr "Trợ giúp"
+
+#: video_box.cpp:124
+msgid "Open the manual page for Visual Typesetting."
+msgstr "Mở trang sổ tay hướng dẫn cho Typeset Trực quan."
+
+#: video_display.cpp:496
+msgid "Save PNG snapshot"
+msgstr "Lưu ảnh chụp PNG"
+
+#: video_display.cpp:497
+msgid "Copy image to Clipboard"
+msgstr "Chép hình ảnh vào Clipboard"
+
+#: video_display.cpp:499
+msgid "Save PNG snapshot (no subtitles)"
+msgstr "Lưu ảnh chụp PNG (không phụ đề)"
+
+#: video_display.cpp:500
+msgid "Copy image to Clipboard (no subtitles)"
+msgstr "Chép hình ảnh vào Clipboard (không phụ đề)"
+
+#: video_display.cpp:502
+msgid "Copy coordinates to Clipboard"
+msgstr "Chép tọa độ vào Clipboard"
+
+#: lavc_keyframes.cpp:97
+msgid "Load keyframes"
+msgstr "Nạp keyframe"
+
+#: lavc_keyframes.cpp:97
+msgid "Reading keyframes from video"
+msgstr "Đọc keyframe từ phim"
+
+#: dialog_styling_assistant.cpp:62
+msgid "Styling assistant"
+msgstr "Trợ lí tạo kiểu dáng"
+
+#: dialog_styling_assistant.cpp:75
+#: dialog_styling_assistant.cpp:76
+msgid "Current line"
+msgstr "Dòng hiện tại"
+
+#: dialog_styling_assistant.cpp:81
+msgid "Styles available"
+msgstr "Kiểu dáng hiện có"
+
+#: dialog_styling_assistant.cpp:86
+msgid "Set style"
+msgstr "Thiết lập kiểu dáng"
+
+#: dialog_styling_assistant.cpp:87
+#: dialog_translation.cpp:99
+msgid "Keys"
+msgstr "Phím"
+
+#: dialog_styling_assistant.cpp:88
+#: dialog_translation.cpp:122
+msgid "Actions"
+msgstr "Thao tác"
+
+#: dialog_styling_assistant.cpp:96
+#: dialog_translation.cpp:102
+msgid "Accept changes"
+msgstr "Chấp thuận thay đổi"
+
+#: dialog_styling_assistant.cpp:98
+#: dialog_translation.cpp:104
+msgid "Preview changes"
+msgstr "Xem trước thay đổi"
+
+#: dialog_styling_assistant.cpp:100
+#: dialog_translation.cpp:106
+msgid "Previous line"
+msgstr "Dòng trước"
+
+#: dialog_styling_assistant.cpp:102
+#: dialog_translation.cpp:108
+msgid "Next line"
+msgstr "Dòng kế"
+
+#: dialog_styling_assistant.cpp:104
+#: dialog_styling_assistant.cpp:118
+#: dialog_translation.cpp:112
+#: dialog_translation.cpp:123
+msgid "Play Video"
+msgstr "Phát phim"
+
+#: dialog_styling_assistant.cpp:106
+#: dialog_styling_assistant.cpp:119
+#: dialog_translation.cpp:114
+#: dialog_translation.cpp:124
+msgid "Play Audio"
+msgstr "Phát âm thanh"
+
+#: dialog_styling_assistant.cpp:107
+msgid "Click on list:"
+msgstr "Nhấn lên"
+
+#: dialog_styling_assistant.cpp:108
+msgid "Select style"
+msgstr "Chọn kiểu"
+
+#: dialog_styling_assistant.cpp:111
+msgid "Enable preview (slow)"
+msgstr "Kích hoạt xem trước (chậm)"
+
+#: dialog_styling_assistant.cpp:165
+msgid "style changes"
+msgstr "thay đổi của kiểu dáng"
+
+#: dialog_styling_assistant.cpp:223
+#: dialog_styling_assistant.cpp:252
+msgid "styling assistant"
+msgstr "trợ lí tạo kiểu dáng"
+
+#: dialog_selection.cpp:54
+msgid "Select"
+msgstr "Chọn"
+
+#: dialog_selection.cpp:60
+msgid "Match"
+msgstr "Khớp"
+
+#: dialog_selection.cpp:62
+msgid "Match dialogues/comments"
+msgstr "Khớp đối thoại/bình luận"
+
+#: dialog_selection.cpp:65
+msgid "Matches"
+msgstr "Khớp"
+
+#: dialog_selection.cpp:66
+msgid "Doesn't Match"
+msgstr "Không khớp"
+
+#: dialog_selection.cpp:68
+#: dialog_search_replace.cpp:81
+msgid "Match case"
+msgstr "Phân biệt HOA-thường"
+
+#: dialog_selection.cpp:69
+msgid "Exact match"
+msgstr "Khớp chính xác"
+
+#: dialog_selection.cpp:70
+msgid "Contains"
+msgstr "Chứa"
+
+#: dialog_selection.cpp:71
+msgid "Regular Expression match"
+msgstr "Khớp Biểu thức Chính quy"
+
+#: dialog_selection.cpp:75
+#: dialog_kanji_timer.cpp:707
+#: dialog_search_replace.cpp:95
+#: base_grid.cpp:442
+#: dialog_paste_over.cpp:80
+#: dialog_paste_over.cpp:92
+msgid "Text"
+msgstr "Văn bản"
+
+#: dialog_selection.cpp:76
+#: dialog_options.cpp:216
+#: dialog_options.cpp:288
+#: dialog_options.cpp:477
+#: subs_grid.cpp:122
+#: dialog_search_replace.cpp:96
+#: base_grid.cpp:436
+#: dialog_paste_over.cpp:68
+msgid "Style"
+msgstr "Kiểu dáng"
+
+#: dialog_selection.cpp:77
+#: subs_grid.cpp:123
+#: subs_edit_box.cpp:90
+#: dialog_search_replace.cpp:97
+#: base_grid.cpp:437
+#: dialog_paste_over.cpp:69
+msgid "Actor"
+msgstr "Nhân vật"
+
+#: dialog_selection.cpp:78
+#: subs_grid.cpp:124
+#: subs_edit_box.cpp:93
+#: dialog_search_replace.cpp:98
+#: base_grid.cpp:438
+#: dialog_paste_over.cpp:79
+msgid "Effect"
+msgstr "Hiệu ứng"
+
+#: dialog_selection.cpp:79
+#: dialog_search_replace.cpp:102
+msgid "In Field"
+msgstr ""
+
+#: dialog_selection.cpp:82
+msgid "Dialogues"
+msgstr "Hội thoại"
+
+#: dialog_selection.cpp:83
+msgid "Comments"
+msgstr "Bình luận"
+
+#: dialog_selection.cpp:87
+msgid "Set selection"
+msgstr "Thiết lập lựa chọn"
+
+#: dialog_selection.cpp:88
+msgid "Add to selection"
+msgstr "Thêm vào lựa chọn"
+
+#: dialog_selection.cpp:89
+msgid "Subtract from selection"
+msgstr "Trừ ra từ đoạn được chọn"
+
+#: dialog_selection.cpp:90
+msgid "Intersect with selection"
+msgstr "Giao nhau với đoạn được chọn"
+
+#: dialog_selection.cpp:91
+msgid "Action"
+msgstr "Thao tác"
+
+#: dialog_selection.cpp:267
+#, c-format
+msgid "Selection was set to %i lines"
+msgstr "Đoạn được chọn được thiết lập là %i dòng"
+
+#: dialog_selection.cpp:267
+#: dialog_selection.cpp:268
+#: dialog_selection.cpp:269
+msgid "Selection"
+msgstr "Đoạn được chọn"
+
+#: dialog_selection.cpp:268
+#, c-format
+msgid "%i lines were added to selection"
+msgstr "%i dòng được thêm vào đoạn được chọn"
+
+#: dialog_selection.cpp:269
+#, c-format
+msgid "%i lines were removed from selection"
+msgstr "%i dòng bị xóa từ đoạn được chọn"
+
+#: dialog_style_manager.cpp:62
+#: frame_main.cpp:265
+msgid "Styles Manager"
+msgstr "Quản lí Kiểu dáng"
+
+#: dialog_style_manager.cpp:71
+msgid "Catalog of available storages"
+msgstr "Danh mục các lưu trữ hiện có"
+
+#: dialog_style_manager.cpp:73
+#: dialog_style_manager.cpp:86
+#: dialog_style_manager.cpp:131
+#: frame_main.cpp:234
+msgid "New"
+msgstr "Mới"
+
+#: dialog_style_manager.cpp:74
+#: dialog_style_manager.cpp:89
+#: dialog_style_manager.cpp:134
+#: subs_grid.cpp:204
+msgid "Delete"
+msgstr "Xóa"
+
+#: dialog_style_manager.cpp:81
+msgid "Storage"
+msgstr "Lưu trữ"
+
+#: dialog_style_manager.cpp:85
+msgid "Copy to current script ->"
+msgstr "Chép vào script hiện tại ->"
+
+#: dialog_style_manager.cpp:87
+#: dialog_style_manager.cpp:132
+msgid "Edit"
+msgstr "Chỉnh sửa"
+
+#: dialog_style_manager.cpp:88
+#: dialog_style_manager.cpp:133
+#: hotkeys.cpp:357
+msgid "Copy"
+msgstr "Chép"
+
+#: dialog_style_manager.cpp:99
+#: dialog_style_manager.cpp:144
+msgid "Move style up."
+msgstr "Di chuyển kiểu dáng lên."
+
+#: dialog_style_manager.cpp:100
+#: dialog_style_manager.cpp:145
+msgid "Move style down."
+msgstr "Di chuyển kiểu dáng xuống."
+
+#: dialog_style_manager.cpp:101
+#: dialog_style_manager.cpp:146
+msgid "Move style to top."
+msgstr "Di chuyển kiểu dáng lên đầu."
+
+#: dialog_style_manager.cpp:102
+#: dialog_style_manager.cpp:147
+msgid "Move style to bottom."
+msgstr "Di chuyển kiểu dáng xuống dưới cùng."
+
+#: dialog_style_manager.cpp:103
+#: dialog_style_manager.cpp:148
+msgid "Sort styles alphabetically."
+msgstr "Sắp xếp kiểu dáng theo abc."
+
+#: dialog_style_manager.cpp:123
+msgid "Current script"
+msgstr "Script hiện tại"
+
+#: dialog_style_manager.cpp:128
+msgid "<- Copy to storage"
+msgstr "<- Chép vào lưu trữ"
+
+#: dialog_style_manager.cpp:130
+msgid "Import from script..."
+msgstr "Nhập từ script..."
+
+#: dialog_style_manager.cpp:418
+msgid "New storage name:"
+msgstr "Tên lưu trữ mới:"
+
+#: dialog_style_manager.cpp:418
+msgid "New catalog entry"
+msgstr "Đầu vào mới trên danh mục"
+
+#: dialog_style_manager.cpp:434
+msgid "A catalog with that name already exists."
+msgstr "Một danh mục có tên đó đã tồn tại."
+
+#: dialog_style_manager.cpp:434
+msgid "Catalog name conflict"
+msgstr "Xung đột tên danh mục"
+
+#: dialog_style_manager.cpp:440
+#, c-format
+msgid ""
+"The specified catalog name contains one or more illegal characters. They have been replaced with underscores instead.\n"
+"The catalog has been renamed to \"%s\"."
+msgstr ""
+"Tên danh mục được chỉ định chứa một hoặc nhiều kí tự bất hợp lệ. Chúng đã được thay thế bằng dấu gạch dưới.\n"
+"Danh mục đã được đổi tên thành \"%s\"."
+
+#: dialog_style_manager.cpp:440
+msgid "Invalid characters"
+msgstr "Kí tự không hợp lệ"
+
+#: dialog_style_manager.cpp:469
+#, c-format
+msgid "Are you sure you want to delete the storage \"%s\" from the catalog?"
+msgstr "Bạn có thật sự muốn xóa lưu trữ \"%s\" khỏi danh mục không?"
+
+#: dialog_style_manager.cpp:470
+msgid "Confirm delete"
+msgstr "Xác nhận xóa"
+
+#: dialog_style_manager.cpp:610
+#: dialog_style_manager.cpp:660
+msgid "style copy"
+msgstr "chép kiểu dáng"
+
+#: dialog_style_manager.cpp:623
+#: dialog_style_manager.cpp:647
+#: dialog_style_editor.cpp:449
+msgid "Copy of "
+msgstr "Chép của"
+
+#: dialog_style_manager.cpp:712
+msgid "style paste"
+msgstr "dán kiểu dáng"
+
+#: dialog_style_manager.cpp:716
+#: dialog_style_manager.cpp:719
+#: dialog_style_manager.cpp:752
+#: dialog_style_manager.cpp:755
+msgid "Could not parse style"
+msgstr "Không thể phân tích kiểu dáng"
+
+#: dialog_style_manager.cpp:801
+#: dialog_style_manager.cpp:835
+msgid "Are you sure you want to delete these "
+msgstr "Bạn có thật sự muốn xóa những"
+
+#: dialog_style_manager.cpp:803
+#: dialog_style_manager.cpp:837
+msgid " styles?"
+msgstr " kiểu dáng này?"
+
+#: dialog_style_manager.cpp:805
+#: dialog_style_manager.cpp:839
+msgid "Are you sure you want to delete this style?"
+msgstr "Bạn có thật sự muốn xóa kiểu dáng này?"
+
+#: dialog_style_manager.cpp:806
+msgid "Confirm delete from storage"
+msgstr "Xác nhận xóa khỏi lưu trữ"
+
+#: dialog_style_manager.cpp:840
+msgid "Confirm delete from current"
+msgstr "Xác nhận xóa khỏi hiện hành"
+
+#: dialog_style_manager.cpp:856
+msgid "style delete"
+msgstr "xóa kiểu dáng"
+
+#: dialog_style_manager.cpp:868
+#: frame_main_events.cpp:715
+#: frame_main_events.cpp:733
+msgid "Open subtitles file"
+msgstr "Mở tập tin phụ đề"
+
+#: dialog_style_manager.cpp:884
+msgid "The selected file has no available styles."
+msgstr "Tập tin được chọn không có kiểu dáng nào."
+
+#: dialog_style_manager.cpp:884
+msgid "Error Importing Styles"
+msgstr "Lỗi khi Nhập kiểu dáng"
+
+#: dialog_style_manager.cpp:891
+#: dialog_style_manager.cpp:893
+msgid "Choose styles to import:"
+msgstr "Chọn kiểu dáng để nhập:"
+
+#: dialog_style_manager.cpp:891
+#: dialog_style_manager.cpp:893
+msgid "Import Styles"
+msgstr "Nhập kiểu dáng"
+
+#: dialog_style_manager.cpp:925
+msgid "style import"
+msgstr "nhập kiểu dáng"
+
+#: dialog_style_manager.cpp:1082
+msgid "Are you sure? This cannot be undone!"
+msgstr "Bạn có chắc không? Hành động này sẽ không thể hoàn tác được!"
+
+#: dialog_style_manager.cpp:1082
+msgid "Sort styles"
+msgstr "Sắp xếp kiểu dáng"
+
+#: dialog_style_manager.cpp:1134
+msgid "style move"
+msgstr "di chuyển kiểu dáng"
+
+#: dialog_options.cpp:111
+msgid "Startup"
+msgstr "Khởi động"
+
+#: dialog_options.cpp:114
+msgid "Show Splash Screen"
+msgstr "Hiện hình ảnh Splash"
+
+#: dialog_options.cpp:115
+#: dialog_version_check.cpp:429
+msgid "Auto Check for Updates"
+msgstr "Tự động Kiểm tra Cập nhật"
+
+#: dialog_options.cpp:117
+msgid "Check File Associations on Start"
+msgstr "Kiểm tra Liên kết Tập tin khi Khởi động"
+
+#: dialog_options.cpp:122
+msgid "Limits for levels and recent files"
+msgstr "Giới hạn cho cấp độ và lượng tập tin gần đây"
+
+#: dialog_options.cpp:125
+msgid "Maximum undo levels"
+msgstr "Cấp độ hoàn tác tối đa"
+
+#: dialog_options.cpp:125
+msgid "Maximum recent timecode files"
+msgstr "Tập tin mã thời gian gần đây tối đa"
+
+#: dialog_options.cpp:125
+msgid "Maximum recent keyframe files"
+msgstr "Tập tin keyframe gần đây tối đa"
+
+#: dialog_options.cpp:125
+msgid "Maximum recent subtitle files"
+msgstr "Tập tin phụ đề gần đây tối đa"
+
+#: dialog_options.cpp:125
+msgid "Maximum recent video files"
+msgstr "Tập tin phim gần đây tối đa"
+
+#: dialog_options.cpp:125
+msgid "Maximum recent audio files"
+msgstr "Tập tin âm thanh gần đây tối đa"
+
+#: dialog_options.cpp:125
+msgid "Maximum recent find strings"
+msgstr "Chuỗi tìm kiếm gần đây tối đa"
+
+#: dialog_options.cpp:125
+msgid "Maximum recent replace strings"
+msgstr "Chuỗi thay thế gần đây tối đa"
+
+#: dialog_options.cpp:145
+msgid "Auto-save"
+msgstr "Tự động lưu"
+
+#: dialog_options.cpp:147
+msgid "File paths"
+msgstr "Đường dẫn tập tin"
+
+#: dialog_options.cpp:149
+msgid "Miscellanea"
+msgstr "Linh tinh"
+
+#: dialog_options.cpp:153
+msgid "Auto-backup"
+msgstr "Tự động sao lưu"
+
+#: dialog_options.cpp:159
+msgid "Auto-save every"
+msgstr "Tự động lưu mỗi"
+
+#: dialog_options.cpp:161
+msgid "seconds."
+msgstr "giây."
+
+#: dialog_options.cpp:164
+msgid "Auto-save path:"
+msgstr "Đường dẫn tự động lưu:"
+
+#: dialog_options.cpp:172
+msgid "Auto-backup path:"
+msgstr "Đường dẫn tự động sao lưu:"
+
+#: dialog_options.cpp:180
+msgid "Crash recovery path:"
+msgstr "Đường dẫn khôi phục sau đổ vỡ:"
+
+#: dialog_options.cpp:190
+msgid "Auto-load linked files:"
+msgstr "Tự động nạp tập tin được liên kết:"
+
+#: dialog_options.cpp:191
+#: dialog_options.cpp:364
+msgid "Never"
+msgstr "Không bao giờ"
+
+#: dialog_options.cpp:191
+#: dialog_options.cpp:364
+msgid "Always"
+msgstr "Luôn luôn"
+
+#: dialog_options.cpp:191
+#: dialog_options.cpp:364
+msgid "Ask"
+msgstr "Hỏi"
+
+#: dialog_options.cpp:221
+msgid "Enable call tips"
+msgstr "Kích hoạt mẹo gọi"
+
+#: dialog_options.cpp:221
+msgid "Enable syntax highlighting"
+msgstr "Kích hoạt tô sáng công thức"
+
+#: dialog_options.cpp:221
+msgid "Link commiting of times"
+msgstr "Liên kết việc thực hiện thời gian"
+
+#: dialog_options.cpp:221
+msgid "Overwrite-Insertion in time boxes"
+msgstr "Ghi đè-Chèn trong hộp thời gian"
+
+#: dialog_options.cpp:230
+msgid "Path to dictionary files:"
+msgstr "Đường dẫn đến tập tin từ điển"
+
+#: dialog_options.cpp:240
+#: dialog_options.cpp:572
+#: dialog_properties.cpp:133
+msgid "Normal"
+msgstr "Bình thường"
+
+#: dialog_options.cpp:240
+msgid "Brackets"
+msgstr "Ngoặc"
+
+#: dialog_options.cpp:240
+msgid "Slashes and Parentheses"
+msgstr "Gạch chéo và Ngoặc tròn"
+
+#: dialog_options.cpp:240
+msgid "Tags"
+msgstr "Thẻ"
+
+#: dialog_options.cpp:240
+msgid "Parameters"
+msgstr "Tham số"
+
+#: dialog_options.cpp:241
+#: options.cpp:467
+#: dialog_kanji_timer.cpp:820
+#: dialog_kanji_timer.cpp:822
+#: dialog_kanji_timer.cpp:865
+#: subs_grid.cpp:686
+#: subs_grid.cpp:690
+#: subs_grid.cpp:736
+#: dialog_resample.cpp:217
+#: dialog_resample.cpp:221
+#: dialog_fonts_collector.cpp:195
+#: dialog_fonts_collector.cpp:204
+#: dialog_fonts_collector.cpp:213
+msgid "Error"
+msgstr "Lỗi"
+
+#: dialog_options.cpp:241
+msgid "Error Background"
+msgstr "Hậu cảnh Lỗi"
+
+#: dialog_options.cpp:241
+msgid "Line Break"
+msgstr "Ngắt dòng"
+
+#: dialog_options.cpp:241
+msgid "Karaoke templates"
+msgstr "Khuôn mẫu Karaoke"
+
+#: dialog_options.cpp:241
+msgid "Modified Background"
+msgstr "Hậu cảnh Được sửa đổi"
+
+#: dialog_options.cpp:248
+msgid "Syntax highlighter - "
+msgstr "Tô sáng công thức - "
+
+#: dialog_options.cpp:259
+#: dialog_options.cpp:323
+msgid "Font: "
+msgstr "Font:"
+
+#: dialog_options.cpp:294
+msgid "Allow grid to take focus"
+msgstr "Cho phép đường kẻ ô được chú ý"
+
+#: dialog_options.cpp:294
+msgid "Highlight subtitles that are currently visible in video"
+msgstr "Tô sáng các phụ đề đang hiển thị trên phim"
+
+#: dialog_options.cpp:304
+msgid "Standard foreground"
+msgstr "Tiền cảnh chuẩn"
+
+#: dialog_options.cpp:304
+msgid "Standard background"
+msgstr "Hậu cảnh chuẩn"
+
+#: dialog_options.cpp:304
+msgid "Selection foreground"
+msgstr "Tiền cảnh của phần được chọn"
+
+#: dialog_options.cpp:305
+#: dialog_options.cpp:494
+msgid "Selection background"
+msgstr "Hậu cảnh của phần được chọn"
+
+#: dialog_options.cpp:305
+msgid "Comment background"
+msgstr "Hậu cảnh của bình luận"
+
+#: dialog_options.cpp:305
+msgid "Selected comment background"
+msgstr "Hậu cảnh của bình luận được chọn"
+
+#: dialog_options.cpp:306
+msgid "Collision foreground"
+msgstr "Hậu cảnh của va chạm"
+
+#: dialog_options.cpp:306
+msgid "Line in frame background"
+msgstr "Hậu cảnh của dòng trong khung hình"
+
+#: dialog_options.cpp:306
+msgid "Header"
+msgstr "Đầu đề"
+
+#: dialog_options.cpp:307
+msgid "Left Column"
+msgstr "Cột trái"
+
+#: dialog_options.cpp:307
+msgid "Active Line Border"
+msgstr "Biên của Dòng đang hoạt động"
+
+#: dialog_options.cpp:307
+msgid "Lines"
+msgstr "Dòng"
+
+#: dialog_options.cpp:336
+msgid "Replace override tags with: "
+msgstr "Thay thế thẻ bị ghi đè với:"
+
+#: dialog_options.cpp:357
+#: dialog_options.cpp:528
+msgid "Advanced - EXPERT USERS ONLY"
+msgstr "Nâng cao - CHỈ DÀNH CHO NGƯỜI DÙNG CHUYÊN NGHIỆP"
+
+#: dialog_options.cpp:363
+msgid "Match video resolution on open: "
+msgstr "Khớp độ phân giải phim khi mở:"
+
+#: dialog_options.cpp:368
+msgid "Default Zoom: "
+msgstr "Thu phóng Mặc định:"
+
+#: dialog_options.cpp:379
+msgid "Fast jump step in frames: "
+msgstr "Bước nhảy nhanh trong khung hình:"
+
+#: dialog_options.cpp:383
+msgid "Screenshot save path: "
+msgstr "Đường dẫn lưu ảnh chụp màn hình:"
+
+#: dialog_options.cpp:389
+msgid "Show keyframes in slider"
+msgstr "Hiện keyframe trong thanh trượt:"
+
+#: dialog_options.cpp:395
+msgid "Video provider: "
+msgstr "Trình cung cấp phim:"
+
+#: dialog_options.cpp:400
+msgid "Subtitles provider: "
+msgstr "Trình cung cấp phụ đề:"
+
+#: dialog_options.cpp:406
+msgid "Avisynth memory limit: "
+msgstr "Giới hạn bộ nhớ Avisynth:"
+
+#: dialog_options.cpp:413
+msgid "Allow pre-2.56a Avisynth"
+msgstr "Cho phép Avisynth trước 2.56a"
+
+#: dialog_options.cpp:421
+#: dialog_options.cpp:552
+msgid ""
+"WARNING: Changing these settings might result in bugs,\n"
+"crashes, glitches and/or movax.\n"
+"Don't touch these unless you know what you're doing."
+msgstr ""
+"CẢNH BÁO: Thay đổi những thiết lập này có thể gây ra lỗi,\n"
+"đổ vỡ, trục trặc và/hoặc movax.\n"
+"Đừng chạm vào những thứ này trừ khi bạn biết rõ mình đang làm gì."
+
+#: dialog_options.cpp:439
+msgid "Grab times from line upon selection"
+msgstr "Lấy thời gian từ dòng ở trên đoạn được chọn"
+
+#: dialog_options.cpp:440
+msgid "Default mouse wheel to zoom"
+msgstr "Mặc định cuộn chuột để thu phóng"
+
+#: dialog_options.cpp:441
+msgid "Lock scroll on Cursor"
+msgstr "Khóa cuộn trên Con trỏ"
+
+#: dialog_options.cpp:442
+msgid "Snap to keyframes"
+msgstr "Nắm kéo tới Keyframe"
+
+#: dialog_options.cpp:443
+msgid "Snap to adjacent lines"
+msgstr "Nắm kéo tới dòng cận kề"
+
+#: dialog_options.cpp:444
+msgid "Auto-focus on mouse over"
+msgstr "Tự động chú ý khi rê chuột lên trên"
+
+#: dialog_options.cpp:448
+msgid "Don't show"
+msgstr "Không hiện"
+
+#: dialog_options.cpp:448
+msgid "Show previous"
+msgstr "Hiện trước"
+
+#: dialog_options.cpp:448
+msgid "Show all"
+msgstr "Hiện tất cả"
+
+#: dialog_options.cpp:449
+msgid "Default timing length"
+msgstr "Độ dài chỉnh giờ mặc định"
+
+#: dialog_options.cpp:450
+msgid "Default lead-in length"
+msgstr "Độ dài lead-in mặc định"
+
+#: dialog_options.cpp:451
+msgid "Default lead-out length"
+msgstr "Độ dài lead-out mặc định"
+
+#: dialog_options.cpp:452
+msgid "Show inactive lines"
+msgstr "Hiện các dòng không hoạt động"
+
+#: dialog_options.cpp:482
+msgid "Draw secondary lines"
+msgstr "Vẽ các dòng thứ cấp"
+
+#: dialog_options.cpp:482
+msgid "Draw selection background"
+msgstr "Vẽ hậu cảnh đoạn được chọn"
+
+#: dialog_options.cpp:482
+msgid "Draw timeline"
+msgstr "Vẽ biểu đồ thời gian"
+
+#: dialog_options.cpp:483
+msgid "Draw cursor time"
+msgstr "Vẽ thời gian con trỏ"
+
+#: dialog_options.cpp:483
+msgid "Draw keyframes"
+msgstr "Vẽ keyframe"
+
+#: dialog_options.cpp:483
+msgid "Draw video position"
+msgstr "Vẽ vị trí phim"
+
+#: dialog_options.cpp:494
+msgid "Play cursor"
+msgstr "Con trỏ khi phát"
+
+#: dialog_options.cpp:494
+msgid "Background"
+msgstr "Hậu cảnh"
+
+#: dialog_options.cpp:495
+msgid "Selection background - modified"
+msgstr "Hậu cảnh đoạn được chọn - được sửa đổi"
+
+#: dialog_options.cpp:495
+msgid "Seconds boundary"
+msgstr "Đường biên của giây"
+
+#: dialog_options.cpp:495
+msgid "Waveform"
+msgstr "Dạng sóng"
+
+#: dialog_options.cpp:496
+msgid "Waveform - selection"
+msgstr "Dạng sóng - đoạn được chọn"
+
+#: dialog_options.cpp:496
+msgid "Waveform - modified"
+msgstr "Dạng sóng - được sửa đổi"
+
+#: dialog_options.cpp:496
+msgid "Waveform - inactive"
+msgstr "Dạng sóng - không hoạt động"
+
+#: dialog_options.cpp:497
+msgid "Boundary - start"
+msgstr "Đường biên - bắt đầu"
+
+#: dialog_options.cpp:497
+msgid "Boundary - end"
+msgstr "Đường biên - kết thúc"
+
+#: dialog_options.cpp:497
+msgid "Boundary - inactive"
+msgstr "Đường biên - không hoạt động"
+
+#: dialog_options.cpp:498
+msgid "Syllable text"
+msgstr "Văn bản âm tiết"
+
+#: dialog_options.cpp:498
+msgid "Syllable boundary"
+msgstr "Đường biên của âm tiết"
+
+#: dialog_options.cpp:532
+msgid "None (NOT RECOMMENDED)"
+msgstr "Không (KHÔNG KHUYẾN NGHỊ)"
+
+#: dialog_options.cpp:532
+msgid "RAM"
+msgstr "RAM"
+
+#: dialog_options.cpp:532
+msgid "Hard Disk"
+msgstr "Đĩa cứng"
+
+#: dialog_options.cpp:537
+msgid "Audio provider"
+msgstr "Trình cung cấp âm thanh"
+
+#: dialog_options.cpp:538
+msgid "Audio player"
+msgstr "Trình phát âm thanh"
+
+#: dialog_options.cpp:539
+msgid "Cache type"
+msgstr "Kiểu bộ đệm"
+
+#: dialog_options.cpp:541
+msgid "Avisynth down-mixer"
+msgstr "Avisynth down-mixer"
+
+#: dialog_options.cpp:543
+msgid "HD cache path"
+msgstr "Đường dẫn đệm HD"
+
+#: dialog_options.cpp:544
+msgid "HD cache name"
+msgstr "Tên bộ đệm HD"
+
+#: dialog_options.cpp:545
+msgid "Spectrum cutoff"
+msgstr "Cutoff dải quang phổ"
+
+#: dialog_options.cpp:546
+msgid "0 - Regular quality"
+msgstr "0 - Chất lượng bình thường"
+
+#: dialog_options.cpp:546
+msgid "1 - Better quality"
+msgstr "1 - Chất lượng tốt hơn"
+
+#: dialog_options.cpp:546
+msgid "2 - High quality"
+msgstr "2- Chất lượng cao"
+
+#: dialog_options.cpp:546
+msgid "3 - Insane quality"
+msgstr "3 - Chất lượng khủng bố"
+
+#: dialog_options.cpp:547
+msgid "Spectrum quality"
+msgstr "Chất lượng dải quang phổ"
+
+#: dialog_options.cpp:548
+msgid "Spectrum cache memory max (MB)"
+msgstr "Bộ nhớ đệm dải quang phổ tối đa (MB)"
+
+#: dialog_options.cpp:568
+msgid "Base path"
+msgstr "Đường dẫn Cơ sở"
+
+#: dialog_options.cpp:569
+msgid "Include path"
+msgstr "Đường dẫn Bao gồm"
+
+#: dialog_options.cpp:570
+msgid "Auto-load path"
+msgstr "Đường dẫn Tự động nạp"
+
+#: dialog_options.cpp:571
+msgid "0: Fatal"
+msgstr "0: Nặng"
+
+#: dialog_options.cpp:571
+msgid "1: Error"
+msgstr "1: Lỗi"
+
+#: dialog_options.cpp:571
+msgid "2: Warning"
+msgstr "2: Cảnh báo"
+
+#: dialog_options.cpp:571
+msgid "3: Hint"
+msgstr "3: Gợi ý"
+
+#: dialog_options.cpp:571
+msgid "4: Debug"
+msgstr "4: Gỡ lỗi"
+
+#: dialog_options.cpp:571
+msgid "5: Trace"
+msgstr "5: Truy dấu"
+
+#: dialog_options.cpp:572
+msgid "Below Normal (recommended)"
+msgstr "Dưới trung bình (khuyến nghị)"
+
+#: dialog_options.cpp:572
+msgid "Lowest"
+msgstr "Thấp nhất"
+
+#: dialog_options.cpp:573
+msgid "No scripts"
+msgstr "Không script"
+
+#: dialog_options.cpp:573
+msgid "Subtitle-local scripts"
+msgstr "Script nội bộ phụ đề"
+
+#: dialog_options.cpp:573
+msgid "Global autoload scripts"
+msgstr "Script tự động nạp bao quát"
+
+#: dialog_options.cpp:573
+msgid "All scripts"
+msgstr "Tất cả script"
+
+#: dialog_options.cpp:574
+msgid "Trace level"
+msgstr "Cấp độ truy dấu"
+
+#: dialog_options.cpp:575
+msgid "Thread priority"
+msgstr "Mức ưu tiên cho luồng"
+
+#: dialog_options.cpp:576
+msgid "Autoreload on Export"
+msgstr "Tự động nạp khi Xuất"
+
+#: dialog_options.cpp:595
+#: dialog_options.cpp:1091
+msgid "Function"
+msgstr "Hàm"
+
+#: dialog_options.cpp:596
+#: dialog_options.cpp:1092
+msgid "Key"
+msgstr "Phím"
+
+#: dialog_options.cpp:610
+msgid "Set Hotkey..."
+msgstr "Thiết lập Phím nóng..."
+
+#: dialog_options.cpp:611
+msgid "Clear Hotkey"
+msgstr "Xóa trắng Phím nóng"
+
+#: dialog_options.cpp:612
+#: ass_style.cpp:576
+msgid "Default"
+msgstr "Mặc định"
+
+#: dialog_options.cpp:613
+msgid "Default All"
+msgstr "Mặc định Tất cả"
+
+#: dialog_options.cpp:624
+msgid "General"
+msgstr "Tổng quát"
+
+#: dialog_options.cpp:625
+msgid "File save/load"
+msgstr "Lưu/nạp tập tin"
+
+#: dialog_options.cpp:626
+msgid "Subtitles edit box"
+msgstr "Hộp chỉnh sửa phụ đề"
+
+#: dialog_options.cpp:627
+msgid "Subtitles grid"
+msgstr "Đường kẻ phụ đề"
+
+#: dialog_options.cpp:629
+msgid "Audio"
+msgstr "Âm thanh"
+
+#: dialog_options.cpp:630
+msgid "Display"
+msgstr "Hiển thị"
+
+#: dialog_options.cpp:631
+msgid "Advanced"
+msgstr "Nâng cao"
+
+#: dialog_options.cpp:632
+#: frame_main.cpp:273
+msgid "Automation"
+msgstr "Tự động"
+
+#: dialog_options.cpp:633
+msgid "Hotkeys"
+msgstr "Phím nóng"
+
+#: dialog_options.cpp:646
+msgid "Restore Defaults"
+msgstr "Khôi phục Mặc định"
+
+#: dialog_options.cpp:737
+#: dialog_options.cpp:771
+#: dialog_options.cpp:911
+msgid "Aegisub must restart for the changes to take effect. Restart now?"
+msgstr "Aegisub phải khởi động lại để các thay đổi có hiệu lực. Khởi động lại ngay?"
+
+#: dialog_options.cpp:737
+#: dialog_options.cpp:771
+#: dialog_options.cpp:911
+msgid "Restart Aegisub"
+msgstr "Khởi động lại Aegisub"
+
+#: dialog_options.cpp:787
+msgid "Are you sure that you want to restore the defaults? All your settings will be overriden."
+msgstr "Bạn có thật sự muốn khôi phục các mặc định không? Tất cả thiết lập của bạn sẽ bị ghi đè."
+
+#: dialog_options.cpp:787
+msgid "Restore defaults?"
+msgstr "Khôi phục mặc định?"
+
+#: dialog_options.cpp:1111
+msgid "Press Key"
+msgstr "Ấn phím"
+
+#: dialog_options.cpp:1118
+#, c-format
+msgid "Press key to bind to \"%s\" or Esc to cancel."
+msgstr "Ấn phím để gán vào \"%s\" hoặc Esc để hủy bỏ."
+
+#: dialog_options.cpp:1169
+#, c-format
+msgid "The hotkey %s is already mapped to %s. If you proceed, that hotkey will be cleared. Proceed?"
+msgstr "Phím nóng %s đã được gán cho %s. Nếu bạn tiếp tục, phím nóng đó sẽ bị xóa. Vẫn tiến hành?"
+
+#: dialog_options.cpp:1169
+msgid "Hotkey conflict"
+msgstr "Xung đột phím nóng"
+
+#: dialog_text_import.cpp:50
+msgid "Text import options"
+msgstr "Tùy chọn nhập văn bản"
+
+#: dialog_text_import.cpp:59
+msgid "Actor separator:"
+msgstr "Phân cách nhân vật:"
+
+#: dialog_text_import.cpp:61
+msgid "Comment starter:"
+msgstr "Lời bắt đầu bình luận:"
+
+#: ffmpegsource_common.cpp:86
+msgid "Indexing"
+msgstr "Lập chỉ mục"
+
+#: ffmpegsource_common.cpp:87
+msgid "Reading timecodes and frame/sample data"
+msgstr "Đọc dữ liệu mẫu/khung hình và mã thời gian"
+
+#: ffmpegsource_common.cpp:140
+msgid "video"
+msgstr "phim"
+
+#: ffmpegsource_common.cpp:142
+msgid "audio"
+msgstr "âm thanh"
+
+#: ffmpegsource_common.cpp:145
+#, c-format
+msgid "Track %02d: %s"
+msgstr "Rãnh %02d: %s"
+
+#: ffmpegsource_common.cpp:149
+#, c-format
+msgid "Multiple %s tracks detected, please choose the one you wish to load:"
+msgstr "Nhận diện thấy nhiều rãnh %s, vui lòng chọn cái mà bạn muốn nạp:"
+
+#: ffmpegsource_common.cpp:150
+#, c-format
+msgid "Choose %s track"
+msgstr "Chọn %s rãnh"
+
+#: subtitle_format.cpp:273
+msgid "All Supported Formats"
+msgstr "Tất cả Định dạng Được hỗ trợ"
+
+#: subtitle_format.cpp:297
+msgid "15.000 FPS"
+msgstr "15.000 FPS"
+
+#: subtitle_format.cpp:298
+msgid "23.976 FPS (Decimated NTSC)"
+msgstr "23.976 FPS (Decimated NTSC)"
+
+#: subtitle_format.cpp:299
+msgid "24.000 FPS (FILM)"
+msgstr "24.000 FPS (FILM)"
+
+#: subtitle_format.cpp:300
+msgid "25.000 FPS (PAL)"
+msgstr "25.000 FPS (PAL)"
+
+#: subtitle_format.cpp:301
+msgid "29.970 FPS (NTSC)"
+msgstr "29.970 FPS (NTSC)"
+
+#: subtitle_format.cpp:303
+msgid "29.970 FPS (NTSC with SMPTE dropframe)"
+msgstr "29.970 FPS (NTSC với SMPTE dropframe)"
+
+#: subtitle_format.cpp:304
+msgid "30.000 FPS"
+msgstr "30.000 FPS"
+
+#: subtitle_format.cpp:305
+msgid "50.000 FPS (PAL x2)"
+msgstr "50.000 FPS (PAL x2)"
+
+#: subtitle_format.cpp:306
+msgid "59.940 FPS (NTSC x2)"
+msgstr "59.940 FPS (NTSC x2)"
+
+#: subtitle_format.cpp:307
+msgid "60.000 FPS"
+msgstr "60.000 FPS"
+
+#: subtitle_format.cpp:308
+msgid "119.880 FPS (NTSC x4)"
+msgstr "119.880 FPS (NTSC x4)"
+
+#: subtitle_format.cpp:309
+msgid "120.000 FPS"
+msgstr "120.000 FPS"
+
+#: subtitle_format.cpp:312
+msgid "Please choose the appropriate FPS for the subtitles:"
+msgstr "Vui lòng chọn FPS phù hợp cho phụ đề:"
+
+#: subtitle_format.cpp:312
+msgid "FPS"
+msgstr "FPS"
+
+#: dialog_spellchecker.cpp:69
+#: frame_main.cpp:288
+msgid "Spell Checker"
+msgstr "Kiểm tra Chính tả"
+
+#: dialog_spellchecker.cpp:108
+msgid "original"
+msgstr "gốc"
+
+#: dialog_spellchecker.cpp:109
+msgid "replace with"
+msgstr "thay thế bằng"
+
+#: dialog_spellchecker.cpp:111
+msgid "Misspelled word:"
+msgstr "Từ bị đánh vần sai:"
+
+#: dialog_spellchecker.cpp:113
+#: dialog_search_replace.cpp:74
+msgid "Replace with:"
+msgstr "Thay thế bằng:"
+
+#: dialog_spellchecker.cpp:122
+#: dialog_search_replace.cpp:566
+#: hotkeys.cpp:351
+#: hotkeys.cpp:354
+msgid "Replace"
+msgstr "Thay thế"
+
+#: dialog_spellchecker.cpp:123
+msgid "Replace All"
+msgstr "Thay thế Tất cả"
+
+#: dialog_spellchecker.cpp:124
+msgid "Ignore"
+msgstr "Bỏ qua"
+
+#: dialog_spellchecker.cpp:125
+msgid "Ignore all"
+msgstr "Bỏ qua Tất cả"
+
+#: dialog_spellchecker.cpp:126
+msgid "Add to dictionary"
+msgstr "Thêm vào từ điển"
+
+#: dialog_spellchecker.cpp:325
+msgid "Aegisub has finished checking spelling of this script."
+msgstr "Aegisub đã hoàn thành việc kiểm tra chính tả cho script này."
+
+#: dialog_spellchecker.cpp:325
+#: dialog_spellchecker.cpp:392
+msgid "Spell checking complete."
+msgstr "Kiểm tra chính tả hoàn tất."
+
+#: dialog_spellchecker.cpp:345
+msgid "Spell check replace"
+msgstr "Thay thế kiểm tra chính tả"
+
+#: dialog_spellchecker.cpp:392
+msgid "Aegisub has found no spelling mistakes in this script."
+msgstr "Aegisub không tìm thấy lỗi chính tả nào trong script này."
+
+#: mkv_wrap.cpp:171
+#: mkv_wrap.cpp:399
+msgid "Parsing Matroska"
+msgstr "Phân tích Matroska"
+
+#: mkv_wrap.cpp:171
+msgid "Reading keyframe and timecode data from Matroska file."
+msgstr "Đọc dữ liệu mã thời gian và keyframe từ tập tin Matroska."
+
+#: mkv_wrap.cpp:399
+msgid "Reading subtitles from Matroska file."
+msgstr "Đọc phụ đề từ tập tin Matroska."
+
+#: visual_tool.cpp:285
+#: visual_tool_drag.cpp:117
+msgid "visual typesetting"
+msgstr "typeset trực quan"
+
+#: export_fixstyle.cpp:60
+msgid "Fix Styles"
+msgstr "Sửa kiểu dáng"
+
+#: export_fixstyle.cpp:61
+msgid "Fixes styles by replacing any style that isn't available on file with Default."
+msgstr "Sửa các kiểu dáng bằng cách thay thế kiểu dáng bất kì không có trên tập tin bằng Mặc định."
+
+#: dialog_about.cpp:53
+#: frame_main.cpp:540
+msgid "About Aegisub"
+msgstr "Giới thiệu Aegisub"
+
+#: dialog_about.cpp:114
+msgid "Translated into LANGUAGE by PERSON\n"
+msgstr "Dịch sang Tiếng Việt bởi NGUYỄN Mạnh Hùng\n"
+
+#: dialog_about.cpp:152
+msgid ""
+"\n"
+"See the help file for full credits.\n"
+msgstr ""
+"\n"
+"Xem tập tin trợ giúp để biết công trạng đầy đủ.\n"
+
+#: dialog_about.cpp:153
+#, c-format
+msgid "Built by %s on %s."
+msgstr "Xây dựng bởi %s lúc %s."
+
+#: options.cpp:467
+msgid "Configuration file is either invalid or corrupt. The current file will be backed up and replaced with a default file."
+msgstr "Tập tin cấu hình không hợp lệ hoặc đã bị hư. Tập tin hiện tại sẽ được sao lưu và thay thế bằng một tập tin mặc định."
+
+#: browse_button.cpp:52
+msgid "Browse..."
+msgstr "Duyệt..."
+
+#: browse_button.cpp:75
+msgid "Please choose the folder:"
+msgstr "Vui lòng chọn thư mục:"
+
+#: dialog_automation.cpp:54
+msgid "Automation Manager"
+msgstr "Quản lí Tự động"
+
+#: dialog_automation.cpp:64
+msgid "&Add"
+msgstr "&Thêm"
+
+#: dialog_automation.cpp:65
+msgid "&Remove"
+msgstr "&Xóa"
+
+#: dialog_automation.cpp:66
+msgid "Re&load"
+msgstr "&Nạp lại"
+
+#: dialog_automation.cpp:67
+msgid "Show &Info"
+msgstr "H&iện thông tin"
+
+#: dialog_automation.cpp:68
+msgid "Re&scan Autoload Dir"
+msgstr "&Quét lại Th.mục T.động nạp"
+
+#: dialog_automation.cpp:69
+#: dialog_version_check.cpp:436
+#: dialog_attachments.cpp:80
+msgid "&Close"
+msgstr "Đón&g"
+
+#: dialog_automation.cpp:73
+msgid "Name"
+msgstr "Tên"
+
+#: dialog_automation.cpp:74
+msgid "Filename"
+msgstr "Tên tập tin"
+
+#: dialog_automation.cpp:75
+msgid "Description"
+msgstr "Mô tả"
+
+#: dialog_automation.cpp:210
+msgid "Add Automation script"
+msgstr "Thêm script Tự động"
+
+#: dialog_automation.cpp:281
+#, c-format
+msgid ""
+"Total scripts loaded: %d\n"
+"Global scripts loaded: %d\n"
+"Local scripts loaded: %d\n"
+"\n"
+msgstr ""
+"Tổng script được nạp: %d\n"
+"Script bao quát được nạp: %d\n"
+"Script nội bộ được nạp: %d\n"
+"\n"
+
+#: dialog_automation.cpp:286
+msgid "Scripting engines installed:\n"
+msgstr "Bộ máy script được cài:\n"
+
+#: dialog_automation.cpp:293
+#, c-format
+msgid ""
+"\n"
+"Script info:\n"
+"Name: %s\n"
+"Description: %s\n"
+"Author: %s\n"
+"Version: %s\n"
+"Full path: %s\n"
+"State: %s\n"
+"\n"
+"Features provided by script:\n"
+msgstr ""
+"\n"
+"Thông tin script:\n"
+"Tên: %s\n"
+"Mô tả: %s\n"
+"Tác giả: %s\n"
+"Phiên bản: %s\n"
+"Đường dẫn đầy đủ: %s\n"
+"Tình trạng: %s\n"
+"\n"
+"Tính năng được cung cấp bởi script:\n"
+
+#: dialog_automation.cpp:299
+msgid "Correctly loaded"
+msgstr "Được nạp đúng"
+
+#: dialog_automation.cpp:299
+msgid "Failed to load"
+msgstr "Thất bại khi nạp"
+
+#: dialog_automation.cpp:303
+msgid "    Macro: "
+msgstr "    Macro: "
+
+#: dialog_automation.cpp:305
+msgid "    Export filter: "
+msgstr "    Xuất bộ lọc: "
+
+#: dialog_automation.cpp:307
+msgid "    Subtitle format handler: "
+msgstr "    Trình xử lí định dạng phụ đề: "
+
+#: dialog_automation.cpp:315
+msgid "Automation Script Info"
+msgstr "Thông tin Script Tự động"
+
+#: dialog_kanji_timer.cpp:59
+msgid "Source: "
+msgstr "Nguồn:"
+
+#: dialog_kanji_timer.cpp:60
+msgid "Dest: "
+msgstr "Đích:"
+
+#: dialog_kanji_timer.cpp:695
+msgid "Kanji timing"
+msgstr "Chỉnh giờ Kanji"
+
+#: dialog_kanji_timer.cpp:708
+msgid "Styles"
+msgstr "Kiểu dáng"
+
+#: dialog_kanji_timer.cpp:710
+msgid "Shortcut Keys"
+msgstr "Phím tắt"
+
+#: dialog_kanji_timer.cpp:711
+msgid "Commands"
+msgstr "Lệnh"
+
+#: dialog_kanji_timer.cpp:719
+msgid "Attempt to interpolate kanji."
+msgstr "Cố gắng nội suy kanji."
+
+#: dialog_kanji_timer.cpp:723
+msgid "Source Style"
+msgstr "Kiểu dáng Nguồn"
+
+#: dialog_kanji_timer.cpp:725
+msgid "Dest Style"
+msgstr "Kiểu dáng Đích"
+
+#: dialog_kanji_timer.cpp:727
+msgid ""
+"When the destination textbox has focus, use the following keys:\n"
+"\n"
+"Right Arrow: Increase dest. selection length\n"
+"Left Arrow: Decrease dest. selection length\n"
+"Up Arrow: Increase source selection length\n"
+"Down Arrow: Decrease source selection length\n"
+"Enter: Link, accept line when done\n"
+"Backspace: Unlink last"
+msgstr ""
+"Khi hộp văn bản đích được chú ý, dùng các phím sau:\n"
+"\n"
+"Mũi tên Phải: Tăng độ dài đoạn được chọn đích\n"
+"Mũi tên Trái: Giảm độ dài đoạn được chọn đích\n"
+"Mũi tên Lên: Tăng độ dài đoạn được chọn nguồn\n"
+"Mũi tên Xuống: Giảm độ dài đoạn được chọn nguồn\n"
+"Enter: Liên kết, chấp thuận dòng khi xong\n"
+"Backspace: Dừng liên kết cái cuối"
+
+#: dialog_kanji_timer.cpp:730
+msgid "Start!"
+msgstr "Bắt đầu!"
+
+#: dialog_kanji_timer.cpp:731
+msgid "Link"
+msgstr "Liên kết"
+
+#: dialog_kanji_timer.cpp:732
+msgid "Unlink"
+msgstr "Dừng liên kết"
+
+#: dialog_kanji_timer.cpp:733
+msgid "Skip Source Line"
+msgstr "Bỏ qua Dòng nguồn"
+
+#: dialog_kanji_timer.cpp:734
+msgid "Skip Dest Line"
+msgstr "Bỏ qua Dòng đích"
+
+#: dialog_kanji_timer.cpp:735
+msgid "Go Back a Line"
+msgstr "Trở lại một Dòng"
+
+#: dialog_kanji_timer.cpp:736
+msgid "Accept Line"
+msgstr "Chấp thuận Dòng"
+
+#: dialog_kanji_timer.cpp:737
+#: auto4_base.cpp:401
+msgid "Close"
+msgstr "Đóng"
+
+#: dialog_kanji_timer.cpp:810
+msgid "kanji timing"
+msgstr "chỉnh giờ kanji"
+
+#: dialog_kanji_timer.cpp:820
+msgid "Select source and destination styles first."
+msgstr "Chọn kiểu dáng nguồn và đích trước."
+
+#: dialog_kanji_timer.cpp:822
+msgid "The source and destination styles must be different."
+msgstr "Kiểu dáng nguồn và đích phải khác nhau."
+
+#: dialog_kanji_timer.cpp:865
+msgid "Group all of the source text."
+msgstr "Nhóm tất cả văn bản nguồn."
+
+#: subs_grid.cpp:118
+msgid "Line Number"
+msgstr "Số dòng"
+
+#: subs_grid.cpp:119
+#: dialog_paste_over.cpp:65
+msgid "Layer"
+msgstr "Lớp"
+
+#: subs_grid.cpp:120
+#: base_grid.cpp:434
+msgid "Start"
+msgstr "Bắt đầu"
+
+#: subs_grid.cpp:121
+#: base_grid.cpp:435
+msgid "End"
+msgstr "Kết thúc"
+
+#: subs_grid.cpp:125
+#: base_grid.cpp:439
+#: dialog_style_editor.cpp:247
+msgid "Left"
+msgstr "Trái"
+
+#: subs_grid.cpp:126
+#: base_grid.cpp:440
+#: dialog_style_editor.cpp:247
+msgid "Right"
+msgstr "Phải"
+
+#: subs_grid.cpp:127
+#: base_grid.cpp:441
+#: dialog_style_editor.cpp:247
+msgid "Vert"
+msgstr "Dọc"
+
+#: subs_grid.cpp:151
+msgid "&Insert (before)"
+msgstr "C&hèn (trước)"
+
+#: subs_grid.cpp:152
+msgid "Insert (after)"
+msgstr "Chèn (sau)"
+
+#: subs_grid.cpp:154
+msgid "Insert at video time (before)"
+msgstr "Chèn tại thời gian phim (trước)"
+
+#: subs_grid.cpp:155
+msgid "Insert at video time (after)"
+msgstr "Chèn tại thời gian phim (sau)"
+
+#: subs_grid.cpp:167
+msgid "&Duplicate"
+msgstr "Tạo &bản sao"
+
+#: subs_grid.cpp:167
+#: frame_main.cpp:394
+msgid "Duplicate the selected lines"
+msgstr "Tạo bản sao của các dòng đã chọn"
+
+#: subs_grid.cpp:168
+msgid "&Duplicate and shift by 1 frame"
+msgstr "Tạo bản sao &và dịch chuyển 1 khung hình"
+
+#: subs_grid.cpp:168
+#: frame_main.cpp:395
+msgid "Duplicate lines and shift by one frame"
+msgstr "Tạo bản sao các dòng và dịch chuyển một khung hình"
+
+#: subs_grid.cpp:169
+msgid "Split (by karaoke)"
+msgstr "Chia tách (theo karaoke)"
+
+#: subs_grid.cpp:169
+#: frame_main.cpp:408
+msgid "Uses karaoke timing to split line into multiple smaller lines"
+msgstr "Dùng chỉnh giờ karaoke để chia tách dòng thành nhiều dòng nhỏ hơn"
+
+#: subs_grid.cpp:173
+msgid "&Swap"
+msgstr "H&oán chuyển"
+
+#: subs_grid.cpp:173
+#: frame_main.cpp:410
+msgid "Swaps the two selected lines"
+msgstr "Hoán chuyển hai dòng đã chọn"
+
+#: subs_grid.cpp:177
+msgid "&Join (concatenate)"
+msgstr "&Ghép (nối tiếp)"
+
+#: subs_grid.cpp:177
+#: frame_main.cpp:403
+msgid "Joins selected lines in a single one, concatenating text together"
+msgstr "Ghép các dòng đã chọn thành một, nối tiếp văn bản với nhau"
+
+#: subs_grid.cpp:178
+msgid "Join (keep first)"
+msgstr "Ghép (giữ lại dòng đầu tiên)"
+
+#: subs_grid.cpp:178
+#: frame_main.cpp:404
+msgid "Joins selected lines in a single one, keeping text of first and discarding remaining"
+msgstr "Ghép các dòng đã chọn thành một, giữ lại văn bản của dòng đầu tiên và hủy phần còn lại"
+
+#: subs_grid.cpp:179
+msgid "Join (as Karaoke)"
+msgstr "Ghép (như Karaoke)"
+
+#: subs_grid.cpp:179
+msgid "Joins selected lines in a single one, making each line into a karaoke syllable"
+msgstr "Ghép các dòng đã chọn thành một, đưa mỗi dòng thành một âm tiết karaoke"
+
+#: subs_grid.cpp:183
+msgid "&Make times continuous (change start)"
+msgstr "&Làm thời gian tiếp diễn (thay đổi điểm bắt đầu)"
+
+#: subs_grid.cpp:183
+#: frame_main.cpp:431
+msgid "Changes times of subs so start times begin on previous's end time"
+msgstr "Thay đổi thời gian của phụ đề để thời gian bắt đầu sẽ bắt đầu trên thời gian kết thúc của dòng trước đó"
+
+#: subs_grid.cpp:184
+msgid "&Make times continuous (change end)"
+msgstr "&Làm thời gian tiếp diễn (thay đổi điểm kết thúc)"
+
+#: subs_grid.cpp:184
+#: frame_main.cpp:432
+msgid "Changes times of subs so end times begin on next's start time"
+msgstr "Thay đổi thời gian của phụ đề để thời gian kết thúc sẽ bắt đầu trên thời gian bắt đầu của dòng kế đó"
+
+#: subs_grid.cpp:188
+#: frame_main.cpp:407
+msgid "Recombine Lines"
+msgstr "Tái hợ&p Dòng"
+
+#: subs_grid.cpp:188
+#: frame_main.cpp:407
+msgid "Recombine subtitles when they have been split and merged"
+msgstr "Tái hợp phụ đề khi chúng đã được chia tách và trộn lẫn"
+
+#: subs_grid.cpp:193
+msgid "Create audio clip"
+msgstr "Tạo một đoạn âm thanh"
+
+#: subs_grid.cpp:193
+msgid "Create an audio clip of the selected line"
+msgstr "Tạo một đoạn âm thanh của dòng đã chọn"
+
+#: subs_grid.cpp:198
+#: subs_edit_ctrl.cpp:949
+msgid "&Copy"
+msgstr "&Chép"
+
+#: subs_grid.cpp:198
+msgid "Copies selected lines to clipboard"
+msgstr "Chép các dòng đã chọn vào clipboard"
+
+#: subs_grid.cpp:199
+msgid "C&ut"
+msgstr "Cắ&t"
+
+#: subs_grid.cpp:199
+msgid "Cuts selected lines to clipboard"
+msgstr "Cắt các dòng đã chọn vào clipboard"
+
+#: subs_grid.cpp:200
+#: subs_edit_ctrl.cpp:950
+msgid "&Paste"
+msgstr "&Dán"
+
+#: subs_grid.cpp:200
+msgid "Paste lines from clipboard"
+msgstr "Dán các dòng từ clipboard"
+
+#: subs_grid.cpp:204
+#: frame_main.cpp:396
+msgid "Delete currently selected lines"
+msgstr "Xóa các dòng được chọn hiện tại"
+
+#: subs_grid.cpp:405
+msgid "splitting"
+msgstr "chia tách"
+
+#: subs_grid.cpp:655
+msgid "combining"
+msgstr "tái hợp"
+
+#: subs_grid.cpp:686
+msgid "The starting point is beyond the length of the audio loaded."
+msgstr "Điểm bắt đầu ở trên độ dài của đoạn âm thanh được nạp."
+
+#: subs_grid.cpp:690
+msgid "There is no audio to save."
+msgstr "Không có âm thanh để lưu."
+
+#: subs_grid.cpp:697
+msgid "Save audio clip"
+msgstr "Lưu đoạn âm thanh"
+
+#: subs_grid.cpp:736
+msgid "Couldn't allocate memory."
+msgstr "Không thể truy xuất bộ nhớ."
+
+#: subs_grid.cpp:813
+#: subs_grid.cpp:814
+msgid "load"
+msgstr "nạp"
+
+#: subs_grid.cpp:855
+msgid "swap lines"
+msgstr "hoán chuyển dòng"
+
+#: subs_grid.cpp:881
+msgid "line insertion"
+msgstr "chèn dòng"
+
+#: subs_grid.cpp:1009
+msgid "paste"
+msgstr "dán"
+
+#: subs_grid.cpp:1052
+msgid "delete"
+msgstr "xóa"
+
+#: subs_grid.cpp:1149
+msgid "adjoin"
+msgstr "nối tiếp"
+
+#: subs_grid.cpp:1319
+msgid "split"
+msgstr "chia tách"
+
+#: subs_grid.cpp:1435
+msgid "timing"
+msgstr "chỉnh giờ"
+
+#: subs_edit_box.cpp:84
+msgid "Comment"
+msgstr "Chú giải"
+
+#: subs_edit_box.cpp:85
+msgid "Comment this line out. Commented lines don't show up on screen."
+msgstr "Chú giải dòng này ở bên ngoài. Các dòng bị chú giả sẽ không hiện trên màn hình."
+
+#: subs_edit_box.cpp:87
+msgid "Style for this line."
+msgstr "Kiểu dáng cho dòng này."
+
+#: subs_edit_box.cpp:89
+msgid "Actor name for this speech. This is only for reference, and is mainly useless."
+msgstr "Tên nhân vật cho đoạn nói chuyện này. Phần này chỉ để tham khảo, và thường thì không có ích lắm."
+
+#: subs_edit_box.cpp:92
+msgid "Effect for this line. This can be used to store extra information for karaoke scripts, or for the effects supported by the renderer."
+msgstr "Hiệu ứng cho dòng này. Phần này có thể được dùng để lưu thông tin phụ cho script karaoke, hoặc cho hiệu ứng được hỗ trợ bởi trình render."
+
+#: subs_edit_box.cpp:97
+msgid "Layer number"
+msgstr "Số lượng lớp"
+
+#: subs_edit_box.cpp:99
+msgid "Start time"
+msgstr "Thời gian bắt đầu"
+
+#: subs_edit_box.cpp:102
+msgid "End time"
+msgstr "Thời gian kết thúc"
+
+#: subs_edit_box.cpp:106
+msgid "Line duration"
+msgstr "Khoảng thời gian của dòng"
+
+#: subs_edit_box.cpp:109
+msgid "Left Margin (0 = default)"
+msgstr "Lề trái (0 = mặc định)"
+
+#: subs_edit_box.cpp:112
+msgid "Right Margin (0 = default)"
+msgstr "Lề phải (0 = mặc định)"
+
+#: subs_edit_box.cpp:115
+msgid "Vertical Margin (0 = default)"
+msgstr "Lề dọc (0 = mặc định)"
+
+#: subs_edit_box.cpp:120
+#: dialog_style_editor.cpp:144
+msgid "Bold"
+msgstr "Đậm"
+
+#: subs_edit_box.cpp:122
+msgid "Italics"
+msgstr "Nghiêng"
+
+#: subs_edit_box.cpp:124
+#: dialog_style_editor.cpp:146
+msgid "Underline"
+msgstr "Gạch dưới"
+
+#: subs_edit_box.cpp:126
+#: dialog_style_editor.cpp:147
+msgid "Strikeout"
+msgstr "Gạch ngang"
+
+#: subs_edit_box.cpp:128
+msgid "Font Face Name"
+msgstr "Tên Font"
+
+#: subs_edit_box.cpp:130
+msgid "Primary color"
+msgstr "Màu chính"
+
+#: subs_edit_box.cpp:132
+msgid "Secondary color"
+msgstr "Màu thứ cấp"
+
+#: subs_edit_box.cpp:134
+msgid "Outline color"
+msgstr "Màu đường nét ngoài"
+
+#: subs_edit_box.cpp:136
+msgid "Shadow color"
+msgstr "Màu đổ bóng"
+
+#: subs_edit_box.cpp:137
+msgid "Commit"
+msgstr "Thực hiện"
+
+#: subs_edit_box.cpp:138
+msgid "Commits the text (Enter). Hold Ctrl to stay in line (%KEY%)."
+msgstr "Thực hiện văn bản (Enter). Ấn Ctrl để ở trong dòng (%KEY%)."
+
+#: subs_edit_box.cpp:139
+msgid "Time"
+msgstr "Thời gian"
+
+#: subs_edit_box.cpp:140
+msgid "Time by h:mm:ss.cs"
+msgstr "Thời gian theo h:mm:ss.cs"
+
+#: subs_edit_box.cpp:141
+msgid "Frame"
+msgstr "Khung hình"
+
+#: subs_edit_box.cpp:142
+msgid "Time by frame number"
+msgstr "Thời gian theo số khung hình"
+
+#: subs_edit_box.cpp:595
+#: dialog_style_editor.cpp:486
+msgid "style change"
+msgstr "thay đổi kiểu"
+
+#: subs_edit_box.cpp:626
+msgid "actor change"
+msgstr "thay đổi nhân vật"
+
+#: subs_edit_box.cpp:653
+#: subs_edit_box.cpp:679
+msgid "layer change"
+msgstr "thay đổi lớp"
+
+#: subs_edit_box.cpp:753
+msgid "modify times"
+msgstr "sửa đổi thời gian"
+
+#: subs_edit_box.cpp:777
+msgid "MarginL change"
+msgstr "thay đổi Lề T"
+
+#: subs_edit_box.cpp:799
+msgid "MarginR change"
+msgstr "thay đổi Lề P"
+
+#: subs_edit_box.cpp:822
+msgid "MarginV change"
+msgstr "thay đổi Lề D"
+
+#: subs_edit_box.cpp:843
+msgid "effect change"
+msgstr "thay đổi hiệu ứng"
+
+#: subs_edit_box.cpp:863
+msgid "comment change"
+msgstr "thay đổi chú giải"
+
+#: subs_edit_box.cpp:932
+msgid "editing"
+msgstr "chỉnh sửa"
+
+#: ass_style.cpp:575
+msgid "ANSI"
+msgstr "ANSI"
+
+#: ass_style.cpp:577
+msgid "Symbol"
+msgstr "Biểu tượng"
+
+#: ass_style.cpp:578
+msgid "Mac"
+msgstr "Mac"
+
+#: ass_style.cpp:579
+msgid "Shift_JIS"
+msgstr "Shift_JIS"
+
+#: ass_style.cpp:580
+msgid "Hangeul"
+msgstr "Hangeul"
+
+#: ass_style.cpp:581
+msgid "Johab"
+msgstr "Johab"
+
+#: ass_style.cpp:582
+msgid "GB2312"
+msgstr "GB2312"
+
+#: ass_style.cpp:583
+msgid "Chinese BIG5"
+msgstr "Chinese BIG5"
+
+#: ass_style.cpp:584
+msgid "Greek"
+msgstr "Hi Lạp"
+
+#: ass_style.cpp:585
+msgid "Turkish"
+msgstr "Thổ Nhĩ Kì"
+
+#: ass_style.cpp:586
+msgid "Vietnamese"
+msgstr "Tiếng Việt"
+
+#: ass_style.cpp:587
+msgid "Hebrew"
+msgstr "Do Thái"
+
+#: ass_style.cpp:588
+msgid "Arabic"
+msgstr "Ả Rập"
+
+#: ass_style.cpp:589
+msgid "Baltic"
+msgstr "Bantích"
+
+#: ass_style.cpp:590
+msgid "Russian"
+msgstr "Nga"
+
+#: ass_style.cpp:591
+msgid "Thai"
+msgstr "Thái"
+
+#: ass_style.cpp:592
+msgid "East European"
+msgstr "Đông Âu"
+
+#: ass_style.cpp:593
+msgid "OEM"
+msgstr "OEM"
+
+#: dialog_detached_video.cpp:76
+#, c-format
+msgid "Video: %s"
+msgstr "Phim: %s"
+
+#: video_provider_avs.cpp:105
+msgid "Unknown"
+msgstr "Không rõ"
+
+#: video_provider_avs.cpp:289
+#: video_provider_dshow.cpp:311
+msgid "You already have timecodes loaded. Replace them with the timecodes from the Matroska file?"
+msgstr "Bạn đã nạp mã thời gian rồi. Thay thế chúng bằng các mã thời gian từ tập tin Matroska?"
+
+#: video_provider_avs.cpp:289
+#: video_provider_dshow.cpp:311
+#: video_provider_ffmpegsource.cpp:263
+#: video_provider_lavc.cpp:149
+msgid "Replace timecodes?"
+msgstr "Thay thế mã thời gian?"
+
+#: dialog_search_replace.cpp:69
+msgid "Find what:"
+msgstr "Tìm cái gì:"
+
+#: dialog_search_replace.cpp:82
+msgid "Use regular expressions"
+msgstr "Dùng biểu thức chính quy"
+
+#: dialog_search_replace.cpp:83
+msgid "Update Video (slow)"
+msgstr "Cập nhật Phim (chậm)"
+
+#: dialog_search_replace.cpp:100
+#: dialog_shift_times.cpp:108
+msgid "All rows"
+msgstr "Tất cả các dòng"
+
+#: dialog_search_replace.cpp:101
+#: dialog_shift_times.cpp:108
+msgid "Selected rows"
+msgstr "Dòng đã chọn"
+
+#: dialog_search_replace.cpp:103
+msgid "Limit to"
+msgstr "Giới hạn trong"
+
+#: dialog_search_replace.cpp:118
+msgid "Find next"
+msgstr "Tìm tiếp"
+
+#: dialog_search_replace.cpp:122
+msgid "Replace next"
+msgstr "Thay thế tiếp"
+
+#: dialog_search_replace.cpp:123
+msgid "Replace all"
+msgstr "Thay thế tất cả"
+
+#: dialog_search_replace.cpp:411
+#: dialog_search_replace.cpp:523
+msgid "replace"
+msgstr "thay thế"
+
+#: dialog_search_replace.cpp:526
+#, c-format
+msgid "%i matches were replaced."
+msgstr "%i khớp đã được thay thế."
+
+#: dialog_search_replace.cpp:531
+msgid "No matches found."
+msgstr "Không tìm thấy khớp."
+
+#: dialog_search_replace.cpp:566
+#: hotkeys.cpp:348
+msgid "Find"
+msgstr "Tìm"
+
+#: visual_tool_vector_clip.cpp:70
+msgid "Drag control points."
+msgstr "Kéo điểm điều khiển."
+
+#: visual_tool_vector_clip.cpp:71
+msgid "Line"
+msgstr "Dòng"
+
+#: visual_tool_vector_clip.cpp:71
+msgid "Appends a line."
+msgstr "Ghép nối một dòng."
+
+#: visual_tool_vector_clip.cpp:72
+msgid "Bicubic"
+msgstr "Song lập phương"
+
+#: visual_tool_vector_clip.cpp:72
+msgid "Appends a bezier bicubic curve."
+msgstr "Ghép nối một đường cong song lập phương Bezier."
+
+#: visual_tool_vector_clip.cpp:74
+msgid "Convert"
+msgstr "Chuyển đổi"
+
+#: visual_tool_vector_clip.cpp:74
+msgid "Converts a segment between line and bicubic."
+msgstr "Chuyển đổi một phân mảnh giữa dòng và song lập phương."
+
+#: visual_tool_vector_clip.cpp:75
+msgid "Insert"
+msgstr "Chèn"
+
+#: visual_tool_vector_clip.cpp:75
+msgid "Inserts a control point."
+msgstr "Chèn một điểm điều khiển."
+
+#: visual_tool_vector_clip.cpp:76
+msgid "Remove"
+msgstr "Xóa"
+
+#: visual_tool_vector_clip.cpp:76
+msgid "Removes a control point."
+msgstr "Xóa một điểm điều khiển."
+
+#: visual_tool_vector_clip.cpp:78
+msgid "Freehand"
+msgstr "Rảnh tay"
+
+#: visual_tool_vector_clip.cpp:78
+msgid "Draws a freehand shape."
+msgstr "Vẽ một hình dạng rảnh tay."
+
+#: visual_tool_vector_clip.cpp:79
+msgid "Freehand smooth"
+msgstr "Rảnh tay mượt mà"
+
+#: visual_tool_vector_clip.cpp:79
+msgid "Draws a smoothed freehand shape."
+msgstr "Vẽ một hình dạng rảnh tay mượt mà."
+
+#: export_clean_info.cpp:60
+msgid "Clean Script Info"
+msgstr "Dọn dẹp Thông tin Script"
+
+#: export_clean_info.cpp:61
+msgid "Removes all but the absolutely required fields from the Script Info section. You might want to run this on files that you plan to distribute in original form."
+msgstr "Xóa tất cả ngoại trừ các trường bắt buộc từ phần Thông tin Script. Có thể bạn sẽ muốn chạy lệnh này trên những tập tin mà bạn định phân phối trong dạng gốc."
+
+#: auto4_perl_script.cpp:99
+msgid "Perl script"
+msgstr "Script Perl"
+
+#: auto4_perl_script.cpp:188
+msgid "Unable to add the automation include path(s) to @INC: the script's code may not compile or execute properly."
+msgstr "Không thể thêm đường dẫn bao gồm tính tự động vào @INC: mã của script không thể biên dịch hoặc thực thi đúng."
+
+#: auto4_perl_script.cpp:229
+#, c-format
+msgid "Reloading %s because the file on disk (%s) changed."
+msgstr "Đang nạp lại %s vì tập tin trên đĩa (%s) đã thay đổi."
+
+#: auto4_perl_script.cpp:451
+msgid "Saving changes"
+msgstr "Đang lưu thay đổi"
+
+#: base_grid.cpp:432
+msgid "#"
+msgstr "#"
+
+#: base_grid.cpp:433
+msgid "L"
+msgstr "L"
+
+#: auto4_base.cpp:403
+msgid "Script completed"
+msgstr "Script hoàn tất"
+
+#: auto4_base.cpp:755
+#, c-format
+msgid "An Automation script failed to load. File name: '%s', error reported:"
+msgstr "Một script Tự động gặp thất bại khi nạp. Tên tập tin: '%s', lỗi được báo:"
+
+#: auto4_base.cpp:768
+#, c-format
+msgid "The file was not recognised as an Automation script: %s"
+msgstr "Tập tin không được nhận diện là một script Tự động: %s"
+
+#: auto4_base.cpp:804
+msgid "File was not recognized as a script"
+msgstr "Tập tin không được nhận diện như là một script"
+
+#: dialog_resample.cpp:57
+msgid "Resample resolution"
+msgstr "Tạo lại mẫu Độ phân giải"
+
+#: dialog_resample.cpp:68
+msgid "Margin offset"
+msgstr "Offset lề"
+
+#: dialog_resample.cpp:72
+msgid "Symmetrical"
+msgstr "Đối xứng"
+
+#: dialog_resample.cpp:90
+#: dialog_properties.cpp:105
+msgid "Resolution"
+msgstr "Độ phân giải"
+
+#: dialog_resample.cpp:98
+msgid "x"
+msgstr "x"
+
+#: dialog_resample.cpp:99
+#: dialog_properties.cpp:111
+msgid "From video"
+msgstr "Từ phim"
+
+#: dialog_resample.cpp:105
+msgid "Change aspect ratio"
+msgstr "Thay đổi tỉ lệ màn ảnh"
+
+#: dialog_resample.cpp:221
+msgid "Invalid resolution: destination resolution cannot be 0 on either dimension."
+msgstr "Độ phân giải không hợp lệ: độ phân giải đích không thể là 0 trên chiều bất kì."
+
+#: dialog_resample.cpp:305
+msgid "resolution resampling"
+msgstr "tạo lại mẫu độ phân giải"
+
+#: dialog_version_check.cpp:176
+#, c-format
+msgid ""
+"There was an error checking for updates to Aegisub:\n"
+"%s\n"
+"\n"
+"If other applications can access the Internet fine, this is probably a temporary server problem on our end."
+msgstr ""
+"Có lỗi khi đang kiểm tra cập nhật cho Aegisub:\n"
+"%s\n"
+"\n"
+"Nếu các chương trình khác có thể truy cập Internet bình thường, đây có thể là vấn đề máy chủ tạm thời bên phía chúng tôi."
+
+#: dialog_version_check.cpp:180
+msgid "An unknown error occurred while checking for updates to Aegisub."
+msgstr "Một lỗi chưa rõ xảy ra trong khi kiểm tra cập nhật cho Aegisub."
+
+#: dialog_version_check.cpp:283
+msgid "Could not connect to updates server."
+msgstr "Không thể kết nối tới máy chủ cập nhật."
+
+#: dialog_version_check.cpp:288
+#, c-format
+msgid "HTTP request failed, got HTTP response %d."
+msgstr "Yêu cầu HTTP bị thất bại, nhận được phản hồi HTTP %d."
+
+#: dialog_version_check.cpp:360
+msgid "An update to Aegisub was found."
+msgstr "Tìm thấy một cập nhật cho Aegisub."
+
+#: dialog_version_check.cpp:364
+msgid "Several possible updates to Aegisub were found."
+msgstr "Có lẽ là đã tìm thấy một số cập nhật cho Aegisub."
+
+#: dialog_version_check.cpp:368
+msgid "There are no updates to Aegisub."
+msgstr "Không có cập nhật nào cho Aegisub."
+
+#: dialog_version_check.cpp:402
+msgid "Version Checker"
+msgstr "Kiểm tra Phiên bản"
+
+#: dialog_version_check.cpp:434
+msgid "Remind me again in a &week"
+msgstr "Nhắc lại cho tôi trong một t&uần"
+
+#: dialog_properties.cpp:58
+msgid "Script Properties"
+msgstr "Thuộc tính Script"
+
+#: dialog_properties.cpp:67
+msgid "Script"
+msgstr "Script"
+
+#: dialog_properties.cpp:68
+msgid "Title:"
+msgstr "Tiêu đề:"
+
+#: dialog_properties.cpp:70
+msgid "Original script:"
+msgstr "Script gốc:"
+
+#: dialog_properties.cpp:72
+msgid "Translation:"
+msgstr "Dịch thuật:"
+
+#: dialog_properties.cpp:74
+msgid "Editing:"
+msgstr "Biên tập:"
+
+#: dialog_properties.cpp:76
+msgid "Timing:"
+msgstr "Chỉnh giờ:"
+
+#: dialog_properties.cpp:78
+msgid "Synch point:"
+msgstr "Điểm đồng bộ:"
+
+#: dialog_properties.cpp:80
+msgid "Updated by:"
+msgstr "Cập nhật bởi:"
+
+#: dialog_properties.cpp:82
+msgid "Update details:"
+msgstr "Chi tiết cập nhật:"
+
+#: dialog_properties.cpp:122
+msgid "0: Smart wrapping, top line is wider"
+msgstr "0: Bao gói thông minh, dòng trên cùng rộng hơn"
+
+#: dialog_properties.cpp:123
+msgid "1: End-of-line word wrapping, only \\N breaks"
+msgstr "1: Bao gói văn bản thuộc cuối dòng, chỉ các ngắt \\N"
+
+#: dialog_properties.cpp:124
+msgid ""
+"2: No word wrapping, both \\n"
+" and \\N break"
+msgstr ""
+"2: Không bao gói văn bản, cả ngắt \\n"
+" và \\N"
+
+#: dialog_properties.cpp:125
+msgid "3: Smart wrapping, bottom line is wider"
+msgstr "3: Bao gói thông minh, dòng cuối rộng hơn"
+
+#: dialog_properties.cpp:130
+msgid "Wrap Style: "
+msgstr "Kiểu dáng Bao gói:"
+
+#: dialog_properties.cpp:134
+msgid "Reverse"
+msgstr "Đảo ngược"
+
+#: dialog_properties.cpp:139
+msgid "Collision: "
+msgstr "Va chạm:"
+
+#: dialog_properties.cpp:141
+msgid "Scale Border and Shadow"
+msgstr "Chỉnh tỉ lệ Biên và Bóng đổ"
+
+#: dialog_properties.cpp:142
+msgid "Scale border and shadow together with script/render resolution. If this is unchecked, relative border and shadow size will depend on renderer."
+msgstr "Chỉnh tỉ lệ biên và bóng đổ cùng nhau với độ phân giải render/script. Nếu phần này không được chọn, kích thước bóng đổ và biên liên quan sẽ tùy thuộc vào trình render."
+
+#: dialog_properties.cpp:204
+msgid "property changes"
+msgstr "thay đổi thuộc tính"
+
+#: dialog_translation.cpp:61
+#: frame_main.cpp:284
+msgid "Translation Assistant"
+msgstr "Trợ lí Dịch thuật"
+
+#: dialog_translation.cpp:89
+msgid "Original"
+msgstr "Gốc"
+
+#: dialog_translation.cpp:90
+msgid "Translation"
+msgstr "Bản dịch"
+
+#: dialog_translation.cpp:91
+msgid "Current line: ?"
+msgstr "Dòng hiện tại: ?"
+
+#: dialog_translation.cpp:110
+msgid "Insert original"
+msgstr "Chèn gốc"
+
+#: dialog_translation.cpp:115
+msgid "Enable preview"
+msgstr "Cho phép Xem trước"
+
+#: dialog_translation.cpp:202
+#, c-format
+msgid "Current line: %i/%i"
+msgstr "Dong hiện tại: %i/%i"
+
+#: dialog_translation.cpp:333
+msgid "translation assistant"
+msgstr "trợ lí dịch thuật"
+
+#: dialog_translation.cpp:343
+msgid "No more lines to translate."
+msgstr "Không còn dòng nào để dịch."
+
+#: subtitles_provider_libass.cpp:57
+msgid "Please wait, caching fonts..."
+msgstr "Vui lòng đợi, đang đệm font..."
+
+#: audio_display.cpp:2278
+#: audio_display.cpp:2333
+msgid "Do you want to commit your changes? If you choose No, they will be discarded."
+msgstr "Bạn có muốn thực hiện các thay đổi của mình? Nếu bạn chọn Không, chúng sẽ bị hủy bỏ."
+
+#: audio_display.cpp:2278
+#: audio_display.cpp:2333
+msgid "Commit?"
+msgstr "Thực hiện?"
+
+#: audio_karaoke.cpp:811
+msgid "Karaoke tag"
+msgstr "Thẻ karaoke"
+
+#: audio_karaoke.cpp:815
+msgid "Change karaoke tag to \\k"
+msgstr "Thay đổi thẻ karaoke thành \\k"
+
+#: audio_karaoke.cpp:816
+msgid "Change karaoke tag to \\kf"
+msgstr "Thay đổi thẻ karaoke thành \\kf"
+
+#: audio_karaoke.cpp:817
+msgid "Change karaoke tag to \\ko"
+msgstr "Thay đổi thẻ karaoke thành \\ko"
+
+#: frame_main.cpp:204
+msgid "Do you want Aegisub to check for updates whenever it starts? You can still do it manually via the Help menu."
+msgstr "Bạn có muốn Aegisub kiểm tra cập nhật mỗi khi khởi động không? Bạn vẫn có thể tự làm việc này thông qua trình đơn Trợ giúp."
+
+#: frame_main.cpp:204
+msgid "Check for updates?"
+msgstr "Kiểm tra cập nhật?"
+
+#: frame_main.cpp:234
+#: frame_main.cpp:333
+#: hotkeys.cpp:327
+msgid "New subtitles"
+msgstr "Phụ đề mới"
+
+#: frame_main.cpp:235
+msgid "Open"
+msgstr "Mở"
+
+#: frame_main.cpp:235
+#: hotkeys.cpp:328
+msgid "Open subtitles"
+msgstr "Mở phụ đề"
+
+#: frame_main.cpp:236
+msgid "Save"
+msgstr "Lưu"
+
+#: frame_main.cpp:236
+#: hotkeys.cpp:329
+msgid "Save subtitles"
+msgstr "Lưu phụ đề"
+
+#: frame_main.cpp:240
+msgid "Jump To..."
+msgstr "Nhảy tới..."
+
+#: frame_main.cpp:240
+msgid "Jump video to time/frame"
+msgstr "Nhảy phim tới thời gian/khung hình"
+
+#: frame_main.cpp:241
+msgid "Zoom in"
+msgstr "Phóng to"
+
+#: frame_main.cpp:241
+msgid "Zoom video in"
+msgstr "Phóng to phim"
+
+#: frame_main.cpp:242
+msgid "Zoom out"
+msgstr "Thu nhỏ"
+
+#: frame_main.cpp:242
+msgid "Zoom video out"
+msgstr "Thu nhỏ phim"
+
+#: frame_main.cpp:255
+msgid "Jump video to start"
+msgstr "Nhảy phim tới điểm bắt đầu"
+
+#: frame_main.cpp:255
+#: frame_main.cpp:481
+msgid "Jumps the video to the start frame of current subtitle"
+msgstr "Nhảy phim tới khung hình bắt đầu của phụ đề hiện tại"
+
+#: frame_main.cpp:256
+msgid "Jump video to end"
+msgstr "Nhảy phim tới điểm kết thúc"
+
+#: frame_main.cpp:256
+#: frame_main.cpp:482
+msgid "Jumps the video to the end frame of current subtitle"
+msgstr "Nhảy phim tới khung hình kết thúc của phụ đề hiện tại"
+
+#: frame_main.cpp:257
+msgid "Snap start to video"
+msgstr "Nắm kéo điểm bắt đầu tới phim"
+
+#: frame_main.cpp:257
+#: frame_main.cpp:421
+msgid "Set start of selected subtitles to current video frame"
+msgstr "Thiết lập điểm bắt đầu của phụ đề được chọn tại khung hình phim hiện tại"
+
+#: frame_main.cpp:258
+msgid "Snap end to video"
+msgstr "Nắm kéo điểm kết thúc tới phim"
+
+#: frame_main.cpp:258
+#: frame_main.cpp:422
+msgid "Set end of selected subtitles to current video frame"
+msgstr "Thiết lập điểm kết thúc của phụ đề được chọn tại khung hình phim hiện tại"
+
+#: frame_main.cpp:259
+msgid "Select visible"
+msgstr "Chọn đang hiển thị"
+
+#: frame_main.cpp:259
+msgid "Selects all lines that are currently visible on video frame"
+msgstr "Chọn tất cả các dòng đang hiển thị trên khung hình phim"
+
+#: frame_main.cpp:260
+msgid "Snap subtitles to scene"
+msgstr "Nắm kéo phụ đề tới phân cảnh"
+
+#: frame_main.cpp:260
+msgid "Snap selected subtitles so they match current scene start/end"
+msgstr "Nắm kéo phụ đề đã chọn để chúng khớp với bắt đầu/kết thúc của phân cảnh đã chọn"
+
+#: frame_main.cpp:261
+msgid "Shift subtitles to frame"
+msgstr "Dịch chuyển phụ đề tới khung hình"
+
+#: frame_main.cpp:261
+msgid "Shift selected subtitles so first selected starts at this frame"
+msgstr "Dịch chuyển phụ đề đã chọn để dòng đầu tiên được chọn sẽ bắt đầu tại khung hình này"
+
+#: frame_main.cpp:265
+msgid "Open Styles Manager"
+msgstr "Mở trình Quản lí Kiểu dáng"
+
+#: frame_main.cpp:266
+msgid "Properties"
+msgstr "Thuộc tính"
+
+#: frame_main.cpp:266
+msgid "Open Properties"
+msgstr "Mở thuộc tính"
+
+#: frame_main.cpp:267
+msgid "Attachments"
+msgstr "Đính kèm"
+
+#: frame_main.cpp:267
+msgid "Open Attachment List"
+msgstr "Mở Danh sách Đính kèm"
+
+#: frame_main.cpp:268
+#: dialog_fonts_collector.cpp:80
+msgid "Fonts Collector"
+msgstr "Trình thu thập Font"
+
+#: frame_main.cpp:268
+msgid "Open Fonts Collector"
+msgstr "Mở trình Thu thập Font"
+
+#: frame_main.cpp:273
+msgid "Open Automation manager"
+msgstr "Mở trình Quản lí Tự động"
+
+#: frame_main.cpp:279
+#: frame_main.cpp:386
+msgid "Launches ai-chan's \"ASSDraw3\" tool for vector drawing."
+msgstr "Chạy công cụ \"ASSDraw3\" của ai-chan để vẽ hình véctơ."
+
+#: frame_main.cpp:282
+#: dialog_shift_times.cpp:63
+#: hotkeys.cpp:347
+msgid "Shift Times"
+msgstr "Dịch chuyển Thời gian"
+
+#: frame_main.cpp:282
+msgid "Open Shift Times Dialogue"
+msgstr "Mở hộp thoại Dịch chuyển Thời gian"
+
+#: frame_main.cpp:283
+msgid "Styling Assistant"
+msgstr "Trợ lí Tạo kiểu"
+
+#: frame_main.cpp:283
+msgid "Open Styling Assistant"
+msgstr "Mở trình Trợ lí Tạo kiểu"
+
+#: frame_main.cpp:284
+msgid "Open Translation Assistant"
+msgstr "Mở trình Trợ lí Dịch thuật"
+
+#: frame_main.cpp:285
+msgid "Resample"
+msgstr "Tạo lại mẫu"
+
+#: frame_main.cpp:285
+msgid "Resample Script Resolution"
+msgstr "Tạo lại mẫu Độ phân giải Script"
+
+#: frame_main.cpp:286
+msgid "Open Timing Post-processor dialog"
+msgstr "Mở hộp thoại Xử lí Hậu kì việc Chỉnh giờ"
+
+#: frame_main.cpp:287
+msgid "Kanji Timer"
+msgstr "Trình chỉnh giờ Kanji"
+
+#: frame_main.cpp:287
+msgid "Open Kanji Timer dialog"
+msgstr "Mở hộp thoại Chỉnh giờ Kanji"
+
+#: frame_main.cpp:288
+msgid "Open Spell checker"
+msgstr "Mở trình Kiểm tra Chính tả"
+
+#: frame_main.cpp:292
+#: frame_main.cpp:510
+msgid "Configure Aegisub"
+msgstr "Cấu hình Aegisub"
+
+#: frame_main.cpp:293
+msgid "Cycle Tag Hidding Mode"
+msgstr "Xoay vòng Chế độ Ẩn thẻ"
+
+#: frame_main.cpp:293
+msgid "Cycle through tag-hiding modes"
+msgstr "Xoay vòng qua các chế độ ẩn thẻ"
+
+#: frame_main.cpp:318
+#: frame_main.cpp:541
+msgid "&Help"
+msgstr "T&rợ giúp"
+
+#: frame_main.cpp:333
+msgid "&New Subtitles"
+msgstr "&Phụ đề Mới"
+
+#: frame_main.cpp:334
+msgid "&Open Subtitles..."
+msgstr "&Mở phụ đề..."
+
+#: frame_main.cpp:334
+msgid "Opens a subtitles file"
+msgstr "Mở một tập tin phụ đề"
+
+#: frame_main.cpp:335
+msgid "&Open Subtitles with Charset..."
+msgstr "Mở phụ đề có &Bộ mã..."
+
+#: frame_main.cpp:335
+msgid "Opens a subtitles file with a specific charset"
+msgstr "Mở một tập tin phụ đề có bộ mã riêng biệt"
+
+#: frame_main.cpp:336
+msgid "&Save Subtitles"
+msgstr "&Lưu phụ đề"
+
+#: frame_main.cpp:336
+msgid "Saves subtitles"
+msgstr "Lưu phụ đề"
+
+#: frame_main.cpp:337
+msgid "Save Subtitles as..."
+msgstr "Lưu phụ đề &dưới dạng..."
+
+#: frame_main.cpp:337
+msgid "Saves subtitles with another name"
+msgstr "Lưu phụ đề với tên khác"
+
+#: frame_main.cpp:338
+msgid "Export Subtitles..."
+msgstr "&Xuất phụ đề..."
+
+#: frame_main.cpp:338
+msgid "Saves a copy of subtitles with processing applied to it."
+msgstr "Lưu một bản sao của phụ đề kèm theo các xử lí đã được áp dụng cho nó."
+
+#: frame_main.cpp:339
+#: frame_main.cpp:440
+#: frame_main.cpp:448
+#: frame_main.cpp:454
+#: frame_main.cpp:490
+msgid "Recent"
+msgstr "Gần đâ&y"
+
+#: frame_main.cpp:345
+msgid "&Properties..."
+msgstr "&Thuộc tính..."
+
+#: frame_main.cpp:345
+msgid "Open script properties window"
+msgstr "Mở cửa sổ thuộc tính của mã kịch bản"
+
+#: frame_main.cpp:346
+msgid "&Attachments..."
+msgstr "Phần đính &kèm..."
+
+#: frame_main.cpp:346
+msgid "Open the attachment list"
+msgstr "Mở danh sách phần đính kèm"
+
+#: frame_main.cpp:347
+msgid "&Fonts Collector..."
+msgstr "Thu thập &Font..."
+
+#: frame_main.cpp:347
+msgid "Open fonts collector"
+msgstr "Mở trình thu thập font"
+
+#: frame_main.cpp:351
+msgid "New Window"
+msgstr "&Cửa sổ Mới"
+
+#: frame_main.cpp:351
+msgid "Open a new application window"
+msgstr "Mở một cửa sổ chương trình mới"
+
+#: frame_main.cpp:353
+msgid "E&xit"
+msgstr "Th&oát"
+
+#: frame_main.cpp:353
+msgid "Exit the application"
+msgstr "Thoát chương trình"
+
+#: frame_main.cpp:354
+msgid "&File"
+msgstr "&Tập tin"
+
+#: frame_main.cpp:359
+#: subs_edit_ctrl.cpp:946
+#: frame_main_events.cpp:430
+msgid "&Undo"
+msgstr "&Hoàn tác"
+
+#: frame_main.cpp:359
+#: frame_main_events.cpp:430
+msgid "Undoes last action"
+msgstr "Hoàn tác thao tác cuối"
+
+#: frame_main.cpp:360
+#: frame_main_events.cpp:431
+msgid "&Redo"
+msgstr "&Làm lại"
+
+#: frame_main.cpp:360
+#: frame_main_events.cpp:431
+msgid "Redoes last action"
+msgstr "Làm lại thao tác cuối"
+
+#: frame_main.cpp:362
+msgid "Cut Lines"
+msgstr "Cắ&t dòng"
+
+#: frame_main.cpp:362
+msgid "Cut subtitles"
+msgstr "Cắt phụ đề"
+
+#: frame_main.cpp:363
+msgid "Copy Lines"
+msgstr "&Chép dòng"
+
+#: frame_main.cpp:363
+msgid "Copy subtitles"
+msgstr "Chép phụ đề"
+
+#: frame_main.cpp:364
+msgid "Paste Lines"
+msgstr "&Dán dòng"
+
+#: frame_main.cpp:364
+msgid "Paste subtitles"
+msgstr "Dán phụ đề"
+
+#: frame_main.cpp:365
+msgid "Paste Lines Over..."
+msgstr "Dán dòn&g đè lên..."
+
+#: frame_main.cpp:365
+msgid "Paste subtitles over others"
+msgstr "Dán phụ đề đè lên những cái khác"
+
+#: frame_main.cpp:367
+msgid "&Find..."
+msgstr "Tì&m..."
+
+#: frame_main.cpp:367
+msgid "Find words in subtitles"
+msgstr "Tìm từ trong phụ đề"
+
+#: frame_main.cpp:368
+#: hotkeys.cpp:350
+#: hotkeys.cpp:353
+msgid "Find Next"
+msgstr "Tìm t&iếp"
+
+#: frame_main.cpp:368
+msgid "Find next match of last word"
+msgstr "Tìm từ phù hợp kế tiếp"
+
+#: frame_main.cpp:369
+msgid "Search and &Replace..."
+msgstr "Tìm kiếm &và Thay thế..."
+
+#: frame_main.cpp:369
+msgid "Find and replace words in subtitles"
+msgstr "Tìm và thay thế từ trong phụ đề"
+
+#: frame_main.cpp:370
+msgid "&Edit"
+msgstr "&Chỉnh sửa"
+
+#: frame_main.cpp:375
+msgid "&Insert Lines"
+msgstr "&Chèn dòng"
+
+#: frame_main.cpp:379
+msgid "&Styles Manager..."
+msgstr "&Quản lí Kiểu dáng..."
+
+#: frame_main.cpp:379
+msgid "Open styles manager"
+msgstr "Mở trình quản lí kiểu dáng"
+
+#: frame_main.cpp:380
+msgid "St&yling Assistant..."
+msgstr "&Trợ lí Tạo kiểu..."
+
+#: frame_main.cpp:380
+msgid "Open styling assistant"
+msgstr "Mở trình trợ lí tạo kiểu dáng"
+
+#: frame_main.cpp:381
+msgid "&Translation Assistant..."
+msgstr "Trợ &lí Dịch thuật..."
+
+#: frame_main.cpp:381
+msgid "Open translation assistant"
+msgstr "Mở trình trợ lí dịch thuật"
+
+#: frame_main.cpp:382
+msgid "Resample Resolution..."
+msgstr "Tạo lại &mẫu Độ phân giải..."
+
+#: frame_main.cpp:382
+msgid "Changes resolution and modifies subtitles to conform to change"
+msgstr "Thay đổi độ phân giải và sửa đổi phụ đề cho phù hợp với sự thay đổi đó"
+
+#: frame_main.cpp:383
+msgid "Spe&ll Checker..."
+msgstr "&Kiểm tra Chính tả..."
+
+#: frame_main.cpp:383
+msgid "Open spell checker"
+msgstr "Mở trình kiểm tra chính tả"
+
+#: frame_main.cpp:389
+msgid "&Before Current"
+msgstr "&Trước dòng Hiện tại"
+
+#: frame_main.cpp:389
+msgid "Inserts a line before current"
+msgstr "Chèn một dòng trước dòng hiện tại"
+
+#: frame_main.cpp:390
+msgid "&After Current"
+msgstr "&Sau dòng Hiện tại"
+
+#: frame_main.cpp:390
+msgid "Inserts a line after current"
+msgstr "Chèn một dòng sau dòng hiện tại"
+
+#: frame_main.cpp:391
+msgid "Before Current, at Video Time"
+msgstr "T&rước dòng Hiện tại, tại Thời gian Phim"
+
+#: frame_main.cpp:391
+msgid "Inserts a line before current, starting at video time"
+msgstr "Chèn một dòng trước dòng hiện tại, bắt đầu tại thời gian phim"
+
+#: frame_main.cpp:392
+msgid "After Current, at Video Time"
+msgstr "S&au dòng Hiện tại, tại Thời gian Phim"
+
+#: frame_main.cpp:392
+msgid "Inserts a line after current, starting at video time"
+msgstr "Chèn một dòng sau dòng hiện tại, bắt đầu tại thời gian phim"
+
+#: frame_main.cpp:394
+msgid "&Duplicate Lines"
+msgstr "Tạo &bản sao của Dòng"
+
+#: frame_main.cpp:395
+msgid "&Duplicate and Shift by 1 Frame"
+msgstr "Tạo bản sao &và Dịch chuyển 1 Khung hình"
+
+#: frame_main.cpp:396
+msgid "Delete Lines"
+msgstr "&Xóa dòng"
+
+#: frame_main.cpp:399
+msgid "Join Lines"
+msgstr "&Ghép dòng"
+
+#: frame_main.cpp:403
+msgid "&Concatenate"
+msgstr "&Nối tiếp"
+
+#: frame_main.cpp:404
+msgid "Keep &First"
+msgstr "&Chỉ giữ lại Dòng đầu tiên"
+
+#: frame_main.cpp:405
+msgid "As &Karaoke"
+msgstr "Giống như &Karaoke"
+
+#: frame_main.cpp:405
+msgid "Joins selected lines in a single one, as karaoke"
+msgstr "Ghép các dòng đã chọn lại thành một, giống như karaoke"
+
+#: frame_main.cpp:408
+msgid "Split Lines (by karaoke)"
+msgstr "Chi&a tách Dòng (theo karaoke)"
+
+#: frame_main.cpp:410
+msgid "Swap Lines"
+msgstr "&Hoán chuyển Dòng"
+
+#: frame_main.cpp:411
+msgid "Select Lines..."
+msgstr "Chọ&n dòng..."
+
+#: frame_main.cpp:411
+msgid "Selects lines based on defined criterea"
+msgstr "Chọn dòng dựa trên tiêu chí đã xác định"
+
+#: frame_main.cpp:412
+msgid "&Subtitles"
+msgstr "&Phụ đề"
+
+#: frame_main.cpp:416
+msgid "S&hift Times..."
+msgstr "&Dịch chuyển Thời gian..."
+
+#: frame_main.cpp:416
+msgid "Shift subtitles by time or frames"
+msgstr "Dịch chuyển phụ đề theo thời gian hoặc khung hình"
+
+#: frame_main.cpp:417
+msgid "Sort by Time"
+msgstr "&Sắp xếp theo Thời gian"
+
+#: frame_main.cpp:417
+msgid "Sort all subtitles by their start times"
+msgstr "Sắp xếp tất cả phụ đề theo thời gian bắt đầu của chúng"
+
+#: frame_main.cpp:418
+msgid "Timing Post-Processor..."
+msgstr "&Xử lí Hậu kì việc Chỉnh giờ"
+
+#: frame_main.cpp:418
+msgid "Runs a post-processor for timing to deal with lead-ins, lead-outs, scene timing and etc."
+msgstr "Chạy trình xử lí hậu kì cho việc canh chỉnh thời gian để giải quyết kim đầu vào, kim đầu ra, thời gian phân cảnh, vv..."
+
+#: frame_main.cpp:419
+msgid "Kanji Timer..."
+msgstr "Chỉnh giờ &Kanji..."
+
+#: frame_main.cpp:419
+msgid "Open Kanji timer"
+msgstr "Mở trình chỉnh giờ Kanji"
+
+#: frame_main.cpp:421
+msgid "Snap Start to Video"
+msgstr "Nắm kéo Điểm &bắt đầu tới Phim"
+
+#: frame_main.cpp:422
+msgid "Snap End to Video"
+msgstr "Nắm kéo Điểm &kết thúc tới Phim"
+
+#: frame_main.cpp:423
+#: hotkeys.cpp:371
+msgid "Snap to Scene"
+msgstr "&Nắm kéo tới Phân cảnh"
+
+#: frame_main.cpp:423
+msgid "Set start and end of subtitles to the keyframes around current video frame"
+msgstr "Thiết lập phần bắt đầu và kết thúc của phụ đề tại các khung hình chính xung quanh khung hình phim hiện tại"
+
+#: frame_main.cpp:424
+msgid "Shift to Current Frame"
+msgstr "Dịch chu&yển tới Khung hình Hiện tại"
+
+#: frame_main.cpp:424
+msgid "Shift selection so first selected line starts at current frame"
+msgstr "Dịch chuyển đoạn được chọn để dòng được chọn đầu tiên bắt đầu tại khung hình hiện tại"
+
+#: frame_main.cpp:427
+msgid "Make Times Continuous"
+msgstr "&Làm cho Thời gian Tiếp diễn"
+
+#: frame_main.cpp:431
+msgid "Change &Start"
+msgstr "Thay đổi Điểm &bắt đầu"
+
+#: frame_main.cpp:432
+msgid "Change &End"
+msgstr "Thay đổi Điểm &kết thúc"
+
+#: frame_main.cpp:434
+msgid "&Timing"
+msgstr "Chỉnh g&iờ"
+
+#: frame_main.cpp:438
+msgid "&Open Video..."
+msgstr "&Mở Phim..."
+
+#: frame_main.cpp:438
+msgid "Opens a video file"
+msgstr "Mở một tập tin phim"
+
+#: frame_main.cpp:439
+msgid "&Close Video"
+msgstr "Đón&g Phim"
+
+#: frame_main.cpp:439
+msgid "Closes the currently open video file"
+msgstr "Đóng tập tin phim đang được mở"
+
+#: frame_main.cpp:442
+msgid "Use Dummy Video..."
+msgstr "&Sử dụng Phim giả..."
+
+#: frame_main.cpp:442
+msgid "Opens a video clip with solid colour"
+msgstr "Mở một đoạn phim có một màu đặc"
+
+#: frame_main.cpp:443
+msgid "Show Video Details..."
+msgstr "&Hiện chi tiết Phim..."
+
+#: frame_main.cpp:443
+msgid "Shows video details"
+msgstr "Hiện chi tiết của phim"
+
+#: frame_main.cpp:445
+msgid "Open Timecodes File..."
+msgstr "Mở tập tin Mã thời gi&an..."
+
+#: frame_main.cpp:445
+msgid "Opens a VFR timecodes v1 or v2 file"
+msgstr "Mở một tập tin mã thời gian VFT v1 hoặc v2"
+
+#: frame_main.cpp:446
+msgid "Save Timecodes File..."
+msgstr "&Lưu tập tin Mã thời gian..."
+
+#: frame_main.cpp:446
+msgid "Saves a VFR timecodes v2 file"
+msgstr "Lưu một tập tin mã thời gian VFR v2"
+
+#: frame_main.cpp:447
+msgid "Close Timecodes File"
+msgstr "Đóng tập tin Mã thời g&ian"
+
+#: frame_main.cpp:447
+msgid "Closes the currently open timecodes file"
+msgstr "Đóng tập tin mã thời gian đang mở"
+
+#: frame_main.cpp:451
+msgid "Open Keyframes..."
+msgstr "Mở Key&frame..."
+
+#: frame_main.cpp:451
+msgid "Opens a keyframe list file"
+msgstr "Mở một tập tin danh sách keyframe"
+
+#: frame_main.cpp:452
+msgid "Save Keyframes..."
+msgstr "Lư&u Keyframe..."
+
+#: frame_main.cpp:452
+msgid "Saves the current keyframe list"
+msgstr "Lưu danh sách keyframe hiện tại"
+
+#: frame_main.cpp:453
+msgid "Close Keyframes"
+msgstr "Đóng K&eyframe"
+
+#: frame_main.cpp:453
+msgid "Closes the currently open keyframes list"
+msgstr "Đóng danh sách keyframe đang mở"
+
+#: frame_main.cpp:457
+msgid "Detach Video"
+msgstr "Tách &riêng Phim"
+
+#: frame_main.cpp:457
+msgid "Detach video, displaying it in a separate Window."
+msgstr "Tách riêng phim, hiển thị nó trong một Cửa sổ riêng."
+
+#: frame_main.cpp:459
+msgid "Set Zoom"
+msgstr "Thiết lập Thu &phóng"
+
+#: frame_main.cpp:463
+msgid "Set zoom to 50%"
+msgstr "Thiết lập thu phóng là 50%"
+
+#: frame_main.cpp:464
+msgid "Set zoom to 100%"
+msgstr "Thiết lập thu phóng là 100%"
+
+#: frame_main.cpp:465
+msgid "Set zoom to 200%"
+msgstr "Thiết lập thu phóng là 200%"
+
+#: frame_main.cpp:468
+msgid "Override Aspect Ratio"
+msgstr "Ghi đè &Tỉ lệ màn ảnh"
+
+#: frame_main.cpp:472
+msgid "&Default"
+msgstr "&Mặc định"
+
+#: frame_main.cpp:472
+msgid "Leave video on original aspect ratio"
+msgstr "Để nguyên phim theo tỉ lệ màn ảnh gốc"
+
+#: frame_main.cpp:473
+msgid "&Fullscreen (4:3)"
+msgstr "&Toàn màn hình (4:3)"
+
+#: frame_main.cpp:473
+msgid "Forces video to 4:3 aspect ratio"
+msgstr "Bắt buộc phim theo tỉ lệ 4:3"
+
+#: frame_main.cpp:474
+msgid "&Widescreen (16:9)"
+msgstr "&Màn hình rộng (16:9)"
+
+#: frame_main.cpp:474
+msgid "Forces video to 16:9 aspect ratio"
+msgstr "Bắt buộc phim theo tỉ lệ 16:9"
+
+#: frame_main.cpp:475
+msgid "&Cinematic (2.35)"
+msgstr "Điệ&n ảnh (2.35)"
+
+#: frame_main.cpp:475
+msgid "Forces video to 2.35 aspect ratio"
+msgstr "Bắt buộc phim theo tỉ lệ 2.35"
+
+#: frame_main.cpp:476
+msgid "Custom..."
+msgstr "Tù&y biến..."
+
+#: frame_main.cpp:476
+msgid "Forces video to a custom aspect ratio"
+msgstr "Bắt buộc phim theo tỉ lệ tùy biến"
+
+#: frame_main.cpp:478
+msgid "Show Overscan Mask"
+msgstr "Hiện mặt nạ &Overscan"
+
+#: frame_main.cpp:478
+msgid "Show a mask over the video, indicating areas that might get cropped off by overscan on televisions."
+msgstr "Hiện một mặt nạ trên phim, xác định các vùng có thể bị cắt cúp bởi overscan trên tivi."
+
+#: frame_main.cpp:480
+msgid "&Jump to..."
+msgstr "&Nhảy tới..."
+
+#: frame_main.cpp:480
+msgid "Jump to frame or time"
+msgstr "Nhảy tới khung hình hoặc thời gian"
+
+#: frame_main.cpp:481
+#: hotkeys.cpp:367
+msgid "Jump Video to Start"
+msgstr "Nhảy Phim tới Điểm &bắt đầu"
+
+#: frame_main.cpp:482
+#: hotkeys.cpp:368
+msgid "Jump Video to End"
+msgstr "Nhảy Phim tới Điểm &kết thúc"
+
+#: frame_main.cpp:483
+msgid "&Video"
+msgstr "Phi&m"
+
+#: frame_main.cpp:487
+msgid "&Open Audio File..."
+msgstr "&Mở tập tin Âm thanh..."
+
+#: frame_main.cpp:487
+msgid "Opens an audio file"
+msgstr "Mở một tập tin âm thanh"
+
+#: frame_main.cpp:488
+msgid "Open Audio from &Video"
+msgstr "Mở Âm thanh từ &Phim"
+
+#: frame_main.cpp:488
+msgid "Opens the audio from the current video file"
+msgstr "Mở phần âm thanh từ tập tin phim hiện tại"
+
+#: frame_main.cpp:489
+msgid "&Close Audio"
+msgstr "Đón&g Âm thanh"
+
+#: frame_main.cpp:489
+msgid "Closes the currently open audio file"
+msgstr "Đóng tập tin âm thanh đang mở"
+
+#: frame_main.cpp:497
+msgid "&Audio"
+msgstr "Âm th&anh"
+
+#: frame_main.cpp:502
+msgid "&Automation..."
+msgstr "Tự độ&ng..."
+
+#: frame_main.cpp:502
+msgid "Open automation manager"
+msgstr "Mở trình quản lí việc tự động"
+
+#: frame_main.cpp:504
+msgid "&Automation"
+msgstr "Tự độ&ng"
+
+#: frame_main.cpp:509
+msgid "Select Aegisub interface language"
+msgstr "Chọn ngôn ngữ giao diện Aegisub"
+
+#: frame_main.cpp:510
+msgid "&Options..."
+msgstr "Tù&y chọn..."
+
+#: frame_main.cpp:513
+msgid "&Associations..."
+msgstr "Liên &kết..."
+
+#: frame_main.cpp:513
+msgid "Associate file types with Aegisub"
+msgstr "Liên kết các kiểu tập tin với Aegisub"
+
+#: frame_main.cpp:516
+msgid "Lo&g Window..."
+msgstr "Cửa sổ L&og..."
+
+#: frame_main.cpp:516
+msgid "Open log window"
+msgstr "Mở cửa sổ log"
+
+#: frame_main.cpp:519
+msgid "Subs Only View"
+msgstr "Hiển thị Chỉ &phụ đề"
+
+#: frame_main.cpp:519
+msgid "Display subtitles only"
+msgstr "Chỉ hiển thị phụ đề"
+
+#: frame_main.cpp:520
+msgid "Video+Subs View"
+msgstr "Hiển thị Phi&m+Phụ đề"
+
+#: frame_main.cpp:520
+msgid "Display video and subtitles only"
+msgstr "Chỉ hiển thị phim và phụ đề"
+
+#: frame_main.cpp:521
+msgid "Audio+Subs View"
+msgstr "Hiển thị Âm th&anh+Phụ đề"
+
+#: frame_main.cpp:521
+msgid "Display audio and subtitles only"
+msgstr "Chỉ hiển thị âm thanh và phụ đề"
+
+#: frame_main.cpp:522
+msgid "Full view"
+msgstr "&Hiển thị đầy đủ"
+
+#: frame_main.cpp:522
+msgid "Display audio, video and subtitles"
+msgstr "Hiển thị âm thanh, phim và phụ đề"
+
+#: frame_main.cpp:523
+msgid "Vie&w"
+msgstr "&Hiển thị"
+
+#: frame_main.cpp:527
+msgid "&Contents..."
+msgstr "&Nội dung..."
+
+#: frame_main.cpp:527
+msgid "Help topics"
+msgstr "Các chủ đề trợ giúp"
+
+#: frame_main.cpp:529
+msgid "&Resource Files..."
+msgstr "&Tập tin Tài nguyên..."
+
+#: frame_main.cpp:529
+msgid "Resource files distributed with Aegisub"
+msgstr "Các tập tin tài nguyên được phân phối cùng Aegisub"
+
+#: frame_main.cpp:532
+msgid "&Website..."
+msgstr "Trang &web..."
+
+#: frame_main.cpp:532
+msgid "Visit Aegisub's official website"
+msgstr "Vào trang chủ chính thức của Aegisub"
+
+#: frame_main.cpp:533
+msgid "&Forums..."
+msgstr "&Diễn đàn..."
+
+#: frame_main.cpp:533
+msgid "Visit Aegisub's forums"
+msgstr "Vào diễn đàn của Aegisub"
+
+#: frame_main.cpp:534
+msgid "&Bug Tracker..."
+msgstr "Trình theo dõi &Lỗi..."
+
+#: frame_main.cpp:534
+msgid "Visit Aegisub's bug tracker to report bugs and request new features"
+msgstr "Vào trình theo dõi lỗi của Aegisub để báo cáo lỗi và yêu cầu tính năng mới"
+
+#: frame_main.cpp:535
+msgid "&IRC Channel..."
+msgstr "Kênh &IRC..."
+
+#: frame_main.cpp:535
+msgid "Visit Aegisub's official IRC channel"
+msgstr "Vào kênh IRC chính thức của Aegisub"
+
+#: frame_main.cpp:539
+msgid "&Check for Updates..."
+msgstr "&Kiểm tra Cập nhật..."
+
+#: frame_main.cpp:539
+msgid "Check to see if there is a new version of Aegisub available"
+msgstr "Kiểm tra xem đã có phiên bản mới của Aegisub chưa"
+
+#: frame_main.cpp:540
+msgid "&About..."
+msgstr "&Giới thiệu..."
+
+#: frame_main.cpp:750
+msgid "Save subtitles file"
+msgstr "Lưu tập tin phụ đề"
+
+#: frame_main.cpp:769
+#: frame_main_events.cpp:735
+msgid "Choose charset code:"
+msgstr "Chọn bảng mã:"
+
+#: frame_main.cpp:799
+msgid "Save before continuing?"
+msgstr "Lưu trước khi tiếp tục?"
+
+#: frame_main.cpp:799
+msgid "Unsaved changes"
+msgstr "Các thay đổi chưa lưu"
+
+#: frame_main.cpp:866
+msgid "Untitled"
+msgstr "Không đề"
+
+#: frame_main.cpp:876
+msgid "untitled"
+msgstr "không đề"
+
+#: frame_main.cpp:942
+msgid "Do you want to load/unload the associated files?"
+msgstr "Bạn có muốn nạp/ngừng nạp các tập tin được liên kết?"
+
+#: frame_main.cpp:942
+msgid "(Un)Load files?"
+msgstr "(Ngừng) Nạp tập tin?"
+
+#: frame_main.cpp:1087
+msgid "You have timecodes loaded currently. Would you like to unload them?"
+msgstr "Bạn đã có nạp mã thời gian rồi. Bạn có muốn ngừng nạp chúng không?"
+
+#: frame_main.cpp:1087
+msgid "Unload timecodes?"
+msgstr "Ngừng nạp mã thời gian?"
+
+#: frame_main.cpp:1129
+#, c-format
+msgid ""
+"The resolution of the loaded video and the resolution specified for the subtitles don't match.\n"
+"\n"
+"Video resolution:\t%d x %d\n"
+"Script resolution:\t%d x %d\n"
+"\n"
+"Change subtitles resolution to match video?"
+msgstr ""
+"Độ phân giải của phim được nạp và độ phân giải xác định cho phụ đề không khớp nhau.\n"
+"\n"
+"Độ phân giải phim:\t%d x %d\n"
+"Độ phân giải script:\t%d x %d\n"
+"\n"
+"Thay đổi độ phân giải của phụ đề cho khớp với phim?"
+
+#: frame_main.cpp:1129
+msgid "Resolution mismatch"
+msgstr "Độ phân giải không khớp"
+
+#: frame_main.cpp:1136
+msgid "Change script resolution"
+msgstr "Thay đổi độ phân giải của script"
+
+#: export_framerate.cpp:61
+msgid "Transform Framerate"
+msgstr "Chuyển hóa Tốc độ khung hình"
+
+#: export_framerate.cpp:62
+msgid "Transform subtitles times, including those in override tags, from input to output. This is most useful to convert CFR to VFR for hardsubbing. You usually DO NOT want to check this filter for softsubbing."
+msgstr "Chuyển hóa thời gian phụ đề, bao gồm cả những cái trong các thẻ ghi đè, từ đầu vào tới đầu ra. Điều này có ích nhất khi chuyển đổi CFR sang VFR để hardsub. Bạn thường sẽ KHÔNG muốn chọn bộ lọc này khi làm softsub."
+
+#: export_framerate.cpp:88
+msgid "From Video"
+msgstr "Từ phim"
+
+#: export_framerate.cpp:105
+msgid "Variable"
+msgstr "Biến"
+
+#: export_framerate.cpp:109
+msgid "Constant: "
+msgstr "Hằng số:"
+
+#: export_framerate.cpp:121
+msgid "Reverse transformation"
+msgstr "Đảo ngược việc chuyển hóa"
+
+#: export_framerate.cpp:129
+msgid "Input framerate: "
+msgstr "Tốc độ khung hình Đầu vào:"
+
+#: export_framerate.cpp:131
+msgid "Output: "
+msgstr "Đầu ra:"
+
+#: audio_provider_ram.cpp:90
+msgid "Load audio"
+msgstr "Nạp âm thanh"
+
+#: audio_provider_ram.cpp:90
+msgid "Reading into RAM"
+msgstr "Đọc vào RAM"
+
+#: auto4_perl.cpp:111
+msgid "Not enough parameters for Aegisub::text_extents()"
+msgstr "Không đủ tham số cho Aegisub::text_extents()"
+
+#: auto4_perl.cpp:315
+msgid "Tried to register PerlConsole, but support for it was disabled in this version."
+msgstr "Đã cố đăng kí PerlConsole, nhưng hỗ trợ cho nó đã bị vô hiệu hóa trong phiên bản này."
+
+#: auto4_perl.cpp:383
+msgid "Fatal error: "
+msgstr "Lỗi nặng:"
+
+#: auto4_perl.cpp:385
+msgid "Error: "
+msgstr "Lỗi:"
+
+#: auto4_perl.cpp:387
+msgid "Warning: "
+msgstr "Cảnh báo:"
+
+#: auto4_perl.cpp:389
+msgid "Hint: "
+msgstr "Gợi ý:"
+
+#: auto4_perl.cpp:391
+msgid "Debug: "
+msgstr "Gỡ lỗi:"
+
+#: auto4_perl.cpp:393
+msgid "Trace: "
+msgstr "Truy dấu:"
+
+#: dialog_style_editor.cpp:99
+msgid "Style Editor"
+msgstr "Chỉnh sửa Kiểu dáng"
+
+#: dialog_style_editor.cpp:132
+msgid "Style name"
+msgstr "Tên kiểu dáng"
+
+#: dialog_style_editor.cpp:133
+msgid "Font"
+msgstr "Font"
+
+#: dialog_style_editor.cpp:134
+msgid "Colors"
+msgstr "Màu"
+
+#: dialog_style_editor.cpp:135
+msgid "Margins"
+msgstr "Lề"
+
+#: dialog_style_editor.cpp:136
+#: dialog_style_editor.cpp:235
+msgid "Outline"
+msgstr "Đường nét ngoài"
+
+#: dialog_style_editor.cpp:137
+msgid "Miscellaneous"
+msgstr "Linh tinh"
+
+#: dialog_style_editor.cpp:138
+msgid "Preview"
+msgstr "Xem trước"
+
+#: dialog_style_editor.cpp:145
+msgid "Italic"
+msgstr "Nghiêng"
+
+#: dialog_style_editor.cpp:158
+msgid "Alignment"
+msgstr "Canh hàng"
+
+#: dialog_style_editor.cpp:161
+msgid "Opaque box"
+msgstr "Hộp mờ"
+
+#: dialog_style_editor.cpp:169
+msgid "Style name."
+msgstr "Tên kiểu dáng"
+
+#: dialog_style_editor.cpp:170
+msgid "Font face."
+msgstr "Tên font."
+
+#: dialog_style_editor.cpp:171
+msgid "Font size."
+msgstr "Cỡ font."
+
+#: dialog_style_editor.cpp:172
+msgid "Choose primary color."
+msgstr "Chọn màu chính."
+
+#: dialog_style_editor.cpp:173
+msgid "Choose secondary color."
+msgstr "Chọn màu thứ cấp."
+
+#: dialog_style_editor.cpp:174
+msgid "Choose outline color."
+msgstr "Chọn màu đường nét ngoài."
+
+#: dialog_style_editor.cpp:175
+msgid "Choose shadow color."
+msgstr "Chọn màu đổ bóng."
+
+#: dialog_style_editor.cpp:176
+msgid "Set opacity, from 0 (opaque) to 255 (transparent)."
+msgstr "Thiết lập độ mờ, từ 0 (mờ đục) tới 255 (trong suốt)."
+
+#: dialog_style_editor.cpp:177
+msgid "Distance from left edge, in pixels."
+msgstr "Khoảng cách từ đỉnh trái, theo pixel."
+
+#: dialog_style_editor.cpp:178
+msgid "Distance from right edge, in pixels."
+msgstr "Khoảng cách từ đỉnh phải, theo pixel."
+
+#: dialog_style_editor.cpp:179
+msgid "Distance from top/bottom edge, in pixels."
+msgstr "Khoảng cách từ đỉnh trên cùng/dưới cùng, theo pixel."
+
+#: dialog_style_editor.cpp:180
+msgid "When selected, display an opaque box behind the subtitles instead of an outline around the text."
+msgstr "Khi được chọn, sẽ hiển thị một hộp mờ sau phụ đề thay cho đường nét ngoài xung quanh văn bản."
+
+#: dialog_style_editor.cpp:181
+msgid "Outline width, in pixels."
+msgstr "Độ rộng đường nét ngoài, theo pixel."
+
+#: dialog_style_editor.cpp:182
+msgid "Shadow distance, in pixels."
+msgstr "Khoảng cách bóng đổ, theo pixel."
+
+#: dialog_style_editor.cpp:183
+msgid "Scale X, in percentage."
+msgstr "Chỉnh tỉ lệ X, theo phần trăm."
+
+#: dialog_style_editor.cpp:184
+msgid "Scale Y, in percentage."
+msgstr "Chỉnh tỉ lệ Y, theo phần trăm."
+
+#: dialog_style_editor.cpp:185
+msgid "Angle to rotate in Z axis, in degrees."
+msgstr "Góc để quay theo trục Z, theo độ."
+
+#: dialog_style_editor.cpp:186
+msgid "Encoding, only useful in unicode if the font doesn't have the proper unicode mapping."
+msgstr "Bảng mã, chỉ có ích trong unicode nếu font không có gán unicode phù hợp."
+
+#: dialog_style_editor.cpp:187
+msgid "Character spacing, in pixels."
+msgstr "Khoảng cách kí tự, theo pixel."
+
+#: dialog_style_editor.cpp:188
+msgid "Alignment in screen, in numpad style."
+msgstr "Canh hàng trong màn hình, theo kiểu numpad."
+
+#: dialog_style_editor.cpp:235
+msgid "Primary"
+msgstr "Chính"
+
+#: dialog_style_editor.cpp:235
+msgid "Secondary"
+msgstr "Thứ cấp"
+
+#: dialog_style_editor.cpp:235
+msgid "Shadow"
+msgstr "Bóng đổ"
+
+#: dialog_style_editor.cpp:267
+msgid "Outline:"
+msgstr "Đường nét ngoài:"
+
+#: dialog_style_editor.cpp:269
+msgid "Shadow:"
+msgstr "Bóng đổ:"
+
+#: dialog_style_editor.cpp:277
+msgid "Scale X%:"
+msgstr "Chỉnh tỉ lệ X%:"
+
+#: dialog_style_editor.cpp:279
+msgid "Scale Y%:"
+msgstr "Chỉnh tỉ lệ Y%:"
+
+#: dialog_style_editor.cpp:281
+msgid "Rotation:"
+msgstr "Xoay:"
+
+#: dialog_style_editor.cpp:283
+msgid "Spacing:"
+msgstr "Khoảng trắng:"
+
+#: dialog_style_editor.cpp:287
+msgid "Encoding:"
+msgstr "Bảng mã:"
+
+#: dialog_style_editor.cpp:300
+msgid "Preview of current style."
+msgstr "Xem trước kiểu dáng hiện tại."
+
+#: dialog_style_editor.cpp:303
+msgid "Text to be used for the preview."
+msgstr "Văn bản được dùng để xem trước."
+
+#: dialog_style_editor.cpp:304
+msgid "Colour of preview background."
+msgstr "Màu của hậu cảnh phần xem thử."
+
+#: dialog_style_editor.cpp:313
+msgid "No subtitle providers available. Cannot preview subs."
+msgstr "Không có trình cung cấp phụ đề. Không thể xem thử phụ đề."
+
+#: dialog_style_editor.cpp:452
+msgid "Do you want to change all instances of this style in the script to this new name?"
+msgstr "Bạn có muốn thay đổi tất cả kiểu dáng loại này trong script sang tên mới này không?"
+
+#: dialog_style_editor.cpp:452
+msgid "Update script?"
+msgstr "Cập nhật script?"
+
+#: dialog_style_editor.cpp:583
+msgid ""
+"You have chosen to use the \"Comic Sans\" font. As the programmer and a typesetter,\n"
+"I must urge you to reconsider. Comic Sans is the most abused font in the history\n"
+"of computing, so please avoid using it unless it's REALLY suitable. Thanks."
+msgstr ""
+"Bạn đã chọn dùng font \"Comic Sans\". Với tư cách là một lập trình viên và là một người typeset,\n"
+"tôi khuyên bạn nên cân nhắc lại. Comic Sans là font bị lạm dụng nhất trong lịch sử\n"
+"máy tính, do đó vui lòng tránh dùng nó trừ khi nó THẬT SỰ phù hợp. Cảm ơn."
+
+#: dialog_style_editor.cpp:583
+msgid "Warning"
+msgstr "Cảnh báo"
+
+#: dialog_shift_times.cpp:74
+msgid "Shift by"
+msgstr "Dịch chuyển theo"
+
+#: dialog_shift_times.cpp:75
+msgid "History"
+msgstr "Lược sử"
+
+#: dialog_shift_times.cpp:78
+#: dialog_jumpto.cpp:76
+msgid "Time: "
+msgstr "Thời gian:"
+
+#: dialog_shift_times.cpp:79
+msgid "Frames: "
+msgstr "Khung hình:"
+
+#: dialog_shift_times.cpp:82
+msgid "Enter time in h:mm:ss.cs notation"
+msgstr "Nhập thời gian theo ghi chú h:mm:ss.cs"
+
+#: dialog_shift_times.cpp:83
+msgid "Shift by time"
+msgstr "Dịch chuyển theo thời gian"
+
+#: dialog_shift_times.cpp:87
+msgid "Enter number of frames to shift by"
+msgstr "Nhập số khung hình để dịch chuyển theo"
+
+#: dialog_shift_times.cpp:88
+msgid "Shift by frames"
+msgstr "Dịch chuyển theo khung hình"
+
+#: dialog_shift_times.cpp:97
+msgid "Forward"
+msgstr "Tiến"
+
+#: dialog_shift_times.cpp:98
+msgid "Backward"
+msgstr "Lùi"
+
+#: dialog_shift_times.cpp:99
+msgid "Shifts subs forward, making them appear later. Use if they are appearing too soon."
+msgstr "Dịch chuyển phụ đề tiến tới, để cho chúng hiện ra muộn hơn. Sử dụng nếu chúng xuất hiện quá sớm."
+
+#: dialog_shift_times.cpp:100
+msgid "Shifts subs backward, making them appear earlier. Use if they are appearing too late."
+msgstr "Dịch chuyển phụ đề lùi lại, để cho chúng hiện ra sớm hơn. Sử dụng nếu chúng xuất hiện quá muộn."
+
+#: dialog_shift_times.cpp:108
+msgid "Selection onward"
+msgstr ""
+
+#: dialog_shift_times.cpp:109
+msgid "Affect"
+msgstr "Ảnh hưởng"
+
+#: dialog_shift_times.cpp:112
+msgid "Start and End times"
+msgstr "Thời gian Bắt đầu và Kết thúc"
+
+#: dialog_shift_times.cpp:112
+msgid "Start times only"
+msgstr "Chỉ thời gian bắt đầu"
+
+#: dialog_shift_times.cpp:112
+msgid "End times only"
+msgstr "Chỉ thời gian kết thúc"
+
+#: dialog_shift_times.cpp:113
+#: dialog_paste_over.cpp:91
+msgid "Times"
+msgstr "Thời gian"
+
+#: dialog_shift_times.cpp:117
+msgid "Clear"
+msgstr "Xóa trắng"
+
+#: dialog_shift_times.cpp:251
+msgid "unsaved, "
+msgstr "không lưu,"
+
+#: dialog_shift_times.cpp:256
+msgid " frames "
+msgstr " khung hình "
+
+#: dialog_shift_times.cpp:259
+msgid "backward, "
+msgstr "lùi, "
+
+#: dialog_shift_times.cpp:260
+msgid "forward, "
+msgstr "tiến, "
+
+#: dialog_shift_times.cpp:263
+msgid "s+e, "
+msgstr ""
+
+#: dialog_shift_times.cpp:264
+msgid "s, "
+msgstr ""
+
+#: dialog_shift_times.cpp:265
+msgid "e, "
+msgstr ""
+
+#: dialog_shift_times.cpp:268
+msgid "all"
+msgstr "tất cả"
+
+#: dialog_shift_times.cpp:269
+#, c-format
+msgid "from %i onward"
+msgstr ""
+
+#: dialog_shift_times.cpp:271
+msgid "sel "
+msgstr ""
+
+#: dialog_shift_times.cpp:299
+msgid "shifting"
+msgstr "dịch chuyển"
+
+#: dialog_dummy_video.cpp:122
+msgid "Dummy video options"
+msgstr "Tùy chọn cho phim giả"
+
+#: dialog_dummy_video.cpp:130
+msgid "Checkerboard pattern"
+msgstr "Mẫu bàn đánh cờ"
+
+#: dialog_dummy_video.cpp:138
+msgid "Video resolution:"
+msgstr "Độ phân giải phim:"
+
+#: dialog_dummy_video.cpp:146
+msgid "Colour:"
+msgstr "Màu:"
+
+#: dialog_dummy_video.cpp:150
+msgid "Frame rate (fps):"
+msgstr "Tốc độ khung hình (fps):"
+
+#: dialog_dummy_video.cpp:152
+msgid "Duration (frames):"
+msgstr "Khoảng thời gian (khung hình):"
+
+#: dialog_dummy_video.cpp:257
+#, c-format
+msgid "Resulting duration: %d:%02d:%02d.%03d"
+msgstr "Khoảng thời gian kết quả: %d:%02d:%02d.%03d"
+
+#: dialog_dummy_video.cpp:263
+msgid "Invalid fps or length value"
+msgstr "Giá trị độ dài hoặc fps không hợp lệ"
+
+#: dialog_attachments.cpp:58
+msgid "Attachment List"
+msgstr "Danh sách Đính kèm"
+
+#: dialog_attachments.cpp:68
+msgid "E&xtract"
+msgstr "Trích x&uất"
+
+#: dialog_attachments.cpp:69
+msgid "&Delete"
+msgstr "&Xóa"
+
+#: dialog_attachments.cpp:75
+msgid "Attach &Font"
+msgstr "Đính kèm &Font"
+
+#: dialog_attachments.cpp:76
+msgid "Attach &Graphics"
+msgstr "Đính &kèm Ảnh đồ họa"
+
+#: dialog_attachments.cpp:99
+msgid "Attachment name"
+msgstr "Tên đính kèm"
+
+#: dialog_attachments.cpp:100
+msgid "Size"
+msgstr "Kích cỡ"
+
+#: dialog_attachments.cpp:101
+msgid "Group"
+msgstr "Nhóm"
+
+#: dialog_attachments.cpp:145
+#: dialog_attachments.cpp:178
+msgid "Choose file to be attached"
+msgstr "Chọn tập tin để đính kèm"
+
+#: dialog_attachments.cpp:216
+msgid "Select the path to save the files to:"
+msgstr "Chọn đường dẫn để lưu tập tin vào:"
+
+#: dialog_attachments.cpp:220
+msgid "Select the path to save the file to:"
+msgstr "Chọn đường dẫn để lưu tập tin vào:"
+
+#: dialog_jumpto.cpp:63
+msgid "Jump to"
+msgstr "Nhảy tới"
+
+#: dialog_jumpto.cpp:75
+msgid "Frame: "
+msgstr "Khung hình:"
+
+#: video_provider_ffmpegsource.cpp:263
+#: video_provider_lavc.cpp:149
+msgid "You already have timecodes loaded. Would you like to replace them with timecodes from the video file?"
+msgstr "Bạn đã nạp mã thời gian rồi. Bạn có muốn thay thế chúng bằng các mã thời gian từ tập tin phim?"
+
+#: dialog_tip.cpp:52
+msgid "Aegisub can export subtitles to many different formats, character encodings, and even compensate Variable Frame Rate so you can hardsub them - it's all in the Export option in File menu."
+msgstr "Aegisub có thể xuất phụ đề sang nhiều định dạng, bảng mã khác nhau, và thậm chí cả Tốc độ Khung hình Biến động điều hòa để bạn có thể hardsub chúng - tất cả có trong tùy chọn Xuất của trình đơn Tập tin."
+
+#: dialog_tip.cpp:53
+msgid "You can easily translate subtitle files using the translation assistant."
+msgstr "Bạn có thể dễ dàng dịch tập tin phụ đề bằng trợ lí dịch thuật."
+
+#: dialog_tip.cpp:54
+msgid "Styles can be stored in different storages, so that you can keep your projects organized."
+msgstr "Kiểu dáng có thể được lưu trữ trong các kho lưu trữ khác nhau, để bạn có thể tổ chức sắp xếp tốt các dự án của mình."
+
+#: dialog_tip.cpp:55
+msgid "Use keyboard shortcuts! They make your life easier, for example, Ctrl+Enter updates changes on current line without going to next. Check the manual for a complete list."
+msgstr "Hãy dùng phím tắt! Chúng làm cho cuộc sống của bạn dễ thở hơn, ví dụ, Ctrl+Enter cập nhật các thay đổi trên dòng hiện tại mà không cần phải đi tới dòng tiếp theo. Xem sổ tay hướng dẫn để biết danh sách hoàn chỉnh."
+
+#: dialog_tip.cpp:56
+msgid "There is no reason to use the SSA format (as opposed to ASS). ASS is very similar, but adds some important functionality. Most importantly, however, is that only ASS supports certain override tags (such as \\pos and \\t). Those only work on SSA files because VSFilter/Textsub is merciful."
+msgstr "Không có lí do gì để dùng định dạng SSA (trái với ASS) cả. ASS cũng tương tự, nhưng thêm một số chức năng quan trọng. Quan trọng nhất, tuy nhiên, là chỉ ASS mới hỗ trợ các thẻ ghi đè nào đó (như \\pos và \\t). Những thẻ này chỉ hoạt động trên tập tin SSA vì VSFilter/Textsub khá rộng lượng."
+
+#: dialog_tip.cpp:57
+msgid "DON'T PANIC!"
+msgstr "ĐỪNG HOẢNG LOẠN!"
+
+#: dialog_tip.cpp:58
+msgid "Aegisub has several features to make sure you will never lose your work. It will periodically save your subtitles to autosave folder, and will create a copy of subs whenever you open them, to autoback folder. Also, if it crashes, it will attempt to save a restore file."
+msgstr "Aegisub có vài tính năng để chắc chắn rằng bạn sẽ không bao giờ làm mất thành quả của mình. Nó sẽ thường xuyên lưu phụ đề của bạn vào thư mục tự động lưu, và sẽ tạo một bản sao cho các phụ đề mỗi khi bạn mở chúng, tại thư mục tự động sao lưu. Thêm vào đó, nếu nó bị đổ vỡ, nó sẽ cố gắng lưu một tập tin khôi phục."
+
+#: dialog_tip.cpp:59
+msgid "The styling assistant is a practical way to set styles to each line, when each actor has a different style assigned to it."
+msgstr "Trợ lí tạo kiểu dáng là một cách thực tế để thiết lập kiểu dáng cho mỗi dòng, khi mỗi nhân vật có một kiểu khác nhau được gán cho chúng."
+
+#: dialog_tip.cpp:60
+msgid "The fonts collector is one of the most useful features, which resumes the boring task of hunting down fonts into a matter of a few clicks."
+msgstr "Trình thu thập font là một trong các tính năng hữu ích nhất, tiếp tục công việc nhàm chán là săn lùng các font chỉ trong vài cú nhấp chuột."
+
+#: dialog_tip.cpp:61
+msgid "When you are done with your subtitles and ready to distribute them, remember: say no to MP4, OGM or AVI. Matroska is your friend."
+msgstr "Khi bạn đã hoàn thành phụ đề của mình và sẵn sàng phân phối chúng, hãy nhớ: nói không với MP4, OGM và AVI. Matroska mới chính là bạn của chúng ta."
+
+#: dialog_tip.cpp:62
+msgid "Much like anything loaded via DirectShow, certain files may have a strange structure (such as h.264 into AVI or XviD will null frames) which may cause unreliable seeking (that is, video frames might be off by one frame). This is not an Aegisub bug - you may consider reencoding those videos before working with them."
+msgstr "Giống như mọi thứ được nạp thông qua DirectShow, một số tập tin có thể có cấu trúc kì lạ (như h.264 biến thành AVI hoặc XviD có khung hình rỗng) và khiến việc truy tìm bị trúc trắc (có nghĩa là, các khung hình phim có thể bị mất đi một khung). Đây không phải là lỗi của Aegisub - có thể bạn sẽ muốn cân nhắc việc mã hóa lại phim trước khi làm việc với chúng."
+
+#: dialog_tip.cpp:63
+msgid "Try the spectrum mode for the audio display, it can make it much easier to spot where the important points in the audio are."
+msgstr "Hãy thử chế độ dải quang phổ cho việc hiển thị âm thanh, nó có thể giúp dễ dàng chỉ ra các điểm quan trọng trong đoạn âm thanh."
+
+#: dialog_tip.cpp:64
+msgid "If you decode your audio to a PCM WAV file before loading it in Aegisub, you don't have to wait for it to be decoded before you can use it."
+msgstr "Nếu muốn giải mã âm thanh sáng tập tin PCM WAV trước khi nạp nó vào Aegisub, bạn sẽ không phải chờ cho nó được giải mã trước khi có thể dùng nó."
+
+#: dialog_tip.cpp:65
+msgid "Having video open is often more a nuisance than a help when timing subtitles. Timing with only audio open is often much easier. You can always adjust the subtitles to match the video later on."
+msgstr "Để phim mở thường gây phiền toái hơn là trợ giúp khi chỉnh giờ cho phụ đề. Việc chỉnh giờ và để âm thanh mở thường sẽ dễ hơn. Bạn luôn có thể điều chỉnh phụ đề cho khớp với phim sau."
+
+#: dialog_tip.cpp:66
+msgid "If the audio doesn't seem to work properly during video playback, try loading audio separately. Just select Audio->Load from video, that usually makes the audio much more reliable."
+msgstr "Nếu âm thanh có vẻ không hoạt động đúng khi phát phim, vui lòng thử nạp lại âm thanh riêng. Chỉ cần chọn Âm thanh -> Nạp từ phim, thao tác đó sẽ làm cho âm thanh ổn định hơn."
+
+#: dialog_tip.cpp:67
+msgid "If anything goes wrong, blame movax."
+msgstr "Nếu có gì trục trặc, cứ đổi lỗi cho movax."
+
+#: dialog_fonts_collector.cpp:96
+msgid "&Browse..."
+msgstr "Du&yệt..."
+
+#: dialog_fonts_collector.cpp:98
+#: dialog_fonts_collector.cpp:309
+msgid ""
+"Choose the folder where the fonts will be collected to.\n"
+"It will be created if it doesn't exist."
+msgstr ""
+"Chọn thư mục để chứa font được thu thập.\n"
+"Nó sẽ được tạo nếu chưa có sẵn."
+
+#: dialog_fonts_collector.cpp:101
+msgid "Destination"
+msgstr "Đích"
+
+#: dialog_fonts_collector.cpp:107
+msgid "Check fonts for availability"
+msgstr "Kiểm tra tính khả thi của font"
+
+#: dialog_fonts_collector.cpp:108
+msgid "Copy fonts to folder"
+msgstr "Chép font vào thư mục"
+
+#: dialog_fonts_collector.cpp:109
+msgid "Copy fonts to zipped archive"
+msgstr "Chép font vào tập tin nén zip"
+
+#: dialog_fonts_collector.cpp:110
+msgid "Attach fonts to current subtitles"
+msgstr "Đính kèm font vào phụ đề hiện tại"
+
+#: dialog_fonts_collector.cpp:112
+msgid "DEBUG: Verify all fonts in system"
+msgstr "GỠ LỖI: Xác minh tất cả các font trong hệ thống"
+
+#: dialog_fonts_collector.cpp:127
+msgid "Log"
+msgstr "Log"
+
+#: dialog_fonts_collector.cpp:131
+msgid "&Start!"
+msgstr "&Bắt đầu!"
+
+#: dialog_fonts_collector.cpp:195
+msgid "Invalid destination."
+msgstr "Đích không hợp lệ."
+
+#: dialog_fonts_collector.cpp:204
+msgid "Could not create destination folder."
+msgstr "Không thể tạo thư mục đích."
+
+#: dialog_fonts_collector.cpp:213
+msgid "Invalid path for .zip file."
+msgstr "Đường dẫn không hợp lệ cho tập tin .zip."
+
+#: dialog_fonts_collector.cpp:259
+msgid "Select archive file name"
+msgstr "Chọn tên tập tin nén"
+
+#: dialog_fonts_collector.cpp:259
+msgid "Zip Archives (*.zip)|*.zip"
+msgstr "Zip Archives (*.zip)|*.zip"
+
+#: dialog_fonts_collector.cpp:267
+msgid "Select folder to save fonts on"
+msgstr "Chọn thư mục để lưu font"
+
+#: dialog_fonts_collector.cpp:323
+msgid ""
+"Enter the name of the destination zip file to collect the fonts to.\n"
+"If a folder is entered, a default name will be used."
+msgstr ""
+"Nhập tên tập tin zip để thu thập font.\n"
+"Nếu thư mục được đưa vào, tên mặc định sẽ được dùng."
+
+#: dialog_fonts_collector.cpp:393
+msgid "Invalid destination directory."
+msgstr "Thư mục đích không hợp lệ."
+
+#: dialog_fonts_collector.cpp:406
+msgid "Collecting font data from system. This might take a while, depending on the number of fonts installed. Results are cached and subsequent executions will be faster...\n"
+msgstr "Đang thu thập dữ liệu font từ hệ thống. Việc này có thể sẽ mất một lúc, tùy vào số lượng font đã cài. Kết quả được đệm và các lần thực thi sau sẽ nhanh hơn...\n"
+
+#: dialog_fonts_collector.cpp:408
+msgid "Done collecting font data."
+msgstr "Hoàn tất việc thu thập dữ liệu font."
+
+#: dialog_fonts_collector.cpp:409
+msgid "Scanning file for fonts..."
+msgstr "Đang quét tập tin để tìm font..."
+
+#: dialog_fonts_collector.cpp:442
+msgid "Done."
+msgstr "Xong."
+
+#: dialog_fonts_collector.cpp:444
+msgid "Checking fonts...\n"
+msgstr "Đang kiểm tra font...\n"
+
+#: dialog_fonts_collector.cpp:445
+msgid "Copying fonts to folder...\n"
+msgstr "Đang chép font vào thư mục...\n"
+
+#: dialog_fonts_collector.cpp:446
+msgid "Copying fonts to archive...\n"
+msgstr "Đang chép font vào tập tin nén...\n"
+
+#: dialog_fonts_collector.cpp:447
+msgid "Attaching fonts to file...\n"
+msgstr "Đang đính kèm font vào tập tin...\n"
+
+#: dialog_fonts_collector.cpp:463
+#, c-format
+msgid ""
+"\n"
+"Finished writing to %s.\n"
+msgstr ""
+"\n"
+"Hoàn thành việc ghi vào %s.\n"
+
+#: dialog_fonts_collector.cpp:469
+msgid "Done. All fonts found."
+msgstr "Xong. Tất cả font đã được tìm thấy."
+
+#: dialog_fonts_collector.cpp:472
+msgid "Done. All fonts copied."
+msgstr "Xong. Tất cả font đã được chép."
+
+#: dialog_fonts_collector.cpp:477
+msgid "font attachment"
+msgstr "đính kèm font"
+
+#: dialog_fonts_collector.cpp:484
+msgid "Done. Some fonts could not be found."
+msgstr "Xong. Một số font không thể tìm thấy."
+
+#: dialog_fonts_collector.cpp:485
+msgid "Done. Some fonts could not be copied."
+msgstr "Xong. Một số font không thể chép."
+
+#: dialog_fonts_collector.cpp:505
+msgid "Not found.\n"
+msgstr "Không tìm thấy.\n"
+
+#: dialog_fonts_collector.cpp:511
+msgid "Found.\n"
+msgstr "Tìm thấy.\n"
+
+#: dialog_fonts_collector.cpp:526
+#, c-format
+msgid "* Copied %s.\n"
+msgstr "* Đã chép %s.\n"
+
+#: dialog_fonts_collector.cpp:530
+#, c-format
+msgid "* %s already exists on destination.\n"
+msgstr "* %s đã tồn tại trong đích.\n"
+
+#: dialog_fonts_collector.cpp:533
+#, c-format
+msgid "* Failed to copy %s.\n"
+msgstr "* Thất bại khi chép %s.\n"
+
+#: dialog_fonts_collector.cpp:606
+#, c-format
+msgid "\"%s\" found on style \"%s\".\n"
+msgstr "\"%s\" được tìm thấy trên kiểu dáng \"%s\".\n"
+
+#: dialog_fonts_collector.cpp:607
+#, c-format
+msgid "\"%s\" found on dialogue line \"%d\".\n"
+msgstr "\"%s\" được tìm thấy trên dòng hội thoại \"%d\".\n"
+
+#: dialog_fonts_collector.cpp:608
+#, c-format
+msgid "\"%s\" found.\n"
+msgstr "\"%s\" được tìm thấy.\n"
+
+#: subs_edit_ctrl.cpp:800
+msgid "No correction suggestions"
+msgstr "Không có đề xuất sửa lỗi."
+
+#: subs_edit_ctrl.cpp:812
+#, c-format
+msgid "Add \"%s\" to dictionary"
+msgstr "Thêm \"%s\" vào từ điển"
+
+#: subs_edit_ctrl.cpp:818
+msgid "No spell checker suggestions"
+msgstr "Không có đề xuất kiểm tra chính tả"
+
+#: subs_edit_ctrl.cpp:825
+#, c-format
+msgid "Spell checker suggestions for \"%s\""
+msgstr "Đề xuất kiểm tra chính tả cho \"%s\""
+
+#: subs_edit_ctrl.cpp:845
+#: subs_edit_ctrl.cpp:928
+msgid "Disable"
+msgstr "Vô hiệu hóa"
+
+#: subs_edit_ctrl.cpp:858
+msgid "Spell checker language"
+msgstr "Ngôn ngữ kiểm tra chính tả"
+
+#: subs_edit_ctrl.cpp:909
+#, c-format
+msgid "Thesaurus suggestions for \"%s\""
+msgstr "Đề xuất từ đồng nghĩa cho \"%s\""
+
+#: subs_edit_ctrl.cpp:913
+msgid "No thesaurus suggestions"
+msgstr "Không có đề xuất từ đồng nghĩa"
+
+#: subs_edit_ctrl.cpp:941
+msgid "Thesaurus language"
+msgstr "Ngôn ngữ cho từ điển đồng nghĩa"
+
+#: subs_edit_ctrl.cpp:948
+msgid "Cu&t"
+msgstr "Cắ&t"
+
+#: subs_edit_ctrl.cpp:952
+msgid "Select &All"
+msgstr "Chọn toàn &bộ"
+
+#: subs_edit_ctrl.cpp:956
+msgid "Split at cursor (preserve times)"
+msgstr "Chia tách tại con trỏ (giữ nguyên thời gian)"
+
+#: subs_edit_ctrl.cpp:957
+msgid "Split at cursor (estimate times)"
+msgstr "Chia tách tại con trỏ (ước tính thời gian)"
+
+#: audio_box.cpp:68
+msgid "Seek bar"
+msgstr "Thanh truy tìm"
+
+#: audio_box.cpp:86
+msgid "Horizontal zoom"
+msgstr "Thu phóng ngang"
+
+#: audio_box.cpp:89
+msgid "Vertical zoom"
+msgstr "Thu phóng dọc"
+
+#: audio_box.cpp:92
+msgid "Audio Volume"
+msgstr "Âm lượng"
+
+#: audio_box.cpp:99
+msgid "Link vertical zoom and volume sliders"
+msgstr "Liên kết thu phóng dọc và thanh trượt âm lượng"
+
+#: audio_box.cpp:126
+msgid "Previous line or syllable (%KEY%/%KEY%)"
+msgstr "Âm tiết hoặc dòng trước (%KEY%/%KEY%)"
+
+#: audio_box.cpp:129
+msgid "Next line/syllable (%KEY%/%KEY%)"
+msgstr "Âm tiết hoặc dòng kế (%KEY%/%KEY%)"
+
+#: audio_box.cpp:132
+msgid "Play selection (%KEY%/%KEY%)"
+msgstr "Phát đoạn đã chọn (%KEY%/%KEY%)"
+
+#: audio_box.cpp:135
+msgid "Play current line (%KEY%)"
+msgstr "Phát dòng hiện tại (%KEY%)"
+
+#: audio_box.cpp:138
+msgid "Stop (%KEY%)"
+msgstr "Dừng (%KEY%)"
+
+#: audio_box.cpp:142
+msgid "Play 500 ms before selection (%KEY%)"
+msgstr "Phát 500ms trước đoạn đã chọn (%KEY%)"
+
+#: audio_box.cpp:145
+msgid "Play 500 ms after selection (%KEY%)"
+msgstr "Phát 500ms sau đoạn đã chọn (%KEY%)"
+
+#: audio_box.cpp:148
+msgid "Play first 500ms of selection (%KEY%)"
+msgstr "Phát 500ms đầu của đoạn đã chọn (%KEY%)"
+
+#: audio_box.cpp:151
+msgid "Play last 500ms of selection (%KEY%)"
+msgstr "Phát 500ms cuối của đoạn đã chọn (%KEY%)"
+
+#: audio_box.cpp:154
+msgid "Play from selection start to end of file (%KEY%)"
+msgstr "Phát từ điểm bắt đầu đoạn đã chọn cho tới cuối tập tin (%KEY%)"
+
+#: audio_box.cpp:158
+msgid "Add lead in (%KEY%)"
+msgstr "Thêm lead-in (%KEY%)"
+
+#: audio_box.cpp:161
+msgid "Add lead out (%KEY%)"
+msgstr "Thêm lead out (%KEY%)"
+
+#: audio_box.cpp:165
+msgid "Commit changes (%KEY%/%KEY%)"
+msgstr "Thực hiện thay đổi (%KEY%/%KEY%)"
+
+#: audio_box.cpp:168
+msgid "Go to selection"
+msgstr "Đi tới đoạn đã chọn"
+
+#: audio_box.cpp:172
+msgid "Automatically commit all changes"
+msgstr "Tự động thực hiện các thay đổi"
+
+#: audio_box.cpp:176
+msgid "Auto goes to next line on commit"
+msgstr "Tự động đi tới dòng kế khi thực hiện"
+
+#: audio_box.cpp:180
+msgid "Auto scrolls audio display to selected line"
+msgstr "Tự động cuộn phần hiển thị âm thanh tới dòng đã chọn"
+
+#: audio_box.cpp:184
+msgid "Spectrum analyzer mode"
+msgstr "Chế độ phân tích hình dải quang phổ"
+
+#: audio_box.cpp:188
+msgid "Enable Medusa-Style Timing Shortcuts"
+msgstr "Kích hoạt Phím tắt cho Chỉnh giờ Kiểu Medusa"
+
+#: audio_box.cpp:199
+msgid "Karaoke"
+msgstr "Karaoke"
+
+#: audio_box.cpp:200
+msgid "Toggle karaoke mode"
+msgstr "Bật-tắt chế độ karaoke"
+
+#: audio_box.cpp:551
+msgid "Cancel Split"
+msgstr "Hủy bỏ Chia tách"
+
+#: audio_box.cpp:552
+msgid "Discard all splits and leave split-mode"
+msgstr "Hủy bỏ tất cả chia tách và rời chế độ chia tách"
+
+#: audio_box.cpp:553
+msgid "Accept Split"
+msgstr "Chấp thuận Chia tách"
+
+#: audio_box.cpp:554
+msgid "Commit splits and leave split-mode"
+msgstr "Thực hiện các chia tách và rời chế độ chia tách"
+
+#: audio_box.cpp:556
+msgid "Join"
+msgstr "Ghép"
+
+#: audio_box.cpp:557
+msgid "Join selected syllables"
+msgstr "Ghép các âm tiết đã chọn"
+
+#: audio_box.cpp:558
+msgid "Split"
+msgstr "Chia tác"
+
+#: audio_box.cpp:559
+msgid "Enter split-mode"
+msgstr "Vào chế độ chia tách"
+
+#: hotkeys.cpp:331
+#: hotkeys.cpp:335
+msgid "Exit"
+msgstr "Thoát"
+
+#: hotkeys.cpp:340
+msgid "Edit Box Commit"
+msgstr "Chỉnh sửa Thực hiện Hộp"
+
+#: hotkeys.cpp:341
+msgid "Undo"
+msgstr "Hoàn tác"
+
+#: hotkeys.cpp:343
+#: hotkeys.cpp:345
+msgid "Redo"
+msgstr "Làm lại"
+
+#: hotkeys.cpp:356
+msgid "Select Lines"
+msgstr "Chọn dòng"
+
+#: hotkeys.cpp:358
+msgid "Cut"
+msgstr "Cắt"
+
+#: hotkeys.cpp:359
+msgid "Paste"
+msgstr "Dán"
+
+#: hotkeys.cpp:360
+msgid "Paste Over"
+msgstr "Dán đè"
+
+#: hotkeys.cpp:363
+#: hotkeys.cpp:365
+msgid "Video Jump"
+msgstr "Nhảy phim"
+
+#: hotkeys.cpp:369
+msgid "Set Start to Video"
+msgstr "Thiết lập Bắt đầu tới Phim"
+
+#: hotkeys.cpp:370
+msgid "Set End to Video"
+msgstr "Thiết lập Kết thúc tới Phim"
+
+#: hotkeys.cpp:372
+msgid "Shift by Current Time"
+msgstr "Dịch chuyển theo Thời gian Hiện tại"
+
+#: hotkeys.cpp:373
+msgid "Zoom 50%"
+msgstr "Phóng 50%"
+
+#: hotkeys.cpp:374
+msgid "Zoom 100%"
+msgstr "Phóng 100%"
+
+#: hotkeys.cpp:375
+msgid "Zoom 200%"
+msgstr "Phóng 200%"
+
+#: hotkeys.cpp:377
+msgid "Video global prev frame"
+msgstr "Phim - khung hình trước bao quát"
+
+#: hotkeys.cpp:378
+msgid "Video global next frame"
+msgstr "Phim - khung hình kế bao quát"
+
+#: hotkeys.cpp:379
+msgid "Video global focus seek"
+msgstr "Phim - truy tìm chú ý bao quát"
+
+#: hotkeys.cpp:380
+msgid "Video global play"
+msgstr "Phim - phát bao quát"
+
+#: hotkeys.cpp:381
+msgid "Grid global prev line"
+msgstr "Đường kẻ - dòng trước bao quát"
+
+#: hotkeys.cpp:382
+msgid "Grid global next line"
+msgstr "Đường kẻ - dòng kế bao quát"
+
+#: hotkeys.cpp:383
+msgid "Save Subtitles Alt"
+msgstr "Save Subtitles Alt"
+
+#: hotkeys.cpp:384
+msgid "Video global zoom in"
+msgstr "Phim - phóng to bao quát"
+
+#: hotkeys.cpp:385
+msgid "Video global zoom out"
+msgstr "Phim - thu nhỏ bao quát"
+
+#: hotkeys.cpp:387
+msgid "Grid move row down"
+msgstr "Đường kẻ - di chuyển hàng xuống"
+
+#: hotkeys.cpp:388
+msgid "Grid move row up"
+msgstr "Đường kẻ - di chuyển hàng lên"
+
+#: hotkeys.cpp:390
+#: hotkeys.cpp:392
+msgid "Grid delete rows"
+msgstr "Đường kẻ - xóa hàng"
+
+#: hotkeys.cpp:394
+msgid "Grid duplicate rows"
+msgstr "Đường kẻ - tạo bản sao của hàng"
+
+#: hotkeys.cpp:395
+msgid "Grid duplicate and shift one frame"
+msgstr "Đường kẻ - tạo bản sao và dịch chuyển một khung hình"
+
+#: hotkeys.cpp:397
+msgid "Audio Commit Alt"
+msgstr "Âm thanh - Thực hiện Alt"
+
+#: hotkeys.cpp:398
+msgid "Audio Commit"
+msgstr "Âm thanh - Thực hiện"
+
+#: hotkeys.cpp:399
+msgid "Audio Commit (Stay)"
+msgstr "Âm thanh - Thực hiện (Ở lại)"
+
+#: hotkeys.cpp:400
+msgid "Audio Prev Line"
+msgstr "Âm thanh - Dòng trước"
+
+#: hotkeys.cpp:401
+msgid "Audio Prev Line Alt"
+msgstr "Âm thanh - Dòng trước Alt"
+
+#: hotkeys.cpp:402
+msgid "Audio Next Line"
+msgstr "Âm thanh - Dòng kế"
+
+#: hotkeys.cpp:403
+msgid "Audio Next Line Alt"
+msgstr "Âm thanh - Dòng kế Alt"
+
+#: hotkeys.cpp:404
+msgid "Audio Play"
+msgstr "Âm thanh - Phát"
+
+#: hotkeys.cpp:405
+msgid "Audio Play Alt"
+msgstr "Âm thanh - Phát Alt"
+
+#: hotkeys.cpp:406
+msgid "Audio Play or Stop"
+msgstr "Âm thanh - Phát hoặc Dừng"
+
+#: hotkeys.cpp:407
+msgid "Audio Stop"
+msgstr "Âm thanh - Dừng"
+
+#: hotkeys.cpp:408
+msgid "Audio Karaoke Increase Len"
+msgstr "Âm thanh Karaoke - Tăng độ dài"
+
+#: hotkeys.cpp:409
+msgid "Audio Karaoke Decrease Len"
+msgstr "Âm thanh Karaoke - Giảm độ dài"
+
+#: hotkeys.cpp:410
+msgid "Audio Karaoke Increase Len Shift"
+msgstr "Âm thanh Karaoke - Tăng dịch chuyển độ dài"
+
+#: hotkeys.cpp:411
+msgid "Audio Karaoke Decrease Len Shift"
+msgstr "Âm thanh Karaoke - Giảm dịch chuyển độ dài"
+
+#: hotkeys.cpp:412
+msgid "Audio Scroll Left"
+msgstr "Âm thanh - Cuộn trái"
+
+#: hotkeys.cpp:413
+msgid "Audio Scroll Right"
+msgstr "Âm thanh - Cuộn phải"
+
+#: hotkeys.cpp:414
+msgid "Audio Play First 500ms"
+msgstr "Âm thanh - Phát 500ms đầu"
+
+#: hotkeys.cpp:415
+msgid "Audio Play Last 500ms"
+msgstr "Âm thanh - Phát 500ms cuối"
+
+#: hotkeys.cpp:416
+msgid "Audio Play 500ms Before"
+msgstr "Âm thanh - Phát 500ms trước"
+
+#: hotkeys.cpp:417
+msgid "Audio Play 500ms After"
+msgstr "Âm thanh - Phát 500ms sau"
+
+#: hotkeys.cpp:418
+msgid "Audio Play To End"
+msgstr "Âm thanh - Phát tới Cuối"
+
+#: hotkeys.cpp:419
+msgid "Audio Play Original Line"
+msgstr "Âm thanh - Phát dòng gốc"
+
+#: hotkeys.cpp:420
+msgid "Audio Add Lead In"
+msgstr "Âm thanh - Thêm Lead-in"
+
+#: hotkeys.cpp:421
+msgid "Audio Add Lead Out"
+msgstr "Âm thanh - Thêm Lead-out"
+
+#: hotkeys.cpp:423
+msgid "Audio Medusa Toggle"
+msgstr "Âm thanh Medusa - Bật-tắt"
+
+#: hotkeys.cpp:424
+msgid "Audio Medusa Play"
+msgstr "Âm thanh Medusa - Phát"
+
+#: hotkeys.cpp:425
+msgid "Audio Medusa Stop"
+msgstr "Âm thanh Medusa - Dừng"
+
+#: hotkeys.cpp:426
+msgid "Audio Medusa Shift Start Back"
+msgstr "Âm thanh Medusa - Dịch chuyển Bắt đầu Lùi"
+
+#: hotkeys.cpp:427
+msgid "Audio Medusa Shift Start Forward"
+msgstr "Âm thanh Medusa - Dịch chuyển Bắt đầu Tiến"
+
+#: hotkeys.cpp:428
+msgid "Audio Medusa Shift End Back"
+msgstr "Âm thanh Medusa - Dịch chuyển Kết thúc Lùi"
+
+#: hotkeys.cpp:429
+msgid "Audio Medusa Shift End Forward"
+msgstr "Âm thanh Medusa - Dịch chuyển Kết thúc Tiến"
+
+#: hotkeys.cpp:430
+msgid "Audio Medusa Play Before"
+msgstr "Âm thanh Medusa - Phát trước"
+
+#: hotkeys.cpp:431
+msgid "Audio Medusa Play After"
+msgstr "Âm thanh Medusa - Phát sau"
+
+#: hotkeys.cpp:432
+msgid "Audio Medusa Next"
+msgstr "Âm thanh Medusa - Tiếp"
+
+#: hotkeys.cpp:433
+msgid "Audio Medusa Previous"
+msgstr "Âm thanh Medusa - Trước"
+
+#: hotkeys.cpp:434
+msgid "Audio Medusa Enter"
+msgstr "Âm thanh Medusa - Vào"
+
+#: hotkeys.cpp:436
+msgid "Translation Assistant Play Audio"
+msgstr "Trợ lí Dịch thuật - Phát âm thanh"
+
+#: hotkeys.cpp:437
+msgid "Translation Assistant Play Video"
+msgstr "Trợ lí Dịch thuật - Phát phim"
+
+#: hotkeys.cpp:438
+msgid "Translation Assistant Next"
+msgstr "Trợ lí Dịch thuật - Tiếp"
+
+#: hotkeys.cpp:439
+msgid "Translation Assistant Prev"
+msgstr "Trợ lí Dịch thuật - Trước"
+
+#: hotkeys.cpp:440
+msgid "Translation Assistant Accept"
+msgstr "Trợ lí Dịch thuật - Chấp thuận"
+
+#: hotkeys.cpp:441
+msgid "Translation Assistant Preview"
+msgstr "Trợ lí Dịch thuật - Xem thử"
+
+#: hotkeys.cpp:442
+msgid "Translation Assistant Insert Original"
+msgstr "Trợ lí Dịch thuật - Chèn gốc"
+
+#: hotkeys.cpp:444
+msgid "Styling Assistant Play Audio"
+msgstr "Trợ lí Tạo kiểu - Phát âm thanh"
+
+#: hotkeys.cpp:445
+msgid "Styling Assistant Play Video"
+msgstr "Trợ lí Tạo kiểu - Phát phim"
+
+#: hotkeys.cpp:446
+msgid "Styling Assistant Next"
+msgstr "Trợ lí Tạo kiểu - Tiếp"
+
+#: hotkeys.cpp:447
+msgid "Styling Assistant Prev"
+msgstr "Trợ lí Tạo kiểu - Trước"
+
+#: hotkeys.cpp:448
+msgid "Styling Assistant Accept"
+msgstr "Trợ lí Tạo kiểu - Chấp thuận"
+
+#: hotkeys.cpp:449
+msgid "Styling Assistant Preview"
+msgstr "Trợ lí Tạo kiểu - Xem thử"
+
+#: dialog_associations.cpp:349
+msgid "Associate file types"
+msgstr "Liên kết các kiểu tập tin"
+
+#: dialog_associations.cpp:376
+msgid ""
+"Aegisub can take over the following file types.\n"
+"\n"
+"If you want Aegisub to no longer be associated with a file type, you must tell another program to take over the file type."
+msgstr ""
+"Aegisub có thể xử lí các kiểu tập tin sau.\n"
+"\n"
+"Nếu muốn Aegisub không liên kết với một kiểu tập tin, bạn phải cho chương trình khác xử lí kiểu tập tin đó."
+
+#: dialog_associations.cpp:378
+msgid ""
+"Aegisub is already associated with all supported file types.\n"
+"\n"
+"If you want Aegisub to no longer be associated with a file type, you must tell another program to take over the file type."
+msgstr ""
+"Aegisub đã được liên kết với tất cả các kiểu tập tin được hỗ trợ.\n"
+"\n"
+"Nếu muốn Aegisub không liên kết với một kiểu tập tin, bạn phải cho chương trình khác xử lí kiểu tập tin đó."
+
+#: dialog_associations.cpp:475
+msgid "Aegisub"
+msgstr "Aegisub"
+
+#: dialog_associations.cpp:476
+msgid "Make Aegisub default editor for subtitles?"
+msgstr "Thiết lập Aegisub làm trình biên tập phụ đề mặc định?"
+
+#: dialog_associations.cpp:477
+msgid "Aegisub is not your default editor for subtitle files. Do you want to make Aegisub your default editor for subtitle files?"
+msgstr "Aegisub không phải là trình biên tập phụ đề mặc định của bạn. Bạn có muốn thiết lập Aegisub làm trình biên tập phụ đề mặc định của mình không?"
+
+#: dialog_associations.cpp:478
+msgid "Always perform this check when Aegisub starts"
+msgstr "Luôn thực hiện việc kiểm tra này khi Aegisub khởi động"
+
+#: dialog_associations.cpp:533
+msgid "&Yes"
+msgstr "&Có"
+
+#: dialog_associations.cpp:534
+msgid "&No"
+msgstr "&Không"
+
+#: auto4_perl_dialogs.cpp:60
+msgid "Executing "
+msgstr "Thực thi"
+
+#: dialog_paste_over.cpp:53
+msgid "Select Fields to Paste Over"
+msgstr "Chọn các Trường để Dán đè"
+
+#: dialog_paste_over.cpp:59
+msgid "Fields"
+msgstr "Trường"
+
+#: dialog_paste_over.cpp:60
+msgid "Please select the fields that you want to paste over:"
+msgstr "Vui lòng chọn các trường mà bạn muốn dán đè:"
+
+#: dialog_paste_over.cpp:66
+msgid "Start Time"
+msgstr "Thời gian Bắt đầu"
+
+#: dialog_paste_over.cpp:67
+msgid "End Time"
+msgstr "Thời gian Kết thúc"
+
+#: dialog_paste_over.cpp:70
+msgid "Margin Left"
+msgstr "Lề trái"
+
+#: dialog_paste_over.cpp:71
+msgid "Margin Right"
+msgstr "Lề phải"
+
+#: dialog_paste_over.cpp:73
+msgid "Margin Vertical"
+msgstr "Lề dọc"
+
+#: dialog_paste_over.cpp:76
+msgid "Margin Top"
+msgstr "Lề trên"
+
+#: dialog_paste_over.cpp:77
+msgid "Margin Bottom"
+msgstr "Lề dưới"
+
+#: subtitle_format_prs.cpp:145
+msgid "Exporting PRS"
+msgstr "Xuất PRS"
+
+#: subtitle_format_prs.cpp:145
+msgid "Writing file"
+msgstr "Đang ghi tập tin"
+
+#: dialog_colorpicker.cpp:446
+msgid "Select Colour"
+msgstr "Chọn màu"
+
+#: dialog_colorpicker.cpp:519
+msgid "Colour spectrum"
+msgstr "Dải phổ màu"
+
+#: dialog_colorpicker.cpp:522
+msgid "RGB/R"
+msgstr "RGB/R"
+
+#: dialog_colorpicker.cpp:522
+msgid "RGB/G"
+msgstr "RGB/G"
+
+#: dialog_colorpicker.cpp:522
+msgid "RGB/B"
+msgstr "RGB/B"
+
+#: dialog_colorpicker.cpp:522
+msgid "HSL/L"
+msgstr "HSL/L"
+
+#: dialog_colorpicker.cpp:522
+msgid "HSV/H"
+msgstr "HSV/H"
+
+#: dialog_colorpicker.cpp:528
+msgid "RGB colour"
+msgstr "Màu RGB"
+
+#: dialog_colorpicker.cpp:533
+msgid "HSL colour"
+msgstr "Màu HSL"
+
+#: dialog_colorpicker.cpp:538
+msgid "HSV colour"
+msgstr "Màu HSV"
+
+#: dialog_colorpicker.cpp:560
+msgid "Spectrum mode:"
+msgstr "Chế độ dải quang phổ:"
+
+#: dialog_colorpicker.cpp:572
+msgid "Red:"
+msgstr "Đỏ:"
+
+#: dialog_colorpicker.cpp:574
+msgid "Green:"
+msgstr "Xanh lá:"
+
+#: dialog_colorpicker.cpp:576
+msgid "Blue:"
+msgstr "Xanh dương:"
+
+#: dialog_colorpicker.cpp:591
+#: dialog_colorpicker.cpp:601
+msgid "Hue:"
+msgstr "Độ màu:"
+
+#: dialog_colorpicker.cpp:593
+#: dialog_colorpicker.cpp:603
+msgid "Sat.:"
+msgstr "Bão hòa:"
+
+#: dialog_colorpicker.cpp:595
+msgid "Lum.:"
+msgstr "Độ sáng:"
+
+#: dialog_colorpicker.cpp:605
+msgid "Value:"
+msgstr "Giá trị:"
+
+#: dialog_colorpicker.cpp:632
+msgid "Colour Picker"
+msgstr "Trình chọn màu:"
+
+#: vfr.cpp:68
+msgid "No timecodes to average"
+msgstr "Không có mã thời gian để tính trung bình"
+
+#: frame_main_events.cpp:274
+msgid "Empty"
+msgstr "Rỗng"
+
+#: frame_main_events.cpp:468
+msgid "No Automation macros loaded"
+msgstr "Không có macro Tự động được nạp"
+
+#: frame_main_events.cpp:658
+#: frame_main_events.cpp:681
+msgid "Video Formats"
+msgstr "Định dạng Phim"
+
+#: frame_main_events.cpp:659
+#: frame_main_events.cpp:809
+#: frame_main_events.cpp:824
+msgid "All Files"
+msgstr "Tất cả Tập tin"
+
+#: frame_main_events.cpp:660
+msgid "Open video file"
+msgstr "Mở tập tin phim"
+
+#: frame_main_events.cpp:680
+msgid "Audio Formats"
+msgstr "Định dạng Âm thanh"
+
+#: frame_main_events.cpp:682
+msgid "All files"
+msgstr "Tất cả Tập tin"
+
+#: frame_main_events.cpp:683
+msgid "Open audio file"
+msgstr "Mở tập tin âm thanh"
+
+#: frame_main_events.cpp:735
+msgid "Charset"
+msgstr "Bảng mã"
+
+#: frame_main_events.cpp:808
+#: frame_main_events.cpp:823
+msgid "All Supported Types"
+msgstr "Tất cả Các kiểu Được hỗ trợ"
+
+#: frame_main_events.cpp:810
+msgid "Open timecodes file"
+msgstr "Mở tập tin mã thời gian"
+
+#: frame_main_events.cpp:825
+msgid "Save timecodes file"
+msgstr "Lưu tập tin mã thời gian"
+
+#: frame_main_events.cpp:1117
+msgid "Reloaded all Automation scripts"
+msgstr "Nạp lại tất cả script Tự động"
+
+#: frame_main_events.cpp:1120
+msgid "Reloaded autoload Automation scripts"
+msgstr "Nạp lại các script Tự động được tự động nạp"
+
+#: frame_main_events.cpp:1257
+msgid "snap to scene"
+msgstr "bắt kéo tới phân cảnh"
+
+#: frame_main_events.cpp:1288
+msgid "shift to frame"
+msgstr "dịch chuyển tới khung hình"
+
+#: frame_main_events.cpp:1385
+msgid "Enter aspect ratio in either decimal (e.g. 2.35) or fractional (e.g. 16:9) form. Enter a value like 853x480 to set a specific resolution."
+msgstr "Nhập tỉ lệ màn ảnh theo thập phân (vd. 2.35) hoặc phân số (vd. 16:9). Nhập một giá trị như 853x480 để thiết lập một độ phân giải xác định"
+
+#: frame_main_events.cpp:1385
+msgid "Enter aspect ratio"
+msgstr "Nhập tỉ lệ màn ảnh"
+
+#: frame_main_events.cpp:1420
+msgid "Invalid value! Aspect ratio must be between 0.5 and 5.0."
+msgstr "Giá trị không hợp lệ! Tỉ lệ màn ảnh phải giữa 0.5 và 5.0."
+
+#: frame_main_events.cpp:1420
+msgid "Invalid Aspect Ratio"
+msgstr "Tỉ lệ màn ảnh Không hợp lệ"
+
+#: frame_main_events.cpp:1521
+msgid "sort"
+msgstr "sắp xếp"
+
+#: frame_main_events.cpp:1560
+msgid "File backup saved as \""
+msgstr "Tập tin sao lưu được lưu dưới dạng \""
+
+#: frame_main_events.cpp:1654
+msgid "ASS Override Tag mode set to "
+msgstr "Chế độ Ghi đè Thẻ ASS được thiết lập thành"
+
+#: frame_main_events.cpp:1655
+msgid "show full tags."
+msgstr "hiện thẻ đầy đủ."
+
+#: frame_main_events.cpp:1656
+msgid "simplify tags."
+msgstr "đơn giản hóa các thẻ."
+
+#: frame_main_events.cpp:1657
+msgid "hide tags."
+msgstr "ẩn thẻ."
+
