@@ -225,17 +225,15 @@ static const wxChar * GetOSShortName()
 		else
 			return _T("windows"); // future proofing? I doubt we run on nt4
 	}
-	else if (osid & wxOS_MAC_OSX_DARWIN && osver_maj == 10)
+	else if (osid & wxOS_MAC_OSX_DARWIN && osver_maj == 0x10) // yes 0x10, not decimal 10, don't ask me
 	{
-		if (osver_min == 4)
-			return _T("osx4");
-		else if (osver_min == 5)
-			return _T("osx5");
-		else if (osver_min == 6)
-			return _T("osx6");
-		else
-			return _T("osx");
-		// lump anyone who manages to build us on a non-osx version into "unknown"
+		// ugliest hack in the world? nah.
+		static wxChar osxstring[] = _T("osx00");
+		char minor = osver_min >> 4;
+		char patch = osver_min & 0x0F;
+		osxstring[3] = minor + (minor <= 9) ? '0' : ('a'-1);
+		osxstring[4] = patch + (patch <= 9) ? '0' : ('a'-1);
+		return osxstring;
 	}
 	else if (osid & wxOS_UNIX_LINUX)
 		return _T("linux");
