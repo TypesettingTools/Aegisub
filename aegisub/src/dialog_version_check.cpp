@@ -262,21 +262,70 @@ static const wxChar * GetOSShortName()
 }
 
 
+#ifdef WIN32
+typedef BOOL (WINAPI * PGetUserPreferredUILanguages)(DWORD dwFlags, PULONG pulNumLanguages, wchar_t *pwszLanguagesBuffer, PULONG pcchLanguagesBuffer);
+static wxString GetSystemLanguage()
+{
+	wxString res;
+
+	// Try using Win 6+ functions if available
+	HMODULE kernel32 = LoadLibraryW(L"kernel32.dll");
+	PGetUserPreferredUILanguages gupuil = (PGetUserPreferredUILanguages)GetProcAddress(kernel32, "GetUserPreferredUILanguages");
+	if (gupuil)
+	{
+		ULONG numlang = 0, output_len = 0;
+		if (gupuil(MUI_LANGUAGE_NAME, &numlang, 0, &output_len) != TRUE)
+			goto getsyslang_fallback;
+		wchar_t *output = new wchar_t[output_len];
+		if (gupuil(MUI_LANGUAGE_NAME, &numlang, output, &output_len) && numlang >= 1)
+		{
+			// We got at least one language, just treat it as the only, and a null-terminated string
+			res = wxString(output);
+			delete[] output;
+		}
+		else
+		{
+			delete[] output;
+			goto getsyslang_fallback;
+		}
+	}
+	else
+	{
+getsyslang_fallback:
+		// On an old version of Windows, let's just return the LANGID as a string
+		LANGID langid = GetUserDefaultUILanguage();
+		res = wxString::Format(_T("x-win%04x"), langid);
+
+	}
+	FreeModule(kernel32);
+
+	return res;
+}
+#else
+static wxString GetSystemLanguage()
+{
+	return _T("x-unk")
+}
+#endif
+
+
 void AegisubVersionCheckerThread::DoCheck()
 {
 	const wxString servername = _T("updates.aegisub.org");
 	const wxString base_updates_path = _T("/2.1.8");
 
 	wxString querystring = wxString::Format(
-		_T("?rev=%d&rel=%d&os=%s"),
+		_T("?rev=%d&rel=%d&os=%s&lang=%s"),
 		GetSVNRevision(),
 		GetIsOfficialRelease()?1:0,
-		GetOSShortName());
+		GetOSShortName(),
+		GetSystemLanguage().c_str());
 
 	wxString path = base_updates_path + querystring;
 
 	wxHTTP http;
 	http.SetHeader(_T("Connection"), _T("Close"));
+	http.SetFlags(wxSOCKET_WAITALL|wxSOCKET_BLOCK);
 
 	if (!http.Connect(servername))
 		throw VersionCheckError(_("Could not connect to updates server."));
