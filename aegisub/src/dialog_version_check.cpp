@@ -337,7 +337,7 @@ void AegisubVersionCheckerThread::DoCheck()
 
 	AegisubVersionCheckResultEvent result_event;
 
-	while (!stream->Eof())
+	while (!stream->Eof() && stream->GetSize() > 0)
 	{
 		wxString line = text.ReadLine();
 		wxStringTokenizer tkn(line, _T("|"), wxTOKEN_RET_EMPTY_ALL);
