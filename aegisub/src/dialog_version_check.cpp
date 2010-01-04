@@ -304,7 +304,7 @@ getsyslang_fallback:
 #else
 static wxString GetSystemLanguage()
 {
-	return _T("x-unk")
+	return _T("x-unk");
 }
 #endif
 
@@ -543,7 +543,7 @@ void AegisubVersionCheckEventHandler::EnsureHandlerIsRegistered()
 	wxTheApp->Connect(
 		-1, -1,
 		AEGISUB_EVENT_VERSIONCHECK_RESULT,
-		(wxObjectEventFunction)&OnUpdateResult,
+		(wxObjectEventFunction)&AegisubVersionCheckEventHandler::OnUpdateResult,
 		0,
 		&evt_handler_object);
 
