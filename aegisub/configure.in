@@ -640,10 +640,10 @@ AC_SUBST(LIBSWSCALE_CFLAGS)
 AC_SUBST(LIBAVUTIL_LIBS)
 AC_SUBST(LIBAVUTIL_CFLAGS)
 
-AC_ARG_WITH(provider-ffmpeg, [  --with-provider-ffmpeg
+AC_ARG_WITH(provider-BROKEN-ffmpeg, [  --with-provider-BROKEN-ffmpeg
                           build with FFMPEG A/V provider. (default: no)]", [with_provider_ffmpeg="yes"])
 
-if test "$agi_cv_with_ffmpeg" = "yes" && test "$with_provider_ffmpeg" = "yes"; then
+if test "$agi_cv_with_ffmpeg" = "yes" && test "$with_provider_BROKEN_ffmpeg" = "yes"; then
   found_video_provider="yes"
   AC_DEFINE(WITH_FFMPEG, 1, [Enable FFMPEG Video Provider])
 else
