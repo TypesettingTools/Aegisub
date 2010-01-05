@@ -46,6 +46,10 @@
 #include "utils.h"
 #include "standard_paths.h"
 #include <wx/filefn.h>
+#include <wx/thread.h>
+#include <wx/dialog.h>
+#include <wx/gauge.h>
+#include <wx/utils.h>
 
 #ifdef __APPLE__
 extern "C" {
@@ -54,7 +58,92 @@ extern "C" {
 }
 #endif
 
-#define STUB_MSG _("Please wait, caching fonts...");
+
+
+DEFINE_EVENT_TYPE(AEGISUB_LIBASS_FONTUPDATE_FINISH)
+
+class AegisubLibassFontupdateFinishEvent : public wxEvent {
+public:
+	AegisubLibassFontupdateFinishEvent()
+		: wxEvent(0, AEGISUB_LIBASS_FONTUPDATE_FINISH)
+	{ }
+	virtual wxEvent *Clone() const {
+		return new AegisubLibassFontupdateFinishEvent(*this);
+	}
+};
+
+class LibassFontUpdateThread : public wxThread {
+	wxEvtHandler *completion_event_handler;
+	ASS_Renderer *renderer;
+
+public:
+	LibassFontUpdateThread(wxEvtHandler *completion_event_handler, ASS_Renderer *renderer)
+		: wxThread(wxTHREAD_JOINABLE)
+		, completion_event_handler(completion_event_handler)
+		, renderer(renderer)
+	{
+		Create();
+		Run();
+	}
+
+	ExitCode Entry() {
+		ass_fonts_update(renderer);
+		completion_event_handler->AddPendingEvent(AegisubLibassFontupdateFinishEvent());
+		return 0;
+	}
+};
+
+
+class LibassFontUpdateStatusDialog : public wxDialog {
+	void OnDoneUpdating(AegisubLibassFontupdateFinishEvent &evt) {
+		Destroy();
+	}
+	
+	void OnTimer(wxTimerEvent &evt) {
+		Show();
+	}
+	
+	wxTimer timer;
+
+public:
+	LibassFontUpdateStatusDialog()
+		: wxDialog(0, -1, _T(""), wxDefaultPosition, wxDefaultSize, 0)
+		, timer(this, -1)
+	{
+		wxSizer *main_sizer = new wxBoxSizer(wxVERTICAL);
+
+		main_sizer->Add(new wxStaticText(this, -1, _("Please wait, caching fonts...")), 0, wxEXPAND|wxALL, 12);
+
+		wxGauge *gauge = new wxGauge(this, -1, 1, wxDefaultPosition, wxSize(350, -1));
+		gauge->Pulse();
+		main_sizer->Add(gauge, 0, wxEXPAND|wxALL&~wxTOP, 12);
+		
+		Connect(-1, -1, AEGISUB_LIBASS_FONTUPDATE_FINISH,
+			(wxObjectEventFunction)&LibassFontUpdateStatusDialog::OnDoneUpdating,
+			0, this);
+		Connect(timer.GetId(), -1, wxEVT_TIMER,
+			(wxObjectEventFunction)&LibassFontUpdateStatusDialog::OnTimer,
+			0, this);
+		
+		timer.Start(500, true);
+
+		SetSizerAndFit(main_sizer);
+		CentreOnScreen();
+	}
+	
+	void WaitForUpdatingFinish(wxThread *thread) {
+		wxWindowDisabler disabler(this);
+		wxApp &app = *wxTheApp;
+		while (thread->IsAlive()) {
+			while (app.Pending())
+				app.Dispatch();
+			wxYield();
+		}
+		thread->Wait();
+	}
+};
+
+
 
 ///////////////
 // Constructor
@@ -93,7 +182,11 @@ LibassSubtitlesProvider::LibassSubtitlesProvider() {
 	const char *config_path = NULL;
 #endif
 
-	ass_set_fonts(ass_renderer, NULL, "Sans", 1, config_path, 1);
+	ass_set_fonts(ass_renderer, NULL, "Sans", 1, config_path, 0);
+
+	LibassFontUpdateStatusDialog *fonts_update_dlg = new LibassFontUpdateStatusDialog;
+	wxThread * update_thread = new LibassFontUpdateThread(fonts_update_dlg, ass_renderer);
+	fonts_update_dlg->WaitForUpdatingFinish(update_thread);
 }
 
 
