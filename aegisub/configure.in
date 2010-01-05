@@ -1307,7 +1307,7 @@ if ! test -z "$with_player_audio"; then
     default_player_audio="$with_player_audio"
 else
   if test "$build_linux" = "yes" && test "$with_alsa" = "yes"; then
-    default_player_audio="alsa"
+    default_player_audio="openal"
   elif test "$build_darwin" = "yes" && test "$with_openal" = "yes"; then
     default_player_audio="openal"
   elif test "$with_portaudio" = "yes"; then
