@@ -56,6 +56,7 @@
 #include <wx/platinfo.h>
 #include <wx/tokenzr.h>
 #include <wx/hyperlink.h>
+#include <wx/intl.h>
 #include <memory>
 
 
@@ -302,7 +303,10 @@ getsyslang_fallback:
 #else
 static wxString GetSystemLanguage()
 {
-	return _T("x-unk");
+    wxLocale *locale = new wxLocale();
+    locale->Init();
+	const wxLanguageInfo *info = locale->GetLanguageInfo(locale->GetLanguage());
+	return info->CanonicalName;
 }
 #endif
 
