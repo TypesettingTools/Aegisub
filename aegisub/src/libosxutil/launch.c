@@ -1,4 +1,4 @@
-#include <LSOpen.h>
+#include <ApplicationServices/ApplicationServices.h>
 #include "libosxutil.h"
 
 void OSX_OpenLocation (const char *location) {
