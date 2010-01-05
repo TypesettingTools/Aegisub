@@ -46,18 +46,16 @@
 #include "utils.h"
 #include "standard_paths.h"
 #include <wx/filefn.h>
+#ifdef __APPLE__
 #include <wx/thread.h>
 #include <wx/dialog.h>
 #include <wx/gauge.h>
 #include <wx/utils.h>
 
-#ifdef __APPLE__
 extern "C" {
 #include "libosxutil/libosxutil.h"
 #include <sys/param.h>
 }
-#endif
-
 
 
 DEFINE_EVENT_TYPE(AEGISUB_LIBASS_FONTUPDATE_FINISH)
@@ -143,6 +141,7 @@ public:
 	}
 };
 
+#endif
 
 
 ///////////////
@@ -182,11 +181,16 @@ LibassSubtitlesProvider::LibassSubtitlesProvider() {
 	const char *config_path = NULL;
 #endif
 
+#ifdef __APPLE__
 	ass_set_fonts(ass_renderer, NULL, "Sans", 1, config_path, 0);
 
 	LibassFontUpdateStatusDialog *fonts_update_dlg = new LibassFontUpdateStatusDialog;
 	wxThread * update_thread = new LibassFontUpdateThread(fonts_update_dlg, ass_renderer);
 	fonts_update_dlg->WaitForUpdatingFinish(update_thread);
+#else
+	ass_set_fonts(ass_renderer, NULL, "Sans", 1, config_path, 1);
+#endif
+
 }
 
 
