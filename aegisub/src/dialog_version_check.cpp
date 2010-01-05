@@ -303,10 +303,7 @@ getsyslang_fallback:
 #else
 static wxString GetSystemLanguage()
 {
-    wxLocale *locale = new wxLocale();
-    locale->Init();
-	const wxLanguageInfo *info = locale->GetLanguageInfo(locale->GetLanguage());
-	return info->CanonicalName;
+	return wxLocale::GetLanguageInfo(wxLocale::GetSystemLanguage())->CanonicalName;
 }
 #endif
 
