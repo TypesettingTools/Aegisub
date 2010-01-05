@@ -232,8 +232,8 @@ static const wxChar * GetOSShortName()
 		static wxChar osxstring[] = _T("osx00");
 		char minor = osver_min >> 4;
 		char patch = osver_min & 0x0F;
-		osxstring[3] = minor + (minor <= 9) ? '0' : ('a'-1);
-		osxstring[4] = patch + (patch <= 9) ? '0' : ('a'-1);
+		osxstring[3] = minor + ((minor<=9) ? '0' : ('a'-1));
+		osxstring[4] = patch + ((patch<=9) ? '0' : ('a'-1));
 		return osxstring;
 	}
 	else if (osid & wxOS_UNIX_LINUX)
