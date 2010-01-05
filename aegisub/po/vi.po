@@ -549,7 +549,7 @@ msgstr "Hiệu ứng"
 #: dialog_selection.cpp:79
 #: dialog_search_replace.cpp:102
 msgid "In Field"
-msgstr ""
+msgstr "Trong Trường"
 
 #: dialog_selection.cpp:82
 msgid "Dialogues"
@@ -4139,7 +4139,7 @@ msgstr "Dịch chuyển phụ đề lùi lại, để cho chúng hiện ra sớm
 
 #: dialog_shift_times.cpp:108
 msgid "Selection onward"
-msgstr ""
+msgstr "Đoạn lựa chọn trở đi"
 
 #: dialog_shift_times.cpp:109
 msgid "Affect"
@@ -4184,15 +4184,15 @@ msgstr "tiến, "
 
 #: dialog_shift_times.cpp:263
 msgid "s+e, "
-msgstr ""
+msgstr "s+e, "
 
 #: dialog_shift_times.cpp:264
 msgid "s, "
-msgstr ""
+msgstr "s, "
 
 #: dialog_shift_times.cpp:265
 msgid "e, "
-msgstr ""
+msgstr "e, "
 
 #: dialog_shift_times.cpp:268
 msgid "all"
@@ -4201,11 +4201,11 @@ msgstr "tất cả"
 #: dialog_shift_times.cpp:269
 #, c-format
 msgid "from %i onward"
-msgstr ""
+msgstr "từ %i trở đi"
 
 #: dialog_shift_times.cpp:271
 msgid "sel "
-msgstr ""
+msgstr "sel "
 
 #: dialog_shift_times.cpp:299
 msgid "shifting"
