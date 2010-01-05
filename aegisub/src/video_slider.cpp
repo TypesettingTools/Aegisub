@@ -66,6 +66,7 @@ VideoSlider::VideoSlider (wxWindow* parent, wxWindowID id)
 	max = 1;
 	Display = NULL;
 	SetClientSize(20,25);
+	SetMinSize(wxSize(20, 25));
 	locked = false;
 	SetRange(0,1);
 }
