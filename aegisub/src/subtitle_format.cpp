@@ -503,8 +503,9 @@ static void InsertLineSortedIntoList(std::list<AssEntry*> &list, std::list<AssEn
 }
 
 
-/// @brief http://malakith.net/aegiwiki/Split-merge_algorithm_for_converting_to_simple_subtitle_formats Split and merge lines so there are no overlapping lines 
+/// @brief Split and merge lines so there are no overlapping lines 
 ///
+/// Algorithm described at http://devel.aegisub.org/wiki/Technical/SplitMerge
 void SubtitleFormat::RecombineOverlaps() {
 	using std::list;
 	list<AssEntry*>::iterator next;
