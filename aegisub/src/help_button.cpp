@@ -79,18 +79,15 @@ void HelpButton::OpenPage(const wxString pageID) {
 	InitStatic();
 	wxString page = (*pages)[pageID];
 
-	// Get the file type
-	wxFileType *type = wxTheMimeTypesManager->GetFileTypeFromExtension(_T("html"));
-	if (type) {
-		//wxString path = StandardPaths::DecodePath(wxString::Format(_T("http://docs.aegisub.net/%s"),page.c_str()));
-		wxString docsPath = StandardPaths::DecodePath(_T("?data/docs"));
+	wxString docsPath = StandardPaths::DecodePath(_T("?data/docs"));
 #ifdef __WINDOWS__
-		docsPath.Replace(_T("\\"),_T("/"));
-		docsPath = _T("/") + docsPath;
+	docsPath.Replace(_T("\\"),_T("/"));
+	docsPath = _T("/") + docsPath;
 #endif
-		wxString path = wxString::Format(_T("file://%s/%s.html"),docsPath.c_str(),page.c_str());
-		wxLaunchDefaultBrowser(path);
-	}
+	wxString path = wxString::Format(_T("file://%s/%s.html"),docsPath.c_str(),page.c_str());
+	if (!wxFileName::IsFileReadable(docsPath))
+		path = StandardPaths::DecodePath(wxString::Format(_T("http://docs.aegisub.net/%s"),page.c_str()));
+	wxLaunchDefaultBrowser(path);
 }
 
 
