@@ -1127,33 +1127,7 @@ void AudioDisplay::Play(int start,int end) {
 	// Check provider
 	if (!provider) {
 		wxLogDebug(_T("AudioDisplay::Play: no audio provider"));
-		// Load temporary provider from video
-		if (VideoContext::Get()->IsLoaded()) {
-			wxLogDebug(_T("AudioDisplay::Play: has video provider"));
-			try {
-				// Get provider
-				if (!VideoContext::Get()->videoName.StartsWith(_T("?dummy")))
-					provider = AudioProviderFactoryManager::GetAudioProvider(VideoContext::Get()->videoName, 0);
-				else
-					return;
-
-				// Get player
-				player = AudioPlayerFactoryManager::GetAudioPlayer();
-				player->SetDisplayTimer(&UpdateTimer);
-				player->SetProvider(provider);
-				player->OpenStream();
-				temporary = true;
-				wxLogDebug(_T("AudioDisplay::Play: got temp audio provider from video provider"));
-			}
-			catch (...) {
-				wxLogDebug(_T("AudioDisplay::Play: exception getting audio provider from video, returning"));
-				return;
-			}
-		}
-		if (!provider) {
-			wxLogDebug(_T("AudioDisplay::Play: has no provider, returning"));
-			return;
-		}
+		return;
 	}
 
 	// Set defaults
