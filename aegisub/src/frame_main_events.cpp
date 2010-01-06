@@ -607,14 +607,14 @@ void FrameMain::OnFiles(wxCommandEvent& WXUNUSED(event)) {
 /// @param event 
 ///
 void FrameMain::OnWebsite(wxCommandEvent& WXUNUSED(event)) {
-	AegisubApp::OpenURL(_T("http://www.aegisub.net/"));
+	AegisubApp::OpenURL(_T("http://www.aegisub.org/"));
 }
 
 
 ///////////////
 // Open forums
 void FrameMain::OnForums(wxCommandEvent& WXUNUSED(event)) {
-	AegisubApp::OpenURL(_T("http://forum.aegisub.net/"));
+	AegisubApp::OpenURL(_T("http://forum.aegisub.org/"));
 }
 
 
