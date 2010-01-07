@@ -566,7 +566,7 @@ void DialogStyleManager::OnCopyToStorage (wxCommandEvent &event) {
 		for (std::list<AssStyle *>::iterator style = Store.style.begin(); style != Store.style.end(); ++style) {
 			if ((*style)->name.CmpNoCase(styleName) == 0) {
 				addStyle = false;
-				if (wxYES == wxMessageBox(wxString::Format(_T("There is already a style with the name \"%s\" on the current storage. Proceed and overwrite anyway?"),styleName), _T("Style name collision."), wxYES_NO)) {
+				if (wxYES == wxMessageBox(wxString::Format(_T("There is already a style with the name \"%s\" on the current storage. Proceed and overwrite anyway?"),styleName.c_str()), _T("Style name collision."), wxYES_NO)) {
 					**style = *styleMap.at(selections[i]);
 				}
 				break;
@@ -595,7 +595,7 @@ void DialogStyleManager::OnCopyToCurrent (wxCommandEvent &event) {
 		for (std::vector<AssStyle *>::iterator style = styleMap.begin(); style != styleMap.end(); ++style) {
 			if ((*style)->name.CmpNoCase(styleName) == 0) {
 				addStyle = false;
-				if (wxYES == wxMessageBox(wxString::Format(_T("There is already a style with the name \"%s\" on the current script. Proceed and overwrite anyway?"),styleName), _T("Style name collision."), wxYES_NO)) {
+				if (wxYES == wxMessageBox(wxString::Format(_T("There is already a style with the name \"%s\" on the current script. Proceed and overwrite anyway?"),styleName.c_str()), _T("Style name collision."), wxYES_NO)) {
 					**style = *styleStorageMap.at(selections[i]);
 				}
 				break;
