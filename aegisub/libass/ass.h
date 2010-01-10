@@ -25,7 +25,7 @@
 #include <stdarg.h>
 #include "ass_types.h"
 
-#define LIBASS_VERSION 0x00907010
+#define LIBASS_VERSION 0x00908000
 
 /*
  * A linked list of images produced by an ass renderer.
@@ -49,7 +49,7 @@ typedef struct ass_image {
 } ASS_Image;
 
 /*
- * Hintint type. (see ass_set_hinting below)
+ * Hinting type. (see ass_set_hinting below)
  *
  * FreeType's native hinter is still buggy sometimes and it is recommended
  * to use the light autohinter, ASS_HINTING_LIGHT, instead.  For best
@@ -195,6 +195,9 @@ void ass_set_line_spacing(ASS_Renderer *priv, double line_spacing);
 
 /**
  * \brief Set font lookup defaults.
+ * \param default_font path to default font to use. Must be supplied if
+ * fontconfig is disabled or unavailable.
+ * \param default_family fallback font family for fontconfig, or NULL
  * \param fc whether to use fontconfig
  * \param config path to fontconfig configuration file, or NULL.  Only relevant
  * if fontconfig is used.

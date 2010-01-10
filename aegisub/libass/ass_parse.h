@@ -29,6 +29,7 @@
 void update_font(ASS_Renderer *render_priv);
 void change_border(ASS_Renderer *render_priv, double border_x,
                    double border_y);
+void apply_transition_effects(ASS_Renderer *render_priv, ASS_Event *event);
 unsigned get_next_char(ASS_Renderer *render_priv, char **str);
 extern void change_alpha(uint32_t *var, uint32_t new, double pwr);
 extern uint32_t mult_alpha(uint32_t a, uint32_t b);

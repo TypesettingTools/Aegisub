@@ -218,7 +218,6 @@ void ass_font_set_transform(ASS_Font *font, double scale_x,
 
 static void face_set_size(FT_Face face, double size)
 {
-#if (FREETYPE_MAJOR > 2) || ((FREETYPE_MAJOR == 2) && (FREETYPE_MINOR > 1))
     TT_HoriHeader *hori = FT_Get_Sfnt_Table(face, ft_sfnt_hhea);
     TT_OS2 *os2 = FT_Get_Sfnt_Table(face, ft_sfnt_os2);
     double mscale = 1.;
@@ -241,9 +240,6 @@ static void face_set_size(FT_Face face, double size)
     m->ascender /= mscale;
     m->descender /= mscale;
     m->height /= mscale;
-#else
-    FT_Set_Char_Size(face, 0, double_to_d6(size), 0, 0);
-#endif
 }
 
 /**
@@ -421,6 +417,9 @@ FT_Glyph ass_font_get_glyph(void *fontconfig_priv, ASS_Font *font,
 
     if (ch < 0x20)
         return 0;
+    // Handle NBSP like a regular space when rendering the glyph
+    if (ch == 0xa0)
+        ch = ' ';
     if (font->n_faces == 0)
         return 0;
 
@@ -473,10 +472,6 @@ FT_Glyph ass_font_get_glyph(void *fontconfig_priv, ASS_Font *font,
                 index);
         return 0;
     }
-#if (FREETYPE_MAJOR > 2) || \
-    ((FREETYPE_MAJOR == 2) && (FREETYPE_MINOR >= 2)) || \
-    ((FREETYPE_MAJOR == 2) && (FREETYPE_MINOR == 1) && (FREETYPE_PATCH >= 10))
-// FreeType >= 2.1.10 required
     if (!(face->style_flags & FT_STYLE_FLAG_ITALIC) &&
         (font->desc.italic > 55)) {
         FT_GlyphSlot_Oblique(face->glyph);
@@ -486,7 +481,6 @@ FT_Glyph ass_font_get_glyph(void *fontconfig_priv, ASS_Font *font,
         (font->desc.bold > 80)) {
         ass_glyph_embolden(face->glyph);
     }
-#endif
     error = FT_Get_Glyph(face->glyph, &glyph);
     if (error) {
         ass_msg(font->library, MSGL_WARN, "Error loading glyph, index %d",
