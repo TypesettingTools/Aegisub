@@ -342,8 +342,8 @@ void TimeEdit::OnMouseEvent(wxMouseEvent &event) {
 	if (event.RightUp()) {
 		if (!byFrame && Options.AsBool(_T("Insert Mode on Time Boxes"))) {
 			wxMenu menu;
-			menu.Append(Time_Edit_Copy,_T("&Copy"));
-			menu.Append(Time_Edit_Paste,_T("&Paste"));
+			menu.Append(Time_Edit_Copy,_("&Copy"));
+			menu.Append(Time_Edit_Paste,_("&Paste"));
 			PopupMenu(&menu);
 			return;
 		}
