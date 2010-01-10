@@ -211,6 +211,7 @@ void OptionsManager::LoadDefaults(bool onlyDefaults,bool doOverride) {
 	SetText(_T("Audio Downmixer"),_T("ConvertToMono"),1700);
 	SetText(_T("Audio Alsa Device"), _T("default"));
 	SetInt(_T("Audio PortAudio Device"), -1);
+	SetText(_T("Audio OSS Device"), _T("/dev/dsp"));
 	SetText(_T("Audio HD Cache Location"),_T("default"),1700);
 	SetText(_T("Audio HD Cache Name"),_T("audio%02i.tmp"),1700);
 	SetBool(_T("Audio Disable PCM Provider"), false);

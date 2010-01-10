@@ -57,6 +57,9 @@
 #ifdef WITH_PULSEAUDIO
 #include "audio_player_pulse.h"
 #endif
+#ifdef WITH_OSS
+#include "audio_player_oss.h"
+#endif
 
 
 ///////////////
@@ -171,6 +174,9 @@ void AudioPlayerFactoryManager::RegisterProviders() {
 #endif
 #ifdef WITH_PULSEAUDIO
 	RegisterFactory(new PulseAudioPlayerFactory(),_T("PulseAudio"));
+#endif
+#ifdef WITH_OSS
+	RegisterFactory(new OSSPlayerFactory(),_T("OSS"));
 #endif
 }
 
