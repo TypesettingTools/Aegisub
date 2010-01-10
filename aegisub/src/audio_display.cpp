@@ -1692,17 +1692,20 @@ void AudioDisplay::OnMouseEvent(wxMouseEvent& event) {
 
 			// Release
 			else {
-				// Commit changes
-				if (diagUpdated) {
-					diagUpdated = false;
-					NeedCommit = true;
-					if (curStartMS <= curEndMS) {
-						UpdateTimeEditCtrls();
-						if (Options.AsBool(_T("Audio Autocommit"))) CommitChanges();
-					}
+				// Prevent negative times
+				curStartMS = MAX(0, curStartMS);
+				curEndMS = MAX(0, curEndMS);
+				selStart = MAX(0, selStart);
+				selEnd = MAX(0, selEnd);
 
-					else UpdateImage(true);
-				}
+				// Commit changes
+				diagUpdated = false;
+				NeedCommit = UpdateTimeEditCtrls();
+
+				if (NeedCommit && Options.AsBool(_T("Audio Autocommit"))) 
+					CommitChanges();
+				else
+					UpdateImage(true);
 
 				// Update stuff
 				SetCursor(wxNullCursor);
@@ -2379,8 +2382,9 @@ void AudioDisplay::OnLoseFocus(wxFocusEvent &event) {
 
 //////////////////////////////
 // Update time edit controls
-void AudioDisplay::UpdateTimeEditCtrls() {
-	grid->editBox->StartTime->SetTime(curStartMS,true);
-	grid->editBox->EndTime->SetTime(curEndMS,true);
-	grid->editBox->Duration->SetTime(curEndMS-curStartMS,true);
+bool AudioDisplay::UpdateTimeEditCtrls() {
+	return
+		grid->editBox->StartTime->SetTime(curStartMS,true) || 
+		grid->editBox->EndTime->SetTime(curEndMS,true) ||
+		grid->editBox->Duration->SetTime(curEndMS-curStartMS,true);
 }

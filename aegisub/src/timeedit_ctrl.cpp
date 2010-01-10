@@ -139,11 +139,13 @@ void TimeEdit::Modified(bool byUser) {
 
 /////////////////////////////
 // Set time and update stuff
-void TimeEdit::SetTime(int ms,bool setModified) {
+bool TimeEdit::SetTime(int ms,bool setModified) {
+	if (ms < 0) ms = 0;
 	int oldMs = time.GetMS();
 	time.SetMS(ms);
 	UpdateText();
 	if (setModified && oldMs != ms) Modified(false);
+	return oldMs != ms;
 }
 
 

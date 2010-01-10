@@ -166,7 +166,7 @@ public:
 	void Next(bool play=true);
 	void Prev(bool play=true);
 
-	void UpdateTimeEditCtrls();
+	bool UpdateTimeEditCtrls();
 	void CommitChanges(bool nextLine=false);
 	void AddLead(bool in,bool out);
 
