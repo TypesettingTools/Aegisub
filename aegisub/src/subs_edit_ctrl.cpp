@@ -829,11 +829,11 @@ void SubsTextEditCtrl::ShowPopupMenu(int activePos) {
 
 			// Build menu
 			for (int i=0;i<nSugs;i++) {
-				wxMenuItem *itm;
-				itm = menu.Append(EDIT_MENU_SUGGESTIONS+i,sugs[i]);
+				wxMenuItem *itm = new wxMenuItem(&menu, EDIT_MENU_SUGGESTIONS+i, sugs[i]);
 #ifdef __WINDOWS__
 				itm->SetFont(font);
 #endif
+				menu.Append(itm);
 			}
 
 			// Append "add word"
