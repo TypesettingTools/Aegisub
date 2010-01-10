@@ -123,15 +123,9 @@ void change_border(ASS_Renderer *render_priv, double border_x,
     if (bord > 0 && border_x == border_y) {
         if (!render_priv->state.stroker) {
             int error;
-#if (FREETYPE_MAJOR > 2) || ((FREETYPE_MAJOR == 2) && (FREETYPE_MINOR > 1))
             error =
                 FT_Stroker_New(render_priv->ftlibrary,
                                &render_priv->state.stroker);
-#else                           // < 2.2
-            error =
-                FT_Stroker_New(render_priv->state.font->faces[0]->
-                               memory, &render_priv->state.stroker);
-#endif
             if (error) {
                 ass_msg(render_priv->library, MSGL_V,
                         "failed to get stroker");
@@ -164,7 +158,7 @@ inline void change_alpha(uint32_t *var, uint32_t new, double pwr)
 {
     *var =
         (_r(*var) << 24) + (_g(*var) << 16) + (_b(*var) << 8) +
-        (_a(*var) * (1 - pwr) + _a(new) * pwr);
+        (uint32_t) (_a(*var) * (1 - pwr) + _a(new) * pwr);
 }
 
 /**
@@ -233,20 +227,20 @@ static char *parse_vector_clip(ASS_Renderer *render_priv, char *p)
     while (*p != ')' && *p != '}' && p != 0)
         ass_drawing_add_char(drawing, *p++);
     skipopt(')');
-    ass_drawing_parse(drawing, 1);
-
-    // We need to translate the clip according to screen borders
-    if (render_priv->settings.left_margin != 0 ||
-        render_priv->settings.top_margin != 0) {
-        FT_Vector trans = {
-            .x = int_to_d6(render_priv->settings.left_margin),
-            .y = -int_to_d6(render_priv->settings.top_margin),
-        };
-        FT_Outline_Translate(&drawing->glyph->outline, trans.x, trans.y);
+    if (ass_drawing_parse(drawing, 1)) {
+        // We need to translate the clip according to screen borders
+        if (render_priv->settings.left_margin != 0 ||
+            render_priv->settings.top_margin != 0) {
+            FT_Vector trans = {
+                .x = int_to_d6(render_priv->settings.left_margin),
+                .y = -int_to_d6(render_priv->settings.top_margin),
+            };
+            FT_Outline_Translate(&drawing->glyph->outline, trans.x, trans.y);
+        }
+        ass_msg(render_priv->library, MSGL_DBG2,
+                "Parsed vector clip: scale %d, scales (%f, %f) string [%s]\n",
+                scale, drawing->scale_x, drawing->scale_y, drawing->text);
     }
-    ass_msg(render_priv->library, MSGL_DBG2,
-            "Parsed vector clip: scale %d, scales (%f, %f) string [%s]\n",
-            scale, drawing->scale_x, drawing->scale_y, drawing->text);
 
     return p;
 }
@@ -800,6 +794,81 @@ static char *parse_tag(ASS_Renderer *render_priv, char *p, double pwr)
     }
 
     return p;
+}
+
+void apply_transition_effects(ASS_Renderer *render_priv, ASS_Event *event)
+{
+    int v[4];
+    int cnt;
+    char *p = event->Effect;
+
+    if (!p || !*p)
+        return;
+
+    cnt = 0;
+    while (cnt < 4 && (p = strchr(p, ';'))) {
+        v[cnt++] = atoi(++p);
+    }
+
+    if (strncmp(event->Effect, "Banner;", 7) == 0) {
+        int delay;
+        if (cnt < 1) {
+            ass_msg(render_priv->library, MSGL_V,
+                    "Error parsing effect: '%s'", event->Effect);
+            return;
+        }
+        if (cnt >= 2 && v[1] == 0)      // right-to-left
+            render_priv->state.scroll_direction = SCROLL_RL;
+        else                    // left-to-right
+            render_priv->state.scroll_direction = SCROLL_LR;
+
+        delay = v[0];
+        if (delay == 0)
+            delay = 1;          // ?
+        render_priv->state.scroll_shift =
+            (render_priv->time - render_priv->state.event->Start) / delay;
+        render_priv->state.evt_type = EVENT_HSCROLL;
+        return;
+    }
+
+    if (strncmp(event->Effect, "Scroll up;", 10) == 0) {
+        render_priv->state.scroll_direction = SCROLL_BT;
+    } else if (strncmp(event->Effect, "Scroll down;", 12) == 0) {
+        render_priv->state.scroll_direction = SCROLL_TB;
+    } else {
+        ass_msg(render_priv->library, MSGL_V,
+                "Unknown transition effect: '%s'", event->Effect);
+        return;
+    }
+    // parse scroll up/down parameters
+    {
+        int delay;
+        int y0, y1;
+        if (cnt < 3) {
+            ass_msg(render_priv->library, MSGL_V,
+                    "Error parsing effect: '%s'", event->Effect);
+            return;
+        }
+        delay = v[2];
+        if (delay == 0)
+            delay = 1;          // ?
+        render_priv->state.scroll_shift =
+            (render_priv->time - render_priv->state.event->Start) / delay;
+        if (v[0] < v[1]) {
+            y0 = v[0];
+            y1 = v[1];
+        } else {
+            y0 = v[1];
+            y1 = v[0];
+        }
+        if (y1 == 0)
+            y1 = render_priv->track->PlayResY;  // y0=y1=0 means fullscreen scrolling
+        render_priv->state.clip_y0 = y0;
+        render_priv->state.clip_y1 = y1;
+        render_priv->state.evt_type = EVENT_VSCROLL;
+        render_priv->state.detect_collisions = 0;
+    }
+
 }
 
 /**

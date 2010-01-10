@@ -34,7 +34,7 @@ int mystrtoi(char **p, int *res)
 {
     double temp_res;
     char *start = *p;
-    temp_res = strtod(*p, p);
+    temp_res = ass_strtod(*p, p);
     *res = (int) (temp_res + (temp_res > 0 ? 0.5 : -0.5));
     if (*p != start)
         return 1;
@@ -46,7 +46,7 @@ int mystrtoll(char **p, long long *res)
 {
     double temp_res;
     char *start = *p;
-    temp_res = strtod(*p, p);
+    temp_res = ass_strtod(*p, p);
     *res = (int) (temp_res + (temp_res > 0 ? 0.5 : -0.5));
     if (*p != start)
         return 1;
@@ -67,7 +67,7 @@ int mystrtou32(char **p, int base, uint32_t *res)
 int mystrtod(char **p, double *res)
 {
     char *start = *p;
-    *res = strtod(*p, p);
+    *res = ass_strtod(*p, p);
     if (*p != start)
         return 1;
     else

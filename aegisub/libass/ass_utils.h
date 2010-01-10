@@ -59,6 +59,9 @@ void *ass_guess_buffer_cp(ASS_Library *library, unsigned char *buffer,
                           char *fallback);
 #endif
 
+/* defined in ass_strtod.c */
+double ass_strtod(const char *string, char **endPtr);
+
 static inline int d6_to_int(int x)
 {
     return (x + 32) >> 6;
@@ -98,6 +101,21 @@ static inline double d16_to_double(int x)
 static inline int double_to_d16(double x)
 {
     return (int) (x * 0x10000);
+}
+static inline double d22_to_double(int x)
+{
+    return ((double) x) / 0x400000;
+}
+static inline int double_to_d22(double x)
+{
+    return (int) (x * 0x400000);
+}
+
+// Calculate cache key for a rotational angle in degrees
+static inline int rot_key(double a)
+{
+    const int m = double_to_d22(360.0);
+    return double_to_d22(a) % m;
 }
 
 #define FNV1_32A_INIT (unsigned)0x811c9dc5

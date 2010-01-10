@@ -230,12 +230,12 @@ static Bitmap *glyph_to_bitmap_internal(ASS_Library *library,
 }
 
 /**
- * \brief fix outline bitmap and generate shadow bitmap
- * Two things are done here:
- * 1. Glyph bitmap is subtracted from outline bitmap. This way looks much better in some cases.
- * 2. Shadow bitmap is created as a sum of glyph and outline bitmaps.
+ * \brief fix outline bitmap
+ *
+ * The glyph bitmap is subtracted from outline bitmap. This way looks much
+ * better in some cases.
  */
-static Bitmap *fix_outline_and_shadow(Bitmap *bm_g, Bitmap *bm_o)
+static void fix_outline(Bitmap *bm_g, Bitmap *bm_o)
 {
     int x, y;
     const int l = bm_o->left > bm_g->left ? bm_o->left : bm_g->left;
@@ -247,14 +247,10 @@ static Bitmap *fix_outline_and_shadow(Bitmap *bm_g, Bitmap *bm_o)
         bm_o->top + bm_o->h <
         bm_g->top + bm_g->h ? bm_o->top + bm_o->h : bm_g->top + bm_g->h;
 
-    Bitmap *bm_s = copy_bitmap(bm_o);
-
     unsigned char *g =
         bm_g->buffer + (t - bm_g->top) * bm_g->w + (l - bm_g->left);
     unsigned char *o =
         bm_o->buffer + (t - bm_o->top) * bm_o->w + (l - bm_o->left);
-    unsigned char *s =
-        bm_s->buffer + (t - bm_s->top) * bm_s->w + (l - bm_s->left);
 
     for (y = 0; y < b - t; ++y) {
         for (x = 0; x < r - l; ++x) {
@@ -262,15 +258,10 @@ static Bitmap *fix_outline_and_shadow(Bitmap *bm_g, Bitmap *bm_o)
             c_g = g[x];
             c_o = o[x];
             o[x] = (c_o > c_g) ? c_o - (c_g / 2) : 0;
-            s[x] = (c_o < 0xFF - c_g) ? c_o + c_g : 0xFF;
         }
         g += bm_g->w;
         o += bm_o->w;
-        s += bm_s->w;
     }
-
-    assert(bm_s);
-    return bm_s;
 }
 
 /**
@@ -528,16 +519,19 @@ int glyph_to_bitmap(ASS_Library *library, ASS_SynthPriv *priv_blur,
                            priv_blur->g_w);
     }
 
-    if (*bm_o && border_style == 3)
+    // Create shadow and fix outline as needed
+    if (*bm_o && border_style != 3) {
         *bm_s = copy_bitmap(*bm_o);
-    else if (*bm_o)
-        *bm_s = fix_outline_and_shadow(*bm_g, *bm_o);
-    else
+        fix_outline(*bm_g, *bm_o);
+    } else if (*bm_o) {
+        *bm_s = copy_bitmap(*bm_o);
+    } else
         *bm_s = copy_bitmap(*bm_g);
+
+    assert(bm_s);
 
     shift_bitmap((*bm_s)->buffer, (*bm_s)->w,(*bm_s)->h,
                  shadow_offset.x, shadow_offset.y);
 
-    assert(bm_s);
     return 0;
 }

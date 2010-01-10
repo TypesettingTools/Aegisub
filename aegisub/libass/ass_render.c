@@ -809,82 +809,6 @@ static void compute_string_bbox(TextInfo *info, DBBox *bbox)
         bbox->xMin = bbox->xMax = bbox->yMin = bbox->yMax = 0.;
 }
 
-static void
-apply_transition_effects(ASS_Renderer *render_priv, ASS_Event *event)
-{
-    int v[4];
-    int cnt;
-    char *p = event->Effect;
-
-    if (!p || !*p)
-        return;
-
-    cnt = 0;
-    while (cnt < 4 && (p = strchr(p, ';'))) {
-        v[cnt++] = atoi(++p);
-    }
-
-    if (strncmp(event->Effect, "Banner;", 7) == 0) {
-        int delay;
-        if (cnt < 1) {
-            ass_msg(render_priv->library, MSGL_V,
-                    "Error parsing effect: '%s'", event->Effect);
-            return;
-        }
-        if (cnt >= 2 && v[1] == 0)      // right-to-left
-            render_priv->state.scroll_direction = SCROLL_RL;
-        else                    // left-to-right
-            render_priv->state.scroll_direction = SCROLL_LR;
-
-        delay = v[0];
-        if (delay == 0)
-            delay = 1;          // ?
-        render_priv->state.scroll_shift =
-            (render_priv->time - render_priv->state.event->Start) / delay;
-        render_priv->state.evt_type = EVENT_HSCROLL;
-        return;
-    }
-
-    if (strncmp(event->Effect, "Scroll up;", 10) == 0) {
-        render_priv->state.scroll_direction = SCROLL_BT;
-    } else if (strncmp(event->Effect, "Scroll down;", 12) == 0) {
-        render_priv->state.scroll_direction = SCROLL_TB;
-    } else {
-        ass_msg(render_priv->library, MSGL_V,
-                "Unknown transition effect: '%s'", event->Effect);
-        return;
-    }
-    // parse scroll up/down parameters
-    {
-        int delay;
-        int y0, y1;
-        if (cnt < 3) {
-            ass_msg(render_priv->library, MSGL_V,
-                    "Error parsing effect: '%s'", event->Effect);
-            return;
-        }
-        delay = v[2];
-        if (delay == 0)
-            delay = 1;          // ?
-        render_priv->state.scroll_shift =
-            (render_priv->time - render_priv->state.event->Start) / delay;
-        if (v[0] < v[1]) {
-            y0 = v[0];
-            y1 = v[1];
-        } else {
-            y0 = v[1];
-            y1 = v[0];
-        }
-        if (y1 == 0)
-            y1 = render_priv->track->PlayResY;  // y0=y1=0 means fullscreen scrolling
-        render_priv->state.clip_y0 = y0;
-        render_priv->state.clip_y1 = y1;
-        render_priv->state.evt_type = EVENT_VSCROLL;
-        render_priv->state.detect_collisions = 0;
-    }
-
-}
-
 /**
  * \brief partially reset render_context to style values
  * Works like {\r}: resets some style overrides
@@ -947,6 +871,7 @@ init_render_context(ASS_Renderer *render_priv, ASS_Event *event)
     render_priv->state.clip_y0 = 0;
     render_priv->state.clip_x1 = render_priv->track->PlayResX;
     render_priv->state.clip_y1 = render_priv->track->PlayResY;
+    render_priv->state.clip_mode = 0;
     render_priv->state.detect_collisions = 1;
     render_priv->state.fade = 0;
     render_priv->state.drawing_mode = 0;
@@ -1208,7 +1133,8 @@ get_outline_glyph(ASS_Renderer *render_priv, int symbol, GlyphInfo *info,
     } else {
         GlyphHashValue v;
         if (drawing->hash) {
-            ass_drawing_parse(drawing, 0);
+            if(!ass_drawing_parse(drawing, 0))
+                return;
             FT_Glyph_Copy((FT_Glyph) drawing->glyph, &info->glyph);
         } else {
             info->glyph =
@@ -1816,6 +1742,7 @@ ass_render_event(ASS_Renderer *render_priv, ASS_Event *event,
     int MarginL, MarginR, MarginV;
     int last_break;
     int alignment, halign, valign;
+    int kern = render_priv->track->Kerning;
     double device_x = 0;
     double device_y = 0;
     TextInfo *text_info = &render_priv->text_info;
@@ -1879,7 +1806,7 @@ ass_render_event(ASS_Renderer *render_priv, ASS_Event *event,
         }
 
         // Add kerning to pen
-        if (previous && code && !drawing->hash) {
+        if (kern && previous && code && !drawing->hash) {
             FT_Vector delta;
             delta =
                 ass_font_get_kerning(render_priv->state.font, previous,
@@ -1980,23 +1907,23 @@ ass_render_event(ASS_Renderer *render_priv, ASS_Event *event,
                 drawing->hash;
         text_info->glyphs[text_info->length].hash_key.ch = code;
         text_info->glyphs[text_info->length].hash_key.outline.x =
-            render_priv->state.border_x * 0xFFFF;
+            double_to_d16(render_priv->state.border_x);
         text_info->glyphs[text_info->length].hash_key.outline.y =
-            render_priv->state.border_y * 0xFFFF;
+            double_to_d16(render_priv->state.border_y);
         text_info->glyphs[text_info->length].hash_key.scale_x =
-            render_priv->state.scale_x * 0xFFFF;
+            double_to_d16(render_priv->state.scale_x);
         text_info->glyphs[text_info->length].hash_key.scale_y =
-            render_priv->state.scale_y * 0xFFFF;
+            double_to_d16(render_priv->state.scale_y);
         text_info->glyphs[text_info->length].hash_key.frx =
-            render_priv->state.frx * 0xFFFF;
+            rot_key(render_priv->state.frx);
         text_info->glyphs[text_info->length].hash_key.fry =
-            render_priv->state.fry * 0xFFFF;
+            rot_key(render_priv->state.fry);
         text_info->glyphs[text_info->length].hash_key.frz =
-            render_priv->state.frz * 0xFFFF;
+            rot_key(render_priv->state.frz);
         text_info->glyphs[text_info->length].hash_key.fax =
-            render_priv->state.fax * 0xFFFF;
+            double_to_d16(render_priv->state.fax);
         text_info->glyphs[text_info->length].hash_key.fay =
-            render_priv->state.fay * 0xFFFF;
+            double_to_d16(render_priv->state.fay);
         text_info->glyphs[text_info->length].hash_key.advance.x = pen.x;
         text_info->glyphs[text_info->length].hash_key.advance.y = pen.y;
         text_info->glyphs[text_info->length].hash_key.be =
