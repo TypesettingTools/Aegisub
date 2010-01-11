@@ -24,3 +24,30 @@ INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
 CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
+--- END AEGISUB LICENSE --
+
+Any file that does not have a license in the header is covered by the above 
+license with exception to any directories that contain a license file, or are 
+covered by another license in the file itself.
+
+The following directories and file are covered by their respective licenses as 
+follows:
+
+libass/
+ - GPL see libass/COPYING.
+
+libffms/
+ - MIT license.
+
+src/boost/
+ - Boost Software License Version 1.0 see src/boost/LICENSE_1_0.txt.
+
+src/gl/
+ - SGI Free Software License. See src/gl/glext.h
+
+src/MatroskaParser.(c|h)
+ - Licensed to BSDL with permission from the author.
+
+universalchardet/
+ - MPL 1.1
+
