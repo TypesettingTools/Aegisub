@@ -314,6 +314,7 @@ private:
 	void OnRecentSelect(wxCommandEvent &evt); // also handles dropper pick
 	void OnRGBAdjust(wxCommandEvent &evt);
 	void OnDropperMouse(wxMouseEvent &evt);
+	void OnMouse(wxMouseEvent &evt);
 
 
 	/// DOCME
