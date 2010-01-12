@@ -6,6 +6,8 @@ AEGISUB_VERSION_DATA="${2}"
 AEGISUB_BIN="aegisub-${AEGISUB_VERSION_DATA}"
 SRCDIR=`pwd`
 HOME_DIR=`echo ~`
+WX_CONFIG="wx-config"
+WX_PREFIX=`${WX_CONFIG} --prefix`
 
 if test -z "${CC}"; then
   CC="cc"
@@ -67,20 +69,33 @@ cd "${SRCDIR}"
 
 
 echo
-echo "---- Copying locale files ----"
+echo "---- Copying Aegisub locale files ----"
 # Let Aqua know that aegisub supports english.  English strings are
 # internal so we don't need an aegisub.mo file.
-mkdir -v "${PKG_DIR}/Contents/Resources/en.lproj"
+mkdir -vp "${PKG_DIR}/Contents/Resources/en.lproj"
 
 for i in `cat po/LINGUAS`; do
   if test -f "po/${i}.gmo"; then
-    mkdir -v "${PKG_DIR}/Contents/Resources/${i}.lproj";
+    mkdir -p "${PKG_DIR}/Contents/Resources/${i}.lproj";
     cp -v po/${i}.gmo "${PKG_DIR}/Contents/Resources/${i}.lproj/aegisub.mo";
   else
     echo "${i}.gmo not found!"
 	exit 1
-  fi
+  fi;
 done
+
+
+echo
+echo "---- Copying WX locale files ----"
+
+for i in `cat po/LINGUAS`; do
+  if test -f "${WX_PREFIX}/share/locale/${i}/LC_MESSAGES/wxstd.mo"; then
+	cp -v "${WX_PREFIX}/share/locale/${i}/LC_MESSAGES/wxstd.mo" "${PKG_DIR}/Contents/Resources/${i}.lproj/";
+  else
+	echo "WARNING: \"$i\" locale in aegisub but no WX catalog found!";
+  fi;
+done
+
 
 echo
 echo "---- Binaries ----"
