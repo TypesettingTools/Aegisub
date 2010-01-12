@@ -10,6 +10,7 @@ is_bad_lib = re.compile(r'(/usr/local|/opt)').match
 is_sys_lib = re.compile(r'(/usr|/System)').match
 otool_libname_extract = re.compile(r'\s+(/.*?)[\(\s:]').search
 goodlist = []
+link_map = {}
 
 def otool(cmdline):
 	pipe = os.popen("otool " + cmdline, 'r')
@@ -18,9 +19,10 @@ def otool(cmdline):
 	return output
 
 def collectlibs(lib, masterlist, targetdir):
-	global goodlist
+	global goodlist, link_map
 	liblist = otool("-L '" + lib + "'")
 	locallist = []
+
 	for l in liblist:
 		lr = otool_libname_extract(l)
 		if not lr: continue
@@ -32,20 +34,25 @@ def collectlibs(lib, masterlist, targetdir):
 			print "found %s:" % l
 
 			check = l
+			link_list = []
 			while check:
 				if os.path.isfile(check) and not os.path.islink(check):
 					os.system("cp '%s' '%s'" % (check, targetdir))
 					print "    FILE %s ... copied to target" % check
+					if link_list:
+						for link in link_list:
+							link_map[link] = os.path.basename(check)
 					break
 					
 				if os.path.islink(check):
-					os.system("cp -fR '%s' '%s'" % (check, targetdir))
-					print "    LINK %s ... copied to target" % check
+					print "    LINK %s" % check
+					link_list.append(os.path.basename(check))
 					check = os.path.dirname(check) + "/" + os.readlink(check)
 
 		elif not l in goodlist and not l in masterlist:
 			goodlist.append(l)
 	masterlist.extend(locallist)
+
 	for l in locallist:
 		collectlibs(l, masterlist, targetdir)
 
@@ -55,6 +62,7 @@ targetdir = os.path.dirname(binname)
 print "Searching for libraries in ", binname, "..."
 libs = [binname]
 collectlibs(sys.argv[1], libs, targetdir)
+
 
 print
 print "System libraries used..."
@@ -68,12 +76,21 @@ print "Fixing library install names..."
 in_tool_cmdline = "install_name_tool "
 for lib in libs:
 	libbase = os.path.basename(lib)
+	if libbase in link_map:
+		libbase = link_map[libbase]
 	in_tool_cmdline = in_tool_cmdline + ("-change '%s' '@executable_path/%s' " % (lib, libbase))
 for lib in libs:
 	libbase = os.path.basename(lib)
+
+	if libbase in link_map:
+		libbase = link_map[libbase]
+		print "%s -> @executable_path/%s (REMAPPED)" % (lib, libbase)
+	else:
+		print "%s -> @executable_path/%s" % (lib, libbase)
+
 	os.system("%s -id '@executable_path/%s' '%s/%s'" % (in_tool_cmdline, libbase, targetdir, libbase))
-	print lib, "-> @executable_path/" + libbase
 	sys.stdout.flush()
+
 
 print
 print "All done!"
