@@ -280,7 +280,7 @@ int64_t OSSPlayer::GetCurrentPosition()
 #else
         played_frames = pos.samples + pos.fifo_samples;
 #endif
-        wxLogDebug("OSS player: played_frames %d fifo %d", played_frames,
+        wxLogDebug(_T("OSS player: played_frames %d fifo %d"), played_frames,
                    pos.fifo_samples);
         if (start_frame + played_frames >= end_frame) {
             if (displayTimer)
@@ -294,7 +294,7 @@ int64_t OSSPlayer::GetCurrentPosition()
     int delay = 0;
     if (ioctl(dspdev, SNDCTL_DSP_GETODELAY, &delay) >= 0) {
         delay /= bpf;
-        wxLogDebug("OSS player: cur_frame %d delay %d", cur_frame, delay);
+        wxLogDebug(_T("OSS player: cur_frame %d delay %d"), cur_frame, delay);
         // delay can jitter a bit at the end, detect that
         if (cur_frame == end_frame && delay < rate / 20) {
             if (displayTimer)
