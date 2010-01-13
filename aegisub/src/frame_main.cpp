@@ -297,9 +297,9 @@ void FrameMain::InitToolbar () {
 }
 
 
-wxString MakeHotkeyText(const wxChar *item_text, const wxChar *hotkey_name) {
-	return wxString::Format(_T("%s\t%s"), item_text, Hotkeys.GetText(hotkey_name).c_str());
-}
+wxString MakeHotkeyText(const wxString &item_text, const wxString &hotkey_name) {
+	return item_text + wxString(_T("\t")) + Hotkeys.GetText(hotkey_name);
+ }
 
 ///////////////////////
 // Initialize menu bar
