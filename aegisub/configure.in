@@ -915,13 +915,13 @@ AC_SUBST(LUALIB50_LDFLAGS)
 #############
 ## Auto4 PERL
 #############
-AC_ARG_WITH(perl, [  --without-perl          build without PERL Automation. (default: auto)], perl_disabled="(disabled)")
+AC_ARG_WITH(perl, [  --with-perl             build with PERL Automation. (default: no)], perl_disabled="(disabled)")
 AC_ARG_WITH(perl-bin, [  --with-perl-bin=PATH    location of PERL binary. (default: $PATH)], [WITH_PERL_BIN="$withval"])
 
 AC_ARG_VAR([PERL_CFLAGS], [CFLAGS to use for Perl (default: -MExtUtils::Embed -eccflags -eperl_inc)])
 AC_ARG_VAR([PERL_LDFLAGS], [LDFLAGS to use for Perl (default: -MExtUtils::Embed -eldopts)])
 
-if test "$with_perl" != "no"; then
+if test "$with_perl" = "yes"; then
   if test -z "$WITH_PERL_BIN"; then
     AC_PATH_PROG([PERL_BIN],perl,no)
   else
@@ -987,13 +987,13 @@ fi
 #############
 ## Auto4 Ruby
 #############
-AC_ARG_WITH(ruby, [  --without-ruby          build without Ruby Automation. (default: auto)], ruby_disabled="(disabled)")
+AC_ARG_WITH(ruby, [  --with-ruby             build with Ruby Automation. (default: no)], ruby_disabled="(disabled)")
 AC_ARG_WITH(ruby-bin, [  --with-ruby-bin=PATH    location of RUBY binary. (default: $PATH)], [WITH_RUBY_BIN="$withval"])
 
 AC_ARG_VAR([RUBY_CFLAGS], [CFLAGS to use for Ruby (default: Config::CONFIG archdir + CFLAGS)])
 AC_ARG_VAR([RUBY_LDFLAGS], [LDFLAGS to use for Ruby (default: Cofig::CONFIG LIBRUBYARG)])
 
-if test "$with_ruby" != "no"; then
+if test "$with_ruby" = "yes"; then
   if test -z "$WITH_RUBY_BIN"; then
     AC_PATH_PROG([RUBY_BIN],ruby,no)
   else
