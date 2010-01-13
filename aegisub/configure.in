@@ -3,10 +3,13 @@ AC_PREREQ(2.57)
 ######################
 # aegisub version info 
 ######################
+# MAKE SURE YOU UPDATE THE VERSION INFO BELOW WHEN YOU SET THIS TO '1'
+m4_define([aegisub_FINAL_RELEASE], [0])
+
 m4_define([aegisub_version_major], [2])
 m4_define([aegisub_version_minor], [1])
 m4_define([aegisub_version_revision], [8])
-m4_define([aegisub_version], [aegisub_version_major.aegisub_version_minor.aegisub_version_revision-dev])
+m4_define([aegisub_version], [aegisub_version_major.aegisub_version_minor.aegisub_version_revision])
 m4_define([aegisub_version_data], [aegisub_version_major.aegisub_version_minor])
 
 
@@ -218,10 +221,19 @@ fi
 # This is required in order for the config file to work correctly.
 AC_DEFINE_UNQUOTED([BUILD_SVN_REVISION], [$SVN_REVISION], [SVN Revision number, used for config.dat and verison.cpp])
 
-# Used on OSX and Unix for packing building.
-PACKAGE_STRING="${PACKAGE_STRING}-r$SVN_REVISION"
-PACKAGE_VERSION="${PACKAGE_VERSION}-r$SVN_REVISION"
-VERSION="${VERSION}-r$SVN_REVISION"
+
+# Release information.
+if test "aegisub_FINAL_RELEASE" = "1"; then
+  AC_DEFINE([FINAL_RELEASE], [aegisub_FINAL_RELEASE], [This is only set to 1 for a RELEASE VERSION.])
+  PACKAGE_STRING="${PACKAGE_STRING}"
+  PACKAGE_VERSION="${PACKAGE_VERSION}"
+  VERSION="${VERSION}"
+else
+  PACKAGE_STRING="${PACKAGE_STRING}-dev-r$SVN_REVISION"
+  PACKAGE_VERSION="${PACKAGE_VERSION}-dev-r$SVN_REVISION"
+  VERSION="${VERSION}-dev-r$SVN_REVISION"
+fi
+
 
 # Used in version.cpp
 AC_MSG_CHECKING([for build date])
@@ -230,6 +242,8 @@ AC_MSG_RESULT($BUILD_DATE)
 
 AC_SUBST(SVN_REVISION)
 AC_SUBST(BUILD_DATE)
+
+
 
 
 ###################################################
