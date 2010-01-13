@@ -149,16 +149,20 @@ wxArrayInt AegisubLocale::GetAvailableLanguages() {
 
 	wchar_t* langs[] = {
 		_T("ca"),
+		_T("cs"),
 		_T("da"),
 		_T("de"),
 		_T("es"),
+		_T("fi"),
 		_T("fr_FR"),
 		_T("hu"),
 		_T("it"),
 		_T("ja"),
 		_T("ko"),
-		_T("ru"),
 		_T("pt_BR"),
+		_T("ru"),
+		_T("vi"),
+		_T("zh_CN"),
 		_T("zh_TW")
 	};
 
