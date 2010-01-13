@@ -57,7 +57,8 @@ msgstr "위치"
 msgid "Video Details"
 msgstr "동영상 등록 정보"
 
-#: dialog_video_details.cpp:57 dialog_options.cpp:628
+#: dialog_video_details.cpp:57
+#: dialog_options.cpp:628
 msgid "Video"
 msgstr "비디오"
 
@@ -93,7 +94,8 @@ msgstr ""
 msgid "Choose character set"
 msgstr "언어 코드 설정"
 
-#: dialog_timing_processor.cpp:57 frame_main.cpp:286
+#: dialog_timing_processor.cpp:57
+#: frame_main.cpp:286
 msgid "Timing Post-Processor"
 msgstr "타이밍 포스트-프로세서"
 
@@ -105,7 +107,8 @@ msgstr "스타일에 적용"
 msgid "Select styles to process. Unchecked ones will be ignored."
 msgstr "선택된 스타일 진행.선택하지 않은 상태 것은 무시됩니다."
 
-#: dialog_timing_processor.cpp:77 dialog_paste_over.cpp:89
+#: dialog_timing_processor.cpp:77
+#: dialog_paste_over.cpp:89
 msgid "All"
 msgstr "모두"
 
@@ -113,7 +116,8 @@ msgstr "모두"
 msgid "Select all styles."
 msgstr "모든 스타일 선택"
 
-#: dialog_timing_processor.cpp:79 dialog_paste_over.cpp:90
+#: dialog_timing_processor.cpp:79
+#: dialog_paste_over.cpp:90
 msgid "None"
 msgstr "없음"
 
@@ -121,10 +125,18 @@ msgstr "없음"
 msgid "Deselect all styles."
 msgstr "모든 스타일 선택 취소"
 
-#: dialog_timing_processor.cpp:83 dialog_options.cpp:86 dialog_options.cpp:213
-#: dialog_options.cpp:287 dialog_options.cpp:356 dialog_options.cpp:434
-#: dialog_options.cpp:476 dialog_options.cpp:564 dialog_properties.cpp:119
-#: frame_main.cpp:292 hotkeys.cpp:333 hotkeys.cpp:337
+#: dialog_timing_processor.cpp:83
+#: dialog_options.cpp:86
+#: dialog_options.cpp:213
+#: dialog_options.cpp:287
+#: dialog_options.cpp:356
+#: dialog_options.cpp:434
+#: dialog_options.cpp:476
+#: dialog_options.cpp:564
+#: dialog_properties.cpp:119
+#: frame_main.cpp:292
+#: hotkeys.cpp:333
+#: hotkeys.cpp:337
 msgid "Options"
 msgstr "설정"
 
@@ -164,36 +176,27 @@ msgstr "리드 아웃(종료점)추가, ms"
 msgid "Make adjacent subtitles continuous"
 msgstr "자막을 계속 만들다"
 
-#: dialog_timing_processor.cpp:108 dialog_timing_processor.cpp:126
+#: dialog_timing_processor.cpp:108
+#: dialog_timing_processor.cpp:126
 msgid "Enable"
 msgstr "사용"
 
 #: dialog_timing_processor.cpp:109
-msgid ""
-"Enable snapping of subtitles together if they are within a certain distance "
-"of each other."
-msgstr ""
-"모두 해서 자막 맞추기를 사용하면, 각각의 자막들의 거리는 일정한 범위내에 있습"
-"니다."
+msgid "Enable snapping of subtitles together if they are within a certain distance of each other."
+msgstr "모두 해서 자막 맞추기를 사용하면, 각각의 자막들의 거리는 일정한 범위내에 있습니다."
 
 #: dialog_timing_processor.cpp:111
 msgid "Threshold:"
 msgstr "스레시홀드:"
 
 #: dialog_timing_processor.cpp:113
-msgid ""
-"Maximum difference between start and end time for two subtitles to be made "
-"continuous, in milliseconds."
+msgid "Maximum difference between start and end time for two subtitles to be made continuous, in milliseconds."
 msgstr "시작 시간과 끝 시간이 완전히 다른 두 자막들은 연결시키다, ms."
 
 #: dialog_timing_processor.cpp:115
-msgid ""
-"Sets how to set the adjoining of lines. If set totally to left, it will "
-"extend start time of the second line; if totally to right, it will extend "
-"the end time of the first line."
+msgid "Sets how to set the adjoining of lines. If set totally to left, it will extend start time of the second line; if totally to right, it will extend the end time of the first line."
 msgstr ""
-"서로 접한 라인들을 설정하는 방법 설정하다. 모두 왼쪽으로 설정하면, 첫번째 라"
-"인이 두번째 라인의 시작 시간까지 늘어나다;\n"
+"서로 접한 라인들을 설정하는 방법 설정하다. 모두 왼쪽으로 설정하면, 첫번째 라인이 두번째 라인의 시작 시간까지 늘어나다;\n"
 "모두 오른쪽으로 설정하면 두번째 라인이 첫번째 라인의 끝 시간까지 늘어납니다."
 
 #: dialog_timing_processor.cpp:119
@@ -209,66 +212,45 @@ msgid "Keyframe snapping"
 msgstr "키 프레임 맞춤"
 
 #: dialog_timing_processor.cpp:127
-msgid ""
-"Enable snapping of subtitles to nearest keyframe, if distance is within "
-"threshold."
-msgstr ""
-"스레시홀드 범위내에 거리가 있으면 ,자막에 가장 가까운 키 프레임 맞추기를 사용"
-"하다."
+msgid "Enable snapping of subtitles to nearest keyframe, if distance is within threshold."
+msgstr "스레시홀드 범위내에 거리가 있으면 ,자막에 가장 가까운 키 프레임 맞추기를 사용하다."
 
 #: dialog_timing_processor.cpp:129
 msgid "Starts before thres.:"
 msgstr "시작 앞에 스레시홀드 :"
 
 #: dialog_timing_processor.cpp:131
-msgid ""
-"Threshold for 'before start' distance, that is, how many frames a subtitle "
-"must start before a keyframe to snap to it."
-msgstr ""
-"'시작 앞에' 거리에 스레시홀드 있으면  몇개의 자막 프레임들을 시작 앞에 키 프"
-"레임으로 맞춰야 한다."
+msgid "Threshold for 'before start' distance, that is, how many frames a subtitle must start before a keyframe to snap to it."
+msgstr "'시작 앞에' 거리에 스레시홀드 있으면  몇개의 자막 프레임들을 시작 앞에 키 프레임으로 맞춰야 한다."
 
 #: dialog_timing_processor.cpp:132
 msgid "Starts after thres.:"
 msgstr "시작 이후 스레시홀드 :"
 
 #: dialog_timing_processor.cpp:134
-msgid ""
-"Threshold for 'after start' distance, that is, how many frames a subtitle "
-"must start after a keyframe to snap to it."
-msgstr ""
-"'시작 이후' 거리에 스레시홀드간격에 있으면 몇개의 자막 프레임을 시작 이후 키 "
-"프레임에 맞춰야 한다."
+msgid "Threshold for 'after start' distance, that is, how many frames a subtitle must start after a keyframe to snap to it."
+msgstr "'시작 이후' 거리에 스레시홀드간격에 있으면 몇개의 자막 프레임을 시작 이후 키 프레임에 맞춰야 한다."
 
 #: dialog_timing_processor.cpp:135
 msgid "Ends before thres.:"
 msgstr "종료 앞에 스레시시홀드 :"
 
 #: dialog_timing_processor.cpp:137
-msgid ""
-"Threshold for 'before end' distance, that is, how many frames a subtitle "
-"must end before a keyframe to snap to it."
-msgstr ""
-"'종료 앞에' 거리에 스레시홀드가 있으면 몇개의 자막 프레임들을 종료 앞에 키 프"
-"레임에 맞춰야 한다."
+msgid "Threshold for 'before end' distance, that is, how many frames a subtitle must end before a keyframe to snap to it."
+msgstr "'종료 앞에' 거리에 스레시홀드가 있으면 몇개의 자막 프레임들을 종료 앞에 키 프레임에 맞춰야 한다."
 
 #: dialog_timing_processor.cpp:138
 msgid "Ends after thres.:"
 msgstr "종료 이후 스레시홀드 :"
 
 #: dialog_timing_processor.cpp:140
-msgid ""
-"Threshold for 'after end' distance, that is, how many frames a subtitle must "
-"end after a keyframe to snap to it."
-msgstr ""
-"'종료 이후'거리에 스레쉬홀드가 있으면 몇개의 자막 프레임들을 종료 이후 키 프"
-"레임에 맞춰야 한다."
+msgid "Threshold for 'after end' distance, that is, how many frames a subtitle must end after a keyframe to snap to it."
+msgstr "'종료 이후'거리에 스레쉬홀드가 있으면 몇개의 자막 프레임들을 종료 이후 키 프레임에 맞춰야 한다."
 
 #: dialog_timing_processor.cpp:322
 #, c-format
 msgid "One of the lines in the file (%i) has negative duration. Aborting."
-msgstr ""
-"파일 (%i)의 라인중 하나가 마이너스 재생시간을 가지고 있습니다.취소합니다."
+msgstr "파일 (%i)의 라인중 하나가 마이너스 재생시간을 가지고 있습니다.취소합니다."
 
 #: dialog_timing_processor.cpp:322
 msgid "Invalid script"
@@ -314,7 +296,8 @@ msgstr "표준"
 msgid "Standard mode, double click sets position."
 msgstr "표준 모드, 위치 설정 두번 클릭"
 
-#: video_box.cpp:115 visual_tool_vector_clip.cpp:70
+#: video_box.cpp:115
+#: visual_tool_vector_clip.cpp:70
 msgid "Drag"
 msgstr "끌기"
 
@@ -370,7 +353,9 @@ msgstr "실시간"
 msgid "Toggle realtime display of changes."
 msgstr "변경 내용의 실시간 표시 토글"
 
-#: video_box.cpp:124 hotkeys.cpp:332 hotkeys.cpp:336
+#: video_box.cpp:124
+#: hotkeys.cpp:332
+#: hotkeys.cpp:336
 msgid "Help"
 msgstr "도움말"
 
@@ -410,7 +395,8 @@ msgstr "비디오에서 키프레임 읽어오는중"
 msgid "Styling assistant"
 msgstr "스타일 도우미"
 
-#: dialog_styling_assistant.cpp:75 dialog_styling_assistant.cpp:76
+#: dialog_styling_assistant.cpp:75
+#: dialog_styling_assistant.cpp:76
 msgid "Current line"
 msgstr "현재 라인"
 
@@ -422,37 +408,47 @@ msgstr "이용 가능한 스타일"
 msgid "Set style"
 msgstr "스타일 설정"
 
-#: dialog_styling_assistant.cpp:87 dialog_translation.cpp:99
+#: dialog_styling_assistant.cpp:87
+#: dialog_translation.cpp:99
 msgid "Keys"
 msgstr "키"
 
-#: dialog_styling_assistant.cpp:88 dialog_translation.cpp:122
+#: dialog_styling_assistant.cpp:88
+#: dialog_translation.cpp:122
 msgid "Actions"
 msgstr "작업"
 
-#: dialog_styling_assistant.cpp:96 dialog_translation.cpp:102
+#: dialog_styling_assistant.cpp:96
+#: dialog_translation.cpp:102
 msgid "Accept changes"
 msgstr "변경 내용 적용"
 
-#: dialog_styling_assistant.cpp:98 dialog_translation.cpp:104
+#: dialog_styling_assistant.cpp:98
+#: dialog_translation.cpp:104
 msgid "Preview changes"
 msgstr "변경 내용 미리 보기"
 
-#: dialog_styling_assistant.cpp:100 dialog_translation.cpp:106
+#: dialog_styling_assistant.cpp:100
+#: dialog_translation.cpp:106
 msgid "Previous line"
 msgstr "이전 라인"
 
-#: dialog_styling_assistant.cpp:102 dialog_translation.cpp:108
+#: dialog_styling_assistant.cpp:102
+#: dialog_translation.cpp:108
 msgid "Next line"
 msgstr "다음 라인"
 
-#: dialog_styling_assistant.cpp:104 dialog_styling_assistant.cpp:118
-#: dialog_translation.cpp:112 dialog_translation.cpp:123
+#: dialog_styling_assistant.cpp:104
+#: dialog_styling_assistant.cpp:118
+#: dialog_translation.cpp:112
+#: dialog_translation.cpp:123
 msgid "Play Video"
 msgstr "비디오 재생"
 
-#: dialog_styling_assistant.cpp:106 dialog_styling_assistant.cpp:119
-#: dialog_translation.cpp:114 dialog_translation.cpp:124
+#: dialog_styling_assistant.cpp:106
+#: dialog_styling_assistant.cpp:119
+#: dialog_translation.cpp:114
+#: dialog_translation.cpp:124
 msgid "Play Audio"
 msgstr "오디오 재생"
 
@@ -472,7 +468,8 @@ msgstr "미리 보기 사용(느림)"
 msgid "style changes"
 msgstr "스타일 바꾸기"
 
-#: dialog_styling_assistant.cpp:223 dialog_styling_assistant.cpp:252
+#: dialog_styling_assistant.cpp:223
+#: dialog_styling_assistant.cpp:252
 msgid "styling assistant"
 msgstr "스타일 도우미"
 
@@ -496,7 +493,8 @@ msgstr "일치"
 msgid "Doesn't Match"
 msgstr "일치하지 않음 "
 
-#: dialog_selection.cpp:68 dialog_search_replace.cpp:81
+#: dialog_selection.cpp:68
+#: dialog_search_replace.cpp:81
 msgid "Match case"
 msgstr "대/소문자 구분"
 
@@ -512,29 +510,46 @@ msgstr "포함"
 msgid "Regular Expression match"
 msgstr "정규식 일치"
 
-#: dialog_selection.cpp:75 dialog_kanji_timer.cpp:707
-#: dialog_search_replace.cpp:95 base_grid.cpp:442 dialog_paste_over.cpp:80
+#: dialog_selection.cpp:75
+#: dialog_kanji_timer.cpp:707
+#: dialog_search_replace.cpp:95
+#: base_grid.cpp:442
+#: dialog_paste_over.cpp:80
 #: dialog_paste_over.cpp:92
 msgid "Text"
 msgstr "텍스트"
 
-#: dialog_selection.cpp:76 dialog_options.cpp:216 dialog_options.cpp:288
-#: dialog_options.cpp:477 subs_grid.cpp:122 dialog_search_replace.cpp:96
-#: base_grid.cpp:436 dialog_paste_over.cpp:68
+#: dialog_selection.cpp:76
+#: dialog_options.cpp:216
+#: dialog_options.cpp:288
+#: dialog_options.cpp:477
+#: subs_grid.cpp:122
+#: dialog_search_replace.cpp:96
+#: base_grid.cpp:436
+#: dialog_paste_over.cpp:68
 msgid "Style"
 msgstr "스타일"
 
-#: dialog_selection.cpp:77 subs_grid.cpp:123 subs_edit_box.cpp:90
-#: dialog_search_replace.cpp:97 base_grid.cpp:437 dialog_paste_over.cpp:69
+#: dialog_selection.cpp:77
+#: subs_grid.cpp:123
+#: subs_edit_box.cpp:90
+#: dialog_search_replace.cpp:97
+#: base_grid.cpp:437
+#: dialog_paste_over.cpp:69
 msgid "Actor"
 msgstr "작업자"
 
-#: dialog_selection.cpp:78 subs_grid.cpp:124 subs_edit_box.cpp:93
-#: dialog_search_replace.cpp:98 base_grid.cpp:438 dialog_paste_over.cpp:79
+#: dialog_selection.cpp:78
+#: subs_grid.cpp:124
+#: subs_edit_box.cpp:93
+#: dialog_search_replace.cpp:98
+#: base_grid.cpp:438
+#: dialog_paste_over.cpp:79
 msgid "Effect"
 msgstr "효과"
 
-#: dialog_selection.cpp:79 dialog_search_replace.cpp:102
+#: dialog_selection.cpp:79
+#: dialog_search_replace.cpp:102
 msgid "In Field"
 msgstr "필드"
 
@@ -571,7 +586,9 @@ msgstr "작업"
 msgid "Selection was set to %i lines"
 msgstr "선택 영역에 %i 라인를 설정"
 
-#: dialog_selection.cpp:267 dialog_selection.cpp:268 dialog_selection.cpp:269
+#: dialog_selection.cpp:267
+#: dialog_selection.cpp:268
+#: dialog_selection.cpp:269
 msgid "Selection"
 msgstr "선택 영역"
 
@@ -585,7 +602,8 @@ msgstr "선택 영역에 %i 라인을 추가"
 msgid "%i lines were removed from selection"
 msgstr "선택 영역에서 %i 라인을 제거"
 
-#: dialog_style_manager.cpp:62 frame_main.cpp:265
+#: dialog_style_manager.cpp:62
+#: frame_main.cpp:265
 msgid "Styles Manager"
 msgstr "스타일 매니저"
 
@@ -593,13 +611,17 @@ msgstr "스타일 매니저"
 msgid "Catalog of available storages"
 msgstr "이용 가능한 저장 공간 목록"
 
-#: dialog_style_manager.cpp:73 dialog_style_manager.cpp:86
-#: dialog_style_manager.cpp:131 frame_main.cpp:234
+#: dialog_style_manager.cpp:73
+#: dialog_style_manager.cpp:86
+#: dialog_style_manager.cpp:131
+#: frame_main.cpp:234
 msgid "New"
 msgstr "새로만들기"
 
-#: dialog_style_manager.cpp:74 dialog_style_manager.cpp:89
-#: dialog_style_manager.cpp:134 subs_grid.cpp:204
+#: dialog_style_manager.cpp:74
+#: dialog_style_manager.cpp:89
+#: dialog_style_manager.cpp:134
+#: subs_grid.cpp:204
 msgid "Delete"
 msgstr "삭제"
 
@@ -611,31 +633,39 @@ msgstr "저장 공간"
 msgid "Copy to current script ->"
 msgstr "현재 스크립트에 복사 ->"
 
-#: dialog_style_manager.cpp:87 dialog_style_manager.cpp:132
+#: dialog_style_manager.cpp:87
+#: dialog_style_manager.cpp:132
 msgid "Edit"
 msgstr "편집"
 
-#: dialog_style_manager.cpp:88 dialog_style_manager.cpp:133 hotkeys.cpp:357
+#: dialog_style_manager.cpp:88
+#: dialog_style_manager.cpp:133
+#: hotkeys.cpp:357
 msgid "Copy"
 msgstr "복사"
 
-#: dialog_style_manager.cpp:99 dialog_style_manager.cpp:144
+#: dialog_style_manager.cpp:99
+#: dialog_style_manager.cpp:144
 msgid "Move style up."
 msgstr "스타일 위로 이동."
 
-#: dialog_style_manager.cpp:100 dialog_style_manager.cpp:145
+#: dialog_style_manager.cpp:100
+#: dialog_style_manager.cpp:145
 msgid "Move style down."
 msgstr "스타일 아래로 이동."
 
-#: dialog_style_manager.cpp:101 dialog_style_manager.cpp:146
+#: dialog_style_manager.cpp:101
+#: dialog_style_manager.cpp:146
 msgid "Move style to top."
 msgstr "스타일 맨 위로 이동."
 
-#: dialog_style_manager.cpp:102 dialog_style_manager.cpp:147
+#: dialog_style_manager.cpp:102
+#: dialog_style_manager.cpp:147
 msgid "Move style to bottom."
 msgstr "스타일 맨 아래로 이동."
 
-#: dialog_style_manager.cpp:103 dialog_style_manager.cpp:148
+#: dialog_style_manager.cpp:103
+#: dialog_style_manager.cpp:148
 msgid "Sort styles alphabetically."
 msgstr "사전 순서로 스타일 정렬."
 
@@ -670,12 +700,10 @@ msgstr "카달로그 이름 충돌"
 #: dialog_style_manager.cpp:440
 #, c-format
 msgid ""
-"The specified catalog name contains one or more illegal characters. They "
-"have been replaced with underscores instead.\n"
+"The specified catalog name contains one or more illegal characters. They have been replaced with underscores instead.\n"
 "The catalog has been renamed to \"%s\"."
 msgstr ""
-"지정한 카달로그 이름이 잘못된 언어코드를 한개 이상 포함하고 있습니다.잘못된 "
-"부분을 바꿔야 합니다.\n"
+"지정한 카달로그 이름이 잘못된 언어코드를 한개 이상 포함하고 있습니다.잘못된 부분을 바꿔야 합니다.\n"
 "카달로그  \"%s\"은(는) 이름를 변경해야 합니다."
 
 #: dialog_style_manager.cpp:440
@@ -691,11 +719,13 @@ msgstr "카달로그에 저장 공간 \"%s\"을(를) 삭제하겠습니까 ?"
 msgid "Confirm delete"
 msgstr "삭제 확인"
 
-#: dialog_style_manager.cpp:610 dialog_style_manager.cpp:660
+#: dialog_style_manager.cpp:610
+#: dialog_style_manager.cpp:660
 msgid "style copy"
 msgstr "스타일 복사"
 
-#: dialog_style_manager.cpp:623 dialog_style_manager.cpp:647
+#: dialog_style_manager.cpp:623
+#: dialog_style_manager.cpp:647
 #: dialog_style_editor.cpp:449
 msgid "Copy of "
 msgstr "복사 내용"
@@ -704,20 +734,25 @@ msgstr "복사 내용"
 msgid "style paste"
 msgstr "스타일 불어넣기"
 
-#: dialog_style_manager.cpp:716 dialog_style_manager.cpp:719
-#: dialog_style_manager.cpp:752 dialog_style_manager.cpp:755
+#: dialog_style_manager.cpp:716
+#: dialog_style_manager.cpp:719
+#: dialog_style_manager.cpp:752
+#: dialog_style_manager.cpp:755
 msgid "Could not parse style"
 msgstr "스타일을 분석할 수 없음"
 
-#: dialog_style_manager.cpp:801 dialog_style_manager.cpp:835
+#: dialog_style_manager.cpp:801
+#: dialog_style_manager.cpp:835
 msgid "Are you sure you want to delete these "
 msgstr "선택된것을 삭제할까요?"
 
-#: dialog_style_manager.cpp:803 dialog_style_manager.cpp:837
+#: dialog_style_manager.cpp:803
+#: dialog_style_manager.cpp:837
 msgid " styles?"
 msgstr "스타일?"
 
-#: dialog_style_manager.cpp:805 dialog_style_manager.cpp:839
+#: dialog_style_manager.cpp:805
+#: dialog_style_manager.cpp:839
 msgid "Are you sure you want to delete this style?"
 msgstr "이 스타일을 삭제할까요?"
 
@@ -733,7 +768,8 @@ msgstr "현재 스타일 삭제 확인"
 msgid "style delete"
 msgstr "스타일 삭제"
 
-#: dialog_style_manager.cpp:868 frame_main_events.cpp:715
+#: dialog_style_manager.cpp:868
+#: frame_main_events.cpp:715
 #: frame_main_events.cpp:733
 msgid "Open subtitles file"
 msgstr "자막 파일 열기"
@@ -746,11 +782,13 @@ msgstr "선택된 파일은 이용 가능한 스타일이 없습니다."
 msgid "Error Importing Styles"
 msgstr "스타일 가져오기 오류"
 
-#: dialog_style_manager.cpp:891 dialog_style_manager.cpp:893
+#: dialog_style_manager.cpp:891
+#: dialog_style_manager.cpp:893
 msgid "Choose styles to import:"
 msgstr "선택된 스타일 가져오기:"
 
-#: dialog_style_manager.cpp:891 dialog_style_manager.cpp:893
+#: dialog_style_manager.cpp:891
+#: dialog_style_manager.cpp:893
 msgid "Import Styles"
 msgstr "스타일 가져오기"
 
@@ -778,13 +816,14 @@ msgstr "Aegisub 시작시 작동 설정"
 msgid "Show Splash Screen"
 msgstr "시작 화면 표시"
 
-#: dialog_options.cpp:115 dialog_version_check.cpp:429
+#: dialog_options.cpp:115
+#: dialog_version_check.cpp:429
 msgid "Auto Check for Updates"
 msgstr "자동 업데이트 검사"
 
 #: dialog_options.cpp:117
 msgid "Check File Associations on Start"
-msgstr ""
+msgstr "실행시 파일 확장자 확인"
 
 #: dialog_options.cpp:122
 msgid "Limits for levels and recent files"
@@ -862,15 +901,18 @@ msgstr "충돌시 복구할 파일 경로:"
 msgid "Auto-load linked files:"
 msgstr "자동-로드 파일 경로:"
 
-#: dialog_options.cpp:191 dialog_options.cpp:364
+#: dialog_options.cpp:191
+#: dialog_options.cpp:364
 msgid "Never"
 msgstr "표시 안 함"
 
-#: dialog_options.cpp:191 dialog_options.cpp:364
+#: dialog_options.cpp:191
+#: dialog_options.cpp:364
 msgid "Always"
 msgstr "항상 표시"
 
-#: dialog_options.cpp:191 dialog_options.cpp:364
+#: dialog_options.cpp:191
+#: dialog_options.cpp:364
 msgid "Ask"
 msgstr "표시"
 
@@ -894,7 +936,9 @@ msgstr "시간 박스안에 삽입해서 덮어쓰기"
 msgid "Path to dictionary files:"
 msgstr "사전 파일 경로:"
 
-#: dialog_options.cpp:240 dialog_options.cpp:572 dialog_properties.cpp:133
+#: dialog_options.cpp:240
+#: dialog_options.cpp:572
+#: dialog_properties.cpp:133
 msgid "Normal"
 msgstr "표준(Normal)"
 
@@ -914,11 +958,19 @@ msgstr "태그"
 msgid "Parameters"
 msgstr "매개 변수"
 
-#: dialog_options.cpp:241 options.cpp:467 dialog_kanji_timer.cpp:820
-#: dialog_kanji_timer.cpp:822 dialog_kanji_timer.cpp:865 subs_grid.cpp:686
-#: subs_grid.cpp:690 subs_grid.cpp:736 dialog_resample.cpp:217
-#: dialog_resample.cpp:221 dialog_fonts_collector.cpp:195
-#: dialog_fonts_collector.cpp:204 dialog_fonts_collector.cpp:213
+#: dialog_options.cpp:241
+#: options.cpp:467
+#: dialog_kanji_timer.cpp:820
+#: dialog_kanji_timer.cpp:822
+#: dialog_kanji_timer.cpp:865
+#: subs_grid.cpp:686
+#: subs_grid.cpp:690
+#: subs_grid.cpp:736
+#: dialog_resample.cpp:217
+#: dialog_resample.cpp:221
+#: dialog_fonts_collector.cpp:195
+#: dialog_fonts_collector.cpp:204
+#: dialog_fonts_collector.cpp:213
 msgid "Error"
 msgstr "오류"
 
@@ -942,7 +994,8 @@ msgstr "수정된 배경색"
 msgid "Syntax highlighter - "
 msgstr "자막 태그 하이라이터  - "
 
-#: dialog_options.cpp:259 dialog_options.cpp:323
+#: dialog_options.cpp:259
+#: dialog_options.cpp:323
 msgid "Font: "
 msgstr "글꼴:"
 
@@ -966,7 +1019,8 @@ msgstr "표준 배경색"
 msgid "Selection foreground"
 msgstr "선택 전경색"
 
-#: dialog_options.cpp:305 dialog_options.cpp:494
+#: dialog_options.cpp:305
+#: dialog_options.cpp:494
 msgid "Selection background"
 msgstr "선택 배경색"
 
@@ -1006,7 +1060,8 @@ msgstr "라인간 구분선"
 msgid "Replace override tags with: "
 msgstr "태그를 덮어쓰기 해서 바꾸기:"
 
-#: dialog_options.cpp:357 dialog_options.cpp:528
+#: dialog_options.cpp:357
+#: dialog_options.cpp:528
 msgid "Advanced - EXPERT USERS ONLY"
 msgstr "고급 - 고급 사용자 설정"
 
@@ -1046,15 +1101,15 @@ msgstr "Avisynth 최대 사용 메모리(MB): "
 msgid "Allow pre-2.56a Avisynth"
 msgstr "Avisynth Ver2.56a 이전 버전 사용"
 
-#: dialog_options.cpp:421 dialog_options.cpp:552
+#: dialog_options.cpp:421
+#: dialog_options.cpp:552
 msgid ""
 "WARNING: Changing these settings might result in bugs,\n"
 "crashes, glitches and/or movax.\n"
 "Don't touch these unless you know what you're doing."
 msgstr ""
 "경고!:\n"
-"오류, 충돌(고장), 사소한 결함 그리고 movax 등의 결과로 설정들이 변경될지도 모"
-"릅니다.\n"
+"오류, 충돌(고장), 사소한 결함 그리고 movax 등의 결과로 설정들이 변경될지도 모릅니다.\n"
 "사용자가 무엇을 하고 있는지 알기전까지는 건드리지 마세요 !!!"
 
 #: dialog_options.cpp:439
@@ -1321,11 +1376,13 @@ msgstr "스레드 우선 순위"
 msgid "Autoreload on Export"
 msgstr "익스포트 자동리로드"
 
-#: dialog_options.cpp:595 dialog_options.cpp:1091
+#: dialog_options.cpp:595
+#: dialog_options.cpp:1091
 msgid "Function"
 msgstr "기능"
 
-#: dialog_options.cpp:596 dialog_options.cpp:1092
+#: dialog_options.cpp:596
+#: dialog_options.cpp:1092
 msgid "Key"
 msgstr "키"
 
@@ -1337,7 +1394,8 @@ msgstr "바로 가기 키 설정..."
 msgid "Clear Hotkey"
 msgstr "바로 가기 키 지우기"
 
-#: dialog_options.cpp:612 ass_style.cpp:576
+#: dialog_options.cpp:612
+#: ass_style.cpp:576
 msgid "Default"
 msgstr "기본설정"
 
@@ -1373,7 +1431,8 @@ msgstr "표시"
 msgid "Advanced"
 msgstr "고급"
 
-#: dialog_options.cpp:632 frame_main.cpp:273
+#: dialog_options.cpp:632
+#: frame_main.cpp:273
 msgid "Automation"
 msgstr "자동화"
 
@@ -1385,19 +1444,20 @@ msgstr "바로 가기 키"
 msgid "Restore Defaults"
 msgstr "기본 설정 복구"
 
-#: dialog_options.cpp:737 dialog_options.cpp:771 dialog_options.cpp:911
+#: dialog_options.cpp:737
+#: dialog_options.cpp:771
+#: dialog_options.cpp:911
 msgid "Aegisub must restart for the changes to take effect. Restart now?"
-msgstr ""
-"변경 사항을 적용할려면 Aegisub를 재시작해야 합니다.다시 시작하겠습니까?"
+msgstr "변경 사항을 적용할려면 Aegisub를 재시작해야 합니다.다시 시작하겠습니까?"
 
-#: dialog_options.cpp:737 dialog_options.cpp:771 dialog_options.cpp:911
+#: dialog_options.cpp:737
+#: dialog_options.cpp:771
+#: dialog_options.cpp:911
 msgid "Restart Aegisub"
 msgstr "Aegisub 다시 시작"
 
 #: dialog_options.cpp:787
-msgid ""
-"Are you sure that you want to restore the defaults? All your settings will "
-"be overriden."
+msgid "Are you sure that you want to restore the defaults? All your settings will be overriden."
 msgstr "기본 설정으로 복원하겠습니까? 모든 설정이 무효화 됩니다."
 
 #: dialog_options.cpp:787
@@ -1417,9 +1477,7 @@ msgstr ""
 
 #: dialog_options.cpp:1169
 #, c-format
-msgid ""
-"The hotkey %s is already mapped to %s. If you proceed, that hotkey will be "
-"cleared. Proceed?"
+msgid "The hotkey %s is already mapped to %s. If you proceed, that hotkey will be cleared. Proceed?"
 msgstr ""
 "바로 가기 키 \"%s\"은(는) 이미 \"%s\"에 연결되어 있습니다.\n"
 "\n"
@@ -1451,26 +1509,26 @@ msgstr "타임코드 와 프레임/샘플 데이터 읽는중"
 
 #: ffmpegsource_common.cpp:140
 msgid "video"
-msgstr ""
+msgstr "비디오"
 
 #: ffmpegsource_common.cpp:142
 msgid "audio"
-msgstr ""
+msgstr "오디오"
 
 #: ffmpegsource_common.cpp:145
 #, c-format
 msgid "Track %02d: %s"
-msgstr ""
+msgstr "트랙 %02d: %s"
 
 #: ffmpegsource_common.cpp:149
 #, c-format
 msgid "Multiple %s tracks detected, please choose the one you wish to load:"
-msgstr ""
+msgstr "다수의 %s 트랙을 찾았습니다. 로드할 파일을 선택하십시오."
 
 #: ffmpegsource_common.cpp:150
 #, c-format
 msgid "Choose %s track"
-msgstr ""
+msgstr "%s 트랙 고르기"
 
 #: subtitle_format.cpp:273
 msgid "All Supported Formats"
@@ -1498,7 +1556,7 @@ msgstr "29.970 FPS (NTSC)"
 
 #: subtitle_format.cpp:303
 msgid "29.970 FPS (NTSC with SMPTE dropframe)"
-msgstr ""
+msgstr "29.970 FPS (SMPTE dropframe의 NTSC)"
 
 #: subtitle_format.cpp:304
 msgid "30.000 FPS"
@@ -1506,7 +1564,7 @@ msgstr "30.000 FPS"
 
 #: subtitle_format.cpp:305
 msgid "50.000 FPS (PAL x2)"
-msgstr ""
+msgstr "50.000 FPS (PAL x2)"
 
 #: subtitle_format.cpp:306
 msgid "59.940 FPS (NTSC x2)"
@@ -1532,7 +1590,8 @@ msgstr "자막에 알맞는 재생속도를 선택하세요:"
 msgid "FPS"
 msgstr "재생속도"
 
-#: dialog_spellchecker.cpp:69 frame_main.cpp:288
+#: dialog_spellchecker.cpp:69
+#: frame_main.cpp:288
 msgid "Spell Checker"
 msgstr "맞춤법 검사기"
 
@@ -1548,11 +1607,14 @@ msgstr "바꿀 내용"
 msgid "Misspelled word:"
 msgstr "잘못 쓴 단어:"
 
-#: dialog_spellchecker.cpp:113 dialog_search_replace.cpp:74
+#: dialog_spellchecker.cpp:113
+#: dialog_search_replace.cpp:74
 msgid "Replace with:"
 msgstr "바꿀 내용:"
 
-#: dialog_spellchecker.cpp:122 dialog_search_replace.cpp:566 hotkeys.cpp:351
+#: dialog_spellchecker.cpp:122
+#: dialog_search_replace.cpp:566
+#: hotkeys.cpp:351
 #: hotkeys.cpp:354
 msgid "Replace"
 msgstr "바꾸기"
@@ -1577,7 +1639,8 @@ msgstr "디렉터리에 추가"
 msgid "Aegisub has finished checking spelling of this script."
 msgstr "이 스크립트의 맘춤법 검사가 완료되었습니다."
 
-#: dialog_spellchecker.cpp:325 dialog_spellchecker.cpp:392
+#: dialog_spellchecker.cpp:325
+#: dialog_spellchecker.cpp:392
 msgid "Spell checking complete."
 msgstr "맞춤법 검사 완료"
 
@@ -1589,7 +1652,8 @@ msgstr "맞춤법 검사 바꾸기"
 msgid "Aegisub has found no spelling mistakes in this script."
 msgstr "이 스크립트에서 잘못된 맞춤법을 찾을 수 없습니다."
 
-#: mkv_wrap.cpp:171 mkv_wrap.cpp:399
+#: mkv_wrap.cpp:171
+#: mkv_wrap.cpp:399
 msgid "Parsing Matroska"
 msgstr "Matroska 분석중"
 
@@ -1601,7 +1665,8 @@ msgstr "Matroska 파일에서 키 프레임과 타임코드 데이터 읽어오�
 msgid "Reading subtitles from Matroska file."
 msgstr "Matroska 파일에서 자막 읽어오는중"
 
-#: visual_tool.cpp:285 visual_tool_drag.cpp:117
+#: visual_tool.cpp:285
+#: visual_tool_drag.cpp:117
 msgid "visual typesetting"
 msgstr "visual typesetting"
 
@@ -1610,12 +1675,11 @@ msgid "Fix Styles"
 msgstr "스타일 수정"
 
 #: export_fixstyle.cpp:61
-msgid ""
-"Fixes styles by replacing any style that isn't available on file with "
-"Default."
+msgid "Fixes styles by replacing any style that isn't available on file with Default."
 msgstr "스타일 픽스는 파일에 기본으로 이용할 수 없는 스타일을 바꾸는것이다."
 
-#: dialog_about.cpp:53 frame_main.cpp:540
+#: dialog_about.cpp:53
+#: frame_main.cpp:540
 msgid "About Aegisub"
 msgstr "Aegisub 정보"
 
@@ -1637,12 +1701,8 @@ msgid "Built by %s on %s."
 msgstr "빌드 시간 %s on %s."
 
 #: options.cpp:467
-msgid ""
-"Configuration file is either invalid or corrupt. The current file will be "
-"backed up and replaced with a default file."
-msgstr ""
-"구성파일이 잘못되거나 오류입니다.현재 파일을 백업하거나 기본구성파일로 바꾸세"
-"요."
+msgid "Configuration file is either invalid or corrupt. The current file will be backed up and replaced with a default file."
+msgstr "구성파일이 잘못되거나 오류입니다.현재 파일을 백업하거나 기본구성파일로 바꾸세요."
 
 #: browse_button.cpp:52
 msgid "Browse..."
@@ -1676,7 +1736,8 @@ msgstr "정보 표시(&I)"
 msgid "Re&scan Autoload Dir"
 msgstr "자동로드 디렉터리 다시 검색(&S)"
 
-#: dialog_automation.cpp:69 dialog_version_check.cpp:436
+#: dialog_automation.cpp:69
+#: dialog_version_check.cpp:436
 #: dialog_attachments.cpp:80
 msgid "&Close"
 msgstr "닫기(&C)"
@@ -1847,7 +1908,8 @@ msgstr "이전 라인으로 이동"
 msgid "Accept Line"
 msgstr "라인 적용"
 
-#: dialog_kanji_timer.cpp:737 auto4_base.cpp:401
+#: dialog_kanji_timer.cpp:737
+#: auto4_base.cpp:401
 msgid "Close"
 msgstr "닫기"
 
@@ -1871,27 +1933,36 @@ msgstr "원본의 전체 라인"
 msgid "Line Number"
 msgstr "라인 수"
 
-#: subs_grid.cpp:119 dialog_paste_over.cpp:65
+#: subs_grid.cpp:119
+#: dialog_paste_over.cpp:65
 msgid "Layer"
 msgstr "레이어"
 
-#: subs_grid.cpp:120 base_grid.cpp:434
+#: subs_grid.cpp:120
+#: base_grid.cpp:434
 msgid "Start"
 msgstr "시작"
 
-#: subs_grid.cpp:121 base_grid.cpp:435
+#: subs_grid.cpp:121
+#: base_grid.cpp:435
 msgid "End"
 msgstr "끝"
 
-#: subs_grid.cpp:125 base_grid.cpp:439 dialog_style_editor.cpp:247
+#: subs_grid.cpp:125
+#: base_grid.cpp:439
+#: dialog_style_editor.cpp:247
 msgid "Left"
 msgstr "왼쪽"
 
-#: subs_grid.cpp:126 base_grid.cpp:440 dialog_style_editor.cpp:247
+#: subs_grid.cpp:126
+#: base_grid.cpp:440
+#: dialog_style_editor.cpp:247
 msgid "Right"
 msgstr "오른쪽"
 
-#: subs_grid.cpp:127 base_grid.cpp:441 dialog_style_editor.cpp:247
+#: subs_grid.cpp:127
+#: base_grid.cpp:441
+#: dialog_style_editor.cpp:247
 msgid "Vert"
 msgstr "세로"
 
@@ -1915,7 +1986,8 @@ msgstr "현재 비디오 시간 이후에 삽입"
 msgid "&Duplicate"
 msgstr "복제(&D)"
 
-#: subs_grid.cpp:167 frame_main.cpp:394
+#: subs_grid.cpp:167
+#: frame_main.cpp:394
 msgid "Duplicate the selected lines"
 msgstr "선택된 라인 복제"
 
@@ -1923,7 +1995,8 @@ msgstr "선택된 라인 복제"
 msgid "&Duplicate and shift by 1 frame"
 msgstr "한 프레임 이동후 복제(&D)"
 
-#: subs_grid.cpp:168 frame_main.cpp:395
+#: subs_grid.cpp:168
+#: frame_main.cpp:395
 msgid "Duplicate lines and shift by one frame"
 msgstr "한개 프레임 이동후 라인 복제"
 
@@ -1931,7 +2004,8 @@ msgstr "한개 프레임 이동후 라인 복제"
 msgid "Split (by karaoke)"
 msgstr "분할(가라오케)"
 
-#: subs_grid.cpp:169 frame_main.cpp:408
+#: subs_grid.cpp:169
+#: frame_main.cpp:408
 msgid "Uses karaoke timing to split line into multiple smaller lines"
 msgstr "가라오케 타이밍을 사용해서 여러개의 간단한 라인으로 분할"
 
@@ -1939,7 +2013,8 @@ msgstr "가라오케 타이밍을 사용해서 여러개의 간단한 라인으�
 msgid "&Swap"
 msgstr "교체(&S)"
 
-#: subs_grid.cpp:173 frame_main.cpp:410
+#: subs_grid.cpp:173
+#: frame_main.cpp:410
 msgid "Swaps the two selected lines"
 msgstr "두개의 선택된 라인을 교환"
 
@@ -1947,7 +2022,8 @@ msgstr "두개의 선택된 라인을 교환"
 msgid "&Join (concatenate)"
 msgstr "연결(&J)"
 
-#: subs_grid.cpp:177 frame_main.cpp:403
+#: subs_grid.cpp:177
+#: frame_main.cpp:403
 msgid "Joins selected lines in a single one, concatenating text together"
 msgstr "선택된 라인및 텍스트를 하나로 연결시키다."
 
@@ -1955,29 +2031,25 @@ msgstr "선택된 라인및 텍스트를 하나로 연결시키다."
 msgid "Join (keep first)"
 msgstr "우선 보존후 연결"
 
-#: subs_grid.cpp:178 frame_main.cpp:404
-msgid ""
-"Joins selected lines in a single one, keeping text of first and discarding "
-"remaining"
-msgstr ""
-"선택된 라인를 하나로 연결후 남아 있는 작업을 취소하고 우선 텍스트를 보존"
+#: subs_grid.cpp:178
+#: frame_main.cpp:404
+msgid "Joins selected lines in a single one, keeping text of first and discarding remaining"
+msgstr "선택된 라인를 하나로 연결후 남아 있는 작업을 취소하고 우선 텍스트를 보존"
 
 #: subs_grid.cpp:179
 msgid "Join (as Karaoke)"
 msgstr "가라오케도 연결"
 
 #: subs_grid.cpp:179
-msgid ""
-"Joins selected lines in a single one, making each line into a karaoke "
-"syllable"
-msgstr ""
-"선택된 라인을 하나의 라인으로 연결, 각각의 라인에 가라오케 음절 만들다."
+msgid "Joins selected lines in a single one, making each line into a karaoke syllable"
+msgstr "선택된 라인을 하나의 라인으로 연결, 각각의 라인에 가라오케 음절 만들다."
 
 #: subs_grid.cpp:183
 msgid "&Make times continuous (change start)"
 msgstr "연속 시간 만들기(시작 바꾸기) (&M)"
 
-#: subs_grid.cpp:183 frame_main.cpp:431
+#: subs_grid.cpp:183
+#: frame_main.cpp:431
 msgid "Changes times of subs so start times begin on previous's end time"
 msgstr "종료 시간 앞으로 자막의 시작 시간 바꾸기"
 
@@ -1985,15 +2057,18 @@ msgstr "종료 시간 앞으로 자막의 시작 시간 바꾸기"
 msgid "&Make times continuous (change end)"
 msgstr "연속 시간  만들기(종료 바꾸기) (&M)"
 
-#: subs_grid.cpp:184 frame_main.cpp:432
+#: subs_grid.cpp:184
+#: frame_main.cpp:432
 msgid "Changes times of subs so end times begin on next's start time"
 msgstr "현재 자막 종료 시간를 다음 자막 시작 시간으로 바꾸기"
 
-#: subs_grid.cpp:188 frame_main.cpp:407
+#: subs_grid.cpp:188
+#: frame_main.cpp:407
 msgid "Recombine Lines"
 msgstr "라인 재결합"
 
-#: subs_grid.cpp:188 frame_main.cpp:407
+#: subs_grid.cpp:188
+#: frame_main.cpp:407
 msgid "Recombine subtitles when they have been split and merged"
 msgstr "분활되고 합쳐진 자막을 재결합"
 
@@ -2005,7 +2080,8 @@ msgstr "오디오 클립 만들기"
 msgid "Create an audio clip of the selected line"
 msgstr "선택된 라인에 오디오 클립 만들기"
 
-#: subs_grid.cpp:198 subs_edit_ctrl.cpp:949
+#: subs_grid.cpp:198
+#: subs_edit_ctrl.cpp:949
 msgid "&Copy"
 msgstr "복사(&C)"
 
@@ -2021,7 +2097,8 @@ msgstr "자르기(&U)"
 msgid "Cuts selected lines to clipboard"
 msgstr "클립보드에 선택된 라인 자르기"
 
-#: subs_grid.cpp:200 subs_edit_ctrl.cpp:950
+#: subs_grid.cpp:200
+#: subs_edit_ctrl.cpp:950
 msgid "&Paste"
 msgstr "불여넣기(&P)"
 
@@ -2029,7 +2106,8 @@ msgstr "불여넣기(&P)"
 msgid "Paste lines from clipboard"
 msgstr "클립보드에서 라인 불여넣기"
 
-#: subs_grid.cpp:204 frame_main.cpp:396
+#: subs_grid.cpp:204
+#: frame_main.cpp:396
 msgid "Delete currently selected lines"
 msgstr "현재 선택된 라인 삭제"
 
@@ -2057,7 +2135,8 @@ msgstr "오디오 클립 저장"
 msgid "Couldn't allocate memory."
 msgstr "메모리를 할당할 수 없습니다."
 
-#: subs_grid.cpp:813 subs_grid.cpp:814
+#: subs_grid.cpp:813
+#: subs_grid.cpp:814
 msgid "load"
 msgstr "로드"
 
@@ -2102,18 +2181,12 @@ msgid "Style for this line."
 msgstr "라인의 스타일"
 
 #: subs_edit_box.cpp:89
-msgid ""
-"Actor name for this speech. This is only for reference, and is mainly "
-"useless."
+msgid "Actor name for this speech. This is only for reference, and is mainly useless."
 msgstr "제작자 소개. 관련있는 사람을 소개하다. 그러나 별루 쓸모가 없다."
 
 #: subs_edit_box.cpp:92
-msgid ""
-"Effect for this line. This can be used to store extra information for "
-"karaoke scripts, or for the effects supported by the renderer."
-msgstr ""
-"이 라인에 효과를 주다. 가라오케 스크립트에 추가정보를 저장하거나 또는 지원되"
-"는 랜더러 효과를 사용할 수 있다"
+msgid "Effect for this line. This can be used to store extra information for karaoke scripts, or for the effects supported by the renderer."
+msgstr "이 라인에 효과를 주다. 가라오케 스크립트에 추가정보를 저장하거나 또는 지원되는 랜더러 효과를 사용할 수 있다"
 
 #: subs_edit_box.cpp:97
 msgid "Layer number"
@@ -2143,7 +2216,8 @@ msgstr "오른쪽 여백(기본값 0 )"
 msgid "Vertical Margin (0 = default)"
 msgstr "수직 여백(기본값 0 )"
 
-#: subs_edit_box.cpp:120 dialog_style_editor.cpp:144
+#: subs_edit_box.cpp:120
+#: dialog_style_editor.cpp:144
 msgid "Bold"
 msgstr "굵게"
 
@@ -2151,11 +2225,13 @@ msgstr "굵게"
 msgid "Italics"
 msgstr "굵게"
 
-#: subs_edit_box.cpp:124 dialog_style_editor.cpp:146
+#: subs_edit_box.cpp:124
+#: dialog_style_editor.cpp:146
 msgid "Underline"
 msgstr "밑줄"
 
-#: subs_edit_box.cpp:126 dialog_style_editor.cpp:147
+#: subs_edit_box.cpp:126
+#: dialog_style_editor.cpp:147
 msgid "Strikeout"
 msgstr "취소선"
 
@@ -2203,7 +2279,8 @@ msgstr "프레임"
 msgid "Time by frame number"
 msgstr "프레임수를 시간으로 표시"
 
-#: subs_edit_box.cpp:595 dialog_style_editor.cpp:486
+#: subs_edit_box.cpp:595
+#: dialog_style_editor.cpp:486
 msgid "style change"
 msgstr "스타일 바꾸기"
 
@@ -2211,7 +2288,8 @@ msgstr "스타일 바꾸기"
 msgid "actor change"
 msgstr "작업자 바꾸기"
 
-#: subs_edit_box.cpp:653 subs_edit_box.cpp:679
+#: subs_edit_box.cpp:653
+#: subs_edit_box.cpp:679
 msgid "layer change"
 msgstr "레이어 바꾸기"
 
@@ -2324,16 +2402,15 @@ msgstr "비디오: %s"
 msgid "Unknown"
 msgstr "알 수 없음 "
 
-#: video_provider_avs.cpp:289 video_provider_dshow.cpp:311
-msgid ""
-"You already have timecodes loaded. Replace them with the timecodes from the "
-"Matroska file?"
-msgstr ""
-"로드된 타임코드를 이미 가지고 있습니다. Matroska 파일의 타임코드와 이미 로드"
-"된 타임코드를 바꾸시겠습니까?"
+#: video_provider_avs.cpp:289
+#: video_provider_dshow.cpp:311
+msgid "You already have timecodes loaded. Replace them with the timecodes from the Matroska file?"
+msgstr "로드된 타임코드를 이미 가지고 있습니다. Matroska 파일의 타임코드와 이미 로드된 타임코드를 바꾸시겠습니까?"
 
-#: video_provider_avs.cpp:289 video_provider_dshow.cpp:311
-#: video_provider_ffmpegsource.cpp:263 video_provider_lavc.cpp:149
+#: video_provider_avs.cpp:289
+#: video_provider_dshow.cpp:311
+#: video_provider_ffmpegsource.cpp:263
+#: video_provider_lavc.cpp:149
 msgid "Replace timecodes?"
 msgstr "타임코드를 바꿀까요?"
 
@@ -2349,11 +2426,13 @@ msgstr "정규식 사용"
 msgid "Update Video (slow)"
 msgstr "업데이트 비디오(느림)"
 
-#: dialog_search_replace.cpp:100 dialog_shift_times.cpp:108
+#: dialog_search_replace.cpp:100
+#: dialog_shift_times.cpp:108
 msgid "All rows"
 msgstr "전체 행"
 
-#: dialog_search_replace.cpp:101 dialog_shift_times.cpp:108
+#: dialog_search_replace.cpp:101
+#: dialog_shift_times.cpp:108
 msgid "Selected rows"
 msgstr "선택된 행"
 
@@ -2373,7 +2452,8 @@ msgstr "다음 바꾸기"
 msgid "Replace all"
 msgstr "모두 바꾸기"
 
-#: dialog_search_replace.cpp:411 dialog_search_replace.cpp:523
+#: dialog_search_replace.cpp:411
+#: dialog_search_replace.cpp:523
 msgid "replace"
 msgstr "바꾸기"
 
@@ -2386,7 +2466,8 @@ msgstr "%i 일치되는 항목를 바꾸다."
 msgid "No matches found."
 msgstr "일치하는 항목을 찾을 수 없습니다."
 
-#: dialog_search_replace.cpp:566 hotkeys.cpp:348
+#: dialog_search_replace.cpp:566
+#: hotkeys.cpp:348
 msgid "Find"
 msgstr "찾기"
 
@@ -2455,25 +2536,16 @@ msgid "Clean Script Info"
 msgstr "스크립트 정보 지우기"
 
 #: export_clean_info.cpp:61
-msgid ""
-"Removes all but the absolutely required fields from the Script Info section. "
-"You might want to run this on files that you plan to distribute in original "
-"form."
-msgstr ""
-"스크립트 정보 섹션에서 필수적으로 요구되는 필드를 제외하고 모두 제거하세요. "
-"이 스크립트를 배포하다."
+msgid "Removes all but the absolutely required fields from the Script Info section. You might want to run this on files that you plan to distribute in original form."
+msgstr "스크립트 정보 섹션에서 필수적으로 요구되는 필드를 제외하고 모두 제거하세요. 이 스크립트를 배포하다."
 
 #: auto4_perl_script.cpp:99
 msgid "Perl script"
 msgstr "펄 스크립트"
 
 #: auto4_perl_script.cpp:188
-msgid ""
-"Unable to add the automation include path(s) to @INC: the script's code may "
-"not compile or execute properly."
-msgstr ""
-"@INC 경로를 포함하고 있는 자동화 스크립트를 추가할 수 없습니다: 이 스크립트 "
-"코드는 컴파일 되지 않았거나 실행할 수 없습니다."
+msgid "Unable to add the automation include path(s) to @INC: the script's code may not compile or execute properly."
+msgstr "@INC 경로를 포함하고 있는 자동화 스크립트를 추가할 수 없습니다: 이 스크립트 코드는 컴파일 되지 않았거나 실행할 수 없습니다."
 
 #: auto4_perl_script.cpp:229
 #, c-format
@@ -2522,7 +2594,8 @@ msgstr "여백 설정"
 msgid "Symmetrical"
 msgstr "상하/좌우 대칭 설정"
 
-#: dialog_resample.cpp:90 dialog_properties.cpp:105
+#: dialog_resample.cpp:90
+#: dialog_properties.cpp:105
 msgid "Resolution"
 msgstr "해상도:"
 
@@ -2530,7 +2603,8 @@ msgstr "해상도:"
 msgid "x"
 msgstr "x"
 
-#: dialog_resample.cpp:99 dialog_properties.cpp:111
+#: dialog_resample.cpp:99
+#: dialog_properties.cpp:111
 msgid "From video"
 msgstr "비디오에서"
 
@@ -2539,10 +2613,8 @@ msgid "Change aspect ratio"
 msgstr "비디오의 가로 세로의 비 바꾸기"
 
 #: dialog_resample.cpp:221
-msgid ""
-"Invalid resolution: destination resolution cannot be 0 on either dimension."
-msgstr ""
-"잘못된 해상도: 대상의 해상도는 가로 또는 세로이든지 \"0\"이 될 수 없습니다."
+msgid "Invalid resolution: destination resolution cannot be 0 on either dimension."
+msgstr "잘못된 해상도: 대상의 해상도는 가로 또는 세로이든지 \"0\"이 될 수 없습니다."
 
 #: dialog_resample.cpp:305
 msgid "resolution resampling"
@@ -2554,34 +2626,37 @@ msgid ""
 "There was an error checking for updates to Aegisub:\n"
 "%s\n"
 "\n"
-"If other applications can access the Internet fine, this is probably a "
-"temporary server problem on our end."
+"If other applications can access the Internet fine, this is probably a temporary server problem on our end."
 msgstr ""
+"업데이트 오류:\n"
+"%s\n"
+"\n"
+"현제 인터넷에 문제가 없다면, 서버의 문제일 가능성이 큽니다."
 
 #: dialog_version_check.cpp:180
 msgid "An unknown error occurred while checking for updates to Aegisub."
-msgstr ""
+msgstr "업데이트 확인 도중 불명의 오류가 발생하였습니다."
 
 #: dialog_version_check.cpp:283
 msgid "Could not connect to updates server."
-msgstr ""
+msgstr "업데이트 서버 접속 실패."
 
 #: dialog_version_check.cpp:288
 #, c-format
 msgid "HTTP request failed, got HTTP response %d."
-msgstr ""
+msgstr "HTTP 요구 실패, HTTP 응답 %d"
 
 #: dialog_version_check.cpp:360
 msgid "An update to Aegisub was found."
-msgstr ""
+msgstr "Aegisub 업데이트가 가능합니다."
 
 #: dialog_version_check.cpp:364
 msgid "Several possible updates to Aegisub were found."
-msgstr ""
+msgstr "여러 Aegisub 업데이트가 가능합니다."
 
 #: dialog_version_check.cpp:368
 msgid "There are no updates to Aegisub."
-msgstr ""
+msgstr "최신 버젼입니다."
 
 #: dialog_version_check.cpp:402
 msgid "Version Checker"
@@ -2589,7 +2664,7 @@ msgstr "Aegisub 버전 검사기"
 
 #: dialog_version_check.cpp:434
 msgid "Remind me again in a &week"
-msgstr ""
+msgstr "일주일 후 다시 알림"
 
 #: dialog_properties.cpp:58
 msgid "Script Properties"
@@ -2640,8 +2715,12 @@ msgid "1: End-of-line word wrapping, only \\N breaks"
 msgstr "1: End-of-line word wrapping, only \\N 중단"
 
 #: dialog_properties.cpp:124
-msgid "2: No word wrapping, both \\n and \\N break"
-msgstr "2: No word wrapping, both \\n and \\N 중단"
+msgid ""
+"2: No word wrapping, both \\n"
+" and \\N break"
+msgstr ""
+"2: No word wrapping, both \\n"
+" and \\N 중단"
 
 #: dialog_properties.cpp:125
 msgid "3: Smart wrapping, bottom line is wider"
@@ -2664,18 +2743,15 @@ msgid "Scale Border and Shadow"
 msgstr "그림자 및 테두리 크기"
 
 #: dialog_properties.cpp:142
-msgid ""
-"Scale border and shadow together with script/render resolution. If this is "
-"unchecked, relative border and shadow size will depend on renderer."
-msgstr ""
-"테두리 와 그림자 크기는 스크립트/랜더 해상도와 함께 선택하지 않으면 관계된 테"
-"두리 와 그림자의 크기 랜더러에 의존하게 된다."
+msgid "Scale border and shadow together with script/render resolution. If this is unchecked, relative border and shadow size will depend on renderer."
+msgstr "테두리 와 그림자 크기는 스크립트/랜더 해상도와 함께 선택하지 않으면 관계된 테두리 와 그림자의 크기 랜더러에 의존하게 된다."
 
 #: dialog_properties.cpp:204
 msgid "property changes"
 msgstr "속성 바꾸기"
 
-#: dialog_translation.cpp:61 frame_main.cpp:284
+#: dialog_translation.cpp:61
+#: frame_main.cpp:284
 msgid "Translation Assistant"
 msgstr "번역 도우미"
 
@@ -2714,14 +2790,15 @@ msgstr "더 이상 번역할 라인이 없다."
 
 #: subtitles_provider_libass.cpp:57
 msgid "Please wait, caching fonts..."
-msgstr ""
+msgstr "글씨체 캐싱중..."
 
-#: audio_display.cpp:2278 audio_display.cpp:2333
-msgid ""
-"Do you want to commit your changes? If you choose No, they will be discarded."
+#: audio_display.cpp:2278
+#: audio_display.cpp:2333
+msgid "Do you want to commit your changes? If you choose No, they will be discarded."
 msgstr "변경 내용을 적용하시겠습니까? No를 선택하시면 변경 내용이 취소됩니다."
 
-#: audio_display.cpp:2278 audio_display.cpp:2333
+#: audio_display.cpp:2278
+#: audio_display.cpp:2333
 msgid "Commit?"
 msgstr "적용하시겠습니까?"
 
@@ -2742,18 +2819,16 @@ msgid "Change karaoke tag to \\ko"
 msgstr "가라오케 태그 바꾸기 \\ko"
 
 #: frame_main.cpp:204
-msgid ""
-"Do you want Aegisub to check for updates whenever it starts? You can still "
-"do it manually via the Help menu."
-msgstr ""
-"Aegisub 업데이트 체크를 시작하시겠습니까 ? 도움말 메뉴를 통해서 수동으로 업데"
-"이트 체크를 할 수 있다."
+msgid "Do you want Aegisub to check for updates whenever it starts? You can still do it manually via the Help menu."
+msgstr "Aegisub 업데이트 체크를 시작하시겠습니까 ? 도움말 메뉴를 통해서 수동으로 업데이트 체크를 할 수 있다."
 
 #: frame_main.cpp:204
 msgid "Check for updates?"
 msgstr "업데이트를 체크할까요?"
 
-#: frame_main.cpp:234 frame_main.cpp:333 hotkeys.cpp:327
+#: frame_main.cpp:234
+#: frame_main.cpp:333
+#: hotkeys.cpp:327
 msgid "New subtitles"
 msgstr "새 재막"
 
@@ -2761,7 +2836,8 @@ msgstr "새 재막"
 msgid "Open"
 msgstr "열기"
 
-#: frame_main.cpp:235 hotkeys.cpp:328
+#: frame_main.cpp:235
+#: hotkeys.cpp:328
 msgid "Open subtitles"
 msgstr "자막 열기"
 
@@ -2769,7 +2845,8 @@ msgstr "자막 열기"
 msgid "Save"
 msgstr "저장"
 
-#: frame_main.cpp:236 hotkeys.cpp:329
+#: frame_main.cpp:236
+#: hotkeys.cpp:329
 msgid "Save subtitles"
 msgstr "자막저장"
 
@@ -2801,7 +2878,8 @@ msgstr "비디오 화면 축소"
 msgid "Jump video to start"
 msgstr "비디오 시작으로 이동"
 
-#: frame_main.cpp:255 frame_main.cpp:481
+#: frame_main.cpp:255
+#: frame_main.cpp:481
 msgid "Jumps the video to the start frame of current subtitle"
 msgstr "비디오 현재 자막의 시작 프레임 이동"
 
@@ -2809,7 +2887,8 @@ msgstr "비디오 현재 자막의 시작 프레임 이동"
 msgid "Jump video to end"
 msgstr "비디오 종료로 이동"
 
-#: frame_main.cpp:256 frame_main.cpp:482
+#: frame_main.cpp:256
+#: frame_main.cpp:482
 msgid "Jumps the video to the end frame of current subtitle"
 msgstr "비디오 현재 자막의 종료 프레임으로 이동"
 
@@ -2817,7 +2896,8 @@ msgstr "비디오 현재 자막의 종료 프레임으로 이동"
 msgid "Snap start to video"
 msgstr "비디오 시작 맞추기"
 
-#: frame_main.cpp:257 frame_main.cpp:421
+#: frame_main.cpp:257
+#: frame_main.cpp:421
 msgid "Set start of selected subtitles to current video frame"
 msgstr "현재 비디오 프레임에 선택된 자막의 시작 설정"
 
@@ -2825,7 +2905,8 @@ msgstr "현재 비디오 프레임에 선택된 자막의 시작 설정"
 msgid "Snap end to video"
 msgstr "비디오 종료 맞추기"
 
-#: frame_main.cpp:258 frame_main.cpp:422
+#: frame_main.cpp:258
+#: frame_main.cpp:422
 msgid "Set end of selected subtitles to current video frame"
 msgstr "현재 비디오 프레임에 선택된 자막 종료 설정"
 
@@ -2873,7 +2954,8 @@ msgstr "첨부 파일"
 msgid "Open Attachment List"
 msgstr "첨부 파일 목록 열기"
 
-#: frame_main.cpp:268 dialog_fonts_collector.cpp:80
+#: frame_main.cpp:268
+#: dialog_fonts_collector.cpp:80
 msgid "Fonts Collector"
 msgstr "글꼴 셀렉터"
 
@@ -2885,11 +2967,14 @@ msgstr "글꼴 셀렉터 열기"
 msgid "Open Automation manager"
 msgstr "자동화 매니저 열기"
 
-#: frame_main.cpp:279 frame_main.cpp:386
+#: frame_main.cpp:279
+#: frame_main.cpp:386
 msgid "Launches ai-chan's \"ASSDraw3\" tool for vector drawing."
 msgstr "벡터 드로잉 툴  \"ASSDraw3\"은 ai-chan's 님 만들었습니다."
 
-#: frame_main.cpp:282 dialog_shift_times.cpp:63 hotkeys.cpp:347
+#: frame_main.cpp:282
+#: dialog_shift_times.cpp:63
+#: hotkeys.cpp:347
 msgid "Shift Times"
 msgstr "시간 이동"
 
@@ -2933,7 +3018,8 @@ msgstr "Kanji 타이머 dialog 열기"
 msgid "Open Spell checker"
 msgstr "맞춤법 검사기 열기"
 
-#: frame_main.cpp:292 frame_main.cpp:510
+#: frame_main.cpp:292
+#: frame_main.cpp:510
 msgid "Configure Aegisub"
 msgstr "Aegisub 구성"
 
@@ -2945,7 +3031,8 @@ msgstr "태그 숨김 모드 전환"
 msgid "Cycle through tag-hiding modes"
 msgstr "태그-숨기기 모드를 전환"
 
-#: frame_main.cpp:318 frame_main.cpp:541
+#: frame_main.cpp:318
+#: frame_main.cpp:541
 msgid "&Help"
 msgstr "도움말(&H)"
 
@@ -2993,7 +3080,10 @@ msgstr "자막 내보내기"
 msgid "Saves a copy of subtitles with processing applied to it."
 msgstr "자막의 변경 내용 적용해서 자막의 복사본으로 저장"
 
-#: frame_main.cpp:339 frame_main.cpp:440 frame_main.cpp:448 frame_main.cpp:454
+#: frame_main.cpp:339
+#: frame_main.cpp:440
+#: frame_main.cpp:448
+#: frame_main.cpp:454
 #: frame_main.cpp:490
 msgid "Recent"
 msgstr "최근 사용 목록"
@@ -3042,19 +3132,24 @@ msgstr "Aegisub 프로그램 끝내기"
 msgid "&File"
 msgstr "파일(&F)"
 
-#: frame_main.cpp:359 subs_edit_ctrl.cpp:946 frame_main_events.cpp:430
+#: frame_main.cpp:359
+#: subs_edit_ctrl.cpp:946
+#: frame_main_events.cpp:430
 msgid "&Undo"
 msgstr "실행 취소(&U)"
 
-#: frame_main.cpp:359 frame_main_events.cpp:430
+#: frame_main.cpp:359
+#: frame_main_events.cpp:430
 msgid "Undoes last action"
 msgstr "마지막 작업 실행 취소"
 
-#: frame_main.cpp:360 frame_main_events.cpp:431
+#: frame_main.cpp:360
+#: frame_main_events.cpp:431
 msgid "&Redo"
 msgstr "다시 실행(&R)"
 
-#: frame_main.cpp:360 frame_main_events.cpp:431
+#: frame_main.cpp:360
+#: frame_main_events.cpp:431
 msgid "Redoes last action"
 msgstr "마지막 작업 다시 실행"
 
@@ -3098,7 +3193,9 @@ msgstr "찾기(&F)"
 msgid "Find words in subtitles"
 msgstr "자막에서 단어 찾기"
 
-#: frame_main.cpp:368 hotkeys.cpp:350 hotkeys.cpp:353
+#: frame_main.cpp:368
+#: hotkeys.cpp:350
+#: hotkeys.cpp:353
 msgid "Find Next"
 msgstr "다음 찾기"
 
@@ -3267,11 +3364,8 @@ msgid "Timing Post-Processor..."
 msgstr "타이밍 포스트-프로세서"
 
 #: frame_main.cpp:418
-msgid ""
-"Runs a post-processor for timing to deal with lead-ins, lead-outs, scene "
-"timing and etc."
-msgstr ""
-"리드인,리드아웃, 장면 시간 그리고 기타 시간을 나누어서  post-processor 실행"
+msgid "Runs a post-processor for timing to deal with lead-ins, lead-outs, scene timing and etc."
+msgstr "리드인,리드아웃, 장면 시간 그리고 기타 시간을 나누어서  post-processor 실행"
 
 #: frame_main.cpp:419
 msgid "Kanji Timer..."
@@ -3289,13 +3383,13 @@ msgstr "비디오 시작 맞추기"
 msgid "Snap End to Video"
 msgstr "비디오 종료 맞추기"
 
-#: frame_main.cpp:423 hotkeys.cpp:371
+#: frame_main.cpp:423
+#: hotkeys.cpp:371
 msgid "Snap to Scene"
 msgstr "장면 맞추기"
 
 #: frame_main.cpp:423
-msgid ""
-"Set start and end of subtitles to the keyframes around current video frame"
+msgid "Set start and end of subtitles to the keyframes around current video frame"
 msgstr "현재 비디오 프레임에 자막의 시작과 끝의 키 프레임 설정"
 
 #: frame_main.cpp:424
@@ -3475,9 +3569,7 @@ msgid "Show Overscan Mask"
 msgstr "오버스캔 마스크 표시"
 
 #: frame_main.cpp:478
-msgid ""
-"Show a mask over the video, indicating areas that might get cropped off by "
-"overscan on televisions."
+msgid "Show a mask over the video, indicating areas that might get cropped off by overscan on televisions."
 msgstr "비디오에 마크 표시, 텔레비전 오버스캔 표시된 부분을 잘라서 가져오다."
 
 #: frame_main.cpp:480
@@ -3488,11 +3580,13 @@ msgstr "이동(&J)"
 msgid "Jump to frame or time"
 msgstr "시간 또는 프레임 이동"
 
-#: frame_main.cpp:481 hotkeys.cpp:367
+#: frame_main.cpp:481
+#: hotkeys.cpp:367
 msgid "Jump Video to Start"
 msgstr "비디오 시작으로 이동"
 
-#: frame_main.cpp:482 hotkeys.cpp:368
+#: frame_main.cpp:482
+#: hotkeys.cpp:368
 msgid "Jump Video to End"
 msgstr "비디오 종료로 이동"
 
@@ -3610,11 +3704,11 @@ msgstr "도움말 항목"
 
 #: frame_main.cpp:529
 msgid "&Resource Files..."
-msgstr ""
+msgstr "리소스 파일...(&R)"
 
 #: frame_main.cpp:529
 msgid "Resource files distributed with Aegisub"
-msgstr ""
+msgstr "리소스 파일이 보내졌습니다."
 
 #: frame_main.cpp:532
 msgid "&Website..."
@@ -3664,7 +3758,8 @@ msgstr "Aegisub 정보(&A)"
 msgid "Save subtitles file"
 msgstr "자막 파일 저장"
 
-#: frame_main.cpp:769 frame_main_events.cpp:735
+#: frame_main.cpp:769
+#: frame_main_events.cpp:735
 msgid "Choose charset code:"
 msgstr "문자 코드 선택:"
 
@@ -3678,11 +3773,11 @@ msgstr "저장하지 않음"
 
 #: frame_main.cpp:866
 msgid "Untitled"
-msgstr ""
+msgstr "제목 없음"
 
 #: frame_main.cpp:876
 msgid "untitled"
-msgstr ""
+msgstr "제목 없음"
 
 #: frame_main.cpp:942
 msgid "Do you want to load/unload the associated files?"
@@ -3694,8 +3789,7 @@ msgstr "파일을 로드(언로드) 하시겠습니까 ?"
 
 #: frame_main.cpp:1087
 msgid "You have timecodes loaded currently. Would you like to unload them?"
-msgstr ""
-"현재 로드된 타임코드를 가지고 있습니다. 타임코드 파일을 언로드 하시겠습니까?"
+msgstr "현재 로드된 타임코드를 가지고 있습니다. 타임코드 파일을 언로드 하시겠습니까?"
 
 #: frame_main.cpp:1087
 msgid "Unload timecodes?"
@@ -3704,8 +3798,7 @@ msgstr "타임코드 파일을 언로드 하시겠습니까?"
 #: frame_main.cpp:1129
 #, c-format
 msgid ""
-"The resolution of the loaded video and the resolution specified for the "
-"subtitles don't match.\n"
+"The resolution of the loaded video and the resolution specified for the subtitles don't match.\n"
 "\n"
 "Video resolution:\t%d x %d\n"
 "Script resolution:\t%d x %d\n"
@@ -3732,14 +3825,8 @@ msgid "Transform Framerate"
 msgstr "재생속도 변경"
 
 #: export_framerate.cpp:62
-msgid ""
-"Transform subtitles times, including those in override tags, from input to "
-"output. This is most useful to convert CFR to VFR for hardsubbing. You "
-"usually DO NOT want to check this filter for softsubbing."
-msgstr ""
-"자막 시간 변경은 덮어쓰기 태그 및 입력에서 출력까지 포합니다. CFR에서 VFR 변"
-"경하는 하드서핑에서 자주 이용합니다. 보통 소프트서핑 필터를 체크 하지 않습니"
-"다."
+msgid "Transform subtitles times, including those in override tags, from input to output. This is most useful to convert CFR to VFR for hardsubbing. You usually DO NOT want to check this filter for softsubbing."
+msgstr "자막 시간 변경은 덮어쓰기 태그 및 입력에서 출력까지 포합니다. CFR에서 VFR 변경하는 하드서핑에서 자주 이용합니다. 보통 소프트서핑 필터를 체크 하지 않습니다."
 
 #: export_framerate.cpp:88
 msgid "From Video"
@@ -3778,12 +3865,8 @@ msgid "Not enough parameters for Aegisub::text_extents()"
 msgstr "Aegisub에 매개변수가 부족합니다::text_extents()"
 
 #: auto4_perl.cpp:315
-msgid ""
-"Tried to register PerlConsole, but support for it was disabled in this "
-"version."
-msgstr ""
-"PerlConsole에 등록을 시도하다, 하지만 이 버전에서는 PerlConsole 등록 지원를 "
-"사용하지 않습니다."
+msgid "Tried to register PerlConsole, but support for it was disabled in this version."
+msgstr "PerlConsole에 등록을 시도하다, 하지만 이 버전에서는 PerlConsole 등록 지원를 사용하지 않습니다."
 
 #: auto4_perl.cpp:383
 msgid "Fatal error: "
@@ -3829,7 +3912,8 @@ msgstr "색"
 msgid "Margins"
 msgstr "여백"
 
-#: dialog_style_editor.cpp:136 dialog_style_editor.cpp:235
+#: dialog_style_editor.cpp:136
+#: dialog_style_editor.cpp:235
 msgid "Outline"
 msgstr "외곽선"
 
@@ -3898,9 +3982,7 @@ msgid "Distance from top/bottom edge, in pixels."
 msgstr "위쪽/아래쪽 여백 간격, 픽셀"
 
 #: dialog_style_editor.cpp:180
-msgid ""
-"When selected, display an opaque box behind the subtitles instead of an "
-"outline around the text."
+msgid "When selected, display an opaque box behind the subtitles instead of an outline around the text."
 msgstr "택스트의 외곽선 대신에 자막뒤에 불투명 상자를 표시할 때 선택한다."
 
 #: dialog_style_editor.cpp:181
@@ -3924,11 +4006,8 @@ msgid "Angle to rotate in Z axis, in degrees."
 msgstr "Z축의 회전 각도, 도"
 
 #: dialog_style_editor.cpp:186
-msgid ""
-"Encoding, only useful in unicode if the font doesn't have the proper unicode "
-"mapping."
-msgstr ""
-"글꼴이 적당한 유니코드 맵핑을 가지고 있지 않을때, 유니코드 인코딩 쓸모있다."
+msgid "Encoding, only useful in unicode if the font doesn't have the proper unicode mapping."
+msgstr "글꼴이 적당한 유니코드 맵핑을 가지고 있지 않을때, 유니코드 인코딩 쓸모있다."
 
 #: dialog_style_editor.cpp:187
 msgid "Character spacing, in pixels."
@@ -3995,9 +4074,7 @@ msgid "No subtitle providers available. Cannot preview subs."
 msgstr "이용 가능한 자막이 없어 자막 미리 보기할 수 없습니다."
 
 #: dialog_style_editor.cpp:452
-msgid ""
-"Do you want to change all instances of this style in the script to this new "
-"name?"
+msgid "Do you want to change all instances of this style in the script to this new name?"
 msgstr "스타일에 모든 인스턴트에 스크립트를 새로운 이름으로 변경하시겠습니다?"
 
 #: dialog_style_editor.cpp:452
@@ -4006,16 +4083,12 @@ msgstr "스크립트를 업데이트할까요?"
 
 #: dialog_style_editor.cpp:583
 msgid ""
-"You have chosen to use the \"Comic Sans\" font. As the programmer and a "
-"typesetter,\n"
-"I must urge you to reconsider. Comic Sans is the most abused font in the "
-"history\n"
+"You have chosen to use the \"Comic Sans\" font. As the programmer and a typesetter,\n"
+"I must urge you to reconsider. Comic Sans is the most abused font in the history\n"
 "of computing, so please avoid using it unless it's REALLY suitable. Thanks."
 msgstr ""
-"\"Comic Sans\" 글꼴 사용을 선택하는걸,전문가처럼 성급하게 고려해서는 안됩니"
-"다.\n"
-"Comic Sans는 컴퓨터에서 너무 많이 사용되고 글꼴입니다, 정말로 알맞지 않은 이"
-"상은 사용하지 말아주세요.\n"
+"\"Comic Sans\" 글꼴 사용을 선택하는걸,전문가처럼 성급하게 고려해서는 안됩니다.\n"
+"Comic Sans는 컴퓨터에서 너무 많이 사용되고 글꼴입니다, 정말로 알맞지 않은 이상은 사용하지 말아주세요.\n"
 "감사합니다."
 
 #: dialog_style_editor.cpp:583
@@ -4030,7 +4103,8 @@ msgstr "이동 위치"
 msgid "History"
 msgstr "사용 기록"
 
-#: dialog_shift_times.cpp:78 dialog_jumpto.cpp:76
+#: dialog_shift_times.cpp:78
+#: dialog_jumpto.cpp:76
 msgid "Time: "
 msgstr "시간:"
 
@@ -4063,15 +4137,11 @@ msgid "Backward"
 msgstr "뒤로"
 
 #: dialog_shift_times.cpp:99
-msgid ""
-"Shifts subs forward, making them appear later. Use if they are appearing too "
-"soon."
+msgid "Shifts subs forward, making them appear later. Use if they are appearing too soon."
 msgstr "자막을 앞으로 이동"
 
 #: dialog_shift_times.cpp:100
-msgid ""
-"Shifts subs backward, making them appear earlier. Use if they are appearing "
-"too late."
+msgid "Shifts subs backward, making them appear earlier. Use if they are appearing too late."
 msgstr "자막을 뒤로 이동"
 
 #: dialog_shift_times.cpp:108
@@ -4094,7 +4164,8 @@ msgstr "시작 시간"
 msgid "End times only"
 msgstr "종료 시간"
 
-#: dialog_shift_times.cpp:113 dialog_paste_over.cpp:91
+#: dialog_shift_times.cpp:113
+#: dialog_paste_over.cpp:91
 msgid "Times"
 msgstr "시간"
 
@@ -4212,7 +4283,8 @@ msgstr "크기"
 msgid "Group"
 msgstr "그룹"
 
-#: dialog_attachments.cpp:145 dialog_attachments.cpp:178
+#: dialog_attachments.cpp:145
+#: dialog_attachments.cpp:178
 msgid "Choose file to be attached"
 msgstr "첨부할 파일 선택"
 
@@ -4232,147 +4304,70 @@ msgstr "이동"
 msgid "Frame: "
 msgstr "프레임:"
 
-#: video_provider_ffmpegsource.cpp:263 video_provider_lavc.cpp:149
-msgid ""
-"You already have timecodes loaded. Would you like to replace them with "
-"timecodes from the video file?"
-msgstr ""
-"타임코드가 이미 로드 되었습니다.비디오 파일에서 타임코드를 바꾸시겠습니까 ?"
+#: video_provider_ffmpegsource.cpp:263
+#: video_provider_lavc.cpp:149
+msgid "You already have timecodes loaded. Would you like to replace them with timecodes from the video file?"
+msgstr "타임코드가 이미 로드 되었습니다.비디오 파일에서 타임코드를 바꾸시겠습니까 ?"
 
 #: dialog_tip.cpp:52
-msgid ""
-"Aegisub can export subtitles to many different formats, character encodings, "
-"and even compensate Variable Frame Rate so you can hardsub them - it's all "
-"in the Export option in File menu."
-msgstr ""
-"Aegusub 프로그램은 매우 다양한 형식 과 언어 코드 인코딩으로 자막 내보기를 할 "
-"수 있으며 , 심지어 변하기 쉬운 재생 속도를 보정할 수 있으며 또한  어려운 자막"
-"에서도 할 수 있습니다- Aegisub 프로그램의 파일 메뉴 내보내기 항목에서 모두할 "
-"수 있습니다."
+msgid "Aegisub can export subtitles to many different formats, character encodings, and even compensate Variable Frame Rate so you can hardsub them - it's all in the Export option in File menu."
+msgstr "Aegusub 프로그램은 매우 다양한 형식 과 언어 코드 인코딩으로 자막 내보기를 할 수 있으며 , 심지어 변하기 쉬운 재생 속도를 보정할 수 있으며 또한  어려운 자막에서도 할 수 있습니다- Aegisub 프로그램의 파일 메뉴 내보내기 항목에서 모두할 수 있습니다."
 
 #: dialog_tip.cpp:53
-msgid ""
-"You can easily translate subtitle files using the translation assistant."
+msgid "You can easily translate subtitle files using the translation assistant."
 msgstr "번역 도우미를 사용해서 자막 파일 쉽게 번역할 수 있습니다."
 
 #: dialog_tip.cpp:54
-msgid ""
-"Styles can be stored in different storages, so that you can keep your "
-"projects organized."
-msgstr ""
-"계획된 프로젝트를 보존하기 위해서 스타일을 다른 저장 공간에 저장할 수 있습니"
-"다."
+msgid "Styles can be stored in different storages, so that you can keep your projects organized."
+msgstr "계획된 프로젝트를 보존하기 위해서 스타일을 다른 저장 공간에 저장할 수 있습니다."
 
 #: dialog_tip.cpp:55
-msgid ""
-"Use keyboard shortcuts! They make your life easier, for example, Ctrl+Enter "
-"updates changes on current line without going to next. Check the manual for "
-"a complete list."
-msgstr ""
-"바로 가기 키를 사용하면 여러분의 작업을 쉬게 만들 수 있습니다. 예를 들어 Ctrl"
-"+Enter 키는 현재 라인의 변경 내용을 업데이트하고 없으면 다음 라인으로 이동합"
-"니다. 모든 목록에 매뉴얼 클릭하세요."
+msgid "Use keyboard shortcuts! They make your life easier, for example, Ctrl+Enter updates changes on current line without going to next. Check the manual for a complete list."
+msgstr "바로 가기 키를 사용하면 여러분의 작업을 쉬게 만들 수 있습니다. 예를 들어 Ctrl+Enter 키는 현재 라인의 변경 내용을 업데이트하고 없으면 다음 라인으로 이동합니다. 모든 목록에 매뉴얼 클릭하세요."
 
 #: dialog_tip.cpp:56
-msgid ""
-"There is no reason to use the SSA format (as opposed to ASS). ASS is very "
-"similar, but adds some important functionality. Most importantly, however, "
-"is that only ASS supports certain override tags (such as \\pos and \\t). "
-"Those only work on SSA files because VSFilter/Textsub is merciful."
-msgstr ""
-"SSA 형식을 사용할 이유가 없습니다.(ASS형식과 대조적으로).ASS 형식은 SSA 형식"
-"과 아주 비슷하지만 , 다소의 중요한 기능이 추가 되었습니다.대부분 중요하지만 "
-"그렇지만 확실히 덮어쓰기 태그는 ASS 형식만 지원한다.VS필터/Textsub 지원으로 "
-"덮어쓰기 태그는 SSA형식의 파일에서만 작동한다."
+msgid "There is no reason to use the SSA format (as opposed to ASS). ASS is very similar, but adds some important functionality. Most importantly, however, is that only ASS supports certain override tags (such as \\pos and \\t). Those only work on SSA files because VSFilter/Textsub is merciful."
+msgstr "SSA 형식을 사용할 이유가 없습니다.(ASS형식과 대조적으로).ASS 형식은 SSA 형식과 아주 비슷하지만 , 다소의 중요한 기능이 추가 되었습니다.대부분 중요하지만 그렇지만 확실히 덮어쓰기 태그는 ASS 형식만 지원한다.VS필터/Textsub 지원으로 덮어쓰기 태그는 SSA형식의 파일에서만 작동한다."
 
 #: dialog_tip.cpp:57
 msgid "DON'T PANIC!"
 msgstr "허둥대지 마라, 침착해라!"
 
 #: dialog_tip.cpp:58
-msgid ""
-"Aegisub has several features to make sure you will never lose your work. It "
-"will periodically save your subtitles to autosave folder, and will create a "
-"copy of subs whenever you open them, to autoback folder. Also, if it "
-"crashes, it will attempt to save a restore file."
-msgstr ""
-"Aegisub 프로그램은 작업을 잃어버리지 않게 하는 몇가지 기능을 가지고 있습니다."
-"자동 저장 기능은 정기적으로 작업중인 자막 파일을 정기적으로 자동 저장 폴더에 "
-"저장합니다, 자동 백업 기능은 자막 파일을 열 때 언제나 자막 파일을 복사해서 자"
-"동백업 폴더에 저장합니다.또한 자동 복원 기능은 Aegisub 프로그램이 충돌 하면 "
-"작업중인 자막 파일을 복원 파일에 저장하도록 시도합니다."
+msgid "Aegisub has several features to make sure you will never lose your work. It will periodically save your subtitles to autosave folder, and will create a copy of subs whenever you open them, to autoback folder. Also, if it crashes, it will attempt to save a restore file."
+msgstr "Aegisub 프로그램은 작업을 잃어버리지 않게 하는 몇가지 기능을 가지고 있습니다.자동 저장 기능은 정기적으로 작업중인 자막 파일을 정기적으로 자동 저장 폴더에 저장합니다, 자동 백업 기능은 자막 파일을 열 때 언제나 자막 파일을 복사해서 자동백업 폴더에 저장합니다.또한 자동 복원 기능은 Aegisub 프로그램이 충돌 하면 작업중인 자막 파일을 복원 파일에 저장하도록 시도합니다."
 
 #: dialog_tip.cpp:59
-msgid ""
-"The styling assistant is a practical way to set styles to each line, when "
-"each actor has a different style assigned to it."
-msgstr ""
-"스타일 도우미는 각 라인의 스타일 설정을 실용적인 방법으로 각 작업자가 가지고 "
-"있는 다른 스타일을 배정한다."
+msgid "The styling assistant is a practical way to set styles to each line, when each actor has a different style assigned to it."
+msgstr "스타일 도우미는 각 라인의 스타일 설정을 실용적인 방법으로 각 작업자가 가지고 있는 다른 스타일을 배정한다."
 
 #: dialog_tip.cpp:60
-msgid ""
-"The fonts collector is one of the most useful features, which resumes the "
-"boring task of hunting down fonts into a matter of a few clicks."
-msgstr ""
-"글꼴 셀렉터의 가장 유용한 기능은 대략 몇번 클릭으로 글꼴 찾는 지루한 작업을 "
-"반복하는걸 해결습니다."
+msgid "The fonts collector is one of the most useful features, which resumes the boring task of hunting down fonts into a matter of a few clicks."
+msgstr "글꼴 셀렉터의 가장 유용한 기능은 대략 몇번 클릭으로 글꼴 찾는 지루한 작업을 반복하는걸 해결습니다."
 
 #: dialog_tip.cpp:61
-msgid ""
-"When you are done with your subtitles and ready to distribute them, "
-"remember: say no to MP4, OGM or AVI. Matroska is your friend."
-msgstr ""
-"자막이 완료가 되어 배포할 준비가 되었을때 기억하세요: MP4 나 OGM 또는 AVI 아"
-"니고  Matroska(MKV) 입니다."
+msgid "When you are done with your subtitles and ready to distribute them, remember: say no to MP4, OGM or AVI. Matroska is your friend."
+msgstr "자막이 완료가 되어 배포할 준비가 되었을때 기억하세요: MP4 나 OGM 또는 AVI 아니고  Matroska(MKV) 입니다."
 
 #: dialog_tip.cpp:62
-msgid ""
-"Much like anything loaded via DirectShow, certain files may have a strange "
-"structure (such as h.264 into AVI or XviD will null frames) which may cause "
-"unreliable seeking (that is, video frames might be off by one frame). This "
-"is not an Aegisub bug - you may consider reencoding those videos before "
-"working with them."
-msgstr ""
-"DirectShow 통해서 많이 불러오다. 확실히 파일이 불확실한 탐색이 원인이 되어서 "
-"이상한 구조 ( 예컨데 H.264에 AVI 또는 XviD은 빈 프레임을 요구한다.) 가지게 될"
-"것이다.  다시 말하자면 하나의 프레임에 의해서 비디오 프레임이 중단될지도 모른"
-"다.이것은 Aegisub 프로그램 버그가 아닙니다 - 비디오 파일을 작업하기 전에 다"
-"시 인코딩하는것을 생각하는것도 좋을것 같습니다."
+msgid "Much like anything loaded via DirectShow, certain files may have a strange structure (such as h.264 into AVI or XviD will null frames) which may cause unreliable seeking (that is, video frames might be off by one frame). This is not an Aegisub bug - you may consider reencoding those videos before working with them."
+msgstr "DirectShow 통해서 많이 불러오다. 확실히 파일이 불확실한 탐색이 원인이 되어서 이상한 구조 ( 예컨데 H.264에 AVI 또는 XviD은 빈 프레임을 요구한다.) 가지게 될것이다.  다시 말하자면 하나의 프레임에 의해서 비디오 프레임이 중단될지도 모른다.이것은 Aegisub 프로그램 버그가 아닙니다 - 비디오 파일을 작업하기 전에 다시 인코딩하는것을 생각하는것도 좋을것 같습니다."
 
 #: dialog_tip.cpp:63
-msgid ""
-"Try the spectrum mode for the audio display, it can make it much easier to "
-"spot where the important points in the audio are."
-msgstr ""
-"오디오 표시에 스펙트럼 모드를 시도하다, 스펙트럼 모드는 오디오에 중요한 포인"
-"트를 매우 쉽게 만들 수 있다."
+msgid "Try the spectrum mode for the audio display, it can make it much easier to spot where the important points in the audio are."
+msgstr "오디오 표시에 스펙트럼 모드를 시도하다, 스펙트럼 모드는 오디오에 중요한 포인트를 매우 쉽게 만들 수 있다."
 
 #: dialog_tip.cpp:64
-msgid ""
-"If you decode your audio to a PCM WAV file before loading it in Aegisub, you "
-"don't have to wait for it to be decoded before you can use it."
-msgstr ""
-"Aegisub 로딩전에 PCM 음성 파일을 디코드했으면, 디코드 시간을 기다릴 필요 없"
-"이 사용할 수 있습니다."
+msgid "If you decode your audio to a PCM WAV file before loading it in Aegisub, you don't have to wait for it to be decoded before you can use it."
+msgstr "Aegisub 로딩전에 PCM 음성 파일을 디코드했으면, 디코드 시간을 기다릴 필요 없이 사용할 수 있습니다."
 
 #: dialog_tip.cpp:65
-msgid ""
-"Having video open is often more a nuisance than a help when timing "
-"subtitles. Timing with only audio open is often much easier. You can always "
-"adjust the subtitles to match the video later on."
-msgstr ""
-"비디오 열기후 자막 타이밍의 도움말은 매우 성가시다. 대개는 쉽게 오디오 타이밍"
-"만 열다.나중에 비디오에 일치되게 자막을 늘 조정할 수 있습니다."
+msgid "Having video open is often more a nuisance than a help when timing subtitles. Timing with only audio open is often much easier. You can always adjust the subtitles to match the video later on."
+msgstr "비디오 열기후 자막 타이밍의 도움말은 매우 성가시다. 대개는 쉽게 오디오 타이밍만 열다.나중에 비디오에 일치되게 자막을 늘 조정할 수 있습니다."
 
 #: dialog_tip.cpp:66
-msgid ""
-"If the audio doesn't seem to work properly during video playback, try "
-"loading audio separately. Just select Audio->Load from video, that usually "
-"makes the audio much more reliable."
-msgstr ""
-"비디오 재생중에 오디오 작업을 원만하게 하지못한다면 따로 오디오 로딩를 시도해"
-"라. 바로 오디오 선택 --> 비디오에서 로드, 이것은 확실하게 오디오를 만든다."
+msgid "If the audio doesn't seem to work properly during video playback, try loading audio separately. Just select Audio->Load from video, that usually makes the audio much more reliable."
+msgstr "비디오 재생중에 오디오 작업을 원만하게 하지못한다면 따로 오디오 로딩를 시도해라. 바로 오디오 선택 --> 비디오에서 로드, 이것은 확실하게 오디오를 만든다."
 
 #: dialog_tip.cpp:67
 msgid "If anything goes wrong, blame movax."
@@ -4382,7 +4377,8 @@ msgstr "잘못된 곳으로 이동하게 되면 mova 잘못이다."
 msgid "&Browse..."
 msgstr "찾아보기(&B)"
 
-#: dialog_fonts_collector.cpp:98 dialog_fonts_collector.cpp:309
+#: dialog_fonts_collector.cpp:98
+#: dialog_fonts_collector.cpp:309
 msgid ""
 "Choose the folder where the fonts will be collected to.\n"
 "It will be created if it doesn't exist."
@@ -4459,13 +4455,8 @@ msgid "Invalid destination directory."
 msgstr "대상 디렉터리가 잘못되었습니다."
 
 #: dialog_fonts_collector.cpp:406
-msgid ""
-"Collecting font data from system. This might take a while, depending on the "
-"number of fonts installed. Results are cached and subsequent executions will "
-"be faster...\n"
-msgstr ""
-"시스템에서 글꼴 데이터를 가져오다.설치된 글꼴 갯수에 따라서 시간이 걸리지도 "
-"모릅니다.저장된 결과로 이후 빠르게 실행할 수 있습니다.\n"
+msgid "Collecting font data from system. This might take a while, depending on the number of fonts installed. Results are cached and subsequent executions will be faster...\n"
+msgstr "시스템에서 글꼴 데이터를 가져오다.설치된 글꼴 갯수에 따라서 시간이 걸리지도 모릅니다.저장된 결과로 이후 빠르게 실행할 수 있습니다.\n"
 
 #: dialog_fonts_collector.cpp:408
 msgid "Done collecting font data."
@@ -4580,7 +4571,8 @@ msgstr "제안할 맞춤법 검사기가 없음"
 msgid "Spell checker suggestions for \"%s\""
 msgstr "\"%s\"에 맞춤법 검사기 제안"
 
-#: subs_edit_ctrl.cpp:845 subs_edit_ctrl.cpp:928
+#: subs_edit_ctrl.cpp:845
+#: subs_edit_ctrl.cpp:928
 msgid "Disable"
 msgstr "사용 안 함"
 
@@ -4753,7 +4745,8 @@ msgstr "분할 작업"
 msgid "Enter split-mode"
 msgstr "분할 작업 모드 들어가기"
 
-#: hotkeys.cpp:331 hotkeys.cpp:335
+#: hotkeys.cpp:331
+#: hotkeys.cpp:335
 msgid "Exit"
 msgstr "끝내기"
 
@@ -4765,7 +4758,8 @@ msgstr "편집 도구 실행"
 msgid "Undo"
 msgstr "실행 취소"
 
-#: hotkeys.cpp:343 hotkeys.cpp:345
+#: hotkeys.cpp:343
+#: hotkeys.cpp:345
 msgid "Redo"
 msgstr "다시 실행"
 
@@ -4785,7 +4779,8 @@ msgstr "붙여넣기"
 msgid "Paste Over"
 msgstr "덮어쓰기"
 
-#: hotkeys.cpp:363 hotkeys.cpp:365
+#: hotkeys.cpp:363
+#: hotkeys.cpp:365
 msgid "Video Jump"
 msgstr "[비디오] 이동"
 
@@ -4857,7 +4852,8 @@ msgstr "[그리드] 줄 아래로 이동"
 msgid "Grid move row up"
 msgstr "[그리드] 줄 위로 이동"
 
-#: hotkeys.cpp:390 hotkeys.cpp:392
+#: hotkeys.cpp:390
+#: hotkeys.cpp:392
 msgid "Grid delete rows"
 msgstr "[그리드] 줄 삭제"
 
@@ -5071,49 +5067,51 @@ msgstr "[스타일 도우미]미리 보기"
 
 #: dialog_associations.cpp:349
 msgid "Associate file types"
-msgstr ""
+msgstr "파일 형식 연결"
 
 #: dialog_associations.cpp:376
 msgid ""
 "Aegisub can take over the following file types.\n"
 "\n"
-"If you want Aegisub to no longer be associated with a file type, you must "
-"tell another program to take over the file type."
+"If you want Aegisub to no longer be associated with a file type, you must tell another program to take over the file type."
 msgstr ""
+"Aegisub가 다음 파일 형식에 연결이 가능합니다.\n"
+"\n"
+"파일 형식 연결을 취소하려면, 다른 프로그램으로 파일 형식 연결을 다시 설정하십시오."
 
 #: dialog_associations.cpp:378
 msgid ""
 "Aegisub is already associated with all supported file types.\n"
 "\n"
-"If you want Aegisub to no longer be associated with a file type, you must "
-"tell another program to take over the file type."
+"If you want Aegisub to no longer be associated with a file type, you must tell another program to take over the file type."
 msgstr ""
+"Aegisub가 이미 지원된 모든 파일 형식에 연결되 있습니다.\n"
+"\n"
+"파일 형식 연결을 취소하려면, 다른 프로그램으로 파일 형식 연결을 다시 설정하십시오."
 
 #: dialog_associations.cpp:475
 msgid "Aegisub"
-msgstr ""
+msgstr "Aegisub"
 
 #: dialog_associations.cpp:476
 msgid "Make Aegisub default editor for subtitles?"
-msgstr ""
+msgstr "Aegisub을 기본 자막 에디터로 설정하기"
 
 #: dialog_associations.cpp:477
-msgid ""
-"Aegisub is not your default editor for subtitle files. Do you want to make "
-"Aegisub your default editor for subtitle files?"
-msgstr ""
+msgid "Aegisub is not your default editor for subtitle files. Do you want to make Aegisub your default editor for subtitle files?"
+msgstr "Aegisub가 기본 자막 에디터가 아닙니다. Aegisub를 기본 자막 에디터로 설정하시겠습니까?"
 
 #: dialog_associations.cpp:478
 msgid "Always perform this check when Aegisub starts"
-msgstr ""
+msgstr "실행시 항상 체크하기"
 
 #: dialog_associations.cpp:533
 msgid "&Yes"
-msgstr ""
+msgstr "확인(&Y)"
 
 #: dialog_associations.cpp:534
 msgid "&No"
-msgstr ""
+msgstr "취소(&N)"
 
 #: auto4_perl_dialogs.cpp:60
 msgid "Executing "
@@ -5223,11 +5221,13 @@ msgstr "그린:"
 msgid "Blue:"
 msgstr "블루:"
 
-#: dialog_colorpicker.cpp:591 dialog_colorpicker.cpp:601
+#: dialog_colorpicker.cpp:591
+#: dialog_colorpicker.cpp:601
 msgid "Hue:"
 msgstr "색조 :"
 
-#: dialog_colorpicker.cpp:593 dialog_colorpicker.cpp:603
+#: dialog_colorpicker.cpp:593
+#: dialog_colorpicker.cpp:603
 msgid "Sat.:"
 msgstr "채도 :"
 
@@ -5255,11 +5255,13 @@ msgstr "빈"
 msgid "No Automation macros loaded"
 msgstr "로드된 자동화 매크로가 없음"
 
-#: frame_main_events.cpp:658 frame_main_events.cpp:681
+#: frame_main_events.cpp:658
+#: frame_main_events.cpp:681
 msgid "Video Formats"
 msgstr "비디오 형식"
 
-#: frame_main_events.cpp:659 frame_main_events.cpp:809
+#: frame_main_events.cpp:659
+#: frame_main_events.cpp:809
 #: frame_main_events.cpp:824
 msgid "All Files"
 msgstr "모든 파일"
@@ -5284,7 +5286,8 @@ msgstr "오디오 파일 열기"
 msgid "Charset"
 msgstr "문자"
 
-#: frame_main_events.cpp:808 frame_main_events.cpp:823
+#: frame_main_events.cpp:808
+#: frame_main_events.cpp:823
 msgid "All Supported Types"
 msgstr "지원하는 모든 형식"
 
@@ -5313,12 +5316,8 @@ msgid "shift to frame"
 msgstr "프레임 이동"
 
 #: frame_main_events.cpp:1385
-msgid ""
-"Enter aspect ratio in either decimal (e.g. 2.35) or fractional (e.g. 16:9) "
-"form. Enter a value like 853x480 to set a specific resolution."
-msgstr ""
-"decimal (e.g. 2.35) 또는  fractional (e.g. 16:9) 형식으로 가로세로비 입력하"
-"다. 지정된 해상도 설정은 853x480 처럼 값을 입력하다."
+msgid "Enter aspect ratio in either decimal (e.g. 2.35) or fractional (e.g. 16:9) form. Enter a value like 853x480 to set a specific resolution."
+msgstr "decimal (e.g. 2.35) 또는  fractional (e.g. 16:9) 형식으로 가로세로비 입력하다. 지정된 해상도 설정은 853x480 처럼 값을 입력하다."
 
 #: frame_main_events.cpp:1385
 msgid "Enter aspect ratio"
@@ -5358,60 +5357,42 @@ msgstr "태크 숨기기."
 
 #~ msgid "Could not open Internet File system. Aborting.\n"
 #~ msgstr "인터넷 파일 시스템을 열 수 없습니다. 취소합니다.\n"
-
 #~ msgid "Attempting to open \"%s\"..."
 #~ msgstr "\"%s\" 열기 시도중..."
-
 #~ msgid "Failed.\n"
 #~ msgstr "실패.\n"
-
 #~ msgid "OK.\n"
 #~ msgstr "확인.\n"
-
 #~ msgid "New version found!\n"
 #~ msgstr "새 버전을 찾았습니다!\n"
-
 #~ msgid "Please go to the following URL to download it: %s\n"
 #~ msgstr "다음 URL으로 이동후에 새버전을 다운로드 하세요: %s\n"
-
 #~ msgid "No new version has been found.\n"
 #~ msgstr "새 버전을 찾을 수가 없습니다.\n"
-
 #~ msgid "This build of Aegisub uses the following C/C++ libraries:\n"
 #~ msgstr "Aegisub는  C/C++  libraries를 사용해서 만들었습니다:\n"
-
 #~ msgid "Programmers:"
 #~ msgstr "프로그래머:"
-
 #~ msgid "Manual by:"
 #~ msgstr "매뉴얼:"
-
 #~ msgid "Forum and wiki hosting by:"
 #~ msgstr "포럼 및 위키(wiki) 사이트:"
-
 #~ msgid "SVN hosting by:"
 #~ msgstr "자유 소프트웨어 버전 관리 시스템( Subversion , SVN ) 사이트:"
-
 #~ msgid "Bug tracker hosting by:"
 #~ msgstr "버그 신고 사이트:"
-
 #~ msgid "Associate extensions"
 #~ msgstr "확장자 프로그램에 연결"
-
 #~ msgid ""
 #~ "Please select the formats you want to\n"
 #~ "associate with Aegisub:"
 #~ msgstr "Aegisub 프로그램에 연결할 형식을 선택:"
-
 #~ msgid "Associations"
 #~ msgstr "연결 정보"
-
 #~ msgid "Groups"
 #~ msgstr "그룹"
-
 #~ msgid "Select source text first."
 #~ msgstr "원본 첫 라인 선택합니다. "
-
 #~ msgid ""
 #~ "The source line contains text before the first karaoke block.\n"
 #~ "Do you want to carry it over to the destination?\n"
@@ -5420,21 +5401,16 @@ msgstr "태크 숨기기."
 #~ "원본 라인은 첫번째 카라오케 블록 이전에 텍스트를 포함있습니다.\n"
 #~ "텍스트를 이동해서 대상에 덮어쓸까요?\n"
 #~ "만약 그렇지 않으면 무시하십시오."
-
 #~ msgid "Kanji timer"
 #~ msgstr "Kanji 타이머"
-
 #~ msgid "Possible error parsing source line"
 #~ msgstr "원본 라인 분석중 사소한 오류 발생"
-
 #~ msgid "Group some text first."
 #~ msgstr "자막의 첫 라인"
-
 #~ msgid "Show Tip of the Day"
 #~ msgstr "오늘의 조언 표시"
-
 #~ msgid "Save config.dat locally"
 #~ msgstr "config.dat에 설정 정보 저장"
-
 #~ msgid "Avisynth renders its own subs"
 #~ msgstr "Avisynth 자막을 사용하게 한다."
+
