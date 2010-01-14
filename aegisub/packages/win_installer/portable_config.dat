@@ -1,5 +1,6 @@
 [Config]
 local config=1
-auto check for updates=0
-show splash=0
 show associations=0
+automation base path=?data/automation/
+automation include path=?data/automation/include/
+automation autoload path=?data/automation/autoload/
