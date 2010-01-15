@@ -223,6 +223,9 @@ void AlsaPlayer::SetUpAsync()
 	// And free struct again
 	snd_pcm_sw_params_free(sw_params);
 
+	// Prepare for playback
+	snd_pcm_prepare(pcm_handle);
+
 	// Attach async handler
 	if (snd_async_add_pcm_handler(&pcm_callback, pcm_handle, async_write_handler, this) < 0) {
 		throw _T("ALSA player: Failed attaching async handler");
