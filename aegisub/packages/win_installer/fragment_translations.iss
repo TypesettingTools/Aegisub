@@ -76,8 +76,8 @@ Name: i18n;       Description: Languages; Types: full custom compact
 Name: i18n/en;    Description: English (built in); Flags: fixed; Types: compact full custom
 Name: i18n/pt_BR; Description: "Português do Brasil (Brazilian Portuguese)"; Types: full
 Name: i18n/ca;    Description: "Català (Catalan)"; Types: full
-Name: i18n/zh_CN; Description: "简体字 (Chinese (Simplified))"; Types: full
-Name: i18n/zh_TW; Description: "正體字 (Chinese (Traditional))"; Types: full
+Name: i18n/zh_CN; Description: "简体中文 (Chinese (Simplified))"; Types: full
+Name: i18n/zh_TW; Description: "繁體中文 (Chinese (Traditional))"; Types: full
 Name: i18n/cs;    Description: "Čeština (Czech)"; Types: full
 Name: i18n/da;    Description: "Dansk (Danish)"; Types: full
 Name: i18n/fi;    Description: "Suomi (Finnish)"; Types: full
@@ -90,6 +90,7 @@ Name: i18n/ko;    Description: "한국어 (Korean)"; Types: full
 Name: i18n/ru;    Description: "Русский язык (Russian)"; Types: full
 Name: i18n/es;    Description: "Español (Spanish)"; Types: full
 Name: i18n/vi;    Description: "Tiếng Việt (Vietnamese)"; Types: full
+
 
 
 
