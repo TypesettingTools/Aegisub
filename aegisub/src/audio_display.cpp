@@ -1952,7 +1952,7 @@ void AudioDisplay::OnSize(wxSizeEvent &event) {
 ///////////////
 // Timer event
 void AudioDisplay::OnUpdateTimer(wxTimerEvent &event) {
-	if (!origImage)
+	if (!origImage && oldCurPos > 0)
 		return;
 
 	// Get lock and check if it's OK
