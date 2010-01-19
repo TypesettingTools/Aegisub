@@ -228,10 +228,10 @@ DialogOptions::DialogOptions(wxWindow *parent)
 		editSizer6->Add(new wxStaticText(editPage,-1,_("Path to dictionary files:")),0,wxALIGN_CENTER_VERTICAL|wxRIGHT,5);
 		wxTextCtrl *edit = new wxTextCtrl(editPage,-1,_T(""));
 		Bind(edit,_T("Dictionaries path"));
-		editSizer6->Add(edit,1,wxEXPAND|wxALIGN_CENTER_VERTICAL|wxRIGHT,5);
+		editSizer6->Add(edit,1,wxALIGN_CENTER_VERTICAL|wxRIGHT,5);
 		browse = new BrowseButton(editPage,-1,_T(""),BROWSE_FOLDER);
 		browse->Bind(edit);
-		editSizer6->Add(browse,0,wxEXPAND);
+		editSizer6->Add(browse,0,0);
 
 		// Second static box
 		wxControl *control;
@@ -259,12 +259,12 @@ DialogOptions::DialogOptions(wxWindow *parent)
 		Bind(control,options2[10]);
 		browse = new BrowseButton(editPage,-1,_T(""),BROWSE_FONT);
 		browse->Bind((wxTextCtrl*)control);
-		editSizer5->Add(control,1,wxEXPAND | wxRIGHT,5);
+		editSizer5->Add(control,1,wxALIGN_CENTER | wxRIGHT,5);
 		control = new wxTextCtrl(editPage,-1,_T(""),wxDefaultPosition,wxSize(50,-1),0,NumValidator(NULL,false));;
 		Bind(control,options2[11]);
-		editSizer5->Add(control,0,wxEXPAND | wxRIGHT,5);
+		editSizer5->Add(control,0,wxALIGN_CENTER | wxRIGHT,5);
 		browse->Bind((wxTextCtrl*)control,1);
-		editSizer5->Add(browse,0,wxEXPAND);
+		editSizer5->Add(browse,0,0);
 
 		// Sizers
 		editSizer1->Add(editSizer2,1,wxEXPAND | wxALL,5);
@@ -322,12 +322,12 @@ DialogOptions::DialogOptions(wxWindow *parent)
 		Bind(control,_T("Grid font face"));
 		browse = new BrowseButton(gridPage,-1,_T(""),BROWSE_FONT);
 		browse->Bind((wxTextCtrl*)control);
-		gridSizer4->Add(control,1,wxEXPAND | wxRIGHT,5);
+		gridSizer4->Add(control,1,wxALIGN_CENTER | wxRIGHT,5);
 		control = new wxTextCtrl(gridPage,-1,_T(""),wxDefaultPosition,wxSize(50,-1),0,NumValidator(NULL,false));;
 		Bind(control,_T("Grid font size"));
 		browse->Bind((wxTextCtrl*)control,1);
-		gridSizer4->Add(control,0,wxEXPAND | wxRIGHT,5);
-		gridSizer4->Add(browse,0,wxEXPAND);
+		gridSizer4->Add(control,0,wxALIGN_CENTER | wxRIGHT,5);
+		gridSizer4->Add(browse,0,0);
 
 		// Fourth sizer
 		gridSizer5->Add(new wxStaticText(gridPage,-1,_("Replace override tags with: ")),0,wxALIGN_CENTER_VERTICAL | wxRIGHT,10);
