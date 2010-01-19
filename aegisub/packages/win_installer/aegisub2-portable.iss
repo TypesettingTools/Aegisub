@@ -41,7 +41,7 @@ AppVersion=2.1.8
 AppPublisher=Aegisub Team
 AppPublisherURL=http://www.aegisub.org/
 AppSupportURL=http://forum.aegisub.org/
-AppCopyright=© 2005-2009 The Aegisub Team
+AppCopyright=© 2005-2010 The Aegisub Team
 VersionInfoVersion=2.1.8
 VersionInfoDescription=Aegisub 2.1.8 portable package
 DefaultDirName={userdesktop}\Aegisub portable
@@ -127,4 +127,5 @@ procedure InitializeWizard;
 begin
   InitializeWizardBeautify;
 end;
+
 

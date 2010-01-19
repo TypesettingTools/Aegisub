@@ -40,7 +40,7 @@ AppVersion=2.1.8
 AppPublisher=Aegisub Team
 AppPublisherURL=http://www.aegisub.org/
 AppSupportURL=http://forum.aegisub.org/
-AppCopyright=© 2005-2009 The Aegisub Team
+AppCopyright=© 2005-2010 The Aegisub Team
 VersionInfoVersion=2.1.8
 DefaultDirName={pf}\Aegisub
 DefaultGroupName=Aegisub
@@ -83,4 +83,5 @@ DestDir: {tmp}; Flags: dontcopy; Source: old_filelist.txt
 DestDir: {tmp}; Flags: dontcopy; Source: old_dirlist.txt
 DestDir: {tmp}; Flags: dontcopy; Source: old_locales.txt
 DestDir: {tmp}; Flags: dontcopy; Source: old_shortcutlist.txt
+
 
