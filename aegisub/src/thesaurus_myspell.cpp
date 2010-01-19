@@ -142,12 +142,15 @@ void MySpellThesaurus::SetLanguage(wxString language) {
 	// Get dir name
 	wxString path = StandardPaths::DecodePathMaybeRelative(Options.AsText(_T("Dictionaries path")), _T("?data")) + _T("/");
 
+
 	// Get affix and dictionary paths
 	wxString idxpath = path + _T("th_") + language + _T(".idx");
 	wxString datpath = path + _T("th_") + language + _T(".dat");
 
 	// Check if language is available
 	if (!wxFileExists(idxpath) || !wxFileExists(datpath)) return;
+
+	wxLogDebug(_("Using dictionary %ls for thesaurus"), datpath.c_str());
 
 	// Load
 	mythes = new MyThes(idxpath.mb_str(wxConvLocal),datpath.mb_str(wxConvLocal));
