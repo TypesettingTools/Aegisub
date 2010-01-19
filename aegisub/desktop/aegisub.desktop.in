@@ -10,3 +10,4 @@ Icon=aegisub
 Terminal=false
 Categories=AudioVideo;AudioVideoEditing;
 MimeType=application/x-srt;text/plain;text/x-ass;text/x-microdvd;text/x-ssa;
+StartupNotify=true
