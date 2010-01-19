@@ -101,6 +101,7 @@ private:
 
 	/// DOCME
 	wxComboBox *language;
+	wxButton *addButton;
 
 	bool FindOrDie();
 	bool FindNext(int startLine=-1,int startPos=-1);

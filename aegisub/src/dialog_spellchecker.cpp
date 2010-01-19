@@ -145,7 +145,7 @@ DialogSpellChecker::DialogSpellChecker(wxFrame *parent)
 	actionsSizer->Add(new wxButton(this,BUTTON_REPLACE_ALL,_("Replace All")),0,wxEXPAND | wxBOTTOM,5);
 	actionsSizer->Add(new wxButton(this,BUTTON_IGNORE,_("Ignore")),0,wxEXPAND | wxBOTTOM,5);
 	actionsSizer->Add(new wxButton(this,BUTTON_IGNORE_ALL,_("Ignore all")),0,wxEXPAND | wxBOTTOM,5);
-	actionsSizer->Add(new wxButton(this,BUTTON_ADD,_("Add to dictionary")),0,wxEXPAND | wxBOTTOM,5);
+	actionsSizer->Add(addButton = new wxButton(this,BUTTON_ADD,_("Add to dictionary")),0,wxEXPAND | wxBOTTOM,5);
 	actionsSizer->Add(new HelpButton(this,_T("Spell Checker")),0,wxEXPAND | wxBOTTOM,0);
 	actionsSizer->AddStretchSpacer(1);
 
@@ -274,6 +274,8 @@ void DialogSpellChecker::SetWord(wxString word) {
 	grid->editBox->SetToLine(line);
 	grid->editBox->TextEdit->SetSelectionU(wordStart,wordEnd);
 	grid->EndBatch();
+
+	addButton->Enable(spellchecker->CanAddWord(word));
 }
 
 
