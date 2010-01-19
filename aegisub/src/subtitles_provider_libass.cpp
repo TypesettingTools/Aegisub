@@ -186,7 +186,8 @@ LibassSubtitlesProvider::LibassSubtitlesProvider() {
 
 	LibassFontUpdateStatusDialog *fonts_update_dlg = new LibassFontUpdateStatusDialog;
 	wxThread * update_thread = new LibassFontUpdateThread(fonts_update_dlg, ass_renderer);
-	fonts_update_dlg->WaitForUpdatingFinish(update_thread);
+	fonts_update_dlg->Show();
+	update_thread->Wait();
 #else
 	ass_set_fonts(ass_renderer, NULL, "Sans", 1, config_path, 1);
 #endif
