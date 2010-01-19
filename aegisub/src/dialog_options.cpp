@@ -1020,7 +1020,7 @@ void DialogOptions::OnEditHotkey(wxCommandEvent &event) {
 	int oldFlags = curKey->flags;
 
 	// Open dialog
-	DialogInputHotkey input(curKey,Shortcuts->GetItemText(sel),Shortcuts);
+	DialogInputHotkey input(this, curKey, Shortcuts->GetItemText(sel), Shortcuts);
 	input.ShowModal();
 
 	// Update stuff if it changed
@@ -1107,51 +1107,40 @@ void DialogOptions::OnDefaultAllHotkey(wxCommandEvent &event) {
 
 /////////////////////
 // Input constructor
-DialogInputHotkey::DialogInputHotkey(HotkeyType *_key,wxString name,wxListView *shorts)
-: wxDialog(NULL, -1, _("Press Key"), wxDefaultPosition, wxSize(200,50), wxCAPTION | wxWANTS_CHARS , _T("Press key"))
+DialogInputHotkey::DialogInputHotkey(wxWindow *parent, HotkeyType *_key, wxString name, wxListView *shorts)
+: wxDialog(parent, -1, _("Press Key"), wxDefaultPosition, wxSize(200,50), wxCAPTION | wxWANTS_CHARS , _T("Press key"))
 {
 	// Key
 	key = _key;
 	shortcuts = shorts;
 
-	// Text
-	wxStaticText *text = new wxStaticText(this,-1,wxString::Format(_("Press key to bind to \"%s\" or Esc to cancel."), name.c_str()));
-
-	// Key capturer
-	capture = new CaptureKey(this);
+	wxButton *cancel_button = new wxButton(this, wxID_CANCEL);
+	cancel_button->Connect(wxEVT_KEY_DOWN, (wxObjectEventFunction)&DialogInputHotkey::OnKeyDown, 0, this);
 
 	// Main sizer
 	wxSizer *MainSizer = new wxBoxSizer(wxVERTICAL);
-	MainSizer->Add(text,1,wxALL,5);
+	MainSizer->Add(new wxStaticText(this,-1,wxString::Format(_("Press key to bind to \"%s\" or Esc to cancel."), name.c_str())), 0, wxALL, 12);
+	MainSizer->Add(cancel_button, 0, wxALIGN_CENTER|wxALL&~wxTOP, 12);
 	MainSizer->SetSizeHints(this);
 	SetSizer(MainSizer);
+	CentreOnParent();
 }
 
-
-////////////////////////
-// Capturer constructor
-CaptureKey::CaptureKey(DialogInputHotkey *_parent)
-: wxTextCtrl(_parent,-1,_T(""),wxDefaultPosition,wxSize(0,0),wxTE_PROCESS_ENTER | wxTE_PROCESS_TAB)
-{
-	parent = _parent;
-	SetFocus();
-}
 
 
 /////////////////////
 // Input event table
-BEGIN_EVENT_TABLE(CaptureKey,wxTextCtrl)
-	EVT_KEY_DOWN(CaptureKey::OnKeyDown)
-	EVT_KILL_FOCUS(CaptureKey::OnLoseFocus)
+BEGIN_EVENT_TABLE(DialogInputHotkey,wxDialog)
+	EVT_KEY_DOWN(DialogInputHotkey::OnKeyDown)
 END_EVENT_TABLE()
 
 
 ///////////////
 // On key down
-void CaptureKey::OnKeyDown(wxKeyEvent &event) {
+void DialogInputHotkey::OnKeyDown(wxKeyEvent &event) {
 	// Get key
 	int keycode = event.GetKeyCode();
-	if (keycode == WXK_ESCAPE) parent->EndModal(0);
+	if (keycode == WXK_ESCAPE) EndModal(0);
 	else if (keycode != WXK_SHIFT && keycode != WXK_CONTROL && keycode != WXK_ALT) {
 		// Get modifier
 		int mod = 0;
@@ -1168,28 +1157,22 @@ void CaptureKey::OnKeyDown(wxKeyEvent &event) {
 		if (dup) {
 			int result = wxMessageBox(wxString::Format(_("The hotkey %s is already mapped to %s. If you proceed, that hotkey will be cleared. Proceed?"),dup->GetText().c_str(),dup->origName.c_str()),_("Hotkey conflict"),wxYES_NO | wxICON_EXCLAMATION);
 			if (result == wxNO) {
-				parent->EndModal(0);
+				EndModal(0);
 				return;
 			}
 			dup->keycode = 0;
 			dup->flags = 0;
-			int item = parent->shortcuts->FindItem(-1,wxPtrToUInt(dup));
-			if (item != -1) parent->shortcuts->SetItem(item,1,dup->GetText());
+			int item = shortcuts->FindItem(-1,wxPtrToUInt(dup));
+			if (item != -1) shortcuts->SetItem(item,1,dup->GetText());
 		}
 
 		// Set keycode
-		parent->key->keycode = keycode;
-		parent->key->flags = mod;
+		key->keycode = keycode;
+		key->flags = mod;
 
 		// End dialogue
-		parent->EndModal(0);
+		EndModal(0);
 	}
 	else event.Skip();
 }
 
-
-//////////////
-// Keep focus
-void CaptureKey::OnLoseFocus(wxFocusEvent &event) {
-	SetFocus();
-}

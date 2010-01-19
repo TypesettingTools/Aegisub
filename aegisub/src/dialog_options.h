@@ -120,31 +120,17 @@ public:
 };
 
 
-/////////////////////
-// Capture key class
-class CaptureKey : public wxTextCtrl {
-private:
-	DialogInputHotkey *parent;
-	void OnKeyDown(wxKeyEvent &event);
-	void OnLoseFocus(wxFocusEvent &event);
-
-public:
-	CaptureKey(DialogInputHotkey *parent);
-
-	DECLARE_EVENT_TABLE()
-};
-
 
 //////////////////////
 // Input dialog class
 class DialogInputHotkey : public wxDialog {
-	friend class CaptureKey;
-
-private:
-	CaptureKey *capture;
 	HotkeyType *key;
 	wxListView *shortcuts;
 
+	void OnKeyDown(wxKeyEvent &event);
+
 public:
-	DialogInputHotkey(HotkeyType *key,wxString name,wxListView *Shortcuts);
+	DialogInputHotkey(wxWindow *parent, HotkeyType *key, wxString name, wxListView *Shortcuts);
+
+	DECLARE_EVENT_TABLE()
 };
