@@ -417,14 +417,18 @@ void ColorPickerScreenDropper::OnPaint(wxPaintEvent &evt)
 
 void ColorPickerScreenDropper::DropFromScreenXY(int x, int y)
 {
-	wxMemoryDC capdc;
-	capdc.SelectObject(capture);
+	wxMemoryDC capdc(capture);
 	wxScreenDC screen;
 
+#ifdef __WXMAC__
+	wxBitmap &screenbmp = screen.GetAsBitmap().GetSubBitmap(wxRect(x-resx/2, y-resy/2, resx, resy));
+	capdc.DrawBitmap(screenbmp, 0, 0);
+#else
 	screen.StartDrawingOnTop();
 	capdc.Blit(0, 0, resx, resy, &screen, x-resx/2, y-resy/2);
 	screen.EndDrawingOnTop();
-
+#endif
+	
 	Refresh(false);
 }
 
