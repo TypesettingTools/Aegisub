@@ -161,26 +161,6 @@ public:
 
 
 
-/// DOCME
-/// @class CaptureKey
-/// @brief DOCME
-///
-/// DOCME
-class CaptureKey : public wxTextCtrl {
-private:
-
-	/// DOCME
-	DialogInputHotkey *parent;
-	void OnKeyDown(wxKeyEvent &event);
-	void OnLoseFocus(wxFocusEvent &event);
-
-public:
-	CaptureKey(DialogInputHotkey *parent);
-
-	DECLARE_EVENT_TABLE()
-};
-
-
 
 /// DOCME
 /// @class DialogInputHotkey
@@ -188,12 +168,6 @@ public:
 ///
 /// DOCME
 class DialogInputHotkey : public wxDialog {
-	friend class CaptureKey;
-
-private:
-
-	/// DOCME
-	CaptureKey *capture;
 
 	/// DOCME
 	HotkeyType *key;
@@ -201,8 +175,12 @@ private:
 	/// DOCME
 	wxListView *shortcuts;
 
+	void OnKeyDown(wxKeyEvent &event);
+
 public:
-	DialogInputHotkey(HotkeyType *key,wxString name,wxListView *Shortcuts);
+	DialogInputHotkey(wxWindow *parent, HotkeyType *key, wxString name, wxListView *Shortcuts);
+
+	DECLARE_EVENT_TABLE()
 };
 
 
