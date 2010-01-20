@@ -638,18 +638,21 @@ void FrameMain::UpdateToolbar() {
 
 	// Update
 	wxToolBar* toolbar = GetToolBar();
-	toolbar->FindById(Menu_Video_JumpTo)->Enable(isVideo);
-	toolbar->FindById(Menu_Video_Zoom_In)->Enable(isVideo);
-	toolbar->FindById(Menu_Video_Zoom_Out)->Enable(isVideo);
-	ZoomBox->Enable(isVideo);
-	toolbar->FindById(Menu_Subs_Snap_Start_To_Video)->Enable(isVideo && selRows > 0);
-	toolbar->FindById(Menu_Subs_Snap_End_To_Video)->Enable(isVideo && selRows > 0);
-	toolbar->FindById(Menu_Subs_Snap_Video_To_Start)->Enable(isVideo && selRows == 1);
-	toolbar->FindById(Menu_Subs_Snap_Video_To_End)->Enable(isVideo && selRows == 1);
-	toolbar->FindById(Menu_Video_Select_Visible)->Enable(isVideo);
-	toolbar->FindById(Menu_Video_Snap_To_Scene)->Enable(isVideo && selRows > 0);
-	toolbar->FindById(Menu_Video_Shift_To_Frame)->Enable(isVideo && selRows > 0);
-	toolbar->Realize();
+	bool changed = false;
+	changed |= toolbar->FindById(Menu_Video_JumpTo)->Enable(isVideo);
+	changed |= toolbar->FindById(Menu_Video_Zoom_In)->Enable(isVideo);
+	changed |= toolbar->FindById(Menu_Video_Zoom_Out)->Enable(isVideo);
+	changed |= ZoomBox->Enable(isVideo);
+	changed |= toolbar->FindById(Menu_Subs_Snap_Start_To_Video)->Enable(isVideo && selRows > 0);
+	changed |= toolbar->FindById(Menu_Subs_Snap_End_To_Video)->Enable(isVideo && selRows > 0);
+	changed |= toolbar->FindById(Menu_Subs_Snap_Video_To_Start)->Enable(isVideo && selRows == 1);
+	changed |= toolbar->FindById(Menu_Subs_Snap_Video_To_End)->Enable(isVideo && selRows == 1);
+	changed |= toolbar->FindById(Menu_Video_Select_Visible)->Enable(isVideo);
+	changed |= toolbar->FindById(Menu_Video_Snap_To_Scene)->Enable(isVideo && selRows > 0);
+	changed |= toolbar->FindById(Menu_Video_Shift_To_Frame)->Enable(isVideo && selRows > 0);
+
+	if (changed)
+		toolbar->Realize();
 }
 
 
