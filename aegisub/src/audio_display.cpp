@@ -1512,7 +1512,7 @@ void AudioDisplay::OnMouseEvent(wxMouseEvent& event) {
 	// Timing
 	if (hasSel) {
 		bool updated = false;
-							
+
 		// Grab start/end
 		if (hold == 0) {
 			bool gotGrab = false;
@@ -2383,8 +2383,11 @@ void AudioDisplay::OnLoseFocus(wxFocusEvent &event) {
 //////////////////////////////
 // Update time edit controls
 bool AudioDisplay::UpdateTimeEditCtrls() {
+	// Make sure this does NOT get short-circuit evaluation,
+	// this is why binary OR instead of logical OR is used.
+	// All three time edits must always be updated.
 	return
-		grid->editBox->StartTime->SetTime(curStartMS,true) || 
-		grid->editBox->EndTime->SetTime(curEndMS,true) ||
+		grid->editBox->StartTime->SetTime(curStartMS,true) |
+		grid->editBox->EndTime->SetTime(curEndMS,true) |
 		grid->editBox->Duration->SetTime(curEndMS-curStartMS,true);
 }
