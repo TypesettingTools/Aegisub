@@ -31,7 +31,7 @@
     <string>@PLIST_VERSION@</string>
 
     <key>CFBundleLongVersionString</key>
-    <string>@PLIST_VERSION@ (@PLIST_SVN_REVISION@), Copyright 2005-2009, aegisub http://www.aegisub.net/</string>
+    <string>@PLIST_VERSION@ (@PLIST_SVN_REVISION@), Copyright 2005-2010, aegisub http://www.aegisub.net/</string>
 
     <!-- Values: i386, ppc, x86_65, ppc64 -->
     <key>LSArchitecturePriority</key>
@@ -52,18 +52,22 @@
     <!-- Localizations supported -->
     <key>CFBundleLocalizations</key>
     <array>
-        <string>ca</string>
-        <string>da</string>
-        <string>de</string>
-        <string>en</string>
-        <string>es</string>
-        <string>fr_FR</string>
-        <string>hu</string>
-        <string>it</string>
-        <string>ko</string>
-        <string>ru</string>
-        <string>pt_BR</string>
-        <string>zh_TW</string>
+		<string>ca</string>
+		<string>cs</string>
+		<string>da</string>
+		<string>de</string>
+		<string>es</string>
+		<string>fi</string>
+		<string>fr_FR</string>
+		<string>hu</string>
+		<string>it</string>
+		<string>ja</string>
+		<string>ko</string>
+		<string>pt_BR</string>
+		<string>ru</string>
+		<string>vi</string>
+		<string>zh_CN</string>
+		<string>zh_TW</string>
     </array>
 
     <!-- Supported document types -->
