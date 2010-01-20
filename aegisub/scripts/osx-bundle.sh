@@ -89,8 +89,11 @@ echo
 echo "---- Copying WX locale files ----"
 
 for i in `cat po/LINGUAS`; do
-  if test -f "${WX_PREFIX}/share/locale/${i}/LC_MESSAGES/wxstd.mo"; then
-	cp -v "${WX_PREFIX}/share/locale/${i}/LC_MESSAGES/wxstd.mo" "${PKG_DIR}/Contents/Resources/${i}.lproj/";
+#  WX_MO="${WX_PREFIX}/share/locale/${i}/LC_MESSAGES/wxstd.mo"
+  WX_MO="${HOME_DIR}/wxstd/${i}.mo"
+
+  if test -f "${WX_MO}"; then
+	cp -v "${WX_MO}" "${PKG_DIR}/Contents/Resources/${i}.lproj/";
   else
 	echo "WARNING: \"$i\" locale in aegisub but no WX catalog found!";
   fi;
