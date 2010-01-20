@@ -23,11 +23,11 @@ SUBDIRS = \
 	desktop
 
 osx-bundle:
-	@SHELL@ scripts/osx-bundle.sh "Aegisub (r@SVN_REVISION@-@DARWIN_ARCH@@PACKAGE_DEBUG@)" @AEGISUB_VERSION_DATA@ DICT_DIR=$(DICT_DIR)
+	@SHELL@ scripts/osx-bundle.sh "@BUNDLE_STRING@" @AEGISUB_VERSION_DATA@ DICT_DIR=$(DICT_DIR)
 
 
 osx-dmg:
-	@SHELL@ scripts/osx-dmg.sh "Aegisub (r@SVN_REVISION@-@DARWIN_ARCH@@PACKAGE_DEBUG@)" "Aegisub (r@SVN_REVISION@-@DARWIN_ARCH@@PACKAGE_DEBUG@)"
+	@SHELL@ scripts/osx-dmg.sh "@BUNDLE_STRING@" "@DMG_STRING@"
 
 osx-tinderbox-bundle:
 	@SHELL@ scripts/osx-bundle.sh "$(T_BUNDLE)" @AEGISUB_VERSION_DATA@ DICT_DIR="$(DICT_DIR)"
