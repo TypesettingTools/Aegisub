@@ -72,7 +72,7 @@ if test -n "${SET_STYLE}"; then
   echo "********************************************************"
   echo
   echo "PRESS ENTER WHEN DONE"
-  open "/Volumes/${DEV_NAME}"
+  open "/Volumes/${PKG_NAME_VOLUME}"
   read -e DUMB
 
   hdiutil detach "${DEV_NAME}"
