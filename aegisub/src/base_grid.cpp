@@ -89,8 +89,10 @@ void BaseGrid::UpdateStyle() {
 	wxString fontname = Options.AsText(_T("Grid Font Face"));
 	if (fontname.IsEmpty()) fontname = _T("Tahoma");
 	font.SetFaceName(fontname);
-	font.SetPointSize(Options.AsInt(_T("Grid font size")));
+	if (!font.IsOk())
+		font.SetFamily(wxFONTFAMILY_SWISS );
 	font.SetWeight(wxFONTWEIGHT_NORMAL);
+	font.SetPointSize(Options.AsInt(_T("Grid font size")));
 
 	// Set line height
 	{
