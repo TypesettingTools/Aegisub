@@ -77,10 +77,12 @@ esac
 case "$target_or_host" in
   ppc-*-* | powerpc-*)
     arch_ppc="yes"
+    arch_bundle="ppc"
   ;;
 
   i*86-*-*)
     arch_x86="yes"
+    arch_bundle="intel"
   ;;
 
   x86_64-*-*)
@@ -228,13 +230,15 @@ AC_DEFINE_UNQUOTED([BUILD_SVN_REVISION], [$SVN_REVISION], [SVN Revision number, 
 # Release information.
 if test "aegisub_FINAL_RELEASE" = "1"; then
   AC_DEFINE([FINAL_RELEASE], [aegisub_FINAL_RELEASE], [This is only set to 1 for a RELEASE VERSION.])
-  PACKAGE_STRING="${PACKAGE_STRING}"
-  PACKAGE_VERSION="${PACKAGE_VERSION}"
-  VERSION="${VERSION}"
+  BUNDLE_STRING="Aegisub"
+  DMG_STRING="Aegisub-${PACKAGE_VERSION}-${arch_bundle}"
 else
-  PACKAGE_STRING="${PACKAGE_STRING}-dev-r$SVN_REVISION"
-  PACKAGE_VERSION="${PACKAGE_VERSION}-dev-r$SVN_REVISION"
-  VERSION="${VERSION}-dev-r$SVN_REVISION"
+  PACKAGE_STRING="${PACKAGE_STRING}-dev-r${SVN_REVISION}"
+  PACKAGE_VERSION="${PACKAGE_VERSION}-dev-r${SVN_REVISION}"
+  VERSION="${VERSION}-dev-r${SVN_REVISION}"
+
+  BUNDLE_STRING="Aegisub-${PACKAGE_VERSION}-dev-${SVN_REVISION}"
+  DMG_STRING="Aegisub-${PACKAGE_VERSION}-dev-${SVN_REVISION}-${arch_bundle}"
 fi
 
 
@@ -245,6 +249,8 @@ AC_MSG_RESULT($BUILD_DATE)
 
 AC_SUBST(SVN_REVISION)
 AC_SUBST(BUILD_DATE)
+AC_SUBST(BUNDLE_STRING)
+AC_SUBST(DMG_STRING)
 
 
 
