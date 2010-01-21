@@ -277,10 +277,14 @@ if test "$enable_compiler_flags" != "no"; then
   AC_CXX_FLAG([-pipe])
 
   # -O* messes with debugging.
-  if test "$enable_debug" != "yes"; then
-    AC_C_FLAG([-O2])
-    AC_CXX_FLAG([-O2])
+  if test "$enable_debug" = "yes"; then
+    opt_flag="-O0"
+  else
+    opt_flag="-O2"
   fi
+
+  AC_C_FLAG([$opt_flag])
+  AC_CXX_FLAG([$opt_flag])
 fi
 
 
