@@ -52,7 +52,7 @@ int main(int argc, char *argv[], char *env[])
 
 	if ((queue = kqueue()) == -1)
 	{
-		perror("kqueue()");
+		perror("Error in: kqueue()");
 		return 1;
 	}
 
@@ -63,26 +63,34 @@ int main(int argc, char *argv[], char *env[])
 	       NOTE_EXIT,
 	       0, 0);
 
+	printf("restart-helper: waiting for pid %d\n", waitpid);
+
 	nchange = kevent(queue, change, 1, event, 1, &timeout);
+
 	if (nchange < 0)
 	{
-		perror("kevent()");
+		perror("restart-helper: Error in kevent()");
 		return 2;
 	}
 	else if (nchange == 0)
 	{
+		printf("restart-helper: Timed out waiting for pid %d\n", waitpid);
 		return 3;
 	}
 	else if (change[0].flags & EV_ERROR)
 	{
+		perror("restart-helper: Error in event");
 		return 2;
 	}
 	else
 	{
 		close(queue);
+
+		printf("restart-helper: Executing '%s'\n", argv[1]);
+
 		if (execve(argv[1], argv+1, env) == -1)
 		{
-			perror("execve()");
+			perror("restart-helper: Error in execve()");
 			return 4;
 		}
 		return 0; /* never reached */
