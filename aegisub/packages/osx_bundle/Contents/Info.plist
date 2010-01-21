@@ -33,13 +33,24 @@
     <key>CFBundleLongVersionString</key>
     <string>@PLIST_VERSION@ (@PLIST_SVN_REVISION@), Copyright 2005-2010, aegisub http://www.aegisub.net/</string>
 
-    <!-- Values: i386, ppc, x86_65, ppc64 -->
+    <!-- Values: i386, ppc, x86_64, ppc64 -->
     <key>LSArchitecturePriority</key>
-    <string>i386</string>
+    <array>
+      <string>i386</string>
+      <string>x86_64</string>
+    </array>
+
+    <!-- Values: Always run in the native format if more than one is available -->
+    <key>LSRequiresNativeExecution</key>
+	<true/>
+
+    <!-- Minimum version we want to run on -->
+    <key>LSMinimumSystemVersion</key>
+    <string>10.4.0</string>
 
     <!-- Displayed in the 'Get Info' context menu dialogue -->
     <key>CFBundleGetInfoString</key>
-    <string>aegisub version @PLIST_VERSION@ (@PLIST_SVN_REVISION@) built on @PLIST_BUILD_DATE@ http://www.aegisub.net/</string>
+    <string>Aegisub version @PLIST_VERSION@ (@PLIST_SVN_REVISION@) built on @PLIST_BUILD_DATE@ http://www.aegisub.net/</string>
 
     <!-- Whether to allow multiple instances across user logins -->
     <key>LSMultipleInstancesProhibited</key>
