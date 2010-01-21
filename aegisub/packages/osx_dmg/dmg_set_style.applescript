@@ -11,13 +11,13 @@ disk image in which Inkscape is bundled on MacOS X
 
 
 tell application "Finder"
-	tell disk "@PKG_NAME_VOLUME@"
+	tell disk "@PKG_DMG_STRING@"
 		open
 		tell container window
 			set current view to icon view
 			set toolbar visible to false
 			set statusbar visible to false
-			set the bounds to {250, 250, 700, 600}
+			set the bounds to {308, 397, 725, 731}
 		end tell
 		close
 		set opts to the icon view options of container window
@@ -26,12 +26,12 @@ tell application "Finder"
 			set arrangement to not arranged
 		end tell
 		set background picture of opts to file ".background:background.png"
-		set position of application file "@PKG_DIR@" to {133, 55}
-		set position of alias file "Applications" to {133, 250}
+		set position of application file "@PKG_BUNDLE_STRING@" to {133, 55}
+		set position of alias file "Applications" to {133, 241}
 		update without registering applications
 		tell container window
-			set the bounds to {250, 250, 700, 600}
-			set the bounds to {249, 250, 700, 600}
+			set the bounds to {308, 397, 725, 731}
+			set the bounds to {307, 397, 725, 731}
 		end tell
 		update without registering applications
 	end tell
