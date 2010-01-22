@@ -77,12 +77,10 @@ esac
 case "$target_or_host" in
   ppc-*-* | powerpc-*)
     arch_ppc="yes"
-    arch_bundle="ppc"
   ;;
 
   i*86-*-*)
     arch_x86="yes"
-    arch_bundle="intel"
   ;;
 
   x86_64-*-*)
@@ -94,6 +92,7 @@ case "$target_or_host" in
   ;;
 esac
 
+# Darwin / OS X settings
 if test "$build_darwin" = "yes"; then
   if test "$arch_x86" = "yes"; then
     DARWIN_ARCH="intel"
@@ -102,7 +101,18 @@ if test "$build_darwin" = "yes"; then
   fi
   AC_SUBST(DARWIN_ARCH)
 
-  CXXFLAGS_OSX="-I/Developer/SDKs/MacOSX10.4u.sdk/usr/include -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4"
+  CXXFLAGS_OSX="-I/Developer/SDKs/MacOSX10.4u.sdk/usr/include -mmacosx-version-min=10.4"
+
+  case "$target_or_host" in
+    # 10.4
+    *-*-darwin8*)
+    ;;
+    # 10.5
+    *-*-darwin9*)
+      CXXFLAGS_OSX="$CXXFLAGS_OSX -isysroot /Developer/SDKs/MacOSX10.4u.sdk"
+    ;;
+  esac
+
   AC_SUBST(CXXFLAGS_OSX)
 fi
 
@@ -231,14 +241,14 @@ AC_DEFINE_UNQUOTED([BUILD_SVN_REVISION], [$SVN_REVISION], [SVN Revision number, 
 if test "aegisub_FINAL_RELEASE" = "1"; then
   AC_DEFINE([FINAL_RELEASE], [aegisub_FINAL_RELEASE], [This is only set to 1 for a RELEASE VERSION.])
   BUNDLE_STRING="Aegisub"
-  DMG_STRING="Aegisub-${PACKAGE_VERSION}-${arch_bundle}"
+  DMG_STRING="Aegisub-${PACKAGE_VERSION}-${DARWIN_ARCH}"
 else
   PACKAGE_STRING="${PACKAGE_STRING}-dev-r${SVN_REVISION}"
   PACKAGE_VERSION="${PACKAGE_VERSION}-dev-r${SVN_REVISION}"
   VERSION="${VERSION}-dev-r${SVN_REVISION}"
 
-  BUNDLE_STRING="Aegisub-${PACKAGE_VERSION}-${arch_bundle}"
-  DMG_STRING="Aegisub-${PACKAGE_VERSION}-${arch_bundle}"
+  BUNDLE_STRING="Aegisub-${PACKAGE_VERSION}-${DARWIN_ARCH}"
+  DMG_STRING="Aegisub-${PACKAGE_VERSION}-${DARWIN_ARCH}"
 fi
 
 
