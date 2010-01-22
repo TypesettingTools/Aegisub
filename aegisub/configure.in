@@ -101,6 +101,9 @@ if test "$build_darwin" = "yes"; then
     DARWIN_ARCH="ppc"
   fi
   AC_SUBST(DARWIN_ARCH)
+
+  CXXFLAGS_OSX="-I/Developer/SDKs/MacOSX10.4u.sdk/usr/include -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4"
+  AC_SUBST(CXXFLAGS_OSX)
 fi
 
 # Used for universalchardet.

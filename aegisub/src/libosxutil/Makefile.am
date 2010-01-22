@@ -2,7 +2,7 @@ noinst_LIBRARIES = libosxutil.a
 
 libosxutil_a_SOURCES = bundledirs.c launch.c
 
-libosxutil_a_CFLAGS = -I/Developer/SDKs/MacOSX10.5.sdk/System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/LaunchServices.framework/Versions/A/Headers/
+libosxutil_a_CFLAGS = @CXXFLAGS_OSX@
 noinst_HEADERS = libosxutil.h
 
 CLEANFILES = bundledirs-test
