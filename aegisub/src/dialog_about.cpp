@@ -127,6 +127,7 @@ AboutScreen::AboutScreen(wxWindow *parent)
 	aboutString += _T("    Eric Batalitzky\n");
 	aboutString += _T("    Evgeniy Stepanov\n");
 	aboutString += _T("    Fredrik Mellbin\n");
+	aboutString += _T("    Grigori Goronzy\n");
 	aboutString += _T("    Karl Blomster\n");
 	aboutString += _T("    Mike Matsnev\n");
 	aboutString += _T("    Moritz Brunner\n");
