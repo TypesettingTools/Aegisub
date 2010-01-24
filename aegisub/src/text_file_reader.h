@@ -1,4 +1,4 @@
-// Copyright (c) 2005, Rodrigo Braz Monteiro
+// Copyright (c) 2010, Rodrigo Braz Monteiro
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -45,62 +45,53 @@
 #include <wx/string.h>
 #endif
 
-
-/// DOCME
 /// @class TextFileReader
-/// @brief DOCME
-///
-/// DOCME
+/// @brief A line-based text file reader
 class TextFileReader {
 private:
-
-	/// DOCME
+	/// Encoding of the file being read
 	wxString encoding;
-
-	/// DOCME
 	std::ifstream file;
-
-	/// DOCME
 	iconv_t conv;
-
-	/// DOCME
 	bool trim;
-
-	/// DOCME
 	bool readComplete;
 
-
-	/// DOCME
+	// Iconv buffers and state
 	wchar_t outbuf[256];
-
-	/// DOCME
 	wchar_t *currout;
-
-	/// DOCME
 	wchar_t *outptr;
-
-	/// DOCME
 	size_t  outbytesleft;
 
-
-	/// DOCME
+	/// Current line number
 	unsigned int currentLine;
 
+	/// @brief Read a single wchar_t from the file
 	wchar_t GetWChar();
 
 	TextFileReader(const TextFileReader&);
 	TextFileReader& operator=(const TextFileReader&);
 
 public:
-	TextFileReader(wxString filename,wxString encoding=_T(""), bool trim=true);
+	/// @brief Constructor
+	/// @param filename File to open
+	/// @param enc      Encoding to use, or empty to autodetect
+	/// @param trim     Whether to trim whitespace from lines read
+	TextFileReader(wxString filename,wxString encoding=L"", bool trim=true);
+	/// @brief Destructor
 	~TextFileReader();
 
+	/// @brief Read a line from the file
+	/// @return The line, possibly trimmed
 	wxString ReadLineFromFile();
+	/// @brief Check if there are any more lines to read
 	bool HasMoreLines();
 
-	static void EnsureValid(const wxString encoding);
+	/// @brief Get the file encoding used by this reader
+	/// @return "unknown", "binary", or a character encoding name
 	wxString GetCurrentEncoding();
-	static wxString GetEncoding(const wxString filename);
+
+	/// @brief Attempt to detect a file's encoding
+	/// @param filename The file to check
+	/// @return "unknown", "binary", or a character encoding name
+	static wxString GetEncoding(wxString const& filename);
 };
-
-

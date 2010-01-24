@@ -103,7 +103,6 @@ void AssFile::Load (const wxString _filename,const wxString charset,bool addToRe
 		wxString enc;
 		if (charset.IsEmpty()) enc = TextFileReader::GetEncoding(_filename);
 		else enc = charset;
-		TextFileReader::EnsureValid(enc);
 
 		// Generic preparation
 		Clear();

@@ -49,52 +49,27 @@
 WX_DECLARE_STRING_HASH_MAP(wxString, PrettyNamesHash);
 
 #if wxUSE_THREADS
-
-/// DOCME
 static wxMutex encodingListMutex;
 #endif
 
-
-/// DOCME
 static const iconv_t iconv_invalid = (iconv_t)-1;
-
-/// DOCME
 static const size_t  iconv_failed  = (size_t)-1;
-
-/// DOCME
 #define ICONV_CONST_CAST(a) const_cast<ICONV_CONST char *>(a)
 
-#ifndef ICONV_POSIX
-static int addEncoding(unsigned int namescount, const char * const * names, void* data);
-#endif
-
-/// DOCME
 static wxArrayString   *supportedEncodings = NULL;
-
-/// DOCME
 static wxArrayString   *prettyEncodingList = NULL;
-
-/// DOCME
 static PrettyNamesHash *prettyEncodingHash = NULL;
 
-
-/// @brief DOCME
-/// @param mbEncName   
-/// @param enableSubst 
-///
 AegisubCSConv::AegisubCSConv(const wxChar *mbEncName, bool enableSubst)
-:	mbCharsetName(GetRealEncodingName(mbEncName)), mbNulLen(0), enableSubst(enableSubst)
+: wcCharsetName(WCHAR_T_ENCODING)
+, mbCharsetName(GetRealEncodingName(mbEncName))
+, mbNulLen(0)
+, enableSubst(enableSubst)
+, m2w(wcCharsetName, mbCharsetName)
+, w2m(mbCharsetName, wcCharsetName)
 {
-	wcCharsetName = wxString::FromAscii(WCHAR_T_ENCODING);
-
-	m2w = iconv_open(wcCharsetName.ToAscii(), mbCharsetName.ToAscii());
-	w2m = iconv_open(mbCharsetName.ToAscii(), wcCharsetName.ToAscii());
-
 	if (m2w == iconv_invalid || w2m == iconv_invalid) {
-		if (m2w != iconv_invalid) iconv_close(m2w);
-		if (w2m != iconv_invalid) iconv_close(w2m);
-
-		throw wxString::Format(_T("Character set %s is not supported."), mbEncName);
+		throw wxString::Format(L"Character set %s is not supported.", mbEncName);
 	}
 
 	if (enableSubst) {
@@ -110,26 +85,14 @@ AegisubCSConv::AegisubCSConv(const wxChar *mbEncName, bool enableSubst)
 	}
 }
 
-/// @brief DOCME
-///
-AegisubCSConv::~AegisubCSConv() {
-	if (m2w != iconv_invalid) iconv_close(m2w);
-	if (w2m != iconv_invalid) iconv_close(w2m);
-}
-
-/// @brief DOCME
-/// @return 
-///
 wxMBConv * AegisubCSConv::Clone() const {
 	AegisubCSConv *c = new AegisubCSConv(mbCharsetName);
 	c->mbNulLen = mbNulLen;
 	return c;
 }
 
-
 /// @brief Calculate the size of NUL in the target encoding via iconv
-/// @return 
-///
+/// @return The size in bytes of NUL
 size_t AegisubCSConv::GetMBNulLen() const {
 	if (mbNulLen == 0) {
 		const wchar_t nulStr[] = L"";
@@ -142,18 +105,13 @@ size_t AegisubCSConv::GetMBNulLen() const {
 		size_t res = iconv(w2m, &inPtr, &inLen, &outPtr, &outLen);
 
 		if (res != 0)
-			const_cast<AegisubCSConv *>(this)->mbNulLen = (size_t)-1;
+			mbNulLen = (size_t)-1;
 		else
-			const_cast<AegisubCSConv *>(this)->mbNulLen = sizeof(outBuff) - outLen;
+			mbNulLen = sizeof(outBuff) - outLen;
 	}
 	return mbNulLen;
 }
 
-
-/// @brief Calculate the length (in bytes) of a MB string, not including the terminator
-/// @param str 
-/// @return 
-///
 size_t AegisubCSConv::MBBuffLen(const char * str) const {
 	size_t nulLen = GetMBNulLen();
 	const char *ptr;
@@ -171,14 +129,12 @@ size_t AegisubCSConv::MBBuffLen(const char * str) const {
 	}
 }
 
-
-/// @brief DOCME
-/// @param dst     
-/// @param dstSize 
-/// @param src     
-/// @param srcLen  
-/// @return 
-///
+/// @brief Convert a string from multibyte to wide characters
+/// @param dst     Destination buffer.
+/// @param dstSize Length of destination buffer in wchar_ts
+/// @param src     Source multibyte string
+/// @param srcLen  Length of source buffer in bytes, or -1 to autodetect
+/// @return The number of wchar_ts needed to store the string in the target charset
 size_t AegisubCSConv::ToWChar(wchar_t *dst, size_t dstSize, const char *src, size_t srcLen) const {
 	return doConversion(
 		m2w,
@@ -189,14 +145,12 @@ size_t AegisubCSConv::ToWChar(wchar_t *dst, size_t dstSize, const char *src, siz
 	) / sizeof(wchar_t);
 }
 
-
-/// @brief DOCME
-/// @param dst     
-/// @param dstSize 
-/// @param src     
-/// @param srcLen  
-/// @return 
-///
+/// @brief Convert a string from wide characters to multibyte
+/// @param dst     Destination buffer
+/// @param dstSize Length of destination buffer in bytes
+/// @param src     Source wide character string
+/// @param srcLen  Length in wchar_ts of source, or -1 to autodetect
+/// @return The number of bytes needed to store the string in the target charset
 size_t AegisubCSConv::FromWChar(char *dst, size_t dstSize, const wchar_t *src, size_t srcLen) const {
 	return doConversion(
 		w2m,
@@ -207,15 +161,7 @@ size_t AegisubCSConv::FromWChar(char *dst, size_t dstSize, const wchar_t *src, s
 	);
 }
 
-
-/// @brief DOCME
-/// @param cd      
-/// @param dst     
-/// @param dstSize 
-/// @param src     
-/// @param srcSize 
-/// @return 
-///
+// Perform a conversion if a buffer is given or calculate the needed buffer size if not
 size_t AegisubCSConv::doConversion(iconv_t cd, char *dst, size_t dstSize, char *src, size_t srcSize) const {
 	if (dstSize > 0) {
 		return iconvWrapper(cd, &src, &srcSize, &dst, &dstSize);
@@ -239,20 +185,12 @@ size_t AegisubCSConv::doConversion(iconv_t cd, char *dst, size_t dstSize, char *
 	return charsWritten;
 }
 
-
-/// @brief DOCME
-/// @param cd           
-/// @param inbuf        
-/// @param inbytesleft  
-/// @param outbuf       
-/// @param outbytesleft 
-/// @return 
-///
+// Actually perform a conversion via iconv
 size_t AegisubCSConv::iconvWrapper(iconv_t cd, char **inbuf, size_t *inbytesleft,
-							 char **outbuf, size_t *outbytesleft) const {
+                                   char **outbuf, size_t *outbytesleft) const {
 
 #if wxUSE_THREADS
-	wxMutexLocker lock(const_cast<AegisubCSConv *>(this)->iconvMutex);
+	wxMutexLocker lock(iconvMutex);
 #endif
 
 	char *outbuforig = *outbuf;
@@ -265,10 +203,11 @@ size_t AegisubCSConv::iconvWrapper(iconv_t cd, char **inbuf, size_t *inbytesleft
 
 #ifdef ICONV_POSIX
 	if (errno == EILSEQ) {
-		throw	_T("One or more characters do not fit in the selected ")
-				_T("encoding and the version of iconv Aegisub was built with")
-				_T(" does not have useful fallbacks. For best results, ")
-				_T("please rebuild Aegisub using a recent version of GNU iconv.");
+		throw
+			L"One or more characters do not fit in the selected "
+			L"encoding and the version of iconv Aegisub was built with"
+			L" does not have useful fallbacks. For best results, "
+			L"please rebuild Aegisub using a recent version of GNU iconv.";
 	}
 	return wxCONV_FAILED;
 #else
@@ -287,7 +226,7 @@ size_t AegisubCSConv::iconvWrapper(iconv_t cd, char **inbuf, size_t *inbytesleft
 	}
 	if (res == iconv_failed && err == EILSEQ) {
 		// Conversion still failed with transliteration enabled, so try our substitution
-		iconvctl(cd, ICONV_SET_FALLBACKS, const_cast<iconv_fallbacks *>(&fallbacks));
+		iconvctl(cd, ICONV_SET_FALLBACKS, &fallbacks);
 		res = iconv(cd, inbuf, inbytesleft, outbuf, outbytesleft);
 		err = errno;
 		iconvctl(cd, ICONV_SET_FALLBACKS, NULL);
@@ -309,13 +248,11 @@ size_t AegisubCSConv::iconvWrapper(iconv_t cd, char **inbuf, size_t *inbytesleft
 }
 
 
-/// @brief DOCME
-/// @param code         
-/// @param callback     
-/// @param callback_arg 
-/// @param convPtr      
-/// @return 
-///
+/// @brief GNU iconv character substitution callback
+/// @param code         Unicode character which could not be converted
+/// @param callback     Callback to tell iconv what string to use instead
+/// @param callback_arg Iconv userdata for callback
+/// @param convPtr      AegisubCSConv instance to use
 void AegisubCSConv::ucToMbFallback(
 	unsigned int code,
 	void (*callback) (const char *buf, size_t buflen, void* callback_arg),
@@ -323,7 +260,8 @@ void AegisubCSConv::ucToMbFallback(
 	void *convPtr)
 {
 	// At some point in the future, this should probably switch to a real mapping
-	// For now, there's just three cases: BOM to nothing, \ to itself (lol Shift-JIS) and everything else to ?
+	// For now, there's just three cases: BOM to nothing, '\' to itself
+	// (for Shift-JIS, which does not have \) and everything else to '?'
 	if (code == 0xFEFF) return;
 	if (code == 0x5C) callback("\\", 1, callback_arg);
 	else {
@@ -333,13 +271,10 @@ void AegisubCSConv::ucToMbFallback(
 }
 
 #ifndef ICONV_POSIX
-
-/// @brief DOCME
-/// @param namescount 
-/// @param names      
-/// @param data       
-/// @return 
-///
+/// @brief Callback for iconvlist
+/// @param namescount Number of names in names
+/// @param names      Names to add to the list
+/// @param data       Unused userdata field
 int addEncoding(unsigned int namescount, const char * const * names, void* data) {
 	for (unsigned int i = 0; i < namescount; i++) {
 		supportedEncodings->Add(wxString::FromAscii(names[i]));
@@ -348,10 +283,6 @@ int addEncoding(unsigned int namescount, const char * const * names, void* data)
 }
 #endif
 
-
-/// @brief DOCME
-/// @return 
-///
 wxArrayString AegisubCSConv::GetAllSupportedEncodings() {
 #if wxUSE_THREADS
 	wxMutexLocker lock(encodingListMutex);
@@ -366,13 +297,8 @@ wxArrayString AegisubCSConv::GetAllSupportedEncodings() {
 	return *supportedEncodings;
 }
 
-
-/// @brief Map pretty names to the real encoding names
-/// @param name 
-/// @return 
-///
 wxString AegisubCSConv::GetRealEncodingName(wxString name) {
-	if (name.Lower() == _T("local")) return wxLocale::GetSystemEncodingName();
+	if (name.Lower() == L"local") return wxLocale::GetSystemEncodingName();
 	if (prettyEncodingList == NULL) return name;
 
 	PrettyNamesHash::iterator realName = prettyEncodingHash->find(name);
@@ -382,9 +308,6 @@ wxString AegisubCSConv::GetRealEncodingName(wxString name) {
 	return name;
 }
 
-
-/// @brief DOCME
-///
 wxArrayString AegisubCSConv::GetEncodingsList() {
 #if wxUSE_THREADS
 	wxMutexLocker lock(encodingListMutex);
@@ -511,10 +434,10 @@ wxArrayString AegisubCSConv::GetEncodingsList() {
 
 		PrettyNamesHash *map = new PrettyNamesHash(100);
 		wxArrayString *arr = new wxArrayString();
-		arr->Add(_T("Local"));
+		arr->Add(L"Local");
 
 		for (int i = 0; encodingNames[i].real != NULL; i++) {
-			// Verify that iconv actually supports this encoding
+			// Verify that iconv actually supports converting to and from this encoding
 			iconv_t cd = iconv_open(encodingNames[i].real, WCHAR_T_ENCODING);
 			if (cd == iconv_invalid) continue;
 			iconv_close(cd);
@@ -533,7 +456,5 @@ wxArrayString AegisubCSConv::GetEncodingsList() {
 	}
 	return *prettyEncodingList;
 }
-static AegisubCSConv localConv(_T("Local"), false);
+static AegisubCSConv localConv(L"Local", false);
 AegisubCSConv& csConvLocal(localConv);
-
-

@@ -1,4 +1,4 @@
-// Copyright (c) 2005, Rodrigo Braz Monteiro
+// Copyright (c) 2010, Rodrigo Braz Monteiro, Thomas Goyne
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -51,13 +51,6 @@
 #endif
 #include "text_file_reader.h"
 
-
-/// @brief DOCME
-/// @param filename 
-/// @param enc      
-/// @param trim     
-/// @return 
-///
 TextFileReader::TextFileReader(wxString filename, wxString enc, bool trim)
 : encoding(enc), conv((iconv_t)-1), trim(trim), readComplete(false), currout(0), outptr(0), currentLine(0) {
 #ifdef __WINDOWS__
@@ -65,29 +58,22 @@ TextFileReader::TextFileReader(wxString filename, wxString enc, bool trim)
 #else
 	file.open(wxFNCONV(filename),std::ios::in | std::ios::binary);
 #endif
-	if (!file.is_open()) {
-		throw _T("Failed opening file for reading.");
-	}
+	if (!file.is_open()) throw L"Failed opening file for reading.";
 
 	if (encoding.IsEmpty()) encoding = GetEncoding(filename);
-	if (encoding == _T("binary")) return;
+	if (encoding == L"binary") return;
 	encoding = AegisubCSConv::GetRealEncodingName(encoding);
 	conv = iconv_open(WCHAR_T_ENCODING, encoding.ToAscii());
+	if (conv == (iconv_t)-1) {
+		throw wxString::Format(L"Character set '%s' is not supported.", enc.c_str());
+	}
 }
 
-
-/// @brief DOCME
-///
 TextFileReader::~TextFileReader() {
 	if (conv != (iconv_t)-1) iconv_close(conv);
 }
 
-
-/// @brief DOCME
-/// @param filename 
-/// @return 
-///
-wxString TextFileReader::GetEncoding(const wxString filename) {
+wxString TextFileReader::GetEncoding(wxString const& filename) {
 	// Prepare
 	unsigned char b[4];
 	memset(b, 0, sizeof(b));
@@ -100,27 +86,27 @@ wxString TextFileReader::GetEncoding(const wxString filename) {
 	ifile.open(wxFNCONV(filename));
 #endif
 	if (!ifile.is_open()) {
-		return _T("unknown");
+		return L"unknown";
 	}
 	ifile.read(reinterpret_cast<char *>(b),4);
 	ifile.close();
 
 	// Try to get the byte order mark from them
-	if (b[0] == 0xEF && b[1] == 0xBB && b[2] == 0xBF) return _T("UTF-8");
-	else if (b[0] == 0xFF && b[1] == 0xFE && b[2] == 0x00 && b[3] == 0x00) return _T("UTF-32LE");
-	else if (b[0] == 0x00 && b[1] == 0x00 && b[2] == 0xFE && b[3] == 0xFF) return _T("UTF-32BE");
-	else if (b[0] == 0xFF && b[1] == 0xFE) return _T("UTF-16LE");
-	else if (b[0] == 0xFE && b[1] == 0xFF) return _T("UTF-16BE");
-	else if (b[0] == 0x2B && b[1] == 0x2F && b[2] == 0x76) return _T("UTF-7");
+	if (b[0] == 0xEF && b[1] == 0xBB && b[2] == 0xBF) return L"UTF-8";
+	else if (b[0] == 0xFF && b[1] == 0xFE && b[2] == 0x00 && b[3] == 0x00) return L"UTF-32LE";
+	else if (b[0] == 0x00 && b[1] == 0x00 && b[2] == 0xFE && b[3] == 0xFF) return L"UTF-32BE";
+	else if (b[0] == 0xFF && b[1] == 0xFE) return L"UTF-16LE";
+	else if (b[0] == 0xFE && b[1] == 0xFF) return L"UTF-16BE";
+	else if (b[0] == 0x2B && b[1] == 0x2F && b[2] == 0x76) return L"UTF-7";
 
 	// Try to guess UTF-16
-	else if (b[0] == 0 && b[1] >= 32 && b[2] == 0 && b[3] >= 32) return _T("UTF-16BE");
-	else if (b[0] >= 32 && b[1] == 0 && b[2] >= 32 && b[3] == 0) return _T("UTF-16LE");
+	else if (b[0] == 0 && b[1] >= 32 && b[2] == 0 && b[3] >= 32) return L"UTF-16BE";
+	else if (b[0] >= 32 && b[1] == 0 && b[2] >= 32 && b[3] == 0) return L"UTF-16LE";
 
 	// If any of the first four bytes are under 0x20 (the first printable character),
 	// except for 9-13 range, assume binary
 	for (int i=0;i<4;i++) {
-		if (b[i] < 9 || (b[i] > 13 && b[i] < 32)) return _T("binary");
+		if (b[i] < 9 || (b[i] > 13 && b[i] < 32)) return L"binary";
 	}
 
 #ifdef WITH_UNIVCHARDET
@@ -129,14 +115,10 @@ wxString TextFileReader::GetEncoding(const wxString filename) {
 	return det.GetEncoding(filename);
 #else
 	// Fall back to local
-	return _T("Local");
+	return L"local";
 #endif
 }
 
-
-/// @brief DOCME
-/// @return 
-///
 wchar_t TextFileReader::GetWChar() {
 	// If there's already some converted characters waiting, return the next one
 	if (++currout < outptr) {
@@ -174,7 +156,7 @@ wchar_t TextFileReader::GetWChar() {
 		// adding one byte to the input buffer until either it succeeds or we add enough bytes to
 		// complete any character
 		if (++bytesAdded > 3)
-			throw wxString::Format(_T("Invalid input character found near line %u"), currentLine);
+			throw wxString::Format(L"Invalid input character found near line %u", currentLine);
 
 		file.read(inptr + inbytesleft, 1);
 		inbytesleft++;
@@ -183,34 +165,27 @@ wchar_t TextFileReader::GetWChar() {
 	if (outptr > outbuf)
 		return *currout;
 
-	throw wxString::Format(_T("Invalid input character found near line %u"), currentLine);
+	throw wxString::Format(L"Invalid input character found near line %u", currentLine);
 }
 
-
-/// @brief DOCME
-/// @return 
-///
 wxString TextFileReader::ReadLineFromFile() {
 	wxString buffer;
-	size_t bufAlloc = 1024;
-	buffer.Alloc(bufAlloc);
+	buffer.Alloc(1024);
 
 	currentLine++;
 	// Read a line
 	wchar_t ch;
-	size_t len = 0;
+	bool first = true;
+	// This doesn't work for \r deliminated files, but it's very unlikely
+	// that we'll run into one of those
 	for (ch = GetWChar(); ch != L'\n' && ch != 0; ch = GetWChar()) {
 		if (ch == L'\r') continue;
 		// Skip the BOM -- we don't need it as the encoding is already known
 		// and it sometimes causes conversion problems
-		if (ch == 0xFEFF && len == 0) continue;
+		if (ch == 0xFEFF && first) continue;
 
-		if (len >= bufAlloc - 1) {
-			bufAlloc *= 2;
-			buffer.Alloc(bufAlloc);
-		}
 		buffer += ch;
-		len++;
+		first = false;
 	}
 	if (ch == 0)
 		readComplete = true;
@@ -223,36 +198,10 @@ wxString TextFileReader::ReadLineFromFile() {
 	return buffer;
 }
 
-
-/// @brief DOCME
-/// @return 
-///
 bool TextFileReader::HasMoreLines() {
 	return !readComplete;
 }
 
-
-/// @brief DOCME
-/// @param encoding
-/// @return 
-///
-void TextFileReader::EnsureValid(wxString enc) {
-	if (enc == _T("binary")) return;
-
-	enc = AegisubCSConv::GetRealEncodingName(enc);
-	iconv_t cd = iconv_open(WCHAR_T_ENCODING, enc.ToAscii());
-	bool canOpen = cd != (iconv_t)-1;
-	iconv_close(cd);
-	if (!canOpen) {
-		throw wxString::Format(_T("Character set %s is not supported."), enc.c_str());
-	}
-}
-
-
-/// @brief DOCME
-///
 wxString TextFileReader::GetCurrentEncoding() {
 	return encoding;
 }
-
-
