@@ -47,6 +47,7 @@
 #include <wx/filename.h>
 #include <wx/log.h>
 #include <wx/msgdlg.h>
+#include <wx/tokenzr.h>
 #include <wx/window.h>
 #endif
 
@@ -58,6 +59,7 @@
 #include "auto4_lua_factory.h"
 #include "auto4_lua_scriptreader.h"
 #include "options.h"
+#include "standard_paths.h"
 #include "text_file_reader.h"
 #include "vfr.h"
 #include "video_context.h"
@@ -187,6 +189,26 @@ namespace Automation4 {
 			lua_setglobal(L, "loadfile");
 			lua_pushcfunction(L, LuaInclude);
 			lua_setglobal(L, "include");
+
+			// add include_path to the module load path
+			lua_getglobal(L, "package");
+			lua_pushstring(L, "path");
+			lua_pushstring(L, "path");
+			lua_gettable(L, -3);
+
+			wxStringTokenizer toker(Options.AsText(_T("Automation Include Path")), _T("|"), wxTOKEN_STRTOK);
+			while (toker.HasMoreTokens()) {
+				wxFileName path(StandardPaths::DecodePath(toker.GetNextToken()));
+				if (path.IsOk() && !path.IsRelative() && path.DirExists()) {
+					wxCharBuffer p = path.GetLongPath().utf8_str();
+					lua_pushfstring(L, ";%s/?.lua;%s/?/init.lua", p.data(), p.data());
+					lua_concat(L, 2);
+				}
+			}
+
+			lua_settable(L, -3);
+			lua_pop(L, 1); // pop package
+			_stackcheck.check_stack(0);
 
 			// prepare stuff in the registry
 			// reference to the script object
@@ -385,7 +407,6 @@ namespace Automation4 {
 		lua_pushnumber(L, extlead);
 		return 4;
 	}
-
 
 	/// @brief DOCME
 	/// @param L 
@@ -1152,5 +1173,3 @@ namespace Automation4 {
 };
 
 #endif // WITH_AUTO4_LUA
-
-
