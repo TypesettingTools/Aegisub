@@ -70,18 +70,30 @@ struct VideoOutGL::TextureInfo {
 	int sourceH;
 	int sourceW;
 
-	int textureH;
-	int textureW;
-
-	float destH;
-	float destW;
-	float destX;
-	float destY;
+	float destX1;
+	float destY1;
+	float destX2;
+	float destY2;
 
 	float texTop;
 	float texBottom;
 	float texLeft;
 	float texRight;
+
+	TextureInfo()
+		: textureID(0)
+		, dataOffset(0)
+		, sourceH(0)
+		, sourceW(0)
+		, destX1(0)
+		, destY1(0)
+		, destX2(0)
+		, destY2(0)
+		, texTop(0)
+		, texBottom(1.0f)
+		, texLeft(0)
+		, texRight(1.0f)
+	{ }
 };
 
 /// @brief Test if a texture can be created
@@ -152,6 +164,10 @@ void VideoOutGL::DetectOpenGLCapabilities() {
 void VideoOutGL::InitTextures(int width, int height, GLenum format, int bpp, bool flipped) {
 	// Do nothing if the frame size and format are unchanged
 	if (width == frameWidth && height == frameHeight && format == frameFormat && flipped == frameFlipped) return;
+	frameWidth   = width;
+	frameHeight  = height;
+	frameFormat  = format;
+	frameFlipped = flipped;
 	wxLogDebug("VideoOutGL::InitTextures: Video size: %dx%d\n", width, height);
 
 	DetectOpenGLCapabilities();
@@ -172,10 +188,10 @@ void VideoOutGL::InitTextures(int width, int height, GLenum format, int bpp, boo
 
 	// Calculate the position information for each texture
 	int sourceY = 0;
-	float destY = 0.0f;
+	float destY = -1.0f;
 	for (int i = 0; i < textureRows; i++) {
 		int sourceX = 0;
-		float destX = 0.0f;
+		float destX = -1.0f;
 
 		int sourceH = maxTextureSize;
 		int textureH = maxTextureSize;
@@ -184,13 +200,15 @@ void VideoOutGL::InitTextures(int width, int height, GLenum format, int bpp, boo
 			sourceH = height % maxTextureSize;
 			textureH = SmallestPowerOf2(sourceH);
 		}
+
 		for (int j = 0; j < textureCols; j++) {
 			TextureInfo& ti = textureList[i * textureCols + j];
 
 			// Copy the current position information into the struct
-			ti.destX = destX;
-			ti.destY = destY;
+			ti.destX1 = destX;
+			ti.destY1 = destY;
 			ti.sourceH = sourceH;
+			ti.textureID = textureIdList[i * textureCols + j];
 
 			ti.sourceW = maxTextureSize;
 			int textureW = maxTextureSize;
@@ -204,54 +222,49 @@ void VideoOutGL::InitTextures(int width, int height, GLenum format, int bpp, boo
 			int h = textureH;
 			if (!supportsRectangularTextures) w = h = MAX(w, h);
 
-			if (supportsGlClampToEdge) {
-				ti.texLeft = 0.0f;
-				ti.texTop = 0.0f;
-			}
-			else {
+			CreateTexture(w, h, ti, format);
+
+			if (!supportsGlClampToEdge) {
 				// Stretch the texture a half pixel in each direction to eliminate the border
 				ti.texLeft = 1.0f / (2 * w);
 				ti.texTop = 1.0f / (2 * h);
 			}
 
-			ti.destW = float(w) / width;
-			ti.destH = float(h) / height;
-
-			ti.textureID = textureIdList[i * textureCols + j];
-			ti.dataOffset = sourceY * width * bpp + sourceX * bpp;
+			ti.destX2 = ti.destX1 + w * 2.0f / width;
+			ti.destY2 = ti.destY1 + h * 2.0f / height;
 
 			ti.texRight = 1.0f - ti.texLeft;
-			ti.texBottom = 1.0f - ti.texTop;
 			if (flipped) {
+				ti.texBottom = 1.0f - ti.texTop;
+				ti.dataOffset = sourceY * width * bpp + sourceX * bpp;
+			}
+			else {
 				ti.texBottom = ti.texTop - float(h - ti.sourceH) / h;
 				ti.texTop = 1.0f - ti.texTop - float(h - ti.sourceH) / h;
 
 				ti.dataOffset = (height - sourceY - ti.sourceH) * width * bpp + sourceX * bpp;
 			}
 
-			// Actually create the texture and set the scaling mode
-			CHECK_INIT_ERROR(glBindTexture(GL_TEXTURE_2D, ti.textureID));
-			CHECK_INIT_ERROR(glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, w, h, 0, format, GL_UNSIGNED_BYTE, NULL));
-			wxLogDebug("VideoOutGL::InitTextures: Using texture size: %dx%d\n", w, h);
-			CHECK_INIT_ERROR(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR));
-			CHECK_INIT_ERROR(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
-
-			GLint mode = supportsGlClampToEdge ? GL_CLAMP_TO_EDGE : GL_CLAMP;
-			CHECK_INIT_ERROR(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, mode));
-			CHECK_INIT_ERROR(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, mode));
-
-			destX += ti.destW;
+			destX = ti.destX2;
 			sourceX += ti.sourceW;
 		}
-		destY += float(sourceH) / height;
+		destY += sourceH * 2.0f / height;
 		sourceY += sourceH;
 	}
-
-	// Store the information needed to know when the grid must be recreated
-	frameWidth  = width;
-	frameHeight = height;
-	frameFormat = format;
 }
+
+void VideoOutGL::CreateTexture(int w, int h, const TextureInfo& ti, GLenum format) {
+	CHECK_INIT_ERROR(glBindTexture(GL_TEXTURE_2D, ti.textureID));
+	CHECK_INIT_ERROR(glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, w, h, 0, format, GL_UNSIGNED_BYTE, NULL));
+	wxLogDebug("VideoOutGL::InitTextures: Using texture size: %dx%d\n", w, h);
+	CHECK_INIT_ERROR(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR));
+	CHECK_INIT_ERROR(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
+
+	GLint mode = supportsGlClampToEdge ? GL_CLAMP_TO_EDGE : GL_CLAMP;
+	CHECK_INIT_ERROR(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, mode));
+	CHECK_INIT_ERROR(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, mode));
+}
+
 void VideoOutGL::UploadFrameData(const AegiVideoFrame& frame) {
 	if (frame.h == 0 || frame.w == 0) return;
 
@@ -271,30 +284,45 @@ void VideoOutGL::UploadFrameData(const AegiVideoFrame& frame) {
 
 	CHECK_ERROR(glPixelStorei(GL_UNPACK_ROW_LENGTH, 0));
 }
+void VideoOutGL::SetViewport(int x, int y, int width, int height) {
+	CHECK_ERROR(glViewport(x, y, width, height));
+}
 
 void VideoOutGL::Render(int sw, int sh) {
+	// Clear the frame buffer
+	CHECK_ERROR(glClearColor(0,0,0,0));
+	CHECK_ERROR(glClearStencil(0));
+	CHECK_ERROR(glClear(GL_COLOR_BUFFER_BIT | GL_STENCIL_BUFFER_BIT));
+
+
+	CHECK_ERROR(glShadeModel(GL_FLAT));
+	CHECK_ERROR(glDisable(GL_BLEND));
+
+	CHECK_ERROR(glMatrixMode(GL_PROJECTION));
+	CHECK_ERROR(glLoadIdentity());
+
+	// Render the current frame
 	CHECK_ERROR(glEnable(GL_TEXTURE_2D));
 
 	for (unsigned i = 0; i < textureList.size(); i++) {
 		TextureInfo& ti = textureList[i];
 
-		float destX = ti.destX * sw;
-		float destW = ti.destW * sw;
-		float destY = ti.destY * sh;
-		float destH = ti.destH * sh;
-
 		CHECK_ERROR(glBindTexture(GL_TEXTURE_2D, ti.textureID));
 		CHECK_ERROR(glColor4f(1.0f, 1.0f, 1.0f, 1.0f));
 
 		glBegin(GL_QUADS);
-			glTexCoord2f(ti.texLeft,  ti.texTop);     glVertex2f(destX, destY);
-			glTexCoord2f(ti.texRight, ti.texTop);     glVertex2f(destX + destW, destY);
-			glTexCoord2f(ti.texRight, ti.texBottom);  glVertex2f(destX + destW, destY + destH);
-			glTexCoord2f(ti.texLeft,  ti.texBottom);  glVertex2f(destX, destY + destH);
+			glTexCoord2f(ti.texLeft,  ti.texTop);     glVertex2f(ti.destX1, ti.destY1);
+			glTexCoord2f(ti.texRight, ti.texTop);     glVertex2f(ti.destX2, ti.destY1);
+			glTexCoord2f(ti.texRight, ti.texBottom);  glVertex2f(ti.destX2, ti.destY2);
+			glTexCoord2f(ti.texLeft,  ti.texBottom);  glVertex2f(ti.destX1, ti.destY2);
 		glEnd();
 		if (GLenum err = glGetError()) throw VideoOutRenderException(L"GL_QUADS", err);
 	}
 	CHECK_ERROR(glDisable(GL_TEXTURE_2D));
+
+	CHECK_ERROR(glOrtho(0.0f, sw, sh, 0.0f, -1000.0f, 1000.0f));
+	CHECK_ERROR(glMatrixMode(GL_MODELVIEW));
+	CHECK_ERROR(glLoadIdentity());
 }
 
 VideoOutGL::~VideoOutGL() {

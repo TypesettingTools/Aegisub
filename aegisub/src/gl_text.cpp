@@ -145,6 +145,7 @@ void OpenGLText::DoPrint(wxString text,int x,int y) {
 	DrawString(text,x,y);
 
 	// Disable blend
+	glDisable(GL_TEXTURE_2D);
 	glDisable(GL_BLEND);
 }
 
