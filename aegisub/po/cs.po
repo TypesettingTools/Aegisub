@@ -5,9 +5,9 @@ msgstr ""
 "Project-Id-Version: cs\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2010-01-26 08:25-0500\n"
-"PO-Revision-Date: 2009-06-24 17:45+0100\n"
-"Last-Translator: Karl Blomster <thefluff@mod16.org>\n"
-"Language-Team:  <cs@li.org>\n"
+"PO-Revision-Date: 2009-12-31 08:04+0100\n"
+"Last-Translator: Christof <christof@totan.cz>\n"
+"Language-Team:  <en@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -1463,7 +1463,7 @@ msgstr "29.970 FPS (NTSC)"
 
 #: subtitle_format.cpp:346
 msgid "29.970 FPS (NTSC with SMPTE dropframe)"
-msgstr ""
+msgstr "29.970 FPS (NTSC, vypuštění snímku SMPTE)"
 
 #: subtitle_format.cpp:347
 msgid "30.000 FPS"
@@ -1471,7 +1471,7 @@ msgstr "30.000 FPS"
 
 #: subtitle_format.cpp:348
 msgid "50.000 FPS (PAL x2)"
-msgstr ""
+msgstr "50.000 FPS (PAL x2)"
 
 #: subtitle_format.cpp:349
 msgid "59.940 FPS (NTSC x2)"
@@ -1519,26 +1519,27 @@ msgstr "Načítám časové kódy a snímková/vzorková data"
 
 #: ffmpegsource_common.cpp:157
 msgid "video"
-msgstr ""
+msgstr "video"
 
 #: ffmpegsource_common.cpp:159
 msgid "audio"
-msgstr ""
+msgstr "audio"
 
 #: ffmpegsource_common.cpp:162
 #, c-format
 msgid "Track %02d: %s"
-msgstr ""
+msgstr "Stopa %02d: %s"
 
 #: ffmpegsource_common.cpp:166
 #, c-format
 msgid "Multiple %s tracks detected, please choose the one you wish to load:"
 msgstr ""
+"Byla nalezena více než jedna %s stopa, zvolte prosím, která má být načtena:"
 
 #: ffmpegsource_common.cpp:167
 #, c-format
 msgid "Choose %s track"
-msgstr ""
+msgstr "Vybrat %s stopu"
 
 #: dialog_spellchecker.cpp:91 frame_main.cpp:306
 msgid "Spell Checker"
@@ -2573,31 +2574,36 @@ msgid ""
 "If other applications can access the Internet fine, this is probably a "
 "temporary server problem on our end."
 msgstr ""
+"Při kontrole aktualizace Aegisubu došlo k chybě:\n"
+"%s\n"
+"\n"
+"Pokud jiné aplikace nemají potíže s přístupem na Internet, nejspíš je to jen "
+"dočasná chyba našeho serveru."
 
 #: dialog_version_check.cpp:183
 msgid "An unknown error occurred while checking for updates to Aegisub."
-msgstr ""
+msgstr "Při kontrole aktualizace Aegisubu došlo k neznámé chybě."
 
 #: dialog_version_check.cpp:332
 msgid "Could not connect to updates server."
-msgstr ""
+msgstr "Nelze se připojit k aktualizačnímu serveru."
 
 #: dialog_version_check.cpp:337
 #, c-format
 msgid "HTTP request failed, got HTTP response %d."
-msgstr ""
+msgstr "HTTP požadavek selhal, HTTP odpověď %d."
 
 #: dialog_version_check.cpp:409
 msgid "An update to Aegisub was found."
-msgstr ""
+msgstr "Je k dispozici aktualizace Aegisubu."
 
 #: dialog_version_check.cpp:413
 msgid "Several possible updates to Aegisub were found."
-msgstr ""
+msgstr "Je k dispozici několik možných aktualizací Aegisubu."
 
 #: dialog_version_check.cpp:417
 msgid "There are no updates to Aegisub."
-msgstr ""
+msgstr "Žádné nové aktualizace Aegisubu."
 
 #: dialog_version_check.cpp:451
 msgid "Version Checker"
@@ -2605,7 +2611,7 @@ msgstr "Kontrola nových verzí"
 
 #: dialog_version_check.cpp:483
 msgid "Remind me again in a &week"
-msgstr ""
+msgstr "Znovu připomenout za týden"
 
 #: frame_main.cpp:219
 msgid ""
@@ -3513,11 +3519,11 @@ msgstr "Neuložené změny"
 
 #: frame_main.cpp:909
 msgid "Untitled"
-msgstr ""
+msgstr "Bez názvu"
 
 #: frame_main.cpp:919
 msgid "untitled"
-msgstr ""
+msgstr "bez názvu"
 
 #: frame_main.cpp:987
 msgid "Do you want to load/unload the associated files?"
@@ -5261,20 +5267,57 @@ msgstr "Jas"
 msgid "Colour Picker"
 msgstr "Kapátko"
 
-#~ msgid "Karaoke"
-#~ msgstr "Karaoke"
+#~ msgid "Load keyframes"
+#~ msgstr "Načíst klíčové snímky"
 
-#~ msgid "Cancel Split"
-#~ msgstr "Zrušit rozdělení"
+#~ msgid "Reading keyframes from video"
+#~ msgstr "Načítám klíčové snímky z videa"
 
-#~ msgid "Accept Split"
-#~ msgstr "Potvrdit rozdělení"
+#~ msgid "Check File Associations on Start"
+#~ msgstr "Po startu zkontrolovat asociace s typy souborů."
 
-#~ msgid "Join"
-#~ msgstr "Spojit"
+#~ msgid "Crash recovery path:"
+#~ msgstr "Umístění souborů automatického obnovení po pádu:"
 
-#~ msgid "Split"
-#~ msgstr "Rozdělit"
+#~ msgid "Commit"
+#~ msgstr "Potvrdit"
+
+#~ msgid "Perl script"
+#~ msgstr "Perl skript"
+
+#~ msgid ""
+#~ "Unable to add the automation include path(s) to @INC: the script's code "
+#~ "may not compile or execute properly."
+#~ msgstr ""
+#~ "Nemůžu najít cestu k součástem automatizace @INC: kód skriptu se nemusí "
+#~ "sestavit či provést správně."
+
+#~ msgid "Reloading %s because the file on disk (%s) changed."
+#~ msgstr "Znovunačítání %s z důvodu změny souboru (%s) na disku."
+
+#~ msgid "Saving changes"
+#~ msgstr "Ukládám změny"
+
+#~ msgid "Please wait, caching fonts..."
+#~ msgstr "Vyčkejte prosím, probíhá načítání fontů do vyrovnávací paměti..."
+
+#~ msgid "&Associations..."
+#~ msgstr "&Asociace..."
+
+#~ msgid "Associate file types with Aegisub"
+#~ msgstr "Asociuje s Aegisubem zvolené typy souborů "
+
+#~ msgid "Lo&g Window..."
+#~ msgstr "Okno lo&gování..."
+
+#~ msgid "Open log window"
+#~ msgstr "Otevře okno logování"
+
+#~ msgid "&Resource Files..."
+#~ msgstr "Datové soubory..."
+
+#~ msgid "Resource files distributed with Aegisub"
+#~ msgstr "Datové soubory distribuované s Aegisub"
 
 #~ msgid "Not enough parameters for Aegisub::text_extents()"
 #~ msgstr "Nedostatek parametrů pro Aegisub::text_extents()"
@@ -5302,138 +5345,70 @@ msgstr "Kapátko"
 #~ msgid "Trace: "
 #~ msgstr "Trace: "
 
+#~ msgid "Karaoke"
+#~ msgstr "Karaoke"
+
+#~ msgid "Cancel Split"
+#~ msgstr "Zrušit rozdělení"
+
+#~ msgid "Accept Split"
+#~ msgstr "Potvrdit rozdělení"
+
+#~ msgid "Join"
+#~ msgstr "Spojit"
+
+#~ msgid "Split"
+#~ msgstr "Rozdělit"
+
+#~ msgid "Associate file types"
+#~ msgstr "Asociovat s typy souborů"
+
+#~ msgid ""
+#~ "Aegisub can take over the following file types.\n"
+#~ "\n"
+#~ "If you want Aegisub to no longer be associated with a file type, you must "
+#~ "tell another program to take over the file type."
+#~ msgstr ""
+#~ "Aegisub může převzít otevírání následujících typů souborů.\n"
+#~ "\n"
+#~ "Pokud již dále nechcete, aby byl Aegisub asociován s určitým typem "
+#~ "souboru, budete potřebovat nastavit k otevření jiný program."
+
+#~ msgid ""
+#~ "Aegisub is already associated with all supported file types.\n"
+#~ "\n"
+#~ "If you want Aegisub to no longer be associated with a file type, you must "
+#~ "tell another program to take over the file type."
+#~ msgstr ""
+#~ "Aegisub je již asociován se všemi podporovanými typy souborů.\n"
+#~ "\n"
+#~ "Pokud již dále nechcete, aby byl Aegisub asociován s určitým typem "
+#~ "souboru, budete potřebovat nastavit k otevření jiný program."
+
+#~ msgid "Aegisub"
+#~ msgstr "Aegisub"
+
+#~ msgid "Make Aegisub default editor for subtitles?"
+#~ msgstr "Nastavit Aegisub jako výchozí editor titulků?"
+
+#~ msgid ""
+#~ "Aegisub is not your default editor for subtitle files. Do you want to "
+#~ "make Aegisub your default editor for subtitle files?"
+#~ msgstr ""
+#~ "Aegisub není výchozím editorem souborů titulků. Chcete Aegisub nastavit "
+#~ "jako výchozí editor pro soubory titulků?"
+
+#~ msgid "Always perform this check when Aegisub starts"
+#~ msgstr "Zkontrolavat při každém spuštění Aegisubu"
+
+#~ msgid "&Yes"
+#~ msgstr "&Ano"
+
+#~ msgid "&No"
+#~ msgstr "&Ne"
+
 #~ msgid "Executing "
 #~ msgstr "Provádím"
-
-#~ msgid "Perl script"
-#~ msgstr "Perl skript"
-
-#~ msgid ""
-#~ "Unable to add the automation include path(s) to @INC: the script's code "
-#~ "may not compile or execute properly."
-#~ msgstr ""
-#~ "Nemůžu najít cestu k součástem automatizace @INC: kód skriptu se nemusí "
-#~ "sestavit či provést správně."
-
-#~ msgid "Reloading %s because the file on disk (%s) changed."
-#~ msgstr "Znovunačítání %s z důvodu změny souboru (%s) na disku."
-
-#~ msgid "Saving changes"
-#~ msgstr "Ukládám změny"
-
-#~ msgid "This build of Aegisub uses the following C/C++ libraries:\n"
-#~ msgstr "Tento build Aegisubu používá následující C/C++ knihovny:\n"
-
-#~ msgid "Programmers:"
-#~ msgstr "Programátoři:"
-
-#~ msgid "Manual by:"
-#~ msgstr "Tvůrci manuálu:"
-
-#~ msgid "Forum and wiki hosting by:"
-#~ msgstr "Hosting fóra a wiki:"
-
-#~ msgid "SVN hosting by:"
-#~ msgstr "Hosting SVN:"
-
-#~ msgid "Bug tracker hosting by:"
-#~ msgstr "Hosting bug trackeru:"
-
-#~ msgid "Associate extensions"
-#~ msgstr "Asociace přípon"
-
-#~ msgid ""
-#~ "Please select the formats you want to\n"
-#~ "associate with Aegisub:"
-#~ msgstr "Prosím zvolte formáty, které chcete asociovat s aplikací Aegisub:"
-
-#~ msgid "Associations"
-#~ msgstr "Asociace"
-
-#~ msgid "Groups"
-#~ msgstr "Skupiny"
-
-#~ msgid "Select source text first."
-#~ msgstr "Nejprve zvolte zdrojový text."
-
-#~ msgid ""
-#~ "The source line contains text before the first karaoke block.\n"
-#~ "Do you want to carry it over to the destination?\n"
-#~ "It will be ignored otherwise."
-#~ msgstr ""
-#~ "Zdrojový řádek obsahuje text před prvním karaoke tagem.\n"
-#~ "Přejete si jej zachovat do cílového řádku?\n"
-#~ "V opačném případě bude zahozen."
-
-#~ msgid "Kanji timer"
-#~ msgstr "Časovač kanji"
-
-#~ msgid "Possible error parsing source line"
-#~ msgstr "Možná chyba při rozboru zdrojového řádku"
-
-#~ msgid "Group some text first."
-#~ msgstr "Nejprve seskupte část textu."
-
-#~ msgid "Show Tip of the Day"
-#~ msgstr "Zobrazovat tipy dne"
-
-#~ msgid "Save config.dat locally"
-#~ msgstr "Ukládat config.dat lokálně"
-
-#~ msgid "Crash recovery path:"
-#~ msgstr "Umístění souborů automatického obnovení po pádu:"
-
-#~ msgid "Avisynth renders its own subs"
-#~ msgstr "Povolit vykreslování vlastních titulků Avisynthem"
-
-#~ msgid "Could not open Internet File system. Aborting.\n"
-#~ msgstr "Nepodařilo se otevřít Souborový systém Internetu. To je konec :(\n"
-
-#~ msgid "Attempting to open \"%s\"..."
-#~ msgstr "Zkouším otevřít \"%s\"..."
-
-#~ msgid "Failed.\n"
-#~ msgstr "Selhání.\n"
-
-#~ msgid "OK.\n"
-#~ msgstr "OK.\n"
-
-#~ msgid "New version found!\n"
-#~ msgstr "Nalezena nová verze!\n"
-
-#~ msgid "Please go to the following URL to download it: %s\n"
-#~ msgstr "Prosím otevřete následující URL a stáhněte si ji: %s\n"
-
-#~ msgid "No new version has been found.\n"
-#~ msgstr "Nová verze nenalezena.\n"
-
-#~ msgid "&Associations..."
-#~ msgstr "&Asociace..."
-
-#~ msgid "Associate file types with Aegisub"
-#~ msgstr "Asociuje s Aegisubem zvolené typy souborů "
-
-#~ msgid "Lo&g Window..."
-#~ msgstr "Okno lo&gování..."
-
-#~ msgid "Open log window"
-#~ msgstr "Otevře okno logování"
-
-#~ msgid ""
-#~ "Enter aspect ratio in either decimal (e.g. 2.35) or fractional (e.g. "
-#~ "16:9) form. Enter a value like 853x480 to set a specific resolution."
-#~ msgstr ""
-#~ "Vložte poměr stran v desetinné (např. 2.35) nebo zlomkové (např. 16:9) "
-#~ "podobě. Pro nastavení přesného rozlišení zadejte např. 853x480."
-
-#~ msgid "Load keyframes"
-#~ msgstr "Načíst klíčové snímky"
-
-#~ msgid "Reading keyframes from video"
-#~ msgstr "Načítám klíčové snímky z videa"
-
-#~ msgid "Commit"
-#~ msgstr "Potvrdit"
 
 #~ msgid "Exporting PRS"
 #~ msgstr "Exportuji PRS"
@@ -5441,11 +5416,9 @@ msgstr "Kapátko"
 #~ msgid "Writing file"
 #~ msgstr "Zapisuji soubor"
 
-#~ msgid "Recommended Formats"
-#~ msgstr "Doporučené formáty"
-
-#~ msgid "Other supported formats"
-#~ msgstr "Další podporované formáty"
-
-#~ msgid "Video Screenshot Path"
-#~ msgstr "Video Screenshot Path"
+#~ msgid ""
+#~ "Enter aspect ratio in either decimal (e.g. 2.35) or fractional (e.g. "
+#~ "16:9) form. Enter a value like 853x480 to set a specific resolution."
+#~ msgstr ""
+#~ "Vložte poměr stran v desetinné (např. 2.35) nebo zlomkové (např. 16:9) "
+#~ "podobě. Pro nastavení přesného rozlišení zadejte např. 853x480."

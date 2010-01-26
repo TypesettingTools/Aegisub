@@ -1,11 +1,11 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: Aegisub Finnish v1\n"
+"Project-Id-Version: Aegisub Finnish v1.3\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2010-01-26 08:25-0500\n"
 "PO-Revision-Date: \n"
-"Last-Translator: Jeremi Roivas <jeremi.roivas@pp.inet.fi>\n"
-"Language-Team: Anime-Fan <jeremi.roivas@pp.inet.fi>\n"
+"Last-Translator: Jeremi Roivas <jeremi.roivas@turkunet.fi>\n"
+"Language-Team: Anime-Fan <jeremi.roivas@turkunet.fi>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -14,11 +14,11 @@ msgstr ""
 
 #: dialog_export.cpp:61
 msgid "Export"
-msgstr "Viedään toiselle tekstitysformaatille"
+msgstr "Vienti"
 
 #: dialog_export.cpp:64
 msgid "Filters"
-msgstr "Filtterit"
+msgstr "Suodattimet"
 
 #: dialog_export.cpp:95
 msgid "Move up"
@@ -46,7 +46,7 @@ msgstr "Tallenna nimellä..."
 
 #: dialog_export.cpp:202
 msgid "Export subtitles file"
-msgstr "Tallentaa nimellä filtteröidyn tiedoston toiselle tekstitysformaatille"
+msgstr "Tallentaa nimellä toiselle tekstitysformaatille"
 
 #: visual_tool_cross.cpp:80
 msgid "positioning"
@@ -57,6 +57,8 @@ msgid ""
 "You already have timecodes loaded. Would you like to replace them with "
 "timecodes from the video file?"
 msgstr ""
+"Sinulla on aikakoodit jo avattuna. Korvataanko ne tämän videotiedoston "
+"aikakoodeilla?"
 
 #: video_provider_quicktime.cpp:181 video_provider_avs.cpp:271
 #: video_provider_ffmpegsource.cpp:272
@@ -424,7 +426,7 @@ msgstr "Valinta vastaa hakusanaa"
 
 #: dialog_selection.cpp:67
 msgid "Match dialogues/comments"
-msgstr "Vastaa tekstiä tai kommentia"
+msgstr "Vastaa tekstiä/kommenttia"
 
 #: dialog_selection.cpp:70
 msgid "Matches"
@@ -1054,7 +1056,7 @@ msgid ""
 "crashes, glitches and/or movax.\n"
 "Don't touch these unless you know what you're doing."
 msgstr ""
-"VAROITUS: Näiden asetusten muuttaminen saattaa aiheuttaa virheitä, "
+"VAROITUS: Näiden asetusten muuttaminen saattaa aiheuttaa virheitä,\n"
 "kaatumisia, häiriöitä jne. \n"
 "Älä koske asetuksiin ellet tiedä tarkalleen mitä olet tekemässä."
 
@@ -1284,7 +1286,7 @@ msgstr "3: Opaste"
 
 #: dialog_options.cpp:568
 msgid "4: Debug"
-msgstr "4: Debuggaus"
+msgstr "4: Virhe-etsintä"
 
 #: dialog_options.cpp:568
 msgid "5: Trace"
@@ -1460,7 +1462,7 @@ msgstr "29.970 kuvaa/s (NTSC)"
 
 #: subtitle_format.cpp:346
 msgid "29.970 FPS (NTSC with SMPTE dropframe)"
-msgstr ""
+msgstr "29.970 kuvaa/s (NTSC ja SMPTE näkymätön kuva)"
 
 #: subtitle_format.cpp:347
 msgid "30.000 FPS"
@@ -1468,7 +1470,7 @@ msgstr "30.000 kuvaa/s"
 
 #: subtitle_format.cpp:348
 msgid "50.000 FPS (PAL x2)"
-msgstr ""
+msgstr "50.000 kuvaa/s (PAL x2)"
 
 #: subtitle_format.cpp:349
 msgid "59.940 FPS (NTSC x2)"
@@ -1508,38 +1510,38 @@ msgstr "Komentin aloittaja:"
 
 #: ffmpegsource_common.cpp:99
 msgid "Indexing"
-msgstr ""
+msgstr "Jäsennetään"
 
 #: ffmpegsource_common.cpp:100
 msgid "Reading timecodes and frame/sample data"
-msgstr ""
+msgstr "Luetaan aikakoodit ja kuva/näyte dataa"
 
 #: ffmpegsource_common.cpp:157
 msgid "video"
-msgstr ""
+msgstr "Video"
 
 #: ffmpegsource_common.cpp:159
 msgid "audio"
-msgstr ""
+msgstr "Ääniraita"
 
 #: ffmpegsource_common.cpp:162
 #, c-format
 msgid "Track %02d: %s"
-msgstr ""
+msgstr "Ääniraita %02d: %s"
 
 #: ffmpegsource_common.cpp:166
 #, c-format
 msgid "Multiple %s tracks detected, please choose the one you wish to load:"
-msgstr ""
+msgstr "Useita %s ääniraitoja havaittu, valitse niistä yksi:"
 
 #: ffmpegsource_common.cpp:167
 #, c-format
 msgid "Choose %s track"
-msgstr ""
+msgstr "Valitse %s ääniraita"
 
 #: dialog_spellchecker.cpp:91 frame_main.cpp:306
 msgid "Spell Checker"
-msgstr "Kieliasun tarkistus"
+msgstr "Kieliopin tarkistus"
 
 #: dialog_spellchecker.cpp:130
 msgid "original"
@@ -1895,7 +1897,7 @@ msgstr "    Tekstitysformaatin käsittelijä: "
 
 #: dialog_automation.cpp:352
 msgid "Automation Script Info"
-msgstr "Tiedot"
+msgstr "Skriptitiedot"
 
 #: subs_grid.cpp:136
 msgid "Line Number"
@@ -2354,7 +2356,7 @@ msgstr "Skripti valmistunut"
 #, c-format
 msgid "An Automation script failed to load. File name: '%s', error reported:"
 msgstr ""
-"Automaatioskriptin tuominen epäonnistui. Tiedsto: '%s', raportoi "
+"Automaatioskriptin tuominen epäonnistui. Tiedosto: '%s', raportoi "
 "virhesanoman:"
 
 #: auto4_base.cpp:1016
@@ -2364,7 +2366,7 @@ msgstr "Tiedostoa ei tunnistettu Automaatioskriptiksi: %s"
 
 #: auto4_base.cpp:1065
 msgid "File was not recognized as a script"
-msgstr "Tiedostoa ei tunnistettu skriptiksi"
+msgstr "Tiedostoa ei tunnistettu käännöstiedostoksi"
 
 #: dialog_resample.cpp:61
 msgid "Resample resolution"
@@ -2372,7 +2374,7 @@ msgstr "Muuta resoluutiota"
 
 #: dialog_resample.cpp:72
 msgid "Margin offset"
-msgstr "Marginaali asetukset"
+msgstr "Marginaali etäisyys"
 
 #: dialog_resample.cpp:76
 msgid "Symmetrical"
@@ -2398,8 +2400,8 @@ msgstr "Muuta kuvasuhdetta"
 msgid ""
 "Invalid resolution: destination resolution cannot be 0 on either dimension."
 msgstr ""
-"Epäkelpo resoluutio: määrätty resoluutio ei voi olla 0 kummassakaan "
-"ulottovuudessa"
+"Laiton kuvasuhde: määrätty resoluutio ei voi olla 0 kummassakaan "
+"ulottuvuudessa"
 
 #: dialog_resample.cpp:325
 msgid "resolution resampling"
@@ -2568,39 +2570,44 @@ msgid ""
 "If other applications can access the Internet fine, this is probably a "
 "temporary server problem on our end."
 msgstr ""
+"Aegisubin päivitysten tarkastuksessa tapahtui virhe:\n"
+"%s\n"
+"\n"
+"Jos jokin muu ohjelmasi pystyy yhdistämään internetiin hyvin, voi tämä olla "
+"väliaikainen vika meidän palvelimessa."
 
 #: dialog_version_check.cpp:183
 msgid "An unknown error occurred while checking for updates to Aegisub."
-msgstr ""
+msgstr "Aegisubin päivtysten tarkistuksessa ilmaantui tuntematon virhe."
 
 #: dialog_version_check.cpp:332
 msgid "Could not connect to updates server."
-msgstr ""
+msgstr "Ei voitu yhdistää päivtyspalvelimeen."
 
 #: dialog_version_check.cpp:337
 #, c-format
 msgid "HTTP request failed, got HTTP response %d."
-msgstr ""
+msgstr "HTTP pyyntö epäonnistui, saatiin HTTP vastaus %d."
 
 #: dialog_version_check.cpp:409
 msgid "An update to Aegisub was found."
-msgstr ""
+msgstr "Aegisubille on löytynyt päivitys."
 
 #: dialog_version_check.cpp:413
 msgid "Several possible updates to Aegisub were found."
-msgstr ""
+msgstr "Aegisubille on löytynyt useita mahdollisia päivityksiä."
 
 #: dialog_version_check.cpp:417
 msgid "There are no updates to Aegisub."
-msgstr ""
+msgstr "Aiegisubille ei löytynyt päivityksiä."
 
 #: dialog_version_check.cpp:451
 msgid "Version Checker"
-msgstr "Version tarkistaja"
+msgstr "Version Tarkastaja"
 
 #: dialog_version_check.cpp:483
 msgid "Remind me again in a &week"
-msgstr ""
+msgstr "Muistuta uudelleen &viikon päästä"
 
 #: frame_main.cpp:219
 msgid ""
@@ -2704,7 +2711,8 @@ msgstr "Kaappaa videon kohtauksesta alun ja lopun"
 
 #: frame_main.cpp:278
 msgid "Snap selected subtitles so they match current scene start/end"
-msgstr "Kaappaa ajat siten, että ne täsmää nykyisen kohtauksen alkua ja loppua"
+msgstr ""
+"Kaappaa ajat siten, että ne täsmää nykyisen kohtauksen alkua tai loppua"
 
 #: frame_main.cpp:279
 msgid "Shift subtitles to frame"
@@ -2813,7 +2821,7 @@ msgstr "Yliajomerkkien piilotus, kuvio tai näyttö"
 
 #: frame_main.cpp:342 frame_main.cpp:560
 msgid "&Help"
-msgstr "Oh&je"
+msgstr "O&hje"
 
 #: frame_main.cpp:357
 msgid "&New Subtitles"
@@ -2958,7 +2966,7 @@ msgstr "Etsii seuraavan osuman"
 
 #: frame_main.cpp:393
 msgid "Search and &Replace..."
-msgstr "Etsi ja &korvaa..."
+msgstr "Etsi ja &Korvaa..."
 
 #: frame_main.cpp:393
 msgid "Find and replace words in subtitles"
@@ -2974,7 +2982,7 @@ msgstr "&Lisää rivi"
 
 #: frame_main.cpp:403
 msgid "&Styles Manager..."
-msgstr "&Tyylien hallinta..."
+msgstr "&Tyylien Hallinta..."
 
 #: frame_main.cpp:403
 msgid "Open styles manager"
@@ -2998,7 +3006,7 @@ msgstr "Avaa käännösavustajan"
 
 #: frame_main.cpp:406
 msgid "Resample Resolution..."
-msgstr "Muuta resoluutio..."
+msgstr "Muuta resoluutiota..."
 
 #: frame_main.cpp:406
 msgid "Changes resolution and modifies subtitles to conform to change"
@@ -3007,11 +3015,11 @@ msgstr ""
 
 #: frame_main.cpp:407
 msgid "Spe&ll Checker..."
-msgstr "Kie&liasun tarkistus..."
+msgstr "Kie&liopin Tarkastaja..."
 
 #: frame_main.cpp:407
 msgid "Open spell checker"
-msgstr "Avaa kieliasun tarkistuksen"
+msgstr "Avaa kieliopin tarkistajan"
 
 #: frame_main.cpp:413
 msgid "&Before Current"
@@ -3511,22 +3519,19 @@ msgstr "Tallentamattomia muutoksia"
 
 #: frame_main.cpp:909
 msgid "Untitled"
-msgstr ""
+msgstr "Nimetön"
 
 #: frame_main.cpp:919
 msgid "untitled"
-msgstr ""
+msgstr "nimetön"
 
 #: frame_main.cpp:987
 msgid "Do you want to load/unload the associated files?"
-msgstr ""
-"Tahdotko avata tähän tekstitystiedostoon kytketyn videon ja/tai ääniraidan?\n"
-"\n"
-"Kytkennät poistetaan tästä tekstitystiedostosta, jos valitset \"Ei\"."
+msgstr "Tahdotko avata/sulkea tekstitykseen kytketyt tiedostot?"
 
 #: frame_main.cpp:987
 msgid "(Un)Load files?"
-msgstr "Tekstitystiedostoon kytketyt tiedostot... "
+msgstr "(Suljetaanko)Avataanko tiedostot?"
 
 #: frame_main.cpp:1136
 msgid "You have timecodes loaded currently. Would you like to unload them?"
@@ -3547,7 +3552,7 @@ msgid ""
 "\n"
 "Change subtitles resolution to match video?"
 msgstr ""
-"Videon ja tekstitystiedostn resoluutiot poikkeavat toisistaan.\n"
+"Videon ja tekstitystiedoston resoluutiot poikkeavat toisistaan.\n"
 "\n"
 "Videon resoluutio:\t%d x %d\n"
 "Tekstitystiedoston resoluutio:\t%d x %d\n"
@@ -3556,7 +3561,7 @@ msgstr ""
 
 #: frame_main.cpp:1176
 msgid "Resolution mismatch"
-msgstr "Resoluutio poikkeavuus"
+msgstr "Resoluutiot ei vastaa toisiaan"
 
 #: frame_main.cpp:1183
 msgid "Change script resolution"
@@ -3645,7 +3650,7 @@ msgstr ""
 
 #: dialog_properties.cpp:214
 msgid "property changes"
-msgstr "omistus muutokset"
+msgstr "ominaisuuksien muutokset"
 
 #: dialog_translation.cpp:98
 msgid "Original"
@@ -3778,7 +3783,7 @@ msgstr "Reunaviiva"
 
 #: dialog_style_editor.cpp:205
 msgid "Miscellaneous"
-msgstr ""
+msgstr "Sekalaisia"
 
 #: dialog_style_editor.cpp:206
 msgid "Preview"
@@ -4451,7 +4456,7 @@ msgid ""
 "Finished writing to %s.\n"
 msgstr ""
 "\n"
-"%s kirjoittaminen valmistui.\n"
+"%s:iin kirjoittaminen valmistui.\n"
 
 #: dialog_fonts_collector.cpp:502
 msgid "Done. All fonts found."
@@ -5220,7 +5225,7 @@ msgstr "HSV/H"
 
 #: dialog_colorpicker.cpp:640
 msgid "RGB colour"
-msgstr "RGB väri:"
+msgstr "RGB väri"
 
 #: dialog_colorpicker.cpp:645
 msgid "HSL colour"
@@ -5266,20 +5271,59 @@ msgstr "Arvo:"
 msgid "Colour Picker"
 msgstr "Värivalitsin"
 
-#~ msgid "Karaoke"
-#~ msgstr "Karaoke"
+#~ msgid "Load keyframes"
+#~ msgstr "Avaa avainkuvat"
 
-#~ msgid "Cancel Split"
-#~ msgstr "Peruuta"
+#~ msgid "Reading keyframes from video"
+#~ msgstr "Luetaan avainkuvia videosta"
 
-#~ msgid "Accept Split"
+#~ msgid "Check File Associations on Start"
+#~ msgstr "Tarkista tiedostopäätteiden kytkennät käynnistyksessä"
+
+#~ msgid "Crash recovery path:"
+#~ msgstr "Palautustallennuksien polku:"
+
+#~ msgid "Commit"
 #~ msgstr "Hyväksy"
 
-#~ msgid "Join"
-#~ msgstr "Yhdistä"
+#~ msgid "Perl script"
+#~ msgstr "Perl skripti"
 
-#~ msgid "Split"
-#~ msgstr "Tavuta"
+#~ msgid ""
+#~ "Unable to add the automation include path(s) to @INC: the script's code "
+#~ "may not compile or execute properly."
+#~ msgstr ""
+#~ "Ei voitu lisätä automaatioskriptiin polkuja @INC:lle: Skripti ei "
+#~ "välttämättä käänny tai suorita oikein."
+
+#~ msgid "Reloading %s because the file on disk (%s) changed."
+#~ msgstr ""
+#~ "Tuodaan uudestaan %s, koska kovalevyllä ollutta tiedostoa (%s) on "
+#~ "muutettu."
+
+#~ msgid "Saving changes"
+#~ msgstr "Tallennetaan muutokset"
+
+#~ msgid "Please wait, caching fonts..."
+#~ msgstr "Pieni hetki, avataan fontteja tietovarastoon..."
+
+#~ msgid "&Associations..."
+#~ msgstr "&Tiedostokytkennät..."
+
+#~ msgid "Associate file types with Aegisub"
+#~ msgstr "Eri formaattien kytkennät Aegisubille"
+
+#~ msgid "Lo&g Window..."
+#~ msgstr "Lo&ki Ikkuna..."
+
+#~ msgid "Open log window"
+#~ msgstr "Avaa Loki -ikkunan"
+
+#~ msgid "&Resource Files..."
+#~ msgstr "&Resurssitiedostot..."
+
+#~ msgid "Resource files distributed with Aegisub"
+#~ msgstr "Aegisubin mukana julkaistut rersurssitiedosot"
 
 #~ msgid "Not enough parameters for Aegisub::text_extents()"
 #~ msgstr "Ei tarpeeksi parametrejä Aegisubille::text_extents()"
@@ -5309,26 +5353,84 @@ msgstr "Värivalitsin"
 #~ msgid "Trace: "
 #~ msgstr "Jäljitä:"
 
+#~ msgid "Karaoke"
+#~ msgstr "Karaoke"
+
+#~ msgid "Cancel Split"
+#~ msgstr "Peruuta"
+
+#~ msgid "Accept Split"
+#~ msgstr "Hyväksy"
+
+#~ msgid "Join"
+#~ msgstr "Yhdistä"
+
+#~ msgid "Split"
+#~ msgstr "Tavuta"
+
+#~ msgid "Associate file types"
+#~ msgstr "Tiedostotyypien kytkennät"
+
+#~ msgid ""
+#~ "Aegisub can take over the following file types.\n"
+#~ "\n"
+#~ "If you want Aegisub to no longer be associated with a file type, you must "
+#~ "tell another program to take over the file type."
+#~ msgstr ""
+#~ "Aegisub voidaan kytkeä seuraaviin tiedostopäätteisiin.\n"
+#~ "\n"
+#~ "Jos tahdot poistaa tiedoston kytkennän Aegisubiin, sinun pitää kytkeä "
+#~ "tiedostotyyppi jollakin toisella sovelluksella siihen."
+
+#~ msgid ""
+#~ "Aegisub is already associated with all supported file types.\n"
+#~ "\n"
+#~ "If you want Aegisub to no longer be associated with a file type, you must "
+#~ "tell another program to take over the file type."
+#~ msgstr ""
+#~ "Aegisub on kytketty jo kaikkiin tuettuihin tiedostotyyppeihin. \n"
+#~ "\n"
+#~ "Jos tahdot poistaa tiedoston kytkennän Aegisubiin, sinun pitää kytkeä "
+#~ "tiedostotyyppi jollakin toisella sovelluksella siihen."
+
+#~ msgid "Aegisub"
+#~ msgstr "Tietoa Aegisubista"
+
+#~ msgid "Make Aegisub default editor for subtitles?"
+#~ msgstr "Kytketäänkö Aegisub oletus editoriksi teksitystiedostoille?"
+
+#~ msgid ""
+#~ "Aegisub is not your default editor for subtitle files. Do you want to "
+#~ "make Aegisub your default editor for subtitle files?"
+#~ msgstr ""
+#~ "Aegisub ei ole oletus editori tekstiystiedostoille. Tahdotko tehdä "
+#~ "Aegisubista oletus editorin tekstitystiedostoille?"
+
+#~ msgid "Always perform this check when Aegisub starts"
+#~ msgstr "Suorita aina tämä tarkistus, kun Aegisub käynnistyy"
+
+#~ msgid "&Yes"
+#~ msgstr "&Kyllä"
+
+#~ msgid "&No"
+#~ msgstr "&Ei"
+
 #~ msgid "Executing "
 #~ msgstr "Suoritetaan"
 
-#~ msgid "Perl script"
-#~ msgstr "Perl skripti"
+#~ msgid "Exporting PRS"
+#~ msgstr "Viedään PRS "
+
+#~ msgid "Writing file"
+#~ msgstr "Kirjoitetaan tiedostoa"
 
 #~ msgid ""
-#~ "Unable to add the automation include path(s) to @INC: the script's code "
-#~ "may not compile or execute properly."
+#~ "Enter aspect ratio in either decimal (e.g. 2.35) or fractional (e.g. "
+#~ "16:9) form. Enter a value like 853x480 to set a specific resolution."
 #~ msgstr ""
-#~ "Ei voitu lisätä automaatioskriptiin polkuja @INC:lle: Skripti ei "
-#~ "välttämättä käänny tai suorita oikein."
-
-#~ msgid "Reloading %s because the file on disk (%s) changed."
-#~ msgstr ""
-#~ "Tuodaan uudestaan %s, koska kovalevyllä ollutta tiedostoa (%s) on "
-#~ "muutettu."
-
-#~ msgid "Saving changes"
-#~ msgstr "Tallennetaan muutokset"
+#~ "Syötä kuvasuhde joku desimaalisessa (esim 2.35) tai suhteellisessa (esim "
+#~ "16:9) muodossa. Syötä arvo kuten 853:480 aseettaaksesi erityisen "
+#~ "resoluution."
 
 #~ msgid "This build of Aegisub uses the following C/C++ libraries:\n"
 #~ msgstr "Tämä versio Aegisubista käyttää seuraavia C/C++ kirjastoja:\n"
@@ -5391,14 +5493,8 @@ msgstr "Värivalitsin"
 #~ msgid "Save config.dat locally"
 #~ msgstr "Tallenna config.dat paikallisesti"
 
-#~ msgid "Crash recovery path:"
-#~ msgstr "Palautustallennuksien polku:"
-
 #~ msgid "Avisynth renders its own subs"
 #~ msgstr "Avisynth renderöi omien skriptiensä tekstitystiedostot"
-
-#~ msgid "Miscelaneous"
-#~ msgstr "Sekalaista"
 
 #~ msgid "Could not open Internet File system. Aborting.\n"
 #~ msgstr "Ei voitu avata internet tiedostonhallintaa. Keskeytetään.\n"
@@ -5421,46 +5517,11 @@ msgstr "Värivalitsin"
 #~ msgid "No new version has been found.\n"
 #~ msgstr "Aegisubista ei löytynyt uutta versiota.\n"
 
-#~ msgid "&Associations..."
-#~ msgstr "&Tiedostokytkennät..."
-
-#~ msgid "Associate file types with Aegisub"
-#~ msgstr "Eri formaattien kytkennät Aegisubille"
-
-#~ msgid "Lo&g Window..."
-#~ msgstr "Lo&ki Ikkuna..."
-
-#~ msgid "Open log window"
-#~ msgstr "Avaa Loki -ikkunan"
-
 #~ msgid "Recommended Formats"
 #~ msgstr "Suositellut formaatit"
 
 #~ msgid "Other supported formats"
 #~ msgstr "Muut tuetut formaatit"
-
-#~ msgid ""
-#~ "Enter aspect ratio in either decimal (e.g. 2.35) or fractional (e.g. "
-#~ "16:9) form. Enter a value like 853x480 to set a specific resolution."
-#~ msgstr ""
-#~ "Syötä kuvasuhde joku desimaalisessa (esim 2.35) tai suhteellisessa (esim "
-#~ "16:9) muodossa. Syötä arvo kuten 853:480 aseettaaksesi erityisen "
-#~ "resoluution."
-
-#~ msgid "Load keyframes"
-#~ msgstr "Avaa avainkuvat"
-
-#~ msgid "Reading keyframes from video"
-#~ msgstr "Luetaan avainkuvia videosta"
-
-#~ msgid "Commit"
-#~ msgstr "Hyväksy"
-
-#~ msgid "Exporting PRS"
-#~ msgstr "Viedään PRS "
-
-#~ msgid "Writing file"
-#~ msgstr "Kirjoitetaan tiedostoa"
 
 #~ msgid "Video Screenshot Path"
 #~ msgstr "Kuvankaappauspolku"

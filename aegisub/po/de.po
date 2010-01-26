@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Aegisub CVS\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2010-01-26 08:25-0500\n"
-"PO-Revision-Date: 2009-09-02 10:36+0100\n"
+"PO-Revision-Date: 2009-12-31 08:32+0100\n"
 "Last-Translator: Sebastian Billau <sebastian_billau@web.de>\n"
 "Language-Team: David Lamparter <dl@diac24.net>\n"
 "MIME-Version: 1.0\n"
@@ -1470,7 +1470,7 @@ msgstr "29.970 FPS (NTSC)"
 
 #: subtitle_format.cpp:346
 msgid "29.970 FPS (NTSC with SMPTE dropframe)"
-msgstr ""
+msgstr "29.970 FPS (NTSC mit SMPTE Frame)"
 
 #: subtitle_format.cpp:347
 msgid "30.000 FPS"
@@ -1478,7 +1478,7 @@ msgstr "30.000 FPS"
 
 #: subtitle_format.cpp:348
 msgid "50.000 FPS (PAL x2)"
-msgstr ""
+msgstr "50.000 FPS (PAL x2)"
 
 #: subtitle_format.cpp:349
 msgid "59.940 FPS (NTSC x2)"
@@ -1526,26 +1526,26 @@ msgstr "Lese Zeitcodes und Frame-/Sample-Daten"
 
 #: ffmpegsource_common.cpp:157
 msgid "video"
-msgstr ""
+msgstr "Video"
 
 #: ffmpegsource_common.cpp:159
 msgid "audio"
-msgstr ""
+msgstr "Audio"
 
 #: ffmpegsource_common.cpp:162
 #, c-format
 msgid "Track %02d: %s"
-msgstr ""
+msgstr "Titel %02d: %s"
 
 #: ffmpegsource_common.cpp:166
 #, c-format
 msgid "Multiple %s tracks detected, please choose the one you wish to load:"
-msgstr ""
+msgstr "Mehrere Titel %s erkannt, wählen Sie bitte die, die Sie laden möchten:"
 
 #: ffmpegsource_common.cpp:167
 #, c-format
 msgid "Choose %s track"
-msgstr ""
+msgstr "Wähle %s Titel"
 
 #: dialog_spellchecker.cpp:91 frame_main.cpp:306
 msgid "Spell Checker"
@@ -2594,31 +2594,37 @@ msgid ""
 "If other applications can access the Internet fine, this is probably a "
 "temporary server problem on our end."
 msgstr ""
+"Es gab einen Fehler bei der Update-Prüfung für Aegisub:\n"
+"%s\n"
+"Wenn andere Anwendungen auf das Internet zugreifen können, ist dies "
+"wahrscheinlich ein temporäres Server-Problem auf unserer Seite."
 
 #: dialog_version_check.cpp:183
 msgid "An unknown error occurred while checking for updates to Aegisub."
 msgstr ""
+"Es ist ein unbekannter Fehler während der Überprüfung auf Updates für "
+"Aegisub aufgetreten."
 
 #: dialog_version_check.cpp:332
 msgid "Could not connect to updates server."
-msgstr ""
+msgstr "Konnte keine Verbindung zum Update-Server herstellen."
 
 #: dialog_version_check.cpp:337
 #, c-format
 msgid "HTTP request failed, got HTTP response %d."
-msgstr ""
+msgstr "HTTP Anforderung fehlgeschlagen, bekam HTTP-Antwort %d"
 
 #: dialog_version_check.cpp:409
 msgid "An update to Aegisub was found."
-msgstr ""
+msgstr "Ein Update für Aegisub wurde gefunden"
 
 #: dialog_version_check.cpp:413
 msgid "Several possible updates to Aegisub were found."
-msgstr ""
+msgstr "Mehrere mögliche Updates für Aegisub wurden gefunden."
 
 #: dialog_version_check.cpp:417
 msgid "There are no updates to Aegisub."
-msgstr ""
+msgstr "Es gibt keine aktuellen Updates für Aegisub."
 
 #: dialog_version_check.cpp:451
 msgid "Version Checker"
@@ -2626,7 +2632,7 @@ msgstr "Auf neue Version prüfen"
 
 #: dialog_version_check.cpp:483
 msgid "Remind me again in a &week"
-msgstr ""
+msgstr "Mich in einer Woche erneut erinnern"
 
 #: frame_main.cpp:219
 msgid ""
@@ -2776,7 +2782,7 @@ msgstr "Automationsmanager öffnen"
 
 #: frame_main.cpp:297 frame_main.cpp:410
 msgid "Launches ai-chan's \"ASSDraw3\" tool for vector drawing."
-msgstr "Startet ai-chan's \"ASSDraw3\"-Werkzeug für Vektorgrafik."
+msgstr "Startet ai-chan's \"ASSDraw3\"-Werkzeg für Vektorgrafik."
 
 #: frame_main.cpp:300 dialog_shift_times.cpp:72 hotkeys.cpp:393
 msgid "Shift Times"
@@ -3543,11 +3549,11 @@ msgstr "Ungespeicherte Änderungen"
 
 #: frame_main.cpp:909
 msgid "Untitled"
-msgstr ""
+msgstr "Unbenannt"
 
 #: frame_main.cpp:919
 msgid "untitled"
-msgstr ""
+msgstr "unbenannt"
 
 #: frame_main.cpp:987
 msgid "Do you want to load/unload the associated files?"
@@ -5291,20 +5297,58 @@ msgstr "Wert:"
 msgid "Colour Picker"
 msgstr "Farbspektrum"
 
-#~ msgid "Karaoke"
-#~ msgstr "Karaoke"
+#~ msgid "Load keyframes"
+#~ msgstr "Lade Keyframes"
 
-#~ msgid "Cancel Split"
-#~ msgstr "Split abbrechen"
+#~ msgid "Reading keyframes from video"
+#~ msgstr "Lese Keyframes vom Video"
 
-#~ msgid "Accept Split"
-#~ msgstr "Split annehmen"
+#~ msgid "Check File Associations on Start"
+#~ msgstr "Überprüfe Dateiverknüpfungen beim Programmstart"
 
-#~ msgid "Join"
-#~ msgstr "Zusammenfügen"
+#~ msgid "Crash recovery path:"
+#~ msgstr "Ordner für Crash-Wiederherstellung:"
 
-#~ msgid "Split"
-#~ msgstr "Splitten"
+#~ msgid "Commit"
+#~ msgstr "Übernehmen"
+
+#~ msgid "Perl script"
+#~ msgstr "Perl Script"
+
+#~ msgid ""
+#~ "Unable to add the automation include path(s) to @INC: the script's code "
+#~ "may not compile or execute properly."
+#~ msgstr ""
+#~ "Kann den Automatisierungs-Include Pfad nicht zu @INC hinzufügen: Der "
+#~ "Scriptcode kann nicht ordnungsgemäß kompiliert oder ausgeführt werden."
+
+#~ msgid "Reloading %s because the file on disk (%s) changed."
+#~ msgstr ""
+#~ "Lade %s neu, weil sich die Datei auf der Festplatte (%s) geändert hat."
+
+#~ msgid "Saving changes"
+#~ msgstr "Speichere Änderungen"
+
+#~ msgid "Please wait, caching fonts..."
+#~ msgstr "Bitte warten, cache Schriftarten..."
+
+#~ msgid "&Associations..."
+#~ msgstr "Dateierweiterungen"
+
+#~ msgid "Associate file types with Aegisub"
+#~ msgstr "Dateierweiterungen zu Aegisub zuordnen"
+
+#~ msgid "Lo&g Window..."
+#~ msgstr "Logbuchfenster"
+
+#~ msgid "Open log window"
+#~ msgstr "Öffne Logbuchfenster"
+
+#~ msgid "&Resource Files..."
+#~ msgstr "&Resource Dateien..."
+
+#~ msgid "Resource files distributed with Aegisub"
+#~ msgstr "Resource-Dateien mit Aegisub verteilt."
 
 #~ msgid "Not enough parameters for Aegisub::text_extents()"
 #~ msgstr "Nicht genügend Parameter für Aegisub::text_extents()"
@@ -5334,25 +5378,106 @@ msgstr "Farbspektrum"
 #~ msgid "Trace: "
 #~ msgstr "Trace:"
 
+#~ msgid "Karaoke"
+#~ msgstr "Karaoke"
+
+#~ msgid "Cancel Split"
+#~ msgstr "Split abbrechen"
+
+#~ msgid "Accept Split"
+#~ msgstr "Split annehmen"
+
+#~ msgid "Join"
+#~ msgstr "Zusammenfügen"
+
+#~ msgid "Split"
+#~ msgstr "Splitten"
+
+#~ msgid "Associate file types"
+#~ msgstr "Mit Dateitypen verbinden"
+
+#~ msgid ""
+#~ "Aegisub can take over the following file types.\n"
+#~ "\n"
+#~ "If you want Aegisub to no longer be associated with a file type, you must "
+#~ "tell another program to take over the file type."
+#~ msgstr ""
+#~ "Aegisub kann als Standardprogramm für folgende Dateitypen übernommen "
+#~ "werden.\n"
+#~ "\n"
+#~ "Wenn Sie wollen das Aegisub nicht mehr mit dem Dateityp verbunden ist, "
+#~ "müssen Sie diesen Dateityp mit einem anderen Programm verknüpfen."
+
+#~ msgid ""
+#~ "Aegisub is already associated with all supported file types.\n"
+#~ "\n"
+#~ "If you want Aegisub to no longer be associated with a file type, you must "
+#~ "tell another program to take over the file type."
+#~ msgstr ""
+#~ "Aegisub ist bereits mit allen unterstützten Dateitypen zugeordnet.\n"
+#~ "\n"
+#~ "Wenn Sie wollen das Aegisub nicht mehr mit dem Dateityp verbunden ist, "
+#~ "müssen Sie diesen Dateityp mit einem anderen Programm verknüpfen."
+
+#~ msgid "Aegisub"
+#~ msgstr "Aegisub"
+
+#~ msgid "Make Aegisub default editor for subtitles?"
+#~ msgstr "Aegisub zum Standardeditor für Untertitel machen?"
+
+#~ msgid ""
+#~ "Aegisub is not your default editor for subtitle files. Do you want to "
+#~ "make Aegisub your default editor for subtitle files?"
+#~ msgstr ""
+#~ "Aegisub ist momentan nicht als Ihr Standardeditor für Untertiteldateien "
+#~ "festgelegt. Möchten Sie Aegisub zu Ihren Standardeditor für "
+#~ "Untertiteldateien machen?"
+
+#~ msgid "Always perform this check when Aegisub starts"
+#~ msgstr "Bei jedem Start von Aegisub diese Prüfung durchführen"
+
+#~ msgid "&Yes"
+#~ msgstr "&Ja"
+
+#~ msgid "&No"
+#~ msgstr "&Nein"
+
 #~ msgid "Executing "
 #~ msgstr "Ausführen"
 
-#~ msgid "Perl script"
-#~ msgstr "Perl Script"
+#~ msgid "Exporting PRS"
+#~ msgstr "Exportiere PRS"
+
+#~ msgid "Writing file"
+#~ msgstr "Schreibe Datei"
 
 #~ msgid ""
-#~ "Unable to add the automation include path(s) to @INC: the script's code "
-#~ "may not compile or execute properly."
+#~ "Enter aspect ratio in either decimal (e.g. 2.35) or fractional (e.g. "
+#~ "16:9) form. Enter a value like 853x480 to set a specific resolution."
 #~ msgstr ""
-#~ "Kann den Automatisierungs-Include Pfad nicht zu @INC hinzufügen: Der "
-#~ "Scriptcode kann nicht ordnungsgemäß kompiliert oder ausgeführt werden."
+#~ "Seitenverhältnis als Dezimalzahl (z.B. 2.35) oder Verhältnis (z.B. 16:9) "
+#~ "angeben. Für eine bestimmte Auflösung einen Wert wie 853x480 eingeben."
 
-#~ msgid "Reloading %s because the file on disk (%s) changed."
-#~ msgstr ""
-#~ "Lade %s neu, weil sich die Datei auf der Festplatte (%s) geändert hat."
+#~ msgid "Could not open Internet File system. Aborting.\n"
+#~ msgstr "Kann nicht Internet-Dateisystem öffen. Breche ab.\n"
 
-#~ msgid "Saving changes"
-#~ msgstr "Speichere Änderungen"
+#~ msgid "Attempting to open \"%s\"..."
+#~ msgstr "Versuche \"%s\" zu öffnen..."
+
+#~ msgid "Failed.\n"
+#~ msgstr "Fehlgeschlagen.\n"
+
+#~ msgid "OK.\n"
+#~ msgstr "OK.\n"
+
+#~ msgid "New version found!\n"
+#~ msgstr "Neue Version gefunden!\n"
+
+#~ msgid "Please go to the following URL to download it: %s\n"
+#~ msgstr "Für den Download gehen Sie bitte auf folgende Seite: %s\n"
+
+#~ msgid "No new version has been found.\n"
+#~ msgstr "Keine neue Version gefunden.\n"
 
 #~ msgid "This build of Aegisub uses the following C/C++ libraries:\n"
 #~ msgstr ""
@@ -5416,66 +5541,8 @@ msgstr "Farbspektrum"
 #~ msgid "Save config.dat locally"
 #~ msgstr "Speichere config.dat lokal"
 
-#~ msgid "Crash recovery path:"
-#~ msgstr "Ordner für Crash-Wiederherstellung:"
-
 #~ msgid "Avisynth renders its own subs"
 #~ msgstr "Avisynth rendert seine eigenen Untertitel"
-
-#~ msgid "Could not open Internet File system. Aborting.\n"
-#~ msgstr "Kann nicht Internet-Dateisystem öffen. Breche ab.\n"
-
-#~ msgid "Attempting to open \"%s\"..."
-#~ msgstr "Versuche \"%s\" zu öffnen..."
-
-#~ msgid "Failed.\n"
-#~ msgstr "Fehlgeschlagen.\n"
-
-#~ msgid "OK.\n"
-#~ msgstr "OK.\n"
-
-#~ msgid "New version found!\n"
-#~ msgstr "Neue Version gefunden!\n"
-
-#~ msgid "Please go to the following URL to download it: %s\n"
-#~ msgstr "Für den Download gehen Sie bitte auf folgende Seite: %s\n"
-
-#~ msgid "No new version has been found.\n"
-#~ msgstr "Keine neue Version gefunden.\n"
-
-#~ msgid "&Associations..."
-#~ msgstr "Dateierweiterungen"
-
-#~ msgid "Associate file types with Aegisub"
-#~ msgstr "Dateierweiterungen zu Aegisub zuordnen"
-
-#~ msgid "Lo&g Window..."
-#~ msgstr "Logbuchfenster"
-
-#~ msgid "Open log window"
-#~ msgstr "Öffne Logbuchfenster"
-
-#~ msgid ""
-#~ "Enter aspect ratio in either decimal (e.g. 2.35) or fractional (e.g. "
-#~ "16:9) form. Enter a value like 853x480 to set a specific resolution."
-#~ msgstr ""
-#~ "Seitenverhältnis als Dezimalzahl (z.B. 2.35) oder Verhältnis (z.B. 16:9) "
-#~ "angeben. Für eine bestimmte Auflösung einen Wert wie 853x480 eingeben."
-
-#~ msgid "Load keyframes"
-#~ msgstr "Lade Keyframes"
-
-#~ msgid "Reading keyframes from video"
-#~ msgstr "Lese Keyframes vom Video"
-
-#~ msgid "Commit"
-#~ msgstr "Übernehmen"
-
-#~ msgid "Exporting PRS"
-#~ msgstr "Exportiere PRS"
-
-#~ msgid "Writing file"
-#~ msgstr "Schreibe Datei"
 
 #~ msgid " by ArchMage ZeratuL.\n"
 #~ msgstr " by ArchMage ZeratuL.\n"

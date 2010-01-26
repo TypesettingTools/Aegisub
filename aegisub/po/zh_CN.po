@@ -3,8 +3,8 @@ msgstr ""
 "Project-Id-Version: Aegisub v2.1.7\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2010-01-26 08:25-0500\n"
-"PO-Revision-Date: 2009-08-08 20:40+0800\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"PO-Revision-Date: 2010-01-01 03:54+0800\n"
+"Last-Translator: judo <mkboy2@qq.com>\n"
 "Language-Team: LANGUAGE <EMAIL@ADDRESS>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -1437,7 +1437,7 @@ msgstr "29.970 FPS (NTSC)"
 
 #: subtitle_format.cpp:346
 msgid "29.970 FPS (NTSC with SMPTE dropframe)"
-msgstr ""
+msgstr "29.970 FPS (NTSC 和 SMPTE 帧下调)"
 
 #: subtitle_format.cpp:347
 msgid "30.000 FPS"
@@ -1445,7 +1445,7 @@ msgstr "30.000 FPS"
 
 #: subtitle_format.cpp:348
 msgid "50.000 FPS (PAL x2)"
-msgstr ""
+msgstr "50,000 FPS (PAL x2)"
 
 #: subtitle_format.cpp:349
 msgid "59.940 FPS (NTSC x2)"
@@ -1493,26 +1493,26 @@ msgstr "读取时间码和帧/采样数据"
 
 #: ffmpegsource_common.cpp:157
 msgid "video"
-msgstr ""
+msgstr "视频"
 
 #: ffmpegsource_common.cpp:159
 msgid "audio"
-msgstr ""
+msgstr "音频"
 
 #: ffmpegsource_common.cpp:162
 #, c-format
 msgid "Track %02d: %s"
-msgstr ""
+msgstr "追踪 %02d: %s"
 
 #: ffmpegsource_common.cpp:166
 #, c-format
 msgid "Multiple %s tracks detected, please choose the one you wish to load:"
-msgstr ""
+msgstr "发现多条 %s 轨道,请选择您希望装载的那个:"
 
 #: ffmpegsource_common.cpp:167
 #, c-format
 msgid "Choose %s track"
-msgstr ""
+msgstr "选择 %s 追踪"
 
 #: dialog_spellchecker.cpp:91 frame_main.cpp:306
 msgid "Spell Checker"
@@ -2527,31 +2527,35 @@ msgid ""
 "If other applications can access the Internet fine, this is probably a "
 "temporary server problem on our end."
 msgstr ""
+"检查Aegisub更新出错:\n"
+"%s\n"
+"\n"
+"如果其他应用惯例也许通常使用互联网, 这个一般问题在我们的终端临时服务器."
 
 #: dialog_version_check.cpp:183
 msgid "An unknown error occurred while checking for updates to Aegisub."
-msgstr ""
+msgstr "当检查Aegisub更新时, 不知明的错误出现."
 
 #: dialog_version_check.cpp:332
 msgid "Could not connect to updates server."
-msgstr ""
+msgstr "不可能连接更新的服务器."
 
 #: dialog_version_check.cpp:337
 #, c-format
 msgid "HTTP request failed, got HTTP response %d."
-msgstr ""
+msgstr "HTTP请求失败, 得到HTTP回应 %d."
 
 #: dialog_version_check.cpp:409
 msgid "An update to Aegisub was found."
-msgstr ""
+msgstr "发现Aegisub更新."
 
 #: dialog_version_check.cpp:413
 msgid "Several possible updates to Aegisub were found."
-msgstr ""
+msgstr "发现几个Aegisub更新."
 
 #: dialog_version_check.cpp:417
 msgid "There are no updates to Aegisub."
-msgstr ""
+msgstr "Aegisub没有更新."
 
 #: dialog_version_check.cpp:451
 msgid "Version Checker"
@@ -2559,7 +2563,7 @@ msgstr "版本检查"
 
 #: dialog_version_check.cpp:483
 msgid "Remind me again in a &week"
-msgstr ""
+msgstr "下个星期再将提醒我(&W)"
 
 #: frame_main.cpp:219
 msgid ""
@@ -3459,11 +3463,11 @@ msgstr "未保存的更改"
 
 #: frame_main.cpp:909
 msgid "Untitled"
-msgstr ""
+msgstr "无标题"
 
 #: frame_main.cpp:919
 msgid "untitled"
-msgstr ""
+msgstr "无标题"
 
 #: frame_main.cpp:987
 msgid "Do you want to load/unload the associated files?"
@@ -5175,20 +5179,55 @@ msgstr "浓度:"
 msgid "Colour Picker"
 msgstr "颜色选择器"
 
-#~ msgid "Karaoke"
-#~ msgstr "卡拉OK"
+#~ msgid "Load keyframes"
+#~ msgstr "载入关键帧"
 
-#~ msgid "Cancel Split"
-#~ msgstr "取消分割"
+#~ msgid "Reading keyframes from video"
+#~ msgstr "从视频中读取关键帧"
 
-#~ msgid "Accept Split"
-#~ msgstr "接受分割"
+#~ msgid "Check File Associations on Start"
+#~ msgstr "在开始检查文件关联"
 
-#~ msgid "Join"
-#~ msgstr "合并"
+#~ msgid "Crash recovery path:"
+#~ msgstr "崩溃恢复路径:"
 
-#~ msgid "Split"
-#~ msgstr "分割"
+#~ msgid "Commit"
+#~ msgstr "提交"
+
+#~ msgid "Perl script"
+#~ msgstr "Perl 脚本"
+
+#~ msgid ""
+#~ "Unable to add the automation include path(s) to @INC: the script's code "
+#~ "may not compile or execute properly."
+#~ msgstr "无法添加自动化脚本路径 @INC: 该脚本代码可能不兼容或未合适执行."
+
+#~ msgid "Reloading %s because the file on disk (%s) changed."
+#~ msgstr "重新载入 %s 由于该文件于磁盘 (%s) 被更改."
+
+#~ msgid "Saving changes"
+#~ msgstr "保存更改"
+
+#~ msgid "Please wait, caching fonts..."
+#~ msgstr "请等待,贮藏字体..."
+
+#~ msgid "&Associations..."
+#~ msgstr "关联(&A)…"
+
+#~ msgid "Associate file types with Aegisub"
+#~ msgstr "关联到Aegisub的文件类型"
+
+#~ msgid "Lo&g Window..."
+#~ msgstr "记录窗口(&G)…"
+
+#~ msgid "Open log window"
+#~ msgstr "打开记录窗口"
+
+#~ msgid "&Resource Files..."
+#~ msgstr "资源文件(&R)..."
+
+#~ msgid "Resource files distributed with Aegisub"
+#~ msgstr "\"Aegisub资源文件分布"
 
 #~ msgid "Not enough parameters for Aegisub::text_extents()"
 #~ msgstr "参数不足对于Aegisub::text_extents()"
@@ -5216,22 +5255,101 @@ msgstr "颜色选择器"
 #~ msgid "Trace: "
 #~ msgstr "回溯:"
 
+#~ msgid "Karaoke"
+#~ msgstr "卡拉OK"
+
+#~ msgid "Cancel Split"
+#~ msgstr "取消分割"
+
+#~ msgid "Accept Split"
+#~ msgstr "接受分割"
+
+#~ msgid "Join"
+#~ msgstr "合并"
+
+#~ msgid "Split"
+#~ msgstr "分割"
+
+#~ msgid "Associate file types"
+#~ msgstr "关联文件类型"
+
+#~ msgid ""
+#~ "Aegisub can take over the following file types.\n"
+#~ "\n"
+#~ "If you want Aegisub to no longer be associated with a file type, you must "
+#~ "tell another program to take over the file type."
+#~ msgstr ""
+#~ "Aegisub 能接收以下类型. \n"
+#~ "\n"
+#~ "如果您要Aegisub不再同文件类型关联在一起,您必须告诉另一个程式接收文件类型."
+
+#~ msgid ""
+#~ "Aegisub is already associated with all supported file types.\n"
+#~ "\n"
+#~ "If you want Aegisub to no longer be associated with a file type, you must "
+#~ "tell another program to take over the file type."
+#~ msgstr ""
+#~ "Aegisub已经同所有支持的文件类型联系在一起.\n"
+#~ "\n"
+#~ "如果您要Aegisub不再同文件类型关联在一起,您必须告诉另一个程式接收文件类型."
+
+#~ msgid "Aegisub"
+#~ msgstr "Aegisub"
+
+#~ msgid "Make Aegisub default editor for subtitles?"
+#~ msgstr "设定Aegisub为指定字幕编辑器"
+
+#~ msgid ""
+#~ "Aegisub is not your default editor for subtitle files. Do you want to "
+#~ "make Aegisub your default editor for subtitle files?"
+#~ msgstr ""
+#~ "Aegisub不是您的预定题文件编辑器. 您是否想要设定Aegisub为指定字幕编辑器？"
+
+#~ msgid "Always perform this check when Aegisub starts"
+#~ msgstr "永远进行这个检查当Aegisub启动 "
+
+#~ msgid "&Yes"
+#~ msgstr "是(&Y)"
+
+#~ msgid "&No"
+#~ msgstr "否(&N)"
+
 #~ msgid "Executing "
 #~ msgstr "执行"
 
-#~ msgid "Perl script"
-#~ msgstr "Perl 脚本"
+#~ msgid "Exporting PRS"
+#~ msgstr "导出 PRS"
+
+#~ msgid "Writing file"
+#~ msgstr "写入文件"
 
 #~ msgid ""
-#~ "Unable to add the automation include path(s) to @INC: the script's code "
-#~ "may not compile or execute properly."
-#~ msgstr "无法添加自动化脚本路径 @INC: 该脚本代码可能不兼容或未合适执行."
+#~ "Enter aspect ratio in either decimal (e.g. 2.35) or fractional (e.g. "
+#~ "16:9) form. Enter a value like 853x480 to set a specific resolution."
+#~ msgstr ""
+#~ "以小数(例如 2.35)或是比数(例如16:9)输入纵横比.输入像853x480这样的数值来设"
+#~ "置一个特定的分辨率."
 
-#~ msgid "Reloading %s because the file on disk (%s) changed."
-#~ msgstr "重新载入 %s 由于该文件于磁盘 (%s) 被更改."
+#~ msgid "Could not open Internet File system. Aborting.\n"
+#~ msgstr "无法打开网络文件系统. 操作取消.\n"
 
-#~ msgid "Saving changes"
-#~ msgstr "保存更改"
+#~ msgid "Attempting to open \"%s\"..."
+#~ msgstr "尝试打开 \"%s\"..."
+
+#~ msgid "Failed.\n"
+#~ msgstr "失败\n"
+
+#~ msgid "OK.\n"
+#~ msgstr "OK.\n"
+
+#~ msgid "New version found!\n"
+#~ msgstr "发现新版本!\n"
+
+#~ msgid "Please go to the following URL to download it: %s\n"
+#~ msgstr "请到下列URL地址下载: %s\n"
+
+#~ msgid "No new version has been found.\n"
+#~ msgstr "没有发现新版本\n"
 
 #~ msgid "This build of Aegisub uses the following C/C++ libraries:\n"
 #~ msgstr "本版本Aegisub使用如下的 C/C++ 链接库:\n"
@@ -5292,63 +5410,5 @@ msgstr "颜色选择器"
 #~ msgid "Save config.dat locally"
 #~ msgstr "本地保存 config.dat"
 
-#~ msgid "Crash recovery path:"
-#~ msgstr "崩溃恢复路径:"
-
 #~ msgid "Avisynth renders its own subs"
 #~ msgstr "Avisynth 渲染其字幕"
-
-#~ msgid "Could not open Internet File system. Aborting.\n"
-#~ msgstr "无法打开网络文件系统. 操作取消.\n"
-
-#~ msgid "Attempting to open \"%s\"..."
-#~ msgstr "尝试打开 \"%s\"..."
-
-#~ msgid "Failed.\n"
-#~ msgstr "失败\n"
-
-#~ msgid "OK.\n"
-#~ msgstr "OK.\n"
-
-#~ msgid "New version found!\n"
-#~ msgstr "发现新版本!\n"
-
-#~ msgid "Please go to the following URL to download it: %s\n"
-#~ msgstr "请到下列URL地址下载: %s\n"
-
-#~ msgid "No new version has been found.\n"
-#~ msgstr "没有发现新版本\n"
-
-#~ msgid "&Associations..."
-#~ msgstr "关联(&A)…"
-
-#~ msgid "Associate file types with Aegisub"
-#~ msgstr "关联到Aegisub的文件类型"
-
-#~ msgid "Lo&g Window..."
-#~ msgstr "记录窗口(&G)…"
-
-#~ msgid "Open log window"
-#~ msgstr "打开记录窗口"
-
-#~ msgid ""
-#~ "Enter aspect ratio in either decimal (e.g. 2.35) or fractional (e.g. "
-#~ "16:9) form. Enter a value like 853x480 to set a specific resolution."
-#~ msgstr ""
-#~ "以小数(例如 2.35)或是比数(例如16:9)输入纵横比.输入像853x480这样的数值来设"
-#~ "置一个特定的分辨率."
-
-#~ msgid "Load keyframes"
-#~ msgstr "载入关键帧"
-
-#~ msgid "Reading keyframes from video"
-#~ msgstr "从视频中读取关键帧"
-
-#~ msgid "Commit"
-#~ msgstr "提交"
-
-#~ msgid "Exporting PRS"
-#~ msgstr "导出 PRS"
-
-#~ msgid "Writing file"
-#~ msgstr "写入文件"

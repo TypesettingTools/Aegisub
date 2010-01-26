@@ -6,11 +6,11 @@ msgstr ""
 "Project-Id-Version: aegisub 2\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2010-01-26 08:25-0500\n"
-"PO-Revision-Date: 2009-04-26 22:58+0200\n"
+"PO-Revision-Date: 2010-01-02 06:16+0200\n"
 "Last-Translator: z0rc <z0rc3r@gmail.com>\n"
 "Language-Team: #FT & Kuroyami <yukos@haruhi.ru>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-Language: Russian\n"
 "X-Poedit-Country: RUSSIAN FEDERATION\n"
@@ -1452,7 +1452,7 @@ msgstr "15.000 кадр/с"
 
 #: subtitle_format.cpp:341
 msgid "23.976 FPS (Decimated NTSC)"
-msgstr "23.976 кадр/с (Decimated NTSC)"
+msgstr "23.976 кадр/с (Прорежённый NTSC)"
 
 #: subtitle_format.cpp:342
 msgid "24.000 FPS (FILM)"
@@ -1468,7 +1468,7 @@ msgstr "29.970 кадр/с (NTSC)"
 
 #: subtitle_format.cpp:346
 msgid "29.970 FPS (NTSC with SMPTE dropframe)"
-msgstr ""
+msgstr "29.970 кадр/с (NTSC с SMPTE пропуском кадров)"
 
 #: subtitle_format.cpp:347
 msgid "30.000 FPS"
@@ -1476,7 +1476,7 @@ msgstr "30.000 кадр/с"
 
 #: subtitle_format.cpp:348
 msgid "50.000 FPS (PAL x2)"
-msgstr ""
+msgstr "50.000 кадр/с (PAL x2)"
 
 #: subtitle_format.cpp:349
 msgid "59.940 FPS (NTSC x2)"
@@ -1524,26 +1524,28 @@ msgstr "Чтение временных меток и кадров"
 
 #: ffmpegsource_common.cpp:157
 msgid "video"
-msgstr ""
+msgstr "видео"
 
 #: ffmpegsource_common.cpp:159
 msgid "audio"
-msgstr ""
+msgstr "аудио"
 
 #: ffmpegsource_common.cpp:162
 #, c-format
 msgid "Track %02d: %s"
-msgstr ""
+msgstr "Дорожка %02d: %s"
 
 #: ffmpegsource_common.cpp:166
 #, c-format
 msgid "Multiple %s tracks detected, please choose the one you wish to load:"
 msgstr ""
+"Обнаружено несколько %s дорожек, пожалуйста выберите ту, которую хотите "
+"загрузить:"
 
 #: ffmpegsource_common.cpp:167
 #, c-format
 msgid "Choose %s track"
-msgstr ""
+msgstr "Выберите %s дорожку"
 
 #: dialog_spellchecker.cpp:91 frame_main.cpp:306
 msgid "Spell Checker"
@@ -1634,7 +1636,7 @@ msgstr "Пусто"
 
 #: frame_main_events.cpp:438 frame_main.cpp:383 subs_edit_ctrl.cpp:979
 msgid "&Undo"
-msgstr "Отменить"
+msgstr "&Отменить"
 
 #: frame_main_events.cpp:439 frame_main.cpp:383
 msgid "Undoes last action"
@@ -1642,7 +1644,7 @@ msgstr "Отменяет последнее действие"
 
 #: frame_main_events.cpp:441 frame_main.cpp:384
 msgid "&Redo"
-msgstr "Повторить"
+msgstr "&Повторить"
 
 #: frame_main_events.cpp:442 frame_main.cpp:384
 msgid "Redoes last action"
@@ -1800,28 +1802,28 @@ msgstr "Менеджер автоматизации"
 
 #: dialog_automation.cpp:73
 msgid "&Add"
-msgstr "Добавить"
+msgstr "&Добавить"
 
 #: dialog_automation.cpp:74
 msgid "&Remove"
-msgstr "Удалить"
+msgstr "&Удалить"
 
 #: dialog_automation.cpp:75
 msgid "Re&load"
-msgstr "Перезагрузить"
+msgstr "&Перезагрузить"
 
 #: dialog_automation.cpp:76
 msgid "Show &Info"
-msgstr "Показать информацию"
+msgstr "Показать &информацию"
 
 #: dialog_automation.cpp:77
 msgid "Re&scan Autoload Dir"
-msgstr "Обновить директорию автозагрузки"
+msgstr "&Обновить директорию автозагрузки"
 
 #: dialog_automation.cpp:78 dialog_version_check.cpp:485
 #: dialog_attachments.cpp:86
 msgid "&Close"
-msgstr "Закрыть"
+msgstr "&Закрыть"
 
 #: dialog_automation.cpp:82
 msgid "Name"
@@ -1935,7 +1937,7 @@ msgstr "Верт"
 
 #: subs_grid.cpp:169
 msgid "&Insert (before)"
-msgstr "Вставить (перед)"
+msgstr "&Вставить (перед)"
 
 #: subs_grid.cpp:170
 msgid "Insert (after)"
@@ -1951,7 +1953,7 @@ msgstr "Вставить по времени видео (после)"
 
 #: subs_grid.cpp:185
 msgid "&Duplicate"
-msgstr "Дублировать"
+msgstr "&Дублировать"
 
 #: subs_grid.cpp:185 frame_main.cpp:418
 msgid "Duplicate the selected lines"
@@ -1959,7 +1961,7 @@ msgstr "Дублирует выделенные события"
 
 #: subs_grid.cpp:186
 msgid "&Duplicate and shift by 1 frame"
-msgstr "Дублировать и сдвинуть на 1 кадр"
+msgstr "&Дублировать и сдвинуть на 1 кадр"
 
 #: subs_grid.cpp:186 frame_main.cpp:419
 msgid "Duplicate lines and shift by one frame"
@@ -1975,7 +1977,7 @@ msgstr "Использует тайминг караоке, чтобы разб�
 
 #: subs_grid.cpp:191
 msgid "&Swap"
-msgstr "Обменять"
+msgstr "Об&менять"
 
 #: subs_grid.cpp:191 frame_main.cpp:434
 msgid "Swaps the two selected lines"
@@ -1983,7 +1985,7 @@ msgstr "Обменивает два выбранных события"
 
 #: subs_grid.cpp:195
 msgid "&Join (concatenate)"
-msgstr "Объединить"
+msgstr "&Объединить"
 
 #: subs_grid.cpp:195 frame_main.cpp:427
 msgid "Joins selected lines in a single one, concatenating text together"
@@ -2012,7 +2014,7 @@ msgstr "Объединяет выбранные события в одно, ра
 
 #: subs_grid.cpp:201
 msgid "&Make times continuous (change start)"
-msgstr "Сделать непрерывным (изменить начало)"
+msgstr "Сделать &непрерывным (изменить начало)"
 
 #: subs_grid.cpp:201 frame_main.cpp:455
 msgid "Changes times of subs so start times begin on previous's end time"
@@ -2022,7 +2024,7 @@ msgstr ""
 
 #: subs_grid.cpp:202
 msgid "&Make times continuous (change end)"
-msgstr "Сделать непрерывным (изменить конец)"
+msgstr "Сделать &непрерывным (изменить конец)"
 
 #: subs_grid.cpp:202 frame_main.cpp:456
 msgid "Changes times of subs so end times begin on next's start time"
@@ -2048,7 +2050,7 @@ msgstr "Создать аудиофайл на основе выделения"
 
 #: subs_grid.cpp:216 timeedit_ctrl.cpp:345 subs_edit_ctrl.cpp:982
 msgid "&Copy"
-msgstr "Копировать"
+msgstr "&Копировать"
 
 #: subs_grid.cpp:216
 msgid "Copies selected lines to clipboard"
@@ -2056,7 +2058,7 @@ msgstr "Копирует выбранные события в буфер обм�
 
 #: subs_grid.cpp:217
 msgid "C&ut"
-msgstr "Вырезать"
+msgstr "&Вырезать"
 
 #: subs_grid.cpp:217
 msgid "Cuts selected lines to clipboard"
@@ -2064,7 +2066,7 @@ msgstr "Вырезает выбранные события в буфер обм�
 
 #: subs_grid.cpp:218 timeedit_ctrl.cpp:346 subs_edit_ctrl.cpp:983
 msgid "&Paste"
-msgstr "Вставить"
+msgstr "В&ставить"
 
 #: subs_grid.cpp:218
 msgid "Paste lines from clipboard"
@@ -2572,31 +2574,36 @@ msgid ""
 "If other applications can access the Internet fine, this is probably a "
 "temporary server problem on our end."
 msgstr ""
+"Произошла ошибка при проверке обновлений Aegisub:\n"
+"%s\n"
+"\n"
+"Если у других приложений нет проблем с доступом к Интернет, то скорее всего "
+"это временная проблема с нашей стороны."
 
 #: dialog_version_check.cpp:183
 msgid "An unknown error occurred while checking for updates to Aegisub."
-msgstr ""
+msgstr "Произошла неизвестная ошибка при проверке обновлений Aegisub."
 
 #: dialog_version_check.cpp:332
 msgid "Could not connect to updates server."
-msgstr ""
+msgstr "Невозможно подключиться к северу обновлений."
 
 #: dialog_version_check.cpp:337
 #, c-format
 msgid "HTTP request failed, got HTTP response %d."
-msgstr ""
+msgstr "Ошибка HTTP запроса, получен ответ HTTP %d."
 
 #: dialog_version_check.cpp:409
 msgid "An update to Aegisub was found."
-msgstr ""
+msgstr "Было найдено обновление Aegisub."
 
 #: dialog_version_check.cpp:413
 msgid "Several possible updates to Aegisub were found."
-msgstr ""
+msgstr "Было найдено несколько обновлений Aegisub."
 
 #: dialog_version_check.cpp:417
 msgid "There are no updates to Aegisub."
-msgstr ""
+msgstr "Обновлений Aegisub нет."
 
 #: dialog_version_check.cpp:451
 msgid "Version Checker"
@@ -2604,7 +2611,7 @@ msgstr "Проверка обновлений"
 
 #: dialog_version_check.cpp:483
 msgid "Remind me again in a &week"
-msgstr ""
+msgstr "Напомнить через &неделю"
 
 #: frame_main.cpp:219
 msgid ""
@@ -2709,7 +2716,7 @@ msgstr "Подгон субтитров к сцене"
 #: frame_main.cpp:278
 msgid "Snap selected subtitles so they match current scene start/end"
 msgstr ""
-"Установка времени выделенных событий так, что она совпадёт с текущей сценой"
+"Установка времени выделенных событий так, что оно совпадёт с текущей сценой"
 
 #: frame_main.cpp:279
 msgid "Shift subtitles to frame"
@@ -2817,15 +2824,15 @@ msgstr "Переключить режим показа тегов"
 
 #: frame_main.cpp:342 frame_main.cpp:560
 msgid "&Help"
-msgstr "Помощь"
+msgstr "&Помощь"
 
 #: frame_main.cpp:357
 msgid "&New Subtitles"
-msgstr "Новые субтитры"
+msgstr "&Новые субтитры"
 
 #: frame_main.cpp:358
 msgid "&Open Subtitles..."
-msgstr "Открыть субтитры"
+msgstr "&Открыть субтитры"
 
 #: frame_main.cpp:358
 msgid "Opens a subtitles file"
@@ -2833,7 +2840,7 @@ msgstr "Открывает файл субтитров"
 
 #: frame_main.cpp:359
 msgid "&Open Subtitles with Charset..."
-msgstr "Открыть субтитры в кодировке..."
+msgstr "&Открыть субтитры в кодировке..."
 
 #: frame_main.cpp:359
 msgid "Opens a subtitles file with a specific charset"
@@ -2841,7 +2848,7 @@ msgstr "Открывает субтитры в заданной кодировк
 
 #: frame_main.cpp:360
 msgid "&Save Subtitles"
-msgstr "Сохранить субтитры"
+msgstr "&Сохранить субтитры"
 
 #: frame_main.cpp:360
 msgid "Saves subtitles"
@@ -2870,7 +2877,7 @@ msgstr "Недавние"
 
 #: frame_main.cpp:369
 msgid "&Properties..."
-msgstr "Свойства..."
+msgstr "&Свойства..."
 
 #: frame_main.cpp:369
 msgid "Open script properties window"
@@ -2878,7 +2885,7 @@ msgstr "Открыть окно свойств скрипта"
 
 #: frame_main.cpp:370
 msgid "&Attachments..."
-msgstr "Прикреплённые файлы..."
+msgstr "Прикреплённые &файлы..."
 
 #: frame_main.cpp:370
 msgid "Open the attachment list"
@@ -2886,7 +2893,7 @@ msgstr "Открывает список прикреплённых файлов"
 
 #: frame_main.cpp:371
 msgid "&Fonts Collector..."
-msgstr "Сборщик шрифтов..."
+msgstr "Сборщик &шрифтов..."
 
 #: frame_main.cpp:371
 msgid "Open fonts collector"
@@ -2902,7 +2909,7 @@ msgstr "Открывает новое окно приложения"
 
 #: frame_main.cpp:377
 msgid "E&xit"
-msgstr "Выход"
+msgstr "&Выход"
 
 #: frame_main.cpp:377
 msgid "Exit the application"
@@ -2946,7 +2953,7 @@ msgstr "Вставляет субтитры поверх других"
 
 #: frame_main.cpp:391
 msgid "&Find..."
-msgstr "Найти..."
+msgstr "&Найти..."
 
 #: frame_main.cpp:391
 msgid "Find words in subtitles"
@@ -2970,15 +2977,15 @@ msgstr "Ищет и заменяеть символы в субтитрах"
 
 #: frame_main.cpp:394
 msgid "&Edit"
-msgstr "Правка"
+msgstr "&Правка"
 
 #: frame_main.cpp:399
 msgid "&Insert Lines"
-msgstr "Вставить события"
+msgstr "&Вставить события"
 
 #: frame_main.cpp:403
 msgid "&Styles Manager..."
-msgstr "Менеджер стилей..."
+msgstr "Менеджер &стилей..."
 
 #: frame_main.cpp:403
 msgid "Open styles manager"
@@ -2986,7 +2993,7 @@ msgstr "Открыть менеджер стилей"
 
 #: frame_main.cpp:404
 msgid "St&yling Assistant..."
-msgstr "Ассистент стиля..."
+msgstr "&Ассистент стиля..."
 
 #: frame_main.cpp:404
 msgid "Open styling assistant"
@@ -2994,7 +3001,7 @@ msgstr "Открыть ассистент стилей"
 
 #: frame_main.cpp:405
 msgid "&Translation Assistant..."
-msgstr "Ассистент перевода..."
+msgstr "Ассистент &перевода..."
 
 #: frame_main.cpp:405
 msgid "Open translation assistant"
@@ -3010,7 +3017,7 @@ msgstr "Изменяет разрешение и модифицирует скр
 
 #: frame_main.cpp:407
 msgid "Spe&ll Checker..."
-msgstr "Проверка орфографии..."
+msgstr "Проверка &орфографии..."
 
 #: frame_main.cpp:407
 msgid "Open spell checker"
@@ -3018,7 +3025,7 @@ msgstr "Открывает проверку орфографии"
 
 #: frame_main.cpp:413
 msgid "&Before Current"
-msgstr "Перед текущим"
+msgstr "&Перед текущим"
 
 #: frame_main.cpp:413
 msgid "Inserts a line before current"
@@ -3026,7 +3033,7 @@ msgstr "Вставляет событие перед текущим"
 
 #: frame_main.cpp:414
 msgid "&After Current"
-msgstr "После текущего"
+msgstr "П&осле текущего"
 
 #: frame_main.cpp:414
 msgid "Inserts a line after current"
@@ -3050,11 +3057,11 @@ msgstr "Вставляет событие после текущего по вр�
 
 #: frame_main.cpp:418
 msgid "&Duplicate Lines"
-msgstr "Дублировать события"
+msgstr "&Дублировать события"
 
 #: frame_main.cpp:419
 msgid "&Duplicate and Shift by 1 Frame"
-msgstr "Дублировать и сдвинуть на 1 кадр"
+msgstr "&Дублировать и сдвинуть на 1 кадр"
 
 #: frame_main.cpp:420
 msgid "Delete Lines"
@@ -3066,15 +3073,15 @@ msgstr "Объединить события"
 
 #: frame_main.cpp:427
 msgid "&Concatenate"
-msgstr "Объединить"
+msgstr "&Объединить"
 
 #: frame_main.cpp:428
 msgid "Keep &First"
-msgstr "Сохранить первое"
+msgstr "Сохранить &первое"
 
 #: frame_main.cpp:429
 msgid "As &Karaoke"
-msgstr "Как караоке"
+msgstr "Как &караоке"
 
 #: frame_main.cpp:429
 msgid "Joins selected lines in a single one, as karaoke"
@@ -3098,11 +3105,11 @@ msgstr "Выбор событий по заданному критерию"
 
 #: frame_main.cpp:436
 msgid "&Subtitles"
-msgstr "Субтитры"
+msgstr "&Субтитры"
 
 #: frame_main.cpp:440
 msgid "S&hift Times..."
-msgstr "Сдвиг по времени..."
+msgstr "С&двиг по времени..."
 
 #: frame_main.cpp:440
 msgid "Shift subtitles by time or frames"
@@ -3171,19 +3178,19 @@ msgstr "Сделать тайминг непрерывным"
 
 #: frame_main.cpp:455
 msgid "Change &Start"
-msgstr "Изменить начало"
+msgstr "Изменить &начало"
 
 #: frame_main.cpp:456
 msgid "Change &End"
-msgstr "Изменить конец"
+msgstr "Изменить &конец"
 
 #: frame_main.cpp:458
 msgid "&Timing"
-msgstr "Тайминг"
+msgstr "&Тайминг"
 
 #: frame_main.cpp:462
 msgid "&Open Video..."
-msgstr "Oткрыть видео..."
+msgstr "&Oткрыть видео..."
 
 #: frame_main.cpp:462
 msgid "Opens a video file"
@@ -3191,7 +3198,7 @@ msgstr "Открывает видеофайл"
 
 #: frame_main.cpp:463
 msgid "&Close Video"
-msgstr "Закрыть видео"
+msgstr "&Закрыть видео"
 
 #: frame_main.cpp:463
 msgid "Closes the currently open video file"
@@ -3291,7 +3298,7 @@ msgstr "Изменить соотношение сторон"
 
 #: frame_main.cpp:496
 msgid "&Default"
-msgstr "По умолчанию"
+msgstr "По &умолчанию"
 
 #: frame_main.cpp:496
 msgid "Leave video on original aspect ratio"
@@ -3299,7 +3306,7 @@ msgstr "Оставить соотношение сторон по умолчан
 
 #: frame_main.cpp:497
 msgid "&Fullscreen (4:3)"
-msgstr "Полноэкранное (4:3)"
+msgstr "&Полноэкранное (4:3)"
 
 #: frame_main.cpp:497
 msgid "Forces video to 4:3 aspect ratio"
@@ -3307,7 +3314,7 @@ msgstr "Установить соотношение 4:3"
 
 #: frame_main.cpp:498
 msgid "&Widescreen (16:9)"
-msgstr "Широкоэкранное (16:9)"
+msgstr "&Широкоэкранное (16:9)"
 
 #: frame_main.cpp:498
 msgid "Forces video to 16:9 aspect ratio"
@@ -3315,7 +3322,7 @@ msgstr "Установить соотношение 16:9"
 
 #: frame_main.cpp:499
 msgid "&Cinematic (2.35)"
-msgstr "Кинематографическое (2.35)"
+msgstr "&Кинематографическое (2.35)"
 
 #: frame_main.cpp:499
 msgid "Forces video to 2.35 aspect ratio"
@@ -3341,7 +3348,7 @@ msgstr "Границы, не отображаемые на ЭЛТ-телевиз
 
 #: frame_main.cpp:506
 msgid "&Jump to..."
-msgstr "Перейти к..."
+msgstr "&Перейти к..."
 
 #: frame_main.cpp:506
 msgid "Jump to frame or time"
@@ -3357,11 +3364,11 @@ msgstr "Перемотка видео к концу"
 
 #: frame_main.cpp:509
 msgid "&Video"
-msgstr "Видео"
+msgstr "&Видео"
 
 #: frame_main.cpp:513
 msgid "&Open Audio File..."
-msgstr "Oткрыть аудиофайл..."
+msgstr "&Oткрыть аудиофайл..."
 
 #: frame_main.cpp:513
 msgid "Opens an audio file"
@@ -3369,7 +3376,7 @@ msgstr "Открывает аудиофайл"
 
 #: frame_main.cpp:514
 msgid "Open Audio from &Video"
-msgstr "Открыть аудио из видео"
+msgstr "Открыть аудио из &видео"
 
 #: frame_main.cpp:514
 msgid "Opens the audio from the current video file"
@@ -3377,7 +3384,7 @@ msgstr "Открывает аудио из текущего видеофайла
 
 #: frame_main.cpp:515
 msgid "&Close Audio"
-msgstr "Закрыть аудио"
+msgstr "&Закрыть аудио"
 
 #: frame_main.cpp:515
 msgid "Closes the currently open audio file"
@@ -3385,11 +3392,11 @@ msgstr "Закрывает текущий аудиофайл"
 
 #: frame_main.cpp:523
 msgid "&Audio"
-msgstr "Aудио"
+msgstr "&Aудио"
 
 #: frame_main.cpp:528
 msgid "&Automation..."
-msgstr "Aвтоматизация..."
+msgstr "&Aвтоматизация..."
 
 #: frame_main.cpp:528
 msgid "Open automation manager"
@@ -3397,7 +3404,7 @@ msgstr "Открыть менеджер автоматизации"
 
 #: frame_main.cpp:530
 msgid "&Automation"
-msgstr "Автоматизация"
+msgstr "&Автоматизация"
 
 #: frame_main.cpp:535
 msgid "Select Aegisub interface language"
@@ -3405,7 +3412,7 @@ msgstr "Выбрать язык интерфейса Aegisub"
 
 #: frame_main.cpp:536
 msgid "&Options..."
-msgstr "Настройки..."
+msgstr "&Настройки..."
 
 #: frame_main.cpp:538
 msgid "Subs Only View"
@@ -3441,11 +3448,11 @@ msgstr "Показ аудио, видео и субтитров"
 
 #: frame_main.cpp:542
 msgid "Vie&w"
-msgstr "Вид"
+msgstr "&Вид"
 
 #: frame_main.cpp:546
 msgid "&Contents..."
-msgstr "Cодержание..."
+msgstr "&Cодержание..."
 
 #: frame_main.cpp:546 frame_main.cpp:548
 msgid "Help topics"
@@ -3457,7 +3464,7 @@ msgstr ""
 
 #: frame_main.cpp:551
 msgid "&Website..."
-msgstr "Web-сайт..."
+msgstr "Web-&сайт..."
 
 #: frame_main.cpp:551
 msgid "Visit Aegisub's official website"
@@ -3465,7 +3472,7 @@ msgstr "Посетить официальный сайт Aegisub"
 
 #: frame_main.cpp:552
 msgid "&Forums..."
-msgstr "Форум..."
+msgstr "&Форум..."
 
 #: frame_main.cpp:552
 msgid "Visit Aegisub's forums"
@@ -3473,7 +3480,7 @@ msgstr "Посетить официальный форум Aegisub"
 
 #: frame_main.cpp:553
 msgid "&Bug Tracker..."
-msgstr "Трекер ошибок..."
+msgstr "&Трекер ошибок..."
 
 #: frame_main.cpp:553
 msgid "Visit Aegisub's bug tracker to report bugs and request new features"
@@ -3481,7 +3488,7 @@ msgstr "Посетить трекер ошибок Aegisub"
 
 #: frame_main.cpp:554
 msgid "&IRC Channel..."
-msgstr "IRC канал..."
+msgstr "IRC &канал..."
 
 #: frame_main.cpp:554
 msgid "Visit Aegisub's official IRC channel"
@@ -3489,7 +3496,7 @@ msgstr "Посетить официальный канал IRC Aegisub"
 
 #: frame_main.cpp:558
 msgid "&Check for Updates..."
-msgstr "Проверить обновления..."
+msgstr "&Проверить обновления..."
 
 #: frame_main.cpp:558
 msgid "Check to see if there is a new version of Aegisub available"
@@ -3497,7 +3504,7 @@ msgstr "Проверить, доступна ли новая версия Aegisu
 
 #: frame_main.cpp:559
 msgid "&About..."
-msgstr "О программе..."
+msgstr "&О программе..."
 
 #: frame_main.cpp:788
 msgid "Save subtitles file"
@@ -3513,11 +3520,11 @@ msgstr "Несохранённые изменения"
 
 #: frame_main.cpp:909
 msgid "Untitled"
-msgstr ""
+msgstr "Без имени"
 
 #: frame_main.cpp:919
 msgid "untitled"
-msgstr ""
+msgstr "без имени"
 
 #: frame_main.cpp:987
 msgid "Do you want to load/unload the associated files?"
@@ -4128,19 +4135,19 @@ msgstr "Прикреплённые файлы"
 
 #: dialog_attachments.cpp:74
 msgid "E&xtract"
-msgstr "Извлечь"
+msgstr "&Извлечь"
 
 #: dialog_attachments.cpp:75
 msgid "&Delete"
-msgstr "Удалить"
+msgstr "&Удалить"
 
 #: dialog_attachments.cpp:81
 msgid "Attach &Font"
-msgstr "Прикрепить шрифт"
+msgstr "Прикрепить &шрифт"
 
 #: dialog_attachments.cpp:82
 msgid "Attach &Graphics"
-msgstr "Прикрепить графику"
+msgstr "Прикрепить &графику"
 
 #: dialog_attachments.cpp:106
 msgid "Attachment name"
@@ -4317,7 +4324,7 @@ msgstr "Если что-то не так, виноват movax."
 
 #: dialog_fonts_collector.cpp:106
 msgid "&Browse..."
-msgstr "Обзор..."
+msgstr "&Обзор..."
 
 #: dialog_fonts_collector.cpp:108 dialog_fonts_collector.cpp:331
 msgid ""
@@ -4357,7 +4364,7 @@ msgstr "Журнал"
 
 #: dialog_fonts_collector.cpp:141
 msgid "&Start!"
-msgstr "Выполнить"
+msgstr "&Выполнить"
 
 #: dialog_fonts_collector.cpp:209
 msgid "Invalid destination."
@@ -5256,20 +5263,57 @@ msgstr "Знач.:"
 msgid "Colour Picker"
 msgstr "Пипетка"
 
-#~ msgid "Karaoke"
-#~ msgstr "Караоке"
+#~ msgid "Load keyframes"
+#~ msgstr "Загрузить ключкадры"
 
-#~ msgid "Cancel Split"
-#~ msgstr "Отменить"
+#~ msgid "Reading keyframes from video"
+#~ msgstr "Чтение ключкадров из файла"
 
-#~ msgid "Accept Split"
+#~ msgid "Check File Associations on Start"
+#~ msgstr "Проверять ассоциации файлов при запуске"
+
+#~ msgid "Crash recovery path:"
+#~ msgstr "Путь восстановления:"
+
+#~ msgid "Commit"
 #~ msgstr "Принять"
 
-#~ msgid "Join"
-#~ msgstr "Объединить"
+#~ msgid "Perl script"
+#~ msgstr "Perl скрипт"
 
-#~ msgid "Split"
-#~ msgstr "Разбить"
+#~ msgid ""
+#~ "Unable to add the automation include path(s) to @INC: the script's code "
+#~ "may not compile or execute properly."
+#~ msgstr ""
+#~ "Невозможно добавить путь к заголовочным файлам в @INC: скрипты могут "
+#~ "выполняться с ошибками или не выполняться вобще."
+
+#~ msgid "Reloading %s because the file on disk (%s) changed."
+#~ msgstr "Перезагружаю %s в связи с изменением файла (%s) на диске."
+
+#~ msgid "Saving changes"
+#~ msgstr "Сохранение изменений"
+
+#~ msgid "Please wait, caching fonts..."
+#~ msgstr "Пожалуйста подождите, кешировние шрифтов..."
+
+#~ msgid "&Associations..."
+#~ msgstr "&Ассоциации..."
+
+#~ msgid "Associate file types with Aegisub"
+#~ msgstr "Ассоциировать типы файлов с Aegisub"
+
+#~ msgid "Lo&g Window..."
+#~ msgstr "Окно &журнала..."
+
+#~ msgid "Open log window"
+#~ msgstr "Открыть окно журнала"
+
+#~ msgid "&Resource Files..."
+#~ msgstr "Файлы &ресурсов..."
+
+#~ msgid "Resource files distributed with Aegisub"
+#~ msgstr "Файлы ресурсов, распространяемые с Aegisub"
 
 #~ msgid "Not enough parameters for Aegisub::text_extents()"
 #~ msgstr "Недостаточно параметров в Aegisub::text_extents()"
@@ -5299,24 +5343,104 @@ msgstr "Пипетка"
 #~ msgid "Trace: "
 #~ msgstr "Информация:"
 
+#~ msgid "Karaoke"
+#~ msgstr "Караоке"
+
+#~ msgid "Cancel Split"
+#~ msgstr "Отменить"
+
+#~ msgid "Accept Split"
+#~ msgstr "Принять"
+
+#~ msgid "Join"
+#~ msgstr "Объединить"
+
+#~ msgid "Split"
+#~ msgstr "Разбить"
+
+#~ msgid "Associate file types"
+#~ msgstr "Файловые ассоциации"
+
+#~ msgid ""
+#~ "Aegisub can take over the following file types.\n"
+#~ "\n"
+#~ "If you want Aegisub to no longer be associated with a file type, you must "
+#~ "tell another program to take over the file type."
+#~ msgstr ""
+#~ "Aegisub может быть ассоциирован со следующими типами файлов.\n"
+#~ "\n"
+#~ "Если вы хотите, чтобы Aegisub более не был ассоциирован с каким-либо "
+#~ "типом файлов, надо назначить этот тип файлов другой программе."
+
+#~ msgid ""
+#~ "Aegisub is already associated with all supported file types.\n"
+#~ "\n"
+#~ "If you want Aegisub to no longer be associated with a file type, you must "
+#~ "tell another program to take over the file type."
+#~ msgstr ""
+#~ "Aegisub уже ассоциирован со всеми поддерживаемыми типами файлов.\n"
+#~ "\n"
+#~ "Если вы хотите, чтобы Aegisub более не был ассоциирован с каким-либо "
+#~ "типом файлов, надо назначить этот тип файлов другой программе."
+
+#~ msgid "Aegisub"
+#~ msgstr "Aegisub"
+
+#~ msgid "Make Aegisub default editor for subtitles?"
+#~ msgstr "Сделать Aegisub редактором субтитров по умолчанию?"
+
+#~ msgid ""
+#~ "Aegisub is not your default editor for subtitle files. Do you want to "
+#~ "make Aegisub your default editor for subtitle files?"
+#~ msgstr ""
+#~ "Aegisub не выбран как редактор субтитров по умолчанию. Сделать его "
+#~ "таковым?"
+
+#~ msgid "Always perform this check when Aegisub starts"
+#~ msgstr "Всегда проверять ассоциации при старте"
+
+#~ msgid "&Yes"
+#~ msgstr "&Да"
+
+#~ msgid "&No"
+#~ msgstr "&Нет"
+
 #~ msgid "Executing "
 #~ msgstr "Выполнение"
 
-#~ msgid "Perl script"
-#~ msgstr "Perl скрипт"
+#~ msgid "Exporting PRS"
+#~ msgstr "Экспорт PRS"
+
+#~ msgid "Writing file"
+#~ msgstr "Запись файла"
 
 #~ msgid ""
-#~ "Unable to add the automation include path(s) to @INC: the script's code "
-#~ "may not compile or execute properly."
+#~ "Enter aspect ratio in either decimal (e.g. 2.35) or fractional (e.g. "
+#~ "16:9) form. Enter a value like 853x480 to set a specific resolution."
 #~ msgstr ""
-#~ "Невозможно добавить путь к заголовочным файлам в @INC: скрипты могут "
-#~ "выполняться с ошибками или не выполняться вобще."
+#~ "Введите отношение сторон в десятичном (2.35) или дробном (16:9) виде. "
+#~ "Введите значение наподобие 853х480 для точного разрешения."
 
-#~ msgid "Reloading %s because the file on disk (%s) changed."
-#~ msgstr "Перезагружаю %s в связи с изменением файла (%s) на диске."
+#~ msgid "Could not open Internet File system. Aborting.\n"
+#~ msgstr "Ошибка подключения. Загрузка прервана.\n"
 
-#~ msgid "Saving changes"
-#~ msgstr "Сохранение изменений"
+#~ msgid "Attempting to open \"%s\"..."
+#~ msgstr "Попытка открыть «%s»..."
+
+#~ msgid "Failed.\n"
+#~ msgstr "Ошибка.\n"
+
+#~ msgid "OK.\n"
+#~ msgstr "OK.\n"
+
+#~ msgid "New version found!\n"
+#~ msgstr "Вышла новая версия!\n"
+
+#~ msgid "Please go to the following URL to download it: %s\n"
+#~ msgstr "Пожалуйста, пройдите по этой ссылке: %s\n"
+
+#~ msgid "No new version has been found.\n"
+#~ msgstr "Обновлений нет.\n"
 
 #~ msgid "This build of Aegisub uses the following C/C++ libraries:\n"
 #~ msgstr "Эта сборка Aegisub использует следующие библиотеки C/C++:\n"
@@ -5379,66 +5503,8 @@ msgstr "Пипетка"
 #~ msgid "Save config.dat locally"
 #~ msgstr "Сохранять конфигурационный файл локально"
 
-#~ msgid "Crash recovery path:"
-#~ msgstr "Путь восстановления:"
-
 #~ msgid "Avisynth renders its own subs"
 #~ msgstr "Avisynth обрабатывает отдельные субтитры"
-
-#~ msgid "Could not open Internet File system. Aborting.\n"
-#~ msgstr "Ошибка подключения. Загрузка прервана.\n"
-
-#~ msgid "Attempting to open \"%s\"..."
-#~ msgstr "Попытка открыть «%s»..."
-
-#~ msgid "Failed.\n"
-#~ msgstr "Ошибка.\n"
-
-#~ msgid "OK.\n"
-#~ msgstr "OK.\n"
-
-#~ msgid "New version found!\n"
-#~ msgstr "Вышла новая версия!\n"
-
-#~ msgid "Please go to the following URL to download it: %s\n"
-#~ msgstr "Пожалуйста, пройдите по этой ссылке: %s\n"
-
-#~ msgid "No new version has been found.\n"
-#~ msgstr "Обновлений нет.\n"
-
-#~ msgid "&Associations..."
-#~ msgstr "Ассоциации..."
-
-#~ msgid "Associate file types with Aegisub"
-#~ msgstr "Ассоциировать типы файлов с Aegisub"
-
-#~ msgid "Lo&g Window..."
-#~ msgstr "Окно журнала..."
-
-#~ msgid "Open log window"
-#~ msgstr "Открыть окно журнала"
-
-#~ msgid ""
-#~ "Enter aspect ratio in either decimal (e.g. 2.35) or fractional (e.g. "
-#~ "16:9) form. Enter a value like 853x480 to set a specific resolution."
-#~ msgstr ""
-#~ "Введите отношение сторон в десятичном (2.35) или дробном (16:9) виде. "
-#~ "Введите значение наподобие 853х480 для точного разрешения."
-
-#~ msgid "Load keyframes"
-#~ msgstr "Загрузить ключкадры"
-
-#~ msgid "Reading keyframes from video"
-#~ msgstr "Чтение ключкадров из файла"
-
-#~ msgid "Commit"
-#~ msgstr "Принять"
-
-#~ msgid "Exporting PRS"
-#~ msgstr "Экспорт PRS"
-
-#~ msgid "Writing file"
-#~ msgstr "Запись файла"
 
 #~ msgid "Recommended Formats"
 #~ msgstr "Рекомендуемые форматы"

@@ -5,14 +5,13 @@ msgstr ""
 "Project-Id-Version: ca\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2010-01-26 08:25-0500\n"
-"PO-Revision-Date: 2008-10-27 22:50-0300\n"
-"Last-Translator: amz <amz@aegisub.net>\n"
-"Language-Team: Catalan <ubuntu-l10n-ca@lists.ubuntu.com>\n"
+"PO-Revision-Date: 2010-01-05 08:28+0100\n"
+"Last-Translator: Eduard Ereza Martínez <ereza@catsub.net>\n"
+"Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-Language: Catalan\n"
-"X-Generator: KBabel 1.11.4\n"
 
 #: dialog_export.cpp:61
 msgid "Export"
@@ -55,13 +54,12 @@ msgid "positioning"
 msgstr "posicionament"
 
 #: video_provider_quicktime.cpp:181 video_provider_ffmpegsource.cpp:272
-#, fuzzy
 msgid ""
 "You already have timecodes loaded. Would you like to replace them with "
 "timecodes from the video file?"
 msgstr ""
 "Ja teniu codis de temps carregats. Voleu substituir-los amb els codis de "
-"temps del fitxer Matroska?"
+"temps del fitxer de vídeo?"
 
 #: video_provider_quicktime.cpp:181 video_provider_avs.cpp:271
 #: video_provider_ffmpegsource.cpp:272
@@ -1465,7 +1463,7 @@ msgstr "29.970 FPS (NTSC)"
 
 #: subtitle_format.cpp:346
 msgid "29.970 FPS (NTSC with SMPTE dropframe)"
-msgstr ""
+msgstr "29.970 FPS (NTSC amb caiguda de marcs SMPTE)"
 
 #: subtitle_format.cpp:347
 msgid "30.000 FPS"
@@ -1473,7 +1471,7 @@ msgstr "30.000 FPS"
 
 #: subtitle_format.cpp:348
 msgid "50.000 FPS (PAL x2)"
-msgstr ""
+msgstr "50.000 FPS (PAL x2)"
 
 #: subtitle_format.cpp:349
 msgid "59.940 FPS (NTSC x2)"
@@ -1513,34 +1511,35 @@ msgstr "Inici dels comentaris:"
 
 #: ffmpegsource_common.cpp:99
 msgid "Indexing"
-msgstr ""
+msgstr "S'està indexant"
 
 #: ffmpegsource_common.cpp:100
 msgid "Reading timecodes and frame/sample data"
-msgstr ""
+msgstr "S'estan llegint els codis de temps i les dades dels marcs/mostres"
 
 #: ffmpegsource_common.cpp:157
 msgid "video"
-msgstr ""
+msgstr "vídeo"
 
 #: ffmpegsource_common.cpp:159
 msgid "audio"
-msgstr ""
+msgstr "àudio"
 
 #: ffmpegsource_common.cpp:162
 #, c-format
 msgid "Track %02d: %s"
-msgstr ""
+msgstr "Pista %02d: %s"
 
 #: ffmpegsource_common.cpp:166
 #, c-format
 msgid "Multiple %s tracks detected, please choose the one you wish to load:"
 msgstr ""
+"S'han detectat múltiples pistes de %s, escolliu la que vulgueu carregar:"
 
 #: ffmpegsource_common.cpp:167
 #, c-format
 msgid "Choose %s track"
-msgstr ""
+msgstr "Escull la pista de %s"
 
 #: dialog_spellchecker.cpp:91 frame_main.cpp:306
 msgid "Spell Checker"
@@ -2588,31 +2587,39 @@ msgid ""
 "If other applications can access the Internet fine, this is probably a "
 "temporary server problem on our end."
 msgstr ""
+"S'ha produït un error en comprovar les actualitzacions de l'Aegisub:\n"
+"%s\n"
+"\n"
+"Si hi ha altres aplicacions que poden accedir correctament a Internet, "
+"probablement estigui causat per un problema temporal en els nostres "
+"servidors."
 
 #: dialog_version_check.cpp:183
 msgid "An unknown error occurred while checking for updates to Aegisub."
 msgstr ""
+"S'ha produït un error desconegut en comprovar les actualitzacions de "
+"l'Aegisub."
 
 #: dialog_version_check.cpp:332
 msgid "Could not connect to updates server."
-msgstr ""
+msgstr "No s'ha pogut connectar al servidor d'actualitzacions."
 
 #: dialog_version_check.cpp:337
 #, c-format
 msgid "HTTP request failed, got HTTP response %d."
-msgstr ""
+msgstr "La petició HTTP ha fallat, s'ha obtingut la resposta HTTP %d."
 
 #: dialog_version_check.cpp:409
 msgid "An update to Aegisub was found."
-msgstr ""
+msgstr "S'ha trobat una actualització de l'Aegisub."
 
 #: dialog_version_check.cpp:413
 msgid "Several possible updates to Aegisub were found."
-msgstr ""
+msgstr "S'han trobat diverses possibles actualitzacions de l'Aegisub."
 
 #: dialog_version_check.cpp:417
 msgid "There are no updates to Aegisub."
-msgstr ""
+msgstr "No hi ha actualitzacions de l'Aegisub."
 
 #: dialog_version_check.cpp:451
 msgid "Version Checker"
@@ -2620,7 +2627,7 @@ msgstr "Comprovador de versió"
 
 #: dialog_version_check.cpp:483
 msgid "Remind me again in a &week"
-msgstr ""
+msgstr "Recorda-m'ho en una &setmana"
 
 #: frame_main.cpp:219
 msgid ""
@@ -3536,11 +3543,11 @@ msgstr "Canvis no desats"
 
 #: frame_main.cpp:909
 msgid "Untitled"
-msgstr ""
+msgstr "Sense títol"
 
 #: frame_main.cpp:919
 msgid "untitled"
-msgstr ""
+msgstr "sense títol"
 
 #: frame_main.cpp:987
 msgid "Do you want to load/unload the associated files?"
@@ -3800,9 +3807,8 @@ msgid "Outline"
 msgstr "Vora"
 
 #: dialog_style_editor.cpp:205
-#, fuzzy
 msgid "Miscellaneous"
-msgstr "Miscel·lani"
+msgstr "Miscel·lània"
 
 #: dialog_style_editor.cpp:206
 msgid "Preview"
@@ -5301,20 +5307,58 @@ msgstr "Valor:"
 msgid "Colour Picker"
 msgstr "Selector de color"
 
-#~ msgid "Karaoke"
-#~ msgstr "Karaoke"
+#~ msgid "Load keyframes"
+#~ msgstr "Carrega els marcs clau"
 
-#~ msgid "Cancel Split"
-#~ msgstr "Cancel·la la divisió"
+#~ msgid "Reading keyframes from video"
+#~ msgstr "S'estan llegint els marcs clau del vídeo"
 
-#~ msgid "Accept Split"
-#~ msgstr "Accepta la divisió"
+#~ msgid "Check File Associations on Start"
+#~ msgstr "Comprova les associacions de fitxers en iniciar"
 
-#~ msgid "Join"
-#~ msgstr "Uneix"
+#~ msgid "Crash recovery path:"
+#~ msgstr "Camí de recuperació de petades:"
 
-#~ msgid "Split"
-#~ msgstr "Divideix"
+#~ msgid "Commit"
+#~ msgstr "Aplica"
+
+#~ msgid "Perl script"
+#~ msgstr "'Script' Perl"
+
+#~ msgid ""
+#~ "Unable to add the automation include path(s) to @INC: the script's code "
+#~ "may not compile or execute properly."
+#~ msgstr ""
+#~ "No s'ha(n) pogut afegir el(s) camí(ns) d'inclusió de l'automatització a "
+#~ "@INC, pot ser que el codi de l''script' no es compili o s'executi "
+#~ "correctament."
+
+#~ msgid "Reloading %s because the file on disk (%s) changed."
+#~ msgstr "S'està recarregant %s perquè el fitxer al disc (%s) ha canviat."
+
+#~ msgid "Saving changes"
+#~ msgstr "S'estan desant els canvis"
+
+#~ msgid "Please wait, caching fonts..."
+#~ msgstr "Espereu, s'estan col·locant els tipus de lletra a la memòria cau..."
+
+#~ msgid "&Associations..."
+#~ msgstr "&Associacions..."
+
+#~ msgid "Associate file types with Aegisub"
+#~ msgstr "Associa tipus de fitxers amb l'Aegisub"
+
+#~ msgid "Lo&g Window..."
+#~ msgstr "Finestra del re&gistre..."
+
+#~ msgid "Open log window"
+#~ msgstr "Obre la finestra del registre"
+
+#~ msgid "&Resource Files..."
+#~ msgstr "Fitxers de &recursos..."
+
+#~ msgid "Resource files distributed with Aegisub"
+#~ msgstr "Fitxers de recursos distribuïts amb l'Aegisub"
 
 #~ msgid "Not enough parameters for Aegisub::text_extents()"
 #~ msgstr "No hi ha prou paràmetres per a Aegisub::text_extents()"
@@ -5344,25 +5388,109 @@ msgstr "Selector de color"
 #~ msgid "Trace: "
 #~ msgstr "Traça:"
 
+#~ msgid "Karaoke"
+#~ msgstr "Karaoke"
+
+#~ msgid "Cancel Split"
+#~ msgstr "Cancel·la la divisió"
+
+#~ msgid "Accept Split"
+#~ msgstr "Accepta la divisió"
+
+#~ msgid "Join"
+#~ msgstr "Uneix"
+
+#~ msgid "Split"
+#~ msgstr "Divideix"
+
+#~ msgid "Associate file types"
+#~ msgstr "Associa els tipus de fitxer"
+
+#~ msgid ""
+#~ "Aegisub can take over the following file types.\n"
+#~ "\n"
+#~ "If you want Aegisub to no longer be associated with a file type, you must "
+#~ "tell another program to take over the file type."
+#~ msgstr ""
+#~ "L'Aegisub es pot convertir en l'editor per defecte dels següents tipus de "
+#~ "fitxer.\n"
+#~ "\n"
+#~ "Si voleu que l'Aegisub deixi d'estar associat amb un tipus de fitxer, heu "
+#~ "de fer que un altre programa sigui l'editor per defecte d'aquell tipus de "
+#~ "fitxer."
+
+#~ msgid ""
+#~ "Aegisub is already associated with all supported file types.\n"
+#~ "\n"
+#~ "If you want Aegisub to no longer be associated with a file type, you must "
+#~ "tell another program to take over the file type."
+#~ msgstr ""
+#~ "L'Aegisub ja està associat amb tots els tipus de fitxer suportats.\n"
+#~ "\n"
+#~ "Si voleu que l'Aegisub deixi d'estar associat amb un tipus de fitxer, heu "
+#~ "de fer que un altre programa sigui l'editor per defecte d'aquell tipus de "
+#~ "fitxer."
+
+#~ msgid "Aegisub"
+#~ msgstr "Aegisub"
+
+#~ msgid "Make Aegisub default editor for subtitles?"
+#~ msgstr "Converteix l'Aegisub en l'editor de subtítols per defecte"
+
+#~ msgid ""
+#~ "Aegisub is not your default editor for subtitle files. Do you want to "
+#~ "make Aegisub your default editor for subtitle files?"
+#~ msgstr ""
+#~ "L'Aegisub no és el vostre editor de subtítols per defecte. Voleu fer que "
+#~ "l'Aegisub sigui el vostre editor de subtítols per defecte?"
+
+#~ msgid "Always perform this check when Aegisub starts"
+#~ msgstr "Comprova-ho sempre en iniciar l'Aegisub"
+
+#~ msgid "&Yes"
+#~ msgstr "&Sí"
+
+#~ msgid "&No"
+#~ msgstr "&No"
+
 #~ msgid "Executing "
 #~ msgstr "S'està executant"
 
-#~ msgid "Perl script"
-#~ msgstr "'Script' Perl"
+#~ msgid "Exporting PRS"
+#~ msgstr "S'està exportant PRS"
+
+#~ msgid "Writing file"
+#~ msgstr "S'està escrivint el fitxer"
 
 #~ msgid ""
-#~ "Unable to add the automation include path(s) to @INC: the script's code "
-#~ "may not compile or execute properly."
+#~ "Enter aspect ratio in either decimal (e.g. 2.35) or fractional (e.g. "
+#~ "16:9) form. Enter a value like 853x480 to set a specific resolution."
 #~ msgstr ""
-#~ "No s'ha(n) pogut afegir el(s) camí(ns) d'inclusió de l'automatització a "
-#~ "@INC, pot ser que el codi de l''script' no es compili o s'executi "
-#~ "correctament."
+#~ "Introduïu la relació d'aspecte de manera decimal (p. ex. 2.35) o "
+#~ "fraccional (p. ex. 16:9). Introduïu un valor com ara 853x480 per definir "
+#~ "una resolució específica."
 
-#~ msgid "Reloading %s because the file on disk (%s) changed."
-#~ msgstr "S'està recarregant %s perquè el fitxer al disc (%s) ha canviat."
+#~ msgid "Could not open Internet File system. Aborting.\n"
+#~ msgstr ""
+#~ "No s'ha pogut obrir el sistema de fitxers d'Internet. S'ha avortat.\n"
 
-#~ msgid "Saving changes"
-#~ msgstr "S'estan desant els canvis"
+#~ msgid "Attempting to open \"%s\"..."
+#~ msgstr "S'està intentant obrir \"%s\"..."
+
+#~ msgid "Failed.\n"
+#~ msgstr "S'ha produït un error.\n"
+
+#~ msgid "OK.\n"
+#~ msgstr "Correcte.\n"
+
+#~ msgid "New version found!\n"
+#~ msgstr "S'ha trobat una nova versió!\n"
+
+#~ msgid "Please go to the following URL to download it: %s\n"
+#~ msgstr "Aneu a la següent URL per descarregar-la: %s\n"
+
+#~ msgid "No new version has been found.\n"
+#~ msgstr "No s'ha trobat cap nova versió.\n"
 
 #~ msgid "This build of Aegisub uses the following C/C++ libraries:\n"
 #~ msgstr ""
@@ -5427,68 +5555,8 @@ msgstr "Selector de color"
 #~ msgid "Save config.dat locally"
 #~ msgstr "Desa el config.dat localment"
 
-#~ msgid "Crash recovery path:"
-#~ msgstr "Camí de recuperació de petades:"
-
 #~ msgid "Avisynth renders its own subs"
 #~ msgstr "L'Avisynth renderitza els seus propis subtítols"
-
-#~ msgid "Could not open Internet File system. Aborting.\n"
-#~ msgstr ""
-#~ "No s'ha pogut obrir el sistema de fitxers d'Internet. S'ha avortat.\n"
-
-#~ msgid "Attempting to open \"%s\"..."
-#~ msgstr "S'està intentant obrir \"%s\"..."
-
-#~ msgid "Failed.\n"
-#~ msgstr "S'ha produït un error.\n"
-
-#~ msgid "OK.\n"
-#~ msgstr "Correcte.\n"
-
-#~ msgid "New version found!\n"
-#~ msgstr "S'ha trobat una nova versió!\n"
-
-#~ msgid "Please go to the following URL to download it: %s\n"
-#~ msgstr "Aneu a la següent URL per descarregar-la: %s\n"
-
-#~ msgid "No new version has been found.\n"
-#~ msgstr "No s'ha trobat cap nova versió.\n"
-
-#~ msgid "&Associations..."
-#~ msgstr "&Associacions..."
-
-#~ msgid "Associate file types with Aegisub"
-#~ msgstr "Associa tipus de fitxers amb l'Aegisub"
-
-#~ msgid "Lo&g Window..."
-#~ msgstr "Finestra del re&gistre..."
-
-#~ msgid "Open log window"
-#~ msgstr "Obre la finestra del registre"
-
-#~ msgid ""
-#~ "Enter aspect ratio in either decimal (e.g. 2.35) or fractional (e.g. "
-#~ "16:9) form. Enter a value like 853x480 to set a specific resolution."
-#~ msgstr ""
-#~ "Introduïu la relació d'aspecte de manera decimal (p. ex. 2.35) o "
-#~ "fraccional (p. ex. 16:9). Introduïu un valor com ara 853x480 per definir "
-#~ "una resolució específica."
-
-#~ msgid "Load keyframes"
-#~ msgstr "Carrega els marcs clau"
-
-#~ msgid "Reading keyframes from video"
-#~ msgstr "S'estan llegint els marcs clau del vídeo"
-
-#~ msgid "Commit"
-#~ msgstr "Aplica"
-
-#~ msgid "Exporting PRS"
-#~ msgstr "S'està exportant PRS"
-
-#~ msgid "Writing file"
-#~ msgstr "S'està escrivint el fitxer"
 
 #~ msgid "Recommended Formats"
 #~ msgstr "Formats recomanats"

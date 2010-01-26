@@ -1461,7 +1461,7 @@ msgstr "29.970 FPS (NTSC)"
 
 #: subtitle_format.cpp:346
 msgid "29.970 FPS (NTSC with SMPTE dropframe)"
-msgstr ""
+msgstr "29.970 FPS (SMPTE dropframe의 NTSC)"
 
 #: subtitle_format.cpp:347
 msgid "30.000 FPS"
@@ -1469,7 +1469,7 @@ msgstr "30.000 FPS"
 
 #: subtitle_format.cpp:348
 msgid "50.000 FPS (PAL x2)"
-msgstr ""
+msgstr "50.000 FPS (PAL x2)"
 
 #: subtitle_format.cpp:349
 msgid "59.940 FPS (NTSC x2)"
@@ -1517,26 +1517,26 @@ msgstr "타임코드 와 프레임/샘플 데이터 읽는중"
 
 #: ffmpegsource_common.cpp:157
 msgid "video"
-msgstr ""
+msgstr "비디오"
 
 #: ffmpegsource_common.cpp:159
 msgid "audio"
-msgstr ""
+msgstr "오디오"
 
 #: ffmpegsource_common.cpp:162
 #, c-format
 msgid "Track %02d: %s"
-msgstr ""
+msgstr "트랙 %02d: %s"
 
 #: ffmpegsource_common.cpp:166
 #, c-format
 msgid "Multiple %s tracks detected, please choose the one you wish to load:"
-msgstr ""
+msgstr "다수의 %s 트랙을 찾았습니다. 로드할 파일을 선택하십시오."
 
 #: ffmpegsource_common.cpp:167
 #, c-format
 msgid "Choose %s track"
-msgstr ""
+msgstr "%s 트랙 고르기"
 
 #: dialog_spellchecker.cpp:91 frame_main.cpp:306
 msgid "Spell Checker"
@@ -2562,31 +2562,35 @@ msgid ""
 "If other applications can access the Internet fine, this is probably a "
 "temporary server problem on our end."
 msgstr ""
+"업데이트 오류:\n"
+"%s\n"
+"\n"
+"현제 인터넷에 문제가 없다면, 서버의 문제일 가능성이 큽니다."
 
 #: dialog_version_check.cpp:183
 msgid "An unknown error occurred while checking for updates to Aegisub."
-msgstr ""
+msgstr "업데이트 확인 도중 불명의 오류가 발생하였습니다."
 
 #: dialog_version_check.cpp:332
 msgid "Could not connect to updates server."
-msgstr ""
+msgstr "업데이트 서버 접속 실패."
 
 #: dialog_version_check.cpp:337
 #, c-format
 msgid "HTTP request failed, got HTTP response %d."
-msgstr ""
+msgstr "HTTP 요구 실패, HTTP 응답 %d"
 
 #: dialog_version_check.cpp:409
 msgid "An update to Aegisub was found."
-msgstr ""
+msgstr "Aegisub 업데이트가 가능합니다."
 
 #: dialog_version_check.cpp:413
 msgid "Several possible updates to Aegisub were found."
-msgstr ""
+msgstr "여러 Aegisub 업데이트가 가능합니다."
 
 #: dialog_version_check.cpp:417
 msgid "There are no updates to Aegisub."
-msgstr ""
+msgstr "최신 버젼입니다."
 
 #: dialog_version_check.cpp:451
 msgid "Version Checker"
@@ -2594,7 +2598,7 @@ msgstr "Aegisub 버전 검사기"
 
 #: dialog_version_check.cpp:483
 msgid "Remind me again in a &week"
-msgstr ""
+msgstr "일주일 후 다시 알림"
 
 #: frame_main.cpp:219
 msgid ""
@@ -3497,11 +3501,11 @@ msgstr "저장하지 않음"
 
 #: frame_main.cpp:909
 msgid "Untitled"
-msgstr ""
+msgstr "제목 없음"
 
 #: frame_main.cpp:919
 msgid "untitled"
-msgstr ""
+msgstr "제목 없음"
 
 #: frame_main.cpp:987
 msgid "Do you want to load/unload the associated files?"
@@ -5235,20 +5239,57 @@ msgstr "명도 :"
 msgid "Colour Picker"
 msgstr "컬러 선택"
 
-#~ msgid "Karaoke"
-#~ msgstr "가라오케"
+#~ msgid "Load keyframes"
+#~ msgstr "키 프레임 로드"
 
-#~ msgid "Cancel Split"
-#~ msgstr "분할 작업 취소"
+#~ msgid "Reading keyframes from video"
+#~ msgstr "비디오에서 키프레임 읽어오는중"
 
-#~ msgid "Accept Split"
-#~ msgstr "분할 작업 적용"
+#~ msgid "Check File Associations on Start"
+#~ msgstr "실행시 파일 확장자 확인"
 
-#~ msgid "Join"
-#~ msgstr "연결"
+#~ msgid "Crash recovery path:"
+#~ msgstr "충돌시 복구할 파일 경로:"
 
-#~ msgid "Split"
-#~ msgstr "분할 작업"
+#~ msgid "Commit"
+#~ msgstr "적용"
+
+#~ msgid "Perl script"
+#~ msgstr "펄 스크립트"
+
+#~ msgid ""
+#~ "Unable to add the automation include path(s) to @INC: the script's code "
+#~ "may not compile or execute properly."
+#~ msgstr ""
+#~ "@INC 경로를 포함하고 있는 자동화 스크립트를 추가할 수 없습니다: 이 스크립"
+#~ "트 코드는 컴파일 되지 않았거나 실행할 수 없습니다."
+
+#~ msgid "Reloading %s because the file on disk (%s) changed."
+#~ msgstr "디스크에 파일(%s)이 변경되어 %s 리로딩중입니다."
+
+#~ msgid "Saving changes"
+#~ msgstr "변경 내용 저장중"
+
+#~ msgid "Please wait, caching fonts..."
+#~ msgstr "글씨체 캐싱중..."
+
+#~ msgid "&Associations..."
+#~ msgstr "연결(&A)"
+
+#~ msgid "Associate file types with Aegisub"
+#~ msgstr "Aegisub 프로그림과 파일 형식를 연결하다"
+
+#~ msgid "Lo&g Window..."
+#~ msgstr "로그창(&G)"
+
+#~ msgid "Open log window"
+#~ msgstr "로그창 열기"
+
+#~ msgid "&Resource Files..."
+#~ msgstr "리소스 파일...(&R)"
+
+#~ msgid "Resource files distributed with Aegisub"
+#~ msgstr "리소스 파일이 보내졌습니다."
 
 #~ msgid "Not enough parameters for Aegisub::text_extents()"
 #~ msgstr "Aegisub에 매개변수가 부족합니다::text_extents()"
@@ -5278,24 +5319,104 @@ msgstr "컬러 선택"
 #~ msgid "Trace: "
 #~ msgstr "추적: "
 
+#~ msgid "Karaoke"
+#~ msgstr "가라오케"
+
+#~ msgid "Cancel Split"
+#~ msgstr "분할 작업 취소"
+
+#~ msgid "Accept Split"
+#~ msgstr "분할 작업 적용"
+
+#~ msgid "Join"
+#~ msgstr "연결"
+
+#~ msgid "Split"
+#~ msgstr "분할 작업"
+
+#~ msgid "Associate file types"
+#~ msgstr "파일 형식 연결"
+
+#~ msgid ""
+#~ "Aegisub can take over the following file types.\n"
+#~ "\n"
+#~ "If you want Aegisub to no longer be associated with a file type, you must "
+#~ "tell another program to take over the file type."
+#~ msgstr ""
+#~ "Aegisub가 다음 파일 형식에 연결이 가능합니다.\n"
+#~ "\n"
+#~ "파일 형식 연결을 취소하려면, 다른 프로그램으로 파일 형식 연결을 다시 설정"
+#~ "하십시오."
+
+#~ msgid ""
+#~ "Aegisub is already associated with all supported file types.\n"
+#~ "\n"
+#~ "If you want Aegisub to no longer be associated with a file type, you must "
+#~ "tell another program to take over the file type."
+#~ msgstr ""
+#~ "Aegisub가 이미 지원된 모든 파일 형식에 연결되 있습니다.\n"
+#~ "\n"
+#~ "파일 형식 연결을 취소하려면, 다른 프로그램으로 파일 형식 연결을 다시 설정"
+#~ "하십시오."
+
+#~ msgid "Aegisub"
+#~ msgstr "Aegisub"
+
+#~ msgid "Make Aegisub default editor for subtitles?"
+#~ msgstr "Aegisub을 기본 자막 에디터로 설정하기"
+
+#~ msgid ""
+#~ "Aegisub is not your default editor for subtitle files. Do you want to "
+#~ "make Aegisub your default editor for subtitle files?"
+#~ msgstr ""
+#~ "Aegisub가 기본 자막 에디터가 아닙니다. Aegisub를 기본 자막 에디터로 설정하"
+#~ "시겠습니까?"
+
+#~ msgid "Always perform this check when Aegisub starts"
+#~ msgstr "실행시 항상 체크하기"
+
+#~ msgid "&Yes"
+#~ msgstr "확인(&Y)"
+
+#~ msgid "&No"
+#~ msgstr "취소(&N)"
+
 #~ msgid "Executing "
 #~ msgstr "실행중"
 
-#~ msgid "Perl script"
-#~ msgstr "펄 스크립트"
+#~ msgid "Exporting PRS"
+#~ msgstr "PRS 내보내기"
+
+#~ msgid "Writing file"
+#~ msgstr "파일 기록중"
 
 #~ msgid ""
-#~ "Unable to add the automation include path(s) to @INC: the script's code "
-#~ "may not compile or execute properly."
+#~ "Enter aspect ratio in either decimal (e.g. 2.35) or fractional (e.g. "
+#~ "16:9) form. Enter a value like 853x480 to set a specific resolution."
 #~ msgstr ""
-#~ "@INC 경로를 포함하고 있는 자동화 스크립트를 추가할 수 없습니다: 이 스크립"
-#~ "트 코드는 컴파일 되지 않았거나 실행할 수 없습니다."
+#~ "decimal (e.g. 2.35) 또는  fractional (e.g. 16:9) 형식으로 가로세로비 입력"
+#~ "하다. 지정된 해상도 설정은 853x480 처럼 값을 입력하다."
 
-#~ msgid "Reloading %s because the file on disk (%s) changed."
-#~ msgstr "디스크에 파일(%s)이 변경되어 %s 리로딩중입니다."
+#~ msgid "Could not open Internet File system. Aborting.\n"
+#~ msgstr "인터넷 파일 시스템을 열 수 없습니다. 취소합니다.\n"
 
-#~ msgid "Saving changes"
-#~ msgstr "변경 내용 저장중"
+#~ msgid "Attempting to open \"%s\"..."
+#~ msgstr "\"%s\" 열기 시도중..."
+
+#~ msgid "Failed.\n"
+#~ msgstr "실패.\n"
+
+#~ msgid "OK.\n"
+#~ msgstr "확인.\n"
+
+#~ msgid "New version found!\n"
+#~ msgstr "새 버전을 찾았습니다!\n"
+
+#~ msgid "Please go to the following URL to download it: %s\n"
+#~ msgstr "다음 URL으로 이동후에 새버전을 다운로드 하세요: %s\n"
+
+#~ msgid "No new version has been found.\n"
+#~ msgstr "새 버전을 찾을 수가 없습니다.\n"
 
 #~ msgid "This build of Aegisub uses the following C/C++ libraries:\n"
 #~ msgstr "Aegisub는  C/C++  libraries를 사용해서 만들었습니다:\n"
@@ -5356,63 +5477,5 @@ msgstr "컬러 선택"
 #~ msgid "Save config.dat locally"
 #~ msgstr "config.dat에 설정 정보 저장"
 
-#~ msgid "Crash recovery path:"
-#~ msgstr "충돌시 복구할 파일 경로:"
-
 #~ msgid "Avisynth renders its own subs"
 #~ msgstr "Avisynth 자막을 사용하게 한다."
-
-#~ msgid "Could not open Internet File system. Aborting.\n"
-#~ msgstr "인터넷 파일 시스템을 열 수 없습니다. 취소합니다.\n"
-
-#~ msgid "Attempting to open \"%s\"..."
-#~ msgstr "\"%s\" 열기 시도중..."
-
-#~ msgid "Failed.\n"
-#~ msgstr "실패.\n"
-
-#~ msgid "OK.\n"
-#~ msgstr "확인.\n"
-
-#~ msgid "New version found!\n"
-#~ msgstr "새 버전을 찾았습니다!\n"
-
-#~ msgid "Please go to the following URL to download it: %s\n"
-#~ msgstr "다음 URL으로 이동후에 새버전을 다운로드 하세요: %s\n"
-
-#~ msgid "No new version has been found.\n"
-#~ msgstr "새 버전을 찾을 수가 없습니다.\n"
-
-#~ msgid "&Associations..."
-#~ msgstr "연결(&A)"
-
-#~ msgid "Associate file types with Aegisub"
-#~ msgstr "Aegisub 프로그림과 파일 형식를 연결하다"
-
-#~ msgid "Lo&g Window..."
-#~ msgstr "로그창(&G)"
-
-#~ msgid "Open log window"
-#~ msgstr "로그창 열기"
-
-#~ msgid ""
-#~ "Enter aspect ratio in either decimal (e.g. 2.35) or fractional (e.g. "
-#~ "16:9) form. Enter a value like 853x480 to set a specific resolution."
-#~ msgstr ""
-#~ "decimal (e.g. 2.35) 또는  fractional (e.g. 16:9) 형식으로 가로세로비 입력"
-#~ "하다. 지정된 해상도 설정은 853x480 처럼 값을 입력하다."
-
-#~ msgid "Load keyframes"
-#~ msgstr "키 프레임 로드"
-
-#~ msgid "Reading keyframes from video"
-#~ msgstr "비디오에서 키프레임 읽어오는중"
-
-#~ msgid "Commit"
-#~ msgstr "적용"
-
-#~ msgid "Exporting PRS"
-#~ msgstr "PRS 내보내기"
-
-#~ msgid "Writing file"
-#~ msgstr "파일 기록중"
