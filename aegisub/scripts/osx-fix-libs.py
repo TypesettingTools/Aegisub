@@ -6,7 +6,7 @@ import os
 import shutil
 import stat
 
-is_bad_lib = re.compile(r'(/usr/local|/opt)').match
+is_bad_lib = re.compile(r'(/usr/local|/opt|/usr/lib/libexpat)').match
 is_sys_lib = re.compile(r'(/usr|/System)').match
 otool_libname_extract = re.compile(r'\s+(/.*?)[\(\s:]').search
 goodlist = []
