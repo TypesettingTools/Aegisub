@@ -601,12 +601,11 @@ void FrameMain::OnAbout(wxCommandEvent &event) {
 
 
 
-/// @brief Open check updates 
+/// @brief Open check updates
 /// @param event 
 ///
 void FrameMain::OnCheckUpdates(wxCommandEvent &event) {
-	DialogVersionCheck *check = new DialogVersionCheck(this,false);
-	(void)check;
+	PerformVersionCheck(true);
 }
 
 

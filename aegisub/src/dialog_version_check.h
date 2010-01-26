@@ -35,87 +35,21 @@
 ///
 
 
-
-
-///////////
-// Headers
 #ifndef AGI_PRE
-#include <wx/dialog.h>
-#include <wx/sizer.h>
-#include <wx/textctrl.h>
+#include <wx/thread.h>
 #endif
 
 
-//////////////
-// Prototypes
-class DialogVersionCheck;
+/// @brief Check whether a newer version is available and report to the user if there is
+/// @param interactive If true, always check and report all results, both success and failure.
+///                    If false, only check if auto-checking is enabled, and only report if a
+///                    new version actually exists.
+void PerformVersionCheck(bool interactive);
 
 
-
-/// DOCME
-/// @class VersionCheckThread
-/// @brief DOCME
+/// @brief Mutex that is taken while version checking is being performed.
 ///
-/// DOCME
-class VersionCheckThread : public wxThread {
-private:
-
-	/// DOCME
-	DialogVersionCheck *parent;
-
-public:
-
-	/// DOCME
-	bool alive;
-
-	VersionCheckThread(DialogVersionCheck *parent);
-	wxThread::ExitCode Entry();
-};
-
-
-
-/// DOCME
-/// @class DialogVersionCheck
-/// @brief DOCME
-///
-/// DOCME
-class DialogVersionCheck : public wxDialog {
-	friend class VersionCheckThread;
-
-private:
-
-	/// DOCME
-	static bool dialogRunning;
-
-
-	/// DOCME
-	wxTextCtrl *logBox;
-
-	/// DOCME
-	VersionCheckThread *thread;
-
-	/// DOCME
-	bool visible;
-
-	void CheckVersion();
-	void OnClose(wxCloseEvent &event);
-	void OnOK(wxCommandEvent &event);
-	void OnURL(wxTextUrlEvent &event);
-
-public:
-	DialogVersionCheck(wxWindow *parent,bool hidden);
-	~DialogVersionCheck();
-
-	DECLARE_EVENT_TABLE()
-};
-
-
-///////
-// IDs
-enum {
-
-	/// DOCME
-	Log_Box = 1000
-};
-
-
+/// A new version check can't be performed while this mutex is locked, checking whether
+/// it is locked is a way to disable UI to invoke a version check while one is being
+/// performed.
+extern wxMutex VersionCheckLock;

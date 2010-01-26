@@ -213,22 +213,16 @@ FrameMain::FrameMain (wxArrayString args)
 	LoadList(args);
 
 	// Version checker
-	// Fails on non-Windows platforms with a crash
-#ifdef __WXMSW__
 	StartupLog(_T("Possibly perform automatic updates check"));
 	int option = Options.AsInt(_T("Auto check for updates"));
 	if (option == -1) {
 		int result = wxMessageBox(_("Do you want Aegisub to check for updates whenever it starts? You can still do it manually via the Help menu."),_("Check for updates?"),wxYES_NO);
-		option = 0;
-		if (result == wxYES) option = 1;
+		option = (result == wxYES);
 		Options.SetInt(_T("Auto check for updates"),option);
 		Options.Save();
 	}
-	if (option == 1) {
-		DialogVersionCheck *checker = new DialogVersionCheck (this,true);
-		(void)checker;
-	}
-#endif
+
+	PerformVersionCheck(false);
 
 	//ShowFullScreen(true,wxFULLSCREEN_NOBORDER | wxFULLSCREEN_NOCAPTION);
 	StartupLog(_T("Leaving FrameMain constructor"));
@@ -561,9 +555,7 @@ void FrameMain::InitMenu() {
 #ifndef __WXMAC__
 	helpMenu->AppendSeparator();
 #endif
-#ifdef __WXMSW__
 	AppendBitmapMenuItem(helpMenu,Menu_Help_Check_Updates, _("&Check for Updates..."), _("Check to see if there is a new version of Aegisub available"),GETIMAGE(blank_button_16));
-#endif
 	AppendBitmapMenuItem(helpMenu,Menu_Help_About, _("&About..."), _("About Aegisub"),GETIMAGE(about_menu_16));
 	MenuBar->Append(helpMenu, _("&Help"));
 

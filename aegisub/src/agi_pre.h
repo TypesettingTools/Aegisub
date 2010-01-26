@@ -173,6 +173,7 @@
 #include <wx/glcanvas.h>
 #include <wx/grid.h>
 #include <wx/hashmap.h>
+#include <wx/hyperlink.h>
 #include <wx/icon.h>
 #include <wx/image.h>
 #include <wx/intl.h>
@@ -187,6 +188,7 @@
 #include <wx/mstream.h>
 #include <wx/notebook.h>
 #include <wx/panel.h>
+#include <wx/protocol/http.h>
 #include <wx/radiobox.h>
 #include <wx/radiobut.h>
 #include <wx/rawbmp.h>

@@ -419,6 +419,8 @@ void OptionsManager::LoadDefaults(bool onlyDefaults,bool doOverride) {
 		previewText += 0x8a9e; // kanji "speak"
 		SetText(_T("Style editor preview text"),previewText);
 		SetColour(_T("Style editor preview background"),wxColour(125,153,176));
+
+		SetInt(_T("Updates Next Check Time"), 0);
 	}
 
 	lastVersion = -1;
