@@ -431,7 +431,9 @@ int AegisubApp::OnRun() {
 			file.close();
 		}
 
+#if wxUSE_EXCEPTIONS
 		OnUnhandledException();
+#endif
 	}
 
 	ExitMainLoop();
