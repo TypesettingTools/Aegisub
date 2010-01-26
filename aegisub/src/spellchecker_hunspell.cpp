@@ -267,7 +267,7 @@ void HunspellSpellChecker::SetLanguage(wxString language) {
 	dicpath = wxString::Format("%s%s.dic", path, language);
 	usrdicpath = wxString::Format("%s%s.dic", userPath, language);
 
-	wxLogDebug("Using dictionary %ls for spellchecking\n", dicpath);
+	wxLogDebug("Using dictionary: %ls", dicpath);
 
 	// Check if language is available
 	if (!wxFileExists(affpath) || !wxFileExists(dicpath)) return;

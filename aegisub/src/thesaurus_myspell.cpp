@@ -161,6 +161,8 @@ void MySpellThesaurus::SetLanguage(wxString language) {
 	// Check if language is available
 	if (!wxFileExists(idxpath) || !wxFileExists(datpath)) return;
 
+	wxLogDebug(_("Using thesarus: %ls"), datpath.c_str());
+
 	// Load
 	mythes = new MyThes(idxpath.mb_str(wxConvLocal),datpath.mb_str(wxConvLocal));
 	conv = NULL;
