@@ -79,7 +79,7 @@ wxTextCtrl(parent,id,value,pos,size,TimeEditWindowStyle | style,validator,name)
 	// Other stuff
 	if (!value) SetValue(time.GetASSFormated());
 	// This is a multiline control on wxGTK so we need to size it manually there
-#ifdef __WXGTK__ 
+#if defined(__WXGTK__) || defined(__APPLE__)
 	int w, h;
 	GetTextExtent(GetValue(),&w,&h);
 	w += 30;
