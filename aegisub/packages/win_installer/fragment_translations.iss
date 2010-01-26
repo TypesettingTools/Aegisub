@@ -47,8 +47,8 @@ Source: ..\..\po\de.mo;          DestDir: {app}\locale\de;    DestName: aegisub.
 Source: ..\..\po\wxstd-de.mo;    DestDir: {app}\locale\de;    DestName: wxstd.mo;   Flags: ignoreversion; Components: i18n/de
 Source: ..\..\po\es.mo;          DestDir: {app}\locale\es;    DestName: aegisub.mo; Flags: ignoreversion; Components: i18n/es
 Source: ..\..\po\wxstd-es.mo;    DestDir: {app}\locale\es;    DestName: wxstd.mo;   Flags: ignoreversion; Components: i18n/es
-Source: ..\..\po\el.mo;          DestDir: {app}\locale\es;    DestName: aegisub.mo; Flags: ignoreversion; Components: i18n/es
-Source: ..\..\po\wxstd-el.mo;    DestDir: {app}\locale\es;    DestName: wxstd.mo;   Flags: ignoreversion; Components: i18n/es
+Source: ..\..\po\el.mo;          DestDir: {app}\locale\el;    DestName: aegisub.mo; Flags: ignoreversion; Components: i18n/el
+Source: ..\..\po\wxstd-el.mo;    DestDir: {app}\locale\el;    DestName: wxstd.mo;   Flags: ignoreversion; Components: i18n/el
 Source: ..\..\po\fi.mo;          DestDir: {app}\locale\fi;    DestName: aegisub.mo; Flags: ignoreversion; Components: i18n/fi
 Source: ..\..\po\wxstd-fi.mo;    DestDir: {app}\locale\fi;    DestName: wxstd.mo;   Flags: ignoreversion; Components: i18n/fi
 Source: ..\..\po\fr_FR.mo;       DestDir: {app}\locale\fr_FR; DestName: aegisub.mo; Flags: ignoreversion; Components: i18n/fr_FR
@@ -93,6 +93,7 @@ Name: i18n/ko;    Description: "한국어 (Korean)"; Types: full
 Name: i18n/ru;    Description: "Русский язык (Russian)"; Types: full
 Name: i18n/es;    Description: "Español (Spanish)"; Types: full
 Name: i18n/vi;    Description: "Tiếng Việt (Vietnamese)"; Types: full
+
 
 
 
