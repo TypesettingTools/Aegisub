@@ -511,6 +511,8 @@ void AudioDisplay::DrawTimescale(wxDC &dc) {
 	dc.SetTextForeground(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNTEXT));
 	wxFont scaleFont;
 	scaleFont.SetFaceName(_T("Tahoma")); // FIXME: hardcoded font name
+	if (!scaleFont.IsOk())
+		scaleFont.SetFamily(wxFONTFAMILY_SWISS );
 	scaleFont.SetPointSize(8);
 	dc.SetFont(scaleFont);
 
