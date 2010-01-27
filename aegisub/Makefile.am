@@ -65,7 +65,6 @@ EXTRA_DIST += \
 EXTRA_DIST += \
 	scripts/osx-bundle-restart-helper.c \
 	scripts/osx-bundle.sh \
-	scripts/osx-dmg-dsstore.pl \
 	scripts/osx-dmg.sh \
 	scripts/osx-fix-libs.py \
 	scripts/unix-gen-res.awk \

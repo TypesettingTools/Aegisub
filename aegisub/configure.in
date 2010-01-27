@@ -4,7 +4,7 @@ AC_PREREQ(2.57)
 # aegisub version info 
 ######################
 # MAKE SURE YOU UPDATE THE VERSION INFO BELOW WHEN YOU SET THIS TO '1'
-m4_define([aegisub_FINAL_RELEASE], [0])
+m4_define([aegisub_FINAL_RELEASE], [1])
 
 m4_define([aegisub_version_major], [2])
 m4_define([aegisub_version_minor], [1])
