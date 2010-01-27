@@ -264,7 +264,6 @@ AC_SUBST(DMG_STRING)
 
 
 
-
 ###################################################
 # Check for pthreads and setup variables / compiler
 ###################################################
