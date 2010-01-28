@@ -1340,7 +1340,7 @@ void AudioDisplay::OnPaint(wxPaintEvent& event) {
 	if (player && !player->IsPlaying())
 		playbackCursorPos = -1;
 	if (playbackCursorPos >= 0) {
-		dc.SetPen(wxPen(wxColour(255,255,255)));
+		dc.SetPen(wxPen(Options.AsColour(_T("Audio Play cursor"))));
 		dc.DrawLine(playbackCursorPos,0,playbackCursorPos,h);
 	}
 #endif
