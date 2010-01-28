@@ -1329,6 +1329,21 @@ void AudioDisplay::OnPaint(wxPaintEvent& event) {
 
 	wxPaintDC dc(this);
 	if (origImage) dc.DrawBitmap(*origImage,0,0);
+	
+#ifdef __WXMAC__
+	// Hack/workaround for wxMac limitation
+	// Painting to a wxClientDC doesn't work on wxMac so use this hack
+	// instead to paint the playback cursor in OnPaint, and shoot Refresh()
+	// in the OnUpdateTimer handler.
+	// The playback cursor doesn't disappear after stopping in every case,
+	// but most.
+	if (player && !player->IsPlaying())
+		playbackCursorPos = -1;
+	if (playbackCursorPos >= 0) {
+		dc.SetPen(wxPen(wxColour(255,255,255)));
+		dc.DrawLine(playbackCursorPos,0,playbackCursorPos,h);
+	}
+#endif
 }
 
 
@@ -2004,6 +2019,10 @@ void AudioDisplay::OnUpdateTimer(wxTimerEvent &event) {
 			wxMemoryDC src;
 			curpos = GetXAtSample(curPos);
 			if (curpos >= 0 && curpos < GetClientSize().GetWidth()) {
+#ifdef __WXMAC__
+				playbackCursorPos = curpos;
+				Refresh();
+#else
 				dc.SetPen(wxPen(Options.AsColour(_T("Audio Play cursor"))));
 				src.SelectObject(*origImage);
 				if (fullDraw) {
@@ -2016,23 +2035,34 @@ void AudioDisplay::OnUpdateTimer(wxTimerEvent &event) {
 					dc.Blit(oldCurPos,0,1,h,&src,oldCurPos,0);
 					dc.DrawLine(curpos,0,curpos,h);
 				}
+#endif
 			}
 		}
 		else {
 			if (curPos > player->GetEndPosition() + 8192) {
 				player->Stop();
 			}
+#ifdef __WXMAC__
+			playbackCursorPos = -1;
+			Refresh();
+#else
 			wxMemoryDC src;
 			src.SelectObject(*origImage);
 			dc.Blit(oldCurPos,0,1,h,&src,oldCurPos,0);
+#endif
 		}
 	}
 
 	// Restore background
 	else {
+#ifdef __WXMAC__
+		playbackCursorPos = -1;
+		Refresh();
+#else
 		wxMemoryDC src;
 		src.SelectObject(*origImage);
 		dc.Blit(oldCurPos,0,1,h,&src,oldCurPos,0);
+#endif
 	}
 	oldCurPos = curpos;
 	if (oldCurPos < 0) oldCurPos = 0;

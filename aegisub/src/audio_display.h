@@ -85,6 +85,10 @@ private:
 	bool dontReadTimes;
 	bool playingToEnd;
 
+#ifdef __WXMAC__
+	int playbackCursorPos;
+#endif
+
 	bool needImageUpdate;
 	bool needImageUpdateWeak;
 
