@@ -82,7 +82,7 @@ void OSSPlayer::OpenStream()
 
     // Open device
     wxString device = Options.AsText(_T("Audio OSS Device"));
-    dspdev = ::open(device, O_WRONLY, 0);
+    dspdev = ::open(device.mb_str(wxConvUTF8), O_WRONLY, 0);
     if (dspdev < 0) {
         throw _T("OSS player: opening device failed");
     }
