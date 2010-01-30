@@ -1,4 +1,4 @@
-; Copyright (c) 2007-2009, Niels Martin Hansen
+﻿; Copyright (c) 2007-2009, Niels Martin Hansen
 ;
 ; Redistribution and use in source and binary forms, with or without
 ; modification, are permitted provided that the following conditions are met:
@@ -65,8 +65,8 @@ Source: ..\..\po\pt_BR.mo;       DestDir: {app}\locale\pt_BR; DestName: aegisub.
 Source: ..\..\po\wxstd-pt_BR.mo; DestDir: {app}\locale\pt_BR; DestName: wxstd.mo;   Flags: ignoreversion; Components: i18n/pt_BR
 Source: ..\..\po\ru.mo;          DestDir: {app}\locale\ru;    DestName: aegisub.mo; Flags: ignoreversion; Components: i18n/ru
 Source: ..\..\po\wxstd-ru.mo;    DestDir: {app}\locale\ru;    DestName: wxstd.mo;   Flags: ignoreversion; Components: i18n/ru
-Source: ..\..\po\vi.mo;          DestDir: {app}\locale\ru;    DestName: aegisub.mo; Flags: ignoreversion; Components: i18n/vi
-Source: ..\..\po\wxstd-vi.mo;    DestDir: {app}\locale\ru;    DestName: wxstd.mo;   Flags: ignoreversion; Components: i18n/vi
+Source: ..\..\po\vi.mo;          DestDir: {app}\locale\vi;    DestName: aegisub.mo; Flags: ignoreversion; Components: i18n/vi
+Source: ..\..\po\wxstd-vi.mo;    DestDir: {app}\locale\vi;    DestName: wxstd.mo;   Flags: ignoreversion; Components: i18n/vi
 Source: ..\..\po\zh_CN.mo;       DestDir: {app}\locale\zh_CN; DestName: aegisub.mo; Flags: ignoreversion; Components: i18n/zh_CN
 Source: ..\..\po\wxstd-zh_CN.mo; DestDir: {app}\locale\zh_CN; DestName: wxstd.mo;   Flags: ignoreversion; Components: i18n/zh_CN
 Source: ..\..\po\zh_TW.mo;       DestDir: {app}\locale\zh_TW; DestName: aegisub.mo; Flags: ignoreversion; Components: i18n/zh_TW
