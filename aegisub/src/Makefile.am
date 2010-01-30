@@ -2,6 +2,7 @@ AUTOMAKE_OPTIONS = foreign
 SUFFIXES = .c .cpp .rc
 noinst_LIBRARIES= 
 AM_CXXFLAGS = 
+DISTCLEANFILES =
 
 if BUILD_DARWIN
 libosxutil_subdir = libosxutil
@@ -18,6 +19,7 @@ BUILT_SOURCES = stdwx.h.gch
 precompiled_header = stdwx.h
 AM_CXXFLAGS += -Winvalid-pch -fpch-deps -fpch-preprocess -include stdwx.h
 nodist_aegisub_2_1_SOURCES = stdwx.h.gch
+DISTCLEANFILES += stdwx.h.gch
 endif
 
 SUBDIRS = \
