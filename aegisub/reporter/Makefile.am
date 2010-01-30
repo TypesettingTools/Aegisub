@@ -1,5 +1,6 @@
 AUTOMAKE_OPTIONS = foreign
 AM_CXXFLAGS =
+DISTCLEANFILES =
 
 bin_PROGRAMS = reporter-2.2
 
@@ -16,6 +17,7 @@ if PRECOMPILED_HEADER
 # This doesn't depend on Makefile on purpose, you should already know what you're doing when using this.
 r_pre.h.gch: r_pre.h
 	@CXX@ @WX_CPPFLAGS@ @CXXFLAGS@ @DEBUG_FLAGS@ r_pre.h
+DISTCLEANFILES += r_pre.h.gch
 endif
 
 
