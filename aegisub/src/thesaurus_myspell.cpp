@@ -42,6 +42,7 @@
 #ifndef AGI_PRE
 #include <wx/dir.h>
 #include <wx/filename.h>
+#include <wx/log.h>
 #endif
 
 #include "mythes.hxx"
