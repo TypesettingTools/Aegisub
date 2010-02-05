@@ -1,4 +1,4 @@
-// Copyright (c) 2008, Niels Martin Hansen
+// Copyright (c) 2008, 2010, Niels Martin Hansen
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -103,6 +103,29 @@ struct COMObjectRetainer {
 };
 
 
+struct Win32KernelHandle {
+	/// HANDLE value being managed
+	HANDLE handle;
+
+	/// @brief Create with a managed handle
+	/// @param handle Win32 handle to manage
+	Win32KernelHandle(HANDLE handle = 0)
+		: handle(handle)
+	{
+	}
+
+	/// @brief Destructor, closes the managed handle
+	~Win32KernelHandle()
+	{
+		if (handle) CloseHandle(handle);
+	}
+
+	/// @brief Returns the managed handle
+	operator HANDLE () const { return handle; }
+};
+
+
+
 class DirectSoundPlayer2Thread {
 	static unsigned int __stdcall ThreadProc(void *parameter);
 	void Run();
@@ -111,10 +134,10 @@ class DirectSoundPlayer2Thread {
 
 	void CheckError();
 
-	HANDLE thread_handle;
+	Win32KernelHandle thread_handle;
 
 	// Used to signal state-changes to thread
-	HANDLE
+	Win32KernelHandle
 		event_start_playback,
 		event_stop_playback,
 		event_update_end_time,
@@ -122,7 +145,7 @@ class DirectSoundPlayer2Thread {
 		event_kill_self;
 
 	// Thread communicating back
-	HANDLE
+	Win32KernelHandle
 		thread_running,
 		is_playing,
 		error_happened;
@@ -552,17 +575,15 @@ void DirectSoundPlayer2Thread::CheckError()
 
 
 DirectSoundPlayer2Thread::DirectSoundPlayer2Thread(AudioProvider *provider, int _WantedLatency, int _BufferLength)
+: event_start_playback  (CreateEvent(0, FALSE, FALSE, 0))
+, event_stop_playback   (CreateEvent(0, FALSE, FALSE, 0))
+, event_update_end_time (CreateEvent(0, FALSE, FALSE, 0))
+, event_set_volume      (CreateEvent(0, FALSE, FALSE, 0))
+, event_kill_self       (CreateEvent(0, FALSE, FALSE, 0))
+, thread_running        (CreateEvent(0,  TRUE, FALSE, 0))
+, is_playing            (CreateEvent(0,  TRUE, FALSE, 0))
+, error_happened        (CreateEvent(0, FALSE, FALSE, 0))
 {
-	event_start_playback  = CreateEvent(0, FALSE, FALSE, 0);
-	event_stop_playback   = CreateEvent(0, FALSE, FALSE, 0);
-	event_update_end_time = CreateEvent(0, FALSE, FALSE, 0);
-	event_set_volume      = CreateEvent(0, FALSE, FALSE, 0);
-	event_kill_self       = CreateEvent(0, FALSE, FALSE, 0);
-
-	thread_running        = CreateEvent(0,  TRUE, FALSE, 0);
-	is_playing            = CreateEvent(0,  TRUE, FALSE, 0);
-	error_happened        = CreateEvent(0, FALSE, FALSE, 0);
-
 	error_message = 0;
 	volume = 1.0;
 	start_frame = 0;
@@ -573,7 +594,7 @@ DirectSoundPlayer2Thread::DirectSoundPlayer2Thread(AudioProvider *provider, int 
 
 	this->provider = provider;
 
-	thread_handle = (HANDLE)_beginthreadex(0, 0, ThreadProc, this, 0, 0);
+	thread_handle.handle = (HANDLE)_beginthreadex(0, 0, ThreadProc, this, 0, 0);
 
 	if (!thread_handle)
 		throw _T("Failed creating playback thread in DirectSoundPlayer2. This is bad.");
