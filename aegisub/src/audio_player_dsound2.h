@@ -43,22 +43,23 @@
 class DirectSoundPlayer2Thread;
 
 
-/// DOCME
 /// @class DirectSoundPlayer2
-/// @brief DOCME
+/// @brief New implementation of DirectSound-based audio player
 ///
-/// DOCME
+/// The core design idea is to have a playback thread that owns the DirectSound COM objects
+/// and performs all playback operations, and use the player object as a proxy to
+/// send commands to the playback thread.
 class DirectSoundPlayer2 : public AudioPlayer {
 
-	/// DOCME
+	/// The playback thread
 	DirectSoundPlayer2Thread *thread;
 
 protected:
 
-	/// DOCME
+	/// Desired length in milliseconds to write ahead of the playback cursor
 	int WantedLatency;
 
-	/// DOCME
+	/// Multiplier for WantedLatency to get total buffer length
 	int BufferLength;
 
 	bool IsThreadAlive();
@@ -88,16 +89,12 @@ public:
 
 
 
-/// DOCME
 /// @class DirectSoundPlayer2Factory
-/// @brief DOCME
-///
-/// DOCME
+/// @brief Factory class for DirectSoundPlayer2
 class DirectSoundPlayer2Factory : public AudioPlayerFactory {
 public:
 
-	/// @brief DOCME
-	///
+	/// @brief Create a DirectSoundPlayer2 object
 	AudioPlayer *CreatePlayer() { return new DirectSoundPlayer2(); }
 };
 
