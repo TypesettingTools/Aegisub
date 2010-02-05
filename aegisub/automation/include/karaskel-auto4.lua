@@ -429,12 +429,14 @@ function karaskel.do_furigana_layout(meta, styles, line)
 	-- And end-sentinel
 	table.insert(lgroups, lgsentinel)
 
+	aegisub.debug.out(5, "\nProducing layout from %d layout groups\n", #lgroups-1)
 	-- Layout the groups at macro-level
 	-- Skip sentinel at ends in loop
 	local curx = 0
 	for i = 2, #lgroups-1 do
 		local lg = lgroups[i]
 		local prev = lgroups[i-1]
+		aegisub.debug.out(5, "Layout group, nsyls=%d, nfuri=%d, syl1text='%s', basewidth=%f furiwidth=%f, ", #lg.syls, #lg.furi, lg.syls[1] and lg.syls[1].text or "", lg.basewidth, lg.furiwidth)
 		
 		-- Three cases: No furigana, furigana smaller than base and furigana larger than base
 		if lg.furiwidth == 0 then
@@ -443,14 +445,16 @@ function karaskel.do_furigana_layout(meta, styles, line)
 			lg.right = lg.left + lg.basewidth
 			-- If there was any spillover from a previous group, add it to here
 			if prev.rightspill  and prev.rightspill > 0 then
+				aegisub.debug.out(5, "eat rightspill=%f, ", prev.rightspill)
 				lg.leftspill = 0
-				lg.rightspill = lg.basewidth - prev.rightspill
+				lg.rightspill = prev.rightspill - lg.basewidth
 				prev.rightspill = 0
 			end
 			curx = curx + lg.basewidth
 		elseif lg.furiwidth <= lg.basewidth then
 			-- If there was any rightspill from previous group, we have to stay 100% clear of that
 			if prev.rightspill and prev.rightspill > 0 then
+				aegisub.debug.out(5, "skip rightspill=%f, ", prev.rightspill)
 				curx = curx + prev.rightspill
 				prev.rightspill = 0
 			end
@@ -463,6 +467,7 @@ function karaskel.do_furigana_layout(meta, styles, line)
 		else
 			-- Furigana is wider than base, we'll have to spill in some direction
 			if prev.rightspill and prev.rightspill > 0 then
+				aegisub.debug.out(5, "skip rightspill=%f, ", prev.rightspill)
 				curx = curx + prev.rightspill
 				prev.rightspill = 0
 			end
@@ -471,6 +476,7 @@ function karaskel.do_furigana_layout(meta, styles, line)
 				-- Both directions
 				lg.leftspill = (lg.furiwidth - lg.basewidth) / 2
 				lg.rightspill = lg.leftspill
+				aegisub.debug.out(5, "spill left=%f right=%f, ", lg.leftspill, lg.rightspill)
 				-- If there was any furigana or spill on previous syllable we can't overlap it
 				if prev.rightspill then
 					lg.left = curx + lg.leftspill
@@ -481,11 +487,13 @@ function karaskel.do_furigana_layout(meta, styles, line)
 				-- Only to the right
 				lg.leftspill = 0
 				lg.rightspill = lg.furiwidth - lg.basewidth
+				aegisub.debug.out(5, "spill right=%f, ", lg.rightspill)
 				lg.left = curx
 			end
 			lg.right = lg.left + lg.basewidth
 			curx = lg.right
 		end
+		aegisub.debug.out(5, "left=%f, right=%f\n", lg.left, lg.right)
 	end
 	
 	-- Now the groups are layouted, so place the individual syllables/furigana
