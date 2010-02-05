@@ -1,5 +1,5 @@
 --[[
- Copyright (c) 2007, Niels Martin Hansen, Rodrigo Braz Monteiro
+ Copyright (c) 2007, 2010, Niels Martin Hansen, Rodrigo Braz Monteiro
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -37,7 +37,12 @@ end
 
 -- Collect styles and metadata from the subs
 function karaskel.collect_head(subs, generate_furigana)
-	local meta = { res_x = 0, res_y = 0 }
+	local meta = {
+		-- X and Y script resolution
+		res_x = 0, res_y = 0,
+		-- Aspect ratio correction factor for video/script resolution mismatch
+		video_x_correct_factor = 1.0
+	}
 	local styles = { n = 0 }
 	local toinsert = {}
 	local first_style_line = nil
@@ -115,6 +120,17 @@ function karaskel.collect_head(subs, generate_furigana)
 			meta.res_y = meta.res_x * 3 / 4
 		end
 	end
+	
+	local video_x, video_y = aegisub.video_size()
+	if video_y then
+		-- Correction factor for TextSub weirdness when render resolution does
+		-- not match script resolution. Text pixels are considered square in
+		-- render resolution rather than in script resolution, which is
+		-- logically inconsistent. Correct for that.
+		meta.video_x_correct_factor =
+			(video_y / video_x) / (meta.res_y / meta.res_x)
+	end
+	aegisub.debug.out(4, "Karaskel: Video X correction factor = %f\n\n", meta.video_x_correct_factor)
 	
 	return meta, styles
 end
@@ -270,14 +286,16 @@ function karaskel.preproc_line_size(meta, styles, line)
 	
 	-- Calculate whole line sizing
 	line.width, line.height, line.descent, line.extlead = aegisub.text_extents(line.styleref, line.text_stripped)
+	line.width = line.width * meta.video_x_correct_factor
 
 	-- Calculate syllable sizing
 	for s = 0, line.kara.n do
 		local syl = line.kara[s]
 		syl.style = line.styleref
 		syl.width, syl.height = aegisub.text_extents(syl.style, syl.text_spacestripped)
-		syl.prespacewidth = aegisub.text_extents(syl.style, syl.prespace)
-		syl.postspacewidth = aegisub.text_extents(syl.style, syl.postspace)
+		syl.width = syl.width * meta.video_x_correct_factor
+		syl.prespacewidth = aegisub.text_extents(syl.style, syl.prespace) * meta.video_x_correct_factor
+		syl.postspacewidth = aegisub.text_extents(syl.style, syl.postspace) * meta.video_x_correct_factor
 	end
 	
 	-- Calculate furigana sizing
@@ -292,6 +310,7 @@ function karaskel.preproc_line_size(meta, styles, line)
 			local furi = line.furi[f]
 			furi.style = line.furistyle
 			furi.width, furi.height = aegisub.text_extents(furi.style, furi.text)
+			furi.width = furi.width * meta.video_x_correct_factor
 			furi.prespacewidth = 0
 			furi.postspacewidth = 0
 		end
