@@ -1,4 +1,4 @@
-// Copyright (c) 2008, Niels Martin Hansen
+// Copyright (c) 2008, 2010, Niels Martin Hansen
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -55,6 +55,7 @@
 #include "utils.h"
 
 
+
 /// @brief RAII support class to init and de-init the COM library
 struct COMInitialization {
 
@@ -87,6 +88,7 @@ struct COMInitialization {
 		}
 	}
 };
+
 
 
 /// @class COMObjectRetainer
@@ -130,6 +132,30 @@ struct COMObjectRetainer {
 
 
 
+/// @brief RAII wrapper around Win32 HANDLE type
+struct Win32KernelHandle {
+	/// HANDLE value being managed
+	HANDLE handle;
+
+	/// @brief Create with a managed handle
+	/// @param handle Win32 handle to manage
+	Win32KernelHandle(HANDLE handle = 0)
+		: handle(handle)
+	{
+	}
+
+	/// @brief Destructor, closes the managed handle
+	~Win32KernelHandle()
+	{
+		if (handle) CloseHandle(handle);
+	}
+
+	/// @brief Returns the managed handle
+	operator HANDLE () const { return handle; }
+};
+
+
+
 /// @class DirectSoundPlayer2Thread
 /// @brief Playback thread class for DirectSoundPlayer2
 ///
@@ -144,31 +170,31 @@ class DirectSoundPlayer2Thread {
 
 
 	/// Win32 handle to the thread
-	HANDLE thread_handle;
+	Win32KernelHandle thread_handle;
 
 	/// Event object, world to thread, set to start playback
-	HANDLE event_start_playback;
+	Win32KernelHandle event_start_playback;
 
 	/// Event object, world to thread, set to stop playback
-	HANDLE event_stop_playback;
+	Win32KernelHandle event_stop_playback;
 
 	/// Event object, world to thread, set if playback end time was updated
-	HANDLE event_update_end_time;
+	Win32KernelHandle event_update_end_time;
 
 	/// Event object, world to thread, set if the volume was changed
-	HANDLE event_set_volume;
+	Win32KernelHandle event_set_volume;
 
 	/// Event object, world to thread, set if the thread should end as soon as possible
-	HANDLE event_kill_self;
+	Win32KernelHandle event_kill_self;
 
 	/// Event object, thread to world, set when the thread has entered its main loop
-	HANDLE thread_running;
+	Win32KernelHandle thread_running;
 
 	/// Event object, thread to world, set when playback is ongoing
-	HANDLE is_playing;
+	Win32KernelHandle is_playing;
 
 	/// Event object, thread to world, set if an error state has occurred (implies thread is dying)
-	HANDLE error_happened;
+	Win32KernelHandle error_happened;
 
 	/// Statically allocated error message text describing reason for error_happened being set
 	const wxChar *error_message;
@@ -636,17 +662,15 @@ void DirectSoundPlayer2Thread::CheckError()
 /// @param _WantedLatency Desired length in milliseconds to write ahead of the playback cursor
 /// @param _BufferLength  Multiplier for WantedLatency to get total buffer length
 DirectSoundPlayer2Thread::DirectSoundPlayer2Thread(AudioProvider *provider, int _WantedLatency, int _BufferLength)
+: event_start_playback  (CreateEvent(0, FALSE, FALSE, 0))
+, event_stop_playback   (CreateEvent(0, FALSE, FALSE, 0))
+, event_update_end_time (CreateEvent(0, FALSE, FALSE, 0))
+, event_set_volume      (CreateEvent(0, FALSE, FALSE, 0))
+, event_kill_self       (CreateEvent(0, FALSE, FALSE, 0))
+, thread_running        (CreateEvent(0,  TRUE, FALSE, 0))
+, is_playing            (CreateEvent(0,  TRUE, FALSE, 0))
+, error_happened        (CreateEvent(0, FALSE, FALSE, 0))
 {
-	event_start_playback  = CreateEvent(0, FALSE, FALSE, 0);
-	event_stop_playback   = CreateEvent(0, FALSE, FALSE, 0);
-	event_update_end_time = CreateEvent(0, FALSE, FALSE, 0);
-	event_set_volume      = CreateEvent(0, FALSE, FALSE, 0);
-	event_kill_self       = CreateEvent(0, FALSE, FALSE, 0);
-
-	thread_running        = CreateEvent(0,  TRUE, FALSE, 0);
-	is_playing            = CreateEvent(0,  TRUE, FALSE, 0);
-	error_happened        = CreateEvent(0, FALSE, FALSE, 0);
-
 	error_message = 0;
 	volume = 1.0;
 	start_frame = 0;
@@ -657,7 +681,7 @@ DirectSoundPlayer2Thread::DirectSoundPlayer2Thread(AudioProvider *provider, int 
 
 	this->provider = provider;
 
-	thread_handle = (HANDLE)_beginthreadex(0, 0, ThreadProc, this, 0, 0);
+	thread_handle.handle = (HANDLE)_beginthreadex(0, 0, ThreadProc, this, 0, 0);
 
 	if (!thread_handle)
 		throw _T("Failed creating playback thread in DirectSoundPlayer2. This is bad.");
