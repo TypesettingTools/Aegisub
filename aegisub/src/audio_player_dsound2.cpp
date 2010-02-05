@@ -354,22 +354,21 @@ void DirectSoundPlayer2Thread::Run()
 					REPORT_ERROR("Could not reset playback buffer cursor before filling first buffer.")
 
 				HRESULT res = bfr->Lock(buffer_offset, 0, &buf, &buf_size, 0, 0, DSBLOCK_ENTIREBUFFER);
-				while (FAILED(res)) // yes, while, so I can break out of it without a goto!
+				if (FAILED(res))
 				{
 					if (res == DSERR_BUFFERLOST)
 					{
 						// Try to regain the buffer
-						if (SUCCEEDED(bfr->Restore()) &&
-							SUCCEEDED(bfr->Lock(buffer_offset, 0, &buf, &buf_size, 0, 0, DSBLOCK_ENTIREBUFFER)))
+						if (FAILED(bfr->Restore()) ||
+							FAILED(bfr->Lock(buffer_offset, 0, &buf, &buf_size, 0, 0, DSBLOCK_ENTIREBUFFER)))
 						{
-							//wxLogDebug(_T("DirectSoundPlayer2: Lost and restored buffer"));
-							break;
+							REPORT_ERROR("Lost buffer and could not restore it.")
 						}
-
-						REPORT_ERROR("Lost buffer and could not restore it.")
 					}
-
-					REPORT_ERROR("Could not lock buffer for playback.")
+					else
+					{
+						REPORT_ERROR("Could not lock buffer for playback.")
+					}
 				}
 
 				// Clear the buffer in case we can't fill it completely
