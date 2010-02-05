@@ -578,9 +578,20 @@ DirectSoundPlayer2Thread::DirectSoundPlayer2Thread(AudioProvider *provider, int 
 	if (!thread_handle)
 		throw _T("Failed creating playback thread in DirectSoundPlayer2. This is bad.");
 
-	CheckError();
+	HANDLE running_or_error[] = { thread_running, error_happened };
+	switch (WaitForMultipleObjects(2, running_or_error, FALSE, INFINITE))
+	{
+	case WAIT_OBJECT_0:
+		// running, all good
+		return;
 
-	WaitForSingleObject(thread_running, INFINITE);
+	case WAIT_OBJECT_0 + 1:
+		// error happened, we fail
+		throw error_message;
+
+	default:
+		throw _T("Failed wait for thread start or thread error in DirectSoundPlayer2. This is bad.");
+	}
 }
 
 
