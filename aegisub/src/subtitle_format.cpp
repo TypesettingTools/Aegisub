@@ -160,7 +160,7 @@ void SubtitleFormat::LoadFormats () {
 		new MKVSubtitleFormat();
 		new EncoreSubtitleFormat();
 		new TranStationSubtitleFormat();
-#ifdef __WXDEBUG__
+#ifdef _DEBUG
 		new DVDSubtitleFormat();
 #endif
 	}

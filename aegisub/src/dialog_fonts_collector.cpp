@@ -118,7 +118,7 @@ DialogFontsCollector::DialogFontsCollector(wxWindow *parent)
 	choices.Add(_("Copy fonts to folder"));
 	choices.Add(_("Copy fonts to zipped archive"));
 	choices.Add(_("Attach fonts to current subtitles"));
-#ifdef __WXDEBUG__
+#ifdef _DEBUG
 	choices.Add(_("DEBUG: Verify all fonts in system"));
 #endif
 	CollectAction = new wxRadioBox(this,RADIO_BOX,_T("Action"),wxDefaultPosition,wxDefaultSize,choices,1);

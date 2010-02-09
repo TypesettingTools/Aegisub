@@ -237,7 +237,7 @@
 #include <GL/glu.h>
 #endif
 
-#ifndef _CRT_SECURE_NO_WARNINGS
+#ifndef _CRT_SECURE_NO_WARNINGS_DEFINED
 #undef _CRT_SECURE_NO_WARNINGS
 #endif
 

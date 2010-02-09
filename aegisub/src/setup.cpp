@@ -48,7 +48,7 @@
 /////////////
 // wxWidgets
 #if wxCHECK_VERSION(2, 9, 0)
-#ifdef __WXDEBUG__
+#ifdef _DEBUG
 #pragma comment(lib, "wxzlibd.lib")
 #pragma comment(lib, "wxpngd.lib")
 #pragma comment(lib, "wxregexud.lib")
@@ -122,7 +122,7 @@
 /////////////
 // FreeType2
 #ifdef WITH_FREETYPE2
-#ifdef __WXDEBUG__
+#ifdef _DEBUG
 #ifdef FT2_LIB_DEBUG
 #pragma comment(lib,FT2_LIB_DEBUG)
 #endif
