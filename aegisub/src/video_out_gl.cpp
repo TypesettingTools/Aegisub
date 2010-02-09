@@ -82,6 +82,8 @@ struct VideoOutGL::TextureInfo {
 	float texBottom;
 	float texLeft;
 	float texRight;
+
+	float texPct;
 };
 
 /// @brief Test if a texture can be created
@@ -223,8 +225,11 @@ void VideoOutGL::InitTextures(int width, int height, GLenum format, int bpp, boo
 			ti.texRight = 1.0f - ti.texLeft;
 			ti.texBottom = 1.0f - ti.texTop;
 			if (flipped) {
-				ti.texBottom = ti.texTop - float(h - ti.sourceH) / h;
-				ti.texTop = 1.0f - ti.texTop - float(h - ti.sourceH) / h;
+				// Don't simply flip the texture, as some of it may be unused and if so the
+				// frame would be partially offscreen
+				ti.texPct = float(h - ti.sourceH) / h;
+				ti.texBottom = ti.texTop - ti.texPct;
+				ti.texTop = 1.0f - ti.texTop - ti.texPct;
 
 				ti.dataOffset = (height - sourceY - ti.sourceH) * width * bpp + sourceX * bpp;
 			}
@@ -274,7 +279,7 @@ void VideoOutGL::UploadFrameData(const AegiVideoFrame& frame) {
 	CHECK_ERROR(glPixelStorei(GL_UNPACK_ROW_LENGTH, 0));
 }
 
-void VideoOutGL::Render(int sw, int sh) {
+void VideoOutGL::Render(int sw, int sh, double zoom) {
 	CHECK_ERROR(glEnable(GL_TEXTURE_2D));
 
 	for (unsigned i = 0; i < textureList.size(); i++) {
@@ -288,11 +293,25 @@ void VideoOutGL::Render(int sw, int sh) {
 		CHECK_ERROR(glBindTexture(GL_TEXTURE_2D, ti.textureID));
 		CHECK_ERROR(glColor4f(1.0f, 1.0f, 1.0f, 1.0f));
 
+		// Only stretch the textures if the video isn't at 100% zoom, as
+		// the stretch is only needed when scaling
+		float left = 0.0f, right = 1.0f, top = 0.0f, bottom = 1.0f;
+		if (zoom != 1.0) {
+			left   = ti.texLeft;
+			right  = ti.texRight;
+			top    = ti.texTop;
+			bottom = ti.texBottom;
+		}
+		else if (frameFlipped) {
+			bottom = -ti.texPct;
+			top    = 1.0f - ti.texPct;
+		}
+
 		glBegin(GL_QUADS);
-			glTexCoord2f(ti.texLeft,  ti.texTop);     glVertex2f(destX, destY);
-			glTexCoord2f(ti.texRight, ti.texTop);     glVertex2f(destX + destW, destY);
-			glTexCoord2f(ti.texRight, ti.texBottom);  glVertex2f(destX + destW, destY + destH);
-			glTexCoord2f(ti.texLeft,  ti.texBottom);  glVertex2f(destX, destY + destH);
+			glTexCoord2f(left,  top);     glVertex2f(destX, destY);
+			glTexCoord2f(right, top);     glVertex2f(destX + destW, destY);
+			glTexCoord2f(right, bottom);  glVertex2f(destX + destW, destY + destH);
+			glTexCoord2f(left,  bottom);  glVertex2f(destX, destY + destH);
 		glEnd();
 		if (GLenum err = glGetError()) throw VideoOutRenderException(L"GL_QUADS", err);
 	}

@@ -86,7 +86,8 @@ public:
 	/// @brief Render a frame
 	/// @param sw The current script width
 	/// @param sh The current script height
-	void Render(int sw, int sh);
+	/// @param zoom The current zoom level
+	void Render(int sw, int sh, double zoom);
 
 	/// @brief Constructor
 	VideoOutGL();

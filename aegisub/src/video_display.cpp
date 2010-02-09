@@ -315,7 +315,7 @@ void VideoDisplay::Render() try {
 	glDisable(GL_BLEND);
 	if (glGetError()) throw _T("Error disabling blending.");
 
-	videoOut->Render(sw, sh);
+	videoOut->Render(sw, sh, zoomValue);
 
 	DrawTVEffects();
 
