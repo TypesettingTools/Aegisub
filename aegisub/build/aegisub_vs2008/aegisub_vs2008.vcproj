@@ -113,6 +113,7 @@
 				MinimalRebuild="true"
 				UsePrecompiledHeader="2"
 				PrecompiledHeaderThrough="stdwx.h"
+				DebugInformationFormat="3"
 				DisableSpecificWarnings="4267"
 				ForcedIncludeFiles="stdwx.h"
 			/>
