@@ -75,19 +75,23 @@ void HelpButton::OnPressed(wxCommandEvent &event) {
 ///////////////
 // Open a page
 void HelpButton::OpenPage(const wxString pageID) {
-	// Transcode
+	// Translate ID to page filename
 	InitStatic();
 	wxString page = (*pages)[pageID];
 
-	wxString docsPath = StandardPaths::DecodePath(_T("?data/docs"));
-#ifdef __WINDOWS__
-	docsPath.Replace(_T("\\"),_T("/"));
-	docsPath = _T("/") + docsPath;
-#endif
-	wxString path = wxString::Format(_T("file://%s/%s.html"),docsPath.c_str(),page.c_str());
-	if (!wxFileName::IsFileReadable(docsPath))
-		path = StandardPaths::DecodePath(wxString::Format(_T("http://docs.aegisub.net/%s"),page.c_str()));
-	wxLaunchDefaultBrowser(path);
+	wxFileName docFile(StandardPaths::DecodePath(_T("?data/docs/")), page, _T("html"), wxPATH_NATIVE);
+
+	wxString url;
+	// If we can read a file by the constructed name, assume we have a local copy of the manual
+	if (docFile.IsFileReadable())
+		// Tested IE8, Firefox 3.5, Safari 4, Chrome 4 and Opera 10 on Windows, they all handle
+		// various variations of slashes, missing one at the start and using backslashes throughout
+		// is safe with everything everyone uses. Blame Microsoft.
+		url = wxString(_T("file://")) + docFile.GetFullPath(wxPATH_NATIVE);
+	else
+		url = wxString::Format(_T("http://docs.aegisub.net/%s"),page.c_str());
+
+	wxLaunchDefaultBrowser(url);
 }
 
 
