@@ -81,7 +81,6 @@
 #include <ctype.h>
 #include <errno.h>
 #include <fcntl.h>
-#include <iconv.h>
 #include <locale.h>
 #include <math.h>
 #ifdef _OPENMP
