@@ -36,7 +36,9 @@
 
 #include "include/aegisub/exception.h"
 
+#ifndef AGI_PRE
 #include <vector>
+#endif
 
 class AegiVideoFrame;
 
@@ -76,18 +78,26 @@ private:
 
 	void DetectOpenGLCapabilities();
 	void InitTextures(int width, int height, GLenum format, int bpp, bool flipped);
+	void CreateTexture(int w, int h, const TextureInfo& ti, GLenum format);
 
 	VideoOutGL(const VideoOutGL &);
 	VideoOutGL& operator=(const VideoOutGL&);
 public:
+	/// @brief Set the viewport
+	/// @param x Bottom left x coordinate
+	/// @param y Bottom left y coordinate
+	/// @param width Width in pixels of viewport
+	/// @param height Height in pixels of viewport
+	void SetViewport(int x, int y, int width, int height);
+
 	/// @brief Set the frame to be displayed when Render() is called
 	/// @param frame The frame to be displayed
 	void UploadFrameData(const AegiVideoFrame& frame);
+
 	/// @brief Render a frame
 	/// @param sw The current script width
 	/// @param sh The current script height
-	/// @param zoom The current zoom level
-	void Render(int sw, int sh, double zoom);
+	void Render(int sw, int sh);
 
 	/// @brief Constructor
 	VideoOutGL();

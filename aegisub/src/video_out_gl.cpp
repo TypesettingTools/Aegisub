@@ -1,4 +1,4 @@
-// Copyright (c) 2009, Thomas Goyne
+// Copyright (c) 2010, Thomas Goyne
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -53,37 +53,40 @@
 #include "utils.h"
 #include "video_frame.h"
 
-// Windows only has headers for OpenGL 1.1 and GL_CLAMP_TO_EDGE is 1.2
-#ifndef GL_CLAMP_TO_EDGE
-#define GL_CLAMP_TO_EDGE 0x812F
-#endif
-
 #define CHECK_INIT_ERROR(cmd) cmd; if (GLenum err = glGetError()) throw VideoOutInitException(_T(#cmd), err)
 #define CHECK_ERROR(cmd) cmd; if (GLenum err = glGetError()) throw VideoOutRenderException(_T(#cmd), err)
 
 /// @brief Structure tracking all precomputable information about a subtexture
 struct VideoOutGL::TextureInfo {
-	/// The OpenGL texture id this is for
 	GLuint textureID;
-	/// The byte offset into the frame's data block
 	int dataOffset;
 	int sourceH;
 	int sourceW;
 
-	int textureH;
-	int textureW;
-
-	float destH;
-	float destW;
-	float destX;
-	float destY;
+	float destX1;
+	float destY1;
+	float destX2;
+	float destY2;
 
 	float texTop;
 	float texBottom;
 	float texLeft;
 	float texRight;
 
-	float texPct;
+	TextureInfo()
+		: textureID(0)
+		, dataOffset(0)
+		, sourceH(0)
+		, sourceW(0)
+		, destX1(0)
+		, destY1(0)
+		, destX2(0)
+		, destY2(0)
+		, texTop(0)
+		, texBottom(1.0f)
+		, texLeft(0)
+		, texRight(1.0f)
+	{ }
 };
 
 /// @brief Test if a texture can be created
@@ -132,18 +135,6 @@ void VideoOutGL::DetectOpenGLCapabilities() {
 
 	// Test for rectangular texture support
 	supportsRectangularTextures = TestTexture(maxTextureSize, maxTextureSize >> 1, internalFormat);
-
-	// Test GL_CLAMP_TO_EDGE support
-	glTexImage2D(GL_PROXY_TEXTURE_2D, 0, GL_RGBA8, 64, 64, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	if (glGetError()) {
-		supportsGlClampToEdge = false;
-		wxLogDebug(L"VideoOutGL::DetectOpenGLCapabilities: Using GL_CLAMP\n");
-	}
-	else {
-		supportsGlClampToEdge = true;
-		wxLogDebug(L"VideoOutGL::DetectOpenGLCapabilities: Using GL_CLAMP_TO_EDGE\n");
-	}
 }
 
 /// @brief If needed, create the grid of textures for displaying frames of the given format
@@ -152,8 +143,12 @@ void VideoOutGL::DetectOpenGLCapabilities() {
 /// @param format The frame's format
 /// @param bpp The frame's bytes per pixel
 void VideoOutGL::InitTextures(int width, int height, GLenum format, int bpp, bool flipped) {
+	frameFlipped = flipped;
 	// Do nothing if the frame size and format are unchanged
-	if (width == frameWidth && height == frameHeight && format == frameFormat && frameFlipped == flipped) return;
+	if (width == frameWidth && height == frameHeight && format == frameFormat) return;
+	frameWidth  = width;
+	frameHeight = height;
+	frameFormat = format;
 	wxLogDebug(L"VideoOutGL::InitTextures: Video size: %dx%d\n", width, height);
 
 	DetectOpenGLCapabilities();
@@ -166,99 +161,90 @@ void VideoOutGL::InitTextures(int width, int height, GLenum format, int bpp, boo
 	}
 
 	// Create the textures
-	textureRows  = (int)ceil(double(height) / maxTextureSize);
-	textureCols  = (int)ceil(double(width) / maxTextureSize);
+	int textureArea = maxTextureSize - 2;
+	textureRows  = (int)ceil(double(height) / textureArea);
+	textureCols  = (int)ceil(double(width) / textureArea);
 	textureIdList.resize(textureRows * textureCols);
 	textureList.resize(textureRows * textureCols);
 	CHECK_INIT_ERROR(glGenTextures(textureIdList.size(), &textureIdList[0]));
 
+	/* Unfortunately, we can't simply use one of the two standard ways to do
+	 * tiled textures to work around texture size limits in OpenGL, due to our
+	 * need to support Microsoft's OpenGL emulation for RDP/VPC/video card
+	 * drivers that don't support OpenGL (such as the ones which Windows
+	 * Update pushes for ATI cards in Windows 7). GL_CLAMP_TO_EDGE requires
+	 * OpenGL 1.2, but the emulation only supports 1.1. GL_CLAMP + borders has
+	 * correct results, but takes several seconds to render each frame. As a
+	 * result, the code below essentially manually reimplements borders, by
+	 * just not using the edge when mapping the texture onto a quad. The one
+	 * exception to this is the texture edges which are also frame edges, as
+	 * there does not appear to be a trivial way to mirror the edges, and the
+	 * nontrivial ways are more complex that is worth to avoid a single row of
+	 * slightly discolored pixels along the edges at zooms over 100%.
+	 *
+	 * Given a 64x64 maximum texture size:
+	 *     Quads touching the top of the frame are 63 pixels tall
+	 *     Quads touching the bottom of the frame are up to 63 pixels tall
+	 *     All other quads are 62 pixels tall
+	 *     Quads not on the top skip the first row of the texture
+	 *     Quads not on the bottom skip the last row of the texture
+	 *     Width behaves in the same way with respect to left/right edges
+	 */
+
 	// Calculate the position information for each texture
-	int sourceY = 0;
-	float destY = 0.0f;
-	for (int i = 0; i < textureRows; i++) {
-		int sourceX = 0;
-		float destX = 0.0f;
+	int lastRow = textureRows - 1;
+	int lastCol = textureCols - 1;
+	for (int row = 0; row < textureRows; ++row) {
+		for (int col = 0; col < textureCols; ++col) {
+			TextureInfo& ti = textureList[row * textureCols + col];
 
-		int sourceH = maxTextureSize;
-		int textureH = maxTextureSize;
-		// If the last row doesn't need a full texture, shrink it to the smallest one possible
-		if (i == textureRows - 1 && height % maxTextureSize > 0) {
-			sourceH = height % maxTextureSize;
-			textureH = SmallestPowerOf2(sourceH);
+			// Width and height of the area read from the frame data
+			int sourceX = col * textureArea;
+			int sourceY = row * textureArea;
+			ti.sourceW  = min(frameWidth  - sourceX, maxTextureSize);
+			ti.sourceH  = min(frameHeight - sourceY, maxTextureSize);
+
+			// Used instead of GL_PACK_SKIP_ROWS/GL_PACK_SKIP_PIXELS due to
+			// performance issues with the emulation
+			ti.dataOffset = sourceY * frameWidth * bpp + sourceX * bpp;
+
+			int textureHeight = SmallestPowerOf2(ti.sourceH);
+			int textureWidth  = SmallestPowerOf2(ti.sourceW);
+			if (!supportsRectangularTextures) {
+				textureWidth = textureHeight = max(textureWidth, textureHeight);
+			}
+
+			// Location where this texture is placed
+			// X2/Y2 will be offscreen unless the video frame happens to
+			// exactly use all of the texture
+			ti.destX1 = sourceX + (col != 0);
+			ti.destY1 = sourceY + (row != 0);
+			ti.destX2 = sourceX + textureWidth - (col != lastCol);
+			ti.destY2 = sourceY + textureHeight - (row != lastRow);
+
+			// Portion of the texture actually used
+			ti.texTop    = row == 0 ? 0 : 1.0f / textureHeight;
+			ti.texLeft   = col == 0 ? 0 : 1.0f / textureWidth;
+			ti.texBottom = row == lastRow ? 1.0f : 1.0f - 1.0f / textureHeight;
+			ti.texRight  = col == lastCol ? 1.0f : 1.0f - 1.0f / textureWidth;
+
+			ti.textureID = textureIdList[row * textureCols + col];
+
+			CreateTexture(textureWidth, textureHeight, ti, format);
 		}
-		for (int j = 0; j < textureCols; j++) {
-			TextureInfo& ti = textureList[i * textureCols + j];
-
-			// Copy the current position information into the struct
-			ti.destX = destX;
-			ti.destY = destY;
-			ti.sourceH = sourceH;
-
-			ti.sourceW = maxTextureSize;
-			int textureW = maxTextureSize;
-			// If the last column doesn't need a full texture, shrink it to the smallest one possible
-			if (j == textureCols - 1 && width % maxTextureSize > 0) {
-				ti.sourceW = width % maxTextureSize;
-				textureW = SmallestPowerOf2(ti.sourceW);
-			}
-
-			int w = textureW;
-			int h = textureH;
-			if (!supportsRectangularTextures) w = h = MAX(w, h);
-
-			if (supportsGlClampToEdge) {
-				ti.texLeft = 0.0f;
-				ti.texTop = 0.0f;
-			}
-			else {
-				// Stretch the texture a half pixel in each direction to eliminate the border
-				ti.texLeft = 1.0f / (2 * w);
-				ti.texTop = 1.0f / (2 * h);
-			}
-
-			ti.destW = float(w) / width;
-			ti.destH = float(h) / height;
-
-			ti.textureID = textureIdList[i * textureCols + j];
-			ti.dataOffset = sourceY * width * bpp + sourceX * bpp;
-
-			ti.texRight = 1.0f - ti.texLeft;
-			ti.texBottom = 1.0f - ti.texTop;
-			if (flipped) {
-				// Don't simply flip the texture, as some of it may be unused and if so the
-				// frame would be partially offscreen
-				ti.texPct = float(h - ti.sourceH) / h;
-				ti.texBottom = ti.texTop - ti.texPct;
-				ti.texTop = 1.0f - ti.texTop - ti.texPct;
-
-				ti.dataOffset = (height - sourceY - ti.sourceH) * width * bpp + sourceX * bpp;
-			}
-
-
-			// Actually create the texture and set the scaling mode
-			CHECK_INIT_ERROR(glBindTexture(GL_TEXTURE_2D, ti.textureID));
-			CHECK_INIT_ERROR(glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, w, h, 0, format, GL_UNSIGNED_BYTE, NULL));
-			wxLogDebug(L"VideoOutGL::InitTextures: Using texture size: %dx%d\n", w, h);
-			CHECK_INIT_ERROR(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR));
-			CHECK_INIT_ERROR(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
-
-			GLint mode = supportsGlClampToEdge ? GL_CLAMP_TO_EDGE : GL_CLAMP;
-			CHECK_INIT_ERROR(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, mode));
-			CHECK_INIT_ERROR(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, mode));
-
-			destX += ti.destW;
-			sourceX += ti.sourceW;
-		}
-		destY += float(sourceH) / height;
-		sourceY += sourceH;
 	}
-
-	// Store the information needed to know when the grid must be recreated
-	frameWidth   = width;
-	frameHeight  = height;
-	frameFormat  = format;
-	frameFlipped = flipped;
 }
+
+void VideoOutGL::CreateTexture(int w, int h, const TextureInfo& ti, GLenum format) {
+	CHECK_INIT_ERROR(glBindTexture(GL_TEXTURE_2D, ti.textureID));
+	CHECK_INIT_ERROR(glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, w, h, 0, format, GL_UNSIGNED_BYTE, NULL));
+	wxLogDebug(L"VideoOutGL::InitTextures: Using texture size: %dx%d\n", w, h);
+	CHECK_INIT_ERROR(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR));
+	CHECK_INIT_ERROR(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
+	CHECK_INIT_ERROR(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP));
+	CHECK_INIT_ERROR(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP));
+}
+
 void VideoOutGL::UploadFrameData(const AegiVideoFrame& frame) {
 	if (frame.h == 0 || frame.w == 0) return;
 
@@ -278,44 +264,53 @@ void VideoOutGL::UploadFrameData(const AegiVideoFrame& frame) {
 
 	CHECK_ERROR(glPixelStorei(GL_UNPACK_ROW_LENGTH, 0));
 }
+void VideoOutGL::SetViewport(int x, int y, int width, int height) {
+	CHECK_ERROR(glViewport(x, y, width, height));
+}
 
-void VideoOutGL::Render(int sw, int sh, double zoom) {
+void VideoOutGL::Render(int sw, int sh) {
+	// Clear the frame buffer
+	CHECK_ERROR(glClearColor(0,0,0,0));
+	CHECK_ERROR(glClearStencil(0));
+	CHECK_ERROR(glClear(GL_COLOR_BUFFER_BIT | GL_STENCIL_BUFFER_BIT));
+
+
+	CHECK_ERROR(glShadeModel(GL_FLAT));
+	CHECK_ERROR(glDisable(GL_BLEND));
+
+	CHECK_ERROR(glMatrixMode(GL_PROJECTION));
+	CHECK_ERROR(glLoadIdentity());
+	CHECK_ERROR(glPushMatrix());
+	if (frameFlipped) {
+		CHECK_ERROR(glOrtho(0.0f, frameWidth, 0.0f, frameHeight, -1000.0f, 1000.0f));
+	}
+	else {
+		CHECK_ERROR(glOrtho(0.0f, frameWidth, frameHeight, 0.0f, -1000.0f, 1000.0f));
+	}
+
+	// Render the current frame
 	CHECK_ERROR(glEnable(GL_TEXTURE_2D));
 
 	for (unsigned i = 0; i < textureList.size(); i++) {
 		TextureInfo& ti = textureList[i];
 
-		float destX = ti.destX * sw;
-		float destW = ti.destW * sw;
-		float destY = ti.destY * sh;
-		float destH = ti.destH * sh;
-
 		CHECK_ERROR(glBindTexture(GL_TEXTURE_2D, ti.textureID));
 		CHECK_ERROR(glColor4f(1.0f, 1.0f, 1.0f, 1.0f));
 
-		// Only stretch the textures if the video isn't at 100% zoom, as
-		// the stretch is only needed when scaling
-		float left = 0.0f, right = 1.0f, top = 0.0f, bottom = 1.0f;
-		if (zoom != 1.0) {
-			left   = ti.texLeft;
-			right  = ti.texRight;
-			top    = ti.texTop;
-			bottom = ti.texBottom;
-		}
-		else if (frameFlipped) {
-			bottom = -ti.texPct;
-			top    = 1.0f - ti.texPct;
-		}
-
 		glBegin(GL_QUADS);
-			glTexCoord2f(left,  top);     glVertex2f(destX, destY);
-			glTexCoord2f(right, top);     glVertex2f(destX + destW, destY);
-			glTexCoord2f(right, bottom);  glVertex2f(destX + destW, destY + destH);
-			glTexCoord2f(left,  bottom);  glVertex2f(destX, destY + destH);
+			glTexCoord2f(ti.texLeft,  ti.texTop);     glVertex2f(ti.destX1, ti.destY1);
+			glTexCoord2f(ti.texRight, ti.texTop);     glVertex2f(ti.destX2, ti.destY1);
+			glTexCoord2f(ti.texRight, ti.texBottom);  glVertex2f(ti.destX2, ti.destY2);
+			glTexCoord2f(ti.texLeft,  ti.texBottom);  glVertex2f(ti.destX1, ti.destY2);
 		glEnd();
 		if (GLenum err = glGetError()) throw VideoOutRenderException(L"GL_QUADS", err);
 	}
 	CHECK_ERROR(glDisable(GL_TEXTURE_2D));
+
+	CHECK_ERROR(glPopMatrix());
+	CHECK_ERROR(glOrtho(0.0f, sw, sh, 0.0f, -1000.0f, 1000.0f));
+	CHECK_ERROR(glMatrixMode(GL_MODELVIEW));
+	CHECK_ERROR(glLoadIdentity());
 }
 
 VideoOutGL::~VideoOutGL() {

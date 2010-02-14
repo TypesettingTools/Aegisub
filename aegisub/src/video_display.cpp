@@ -247,7 +247,7 @@ void VideoDisplay::SetFrame(int frameNumber) {
 // Render
 void VideoDisplay::Render() try {
 	if (!IsShownOnScreen()) return;
-	if (!wxIsMainThread()) throw _T("Error: trying to render from non-primary thread");
+	wxASSERT(wxIsMainThread());
 
 	VideoContext *context = VideoContext::Get();
 	wxASSERT(context);
@@ -266,14 +266,6 @@ void VideoDisplay::Render() try {
 	ph = context->GetHeight();
 	wxASSERT(pw > 0);
 	wxASSERT(ph > 0);
-
-	// Clear frame buffer
-	glClearColor(0,0,0,0);
-	if (glGetError()) throw _T("Error setting glClearColor().");
-	glClearStencil(0);
-	if (glGetError()) throw _T("Error setting glClearStencil().");
-	glClear(GL_COLOR_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-	if (glGetError()) throw _T("Error calling glClear().");
 
 	// Freesized transform
 	dx1 = 0;
@@ -300,22 +292,8 @@ void VideoDisplay::Render() try {
 		}
 	}
 
-	// Set viewport
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
-	glViewport(dx1,dy1,dx2,dy2);
-	if (glGetError()) throw _T("Error setting GL viewport.");
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	glOrtho(0.0f,sw,sh,0.0f,-1000.0f,1000.0f);
-	glMatrixMode(GL_MODELVIEW);
-	if (glGetError()) throw _T("Error setting up matrices (wtf?).");
-	glShadeModel(GL_FLAT);
-
-	glDisable(GL_BLEND);
-	if (glGetError()) throw _T("Error disabling blending.");
-
-	videoOut->Render(sw, sh, zoomValue);
+	videoOut->SetViewport(dx1, dy1, dx2, dy2);
+	videoOut->Render(sw, sh);
 
 	DrawTVEffects();
 
@@ -329,13 +307,6 @@ catch (const VideoOutException &err) {
 		_T("An error occurred trying to render the video frame on the screen.\n")
 		_T("Error message reported: %s"),
 		err.GetMessage().c_str());
-	VideoContext::Get()->Reset();
-}
-catch (const wxChar *err) {
-	wxLogError(
-		_T("An error occurred trying to render the video frame to screen.\n")
-		_T("Error message reported: %s"),
-		err);
 	VideoContext::Get()->Reset();
 }
 catch (...) {

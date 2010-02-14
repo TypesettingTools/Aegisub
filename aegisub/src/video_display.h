@@ -73,11 +73,31 @@ private:
 	int visualMode;
 
 	wxSize origSize;
-	int w,h;
-	int dx1,dx2,dy1,dy2;
-	int mouse_x,mouse_y;
 
 	int currentFrame;
+
+	/// The width of the display
+	int w;
+	/// The height of the display
+	int h;
+
+	/// The x-coordinate of the bottom left of the area containing video.
+	/// Always zero unless the display is detatched and is wider than the video.
+	int dx1;
+	/// The width of the screen area containing video
+	int dx2;
+	/// The y-coordinate of the bottom left of the area containing video.
+	/// Always zero unless the display is detatched and is taller than the video.
+	int dy1;
+	/// The height of the screen area containing video
+	int dy2;
+
+	/// The x position of the mouse
+	int mouse_x;
+	/// The y position of the mouse
+	int mouse_y;
+
+	/// Lock to disable mouse updates during resize operations
 	bool locked;
 
 	void DrawTVEffects();
