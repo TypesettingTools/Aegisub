@@ -1,4 +1,4 @@
-; Copyright (c) 2007-2009, Niels Martin Hansen
+; Copyright (c) 2007-2010, Niels Martin Hansen
 ;
 ; Redistribution and use in source and binary forms, with or without
 ; modification, are permitted provided that the following conditions are met:
@@ -68,16 +68,16 @@ var
   OldVersionDir: string;
   OldExeSize: Integer;
 begin
-  // Check that we have an aegisub32.exe from 2.1.7 present and installation data from
-  // 2.1.7 as well, otherwise don't allow setup to run.
+  // Check that we have an aegisub32.exe from 2.1.8 present and installation data from
+  // 2.1.8 as well, otherwise don't allow setup to run.
   Result := False;
   try
     if RegQueryStringValue(HKLM, 'SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\{24BC8B57-716C-444F-B46B-A3349B9164C5}_is1', 'DisplayVersion', OldVersionString) and
        RegQueryStringValue(HKLM, 'SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\{24BC8B57-716C-444F-B46B-A3349B9164C5}_is1', 'InstallLocation', OldVersionDir) and
-       (OldVersionString = '2.1.7') and
+       (OldVersionString = '2.1.8') and
        FileSize(OldVersionDir + '\aegisub32.exe', OldExeSize) and
-       (OldExeSize = 5668864) and
-       (GetMD5OfFile(OldVersionDir + '\aegisub32.exe') = 'c5e6c3e6511f4c293a12c980d8c4ca6e') then
+       (OldExeSize = 5595648) and
+       (GetMD5OfFile(OldVersionDir + '\aegisub32.exe') = 'ed67349f7dace0444fd5edcab5039737') then
     begin
       Result := True;
     end;
@@ -89,8 +89,8 @@ begin
   begin
     SuppressibleMsgBox(
       'Aegisub could not be upgraded because a supported version was not found.'#13#10#13#10 +
-      'You must have Aegisub 2.1.7 installed to be able to use this upgrade installer.'#13#10 +
-      'To install Aegisub 2.1.8, you must use the full version installer which can be downloaded from http://www.aegisub.org/.',
+      'You must have Aegisub 2.1.8 installed to be able to use this upgrade installer.'#13#10 +
+      'To install Aegisub 2.1.9, you must use the full version installer which can be downloaded from http://www.aegisub.org/.',
       mbError,
       MB_OK,
       IDOK);
