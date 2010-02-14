@@ -274,6 +274,8 @@ void VideoContext::SetVideo(const wxString &filename) {
 			// Show warning
 			wxString warning = provider->GetWarning().c_str();
 			if (!warning.IsEmpty()) wxMessageBox(warning,_T("Warning"),wxICON_WARNING | wxOK);
+
+			UpdateDisplays(true);
 		}
 		
 		catch (wxString &e) {
