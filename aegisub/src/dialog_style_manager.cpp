@@ -663,7 +663,7 @@ void DialogStyleManager::OnStorageCopy (wxCommandEvent &event) {
 	newName += temp->name;
 	temp->name = newName;
 
-	DialogStyleEditor editor(this,temp,grid,false,&Store);
+	DialogStyleEditor editor(this,temp,grid,false,&Store,true);
 	int modified = editor.ShowModal();
 	if (modified) {
 		Store.style.push_back(temp);
@@ -689,7 +689,7 @@ void DialogStyleManager::OnCurrentCopy (wxCommandEvent &event) {
 	newName += temp->name;
 	temp->name = newName;
 
-	DialogStyleEditor editor(this,temp,grid,true,&Store);
+	DialogStyleEditor editor(this,temp,grid,true,&Store,true);
 	int modified = editor.ShowModal();
 	if (modified) {
 		AssFile::top->InsertStyle(temp);
@@ -812,7 +812,7 @@ void DialogStyleManager::PasteToStorage() {
 void DialogStyleManager::OnStorageNew (wxCommandEvent &event) {
 	AssStyle *temp = new AssStyle;
 
-	DialogStyleEditor editor(this,temp,grid,false,&Store);
+	DialogStyleEditor editor(this,temp,grid,false,&Store,true);
 	int modified = editor.ShowModal();
 	if (modified) {
 		Store.style.push_back(temp);
@@ -831,7 +831,7 @@ void DialogStyleManager::OnStorageNew (wxCommandEvent &event) {
 void DialogStyleManager::OnCurrentNew (wxCommandEvent &event) {
 	AssStyle *temp = new AssStyle;
 
-	DialogStyleEditor editor(this,temp,grid,true,&Store);
+	DialogStyleEditor editor(this,temp,grid,true,&Store,true);
 	int modified = editor.ShowModal();
 	if (modified) {
 		AssFile::top->InsertStyle(temp);

@@ -163,7 +163,7 @@ enum {
 /// @param local  
 /// @param _store 
 ///
-DialogStyleEditor::DialogStyleEditor (wxWindow *parent, AssStyle *_style, SubtitlesGrid *_grid,bool local,AssStyleStorage *_store)
+DialogStyleEditor::DialogStyleEditor (wxWindow *parent, AssStyle *_style, SubtitlesGrid *_grid,bool local,AssStyleStorage *_store,bool newStyle)
 : wxDialog (parent,-1,_("Style Editor"),wxDefaultPosition,wxDefaultSize,wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER,_T("DialogStyleEditor"))
 {
 	// Set icon
@@ -171,6 +171,7 @@ DialogStyleEditor::DialogStyleEditor (wxWindow *parent, AssStyle *_style, Subtit
 
 	// Set variables
 	isLocal = local;
+	isNew = newStyle;
 	store = _store;
 
 	// Set styles
@@ -427,14 +428,11 @@ DialogStyleEditor::DialogStyleEditor (wxWindow *parent, AssStyle *_style, Subtit
 	LoadPosition();
 }
 
-
-
 /// @brief Destructor 
 ///
 DialogStyleEditor::~DialogStyleEditor () {
 	delete work;
 }
-
 
 ///////////////
 // Event table
@@ -501,8 +499,6 @@ void DialogStyleEditor::OnSetColor3 (wxCommandEvent &event) { OnSetColor(3); }
 ///
 void DialogStyleEditor::OnSetColor4 (wxCommandEvent &event) { OnSetColor(4); }
 
-
-
 /// @brief Replace Style 
 /// @param tag      
 /// @param n        
@@ -519,8 +515,6 @@ void ReplaceStyle(wxString tag,int n,AssOverrideParameter* param,void *userData)
 		}
 	}
 }
-
-
 
 /// @brief Events 
 /// @param apply 
@@ -550,7 +544,7 @@ void DialogStyleEditor::Apply (bool apply,bool close) {
 
 		// Style name change
 		if (work->name != newStyleName) {
-			if (!work->name.StartsWith(_("Copy of ")) && isLocal) {
+			if (!isNew && isLocal) {
 				// See if user wants to update style name through script
 				int answer = wxNO;
 				if (work->name != _T("Default")) answer = wxMessageBox(_("Do you want to change all instances of this style in the script to this new name?"),_("Update script?"),wxYES_NO | wxCANCEL);
@@ -612,8 +606,6 @@ void DialogStyleEditor::Apply (bool apply,bool close) {
 	}
 }
 
-
-
 /// @brief Update work style 
 ///
 void DialogStyleEditor::UpdateWorkStyle() {
@@ -663,8 +655,6 @@ void DialogStyleEditor::UpdateWorkStyle() {
 	work->strikeout = BoxStrikeout->IsChecked();
 }
 
-
-
 /// @brief Choose font box 
 /// @param event 
 ///
@@ -692,8 +682,6 @@ void DialogStyleEditor::OnChooseFont (wxCommandEvent &event) {
 	}
 }
 
-
-
 /// @brief Sets color for one of the four color buttons 
 /// @param n 
 ///
@@ -710,8 +698,6 @@ void DialogStyleEditor::OnSetColor (int n) {
 	if (SubsPreview) SubsPreview->SetStyle(work);
 }
 
-
-
 /// @brief Child focus change 
 /// @param event 
 ///
@@ -720,8 +706,6 @@ void DialogStyleEditor::OnChildFocus (wxChildFocusEvent &event) {
 	if (SubsPreview) SubsPreview->SetStyle(work);
 	event.Skip();
 }
-
-
 
 /// @brief Preview text changed 
 /// @param event 
@@ -733,8 +717,6 @@ void DialogStyleEditor::OnPreviewTextChange (wxCommandEvent &event) {
 	}
 }
 
-
-
 /// @brief Change colour of preview's background 
 /// @param event 
 ///
@@ -743,8 +725,6 @@ void DialogStyleEditor::OnPreviewColourChange (wxCommandEvent &event) {
 	Options.SetColour(_T("Style editor preview background"),previewButton->GetColour());
 	Options.Save();
 }
-
-
 
 /// @brief Command event to update preview 
 /// @param event 
@@ -756,8 +736,6 @@ void DialogStyleEditor::OnCommandPreviewUpdate (wxCommandEvent &event) {
 	if (SubsPreview) SubsPreview->SetStyle(work);
 	event.Skip();
 }
-
-
 
 /// @brief Converts control value to alignment 
 /// @param n 
@@ -778,8 +756,6 @@ int DialogStyleEditor::ControlToAlign (int n) {
 	}
 }
 
-
-
 /// @brief Converts alignment value to control 
 /// @param n 
 /// @return 
@@ -799,8 +775,6 @@ int DialogStyleEditor::AlignToControl (int n) {
 	}
 }
 
-
-
 /// @brief Load and save window position for the session 
 ///
 void DialogStyleEditor::SavePosition() {
@@ -817,12 +791,8 @@ void DialogStyleEditor::LoadPosition() {
 		CentreOnParent();
 }
 
-
-
 /// DOCME
 wxRect DialogStyleEditor::saved_position;
 
 /// DOCME
 bool DialogStyleEditor::use_saved_position = false;
-
-

@@ -70,6 +70,11 @@ private:
 	/// DOCME
 	bool isLocal;
 
+	/// If true, the style was just created and so the user should not be
+	/// asked if they want to change any existing lines should they rename
+	/// the style
+	bool isNew;
+
 	/// DOCME
 	AssStyle *style;
 
@@ -213,7 +218,7 @@ private:
 	void OnPreviewColourChange (wxCommandEvent &event);
 
 public:
-	DialogStyleEditor(wxWindow *parent,AssStyle *style,SubtitlesGrid *grid,bool local,AssStyleStorage *store);
+	DialogStyleEditor(wxWindow *parent,AssStyle *style,SubtitlesGrid *grid,bool local,AssStyleStorage *store,bool newStyle=false);
 	~DialogStyleEditor();
 
 	void Apply (bool apply,bool close);
