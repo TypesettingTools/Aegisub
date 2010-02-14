@@ -95,7 +95,7 @@ enum {
 
 ///////////////
 // Constructor
-DialogStyleEditor::DialogStyleEditor (wxWindow *parent, AssStyle *_style, SubtitlesGrid *_grid,bool local,AssStyleStorage *_store)
+DialogStyleEditor::DialogStyleEditor (wxWindow *parent, AssStyle *_style, SubtitlesGrid *_grid,bool local,AssStyleStorage *_store,bool newStyle)
 : wxDialog (parent,-1,_("Style Editor"),wxDefaultPosition,wxDefaultSize,wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER,_T("DialogStyleEditor"))
 {
 	// Set icon
@@ -103,6 +103,7 @@ DialogStyleEditor::DialogStyleEditor (wxWindow *parent, AssStyle *_style, Subtit
 
 	// Set variables
 	isLocal = local;
+	isNew = newStyle;
 	store = _store;
 
 	// Set styles
@@ -366,7 +367,6 @@ DialogStyleEditor::~DialogStyleEditor () {
 	delete work;
 }
 
-
 ///////////////
 // Event table
 BEGIN_EVENT_TABLE(DialogStyleEditor, wxDialog)
@@ -446,7 +446,7 @@ void DialogStyleEditor::Apply (bool apply,bool close) {
 
 		// Style name change
 		if (work->name != newStyleName) {
-			if (!work->name.StartsWith(_("Copy of ")) && isLocal) {
+			if (!isNew && isLocal) {
 				// See if user wants to update style name through script
 				int answer = wxNO;
 				if (work->name != _T("Default")) answer = wxMessageBox(_("Do you want to change all instances of this style in the script to this new name?"),_("Update script?"),wxYES_NO | wxCANCEL);
