@@ -35,8 +35,8 @@
 #include "fragment_setupbase.iss"
 
 [Setup]
-OutputBaseFilename=Aegisub-2.1.8-upgrade
-VersionInfoDescription=Aegisub 2.1.8 upgrade
+OutputBaseFilename=Aegisub-2.1.9-upgrade
+VersionInfoDescription=Aegisub 2.1.9 upgrade
 DisableDirPage=yes
 
 
@@ -74,12 +74,10 @@ begin
   try
     if RegQueryStringValue(HKLM, 'SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\{24BC8B57-716C-444F-B46B-A3349B9164C5}_is1', 'DisplayVersion', OldVersionString) and
        RegQueryStringValue(HKLM, 'SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\{24BC8B57-716C-444F-B46B-A3349B9164C5}_is1', 'InstallLocation', OldVersionDir) and
-       (
-        ((OldVersionString = '2.1.7') and FileSize(OldVersionDir + '\aegisub32.exe', OldExeSize) and (OldExeSize = 5668864) and
-         (GetMD5OfFile(OldVersionDir + '\aegisub32.exe') = 'c5e6c3e6511f4c293a12c980d8c4ca6e')) or
-        ((OldVersionString = '2.1.8') and FileSize(OldVersionDir + '\aegisub32.exe', OldExeSize) and (OldExeSize = 5595648) and
-         (GetMD5OfFile(OldVersionDir + '\aegisub32.exe') = 'ed67349f7dace0444fd5edcab5039737'))
-      ) then
+       (OldVersionString = '2.1.7') and
+       FileSize(OldVersionDir + '\aegisub32.exe', OldExeSize) and
+       (OldExeSize = 5668864) and
+       (GetMD5OfFile(OldVersionDir + '\aegisub32.exe') = 'c5e6c3e6511f4c293a12c980d8c4ca6e') then
     begin
       Result := True;
     end;

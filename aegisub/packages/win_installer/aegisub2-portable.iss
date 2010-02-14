@@ -36,25 +36,25 @@
 ; Different ID than the regular Aegisub installer
 AppID={{76FE2682-E393-4F70-9FFD-2401507FC748}
 AppName=Aegisub
-AppVerName=Aegisub 2.1.8
-AppVersion=2.1.8
+AppVerName=Aegisub 2.1.9
+AppVersion=2.1.9
 AppPublisher=Aegisub Team
 AppPublisherURL=http://www.aegisub.org/
 AppSupportURL=http://forum.aegisub.org/
 AppCopyright=© 2005-2010 The Aegisub Team
-VersionInfoVersion=2.1.8
-VersionInfoDescription=Aegisub 2.1.8 portable package
+VersionInfoVersion=2.1.9
+VersionInfoDescription=Aegisub 2.1.9 portable package
 DefaultDirName={userdesktop}\Aegisub portable
 AllowNoIcons=true
 Uninstallable=no
 OutputDir=output
-OutputBaseFilename=Aegisub-2.1.8-portable
+OutputBaseFilename=Aegisub-2.1.9-portable
 Compression=lzma/ultra64
 SolidCompression=true
 MinVersion=0,5.0
 ShowLanguageDialog=no
 LanguageDetectionMethod=none
-PrivilegesRequired=none
+PrivilegesRequired=lowest
 DisableProgramGroupPage=yes
 ; Default to a large welcome bitmap, suitable for large fonts
 ; The normal fonts version is selected by code below
@@ -67,7 +67,7 @@ Name: english; MessagesFile: compiler:Default.isl
 [Messages]
 ; Replacement for License page, no need to bother the user with legal mumbo-jumbo
 WelcomeLabel1=Aegisub portable version
-WelcomeLabel2=This will extract the portable version of Aegisub 2.1.8 to your computer.%n%nAegisub is covered by the GNU General Public License version 2. This means you may use the application for any purpose without charge, but that no warranties of any kind are given either.%n%nSee the Aegisub website for information on obtaining the source code.
+WelcomeLabel2=This will extract the portable version of Aegisub 2.1.9 to your computer.%n%nAegisub is covered by the GNU General Public License version 2. This means you may use the application for any purpose without charge, but that no warranties of any kind are given either.%n%nSee the Aegisub website for information on obtaining the source code.
 ; Select Dir page
 SelectDirDesc=Where should Aegisub be extracted to?
 SelectDirLabel3=Aegisub will be extracted into the following folder.
@@ -127,5 +127,7 @@ procedure InitializeWizard;
 begin
   InitializeWizardBeautify;
 end;
+
+
 
 

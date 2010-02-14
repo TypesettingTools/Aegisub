@@ -35,13 +35,13 @@
 [Setup]
 AppID={{24BC8B57-716C-444F-B46B-A3349B9164C5}
 AppName=Aegisub
-AppVerName=Aegisub 2.1.8
-AppVersion=2.1.8
+AppVerName=Aegisub 2.1.9
+AppVersion=2.1.9
 AppPublisher=Aegisub Team
 AppPublisherURL=http://www.aegisub.org/
 AppSupportURL=http://forum.aegisub.org/
 AppCopyright=© 2005-2010 The Aegisub Team
-VersionInfoVersion=2.1.8
+VersionInfoVersion=2.1.9
 DefaultDirName={pf}\Aegisub
 DefaultGroupName=Aegisub
 AllowNoIcons=true
@@ -68,7 +68,7 @@ Name: english; MessagesFile: compiler:Default.isl
 
 [Messages]
 ; Replacement for License page, no need to bother the user with legal mumbo-jumbo
-WelcomeLabel2=This will install Aegisub 2.1.8 on your computer.%n%nAegisub is covered by the GNU General Public License version 2. This means you may use the application for any purpose without charge, but that no warranties of any kind are given either.%n%nSee the Aegisub website for information on obtaining the source code.
+WelcomeLabel2=This will install Aegisub 2.1.9 on your computer.%n%nAegisub is covered by the GNU General Public License version 2. This means you may use the application for any purpose without charge, but that no warranties of any kind are given either.%n%nSee the Aegisub website for information on obtaining the source code.
 
 [Files]
 ; small bitmaps (used by beautify code)
@@ -83,5 +83,6 @@ DestDir: {tmp}; Flags: dontcopy; Source: old_filelist.txt
 DestDir: {tmp}; Flags: dontcopy; Source: old_dirlist.txt
 DestDir: {tmp}; Flags: dontcopy; Source: old_locales.txt
 DestDir: {tmp}; Flags: dontcopy; Source: old_shortcutlist.txt
+
 
 

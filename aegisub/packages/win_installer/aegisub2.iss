@@ -35,8 +35,8 @@
 #include "fragment_setupbase.iss"
 
 [Setup]
-OutputBaseFilename=Aegisub-2.1.8-setup
-VersionInfoDescription=Aegisub 2.1.8 setup
+OutputBaseFilename=Aegisub-2.1.9-setup
+VersionInfoDescription=Aegisub 2.1.9 setup
 
 
 #include "fragment_mainprogram.iss"
@@ -70,6 +70,7 @@ procedure CurStepChanged(CurStep: TSetupStep);
 begin
   CurStepChangedMigration(CurStep);
 end;
+
 
 
 
