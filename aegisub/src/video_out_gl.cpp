@@ -38,7 +38,11 @@
 
 #ifndef AGI_PRE
 #include <wx/log.h>
+#include <algorithm>
 #endif
+
+using std::min;
+using std::max;
 
 // These must be included before local headers.
 #ifdef __APPLE__
