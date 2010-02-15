@@ -46,6 +46,7 @@
 
 #include <wx/dcmemory.h>
 #include <wx/filename.h>
+#include <wx/log.h>
 #include <wx/menu.h>
 #include <wx/stdpaths.h>
 #endif
