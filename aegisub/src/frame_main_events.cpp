@@ -1779,13 +1779,6 @@ void FrameMain::OnStatusClear(wxTimerEvent &event) {
 ///
 void FrameMain::OnNextFrame(wxCommandEvent &event) {
 	videoBox->videoSlider->NextFrame();
-	// FIXME: This is probably not the best place to put this, but I was told
-	// this code is all undergoing a rewrite, so I consider this a temporary solution.
-	if (audioBox && Options.AsBool(_T("Audio Plays When Stepping Video"))) {
-		int start = VFR_Output.GetTimeAtFrame(videoBox->videoDisplay->GetFrame());
-		int end = VFR_Output.GetTimeAtFrame(videoBox->videoDisplay->GetFrame() + 1);
-		audioBox->audioDisplay->Play(start,end);
-	}
 }
 
 
@@ -1795,13 +1788,6 @@ void FrameMain::OnNextFrame(wxCommandEvent &event) {
 ///
 void FrameMain::OnPrevFrame(wxCommandEvent &event) {
 	videoBox->videoSlider->PrevFrame();
-	// FIXME: This is probably not the best place to put this, but I was told
-	// this code is all undergoing a rewrite, so I consider this a temporary solution.
-	if (audioBox  && Options.AsBool(_T("Audio Plays When Stepping Video"))) {
-		int start = VFR_Output.GetTimeAtFrame(videoBox->videoDisplay->GetFrame() - 1);
-		int end = VFR_Output.GetTimeAtFrame(videoBox->videoDisplay->GetFrame());
-		audioBox->audioDisplay->Play(start,end);
-	}
 }
 
 
