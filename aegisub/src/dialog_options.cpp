@@ -449,6 +449,7 @@ DialogOptions::DialogOptions(wxWindow *parent)
 		AddCheckBox(audioPage,audioSizer3,_("Snap to keyframes"),_T("Audio snap to keyframes"));
 		AddCheckBox(audioPage,audioSizer3,_("Snap to adjacent lines"),_T("Audio snap to other lines"));
 		AddCheckBox(audioPage,audioSizer3,_("Auto-focus on mouse over"),_T("Audio Autofocus"));
+		AddCheckBox(audioPage,audioSizer3,_("Play audio when stepping in video"),_T("Audio Plays When Stepping Video"));
 		audioSizer3->AddGrowableCol(1,1);
 
 		// Second sizer
