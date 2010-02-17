@@ -154,7 +154,7 @@ void VideoSlider::NextFrame() {
 	if (VideoContext::Get()->IsPlaying()) return;
 
 	//don't request out of range frames
-	if (GetValue() < max) VideoContext::Get()->JumpToFrame(GetValue()+1);
+	if (GetValue() < max) VideoContext::Get()->PlayNextFrame();
 	Refresh(false);
 	Update();
 }
@@ -168,7 +168,7 @@ void VideoSlider::PrevFrame() {
 	if (VideoContext::Get()->IsPlaying()) return;
 
 	//don't request out of range frames
-	if (GetValue() > min) VideoContext::Get()->JumpToFrame(GetValue()-1);
+	if (GetValue() > min) VideoContext::Get()->PlayPrevFrame();
 	Refresh(false);
 	Update();
 }

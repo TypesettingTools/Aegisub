@@ -468,6 +468,34 @@ void VideoContext::GetScriptSize(int &sw,int &sh) {
 	grid->ass->GetResolution(sw,sh);
 }
 
+/// @brief Play the next frame, possibly with audio
+/// @return 
+///
+void VideoContext::PlayNextFrame() {
+	if (isPlaying)
+		return;
+
+	int thisFrame = frame_n;
+	JumpToFrame(frame_n + 1);
+	// Start playing audio
+	if (Options.AsBool(_T("Audio Plays When Stepping Video")))
+		audio->Play(VFR_Output.GetTimeAtFrame(thisFrame),VFR_Output.GetTimeAtFrame(thisFrame + 1));
+}
+
+/// @brief Play the previous frame, possibly with audio
+/// @return 
+///
+void VideoContext::PlayPrevFrame() {
+	if (isPlaying)
+		return;
+
+	int thisFrame = frame_n;
+	JumpToFrame(frame_n -1);
+	// Start playing audio
+	if (Options.AsBool(_T("Audio Plays When Stepping Video")))
+		audio->Play(VFR_Output.GetTimeAtFrame(thisFrame - 1),VFR_Output.GetTimeAtFrame(thisFrame));
+}
+
 /// @brief Play 
 /// @return 
 ///
@@ -493,6 +521,9 @@ void VideoContext::Play() {
 	playback.SetOwner(this,VIDEO_PLAY_TIMER);
 	playback.Start(10);
 }
+
+
+
 
 /// @brief Play line 
 /// @return 
