@@ -99,6 +99,8 @@ private:
 	wxArrayInt overKeyFrames;
 	wxString keyFramesFilename;
 
+	int keyframesRevision;
+
 	wxMutex playMutex;
 	wxTimer playback;
 	wxStopWatch playTime;
@@ -188,12 +190,13 @@ public:
 	void PlayLine();
 	void Stop();
 
-	wxArrayInt GetKeyFrames();
+	const wxArrayInt & GetKeyFrames();
 	void SetKeyFrames(wxArrayInt frames);
 	void SetOverKeyFrames(wxArrayInt frames);
 	void CloseOverKeyFrames();
 	bool OverKeyFramesLoaded();
 	bool KeyFramesLoaded();
+	int GetKeyframesRevision() const { return keyframesRevision; }
 	wxString GetKeyFramesName() { return keyFramesFilename; }
 	void SetKeyFramesName(wxString name) { keyFramesFilename = name; }
 

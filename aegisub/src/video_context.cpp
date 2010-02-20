@@ -109,6 +109,7 @@ VideoContext::VideoContext() {
 	loaded = false;
 	keyFramesLoaded = false;
 	overKeyFramesLoaded = false;
+	keyframesRevision = 0;
 	frame_n = 0;
 	length = 0;
 	fps = 0;
@@ -164,6 +165,7 @@ void VideoContext::Reset() {
 	// Clear keyframes
 	KeyFrames.Clear();
 	keyFramesLoaded = false;
+	keyframesRevision++;
 
 	// Remove temporary audio provider
 	if (audio && audio->temporary) {
@@ -264,6 +266,7 @@ void VideoContext::SetVideo(const wxString &filename) {
 			catch (const wchar_t *err) { wxMessageBox(_T("Error while loading subtitles provider: ") + wxString(err),_T("Subtitles provider"));	}
 
 			KeyFrames.Clear();
+			keyframesRevision++;
 			// load keyframes if available
 			if (provider->AreKeyFramesLoaded()) {
 				KeyFrames = provider->GetKeyFrames();
@@ -623,7 +626,7 @@ wxString VideoContext::GetTempWorkFile () {
 
 /////////////////
 // Get keyframes
-wxArrayInt VideoContext::GetKeyFrames() {
+const wxArrayInt & VideoContext::GetKeyFrames() {
 	if (OverKeyFramesLoaded()) return overKeyFrames;
 	return KeyFrames;
 }
@@ -633,6 +636,7 @@ wxArrayInt VideoContext::GetKeyFrames() {
 // Set keyframes
 void VideoContext::SetKeyFrames(wxArrayInt frames) {
 	KeyFrames = frames;
+	keyframesRevision++;
 }
 
 
@@ -641,6 +645,7 @@ void VideoContext::SetKeyFrames(wxArrayInt frames) {
 void VideoContext::SetOverKeyFrames(wxArrayInt frames) {
 	overKeyFrames = frames;
 	overKeyFramesLoaded = true;
+	keyframesRevision++;
 }
 
 
@@ -649,6 +654,7 @@ void VideoContext::SetOverKeyFrames(wxArrayInt frames) {
 void VideoContext::CloseOverKeyFrames() {
 	overKeyFrames.Clear();
 	overKeyFramesLoaded = false;
+	keyframesRevision++;
 }
 
 
