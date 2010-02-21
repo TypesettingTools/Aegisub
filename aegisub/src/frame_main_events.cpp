@@ -432,14 +432,17 @@ void FrameMain::OnMenuOpen (wxMenuEvent &event) {
 	// Edit menu
 	else if (curMenu == editMenu) {
 		// Undo state
-		editMenu->Remove(Menu_Edit_Undo);
-		editMenu->Remove(Menu_Edit_Redo);
-
+		wxMenuItem *item;
 		wxString undo_text = _("&Undo") + wxString(_T(" ")) + AssFile::GetUndoDescription() + wxString(_T("\t")) + Hotkeys.GetText(_T("Undo"));
-		AppendBitmapMenuItem(editMenu,Menu_Edit_Undo, undo_text, _("Undoes last action"),GETIMAGE(undo_button_16),0)->Enable(!AssFile::IsUndoStackEmpty());
+		item = editMenu->FindItem(Menu_Edit_Undo);
+		item->SetItemLabel(undo_text);
+		item->Enable(!AssFile::IsUndoStackEmpty());
 
+		// Redo state
 		wxString redo_text = _("&Redo") + wxString(_T(" ")) + AssFile::GetRedoDescription() + wxString(_T("\t")) + Hotkeys.GetText(_T("Redo"));
-		AppendBitmapMenuItem(editMenu,Menu_Edit_Redo, redo_text, _("Redoes last action"),GETIMAGE(redo_button_16),1)->Enable(!AssFile::IsRedoStackEmpty());
+		item = editMenu->FindItem(Menu_Edit_Redo);
+		item->SetItemLabel(redo_text);
+		item->Enable(!AssFile::IsRedoStackEmpty());
 
 		// Copy/cut/paste
 		wxArrayInt sels = SubsBox->GetSelection();
