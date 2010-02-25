@@ -104,8 +104,8 @@ RAMAudioProvider::RAMAudioProvider(AudioProvider *source) {
 	}
 
 	// Clean up progress
-	if (!canceled) progress->Destroy();
-	else {
+	progress->Destroy();
+	if (canceled) {
 		Clear();
 		throw wxString(_T("Audio loading cancelled by user"));
 	}

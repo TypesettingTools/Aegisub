@@ -65,6 +65,7 @@ class AssFile;
 class MkvStdIO : public InputStream {
 public:
 	MkvStdIO(wxString filename);
+	~MkvStdIO() { if (fp) fclose(fp); }
 
 	/// DOCME
 	FILE *fp;

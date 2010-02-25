@@ -746,8 +746,9 @@ void DialogStyleManager::PasteToCurrent() {
 
 	wxStringTokenizer st(data,_T('\n'));
 	while (st.HasMoreTokens()) {
+		AssStyle *s = NULL;
 		try {
-			AssStyle *s = new AssStyle(st.GetNextToken().Trim(true));
+			s = new AssStyle(st.GetNextToken().Trim(true));
 			if (s->Valid) {
 				while (AssFile::top->GetStyle(s->name) != NULL)
 					s->name = _T("Copy of ") + s->name;
@@ -763,6 +764,7 @@ void DialogStyleManager::PasteToCurrent() {
 				wxMessageBox(_("Could not parse style"), _("Could not parse style"), wxOK | wxICON_EXCLAMATION , this);
 		}
 		catch (...) {
+			delete s;
 			wxMessageBox(_("Could not parse style"), _("Could not parse style"), wxOK | wxICON_EXCLAMATION , this);
 		}
 
@@ -785,8 +787,9 @@ void DialogStyleManager::PasteToStorage() {
 
 	wxStringTokenizer st(data,_T('\n'));
 	while (st.HasMoreTokens()) {
+		AssStyle *s = NULL;
 		try {
-			AssStyle *s = new AssStyle(st.GetNextToken().Trim(true));
+			s = new AssStyle(st.GetNextToken().Trim(true));
 			if (s->Valid) {
 				while (Store.GetStyle(s->name) != NULL)
 					s->name = _T("Copy of ") + s->name;
@@ -802,6 +805,7 @@ void DialogStyleManager::PasteToStorage() {
 				wxMessageBox(_("Could not parse style"), _("Could not parse style"), wxOK | wxICON_EXCLAMATION , this);
 		}
 		catch(...) {
+			delete s;
 			wxMessageBox(_("Could not parse style"), _("Could not parse style"), wxOK | wxICON_EXCLAMATION , this);
 		}
 

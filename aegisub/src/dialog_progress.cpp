@@ -111,9 +111,9 @@ void DialogProgress::SetProgress(int cur,int max) {
 		else count++;
 	}
 
-	wxCommandEvent* evt = new wxCommandEvent(wxEVT_PROGRESS_UPDATE,0);
-	evt->SetInt(value);
-	AddPendingEvent(*evt);
+	wxCommandEvent evt(wxEVT_PROGRESS_UPDATE,0);
+	evt.SetInt(value);
+	AddPendingEvent(evt);
 }
 
 

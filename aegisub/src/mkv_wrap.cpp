@@ -122,7 +122,6 @@ void MatroskaWrapper::Close() {
 	if (file) {
 		mkv_Close(file);
 		file = NULL;
-		fclose(input->fp);
 		delete input;
 	}
 	keyFrames.Clear();
