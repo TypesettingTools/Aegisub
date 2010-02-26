@@ -79,6 +79,7 @@ void csrilib_inst_remove(struct csri_wrap_inst *winst)
 	if (!*pnext)
 		return;
 	*pnext = (*pnext)->next;
+	free(winst);
 }
 
 void csrilib_rend_initadd(struct csri_wrap_rend *wrend)
