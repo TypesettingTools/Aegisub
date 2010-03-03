@@ -1840,11 +1840,15 @@
 			Name="Resources"
 			>
 			<File
-				RelativePath="..\..\src\libresrc\libresrc.cpp"
+				RelativePath="..\..\src\libresrc\bitmap.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\libresrc\libresrc.h"
+				RelativePath="..\..\src\libresrc\default_config.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\libresrc\libresrc.cpp"
 				>
 			</File>
 			<File

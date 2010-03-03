@@ -6,6 +6,6 @@
 	>
 	<Tool
 		Name="VCPostBuildEventTool"
-		CommandLine="$(TargetPath) &quot;$(ProjectDir)\..\src\libresrc\libresrc.cpp&quot; &quot;$(ProjectDir)\..\src\bitmaps\16&quot; &quot;$(ProjectDir)\..\src\bitmaps\24&quot; &quot;$(ProjectDir)\..\src\bitmaps\misc&quot;"
+		CommandLine="$(TargetPath) &quot;$(ProjectDir)\..\src\libresrc\bitmap.cpp&quot; &quot;$(ProjectDir)\..\src\bitmaps\16&quot; &quot;$(ProjectDir)\..\src\bitmaps\24&quot; &quot;$(ProjectDir)\..\src\bitmaps\misc&quot;&#x0D;&#x0A;$(TargetPath) &quot;$(ProjectDir)\..\src\libresrc\default_config.cpp&quot; &quot;$(ProjectDir)\..\src\libresrc\default_mru.json&quot;"
 	/>
 </VisualStudioPropertySheet>
