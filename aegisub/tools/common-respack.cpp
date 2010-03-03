@@ -113,21 +113,6 @@ int main(int argc, const char *argv[]) {
 	ofstream outH(headerFileName.GetFullPath().char_str());
 	ofstream outC(argv[1]);
 
-	outC << "/* This is an automatically generated file and should not be modified directly */" << endl
-	     << "#include \"" << headerFileName.GetFullName() << "\"" << endl
-	     << "wxBitmap " << headerFileName.GetName() << "_getimage(const unsigned char *buff, size_t size) {" << endl
-	     << "	wxMemoryInputStream mem(buff, size);" << endl
-	     << "	wxImage image(mem);" << endl
-	     << "	return wxBitmap(image);" << endl
-	     << "}" << endl;
-
-	outH << "/* This is an automatically generated file and should not be modified directly */" << endl
-	     << "#include <wx/mstream.h>" << endl
-	     << "#include <wx/bitmap.h>" << endl
-	     << "#include <wx/image.h>" << endl
-	     << "wxBitmap " << headerFileName.GetName() << "_getimage(const unsigned char *image, size_t size);" << endl
-	     << "#define GETIMAGE(a) " << headerFileName.GetName() << "_getimage(a, sizeof(a))" << endl;
-
 	wxRegEx nameCleaner("[^A-Za-z_0-9]");
 	wxString filename;
 	FileIterator iter(argc, argv);
@@ -139,9 +124,16 @@ int main(int argc, const char *argv[]) {
 		infile.seekg(0, ios::beg);
 
 		wxFileName file(filename);
-		wxString identifier = file.GetName() + "_" + file.GetDirs().Last();
+
+		wxString identifier = file.GetName();
+
+		// Hack to work around inserting files in the current directory
+		if (file.GetDirs().Last() != ".")
+			identifier.Append("_" + file.GetDirs().Last());
+
 		nameCleaner.ReplaceAll(&identifier, "_");
 
+		outC << "#include \"libresrc.h\"" << endl;
 		outC << "const unsigned char " << identifier << "[] = {";
 		bool first = true;
 		char c[1];
