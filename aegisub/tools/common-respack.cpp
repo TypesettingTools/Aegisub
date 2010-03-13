@@ -4,14 +4,14 @@
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are met:
 //
-//   * Redistributions of source code must retain the above copyright notice,
-//     this list of conditions and the following disclaimer.
-//   * Redistributions in binary form must reproduce the above copyright notice,
-//     this list of conditions and the following disclaimer in the documentation
-//     and/or other materials provided with the distribution.
-//   * Neither the name of the Aegisub Group nor the names of its contributors
-//     may be used to endorse or promote products derived from this software
-//     without specific prior written permission.
+//	 * Redistributions of source code must retain the above copyright notice,
+//	   this list of conditions and the following disclaimer.
+//	 * Redistributions in binary form must reproduce the above copyright notice,
+//	   this list of conditions and the following disclaimer in the documentation
+//	   and/or other materials provided with the distribution.
+//	 * Neither the name of the Aegisub Group nor the names of its contributors
+//	   may be used to endorse or promote products derived from this software
+//	   without specific prior written permission.
 //
 // THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
 // AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
@@ -78,12 +78,15 @@ bool FileIterator::Next(wxString *filename) {
 
 	// No more items
 	if (currentItem >= items.GetCount()) return false;
-
+		
 	wxFileName next;
+	wxString current = items[currentItem];
+
+	currentItem++;
+	
 	// Test if it's a directory
-	if (wxFileName::DirExists(items[currentItem])) {
-		currentDir.Open(items[currentItem]);
-		currentItem++;
+	if (wxFileName::DirExists(current)) {
+		currentDir.Open(current);
 		if (currentDir.GetFirst(filename, "", wxDIR_FILES)) {
 			wxString path = currentDir.GetName();
 			*filename = wxFileName(path, *filename).GetFullPath();
@@ -94,12 +97,11 @@ bool FileIterator::Next(wxString *filename) {
 		return Next(filename);
 	}
 	// Test if it's a file
-	if (wxFileName::FileExists(items[currentItem])) {
-		*filename = items[currentItem];
-		currentItem++;
+	if (wxFileName::FileExists(current)) {
+		*filename = current;
 		return true;
 	}
-
+	
 	// Entry is neither a file nor a directory, just skip it
 	return Next(filename);
 }
