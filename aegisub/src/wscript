@@ -22,7 +22,7 @@ import distutils.dir_util
 
 def build(bld):
     subdirs = ['libresrc']
-    uselib_local = []
+    uselib_local = ['libresrc']
     includes = ['#', '.']
     
     if Options.options.with_provider_video == 'ffmpegsource' or Options.options.with_provider_audio == 'ffmpegsource':
@@ -45,10 +45,10 @@ def build(bld):
         features = 'cc cxx cprogram',
         target = 'aegisub',
         includes = includes,
-        source = 'libresrc/libresrc.cpp',
         defines = '',
         uselib = 'GL CURL FONTCONFIG FREETYPE2 WX',
-        uselib_local = uselib_local)
+        uselib_local = uselib_local,
+        after = 'libresrc')
 
     if sys.platform.startswith('darwin'):
         excludes.append('bundledirs-test.c')

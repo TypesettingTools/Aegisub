@@ -19,16 +19,30 @@ import os
 
 dir = os.path.abspath('.')
 
-source_list = [
-    'src/bitmaps/16', 'src/bitmaps/24', 'src/bitmaps/misc/splash.png', 'src/bitmaps/misc/wxicon.png'
-]
-
-sources = ''
-for source in source_list:
-    sources += ' %s/%s' % (dir, source) 
-
 def build(bld):
-    obj = bld.new_task_gen(
-        rule = dir + '/build/default/tools/common-respack %s/src/libresrc/libresrc.cpp' % dir + sources,
+    bld.new_task_gen(
+        rule = dir + '/build/default/tools/common-respack ${TGT} ${SRC}',
+        source = "default_mru.json",
+        target = 'default_config.cpp',
+        name = 'default_config',
         after = 'common-respack',
         )
+
+    bld.new_task_gen(
+        rule = dir + '/build/default/tools/common-respack ${TGT} ${SRC} ../src/bitmaps/16 ../src/bitmaps/24',
+        source = '../bitmaps/misc/splash.png ../bitmaps/misc/wxicon.png',
+        target = 'bitmap.cpp',
+        after = 'common-respack',
+        name = 'bitmap',
+        )
+
+    bld.add_group()
+    
+    bld.new_task_gen(
+        features = 'cc cxx cstaticlib',
+        target = 'libresrc',
+        source = 'bitmap.cpp default_config.cpp libresrc.cpp',
+        includes = '.',
+        uselib = 'WX',
+        after = 'bitmap default_config',
+      )

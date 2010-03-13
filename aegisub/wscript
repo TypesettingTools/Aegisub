@@ -55,6 +55,7 @@ def configure(conf):
         conf.check_tool('osx')
         
     conf.env.append_value('CPPPATH', '/usr/local/aegisub-deps/include')
+    conf.env.append_value('CPPPATH', os.path.join(appdir, blddir, 'default', 'src', 'libresrc'))
     
     conf.define('HAVE_GETTEXT', 1)
     
