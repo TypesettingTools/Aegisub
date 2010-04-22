@@ -411,7 +411,12 @@ AegiVideoFrame VideoContext::GetFrame(int n,bool raw) {
 	// Raster subtitles if available/necessary
 	if (!raw && subsProvider) {
 		tempFrame.CopyFrom(frame);
-		subsProvider->DrawSubtitles(tempFrame,VFR_Input.GetTimeAtFrame(n,true,true)/1000.0);
+		try {
+			subsProvider->DrawSubtitles(tempFrame,VFR_Input.GetTimeAtFrame(n,true,true)/1000.0);
+		}
+		catch (...) {
+			wxLogError(L"Subtitle rendering for the current frame failed.\n");
+		}
 		return tempFrame;
 	}
 
