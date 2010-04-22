@@ -544,7 +544,10 @@ void VisualTool::GetLineMove(AssDialogue *diag,bool &hasMove,int &x1,int &y1,int
 					y1 = tag->Params[1]->AsInt();
 					x2 = tag->Params[2]->AsInt();
 					y2 = tag->Params[3]->AsInt();
-					if (tag->Params.size() >= 6) {
+					if (tag->Params.size() >= 6 &&
+						!tag->Params[4]->ommited &&
+						!tag->Params[5]->ommited) {
+
 						t1 = tag->Params[4]->AsInt();
 						t2 = tag->Params[5]->AsInt();
 					}
