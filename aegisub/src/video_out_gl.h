@@ -52,8 +52,6 @@ private:
 	int maxTextureSize;
 	/// Whether rectangular textures are supported by the user's graphics card
 	bool supportsRectangularTextures;
-	/// Whether GL_CLAMP_TO_EDGE is supported by the user's drivers
-	bool supportsGlClampToEdge;
 	/// The internalformat to use
 	int internalFormat;
 

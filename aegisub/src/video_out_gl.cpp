@@ -91,7 +91,6 @@ static bool TestTexture(int width, int height, GLint format) {
 VideoOutGL::VideoOutGL()
 :	maxTextureSize(0),
 	supportsRectangularTextures(false),
-	supportsGlClampToEdge(false),
 	internalFormat(0),
 	frameWidth(0),
 	frameHeight(0),
