@@ -42,6 +42,7 @@
 #ifndef AGI_PRE
 #include <wx/dcmemory.h>
 #include <wx/image.h>
+#include <algorithm>
 #endif
 
 #include "gl_text.h"
@@ -283,6 +284,7 @@ OpenGLTextGlyph OpenGLText::CreateGlyph(int n) {
 /// @param h 
 ///
 OpenGLTextTexture::OpenGLTextTexture(int w,int h) {
+	using std::max;
 	// Properties
 	x = y = nextY = 0;
 	width = max(SmallestPowerOf2(w), 64);

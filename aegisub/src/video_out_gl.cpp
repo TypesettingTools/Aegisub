@@ -39,6 +39,7 @@
 #ifndef AGI_PRE
 #include <wx/log.h>
 #include <algorithm>
+#include <utility>
 #endif
 
 using std::min;
