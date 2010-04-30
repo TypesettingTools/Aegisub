@@ -187,9 +187,9 @@ private:
 	static OpenGLText& GetInstance();
 	void DoSetFont(wxString face,int size,bool bold,bool italics);
 	void DoSetColour(wxColour col,float alpha);
-	void DoPrint(wxString text,int x,int y);
-	void DrawString(wxString text,int x,int y);
-	void DoGetExtent(wxString text,int &w,int &h);
+	void DoPrint(const wxString &text,int x,int y);
+	void DrawString(const wxString &text,int x,int y);
+	void DoGetExtent(const wxString &text,int &w,int &h);
 
 public:
 
@@ -217,14 +217,12 @@ public:
 	/// @param x    
 	/// @param y    
 	///
-	static void Print(wxString text,int x,int y) { GetInstance().DoPrint(text,x,y); }
+	static void Print(const wxString &text,int x,int y) { GetInstance().DoPrint(text,x,y); }
 
 	/// @brief DOCME
 	/// @param text 
 	/// @param w    
 	/// @param h    
 	///
-	static void GetExtent(wxString text,int &w,int &h) { GetInstance().DoGetExtent(text,w,h); }
+	static void GetExtent(const wxString &text,int &w,int &h) { GetInstance().DoGetExtent(text,w,h); }
 };
-
-

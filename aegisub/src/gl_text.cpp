@@ -48,41 +48,26 @@
 #include "gl_text.h"
 #include "utils.h"
 
-
-/// @brief Constructor 
-///
 OpenGLText::OpenGLText() {
 	r = g = b = a = 1.0f;
 }
 
-
-
-/// @brief Destructor 
-///
 OpenGLText::~OpenGLText() {
 	Reset();
 }
 
-
-
 /// @brief Reset 
-///
 void OpenGLText::Reset() {
 	textures.clear();
 	glyphs.clear();
 }
 
-
-
 /// @brief Get instance 
 /// @return 
-///
 OpenGLText& OpenGLText::GetInstance() {
 	static OpenGLText instance;
 	return instance;
 }
-
-
 
 /// @brief Set font 
 /// @param face    
@@ -108,8 +93,6 @@ void OpenGLText::DoSetFont(wxString face,int size,bool bold,bool italics) {
 	Reset();
 }
 
-
-
 /// @brief Set colour 
 /// @param col   
 /// @param alpha 
@@ -121,14 +104,11 @@ void OpenGLText::DoSetColour(wxColour col,float alpha) {
 	a = alpha;
 }
 
-
-
 /// @brief Print 
 /// @param text 
 /// @param x    
 /// @param y    
-///
-void OpenGLText::DoPrint(wxString text,int x,int y) {
+void OpenGLText::DoPrint(const wxString &text,int x,int y) {
 	// Set OpenGL
 	glEnable(GL_BLEND);
 	glEnable(GL_TEXTURE_2D);
@@ -150,15 +130,8 @@ void OpenGLText::DoPrint(wxString text,int x,int y) {
 	glDisable(GL_BLEND);
 }
 
-
-
-/// @brief Draw a string 
-/// @param text 
-/// @param x    
-/// @param y    
-/// @return 
-///
-void OpenGLText::DrawString(wxString text,int x,int y) {
+/// @brief Draw a string at (x,y)
+void OpenGLText::DrawString(const wxString &text,int x,int y) {
 	// Variables
 	size_t len = text.Length();
 	OpenGLTextGlyph glyph;
@@ -186,16 +159,11 @@ void OpenGLText::DrawString(wxString text,int x,int y) {
 	}
 }
 
-
-
 /// @brief Calculate text extent 
-/// @param text 
-/// @param w    
-/// @param h    
-/// @return 
-///
-void OpenGLText::DoGetExtent(wxString text,int &w,int &h) {
-	// Variables
+/// @param text Text to get the extents of
+/// @param w    [out] Width
+/// @param h    [out] Height
+void OpenGLText::DoGetExtent(const wxString &text,int &w,int &h) {
 	size_t len = text.Length();
 	OpenGLTextGlyph glyph;
 	lineHeight = 0;
@@ -229,12 +197,9 @@ void OpenGLText::DoGetExtent(wxString text,int &w,int &h) {
 	h = dy+lineHeight;
 }
 
-
-
 /// @brief Get a glyph 
 /// @param i 
 /// @return 
-///
 OpenGLTextGlyph OpenGLText::GetGlyph(int i) {
 	glyphMap::iterator res = glyphs.find(i);
 
@@ -245,12 +210,8 @@ OpenGLTextGlyph OpenGLText::GetGlyph(int i) {
 	return CreateGlyph(i);
 }
 
-
-
 /// @brief Create a glyph 
 /// @param n 
-/// @return 
-///
 OpenGLTextGlyph OpenGLText::CreateGlyph(int n) {
 	// Create glyph
 	OpenGLTextGlyph glyph;
@@ -277,12 +238,9 @@ OpenGLTextGlyph OpenGLText::CreateGlyph(int n) {
 	return glyph;
 }
 
-
-
 /// @brief Texture constructor 
 /// @param w 
 /// @param h 
-///
 OpenGLTextTexture::OpenGLTextTexture(int w,int h) {
 	using std::max;
 	// Properties
@@ -307,10 +265,6 @@ OpenGLTextTexture::OpenGLTextTexture(int w,int h) {
 	if (glGetError()) throw _T("Internal OpenGL text renderer error: Could not allocate Text Texture");
 }
 
-
-
-/// @brief Texture destructor 
-///
 OpenGLTextTexture::~OpenGLTextTexture() {
 	if (tex) {
 		glDeleteTextures(1,&tex);
@@ -318,12 +272,9 @@ OpenGLTextTexture::~OpenGLTextTexture() {
 	}
 }
 
-
-
 /// @brief Can fit a glyph in it? 
 /// @param glyph 
 /// @return 
-///
 bool OpenGLTextTexture::TryToInsert(OpenGLTextGlyph &glyph) {
 	// Get size
 	int w = glyph.w;
@@ -350,11 +301,8 @@ bool OpenGLTextTexture::TryToInsert(OpenGLTextGlyph &glyph) {
 	}
 }
 
-
-
 /// @brief Insert 
 /// @param glyph 
-///
 void OpenGLTextTexture::Insert(OpenGLTextGlyph &glyph) {
 	// Glyph data
 	wxString str = wxChar(glyph.value);
@@ -378,9 +326,7 @@ void OpenGLTextTexture::Insert(OpenGLTextGlyph &glyph) {
 	dc.SetFont(OpenGLText::GetFont());
 	dc.SetTextForeground(wxColour(255,255,255));
 	dc.DrawText(str,0,0);
-	//bmp.SaveFile(wxString::Format(_T("glyph%i.bmp"),glyph.value),wxBITMAP_TYPE_BMP);
 	wxImage img = bmp.ConvertToImage();
-	//img.SaveFile(str + _T(".bmp"));
 
 	// Convert to alpha
 	int imgw = img.GetWidth();
@@ -403,12 +349,9 @@ void OpenGLTextTexture::Insert(OpenGLTextGlyph &glyph) {
 	if (glGetError()) throw _T("Internal OpenGL text renderer error: Error uploading glyph data to video memory.");
 }
 
-
-
-/// @brief Draw a glyph 
+/// @brief Draw a glyph at (x,y)
 /// @param x 
 /// @param y 
-///
 void OpenGLTextGlyph::Draw(int x,int y) {
 	// Store matrix and translate
 	glPushMatrix();
@@ -437,22 +380,15 @@ void OpenGLTextGlyph::Draw(int x,int y) {
 	glPopMatrix();
 }
 
-
-
-/// @brief Glyph Destructor 
-///
 OpenGLTextGlyph::~OpenGLTextGlyph() {
 	if (tempBmp) delete tempBmp;
 	tempBmp = NULL;
 }
 
-
-
 /// DOCME
 wxBitmap *OpenGLTextGlyph::tempBmp = NULL;
 
 /// @brief DOCME
-///
 void OpenGLTextGlyph::GetMetrics() {
 	// Glyph data
 	wxCoord desc,lead;
@@ -462,11 +398,7 @@ void OpenGLTextGlyph::GetMetrics() {
 	if (!tempBmp) tempBmp = new wxBitmap(16,16,24);
 
 	// Get text extents
-	{
-		wxMemoryDC dc(*tempBmp);
-		dc.SetFont(OpenGLText::GetFont());
-		dc.GetTextExtent(str,&w,&h,&desc,&lead);
-	}
+	wxMemoryDC dc(*tempBmp);
+	dc.SetFont(OpenGLText::GetFont());
+	dc.GetTextExtent(str,&w,&h,&desc,&lead);
 }
-
-
