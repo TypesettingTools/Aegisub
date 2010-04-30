@@ -49,6 +49,7 @@
 #include "help_button.h"
 #include "options.h"
 #include "subs_grid.h"
+#include "subs_edit_box.h"
 
 
 /// @brief Constructor 
@@ -223,8 +224,8 @@ void DialogSelection::Process() {
 	AssDialogue *current;
 	int rows = grid->GetRows();
 	int action = Action->GetSelection();
-	bool replaceSel = false;
-	if (action == 0) replaceSel = true;
+	bool replaceSel = (action == 0);
+	int firstSel = -1;
 	int count = 0;
 
 	// Build current selection list
@@ -240,6 +241,7 @@ void DialogSelection::Process() {
 			// Set/Add to selection
 			if (action == 0 || action == 1) {
 				grid->SelectRow(i,!replaceSel);
+				if (replaceSel) firstSel = i;
 				replaceSel = false;
 				count++;
 			}
@@ -267,9 +269,15 @@ void DialogSelection::Process() {
 	if (action == 2 || action == 3) {
 		grid->ClearSelection();
 		int count = sels.Count();
+		if (count) {
+			grid->editBox->SetToLine(sels[0], true);
+		}
 		for (int i=0;i<count;i++) {
 			grid->SelectRow(sels[i],true);
 		}
+	}
+	else if (firstSel > -1) {
+		grid->editBox->SetToLine(firstSel, true);
 	}
 
 	// Message saying number selected
