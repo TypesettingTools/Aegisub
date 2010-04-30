@@ -303,6 +303,13 @@ catch (const VideoOutException &err) {
 		err.GetMessage().c_str());
 	VideoContext::Get()->Reset();
 }
+catch (const wchar_t *err) {
+	wxLogError(
+		L"An error occurred trying to render the video frame on the screen.\n"
+		L"Error message reported: %s",
+		err);
+	VideoContext::Get()->Reset();
+}
 catch (...) {
 	wxLogError(
 		_T("An error occurred trying to render the video frame to screen.\n")
