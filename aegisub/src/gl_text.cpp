@@ -267,7 +267,7 @@ OpenGLTextGlyph OpenGLText::CreateGlyph(int n) {
 
 	// No texture could fit it, create a new one
 	if (!ok) {
-		textures.push_back(new OpenGLTextTexture(256,256));
+		textures.push_back(new OpenGLTextTexture(glyph.w,glyph.h));
 		textures.back()->TryToInsert(glyph);
 	}
 
@@ -285,8 +285,9 @@ OpenGLTextGlyph OpenGLText::CreateGlyph(int n) {
 OpenGLTextTexture::OpenGLTextTexture(int w,int h) {
 	// Properties
 	x = y = nextY = 0;
-	width = SmallestPowerOf2(w);
-	height = SmallestPowerOf2(h);
+	width = max(SmallestPowerOf2(w), 64);
+	height = max(SmallestPowerOf2(h), 64);
+	width = height = max(width, height);
 	tex = 0;
 
 	// Generate and bind
