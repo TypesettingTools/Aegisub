@@ -539,6 +539,10 @@ void FrameMain::InitMenu() {
 	viewMenu->AppendRadioItem(Menu_View_Video, _("Video+Subs View"), _("Display video and subtitles only"));
 	viewMenu->AppendRadioItem(Menu_View_Audio, _("Audio+Subs View"), _("Display audio and subtitles only"));
 	viewMenu->AppendRadioItem(Menu_View_Standard, _("Full view"), _("Display audio, video and subtitles"));
+	viewMenu->AppendSeparator();
+	viewMenu->AppendRadioItem(Menu_View_FullTags, _("Show Tags"), _("Show full override tags in the subtitle grid"));
+	viewMenu->AppendRadioItem(Menu_View_ShortTags, _("Simplify Tags"), _("Replace override tags in the subtitle grid with a simplified placeholder"));
+	viewMenu->AppendRadioItem(Menu_View_NoTags, _("Hide Tags"), _("Hide override tags in the subtitle grid"));
 	MenuBar->Append(viewMenu, _("Vie&w"));
 
 	// Create help menu

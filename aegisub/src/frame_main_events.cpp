@@ -211,6 +211,9 @@ BEGIN_EVENT_TABLE(FrameMain, wxFrame)
 	EVT_MENU(Menu_View_Audio, FrameMain::OnViewAudio)
 	EVT_MENU(Menu_View_Video, FrameMain::OnViewVideo)
 	EVT_MENU(Menu_View_Subs, FrameMain::OnViewSubs)
+	EVT_MENU(Menu_View_FullTags, FrameMain::OnSetTags)
+	EVT_MENU(Menu_View_ShortTags, FrameMain::OnSetTags)
+	EVT_MENU(Menu_View_NoTags, FrameMain::OnSetTags)
 
 	EVT_MENU(Video_Prev_Frame,FrameMain::OnPrevFrame)
 	EVT_MENU(Video_Next_Frame,FrameMain::OnNextFrame)
@@ -310,6 +313,8 @@ void FrameMain::OnMenuOpen (wxMenuEvent &event) {
 		else if (showVideo && !showAudio) MenuBar->Check(Menu_View_Video,true);
 		else if (showAudio && showVideo) MenuBar->Check(Menu_View_Standard,true);
 		else MenuBar->Check(Menu_View_Audio,true);
+
+		MenuBar->Check(Options.AsInt(L"Grid hide overrides") + Menu_View_FullTags, true);
 	}
 
 	// Video menu
@@ -1841,17 +1846,11 @@ void FrameMain::OnNextLine(wxCommandEvent &event) {
 
 
 /// @brief Cycle through tag hiding modes 
-/// @param event 
-///
-void FrameMain::OnToggleTags(wxCommandEvent &event) {
-	// Read value
+void FrameMain::OnToggleTags(wxCommandEvent &) {
 	int tagMode = Options.AsInt(_T("Grid hide overrides"));
 
 	// Cycle to next
-	if (tagMode < 0 || tagMode > 2) tagMode = 1;
-	else {
-		tagMode = (tagMode+1)%3;
-	}
+	tagMode = (tagMode+1)%3;
 
 	// Show on status bar
 	wxString message = _("ASS Override Tag mode set to ");
@@ -1867,7 +1866,11 @@ void FrameMain::OnToggleTags(wxCommandEvent &event) {
 	// Refresh grid
 	SubsBox->Refresh(false);
 }
-
+void FrameMain::OnSetTags(wxCommandEvent &event) {
+	Options.SetInt(_T("Grid hide overrides"), event.GetId() - Menu_View_FullTags);
+	Options.Save();
+	SubsBox->Refresh(false);
+}
 
 
 /// @brief Commit Edit Box's changes 

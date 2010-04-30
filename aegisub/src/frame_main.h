@@ -255,6 +255,7 @@ private:
 	void OnViewVideo (wxCommandEvent &event);
 	void OnViewAudio (wxCommandEvent &event);
 	void OnViewSubs (wxCommandEvent &event);
+	void OnSetTags (wxCommandEvent &event);
 
 	void OnUndo (wxCommandEvent &event);
 	void OnRedo (wxCommandEvent &event);
@@ -601,6 +602,9 @@ enum {
 
 	/// DOCME
 	Menu_View_Subs,
+	Menu_View_FullTags,
+	Menu_View_ShortTags,
+	Menu_View_NoTags,
 
 
 	/// DOCME
