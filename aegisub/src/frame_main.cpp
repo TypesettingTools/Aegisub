@@ -265,7 +265,7 @@ void FrameMain::InitToolbar () {
 		toAdd += _T("%");
 		choices.Add(toAdd);
 	}
-	ZoomBox = new wxComboBox(Toolbar,Toolbar_Zoom_Dropdown,_T("75%"),wxDefaultPosition,wxDefaultSize,choices,wxCB_READONLY);
+	ZoomBox = new wxComboBox(Toolbar,Toolbar_Zoom_Dropdown,_T("75%"),wxDefaultPosition,wxDefaultSize,choices,wxCB_DROPDOWN);
 	Toolbar->AddControl(ZoomBox);
 	Toolbar->AddSeparator();
 
@@ -600,7 +600,7 @@ void FrameMain::InitContents() {
 	videoBox->videoSlider->grid = SubsBox;
 	VideoContext::Get()->grid = SubsBox;
 	StartupLog(_T("Reset video zoom"));
-	videoBox->videoDisplay->SetZoomPos(Options.AsInt(_T("Video Default Zoom")));
+	videoBox->videoDisplay->SetZoom(Options.AsInt(_T("Video Default Zoom")) * .125 + .125);
 	Search.grid = SubsBox;
 
 	// Audio area
@@ -949,7 +949,7 @@ void FrameMain::SynchronizeProject(bool fromSubs) {
 		long videoPos = 0;
 		long videoAr = 0;
 		double videoArValue = 0.0;
-		long videoZoom = 0;
+		double videoZoom = 0.;
 
 		// Get AR
 		wxString arString = subs->GetScriptInfo(_T("Video Aspect Ratio"));
@@ -962,7 +962,7 @@ void FrameMain::SynchronizeProject(bool fromSubs) {
 
 		// Get new state info
 		subs->GetScriptInfo(_T("Video Position")).ToLong(&videoPos);
-		subs->GetScriptInfo(_T("Video Zoom")).ToLong(&videoZoom);
+		subs->GetScriptInfo(_T("Video Zoom Percent")).ToDouble(&videoZoom);
 		wxString curSubsVideo = DecodeRelativePath(subs->GetScriptInfo(_T("Video File")),AssFile::top->filename);
 		wxString curSubsVFR = DecodeRelativePath(subs->GetScriptInfo(_T("VFR File")),AssFile::top->filename);
 		wxString curSubsKeyframes = DecodeRelativePath(subs->GetScriptInfo(_T("Keyframes File")),AssFile::top->filename);
@@ -1003,7 +1003,7 @@ void FrameMain::SynchronizeProject(bool fromSubs) {
 				LoadVideo(curSubsVideo);
 				if (VideoContext::Get()->IsLoaded()) {
 					VideoContext::Get()->SetAspectRatio(videoAr,videoArValue);
-					videoBox->videoDisplay->SetZoomPos(videoZoom-1);
+					videoBox->videoDisplay->SetZoom(videoZoom);
 					VideoContext::Get()->JumpToFrame(videoPos);
 				}
 				//}
@@ -1067,7 +1067,7 @@ void FrameMain::SynchronizeProject(bool fromSubs) {
 		wxString zoom = _T("6");
 		if (VideoContext::Get()->IsLoaded()) {
 			seekpos = wxString::Format(_T("%i"),videoBox->videoDisplay->GetFrame());
-			zoom = wxString::Format(_T("%i"),videoBox->videoDisplay->zoomBox->GetSelection()+1);
+			zoom = wxString::Format(_T("%f"),videoBox->videoDisplay->GetZoom());
 
 			int arType = VideoContext::Get()->GetAspectRatioType();
 			if (arType == 4) ar = wxString(_T("c")) + AegiFloatToString(VideoContext::Get()->GetAspectRatioValue());
@@ -1080,7 +1080,7 @@ void FrameMain::SynchronizeProject(bool fromSubs) {
 		// Store video data
 		subs->SetScriptInfo(_T("Video File"),MakeRelativePath(VideoContext::Get()->videoName,AssFile::top->filename));
 		subs->SetScriptInfo(_T("Video Aspect Ratio"),ar);
-		subs->SetScriptInfo(_T("Video Zoom"),zoom);
+		subs->SetScriptInfo(_T("Video Zoom Percent"),zoom);
 		subs->SetScriptInfo(_T("Video Position"),seekpos);
 		subs->SetScriptInfo(_T("VFR File"),MakeRelativePath(VFR_Output.GetFilename(),AssFile::top->filename));
 		subs->SetScriptInfo(_T("Keyframes File"),MakeRelativePath(VideoContext::Get()->GetKeyFramesName(),AssFile::top->filename));
@@ -1161,14 +1161,13 @@ void FrameMain::LoadVideo(wxString file,bool autoload) {
 		int vidx = VideoContext::Get()->GetWidth(), vidy = VideoContext::Get()->GetHeight();
 
 		// Set zoom level based on video resolution and window size
-		int target_zoom = 7; // 100%
+		double target_zoom = 1.;
 		wxSize windowSize = GetSize();
 		if (vidx*3 > windowSize.GetX()*2 || vidy*4 > windowSize.GetY()*3)
-			target_zoom = 3; // 50%
+			target_zoom = .5;
 		if (vidx*3 > windowSize.GetX()*4 || vidy*4 > windowSize.GetY()*6)
-			target_zoom = 1; // 25%
-		videoBox->videoDisplay->zoomBox->SetSelection(target_zoom);
-		videoBox->videoDisplay->SetZoomPos(target_zoom);
+			target_zoom = .25;
+		videoBox->videoDisplay->SetZoom(target_zoom);
 
 		// Check that the video size matches the script video size specified
 		int scriptx = SubsBox->ass->GetScriptInfoAsInt(_T("PlayResX"));

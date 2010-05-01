@@ -148,8 +148,13 @@ public:
 	void ShowCursor(bool show);
 	void ConvertMouseCoords(int &x,int &y);
 	void UpdateSize();
+	/// @brief Set the zoom level
+	/// @param value The new zoom level
 	void SetZoom(double value);
-	void SetZoomPos(int pos);
+	/// @brief Set the zoom level to that indicated by the dropdown
+	void SetZoomFromBox();
+	/// @brief Get the current zoom level
+	double GetZoom();
 	void SetVisualMode(int mode, bool render = false);
 
 	void OnSubTool(wxCommandEvent &event);

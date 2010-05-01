@@ -140,6 +140,7 @@ BEGIN_EVENT_TABLE(FrameMain, wxFrame)
 	EVT_MENU(Menu_View_Zoom_100, FrameMain::OnSetZoom100)
 	EVT_MENU(Menu_View_Zoom_200, FrameMain::OnSetZoom200)
 	EVT_COMBOBOX(Toolbar_Zoom_Dropdown, FrameMain::OnSetZoom)
+	EVT_TEXT_ENTER(Toolbar_Zoom_Dropdown, FrameMain::OnSetZoom)
 	EVT_MENU(Video_Frame_Play, FrameMain::OnVideoPlay)
 	EVT_MENU(Menu_Video_Zoom_In, FrameMain::OnZoomIn)
 	EVT_MENU(Menu_Video_Zoom_Out, FrameMain::OnZoomOut)
@@ -981,8 +982,7 @@ void FrameMain::OnSaveKeyframes (wxCommandEvent &event) {
 ///
 void FrameMain::OnSetZoom50(wxCommandEvent& WXUNUSED(event)) {
 	VideoContext::Get()->Stop();
-	videoBox->videoDisplay->zoomBox->SetSelection(3);
-	videoBox->videoDisplay->SetZoomPos(3);
+	videoBox->videoDisplay->SetZoom(.5);
 }
 
 
@@ -991,8 +991,7 @@ void FrameMain::OnSetZoom50(wxCommandEvent& WXUNUSED(event)) {
 ///
 void FrameMain::OnSetZoom100(wxCommandEvent& WXUNUSED(event)) {
 	VideoContext::Get()->Stop();
-	videoBox->videoDisplay->zoomBox->SetSelection(7);
-	videoBox->videoDisplay->SetZoomPos(7);
+	videoBox->videoDisplay->SetZoom(1.);
 }
 
 
@@ -1001,8 +1000,7 @@ void FrameMain::OnSetZoom100(wxCommandEvent& WXUNUSED(event)) {
 ///
 void FrameMain::OnSetZoom200(wxCommandEvent& WXUNUSED(event)) {
 	VideoContext::Get()->Stop();
-	videoBox->videoDisplay->zoomBox->SetSelection(15);
-	videoBox->videoDisplay->SetZoomPos(15);
+	videoBox->videoDisplay->SetZoom(2.);
 }
 
 
@@ -1011,8 +1009,7 @@ void FrameMain::OnSetZoom200(wxCommandEvent& WXUNUSED(event)) {
 ///
 void FrameMain::OnZoomIn (wxCommandEvent &event) {
 	VideoContext::Get()->Stop();
-	videoBox->videoDisplay->zoomBox->SetSelection(videoBox->videoDisplay->zoomBox->GetSelection()+1);
-	videoBox->videoDisplay->SetZoomPos(videoBox->videoDisplay->zoomBox->GetSelection());
+	videoBox->videoDisplay->SetZoom(videoBox->videoDisplay->GetZoom() + .125);
 }
 
 
@@ -1021,10 +1018,7 @@ void FrameMain::OnZoomIn (wxCommandEvent &event) {
 ///
 void FrameMain::OnZoomOut (wxCommandEvent &event) {
 	VideoContext::Get()->Stop();
-	int selTo = videoBox->videoDisplay->zoomBox->GetSelection()-1;
-	if (selTo < 0) selTo = 0;
-	videoBox->videoDisplay->zoomBox->SetSelection(selTo);
-	videoBox->videoDisplay->SetZoomPos(videoBox->videoDisplay->zoomBox->GetSelection());
+	videoBox->videoDisplay->SetZoom(videoBox->videoDisplay->GetZoom() - .125);
 }
 
 
@@ -1032,7 +1026,7 @@ void FrameMain::OnZoomOut (wxCommandEvent &event) {
 /// @param event 
 ///
 void FrameMain::OnSetZoom(wxCommandEvent &event) {
-	videoBox->videoDisplay->SetZoomPos(videoBox->videoDisplay->zoomBox->GetSelection());
+	videoBox->videoDisplay->SetZoomFromBox();
 }
 
 
