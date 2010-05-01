@@ -291,7 +291,9 @@ void VideoDisplay::Render() try {
 	DrawTVEffects();
 
 	if (visualMode == -1) SetVisualMode(0, false);
-	if (visual) visual->Draw();
+	if (visual && (visual->mouseX > INT_MIN || visual->mouseY > INT_MIN || Options.AsBool(L"Always show visual tools"))) {
+		visual->Draw();
+	}
 
 	glFinish();
 	SwapBuffers();

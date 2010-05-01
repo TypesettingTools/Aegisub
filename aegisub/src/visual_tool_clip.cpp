@@ -80,6 +80,7 @@ void VisualToolClip::Update() {
 /// @return 
 ///
 void VisualToolClip::Draw() {
+	if (mouseX == -1 || mouseY == -1) return;
 	// Get current line
 	AssDialogue *line = GetActiveDialogueLine();
 	if (!line) return;

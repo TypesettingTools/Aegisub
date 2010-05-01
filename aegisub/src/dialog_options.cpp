@@ -397,6 +397,9 @@ DialogOptions::DialogOptions(wxWindow *parent)
 		control = new wxCheckBox(videoPage,-1,_("Show keyframes in slider"));
 		Bind(control,_T("Show keyframes on video slider"));
 		videoSizer3->Add(control,0,wxEXPAND);
+		control = new wxCheckBox(videoPage,-1,_("Always show visual tools"));
+		Bind(control,_T("Always show visual tools"));
+		videoSizer3->Add(control,0,wxEXPAND);
 		videoSizer3->AddGrowableCol(1,1);
 
 		// Second sizer

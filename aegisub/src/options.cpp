@@ -377,6 +377,7 @@ void OptionsManager::LoadDefaults(bool onlyDefaults,bool doOverride) {
 		SetInt(_T("Audio Sample Rate"),0);
 
 		SetBool(_T("Video Visual Realtime"),true);
+		SetBool(_T("Always show visual tools"),true);
 		SetBool(_T("Detached video"),false);
 		SetInt(_T("Detached video last x"),-1);
 		SetInt(_T("Detached video last y"),-1);

@@ -90,7 +90,6 @@ void VisualToolCross::Update() {
 /// @brief Draw 
 ///
 void VisualToolCross::Draw() {
-	// Is it outside?
 	if (mouseX == -1 || mouseY == -1) return;
 
 	// Draw cross
