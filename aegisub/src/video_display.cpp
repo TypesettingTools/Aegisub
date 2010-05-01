@@ -120,7 +120,7 @@ VideoDisplay::VideoDisplay(VideoBox *box, VideoSlider *ControlSlider, wxTextCtrl
 , origSize(size)
 , currentFrame(-1)
 , w(8), h(8), dx1(0), dx2(8), dy1(0), dy2(8)
-, mouse_x(-1), mouse_y(-1)
+, mouse_x(INT_MIN), mouse_y(INT_MIN)
 , locked(false)
 , zoomValue(1.0)
 , ControlSlider(ControlSlider)

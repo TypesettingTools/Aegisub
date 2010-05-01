@@ -87,7 +87,7 @@ VisualTool::VisualTool(VideoDisplay *par) : eventSink(this) {
 	dragListOK = false;
 
 	// Video options
-	mouseX = mouseY = -1;
+	mouseX = mouseY = INT_MIN;
 	frame_n = 0;
 	if (VideoContext::Get()->IsLoaded()) {
 		parent->GetClientSize(&w,&h);
@@ -124,10 +124,10 @@ void VisualTool::OnMouseEvent (wxMouseEvent &event) {
 
 	// Mouse leaving control
 	if (event.Leaving()) {
-		mouseX = -1;
-		mouseY = -1;
-		mx = -1;
-		my = -1;
+		mouseX = INT_MIN;
+		mouseY = INT_MIN;
+		mx = INT_MIN;
+		my = INT_MIN;
 		Update();
 		return;
 	}
@@ -393,10 +393,10 @@ void VisualTool::GetLinePosition(AssDialogue *diag,int &x, int &y) {
 void VisualTool::GetLinePosition(AssDialogue *diag,int &x, int &y, int &orgx, int &orgy) {
 	// No dialogue
 	if (!diag) {
-		x = -1;
-		y = -1;
-		orgx = -1;
-		orgy = -1;
+		x = INT_MIN;
+		y = INT_MIN;
+		orgx = INT_MIN;
+		orgy = INT_MIN;
 		return;
 	}
 
@@ -426,8 +426,8 @@ void VisualTool::GetLinePosition(AssDialogue *diag,int &x, int &y, int &orgx, in
 	// Position
 	bool posSet = false;
 	bool orgSet = false;
-	int posx = -1;
-	int posy = -1;
+	int posx = INT_MIN;
+	int posy = INT_MIN;
 
 	// Overrides processing
 	diag->ParseASSTags();

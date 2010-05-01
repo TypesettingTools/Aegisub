@@ -214,12 +214,10 @@ void VisualToolVectorClip::Draw() {
 	// Draw preview of inserted line
 	if (mode == 1 || mode == 2) {
 		if (spline.curves.size()) {
-			if (mx != -1 || my != -1) {
-				SplineCurve *c0 = &spline.curves.front();
-				SplineCurve *c1 = &spline.curves.back();
-				DrawDashedLine(mx,my,c0->p1.x,c0->p1.y,6);
-				DrawDashedLine(mx,my,c1->GetEndPoint().x,c1->GetEndPoint().y,6);
-			}
+			SplineCurve *c0 = &spline.curves.front();
+			SplineCurve *c1 = &spline.curves.back();
+			DrawDashedLine(mx,my,c0->p1.x,c0->p1.y,6);
+			DrawDashedLine(mx,my,c1->GetEndPoint().x,c1->GetEndPoint().y,6);
 		}
 	}
 	
@@ -492,7 +490,7 @@ void VisualToolVectorClip::UpdateHold() {
 
 	// Freehand
 	if (mode == 6 || mode == 7) {
-		if (lastX != -100000 && lastY != -100000) {
+		if (lastX !=	-100000 && lastY != -100000) {
 			// See if distance is enough
 			Vector2D delta(lastX-mx,lastY-my);
 			int len = (int)delta.Len();

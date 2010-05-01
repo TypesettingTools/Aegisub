@@ -160,7 +160,7 @@ void VisualToolRotateZ::Draw() {
 	glPopMatrix();
 
 	// Draw line to mouse
-	if (mouseX != -1 && !dragging && GetHighlightedFeature() == -1) {
+	if (!dragging && GetHighlightedFeature() == -1) {
 		SetLineColour(colour[0]);
 		DrawLine(dx,dy,mx,my);
 	}

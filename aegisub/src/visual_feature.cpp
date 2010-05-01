@@ -48,8 +48,8 @@
 ///
 VisualDraggableFeature::VisualDraggableFeature() {
 	type = DRAG_NONE;
-	x = -1;
-	y = -1;
+	x = INT_MIN;
+	y = INT_MIN;
 	value = value2 = 0;
 	layer = 0;
 	lineN = -1;

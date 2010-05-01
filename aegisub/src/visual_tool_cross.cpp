@@ -90,7 +90,7 @@ void VisualToolCross::Update() {
 /// @brief Draw 
 ///
 void VisualToolCross::Draw() {
-	if (mouseX == -1 || mouseY == -1) return;
+	if (mouseX == INT_MIN || mouseY == INT_MIN) return;
 
 	// Draw cross
 	glDisable(GL_LINE_SMOOTH);
