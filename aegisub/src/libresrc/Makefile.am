@@ -12,7 +12,7 @@ bitmap.cpp: ../../tools/common-respack
 default_config.cpp: ../../tools/common-respack
 	../../tools/common-respack default_config.cpp ./default_mru.json
 
-EXTRA_DIST = mru.json
+EXTRA_DIST = default_mru.json
 
 CLEANFILES= \
 	bitmap.cpp \
