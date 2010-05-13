@@ -106,14 +106,6 @@ END_EVENT_TABLE()
 /// Attribute list for gl canvases; set the canvases to doublebuffered rgba with an 8 bit stencil buffer
 int attribList[] = { WX_GL_RGBA , WX_GL_DOUBLEBUFFER, WX_GL_STENCIL_SIZE, 8, 0 };
 
-
-/// @brief Constructor
-/// @param parent Pointer to a parent window.
-/// @param id     Window identifier. If -1, will automatically create an identifier.
-/// @param pos    Window position. wxDefaultPosition is (-1, -1) which indicates that wxWidgets should generate a default position for the window.
-/// @param size   Window size. wxDefaultSize is (-1, -1) which indicates that wxWidgets should generate a default size for the window. If no suitable size can be found, the window will be sized to 20x20 pixels so that the window is visible but obviously not correctly sized.
-/// @param style  Window style.
-/// @param name   Window name.
 VideoDisplay::VideoDisplay(VideoBox *box, VideoSlider *ControlSlider, wxTextCtrl *PositionDisplay, wxTextCtrl *SubsPosition, wxWindow* parent, wxWindowID id, const wxPoint& pos, const wxSize& size, long style, const wxString& name)
 : wxGLCanvas (parent, id, attribList, pos, size, style, name)
 , visualMode(-1)
@@ -134,15 +126,12 @@ VideoDisplay::VideoDisplay(VideoBox *box, VideoSlider *ControlSlider, wxTextCtrl
 	SetCursor(wxNullCursor);
 }
 
-/// @brief Destructor 
 VideoDisplay::~VideoDisplay () {
 	if (visual) delete visual;
 	visual = NULL;
 	VideoContext::Get()->RemoveDisplay(this);
 }
 
-/// @brief Set the cursor to either default or blank
-/// @param show Whether or not the cursor should be visible
 void VideoDisplay::ShowCursor(bool show) {
 	if (show) SetCursor(wxNullCursor);
 	else {
@@ -150,7 +139,6 @@ void VideoDisplay::ShowCursor(bool show) {
 		SetCursor(cursor);
 	}
 }
-
 void VideoDisplay::SetFrame(int frameNumber) {
 	VideoContext *context = VideoContext::Get();
 	ControlSlider->SetValue(frameNumber);
@@ -236,8 +224,6 @@ void VideoDisplay::SetFrameRange(int from, int to) {
 	ControlSlider->SetRange(from, to);
 }
 
-
-/// @brief Render the currently visible frame
 void VideoDisplay::Render() try {
 	if (!IsShownOnScreen()) return;
 	wxASSERT(wxIsMainThread());
@@ -319,9 +305,7 @@ catch (...) {
 	VideoContext::Get()->Reset();
 }
 
-/// @brief Draw the appropriate overscan masks for the current aspect ratio
 void VideoDisplay::DrawTVEffects() {
-	// Get coordinates
 	int sw,sh;
 	VideoContext *context = VideoContext::Get();
 	context->GetScriptSize(sw,sh);
@@ -346,13 +330,7 @@ void VideoDisplay::DrawTVEffects() {
 	}
 }
 
-/// @brief Draw an overscan mask 
-/// @param sizeH  The amount of horizontal overscan on one side
-/// @param sizeV  The amount of vertical overscan on one side
-/// @param colour The color of the mask
-/// @param alpha  The alpha of the mask
 void VideoDisplay::DrawOverscanMask(int sizeH,int sizeV,wxColour colour,double alpha) {
-	// Parameters
 	int sw,sh;
 	VideoContext *context = VideoContext::Get();
 	context->GetScriptSize(sw,sh);
@@ -366,13 +344,13 @@ void VideoDisplay::DrawOverscanMask(int sizeH,int sizeV,wxColour colour,double a
 	gl.SetFillColour(colour,alpha);
 	gl.SetLineColour(wxColour(0,0,0),0.0,1);
 
-	// Draw rectangles
+	// Draw sides
 	gl.DrawRectangle(gapH,0,sw-gapH,sizeV);		// Top
 	gl.DrawRectangle(sw-sizeH,gapV,sw,sh-gapV);	// Right
 	gl.DrawRectangle(gapH,sh-sizeV,sw-gapH,sh);	// Bottom
 	gl.DrawRectangle(0,gapV,sizeH,sh-gapV);		// Left
 
-	// Draw corners
+	// Draw rounded corners
 	gl.DrawRing(gapH,gapV,rad1,rad2,1.0,180.0,270.0);		// Top-left
 	gl.DrawRing(sw-gapH,gapV,rad1,rad2,1.0,90.0,180.0);		// Top-right
 	gl.DrawRing(sw-gapH,sh-gapV,rad1,rad2,1.0,0.0,90.0);	// Bottom-right
@@ -382,7 +360,6 @@ void VideoDisplay::DrawOverscanMask(int sizeH,int sizeV,wxColour colour,double a
 	glDisable(GL_BLEND);
 }
 
-/// @brief Update the size of the display
 void VideoDisplay::UpdateSize() {
 	VideoContext *con = VideoContext::Get();
 	wxASSERT(con);
@@ -419,7 +396,6 @@ void VideoDisplay::UpdateSize() {
 	Refresh(false);
 }
 
-/// @brief Reset the size of the display to the video size
 void VideoDisplay::Reset() {
 	// Only calculate sizes if it's visible
 	if (!IsShownOnScreen()) return;
@@ -435,36 +411,26 @@ void VideoDisplay::Reset() {
 	SetSizeHints(_w,_h,_w,_h);
 }
 
-/// @brief Paint event 
-/// @param event 
-void VideoDisplay::OnPaint(wxPaintEvent& event) {
+void VideoDisplay::OnPaint(wxPaintEvent&) {
 	wxPaintDC dc(this);
 	Render();
 }
 
-/// @brief Handle resize events
-/// @param event
 void VideoDisplay::OnSizeEvent(wxSizeEvent &event) {
 	if (freeSize) UpdateSize();
 	event.Skip();
 }
 
-/// @brief Handle mouse events
-/// @param event 
 void VideoDisplay::OnMouseEvent(wxMouseEvent& event) {
-	// Locked?
 	if (locked) return;
 
-	// Mouse coordinates
 	mouse_x = event.GetX();
 	mouse_y = event.GetY();
 
 	// Disable when playing
 	if (VideoContext::Get()->IsPlaying()) return;
 
-	// Right click
 	if (event.ButtonUp(wxMOUSE_BTN_RIGHT)) {
-		// Create menu
 		wxMenu menu;
 		menu.Append(VIDEO_MENU_SAVE_SNAPSHOT,_("Save PNG snapshot"));
 		menu.Append(VIDEO_MENU_COPY_TO_CLIPBOARD,_("Copy image to Clipboard"));
@@ -496,8 +462,6 @@ void VideoDisplay::OnMouseEvent(wxMouseEvent& event) {
 	if (visual) visual->OnMouseEvent(event);
 }
 
-/// @brief Handle keypress events for switching visual typesetting modes
-/// @param event
 void VideoDisplay::OnKey(wxKeyEvent &event) {
 	int key = event.GetKeyCode();
 #ifdef __APPLE__
@@ -535,39 +499,29 @@ double VideoDisplay::GetZoom() {
 	return zoomValue;
 }
 
-/// @brief Copy the currently display frame to the clipboard, with subtitles
-/// @param event Unused
-void VideoDisplay::OnCopyToClipboard(wxCommandEvent &event) {
+void VideoDisplay::OnCopyToClipboard(wxCommandEvent &) {
 	if (wxTheClipboard->Open()) {
 		wxTheClipboard->SetData(new wxBitmapDataObject(wxBitmap(VideoContext::Get()->GetFrame(-1).GetImage(),24)));
 		wxTheClipboard->Close();
 	}
 }
 
-/// @brief Copy the currently display frame to the clipboard, without subtitles
-/// @param event Unused
-void VideoDisplay::OnCopyToClipboardRaw(wxCommandEvent &event) {
+void VideoDisplay::OnCopyToClipboardRaw(wxCommandEvent &) {
 	if (wxTheClipboard->Open()) {
 		wxTheClipboard->SetData(new wxBitmapDataObject(wxBitmap(VideoContext::Get()->GetFrame(-1,true).GetImage(),24)));
 		wxTheClipboard->Close();
 	}
 }
 
-/// @brief Save the currently display frame to a file, with subtitles
-/// @param event Unused
-void VideoDisplay::OnSaveSnapshot(wxCommandEvent &event) {
+void VideoDisplay::OnSaveSnapshot(wxCommandEvent &) {
 	VideoContext::Get()->SaveSnapshot(false);
 }
 
-/// @brief Save the currently display frame to a file, without subtitles
-/// @param event Unused
-void VideoDisplay::OnSaveSnapshotRaw(wxCommandEvent &event) {
+void VideoDisplay::OnSaveSnapshotRaw(wxCommandEvent &) {
 	VideoContext::Get()->SaveSnapshot(true);
 }
 
-/// @brief Copy coordinates of the mouse to the clipboard
-/// @param event Unused
-void VideoDisplay::OnCopyCoords(wxCommandEvent &event) {
+void VideoDisplay::OnCopyCoords(wxCommandEvent &) {
 	if (wxTheClipboard->Open()) {
 		int sw,sh;
 		VideoContext::Get()->GetScriptSize(sw,sh);
@@ -578,9 +532,6 @@ void VideoDisplay::OnCopyCoords(wxCommandEvent &event) {
 	}
 }
 
-/// @brief Convert mouse coordinates relative to the display to coordinates relative to the video
-/// @param x X coordinate
-/// @param y Y coordinate
 void VideoDisplay::ConvertMouseCoords(int &x,int &y) {
 	int w,h;
 	GetClientSize(&w,&h);
@@ -592,9 +543,6 @@ void VideoDisplay::ConvertMouseCoords(int &x,int &y) {
 	y = (y-dy1)*h/dy2;
 }
 
-/// @brief Set the current visual typesetting mode
-/// @param mode The new mode
-/// @param render Whether the display should be rerendered
 void VideoDisplay::SetVisualMode(int mode, bool render) {
 	// Set visual
 	if (visualMode != mode) {

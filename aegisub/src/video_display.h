@@ -42,18 +42,14 @@
 #include <memory>
 #endif
 
-
 // Prototypes
 class VideoSlider;
 class VisualTool;
 class VideoBox;
 class VideoOutGL;
 
-/// DOCME
 /// @class VideoDisplay
 /// @brief DOCME
-///
-/// DOCME
 class VideoDisplay: public wxGLCanvas {
 private:
 	/// The current visual typesetting mode
@@ -81,30 +77,47 @@ private:
 	/// The height of the screen area containing video
 	int dy2;
 
-	/// The x position of the mouse
+	/// The last seen x position of the mouse; stored for some context menu commands
 	int mouse_x;
-	/// The y position of the mouse
+	/// The last seen y position of the mouse; stored for some context menu commands
 	int mouse_y;
 
 	/// Lock to disable mouse updates during resize operations
 	bool locked;
 
+	/// @brief Draw the appropriate overscan masks for the current aspect ratio
 	void DrawTVEffects();
+	/// @brief Draw an overscan mask 
+	/// @param sizeH  The amount of horizontal overscan on one side
+	/// @param sizeV  The amount of vertical overscan on one side
+	/// @param colour The color of the mask
+	/// @param alpha  The alpha of the mask
 	void DrawOverscanMask(int sizeH,int sizeV,wxColour color,double alpha=0.5);
 
+	/// @brief Paint event 
 	void OnPaint(wxPaintEvent& event);
+	/// @brief Handle keypress events for switching visual typesetting modes
+	/// @param event
 	void OnKey(wxKeyEvent &event);
+	/// @brief Handle mouse events
+	/// @param event 
 	void OnMouseEvent(wxMouseEvent& event);
 
 	/// @brief NOP event handler
-	/// @param event Unused
 	void OnEraseBackground(wxEraseEvent &event) {}
+	/// @brief Handle resize events
+	/// @param event
 	void OnSizeEvent(wxSizeEvent &event);
 
+	/// @brief Copy coordinates of the mouse to the clipboard
 	void OnCopyCoords(wxCommandEvent &event);
+	/// @brief Copy the currently display frame to the clipboard, with subtitles
 	void OnCopyToClipboard(wxCommandEvent &event);
+	/// @brief Save the currently display frame to a file, with subtitles
 	void OnSaveSnapshot(wxCommandEvent &event);
+	/// @brief Copy the currently display frame to the clipboard, without subtitles
 	void OnCopyToClipboardRaw(wxCommandEvent &event);
+	/// @brief Save the currently display frame to a file, without subtitles
 	void OnSaveSnapshotRaw(wxCommandEvent &event);
 
 	/// The current zoom level, where 1.0 = 100%
@@ -135,18 +148,39 @@ public:
 	/// Whether the display can be freely resized by the user
 	bool freeSize;
 
+	/// @brief Constructor
+	/// @param parent Pointer to a parent window.
+	/// @param id     Window identifier. If -1, will automatically create an identifier.
+	/// @param pos    Window position. wxDefaultPosition is (-1, -1) which indicates that wxWidgets should generate a default position for the window.
+	/// @param size   Window size. wxDefaultSize is (-1, -1) which indicates that wxWidgets should generate a default size for the window. If no suitable size can be found, the window will be sized to 20x20 pixels so that the window is visible but obviously not correctly sized.
+	/// @param style  Window style.
+	/// @param name   Window name.
 	VideoDisplay(VideoBox *box, VideoSlider *ControlSlider, wxTextCtrl *PositionDisplay, wxTextCtrl *SubsPosition, wxWindow* parent, wxWindowID id, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = 0, const wxString& name = wxPanelNameStr);
 	~VideoDisplay();
+	/// @brief Reset the size of the display to the video size
 	void Reset();
 
+	/// @brief Set this video display to the given frame
+	/// @frameNumber The desired frame number
 	void SetFrame(int frameNumber);
+	/// @brief Get the number of the currently displayed framed
 	int GetFrame() const { return currentFrame; }
+	/// @brief Set the range of valid frame numbers for the slider
+	/// @from Minimum frame number
+	/// @to Maximum frame number; must be >= from or strange things may happen
 	void SetFrameRange(int from, int to);
 
+	/// @brief Render the currently visible frame
 	void Render();
 
+	/// @brief Set the cursor to either default or blank
+	/// @param show Whether or not the cursor should be visible
 	void ShowCursor(bool show);
+	/// @brief Convert mouse coordinates relative to the display to coordinates relative to the video
+	/// @param x X coordinate
+	/// @param y Y coordinate
 	void ConvertMouseCoords(int &x,int &y);
+	/// @brief Set the size of the display based on the current zoom and video resolution
 	void UpdateSize();
 	/// @brief Set the zoom level
 	/// @param value The new zoom level
@@ -155,8 +189,12 @@ public:
 	void SetZoomFromBox();
 	/// @brief Get the current zoom level
 	double GetZoom();
+	/// @brief Set the current visual typesetting mode
+	/// @param mode The new mode
+	/// @param render Whether the display should be rerendered
 	void SetVisualMode(int mode, bool render = false);
 
+	/// @brief Event handler for the secondary toolbar which some visual tools use
 	void OnSubTool(wxCommandEvent &event);
 
 	DECLARE_EVENT_TABLE()
