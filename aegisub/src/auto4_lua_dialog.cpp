@@ -622,7 +622,7 @@ nospin:
 			///
 			wxString SerialiseValue()
 			{
-				return PrettyFloatF(value);
+				return AegiFloatToString(value);
 			}
 
 
@@ -646,7 +646,7 @@ nospin:
 			///
 			wxControl *Create(wxWindow *parent)
 			{
-				cw = new wxTextCtrl(parent, -1, PrettyFloatF(value), wxDefaultPosition, wxDefaultSize, 0); //, FloatTextValidator());
+				cw = new wxTextCtrl(parent, -1, AegiFloatToString(value), wxDefaultPosition, wxDefaultSize, 0); //, FloatTextValidator());
 				cw->SetToolTip(hint);
 				return cw;
 			}

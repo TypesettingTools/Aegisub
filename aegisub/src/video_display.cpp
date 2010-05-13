@@ -133,7 +133,9 @@ VideoDisplay::~VideoDisplay () {
 }
 
 void VideoDisplay::ShowCursor(bool show) {
-	if (show) SetCursor(wxNullCursor);
+	if (show) {
+		SetCursor(wxNullCursor);
+	}
 	else {
 		wxCursor cursor(wxCURSOR_BLANK);
 		SetCursor(cursor);

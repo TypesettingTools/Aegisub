@@ -261,7 +261,7 @@ wxString VariableData::AsText() const {
 	if (!value) throw _T("Null parameter");
 	if (type != VARDATA_TEXT) {
 		if (type == VARDATA_INT) return wxString::Format(_T("%i"),*value_int);
-		else if (type == VARDATA_FLOAT) return PrettyFloat(wxString::Format(_T("%f"),*value_float));
+		else if (type == VARDATA_FLOAT) return wxString::Format(_T("%g"),*value_float);
 		else if (type == VARDATA_COLOUR) return wxString::Format(_T("#%02X%02X%02X"),value_colour->Red(),value_colour->Green(),value_colour->Blue());
 		else if (type == VARDATA_BOOL) {
 			if (*value_bool) return _T("1");

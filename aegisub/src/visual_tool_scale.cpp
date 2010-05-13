@@ -184,8 +184,8 @@ void VisualToolScale::UpdateHold() {
 /// @brief Commit hold 
 ///
 void VisualToolScale::CommitHold() {
-	SetOverride(_T("\\fscx"),PrettyFloat(wxString::Format(_T("(%0.3f)"),curScaleX)));
-	SetOverride(_T("\\fscy"),PrettyFloat(wxString::Format(_T("(%0.3f)"),curScaleY)));
+	SetOverride(_T("\\fscx"),wxString::Format(L"(%0.3g)",curScaleX));
+	SetOverride(_T("\\fscy"),wxString::Format(L"(%0.3g)",curScaleY));
 }
 
 

@@ -460,16 +460,16 @@ void AssStyle::UpdateData() {
 	font.Replace(_T(","),_T(";"));
 
 
-	final = wxString::Format(_T("Style: %s,%s,%s,%s,%s,%s,%s,%d,%d,%d,%d,%s,%s,%s,%s,%d,%s,%s,%i,%i,%i,%i,%i"),
-					  name.c_str(), font.c_str(), PrettyFloatD(fontsize).c_str(),
+	final = wxString::Format(_T("Style: %s,%s,%g,%s,%s,%s,%s,%d,%d,%d,%d,%g,%g,%g,%g,%d,%g,%g,%i,%i,%i,%i,%i"),
+					  name.c_str(), font.c_str(), fontsize,
 					  primary.GetASSFormatted(true,false,true).c_str(),
 					  secondary.GetASSFormatted(true,false,true).c_str(),
 					  outline.GetASSFormatted(true,false,true).c_str(),
 					  shadow.GetASSFormatted(true,false,true).c_str(),
 					  (bold? -1 : 0), (italic ? -1 : 0),
 					  (underline?-1:0),(strikeout?-1:0),
-					  PrettyFloatD(scalex).c_str(),PrettyFloatD(scaley).c_str(),PrettyFloatD(spacing).c_str(),PrettyFloatD(angle).c_str(),
-					  borderstyle,PrettyFloatD(outline_w).c_str(),PrettyFloatD(shadow_w).c_str(),alignment,
+					  scalex,scaley,spacing,angle,
+					  borderstyle,outline_w,shadow_w,alignment,
 					  Margin[0],Margin[1],Margin[2],encoding);
 
 	SetEntryData(final);
@@ -526,13 +526,13 @@ wxString AssStyle::GetSSAText() {
 	name.Replace(_T(","),_T(";"));
 	font.Replace(_T(","),_T(";"));
 
-	output = wxString::Format(_T("Style: %s,%s,%s,%s,%s,0,%s,%d,%d,%d,%s,%s,%d,%d,%d,%d,0,%i"),
-				  name.c_str(), font.c_str(), PrettyFloatD(fontsize).c_str(),
+	output = wxString::Format(_T("Style: %s,%s,%g,%s,%s,0,%s,%d,%d,%d,%g,%g,%d,%d,%d,%d,0,%i"),
+				  name.c_str(), font.c_str(), fontsize,
 				  primary.GetSSAFormatted().c_str(),
 				  secondary.GetSSAFormatted().c_str(),
 				  shadow.GetSSAFormatted().c_str(),
 				  (bold? -1 : 0), (italic ? -1 : 0),
-				  borderstyle,PrettyFloatD(outline_w).c_str(),PrettyFloatD(shadow_w).c_str(),align,
+				  borderstyle,outline_w,shadow_w,align,
 				  Margin[0],Margin[1],Margin[2],encoding);
 
 	return output;

@@ -235,8 +235,8 @@ void VisualToolRotateXY::UpdateHold() {
 /// @brief Commit hold 
 ///
 void VisualToolRotateXY::CommitHold() {
-	SetOverride(_T("\\frx"),PrettyFloat(wxString::Format(_T("(%0.3f)"),curAngleX)));
-	SetOverride(_T("\\fry"),PrettyFloat(wxString::Format(_T("(%0.3f)"),curAngleY)));
+	SetOverride(_T("\\frx"),wxString::Format(_T("(%0.3g)"),curAngleX));
+	SetOverride(_T("\\fry"),wxString::Format(_T("(%0.3g)"),curAngleY));
 }
 
 

@@ -1497,7 +1497,7 @@ void DialogColorPicker::OnRGBAdjust(wxCommandEvent &evt)
 	double r = double(cur.Red()) / double(old.Red());
 	double g = double(cur.Green()) / double(old.Green());
 	double b = double(cur.Blue()) / double(old.Blue());
-	wxString data = wxString(_T("rgbadjust(")) + PrettyFloatD(r) + _T(",") + PrettyFloatD(g) + _T(",") + PrettyFloatD(b) + _T(")");
+	wxString data = wxString::Format(L"rgbadjust(%g,%g,%g)", r, g, b);
 
 	if (wxTheClipboard->Open())	{
 		wxTheClipboard->SetData(new wxTextDataObject(data));

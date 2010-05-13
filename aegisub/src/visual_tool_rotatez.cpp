@@ -202,7 +202,7 @@ void VisualToolRotateZ::UpdateHold() {
 /// @brief Commit hold 
 ///
 void VisualToolRotateZ::CommitHold() {
-	SetOverride(_T("\\frz"),PrettyFloat(wxString::Format(_T("(%0.3f)"),curAngle)));
+	SetOverride(_T("\\frz"),wxString::Format(L"(%0.3g)",curAngle));
 }
 
 

@@ -123,51 +123,13 @@ wxString DecodeRelativePath(wxString _path,wxString reference) {
 #endif
 }
 
-
-
-/// @brief Pretty float 
-/// @param src 
-/// @return 
-///
-wxString PrettyFloat(wxString src) {
-	if (src.Contains(_T("."))) {
-		size_t len = src.Length();
-		while (src.Right(1) == _T("0")) {
-			len--;
-			src.Truncate(len);
-		}
-		if (src.Right(1) == _T(".")) {
-			len--;
-			src.Truncate(len);
-		}
-	}
-	return src;
-}
-
-
-/// @brief DOCME
-/// @param src 
-/// @return 
-///
-wxString PrettyFloatF(float src) { return PrettyFloat(wxString::Format(_T("%f"),src)); }
-
-/// @brief DOCME
-/// @param src 
-/// @return 
-///
-wxString PrettyFloatD(double src) { return PrettyFloat(wxString::Format(_T("%f"),src)); }
-
-
-
 /// @brief Float to string 
 /// @param value 
 /// @return 
 ///
 wxString AegiFloatToString(double value) {
-	return PrettyFloat(wxString::Format(_T("%f"),value));
+	return wxString::Format(_T("%g"),value);
 }
-
-
 
 /// @brief Int to string 
 /// @param value 
@@ -176,8 +138,6 @@ wxString AegiFloatToString(double value) {
 wxString AegiIntegerToString(int value) {
 	return wxString::Format(_T("%i"),value);
 }
-
-
 
 /// @brief There shall be no kiB, MiB stuff here Pretty reading of size 
 /// @param bytes 
