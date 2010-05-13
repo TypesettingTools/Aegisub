@@ -80,7 +80,6 @@ void VisualToolClip::Update() {
 /// @return 
 ///
 void VisualToolClip::Draw() {
-	if (mouseX == INT_MIN || mouseY == INT_MIN) return;
 	// Get current line
 	AssDialogue *line = GetActiveDialogueLine();
 	if (!line) return;
