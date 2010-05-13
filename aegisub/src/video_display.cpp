@@ -487,6 +487,10 @@ void VideoDisplay::OnMouseEvent(wxMouseEvent& event) {
 	if (event.ButtonDown(wxMOUSE_BTN_ANY)) {
 		SetFocus();
 	}
+	int wheel = event.GetWheelRotation();
+	if (wheel) {
+		SetZoom (zoomValue + .125 * (wheel / event.GetWheelDelta()));
+	}
 
 	// Send to visual
 	if (visual) visual->OnMouseEvent(event);
@@ -515,7 +519,7 @@ void VideoDisplay::OnKey(wxKeyEvent &event) {
 void VideoDisplay::SetZoom(double value) {
 	using std::max;
 	zoomValue = max(value, .125);
-	zoomBox->SetValue(wxString::Format("%g%%", value * 100.));
+	zoomBox->SetValue(wxString::Format("%g%%", zoomValue * 100.));
 	UpdateSize();
 }
 void VideoDisplay::SetZoomFromBox() {
