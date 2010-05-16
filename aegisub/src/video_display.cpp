@@ -131,13 +131,13 @@ VideoDisplay::VideoDisplay(VideoBox *box, VideoSlider *ControlSlider, wxTextCtrl
 , SubsPosition(SubsPosition)
 , PositionDisplay(PositionDisplay)
 , videoOut(new VideoOutGL())
-, box(box)
-, freeSize(false)
 , tool(new VisualToolCross(this, video, box->visualSubToolBar))
 , activeMode(Video_Mode_Standard)
 , toolBar(box->visualSubToolBar)
 , scriptW(INT_MIN)
 , scriptH(INT_MIN)
+, box(box)
+, freeSize(false)
 {
 	box->Bind(wxEVT_COMMAND_TOOL_CLICKED, &VideoDisplay::OnMode, this, Video_Mode_Standard, Video_Mode_Vector_Clip);
 	SetCursor(wxNullCursor);
@@ -469,15 +469,7 @@ void VideoDisplay::OnMouseEvent(wxMouseEvent& event) {
 		return;
 	}
 
-<<<<<<< HEAD
-	// Enforce correct cursor display
-	ShowCursor(visualMode != 0);
-
-	// Click?
 	if (event.ButtonDown(wxMOUSE_BTN_ANY)) {
-=======
-	if (event.ButtonDown(wxMOUSE_BTN_ANY) || Options.AsBool(L"Video Autofocus")) {
->>>>>>> b1a392b... Make visual tools use only screen coordinates.
 		SetFocus();
 	}
 	int wheel = event.GetWheelRotation();
