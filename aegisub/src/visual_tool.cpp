@@ -65,33 +65,22 @@
 #include "video_provider_manager.h"
 #include "visual_tool.h"
 
+const wxColour VisualTool::colour[4] = {wxColour(106,32,19), wxColour(255,169,40), wxColour(255,253,185), wxColour(187,0,0)};
 
-/// @brief Constructor 
-/// @param par 
-///
-VisualTool::VisualTool(VideoDisplay *par) : eventSink(this) {
-	// Config
-	parent = par;
-	colour[0] = wxColour(106,32,19);
-	colour[1] = wxColour(255,169,40);
-	colour[2] = wxColour(255,253,185);
-	colour[3] = wxColour(187,0,0);
-
-	// Holding variables
-	holding = false;
-	curDiag = NULL;
-
-	// Dragging variables
-	dragging = false;
-	curFeature = -1;
-	dragListOK = false;
-
-	// Video options
-	mouseX = mouseY = INT_MIN;
-	frame_n = 0;
+/// @brief Constructor
+/// @param parent
+VisualTool::VisualTool(VideoDisplay *parent, VideoState const& video)
+: parent(parent)
+, eventSink(this)
+, holding(false)
+, curDiag(NULL)
+, dragging(false)
+, curFeature(-1)
+, dragListOK(false)
+, video(video)
+, frame_n(0)
+{
 	if (VideoContext::Get()->IsLoaded()) {
-		parent->GetClientSize(&w,&h);
-		VideoContext::Get()->GetScriptSize(sw,sh);
 		frame_n = VideoContext::Get()->GetFrameN();
 	}
 
@@ -99,42 +88,20 @@ VisualTool::VisualTool(VideoDisplay *par) : eventSink(this) {
 	if (CanDrag()) PopulateFeatureList();
 }
 
-
-
 /// @brief Destructor 
-///
 VisualTool::~VisualTool() {
 }
 
-
-
 /// @brief Mouse event 
 /// @param event 
-/// @return 
-///
 void VisualTool::OnMouseEvent (wxMouseEvent &event) {
-	// General variables
-	mouseX = event.GetX();
-	mouseY = event.GetY();
-	parent->ConvertMouseCoords(mouseX,mouseY);
-	parent->GetClientSize(&w,&h);
-	VideoContext::Get()->GetScriptSize(sw,sh);
-	frame_n = VideoContext::Get()->GetFrameN();
-	bool realTime = Options.AsBool(_T("Video Visual Realtime"));
+	bool realTime = Options.AsBool(L"Video Visual Realtime");
 
 	// Mouse leaving control
 	if (event.Leaving()) {
-		mouseX = INT_MIN;
-		mouseY = INT_MIN;
-		mx = INT_MIN;
-		my = INT_MIN;
 		Update();
 		return;
 	}
-
-	// Transformed mouse x/y
-	mx = mouseX * sw / w;
-	my = mouseY * sh / h;
 
 	// Clicks
 	leftClick = event.ButtonDown(wxMOUSE_BTN_LEFT);
@@ -176,8 +143,8 @@ void VisualTool::OnMouseEvent (wxMouseEvent &event) {
 				}
 
 				// Set start value
-				dragStartX = mx;
-				dragStartY = my;
+				dragStartX = video.x;
+				dragStartY = video.y;
 				dragOrigX = features[curFeature].x;
 				dragOrigY = features[curFeature].y;
 
@@ -192,8 +159,8 @@ void VisualTool::OnMouseEvent (wxMouseEvent &event) {
 			// Dragging
 			if (event.LeftIsDown()) {
 				// Update position
-				features[curFeature].x = (mx - dragStartX + dragOrigX);
-				features[curFeature].y = (my - dragStartY + dragOrigY);
+				features[curFeature].x = (video.x - dragStartX + dragOrigX);
+				features[curFeature].y = (video.y - dragStartY + dragOrigY);
 
 				// Update drag
 				UpdateDrag(features[curFeature]);
@@ -276,12 +243,8 @@ void VisualTool::OnMouseEvent (wxMouseEvent &event) {
 	Update();
 }
 
-
-
 /// @brief Commit 
 /// @param full 
-/// @return 
-///
 void VisualTool::Commit(bool full) {
 	// Get grid
 	SubtitlesGrid *grid = VideoContext::Get()->grid;
@@ -303,7 +266,6 @@ void VisualTool::Commit(bool full) {
 
 /// @brief Get active dialogue line 
 /// @return 
-///
 AssDialogue* VisualTool::GetActiveDialogueLine() {
 	SubtitlesGrid *grid = VideoContext::Get()->grid;
 	AssDialogue *diag = grid->GetDialogue(grid->editBox->linen);
@@ -320,16 +282,13 @@ AssDialogue* VisualTool::GetActiveDialogueLine() {
 	return diag;
 }
 
-
-
 /// @brief Get feature under mouse 
 /// @return 
-///
 int VisualTool::GetHighlightedFeature() {
-	int highestLayerFound = -99999;
+	int highestLayerFound = INT_MIN;
 	int bestMatch = -1;
 	for (size_t i=0;i<features.size();i++) {
-		if (features[i].IsMouseOver(mx,my) && features[i].layer > highestLayerFound) {
+		if (features[i].IsMouseOver(video.x, video.y) && features[i].layer > highestLayerFound) {
 			bestMatch = i;
 			highestLayerFound = features[i].layer;
 		}
@@ -337,10 +296,7 @@ int VisualTool::GetHighlightedFeature() {
 	return bestMatch;
 }
 
-
-
 /// @brief Draw all features 
-///
 void VisualTool::DrawAllFeatures() {
 	// Populate list, if needed
 	if (!dragListOK) {
@@ -360,23 +316,17 @@ void VisualTool::DrawAllFeatures() {
 	}
 }
 
-
-
 /// @brief Refresh 
-///
 void VisualTool::Refresh() {
 	frame_n = VideoContext::Get()->GetFrameN();
 	if (!dragging) dragListOK = false;
 	DoRefresh();
 }
 
-
-
 /// @brief Get position of line 
 /// @param diag 
 /// @param x    
 /// @param y    
-///
 void VisualTool::GetLinePosition(AssDialogue *diag,int &x, int &y) {
 	int orgx=0,orgy=0;
 	GetLinePosition(diag,x,y,orgx,orgy);
@@ -388,8 +338,6 @@ void VisualTool::GetLinePosition(AssDialogue *diag,int &x, int &y) {
 /// @param y    
 /// @param orgx 
 /// @param orgy 
-/// @return 
-///
 void VisualTool::GetLinePosition(AssDialogue *diag,int &x, int &y, int &orgx, int &orgy) {
 	// No dialogue
 	if (!diag) {
@@ -426,8 +374,6 @@ void VisualTool::GetLinePosition(AssDialogue *diag,int &x, int &y, int &orgx, in
 	// Position
 	bool posSet = false;
 	bool orgSet = false;
-	int posx = INT_MIN;
-	int posy = INT_MIN;
 
 	// Overrides processing
 	diag->ParseASSTags();
@@ -435,43 +381,47 @@ void VisualTool::GetLinePosition(AssDialogue *diag,int &x, int &y, int &orgx, in
 	AssOverrideTag *tag;
 	size_t blockn = diag->Blocks.size();
 	for (size_t i=0;i<blockn;i++) {
+		if (posSet && orgSet) break;
+
 		override = AssDialogueBlock::GetAsOverride(diag->Blocks.at(i));
 		if (override) {
 			for (size_t j=0;j<override->Tags.size();j++) {
 				tag = override->Tags.at(j);
 
 				// Position
-				if ((tag->Name == _T("\\pos") || tag->Name == _T("\\move")) && tag->Params.size() >= 2) {
+				if ((tag->Name == L"\\pos" || tag->Name == L"\\move") && tag->Params.size() >= 2) {
 					if (!posSet) {
-						posx = tag->Params[0]->AsInt();
-						posy = tag->Params[1]->AsInt();
+						x = tag->Params[0]->AsInt();
+						y = tag->Params[1]->AsInt();
 						posSet = true;
 					}
 				}
 
 				// Alignment
-				else if ((tag->Name == _T("\\an") || tag->Name == _T("\\a")) && tag->Params.size() >= 1) {
+				else if ((tag->Name == L"\\an" || tag->Name == L"\\a") && tag->Params.size() >= 1) {
 					align = tag->Params[0]->AsInt();
-					if (tag->Name == _T("\\a")) {
+					if (tag->Name == L"\\a") {
 						switch(align) {
-							case 1: align = 1; break;
-							case 2: align = 2; break;
-							case 3: align = 3; break;
-							case 5: align = 7; break;
-							case 6: align = 8; break;
-							case 7: align = 9; break;
-							case 9: align = 4; break;
-							case 10: align = 5; break;
-							case 11: align = 6; break;
-							default: align = 2; break;
+							case 1: case 2: case 3:
+								break;
+							case 5: case 6: case 7:
+								align += 2;
+								break;
+							case 9: case 10: case 11:
+								align -= 5;
+								break;
+							default:
+								align = 2;
+								break;
 						}
 					}
 				}
 
 				// Origin
-				else if (!orgSet && tag->Name == _T("\\org") && tag->Params.size() >= 2) {
+				else if (!orgSet && tag->Name == L"\\org" && tag->Params.size() >= 2) {
 					orgx = tag->Params[0]->AsInt();
 					orgy = tag->Params[1]->AsInt();
+					parent->FromScriptCoords(&orgx, &orgy);
 					orgSet = true;
 				}
 			}
@@ -479,28 +429,21 @@ void VisualTool::GetLinePosition(AssDialogue *diag,int &x, int &y, int &orgx, in
 	}
 	diag->ClearBlocks();
 
-	// Got position
-	if (posSet) {
-		x = posx;
-		y = posy;
-		if (!orgSet) {
-			orgx = x;
-			orgy = y;
-		}
-		return;
+	if (!posSet) {
+		// Alignment type
+		int hor = (align - 1) % 3;
+		int vert = (align - 1) / 3;
+
+		// Calculate positions
+		if (hor == 0) x = margin[0];
+		else if (hor == 1) x = (margin[0] + margin[1])/2;
+		else if (hor == 2) x = margin[1];
+		if (vert == 0) y = margin[3];
+		else if (vert == 1) y = (margin[2] + margin[3])/2;
+		else if (vert == 2) y = margin[2];
 	}
 
-	// Alignment type
-	int hor = (align - 1) % 3;
-	int vert = (align - 1) / 3;
-
-	// Calculate positions
-	if (hor == 0) x = margin[0];
-	else if (hor == 1) x = (margin[0] + margin[1])/2;
-	else if (hor == 2) x = margin[1];
-	if (vert == 0) y = margin[3];
-	else if (vert == 1) y = (margin[2] + margin[3])/2;
-	else if (vert == 2) y = margin[2];
+	parent->FromScriptCoords(&x, &y);
 
 	// No origin?
 	if (!orgSet) {
@@ -508,8 +451,6 @@ void VisualTool::GetLinePosition(AssDialogue *diag,int &x, int &y, int &orgx, in
 		orgy = y;
 	}
 }
-
-
 
 /// @brief Get the destination of move, if any 
 /// @param diag    
@@ -520,8 +461,6 @@ void VisualTool::GetLinePosition(AssDialogue *diag,int &x, int &y, int &orgx, in
 /// @param y2      
 /// @param t1      
 /// @param t2      
-/// @return 
-///
 void VisualTool::GetLineMove(AssDialogue *diag,bool &hasMove,int &x1,int &y1,int &x2,int &y2,int &t1,int &t2) {
 	// Parse tags
 	hasMove = false;
@@ -538,12 +477,14 @@ void VisualTool::GetLineMove(AssDialogue *diag,bool &hasMove,int &x1,int &y1,int
 				tag = override->Tags.at(j);
 
 				// Position
-				if (tag->Name == _T("\\move") && tag->Params.size() >= 4) {
+				if (tag->Name == L"\\move" && tag->Params.size() >= 4) {
 					hasMove = true;
 					x1 = tag->Params[0]->AsInt();
 					y1 = tag->Params[1]->AsInt();
 					x2 = tag->Params[2]->AsInt();
 					y2 = tag->Params[3]->AsInt();
+					parent->FromScriptCoords(&x1, &y1);
+					parent->FromScriptCoords(&x2, &y2);
 					if (tag->Params.size() >= 6 &&
 						!tag->Params[4]->ommited &&
 						!tag->Params[5]->ommited) {
@@ -559,15 +500,11 @@ void VisualTool::GetLineMove(AssDialogue *diag,bool &hasMove,int &x1,int &y1,int
 	diag->ClearBlocks();
 }
 
-
-
 /// @brief Get line's rotation 
 /// @param diag 
 /// @param rx   
 /// @param ry   
 /// @param rz   
-/// @return 
-///
 void VisualTool::GetLineRotation(AssDialogue *diag,float &rx,float &ry,float &rz) {
 	// Default values
 	rx = ry = rz = 0.0f;
@@ -590,13 +527,13 @@ void VisualTool::GetLineRotation(AssDialogue *diag,float &rx,float &ry,float &rz
 	if (override) {
 		for (size_t j=0;j<override->Tags.size();j++) {
 			tag = override->Tags.at(j);
-			if (tag->Name == _T("\\frx") && tag->Params.size() == 1) {
+			if (tag->Name == L"\\frx" && tag->Params.size() == 1) {
 				rx = tag->Params[0]->AsFloat();
 			}
-			if (tag->Name == _T("\\fry") && tag->Params.size() == 1) {
+			if (tag->Name == L"\\fry" && tag->Params.size() == 1) {
 				ry = tag->Params[0]->AsFloat();
 			}
-			if ((tag->Name == _T("\\frz") || tag->Name == _T("\fr")) && tag->Params.size() == 1) {
+			if ((tag->Name == L"\\frz" || tag->Name == L"\fr") && tag->Params.size() == 1) {
 				rz = tag->Params[0]->AsFloat();
 			}
 		}
@@ -604,14 +541,10 @@ void VisualTool::GetLineRotation(AssDialogue *diag,float &rx,float &ry,float &rz
 	diag->ClearBlocks();
 }
 
-
-
 /// @brief Get line's scale 
 /// @param diag  
 /// @param scalX 
 /// @param scalY 
-/// @return 
-///
 void VisualTool::GetLineScale(AssDialogue *diag,float &scalX,float &scalY) {
 	// Default values
 	scalX = scalY = 100.0f;
@@ -631,10 +564,10 @@ void VisualTool::GetLineScale(AssDialogue *diag,float &scalX,float &scalY) {
 	if (override) {
 		for (size_t j=0;j<override->Tags.size();j++) {
 			tag = override->Tags.at(j);
-			if (tag->Name == _T("\\fscx") && tag->Params.size() == 1) {
+			if (tag->Name == L"\\fscx" && tag->Params.size() == 1) {
 				scalX = tag->Params[0]->AsFloat();
 			}
-			if (tag->Name == _T("\\fscy") && tag->Params.size() == 1) {
+			if (tag->Name == L"\\fscy" && tag->Params.size() == 1) {
 				scalY = tag->Params[0]->AsFloat();
 			}
 		}
@@ -651,8 +584,6 @@ void VisualTool::GetLineScale(AssDialogue *diag,float &scalX,float &scalY) {
 /// @param x2      
 /// @param y2      
 /// @param inverse 
-/// @return 
-///
 void VisualTool::GetLineClip(AssDialogue *diag,int &x1,int &y1,int &x2,int &y2,bool &inverse) {
 	// Default values
 	x1 = y1 = 0;
@@ -677,14 +608,14 @@ void VisualTool::GetLineClip(AssDialogue *diag,int &x1,int &y1,int &x2,int &y2,b
 	if (override) {
 		for (size_t j=0;j<override->Tags.size();j++) {
 			tag = override->Tags.at(j);
-			if (tag->Name == _T("\\clip") && tag->Params.size() == 4) {
+			if (tag->Name == L"\\clip" && tag->Params.size() == 4) {
 				x1 = tag->Params[0]->AsInt();
 				y1 = tag->Params[1]->AsInt();
 				x2 = tag->Params[2]->AsInt();
 				y2 = tag->Params[3]->AsInt();
 				inverse = false;
 			}
-			else if (tag->Name == _T("\\iclip") && tag->Params.size() == 4) {
+			else if (tag->Name == L"\\iclip" && tag->Params.size() == 4) {
 				x1 = tag->Params[0]->AsInt();
 				y1 = tag->Params[1]->AsInt();
 				x2 = tag->Params[2]->AsInt();
@@ -694,6 +625,9 @@ void VisualTool::GetLineClip(AssDialogue *diag,int &x1,int &y1,int &x2,int &y2,b
 		}
 	}
 	diag->ClearBlocks();
+
+	parent->FromScriptCoords(&x1, &y1);
+	parent->FromScriptCoords(&x2, &y2);
 }
 
 
@@ -702,8 +636,6 @@ void VisualTool::GetLineClip(AssDialogue *diag,int &x1,int &y1,int &x2,int &y2,b
 /// @param diag    
 /// @param scale   
 /// @param inverse 
-/// @return 
-///
 wxString VisualTool::GetLineVectorClip(AssDialogue *diag,int &scale,bool &inverse) {
 	// Prepare overrides
 	wxString result;
@@ -723,7 +655,7 @@ wxString VisualTool::GetLineVectorClip(AssDialogue *diag,int &scale,bool &invers
 	if (override) {
 		for (size_t j=0;j<override->Tags.size();j++) {
 			tag = override->Tags.at(j);
-			if (tag->Name == _T("\\clip") || tag->Name == _T("\\iclip")) {
+			if (tag->Name == L"\\clip" || tag->Name == L"\\iclip") {
 				if (tag->Params.size() == 1) {
 					result = tag->Params[0]->AsText();
 				}
@@ -736,9 +668,9 @@ wxString VisualTool::GetLineVectorClip(AssDialogue *diag,int &scale,bool &invers
 						y1 = tag->Params[1]->AsInt(),
 						x2 = tag->Params[2]->AsInt(),
 						y2 = tag->Params[3]->AsInt();
-					result = wxString::Format(_T("m %d %d l %d %d %d %d %d %d"), x1, y1, x2, y1, x2, y2, x1, y2);
+					result = wxString::Format(L"m %d %d l %d %d %d %d %d %d", x1, y1, x2, y1, x2, y2, x1, y2);
 				}
-				inverse = tag->Name == _T("\\iclip");
+				inverse = tag->Name == L"\\iclip";
 			}
 		}
 	}
@@ -746,42 +678,28 @@ wxString VisualTool::GetLineVectorClip(AssDialogue *diag,int &scale,bool &invers
 	return result;
 }
 
-
-
 /// @brief Set override 
 /// @param tag   
 /// @param value 
-///
 void VisualTool::SetOverride(wxString tag,wxString value) {
 	VideoContext::Get()->grid->editBox->SetOverride(tag,value,0,false);
-	parent->SetFocus();
+	//parent->SetFocus();
 }
-
-
 
 /// @brief Connect button 
 /// @param button 
-///
 void VisualTool::ConnectButton(wxButton *button) {
 	button->Connect(wxEVT_COMMAND_BUTTON_CLICKED,wxCommandEventHandler(VisualToolEvent::OnButton),NULL,&eventSink);
 }
 
-
-
 /// @brief Event sink 
 /// @param _tool 
-///
 VisualToolEvent::VisualToolEvent(VisualTool *_tool) {
 	tool = _tool;
 }
 
 /// @brief DOCME
 /// @param event 
-///
 void VisualToolEvent::OnButton(wxCommandEvent &event) {
 	tool->OnButton(event);
 }
-
-
-
-

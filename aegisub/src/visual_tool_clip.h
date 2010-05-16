@@ -85,10 +85,7 @@ private:
 	void CommitDrag(VisualDraggableFeature &feature);
 
 public:
-	VisualToolClip(VideoDisplay *parent);
+	VisualToolClip(VideoDisplay *parent, VideoState const& video, wxToolBar *);
 
-	void Update();
 	void Draw();
 };
-
-

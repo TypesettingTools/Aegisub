@@ -51,47 +51,32 @@
 /// @brief Constructor 
 /// @param _parent 
 ///
-VisualToolCross::VisualToolCross(VideoDisplay *_parent)
-: VisualTool(_parent)
+VisualToolCross::VisualToolCross(VideoDisplay *parent, VideoState const& video, wxToolBar *)
+: VisualTool(parent, video)
 {
-	_parent->ShowCursor(false);
 }
-
-
-
-/// @brief Destructor 
-///
-VisualToolCross::~VisualToolCross() {
-	GetParent()->ShowCursor(true);
-}
-
-
+VisualToolCross::~VisualToolCross() { }
 
 /// @brief Update 
 ///
 void VisualToolCross::Update() {
 	// Position
 	if (leftDClick) {
-		int vx = (sw * mouseX + w/2) / w;
-		int vy = (sh * mouseY + h/2) / h;
+		int vx = video.x;
+		int vy = video.y;
+		parent->ToScriptCoords(&vx, &vy);
 		SubtitlesGrid *grid = VideoContext::Get()->grid;
-		SetOverride(_T("\\pos"),wxString::Format(_T("(%i,%i)"),vx,vy));
+		SetOverride(L"\\pos",wxString::Format(L"(%i,%i)",vx,vy));
 		grid->editBox->CommitText();
 		grid->ass->FlagAsModified(_("positioning"));
 		grid->CommitChanges(false,true);
 	}
-
-	// Render parent
-	GetParent()->Render();
 }
 
 
 
 /// @brief Draw 
-///
 void VisualToolCross::Draw() {
-	if (mouseX == INT_MIN || mouseY == INT_MIN) return;
-
 	// Draw cross
 	glDisable(GL_LINE_SMOOTH);
 	glEnable(GL_COLOR_LOGIC_OP);
@@ -99,38 +84,35 @@ void VisualToolCross::Draw() {
 	glLineWidth(1);
 	glBegin(GL_LINES);
 		glColor3f(1.0f,1.0f,1.0f);
-		glVertex2f(0,my);
-		glVertex2f(sw,my);
-		glVertex2f(mx,0);
-		glVertex2f(mx,sh);
+		glVertex2f(0, video.y);
+		glVertex2f(video.w, video.y);
+		glVertex2f(video.x, 0);
+		glVertex2f(video.x, video.h);
 	glEnd();
 	glDisable(GL_COLOR_LOGIC_OP);
 
-	// Switch display
-	glMatrixMode(GL_PROJECTION);
-	glPushMatrix();
-	glLoadIdentity();
-	glOrtho(0.0f,w,h,0.0f,-1000.0f,1000.0f);
-	glMatrixMode(GL_MODELVIEW);
+	int tx,ty;
+	if (!wxGetMouseState().ShiftDown()) {
+		tx = video.x;
+		ty = video.y;
+	}
+	else {
+		tx = video.w - video.x;
+		ty = video.h - video.y;
+	}
+	parent->ToScriptCoords(&tx, &ty);
+	wxString mouseText = wxString::Format(L"%i,%i", tx, ty);
 
-	// Text of current coords
-	int dx = mouseX;
-	int dy = mouseY;
-	int vx = (sw * dx + w/2) / w;
-	int vy = (sh * dy + h/2) / h;
-	wxString mouseText;
-	if (!wxGetMouseState().ShiftDown()) mouseText = wxString::Format(_T("%i,%i"),vx,vy);
-	else mouseText = wxString::Format(_T("%i,%i"),vx - sw,vy - sh);
-
-	// Setup gl text
 	int tw,th;
-	OpenGLText::SetFont(_T("Verdana"),12,true);
-	OpenGLText::SetColour(wxColour(255,255,255));
-	OpenGLText::GetExtent(mouseText,tw,th);
+	OpenGLText::SetFont(L"Verdana", 12, true);
+	OpenGLText::SetColour(wxColour(255, 255, 255));
+	OpenGLText::GetExtent(mouseText, tw, th);
 
 	// Calculate draw position
-	bool left = dx > w/2;
-	bool bottom = dy < h/2;
+	int dx = video.x;
+	int dy = video.y;
+	bool left = dx > video.w / 2;
+	bool bottom = dy < video.h / 2;
 
 	// Text draw coords
 	if (left) dx -= tw + 4;
@@ -139,12 +121,5 @@ void VisualToolCross::Draw() {
 	else dy -= th + 3;
 
 	// Draw text
-	OpenGLText::Print(mouseText,dx,dy);
-
-	// Restore matrix
-	glMatrixMode(GL_PROJECTION);
-	glPopMatrix();
-	glMatrixMode(GL_MODELVIEW);
+	OpenGLText::Print(mouseText, dx, dy);
 }
-
-

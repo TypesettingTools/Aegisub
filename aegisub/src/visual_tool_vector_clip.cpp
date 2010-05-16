@@ -34,9 +34,10 @@
 /// @ingroup visual_ts
 ///
 
+#ifndef AGI_PRE
+#include <wx/toolbar.h>
+#endif
 
-///////////
-// Headers
 #include "config.h"
 
 #include "ass_dialogue.h"
@@ -83,14 +84,13 @@ enum {
 /// @param parent   
 /// @param _toolBar 
 ///
-VisualToolVectorClip::VisualToolVectorClip(VideoDisplay *parent,wxToolBar *_toolBar)
-: VisualTool(parent)
+VisualToolVectorClip::VisualToolVectorClip(VideoDisplay *parent, VideoState const& video, wxToolBar * toolBar)
+: VisualTool(parent, video), toolBar(toolBar), spline(*parent)
 {
 	DoRefresh();
 	mode = 0;
 
 	// Create toolbar
-	toolBar = _toolBar;
 	toolBar->AddTool(BUTTON_DRAG,_("Drag"),GETIMAGE(visual_vector_clip_drag_24),_("Drag control points."),wxITEM_CHECK);
 	toolBar->AddTool(BUTTON_LINE,_("Line"),GETIMAGE(visual_vector_clip_line_24),_("Appends a line."),wxITEM_CHECK);
 	toolBar->AddTool(BUTTON_BICUBIC,_("Bicubic"),GETIMAGE(visual_vector_clip_bicubic_24),_("Appends a bezier bicubic curve."),wxITEM_CHECK);
@@ -132,19 +132,7 @@ void VisualToolVectorClip::SetMode(int _mode) {
 	mode = _mode;
 }
 
-
-
-/// @brief Update 
-///
-void VisualToolVectorClip::Update() {
-	GetParent()->Render();
-}
-
-
-
 /// @brief Draw 
-/// @return 
-///
 void VisualToolVectorClip::Draw() {
 	// Get line
 	AssDialogue *line = GetActiveDialogueLine();
@@ -175,7 +163,7 @@ void VisualToolVectorClip::Draw() {
 	glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
 	SetLineColour(colour[3],0.0f);
 	SetFillColour(wxColour(0,0,0),0.5f);
-	DrawRectangle(0,0,sw,sh);
+	DrawRectangle(0,0,video.w,video.h);
 	glDisable(GL_STENCIL_TEST);
 
 	// Get current position information for modes 3 and 4
@@ -183,7 +171,7 @@ void VisualToolVectorClip::Draw() {
 	int highCurve = -1;
 	if (mode == 3 || mode == 4) {
 		float t;
-		spline.GetClosestParametricPoint(Vector2D(mx,my),highCurve,t,pt);
+		spline.GetClosestParametricPoint(Vector2D(video.x,video.y),highCurve,t,pt);
 	}
 
 	// Draw lines
@@ -216,8 +204,8 @@ void VisualToolVectorClip::Draw() {
 		if (spline.curves.size()) {
 			SplineCurve *c0 = &spline.curves.front();
 			SplineCurve *c1 = &spline.curves.back();
-			DrawDashedLine(mx,my,c0->p1.x,c0->p1.y,6);
-			DrawDashedLine(mx,my,c1->GetEndPoint().x,c1->GetEndPoint().y,6);
+			DrawDashedLine(video.x,video.y,c0->p1.x,c0->p1.y,6);
+			DrawDashedLine(video.x,video.y,c1->GetEndPoint().x,c1->GetEndPoint().y,6);
 		}
 	}
 	
@@ -313,9 +301,9 @@ void VisualToolVectorClip::UpdateDrag(VisualDraggableFeature &feature) {
 ///
 void VisualToolVectorClip::CommitDrag(VisualDraggableFeature &feature) {
 	if (inverse)
-		SetOverride(_T("\\iclip"),_T("(") + spline.EncodeToASS() + _T(")"));
+		SetOverride(L"\\iclip",L"(" + spline.EncodeToASS() + L")");
 	else
-		SetOverride(_T("\\clip"),_T("(") + spline.EncodeToASS() + _T(")"));
+		SetOverride(L"\\clip",L"(" + spline.EncodeToASS() + L")");
 }
 
 
@@ -340,9 +328,9 @@ void VisualToolVectorClip::ClickedFeature(VisualDraggableFeature &feature) {
 				// Erase and save changes
 				spline.curves.erase(cur);
 				if (inverse)
-					SetOverride(_T("\\iclip"),_T("(") + spline.EncodeToASS() + _T(")"));
+					SetOverride(L"\\iclip",L"(" + spline.EncodeToASS() + L")");
 				else
-					SetOverride(_T("\\clip"),_T("(") + spline.EncodeToASS() + _T(")"));
+					SetOverride(L"\\clip",L"(" + spline.EncodeToASS() + L")");
 				curFeature = -1;
 				Commit(true);
 				return;
@@ -382,7 +370,7 @@ void VisualToolVectorClip::InitializeHold() {
 		
 		// First point
 		else {
-			curve.p1 = Vector2D(mx,my);
+			curve.p1 = Vector2D(video.x,video.y);
 			curve.type = CURVE_POINT;
 		}
 
@@ -396,7 +384,7 @@ void VisualToolVectorClip::InitializeHold() {
 		Vector2D pt;
 		int curve;
 		float t;
-		spline.GetClosestParametricPoint(Vector2D(mx,my),curve,t,pt);
+		spline.GetClosestParametricPoint(Vector2D(video.x,video.y),curve,t,pt);
 
 		// Convert
 		if (mode == 3) {
@@ -442,9 +430,9 @@ void VisualToolVectorClip::InitializeHold() {
 
 		// Commit
 		if (inverse)
-			SetOverride(_T("\\iclip"),_T("(") + spline.EncodeToASS() + _T(")"));
+			SetOverride(L"\\iclip",L"(" + spline.EncodeToASS() + L")");
 		else
-			SetOverride(_T("\\clip"),_T("(") + spline.EncodeToASS() + _T(")"));
+			SetOverride(L"\\clip",L"(" + spline.EncodeToASS() + L")");
 		Commit(true);
 	}
 
@@ -465,13 +453,13 @@ void VisualToolVectorClip::InitializeHold() {
 void VisualToolVectorClip::UpdateHold() {
 	// Insert line
 	if (mode == 1) {
-		spline.curves.back().p2 = Vector2D(mx,my);
+		spline.curves.back().p2 = Vector2D(video.x,video.y);
 	}
 
 	// Insert bicubic
 	if (mode == 2) {
 		SplineCurve &curve = spline.curves.back();
-		curve.p4 = Vector2D(mx,my);
+		curve.p4 = Vector2D(video.x,video.y);
 
 		// Control points
 		if (spline.curves.size() > 1) {
@@ -492,7 +480,7 @@ void VisualToolVectorClip::UpdateHold() {
 	if (mode == 6 || mode == 7) {
 		if (lastX !=	-100000 && lastY != -100000) {
 			// See if distance is enough
-			Vector2D delta(lastX-mx,lastY-my);
+			Vector2D delta(lastX-video.x,lastY-video.y);
 			int len = (int)delta.Len();
 			if (mode == 6 && len < 30) return;
 			if (mode == 7 && len < 60) return;
@@ -501,11 +489,11 @@ void VisualToolVectorClip::UpdateHold() {
 			SplineCurve curve;
 			curve.type = CURVE_LINE;
 			curve.p1 = Vector2D(lastX,lastY);
-			curve.p2 = Vector2D(mx,my);
+			curve.p2 = Vector2D(video.x,video.y);
 			spline.AppendCurve(curve);
 		}
-		lastX = mx;
-		lastY = my;
+		lastX = video.x;
+		lastY = video.y;
 	}
 }
 
@@ -520,9 +508,9 @@ void VisualToolVectorClip::CommitHold() {
 	// Save it
 	if (mode != 3 && mode != 4) {
 		if (inverse)
-			SetOverride(_T("\\iclip"),_T("(") + spline.EncodeToASS() + _T(")"));
+			SetOverride(L"\\iclip",L"(" + spline.EncodeToASS() + L")");
 		else
-			SetOverride(_T("\\clip"),_T("(") + spline.EncodeToASS() + _T(")"));
+			SetOverride(L"\\clip",L"(" + spline.EncodeToASS() + L")");
 	}
 
 	// End freedraw

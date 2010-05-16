@@ -34,11 +34,6 @@
 /// @ingroup visual_ts
 ///
 
-
-
-
-///////////
-// Headers
 #include "visual_tool.h"
 
 
@@ -91,10 +86,7 @@ private:
 	void DoRefresh();
 
 public:
-	VisualToolRotateZ(VideoDisplay *parent);
+	VisualToolRotateZ(VideoDisplay *parent, VideoState const& video, wxToolBar *);
 
-	void Update();
 	void Draw();
 };
-
-

@@ -57,6 +57,7 @@
 class VideoDisplay;
 class AssDialogue;
 class VisualTool;
+struct VideoState;
 
 
 
@@ -96,17 +97,15 @@ class VisualTool : public OpenGLWrapper {
 	friend class VisualToolEvent;
 
 private:
-
-	/// DOCME
-	VideoDisplay *parent;
-
 	/// DOCME
 	VisualToolEvent eventSink;
 
 protected:
+	/// DOCME
+	VideoDisplay *parent;
 
 	/// DOCME
-	wxColour colour[4];
+	static const wxColour colour[4];
 
 
 	/// DOCME
@@ -139,20 +138,9 @@ protected:
 
 
 	/// DOCME
-
-	/// DOCME
-
-	/// DOCME
-
-	/// DOCME
-
-	/// DOCME
-
-	/// DOCME
-	int w,h,sw,sh,mx,my;
-
-	/// DOCME
 	int frame_n;
+
+	VideoState const& video;
 
 
 	/// DOCME
@@ -181,10 +169,6 @@ protected:
 	void SetOverride(wxString tag,wxString value);
 
 
-	/// @brief DOCME
-	/// @return 
-	///
-	VideoDisplay *GetParent() { return parent; }
 	AssDialogue *GetActiveDialogueLine();
 	int GetHighlightedFeature();
 	void DrawAllFeatures();
@@ -263,23 +247,17 @@ protected:
 	virtual void DoRefresh() {}
 
 public:
-
-	/// DOCME
-
-	/// DOCME
-	int mouseX,mouseY;
-
 	void OnMouseEvent(wxMouseEvent &event);
 
 	/// @brief DOCME
 	/// @param event 
 	///
 	virtual void OnSubTool(wxCommandEvent &event) {}
-	virtual void Update()=0;
+	virtual void Update() { };
 	virtual void Draw()=0;
 	void Refresh();
 
-	VisualTool(VideoDisplay *parent);
+	VisualTool(VideoDisplay *parent, VideoState const& video);
 	virtual ~VisualTool();
 };
 

@@ -34,9 +34,6 @@
 /// @ingroup visual_ts
 ///
 
-
-///////////
-// Headers
 #include "config.h"
 
 #ifndef AGI_PRE
@@ -45,18 +42,14 @@
 
 #include "spline.h"
 #include "utils.h"
+#include "video_display.h"
 
 
 /// @brief Spline constructor 
-///
-Spline::Spline() {
+Spline::Spline(const VideoDisplay &scale) : scale(scale) {
 }
 
-
-
 /// @brief Encode to ASS 
-/// @return 
-///
 wxString Spline::EncodeToASS() {
 	wxString result;
 	char lastCommand = 0;
@@ -68,38 +61,52 @@ wxString Spline::EncodeToASS() {
 	for (std::list<SplineCurve>::iterator cur=curves.begin();cur!=curves.end();cur++) {
 		// Start of spline
 		if (isFirst) {
-			result = wxString::Format(_T("m %i %i "),(int)cur->p1.x,(int)cur->p1.y);
+			int x = cur->p1.x;
+			int y = cur->p1.y;
+			scale.ToScriptCoords(&x, &y);
+			result = wxString::Format(L"m %i %i ", x, y);
 			lastCommand = 'm';
 			isFirst = false;
 		}
 
 		// Each curve
 		switch (cur->type) {
-			case CURVE_LINE:
+			case CURVE_LINE: {
 				if (lastCommand != 'l') {
-					result += _T("l ");
+					result += L"l ";
 					lastCommand = 'l';
 				}
-				result += wxString::Format(_T("%i %i "),(int)cur->p2.x,(int)cur->p2.y);
+				int x = cur->p2.x;
+				int y = cur->p2.y;
+				scale.ToScriptCoords(&x, &y);
+				result += wxString::Format(L"%i %i ", x, y);
 				break;
-			case CURVE_BICUBIC:
+			}
+			case CURVE_BICUBIC: {
 				if (lastCommand != 'b') {
-					result += _T("b ");
+					result += L"b ";
 					lastCommand = 'b';
 				}
-				result += wxString::Format(_T("%i %i %i %i %i %i "),(int)cur->p2.x,(int)cur->p2.y,(int)cur->p3.x,(int)cur->p3.y,(int)cur->p4.x,(int)cur->p4.y);
+				int x2 = cur->p2.x;
+				int y2 = cur->p2.y;
+				int x3 = cur->p3.x;
+				int y3 = cur->p3.y;
+				int x4 = cur->p4.x;
+				int y4 = cur->p4.y;
+				scale.ToScriptCoords(&x2, &y2);
+				scale.ToScriptCoords(&x3, &y3);
+				scale.ToScriptCoords(&x4, &y4);
+				result += wxString::Format(L"%i %i %i %i %i %i ", x2, y2, x3, y3, x4, y4);
 				break;
+			}
 			default: break;
 		}
 	}
 	return result;
 }
 
-
-
 /// @brief Decode from ASS 
 /// @param str 
-///
 void Spline::DecodeFromASS(wxString str) {
 	// Clear current
 	curves.clear();
@@ -112,7 +119,7 @@ void Spline::DecodeFromASS(wxString str) {
 	bool coordsSet = false;
 
 	// Tokenize the string
-	wxStringTokenizer tkn(str,_T(" "));
+	wxStringTokenizer tkn(str,L" ");
 	while (tkn.HasMoreTokens()) {
 		wxString token = tkn.GetNextToken();
 
@@ -126,26 +133,31 @@ void Spline::DecodeFromASS(wxString str) {
 			if (stack.size() == 2 && lastCommand == 'm') {
 				x = stack[0];
 				y = stack[1];
+				scale.FromScriptCoords(&x, &y);
 				coordsSet = true;
 				stack.clear();
 			}
 
 			// Line
 			if (stack.size() == 2 && lastCommand == 'l') {
+				scale.FromScriptCoords(&stack[0], &stack[1]);
 				SplineCurve curve;
 				curve.p1.x = x;
 				curve.p1.y = y;
 				curve.p2.x = stack[0];
 				curve.p2.y = stack[1];
 				curve.type = CURVE_LINE;
-				x = (int)curve.p2.x;
-				y = (int)curve.p2.y;
+				x = curve.p2.x;
+				y = curve.p2.y;
 				stack.clear();
 				AppendCurve(curve);
 			}
 
 			// Bicubic
 			else if (stack.size() == 6 && lastCommand == 'b') {
+				scale.FromScriptCoords(&stack[0], &stack[1]);
+				scale.FromScriptCoords(&stack[2], &stack[3]);
+				scale.FromScriptCoords(&stack[4], &stack[5]);
 				SplineCurve curve;
 				curve.p1.x = x;
 				curve.p1.y = y;
@@ -156,8 +168,8 @@ void Spline::DecodeFromASS(wxString str) {
 				curve.p4.x = stack[4];
 				curve.p4.y = stack[5];
 				curve.type = CURVE_BICUBIC;
-				x = (int)curve.p4.x;
-				y = (int)curve.p4.y;
+				x = curve.p4.x;
+				y = curve.p4.y;
 				stack.clear();
 				AppendCurve(curve);
 			}
@@ -170,12 +182,12 @@ void Spline::DecodeFromASS(wxString str) {
 
 		// Got something else
 		else {
-			if (token == _T("m")) lastCommand = 'm';
-			else if (token == _T("l")) lastCommand = 'l';
-			else if (token == _T("b")) lastCommand = 'b';
-			else if (token == _T("n")) lastCommand = 'n';
-			else if (token == _T("s")) lastCommand = 's';
-			else if (token == _T("c")) lastCommand = 'c';
+			if (token == L"m") lastCommand = 'm';
+			else if (token == L"l") lastCommand = 'l';
+			else if (token == L"b") lastCommand = 'b';
+			else if (token == L"n") lastCommand = 'n';
+			else if (token == L"s") lastCommand = 's';
+			else if (token == L"c") lastCommand = 'c';
 		}
 	}
 
@@ -189,12 +201,9 @@ void Spline::DecodeFromASS(wxString str) {
 	}
 }
 
-
-
 /// @brief Insert a curve to the spline 
 /// @param curve 
 /// @param index 
-///
 void Spline::InsertCurve(SplineCurve &curve,int index) {
 	if (index == -1) curves.push_back(curve);
 	else {
@@ -205,12 +214,9 @@ void Spline::InsertCurve(SplineCurve &curve,int index) {
 	}
 }
 
-
-
 /// @brief Get a specific curve 
 /// @param index 
 /// @return 
-///
 SplineCurve *Spline::GetCurve(int index) {
 	int i=0;
 	for (std::list<SplineCurve>::iterator cur=curves.begin();cur!=curves.end() && i <= index;cur++,i++) {
@@ -219,13 +225,10 @@ SplineCurve *Spline::GetCurve(int index) {
 	return NULL;
 }
 
-
-
 /// @brief Moves a specific point in the spline 
 /// @param curveIndex 
 /// @param point      
 /// @param pos        
-///
 void Spline::MovePoint(int curveIndex,int point,wxPoint pos) {
 	// Curves
 	int i = 0;
@@ -234,12 +237,9 @@ void Spline::MovePoint(int curveIndex,int point,wxPoint pos) {
 	SplineCurve *c2 = NULL;
 
 	// Indices
-	//int size = curves.size();
 	int i0 = curveIndex-1;
 	int i1 = curveIndex;
 	int i2 = curveIndex+1;
-	//if (i0 < 0) i0 = size-1;
-	//if (i2 >= size) i2 = 0;
 
 	// Get the curves
 	for (std::list<SplineCurve>::iterator cur = curves.begin();cur!=curves.end();cur++) {
@@ -286,12 +286,9 @@ void Spline::MovePoint(int curveIndex,int point,wxPoint pos) {
 	}
 }
 
-
-
 /// @brief Gets a list of points in the curve 
 /// @param points     
 /// @param pointCurve 
-///
 void Spline::GetPointList(std::vector<Vector2D> &points,std::vector<int> &pointCurve) {
 	// Prepare
 	points.clear();
@@ -343,15 +340,11 @@ void Spline::GetPointList(std::vector<Vector2D> &points,std::vector<int> &pointC
 	}
 }
 
-
-
 /// @brief t value and curve of the point closest to reference 
 /// @param reference 
 /// @param curve     
 /// @param t         
 /// @param pt        
-/// @return 
-///
 void Spline::GetClosestParametricPoint(Vector2D reference,int &curve,float &t,Vector2D &pt) {
 	// Has at least one curve?
 	curve = -1;
@@ -384,12 +377,9 @@ void Spline::GetClosestParametricPoint(Vector2D reference,int &curve,float &t,Ve
 	curves.pop_back();
 }
 
-
-
 /// @brief Point closest to reference 
 /// @param reference 
 /// @return 
-///
 Vector2D Spline::GetClosestPoint(Vector2D reference) {
 	int curve;
 	float t;
@@ -409,11 +399,8 @@ Vector2D Spline::GetClosestControlPoint(Vector2D reference) {
 	return Vector2D(-1,-1);
 }
 
-
-
 /// @brief Smoothes the spline 
 /// @param smooth 
-///
 void Spline::Smooth(float smooth) {
 	// See if there are enough curves
 	if (curves.size() < 3) return;
@@ -434,5 +421,3 @@ void Spline::Smooth(float smooth) {
 		curve1->Smooth(curve0->p1,curve2->p2,smooth);
 	}
 }
-
-

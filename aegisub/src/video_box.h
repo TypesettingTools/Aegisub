@@ -69,8 +69,6 @@ private:
 	void OnVideoStop(wxCommandEvent &event);
 	void OnVideoToggleScroll(wxCommandEvent &event);
 
-	void OnModeChange(wxCommandEvent &event);
-	void OnSubTool(wxCommandEvent &event);
 	void OnToggleRealtime(wxCommandEvent &event);
 	void OnHelp(wxCommandEvent &event);
 

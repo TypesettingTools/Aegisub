@@ -65,16 +65,13 @@ enum {
 /// @param _parent 
 /// @param toolBar 
 ///
-VisualToolDrag::VisualToolDrag(VideoDisplay *_parent,wxToolBar *toolBar)
-: VisualTool(_parent)
+VisualToolDrag::VisualToolDrag(VideoDisplay *parent, VideoState const& video, wxToolBar * toolBar)
+: VisualTool(parent, video)
 {
-	_parent->ShowCursor(false);
-	//toolBar->AddTool(BUTTON_TOGGLE_MOVE,_T("Toggle Move/Pos"),GETIMAGE(visual_move_conv_move_24));
 	toggleMove = new wxBitmapButton(toolBar,BUTTON_TOGGLE_MOVE,GETIMAGE(visual_move_conv_move_24),wxDefaultPosition);
 	ConnectButton(toggleMove);
 	toolBar->AddControl(toggleMove);
 	toggleMoveOnMove = true;
-	//UpdateToggleButtons();
 	toolBar->Realize();
 	toolBar->Show(true);
 }
@@ -122,10 +119,12 @@ void VisualToolDrag::OnButton(wxCommandEvent &event) {
 		bool hasMove;
 		GetLinePosition(line,x1,y1);
 		GetLineMove(line,hasMove,x1,y1,x2,y2,t1,t2);
+		parent->ToScriptCoords(&x1, &y1);
+		parent->ToScriptCoords(&x2, &y2);
 
 		// Replace tag
-		if (hasMove) SetOverride(_T("\\pos"),wxString::Format(_T("(%i,%i)"),x1,y1));
-		else SetOverride(_T("\\move"),wxString::Format(_T("(%i,%i,%i,%i,%i,%i)"),x1,y1,x1,y1,0,line->End.GetMS() - line->Start.GetMS()));
+		if (hasMove) SetOverride(L"\\pos",wxString::Format(L"(%i,%i)",x1,y1));
+		else SetOverride(L"\\move",wxString::Format(L"(%i,%i,%i,%i,%i,%i)",x1,y1,x1,y1,0,line->End.GetMS() - line->Start.GetMS()));
 		SubtitlesGrid *grid = VideoContext::Get()->grid;
 		grid->editBox->CommitText();
 		grid->ass->FlagAsModified(_("visual typesetting"));
@@ -143,16 +142,6 @@ void VisualToolDrag::OnButton(wxCommandEvent &event) {
 void VisualToolDrag::DoRefresh() {
 	UpdateToggleButtons();
 }
-
-
-
-/// @brief Update 
-///
-void VisualToolDrag::Update() {
-	GetParent()->Render();
-}
-
-
 
 /// @brief Draw 
 ///
@@ -289,16 +278,6 @@ void VisualToolDrag::PopulateFeatureList() {
 	}
 }
 
-
-
-/// @brief Start dragging 
-/// @param feature 
-///
-void VisualToolDrag::InitializeDrag(VisualDraggableFeature &feature) {
-}
-
-
-
 /// @brief Update drag 
 /// @param feature 
 ///
@@ -316,12 +295,18 @@ void VisualToolDrag::UpdateDrag(VisualDraggableFeature &feature) {
 void VisualToolDrag::CommitDrag(VisualDraggableFeature &feature) {
 	// Origin
 	if (feature.type == DRAG_BIG_TRIANGLE) {
-		SetOverride(_T("\\org"),wxString::Format(_T("(%i,%i)"),feature.x,feature.y));
+		int x = feature.x;
+		int y = feature.y;
+		parent->ToScriptCoords(&x, &y);
+		SetOverride(L"\\org",wxString::Format(L"(%i,%i)",x,y));
 	}
 
 	// Position
 	else if (feature.brother[0] == -1) {
-		SetOverride(_T("\\pos"),wxString::Format(_T("(%i,%i)"),feature.x,feature.y));
+		int x = feature.x;
+		int y = feature.y;
+		parent->ToScriptCoords(&x, &y);
+		SetOverride(L"\\pos",wxString::Format(L"(%i,%i)",x,y));
 	}
 
 	// Move
@@ -332,8 +317,15 @@ void VisualToolDrag::CommitDrag(VisualDraggableFeature &feature) {
 		if (p1->type == DRAG_BIG_CIRCLE) p1 = &features[p1->brother[0]];
 		p2 = &features[p1->brother[0]];
 
+		int x1 = p1->x;
+		int y1 = p1->y;
+		parent->ToScriptCoords(&x1, &y1);
+		int x2 = p2->x;
+		int y2 = p2->y;
+		parent->ToScriptCoords(&x2, &y2);
+
 		// Set override
-		SetOverride(_T("\\move"),wxString::Format(_T("(%i,%i,%i,%i,%i,%i)"),p1->x,p1->y,p2->x,p2->y,p1->value,p2->value));
+		SetOverride(L"\\move", wxString::Format(L"(%i,%i,%i,%i,%i,%i)", x1, y1, x2, y2, p1->value, p2->value));
 	}
 }
 

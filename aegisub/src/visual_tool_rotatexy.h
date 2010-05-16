@@ -34,19 +34,11 @@
 /// @ingroup visual_ts
 ///
 
-
-
-
-///////////
-// Headers
 #include "visual_tool.h"
-
 
 /// DOCME
 /// @class VisualToolRotateXY
 /// @brief DOCME
-///
-/// DOCME
 class VisualToolRotateXY : public VisualTool {
 private:
 
@@ -96,10 +88,7 @@ private:
 	void DoRefresh();
 
 public:
-	VisualToolRotateXY(VideoDisplay *parent);
+	VisualToolRotateXY(VideoDisplay *parent, VideoState const& video, wxToolBar *);
 
-	void Update();
 	void Draw();
 };
-
-

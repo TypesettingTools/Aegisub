@@ -51,26 +51,12 @@
 /// @brief Constructor 
 /// @param _parent 
 ///
-VisualToolScale::VisualToolScale(VideoDisplay *_parent)
-: VisualTool(_parent)
+VisualToolScale::VisualToolScale(VideoDisplay *parent, VideoState const& video, wxToolBar *)
+: VisualTool(parent, video)
 {
-	_parent->ShowCursor(false);
 }
-
-
-
-/// @brief Update 
-///
-void VisualToolScale::Update() {
-	// Render parent
-	GetParent()->Render();
-}
-
-
 
 /// @brief Draw 
-/// @return 
-///
 void VisualToolScale::Draw() {
 	// Get line to draw
 	AssDialogue *line = GetActiveDialogueLine();
@@ -87,8 +73,8 @@ void VisualToolScale::Draw() {
 
 	// Set dx/dy
 	int len = 160;
-	dx = MID(len/2+10,dx,sw-len/2-30);
-	dy = MID(len/2+10,dy,sh-len/2-30);
+	dx = MID(len/2+10,dx,video.w-len/2-30);
+	dy = MID(len/2+10,dy,video.h-len/2-30);
 
 	// Set colours
 	SetLineColour(colour[0]);
@@ -144,8 +130,8 @@ void VisualToolScale::Draw() {
 /// @brief Start holding 
 ///
 void VisualToolScale::InitializeHold() {
-	startX = mouseX;
-	startY = mouseY;
+	startX = video.x;
+	startY = video.y;
 	GetLineScale(curDiag,origScaleX,origScaleY);
 	curScaleX = origScaleX;
 	curScaleY = origScaleY;
@@ -159,8 +145,8 @@ void VisualToolScale::InitializeHold() {
 ///
 void VisualToolScale::UpdateHold() {
 	// Deltas
-	int deltaX = mouseX - startX;
-	int deltaY = startY - mouseY;
+	int deltaX = video.x - startX;
+	int deltaY = startY - video.y;
 	if (ctrlDown) {
 		if (abs(deltaX) >= abs(deltaY)) deltaY = 0;
 		else deltaX = 0;

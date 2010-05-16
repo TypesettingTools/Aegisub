@@ -49,7 +49,7 @@
 /// DOCME
 class VisualToolCross : public VisualTool {
 public:
-	VisualToolCross(VideoDisplay *parent);
+	VisualToolCross(VideoDisplay *parent, VideoState const& video, wxToolBar *);
 	~VisualToolCross();
 
 	void Update();

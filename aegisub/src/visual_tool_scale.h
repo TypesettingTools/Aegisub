@@ -34,19 +34,11 @@
 /// @ingroup visual_ts
 ///
 
-
-
-
-///////////
-// Headers
 #include "visual_tool.h"
-
 
 /// DOCME
 /// @class VisualToolScale
 /// @brief DOCME
-///
-/// DOCME
 class VisualToolScale : public VisualTool {
 private:
 
@@ -78,10 +70,7 @@ private:
 	void CommitHold();
 
 public:
-	VisualToolScale(VideoDisplay *parent);
+	VisualToolScale(VideoDisplay *parent, VideoState const& video, wxToolBar *);
 
-	void Update();
 	void Draw();
 };
-
-

@@ -296,17 +296,10 @@ void VideoOutGL::UploadFrameData(const AegiVideoFrame& frame) {
 
 	CHECK_ERROR(glPixelStorei(GL_UNPACK_ROW_LENGTH, 0));
 }
-void VideoOutGL::SetViewport(int x, int y, int width, int height) {
-	CHECK_ERROR(glViewport(x, y, width, height));
-}
 
-void VideoOutGL::Render(int sw, int sh) {
+void VideoOutGL::Render(int dx1, int dy1, int dx2, int dy2) {
+	CHECK_ERROR(glViewport(dx1, dy1, dx2, dy2));
 	glCallList(dl);
-
-	// Switch to script coordinates
-	// This isn't really the right place to do this, but there isn't really
-	// anywhere better right now
-	CHECK_ERROR(glOrtho(0.0f, sw, sh, 0.0f, -1000.0f, 1000.0f));
 	CHECK_ERROR(glMatrixMode(GL_MODELVIEW));
 	CHECK_ERROR(glLoadIdentity());
 

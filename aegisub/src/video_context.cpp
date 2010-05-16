@@ -73,7 +73,6 @@
 #include "video_context.h"
 #include "video_display.h"
 #include "video_provider_manager.h"
-#include "visual_tool.h"
 
 
 ///////

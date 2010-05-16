@@ -34,24 +34,14 @@
 /// @ingroup visual_ts
 ///
 
-
-
-
-///////////
-// Headers
-#ifndef AGI_PRE
-#include <wx/toolbar.h>
-#endif
-
 #include "visual_tool.h"
 #include "spline.h"
 
+class wxToolBar;
 
 /// DOCME
 /// @class VisualToolVectorClip
 /// @brief DOCME
-///
-/// DOCME
 class VisualToolVectorClip : public VisualTool {
 private:
 
@@ -95,13 +85,10 @@ private:
 	void ClickedFeature(VisualDraggableFeature &feature);
 
 	void DoRefresh();
-	void OnSubTool(wxCommandEvent &event);
 
 public:
-	VisualToolVectorClip(VideoDisplay *parent,wxToolBar *toolbar);
+	VisualToolVectorClip(VideoDisplay *parent, VideoState const& video, wxToolBar *toolbar);
 
-	void Update();
 	void Draw();
+	void OnSubTool(wxCommandEvent &event);
 };
-
-

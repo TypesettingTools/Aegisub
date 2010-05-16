@@ -66,7 +66,6 @@ private:
 	///
 	bool CanDrag() { return true; }
 	void PopulateFeatureList();
-	void InitializeDrag(VisualDraggableFeature &feature);
 	void UpdateDrag(VisualDraggableFeature &feature);
 	void CommitDrag(VisualDraggableFeature &feature);
 
@@ -75,10 +74,7 @@ private:
 	void DoRefresh();
 
 public:
-	VisualToolDrag(VideoDisplay *parent,wxToolBar *toolbar);
+	VisualToolDrag(VideoDisplay *parent, VideoState const& video, wxToolBar *toolbar);
 
-	void Update();
 	void Draw();
 };
-
-

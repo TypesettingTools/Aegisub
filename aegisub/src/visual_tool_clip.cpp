@@ -51,34 +51,19 @@
 /// @brief Constructor 
 /// @param _parent 
 ///
-VisualToolClip::VisualToolClip(VideoDisplay *_parent)
-: VisualTool(_parent)
+VisualToolClip::VisualToolClip(VideoDisplay *parent, VideoState const& video, wxToolBar *)
+: VisualTool(parent, video)
+, curX1(0)
+, curY1(0)
+, curX2(video.w)
+, curY2(video.h)
+, inverse(false)
 {
-	_parent->ShowCursor(false);
-
-	// Set defaults
-	curX1 = curY1 = 0;
-	curX2 = sw;
-	curY2 = sh;
-	inverse = false;
 	AssDialogue *line = GetActiveDialogueLine();
 	if (line) GetLineClip(line,curX1,curY1,curX2,curY2,inverse);
 }
 
-
-
-/// @brief Update 
-///
-void VisualToolClip::Update() {
-	// Render parent
-	GetParent()->Render();
-}
-
-
-
 /// @brief Draw 
-/// @return 
-///
 void VisualToolClip::Draw() {
 	// Get current line
 	AssDialogue *line = GetActiveDialogueLine();
@@ -103,10 +88,10 @@ void VisualToolClip::Draw() {
 		DrawRectangle(dx1,dy1,dx2,dy2);
 	}
 	else {
-		DrawRectangle(0,0,sw,dy1);
-		DrawRectangle(0,dy2,sw,sh);
+		DrawRectangle(0,0,video.w,dy1);
+		DrawRectangle(0,dy2,video.w,video.h);
 		DrawRectangle(0,dy1,dx1,dy2);
-		DrawRectangle(dx2,dy1,sw,dy2);
+		DrawRectangle(dx2,dy1,video.w,dy2);
 	}
 
 	// Draw circles
@@ -121,15 +106,12 @@ void VisualToolClip::Draw() {
 	}
 }
 
-
-
 /// @brief Start holding 
-///
 void VisualToolClip::InitializeHold() {
-	startX = mouseX;
-	startY = mouseY;
-	curDiag->StripTag(_T("\\clip"));
-	curDiag->StripTag(_T("\\iclip"));
+	startX = video.x;
+	startY = video.y;
+	curDiag->StripTag(L"\\clip");
+	curDiag->StripTag(L"\\iclip");
 }
 
 
@@ -138,20 +120,20 @@ void VisualToolClip::InitializeHold() {
 ///
 void VisualToolClip::UpdateHold() {
 	// Coordinates
-	curX1 = startX * sw / w;
-	curY1 = startY * sh / h;
-	curX2 = mouseX * sw / w;
-	curY2 = mouseY * sh / h;
+	curX1 = startX;
+	curY1 = startY;
+	curX2 = video.x;
+	curY2 = video.y;
 
 	// Make sure 1 is smaller than 2
 	if (curX1 > curX2) IntSwap(curX1,curX2);
 	if (curY1 > curY2) IntSwap(curY1,curY2);
 
 	// Limit to video area
-	curX1 = MID(0,curX1,sw);
-	curX2 = MID(0,curX2,sw);
-	curY1 = MID(0,curY1,sh);
-	curY2 = MID(0,curY2,sh);
+	curX1 = MID(0,curX1,video.w);
+	curX2 = MID(0,curX2,video.w);
+	curY1 = MID(0,curY1,video.h);
+	curY2 = MID(0,curY2,video.h);
 	
 	// Features
 	if (CanDrag()) PopulateFeatureList();
@@ -162,10 +144,12 @@ void VisualToolClip::UpdateHold() {
 /// @brief Commit hold 
 ///
 void VisualToolClip::CommitHold() {
+	parent->ToScriptCoords(&curX1, &curY1);
+	parent->ToScriptCoords(&curX2, &curY2);
 	if (inverse)
-		SetOverride(_T("\\iclip"),wxString::Format(_T("(%i,%i,%i,%i)"),curX1,curY1,curX2,curY2));
+		SetOverride(L"\\iclip",wxString::Format(L"(%i,%i,%i,%i)",curX1,curY1,curX2,curY2));
 	else
-		SetOverride(_T("\\clip"),wxString::Format(_T("(%i,%i,%i,%i)"),curX1,curY1,curX2,curY2));
+		SetOverride(L"\\clip",wxString::Format(L"(%i,%i,%i,%i)",curX1,curY1,curX2,curY2));
 }
 
 
@@ -224,8 +208,8 @@ void VisualToolClip::PopulateFeatureList() {
 ///
 void VisualToolClip::InitializeDrag(VisualDraggableFeature &feature) {
 	curDiag = GetActiveDialogueLine();
-	curDiag->StripTag(_T("\\clip"));
-	curDiag->StripTag(_T("\\iclip"));
+	curDiag->StripTag(L"\\clip");
+	curDiag->StripTag(L"\\iclip");
 }
 
 
@@ -257,5 +241,3 @@ void VisualToolClip::UpdateDrag(VisualDraggableFeature &feature) {
 void VisualToolClip::CommitDrag(VisualDraggableFeature &feature) {
 	CommitHold();
 }
-
-

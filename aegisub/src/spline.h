@@ -34,11 +34,6 @@
 /// @ingroup visual_ts
 ///
 
-
-
-
-///////////
-// Headers
 #ifndef AGI_PRE
 #include <list>
 #include <vector>
@@ -48,19 +43,21 @@
 
 #include "spline_curve.h"
 
+class VideoDisplay;
+
 
 /// DOCME
 /// @class Spline
 /// @brief DOCME
-///
-/// DOCME
 class Spline {
+private:
+	const VideoDisplay &scale;
 public:
 
 	/// DOCME
 	std::list<SplineCurve> curves;
 
-	Spline();
+	Spline(const VideoDisplay &scale);
 
 	wxString EncodeToASS();
 	void DecodeFromASS(wxString str);
@@ -81,5 +78,3 @@ public:
 	Vector2D GetClosestPoint(Vector2D reference);
 	Vector2D GetClosestControlPoint(Vector2D reference);
 };
-
-

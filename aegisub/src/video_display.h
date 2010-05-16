@@ -44,81 +44,77 @@
 
 // Prototypes
 class VideoSlider;
-class VisualTool;
 class VideoBox;
 class VideoOutGL;
+class VisualTool;
+
+struct VideoState {
+	int x;
+	int y;
+	int w;
+	int h;
+};
 
 /// @class VideoDisplay
 /// @brief DOCME
 class VideoDisplay: public wxGLCanvas {
-private:
-	/// The current visual typesetting mode
-	int visualMode;
-
 	/// The unscaled size of the displayed video
 	wxSize origSize;
 
 	/// The frame number currently being displayed
 	int currentFrame;
 
-	/// The width of the display
+	/// The width of the canvas in screen pixels
 	int w;
-	/// The height of the display
+	/// The height of the canvas in screen pixels
 	int h;
 
-	/// The x-coordinate of the bottom left of the area containing video.
-	/// Always zero unless the display is detatched and is wider than the video.
-	int dx1;
-	/// The width of the screen area containing video
-	int dx2;
-	/// The y-coordinate of the bottom left of the area containing video.
-	/// Always zero unless the display is detatched and is taller than the video.
-	int dy1;
-	/// The height of the screen area containing video
-	int dy2;
-
-	/// The last seen x position of the mouse; stored for some context menu commands
-	int mouse_x;
-	/// The last seen y position of the mouse; stored for some context menu commands
-	int mouse_y;
+	/// Screen pixels between the left of the canvas and the left of the video
+	int viewport_x;
+	/// The width of the video in screen pixels
+	int viewport_width;
+	/// Screen pixels between the bottom of the canvas and the bottom of the video; used for glViewport
+	int viewport_bottom;
+	/// Screen pixels between the bottom of the canvas and the top of the video; used for coordinate space conversion
+	int viewport_top;
+	/// The height of the video in screen pixels
+	int viewport_height;
 
 	/// Lock to disable mouse updates during resize operations
 	bool locked;
 
-	/// @brief Draw the appropriate overscan masks for the current aspect ratio
-	void DrawTVEffects(int sh, int sw);
-	/// @brief Draw an overscan mask 
+	/// @brief Draw an overscan mask
 	/// @param sizeH  The amount of horizontal overscan on one side
 	/// @param sizeV  The amount of vertical overscan on one side
 	/// @param colour The color of the mask
 	/// @param alpha  The alpha of the mask
-	void DrawOverscanMask(int sizeH,int sizeV,wxColour color,double alpha=0.5);
+	void DrawOverscanMask(int sizeH, int sizeV, wxColor color, double alpha) const;
 
 	/// @brief Paint event 
 	void OnPaint(wxPaintEvent& event);
-	/// @brief Handle keypress events for switching visual typesetting modes
-	/// @param event
+	/// @brief Key event handler
+	/// @param event 
 	void OnKey(wxKeyEvent &event);
-	/// @brief Handle mouse events
+	/// @brief Mouse event handler
 	/// @param event 
 	void OnMouseEvent(wxMouseEvent& event);
 
 	/// @brief NOP event handler
-	void OnEraseBackground(wxEraseEvent &event) {}
-	/// @brief Handle resize events
+	void OnEraseBackground(wxEraseEvent &) {}
+	/// @brief Recalculate video positioning and scaling when the available area or zoom changes
 	/// @param event
 	void OnSizeEvent(wxSizeEvent &event);
 
 	/// @brief Copy coordinates of the mouse to the clipboard
-	void OnCopyCoords(wxCommandEvent &event);
+	void OnCopyCoords(wxCommandEvent &);
 	/// @brief Copy the currently display frame to the clipboard, with subtitles
-	void OnCopyToClipboard(wxCommandEvent &event);
+	void OnCopyToClipboard(wxCommandEvent &);
 	/// @brief Save the currently display frame to a file, with subtitles
-	void OnSaveSnapshot(wxCommandEvent &event);
+	void OnSaveSnapshot(wxCommandEvent &);
 	/// @brief Copy the currently display frame to the clipboard, without subtitles
-	void OnCopyToClipboardRaw(wxCommandEvent &event);
+	void OnCopyToClipboardRaw(wxCommandEvent &);
 	/// @brief Save the currently display frame to a file, without subtitles
-	void OnSaveSnapshotRaw(wxCommandEvent &event);
+	void OnSaveSnapshotRaw(wxCommandEvent &);
 
 	/// The current zoom level, where 1.0 = 100%
 	double zoomValue;
@@ -132,11 +128,29 @@ private:
 	/// The display for the absolute time of the video position
 	wxTextCtrl *PositionDisplay;
 
-	/// The current visual typesetting tool
-	VisualTool *visual;
-
 	/// The video renderer
 	std::auto_ptr<VideoOutGL> videoOut;
+
+	/// The active visual typesetting tool
+	std::auto_ptr<VisualTool> tool;
+	/// The current tool's ID
+	int activeMode;
+	/// The toolbar used by individual typesetting tools
+	wxToolBar* toolBar;
+
+
+	void OnMode(const wxCommandEvent &event);
+	void SetMode(int mode);
+	/// @brief Switch the active tool to a new object of the specified class
+	/// @param T The class of the new visual typsetting tool
+	template <class T> void SetTool();
+
+	/// The current script width
+	int scriptW;
+	/// The current script height
+	int scriptH;
+
+	VideoState video;
 
 public:
 	/// The VideoBox this display is contained in
@@ -176,10 +190,6 @@ public:
 	/// @brief Set the cursor to either default or blank
 	/// @param show Whether or not the cursor should be visible
 	void ShowCursor(bool show);
-	/// @brief Convert mouse coordinates relative to the display to coordinates relative to the video
-	/// @param x X coordinate
-	/// @param y Y coordinate
-	void ConvertMouseCoords(int &x,int &y);
 	/// @brief Set the size of the display based on the current zoom and video resolution
 	void UpdateSize();
 	/// @brief Set the zoom level
@@ -188,14 +198,17 @@ public:
 	/// @brief Set the zoom level to that indicated by the dropdown
 	void SetZoomFromBox();
 	/// @brief Get the current zoom level
-	double GetZoom();
-	/// @brief Set the current visual typesetting mode
-	/// @param mode The new mode
-	/// @param render Whether the display should be rerendered
-	void SetVisualMode(int mode, bool render = false);
+	double GetZoom() const;
 
-	/// @brief Event handler for the secondary toolbar which some visual tools use
-	void OnSubTool(wxCommandEvent &event);
+	/// @brief Convert a point from screen to script coordinate frame
+	/// @param x x coordinate; in/out
+	/// @param y y coordinate; in/out
+	void ToScriptCoords(int *x, int *y) const;
+	/// @brief Convert a point from script to screen coordinate frame
+	/// @param x x coordinate; in/out
+	/// @param y y coordinate; in/out
+	void FromScriptCoords(int *x, int *y) const;
+
 
 	DECLARE_EVENT_TABLE()
 };

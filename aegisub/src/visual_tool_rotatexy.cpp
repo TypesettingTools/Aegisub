@@ -51,27 +51,13 @@
 /// @brief Constructor 
 /// @param _parent 
 ///
-VisualToolRotateXY::VisualToolRotateXY(VideoDisplay *_parent)
-: VisualTool(_parent)
+VisualToolRotateXY::VisualToolRotateXY(VideoDisplay *parent, VideoState const& video, wxToolBar *)
+: VisualTool(parent, video)
 {
-	_parent->ShowCursor(false);
 	DoRefresh();
 }
 
-
-
-/// @brief Update 
-///
-void VisualToolRotateXY::Update() {
-	// Render parent
-	GetParent()->Render();
-}
-
-
-
 /// @brief Draw 
-/// @return 
-///
 void VisualToolRotateXY::Draw() {
 	// Get line to draw
 	AssDialogue *line = GetActiveDialogueLine();
@@ -188,12 +174,12 @@ void VisualToolRotateXY::Draw() {
 void VisualToolRotateXY::InitializeHold() {
 	GetLinePosition(curDiag,odx,ody,orgx,orgy);
 	GetLineRotation(curDiag,origAngleX,origAngleY,rz);
-	startAngleX = (orgy-mouseY*sh/h)*2.0;
-	startAngleY = (mouseX*sw/w-orgx)*2.0;
+	startAngleX = (orgy-video.x)*2.0;
+	startAngleY = (video.y-orgx)*2.0;
 	curAngleX = origAngleX;
 	curAngleY = origAngleY;
-	curDiag->StripTag(_T("\\frx"));
-	curDiag->StripTag(_T("\\fry"));
+	curDiag->StripTag(L"\\frx");
+	curDiag->StripTag(L"\\fry");
 }
 
 
@@ -202,8 +188,8 @@ void VisualToolRotateXY::InitializeHold() {
 ///
 void VisualToolRotateXY::UpdateHold() {
 	// Find screen angles
-	float screenAngleX = (orgy-mouseY*sh/h)*2.0;
-	float screenAngleY = (mouseX*sw/w-orgx)*2.0;
+	float screenAngleX = (orgy-video.x)*2.0;
+	float screenAngleY = (video.y-orgx)*2.0;
 
 	// Deltas
 	float deltaX = screenAngleX - startAngleX;
@@ -235,8 +221,8 @@ void VisualToolRotateXY::UpdateHold() {
 /// @brief Commit hold 
 ///
 void VisualToolRotateXY::CommitHold() {
-	SetOverride(_T("\\frx"),wxString::Format(_T("(%0.3g)"),curAngleX));
-	SetOverride(_T("\\fry"),wxString::Format(_T("(%0.3g)"),curAngleY));
+	SetOverride(L"\\frx",wxString::Format(L"(%0.3g)",curAngleX));
+	SetOverride(L"\\fry",wxString::Format(L"(%0.3g)",curAngleY));
 }
 
 
@@ -273,7 +259,10 @@ void VisualToolRotateXY::UpdateDrag(VisualDraggableFeature &feature) {
 /// @param feature 
 ///
 void VisualToolRotateXY::CommitDrag(VisualDraggableFeature &feature) {
-	SetOverride(_T("\\org"),wxString::Format(_T("(%i,%i)"),feature.x,feature.y));
+	int x = feature.x;
+	int y = feature.y;
+	parent->ToScriptCoords(&x, &y);
+	SetOverride(L"\\org",wxString::Format(L"(%i,%i)",x,y));
 }
 
 

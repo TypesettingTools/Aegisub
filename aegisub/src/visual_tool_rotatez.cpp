@@ -51,27 +51,13 @@
 /// @brief Constructor 
 /// @param _parent 
 ///
-VisualToolRotateZ::VisualToolRotateZ(VideoDisplay *_parent)
-: VisualTool(_parent)
+VisualToolRotateZ::VisualToolRotateZ(VideoDisplay *parent, VideoState const& video, wxToolBar *)
+: VisualTool(parent, video)
 {
-	_parent->ShowCursor(false);
 	DoRefresh();
 }
 
-
-
-/// @brief Update 
-///
-void VisualToolRotateZ::Update() {
-	// Render parent
-	GetParent()->Render();
-}
-
-
-
 /// @brief Draw 
-/// @return 
-///
 void VisualToolRotateZ::Draw() {
 	// Get line to draw
 	AssDialogue *line = GetActiveDialogueLine();
@@ -162,7 +148,7 @@ void VisualToolRotateZ::Draw() {
 	// Draw line to mouse
 	if (!dragging && GetHighlightedFeature() == -1) {
 		SetLineColour(colour[0]);
-		DrawLine(dx,dy,mx,my);
+		DrawLine(dx,dy,video.x,video.y);
 	}
 }
 
@@ -172,11 +158,11 @@ void VisualToolRotateZ::Draw() {
 ///
 void VisualToolRotateZ::InitializeHold() {
 	GetLinePosition(curDiag,odx,ody,orgx,orgy);
-	startAngle = atan2(double(orgy-mouseY*sh/h),double(mouseX*sw/w-orgx)) * 180.0 / 3.1415926535897932;
+	startAngle = atan2(double(orgy-video.y),double(video.x-orgx)) * 180.0 / 3.1415926535897932;
 	GetLineRotation(curDiag,rx,ry,origAngle);
 	curAngle = origAngle;
-	curDiag->StripTag(_T("\\frz"));
-	curDiag->StripTag(_T("\\fr"));
+	curDiag->StripTag(L"\\frz");
+	curDiag->StripTag(L"\\fr");
 }
 
 
@@ -185,7 +171,7 @@ void VisualToolRotateZ::InitializeHold() {
 ///
 void VisualToolRotateZ::UpdateHold() {
 	// Find angle
-	float screenAngle = atan2(double(orgy-mouseY*sh/h),double(mouseX*sw/w-orgx)) * 180.0 / 3.1415926535897932;
+	float screenAngle = atan2(double(orgy-video.y),double(video.x-orgx)) * 180.0 / 3.1415926535897932;
 	curAngle = screenAngle - startAngle + origAngle;
 	while (curAngle < 0.0f) curAngle += 360.0f;
 	while (curAngle >= 360.0f) curAngle -= 360.0f;
@@ -202,7 +188,7 @@ void VisualToolRotateZ::UpdateHold() {
 /// @brief Commit hold 
 ///
 void VisualToolRotateZ::CommitHold() {
-	SetOverride(_T("\\frz"),wxString::Format(L"(%0.3g)",curAngle));
+	SetOverride(L"\\frz",wxString::Format(L"(%0.3g)",curAngle));
 }
 
 
@@ -239,7 +225,10 @@ void VisualToolRotateZ::UpdateDrag(VisualDraggableFeature &feature) {
 /// @param feature 
 ///
 void VisualToolRotateZ::CommitDrag(VisualDraggableFeature &feature) {
-	SetOverride(_T("\\org"),wxString::Format(_T("(%i,%i)"),feature.x,feature.y));
+	int x = feature.x;
+	int y = feature.y;
+	parent->ToScriptCoords(&x, &y);
+	SetOverride(L"\\org",wxString::Format(L"(%i,%i)",x,y));
 }
 
 

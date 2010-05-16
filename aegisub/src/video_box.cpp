@@ -61,9 +61,7 @@
 #include "video_box.h"
 #include "video_context.h"
 #include "video_display.h"
-#include "video_provider_manager.h"
 #include "video_slider.h"
-#include "visual_tool.h"
 
 
 /// @brief Constructor 
@@ -171,8 +169,6 @@ BEGIN_EVENT_TABLE(VideoBox, wxPanel)
 	EVT_BUTTON(Video_Stop, VideoBox::OnVideoStop)
 	EVT_TOGGLEBUTTON(Video_Auto_Scroll, VideoBox::OnVideoToggleScroll)
 
-	EVT_TOOL_RANGE(Video_Mode_Standard, Video_Mode_Vector_Clip, VideoBox::OnModeChange)
-	EVT_TOOL_RANGE(VISUAL_SUB_TOOL_START,VISUAL_SUB_TOOL_END, VideoBox::OnSubTool)
 	EVT_TOOL(Video_Mode_Realtime, VideoBox::OnToggleRealtime)
 	EVT_TOOL(Video_Mode_Help, VideoBox::OnHelp)
 END_EVENT_TABLE()
@@ -225,26 +221,6 @@ void VideoBox::OnVideoToggleScroll(wxCommandEvent &event) {
 	Options.SetBool(_T("Sync video with subs"),AutoScroll->GetValue());
 	Options.Save();
 }
-
-
-
-/// @brief Mode changed 
-/// @param event 
-///
-void VideoBox::OnModeChange(wxCommandEvent &event) {
-	videoDisplay->SetVisualMode(event.GetId() - Video_Mode_Standard);
-}
-
-
-
-/// @brief Sub-tool button pressed 
-/// @param event 
-///
-void VideoBox::OnSubTool(wxCommandEvent &event) {
-	videoDisplay->OnSubTool(event);
-}
-
-
 
 /// @brief Realtime toggle 
 /// @param event 
