@@ -231,52 +231,16 @@ void VideoDisplay::Render() try {
 	wxASSERT(wxIsMainThread());
 
 	VideoContext *context = VideoContext::Get();
-	wxASSERT(context);
 	if (!context->IsLoaded()) return;
 
-	// Set GL context
 	SetCurrent(*context->GetGLContext(this));
 
-	// Get sizes
-	int w, h, sw, sh, pw, ph;
-	GetClientSize(&w, &h);
-	wxASSERT(w > 0);
-	wxASSERT(h > 0);
+	int sw, sh;
 	context->GetScriptSize(sw, sh);
-	pw = context->GetWidth();
-	ph = context->GetHeight();
-	wxASSERT(pw > 0);
-	wxASSERT(ph > 0);
-
-	// Freesized transform
-	dx1 = 0;
-	dy1 = 0;
-	dx2 = w;
-	dy2 = h;
-	if (freeSize) {
-		// Set aspect ratio
-		float thisAr = float(w)/float(h);
-		float vidAr = context->GetAspectRatioType() == 0 ? float(pw)/float(ph) : context->GetAspectRatioValue();
-
-		// Window is wider than video, blackbox left/right
-		if (thisAr - vidAr > 0.01f) {
-			int delta = int(w-vidAr*h);
-			dx1 += delta/2;
-			dx2 -= delta;
-		}
-
-		// Video is wider than window, blackbox top/bottom
-		else if (vidAr - thisAr > 0.01f) {
-			int delta = int(h-w/vidAr);
-			dy1 += delta/2;
-			dy2 -= delta;
-		}
-	}
-
 	videoOut->SetViewport(dx1, dy1, dx2, dy2);
 	videoOut->Render(sw, sh);
 
-	DrawTVEffects();
+	DrawTVEffects(sw, sh);
 
 	if (visualMode == -1) SetVisualMode(0, false);
 	if (visual && (visual->mouseX > INT_MIN || visual->mouseY > INT_MIN || Options.AsBool(L"Always show visual tools"))) {
@@ -307,15 +271,12 @@ catch (...) {
 	VideoContext::Get()->Reset();
 }
 
-void VideoDisplay::DrawTVEffects() {
-	int sw,sh;
-	VideoContext *context = VideoContext::Get();
-	context->GetScriptSize(sw,sh);
+void VideoDisplay::DrawTVEffects(int sw, int sh) {
 	bool drawOverscan = Options.AsBool(_T("Show Overscan Mask"));
 
 	if (drawOverscan) {
 		// Get aspect ratio
-		double ar = context->GetAspectRatioValue();
+		double ar = VideoContext::Get()->GetAspectRatioValue();
 
 		// Based on BBC's guidelines: http://www.bbc.co.uk/guidelines/dq/pdf/tv/tv_standards_london.pdf
 		// 16:9 or wider
@@ -368,13 +329,14 @@ void VideoDisplay::UpdateSize() {
 	if (!con->IsLoaded()) return;
 	if (!IsShownOnScreen()) return;
 
-	if (freeSize) {
-		GetClientSize(&w,&h);
-	}
-	else {
-		if (con->GetAspectRatioType() == 0) w = int(con->GetWidth() * zoomValue);
-		else w = int(con->GetHeight() * zoomValue * con->GetAspectRatioValue());
-		h = int(con->GetHeight() * zoomValue);
+	int vidW = con->GetWidth();
+	int vidH = con->GetHeight();
+	assert(vidW > 0);
+	assert(vidH > 0);
+
+	if (!freeSize) {
+		h = vidH * zoomValue;
+		w = con->GetAspectRatioType() == 0 ? vidW * zoomValue : vidH * zoomValue * con->GetAspectRatioValue();
 
 		// Sizers ignore SetClientSize/SetSize, so only use them to calculate
 		// what size is required after including the borders
@@ -395,6 +357,35 @@ void VideoDisplay::UpdateSize() {
 
 		locked = false;
 	}
+
+	GetClientSize(&w,&h);
+	wxASSERT(w > 0);
+	wxASSERT(h > 0);
+
+	dx1 = 0;
+	dy1 = 0;
+	dx2 = w;
+	dy2 = h;
+	if (freeSize) {
+		// Set aspect ratio
+		float displayAr = float(w) / float(h);
+		float videoAr = con->GetAspectRatioType() == 0 ? float(vidW)/float(vidH) : con->GetAspectRatioValue();
+
+		// Window is wider than video, blackbox left/right
+		if (displayAr - videoAr > 0.01f) {
+			int delta = w - videoAr * h;
+			dx1 = delta / 2;
+			dx2 = w - delta;
+		}
+
+		// Video is wider than window, blackbox top/bottom
+		else if (videoAr - displayAr > 0.01f) {
+			int delta = h - w / videoAr;
+			dy1 = delta / 2;
+			dy2 = h - delta;
+		}
+	}
+
 	Refresh(false);
 }
 
@@ -535,12 +526,6 @@ void VideoDisplay::OnCopyCoords(wxCommandEvent &) {
 }
 
 void VideoDisplay::ConvertMouseCoords(int &x,int &y) {
-	int w,h;
-	GetClientSize(&w,&h);
-	wxASSERT(dx2 > 0);
-	wxASSERT(dy2 > 0);
-	wxASSERT(w > 0);
-	wxASSERT(h > 0);
 	x = (x-dx1)*w/dx2;
 	y = (y-dy1)*h/dy2;
 }

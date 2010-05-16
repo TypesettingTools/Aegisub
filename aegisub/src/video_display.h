@@ -86,7 +86,7 @@ private:
 	bool locked;
 
 	/// @brief Draw the appropriate overscan masks for the current aspect ratio
-	void DrawTVEffects();
+	void DrawTVEffects(int sh, int sw);
 	/// @brief Draw an overscan mask 
 	/// @param sizeH  The amount of horizontal overscan on one side
 	/// @param sizeV  The amount of vertical overscan on one side
