@@ -106,6 +106,8 @@ END_EVENT_TABLE()
 /// Attribute list for gl canvases; set the canvases to doublebuffered rgba with an 8 bit stencil buffer
 int attribList[] = { WX_GL_RGBA , WX_GL_DOUBLEBUFFER, WX_GL_STENCIL_SIZE, 8, 0 };
 
+using std::min;
+
 VideoDisplay::VideoDisplay(VideoBox *box, VideoSlider *ControlSlider, wxTextCtrl *PositionDisplay, wxTextCtrl *SubsPosition, wxWindow* parent, wxWindowID id, const wxPoint& pos, const wxSize& size, long style, const wxString& name)
 : wxGLCanvas (parent, id, attribList, pos, size, style, name)
 , visualMode(-1)
@@ -331,42 +333,14 @@ void VideoDisplay::UpdateSize() {
 
 	int vidW = con->GetWidth();
 	int vidH = con->GetHeight();
-	assert(vidW > 0);
-	assert(vidH > 0);
 
-	if (!freeSize) {
-		h = vidH * zoomValue;
-		w = con->GetAspectRatioType() == 0 ? vidW * zoomValue : vidH * zoomValue * con->GetAspectRatioValue();
-
-		// Sizers ignore SetClientSize/SetSize, so only use them to calculate
-		// what size is required after including the borders
-		SetClientSize(w,h);
-		GetSize(&w,&h);
-		wxSize size(w,h);
-		SetMinSize(size);
-		SetMaxSize(size);
-
-		locked = true;
-		box->VideoSizer->Fit(box);
-		box->GetParent()->Layout();
-
-		// The sizer makes us use the full width, which at very low zoom levels
-		// results in stretched video, so after using the sizer to update the 
-		// parent window sizes, reset our size to the correct value
-		SetSize(w,h);
-
-		locked = false;
-	}
-
-	GetClientSize(&w,&h);
-	wxASSERT(w > 0);
-	wxASSERT(h > 0);
-
-	dx1 = 0;
-	dy1 = 0;
-	dx2 = w;
-	dy2 = h;
 	if (freeSize) {
+		GetClientSize(&w,&h);
+		dx1 = 0;
+		dy1 = 0;
+		dx2 = w;
+		dy2 = h;
+
 		// Set aspect ratio
 		float displayAr = float(w) / float(h);
 		float videoAr = con->GetAspectRatioType() == 0 ? float(vidW)/float(vidH) : con->GetAspectRatioValue();
@@ -384,6 +358,43 @@ void VideoDisplay::UpdateSize() {
 			dy1 = delta / 2;
 			dy2 = h - delta;
 		}
+	}
+	else {
+		wxWindow* parent = GetParent();
+		while (!parent->IsTopLevel()) parent = parent->GetParent();
+		int maxH, maxW;
+		parent->GetClientSize(&maxW, &maxH);
+
+		h = vidH * zoomValue;
+		w = con->GetAspectRatioType() == 0 ? vidW * zoomValue : vidH * zoomValue * con->GetAspectRatioValue();
+
+		// Cap the canvas size to the window size
+		int cw = min(w, maxW), ch = min(h, maxH);
+
+		// Sizers ignore SetClientSize/SetSize, so only use them to calculate
+		// what size is required after including the borders
+		SetClientSize(cw, ch);
+		int fw, fh;
+		GetSize(&fw, &fh);
+		wxSize size(fw, fh);
+		SetMinSize(size);
+		SetMaxSize(size);
+
+		locked = true;
+		box->VideoSizer->Fit(box);
+		box->GetParent()->Layout();
+
+		// The sizer makes us use the full width, which at very low zoom levels
+		// results in stretched video, so after using the sizer to update the 
+		// parent window sizes, reset our size to the correct value
+		SetSize(fw, fh);
+
+		locked = false;
+
+		dx1 = 0;
+		dy1 = ch - h;
+		dx2 = w;
+		dy2 = h;
 	}
 
 	Refresh(false);
