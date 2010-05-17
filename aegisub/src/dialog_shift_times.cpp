@@ -266,7 +266,7 @@ void DialogShiftTimes::OnOK(wxCommandEvent &event) {
 
 		// Selection range
 		if (affect == 0) message << _("all");
-		else if (affect == 2) message << wxString::Format(_("from %i onward"),sel[0]);
+		else if (affect == 2) message << wxString::Format(_("from %i onward"),sel[0]+1);
 		else {	// This huge block of code prints the selected ranges of subs
 			message << _("sel ");
 			int last = sel[0]-1;
