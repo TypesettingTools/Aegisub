@@ -106,7 +106,7 @@ void DVDSubtitleFormat::GetSubPictureList(std::vector<SubPicture> &pics) {
 	int count = 0;
 	std::vector<AssDialogue*> diags;
 	for (list<AssEntry*>::iterator cur=Line->begin();cur!=Line->end();cur++) {
-		AssDialogue *current = AssEntry::GetAsDialogue(*cur);
+		AssDialogue *current = dynamic_cast<AssDialogue*>(*cur);
 		if (current) {
 			diags.push_back(current);
 			count++;

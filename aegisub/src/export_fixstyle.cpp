@@ -78,7 +78,7 @@ void AssFixStylesFilter::ProcessSubs(AssFile *subs, wxWindow *export_dialog) {
 	// Process lines
 	entryIter cur;
 	for (cur=subs->Line.begin();cur!=subs->Line.end();cur++) {
-		AssDialogue *diag = AssEntry::GetAsDialogue(*cur);
+		AssDialogue *diag = dynamic_cast<AssDialogue*>(*cur);
 		if (diag) {
 			// Try to find style and match case
 			bool found = false;

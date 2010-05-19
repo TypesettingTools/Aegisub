@@ -133,7 +133,7 @@ namespace Automation4 {
 			lua_pushstring(L, "format");
 
 		} else if (e->GetType() == ENTRY_DIALOGUE) {
-			AssDialogue *dia = e->GetAsDialogue(e);
+			AssDialogue *dia = static_cast<AssDialogue*>(e);
 
 			lua_pushboolean(L, (int)dia->Comment);
 			lua_setfield(L, -2, "comment");
@@ -172,7 +172,7 @@ namespace Automation4 {
 			lua_pushstring(L, "dialogue");
 
 		} else if (e->GetType() == ENTRY_STYLE) {
-			AssStyle *sty = e->GetAsStyle(e);
+			AssStyle *sty = static_cast<AssStyle*>(e);
 
 			lua_pushstring(L, sty->name.mb_str(wxConvUTF8));
 			lua_setfield(L, -2, "name");
@@ -858,14 +858,14 @@ namespace Automation4 {
 	int LuaAssFile::LuaParseKaraokeData(lua_State *L)
 	{
 		AssEntry *e = LuaToAssEntry(L);
-		if (e->GetType() != ENTRY_DIALOGUE) {
+		AssDialogue *dia = dynamic_cast<AssDialogue*>(e);
+		if (!dia) {
 			delete e;
 			lua_pushstring(L, "Attempt to create karaoke table from non-dialogue subtitle line");
 			lua_error(L);
 			return 0;
 		}
 
-		AssDialogue *dia = e->GetAsDialogue(e);
 		dia->ParseASSTags();
 
 		int kcount = 0;

@@ -245,7 +245,7 @@ void TTXTSubtitleFormat::WriteFile(wxString filename,wxString encoding) {
 	using std::list;
 	prev = NULL;
 	for (list<AssEntry*>::iterator cur=Line->begin();cur!=Line->end();cur++) {
-		AssDialogue *current = AssEntry::GetAsDialogue(*cur);
+		AssDialogue *current = dynamic_cast<AssDialogue*>(*cur);
 		if (current && !current->Comment) {
 			WriteLine(root,current);
 			i++;
@@ -359,7 +359,7 @@ void TTXTSubtitleFormat::ConvertToTTXT () {
 	// Find last line
 	AssTime lastTime;
 	for (std::list<AssEntry*>::reverse_iterator cur=Line->rbegin();cur!=Line->rend();cur++) {
-		AssDialogue *prev = AssEntry::GetAsDialogue(*cur);
+		AssDialogue *prev = dynamic_cast<AssDialogue*>(*cur);
 		if (prev) {
 			lastTime = prev->End;
 			break;

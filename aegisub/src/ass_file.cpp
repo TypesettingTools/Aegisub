@@ -256,17 +256,17 @@ bool AssFile::CanSave() {
 	AssAttachment *attach;
 	for (entryIter cur=Line.begin();cur!=Line.end();cur++) {
 		// Check style, if anything non-default is found, return false
-		curstyle = AssEntry::GetAsStyle(*cur);
+		curstyle = dynamic_cast<AssStyle*>(*cur);
 		if (curstyle) {
 			if (curstyle->GetEntryData() != defstyle.GetEntryData()) return false;
 		}
 
 		// Check for attachments, if any is found, return false
-		attach = AssEntry::GetAsAttachment(*cur);
+		attach = dynamic_cast<AssAttachment*>(*cur);
 		if (attach) return false;
 
 		// Check dialog
-		curdiag = AssEntry::GetAsDialogue(*cur);
+		curdiag = dynamic_cast<AssDialogue*>(*cur);
 		if (curdiag) {
 			// Timed?
 			if (!canTime && (curdiag->Start.GetMS() != 0 || curdiag->End.GetMS() != 0)) return false;
@@ -542,7 +542,7 @@ void AssFile::InsertAttachment (AssAttachment *attach) {
 	std::list<AssEntry*>::iterator insPoint=Line.end(),cur;
 	for (cur=Line.begin();cur!=Line.end();cur++) {
 		// Check if it's another attachment
-		AssAttachment *att = AssEntry::GetAsAttachment(*cur);
+		AssAttachment *att = dynamic_cast<AssAttachment*>(*cur);
 		if (att) {
 			if (attach->group == att->group) insPoint = cur;
 		}
@@ -771,7 +771,7 @@ wxArrayString AssFile::GetStyles() {
 	wxArrayString styles;
 	AssStyle *curstyle;
 	for (entryIter cur=Line.begin();cur!=Line.end();cur++) {
-		curstyle = AssEntry::GetAsStyle(*cur);
+		curstyle = dynamic_cast<AssStyle*>(*cur);
 		if (curstyle) {
 			styles.Add(curstyle->name);
 		}
@@ -785,7 +785,7 @@ wxArrayString AssFile::GetStyles() {
 AssStyle *AssFile::GetStyle(wxString name) {
 	AssStyle *curstyle;
 	for (entryIter cur=Line.begin();cur!=Line.end();cur++) {
-		curstyle = AssEntry::GetAsStyle(*cur);
+		curstyle = dynamic_cast<AssStyle*>(*cur);
 		if (curstyle) {
 			if (curstyle->name == name) return curstyle;
 		}
@@ -814,7 +814,7 @@ wxString AssFile::GetWildcardList(int mode) {
 void AssFile::CompressForStack(bool compress) {
 	AssDialogue *diag;
 	for (entryIter cur=Line.begin();cur!=Line.end();cur++) {
-		diag = AssEntry::GetAsDialogue(*cur);
+		diag = dynamic_cast<AssDialogue*>(*cur);
 		if (diag) {
 			if (compress) {
 				diag->SetEntryData(_T(""));

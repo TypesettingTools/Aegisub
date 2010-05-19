@@ -319,7 +319,7 @@ void DialogTimingProcessor::OnApply(wxCommandEvent &event) {
 	AssDialogue *tempDiag;
 	int i = 0;
 	for (std::list<AssEntry*>::iterator cur=grid->ass->Line.begin();cur!=grid->ass->Line.end();cur++) {
-		tempDiag = AssEntry::GetAsDialogue(*cur);
+		tempDiag = dynamic_cast<AssDialogue*>(*cur);
 		if (tempDiag) {
 			i++;
 			if (tempDiag->Start.GetMS() > tempDiag->End.GetMS()) {

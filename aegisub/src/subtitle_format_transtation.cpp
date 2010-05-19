@@ -108,7 +108,7 @@ void TranStationSubtitleFormat::WriteFile(wxString _filename,wxString encoding) 
 	for (list<AssEntry*>::iterator cur=Line->begin();cur!=Line->end();cur++) {
 		if (next) 
 			current = next;
-		next = AssEntry::GetAsDialogue(*cur);
+		next = dynamic_cast<AssDialogue*>(*cur);
 
 		if (current && !current->Comment) {
 			// Write text

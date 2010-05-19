@@ -139,7 +139,4 @@ public:
 	virtual void SetEntryData(wxString newData) { if (newData.IsEmpty()) data.Clear(); else data = newData; }
 
 	virtual wxString GetSSAText();
-	static AssDialogue *GetAsDialogue(AssEntry *base);	// Returns an entry base as a dialogue if it is valid, null otherwise
-	static AssStyle *GetAsStyle(AssEntry *base);		// Returns an entry base as a style if it is valid, null otherwise
-	static AssAttachment *GetAsAttachment(AssEntry *base);// Returns an entry base as an attachment if it is valid, null otherwise
 };

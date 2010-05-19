@@ -63,42 +63,6 @@ AssEntry::AssEntry(wxString _data) {
 AssEntry::~AssEntry() {
 }
 
-/// @brief Returns an entry as dialogue if possible, else, returns NULL 
-/// @param base 
-/// @return 
-///
-AssDialogue *AssEntry::GetAsDialogue(AssEntry *base) {
-	if (!base) return NULL;
-	if (base->GetType() == ENTRY_DIALOGUE) {
-		return static_cast<AssDialogue*> (base);
-	}
-	return NULL;
-}
-
-/// @brief Returns an entry as style if possible, else, returns NULL 
-/// @param base 
-/// @return 
-///
-AssStyle *AssEntry::GetAsStyle(AssEntry *base) {
-	if (!base) return NULL;
-	if (base->GetType() == ENTRY_STYLE) {
-		return static_cast<AssStyle*> (base);
-	}
-	return NULL;
-}
-
-/// @brief Returns an entry as attachment if possible, else, returns NULL 
-/// @param base 
-/// @return 
-///
-AssAttachment *AssEntry::GetAsAttachment(AssEntry *base) {
-	if (!base) return NULL;
-	if (base->GetType() == ENTRY_ATTACHMENT) {
-		return static_cast<AssAttachment*> (base);
-	}
-	return NULL;
-}
-
 /// @brief Get SSA conversion 
 /// @return 
 ///

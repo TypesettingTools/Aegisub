@@ -447,14 +447,14 @@ void FontsCollectorThread::Collect() {
 		curLine = 0;
 		for (std::list<AssEntry*>::iterator cur=subs->Line.begin();cur!=subs->Line.end();cur++) {
 			// Collect from style
-			curStyle = AssEntry::GetAsStyle(*cur);
+			curStyle = dynamic_cast<AssStyle*>(*cur);
 			if (curStyle) {
 				AddFont(curStyle->font,0);
 			}
 
 			// Collect from dialogue
 			else {
-				curDiag = AssEntry::GetAsDialogue(*cur);
+				curDiag = dynamic_cast<AssDialogue*>(*cur);
 				if (curDiag) {
 					curLine++;
 					curDiag->ParseASSTags();

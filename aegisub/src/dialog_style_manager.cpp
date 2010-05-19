@@ -288,7 +288,7 @@ void DialogStyleManager::LoadCurrentStyles (AssFile *subs) {
 	styleMap.clear();
 
 	for (list<AssEntry*>::iterator cur=subs->Line.begin();cur!=subs->Line.end();cur++) {
-		style = AssEntry::GetAsStyle(*cur);
+		style = dynamic_cast<AssStyle*>(*cur);
 		if (style && style->Valid) {
 			CurrentList->Append(style->name);
 			styleMap.push_back(style);
@@ -1075,7 +1075,7 @@ void DialogStyleManager::MoveStyles(bool storage, int type) {
 		for (entryIter cur=subs->Line.begin();cur!=subs->Line.end();cur = next) {
 			next = cur;
 			next++;
-			AssStyle *style = AssEntry::GetAsStyle(*cur);
+			AssStyle *style = dynamic_cast<AssStyle*>(*cur);
 			if (style) {
 				subs->Line.insert(cur,styls[curn]);
 				subs->Line.erase(cur);

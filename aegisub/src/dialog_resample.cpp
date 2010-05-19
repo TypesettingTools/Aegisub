@@ -264,7 +264,7 @@ void DialogResample::OnResample (wxCommandEvent &event) {
 	AssDialogue *curDiag;
 	for (entryIter cur=subs->Line.begin();cur!=subs->Line.end();cur++) {
 		// Apply to dialogues
-		curDiag = AssEntry::GetAsDialogue(*cur);
+		curDiag = dynamic_cast<AssDialogue*>(*cur);
 		if (curDiag && !(curDiag->Comment && (curDiag->Effect.StartsWith(_T("template")) || curDiag->Effect.StartsWith(_T("code"))))) {
 			try {
 				// Override tags
@@ -302,7 +302,7 @@ void DialogResample::OnResample (wxCommandEvent &event) {
 		}
 
 		// Apply to styles
-		curStyle = AssEntry::GetAsStyle(*cur);
+		curStyle = dynamic_cast<AssStyle*>(*cur);
 		if (curStyle) {
 			curStyle->fontsize = int(curStyle->fontsize * r + 0.5);
 			curStyle->outline_w *= r;

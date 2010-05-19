@@ -215,7 +215,7 @@ void SRTSubtitleFormat::WriteFile(wxString _filename,wxString encoding) {
 	int i=1;
 	using std::list;
 	for (list<AssEntry*>::iterator cur=Line->begin();cur!=Line->end();cur++) {
-		AssDialogue *current = AssEntry::GetAsDialogue(*cur);
+		AssDialogue *current = dynamic_cast<AssDialogue*>(*cur);
 		if (current && !current->Comment) {
 			// Write line
 			file.WriteLineToFile(wxString::Format(_T("%i"),i));

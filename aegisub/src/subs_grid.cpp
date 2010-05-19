@@ -853,7 +853,7 @@ void SubtitlesGrid::LoadFromAss (AssFile *_ass,bool keepSelection,bool dontModif
 	AssDialogue *curdiag;
 	ready = false;
 	for (entryIter cur=ass->Line.begin();cur != ass->Line.end();cur++) {
-		curdiag = AssEntry::GetAsDialogue(*cur);
+		curdiag = dynamic_cast<AssDialogue*>(*cur);
 		if (curdiag) {
 			diagMap.push_back(cur);
 			diagPtrMap.push_back(curdiag);

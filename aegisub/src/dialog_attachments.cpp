@@ -110,7 +110,7 @@ void DialogAttachments::UpdateList() {
 	// Fill list
 	AssAttachment *attach;
 	for (std::list<AssEntry*>::iterator cur = AssFile::top->Line.begin();cur != AssFile::top->Line.end();cur++) {
-		attach = AssEntry::GetAsAttachment(*cur);
+		attach = dynamic_cast<AssAttachment*>(*cur);
 		if (attach) {
 			// Add item
 			int row = listView->GetItemCount();

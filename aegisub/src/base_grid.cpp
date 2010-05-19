@@ -929,7 +929,7 @@ void BaseGrid::SetColumnWidths() {
 	if (false && AssFile::top) {
 		AssStyle *curStyle;
 		for (entryIter curIter=AssFile::top->Line.begin();curIter!=AssFile::top->Line.end();curIter++) {
-			curStyle = AssEntry::GetAsStyle(*curIter);
+			curStyle = dynamic_cast<AssStyle*>(*curIter);
 			if (curStyle) {
 				dc.GetTextExtent(curStyle->name, &fw, &fh, NULL, NULL, &font);
 				if (fw > styleLen) styleLen = fw;
@@ -975,7 +975,7 @@ AssDialogue *BaseGrid::GetDialogue(int n) {
 		if ((size_t)n >= diagMap.size()) return NULL;
 		AssEntry *e = *diagMap.at(n);
 		if (e->GetType() != ENTRY_DIALOGUE) return NULL;
-		return AssEntry::GetAsDialogue(e);
+		return dynamic_cast<AssDialogue*>(e);
 	}
 	catch (...) {
 		return NULL;
@@ -1019,7 +1019,7 @@ void BaseGrid::UpdateMaps() {
 	int n = 0;
 	AssDialogue *curdiag;
 	for (entryIter cur=AssFile::top->Line.begin();cur != AssFile::top->Line.end();cur++) {
-		curdiag = AssEntry::GetAsDialogue(*cur);
+		curdiag = dynamic_cast<AssDialogue*>(*cur);
 		if (curdiag) {
 			// Find old pos
 			bool sel = false;

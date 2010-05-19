@@ -94,7 +94,7 @@ SubtitlesPreview::~SubtitlesPreview() {
 ///
 void SubtitlesPreview::SetStyle(AssStyle *_style) {
 	// Prepare style
-	AssStyle *tmpStyle = AssEntry::GetAsStyle(_style->Clone());
+	AssStyle *tmpStyle = dynamic_cast<AssStyle*>(_style->Clone());
 	tmpStyle->name = _T("Preview");
 	tmpStyle->alignment = 5;
 	for (int i=0;i<4;i++) tmpStyle->Margin[i] = 0;

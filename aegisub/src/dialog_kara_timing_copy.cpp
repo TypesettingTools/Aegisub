@@ -459,7 +459,7 @@ void KaraokeLineMatchDisplay::SetInputData(const AssDialogue *src, const AssDial
 	source_sel_length = 0;
 	if (src)
 	{
-		AssDialogue *varsrc = AssEntry::GetAsDialogue(src->Clone());
+		AssDialogue *varsrc = dynamic_cast<AssDialogue*>(src->Clone());
 		varsrc->ParseASSTags();
 		AssKaraokeVector kara;
 		ParseAssKaraokeTags(varsrc, kara);
@@ -941,7 +941,7 @@ void DialogKanjiTimer::OnClose(wxCommandEvent &event) {
 	while(LinesToChange.empty()==false) {
 		std::pair<entryIter,wxString> p = LinesToChange.back();
 		LinesToChange.pop_back();
-		AssDialogue *line = AssEntry::GetAsDialogue(*p.first);
+		AssDialogue *line = dynamic_cast<AssDialogue*>(*p.first);
 		line->Text = p.second;
 	}
 	if (modified) {
@@ -1101,9 +1101,9 @@ void DialogKanjiTimer::ResetForNewLine()
 	AssDialogue *dst = 0;
 
 	if (currentSourceLine != subs->Line.end())
-		src = AssEntry::GetAsDialogue(*currentSourceLine);
+		src = dynamic_cast<AssDialogue*>(*currentSourceLine);
 	if (currentDestinationLine != subs->Line.end())
-		dst = AssEntry::GetAsDialogue(*currentDestinationLine);
+		dst = dynamic_cast<AssDialogue*>(*currentDestinationLine);
 
 	if (src == 0 || dst == 0)
 	{
@@ -1139,7 +1139,7 @@ entryIter DialogKanjiTimer::FindNextStyleMatch(entryIter search_from, const wxSt
 
 	while (++search_from != subs->Line.end())
 	{
-		AssDialogue *dlg = AssEntry::GetAsDialogue(*search_from);
+		AssDialogue *dlg = dynamic_cast<AssDialogue*>(*search_from);
 		if (dlg && dlg->Style == search_style)
 			break;
 	}
@@ -1158,7 +1158,7 @@ entryIter DialogKanjiTimer::FindPrevStyleMatch(entryIter search_from, const wxSt
 
 	while (--search_from != subs->Line.begin())
 	{
-		AssDialogue *dlg = AssEntry::GetAsDialogue(*search_from);
+		AssDialogue *dlg = dynamic_cast<AssDialogue*>(*search_from);
 		if (dlg && dlg->Style == search_style)
 			break;
 	}

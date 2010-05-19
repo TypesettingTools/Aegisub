@@ -200,7 +200,7 @@ void TXTSubtitleFormat::WriteFile(wxString filename,wxString encoding) {	using n
 
 	// Detect number of lines with Actor field filled out
 	for (list<AssEntry*>::iterator l = Line->begin(); l != Line->end(); ++l) {
-		AssDialogue *dia = AssEntry::GetAsDialogue(*l);
+		AssDialogue *dia = dynamic_cast<AssDialogue*>(*l);
 		if (dia && !dia->Comment) {
 			num_dialogue_lines++;
 			if (!dia->Actor.IsEmpty())
@@ -217,7 +217,7 @@ void TXTSubtitleFormat::WriteFile(wxString filename,wxString encoding) {	using n
 
 	// Write the file
 	for (list<AssEntry*>::iterator l = Line->begin(); l != Line->end(); ++l) {
-		AssDialogue *dia = AssEntry::GetAsDialogue(*l);
+		AssDialogue *dia = dynamic_cast<AssDialogue*>(*l);
 
 		if (dia) {
 			wxString out_line;

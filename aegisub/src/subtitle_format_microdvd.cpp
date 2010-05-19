@@ -219,7 +219,7 @@ void MicroDVDSubtitleFormat::WriteFile(wxString filename,wxString encoding) {
 	// Write lines
 	using std::list;
 	for (list<AssEntry*>::iterator cur=Line->begin();cur!=Line->end();cur++) {
-		AssDialogue *current = AssEntry::GetAsDialogue(*cur);
+		AssDialogue *current = dynamic_cast<AssDialogue*>(*cur);
 		if (current && !current->Comment) {
 			// Prepare data
 			int start = rate->GetFrameAtTime(current->Start.GetMS(),true);

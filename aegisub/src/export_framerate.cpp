@@ -285,7 +285,7 @@ void AssTransformFramerateFilter::TransformFrameRate(AssFile *subs) {
 		// compensate it AGAIN 20 lines down? I DO NOT GET IT
 		// -Fluff
 		//curEntry->Start.SetMS(Input->GetTimeAtFrame(Output->GetFrameAtTime(curEntry->GetStartMS(),true),true));
-		curDialogue = AssEntry::GetAsDialogue(curEntry);
+		curDialogue = dynamic_cast<AssDialogue*>(curEntry);
 
 		// Update dialogue entries
 		if (curDialogue) {

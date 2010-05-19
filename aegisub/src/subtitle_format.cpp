@@ -421,7 +421,7 @@ void SubtitleFormat::ConvertTags(int format,wxString lineEnd) {
 	using std::list;
 	list<AssEntry*>::iterator next;
 	for (list<AssEntry*>::iterator cur=Line->begin();cur!=Line->end();cur++) {
-		AssDialogue *current = AssEntry::GetAsDialogue(*cur);
+		AssDialogue *current = dynamic_cast<AssDialogue*>(*cur);
 		if (current) {
 			// Strip tags
 			if (format == 1) current->StripTags();
@@ -448,7 +448,7 @@ void SubtitleFormat::StripComments() {
 		next = cur;
 		next++;
 		
-		AssDialogue *dlg = AssEntry::GetAsDialogue(*cur);
+		AssDialogue *dlg = dynamic_cast<AssDialogue*>(*cur);
 		if (dlg && (dlg->Comment || dlg->Text.IsEmpty())) {
 			delete *cur;
 			Line->erase(cur);
@@ -468,7 +468,7 @@ void SubtitleFormat::StripNonDialogue() {
 		next = cur;
 		next++;
 		
-		if (!AssEntry::GetAsDialogue(*cur)) {
+		if (!dynamic_cast<AssDialogue*>(*cur)) {
 			delete *cur;
 			Line->erase(cur);
 		}
@@ -486,7 +486,7 @@ static void InsertLineSortedIntoList(std::list<AssEntry*> &list, std::list<AssEn
 	std::list<AssEntry*>::iterator insertpos = next;
 	bool inserted = false;
 	while (insertpos != list.end()) {
-		AssDialogue *candidate = AssEntry::GetAsDialogue(*insertpos);
+		AssDialogue *candidate = dynamic_cast<AssDialogue*>(*insertpos);
 		if (candidate && candidate->Start >= newdlg->Start) {
 			list.insert(insertpos, newdlg);
 			inserted = true;
@@ -513,8 +513,8 @@ void SubtitleFormat::RecombineOverlaps() {
 		
 		if (next == Line->end()) break;
 		
-		AssDialogue *prevdlg = AssEntry::GetAsDialogue(*cur);
-		AssDialogue *curdlg = AssEntry::GetAsDialogue(*next);
+		AssDialogue *prevdlg = dynamic_cast<AssDialogue*>(*cur);
+		AssDialogue *curdlg = dynamic_cast<AssDialogue*>(*next);
 		
 		if (curdlg && prevdlg && prevdlg->End > curdlg->Start) {
 			// Use names like in the algorithm description and prepare for erasing
@@ -532,7 +532,7 @@ void SubtitleFormat::RecombineOverlaps() {
 			//Is there an A part before the overlap?
 			if (curdlg->Start > prevdlg->Start) {
 				// Produce new entry with correct values
-				AssDialogue *newdlg = AssEntry::GetAsDialogue(prevdlg->Clone());
+				AssDialogue *newdlg = dynamic_cast<AssDialogue*>(prevdlg->Clone());
 				newdlg->Start = prevdlg->Start;
 				newdlg->End = curdlg->Start;
 				newdlg->Text = prevdlg->Text;
@@ -542,7 +542,7 @@ void SubtitleFormat::RecombineOverlaps() {
 			
 			// Overlapping A+B part
 			{
-				AssDialogue *newdlg = AssEntry::GetAsDialogue(prevdlg->Clone());
+				AssDialogue *newdlg = dynamic_cast<AssDialogue*>(prevdlg->Clone());
 				newdlg->Start = curdlg->Start;
 				newdlg->End = (prevdlg->End < curdlg->End) ? prevdlg->End : curdlg->End;
 				// Put an ASS format hard linewrap between lines
@@ -554,7 +554,7 @@ void SubtitleFormat::RecombineOverlaps() {
 			// Is there an A part after the overlap?
 			if (prevdlg->End > curdlg->End) {
 				// Produce new entry with correct values
-				AssDialogue *newdlg = AssEntry::GetAsDialogue(prevdlg->Clone());
+				AssDialogue *newdlg = dynamic_cast<AssDialogue*>(prevdlg->Clone());
 				newdlg->Start = curdlg->End;
 				newdlg->End = prevdlg->End;
 				newdlg->Text = prevdlg->Text;
@@ -565,7 +565,7 @@ void SubtitleFormat::RecombineOverlaps() {
 			// Is there a B part after the overlap?
 			if (curdlg->End > prevdlg->End) {
 				// Produce new entry with correct values
-				AssDialogue *newdlg = AssEntry::GetAsDialogue(prevdlg->Clone());
+				AssDialogue *newdlg = dynamic_cast<AssDialogue*>(prevdlg->Clone());
 				newdlg->Start = prevdlg->End;
 				newdlg->End = curdlg->End;
 				newdlg->Text = curdlg->Text;
@@ -592,8 +592,8 @@ void SubtitleFormat::MergeIdentical() {
 		
 		if (next == Line->end()) break;
 		
-		AssDialogue *curdlg = AssEntry::GetAsDialogue(*cur);
-		AssDialogue *nextdlg = AssEntry::GetAsDialogue(*next);
+		AssDialogue *curdlg = dynamic_cast<AssDialogue*>(*cur);
+		AssDialogue *nextdlg = dynamic_cast<AssDialogue*>(*next);
 		
 		if (curdlg && nextdlg && curdlg->End == nextdlg->Start && curdlg->Text == nextdlg->Text) {
 			// Merge timing

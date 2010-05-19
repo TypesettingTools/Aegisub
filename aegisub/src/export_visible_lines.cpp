@@ -87,7 +87,7 @@ void AssLimitToVisibleFilter::ProcessSubs(AssFile *subs, wxWindow *export_dialog
 		cur = next++;
 
 		// Is dialogue?
-		diag = AssEntry::GetAsDialogue(*cur);
+		diag = dynamic_cast<AssDialogue*>(*cur);
 		if (diag) {
 			int f1 = VFR_Output.GetFrameAtTime(diag->Start.GetMS(),true);
 			int f2 = VFR_Output.GetFrameAtTime(diag->End.GetMS(),false);
