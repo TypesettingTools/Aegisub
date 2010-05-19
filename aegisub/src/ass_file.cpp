@@ -287,7 +287,6 @@ bool AssFile::CanSave() {
 /// @brief  even moving things out of order might break ASS parsing - AMZ. I strongly advice you against touching this function unless you know what you're doing; ------------------- Appends line to Ass 
 /// @param data     
 /// @param group    
-/// @param lasttime 
 /// @param version  
 /// @param outGroup 
 /// @return 
@@ -493,7 +492,6 @@ void AssFile::InsertStyle (AssStyle *style) {
 	AssEntry *curEntry;
 	list<AssEntry*>::iterator lastStyle = Line.end();
 	list<AssEntry*>::iterator cur;
-	int lasttime = -1;
 	wxString lastGroup;
 
 	// Look for insert position
@@ -992,14 +990,16 @@ bool AssFile::CompStyle(const AssDialogue* lft, const AssDialogue* rgt) {
 void AssFile::Sort(CompFunc comp) {
 	Sort(Line, comp);
 }
-void AssFile::Sort(std::list<AssEntry*> &lst, CompFunc comp) {
-	// uguu c++ closures uguu
-	struct : public std::binary_function<const AssEntry*, const AssEntry*, bool> {
-		CompFunc comp;
+namespace {
+	struct AssEntryComp : public std::binary_function<const AssEntry*, const AssEntry*, bool> {
+		AssFile::CompFunc comp;
 		bool operator()(const AssEntry* a, const AssEntry* b) const {
 			return comp(static_cast<const AssDialogue*>(a), static_cast<const AssDialogue*>(b));
 		}
-	} compE;
+	};
+}
+void AssFile::Sort(std::list<AssEntry*> &lst, CompFunc comp) {
+	AssEntryComp compE;
 	compE.comp = comp;
 	// Sort each block of AssDialogues separately, leaving everything else untouched
 	for (entryIter begin = lst.begin(); begin != lst.end(); ++begin) {
