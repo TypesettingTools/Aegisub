@@ -34,10 +34,11 @@
 /// @ingroup visual_ts
 ///
 
-
-///////////
-// Headers
 #include "config.h"
+
+#ifndef AGI_PRE
+#include <math.h>
+#endif
 
 #include "ass_dialogue.h"
 #include "ass_file.h"
@@ -144,24 +145,23 @@ void VisualToolScale::InitializeHold() {
 /// @brief Update hold 
 ///
 void VisualToolScale::UpdateHold() {
+	using std::max;
 	// Deltas
 	int deltaX = video.x - startX;
 	int deltaY = startY - video.y;
-	if (ctrlDown) {
+	if (shiftDown) {
 		if (abs(deltaX) >= abs(deltaY)) deltaY = 0;
 		else deltaX = 0;
 	}
 
 	// Calculate
-	curScaleX = (float(deltaX)/0.8f) + origScaleX;
-	curScaleY = (float(deltaY)/0.8f) + origScaleY;
-	if (curScaleX < 0.0f) curScaleX = 0.0f;
-	if (curScaleY < 0.0f) curScaleY = 0.0f;
+	curScaleX = max(deltaX*1.25f + origScaleX, 0.f);
+	curScaleY = max(deltaY*1.25f + origScaleY, 0.f);
 
-	// Snap
-	if (shiftDown) {
-		curScaleX = (float)((int)((curScaleX+12.5f)/25.0f))*25.0f;
-		curScaleY = (float)((int)((curScaleY+12.5f)/25.0f))*25.0f;
+	// Oh Snap
+	if (ctrlDown) {
+		curScaleX = floorf(curScaleX/25.f+.5f)*25.0f;
+		curScaleY = floorf(curScaleY/25.f+.5f)*25.0f;
 	}
 }
 

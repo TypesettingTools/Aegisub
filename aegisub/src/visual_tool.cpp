@@ -158,9 +158,16 @@ void VisualTool::OnMouseEvent (wxMouseEvent &event) {
 		if (dragging) {
 			// Dragging
 			if (event.LeftIsDown()) {
-				// Update position
 				features[curFeature].x = (video.x - dragStartX + dragOrigX);
 				features[curFeature].y = (video.y - dragStartY + dragOrigY);
+				if (shiftDown) {
+					if (abs(video.x - dragStartX) > abs(video.y - dragStartY)) {
+						features[curFeature].y = dragOrigY;
+					}
+					else {
+						features[curFeature].x = dragOrigX;
+					}
+				}
 
 				// Update drag
 				UpdateDrag(features[curFeature]);

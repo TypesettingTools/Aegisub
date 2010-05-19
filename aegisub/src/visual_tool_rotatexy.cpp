@@ -34,10 +34,11 @@
 /// @ingroup visual_ts
 ///
 
-
-///////////
-// Headers
 #include "config.h"
+
+#ifndef AGI_PRE
+#include <math.h>
+#endif
 
 #include "ass_dialogue.h"
 #include "ass_file.h"
@@ -194,25 +195,21 @@ void VisualToolRotateXY::UpdateHold() {
 	// Deltas
 	float deltaX = screenAngleX - startAngleX;
 	float deltaY = screenAngleY - startAngleY;
-	if (ctrlDown) {
+	if (shiftDown) {
 		if (fabs(deltaX) >= fabs(deltaY)) deltaY = 0;
 		else deltaX = 0;
 	}
 
 	// Calculate
-	curAngleX = deltaX + origAngleX;
-	curAngleY = deltaY + origAngleY;
-	while (curAngleX < 0.0) curAngleX += 360.0;
-	while (curAngleX >= 360.0) curAngleX -= 360.0;
-	while (curAngleY < 0.0) curAngleY += 360.0;
-	while (curAngleY >= 360.0) curAngleY -= 360.0;
+	curAngleX = fmodf(deltaX + origAngleX + 360., 360.);
+	curAngleY = fmodf(deltaY + origAngleY + 360., 360.);
 
 	// Oh Snap
-	if (shiftDown) {
-		curAngleX = (float)((int)((curAngleX+15.0f)/30.0f))*30.0f;
-		curAngleY = (float)((int)((curAngleY+15.0f)/30.0f))*30.0f;
-		if (curAngleX == 360.0f) curAngleX = 0.0f;
-		if (curAngleY == 360.0f) curAngleX = 0.0f;
+	if (ctrlDown) {
+		curAngleX = floorf(curAngleX/30.f+.5f)*30.0f;
+		curAngleY = floorf(curAngleY/30.f+.5f)*30.0f;
+		if (curAngleX > 359.0f) curAngleX = 0.0f;
+		if (curAngleY > 359.0f) curAngleY = 0.0f;
 	}
 }
 

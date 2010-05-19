@@ -34,10 +34,11 @@
 /// @ingroup visual_ts
 ///
 
-
-///////////
-// Headers
 #include "config.h"
+
+#ifndef AGI_PRE
+#include <math.h>
+#endif
 
 #include "ass_dialogue.h"
 #include "ass_file.h"
@@ -172,14 +173,12 @@ void VisualToolRotateZ::InitializeHold() {
 void VisualToolRotateZ::UpdateHold() {
 	// Find angle
 	float screenAngle = atan2(double(orgy-video.y),double(video.x-orgx)) * 180.0 / 3.1415926535897932;
-	curAngle = screenAngle - startAngle + origAngle;
-	while (curAngle < 0.0f) curAngle += 360.0f;
-	while (curAngle >= 360.0f) curAngle -= 360.0f;
+	curAngle = fmodf(screenAngle - startAngle + origAngle + 360.f, 360.f);
 
-	// Snap
-	if (shiftDown) {
-		curAngle = (float)((int)((curAngle+15.0f)/30.0f))*30.0f;
-		if (curAngle == 360.0f) curAngle = 0.0f;
+	// Oh Snap
+	if (ctrlDown) {
+		curAngle = floorf(curAngle/30.f+.5f)*30.0f;
+		if (curAngle > 359.0f) curAngle = 0.0f;
 	}
 }
 
