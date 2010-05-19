@@ -34,117 +34,77 @@
 /// @ingroup visual_ts
 ///
 
-
-///////////
-// Headers
 #include "config.h"
 
-#include "ass_dialogue.h"
 #include "gl_wrap.h"
 #include "visual_feature.h"
 
-
-/// @brief Constructor 
-///
-VisualDraggableFeature::VisualDraggableFeature() {
-	type = DRAG_NONE;
-	x = INT_MIN;
-	y = INT_MIN;
-	value = value2 = 0;
-	layer = 0;
-	lineN = -1;
-	line = NULL;
+VisualDraggableFeature::VisualDraggableFeature()
+: type(DRAG_NONE)
+, x(INT_MIN)
+, y(INT_MIN)
+, layer(0)
+, value(0)
+, value2(0)
+, line(NULL)
+, lineN(-1)
+{
 	for (int i=0;i<4;i++) brother[i] = -1;
 }
 
-
-
-/// @brief Is mouse over it? 
-/// @param mx 
-/// @param my 
-/// @return 
-///
 bool VisualDraggableFeature::IsMouseOver(int mx,int my) {
-	// Square
-	if (type == DRAG_BIG_SQUARE) {
-		if (mx < x-8 || mx > x+8 || my < y-8 || my > y+8) return false;
-		return true;
-	}
-
-	// Circle
-	else if (type == DRAG_BIG_CIRCLE) {
-		int dx = mx-x;
-		int dy = my-y;
-		if (dx*dx + dy*dy <= 64) return true;
-		return false;
-	}
-
-	// Triangle
-	else if (type == DRAG_BIG_TRIANGLE) {
-		int _my = my+2;
-		if (_my < y-8 || _my > y+8) return false;
-		int dx = mx-x;
-		int dy = _my-y-8;
-		return (16*dx+9*dy < 0 && 16*dx-9*dy > 0);
-	}
-
-	// Small square
-	else if (type == DRAG_SMALL_SQUARE) {
-		if (mx < x-4 || mx > x+4 || my < y-4 || my > y+4) return false;
-		return true;
-	}
-
-	// Small circle
-	else if (type == DRAG_SMALL_CIRCLE) {
-		int dx = mx-x;
-		int dy = my-y;
-		if (dx*dx + dy*dy <= 16) return true;
-		return false;
-	}
-
-	// Fallback
-	return false;
-}
-
-
-
-/// @brief Draw feature 
-/// @param gl 
-///
-void VisualDraggableFeature::Draw(OpenGLWrapper *gl) {
-	wxASSERT(gl);
-
-	// Square
-	if (type == DRAG_BIG_SQUARE) {
-		gl->DrawRectangle(x-8,y-8,x+8,y+8);
-		gl->DrawLine(x,y-16,x,y+16);
-		gl->DrawLine(x-16,y,x+16,y);
-	}
-
-	// Circle
-	else if (type == DRAG_BIG_CIRCLE) {
-		gl->DrawCircle(x,y,8);
-		gl->DrawLine(x,y-16,x,y+16);
-		gl->DrawLine(x-16,y,x+16,y);
-	}
-
-	// Triangle
-	else if (type == DRAG_BIG_TRIANGLE) {
-		gl->DrawTriangle(x-9,y-6,x+9,y-6,x,y+10);
-		gl->DrawLine(x,y,x,y-16);
-		gl->DrawLine(x,y,x-14,y+8);
-		gl->DrawLine(x,y,x+14,y+8);
-	}
-
-	// Square
-	else if (type == DRAG_SMALL_SQUARE) {
-		gl->DrawRectangle(x-4,y-4,x+4,y+4);
-	}
-
-	// Small circle
-	else if (type == DRAG_SMALL_CIRCLE) {
-		gl->DrawCircle(x,y,4);
+	switch (type) {
+		case DRAG_BIG_SQUARE:
+			return !(mx < x-8 || mx > x+8 || my < y-8 || my > y+8);
+		case DRAG_BIG_CIRCLE: {
+			int dx = mx-x;
+			int dy = my-y;
+			return dx*dx + dy*dy <= 64;
+		}
+		case DRAG_BIG_TRIANGLE: {
+			int _my = my+2;
+			if (_my < y-8 || _my > y+8) return false;
+			int dx = mx-x;
+			int dy = _my-y-8;
+			return (16*dx+9*dy < 0 && 16*dx-9*dy > 0);
+		}
+		case DRAG_SMALL_SQUARE:
+			return !(mx < x-4 || mx > x+4 || my < y-4 || my > y+4);
+		case DRAG_SMALL_CIRCLE: {
+			int dx = mx-x;
+			int dy = my-y;
+			return dx*dx + dy*dy <= 16;
+		}
+		default:
+			return false;
 	}
 }
 
-
+void VisualDraggableFeature::Draw(OpenGLWrapper const& gl) {
+	switch (type) {
+		case DRAG_BIG_SQUARE:
+			gl.DrawRectangle(x-8,y-8,x+8,y+8);
+			gl.DrawLine(x,y-16,x,y+16);
+			gl.DrawLine(x-16,y,x+16,y);
+			break;
+		case DRAG_BIG_CIRCLE:
+			gl.DrawCircle(x,y,8);
+			gl.DrawLine(x,y-16,x,y+16);
+			gl.DrawLine(x-16,y,x+16,y);
+			break;
+		case DRAG_BIG_TRIANGLE:
+			gl.DrawTriangle(x-9,y-6,x+9,y-6,x,y+10);
+			gl.DrawLine(x,y,x,y-16);
+			gl.DrawLine(x,y,x-14,y+8);
+			gl.DrawLine(x,y,x+14,y+8);
+			break;
+		case DRAG_SMALL_SQUARE:
+			gl.DrawRectangle(x-4,y-4,x+4,y+4);
+			break;
+		case DRAG_SMALL_CIRCLE:
+			gl.DrawCircle(x,y,4);
+			break;
+		default:
+			break;
+	}
+}

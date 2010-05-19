@@ -89,7 +89,7 @@ OpenGLWrapper::OpenGLWrapper() {
 /// @param x2 
 /// @param y2 
 ///
-void OpenGLWrapper::DrawLine(float x1,float y1,float x2,float y2) {
+void OpenGLWrapper::DrawLine(float x1,float y1,float x2,float y2) const {
 	SetModeLine();
 	glBegin(GL_LINES);
 		glVertex2f(x1,y1);
@@ -106,7 +106,7 @@ void OpenGLWrapper::DrawLine(float x1,float y1,float x2,float y2) {
 /// @param y2   
 /// @param step 
 ///
-void OpenGLWrapper::DrawDashedLine(float x1,float y1,float x2,float y2,float step) {
+void OpenGLWrapper::DrawDashedLine(float x1,float y1,float x2,float y2,float step) const {
 	float dist = sqrt((x2-x1)*(x2-x1) + (y2-y1)*(y2-y1));
 	int steps = (int)((dist-20)/step);
 	double stepx = double(x2-x1)/steps;
@@ -124,7 +124,7 @@ void OpenGLWrapper::DrawDashedLine(float x1,float y1,float x2,float y2,float ste
 /// @param radiusX 
 /// @param radiusY 
 ///
-void OpenGLWrapper::DrawEllipse(float x,float y,float radiusX,float radiusY) {
+void OpenGLWrapper::DrawEllipse(float x,float y,float radiusX,float radiusY) const {
 	DrawRing(x,y,radiusY,radiusY,radiusX/radiusY);
 }
 
@@ -136,7 +136,7 @@ void OpenGLWrapper::DrawEllipse(float x,float y,float radiusX,float radiusY) {
 /// @param x2 
 /// @param y2 
 ///
-void OpenGLWrapper::DrawRectangle(float x1,float y1,float x2,float y2) {
+void OpenGLWrapper::DrawRectangle(float x1,float y1,float x2,float y2) const {
 	// Fill
 	if (a2 != 0.0) {
 		SetModeFill();
@@ -170,7 +170,7 @@ void OpenGLWrapper::DrawRectangle(float x1,float y1,float x2,float y2) {
 /// @param x3 
 /// @param y3 
 ///
-void OpenGLWrapper::DrawTriangle(float x1,float y1,float x2,float y2,float x3,float y3) {
+void OpenGLWrapper::DrawTriangle(float x1,float y1,float x2,float y2,float x3,float y3) const {
 	// Fill
 	if (a2 != 0.0) {
 		SetModeFill();
@@ -203,7 +203,7 @@ void OpenGLWrapper::DrawTriangle(float x1,float y1,float x2,float y2,float x3,fl
 /// @param arcStart 
 /// @param arcEnd   
 ///
-void OpenGLWrapper::DrawRing(float x,float y,float r1,float r2,float ar,float arcStart,float arcEnd) {
+void OpenGLWrapper::DrawRing(float x,float y,float r1,float r2,float ar,float arcStart,float arcEnd) const {
 	// Make r1 bigger
 	if (r2 > r1) {
 		float temp = r1;
@@ -324,7 +324,7 @@ void OpenGLWrapper::SetFillColour(wxColour col,float alpha) {
 
 /// @brief Line 
 ///
-void OpenGLWrapper::SetModeLine() {
+void OpenGLWrapper::SetModeLine() const {
 	glColor4f(r1,g1,b1,a1);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
@@ -336,7 +336,7 @@ void OpenGLWrapper::SetModeLine() {
 
 /// @brief Fill 
 ///
-void OpenGLWrapper::SetModeFill() {
+void OpenGLWrapper::SetModeFill() const {
 	glColor4f(r2,g2,b2,a2);
 	if (a2 == 1.0f) glDisable(GL_BLEND);
 	else {

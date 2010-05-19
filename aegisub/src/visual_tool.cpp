@@ -312,7 +312,7 @@ void VisualTool::DrawAllFeatures() {
 	for (size_t i=0;i<features.size();i++) {
 		SetFillColour(colour[(signed)i == mouseOver ? 2 : 1],0.6f);
 		SetLineColour(colour[0],1.0f,2);
-		features[i].Draw(this);
+		features[i].Draw(*this);
 	}
 }
 
