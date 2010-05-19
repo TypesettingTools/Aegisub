@@ -53,11 +53,9 @@
 #include "vfr.h"
 
 
-/// @brief AssTime constructors AssTime //////////////////////
-///
-AssTime::AssTime () {
-	time = 0;
-}
+/// @brief AssTime constructors
+AssTime::AssTime () : time(0) { }
+AssTime::AssTime (int time) : time(time) { }
 
 
 
@@ -271,7 +269,7 @@ wxString AssTime::GetSRTFormated () {
 /// @param t2 
 /// @return 
 ///
-bool operator < (AssTime &t1, AssTime &t2) {
+bool operator < (const AssTime &t1, const AssTime &t2) {
 	return (t1.GetMS() < t2.GetMS());
 }
 
@@ -281,7 +279,7 @@ bool operator < (AssTime &t1, AssTime &t2) {
 /// @param t2 
 /// @return 
 ///
-bool operator > (AssTime &t1, AssTime &t2) {
+bool operator > (const AssTime &t1, const AssTime &t2) {
 	return (t1.GetMS() > t2.GetMS());
 }
 
@@ -291,7 +289,7 @@ bool operator > (AssTime &t1, AssTime &t2) {
 /// @param t2 
 /// @return 
 ///
-bool operator <= (AssTime &t1, AssTime &t2) {
+bool operator <= (const AssTime &t1, const AssTime &t2) {
 	return (t1.GetMS() <= t2.GetMS());
 }
 
@@ -301,7 +299,7 @@ bool operator <= (AssTime &t1, AssTime &t2) {
 /// @param t2 
 /// @return 
 ///
-bool operator >= (AssTime &t1, AssTime &t2) {
+bool operator >= (const AssTime &t1, const AssTime &t2) {
 	return (t1.GetMS() >= t2.GetMS());
 }
 
@@ -311,7 +309,7 @@ bool operator >= (AssTime &t1, AssTime &t2) {
 /// @param t2 
 /// @return 
 ///
-bool operator == (AssTime &t1, AssTime &t2) {
+bool operator == (const AssTime &t1, const AssTime &t2) {
 	return (t1.GetMS() == t2.GetMS());
 }
 
@@ -321,7 +319,7 @@ bool operator == (AssTime &t1, AssTime &t2) {
 /// @param t2 
 /// @return 
 ///
-bool operator != (AssTime &t1, AssTime &t2) {
+bool operator != (const AssTime &t1, const AssTime &t2) {
 	return (t1.GetMS() != t2.GetMS());
 }
 

@@ -102,7 +102,6 @@ void ASSSubtitleFormat::ReadFile(wxString filename,wxString encoding) {
 
 	// Parse file
 	wxString curgroup;
-	int lasttime = -1;
 	wxString wxbuffer;
 	while (file.HasMoreLines()) {
 		// Reads line
@@ -112,7 +111,7 @@ void ASSSubtitleFormat::ReadFile(wxString filename,wxString encoding) {
 		// is really [Script Info]
 		if (curgroup.IsEmpty() && !wxbuffer.IsEmpty() && wxbuffer[0] != _T(';') && wxbuffer[0] != _T('[')) {
 			curgroup = _T("[Script Info]");
-			lasttime = AddLine(curgroup,curgroup,lasttime,version,&curgroup);
+			AddLine(curgroup,curgroup,version,&curgroup);
 		}
 
 		// Convert v4 styles to v4+ styles
@@ -145,7 +144,7 @@ void ASSSubtitleFormat::ReadFile(wxString filename,wxString encoding) {
 
 		// Add line
 		try {
-			lasttime = AddLine(wxbuffer,curgroup,lasttime,version,&curgroup);
+			AddLine(wxbuffer,curgroup,version,&curgroup);
 		}
 		catch (const wchar_t *err) {
 			Clear();
@@ -158,7 +157,7 @@ void ASSSubtitleFormat::ReadFile(wxString filename,wxString encoding) {
 	}
 
 	// Add one last empty line in case it didn't end with one
-	if (!wxbuffer.IsEmpty()) AddLine(_T(""),curgroup,lasttime,version);
+	if (!wxbuffer.IsEmpty()) AddLine(_T(""),curgroup,version);
 }
 
 

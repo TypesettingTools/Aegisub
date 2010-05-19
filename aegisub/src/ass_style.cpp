@@ -549,7 +549,6 @@ AssEntry *AssStyle::Clone() const {
 
 	// Copy data
 	final->group = group;
-	final->SetStartMS(GetStartMS());
 	final->Valid = Valid;
 	final->alignment = alignment;
 	final->angle = angle;

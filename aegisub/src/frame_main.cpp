@@ -432,6 +432,15 @@ void FrameMain::InitMenu() {
 	AppendBitmapMenuItem(subtitlesMenu,MENU_RECOMBINE,_("Recombine Lines"),_("Recombine subtitles when they have been split and merged"),GETIMAGE(blank_button_16));
 	AppendBitmapMenuItem(subtitlesMenu,MENU_SPLIT_BY_KARAOKE,_("Split Lines (by karaoke)"),_("Uses karaoke timing to split line into multiple smaller lines"),GETIMAGE(blank_button_16));
 	subtitlesMenu->AppendSeparator();
+	wxMenu *SortMenu = new wxMenu;
+	wxMenuItem *SortParent = new wxMenuItem(subtitlesMenu,Menu_Subtitles_Sort_Start,_("Sort Lines"),_T(""),wxITEM_NORMAL,SortMenu);
+#ifndef __APPLE__
+	SortParent->SetBitmap(GETIMAGE(sort_times_button_16));
+#endif
+	AppendBitmapMenuItem(SortMenu,Menu_Subtitles_Sort_Start,_("&Start Time"),_("Sort all subtitles by their start times"),GETIMAGE(blank_button_16));
+	AppendBitmapMenuItem(SortMenu,Menu_Subtitles_Sort_End,_("&End Time"),_("Sort all subtitles by their end times"),GETIMAGE(blank_button_16));
+	AppendBitmapMenuItem(SortMenu,Menu_Subtitles_Sort_Style,_("St&yle Name"),_("Sort all subtitles by their style names"),GETIMAGE(blank_button_16));
+	subtitlesMenu->Append(SortParent);
 	AppendBitmapMenuItem(subtitlesMenu,MENU_SWAP,_("Swap Lines"),_("Swaps the two selected lines"),GETIMAGE(arrow_sort_16));
 	AppendBitmapMenuItem (subtitlesMenu,Menu_Edit_Select, MakeHotkeyText(_("Select Lines..."), _T("Select lines")), _("Selects lines based on defined criterea"),GETIMAGE(select_lines_button_16));
 	MenuBar->Append(subtitlesMenu, _("&Subtitles"));
@@ -439,7 +448,6 @@ void FrameMain::InitMenu() {
 	// Create timing menu
 	timingMenu = new wxMenu();
 	AppendBitmapMenuItem(timingMenu,Menu_Edit_Shift, MakeHotkeyText(_("S&hift Times..."), _T("Shift times")), _("Shift subtitles by time or frames"),GETIMAGE(shift_times_toolbutton_16));
-	AppendBitmapMenuItem(timingMenu,Menu_Edit_Sort, _("Sort by Time"), _("Sort all subtitles by their start times"),GETIMAGE(sort_times_button_16));
 	AppendBitmapMenuItem(timingMenu,Menu_Tools_Timing_Processor,_("Timing Post-Processor..."), _("Runs a post-processor for timing to deal with lead-ins, lead-outs, scene timing and etc."), GETIMAGE(timing_processor_toolbutton_16));
 	AppendBitmapMenuItem (timingMenu,Menu_Tools_Kanji_Timer,_("Kanji Timer..."),_("Open Kanji timer"),GETIMAGE(kara_timing_copier_16));
 	timingMenu->AppendSeparator();

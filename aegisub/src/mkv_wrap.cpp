@@ -387,14 +387,13 @@ void MatroskaWrapper::GetSubtitles(AssFile *target) {
 
 			// Load into file
 			wxString group = _T("[Script Info]");
-			int lasttime = 0;
 			int version = 1;
 			if (CodecID == _T("S_TEXT/SSA")) version = 0;
 			wxStringTokenizer token(privString,_T("\r\n"),wxTOKEN_STRTOK);
 			while (token.HasMoreTokens()) {
 				wxString next = token.GetNextToken();
 				if (next[0] == _T('[')) group = next;
-				lasttime = target->AddLine(next,group,lasttime,version,&group);
+				target->AddLine(next,group,version,&group);
 			}
 
 			// Insert "[Events]"
@@ -492,10 +491,9 @@ void MatroskaWrapper::GetSubtitles(AssFile *target) {
 
 		// Insert into file
 		wxString group = _T("[Events]");
-		int lasttime = 0;
 		int version = (CodecID == _T("S_TEXT/SSA"));
 		for (unsigned int i=0;i<subList.size();i++) {
-			lasttime = target->AddLine(subList[i],group,lasttime,version,&group);
+			target->AddLine(subList[i],group,version,&group);
 		}
 
 		// Close progress bar

@@ -176,7 +176,10 @@ BEGIN_EVENT_TABLE(FrameMain, wxFrame)
 	EVT_MENU(Menu_Edit_Replace, FrameMain::OnReplace)
 	EVT_MENU(Menu_Edit_Shift, FrameMain::OnShift)
 	EVT_MENU(Menu_Edit_Select, FrameMain::OnSelect)
-	EVT_MENU(Menu_Edit_Sort, FrameMain::OnSort)
+
+	EVT_MENU(Menu_Subtitles_Sort_Start, FrameMain::OnSortStart)
+	EVT_MENU(Menu_Subtitles_Sort_End, FrameMain::OnSortEnd)
+	EVT_MENU(Menu_Subtitles_Sort_Style, FrameMain::OnSortStyle)
 
 	EVT_MENU(Menu_Tools_Properties, FrameMain::OnOpenProperties)
 	EVT_MENU(Menu_Tools_Styles_Manager, FrameMain::OnOpenStylesManager)
@@ -1693,31 +1696,27 @@ void FrameMain::OnSelect (wxCommandEvent &event) {
 	select.ShowModal();
 }
 
-
-
-/// @brief Sort subtitles 
-/// @param event 
-///
-void FrameMain::OnSort (wxCommandEvent &event) {
-	// Ensure that StartMS is set properly
-	AssEntry *curEntry;
-	AssDialogue *curDiag;
-	int startMS = -1;
-	for (std::list<AssEntry*>::iterator cur = AssFile::top->Line.begin(); cur != AssFile::top->Line.end(); cur++) {
-		curEntry = *cur;
-		curDiag = AssEntry::GetAsDialogue(curEntry);
-		if (curDiag) startMS = curDiag->GetStartMS();
-		curEntry->SetStartMS(startMS);
-	}
-
-	// Sort
-	AssFile::top->Line.sort(LessByPointedToValue<AssEntry>());
+/// @brief Sort subtitles by start time
+void FrameMain::OnSortStart (wxCommandEvent &) {
+	AssFile::top->Sort();
 	AssFile::top->FlagAsModified(_("sort"));
 	SubsBox->UpdateMaps();
 	SubsBox->CommitChanges();
 }
-
-
+/// @brief Sort subtitles by end time
+void FrameMain::OnSortEnd (wxCommandEvent &) {
+	AssFile::top->Sort(AssFile::CompEnd);
+	AssFile::top->FlagAsModified(_("sort"));
+	SubsBox->UpdateMaps();
+	SubsBox->CommitChanges();
+}
+/// @brief Sort subtitles by style name
+void FrameMain::OnSortStyle (wxCommandEvent &) {
+	AssFile::top->Sort(AssFile::CompStyle);
+	AssFile::top->FlagAsModified(_("sort"));
+	SubsBox->UpdateMaps();
+	SubsBox->CommitChanges();
+}
 
 /// @brief Open styling assistant 
 /// @param event 

@@ -115,7 +115,7 @@ protected:
 	/// @return 
 	///
 	AssFile *GetAssFile() { return assFile; }
-	int AddLine(wxString data,wxString group,int lasttime,int &version,wxString *outgroup=NULL);
+	void AddLine(wxString data,wxString group,int &version,wxString *outgroup=NULL);
 	FPSRational AskForFPS(bool showSMPTE=false);
 
 	virtual wxString GetName()=0;

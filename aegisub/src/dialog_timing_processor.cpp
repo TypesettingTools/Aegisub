@@ -384,14 +384,13 @@ void DialogTimingProcessor::SortDialogues() {
 		tempDiag = grid->GetDialogue(i);
 		if (tempDiag && StyleOK(tempDiag->Style) && !tempDiag->Comment) {
 			if (!onlySelection->IsChecked() || grid->IsInSelection(i)) {
-				tempDiag->FixStartMS();
 				temp.push_back(tempDiag);
 			}
 		}
 	}
 
 	// Sort temporary list
-	temp.sort(LessByPointedToValue<AssDialogue>());
+	AssFile::Sort(temp);
 
 	// Copy temporary list to final vector
 	Sorted.clear();

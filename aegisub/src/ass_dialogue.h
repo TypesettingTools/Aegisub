@@ -202,36 +202,28 @@ private:
 
 public:
 
-	/// DOCME
-	std::vector<AssDialogueBlock*> Blocks;	// Contains information about each block of text
+	/// Contains information about each block of text
+	std::vector<AssDialogueBlock*> Blocks;
 
 
-	/// DOCME
-	bool Comment;					// Is this a comment line?
-
-	/// DOCME
-	int Layer;						// Layer number
-
-	/// DOCME
-	int Margin[4];					// Margins: 0 = Left, 1 = Right, 2 = Top (Vertical), 3 = Bottom
-
-	/// DOCME
-	AssTime Start;					// Starting time
-
-	/// DOCME
-	AssTime End;					// Ending time
-
-	/// DOCME
-	wxString Style;					// Style name
-
-	/// DOCME
-	wxString Actor;					// Actor name
-
-	/// DOCME
-	wxString Effect;				// Effect name
-
-	/// DOCME
-	wxString Text;					// Raw text data
+	/// Is this a comment line?
+	bool Comment;
+	/// Layer number
+	int Layer;
+	/// Margins: 0 = Left, 1 = Right, 2 = Top (Vertical), 3 = Bottom
+	int Margin[4];
+	/// Starting time
+	AssTime Start;
+	/// Ending time
+	AssTime End;
+	/// Style name
+	wxString Style;
+	/// Actor name
+	wxString Actor;
+	/// Effect name
+	wxString Effect;
+	/// Raw text data
+	wxString Text;
 
 
 	/// @brief DOCME
@@ -259,30 +251,6 @@ public:
 	void SetEntryData(wxString newData);
 	void Clear();					// Wipes all data
 
-
-	/// @brief DOCME
-	/// @return 
-	///
-	virtual int GetStartMS() const { return Start.GetMS(); }
-
-	/// @brief DOCME
-	/// @return 
-	///
-	virtual int GetEndMS() const { return End.GetMS(); }
-
-	/// @brief DOCME
-	/// @param newStart 
-	///
-	virtual void SetStartMS(const int newStart) { AssEntry::SetStartMS(newStart); Start.SetMS(newStart); }
-
-	/// @brief DOCME
-	/// @param newEnd 
-	///
-	virtual void SetEndMS(const int newEnd) { End.SetMS(newEnd); }
-
-	/// @brief DOCME
-	///
-	void FixStartMS() { AssEntry::SetStartMS(Start.GetMS()); } // Update StartMS in AssEntry from the Start value here
 
 	void SetMarginString(const wxString value,int which);	// Set string to a margin value (0 = left, 1 = right, 2 = vertical/top, 3 = bottom)
 	wxString GetMarginString(int which,bool pad=true);		// Returns the string of a margin value (0 = left, 1 = right, 2 = vertical/top, 3 = bottom)

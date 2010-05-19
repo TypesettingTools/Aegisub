@@ -270,7 +270,9 @@ private:
 	void OnReplace (wxCommandEvent &event);
 	void OnJumpTo (wxCommandEvent &event);
 	void OnShift (wxCommandEvent &event);
-	void OnSort (wxCommandEvent &event);
+	void OnSortStart (wxCommandEvent &event);
+	void OnSortEnd (wxCommandEvent &event);
+	void OnSortStyle (wxCommandEvent &event);
 	void OnEditBoxCommit (wxCommandEvent &event);
 	void OnOpenProperties (wxCommandEvent &event);
 	void OnOpenStylesManager (wxCommandEvent &event);
@@ -560,9 +562,6 @@ enum {
 	Menu_Edit_Redo,
 
 	/// DOCME
-	Menu_Edit_Sort,
-
-	/// DOCME
 	Menu_Edit_Find,
 
 	/// DOCME
@@ -617,6 +616,10 @@ enum {
 
 	/// DOCME
 	Menu_Subtitles_Insert,
+	
+	Menu_Subtitles_Sort_Start,
+	Menu_Subtitles_Sort_End,
+	Menu_Subtitles_Sort_Style,
 
 
 	/// DOCME

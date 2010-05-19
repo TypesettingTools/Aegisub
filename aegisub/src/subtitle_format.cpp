@@ -137,13 +137,10 @@ void SubtitleFormat::LoadDefault(bool defline) {
 /// @brief Add line 
 /// @param data     
 /// @param group    
-/// @param lasttime 
 /// @param version  
 /// @param outgroup 
-/// @return 
-///
-int SubtitleFormat::AddLine(wxString data,wxString group,int lasttime,int &version,wxString *outgroup) {
-	return assFile->AddLine(data,group,lasttime,version,outgroup);
+void SubtitleFormat::AddLine(wxString data,wxString group,int &version,wxString *outgroup) {
+	assFile->AddLine(data,group,version,outgroup);
 }
 
 
@@ -411,7 +408,7 @@ SubtitleFormat::FPSRational SubtitleFormat::AskForFPS(bool showSMPTE) {
 /// @brief Sort lines 
 ///
 void SubtitleFormat::SortLines() {
-	Line->sort(LessByPointedToValue<AssEntry>());
+	AssFile::Sort(*Line);
 }
 
 

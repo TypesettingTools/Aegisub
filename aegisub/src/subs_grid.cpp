@@ -1450,7 +1450,7 @@ bool SubtitlesGrid::SplitLineByKaraoke(int lineNumber) {
 	if (syls.size() < 2) return false;
 
 	// Insert a new line for each syllable
-	int start_ms = line->GetStartMS();
+	int start_ms = line->Start.GetMS();
 	int nextpos = lineNumber;
 	for (AssKaraokeVector::iterator syl = syls.begin(); syl != syls.end(); ++syl)
 	{
@@ -1458,9 +1458,9 @@ bool SubtitlesGrid::SplitLineByKaraoke(int lineNumber) {
 		if (syl->unstripped_text.IsEmpty()) continue;
 
 		AssDialogue *nl = new AssDialogue(line->GetEntryData());
-		nl->SetStartMS(start_ms);
+		nl->Start.SetMS(start_ms);
 		start_ms += syl->duration * 10;
-		nl->SetEndMS(start_ms);
+		nl->End.SetMS(start_ms);
 		nl->Text = syl->unstripped_text;
 		nl->UpdateData();
 		InsertLine(nl, nextpos++, true, false);

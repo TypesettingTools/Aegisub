@@ -64,6 +64,7 @@ public:
 	static bool UseMSPrecision;
 
 	AssTime();
+	AssTime(int ms);
 
 	int GetTimeHours();
 	int GetTimeMinutes();
@@ -80,12 +81,12 @@ public:
 };
 
 // Comparison operators
-bool operator == (AssTime &t1, AssTime &t2);
-bool operator != (AssTime &t1, AssTime &t2);
-bool operator < (AssTime &t1, AssTime &t2);
-bool operator > (AssTime &t1, AssTime &t2);
-bool operator <= (AssTime &t1, AssTime &t2);
-bool operator >= (AssTime &t1, AssTime &t2);
+bool operator == (const AssTime &t1, const AssTime &t2);
+bool operator != (const AssTime &t1, const AssTime &t2);
+bool operator <  (const AssTime &t1, const AssTime &t2);
+bool operator >  (const AssTime &t1, const AssTime &t2);
+bool operator <= (const AssTime &t1, const AssTime &t2);
+bool operator >= (const AssTime &t1, const AssTime &t2);
 
 
 
