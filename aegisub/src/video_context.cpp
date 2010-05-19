@@ -62,6 +62,7 @@
 #include "ass_style.h"
 #include "ass_time.h"
 #include "audio_display.h"
+#include "mkv_wrap.h"
 #include "options.h"
 #include "standard_paths.h"
 #include "subs_edit_box.h"
@@ -95,27 +96,26 @@ VideoContext *VideoContext::instance = NULL;
 
 /// @brief Constructor 
 ///
-VideoContext::VideoContext() {
-	// Set GL context
-	glContext = NULL;
-	ownGlContext = false;
-
-	// Set options
-	audio = NULL;
-	provider = NULL;
-	subsProvider = NULL;
-	curLine = NULL;
-	loaded = false;
-	keyFramesLoaded = false;
-	overKeyFramesLoaded = false;
-	frame_n = 0;
-	length = 0;
-	fps = 0;
-	arType = 0;
-	arValue = 1.0;
-	isPlaying = false;
-	nextFrame = -1;
-	keepAudioSync = true;
+VideoContext::VideoContext()
+: glContext(NULL)
+, ownGlContext(false)
+, audio(NULL)
+, provider(NULL)
+, subsProvider(NULL)
+, curLine(NULL)
+, loaded(false)
+, keyFramesLoaded(false)
+, overKeyFramesLoaded(false)
+, frame_n(0)
+, length(0)
+, fps(0)
+, arType(0)
+, arValue(1.)
+, isPlaying(false)
+, nextFrame(-1)
+, keepAudioSync(true)
+, hasSubtitles(false)
+{
 }
 
 /// @brief Destructor 
@@ -273,6 +273,11 @@ void VideoContext::SetVideo(const wxString &filename) {
 			// Show warning
 			wxString warning = provider->GetWarning().c_str();
 			if (!warning.IsEmpty()) wxMessageBox(warning,_T("Warning"),wxICON_WARNING | wxOK);
+
+			hasSubtitles = false;
+			if (filename.Right(4).Lower() == L".mkv") {
+				hasSubtitles = MatroskaWrapper::HasSubtitles(filename);
+			}
 
 			UpdateDisplays(true);
 		}

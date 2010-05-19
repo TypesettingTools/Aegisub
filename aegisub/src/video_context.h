@@ -174,6 +174,8 @@ private:
 	/// DOCME
 	int arType;
 
+	bool hasSubtitles;
+
 	void OnPlayTimer(wxTimerEvent &event);
 
 public:
@@ -214,6 +216,9 @@ public:
 	/// @brief DOCME
 	/// @return 
 	bool IsPlaying() { return isPlaying; }
+
+	/// @brief Does the video file loaded have muxed subtitles that we can load?
+	bool HasSubtitles() {return hasSubtitles; }
 
 	/// @brief DOCME
 	/// @param sync 

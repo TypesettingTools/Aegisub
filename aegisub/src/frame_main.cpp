@@ -357,6 +357,7 @@ void FrameMain::InitMenu() {
 	AppendBitmapMenuItem(fileMenu,Menu_File_New_Subtitles, MakeHotkeyText(_("&New Subtitles"), _T("New Subtitles")), _("New subtitles"),GETIMAGE(new_toolbutton_16));
 	AppendBitmapMenuItem(fileMenu,Menu_File_Open_Subtitles, MakeHotkeyText(_("&Open Subtitles..."), _T("Open Subtitles")), _("Opens a subtitles file"),GETIMAGE(open_toolbutton_16));
 	AppendBitmapMenuItem(fileMenu,Menu_File_Open_Subtitles_Charset, _("&Open Subtitles with Charset..."), _("Opens a subtitles file with a specific charset"),GETIMAGE(open_with_toolbutton_16));
+	fileMenu->Append(Menu_File_Open_Subtitles_From_Video, _("Open Subtitles from &Video"), _("Opens the subtitles from the current video file"));
 	AppendBitmapMenuItem(fileMenu,Menu_File_Save_Subtitles, MakeHotkeyText(_("&Save Subtitles"), _T("Save Subtitles")), _("Saves subtitles"),GETIMAGE(save_toolbutton_16));
 	AppendBitmapMenuItem(fileMenu,Menu_File_Save_Subtitles_As, _("Save Subtitles as..."), _("Saves subtitles with another name"), GETIMAGE(save_as_toolbutton_16));
 	AppendBitmapMenuItem(fileMenu,Menu_File_Export_Subtitles, _("Export Subtitles..."), _("Saves a copy of subtitles with processing applied to it."), GETIMAGE(export_menu_16));

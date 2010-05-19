@@ -124,6 +124,7 @@ BEGIN_EVENT_TABLE(FrameMain, wxFrame)
 	EVT_MENU(Menu_File_Close_Video, FrameMain::OnCloseVideo)
 	EVT_MENU(Menu_File_Open_Subtitles, FrameMain::OnOpenSubtitles)
 	EVT_MENU(Menu_File_Open_Subtitles_Charset, FrameMain::OnOpenSubtitlesCharset)
+	EVT_MENU(Menu_File_Open_Subtitles_From_Video, FrameMain::OnOpenSubtitlesVideo)
 	EVT_MENU(Menu_File_New_Subtitles, FrameMain::OnNewSubtitles)
 	EVT_MENU(Menu_File_Save_Subtitles, FrameMain::OnSaveSubtitles)
 	EVT_MENU(Menu_File_Save_Subtitles_As, FrameMain::OnSaveSubtitlesAs)
@@ -296,6 +297,8 @@ void FrameMain::OnMenuOpen (wxMenuEvent &event) {
 	if (curMenu == fileMenu) {
 		// Rebuild recent
 		RebuildRecentList(_T("Recent sub"),RecentSubs,Menu_File_Recent);
+
+		MenuBar->Enable(Menu_File_Open_Subtitles_From_Video,VideoContext::Get()->HasSubtitles());
 	}
 
 	// View menu
@@ -809,6 +812,11 @@ void FrameMain::OnOpenSubtitlesCharset(wxCommandEvent& WXUNUSED(event)) {
 		Options.SetText(_T("Last open subtitles path"), filename);
 		Options.Save();
 	}
+}
+
+/// @brief Open subtitles from the currently open video file
+void FrameMain::OnOpenSubtitlesVideo(wxCommandEvent&) {
+	LoadSubtitles(VideoContext::Get()->videoName);
 }
 
 

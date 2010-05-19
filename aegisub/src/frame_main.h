@@ -214,6 +214,7 @@ private:
 	void OnNewSubtitles (wxCommandEvent &event);
 	void OnOpenSubtitles (wxCommandEvent &event);
 	void OnOpenSubtitlesCharset (wxCommandEvent &event);
+	void OnOpenSubtitlesVideo (wxCommandEvent &event);
 	void OnSaveSubtitles (wxCommandEvent &event);
 	void OnSaveSubtitlesAs (wxCommandEvent &event);
 	void OnSaveSubtitlesCharset (wxCommandEvent &event);
@@ -412,6 +413,7 @@ enum {
 
 	/// DOCME
 	Menu_File_Open_Subtitles_Charset,
+	Menu_File_Open_Subtitles_From_Video,
 
 	/// DOCME
 	Menu_File_New_Subtitles,

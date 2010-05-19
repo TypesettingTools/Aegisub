@@ -174,6 +174,7 @@ public:
 	unsigned int GetFrameCount() { return timecodes.size(); }
 	wxArrayInt GetKeyFrames();
 	void GetSubtitles(AssFile *target);
+	static bool HasSubtitles(wxString const& filename);
 
 
 	/// DOCME

@@ -508,9 +508,31 @@ void MatroskaWrapper::GetSubtitles(AssFile *target) {
 	}
 }
 
+bool MatroskaWrapper::HasSubtitles(wxString const& filename) {
+	char err[2048];
+	MkvStdIO input(filename);
+	if (!input.fp) return false;
 
+	MatroskaFile* file = mkv_Open(&input, err, sizeof(err));
+	if (!file) return false;
 
+	// Find tracks
+	int tracks = mkv_GetNumTracks(file);
+	for (int track = 0; track < tracks; track++) {
+		TrackInfo *trackInfo = mkv_GetTrackInfo(file, track);
 
+		if (trackInfo->Type == 0x11) {
+			wxString CodecID = wxString(trackInfo->CodecID, *wxConvCurrent);
+			if (CodecID == _T("S_TEXT/SSA") || CodecID == _T("S_TEXT/ASS") || CodecID == _T("S_TEXT/UTF8")) {
+				mkv_Close(file);
+				return true;
+			}
+		}
+	}
+
+	mkv_Close(file);
+	return false;
+}
 
 ////////////////////////////// LOTS OF HAALI C CODE DOWN HERE ///////////////////////////////////////
 
