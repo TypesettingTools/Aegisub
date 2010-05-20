@@ -32,7 +32,6 @@
 /// @file visual_tool_scale.cpp
 /// @brief X/Y scaling visual typesetting tool
 /// @ingroup visual_ts
-///
 
 #include "config.h"
 
@@ -48,10 +47,8 @@
 #include "video_display.h"
 #include "visual_tool_scale.h"
 
-
 /// @brief Constructor 
 /// @param _parent 
-///
 VisualToolScale::VisualToolScale(VideoDisplay *parent, VideoState const& video, wxToolBar *)
 : VisualTool(parent, video)
 {
@@ -126,10 +123,7 @@ void VisualToolScale::Draw() {
 	glPopMatrix();
 }
 
-
-
 /// @brief Start holding 
-///
 void VisualToolScale::InitializeHold() {
 	startX = video.x;
 	startY = video.y;
@@ -140,10 +134,7 @@ void VisualToolScale::InitializeHold() {
 	curDiag->StripTag(_T("\\fscy"));
 }
 
-
-
 /// @brief Update hold 
-///
 void VisualToolScale::UpdateHold() {
 	using std::max;
 	// Deltas
@@ -165,13 +156,9 @@ void VisualToolScale::UpdateHold() {
 	}
 }
 
-
-
 /// @brief Commit hold 
-///
 void VisualToolScale::CommitHold() {
-	SetOverride(_T("\\fscx"),wxString::Format(L"(%0.3g)",curScaleX));
-	SetOverride(_T("\\fscy"),wxString::Format(L"(%0.3g)",curScaleY));
+	SetOverride(GetActiveDialogueLine(), _T("\\fscx"),wxString::Format(L"(%0.3g)",curScaleX));
+	SetOverride(GetActiveDialogueLine(), _T("\\fscy"),wxString::Format(L"(%0.3g)",curScaleY));
 }
-
 

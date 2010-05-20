@@ -32,11 +32,8 @@
 /// @file visual_tool.h
 /// @see visual_tool.cpp
 /// @ingroup visual_ts
-///
-
 
 #pragma once
-
 
 ///////////
 // Headers
@@ -51,7 +48,6 @@
 #include "gl_wrap.h"
 #include "visual_feature.h"
 
-
 //////////////
 // Prototypes
 class VideoDisplay;
@@ -59,20 +55,15 @@ class AssDialogue;
 class VisualTool;
 struct VideoState;
 
-
-
 /// DOCME
 #define VISUAL_SUB_TOOL_START 1300
 
 /// DOCME
 #define VISUAL_SUB_TOOL_END (VISUAL_SUB_TOOL_START+100)
 
-
-
 /// DOCME
 /// @class VisualTool
 /// @brief DOCME
-///
 /// DOCME
 class VisualTool : public OpenGLWrapper {
 	int GetHighlightedFeature();
@@ -83,13 +74,11 @@ protected:
 	/// DOCME
 	static const wxColour colour[4];
 
-
 	/// DOCME
 	bool holding;
 
 	/// DOCME
 	AssDialogue *curDiag;
-
 
 	/// DOCME
 	bool dragging;
@@ -112,12 +101,10 @@ protected:
 	/// DOCME
 	bool dragListOK;
 
-
 	/// DOCME
 	int frame_n;
 
 	VideoState const& video;
-
 
 	/// DOCME
 	bool leftClick;
@@ -141,8 +128,7 @@ protected:
 	void GetLineScale(AssDialogue *diag,float &scalX,float &scalY);
 	void GetLineClip(AssDialogue *diag,int &x1,int &y1,int &x2,int &y2,bool &inverse);
 	wxString GetLineVectorClip(AssDialogue *diag,int &scale,bool &inverse);
-	void SetOverride(wxString tag,wxString value);
-
+	void SetOverride(AssDialogue* line, wxString tag, wxString value);
 
 	AssDialogue *GetActiveDialogueLine();
 	void DrawAllFeatures();
@@ -170,7 +156,6 @@ protected:
 	/// @return 
 	///
 	virtual void CommitHold() {}
-
 
 	/// @brief DOCME
 	/// @return 
@@ -206,7 +191,6 @@ protected:
 	///
 	virtual void ClickedFeature(VisualDraggableFeature &feature) {}
 
-
 	/// @brief DOCME
 	///
 	virtual void DoRefresh() {}
@@ -225,7 +209,4 @@ public:
 	VisualTool(VideoDisplay *parent, VideoState const& video);
 	virtual ~VisualTool();
 };
-
-
-
 

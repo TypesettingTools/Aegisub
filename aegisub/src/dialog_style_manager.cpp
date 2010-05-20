@@ -32,8 +32,6 @@
 /// @file dialog_style_manager.cpp
 /// @brief Style Manager dialogue box and partial logic
 /// @ingroup style_editor
-///
-
 
 #include "config.h"
 
@@ -61,7 +59,6 @@
 /// @brief Constructor 
 /// @param parent 
 /// @param _grid  
-///
 DialogStyleManager::DialogStyleManager (wxWindow *parent,SubtitlesGrid *_grid)
 : wxDialog (parent,-1,_("Styles Manager"),wxDefaultPosition,wxDefaultSize,wxDEFAULT_DIALOG_STYLE,_T("DialogStylesManager"))
 {
@@ -367,7 +364,6 @@ BEGIN_EVENT_TABLE(DialogStyleManager, wxDialog)
 	EVT_BUTTON(BUTTON_STORAGE_BOTTOM, DialogStyleManager::OnStorageMoveBottom)
 	EVT_BUTTON(BUTTON_STORAGE_SORT, DialogStyleManager::OnStorageSort)
 END_EVENT_TABLE()
-
 
 //////////
 // Events
@@ -1160,8 +1156,6 @@ int DialogStyleManager::lastx = -1;
 /// DOCME
 int DialogStyleManager::lasty = -1;
 
-
-
 /// @brief DialogStyleManagerEvent stuff 
 /// @param ctrl 
 DialogStyleManagerEvent::DialogStyleManagerEvent(DialogStyleManager *ctrl) {
@@ -1170,7 +1164,6 @@ DialogStyleManagerEvent::DialogStyleManagerEvent(DialogStyleManager *ctrl) {
 BEGIN_EVENT_TABLE(DialogStyleManagerEvent, wxEvtHandler)
 	EVT_KEY_DOWN(DialogStyleManagerEvent::OnKeyDown)
 END_EVENT_TABLE()
-
 
 void DialogStyleManagerEvent::OnKeyDown(wxKeyEvent &event) {
 	control->OnKeyDown(event); //we need to access controls, so rather than make the controls public...

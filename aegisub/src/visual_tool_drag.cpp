@@ -32,7 +32,6 @@
 /// @file visual_tool_drag.cpp
 /// @brief Position all visible subtitles by dragging visual typesetting tool
 /// @ingroup visual_ts
-///
 
 #include "config.h"
 
@@ -51,12 +50,9 @@ enum {
 	BUTTON_TOGGLE_MOVE = VISUAL_SUB_TOOL_START
 };
 
-
-
 /// @brief Constructor 
 /// @param _parent 
 /// @param toolBar 
-///
 VisualToolDrag::VisualToolDrag(VideoDisplay *parent, VideoState const& video, wxToolBar * toolBar)
 : VisualTool(parent, video)
 , toolBar(toolBar)
@@ -67,11 +63,8 @@ VisualToolDrag::VisualToolDrag(VideoDisplay *parent, VideoState const& video, wx
 	toolBar->Show(true);
 }
 
-
-
 /// @brief Update toggle buttons 
 /// @return 
-///
 void VisualToolDrag::UpdateToggleButtons() {
 	// Check which bitmap to use
 	bool toMove = true;
@@ -96,8 +89,6 @@ void VisualToolDrag::UpdateToggleButtons() {
 	toggleMoveOnMove = toMove;
 }
 
-
-
 /// @brief Toggle button pressed 
 /// @param event 
 /// @return 
@@ -117,8 +108,8 @@ void VisualToolDrag::OnSubTool(wxCommandEvent &event) {
 		parent->ToScriptCoords(&x2, &y2);
 
 		// Replace tag
-		if (hasMove) SetOverride(L"\\pos",wxString::Format(L"(%i,%i)",x1,y1));
-		else SetOverride(L"\\move",wxString::Format(L"(%i,%i,%i,%i,%i,%i)",x1,y1,x1,y1,0,line->End.GetMS() - line->Start.GetMS()));
+		if (hasMove) SetOverride(line, L"\\pos",wxString::Format(L"(%i,%i)",x1,y1));
+		else SetOverride(line, L"\\move",wxString::Format(L"(%i,%i,%i,%i,%i,%i)",x1,y1,x1,y1,0,line->End.GetMS() - line->Start.GetMS()));
 		Commit(true);
 
 		// Update display
@@ -126,16 +117,12 @@ void VisualToolDrag::OnSubTool(wxCommandEvent &event) {
 	}
 }
 
-
-
 /// @brief Refresh 
-///
 void VisualToolDrag::DoRefresh() {
 	UpdateToggleButtons();
 }
 
 /// @brief Draw 
-///
 void VisualToolDrag::Draw() {
 	DrawAllFeatures();
 
@@ -189,10 +176,7 @@ void VisualToolDrag::Draw() {
 	}
 }
 
-
-
 /// @brief Populate list 
-///
 void VisualToolDrag::PopulateFeatureList() {
 	// Clear features
 	features.clear();
@@ -271,25 +255,21 @@ void VisualToolDrag::PopulateFeatureList() {
 
 /// @brief Update drag 
 /// @param feature 
-///
 void VisualToolDrag::UpdateDrag(VisualDraggableFeature &feature) {
 	// Update "value" to reflect the time of the frame in which the feature is being dragged
 	int time = VFR_Output.GetTimeAtFrame(frame_n,true,true);
 	feature.value = MID(0,time - feature.line->Start.GetMS(),feature.line->End.GetMS()-feature.line->Start.GetMS());
 }
 
-
-
 /// @brief Commit drag 
 /// @param feature 
-///
 void VisualToolDrag::CommitDrag(VisualDraggableFeature &feature) {
 	// Origin
 	if (feature.type == DRAG_BIG_TRIANGLE) {
 		int x = feature.x;
 		int y = feature.y;
 		parent->ToScriptCoords(&x, &y);
-		SetOverride(L"\\org",wxString::Format(L"(%i,%i)",x,y));
+		SetOverride(feature.line, L"\\org",wxString::Format(L"(%i,%i)",x,y));
 	}
 
 	// Position
@@ -297,7 +277,7 @@ void VisualToolDrag::CommitDrag(VisualDraggableFeature &feature) {
 		int x = feature.x;
 		int y = feature.y;
 		parent->ToScriptCoords(&x, &y);
-		SetOverride(L"\\pos",wxString::Format(L"(%i,%i)",x,y));
+		SetOverride(feature.line, L"\\pos",wxString::Format(L"(%i,%i)",x,y));
 	}
 
 	// Move
@@ -316,8 +296,6 @@ void VisualToolDrag::CommitDrag(VisualDraggableFeature &feature) {
 		parent->ToScriptCoords(&x2, &y2);
 
 		// Set override
-		SetOverride(L"\\move", wxString::Format(L"(%i,%i,%i,%i,%i,%i)", x1, y1, x2, y2, p1->value, p2->value));
+		SetOverride(feature.line, L"\\move", wxString::Format(L"(%i,%i,%i,%i,%i,%i)", x1, y1, x2, y2, p1->value, p2->value));
 	}
 }
-
-

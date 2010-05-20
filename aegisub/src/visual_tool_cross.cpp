@@ -32,8 +32,6 @@
 /// @file visual_tool_cross.cpp
 /// @brief Crosshair double-click-to-position visual typesetting tool
 /// @ingroup visual_ts
-///
-
 
 ///////////
 // Headers
@@ -47,10 +45,8 @@
 #include "video_display.h"
 #include "visual_tool_cross.h"
 
-
 /// @brief Constructor 
 /// @param _parent 
-///
 VisualToolCross::VisualToolCross(VideoDisplay *parent, VideoState const& video, wxToolBar *)
 : VisualTool(parent, video)
 {
@@ -58,7 +54,6 @@ VisualToolCross::VisualToolCross(VideoDisplay *parent, VideoState const& video, 
 VisualToolCross::~VisualToolCross() { }
 
 /// @brief Update 
-///
 void VisualToolCross::Update() {
 	// Position
 	if (leftDClick) {
@@ -66,14 +61,12 @@ void VisualToolCross::Update() {
 		int vy = video.y;
 		parent->ToScriptCoords(&vx, &vy);
 		SubtitlesGrid *grid = VideoContext::Get()->grid;
-		SetOverride(L"\\pos",wxString::Format(L"(%i,%i)",vx,vy));
-		grid->editBox->CommitText();
+		SetOverride(GetActiveDialogueLine(), L"\\pos",wxString::Format(L"(%i,%i)",vx,vy));
 		grid->ass->FlagAsModified(_("positioning"));
 		grid->CommitChanges(false,true);
+		grid->editBox->Update(false, true, false);
 	}
 }
-
-
 
 /// @brief Draw 
 void VisualToolCross::Draw() {

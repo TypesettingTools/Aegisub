@@ -32,7 +32,6 @@
 /// @file visual_tool_vector_clip.cpp
 /// @brief Vector clipping visual typesetting tool
 /// @ingroup visual_ts
-///
 
 #ifndef AGI_PRE
 #include <wx/toolbar.h>
@@ -44,7 +43,6 @@
 #include "libresrc/libresrc.h"
 #include "video_display.h"
 #include "visual_tool_vector_clip.h"
-
 
 ///////
 // IDs
@@ -78,12 +76,9 @@ enum {
 	BUTTON_LAST		// Leave this at the end and don't use it
 };
 
-
-
 /// @brief Constructor 
 /// @param parent   
 /// @param _toolBar 
-///
 VisualToolVectorClip::VisualToolVectorClip(VideoDisplay *parent, VideoState const& video, wxToolBar * toolBar)
 : VisualTool(parent, video), toolBar(toolBar), spline(*parent)
 {
@@ -110,20 +105,14 @@ VisualToolVectorClip::VisualToolVectorClip(VideoDisplay *parent, VideoState cons
 	if (features.size() == 0) SetMode(1);
 }
 
-
-
 /// @brief Sub-tool pressed 
 /// @param event 
-///
 void VisualToolVectorClip::OnSubTool(wxCommandEvent &event) {
 	SetMode(event.GetId() - BUTTON_DRAG);
 }
 
-
-
 /// @brief Set mode 
 /// @param _mode 
-///
 void VisualToolVectorClip::SetMode(int _mode) {
 	// Make sure clicked is checked and everything else isn't. (Yes, this is radio behavior, but the separators won't let me use it)
 	for (int i=BUTTON_DRAG;i<BUTTON_LAST;i++) {
@@ -213,10 +202,7 @@ void VisualToolVectorClip::Draw() {
 	if (mode == 4) DrawCircle(pt.x,pt.y,4);
 }
 
-
-
 /// @brief Populate feature list 
-///
 void VisualToolVectorClip::PopulateFeatureList() {
 	// Clear
 	features.clear();
@@ -276,42 +262,27 @@ void VisualToolVectorClip::PopulateFeatureList() {
 	}
 }
 
-
-
 /// @brief Can drag? 
 /// @return 
-///
 bool VisualToolVectorClip::DragEnabled() {
 	return mode <= 4;
 }
 
-
-
 /// @brief Update 
 /// @param feature 
-///
 void VisualToolVectorClip::UpdateDrag(VisualDraggableFeature &feature) {
 	spline.MovePoint(feature.value,feature.value2,wxPoint(feature.x,feature.y));
 }
 
-
-
 /// @brief Commit 
 /// @param feature 
-///
 void VisualToolVectorClip::CommitDrag(VisualDraggableFeature &feature) {
-	if (inverse)
-		SetOverride(L"\\iclip",L"(" + spline.EncodeToASS() + L")");
-	else
-		SetOverride(L"\\clip",L"(" + spline.EncodeToASS() + L")");
+	SetOverride(GetActiveDialogueLine(), inverse ? L"\\iclip" : L"\\clip", L"(" + spline.EncodeToASS() + L")");
 }
-
-
 
 /// @brief Clicked a feature 
 /// @param feature 
 /// @return 
-///
 void VisualToolVectorClip::ClickedFeature(VisualDraggableFeature &feature) {
 	// Delete a control point
 	if (mode == 5) {
@@ -327,10 +298,7 @@ void VisualToolVectorClip::ClickedFeature(VisualDraggableFeature &feature) {
 
 				// Erase and save changes
 				spline.curves.erase(cur);
-				if (inverse)
-					SetOverride(L"\\iclip",L"(" + spline.EncodeToASS() + L")");
-				else
-					SetOverride(L"\\clip",L"(" + spline.EncodeToASS() + L")");
+				CommitDrag(feature);
 				curFeature = -1;
 				Commit(true);
 				return;
@@ -339,20 +307,14 @@ void VisualToolVectorClip::ClickedFeature(VisualDraggableFeature &feature) {
 	}
 }
 
-
-
 /// @brief Can hold? 
 /// @return 
-///
 bool VisualToolVectorClip::HoldEnabled() {
 	return mode <= 4 || mode == 6 || mode == 7;
 }
 
-
-
 /// @brief Initialize hold 
 /// @return 
-///
 void VisualToolVectorClip::InitializeHold() {
 	// Insert line/bicubic
 	if (mode == 1 || mode == 2) {
@@ -429,10 +391,7 @@ void VisualToolVectorClip::InitializeHold() {
 		}
 
 		// Commit
-		if (inverse)
-			SetOverride(L"\\iclip",L"(" + spline.EncodeToASS() + L")");
-		else
-			SetOverride(L"\\clip",L"(" + spline.EncodeToASS() + L")");
+		SetOverride(GetActiveDialogueLine(), inverse ? L"\\iclip" : L"\\clip", L"(" + spline.EncodeToASS() + L")");
 		Commit(true);
 	}
 
@@ -445,11 +404,8 @@ void VisualToolVectorClip::InitializeHold() {
 	}
 }
 
-
-
 /// @brief Update hold 
 /// @return 
-///
 void VisualToolVectorClip::UpdateHold() {
 	// Insert line
 	if (mode == 1) {
@@ -497,30 +453,21 @@ void VisualToolVectorClip::UpdateHold() {
 	}
 }
 
-
-
 /// @brief Commit hold 
-///
 void VisualToolVectorClip::CommitHold() {
 	// Smooth spline
 	if (!holding && mode == 7) spline.Smooth();
 
 	// Save it
 	if (mode != 3 && mode != 4) {
-		if (inverse)
-			SetOverride(L"\\iclip",L"(" + spline.EncodeToASS() + L")");
-		else
-			SetOverride(L"\\clip",L"(" + spline.EncodeToASS() + L")");
+		SetOverride(GetActiveDialogueLine(), inverse ? L"\\iclip" : L"\\clip", L"(" + spline.EncodeToASS() + L")");
 	}
 
 	// End freedraw
 	if (!holding && (mode == 6 || mode == 7)) SetMode(0);
 }
 
-
-
 /// @brief Refresh 
-///
 void VisualToolVectorClip::DoRefresh() {
 	if (!dragging && !holding) {
 		// Get line
@@ -535,5 +482,4 @@ void VisualToolVectorClip::DoRefresh() {
 		PopulateFeatureList();
 	}
 }
-
 

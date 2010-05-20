@@ -32,8 +32,6 @@
 /// @file visual_tool_clip.cpp
 /// @brief Rectangular clipping visual typesetting tool
 /// @ingroup visual_ts
-///
-
 
 ///////////
 // Headers
@@ -47,10 +45,8 @@
 #include "video_display.h"
 #include "visual_tool_clip.h"
 
-
 /// @brief Constructor 
 /// @param _parent 
-///
 VisualToolClip::VisualToolClip(VideoDisplay *parent, VideoState const& video, wxToolBar *)
 : VisualTool(parent, video)
 , curX1(0)
@@ -114,10 +110,7 @@ void VisualToolClip::InitializeHold() {
 	curDiag->StripTag(L"\\iclip");
 }
 
-
-
 /// @brief Update hold 
-///
 void VisualToolClip::UpdateHold() {
 	// Coordinates
 	curX1 = startX;
@@ -139,10 +132,7 @@ void VisualToolClip::UpdateHold() {
 	if (CanDrag()) PopulateFeatureList();
 }
 
-
-
 /// @brief Commit hold 
-///
 void VisualToolClip::CommitHold() {
 	int x1 = curX1;
 	int x2 = curX2;
@@ -153,10 +143,7 @@ void VisualToolClip::CommitHold() {
 	SetOverride(GetActiveDialogueLine(), inverse ? L"\\iclip" : L"\\clip",wxString::Format(L"(%i,%i,%i,%i)",x1,y1,x2,y2));
 }
 
-
-
 /// @brief Populate feature list 
-///
 void VisualToolClip::PopulateFeatureList() {
 	// Clear
 	if (features.size() != 4) {
@@ -202,22 +189,16 @@ void VisualToolClip::PopulateFeatureList() {
 	i++;
 }
 
-
-
 /// @brief Initialize 
 /// @param feature 
-///
 void VisualToolClip::InitializeDrag(VisualDraggableFeature &feature) {
 	curDiag = GetActiveDialogueLine();
 	curDiag->StripTag(L"\\clip");
 	curDiag->StripTag(L"\\iclip");
 }
 
-
-
 /// @brief Update drag 
 /// @param feature 
-///
 void VisualToolClip::UpdateDrag(VisualDraggableFeature &feature) {
 	// Update brothers
 	features[feature.brother[0]].y = feature.y;
@@ -234,11 +215,8 @@ void VisualToolClip::UpdateDrag(VisualDraggableFeature &feature) {
 	if (curY1 > curY2) IntSwap(curY1,curY2);
 }
 
-
-
 /// @brief Done dragging 
 /// @param feature 
-///
 void VisualToolClip::CommitDrag(VisualDraggableFeature &feature) {
 	CommitHold();
 }

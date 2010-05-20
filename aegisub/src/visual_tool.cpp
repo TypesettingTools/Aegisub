@@ -32,11 +32,7 @@
 /// @file visual_tool.cpp
 /// @brief Base class for visual typesetting functions
 /// @ingroup visual_ts
-///
 
-
-//////////////
-// Headers
 #include "config.h"
 
 #ifndef AGI_PRE
@@ -83,7 +79,6 @@ VisualTool::VisualTool(VideoDisplay *parent, VideoState const& video)
 		frame_n = VideoContext::Get()->GetFrameN();
 	}
 
-	// Features
 	if (CanDrag()) PopulateFeatureList();
 }
 
@@ -96,13 +91,11 @@ VisualTool::~VisualTool() {
 void VisualTool::OnMouseEvent (wxMouseEvent &event) {
 	bool realTime = Options.AsBool(L"Video Visual Realtime");
 
-	// Mouse leaving control
 	if (event.Leaving()) {
 		Update();
 		return;
 	}
 
-	// Clicks
 	leftClick = event.ButtonDown(wxMOUSE_BTN_LEFT);
 	leftDClick = event.LeftDClick();
 	shiftDown = event.m_shiftDown;
@@ -115,7 +108,6 @@ void VisualTool::OnMouseEvent (wxMouseEvent &event) {
 
 	// Drag a feature
 	if (CanDrag()) {
-		// Populate list if needed
 		if (!dragListOK) {
 			PopulateFeatureList();
 			dragListOK = true;
@@ -129,25 +121,20 @@ void VisualTool::OnMouseEvent (wxMouseEvent &event) {
 			}
 		}
 
-		// Start dragging
 		if (!dragging && leftClick && DragEnabled()) {
-			// Get a feature
 			curFeature = GetHighlightedFeature();
 			if (curFeature != -1) {
-				// Initialize drag
 				InitializeDrag(features[curFeature]);
 				if (features[curFeature].lineN != -1) {
 					VideoContext::Get()->grid->editBox->SetToLine(features[curFeature].lineN,true);
 					VideoContext::Get()->grid->SelectRow(features[curFeature].lineN);
 				}
 
-				// Set start value
 				dragStartX = video.x;
 				dragStartY = video.y;
 				dragOrigX = features[curFeature].x;
 				dragOrigY = features[curFeature].y;
 
-				// Set flags
 				dragging = true;
 				parent->CaptureMouse();
 				if (realTime) AssLimitToVisibleFilter::SetFrame(frame_n);
@@ -155,7 +142,6 @@ void VisualTool::OnMouseEvent (wxMouseEvent &event) {
 		}
 
 		if (dragging) {
-			// Dragging
 			if (event.LeftIsDown()) {
 				features[curFeature].x = (video.x - dragStartX + dragOrigX);
 				features[curFeature].y = (video.y - dragStartY + dragOrigY);
@@ -167,47 +153,34 @@ void VisualTool::OnMouseEvent (wxMouseEvent &event) {
 						features[curFeature].x = dragOrigX;
 					}
 				}
-
-				// Update drag
 				UpdateDrag(features[curFeature]);
 
 				if (realTime) {
-					// Commit
 					CommitDrag(features[curFeature]);
 					Commit();
 				}
 			}
-
-			// Release
 			else {
-				// Disable limiting
 				if (realTime) AssLimitToVisibleFilter::SetFrame(-1);
 
-				// Commit
 				dragging = false;
 				CommitDrag(features[curFeature]);
 				Commit(true);
 
-				// Clean up
 				curFeature = -1;
 				parent->ReleaseMouse();
 				parent->SetFocus();
 			}
 		}
-
 	}
 
 	// Hold
 	if (!dragging && CanHold()) {
-		// Start holding
 		if (!holding && event.LeftIsDown() && HoldEnabled()) {
-			// Get a dialogue
 			curDiag = GetActiveDialogueLine();
 			if (curDiag) {
-				// Initialize Drag
 				InitializeHold();
 
-				// Set flags
 				holding = true;
 				parent->CaptureMouse();
 				if (realTime) AssLimitToVisibleFilter::SetFrame(frame_n);
@@ -215,29 +188,21 @@ void VisualTool::OnMouseEvent (wxMouseEvent &event) {
 		}
 
 		if (holding) {
-			// Holding
 			if (event.LeftIsDown()) {
-				// Update drag
 				UpdateHold();
 
 				if (realTime) {
-					// Commit
 					CommitHold();
 					Commit();
 				}
 			}
-
-			// Release
 			else {
-				// Disable limiting
 				if (realTime) AssLimitToVisibleFilter::SetFrame(-1);
 
-				// Commit
 				holding = false;
 				CommitHold();
 				Commit(true);
 
-				// Clean up
 				curDiag = NULL;
 				parent->ReleaseMouse();
 				parent->SetFocus();
@@ -245,30 +210,17 @@ void VisualTool::OnMouseEvent (wxMouseEvent &event) {
 		}
 	}
 
-	// Update
 	Update();
 }
 
 /// @brief Commit 
 /// @param full 
 void VisualTool::Commit(bool full) {
-	// Get grid
 	SubtitlesGrid *grid = VideoContext::Get()->grid;
-
-	// See if anything actually changed
-	// Fix by jfs: Only if not doing a  full commit. Not sure why, but this avoids bug #532
-	if (!full) {
-		AssDialogue *diag = grid->GetDialogue(grid->editBox->linen);
-		if (diag && grid->editBox->TextEdit->GetText() == diag->Text) return;
-	}
-
-	// Commit changes
-	grid->editBox->CommitText();
 	if (full) grid->ass->FlagAsModified(_("visual typesetting"));
 	grid->CommitChanges(false,!full);
+	grid->editBox->Update(false, true, false);
 }
-
-
 
 /// @brief Get active dialogue line 
 /// @return 
@@ -281,7 +233,6 @@ AssDialogue* VisualTool::GetActiveDialogueLine() {
 		int f1 = VFR_Output.GetFrameAtTime(diag->Start.GetMS(),true);
 		int f2 = VFR_Output.GetFrameAtTime(diag->End.GetMS(),false);
 
-		// Invisible
 		if (f1 > frame_n || f2 < frame_n) return NULL;
 	}
 
@@ -304,17 +255,14 @@ int VisualTool::GetHighlightedFeature() {
 
 /// @brief Draw all features 
 void VisualTool::DrawAllFeatures() {
-	// Populate list, if needed
 	if (!dragListOK) {
 		PopulateFeatureList();
 		dragListOK = true;
 	}
 
-	// Get feature that mouse is over
 	int mouseOver = curFeature;
 	if (curFeature == -1) mouseOver = GetHighlightedFeature();
 
-	// Draw features
 	for (size_t i=0;i<features.size();i++) {
 		SetFillColour(colour[(signed)i == mouseOver ? 2 : 1],0.6f);
 		SetLineColour(colour[0],1.0f,2);
@@ -345,7 +293,6 @@ void VisualTool::GetLinePosition(AssDialogue *diag,int &x, int &y) {
 /// @param orgx 
 /// @param orgy 
 void VisualTool::GetLinePosition(AssDialogue *diag,int &x, int &y, int &orgx, int &orgy) {
-	// No dialogue
 	if (!diag) {
 		x = INT_MIN;
 		y = INT_MIN;
@@ -354,12 +301,10 @@ void VisualTool::GetLinePosition(AssDialogue *diag,int &x, int &y, int &orgx, in
 		return;
 	}
 
-	// Default values
 	int margin[4];
 	for (int i=0;i<4;i++) margin[i] = diag->Margin[i];
 	int align = 2;
 
-	// Get style
 	AssStyle *style = VideoContext::Get()->grid->ass->GetStyle(diag->Style);
 	if (style) {
 		align = style->alignment;
@@ -368,7 +313,6 @@ void VisualTool::GetLinePosition(AssDialogue *diag,int &x, int &y, int &orgx, in
 		}
 	}
 
-	// Script size
 	int sw,sh;
 	VideoContext::Get()->GetScriptSize(sw,sh);
 
@@ -581,8 +525,6 @@ void VisualTool::GetLineScale(AssDialogue *diag,float &scalX,float &scalY) {
 	diag->ClearBlocks();
 }
 
-
-
 /// @brief Get line's clip 
 /// @param diag    
 /// @param x1      
@@ -636,8 +578,6 @@ void VisualTool::GetLineClip(AssDialogue *diag,int &x1,int &y1,int &x2,int &y2,b
 	parent->FromScriptCoords(&x2, &y2);
 }
 
-
-
 /// @brief Get line vector clip, if it exists 
 /// @param diag    
 /// @param scale   
@@ -687,7 +627,46 @@ wxString VisualTool::GetLineVectorClip(AssDialogue *diag,int &scale,bool &invers
 /// @brief Set override 
 /// @param tag   
 /// @param value 
-void VisualTool::SetOverride(wxString tag,wxString value) {
-	VideoContext::Get()->grid->editBox->SetOverride(tag,value,0,false);
-	//parent->SetFocus();
+void VisualTool::SetOverride(AssDialogue* line, wxString tag, wxString value) {
+	if (!line) return;
+
+	wxString removeTag;
+	if (tag == L"\\1c") removeTag = L"\\c";
+	else if (tag == L"\\fr") removeTag = L"\\frz";
+	else if (tag == L"\\pos") removeTag = L"\\move";
+	else if (tag == L"\\move") removeTag = L"\\pos";
+	else if (tag == L"\\clip") removeTag = L"\\iclip";
+	else if (tag == L"\\iclip") removeTag = L"\\clip";
+
+	wxString insert = tag + value;
+
+	// Get block at start
+	line->ParseASSTags();
+	AssDialogueBlock *block = line->Blocks.at(0);
+
+	// Get current block as plain or override
+	AssDialogueBlockPlain *plain = dynamic_cast<AssDialogueBlockPlain*>(block);
+	AssDialogueBlockOverride *ovr = dynamic_cast<AssDialogueBlockOverride*>(block);
+
+	if (plain) {
+		line->Text = L"{" + insert + L"}" + line->Text;
+	}
+	else if (ovr) {
+		ovr->text += insert;
+		ovr->ParseTags();
+
+		// Remove old of same
+		for (size_t i = 0; i < ovr->Tags.size() - 1; i++) {
+			wxString name = ovr->Tags.at(i)->Name;
+			if (tag == name || removeTag == name) {
+				delete ovr->Tags.at(i);
+				ovr->Tags.erase(ovr->Tags.begin() + i);
+				i--;
+			}
+		}
+
+		line->UpdateText();
+	}
+
+	parent->SetFocus();
 }
