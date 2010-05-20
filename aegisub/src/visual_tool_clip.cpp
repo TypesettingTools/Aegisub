@@ -144,12 +144,13 @@ void VisualToolClip::UpdateHold() {
 /// @brief Commit hold 
 ///
 void VisualToolClip::CommitHold() {
-	parent->ToScriptCoords(&curX1, &curY1);
-	parent->ToScriptCoords(&curX2, &curY2);
-	if (inverse)
-		SetOverride(L"\\iclip",wxString::Format(L"(%i,%i,%i,%i)",curX1,curY1,curX2,curY2));
-	else
-		SetOverride(L"\\clip",wxString::Format(L"(%i,%i,%i,%i)",curX1,curY1,curX2,curY2));
+	int x1 = curX1;
+	int x2 = curX2;
+	int y1 = curY1;
+	int y2 = curY2;
+	parent->ToScriptCoords(&x1, &y1);
+	parent->ToScriptCoords(&x2, &y2);
+	SetOverride(GetActiveDialogueLine(), inverse ? L"\\iclip" : L"\\clip",wxString::Format(L"(%i,%i,%i,%i)",x1,y1,x2,y2));
 }
 
 

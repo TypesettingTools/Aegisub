@@ -100,6 +100,7 @@ private:
 	/// DOCME
 	VisualToolEvent eventSink;
 
+	int GetHighlightedFeature();
 protected:
 	/// DOCME
 	VideoDisplay *parent;
@@ -165,12 +166,10 @@ protected:
 	void GetLineScale(AssDialogue *diag,float &scalX,float &scalY);
 	void GetLineClip(AssDialogue *diag,int &x1,int &y1,int &x2,int &y2,bool &inverse);
 	wxString GetLineVectorClip(AssDialogue *diag,int &scale,bool &inverse);
-	void FillPositionData();
 	void SetOverride(wxString tag,wxString value);
 
 
 	AssDialogue *GetActiveDialogueLine();
-	int GetHighlightedFeature();
 	void DrawAllFeatures();
 	void Commit(bool full=false);
 
@@ -252,7 +251,7 @@ public:
 	/// @brief DOCME
 	/// @param event 
 	///
-	virtual void OnSubTool(wxCommandEvent &event) {}
+	virtual void OnSubTool(wxCommandEvent &) {}
 	virtual void Update() { };
 	virtual void Draw()=0;
 	void Refresh();
