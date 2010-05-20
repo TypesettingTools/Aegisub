@@ -29,8 +29,8 @@
 //
 // $Id$
 
-/// @file visual_feature.h
-/// @see visual_feature.cpp
+/// @file visual_feature->h
+/// @see visual_feature->cpp
 /// @ingroup visual_ts
 ///
 
@@ -75,6 +75,11 @@ public:
 	int x; /// x coordinate
 	int y; /// y coordinate
 
+	int origX; /// x coordindate before the last operation began
+	int origY; /// y coordindate before the last operation began
+
+	bool selected; ///Iis this feature selected?
+
 	int layer; /// Layer; Higher = above
 
 	AssDialogue* line; /// The dialogue line this feature is for
@@ -83,8 +88,8 @@ public:
 	/// @brief Is the given point over this feature?
 	/// @param mx x coordinate to test
 	/// @param my y coordinate to test
-	bool IsMouseOver(int x,int y);
+	bool IsMouseOver(int x,int y) const;
 	/// @brief Draw this feature
 	/// @param gl OpenGLWrapper to use
-	void Draw(OpenGLWrapper const& gl);
+	void Draw(OpenGLWrapper const& gl) const;
 };

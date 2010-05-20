@@ -50,7 +50,7 @@
 /// @brief Constructor 
 /// @param _parent 
 VisualToolScale::VisualToolScale(VideoDisplay *parent, VideoState const& video, wxToolBar *)
-: VisualTool(parent, video)
+: VisualTool<VisualDraggableFeature>(parent, video)
 {
 }
 

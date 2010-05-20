@@ -50,7 +50,7 @@
 /// @brief Constructor 
 /// @param _parent 
 VisualToolRotateZ::VisualToolRotateZ(VideoDisplay *parent, VideoState const& video, wxToolBar *)
-: VisualTool(parent, video)
+: VisualTool<VisualDraggableFeature>(parent, video)
 {
 	DoRefresh();
 }
@@ -144,7 +144,7 @@ void VisualToolRotateZ::Draw() {
 	glPopMatrix();
 
 	// Draw line to mouse
-	if (!dragging && curFeature == -1) {
+	if (!dragging && !curFeature) {
 		SetLineColour(colour[0]);
 		DrawLine(dx,dy,video.x,video.y);
 	}
@@ -197,18 +197,18 @@ void VisualToolRotateZ::PopulateFeatureList() {
 
 /// @brief Update dragging of \\org 
 /// @param feature 
-void VisualToolRotateZ::UpdateDrag(VisualDraggableFeature &feature) {
-	orgx = feature.x;
-	orgy = feature.y;
+void VisualToolRotateZ::UpdateDrag(VisualDraggableFeature* feature) {
+	orgx = feature->x;
+	orgy = feature->y;
 }
 
 /// @brief Commit dragging of \\org 
 /// @param feature 
-void VisualToolRotateZ::CommitDrag(VisualDraggableFeature &feature) {
-	int x = feature.x;
-	int y = feature.y;
+void VisualToolRotateZ::CommitDrag(VisualDraggableFeature* feature) {
+	int x = feature->x;
+	int y = feature->y;
 	parent->ToScriptCoords(&x, &y);
-	SetOverride(feature.line, L"\\org",wxString::Format(L"(%i,%i)",x,y));
+	SetOverride(feature->line, L"\\org",wxString::Format(L"(%i,%i)",x,y));
 }
 
 /// @brief Refresh 

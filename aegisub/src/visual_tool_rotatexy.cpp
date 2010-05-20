@@ -50,7 +50,7 @@
 /// @brief Constructor 
 /// @param _parent 
 VisualToolRotateXY::VisualToolRotateXY(VideoDisplay *parent, VideoState const& video, wxToolBar *)
-: VisualTool(parent, video)
+: VisualTool<VisualDraggableFeature>(parent, video)
 {
 	DoRefresh();
 }
@@ -230,18 +230,18 @@ void VisualToolRotateXY::PopulateFeatureList() {
 
 /// @brief Update dragging of \\org 
 /// @param feature 
-void VisualToolRotateXY::UpdateDrag(VisualDraggableFeature &feature) {
-	orgx = feature.x;
-	orgy = feature.y;
+void VisualToolRotateXY::UpdateDrag(VisualDraggableFeature* feature) {
+	orgx = feature->x;
+	orgy = feature->y;
 }
 
 /// @brief Commit dragging of \\org 
 /// @param feature 
-void VisualToolRotateXY::CommitDrag(VisualDraggableFeature &feature) {
-	int x = feature.x;
-	int y = feature.y;
+void VisualToolRotateXY::CommitDrag(VisualDraggableFeature* feature) {
+	int x = feature->x;
+	int y = feature->y;
 	parent->ToScriptCoords(&x, &y);
-	SetOverride(feature.line, L"\\org",wxString::Format(L"(%i,%i)",x,y));
+	SetOverride(feature->line, L"\\org",wxString::Format(L"(%i,%i)",x,y));
 }
 
 /// @brief Refresh 

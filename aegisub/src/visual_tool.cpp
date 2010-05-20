@@ -67,18 +67,25 @@
 
 const wxColour IVisualTool::colour[4] = {wxColour(106,32,19), wxColour(255,169,40), wxColour(255,253,185), wxColour(187,0,0)};
 
-/// @brief Constructor
-/// @param parent
 template<class FeatureType>
 VisualTool<FeatureType>::VisualTool(VideoDisplay *parent, VideoState const& video)
-: parent(parent)
+: dragStartX(0)
+, dragStartY(0)
+, externalChange(true)
+, selChanged(false)
+, parent(parent)
 , holding(false)
 , curDiag(NULL)
 , dragging(false)
-, curFeature(-1)
+, curFeature(NULL)
 , dragListOK(false)
-, video(video)
 , frame_n(0)
+, video(video)
+, leftClick(false)
+, leftDClick(false)
+, shiftDown(false)
+, ctrlDown(false)
+, altDown(false)
 {
 	if (VideoContext::Get()->IsLoaded()) {
 		frame_n = VideoContext::Get()->GetFrameN();
@@ -87,13 +94,10 @@ VisualTool<FeatureType>::VisualTool(VideoDisplay *parent, VideoState const& vide
 	PopulateFeatureList();
 }
 
-/// @brief Destructor 
 template<class FeatureType>
 VisualTool<FeatureType>::~VisualTool() {
 }
 
-/// @brief Mouse event 
-/// @param event 
 template<class FeatureType>
 void VisualTool<FeatureType>::OnMouseEvent (wxMouseEvent &event) {
 	bool realTime = Options.AsBool(L"Video Visual Realtime");
@@ -102,6 +106,9 @@ void VisualTool<FeatureType>::OnMouseEvent (wxMouseEvent &event) {
 		Update();
 		return;
 	}
+	externalChange = false;
+
+	VideoContext* con = VideoContext::Get();
 
 	leftClick = event.ButtonDown(wxMOUSE_BTN_LEFT);
 	leftDClick = event.LeftDClick();
@@ -121,32 +128,62 @@ void VisualTool<FeatureType>::OnMouseEvent (wxMouseEvent &event) {
 	if (dragging) {
 		// continue drag
 		if (event.LeftIsDown()) {
-			features[curFeature].x = (video.x - dragStartX + dragOrigX);
-			features[curFeature].y = (video.y - dragStartY + dragOrigY);
-			if (shiftDown) {
-				if (abs(video.x - dragStartX) > abs(video.y - dragStartY)) {
-					features[curFeature].y = dragOrigY;
+			for (SelFeatureIter cur = selFeatures.begin(); cur != selFeatures.end(); ++cur) {
+				(*cur)->x = (video.x - dragStartX + (*cur)->origX);
+				(*cur)->y = (video.y - dragStartY + (*cur)->origY);
+				if (shiftDown) {
+					if (abs(video.x - dragStartX) > abs(video.y - dragStartY)) {
+						(*cur)->y = (*cur)->origY;
+					}
+					else {
+						(*cur)->x = (*cur)->origX;
+					}
 				}
-				else {
-					features[curFeature].x = dragOrigX;
-				}
-			}
-			UpdateDrag(features[curFeature]);
+				UpdateDrag(*cur);
 
-			if (realTime) {
-				CommitDrag(features[curFeature]);
-				Commit();
+				if (realTime) {
+					CommitDrag(*cur);
+				}
 			}
+			if (realTime) Commit();
 		}
 		// end drag
 		else {
 			if (realTime) AssLimitToVisibleFilter::SetFrame(-1);
 
 			dragging = false;
-			CommitDrag(features[curFeature]);
-			Commit(true);
 
-			curFeature = -1;
+			// mouse didn't move, fiddle with selection
+			if (curFeature->x == curFeature->origX && curFeature->y == curFeature->origY) {
+				// Don't deselect stuff that was selected in this click's mousedown event
+				if (!selChanged) {
+					if (ctrlDown) {
+						// deselect this feature
+						selFeatures.remove(curFeature);
+						curFeature->selected = false;
+						if (curFeature->lineN > -1) {
+							con->grid->SelectRow(curFeature->lineN, true, false);
+						}
+					}
+					else {
+						// deselect everything else
+						ClearSelection();
+						selFeatures.push_back(curFeature);
+						curFeature->selected = true;
+						if (curFeature->lineN > -1) {
+							con->grid->SelectRow(curFeature->lineN, false);
+						}
+					}
+				}
+			}
+			else {
+				for (SelFeatureIter cur = selFeatures.begin(); cur != selFeatures.end(); ++cur) {
+					CommitDrag(*cur);
+				}
+				Commit(true);
+			}
+
+			curFeature = NULL;
 			parent->ReleaseMouse();
 			parent->SetFocus();
 		}
@@ -177,17 +214,33 @@ void VisualTool<FeatureType>::OnMouseEvent (wxMouseEvent &event) {
 	else if (leftClick) {
 		curFeature = GetHighlightedFeature();
 		// start drag
-		if (curFeature > -1) {
-			if (InitializeDrag(features[curFeature])) {
-				if (features[curFeature].lineN != -1) {
-					VideoContext::Get()->grid->editBox->SetToLine(features[curFeature].lineN,true);
-					VideoContext::Get()->grid->SelectRow(features[curFeature].lineN);
+		if (curFeature) {
+			if (InitializeDrag(curFeature)) {
+				if (!curFeature->selected) {
+					selChanged = true;
+					if (!ctrlDown) {
+						ClearSelection();
+					}
+					selFeatures.push_back(curFeature);
+					curFeature->selected = true;
+					if (curFeature->lineN != -1) {
+						con->grid->editBox->SetToLine(curFeature->lineN,true);
+						con->grid->SelectRow(curFeature->lineN, ctrlDown);
+					}
+				}
+				else {
+					selChanged = false;
+					if (curFeature->lineN != -1) {
+						con->grid->editBox->SetToLine(curFeature->lineN,true);
+					}
 				}
 
 				dragStartX = video.x;
 				dragStartY = video.y;
-				dragOrigX = features[curFeature].x;
-				dragOrigY = features[curFeature].y;
+				for (SelFeatureIter cur = selFeatures.begin(); cur != selFeatures.end(); ++cur) {
+					(*cur)->origX = (*cur)->x;
+					(*cur)->origY = (*cur)->y;
+				}
 
 				dragging = true;
 				parent->CaptureMouse();
@@ -196,6 +249,7 @@ void VisualTool<FeatureType>::OnMouseEvent (wxMouseEvent &event) {
 		}
 		// start hold
 		else {
+			ClearSelection();
 			curDiag = GetActiveDialogueLine();
 			if (curDiag && InitializeHold()) {
 				holding = true;
@@ -206,10 +260,9 @@ void VisualTool<FeatureType>::OnMouseEvent (wxMouseEvent &event) {
 	}
 
 	Update();
+	externalChange = true;
 }
 
-/// @brief Commit 
-/// @param full 
 template<class FeatureType>
 void VisualTool<FeatureType>::Commit(bool full) {
 	SubtitlesGrid *grid = VideoContext::Get()->grid;
@@ -218,8 +271,6 @@ void VisualTool<FeatureType>::Commit(bool full) {
 	grid->editBox->Update(false, true, false);
 }
 
-/// @brief Get active dialogue line 
-/// @return 
 template<class FeatureType>
 AssDialogue* VisualTool<FeatureType>::GetActiveDialogueLine() {
 	SubtitlesGrid *grid = VideoContext::Get()->grid;
@@ -236,22 +287,19 @@ AssDialogue* VisualTool<FeatureType>::GetActiveDialogueLine() {
 	return diag;
 }
 
-/// @brief Get feature under mouse 
-/// @return 
 template<class FeatureType>
-int VisualTool<FeatureType>::GetHighlightedFeature() {
+FeatureType* VisualTool<FeatureType>::GetHighlightedFeature() {
 	int highestLayerFound = INT_MIN;
-	int bestMatch = -1;
-	for (size_t i=0;i<features.size();i++) {
-		if (features[i].IsMouseOver(video.x, video.y) && features[i].layer > highestLayerFound) {
-			bestMatch = i;
-			highestLayerFound = features[i].layer;
+	FeatureType* bestMatch = NULL;
+	for (FeatureIter cur = features.begin(); cur != features.end(); ++cur) {
+		if (cur->IsMouseOver(video.x, video.y) && cur->layer > highestLayerFound) {
+			bestMatch = &*cur;
+			highestLayerFound = cur->layer;
 		}
 	}
 	return bestMatch;
 }
 
-/// @brief Draw all features 
 template<class FeatureType>
 void VisualTool<FeatureType>::DrawAllFeatures() {
 	if (!dragListOK) {
@@ -259,22 +307,31 @@ void VisualTool<FeatureType>::DrawAllFeatures() {
 		dragListOK = true;
 	}
 
-	int mouseOver = curFeature;
-	if (curFeature == -1) mouseOver = GetHighlightedFeature();
+	FeatureType* mouseOver = curFeature ?  curFeature : GetHighlightedFeature();
 
-	for (size_t i=0;i<features.size();i++) {
-		SetFillColour(colour[(signed)i == mouseOver ? 2 : 1],0.6f);
+	for (FeatureCIter cur = features.begin(); cur != features.end(); ++cur) {
+		int fill = &*cur == mouseOver ? 2 :
+		           cur->selected      ? 3 :
+		                                1;
+		SetFillColour(colour[fill],0.6f);
 		SetLineColour(colour[0],1.0f,2);
-		features[i].Draw(*this);
+		cur->Draw(*this);
 	}
 }
 
-/// @brief Refresh 
 template<class FeatureType>
 void VisualTool<FeatureType>::Refresh() {
 	frame_n = VideoContext::Get()->GetFrameN();
-	if (!dragging) dragListOK = false;
+	if (externalChange) dragListOK = false;
 	DoRefresh();
+}
+
+template<class FeatureType>
+void VisualTool<FeatureType>::ClearSelection() {
+	for (SelFeatureIter cur = selFeatures.begin(); cur != selFeatures.end(); ++cur) {
+		(*cur)->selected = false;
+	}
+	selFeatures.clear();
 }
 
 /// @brief Get position of line 
@@ -283,7 +340,7 @@ void VisualTool<FeatureType>::Refresh() {
 /// @param y    
 template<class FeatureType>
 void VisualTool<FeatureType>::GetLinePosition(AssDialogue *diag,int &x, int &y) {
-	int orgx=0,orgy=0;
+	int orgx,orgy;
 	GetLinePosition(diag,x,y,orgx,orgy);
 }
 

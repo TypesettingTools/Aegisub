@@ -75,6 +75,8 @@ private:
 	/// DOCME
 	bool inverse;
 
+	ClipCorner* feat[4];
+
 
 	/// @brief DOCME
 	/// @return 
@@ -87,9 +89,9 @@ private:
 	/// @brief DOCME
 	///
 	void PopulateFeatureList();
-	bool InitializeDrag(ClipCorner &feature);
-	void UpdateDrag(ClipCorner &feature);
-	void CommitDrag(ClipCorner &feature);
+	bool InitializeDrag(ClipCorner* feature);
+	void UpdateDrag(ClipCorner* feature);
+	void CommitDrag(ClipCorner* feature);
 
 public:
 	VisualToolClip(VideoDisplay *parent, VideoState const& video, wxToolBar *);

@@ -33,8 +33,6 @@
 /// @brief Crosshair double-click-to-position visual typesetting tool
 /// @ingroup visual_ts
 
-///////////
-// Headers
 #include "config.h"
 
 #include "ass_file.h"
@@ -48,7 +46,7 @@
 /// @brief Constructor 
 /// @param _parent 
 VisualToolCross::VisualToolCross(VideoDisplay *parent, VideoState const& video, wxToolBar *)
-: VisualTool(parent, video)
+: VisualTool<VisualDraggableFeature>(parent, video)
 {
 }
 VisualToolCross::~VisualToolCross() { }

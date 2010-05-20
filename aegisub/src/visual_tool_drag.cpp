@@ -54,7 +54,7 @@ enum {
 /// @param _parent 
 /// @param toolBar 
 VisualToolDrag::VisualToolDrag(VideoDisplay *parent, VideoState const& video, wxToolBar * toolBar)
-: VisualTool(parent, video)
+: VisualTool<VisualToolDragDraggableFeature>(parent, video)
 , toolBar(toolBar)
 , toggleMoveOnMove(true)
 {
@@ -127,10 +127,10 @@ void VisualToolDrag::Draw() {
 	DrawAllFeatures();
 
 	// Draw arrows
-	for (size_t i=0;i<features.size();i++) {
-		if (features[i].type == DRAG_BIG_SQUARE) continue;
-		VisualDraggableFeature *p2 = &features[i];
-		VisualDraggableFeature *p1 = &features[features[i].parent];
+	for (std::list<VisualToolDragDraggableFeature>::iterator cur = features.begin(); cur != features.end(); ++cur) {
+		if (cur->type == DRAG_BIG_SQUARE) continue;
+		VisualDraggableFeature *p2 = &*cur;
+		VisualDraggableFeature *p1 = cur->parent;
 
 		// Has arrow?
 		bool hasArrow = p2->type == DRAG_BIG_CIRCLE;
@@ -175,6 +175,7 @@ void VisualToolDrag::Draw() {
 
 /// @brief Populate list 
 void VisualToolDrag::PopulateFeatureList() {
+	ClearSelection();
 	features.clear();
 
 	// Get video data
@@ -209,7 +210,7 @@ void VisualToolDrag::PopulateFeatureList() {
 				feat.line = diag;
 				feat.lineN = i;
 				features.push_back(feat);
-				feat.parent = features.size() - 1;
+				feat.parent = &features.back();
 
 				// Create move destination feature
 				if (hasMove) {
@@ -221,7 +222,7 @@ void VisualToolDrag::PopulateFeatureList() {
 					feat.line = diag;
 					feat.lineN = i;
 					features.push_back(feat);
-					features[feat.parent].parent = features.size() - 1;
+					feat.parent->parent = &features.back();
 				}
 				// Create org feature
 				if (torgx != x1 || torgy != y1) {
@@ -241,25 +242,25 @@ void VisualToolDrag::PopulateFeatureList() {
 
 /// @brief Update drag 
 /// @param feature 
-void VisualToolDrag::UpdateDrag(VisualToolDragDraggableFeature &feature) {
+void VisualToolDrag::UpdateDrag(VisualToolDragDraggableFeature* feature) {
 	// Update "time" to reflect the time of the frame in which the feature is being dragged
 	int time = VFR_Output.GetTimeAtFrame(frame_n,true,true);
-	feature.time = MID(0,time - feature.line->Start.GetMS(),feature.line->End.GetMS()-feature.line->Start.GetMS());
+	feature->time = MID(0,time - feature->line->Start.GetMS(),feature->line->End.GetMS()-feature->line->Start.GetMS());
 }
 
 /// @brief Commit drag 
 /// @param feature 
-void VisualToolDrag::CommitDrag(VisualToolDragDraggableFeature &feature) {
+void VisualToolDrag::CommitDrag(VisualToolDragDraggableFeature* feature) {
 	// Origin
-	if (feature.type == DRAG_BIG_TRIANGLE) {
-		int x = feature.x;
-		int y = feature.y;
+	if (feature->type == DRAG_BIG_TRIANGLE) {
+		int x = feature->x;
+		int y = feature->y;
 		parent->ToScriptCoords(&x, &y);
-		SetOverride(feature.line, L"\\org",wxString::Format(L"(%i,%i)",x,y));
+		SetOverride(feature->line, L"\\org",wxString::Format(L"(%i,%i)",x,y));
 		return;
 	}
 
-	VisualToolDragDraggableFeature *p = feature->parent > -1 ? &features[feature->parent] : NULL;
+	VisualToolDragDraggableFeature *p = feature->parent;
 	if (feature->type == DRAG_BIG_CIRCLE) {
 		std::swap(feature, p);
 	}
@@ -270,7 +271,7 @@ void VisualToolDrag::CommitDrag(VisualToolDragDraggableFeature &feature) {
 
 	// Position
 	if (!p) {
-		SetOverride(feature.line, L"\\pos", wxString::Format(L"(%i,%i)", x1, y1));
+		SetOverride(feature->line, L"\\pos", wxString::Format(L"(%i,%i)", x1, y1));
 	}
 	// Move
 	else {

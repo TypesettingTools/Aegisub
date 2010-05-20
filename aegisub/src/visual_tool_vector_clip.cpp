@@ -80,7 +80,9 @@ enum {
 /// @param parent   
 /// @param _toolBar 
 VisualToolVectorClip::VisualToolVectorClip(VideoDisplay *parent, VideoState const& video, wxToolBar * toolBar)
-: VisualTool(parent, video), toolBar(toolBar), spline(*parent)
+: VisualTool<VisualToolVectorClipDraggableFeature>(parent, video)
+, toolBar(toolBar)
+, spline(*parent)
 {
 	DoRefresh();
 	mode = 0;
@@ -168,7 +170,7 @@ void VisualToolVectorClip::Draw() {
 	SetLineColour(colour[3],1.0f,2);
 	int col = 3;
 	for (size_t i=1;i<points.size();i++) {
-		int useCol = pointCurve[i] == highCurve && curFeature == -1 ? 2 : 3;
+		int useCol = pointCurve[i] == highCurve && !curFeature ? 2 : 3;
 		if (col != useCol) {
 			col = useCol;
 			SetLineColour(colour[col],1.0f,2);
@@ -205,6 +207,7 @@ void VisualToolVectorClip::Draw() {
 /// @brief Populate feature list 
 void VisualToolVectorClip::PopulateFeatureList() {
 	// Clear
+	ClearSelection();
 	features.clear();
 	VisualToolVectorClipDraggableFeature feat;
 	
@@ -262,27 +265,27 @@ void VisualToolVectorClip::PopulateFeatureList() {
 
 /// @brief Update 
 /// @param feature 
-void VisualToolVectorClip::UpdateDrag(VisualToolVectorClipDraggableFeature &feature) {
-	spline.MovePoint(feature.index,feature.point,wxPoint(feature.x,feature.y));
+void VisualToolVectorClip::UpdateDrag(VisualToolVectorClipDraggableFeature* feature) {
+	spline.MovePoint(feature->index,feature->point,wxPoint(feature->x,feature->y));
 }
 
 /// @brief Commit 
 /// @param feature 
-void VisualToolVectorClip::CommitDrag(VisualToolVectorClipDraggableFeature &feature) {
+void VisualToolVectorClip::CommitDrag(VisualToolVectorClipDraggableFeature* feature) {
 	SetOverride(GetActiveDialogueLine(), inverse ? L"\\iclip" : L"\\clip", L"(" + spline.EncodeToASS() + L")");
 }
 
 /// @brief Clicked a feature 
 /// @param feature 
 /// @return 
-bool VisualToolVectorClip::InitializeDrag(VisualToolVectorClipDraggableFeature &feature) {
+bool VisualToolVectorClip::InitializeDrag(VisualToolVectorClipDraggableFeature* feature) {
 	// Delete a control point
 	if (mode == 5) {
 		int i = 0;
 		for (std::list<SplineCurve>::iterator cur=spline.curves.begin();cur!=spline.curves.end();i++,cur++) {
-			if (i == feature.index) {
+			if (i == feature->index) {
 				// Update next
-				if (i != 0 || feature.point != 0) {
+				if (i != 0 || feature->point != 0) {
 					std::list<SplineCurve>::iterator next = cur;
 					next++;
 					if (next != spline.curves.end()) next->p1 = cur->p1;
@@ -291,7 +294,7 @@ bool VisualToolVectorClip::InitializeDrag(VisualToolVectorClipDraggableFeature &
 				// Erase and save changes
 				spline.curves.erase(cur);
 				CommitDrag(feature);
-				curFeature = -1;
+				curFeature = NULL;
 				Commit(true);
 				return false;
 			}
@@ -387,6 +390,7 @@ bool VisualToolVectorClip::InitializeHold() {
 
 	// Freehand
 	if (mode == 6 || mode == 7) {
+		ClearSelection();
 		features.clear();
 		spline.curves.clear();
 		lastX = INT_MIN;

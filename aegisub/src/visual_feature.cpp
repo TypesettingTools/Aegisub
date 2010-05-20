@@ -29,7 +29,7 @@
 //
 // $Id$
 
-/// @file visual_feature.cpp
+/// @file visual_feature->cpp
 /// @brief Feature on video the user can interact with using mouse
 /// @ingroup visual_ts
 ///
@@ -43,13 +43,16 @@ VisualDraggableFeature::VisualDraggableFeature()
 : type(DRAG_NONE)
 , x(INT_MIN)
 , y(INT_MIN)
+, origX(INT_MIN)
+, origY(INT_MIN)
+, selected(false)
 , layer(0)
 , line(NULL)
 , lineN(-1)
 {
 }
 
-bool VisualDraggableFeature::IsMouseOver(int mx,int my) {
+bool VisualDraggableFeature::IsMouseOver(int mx,int my) const {
 	switch (type) {
 		case DRAG_BIG_SQUARE:
 			return !(mx < x-8 || mx > x+8 || my < y-8 || my > y+8);
@@ -77,7 +80,7 @@ bool VisualDraggableFeature::IsMouseOver(int mx,int my) {
 	}
 }
 
-void VisualDraggableFeature::Draw(OpenGLWrapper const& gl) {
+void VisualDraggableFeature::Draw(OpenGLWrapper const& gl) const {
 	switch (type) {
 		case DRAG_BIG_SQUARE:
 			gl.DrawRectangle(x-8,y-8,x+8,y+8);

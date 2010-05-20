@@ -92,9 +92,9 @@ private:
 
 
 	void PopulateFeatureList();
-	void UpdateDrag(VisualToolVectorClipDraggableFeature &feature);
-	void CommitDrag(VisualToolVectorClipDraggableFeature &feature);
-	bool InitializeDrag(VisualToolVectorClipDraggableFeature &feature);
+	void UpdateDrag(VisualToolVectorClipDraggableFeature* feature);
+	void CommitDrag(VisualToolVectorClipDraggableFeature* feature);
+	bool InitializeDrag(VisualToolVectorClipDraggableFeature* feature);
 
 	void DoRefresh();
 

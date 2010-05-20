@@ -81,8 +81,8 @@ private:
 	/// @brief DOCME
 	///
 	void PopulateFeatureList();
-	void UpdateDrag(VisualDraggableFeature &feature);
-	void CommitDrag(VisualDraggableFeature &feature);
+	void UpdateDrag(VisualDraggableFeature* feature);
+	void CommitDrag(VisualDraggableFeature* feature);
 
 	void DoRefresh();
 

@@ -47,11 +47,11 @@
 class VisualToolDragDraggableFeature : public VisualDraggableFeature {
 public:
 	int time;
-	int parent;
+	VisualToolDragDraggableFeature* parent;
 	VisualToolDragDraggableFeature()
 		: VisualDraggableFeature()
 		, time(0)
-		, parent(-1)
+		, parent(NULL)
 	{ }
 };
 
@@ -73,8 +73,8 @@ private:
 	///
 	bool CanDrag() { return true; }
 	void PopulateFeatureList();
-	void UpdateDrag(VisualToolDragDraggableFeature &feature);
-	void CommitDrag(VisualToolDragDraggableFeature &feature);
+	void UpdateDrag(VisualToolDragDraggableFeature* feature);
+	void CommitDrag(VisualToolDragDraggableFeature* feature);
 
 	void UpdateToggleButtons();
 	void DoRefresh();

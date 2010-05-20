@@ -37,7 +37,6 @@
 
 #ifndef AGI_PRE
 #include <vector>
-#include "boost/shared_ptr.hpp"
 
 #include <wx/log.h>
 #include <wx/event.h>
@@ -76,56 +75,38 @@ public:
 template<class FeatureType>
 class VisualTool : public IVisualTool {
 private:
-	/// DOCME
+	int dragStartX; /// Starting x coordinate of the current drag, if any
+	int dragStartY; /// Starting y coordinate of the current drag, if any
 
-	/// DOCME
+	/// @brief Get the topmost visual feature under the mouse, or NULL if none are under the mouse
+	FeatureType* GetHighlightedFeature();
 
-	/// DOCME
+	typedef typename std::list<FeatureType*>::iterator SelFeatureIter;
+	typedef typename std::list<FeatureType>::iterator FeatureIter;
+	typedef typename std::list<FeatureType>::const_iterator FeatureCIter;
 
-	/// DOCME
-	int dragStartX,dragStartY,dragOrigX,dragOrigY;
-	int GetHighlightedFeature();
+	std::list<FeatureType*> selFeatures; /// Currently selected visual features
+
+	bool externalChange; /// Only invalid drag lists when refreshing due to external changes
+	bool selChanged; /// Has the selection already been changed in the current click?
 protected:
-	/// DOCME
-	VideoDisplay *parent;
+	VideoDisplay *parent; /// VideoDisplay which this belongs to, used to frame conversion
+	bool holding; /// Is a hold currently in progress?
+	AssDialogue *curDiag; /// Active dialogue line for a hold; only valid when holding = true
+	bool dragging; /// Is a drag currently in progress?
 
-	/// DOCME
-	bool holding;
+	FeatureType* curFeature; /// Topmost feature under the mouse; only valid during a drag?
+	std::list<FeatureType> features; /// List of features which are drawn and can be clicked on
+	bool dragListOK; /// Do the features not need to be regenerated?
 
-	/// DOCME
-	AssDialogue *curDiag;
+	int frame_n; /// Current frame number
+	VideoState const& video; /// Mouse and video information
 
-	/// DOCME
-	bool dragging;
-
-	/// DOCME
-	int curFeature;
-
-	/// DOCME
-	std::vector<FeatureType> features;
-
-	/// DOCME
-	bool dragListOK;
-
-	/// DOCME
-	int frame_n;
-
-	VideoState const& video;
-
-	/// DOCME
-	bool leftClick;
-
-	/// DOCME
-	bool leftDClick;
-
-	/// DOCME
-	bool shiftDown;
-
-	/// DOCME
-	bool ctrlDown;
-
-	/// DOCME
-	bool altDown;
+	bool leftClick; /// Is a left click event currently being processed?
+	bool leftDClick; /// Is a left double click event currently being processed?
+	bool shiftDown; /// Is shift down?
+	bool ctrlDown; /// Is ctrl down?
+	bool altDown; /// Is alt down?
 
 	void GetLinePosition(AssDialogue *diag,int &x,int &y);
 	void GetLinePosition(AssDialogue *diag,int &x,int &y,int &orgx,int &orgy);
@@ -136,58 +117,63 @@ protected:
 	wxString GetLineVectorClip(AssDialogue *diag,int &scale,bool &inverse);
 	void SetOverride(AssDialogue* line, wxString tag, wxString value);
 
+	/// @brief Get the dialogue line currently in the edit box
+	/// @return NULL if the line is not active on the current frame
 	AssDialogue *GetActiveDialogueLine();
 	void DrawAllFeatures();
 	void Commit(bool full=false);
 
-	/// @brief DOCME
-	///
+	/// @brief Called when a hold is begun
+	/// @return Should the hold actually happen?
 	virtual bool InitializeHold() { return false; }
 
-	/// @brief DOCME
-	///
-	virtual void UpdateHold() {}
+	/// @brief Called on every mouse event during a hold
+	virtual void UpdateHold() { }
 
-	/// @brief DOCME
-	/// @return 
-	///
-	virtual void CommitHold() {}
+	/// @brief Called at the end of a hold
+	virtual void CommitHold() { }
 
-	/// @brief DOCME
-	///
+	/// @brief Called when the feature list needs to be (re)generated
 	virtual void PopulateFeatureList() { }
 
-	/// @brief DOCME
-	/// @param feature 
-	///
-	virtual bool InitializeDrag(FeatureType &feature) { return true; }
+	/// @brief Called at the beginning of a drag
+	/// @param feature The visual feature clicked on
+	/// @return Should the drag happen?
+	virtual bool InitializeDrag(FeatureType* feature) { return true; }
 
-	/// @brief DOCME
-	/// @param feature 
-	///
-	virtual void UpdateDrag(FeatureType &feature) {}
+	/// @brief Called on every mouse event during a drag
+	/// @param feature The current feature to process; not necessarily the one clicked on
+	virtual void UpdateDrag(FeatureType* feature) { }
 
-	/// @brief DOCME
-	/// @param feature 
-	///
-	virtual void CommitDrag(FeatureType &feature) {}
+	// @brief Called at the end of a drag
+	virtual void CommitDrag(FeatureType* feature) { }
 
-	/// @brief DOCME
-	///
-	virtual void DoRefresh() {}
+	/// @brief Called when there's stuff
+	virtual void DoRefresh() { }
+
+	/// @brief Must be called before removing entries from features
+	void ClearSelection();
 
 public:
+	/// @brief Handler for all mouse events
+	/// @param event Shockingly enough, the mouse event
 	void OnMouseEvent(wxMouseEvent &event);
 
-	/// @brief DOCME
-	/// @param event 
-	///
-	virtual void OnSubTool(wxCommandEvent &) {}
+	/// @brief Event handler for the subtoolbar
+	virtual void OnSubTool(wxCommandEvent &) { }
+	/// @brief Called when there's stuff
 	virtual void Update() { };
+	/// @brief Draw stuff
 	virtual void Draw()=0;
+	/// @brief Called when there's stuff
 	void Refresh();
 
+	/// @brief Constructor
+	/// @param parent The VideoDisplay to use for coordinate conversion
+	/// @param video Video and mouse information passing blob
 	VisualTool(VideoDisplay *parent, VideoState const& video);
+
+	/// @brief Destructor
 	virtual ~VisualTool();
 };
 
