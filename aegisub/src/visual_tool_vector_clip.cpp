@@ -522,7 +522,7 @@ void VisualToolVectorClip::CommitHold() {
 /// @brief Refresh 
 ///
 void VisualToolVectorClip::DoRefresh() {
-	if (!dragging) {
+	if (!dragging && !holding) {
 		// Get line
 		AssDialogue *line = GetActiveDialogueLine();
 		if (!line) return;
@@ -531,7 +531,6 @@ void VisualToolVectorClip::DoRefresh() {
 		wxString vect;
 		int scale;
 		vect = GetLineVectorClip(line,scale,inverse);
-		//if (!vect.IsEmpty()) return;
 		spline.DecodeFromASS(vect);
 		PopulateFeatureList();
 	}
