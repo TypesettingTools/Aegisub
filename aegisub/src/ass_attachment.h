@@ -39,11 +39,10 @@
 // Headers
 #ifndef AGI_PRE
 #include <vector>
+#include "boost/shared_ptr.hpp"
 #endif
 
 #include "ass_entry.h"
-#include "boost/shared_ptr.hpp"
-
 
 /// DOCME
 typedef std::vector<unsigned char> DataVec;

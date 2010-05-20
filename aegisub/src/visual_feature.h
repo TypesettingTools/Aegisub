@@ -75,13 +75,13 @@ public:
 
 	int layer; /// Layer; Higher = above
 
-	int value; /// userdata
+	int value; /// userdata; used by drag tool for time
 	int value2; /// more userdata
 
 	AssDialogue* line; /// The dialogue line this feature is for
 	int lineN; /// The line's index in the file
 
-	int brother[4]; /// userdata; generall indexes of other features in an array
+	int brother[4]; /// userdata; generally indexes of other features in an array
 
 	/// @brief Is the given point over this feature?
 	/// @param mx x coordinate to test

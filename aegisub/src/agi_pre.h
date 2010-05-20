@@ -76,6 +76,8 @@
 #include <utility>
 #include <vector>
 
+#include "boost/shared_ptr.hpp"
+
 // General headers
 #include <assert.h>
 #include <ctype.h>
@@ -237,7 +239,7 @@
 #include <GL/glu.h>
 #endif
 
-#ifndef _CRT_SECURE_NO_WARNINGS_DEFINED
+#ifdef _CRT_SECURE_NO_WARNINGS_DEFINED
 #undef _CRT_SECURE_NO_WARNINGS
 #endif
 

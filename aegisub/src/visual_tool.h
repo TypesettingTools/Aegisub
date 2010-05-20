@@ -35,10 +35,9 @@
 
 #pragma once
 
-///////////
-// Headers
 #ifndef AGI_PRE
 #include <vector>
+#include "boost/shared_ptr.hpp"
 
 #include <wx/log.h>
 #include <wx/event.h>
