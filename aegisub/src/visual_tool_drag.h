@@ -42,13 +42,26 @@
 #include "visual_feature.h"
 #include "visual_tool.h"
 
+/// @class VisualToolDragDraggableFeature
+/// @brief VisualDraggableFeature with a time value
+class VisualToolDragDraggableFeature : public VisualDraggableFeature {
+public:
+	int time;
+	int parent;
+	VisualToolDragDraggableFeature()
+		: VisualDraggableFeature()
+		, time(0)
+		, parent(-1)
+	{ }
+};
+
 
 /// DOCME
 /// @class VisualToolDrag
 /// @brief DOCME
 ///
 /// DOCME
-class VisualToolDrag : public VisualTool<VisualDraggableFeature> {
+class VisualToolDrag : public VisualTool<VisualToolDragDraggableFeature> {
 private:
 	/// DOCME
 	wxToolBar *toolBar;
@@ -60,8 +73,8 @@ private:
 	///
 	bool CanDrag() { return true; }
 	void PopulateFeatureList();
-	void UpdateDrag(VisualDraggableFeature &feature);
-	void CommitDrag(VisualDraggableFeature &feature);
+	void UpdateDrag(VisualToolDragDraggableFeature &feature);
+	void CommitDrag(VisualToolDragDraggableFeature &feature);
 
 	void UpdateToggleButtons();
 	void DoRefresh();

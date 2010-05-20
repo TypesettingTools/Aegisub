@@ -61,6 +61,9 @@
 #include "video_provider_manager.h"
 #include "visual_feature.h"
 #include "visual_tool.h"
+#include "visual_tool_clip.h"
+#include "visual_tool_drag.h"
+#include "visual_tool_vector_clip.h"
 
 const wxColour IVisualTool::colour[4] = {wxColour(106,32,19), wxColour(255,169,40), wxColour(255,253,185), wxColour(187,0,0)};
 
@@ -676,4 +679,8 @@ void VisualTool<FeatureType>::SetOverride(AssDialogue* line, wxString tag, wxStr
 	parent->SetFocus();
 }
 
+// If only export worked
 template class VisualTool<VisualDraggableFeature>;
+template class VisualTool<ClipCorner>;
+template class VisualTool<VisualToolDragDraggableFeature>;
+template class VisualTool<VisualToolVectorClipDraggableFeature>;

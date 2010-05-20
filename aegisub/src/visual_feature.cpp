@@ -44,12 +44,9 @@ VisualDraggableFeature::VisualDraggableFeature()
 , x(INT_MIN)
 , y(INT_MIN)
 , layer(0)
-, value(0)
-, value2(0)
 , line(NULL)
 , lineN(-1)
 {
-	for (int i=0;i<4;i++) brother[i] = -1;
 }
 
 bool VisualDraggableFeature::IsMouseOver(int mx,int my) {

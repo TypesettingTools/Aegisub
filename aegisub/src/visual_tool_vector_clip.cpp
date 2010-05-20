@@ -206,7 +206,7 @@ void VisualToolVectorClip::Draw() {
 void VisualToolVectorClip::PopulateFeatureList() {
 	// Clear
 	features.clear();
-	VisualDraggableFeature feat;
+	VisualToolVectorClipDraggableFeature feat;
 	
 	// Go through each curve
 	bool isFirst = true;
@@ -218,8 +218,8 @@ void VisualToolVectorClip::PopulateFeatureList() {
 			feat.x = (int)cur->p1.x;
 			feat.y = (int)cur->p1.y;
 			feat.type = DRAG_SMALL_CIRCLE;
-			feat.value = i;
-			feat.value2 = 0;
+			feat.index = i;
+			feat.point = 0;
 			features.push_back(feat);
 		}
 
@@ -228,8 +228,8 @@ void VisualToolVectorClip::PopulateFeatureList() {
 			feat.x = (int)cur->p2.x;
 			feat.y = (int)cur->p2.y;
 			feat.type = DRAG_SMALL_CIRCLE;
-			feat.value = i;
-			feat.value2 = 1;
+			feat.index = i;
+			feat.point = 1;
 			features.push_back(feat);
 		}
 
@@ -241,22 +241,20 @@ void VisualToolVectorClip::PopulateFeatureList() {
 			// Control points
 			feat.x = (int)cur->p2.x;
 			feat.y = (int)cur->p2.y;
-			feat.value = i;
-			feat.value2 = 1;
-			feat.brother[0] = size-1;
+			feat.index = i;
+			feat.point = 1;
 			feat.type = DRAG_SMALL_SQUARE;
 			features.push_back(feat);
 			feat.x = (int)cur->p3.x;
 			feat.y = (int)cur->p3.y;
-			feat.value2 = 2;
-			feat.brother[0] = size+2;
+			feat.point = 2;
 			features.push_back(feat);
 
 			// End point
 			feat.x = (int)cur->p4.x;
 			feat.y = (int)cur->p4.y;
 			feat.type = DRAG_SMALL_CIRCLE;
-			feat.value2 = 3;
+			feat.point = 3;
 			features.push_back(feat);
 		}
 	}
@@ -264,27 +262,27 @@ void VisualToolVectorClip::PopulateFeatureList() {
 
 /// @brief Update 
 /// @param feature 
-void VisualToolVectorClip::UpdateDrag(VisualDraggableFeature &feature) {
-	spline.MovePoint(feature.value,feature.value2,wxPoint(feature.x,feature.y));
+void VisualToolVectorClip::UpdateDrag(VisualToolVectorClipDraggableFeature &feature) {
+	spline.MovePoint(feature.index,feature.point,wxPoint(feature.x,feature.y));
 }
 
 /// @brief Commit 
 /// @param feature 
-void VisualToolVectorClip::CommitDrag(VisualDraggableFeature &feature) {
+void VisualToolVectorClip::CommitDrag(VisualToolVectorClipDraggableFeature &feature) {
 	SetOverride(GetActiveDialogueLine(), inverse ? L"\\iclip" : L"\\clip", L"(" + spline.EncodeToASS() + L")");
 }
 
 /// @brief Clicked a feature 
 /// @param feature 
 /// @return 
-bool VisualToolVectorClip::InitializeDrag(VisualDraggableFeature &feature) {
+bool VisualToolVectorClip::InitializeDrag(VisualToolVectorClipDraggableFeature &feature) {
 	// Delete a control point
 	if (mode == 5) {
 		int i = 0;
 		for (std::list<SplineCurve>::iterator cur=spline.curves.begin();cur!=spline.curves.end();i++,cur++) {
-			if (i == feature.value) {
+			if (i == feature.index) {
 				// Update next
-				if (i != 0 || feature.value2 != 0) {
+				if (i != 0 || feature.point != 0) {
 					std::list<SplineCurve>::iterator next = cur;
 					next++;
 					if (next != spline.curves.end()) next->p1 = cur->p1;

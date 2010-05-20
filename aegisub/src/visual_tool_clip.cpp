@@ -150,43 +150,39 @@ void VisualToolClip::PopulateFeatureList() {
 	int i = 0;
 	features[i].x = curX1;
 	features[i].y = curY1;
-	features[i].brother[0] = 1;
-	features[i].brother[1] = 2;
-	features[i].brother[2] = 3;
+	features[i].horiz = &features[1];
+	features[i].vert = &features[2];
 	features[i].type = DRAG_SMALL_CIRCLE;
 	i++;
 
 	// Top-right
 	features[i].x = curX2;
 	features[i].y = curY1;
-	features[i].brother[0] = 0;
-	features[i].brother[1] = 3;
-	features[i].brother[2] = 2;
+	features[i].horiz = &features[0];
+	features[i].vert = &features[3];
 	features[i].type = DRAG_SMALL_CIRCLE;
 	i++;
 
 	// Bottom-left
 	features[i].x = curX1;
 	features[i].y = curY2;
-	features[i].brother[0] = 3;
-	features[i].brother[1] = 0;
-	features[i].brother[2] = 1;
+	features[i].horiz = &features[3];
+	features[i].vert = &features[0];
 	features[i].type = DRAG_SMALL_CIRCLE;
 	i++;
 
 	// Bottom-right
 	features[i].x = curX2;
 	features[i].y = curY2;
-	features[i].brother[0] = 2;
-	features[i].brother[1] = 1;
-	features[i].brother[2] = 0;
+	features[i].horiz = &features[2];
+	features[i].vert = &features[1];
 	features[i].type = DRAG_SMALL_CIRCLE;
 	i++;
 }
 
 /// @brief Initialize 
 /// @param feature 
-bool VisualToolClip::InitializeDrag(VisualDraggableFeature &feature) {
+bool VisualToolClip::InitializeDrag(ClipCorner &feature) {
 	curDiag = GetActiveDialogueLine();
 	curDiag->StripTag(L"\\clip");
 	curDiag->StripTag(L"\\iclip");
@@ -195,10 +191,10 @@ bool VisualToolClip::InitializeDrag(VisualDraggableFeature &feature) {
 
 /// @brief Update drag 
 /// @param feature 
-void VisualToolClip::UpdateDrag(VisualDraggableFeature &feature) {
+void VisualToolClip::UpdateDrag(ClipCorner &feature) {
 	// Update brothers
-	features[feature.brother[0]].y = feature.y;
-	features[feature.brother[1]].x = feature.x;
+	feature.horiz->y = feature.y;
+	feature.vert->x = feature.x;
 
 	// Get "cur" from features
 	curX1 = features[0].x;
@@ -213,6 +209,6 @@ void VisualToolClip::UpdateDrag(VisualDraggableFeature &feature) {
 
 /// @brief Done dragging 
 /// @param feature 
-void VisualToolClip::CommitDrag(VisualDraggableFeature &feature) {
+void VisualToolClip::CommitDrag(ClipCorner &feature) {
 	CommitHold();
 }

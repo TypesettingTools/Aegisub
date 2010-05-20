@@ -37,12 +37,26 @@
 #include "visual_feature.h"
 #include "visual_tool.h"
 
+/// @class ClipCorner
+/// @brief VisualDraggableFeature with siblings
+class ClipCorner : public VisualDraggableFeature {
+public:
+	ClipCorner* horiz; /// Other corner on this corner's horizontal line
+	ClipCorner* vert;  /// Other corner on this corner's vertical line
+	/// @brief Constructor
+	ClipCorner()
+		: VisualDraggableFeature()
+		, horiz(NULL)
+		, vert(NULL)
+	{ }
+};
+
 /// DOCME
 /// @class VisualToolClip
 /// @brief DOCME
 ///
 /// DOCME
-class VisualToolClip : public VisualTool<VisualDraggableFeature> {
+class VisualToolClip : public VisualTool<ClipCorner> {
 private:
 
 	/// DOCME
@@ -73,9 +87,9 @@ private:
 	/// @brief DOCME
 	///
 	void PopulateFeatureList();
-	bool InitializeDrag(VisualDraggableFeature &feature);
-	void UpdateDrag(VisualDraggableFeature &feature);
-	void CommitDrag(VisualDraggableFeature &feature);
+	bool InitializeDrag(ClipCorner &feature);
+	void UpdateDrag(ClipCorner &feature);
+	void CommitDrag(ClipCorner &feature);
 
 public:
 	VisualToolClip(VideoDisplay *parent, VideoState const& video, wxToolBar *);

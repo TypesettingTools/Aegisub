@@ -40,10 +40,27 @@
 
 class wxToolBar;
 
+/// @class VisualToolVectorClipDraggableFeature
+/// @brief VisualDraggableFeature with information about a feature's location
+///        in the spline
+class VisualToolVectorClipDraggableFeature : public VisualDraggableFeature {
+public:
+	/// Which curve in the spline this feature is a point on
+	int index;
+	/// 0-3; indicates which part of the curve this point is
+	int point;
+	/// @brief Constructor
+	VisualToolVectorClipDraggableFeature()
+		: VisualDraggableFeature()
+		, index(0)
+		, point(0)
+	{ }
+};
+
 /// DOCME
 /// @class VisualToolVectorClip
 /// @brief DOCME
-class VisualToolVectorClip : public VisualTool<VisualDraggableFeature> {
+class VisualToolVectorClip : public VisualTool<VisualToolVectorClipDraggableFeature> {
 private:
 
 	/// DOCME
@@ -75,9 +92,9 @@ private:
 
 
 	void PopulateFeatureList();
-	void UpdateDrag(VisualDraggableFeature &feature);
-	void CommitDrag(VisualDraggableFeature &feature);
-	bool InitializeDrag(VisualDraggableFeature &feature);
+	void UpdateDrag(VisualToolVectorClipDraggableFeature &feature);
+	void CommitDrag(VisualToolVectorClipDraggableFeature &feature);
+	bool InitializeDrag(VisualToolVectorClipDraggableFeature &feature);
 
 	void DoRefresh();
 
