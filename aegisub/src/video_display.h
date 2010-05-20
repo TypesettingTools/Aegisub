@@ -46,7 +46,7 @@
 class VideoSlider;
 class VideoBox;
 class VideoOutGL;
-class VisualTool;
+class IVisualTool;
 
 struct VideoState {
 	int x;
@@ -132,7 +132,7 @@ class VideoDisplay: public wxGLCanvas {
 	std::auto_ptr<VideoOutGL> videoOut;
 
 	/// The active visual typesetting tool
-	std::auto_ptr<VisualTool> tool;
+	std::auto_ptr<IVisualTool> tool;
 	/// The current tool's ID
 	int activeMode;
 	/// The toolbar used by individual typesetting tools

@@ -45,26 +45,36 @@
 #endif
 
 #include "gl_wrap.h"
-#include "visual_feature.h"
 
-//////////////
-// Prototypes
 class VideoDisplay;
 class AssDialogue;
-class VisualTool;
 struct VideoState;
 
-/// DOCME
+/// First window id for visualsubtoolbar items
 #define VISUAL_SUB_TOOL_START 1300
 
-/// DOCME
+/// Last window id for visualsubtoolbar items
 #define VISUAL_SUB_TOOL_END (VISUAL_SUB_TOOL_START+100)
+
+class IVisualTool : public OpenGLWrapper {
+protected:
+	/// DOCME
+	static const wxColour colour[4];
+public:
+	virtual void OnMouseEvent(wxMouseEvent &event)=0;
+	virtual void OnSubTool(wxCommandEvent &)=0;
+	virtual void Update()=0;
+	virtual void Draw()=0;
+	virtual void Refresh()=0;
+	virtual ~IVisualTool() { };
+};
 
 /// DOCME
 /// @class VisualTool
 /// @brief DOCME
 /// DOCME
-class VisualTool : public OpenGLWrapper {
+template<class FeatureType>
+class VisualTool : public IVisualTool {
 private:
 	/// DOCME
 
@@ -80,9 +90,6 @@ protected:
 	VideoDisplay *parent;
 
 	/// DOCME
-	static const wxColour colour[4];
-
-	/// DOCME
 	bool holding;
 
 	/// DOCME
@@ -95,7 +102,7 @@ protected:
 	int curFeature;
 
 	/// DOCME
-	std::vector<VisualDraggableFeature> features;
+	std::vector<FeatureType> features;
 
 	/// DOCME
 	bool dragListOK;
@@ -153,17 +160,17 @@ protected:
 	/// @brief DOCME
 	/// @param feature 
 	///
-	virtual bool InitializeDrag(VisualDraggableFeature &feature) { return true; }
+	virtual bool InitializeDrag(FeatureType &feature) { return true; }
 
 	/// @brief DOCME
 	/// @param feature 
 	///
-	virtual void UpdateDrag(VisualDraggableFeature &feature) {}
+	virtual void UpdateDrag(FeatureType &feature) {}
 
 	/// @brief DOCME
 	/// @param feature 
 	///
-	virtual void CommitDrag(VisualDraggableFeature &feature) {}
+	virtual void CommitDrag(FeatureType &feature) {}
 
 	/// @brief DOCME
 	///

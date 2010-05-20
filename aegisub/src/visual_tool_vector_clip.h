@@ -34,6 +34,7 @@
 /// @ingroup visual_ts
 ///
 
+#include "visual_feature.h"
 #include "visual_tool.h"
 #include "spline.h"
 
@@ -42,7 +43,7 @@ class wxToolBar;
 /// DOCME
 /// @class VisualToolVectorClip
 /// @brief DOCME
-class VisualToolVectorClip : public VisualTool {
+class VisualToolVectorClip : public VisualTool<VisualDraggableFeature> {
 private:
 
 	/// DOCME

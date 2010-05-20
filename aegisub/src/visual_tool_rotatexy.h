@@ -34,12 +34,13 @@
 /// @ingroup visual_ts
 ///
 
+#include "visual_feature.h"
 #include "visual_tool.h"
 
 /// DOCME
 /// @class VisualToolRotateXY
 /// @brief DOCME
-class VisualToolRotateXY : public VisualTool {
+class VisualToolRotateXY : public VisualTool<VisualDraggableFeature> {
 private:
 
 	/// DOCME

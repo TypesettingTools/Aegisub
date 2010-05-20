@@ -34,20 +34,15 @@
 /// @ingroup visual_ts
 ///
 
-
-
-
-///////////
-// Headers
+#include "visual_feature.h"
 #include "visual_tool.h"
-
 
 /// DOCME
 /// @class VisualToolClip
 /// @brief DOCME
 ///
 /// DOCME
-class VisualToolClip : public VisualTool {
+class VisualToolClip : public VisualTool<VisualDraggableFeature> {
 private:
 
 	/// DOCME

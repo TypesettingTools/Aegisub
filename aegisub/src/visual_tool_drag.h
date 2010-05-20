@@ -39,6 +39,7 @@
 #include <wx/toolbar.h>
 #endif
 
+#include "visual_feature.h"
 #include "visual_tool.h"
 
 
@@ -47,7 +48,7 @@
 /// @brief DOCME
 ///
 /// DOCME
-class VisualToolDrag : public VisualTool {
+class VisualToolDrag : public VisualTool<VisualDraggableFeature> {
 private:
 	/// DOCME
 	wxToolBar *toolBar;

@@ -34,11 +34,7 @@
 /// @ingroup visual_ts
 ///
 
-
-
-
-///////////
-// Headers
+#include "visual_feature.h"
 #include "visual_tool.h"
 
 
@@ -47,7 +43,7 @@
 /// @brief DOCME
 ///
 /// DOCME
-class VisualToolCross : public VisualTool {
+class VisualToolCross : public VisualTool<VisualDraggableFeature> {
 public:
 	VisualToolCross(VideoDisplay *parent, VideoState const& video, wxToolBar *);
 	~VisualToolCross();

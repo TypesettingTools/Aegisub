@@ -34,6 +34,8 @@
 /// @ingroup visual_ts
 ///
 
+#pragma once
+
 class OpenGLWrapper;
 class AssDialogue;
 

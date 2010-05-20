@@ -59,13 +59,15 @@
 #include "video_context.h"
 #include "video_display.h"
 #include "video_provider_manager.h"
+#include "visual_feature.h"
 #include "visual_tool.h"
 
-const wxColour VisualTool::colour[4] = {wxColour(106,32,19), wxColour(255,169,40), wxColour(255,253,185), wxColour(187,0,0)};
+const wxColour IVisualTool::colour[4] = {wxColour(106,32,19), wxColour(255,169,40), wxColour(255,253,185), wxColour(187,0,0)};
 
 /// @brief Constructor
 /// @param parent
-VisualTool::VisualTool(VideoDisplay *parent, VideoState const& video)
+template<class FeatureType>
+VisualTool<FeatureType>::VisualTool(VideoDisplay *parent, VideoState const& video)
 : parent(parent)
 , holding(false)
 , curDiag(NULL)
@@ -83,12 +85,14 @@ VisualTool::VisualTool(VideoDisplay *parent, VideoState const& video)
 }
 
 /// @brief Destructor 
-VisualTool::~VisualTool() {
+template<class FeatureType>
+VisualTool<FeatureType>::~VisualTool() {
 }
 
 /// @brief Mouse event 
 /// @param event 
-void VisualTool::OnMouseEvent (wxMouseEvent &event) {
+template<class FeatureType>
+void VisualTool<FeatureType>::OnMouseEvent (wxMouseEvent &event) {
 	bool realTime = Options.AsBool(L"Video Visual Realtime");
 
 	if (event.Leaving()) {
@@ -203,7 +207,8 @@ void VisualTool::OnMouseEvent (wxMouseEvent &event) {
 
 /// @brief Commit 
 /// @param full 
-void VisualTool::Commit(bool full) {
+template<class FeatureType>
+void VisualTool<FeatureType>::Commit(bool full) {
 	SubtitlesGrid *grid = VideoContext::Get()->grid;
 	if (full) grid->ass->FlagAsModified(_("visual typesetting"));
 	grid->CommitChanges(false,!full);
@@ -212,7 +217,8 @@ void VisualTool::Commit(bool full) {
 
 /// @brief Get active dialogue line 
 /// @return 
-AssDialogue* VisualTool::GetActiveDialogueLine() {
+template<class FeatureType>
+AssDialogue* VisualTool<FeatureType>::GetActiveDialogueLine() {
 	SubtitlesGrid *grid = VideoContext::Get()->grid;
 	AssDialogue *diag = grid->GetDialogue(grid->editBox->linen);
 
@@ -229,7 +235,8 @@ AssDialogue* VisualTool::GetActiveDialogueLine() {
 
 /// @brief Get feature under mouse 
 /// @return 
-int VisualTool::GetHighlightedFeature() {
+template<class FeatureType>
+int VisualTool<FeatureType>::GetHighlightedFeature() {
 	int highestLayerFound = INT_MIN;
 	int bestMatch = -1;
 	for (size_t i=0;i<features.size();i++) {
@@ -242,7 +249,8 @@ int VisualTool::GetHighlightedFeature() {
 }
 
 /// @brief Draw all features 
-void VisualTool::DrawAllFeatures() {
+template<class FeatureType>
+void VisualTool<FeatureType>::DrawAllFeatures() {
 	if (!dragListOK) {
 		PopulateFeatureList();
 		dragListOK = true;
@@ -259,7 +267,8 @@ void VisualTool::DrawAllFeatures() {
 }
 
 /// @brief Refresh 
-void VisualTool::Refresh() {
+template<class FeatureType>
+void VisualTool<FeatureType>::Refresh() {
 	frame_n = VideoContext::Get()->GetFrameN();
 	if (!dragging) dragListOK = false;
 	DoRefresh();
@@ -269,7 +278,8 @@ void VisualTool::Refresh() {
 /// @param diag 
 /// @param x    
 /// @param y    
-void VisualTool::GetLinePosition(AssDialogue *diag,int &x, int &y) {
+template<class FeatureType>
+void VisualTool<FeatureType>::GetLinePosition(AssDialogue *diag,int &x, int &y) {
 	int orgx=0,orgy=0;
 	GetLinePosition(diag,x,y,orgx,orgy);
 }
@@ -280,7 +290,8 @@ void VisualTool::GetLinePosition(AssDialogue *diag,int &x, int &y) {
 /// @param y    
 /// @param orgx 
 /// @param orgy 
-void VisualTool::GetLinePosition(AssDialogue *diag,int &x, int &y, int &orgx, int &orgy) {
+template<class FeatureType>
+void VisualTool<FeatureType>::GetLinePosition(AssDialogue *diag,int &x, int &y, int &orgx, int &orgy) {
 	if (!diag) {
 		x = INT_MIN;
 		y = INT_MIN;
@@ -399,7 +410,8 @@ void VisualTool::GetLinePosition(AssDialogue *diag,int &x, int &y, int &orgx, in
 /// @param y2      
 /// @param t1      
 /// @param t2      
-void VisualTool::GetLineMove(AssDialogue *diag,bool &hasMove,int &x1,int &y1,int &x2,int &y2,int &t1,int &t2) {
+template<class FeatureType>
+void VisualTool<FeatureType>::GetLineMove(AssDialogue *diag,bool &hasMove,int &x1,int &y1,int &x2,int &y2,int &t1,int &t2) {
 	// Parse tags
 	hasMove = false;
 	diag->ParseASSTags();
@@ -443,7 +455,8 @@ void VisualTool::GetLineMove(AssDialogue *diag,bool &hasMove,int &x1,int &y1,int
 /// @param rx   
 /// @param ry   
 /// @param rz   
-void VisualTool::GetLineRotation(AssDialogue *diag,float &rx,float &ry,float &rz) {
+template<class FeatureType>
+void VisualTool<FeatureType>::GetLineRotation(AssDialogue *diag,float &rx,float &ry,float &rz) {
 	// Default values
 	rx = ry = rz = 0.0f;
 
@@ -483,7 +496,8 @@ void VisualTool::GetLineRotation(AssDialogue *diag,float &rx,float &ry,float &rz
 /// @param diag  
 /// @param scalX 
 /// @param scalY 
-void VisualTool::GetLineScale(AssDialogue *diag,float &scalX,float &scalY) {
+template<class FeatureType>
+void VisualTool<FeatureType>::GetLineScale(AssDialogue *diag,float &scalX,float &scalY) {
 	// Default values
 	scalX = scalY = 100.0f;
 
@@ -520,7 +534,8 @@ void VisualTool::GetLineScale(AssDialogue *diag,float &scalX,float &scalY) {
 /// @param x2      
 /// @param y2      
 /// @param inverse 
-void VisualTool::GetLineClip(AssDialogue *diag,int &x1,int &y1,int &x2,int &y2,bool &inverse) {
+template<class FeatureType>
+void VisualTool<FeatureType>::GetLineClip(AssDialogue *diag,int &x1,int &y1,int &x2,int &y2,bool &inverse) {
 	// Default values
 	x1 = y1 = 0;
 	int sw,sh;
@@ -570,7 +585,8 @@ void VisualTool::GetLineClip(AssDialogue *diag,int &x1,int &y1,int &x2,int &y2,b
 /// @param diag    
 /// @param scale   
 /// @param inverse 
-wxString VisualTool::GetLineVectorClip(AssDialogue *diag,int &scale,bool &inverse) {
+template<class FeatureType>
+wxString VisualTool<FeatureType>::GetLineVectorClip(AssDialogue *diag,int &scale,bool &inverse) {
 	// Prepare overrides
 	wxString result;
 	scale = 1;
@@ -615,7 +631,8 @@ wxString VisualTool::GetLineVectorClip(AssDialogue *diag,int &scale,bool &invers
 /// @brief Set override 
 /// @param tag   
 /// @param value 
-void VisualTool::SetOverride(AssDialogue* line, wxString tag, wxString value) {
+template<class FeatureType>
+void VisualTool<FeatureType>::SetOverride(AssDialogue* line, wxString tag, wxString value) {
 	if (!line) return;
 
 	wxString removeTag;
@@ -658,3 +675,5 @@ void VisualTool::SetOverride(AssDialogue* line, wxString tag, wxString value) {
 
 	parent->SetFocus();
 }
+
+template class VisualTool<VisualDraggableFeature>;

@@ -81,7 +81,6 @@ class SubtitlesProvider;
 /// DOCME
 class VideoContext : public wxEvtHandler {
 	friend class AudioProvider;
-	friend class VisualTool;
 
 private:
 	/// DOCME
