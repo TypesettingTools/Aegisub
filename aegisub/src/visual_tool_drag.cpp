@@ -34,9 +34,6 @@
 /// @ingroup visual_ts
 ///
 
-
-///////////
-// Headers
 #include "config.h"
 
 #include "ass_dialogue.h"
@@ -50,12 +47,7 @@
 #include "video_display.h"
 #include "visual_tool_drag.h"
 
-
-///////
-// IDs
 enum {
-
-	/// DOCME
 	BUTTON_TOGGLE_MOVE = VISUAL_SUB_TOOL_START
 };
 
@@ -67,11 +59,10 @@ enum {
 ///
 VisualToolDrag::VisualToolDrag(VideoDisplay *parent, VideoState const& video, wxToolBar * toolBar)
 : VisualTool(parent, video)
+, toolBar(toolBar)
+, toggleMoveOnMove(true)
 {
-	toggleMove = new wxBitmapButton(toolBar,BUTTON_TOGGLE_MOVE,GETIMAGE(visual_move_conv_move_24),wxDefaultPosition);
-	ConnectButton(toggleMove);
-	toolBar->AddControl(toggleMove);
-	toggleMoveOnMove = true;
+	toolBar->AddTool(BUTTON_TOGGLE_MOVE, _("Toggle between \\move and \\pos"), GETIMAGE(visual_move_conv_move_24));
 	toolBar->Realize();
 	toolBar->Show(true);
 }
@@ -96,8 +87,12 @@ void VisualToolDrag::UpdateToggleButtons() {
 	if (toMove == toggleMoveOnMove) return;
 
 	// Change bitmap
-	if (toMove) toggleMove->SetBitmapLabel(GETIMAGE(visual_move_conv_move_24));
-	else toggleMove->SetBitmapLabel(GETIMAGE(visual_move_conv_pos_24));
+	if (toMove) {
+		toolBar->SetToolNormalBitmap(BUTTON_TOGGLE_MOVE, GETIMAGE(visual_move_conv_move_24));
+	}
+	else {
+		toolBar->SetToolNormalBitmap(BUTTON_TOGGLE_MOVE, GETIMAGE(visual_move_conv_pos_24));
+	}
 	toggleMoveOnMove = toMove;
 }
 
@@ -106,8 +101,7 @@ void VisualToolDrag::UpdateToggleButtons() {
 /// @brief Toggle button pressed 
 /// @param event 
 /// @return 
-///
-void VisualToolDrag::OnButton(wxCommandEvent &event) {
+void VisualToolDrag::OnSubTool(wxCommandEvent &event) {
 	// Get line
 	AssDialogue *line = GetActiveDialogueLine();
 	if (!line) return;
@@ -125,10 +119,7 @@ void VisualToolDrag::OnButton(wxCommandEvent &event) {
 		// Replace tag
 		if (hasMove) SetOverride(L"\\pos",wxString::Format(L"(%i,%i)",x1,y1));
 		else SetOverride(L"\\move",wxString::Format(L"(%i,%i,%i,%i,%i,%i)",x1,y1,x1,y1,0,line->End.GetMS() - line->Start.GetMS()));
-		SubtitlesGrid *grid = VideoContext::Get()->grid;
-		grid->editBox->CommitText();
-		grid->ass->FlagAsModified(_("visual typesetting"));
-		grid->CommitChanges(false,true);
+		Commit(true);
 
 		// Update display
 		Refresh();

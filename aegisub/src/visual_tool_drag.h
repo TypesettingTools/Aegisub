@@ -34,11 +34,6 @@
 /// @ingroup visual_ts
 ///
 
-
-
-
-///////////
-// Headers
 #ifndef AGI_PRE
 #include <wx/bmpbuttn.h>
 #include <wx/toolbar.h>
@@ -54,13 +49,11 @@
 /// DOCME
 class VisualToolDrag : public VisualTool {
 private:
-
 	/// DOCME
-	wxBitmapButton *toggleMove;
+	wxToolBar *toolBar;
 
 	/// DOCME
 	bool toggleMoveOnMove;
-
 
 	/// @brief DOCME
 	///
@@ -69,7 +62,6 @@ private:
 	void UpdateDrag(VisualDraggableFeature &feature);
 	void CommitDrag(VisualDraggableFeature &feature);
 
-	void OnButton(wxCommandEvent &event);
 	void UpdateToggleButtons();
 	void DoRefresh();
 
@@ -77,4 +69,5 @@ public:
 	VisualToolDrag(VideoDisplay *parent, VideoState const& video, wxToolBar *toolbar);
 
 	void Draw();
+	void OnSubTool(wxCommandEvent &event);
 };

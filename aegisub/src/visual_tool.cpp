@@ -71,7 +71,6 @@ const wxColour VisualTool::colour[4] = {wxColour(106,32,19), wxColour(255,169,40
 /// @param parent
 VisualTool::VisualTool(VideoDisplay *parent, VideoState const& video)
 : parent(parent)
-, eventSink(this)
 , holding(false)
 , curDiag(NULL)
 , dragging(false)
@@ -691,22 +690,4 @@ wxString VisualTool::GetLineVectorClip(AssDialogue *diag,int &scale,bool &invers
 void VisualTool::SetOverride(wxString tag,wxString value) {
 	VideoContext::Get()->grid->editBox->SetOverride(tag,value,0,false);
 	//parent->SetFocus();
-}
-
-/// @brief Connect button 
-/// @param button 
-void VisualTool::ConnectButton(wxButton *button) {
-	button->Connect(wxEVT_COMMAND_BUTTON_CLICKED,wxCommandEventHandler(VisualToolEvent::OnButton),NULL,&eventSink);
-}
-
-/// @brief Event sink 
-/// @param _tool 
-VisualToolEvent::VisualToolEvent(VisualTool *_tool) {
-	tool = _tool;
-}
-
-/// @brief DOCME
-/// @param event 
-void VisualToolEvent::OnButton(wxCommandEvent &event) {
-	tool->OnButton(event);
 }

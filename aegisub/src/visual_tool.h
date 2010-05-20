@@ -70,36 +70,11 @@ struct VideoState;
 
 
 /// DOCME
-/// @class VisualToolEvent
-/// @brief DOCME
-///
-/// DOCME
-class VisualToolEvent : public wxEvtHandler {
-private:
-
-	/// DOCME
-	VisualTool *tool;
-
-public:
-	void OnButton(wxCommandEvent &event);
-
-	VisualToolEvent(VisualTool *tool);
-};
-
-
-
-/// DOCME
 /// @class VisualTool
 /// @brief DOCME
 ///
 /// DOCME
 class VisualTool : public OpenGLWrapper {
-	friend class VisualToolEvent;
-
-private:
-	/// DOCME
-	VisualToolEvent eventSink;
-
 	int GetHighlightedFeature();
 protected:
 	/// DOCME
@@ -172,15 +147,6 @@ protected:
 	AssDialogue *GetActiveDialogueLine();
 	void DrawAllFeatures();
 	void Commit(bool full=false);
-
-	void ConnectButton(wxButton *button);
-
-	/// @brief DOCME
-	/// @param event 
-	/// @return 
-	///
-	virtual void OnButton(wxCommandEvent &event) {}
-
 
 	/// @brief DOCME
 	/// @return 
