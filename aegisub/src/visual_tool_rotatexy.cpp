@@ -166,7 +166,7 @@ void VisualToolRotateXY::Draw() {
 }
 
 /// @brief Start holding 
-void VisualToolRotateXY::InitializeHold() {
+bool VisualToolRotateXY::InitializeHold() {
 	GetLinePosition(curDiag,odx,ody,orgx,orgy);
 	GetLineRotation(curDiag,origAngleX,origAngleY,rz);
 	startAngleX = (orgy-video.x)*2.0;
@@ -175,6 +175,8 @@ void VisualToolRotateXY::InitializeHold() {
 	curAngleY = origAngleY;
 	curDiag->StripTag(L"\\frx");
 	curDiag->StripTag(L"\\fry");
+
+	return true;
 }
 
 /// @brief Update hold 

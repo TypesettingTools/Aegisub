@@ -262,12 +262,6 @@ void VisualToolVectorClip::PopulateFeatureList() {
 	}
 }
 
-/// @brief Can drag? 
-/// @return 
-bool VisualToolVectorClip::DragEnabled() {
-	return mode <= 4;
-}
-
 /// @brief Update 
 /// @param feature 
 void VisualToolVectorClip::UpdateDrag(VisualDraggableFeature &feature) {
@@ -283,7 +277,7 @@ void VisualToolVectorClip::CommitDrag(VisualDraggableFeature &feature) {
 /// @brief Clicked a feature 
 /// @param feature 
 /// @return 
-void VisualToolVectorClip::ClickedFeature(VisualDraggableFeature &feature) {
+bool VisualToolVectorClip::InitializeDrag(VisualDraggableFeature &feature) {
 	// Delete a control point
 	if (mode == 5) {
 		int i = 0;
@@ -301,21 +295,16 @@ void VisualToolVectorClip::ClickedFeature(VisualDraggableFeature &feature) {
 				CommitDrag(feature);
 				curFeature = -1;
 				Commit(true);
-				return;
+				return false;
 			}
 		}
 	}
-}
-
-/// @brief Can hold? 
-/// @return 
-bool VisualToolVectorClip::HoldEnabled() {
-	return mode <= 4 || mode == 6 || mode == 7;
+	return true;
 }
 
 /// @brief Initialize hold 
 /// @return 
-void VisualToolVectorClip::InitializeHold() {
+bool VisualToolVectorClip::InitializeHold() {
 	// Insert line/bicubic
 	if (mode == 1 || mode == 2) {
 		SplineCurve curve;
@@ -338,10 +327,12 @@ void VisualToolVectorClip::InitializeHold() {
 
 		// Insert
 		spline.AppendCurve(curve);
+		UpdateHold();
+		return true;
 	}
 
 	// Convert and insert
-	else if (mode == 3 || mode == 4) {
+	if (mode == 3 || mode == 4) {
 		// Get closest point
 		Vector2D pt;
 		int curve;
@@ -371,7 +362,7 @@ void VisualToolVectorClip::InitializeHold() {
 		// Insert
 		else {
 			// Check if there is at least one curve to split
-			if (spline.curves.size() == 0) return;
+			if (spline.curves.size() == 0) return false;
 
 			// Split the curve
 			SplineCurve *c1 = spline.GetCurve(curve);
@@ -393,15 +384,18 @@ void VisualToolVectorClip::InitializeHold() {
 		// Commit
 		SetOverride(GetActiveDialogueLine(), inverse ? L"\\iclip" : L"\\clip", L"(" + spline.EncodeToASS() + L")");
 		Commit(true);
+		return false;
 	}
 
 	// Freehand
-	else if (mode == 6 || mode == 7) {
+	if (mode == 6 || mode == 7) {
 		features.clear();
 		spline.curves.clear();
-		lastX = -100000;
-		lastY = -100000;
+		lastX = INT_MIN;
+		lastY = INT_MIN;
+		return true;
 	}
+	return false;
 }
 
 /// @brief Update hold 
@@ -434,7 +428,7 @@ void VisualToolVectorClip::UpdateHold() {
 
 	// Freehand
 	if (mode == 6 || mode == 7) {
-		if (lastX !=	-100000 && lastY != -100000) {
+		if (lastX != INT_MIN && lastY != INT_MIN) {
 			// See if distance is enough
 			Vector2D delta(lastX-video.x,lastY-video.y);
 			int len = (int)delta.Len();

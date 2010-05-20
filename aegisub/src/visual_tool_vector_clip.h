@@ -68,21 +68,15 @@ private:
 	/// @brief DOCME
 	/// @return 
 	///
-	bool CanHold() { return true; }
-	bool HoldEnabled();
-	void InitializeHold();
+	bool InitializeHold();
 	void UpdateHold();
 	void CommitHold();
 
 
-	/// @brief DOCME
-	///
-	bool CanDrag() { return true; }
-	bool DragEnabled();
 	void PopulateFeatureList();
 	void UpdateDrag(VisualDraggableFeature &feature);
 	void CommitDrag(VisualDraggableFeature &feature);
-	void ClickedFeature(VisualDraggableFeature &feature);
+	bool InitializeDrag(VisualDraggableFeature &feature);
 
 	void DoRefresh();
 

@@ -79,7 +79,7 @@ VisualTool::VisualTool(VideoDisplay *parent, VideoState const& video)
 		frame_n = VideoContext::Get()->GetFrameN();
 	}
 
-	if (CanDrag()) PopulateFeatureList();
+	PopulateFeatureList();
 }
 
 /// @brief Destructor 
@@ -106,25 +106,72 @@ void VisualTool::OnMouseEvent (wxMouseEvent &event) {
 #endif
 	altDown = event.m_altDown;
 
-	// Drag a feature
-	if (CanDrag()) {
-		if (!dragListOK) {
-			PopulateFeatureList();
-			dragListOK = true;
-		}
+	if (!dragListOK) {
+		PopulateFeatureList();
+		dragListOK = true;
+	}
 
-		// Click on feature
-		if (!dragging && leftClick && !DragEnabled()) {
-			curFeature = GetHighlightedFeature();
-			if (curFeature != -1) {
-				ClickedFeature(features[curFeature]);
+	if (dragging) {
+		// continue drag
+		if (event.LeftIsDown()) {
+			features[curFeature].x = (video.x - dragStartX + dragOrigX);
+			features[curFeature].y = (video.y - dragStartY + dragOrigY);
+			if (shiftDown) {
+				if (abs(video.x - dragStartX) > abs(video.y - dragStartY)) {
+					features[curFeature].y = dragOrigY;
+				}
+				else {
+					features[curFeature].x = dragOrigX;
+				}
+			}
+			UpdateDrag(features[curFeature]);
+
+			if (realTime) {
+				CommitDrag(features[curFeature]);
+				Commit();
 			}
 		}
+		// end drag
+		else {
+			if (realTime) AssLimitToVisibleFilter::SetFrame(-1);
 
-		if (!dragging && leftClick && DragEnabled()) {
-			curFeature = GetHighlightedFeature();
-			if (curFeature != -1) {
-				InitializeDrag(features[curFeature]);
+			dragging = false;
+			CommitDrag(features[curFeature]);
+			Commit(true);
+
+			curFeature = -1;
+			parent->ReleaseMouse();
+			parent->SetFocus();
+		}
+	}
+	else if (holding) {
+		// continue hold
+		if (event.LeftIsDown()) {
+			UpdateHold();
+
+			if (realTime) {
+				CommitHold();
+				Commit();
+			}
+		}
+		// end hold
+		else {
+			if (realTime) AssLimitToVisibleFilter::SetFrame(-1);
+
+			holding = false;
+			CommitHold();
+			Commit(true);
+
+			curDiag = NULL;
+			parent->ReleaseMouse();
+			parent->SetFocus();
+		}
+	}
+	else if (leftClick) {
+		curFeature = GetHighlightedFeature();
+		// start drag
+		if (curFeature > -1) {
+			if (InitializeDrag(features[curFeature])) {
 				if (features[curFeature].lineN != -1) {
 					VideoContext::Get()->grid->editBox->SetToLine(features[curFeature].lineN,true);
 					VideoContext::Get()->grid->SelectRow(features[curFeature].lineN);
@@ -140,72 +187,13 @@ void VisualTool::OnMouseEvent (wxMouseEvent &event) {
 				if (realTime) AssLimitToVisibleFilter::SetFrame(frame_n);
 			}
 		}
-
-		if (dragging) {
-			if (event.LeftIsDown()) {
-				features[curFeature].x = (video.x - dragStartX + dragOrigX);
-				features[curFeature].y = (video.y - dragStartY + dragOrigY);
-				if (shiftDown) {
-					if (abs(video.x - dragStartX) > abs(video.y - dragStartY)) {
-						features[curFeature].y = dragOrigY;
-					}
-					else {
-						features[curFeature].x = dragOrigX;
-					}
-				}
-				UpdateDrag(features[curFeature]);
-
-				if (realTime) {
-					CommitDrag(features[curFeature]);
-					Commit();
-				}
-			}
-			else {
-				if (realTime) AssLimitToVisibleFilter::SetFrame(-1);
-
-				dragging = false;
-				CommitDrag(features[curFeature]);
-				Commit(true);
-
-				curFeature = -1;
-				parent->ReleaseMouse();
-				parent->SetFocus();
-			}
-		}
-	}
-
-	// Hold
-	if (!dragging && CanHold()) {
-		if (!holding && event.LeftIsDown() && HoldEnabled()) {
+		// start hold
+		else {
 			curDiag = GetActiveDialogueLine();
-			if (curDiag) {
-				InitializeHold();
-
+			if (curDiag && InitializeHold()) {
 				holding = true;
 				parent->CaptureMouse();
 				if (realTime) AssLimitToVisibleFilter::SetFrame(frame_n);
-			}
-		}
-
-		if (holding) {
-			if (event.LeftIsDown()) {
-				UpdateHold();
-
-				if (realTime) {
-					CommitHold();
-					Commit();
-				}
-			}
-			else {
-				if (realTime) AssLimitToVisibleFilter::SetFrame(-1);
-
-				holding = false;
-				CommitHold();
-				Commit(true);
-
-				curDiag = NULL;
-				parent->ReleaseMouse();
-				parent->SetFocus();
 			}
 		}
 	}

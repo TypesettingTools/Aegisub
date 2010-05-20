@@ -64,8 +64,7 @@ private:
 
 	/// @brief DOCME
 	///
-	bool CanHold() { return true; }
-	void InitializeHold();
+	bool InitializeHold();
 	void UpdateHold();
 	void CommitHold();
 

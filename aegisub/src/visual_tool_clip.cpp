@@ -93,21 +93,16 @@ void VisualToolClip::Draw() {
 	// Draw circles
 	SetLineColour(colour[0]);
 	SetFillColour(colour[1],0.5);
-	if (CanDrag()) DrawAllFeatures();
-	else {
-		DrawCircle(dx1,dy1,4);
-		DrawCircle(dx2,dy1,4);
-		DrawCircle(dx2,dy2,4);
-		DrawCircle(dx1,dy2,4);
-	}
+	DrawAllFeatures();
 }
 
 /// @brief Start holding 
-void VisualToolClip::InitializeHold() {
+bool VisualToolClip::InitializeHold() {
 	startX = video.x;
 	startY = video.y;
 	curDiag->StripTag(L"\\clip");
 	curDiag->StripTag(L"\\iclip");
+	return true;
 }
 
 /// @brief Update hold 
@@ -129,7 +124,7 @@ void VisualToolClip::UpdateHold() {
 	curY2 = MID(0,curY2,video.h);
 	
 	// Features
-	if (CanDrag()) PopulateFeatureList();
+	PopulateFeatureList();
 }
 
 /// @brief Commit hold 
@@ -191,10 +186,11 @@ void VisualToolClip::PopulateFeatureList() {
 
 /// @brief Initialize 
 /// @param feature 
-void VisualToolClip::InitializeDrag(VisualDraggableFeature &feature) {
+bool VisualToolClip::InitializeDrag(VisualDraggableFeature &feature) {
 	curDiag = GetActiveDialogueLine();
 	curDiag->StripTag(L"\\clip");
 	curDiag->StripTag(L"\\iclip");
+	return true;
 }
 
 /// @brief Update drag 

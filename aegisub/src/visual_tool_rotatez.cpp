@@ -151,13 +151,15 @@ void VisualToolRotateZ::Draw() {
 }
 
 /// @brief Start holding 
-void VisualToolRotateZ::InitializeHold() {
+bool VisualToolRotateZ::InitializeHold() {
 	GetLinePosition(curDiag,odx,ody,orgx,orgy);
 	startAngle = atan2(double(orgy-video.y),double(video.x-orgx)) * 180.0 / 3.1415926535897932;
 	GetLineRotation(curDiag,rx,ry,origAngle);
 	curAngle = origAngle;
 	curDiag->StripTag(L"\\frz");
 	curDiag->StripTag(L"\\fr");
+
+	return true;
 }
 
 /// @brief Update hold 

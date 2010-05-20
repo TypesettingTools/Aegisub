@@ -124,7 +124,7 @@ void VisualToolScale::Draw() {
 }
 
 /// @brief Start holding 
-void VisualToolScale::InitializeHold() {
+bool VisualToolScale::InitializeHold() {
 	startX = video.x;
 	startY = video.y;
 	GetLineScale(curDiag,origScaleX,origScaleY);
@@ -132,6 +132,8 @@ void VisualToolScale::InitializeHold() {
 	curScaleY = origScaleY;
 	curDiag->StripTag(_T("\\fscx"));
 	curDiag->StripTag(_T("\\fscy"));
+
+	return true;
 }
 
 /// @brief Update hold 

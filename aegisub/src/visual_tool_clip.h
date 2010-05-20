@@ -70,17 +70,15 @@ private:
 	/// @brief DOCME
 	/// @return 
 	///
-	bool CanHold() { return true; }
-	void InitializeHold();
+	bool InitializeHold();
 	void UpdateHold();
 	void CommitHold();
 
 
 	/// @brief DOCME
 	///
-	bool CanDrag() { return true; }
 	void PopulateFeatureList();
-	void InitializeDrag(VisualDraggableFeature &feature);
+	bool InitializeDrag(VisualDraggableFeature &feature);
 	void UpdateDrag(VisualDraggableFeature &feature);
 	void CommitDrag(VisualDraggableFeature &feature);
 

@@ -66,6 +66,15 @@ struct VideoState;
 /// @brief DOCME
 /// DOCME
 class VisualTool : public OpenGLWrapper {
+private:
+	/// DOCME
+
+	/// DOCME
+
+	/// DOCME
+
+	/// DOCME
+	int dragStartX,dragStartY,dragOrigX,dragOrigY;
 	int GetHighlightedFeature();
 protected:
 	/// DOCME
@@ -88,15 +97,6 @@ protected:
 
 	/// DOCME
 	std::vector<VisualDraggableFeature> features;
-
-	/// DOCME
-
-	/// DOCME
-
-	/// DOCME
-
-	/// DOCME
-	int dragStartX,dragStartY,dragOrigX,dragOrigY;
 
 	/// DOCME
 	bool dragListOK;
@@ -135,18 +135,8 @@ protected:
 	void Commit(bool full=false);
 
 	/// @brief DOCME
-	/// @return 
 	///
-	virtual bool CanHold() { return false; }
-
-	/// @brief DOCME
-	/// @return 
-	///
-	virtual bool HoldEnabled() { return true; }
-
-	/// @brief DOCME
-	///
-	virtual void InitializeHold() {}
+	virtual bool InitializeHold() { return false; }
 
 	/// @brief DOCME
 	///
@@ -158,23 +148,13 @@ protected:
 	virtual void CommitHold() {}
 
 	/// @brief DOCME
-	/// @return 
 	///
-	virtual bool CanDrag() { return false; }
-
-	/// @brief DOCME
-	/// @return 
-	///
-	virtual bool DragEnabled() { return true; }
-
-	/// @brief DOCME
-	///
-	virtual void PopulateFeatureList() { wxLogMessage(_T("wtf?")); }
+	virtual void PopulateFeatureList() { }
 
 	/// @brief DOCME
 	/// @param feature 
 	///
-	virtual void InitializeDrag(VisualDraggableFeature &feature) {}
+	virtual bool InitializeDrag(VisualDraggableFeature &feature) { return true; }
 
 	/// @brief DOCME
 	/// @param feature 
@@ -185,11 +165,6 @@ protected:
 	/// @param feature 
 	///
 	virtual void CommitDrag(VisualDraggableFeature &feature) {}
-
-	/// @brief DOCME
-	/// @param feature 
-	///
-	virtual void ClickedFeature(VisualDraggableFeature &feature) {}
 
 	/// @brief DOCME
 	///
