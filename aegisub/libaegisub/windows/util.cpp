@@ -34,7 +34,7 @@ namespace agi {
 
 
 const std::string DirName(const std::string& path) {
-    if (path.find('/') == std::string::npos) {
+	if (path.find('/') == std::string::npos) {
 		const std::string cwd(".");
 		return cwd;
 	}
@@ -52,7 +52,7 @@ void Rename(const std::string& from, const std::string& to) {
 		acs::CheckDirWrite(DirName(to));
 	}
 
-	rename(from.c_str(), to.c_str());
+	MoveFileExA(from.c_str(), to.c_str(), MOVEFILE_REPLACE_EXISTING);
 }
 
 	} // namespace io

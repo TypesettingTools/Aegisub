@@ -60,7 +60,6 @@ Save::Save(const std::string& file): file_name(file) {
 		// util::Rename will find it, and to let users know something went
 		// wrong by leaving a 0 byte file.
 		std::ofstream fp_touch(file.c_str());
-		fp_touch.close();
 	}
 
 	/// @todo This is a temp hack, proper implementation needs to come after
@@ -75,9 +74,8 @@ Save::Save(const std::string& file): file_name(file) {
 Save::~Save() {
 
 	const std::string tmp(file_name + "_tmp");
-	util::Rename(tmp, file_name);
 	delete fp;
-	fp = 0;	// to avoid any silly errors.
+	util::Rename(tmp, file_name);
 }
 
 std::ofstream& Save::Get() {
