@@ -74,6 +74,7 @@
 #include "video_context.h"
 
 #include <libaegisub/io.h>
+#include <libaegisub/access.h>
 
 ///////////////////
 // wxWidgets macro
@@ -142,6 +143,12 @@ bool AegisubApp::OnInit() {
 	StartupLog(_T("Inside OnInit"));
 	frame = NULL;
 	try {
+		// App name (yeah, this is a little weird to get rid of an odd warning)
+#if defined(__WXMSW__) || defined(__WXMAC__)
+		SetAppName(_T("Aegisub"));
+#else
+		SetAppName(_T("aegisub"));
+#endif
 
 		const std::string conf_mru(StandardPaths::DecodePath(_T("?user/mru.json")));
 		mru = new agi::MRUManager(conf_mru, GET_DEFAULT_CONFIG(default_mru));
@@ -151,6 +158,25 @@ bool AegisubApp::OnInit() {
 		try {
 			const std::string conf_user(StandardPaths::DecodePath(_T("?user/config.json")));
 			opt = new agi::Options(conf_user, GET_DEFAULT_CONFIG(default_config));
+
+#ifdef __WXMSW__
+			// Try loading configuration from the install dir if one exists there
+			try {
+				const std::string conf_local(StandardPaths::DecodePath(_T("?data/config.json")));
+				std::ifstream* localConfig = agi::io::Open(conf_local);
+				opt->ConfigNext(*localConfig);
+				delete localConfig;
+
+				if (OPT_GET("App/Local Config")->GetBool()) {
+					// Local config, make ?user mean ?data so all user settings are placed in install dir
+					StandardPaths::SetPathValue(_T("?user"), StandardPaths::DecodePath(_T("?data")));
+				}
+			}
+			catch (agi::acs::AcsError const&) {
+				// File doesn't exist or we can't read it
+				// Might be worth displaying an error in the second case
+			}
+#endif
 			opt->ConfigUser();
 /*
 #ifdef _DEBUG
@@ -176,17 +202,6 @@ bool AegisubApp::OnInit() {
 		StartupLog(_T("Set initial locale"));
 		setlocale(LC_NUMERIC, "C");
 		setlocale(LC_CTYPE, "C");
-
-		// App name (yeah, this is a little weird to get rid of an odd warning)
-#ifdef __WXMSW__
-		SetAppName(_T("Aegisub"));
-#else
-#ifdef __WXMAC__
-		SetAppName(_T("Aegisub"));
-#else
-		SetAppName(_T("aegisub"));
-#endif
-#endif
 
 		// Crash handling
 #if !defined(_DEBUG) || defined(WITH_EXCEPTIONS)
