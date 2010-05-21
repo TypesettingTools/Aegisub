@@ -22,10 +22,10 @@ echo '{"Valid" : []}' > data/mru_ok.json
 
 echo '{"Invalid" : [1 3]}' > data/mru_invalid.json
 
-echo '' data/rename_me
+echo '' > data/rename_me
 
-echo '' data/rename_me_overwrite
-echo '' data/rename_me_overwrite_renamed
+echo '' > data/rename_me_overwrite
+echo '' > data/rename_me_overwrite_renamed
 
 
 echo '{"String" : "This is a test"}' > data/option_string.json
