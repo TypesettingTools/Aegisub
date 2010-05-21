@@ -42,10 +42,9 @@
 // Headers
 #ifndef AGI_PRE
 #include <wx/string.h>
-
-#include "include/aegisub/exception.h"
 #endif
 
+#include <libaegisub/exception.h>
 
 //////////////
 // Prototypes
@@ -81,18 +80,18 @@ namespace Aegisub {
 	/// @brief DOCME
 	///
 	/// DOCME
-	class InvalidMarginIdError : public InternalError {
+	class InvalidMarginIdError : public agi::InternalError {
 	public:
 
 		/// @brief DOCME
 		/// @return 
 		///
-		InvalidMarginIdError() : InternalError(_T("Invalid margin id"), 0) { }
+		InvalidMarginIdError() : InternalError("Invalid margin id", 0) { }
 
 		/// @brief DOCME
 		/// @return 
 		///
-		const wxChar *GetName() { return _T("internal_error/invalid_margin_id"); }
+		const char *GetName() { return "internal_error/invalid_margin_id"; }
 	};
 };
 

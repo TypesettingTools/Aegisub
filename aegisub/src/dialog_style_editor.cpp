@@ -50,10 +50,12 @@
 #include "ass_override.h"
 #include "ass_style.h"
 #include "ass_style_storage.h"
+#include "compat.h"
 #include "dialog_colorpicker.h"
 #include "dialog_style_editor.h"
 #include "help_button.h"
 #include "libresrc/libresrc.h"
+#include "main.h"
 #include "options.h"
 #include "subs_grid.h"
 #include "subs_preview.h"
@@ -362,9 +364,9 @@ DialogStyleEditor::DialogStyleEditor (wxWindow *parent, AssStyle *_style, Subtit
 	SubsPreview = NULL;
 	PreviewText = NULL;
 	if (SubtitlesProviderFactoryManager::ProviderAvailable()) {
-		PreviewText = new wxTextCtrl(this,TEXT_PREVIEW,Options.AsText(_T("Style editor preview text")));
-		previewButton = new ColourButton(this,BUTTON_PREVIEW_COLOR,wxSize(45,16),Options.AsColour(_T("Style editor preview background")));
-		SubsPreview = new SubtitlesPreview(this,-1,wxDefaultPosition,wxSize(100,60),wxSUNKEN_BORDER,Options.AsColour(_T("Style editor preview background")));
+		PreviewText = new wxTextCtrl(this,TEXT_PREVIEW,lagi_wxString(OPT_GET("Tool/Style Editor/Preview Text")->GetString()));
+		previewButton = new ColourButton(this,BUTTON_PREVIEW_COLOR,wxSize(45,16),lagi_wxColour(OPT_GET("Colour/Style Editor/Background/Preview")->GetColour()));
+		SubsPreview = new SubtitlesPreview(this,-1,wxDefaultPosition,wxSize(100,60),wxSUNKEN_BORDER,lagi_wxColour(OPT_GET("Colour/Style Editor/Background/Preview")->GetColour()));
 	
 		SubsPreview->SetToolTip(_("Preview of current style."));
 		SubsPreview->SetStyle(style);
@@ -588,8 +590,7 @@ void DialogStyleEditor::Apply (bool apply,bool close) {
 		// Exit
 		if (close) {
 			EndModal(1);
-			if (PreviewText) Options.SetText(_T("Style editor preview text"),PreviewText->GetValue());
-			Options.Save();
+			if (PreviewText) OPT_SET("Tool/Style Editor/Preview Text")->SetString(STD_STR(PreviewText->GetValue()));
 		}
 
 		// Update preview
@@ -600,8 +601,7 @@ void DialogStyleEditor::Apply (bool apply,bool close) {
 	else {
 		if (close) {
 			EndModal(0);
-			if (PreviewText) Options.SetText(_T("Style editor preview text"),PreviewText->GetValue());
-			Options.Save();
+			if (PreviewText) OPT_SET("Tool/Style Editor/Preview Text")->SetString(STD_STR(PreviewText->GetValue()));
 		}
 	}
 }
@@ -722,8 +722,7 @@ void DialogStyleEditor::OnPreviewTextChange (wxCommandEvent &event) {
 ///
 void DialogStyleEditor::OnPreviewColourChange (wxCommandEvent &event) {
 	if (SubsPreview) SubsPreview->SetColour(previewButton->GetColour());
-	Options.SetColour(_T("Style editor preview background"),previewButton->GetColour());
-	Options.Save();
+	OPT_SET("Colour/Style Editor/Background/Preview")->SetColour(STD_STR(previewButton->GetColour().GetAsString(wxC2S_CSS_SYNTAX)));
 }
 
 /// @brief Command event to update preview 

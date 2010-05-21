@@ -1,0 +1,12 @@
+@INCLUDE = doxyfile_base
+
+PROJECT_NAME           = "libaegisub"
+
+INPUT                  = ../../libaegisub/ ./pages_libaegisub
+
+EXCLUDE_PATTERNS       = */.svn* */.deps* */.libs*
+
+PREDEFINED             +=	\
+							__WINDOWS__ \
+							__UNIX__ \
+							__OSX__

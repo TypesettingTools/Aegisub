@@ -36,13 +36,10 @@
 
 #pragma once
 
-#ifndef AGI_PRE
-#include <wx/string.h>
-#endif
-
+#include <string>
 
 /// @see aegisub.h
-namespace Aegisub {
+namespace agi {
 
 
 	/// @class Exception
@@ -61,11 +58,11 @@ namespace Aegisub {
 	/// When throwing exceptions, throw temporaries, not heap allocated
 	/// objects. (C++ FAQ Lite 17.6.) I.e. this is correct:
 	/// @code
-	/// throw Aegisub::SomeException(_T("Message for exception"));
+	/// throw Aegisub::SomeException("Message for exception");
 	/// @endcode
 	/// This is wrong:
 	/// @code
-	/// throw new Aegisub::SomeException(_T("Remember this is the wrong way!"));
+	/// throw new Aegisub::SomeException("Remember this is the wrong way!");
 	/// @endcode
 	/// Exceptions must not be allocated on heap, because of the risks of
 	/// leaking memory that way. (C++ FAQ Lite 17.8.)
@@ -96,7 +93,7 @@ namespace Aegisub {
 	class Exception {
 
 		/// The error message
-		wxString message;
+		std::string message;
 
 		/// An inner exception, the cause of this exception
 		Exception *inner;
@@ -109,7 +106,7 @@ namespace Aegisub {
 		///
 		/// Deriving classes should always use this constructor for initialising
 		/// the base class.
-		Exception(const wxString &msg, const Exception *inr = 0)
+		Exception(const std::string &msg, const Exception *inr = 0)
 			: message(msg)
 			, inner(0)
 		{
@@ -136,7 +133,7 @@ namespace Aegisub {
 
 		/// @brief Get the outer exception error message
 		/// @return Error message
-		virtual wxString GetMessage() const { return message; }
+		virtual std::string GetMessage() const { return message; }
 
 		/// @brief Get error messages for chained exceptions
 		/// @return Chained error message
@@ -144,7 +141,7 @@ namespace Aegisub {
 		/// If there is an inner exception, prepend its chained error message to
 		/// our error message, with a CRLF between. Returns our own error message
 		/// alone if there is no inner exception.
-		wxString GetChainedMessage() const { if (inner) return inner->GetChainedMessage() + _T("\r\n") + GetMessage(); else return GetMessage(); }
+		std::string GetChainedMessage() const { if (inner) return inner->GetChainedMessage() + "\r\n" + GetMessage(); else return GetMessage(); }
 		
 		/// @brief Exception class printable name
 		///
@@ -155,16 +152,16 @@ namespace Aegisub {
 		/// name for their sub-tree, further sub-classes add further levels, each
 		/// level is separated by a slash. Characters allowed in the name for a
 		/// level are [a-z0-9_].
-		virtual const wxChar * GetName() const = 0;
+		virtual const char * GetName() const = 0;
 
 
-		/// @brief Convert to wxChar array as the error message
+		/// @brief Convert to char array as the error message
 		/// @return The error message
-		operator const wxChar * () { return GetMessage().c_str(); }
+		operator const char * () { return GetMessage().c_str(); }
 
-		/// @brief Convert to wxString as the error message
+		/// @brief Convert to std::string as the error message
 		/// @return The error message
-		operator wxString () { return GetMessage(); }
+		operator std::string () { return GetMessage(); }
 
 		/// @brief Create a copy of the exception allocated on the heap
 		/// @return A heap-allocated exception object
@@ -180,7 +177,7 @@ namespace Aegisub {
 ///
 /// Intended for use in error messages where it can sometimes be convenient to
 /// indicate the exact position the error occurred at.
-#define AG_WHERE _T(" (at ") _T(__FILE__) _T(":") _T(#__LINE__) _T(")")
+#define AG_WHERE " (at " __FILE__ ":" #__LINE__ ")"
 
 
 
@@ -194,8 +191,8 @@ namespace Aegisub {
 #define DEFINE_SIMPLE_EXCEPTION_NOINNER(classname,baseclass,displayname)             \
 	class classname : public baseclass {                                             \
 	public:                                                                          \
-		classname(const wxString &msg) : baseclass(msg) { }                          \
-		const wxChar * GetName() const { return _T(displayname); }                   \
+		classname(const std::string &msg) : baseclass(msg) { }                          \
+		const char * GetName() const { return displayname; }                   \
 		Exception * Copy() const { return new classname(*this); }                    \
 	};
 
@@ -209,8 +206,8 @@ namespace Aegisub {
 #define DEFINE_SIMPLE_EXCEPTION(classname,baseclass,displayname)                     \
 	class classname : public baseclass {                                             \
 	public:                                                                          \
-		classname(const wxString &msg, Exception *inner) : baseclass(msg, inner) { } \
-		const wxChar * GetName() const { return _T(displayname); }                   \
+		classname(const std::string &msg, Exception *inner) : baseclass(msg, inner) { } \
+		const char * GetName() const { return displayname; }                   \
 		Exception * Copy() const { return new classname(*this); }                    \
 	};
 
@@ -224,7 +221,7 @@ namespace Aegisub {
 #define DEFINE_BASE_EXCEPTION_NOINNER(classname,baseclass)                           \
 	class classname : public baseclass {                                             \
 	public:                                                                          \
-		classname(const wxString &msg) : baseclass(msg) { }                          \
+		classname(const std::string &msg) : baseclass(msg) { }                          \
 	};
 
 /// @brief Macro for declaring non-instantiable exception base classes with inner
@@ -238,7 +235,7 @@ namespace Aegisub {
 #define DEFINE_BASE_EXCEPTION(classname,baseclass)                                   \
 	class classname : public baseclass {                                             \
 	public:                                                                          \
-		classname(const wxString &msg, Exception *inner) : baseclass(msg, inner) { } \
+		classname(const std::string &msg, Exception *inner) : baseclass(msg, inner) { } \
 	};
 
 
@@ -291,10 +288,10 @@ namespace Aegisub {
 
 		/// @brief Constructor, automatically builds the error message
 		/// @param filename Name of the file that could not be found
-		FileNotFoundError(const wxString &filename) : FileNotAccessibleError(wxString(_T("File not found: ")) + filename) { }
+		FileNotFoundError(const std::string &filename) : FileNotAccessibleError(std::string("File not found: ") + filename) { }
 
 		// Not documented, see  Aegisub::Exception class
-		const wxChar * GetName() const { return _T("filesystem/not_accessible/not_found"); }
+		const char * GetName() const { return "filesystem/not_accessible/not_found"; }
 
 		// Not documented, see  Aegisub::Exception class
 		Exception * Copy() const { return new FileNotFoundError(*this); }                    \

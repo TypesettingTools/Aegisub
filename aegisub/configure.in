@@ -1204,6 +1204,7 @@ AC_CONFIG_FILES([
 Makefile
 automation/Makefile
 desktop/Makefile
+libaegisub/Makefile
 libass/Makefile
 libffms/Makefile
 po/Makefile.in
@@ -1214,6 +1215,7 @@ src/libosxutil/Makefile
 src/libresrc/Makefile
 tools/Makefile
 universalchardet/Makefile
+tests/Makefile
 ])
 
 # Files that need substitution.

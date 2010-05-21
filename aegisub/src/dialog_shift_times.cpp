@@ -55,6 +55,7 @@
 #include "dialog_shift_times.h"
 #include "help_button.h"
 #include "libresrc/libresrc.h"
+#include "main.h"
 #include "options.h"
 #include "standard_paths.h"
 #include "subs_edit_box.h"
@@ -154,20 +155,20 @@ DialogShiftTimes::DialogShiftTimes (wxWindow *parent,SubtitlesGrid *_grid)
 	CenterOnParent();
 
 	// Load values from options
-	if (!Options.AsBool(_T("Shift Times ByTime"))) {
+	if (!OPT_GET("Tools/Shift Times/ByTime")->GetBool()) {
 		if (RadioFrames->IsEnabled()) {
 			RadioFrames->SetValue(true);
 			ShiftFrame->Enable(true);
 			ShiftTime->Enable(false);
-			ShiftFrame->SetValue(Options.AsText(_T("Shift Times Length")));
+			ShiftFrame->SetValue(AegiIntegerToString(OPT_GET("Tool/Shift Times/Length")->GetInt()));
 		}
 	}
 	else {
-		ShiftTime->SetTime(Options.AsInt(_T("Shift Times Length")));
+		ShiftTime->SetTime(OPT_GET("Tool/Shift Times/Length")->GetInt());
 	}
-	TimesChoice->SetSelection(Options.AsInt(_T("Shift Times Type")));
-	SelChoice->SetSelection(Options.AsInt(_T("Shift Times Affect")));
-	if (Options.AsBool(_T("Shift Times Direction"))) DirectionBackward->SetValue(true);
+	TimesChoice->SetSelection(OPT_GET("Tool/Shift Times/Type")->GetInt());
+	SelChoice->SetSelection(OPT_GET("Tool/Shift Times/Affect")->GetInt());
+	if (OPT_GET("Tools/Shift Times/Direction")->GetBool()) DirectionBackward->SetValue(true);
 
 	// Has selection?
 	wxArrayInt sel = grid->GetSelection();
@@ -304,12 +305,11 @@ void DialogShiftTimes::OnOK(wxCommandEvent &event) {
 	}
 
 	// Store modifications
-	Options.SetBool(_T("Shift Times ByTime"),byTime);
-	Options.SetInt(_T("Shift Times Type"),type);
-	Options.SetInt(_T("Shift Times Length"),len);
-	Options.SetInt(_T("Shift Times Affect"),affect);
-	Options.SetBool(_T("Shift Times Direction"),backward);
-	Options.Save();
+	OPT_SET("Tools/Shift Times/ByTime")->SetBool(byTime);
+	OPT_SET("Tool/Shift Times/Type")->SetInt(type);
+	OPT_SET("Tool/Shift Times/Length")->SetInt(len);
+	OPT_SET("Tool/Shift Times/Affect")->SetInt(affect);
+	OPT_SET("Tools/Shift Times/Direction")->SetBool(backward);
 
 	// End dialog
 	grid->ass->FlagAsModified(_("shifting"));

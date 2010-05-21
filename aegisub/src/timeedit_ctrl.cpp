@@ -47,6 +47,8 @@
 #endif
 
 #include "ass_time.h"
+#include "compat.h"
+#include "main.h"
 #include "options.h"
 #include "timeedit_ctrl.h"
 #include "vfr.h"
@@ -151,7 +153,7 @@ void TimeEdit::Modified(bool byUser) {
 
 	// Colour
 	if (showModified && !modified) {
-		SetBackgroundColour(Options.AsColour(_T("Edit Box Need Enter Background")));
+		SetBackgroundColour(lagi_wxColour(OPT_GET("Colour/Background/Modified")->GetColour()));
 	}
 	modified = true;
 
@@ -223,7 +225,7 @@ void TimeEdit::Update() {
 	}
 
 	// Update time if not on insertion mode
-	else if (!Options.AsBool(_T("Insert Mode on Time Boxes"))) {
+	else if (!OPT_GET("Subtitle/Time Edit/Insert Mode")->GetBool()) {
 		UpdateTime();
 		SetValue(time.GetASSFormated());
 	}
@@ -242,7 +244,7 @@ void TimeEdit::Update() {
 /// @param byUser 
 ///
 void TimeEdit::UpdateTime(bool byUser) {
-	bool insertion = Options.AsBool(_T("Insert Mode on Time Boxes"));
+	bool insertion = OPT_GET("Subtitle/Time Edit/Insert Mode")->GetBool();
 	wxString text = GetValue();
 	long start=0,end=0;
 	if (insertion && byUser) {
@@ -279,7 +281,7 @@ void TimeEdit::UpdateTime(bool byUser) {
 void TimeEdit::OnKeyDown(wxKeyEvent &event) {
 	// Get key ID
 	int key = event.GetKeyCode();
-	bool insertMode = Options.AsBool(_T("Insert Mode on Time Boxes"));
+	bool insertMode = OPT_GET("Subtitle/Time Edit/Insert Mode")->GetBool();
 	Refresh();
 
 	// Check if it's an acceptable key
@@ -320,7 +322,7 @@ void TimeEdit::OnKeyDown(wxKeyEvent &event) {
 /// @param event 
 ///
 void TimeEdit::OnKillFocus(wxFocusEvent &event) {
-	if (!byFrame && !Options.AsBool(_T("Insert Mode on Time Boxes"))) {
+	if (!byFrame && !OPT_GET("Subtitle/Time Edit/Insert Mode")->GetBool()) {
 		if (time.GetASSFormated() != GetValue()) {
 			UpdateTime();
 			SetValue(time.GetASSFormated());
@@ -340,7 +342,7 @@ void TimeEdit::OnKillFocus(wxFocusEvent &event) {
 void TimeEdit::OnMouseEvent(wxMouseEvent &event) {
 	// Right click context menu
 	if (event.RightUp()) {
-		if (!byFrame && Options.AsBool(_T("Insert Mode on Time Boxes"))) {
+		if (!byFrame && OPT_GET("Subtitle/Time Edit/Insert Mode")->GetBool()) {
 			wxMenu menu;
 			menu.Append(Time_Edit_Copy,_("&Copy"));
 			menu.Append(Time_Edit_Paste,_("&Paste"));

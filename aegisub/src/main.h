@@ -44,7 +44,8 @@
 #endif
 
 #include "aegisublocale.h"
-
+#include <libaegisub/mru.h>
+#include <libaegisub/option.h>
 
 //////////////
 // Prototypes
@@ -54,7 +55,11 @@ class PluginManager;
 /// DOCME
 namespace Automation4 { class AutoloadScriptManager; }
 
+/// Macro to get OptionValue object.
+#define OPT_GET(x) AegisubApp::Get()->opt->Get(x)
 
+/// Macro to set OptionValue object.
+#define OPT_SET(x) AegisubApp::Get()->opt->Get(x)
 
 /// DOCME
 /// @class AegisubApp
@@ -74,6 +79,9 @@ public:
 
 	/// DOCME
 	AegisubLocale locale;
+
+	agi::MRUManager *mru;
+	agi::Options *opt;
 
 	/// DOCME
 	FrameMain *frame;

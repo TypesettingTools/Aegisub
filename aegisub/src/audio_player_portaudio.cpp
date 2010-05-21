@@ -44,6 +44,7 @@
 #include "audio_player_portaudio.h"
 #include "audio_provider_manager.h"
 #include "charset_conv.h"
+#include "main.h"
 #include "options.h"
 #include "utils.h"
 #include <wx/log.h>
@@ -84,7 +85,7 @@ void PortAudioPlayer::OpenStream() {
 	// Open stream
 	PaStreamParameters pa_output_p;
 
-	int pa_config_default = Options.AsInt(_T("Audio PortAudio Device"));
+	int pa_config_default = OPT_GET("Player/Audio/PortAudio/Device")->GetInt();
 	PaDeviceIndex pa_device;
 
 	if (pa_config_default < 0) {

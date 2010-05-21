@@ -50,6 +50,7 @@
 
 #include "audio_provider_ffmpegsource.h"
 #include "include/aegisub/aegisub.h"
+#include "main.h"
 #include "options.h"
 
 
@@ -164,7 +165,7 @@ void FFmpegSourceAudioProvider::LoadAudio(wxString filename) {
 	// moment of truth
 	if (!IndexIsValid) {
 		int TrackMask;
-		if (Options.AsBool(_T("FFmpegSource always index all tracks")) || TrackNumber == FFMS_TRACKMASK_ALL)
+		if (OPT_GET("Provider/FFmpegSource/Index All Tracks")->GetBool() || TrackNumber == FFMS_TRACKMASK_ALL)
 			TrackMask = FFMS_TRACKMASK_ALL;
 		else
 			TrackMask = (1 << TrackNumber);

@@ -60,11 +60,12 @@
 #include "auto4_base.h"
 #endif
 #include "charset_conv.h"
+#include "compat.h"
 #include "export_framerate.h"
 #include "frame_main.h"
 #include "hotkeys.h"
 #include "main.h"
-#include "options.h"
+#include "libresrc/libresrc.h"
 #include "plugin_manager.h"
 #include "standard_paths.h"
 #include "subs_grid.h"
@@ -72,6 +73,7 @@
 #include "version.h"
 #include "video_context.h"
 
+#include <libaegisub/io.h>
 
 ///////////////////
 // wxWidgets macro
@@ -140,6 +142,32 @@ bool AegisubApp::OnInit() {
 	StartupLog(_T("Inside OnInit"));
 	frame = NULL;
 	try {
+
+		const std::string conf_mru(StandardPaths::DecodePath(_T("?user/mru.json")));
+		mru = new agi::MRUManager(conf_mru, GET_DEFAULT_CONFIG(default_mru));
+
+		// Set config file
+		StartupLog(_T("Load configuration"));
+		try {
+			const std::string conf_user(StandardPaths::DecodePath(_T("?user/config.json")));
+			opt = new agi::Options(conf_user, GET_DEFAULT_CONFIG(default_config));
+			opt->ConfigUser();
+/*
+#ifdef _DEBUG
+			const std::string conf_default("default_config.json");
+			std::istream *stream = agi::io::Open(conf_default);
+			opt->ConfigDefault(*stream);
+			delete stream;
+#else
+			opt->ConfigDefault(GET_DEFAULT_CONFIG(default_config));
+#endif
+*/
+//			opt->ConfigDefault(GET_DEFAULT_CONFIG(default_config));
+
+		} catch (agi::Exception& e) {
+			wxPrintf("Caught agi::Exception: %s -> %s\n", e.GetName(), e.GetMessage());
+		}
+
 		// Initialize randomizer
 		StartupLog(_T("Initialize random generator"));
 		srand(time(NULL));
@@ -166,36 +194,9 @@ bool AegisubApp::OnInit() {
 		wxHandleFatalExceptions(true);
 #endif
 
-		// Set config file
-		StartupLog(_T("Load configuration"));
-		Options.LoadDefaults();
-#ifdef __WXMSW__
-		// Try loading configuration from the install dir if one exists there
-		if (wxFileName::FileExists(StandardPaths::DecodePath(_T("?data/config.dat")))) {
-			Options.SetFile(StandardPaths::DecodePath(_T("?data/config.dat")));
-			Options.Load();
-
-			if (Options.AsBool(_T("Local config"))) {
-				// Local config, make ?user mean ?data so all user settings are placed in install dir
-				StandardPaths::SetPathValue(_T("?user"), StandardPaths::DecodePath(_T("?data")));
-			}
-			else {
-				// Not local config, we don't want that config.dat file here any more
-				// It might be a leftover from a really old install
-				wxRemoveFile(StandardPaths::DecodePath(_T("?data/config.dat")));
-			}
-		}
-#endif
-		// TODO: Check if we can write to config.dat and warn the user if we can't
-		// If we had local config, ?user now means ?data so this will still be loaded from the correct location
-		Options.SetFile(StandardPaths::DecodePath(_T("?user/config.dat")));
-		Options.Load();
-
 		StartupLog(_T("Store options back"));
-		Options.SetInt(_T("Last Version"),GetSVNRevision());
-		Options.LoadDefaults(false,true);	// Override options based on version number
-		Options.Save();
-		AssTime::UseMSPrecision = Options.AsBool(_T("Use nonstandard Milisecond Times"));
+		OPT_SET("Version/Last Version")->SetInt(GetSVNRevision());
+		AssTime::UseMSPrecision = OPT_GET("App/Nonstandard Milisecond Times")->GetBool();
 
 		// Set hotkeys file
 		StartupLog(_T("Load hotkeys"));
@@ -205,11 +206,10 @@ bool AegisubApp::OnInit() {
 		StartupLog(_T("Initialize final locale"));
 
 		// Set locale
-		int lang = Options.AsInt(_T("Locale Code"));
+		int lang = OPT_GET("App/Locale")->GetInt();
 		if (lang == -1) {
 			lang = locale.PickLanguage();
-			Options.SetInt(_T("Locale Code"),lang);
-			Options.Save();
+			OPT_SET("App/Locale")->SetInt(lang);
 		}
 		locale.Init(lang);
 
@@ -220,7 +220,7 @@ bool AegisubApp::OnInit() {
 		// Load Automation scripts
 #ifdef WITH_AUTOMATION
 		StartupLog(_T("Load global Automation scripts"));
-		global_scripts = new Automation4::AutoloadScriptManager(Options.AsText(_T("Automation Autoload Path")));
+		global_scripts = new Automation4::AutoloadScriptManager(lagi_wxString(OPT_GET("Path/Automation/Autoload")->GetString()));
 #endif
 
 		// Load export filters
@@ -263,7 +263,8 @@ int AegisubApp::OnExit() {
 	SubtitleFormat::DestroyFormats();
 	VideoContext::Clear();
 	delete plugins;
-	Options.Clear();
+	delete opt;
+	delete mru;
 #ifdef WITH_AUTOMATION
 	delete global_scripts;
 #endif
@@ -461,7 +462,7 @@ void AegisubApp::MacOpenFile(const wxString &filename) {
 	if (frame != NULL && !filename.empty()) {
 		frame->LoadSubtitles(filename);
 		wxFileName filepath(filename);
-		Options.SetText(_T("Last open subtitles path"), filepath.GetPath());
+		OPT_SET("Path/Last/Subtitles")->SetString(STD_STR(filepath.GetPath()));
 	}
 }
 #endif

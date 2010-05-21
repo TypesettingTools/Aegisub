@@ -42,6 +42,7 @@
 #include <wx/thread.h>
 #endif
 
+#include "compat.h"
 #include "auto4_base.h"
 
 #ifdef __WINDOWS__

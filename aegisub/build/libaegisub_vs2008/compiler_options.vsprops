@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="Windows-1252"?>
+<VisualStudioPropertySheet
+	ProjectType="Visual C++"
+	Version="8.00"
+	Name="compiler_options"
+	>
+	<Tool
+		Name="VCCLCompilerTool"
+		EnableIntrinsicFunctions="true"
+		RuntimeLibrary="2"
+		OpenMP="true"
+		WarningLevel="3"
+		WarnAsError="true"
+        DebugInformationFormat="3"
+        PreprocessorDefinitions="_CRT_SECURE_NO_WARNINGS"
+	/>
+	<Tool
+		Name="VCLinkerTool"
+		LinkIncremental="1"
+		GenerateManifest="true"
+		GenerateDebugInformation="true"
+		SubSystem="2"
+		LargeAddressAware="2"
+		DataExecutionPrevention="2"
+	/>
+</VisualStudioPropertySheet>

@@ -39,7 +39,9 @@
 // Includes
 #include "config.h"
 
+#include "compat.h"
 #include "hilimod_textctrl.h"
+#include "main.h"
 #include "options.h"
 
 
@@ -111,7 +113,7 @@ void HiliModTextCtrl::Modified() {
 	// Different from original
 	if (!isModified && !match) {
 		isModified = true;
-		SetBackgroundColour(Options.AsColour(_T("Edit Box Need Enter Background")));
+		SetBackgroundColour(lagi_wxColour(OPT_GET("Colour/Background/Modified")->GetColour()));
 		Refresh(false);
 	}
 

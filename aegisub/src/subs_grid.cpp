@@ -55,6 +55,7 @@
 #include "dialog_paste_over.h"
 #include "frame_main.h"
 #include "hotkeys.h"
+#include "main.h"
 #include "options.h"
 #include "subs_edit_box.h"
 #include "subs_grid.h"
@@ -223,13 +224,11 @@ void SubtitlesGrid::OnPopupMenu(bool alternate) {
 /// @param event 
 ///
 void SubtitlesGrid::OnShowColMenu(wxCommandEvent &event) {
-	// Set width
 	int item = event.GetId()-MENU_SHOW_COL;
 	showCol[item] = !showCol[item];
 
-	// Save options
-	Options.SetBool(_T("Grid show column ") + AegiIntegerToString(item),showCol[item]);
-	Options.Save();
+	std::vector<bool> map(showCol, showCol + sizeof(showCol) / sizeof(bool));
+	OPT_SET("Subtitle/Grid/Column")->SetListBool(map);
 
 	// Update
 	SetColumnWidths();
@@ -456,14 +455,14 @@ void SubtitlesGrid::OnInsertBefore (wxCommandEvent &event) {
 		def->End = GetDialogue(n)->Start;
 	}
 	else if (GetDialogue(n-1)->End.GetMS() > GetDialogue(n)->Start.GetMS()) {
-		def->Start.SetMS(GetDialogue(n)->Start.GetMS()-Options.AsInt(_T("Timing Default Duration")));
+		def->Start.SetMS(GetDialogue(n)->Start.GetMS()-OPT_GET("Timing/Default Duration")->GetInt());
 		def->End = GetDialogue(n)->Start;
 	}
 	else {
 		def->Start = GetDialogue(n-1)->End;
 		def->End = GetDialogue(n)->Start;
 	}
-	if (def->End.GetMS() < def->Start.GetMS()) def->End.SetMS(def->Start.GetMS()+Options.AsInt(_T("Timing Default Duration")));
+	if (def->End.GetMS() < def->Start.GetMS()) def->End.SetMS(def->Start.GetMS()+OPT_GET("Timing/Default Duration")->GetInt());
 	def->Style = GetDialogue(n)->Style;
 
 	// Insert it
@@ -489,13 +488,13 @@ void SubtitlesGrid::OnInsertAfter (wxCommandEvent &event) {
 	if (n == nrows-1) {
 		def->Start = GetDialogue(n)->End;
 		def->End = GetDialogue(n)->End;
-		def->End.SetMS(def->End.GetMS()+Options.AsInt(_T("Timing Default Duration")));
+		def->End.SetMS(def->End.GetMS()+OPT_GET("Timing/Default Duration")->GetInt());
 	}
 	else {
 		def->Start = GetDialogue(n)->End;
 		def->End = GetDialogue(n+1)->Start;
 	}
-	if (def->End.GetMS() < def->Start.GetMS()) def->End.SetMS(def->Start.GetMS()+Options.AsInt(_T("Timing Default Duration")));
+	if (def->End.GetMS() < def->Start.GetMS()) def->End.SetMS(def->Start.GetMS()+OPT_GET("Timing/Default Duration")->GetInt());
 	def->Style = GetDialogue(n)->Style;
 
 	// Insert it
@@ -519,7 +518,7 @@ void SubtitlesGrid::OnInsertBeforeVideo (wxCommandEvent &event) {
 	AssDialogue *def = new AssDialogue;
 	int video_ms = VFR_Output.GetTimeAtFrame(VideoContext::Get()->GetFrameN(),true);
 	def->Start.SetMS(video_ms);
-	def->End.SetMS(video_ms+Options.AsInt(_T("Timing Default Duration")));
+	def->End.SetMS(video_ms+OPT_GET("Timing/Default Duration")->GetInt());
 	def->Style = GetDialogue(n)->Style;
 
 	// Insert it
@@ -543,7 +542,7 @@ void SubtitlesGrid::OnInsertAfterVideo (wxCommandEvent &event) {
 	AssDialogue *def = new AssDialogue;
 	int video_ms = VFR_Output.GetTimeAtFrame(VideoContext::Get()->GetFrameN(),true);
 	def->Start.SetMS(video_ms);
-	def->End.SetMS(video_ms+Options.AsInt(_T("Timing Default Duration")));
+	def->End.SetMS(video_ms+OPT_GET("Timing/Default Duration")->GetInt());
 	def->Style = GetDialogue(n)->Style;
 
 	// Insert it
@@ -1490,7 +1489,7 @@ void SubtitlesGrid::CommitChanges(bool force,bool videoOnly) {
 
 	if (!videoOnly) {
 		// Autosave if option is enabled
-		if (Options.AsBool(_T("Auto Save on Every Change"))) {
+		if (OPT_GET("App/Auto/Save on Every Change")->GetBool()) {
 			if (ass->IsModified() && !ass->filename.IsEmpty()) parentFrame->SaveSubtitles(false);
 		}
 

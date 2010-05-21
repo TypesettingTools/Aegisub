@@ -295,7 +295,7 @@ private:
 	void OnOpenVideoDetails (wxCommandEvent &event);
 	void OnOpenASSDraw (wxCommandEvent &event);
 
-	void OnOpenOptions (wxCommandEvent &event);
+	void OnOpenPreferences (wxCommandEvent &event);
 	void OnGridEvent (wxCommandEvent &event);
 
 	void OnOpenAutomation (wxCommandEvent &event);

@@ -68,6 +68,8 @@
 #include "ass_file.h"
 #include "ass_style.h"
 #include "auto4_base.h"
+#include "compat.h"
+#include "main.h"
 #include "options.h"
 #include "standard_paths.h"
 #include "string_codec.h"
@@ -491,7 +493,7 @@ namespace Automation4 {
 		Center();
 
 		// Init trace level
-		trace_level = Options.AsInt(_T("Automation Trace Level"));
+		trace_level = OPT_GET("Automation/Trace Level")->GetInt();
 	}
 
 
@@ -678,7 +680,7 @@ namespace Automation4 {
 		// copied from auto3
 		include_path.clear();
 		include_path.EnsureFileAccessible(filename);
-		wxStringTokenizer toker(Options.AsText(_T("Automation Include Path")), _T("|"), wxTOKEN_STRTOK);
+		wxStringTokenizer toker(lagi_wxString(OPT_GET("Path/Automation/Include")->GetString()), _T("|"), wxTOKEN_STRTOK);
 		while (toker.HasMoreTokens()) {
 			// todo? make some error reporting here
 			wxFileName path(StandardPaths::DecodePath(toker.GetNextToken()));

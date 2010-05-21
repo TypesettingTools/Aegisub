@@ -58,6 +58,7 @@
 #include "auto4_lua.h"
 #include "auto4_lua_factory.h"
 #include "auto4_lua_scriptreader.h"
+#include "main.h"
 #include "options.h"
 #include "standard_paths.h"
 #include "text_file_reader.h"
@@ -196,7 +197,7 @@ namespace Automation4 {
 			lua_pushstring(L, "path");
 			lua_gettable(L, -3);
 
-			wxStringTokenizer toker(Options.AsText(_T("Automation Include Path")), _T("|"), wxTOKEN_STRTOK);
+			wxStringTokenizer toker(lagi_wxString(OPT_GET("Path/Automation/Include")->GetString()), _T("|"), wxTOKEN_STRTOK);
 			while (toker.HasMoreTokens()) {
 				wxFileName path(StandardPaths::DecodePath(toker.GetNextToken()));
 				if (path.IsOk() && !path.IsRelative() && path.DirExists()) {
@@ -563,7 +564,7 @@ namespace Automation4 {
 		, nargs(_nargs)
 		, nresults(_nresults)
 	{
-		int prio = Options.AsInt(_T("Automation Thread Priority"));
+		int prio = OPT_GET("Automation/Lua/Thread Priority")->GetInt();
 		if (prio == 0) prio = 50; // normal
 		else if (prio == 1) prio = 30; // below normal
 		else if (prio == 2) prio = 10; // lowest

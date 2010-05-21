@@ -42,6 +42,7 @@
 
 #ifdef WITH_AVISYNTH
 #include "avisynth_wrap.h"
+#include "main.h"
 #include "options.h"
 
 #ifdef DEBUG_AVISYNTH_CODE
@@ -101,7 +102,7 @@ AviSynthWrapper::AviSynthWrapper() {
 		AVSTRACE(_T("Got address of CreateScriptEnv"));
 
 		// Require Avisynth 2.5.6+?
-		if (Options.AsBool(_T("Allow Ancient Avisynth")))
+		if (OPT_GET("Provider/Avisynth/Allow Ancient")->GetBool())
 			env = CreateScriptEnv(AVISYNTH_INTERFACE_VERSION-1);
 		else
 			env = CreateScriptEnv(AVISYNTH_INTERFACE_VERSION);
@@ -112,7 +113,7 @@ AviSynthWrapper::AviSynthWrapper() {
 		}
 		AVSTRACE(_T("Created script environment"));
 		// Set memory limit
-		int memoryMax = Options.AsInt(_T("Avisynth MemoryMax"));
+		const int memoryMax = OPT_GET("Provider/Avisynth/Memory Max")->GetInt();
 		if (memoryMax != 0) {
 			env->SetMemoryMax(memoryMax);
 			AVSTRACE(_T("Set Avisynth memory limit"));

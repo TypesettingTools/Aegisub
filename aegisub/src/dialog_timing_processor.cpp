@@ -44,6 +44,7 @@
 #include "dialog_timing_processor.h"
 #include "help_button.h"
 #include "libresrc/libresrc.h"
+#include "main.h"
 #include "options.h"
 #include "subs_grid.h"
 #include "utils.h"
@@ -66,13 +67,14 @@ DialogTimingProcessor::DialogTimingProcessor(wxWindow *parent,SubtitlesGrid *_gr
 
 	// Set variables
 	grid = _grid;
-	leadInTime = Options.AsText(_T("Audio lead in"));
-	leadOutTime = Options.AsText(_T("Audio lead out"));
-	thresStartBefore = Options.AsText(_T("Timing processor key start before thres"));
-	thresStartAfter = Options.AsText(_T("Timing processor key start after thres"));
-	thresEndBefore = Options.AsText(_T("Timing processor key end before thres"));
-	thresEndAfter = Options.AsText(_T("Timing processor key end after thres"));
-	adjsThresTime = Options.AsText(_T("Timing processor adjacent thres"));
+	leadInTime = AegiIntegerToString(OPT_GET("Audio/Lead/IN")->GetInt());
+	leadOutTime = AegiIntegerToString(OPT_GET("Audio/Lead/OUT")->GetInt());
+	thresStartBefore = AegiIntegerToString(OPT_GET("Tool/Timing Post Processor/Threshold/Key Start Before")->GetInt());
+	thresStartAfter = AegiIntegerToString(OPT_GET("Tool/Timing Post Processor/Threshold/Key Start After")->GetInt());
+	thresEndBefore = AegiIntegerToString(OPT_GET("Tool/Timing Post Processor/Threshold/Key End Before")->GetInt());
+	thresEndAfter = AegiIntegerToString(OPT_GET("Tool/Timing Post Processor/Threshold/Key End After")->GetInt());
+	adjsThresTime = AegiIntegerToString(OPT_GET("Tool/Timing Post Processor/Threshold/Adjacent")->GetInt());
+
 
 	// Styles box
 	wxSizer *LeftSizer = new wxStaticBoxSizer(wxVERTICAL,this,_("Apply to styles"));
@@ -87,19 +89,19 @@ DialogTimingProcessor::DialogTimingProcessor(wxWindow *parent,SubtitlesGrid *_gr
 	// Options box
 	wxSizer *optionsSizer = new wxStaticBoxSizer(wxHORIZONTAL,this,_("Options"));
 	onlySelection = new wxCheckBox(this,-1,_("Affect selection only"));
-	onlySelection->SetValue(Options.AsBool(_T("Timing processor Only Selection")));
+	onlySelection->SetValue(OPT_GET("Tool/Timing Post Processor/Only Selection")->GetBool());
 	optionsSizer->Add(onlySelection,1,wxALL,0);
 
 	// Lead-in/out box
 	wxSizer *LeadSizer = new wxStaticBoxSizer(wxHORIZONTAL,this,_("Lead-in/Lead-out"));
 	hasLeadIn = new wxCheckBox(this,CHECK_ENABLE_LEADIN,_("Add lead in:"));
 	hasLeadIn->SetToolTip(_("Enable adding of lead-ins to lines."));
-	hasLeadIn->SetValue(Options.AsBool(_T("Timing processor Enable lead-in")));
+	hasLeadIn->SetValue(OPT_GET("Tool/Timing Post Processor/Enable/Lead/IN")->GetBool());
 	leadIn = new wxTextCtrl(this,-1,_T(""),wxDefaultPosition,wxSize(80,-1),0,NumValidator(&leadInTime));
 	leadIn->SetToolTip(_("Lead in to be added, in milliseconds."));
 	hasLeadOut = new wxCheckBox(this,CHECK_ENABLE_LEADOUT,_("Add lead out:"));
 	hasLeadOut->SetToolTip(_("Enable adding of lead-outs to lines."));
-	hasLeadOut->SetValue(Options.AsBool(_T("Timing processor Enable lead-out")));
+	hasLeadOut->SetValue(OPT_GET("Tool/Timing Post Processor/Enable/Lead/OUT")->GetBool());
 	leadOut = new wxTextCtrl(this,-1,_T(""),wxDefaultPosition,wxSize(80,-1),0,NumValidator(&leadOutTime));
 	leadOut->SetToolTip(_("Lead out to be added, in milliseconds."));
 	LeadSizer->Add(hasLeadIn,0,wxRIGHT|wxEXPAND,5);
@@ -112,11 +114,11 @@ DialogTimingProcessor::DialogTimingProcessor(wxWindow *parent,SubtitlesGrid *_gr
 	wxSizer *AdjacentSizer = new wxStaticBoxSizer(wxHORIZONTAL,this,_("Make adjacent subtitles continuous"));
 	adjsEnable = new wxCheckBox(this,CHECK_ENABLE_ADJASCENT,_("Enable"));
 	adjsEnable->SetToolTip(_("Enable snapping of subtitles together if they are within a certain distance of each other."));
-	adjsEnable->SetValue(Options.AsBool(_T("Timing processor Enable adjacent")));
+	adjsEnable->SetValue(OPT_GET("Tool/Timing Post Processor/Enable/Adjacent")->GetBool());
 	wxStaticText *adjsThresText = new wxStaticText(this,-1,_("Threshold:"),wxDefaultPosition,wxDefaultSize,wxALIGN_CENTRE);
 	adjacentThres = new wxTextCtrl(this,-1,_T(""),wxDefaultPosition,wxSize(60,-1),0,NumValidator(&adjsThresTime));
 	adjacentThres->SetToolTip(_("Maximum difference between start and end time for two subtitles to be made continuous, in milliseconds."));
-	adjacentBias = new wxSlider(this,-1,MID(0,int(Options.AsFloat(_T("Timing processor adjacent bias"))*100),100),0,100,wxDefaultPosition,wxSize(-1,20));
+	adjacentBias = new wxSlider(this,-1,MID(0,int(OPT_GET("Tool/Timing Post Processor/Adjacent Bias")->GetDouble()*100),100),0,100,wxDefaultPosition,wxSize(-1,20));
 	adjacentBias->SetToolTip(_("Sets how to set the adjoining of lines. If set totally to left, it will extend start time of the second line; if totally to right, it will extend the end time of the first line."));
 	AdjacentSizer->Add(adjsEnable,0,wxRIGHT|wxEXPAND,10);
 	AdjacentSizer->Add(adjsThresText,0,wxRIGHT|wxALIGN_CENTER,5);
@@ -130,7 +132,7 @@ DialogTimingProcessor::DialogTimingProcessor(wxWindow *parent,SubtitlesGrid *_gr
 	wxSizer *KeyframesFlexSizer = new wxFlexGridSizer(2,5,5,0);
 	keysEnable = new wxCheckBox(this,CHECK_ENABLE_KEYFRAME,_("Enable"));
 	keysEnable->SetToolTip(_("Enable snapping of subtitles to nearest keyframe, if distance is within threshold."));
-	keysEnable->SetValue(Options.AsBool(_T("Timing processor Enable keyframe")));
+	keysEnable->SetValue(OPT_GET("Tool/Timing Post Processor/Enable/Keyframe")->GetBool());
 	wxStaticText *textStartBefore = new wxStaticText(this,-1,_("Starts before thres.:"),wxDefaultPosition,wxDefaultSize,wxALIGN_CENTRE);
 	keysStartBefore = new wxTextCtrl(this,-1,_T(""),wxDefaultPosition,wxSize(60,-1),0,NumValidator(&thresStartBefore));
 	keysStartBefore->SetToolTip(_("Threshold for 'before start' distance, that is, how many frames a subtitle must start before a keyframe to snap to it."));
@@ -293,26 +295,25 @@ void DialogTimingProcessor::OnApply(wxCommandEvent &event) {
 	// Save settings
 	long temp = 0;
 	leadIn->GetValue().ToLong(&temp);
-	Options.SetInt(_T("Audio lead in"),temp);
+	OPT_SET("Audio/Lead/IN")->SetInt(temp);
 	leadOut->GetValue().ToLong(&temp);
-	Options.SetInt(_T("Audio lead out"),temp);
+	OPT_SET("Audio/Lead/OUT")->SetInt(temp);
 	keysStartBefore->GetValue().ToLong(&temp);
-	Options.SetInt(_T("Timing processor key start before thres"),temp);
+	OPT_SET("Tool/Timing Post Processor/Threshold/Key Start Before")->SetInt(temp);
 	keysStartAfter->GetValue().ToLong(&temp);
-	Options.SetInt(_T("Timing processor key start after thres"),temp);
+	OPT_SET("Tool/Timing Post Processor/Threshold/Key Start After")->SetInt(temp);
 	keysEndBefore->GetValue().ToLong(&temp);
-	Options.SetInt(_T("Timing processor key end before thres"),temp);
+	OPT_SET("Tool/Timing Post Processor/Threshold/Key End Before")->SetInt(temp);
 	keysEndAfter->GetValue().ToLong(&temp);
-	Options.SetInt(_T("Timing processor key end after thres"),temp);
+	OPT_SET("Tool/Timing Post Processor/Threshold/Key End After")->SetInt(temp);
 	adjacentThres->GetValue().ToLong(&temp);
-	Options.SetInt(_T("Timing processor adjacent thres"),temp);
-	Options.SetFloat(_T("Timing processor adjacent bias"),adjacentBias->GetValue() / 100.0);
-	Options.SetBool(_T("Timing processor Enable lead-in"),hasLeadIn->IsChecked());
-	Options.SetBool(_T("Timing processor Enable lead-out"),hasLeadOut->IsChecked());
-	if (keysEnable->IsEnabled()) Options.SetBool(_T("Timing processor Enable keyframe"),keysEnable->IsChecked());
-	Options.SetBool(_T("Timing processor Enable adjacent"),adjsEnable->IsChecked());
-	Options.SetBool(_T("Timing processor Only Selection"),onlySelection->IsChecked());
-	Options.Save();
+	OPT_SET("Tool/Timing Post Processor/Threshold/Adjacent")->SetInt(temp);
+	OPT_SET("Tool/Timing Post Processor/Adjacent Bias")->SetDouble(adjacentBias->GetValue() / 100.0);
+	OPT_SET("Tool/Timing Post Processor/Enable/Lead/IN")->SetBool(hasLeadIn->IsChecked());
+	OPT_SET("Tool/Timing Post Processor/Enable/Lead/OUT")->SetBool(hasLeadOut->IsChecked());
+	if (keysEnable->IsEnabled()) OPT_SET("Tool/Timing Post Processor/Enable/Keyframe")->SetBool(keysEnable->IsChecked());
+	OPT_SET("Tool/Timing Post Processor/Enable/Adjacent")->SetBool(adjsEnable->IsChecked());
+	OPT_SET("Tool/Timing Post Processor/Only Selection")->SetBool(onlySelection->IsChecked());
 
 	// Check if rows are valid
 	bool valid = true;

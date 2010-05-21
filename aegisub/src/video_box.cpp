@@ -52,6 +52,7 @@
 #include "frame_main.h"
 #include "help_button.h"
 #include "libresrc/libresrc.h"
+#include "main.h"
 #include "options.h"
 #include "subs_edit_box.h"
 #include "subs_grid.h"
@@ -86,7 +87,7 @@ VideoBox::VideoBox(wxWindow *parent, bool isDetached)
 	VideoStopButton->SetToolTip(_("Stop video playback"));
 	AutoScroll = new ToggleBitmap(videoPage,Video_Auto_Scroll,GETIMAGE(toggle_video_autoscroll_24),wxSize(30,-1));
 	AutoScroll->SetToolTip(_("Toggle autoscroll of video"));
-	AutoScroll->SetValue(Options.AsBool(_T("Sync video with subs")));
+	AutoScroll->SetValue(OPT_GET("Video/Subtitle Sync")->GetBool());
 
 	// Seek
 	videoSlider = new VideoSlider(videoPage,-1);
@@ -111,7 +112,7 @@ VideoBox::VideoBox(wxWindow *parent, bool isDetached)
 	visualToolBar->AddTool(Video_Mode_Vector_Clip,_("Vector Clip"),GETIMAGE(visual_vector_clip_24),_("Clip subtitles to a vectorial area."),wxITEM_RADIO);
 	visualToolBar->AddSeparator();
 	visualToolBar->AddTool(Video_Mode_Realtime,_("Realtime"),GETIMAGE(visual_realtime_24),_("Toggle realtime display of changes."),wxITEM_CHECK);
-	visualToolBar->ToggleTool(Video_Mode_Realtime,Options.AsBool(_T("Video Visual Realtime")));
+	visualToolBar->ToggleTool(Video_Mode_Realtime,OPT_GET("Video/Visual Realtime")->GetBool());
 	visualToolBar->AddTool(Video_Mode_Help,_("Help"),GETIMAGE(visual_help_24),_("Open the manual page for Visual Typesetting."));
 	visualToolBar->Realize();
 	// Avoid ugly themed background on Vista and possibly also Win7
@@ -218,16 +219,14 @@ void VideoBox::OnVideoStop(wxCommandEvent &event) {
 /// @param event 
 ///
 void VideoBox::OnVideoToggleScroll(wxCommandEvent &event) {
-	Options.SetBool(_T("Sync video with subs"),AutoScroll->GetValue());
-	Options.Save();
+	OPT_SET("Video/Subtitle Sync")->SetBool(AutoScroll->GetValue());
 }
 
 /// @brief Realtime toggle 
 /// @param event 
 ///
 void VideoBox::OnToggleRealtime(wxCommandEvent &event) {
-	Options.SetBool(_T("Video Visual Realtime"),event.IsChecked());
-	Options.Save();
+	OPT_SET("Video/Visual Realtime")->SetBool(event.IsChecked());
 }
 
 

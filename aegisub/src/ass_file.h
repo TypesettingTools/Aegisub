@@ -113,7 +113,7 @@ public:
 	void Save(wxString file,bool setfilename=false,bool addToRecent=true,const wxString encoding=_T(""));	// Save to a file. Pass true to second argument if this isn't a copy
 	void SaveMemory(std::vector<char> &dst,const wxString encoding=_T(""));	// Save to a memory string
 	void Export(wxString file);							// Saves exported copy, with effects applied
-	void AddToRecent(wxString file);					// Adds file name to list of recently opened files
+	void AddToRecent(wxString file);                    // Adds file name to list of recently opened files
 	bool CanSave();										// Returns true if the file can be saved in its current format
 	static wxString GetWildcardList(int mode);			// Returns the list of wildcards supported (0 = open, 1 = save, 2 = export)
 

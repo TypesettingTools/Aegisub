@@ -43,6 +43,8 @@
 #include "spellchecker_hunspell.h"
 #endif
 
+#include "compat.h"
+#include "main.h"
 #include "options.h"
 #include "spellchecker_manager.h"
 
@@ -53,7 +55,7 @@
 ///
 SpellChecker *SpellCheckerFactoryManager::GetSpellChecker() {
 	// List of providers
-	wxArrayString list = GetFactoryList(Options.AsText(_T("Spell Checker")));
+	wxArrayString list = GetFactoryList(lagi_wxString(OPT_GET("Tool/Spell Checker/Backend")->GetString()));
 
 	// None available
 	if (list.Count() == 0) return 0; //throw _T("No spell checkers are available.");

@@ -46,6 +46,7 @@
 #include <wx/choicdlg.h> // Keep this last so wxUSE_CHOICEDLG is set.
 #endif
 
+#include "compat.h"
 #include "ffmpegsource_common.h"
 #include "frame_main.h"
 #include "main.h"
@@ -176,7 +177,7 @@ int FFmpegSourceProvider::AskForTrackSelection(const std::map<int,wxString> &Tra
 
 /// @brief Set ffms2 log level according to setting in config.dat 
 void FFmpegSourceProvider::SetLogLevel() {
-	wxString LogLevel = Options.AsText(_T("FFmpegSource log level"));
+	wxString LogLevel = lagi_wxString(OPT_GET("Provider/FFmpegSource/Log Level")->GetString());
 
 	if (!LogLevel.CmpNoCase(_T("panic")))
 		FFMS_SetLogLevel(FFMS_LOG_PANIC);
@@ -198,7 +199,7 @@ void FFmpegSourceProvider::SetLogLevel() {
 
 
 FFMS_IndexErrorHandling FFmpegSourceProvider::GetErrorHandlingMode() {
-	wxString Mode = Options.AsText(_T("FFmpegSource audio decoding error handling"));
+	wxString Mode = lagi_wxString(OPT_GET("Provider/Audio/FFMpegSource/Decode Error Handling")->GetString());
 
 	if (!Mode.CmpNoCase(_T("ignore")))
 		return FFMS_IEH_IGNORE;
@@ -310,9 +311,9 @@ wxThread::ExitCode FFmpegSourceCacheCleaner::Entry() {
 
 	// the option is in megabytes, we need bytes
 	// shift left by 20 is CLEARLY more efficient than multiplying by 1048576
-	int64_t maxsize = Options.AsInt(_T("FFmpegSource max cache size")) << 20;
+	int64_t maxsize = OPT_GET("Provider/FFmpegSource/Cache/Size")->GetInt() << 20;
 	int64_t cursize = wxDir::GetTotalSize(cachedirname).GetValue();
-	int maxfiles	= Options.AsInt(_T("FFmpegSource max cache files"));
+	int maxfiles	= OPT_GET("Provider/FFmpegSource/Cache/Files")->GetInt();
 
 	if (!cachedir.HasFiles(_T("*.ffindex"))) {
 		wxLogDebug(_T("FFmpegSourceCacheCleaner: no index files in cache folder, exiting"));

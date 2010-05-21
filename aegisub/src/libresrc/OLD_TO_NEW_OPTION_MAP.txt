@@ -1,0 +1,191 @@
+Allow Ancient Avisynth				Provider/Avisynth/Allow Ancient
+Audio Alsa Device					Player/Audio/ALSA/Device
+Audio Autocommit					Audio/Auto/Commit
+Audio Autofocus						Audio/Auto/Focus
+Audio Autoscroll					Audio/Auto/Scroll
+Audio Background					Colour/Audio Display/Background/Background
+Audio Cache							Audio/Cache/Type
+Audio Disable PCM Provider			Provider/Audio/PCM/Disable
+Audio Display Height				Audio/Display Height
+Audio Downmixer						Audio/Downmixer
+Audio Draw Cursor Time				Audio/Display/Draw/Cursor Time
+Audio Draw Keyframes				Audio/Display/Draw/Keyframes
+Audio Draw Secondary Lines			Audio/Display/Draw/Secondary Lines
+Audio Draw Selection Background		Audio/Display/Draw/Selection Background
+Audio Draw Timeline					Audio/Display/Draw/Timeline
+Audio Draw Video Position			Audio/Display/Draw/Video Position
+Audio dsound buffer latency			Player/Audio/DirectSound/Buffer Latency
+Audio dsound buffer length			Player/Audio/DirectSound/Buffer Length
+Audio grab times on select			Audio/Grab Times on Select
+Audio HD Cache Location				Audio/Cache/HD/Location
+Audio HD Cache Name					Audio/Cache/HD/Name
+Audio Inactive Lines Display Mode	Audio/Inactive Lines Display Mode
+Audio Lead in						Audio/Lead/IN
+Audio Lead out						Audio/Lead/OUT
+Audio Line boundaries Thickness		Audio/Line Boundaries Thickness
+Audio Line boundary end				Colour/Audio Display/Line boundary End
+Audio Line boundary inactive line	Colour/Audio Display/Line Boundary Inactive Line
+Audio Line boundary start			Colour/Audio Display/Line boundary Start
+Audio Link							Audio/Link
+Audio lock scroll on cursor			Audio/Lock Scroll on Cursor
+Audio Medusa Timing Hotkeys			Audio/Medusa Timing Hotkeys
+Audio Next Line on Commit			Audio/Next Line on Commit
+Audio OSS Device					Audio/OSS/Device
+Audio Play Cursor					Colour/Audio Display/Play Cursor
+Audio player						Audio/Player
+Audio Plays When Stepping Video		Audio/Plays When Stepping
+Audio PortAudio Device				Player/Audio/PortAudio/Device
+Audio provider						Audio/Provider
+Audio Sample Rate					Provider/Audio/AVS/Sample Rate
+Audio Seconds Boundaries			Colour/Audio Display/Seconds Boundaries
+Audio Selection Background			Colour/Audio Display/Background/Background
+Audio Selection Background Modified	Colour/Audio Display/Background/Selection Modified
+Audio snap to keyframes				Audio/Display/Snap/Keyframes
+Audio snap to other lines			Audio/Display/Snap/Other Lines
+Audio Spectrum						Audio/Spectrum
+Audio Spectrum Cutoff				Audio/Renderer/Spectrum/Cutoff
+Audio Spectrum Memory Max			Audio/Renderer/Spectrum/Memory Max
+Audio Spectrum Quality				Audio/Renderer/Spectrum/Quality
+Audio Start Drag Sensitivity		Audio/Start Drag Sensitivity
+Audio Syllable boundaries			Colour/Audio Display/Syllable Boundaries
+Audio Syllable text					Colour/Audio Display/Syllable Text
+Audio Waveform						Colour/Audio Display/Waveform
+Audio Waveform Inactive				Colour/Audio Display/Waveform Inactive
+Audio Waveform Modified				Colour/Audio Display/Waveform Modified
+Audio Waveform Selected				Colour/Audio Display/Waveform Selected
+Audio Wheel Default To Zoom			Audio/Wheel Default to Zoom
+Auto backup							App/Auto/Backup
+Auto backup path					Path/Auto/Backup
+Auto check for updates				App/Auto/Check For Updates
+Auto save every seconds				App/Auto/Save Every Seconds
+Auto Save on Every Change			App/Auto/Save on Every Change
+Auto save path						Path/Auto/Save
+Autoload linked files				App/Auto/Load Linked Files
+Automation Autoload Path			Path/Automation/Autoload
+Automation Autoreload Mode			Automation/Autoreload Mode
+Automation Base Path				Path/Automation/Base
+Automation Include Path				Path/Automation/Include
+Automation Thread Priority			Automation/Lua/Thread Priority
+Automation Trace Level				Automation/Trace Level
+Avisynth MemoryMax					Provider/Avisynth/Memory Max
+Call tips enabled					App/Call Tips
+Color Picker Mode					Tool/Colour Picker/Mode
+Color Picker Recent					Tool/Colour Picker/Recent
+Colour/Subtitle/Syntax/Error		Colour/Subtitle/Syntax/Background/Error
+Detached Video						Video/Detached/Enabled
+Detached video last x				Video/Detached/Last/X
+Detached video last y				Video/Detached/Last/Y
+Detached video maximized			Video/Detached/Maximized
+Dictionaries path					Path/Dictionary
+Disable Dragging Times				Audio/Display/Dragging Times
+Edit Box Need Enter Background		Color/Background/Modified
+Edit Font Face						Subtitle/Edit Box/Font Face
+Edit Font Size						Subtitle/Edit Box/Font Size
+FFmpeg allow unsafe seeking			Provider/Video/FFMpegSource/Unsafe Seeking
+FFmpegSource always index all tracks		Provider/FFmpegSource/Index All Tracks
+FFmpegSource audio decoding error handling	Provider/Audio/FFMpegSource/Decode Error Handling
+FFmpegSource decoding threads		Provider/Video/FFmpegSource/Decoding Threads
+FFmpegSource log level				Provider/FFmpegSource/Log Level
+FFmpegSource max cache files		Provider/FFmpegSource/Cache/Files
+FFmpegSource max cache size			Provider/FFmpegSource/Cache/Size
+Find Affect							Tool/Search Replace/Affect
+Find Field							Tool/Search Replace/Field
+Find Match Case						Tool/Search Replace/Match Case
+Find RegExp							Tool/Search Replace/RegExp
+Find Update Video					Tool/Search Replace/Video Update
+Fonts Collector Action				Tool/Fonts Collector/Action
+Fonts Collector Destination			Path/Fonts Collector Destination
+Grid Active border					Colour/Subtitle Grid/Active Border
+Grid Allow Focus					Subtitle/Grid/Focus Allow
+Grid Background						Colour/Subtitle Grid/Background/Background
+Grid collision foreground			Colour/Subtitle Grid/Collision
+Grid Font Face						Subtitle/Grid/Font Face
+Grid font size						Subtitle/Grid/Font Size
+Grid Hide Overrides					Subtitle/Grid/Hide Overrides
+Grid hide overrides char			Subtitle/Grid/Hide Overrides Char
+Grid left column					Colour/Subtitle Grid/Left Column
+Grid lines							Colour/Subtitle Grid/Lines
+Grid selection background			Colour/Subtitle Grid/Background/Selection
+Grid selection foreground			Colour/Subtitle Grid/Selection
+Grid standard foreground			Colour/Subtitle Grid/Standard
+Highlight subs in frame				Subtitle/Grid/Highlight Subtitles in Frame
+Insert Mode on Time Boxes			Subtitle/Time Edit/Insert Mode
+kanji timer interpolation			Tool/Kanji Timer/Interpolation
+Last open audio path				Path/Last/Audio
+Last open automation path			Path/Last/Automation
+Last open keyframes path			Path/Last/Keyframes
+Last open subtitles path			Path/Last/Subtitles
+Last open timecodes path			Path/Last/Timecodes
+Last open video path				Path/Last/Video
+Link Time Boxes Commit				Subtitle/Edit Box/Link Time Boxes Commit
+Local config						App/Local Config
+Locale Code							App/Locale
+Maximized							App/Maximized
+Recent timecodes					Timecodes
+RGBAdjust Tool						Tool/Colour Picker/RGBAdjust Tool
+Save Charset						App/Save Charset
+Select Action						Tool/Select/Action
+Select Condition					Tool/Select/Condition
+Select Field						Tool/Select/Field
+Select Match case					Tool/Select Lines/Match/Case
+Select Match comments				Tool/Select Lines/Match/Comment
+Select Match dialogues				Tool/Select Lines/Match/Dialogue
+Select Mode							Tool/Select/Mode
+Select Text							Tool/Select Lines/Text
+Shift Times Affect					Tool/Shift Times/Affect
+Shift Times ByTime					Tools/Shift Times/ByTime
+Shift Times Direction				Tools/Shift Times/Direction
+Shift Times Length					Tool/Shift Times/Length
+Shift Times Type					Tool/Shift Times/Type
+Show keyframes on video slider		Video/Slider/Show Keyframes
+Show Overscan Mask					Video/Overscan Mask
+Show Splash							App/Splash
+Spell Checker						Tool/Spell Checker/Backend
+Spell checker Language				Tool/Spell Checker/Language
+Style editor preview background		Colour/Style Editor/Background/Preview
+Style editor preview text			Tool/Style Editor/Preview Text
+Subtitles provider					Subtitle/Provider
+Sync video with subs				Video/Subtitle Sync
+
+Syntax Highlight Brackets			Colour/Subtitle/Syntax/Brackets
+Syntax Highlight Enabled			Subtitle/Highlight/Syntax
+Syntax Highlight Error				Syntax Highlight Error Background
+Syntax Highlight Karaoke Template	Colour/Subtitle/Syntax/Karaoke Template
+Syntax Highlight Line Break			Colour/Subtitle/Syntax/Line Break
+Syntax Highlight Normal				Colour/Subtitle/Syntax/Normal
+Syntax Highlight Parameters			Colour/Subtitle/Syntax/Parameters
+Syntax Highlight Slashes			Colour/Subtitle/Syntax/Slashes
+Syntax Highlight Tags				Colour/Subtitle/Syntax/Highlight Tags
+Text actor separator				Tool/Import/Text/Actor Separator
+
+Text comment starter				Tool/Import/Text/Comment Starter
+Thesaurus Language					Tool/Thesaurus/Language
+Timing Default Duration				Timing/Default Duration
+Timing processor adjacent bias			Tool/Timing Post Processor/Adjacent Bias
+Timing processor adjacent thres			Tool/Timing Post Processor/Threshold/Adjacent
+Timing processor Enable adjacent		Tool/Timing Post Processor/Enable/Adjacent
+Timing processor Enable keyframe		Tool/Timing Post Processor/Enable/Keyframe
+Timing processor Enable lead-in			Tool/Timing Post Processor/Enable/Lead/IN
+Timing processor Enable lead-out		Tool/Timing Post Processor/Enable/Lead/OUT
+Timing processor key end after thres	Tool/Timing Post Processor/Threshold/Key End After
+Timing processor key end before thres	Tool/Timing Post Processor/Threshold/Key End Before
+Timing processor key start after thres	Tool/Timing Post Processor/Threshold/Key Start After
+Timing processor key start before thres	Tool/Timing Post Processor/Threshold/Key Start Before
+Timing processor Only Selection			Tool/Timing Post Processor/Only Selection
+Tips current						Tool/Tip of the Day/Current
+Tips enabled						App/Tips
+Undo levels							Subtitle/Undo Levels
+Updates Next Check Time				Version/Next Check
+Use nonstandard Milisecond Times	App/Nonstandard Milisecond Times
+Video Check Script Res				Video/Check Script Res
+Video Default Zoom					Video/Default Zoom
+Video Dummy Last Colour				Colour/Video Dummy/Last Colour
+Video Dummy Last FPS				Video/Dummy/FPS
+Video Dummy Last Height				Video/Dummy/Last/Height
+Video Dummy Last Length				Video/Dummy/Last/Length
+Video Dummy Last Width				Video/Dummy/Last/Width
+Video Dummy Pattern					Video/Dummy/Pattern
+Video Fast Jump Step				Video/Slider/Fast Jump Step
+Video provider						Video/Provider
+Video Screenshot Path				Path/Screenshot
+Video Visual Realtime				Video/Visual Realtime

@@ -44,10 +44,12 @@
 
 #include "ass_dialogue.h"
 #include "ass_file.h"
+#include "compat.h"
 #include "dialog_spellchecker.h"
 #include "frame_main.h"
 #include "help_button.h"
 #include "libresrc/libresrc.h"
+#include "main.h"
 #include "options.h"
 #include "spellchecker_manager.h"
 #include "subs_edit_box.h"
@@ -114,7 +116,7 @@ DialogSpellChecker::DialogSpellChecker(wxFrame *parent)
 	}
 
 	// Get current language
-	wxString curLang = Options.AsText(_T("Spell checker language"));
+	wxString curLang = lagi_wxString(OPT_GET("Tool/Spell Checker/Language")->GetString());
 	int curLangPos = langCodes.Index(curLang);
 	if (curLangPos == wxNOT_FOUND) {
 		curLangPos = langCodes.Index(_T("en"));
@@ -401,8 +403,7 @@ void DialogSpellChecker::OnChangeLanguage(wxCommandEvent &event) {
 	// Change language code
 	wxString code = langCodes[language->GetSelection()];
 	spellchecker->SetLanguage(code);
-	Options.SetText(_T("Spell checker language"),code);
-	Options.Save();
+	OPT_SET("Tool/Spell Checker/Language")->SetString(STD_STR(code));
 
 	// Go back to first match
 	GetFirstMatch();

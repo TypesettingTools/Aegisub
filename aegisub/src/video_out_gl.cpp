@@ -58,8 +58,8 @@ using std::max;
 #include "utils.h"
 #include "video_frame.h"
 
-#define CHECK_INIT_ERROR(cmd) cmd; if (GLenum err = glGetError()) throw VideoOutInitException(_T(#cmd), err)
-#define CHECK_ERROR(cmd) cmd; if (GLenum err = glGetError()) throw VideoOutRenderException(_T(#cmd), err)
+#define CHECK_INIT_ERROR(cmd) cmd; if (GLenum err = glGetError()) throw VideoOutInitException(#cmd, err)
+#define CHECK_ERROR(cmd) cmd; if (GLenum err = glGetError()) throw VideoOutRenderException(#cmd, err)
 
 /// @brief Structure tracking all precomputable information about a subtexture
 struct VideoOutGL::TextureInfo {
@@ -111,7 +111,7 @@ void VideoOutGL::DetectOpenGLCapabilities() {
 	// Test for supported internalformats
 	if (TestTexture(64, 64, GL_RGBA8)) internalFormat = GL_RGBA8;
 	else if (TestTexture(64, 64, GL_RGBA)) internalFormat = GL_RGBA;
-	else throw VideoOutInitException(L"Could not create a 64x64 RGB texture in any format.");
+	else throw VideoOutInitException("Could not create a 64x64 RGB texture in any format.");
 
 	// Test for the maximum supported texture size
 	glGetIntegerv(GL_MAX_TEXTURE_SIZE, &maxTextureSize);
@@ -256,7 +256,7 @@ void VideoOutGL::InitTextures(int width, int height, GLenum format, int bpp, boo
 				glTexCoord2f(right, bottom);  glVertex2f(x2, y2);
 				glTexCoord2f(left,  bottom);  glVertex2f(x1, y2);
 			glEnd();
-			if (GLenum err = glGetError()) throw VideoOutRenderException(L"GL_QUADS", err);
+			if (GLenum err = glGetError()) throw VideoOutRenderException("GL_QUADS", err);
 		}
 	}
 	CHECK_ERROR(glDisable(GL_TEXTURE_2D));

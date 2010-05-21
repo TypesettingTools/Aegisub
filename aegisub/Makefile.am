@@ -14,6 +14,7 @@ ffmpegsource = libffms
 endif
 
 SUBDIRS = \
+	libaegisub \
 	$(ffmpegsource) \
     $(libass) \
 	$(univchardet) \

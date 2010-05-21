@@ -50,9 +50,11 @@
 
 #include "ass_attachment.h"
 #include "ass_file.h"
+#include "compat.h"
 #include "dialog_attachments.h"
 #include "help_button.h"
 #include "libresrc/libresrc.h"
+#include "main.h"
 #include "options.h"
 #include "utils.h"
 
@@ -153,7 +155,7 @@ void DialogAttachments::OnAttachFont(wxCommandEvent &event) {
 	wxArrayString filenames;
 	wxArrayString paths;
 	{
-		wxFileDialog diag (this,_("Choose file to be attached"), Options.AsText(_T("Fonts Collector Destination")), _T(""), _T("Font Files (*.ttf)|*.ttf"), wxFD_OPEN | wxFD_FILE_MUST_EXIST | wxFD_MULTIPLE);
+		wxFileDialog diag (this,_("Choose file to be attached"), lagi_wxString(OPT_GET("Path/Fonts Collector Destination")->GetString()), _T(""), _T("Font Files (*.ttf)|*.ttf"), wxFD_OPEN | wxFD_FILE_MUST_EXIST | wxFD_MULTIPLE);
 		if (diag.ShowModal() == wxID_CANCEL) return;
 		diag.GetFilenames(filenames);
 		diag.GetPaths(paths);
@@ -230,11 +232,11 @@ void DialogAttachments::OnExtract(wxCommandEvent &event) {
 		bool fullPath = false;
 
 		// Multiple or single?
-		if (listView->GetNextSelected(i) != -1) path = wxDirSelector(_("Select the path to save the files to:"),Options.AsText(_T("Fonts Collector Destination"))) + _T("/");
+		if (listView->GetNextSelected(i) != -1) path = wxDirSelector(_("Select the path to save the files to:"),lagi_wxString(OPT_GET("Path/Fonts Collector Destination")->GetString())) + _T("/");
 		else {
 			// Default path
 			wxString defPath = ((AssAttachment*) wxUIntToPtr(listView->GetItemData(i)))->GetFileName();
-			path = wxFileSelector(_("Select the path to save the file to:"),Options.AsText(_T("Fonts Collector Destination")),defPath);
+			path = wxFileSelector(_("Select the path to save the file to:"),lagi_wxString(OPT_GET("Path/Fonts Collector Destination")->GetString()),defPath);
 			fullPath = true;
 		}
 		if (path.IsEmpty()) return;

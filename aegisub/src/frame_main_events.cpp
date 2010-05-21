@@ -57,6 +57,7 @@
 #include "auto4_base.h"
 #endif
 #include "charset_conv.h"
+#include "compat.h"
 #include "dialog_about.h"
 #include "dialog_attachments.h"
 #include "dialog_automation.h"
@@ -65,7 +66,6 @@
 #include "dialog_fonts_collector.h"
 #include "dialog_jumpto.h"
 #include "dialog_kara_timing_copy.h"
-#include "dialog_options.h"
 #include "dialog_progress.h"
 #include "dialog_properties.h"
 #include "dialog_resample.h"
@@ -80,10 +80,12 @@
 #include "dialog_version_check.h"
 #include "dialog_video_details.h"
 #include "frame_main.h"
+#include "hotkeys.h"
 #include "keyframe.h"
 #include "libresrc/libresrc.h"
 #include "main.h"
 #include "options.h"
+#include "preferences.h"
 #include "standard_paths.h"
 #include "subs_edit_box.h"
 #include "subs_grid.h"
@@ -192,7 +194,7 @@ BEGIN_EVENT_TABLE(FrameMain, wxFrame)
 	EVT_MENU(Menu_Tools_Resample, FrameMain::OnOpenResample)
 	EVT_MENU(Menu_Tools_Timing_Processor, FrameMain::OnOpenTimingProcessor)
 	EVT_MENU(Menu_Tools_Kanji_Timer, FrameMain::OnOpenKanjiTimer)
-	EVT_MENU(Menu_Tools_Options, FrameMain::OnOpenOptions)
+	EVT_MENU(Menu_Tools_Options, FrameMain::OnOpenPreferences)
 	EVT_MENU(Menu_Tools_ASSDraw, FrameMain::OnOpenASSDraw)
 	
 	EVT_MENU(Menu_Subs_Snap_Start_To_Video, FrameMain::OnSnapSubsStartToVid)
@@ -272,7 +274,7 @@ void FrameMain::RebuildRecentList(wxString listName,wxMenu *menu,int startID) {
 	// Rebuild
 	int added = 0;
 	wxString n;
-	wxArrayString entries = Options.GetRecentList(listName);
+	wxArrayString entries = lagi_MRU_wxAS(listName);
 	for (size_t i=0;i<entries.Count();i++) {
 		n = wxString::Format(_T("%i"),i+1);
 		if (i < 9) n = _T("&") + n;
@@ -299,7 +301,7 @@ void FrameMain::OnMenuOpen (wxMenuEvent &event) {
 	// File menu
 	if (curMenu == fileMenu) {
 		// Rebuild recent
-		RebuildRecentList(_T("Recent sub"),RecentSubs,Menu_File_Recent);
+		RebuildRecentList(_T("Subtitle"),RecentSubs,Menu_File_Recent);
 
 		MenuBar->Enable(Menu_File_Open_Subtitles_From_Video,VideoContext::Get()->HasSubtitles());
 	}
@@ -321,7 +323,7 @@ void FrameMain::OnMenuOpen (wxMenuEvent &event) {
 		else if (showAudio && showVideo) MenuBar->Check(Menu_View_Standard,true);
 		else MenuBar->Check(Menu_View_Audio,true);
 
-		MenuBar->Check(Options.AsInt(L"Grid hide overrides") + Menu_View_FullTags, true);
+		MenuBar->Check(OPT_GET("Subtitle/Grid/Hide Overrides")->GetInt() + Menu_View_FullTags, true);
 	}
 
 	// Video menu
@@ -368,12 +370,12 @@ void FrameMain::OnMenuOpen (wxMenuEvent &event) {
 		}
 
 		// Set overscan mask
-		MenuBar->Check(Menu_Video_Overscan,Options.AsBool(_T("Show Overscan Mask")));
+		MenuBar->Check(Menu_Video_Overscan,OPT_GET("Video/Overscan Mask")->GetBool());
 
 		// Rebuild recent lists
-		RebuildRecentList(_T("Recent vid"),RecentVids,Menu_Video_Recent);
-		RebuildRecentList(_T("Recent timecodes"),RecentTimecodes,Menu_Timecodes_Recent);
-		RebuildRecentList(_T("Recent Keyframes"),RecentKeyframes,Menu_Keyframes_Recent);
+		RebuildRecentList(_T("Video"),RecentVids,Menu_Video_Recent);
+		RebuildRecentList(_T("Timecodes"),RecentTimecodes,Menu_Timecodes_Recent);
+		RebuildRecentList(_T("Keyframes"),RecentKeyframes,Menu_Keyframes_Recent);
 	}
 
 	// Audio menu
@@ -385,7 +387,7 @@ void FrameMain::OnMenuOpen (wxMenuEvent &event) {
 		MenuBar->Enable(Menu_Audio_Close,state);
 
 		// Rebuild recent
-		RebuildRecentList(_T("Recent aud"),RecentAuds,Menu_Audio_Recent);
+		RebuildRecentList(_T("Audio"),RecentAuds,Menu_Audio_Recent);
 	}
 
 	// Subtitles menu
@@ -534,8 +536,7 @@ int FrameMain::AddMacroMenuItems(wxMenu *menu, const std::vector<Automation4::Fe
 ///
 void FrameMain::OnOpenRecentSubs(wxCommandEvent &event) {
 	int number = event.GetId()-Menu_File_Recent;
-	wxString key = _T("Recent sub #") + wxString::Format(_T("%i"),number+1);
-	LoadSubtitles(Options.AsText(key));
+	LoadSubtitles(AegisubApp::Get()->mru->GetEntry("Subtitle", number));
 }
 
 
@@ -545,8 +546,7 @@ void FrameMain::OnOpenRecentSubs(wxCommandEvent &event) {
 ///
 void FrameMain::OnOpenRecentVideo(wxCommandEvent &event) {
 	int number = event.GetId()-Menu_Video_Recent;
-	wxString key = _T("Recent vid #") + wxString::Format(_T("%i"),number+1);
-	LoadVideo(Options.AsText(key));
+	LoadSubtitles(AegisubApp::Get()->mru->GetEntry("Video", number));
 }
 
 
@@ -556,8 +556,7 @@ void FrameMain::OnOpenRecentVideo(wxCommandEvent &event) {
 ///
 void FrameMain::OnOpenRecentTimecodes(wxCommandEvent &event) {
 	int number = event.GetId()-Menu_Timecodes_Recent;
-	wxString key = _T("Recent timecodes #") + wxString::Format(_T("%i"),number+1);
-	LoadVFR(Options.AsText(key));
+	LoadSubtitles(AegisubApp::Get()->mru->GetEntry("Timecodes", number));
 }
 
 
@@ -567,8 +566,7 @@ void FrameMain::OnOpenRecentTimecodes(wxCommandEvent &event) {
 ///
 void FrameMain::OnOpenRecentKeyframes(wxCommandEvent &event) {
 	int number = event.GetId()-Menu_Keyframes_Recent;
-	wxString key = _T("Recent Keyframes #") + wxString::Format(_T("%i"),number+1);
-	KeyFrameFile::Load(Options.AsText(key));
+	LoadSubtitles(AegisubApp::Get()->mru->GetEntry("Keyframes", number));
 	videoBox->videoSlider->Refresh();
 	audioBox->audioDisplay->Update();
 	Refresh();
@@ -581,8 +579,7 @@ void FrameMain::OnOpenRecentKeyframes(wxCommandEvent &event) {
 ///
 void FrameMain::OnOpenRecentAudio(wxCommandEvent &event) {
 	int number = event.GetId()-Menu_Audio_Recent;
-	wxString key = _T("Recent aud #") + wxString::Format(_T("%i"),number+1);
-	LoadAudio(Options.AsText(key));
+	LoadSubtitles(AegisubApp::Get()->mru->GetEntry("Audio", number));
 }
 
 
@@ -706,14 +703,13 @@ void FrameMain::OnVideoPlay(wxCommandEvent &event) {
 /// @param event 
 ///
 void FrameMain::OnOpenVideo(wxCommandEvent& WXUNUSED(event)) {
-	wxString path = Options.AsText(_T("Last open video path"));
+	wxString path = lagi_wxString(OPT_GET("Path/Last/Video")->GetString());
 	wxString str = wxString(_("Video Formats")) + _T(" (*.avi,*.mkv,*.mp4,*.avs,*.d2v,*.ogm,*.mpeg,*.mpg,*.vob,*.mov)|*.avi;*.avs;*.d2v;*.mkv;*.ogm;*.mp4;*.mpeg;*.mpg;*.vob;*.mov|")
 				 + _("All Files") + _T(" (*.*)|*.*");
 	wxString filename = wxFileSelector(_("Open video file"),path,_T(""),_T(""),str,wxFD_OPEN | wxFD_FILE_MUST_EXIST);
 	if (!filename.empty()) {
 		LoadVideo(filename);
-		Options.SetText(_T("Last open video path"), filename);
-		Options.Save();
+		OPT_SET("Path/Last/Video")->SetString(STD_STR(filename));
 	}
 }
 
@@ -732,15 +728,14 @@ void FrameMain::OnCloseVideo(wxCommandEvent& WXUNUSED(event)) {
 /// @param event 
 ///
 void FrameMain::OnOpenAudio (wxCommandEvent& WXUNUSED(event)) {
-	wxString path = Options.AsText(_T("Last open audio path"));
+	wxString path = lagi_wxString(OPT_GET("Path/Last/Audio")->GetString());
 	wxString str = wxString(_("Audio Formats")) + _T(" (*.wav,*.mp3,*.ogg,*.flac,*.mp4,*.ac3,*.aac,*.mka,*.m4a,*.w64)|*.wav;*.mp3;*.ogg;*.flac;*.mp4;*.ac3;*.aac;*.mka;*.m4a;*.w64|")
 		         + _("Video Formats") + _T(" (*.avi,*.mkv,*.ogm,*.mpg,*.mpeg)|*.avi;*.mkv;*.ogm;*.mp4;*.mpeg;*.mpg|")
 				 + _("All files") + _T(" (*.*)|*.*");
 	wxString filename = wxFileSelector(_("Open audio file"),path,_T(""),_T(""),str,wxFD_OPEN | wxFD_FILE_MUST_EXIST);
 	if (!filename.empty()) {
 		LoadAudio(filename);
-		Options.SetText(_T("Last open audio path"), filename);
-		Options.Save();
+		OPT_SET("Path/Last/Audio")->SetString(STD_STR(filename));
 	}
 }
 
@@ -785,13 +780,12 @@ void FrameMain::OnOpenDummyNoiseAudio (wxCommandEvent& WXUNUSED(event)) {
 /// @param event 
 ///
 void FrameMain::OnOpenSubtitles(wxCommandEvent& WXUNUSED(event)) {
-	wxString path = Options.AsText(_T("Last open subtitles path"));	
+	wxString path = lagi_wxString(OPT_GET("Path/Last/Subtitles")->GetString());	
 	wxString filename = wxFileSelector(_("Open subtitles file"),path,_T(""),_T(""),AssFile::GetWildcardList(0),wxFD_OPEN | wxFD_FILE_MUST_EXIST);
 	if (!filename.empty()) {
 		LoadSubtitles(filename);
 		wxFileName filepath(filename);
-		Options.SetText(_T("Last open subtitles path"), filepath.GetPath());
-		Options.Save();
+		OPT_SET("Path/Last/Subtitles")->SetString(STD_STR(filepath.GetPath()));
 	}
 }
 
@@ -803,7 +797,7 @@ void FrameMain::OnOpenSubtitles(wxCommandEvent& WXUNUSED(event)) {
 void FrameMain::OnOpenSubtitlesCharset(wxCommandEvent& WXUNUSED(event)) {
 	// Initialize charsets
 	wxArrayString choices = AegisubCSConv::GetEncodingsList();
-	wxString path = Options.AsText(_T("Last open subtitles path"));
+	wxString path = lagi_wxString(OPT_GET("Path/Last/Subtitles")->GetString());
 
 	// Get options and load
 	wxString filename = wxFileSelector(_("Open subtitles file"),path,_T(""),_T(""),AssFile::GetWildcardList(0),wxFD_OPEN | wxFD_FILE_MUST_EXIST);
@@ -812,8 +806,7 @@ void FrameMain::OnOpenSubtitlesCharset(wxCommandEvent& WXUNUSED(event)) {
 		if (!charset.empty()) {
 			LoadSubtitles(filename,charset);
 		}
-		Options.SetText(_T("Last open subtitles path"), filename);
-		Options.Save();
+		OPT_SET("Path/Last/Subtitles")->SetString(STD_STR(filename));
 	}
 }
 
@@ -865,7 +858,7 @@ void FrameMain::OnNewSubtitles(wxCommandEvent& WXUNUSED(event)) {
 ///
 void FrameMain::OnExportSubtitles(wxCommandEvent & WXUNUSED(event)) {
 #ifdef WITH_AUTOMATION
-	int autoreload = Options.AsInt(_T("Automation Autoreload Mode"));
+	int autoreload = OPT_GET("Automation/Autoreload Mode")->GetInt();
 	if (autoreload & 1) {
 		// Local scripts
 		const std::vector<Automation4::Script*> scripts = local_scripts->GetScripts();
@@ -897,14 +890,13 @@ void FrameMain::OnExportSubtitles(wxCommandEvent & WXUNUSED(event)) {
 /// @param event 
 ///
 void FrameMain::OnOpenVFR(wxCommandEvent &event) {
-	wxString path = Options.AsText(_T("Last open timecodes path"));
+	wxString path = lagi_wxString(OPT_GET("Path/Last/Timecodes")->GetString());
 	wxString str = wxString(_("All Supported Types")) + _T("(*.txt)|*.txt|")
 		           + _("All Files") + _T(" (*.*)|*.*");
 	wxString filename = wxFileSelector(_("Open timecodes file"),path,_T(""),_T(""),str,wxFD_OPEN | wxFD_FILE_MUST_EXIST);
 	if (!filename.empty()) {
 		LoadVFR(filename);
-		Options.SetText(_T("Last open timecodes path"), filename);
-		Options.Save();
+		OPT_SET("Path/Last/Timecodes")->SetString(STD_STR(filename));
 	}
 }
 
@@ -914,14 +906,13 @@ void FrameMain::OnOpenVFR(wxCommandEvent &event) {
 /// @param event 
 ///
 void FrameMain::OnSaveVFR(wxCommandEvent &event) {
-	wxString path = Options.AsText(_T("Last open timecodes path"));
+	wxString path = lagi_wxString(OPT_GET("Path/Last/Timecodes")->GetString());
 	wxString str = wxString(_("All Supported Types")) + _T("(*.txt)|*.txt|")
 		           + _("All Files") + _T(" (*.*)|*.*");
 	wxString filename = wxFileSelector(_("Save timecodes file"),path,_T(""),_T(""),str,wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
 	if (!filename.empty()) {
 		SaveVFR(filename);
-		Options.SetText(_T("Last open timecodes path"), filename);
-		Options.Save();
+		OPT_SET("Path/Last/Timecodes")->SetString(STD_STR(filename));
 	}
 }
 
@@ -943,11 +934,10 @@ void FrameMain::OnCloseVFR(wxCommandEvent &event) {
 ///
 void FrameMain::OnOpenKeyframes (wxCommandEvent &event) {
 	// Pick file
-	wxString path = Options.AsText(_T("Last open keyframes path"));
+	wxString path = lagi_wxString(OPT_GET("Path/Last/Keyframes")->GetString());
 	wxString filename = wxFileSelector(_T("Select the keyframes file to open"),path,_T(""),_T(".txt"),_T("All supported formats (*.txt, *.pass, *.stats, *.log)|*.txt;*.pass;*.stats;*.log|All files (*.*)|*.*"),wxFD_FILE_MUST_EXIST | wxFD_OPEN);
 	if (filename.IsEmpty()) return;
-	Options.SetText(_T("Last open keyframes path"),filename);
-	Options.Save();
+	OPT_SET("Path/Last/Keyframes")->SetString(STD_STR(filename));
 
 	// Load
 	KeyFrameFile::Load(filename);
@@ -976,11 +966,10 @@ void FrameMain::OnCloseKeyframes (wxCommandEvent &event) {
 ///
 void FrameMain::OnSaveKeyframes (wxCommandEvent &event) {
 	// Pick file
-	wxString path = Options.AsText(_T("Last open keyframes path"));
+	wxString path = lagi_wxString(OPT_GET("Path/Last/Keyframes")->GetString());
 	wxString filename = wxFileSelector(_T("Select the Keyframes file to open"),path,_T(""),_T("*.key.txt"),_T("Text files (*.txt)|*.txt"),wxFD_OVERWRITE_PROMPT | wxFD_SAVE);
 	if (filename.IsEmpty()) return;
-	Options.SetText(_T("Last open keyframes path"),filename);
-	Options.Save();
+	OPT_SET("Path/Last/Keyframes")->SetString(STD_STR(filename));
 
 	// Save
 	KeyFrameFile::Save(filename);
@@ -1067,8 +1056,7 @@ void FrameMain::OnDummyVideo (wxCommandEvent &event) {
 /// @param event 
 ///
 void FrameMain::OnOverscan (wxCommandEvent &event) {
-	Options.SetBool(_T("Show overscan mask"),event.IsChecked());
-	Options.Save();
+	OPT_SET("Video/Overscan Mask")->SetBool(event.IsChecked());
 	VideoContext::Get()->Stop();
 	videoBox->videoDisplay->Render();
 }
@@ -1217,13 +1205,13 @@ void FrameMain::OnOpenKanjiTimer (wxCommandEvent &event) {
 /// @brief Open Options dialog 
 /// @param event 
 ///
-void FrameMain::OnOpenOptions (wxCommandEvent &event) {
+void FrameMain::OnOpenPreferences (wxCommandEvent &event) {
 	try {
-		DialogOptions options(this);
-		options.ShowModal();
-	}
-	catch (const wxChar *e) {
-		wxLogError(e);
+		Preferences pref(this);
+		pref.ShowModal();
+
+	} catch (agi::Exception& e) {
+		wxPrintf("Caught agi::Exception: %s -> %s\n", e.GetName(), e.GetMessage());
 	}
 }
 
@@ -1615,8 +1603,7 @@ void FrameMain::OnCloseWindow (wxCloseEvent &event) {
 	int result = TryToCloseSubs(canVeto);
 
 	// Store maximization state
-	Options.SetBool(_T("Maximized"),IsMaximized());
-	Options.Save();
+	OPT_SET("App/Maximized")->SetBool(IsMaximized());
 
 	// Abort/destroy
 	if (canVeto) {
@@ -1738,7 +1725,7 @@ void FrameMain::OnAutoSave(wxTimerEvent &event) {
 		if (AssFile::top->loaded) {
 			// Set path
 			wxFileName origfile(AssFile::top->filename);
-			wxString path = Options.AsText(_T("Auto save path"));
+			wxString path = lagi_wxString(OPT_GET("Path/Auto/Save")->GetString());
 			if (path.IsEmpty()) path = origfile.GetPath();
 			wxFileName dstpath(path);
 			if (!dstpath.IsAbsolute()) path = StandardPaths::DecodePathMaybeRelative(path, _T("?user/"));
@@ -1848,7 +1835,7 @@ void FrameMain::OnNextLine(wxCommandEvent &event) {
 
 /// @brief Cycle through tag hiding modes 
 void FrameMain::OnToggleTags(wxCommandEvent &) {
-	int tagMode = Options.AsInt(_T("Grid hide overrides"));
+	int tagMode = OPT_GET("Subtitle/Grid/Hide Overrides")->GetInt();
 
 	// Cycle to next
 	tagMode = (tagMode+1)%3;
@@ -1861,15 +1848,13 @@ void FrameMain::OnToggleTags(wxCommandEvent &) {
 	StatusTimeout(message,10000);
 
 	// Set option
-	Options.SetInt(_T("Grid hide overrides"),tagMode);
-	Options.Save();
+	OPT_SET("Subtitle/Grid/Hide Overrides")->SetInt(tagMode);
 
 	// Refresh grid
 	SubsBox->Refresh(false);
 }
 void FrameMain::OnSetTags(wxCommandEvent &event) {
-	Options.SetInt(_T("Grid hide overrides"), event.GetId() - Menu_View_FullTags);
-	Options.Save();
+	OPT_SET("Subtitle/Grid/Hide Overrides")->SetInt(event.GetId() - Menu_View_FullTags);
 	SubsBox->Refresh(false);
 }
 
@@ -1914,8 +1899,7 @@ void FrameMain::OnChooseLanguage (wxCommandEvent &event) {
 	// Is OK?
 	if (newCode != -1) {
 		// Set code
-		Options.SetInt(_T("Locale Code"),newCode);
-		Options.Save();
+		OPT_SET("App/Locale")->SetInt(newCode);
 
 		// Language actually changed?
 		if (newCode != old) {

@@ -50,6 +50,8 @@
 #include "ass_file.h"
 #include "ass_override.h"
 #include "ass_style.h"
+#include "compat.h"
+#include "main.h"
 #include "options.h"
 #include "subtitle_format.h"
 #include "text_file_reader.h"
@@ -794,7 +796,7 @@ AssStyle *AssFile::GetStyle(wxString name) {
 /// @brief Adds file name to list of recent 
 /// @param file 
 void AssFile::AddToRecent(wxString file) {
-	Options.AddToRecentList(file,_T("Recent sub"));
+	AegisubApp::Get()->mru->Add("Subtitle", STD_STR(file));
 }
 
 /// @brief List of supported wildcards 
@@ -861,7 +863,7 @@ void AssFile::StackPush(wxString desc) {
 	for (std::list<AssFile*>::iterator cur=UndoStack.begin();cur!=UndoStack.end();cur++) {
 		n++;
 	}
-	int depth = Options.AsInt(_T("Undo levels"));
+	int depth = OPT_GET("Limits/Undo Levels")->GetInt();
 	while (n > depth) {
 		delete UndoStack.front();
 		UndoStack.pop_front();

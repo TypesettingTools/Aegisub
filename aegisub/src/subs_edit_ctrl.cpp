@@ -44,6 +44,8 @@
 #endif
 
 #include "ass_dialogue.h"
+#include "compat.h"
+#include "main.h"
 #include "options.h"
 #include "subs_edit_box.h"
 #include "subs_grid.h"
@@ -201,54 +203,54 @@ void SubsTextEditCtrl::SetStyles() {
 	// Styles
 	wxFont font = wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT);
 	font.SetEncoding(wxFONTENCODING_DEFAULT); // this solves problems with some fonts not working properly
-	wxString fontname = Options.AsText(_T("Edit Font Face"));
+	wxString fontname = lagi_wxString(OPT_GET("Subtitle/Edit Box/Font Face")->GetString());
 	if (fontname != _T("")) font.SetFaceName(fontname);
-	int size = Options.AsInt(_T("Edit Font Size"));
+	int size = OPT_GET("Subtitle/Edit Box/Font Size")->GetInt();
 
 	// Normal style
 	StyleSetFont(0,font);
 	StyleSetSize(0,size);
-	StyleSetForeground(0,Options.AsColour(_T("Syntax Highlight Normal")));
+	StyleSetForeground(0,lagi_wxColour(OPT_GET("Colour/Subtitle/Syntax/Normal")->GetColour()));
 
 	// Brackets style
 	StyleSetFont(1,font);
 	StyleSetSize(1,size);
-	StyleSetForeground(1,Options.AsColour(_T("Syntax Highlight Brackets")));
+	StyleSetForeground(1,lagi_wxColour(OPT_GET("Colour/Subtitle/Syntax/Brackets")->GetColour()));
 
 	// Slashes/Parenthesis/Comma style
 	StyleSetFont(2,font);
 	StyleSetSize(2,size);
-	StyleSetForeground(2,Options.AsColour(_T("Syntax Highlight Slashes")));
+	StyleSetForeground(2,lagi_wxColour(OPT_GET("Colour/Subtitle/Syntax/Slashes")->GetColour()));
 
 	// Tags style
 	StyleSetFont(3,font);
 	StyleSetSize(3,size);
 	StyleSetBold(3,true);
-	StyleSetForeground(3,Options.AsColour(_T("Syntax Highlight Tags")));
+	StyleSetForeground(3,lagi_wxColour(OPT_GET("Colour/Subtitle/Syntax/Highlight Tags")->GetColour()));
 
 	// Error style
 	StyleSetFont(4,font);
 	StyleSetSize(4,size);
-	StyleSetForeground(4,Options.AsColour(_T("Syntax Highlight Error")));
-	StyleSetBackground(4,Options.AsColour(_T("Syntax Highlight Error Background")));
+	StyleSetForeground(4,lagi_wxColour(OPT_GET("Colour/Subtitle/Syntax/Error")->GetColour()));
+	StyleSetBackground(4,lagi_wxColour(OPT_GET("Colour/Subtitle/Syntax/Background/Error")->GetColour()));
 
 	// Tag Parameters style
 	StyleSetFont(5,font);
 	StyleSetSize(5,size);
-	StyleSetForeground(5,Options.AsColour(_T("Syntax Highlight Parameters")));
+	StyleSetForeground(5,lagi_wxColour(OPT_GET("Colour/Subtitle/Syntax/Parameters")->GetColour()));
 
 	// Line breaks style
 	StyleSetFont(6,font);
 	StyleSetSize(6,size);
 	StyleSetBold(6,true);
-	StyleSetForeground(6,Options.AsColour(_T("Syntax Highlight Line Break")));
+	StyleSetForeground(6,lagi_wxColour(OPT_GET("Colour/Subtitle/Syntax/Line Break")->GetColour()));
 
 	// Karaoke template code block style
 	StyleSetFont(7,font);
 	StyleSetSize(7,size);
 	StyleSetBold(7,true);
 	//StyleSetItalic(7,true);
-	StyleSetForeground(7,Options.AsColour(_T("Syntax Highlight Karaoke Template")));
+	StyleSetForeground(7,lagi_wxColour(OPT_GET("Colour/Subtitle/Syntax/Karaoke Template")->GetColour()));
 
 	// Misspelling indicator
 	IndicatorSetStyle(0,wxSTC_INDIC_SQUIGGLE);
@@ -264,7 +266,7 @@ void SubsTextEditCtrl::SetStyles() {
 ///
 void SubsTextEditCtrl::UpdateStyle(int start, int _length) {
 	// Styling enabled?
-	if (Options.AsBool(_T("Syntax Highlight Enabled")) == 0) return;
+	if (OPT_GET("Subtitle/Highlight/Syntax")->GetBool() == 0) return;
 
 	// Check if it's a template line
 	AssDialogue *diag = control->grid->GetDialogue(control->linen);
@@ -483,7 +485,7 @@ void SubsTextEditCtrl::UpdateStyle(int start, int _length) {
 ///
 void SubsTextEditCtrl::UpdateCallTip() {
 	// Enabled?
-	if (!Options.AsBool(_T("Call tips enabled"))) return;
+	if (!OPT_GET("App/Call Tips")->GetBool()) return;
 
 	// Get position and text
 	const unsigned int pos = GetReverseUnicodePosition(GetCurrentPos());
@@ -863,7 +865,7 @@ void SubsTextEditCtrl::ShowPopupMenu(int activePos) {
 		wxArrayString langs = spellchecker->GetLanguageList();	// This probably should be cached...
 
 		// Current language
-		wxString curLang = Options.AsText(_T("Spell checker language"));
+		wxString curLang = lagi_wxString(OPT_GET("Tool/Spell Checker/Language")->GetString());
 
 		// Languages
 		wxMenu *languageMenu = new wxMenu();
@@ -949,7 +951,7 @@ void SubsTextEditCtrl::ShowPopupMenu(int activePos) {
 		wxArrayString langs = thesaurus->GetLanguageList();	// This probably should be cached...
 
 		// Current language
-		wxString curLang = Options.AsText(_T("Thesaurus language"));
+		wxString curLang = lagi_wxString(OPT_GET("Tool/Thesaurus/Language")->GetString());
 
 		// Languages
 		wxMenu *languageMenu = new wxMenu();
@@ -1144,8 +1146,7 @@ void SubsTextEditCtrl::OnSetDicLanguage(wxCommandEvent &event) {
 	wxString lang;
 	if (index >= 0) lang = langs[index];
 	spellchecker->SetLanguage(lang);
-	Options.SetText(_T("Spell checker language"),lang);
-	Options.Save();
+	OPT_SET("Tool/Spell Checker/Language")->SetString(STD_STR(lang));
 
 	// Update styling
 	UpdateStyle();
@@ -1165,8 +1166,7 @@ void SubsTextEditCtrl::OnSetThesLanguage(wxCommandEvent &event) {
 	wxString lang;
 	if (index >= 0) lang = langs[index];
 	thesaurus->SetLanguage(lang);
-	Options.SetText(_T("Thesaurus language"),lang);
-	Options.Save();
+	OPT_SET("Tool/Thesaurus/Language")->SetString(STD_STR(lang));
 
 	// Update styling
 	UpdateStyle();

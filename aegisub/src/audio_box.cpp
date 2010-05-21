@@ -54,6 +54,7 @@
 #include "frame_main.h"
 #include "hotkeys.h"
 #include "libresrc/libresrc.h"
+#include "main.h"
 #include "options.h"
 #include "toggle_bitmap.h"
 #include "tooltip_manager.h"
@@ -97,7 +98,7 @@ wxPanel(parent,-1,wxDefaultPosition,wxDefaultSize,wxTAB_TRAVERSAL|wxBORDER_RAISE
 	VolumeBar = new wxSlider(this,Audio_Volume,50,0,100,wxDefaultPosition,wxSize(-1,20),wxSL_VERTICAL|wxSL_BOTH|wxSL_INVERSE);
 	VolumeBar->PushEventHandler(new FocusEvent());
 	VolumeBar->SetToolTip(_("Audio Volume"));
-	bool link = Options.AsBool(_T("Audio Link"));
+	bool link = OPT_GET("Audio/Link")->GetBool();
 	if (link) {
 		VolumeBar->SetValue(VerticalZoom->GetValue());
 		VolumeBar->Enable(false);
@@ -177,23 +178,23 @@ wxPanel(parent,-1,wxDefaultPosition,wxDefaultSize,wxTAB_TRAVERSAL|wxBORDER_RAISE
 
 	AutoCommit = new ToggleBitmap(this,Audio_Check_AutoCommit,GETIMAGE(toggle_audio_autocommit_24),wxSize(30,-1));
 	AutoCommit->SetToolTip(_("Automatically commit all changes"));
-	AutoCommit->SetValue(Options.AsBool(_T("Audio Autocommit")));
+	AutoCommit->SetValue(OPT_GET("Audio/Auto/Commit")->GetBool());
 	ButtonSizer->Add(AutoCommit,0,wxRIGHT | wxALIGN_CENTER | wxEXPAND,0);
 	NextCommit = new ToggleBitmap(this,Audio_Check_NextCommit,GETIMAGE(toggle_audio_nextcommit_24),wxSize(30,-1));
 	NextCommit->SetToolTip(_("Auto goes to next line on commit"));
-	NextCommit->SetValue(Options.AsBool(_T("Audio Next Line on Commit")));
+	NextCommit->SetValue(OPT_GET("Audio/Next Line on Commit")->GetBool());
 	ButtonSizer->Add(NextCommit,0,wxRIGHT | wxALIGN_CENTER | wxEXPAND,0);
 	AutoScroll = new ToggleBitmap(this,Audio_Check_AutoGoto,GETIMAGE(toggle_audio_autoscroll_24),wxSize(30,-1));
 	AutoScroll->SetToolTip(_("Auto scrolls audio display to selected line"));
-	AutoScroll->SetValue(Options.AsBool(_T("Audio Autoscroll")));
+	AutoScroll->SetValue(OPT_GET("Audio/Auto/Scroll")->GetBool());
 	ButtonSizer->Add(AutoScroll,0,wxRIGHT | wxALIGN_CENTER | wxEXPAND,0);
 	SpectrumMode = new ToggleBitmap(this,Audio_Check_Spectrum,GETIMAGE(toggle_audio_spectrum_24),wxSize(30,-1));
 	SpectrumMode->SetToolTip(_("Spectrum analyzer mode"));
-	SpectrumMode->SetValue(Options.AsBool(_T("Audio Spectrum")));
+	SpectrumMode->SetValue(OPT_GET("Audio/Spectrum")->GetBool());
 	ButtonSizer->Add(SpectrumMode,0,wxRIGHT | wxALIGN_CENTER | wxEXPAND,0);
 	MedusaMode = new ToggleBitmap(this,Audio_Check_Medusa,GETIMAGE(toggle_audio_medusa_24),wxSize(30,-1));
 	MedusaMode->SetToolTip(_("Enable Medusa-Style Timing Shortcuts"));
-	MedusaMode->SetValue(Options.AsBool(_T("Audio Medusa Timing Hotkeys")));
+	MedusaMode->SetValue(OPT_GET("Audio/Medusa Timing Hotkeys")->GetBool());
 	ButtonSizer->Add(MedusaMode,0,wxRIGHT | wxALIGN_CENTER | wxEXPAND,0);
 	ButtonSizer->AddStretchSpacer(1);
 
@@ -383,8 +384,7 @@ void AudioBox::OnVerticalLink(wxCommandEvent &event) {
 	}
 	VolumeBar->Enable(!VerticalLink->GetValue());
 
-	Options.SetBool(_T("Audio Link"),VerticalLink->GetValue());
-	Options.Save();
+	OPT_SET("Audio/Link")->SetBool(VerticalLink->GetValue());
 }
 
 
@@ -419,8 +419,7 @@ void AudioBox::OnSash(wxSashEvent& event) {
 	Sash->GetParent()->Layout();
 
 	// Store new size
-	Options.SetInt(_T("Audio Display Height"),h);
-	Options.Save();
+	OPT_SET("Audio/Display Height")->SetInt(h);
 
 	// Fix layout
 	frameMain->Freeze();
@@ -683,8 +682,7 @@ void AudioBox::OnGoto(wxCommandEvent &event) {
 ///
 void AudioBox::OnAutoGoto(wxCommandEvent &event) {
 	audioDisplay->SetFocus();
-	Options.SetBool(_T("Audio Autoscroll"),AutoScroll->GetValue());
-	Options.Save();
+	OPT_SET("Audio/Auto/Scroll")->SetBool(AutoScroll->GetValue());
 }
 
 
@@ -694,8 +692,7 @@ void AudioBox::OnAutoGoto(wxCommandEvent &event) {
 ///
 void AudioBox::OnAutoCommit(wxCommandEvent &event) {
 	audioDisplay->SetFocus();
-	Options.SetBool(_T("Audio Autocommit"),AutoCommit->GetValue());
-	Options.Save();
+	OPT_SET("Audio/Auto/Commit")->SetBool(AutoCommit->GetValue());
 }
 
 
@@ -705,8 +702,7 @@ void AudioBox::OnAutoCommit(wxCommandEvent &event) {
 ///
 void AudioBox::OnNextLineCommit(wxCommandEvent &event) {
 	audioDisplay->SetFocus();
-	Options.SetBool(_T("Audio Next Line on Commit"),NextCommit->GetValue());
-	Options.Save();
+	OPT_SET("Audio/Next Line on Commit")->SetBool(NextCommit->GetValue());
 }
 
 
@@ -716,8 +712,7 @@ void AudioBox::OnNextLineCommit(wxCommandEvent &event) {
 ///
 void AudioBox::OnMedusaMode(wxCommandEvent &event) {
 	audioDisplay->SetFocus();
-	Options.SetBool(_T("Audio Medusa Timing Hotkeys"),MedusaMode->GetValue());
-	Options.Save();
+	OPT_SET("Audio/Medusa Timing Hotkeys")->SetBool(MedusaMode->GetValue());
 	frameMain->SetAccelerators();
 }
 
@@ -727,8 +722,7 @@ void AudioBox::OnMedusaMode(wxCommandEvent &event) {
 /// @param event 
 ///
 void AudioBox::OnSpectrumMode(wxCommandEvent &event) {
-	Options.SetBool(_T("Audio Spectrum"),SpectrumMode->GetValue());
-	Options.Save();
+	OPT_SET("Audio/Spectrum")->SetBool(SpectrumMode->GetValue());
 	audioDisplay->UpdateImage(false);
 	audioDisplay->SetFocus();
 	audioDisplay->Refresh(false);

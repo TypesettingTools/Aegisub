@@ -58,6 +58,7 @@
 #include "ass_dialogue.h"
 #include "hotkeys.h"
 #include "options.h"
+#include "main.h"
 #include "video_out_gl.h"
 #include "vfr.h"
 #include "video_box.h"
@@ -107,12 +108,12 @@ int attribList[] = { WX_GL_RGBA , WX_GL_DOUBLEBUFFER, WX_GL_STENCIL_SIZE, 8, 0 }
 /// @class VideoOutRenderException
 /// @extends VideoOutException
 /// @brief An OpenGL error occured while uploading or displaying a frame
-class OpenGlException : public Aegisub::Exception {
+class OpenGlException : public agi::Exception {
 public:
 	OpenGlException(const wxChar *func, int err)
-		: Aegisub::Exception(wxString::Format("%s failed with error code %d", func, err))
+		: agi::Exception(STD_STR(wxString::Format("%s failed with error code %d", func, err)))
 	{ }
-	const wxChar * GetName() const { return L"video/opengl"; }
+	const char * GetName() const { return "video/opengl"; }
 	Exception * Copy() const { return new OpenGlException(*this); }
 };
 
@@ -172,8 +173,8 @@ void VideoDisplay::SetFrame(int frameNumber) {
 		PositionDisplay->SetValue(wxString::Format(L"%01i:%02i:%02i.%03i - %i", h, m, s, ms, frameNumber));
 		if (context->GetKeyFrames().Index(frameNumber) != wxNOT_FOUND) {
 			// Set the background color to indicate this is a keyframe
-			PositionDisplay->SetBackgroundColour(Options.AsColour(L"Grid selection background"));
-			PositionDisplay->SetForegroundColour(Options.AsColour(L"Grid selection foreground"));
+			PositionDisplay->SetBackgroundColour(lagi_wxColour(OPT_GET("Colour/Subtitle Grid/Background/Selection")->GetColour()));
+			PositionDisplay->SetForegroundColour(lagi_wxColour(OPT_GET("Colour/Subtitle Grid/Selection")->GetColour()));
 		}
 		else {
 			PositionDisplay->SetBackgroundColour(wxNullColour);
@@ -260,7 +261,7 @@ void VideoDisplay::Render() try {
 	E(glLoadIdentity());
 	E(glOrtho(0.0f, w, h, 0.0f, -1000.0f, 1000.0f));
 
-	if (Options.AsBool(L"Show Overscan Mask")) {
+	if (OPT_GET("Video/Overscan Mask")->GetBool()) {
 		double ar = context->GetAspectRatioValue();
 
 		// Based on BBC's guidelines: http://www.bbc.co.uk/guidelines/dq/pdf/tv/tv_standards_london.pdf
@@ -279,7 +280,7 @@ void VideoDisplay::Render() try {
 
 	if (video.x > INT_MIN ||
 	    video.y > INT_MIN ||
-	    Options.AsBool(L"Always show visual tools")) {
+		OPT_GET("Tool/Visual/Always Show")->GetBool()) {
 		tool->Draw();
 	}
 

@@ -40,7 +40,9 @@
 #include "config.h"
 
 #include "ass_dialogue.h"
+#include "compat.h"
 #include "dialog_text_import.h"
+#include "main.h"
 #include "options.h"
 #include "subtitle_format_txt.h"
 #include "text_file_reader.h"
@@ -115,8 +117,8 @@ void TXTSubtitleFormat::ReadFile(wxString filename,wxString encoding) {	using na
 
 	// Data
 	wxString actor;
-	wxString separator = Options.AsText(_T("Text actor separator"));
-	wxString comment = Options.AsText(_T("Text comment starter"));
+	wxString separator = lagi_wxString(OPT_GET("Tool/Import/Text/Actor Separator")->GetString());
+	wxString comment = lagi_wxString(OPT_GET("Tool/Import/Text/Comment Starter")->GetString());
 	bool isComment = false;
 	int lines = 0;
 
@@ -184,7 +186,7 @@ void TXTSubtitleFormat::ReadFile(wxString filename,wxString encoding) {	using na
 		line->group = _T("[Events]");
 		line->Style = _T("Default");
 		line->Start.SetMS(0);
-		line->End.SetMS(Options.AsInt(_T("Timing Default Duration")));
+		line->End.SetMS(OPT_GET("Timing/Default Duration")->GetInt());
 		Line->push_back(line);
 	}
 }

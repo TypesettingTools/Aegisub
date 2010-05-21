@@ -44,6 +44,7 @@
 #include <wx/string.h>
 #endif
 
+#include "compat.h"
 #include "ass_dialogue.h"
 #include "ass_file.h"
 #include "dialog_search_replace.h"
@@ -68,14 +69,14 @@ DialogSearchReplace::DialogSearchReplace (wxWindow *parent,bool _hasReplace,wxSt
 
 	// Find sizer
 	wxSizer *FindSizer = new wxFlexGridSizer(2,2,5,15);
-	wxArrayString FindHistory = Options.GetRecentList(_T("Recent find"));
+	wxArrayString FindHistory = lagi_MRU_wxAS("Find");
 	FindEdit = new wxComboBox(this,-1,_T(""),wxDefaultPosition,wxSize(300,-1),FindHistory,wxCB_DROPDOWN);
 	//if (FindHistory.Count()) FindEdit->SetStringSelection(FindHistory[0]);
 	FindEdit->SetSelection(0);
 	FindSizer->Add(new wxStaticText(this,-1,_("Find what:")),0,wxRIGHT | wxALIGN_CENTER_VERTICAL,0);
 	FindSizer->Add(FindEdit,0,wxRIGHT,0);
 	if (hasReplace) {
-		wxArrayString ReplaceHistory = Options.GetRecentList(_T("Recent replace"));
+		wxArrayString ReplaceHistory = lagi_MRU_wxAS("Replace");
 		ReplaceEdit = new wxComboBox(this,-1,_T(""),wxDefaultPosition,wxSize(300,-1),ReplaceHistory,wxCB_DROPDOWN);
 		FindSizer->Add(new wxStaticText(this,-1,_("Replace with:")),0,wxRIGHT | wxALIGN_CENTER_VERTICAL,0);
 		FindSizer->Add(ReplaceEdit,0,wxRIGHT,0);
@@ -87,10 +88,10 @@ DialogSearchReplace::DialogSearchReplace (wxWindow *parent,bool _hasReplace,wxSt
 	CheckMatchCase = new wxCheckBox(this,CHECK_MATCH_CASE,_("Match case"));
 	CheckRegExp = new wxCheckBox(this,CHECK_MATCH_CASE,_("Use regular expressions"));
 	CheckUpdateVideo = new wxCheckBox(this,CHECK_UPDATE_VIDEO,_("Update Video (slow)"));
-	CheckMatchCase->SetValue(Options.AsBool(_T("Find Match Case")));
-	CheckRegExp->SetValue(Options.AsBool(_T("Find RegExp")));
+	CheckMatchCase->SetValue(OPT_GET("Tool/Search Replace/Match Case")->GetBool());
+	CheckRegExp->SetValue(OPT_GET("Tool/Search Replace/RegExp")->GetBool());
 	//CheckRegExp->Enable(false);
-	CheckUpdateVideo->SetValue(Options.AsBool(_T("Find Update Video")));
+	CheckUpdateVideo->SetValue(OPT_GET("Tool/Search Replace/Video Update")->GetBool());
 //	CheckUpdateVideo->Enable(Search.grid->video->loaded);
 	OptionsSizer->Add(CheckMatchCase,0,wxBOTTOM,5);
 	OptionsSizer->Add(CheckRegExp,0,wxBOTTOM,5);
@@ -110,8 +111,8 @@ DialogSearchReplace::DialogSearchReplace (wxWindow *parent,bool _hasReplace,wxSt
 	wxSizer *LimitSizer = new wxBoxSizer(wxHORIZONTAL);
 	LimitSizer->Add(Field,1,wxEXPAND | wxRIGHT,5);
 	LimitSizer->Add(Affect,0,wxEXPAND | wxRIGHT,0);
-	Field->SetSelection(Options.AsInt(_T("Find Field")));
-	Affect->SetSelection(Options.AsInt(_T("Find Affect")));
+	Field->SetSelection(OPT_GET("Tool/Search Replace/Field")->GetInt());
+	Affect->SetSelection(OPT_GET("Tool/Search Replace/Affect")->GetInt());
 
 	// Left sizer
 	wxSizer *LeftSizer = new wxBoxSizer(wxVERTICAL);
@@ -160,12 +161,11 @@ void DialogSearchReplace::UpdateSettings() {
 	Search.isReg = CheckRegExp->IsChecked() && CheckRegExp->IsEnabled();
 	Search.matchCase = CheckMatchCase->IsChecked();
 	Search.updateVideo = CheckUpdateVideo->IsChecked() && CheckUpdateVideo->IsEnabled();
-	Options.SetBool(_T("Find Match Case"),CheckMatchCase->IsChecked());
-	Options.SetBool(_T("Find RegExp"),CheckRegExp->IsChecked());
-	Options.SetBool(_T("Find Update Video"),CheckUpdateVideo->IsChecked());
-	Options.SetInt(_T("Find Field"),Field->GetSelection());
-	Options.SetInt(_T("Find Affect"),Affect->GetSelection());
-	Options.Save();
+	OPT_SET("Tool/Search Replace/Match Case")->SetBool(CheckMatchCase->IsChecked());
+	OPT_SET("Tool/Search Replace/RegExp")->SetBool(CheckRegExp->IsChecked());
+	OPT_SET("Tool/Search Replace/Video Update")->SetBool(CheckUpdateVideo->IsChecked());
+	OPT_SET("Tool/Search Replace/Field")->SetInt(Field->GetSelection());
+	OPT_SET("Tool/Search Replace/Affect")->SetInt(Affect->GetSelection());
 }	
 
 
@@ -234,7 +234,7 @@ void DialogSearchReplace::FindReplace(int mode) {
 		if (hasReplace) {
 			wxString ReplaceWith = ReplaceEdit->GetValue();
 			Search.ReplaceWith = ReplaceWith;
-			Options.AddToRecentList(ReplaceWith,_T("Recent replace"));
+			AegisubApp::Get()->mru->Add("Replace", STD_STR(ReplaceWith));
 		}	
 	}
 
@@ -244,11 +244,11 @@ void DialogSearchReplace::FindReplace(int mode) {
 		Search.ReplaceWith = ReplaceWith;
 		if (mode == 1) Search.ReplaceNext();
 		else Search.ReplaceAll();
-		Options.AddToRecentList(ReplaceWith,_T("Recent replace"));
+		AegisubApp::Get()->mru->Add("Replace", STD_STR(ReplaceWith));
 	}
 	
 	// Add to history
-	Options.AddToRecentList(LookFor,_T("Recent find"));
+	AegisubApp::Get()->mru->Add("Find", STD_STR(LookFor));
 	UpdateDropDowns();
 }
 
@@ -287,7 +287,7 @@ void DialogSearchReplace::UpdateDropDowns() {
 	// Find
 	FindEdit->Freeze();
 	FindEdit->Clear();
-	FindEdit->Append(Options.GetRecentList(_T("Recent find")));
+	FindEdit->Append(lagi_MRU_wxAS("Find"));
 	FindEdit->SetSelection(0);
 	FindEdit->Thaw();
 
@@ -295,7 +295,7 @@ void DialogSearchReplace::UpdateDropDowns() {
 	if (hasReplace) {
 		ReplaceEdit->Freeze();
 		ReplaceEdit->Clear();
-		ReplaceEdit->Append(Options.GetRecentList(_T("Recent replace")));
+		ReplaceEdit->Append(lagi_MRU_wxAS("Replace"));
 		ReplaceEdit->SetSelection(0);
 		ReplaceEdit->Thaw();
 	}

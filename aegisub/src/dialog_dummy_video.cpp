@@ -44,10 +44,12 @@
 #include <wx/statline.h>
 #endif
 
+#include "compat.h"
 #include "dialog_dummy_video.h"
 #include "help_button.h"
+#include "main.h"
 #include "options.h"
-
+#include "utils.h"
 
 /// DOCME
 struct ResolutionShortcut {
@@ -123,12 +125,12 @@ bool DialogDummyVideo::CreateDummyVideo(wxWindow *parent, wxString &out_filename
 		pattern = dlg.pattern->GetValue();
 
 		// Write to options
-		Options.SetFloat(_T("Video Dummy Last FPS"), fps);
-		Options.SetInt(_T("Video Dummy Last Width"), width);
-		Options.SetInt(_T("Video Dummy Last Height"), height);
-		Options.SetInt(_T("Video Dummy Last Length"), length);
-		Options.SetColour(_T("Video Dummy Last Colour"), colour);
-		Options.SetBool(_T("Video Dummy Pattern"), pattern);
+		OPT_SET("Video/Dummy/FPS")->SetDouble(fps);
+		OPT_SET("Video/Dummy/Last/Width")->SetInt(width);
+		OPT_SET("Video/Dummy/Last/Height")->SetInt(height);
+		OPT_SET("Video/Dummy/Last/Length")->SetInt(length);
+		OPT_SET("Colour/Video Dummy/Last Colour")->SetColour(STD_STR(colour.GetAsString(wxC2S_CSS_SYNTAX)));
+		OPT_SET("Video/Dummy/Pattern")->SetBool(pattern);
 
 		out_filename = DummyVideoProvider::MakeFilename(fps, length, width, height, colour, pattern);
 		return true;
@@ -150,10 +152,10 @@ DialogDummyVideo::DialogDummyVideo(wxWindow *parent)
 	resolution_shortcuts = new wxComboBox(this, Dummy_Video_Resolution_Shortcut, _T(""), wxDefaultPosition, wxDefaultSize, 0, 0, wxCB_READONLY);
 	width = new wxTextCtrl(this, -1);
 	height = new wxTextCtrl(this, -1);
-	colour = new ColourButton(this, -1, wxSize(30, 17), Options.AsColour(_T("Video Dummy Last Colour")));
+	colour = new ColourButton(this, -1, wxSize(30, 17), lagi_wxColour(OPT_GET("Colour/Video Dummy/Last Colour")->GetColour()));
 	pattern = new wxCheckBox(this, -1, _("Checkerboard pattern"));
 	//fps = new wxComboBox(this, Dummy_Video_FPS, Options.AsText(_T("Video Dummy Last FPS")), wxDefaultPosition, wxDefaultSize, 0, 0, wxCB_DROPDOWN);
-	fps = new wxTextCtrl(this, Dummy_Video_FPS, Options.AsText(_T("Video Dummy Last FPS")));
+	fps = new wxTextCtrl(this, Dummy_Video_FPS, wxString::Format("%f", OPT_GET("Video/Dummy/FPS")->GetDouble()));
 	length = new wxSpinCtrl(this, Dummy_Video_Length);
 	length_display = new wxStaticText(this, -1, _T(""));
 
@@ -195,24 +197,24 @@ DialogDummyVideo::DialogDummyVideo(wxWindow *parent)
 
 	// Initialise controls
 	int lastwidth, lastheight, lastres = 0;
-	lastwidth = Options.AsInt(_T("Video Dummy Last Width"));
-	lastheight = Options.AsInt(_T("Video Dummy Last Height"));
+	lastwidth = OPT_GET("Video/Dummy/Last/Width")->GetInt();
+	lastheight = OPT_GET("Video/Dummy/Last/Height")->GetInt();
 	for (ResolutionShortcut *res = resolutions; res->name; ++res) {
 		resolution_shortcuts->Append(res->name);
 		if (res->width == lastwidth && res->height == lastheight)
 			resolution_shortcuts->SetSelection(lastres);
 		lastres++;
 	}
-	pattern->SetValue(Options.AsBool(_T("Video Dummy Pattern")));
+	pattern->SetValue(OPT_GET("Video/Dummy/Pattern")->GetBool());
 	/*fps->Append(_T("23.976"));
 	fps->Append(_T("29.97"));
 	fps->Append(_T("24"));
 	fps->Append(_T("25"));
 	fps->Append(_T("30"));*/
-	width->ChangeValue(Options.AsText(_T("Video Dummy Last Width")));
-	height->ChangeValue(Options.AsText(_T("Video Dummy Last Height")));
+	width->ChangeValue(AegiIntegerToString(OPT_GET("Video/Dummy/Last/Width")->GetInt()));
+	height->ChangeValue(AegiIntegerToString(OPT_GET("Video/Dummy/Last/Height")->GetInt()));
 	length->SetRange(0, 0x10000000);
-	length->SetValue(Options.AsInt(_T("Video Dummy Last Length")));
+	length->SetValue(OPT_GET("Video/Dummy/Last/Length")->GetInt());
 	UpdateLengthDisplay();
 
 	// Layout

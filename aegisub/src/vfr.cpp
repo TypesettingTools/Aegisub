@@ -43,6 +43,8 @@
 #include <wx/filename.h>
 #endif
 
+#include "compat.h"
+#include "main.h"
 #include "options.h"
 #include "text_file_reader.h"
 #include "text_file_writer.h"
@@ -236,7 +238,7 @@ void FrameRate::Load(wxString filename) {
 	FrameRateType = VFR;
 
 	// Add to recent
-	Options.AddToRecentList(filename,_T("Recent timecodes"));
+	AegisubApp::Get()->mru->Add("Timecodes", STD_STR(filename));
 }
 
 

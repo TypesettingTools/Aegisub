@@ -56,9 +56,11 @@
 
 #include "ass_style.h"
 #include "colorspace.h"
+#include "compat.h"
 #include "dialog_colorpicker.h"
 #include "help_button.h"
 #include "libresrc/libresrc.h"
+#include "main.h"
 #include "options.h"
 #include "utils.h"
 
@@ -723,7 +725,7 @@ DialogColorPicker::DialogColorPicker(wxWindow *parent, wxColour initial_color)
 
 	wxSizer *recent_sizer = new wxBoxSizer(wxVERTICAL);
 	recent_sizer->Add(recent_box, 1, wxEXPAND);
-	if (Options.AsBool(_T("RGBAdjust Tool"))) recent_sizer->Add(new wxButton(this,BUTTON_RGBADJUST,_T("rgbadjust()")), 0, wxEXPAND);
+	if (OPT_GET("Tool/Colour Picker/RGBAdjust Tool")->GetBool()) recent_sizer->Add(new wxButton(this,BUTTON_RGBADJUST,_T("rgbadjust()")), 0, wxEXPAND);
 
 	wxSizer *picker_sizer = new wxBoxSizer(wxHORIZONTAL);
 	picker_sizer->AddStretchSpacer();
@@ -764,11 +766,11 @@ DialogColorPicker::DialogColorPicker(wxWindow *parent, wxColour initial_color)
 
 	// Fill the controls
 	updating_controls = false;
-	int mode = Options.AsInt(_T("Color Picker Mode"));
+	int mode = OPT_GET("Tool/Colour Picker/Mode")->GetInt();
 	if (mode < 0 || mode > 4) mode = 3; // HSL default
 	colorspace_choice->SetSelection(mode);
 	SetColor(initial_color);
-	recent_box->LoadFromString(Options.AsText(_T("Color Picker Recent")));
+	recent_box->LoadFromString(lagi_wxString(OPT_GET("Tool/Colour Picker/Recent")->GetString()));
 
 	// The mouse event handler for the Dropper control must be manually assigned
 	// The EVT_MOUSE_EVENTS macro can't take a control id
@@ -821,8 +823,7 @@ void DialogColorPicker::SetColor(wxColour new_color)
 wxColour DialogColorPicker::GetColor()
 {
 	recent_box->AddColor(cur_color);
-	Options.SetText(_T("Color Picker Recent"), recent_box->StoreToString());
-	Options.Save();
+	OPT_SET("Tool/Colour Picker/Recent")->SetString(STD_STR(recent_box->StoreToString()));
 	return cur_color;
 }
 
@@ -1326,7 +1327,7 @@ void DialogColorPicker::OnChangeMode(wxCommandEvent &evt)
 {
 	if (!updating_controls)
 		spectrum_dirty = true;
-	Options.SetInt(_T("Color Picker Mode"), colorspace_choice->GetSelection());
+	OPT_SET("Tool/Colour Picker/Mode")->SetInt(colorspace_choice->GetSelection());
 	UpdateSpectrumDisplay();
 }
 

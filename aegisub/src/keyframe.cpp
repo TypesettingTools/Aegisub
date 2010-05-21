@@ -42,7 +42,9 @@
 #include <wx/msgdlg.h>
 #endif
 
+#include "compat.h"
 #include "keyframe.h"
+#include "main.h"
 #include "options.h"
 #include "text_file_reader.h"
 #include "text_file_writer.h"
@@ -74,7 +76,7 @@ void KeyFrameFile::Load(wxString filename) {
 		VideoContext::Get()->SetKeyFramesName(filename);
 
 		// Add to recent
-		Options.AddToRecentList(filename,_T("Recent keyframes"));
+		AegisubApp::Get()->mru->Add("Keyframes", STD_STR(filename));
 	}
 	// Fail
 	catch (const wchar_t *error) {
@@ -106,7 +108,7 @@ void KeyFrameFile::Save(wxString filename) {
 	}
 
 	// Add to recent
-	Options.AddToRecentList(filename,_T("Recent keyframes"));
+	AegisubApp::Get()->mru->Add("Keyframes", STD_STR(filename));
 }
 
 

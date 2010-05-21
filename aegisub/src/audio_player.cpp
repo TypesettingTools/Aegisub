@@ -59,6 +59,8 @@
 #ifdef WITH_PULSEAUDIO
 #include "audio_player_pulse.h"
 #endif
+#include "compat.h"
+#include "main.h"
 #include "options.h"
 
 
@@ -151,7 +153,7 @@ void AudioPlayer::OnStopAudio(wxCommandEvent &event) {
 ///
 AudioPlayer* AudioPlayerFactoryManager::GetAudioPlayer() {
 	// List of providers
-	wxArrayString list = GetFactoryList(Options.AsText(_T("Audio player")));
+	wxArrayString list = GetFactoryList(lagi_wxString(OPT_GET("Audio/Player")->GetString()));
 
 	// None available
 	if (list.Count() == 0) throw _T("No audio players are available.");

@@ -62,6 +62,8 @@
 #include "ass_style.h"
 #include "ass_time.h"
 #include "audio_display.h"
+#include "compat.h"
+#include "main.h"
 #include "mkv_wrap.h"
 #include "options.h"
 #include "standard_paths.h"
@@ -269,7 +271,7 @@ void VideoContext::SetVideo(const wxString &filename) {
 
 			// Set filename
 			videoName = filename;
-			Options.AddToRecentList(filename,_T("Recent vid"));
+			AegisubApp::Get()->mru->Add("Video", STD_STR(filename));
 			wxFileName fn(filename);
 			StandardPaths::SetPathValue(_T("?video"),fn.GetPath());
 
@@ -329,7 +331,7 @@ void VideoContext::UpdateDisplays(bool full) {
 
 	// Update audio display
 	if (audio && audio->loaded && audio->IsShownOnScreen()) {
-		if (Options.AsBool(_T("Audio Draw Video Position"))) {
+		if (OPT_GET("Audio/Display/Draw/Video Position")->GetBool()) {
 			audio->UpdateImage(false);
 		}
 	}
@@ -374,7 +376,7 @@ void VideoContext::JumpToFrame(int n) {
 	UpdateDisplays(false);
 
 	// Update grid
-	if (!isPlaying && Options.AsBool(_T("Highlight subs in frame"))) grid->Refresh(false);
+	if (!isPlaying && OPT_GET("Subtitle/Grid/Highlight Subtitles in Frame")->GetBool()) grid->Refresh(false);
 }
 
 
@@ -439,7 +441,7 @@ AegiVideoFrame VideoContext::GetFrame(int n,bool raw) {
 ///
 void VideoContext::SaveSnapshot(bool raw) {
 	// Get folder
-	wxString option = Options.AsText(_T("Video Screenshot Path"));
+	wxString option = lagi_wxString(OPT_GET("Path/Screenshot")->GetString());
 	wxFileName videoFile(videoName);
 	wxString basepath;
 	// Is it a path specifier and not an actual fixed path?
@@ -493,7 +495,7 @@ void VideoContext::PlayNextFrame() {
 	int thisFrame = frame_n;
 	JumpToFrame(frame_n + 1);
 	// Start playing audio
-	if (Options.AsBool(_T("Audio Plays When Stepping Video")))
+	if (OPT_GET("Audio/Plays When Stepping")->GetBool())
 		audio->Play(VFR_Output.GetTimeAtFrame(thisFrame),VFR_Output.GetTimeAtFrame(thisFrame + 1));
 }
 
@@ -507,7 +509,7 @@ void VideoContext::PlayPrevFrame() {
 	int thisFrame = frame_n;
 	JumpToFrame(frame_n -1);
 	// Start playing audio
-	if (Options.AsBool(_T("Audio Plays When Stepping Video")))
+	if (OPT_GET("Audio/Plays When Stepping")->GetBool())
 		audio->Play(VFR_Output.GetTimeAtFrame(thisFrame - 1),VFR_Output.GetTimeAtFrame(thisFrame));
 }
 

@@ -39,6 +39,8 @@
 // Headers
 #include "config.h"
 
+#include "compat.h"
+#include "main.h"
 #include "options.h"
 #include "vfr.h"
 #ifdef WITH_AVISYNTH
@@ -80,7 +82,7 @@ VideoProvider *VideoProviderFactoryManager::GetProvider(wxString video) {
 	}
 
 	// List of providers
-	wxArrayString list = GetFactoryList(Options.AsText(_T("Video provider")));
+	wxArrayString list = GetFactoryList(lagi_wxString(OPT_GET("Video/Provider")->GetString()));
 
 	// None available
 	if (list.Count() == 0) throw _T("No video providers are available.");

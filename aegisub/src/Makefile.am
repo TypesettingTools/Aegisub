@@ -23,10 +23,10 @@ SUBDIRS = \
 	libresrc \
 	$(libosxutil_subdir)
 
-AM_CXXFLAGS += -DAEGISUB -Iinclude -I../libffms/include @WX_CPPFLAGS@ @OPENMP_CXXFLAGS@ @LIBAVFORMAT_CFLAGS@ @LIBAVCODEC_CFLAGS@ @LIBSWSCALE_CFLAGS@ @LIBAVUTIL_CFLAGS@
+AM_CXXFLAGS += -DAEGISUB -Iinclude -I../libffms/include -I../libaegisub/include @WX_CPPFLAGS@ @OPENMP_CXXFLAGS@ @LIBAVFORMAT_CFLAGS@ @LIBAVCODEC_CFLAGS@ @LIBSWSCALE_CFLAGS@ @LIBAVUTIL_CFLAGS@
 
 bin_PROGRAMS = aegisub-2.2
-aegisub_2_2_LDADD = libresrc/libresrc.a $(libosxutil_lib)
+aegisub_2_2_LDADD = libresrc/libresrc.a $(libosxutil_lib) -L../libaegisub -laegisub-2.2
 aegisub_2_2_CPPFLAGS = @FREETYPE_CFLAGS@
 aegisub_2_2_LDFLAGS = @DEBUG_FLAGS@ @PROFILE_FLAGS@ @GL_LIBS@ @PTHREAD_LIBS@ @WX_LIBS@ @ICONV_LDFLAGS@ $(libosxutil_ldflags) @CCMALLOC_LDFLAGS@ @EFENCE_LDFLAGS@
 LIBS += @FREETYPE_LIBS@ @FONTCONFIG_LIBS@ @CCMALLOC_LIBS@
@@ -222,6 +222,7 @@ aegisub_2_2_SOURCES = \
 	charset_conv.cpp \
 	colorspace.cpp \
 	colour_button.cpp \
+	compat.cpp \
 	dialog_about.cpp \
 	dialog_attachments.cpp \
 	dialog_automation.cpp \
@@ -232,7 +233,6 @@ aegisub_2_2_SOURCES = \
 	dialog_fonts_collector.cpp \
 	dialog_jumpto.cpp \
 	dialog_kara_timing_copy.cpp \
-	dialog_options.cpp \
 	dialog_paste_over.cpp \
 	dialog_progress.cpp \
 	dialog_properties.cpp \
@@ -274,6 +274,7 @@ aegisub_2_2_SOURCES = \
 	mythes.cxx \
 	options.cpp \
 	plugin_manager.cpp \
+	preferences.cpp \
 	scintilla_text_ctrl.cpp \
 	spellchecker.cpp \
 	spline.cpp \

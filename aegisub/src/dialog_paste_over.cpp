@@ -48,6 +48,7 @@
 
 #include "dialog_paste_over.h"
 #include "help_button.h"
+#include "main.h"
 #include "options.h"
 
 
@@ -87,7 +88,10 @@ DialogPasteOver::DialogPasteOver (wxWindow *parent)
 	ListSizer->Add(ListBox,0,wxEXPAND|wxTOP,5);
 
 	// Load checked items
-	for (unsigned int i=0;i<choices.Count();i++) ListBox->Check(i,Options.AsBool(wxString::Format(_T("Paste Over #%i"),i)));
+	/// @todo This assumes a static set of fields.
+	std::vector<bool> choice_array;
+	OPT_GET("Tool/Paste Lines Over/Fields")->GetListBool(choice_array);
+	for (unsigned int i=0;i<choices.Count();i++) ListBox->Check(i,choice_array.at(i));
 
 	// Top buttons
 	wxSizer *TopButtonSizer = new wxBoxSizer(wxHORIZONTAL);
@@ -138,15 +142,13 @@ END_EVENT_TABLE()
 /// @param event 
 ///
 void DialogPasteOver::OnOK(wxCommandEvent &event) {
-	// Set options
-	options.SetCount(10);
-	for (int i=0;i<10;i++) {
-		options[i] = ListBox->IsChecked(i) ? 1 : 0;
-		Options.SetBool(wxString::Format(_T("Paste Over #%i"),i),options[i]==1);
-	}
-	Options.Save();
 
-	// End
+	std::vector<bool> map;
+	for (int i=0;i<10;i++) {
+		map[i] = ListBox->IsChecked(i);
+	}
+	OPT_SET("Tool/Paste Lines Over/Fields")->SetListBool(map);
+
 	EndModal(1);
 }
 

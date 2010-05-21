@@ -57,6 +57,8 @@
 #include "audio_provider_quicktime.h"
 #endif
 #include "audio_provider_ram.h"
+#include "compat.h"
+#include "main.h"
 #include "options.h"
 
 
@@ -243,7 +245,7 @@ AudioProvider *AudioProviderFactoryManager::GetAudioProvider(wxString filename, 
 	// Prepare provider
 	AudioProvider *provider = NULL;
 
-	if (!Options.AsBool(_T("Audio Disable PCM Provider"))) {
+	if (!OPT_GET("Provider/Audio/PCM/Disable")->GetBool()) {
 		// Try a PCM provider first
 		provider = CreatePCMAudioProvider(filename);
 		if (provider) {
@@ -257,7 +259,7 @@ AudioProvider *AudioProviderFactoryManager::GetAudioProvider(wxString filename, 
 	}
 
 	// List of providers
-	wxArrayString list = GetFactoryList(Options.AsText(_T("Audio provider")));
+	wxArrayString list = GetFactoryList(lagi_wxString(OPT_GET("Audio/Provider")->GetString()));
 
 	// None available
 	if (list.Count() == 0) throw _T("No audio providers are available.");
@@ -285,7 +287,7 @@ AudioProvider *AudioProviderFactoryManager::GetAudioProvider(wxString filename, 
 		provider = CreateConvertAudioProvider(provider);
 
 	// Change provider to RAM/HD cache if needed
-	if (cache == -1) cache = Options.AsInt(_T("Audio Cache"));
+	if (cache == -1) cache = OPT_GET("Audio/Cache/Type")->GetInt();
 	if (cache) {
 		AudioProvider *final = NULL;
 

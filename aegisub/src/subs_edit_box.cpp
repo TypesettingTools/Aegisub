@@ -373,11 +373,11 @@ void SubsEditBox::SetToLine(int n,bool weak) {
 
 	// Set video
 	if (VideoContext::Get()->IsLoaded() && !weak) {
-		wxString sync;
-		if (Search.hasFocus) sync = _T("Find update video");
-		else sync = _T("Sync video with subs");
-		
-		if (Options.AsBool(sync)) {
+		bool sync;
+		if (Search.hasFocus) sync = OPT_GET("Tool/Search Replace/Video Update")->GetBool();
+		else sync = OPT_GET("Video/Subtitle Sync")->GetBool();
+
+		if (sync) {
 			VideoContext::Get()->Stop();
 			AssDialogue *cur = grid->GetDialogue(n);
 			if (cur) VideoContext::Get()->JumpToFrame(VFR_Output.GetFrameAtTime(cur->Start.GetMS(),true));
@@ -499,8 +499,7 @@ void SubsEditBox::OnKeyDown(wxStyledTextEvent &event) {
 ///
 void SubsEditBox::OnSyntaxBox(wxCommandEvent &event) {
 	TextEdit->UpdateStyle();
-	Options.SetBool(_T("Syntax Highlight Enabled"),SyntaxHighlight->GetValue());
-	Options.Save();
+	OPT_SET("Subtitle/Highlight/Syntax")->SetBool(SyntaxHighlight->GetValue());
 	event.Skip();
 }
 
@@ -724,7 +723,7 @@ void SubsEditBox::OnLayerEnter(wxCommandEvent &event) {
 ///
 void SubsEditBox::OnStartTimeChange(wxCommandEvent &event) {
 	if (StartTime->time > EndTime->time) StartTime->SetTime(EndTime->time.GetMS());
-	bool join = Options.AsBool(_T("Link Time Boxes Commit")) && EndTime->HasBeenModified();
+	bool join = OPT_GET("Subtitle/Edit Box/Link Time Boxes Commit")->GetBool() && EndTime->HasBeenModified();
 	StartTime->Update();
 	Duration->Update();
 	if (join) EndTime->Update();
@@ -738,7 +737,7 @@ void SubsEditBox::OnStartTimeChange(wxCommandEvent &event) {
 ///
 void SubsEditBox::OnEndTimeChange(wxCommandEvent &event) {
 	if (StartTime->time > EndTime->time) EndTime->SetTime(StartTime->time.GetMS());
-	bool join = Options.AsBool(_T("Link Time Boxes Commit")) && StartTime->HasBeenModified();
+	bool join = OPT_GET("Subtitle/Edit Box/Link Time Boxes Commit")->GetBool() && StartTime->HasBeenModified();
 	EndTime->Update();
 	Duration->Update();
 	if (join) StartTime->Update();
@@ -1015,7 +1014,7 @@ void SubsEditBox::Commit(bool stay) {
 		if (next >= nrows) {
 			AssDialogue *newline = new AssDialogue;
 			newline->Start = cur->End;
-			newline->End.SetMS(cur->End.GetMS()+Options.AsInt(_T("Timing Default Duration")));
+			newline->End.SetMS(cur->End.GetMS()+OPT_GET("Timing/Default Duration")->GetInt());
 			newline->Style = cur->Style;
 			newline->UpdateData();
 			grid->InsertLine(newline,next-1,true,true);

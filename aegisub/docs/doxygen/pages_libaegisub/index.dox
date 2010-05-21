@@ -1,0 +1,11 @@
+/** @mainpage
+
+Main
+ - @ref base
+
+Library
+ - @ref unix
+ - @ref windows
+ - @ref osx
+ - @ref io
+*/

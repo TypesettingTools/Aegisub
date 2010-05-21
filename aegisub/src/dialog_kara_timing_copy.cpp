@@ -54,6 +54,7 @@
 #include "dialog_kara_timing_copy.h"
 #include "help_button.h"
 #include "libresrc/libresrc.h"
+#include "main.h"
 #include "subs_grid.h"
 #include "utils.h"
 #include "validators.h"
@@ -852,7 +853,7 @@ DialogKanjiTimer::DialogKanjiTimer(wxWindow *parent, SubtitlesGrid *_grid)
 
 	//Checkbox
 	Interpolate = new wxCheckBox(this,-1,_("Attempt to interpolate kanji."),wxDefaultPosition,wxDefaultSize,wxALIGN_LEFT);
-	Interpolate->SetValue(Options.AsBool(_T("kanji timer interpolation")));
+	Interpolate->SetValue(OPT_GET("Tool/Kanji Timer/Interpolation")->GetBool());
 
 	SourceStyle=new wxComboBox(this,-1,_T(""),wxDefaultPosition,wxSize(160,-1),
 								 subs->GetStyles(),wxCB_READONLY,wxDefaultValidator,_("Source Style"));
@@ -934,8 +935,7 @@ END_EVENT_TABLE()
 /// @param event 
 ///
 void DialogKanjiTimer::OnClose(wxCommandEvent &event) {
-	Options.SetBool(_T("kanji timer interpolation"),Interpolate->IsChecked());
-	Options.Save();
+	OPT_SET("Tool/Kanji Timer/Interpolation")->SetBool(Interpolate->IsChecked());
 	bool modified = !LinesToChange.empty();
 	
 	while(LinesToChange.empty()==false) {

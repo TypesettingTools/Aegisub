@@ -39,6 +39,8 @@
 // Headers
 #include "config.h"
 
+#include "compat.h"
+#include "main.h"
 #include "options.h"
 #ifdef WITH_CSRI
 #include "subtitles_provider_csri.h"
@@ -61,7 +63,7 @@ SubtitlesProvider::~SubtitlesProvider() {
 ///
 bool SubtitlesProviderFactoryManager::ProviderAvailable() {
 	// List of providers
-	wxArrayString list = GetFactoryList(Options.AsText(_T("Subtitles provider")));
+	wxArrayString list = GetFactoryList(lagi_wxString(OPT_GET("Subtitle/Provider")->GetString()));
 
 	// None available
 	return (list.Count() > 0);
@@ -74,7 +76,7 @@ bool SubtitlesProviderFactoryManager::ProviderAvailable() {
 ///
 SubtitlesProvider* SubtitlesProviderFactoryManager::GetProvider() {
 	// List of providers
-	wxArrayString list = GetFactoryList(Options.AsText(_T("Subtitles provider")));
+	wxArrayString list = GetFactoryList(lagi_wxString(OPT_GET("Subtitle/Provider")->GetString()));
 
 	// None available
 	if (list.Count() == 0) throw _T("No subtitle providers are available.");

@@ -51,11 +51,13 @@
 #include "ass_file.h"
 #include "ass_override.h"
 #include "ass_style.h"
+#include "compat.h"
 #include "dialog_fonts_collector.h"
 #include "font_file_lister.h"
 #include "frame_main.h"
 #include "help_button.h"
 #include "libresrc/libresrc.h"
+#include "main.h"
 #include "options.h"
 #include "scintilla_text_ctrl.h"
 #include "subs_grid.h"
@@ -96,7 +98,7 @@ DialogFontsCollector::DialogFontsCollector(wxWindow *parent)
 	main = (FrameMain*) parent;
 
 	// Destination box
-	wxString dest = Options.AsText(_T("Fonts Collector Destination"));
+	wxString dest = lagi_wxString(OPT_GET("Path/Fonts Collector Destination")->GetString());
 	if (dest == _T("?script")) {
 		wxFileName filename(AssFile::top->filename);
 		dest = filename.GetPath();
@@ -122,7 +124,7 @@ DialogFontsCollector::DialogFontsCollector(wxWindow *parent)
 	choices.Add(_("DEBUG: Verify all fonts in system"));
 #endif
 	CollectAction = new wxRadioBox(this,RADIO_BOX,_T("Action"),wxDefaultPosition,wxDefaultSize,choices,1);
-	size_t lastAction = Options.AsInt(_T("Fonts Collector Action"));
+	size_t lastAction = OPT_GET("Tool/Fonts Collector/Action")->GetInt();
 	if (lastAction >= choices.GetCount()) lastAction = 0;
 	CollectAction->SetSelection(lastAction);
 
@@ -241,10 +243,9 @@ void DialogFontsCollector::OnStart(wxCommandEvent &event) {
 		if (filename.GetPath() == dest) {
 			dest = _T("?script");
 		}
-		Options.SetText(_T("Fonts Collector Destination"),dest);
+		OPT_SET("Path/Fonts Collector Destination")->SetString(STD_STR(dest));
 	}
-	Options.SetInt(_T("Fonts Collector Action"),action);
-	Options.Save();
+	OPT_SET("Tool/Fonts Collector/Action")->SetInt(action);
 
 	// Set buttons
 	StartButton->Enable(false);

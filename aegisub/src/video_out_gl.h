@@ -34,11 +34,13 @@
 /// @ingroup video
 ///
 
-#include "include/aegisub/exception.h"
+#include <libaegisub/exception.h>
 
 #ifndef AGI_PRE
 #include <vector>
 #endif
+
+#include "compat.h"
 
 class AegiVideoFrame;
 
@@ -102,17 +104,17 @@ public:
 /// @class VideoOutException
 /// @extends Aegisub::Exception
 /// @brief Base class for all exceptions thrown by VideoOutGL
-DEFINE_BASE_EXCEPTION_NOINNER(VideoOutException, Aegisub::Exception)
+DEFINE_BASE_EXCEPTION_NOINNER(VideoOutException, agi::Exception)
 
 /// @class VideoOutRenderException
 /// @extends VideoOutException
 /// @brief An OpenGL error occured while uploading or displaying a frame
 class VideoOutRenderException : public VideoOutException {
 public:
-	VideoOutRenderException(const wxChar *func, int err)
-		: VideoOutException(wxString::Format("%s failed with error code %d", func, err))
+	VideoOutRenderException(const char *func, int err)
+		: VideoOutException(STD_STR(wxString::Format("%s failed with error code %d", func, err)))
 	{ }
-	const wxChar * GetName() const { return L"videoout/opengl/render"; }
+	const char * GetName() const { return "videoout/opengl/render"; }
 	Exception * Copy() const { return new VideoOutRenderException(*this); }
 };
 /// @class VideoOutOpenGLException
@@ -120,10 +122,10 @@ public:
 /// @brief An OpenGL error occured while setting up the video display
 class VideoOutInitException : public VideoOutException {
 public:
-	VideoOutInitException(const wxChar *func, int err)
-		: VideoOutException(wxString::Format("%s failed with error code %d", func, err))
+	VideoOutInitException(const char *func, int err)
+		: VideoOutException(STD_STR(wxString::Format("%s failed with error code %d", func, err)))
 	{ }
-	VideoOutInitException(const wxChar *err) : VideoOutException(err) { }
-	const wxChar * GetName() const { return L"videoout/opengl/init"; }
+	VideoOutInitException(const char *err) : VideoOutException(err) { }
+	const char * GetName() const { return "videoout/opengl/init"; }
 	Exception * Copy() const { return new VideoOutInitException(*this); }
 };

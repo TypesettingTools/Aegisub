@@ -45,8 +45,10 @@
 #endif
 
 #include "ass_dialogue.h"
+#include "compat.h"
 #include "dialog_selection.h"
 #include "help_button.h"
+#include "main.h"
 #include "options.h"
 #include "subs_grid.h"
 #include "subs_edit_box.h"
@@ -70,7 +72,7 @@ wxDialog (parent,-1,_("Select"),wxDefaultPosition,wxDefaultSize,wxCAPTION)
 	// Matches box
 	Matches = new wxRadioButton(this,-1,_("Matches"),wxDefaultPosition,wxDefaultSize,wxRB_GROUP);
 	DoesntMatch = new wxRadioButton(this,-1,_("Doesn't Match"),wxDefaultPosition,wxDefaultSize,0);
-	Match = new wxTextCtrl(this,-1,Options.AsText(_T("Select Text")),wxDefaultPosition,wxSize(200,-1));
+	Match = new wxTextCtrl(this,-1,lagi_wxString(OPT_GET("Tool/Select Lines/Text")->GetString()),wxDefaultPosition,wxSize(200,-1));
 	MatchCase = new wxCheckBox(this,-1,_("Match case"));
 	Exact = new wxRadioButton(this,-1,_("Exact match"),wxDefaultPosition,wxDefaultSize,wxRB_GROUP);
 	Contains = new wxRadioButton(this,-1,_("Contains"));
@@ -130,13 +132,13 @@ wxDialog (parent,-1,_("Select"),wxDefaultPosition,wxDefaultSize,wxCAPTION)
 	CenterOnParent();
 
 	// Load settings
-	Field->SetSelection(Options.AsInt(_T("Select Field")));
-	Action->SetSelection(Options.AsInt(_T("Select Action")));
-	MatchCase->SetValue(Options.AsBool(_T("Select Match case")));
-	MatchDialogues->SetValue(Options.AsBool(_T("Select Match dialogues")));
-	MatchComments->SetValue(Options.AsBool(_T("Select Match comments")));
-	int condition = Options.AsInt(_T("Select Condition"));
-	int mode = Options.AsInt(_T("Select Mode"));
+	Field->SetSelection(OPT_GET("Tool/Select/Field")->GetInt());
+	Action->SetSelection(OPT_GET("Tool/Select/Action")->GetInt());
+	MatchCase->SetValue(OPT_GET("Tool/Select Lines/Match/Case")->GetBool());
+	MatchDialogues->SetValue(OPT_GET("Tool/Select Lines/Match/Dialogue")->GetBool());
+	MatchComments->SetValue(OPT_GET("Tool/Select Lines/Match/Comment")->GetBool());
+	int condition = OPT_GET("Tool/Select/Condition")->GetInt();
+	int mode = OPT_GET("Tool/Select/Mode")->GetInt();
 	if (condition == 1) DoesntMatch->SetValue(true);
 	if (mode == 1) Contains->SetValue(true);
 	else if (mode == 2) RegExp->SetValue(true);
@@ -303,14 +305,14 @@ void DialogSelection::SaveSettings() {
 	else condition = 1;
 
 	// Store
-	Options.SetText(_T("Select Text"),Match->GetValue());
-	Options.SetInt(_T("Select Condition"),condition);
-	Options.SetInt(_T("Select Field"),field);
-	Options.SetInt(_T("Select Action"),action);
-	Options.SetInt(_T("Select Mode"),mode);
-	Options.SetBool(_T("Select Match case"),MatchCase->IsChecked());
-	Options.SetBool(_T("Select Match dialogues"),MatchDialogues->IsChecked());
-	Options.SetBool(_T("Select Match comments"),MatchComments->IsChecked());
+	OPT_SET("Tool/Select Lines/Text")->SetString(STD_STR(Match->GetValue()));
+	OPT_SET("Tool/Select/Condition")->SetInt(condition);
+	OPT_SET("Tool/Select/Field")->SetInt(field);
+	OPT_SET("Tool/Select/Action")->SetInt(action);
+	OPT_SET("Tool/Select/Mode")->SetInt(mode);
+	OPT_SET("Tool/Select Lines/Match/Case")->SetBool(MatchCase->IsChecked());
+	OPT_SET("Tool/Select Lines/Match/Dialogue")->SetBool(MatchDialogues->IsChecked());
+	OPT_SET("Tool/Select Lines/Match/Comment")->SetBool(MatchComments->IsChecked());
 }
 
 

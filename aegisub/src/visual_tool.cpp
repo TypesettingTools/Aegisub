@@ -51,6 +51,7 @@
 #include "ass_style.h"
 #include "ass_time.h"
 #include "export_visible_lines.h"
+#include "main.h"
 #include "options.h"
 #include "subs_edit_box.h"
 #include "subs_grid.h"
@@ -100,7 +101,7 @@ VisualTool<FeatureType>::~VisualTool() {
 
 template<class FeatureType>
 void VisualTool<FeatureType>::OnMouseEvent (wxMouseEvent &event) {
-	bool realTime = Options.AsBool(L"Video Visual Realtime");
+	bool realTime = OPT_GET("Video/Visual Realtime")->GetBool();
 
 	if (event.Leaving()) {
 		Update();

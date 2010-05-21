@@ -863,8 +863,8 @@ DirectSoundPlayer2::DirectSoundPlayer2()
 	thread = 0;
 
 	// The buffer will hold BufferLength times WantedLatency milliseconds of audio
-	WantedLatency = Options.AsInt(_T("Audio dsound buffer latency"));
-	BufferLength = Options.AsInt(_T("Audio dsound buffer length"));
+	WantedLatency = OPT_GET("Player/Audio/DirectSound/Buffer Latency")->GetInt();
+	BufferLength = OPT_GET("Player/Audio/DirectSound/Buffer Length")->GetInt();
 
 	// sanity checking
 	if (WantedLatency <= 0)

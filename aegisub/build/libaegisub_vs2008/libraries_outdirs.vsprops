@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="Windows-1252"?>
+<VisualStudioPropertySheet
+	ProjectType="Visual C++"
+	Version="8.00"
+	Name="standard_outdirs"
+	OutputDirectory="$(SolutionDir)build/$(ProjectName)/$(PlatformName)/$(ConfigurationName)/"
+	IntermediateDirectory="$(OutDir)"
+	>
+	<Tool
+		Name="VCLibrarianTool"
+		OutputFile="$(LibraryOutDir)/$(ProjectName).lib"
+	/>
+	<Tool
+		Name="VCLinkerTool"
+		OutputFile=""
+		AdditionalLibraryDirectories="$(LibraryOutDir)"
+		ImportLibrary="$(LibraryOutDir)$(TargetName).lib"
+	/>
+	<UserMacro
+		Name="LibraryOutDir"
+		Value="$(SolutionDir)lib/$(PlatformName)/$(ConfigurationName)/"
+	/>
+	<UserMacro
+		Name="ExecutableOutDir"
+		Value="$(SolutionDir)bin/"
+	/>
+</VisualStudioPropertySheet>

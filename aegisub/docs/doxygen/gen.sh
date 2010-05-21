@@ -17,6 +17,9 @@ case "$1" in
 	"reporter")
 		TRIM="${SRC_PWD}/reporter/"
 	;;
+	"libaegisub")
+		TRIM="${SRC_PWD}/libaegisub/"
+	;;
 esac
 
 export OUTPUT_DIR="$2"

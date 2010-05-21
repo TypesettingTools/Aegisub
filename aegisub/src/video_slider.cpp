@@ -44,6 +44,7 @@
 #endif
 
 #include "ass_dialogue.h"
+#include "main.h"
 #include "options.h"
 #include "subs_edit_box.h"
 #include "subs_grid.h"
@@ -310,7 +311,7 @@ void VideoSlider::OnKeyDown(wxKeyEvent &event) {
 		// Fast move
 		if (!ctrl && !shift && alt) {
 			if (VideoContext::Get()->IsPlaying()) return;
-			int target = MID(min,GetValue() + direction * Options.AsInt(_T("Video Fast Jump Step")),max);
+			int target = MID(min,GetValue() + direction * OPT_GET("Video/Slider/Fast Jump Step")->GetInt(),max);
 			if (target != GetValue()) VideoContext::Get()->JumpToFrame(target);
 			return;
 		}
@@ -478,7 +479,7 @@ void VideoSlider::DrawImage(wxDC &destdc) {
 
 	// Draw keyframes
 	int curX;
-	if (Display && Options.AsBool(_T("Show keyframes on video slider"))) {
+	if (Display && OPT_GET("Video/Slider/Show Keyframes")->GetBool()) {
 		dc.SetPen(wxPen(shad));
 		wxArrayInt KeyFrames = VideoContext::Get()->GetKeyFrames();
 		int keys = KeyFrames.Count();

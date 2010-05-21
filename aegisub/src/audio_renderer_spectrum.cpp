@@ -54,6 +54,7 @@
 #include "audio_renderer_spectrum.h"
 #include "colorspace.h"
 #include "fft.h"
+#include "main.h"
 #include "options.h"
 #include "utils.h"
 
@@ -565,7 +566,7 @@ public:
 		cache_root = new IntermediateSpectrumCache(provider, 0, num_lines, num_overlaps, 0);
 
 		// option is stored in megabytes, but we want number of bytes
-		unsigned long max_cache_size = Options.AsInt(_T("Audio Spectrum Memory Max"));
+		unsigned long max_cache_size = OPT_GET("Audio/Renderer/Spectrum/Memory Max")->GetInt();
 		// It can't go too low
 		if (max_cache_size < 5) max_cache_size = 128;
 		max_cache_size *= 1024 * 1024;
@@ -590,7 +591,7 @@ AudioSpectrum::AudioSpectrum(AudioProvider *_provider)
 	provider = _provider;
 
 	// Determine the quality of the spectrum rendering based on an index
-	int quality_index = Options.AsInt(_T("Audio Spectrum Quality"));
+	int quality_index = OPT_GET("Audio/Renderer/Spectrum/Quality")->GetInt();
 	if (quality_index < 0) quality_index = 0;
 	if (quality_index > 5) quality_index = 5; // no need to go freaking insane
 
@@ -655,7 +656,7 @@ AudioSpectrum::AudioSpectrum(AudioProvider *_provider)
 	cache = new AudioSpectrumCacheManager(provider, line_length, num_lines, fft_overlaps);
 
 	power_scale = 1;
-	minband = Options.AsInt(_T("Audio Spectrum Cutoff"));
+	minband = OPT_GET("Audio/Renderer/Spectrum/Cutoff")->GetInt();
 	maxband = line_length - minband * 2/3; // TODO: make this customisable?
 
 	// Generate colour maps

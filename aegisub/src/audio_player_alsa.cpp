@@ -85,7 +85,7 @@ void AlsaPlayer::OpenStream()
 	// We want playback
 	stream = SND_PCM_STREAM_PLAYBACK;
 	// And get a device name
-	wxString device = Options.AsText(_T("Audio Alsa Device"));
+	wxString device = lagi_wxString(OPT_GET("Player/Audio/ALSA/Device")->GetString());
 
 	// Open device for blocking access
 	if (snd_pcm_open(&pcm_handle, device.mb_str(wxConvUTF8), stream, 0) < 0) { // supposedly we don't want SND_PCM_ASYNC even for async playback

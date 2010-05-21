@@ -62,6 +62,7 @@
 #include "avisynth_wrap.h"
 #endif
 #include "charset_conv.h"
+#include "compat.h"
 #include "dialog_detached_video.h"
 #include "dialog_search_replace.h"
 #include "dialog_splash.h"
@@ -145,7 +146,7 @@ FrameMain::FrameMain (wxArrayString args)
 
 	// Create menu and tool bars
 	StartupLog(_T("Apply saved Maximized state"));
-	if (Options.AsBool(_T("Maximized"))) Maximize(true);
+	if (OPT_GET("App/Maximized")->GetBool()) Maximize(true);
 	StartupLog(_T("Initialize toolbar"));
 	InitToolbar();
 	StartupLog(_T("Initialize menu bar"));
@@ -179,7 +180,7 @@ FrameMain::FrameMain (wxArrayString args)
 	// It doesn't work properly on wxMac, and the jumping dock icon
 	// signals the same as the splash screen either way.
 #if !_DEBUG && !__WXMAC__
-	if (Options.AsBool(_T("Show Splash"))) {
+	if (OPT_GET("App/Splash")->GetBool()) {
 		SplashScreen *splash = new SplashScreen(this);
 		splash->Show(true);
 		splash->Update();
@@ -192,7 +193,7 @@ FrameMain::FrameMain (wxArrayString args)
 	// Set autosave timer
 	StartupLog(_T("Set up Auto Save"));
 	AutoSave.SetOwner(this,AutoSave_Timer);
-	int time = Options.AsInt(_T("Auto save every seconds"));
+	int time = OPT_GET("App/Auto/Save Every Seconds")->GetInt();
 	if (time > 0) {
 		AutoSave.Start(time*1000);
 	}
@@ -214,12 +215,11 @@ FrameMain::FrameMain (wxArrayString args)
 
 	// Version checker
 	StartupLog(_T("Possibly perform automatic updates check"));
-	int option = Options.AsInt(_T("Auto check for updates"));
+	int option = OPT_GET("App/Auto/Check For Updates")->GetInt();
 	if (option == -1) {
 		int result = wxMessageBox(_("Do you want Aegisub to check for updates whenever it starts? You can still do it manually via the Help menu."),_("Check for updates?"),wxYES_NO);
 		option = (result == wxYES);
-		Options.SetInt(_T("Auto check for updates"),option);
-		Options.Save();
+		OPT_SET("App/Auto/Check For Updates")->SetInt(option);
 	}
 
 	PerformVersionCheck(false);
@@ -609,7 +609,7 @@ void FrameMain::InitContents() {
 	videoBox->videoSlider->grid = SubsBox;
 	VideoContext::Get()->grid = SubsBox;
 	StartupLog(_T("Reset video zoom"));
-	videoBox->videoDisplay->SetZoom(Options.AsInt(_T("Video Default Zoom")) * .125 + .125);
+	videoBox->videoDisplay->SetZoom(OPT_GET("Video/Default Zoom")->GetInt() * .125 + .125);
 	Search.grid = SubsBox;
 
 	// Audio area
@@ -718,7 +718,7 @@ void FrameMain::LoadSubtitles (wxString filename,wxString charset) {
 					wxString cur = testSubs.ReadLineFromFile();
 					if (cur.Left(10) == _T("# timecode")) {
 						LoadVFR(filename);
-						Options.SetText(_T("Last open timecodes path"), fileCheck.GetPath());
+						OPT_SET("Path/Last/Timecodes")->SetString(STD_STR(fileCheck.GetPath()));
 						return;
 					}
 				}
@@ -737,7 +737,7 @@ void FrameMain::LoadSubtitles (wxString filename,wxString charset) {
 			SubsBox->LoadFromAss(AssFile::top,false,true);
 			wxFileName fn(filename);
 			StandardPaths::SetPathValue(_T("?script"),fn.GetPath());
-			Options.SetText(_T("Last open subtitles path"), fn.GetPath());
+			OPT_SET("Path/Last/Subtitles")->SetString(STD_STR(fn.GetPath()));
 		}
 		else {
 			SubsBox->LoadDefault(AssFile::top);
@@ -759,9 +759,9 @@ void FrameMain::LoadSubtitles (wxString filename,wxString charset) {
 
 	// Save copy
 	wxFileName origfile(filename);
-	if (!isBinary && Options.AsBool(_T("Auto backup")) && origfile.FileExists()) {
+	if (!isBinary && OPT_GET("App/Auto/Backup")->GetBool() && origfile.FileExists()) {
 		// Get path
-		wxString path = Options.AsText(_T("Auto backup path"));
+		wxString path = lagi_wxString(OPT_GET("Path/Auto/Backup")->GetString());
 		if (path.IsEmpty()) path = origfile.GetPath();
 		wxFileName dstpath(path);
 		if (!dstpath.IsAbsolute()) path = StandardPaths::DecodePathMaybeRelative(path, _T("?user/"));
@@ -796,7 +796,7 @@ bool FrameMain::SaveSubtitles(bool saveas,bool withCharset) {
 	// Failed, ask user
 	if (filename.IsEmpty()) {
 		VideoContext::Get()->Stop();
-		wxString path = Options.AsText(_T("Last open subtitles path"));
+		wxString path = lagi_wxString(OPT_GET("Path/Last/Subtitles")->GetString());
 		wxFileName origPath(AssFile::top->filename);
 		filename = 	wxFileSelector(_("Save subtitles file"),path,origPath.GetName() + _T(".ass"),_T("ass"),AssFile::GetWildcardList(1),wxFD_SAVE | wxFD_OVERWRITE_PROMPT,this);
 	}
@@ -805,7 +805,7 @@ bool FrameMain::SaveSubtitles(bool saveas,bool withCharset) {
 	if (!filename.empty()) {
 		// Store path
 		wxFileName filepath(filename);
-		Options.SetText(_T("Last open subtitles path"), filepath.GetPath());
+		OPT_SET("Path/Last/Subtitles")->SetString(STD_STR(filepath.GetPath()));
 
 		// Fix me, ghetto hack for correct relative path generation in SynchronizeProject()
 		AssFile::top->filename = filename;
@@ -979,7 +979,7 @@ void FrameMain::SynchronizeProject(bool fromSubs) {
 		wxString AutoScriptString = subs->GetScriptInfo(_T("Automation Scripts"));
 
 		// Check if there is anything to change
-		int autoLoadMode = Options.AsInt(_T("Autoload linked files"));
+		int autoLoadMode = OPT_GET("App/Auto/Load Linked Files")->GetInt();
 		bool hasToLoad = false;
 		if (curSubsAudio != audioBox->audioName ||
 			curSubsVFR != VFR_Output.GetFilename() ||
@@ -1034,7 +1034,7 @@ void FrameMain::SynchronizeProject(bool fromSubs) {
 			local_scripts->RemoveAll();
 			wxStringTokenizer tok(AutoScriptString, _T("|"), wxTOKEN_STRTOK);
 			wxFileName subsfn(subs->filename);
-			wxString autobasefn(Options.AsText(_T("Automation Base Path")));
+			wxString autobasefn(lagi_wxString(OPT_GET("Path/Automation/Base")->GetString()));
 			while (tok.HasMoreTokens()) {
 				wxString sfnames = tok.GetNextToken().Trim(true).Trim(false);
 				wxString sfnamel = sfnames.Left(1);
@@ -1102,7 +1102,7 @@ void FrameMain::SynchronizeProject(bool fromSubs) {
 		// 4. Otherwise, use path relative to subs ("~")
 #ifdef WITH_AUTOMATION
 		wxString scripts_string;
-		wxString autobasefn(Options.AsText(_T("Automation Base Path")));
+		wxString autobasefn(lagi_wxString(OPT_GET("Path/Automation/Base")->GetString()));
 
 		const std::vector<Automation4::Script*> &scripts = local_scripts->GetScripts();
 		for (unsigned int i = 0; i < scripts.size(); i++) {
@@ -1182,7 +1182,7 @@ void FrameMain::LoadVideo(wxString file,bool autoload) {
 		int scriptx = SubsBox->ass->GetScriptInfoAsInt(_T("PlayResX"));
 		int scripty = SubsBox->ass->GetScriptInfoAsInt(_T("PlayResY"));
 		if (scriptx != vidx || scripty != vidy) {
-			switch (Options.AsInt(_T("Video Check Script Res"))) {
+			switch (OPT_GET("Video/Check Script Res")->GetInt()) {
 				case 1:
 					// Ask to change on mismatch
 					if (wxMessageBox(wxString::Format(_("The resolution of the loaded video and the resolution specified for the subtitles don't match.\n\nVideo resolution:\t%d x %d\nScript resolution:\t%d x %d\n\nChange subtitles resolution to match video?"), vidx, vidy, scriptx, scripty), _("Resolution mismatch"), wxYES_NO, this) != wxYES)
@@ -1207,7 +1207,7 @@ void FrameMain::LoadVideo(wxString file,bool autoload) {
 	SetDisplayMode(1,-1);
 	EditBox->UpdateFrameTiming();
 
-	DetachVideo(VideoContext::Get()->IsLoaded() && Options.AsBool(_T("Detached Video")));
+	DetachVideo(VideoContext::Get()->IsLoaded() && OPT_GET("Video/Detached/Enabled")->GetBool());
 	Thaw();
 }
 
@@ -1345,7 +1345,7 @@ void FrameMain::SetAccelerators() {
 	entry.push_back(Hotkeys.GetAccelerator(_T("Edit box commit"),Edit_Box_Commit));
 
 	// Medusa
-	bool medusaPlay = Options.AsBool(_T("Audio Medusa Timing Hotkeys"));
+	bool medusaPlay = OPT_GET("Audio/Medusa Timing Hotkeys")->GetBool();
 	if (medusaPlay && audioBox->audioDisplay->loaded) {
 		entry.push_back(Hotkeys.GetAccelerator(_T("Audio Medusa Play"),Medusa_Play));
 		entry.push_back(Hotkeys.GetAccelerator(_T("Audio Medusa Stop"),Medusa_Stop));

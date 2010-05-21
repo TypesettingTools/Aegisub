@@ -41,6 +41,8 @@
 #endif
 
 #include "charset_conv.h"
+#include "compat.h"
+#include "main.h"
 #include "options.h"
 #include "text_file_writer.h"
 
@@ -60,7 +62,7 @@ TextFileWriter::TextFileWriter(wxString filename, wxString encoding)
 		throw _T("Failed opening file for writing.");
 	}
 
-	if (encoding.IsEmpty()) encoding = Options.AsText(_T("Save Charset"));
+	if (encoding.IsEmpty()) encoding = lagi_wxString(OPT_GET("App/Save Charset")->GetString());
 	conv.reset(new AegisubCSConv(encoding, true));
 
 	// Write the BOM

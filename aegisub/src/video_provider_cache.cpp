@@ -38,6 +38,7 @@
 ///////////
 // Headers
 #include "config.h"
+#include "main.h"
 #include "options.h"
 
 #include "video_provider_cache.h"
@@ -50,7 +51,7 @@ VideoProviderCache::VideoProviderCache(VideoProvider *parent) {
 	master = parent;
 	cacheMax = 0;
 	if (parent->WantsCaching())
-		cacheMax = Options.AsInt(_T("Video cache size")) << 20; // convert MB to bytes
+		cacheMax = OPT_GET("Provider/Video/Cache/Size")->GetInt() << 20; // convert MB to bytes
 	else
 		cacheMax = 0;
 }

@@ -18,6 +18,9 @@ case "$1" in
     "reporter")
 		OUTPUT="reporter"
     ;;
+    "libaegisub")
+		OUTPUT="libaegisub"
+    ;;
 esac
 
 cd docs/doxygen

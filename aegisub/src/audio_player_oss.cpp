@@ -43,6 +43,8 @@
 #include "audio_player_oss.h"
 #include "audio_provider_manager.h"
 #include "frame_main.h"
+#include "compat.h"
+#include "main.h"
 #include "options.h"
 #include "utils.h"
 
@@ -81,7 +83,7 @@ void OSSPlayer::OpenStream()
     bpf = provider->GetChannels() * provider->GetBytesPerSample();
 
     // Open device
-    wxString device = Options.AsText(_T("Audio OSS Device"));
+    wxString device = lagi_wxString(OPT_GET("Audio/OSS/Device")->GetString());
     dspdev = ::open(device.mb_str(wxConvUTF8), O_WRONLY, 0);
     if (dspdev < 0) {
         throw _T("OSS player: opening device failed");

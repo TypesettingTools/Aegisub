@@ -243,10 +243,6 @@
 #undef _CRT_SECURE_NO_WARNINGS
 #endif
 
-///////////////////
-// Aegisub headers
-#include "include/aegisub/exception.h"
-
 #endif // C++
 
 #endif // AGI_PRE_H
