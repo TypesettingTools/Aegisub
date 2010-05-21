@@ -546,7 +546,7 @@ void FrameMain::OnOpenRecentSubs(wxCommandEvent &event) {
 ///
 void FrameMain::OnOpenRecentVideo(wxCommandEvent &event) {
 	int number = event.GetId()-Menu_Video_Recent;
-	LoadSubtitles(AegisubApp::Get()->mru->GetEntry("Video", number));
+	LoadVideo(AegisubApp::Get()->mru->GetEntry("Video", number));
 }
 
 
@@ -556,7 +556,7 @@ void FrameMain::OnOpenRecentVideo(wxCommandEvent &event) {
 ///
 void FrameMain::OnOpenRecentTimecodes(wxCommandEvent &event) {
 	int number = event.GetId()-Menu_Timecodes_Recent;
-	LoadSubtitles(AegisubApp::Get()->mru->GetEntry("Timecodes", number));
+	LoadVFR(AegisubApp::Get()->mru->GetEntry("Timecodes", number));
 }
 
 
@@ -566,7 +566,7 @@ void FrameMain::OnOpenRecentTimecodes(wxCommandEvent &event) {
 ///
 void FrameMain::OnOpenRecentKeyframes(wxCommandEvent &event) {
 	int number = event.GetId()-Menu_Keyframes_Recent;
-	LoadSubtitles(AegisubApp::Get()->mru->GetEntry("Keyframes", number));
+	KeyFrameFile::Load(AegisubApp::Get()->mru->GetEntry("Keyframes", number));
 	videoBox->videoSlider->Refresh();
 	audioBox->audioDisplay->Update();
 	Refresh();
