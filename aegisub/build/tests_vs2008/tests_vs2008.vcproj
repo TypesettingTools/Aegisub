@@ -23,7 +23,7 @@
 			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
 			IntermediateDirectory="$(ConfigurationName)"
 			ConfigurationType="1"
-			InheritedPropertySheets="..\aegisub_vs2008\compiler_options_debug.vsprops;..\aegisub_vs2008\compiler_options.vsprops;.\googletest_include.vsprops;..\aegisub_vs2008\libaegisub_include_dir.vsprops;.\test_exe_filename.vsprops;..\libaegisub_vs2008\src_msvc_include_dir.vsprops;..\aegisub_vs2008\libraries_outdirs.vsprops;.\googletest_lib.vsprops"
+			InheritedPropertySheets="..\aegisub_vs2008\compiler_options_debug.vsprops;..\aegisub_vs2008\compiler_options.vsprops;.\googletest_include.vsprops;..\aegisub_vs2008\libaegisub_include_dir.vsprops;.\test_exe_filename.vsprops;..\libaegisub_vs2008\src_msvc_include_dir.vsprops;..\aegisub_vs2008\libraries_outdirs.vsprops;.\googletest_lib.vsprops;..\aegisub_vs2008\suffix_debug32.vsprops;.\setup_data_dir.vsprops"
 			CharacterSet="1"
 			>
 			<Tool
@@ -63,6 +63,8 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				OutputFile="$(ExecutableOutDir)/aegisub$(PlatformConfigSuffix).exe"
+				SubSystem="1"
 			/>
 			<Tool
 				Name="VCALinkTool"
