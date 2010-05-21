@@ -18,7 +18,13 @@
 /// @brief Common utilities used in tests.
 /// @ingroup util
 
+#ifdef _WIN32
+#include <io.h>
+#define UNLINK _unlink
+#else
 #include <unistd.h>
+#define UNLINK unlink
+#endif
 #include <fstream>
 
 namespace util {
@@ -31,7 +37,7 @@ void copy(const std::string from, const std::string to) {
 }
 
 void remove(const std::string& file) {
-	unlink(file.c_str());
+	UNLINK(file.c_str());
 }
 
 } // namespace util
