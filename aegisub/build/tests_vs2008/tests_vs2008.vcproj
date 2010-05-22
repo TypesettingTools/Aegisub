@@ -215,6 +215,10 @@
 				RelativePath="..\..\tests\util.cpp"
 				>
 			</File>
+			<File
+				RelativePath="..\..\tests\util_windows.cpp"
+				>
+			</File>
 		</Filter>
 		<File
 			RelativePath="..\..\tests\libaegisub_access.cpp"

@@ -19,7 +19,7 @@
 /// @ingroup util windows
 
 #include <io.h>
-#include "util.sh"
+#include "util.h"
 
 namespace util {
 
