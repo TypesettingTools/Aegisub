@@ -40,7 +40,6 @@
 #include <wx/string.h>
 #include <wx/regex.h>
 #include <wx/arrstr.h>
-
 using namespace std;
 
 class FileIterator {
@@ -56,7 +55,7 @@ public:
 
 FileIterator::FileIterator(int argc, const char **argv)
  : currentItem(2), inDir(false), currentDir(), items(argc, argv) {
-	if (argc == 2) {
+	 if (argc == 2) {
 		// No names passed on the command line, so read them from stdin
 		char buffer[1024];
 		while (cin.getline(buffer, 1024), cin.good()) {
@@ -81,7 +80,6 @@ bool FileIterator::Next(wxString *filename) {
 		
 	wxFileName next;
 	wxString current = items[currentItem];
-
 	currentItem++;
 	
 	// Test if it's a directory
@@ -135,8 +133,9 @@ int main(int argc, const char *argv[]) {
 
 		nameCleaner.ReplaceAll(&identifier, "_");
 
+		std::string tmp(identifier.mb_str());
 		outC << "#include \"libresrc.h\"" << endl;
-		outC << "const unsigned char " << identifier << "[] = {";
+		outC << "const unsigned char " << tmp << "[] = {";
 		bool first = true;
 		char c[1];
 		while (infile.read(c, 1).gcount() > 0) {
@@ -145,7 +144,7 @@ int main(int argc, const char *argv[]) {
 			first = false;
 		}
 		outC << "};" << endl;
-		outH << "extern const unsigned char " << identifier << "[" << infile_end << "];" << endl;
+		outH << "extern const unsigned char " << tmp << "[" << infile_end << "];" << endl;
 	}
 
 	return 0;
