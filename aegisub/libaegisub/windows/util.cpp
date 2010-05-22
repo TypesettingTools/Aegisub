@@ -28,6 +28,7 @@
 
 #include <string.h>
 #include "libaegisub/util.h"
+#include "libaegisub/util_win.h"
 
 namespace agi {
 	namespace util {
@@ -54,6 +55,21 @@ void Rename(const std::string& from, const std::string& to) {
 
 	MoveFileExA(from.c_str(), to.c_str(), MOVEFILE_REPLACE_EXISTING);
 }
+
+std::string ErrorString(DWORD error) {
+	LPSTR lpstr = NULL;
+
+	if(FormatMessageA(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM, NULL, error, 0, (LPSTR)&lpstr, 0, NULL) == 0) {
+		/// @todo Return the actual 'unknown error' string from windows.
+		std::string str("Unknown Error");		
+		return str;
+	}
+
+	std::string str(lpstr);
+	LocalFree(lpstr);
+	return str;
+}
+
 
 	} // namespace io
 } // namespace agi
