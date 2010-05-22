@@ -14,16 +14,18 @@
 //
 // $Id$
 
-/// @file util.cpp
+/// @file util_unix.cpp
 /// @brief Common utilities used in tests.
-/// @ingroup util
+/// @ingroup util unix
 
-#include <string>
+#include <unistd.h>
+#include "util.h"
+
 namespace util {
 
-void copy(const std::string from, const std::string to);
-void remove(const std::string& file);
+void remove(const std::string& file) {
+	unlink(file.c_str());
+}
 
 } // namespace util
-
 

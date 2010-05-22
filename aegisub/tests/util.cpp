@@ -16,16 +16,10 @@
 
 /// @file util.cpp
 /// @brief Common utilities used in tests.
-/// @ingroup util
+/// @ingroup util common
 
-#ifdef _WIN32
-#include <io.h>
-#define UNLINK _unlink
-#else
-#include <unistd.h>
-#define UNLINK unlink
-#endif
 #include <fstream>
+#include "util.h"
 
 namespace util {
 
@@ -34,10 +28,6 @@ void copy(const std::string from, const std::string to) {
 	std::ofstream ofs(to.c_str(), std::ios::binary);
 
 	ofs << ifs.rdbuf();
-}
-
-void remove(const std::string& file) {
-	UNLINK(file.c_str());
 }
 
 } // namespace util

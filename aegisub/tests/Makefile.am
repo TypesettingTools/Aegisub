@@ -9,6 +9,7 @@ run_CPPFLAGS= -I../src/include -I../libaegisub/include
 run_SOURCES = \
 		main.cpp \
 		util.cpp \
+		util_unix.cpp \
 		libaegisub_access.cpp \
 		libaegisub_cajun.cpp \
 		libaegisub_util.cpp \
