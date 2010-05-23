@@ -63,7 +63,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile="$(ExecutableOutDir)/aegisub$(PlatformConfigSuffix).exe"
+				OutputFile="$(ExecutableOutDir)/test$(PlatformConfigSuffix).exe"
 				SubSystem="1"
 			/>
 			<Tool
