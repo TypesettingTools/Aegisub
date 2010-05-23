@@ -46,6 +46,7 @@ MRUManager::MRUManager(const std::string &config, const std::string &default_con
 		/// @todo Do something better here, maybe print the exact error
 //		std::cout << "json::Exception: " << e.what() << std::endl;
 
+		delete stream;
 		stream = new std::istringstream(default_config);
 		json::Reader::Read(root, *stream);
 	}
@@ -68,6 +69,10 @@ MRUManager::MRUManager(const std::string &config, const std::string &default_con
 
 MRUManager::~MRUManager() {
 	Flush();
+
+	for (MRUMap::iterator i = mru.begin(); i != mru.end(); ++i) {
+		delete i->second;
+	}
 }
 
 
