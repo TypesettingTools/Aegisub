@@ -96,7 +96,7 @@ void MRUManager::Remove(const std::string &key, const std::string &entry) {
 	MRUMap::iterator index;
 
 	if ((index = mru.find(key)) != mru.end()) {
-		MRUListMap map = *index->second;
+		MRUListMap &map = *index->second;
 		for (MRUListMap::iterator map_idx = map.begin(); map_idx != map.end();) {
 			if (map_idx->second == entry)
 				map.erase(map_idx++);
