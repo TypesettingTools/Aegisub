@@ -35,7 +35,7 @@ protected:
 
 
 TEST_F(lagi_mru, MRUConstructFromFile) {
-	agi::MRUManager mru(conf_ok, default_mru);
+	EXPECT_NO_THROW(agi::MRUManager mru(conf_ok, default_mru));
 }
 
 TEST_F(lagi_mru, MRUConstructFromString) {
