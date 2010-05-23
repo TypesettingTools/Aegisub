@@ -213,7 +213,7 @@ void NumValidator::OnChar(wxKeyEvent& event) {
 ///
 bool NumValidator::TransferToWindow() {
 	wxTextCtrl *ctrl = (wxTextCtrl*) GetWindow();
-	if (isFloat) ctrl->SetValue(wxString::Format(_T("%g"),iValue));
+	if (isFloat) ctrl->SetValue(wxString::Format(_T("%g"),fValue));
 	else ctrl->SetValue(wxString::Format(_T("%d"),iValue));
 
 	return true;
