@@ -49,6 +49,9 @@
 enum {
 	BUTTON_TOGGLE_MOVE = VISUAL_SUB_TOOL_START
 };
+static const DraggableFeatureType DRAG_ORIGIN = DRAG_BIG_TRIANGLE;
+static const DraggableFeatureType DRAG_START = DRAG_BIG_SQUARE;
+static const DraggableFeatureType DRAG_END = DRAG_BIG_CIRCLE;
 
 /// @brief Constructor 
 /// @param _parent 
@@ -56,6 +59,7 @@ enum {
 VisualToolDrag::VisualToolDrag(VideoDisplay *parent, VideoState const& video, wxToolBar * toolBar)
 : VisualTool<VisualToolDragDraggableFeature>(parent, video)
 , toolBar(toolBar)
+, primary(NULL)
 , toggleMoveOnMove(true)
 {
 	toolBar->AddTool(BUTTON_TOGGLE_MOVE, _("Toggle between \\move and \\pos"), GETIMAGE(visual_move_conv_move_24));
@@ -63,8 +67,6 @@ VisualToolDrag::VisualToolDrag(VideoDisplay *parent, VideoState const& video, wx
 	toolBar->Show(true);
 }
 
-/// @brief Update toggle buttons 
-/// @return 
 void VisualToolDrag::UpdateToggleButtons() {
 	// Check which bitmap to use
 	bool toMove = true;
@@ -91,7 +93,6 @@ void VisualToolDrag::UpdateToggleButtons() {
 
 /// @brief Toggle button pressed 
 /// @param event 
-/// @return 
 void VisualToolDrag::OnSubTool(wxCommandEvent &event) {
 	// Get line
 	AssDialogue *line = GetActiveDialogueLine();
@@ -117,23 +118,21 @@ void VisualToolDrag::OnSubTool(wxCommandEvent &event) {
 	}
 }
 
-/// @brief Refresh 
 void VisualToolDrag::DoRefresh() {
 	UpdateToggleButtons();
 }
 
-/// @brief Draw 
 void VisualToolDrag::Draw() {
 	DrawAllFeatures();
 
 	// Draw arrows
 	for (std::list<VisualToolDragDraggableFeature>::iterator cur = features.begin(); cur != features.end(); ++cur) {
-		if (cur->type == DRAG_BIG_SQUARE) continue;
+		if (cur->type == DRAG_START) continue;
 		VisualDraggableFeature *p2 = &*cur;
 		VisualDraggableFeature *p1 = cur->parent;
 
 		// Has arrow?
-		bool hasArrow = p2->type == DRAG_BIG_CIRCLE;
+		bool hasArrow = p2->type == DRAG_END;
 		int arrowLen = hasArrow ? 10 : 0;
 
 		// See if the distance between them is enough
@@ -176,6 +175,7 @@ void VisualToolDrag::Draw() {
 /// @brief Populate list 
 void VisualToolDrag::PopulateFeatureList() {
 	ClearSelection();
+	primary = NULL;
 	features.clear();
 
 	// Get video data
@@ -205,7 +205,7 @@ void VisualToolDrag::PopulateFeatureList() {
 				feat.x = x1;
 				feat.y = y1;
 				feat.layer = 0;
-				feat.type = DRAG_BIG_SQUARE;
+				feat.type = DRAG_START;
 				feat.time = t1;
 				feat.line = diag;
 				feat.lineN = i;
@@ -217,7 +217,7 @@ void VisualToolDrag::PopulateFeatureList() {
 					feat.x = x2;
 					feat.y = y2;
 					feat.layer = 1;
-					feat.type = DRAG_BIG_CIRCLE;
+					feat.type = DRAG_END;
 					feat.time = t2;
 					feat.line = diag;
 					feat.lineN = i;
@@ -229,7 +229,7 @@ void VisualToolDrag::PopulateFeatureList() {
 					feat.x = torgx;
 					feat.y = torgy;
 					feat.layer = -1;
-					feat.type = DRAG_BIG_TRIANGLE;
+					feat.type = DRAG_ORIGIN;
 					feat.time = 0;
 					feat.line = diag;
 					feat.lineN = i;
@@ -238,6 +238,10 @@ void VisualToolDrag::PopulateFeatureList() {
 			}
 		}
 	}
+}
+bool VisualToolDrag::InitializeDrag(VisualToolDragDraggableFeature *feature) {
+	if (feature->type != DRAG_ORIGIN) primary = feature;
+	return true;
 }
 
 /// @brief Update drag 
@@ -251,8 +255,7 @@ void VisualToolDrag::UpdateDrag(VisualToolDragDraggableFeature* feature) {
 /// @brief Commit drag 
 /// @param feature 
 void VisualToolDrag::CommitDrag(VisualToolDragDraggableFeature* feature) {
-	// Origin
-	if (feature->type == DRAG_BIG_TRIANGLE) {
+	if (feature->type == DRAG_ORIGIN) {
 		int x = feature->x;
 		int y = feature->y;
 		parent->ToScriptCoords(&x, &y);
@@ -261,7 +264,7 @@ void VisualToolDrag::CommitDrag(VisualToolDragDraggableFeature* feature) {
 	}
 
 	VisualToolDragDraggableFeature *p = feature->parent;
-	if (feature->type == DRAG_BIG_CIRCLE) {
+	if (feature->type == DRAG_END) {
 		std::swap(feature, p);
 	}
 
@@ -282,4 +285,54 @@ void VisualToolDrag::CommitDrag(VisualToolDragDraggableFeature* feature) {
 		// Set override
 		SetOverride(feature->line, L"\\move", wxString::Format(L"(%i,%i,%i,%i,%i,%i)", x1, y1, x2, y2, feature->time, p->time));
 	}
+}
+void VisualToolDrag::Update() {
+	if (!leftDClick) return;
+
+	int dx, dy;
+	int vx = video.x;
+	int vy = video.y;
+	parent->ToScriptCoords(&vx, &vy);
+	if (primary) {
+		dx = primary->x;
+		dy = primary->y;
+	}
+	else {
+		AssDialogue* line = GetActiveDialogueLine();
+		if (!line) return;
+		GetLinePosition(line, dx, dy);
+	}
+	parent->ToScriptCoords(&dx, &dy);
+	dx -= vx;
+	dy -= vy;
+
+	SubtitlesGrid *grid = VideoContext::Get()->grid;
+	wxArrayInt sel = grid->GetSelection();
+	for (wxArrayInt::const_iterator cur = sel.begin(); cur != sel.end(); ++cur) {
+		AssDialogue* line = grid->GetDialogue(*cur);
+		if (!line) continue;
+		int x1, y1, x2, y2, t1 = INT_MIN, t2 = INT_MIN;
+		bool isMove;
+		GetLineMove(line, isMove, x1, y1, x2, y2, t1, t2);
+		if (isMove) {
+			parent->ToScriptCoords(&x1, &y1);
+			parent->ToScriptCoords(&x2, &y2);
+			if (t1 > INT_MIN && t2 > INT_MIN)
+				SetOverride(line, L"\\move", wxString::Format(L"(%i,%i,%i,%i,%i,%i)", x1 - dx, y1 - dy, x2 - dx, y2 - dy, t1, t2));
+			else
+				SetOverride(line, L"\\move", wxString::Format(L"(%i,%i,%i,%i)", x1, y1, x2, y2));
+		}
+		else {
+			GetLinePosition(line, x1, y1);
+			parent->ToScriptCoords(&x1, &y1);
+			SetOverride(line, L"\\pos", wxString::Format(L"(%i,%i)", x1 - dx, y1 - dy));
+		}
+	}
+
+	grid->ass->FlagAsModified(_("positioning"));
+	grid->CommitChanges(false,true);
+	grid->editBox->Update(false, true, false);
+
+	/// @todo: should just move the existing features rather than remaking them all
+	PopulateFeatureList();
 }

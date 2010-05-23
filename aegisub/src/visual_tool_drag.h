@@ -63,19 +63,19 @@ public:
 /// DOCME
 class VisualToolDrag : public VisualTool<VisualToolDragDraggableFeature> {
 private:
-	/// DOCME
-	wxToolBar *toolBar;
+	wxToolBar *toolBar; /// The subtoolbar
+	VisualToolDragDraggableFeature* primary; /// The feature last clicked on
 
-	/// DOCME
+	/// When the button is pressed, will it convert the line to a move (vs. from
+	/// move to pos)? Used to avoid changing the button's icon unnecessarily
 	bool toggleMoveOnMove;
 
-	/// @brief DOCME
-	///
-	bool CanDrag() { return true; }
 	void PopulateFeatureList();
+	bool InitializeDrag(VisualToolDragDraggableFeature* feature);
 	void UpdateDrag(VisualToolDragDraggableFeature* feature);
 	void CommitDrag(VisualToolDragDraggableFeature* feature);
 
+	/// Set the pos/move button to the correct icon based on the active line
 	void UpdateToggleButtons();
 	void DoRefresh();
 
@@ -83,5 +83,6 @@ public:
 	VisualToolDrag(VideoDisplay *parent, VideoState const& video, wxToolBar *toolbar);
 
 	void Draw();
+	void Update();
 	void OnSubTool(wxCommandEvent &event);
 };

@@ -250,7 +250,6 @@ void VisualTool<FeatureType>::OnMouseEvent (wxMouseEvent &event) {
 		}
 		// start hold
 		else {
-			ClearSelection();
 			curDiag = GetActiveDialogueLine();
 			if (curDiag && InitializeHold()) {
 				holding = true;

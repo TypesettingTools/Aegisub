@@ -36,6 +36,7 @@
 #pragma once
 
 #ifndef AGI_PRE
+#include <list>
 #include <vector>
 
 #include <wx/log.h>
