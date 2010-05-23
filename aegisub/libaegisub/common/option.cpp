@@ -37,6 +37,9 @@ Options::Options(const std::string &file, const std::string& default_config):
 
 Options::~Options() {
 	Flush();
+	for (OptionValueMap::iterator i = values.begin(); i != values.end(); i++) {
+		delete i->second;
+	}
 }
 
 void Options::ConfigNext(std::istream& stream) {
@@ -60,9 +63,9 @@ void Options::LoadConfig(std::istream& stream) {
 		json::Reader::Read(config_root, stream);
 	} catch (json::Reader::ParseException& e) {
 		std::cout << "json::ParseException: " << e.what() << ", Line/offset: " << e.m_locTokenBegin.m_nLine + 1 << '/' << e.m_locTokenBegin.m_nLineOffset + 1 << std::endl << std::endl;
-    } catch (json::Exception& e) {
-        /// @todo Do something better here, maybe print the exact error
-        std::cout << "json::Exception: " << e.what() << std::endl;
+	} catch (json::Exception& e) {
+		/// @todo Do something better here, maybe print the exact error
+		std::cout << "json::Exception: " << e.what() << std::endl;
 	}
 
 	ConfigVisitor config_visitor(values, std::string(""));
@@ -76,7 +79,7 @@ OptionValue* Options::Get(const std::string &name) {
 
 	OptionValueMap::iterator index;
 
-    if ((index = values.find(name)) != values.end())
+	if ((index = values.find(name)) != values.end())
 		return index->second;
 
 	std::cout << "agi::Options::Get Option not found: (" << name << ")" << std::endl;

@@ -22,6 +22,8 @@
 #ifndef LAGI_PRE
 #include <math.h>
 
+#include <memory>
+
 #include <wx/colour.h>
 #include <wx/wxcrtvararg.h>
 #endif
@@ -32,7 +34,7 @@
 namespace agi {
 
 ConfigVisitor::ConfigVisitor(OptionValueMap &val, const std::string &member_name): values(val) {
-		// Corropsonding code is in AddOptionValue()
+		// Corresponding code is in AddOptionValue()
 		name = member_name +  "/";
 }
 
@@ -57,9 +59,9 @@ void ConfigVisitor::Visit(const json::Object& object) {
 
 
 void ConfigVisitor::Visit(const json::Array& array) {
-	int init = 0;
+	bool init = false;
 
-	OptionValueList *array_list;
+	OptionValueList *array_list = NULL;
 
 	json::Array::const_iterator index(array.Begin()), indexEnd(array.End());
 
@@ -90,7 +92,7 @@ void ConfigVisitor::Visit(const json::Array& array) {
 				} else {
 					throw OptionJsonValueArray("Array type not handled");
 				}
-				init = 1;
+				init = true;
 			}
 
 			try {
@@ -115,16 +117,17 @@ void ConfigVisitor::Visit(const json::Array& array) {
 					Colour col(val);
 					array_list->InsertColour(col);
 				}
-
-				AddOptionValue(array_list);
-
 			} catch (agi::Exception&) {
+				delete array_list;
 				throw OptionJsonValueArray("Attempt to insert value into array of wrong type");
 			}
 
 		} // for index_object
 
 	} // for index
+
+	if (array_list) AddOptionValue(array_list);
+
 }
 
 
@@ -165,7 +168,7 @@ void ConfigVisitor::Visit(const json::Null& null) {
 
 
 void ConfigVisitor::AddOptionValue(OptionValue* opt) {
-	// Corrosponding code is in the constuctor.
+	// Corresponding code is in the constuctor.
 	std::string stripped = name.substr(1, name.rfind("/")-1);
 	OptionValue *opt_cur;
 
@@ -177,6 +180,10 @@ void ConfigVisitor::AddOptionValue(OptionValue* opt) {
 		values.insert(OptionValuePair(stripped, opt));
 		return;
 	}
+
+	// Ensure than opt is deleted at the end of this function even if the Set
+	// method throws
+	std::auto_ptr<OptionValue> auto_opt(opt);
 
 	int type = opt_cur->GetType();
 	switch (type) {
