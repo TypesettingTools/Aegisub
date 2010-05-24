@@ -82,3 +82,18 @@ TEST_F(lagi_mru, MRUKeyValid) {
 	EXPECT_NO_THROW(mru.Add("Valid", "/path/to/file"));
 }
 
+
+// Check to make sure an entry is really removed.  This was fixed in
+// r4347, the entry was being removed from a copy of the map internally.
+TEST_F(lagi_mru, MRUEntryRemove_r4347) {
+
+	agi::MRUManager mru(conf_ok, default_mru);
+	EXPECT_NO_THROW(mru.Add("Valid", "/path/to/file"));
+	EXPECT_NO_THROW(mru.Remove("Valid", "/path/to/file"));
+
+	const agi::MRUManager::MRUListMap *map_list = mru.Get("Valid");
+	agi::MRUManager::MRUListMap::const_iterator i_lst = map_list->begin();
+
+	if ((i_lst != map_list->end()) && (i_lst->second == "/path/to/file"))
+		FAIL() << "r4347 regression, Entry exists after remove";
+}
