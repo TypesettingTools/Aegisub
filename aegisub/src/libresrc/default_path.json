@@ -1,0 +1,27 @@
+{
+	"Backup" : "^USER/backup",
+	"Autosave" : "^USER/autosave",
+	"Data" : "^DATA",
+	"User" : "^USER",
+	"Temp" : "^TEMP",
+	"Dictionary" : {
+		"Local" {
+			"Lang" : "^CONFIG/dictionary/lang",
+			"Thesarus" : "^CONFIG/dictionary/thesaurus",
+			"Personal" : "^CONFIG/dictionary/personal"
+		}
+		"Lang" : [],
+		"Thesaurus" : []
+	},
+	"Automation" {
+		"Autoload" : [],
+		"Include" : []
+	}
+	"Crash" : "^CONFIG/crash",
+	"Font" {
+		"FontConfig" {
+				"Cache" : "^CONFIG/fontconfig_cache"
+		}
+	},
+	"Log" : "^CONFIG/log"
+}
