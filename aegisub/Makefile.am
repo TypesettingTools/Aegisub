@@ -5,7 +5,7 @@ if HAVE_UNIVCHARDET
 univchardet = universalchardet
 endif
 
-if WITH_LIBASS
+if WITH_INTERNAL_LIBASS
 libass = libass
 endif
 
