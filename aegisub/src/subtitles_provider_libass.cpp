@@ -60,6 +60,17 @@ extern "C" {
 
 
 
+/// @brief Handle libass messages
+///
+static void msg_callback(int level, const char *fmt, va_list args, void *data) {
+	if (level < 2) // warning/error
+		wxVLogWarning(fmt, args);
+	else if (level < 7) // verbose
+		wxVLogDebug(fmt, args);
+}
+
+
+
 /// @brief Constructor
 ///
 LibassSubtitlesProvider::LibassSubtitlesProvider() {
@@ -77,6 +88,7 @@ LibassSubtitlesProvider::LibassSubtitlesProvider() {
 		ass_set_fonts_dir(ass_library, fonts_dir.mb_str(wxConvFile));
 		ass_set_extract_fonts(ass_library, 0);
 		ass_set_style_overrides(ass_library, NULL);
+		ass_set_message_cb(ass_library, msg_callback, this);
 		first = false;
 	}
 
