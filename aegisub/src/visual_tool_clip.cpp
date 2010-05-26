@@ -140,46 +140,42 @@ void VisualToolClip::CommitHold() {
 void VisualToolClip::PopulateFeatureList() {
 	// Clear
 	if (features.size() != 4) {
-		ClearSelection();
+		ClearSelection(false);
 		features.clear();
 		features.resize(4);
-		int i = 0;
-		for (std::list<ClipCorner>::iterator cur = features.begin(); cur != features.end(); ++cur, ++i) {
-			feat[i] = &*cur;
-		}
 	}
 
 	// Top-left
 	int i = 0;
-	feat[i]->x = curX1;
-	feat[i]->y = curY1;
-	feat[i]->horiz = feat[1];
-	feat[i]->vert = feat[2];
-	feat[i]->type = DRAG_SMALL_CIRCLE;
+	features[i].x = curX1;
+	features[i].y = curY1;
+	features[i].horiz = &features[1];
+	features[i].vert = &features[2];
+	features[i].type = DRAG_SMALL_CIRCLE;
 	i++;
 
 	// Top-right
-	feat[i]->x = curX2;
-	feat[i]->y = curY1;
-	feat[i]->horiz = feat[0];
-	feat[i]->vert = feat[3];
-	feat[i]->type = DRAG_SMALL_CIRCLE;
+	features[i].x = curX2;
+	features[i].y = curY1;
+	features[i].horiz = &features[0];
+	features[i].vert = &features[3];
+	features[i].type = DRAG_SMALL_CIRCLE;
 	i++;
 
 	// Bottom-left
-	feat[i]->x = curX1;
-	feat[i]->y = curY2;
-	feat[i]->horiz = feat[3];
-	feat[i]->vert = feat[0];
-	feat[i]->type = DRAG_SMALL_CIRCLE;
+	features[i].x = curX1;
+	features[i].y = curY2;
+	features[i].horiz = &features[3];
+	features[i].vert = &features[0];
+	features[i].type = DRAG_SMALL_CIRCLE;
 	i++;
 
 	// Bottom-right
-	feat[i]->x = curX2;
-	feat[i]->y = curY2;
-	feat[i]->horiz = feat[2];
-	feat[i]->vert = feat[1];
-	feat[i]->type = DRAG_SMALL_CIRCLE;
+	features[i].x = curX2;
+	features[i].y = curY2;
+	features[i].horiz = &features[2];
+	features[i].vert = &features[1];
+	features[i].type = DRAG_SMALL_CIRCLE;
 	i++;
 }
 
@@ -200,10 +196,10 @@ void VisualToolClip::UpdateDrag(ClipCorner* feature) {
 	feature->vert->x = feature->x;
 
 	// Get "cur" from features
-	curX1 = feat[0]->x;
-	curX2 = feat[3]->x;
-	curY1 = feat[0]->y;
-	curY2 = feat[3]->y;
+	curX1 = features[0].x;
+	curX2 = features[3].x;
+	curY1 = features[0].y;
+	curY2 = features[3].y;
 
 	// Make sure p1 < p2
 	if (curX1 > curX2) IntSwap(curX1,curX2);

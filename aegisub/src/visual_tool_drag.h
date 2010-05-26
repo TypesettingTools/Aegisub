@@ -47,11 +47,11 @@
 class VisualToolDragDraggableFeature : public VisualDraggableFeature {
 public:
 	int time;
-	VisualToolDragDraggableFeature* parent;
+	int parent;
 	VisualToolDragDraggableFeature()
 		: VisualDraggableFeature()
 		, time(0)
-		, parent(NULL)
+		, parent(-1)
 	{ }
 };
 
@@ -64,11 +64,14 @@ public:
 class VisualToolDrag : public VisualTool<VisualToolDragDraggableFeature> {
 private:
 	wxToolBar *toolBar; /// The subtoolbar
-	VisualToolDragDraggableFeature* primary; /// The feature last clicked on
+	int primary; /// The feature last clicked on
 
 	/// When the button is pressed, will it convert the line to a move (vs. from
 	/// move to pos)? Used to avoid changing the button's icon unnecessarily
 	bool toggleMoveOnMove;
+
+	/// Regenerage features without touching the selection
+	void GenerateFeatures();
 
 	void PopulateFeatureList();
 	bool InitializeDrag(VisualToolDragDraggableFeature* feature);
@@ -81,6 +84,8 @@ private:
 
 public:
 	VisualToolDrag(VideoDisplay *parent, VideoState const& video, wxToolBar *toolbar);
+
+	void OnSelectionChange(bool clear, int row, bool selected);
 
 	void Draw();
 	void Update();

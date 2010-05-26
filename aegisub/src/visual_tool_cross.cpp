@@ -79,9 +79,7 @@ void VisualToolCross::Update() {
 		SetOverride(line, L"\\pos", wxString::Format(L"(%i,%i)", x1 - dx, y1 - dy));
 	}
 
-	grid->ass->FlagAsModified(_("positioning"));
-	grid->CommitChanges(false,true);
-	grid->editBox->Update(false, true, false);
+	Commit(false, _("positioning"));
 }
 
 /// @brief Draw 

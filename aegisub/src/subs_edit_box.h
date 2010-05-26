@@ -251,7 +251,7 @@ public:
 
 	void SetSplitLineMode(wxSize size=wxSize(-1,-1));
 	void CommitText(bool weak=false);
-	void Update(bool timeOnly=false,bool weak=false,bool video=true);
+	void Update(bool timeOnly=false,bool weak=false);
 	void UpdateGlobals();
 	void SetToLine(int n,bool weak=false);
 	void UpdateFrameTiming();

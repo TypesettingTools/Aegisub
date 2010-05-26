@@ -122,14 +122,38 @@ void VisualToolDrag::DoRefresh() {
 	UpdateToggleButtons();
 }
 
+void VisualToolDrag::OnSelectionChange(bool clear, int row, bool selected) {
+	if (!externalChange) return;
+	externalChange = false;
+	if (clear) {
+		ClearSelection(false);
+	}
+	if (selected) {
+		for (size_t i = 0; i < features.size(); i++) {
+			if (features[i].lineN == row && features[i].type == DRAG_START) {
+				AddSelection(i);
+				break;
+			}
+		}
+	}
+	else {
+		for (size_t i = 0; i < features.size(); i++) {
+			if (features[i].lineN == row) {
+				RemoveSelection(i);
+			}
+		}
+	}
+	externalChange = true;
+}
+
 void VisualToolDrag::Draw() {
 	DrawAllFeatures();
 
 	// Draw arrows
-	for (std::list<VisualToolDragDraggableFeature>::iterator cur = features.begin(); cur != features.end(); ++cur) {
+	for (feature_iterator cur = features.begin(); cur != features.end(); ++cur) {
 		if (cur->type == DRAG_START) continue;
 		VisualDraggableFeature *p2 = &*cur;
-		VisualDraggableFeature *p1 = cur->parent;
+		VisualDraggableFeature *p1 = &features[cur->parent];
 
 		// Has arrow?
 		bool hasArrow = p2->type == DRAG_END;
@@ -172,77 +196,74 @@ void VisualToolDrag::Draw() {
 	}
 }
 
-/// @brief Populate list 
 void VisualToolDrag::PopulateFeatureList() {
-	ClearSelection();
-	primary = NULL;
+	ClearSelection(false);
+	primary = -1;
+	GenerateFeatures();
+}
+void VisualToolDrag::GenerateFeatures() {
 	features.clear();
 
 	// Get video data
-	VideoContext* con = VideoContext::Get();
-	int numRows = con->grid->GetRows();
-	int framen = con->GetFrameN();
-	wxArrayInt sel = GetSelection();
+	BaseGrid* grid = VideoContext::Get()->grid;
+	int numRows = grid->GetRows();
 
-	// For each line
-	AssDialogue *diag;
 	for (int i=numRows;--i>=0;) {
-		diag = VideoContext::Get()->grid->GetDialogue(i);
-		if (diag) {
-			// Line visible?
-			int f1 = VFR_Output.GetFrameAtTime(diag->Start.GetMS(),true);
-			int f2 = VFR_Output.GetFrameAtTime(diag->End.GetMS(),false);
-			if (f1 <= framen && f2 >= framen) {
-				// Get position
-				int x1,x2,y1,y2;
-				int t1=0;
-				int t2=diag->End.GetMS()-diag->Start.GetMS();
-				int torgx,torgy;
-				bool hasMove;
-				GetLinePosition(diag,x1,y1,torgx,torgy);
-				GetLineMove(diag,hasMove,x1,y1,x2,y2,t1,t2);
+		AssDialogue *diag = grid->GetDialogue(i);
+		if (!diag || !BaseGrid::IsDisplayed(diag)) continue;
 
-				// Create \pos feature
-				VisualToolDragDraggableFeature feat;
-				feat.x = x1;
-				feat.y = y1;
-				feat.layer = 0;
-				feat.type = DRAG_START;
-				feat.time = t1;
-				feat.line = diag;
-				feat.lineN = i;
-				features.push_back(feat);
-				feat.parent = &features.back();
+		// Get position
+		int x1,x2,y1,y2;
+		int t1=0;
+		int t2=diag->End.GetMS()-diag->Start.GetMS();
+		int torgx,torgy;
+		bool hasMove;
+		GetLinePosition(diag,x1,y1,torgx,torgy);
+		GetLineMove(diag,hasMove,x1,y1,x2,y2,t1,t2);
 
-				// Create move destination feature
-				if (hasMove) {
-					feat.x = x2;
-					feat.y = y2;
-					feat.layer = 1;
-					feat.type = DRAG_END;
-					feat.time = t2;
-					feat.line = diag;
-					feat.lineN = i;
-					features.push_back(feat);
-					feat.parent->parent = &features.back();
-				}
-				// Create org feature
-				if (torgx != x1 || torgy != y1) {
-					feat.x = torgx;
-					feat.y = torgy;
-					feat.layer = -1;
-					feat.type = DRAG_ORIGIN;
-					feat.time = 0;
-					feat.line = diag;
-					feat.lineN = i;
-					features.push_back(feat);
-				}
-			}
+		// Create \pos feature
+		VisualToolDragDraggableFeature feat;
+		feat.x = x1;
+		feat.y = y1;
+		feat.layer = 0;
+		feat.type = DRAG_START;
+		feat.time = t1;
+		feat.line = diag;
+		feat.lineN = i;
+		features.push_back(feat);
+		feat.parent = features.size() - 1;
+		if (grid->IsInSelection(i)) {
+			AddSelection(features.size() - 1);
+		}
+
+		// Create move destination feature
+		if (hasMove) {
+			feat.x = x2;
+			feat.y = y2;
+			feat.layer = 1;
+			feat.type = DRAG_END;
+			feat.time = t2;
+			feat.line = diag;
+			feat.lineN = i;
+			features.push_back(feat);
+			features[feat.parent].parent = features.size() - 1;
+		}
+		// Create org feature
+		if (torgx != x1 || torgy != y1) {
+			feat.x = torgx;
+			feat.y = torgy;
+			feat.layer = -1;
+			feat.type = DRAG_ORIGIN;
+			feat.time = 0;
+			feat.line = diag;
+			feat.lineN = i;
+			features.push_back(feat);
 		}
 	}
 }
+
 bool VisualToolDrag::InitializeDrag(VisualToolDragDraggableFeature *feature) {
-	primary = feature;
+	primary = feature - &features[0];
 	return true;
 }
 
@@ -265,7 +286,7 @@ void VisualToolDrag::CommitDrag(VisualToolDragDraggableFeature* feature) {
 		return;
 	}
 
-	VisualToolDragDraggableFeature *p = feature->parent;
+	VisualToolDragDraggableFeature *p = feature->parent > -1 ? &features[feature->parent] : NULL;
 	if (feature->type == DRAG_END) {
 		std::swap(feature, p);
 	}
@@ -295,9 +316,9 @@ void VisualToolDrag::Update() {
 	int vx = video.x;
 	int vy = video.y;
 	parent->ToScriptCoords(&vx, &vy);
-	if (primary) {
-		dx = primary->x;
-		dy = primary->y;
+	if (primary > -1) {
+		dx = features[primary].x;
+		dy = features[primary].y;
 	}
 	else {
 		AssDialogue* line = GetActiveDialogueLine();
@@ -336,10 +357,7 @@ void VisualToolDrag::Update() {
 		}
 	}
 
-	grid->ass->FlagAsModified(_("positioning"));
-	grid->CommitChanges(false,true);
-	grid->editBox->Update(false, true, false);
+	Commit(false, _("positioning"));
 
-	/// @todo: should just move the existing features rather than remaking them all
-	PopulateFeatureList();
+	GenerateFeatures();
 }

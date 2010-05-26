@@ -206,14 +206,16 @@ void VisualToolVectorClip::Draw() {
 
 /// @brief Populate feature list 
 void VisualToolVectorClip::PopulateFeatureList() {
-	// Clear
-	ClearSelection();
+	ClearSelection(false);
 	features.clear();
+	// This is perhaps a bit conservative as there can be up to 3N+1 features
+	features.reserve(spline.curves.size());
 	VisualToolVectorClipDraggableFeature feat;
 	
 	// Go through each curve
 	bool isFirst = true;
 	int i = 0;
+	int j = 0;
 	for (std::list<SplineCurve>::iterator cur=spline.curves.begin();cur!=spline.curves.end();cur++,i++) {
 		// First point
 		if (isFirst) {
@@ -224,9 +226,9 @@ void VisualToolVectorClip::PopulateFeatureList() {
 			feat.index = i;
 			feat.point = 0;
 			features.push_back(feat);
+			AddSelection(j++);
 		}
 
-		// Line
 		if (cur->type == CURVE_LINE) {
 			feat.x = (int)cur->p2.x;
 			feat.y = (int)cur->p2.y;
@@ -234,13 +236,10 @@ void VisualToolVectorClip::PopulateFeatureList() {
 			feat.index = i;
 			feat.point = 1;
 			features.push_back(feat);
+			AddSelection(j++);
 		}
 
-		// Bicubic
-		if (cur->type == CURVE_BICUBIC) {
-			// Current size
-			int size = features.size();
-
+		else if (cur->type == CURVE_BICUBIC) {
 			// Control points
 			feat.x = (int)cur->p2.x;
 			feat.y = (int)cur->p2.y;
@@ -259,6 +258,10 @@ void VisualToolVectorClip::PopulateFeatureList() {
 			feat.type = DRAG_SMALL_CIRCLE;
 			feat.point = 3;
 			features.push_back(feat);
+
+			AddSelection(j++);
+			AddSelection(j++);
+			AddSelection(j++);
 		}
 	}
 }
@@ -294,6 +297,7 @@ bool VisualToolVectorClip::InitializeDrag(VisualToolVectorClipDraggableFeature* 
 				// Erase and save changes
 				spline.curves.erase(cur);
 				CommitDrag(feature);
+				PopulateFeatureList();
 				curFeature = NULL;
 				Commit(true);
 				return false;
@@ -390,7 +394,7 @@ bool VisualToolVectorClip::InitializeHold() {
 
 	// Freehand
 	if (mode == 6 || mode == 7) {
-		ClearSelection();
+		ClearSelection(false);
 		features.clear();
 		spline.curves.clear();
 		lastX = INT_MIN;
@@ -456,11 +460,13 @@ void VisualToolVectorClip::CommitHold() {
 
 	// Save it
 	if (mode != 3 && mode != 4) {
-		SetOverride(GetActiveDialogueLine(), inverse ? L"\\iclip" : L"\\clip", L"(" + spline.EncodeToASS() + L")");
+		SetOverride(curDiag, inverse ? L"\\iclip" : L"\\clip", L"(" + spline.EncodeToASS() + L")");
 	}
 
 	// End freedraw
 	if (!holding && (mode == 6 || mode == 7)) SetMode(0);
+
+	PopulateFeatureList();
 }
 
 /// @brief Refresh 

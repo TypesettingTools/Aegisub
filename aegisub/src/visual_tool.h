@@ -36,14 +36,15 @@
 #pragma once
 
 #ifndef AGI_PRE
-#include <list>
-#include <vector>
+#include <deque>
+#include <set>
 
 #include <wx/log.h>
 #include <wx/event.h>
 #include <wx/button.h>
 #endif
 
+#include "base_grid.h"
 #include "gl_wrap.h"
 
 class VideoDisplay;
@@ -74,30 +75,40 @@ public:
 /// @brief DOCME
 /// DOCME
 template<class FeatureType>
-class VisualTool : public IVisualTool {
+class VisualTool : public IVisualTool, public SelectionChangeSubscriber {
 private:
 	int dragStartX; /// Starting x coordinate of the current drag, if any
 	int dragStartY; /// Starting y coordinate of the current drag, if any
 
-	/// @brief Get the topmost visual feature under the mouse, or NULL if none are under the mouse
-	FeatureType* GetHighlightedFeature();
+	/// Set curFeature and curFeatureI to the topmost feature under the mouse,
+	/// or NULL and -1 if there are none
+	void GetHighlightedFeature();
 
-	typedef typename std::list<FeatureType*>::iterator SelFeatureIter;
-	typedef typename std::list<FeatureType>::iterator FeatureIter;
-	typedef typename std::list<FeatureType>::const_iterator FeatureCIter;
+	typedef typename std::set<int>::iterator selection_iterator;
 
-	std::list<FeatureType*> selFeatures; /// Currently selected visual features
+	std::set<int> selFeatures; /// Currently selected visual features
+	std::map<int, int> lineSelCount; /// Number of selected features for each line
 
-	bool externalChange; /// Only invalid drag lists when refreshing due to external changes
+	/// @brief Set the edit box's active line, ensuring proper sync with grid
+	/// @param lineN Line number or -1 for automatic selection
+	///
+	/// This function ensures that the selection is not empty and that the line
+	/// displayed in the edit box is part of the selection, by either setting
+	/// the edit box to the selection or setting the selection to the edit
+	/// box's line, as is appropriate.
+	void SetEditbox(int lineN = -1);
+
 	bool selChanged; /// Has the selection already been changed in the current click?
 protected:
 	VideoDisplay *parent; /// VideoDisplay which this belongs to, used to frame conversion
 	bool holding; /// Is a hold currently in progress?
 	AssDialogue *curDiag; /// Active dialogue line for a hold; only valid when holding = true
 	bool dragging; /// Is a drag currently in progress?
+	bool externalChange; /// Only invalid drag lists when refreshing due to external changes
 
-	FeatureType* curFeature; /// Topmost feature under the mouse; only valid during a drag?
-	std::list<FeatureType> features; /// List of features which are drawn and can be clicked on
+	FeatureType* curFeature; /// Topmost feature under the mouse; generally only valid during a drag
+	unsigned curFeatureI; /// Index of the current feature in the list
+	std::vector<FeatureType> features; /// List of features which are drawn and can be clicked on
 	bool dragListOK; /// Do the features not need to be regenerated?
 
 	int frame_n; /// Current frame number
@@ -121,8 +132,11 @@ protected:
 	/// @brief Get the dialogue line currently in the edit box
 	/// @return NULL if the line is not active on the current frame
 	AssDialogue *GetActiveDialogueLine();
+	/// Draw all of the features in the list
 	void DrawAllFeatures();
-	void Commit(bool full=false);
+	/// @brief Commit the current file state
+	/// @param message Description of changes for undo
+	void Commit(bool full=false, wxString message = L"");
 
 	/// @brief Called when a hold is begun
 	/// @return Should the hold actually happen?
@@ -152,8 +166,21 @@ protected:
 	/// @brief Called when there's stuff
 	virtual void DoRefresh() { }
 
-	/// @brief Must be called before removing entries from features
-	void ClearSelection();
+	/// @brief Add a feature (and its line) to the selection
+	/// @param i Index in the feature list
+	void AddSelection(unsigned i);
+	/// @brief Remove a feature from the selection
+	/// @param i Index in the feature list
+	/// Also deselects lines if all features for that line have been deselected
+	void RemoveSelection(unsigned i);
+	/// @brief Clear the selection
+	/// @param hard Should the grid's selection be cleared as well?
+	void ClearSelection(bool hard=true);
+	/// @brief Get the currently selected lines
+	wxArrayInt GetSelection();
+
+	typedef typename std::vector<FeatureType>::iterator feature_iterator;
+	typedef typename std::vector<FeatureType>::const_iterator feature_const_iterator;
 
 public:
 	/// @brief Handler for all mouse events
@@ -166,8 +193,11 @@ public:
 	virtual void Update() { };
 	/// @brief Draw stuff
 	virtual void Draw()=0;
-	/// @brief Called when there's stuff
+	/// @brief Called by stuff when there's stuff
 	void Refresh();
+
+	/// Called by the grid when the selection changes
+	virtual void OnSelectionChange(bool, int, bool) { }
 
 	/// @brief Constructor
 	/// @param parent The VideoDisplay to use for coordinate conversion
@@ -177,4 +207,3 @@ public:
 	/// @brief Destructor
 	virtual ~VisualTool();
 };
-

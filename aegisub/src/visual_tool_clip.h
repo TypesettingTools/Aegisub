@@ -75,9 +75,6 @@ private:
 	/// DOCME
 	bool inverse;
 
-	ClipCorner* feat[4];
-
-
 	/// @brief DOCME
 	/// @return 
 	///

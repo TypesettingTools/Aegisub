@@ -78,8 +78,6 @@ public:
 	int origX; /// x coordindate before the last operation began
 	int origY; /// y coordindate before the last operation began
 
-	bool selected; ///Iis this feature selected?
-
 	int layer; /// Layer; Higher = above
 
 	AssDialogue* line; /// The dialogue line this feature is for

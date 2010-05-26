@@ -530,6 +530,7 @@ double VideoDisplay::GetZoom() const {
 
 template<class T>
 void VideoDisplay::SetTool() {
+	tool.reset();
 	tool.reset(new T(this, video, toolBar));
 	box->Bind(wxEVT_COMMAND_TOOL_CLICKED, &T::OnSubTool, static_cast<T*>(tool.get()), VISUAL_SUB_TOOL_START, VISUAL_SUB_TOOL_END);
 }

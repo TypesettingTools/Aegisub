@@ -261,11 +261,10 @@ void SubsEditBox::SetSplitLineMode(wxSize newSize) {
 
 
 /// @brief Update function 
-/// @param timeOnly If true, only update the time fields
-/// @param weak     ?
-/// @param video    If true, update the video display
+/// @param timeOnly 
+/// @param weak     
 ///
-void SubsEditBox::Update (bool timeOnly,bool weak,bool video) {
+void SubsEditBox::Update (bool timeOnly,bool weak) {
 	if (enabled) {
 		AssDialogue *curdiag = grid->GetDialogue(linen);
 		if (curdiag) {
@@ -301,7 +300,7 @@ void SubsEditBox::Update (bool timeOnly,bool weak,bool video) {
 
 			// Video
 			VideoContext::Get()->curLine = curdiag;
-			if (video) VideoContext::Get()->UpdateDisplays(false);
+			VideoContext::Get()->UpdateDisplays(false);
 
 			TextEdit->EmptyUndoBuffer();
 		}
@@ -353,12 +352,10 @@ void SubsEditBox::SetToLine(int n,bool weak) {
 	// Set to nothing
 	if (n == -1) {
 		enabled = false;
-		SetControlsState(false);
-		return;
 	}
 
 	// Set line
-	if (grid->GetDialogue(n)) {
+	else if (grid->GetDialogue(n)) {
 		enabled = true;
 		if (n != linen) {
 			linen = n;
@@ -369,7 +366,7 @@ void SubsEditBox::SetToLine(int n,bool weak) {
 	}
 
 	// Update controls
-	Update(false, false, false);
+	Update();
 
 	// Set video
 	if (VideoContext::Get()->IsLoaded() && !weak) {
