@@ -240,7 +240,7 @@ void VisualToolDrag::PopulateFeatureList() {
 	}
 }
 bool VisualToolDrag::InitializeDrag(VisualToolDragDraggableFeature *feature) {
-	if (feature->type != DRAG_ORIGIN) primary = feature;
+	primary = feature;
 	return true;
 }
 
@@ -311,21 +311,26 @@ void VisualToolDrag::Update() {
 	for (wxArrayInt::const_iterator cur = sel.begin(); cur != sel.end(); ++cur) {
 		AssDialogue* line = grid->GetDialogue(*cur);
 		if (!line) continue;
-		int x1, y1, x2, y2, t1 = INT_MIN, t2 = INT_MIN;
+		int x1 = 0, y1 = 0, x2 = 0, y2 = 0, t1 = INT_MIN, t2 = INT_MIN, orgx, orgy;
 		bool isMove;
+
+		GetLinePosition(line, x1, y1, orgx, orgy);
 		GetLineMove(line, isMove, x1, y1, x2, y2, t1, t2);
+		parent->ToScriptCoords(&x1, &y1);
+		parent->ToScriptCoords(&x2, &y2);
+		parent->ToScriptCoords(&orgx, &orgy);
+
 		if (isMove) {
-			parent->ToScriptCoords(&x1, &y1);
-			parent->ToScriptCoords(&x2, &y2);
 			if (t1 > INT_MIN && t2 > INT_MIN)
 				SetOverride(line, L"\\move", wxString::Format(L"(%i,%i,%i,%i,%i,%i)", x1 - dx, y1 - dy, x2 - dx, y2 - dy, t1, t2));
 			else
 				SetOverride(line, L"\\move", wxString::Format(L"(%i,%i,%i,%i)", x1, y1, x2, y2));
 		}
 		else {
-			GetLinePosition(line, x1, y1);
-			parent->ToScriptCoords(&x1, &y1);
 			SetOverride(line, L"\\pos", wxString::Format(L"(%i,%i)", x1 - dx, y1 - dy));
+		}
+		if (orgx != x1 || orgy != y1) {
+			SetOverride(line, L"\\org", wxString::Format(L"(%i,%i)", orgx - dx, orgy - dy));
 		}
 	}
 
