@@ -266,7 +266,7 @@ void VisualTool<FeatureType>::Commit(bool full, wxString message) {
 		grid->ass->FlagAsModified(message);
 	}
 	grid->CommitChanges(false,!full);
-	grid->editBox->Update(false, true);
+	grid->editBox->Update(false, true, false);
 }
 
 template<class FeatureType>
