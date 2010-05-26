@@ -53,17 +53,35 @@ VisualToolCross::~VisualToolCross() { }
 
 /// @brief Update 
 void VisualToolCross::Update() {
-	// Position
-	if (leftDClick) {
-		int vx = video.x;
-		int vy = video.y;
-		parent->ToScriptCoords(&vx, &vy);
-		SubtitlesGrid *grid = VideoContext::Get()->grid;
-		SetOverride(GetActiveDialogueLine(), L"\\pos",wxString::Format(L"(%i,%i)",vx,vy));
-		grid->ass->FlagAsModified(_("positioning"));
-		grid->CommitChanges(false,true);
-		grid->editBox->Update(false, true, false);
+	if (!leftDClick) return;
+
+	AssDialogue* line = GetActiveDialogueLine();
+	if (!line) return;
+
+
+	int dx, dy;
+	int vx = video.x;
+	int vy = video.y;
+	GetLinePosition(line, dx, dy);
+	parent->ToScriptCoords(&vx, &vy);
+	parent->ToScriptCoords(&dx, &dy);
+	dx -= vx;
+	dy -= vy;
+
+	SubtitlesGrid *grid = VideoContext::Get()->grid;
+	wxArrayInt sel = grid->GetSelection();
+	for (wxArrayInt::const_iterator cur = sel.begin(); cur != sel.end(); ++cur) {
+		AssDialogue* line = grid->GetDialogue(*cur);
+		if (!line) continue;
+		int x1, y1;
+		GetLinePosition(line, x1, y1);
+		parent->ToScriptCoords(&x1, &y1);
+		SetOverride(line, L"\\pos", wxString::Format(L"(%i,%i)", x1 - dx, y1 - dy));
 	}
+
+	grid->ass->FlagAsModified(_("positioning"));
+	grid->CommitChanges(false,true);
+	grid->editBox->Update(false, true, false);
 }
 
 /// @brief Draw 
