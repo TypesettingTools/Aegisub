@@ -179,8 +179,10 @@ void VisualToolDrag::PopulateFeatureList() {
 	features.clear();
 
 	// Get video data
-	int numRows = VideoContext::Get()->grid->GetRows();
-	int framen = VideoContext::Get()->GetFrameN();
+	VideoContext* con = VideoContext::Get();
+	int numRows = con->grid->GetRows();
+	int framen = con->GetFrameN();
+	wxArrayInt sel = GetSelection();
 
 	// For each line
 	AssDialogue *diag;

@@ -40,6 +40,7 @@
 #include "config.h"
 
 #ifndef AGI_PRE
+#include <algorithm>
 #include <wx/sizer.h>
 #endif
 
@@ -205,27 +206,23 @@ void BaseGrid::MakeCellVisible(int row, int col,bool center) {
 /// @param select        
 ///
 void BaseGrid::SelectRow(int row, bool addToSelected, bool select) {
-	// Sanity checking
-	if (row >= GetRows()) row = GetRows()-1;
-	else if (row < 0) row = 0;
-
 	if (!addToSelected) ClearSelection();
-	try {
-		bool cur = selMap.at(row);
-		if (select != cur) {
-			selMap.at(row) = select;
-			
-			if (!addToSelected) Refresh(false);
 
-			else {
-				int w = 0;
-				int h = 0;
-				GetClientSize(&w,&h);
-				RefreshRect(wxRect(0,(row+1-yPos)*lineHeight,w,lineHeight),false);
-			}
+	if (row < 0 || (size_t)row >= selMap.size()) return;
+
+	if (select != selMap[row]) {
+		selMap[row] = select;
+		
+		if (!addToSelected) {
+			Refresh(false);
+		}
+		else {
+			int w = 0;
+			int h = 0;
+			GetClientSize(&w,&h);
+			RefreshRect(wxRect(0,(row+1-yPos)*lineHeight,w,lineHeight),false);
 		}
 	}
-	catch (...) {}
 }
 
 
@@ -268,15 +265,9 @@ void BaseGrid::ClearSelection() {
 /// @param col 
 /// @return 
 ///
-bool BaseGrid::IsInSelection(int row, int col) const {
-	if (row >= GetRows() || row < 0) return false;
-	(void) col;
-	try {
-		return selMap.at(row);
-	}
-	catch (...) {
-		return false;
-	}
+bool BaseGrid::IsInSelection(int row, int) const {
+	if ((size_t)row >= selMap.size() || row < 0) return false;
+	return selMap[row];
 }
 
 
@@ -284,13 +275,8 @@ bool BaseGrid::IsInSelection(int row, int col) const {
 /// @brief Number of selected rows 
 /// @return 
 ///
-int BaseGrid::GetNumberSelection() {
-	int count = 0;
-	int rows = selMap.size();
-	for (int i=0;i<rows;i++) {
-		if (selMap[i]) count++;
-	}
-	return count;
+int BaseGrid::GetNumberSelection() const {
+	return std::count(selMap.begin(), selMap.end(), true);
 }
 
 
@@ -298,14 +284,10 @@ int BaseGrid::GetNumberSelection() {
 /// @brief Gets first selected row 
 /// @return 
 ///
-int BaseGrid::GetFirstSelRow() {
-	int nrows = GetRows();
-	for (int i=0;i<nrows;i++) {
-		if (IsInSelection(i,0)) {
-			return i;
-		}
-	}
-	return -1;
+int BaseGrid::GetFirstSelRow() const {
+	std::vector<bool>::const_iterator first = std::find(selMap.begin(), selMap.end(), true);
+	if (first == selMap.end()) return -1;
+	return std::distance(selMap.begin(), first);
 }
 
 
@@ -313,7 +295,7 @@ int BaseGrid::GetFirstSelRow() {
 /// @brief Gets last selected row from first block selection 
 /// @return 
 ///
-int BaseGrid::GetLastSelRow() {
+int BaseGrid::GetLastSelRow() const {
 	int frow = GetFirstSelRow();
 	while (IsInSelection(frow)) {
 		frow++;
@@ -324,10 +306,10 @@ int BaseGrid::GetLastSelRow() {
 
 
 /// @brief Gets all selected rows 
-/// @param cont 
+/// @param[out] cont 
 /// @return 
 ///
-wxArrayInt BaseGrid::GetSelection(bool *cont) {
+wxArrayInt BaseGrid::GetSelection(bool *cont) const {
 	// Prepare
 	int nrows = GetRows();
 	int last = -1;
@@ -973,13 +955,10 @@ void BaseGrid::SetColumnWidths() {
 /// @param n 
 /// @return 
 ///
-AssDialogue *BaseGrid::GetDialogue(int n) {
+AssDialogue *BaseGrid::GetDialogue(int n) const {
 	try {
-		if (n < 0) return NULL;
-		if ((size_t)n >= diagMap.size()) return NULL;
-		AssEntry *e = *diagMap.at(n);
-		if (e->GetType() != ENTRY_DIALOGUE) return NULL;
-		return dynamic_cast<AssDialogue*>(e);
+		if (n < 0 || (size_t)n >= diagMap.size()) return NULL;
+		return dynamic_cast<AssDialogue*>(*diagMap.at(n));
 	}
 	catch (...) {
 		return NULL;
@@ -993,10 +972,11 @@ AssDialogue *BaseGrid::GetDialogue(int n) {
 /// @return 
 ///
 bool BaseGrid::IsDisplayed(AssDialogue *line) {
-	if (!VideoContext::Get()->IsLoaded()) return false;
+	VideoContext* con = VideoContext::Get();
+	if (!con->IsLoaded()) return false;
 	int f1 = VFR_Output.GetFrameAtTime(line->Start.GetMS(),true);
 	int f2 = VFR_Output.GetFrameAtTime(line->End.GetMS(),false);
-	if (f1 <= VideoContext::Get()->GetFrameN() && f2 >= VideoContext::Get()->GetFrameN()) return true;
+	if (f1 <= con->GetFrameN() && f2 >= con->GetFrameN()) return true;
 	return false;
 }
 
@@ -1188,7 +1168,7 @@ void BaseGrid::SetByFrame (bool state) {
 /// @param n1 
 /// @param n2 
 ///
-wxArrayInt BaseGrid::GetRangeArray(int n1,int n2) {
+wxArrayInt BaseGrid::GetRangeArray(int n1,int n2) const {
 	// Swap if in wrong order
 	if (n2 < n1) {
 		int aux = n1;
