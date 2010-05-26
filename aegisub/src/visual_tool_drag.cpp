@@ -93,29 +93,28 @@ void VisualToolDrag::UpdateToggleButtons() {
 
 /// @brief Toggle button pressed 
 /// @param event 
-void VisualToolDrag::OnSubTool(wxCommandEvent &event) {
-	// Get line
-	AssDialogue *line = GetActiveDialogueLine();
-	if (!line) return;
-
+void VisualToolDrag::OnSubTool(wxCommandEvent &) {
+	BaseGrid* grid = VideoContext::Get()->grid;
+	wxArrayInt sel = GetSelection();
 	// Toggle \move <-> \pos
-	if (event.GetId() == BUTTON_TOGGLE_MOVE) {
-		// Get coordinates
+	for (wxArrayInt::const_iterator cur = sel.begin(); cur != sel.end(); ++cur) {
 		int x1,y1,x2,y2,t1,t2;
 		bool hasMove;
+
+		AssDialogue *line = grid->GetDialogue(*cur);
+		if (!line) continue;
+
 		GetLinePosition(line,x1,y1);
 		GetLineMove(line,hasMove,x1,y1,x2,y2,t1,t2);
 		parent->ToScriptCoords(&x1, &y1);
 		parent->ToScriptCoords(&x2, &y2);
 
-		// Replace tag
 		if (hasMove) SetOverride(line, L"\\pos",wxString::Format(L"(%i,%i)",x1,y1));
 		else SetOverride(line, L"\\move",wxString::Format(L"(%i,%i,%i,%i,%i,%i)",x1,y1,x1,y1,0,line->End.GetMS() - line->Start.GetMS()));
-		Commit(true);
-
-		// Update display
-		Refresh();
 	}
+
+	Commit(true);
+	Refresh();
 }
 
 void VisualToolDrag::DoRefresh() {

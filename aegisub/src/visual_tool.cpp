@@ -111,8 +111,6 @@ void VisualTool<FeatureType>::OnMouseEvent (wxMouseEvent &event) {
 	}
 	externalChange = false;
 
-	VideoContext* con = VideoContext::Get();
-
 	leftClick = event.ButtonDown(wxMOUSE_BTN_LEFT);
 	leftDClick = event.LeftDClick();
 	shiftDown = event.m_shiftDown;
