@@ -30,3 +30,9 @@
 #include "libaegisub/cajun/visitor.h"
 #include "libaegisub/cajun/writer.h"
 
+// Universalchardet
+#include "../universalchardet/nscore.h"
+#include "../universalchardet/nsUniversalDetector.h"
+#include "../universalchardet/nsMBCSGroupProber.h"
+#include "../universalchardet/nsCharSetProber.h"
+
