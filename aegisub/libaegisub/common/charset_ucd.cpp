@@ -30,7 +30,6 @@
 namespace agi {
 	namespace charset {
 
-
 UCDetect::UCDetect(const std::string file): nsUniversalDetector(NS_FILTER_ALL) {
 	{
 		std::ifstream *fp;
@@ -47,7 +46,7 @@ UCDetect::UCDetect(const std::string file): nsUniversalDetector(NS_FILTER_ALL) {
 	DataEnd();
 
 	if (mDetectedCharset) {
-		charset.assign(mDetectedCharset);
+		list.insert(CLDPair(1, mDetectedCharset));
 	} else {
 
 		switch (mInputState) {
@@ -56,31 +55,38 @@ UCDetect::UCDetect(const std::string file): nsUniversalDetector(NS_FILTER_ALL) {
 					if (mCharSetProbers[i]) {
 						float conf = mCharSetProbers[i]->GetConfidence();
 						if (conf > 0.01f) {
-							list.insert(std::pair<float, std::string>(conf, mCharSetProbers[i]->GetCharSetName()));
+							list.insert(CLDPair(conf, mCharSetProbers[i]->GetCharSetName()));
 						}
 					}
 				}
 
-				if (!list.empty()) {
-					CharsetListDetected::const_iterator i_lst = list.begin();
-					charset.assign(i_lst->second);
-				}
 				break;
 			}
 			case ePureAscii:
-				charset.assign("US-ASCII");
+				list.insert(CLDPair(1, "US-ASCII"));
 				break;
 
 			default:
 				throw UnknownCharset("Unknown chararacter set.");
 		}
 
-		if ((list.empty() && (mInputState == eHighbyte)) || charset.empty())
+		if (list.empty() && (mInputState == eHighbyte))
 			throw UnknownCharset("Unknown chararacter set.");
 
 
 	} // if mDetectedCharset else
 }
+
+std::string UCDetect::Single() {
+	/// @todo Add a debug log here since this shouldn't happen.
+	if (list.empty()) {
+		throw UnknownCharset("Unknown chararacter set.");
+	}
+
+	CharsetListDetected::const_iterator i_lst = list.begin();
+	return i_lst->second;
+}
+
 
 
 	} // namespace util

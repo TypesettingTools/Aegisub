@@ -29,8 +29,8 @@ namespace agi {
 
 class UCDetect : public nsUniversalDetector {
 
-	/// Character set
-	std::string charset;
+	/// For insertion into CharsetListDetected
+	typedef std::pair<float, std::string> CLDPair;
 
 	/// List of detected character sets.
 	CharsetListDetected list;
@@ -50,7 +50,7 @@ public:
 
 	/// @brief Return a single character set (highest confidence)
 	/// @return Character set
-	std::string Single() { return charset; }
+	std::string Single();
 };
 
 	} // namespace util
