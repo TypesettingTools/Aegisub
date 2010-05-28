@@ -31,7 +31,7 @@ namespace agi {
 	namespace charset {
 
 
-UCDetect::UCDetect(const std::string file): nsUniversalDetector(NS_FILTER_ALL), binary(0) {
+UCDetect::UCDetect(const std::string file): nsUniversalDetector(NS_FILTER_ALL) {
 	{
 		std::ifstream *fp;
 		fp = io::Open(file);
