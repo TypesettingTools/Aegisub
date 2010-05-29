@@ -1,4 +1,4 @@
-// Copyright (c) 2007, Rodrigo Braz Monteiro
+// Copyright (c) 2010, Amar Takhar
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -34,34 +34,17 @@
 /// @ingroup utility
 ///
 
-
-
-///////////
-// Headers
-#include "../universalchardet/nscore.h"
-#include "../universalchardet/nsUniversalDetector.h"
-#include "../universalchardet/nsMBCSGroupProber.h"
-
-
 /// DOCME
 /// @class CharSetDetect
-/// @brief DOCME
-///
-/// DOCME
-class CharSetDetect : public nsUniversalDetector {
+/// @brief Detect character set of a file
+class CharSetDetect {
 private:
-
-	/// DOCME
+	/// Character set
 	wxString result;
-	void Report(const char* aCharset);
 
 public:
-	CharSetDetect() : nsUniversalDetector(NS_FILTER_ALL) { };
+	/// @brief Get character set name.
+	/// @param filename File to check
+	/// @return Character set name
 	wxString GetEncoding(wxString filename);
-
-	/// @brief DOCME
-	///
-	PRBool done() const { return mDone; }
 };
-
-

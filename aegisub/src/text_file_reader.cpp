@@ -74,49 +74,12 @@ TextFileReader::~TextFileReader() {
 }
 
 wxString TextFileReader::GetEncoding(wxString const& filename) {
-	// Prepare
-	unsigned char b[4];
-	memset(b, 0, sizeof(b));
 
-	// Read four bytes from file
-	std::ifstream ifile;
-#ifdef __WINDOWS__
-	ifile.open(filename.wc_str());
-#else
-	ifile.open(wxFNCONV(filename));
-#endif
-	if (!ifile.is_open()) {
-		return L"unknown";
-	}
-	ifile.read(reinterpret_cast<char *>(b),4);
-	ifile.close();
-
-	// Try to get the byte order mark from them
-	if (b[0] == 0xEF && b[1] == 0xBB && b[2] == 0xBF) return L"UTF-8";
-	else if (b[0] == 0xFF && b[1] == 0xFE && b[2] == 0x00 && b[3] == 0x00) return L"UTF-32LE";
-	else if (b[0] == 0x00 && b[1] == 0x00 && b[2] == 0xFE && b[3] == 0xFF) return L"UTF-32BE";
-	else if (b[0] == 0xFF && b[1] == 0xFE) return L"UTF-16LE";
-	else if (b[0] == 0xFE && b[1] == 0xFF) return L"UTF-16BE";
-	else if (b[0] == 0x2B && b[1] == 0x2F && b[2] == 0x76) return L"UTF-7";
-
-	// Try to guess UTF-16
-	else if (b[0] == 0 && b[1] >= 32 && b[2] == 0 && b[3] >= 32) return L"UTF-16BE";
-	else if (b[0] >= 32 && b[1] == 0 && b[2] >= 32 && b[3] == 0) return L"UTF-16LE";
-
-	// If any of the first four bytes are under 0x20 (the first printable character),
-	// except for 9-13 range, assume binary
-	for (int i=0;i<4;i++) {
-		if (b[i] < 9 || (b[i] > 13 && b[i] < 32)) return L"binary";
-	}
-
-#ifdef WITH_UNIVCHARDET
 	// Use universalchardet library to detect charset
 	CharSetDetect det;
-	return det.GetEncoding(filename);
-#else
-	// Fall back to local
-	return L"local";
-#endif
+	wxString str(det.GetEncoding(filename));
+	wxLogDebug("Encoding: %s", str);
+	return str;
 }
 
 wchar_t TextFileReader::GetWChar() {
