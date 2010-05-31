@@ -9,6 +9,7 @@
 		Optimization="0"
 		InlineFunctionExpansion="0"
 		EnableIntrinsicFunctions="false"
+		FavorSizeOrSpeed="0"
 		WholeProgramOptimization="false"
 		PreprocessorDefinitions="DEBUG;_DEBUG"
 		BasicRuntimeChecks="3"

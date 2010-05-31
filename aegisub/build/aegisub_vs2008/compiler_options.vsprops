@@ -6,7 +6,9 @@
 	>
 	<Tool
 		Name="VCCLCompilerTool"
+		Optimization="1"
 		EnableIntrinsicFunctions="true"
+		FavorSizeOrSpeed="2"
 		RuntimeLibrary="2"
 		OpenMP="true"
 		WarningLevel="3"
