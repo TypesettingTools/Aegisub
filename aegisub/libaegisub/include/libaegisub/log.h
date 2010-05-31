@@ -53,10 +53,6 @@ enum Severity {
 	Debug		///< Enabled by default when compiled in debug mode.
 };
 
-/// Short Severity ID
-/// Keep this ordered the same as Severity
-const char* Severity_ID = "EAWID";
-
 /// Container to hold a single message
 struct SinkMessage {
 	/// @brief Constructor

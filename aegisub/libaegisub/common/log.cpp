@@ -32,6 +32,9 @@ namespace agi {
 /// Global log sink.
 LogSink *log = new LogSink();
 
+/// Short Severity ID
+/// Keep this ordered the same as Severity
+const char* Severity_ID = "EAWID";
 
 SinkMessage::SinkMessage(const char *section, Severity severity, const char *file,
 			const char *func, int line, timeval tv):
