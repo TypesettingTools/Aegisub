@@ -473,7 +473,7 @@ void AudioDisplay::DrawInactiveLines(wxDC &dc) {
 //////////////////
 // Draw keyframes
 void AudioDisplay::DrawKeyframes(wxDC &dc) {
-	wxArrayInt KeyFrames = VideoContext::Get()->GetKeyFrames();
+	const wxArrayInt & KeyFrames = VideoContext::Get()->GetKeyFrames();
 	int nKeys = (int)KeyFrames.Count();
 	dc.SetPen(wxPen(wxColour(255,0,255),1));
 
