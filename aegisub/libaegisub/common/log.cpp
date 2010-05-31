@@ -24,6 +24,7 @@
 #include <string.h>
 
 #include "libaegisub/log.h"
+#include "libaegisub/mutex.h"
 
 namespace agi {
 	namespace log {

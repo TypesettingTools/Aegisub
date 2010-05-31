@@ -262,6 +262,19 @@ AC_SUBST(DMG_STRING)
 ACX_PTHREAD([], [AC_MSG_FAILURE([You must have working pthreads.])])
 CC="$PTHREAD_CC";
 
+AC_AGI_COMPILE([pthread_rwlock_*], [pthread_rwlock], [$PTHREAD_CFLAGS], [$PTHREAD_LIBS],[
+#include <pthread.h>
+#define _XOPEN_SOURCE 500
+int main(void) {
+  pthread_rwlock_t l; pthread_rwlock_init(&l, NULL);
+  pthread_rwlock_rdlock(&l);
+  return 0;
+}])
+
+if test "$agi_cv_with_pthread_rwlock" = "yes"; then
+  AC_DEFINE(HAVE_RWLOCK,1,[define if the compiler implements pthread_rwlock_*])
+fi
+
 
 ######################
 # Check compiler flags
