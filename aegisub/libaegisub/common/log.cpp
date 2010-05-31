@@ -87,11 +87,12 @@ void EmitSTDOUT::log(SinkMessage *sm) {
 	tm tmtime;
 	localtime_r(&sm->tv.tv_sec, &tmtime);
 
-	printf("%c %d-%02d-%02d %02d:%02d:%02d %ld %s %s %s:%d %s\n",
+//		tmtime.tm_year+1900,
+//		tmtime.tm_mon,
+//		tmtime.tm_mday,
+
+	printf("%c %02d:%02d:%02d %ld <%-25s> [%s:%s:%d]  %s\n",
 		Severity_ID[sm->severity],
-		tmtime.tm_year+1900,
-		tmtime.tm_mon,
-		tmtime.tm_mday,
 		tmtime.tm_hour,
 		tmtime.tm_min,
 		tmtime.tm_sec,
