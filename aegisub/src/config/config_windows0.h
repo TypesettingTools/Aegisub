@@ -50,7 +50,16 @@
 
 ////////////// HIGH PRIORITY /////////////
 
+// You seriously want these.
+// Aegisub might be impossible to build without some of these,
+// or just be nearly useless without them.
+
+
 // Enable Automation
+// All this does is allow Automation libraries to be built at all,
+// and makes the GUI for Automation stuff show up.
+// (It should be possible to build WITH_AUTOMATION but without any
+// Automation engines enabled, albeit not interesting.)
 // Requires: Nothing
 #define WITH_AUTOMATION
 
@@ -60,35 +69,68 @@
 #define WITH_AUTO4_LUA
 
 
-// Enable Automation 3
-// Requires: auto3 dll (in repository), Lua (in repository)
-#define WITH_AUTO3
-
-
 // Enable DirectSound audio player
-// Requires: DirectX SDK
+// This enables both the new and old DSound player implementations.
+// The new DSound player (DirectSoundPlayer2) is the recommended
+// audio player on Windows.
+// Requires: DirectX SDK (or Windows SDK 7.0)
 #define WITH_DIRECTSOUND
+#ifdef WITH_DIRECTSOUND
+# pragma comment(lib, "dsound.lib")
+# pragma comment(lib, "dxguid.lib")
+#endif
 
 
-// Enable Avisynth
-// Requires: nothing (just the avisynth dlls)
+// Enable Avisynth video and audio providers
+// Requires: nothing (just the Avisynth DLLs at runtime)
 #define WITH_AVISYNTH
+
+
+// Enable CSRI (Common Subtitle Renderer Interface)
+// Used to interface with VSFilter and potentially other subtitle renderers
+// supporting the CSRI API, though none other do.
+// You really want
+// Requires: csri helper library (in repository) or another CSRI implementation
+#define WITH_CSRI
+// Easiest is to include the CSRI helper library in your solution and make
+// Aegisub depend on it, so it gets linked in.
+// Alternatively, link VSFilter directly and avoid the CSRI helper library, like so:
+//#pragma comment(lib,"vsfilter-aegisub32.lib")
+
+
+// Enable FreeType2 font lister for the fonts collector
+// (You cannot build without having a font lister, and the FT2-based
+// one is the only currently working on Windows.)
+// Make sure to replace the library name by the actual one you use,
+// or otherwise ensure the FT2 library gets linked to Aegisub.
+// Requires: FreeType2
+#define WITH_FREETYPE2
+#ifdef WITH_FREETYPE2
+# ifndef _DEBUG
+#  pragma comment(lib,"freetype235.lib")
+# else
+#  pragma comment(lib,"freetype235_D.lib")
+# endif
+#endif
 
 
 
 ///////////// MEDIUM PRIORITY ////////////
 
-// Enable FreeType2 font lister for the fonts collector
-// If you're on Visual Studio, also uncomment the library names and make sure they match the files that you have
-// Requires: FreeType2
-#define WITH_FREETYPE2
-#define FT2_LIB_RELEASE "freetype235.lib"
-#define FT2_LIB_DEBUG "freetype235_D.lib"
+// Nice to have things, easy to get working.
 
 
-// Enable CSRI, required for styles previews in the style editor and some video providers
-// Requires: csri (in repository)
-#define WITH_CSRI
+// Enable Automation 3
+// Requires: auto3 dll (in repository), Lua 5.0 (in repository)
+#define WITH_AUTO3
+
+
+// Enable ffmpegsource video and audio providers
+// Requires: ffmpegsource version 2 .lib file
+//#define WITH_FFMPEGSOURCE
+#ifdef WITH_FFMPEGSOURCE
+# pragma comment(lib, "ffms2.lib")
+#endif
 
 
 // Enable universal charset detector, so Aegisub can automatically detect the encoding of non-unicode subtitles
@@ -105,34 +147,50 @@
 
 
 // Enable "final release" mode
-// Displays different versions numbers in About box and title bar, and omits detailed version information from
-// the title bar. Only core developers should enable then, and only when making builds for mass consumption.
+// Displays different version numbers in About box and title bar, and omits detailed version information from
+// the title bar. Only core developers should enable this, and only when making builds for mass consumption.
 //#define FINAL_RELEASE
 
 
 
-/////////////// LOW PRIORITY ////////////
+///////////// NOT RECOMMENDED /////////////
 
-// Enable DirectShow video provider
-// Requires: DirectShow "baseclasses", DirectX SDK
+// The options in this section are generally deprecated or just not
+// suited for Windows builds. They might not be compileable at all.
+
+
+// Enable DirectShow video provider, unmaintained
+// Requires: DirectShow "baseclasses", DirectX SDK, luck
 //#define WITH_DIRECTSHOW
+#ifdef WITH_DIRECTSHOW
+# pragma comment(lib, "strmiids.lib")
+# ifdef _DEBUG
+#  pragma comment(lib, "strmbasdu.lib")
+# else
+#  pragma comment(lib, "strmbaseu.lib")
+# endif
+#endif
 
 
-// Enable Perl scripting
-// Requires: perl library (ActivePerl comes with one for Visual C++ under lib\core\)
+// Enable Perl scripting, unmaintainted
+// Requires: perl library (ActivePerl comes with one for Visual C++ under lib\core\), luck
 //#define WITH_PERL
+#ifdef WITH_PERL
+# pragma comment(lib,"perl510.lib")
+#endif
 
 // Enable PerlConsole (a debug tool for the perl engine)
 // You don't want it
 //#define WITH_PERLCONSOLE
 
 
-
-///////////// NOT RECOMMENDED /////////////
-
 // Enable FontConfig
+// Alternate font lister for fonts collector, probably doesn't work on Windows.
 // Requires: fontconfig
 //#define WITH_FONTCONFIG
+#ifdef WITH_FONTCONFIG
+# pragma comment(lib,"libfontconfig.lib")
+#endif
 
 
 // Enable libass
@@ -141,26 +199,36 @@
 
 
 // Enable FFmpeg video and audio decoders
+// Deprecated by the FFmpegSource library, might not compile
 // Requires: libavcodec, libavformat, libswscale, libavutil
 // If you compiled static libraries (yes, by default), uncomment the second line as well,
 // and remember to add the correct .a files to the linker's additional dependencies.
-// #define WITH_FFMPEG
-// #define WITH_STATIC_FFMPEG
+//#define WITH_FFMPEG
+//#define WITH_STATIC_FFMPEG
+#ifdef WITH_FFMPEG
+# ifndef WITH_STATIC_FFMPEG
+#  pragma comment(lib, "avcodec-51.lib")
+#  pragma comment(lib, "avformat-51.lib")
+#  pragma comment(lib, "avutil-49.lib")
+# endif
+#endif
 
 
-// Enable ffmpegsource video and audio providers
-// Requires: ffmpegsource version 2
-//#define WITH_FFMPEGSOURCE
-
-
-// Enable Ruby support for Automation
+// Enable Ruby support for Automation, unmaintained
 // Requires: Ruby 1.9
 //#define WITH_RUBY
+#ifdef WITH_RUBY
+# pragma comment(lib,"ws2_32.lib")
+# pragma comment(lib,"msvcrt-ruby18-static.lib")
+#endif
 
 
 // Enable PortAudio audio player
 // Requires PortAudio release 18
 //#define WITH_PORTAUDIO
+#ifdef WITH_PORTAUDIO
+# pragma comment(lib,"portaudio_x86.lib")
+#endif
 
 
 // Enable PortAudio audio player version 2
@@ -174,6 +242,7 @@
 
 
 // Enable OpenAL audio player
+// Works on Windows, but no real advantage of using it over DSound.
 // Requires OpenAL development libraries and headers
 //#define WITH_OPENAL
 
