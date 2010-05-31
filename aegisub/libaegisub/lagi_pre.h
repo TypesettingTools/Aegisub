@@ -17,12 +17,21 @@
 #endif
 
 // Common C++
+#include <deque>
 #include <fstream>
 #include <iostream>
 #include <map>
 #include <memory>
 #include <sstream>
 #include <string>
+
+#ifdef __DEPRECATED // Dodge GCC warnings
+# undef __DEPRECATED
+# include <strstream>
+# define __DEPRECATED
+#else
+# include <strstream>
+#endif
 
 // Cajun
 #include "libaegisub/cajun/elements.h"

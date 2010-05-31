@@ -25,6 +25,7 @@ libaegisub_2_2_la_SOURCES = \
 	common/mru.cpp \
 	common/option.cpp \
 	common/option_visit.cpp \
+	common/log.cpp \
 	common/validator.cpp \
 	unix/util.cpp \
 	unix/io.cpp \
