@@ -75,6 +75,7 @@
 
 #include <libaegisub/io.h>
 #include <libaegisub/access.h>
+#include <libaegisub/log.h>
 
 ///////////////////
 // wxWidgets macro
@@ -136,6 +137,9 @@ void SetThreadName(DWORD dwThreadID, LPCSTR szThreadName) {
 /// @return 
 ///
 bool AegisubApp::OnInit() {
+agi::log::EmitSTDOUT *emit_stdout = new agi::log::EmitSTDOUT();
+emit_stdout->Enable();
+
 #ifdef __VISUALC__
 	SetThreadName((DWORD) -1,"AegiMain");
 #endif

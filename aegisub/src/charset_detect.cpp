@@ -49,6 +49,7 @@
 #endif
 
 #include <libaegisub/charset.h>
+#include <libaegisub/log.h>
 
 #include "charset_detect.h"
 #include "text_file_reader.h"
@@ -61,7 +62,7 @@
 /// @return 
 ///
 wxString CharSetDetect::GetEncoding(wxString filename) {
-	wxLogDebug("Filename: %s", filename);
+	LOG_I("charset/file") << filename;
 	bool unknown = 0;
 
 	agi::charset::CharsetListDetected list;

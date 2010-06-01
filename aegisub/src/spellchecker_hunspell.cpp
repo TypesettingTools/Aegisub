@@ -50,6 +50,7 @@
 #include <wx/wfstream.h>
 #endif
 
+#include <libaegisub/log.h>
 #include <hunspell/hunspell.hxx>
 
 #include "charset_conv.h"
@@ -269,7 +270,7 @@ void HunspellSpellChecker::SetLanguage(wxString language) {
 	dicpath = wxString::Format("%s%s.dic", path, language);
 	usrdicpath = wxString::Format("%s%s.dic", userPath, language);
 
-	wxLogDebug("Using dictionary: %ls", dicpath);
+	LOG_I("dictionary/file") << dicpath;
 
 	// Check if language is available
 	if (!wxFileExists(affpath) || !wxFileExists(dicpath)) return;

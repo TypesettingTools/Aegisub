@@ -45,6 +45,8 @@
 #include <string>
 #endif
 
+#include <libaegisub/log.h>
+
 #include "charset_conv.h"
 #ifdef WITH_UNIVCHARDET
 #include "charset_detect.h"
@@ -78,7 +80,7 @@ wxString TextFileReader::GetEncoding(wxString const& filename) {
 	// Use universalchardet library to detect charset
 	CharSetDetect det;
 	wxString str(det.GetEncoding(filename));
-	wxLogDebug("Encoding: %s", str);
+	LOG_I("file/reader/text/encoding") << str;
 	return str;
 }
 

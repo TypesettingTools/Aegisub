@@ -37,10 +37,11 @@
 #include "config.h"
 
 #ifndef AGI_PRE
-#include <wx/log.h>
 #include <algorithm>
 #include <utility>
 #endif
+
+#include <libaegisub/log.h>
 
 using std::min;
 using std::max;
@@ -85,7 +86,7 @@ static bool TestTexture(int width, int height, GLint format) {
 	glGetTexLevelParameteriv(GL_PROXY_TEXTURE_2D, 0, GL_TEXTURE_INTERNAL_FORMAT, &format);
 	while (glGetError()) { } // Silently swallow all errors as we don't care why it failed if it did
 
-	wxLogDebug(L"VideoOutGL::TestTexture: %dx%d\n", width, height);
+	LOG_I("video/out/gl") << "VideoOutGL::TestTexture: " << width << "x" << height;
 	return format != 0;
 }
 
@@ -116,7 +117,7 @@ void VideoOutGL::DetectOpenGLCapabilities() {
 	// Test for the maximum supported texture size
 	glGetIntegerv(GL_MAX_TEXTURE_SIZE, &maxTextureSize);
 	while (maxTextureSize > 64 && !TestTexture(maxTextureSize, maxTextureSize, internalFormat)) maxTextureSize >>= 1;
-	wxLogDebug(L"VideoOutGL::DetectOpenGLCapabilities: Maximum texture size is %dx%d\n", maxTextureSize, maxTextureSize);
+	LOG_I("video/out/gl") << "Maximum texture size is " << maxTextureSize << "x" << maxTextureSize;
 
 	// Test for rectangular texture support
 	supportsRectangularTextures = TestTexture(maxTextureSize, maxTextureSize >> 1, internalFormat);
@@ -136,7 +137,7 @@ void VideoOutGL::InitTextures(int width, int height, GLenum format, int bpp, boo
 	frameWidth  = width;
 	frameHeight = height;
 	frameFormat = format;
-	wxLogDebug(L"VideoOutGL::InitTextures: Video size: %dx%d\n", width, height);
+	LOG_I("video/out/gl") << "Video size: " << width << "x" << height;
 
 	DetectOpenGLCapabilities();
 
@@ -269,7 +270,7 @@ void VideoOutGL::InitTextures(int width, int height, GLenum format, int bpp, boo
 	for (int i = 0; i < textureCount; ++i) {
 		CHECK_ERROR(glBindTexture(GL_TEXTURE_2D, textureIdList[i]));
 		CHECK_INIT_ERROR(glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, textureSizes[i].first, textureSizes[i].second, 0, format, GL_UNSIGNED_BYTE, NULL));
-		wxLogDebug(L"VideoOutGL::InitTextures: Using texture size: %dx%d\n", textureSizes[i].first, textureSizes[i].second);
+		LOG_I("video/out/gl") << "Using texture size: " << textureSizes[i].first << "x" << textureSizes[i].second;
 		CHECK_INIT_ERROR(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR));
 		CHECK_INIT_ERROR(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
 		CHECK_INIT_ERROR(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP));

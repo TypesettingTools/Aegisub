@@ -52,6 +52,8 @@ extern "C" {
 }
 #endif
 
+#include <libaegisub/log.h>
+
 #include "ass_file.h"
 #include "standard_paths.h"
 #include "subtitles_provider_libass.h"
@@ -63,10 +65,13 @@ extern "C" {
 /// @brief Handle libass messages
 ///
 static void msg_callback(int level, const char *fmt, va_list args, void *data) {
+	char buf[256];
+	snprintf(buf, sizeof(buf), fmt, args);
+
 	if (level < 2) // warning/error
-		wxVLogWarning(fmt, args);
+		LOG_I("subtitle/provider/libass") << buf;
 	else if (level < 7) // verbose
-		wxVLogDebug(fmt, args);
+		LOG_D("subtitle/provider/libass") << buf;
 }
 
 

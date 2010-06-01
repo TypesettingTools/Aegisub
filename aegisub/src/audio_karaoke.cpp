@@ -49,6 +49,8 @@
 #include <wx/tokenzr.h>
 #endif
 
+#include <libaegisub/log.h>
+
 #include "ass_override.h"
 #include "audio_box.h"
 #include "audio_display.h"
@@ -84,7 +86,7 @@ AudioKaraokeSyllable::AudioKaraokeSyllable(const AssKaraokeSyllable &base)
 AudioKaraoke::AudioKaraoke(wxWindow *parent)
 : wxWindow (parent,-1,wxDefaultPosition,wxSize(10,5),wxTAB_TRAVERSAL|wxBORDER_SUNKEN)
 {
-	wxLogDebug(_T("AudioKaraoke constructor"));
+	LOG_D("karaoke") << "Constructor";
 	enabled = false;
 	splitting = false;
 	split_cursor_syl = -1;
