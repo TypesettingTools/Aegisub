@@ -169,8 +169,8 @@ void VisualToolRotateXY::Draw() {
 bool VisualToolRotateXY::InitializeHold() {
 	GetLinePosition(curDiag,odx,ody,orgx,orgy);
 	GetLineRotation(curDiag,origAngleX,origAngleY,rz);
-	startAngleX = (orgy-video.x)*2.0;
-	startAngleY = (video.y-orgx)*2.0;
+	startAngleX = (orgy-video.y)*2.f;
+	startAngleY = (video.x-orgx)*2.f;
 	curAngleX = origAngleX;
 	curAngleY = origAngleY;
 	curDiag->StripTag(L"\\frx");
@@ -181,28 +181,27 @@ bool VisualToolRotateXY::InitializeHold() {
 
 /// @brief Update hold 
 void VisualToolRotateXY::UpdateHold() {
-	// Find screen angles
-	float screenAngleX = (orgy-video.x)*2.0;
-	float screenAngleY = (video.y-orgx)*2.0;
+	float screenAngleX = (orgy-video.y)*2.f;
+	float screenAngleY = (video.x-orgx)*2.f;
 
 	// Deltas
 	float deltaX = screenAngleX - startAngleX;
 	float deltaY = screenAngleY - startAngleY;
 	if (shiftDown) {
-		if (fabs(deltaX) >= fabs(deltaY)) deltaY = 0;
-		else deltaX = 0;
+		if (fabs(deltaX) >= fabs(deltaY)) deltaY = 0.f;
+		else deltaX = 0.f;
 	}
 
 	// Calculate
-	curAngleX = fmodf(deltaX + origAngleX + 360., 360.);
-	curAngleY = fmodf(deltaY + origAngleY + 360., 360.);
+	curAngleX = fmodf(deltaX + origAngleX + 360.f, 360.f);
+	curAngleY = fmodf(deltaY + origAngleY + 360.f, 360.f);
 
 	// Oh Snap
 	if (ctrlDown) {
-		curAngleX = floorf(curAngleX/30.f+.5f)*30.0f;
-		curAngleY = floorf(curAngleY/30.f+.5f)*30.0f;
-		if (curAngleX > 359.0f) curAngleX = 0.0f;
-		if (curAngleY > 359.0f) curAngleY = 0.0f;
+		curAngleX = floorf(curAngleX/30.f+.5f)*30.f;
+		curAngleY = floorf(curAngleY/30.f+.5f)*30.f;
+		if (curAngleX > 359.f) curAngleX = 0.f;
+		if (curAngleY > 359.f) curAngleY = 0.f;
 	}
 }
 
