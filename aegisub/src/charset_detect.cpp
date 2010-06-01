@@ -129,10 +129,7 @@ wxString CharSetDetect::GetEncoding(wxString filename) {
 		if (choice == -1) throw _T("Canceled");
 
 		// Retrieve name
-		i = 0;
-		for (std::list<CharDetResult>::iterator cur=results.begin();cur!=results.end();cur++,i++) {
-			if (i == choice) result = (*cur).name;
-		}
+		result = picked[choice];
 	}
 
 	// Return whatever it got
