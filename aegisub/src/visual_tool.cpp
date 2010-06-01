@@ -581,6 +581,11 @@ void VisualTool<FeatureType>::GetLineRotation(AssDialogue *diag,float &rx,float 
 	// No dialogue
 	if (!diag) return;
 
+	AssStyle *style = VideoContext::Get()->grid->ass->GetStyle(diag->Style);
+	if (style) {
+		rz = style->angle;
+	}
+
 	// Prepare overrides
 	diag->ParseASSTags();
 	AssDialogueBlockOverride *override;
