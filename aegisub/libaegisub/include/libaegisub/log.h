@@ -57,6 +57,11 @@ enum Severity {
 	Debug		///< Enabled by default when compiled in debug mode.
 };
 
+/// Short Severity ID
+/// Set in common/log.cpp, keep this ordered the same as Severity.
+extern const char *Severity_ID;
+
+
 /// Container to hold a single message
 struct SinkMessage {
 	/// @brief Constructor

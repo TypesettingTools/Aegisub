@@ -29,7 +29,8 @@ libaegisub_2_2_la_SOURCES = \
 	common/validator.cpp \
 	unix/util.cpp \
 	unix/io.cpp \
-	unix/access.cpp
+	unix/access.cpp \
+	unix/log.cpp
 
 noinst_HEADERS = *.h
 

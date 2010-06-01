@@ -35,7 +35,7 @@ LogSink *log = new LogSink();
 
 /// Short Severity ID
 /// Keep this ordered the same as Severity
-const char* Severity_ID = "EAWID";
+const char *Severity_ID = "EAWID";
 
 SinkMessage::SinkMessage(const char *section, Severity severity, const char *file,
 			const char *func, int line, timeval tv):
@@ -82,28 +82,6 @@ Emitter::~Emitter() {
 
 
 Emitter::Emitter() {
-}
-
-void EmitSTDOUT::log(SinkMessage *sm) {
-	tm tmtime;
-	localtime_r(&sm->tv.tv_sec, &tmtime);
-
-//		tmtime.tm_year+1900,
-//		tmtime.tm_mon,
-//		tmtime.tm_mday,
-
-	printf("%c %02d:%02d:%02d %ld <%-25s> [%s:%s:%d]  %s\n",
-		Severity_ID[sm->severity],
-		tmtime.tm_hour,
-		tmtime.tm_min,
-		tmtime.tm_sec,
-		sm->tv.tv_usec,
-		sm->section,
-		sm->file,
-		sm->func,
-		sm->line,
-		strndup(sm->message,
-		sm->len));
 }
 
 
