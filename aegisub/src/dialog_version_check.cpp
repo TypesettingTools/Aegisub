@@ -343,6 +343,8 @@ void AegisubVersionCheckerThread::DoCheck()
 		throw VersionCheckError(STD_STR(_("Could not connect to updates server.")));
 
 	std::auto_ptr<wxInputStream> stream(http.GetInputStream(path));
+	if (stream.get() == 0) // check for null-pointer
+		throw VersionCheckError(_("Could not connect to updates server."));
 
 	if (http.GetResponse() < 200 || http.GetResponse() >= 300) {
 		const std::string str_err = STD_STR(wxString::Format(_("HTTP request failed, got HTTP response %d."), http.GetResponse()));
