@@ -21,11 +21,7 @@
 #ifndef LAGI_PRE
 #include <string>
 #include <stdio.h>
-#ifdef _WIN32
-#  include <time.h>
-#else
-#  include <sys/time.h>
-#endif // _WIN32
+#include <time.h>
 #endif // LAGI_PRE
 
 #include <libaegisub/access.h>
