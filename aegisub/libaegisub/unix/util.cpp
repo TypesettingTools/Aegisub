@@ -55,5 +55,9 @@ void Rename(const std::string& from, const std::string& to) {
 	rename(from.c_str(), to.c_str());
 }
 
+void time_log(timeval &tv) {
+	gettimeofday(&tv, (struct timezone *)NULL);
+}
+
 	} // namespace io
 } // namespace agi

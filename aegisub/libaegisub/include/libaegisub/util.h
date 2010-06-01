@@ -21,7 +21,12 @@
 #ifndef LAGI_PRE
 #include <string>
 #include <stdio.h>
-#endif
+#ifdef _WIN32
+#  include <time.h>
+#else
+#  include <sys/time.h>
+#endif // _WIN32
+#endif // LAGI_PRE
 
 #include <libaegisub/access.h>
 
@@ -30,7 +35,7 @@ namespace agi {
 
 	const std::string DirName(const std::string& path);
 	void Rename(const std::string& from, const std::string& to);
-
+	void time_log(timeval &tv);
 
 	} // namespace util
 } // namespace agi

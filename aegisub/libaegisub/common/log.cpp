@@ -25,6 +25,7 @@
 
 #include "libaegisub/log.h"
 #include "libaegisub/mutex.h"
+#include "libaegisub/util.h"
 
 namespace agi {
 	namespace log {
@@ -129,7 +130,7 @@ Message::Message(const char *section,
 	buf = new char[len];
 	msg = new std::ostrstream(buf, len);
 	timeval tv;
-	gettimeofday(&tv, (struct timezone *)NULL);
+	util::time_log(tv);
 	sm = new SinkMessage(section, severity, file, func, line, tv);
 }
 

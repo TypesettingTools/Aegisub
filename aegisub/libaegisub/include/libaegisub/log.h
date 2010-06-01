@@ -19,6 +19,13 @@
 /// @ingroup libaegisub
 
 #ifndef LAGI_PRE
+#include <stdio.h>
+#ifdef _WIN32
+#  include <time.h>
+#else
+#  include <sys/time.h>
+#endif // _WIN32
+
 #include <deque>
 #ifdef __DEPRECATED // Dodge GCC warnings
 # undef __DEPRECATED
