@@ -110,7 +110,9 @@ void EmitSTDOUT::log(SinkMessage *sm) {
 int LogSink::Subscribe(Emitter &em) {
 	emitters.push_back(&em);
 	emit = 1;
-
+	/// @todo This won't work since removing it will cause the id's to change,
+	///       it's good enough while this is being written.
+	return emitters.size();
 }
 
 
