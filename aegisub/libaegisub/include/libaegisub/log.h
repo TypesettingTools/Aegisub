@@ -33,6 +33,7 @@
 #include <vector>
 #endif
 //#include <libaegisub/exception.h>
+#include <libaegisub/types.h>
 
 // These macros below aren't a perm solution, it will depend on how annoying they are through
 // actual usage, and also depends on msvc support.

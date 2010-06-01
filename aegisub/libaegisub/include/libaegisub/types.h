@@ -14,25 +14,22 @@
 //
 // $Id$
 
-/// @file util.h
-/// @brief Public interface for general utilities.
+/// @file types.h
+/// @brief Platform specific types.
 /// @ingroup libaegisub
 
 #ifndef LAGI_PRE
-#include <string>
-#include <stdio.h>
-#include <time.h>
 #endif // LAGI_PRE
 
-#include <libaegisub/access.h>
-#include <libaegisub/types.h>
+#pragma once
 
 namespace agi {
-	namespace util {
 
-	const std::string DirName(const std::string& path);
-	void Rename(const std::string& from, const std::string& to);
-	void time_log(timeval &tv);
+#if defined(_WIN32)
+typedef struct timeval {
+	long tv_sec;
+	long tv_usec;
+} timeval;
+#endif
 
-	} // namespace util
 } // namespace agi

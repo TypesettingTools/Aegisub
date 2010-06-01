@@ -20,7 +20,7 @@
 
 
 #include <stdio.h>
-#include <sys/time.h>
+#include <time.h>
 #include <string.h>
 
 #include "libaegisub/log.h"
