@@ -356,7 +356,7 @@ void VisualToolDrag::Update() {
 		}
 	}
 
-	Commit(false, _("positioning"));
+	Commit(true, _("positioning"));
 
 	GenerateFeatures();
 }

@@ -79,7 +79,7 @@ void VisualToolCross::Update() {
 		SetOverride(line, L"\\pos", wxString::Format(L"(%i,%i)", x1 - dx, y1 - dy));
 	}
 
-	Commit(false, _("positioning"));
+	Commit(true, _("positioning"));
 }
 
 /// @brief Draw 
