@@ -184,6 +184,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath="..\..\libaegisub\windows\log.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\libaegisub\windows\util.cpp"
 				>
 			</File>
