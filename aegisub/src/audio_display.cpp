@@ -1717,7 +1717,8 @@ void AudioDisplay::OnMouseEvent(wxMouseEvent& event) {
 
 				// Commit changes
 				diagUpdated = false;
-				NeedCommit = UpdateTimeEditCtrls();
+				// Time edit controls changed, or it was a karaoke syllable drag
+				NeedCommit = UpdateTimeEditCtrls() || (hold == 4);
 
 				if (NeedCommit && Options.AsBool(_T("Audio Autocommit"))) 
 					CommitChanges();
