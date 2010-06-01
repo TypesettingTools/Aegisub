@@ -32,27 +32,80 @@
 ; Contact: mailto:nielsm@indvikleren.dk
 ;
 
-#include "fragment_setupbase.iss"
-
 [Setup]
+AppID={{24BC8B57-716C-444F-B46B-A3349B9164C5}
+AppName=Aegisub
+AppVerName=Aegisub 2.1.9
+AppVersion=2.1.9
+AppPublisher=Aegisub Team
+AppPublisherURL=http://www.aegisub.org/
+AppSupportURL=http://forum.aegisub.org/
+AppCopyright=© 2005-2010 The Aegisub Team
+VersionInfoVersion=2.1.9
+DefaultDirName={pf}\Aegisub
+DefaultGroupName=Aegisub
+AllowNoIcons=true
+OutputDir=output
+Compression=lzma/ultra64
+SolidCompression=true
+MinVersion=0,5.0
+ShowLanguageDialog=no
+LanguageDetectionMethod=none
+PrivilegesRequired=poweruser
+DisableProgramGroupPage=yes
+DisableDirPage=yes
+UsePreviousSetupType=yes
+UsePreviousGroup=yes
+UsePreviousAppDir=yes
+UsePreviousTasks=no
+UninstallDisplayIcon={app}\aegisub32.exe
+; Default to a large welcome bitmap, suitable for large fonts
+; The normal fonts version is selected by code below
+WizardImageFile=welcome-large.bmp
+WizardSmallImageFile=aegisub-large.bmp
+
 OutputBaseFilename=Aegisub-2.1.9-upgrade
 VersionInfoDescription=Aegisub 2.1.9 upgrade
-DisableDirPage=yes
+
+[Languages]
+Name: english; MessagesFile: compiler:Default.isl
+
+[Messages]
+; Replacement for License page, no need to bother the user with legal mumbo-jumbo
+WelcomeLabel2=This will install Aegisub 2.1.9 on your computer.%n%nAegisub is covered by the GNU General Public License version 2. This means you may use the application for any purpose without charge, but that no warranties of any kind are given either.%n%nSee the Aegisub website for information on obtaining the source code.
+
+[Files]
+; small bitmaps (used by beautify code)
+DestDir: {tmp}; Flags: dontcopy; Source: welcome.bmp
+DestDir: {tmp}; Flags: dontcopy; Source: aegisub.bmp
 
 
 #include "fragment_mainprogram.iss"
 #include "fragment_associations.iss"
-#include "fragment_codecs.iss"
-#include "fragment_automation.iss"
+
+[Components]
+Name: codec; Description: Media formats support; Flags: fixed; Types: custom compact full
+Name: codec/vsfilter; Description: VSFilter 2.39e; Types: compact full custom; Flags: fixed
+Name: auto; Description: Automation 4 scripting support; Types: compact full
+Name: auto/lua; Description: Lua; Types: compact full; Flags: checkablealone; Languages:
+
+;#include "fragment_codecs.iss"
+;#include "fragment_automation.iss"
 #include "fragment_translations.iss"
-#include "fragment_opengl.iss"
+;#include "fragment_opengl.iss"
 
 
 [InstallDelete]
 ; Usually this would be removed by the migration code, but that isn't used in upgrades so
 ; include the file deletion as a regular InstallDelete command
-Type: files; Name: "{app}\csri\VSFilter.dll"; Components: codec/vsfilter
+Type: files; Name: "{app}\csri\VSFilter-Aegisub.dll"; Components: codec/vsfilter
+Type: dirifempty; Name: "{app}\csri\"; Components: codec/vsfilter
 
+[Files]
+DestDir: {app}\automation\include; Source: src\automation\include\karaskel-auto4.lua; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/lua; Attribs: readonly
+DestDir: {app}; Source: src\ffms2.dll; Flags: ignoreversion; Components: codec
+DestDir: {app}; Source: src\ffms2.pdb; Flags: ignoreversion; Components: codec and main/pdb
+DestDir: {app}; Source: src\vsfilter-aegisub32.dll; Flags: ignoreversion; Components: codec/vsfilter
 
 [Code]
 #include "fragment_beautify_code.iss"

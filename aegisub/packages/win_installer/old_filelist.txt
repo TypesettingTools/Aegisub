@@ -53,3 +53,4 @@ automation\autoload\line-per-syllable.auto3
 automation\autoload\multi-template.auto3
 automation\autoload\simple-k-replacer.auto3
 csri\VSFilter.dll
+csri\VSFilter-Aegisub.dll

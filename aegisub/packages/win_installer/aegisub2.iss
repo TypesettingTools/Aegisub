@@ -48,7 +48,7 @@ VersionInfoDescription=Aegisub 2.1.9 setup
 #include "fragment_spelling.iss"
 #include "fragment_docs.iss"
 #include "fragment_assdraw.iss"
-#include "fragment_opengl.iss"
+;#include "fragment_opengl.iss"
 
 
 [Code]
