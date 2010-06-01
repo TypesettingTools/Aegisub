@@ -102,6 +102,18 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
+				RelativePath="..\..\libaegisub\common\charset.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\libaegisub\common\charset_ucd.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\libaegisub\common\log.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\libaegisub\common\mru.cpp"
 				>
 			</File>
@@ -185,6 +197,10 @@
 			</File>
 			<File
 				RelativePath="..\..\libaegisub\include\libaegisub\colour.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\libaegisub\config.h"
 				>
 			</File>
 			<File
