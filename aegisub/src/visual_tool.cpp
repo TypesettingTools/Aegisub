@@ -170,6 +170,7 @@ void VisualTool<FeatureType>::OnMouseEvent (wxMouseEvent &event) {
 						ClearSelection();
 						AddSelection(curFeatureI);
 					}
+					SetEditbox();
 				}
 			}
 			else {
@@ -221,9 +222,7 @@ void VisualTool<FeatureType>::OnMouseEvent (wxMouseEvent &event) {
 				else {
 					selChanged = false;
 				}
-				if (curFeature->lineN != -1) {
-					SetEditbox(curFeature->lineN);
-				}
+				SetEditbox(curFeature->lineN);
 
 				dragStartX = video.x;
 				dragStartY = video.y;
