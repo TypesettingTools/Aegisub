@@ -51,6 +51,14 @@
 /// @param _parent 
 VisualToolScale::VisualToolScale(VideoDisplay *parent, VideoState const& video, wxToolBar *)
 : VisualTool<VisualDraggableFeature>(parent, video)
+, curScaleX(0.f)
+, startScaleX(0.f)
+, origScaleX(0.f)
+, curScaleY(0.f)
+, startScaleY(0.f)
+, origScaleY(0.f)
+, startX(0)
+, startY(0)
 {
 }
 
@@ -130,8 +138,8 @@ bool VisualToolScale::InitializeHold() {
 	GetLineScale(curDiag,origScaleX,origScaleY);
 	curScaleX = origScaleX;
 	curScaleY = origScaleY;
-	curDiag->StripTag(_T("\\fscx"));
-	curDiag->StripTag(_T("\\fscy"));
+	curDiag->StripTag(L"\\fscx");
+	curDiag->StripTag(L"\\fscy");
 
 	return true;
 }
@@ -160,7 +168,7 @@ void VisualToolScale::UpdateHold() {
 
 /// @brief Commit hold 
 void VisualToolScale::CommitHold() {
-	SetOverride(GetActiveDialogueLine(), _T("\\fscx"),wxString::Format(L"(%0.3g)",curScaleX));
-	SetOverride(GetActiveDialogueLine(), _T("\\fscy"),wxString::Format(L"(%0.3g)",curScaleY));
+	SetOverride(GetActiveDialogueLine(), L"\\fscx",wxString::Format(L"(%0.3g)",curScaleX));
+	SetOverride(GetActiveDialogueLine(), L"\\fscy",wxString::Format(L"(%0.3g)",curScaleY));
 }
 
