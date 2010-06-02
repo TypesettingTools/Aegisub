@@ -203,6 +203,7 @@ private:
 	void OnMenuOpen (wxMenuEvent &event);
 	void OnExit(wxCommandEvent &WXUNUSED(event));
 	void OnAbout (wxCommandEvent &event);
+	void OnLog (wxCommandEvent &event);
 	void OnCheckUpdates (wxCommandEvent &event);
 	void OnContents (wxCommandEvent &event);
 	void OnFiles (wxCommandEvent &event);
@@ -686,6 +687,7 @@ enum {
 	/// DOCME
 	Menu_Help_About,
 
+	Menu_Help_Log,
 
 	/// DOCME
 	Menu_Subs_Snap_Start_To_Video,

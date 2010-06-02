@@ -570,6 +570,7 @@ void FrameMain::InitMenu() {
 #endif
 	AppendBitmapMenuItem(helpMenu,Menu_Help_Check_Updates, _("&Check for Updates..."), _("Check to see if there is a new version of Aegisub available"),GETIMAGE(blank_button_16));
 	AppendBitmapMenuItem(helpMenu,Menu_Help_About, _("&About..."), _("About Aegisub"),GETIMAGE(about_menu_16));
+	AppendBitmapMenuItem(helpMenu,Menu_Help_Log, _("&Log window..."), _("Aegisub event log"),GETIMAGE(about_menu_16));
 	MenuBar->Append(helpMenu, _("&Help"));
 
 	// Set the bar as this frame's

@@ -66,6 +66,7 @@
 #include "dialog_fonts_collector.h"
 #include "dialog_jumpto.h"
 #include "dialog_kara_timing_copy.h"
+#include "dialog_log.h"
 #include "dialog_progress.h"
 #include "dialog_properties.h"
 #include "dialog_resample.h"
@@ -212,6 +213,7 @@ BEGIN_EVENT_TABLE(FrameMain, wxFrame)
 	EVT_MENU(Menu_Help_IRCChannel, FrameMain::OnIRCChannel)
 	EVT_MENU(Menu_Help_Check_Updates, FrameMain::OnCheckUpdates)
 	EVT_MENU(Menu_Help_About, FrameMain::OnAbout)
+	EVT_MENU(Menu_Help_Log, FrameMain::OnLog)
 
 	EVT_MENU(Menu_View_Language, FrameMain::OnChooseLanguage)
 	EVT_MENU(Menu_View_Standard, FrameMain::OnViewStandard)
@@ -611,6 +613,13 @@ void FrameMain::OnAbout(wxCommandEvent &event) {
 	About.ShowModal();
 }
 
+
+/// @brief Open log window
+/// @param event 
+void FrameMain::OnLog(wxCommandEvent &event) {
+	LogWindow *log = new LogWindow(this);
+	log->Show(1);
+}
 
 
 /// @brief Open check updates
