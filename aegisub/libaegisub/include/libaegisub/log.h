@@ -47,6 +47,7 @@
 
 namespace agi {
 	namespace log {
+class LogSink;
 
 /// Severity levels
 enum Severity {
@@ -61,6 +62,8 @@ enum Severity {
 /// Set in common/log.cpp, keep this ordered the same as Severity.
 extern const char *Severity_ID;
 
+/// Global log sink.
+extern LogSink *log;
 
 /// Container to hold a single message
 struct SinkMessage {
@@ -126,10 +129,9 @@ public:
 	void Unsubscribe(const int &id);
 
 	/// @brief @get the complete (current) log.
-	/// @param[out] out Reference to a sink.
-	void GetSink(Sink *s);
+	/// @return Const pointer to internal sink.
+	const Sink* GetSink() { return sink; }
 };
-
 
 /// An emitter to produce human readable output for a log sink.
 class Emitter {
