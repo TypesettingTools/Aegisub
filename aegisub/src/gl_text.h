@@ -34,15 +34,11 @@
 /// @ingroup video_output
 ///
 
-
-///////////
-// Headers
-
 #ifndef AGI_PRE
 #include <map>
 #include <vector>
+#include "boost/shared_ptr.hpp"
 
-#include <wx/bitmap.h>
 #include <wx/font.h>
 #endif
 
@@ -52,86 +48,11 @@
 #include <GL/gl.h>
 #endif
 
-
-/// DOCME
-/// @class OpenGLTextGlyph
-/// @brief DOCME
-///
-/// DOCME
-class OpenGLTextGlyph {
-private:
-
-	/// DOCME
-	static wxBitmap *tempBmp;
-
-public:
-
-	/// DOCME
-	int value;
-
-	/// DOCME
-	int tex;
-
-	/// DOCME
-
-	/// DOCME
-
-	/// DOCME
-
-	/// DOCME
-	float x1,y1,x2,y2;
-
-	/// DOCME
-
-	/// DOCME
-	int w,h;
-
-	void GetMetrics();
-	void Draw(int x,int y);
-
-	~OpenGLTextGlyph();
-};
-
+class OpenGLTextGlyph;
+class OpenGLTextTexture;
 
 /// DOCME
 typedef std::map<int,OpenGLTextGlyph> glyphMap;
-
-
-
-/// DOCME
-/// @class OpenGLTextTexture
-/// @brief DOCME
-///
-/// DOCME
-class OpenGLTextTexture {
-private:
-
-	/// DOCME
-
-	/// DOCME
-
-	/// DOCME
-	int x,y,nextY;
-
-	/// DOCME
-
-	/// DOCME
-	int width,height;
-
-	void Insert(OpenGLTextGlyph &glyph);
-
-public:
-
-	/// DOCME
-	GLuint tex;
-
-	bool TryToInsert(OpenGLTextGlyph &glyph);
-
-	OpenGLTextTexture(int w,int h);
-	~OpenGLTextTexture();
-};
-
-
 
 /// DOCME
 /// @class OpenGLText
@@ -173,56 +94,69 @@ private:
 	glyphMap glyphs;
 
 	/// DOCME
-	std::vector <OpenGLTextTexture*> textures;
+	std::vector<boost::shared_ptr<OpenGLTextTexture> > textures;
 
 	OpenGLText();
 	~OpenGLText();
 	OpenGLText(OpenGLText const&);
 	OpenGLText& operator=(OpenGLText const&);
 
-	OpenGLTextGlyph GetGlyph(int i);
-	OpenGLTextGlyph CreateGlyph(int i);
-	void Reset();
+	/// @brief Get the glyph for the character chr, creating it if necessary
+	/// @param chr Character to get the glyph of
+	/// @return The appropriate OpenGLTextGlyph
+	OpenGLTextGlyph const& GetGlyph(int chr);
+	/// @brief Create a new glyph
+	OpenGLTextGlyph const& CreateGlyph(int chr);
 
+	/// @brief Get the singleton OpenGLText instance
 	static OpenGLText& GetInstance();
+	/// @brief Set the currently active font
+	/// @param face    Name of the desired font
+	/// @param size    Size in points of the desired font
+	/// @param bold    Should the font be bold?
+	/// @param italics Should the font be italic?
 	void DoSetFont(wxString face,int size,bool bold,bool italics);
+	/// @brief Set the text color
+	/// @param col   Color
+	/// @param alpha Alpha value from 0.f-1.f
 	void DoSetColour(wxColour col,float alpha);
+	/// @brief Print a string onscreen
+	/// @param text String to print
+	/// @param x    x coordinate
+	/// @param y    y coordinate
 	void DoPrint(const wxString &text,int x,int y);
 	void DrawString(const wxString &text,int x,int y);
+	/// @brief Get the extents of a string printed with the current font in pixels
+	/// @param text String to get extends of
+	/// @param[out] w    Width
+	/// @param[out] h    Height
 	void DoGetExtent(const wxString &text,int &w,int &h);
 
 public:
-
-	/// @brief DOCME
-	/// @return 
-	///
+	/// @brief Get the currently active font
 	static wxFont GetFont() { return GetInstance().font; }
 
-	/// @brief DOCME
-	/// @param face    
-	/// @param size    
-	/// @param bold    
-	/// @param italics 
-	///
+	/// @brief Set the currently active font
+	/// @param face    Name of the desired font
+	/// @param size    Size in points of the desired font
+	/// @param bold    Should the font be bold?
+	/// @param italics Should the font be italic?
 	static void SetFont(wxString face=_T("Verdana"),int size=10,bool bold=true,bool italics=false) { GetInstance().DoSetFont(face,size,bold,italics); }
 
-	/// @brief DOCME
-	/// @param col   
-	/// @param alpha 
-	///
+	/// @brief Set the text color
+	/// @param col   Color
+	/// @param alpha Alpha value from 0.f-1.f
 	static void SetColour(wxColour col,float alpha=1.0f) { GetInstance().DoSetColour(col,alpha); }
 
-	/// @brief DOCME
-	/// @param text 
-	/// @param x    
-	/// @param y    
-	///
+	/// @brief Print a string onscreen
+	/// @param text String to print
+	/// @param x    x coordinate
+	/// @param y    y coordinate
 	static void Print(const wxString &text,int x,int y) { GetInstance().DoPrint(text,x,y); }
 
-	/// @brief DOCME
-	/// @param text 
-	/// @param w    
-	/// @param h    
-	///
+	/// @brief Get the extents of a string printed with the current font in pixels
+	/// @param text   String to get extends of
+	/// @param[out] w Width
+	/// @param[out] h Height
 	static void GetExtent(const wxString &text,int &w,int &h) { GetInstance().DoGetExtent(text,w,h); }
 };
