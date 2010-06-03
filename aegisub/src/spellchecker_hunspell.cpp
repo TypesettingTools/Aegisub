@@ -102,7 +102,7 @@ void HunspellSpellChecker::Reset() {
 bool HunspellSpellChecker::CanAddWord(wxString word) {
 	if (!hunspell) return false;
 	try {
-		conv->Convert(word);
+		conv->Convert(STD_STR(word));
 		return true;
 	}
 	catch (agi::charset::ConvError const&) {
@@ -121,9 +121,9 @@ void HunspellSpellChecker::AddWord(wxString word) {
 
 	// Add to currently loaded file
 #ifdef WITH_OLD_HUNSPELL
-	hunspell->put_word(conv->Convert(word).c_str());
+	hunspell->put_word(conv->Convert(STD_STR(word)).c_str());
 #else
-	hunspell->add(conv->Convert(word).c_str());
+	hunspell->add(conv->Convert(STD_STR(word)).c_str());
 #endif
 
 	// Ensure that the path exists
@@ -181,7 +181,7 @@ void HunspellSpellChecker::AddWord(wxString word) {
 bool HunspellSpellChecker::CheckWord(wxString word) {
 	if (!hunspell) return true;
 	try {
-		return hunspell->spell(conv->Convert(word).c_str()) == 1;
+		return hunspell->spell(conv->Convert(STD_STR(word)).c_str()) == 1;
 	}
 	catch (agi::charset::ConvError const&) {
 		return false;
@@ -201,7 +201,7 @@ wxArrayString HunspellSpellChecker::GetSuggestions(wxString word) {
 	try {
 		// Grab raw from Hunspell
 		char **results;
-		int n = hunspell->suggest(&results,conv->Convert(word).c_str());
+		int n = hunspell->suggest(&results,conv->Convert(STD_STR(word)).c_str());
 
 		// Convert each
 		for (int i=0;i<n;i++) {
@@ -290,9 +290,9 @@ void HunspellSpellChecker::SetLanguage(wxString language) {
 				wxString curLine = reader.ReadLineFromFile();
 				if (curLine.IsEmpty() || curLine.IsNumber()) continue;
 #ifdef WITH_OLD_HUNSPELL
-				hunspell->put_word(conv->Convert(curLine).c_str());
+				hunspell->put_word(conv->Convert(STD_STR(curLine)).c_str());
 #else
-				hunspell->add(conv->Convert(curLine).c_str());
+				hunspell->add(conv->Convert(STD_STR(curLine)).c_str());
 #endif
 			}
 		}
