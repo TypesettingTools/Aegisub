@@ -821,7 +821,7 @@ void FrameMain::OnOpenSubtitlesCharset(wxCommandEvent& WXUNUSED(event)) {
 
 /// @brief Open subtitles from the currently open video file
 void FrameMain::OnOpenSubtitlesVideo(wxCommandEvent&) {
-	LoadSubtitles(VideoContext::Get()->videoName);
+	LoadSubtitles(VideoContext::Get()->videoName, "binary");
 }
 
 
