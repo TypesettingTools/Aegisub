@@ -119,7 +119,6 @@ Message::~Message() {
 	sm->message = msg->str();
 	sm->len = msg->pcount();
 	agi::log::log->log(sm);
-	delete[] buf;
 	delete msg;
 }
 
