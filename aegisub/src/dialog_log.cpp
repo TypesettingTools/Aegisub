@@ -46,6 +46,7 @@
 #include <wx/statline.h>
 #include <wx/stattext.h>
 #endif
+#include <string.h>
 
 #include <time.h>
 #include "dialog_log.h"
@@ -97,6 +98,7 @@ LogWindow::EmitLog::EmitLog(wxTextCtrl *t): text_ctrl(t) {
 
 
 void LogWindow::EmitLog::Write(agi::log::SinkMessage *sm) {
+#ifndef _WIN32
 	tm tmtime;
 	localtime_r(&sm->tv.tv_sec, &tmtime);
 	wxString log = wxString::Format("%c %02d:%02d:%02d %ld <%-25s> [%s:%s:%d]  %s\n",
@@ -110,9 +112,19 @@ void LogWindow::EmitLog::Write(agi::log::SinkMessage *sm) {
 		sm->func,
 		sm->line,
 		strndup(sm->message, sm->len));
+#else
+	wxString log = wxString::Format("%c %ld <%-25s> [%s:%s:%d]  %s\n",
+		agi::log::Severity_ID[sm->severity],
+		sm->tv.tv_usec,
+		sm->section,
+		sm->file,
+		sm->func,
+		sm->line,
+		sm->message);
 
 	text_ctrl->AppendText(log);
 }
+#endif
 
 void LogWindow::EmitLog::log(agi::log::SinkMessage *sm) {
 	Write(sm);
