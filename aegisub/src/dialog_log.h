@@ -65,7 +65,9 @@ public:
 
 	LogWindow(wxWindow *parent);
 	~LogWindow();
+	DECLARE_EVENT_TABLE()
 private:
-    EmitLog *emit_log;
+	void OnClose(wxCloseEvent &event);
+	EmitLog *emit_log;
 };
 

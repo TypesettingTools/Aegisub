@@ -66,7 +66,7 @@ LogWindow::LogWindow(wxWindow *parent)
 	sizer_text->Add(text_ctrl, 1, wxEXPAND);
 
 	wxSizer *sizer_button = new wxBoxSizer(wxHORIZONTAL);
-	sizer_button->Add(new wxButton(this, wxID_CLOSE), 0, wxALIGN_RIGHT | wxALL, 2);
+	sizer_button->Add(new wxButton(this, wxID_OK), 0, wxALIGN_RIGHT | wxALL, 2);
 
 
 	wxSizer *sizer = new wxBoxSizer(wxVERTICAL);
@@ -86,15 +86,14 @@ LogWindow::~LogWindow() {
 	delete emit_log;
 }
 
+
 LogWindow::EmitLog::EmitLog(wxTextCtrl *t): text_ctrl(t) {
 	const agi::log::Sink *sink = agi::log::log->GetSink();
 
 	for (unsigned int i=0; i < sink->size(); i++) {
 		Write((*sink)[i]);
 	}
-	delete sink;
 }
-
 
 
 void LogWindow::EmitLog::Write(agi::log::SinkMessage *sm) {
@@ -121,13 +120,22 @@ void LogWindow::EmitLog::Write(agi::log::SinkMessage *sm) {
 		sm->func,
 		sm->line,
 		sm->message);
-
+#endif
 	text_ctrl->AppendText(log);
 }
-#endif
+
 
 void LogWindow::EmitLog::log(agi::log::SinkMessage *sm) {
+	delete text_ctrl;
 	Write(sm);
 }
 
 
+void LogWindow::OnClose(wxCloseEvent &WXUNUSED(event)) {
+	Destroy();
+}
+
+
+BEGIN_EVENT_TABLE(LogWindow, wxDialog)
+    EVT_CLOSE(LogWindow::OnClose)
+END_EVENT_TABLE()
