@@ -34,10 +34,11 @@
 /// @ingroup export
 ///
 
-
-///////////
-// Headers
 #include "config.h"
+
+#ifndef AGI_PRE
+#include <memory>
+#endif
 
 #include "ass_export_filter.h"
 #include "ass_exporter.h"
@@ -169,12 +170,8 @@ AssFile *AssExporter::ExportTransform(wxWindow *export_dialog) {
 /// @param export_dialog 
 ///
 void AssExporter::Export(wxString filename, wxString charset, wxWindow *export_dialog) {
-	// Get transformation
-	AssFile *Subs = ExportTransform(export_dialog);
-
-	// Save
+	std::auto_ptr<AssFile> Subs(ExportTransform(export_dialog));
 	Subs->Save(filename,false,false,charset);
-	delete Subs;
 }
 
 
