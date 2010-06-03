@@ -50,7 +50,7 @@ void EmitSTDOUT::log(SinkMessage *sm) {
 		sm->line,
 		strndup(sm->message,
 		sm->len));
-}
 */
+}
 	} // namespace log
 } // namespace agi
