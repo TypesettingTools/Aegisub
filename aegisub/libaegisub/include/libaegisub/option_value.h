@@ -20,6 +20,7 @@
 
 #ifndef LAGI_PRE
 #include <fstream>
+#include <map>
 #include <stdint.h>
 
 #include "libaegisub/cajun/reader.h"
@@ -48,16 +49,16 @@ class ConfigVisitor;
 /// signature.
 class OptionValueListener {
 public:
-	// (I might have messed up the syntax here. It's supposed to be a pointer
-	// to a member function of an OptionValueListener-derived class.)
-	typedef void (OptionValueListener::*ChangeEvent)(const OptionValue *option);
+	/// @brief Type of a notification callback function for option value changes
+	typedef void (OptionValueListener::*ChangeEvent)(const OptionValue &option);
 };
 
 
 /// @class OptionValue
 /// Holds an actual option.
 class OptionValue {
-	std::set<OptionValueListener*> listeners;
+	typedef std::map<OptionValueListener*, OptionValueListener::ChangeEvent> ChangeListenerSet;
+	ChangeListenerSet listeners;
 
 protected:
 	void NotifyChanged();
@@ -125,11 +126,8 @@ public:
 	virtual void GetDefaultListBool(std::vector<bool> &out) const { throw OptionValueErrorInvalidListType("Attempt to retrive string bool from non-bool list"); }
 
 
-	void Subscribe(OptionValueListener*);
-	void Unsubscribe(OptionValueListener*);
-
-	void Subscribe(OptionValueListener *listener, OptionValueListener::ChangeEvent handler);
-	void Unsubscribe(OptionValueListener *listener, OptionValueListener::ChangeEvent handler);
+	void Subscribe(OptionValueListener *listener, OptionValueListener::ChangeEvent function);
+	void Unsubscribe(OptionValueListener *listener, OptionValueListener::ChangeEvent function);
 
 };
 
@@ -142,11 +140,11 @@ public:
 		OptionValue##type_name(std::string member_name, type member_value):                   \
 						  value(member_value), name(member_name) {}                           \
 		type Get##type_name() const { return value; }                                         \
-		void Set##type_name(const type new_val) { value = new_val; }                          \
+		void Set##type_name(const type new_val) { value = new_val; NotifyChanged(); }         \
 		type GetDefault##type_name() const { return value_default; }                          \
 		OptionType GetType() const { return OptionValue::Type_##type_name; }                  \
 		std::string GetName() const { return name; }                                          \
-		void Reset() { value = value_default; }                                               \
+		void Reset() { value = value_default; NotifyChanged(); }                              \
 		bool IsDefault() const { return (value == value_default) ? 1 : 0; }                   \
 	};
 
@@ -181,11 +179,11 @@ protected:
 	virtual std::string GetString() const { return "";}                                       \
 		OptionValueList##type_name(std::string member_name): name(member_name) {}             \
 		void GetList##type_name(std::vector<type> &out) const { out = array; }                \
-		void SetList##type_name(const std::vector<type> val) { array = val;}                  \
+		void SetList##type_name(const std::vector<type> val) { array = val;  NotifyChanged(); } \
 		void GetDefaultList##type_name(std::vector<type> &out) const { out = array_default; } \
 		OptionType GetType() const { return OptionValue::Type_List_##type_name; }             \
 		std::string GetName() const { return name; }                                          \
-		void Reset() { array = array_default; }                                               \
+		void Reset() { array = array_default; NotifyChanged(); }                              \
 		bool IsDefault() const { return (array == array_default) ? 1 : 0; }                   \
 	};
 

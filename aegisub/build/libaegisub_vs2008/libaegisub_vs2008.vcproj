@@ -206,6 +206,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\libaegisub\common\option_value.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\libaegisub\common\option_visit.cpp"
 				>
 			</File>

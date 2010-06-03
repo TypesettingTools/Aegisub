@@ -24,6 +24,7 @@ libaegisub_2_2_la_SOURCES = \
 	common/charset_ucd.cpp \
 	common/mru.cpp \
 	common/option.cpp \
+	common/option_value.cpp \
 	common/option_visit.cpp \
 	common/log.cpp \
 	common/validator.cpp \
