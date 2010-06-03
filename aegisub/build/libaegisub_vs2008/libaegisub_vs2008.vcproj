@@ -186,6 +186,22 @@
 			<File
 				RelativePath="..\..\libaegisub\windows\log.cpp"
 				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\log_windows"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\log_windows"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\..\libaegisub\windows\util.cpp"
