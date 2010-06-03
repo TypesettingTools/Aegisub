@@ -25,12 +25,15 @@
 #endif
 
 #include "libaegisub/io.h"
+#include "libaegisub/log.h"
+
 #include "option_visit.h"
 
 namespace agi {
 
 Options::Options(const std::string &file, const std::string& default_config):
 							config_file(file), config_default(default_config), config_loaded(false) {
+	LOG_D("agi/options") << "New Options object";
 	std::istringstream stream(default_config);
 	LoadConfig(stream);
 }

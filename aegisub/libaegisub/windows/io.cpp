@@ -27,6 +27,7 @@
 #endif
 
 #include "libaegisub/io.h"
+#include "libaegisub/log.h"
 #include "libaegisub/util.h"
 
 
@@ -34,6 +35,7 @@ namespace agi {
 	namespace io {
 
 std::ifstream* Open(const std::string &file) {
+	LOG_D("agi/io/open/file") << file;
 	acs::CheckFileRead(file);
 
 	std::ifstream *stream = new std::ifstream(file.c_str());
@@ -48,7 +50,7 @@ std::ifstream* Open(const std::string &file) {
 
 
 Save::Save(const std::string& file): file_name(file) {
-
+	LOG_D("agi/io/save/file") << file;
 	const std::string pwd = util::DirName(file);
 
 	acs::CheckDirWrite(pwd.c_str());

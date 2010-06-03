@@ -24,12 +24,14 @@
 #endif
 
 #include "libaegisub/access.h"
+#include "libaegisub/log.h"
 #include "libaegisub/mru.h"
 #include "libaegisub/io.h"
 
 namespace agi {
 
 MRUManager::MRUManager(const std::string &config, const std::string &default_config): config_name(config) {
+	LOG_D("agi/mru") << "Loading MRU List";
 
 	json::UnknownElement root;
 	std::istream *stream;
