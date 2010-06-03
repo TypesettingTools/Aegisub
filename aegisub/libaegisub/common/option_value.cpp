@@ -24,7 +24,7 @@ namespace agi {
 
 void OptionValue::NotifyChanged() {
 	for (ChangeListenerSet::const_iterator nfcb = listeners.begin(); nfcb != listeners.end(); ++nfcb) {
-		nfcb->first->*(nfcb->second);
+		(nfcb->first->*(nfcb->second))(*this);
 	}
 }
 
