@@ -34,9 +34,6 @@
 /// @ingroup utility
 ///
 
-
-///////////
-// Headers
 #include "config.h"
 
 #ifndef AGI_PRE
@@ -52,16 +49,11 @@
 #include <libaegisub/log.h>
 
 #include "charset_detect.h"
-#include "text_file_reader.h"
 #include "compat.h"
 
+namespace CharSetDetect {
 
-
-/// @brief Get encoding 
-/// @param filename 
-/// @return 
-///
-wxString CharSetDetect::GetEncoding(wxString filename) {
+wxString GetEncoding(wxString const& filename) {
 	LOG_I("charset/file") << filename;
 	bool unknown = 0;
 
@@ -70,7 +62,7 @@ wxString CharSetDetect::GetEncoding(wxString filename) {
 
 	try {
 		agi::charset::DetectAll(STD_STR(filename), list);
-    } catch (const agi::charset::UnknownCharset&) {
+	} catch (const agi::charset::UnknownCharset&) {
 		unknown = 1;
 	}
 
@@ -91,5 +83,7 @@ wxString CharSetDetect::GetEncoding(wxString filename) {
 
 	i_lst = list.begin();
 	return i_lst->second;
+}
+
 }
 

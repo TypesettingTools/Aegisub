@@ -109,7 +109,7 @@ public:
 	AssStyle *GetStyle(wxString name);					// Gets style by its name
 
 	//wxString GetString();								// Returns the whole file as a single string
-	void Load(wxString file,wxString charset=_T(""),bool addToRecent=true);	// Load from a file
+	void Load(const wxString &file,wxString charset=_T(""),bool addToRecent=true);	// Load from a file
 	void Save(wxString file,bool setfilename=false,bool addToRecent=true,const wxString encoding=_T(""));	// Save to a file. Pass true to second argument if this isn't a copy
 	void SaveMemory(std::vector<char> &dst,const wxString encoding=_T(""));	// Save to a memory string
 	void Export(wxString file);							// Saves exported copy, with effects applied

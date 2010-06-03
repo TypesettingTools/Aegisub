@@ -34,17 +34,9 @@
 /// @ingroup utility
 ///
 
-/// DOCME
-/// @class CharSetDetect
-/// @brief Detect character set of a file
-class CharSetDetect {
-private:
-	/// Character set
-	wxString result;
-
-public:
+namespace CharSetDetect {
 	/// @brief Get character set name.
 	/// @param filename File to check
 	/// @return Character set name
-	wxString GetEncoding(wxString filename);
-};
+	wxString GetEncoding(wxString const& filename);
+}

@@ -48,9 +48,7 @@
 #include <libaegisub/log.h>
 
 #include "charset_conv.h"
-#ifdef WITH_UNIVCHARDET
 #include "charset_detect.h"
-#endif
 #include "text_file_reader.h"
 
 TextFileReader::TextFileReader(wxString filename, wxString enc, bool trim)
@@ -62,7 +60,7 @@ TextFileReader::TextFileReader(wxString filename, wxString enc, bool trim)
 #endif
 	if (!file.is_open()) throw L"Failed opening file for reading.";
 
-	if (encoding.IsEmpty()) encoding = GetEncoding(filename);
+	if (encoding.IsEmpty()) encoding = CharSetDetect::GetEncoding(filename);
 	if (encoding == L"binary") return;
 	encoding = AegisubCSConv::GetRealEncodingName(encoding);
 	conv = iconv_open(WCHAR_T_ENCODING, encoding.ToAscii());
@@ -73,15 +71,6 @@ TextFileReader::TextFileReader(wxString filename, wxString enc, bool trim)
 
 TextFileReader::~TextFileReader() {
 	if (conv != (iconv_t)-1) iconv_close(conv);
-}
-
-wxString TextFileReader::GetEncoding(wxString const& filename) {
-
-	// Use universalchardet library to detect charset
-	CharSetDetect det;
-	wxString str(det.GetEncoding(filename));
-	LOG_I("file/reader/text/encoding") << str;
-	return str;
 }
 
 wchar_t TextFileReader::GetWChar() {

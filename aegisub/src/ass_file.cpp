@@ -50,6 +50,7 @@
 #include "ass_file.h"
 #include "ass_override.h"
 #include "ass_style.h"
+#include "charset_detect.h"
 #include "compat.h"
 #include "main.h"
 #include "options.h"
@@ -74,7 +75,7 @@ AssFile::~AssFile() {
 /// @param file
 /// @param charset     
 /// @param addToRecent 
-void AssFile::Load (const wxString _filename,const wxString charset,bool addToRecent) {
+void AssFile::Load (const wxString &_filename,wxString charset,bool addToRecent) {
 	bool ok = true;
 
 	try {
@@ -91,9 +92,9 @@ void AssFile::Load (const wxString _filename,const wxString charset,bool addToRe
 		fclose(file);
 
 		// Find file encoding
-		wxString enc;
-		if (charset.IsEmpty()) enc = TextFileReader::GetEncoding(_filename);
-		else enc = charset;
+		if (charset.empty()) {
+			charset = CharSetDetect::GetEncoding(_filename);
+		}
 
 		// Generic preparation
 		Clear();
@@ -104,7 +105,7 @@ void AssFile::Load (const wxString _filename,const wxString charset,bool addToRe
 		// Read file
 		if (reader) {
 			reader->SetTarget(this);
-			reader->ReadFile(_filename,enc);
+			reader->ReadFile(_filename,charset);
 		}
 
 		// Couldn't find a type

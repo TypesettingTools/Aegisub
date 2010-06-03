@@ -89,9 +89,4 @@ public:
 	/// @brief Get the file encoding used by this reader
 	/// @return "unknown", "binary", or a character encoding name
 	wxString GetCurrentEncoding();
-
-	/// @brief Attempt to detect a file's encoding
-	/// @param filename The file to check
-	/// @return "unknown", "binary", or a character encoding name
-	static wxString GetEncoding(wxString const& filename);
 };
