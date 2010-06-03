@@ -81,8 +81,8 @@ enum {
 /// @param _toolBar 
 VisualToolVectorClip::VisualToolVectorClip(VideoDisplay *parent, VideoState const& video, wxToolBar * toolBar)
 : VisualTool<VisualToolVectorClipDraggableFeature>(parent, video)
-, toolBar(toolBar)
 , spline(*parent)
+, toolBar(toolBar)
 {
 	DoRefresh();
 	mode = 0;
