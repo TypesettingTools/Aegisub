@@ -51,7 +51,7 @@
 /// @param filename 
 /// @param encoding 
 ///
-TextFileWriter::TextFileWriter(wxString filename, wxString encoding)
+TextFileWriter::TextFileWriter(wxString const& filename, wxString encoding)
 : conv() {
 #ifdef WIN32
 	file.open(filename.wc_str(),std::ios::out | std::ios::binary | std::ios::trunc);
@@ -59,17 +59,17 @@ TextFileWriter::TextFileWriter(wxString filename, wxString encoding)
 	file.open(wxFNCONV(filename),std::ios::out | std::ios::binary | std::ios::trunc);
 #endif
 	if (!file.is_open()) {
-		throw _T("Failed opening file for writing.");
+		throw L"Failed opening file for writing.";
 	}
 
-	if (encoding.IsEmpty()) encoding = lagi_wxString(OPT_GET("App/Save Charset")->GetString());
-	conv.reset(new AegisubCSConv(encoding, true));
+	if (encoding.empty()) encoding = lagi_wxString(OPT_GET("App/Save Charset")->GetString());
+	conv.reset(new agi::charset::IconvWrapper("utf-8", encoding.c_str(), true));
 
 	// Write the BOM
 	try {
-		WriteLineToFile(_T("\uFEFF"), false);
+		WriteLineToFile(L"\uFEFF", false);
 	}
-	catch (wxString ignore) {
+	catch (agi::charset::ConversionFailure&) {
 		// If the BOM could not be converted to the target encoding it isn't needed
 	}
 }
@@ -85,14 +85,11 @@ TextFileWriter::~TextFileWriter() {
 /// @brief DOCME
 /// @param line         
 /// @param addLineBreak 
-///
 void TextFileWriter::WriteLineToFile(wxString line, bool addLineBreak) {
-	wxString temp = line;
-	if (addLineBreak) temp += _T("\r\n");
+	if (addLineBreak) line += L"\n";
 
-	wxCharBuffer buf = temp.mb_str(*conv);
-	if (buf.data())
-		file.write(buf.data(), conv->MBBuffLen(buf.data()));
+	std::string buf = conv->Convert(line.utf8_str().data());
+	file.write(buf.data(), buf.size());
 }
 
 

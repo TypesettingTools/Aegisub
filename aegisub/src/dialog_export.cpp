@@ -34,9 +34,6 @@
 /// @ingroup export
 ///
 
-
-///////////
-// Headers
 #include "config.h"
 
 #ifndef AGI_PRE
@@ -102,7 +99,7 @@ DialogExport::DialogExport (wxWindow *parent)
 
 	// Charset dropdown list
 	wxStaticText *charset_list_label = new wxStaticText(this, -1, _("Text encoding:"));
-	CharsetList = new wxChoice(this, Charset_List_Box, wxDefaultPosition, wxDefaultSize, AegisubCSConv::GetEncodingsList());
+	CharsetList = new wxChoice(this, Charset_List_Box, wxDefaultPosition, wxDefaultSize, agi::charset::GetEncodingsList<wxArrayString>());
 	wxSizer *charset_list_sizer = new wxBoxSizer(wxHORIZONTAL);
 	charset_list_sizer->Add(charset_list_label, 0, wxALIGN_CENTER | wxRIGHT, 5);
 	charset_list_sizer->Add(CharsetList, 1, wxEXPAND);
@@ -218,6 +215,9 @@ void DialogExport::OnProcess(wxCommandEvent &event) {
 	catch (const wchar_t *error) {
 		wxString err(error);
 		wxMessageBox(err, _T("Error exporting subtitles"), wxOK | wxICON_ERROR, this);
+	}
+	catch (const agi::charset::ConvError& err) {
+		wxMessageBox(err.GetMessage(), _T("Error exporting subtitles"), wxOK | wxICON_ERROR, this);
 	}
 	catch (...) {
 		wxMessageBox(_T("Unknown error"), _T("Error exporting subtitles"), wxOK | wxICON_ERROR, this);

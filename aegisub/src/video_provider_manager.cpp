@@ -69,7 +69,7 @@ VideoProvider *VideoProviderFactoryManager::GetProvider(wxString video) {
 	}
 
 	try {
-		VideoProvider *y4m_provider = new YUV4MPEGVideoProvider(video.wc_str());
+		VideoProvider *y4m_provider = new YUV4MPEGVideoProvider(video);
 		if (y4m_provider)
 			y4m_provider = new VideoProviderCache(y4m_provider);
 		return y4m_provider;
@@ -92,7 +92,7 @@ VideoProvider *VideoProviderFactoryManager::GetProvider(wxString video) {
 	for (unsigned int i=0;i<list.Count();i++) {
 		try {
 			// Create provider
-			VideoProvider *provider = GetFactory(list[i])->CreateProvider(video.wc_str());
+			VideoProvider *provider = GetFactory(list[i])->CreateProvider(video);
 			if (provider) {
 				// Cache if necessary
 				if (provider->WantsCaching()) {

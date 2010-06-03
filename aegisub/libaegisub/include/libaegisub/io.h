@@ -45,9 +45,9 @@ class Save {
 	const std::string file_name;
 
 public:
-    Save(const std::string& file);
-    ~Save();
-    std::ofstream& Get();
+	Save(const std::string& file);
+	~Save();
+	std::ofstream& Get();
 };
 
 

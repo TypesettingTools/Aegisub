@@ -51,8 +51,15 @@
 #include "charset_detect.h"
 #include "text_file_reader.h"
 
-TextFileReader::TextFileReader(wxString filename, wxString enc, bool trim)
-: encoding(enc), conv((iconv_t)-1), trim(trim), readComplete(false), currout(0), outptr(0), currentLine(0) {
+TextFileReader::TextFileReader(wxString const& filename, wxString encoding, bool trim)
+: isBinary(false)
+, conv()
+, trim(trim)
+, readComplete(false)
+, currout(0)
+, outptr(0)
+, currentLine(0)
+{
 #ifdef __WINDOWS__
 	file.open(filename.wc_str(),std::ios::in | std::ios::binary);
 #else
@@ -61,16 +68,14 @@ TextFileReader::TextFileReader(wxString filename, wxString enc, bool trim)
 	if (!file.is_open()) throw L"Failed opening file for reading.";
 
 	if (encoding.IsEmpty()) encoding = CharSetDetect::GetEncoding(filename);
-	if (encoding == L"binary") return;
-	encoding = AegisubCSConv::GetRealEncodingName(encoding);
-	conv = iconv_open(WCHAR_T_ENCODING, encoding.ToAscii());
-	if (conv == (iconv_t)-1) {
-		throw wxString::Format(L"Character set '%s' is not supported.", enc.c_str());
+	if (encoding == L"binary") {
+		isBinary = true;
+		return;
 	}
+	conv.reset(new agi::charset::IconvWrapper(encoding.c_str(), "wchar_t"));
 }
 
 TextFileReader::~TextFileReader() {
-	if (conv != (iconv_t)-1) iconv_close(conv);
 }
 
 wchar_t TextFileReader::GetWChar() {
@@ -98,7 +103,8 @@ wchar_t TextFileReader::GetWChar() {
 		return 0;
 
 	do {
-		size_t ret = iconv(conv, &inptr, &inbytesleft, reinterpret_cast<char **>(&outptr), &outbytesleft);
+		// Without this const_cast the wrong overload is chosen
+		size_t ret = conv->Convert(const_cast<const char**>(&inptr), &inbytesleft, reinterpret_cast<char **>(&outptr), &outbytesleft);
 		if (ret != (size_t)-1) break;
 
 		int err = errno;
@@ -144,7 +150,6 @@ wxString TextFileReader::ReadLineFromFile() {
 	if (ch == 0)
 		readComplete = true;
 
-	// Trim
 	if (trim) {
 		buffer.Trim(true);
 		buffer.Trim(false);
@@ -154,8 +159,4 @@ wxString TextFileReader::ReadLineFromFile() {
 
 bool TextFileReader::HasMoreLines() {
 	return !readComplete;
-}
-
-wxString TextFileReader::GetCurrentEncoding() {
-	return encoding;
 }

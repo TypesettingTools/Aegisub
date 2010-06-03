@@ -713,8 +713,7 @@ void FrameMain::LoadSubtitles (wxString filename,wxString charset) {
 			// Make sure that file isn't actually a timecode file
 			try {
 				TextFileReader testSubs(filename,charset);
-				charset = testSubs.GetCurrentEncoding();
-				isBinary = charset == _T("binary");
+				isBinary = testSubs.IsBinary();
 				if (!isBinary && testSubs.HasMoreLines()) {
 					wxString cur = testSubs.ReadLineFromFile();
 					if (cur.Left(10) == _T("# timecode")) {
@@ -817,8 +816,7 @@ bool FrameMain::SaveSubtitles(bool saveas,bool withCharset) {
 		// Get charset
 		wxString charset = _T("");
 		if (withCharset) {
-			wxArrayString choices = AegisubCSConv::GetEncodingsList();
-			charset = wxGetSingleChoice(_("Choose charset code:"), _T("Charset"),choices,this,-1, -1,true,250,200);
+			charset = wxGetSingleChoice(_("Choose charset code:"), _T("Charset"),agi::charset::GetEncodingsList<wxArrayString>(),this,-1, -1,true,250,200);
 			if (charset.IsEmpty()) return false;
 		}
 

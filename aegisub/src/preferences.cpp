@@ -29,6 +29,7 @@
 #include <libaegisub/exception.h>
 
 #include "colour_button.h"
+#include "compat.h"
 #include "libresrc/libresrc.h"
 #include "preferences.h"
 #include "main.h"
@@ -172,7 +173,7 @@ void Preferences::OptionAdd(wxPanel *parent, wxFlexGridSizer *flex, const wxStri
 
 		case agi::OptionValue::Type_String: {
 			flex->Add(new wxStaticText(parent, wxID_ANY, name), 1, wxALIGN_CENTRE_VERTICAL);
-			wxTextCtrl *text = new wxTextCtrl(parent, wxID_ANY , opt->GetString(), wxDefaultPosition, wxDefaultSize);
+			wxTextCtrl *text = new wxTextCtrl(parent, wxID_ANY , lagi_wxString(opt->GetString()), wxDefaultPosition, wxDefaultSize);
 			flex->Add(text, 1, wxEXPAND);
 			break;
 		}

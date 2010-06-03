@@ -43,8 +43,11 @@
 #include <wx/string.h>
 #endif
 
-
-class AegisubCSConv;
+namespace agi {
+	namespace charset {
+		class IconvWrapper;
+	}
+}
 
 
 /// DOCME
@@ -59,13 +62,13 @@ private:
 	std::ofstream file;
 
 	/// DOCME
-	std::auto_ptr<AegisubCSConv> conv;
+	std::auto_ptr<agi::charset::IconvWrapper> conv;
 
 	TextFileWriter(const TextFileWriter&);
 	TextFileWriter& operator=(const TextFileWriter&);
 
 public:
-	TextFileWriter(wxString filename, wxString encoding=_T(""));
+	TextFileWriter(wxString const& filename, wxString encoding="");
 	~TextFileWriter();
 
 	void WriteLineToFile(wxString line, bool addLineBreak=true);

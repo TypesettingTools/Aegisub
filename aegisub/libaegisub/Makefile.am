@@ -21,6 +21,7 @@ endif
 
 libaegisub_2_2_la_SOURCES = \
 	common/charset.cpp \
+	common/charset_conv.cpp \
 	common/charset_ucd.cpp \
 	common/mru.cpp \
 	common/option.cpp \

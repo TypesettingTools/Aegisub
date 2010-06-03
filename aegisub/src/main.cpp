@@ -263,6 +263,10 @@ emit_stdout->Enable();
 		wxMessageBox(err,_T("Fatal error while initializing"));
 		return false;
 	}
+	catch (agi::Exception const& e) {
+		wxMessageBox(e.GetMessage(),_T("Fatal error while initializing"));
+		return false;
+	}
 
 	catch (...) {
 		wxMessageBox(_T("Unhandled exception"),_T("Fatal error while initializing"));

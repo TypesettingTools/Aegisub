@@ -300,7 +300,7 @@ void HotkeyManager::Load() {
 	TextFileReader file(filename);
 	wxString header;
 	try {
-		if (file.GetCurrentEncoding() != _T("binary"))
+		if (!file.IsBinary())
 			header = file.ReadLineFromFile();
 	}
 	catch (wxString e) {

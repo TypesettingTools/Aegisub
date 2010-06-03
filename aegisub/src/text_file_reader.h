@@ -38,21 +38,23 @@
 
 #ifndef AGI_PRE
 #include <fstream>
-
-#include <iconv.h>
+#include <memory>
 
 #include <wx/dynarray.h>
 #include <wx/string.h>
 #endif
 
+namespace agi { namespace charset {
+	class IconvWrapper;
+} }
+
 /// @class TextFileReader
 /// @brief A line-based text file reader
 class TextFileReader {
 private:
-	/// Encoding of the file being read
-	wxString encoding;
+	bool isBinary;
 	std::ifstream file;
-	iconv_t conv;
+	std::auto_ptr<agi::charset::IconvWrapper> conv;
 	bool trim;
 	bool readComplete;
 
@@ -76,7 +78,7 @@ public:
 	/// @param filename File to open
 	/// @param enc      Encoding to use, or empty to autodetect
 	/// @param trim     Whether to trim whitespace from lines read
-	TextFileReader(wxString filename,wxString encoding=L"", bool trim=true);
+	TextFileReader(wxString const& filename,wxString encoding=L"", bool trim=true);
 	/// @brief Destructor
 	~TextFileReader();
 
@@ -85,8 +87,5 @@ public:
 	wxString ReadLineFromFile();
 	/// @brief Check if there are any more lines to read
 	bool HasMoreLines();
-
-	/// @brief Get the file encoding used by this reader
-	/// @return "unknown", "binary", or a character encoding name
-	wxString GetCurrentEncoding();
+	bool IsBinary() { return isBinary; }
 };

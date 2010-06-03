@@ -12,6 +12,7 @@ run_SOURCES = \
 		util_unix.cpp \
 		libaegisub_access.cpp \
 		libaegisub_cajun.cpp \
+		libaegisub_iconv.cpp \
 		libaegisub_util.cpp \
 		libaegisub_mru.cpp
 		

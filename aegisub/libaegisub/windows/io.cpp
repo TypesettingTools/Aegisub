@@ -26,6 +26,7 @@
 #include <fstream>
 #endif
 
+#include <libaegisub/charset_conv_win.h>
 #include "libaegisub/io.h"
 #include "libaegisub/log.h"
 #include "libaegisub/util.h"
@@ -34,11 +35,13 @@
 namespace agi {
 	namespace io {
 
+using agi::charset::ConvertW;
+
 std::ifstream* Open(const std::string &file) {
 	LOG_D("agi/io/open/file") << file;
 	acs::CheckFileRead(file);
 
-	std::ifstream *stream = new std::ifstream(file.c_str());
+	std::ifstream *stream = new std::ifstream(ConvertW(file).c_str());
 
 	if (stream->fail()) {
 		delete stream;
@@ -53,7 +56,7 @@ Save::Save(const std::string& file): file_name(file) {
 	LOG_D("agi/io/save/file") << file;
 	const std::string pwd = util::DirName(file);
 
-	acs::CheckDirWrite(pwd.c_str());
+	acs::CheckDirWrite(pwd);
 
 	try {
 		acs::CheckFileWrite(file);
@@ -61,23 +64,19 @@ Save::Save(const std::string& file): file_name(file) {
 		// If the file doesn't exist we create a 0 byte file, this so so
 		// util::Rename will find it, and to let users know something went
 		// wrong by leaving a 0 byte file.
-		std::ofstream fp_touch(file.c_str());
+		std::ofstream fp_touch(ConvertW(file).c_str());
 	}
 
 	/// @todo This is a temp hack, proper implementation needs to come after
 	///       Windows support is added.  The code in the destructor needs fixing
 	///       as well.
-	const std::string tmp = file + "_tmp";
-
 	// This will open to file.XXXX. (tempfile)
-	fp = new std::ofstream(tmp.c_str());
+	fp = new std::ofstream(ConvertW(file + "_tmp").c_str());
 }
 
 Save::~Save() {
-
-	const std::string tmp(file_name + "_tmp");
 	delete fp;
-	util::Rename(tmp, file_name);
+	util::Rename(file_name + "_tmp", file_name);
 }
 
 std::ofstream& Save::Get() {

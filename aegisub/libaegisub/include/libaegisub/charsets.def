@@ -1,0 +1,116 @@
+ADD("Local",                             "");
+
+ADD("Unicode (UTF-8)",                   "utf-8");
+ADD("Unicode (UTF-16)",                  "utf-16");
+ADD("Unicode (UTF-16BE)",                "utf-16be");
+ADD("Unicode (UTF-16LE)",                "utf-16le");
+ADD("Unicode (UTF-32)",                  "utf-32");
+ADD("Unicode (UTF-32BE)",                "utf-32be");
+ADD("Unicode (UTF-32LE)",                "utf-32le");
+ADD("Unicode (UTF-7)",                   "utf-7");
+
+ADD("Arabic (IBM-864)",                  "ibm864");
+ADD("Arabic (IBM-864-I)",                "ibm864i");
+ADD("Arabic (ISO-8859-6)",               "iso-8859-6");
+ADD("Arabic (ISO-8859-6-E)",             "iso-8859-6-e");
+ADD("Arabic (ISO-8859-6-I)",             "iso-8859-6-i");
+ADD("Arabic (Langbox ISO-8859-6.16)",    "x-iso-8859-6-16");
+ADD("Arabic (Langbox ISO-8859-6.8x)",    "x-iso-8859-6-8-x");
+ADD("Arabic (MacArabic)",                "x-mac-arabic");
+ADD("Arabic (Windows-1256)",             "windows-1256");
+
+ADD("Armenian (ARMSCII-8)",              "armscii-8");
+
+ADD("Baltic (ISO-8859-13)",              "iso-8859-13");
+ADD("Baltic (ISO-8859-4)",               "iso-8859-4");
+ADD("Baltic (Windows-1257)",             "windows-1257");
+
+ADD("Celtic (ISO-8859-14)",              "iso-8859-14");
+
+ADD("Central European (IBM-852)",        "ibm852");
+ADD("Central European (ISO-8859-2)",     "iso-8859-2");
+ADD("Central European (MacCE)",          "x-mac-ce");
+ADD("Central European (Windows-1250)",   "windows-1250");
+
+ADD("Chinese Simplified (GB18030)",      "gb18030");
+ADD("Chinese Simplified (GB2312)",       "gb2312");
+ADD("Chinese Simplified (GBK)",          "x-gbk");
+ADD("Chinese Simplified (HZ)",           "hz-gb-2312");
+ADD("Chinese Simplified (ISO-2022-CN)",  "iso-2022-cn");
+ADD("Chinese Traditional (Big5)",        "big5");
+ADD("Chinese Traditional (Big5-HKSCS)",  "big5-hkscs");
+ADD("Chinese Traditional (EUC-TW)",      "x-euc-tw");
+
+ADD("Croatian (MacCroatian)",            "x-mac-croatian");
+
+ADD("Cyrillic (IBM-855)",                "ibm855");
+ADD("Cyrillic (ISO-8859-5)",             "iso-8859-5");
+ADD("Cyrillic (ISO-IR-111)",             "iso-ir-111");
+ADD("Cyrillic (KOI8-R)",                 "koi8-r");
+ADD("Cyrillic (MacCyrillic)",            "x-mac-cyrillic");
+ADD("Cyrillic (Windows-1251)",           "windows-1251");
+ADD("Cyrillic/Russian (CP-866)",         "ibm866");
+ADD("Cyrillic/Ukrainian (KOI8-U)",       "koi8-u");
+ADD("Cyrillic/Ukrainian (MacUkrainian)", "x-mac-ukrainian");
+
+ADD("English (US-ASCII)",                "us-ascii");
+
+ADD("Farsi (MacFarsi)",                  "x-mac-farsi");
+
+ADD("Georgian (GEOSTD8)",                "geostd8");
+
+ADD("Greek (ISO-8859-7)",                "iso-8859-7");
+ADD("Greek (MacGreek)",                  "x-mac-greek");
+ADD("Greek (Windows-1253)",              "windows-1253");
+
+ADD("Gujarati (MacGujarati)",            "x-mac-gujarati");
+ADD("Gurmukhi (MacGurmukhi)",            "x-mac-gurmukhi");
+
+ADD("Hebrew (IBM-862)",                  "ibm862");
+ADD("Hebrew (ISO-8859-8-E)",             "iso-8859-8-e");
+ADD("Hebrew (ISO-8859-8-I)",             "iso-8859-8-i");
+ADD("Hebrew (MacHebrew)",                "x-mac-hebrew");
+ADD("Hebrew (Windows-1255)",             "windows-1255");
+ADD("Hebrew Visual (ISO-8859-8)",        "iso-8859-8");
+
+ADD("Hindi (MacDevanagari)",             "x-mac-devanagari");
+ADD("Hindi (SunDevanagari)",             "x-sun-unicode-india-0");
+
+ADD("Icelandic (MacIcelandic)",          "x-mac-icelandic");
+
+ADD("Japanese (EUC-JP)",                 "euc-jp");
+ADD("Japanese (ISO-2022-JP)",            "iso-2022-jp");
+ADD("Japanese (Shift_JIS)",              "shift_jis");
+
+ADD("Korean (EUC-KR)",                   "euc-kr");
+ADD("Korean (ISO-2022-KR)",              "iso-2022-kr");
+ADD("Korean (JOHAB)",                    "x-johab");
+ADD("Korean (UHC)",                      "x-windows-949");
+
+ADD("Nordic (ISO-8859-10)",              "iso-8859-10");
+
+ADD("Romanian (ISO-8859-16)",            "iso-8859-16");
+ADD("Romanian (MacRomanian)",            "x-mac-romanian");
+
+ADD("South European (ISO-8859-3)",       "iso-8859-3");
+
+ADD("Thai (IBM-874)",                    "ibm874");
+ADD("Thai (ISO-8859-11)",                "iso-8859-11");
+ADD("Thai (TIS-620)",                    "tis-620");
+ADD("Thai (Windows-874)",                "windows-874");
+
+ADD("Turkish (IBM-857)",                 "ibm857");
+ADD("Turkish (ISO-8859-9)",              "iso-8859-9");
+ADD("Turkish (MacTurkish)",              "x-mac-turkish");
+ADD("Turkish (Windows-1254)",            "windows-1254");
+
+ADD("Vietnamese (TCVN)",                 "x-viet-tcvn5712");
+ADD("Vietnamese (VISCII)",               "viscii");
+ADD("Vietnamese (VPS)",                  "x-viet-vps");
+ADD("Vietnamese (Windows-1258)",         "windows-1258");
+
+ADD("Western (IBM-850)",                 "ibm850");
+ADD("Western (ISO-8859-1)",              "iso-8859-1");
+ADD("Western (ISO-8859-15)",             "iso-8859-15");
+ADD("Western (MacRoman)",                "x-mac-roman");
+ADD("Western (Windows-1252)",            "windows-1252");

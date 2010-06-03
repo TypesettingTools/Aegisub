@@ -43,6 +43,11 @@
 #include <hunspell/hunspell.hxx>
 
 #include "include/aegisub/spellchecker.h"
+namespace agi {
+	namespace charset {
+		class IconvWrapper;
+	}
+}
 
 
 /// @class HunspellSpellChecker
@@ -55,7 +60,8 @@ private:
 	Hunspell *hunspell;
 
 	/// Conversion buffer
-	wxMBConv *conv;
+	agi::charset::IconvWrapper *conv;
+	agi::charset::IconvWrapper *rconv;
 
 	/// Path to .aff file
 	wxString affpath;

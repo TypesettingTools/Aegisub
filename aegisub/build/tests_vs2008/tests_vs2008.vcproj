@@ -229,6 +229,10 @@
 			>
 		</File>
 		<File
+			RelativePath="..\..\tests\libaegisub_iconv.cpp"
+			>
+		</File>
+		<File
 			RelativePath="..\..\tests\libaegisub_mru.cpp"
 			>
 		</File>

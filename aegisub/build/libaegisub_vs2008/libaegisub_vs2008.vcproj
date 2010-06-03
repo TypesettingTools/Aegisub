@@ -20,6 +20,7 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
+			IntermediateDirectory="$(ConfigurationName)"
 			ConfigurationType="4"
 			InheritedPropertySheets=".\wxlib_include.vsprops;.\libraries_outdirs.vsprops;.\compiler_options_debug.vsprops;..\aegisub_vs2008\wxlib_lib32.vsprops;..\aegisub_vs2008\suffix_debug32.vsprops;.\precomp_header.vsprops;.\src_msvc_include_dir.vsprops"
 			CharacterSet="1"
@@ -190,11 +191,11 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\libaegisub\common\charset_ucd.cpp"
+				RelativePath="..\..\libaegisub\common\charset_conv.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\libaegisub\common\log.cpp"
+				RelativePath="..\..\libaegisub\common\charset_ucd.cpp"
 				>
 			</File>
 			<File
@@ -229,6 +230,10 @@
 			>
 			<File
 				RelativePath="..\..\libaegisub\windows\access.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\libaegisub\windows\charset_conv_win.cpp"
 				>
 			</File>
 			<File
@@ -301,6 +306,18 @@
 			>
 			<File
 				RelativePath="..\..\libaegisub\include\libaegisub\access.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\libaegisub\include\libaegisub\charset_conv.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\libaegisub\include\libaegisub\charset_conv_win.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\libaegisub\include\libaegisub\charsets.def"
 				>
 			</File>
 			<File

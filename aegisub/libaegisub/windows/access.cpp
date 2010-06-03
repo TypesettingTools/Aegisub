@@ -25,8 +25,9 @@
 #include <fstream>
 #endif
 
-#include "libaegisub/util.h"
-#include "libaegisub/util_win.h"
+#include <libaegisub/charset_conv_win.h>
+#include <libaegisub/util.h>
+#include <libaegisub/util_win.h>
 
 namespace agi {
 	namespace acs {
@@ -57,8 +58,7 @@ is a short (and incomplete) todo
    requires detecting the filesystem being used.
 */
 void Check(const std::string &file, acs::Type type) {
-	std::wstring wfile;
-	wfile.assign(file.begin(), file.end());
+	std::wstring wfile = agi::charset::ConvertW(file);
 
 	SECURITY_DESCRIPTOR* sd;
 	DWORD len = 0;
