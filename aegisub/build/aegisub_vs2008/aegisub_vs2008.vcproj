@@ -1104,6 +1104,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\dialog_log.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\dialog_log.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\dialog_paste_over.cpp"
 				>
 			</File>
