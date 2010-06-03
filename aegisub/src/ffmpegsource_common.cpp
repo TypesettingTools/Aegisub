@@ -199,7 +199,7 @@ void FFmpegSourceProvider::SetLogLevel() {
 
 
 FFMS_IndexErrorHandling FFmpegSourceProvider::GetErrorHandlingMode() {
-	wxString Mode = lagi_wxString(OPT_GET("Provider/Audio/FFMpegSource/Decode Error Handling")->GetString());
+	wxString Mode = lagi_wxString(OPT_GET("Provider/Audio/FFmpegSource/Decode Error Handling")->GetString());
 
 	if (!Mode.CmpNoCase(_T("ignore")))
 		return FFMS_IEH_IGNORE;

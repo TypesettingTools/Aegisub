@@ -202,7 +202,7 @@
 			"AVS" : {
 				"Sample Rate" : 0
 			},
-			"FFMpegSource" : {
+			"FFmpegSource" : {
 				"Decode Error Handling" : "stop"
 			},
 			"PCM" : {
@@ -225,7 +225,7 @@
 			"Cache" : {
 				"Size" : 32
 			},
-			"FFMpegSource" : {
+			"FFmpegSource" : {
 				"Decoding Threads" : 1,
 				"Unsafe Seeking" : false
 			}
