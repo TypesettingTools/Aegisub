@@ -28,7 +28,7 @@ AM_CXXFLAGS += -DAEGISUB -Iinclude -I../libffms/include -I../libaegisub/include 
 bin_PROGRAMS = aegisub-2.2
 aegisub_2_2_LDADD = libresrc/libresrc.a $(libosxutil_lib) -L../libaegisub -laegisub-2.2
 aegisub_2_2_CPPFLAGS = @FREETYPE_CFLAGS@
-aegisub_2_2_LDFLAGS = @DEBUG_FLAGS@ @PROFILE_FLAGS@ @GL_LIBS@ @PTHREAD_LIBS@ @WX_LIBS@ @ICONV_LDFLAGS@ $(libosxutil_ldflags) @CCMALLOC_LDFLAGS@ @EFENCE_LDFLAGS@
+aegisub_2_2_LDFLAGS = @DEBUG_FLAGS@ @PROFILE_FLAGS@ @GL_LIBS@ @PTHREAD_LIBS@ @WX_LIBS@ $(libosxutil_ldflags) @CCMALLOC_LDFLAGS@ @EFENCE_LDFLAGS@
 LIBS += @FREETYPE_LIBS@ @FONTCONFIG_LIBS@ @CCMALLOC_LIBS@
 
 if PRECOMPILED_HEADER
