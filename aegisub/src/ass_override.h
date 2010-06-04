@@ -34,24 +34,13 @@
 /// @ingroup subs_storage
 ///
 
-
-
-
-///////////
-// Headers
 #ifndef AGI_PRE
-#include <list>
 #include <vector>
 #endif
 
 #include "variable_data.h"
 
-
-//////////////
-// Prototypes
 class AssDialogueBlockOverride;
-
-
 
 /// DOCME
 enum ASS_ParameterClass {
@@ -87,61 +76,6 @@ enum ASS_ParameterClass {
 	PARCLASS_DRAWING
 };
 
-
-/// DOCME
-/// @class AssOverrideParameter
-/// @brief DOCME
-///
-/// DOCME
-class AssOverrideParameter : public VariableData {
-public:
-
-	/// DOCME
-	ASS_ParameterClass classification;
-
-	/// DOCME
-	bool ommited;
-
-	AssOverrideParameter();
-	~AssOverrideParameter();
-
-	void operator= (const AssOverrideParameter &param);
-	void CopyFrom (const AssOverrideParameter &param);
-};
-
-
-
-/// DOCME
-/// @class AssOverrideTag
-/// @brief DOCME
-///
-/// DOCME
-class AssOverrideTag {
-private:
-
-	/// DOCME
-	bool valid;
-
-public:
-
-	/// DOCME
-	wxString Name;
-
-	/// DOCME
-	std::vector <AssOverrideParameter*> Params;
-
-	AssOverrideTag();
-	~AssOverrideTag();
-
-	bool IsValid();
-	void ParseParameters(const wxString &text);
-	void Clear();
-	void SetText(const wxString &text);
-	wxString ToString();
-};
-
-
-
 /// DOCME
 enum ASS_ParameterOptional {
 
@@ -173,6 +107,26 @@ enum ASS_ParameterOptional {
 	OPTIONAL_7 = 0x40
 };
 
+/// DOCME
+/// @class AssOverrideParameter
+/// @brief DOCME
+///
+/// DOCME
+class AssOverrideParameter : public VariableData {
+public:
+
+	/// DOCME
+	ASS_ParameterClass classification;
+
+	/// DOCME
+	bool ommited;
+
+	AssOverrideParameter();
+	~AssOverrideParameter();
+
+	void operator= (const AssOverrideParameter &param);
+	void CopyFrom (const AssOverrideParameter &param);
+};
 
 /// DOCME
 /// @class AssOverrideParamProto
@@ -198,7 +152,6 @@ public:
 	~AssOverrideParamProto();
 };
 
-
 /// DOCME
 /// @class AssOverrideTagProto
 /// @brief DOCME
@@ -206,7 +159,6 @@ public:
 /// DOCME
 class AssOverrideTagProto {
 public:
-
 	/// DOCME
 	wxString name;
 
@@ -214,14 +166,43 @@ public:
 	std::vector<AssOverrideParamProto> params;
 
 	/// DOCME
-	static std::list<AssOverrideTagProto> proto;
+	static std::vector<AssOverrideTagProto> proto;
 
 	/// DOCME
 	static bool loaded;
 	static void LoadProtos();
 
+	typedef std::vector<AssOverrideTagProto>::iterator iterator;
+
 	AssOverrideTagProto();
 	~AssOverrideTagProto();
 };
 
+/// DOCME
+/// @class AssOverrideTag
+/// @brief DOCME
+///
+/// DOCME
+class AssOverrideTag {
+private:
 
+	/// DOCME
+	bool valid;
+
+public:
+
+	/// DOCME
+	wxString Name;
+
+	/// DOCME
+	std::vector <AssOverrideParameter*> Params;
+
+	AssOverrideTag();
+	~AssOverrideTag();
+
+	bool IsValid();
+	void ParseParameters(const wxString &text, AssOverrideTagProto::iterator proto);
+	void Clear();
+	void SetText(const wxString &text);
+	wxString ToString();
+};
