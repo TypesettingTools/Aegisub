@@ -47,6 +47,9 @@ class VideoSlider;
 class VideoBox;
 class VideoOutGL;
 class IVisualTool;
+namespace agi {
+	class OptionValue;
+}
 
 struct VideoState {
 	int x;
@@ -59,6 +62,7 @@ struct VideoState {
 /// @class VideoDisplay
 /// @brief DOCME
 class VideoDisplay: public wxGLCanvas {
+	agi::OptionValue* alwaysShowTools;
 	/// The unscaled size of the displayed video
 	wxSize origSize;
 

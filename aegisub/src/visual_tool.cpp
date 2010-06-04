@@ -70,7 +70,8 @@ const wxColour IVisualTool::colour[4] = {wxColour(106,32,19), wxColour(255,169,4
 
 template<class FeatureType>
 VisualTool<FeatureType>::VisualTool(VideoDisplay *parent, VideoState const& video)
-: dragStartX(0)
+: realtime(OPT_GET("Video/Visual Realtime"))
+, dragStartX(0)
 , dragStartY(0)
 , selChanged(false)
 , parent(parent)
@@ -103,7 +104,7 @@ VisualTool<FeatureType>::~VisualTool() {
 
 template<class FeatureType>
 void VisualTool<FeatureType>::OnMouseEvent (wxMouseEvent &event) {
-	bool realTime = OPT_GET("Video/Visual Realtime")->GetBool();
+	bool realTime = realtime->GetBool();
 
 	if (event.Leaving()) {
 		Update();

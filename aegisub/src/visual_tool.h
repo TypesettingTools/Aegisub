@@ -50,6 +50,9 @@
 class VideoDisplay;
 class AssDialogue;
 struct VideoState;
+namespace agi {
+	class OptionValue;
+}
 
 /// First window id for visualsubtoolbar items
 #define VISUAL_SUB_TOOL_START 1300
@@ -77,6 +80,7 @@ public:
 template<class FeatureType>
 class VisualTool : public IVisualTool, public SelectionChangeSubscriber {
 private:
+	agi::OptionValue* realtime; /// Realtime updating option
 	int dragStartX; /// Starting x coordinate of the current drag, if any
 	int dragStartY; /// Starting y coordinate of the current drag, if any
 
