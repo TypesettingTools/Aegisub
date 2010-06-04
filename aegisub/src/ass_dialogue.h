@@ -177,6 +177,7 @@ public:
 	ASS_BlockType GetType() { return BLOCK_OVERRIDE; }
 	wxString GetText();
 	void ParseTags();		// Parses tags
+	void AddTag(wxString const& tag);
 
 	/// Type of callback function passed to ProcessParameters
 	typedef void (*ProcessParametersCallback)(wxString,int,AssOverrideParameter*,void *);

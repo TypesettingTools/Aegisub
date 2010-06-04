@@ -131,6 +131,11 @@ void AssDialogueBlockOverride::ParseTags () {
 		curTag = _T("\\");
 	}
 }
+void AssDialogueBlockOverride::AddTag(wxString const& tag) {
+	AssOverrideTag *newTag = new AssOverrideTag;
+	newTag->SetText(tag);
+	Tags.push_back(newTag);
+}
 
 /// @brief Get Text representation 
 /// @return 

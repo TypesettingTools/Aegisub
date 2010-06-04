@@ -776,23 +776,22 @@ void VisualTool<FeatureType>::SetOverride(AssDialogue* line, wxString tag, wxStr
 	// Get current block as plain or override
 	AssDialogueBlockPlain *plain = dynamic_cast<AssDialogueBlockPlain*>(block);
 	AssDialogueBlockOverride *ovr = dynamic_cast<AssDialogueBlockOverride*>(block);
+	assert(dynamic_cast<AssDialogueBlockDrawing*>(block) == NULL);
 
 	if (plain) {
 		line->Text = L"{" + insert + L"}" + line->Text;
 	}
 	else if (ovr) {
-		ovr->text += insert;
-		ovr->ParseTags();
-
 		// Remove old of same
-		for (size_t i = 0; i < ovr->Tags.size() - 1; i++) {
-			wxString name = ovr->Tags.at(i)->Name;
+		for (size_t i = 0; i < ovr->Tags.size(); i++) {
+			wxString name = ovr->Tags[i]->Name;
 			if (tag == name || removeTag == name) {
-				delete ovr->Tags.at(i);
+				delete ovr->Tags[i];
 				ovr->Tags.erase(ovr->Tags.begin() + i);
 				i--;
 			}
 		}
+		ovr->AddTag(insert);
 
 		line->UpdateText();
 	}

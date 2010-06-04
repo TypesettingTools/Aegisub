@@ -668,7 +668,7 @@ void AssDialogue::ConvertTagsToSRT () {
 	ClearBlocks();
 }
 
-/// @brief Updates text from tags 
+/// @brief Updates text from tags
 void AssDialogue::UpdateText () {
 	using std::vector;
 	Text = _T("");
