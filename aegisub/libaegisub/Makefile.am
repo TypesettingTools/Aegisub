@@ -5,6 +5,7 @@ DISTCLEANFILES=
 
 lib_LTLIBRARIES = libaegisub-2.2.la
 libaegisub_2_2_la_CPPFLAGS = -I../src/include -Iinclude -I. @WX_CPPFLAGS@
+libaegisub_2_2_la_LDFLAGS = @ICONV_LDFLAGS@
 
 if PRECOMPILED_HEADER
 BUILT_SOURCES = lagi_pre.h.gch
