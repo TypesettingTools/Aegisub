@@ -301,6 +301,7 @@ void VisualTool<FeatureType>::DrawAllFeatures() {
 		dragListOK = true;
 	}
 
+	SetLineColour(colour[0],1.0f,2);
 	for (unsigned i = 0; i < features.size(); ++i) {
 		int fill;
 		if (&features[i] == curFeature)
@@ -310,7 +311,6 @@ void VisualTool<FeatureType>::DrawAllFeatures() {
 		else
 			fill = 1;
 		SetFillColour(colour[fill],0.6f);
-		SetLineColour(colour[0],1.0f,2);
 		features[i].Draw(*this);
 	}
 }
