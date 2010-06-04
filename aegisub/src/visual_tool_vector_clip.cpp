@@ -192,7 +192,7 @@ void VisualToolVectorClip::Draw() {
 
 	// Draw preview of inserted line
 	if (mode == 1 || mode == 2) {
-		if (spline.curves.size()) {
+		if (spline.curves.size() && video.x > INT_MIN && video.y > INT_MIN) {
 			SplineCurve *c0 = &spline.curves.front();
 			SplineCurve *c1 = &spline.curves.back();
 			DrawDashedLine(video.x,video.y,c0->p1.x,c0->p1.y,6);
