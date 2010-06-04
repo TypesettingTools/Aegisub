@@ -83,7 +83,7 @@ void ParseAssKaraokeTags(const AssDialogue *line, AssKaraokeVector &syls)
 				break; 
 
 			case BLOCK_OVERRIDE: {
-				AssDialogueBlockOverride *ovr = block->GetAsOverride(block);
+				AssDialogueBlockOverride *ovr = dynamic_cast<AssDialogueBlockOverride*>(block);
 
 				for (int j = 0; j < (int)ovr->Tags.size(); j++) {
 					AssOverrideTag *tag = ovr->Tags[j];

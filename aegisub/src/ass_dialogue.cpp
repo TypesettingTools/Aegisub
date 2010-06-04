@@ -550,7 +550,7 @@ void AssDialogue::StripTag (wxString tagName) {
 	// Look for blocks
 	for (vector<AssDialogueBlock*>::iterator cur=Blocks.begin();cur!=Blocks.end();cur++) {
 		if ((*cur)->GetType() == BLOCK_OVERRIDE) {
-			AssDialogueBlockOverride *over = AssDialogueBlock::GetAsOverride(*cur);
+			AssDialogueBlockOverride *over = dynamic_cast<AssDialogueBlockOverride*>(*cur);
 			wxString temp;
 			for (size_t i=0;i<over->Tags.size();i++) {
 				if (over->Tags[i]->Name != tagName) temp += over->Tags[i]->ToString();
@@ -583,7 +583,7 @@ void AssDialogue::ConvertTagsToSRT () {
 	// Iterate through blocks
 	ParseASSTags();
 	for (size_t i=0;i<Blocks.size();i++) {
-		curBlock = AssDialogueBlock::GetAsOverride(Blocks.at(i));
+		curBlock = dynamic_cast<AssDialogueBlockOverride*>(Blocks.at(i));
 		if (curBlock) {
 			// Iterate through overrides
 			for (size_t j=0;j<curBlock->Tags.size();j++) {
@@ -646,7 +646,7 @@ void AssDialogue::ConvertTagsToSRT () {
 
 		// Plain text
 		else {
-			curPlain = AssDialogueBlock::GetAsPlain(Blocks.at(i));
+			curPlain = dynamic_cast<AssDialogueBlockPlain*>(Blocks.at(i));
 			if (curPlain) {
 				final += curPlain->GetText();
 			}
@@ -787,48 +787,14 @@ AssDialogueBlock::AssDialogueBlock () {
 }
 
 /// @brief Destructor 
-/// @return 
 AssDialogueBlock::~AssDialogueBlock () {
 }
 
-/// @brief If it isn't a plain block, returns NULL ---------------------- Returns as a plain block 
-/// @param base 
-/// @return 
-AssDialogueBlockPlain *AssDialogueBlock::GetAsPlain(AssDialogueBlock *base) {
-	if (!base) return NULL;
-	if (base->GetType() == BLOCK_PLAIN) {
-		return static_cast<AssDialogueBlockPlain*> (base);
-	}
-	return NULL;
-}
-
-/// @brief If it isn't an override block, returns NULL ---------------------------- Returns as an override block 
-/// @param base 
-/// @return 
-AssDialogueBlockOverride *AssDialogueBlock::GetAsOverride(AssDialogueBlock *base) {
-	if (!base) return NULL;
-	if (base->GetType() == BLOCK_OVERRIDE) {
-		return static_cast<AssDialogueBlockOverride*> (base);
-	}
-	return NULL;
-}
-
-/// @brief If it isn't an drawing block, returns NULL ---------------------------- Returns as a drawing block 
-/// @param base 
-/// @return 
-AssDialogueBlockDrawing *AssDialogueBlock::GetAsDrawing(AssDialogueBlock *base) {
-	if (!base) return NULL;
-	if (base->GetType() == BLOCK_DRAWING) {
-		return static_cast<AssDialogueBlockDrawing*> (base);
-	}
-	return NULL;
-}
-
-/// @brief Constructor  AssDialogueBlockPlain //////////////////////
+/// @brief Constructor  AssDialogueBlockPlain
 AssDialogueBlockPlain::AssDialogueBlockPlain () {
 }
 
-/// @brief Constructor  AssDialogueBlockDrawing //////////////////////
+/// @brief Constructor  AssDialogueBlockDrawing
 AssDialogueBlockDrawing::AssDialogueBlockDrawing () {
 }
 

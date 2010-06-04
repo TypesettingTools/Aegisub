@@ -113,9 +113,6 @@ public:
 	/// @return 
 	///
 	virtual wxString GetText() { return text; }
-	static AssDialogueBlockPlain *GetAsPlain(AssDialogueBlock *base);		// Returns a block base as a plain block if it is valid, null otherwise
-	static AssDialogueBlockOverride *GetAsOverride(AssDialogueBlock *base);	// Returns a block base as an override block if it is valid, null otherwise
-	static AssDialogueBlockDrawing *GetAsDrawing(AssDialogueBlock *base);	// Returns a block base as a drawing block if it is valid, null otherwise
 };
 
 

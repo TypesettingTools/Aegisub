@@ -451,7 +451,7 @@ void VisualTool<FeatureType>::GetLinePosition(AssDialogue *diag,int &x, int &y, 
 	for (size_t i=0;i<blockn;i++) {
 		if (posSet && orgSet) break;
 
-		override = AssDialogueBlock::GetAsOverride(diag->Blocks.at(i));
+		override = dynamic_cast<AssDialogueBlockOverride*>(diag->Blocks.at(i));
 		if (override) {
 			for (size_t j=0;j<override->Tags.size();j++) {
 				tag = override->Tags.at(j);
@@ -540,7 +540,7 @@ void VisualTool<FeatureType>::GetLineMove(AssDialogue *diag,bool &hasMove,int &x
 
 	// For each block
 	for (size_t i=0;i<blockn;i++) {
-		override = AssDialogueBlock::GetAsOverride(diag->Blocks.at(i));
+		override = dynamic_cast<AssDialogueBlockOverride*>(diag->Blocks.at(i));
 		if (override) {
 			for (size_t j=0;j<override->Tags.size();j++) {
 				tag = override->Tags.at(j);
@@ -598,7 +598,7 @@ void VisualTool<FeatureType>::GetLineRotation(AssDialogue *diag,float &rx,float 
 	}
 
 	// Process override
-	override = AssDialogueBlock::GetAsOverride(diag->Blocks.at(0));
+	override = dynamic_cast<AssDialogueBlockOverride*>(diag->Blocks.at(0));
 	if (override) {
 		for (size_t j=0;j<override->Tags.size();j++) {
 			tag = override->Tags.at(j);
@@ -636,7 +636,7 @@ void VisualTool<FeatureType>::GetLineScale(AssDialogue *diag,float &scalX,float 
 	}
 
 	// Process override
-	override = AssDialogueBlock::GetAsOverride(diag->Blocks.at(0));
+	override = dynamic_cast<AssDialogueBlockOverride*>(diag->Blocks.at(0));
 	if (override) {
 		for (size_t j=0;j<override->Tags.size();j++) {
 			tag = override->Tags.at(j);
@@ -679,7 +679,7 @@ void VisualTool<FeatureType>::GetLineClip(AssDialogue *diag,int &x1,int &y1,int 
 	}
 
 	// Process override
-	override = AssDialogueBlock::GetAsOverride(diag->Blocks.at(0));
+	override = dynamic_cast<AssDialogueBlockOverride*>(diag->Blocks.at(0));
 	if (override) {
 		for (size_t j=0;j<override->Tags.size();j++) {
 			tag = override->Tags.at(j);
@@ -725,7 +725,7 @@ wxString VisualTool<FeatureType>::GetLineVectorClip(AssDialogue *diag,int &scale
 	}
 
 	// Process override
-	override = AssDialogueBlock::GetAsOverride(diag->Blocks.at(0));
+	override = dynamic_cast<AssDialogueBlockOverride*>(diag->Blocks.at(0));
 	if (override) {
 		for (size_t j=0;j<override->Tags.size();j++) {
 			tag = override->Tags.at(j);

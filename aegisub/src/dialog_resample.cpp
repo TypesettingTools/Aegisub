@@ -275,7 +275,7 @@ void DialogResample::OnResample (wxCommandEvent &event) {
 				size_t nblocks = curDiag->Blocks.size();
 				AssDialogueBlockDrawing *curBlock;
 				for (size_t i=0;i<nblocks;i++) {
-					curBlock = AssDialogueBlock::GetAsDrawing(curDiag->Blocks.at(i));
+					curBlock = dynamic_cast<AssDialogueBlockDrawing*>(curDiag->Blocks.at(i));
 					if (curBlock) {
 						curBlock->TransformCoords(m[0],m[2],rx,ry);
 					}
