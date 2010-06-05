@@ -38,4 +38,4 @@ void OptionValue::Unsubscribe(OptionValueListener *listener, OptionValueListener
 	listeners.erase(listener);
 }
 
-};
+}

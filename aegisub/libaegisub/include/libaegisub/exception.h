@@ -303,4 +303,4 @@ namespace agi {
 	/// @brief Some input data were invalid and could not be processed
 	DEFINE_BASE_EXCEPTION(InvalidInputException,Exception)
 
-};
+}
