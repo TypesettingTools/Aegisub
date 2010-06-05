@@ -311,7 +311,7 @@ static wxString GetSystemLanguage()
 void AegisubVersionCheckerThread::DoCheck()
 {
 	const wxString servername = _T("updates.aegisub.org");
-	const wxString base_updates_path = _T("/2.1.8");
+	const wxString base_updates_path = _T("/2.1.9");
 
 	wxString querystring = wxString::Format(
 		_T("?rev=%d&rel=%d&os=%s&lang=%s"),
