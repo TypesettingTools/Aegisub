@@ -152,6 +152,18 @@
 //#define FINAL_RELEASE
 
 
+// Specify tags the update checker accepts
+// See <http://devel.aegisub.org/wiki/Technical/UpdateChecker> for details on tags.
+// Depending on who will be using your build, you may or may not want to have the
+// "source" tag in here. If the string is empty, the update checker will reject any
+// update offered.
+#if defined(_M_IX86)
+# define UPDATE_CHECKER_ACCEPT_TAGS "windows source"
+#elif defined(_M_X64)
+# define UPDATE_CHECKER_ACCEPT_TAGS "win64 source"
+#endif
+
+
 
 ///////////// NOT RECOMMENDED /////////////
 
