@@ -24,12 +24,40 @@
 #pragma once
 
 namespace agi {
+	namespace type {
 
-#if defined(_WIN32)
+		namespace win {
 typedef struct timeval {
-	long tv_sec;
-	long tv_usec;
+	long tv_sec;	///< seconds
+	long tv_usec;	///< microseconds
 } timeval;
-#endif
 
+
+typedef struct tm {
+    int tm_sec;			///< seconds (0-59)
+    int tm_min;			///< minutes (0-59)
+    int tm_hour;		///< hours (0-23)
+    int tm_mday;		///< day of the month (1-31)
+    int tm_mon;			///< months since january (0-11)
+    int tm_year;		///< years since 1900
+    int tm_wday;		///< day of the week since sunday (0-6)
+    int tm_yday;		///< days since january 1 (0-365)
+    int tm_isdst;		///< whether in DST or not
+    long    tm_gmtoff;	///< GMT offset in seconds
+    char    *tm_zone;	///< TZ abrivation
+} tm;
+
+		} // namespace win
+
+
+
+
+		namespace unix {
+		} // namespace unix
+
+		namespace osx {
+		} // namespace osx
+
+
+	} // namespace type
 } // namespace agi
