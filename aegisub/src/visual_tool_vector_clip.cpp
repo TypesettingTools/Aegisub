@@ -134,26 +134,48 @@ void VisualToolVectorClip::Draw() {
 	std::vector<int> pointCurve;
 	spline.GetPointList(points,pointCurve);
 
-	// Draw stencil mask
-	glEnable(GL_STENCIL_TEST);
-	glColorMask(0,0,0,0);
-	glStencilFunc(GL_NEVER,1,1);
-	glStencilOp(GL_INVERT,GL_INVERT,GL_INVERT);
-	for (size_t i=2;i<points.size();i++) {
-		glBegin(GL_TRIANGLES);
-			glVertex2f(points[0].x,points[0].y);
-			glVertex2f(points[i-1].x,points[i-1].y);
-			glVertex2f(points[i].x,points[i].y);
-		glEnd();
-	}
+	// The following is nonzero winding-number PIP based on stencils
 
-	// Draw "outside clip" mask
+	// Draw to stencil only
+	glEnable(GL_STENCIL_TEST);
+	glColorMask(0, 0, 0, 0);
+
+	// GL_INCR_WRAP was added in 1.4, so instead set the entire stencil to 128
+	// and wobble from there
+	glStencilFunc(GL_NEVER, 128, 0xFF);
+	glStencilOp(GL_REPLACE, GL_REPLACE, GL_REPLACE);
+	DrawRectangle(0,0,video.w,video.h);
+
+	// Increment the winding number for each forward facing triangle
+	glStencilOp(GL_INCR, GL_INCR, GL_INCR);
+	glEnable(GL_CULL_FACE);
+
+	glCullFace(GL_BACK);
+	glBegin(GL_TRIANGLE_FAN);
+	for (size_t i = 0; i < points.size(); i++) {
+		glVertex2f(points[i].x,points[i].y);
+	}
+	glEnd();
+
+	// Decrement the winding number for each backfacing triangle
+	glStencilOp(GL_DECR, GL_DECR, GL_DECR);
+	glCullFace(GL_FRONT);
+	glBegin(GL_TRIANGLE_FAN);
+	for (size_t i = 0; i < points.size(); i++) {
+		glVertex2f(points[i].x,points[i].y);
+	}
+	glEnd();
+	glDisable(GL_CULL_FACE);
+
+	// Draw the actual rectangle
 	glColorMask(1,1,1,1);
-	if (inverse) glStencilFunc(GL_EQUAL, 1, 1);
-	else glStencilFunc(GL_EQUAL, 0, 1);
-	glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
 	SetLineColour(colour[3],0.0f);
 	SetFillColour(wxColour(0,0,0),0.5f);
+
+	// VSFilter draws when the winding number is nonzero, so we want to draw the
+	// mask when the winding number is zero (where 128 is zero due to the lack of
+	// wrapping combined with unsigned numbers)
+	glStencilFunc(inverse ? GL_NOTEQUAL : GL_EQUAL, 128, 0xFF);
 	DrawRectangle(0,0,video.w,video.h);
 	glDisable(GL_STENCIL_TEST);
 

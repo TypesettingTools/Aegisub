@@ -303,6 +303,7 @@ void Spline::GetPointList(std::vector<Vector2D> &points,std::vector<int> &pointC
 		if (isFirst) {
 			points.push_back(cur->p1);
 			pointCurve.push_back(curve);
+			isFirst = false;
 		}
 
 		// Line
