@@ -35,7 +35,7 @@
 
 [Files]
 ; ASSDraw3
-Source: src\ASSDraw3.exe; DestDir: {app}; Flags: ignoreversion nocompression solidbreak; Components: assdraw
+Source: src\ASSDraw3.exe; DestDir: {app}; Flags: ignoreversion solidbreak; Components: assdraw
 Source: src\ASSDraw3.chm; DestDir: {app}; Flags: ignoreversion; Components: assdraw and docs
 
 [Icons]
