@@ -480,11 +480,7 @@ if test "$agi_cv_with_iconv" = "yes"; then
   AC_AGI_COMPILE([iconv (const)], [iconv_const], [$ICONV_CFLAGS], [$ICONV_LDFLAGS],[
 #include <iconv.h>
 int main(void) {
-  iconv_t cd = iconv_open("UTF-16", "UTF-8");
-  const char *in = "in";
-  char *out = new char();
-  size_t res, inbytesleft, outbytesleft;
-  res = iconv(cd, &in, &inbytesleft, &out, &outbytesleft);
+  size_t iconv (iconv_t cd, const char** in, size_t *inbytesleft, char** out, size_t *outbytesleft);
   return 0;
 } ])
 
