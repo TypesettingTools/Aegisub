@@ -21,6 +21,8 @@
 #ifndef LAGI_PRE
 #endif
 
+#include "../config.h"
+
 #include <libaegisub/charset_conv.h>
 #include <iconv.h>
 
