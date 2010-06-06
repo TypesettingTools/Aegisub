@@ -30,6 +30,12 @@
 #define ICONV_POSIX
 #endif
 
+#ifdef AGI_ICONV_CONST
+#define ICONV_CONST_CAST(a) a
+#else
+#define ICONV_CONST_CAST(a) const_cast<char **>(a)
+#endif
+
 static const iconv_t iconv_invalid = (iconv_t)-1;
 static const size_t iconv_failed = (size_t)-1;
 
@@ -66,8 +72,8 @@ namespace agi {
 class IconvWrapper::Converter {
 public:
 	Converter(bool, const char*) { }
-	size_t operator()(iconv_t cd, char** inbuf, size_t* inbytesleft, char** outbuf, size_t* outbytesleft) {
-		return iconv(cd, inbuf, inbytesleft, outbuf, outbytesleft);
+	size_t operator()(iconv_t cd, const char** inbuf, size_t* inbytesleft, char** outbuf, size_t* outbytesleft) {
+		return iconv(cd, inbuf, ICONV_CONST_CAST(inbytesleft), outbuf, outbytesleft);
 	}
 };
 #else
@@ -102,23 +108,23 @@ public:
 		uc_to_mb_fallback = fallback;
 		wc_to_mb_fallback = NULL;
 
-			char sbuff[] = "?";
-			char* src = sbuff;
-			char* dst = invalidRep;
-			size_t dstLen = 4;
-			size_t srcLen = 1;
+		char sbuff[] = "?";
+		const char* src = sbuff;
+		char* dst = invalidRep;
+		size_t dstLen = 4;
+		size_t srcLen = 1;
 
 		iconv_t cd = iconv_open(GetRealEncodingName(targetEnc), "UTF-8");
 		assert(cd != iconv_invalid);
-		size_t res = iconv(cd, &src, &srcLen, &dst, &dstLen);
+		size_t res = iconv(cd, ICONV_CONST_CAST(&src), &srcLen, &dst, &dstLen);
 		assert(res != iconv_failed);
 		assert(srcLen == 0);
 		iconv_close(cd);
 
 		invalidRepSize = 4 - dstLen;
 	}
-	size_t operator()(iconv_t cd, char** inbuf, size_t* inbytesleft, char** outbuf, size_t* outbytesleft) {
-		size_t res = iconv(cd, inbuf, inbytesleft, outbuf, outbytesleft);
+	size_t operator()(iconv_t cd, const char** inbuf, size_t* inbytesleft, char** outbuf, size_t* outbytesleft) {
+		size_t res = iconv(cd, ICONV_CONST_CAST(inbuf), inbytesleft, outbuf, outbytesleft);
 
 		if (!subst) return res;
 
@@ -130,7 +136,7 @@ public:
 			// first try transliteration only
 			int transliterate = 1;
 			iconvctl(cd, ICONV_SET_TRANSLITERATE, &transliterate);
-			res = iconv(cd, inbuf, inbytesleft, outbuf, outbytesleft);
+			res = iconv(cd, ICONV_CONST_CAST(inbuf), inbytesleft, outbuf, outbytesleft);
 			err = errno;
 			transliterate = 0;
 			iconvctl(cd, ICONV_SET_TRANSLITERATE, &transliterate);
@@ -138,7 +144,7 @@ public:
 		if (res == iconv_failed && err == EILSEQ) {
 			// Conversion still failed with transliteration enabled, so try our substitution
 			iconvctl(cd, ICONV_SET_FALLBACKS, this);
-			res = iconv(cd, inbuf, inbytesleft, outbuf, outbytesleft);
+			res = iconv(cd, ICONV_CONST_CAST(inbuf), inbytesleft, outbuf, outbytesleft);
 			err = errno;
 			iconvctl(cd, ICONV_SET_FALLBACKS, NULL);
 		}
@@ -147,11 +153,11 @@ public:
 			char buff[4];
 			size_t buffsize = 4;
 			char* out = buff;
-			char* in = *inbuf;
+			const char* in = *inbuf;
 			size_t insize = *inbytesleft;
 
 			iconvctl(cd, ICONV_SET_FALLBACKS, this);
-			res = iconv(cd, &in, &insize, &out, &buffsize);
+			res = iconv(cd, ICONV_CONST_CAST(&in), &insize, &out, &buffsize);
 			// If no bytes of the output buffer were used, the original
 			// conversion may have been successful
 			if (buffsize == 4) {
@@ -179,11 +185,11 @@ static size_t NulSize(const char* encoding) {
 	char dbuff[4];
 	char sbuff[] = "";
 	char* dst = dbuff;
-	char* src = sbuff;
+	const char* src = sbuff;
 	size_t dstLen = sizeof(dbuff);
 	size_t srcLen = 1;
 
-	size_t ret = iconv(cd, &src, &srcLen, &dst, &dstLen);
+	size_t ret = iconv(cd, ICONV_CONST_CAST(&src), &srcLen, &dst, &dstLen);
 	assert(ret != iconv_failed);
 	assert(dst - dbuff > 0);
 	iconv_close(cd);
@@ -232,8 +238,7 @@ size_t IconvWrapper::Convert(const char* source, size_t sourceSize, char *dest, 
 	if (sourceSize == (size_t)-1) {
 		sourceSize = SrcStrLen(source);
 	}
-	// POSIX requires that inbuf be const char **, but libiconv uses char**
-	size_t res = (*conv)(cd, const_cast<char **>(&source), &sourceSize, &dest, &destSize);
+	size_t res = (*conv)(cd, &source, &sourceSize, &dest, &destSize);
 
 	if (res == iconv_failed) {
 		switch (errno) {
@@ -260,7 +265,7 @@ size_t IconvWrapper::Convert(const char* source, size_t sourceSize, char *dest, 
 }
 
 size_t IconvWrapper::Convert(const char** source, size_t* sourceSize, char** dest, size_t* destSize) {
-	return (*conv)(cd, const_cast<char **>(source), sourceSize, dest, destSize);
+	return (*conv)(cd, source, sourceSize, dest, destSize);
 }
 
 size_t IconvWrapper::RequiredBufferSize(std::string const& str) {
@@ -275,7 +280,7 @@ size_t IconvWrapper::RequiredBufferSize(const char* src, size_t srcLen) {
 	do {
 		char* dst = buff;
 		size_t dstSize = sizeof(buff);
-		res = (*conv)(cd, const_cast<char **>(&src), &srcLen, &dst, &dstSize);
+		res = (*conv)(cd, &src, &srcLen, &dst, &dstSize);
 
 		charsWritten += dst - buff;
 	} while (res == iconv_failed && errno == E2BIG);
