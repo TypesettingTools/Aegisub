@@ -51,8 +51,8 @@ typedef struct tm {
 
 
 
-
-		namespace unix {
+		// u_nix beacuse some compilers set "unix" to 1 if it's unix. -> ARGH.
+		namespace u_nix {
 		} // namespace unix
 
 		namespace osx {
