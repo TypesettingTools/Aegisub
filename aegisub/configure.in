@@ -489,7 +489,7 @@ int main(void) {
 } ])
 
   if test "$agi_cv_with_iconv_const" = "yes"; then
-    AC_DEFINE(ICONV_CONST, 1, [Enable if your version if iconv is const (annoying!)])
+    AC_DEFINE(AGI_ICONV_CONST, 1, [Enable if your version if iconv is const (annoying!)])
   fi
 fi
 
