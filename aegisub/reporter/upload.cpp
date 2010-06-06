@@ -19,6 +19,7 @@
 /// @ingroup base io
 
 #ifndef R_PRECOMP
+#include <stdlib.h>
 #include <wx/file.h>
 #endif
 
@@ -78,7 +79,7 @@ int Upload::CBProgress(void *p, double dlt, double dln, double ult, double uln) 
 /// @param filep FP to read from.
 size_t Upload::CBRead(char *p, size_t size, size_t nmemb, void *filep) {
 	// This is on purpose to wx doesn't close the fp, curl does that for us.
-	wxFile *file = new wxFile((int)filep);
+	wxFile *file = new wxFile((uintptr_t)filep);
 
 	if (file->Eof())
 		return 0;
