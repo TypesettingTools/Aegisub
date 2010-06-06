@@ -292,7 +292,6 @@ if test "$enable_compiler_flags" != "no"; then
   AC_CXX_FLAG([-Wextra],[AC_CXX_FLAG([-W])])
   AC_CXX_FLAG([-Wno-unused-parameter])
   AC_CXX_FLAG([-Wno-long-long])
-  AC_CXX_FLAG([-fpermissive])
   AC_CXX_FLAG([-fno-strict-aliasing])
   AC_CXX_FLAG([-pipe])
 
@@ -475,6 +474,25 @@ int main(void) {
 
 AC_SUBST(ICONV_LDFLAGS)
 AC_SUBST(ICONV_CFLAGS)
+
+if test "$agi_cv_with_iconv" = "yes"; then
+
+  AC_AGI_COMPILE([iconv (const)], [iconv_const], [$ICONV_CFLAGS], [$ICONV_LDFLAGS],[
+#include <iconv.h>
+int main(void) {
+  iconv_t cd = iconv_open("UTF-16", "UTF-8");
+  const char *in = "in";
+  char *out = new char();
+  size_t res, inbytesleft, outbytesleft;
+  res = iconv(cd, &in, &inbytesleft, &out, &outbytesleft);
+  return 0;
+} ])
+
+  if test "$agi_cv_with_iconv_const" = "yes"; then
+    AC_DEFINE(ICONV_CONST, 1, [Enable if your version if iconv is const (annoying!)])
+  fi
+fi
+
 
 
 ###############
