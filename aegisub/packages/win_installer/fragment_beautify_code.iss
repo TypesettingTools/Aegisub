@@ -50,23 +50,28 @@ begin
   // Thanks to ender for the following snippets
 
   // Fix bitmaps for small/large fonts
-  if WizardForm.WizardBitmapImage.Height < 386 then //use smaller image when not using Large Fonts
-  begin
-    try
+  try
+    if WizardForm.WizardBitmapImage.Height < 386 then //use smaller image when not using Large Fonts
+    begin
       ExtractTemporaryFile('welcome.bmp');
       SmallBitmap := TFileStream.Create(ExpandConstant('{tmp}\welcome.bmp'),fmOpenRead);
-      WizardForm.WizardBitmapImage.Bitmap.LoadFromStream(SmallBitmap);
-      WizardForm.WizardBitmapImage2.Bitmap := WizardForm.WizardBitmapImage.Bitmap;
-      SmallBitmap.Free;
+      try
+        WizardForm.WizardBitmapImage.Bitmap.LoadFromStream(SmallBitmap);
+        WizardForm.WizardBitmapImage2.Bitmap := WizardForm.WizardBitmapImage.Bitmap;
+      finally
+        SmallBitmap.Free;
+      end;
 
       ExtractTemporaryFile('aegisub.bmp');
       SmallBitmap := TFileStream.Create(ExpandConstant('{tmp}\aegisub.bmp'),fmOpenRead);
-      WizardForm.WizardSmallBitmapImage.Bitmap.LoadFromStream(SmallBitmap);
-  	except
-      Log('Error loading bitmaps: ' + GetExceptionMessage);
-    finally
-      SmallBitmap.Free;
+      try
+        WizardForm.WizardSmallBitmapImage.Bitmap.LoadFromStream(SmallBitmap);
+      finally
+        SmallBitmap.Free;
+      end;
     end;
+  except
+    Log('Error loading bitmaps: ' + GetExceptionMessage);
   end;
 
   // Endow install dir edit box with autocomplete

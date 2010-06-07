@@ -105,15 +105,20 @@ var
   fnd: TWin32FindData;
   linkpath: string;
 begin
-  Unk := CreateComObject(StringToGuid(CLSID_ShellLink));
+  try
+    Unk := CreateComObject(StringToGuid(CLSID_ShellLink));
 
-  PF := IPersistFile(Unk);
-  OleCheck(PF.Load(LinkFileName, 0));
+    PF := IPersistFile(Unk);
+    OleCheck(PF.Load(LinkFileName, 0));
 
-  SL := IShellLink(Unk);
-  SetLength(linkpath, MAX_PATH);
-  OleCheck(SL.GetPath(linkpath, MAX_PATH, fnd, 0));
+    SL := IShellLink(Unk);
+    SetLength(linkpath, MAX_PATH);
+    OleCheck(SL.GetPath(linkpath, MAX_PATH, fnd, 0));
 
-  Result := linkpath;
+    Result := linkpath;
+  except
+    Log('Error reading shell link "' + LinkFileName + '": ' + GetExceptionMessage);
+	Result := '';
+  end;
 end;
 
