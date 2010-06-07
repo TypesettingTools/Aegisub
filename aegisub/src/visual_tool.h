@@ -67,7 +67,7 @@ protected:
 public:
 	virtual void OnMouseEvent(wxMouseEvent &event)=0;
 	virtual void OnSubTool(wxCommandEvent &)=0;
-	virtual void Update()=0;
+	virtual bool Update()=0;
 	virtual void Draw()=0;
 	virtual void Refresh()=0;
 	virtual ~IVisualTool() { };
@@ -194,7 +194,8 @@ public:
 	/// @brief Event handler for the subtoolbar
 	virtual void OnSubTool(wxCommandEvent &) { }
 	/// @brief Called when there's stuff
-	virtual void Update() { };
+	/// @return Should the display rerender?
+	virtual bool Update() { return false; };
 	/// @brief Draw stuff
 	virtual void Draw()=0;
 	/// @brief Called by stuff when there's stuff

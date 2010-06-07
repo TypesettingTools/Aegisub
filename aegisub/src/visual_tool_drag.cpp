@@ -308,8 +308,8 @@ void VisualToolDrag::CommitDrag(VisualToolDragDraggableFeature* feature) {
 		SetOverride(feature->line, L"\\move", wxString::Format(L"(%i,%i,%i,%i,%i,%i)", x1, y1, x2, y2, feature->time, p->time));
 	}
 }
-void VisualToolDrag::Update() {
-	if (!leftDClick) return;
+bool VisualToolDrag::Update() {
+	if (!leftDClick) return false;
 
 	int dx, dy;
 	int vx = video.x;
@@ -321,7 +321,7 @@ void VisualToolDrag::Update() {
 	}
 	else {
 		AssDialogue* line = GetActiveDialogueLine();
-		if (!line) return;
+		if (!line) return false;
 		GetLinePosition(line, dx, dy);
 	}
 	parent->ToScriptCoords(&dx, &dy);
@@ -359,4 +359,5 @@ void VisualToolDrag::Update() {
 	Commit(true, _("positioning"));
 
 	GenerateFeatures();
+	return false;
 }

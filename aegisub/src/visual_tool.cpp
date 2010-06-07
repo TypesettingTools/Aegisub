@@ -105,9 +105,11 @@ VisualTool<FeatureType>::~VisualTool() {
 template<class FeatureType>
 void VisualTool<FeatureType>::OnMouseEvent (wxMouseEvent &event) {
 	bool realTime = realtime->GetBool();
+	bool needRender = false;
 
 	if (event.Leaving()) {
 		Update();
+		parent->Render();
 		return;
 	}
 	externalChange = false;
@@ -127,7 +129,9 @@ void VisualTool<FeatureType>::OnMouseEvent (wxMouseEvent &event) {
 		dragListOK = true;
 	}
 	if (!dragging) {
+		int oldHigh = curFeatureI;
 		GetHighlightedFeature();
+		if (curFeatureI != oldHigh) needRender = true;
 	}
 
 	if (dragging) {
@@ -150,7 +154,12 @@ void VisualTool<FeatureType>::OnMouseEvent (wxMouseEvent &event) {
 					CommitDrag(&features[*cur]);
 				}
 			}
-			if (realTime) Commit();
+			if (realTime) {
+				Commit();
+			}
+			else {
+				needRender = true;
+			}
 		}
 		// end drag
 		else {
@@ -194,6 +203,9 @@ void VisualTool<FeatureType>::OnMouseEvent (wxMouseEvent &event) {
 			if (realTime) {
 				CommitHold();
 				Commit();
+			}
+			else {
+				needRender = true;
 			}
 		}
 		// end hold
@@ -242,6 +254,7 @@ void VisualTool<FeatureType>::OnMouseEvent (wxMouseEvent &event) {
 			if (!altDown) {
 				ClearSelection();
 				SetEditbox();
+				needRender = true;
 			}
 			curDiag = GetActiveDialogueLine();
 			if (curDiag && InitializeHold()) {
@@ -252,7 +265,7 @@ void VisualTool<FeatureType>::OnMouseEvent (wxMouseEvent &event) {
 		}
 	}
 
-	Update();
+	if (Update() || needRender) parent->Render();
 	externalChange = true;
 }
 

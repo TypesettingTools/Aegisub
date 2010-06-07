@@ -488,7 +488,6 @@ void VideoDisplay::OnMouseEvent(wxMouseEvent& event) {
 
 	tool->OnMouseEvent(event);
 	ShowCursor(activeMode != Video_Mode_Standard);
-	Render();
 }
 void VideoDisplay::OnKey(wxKeyEvent &event) {
 	int key = event.GetKeyCode();

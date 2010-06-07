@@ -48,7 +48,7 @@ public:
 	VisualToolCross(VideoDisplay *parent, VideoState const& video, wxToolBar *);
 	~VisualToolCross();
 
-	void Update();
+	bool Update();
 	void Draw();
 };
 

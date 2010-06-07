@@ -52,11 +52,11 @@ VisualToolCross::VisualToolCross(VideoDisplay *parent, VideoState const& video, 
 VisualToolCross::~VisualToolCross() { }
 
 /// @brief Update 
-void VisualToolCross::Update() {
-	if (!leftDClick) return;
+bool VisualToolCross::Update() {
+	if (!leftDClick) return true;
 
 	AssDialogue* line = GetActiveDialogueLine();
-	if (!line) return;
+	if (!line) return true;
 
 
 	int dx, dy;
@@ -80,6 +80,7 @@ void VisualToolCross::Update() {
 	}
 
 	Commit(true, _("positioning"));
+	return false;
 }
 
 /// @brief Draw 

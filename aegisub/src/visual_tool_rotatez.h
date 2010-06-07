@@ -88,4 +88,5 @@ public:
 	VisualToolRotateZ(VideoDisplay *parent, VideoState const& video, wxToolBar *);
 
 	void Draw();
+	bool Update() { return true; }
 };

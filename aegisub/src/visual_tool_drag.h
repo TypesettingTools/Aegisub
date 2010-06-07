@@ -88,6 +88,6 @@ public:
 	void OnSelectionChange(bool clear, int row, bool selected);
 
 	void Draw();
-	void Update();
+	bool Update();
 	void OnSubTool(wxCommandEvent &event);
 };
