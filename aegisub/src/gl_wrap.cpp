@@ -35,25 +35,22 @@
 ///
 
 
-///////////
-// Headers
 #include "config.h"
+
+#include "gl_wrap.h"
 
 #ifndef AGI_PRE
 #include <wx/msgdlg.h>
-#endif
-
-#include "gl_wrap.h"
-#include "options.h"
 
 #ifdef __APPLE__
-#include <OpenGL/GL.h>
 #include <OpenGL/glext.h>
 #else
-#include <GL/gl.h>
 #include "gl/glext.h"
 #endif
 
+#endif
+
+#include "options.h"
 
 //////////////////////////
 // Extension get function
