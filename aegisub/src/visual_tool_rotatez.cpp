@@ -144,7 +144,7 @@ void VisualToolRotateZ::Draw() {
 	glPopMatrix();
 
 	// Draw line to mouse
-	if (!dragging && !curFeature) {
+	if (!dragging && !curFeature && video.x > INT_MIN && video.y > INT_MIN) {
 		SetLineColour(colour[0]);
 		DrawLine(dx,dy,video.x,video.y);
 	}

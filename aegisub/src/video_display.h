@@ -56,7 +56,7 @@ struct VideoState {
 	int y;
 	int w;
 	int h;
-	VideoState() : x(-1), y(-1), w(-1), h(-1) { }
+	VideoState() : x(INT_MIN), y(INT_MIN), w(INT_MIN), h(INT_MIN) { }
 };
 
 /// @class VideoDisplay
