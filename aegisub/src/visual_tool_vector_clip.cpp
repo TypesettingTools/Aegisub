@@ -125,14 +125,19 @@ void VisualToolVectorClip::SetMode(int _mode) {
 
 /// @brief Draw 
 void VisualToolVectorClip::Draw() {
+	if (spline.curves.empty()) return;
+
 	// Get line
 	AssDialogue *line = GetActiveDialogueLine();
 	if (!line) return;
 
 	// Parse vector
-	std::vector<Vector2D> points;
+	std::vector<float> points;
 	std::vector<int> pointCurve;
 	spline.GetPointList(points,pointCurve);
+	
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glVertexPointer(2, GL_FLOAT, 0, &points[0]);
 
 	// The following is nonzero winding-number PIP based on stencils
 
@@ -151,20 +156,12 @@ void VisualToolVectorClip::Draw() {
 	glEnable(GL_CULL_FACE);
 
 	glCullFace(GL_BACK);
-	glBegin(GL_TRIANGLE_FAN);
-	for (size_t i = 0; i < points.size(); i++) {
-		glVertex2f(points[i].x,points[i].y);
-	}
-	glEnd();
+	glDrawArrays(GL_TRIANGLE_FAN, 0, points.size() / 2);
 
 	// Decrement the winding number for each backfacing triangle
 	glStencilOp(GL_DECR, GL_DECR, GL_DECR);
 	glCullFace(GL_FRONT);
-	glBegin(GL_TRIANGLE_FAN);
-	for (size_t i = 0; i < points.size(); i++) {
-		glVertex2f(points[i].x,points[i].y);
-	}
-	glEnd();
+	glDrawArrays(GL_TRIANGLE_FAN, 0, points.size() / 2);
 	glDisable(GL_CULL_FACE);
 
 	// Draw the actual rectangle
@@ -190,15 +187,22 @@ void VisualToolVectorClip::Draw() {
 	// Draw lines
 	SetFillColour(colour[3],0.0f);
 	SetLineColour(colour[3],1.0f,2);
-	int col = 3;
-	for (size_t i=1;i<points.size();i++) {
-		int useCol = pointCurve[i] == highCurve && !curFeature ? 2 : 3;
-		if (col != useCol) {
-			col = useCol;
-			SetLineColour(colour[col],1.0f,2);
+	SetModeLine();
+	glDrawArrays(GL_LINE_STRIP, 0, points.size() / 2);
+
+	// Draw highlighted line
+	if (!curFeature && points.size() > 1 && highCurve > -1) {
+		std::pair<std::vector<int>::iterator, std::vector<int>::iterator> high = std::equal_range(pointCurve.begin(), pointCurve.end(), highCurve);
+		if (high.first != high.second) {
+			SetLineColour(colour[2], 1.f, 2);
+			int first = std::distance(pointCurve.begin(), high.first);
+			int count = std::distance(high.first, high.second);
+			if (first > 0) first -= 1;
+			glDrawArrays(GL_LINE_STRIP, first, count);
 		}
-		DrawLine(points[i-1].x,points[i-1].y,points[i].x,points[i].y);
 	}
+
+	glDisableClientState(GL_VERTEX_ARRAY);
 
 	// Draw lines connecting the bicubic features
 	SetLineColour(colour[3],0.9f,1);

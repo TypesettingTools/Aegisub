@@ -289,9 +289,11 @@ void Spline::MovePoint(int curveIndex,int point,wxPoint pos) {
 /// @brief Gets a list of points in the curve 
 /// @param points     
 /// @param pointCurve 
-void Spline::GetPointList(std::vector<Vector2D> &points,std::vector<int> &pointCurve) {
+void Spline::GetPointList(std::vector<float> &points,std::vector<int> &pointCurve) {
 	// Prepare
 	points.clear();
+	points.reserve((curves.size() + 1) * 2);
+	pointCurve.reserve(curves.size() + 1);
 	pointCurve.clear();
 	Vector2D pt;
 	bool isFirst = true;
@@ -301,14 +303,16 @@ void Spline::GetPointList(std::vector<Vector2D> &points,std::vector<int> &pointC
 	for (std::list<SplineCurve>::iterator cur = curves.begin();cur!=curves.end();cur++,curve++) {
 		// First point
 		if (isFirst) {
-			points.push_back(cur->p1);
+			points.push_back(cur->p1.x);
+			points.push_back(cur->p1.y);
 			pointCurve.push_back(curve);
 			isFirst = false;
 		}
 
 		// Line
 		if (cur->type == CURVE_LINE) {
-			points.push_back(cur->p2);
+			points.push_back(cur->p2.x);
+			points.push_back(cur->p2.y);
 			pointCurve.push_back(curve);
 		}
 
@@ -328,15 +332,18 @@ void Spline::GetPointList(std::vector<Vector2D> &points,std::vector<int> &pointC
 			for (int i=1;i<=steps;i++) {
 				// Get t and t-1 (u)
 				float t = float(i)/float(steps);
-				points.push_back(cur->GetPoint(t));
+				Vector2D p = cur->GetPoint(t);
+				points.push_back(p.x);
+				points.push_back(p.y);
 				pointCurve.push_back(curve);
 			}
 		}
 	}
 
 	// Insert a copy of the first point at the end
-	if (points.size()) {
+	if (!points.empty()) {
 		points.push_back(points[0]);
+		points.push_back(points[1]);
 		pointCurve.push_back(curve);
 	}
 }
