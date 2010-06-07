@@ -1,0 +1,742 @@
+{
+	"Main" : [
+		{
+			"type" : 4,
+			"display" : "&File",
+			"description" : "Operations on subtitles.",
+			"command" : "submenu/file",
+			"contents" : [
+				{
+					"type" : 1,
+					"display" : "&New Subtitles",
+					"description" : "New subtitles.",
+					"command" : ""
+				},
+				{
+					"type" : 1,
+					"display" : "&Open Subtitles..",
+					"description" : "Opens a subtitles file.",
+					"command" : ""
+				},
+				{
+					"type" : 1,
+					"display" : "&Open Subtitles with Charset..",
+					"description" : "Opens a subtitles file with a specific charset.",
+					"command" : ""
+				},
+				{
+					"type" : 1,
+					"display" : "&Save Subtitles",
+					"description" : "Saves subtitles.",
+					"command" : ""
+				},
+				{
+					"type" : 1,
+					"display" : "Save Subtitles as..",
+					"description" : "Saves subtitles with another name.",
+					"command" : ""
+				},
+				{
+					"type" : 1,
+					"display" : "Export Subtitles..",
+					"description" : "Saves a copy of subtitles with processing applied to it.",
+					"command" : ""
+				},
+				{
+					"type" : 1,
+					"display" : "Recent",
+					"description" : ".",
+					"command" : ""
+				},
+				{
+					"type" : 1,
+					"display" : "&Properties..",
+					"description" : "Open script properties window.",
+					"command" : ""
+				},
+				{
+					"type" : 1,
+					"display" : "&Attachments..",
+					"description" : "Open the attachment list.",
+					"command" : ""
+				},
+				{
+					"type" : 1,
+					"display" : "&Fonts Collector..",
+					"description" : "Open fonts collector.",
+					"command" : ""
+				},
+				{
+					"type" : 1,
+					"display" : "New Window",
+					"description" : "Open a new application window.",
+					"command" : ""
+				},
+				{
+					"type" : 1,
+					"display" : "E&xit",
+					"description" : "Exit the application.",
+					"command" : ""
+				}
+			]
+		},
+		{
+			"type" : 4,
+			"display" : "&Edit",
+			"description" : "Editing operations.",
+			"command" : "submenu/edit",
+			"contents" : [
+				{
+					"type" : 1,
+					"display" : "&Undo",
+					"description" : "Undoes last action.",
+					"command" : ""
+				},
+				{
+					"type" : 1,
+					"display" : "&Redo",
+					"description" : "Redoes last action.",
+					"command" : ""
+				},
+				{
+					"type" : 1,
+					"display" : "Cut Lines",
+					"description" : "Cut subtitles.",
+					"command" : ""
+				},
+				{
+					"type" : 1,
+					"display" : "Copy Lines",
+					"description" : "Copy subtitles.",
+					"command" : ""
+				},
+				{
+					"type" : 1,
+					"display" : "Paste Lines",
+					"description" : "Paste subtitles.",
+					"command" : ""
+				},
+				{
+					"type" : 1,
+					"display" : "Paste Lines Over..",
+					"description" : "Paste subtitles over others.",
+					"command" : ""
+				},
+				{
+					"type" : 1,
+					"display" : "&Find..",
+					"description" : "Find words in subtitles.",
+					"command" : ""
+				},
+				{
+					"type" : 1,
+					"display" : "Find Next",
+					"description" : "Find next match of last word.",
+					"command" : ""
+				},
+				{
+					"type" : 1,
+					"display" : "Search and &Replace..",
+					"description" : "Find and replace words in subtitles.",
+					"command" : ""
+				},
+
+		{
+			"type" : 4,
+			"display" : "&Subtitle",
+			"description" : "Subtitle manipulation.",
+			"command" : "submenu/subtitle",
+			"contents" : [
+				{
+					"type" : 1,
+					"display" : "&Styles Manager..",
+					"description" : "Open styles manager.",
+					"command" : ""
+				},
+				{
+					"type" : 1,
+					"display" : "St&yling Assistant..",
+					"description" : "Open styling assistant.",
+					"command" : ""
+				},
+				{
+					"type" : 1,
+					"display" : "&Translation Assistant..",
+					"description" : "Open translation assistant.",
+					"command" : ""
+				},
+				{
+					"type" : 1,
+					"display" : "Resample Resolution..",
+					"description" : "Changes resolution and modifies subtitles to conform to change.",
+					"command" : ""
+				},
+				{
+					"type" : 1,
+					"display" : "Spe&ll Checker..",
+					"description" : "Open spell checker.",
+					"command" : ""
+				},
+
+				{
+					"type" : 4,
+					"display" : "&Insert Lines",
+					"description" : "Insert lines into currently active subtitle file.",
+					"command" : "submenu/subtitle/insert lines",
+					"contents" : [
+						{
+							"type" : 1,
+							"display" : "&Before Current",
+							"description" : "Inserts a line before current.",
+							"command" : ""
+						},
+						{
+							"type" : 1,
+							"display" : "&After Current",
+							"description" : "Inserts a line after current.",
+							"command" : ""
+						},
+						{
+							"type" : 1,
+							"display" : "Before Current, at Video Time",
+							"description" : "Inserts a line before current, starting at video time.",
+							"command" : ""
+						},
+						{
+							"type" : 1,
+							"display" : "After Current, at Video Time",
+							"description" : "Inserts a line after current, starting at video time.",
+							"command" : ""
+						}
+					]
+				},
+				{
+					"type" : 1,
+					"display" : "&Duplicate Lines",
+					"description" : "Duplicate the selected lines.",
+					"command" : ""
+				},
+				{
+					"type" : 1,
+					"display" : "&Duplicate and Shift by 1 Frame",
+					"description" : "Duplicate lines and shift by one frame.",
+					"command" : ""
+				},
+				{
+					"type" : 1,
+					"display" : "Delete Lines",
+					"description" : "Delete currently selected lines.",
+					"command" : ""
+				},
+
+
+				{
+					"type" : 4,
+					"display" : "Join Lines",
+					"description" : "Merge 2 or more lines together.",
+					"command" : "submenu/timing/join lines",
+					"contents" : [
+						{
+							"type" : 1,
+							"display" : "&Concatenate",
+							"description" : "Joins selected lines in a single one, concatenating text together.",
+							"command" : ""
+						},
+						{
+							"type" : 1,
+							"display" : "Keep &First",
+							"description" : "Joins selected lines in a single one, keeping text of first and discarding remaining.",
+							"command" : ""
+						},
+						{
+							"type" : 1,
+							"display" : "As &Karaoke",
+							"description" : "Joins selected lines in a single one, as karaoke.",
+						"command" : ""
+						}
+					]
+				},
+				{
+					"type" : 1,
+					"display" : "Recombine Lines",
+					"description" : "Recombine subtitles when they have been split and merged.",
+					"command" : ""
+				},
+				{
+					"type" : 1,
+					"display" : "Split Lines (by karaoke)",
+					"description" : "Uses karaoke timing to split line into multiple smaller lines.",
+					"command" : ""
+				},
+				{
+					"type" : 1,
+					"display" : "Swap Lines",
+					"description" : "Swaps the two selected lines.",
+					"command" : ""
+				},
+				{
+					"type" : 1,
+					"display" : "Select Lines..",
+					"description" : "Selects lines based on defined criterea.",
+					"command" : ""
+				}
+			]
+		},
+		{
+			"type" : 4,
+			"display" : "&Timing",
+			"description" : "Time manipulation.",
+			"command" : "submenu/timing",
+			"contents" : [
+				{
+					"type" : 1,
+					"display" : "S&hift Times..",
+					"description" : "Shift subtitles by time or frames.",
+					"command" : ""
+				},
+				{
+					"type" : 1,
+					"display" : "Sort by Time",
+					"description" : "Sort all subtitles by their start times.",
+					"command" : ""
+				},
+				{
+					"type" : 1,
+					"display" : "Timing Post-Processor..",
+					"description" : "Runs a post-processor for timing to deal with lead-ins, lead-outs, scene timing and etc.",
+					"command" : ""
+				},
+				{
+					"type" : 1,
+					"display" : "Kanji Timer..",
+					"description" : "Open Kanji timer.",
+					"command" : ""
+				},
+				{
+					"type" : 1,
+					"display" : "Snap Start to Video",
+					"description" : "Set start of selected subtitles to current video frame.",
+					"command" : ""
+				},
+				{
+					"type" : 1,
+					"display" : "Snap End to Video",
+					"description" : "Set end of selected subtitles to current video frame.",
+					"command" : ""
+				},
+				{
+					"type" : 1,
+					"display" : "Snap to Scene",
+					"description" : "Set start and end of subtitles to the keyframes around current video frame.",
+					"command" : ""
+				},
+				{
+					"type" : 1,
+					"display" : "Shift to Current Frame",
+					"description" : "Shift selection so first selected line starts at current frame.",
+					"command" : ""
+				},
+				{
+					"type" : 4,
+					"display" : "Make Times Continous",
+					"description" : "Make time continous.",
+					"command" : "submenu/timing/make times continous",
+					"contents" : [
+						{
+							"type" : 1,
+							"display" : "Make Times Continuous",
+							"description" : ".",
+							"command" : ""
+						},
+						{
+									"type" : 1,
+							"display" : "Change &Start",
+							"description" : "Changes times of subs so start times begin on previous's end time.",
+							"command" : ""
+						},
+						{
+							"type" : 1,
+							"display" : "Change &End",
+							"description" : "Changes times of subs so end times begin on next's start time.",
+							"command" : ""
+						}
+					]
+				}
+			]
+		},
+
+		{
+			"type" : 4,
+			"display" : "&Video",
+			"description" : "Video operations.",
+			"command" : "submenu/video",
+			"contents" : [
+				{
+					"type" : 1,
+					"display" : "&Open Video..",
+					"description" : "Opens a video file.",
+					"command" : ""
+				},
+				{
+					"type" : 1,
+					"display" : "&Close Video",
+					"description" : "Closes the currently open video file.",
+					"command" : ""
+				},
+				{
+					"type" : 1,
+					"display" : "Recent",
+					"description" : ".",
+					"command" : ""
+				},
+				{
+					"type" : 1,
+					"display" : "Use Dummy Video..",
+					"description" : "Opens a video clip with solid colour.",
+					"command" : ""
+				},
+				{
+					"type" : 1,
+					"display" : "Show Video Details..",
+					"description" : "Shows video details.",
+					"command" : ""
+				},
+				{
+					"type" : 1,
+					"display" : "Open Timecodes File..",
+					"description" : "Opens a VFR timecodes v1 or v2 file.",
+					"command" : ""
+				},
+				{
+					"type" : 1,
+					"display" : "Save Timecodes File..",
+					"description" : "Saves a VFR timecodes v2 file.",
+					"command" : ""
+				},
+				{
+					"type" : 1,
+					"display" : "Close Timecodes File",
+					"description" : "Closes the currently open timecodes file.",
+					"command" : ""
+				},
+				{
+					"type" : 1,
+					"display" : "Recent",
+					"description" : ".",
+					"command" : ""
+				},
+				{
+					"type" : 1,
+					"display" : "Open Keyframes..",
+					"description" : "Opens a keyframe list file.",
+					"command" : ""
+				},
+				{
+					"type" : 1,
+					"display" : "Save Keyframes..",
+					"description" : "Saves the current keyframe list.",
+					"command" : ""
+				},
+				{
+					"type" : 1,
+					"display" : "Close Keyframes",
+					"description" : "Closes the currently open keyframes list.",
+					"command" : ""
+				},
+				{
+					"type" : 1,
+					"display" : "Recent",
+					"description" : ".",
+					"command" : ""
+				},
+				{
+					"type" : 1,
+					"display" : "Detach Video",
+					"description" : "Detach video, displaying it in a separate Window.",
+					"command" : ""
+				},
+
+
+		{
+			"type" : 4,
+			"display" : "",
+			"description" : "",
+			"command" : "submenu/",
+			"contents" : [
+				{
+					"type" : 1,
+					"display" : "Set Zoom",
+					"description" : ".",
+					"command" : ""
+				},
+				{
+					"type" : 1,
+					"display" : "Set zoom to 50%",
+					"description" : ".",
+					"command" : ""
+				},
+				{
+					"type" : 1,
+					"display" : "Set zoom to 100%",
+					"description" : ".",
+					"command" : ""
+				},
+				{
+					"type" : 1,
+					"display" : "Set zoom to 200%",
+					"description" : ".",
+					"command" : ""
+				},
+
+
+		{
+			"type" : 4,
+			"display" : "",
+			"description" : "",
+			"command" : "submenu/",
+			"contents" : [
+				{
+					"type" : 1,
+					"display" : "Override Aspect Ratio",
+					"description" : ".",
+					"command" : ""
+				},
+				{
+					"type" : 1,
+					"display" : "&Default",
+					"description" : "Leave video on original aspect ratio.",
+					"command" : ""
+				},
+				{
+					"type" : 1,
+					"display" : "&Fullscreen (4:3)",
+					"description" : "Forces video to 4:3 aspect ratio.",
+					"command" : ""
+				},
+				{
+					"type" : 1,
+					"display" : "&Widescreen (16:9)",
+					"description" : "Forces video to 16:9 aspect ratio.",
+					"command" : ""
+				},
+				{
+					"type" : 1,
+					"display" : "&Cinematic (2.35)",
+					"description" : "Forces video to 2.35 aspect ratio.",
+					"command" : ""
+				},
+				{
+					"type" : 1,
+					"display" : "Custom..",
+					"description" : "Forces video to a custom aspect ratio.",
+					"command" : ""
+				},
+				{
+					"type" : 1,
+					"display" : "Show Overscan Mask",
+					"description" : "Show a mask over the video, indicating areas that might get cropped off by overscan on televisions.",
+					"command" : ""
+				},
+				{
+					"type" : 1,
+					"display" : "&Jump to..",
+					"description" : "Jump to frame or time.",
+					"command" : ""
+				},
+				{
+					"type" : 1,
+					"display" : "Jump Video to Start",
+					"description" : "Jumps the video to the start frame of current subtitle.",
+					"command" : ""
+				},
+				{
+					"type" : 1,
+					"display" : "Jump Video to End",
+					"description" : "Jumps the video to the end frame of current subtitle.",
+					"command" : ""
+				},
+				{
+					"type" : 1,
+					"display" : "",
+					"description" : ".",
+					"command" : ""
+				},
+				{
+					"type" : 1,
+					"display" : "",
+					"description" : ".",
+					"command" : ""
+				},
+
+
+
+		{
+			"type" : 4,
+			"display" : "",
+			"description" : "",
+			"command" : "submenu/",
+			"contents" : [
+				{
+					"type" : 1,
+					"display" : "&Open Audio File..",
+					"description" : "Opens an audio file.",
+					"command" : ""
+				},
+				{
+					"type" : 1,
+					"display" : "Open Audio from &Video",
+					"description" : "Opens the audio from the current video file.",
+					"command" : ""
+				},
+				{
+					"type" : 1,
+					"display" : "&Close Audio",
+					"description" : "Closes the currently open audio file.",
+					"command" : ""
+				},
+				{
+					"type" : 1,
+					"display" : "Recent",
+					"description" : ".",
+					"command" : ""
+				},
+				{
+					"type" : 1,
+					"display" : "",
+					"description" : ".",
+					"command" : ""
+				},
+
+		{
+			"type" : 4,
+			"display" : "",
+			"description" : "",
+			"command" : "submenu/",
+			"contents" : [
+				{
+					"type" : 1,
+					"display" : "&Automation..",
+					"description" : "Open automation manager.",
+					"command" : ""
+				},
+				{
+					"type" : 1,
+					"display" : "&Scripts",
+					"description" : "Available automation scripts.",
+					"command" : ""
+				},
+
+
+		{
+			"type" : 4,
+			"display" : "",
+			"description" : "",
+			"command" : "submenu/",
+			"contents" : [
+				{
+					"type" : 1,
+					"display" : "",
+					"description" : ".",
+					"command" : ""
+				},
+				{
+					"type" : 1,
+					"display" : "Select Aegisub interface language",
+					"description" : ".",
+					"command" : ""
+				},
+				{
+					"type" : 1,
+					"display" : "&Options..",
+					"description" : "Configure Aegisub.",
+					"command" : ""
+				},
+				{
+					"type" : 1,
+					"display" : "Subs Only View",
+					"description" : "Display subtitles only.",
+					"command" : ""
+				},
+				{
+					"type" : 1,
+					"display" : "Video+Subs View",
+					"description" : "Display video and subtitles only.",
+					"command" : ""
+				},
+				{
+					"type" : 1,
+					"display" : "Audio+Subs View",
+					"description" : "Display audio and subtitles only.",
+					"command" : ""
+				},
+				{
+					"type" : 1,
+					"display" : "Full view",
+					"description" : "Display audio, video and subtitles.",
+					"command" : ""
+				},
+				{
+					"type" : 1,
+					"display" : "",
+					"description" : ".",
+					"command" : ""
+				},
+
+
+		{
+			"type" : 4,
+			"display" : "",
+			"description" : "",
+			"command" : "submenu/",
+			"contents" : [
+				{
+					"type" : 1,
+					"display" : "&Contents..",
+					"description" : "Help topics.",
+					"command" : ""
+				},
+				{
+					"type" : 1,
+					"display" : "&All Files",
+					"description" : "Help topics.",
+					"command" : ""
+				},
+				{
+					"type" : 1,
+					"display" : "&Website..",
+					"description" : "Visit Aegisub's official website.",
+					"command" : ""
+				},
+				{
+					"type" : 1,
+					"display" : "&Forums..",
+					"description" : "Visit Aegisub's forums.",
+					"command" : ""
+				},
+				{
+					"type" : 1,
+					"display" : "&Bug Tracker..",
+					"description" : "Visit Aegisub's bug tracker to report bugs and request new features.",
+					"command" : ""
+				},
+				{
+					"type" : 1,
+					"display" : "&IRC Channel..",
+					"description" : "Visit Aegisub's official IRC channel.",
+					"command" : ""
+				},
+				{
+					"type" : 1,
+					"display" : "&Check for Updates..",
+					"description" : "Check to see if there is a new version of Aegisub available.",
+					"command" : ""
+				},
+				{
+					"type" : 1,
+					"display" : "&About..",
+					"description" : "About Aegisub.",
+					"command" : ""
+				},
+
+	]
+}
