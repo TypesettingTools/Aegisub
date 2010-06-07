@@ -43,7 +43,7 @@ src/boost/
  - Boost Software License Version 1.0 see src/boost/LICENSE_1_0.txt.
 
 src/gl/
- - SGI Free Software License. See src/gl/glext.h
+ - MIT license. See src/gl/glext.h
 
 src/MatroskaParser.(c|h)
  - Licensed to BSDL with permission from the author.
