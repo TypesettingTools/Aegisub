@@ -495,7 +495,7 @@ void VideoContext::PlayNextFrame() {
 	int thisFrame = frame_n;
 	JumpToFrame(frame_n + 1);
 	// Start playing audio
-	if (OPT_GET("Audio/Plays When Stepping")->GetBool())
+	if (OPT_GET("Audio/Plays When Stepping Video")->GetBool())
 		audio->Play(VFR_Output.GetTimeAtFrame(thisFrame),VFR_Output.GetTimeAtFrame(thisFrame + 1));
 }
 
@@ -509,7 +509,7 @@ void VideoContext::PlayPrevFrame() {
 	int thisFrame = frame_n;
 	JumpToFrame(frame_n -1);
 	// Start playing audio
-	if (OPT_GET("Audio/Plays When Stepping")->GetBool())
+	if (OPT_GET("Audio/Plays When Stepping Video")->GetBool())
 		audio->Play(VFR_Output.GetTimeAtFrame(thisFrame - 1),VFR_Output.GetTimeAtFrame(thisFrame));
 }
 
