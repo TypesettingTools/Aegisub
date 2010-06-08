@@ -40,10 +40,11 @@
 #include <wx/tokenzr.h>
 #endif
 
+#include <limits>
+
 #include "spline.h"
 #include "utils.h"
 #include "video_display.h"
-
 
 /// @brief Spline constructor 
 Spline::Spline(const VideoDisplay &scale) : scale(scale) {
@@ -54,23 +55,21 @@ wxString Spline::EncodeToASS() {
 	wxString result;
 	char lastCommand = 0;
 
-	// At least one element?
-	bool isFirst = true;
-
 	// Insert each element
-	for (std::list<SplineCurve>::iterator cur=curves.begin();cur!=curves.end();cur++) {
-		// Start of spline
-		if (isFirst) {
-			int x = cur->p1.x;
-			int y = cur->p1.y;
-			scale.ToScriptCoords(&x, &y);
-			result = wxString::Format(L"m %i %i ", x, y);
-			lastCommand = 'm';
-			isFirst = false;
-		}
-
+	for (iterator cur=begin();cur!=end();cur++) {
 		// Each curve
 		switch (cur->type) {
+			case CURVE_POINT: {
+				if (lastCommand != 'm') {
+					result += L"m ";
+					lastCommand = 'm';
+				}
+				int x = cur->p1.x;
+				int y = cur->p1.y;
+				scale.ToScriptCoords(&x, &y);
+				result += wxString::Format(L"%i %i ", x, y);
+				break;
+			}
 			case CURVE_LINE: {
 				if (lastCommand != 'l') {
 					result += L"l ";
@@ -109,14 +108,13 @@ wxString Spline::EncodeToASS() {
 /// @param str 
 void Spline::DecodeFromASS(wxString str) {
 	// Clear current
-	curves.clear();
+	clear();
 	std::vector<int> stack;
 
 	// Prepare
 	char lastCommand = 'm';
 	int x = 0;
 	int y = 0;
-	bool coordsSet = false;
 
 	// Tokenize the string
 	wxStringTokenizer tkn(str,L" ");
@@ -131,11 +129,13 @@ void Spline::DecodeFromASS(wxString str) {
 
 			// Move
 			if (stack.size() == 2 && lastCommand == 'm') {
-				x = stack[0];
-				y = stack[1];
-				scale.FromScriptCoords(&x, &y);
-				coordsSet = true;
+				scale.FromScriptCoords(&stack[0], &stack[1]);
+				SplineCurve curve;
+				x = curve.p1.x = stack[0];
+				y = curve.p1.y = stack[1];
+				curve.type = CURVE_POINT;
 				stack.clear();
+				push_back(curve);
 			}
 
 			// Line
@@ -144,13 +144,11 @@ void Spline::DecodeFromASS(wxString str) {
 				SplineCurve curve;
 				curve.p1.x = x;
 				curve.p1.y = y;
-				curve.p2.x = stack[0];
-				curve.p2.y = stack[1];
+				x = curve.p2.x = stack[0];
+				y = curve.p2.y = stack[1];
 				curve.type = CURVE_LINE;
-				x = curve.p2.x;
-				y = curve.p2.y;
 				stack.clear();
-				AppendCurve(curve);
+				push_back(curve);
 			}
 
 			// Bicubic
@@ -171,7 +169,7 @@ void Spline::DecodeFromASS(wxString str) {
 				x = curve.p4.x;
 				y = curve.p4.y;
 				stack.clear();
-				AppendCurve(curve);
+				push_back(curve);
 			}
 
 			// Close
@@ -190,161 +188,128 @@ void Spline::DecodeFromASS(wxString str) {
 			else if (token == L"c") lastCommand = 'c';
 		}
 	}
-
-	// Got coordinates, but list is empty
-	if (curves.size() == 0 && coordsSet) {
-		SplineCurve curve;
-		curve.p1.x = x;
-		curve.p1.y = y;
-		curve.type = CURVE_POINT;
-		AppendCurve(curve);
-	}
-}
-
-/// @brief Insert a curve to the spline 
-/// @param curve 
-/// @param index 
-void Spline::InsertCurve(SplineCurve &curve,int index) {
-	if (index == -1) curves.push_back(curve);
-	else {
-		std::list<SplineCurve>::iterator cur;
-		int i=0;
-		for (cur=curves.begin();cur!=curves.end() && i < index;cur++,i++) ;
-		curves.insert(cur,curve);
-	}
-}
-
-/// @brief Get a specific curve 
-/// @param index 
-/// @return 
-SplineCurve *Spline::GetCurve(int index) {
-	int i=0;
-	for (std::list<SplineCurve>::iterator cur=curves.begin();cur!=curves.end() && i <= index;cur++,i++) {
-		if (i==index) return &(*cur);
-	}
-	return NULL;
 }
 
 /// @brief Moves a specific point in the spline 
 /// @param curveIndex 
 /// @param point      
 /// @param pos        
-void Spline::MovePoint(int curveIndex,int point,wxPoint pos) {
-	// Curves
-	int i = 0;
-	SplineCurve *c0 = NULL;
-	SplineCurve *c1 = NULL;
-	SplineCurve *c2 = NULL;
-
-	// Indices
-	int i0 = curveIndex-1;
-	int i1 = curveIndex;
-	int i2 = curveIndex+1;
-
-	// Get the curves
-	for (std::list<SplineCurve>::iterator cur = curves.begin();cur!=curves.end();cur++) {
-		if (i == i0) c0 = &(*cur);
-		if (i == i1) c1 = &(*cur);
-		if (i == i2) c2 = &(*cur);
-		i++;
-	}
+void Spline::MovePoint(iterator curve,int point,Vector2D const& pos) {
+	iterator prev = curve;
+	if (curve != begin()) --prev;
+	iterator next = curve;
+	++next;
+	if (next != end() && next->type == CURVE_POINT) next = end();
 
 	// Modify
 	if (point == 0) {
-		c1->p1.x = pos.x;
-		c1->p1.y = pos.y;
-		if (c0) {
-			if (c0->type == CURVE_BICUBIC) {
-				c0->p4.x = pos.x;
-				c0->p4.y = pos.y;
-			}
-			else {
-				c0->p2.x = pos.x;
-				c0->p2.y = pos.y;
-			}
-		}
+		curve->p1 = pos;
+		if (curve != begin() && curve->type != CURVE_POINT) prev->EndPoint() = pos;
+		if (next != end() && curve->type == CURVE_POINT) next->p1 = pos;
 	}
 	else if (point == 1) {
-		c1->p2.x = pos.x;
-		c1->p2.y = pos.y;
-		if (c2 && c1->type != CURVE_BICUBIC) {
-			c2->p1.x = pos.x;
-			c2->p1.y = pos.y;
-		}
+		curve->p2 = pos;
+		if (next != end() && curve->type == CURVE_LINE) next->p1 = pos;
 	}
 	else if (point == 2) {
-		c1->p3.x = pos.x;
-		c1->p3.y = pos.y;
+		curve->p3 = pos;
 	}
 	else if (point == 3) {
-		c1->p4.x = pos.x;
-		c1->p4.y = pos.y;
-		if (c2 && c1->type == CURVE_BICUBIC) {
-			c2->p1.x = pos.x;
-			c2->p1.y = pos.y;
-		}
+		curve->p4 = pos;
+		if (next != end()) next->p1 = pos;
 	}
 }
 
 /// @brief Gets a list of points in the curve 
 /// @param points     
 /// @param pointCurve 
-void Spline::GetPointList(std::vector<float> &points,std::vector<int> &pointCurve) {
-	// Prepare
+void Spline::GetPointList(std::vector<float>& points, std::vector<int>& first, std::vector<int>& count) {
 	points.clear();
-	points.reserve((curves.size() + 1) * 2);
-	pointCurve.reserve(curves.size() + 1);
-	pointCurve.clear();
-	Vector2D pt;
-	bool isFirst = true;
-	int curve = 0;
+	first.clear();
+	count.clear();
+
+	points.reserve((size() + 1) * 2);
+	int curCount = 0;
 
 	// Generate points for each curve
-	for (std::list<SplineCurve>::iterator cur = curves.begin();cur!=curves.end();cur++,curve++) {
-		// First point
-		if (isFirst) {
-			points.push_back(cur->p1.x);
-			points.push_back(cur->p1.y);
-			pointCurve.push_back(curve);
-			isFirst = false;
-		}
+	for (iterator cur = begin();cur!=end();cur++) {
+		switch (cur->type) {
+			case CURVE_POINT:
+				if (curCount > 0) {
+					count.push_back(curCount);
+				}
 
-		// Line
-		if (cur->type == CURVE_LINE) {
-			points.push_back(cur->p2.x);
-			points.push_back(cur->p2.y);
-			pointCurve.push_back(curve);
-		}
+				// start new path
+				first.push_back(points.size() / 2);
+				points.push_back(cur->p1.x);
+				points.push_back(cur->p1.y);
+				curCount = 1;
+				break;
+			case CURVE_LINE:
+				points.push_back(cur->p2.x);
+				points.push_back(cur->p2.y);
+				curCount++;
+				break;
+			case CURVE_BICUBIC: {
+				// Get the control points
+				Vector2D p1 = cur->p1;
+				Vector2D p2 = cur->p2;
+				Vector2D p3 = cur->p3;
+				Vector2D p4 = cur->p4;
 
-		// Bicubic
-		else if (cur->type == CURVE_BICUBIC) {
+				// Find number of steps
+				int len = (int)((p2-p1).Len() + (p3-p2).Len() + (p4-p3).Len());
+				int steps = len/8;
+
+				// Render curve
+				for (int i=1;i<=steps;i++) {
+					// Get t and t-1 (u)
+					float t = float(i)/float(steps);
+					Vector2D p = cur->GetPoint(t);
+					points.push_back(p.x);
+					points.push_back(p.y);
+				}
+				curCount += steps;
+				break;
+			}
+			default: break;
+		}
+	}
+
+	count.push_back(curCount);
+}
+void Spline::GetPointList(std::vector<float> &points, iterator curve) {
+	points.clear();
+	if (curve == end()) return;
+	switch (curve->type) {
+		case CURVE_LINE:
+			points.push_back(curve->p1.x);
+			points.push_back(curve->p1.y);
+			points.push_back(curve->p2.x);
+			points.push_back(curve->p2.y);
+			break;
+		case CURVE_BICUBIC: {
 			// Get the control points
-			Vector2D p1 = cur->p1;
-			Vector2D p2 = cur->p2;
-			Vector2D p3 = cur->p3;
-			Vector2D p4 = cur->p4;
+			Vector2D p1 = curve->p1;
+			Vector2D p2 = curve->p2;
+			Vector2D p3 = curve->p3;
+			Vector2D p4 = curve->p4;
 
 			// Find number of steps
 			int len = (int)((p2-p1).Len() + (p3-p2).Len() + (p4-p3).Len());
 			int steps = len/8;
 
 			// Render curve
-			for (int i=1;i<=steps;i++) {
+			for (int i=0;i<=steps;i++) {
 				// Get t and t-1 (u)
 				float t = float(i)/float(steps);
-				Vector2D p = cur->GetPoint(t);
+				Vector2D p = curve->GetPoint(t);
 				points.push_back(p.x);
 				points.push_back(p.y);
-				pointCurve.push_back(curve);
 			}
+			break;
 		}
-	}
-
-	// Insert a copy of the first point at the end
-	if (!points.empty()) {
-		points.push_back(points[0]);
-		points.push_back(points[1]);
-		pointCurve.push_back(curve);
+		default: break;
 	}
 }
 
@@ -353,77 +318,64 @@ void Spline::GetPointList(std::vector<float> &points,std::vector<int> &pointCurv
 /// @param curve     
 /// @param t         
 /// @param pt        
-void Spline::GetClosestParametricPoint(Vector2D reference,int &curve,float &t,Vector2D &pt) {
-	// Has at least one curve?
-	curve = -1;
-	t = 0.0f;
-	if (curves.size() == 0) return;
+void Spline::GetClosestParametricPoint(Vector2D const& reference,iterator &curve,float &t,Vector2D &pt) {
+	curve = end();
+	t = 0.f;
+	if (empty()) return;
 
 	// Close the shape
 	SplineCurve pad;
-	pad.p1 = curves.back().GetEndPoint();
-	pad.p2 = curves.front().p1;
+	pad.p1 = back().EndPoint();
+	pad.p2 = front().p1;
 	pad.type = CURVE_LINE;
-	curves.push_back(pad);
+	push_back(pad);
 
-	// Prepare
-	float closest = 8000000.0f;
-	int i = 0;
-	for (std::list<SplineCurve>::iterator cur = curves.begin();cur!=curves.end();cur++,i++) {
+	float closest = std::numeric_limits<float>::infinity();
+	for (iterator cur = begin();cur!=end();cur++) {
 		float param = cur->GetClosestParam(reference);
 		Vector2D p1 = cur->GetPoint(param);
-		float dist = (p1-reference).Len();
+		float dist = (p1-reference).SquareLen();
 		if (dist < closest) {
 			closest = dist;
 			t = param;
-			curve = i;
+			curve = cur;
 			pt = p1;
 		}
 	}
 
+	if (&*curve == &back()) {
+		curve = end();
+	}
+
 	// Remove closing and return
-	curves.pop_back();
+	pop_back();
 }
 
 /// @brief Point closest to reference 
 /// @param reference 
 /// @return 
-Vector2D Spline::GetClosestPoint(Vector2D reference) {
-	int curve;
+Vector2D Spline::GetClosestPoint(Vector2D const& reference) {
+	iterator curve;
 	float t;
 	Vector2D point;
 	GetClosestParametricPoint(reference,curve,t,point);
 	return point;
 }
 
-
-
-/// @brief Control point closest to reference 
-/// @param reference 
-/// @return 
-///
-Vector2D Spline::GetClosestControlPoint(Vector2D reference) {
-	// TODO
-	return Vector2D(-1,-1);
-}
-
 /// @brief Smoothes the spline 
 /// @param smooth 
 void Spline::Smooth(float smooth) {
 	// See if there are enough curves
-	if (curves.size() < 3) return;
+	if (size() < 3) return;
 
 	// Smooth curve
-	SplineCurve *curve0 = NULL;
-	SplineCurve *curve1 = &curves.back();
-	SplineCurve *curve2 = NULL;
-	for (std::list<SplineCurve>::iterator cur=curves.begin();cur!=curves.end();) {
-		// Get curves
-		curve0 = curve1;
-		curve1 = &(*cur);
+	iterator curve1 = end();
+	--curve1;
+	for (iterator cur = begin(); cur != end();) {
+		iterator curve0 = curve1;
+		curve1 = cur;
 		cur++;
-		if (cur == curves.end()) curve2 = &curves.front();
-		else curve2 = &(*cur);
+		iterator curve2 = cur == end() ? begin() : cur;
 
 		// Smooth curve
 		curve1->Smooth(curve0->p1,curve2->p2,smooth);

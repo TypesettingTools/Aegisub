@@ -34,13 +34,9 @@
 /// @ingroup visual_ts
 ///
 
-
-
-
 ///////////
 // Headers
 #include "vector2d.h"
-
 
 /// DOCME
 enum CurveType {
@@ -58,8 +54,6 @@ enum CurveType {
 	CURVE_BICUBIC
 };
 
-
-
 /// DOCME
 /// @class SplineCurve
 /// @brief DOCME
@@ -67,8 +61,8 @@ enum CurveType {
 /// DOCME
 class SplineCurve {
 private:
-	float GetClosestSegmentPart(Vector2D p1,Vector2D p2,Vector2D p3) const;
-	float GetClosestSegmentDistance(Vector2D p1,Vector2D p2,Vector2D p3) const;
+	float GetClosestSegmentPart(Vector2D const& p1,Vector2D const& p2,Vector2D const& p3) const;
+	float GetClosestSegmentDistance(Vector2D const& p1,Vector2D const& p2,Vector2D const& p3) const;
 
 public:
 
@@ -86,14 +80,11 @@ public:
 
 	SplineCurve();
 	void Split(SplineCurve &c1,SplineCurve &c2,float t=0.5);
-	void Smooth(Vector2D prev,Vector2D next,float smooth=1.0f);
+	void Smooth(Vector2D const& prev,Vector2D const& next,float smooth=1.0f);
 
 	Vector2D GetPoint(float t) const;
-	Vector2D GetStartPoint() const;
-	Vector2D GetEndPoint() const;
-	Vector2D GetClosestPoint(Vector2D ref) const;
-	float GetClosestParam(Vector2D ref) const;
-	float GetQuickDistance(Vector2D ref) const;
+	Vector2D& EndPoint();
+	Vector2D GetClosestPoint(Vector2D const& ref) const;
+	float GetClosestParam(Vector2D const& ref) const;
+	float GetQuickDistance(Vector2D const& ref) const;
 };
-
-

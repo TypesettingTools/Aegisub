@@ -46,13 +46,12 @@ class wxToolBar;
 class VisualToolVectorClipDraggableFeature : public VisualDraggableFeature {
 public:
 	/// Which curve in the spline this feature is a point on
-	int index;
+	Spline::iterator curve;
 	/// 0-3; indicates which part of the curve this point is
 	int point;
 	/// @brief Constructor
 	VisualToolVectorClipDraggableFeature()
 		: VisualDraggableFeature()
-		, index(0)
 		, point(0)
 	{ }
 };
@@ -62,24 +61,18 @@ public:
 /// @brief DOCME
 class VisualToolVectorClip : public VisualTool<VisualToolVectorClipDraggableFeature> {
 private:
+	Spline spline; /// The current spline
 
-	/// DOCME
-	Spline spline;
-
-	/// DOCME
-	wxToolBar *toolBar;
+	wxToolBar *toolBar; /// The subtoolbar
 
 	/// DOCME
 	int mode;
 
 	/// DOCME
-
-	/// DOCME
-	int lastX,lastY;
-
-	/// DOCME
 	bool inverse;
 
+	/// @brief Set the mode
+	/// @param mode 0-7
 	void SetMode(int mode);
 	
 
@@ -89,7 +82,6 @@ private:
 	bool InitializeHold();
 	void UpdateHold();
 	void CommitHold();
-
 
 	void PopulateFeatureList();
 	void UpdateDrag(VisualToolVectorClipDraggableFeature* feature);

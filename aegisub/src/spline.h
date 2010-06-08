@@ -45,36 +45,53 @@
 
 class VideoDisplay;
 
-
 /// DOCME
 /// @class Spline
 /// @brief DOCME
-class Spline {
+class Spline : private std::list<SplineCurve> {
 private:
 	const VideoDisplay &scale;
 public:
-
-	/// DOCME
-	std::list<SplineCurve> curves;
-
 	Spline(const VideoDisplay &scale);
 
 	wxString EncodeToASS();
 	void DecodeFromASS(wxString str);
 
-
-	/// @brief DOCME
-	/// @param curve 
-	///
-	void AppendCurve(SplineCurve &curve) { InsertCurve(curve,-1); }
-	void InsertCurve(SplineCurve &curve,int index);
-	void MovePoint(int curveIndex,int point,wxPoint pos);
+	void MovePoint(iterator curve,int point,Vector2D const& pos);
 	void Smooth(float smooth=1.0f);
 
-	void GetPointList(std::vector<float> &points,std::vector<int> &pointCurve);
-	SplineCurve *GetCurve(int index);
+	void GetPointList(std::vector<float>& points, std::vector<int>& first, std::vector<int>& count);
+	void GetPointList(std::vector<float> &points, iterator curve);
 
-	void GetClosestParametricPoint(Vector2D reference,int &curve,float &t,Vector2D &point);
-	Vector2D GetClosestPoint(Vector2D reference);
-	Vector2D GetClosestControlPoint(Vector2D reference);
+	void GetClosestParametricPoint(Vector2D const& reference, iterator& curve, float &t, Vector2D &point);
+	Vector2D GetClosestPoint(Vector2D const& reference);
+	Vector2D GetClosestControlPoint(Vector2D const& reference);
+
+	// This list intentionally excludes things specific to std::list
+	using std::list<SplineCurve>::value_type;
+	using std::list<SplineCurve>::pointer;
+	using std::list<SplineCurve>::reference;
+	using std::list<SplineCurve>::const_reference;
+	using std::list<SplineCurve>::size_type;
+	using std::list<SplineCurve>::difference_type;
+	using std::list<SplineCurve>::iterator;
+	using std::list<SplineCurve>::const_iterator;
+	using std::list<SplineCurve>::reverse_iterator;
+	using std::list<SplineCurve>::const_reverse_iterator;
+
+	using std::list<SplineCurve>::begin;
+	using std::list<SplineCurve>::end;
+	using std::list<SplineCurve>::rbegin;
+	using std::list<SplineCurve>::rend;
+	using std::list<SplineCurve>::size;
+	using std::list<SplineCurve>::empty;
+	using std::list<SplineCurve>::front;
+	using std::list<SplineCurve>::back;
+	using std::list<SplineCurve>::push_front;
+	using std::list<SplineCurve>::push_back;
+	using std::list<SplineCurve>::pop_front;
+	using std::list<SplineCurve>::pop_back;
+	using std::list<SplineCurve>::insert;
+	using std::list<SplineCurve>::erase;
+	using std::list<SplineCurve>::clear;
 };

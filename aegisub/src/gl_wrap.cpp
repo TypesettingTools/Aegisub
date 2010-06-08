@@ -52,24 +52,6 @@
 
 #include "options.h"
 
-//////////////////////////
-// Extension get function
-#ifdef __WIN32__
-
-/// @brief DOCME
-/// @param str 
-/// @return 
-///
-void* glGetProc(const char *str) { return wglGetProcAddress(str); }
-#else
-
-/// DOCME
-#define glGetProc(a) glXGetProcAddress((const GLubyte *)(a))
-#endif
-
-
-
-
 /// @brief Constructor 
 ///
 OpenGLWrapper::OpenGLWrapper() {

@@ -51,6 +51,19 @@ typedef GLuint GLhandleARB;
 #include <wx/colour.h>
 #endif
 
+#ifdef __WIN32__
+#define glGetProc(a) wglGetProcAddress(a)
+#else
+#define glGetProc(a) glXGetProcAddress((const GLubyte *)(a))
+#endif
+
+#define GL_EXT(type, name) \
+	static type name = reinterpret_cast<type>(glGetProc(#name)); \
+	if (!name) { \
+		name = & name ## Fallback; \
+	}
+
+
 
 /// DOCME
 /// @class OpenGLWrapper
