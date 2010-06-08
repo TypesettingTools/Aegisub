@@ -102,5 +102,7 @@ public:
 	VisualToolVectorClip(VideoDisplay *parent, VideoState const& video, wxToolBar *toolbar);
 
 	void Draw();
+	bool Update() { return mode >= 1 && mode <= 4; }
+	/// Subtoolbar button click handler
 	void OnSubTool(wxCommandEvent &event);
 };
