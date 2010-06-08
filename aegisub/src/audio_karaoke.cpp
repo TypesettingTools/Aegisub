@@ -86,7 +86,7 @@ AudioKaraokeSyllable::AudioKaraokeSyllable(const AssKaraokeSyllable &base)
 AudioKaraoke::AudioKaraoke(wxWindow *parent)
 : wxWindow (parent,-1,wxDefaultPosition,wxSize(10,5),wxTAB_TRAVERSAL|wxBORDER_SUNKEN)
 {
-	LOG_D("karaoke") << "Constructor";
+	LOG_D("karaoke/audio") << "Constructor";
 	enabled = false;
 	splitting = false;
 	split_cursor_syl = -1;
@@ -110,10 +110,10 @@ AudioKaraoke::~AudioKaraoke() {
 /// @return 
 ///
 bool AudioKaraoke::LoadFromDialogue(AssDialogue *_diag) {
-	wxLogDebug(_T("AudioKaraoke::LoadFromDialogue(diag=%p)"), _diag);
+	LOG_D("karaoke/audio") << "diag=" << _diag;
 	// Make sure we're not in splitting-mode
 	if (splitting) {
-		wxLogDebug(_T("AudioKaraoke::LoadFromDialogue: is splitting, discarding splits"));
+		LOG_D("karaoke/audio") << "is splitting, discarding splits";
 		// Discard any splits and leave split-mode
 		EndSplit(false);
 	}
@@ -122,13 +122,13 @@ bool AudioKaraoke::LoadFromDialogue(AssDialogue *_diag) {
 	delete workDiag;
 	diag = _diag;
 	if (!diag) {
-		wxLogDebug(_T("AudioKaraoke::LoadFromDialogue: no diag, refreshing and returning false"));
+		LOG_D("karaoke/audio") << "no diag, refreshing and returning flase";
 		Refresh(false);
 		return false;
 	}
 
 	// Split
-	wxLogDebug(_T("AudioKaraoke::LoadFromDialogue: split"));
+	LOG_D("karaoke/audio") << "split";
 	workDiag = new AssDialogue(diag->GetEntryData(), false);
 	workDiag->ParseASSTags();
 	must_rebuild = false;
@@ -136,7 +136,7 @@ bool AudioKaraoke::LoadFromDialogue(AssDialogue *_diag) {
 
 	// No karaoke, autosplit
 	if (!hasKar) {
-		wxLogDebug(_T("AudioKaraoke::LoadFromDialogue: no existing karaoke, auto-splitting"));
+		LOG_D("karaoke/audio") << "no existing karaoke, auto-splitting";
 		AutoSplit();
 	}
 
@@ -145,7 +145,7 @@ bool AudioKaraoke::LoadFromDialogue(AssDialogue *_diag) {
 	//if (curSyllable >= (signed) syllables.size()) curSyllable = 0;
 	//SetSelection(curSyllable);
 	//Refresh(false);
-	wxLogDebug(_T("AudioKaraoke::LoadFromDialogue: returning %d"), hasKar?0:1);
+	LOG_D("karaoke/audio") << "returning " << hasKar;
 	return !hasKar;
 }
 
@@ -155,17 +155,17 @@ bool AudioKaraoke::LoadFromDialogue(AssDialogue *_diag) {
 /// @return 
 ///
 void AudioKaraoke::Commit() {
-	wxLogDebug(_T("AudioKaraoke::Commit"));
+	LOG_D("karaoke/audio") << "commit";
 	if (splitting) {
-		wxLogDebug(_T("AudioKaraoke::Commit: splitting, ending split"));
+		LOG_D("karaoke/audio") << "splitting, ending split";
 		EndSplit(true);
 	}
 	wxString finalText = _T("");
 	AudioKaraokeSyllable *syl;
 	size_t n = syllables.size();
-	wxLogDebug(_T("AudioKaraoke::Commit: syllables.size() = %u"), n);
+	LOG_D("karaoke/audio") << "syllabels.size() = " << n;
 	if (must_rebuild) {
-		wxLogDebug(_T("AudioKaraoke::Commit: must_rebuild"));
+		LOG_D("karaoke/audio") << "must_rebuild";
 		workDiag->ClearBlocks();
 		for (size_t i=0;i<n;i++) {
 			syl = &syllables.at(i);
@@ -175,11 +175,11 @@ void AudioKaraoke::Commit() {
 		workDiag->ParseASSTags();
 		diag->Text = finalText;
 	} else {
-		wxLogDebug(_T("AudioKaraoke::Commit: Updating karaoke without rebuild"));
+		LOG_D("karaoke/audio") << "updating karaoke without rebuild";
 		for (size_t i = 0; i < n; i++) {
-			wxLogDebug(_T("AudioKaraoke::Commit: Updating syllable %d"), i);
+			LOG_D("karaoke/audio") << "updating syllabel: " << i;
 			syl = &syllables.at(i);
-			wxLogDebug(_T("AudioKaraoke::Commit: Syllable pointer: %p; tagdata pointer: %p; length: %d"), syl, syl->tag, syl->duration);
+			LOG_D("karaoke/audio") << "syllabel pointer: " << syl << "; tagdata pointer: " << syl->tag << "; length: " << syl->duration;
 			// Some weird people have text before the first karaoke tag on a line.
 			// Check that a karaoke tag actually exists for the (non-)syllable to avoid a crash.
 			if (syl->tag && syl->tag->Params.size()>0)
@@ -187,13 +187,13 @@ void AudioKaraoke::Commit() {
 			// Of course, if the user changed the duration of such a non-syllable, its timing can't be updated and will stay zero.
 			// There is no way to check for that right now, and I can't bother to fix it.
 		}
-		wxLogDebug(_T("AudioKaraoke::Commit: Done updating syllables"));
+		LOG_D("karaoke/audio") << "done updating syllabels";
 		workDiag->UpdateText();
 		workDiag->ClearBlocks();
 		workDiag->ParseASSTags();
 		diag->Text = workDiag->Text;
 	}
-	wxLogDebug(_T("AudioKaraoke::Commit: returning"));
+	LOG_D("karaoke/audio") << "returning";
 }
 
 
@@ -202,7 +202,7 @@ void AudioKaraoke::Commit() {
 /// @return 
 ///
 void AudioKaraoke::AutoSplit() {
-	wxLogDebug(_T("AudioKaraoke::AutoSplit"));
+	LOG_D("karaoke/audio") << "autosplit";
 
 	// Get lengths
 	int timeLen = (diag->End.GetMS() - diag->Start.GetMS())/10;
@@ -250,7 +250,7 @@ void AudioKaraoke::AutoSplit() {
 	newDiag.ParseASSTags();
 	ParseDialogue(&newDiag);
 
-	wxLogDebug(_T("AudioKaraoke::AutoSplit: returning"));
+	LOG_D("karaoke/audio") << "returning";
 }
 
 
@@ -294,14 +294,14 @@ bool AudioKaraoke::ParseDialogue(AssDialogue *curDiag) {
 /// @return 
 ///
 void AudioKaraoke::SetSyllable(int n) {
-	wxLogDebug(_T("AudioKaraoke::SetSyllable(n=%d)"), n);
+	LOG_D("karaoke/audio") << "n=" << n;
 	if (n == -1) n = syllables.size()-1;
 	if (n >= (signed) syllables.size()) n = 0;
 	curSyllable = n;
 	startClickSyl = n;
 	SetSelection(n);
 	Refresh(false);
-	wxLogDebug(_T("AudioKaraoke::SetSyllable: returning"));
+	LOG_D("karaoke/audio") << "returning";
 }
 
 
@@ -512,15 +512,15 @@ void AudioKaraoke::OnMouse(wxMouseEvent &event) {
 				int lastx = 0;
 				split_cursor_syl = syli;
 				for (unsigned int i = 0; i < widths.size(); i++) {
-					//wxLogDebug(_T("rx=%d, lastx=%d, widths[i]=%d, i=%d, widths.size()=%d, syli=%d"), rx, lastx, widths[i], i, widths.size(), syli);
+					//wx Log Debug(_T("rx=%d, lastx=%d, widths[i]=%d, i=%d, widths.size()=%d, syli=%d"), rx, lastx, widths[i], i, widths.size(), syli);
 					if (lastx - rx < widths[i] - rx) {
 						if (rx - lastx < widths[i] - rx) {
-							//wxLogDebug(_T("Found at PREV!"));
+							//wx Log Debug(_T("Found at PREV!"));
 							split_cursor_x = lastx;
 							split_cursor_char = i - 1;
 							break;
 						} else if (rx < widths[i]) {
-							//wxLogDebug(_T("Found at CURRENT!"));
+							//wx Log Debug(_T("Found at CURRENT!"));
 							split_cursor_x = widths[i];
 							split_cursor_char = i;
 							break;
@@ -531,7 +531,7 @@ void AudioKaraoke::OnMouse(wxMouseEvent &event) {
 				// If no split-point was caught by the for-loop, it must be over the last character,
 				// ie. split at next-to-last position
 				if (split_cursor_x < 0) {
-					//wxLogDebug(_T("Emergency picking LAST!"));
+					//wx Log Debug(_T("Emergency picking LAST!"));
 					split_cursor_x = widths[widths.size()-1];
 					split_cursor_char = widths.size() - 1;
 				}
@@ -539,12 +539,12 @@ void AudioKaraoke::OnMouse(wxMouseEvent &event) {
 
 			// Do something if there was a click and we're at a valid position
 			if (event.LeftDown() && split_cursor_char >= -1) {
-				//wxLogDebug(_T("A click!"));
+				//wx Log Debug(_T("A click!"));
 				int num_removed = 0;
 				std::vector<int>::iterator i = syl.pending_splits.begin();
 				while (i != syl.pending_splits.end()) {
 					if (split_cursor_char == *i) {
-						//wxLogDebug(_T("Erasing entry"));
+						//wx Log Debug(_T("Erasing entry"));
 						num_removed++;
 						syl.pending_splits.erase(i);
 						break;
@@ -597,7 +597,7 @@ int AudioKaraoke::GetSylAtX(int x) {
 /// @param end   
 ///
 void AudioKaraoke::SetSelection(int start,int end) {
-	wxLogDebug(_T("AudioKaraoke::SetSelection(start=%d, end=%d)"), start, end);
+	LOG_D("karaoke/audio") << "start=" << start << " end=" << end;
 	// Default end
 	if (end == -1) end = start;
 
@@ -609,7 +609,7 @@ void AudioKaraoke::SetSelection(int start,int end) {
 		max = min;
 		min = temp;
 	}
-	wxLogDebug(_T("AudioKaraoke::SetSelection: min=%d, max=%d"), min, max);
+	LOG_D("karaoke/audio") << "min=" << min << ", max=" << max;
 
 	// Set values
 	bool state;
@@ -622,7 +622,7 @@ void AudioKaraoke::SetSelection(int start,int end) {
 	}
 	curSyllable = min;
 	selectionCount = max-min+1;
-	wxLogDebug(_T("AudioKaraoke::SetSelection: new curSyllable=%d, selectionCount=%d"), curSyllable, selectionCount);
+	LOG_D("karaoke/audio") << "new curSyllabel=" << curSyllable << ", selectionCount=" << selectionCount;
 
 	// Set box buttons
 	box->SetKaraokeButtons();
@@ -634,7 +634,7 @@ void AudioKaraoke::SetSelection(int start,int end) {
 /// @return 
 ///
 void AudioKaraoke::Join() {
-	wxLogDebug(_T("AudioKaraoke::Join"));
+	LOG_D("karaoke/audio") << "join";
 	// Variables
 	bool gotOne = false;
 	size_t syls = syllables.size();
@@ -644,7 +644,7 @@ void AudioKaraoke::Join() {
 	// Loop
 	for (size_t i=0;i<syls;i++) {
 		curSyl = &syllables.at(i);
-		wxLogDebug(_T("AudioKaraoke::Join: syllable %d, text='%s', unstripped_text='%s', duration=%d"), i, curSyl->text.c_str(), curSyl->unstripped_text.c_str(), curSyl->duration);
+		LOG_D("karaoke/audio") << "syllabel " << i << ", text='" << curSyl->text.c_str() << "', unstripped_text='" << curSyl->unstripped_text.c_str() << "', duration=" << curSyl->duration;
 		if (curSyl->selected) {
 			if (!gotOne) {
 				gotOne = true;
@@ -652,7 +652,7 @@ void AudioKaraoke::Join() {
 			}
 			else {
 				AudioKaraokeSyllable &work = syllables.at(first);
-				wxLogDebug(_T("AudioKaraoke::Join: worksyl %d, text='%s', unstripped_text='%s', duration=%d"), i, work.text.c_str(), work.unstripped_text.c_str(), work.duration);
+				LOG_D("karaoke/audio") << "worksyl " << work.text.c_str() << ", text='" << work.text.c_str() << ", unstripped_text='" << work.unstripped_text.c_str() << "', duration=" << work.duration;
 				work.duration += curSyl->duration;
 				work.text += curSyl->text;
 				work.unstripped_text += curSyl->unstripped_text;
@@ -672,7 +672,7 @@ void AudioKaraoke::Join() {
 	display->Update();
 	Refresh(false);
 
-	wxLogDebug(_T("AudioKaraoke::Join: returning"));
+	LOG_D("karaoke/audio") << "returning";
 }
 
 
@@ -680,7 +680,7 @@ void AudioKaraoke::Join() {
 /// @brief Enter splitting-mode 
 ///
 void AudioKaraoke::BeginSplit() {
-	wxLogDebug(_T("AudioKaraoke::BeginSplit"));
+	LOG_D("karaoke/audio") << "beginsplit";
 	splitting = true;
 	split_cursor_syl = -1;
 	split_cursor_x = -1;
@@ -695,7 +695,7 @@ void AudioKaraoke::BeginSplit() {
 /// @return 
 ///
 void AudioKaraoke::EndSplit(bool commit) {
-	wxLogDebug(_T("AudioKaraoke::EndSplit(commit=%d)"), commit?1:0);
+	LOG_D("karaoke/audio") << "endsplit, commit=" << commit;
 	splitting = false;
 	bool hasSplit = false;
 	size_t first_sel = ~0U;
@@ -714,7 +714,7 @@ void AudioKaraoke::EndSplit(bool commit) {
 
 	// Update
 	if (hasSplit) {
-		wxLogDebug(_T("AudioKaraoke::EndSplit: hasSplit"));
+		LOG_D("karaoke/audio") << "hassplit";
 		must_rebuild = true;
 		display->NeedCommit = true;
 		SetSelection(first_sel);
@@ -724,7 +724,7 @@ void AudioKaraoke::EndSplit(bool commit) {
 	box->SetKaraokeButtons();
 	Refresh(false);
 
-	wxLogDebug(_T("AudioKaraoke::EndSplit: returning"));
+	LOG_D("karaoke/audio") << "returning";
 }
 
 
@@ -734,14 +734,14 @@ void AudioKaraoke::EndSplit(bool commit) {
 /// @return 
 ///
 int AudioKaraoke::SplitSyl (unsigned int n) {
-	wxLogDebug(_T("AudioKaraoke::SplitSyl(n=%u)"), n);
+	LOG_D("karaoke/audio") << "splitsyl, n=" << n;
 
 	// Avoid multiple vector resizes (this must be first)
 	syllables.reserve(syllables.size() + syllables[n].pending_splits.size());
 
 	// The syllable we're splitting
 	AudioKaraokeSyllable &basesyl = syllables[n];
-	wxLogDebug(_T("AudioKaraoke::SplitSyl: basesyl. contents='%s' selected=%d"), basesyl.unstripped_text.c_str(), basesyl.selected?1:0);
+	LOG_D("karaoke/audio") << "basesyl, contents='" << basesyl.unstripped_text.c_str() << "', selected=" << basesyl.selected;
 
 	// Start by sorting the split points
 	std::sort(basesyl.pending_splits.begin(), basesyl.pending_splits.end());
@@ -771,7 +771,7 @@ int AudioKaraoke::SplitSyl (unsigned int n) {
 		newsyl.start_time = curpos;
 		newsyl.type = basesyl.type;
 		newsyl.selected = false;//basesyl.selected;
-		wxLogDebug(_T("AudioKaraoke::SplitSyl: newsyl. contents='%s' selected=%d"), newsyl.text.c_str(), newsyl.selected?1:0);
+		LOG_D("karaoke/audio") << "splitsyl: newsyl, contents='" << newsyl.text.c_str() << "', selected=" << newsyl.selected;
 		curpos += newsyl.duration;
 		syllables.insert(syllables.begin()+n+i+1, newsyl);
 	}
@@ -808,7 +808,7 @@ int AudioKaraoke::SplitSyl (unsigned int n) {
 /// @return 
 ///
 bool AudioKaraoke::SyllableDelta(int n,int delta,int mode) {
-	wxLogDebug(_T("AudioKaraoke::SyllableDelta(n=%d, delta=%d, mode=%d)"), n, delta, mode);
+	LOG_D("karaoke/audio") << "n=" << n << ", delta=" << delta << ", mode=" << mode;
 	// Get syllable and next
 	AudioKaraokeSyllable *curSyl=NULL,*nextSyl=NULL;
 	curSyl = &syllables.at(n);
@@ -825,33 +825,33 @@ bool AudioKaraoke::SyllableDelta(int n,int delta,int mode) {
 	if (len + delta < minLen) delta = minLen-len;
 	if (mode == 0 && nextSyl && (nextSyl->duration - delta) < minLen) delta = nextSyl->duration - minLen;
 
-	wxLogDebug(_T("AudioKaraoke::SyllableDelta: nkar=%d, len=%d, minLen=%d, delta=%d"), nkar, len, minLen, delta);
+	LOG_D("karaoke/audio") << "nkar=" << nkar << ", len=" << len << ", minLen=" << minLen << ", delta=" << delta;
 
 	// Apply
 	if (delta != 0) {
-		wxLogDebug(_T("AudioKaraoke::SyllableDelta: delta != 0"));
+		LOG_D("karaoke/audio") << "delta != 0";
 		curSyl->duration += delta;
 
 		// Normal mode
 		if (mode == 0 && nextSyl) {
-			wxLogDebug(_T("AudioKaraoke::SyllableDelta: normal mode"));
+			LOG_D("karaoke/audio") << "normal mode";
 			nextSyl->duration -= delta;
 			nextSyl->start_time += delta;
 		}
 
 		// Shift mode
 		if (mode == 1) {
-			wxLogDebug(_T("AudioKaraoke::SyllableDelta: shift mode"));
+			LOG_D("karaoke/audio") << "shift mode";
 			for (int i=n+1;i<nkar;i++) {
 				syllables.at(i).start_time += delta;
 			}
 		}
 
 		// Flag update
-		wxLogDebug(_T("AudioKaraoke::SyllableDelta: return true"));
+		LOG_D("karaoke/audio") << "return true";
 		return true;
 	}
-	wxLogDebug(_T("AudioKaraoke::SyllableDelta: return false"));
+	LOG_D("karaoke/audio") << "return false";
 	return false;
 }
 

@@ -51,6 +51,8 @@
 #include <wx/log.h>
 #endif
 
+#include <libaegisub/log.h>
+
 #include "aegisub_endian.h"
 #include "audio_provider_pcm.h"
 #include "utils.h"
@@ -681,8 +683,8 @@ AudioProvider *CreatePCMAudioProvider(const wxString &filename)
 		return provider;
 	}
 	catch (const wxChar *msg) {
+		LOG_E("audio/provider/pcm") << "Creating PCM WAV reader failed with message: '" << msg << "' Trying other providers";
 		provider = 0;
-		wxLogDebug(_T("Creating PCM WAV reader failed with message: %s\nProceeding to try other providers."), msg);
 	}
 
 	// Try Sony Wave64
@@ -691,8 +693,8 @@ AudioProvider *CreatePCMAudioProvider(const wxString &filename)
 		return provider;
 	}
 	catch (const wxChar *msg) {
+		LOG_E("audio/provider/pcm") << "Creating Wave64 reader failed with message: '" << msg << "' Trying other providers";
 		provider = 0;
-		wxLogDebug(_T("Creating Wave64 reader failed with message: %s\nProceeding to try other providers."), msg);
 	}
 
 	// no providers could be created

@@ -46,6 +46,8 @@
 #include <wx/log.h>
 #endif
 
+#include <libaegisub/log.h>
+
 #include "ass_dialogue.h"
 #include "ass_file.h"
 #include "ass_override.h"
@@ -822,7 +824,7 @@ namespace Automation4 {
 	{
 		LuaAssFile *laf = GetObjPointer(L, 1);
 		delete laf;
-		wxLogDebug(_T(">>gc<< Garbage collected LuaAssFile"));
+		LOG_D("automation/lua") << "Garbage collected LuaAssFile";
 		return 0;
 	}
 

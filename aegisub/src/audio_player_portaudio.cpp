@@ -41,6 +41,8 @@
 
 
 // Headers
+#include <libaegisub/log.h>
+
 #include "audio_player_portaudio.h"
 #include "audio_provider_manager.h"
 #include "charset_conv.h"
@@ -90,10 +92,10 @@ void PortAudioPlayer::OpenStream() {
 
 	if (pa_config_default < 0) {
 		pa_device = Pa_GetDefaultOutputDevice();
-		wxLogDebug(_T("PortAudioPlayer::OpenStream Using Default Output Device: %d"), pa_device);
+		LOG_D("audio/player/portaudio") << "using default output device:" << pa_device;
 	} else {
 		pa_device = pa_config_default;
-		wxLogDebug(_T("PortAudioPlayer::OpenStream Using Config Device: %d"), pa_device);
+		LOG_D("audio/player/portaudio") << "using config device: " << pa_device;
 	}
 
 	pa_output_p.device = pa_device;
@@ -102,17 +104,15 @@ void PortAudioPlayer::OpenStream() {
 	pa_output_p.suggestedLatency = Pa_GetDeviceInfo(pa_device)->defaultLowOutputLatency;
 	pa_output_p.hostApiSpecificStreamInfo = NULL;
 
-	wxLogDebug(_T("PortAudioPlayer::OpenStream Output channels: %d, Latency: %f  Sample Rate: %ld\n"),
-	pa_output_p.channelCount, pa_output_p.suggestedLatency, pa_output_p.sampleFormat);
+	LOG_D("audio/player/portaudio") << "output channels: " << pa_output_p.channelCount << ", latency: " << pa_output_p.suggestedLatency << "  sample rate: " << pa_output_p.sampleFormat;
 
 	PaError err = Pa_OpenStream(&stream, NULL, &pa_output_p, provider->GetSampleRate(), 256, paPrimeOutputBuffersUsingStreamCallback, paCallback, this);
 
 	if (err != paNoError) {
 
 		const PaHostErrorInfo *pa_err = Pa_GetLastHostErrorInfo();
-		if (pa_err->errorCode != 0) {
-			wxLogDebug(_T("PortAudioPlayer::OpenStream HostError: API: %d, %s (%ld)\n"), pa_err->hostApiType, pa_err->errorText, pa_err->errorCode);
-		}
+		LOG_D_IF(pa_err->errorCode != 0, "audio/player/portaudio") << "HostError: API: " << pa_err->hostApiType << ", " << pa_err->errorText << ", " << pa_err->errorCode;
+		LOG_D("audio/player/portaudio") << "Failed initializing PortAudio stream with error: " << Pa_GetErrorText(err);
 		throw wxString(_T("Failed initializing PortAudio stream with error: ") + wxString(Pa_GetErrorText(err),csConvLocal));
 	}
 }
@@ -133,8 +133,7 @@ void PortAudioPlayer::paStreamFinishedCallback(void *userData) {
 	if (player->displayTimer) {
 		player->displayTimer->Stop();
 	}
-
-	wxLogDebug(_T("PortAudioPlayer::paStreamFinishedCallback Stopping stream."));
+	LOG_D("audio/player/portaudio") << "stopping stream";
 }
 
 
@@ -155,14 +154,14 @@ void PortAudioPlayer::Play(int64_t start,int64_t count) {
 		err = Pa_SetStreamFinishedCallback(stream, paStreamFinishedCallback);
 
 		if (err != paNoError) {
-			wxLogDebug(_T("PortAudioPlayer::Play Could not set FinishedCallback.\n"));
+			LOG_D("audio/player/portaudio") << "could not set FinishedCallback";
 			return;
 		}
 
 		err = Pa_StartStream(stream);
 
 		if (err != paNoError) {
-			wxLogDebug(_T("PortAudioPlayer::Play Error playing stream.\n"));
+			LOG_D("audio/player/portaudio") << "error playing stream";
 			return;
 		}
 	}

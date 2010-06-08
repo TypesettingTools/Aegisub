@@ -36,6 +36,8 @@
 
 #include "config.h"
 
+#include <libaegisub/log.h>
+
 #include "video_provider_yuv4mpeg.h"
 
 // All of this cstdio bogus is because of one reason and one reason only:
@@ -113,7 +115,7 @@ void YUV4MPEGVideoProvider::LoadVideo(const wxString _filename) {
 	if (fps_rat.num <= 0 || fps_rat.den <= 0) {
 		fps_rat.num = 25;
 		fps_rat.den = 1;
-		wxLogDebug(_T("YUV4MPEG video provider: framerate info unavailable, assuming 25fps"));
+		LOG_D("provider/video/yuv4mpeg") << "framerate info unavailable, assuming 25fps";
 	}
 	if (pixfmt == Y4M_PIXFMT_NONE)
 		pixfmt = Y4M_PIXFMT_420JPEG;
@@ -187,7 +189,7 @@ std::vector<wxString> YUV4MPEGVideoProvider::ReadHeader(int64_t startpos, bool r
 		if (feof(sf)) {
 			// you know, this is one of the places where it would be really nice
 			// to be able to throw an exception object that tells the caller that EOF was reached
-			wxLogDebug(_T("YUV4MPEG video provider: ReadHeader: Reached EOF, returning"));
+			LOG_D("provider/video/yuv4mpeg") << "ReadHeader: Reached EOF, returning";
 			break;
 		}
 
@@ -281,7 +283,7 @@ void YUV4MPEGVideoProvider::ParseFileHeader(const std::vector<wxString>& tags) {
 				throw wxString(_T("ParseFileHeader: invalid or unknown interlacing mode"));
 		}
 		else
-			wxLogDebug(_T("ParseFileHeader: unparsed tag: %s"), tags.at(i).c_str());
+			LOG_D("provider/video/yuv4mpeg") << "Unparsed tag: " << tags.at(i).c_str();
 	}
 
 	// The point of all this is to allow multiple YUV4MPEG2 headers in a single file

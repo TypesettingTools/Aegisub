@@ -41,6 +41,7 @@
 
 #ifdef WITH_DIRECTSOUND
 
+#include <libaegisub/log.h>
 
 #include "audio_player_dsound.h"
 #include "frame_main.h"
@@ -206,7 +207,7 @@ RetryLock:
 
 	// Buffer lost?
 	if (res == DSERR_BUFFERLOST) {
-		wxLogDebug(_T("Lost DSound buffer"));
+		LOG_D("audio/player/dsound1") << "lost dsound buffer";
 		buffer->Restore();
 		goto RetryLock;
 	}
@@ -218,9 +219,9 @@ RetryLock:
 	unsigned long int count1 = size1 / bytesps;
 	unsigned long int count2 = size2 / bytesps;
 
-	if (count1) wxLogDebug(_T("DS fill: %05lu -> %05lu"), (unsigned long)playPos, (unsigned long)playPos+count1);
-	if (count2) wxLogDebug(_T("DS fill: %05lu => %05lu"), (unsigned long)playPos+count1, (unsigned long)playPos+count1+count2);
-	if (!count1 && !count2) wxLogDebug(_T("DS fill: nothing"));
+	LOG_D_IF(count1, "audio/player/dsound1") << "DS fill: " << (unsigned long)playPos << " -> " << (unsigned long)playPos+count1;
+	LOG_D_IF(count2, "audio/player/dsound1") << "DS fill: " << (unsigned long)playPos+count1 << " -> " << (unsigned long)playPos+count1+count2;
+	LOG_D_IF(!count1 && !count2, "audio/player/dsound1") << "DS fill: nothing";
 
 	// Get source wave
 	if (count1) provider->GetAudioWithVolume(ptr1, playPos, count1, volume);
@@ -378,7 +379,7 @@ wxThread::ExitCode DirectSoundPlayerThread::Entry() {
 	while (WaitForSingleObject(stopnotify, 50) == WAIT_TIMEOUT) {
 		if (!parent->FillBuffer(false)) {
 			// FillBuffer returns false when end of stream is reached
-			wxLogDebug(_T("DS thread hit end of stream"));
+			LOG_D("audio/player/dsound1") << "DS thread hit end of stream";
 			break;
 		}
 	}
@@ -398,8 +399,8 @@ wxThread::ExitCode DirectSoundPlayerThread::Entry() {
 		if (FAILED(res)) break;
 		if (size1) memset(buf1, 0, size1);
 		if (size2) memset(buf2, 0, size2);
-		if (size1) wxLogDebug(_T("DS blnk: %05ld -> %05ld"), (unsigned long)parent->playPos+bytesFilled, (unsigned long)parent->playPos+bytesFilled+size1);
-		if (size2) wxLogDebug(_T("DS blnk: %05ld => %05ld"), (unsigned long)parent->playPos+bytesFilled+size1, (unsigned long)parent->playPos+bytesFilled+size1+size2);
+		LOG_D_IF(size1, "audio/player/dsound1") << "DS blnk:" << (unsigned long)parent->playPos+bytesFilled << " -> " << (unsigned long)parent->playPos+bytesFilled+size1;
+		LOG_D_IF(size2, "audio/player/dsound1") << "DS blnk:" << (unsigned long)parent->playPos+bytesFilled+size1 << " -> " << (unsigned long)parent->playPos+bytesFilled+size1+size2;
 		bytesFilled += size1 + size2;
 		parent->buffer->Unlock(buf1, size1, buf2, size2);
 		if (bytesFilled > parent->bufSize) break;
@@ -408,7 +409,7 @@ wxThread::ExitCode DirectSoundPlayerThread::Entry() {
 
 	WaitForSingleObject(stopnotify, 150);
 
-	wxLogDebug(_T("DS thread dead"));
+	LOG_D("audio/player/dsound1") << "DS thread dead";
 
 	parent->playing = false;
 	parent->buffer->Stop();

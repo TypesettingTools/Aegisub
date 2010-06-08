@@ -39,6 +39,8 @@
 
 ///////////
 // Headers
+#include <libaegisub/log.h>
+
 #include "audio_player_manager.h"
 #include "audio_player_oss.h"
 #include "audio_provider_manager.h"
@@ -279,8 +281,7 @@ int64_t OSSPlayer::GetCurrentPosition()
 #else
         played_frames = pos.samples + pos.fifo_samples;
 #endif
-        wxLogDebug("OSS player: played_frames %d fifo %d", played_frames,
-                   pos.fifo_samples);
+        LOG_D("player/audio/oss") << "played_frames: " << played_frames << " fifo " << pos.fifo_samples;
         if (start_frame + played_frames >= end_frame) {
             if (displayTimer)
                 displayTimer->Stop();
@@ -293,7 +294,8 @@ int64_t OSSPlayer::GetCurrentPosition()
     int delay = 0;
     if (ioctl(dspdev, SNDCTL_DSP_GETODELAY, &delay) >= 0) {
         delay /= bpf;
-        wxLogDebug("OSS player: cur_frame %d delay %d", cur_frame, delay);
+
+        LOG_D("player/audio/oss") << "cur_frame: " << cur_frame << " delay " << delay;
         // delay can jitter a bit at the end, detect that
         if (cur_frame == end_frame && delay < rate / 20) {
             if (displayTimer)
@@ -337,7 +339,7 @@ wxThread::ExitCode OSSPlayerThread::Entry() {
     free(buf);
     parent->cur_frame = parent->end_frame;
 
-    wxLogDebug(_T("OSS player thread dead"));
+	LOG_D("player/audio/oss") << "Thread dead";
     return 0;
 }
 

@@ -48,6 +48,8 @@
 #include <wx/laywin.h> // Keep this last so wxSW_3D is set.
 #endif
 
+#include <libaegisub/log.h>
+
 #include "audio_box.h"
 #include "audio_display.h"
 #include "audio_karaoke.h"
@@ -261,7 +263,7 @@ AudioBox::~AudioBox() {
 /// @return 
 ///
 void AudioBox::SetFile(wxString file,bool FromVideo) {
-	wxLogDebug(_T("AudioBox::SetFile(file=%s, FromVideo=%d)"), file.c_str(), FromVideo?1:0);
+	LOG_D("audio/box") << "file=" << file << " FromVideo: " << FromVideo;
 	loaded = false;
 
 	if (FromVideo) {
@@ -276,9 +278,9 @@ void AudioBox::SetFile(wxString file,bool FromVideo) {
 		audioName = file;
 	}
 
-	wxLogDebug(_T("AudioBox::SetFile: setting up accelerators in frameMain"));
+	LOG_D("audio/box") << "setting up acceleraters in frameMain";
 	frameMain->SetAccelerators();
-	wxLogDebug(_T("AudioBox::SetFile: returning"));
+	LOG_D("audio/box") << "finished setting up accelerators in frameMain";
 }
 
 
@@ -564,11 +566,11 @@ void AudioBox::OnPlayToEnd(wxCommandEvent &event) {
 /// @return 
 ///
 void AudioBox::OnCommit(wxCommandEvent &event) {
-	wxLogDebug(_T("AudioBox::OnCommit"));
+	LOG_D("audio/box") << "OnCommit";
 	audioDisplay->SetFocus();
-	wxLogDebug(_T("AudioBox::OnCommit: has set focus, now committing changes"));
+	LOG_D("audio/box") << "has set focus, now committing changes";
 	audioDisplay->CommitChanges(true);
-	wxLogDebug(_T("AudioBox::OnCommit: returning"));
+	LOG_D("audio/box") << "returning";
 }
 
 
@@ -578,10 +580,10 @@ void AudioBox::OnCommit(wxCommandEvent &event) {
 /// @return 
 ///
 void AudioBox::OnKaraoke(wxCommandEvent &event) {
-	wxLogDebug(_T("AudioBox::OnKaraoke"));
+	LOG_D("audio/box") << "OnKaraoke";
 	audioDisplay->SetFocus();
 	if (karaokeMode) {
-		wxLogDebug(_T("AudioBox::OnKaraoke: karaoke enabled, disabling"));
+		LOG_D("audio/box") << "karaoke enabled, disabling";
 		if (audioKaraoke->splitting) {
 			audioKaraoke->EndSplit(false);
 		}
@@ -592,7 +594,7 @@ void AudioBox::OnKaraoke(wxCommandEvent &event) {
 	}
 
 	else {
-		wxLogDebug(_T("AudioBox::OnKaraoke: karaoke disabled, enabling"));
+		LOG_D("audio/box") << "karaoke disabled, enabling";
 		karaokeMode = true;
 		audioKaraoke->enabled = true;
 		audioDisplay->SetDialogue();
@@ -600,7 +602,7 @@ void AudioBox::OnKaraoke(wxCommandEvent &event) {
 
 	SetKaraokeButtons();
 
-	wxLogDebug(_T("AudioBox::OnKaraoke: returning"));
+	LOG_D("audio/box") << "returning";
 }
 
 
@@ -634,7 +636,7 @@ void AudioBox::SetKaraokeButtons() {
 /// @param event wxEvent
 ///
 void AudioBox::OnJoin(wxCommandEvent &event) {
-	wxLogDebug(_T("AudioBox::OnJoin"));
+	LOG_D("audio/box") << "join";
 	audioDisplay->SetFocus();
 	audioKaraoke->Join();
 }
@@ -643,7 +645,7 @@ void AudioBox::OnJoin(wxCommandEvent &event) {
 /// @param event wxEvent
 ///
 void AudioBox::OnSplit(wxCommandEvent &event) {
-	wxLogDebug(_T("AudioBox::OnSplit"));
+	LOG_D("audio/box") << "split";
 	audioDisplay->SetFocus();
 		audioKaraoke->BeginSplit();
 }
@@ -652,7 +654,7 @@ void AudioBox::OnSplit(wxCommandEvent &event) {
 /// @param event wxEvent
 ///
 void AudioBox::OnCancel(wxCommandEvent &event) {
-	wxLogDebug(_T("AudioBox::OnCancel"));
+	LOG_D("audio/box") << "cancel";
 	audioDisplay->SetFocus();
 	audioKaraoke->EndSplit(true);
 }
@@ -661,7 +663,7 @@ void AudioBox::OnCancel(wxCommandEvent &event) {
 /// @param event wxEvent
 ///
 void AudioBox::OnAccept(wxCommandEvent &event) {
-	wxLogDebug(_T("AudioBox::OnAccept"));
+	LOG_D("audio/box") << "accept";
 	audioDisplay->SetFocus();
 	audioKaraoke->EndSplit(false);
 }

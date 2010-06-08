@@ -42,6 +42,8 @@
 
 ///////////
 // Headers
+#include <libaegisub/log.h>
+
 #include "audio_player_manager.h"
 #include "audio_player_openal.h"
 #include "audio_provider_manager.h"
@@ -236,7 +238,7 @@ void OpenALPlayer::Stop(bool timerToo)
 ///
 void OpenALPlayer::FillBuffers(ALsizei count)
 {
-	wxLogDebug(_T("FillBuffers: count=%d, buffers_free=%d"), count, buffers_free);
+	LOG_D("player/audio/openal") << "count=" << count << " " << "buffers_free=" << buffers_free;
 	if (count > buffers_free) count = buffers_free;
 	if (count < 1) count = 1;
 
@@ -249,7 +251,7 @@ void OpenALPlayer::FillBuffers(ALsizei count)
 		ALsizei fill_len = buffer_length;
 		if (fill_len > (ALsizei)(end_frame - cur_frame)) fill_len = (ALsizei)(end_frame - cur_frame);
 		if (fill_len < 0) fill_len = 0;
-		wxLogDebug(_T("buffer_length=%d, fill_len=%d, end_frame-cur_frame=%d"), buffer_length, fill_len, end_frame-cur_frame);
+		LOG_D("player/audio/openal") << "buffer_length=" << buffer_length << " fill_len=" << fill_len << " end_frame-cur-frame=" << end_frame-cur_frame;
 
 		if (fill_len > 0)
 			// Get fill_len frames of audio
@@ -280,7 +282,7 @@ void OpenALPlayer::Notify()
 	ALsizei newplayed;
 	alGetSourcei(source, AL_BUFFERS_PROCESSED, &newplayed);
 
-	wxLogDebug(_T("OpenAL Player notify: buffers_played=%d, newplayed=%d, playeddiff=%d"), buffers_played, newplayed);
+	LOG_D("player/audio/openal") << "buffers_played=" << buffers_played << " newplayed=" << newplayed;
 
 	if (newplayed > 0) {
 		// Reclaim buffers
@@ -302,7 +304,7 @@ void OpenALPlayer::Notify()
 		FillBuffers(newplayed);
 	}
 
-	wxLogDebug(_T("frames played=%d, num frames=%d"), (buffers_played - num_buffers) * buffer_length, end_frame - start_frame);
+	LOG_D("player/audio/openal") << "frames played=" << (buffers_played - num_buffers) * buffer_length << " num frames=" << end_frame - start_frame;
 	// Check that all of the selected audio plus one full set of buffers has been queued
 	if ((buffers_played - num_buffers) * buffer_length > (ALsizei)(end_frame - start_frame)) {
 		// Then stop

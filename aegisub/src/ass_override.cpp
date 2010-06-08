@@ -41,6 +41,8 @@
 #include <wx/tokenzr.h>
 #endif
 
+#include <libaegisub/log.h>
+
 #include "ass_dialogue.h"
 #include "ass_override.h"
 
@@ -620,7 +622,7 @@ void AssOverrideTag::ParseParameters(const wxString &text, AssOverrideTagProto::
 			work = text.SubString(start, i-1);
 			work.Trim(true).Trim(false);
 			paramList.Add(work);
-			//wxLogDebug(_T("Got parameter: %s"), work.c_str());
+			//LOG_D("subtitle/ass/override" << "Got parameter: <<  work.c_str();
 		}
 
 		if (i+1 < textlen) {

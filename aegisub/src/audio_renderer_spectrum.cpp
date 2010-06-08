@@ -51,6 +51,8 @@
 #include <wx/log.h>
 #endif
 
+#include <libaegisub/log.h>
+
 #include "audio_renderer_spectrum.h"
 #include "colorspace.h"
 #include "fft.h"
@@ -507,7 +509,7 @@ public:
 	/// until the total number of lines stored in the tree is less than the maximum.
 	void Age()
 	{
-		wxLogDebug(_T("AudioSpectrumCacheManager stats: hits=%u, misses=%u, misses%%=%f, managed lines=%u (max=%u)"), cache_hits, cache_misses, cache_misses/float(cache_hits+cache_misses)*100, cache_root->GetManagedLineCount(), max_lines_cached);
+		LOG_D("audio/renderer/spectrum/cache") << "stats: hits=" << cache_hits << " misses=" << cache_misses << " misses%=" << cache_misses/float(cache_hits+cache_misses)*100 << " managed lines=" << cache_root->GetManagedLineCount() << "(max=" << max_lines_cached << ")";
 
 		// 0 means no limit
 		if (max_lines_cached == 0)
@@ -531,7 +533,7 @@ public:
 		// Find the point where we have too many lines cached
 		while (cumulative_lines < max_lines_cached) {
 			if (it == ages.rend()) {
-				wxLogDebug(_T("AudioSpectrumCacheManager done aging did not exceed max_lines_cached"));
+				LOG_D("audio/renderer/spectrum/") << "done aging did not exeed max_lines_cached";
 				return;
 			}
 			cumulative_lines += it->num_lines;
@@ -546,7 +548,7 @@ public:
 			cache_root->KillLine(it->first_line);
 		}
 
-		wxLogDebug(_T("AudioSpectrumCacheManager done aging, managed lines now=%u (max=%u)"), cache_root->GetManagedLineCount(), max_lines_cached);
+		LOG_D("audio/renderer/spectrum/") << "done aging, managed lines now=" << cache_root->GetManagedLineCount() << " (max=" << max_lines_cached << ")";
 		assert(cache_root->GetManagedLineCount() < max_lines_cached);
 	}
 

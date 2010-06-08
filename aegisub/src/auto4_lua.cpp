@@ -51,6 +51,8 @@
 #include <wx/window.h>
 #endif
 
+#include <libaegisub/log.h>
+
 #include "ass_dialogue.h"
 #include "ass_file.h"
 #include "ass_override.h"
@@ -89,7 +91,7 @@ namespace Automation4 {
 		{
 			int top = lua_gettop(L);
 			if (top - additional != startstack) {
-				wxLogDebug(_T("Lua stack size mismatch."));
+				LOG_D("automation/lua") << "lua stack size mismatch.";
 				dump();
 				assert(top - additional == startstack);
 			}
@@ -97,18 +99,18 @@ namespace Automation4 {
 		void dump()
 		{
 			int top = lua_gettop(L);
-			wxLogDebug(_T("Dumping Lua stack..."));
+			LOG_D("automation/lua/stackdump") << "--- dumping lua stack...";
 			for (int i = top; i > 0; i--) {
 				lua_pushvalue(L, i);
 				wxString type(lua_typename(L, lua_type(L, -1)), wxConvUTF8);
 				if (lua_isstring(L, i)) {
-					wxLogDebug(type + _T(": ") + wxString(lua_tostring(L, -1), wxConvUTF8));
+					LOG_D("automation/lua/stackdump") << type << ": " << luatostring(L, -1);
 				} else {
-					wxLogDebug(type);
+					LOG_D("automation/lua/stackdump") << type;
 				}
 				lua_pop(L, 1);
 			}
-			wxLogDebug(_T("--- end dump"));
+			LOG_D("automation/lua") << "--- end dump";
 		}
 		LuaStackcheck(lua_State *_L) : L(_L) { startstack = lua_gettop(L); }
 		~LuaStackcheck() { check_stack(0); }

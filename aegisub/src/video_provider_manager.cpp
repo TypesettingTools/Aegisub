@@ -39,6 +39,8 @@
 // Headers
 #include "config.h"
 
+#include <libaegisub/log.h>
+
 #include "compat.h"
 #include "main.h"
 #include "options.h"
@@ -75,10 +77,10 @@ VideoProvider *VideoProviderFactoryManager::GetProvider(wxString video) {
 		return y4m_provider;
 	}
 	catch (wxString temp) {
-		wxLogDebug(_T("YUV4MPEG provider creation failed with reason: %s; trying other providers"), temp.c_str());
+		LOG_E("manager/video/provider/yuv4mpeg") << "Provider creation failed with reason: "<< temp.c_str() << " trying other providers";
 	}
 	catch (...) {
-		wxLogDebug(_T("YUV4MPEG provider creation failed for unknown reasons, trying other providers"));
+		LOG_E("manager/video/provider/yuv4mpeg") << "Provider creation failed (uknown reason) trying other providers";
 	}
 
 	// List of providers

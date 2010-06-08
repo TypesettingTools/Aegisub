@@ -39,6 +39,8 @@
 
 #ifdef WITH_QUICKTIME
 
+#include <libaegisub/log.h>
+
 #include "audio_provider_quicktime.h"
 
 
@@ -194,9 +196,7 @@ void QuickTimeAudioProvider::GetAudio(void *buf, int64_t start, int64_t count) {
 	qt_status = MovieAudioExtractionFillBuffer(extract_ref, &decode_count, &dst_buflist, &flags);
 	QTCheckError(qt_status, wxString(_T("QuickTime audio provider: Failed to decode audio")));
 
-	if (count != decode_count)
-		wxLogDebug(_T("QuickTime audio provider: GetAudio: Warning: decoded samplecount %d not same as requested count %d"),
-			decode_count, (uint32_t)count);
+		LOG_W_IF(count != decode_count, "audio/provider/quicktime") << "decoded samplecount " << decode_count << "not same as requested count" << (uint32_t)count);
 }
 
 

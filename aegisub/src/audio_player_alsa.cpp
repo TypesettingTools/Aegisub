@@ -37,11 +37,14 @@
 
 #include "config.h"
 
+
 #ifdef WITH_ALSA
 
 
 ///////////
 // Headers
+#include <libaegisub/log.h>
+
 #include "audio_player_alsa.h"
 #include "audio_player_manager.h"
 #include "audio_provider_manager.h"
@@ -151,12 +154,11 @@ void AlsaPlayer::SetUpHardware()
 	if (snd_pcm_hw_params_set_rate_near(pcm_handle, hwparams, &real_rate, 0) < 0) {
 		throw _T("ALSA player: Could not set sample rate");
 	}
-	if (rate != real_rate) {
-		wxLogDebug(_T("ALSA player: Could not set ideal sample rate %d, using %d instead"), rate, real_rate);
-	}
+	LOG_D_IF(rate != real_rate, "player/audio/alsa") << "ALSA player: Could not set ideal sample rate " << rate << "using " << real_rate << "instead";
 
 	// Set number of channels
 	if (snd_pcm_hw_params_set_channels(pcm_handle, hwparams, provider->GetChannels()) < 0) {
+		LOG_E("player/audio/alsa") << "Could not set number of channels";
 		throw _T("ALSA player: Could not set number of channels");
 	}
 	printf("ALSA player: Set sample rate %u (wanted %u)\n", real_rate, rate);
@@ -165,12 +167,13 @@ void AlsaPlayer::SetUpHardware()
 	unsigned int wanted_buflen = 1000000; // microseconds
 	buflen = wanted_buflen;
 	if (snd_pcm_hw_params_set_buffer_time_near(pcm_handle, hwparams, &buflen, &dir) < 0) {
+		LOG_E("player/audio/alsa") << "Couldn't set buffer length";
 		throw _T("ALSA player: Couldn't set buffer length");
 	}
-	if (buflen != wanted_buflen) {
-		wxLogDebug(_T("ALSA player: Couldn't get wanted buffer size of %u, got %u instead"), wanted_buflen, buflen);
-	}
+	LOG_D_IF(buflen != wanted_buflen, "player/audio/alsa") << "Couldn't get wanted buffer size of " << wanted_buflen << ", got " << buflen << "instead";
+
 	if (snd_pcm_hw_params_get_buffer_size(hwparams, &bufsize) < 0) {
+		LOG_E("player/audio/alsa") << "Couldn't get buffer size";
 		throw _T("ALSA player: Couldn't get buffer size");
 	}
 	printf("ALSA player: Buffer size: %lu\n", bufsize);
@@ -182,16 +185,17 @@ void AlsaPlayer::SetUpHardware()
 	if (snd_pcm_hw_params_set_period_time_near(pcm_handle, hwparams, &period_len, &dir) < 0) {
 		throw _T("ALSA player: Couldn't set period length");
 	}
-	if (period_len != wanted_period) {
-		wxLogDebug(_T("ALSA player: Couldn't get wanted period size of %d, got %d instead"), wanted_period, period_len);
-	}
+	LOG_D_IF(period_len != wanted_period, "player/audio/alsa") << Couldn't get wanted period size of " << wanted_period" << ", got " << period_len << " instead";
+
 	if (snd_pcm_hw_params_get_period_size(hwparams, &period, &dir) < 0) {
+		LOG_E("player/audio/alsa") << "Couldn't get period size";
 		throw _T("ALSA player: Couldn't get period size");
 	}
 	printf("ALSA player: Period size: %lu\n", period);
 
 	// Apply parameters
 	if (snd_pcm_hw_params(pcm_handle, hwparams) < 0) {
+		LOG_E("player/audio/alsa") << "Failed applying sound hardware settings";
 		throw _T("ALSA player: Failed applying sound hardware settings");
 	}
 
@@ -211,21 +215,25 @@ void AlsaPlayer::SetUpAsync()
 
 	// Get current parameters
 	if (snd_pcm_sw_params_current(pcm_handle, sw_params) < 0) {
+		LOG_E("player/audio/alsa") << "Couldn't get current SW params";
 		throw _T("ALSA player: Couldn't get current SW params");
 	}
 
 	// How full the buffer must be before playback begins
 	if (snd_pcm_sw_params_set_start_threshold(pcm_handle, sw_params, bufsize - period) < 0) {
+		LOG_E("player/audio/alsa") << "Failed setting start threshold";
 		throw _T("ALSA player: Failed setting start threshold");
 	}
 
 	// The the largest write guaranteed never to block
 	if (snd_pcm_sw_params_set_avail_min(pcm_handle, sw_params, period) < 0) {
+		LOG_E("player/audio/alsa") << "Failed setting min available buffer";
 		throw _T("ALSA player: Failed setting min available buffer");
 	}
 
 	// Apply settings
 	if (snd_pcm_sw_params(pcm_handle, sw_params) < 0) {
+		LOG_E("player/audio/alsa") << "Failed applying SW params";
 		throw _T("ALSA player: Failed applying SW params");
 	}
 
@@ -237,6 +245,7 @@ void AlsaPlayer::SetUpAsync()
 
 	// Attach async handler
 	if (snd_async_add_pcm_handler(&pcm_callback, pcm_handle, async_write_handler, this) < 0) {
+		LOG_E("player/audio/alsa") << "Failed attaching async handler";
 		throw _T("ALSA player: Failed attaching async handler");
 	}
 }

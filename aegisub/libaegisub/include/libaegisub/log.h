@@ -44,6 +44,9 @@
 #define LOG_I(section) LOG_SINK(section, agi::log::Info)
 #define LOG_D(section) LOG_SINK(section, agi::log::Debug)
 
+#define LOG_W_IF(cond, section) if (cond) LOG_SINK(section, agi::log::Warning)
+#define LOG_I_IF(cond, section) if (cond) LOG_SINK(section, agi::log::Info)
+#define LOG_D_IF(cond, section) if (cond) LOG_SINK(section, agi::log::Debug)
 
 namespace agi {
 	namespace log {
