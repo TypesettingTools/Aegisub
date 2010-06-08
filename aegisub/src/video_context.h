@@ -34,8 +34,6 @@
 /// @ingroup video
 ///
 
-///////////
-// Headers
 #ifndef AGI_PRE
 #include <time.h>
 
@@ -56,23 +54,21 @@
 #else
 #include <GL/gl.h>
 #include <GL/glu.h>
-
-/// DOCME
-typedef GLuint GLhandleARB;
 #endif
 
 #include "video_frame.h"
 
-
-//////////////
-// Prototypes
 class SubtitlesGrid;
 class AudioProvider;
 class AudioDisplay;
 class AssDialogue;
+class SubtitlesProvider;
 class VideoProvider;
 class VideoDisplay;
-class SubtitlesProvider;
+
+namespace agi {
+	class OptionValue;
+}
 
 /// DOCME
 /// @class VideoContext
@@ -174,6 +170,8 @@ private:
 	int arType;
 
 	bool hasSubtitles;
+
+	agi::OptionValue* playAudioOnStep;
 
 	void OnPlayTimer(wxTimerEvent &event);
 

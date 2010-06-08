@@ -123,6 +123,7 @@ VideoContext::VideoContext()
 , grid(NULL)
 , curLine(NULL)
 , audio(NULL)
+, playAudioOnStep(OPT_GET("Audio/Plays When Stepping Video"))
 {
 }
 
@@ -331,7 +332,8 @@ void VideoContext::UpdateDisplays(bool full) {
 
 	// Update audio display
 	if (audio && audio->loaded && audio->IsShownOnScreen()) {
-		if (OPT_GET("Audio/Display/Draw/Video Position")->GetBool()) {
+		static agi::OptionValue* opt = OPT_GET("Audio/Display/Draw/Video Position");
+		if (opt->GetBool()) {
 			audio->UpdateImage(false);
 		}
 	}
@@ -376,7 +378,8 @@ void VideoContext::JumpToFrame(int n) {
 	UpdateDisplays(false);
 
 	// Update grid
-	if (!isPlaying && OPT_GET("Subtitle/Grid/Highlight Subtitles in Frame")->GetBool()) grid->Refresh(false);
+	static agi::OptionValue* highlight = OPT_GET("Subtitle/Grid/Highlight Subtitles in Frame");
+	if (!isPlaying && highlight->GetBool()) grid->Refresh(false);
 }
 
 
@@ -441,7 +444,8 @@ AegiVideoFrame VideoContext::GetFrame(int n,bool raw) {
 ///
 void VideoContext::SaveSnapshot(bool raw) {
 	// Get folder
-	wxString option = lagi_wxString(OPT_GET("Path/Screenshot")->GetString());
+	static agi::OptionValue* ssPath = OPT_GET("Path/Screenshot");
+	wxString option = lagi_wxString(ssPath->GetString());
 	wxFileName videoFile(videoName);
 	wxString basepath;
 	// Is it a path specifier and not an actual fixed path?
@@ -495,7 +499,7 @@ void VideoContext::PlayNextFrame() {
 	int thisFrame = frame_n;
 	JumpToFrame(frame_n + 1);
 	// Start playing audio
-	if (OPT_GET("Audio/Plays When Stepping Video")->GetBool())
+	if (playAudioOnStep->GetBool())
 		audio->Play(VFR_Output.GetTimeAtFrame(thisFrame),VFR_Output.GetTimeAtFrame(thisFrame + 1));
 }
 
@@ -509,7 +513,7 @@ void VideoContext::PlayPrevFrame() {
 	int thisFrame = frame_n;
 	JumpToFrame(frame_n -1);
 	// Start playing audio
-	if (OPT_GET("Audio/Plays When Stepping Video")->GetBool())
+	if (playAudioOnStep->GetBool())
 		audio->Play(VFR_Output.GetTimeAtFrame(thisFrame - 1),VFR_Output.GetTimeAtFrame(thisFrame));
 }
 
