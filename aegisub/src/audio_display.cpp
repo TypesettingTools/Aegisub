@@ -1388,7 +1388,7 @@ void AudioDisplay::OnMouseEvent(wxMouseEvent& event) {
 			dc.DrawLine(x,0,x,h);
 
 			// Time
-			if (OPT_GET("Audio/Display/Draw/Cursor")->GetBool()) {
+			if (OPT_GET("Audio/Display/Draw/Cursor Time")->GetBool()) {
 				// Time string
 				AssTime time;
 				time.SetMS(GetMSAtX(x));
