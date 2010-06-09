@@ -21,6 +21,15 @@
 #ifndef LAGI_PRE
 #endif // LAGI_PRE
 
+#ifdef _WIN32
+#include <time.h>
+
+#else // Unix / OSX
+#include <sys/time.h>
+
+#endif // if _WIN32
+
+
 #pragma once
 
 namespace agi {
@@ -61,3 +70,14 @@ typedef struct tm {
 
 	} // namespace type
 } // namespace agi
+
+
+#ifdef _WIN32
+
+typedef agi::type::win::timeval agi_timeval;
+
+#else // Unix / OSX
+
+typedef timeval agi_timeval;
+
+#endif // if _WIN32

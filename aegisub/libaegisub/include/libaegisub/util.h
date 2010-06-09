@@ -32,7 +32,7 @@ namespace agi {
 
 	const std::string DirName(const std::string& path);
 	void Rename(const std::string& from, const std::string& to);
-	void time_log(timeval &tv);
+	void time_log(agi_timeval &tv);
 
 	} // namespace util
 } // namespace agi

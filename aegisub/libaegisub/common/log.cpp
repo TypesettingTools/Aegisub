@@ -20,11 +20,11 @@
 
 
 #include <stdio.h>
-#include <time.h>
 #include <string.h>
 
 #include "libaegisub/log.h"
 #include "libaegisub/mutex.h"
+#include "libaegisub/types.h"
 #include "libaegisub/util.h"
 
 namespace agi {
@@ -38,7 +38,7 @@ LogSink *log = new LogSink();
 const char *Severity_ID = "EAWID";
 
 SinkMessage::SinkMessage(const char *section, Severity severity, const char *file,
-			const char *func, int line, timeval tv):
+			const char *func, int line, agi_timeval tv):
 			section(section),
 			severity(severity),
 			file(file),
@@ -109,7 +109,7 @@ Message::Message(const char *section,
 				len(1024) {
 	buf = new char[len];
 	msg = new std::ostrstream(buf, len);
-	timeval tv;
+	agi_timeval tv;
 	util::time_log(tv);
 	sm = new SinkMessage(section, severity, file, func, line, tv);
 }

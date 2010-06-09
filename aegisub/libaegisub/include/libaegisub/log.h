@@ -78,7 +78,7 @@ struct SinkMessage {
 	/// @param line     Source line
 	/// @param tv 		Log time
 	SinkMessage(const char *section, Severity severity, const char *file,
-            const char *func, int line, timeval tv);
+            const char *func, int line, agi_timeval tv);
 
 	// Destructor
 	~SinkMessage();
@@ -88,7 +88,7 @@ struct SinkMessage {
 	const char *file;		///< Source file
 	const char *func;		///< Function name
 	int line;				///< Source line
-	timeval tv;				///< Time at execution
+	agi_timeval tv;			///< Time at execution
 	char *message;			///< Formatted message
 	size_t len;				///< Message length
 };

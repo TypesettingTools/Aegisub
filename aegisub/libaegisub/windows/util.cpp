@@ -25,13 +25,11 @@
 #include <string>
 #include <fstream>
 
-#include <time.h>
 #include <windows.h>
-
 #endif
 
 #include "libaegisub/types.h"
-#include <libaegisub/charset_conv_win.h>
+#include "libaegisub/charset_conv_win.h"
 #include "libaegisub/util.h"
 #include "libaegisub/util_win.h"
 
@@ -74,9 +72,9 @@ std::string ErrorString(DWORD error) {
 }
 
 /// @brief Get seconds and microseconds.
-/// @param tv[out] timeval struct
+/// @param tv[out] agi_timeval struct
 /// This code is from http://www.suacommunity.com/dictionary/gettimeofday-entry.php
-void time_log(type::win::timeval &tv) {
+void time_log(agi_timeval &tv) {
 #if defined(_MSC_VER) || defined(_MSC_EXTENSIONS)
 #define DELTA_EPOCH_IN_MICROSECS  11644473600000000Ui64
 #else
