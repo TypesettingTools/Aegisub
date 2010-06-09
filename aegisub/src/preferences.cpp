@@ -180,10 +180,7 @@ void Preferences::OptionAdd(wxPanel *parent, wxFlexGridSizer *flex, const wxStri
 
 		case agi::OptionValue::Type_Colour: {
 			flex->Add(new wxStaticText(parent, wxID_ANY, name), 1, wxALIGN_CENTRE_VERTICAL);
-			ColourButton *colour = new ColourButton(parent, wxID_ANY, wxSize(40,10));
-			wxColour current(opt->GetColour());
-			colour->SetColour(current);
-			flex->Add(colour);
+			flex->Add(new ColourButton(parent, wxID_ANY, wxSize(40,10), lagi_wxColour(opt->GetColour())));
 			break;
 		}
 

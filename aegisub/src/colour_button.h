@@ -34,9 +34,6 @@
 /// @ingroup custom_control
 ///
 
-
-////////////
-// Includes
 #ifndef AGI_PRE
 #include <wx/bmpbuttn.h>
 #endif
@@ -49,25 +46,14 @@
 /// DOCME
 class ColourButton: public wxBitmapButton {
 private:
-
-	/// DOCME
-	wxBitmap bmp;
-
-	/// DOCME
-	wxColour colour;
-
-	/// DOCME
-	wxColour *linkColour;
-
+	wxBitmap bmp; /// The button's bitmap label
+	wxColour colour; /// The current colour
 	void OnClick(wxCommandEvent &event);
+	void SetColour(wxColour colour);
 
 public:
 	ColourButton(wxWindow* parent, wxWindowID id, const wxSize& size, wxColour col=wxColour(0,0,0));
 	~ColourButton();
 
-	void SetColour(wxColour colour);
 	wxColour GetColour();
-	void SetLinkColour(wxColour *colour);
 };
-
-

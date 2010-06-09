@@ -51,7 +51,6 @@
 #include "ass_style.h"
 #include "ass_style_storage.h"
 #include "compat.h"
-#include "dialog_colorpicker.h"
 #include "dialog_style_editor.h"
 #include "help_button.h"
 #include "libresrc/libresrc.h"

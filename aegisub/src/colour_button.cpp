@@ -34,9 +34,6 @@
 /// @ingroup custom_control
 ///
 
-
-////////////
-// Includes
 #include "config.h"
 
 #ifndef AGI_PRE
@@ -47,42 +44,20 @@
 #include "config.h"
 #include "dialog_colorpicker.h"
 
-
-/// @brief Constructor 
-/// @param parent 
-/// @param id     
-/// @param size   
-/// @param col    
-///
-ColourButton::ColourButton(wxWindow* parent, wxWindowID id, const wxSize& size, wxColour col) {
-	// Variables
-	linkColour = NULL;
-
-	// Create base
-	wxBitmapButton::Create(parent,id,wxBitmap(size.GetWidth(),size.GetHeight()),wxDefaultPosition,wxDefaultSize,wxBU_AUTODRAW);
-	bmp = GetBitmapLabel();
-
-	// Set colour
+ColourButton::ColourButton(wxWindow* parent, wxWindowID id, const wxSize& size, wxColour col)
+: wxBitmapButton(parent, id, wxBitmap(size))
+, bmp(GetBitmapLabel())
+{
 	SetColour(col);
-
-	// Connect to click event
-	Connect(GetId(),wxEVT_COMMAND_BUTTON_CLICKED,wxCommandEventHandler(ColourButton::OnClick));
+	Bind(wxEVT_COMMAND_BUTTON_CLICKED, &ColourButton::OnClick, this);
 }
 
-
-
-/// @brief Destructor 
-///
 ColourButton::~ColourButton() {
 }
 
-
-
-/// @brief Set colour 
-/// @param col 
-///
+/// @brief Callback for the color picker dialog
+/// @param col New color
 void ColourButton::SetColour(wxColour col) {
-	// Set colour
 	colour = col;
 
 	// Draw colour
@@ -92,44 +67,24 @@ void ColourButton::SetColour(wxColour col) {
 		dc.SetBrush(wxBrush(colour));
 		dc.DrawRectangle(0,0,bmp.GetWidth(),bmp.GetHeight());
 	}
-
-	// Set bitmap
 	SetBitmapLabel(bmp);
 
-	// Set link colour
-	if (linkColour) *linkColour = colour;
+	// Trigger a click event on this as some stuff relies on that to know
+	// when the color has changed
+	wxCommandEvent evt(wxEVT_COMMAND_BUTTON_CLICKED, GetId());
+	evt.SetClientData(this);
+	AddPendingEvent(evt);
 }
 
-
-
-/// @brief Get Colour 
-/// @return 
-///
 wxColour ColourButton::GetColour() {
 	return colour;
 }
 
-
-
-/// @brief Click 
+/// @brief Click handler
 /// @param event 
-///
 void ColourButton::OnClick(wxCommandEvent &event) {
-	DialogColorPicker dlg(GetParent(), colour);
-	if (dlg.ShowModal() == wxID_OK) {
-		SetColour(dlg.GetColor());
-	}
-	event.Skip();
+	if (event.GetClientData() != this)
+		GetColorFromUser<ColourButton, &ColourButton::SetColour>(GetParent(), colour, this);
+	else
+		event.Skip();
 }
-
-
-
-/// @brief Set Link Colour 
-/// @param col 
-///
-void ColourButton::SetLinkColour(wxColour *col) {
-	linkColour = col;
-	if (linkColour) SetColour(*linkColour);
-}
-
-
