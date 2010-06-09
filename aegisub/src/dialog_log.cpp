@@ -119,7 +119,7 @@ void LogWindow::EmitLog::Write(agi::log::SinkMessage *sm) {
 		sm->file,
 		sm->func,
 		sm->line,
-		sm->message);
+		std::string(sm->message, sm->len));
 #endif
 	text_ctrl->AppendText(log);
 }
