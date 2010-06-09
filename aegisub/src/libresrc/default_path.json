@@ -1,9 +1,9 @@
 {
-	"Backup" : "^USER/backup",
-	"Autosave" : "^USER/autosave",
-	"Data" : "^DATA",
-	"User" : "^USER",
-	"Temp" : "^TEMP",
+	"Backup" : "^CONFIG/backup",
+	"Autosave" : "^CONFIG/autosave",
+	"Data" : "",
+	"User" : "",
+	"Temp" : "",
 	"Dictionary" : {
 		"Local" {
 			"Lang" : "^CONFIG/dictionary/lang",
@@ -22,6 +22,11 @@
 		"FontConfig" {
 				"Cache" : "^CONFIG/fontconfig_cache"
 		}
+	},
+	"Last" : {
+		"Video" : "",
+		"Subtitle" : "^VIDEO",
+		"Audio" : "^VIDEO"
 	},
 	"Log" : "^CONFIG/log"
 }
