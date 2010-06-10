@@ -76,13 +76,13 @@ PCMAudioProvider::PCMAudioProvider(const wxString &filename)
 
 	if (file_handle == INVALID_HANDLE_VALUE) {
 		wxLogWarning(_T("PCM audio provider: Could not open audio file for reading (%d)"), GetLastError());
-		throw _T("PCM audio provider: Could not open audio file for reading");
+		throw "PCM audio provider: Could not open audio file for reading";
 	}
 
 	LARGE_INTEGER li_file_size = {0};
 	if (!GetFileSizeEx(file_handle, &li_file_size)) {
 		CloseHandle(file_handle);
-		throw _T("PCM audio provider: Failed getting file size");
+		throw "PCM audio provider: Failed getting file size";
 	}
 	file_size = li_file_size.QuadPart;
 
@@ -95,7 +95,7 @@ PCMAudioProvider::PCMAudioProvider(const wxString &filename)
 
 	if (file_mapping == 0) {
 		CloseHandle(file_handle);
-		throw _T("PCM audio provider: Failed creating file mapping");
+		throw "PCM audio provider: Failed creating file mapping";
 	}
 
 	current_mapping = 0;
@@ -105,14 +105,14 @@ PCMAudioProvider::PCMAudioProvider(const wxString &filename)
 	file_handle = open(filename.mb_str(*wxConvFileName), O_RDONLY);
 
 	if (file_handle == -1) {
-		throw _T("PCM audio provider: Could not open audio file for reading");
+		throw "PCM audio provider: Could not open audio file for reading";
 	}
 
 	struct stat filestats;
 	memset(&filestats, 0, sizeof(filestats));
 	if (fstat(file_handle, &filestats)) {
 		close(file_handle);
-		throw _T("PCM audio provider: Could not stat file to get size");
+		throw "PCM audio provider: Could not stat file to get size";
 	}
 	file_size = filestats.st_size;
 
@@ -157,7 +157,7 @@ PCMAudioProvider::~PCMAudioProvider()
 char * PCMAudioProvider::EnsureRangeAccessible(int64_t range_start, int64_t range_length)
 {
 	if (range_start + range_length > file_size) {
-		throw _T("PCM audio provider: Attempted to map beyond end of file");
+		throw "PCM audio provider: Attempted to map beyond end of file";
 	}
 
 	// Check whether the requested range is already visible
@@ -187,7 +187,7 @@ char * PCMAudioProvider::EnsureRangeAccessible(int64_t range_start, int64_t rang
 		// Make sure to always make a mapping at least as large as the requested range
 		if ((int64_t)mapping_length < range_length) {
 			if (range_length > (int64_t)(~(size_t)0))
-				throw _T("PCM audio provider: Requested range larger than max size_t, cannot create view of file");
+				throw "PCM audio provider: Requested range larger than max size_t, cannot create view of file";
 			else
 				mapping_length = range_length;
 		}
@@ -211,7 +211,7 @@ char * PCMAudioProvider::EnsureRangeAccessible(int64_t range_start, int64_t rang
 #endif
 
 		if (!current_mapping) {
-			throw _T("PCM audio provider: Failed mapping a view of the file");
+			throw "PCM audio provider: Failed mapping a view of the file";
 		}
 
 	}
@@ -366,9 +366,9 @@ public:
 
 		// Check magic values
 		if (!CheckFourcc(header.ch.type, "RIFF"))
-			throw _T("RIFF PCM WAV audio provider: File is not a RIFF file");
+			throw "RIFF PCM WAV audio provider: File is not a RIFF file";
 		if (!CheckFourcc(header.format, "WAVE"))
-			throw _T("RIFF PCM WAV audio provider: File is not a RIFF WAV file");
+			throw "RIFF PCM WAV audio provider: File is not a RIFF WAV file";
 
 		// Count how much more data we can have in the entire file
 		// The first 4 bytes are already eaten by the header.format field
@@ -391,12 +391,12 @@ public:
 			filepos += sizeof(ch);
 
 			if (CheckFourcc(ch.type, "fmt ")) {
-				if (got_fmt_header) throw _T("RIFF PCM WAV audio provider: Invalid file, multiple 'fmt ' chunks");
+				if (got_fmt_header) throw "RIFF PCM WAV audio provider: Invalid file, multiple 'fmt ' chunks";
 				got_fmt_header = true;
 
 				fmtChunk &fmt = *(fmtChunk*)EnsureRangeAccessible(filepos, sizeof(fmtChunk));
 
-				if (Endian::LittleToMachine(fmt.compression) != 1) throw _T("RIFF PCM WAV audio provider: Can't use file, not PCM encoding");
+				if (Endian::LittleToMachine(fmt.compression) != 1) throw "RIFF PCM WAV audio provider: Can't use file, not PCM encoding";
 
 				// Set stuff inherited from the AudioProvider class
 				sample_rate = Endian::LittleToMachine(fmt.samplerate);
@@ -408,7 +408,7 @@ public:
 				// This won't pick up 'data' chunks inside 'wavl' chunks
 				// since the 'wavl' chunks wrap those.
 
-				if (!got_fmt_header) throw _T("RIFF PCM WAV audio provider: Found 'data' chunk before 'fmt ' chunk, file is invalid.");
+				if (!got_fmt_header) throw "RIFF PCM WAV audio provider: Found 'data' chunk before 'fmt ' chunk, file is invalid.";
 
 				int64_t samples = Endian::LittleToMachine(ch.size) / bytes_per_sample;
 				int64_t frames = samples / channels;
@@ -581,7 +581,7 @@ public:
 		int64_t smallest_possible_file = sizeof(RiffChunk) + sizeof(FormatChunk) + sizeof(DataChunk);
 
 		if (file_size < smallest_possible_file)
-			throw _T("Wave64 audio provider: File is too small to be a Wave64 file");
+			throw "Wave64 audio provider: File is too small to be a Wave64 file";
 
 		// Read header
 		// This should throw an exception if the mapping fails
@@ -591,9 +591,9 @@ public:
 
 		// Check magic values
 		if (!CheckGuid(header.riff_guid, w64GuidRIFF))
-			throw _T("Wave64 audio provider: File is not a Wave64 RIFF file");
+			throw "Wave64 audio provider: File is not a Wave64 RIFF file";
 		if (!CheckGuid(header.format_guid, w64GuidWAVE))
-			throw _T("Wave64 audio provider: File is not a Wave64 WAVE file");
+			throw "Wave64 audio provider: File is not a Wave64 WAVE file";
 
 		// Count how much more data we can have in the entire file
 		uint64_t data_left = Endian::LittleToMachine(header.file_size) - sizeof(RiffChunk);
@@ -613,15 +613,15 @@ public:
 
 			if (CheckGuid(chunk_guid, w64Guidfmt)) {
 				if (got_fmt_header)
-					throw _T("Wave64 audio provider: Bad file, found more than one 'fmt' chunk");
+					throw "Wave64 audio provider: Bad file, found more than one 'fmt' chunk";
 
 				FormatChunk &fmt = *(FormatChunk*)EnsureRangeAccessible(filepos, sizeof(FormatChunk));
 				got_fmt_header = true;
 
 				if (Endian::LittleToMachine(fmt.format.wFormatTag) == 3)
-					throw _T("Wave64 audio provider: File is IEEE 32 bit float format which isn't supported. Bug the developers if this matters.");
+					throw "Wave64 audio provider: File is IEEE 32 bit float format which isn't supported. Bug the developers if this matters.";
 				if (Endian::LittleToMachine(fmt.format.wFormatTag) != 1)
-					throw _T("Wave64 audio provider: Can't use file, not PCM encoding");
+					throw "Wave64 audio provider: Can't use file, not PCM encoding";
 
 				// Set stuff inherited from the AudioProvider class
 				sample_rate = Endian::LittleToMachine(fmt.format.nSamplesPerSec);
@@ -631,7 +631,7 @@ public:
 
 			else if (CheckGuid(chunk_guid, w64Guiddata)) {
 				if (!got_fmt_header)
-					throw _T("Wave64 audio provider: Found 'data' chunk before 'fmt ' chunk, file is invalid.");
+					throw "Wave64 audio provider: Found 'data' chunk before 'fmt ' chunk, file is invalid.";
 
 				int64_t samples = chunk_size / bytes_per_sample;
 				int64_t frames = samples / channels;
@@ -682,7 +682,7 @@ AudioProvider *CreatePCMAudioProvider(const wxString &filename)
 		// don't bother trying with anything else if this works
 		return provider;
 	}
-	catch (const wxChar *msg) {
+	catch (const char *msg) {
 		LOG_E("audio/provider/pcm") << "Creating PCM WAV reader failed with message: '" << msg << "' Trying other providers";
 		provider = 0;
 	}
@@ -692,7 +692,7 @@ AudioProvider *CreatePCMAudioProvider(const wxString &filename)
 		provider = new Wave64AudioProvider(filename);
 		return provider;
 	}
-	catch (const wxChar *msg) {
+	catch (const char *msg) {
 		LOG_E("audio/provider/pcm") << "Creating Wave64 reader failed with message: '" << msg << "' Trying other providers";
 		provider = 0;
 	}
