@@ -350,7 +350,8 @@ void VideoContext::Refresh (bool video, bool subtitles) {
 		AssExporter exporter(grid->ass);
 		exporter.AddAutoFilters();
 		try {
-			subsProvider->LoadSubtitles(exporter.ExportTransform());
+			std::auto_ptr<AssFile> exported(exporter.ExportTransform());
+			subsProvider->LoadSubtitles(exported.get());
 		}
 		catch (wxString err) { wxMessageBox(_T("Error while invoking subtitles provider: ") + err,_T("Subtitles provider")); }
 		catch (const wchar_t *err) { wxMessageBox(_T("Error while invoking subtitles provider: ") + wxString(err),_T("Subtitles provider")); }

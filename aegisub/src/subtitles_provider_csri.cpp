@@ -94,7 +94,6 @@ void CSRISubtitlesProvider::LoadSubtitles(AssFile *subs) {
 	if (!renderer) {
 		renderer = csri_renderer_default();
 		if (!renderer) {
-			delete subs;
 			throw _T("No CSRI renderer available, cannot show subtitles. Try installing one or switch to another subtitle provider.");
 		}
 	}
@@ -103,7 +102,6 @@ void CSRISubtitlesProvider::LoadSubtitles(AssFile *subs) {
 	if (canOpenMem) {
 		std::vector<char> data;
 		subs->SaveMemory(data,_T("UTF-8"));
-		delete subs;
 		instance = csri_open_mem(renderer,&data[0],data.size(),NULL);
 	}
 
@@ -111,7 +109,6 @@ void CSRISubtitlesProvider::LoadSubtitles(AssFile *subs) {
 	else {
 		wxString subsFileName = VideoContext::Get()->GetTempWorkFile();
 		subs->Save(subsFileName,false,false,_T("UTF-8"));
-		delete subs;
 		instance = csri_open_file(renderer,subsFileName.mb_str(wxConvUTF8),NULL);
 	}
 }
