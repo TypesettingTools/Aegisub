@@ -448,9 +448,11 @@ void ColorPickerSpectrum::GetXY(int &xx, int &yy)
 ///
 void ColorPickerSpectrum::SetXY(int xx, int yy)
 {
-	x = xx;
-	y = yy;
-	Refresh(true);
+	if (x != xx || y != yy) {
+		x = xx;
+		y = yy;
+		Refresh(false);
+	}
 }
 
 /// @brief DOCME
@@ -461,7 +463,7 @@ void ColorPickerSpectrum::SetBackground(wxBitmap *new_background)
 {
 	if (background == new_background) return;
 	background = new_background;
-	Refresh(true);
+	Refresh(false);
 }
 
 BEGIN_EVENT_TABLE(ColorPickerSpectrum, wxControl)
@@ -479,21 +481,22 @@ void ColorPickerSpectrum::OnPaint(wxPaintEvent &evt)
 {
 	if (!background) return;
 
+	int height = background->GetHeight();
+	int width = background->GetWidth();
 	wxPaintDC dc(this);
 
 	wxMemoryDC memdc;
 	memdc.SelectObject(*background);
-	dc.Blit(1, 1, background->GetWidth(), background->GetHeight(), &memdc, 0, 0);
+	dc.Blit(1, 1, width, height, &memdc, 0, 0);
+
+	wxPoint arrow[3];
+	wxRect arrow_box;
 
 	wxPen invpen(*wxWHITE, 3);
 	invpen.SetCap(wxCAP_BUTT);
-	wxPen blkpen(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT), 1);
-	blkpen.SetCap(wxCAP_BUTT);
-
-	wxPoint arrow[3];
-
 	dc.SetLogicalFunction(wxXOR);
 	dc.SetPen(invpen);
+
 	switch (direction) {
 		case HorzVert:
 			// Make a little cross
@@ -502,31 +505,49 @@ void ColorPickerSpectrum::OnPaint(wxPaintEvent &evt)
 			break;
 		case Horz:
 			// Make a vertical line stretching all the way across
-			dc.DrawLine(x+1, 1, x+1, background->GetHeight()+1);
+			dc.DrawLine(x+1, 1, x+1, height+1);
 			// Points for arrow
-			arrow[0] = wxPoint(x+1, background->GetHeight()+2);
-			arrow[1] = wxPoint(x+1-spectrum_horz_vert_arrow_size, background->GetHeight()+2+spectrum_horz_vert_arrow_size);
-			arrow[2] = wxPoint(x+1+spectrum_horz_vert_arrow_size, background->GetHeight()+2+spectrum_horz_vert_arrow_size);
+			arrow[0] = wxPoint(x+1, height+2);
+			arrow[1] = wxPoint(x+1-spectrum_horz_vert_arrow_size, height+2+spectrum_horz_vert_arrow_size);
+			arrow[2] = wxPoint(x+1+spectrum_horz_vert_arrow_size, height+2+spectrum_horz_vert_arrow_size);
+
+			arrow_box.SetLeft(0);
+			arrow_box.SetTop(height + 2);
+			arrow_box.SetRight(width + 1 + spectrum_horz_vert_arrow_size);
+			arrow_box.SetBottom(height + 2 + spectrum_horz_vert_arrow_size);
 			break;
 		case Vert:
 			// Make a horizontal line stretching all the way across
-			dc.DrawLine(1, y+1, background->GetWidth()+1, y+1);
+			dc.DrawLine(1, y+1, width+1, y+1);
 			// Points for arrow
-			arrow[0] = wxPoint(background->GetWidth()+2, y+1);
-			arrow[1] = wxPoint(background->GetWidth()+2+spectrum_horz_vert_arrow_size, y+1-spectrum_horz_vert_arrow_size);
-			arrow[2] = wxPoint(background->GetWidth()+2+spectrum_horz_vert_arrow_size, y+1+spectrum_horz_vert_arrow_size);
+			arrow[0] = wxPoint(width+2, y+1);
+			arrow[1] = wxPoint(width+2+spectrum_horz_vert_arrow_size, y+1-spectrum_horz_vert_arrow_size);
+			arrow[2] = wxPoint(width+2+spectrum_horz_vert_arrow_size, y+1+spectrum_horz_vert_arrow_size);
+
+			arrow_box.SetLeft(width + 2);
+			arrow_box.SetTop(0);
+			arrow_box.SetRight(width + 2 + spectrum_horz_vert_arrow_size);
+			arrow_box.SetBottom(height + 1 + spectrum_horz_vert_arrow_size);
 			break;
 	}
 
 	if (direction == Horz || direction == Vert) {
-		// Arrow pointing at current point
+		wxBrush bgBrush;
+		bgBrush.SetColour(GetBackgroundColour());
 		dc.SetLogicalFunction(wxCOPY);
 		dc.SetPen(*wxTRANSPARENT_PEN);
+		dc.SetBrush(bgBrush);
+		dc.DrawRectangle(arrow_box);
+
+		// Arrow pointing at current point
 		dc.SetBrush(*wxBLACK_BRUSH);
 		dc.DrawPolygon(3, arrow);
 	}
 
 	// Border around the spectrum
+	wxPen blkpen(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT), 1);
+	blkpen.SetCap(wxCAP_BUTT);
+
 	dc.SetLogicalFunction(wxCOPY);
 	dc.SetPen(blkpen);
 	dc.SetBrush(*wxTRANSPARENT_BRUSH);
@@ -561,9 +582,7 @@ void ColorPickerSpectrum::OnMouse(wxMouseEvent &evt)
 	}
 
 	if (evt.LeftDown() || (HasCapture() && evt.LeftIsDown())) {
-		x = newx;
-		y = newy;
-		Refresh(false);
+		SetXY(newx, newy);
 		wxCommandEvent evt2(wxSPECTRUM_CHANGE, GetId());
 		AddPendingEvent(evt2);
 	}
