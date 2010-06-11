@@ -80,7 +80,7 @@
 		<Configuration
 			Name="Release|Win32"
 			ConfigurationType="4"
-			InheritedPropertySheets=".\wxlib_include.vsprops;.\libraries_outdirs.vsprops;.\compiler_options.vsprops;..\aegisub_vs2008\wxlib_lib32.vsprops;..\aegisub_vs2008\suffix_release32.vsprops;.\precomp_header.vsprops"
+			InheritedPropertySheets=".\wxlib_include.vsprops;.\libraries_outdirs.vsprops;.\compiler_options.vsprops;..\aegisub_vs2008\wxlib_lib32.vsprops;..\aegisub_vs2008\suffix_release32.vsprops;.\precomp_header.vsprops;.\contrib_includedirs.vsprops"
 			CharacterSet="1"
 			WholeProgramOptimization="1"
 			>
