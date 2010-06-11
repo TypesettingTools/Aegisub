@@ -21,14 +21,15 @@
 
 #ifndef LAGI_PRE
 #include <fstream>
-
-#include "libaegisub/cajun/reader.h"
-#include "libaegisub/cajun/writer.h"
-#include "libaegisub/cajun/elements.h"
 #endif
 
 #include <libaegisub/exception.h>
 #include <libaegisub/option_value.h>
+
+namespace json {
+	class Object;
+	class UnknownElement;
+}
 
 namespace agi {
 
@@ -48,12 +49,8 @@ public:
 	OptionValueMap() {};
 };
 
-
 class Options {
 	friend class PutOptionVisitor;
-
-	/// Root json::Object, used for loading.
-	json::UnknownElement config_root;
 
 	/// Internal OptionValueMap
 	OptionValueMap values;

@@ -22,6 +22,10 @@
 #include <fstream>
 #include <sstream>
 #include <map>
+
+#include "libaegisub/cajun/reader.h"
+#include "libaegisub/cajun/writer.h"
+#include "libaegisub/cajun/elements.h"
 #endif
 
 #include "libaegisub/io.h"
