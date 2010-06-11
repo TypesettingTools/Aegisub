@@ -113,6 +113,8 @@ int main(int argc, const char *argv[]) {
 	ofstream outH(headerFileName.GetFullPath().char_str());
 	ofstream outC(argv[1]);
 
+	outC << "#include \"libresrc.h\"" << endl;
+
 	wxRegEx nameCleaner("[^A-Za-z_0-9]");
 	wxString filename;
 	FileIterator iter(argc, argv);
@@ -134,7 +136,6 @@ int main(int argc, const char *argv[]) {
 		nameCleaner.ReplaceAll(&identifier, "_");
 
 		std::string tmp(identifier.mb_str());
-		outC << "#include \"libresrc.h\"" << endl;
 		outC << "const unsigned char " << tmp << "[] = {";
 		bool first = true;
 		char c[1];
