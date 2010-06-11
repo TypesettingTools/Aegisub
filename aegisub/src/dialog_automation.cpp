@@ -323,8 +323,8 @@ void DialogAutomation::OnInfo(wxCommandEvent &evt)
 
 	info += _("Scripting engines installed:\n");
 	const std::vector<Automation4::ScriptFactory*> &factories = Automation4::ScriptFactory::GetFactories();
-	for (std::vector<Automation4::ScriptFactory*>::const_iterator i = factories.begin(); i != factories.end(); ++i) {
-		info += wxString::Format(_T("- %s (%s)\n"), (*i)->GetEngineName().c_str(), (*i)->GetFilenamePattern().c_str());
+	for (std::vector<Automation4::ScriptFactory*>::const_iterator c = factories.begin(); c != factories.end(); ++c) {
+		info += wxString::Format(_T("- %s (%s)\n"), (*c)->GetEngineName().c_str(), (*c)->GetFilenamePattern().c_str());
 	}
 
 	if (ei) {

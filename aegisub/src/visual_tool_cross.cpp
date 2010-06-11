@@ -71,7 +71,7 @@ bool VisualToolCross::Update() {
 	SubtitlesGrid *grid = VideoContext::Get()->grid;
 	wxArrayInt sel = grid->GetSelection();
 	for (wxArrayInt::const_iterator cur = sel.begin(); cur != sel.end(); ++cur) {
-		AssDialogue* line = grid->GetDialogue(*cur);
+		line = grid->GetDialogue(*cur);
 		if (!line) continue;
 		int x1, y1;
 		GetLinePosition(line, x1, y1);

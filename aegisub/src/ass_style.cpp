@@ -84,8 +84,8 @@ void AssColor::Parse(const wxString value) {
 
 	ostr[11]=0;
 
-	for(int i=value.Len()-1;i>=0&&oindex>=0;i--) {
-		c=value[i];
+	for(unsigned char i = value.Len(); i > 0 && oindex >= 0; i--) {
+		c=value[i - 1];
 		if (isxdigit(c) || c=='-') {
 			ostr[--oindex] = c;
 			if (c>='A') ishex = true;

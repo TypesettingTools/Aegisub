@@ -225,9 +225,8 @@ void VisualToolVectorClip::PopulateFeatureList() {
 	VisualToolVectorClipDraggableFeature feat;
 	
 	// Go through each curve
-	int i = 0;
 	int j = 0;
-	for (Spline::iterator cur=spline.begin();cur!=spline.end();cur++,i++) {
+	for (Spline::iterator cur=spline.begin();cur!=spline.end();cur++) {
 		if (cur->type == CURVE_POINT) {
 			feat.x = (int)cur->p1.x;
 			feat.y = (int)cur->p1.y;

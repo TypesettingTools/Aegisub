@@ -670,6 +670,8 @@ end_tokenizing:
 
 		// Create parameter
 		AssOverrideParameter *newparam = new AssOverrideParameter;
+		newparam->classification = curproto->classification;
+		Params.push_back(newparam);
 
 		// Check if it's optional and not set (set to default)
 		if (!(curproto->optional & parsFlag)) {
@@ -735,10 +737,6 @@ end_tokenizing:
 			}
 			else curtok = _T("");
 		}
-
-		// Add to list
-		newparam->classification = curproto->classification;
-		Params.push_back(newparam);
 	}
 }
 

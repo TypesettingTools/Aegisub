@@ -130,7 +130,7 @@ void TXTSubtitleFormat::ReadFile(wxString filename,wxString encoding) {	using na
 		if(value.IsEmpty()) continue;
 
 		// Check if this isn't a timecodes file
-		if (value.Left(10) == _T("# timecode")) {
+		if (value.StartsWith(_T("# timecode"))) {
 			throw _T("File is a timecode file, cannot load as subtitles.");
 		}
 
@@ -159,7 +159,7 @@ void TXTSubtitleFormat::ReadFile(wxString filename,wxString encoding) {	using na
 		value.Trim(false);
 
 		// Sets line up
-		line = new AssDialogue();
+		line = new AssDialogue;
 		line->group = _T("[Events]");
 		line->Style = _T("Default");
 		if (isComment) line->Actor = _T("");
@@ -182,7 +182,7 @@ void TXTSubtitleFormat::ReadFile(wxString filename,wxString encoding) {	using na
 
 	// No lines?
 	if (lines == 0) {
-		AssDialogue *line = new AssDialogue();
+		line = new AssDialogue;
 		line->group = _T("[Events]");
 		line->Style = _T("Default");
 		line->Start.SetMS(0);

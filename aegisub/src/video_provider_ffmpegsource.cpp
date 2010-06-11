@@ -233,7 +233,7 @@ void FFmpegSourceVideoProvider::LoadVideo(wxString filename) {
 	Width	= TempFrame->EncodedWidth;
 	Height	= TempFrame->EncodedHeight;
 
-	if (FFMS_SetOutputFormatV(VideoSource, 1 << FFMS_GetPixFmt("bgra"), Width, Height, FFMS_RESIZER_BICUBIC, &ErrInfo)) {
+	if (FFMS_SetOutputFormatV(VideoSource, 1LL << FFMS_GetPixFmt("bgra"), Width, Height, FFMS_RESIZER_BICUBIC, &ErrInfo)) {
 		ErrorMsg.Append(wxString::Format(_T("Failed to set output format: %s"), ErrInfo.Buffer));
 		throw ErrorMsg;
 	}

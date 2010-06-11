@@ -667,9 +667,9 @@ void ColorPickerRecent::OnClick(wxMouseEvent &evt)
 	i = cols*cy + cx;
 	if (i >= 0 && i < (int)colors.size()) {
 		AssColor color(colors[i]);
-		wxCommandEvent evt(wxRECENT_SELECT, GetId());
-		evt.SetString(color.GetASSFormatted(false, false, false));
-		AddPendingEvent(evt);
+		wxCommandEvent evnt(wxRECENT_SELECT, GetId());
+		evnt.SetString(color.GetASSFormatted(false, false, false));
+		AddPendingEvent(evnt);
 	}
 }
 
@@ -778,9 +778,9 @@ void ColorPickerScreenDropper::OnMouse(wxMouseEvent &evt)
 			wxColour color;
 			capdc.GetPixel(x, y, &color);
 			AssColor ass(color);
-			wxCommandEvent evt(wxDROPPER_SELECT, GetId());
-			evt.SetString(ass.GetASSFormatted(false, false, false));
-			AddPendingEvent(evt);
+			wxCommandEvent evnt(wxDROPPER_SELECT, GetId());
+			evnt.SetString(ass.GetASSFormatted(false, false, false));
+			AddPendingEvent(evnt);
 		}
 
 	} else if (HasCapture() && evt.LeftUp()) {
@@ -878,6 +878,7 @@ DialogColorPicker::DialogColorPicker(wxWindow *parent, wxColour initial_color, C
 
 	// red
 	oslid = slid = (unsigned char *)malloc(slider_width*256*3);
+	if (!slid) throw std::bad_alloc();
 	for (int  y = 0; y < 256; y++) {
 		for (int x = 0; x < slider_width; x++) {
 			*slid++ = clip_colorval(y);
@@ -890,6 +891,7 @@ DialogColorPicker::DialogColorPicker(wxWindow *parent, wxColour initial_color, C
 
 	// green
 	oslid = slid = (unsigned char *)malloc(slider_width*256*3);
+	if (!slid) throw std::bad_alloc();
 	for (int y = 0; y < 256; y++) {
 		for (int x = 0; x < slider_width; x++) {
 			*slid++ = 0;
@@ -902,6 +904,7 @@ DialogColorPicker::DialogColorPicker(wxWindow *parent, wxColour initial_color, C
 
 	// blue
 	oslid = slid = (unsigned char *)malloc(slider_width*256*3);
+	if (!slid) throw std::bad_alloc();
 	for (int y = 0; y < 256; y++) {
 		for (int x = 0; x < slider_width; x++) {
 			*slid++ = 0;
@@ -914,6 +917,7 @@ DialogColorPicker::DialogColorPicker(wxWindow *parent, wxColour initial_color, C
 
 	// luminance
 	oslid = slid = (unsigned char *)malloc(slider_width*256*3);
+	if (!slid) throw std::bad_alloc();
 	for (int y = 0; y < 256; y++) {
 		int x = 0;
 		for (; x < slider_width; x++) {
@@ -926,6 +930,7 @@ DialogColorPicker::DialogColorPicker(wxWindow *parent, wxColour initial_color, C
 	hsl_slider = new wxBitmap(sliderimg);
 
 	oslid = slid = (unsigned char *)malloc(slider_width*256*3);
+	if (!slid) throw std::bad_alloc();
 	for (int y = 0; y < 256; y++) {
 		for (int x = 0; x < slider_width; x++) {
 			hsv_to_rgb(y, 255, 255, slid, slid+1, slid+2);

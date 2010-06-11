@@ -120,10 +120,10 @@ VideoContext::VideoContext()
 , arValue(1.)
 , arType(0)
 , hasSubtitles(false)
+, playAudioOnStep(OPT_GET("Audio/Plays When Stepping Video"))
 , grid(NULL)
 , curLine(NULL)
 , audio(NULL)
-, playAudioOnStep(OPT_GET("Audio/Plays When Stepping Video"))
 {
 }
 

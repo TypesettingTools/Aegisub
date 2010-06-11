@@ -127,6 +127,7 @@ void SRTSubtitleFormat::ReadFile(wxString filename,wxString encoding) {
 			// Check if it's a line number
 			if (!curLine.IsNumber()) {
 				Clear();
+				if (line) delete line;
 				throw wxString::Format(_T("Parse error on entry %i at line %i (expecting line number). Possible malformed file."),linen,fileLine);
 			}
 
@@ -143,6 +144,7 @@ void SRTSubtitleFormat::ReadFile(wxString filename,wxString encoding) {
 			// Read timestamps
 			if (curLine.substr(13,3) != _T("-->")) {
 				Clear();
+				if (line) delete line;
 				throw wxString::Format(_T("Parse error on entry %i at line %i (expecting timestamps). Possible malformed file."),linen,fileLine);
 			}
 			line->Start.ParseSRT(curLine.substr(0,12));
@@ -172,13 +174,14 @@ void SRTSubtitleFormat::ReadFile(wxString filename,wxString encoding) {
 				line->ParseSRTTags();
 				Line->push_back(line);
 				lines++;
+				line = NULL;
 			}
 		}
 	}
 
 	// No lines?
 	if (lines == 0) {
-		AssDialogue *line = new AssDialogue();
+		line = new AssDialogue();
 		line->group = _T("[Events]");
 		line->Style = _T("Default");
 		line->Start.SetMS(0);

@@ -513,13 +513,13 @@ void BaseGrid::DrawImage(wxDC &dc) {
 				int textlen = curDiag->Text.Length();
 				int depth = 0;
 				wxChar curChar;
-				for (int i=0;i<textlen;i++) {
-					curChar = curDiag->Text[i];
+				for (int j=0;j<textlen;j++) {
+					curChar = curDiag->Text[j];
 					if (curChar == _T('{')) depth = 1;
 					else if (curChar == _T('}')) {
 						depth--;
 						if (depth == 0 && mode == 1) value += replaceWith;
-						if (depth < 0) depth = 0;
+						else if (depth < 0) depth = 0;
 					}
 					else if (depth != 1) value += curChar;
 				}

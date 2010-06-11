@@ -80,7 +80,7 @@ class KaraokeLineMatchDisplay : public wxControl {
 	struct MatchSyllable {
 
 		/// DOCME
-		int dur;
+		size_t dur;
 
 		/// DOCME
 		wxString text;
@@ -105,7 +105,7 @@ class KaraokeLineMatchDisplay : public wxControl {
 		wxString dst;
 
 		/// DOCME
-		int duration;
+		size_t duration;
 
 		/// DOCME
 		int last_render_width;
@@ -137,10 +137,10 @@ class KaraokeLineMatchDisplay : public wxControl {
 
 
 	/// DOCME
-	int source_sel_length;
+	size_t source_sel_length;
 
 	/// DOCME
-	int destination_sel_length;
+	size_t destination_sel_length;
 
 
 	/// DOCME
@@ -163,9 +163,9 @@ public:
 	wxString GetOutputLine();
 
 	// Number of syllables not yet matched from source
-	int GetRemainingSource();
+	size_t GetRemainingSource();
 	// Number of characters not yet matched from destination
-	int GetRemainingDestination();
+	size_t GetRemainingDestination();
 
 	// Adjust source and destination match lengths
 	void IncreaseSourceMatch();
@@ -507,7 +507,7 @@ wxString KaraokeLineMatchDisplay::GetOutputLine()
 /// @brief DOCME
 /// @return 
 ///
-int KaraokeLineMatchDisplay::GetRemainingSource()
+size_t KaraokeLineMatchDisplay::GetRemainingSource()
 {
 	return unmatched_source.size();
 }
@@ -516,7 +516,7 @@ int KaraokeLineMatchDisplay::GetRemainingSource()
 /// @brief DOCME
 /// @return 
 ///
-int KaraokeLineMatchDisplay::GetRemainingDestination()
+size_t KaraokeLineMatchDisplay::GetRemainingDestination()
 {
 	return unmatched_destination.size();
 }
@@ -538,9 +538,8 @@ void KaraokeLineMatchDisplay::IncreaseSourceMatch()
 ///
 void KaraokeLineMatchDisplay::DecreaseSourceMatch()
 {
-	source_sel_length -= 1;
-	if (source_sel_length < 0)
-		source_sel_length = 0;
+	if (source_sel_length > 0)
+		source_sel_length -= 1;
 	Refresh(true);
 }
 
@@ -560,9 +559,8 @@ void KaraokeLineMatchDisplay::IncreseDestinationMatch()
 ///
 void KaraokeLineMatchDisplay::DecreaseDestinationMatch()
 {
-	destination_sel_length -= 1;
-	if (destination_sel_length < 0)
-		destination_sel_length = 0;
+	if (destination_sel_length > 0)
+		destination_sel_length -= 1;
 	Refresh(true);
 }
 
@@ -763,20 +761,17 @@ bool KaraokeLineMatchDisplay::AcceptMatch()
 		// Completely empty match
 		return false;
 	}
-	
-	assert(source_sel_length >= 0);
-	assert(source_sel_length <= (int)unmatched_source.size());
-	while (source_sel_length > 0)
+
+	assert(source_sel_length <= unmatched_source.size());
+	for (; source_sel_length > 0; source_sel_length--)
 	{
 		match.src.push_back(unmatched_source.front());
 		match.duration += unmatched_source.front().dur;
 		unmatched_source.pop_front();
-		source_sel_length--;
 	}
 	assert(source_sel_length == 0);
 
-	assert(destination_sel_length >= 0);
-	assert(destination_sel_length <= (int)unmatched_destination.size());
+	assert(destination_sel_length <= unmatched_destination.size());
 	match.dst = unmatched_destination.Left(destination_sel_length);
 	unmatched_destination = unmatched_destination.Mid(destination_sel_length);
 	destination_sel_length = 0;

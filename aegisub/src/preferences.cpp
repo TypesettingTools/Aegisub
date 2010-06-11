@@ -228,7 +228,7 @@ void Preferences::OnCancel(wxCommandEvent &event) {
 	name_value##_sizer->Add(name_value##_flex, 1, wxEXPAND, 5);                                \
 	sizer->AddSpacer(8);
 
-// name_value##_flex->SetFlexibleDirection(wxVERTICAL); \
+// name_value##_flex->SetFlexibleDirection(wxVERTICAL);
 
 #define PAGE_END() \
 	panel->SetSizerAndFit(sizer);

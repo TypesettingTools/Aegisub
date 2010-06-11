@@ -129,7 +129,7 @@ void VisualTool<FeatureType>::OnMouseEvent (wxMouseEvent &event) {
 		dragListOK = true;
 	}
 	if (!dragging) {
-		int oldHigh = curFeatureI;
+		unsigned oldHigh = curFeatureI;
 		GetHighlightedFeature();
 		if (curFeatureI != oldHigh) needRender = true;
 	}

@@ -178,6 +178,7 @@ wxImage AegiVideoFrame::GetImage() const {
 	if (format == FORMAT_RGB32 || format == FORMAT_RGB24) {
 		// Create
 		unsigned char *buf = (unsigned char*)malloc(w*h*3);
+		if (!buf) throw std::bad_alloc();
 		const unsigned char *src = data[0];
 		unsigned char *dst = buf;
 
