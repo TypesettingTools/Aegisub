@@ -476,7 +476,7 @@ void DialogStyleManager::OnCurrentEdit (wxCommandEvent &) {
 	int n = CurrentList->GetSelections(selections);
 	if (n == 1) {
 		AssStyle *selStyle = styleMap[selections[0]];
-		DialogStyleEditor editor(this,selStyle,grid,false,&Store);
+		DialogStyleEditor editor(this,selStyle,grid,true,&Store);
 		if (editor.ShowModal()) {
 			CurrentList->SetString(selections[0],selStyle->name);
 		}
