@@ -75,7 +75,7 @@ class IconvWrapper::Converter {
 public:
 	Converter(bool, const char*) { }
 	size_t operator()(iconv_t cd, const char** inbuf, size_t* inbytesleft, char** outbuf, size_t* outbytesleft) {
-		return iconv(cd, inbuf, ICONV_CONST_CAST(inbytesleft), outbuf, outbytesleft);
+		return iconv(cd, ICONV_CONST_CAST(inbuf), inbytesleft, outbuf, outbytesleft);
 	}
 };
 #else
