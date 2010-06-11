@@ -34,58 +34,52 @@
 /// @ingroup custom_control
 ///
 
-
-
-
-////////////
-// Includes
 #ifndef AGI_PRE
+#include <memory>
 #include <wx/window.h>
 #include <wx/bitmap.h>
 #endif
 
-
-//////////////
-// Prototypes
+class AssFile;
 class AssStyle;
+class SubtitlesProvider;
 class VideoProvider;
-
-
 
 /// DOCME
 /// @class SubtitlesPreview
-/// @brief DOCME
-///
-/// DOCME
+/// @brief Preview window to show a short string with a given ass style
 class SubtitlesPreview : public wxWindow {
 private:
-
-	/// DOCME
-	wxBitmap *bmp;
-
-	/// DOCME
-	AssStyle *style;
-
-	/// DOCME
-	wxString showText;
-
-	/// DOCME
-	VideoProvider *vid;
-
-	/// DOCME
+	/// The subtitle provider used to render the string
+	std::auto_ptr<SubtitlesProvider> provider;
+	/// Bitmap to render into
+	std::auto_ptr<wxBitmap> bmp;
+	/// The currently display style
+	AssStyle* style;
+	/// Video provider to render into
+	std::auto_ptr<VideoProvider> vid;
+	/// Current background color
 	wxColour backColour;
+	/// Subtitle file containing the style and displayed line
+	std::auto_ptr<AssFile> subFile;
+	/// Line used to render the specified text
+	AssDialogue* line;
 
-	void UpdateBitmap(int w=-1,int h=-1);
+	/// Regenerate the bitmap
+	void UpdateBitmap();
+	/// Resize event handler
 	void OnSize(wxSizeEvent &event);
-	void OnPaint(wxPaintEvent &event);
+	/// Paint event handler
+	void OnPaint(wxPaintEvent &);
 
 public:
-	void SetStyle(AssStyle *style);
+	/// Set the style to use
+	void SetStyle(AssStyle const& style);
+	/// Set the text to display
 	void SetText(wxString text);
+	/// Set the background color
 	void SetColour(wxColour col);
 
-	/// @brief DOCME
-	///
 	void Update() { UpdateBitmap(); }
 
 	SubtitlesPreview(wxWindow *parent,int id,wxPoint pos,wxSize size,int style,wxColour colour);
@@ -93,5 +87,3 @@ public:
 
 	DECLARE_EVENT_TABLE()
 };
-
-

@@ -35,8 +35,6 @@
 ///
 
 
-////////////
-// Includes
 #include "config.h"
 
 #ifndef AGI_PRE
@@ -45,6 +43,7 @@
 #include <wx/msgdlg.h>
 #endif
 
+#include "ass_dialogue.h"
 #include "ass_file.h"
 #include "ass_style.h"
 #include "subs_preview.h"
@@ -62,184 +61,103 @@
 ///
 SubtitlesPreview::SubtitlesPreview(wxWindow *parent,int id,wxPoint pos,wxSize size,int winStyle,wxColour col)
 : wxWindow(parent,id,pos,size,winStyle)
+, backColour(col)
+, subFile(new AssFile)
+, line(new AssDialogue)
+, style(new AssStyle)
 {
-	AssStyle temp;
-	bmp = NULL;
-	style = NULL;
-	vid = NULL;
-	SetStyle(&temp);
-	SetText(_T("preview"));
-	SetSizeHints(size.GetWidth(),size.GetHeight(),-1,-1);
-	backColour = col;
-}
+	line->Text = "{\\q2}preview";
 
+	SetStyle(*style);
 
+	subFile->LoadDefault();
+	subFile->InsertStyle(style);
+	subFile->Line.push_back(line);
 
-/// @brief Destructor 
-///
-SubtitlesPreview::~SubtitlesPreview() {
-	delete bmp;
-	bmp = NULL;
-	delete style;
-	style = NULL;
-	delete vid;
-	vid = NULL;
-}
-
-
-
-/// @brief Set style 
-/// @param _style 
-/// @return 
-///
-void SubtitlesPreview::SetStyle(AssStyle *_style) {
-	// Prepare style
-	AssStyle *tmpStyle = dynamic_cast<AssStyle*>(_style->Clone());
-	tmpStyle->name = _T("Preview");
-	tmpStyle->alignment = 5;
-	for (int i=0;i<4;i++) tmpStyle->Margin[i] = 0;
-	tmpStyle->UpdateData();
-
-	// See if it's any different from the current
-	if (style) {
-		if (tmpStyle->IsEqualTo(style)) {
-			delete tmpStyle;
-			return;
-		}
-
-		delete style;
-	}
-
-	// Update
-	style = tmpStyle;
+	SetSizeHints(size.GetWidth(), size.GetHeight(), -1, -1);
+	wxSizeEvent evt(size);
+	OnSize(evt);
 	UpdateBitmap();
 }
 
+SubtitlesPreview::~SubtitlesPreview() {
+}
 
+void SubtitlesPreview::SetStyle(AssStyle const& newStyle) {
+	*style = newStyle;
+	style->name = "Default";
+	style->alignment = 5;
+	memset(style->Margin, 0, 4 * sizeof(int));
+	style->UpdateData();
+	UpdateBitmap();
+}
 
-/// @brief Set text 
-/// @param text 
-///
 void SubtitlesPreview::SetText(wxString text) {
-	if (text != showText) {
-		showText = text;
+	wxString newText = L"{\\q2}" + text;
+	if (newText != line->Text) {
+		line->Text = newText;
 		UpdateBitmap();
 	}
 }
 
-
-
-/// @brief Update image 
-/// @param w 
-/// @param h 
-/// @return 
-///
-void SubtitlesPreview::UpdateBitmap(int w,int h) {
-	// Visible?
+void SubtitlesPreview::UpdateBitmap() {
 	if (!IsShownOnScreen()) return;
 
-	// Get size
-	if (w == -1) {
-		w = GetClientSize().GetWidth();
-		h = GetClientSize().GetHeight();
-	}
-
-	// Delete old bmp if needed
-	if (bmp) {
-		if (bmp->GetWidth() != w || bmp->GetHeight() != h) {
-			delete bmp;
-			bmp = NULL;
-		}
-	}
-
-	// Create bitmap
-	if (!bmp) {
-		bmp = new wxBitmap(w,h,-1);
-	}
-
-	// Get AegiVideoFrame
-	if (!vid) vid = new DummyVideoProvider(0.0,10,w,h,backColour,true);
 	AegiVideoFrame frame;
 	frame.CopyFrom(vid->GetFrame(0));
 
-	// Try to get subtitles provider
-	SubtitlesProvider *provider = NULL;
-	try {
-		provider = SubtitlesProviderFactoryManager::GetProvider();
-	} 
-	catch (...) {
-		wxMessageBox(_T("Could not get any subtitles provider for the preview box. Make sure that you have a provider installed."),_T("No subtitles provider"),wxICON_ERROR|wxOK);
-	}
-
-	// Provider OK
-	if (provider) {
-		// Generate subtitles
-		AssFile *subs = new AssFile();
-		subs->LoadDefault();
-		int ver = 1;
-		wxString outGroup;
-		subs->InsertStyle((AssStyle *)style->Clone());
-		subs->SetScriptInfo(_T("PlayResX"),wxString::Format(_T("%i"),w));
-		subs->SetScriptInfo(_T("PlayResY"),wxString::Format(_T("%i"),h));
-		subs->AddLine(_T("Dialogue: 0,0:00:00.00,0:00:05.00,Preview,,0000,0000,0000,,{\\q2}") + showText,_T("[Events]"),ver,&outGroup);
-
-		// Apply subtitles
+	if (provider.get()) {
 		try {
-			provider->LoadSubtitles(subs);
-			provider->DrawSubtitles(frame,0.1);
+			provider->LoadSubtitles(subFile.get());
+			provider->DrawSubtitles(frame, 0.1);
 		}
-		catch (...) {}
-		delete provider;
+		catch (...) { }
 	}
 
 	// Convert frame to bitmap
-	wxMemoryDC dc(*bmp);
-	wxBitmap tempBmp(frame.GetImage());
+	*bmp = static_cast<wxBitmap>(frame.GetImage());
 	frame.Clear();
-	dc.DrawBitmap(tempBmp,0,0);
 	Refresh();
 }
 
-
-///////////////
-// Event table
 BEGIN_EVENT_TABLE(SubtitlesPreview,wxWindow)
 	EVT_PAINT(SubtitlesPreview::OnPaint)
 	EVT_SIZE(SubtitlesPreview::OnSize)
 END_EVENT_TABLE()
 
-
-
-/// @brief Paint event 
-/// @param event 
-///
-void SubtitlesPreview::OnPaint(wxPaintEvent &event) {
+void SubtitlesPreview::OnPaint(wxPaintEvent &) {
 	wxPaintDC dc(this);
-	if (!bmp) UpdateBitmap();
-	if (bmp) dc.DrawBitmap(*bmp,0,0);
+	dc.DrawBitmap(*bmp,0,0);
 }
 
+void SubtitlesPreview::OnSize(wxSizeEvent &evt) {
+	if (bmp.get() && evt.GetSize() == bmp->GetSize()) return;
 
+	int w = evt.GetSize().GetWidth();
+	int h = evt.GetSize().GetHeight();
 
-/// @brief Size event 
-/// @param event 
-///
-void SubtitlesPreview::OnSize(wxSizeEvent &event) {
-	delete vid;
-	vid = NULL;
-	UpdateBitmap(event.GetSize().GetWidth(),event.GetSize().GetHeight());
-}
+	bmp.reset(new wxBitmap(w, h, -1));
+	vid.reset(new DummyVideoProvider(0.0, 10, w, h, backColour, true));
+	try {
+		provider.reset(SubtitlesProviderFactoryManager::GetProvider());
+	}
+	catch (...) {
+		wxMessageBox(
+			"Could not get any subtitles provider for the preview box. Make "
+			"sure that you have a provider installed.",
+			"No subtitles provider", wxICON_ERROR | wxOK);
+	}
 
+	subFile->SetScriptInfo("PlayResX", wxString::Format("%i", w));
+	subFile->SetScriptInfo("PlayResY", wxString::Format("%i", h));
 
-
-/// @brief Set colour 
-/// @param col 
-///
-void SubtitlesPreview::SetColour(wxColour col) {
-	backColour = col;
-	delete vid;
-	vid = NULL;
 	UpdateBitmap();
 }
 
-
+void SubtitlesPreview::SetColour(wxColour col) {
+	if (col != backColour) {
+		backColour = col;
+		vid.reset(new DummyVideoProvider(0.0, 10, bmp->GetWidth(), bmp->GetHeight(), backColour, true));
+		UpdateBitmap();
+	}
+}

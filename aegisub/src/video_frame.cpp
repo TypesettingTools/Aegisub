@@ -172,7 +172,7 @@ void AegiVideoFrame::SetTo(const unsigned char *const source[], int width, int h
 	
 }
 
-/// @brief This function is only used on screenshots, so it doesn't have to be fast ------ Get wxImage 
+/// @brief Get wxImage 
 /// @return 
 wxImage AegiVideoFrame::GetImage() const {
 	if (format == FORMAT_RGB32 || format == FORMAT_RGB24) {

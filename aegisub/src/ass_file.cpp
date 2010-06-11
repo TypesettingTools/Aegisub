@@ -429,8 +429,8 @@ void AssFile::AddLine (wxString data,wxString group,int &version,wxString *outGr
 
 /// @brief Clears contents of assfile 
 void AssFile::Clear () {
-	for (std::list<AssEntry*>::iterator cur=Line.begin();cur != Line.end();cur++) {
-		if (*cur) delete *cur;
+	for (entryIter cur=Line.begin();cur != Line.end();cur++) {
+		delete *cur;
 	}
 	Line.clear();
 

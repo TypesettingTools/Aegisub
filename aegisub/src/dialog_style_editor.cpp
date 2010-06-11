@@ -368,7 +368,7 @@ DialogStyleEditor::DialogStyleEditor (wxWindow *parent, AssStyle *_style, Subtit
 		SubsPreview = new SubtitlesPreview(this,-1,wxDefaultPosition,wxSize(100,60),wxSUNKEN_BORDER,lagi_wxColour(OPT_GET("Colour/Style Editor/Background/Preview")->GetColour()));
 	
 		SubsPreview->SetToolTip(_("Preview of current style."));
-		SubsPreview->SetStyle(style);
+		SubsPreview->SetStyle(*style);
 		SubsPreview->SetText(PreviewText->GetValue());
 		PreviewText->SetToolTip(_("Text to be used for the preview."));
 		previewButton->SetToolTip(_("Colour of preview background."));
@@ -593,7 +593,7 @@ void DialogStyleEditor::Apply (bool apply,bool close) {
 		}
 
 		// Update preview
-		else if (SubsPreview) SubsPreview->SetStyle(style);
+		else if (SubsPreview) SubsPreview->SetStyle(*style);
 	}
 
 	// Close
@@ -672,7 +672,7 @@ void DialogStyleEditor::OnChooseFont (wxCommandEvent &event) {
 		work->italic = (newfont.GetStyle() == wxFONTSTYLE_ITALIC);
 		work->underline = newfont.GetUnderlined();
 		UpdateWorkStyle();
-		if (SubsPreview) SubsPreview->SetStyle(work);
+		if (SubsPreview) SubsPreview->SetStyle(*work);
 
 		// Comic sans warning
 		if (newfont.GetFaceName() == _T("Comic Sans MS")) {
@@ -694,7 +694,7 @@ void DialogStyleEditor::OnSetColor (int n) {
 		default: throw _T("Internal error in style editor, attempted setting colour id outside range");
 	}
 	modify->SetWXColor(colorButton[n-1]->GetColour());
-	if (SubsPreview) SubsPreview->SetStyle(work);
+	if (SubsPreview) SubsPreview->SetStyle(*work);
 }
 
 /// @brief Child focus change 
@@ -702,7 +702,7 @@ void DialogStyleEditor::OnSetColor (int n) {
 ///
 void DialogStyleEditor::OnChildFocus (wxChildFocusEvent &event) {
 	UpdateWorkStyle();
-	if (SubsPreview) SubsPreview->SetStyle(work);
+	if (SubsPreview) SubsPreview->SetStyle(*work);
 	event.Skip();
 }
 
@@ -731,7 +731,7 @@ void DialogStyleEditor::OnPreviewColourChange (wxCommandEvent &event) {
 void DialogStyleEditor::OnCommandPreviewUpdate (wxCommandEvent &event) {
 	if (!IsShownOnScreen()) return;
 	UpdateWorkStyle();
-	if (SubsPreview) SubsPreview->SetStyle(work);
+	if (SubsPreview) SubsPreview->SetStyle(*work);
 	event.Skip();
 }
 
