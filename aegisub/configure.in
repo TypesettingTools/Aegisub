@@ -1151,13 +1151,13 @@ AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE, "$GETTEXT_PACKAGE",
 #   it above.
 ####################################################################
 
-AC_ARG_WITH(provider-video, [  --with-provider-video=(ffmpegsource|ffmpeg)
+AC_ARG_WITH(provider-video, [  --with-provider-video=(ffmpegsource)
                           Default Video Provider. (default: ffmpegsource)])
-AC_ARG_WITH(provider-audio, [  --with-provider-audio=(ffmpegsource|ffmpeg)
+AC_ARG_WITH(provider-audio, [  --with-provider-audio=(ffmpegsource)
                           Default Audio Provider. (default: ffmpegsource)])
 AC_ARG_WITH(player-audio, [  --with-player-audio=(alsa|openal|portaudio|pulseaudio)
                           Default Audio Player (default: Linux/ALSA,
-                          Darwin/OpenAL, */PortAudio.])
+                          Darwin/OpenAL, 1:*/OSS, 2:*/PortAudio.])
 
 # Default Video Provider.
 if ! test -z "$with_provider_video"; then
@@ -1165,9 +1165,6 @@ if ! test -z "$with_provider_video"; then
 else
   if test "$with_provider_ffmpegsource" = "yes"; then
     default_provider_video="ffmpegsource"
-  elif test "$with_provider_ffmpeg" = "yes"; then
-    default_provider_video="ffmpeg"
-  fi
 fi
 AC_DEFINE_UNQUOTED([DEFAULT_PROVIDER_VIDEO], ["$default_provider_video"], [Default Video Provider.])
 
@@ -1177,9 +1174,6 @@ if ! test -z "$with_provider_audio"; then
 else
   if test "$with_provider_ffmpegsource" = "yes"; then
     default_provider_audio="ffmpegsource"
-  elif test "$with_provider_ffmpeg" = "yes"; then
-    default_provider_audio="ffmpeg"
-  fi
 fi
 AC_DEFINE_UNQUOTED([DEFAULT_PROVIDER_AUDIO], ["$default_provider_audio"], [Default Video Provider.])
 
