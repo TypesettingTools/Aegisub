@@ -19,7 +19,7 @@ def build(bld):
     obj = bld.new_task_gen(
         features = 'cc cxx cstaticlib',
         target = 'ffmpegsource_aegisub',
-        defines = 'FFMS_EXPORTS HAVE_STRLCPY',
+        defines = 'FFMS_EXPORTS HAVE_STRLCPY __STDC_CONSTANT_MACROS',
         includes = 'include src/core',
         uselib = 'FFMPEG')
 
