@@ -93,11 +93,6 @@
 #define WITH_CSRI
 
 
-// Enable universal charset detector, so Aegisub can automatically detect the encoding of non-unicode subtitles
-// Requires: universalcharset (in repository)
-#define WITH_UNIVCHARDET
-
-
 // Enable Hunspell-based spellchecker
 // Requires: hunspell (in repository for Win32)
 // If you have an old version of Hunspell (that uses Hunspell::put_word() instead of Hunspell::add()),

@@ -74,6 +74,7 @@ AboutScreen::AboutScreen(wxWindow *parent)
 	libString += _T("    wxWidgets - Copyright (c) Julian Smart, Robert Roebling et al;\n");
 	libString += _T("    wxStyledTextCtrl - Copyright (c) Robin Dunn, Neil Hodgson;\n");
 	libString += _T("    Scintilla - Copyright (c) Neil Hodgson;\n");
+	libString += _T("    UniversalCharDet - Copyright (c) Netscape Communications Corp.;\n");
 #ifdef WITH_AUTO4_LUA
 	libString += _T("    Lua - Copyright (c) Lua.org, PUC-Rio;\n");
 #endif
@@ -98,9 +99,6 @@ AboutScreen::AboutScreen(wxWindow *parent)
 #endif
 #ifdef WITH_LIBASS
 	libString += _T("    libass - Copyright (c) Evgeniy Stepanov, Grigori Goronzy;\n");
-#endif
-#ifdef WITH_UNIVCHARDET
-	libString += _T("    UniversalCharDet - Copyright (c) Netscape Communications Corp.;\n");
 #endif
 #ifdef __WINDOWS__
 	libString += _T("    Matroska Parser - Copyright (c) Mike Matsnev;\n");

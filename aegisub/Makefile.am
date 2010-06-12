@@ -1,10 +1,6 @@
 AUTOMAKE_OPTIONS = foreign
 
 
-if HAVE_UNIVCHARDET
-univchardet = universalchardet
-endif
-
 if WITH_INTERNAL_LIBASS
 libass = libass
 endif
@@ -17,7 +13,7 @@ SUBDIRS = \
 	libaegisub \
 	$(ffmpegsource) \
     $(libass) \
-	$(univchardet) \
+	universalchardet
 	tools \
 	src \
 	reporter \
