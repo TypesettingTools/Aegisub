@@ -1165,6 +1165,7 @@ if ! test -z "$with_provider_video"; then
 else
   if test "$with_provider_ffmpegsource" = "yes"; then
     default_provider_video="ffmpegsource"
+  fi
 fi
 AC_DEFINE_UNQUOTED([DEFAULT_PROVIDER_VIDEO], ["$default_provider_video"], [Default Video Provider.])
 
@@ -1174,6 +1175,7 @@ if ! test -z "$with_provider_audio"; then
 else
   if test "$with_provider_ffmpegsource" = "yes"; then
     default_provider_audio="ffmpegsource"
+  fi
 fi
 AC_DEFINE_UNQUOTED([DEFAULT_PROVIDER_AUDIO], ["$default_provider_audio"], [Default Video Provider.])
 
