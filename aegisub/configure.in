@@ -646,7 +646,7 @@ if test "$with_oss" != "no"; then
     . /etc/oss.conf
     CPPFLAGS="$CPPFLAGS -I${OSSLIBDIR}/include/sys"
   fi
-  AC_CHECK_HEADERS([soundcard.h sys/soundcard.h], [with_oss=yes], [with_oss=no])
+  AC_CHECK_HEADERS([soundcard.h sys/soundcard.h], [with_oss="yes"], [with_oss="no"])
   # XXX: maybe check if OSS works
 fi
 
@@ -1171,7 +1171,6 @@ else
 fi
 AC_DEFINE_UNQUOTED([DEFAULT_PROVIDER_VIDEO], ["$default_provider_video"], [Default Video Provider.])
 
-
 # Default Audio Provider.
 if ! test -z "$with_provider_audio"; then
     default_provider_audio="$with_provider_audio"
@@ -1183,7 +1182,6 @@ else
   fi
 fi
 AC_DEFINE_UNQUOTED([DEFAULT_PROVIDER_AUDIO], ["$default_provider_audio"], [Default Video Provider.])
-
 
 # Default Subtitle Provider.
 if ! test -z "$with_provider_subtitle"; then
@@ -1197,7 +1195,6 @@ else
 fi
 AC_DEFINE_UNQUOTED([DEFAULT_PROVIDER_SUBTITLE], ["$default_provider_subtitle"], [Default Subtitle Provider.])
 
-
 # Default audio player.
 if ! test -z "$with_player_audio"; then
     default_player_audio="$with_player_audio"
@@ -1208,11 +1205,32 @@ else
     default_player_audio="openal"
   elif test "$with_portaudio" = "yes"; then
     default_player_audio="portaudio"
+  elif test "$with_oss" = "yes"; then
+    default_player_audio="oss"
   elif test "$with_pulseaudio" = "yes"; then
     default_player_audio="pulseaudio"
   fi
 fi
 AC_DEFINE_UNQUOTED([DEFAULT_PLAYER_AUDIO], ["$default_player_audio"], [Default audio player.])
+
+
+# Set some friendly strings if some of the above aren't detected.
+if test -z "$default_provider_video"; then
+  default_provider_video="NONE (requires ffmpeg)"
+fi
+
+if test -z "$default_provider_audio"; then
+  default_provider_audio="NONE (requires ffmpeg)"
+fi
+
+if test -z "$default_provider_subtitle"; then
+  default_provider_audio="NONE"
+fi
+
+if test -z "$default_player_audio"; then
+  default_player_audio="NONE"
+fi
+
 
 
 
