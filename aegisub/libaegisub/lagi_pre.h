@@ -41,6 +41,9 @@
 #include "libaegisub/cajun/writer.h"
 
 // Universalchardet
+#ifndef _WIN32
+#define _X86_ 1
+#endif
 #include "../universalchardet/nscore.h"
 #include "../universalchardet/nsUniversalDetector.h"
 #include "../universalchardet/nsMBCSGroupProber.h"
