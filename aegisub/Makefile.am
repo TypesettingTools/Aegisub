@@ -10,10 +10,10 @@ ffmpegsource = libffms
 endif
 
 SUBDIRS = \
+	universalchardet \
 	libaegisub \
 	$(ffmpegsource) \
     $(libass) \
-	universalchardet
 	tools \
 	src \
 	reporter \
