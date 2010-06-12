@@ -22,7 +22,7 @@
 #define FFMS_H
 
 // Version format: major - minor - micro - bump
-#define FFMS_VERSION ((2 << 24) | (13 << 16)| (0 << 8) | 1)
+#define FFMS_VERSION ((2 << 24) | (13 << 16) | (1 << 8) | 0)
 
 #include <stdint.h>
 
@@ -36,10 +36,14 @@
 
 #ifdef _WIN32
 #	define FFMS_CC __stdcall
-#	ifdef FFMS_EXPORTS
-#		define FFMS_API(ret) EXTERN_C __declspec(dllexport) ret FFMS_CC
+#	ifdef _MSC_VER
+#		ifdef FFMS_EXPORTS
+#			define FFMS_API(ret) EXTERN_C __declspec(dllexport) ret FFMS_CC
+#		else
+#			define FFMS_API(ret) EXTERN_C __declspec(dllimport) ret FFMS_CC
+#		endif
 #	else
-#		define FFMS_API(ret) EXTERN_C __declspec(dllimport) ret FFMS_CC
+#		define FFMS_API(ret) EXTERN_C ret FFMS_CC
 #	endif
 #else
 #	define FFMS_CC
@@ -253,13 +257,14 @@ FFMS_API(void) FFMS_ResetOutputFormatV(FFMS_VideoSource *V);
 FFMS_API(int) FFMS_SetPP(FFMS_VideoSource *V, const char *PP, FFMS_ErrorInfo *ErrorInfo);
 FFMS_API(void) FFMS_ResetPP(FFMS_VideoSource *V);
 FFMS_API(void) FFMS_DestroyIndex(FFMS_Index *Index);
+FFMS_API(int) FFMS_GetSourceType(FFMS_Index *Index);
 FFMS_API(int) FFMS_GetFirstTrackOfType(FFMS_Index *Index, int TrackType, FFMS_ErrorInfo *ErrorInfo);
 FFMS_API(int) FFMS_GetFirstIndexedTrackOfType(FFMS_Index *Index, int TrackType, FFMS_ErrorInfo *ErrorInfo);
 FFMS_API(int) FFMS_GetNumTracks(FFMS_Index *Index);
 FFMS_API(int) FFMS_GetNumTracksI(FFMS_Indexer *Indexer);
 FFMS_API(int) FFMS_GetTrackType(FFMS_Track *T);
 FFMS_API(int) FFMS_GetTrackTypeI(FFMS_Indexer *Indexer, int Track);
-FFMS_API(const char *) FFMS_GetCodecNameI(FFMS_Indexer *Indexer, int Track);
+FFMS_API(const char *) FFMS_GetCodecNameI(FFMS_Indexer *Indexer, int Track); 
 FFMS_API(int) FFMS_GetNumFrames(FFMS_Track *T);
 FFMS_API(const FFMS_FrameInfo *) FFMS_GetFrameInfo(FFMS_Track *T, int Frame);
 FFMS_API(FFMS_Track *) FFMS_GetTrackFromIndex(FFMS_Index *Index, int Track);

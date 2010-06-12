@@ -104,7 +104,7 @@ FFMS_AudioSource::FFMS_AudioSource(const char *SourceFile, FFMS_Index *Index, in
 		throw FFMS_Exception(FFMS_ERROR_INDEX, FFMS_ERROR_INVALID_ARGUMENT,
 			"Not an audio track");
 
-	if (Index[Track].size() == 0)
+	if (Index->at(Track).size() == 0)
 		throw FFMS_Exception(FFMS_ERROR_INDEX, FFMS_ERROR_INVALID_ARGUMENT,
 			"Audio track contains no audio frames");
 

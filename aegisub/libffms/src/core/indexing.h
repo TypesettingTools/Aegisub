@@ -84,6 +84,7 @@ class FFMS_Track : public std::vector<TFrameInfo> {
 public:
 	FFMS_TrackType TT;
 	FFMS_TrackTimeBase TB;
+	bool UseDTS;
 
 	int FindClosestVideoKeyFrame(int Frame);
 	int FindClosestAudioKeyFrame(int64_t Sample);
@@ -92,7 +93,7 @@ public:
 	void WriteTimecodes(const char *TimecodeFile);
 
 	FFMS_Track();
-	FFMS_Track(int64_t Num, int64_t Den, FFMS_TrackType TT);
+	FFMS_Track(int64_t Num, int64_t Den, FFMS_TrackType TT, bool UseDTS = false);
 };
 
 class FFMS_Index : public std::vector<FFMS_Track> {

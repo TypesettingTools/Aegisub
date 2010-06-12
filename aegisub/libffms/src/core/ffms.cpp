@@ -25,7 +25,9 @@
 #include "audiosource.h"
 #include "indexing.h"
 
-
+#ifdef FFMS_WIN_DEBUG
+#	include <windows.h>
+#endif
 
 static bool FFmpegInited	= false;
 bool HasHaaliMPEG = false;
@@ -71,6 +73,9 @@ void av_log_windebug_callback(void* ptr, int level, const char* fmt, va_list vl)
 FFMS_API(void) FFMS_Init(int CPUFeatures) {
 	if (!FFmpegInited) {
 		av_register_all();
+#if defined(_WIN32) && defined(FFMS_USE_UTF8_PATHS) 
+		ffms_patch_lavf_file_open();
+#endif
 #ifdef FFMS_WIN_DEBUG
 		av_log_set_callback(av_log_windebug_callback);
 		av_log_set_level(AV_LOG_INFO);
@@ -98,6 +103,8 @@ FFMS_API(void) FFMS_SetLogLevel(int Level) {
 }
 
 FFMS_API(FFMS_VideoSource *) FFMS_CreateVideoSource(const char *SourceFile, int Track, FFMS_Index *Index, int Threads, int SeekMode, FFMS_ErrorInfo *ErrorInfo) {
+	if (Threads < 1)
+		Threads = 1;
 	try {
 		switch (Index->Decoder) {
 			case FFMS_SOURCE_LAVF:
@@ -225,6 +232,10 @@ FFMS_API(void) FFMS_ResetPP(FFMS_VideoSource *V) {
 
 FFMS_API(void) FFMS_DestroyIndex(FFMS_Index *Index) {
 	delete Index;
+}
+
+FFMS_API(int) FFMS_GetSourceType(FFMS_Index *Index) {
+	return Index->Decoder;
 }
 
 FFMS_API(int) FFMS_GetFirstTrackOfType(FFMS_Index *Index, int TrackType, FFMS_ErrorInfo *ErrorInfo) {

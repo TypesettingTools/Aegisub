@@ -25,6 +25,7 @@
 
 extern "C" {
 #include <libavutil/sha1.h>
+#include <zlib.h>
 }
 
 #define INDEXID 0x53920873
@@ -51,6 +52,7 @@ struct TrackHeader {
 		uint32_t Frames;
 		int64_t Num;
 		int64_t Den;
+		uint32_t UseDTS;
 };
 
 SharedVideoContext::SharedVideoContext(bool FreeCodecContext) {
@@ -155,8 +157,11 @@ int FFMS_Track::ClosestFrameFromPTS(int64_t PTS) {
 int FFMS_Track::FindClosestVideoKeyFrame(int Frame) {
 	Frame = FFMIN(FFMAX(Frame, 0), static_cast<int>(size()) - 1);
 	for (int i = Frame; i > 0; i--)
-		if (at(i).KeyFrame)
-			return i;
+		if (at(i).KeyFrame) {
+			for (int j = i; j >= 0; j--)
+				if (at(at(j).OriginalPos).KeyFrame)
+					return j;
+		}
 	return 0;
 }
 
@@ -174,12 +179,14 @@ FFMS_Track::FFMS_Track() {
 	this->TT = FFMS_TYPE_UNKNOWN;
 	this->TB.Num = 0; 
 	this->TB.Den = 0;
+	this->UseDTS = false;
 }
 
-FFMS_Track::FFMS_Track(int64_t Num, int64_t Den, FFMS_TrackType TT) {
+FFMS_Track::FFMS_Track(int64_t Num, int64_t Den, FFMS_TrackType TT, bool UseDTS) {
 	this->TT = TT;
 	this->TB.Num = Num; 
 	this->TB.Den = Den;
+	this->UseDTS = UseDTS;
 }
 
 void FFMS_Index::CalculateFileSignature(const char *Filename, int64_t *Filesize, uint8_t Digest[20]) {
@@ -264,6 +271,31 @@ bool FFMS_Index::CompareFileSignature(const char *Filename) {
 	return (CFilesize == Filesize && !memcmp(CDigest, Digest, sizeof(Digest)));
 }
 
+#define CHUNK 65536
+
+static unsigned int z_def(ffms_fstream *IndexStream, z_stream *stream, void *in, size_t in_sz, int finish) {
+	unsigned int total = 0, have;
+	int ret;
+	char out[CHUNK];
+
+	if (!finish && (in_sz == 0 || in == NULL)) return 0;
+
+	stream->next_in = (Bytef*) in;
+	stream->avail_in = in_sz;
+	do {
+		do {
+			stream->avail_out = CHUNK;
+			stream->next_out = (Bytef*) out;
+			ret = deflate(stream, finish ? Z_FINISH : Z_NO_FLUSH);
+			have = CHUNK - stream->avail_out;
+			if (have) IndexStream->write(out, have);
+			total += have;
+		} while (stream->avail_out == 0);
+	} while (finish && ret != Z_STREAM_END);
+	if (finish) deflateEnd(stream);
+	return total;
+}
+
 void FFMS_Index::WriteIndex(const char *IndexFile) {
 	ffms_fstream IndexStream(IndexFile, std::ios::out | std::ios::binary | std::ios::trunc);
 
@@ -273,6 +305,12 @@ void FFMS_Index::WriteIndex(const char *IndexFile) {
 		throw FFMS_Exception(FFMS_ERROR_PARSER, FFMS_ERROR_FILE_READ, buf.str());
 	}
 
+	z_stream stream;
+	memset(&stream, 0, sizeof(z_stream));
+	if (deflateInit(&stream, 9) != Z_OK) {
+		throw FFMS_Exception(FFMS_ERROR_PARSER, FFMS_ERROR_FILE_READ, "Failed to initialize zlib");
+	}
+	
 	// Write the index file header
 	IndexHeader IH;
 	IH.Id = INDEXID;
@@ -287,18 +325,72 @@ void FFMS_Index::WriteIndex(const char *IndexFile) {
 	IH.FileSize = Filesize;
 	memcpy(IH.FileSignature, Digest, sizeof(Digest));
 
-	IndexStream.write(reinterpret_cast<char *>(&IH), sizeof(IH));
+	z_def(&IndexStream, &stream, &IH, sizeof(IndexHeader), 0);
 	
 	for (unsigned int i = 0; i < IH.Tracks; i++) {
+		FFMS_Track &ctrack = at(i);
 		TrackHeader TH;
-		TH.TT = at(i).TT;
-		TH.Frames = at(i).size();
-		TH.Num = at(i).TB.Num;;
-		TH.Den = at(i).TB.Den;
+		TH.TT = ctrack.TT;
+		TH.Frames = ctrack.size();
+		TH.Num = ctrack.TB.Num;;
+		TH.Den = ctrack.TB.Den;
+		TH.UseDTS = ctrack.UseDTS;
 
-		IndexStream.write(reinterpret_cast<char *>(&TH), sizeof(TH));
-		IndexStream.write(reinterpret_cast<char *>(FFMS_GET_VECTOR_PTR(at(i))), TH.Frames * sizeof(TFrameInfo));
+		FFMS_Track temptrack;
+		temptrack.resize(TH.Frames);
+
+		if (TH.Frames)
+			temptrack[0] = ctrack[0];
+
+		for (size_t j = 1; j < ctrack.size(); j++) {
+			temptrack[j] = ctrack[j];
+			temptrack[j].FilePos = ctrack[j].FilePos - ctrack[j - 1].FilePos;
+			temptrack[j].OriginalPos = ctrack[j].OriginalPos - ctrack[j - 1].OriginalPos;
+			temptrack[j].PTS = ctrack[j].PTS - ctrack[j - 1].PTS;
+			temptrack[j].SampleStart = ctrack[j].SampleStart - ctrack[j - 1].SampleStart;
+		}
+
+		z_def(&IndexStream, &stream, &TH, sizeof(TrackHeader), 0);
+		if (TH.Frames)
+			z_def(&IndexStream, &stream, FFMS_GET_VECTOR_PTR(temptrack), TH.Frames * sizeof(TFrameInfo), 0);
 	}
+	z_def(&IndexStream, &stream, NULL, 0, 1);
+}
+
+static unsigned int z_inf(ffms_fstream *Index, z_stream *stream, void *in, size_t in_sz, void *out, size_t out_sz) {
+	int ret;
+
+	if (out_sz == 0 || out == 0) return 0;
+	stream->next_out = (Bytef*) out;
+	stream->avail_out = out_sz;
+
+	do {
+		if (stream->avail_in) memmove(in, stream->next_in, stream->avail_in);
+		Index->read(((char*)in) + stream->avail_in, in_sz - stream->avail_in);
+		stream->next_in = (Bytef*) in;
+		stream->avail_in += Index->gcount();
+	
+		ret = inflate(stream, Z_SYNC_FLUSH);
+		switch (ret) {
+		case Z_NEED_DICT:
+			inflateEnd(stream);
+			throw FFMS_Exception(FFMS_ERROR_PARSER, FFMS_ERROR_FILE_READ, "Failed to read data: Dictionary error.");
+			break;
+		case Z_DATA_ERROR:
+			inflateEnd(stream);
+			throw FFMS_Exception(FFMS_ERROR_PARSER, FFMS_ERROR_FILE_READ, "Failed to read data: Data error.");
+			break;
+		case Z_MEM_ERROR:
+			inflateEnd(stream);
+			throw FFMS_Exception(FFMS_ERROR_PARSER, FFMS_ERROR_FILE_READ, "Failed to read data: Memory error.");
+			break;
+		case Z_STREAM_END:
+			inflateEnd(stream);
+			return out_sz - stream->avail_out;
+		}
+
+	} while (stream->avail_out);
+	return out_sz;
 }
 
 void FFMS_Index::ReadIndex(const char *IndexFile) {
@@ -309,10 +401,17 @@ void FFMS_Index::ReadIndex(const char *IndexFile) {
 		buf << "Failed to open '" << IndexFile << "' for reading";
 		throw FFMS_Exception(FFMS_ERROR_PARSER, FFMS_ERROR_FILE_READ, buf.str());
 	}
+
+	z_stream stream;
+	memset(&stream, 0, sizeof(z_stream));
+	unsigned char in[CHUNK];
+	if (inflateInit(&stream) != Z_OK) {
+		throw FFMS_Exception(FFMS_ERROR_PARSER, FFMS_ERROR_FILE_READ, "Failed to initialize zlib");
+	}
 	
 	// Read the index file header
 	IndexHeader IH;
-	Index.read(reinterpret_cast<char *>(&IH), sizeof(IH));
+	z_inf(&Index, &stream,  &in, CHUNK, &IH, sizeof(IndexHeader));
 	if (IH.Id != INDEXID) {
 		std::ostringstream buf;
 		buf << "'" << IndexFile << "' is not a valid index file";
@@ -340,16 +439,24 @@ void FFMS_Index::ReadIndex(const char *IndexFile) {
 	Decoder = IH.Decoder;
 	Filesize = IH.FileSize;
 	memcpy(Digest, IH.FileSignature, sizeof(Digest));
-
+	
 	try {
 		for (unsigned int i = 0; i < IH.Tracks; i++) {
 			TrackHeader TH;
-			Index.read(reinterpret_cast<char *>(&TH), sizeof(TH));
-			push_back(FFMS_Track(TH.Num, TH.Den, static_cast<FFMS_TrackType>(TH.TT)));
+			z_inf(&Index, &stream, &in, CHUNK, &TH, sizeof(TrackHeader));
+			push_back(FFMS_Track(TH.Num, TH.Den, static_cast<FFMS_TrackType>(TH.TT), TH.UseDTS != 0));
+			FFMS_Track &ctrack = at(i);
 
 			if (TH.Frames) {
-				at(i).resize(TH.Frames);
-				Index.read(reinterpret_cast<char *>(FFMS_GET_VECTOR_PTR(at(i))), TH.Frames * sizeof(TFrameInfo));
+				ctrack.resize(TH.Frames);
+				z_inf(&Index, &stream, &in, CHUNK, FFMS_GET_VECTOR_PTR(ctrack), TH.Frames * sizeof(TFrameInfo));
+			}
+
+			for (size_t j = 1; j < ctrack.size(); j++) {
+				ctrack[j].FilePos = ctrack[j].FilePos + ctrack[j - 1].FilePos;
+				ctrack[j].OriginalPos = ctrack[j].OriginalPos + ctrack[j - 1].OriginalPos;
+				ctrack[j].PTS = ctrack[j].PTS + ctrack[j - 1].PTS;
+				ctrack[j].SampleStart = ctrack[j].SampleStart + ctrack[j - 1].SampleStart;
 			}
 		}
 
@@ -361,7 +468,7 @@ void FFMS_Index::ReadIndex(const char *IndexFile) {
 }
 
 FFMS_Index::FFMS_Index() {
-	// this comment documents nothing
+
 }
 
 FFMS_Index::FFMS_Index(int64_t Filesize, uint8_t Digest[20]) {

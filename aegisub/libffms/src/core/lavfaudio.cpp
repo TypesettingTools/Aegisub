@@ -152,10 +152,10 @@ void FFLAVFAudio::GetAudio(void *Buf, int64_t Start, int64_t Count) {
 			while (av_read_frame(FormatContext, &Packet) >= 0) {
 				if (Packet.stream_index == AudioTrack) {
 					if (LastPTS < 0) {
-						LastPTS = Packet.dts;
-					} else if (LastPTS != Packet.dts) {
+						LastPTS = Packet.pts;
+					} else if (LastPTS != Packet.pts) {
 						for (size_t i = 0; i < Frames.size(); i++)
-							if (Frames[i].PTS == Packet.dts) {
+							if (Frames[i].PTS == Packet.pts) {
 								// The current match was consumed
 								CurrentAudioBlock = i + 1;
 								break;

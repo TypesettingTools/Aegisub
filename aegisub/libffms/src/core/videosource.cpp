@@ -102,14 +102,14 @@ FFMS_Frame *FFMS_VideoSource::OutputFrame(AVFrame *Frame) {
 	if (PPMode) {
 		pp_postprocess(const_cast<const uint8_t **>(Frame->data), Frame->linesize, PPFrame.data, PPFrame.linesize, CodecContext->width, CodecContext->height, Frame->qscale_table, Frame->qstride, PPMode, PPContext, Frame->pict_type | (Frame->qscale_type ? PP_PICT_TYPE_QP2 : 0));
 		if (SWS) {
-			sws_scale(SWS, PPFrame.data, PPFrame.linesize, 0, CodecContext->height, SWSFrame.data, SWSFrame.linesize);
+			sws_scale(SWS, const_cast<FFMS_SWS_CONST_PARAM uint8_t **>(PPFrame.data), PPFrame.linesize, 0, CodecContext->height, SWSFrame.data, SWSFrame.linesize);
 			CopyAVPictureFields(SWSFrame, LocalFrame);
 		} else {
 			CopyAVPictureFields(PPFrame, LocalFrame);			
 		}
 	} else {
 		if (SWS) {
-			sws_scale(SWS, Frame->data, Frame->linesize, 0, CodecContext->height, SWSFrame.data, SWSFrame.linesize);
+			sws_scale(SWS, const_cast<FFMS_SWS_CONST_PARAM uint8_t **>(Frame->data), Frame->linesize, 0, CodecContext->height, SWSFrame.data, SWSFrame.linesize);
 			CopyAVPictureFields(SWSFrame, LocalFrame);
 		} else {
 			// Special case to avoid ugly casts
@@ -148,7 +148,7 @@ FFMS_VideoSource::FFMS_VideoSource(const char *SourceFile, FFMS_Index *Index, in
 		throw FFMS_Exception(FFMS_ERROR_INDEX, FFMS_ERROR_INVALID_ARGUMENT,
 			"Not a video track");
 
-	if (Index[Track].size() == 0)
+	if (Index->at(Track).size() == 0)
 		throw FFMS_Exception(FFMS_ERROR_INDEX, FFMS_ERROR_INVALID_ARGUMENT,
 			"Video track contains no frames");
 
@@ -162,7 +162,8 @@ FFMS_VideoSource::FFMS_VideoSource(const char *SourceFile, FFMS_Index *Index, in
 	SWS = NULL;
 	LastFrameNum = 0;
 	CurrentFrame = 1;
-	MPEG4Counter = 0;
+	DelayCounter = 0;
+	InitialDecode = 1;
 	CodecContext = NULL;
 	LastFrameHeight = -1;
 	LastFrameWidth = -1;

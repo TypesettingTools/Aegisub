@@ -88,9 +88,13 @@ FFMS_Index *FFLAVFIndexer::DoIndexing() {
 	AVPacket Packet, TempPacket;
 	InitNullPacket(Packet);
 	InitNullPacket(TempPacket);
+	std::vector<int64_t> LastValidTS;
+	LastValidTS.resize(FormatContext->nb_streams, ffms_av_nopts_value);
+
 	while (av_read_frame(FormatContext, &Packet) >= 0) {
 		// Update progress
-		if (IC) {
+		// FormatContext->pb can apparently be NULL when opening images.
+		if (IC && FormatContext->pb) {
 			if ((*IC)(FormatContext->pb->pos, FormatContext->file_size, ICPrivate))	
 				throw FFMS_Exception(FFMS_ERROR_CANCELLED, FFMS_ERROR_USER,
 					"Cancelled by user");
@@ -102,18 +106,42 @@ FFMS_Index *FFLAVFIndexer::DoIndexing() {
 			int OBSize;
 			int RepeatPict = -1;
 
+			// Duplicated code
+			if (!(*TrackIndices)[Packet.stream_index].UseDTS && Packet.pts != ffms_av_nopts_value)
+				LastValidTS[Packet.stream_index] = Packet.pts;
+			if (LastValidTS[Packet.stream_index] == ffms_av_nopts_value)
+				(*TrackIndices)[Packet.stream_index].UseDTS = true;
+			if ((*TrackIndices)[Packet.stream_index].UseDTS && Packet.dts != ffms_av_nopts_value)
+				LastValidTS[Packet.stream_index] = Packet.dts;
+			if (LastValidTS[Packet.stream_index] == ffms_av_nopts_value)
+				throw FFMS_Exception(FFMS_ERROR_INDEXING, FFMS_ERROR_PARSER,
+					"Invalid initial pts and dts");
+			//
+
 			if (VideoContexts[Packet.stream_index].Parser) {
 				av_parser_parse2(VideoContexts[Packet.stream_index].Parser, VideoContexts[Packet.stream_index].CodecContext, &OB, &OBSize, Packet.data, Packet.size, Packet.pts, Packet.dts, Packet.pos);
 				RepeatPict = VideoContexts[Packet.stream_index].Parser->repeat_pict;
 			}
 
-			(*TrackIndices)[Packet.stream_index].push_back(TFrameInfo::VideoFrameInfo(Packet.dts, RepeatPict, (Packet.flags & AV_PKT_FLAG_KEY) ? 1 : 0));
+			(*TrackIndices)[Packet.stream_index].push_back(TFrameInfo::VideoFrameInfo(LastValidTS[Packet.stream_index], RepeatPict, (Packet.flags & AV_PKT_FLAG_KEY) ? 1 : 0));
 		} else if (FormatContext->streams[Packet.stream_index]->codec->codec_type == CODEC_TYPE_AUDIO && (IndexMask & (1 << Packet.stream_index))) {
 			int64_t StartSample = AudioContexts[Packet.stream_index].CurrentSample;
 			AVCodecContext *AudioCodecContext = FormatContext->streams[Packet.stream_index]->codec;
 			TempPacket.data = Packet.data;
 			TempPacket.size = Packet.size;
 			TempPacket.flags = Packet.flags;
+
+			// Duplicated code
+			if (!(*TrackIndices)[Packet.stream_index].UseDTS && Packet.pts != ffms_av_nopts_value)
+				LastValidTS[Packet.stream_index] = Packet.pts;
+			if (LastValidTS[Packet.stream_index] == ffms_av_nopts_value)
+				(*TrackIndices)[Packet.stream_index].UseDTS = true;
+			if ((*TrackIndices)[Packet.stream_index].UseDTS && Packet.dts != ffms_av_nopts_value)
+				LastValidTS[Packet.stream_index] = Packet.dts;
+			if (LastValidTS[Packet.stream_index] == ffms_av_nopts_value)
+				throw FFMS_Exception(FFMS_ERROR_INDEXING, FFMS_ERROR_PARSER,
+					"Invalid initial pts and dts");
+			//
 
 			while (TempPacket.size > 0) {
 				int dbsize = AVCODEC_MAX_AUDIO_FRAME_SIZE*10;
@@ -146,7 +174,7 @@ FFMS_Index *FFLAVFIndexer::DoIndexing() {
 					WriteAudio(AudioContexts[Packet.stream_index], TrackIndices.get(), Packet.stream_index, dbsize);
 			}
 
-			(*TrackIndices)[Packet.stream_index].push_back(TFrameInfo::AudioFrameInfo(Packet.dts, StartSample,
+			(*TrackIndices)[Packet.stream_index].push_back(TFrameInfo::AudioFrameInfo(LastValidTS[Packet.stream_index], StartSample,
 				static_cast<unsigned int>(AudioContexts[Packet.stream_index].CurrentSample - StartSample), (Packet.flags & AV_PKT_FLAG_KEY) ? 1 : 0));
 		}
 
