@@ -5,21 +5,21 @@
 	"User" : "",
 	"Temp" : "",
 	"Dictionary" : {
-		"Local" {
+		"Local" : {
 			"Lang" : "^CONFIG/dictionary/lang",
 			"Thesarus" : "^CONFIG/dictionary/thesaurus",
 			"Personal" : "^CONFIG/dictionary/personal"
-		}
+		},
 		"Lang" : [],
 		"Thesaurus" : []
 	},
-	"Automation" {
+	"Automation" : {
 		"Autoload" : [],
 		"Include" : []
-	}
+	},
 	"Crash" : "^CONFIG/crash",
-	"Font" {
-		"FontConfig" {
+	"Font" : {
+		"FontConfig" : {
 				"Cache" : "^CONFIG/fontconfig_cache"
 		}
 	},
