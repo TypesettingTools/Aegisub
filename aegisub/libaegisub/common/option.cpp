@@ -28,6 +28,7 @@
 #include "libaegisub/cajun/elements.h"
 #endif
 
+#include "libaegisub/access.h"
 #include "libaegisub/io.h"
 #include "libaegisub/log.h"
 
@@ -54,7 +55,15 @@ void Options::ConfigNext(std::istream& stream) {
 }
 
 void Options::ConfigUser() {
-	std::istream *stream = agi::io::Open(config_file);
+	std::istream *stream;
+
+	try {
+		stream = agi::io::Open(config_file);
+	} catch (const acs::AcsNotFound&) {
+		return;
+	}
+
+	/// @todo Handle other errors such as parsing and notifying the user.
 	LoadConfig(*stream);
 	config_loaded = true;
 	delete stream;
