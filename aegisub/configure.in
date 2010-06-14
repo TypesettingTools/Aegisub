@@ -675,6 +675,7 @@ fi
 
 if test "$with_ffmpeg" != "no" && test "$enable_old_ffmpeg" != "yes"; then
   AC_AGI_COMPILE([FFMPEG], [ffmpeg], [$LIBSWSCALE_CFLAGS $LIBAVCODEC_CFLAGS $LIBAVFORMAT_CFLAGS $LIBAVUTIL_CFLAGS], [$LIBSWSCALE_LIBS $LIBAVCODEC_LIBS $LIBAVFORMAT_LIBS $LIBAVUTIL_LIBS],[
+#define __STDC_CONSTANT_MACROS
 extern "C" {
 #include <libavformat/avformat.h>
 #include <libavcodec/avcodec.h>
