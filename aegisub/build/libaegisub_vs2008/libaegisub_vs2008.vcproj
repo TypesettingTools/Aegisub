@@ -313,6 +313,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\libaegisub\include\libaegisub\charset.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\libaegisub\include\libaegisub\charset_conv.h"
 				>
 			</File>
@@ -341,7 +345,15 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\libaegisub\include\libaegisub\log.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\libaegisub\include\libaegisub\mru.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\libaegisub\include\libaegisub\mutex.h"
 				>
 			</File>
 			<File
@@ -350,6 +362,14 @@
 			</File>
 			<File
 				RelativePath="..\..\libaegisub\include\libaegisub\option_value.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\libaegisub\include\libaegisub\path.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\libaegisub\include\libaegisub\types.h"
 				>
 			</File>
 			<File
