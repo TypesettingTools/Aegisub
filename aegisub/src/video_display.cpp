@@ -43,6 +43,7 @@
 #include <wx/dcclient.h>
 #include <wx/glcanvas.h>
 #include <wx/menu.h>
+#include <wx/toolbar.h>
 #endif
 
 #ifdef __APPLE__

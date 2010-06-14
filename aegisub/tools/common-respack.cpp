@@ -119,6 +119,7 @@ int main(int argc, const char *argv[]) {
 	wxString filename;
 	FileIterator iter(argc, argv);
 
+		outC << "#include \"libresrc.h\"" << endl;
 	while (iter.Next(&filename)) {
 		ifstream infile(filename.char_str(), ios::binary);
 		infile.seekg(0, ios::end);

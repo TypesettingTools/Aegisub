@@ -47,6 +47,7 @@ class VideoSlider;
 class VideoBox;
 class VideoOutGL;
 class IVisualTool;
+class wxToolBar;
 namespace agi {
 	class OptionValue;
 }

@@ -20,6 +20,7 @@
 
 #ifndef LAGI_PRE
 #include <stdio.h>
+#include <stdint.h>
 #include <time.h>
 
 #include <deque>

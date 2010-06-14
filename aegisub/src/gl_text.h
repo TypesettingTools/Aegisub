@@ -39,6 +39,7 @@
 #include <vector>
 #include "boost/shared_ptr.hpp"
 
+#include <wx/colour.h>
 #include <wx/font.h>
 #endif
 

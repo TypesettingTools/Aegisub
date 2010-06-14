@@ -9,6 +9,7 @@
 #include <string.h>
 #include <sys/stat.h>
 #include <time.h>
+#include <sys/time.h>
 
 // Windows C
 #ifdef _WIN32
