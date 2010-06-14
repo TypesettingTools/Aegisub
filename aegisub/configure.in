@@ -687,7 +687,7 @@ int main (void) {
   SwsContext *swsc = NULL;
 
   av_register_all();
-  fc = av_alloc_format_context();
+  fc = avformat_alloc_context();
   if (fc == NULL) {
     printf("avformat failure\n");
     return 1;
