@@ -20,6 +20,10 @@
 
 
 #ifndef LAGI_PRE
+#include <fstream>
+#include <string>
+#include <map>
+
 #include "../../universalchardet/nsCharSetProber.h"
 #endif
 

@@ -18,6 +18,10 @@
 /// @brief Container for holding an actual option value.
 /// @ingroup libaegisub
 
+#ifndef LAGI_PRE
+#include <assert.h>
+#endif
+
 #include "libaegisub/option_value.h"
 
 namespace agi {

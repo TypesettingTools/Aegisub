@@ -19,9 +19,11 @@
 /// @ingroup libaegisub
 
 #ifndef LAGI_PRE
+#include <stdint.h>
+
 #include <fstream>
 #include <map>
-#include <stdint.h>
+#include <vector>
 #endif
 
 #include <libaegisub/exception.h>

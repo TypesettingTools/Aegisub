@@ -19,6 +19,9 @@
 /// @ingroup libaegisub
 
 #ifndef LAGI_PRE
+#include <assert.h>
+
+#include <map>
 #endif
 
 #include "../config.h"
