@@ -716,7 +716,7 @@ void BaseGrid::OnMouseEvent(wxMouseEvent &event) {
 		// Normal click
 		if ((click || dclick) && !shift && !ctrl && !alt) {
 			editBox->SetToLine(row);
-			if (dclick) VideoContext::Get()->JumpToFrame(VFR_Output.GetFrameAtTime(GetDialogue(row)->Start.GetMS(),true));
+			if (dclick) VideoContext::Get()->JumpToTime(GetDialogue(row)->Start.GetMS());
 			SelectRow(row,false);
 			parentFrame->UpdateToolbar();
 			lastRow = row;

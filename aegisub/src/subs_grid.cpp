@@ -1547,7 +1547,7 @@ void SubtitlesGrid::SetVideoToSubs(bool start) {
 	AssDialogue *cur = GetDialogue(sel[0]);
 	if (cur) {
 		if (start) 
-			VideoContext::Get()->JumpToFrame(VFR_Output.GetFrameAtTime(cur->Start.GetMS(),true));
+			VideoContext::Get()->JumpToTime(cur->Start.GetMS());
 		else 
 			VideoContext::Get()->JumpToFrame(VFR_Output.GetFrameAtTime(cur->End.GetMS(),false));
 	}

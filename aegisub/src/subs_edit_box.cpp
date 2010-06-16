@@ -63,7 +63,6 @@
 #include "tooltip_manager.h"
 #include "utils.h"
 #include "validators.h"
-#include "vfr.h"
 #include "video_context.h"
 #include "video_display.h"
 
@@ -377,7 +376,7 @@ void SubsEditBox::SetToLine(int n,bool weak) {
 		if (sync) {
 			VideoContext::Get()->Stop();
 			AssDialogue *cur = grid->GetDialogue(n);
-			if (cur) VideoContext::Get()->JumpToFrame(VFR_Output.GetFrameAtTime(cur->Start.GetMS(),true));
+			if (cur) VideoContext::Get()->JumpToTime(cur->Start.GetMS());
 		}
 	}
 
@@ -592,7 +591,7 @@ void SubsEditBox::SetControlsState (bool state) {
 /// @brief Disables or enables frame timing 
 ///
 void SubsEditBox::UpdateFrameTiming () {
-	if (VFR_Output.IsLoaded()) ByFrame->Enable(enabled);
+	if (VideoContext::Get()->IsLoaded()) ByFrame->Enable(enabled);
 	else {
 		ByFrame->Enable(false);
 		ByTime->SetValue(true);

@@ -56,7 +56,6 @@
 #include "subs_edit_box.h"
 #include "subs_grid.h"
 #include "utils.h"
-#include "vfr.h"
 #include "video_context.h"
 #include "video_display.h"
 
@@ -214,7 +213,7 @@ void DialogStyling::JumpToLine(int n) {
 	grid->editBox->SetToLine(linen);
 
 	// Update display
-	if (PreviewCheck->IsChecked()) VideoContext::Get()->JumpToFrame(VFR_Output.GetFrameAtTime(line->Start.GetMS(),true));
+	if (PreviewCheck->IsChecked()) VideoContext::Get()->JumpToTime(line->Start.GetMS());
 }
 
 
