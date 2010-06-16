@@ -34,12 +34,6 @@
 /// @ingroup main_ui
 ///
 
-
-#pragma once
-
-
-///////////////////
-// Include headers
 #ifndef AGI_PRE
 #include <vector>
 
@@ -53,8 +47,6 @@
 #endif
 
 
-////////////////////
-// Class prototypes
 class VideoDisplay;
 class VideoSlider;
 class VideoZoomSlider;
@@ -66,8 +58,7 @@ class DialogDetachedVideo;
 class DialogStyling;
 class AegisubFileDropTarget;
 
-/// DOCME
-namespace Automation4 { class FeatureMacro; class ScriptManager; };
+namespace Automation4 { class FeatureMacro; class ScriptManager; }
 
 
 
@@ -386,410 +377,157 @@ public:
 };
 
 
-////////////////
-// Menu Entries
+/// Menu entry event ids
 enum {
-
-	/// DOCME
 	Menu_File_New = 200,
-
-	/// DOCME
 	Menu_File_Open,
-
-	/// DOCME
 	Menu_File_Save,
-
-	/// DOCME
 	Menu_File_SaveAs,
-
-	/// DOCME
 	Menu_File_Close,
-
-	/// DOCME
 	Menu_File_Open_Video,
-
-	/// DOCME
 	Menu_File_Close_Video,
-
-	/// DOCME
 	Menu_File_Open_Subtitles,
-
-	/// DOCME
 	Menu_File_Open_Subtitles_Charset,
 	Menu_File_Open_Subtitles_From_Video,
-
-	/// DOCME
 	Menu_File_New_Subtitles,
-
-	/// DOCME
 	Menu_File_Save_Subtitles,
-
-	/// DOCME
 	Menu_File_Save_Subtitles_As,
-
-	/// DOCME
 	Menu_File_Save_Subtitles_With_Charset,
-
-	/// DOCME
 	Menu_File_Export_Subtitles,
-
-	/// DOCME
 	Menu_File_Open_VFR,
-
-	/// DOCME
 	Menu_File_Save_VFR,
-
-	/// DOCME
 	Menu_File_Close_VFR,
-
-	/// DOCME
 	Menu_File_New_Window,
-
-	/// DOCME
 	Menu_File_Exit,
 
-
-	/// DOCME
 	Menu_File_Recent_Subs_Parent,
-
-	/// DOCME
 	Menu_File_Recent_Vids_Parent,
-
-	/// DOCME
 	Menu_File_Recent_Auds_Parent,
-
-	/// DOCME
 	Menu_File_Recent_Timecodes_Parent,
-
-	/// DOCME
 	Menu_File_Recent_Keyframes_Parent,
 
-
-	/// DOCME
 	Menu_Video_JumpTo,
-
-	/// DOCME
 	Menu_View_Zoom,
-
-	/// DOCME
 	Menu_View_Zoom_50,
-
-	/// DOCME
 	Menu_View_Zoom_100,
-
-	/// DOCME
 	Menu_View_Zoom_200,
-
-	/// DOCME
 	Menu_Video_Zoom_In,
-
-	/// DOCME
 	Menu_Video_Zoom_Out,
-
-	/// DOCME
 	Menu_Video_Load_Keyframes,
-
-	/// DOCME
 	Menu_Video_Save_Keyframes,
-
-	/// DOCME
 	Menu_Video_Close_Keyframes,
-
-	/// DOCME
 	Toolbar_Zoom_Dropdown,
-
-	/// DOCME
 	Menu_Video_AR,
-
-	/// DOCME
 	Menu_Video_AR_Default,
-
-	/// DOCME
 	Menu_Video_AR_Full,
-
-	/// DOCME
 	Menu_Video_AR_Wide,
-
-	/// DOCME
 	Menu_Video_AR_235,
-
-	/// DOCME
 	Menu_Video_AR_Custom,
-
-	/// DOCME
 	Menu_Video_Select_Visible,
-
-	/// DOCME
 	Menu_Video_Play,
-
-	/// DOCME
 	Menu_Video_Detach,
-
-	/// DOCME
 	Menu_Video_Dummy,
-
-	/// DOCME
 	Menu_Video_Overscan,
-
-	/// DOCME
 	Menu_Video_Details,
 
-
-	/// DOCME
 	Menu_Audio_Open_File,
-
-	/// DOCME
 	Menu_Audio_Open_From_Video,
-
-	/// DOCME
 	Menu_Audio_Close,
 #ifdef _DEBUG
-
-	/// DOCME
 	Menu_Audio_Open_Dummy,
-
-	/// DOCME
 	Menu_Audio_Open_Dummy_Noise,
 #endif
 
-
-	/// DOCME
 	Menu_Edit_Select,
-
-	/// DOCME
 	Menu_Edit_Undo,
-
-	/// DOCME
 	Menu_Edit_Redo,
-
-	/// DOCME
 	Menu_Edit_Find,
-
-	/// DOCME
 	Menu_Edit_Find_Next,
-
-	/// DOCME
 	Menu_Edit_Replace,
-
-	/// DOCME
 	Menu_Edit_Shift,
-
-	/// DOCME
 	Menu_Edit_Cut,
-
-	/// DOCME
 	Menu_Edit_Copy,
-
-	/// DOCME
 	Menu_Edit_Paste,
-
-	/// DOCME
 	Menu_Edit_Paste_Over,
-
-	/// DOCME
 	Menu_Edit_Delete,
 
-
-	/// DOCME
 	Menu_View_Language,
-
-	/// DOCME
 	Menu_View_Standard,
-
-	/// DOCME
 	Menu_View_Audio,
-
-	/// DOCME
 	Menu_View_Video,
-
-	/// DOCME
 	Menu_View_Subs,
 	Menu_View_FullTags,
 	Menu_View_ShortTags,
 	Menu_View_NoTags,
 
-
-	/// DOCME
 	Menu_Subtitles_Join,
-
-	/// DOCME
 	Menu_Subtitles_Recombine,
-
-	/// DOCME
 	Menu_Subtitles_Insert,
 	
 	Menu_Subtitles_Sort_Start,
 	Menu_Subtitles_Sort_End,
 	Menu_Subtitles_Sort_Style,
-
-
-	/// DOCME
 	Menu_Tools_Properties,
-
-	/// DOCME
 	Menu_Tools_Styles_Manager,
-
-	/// DOCME
 	Menu_Tools_Attachments,
-
-	/// DOCME
 	Menu_Tools_Translation,
-
-	/// DOCME
 	Menu_Tools_SpellCheck,
-
-	/// DOCME
 	Menu_Tools_Fonts_Collector,
-
-	/// DOCME
 	Menu_Tools_Automation,
-
-	/// DOCME
 	Menu_Tools_Styling,
-
-	/// DOCME
 	Menu_Tools_Resample,
-
-	/// DOCME
 	Menu_Tools_Timing_Processor,
-
-	/// DOCME
 	Menu_Tools_Kanji_Timer,
-
-	/// DOCME
 	Menu_Tools_Options,
-
-	/// DOCME
 	Menu_Tools_ASSDraw,
 
-
-	/// DOCME
 	Menu_Help_Contents,
-
-	/// DOCME
 	Menu_Help_Files,
-
-	/// DOCME
 	Menu_Help_IRCChannel,
-
-	/// DOCME
 	Menu_Help_Website,
-
-	/// DOCME
 	Menu_Help_Forums,
-
-	/// DOCME
 	Menu_Help_BugTracker,
-
-	/// DOCME
 	Menu_Help_Check_Updates,
-
-	/// DOCME
 	Menu_Help_About,
 
 	Menu_Help_Log,
-
-	/// DOCME
 	Menu_Subs_Snap_Start_To_Video,
-
-	/// DOCME
 	Menu_Subs_Snap_End_To_Video,
-
-	/// DOCME
 	Menu_Subs_Snap_Video_To_Start,
-
-	/// DOCME
 	Menu_Subs_Snap_Video_To_End,
-
-	/// DOCME
 	Menu_Video_Snap_To_Scene,
-
-	/// DOCME
 	Menu_Video_Shift_To_Frame,
 
-
-	/// DOCME
 	AutoSave_Timer,
-
-	/// DOCME
 	StatusClear_Timer,
 
-
-	/// DOCME
 	Video_Next_Frame,
-
-	/// DOCME
 	Video_Prev_Frame,
-
-	/// DOCME
 	Video_Focus_Seek,
-
-	/// DOCME
 	Grid_Next_Line,
-
-	/// DOCME
 	Grid_Prev_Line,
-
-	/// DOCME
 	Grid_Toggle_Tags,
 
-	/// DOCME
 	Edit_Box_Commit,
 
-
-	/// DOCME
 	Video_Frame_Play,
 
-
-	/// DOCME
 	Medusa_Play,
-
-	/// DOCME
 	Medusa_Stop,
-
-	/// DOCME
 	Medusa_Shift_Start_Forward,
-
-	/// DOCME
 	Medusa_Shift_Start_Back,
-
-	/// DOCME
 	Medusa_Shift_End_Forward,
-
-	/// DOCME
 	Medusa_Shift_End_Back,
-
-	/// DOCME
 	Medusa_Play_Before,
-
-	/// DOCME
 	Medusa_Play_After,
-
-	/// DOCME
 	Medusa_Next,
-
-	/// DOCME
 	Medusa_Prev,
-
-	/// DOCME
 	Medusa_Enter,
 
-
-	/// DOCME
 	Menu_File_Recent = 2000,
-
-	/// DOCME
 	Menu_Video_Recent = 2200,
-
-	/// DOCME
 	Menu_Audio_Recent = 2400,
-
-	/// DOCME
 	Menu_Timecodes_Recent = 2500,
-
-	/// DOCME
 	Menu_Keyframes_Recent = 2600,
-
-	/// DOCME
 	Menu_Automation_Macro = 2700
 };

@@ -185,7 +185,7 @@ void AlsaPlayer::SetUpHardware()
 	if (snd_pcm_hw_params_set_period_time_near(pcm_handle, hwparams, &period_len, &dir) < 0) {
 		throw _T("ALSA player: Couldn't set period length");
 	}
-	LOG_D_IF(period_len != wanted_period, "player/audio/alsa") << Couldn't get wanted period size of " << wanted_period" << ", got " << period_len << " instead";
+	LOG_D_IF(period_len != wanted_period, "player/audio/alsa") << "Couldn't get wanted period size of " << wanted_period << ", got " << period_len << " instead";
 
 	if (snd_pcm_hw_params_get_period_size(hwparams, &period, &dir) < 0) {
 		LOG_E("player/audio/alsa") << "Couldn't get period size";

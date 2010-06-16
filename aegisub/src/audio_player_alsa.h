@@ -42,7 +42,6 @@
 // Headers
 #include <alsa/asoundlib.h>
 
-#include "frame_main.h"
 #include "include/aegisub/audio_player.h"
 #include "include/aegisub/audio_provider.h"
 #include "options.h"

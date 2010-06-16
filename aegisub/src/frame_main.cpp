@@ -32,11 +32,7 @@
 /// @file frame_main.cpp
 /// @brief Main window creation and control management
 /// @ingroup main_ui
-///
 
-
-///////////////////
-// Include headers
 #include "config.h"
 
 #ifndef AGI_PRE
@@ -102,13 +98,6 @@
 #define StartupLog(a)
 #endif
 
-/////////////////////////
-// FrameMain constructor
-
-
-/// @brief DOCME
-/// @param args 
-///
 FrameMain::FrameMain (wxArrayString args)
 : wxFrame ((wxFrame*)NULL,-1,_T(""),wxDefaultPosition,wxSize(920,700),wxDEFAULT_FRAME_STYLE | wxCLIP_CHILDREN)
 {
@@ -228,10 +217,7 @@ FrameMain::FrameMain (wxArrayString args)
 	StartupLog(_T("Leaving FrameMain constructor"));
 }
 
-
-
 /// @brief FrameMain destructor 
-///
 FrameMain::~FrameMain () {
 	DeInitContents();
 #ifdef WITH_AUTOMATION
@@ -239,10 +225,7 @@ FrameMain::~FrameMain () {
 #endif
 }
 
-
-
 /// @brief Initialize toolbar 
-///
 void FrameMain::InitToolbar () {
 	// Create toolbar
 	wxSystemOptions::SetOption(_T("msw.remap"), 0);
@@ -319,14 +302,12 @@ void FrameMain::InitToolbar () {
 /// @param item_text   
 /// @param hotkey_name 
 /// @return 
-///
 wxString MakeHotkeyText(const wxString &item_text, const wxString &hotkey_name) {
 	return item_text + wxString(_T("\t")) + Hotkeys.GetText(hotkey_name);
  }
 
 
 /// @brief Initialize menu bar 
-///
 void FrameMain::InitMenu() {
 	// Deinit menu if needed
 	if (menuCreated) {
@@ -580,10 +561,7 @@ void FrameMain::InitMenu() {
 	menuCreated = true;
 }
 
-
-
 /// @brief Initialize contents 
-///
 void FrameMain::InitContents() {
 	// Set a background panel
 	StartupLog(_T("Create background panel"));
@@ -646,10 +624,7 @@ void FrameMain::InitContents() {
 	StartupLog(_T("Leaving InitContents"));
 }
 
-
-
 /// @brief Deinitialize controls 
-///
 void FrameMain::DeInitContents() {
 	if (detachedVideo) detachedVideo->Destroy();
 	if (stylingAssistant) stylingAssistant->Destroy();
@@ -660,10 +635,7 @@ void FrameMain::DeInitContents() {
 	HelpButton::ClearPages();
 }
 
-
-
 /// @brief Update toolbar 
-///
 void FrameMain::UpdateToolbar() {
 	// Collect flags
 	bool isVideo = VideoContext::Get()->IsLoaded();
@@ -686,13 +658,9 @@ void FrameMain::UpdateToolbar() {
 	toolbar->Realize();
 }
 
-
-
 /// @brief Open subtitles 
 /// @param filename 
 /// @param charset  
-/// @return 
-///
 void FrameMain::LoadSubtitles (wxString filename,wxString charset) {
 	// First check if there is some loaded
 	if (AssFile::top && AssFile::top->loaded) {
@@ -781,13 +749,10 @@ void FrameMain::LoadSubtitles (wxString filename,wxString charset) {
 	UpdateTitle();
 }
 
-
-
 /// @brief Save subtitles 
 /// @param saveas      
 /// @param withCharset 
 /// @return 
-///
 bool FrameMain::SaveSubtitles(bool saveas,bool withCharset) {
 	// Try to get filename from file
 	wxString filename;
@@ -838,12 +803,9 @@ bool FrameMain::SaveSubtitles(bool saveas,bool withCharset) {
 	return false;
 }
 
-
-
 /// @brief Try to close subtitles 
 /// @param enableCancel 
 /// @return 
-///
 int FrameMain::TryToCloseSubs(bool enableCancel) {
 	AssFile *ass = AssFile::top;
 	if (ass->IsModified()) {
@@ -859,8 +821,6 @@ int FrameMain::TryToCloseSubs(bool enableCancel) {
 	}
 	else return wxYES;
 }
-
-
 
 /// @brief Set the video and audio display visibilty
 /// @param video -1: leave unchanged; 0: hide; 1: show
@@ -902,10 +862,7 @@ void FrameMain::SetDisplayMode(int video, int audio) {
 	Thaw();
 }
 
-
-
 /// @brief Update title bar 
-///
 void FrameMain::UpdateTitle() {
 	// Determine if current subs are modified
 	bool subsMod = AssFile::top->IsModified();
@@ -942,11 +899,8 @@ void FrameMain::UpdateTitle() {
 	if (curTitle != newTitle) SetTitle(newTitle);
 }
 
-
-
 /// @brief Updates subs with video/whatever data 
 /// @param fromSubs 
-///
 void FrameMain::SynchronizeProject(bool fromSubs) {
 	// Gather current data
 	AssFile *subs = AssFile::top;
@@ -1130,13 +1084,9 @@ void FrameMain::SynchronizeProject(bool fromSubs) {
 	}
 }
 
-
-
 /// @brief Loads video 
 /// @param file     
 /// @param autoload 
-/// @return 
-///
 void FrameMain::LoadVideo(wxString file,bool autoload) {
 	if (blockVideoLoad) return;
 	Freeze();
@@ -1210,13 +1160,9 @@ void FrameMain::LoadVideo(wxString file,bool autoload) {
 	Thaw();
 }
 
-
-
 /// @brief Loads audio 
 /// @param filename  
 /// @param FromVideo 
-/// @return 
-///
 void FrameMain::LoadAudio(wxString filename,bool FromVideo) {
 	if (blockAudioLoad) return;
 	VideoContext::Get()->Stop();
@@ -1239,11 +1185,8 @@ void FrameMain::LoadAudio(wxString filename,bool FromVideo) {
 	}
 }
 
-
-
 /// @brief Loads VFR 
 /// @param filename 
-///
 void FrameMain::LoadVFR(wxString filename) {
 	VideoContext::Get()->Stop();
 	if (filename != _T("")) {
@@ -1273,25 +1216,16 @@ void FrameMain::LoadVFR(wxString filename) {
 	EditBox->UpdateFrameTiming();
 }
 
-
-
 /// @brief Saves VFR 
 /// @param filename 
-///
 void FrameMain::SaveVFR(wxString filename) {
 	VFR_Output.Save(filename);
 }
 
-
-
 /// @brief Open help 
-/// @param page 
-///
-void FrameMain::OpenHelp(wxString page) {
+void FrameMain::OpenHelp(wxString) {
 	HelpButton::OpenPage(_T("Main"));
 }
-
-
 
 /// @brief Detach video window 
 /// @param detach 
@@ -1311,22 +1245,16 @@ void FrameMain::DetachVideo(bool detach) {
 	UpdateToolbar();
 }
 
-
-
-/// @brief Sets status and clear after n miliseconds 
+/// @brief Sets status and clear after n milliseconds
 /// @param text 
 /// @param ms   
-///
 void FrameMain::StatusTimeout(wxString text,int ms) {
 	SetStatusText(text,1);
 	StatusClear.SetOwner(this,StatusClear_Timer);
 	StatusClear.Start(ms,true);
 }
 
-
-
 /// @brief Setup accelerator table 
-///
 void FrameMain::SetAccelerators() {
 	std::vector<wxAcceleratorEntry> entry;
 	entry.reserve(32);
@@ -1364,12 +1292,9 @@ void FrameMain::SetAccelerators() {
 	SetAcceleratorTable(table);
 }
 
-
-
 /// @brief Load list of files 
 /// @param list 
 /// @return 
-///
 bool FrameMain::LoadList(wxArrayString list) {
 	// Build list
 	wxArrayString List;
@@ -1455,19 +1380,13 @@ bool FrameMain::LoadList(wxArrayString list) {
 }
 
 
-
-
 /// @brief Sets the descriptions for undo/redo 
-///
 void FrameMain::SetUndoRedoDesc() {
 	editMenu->SetHelpString(0,_T("Undo ")+AssFile::GetUndoDescription());
 	editMenu->SetHelpString(1,_T("Redo ")+AssFile::GetRedoDescription());
 }
 
-
-
 /// @brief Check if ASSDraw is available 
-///
 bool FrameMain::HasASSDraw() {
 #ifdef __WINDOWS__
 	wxFileName fn(StandardPaths::DecodePath(_T("?data/ASSDraw3.exe")));
@@ -1476,5 +1395,3 @@ bool FrameMain::HasASSDraw() {
 	return false;
 #endif
 }
-
-

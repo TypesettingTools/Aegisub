@@ -41,7 +41,6 @@
 ///////////
 // Headers
 #include "audio_player_manager.h"
-#include "frame_main.h"
 #include "include/aegisub/audio_player.h"
 #include "include/aegisub/audio_provider.h"
 #include "options.h"
