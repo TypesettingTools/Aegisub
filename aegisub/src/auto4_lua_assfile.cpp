@@ -932,11 +932,11 @@ namespace Automation4 {
 							ktag = tag->Name.Mid(1);
 							// check if it's a "set time" tag, special handling for that (depends on previous syllable duration)
 							if (ktag == _T("kt")) {
-								ktime = tag->Params[0]->AsInt() * 10;
+								ktime = tag->Params[0]->Get<int>() * 10;
 								kdur = 0;
 							} else {
 								ktime += kdur; // duration of previous syllable
-								kdur = tag->Params[0]->AsInt() * 10;
+								kdur = tag->Params[0]->Get<int>() * 10;
 							}
 							ktext.clear();
 							ktext_stripped.clear();

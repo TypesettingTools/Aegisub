@@ -191,9 +191,9 @@ void DialogResample::DoResampleTags (wxString name,int n,AssOverrideParameter *c
 		case PARCLASS_DRAWING:
 			{
 				AssDialogueBlockDrawing block;
-				block.text = curParam->AsText();
+				block.text = curParam->Get<wxString>();
 				block.TransformCoords(m[0],m[2],rx,ry);
-				curParam->SetText(block.GetText());
+				curParam->Set(block.GetText());
 			}
 			return;
 
@@ -203,16 +203,16 @@ void DialogResample::DoResampleTags (wxString name,int n,AssOverrideParameter *c
 
 	VariableDataType curType = curParam->GetType();
 	if (curType == VARDATA_FLOAT) {
-		float par = curParam->AsFloat();
+		float par = curParam->Get<double>();
 		if (isX) par += m[0];
 		if (isY) par += m[2];
-		curParam->SetFloat(par * resizer);
+		curParam->Set<double>(par * resizer);
 	}
 	if (curType == VARDATA_INT) {
-		int par = curParam->AsInt();
+		int par = curParam->Get<int>();
 		if (isX) par += m[0];
 		if (isY) par += m[2];
-		curParam->SetInt(int(double(par) * resizer + 0.5));
+		curParam->Set<int>(int(double(par) * resizer + 0.5));
 	}
 }
 

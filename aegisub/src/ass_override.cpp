@@ -61,15 +61,7 @@ AssOverrideParameter::~AssOverrideParameter () {
 /// @param param 
 ///
 void AssOverrideParameter::CopyFrom (const AssOverrideParameter &param) {
-	switch(param.GetType()) {
-		case VARDATA_INT: SetInt(param.AsInt()); break;
-		case VARDATA_FLOAT: SetFloat(param.AsFloat()); break;
-		case VARDATA_TEXT: SetText(param.AsText()); break;
-		case VARDATA_BOOL: SetBool(param.AsBool()); break;
-		case VARDATA_COLOUR: SetColour(param.AsColour()); break;
-		case VARDATA_BLOCK: SetBlock(param.AsBlock()); break;
-		default: DeleteValue();
-	}
+	*static_cast<VariableData*>(this) = static_cast<const VariableData&>(param);
 	classification = param.classification;
 	ommited = param.ommited;
 }
@@ -165,7 +157,7 @@ void AssDialogueBlockOverride::ProcessParameters(AssDialogueBlockOverride::Proce
 
 				// Go recursive if it's a block parameter
 				if (curPar->GetType() == VARDATA_BLOCK) {
-					curPar->AsBlock()->ProcessParameters(callback,userData);
+					curPar->Get<AssDialogueBlockOverride*>()->ProcessParameters(callback,userData);
 				}
 			}
 
@@ -466,25 +458,25 @@ void AssOverrideTagProto::LoadProtos () {
 	i++;
 	proto[i].name = _T("\\b");
 	proto[i].params.push_back(AssOverrideParamProto(VARDATA_INT,OPTIONAL_1,PARCLASS_NORMAL));
-	proto[i].params.back().defaultValue.SetBool(false);
+	proto[i].params.back().defaultValue.Set<bool>(false);
 
 	// \i<0/1>
 	i++;
 	proto[i].name = _T("\\i");
 	proto[i].params.push_back(AssOverrideParamProto(VARDATA_BOOL,OPTIONAL_1,PARCLASS_NORMAL));
-	proto[i].params.back().defaultValue.SetBool(false);
+	proto[i].params.back().defaultValue.Set<bool>(false);
 
 	// \u<0/1>
 	i++;
 	proto[i].name = _T("\\u");
 	proto[i].params.push_back(AssOverrideParamProto(VARDATA_BOOL,OPTIONAL_1,PARCLASS_NORMAL));
-	proto[i].params.back().defaultValue.SetBool(false);
+	proto[i].params.back().defaultValue.Set<bool>(false);
 
 	// \s<0/1>
 	i++;
 	proto[i].name = _T("\\s");
 	proto[i].params.push_back(AssOverrideParamProto(VARDATA_BOOL,OPTIONAL_1,PARCLASS_NORMAL));
-	proto[i].params.back().defaultValue.SetBool(false);
+	proto[i].params.back().defaultValue.Set<bool>(false);
 
 	// \a<alignment>
 	i++;
@@ -689,7 +681,7 @@ end_tokenizing:
 			wxChar firstChar = curtok[0];
 			bool auto4 = (firstChar == _T('!') || firstChar == _T('$') || firstChar == _T('%')) && curproto->type != VARDATA_BLOCK;
 			if (auto4) {
-				newparam->SetText(curtok);
+				newparam->Set(curtok);
 			}
 			else {
 			// Determine parameter type and set value
@@ -697,29 +689,29 @@ end_tokenizing:
 					case VARDATA_INT: {
 						long temp = 0;
 						curtok.ToLong(&temp);
-						newparam->SetInt(temp);
+						newparam->Set<int>(temp);
 						break;
 					}
 					case VARDATA_FLOAT: {
 						double temp = 0.0;
 						curtok.ToDouble(&temp);
-						newparam->SetFloat(temp);
+						newparam->Set<double>(temp);
 						break;
 					}
 					case VARDATA_TEXT:
-						newparam->SetText(curtok);
+						newparam->Set(curtok);
 						break;
 					case VARDATA_BOOL: {
 						long temp = false;
 						curtok.ToLong(&temp);
-						newparam->SetBool(temp != 0);
+						newparam->Set<bool>(temp != 0);
 						break;
 					}
 					case VARDATA_BLOCK: {
 						AssDialogueBlockOverride *temp = new AssDialogueBlockOverride;
 						temp->text = curtok;
 						temp->ParseTags();
-						newparam->SetBlock(temp);
+						newparam->Set(temp);
 						break;
 					}
 					default:
@@ -761,7 +753,7 @@ wxString AssOverrideTag::ToString() {
 	int n = 0;
 	for (std::vector<AssOverrideParameter*>::iterator cur=Params.begin();cur!=Params.end();cur++) {
 		if ((*cur)->GetType() != VARDATA_NONE && (*cur)->ommited == false) {
-			result += (*cur)->AsText();
+			result += (*cur)->Get<wxString>();
 			result += _T(",");
 			n++;
 		}

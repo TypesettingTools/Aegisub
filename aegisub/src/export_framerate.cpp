@@ -213,7 +213,7 @@ void AssTransformFramerateFilter::TransformTimeTags (wxString name,int n,AssOver
 	}
 
 	// Parameter value
-	int parVal = curParam->AsInt() * mult;
+	int parVal = curParam->Get<int>() * mult;
 
 	// Karaoke preprocess
 	int curKarPos = 0;
@@ -263,7 +263,7 @@ void AssTransformFramerateFilter::TransformTimeTags (wxString name,int n,AssOver
 		value -= curKarPos;
 	}
 
-	curParam->SetInt(value/mult);
+	curParam->Set<int>(value/mult);
 }
 
 

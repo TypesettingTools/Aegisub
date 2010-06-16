@@ -70,11 +70,7 @@ enum VariableDataType {
 	VARDATA_BLOCK
 };
 
-
-//////////////
-// Prototypes
 class AssDialogueBlockOverride;
-
 
 
 /// DOCME
@@ -85,7 +81,6 @@ class AssDialogueBlockOverride;
 class VariableData {
 private:
 	union {
-
 		/// DOCME
 		void *value;
 
@@ -105,7 +100,7 @@ private:
 		wxColour *value_colour;
 
 		/// DOCME
-		AssDialogueBlockOverride *value_block;
+		AssDialogueBlockOverride **value_block;
 	};
 
 	/// DOCME
@@ -119,23 +114,9 @@ public:
 	virtual ~VariableData();
 
 	VariableDataType GetType() const;
-
-	void SetInt(int param);
-	void SetFloat(double param);
-	void SetBool(bool param);
-	void SetText(wxString param);
-	void SetColour(wxColour param);
-	void SetBlock(AssDialogueBlockOverride *param);
+	template<class T> void Set(T param);
 	void ResetWith(wxString value);
-
-	int AsInt() const;
-	double AsFloat() const;
-	bool AsBool() const;
-	wxString AsText() const;
-	wxColour AsColour() const;
-	AssDialogueBlockOverride *AsBlock() const;
+	template<class T> T Get() const;
 
 	void operator= (const VariableData &param);
 };
-
-

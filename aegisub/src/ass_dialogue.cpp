@@ -486,7 +486,7 @@ void AssDialogue::ParseASSTags () {
 				for (curTag = block->Tags.begin();curTag != block->Tags.end();curTag++) {
 					AssOverrideTag *tag = *curTag;
 					if (tag->Name == _T("\\p")) {
-						drawingLevel = tag->Params.at(0)->AsInt();
+						drawingLevel = tag->Params.at(0)->Get<int>();
 					}
 				}
 			}
@@ -591,7 +591,7 @@ void AssDialogue::ConvertTagsToSRT () {
 				if (curTag->IsValid()) {
 					// Italics
 					if (curTag->Name == _T("\\i")) {
-						temp = curTag->Params.at(0)->AsBool();
+						temp = curTag->Params.at(0)->Get<bool>();
 						if (temp && !isItalic) {
 							isItalic = true;
 							final += _T("<i>");
@@ -604,7 +604,7 @@ void AssDialogue::ConvertTagsToSRT () {
 
 					// Underline
 					if (curTag->Name == _T("\\u")) {
-						temp = curTag->Params.at(0)->AsBool();
+						temp = curTag->Params.at(0)->Get<bool>();
 						if (temp && !isUnder) {
 							isUnder = true;
 							final += _T("<u>");
@@ -617,7 +617,7 @@ void AssDialogue::ConvertTagsToSRT () {
 
 					// Strikeout
 					if (curTag->Name == _T("\\s")) {
-						temp = curTag->Params.at(0)->AsBool();
+						temp = curTag->Params.at(0)->Get<bool>();
 						if (temp && !isStrike) {
 							isStrike = true;
 							final += _T("<s>");
@@ -630,7 +630,7 @@ void AssDialogue::ConvertTagsToSRT () {
 
 					// Bold
 					if (curTag->Name == _T("\\b")) {
-						temp = curTag->Params.at(0)->AsBool();
+						temp = curTag->Params.at(0)->Get<bool>();
 						if (temp && !isBold) {
 							isBold = true;
 							final += _T("<b>");

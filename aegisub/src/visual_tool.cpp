@@ -473,15 +473,15 @@ void VisualTool<FeatureType>::GetLinePosition(AssDialogue *diag,int &x, int &y, 
 				// Position
 				if ((tag->Name == L"\\pos" || tag->Name == L"\\move") && tag->Params.size() >= 2) {
 					if (!posSet) {
-						x = tag->Params[0]->AsInt();
-						y = tag->Params[1]->AsInt();
+						x = tag->Params[0]->Get<int>();
+						y = tag->Params[1]->Get<int>();
 						posSet = true;
 					}
 				}
 
 				// Alignment
 				else if ((tag->Name == L"\\an" || tag->Name == L"\\a") && tag->Params.size() >= 1) {
-					align = tag->Params[0]->AsInt();
+					align = tag->Params[0]->Get<int>();
 					if (tag->Name == L"\\a") {
 						switch(align) {
 							case 1: case 2: case 3:
@@ -501,8 +501,8 @@ void VisualTool<FeatureType>::GetLinePosition(AssDialogue *diag,int &x, int &y, 
 
 				// Origin
 				else if (!orgSet && tag->Name == L"\\org" && tag->Params.size() >= 2) {
-					orgx = tag->Params[0]->AsInt();
-					orgy = tag->Params[1]->AsInt();
+					orgx = tag->Params[0]->Get<int>();
+					orgy = tag->Params[1]->Get<int>();
 					parent->FromScriptCoords(&orgx, &orgy);
 					orgSet = true;
 				}
@@ -562,18 +562,18 @@ void VisualTool<FeatureType>::GetLineMove(AssDialogue *diag,bool &hasMove,int &x
 				// Position
 				if (tag->Name == L"\\move" && tag->Params.size() >= 4) {
 					hasMove = true;
-					x1 = tag->Params[0]->AsInt();
-					y1 = tag->Params[1]->AsInt();
-					x2 = tag->Params[2]->AsInt();
-					y2 = tag->Params[3]->AsInt();
+					x1 = tag->Params[0]->Get<int>();
+					y1 = tag->Params[1]->Get<int>();
+					x2 = tag->Params[2]->Get<int>();
+					y2 = tag->Params[3]->Get<int>();
 					parent->FromScriptCoords(&x1, &y1);
 					parent->FromScriptCoords(&x2, &y2);
 					if (tag->Params.size() >= 6 &&
 						!tag->Params[4]->ommited &&
 						!tag->Params[5]->ommited) {
 
-						t1 = tag->Params[4]->AsInt();
-						t2 = tag->Params[5]->AsInt();
+						t1 = tag->Params[4]->Get<int>();
+						t2 = tag->Params[5]->Get<int>();
 					}
 					return;
 				}
@@ -617,13 +617,13 @@ void VisualTool<FeatureType>::GetLineRotation(AssDialogue *diag,float &rx,float 
 		for (size_t j=0;j<override->Tags.size();j++) {
 			tag = override->Tags.at(j);
 			if (tag->Name == L"\\frx" && tag->Params.size() == 1) {
-				rx = tag->Params[0]->AsFloat();
+				rx = tag->Params[0]->Get<double>();
 			}
 			if (tag->Name == L"\\fry" && tag->Params.size() == 1) {
-				ry = tag->Params[0]->AsFloat();
+				ry = tag->Params[0]->Get<double>();
 			}
 			if ((tag->Name == L"\\frz" || tag->Name == L"\fr") && tag->Params.size() == 1) {
-				rz = tag->Params[0]->AsFloat();
+				rz = tag->Params[0]->Get<double>();
 			}
 		}
 	}
@@ -655,10 +655,10 @@ void VisualTool<FeatureType>::GetLineScale(AssDialogue *diag,float &scalX,float 
 		for (size_t j=0;j<override->Tags.size();j++) {
 			tag = override->Tags.at(j);
 			if (tag->Name == L"\\fscx" && tag->Params.size() == 1) {
-				scalX = tag->Params[0]->AsFloat();
+				scalX = tag->Params[0]->Get<double>();
 			}
 			if (tag->Name == L"\\fscy" && tag->Params.size() == 1) {
-				scalY = tag->Params[0]->AsFloat();
+				scalY = tag->Params[0]->Get<double>();
 			}
 		}
 	}
@@ -698,17 +698,17 @@ void VisualTool<FeatureType>::GetLineClip(AssDialogue *diag,int &x1,int &y1,int 
 		for (size_t j=0;j<override->Tags.size();j++) {
 			tag = override->Tags.at(j);
 			if (tag->Name == L"\\clip" && tag->Params.size() == 4) {
-				x1 = tag->Params[0]->AsInt();
-				y1 = tag->Params[1]->AsInt();
-				x2 = tag->Params[2]->AsInt();
-				y2 = tag->Params[3]->AsInt();
+				x1 = tag->Params[0]->Get<int>();
+				y1 = tag->Params[1]->Get<int>();
+				x2 = tag->Params[2]->Get<int>();
+				y2 = tag->Params[3]->Get<int>();
 				inverse = false;
 			}
 			else if (tag->Name == L"\\iclip" && tag->Params.size() == 4) {
-				x1 = tag->Params[0]->AsInt();
-				y1 = tag->Params[1]->AsInt();
-				x2 = tag->Params[2]->AsInt();
-				y2 = tag->Params[3]->AsInt();
+				x1 = tag->Params[0]->Get<int>();
+				y1 = tag->Params[1]->Get<int>();
+				x2 = tag->Params[2]->Get<int>();
+				y2 = tag->Params[3]->Get<int>();
 				inverse = true;
 			}
 		}
@@ -745,17 +745,17 @@ wxString VisualTool<FeatureType>::GetLineVectorClip(AssDialogue *diag,int &scale
 			tag = override->Tags.at(j);
 			if (tag->Name == L"\\clip" || tag->Name == L"\\iclip") {
 				if (tag->Params.size() == 1) {
-					result = tag->Params[0]->AsText();
+					result = tag->Params[0]->Get<wxString>();
 				}
 				else if (tag->Params.size() == 2) {
-					scale = tag->Params[0]->AsInt();
-					result = tag->Params[1]->AsText();
+					scale = tag->Params[0]->Get<int>();
+					result = tag->Params[1]->Get<wxString>();
 				}
 				else if (tag->Params.size() == 4) {
-					int x1 = tag->Params[0]->AsInt(),
-						y1 = tag->Params[1]->AsInt(),
-						x2 = tag->Params[2]->AsInt(),
-						y2 = tag->Params[3]->AsInt();
+					int x1 = tag->Params[0]->Get<int>(),
+						y1 = tag->Params[1]->Get<int>(),
+						x2 = tag->Params[2]->Get<int>(),
+						y2 = tag->Params[3]->Get<int>();
 					result = wxString::Format(L"m %d %d l %d %d %d %d %d %d", x1, y1, x2, y1, x2, y2, x1, y2);
 				}
 				inverse = tag->Name == L"\\iclip";

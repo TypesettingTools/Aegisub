@@ -183,7 +183,7 @@ void AudioKaraoke::Commit() {
 			// Some weird people have text before the first karaoke tag on a line.
 			// Check that a karaoke tag actually exists for the (non-)syllable to avoid a crash.
 			if (syl->tag && syl->tag->Params.size()>0)
-				syl->tag->Params[0]->SetInt(syl->duration);
+				syl->tag->Params[0]->Set<int>(syl->duration);
 			// Of course, if the user changed the duration of such a non-syllable, its timing can't be updated and will stay zero.
 			// There is no way to check for that right now, and I can't bother to fix it.
 		}

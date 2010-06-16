@@ -32,8 +32,6 @@
 /// @file variable_data.cpp
 /// @brief A variant-type implementation
 /// @ingroup utility subs_storage
-///
-
 
 ////////////
 // Includes
@@ -44,27 +42,19 @@
 #include "utils.h"
 #include "variable_data.h"
 
-
 /// @brief Constructor 
-///
 VariableData::VariableData () {
 	type = VARDATA_NONE;
 	value = NULL;
 }
 
-
-
 /// @brief Destructor 
-///
 VariableData::~VariableData () {
 	DeleteValue ();
 }
 
-
-
 /// @brief Deletes the stored value 
 /// @return 
-///
 void VariableData::DeleteValue () {
 	if (!value) return;
 	if (type == VARDATA_NONE) return;
@@ -81,129 +71,88 @@ void VariableData::DeleteValue () {
 	value = NULL;
 }
 
+template<class T> static inline VariableDataType get_type();
 
-
-/// @brief Sets to an integer 
-/// @param param 
-///
-void VariableData::SetInt(int param) {
-	DeleteValue();
-	type = VARDATA_INT;
-	value_int = new int(param);
+template<> inline VariableDataType get_type<int>() {
+	return VARDATA_INT;
+}
+template<> inline VariableDataType get_type<double>() {
+	return VARDATA_FLOAT;
+}
+template<> inline VariableDataType get_type<bool>() {
+	return VARDATA_BOOL;
+}
+template<> inline VariableDataType get_type<wxString>() {
+	return VARDATA_TEXT;
+}
+template<> inline VariableDataType get_type<wxColour>() {
+	return VARDATA_COLOUR;
+}
+template<> inline VariableDataType get_type<AssDialogueBlockOverride *>() {
+	return VARDATA_BLOCK;
 }
 
-
-
-/// @brief Sets to a float 
-/// @param param 
-///
-void VariableData::SetFloat(double param) {
+template<class T>
+void VariableData::Set(T param) {
 	DeleteValue();
-	type = VARDATA_FLOAT;
-	value_float = new double(param);
+	type = get_type<T>();
+	value = new T(param);
 }
-
-
-
-/// @brief Sets to a boolean 
-/// @param param 
-///
-void VariableData::SetBool(bool param) {
-	DeleteValue();
-	type = VARDATA_BOOL;
-	value_bool = new bool(param);
-}
-
-
-
-/// @brief Sets to a string 
-/// @param param 
-///
-void VariableData::SetText(wxString param) {
-	DeleteValue();
-	type = VARDATA_TEXT;
-	value_text = new wxString (param);
-}
-
-
-
-/// @brief Sets to a colour 
-/// @param param 
-///
-void VariableData::SetColour(wxColour param) {
-	DeleteValue();
-	type = VARDATA_COLOUR;
-	value_colour = new wxColour (param);
-}
-
-
-
-/// @brief Sets to a block 
-/// @param param 
-///
-void VariableData::SetBlock(AssDialogueBlockOverride *param) {
-	DeleteValue();
-	type = VARDATA_BLOCK;
-	value_block = param;
-}
-
-
+template void VariableData::Set<int>(int param);
+template void VariableData::Set<double>(double param);
+template void VariableData::Set<bool>(bool param);
+template void VariableData::Set(wxString param);
+template void VariableData::Set<wxColour>(wxColour param);
+template void VariableData::Set<AssDialogueBlockOverride *>(AssDialogueBlockOverride * param);
 
 /// @brief Resets a value with a string, preserving current type 
 /// @param value 
-///
 void VariableData::ResetWith(wxString value) {
 	switch (type) {
 		case VARDATA_INT: {
 			long temp = 0;
 			value.ToLong(&temp);
-			SetInt(temp);
+			Set<int>(temp);
 			break;
 		}
 		case VARDATA_FLOAT: {
 			double temp = 0;
 			value.ToDouble(&temp);
-			SetFloat(temp);
+			Set(temp);
 			break;
 		}
 		case VARDATA_BOOL:
-			if (value == _T("1")) SetBool(true);
-			else SetBool(false);
+			if (value == _T("1")) Set(true);
+			else Set(false);
 			break;
 		case VARDATA_COLOUR: {
 			long r=0,g=0,b=0;
 			value.Mid(1,2).ToLong(&r,16);
 			value.Mid(3,2).ToLong(&g,16);
 			value.Mid(5,2).ToLong(&b,16);
-			SetColour(wxColour(r,g,b));
+			Set(wxColour(r,g,b));
 			break;
 		}
 		default:
-			SetText(value);
+			Set(value);
 			break;
 	}
 }
 
-
-
 /// @brief Reads as an int 
 /// @return 
-///
-int VariableData::AsInt() const {
+template<> int VariableData::Get<int>() const {
 	if (!value) throw _T("Null parameter");
-	if (type == VARDATA_BOOL) return (*value_bool)?1:0;
+	if (type == VARDATA_BOOL) return !!(*value_bool);
 	if (type == VARDATA_INT) return *value_int;
 	if (type == VARDATA_FLOAT) return (int)(*value_float);
 	if (type == VARDATA_TEXT) return 0;
 	throw _T("Wrong parameter type, should be int");
 }
 
-
-
 /// @brief Reads as a float 
 /// @return 
-///
-double VariableData::AsFloat() const {
+template<> double VariableData::Get<double>() const {
 	if (!value) throw _T("Null parameter");
 	if (type == VARDATA_FLOAT) return *value_float;
 	if (type == VARDATA_INT) return (float)(*value_int);
@@ -211,12 +160,9 @@ double VariableData::AsFloat() const {
 	throw _T("Wrong parameter type, should be float");
 }
 
-
-
 /// @brief Reads as a bool 
 /// @return 
-///
-bool VariableData::AsBool() const {
+template<> bool VariableData::Get<bool>() const {
 	if (!value) throw _T("Null parameter");
 	if (type == VARDATA_BOOL) return *value_bool;
 	if (type == VARDATA_INT) return ((*value_int)!=0);
@@ -225,12 +171,9 @@ bool VariableData::AsBool() const {
 	throw _T("Wrong parameter type, should be bool");
 }
 
-
-
 /// @brief Reads as a colour 
 /// @return 
-///
-wxColour VariableData::AsColour() const {
+template<> wxColour VariableData::Get<wxColour>() const {
 	if (!value) throw _T("Null parameter");
 	if (type == VARDATA_COLOUR)	return *value_colour;
 	else if (type == VARDATA_TEXT) {
@@ -241,62 +184,45 @@ wxColour VariableData::AsColour() const {
 	else throw _T("Wrong parameter type, should be colour");
 }
 
-
-
 /// @brief Reads as a block 
 /// @return 
-///
-AssDialogueBlockOverride *VariableData::AsBlock() const {
+template<> AssDialogueBlockOverride *VariableData::Get<AssDialogueBlockOverride *>() const {
 	if (!value) throw _T("Null parameter");
 	if (type != VARDATA_BLOCK) throw _T("Wrong parameter type, should be block");
-	return value_block;
+	return *value_block;
 }
-
-
 
 /// @brief Reads as a string 
 /// @return 
-///
-wxString VariableData::AsText() const {
+template<> wxString VariableData::Get<wxString>() const {
 	if (!value) throw _T("Null parameter");
 	if (type != VARDATA_TEXT) {
-		if (type == VARDATA_INT) return wxString::Format(_T("%i"),*value_int);
-		else if (type == VARDATA_FLOAT) return wxString::Format(_T("%g"),*value_float);
-		else if (type == VARDATA_COLOUR) return wxString::Format(_T("#%02X%02X%02X"),value_colour->Red(),value_colour->Green(),value_colour->Blue());
-		else if (type == VARDATA_BOOL) {
-			if (*value_bool) return _T("1");
-			else return _T("0");
-		}
-		else if (type == VARDATA_BLOCK) return value_block->GetText();
+		if (type == VARDATA_INT) return wxString::Format("%i",*value_int);
+		else if (type == VARDATA_FLOAT) return wxString::Format("%g",*value_float);
+		else if (type == VARDATA_COLOUR) return wxString::Format("#%02X%02X%02X",value_colour->Red(),value_colour->Green(),value_colour->Blue());
+		else if (type == VARDATA_BOOL) return *value_bool ? "1" : "0";
+		else if (type == VARDATA_BLOCK) return (*value_block)->GetText();
 		else throw _T("Wrong parameter type, should be text");
 	}
 	return *value_text;
 }
 
-
-
 /// @brief Gets type 
 /// @return 
-///
 VariableDataType VariableData::GetType() const {
 	return type;
 }
 
-
-
 /// @brief Copy 
 /// @param param 
-///
 void VariableData::operator= (const VariableData &param) {
 	switch(param.GetType()) {
-		case VARDATA_INT: SetInt(param.AsInt()); break;
-		case VARDATA_FLOAT: SetFloat(param.AsFloat()); break;
-		case VARDATA_TEXT: SetText(param.AsText()); break;
-		case VARDATA_BOOL: SetBool(param.AsBool()); break;
-		case VARDATA_COLOUR: SetColour(param.AsColour()); break;
-		case VARDATA_BLOCK: SetBlock(param.AsBlock()); break;
+		case VARDATA_INT: Set(param.Get<int>()); break;
+		case VARDATA_FLOAT: Set(param.Get<double>()); break;
+		case VARDATA_TEXT: Set(param.Get<wxString>()); break;
+		case VARDATA_BOOL: Set(param.Get<bool>()); break;
+		case VARDATA_COLOUR: Set(param.Get<wxColor>()); break;
+		case VARDATA_BLOCK: Set(param.Get<AssDialogueBlockOverride*>()); break;
 		default: DeleteValue();
 	}
 }
-
-

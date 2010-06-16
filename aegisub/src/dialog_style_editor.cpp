@@ -510,8 +510,8 @@ void ReplaceStyle(wxString tag,int n,AssOverrideParameter* param,void *userData)
 	wxArrayString strings = *((wxArrayString*)userData);
 	if (tag == _T("\\r")) {
 		if (param->GetType() == VARDATA_TEXT) {
-			if (param->AsText() == strings[0]) {
-				param->SetText(strings[1]);
+			if (param->Get<wxString>() == strings[0]) {
+				param->Set(strings[1]);
 			}
 		}
 	}

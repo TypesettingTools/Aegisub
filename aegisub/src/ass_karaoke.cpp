@@ -102,7 +102,7 @@ void ParseAssKaraokeTags(const AssDialogue *line, AssKaraokeVector &syls)
 						syl.unstripped_text = _T("");
 						syl.tag = tag;
 						syl.type = tag->Name;
-						syl.duration = tag->Params[0]->AsInt();
+						syl.duration = tag->Params[0]->Get<int>();
 
 					} else {
 						// not karaoke tag
