@@ -19,16 +19,14 @@
 /// @ingroup libaegisub
 
 #ifndef LAGI_PRE
+
+#ifdef HAVE_SYS_TIME_H
+#  include <sys/time.h>
+#else
+#  include <time.h>
+#endif
+
 #endif // LAGI_PRE
-
-#ifdef _WIN32
-#include <time.h>
-
-#else // Unix / OSX
-#include <sys/time.h>
-
-#endif // if _WIN32
-
 
 #pragma once
 

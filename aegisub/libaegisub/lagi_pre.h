@@ -8,8 +8,11 @@
 #include <stdint.h>
 #include <string.h>
 #include <sys/stat.h>
-#include <time.h>
-#include <sys/time.h>
+#ifdef HAVE_SYS_TIME_H
+#  include <sys/time.h>
+#else
+#  include <time.h>
+#endif
 
 // Windows C
 #ifdef _WIN32
