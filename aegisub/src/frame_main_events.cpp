@@ -1394,7 +1394,6 @@ void FrameMain::OnSnapToScene (wxCommandEvent &event) {
 			cur = SubsBox->GetDialogue(sel[i]);
 			cur->Start.SetMS(start_ms);
 			cur->End.SetMS(end_ms);
-			cur->UpdateData();
 		}
 
 		// Commit
@@ -1428,7 +1427,6 @@ void FrameMain::OnShiftToFrame (wxCommandEvent &event) {
 			if (cur) {
 				cur->Start.SetMS(cur->Start.GetMS()+shiftBy);
 				cur->End.SetMS(cur->End.GetMS()+shiftBy);
-				cur->UpdateData();
 			}
 		}
 

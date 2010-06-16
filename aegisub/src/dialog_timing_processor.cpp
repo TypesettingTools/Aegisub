@@ -489,7 +489,6 @@ void DialogTimingProcessor::Process() {
 			// Set times
 			cur->Start.SetMS(startLead);
 			cur->End.SetMS(endLead);
-			cur->UpdateData();
 		}
 	}
 
@@ -529,9 +528,7 @@ void DialogTimingProcessor::Process() {
 			if (dist > 0 && dist < adjsThres) {
 				int setPos = prevEnd+int(dist*bias);
 				cur->Start.SetMS(setPos);
-				cur->UpdateData();
 				prev->End.SetMS(setPos);
-				prev->UpdateData();
 			}
 
 			// Set previous
@@ -548,7 +545,6 @@ void DialogTimingProcessor::Process() {
 		// Variables
 		int startF,endF;
 		int closest;
-		bool changed;
 		AssDialogue *cur;
 
 		// Get variables
@@ -569,25 +565,17 @@ void DialogTimingProcessor::Process() {
 			// Get start/end frames
 			startF = VFR_Output.GetFrameAtTime(cur->Start.GetMS(),true);
 			endF = VFR_Output.GetFrameAtTime(cur->End.GetMS(),false);
-			changed = false;
 
 			// Get closest for start
 			closest = GetClosestKeyFrame(startF);
 			if ((closest > startF && closest-startF <= beforeStart) || (closest < startF && startF-closest <= afterStart)) {
 				cur->Start.SetMS(VFR_Output.GetTimeAtFrame(closest,true));
-				changed = true;
 			}
 
 			// Get closest for end
 			closest = GetClosestKeyFrame(endF)-1;
 			if ((closest > endF && closest-endF <= beforeEnd) || (closest < endF && endF-closest <= afterEnd)) {
 				cur->End.SetMS(VFR_Output.GetTimeAtFrame(closest,false));
-				changed = true;
-			}
-
-			// Apply changes
-			if (changed) {
-				cur->UpdateData();
 			}
 		}
 	}

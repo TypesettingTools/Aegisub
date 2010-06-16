@@ -615,7 +615,6 @@ void SubsEditBox::OnStyleChange(wxCommandEvent &event) {
 		cur = grid->GetDialogue(sel[i]);
 		if (cur) {
 			cur->Style = StyleBox->GetValue();
-			cur->UpdateData();
 		}
 	}
 	grid->ass->FlagAsModified(_("style change"));
@@ -640,7 +639,6 @@ void SubsEditBox::OnActorChange(wxCommandEvent &event) {
 		cur = grid->GetDialogue(sel[i]);
 		if (cur) {
 			cur->Actor = actor;
-			cur->UpdateData();
 		}
 	}
 
@@ -675,7 +673,6 @@ void SubsEditBox::OnLayerChange(wxSpinEvent &event) {
 		cur = grid->GetDialogue(sel[i]);
 		if (cur) {
 			cur->Layer = temp;
-			cur->UpdateData();
 		}
 	}
 
@@ -703,7 +700,6 @@ void SubsEditBox::OnLayerEnter(wxCommandEvent &event) {
 		cur = grid->GetDialogue(sel[i]);
 		if (cur) {
 			cur->Layer = temp;
-			cur->UpdateData();
 		}
 	}
 
@@ -816,7 +812,6 @@ void SubsEditBox::OnMarginLChange(wxCommandEvent &event) {
 		cur = grid->GetDialogue(sel[i]);
 		if (cur) {
 			cur->SetMarginString(MarginL->GetValue(),0);
-			cur->UpdateData();
 		}
 	}
 	MarginL->SetValue(cur->GetMarginString(0,false));
@@ -840,7 +835,6 @@ void SubsEditBox::OnMarginRChange(wxCommandEvent &event) {
 		cur = grid->GetDialogue(sel[i]);
 		if (cur) {
 			cur->SetMarginString(MarginR->GetValue(),1);
-			cur->UpdateData();
 		}
 	}
 	MarginR->SetValue(cur->GetMarginString(1,false));
@@ -865,7 +859,6 @@ void SubsEditBox::OnMarginVChange(wxCommandEvent &event) {
 		if (cur) {
 			cur->SetMarginString(MarginV->GetValue(),2);
 			cur->SetMarginString(MarginV->GetValue(),3); // also bottom margin for now
-			cur->UpdateData();
 		}
 	}
 	MarginV->SetValue(cur->GetMarginString(2,false));
@@ -889,7 +882,6 @@ void SubsEditBox::OnEffectChange(wxCommandEvent &event) {
 		cur = grid->GetDialogue(sel[i]);
 		if (cur) {
 			cur->Effect = Effect->GetValue();
-			cur->UpdateData();
 		}
 	}
 	grid->ass->FlagAsModified(_("effect change"));
@@ -911,7 +903,6 @@ void SubsEditBox::OnCommentChange(wxCommandEvent &event) {
 		cur = grid->GetDialogue(sel[i]);
 		if (cur) {
 			cur->Comment = CommentBox->GetValue();
-			cur->UpdateData();
 		}
 	}
 	grid->ass->FlagAsModified(_("comment change"));
@@ -1012,7 +1003,6 @@ void SubsEditBox::Commit(bool stay) {
 			newline->Start = cur->End;
 			newline->End.SetMS(cur->End.GetMS()+OPT_GET("Timing/Default Duration")->GetInt());
 			newline->Style = cur->Style;
-			newline->UpdateData();
 			grid->InsertLine(newline,next-1,true,true);
 			updated = true;
 		}

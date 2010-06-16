@@ -650,8 +650,6 @@ void SubtitlesGrid::OnRecombine(wxCommandEvent &event) {
 		n3 = GetDialogue(n+2);
 		n1->End = n2->End;
 		n3->Start = n2->Start;
-		n1->UpdateData();
-		n3->UpdateData();
 		DeleteLines(GetRangeArray(n+1,n+1));
 	}
 
@@ -699,13 +697,11 @@ void SubtitlesGrid::OnRecombine(wxCommandEvent &event) {
 		}
 
 		// Commit
-		n1->UpdateData();
-		n2->UpdateData();
 		ass->FlagAsModified(_("combining"));
 		CommitChanges();
 	}
 
-	// Adjus scrollbar
+	// Adjust scrollbar
 	AdjustScrollbar();
 }
 
@@ -935,7 +931,6 @@ void SubtitlesGrid::InsertLine(AssDialogue *line,int n,bool after,bool update) {
 		n++;
 		pos++;
 	}
-	line->UpdateData();
 	entryIter newIter = ass->Line.insert(pos,line);
 	//InsertRows(n);
 	//SetRowToLine(n,line);
@@ -1187,7 +1182,6 @@ void SubtitlesGrid::JoinLines(int n1,int n2,bool concat) {
 	cur->Start.SetMS(min_ms);
 	cur->End.SetMS(max_ms);
 	cur->Text = finalText;
-	cur->UpdateData();
 
 	// Delete remaining lines (this will auto commit)
 	DeleteLines(GetRangeArray(n1+1,n2));
@@ -1214,7 +1208,6 @@ void SubtitlesGrid::AdjoinLines(int n1,int n2,bool setStart) {
 			cur = GetDialogue(i);
 			if (!cur) return;
 			cur->Start = prev->End;
-			cur->UpdateData();
 			prev = cur;
 		}
 	}
@@ -1227,7 +1220,6 @@ void SubtitlesGrid::AdjoinLines(int n1,int n2,bool setStart) {
 			next = GetDialogue(i+1);
 			if (!next) return;
 			cur->End = next->Start;
-			cur->UpdateData();
 			cur = next;
 		}
 	}
@@ -1279,7 +1271,6 @@ void SubtitlesGrid::JoinAsKaraoke(int n1,int n2) {
 	cur->Start.SetMS(firststart);
 	cur->End.SetMS(lastend);
 	cur->Text = finalText;
-	cur->UpdateData();
 
 	// Delete remaining lines (this will auto commit)
 	DeleteLines(GetRangeArray(n1+1,n2));
@@ -1310,7 +1301,6 @@ void SubtitlesGrid::DuplicateLines(int n1,int n2,bool nextFrame) {
 			int posFrame = VFR_Output.GetFrameAtTime(cur->End.GetMS(),false) + 1;
 			cur->Start.SetMS(VFR_Output.GetTimeAtFrame(posFrame,true));
 			cur->End.SetMS(VFR_Output.GetTimeAtFrame(posFrame,false));
-			cur->UpdateData();
 		}
 
 		// Insert
@@ -1340,13 +1330,8 @@ void SubtitlesGrid::DuplicateLines(int n1,int n2,bool nextFrame) {
 void SubtitlesGrid::ShiftLineByTime(int n,int len,int type) {
 	AssDialogue *cur = GetDialogue(n);
 
-	// Start
 	if (type != 2) cur->Start.SetMS(cur->Start.GetMS() + len);
-	// End
 	if (type != 1) cur->End.SetMS(cur->End.GetMS() + len);
-
-	// Update data
-	cur->UpdateData();
 }
 
 
@@ -1360,13 +1345,8 @@ void SubtitlesGrid::ShiftLineByTime(int n,int len,int type) {
 void SubtitlesGrid::ShiftLineByFrames(int n,int len,int type) {
 	AssDialogue *cur = GetDialogue(n);
 
-	// Start
 	if (type != 2) cur->Start.SetMS(VFR_Output.GetTimeAtFrame(len + VFR_Output.GetFrameAtTime(cur->Start.GetMS(),true),true));
-	// End
 	if (type != 1) cur->End.SetMS(VFR_Output.GetTimeAtFrame(len + VFR_Output.GetFrameAtTime(cur->End.GetMS(),false),false));
-
-	// Update data
-	cur->UpdateData();
 }
 
 
@@ -1406,10 +1386,6 @@ void SubtitlesGrid::SplitLine(int n,int pos,int mode,wxString textIn) {
 		n1->End.SetMS(splitTime);
 		n2->Start.SetMS(splitTime);
 	}
-
-	// Update data
-	n1->UpdateData();
-	n2->UpdateData();
 
 	// Update editbox and audio
 	editBox->SetToLine(n);
@@ -1451,7 +1427,6 @@ bool SubtitlesGrid::SplitLineByKaraoke(int lineNumber) {
 		start_ms += syl->duration * 10;
 		nl->End.SetMS(start_ms);
 		nl->Text = syl->unstripped_text;
-		nl->UpdateData();
 		InsertLine(nl, nextpos++, true, false);
 	}
 
@@ -1523,7 +1498,6 @@ void SubtitlesGrid::SetSubsToVideo(bool start) {
 			modified++;
 			if (start) cur->Start.SetMS(ms);
 			else cur->End.SetMS(ms);
-			cur->UpdateData();
 		}
 	}
 

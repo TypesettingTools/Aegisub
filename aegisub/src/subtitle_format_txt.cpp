@@ -172,8 +172,6 @@ void TXTSubtitleFormat::ReadFile(wxString filename,wxString encoding) {	using na
 		line->Text = value;
 		line->Start.SetMS(0);
 		line->End.SetMS(0);
-		line->UpdateData();
-		//line->ParseASSTags();
 
 		// Adds line
 		Line->push_back(line);

@@ -302,7 +302,6 @@ void AssTransformFramerateFilter::TransformFrameRate(AssFile *subs) {
 			curDialogue->Start.SetMS(Input->GetTimeAtFrame(Output->GetFrameAtTime(curDialogue->Start.GetMS(),true),true));
 			curDialogue->End.SetMS(Input->GetTimeAtFrame(Output->GetFrameAtTime(curDialogue->End.GetMS(),false),false));
 			curDialogue->UpdateText();
-			curDialogue->UpdateData();
 			curDialogue->ClearBlocks();
 			n++;
 		}

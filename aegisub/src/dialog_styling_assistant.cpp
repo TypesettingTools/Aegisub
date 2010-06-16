@@ -228,7 +228,6 @@ void DialogStyling::SetStyle (wxString curName, bool jump) {
 
 	// Update line
 	line->Style = curName;
-	line->UpdateData();
 
 	// Update grid/subs
 	grid->Refresh(false);

@@ -243,7 +243,6 @@ public:
 	void StripTag(wxString tagName);// Strips a specific tag from the text
 	wxString GetStrippedText() const; // Gets text without tags
 
-	void UpdateData();				// Updates raw data from current values + text
 	void UpdateText();				// Generates text from the override tags
 	const wxString GetEntryData();
 	void SetEntryData(wxString newData);

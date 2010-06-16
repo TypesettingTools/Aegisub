@@ -440,7 +440,6 @@ namespace Automation4 {
 			dia->Margin[3] = margin_b;
 			dia->Effect = effect;
 			dia->Text = text;
-			dia->UpdateData();
 
 			result = dia;
 

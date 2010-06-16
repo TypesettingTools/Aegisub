@@ -1199,7 +1199,6 @@ void AudioDisplay::CommitChanges (bool nextLine) {
 				// so only update from editbox when not in kara mode
 				curDiag->Text = grid->editBox->TextEdit->GetText();
 			}
-			curDiag->UpdateData();
 			if (!grid->IsInSelection(line_n)) break;
 		}
 

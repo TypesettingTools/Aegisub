@@ -170,7 +170,6 @@ void SRTSubtitleFormat::ReadFile(wxString filename,wxString encoding) {
 				line->group = _T("[Events]");
 				line->Style = _T("Default");
 				line->Comment = false;
-				line->UpdateData();
 				line->ParseSRTTags();
 				Line->push_back(line);
 				lines++;

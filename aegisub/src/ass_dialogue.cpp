@@ -63,7 +63,6 @@ AssDialogue::AssDialogue()
 	group = L"[Events]";
 	Valid = true;
 	for (int i=0;i<4;i++) Margin[i] = 0;
-	UpdateData();
 }
 
 /// @brief DOCME
@@ -94,8 +93,6 @@ AssDialogue::AssDialogue(wxString _data,int version)
 	if (!Valid) {
 		throw _T("Failed parsing line.");
 	}
-
-	UpdateData();
 }
 
 /// @brief Destructor 
@@ -251,10 +248,6 @@ wxString AssDialogue::MakeData() {
 
 	// Return final
 	return final;
-}
-
-/// @brief Update AssDialogue's data line 
-void AssDialogue::UpdateData () {
 }
 
 /// @brief Get entry data 
@@ -432,10 +425,6 @@ void AssDialogue::ParseSRTTags () {
 
 	// Remove double tagging
 	Text.Replace(_T("}{"),_T(""));
-
-	// Update all stuff
-	//if (total > 0) UpdateText();
-	UpdateData();
 }
 
 /// @brief Parse ASS tags 
@@ -565,7 +554,6 @@ void AssDialogue::StripTag (wxString tagName) {
 	// Update
 	ClearBlocks();
 	Text = final;
-	UpdateData();
 }
 
 /// @brief  TODO: Improve this code ------------------- Convert tags to SRT 
@@ -664,7 +652,6 @@ void AssDialogue::ConvertTagsToSRT () {
 		final += _T("</s>");
 
 	Text = final;
-	UpdateData();
 	ClearBlocks();
 }
 

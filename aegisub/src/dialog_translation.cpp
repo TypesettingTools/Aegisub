@@ -356,7 +356,6 @@ void DialogTranslation::OnTransBoxKey(wxKeyEvent &event) {
 		
 		// Update line
 		cur->UpdateText();
-		cur->UpdateData();
 		cur->ClearBlocks();
 		subs->FlagAsModified(_("translation assistant"));
 		grid->CommitChanges();

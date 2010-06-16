@@ -436,11 +436,6 @@ void SearchReplaceEngine::ReplaceNext(bool DoReplace) {
 				replaceLen = ReplaceWith.Length();
 			}
 
-			// Update
-			AssDialogue *cur = grid->GetDialogue(curLine);
-			//cur->ParseASSTags();
-			cur->UpdateData();
-
 			// Commit
 			grid->ass->FlagAsModified(_("replace"));
 			grid->CommitChanges();
@@ -544,12 +539,6 @@ void SearchReplaceEngine::ReplaceAll() {
 					replaced = true;
 				}
 			}
-		}
-
-		// Replaced?
-		if (replaced) {
-			AssDialogue *cur = grid->GetDialogue(i);
-			cur->UpdateData();
 		}
 	}
 

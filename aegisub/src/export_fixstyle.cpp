@@ -92,7 +92,6 @@ void AssFixStylesFilter::ProcessSubs(AssFile *subs, wxWindow *export_dialog) {
 			
 			// Not found, fallback to default
 			if (!found) diag->Style = _T("Default");
-			diag->UpdateData();
 		}
 	}
 }

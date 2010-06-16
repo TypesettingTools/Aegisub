@@ -565,7 +565,6 @@ void DialogStyleEditor::Apply (bool apply,bool close) {
 						curDiag->ParseASSTags();
 						curDiag->ProcessParameters(ReplaceStyle,&strings);
 						curDiag->UpdateText();
-						curDiag->UpdateData();
 						curDiag->ClearBlocks();
 					}
 				}
