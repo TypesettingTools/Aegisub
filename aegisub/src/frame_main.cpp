@@ -581,15 +581,15 @@ void FrameMain::InitContents() {
 
 	// Subtitles area
 	StartupLog(_T("Create subtitles grid"));
-	SubsBox = new SubtitlesGrid(this,Panel,-1,wxDefaultPosition,wxSize(600,100),wxWANTS_CHARS | wxSUNKEN_BORDER,_T("Subs grid"));
-	BottomSizer->Add(SubsBox,1,wxEXPAND | wxLEFT | wxRIGHT | wxBOTTOM,0);
+	SubsGrid = new SubtitlesGrid(this,Panel,-1,wxDefaultPosition,wxSize(600,100),wxWANTS_CHARS | wxSUNKEN_BORDER,_T("Subs grid"));
+	BottomSizer->Add(SubsGrid,1,wxEXPAND | wxLEFT | wxRIGHT | wxBOTTOM,0);
 	StartupLog(_T("Reset undo stack"));
 	AssFile::StackReset();
-	videoBox->videoSlider->grid = SubsBox;
-	VideoContext::Get()->grid = SubsBox;
+	videoBox->videoSlider->grid = SubsGrid;
+	VideoContext::Get()->grid = SubsGrid;
 	StartupLog(_T("Reset video zoom"));
 	videoBox->videoDisplay->SetZoom(OPT_GET("Video/Default Zoom")->GetInt() * .125 + .125);
-	Search.grid = SubsBox;
+	Search.grid = SubsGrid;
 
 	// Audio area
 	StartupLog(_T("Create audio box"));
@@ -599,7 +599,7 @@ void FrameMain::InitContents() {
 
 	// Top sizer
 	StartupLog(_T("Create subtitle editing box"));
-	EditBox = new SubsEditBox(Panel,SubsBox);
+	EditBox = new SubsEditBox(Panel,SubsGrid);
 	EditBox->audio = audioBox->audioDisplay;
 	StartupLog(_T("Arrange controls in sizers"));
 	ToolSizer = new wxBoxSizer(wxVERTICAL);
@@ -640,7 +640,7 @@ void FrameMain::UpdateToolbar() {
 	// Collect flags
 	bool isVideo = VideoContext::Get()->IsLoaded();
 	HasSelection = true;
-	int selRows = SubsBox->GetNumberSelection();
+	int selRows = SubsGrid->GetNumberSelection();
 
 	// Update
 	wxToolBar* toolbar = GetToolBar();
@@ -698,17 +698,17 @@ void FrameMain::LoadSubtitles (wxString filename,wxString charset) {
 		}
 
 		// Proceed into loading
-		SubsBox->Clear();
+		SubsGrid->Clear();
 		AssFile::StackReset();
 		if (isFile) {
 			AssFile::top->Load(filename,charset);
-			SubsBox->LoadFromAss(AssFile::top,false,true);
+			SubsGrid->LoadFromAss(AssFile::top,false,true);
 			wxFileName fn(filename);
 			StandardPaths::SetPathValue(_T("?script"),fn.GetPath());
 			OPT_SET("Path/Last/Subtitles")->SetString(STD_STR(fn.GetPath()));
 		}
 		else {
-			SubsBox->LoadDefault(AssFile::top);
+			SubsGrid->LoadDefault(AssFile::top);
 			StandardPaths::SetPathValue(_T("?script"),_T(""));
 		}
 	}
@@ -1128,8 +1128,8 @@ void FrameMain::LoadVideo(wxString file,bool autoload) {
 		videoBox->videoDisplay->SetZoom(target_zoom);
 
 		// Check that the video size matches the script video size specified
-		int scriptx = SubsBox->ass->GetScriptInfoAsInt(_T("PlayResX"));
-		int scripty = SubsBox->ass->GetScriptInfoAsInt(_T("PlayResY"));
+		int scriptx = SubsGrid->ass->GetScriptInfoAsInt(_T("PlayResX"));
+		int scripty = SubsGrid->ass->GetScriptInfoAsInt(_T("PlayResY"));
 		if (scriptx != vidx || scripty != vidy) {
 			switch (OPT_GET("Video/Check Script Res")->GetInt()) {
 				case 1:
@@ -1139,10 +1139,10 @@ void FrameMain::LoadVideo(wxString file,bool autoload) {
 					// Fallthrough to case 2
 				case 2:
 					// Always change script res
-					SubsBox->ass->SetScriptInfo(_T("PlayResX"), wxString::Format(_T("%d"), vidx));
-					SubsBox->ass->SetScriptInfo(_T("PlayResY"), wxString::Format(_T("%d"), vidy));
-					SubsBox->ass->FlagAsModified(_("Change script resolution"));
-					SubsBox->CommitChanges();
+					SubsGrid->ass->SetScriptInfo(_T("PlayResX"), wxString::Format(_T("%d"), vidx));
+					SubsGrid->ass->SetScriptInfo(_T("PlayResY"), wxString::Format(_T("%d"), vidy));
+					SubsGrid->ass->FlagAsModified(_("Change script resolution"));
+					SubsGrid->CommitChanges();
 					break;
 				case 0:
 				default:
@@ -1152,7 +1152,7 @@ void FrameMain::LoadVideo(wxString file,bool autoload) {
 		}
 	}
 
-	SubsBox->CommitChanges(true);
+	SubsGrid->CommitChanges(true);
 	SetDisplayMode(1,-1);
 	EditBox->UpdateFrameTiming();
 
@@ -1192,7 +1192,7 @@ void FrameMain::LoadVFR(wxString filename) {
 	if (filename != _T("")) {
 		try {
 			VFR_Output.Load(filename);
-			SubsBox->Refresh(false);
+			SubsGrid->Refresh(false);
 		}
 
 		// Fail
@@ -1212,7 +1212,7 @@ void FrameMain::LoadVFR(wxString filename) {
 		}
 	}
 
-	SubsBox->CommitChanges();
+	SubsGrid->CommitChanges();
 	EditBox->UpdateFrameTiming();
 }
 

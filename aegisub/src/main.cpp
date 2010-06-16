@@ -506,7 +506,7 @@ END_EVENT_TABLE()
 void AegisubApp::OnMouseWheel(wxMouseEvent &event) {
 	wxPoint pt;
 	wxWindow *target = wxFindWindowAtPointer(pt);
-	if (frame && (target == frame->audioBox->audioDisplay || target == frame->SubsBox)) {
+	if (frame && (target == frame->audioBox->audioDisplay || target == frame->SubsGrid)) {
 		if (target->IsShownOnScreen()) target->GetEventHandler()->ProcessEvent(event);
 		else event.Skip();
 	}

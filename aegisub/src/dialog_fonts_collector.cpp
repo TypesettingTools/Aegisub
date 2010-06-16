@@ -509,7 +509,7 @@ void FontsCollectorThread::Collect() {
 			if (oper == 3 && someOk) {
 				wxMutexGuiEnter();
 				subs->FlagAsModified(_("font attachment"));
-				collector->main->SubsBox->CommitChanges();
+				collector->main->SubsGrid->CommitChanges();
 				wxMutexGuiLeave();
 			}
 		}

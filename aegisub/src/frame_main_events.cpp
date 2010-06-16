@@ -250,7 +250,7 @@ END_EVENT_TABLE()
 /// @brief Redirect grid events to grid 
 /// @param event 
 void FrameMain::OnGridEvent (wxCommandEvent &event) {
-	SubsBox->GetEventHandler()->ProcessEvent(event);
+	SubsGrid->GetEventHandler()->ProcessEvent(event);
 }
 
 /// @brief Rebuild recent list 
@@ -384,7 +384,7 @@ void FrameMain::OnMenuOpen (wxMenuEvent &event) {
 	else if (curMenu == subtitlesMenu) {
 		// Variables
 		bool continuous;
-		wxArrayInt sels = SubsBox->GetSelection(&continuous);
+		wxArrayInt sels = SubsGrid->GetSelection(&continuous);
 		int count = sels.Count();
 		bool state,state2;
 
@@ -417,7 +417,7 @@ void FrameMain::OnMenuOpen (wxMenuEvent &event) {
 	else if (curMenu == timingMenu) {
 		// Variables
 		bool continuous;
-		wxArrayInt sels = SubsBox->GetSelection(&continuous);
+		wxArrayInt sels = SubsGrid->GetSelection(&continuous);
 		int count = sels.Count();
 
 		// Video related
@@ -449,7 +449,7 @@ void FrameMain::OnMenuOpen (wxMenuEvent &event) {
 		item->Enable(!AssFile::IsRedoStackEmpty());
 
 		// Copy/cut/paste
-		wxArrayInt sels = SubsBox->GetSelection();
+		wxArrayInt sels = SubsGrid->GetSelection();
 		bool can_copy = (sels.Count() > 0);
 
 		bool can_paste = true;
@@ -505,7 +505,7 @@ int FrameMain::AddMacroMenuItems(wxMenu *menu, const std::vector<Automation4::Fe
 	int id = activeMacroItems.size();;
 	for (std::vector<Automation4::FeatureMacro*>::const_iterator i = macros.begin(); i != macros.end(); ++i) {
 		wxMenuItem * m = menu->Append(Menu_Automation_Macro + id, (*i)->GetName(), (*i)->GetDescription());
-		m->Enable((*i)->Validate(SubsBox->ass, SubsBox->GetAbsoluteSelection(), SubsBox->GetFirstSelRow()));
+		m->Enable((*i)->Validate(SubsGrid->ass, SubsGrid->GetAbsoluteSelection(), SubsGrid->GetFirstSelRow()));
 		activeMacroItems.push_back(*i);
 		id++;
 	}
@@ -916,7 +916,7 @@ void FrameMain::OnJumpTo(wxCommandEvent&) {
 /// @brief Open shift dialog 
 void FrameMain::OnShift(wxCommandEvent&) {
 	VideoContext::Get()->Stop();
-	DialogShiftTimes Shift(this,SubsBox);
+	DialogShiftTimes Shift(this,SubsGrid);
 	Shift.ShowModal();
 }
 
@@ -926,17 +926,17 @@ void FrameMain::OnOpenProperties (wxCommandEvent &) {
 	DialogProperties Properties(this);
 	int res = Properties.ShowModal();
 	if (res) {
-		SubsBox->CommitChanges();
+		SubsGrid->CommitChanges();
 	}
 }
 
 /// @brief Open styles manager 
 void FrameMain::OnOpenStylesManager(wxCommandEvent&) {
 	VideoContext::Get()->Stop();
-	DialogStyleManager StyleManager(this,SubsBox);
+	DialogStyleManager StyleManager(this,SubsGrid);
 	StyleManager.ShowModal();
 	EditBox->UpdateGlobals();
-	SubsBox->CommitChanges();
+	SubsGrid->CommitChanges();
 }
 
 /// @brief Open attachments 
@@ -949,9 +949,9 @@ void FrameMain::OnOpenAttachments(wxCommandEvent&) {
 /// @brief Open translation assistant 
 void FrameMain::OnOpenTranslation(wxCommandEvent&) {
 	VideoContext::Get()->Stop();
-	int start = SubsBox->GetFirstSelRow();
+	int start = SubsGrid->GetFirstSelRow();
 	if (start == -1) start = 0;
-	DialogTranslation Trans(this,AssFile::top,SubsBox,start,true);
+	DialogTranslation Trans(this,AssFile::top,SubsGrid,start,true);
 	Trans.ShowModal();
 }
 
@@ -971,19 +971,19 @@ void FrameMain::OnOpenFontsCollector (wxCommandEvent &) {
 /// @brief Open Resolution Resampler 
 void FrameMain::OnOpenResample (wxCommandEvent &) {
 	VideoContext::Get()->Stop();
-	DialogResample diag(this, SubsBox);
+	DialogResample diag(this, SubsGrid);
 	diag.ShowModal();
 }
 
 /// @brief Open Timing post-processor dialog 
 void FrameMain::OnOpenTimingProcessor (wxCommandEvent &) {
-	DialogTimingProcessor timing(this,SubsBox);
+	DialogTimingProcessor timing(this,SubsGrid);
 	timing.ShowModal();
 }
 
 /// @brief Open Kanji Timer dialog 
 void FrameMain::OnOpenKanjiTimer (wxCommandEvent &) {
-	DialogKanjiTimer kanjitimer(this,SubsBox);
+	DialogKanjiTimer kanjitimer(this,SubsGrid);
 	kanjitimer.ShowModal();
 }
 
@@ -1044,52 +1044,52 @@ void FrameMain::OnOpenAutomation (wxCommandEvent &) {
 /// @param event 
 void FrameMain::OnAutomationMacro (wxCommandEvent &event) {
 #ifdef WITH_AUTOMATION
-	SubsBox->BeginBatch();
+	SubsGrid->BeginBatch();
 	// First get selection data
 	// This much be done before clearing the maps, since selection data are lost during that
-	std::vector<int> selected_lines = SubsBox->GetAbsoluteSelection();
-	int first_sel = SubsBox->GetFirstSelRow();
+	std::vector<int> selected_lines = SubsGrid->GetAbsoluteSelection();
+	int first_sel = SubsGrid->GetFirstSelRow();
 	// Clear all maps from the subs grid before running the macro
 	// The stuff done by the macro might invalidate some of the iterators held by the grid, which will cause great crashing
-	SubsBox->Clear();
+	SubsGrid->Clear();
 	// Run the macro...
-	activeMacroItems[event.GetId()-Menu_Automation_Macro]->Process(SubsBox->ass, selected_lines, first_sel, this);
+	activeMacroItems[event.GetId()-Menu_Automation_Macro]->Process(SubsGrid->ass, selected_lines, first_sel, this);
 	// Have the grid update its maps, this properly refreshes it to reflect the changed subs
-	SubsBox->UpdateMaps();
-	SubsBox->SetSelectionFromAbsolute(selected_lines);
-	SubsBox->CommitChanges(true, false);
-	SubsBox->AdjustScrollbar();
-	SubsBox->EndBatch();
+	SubsGrid->UpdateMaps();
+	SubsGrid->SetSelectionFromAbsolute(selected_lines);
+	SubsGrid->CommitChanges(true, false);
+	SubsGrid->AdjustScrollbar();
+	SubsGrid->EndBatch();
 #endif
 }
 
 /// @brief Snap subs to video 
 void FrameMain::OnSnapSubsStartToVid (wxCommandEvent &) {
-	if (VideoContext::Get()->IsLoaded() && SubsBox->GetSelection().Count() > 0) {
-		SubsBox->SetSubsToVideo(true);
+	if (VideoContext::Get()->IsLoaded() && SubsGrid->GetSelection().Count() > 0) {
+		SubsGrid->SetSubsToVideo(true);
 	}
 }
 
 
 /// @brief DOCME
 void FrameMain::OnSnapSubsEndToVid (wxCommandEvent &) {
-	if (VideoContext::Get()->IsLoaded() && SubsBox->GetSelection().Count() > 0) {
-		SubsBox->SetSubsToVideo(false);
+	if (VideoContext::Get()->IsLoaded() && SubsGrid->GetSelection().Count() > 0) {
+		SubsGrid->SetSubsToVideo(false);
 	}
 }
 
 /// @brief Jump video to subs 
 void FrameMain::OnSnapVidToSubsStart (wxCommandEvent &) {
-	if (VideoContext::Get()->IsLoaded() && SubsBox->GetSelection().Count() > 0) {
-		SubsBox->SetVideoToSubs(true);
+	if (VideoContext::Get()->IsLoaded() && SubsGrid->GetSelection().Count() > 0) {
+		SubsGrid->SetVideoToSubs(true);
 	}
 }
 
 
 /// @brief DOCME
 void FrameMain::OnSnapVidToSubsEnd (wxCommandEvent &) {
-	if (VideoContext::Get()->IsLoaded() && SubsBox->GetSelection().Count() > 0) {
-		SubsBox->SetVideoToSubs(false);
+	if (VideoContext::Get()->IsLoaded() && SubsGrid->GetSelection().Count() > 0) {
+		SubsGrid->SetVideoToSubs(false);
 	}
 }
 
@@ -1097,7 +1097,7 @@ void FrameMain::OnSnapVidToSubsEnd (wxCommandEvent &) {
 void FrameMain::OnSnapToScene (wxCommandEvent &) {
 	if (VideoContext::Get()->IsLoaded()) {
 		// Get frames
-		wxArrayInt sel = SubsBox->GetSelection();
+		wxArrayInt sel = SubsGrid->GetSelection();
 		int curFrame = VideoContext::Get()->GetFrameN();
 		int prev = 0;
 		int next = 0;
@@ -1139,33 +1139,33 @@ void FrameMain::OnSnapToScene (wxCommandEvent &) {
 
 		// Update rows
 		for (size_t i=0;i<sel.Count();i++) {
-			cur = SubsBox->GetDialogue(sel[i]);
+			cur = SubsGrid->GetDialogue(sel[i]);
 			cur->Start.SetMS(start_ms);
 			cur->End.SetMS(end_ms);
 		}
 
 		// Commit
-		SubsBox->editBox->Update(true);
-		SubsBox->ass->FlagAsModified(_("snap to scene"));
-		SubsBox->CommitChanges();
+		SubsGrid->editBox->Update(true);
+		SubsGrid->ass->FlagAsModified(_("snap to scene"));
+		SubsGrid->CommitChanges();
 	}
 }
 
 /// @brief Shift to frame 
 void FrameMain::OnShiftToFrame (wxCommandEvent &) {
 	if (VideoContext::Get()->IsLoaded()) {
-		wxArrayInt sels = SubsBox->GetSelection();
+		wxArrayInt sels = SubsGrid->GetSelection();
 		size_t n=sels.Count();
 		if (n == 0) return;
 
 		// Get shifting in ms
-		AssDialogue *cur = SubsBox->GetDialogue(sels[0]);
+		AssDialogue *cur = SubsGrid->GetDialogue(sels[0]);
 		if (!cur) return;
 		int shiftBy = VFR_Output.GetTimeAtFrame(VideoContext::Get()->GetFrameN(),true) - cur->Start.GetMS();
 
 		// Update
 		for (size_t i=0;i<n;i++) {
-			cur = SubsBox->GetDialogue(sels[i]);
+			cur = SubsGrid->GetDialogue(sels[i]);
 			if (cur) {
 				cur->Start.SetMS(cur->Start.GetMS()+shiftBy);
 				cur->End.SetMS(cur->End.GetMS()+shiftBy);
@@ -1173,9 +1173,9 @@ void FrameMain::OnShiftToFrame (wxCommandEvent &) {
 		}
 
 		// Commit
-		SubsBox->ass->FlagAsModified(_("shift to frame"));
-		SubsBox->CommitChanges();
-		SubsBox->editBox->Update(true,false);
+		SubsGrid->ass->FlagAsModified(_("shift to frame"));
+		SubsGrid->CommitChanges();
+		SubsGrid->editBox->Update(true,false);
 	}
 }
 
@@ -1183,7 +1183,7 @@ void FrameMain::OnShiftToFrame (wxCommandEvent &) {
 void FrameMain::OnUndo(wxCommandEvent&) {
 	VideoContext::Get()->Stop();
 	AssFile::StackPop();
-	SubsBox->LoadFromAss(AssFile::top,true);
+	SubsGrid->LoadFromAss(AssFile::top,true);
 	AssFile::Popping = false;
 }
 
@@ -1191,7 +1191,7 @@ void FrameMain::OnUndo(wxCommandEvent&) {
 void FrameMain::OnRedo(wxCommandEvent&) {
 	VideoContext::Get()->Stop();
 	AssFile::StackRedo();
-	SubsBox->LoadFromAss(AssFile::top,true);
+	SubsGrid->LoadFromAss(AssFile::top,true);
 	AssFile::Popping = false;
 }
 
@@ -1317,7 +1317,7 @@ void FrameMain::OnCut (wxCommandEvent &) {
 		EditBox->TextEdit->Cut();
 		return;
 	}
-	SubsBox->CutLines(SubsBox->GetSelection());
+	SubsGrid->CutLines(SubsGrid->GetSelection());
 }
 
 
@@ -1327,7 +1327,7 @@ void FrameMain::OnCopy (wxCommandEvent &) {
 		EditBox->TextEdit->Copy();
 		return;
 	}
-	SubsBox->CopyLines(SubsBox->GetSelection());
+	SubsGrid->CopyLines(SubsGrid->GetSelection());
 }
 
 
@@ -1337,24 +1337,24 @@ void FrameMain::OnPaste (wxCommandEvent &) {
 		EditBox->TextEdit->Paste();
 		return;
 	}
-	SubsBox->PasteLines(SubsBox->GetFirstSelRow());
+	SubsGrid->PasteLines(SubsGrid->GetFirstSelRow());
 }
 
 /// @brief Paste over 
 void FrameMain::OnPasteOver (wxCommandEvent &) {
-	SubsBox->PasteLines(SubsBox->GetFirstSelRow(),true);
+	SubsGrid->PasteLines(SubsGrid->GetFirstSelRow(),true);
 }
 
 /// @brief Select visible lines 
 void FrameMain::OnSelectVisible (wxCommandEvent &) {
 	VideoContext::Get()->Stop();
-	SubsBox->SelectVisible();
+	SubsGrid->SelectVisible();
 }
 
 /// @brief Open select dialog 
 void FrameMain::OnSelect (wxCommandEvent &) {
 	VideoContext::Get()->Stop();
-	DialogSelection select(this, SubsBox);
+	DialogSelection select(this, SubsGrid);
 	select.ShowModal();
 }
 
@@ -1362,28 +1362,28 @@ void FrameMain::OnSelect (wxCommandEvent &) {
 void FrameMain::OnSortStart (wxCommandEvent &) {
 	AssFile::top->Sort();
 	AssFile::top->FlagAsModified(_("sort"));
-	SubsBox->UpdateMaps();
-	SubsBox->CommitChanges();
+	SubsGrid->UpdateMaps();
+	SubsGrid->CommitChanges();
 }
 /// @brief Sort subtitles by end time
 void FrameMain::OnSortEnd (wxCommandEvent &) {
 	AssFile::top->Sort(AssFile::CompEnd);
 	AssFile::top->FlagAsModified(_("sort"));
-	SubsBox->UpdateMaps();
-	SubsBox->CommitChanges();
+	SubsGrid->UpdateMaps();
+	SubsGrid->CommitChanges();
 }
 /// @brief Sort subtitles by style name
 void FrameMain::OnSortStyle (wxCommandEvent &) {
 	AssFile::top->Sort(AssFile::CompStyle);
 	AssFile::top->FlagAsModified(_("sort"));
-	SubsBox->UpdateMaps();
-	SubsBox->CommitChanges();
+	SubsGrid->UpdateMaps();
+	SubsGrid->CommitChanges();
 }
 
 /// @brief Open styling assistant 
 void FrameMain::OnOpenStylingAssistant (wxCommandEvent &) {
 	VideoContext::Get()->Stop();
-	if (!stylingAssistant) stylingAssistant = new DialogStyling(this,SubsBox);
+	if (!stylingAssistant) stylingAssistant = new DialogStyling(this,SubsGrid);
 	stylingAssistant->Show(true);
 }
 
@@ -1461,18 +1461,18 @@ void FrameMain::OnFocusSeek(wxCommandEvent &) {
 void FrameMain::OnPrevLine(wxCommandEvent &) {
 	int next = EditBox->linen-1;
 	if (next < 0) return;
-	SubsBox->SelectRow(next);
-	SubsBox->MakeCellVisible(next,0);
+	SubsGrid->SelectRow(next);
+	SubsGrid->MakeCellVisible(next,0);
 	EditBox->SetToLine(next);
 }
 
 /// @brief Next line hotkey 
 void FrameMain::OnNextLine(wxCommandEvent &) {
-	int nrows = SubsBox->GetRows();
+	int nrows = SubsGrid->GetRows();
 	int next = EditBox->linen+1;
 	if (next >= nrows) return;
-	SubsBox->SelectRow(next);
-	SubsBox->MakeCellVisible(next,0);
+	SubsGrid->SelectRow(next);
+	SubsGrid->MakeCellVisible(next,0);
 	EditBox->SetToLine(next);
 }
 
@@ -1494,11 +1494,11 @@ void FrameMain::OnToggleTags(wxCommandEvent &) {
 	OPT_SET("Subtitle/Grid/Hide Overrides")->SetInt(tagMode);
 
 	// Refresh grid
-	SubsBox->Refresh(false);
+	SubsGrid->Refresh(false);
 }
 void FrameMain::OnSetTags(wxCommandEvent &event) {
 	OPT_SET("Subtitle/Grid/Hide Overrides")->SetInt(event.GetId() - Menu_View_FullTags);
-	SubsBox->Refresh(false);
+	SubsGrid->Refresh(false);
 }
 
 /// @brief Commit Edit Box's changes 

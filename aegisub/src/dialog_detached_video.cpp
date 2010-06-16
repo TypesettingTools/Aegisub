@@ -83,7 +83,7 @@ DialogDetachedVideo::DialogDetachedVideo(FrameMain *par, const wxSize &initialDi
 	videoBox = new VideoBox(panel, true);
 	videoBox->videoDisplay->freeSize = true;
 	videoBox->videoDisplay->SetClientSize(initialDisplaySize);
-	videoBox->videoSlider->grid = par->SubsBox;
+	videoBox->videoSlider->grid = par->SubsGrid;
 
 	// Set sizer
 	wxSizer *mainSizer = new wxBoxSizer(wxVERTICAL);

@@ -326,7 +326,7 @@ private:
 public:
 
 	/// DOCME
-	SubtitlesGrid *SubsBox;
+	SubtitlesGrid *SubsGrid;
 
 	/// DOCME
 	SubsEditBox *EditBox;
