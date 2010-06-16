@@ -1456,7 +1456,7 @@ void SubtitlesGrid::CommitChanges(bool force,bool videoOnly) {
 		}
 
 		// Update video
-		if (VideoContext::Get()->IsLoaded()) VideoContext::Get()->Refresh(false,true);
+		if (VideoContext::Get()->IsLoaded()) VideoContext::Get()->Refresh();
 
 		// Resume play
 		if (playing) VideoContext::Get()->Play();

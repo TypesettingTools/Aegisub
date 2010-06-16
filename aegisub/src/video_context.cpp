@@ -340,13 +340,8 @@ void VideoContext::UpdateDisplays(bool full) {
 }
 
 /// @brief Refresh subtitles 
-/// @param video     
-/// @param subtitles 
-///
-void VideoContext::Refresh (bool video, bool subtitles) {
-	// Update subtitles
-	if (subtitles && subsProvider) {
-		// Re-export
+void VideoContext::Refresh () {
+	if (subsProvider) {
 		AssExporter exporter(grid->ass);
 		exporter.AddAutoFilters();
 		try {
@@ -356,9 +351,7 @@ void VideoContext::Refresh (bool video, bool subtitles) {
 		catch (wxString err) { wxMessageBox(_T("Error while invoking subtitles provider: ") + err,_T("Subtitles provider")); }
 		catch (const wchar_t *err) { wxMessageBox(_T("Error while invoking subtitles provider: ") + wxString(err),_T("Subtitles provider")); }
 	}
-
-	// Jump to frame
-	JumpToFrame(frame_n);
+	UpdateDisplays(false);
 }
 
 /// @brief Jumps to a frame and update display 

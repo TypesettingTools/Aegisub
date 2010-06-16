@@ -266,7 +266,7 @@ public:
 	void JumpToFrame(int n);
 	void JumpToTime(int ms,bool exact=false);
 
-	void Refresh(bool video,bool subtitles);
+	void Refresh();
 	void UpdateDisplays(bool full);
 
 	void GetScriptSize(int &w,int &h);
