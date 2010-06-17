@@ -20,6 +20,8 @@
 
 #ifndef LAGI_PRE
 
+#include "config.h"
+
 #ifdef HAVE_SYS_TIME_H
 #  include <sys/time.h>
 #else

@@ -19,8 +19,11 @@
 /// @ingroup libaegisub
 
 #ifndef LAGI_PRE
-#endif
+#include <fstream>
+#include <functional>
 #include <map>
+#include <string>
+#endif
 #include <libaegisub/exception.h>
 
 namespace agi {
@@ -34,13 +37,13 @@ typedef std::map<float, std::string, std::greater_equal<float> > CharsetListDete
 
 /// @brief Return a complete list of detected character sets ordered by precidence.
 /// @param file File to check
-/// @param[in] list Map to load detected list into.
+/// @param[out] list Map to load detected list into.
 void DetectAll(const std::string file, CharsetListDetected &list);
 
 /// @brief Returns the character set with the highest confidence
 /// @param file File to check
 /// @return Detected character set.
-const std::string Detect(const std::string file);
+std::string Detect(const std::string &file);
 
 
 	} // namespace util

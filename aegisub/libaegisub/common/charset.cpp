@@ -18,14 +18,12 @@
 /// @brief Character set detection and manipulation utilities.
 /// @ingroup libaegisub
 
-
-#include "libaegisub/charset.h"
 #include "charset_ucd.h"
 
 namespace agi {
 	namespace charset {
 
-const std::string Detect(const std::string file) {
+std::string Detect(const std::string &file) {
 	UCDetect ucd(file);
 	return ucd.Single();
 }

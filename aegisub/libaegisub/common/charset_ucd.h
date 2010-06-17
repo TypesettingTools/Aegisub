@@ -18,14 +18,20 @@
 /// @brief Character set detection using Universalchardet
 /// @ingroup libaegisub
 
+#include "libaegisub/charset.h"
+
 #ifndef LAGI_PRE
+#include <string>
+
 #ifndef _WIN32
 #define _X86_ 1
 #endif
+
 #include "../../universalchardet/nscore.h"
 #include "../../universalchardet/nsUniversalDetector.h"
 #include "../../universalchardet/nsMBCSGroupProber.h"
 #endif
+
 
 namespace agi {
 	namespace charset {
@@ -45,7 +51,7 @@ public:
 
 	/// @brief Detect character set of a file using UniversalCharDetect
 	/// @param file File to check
-	UCDetect(const std::string file);
+	UCDetect(const std::string &file);
 
 	/// @brief Detect character set of a file using UniversalCharDet
 	/// @param out[out] Map to load list into ordered by confidence
