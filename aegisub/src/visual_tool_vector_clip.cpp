@@ -118,12 +118,15 @@ static void APIENTRY glMultiDrawArraysFallback(GLenum mode, GLint *first, GLsize
 	}
 }
 
+static bool is_move(SplineCurve const& c) {
+	return c.type == CURVE_POINT;
+}
+
 void VisualToolVectorClip::Draw() {
 	if (spline.empty()) return;
 
 	GL_EXT(PFNGLMULTIDRAWARRAYSPROC, glMultiDrawArrays);
 
-	// Get line
 	AssDialogue *line = GetActiveDialogueLine();
 	if (!line) return;
 
@@ -215,7 +218,7 @@ void VisualToolVectorClip::Draw() {
 	// Draw preview of inserted line
 	if (mode == 1 || mode == 2) {
 		if (spline.size() && video.x > INT_MIN && video.y > INT_MIN) {
-			SplineCurve *c0 = &spline.front();
+			Spline::reverse_iterator c0 = std::find_if(spline.rbegin(), spline.rend(), is_move);
 			SplineCurve *c1 = &spline.back();
 			DrawDashedLine(video.x,video.y,c0->p1.x,c0->p1.y,6);
 			DrawDashedLine(video.x,video.y,c1->EndPoint().x,c1->EndPoint().y,6);
