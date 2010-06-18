@@ -148,6 +148,13 @@ bool AegisubApp::OnInit() {
 	emit_stdout->Enable();
 #endif
 
+	// App name (yeah, this is a little weird to get rid of an odd warning)
+#if defined(__WXMSW__) || defined(__WXMAC__)
+	SetAppName(_T("Aegisub"));
+#else
+	SetAppName(_T("aegisub"));
+#endif
+
 	const std::string conf_mru(StandardPaths::DecodePath(_T("?user/mru.json")));
 	config::mru = new agi::MRUManager(conf_mru, GET_DEFAULT_CONFIG(default_mru));
 
@@ -165,7 +172,7 @@ bool AegisubApp::OnInit() {
 	try {
 		const std::string conf_local(StandardPaths::DecodePath(_T("?data/config.json")));
 		std::ifstream* localConfig = agi::io::Open(conf_local);
-		opt->ConfigNext(*localConfig);
+		config::opt->ConfigNext(*localConfig);
 		delete localConfig;
 
 		if (OPT_GET("App/Local Config")->GetBool()) {
@@ -187,14 +194,6 @@ bool AegisubApp::OnInit() {
 	StartupLog(_T("Inside OnInit"));
 	frame = NULL;
 	try {
-		// App name (yeah, this is a little weird to get rid of an odd warning)
-#if defined(__WXMSW__) || defined(__WXMAC__)
-		SetAppName(_T("Aegisub"));
-#else
-		SetAppName(_T("aegisub"));
-#endif
-
-
 		// Initialize randomizer
 		StartupLog(_T("Initialize random generator"));
 		srand(time(NULL));
