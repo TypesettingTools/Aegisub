@@ -60,25 +60,18 @@ public:
 /// @class VisualToolVectorClip
 /// @brief DOCME
 class VisualToolVectorClip : public VisualTool<VisualToolVectorClipDraggableFeature> {
-private:
 	Spline spline; /// The current spline
-
 	wxToolBar *toolBar; /// The subtoolbar
-
-	/// DOCME
-	int mode;
-
-	/// DOCME
-	bool inverse;
+	int mode; /// 0-7
+	bool inverse; /// is iclip?
 
 	/// @brief Set the mode
 	/// @param mode 0-7
 	void SetMode(int mode);
-	
 
-	/// @brief DOCME
-	/// @return 
-	///
+	void SelectAll();
+	void MakeFeature(Spline::iterator cur);
+
 	bool InitializeHold();
 	void UpdateHold();
 	void CommitHold();

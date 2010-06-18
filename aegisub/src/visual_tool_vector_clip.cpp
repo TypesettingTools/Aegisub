@@ -229,61 +229,56 @@ void VisualToolVectorClip::Draw() {
 	if (mode == 4) DrawCircle(pt.x,pt.y,4);
 }
 
+void VisualToolVectorClip::MakeFeature(Spline::iterator cur) {
+	VisualToolVectorClipDraggableFeature feat;
+	if (cur->type == CURVE_POINT) {
+		feat.x = (int)cur->p1.x;
+		feat.y = (int)cur->p1.y;
+		feat.type = DRAG_SMALL_CIRCLE;
+		feat.curve = cur;
+		feat.point = 0;
+		features.push_back(feat);
+	}
+
+	else if (cur->type == CURVE_LINE) {
+		feat.x = (int)cur->p2.x;
+		feat.y = (int)cur->p2.y;
+		feat.type = DRAG_SMALL_CIRCLE;
+		feat.curve = cur;
+		feat.point = 1;
+		features.push_back(feat);
+	}
+
+	else if (cur->type == CURVE_BICUBIC) {
+		// Control points
+		feat.x = (int)cur->p2.x;
+		feat.y = (int)cur->p2.y;
+		feat.curve = cur;
+		feat.point = 1;
+		feat.type = DRAG_SMALL_SQUARE;
+		features.push_back(feat);
+		feat.x = (int)cur->p3.x;
+		feat.y = (int)cur->p3.y;
+		feat.point = 2;
+		features.push_back(feat);
+
+		// End point
+		feat.x = (int)cur->p4.x;
+		feat.y = (int)cur->p4.y;
+		feat.type = DRAG_SMALL_CIRCLE;
+		feat.point = 3;
+		features.push_back(feat);
+	}
+}
+
 /// @brief Populate feature list 
 void VisualToolVectorClip::PopulateFeatureList() {
-	ClearSelection(false);
 	features.clear();
 	// This is perhaps a bit conservative as there can be up to 3N+1 features
 	features.reserve(spline.size());
-	VisualToolVectorClipDraggableFeature feat;
-	
-	// Go through each curve
-	int j = 0;
-	for (Spline::iterator cur=spline.begin();cur!=spline.end();cur++) {
-		if (cur->type == CURVE_POINT) {
-			feat.x = (int)cur->p1.x;
-			feat.y = (int)cur->p1.y;
-			feat.type = DRAG_SMALL_CIRCLE;
-			feat.curve = cur;
-			feat.point = 0;
-			features.push_back(feat);
-			AddSelection(j++);
-		}
 
-		else if (cur->type == CURVE_LINE) {
-			feat.x = (int)cur->p2.x;
-			feat.y = (int)cur->p2.y;
-			feat.type = DRAG_SMALL_CIRCLE;
-			feat.curve = cur;
-			feat.point = 1;
-			features.push_back(feat);
-			AddSelection(j++);
-		}
-
-		else if (cur->type == CURVE_BICUBIC) {
-			// Control points
-			feat.x = (int)cur->p2.x;
-			feat.y = (int)cur->p2.y;
-			feat.curve = cur;
-			feat.point = 1;
-			feat.type = DRAG_SMALL_SQUARE;
-			features.push_back(feat);
-			feat.x = (int)cur->p3.x;
-			feat.y = (int)cur->p3.y;
-			feat.point = 2;
-			features.push_back(feat);
-
-			// End point
-			feat.x = (int)cur->p4.x;
-			feat.y = (int)cur->p4.y;
-			feat.type = DRAG_SMALL_CIRCLE;
-			feat.point = 3;
-			features.push_back(feat);
-
-			AddSelection(j++);
-			AddSelection(j++);
-			AddSelection(j++);
-		}
+	for (Spline::iterator cur = spline.begin(); cur != spline.end(); ++cur) {
+		MakeFeature(cur);
 	}
 }
 
@@ -321,8 +316,8 @@ bool VisualToolVectorClip::InitializeDrag(VisualToolVectorClipDraggableFeature* 
 		// Erase and save changes
 		spline.erase(feature->curve);
 		CommitDrag(feature);
-		PopulateFeatureList();
 		curFeature = NULL;
+		ClearSelection(false);
 		Commit(true);
 		return false;
 	}
@@ -351,6 +346,8 @@ bool VisualToolVectorClip::InitializeHold() {
 
 		// Insert
 		spline.push_back(curve);
+		ClearSelection(false);
+		MakeFeature(--spline.end());
 		UpdateHold();
 		return true;
 	}
@@ -427,13 +424,15 @@ bool VisualToolVectorClip::InitializeHold() {
 void VisualToolVectorClip::UpdateHold() {
 	// Insert line
 	if (mode == 1) {
-		spline.back().p2 = Vector2D(video.x,video.y);
+		spline.back().EndPoint() = Vector2D(video.x,video.y);
+		features.back().x = video.x;
+		features.back().y = video.y;
 	}
 
 	// Insert bicubic
-	if (mode == 2) {
+	else if (mode == 2) {
 		SplineCurve &curve = spline.back();
-		curve.p4 = Vector2D(video.x,video.y);
+		curve.EndPoint() = Vector2D(video.x,video.y);
 
 		// Control points
 		if (spline.size() > 1) {
@@ -448,10 +447,11 @@ void VisualToolVectorClip::UpdateHold() {
 		}
 		else curve.p2 = curve.p1 * 0.75 + curve.p4 * 0.25;
 		curve.p3 = curve.p1 * 0.25 + curve.p4 * 0.75;
+		PopulateFeatureList();
 	}
 
 	// Freehand
-	if (mode == 6 || mode == 7) {
+	else if (mode == 6 || mode == 7) {
 		// See if distance is enough
 		Vector2D const& last = spline.back().EndPoint();
 		int len = (int)Vector2D(last.x-video.x, last.y-video.y).Len();
@@ -464,13 +464,17 @@ void VisualToolVectorClip::UpdateHold() {
 		curve.p1 = Vector2D(last.x,last.y);
 		curve.p2 = Vector2D(video.x,video.y);
 		spline.push_back(curve);
+		MakeFeature(--spline.end());
 	}
 }
 
 /// @brief Commit hold 
 void VisualToolVectorClip::CommitHold() {
 	// Smooth spline
-	if (!holding && mode == 7) spline.Smooth();
+	if (!holding && mode == 7) {
+		spline.Smooth();
+		PopulateFeatureList();
+	}
 
 	// Save it
 	if (mode != 3 && mode != 4) {
@@ -478,9 +482,10 @@ void VisualToolVectorClip::CommitHold() {
 	}
 
 	// End freedraw
-	if (!holding && (mode == 6 || mode == 7)) SetMode(0);
-
-	PopulateFeatureList();
+	if (!holding && (mode == 6 || mode == 7)) {
+		SetMode(0);
+		SelectAll();
+	}
 }
 
 /// @brief Refresh 
@@ -495,6 +500,14 @@ void VisualToolVectorClip::DoRefresh() {
 		int scale;
 		vect = GetLineVectorClip(line,scale,inverse);
 		spline.DecodeFromASS(vect);
+		SelectAll();
 		PopulateFeatureList();
+	}
+}
+
+void VisualToolVectorClip::SelectAll() {
+	ClearSelection(false);
+	for (size_t i = 0; i < features.size(); ++i) {
+		AddSelection(i);
 	}
 }
