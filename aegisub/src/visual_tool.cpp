@@ -113,6 +113,9 @@ void VisualTool<FeatureType>::OnMouseEvent (wxMouseEvent &event) {
 		parent->Render();
 		return;
 	}
+	else if (event.Entering() && !OPT_GET("Tool/Visual/Always Show")->GetBool()) {
+		needRender = true;
+	}
 	externalChange = false;
 
 	leftClick = event.ButtonDown(wxMOUSE_BTN_LEFT);
