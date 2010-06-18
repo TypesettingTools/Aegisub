@@ -113,7 +113,7 @@ public:
 
 	void GetXY(int &xx, int &yy);
 	void SetXY(int xx, int yy);
-	void SetBackground(wxBitmap *new_background);
+	void SetBackground(wxBitmap *new_background, bool force = false);
 
 	DECLARE_EVENT_TABLE()
 };
@@ -455,13 +455,12 @@ void ColorPickerSpectrum::SetXY(int xx, int yy)
 	}
 }
 
-/// @brief DOCME
-/// @param new_background 
-/// @return 
-///
-void ColorPickerSpectrum::SetBackground(wxBitmap *new_background)
+/// @brief Set the background image for this spectrum
+/// @param new_background New background image
+/// @param force Repaint even if it appears to be the same image
+void ColorPickerSpectrum::SetBackground(wxBitmap *new_background, bool force)
 {
-	if (background == new_background) return;
+	if (background == new_background && !force) return;
 	background = new_background;
 	Refresh(false);
 }
@@ -1307,35 +1306,35 @@ void DialogColorPicker::UpdateSpectrumDisplay()
 	switch (i) {
 		case 0:
 			if (spectrum_dirty)
-				spectrum->SetBackground(MakeGBSpectrum());
+				spectrum->SetBackground(MakeGBSpectrum(), true);
 			slider->SetBackground(rgb_slider[0]);
 			slider->SetXY(0, rgb_input[0]->GetValue());
 			spectrum->SetXY(rgb_input[2]->GetValue(), rgb_input[1]->GetValue());
 			break;
 		case 1:
 			if (spectrum_dirty)
-				spectrum->SetBackground(MakeRBSpectrum());
+				spectrum->SetBackground(MakeRBSpectrum(), true);
 			slider->SetBackground(rgb_slider[1]);
 			slider->SetXY(0, rgb_input[1]->GetValue());
 			spectrum->SetXY(rgb_input[2]->GetValue(), rgb_input[0]->GetValue());
 			break;
 		case 2:
 			if (spectrum_dirty)
-				spectrum->SetBackground(MakeRGSpectrum());
+				spectrum->SetBackground(MakeRGSpectrum(), true);
 			slider->SetBackground(rgb_slider[2]);
 			slider->SetXY(0, rgb_input[2]->GetValue());
 			spectrum->SetXY(rgb_input[1]->GetValue(), rgb_input[0]->GetValue());
 			break;
 		case 3:
 			if (spectrum_dirty)
-				spectrum->SetBackground(MakeHSSpectrum());
+				spectrum->SetBackground(MakeHSSpectrum(), true);
 			slider->SetBackground(hsl_slider);
 			slider->SetXY(0, hsl_input[2]->GetValue());
 			spectrum->SetXY(hsl_input[1]->GetValue(), hsl_input[0]->GetValue());
 			break;
 		case 4:
 			if (spectrum_dirty)
-				spectrum->SetBackground(MakeSVSpectrum());
+				spectrum->SetBackground(MakeSVSpectrum(), true);
 			slider->SetBackground(hsv_slider);
 			slider->SetXY(0, hsv_input[0]->GetValue());
 			spectrum->SetXY(hsv_input[1]->GetValue(), hsv_input[2]->GetValue());
