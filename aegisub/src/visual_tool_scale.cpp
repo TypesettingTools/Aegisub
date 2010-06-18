@@ -44,6 +44,7 @@
 #include "subs_edit_box.h"
 #include "subs_grid.h"
 #include "utils.h"
+#include "video_context.h"
 #include "video_display.h"
 #include "visual_tool_scale.h"
 
@@ -168,7 +169,12 @@ void VisualToolScale::UpdateHold() {
 
 /// @brief Commit hold 
 void VisualToolScale::CommitHold() {
-	SetOverride(GetActiveDialogueLine(), L"\\fscx",wxString::Format(L"(%0.3g)",curScaleX));
-	SetOverride(GetActiveDialogueLine(), L"\\fscy",wxString::Format(L"(%0.3g)",curScaleY));
+	SubtitlesGrid *grid = VideoContext::Get()->grid;
+	wxArrayInt sel = grid->GetSelection();
+	for (wxArrayInt::const_iterator cur = sel.begin(); cur != sel.end(); ++cur) {
+		AssDialogue* line = grid->GetDialogue(*cur);
+		assert(line);
+		SetOverride(line, L"\\fscx",wxString::Format(L"(%0.3g)",curScaleX));
+		SetOverride(line, L"\\fscy",wxString::Format(L"(%0.3g)",curScaleY));
+	}
 }
-

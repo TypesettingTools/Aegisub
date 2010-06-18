@@ -44,6 +44,7 @@
 #include "subs_edit_box.h"
 #include "subs_grid.h"
 #include "utils.h"
+#include "video_context.h"
 #include "video_display.h"
 #include "visual_tool_rotatexy.h"
 
@@ -207,9 +208,14 @@ void VisualToolRotateXY::UpdateHold() {
 
 /// @brief Commit hold 
 void VisualToolRotateXY::CommitHold() {
-	AssDialogue* line = GetActiveDialogueLine();
-	SetOverride(line, L"\\frx",wxString::Format(L"(%0.3g)",curAngleX));
-	SetOverride(line, L"\\fry",wxString::Format(L"(%0.3g)",curAngleY));
+	SubtitlesGrid *grid = VideoContext::Get()->grid;
+	wxArrayInt sel = grid->GetSelection();
+	for (wxArrayInt::const_iterator cur = sel.begin(); cur != sel.end(); ++cur) {
+		AssDialogue* line = grid->GetDialogue(*cur);
+		assert(line);
+		SetOverride(line, L"\\frx",wxString::Format(L"(%0.3g)",curAngleX));
+		SetOverride(line, L"\\fry",wxString::Format(L"(%0.3g)",curAngleY));
+	}
 }
 
 /// @brief Get \\org pivot 
