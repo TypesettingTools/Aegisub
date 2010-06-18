@@ -1,5 +1,7 @@
 #define LAGI_PRE
 
+#include "config.h"
+
 // Common C
 #include <errno.h>
 #include <math.h>
