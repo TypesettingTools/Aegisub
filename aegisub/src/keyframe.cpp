@@ -76,7 +76,7 @@ void KeyFrameFile::Load(wxString filename) {
 		VideoContext::Get()->SetKeyFramesName(filename);
 
 		// Add to recent
-		AegisubApp::Get()->mru->Add("Keyframes", STD_STR(filename));
+		config::mru->Add("Keyframes", STD_STR(filename));
 	}
 	// Fail
 	catch (const wchar_t *error) {
@@ -108,7 +108,7 @@ void KeyFrameFile::Save(wxString filename) {
 	}
 
 	// Add to recent
-	AegisubApp::Get()->mru->Add("Keyframes", STD_STR(filename));
+	config::mru->Add("Keyframes", STD_STR(filename));
 }
 
 

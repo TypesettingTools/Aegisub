@@ -912,7 +912,7 @@ void AudioDisplay::SetFile(wxString file) {
 
 			// Add to recent
 			if (!is_dummy) {
-				AegisubApp::Get()->mru->Add("Audio", STD_STR(file));
+				config::mru->Add("Audio", STD_STR(file));
 				wxFileName fn(file);
 				StandardPaths::SetPathValue(_T("?audio"),fn.GetPath());
 			}

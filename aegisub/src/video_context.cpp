@@ -272,7 +272,7 @@ void VideoContext::SetVideo(const wxString &filename) {
 
 			// Set filename
 			videoName = filename;
-			AegisubApp::Get()->mru->Add("Video", STD_STR(filename));
+			config::mru->Add("Video", STD_STR(filename));
 			wxFileName fn(filename);
 			StandardPaths::SetPathValue(_T("?video"),fn.GetPath());
 

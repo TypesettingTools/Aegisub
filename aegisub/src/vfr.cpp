@@ -238,7 +238,7 @@ void FrameRate::Load(wxString filename) {
 	FrameRateType = VFR;
 
 	// Add to recent
-	AegisubApp::Get()->mru->Add("Timecodes", STD_STR(filename));
+	config::mru->Add("Timecodes", STD_STR(filename));
 }
 
 

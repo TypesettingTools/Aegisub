@@ -234,7 +234,7 @@ void DialogSearchReplace::FindReplace(int mode) {
 		if (hasReplace) {
 			wxString ReplaceWith = ReplaceEdit->GetValue();
 			Search.ReplaceWith = ReplaceWith;
-			AegisubApp::Get()->mru->Add("Replace", STD_STR(ReplaceWith));
+			config::mru->Add("Replace", STD_STR(ReplaceWith));
 		}	
 	}
 
@@ -244,11 +244,11 @@ void DialogSearchReplace::FindReplace(int mode) {
 		Search.ReplaceWith = ReplaceWith;
 		if (mode == 1) Search.ReplaceNext();
 		else Search.ReplaceAll();
-		AegisubApp::Get()->mru->Add("Replace", STD_STR(ReplaceWith));
+		config::mru->Add("Replace", STD_STR(ReplaceWith));
 	}
 	
 	// Add to history
-	AegisubApp::Get()->mru->Add("Find", STD_STR(LookFor));
+	config::mru->Add("Find", STD_STR(LookFor));
 	UpdateDropDowns();
 }
 

@@ -729,7 +729,7 @@ AssStyle *AssFile::GetStyle(wxString name) {
 }
 
 void AssFile::AddToRecent(wxString file) {
-	AegisubApp::Get()->mru->Add("Subtitle", STD_STR(file));
+	config::mru->Add("Subtitle", STD_STR(file));
 }
 
 wxString AssFile::GetWildcardList(int mode) {

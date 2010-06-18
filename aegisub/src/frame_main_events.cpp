@@ -520,28 +520,28 @@ int FrameMain::AddMacroMenuItems(wxMenu *menu, const std::vector<Automation4::Fe
 /// @param event 
 void FrameMain::OnOpenRecentSubs(wxCommandEvent &event) {
 	int number = event.GetId()-Menu_File_Recent;
-	LoadSubtitles(lagi_wxString(AegisubApp::Get()->mru->GetEntry("Subtitle", number)));
+	LoadSubtitles(lagi_wxString(config::mru->GetEntry("Subtitle", number)));
 }
 
 /// @brief Open recent video menu entry 
 /// @param event 
 void FrameMain::OnOpenRecentVideo(wxCommandEvent &event) {
 	int number = event.GetId()-Menu_Video_Recent;
-	LoadVideo(lagi_wxString(AegisubApp::Get()->mru->GetEntry("Video", number)));
+	LoadVideo(lagi_wxString(config::mru->GetEntry("Video", number)));
 }
 
 /// @brief Open recent timecodes entry 
 /// @param event 
 void FrameMain::OnOpenRecentTimecodes(wxCommandEvent &event) {
 	int number = event.GetId()-Menu_Timecodes_Recent;
-	LoadVFR(lagi_wxString(AegisubApp::Get()->mru->GetEntry("Timecodes", number)));
+	LoadVFR(lagi_wxString(config::mru->GetEntry("Timecodes", number)));
 }
 
 /// @brief Open recent Keyframes entry 
 /// @param event 
 void FrameMain::OnOpenRecentKeyframes(wxCommandEvent &event) {
 	int number = event.GetId()-Menu_Keyframes_Recent;
-	KeyFrameFile::Load(lagi_wxString(AegisubApp::Get()->mru->GetEntry("Keyframes", number)));
+	KeyFrameFile::Load(lagi_wxString(config::mru->GetEntry("Keyframes", number)));
 	videoBox->videoSlider->Refresh();
 	audioBox->audioDisplay->Update();
 	Refresh();
@@ -551,7 +551,7 @@ void FrameMain::OnOpenRecentKeyframes(wxCommandEvent &event) {
 /// @param event 
 void FrameMain::OnOpenRecentAudio(wxCommandEvent &event) {
 	int number = event.GetId()-Menu_Audio_Recent;
-	LoadAudio(lagi_wxString(AegisubApp::Get()->mru->GetEntry("Audio", number)));
+	LoadAudio(lagi_wxString(config::mru->GetEntry("Audio", number)));
 }
 
 /// @brief Open new Window 
