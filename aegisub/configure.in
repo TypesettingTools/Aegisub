@@ -495,7 +495,7 @@ AC_SUBST(ALSA_LDFLAGS)
 ############
 
 AC_ARG_WITH(portaudio,[  --without-portaudio     build without PortAudio v19 audio provider.
-                          (default: auto)], pulseaudio_disabled="(disabled)")
+                          (default: auto)], portaudio_disabled="(disabled)")
 if test "$with_portaudio" != "no"; then
   PKG_CHECK_MODULES(PORTAUDIO, portaudio-2.0 >= portaudio_required_version, [with_portaudio="yes"], [with_portaudio="no"])
 fi
@@ -534,7 +534,7 @@ if test "$with_pulseaudio" != "no"; then
 fi
 
 if test "$with_pulseaudio" != "no"; then
-  AC_AGI_COMPILE([PuleseAudio], [pulseaudio], [$LIBPULSE_CFLAGS], [$LIBPULSE_LIBS],[
+  AC_AGI_COMPILE([PulseAudio], [pulseaudio], [$LIBPULSE_CFLAGS], [$LIBPULSE_LIBS],[
 #include <pulse/pulseaudio.h>
 int main(void) {
 pa_threaded_mainloop *mainloop = pa_threaded_mainloop_new();
