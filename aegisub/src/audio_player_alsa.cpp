@@ -225,6 +225,11 @@ void AlsaPlayer::SetUpAsync()
 
 	// Prepare for playback
 	snd_pcm_prepare(pcm_handle);
+	
+	// Write initial chunk of audio data (recommended by ALSA wiki)
+	void *empty = calloc(bpf, period * 2);
+	snd_pcm_writei(pcm_handle, empty, period * 2);
+	free(empty);
 
 	// Attach async handler
 	if (snd_async_add_pcm_handler(&pcm_callback, pcm_handle, async_write_handler, this) < 0) {
@@ -270,10 +275,10 @@ void AlsaPlayer::Play(int64_t start,int64_t count)
 
 	// Prepare a bit
 	snd_pcm_prepare (pcm_handle);
-	async_write_handler(pcm_callback);
 
 	// And go!
 	snd_pcm_start(pcm_handle);
+	async_write_handler(pcm_callback);
 
 	// Update timer
 	if (displayTimer && !displayTimer->IsRunning()) displayTimer->Start(15);
@@ -381,12 +386,17 @@ void AlsaPlayer::async_write_handler(snd_async_handler_t *pcm_callback)
 	void *buf = malloc(player->period * player->bpf);
 	while (frames >= player->period) {
 		unsigned long start = player->cur_frame;
-		player->provider->GetAudioWithVolume(buf, player->cur_frame, player->period, player->volume);
+		player->provider->GetAudioWithVolume(buf, start, player->period, player->volume);
 		int err = snd_pcm_writei(player->pcm_handle, buf, player->period);
 		if(err == -EPIPE) {
 			snd_pcm_prepare(player->pcm_handle);
+		} else if (err < 0) {
+			// An error occured, stop playback
+			snd_pcm_drain(player->pcm_handle);
+			player->playing = false;
+			break;
 		}
-		player->cur_frame += player->period;
+		player->cur_frame += err;
 		frames = snd_pcm_avail_update(player->pcm_handle);
 	}
 	free(buf);
