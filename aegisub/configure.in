@@ -527,8 +527,8 @@ AM_CONDITIONAL([HAVE_PORTAUDIO], [test "$with_portaudio" != "no"])
 ## PulseAudio
 #############
 
-AC_ARG_WITH(pulseaudio,[  --without-pulseaudio    build without PulseAudio audio provider.
-                          (default: auto)], pulseaudio_disabled="(disabled)")
+AC_ARG_WITH(pulseaudio,[  --with-pulseaudio       build with PulseAudio audio provider.
+                          (default: no)], [], [with_pulseaudio=no; pulseaudio_disabled="(disabled)"])
 if test "$with_pulseaudio" != "no"; then
   PKG_CHECK_MODULES(LIBPULSE, libpulse >= pulseaudio_required_version, [with_pulseaudio="yes"], [with_pulseaudio="no"])
 fi
