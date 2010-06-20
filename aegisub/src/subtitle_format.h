@@ -45,6 +45,9 @@
 #include <list>
 
 
+#include "include/aegisub/exception.h"
+
+
 //////////////
 // Prototypes
 class AssFile;
@@ -76,7 +79,7 @@ protected:
 	void CreateCopy();
 	void ClearCopy();
 	void SortLines();
-	void ConvertTags(int format,wxString lineEnd);
+	void ConvertTags(int format,const wxString &lineEnd,bool mergeLineBreaks=true);
 	//void Merge(bool identical,bool overlaps,bool stripComments,bool stripNonDialogue);
 	void StripComments();
 	void StripNonDialogue();
@@ -110,3 +113,7 @@ public:
 	static void LoadFormats();
 	static void DestroyFormats();
 };
+
+
+DEFINE_SIMPLE_EXCEPTION(SubtitleFormatParseError, Aegisub::InvalidInputException, "subtitle_io/parse/generic")
+

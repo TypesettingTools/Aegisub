@@ -76,7 +76,7 @@ AssFile::~AssFile() {
 /////////////////////
 // Load generic subs
 void AssFile::Load (const wxString _filename,const wxString charset,bool addToRecent) {
-	bool ok = true;
+	bool ok = false;
 
 	try {
 		// Try to open file
@@ -107,6 +107,7 @@ void AssFile::Load (const wxString _filename,const wxString charset,bool addToRe
 		if (reader) {
 			reader->SetTarget(this);
 			reader->ReadFile(_filename,enc);
+			ok = true;
 		}
 
 		// Couldn't find a type
@@ -116,18 +117,20 @@ void AssFile::Load (const wxString _filename,const wxString charset,bool addToRe
 	// String error
 	catch (const wchar_t *except) {
 		wxMessageBox(except,_T("Error loading file"),wxICON_ERROR | wxOK);
-		ok = false;
 	}
 
 	catch (wxString except) {
 		wxMessageBox(except,_T("Error loading file"),wxICON_ERROR | wxOK);
-		ok = false;
+	}
+
+	// Real exception
+	catch (Aegisub::Exception &e) {
+		wxMessageBox(wxString(e.GetChainedMessage().c_str(), wxConvUTF8), L"Error loading file", wxICON_ERROR|wxOK);
 	}
 
 	// Other error
 	catch (...) {
 		wxMessageBox(_T("Unknown error"),_T("Error loading file"),wxICON_ERROR | wxOK);
-		ok = false;
 	}
 
 	// Verify loading
