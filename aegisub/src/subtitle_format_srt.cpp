@@ -39,11 +39,18 @@
 // Headers
 #include "config.h"
 
+#ifndef AGI_PRE
+#include <wx/regex.h>
+#endif
+
 #include "ass_dialogue.h"
 #include "ass_file.h"
 #include "subtitle_format_srt.h"
 #include "text_file_reader.h"
 #include "text_file_writer.h"
+
+
+DEFINE_SIMPLE_EXCEPTION(SRTParseError, SubtitleFormatParseError, "subtitle_io/parse/srt")
 
 
 /// @brief Can read? 
@@ -108,84 +115,134 @@ void SRTSubtitleFormat::ReadFile(wxString filename,wxString encoding) {
 	// Default
 	LoadDefault(false);
 
-	// Parse file
-	int linen = 1;
-	int fileLine = 0;
-	int mode = 0;
-	int lines = 0;
-	long templ;
-	AssDialogue *line = NULL;
+	// See parsing algorithm at <http://devel.aegisub.org/wiki/SubtitleFormats/SRT>
+
+	// "hh:mm:ss,fff --> hh:mm:ss,fff" (e.g. "00:00:04,070 --> 00:00:10,04")
+	/// @todo: move the full parsing of SRT timestamps here, instead of having it in AssTime
+	wxRegEx timestamp_regex(L"^([0-9]{2}:[0-9]{2}:[0-9]{2},[0-9]{3}) --> ([0-9]{2}:[0-9]{2}:[0-9]{2},[0-9]{3})");
+	if (!timestamp_regex.IsValid())
+		throw agi::InternalError("Parsing SRT: Failed compiling regex", 0);
+
+	int state = 1;
+	int line_num = 0;
+	int linebreak_debt = 0;
+	AssDialogue *line = 0;
 	while (file.HasMoreLines()) {
-		// Reads line
-		wxString curLine = file.ReadLineFromFile();
-		fileLine++;
+		wxString text_line = file.ReadLineFromFile();
+		line_num++;
+		text_line.Trim(true).Trim(false);
 
-		if (mode == 0) {
-			// Checks if there is anything to read
-			if (curLine.IsEmpty()) continue;
-
-			// Check if it's a line number
-			if (!curLine.IsNumber()) {
-				Clear();
-				if (line) delete line;
-				throw wxString::Format(_T("Parse error on entry %i at line %i (expecting line number). Possible malformed file."),linen,fileLine);
+		switch (state) {
+			case 1:
+			{
+				// start of file, no subtitles found yet
+				if (text_line.IsEmpty())
+					// ignore blank lines
+					break;
+				if (text_line.IsNumber()) {
+					// found the line number, throw it away and hope for timestamps
+					state = 2;
+					break;
+				}
+				if (timestamp_regex.Matches(text_line)) {
+					goto found_timestamps;
+				}
+				char cvtbuf[16]; sprintf(cvtbuf, "%d", line_num);
+				throw SRTParseError(std::string("Parsing SRT: Expected subtitle index at line ") + cvtbuf, 0);
 			}
-
-			// Read line number
-			curLine.ToLong(&templ);
-			if (templ != linen) {
-				linen = templ;
-			}
-			line = new AssDialogue();
-			mode = 1;
-		}
-
-		else if (mode == 1) {
-			// Read timestamps
-			if (curLine.substr(13,3) != _T("-->")) {
-				Clear();
-				if (line) delete line;
-				throw wxString::Format(_T("Parse error on entry %i at line %i (expecting timestamps). Possible malformed file."),linen,fileLine);
-			}
-			line->Start.ParseSRT(curLine.substr(0,12));
-			line->End.ParseSRT(curLine.substr(17,12));
-			mode = 2;
-		}
-
-		else if (mode == 2) {
-			// Checks if it's done
-			bool eof = !file.HasMoreLines();
-			bool isDone = curLine.IsEmpty();
-
-			// Append text
-			if (!isDone) {
-				if (line->Text != _T("")) line->Text += _T("\\N");
-				line->Text += curLine;
-			}
-
-			// Done
-			if (isDone || eof) {
-				mode = 0;
-				linen++;
-				line->group = _T("[Events]");
+			case 2:
+			{
+				// want timestamps
+				if (timestamp_regex.Matches(text_line) == false) {
+					// bad format
+					char cvtbuf[16]; sprintf(cvtbuf, "%d", line_num);
+					throw SRTParseError(std::string("Parsing SRT: Expected timestamp pair at line ") + cvtbuf, 0);
+				}
+found_timestamps:
+				if (line != 0) {
+					// finalise active line
+					line->ParseSRTTags();
+					line = 0;
+				}
+				// create new subtitle
+				line = new AssDialogue();
+				line->group = L"[Events]";
 				line->Style = _T("Default");
 				line->Comment = false;
-				line->ParseSRTTags();
+				// this parsing should best be moved out of AssTime
+				line->Start.ParseSRT(timestamp_regex.GetMatch(text_line, 1));
+				line->End.ParseSRT(timestamp_regex.GetMatch(text_line, 2));
+				// store pointer to subtitle, we'll continue working on it
 				Line->push_back(line);
-				lines++;
-				line = NULL;
+				// next we're reading the text
+				state = 3;
+				break;
+			}
+			case 3:
+			{
+				// reading first line of subtitle text
+				if (text_line.IsEmpty()) {
+					// that's not very interesting... blank subtitle?
+					state = 5;
+					linebreak_debt = 1;
+					break;
+				}
+				line->Text.Append(text_line);
+				state = 4;
+				break;
+			}
+			case 4:
+			{
+				// reading following line of subtitle text
+				if (text_line.IsEmpty()) {
+					// blank line, next may begin a new subtitle
+					state = 5;
+					linebreak_debt = 1;
+					break;
+				}
+				line->Text.Append(L"\\N").Append(text_line);
+				break;
+			}
+			case 5:
+			{
+				// blank line in subtitle text
+				linebreak_debt++;
+				if (text_line.IsEmpty()) {
+					// multiple blank lines in a row, just add a line break...
+					break;
+				}
+				if (text_line.IsNumber()) {
+					// must be a subtitle index!
+					// go for timestamps next
+					state = 2;
+					break;
+				}
+				if (timestamp_regex.Matches(text_line)) {
+					goto found_timestamps;
+				}
+				// assume it's a continuation of the subtitle text
+				// resolve our line break debt and append the line text
+				while (linebreak_debt-- > 0)
+					line->Text.Append(L"\\N");
+				line->Text.Append(text_line);
+				state = 4;
+				break;
+			}
+			default:
+			{
+				char cvtbuf[16]; sprintf(cvtbuf, "%d", state);
+				throw agi::InternalError(std::string("Parsing SRT: Reached unexpected state ") + cvtbuf, 0);
 			}
 		}
 	}
 
-	// No lines?
-	if (lines == 0) {
-		line = new AssDialogue();
-		line->group = _T("[Events]");
-		line->Style = _T("Default");
-		line->Start.SetMS(0);
-		line->End.SetMS(5000);
-		Line->push_back(line);
+	if (state == 1 || state == 2) {
+		throw SRTParseError(std::string("Parsing SRT: Incomplete file"), 0);
+	}
+
+	if (line) {
+		// an unfinalised line
+		line->ParseSRTTags();
 	}
 }
 
