@@ -47,6 +47,8 @@
 #include <wx/string.h>
 #endif
 
+#include <libaegisub/exception.h>
+
 
 //////////////
 // Prototypes
@@ -160,4 +162,6 @@ public:
 	static void DestroyFormats();
 };
 
+
+DEFINE_SIMPLE_EXCEPTION(SubtitleFormatParseError, agi::InvalidInputException, "subtitle_io/parse/generic")
 
