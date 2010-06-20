@@ -103,7 +103,7 @@ protected:
 	void CreateCopy();
 	void ClearCopy();
 	void SortLines();
-	void ConvertTags(int format,wxString lineEnd);
+	void ConvertTags(int format,const wxString &lineEnd,bool mergeLineBreaks=true);
 	//void Merge(bool identical,bool overlaps,bool stripComments,bool stripNonDialogue);
 	void StripComments();
 	void StripNonDialogue();

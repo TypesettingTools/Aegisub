@@ -417,7 +417,7 @@ void SubtitleFormat::SortLines() {
 /// @param format  
 /// @param lineEnd 
 ///
-void SubtitleFormat::ConvertTags(int format,wxString lineEnd) {
+void SubtitleFormat::ConvertTags(int format,const wxString &lineEnd,bool mergeLineBreaks) {
 	using std::list;
 	list<AssEntry*>::iterator next;
 	for (list<AssEntry*>::iterator cur=Line->begin();cur!=Line->end();cur++) {
@@ -431,7 +431,9 @@ void SubtitleFormat::ConvertTags(int format,wxString lineEnd) {
 			current->Text.Replace(_T("\\h"),_T(" "),true);
 			current->Text.Replace(_T("\\n"),lineEnd,true);
 			current->Text.Replace(_T("\\N"),lineEnd,true);
-			while (current->Text.Replace(lineEnd+lineEnd,lineEnd,true)) {};
+			if (mergeLineBreaks) {
+				while (current->Text.Replace(lineEnd+lineEnd,lineEnd,true)) {};
+			}
 		}
 	}
 }

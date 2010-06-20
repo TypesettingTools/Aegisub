@@ -184,7 +184,8 @@ found_timestamps:
 				if (text_line.IsEmpty()) {
 					// that's not very interesting... blank subtitle?
 					state = 5;
-					linebreak_debt = 1;
+					// no previous line that needs a line break after
+					linebreak_debt = 0;
 					break;
 				}
 				line->Text.Append(text_line);
@@ -197,6 +198,7 @@ found_timestamps:
 				if (text_line.IsEmpty()) {
 					// blank line, next may begin a new subtitle
 					state = 5;
+					// previous line needs a line break after
 					linebreak_debt = 1;
 					break;
 				}
@@ -262,12 +264,12 @@ void SRTSubtitleFormat::WriteFile(wxString _filename,wxString encoding) {
 	StripComments();
 	// Tags must be converted in two passes
 	// First ASS style overrides are converted to SRT but linebreaks are kept
-	ConvertTags(2,_T("\\N"));
+	ConvertTags(2,_T("\\N"),false);
 	// Then we can recombine overlaps, this requires ASS style linebreaks
 	RecombineOverlaps();
 	MergeIdentical();
 	// And finally convert linebreaks
-	ConvertTags(0,_T("\r\n"));
+	ConvertTags(0,_T("\r\n"),false);
 	// Otherwise unclosed overrides might affect lines they shouldn't, see bug #809 for example
 
 	// Write lines
