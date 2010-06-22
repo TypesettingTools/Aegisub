@@ -257,6 +257,7 @@ public:
 	AssEntry *Clone() const;
 
 	AssDialogue();
+	AssDialogue(AssDialogue const&);
 	AssDialogue(wxString data,int version=1);
 	~AssDialogue();
 };

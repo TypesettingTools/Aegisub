@@ -65,6 +65,21 @@ AssDialogue::AssDialogue()
 	for (int i=0;i<4;i++) Margin[i] = 0;
 }
 
+AssDialogue::AssDialogue(AssDialogue const& that)
+: Comment(that.Comment)
+, Layer(that.Layer)
+, Start(that.Start)
+, End(that.End)
+, Style(that.Style)
+, Actor(that.Actor)
+, Effect(that.Effect)
+, Text(that.Text)
+{
+	group = that.group;
+	Valid = that.Valid;
+	for (int i=0;i<4;i++) Margin[i] = that.Margin[i];
+}
+
 /// @brief DOCME
 /// @param _data   
 /// @param version 
@@ -750,23 +765,7 @@ wxString AssDialogue::GetStrippedText() const {
 /// @brief Clone 
 /// @return 
 AssEntry *AssDialogue::Clone() const {
-	// Create clone
-	AssDialogue *final = new AssDialogue();
-
-	// Copy data
-	final->group = group;
-	final->Valid = Valid;
-	final->Actor = Actor;
-	final->Comment = Comment;
-	final->Effect = Effect;
-	final->Layer = Layer;
-	for (int i=0;i<4;i++) final->Margin[i] = Margin[i];
-	final->Start = Start;
-	final->End = End;
-	final->Style = Style;
-	final->Text = Text;
-
-	return final;
+	return new AssDialogue(*this);
 }
 
 /// @brief Constructor  AssDialogueBlock
