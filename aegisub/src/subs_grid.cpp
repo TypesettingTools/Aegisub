@@ -132,22 +132,22 @@ SubtitlesGrid::~SubtitlesGrid() {
 void SubtitlesGrid::OnPopupMenu(bool alternate) {
 	// Alternate
 	if (alternate) {
-		// Prepare strings
-		wxArrayString strings;
-		strings.Add(_("Line Number"));
-		strings.Add(_("Layer"));
-		strings.Add(_("Start"));
-		strings.Add(_("End"));
-		strings.Add(_("Style"));
-		strings.Add(_("Actor"));
-		strings.Add(_("Effect"));
-		strings.Add(_("Left"));
-		strings.Add(_("Right"));
-		strings.Add(_("Vert"));
+		const wxString strings[] = {
+			_("Line Number"),
+			_("Layer"),
+			_("Start"),
+			_("End"),
+			_("Style"),
+			_("Actor"),
+			_("Effect"),
+			_("Left"),
+			_("Right"),
+			_("Vert"),
+		};
 
 		// Create Menu
 		wxMenu menu;
-		for (size_t i=0;i<strings.Count();i++) {
+		for (size_t i=0;i<columns;i++) {
 			menu.Append(MENU_SHOW_COL + i,strings[i],_T(""),wxITEM_CHECK)->Check(showCol[i]);
 		}
 		PopupMenu(&menu);
@@ -227,7 +227,7 @@ void SubtitlesGrid::OnShowColMenu(wxCommandEvent &event) {
 	int item = event.GetId()-MENU_SHOW_COL;
 	showCol[item] = !showCol[item];
 
-	std::vector<bool> map(showCol, showCol + sizeof(showCol) / sizeof(bool));
+	std::vector<bool> map(showCol, showCol + columns);
 	OPT_SET("Subtitle/Grid/Column")->SetListBool(map);
 
 	// Update
@@ -810,14 +810,9 @@ void SubtitlesGrid::LoadDefault (AssFile *_ass) {
 ///
 void SubtitlesGrid::LoadFromAss (AssFile *_ass,bool keepSelection,bool dontModify) {
 	// Store selected rows
-	std::vector<int> srows;
+	wxArrayInt srows;
 	if (keepSelection) {
-		int nrows = GetRows();
-		for (int i=0;i<nrows;i++) {
-			if (IsInSelection(i,0)) {
-				srows.push_back(i);
-			}
-		}
+		srows = GetSelection();
 	}
 
 	// Clear grid
@@ -853,7 +848,7 @@ void SubtitlesGrid::LoadFromAss (AssFile *_ass,bool keepSelection,bool dontModif
 	// Restore selection
 	if (keepSelection) {
 		for (size_t i=0;i<srows.size();i++) {
-			SelectRow(srows.at(i),true);
+			SelectRow(srows[i],true);
 		}
 	}
 

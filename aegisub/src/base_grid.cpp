@@ -128,7 +128,8 @@ void BaseGrid::UpdateStyle() {
 	// Set column widths
 	std::vector<bool> column_array;
 	OPT_GET("Subtitle/Grid/Column")->GetListBool(column_array);
-	for (int i=0;i<10;i++) showCol[i] = column_array.at(i);
+	assert(column_array.size() == columns);
+	for (int i=0;i<columns;i++) showCol[i] = column_array[i];
 	SetColumnWidths();
 
 	// Update
@@ -210,7 +211,7 @@ void BaseGrid::SelectRow(int row, bool addToSelected, bool select) {
 	if (row < 0 || (size_t)row >= selMap.size()) return;
 	if (!addToSelected) ClearSelection();
 
-	if (select != selMap[row]) {
+	if (select != !!selMap[row]) {
 		selMap[row] = select;
 		
 		if (!addToSelected) {
@@ -269,7 +270,7 @@ void BaseGrid::ClearSelection() {
 ///
 bool BaseGrid::IsInSelection(int row, int) const {
 	if ((size_t)row >= selMap.size() || row < 0) return false;
-	return selMap[row];
+	return !!selMap[row];
 }
 
 
@@ -278,7 +279,7 @@ bool BaseGrid::IsInSelection(int row, int) const {
 /// @return 
 ///
 int BaseGrid::GetNumberSelection() const {
-	return std::count(selMap.begin(), selMap.end(), true);
+	return std::count(selMap.begin(), selMap.end(), 1);
 }
 
 
@@ -287,7 +288,7 @@ int BaseGrid::GetNumberSelection() const {
 /// @return 
 ///
 int BaseGrid::GetFirstSelRow() const {
-	std::vector<bool>::const_iterator first = std::find(selMap.begin(), selMap.end(), true);
+	std::vector<int>::const_iterator first = std::find(selMap.begin(), selMap.end(), 1);
 	if (first == selMap.end()) return -1;
 	return std::distance(selMap.begin(), first);
 }
@@ -941,8 +942,8 @@ void BaseGrid::SetColumnWidths() {
 	for (int i=0;i<3;i++) colWidth[i+7] = showMargin[i] ? marginLen : 0;
 
 	// Hide columns
-	for (int i=0;i<10;i++) {
-		if (showCol[i] == false) colWidth[i] = 0;
+	for (int i=0;i<columns;i++) {
+		if (!showCol[i]) colWidth[i] = 0;
 	}
 
 	// Set size of last
@@ -988,13 +989,9 @@ bool BaseGrid::IsDisplayed(AssDialogue *line) {
 ///
 void BaseGrid::UpdateMaps() {
 	// Store old
-	int len = diagMap.size();
-	std::vector<AssDialogue *> tmpDiagPtrMap;
-	std::vector<bool> tmpSelMap;
-	for (int i=0;i<len;i++) {
-		tmpDiagPtrMap.push_back(diagPtrMap[i]);
-		tmpSelMap.push_back(selMap[i]);
-	}
+	int len = selMap.size();
+	std::vector<AssDialogue *> tmpDiagPtrMap(diagPtrMap);
+	std::vector<int> tmpSelMap(selMap);
 
 	// Clear old
 	diagPtrMap.clear();
@@ -1002,13 +999,11 @@ void BaseGrid::UpdateMaps() {
 	selMap.clear();
 	
 	// Re-generate lines
-	int n = 0;
-	AssDialogue *curdiag;
 	for (entryIter cur=AssFile::top->Line.begin();cur != AssFile::top->Line.end();cur++) {
-		curdiag = dynamic_cast<AssDialogue*>(*cur);
+		AssDialogue *curdiag = dynamic_cast<AssDialogue*>(*cur);
 		if (curdiag) {
 			// Find old pos
-			bool sel = false;
+			int sel = 0;
 			for (int i=0;i<len;i++) {
 				if (tmpDiagPtrMap[i] == curdiag) {
 					sel = tmpSelMap[i];
@@ -1020,8 +1015,6 @@ void BaseGrid::UpdateMaps() {
 			diagMap.push_back(cur);
 			diagPtrMap.push_back(curdiag);
 			selMap.push_back(sel);
-
-			n++;
 		}
 	}
 
