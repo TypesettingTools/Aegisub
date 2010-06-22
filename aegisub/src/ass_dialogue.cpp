@@ -33,8 +33,6 @@
 /// @brief Class for dialogue lines in subtitles
 /// @ingroup subs_storage
 
-////////////
-// Includes
 #include "config.h"
 
 #ifndef AGI_PRE
@@ -66,7 +64,8 @@ AssDialogue::AssDialogue()
 }
 
 AssDialogue::AssDialogue(AssDialogue const& that)
-: Comment(that.Comment)
+: AssEntry()
+, Comment(that.Comment)
 , Layer(that.Layer)
 , Start(that.Start)
 , End(that.End)

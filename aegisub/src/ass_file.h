@@ -90,7 +90,8 @@ public:
 	bool loaded;
 
 	AssFile();
-	AssFile(AssFile &from);
+	AssFile(const AssFile &from);
+	AssFile& operator=(AssFile from);
 	~AssFile();
 
 	/// Does the file have unsaved changes?
