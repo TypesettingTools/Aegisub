@@ -35,6 +35,10 @@
 
 #include "config.h"
 
+#ifndef AGI_PRE
+#include <utility>
+#endif
+
 #include "ass_dialogue.h"
 #include "ass_file.h"
 #include "subs_edit_box.h"
@@ -112,8 +116,8 @@ void VisualToolClip::UpdateHold() {
 	curY2 = video.y;
 
 	// Make sure 1 is smaller than 2
-	if (curX1 > curX2) IntSwap(curX1,curX2);
-	if (curY1 > curY2) IntSwap(curY1,curY2);
+	if (curX1 > curX2) std::swap(curX1,curX2);
+	if (curY1 > curY2) std::swap(curY1,curY2);
 
 	// Limit to video area
 	curX1 = MID(0,curX1,video.w);
@@ -202,8 +206,8 @@ void VisualToolClip::UpdateDrag(ClipCorner* feature) {
 	curY2 = features[3].y;
 
 	// Make sure p1 < p2
-	if (curX1 > curX2) IntSwap(curX1,curX2);
-	if (curY1 > curY2) IntSwap(curY1,curY2);
+	if (curX1 > curX2) std::swap(curX1,curX2);
+	if (curY1 > curY2) std::swap(curY1,curY2);
 }
 
 /// @brief Done dragging 

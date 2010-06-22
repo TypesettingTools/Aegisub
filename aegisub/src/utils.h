@@ -37,9 +37,6 @@
 
 #pragma once
 
-
-///////////
-// Headers
 #ifndef AGI_PRE
 #include <stdint.h>
 
@@ -50,13 +47,9 @@
 #include <wx/menuitem.h>
 #endif
 
-
 /// DOCME
 typedef std::vector<std::pair<int,int> > IntPairVector;
 
-
-///////////////////////
-// Function prototypes
 #ifndef __LINUX__
 int64_t abs64(int64_t input);
 #endif
@@ -76,24 +69,15 @@ int AegiStringToFix(const wxString &str,size_t decimalPlaces,int start=0,int end
 wxIcon BitmapToIcon(wxBitmap bmp);
 void RestartAegisub();
 
-
-//////////
-// Macros
 #ifndef MIN
-
-/// DOCME
 #define MIN(a,b) ((a)<(b))?(a):(b)
 #endif
 
 #ifndef MAX
-
-/// DOCME
 #define MAX(a,b) ((a)>(b))?(a):(b)
 #endif
 
 #ifndef MID
-
-/// DOCME
 #define MID(a,b,c) MAX((a),MIN((b),(c)))
 #endif
 
@@ -110,20 +94,6 @@ void RestartAegisub();
 #endif
 #endif
 
-
-
-/// @brief Inlines 
-/// @param a 
-/// @param b 
-///
-static inline void IntSwap(int &a,int &b) {
-	int c = a;
-	a = b;
-	b = c;
-}
-
-
-
 /// @brief Code taken from http://bob.allegronetwork.com/prog/tricks.html#clamp Clamp integer to range 
 /// @param x   
 /// @param min 
@@ -138,5 +108,3 @@ static FORCEINLINE int ClampSignedInteger32(int x,int min,int max) {
 	x += max;
 	return x;
 }
-
-
