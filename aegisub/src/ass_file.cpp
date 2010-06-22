@@ -743,13 +743,9 @@ wxString AssFile::GetWildcardList(int mode) {
 }
 
 void AssFile::CompressForStack() {
-	AssDialogue *diag;
 	for (entryIter cur=Line.begin();cur!=Line.end();cur++) {
-		diag = dynamic_cast<AssDialogue*>(*cur);
-		if (diag) {
-			diag->SetEntryData("");
-			diag->ClearBlocks();
-		}
+		AssDialogue *diag = dynamic_cast<AssDialogue*>(*cur);
+		if (diag) diag->ClearBlocks();
 	}
 }
 
