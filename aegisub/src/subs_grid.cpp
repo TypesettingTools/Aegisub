@@ -1010,8 +1010,7 @@ void SubtitlesGrid::PasteLines(int n,bool pasteOver) {
 	if (!data.empty()) {
 		// Insert data
 		int inserted = 0;
-		bool asked = false;
-		wxArrayInt pasteOverOptions;
+		std::vector<bool> pasteOverOptions;
 		wxStringTokenizer token (data,_T("\r\n"),wxTOKEN_STRTOK);
 		while (token.HasMoreTokens()) {
 			// Convert data into an AssDialogue
@@ -1037,14 +1036,12 @@ void SubtitlesGrid::PasteLines(int n,bool pasteOver) {
 			if (pasteOver) {
 				if (n+inserted < GetRows()) {
 					// Get list of options to paste over, if not asked yet
-					if (asked == false) {
-						asked = true;
-						DialogPasteOver diag(NULL);
+					if (pasteOverOptions.empty()) {
+						DialogPasteOver diag(NULL, pasteOverOptions);
 						if (!diag.ShowModal()) {
 							delete curdiag;
 							return;
 						}
-						pasteOverOptions = diag.GetOptions();
 					}
 
 					// Paste over

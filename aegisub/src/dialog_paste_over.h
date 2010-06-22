@@ -34,12 +34,9 @@
 /// @ingroup secondary_ui
 ///
 
-
-
-
-///////////
-// Headers
 #ifndef AGI_PRE
+#include <vector>
+
 #include <wx/dialog.h>
 #include <wx/checklst.h>
 #endif
@@ -57,7 +54,7 @@ private:
 	wxCheckListBox *ListBox;
 
 	/// DOCME
-	wxArrayInt options;
+	std::vector<bool>& options;
 
 	void OnOK(wxCommandEvent &event);
 	void OnCancel(wxCommandEvent &event);
@@ -67,30 +64,8 @@ private:
 	void OnNone(wxCommandEvent &event);
 
 public:
-	DialogPasteOver(wxWindow *parent);
+	DialogPasteOver(wxWindow *parent, std::vector<bool>& options);
 	~DialogPasteOver();
-
-	wxArrayInt GetOptions();
 
 	DECLARE_EVENT_TABLE()
 };
-
-
-///////
-// IDs
-enum {
-
-	/// DOCME
-	Paste_Over_Times = 1620,
-
-	/// DOCME
-	Paste_Over_Text,
-
-	/// DOCME
-	Paste_Over_All,
-
-	/// DOCME
-	Paste_Over_None
-};
-
-

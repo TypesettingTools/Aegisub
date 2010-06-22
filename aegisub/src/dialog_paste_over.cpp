@@ -34,9 +34,6 @@
 /// @ingroup secondary_ui
 ///
 
-
-///////////
-// Headers
 #include "config.h"
 
 #ifndef AGI_PRE
@@ -51,12 +48,21 @@
 #include "main.h"
 #include "options.h"
 
+/// Button IDs
+enum {
+	Paste_Over_Times = 1620,
+	Paste_Over_Text,
+	Paste_Over_All,
+	Paste_Over_None
+};
+
 
 /// @brief Constructor 
 /// @param parent 
 ///
-DialogPasteOver::DialogPasteOver (wxWindow *parent)
+DialogPasteOver::DialogPasteOver (wxWindow *parent, std::vector<bool>& options)
 : wxDialog (parent,-1,_("Select Fields to Paste Over"),wxDefaultPosition,wxDefaultSize)
+, options(options)
 {
 	// Script mode
 	int mode = 1; // ASS
@@ -89,9 +95,8 @@ DialogPasteOver::DialogPasteOver (wxWindow *parent)
 
 	// Load checked items
 	/// @todo This assumes a static set of fields.
-	std::vector<bool> choice_array;
-	OPT_GET("Tool/Paste Lines Over/Fields")->GetListBool(choice_array);
-	for (unsigned int i=0;i<choices.Count();i++) ListBox->Check(i,choice_array.at(i));
+	OPT_GET("Tool/Paste Lines Over/Fields")->GetListBool(options);
+	for (unsigned int i=0;i<choices.Count();i++) ListBox->Check(i,options[i]);
 
 	// Top buttons
 	wxSizer *TopButtonSizer = new wxBoxSizer(wxHORIZONTAL);
@@ -117,16 +122,10 @@ DialogPasteOver::DialogPasteOver (wxWindow *parent)
 	Center();
 }
 
-
-
 /// @brief Destructor 
-///
 DialogPasteOver::~DialogPasteOver() {
 }
 
-
-///////////////
-// Event table
 BEGIN_EVENT_TABLE(DialogPasteOver, wxDialog)
 	EVT_BUTTON(wxID_OK,DialogPasteOver::OnOK)
 	EVT_BUTTON(wxID_CANCEL,DialogPasteOver::OnCancel)
@@ -136,76 +135,40 @@ BEGIN_EVENT_TABLE(DialogPasteOver, wxDialog)
 	EVT_BUTTON(Paste_Over_Times,DialogPasteOver::OnTimes)
 END_EVENT_TABLE()
 
-
-
 /// @brief OK pressed 
-/// @param event 
-///
-void DialogPasteOver::OnOK(wxCommandEvent &event) {
-
-	std::vector<bool> map;
+void DialogPasteOver::OnOK(wxCommandEvent &) {
 	for (int i=0;i<10;i++) {
-		map[i] = ListBox->IsChecked(i);
+		options[i] = ListBox->IsChecked(i);
 	}
-	OPT_SET("Tool/Paste Lines Over/Fields")->SetListBool(map);
+	OPT_SET("Tool/Paste Lines Over/Fields")->SetListBool(options);
 
 	EndModal(1);
 }
 
-
-
 /// @brief Cancel pressed 
-/// @param event 
-///
-void DialogPasteOver::OnCancel(wxCommandEvent &event) {
+void DialogPasteOver::OnCancel(wxCommandEvent &) {
 	EndModal(0);
 }
 
-
-
 /// @brief Select Text 
-/// @param event 
-///
-void DialogPasteOver::OnText(wxCommandEvent &event) {
+void DialogPasteOver::OnText(wxCommandEvent &) {
 	for (int i=0;i<9;i++) ListBox->Check(i,false);
 	ListBox->Check(9,true);
 }
 
-
-
 /// @brief Select Times 
-/// @param event 
-///
-void DialogPasteOver::OnTimes(wxCommandEvent &event) {
+void DialogPasteOver::OnTimes(wxCommandEvent &) {
 	for (int i=0;i<10;i++) ListBox->Check(i,false);
 	ListBox->Check(1,true);
 	ListBox->Check(2,true);
 }
 
-
-
 /// @brief Select All 
-/// @param event 
-///
-void DialogPasteOver::OnAll(wxCommandEvent &event) {
+void DialogPasteOver::OnAll(wxCommandEvent &) {
 	for (int i=0;i<10;i++) ListBox->Check(i,true);
 }
 
-
-
 /// @brief Select None 
-/// @param event 
-///
-void DialogPasteOver::OnNone(wxCommandEvent &event) {
+void DialogPasteOver::OnNone(wxCommandEvent &) {
 	for (int i=0;i<10;i++) ListBox->Check(i,false);
 }
-
-
-
-/// @brief Get options 
-///
-wxArrayInt DialogPasteOver::GetOptions() {
-	return options;
-}
-
-
