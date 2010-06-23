@@ -20,6 +20,10 @@
 
 #include "audiosource.h"
 
+extern "C" {
+#include <libavutil/mem.h>
+}
+
 /* Audio Cache */
 
 TAudioBlock::TAudioBlock(int64_t Start, int64_t Samples, uint8_t *SrcData, size_t SrcBytes) {
@@ -95,7 +99,7 @@ int64_t TAudioCache::FillRequest(int64_t Start, int64_t Samples, uint8_t *Dst) {
 
 /* FFMS_AudioSource base class */
 
-FFMS_AudioSource::FFMS_AudioSource(const char *SourceFile, FFMS_Index *Index, int Track) : DecodingBuffer(AVCODEC_MAX_AUDIO_FRAME_SIZE * 10), CurrentSample(0) {
+FFMS_AudioSource::FFMS_AudioSource(const char *SourceFile, FFMS_Index *Index, int Track) : CurrentSample(0) {
 	if (Track < 0 || Track >= static_cast<int>(Index->size()))
 		throw FFMS_Exception(FFMS_ERROR_INDEX, FFMS_ERROR_INVALID_ARGUMENT,
 			"Out of bounds track index selected");
@@ -111,10 +115,14 @@ FFMS_AudioSource::FFMS_AudioSource(const char *SourceFile, FFMS_Index *Index, in
 	if (!Index->CompareFileSignature(SourceFile))
 		throw FFMS_Exception(FFMS_ERROR_INDEX, FFMS_ERROR_FILE_MISMATCH,
 			"The index does not match the source file");
+
+	DecodingBuffer = (uint8_t *) av_malloc(AVCODEC_MAX_AUDIO_FRAME_SIZE * 10 * sizeof(*DecodingBuffer));
+	if (!DecodingBuffer)
+		throw std::bad_alloc();
 }
 
 FFMS_AudioSource::~FFMS_AudioSource() {
-
+	av_free(DecodingBuffer);
 }
 
 void FFMS_AudioSource::GetAudioCheck(int64_t Start, int64_t Count) {

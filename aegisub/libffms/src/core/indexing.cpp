@@ -24,6 +24,7 @@
 #include <algorithm>
 
 extern "C" {
+#include <libavutil/mem.h>
 #include <libavutil/sha1.h>
 }
 
@@ -426,7 +427,7 @@ FFMS_Indexer *FFMS_Indexer::CreateIndexer(const char *Filename) {
 	return new FFLAVFIndexer(Filename, FormatContext);
 }
 
-FFMS_Indexer::FFMS_Indexer(const char *Filename) : DecodingBuffer(AVCODEC_MAX_AUDIO_FRAME_SIZE * 5) {
+FFMS_Indexer::FFMS_Indexer(const char *Filename) {
 	IndexMask = 0;
 	DumpMask = 0;
 	ErrorHandling = FFMS_IEH_CLEAR_TRACK;
@@ -434,12 +435,15 @@ FFMS_Indexer::FFMS_Indexer(const char *Filename) : DecodingBuffer(AVCODEC_MAX_AU
 	ICPrivate = NULL;
 	ANC = NULL;
 	ANCPrivate = NULL;
+	DecodingBuffer = (int16_t *) av_malloc(AVCODEC_MAX_AUDIO_FRAME_SIZE * 5 * sizeof(*DecodingBuffer));
+	if (!DecodingBuffer)
+		throw std::bad_alloc();
 
 	FFMS_Index::CalculateFileSignature(Filename, &Filesize, Digest);
 }
 
 FFMS_Indexer::~FFMS_Indexer() {
-
+	av_free(DecodingBuffer);
 }
 
 void FFMS_Indexer::WriteAudio(SharedAudioContext &AudioContext, FFMS_Index *Index, int Track, int DBSize) {
@@ -461,6 +465,6 @@ void FFMS_Indexer::WriteAudio(SharedAudioContext &AudioContext, FFMS_Index *Inde
 			}
 		}
 
-		AudioContext.W64Writer->WriteData(&DecodingBuffer[0], DBSize);
+		AudioContext.W64Writer->WriteData(DecodingBuffer, DBSize);
 	}
 }

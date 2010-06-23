@@ -122,7 +122,7 @@ protected:
 	TAudioNameCallback ANC;
 	void *ANCPrivate;
 	const char *SourceFile;
-	std::vector<int16_t> DecodingBuffer;
+	int16_t *DecodingBuffer;
 
 	int64_t Filesize;
 	uint8_t Digest[20];

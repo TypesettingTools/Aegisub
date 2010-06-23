@@ -74,7 +74,7 @@ friend class FFSourceResources<FFMS_AudioSource>;
 protected:
 	TAudioCache AudioCache;
 	int64_t CurrentSample;
-	std::vector<uint8_t> DecodingBuffer;
+	uint8_t *DecodingBuffer;
 	FFMS_Track Frames;
 	AVCodecContext *CodecContext;
 	int AudioTrack;

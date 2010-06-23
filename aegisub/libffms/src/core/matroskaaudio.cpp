@@ -136,7 +136,7 @@ void FFMatroskaAudio::GetAudio(void *Buf, int64_t Start, int64_t Count) {
 
 		// Cache the block if enough blocks before it have been decoded to avoid garbage
 		if (PreDecBlocks == 0) {
-			AudioCache.CacheBlock(FI.SampleStart, DecodeCount, &DecodingBuffer[0]);
+			AudioCache.CacheBlock(FI.SampleStart, DecodeCount, DecodingBuffer);
 			CacheEnd = AudioCache.FillRequest(CacheEnd, Start + Count - CacheEnd, DstBuf + (CacheEnd - Start) * SizeConst);
 		} else {
 			PreDecBlocks--;
@@ -149,7 +149,7 @@ void FFMatroskaAudio::DecodeNextAudioBlock(int64_t *Count) {
 	const size_t SizeConst = (av_get_bits_per_sample_format(CodecContext->sample_fmt) * CodecContext->channels) / 8;
 	int Ret = -1;
 	*Count = 0;
-	uint8_t *Buf = &DecodingBuffer[0];
+	uint8_t *Buf = DecodingBuffer;
 	AVPacket TempPacket;
 	InitNullPacket(TempPacket);
 
