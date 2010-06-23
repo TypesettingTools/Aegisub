@@ -23,9 +23,6 @@
 #include <math.h>
 
 #include <memory>
-
-#include <wx/colour.h>
-#include <wx/wxcrtvararg.h>
 #endif
 
 #include <libaegisub/colour.h>
