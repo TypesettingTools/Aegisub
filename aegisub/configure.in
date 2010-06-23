@@ -154,7 +154,7 @@ AC_SUBST(AEGISUB_VERSION_DATA)
 # Shared data and Documents location.
 aegisubdatadir="$datadir/$PACKAGE/aegisub_version_data"
 AC_SUBST(aegisubdatadir)
-aegisubdocdir="$datadir/doc/$PACKAGE/aegisub_version_data"
+aegisubdocdir="$docdir/$PACKAGE"
 AC_SUBST(aegisubdocdir)
 
 # Name of aegisub binary.
