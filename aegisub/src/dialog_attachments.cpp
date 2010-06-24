@@ -176,6 +176,8 @@ void DialogAttachments::OnAttachFont(wxCommandEvent &event) {
 		AssFile::top->InsertAttachment(newAttach);
 	}
 
+	AssFile::top->FlagAsModified(_("attach font file"));
+
 	// Update
 	UpdateList();
 }
@@ -211,6 +213,8 @@ void DialogAttachments::OnAttachGraphics(wxCommandEvent &event) {
 		newAttach->group = _T("[Graphics]");
 		AssFile::top->InsertAttachment(newAttach);
 	}
+
+	AssFile::top->FlagAsModified(_("attach graphics file"));
 
 	// Update
 	UpdateList();
@@ -264,6 +268,8 @@ void DialogAttachments::OnDelete(wxCommandEvent &event) {
 		AssFile::top->Line.remove((AssEntry*)wxUIntToPtr(listView->GetItemData(i)));
 		i = listView->GetNextSelected(i);
 	}
+
+	AssFile::top->FlagAsModified(_("remove attachment"));
 
 	// Update list
 	UpdateList();
