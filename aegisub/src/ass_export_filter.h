@@ -42,6 +42,7 @@
 // Headers
 #ifndef AGI_PRE
 #include <list>
+#include <memory>
 
 #include <wx/string.h>
 #include <wx/window.h>
@@ -81,7 +82,7 @@ private:
 
 
 	/// DOCME
-	static AssExportFilterChain *instance;
+	static std::auto_ptr<AssExportFilterChain> instance;
 	static FilterList *GetFilterList();
 	static FilterList *GetUnpreparedFilterList();
 

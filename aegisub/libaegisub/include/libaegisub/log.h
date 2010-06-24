@@ -67,7 +67,7 @@ enum Severity {
 extern const char *Severity_ID;
 
 /// Global log sink.
-extern LogSink *log;
+extern std::auto_ptr<LogSink> log;
 
 /// Container to hold a single message
 struct SinkMessage {

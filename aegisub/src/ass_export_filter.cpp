@@ -34,9 +34,6 @@
 /// @ingroup export
 ///
 
-
-///////////
-// Headers
 #include "config.h"
 
 #include "ass_export_filter.h"
@@ -184,7 +181,7 @@ const wxString& AssExportFilter::GetDescription() const {
 
 
 /// DOCME
-AssExportFilterChain *AssExportFilterChain::instance=NULL;
+std::auto_ptr<AssExportFilterChain> AssExportFilterChain::instance;
 
 
 
@@ -192,7 +189,7 @@ AssExportFilterChain *AssExportFilterChain::instance=NULL;
 /// @return 
 ///
 FilterList *AssExportFilterChain::GetFilterList() {
-	if (instance == NULL) instance = new AssExportFilterChain();
+	if (!instance.get()) instance.reset(new AssExportFilterChain());
 	return &(instance->Filters);
 }
 
@@ -202,7 +199,7 @@ FilterList *AssExportFilterChain::GetFilterList() {
 /// @return 
 ///
 FilterList *AssExportFilterChain::GetUnpreparedFilterList() {
-	if (instance == NULL) instance = new AssExportFilterChain();
+	if (!instance.get()) instance.reset(new AssExportFilterChain());
 	return &(instance->Unprepared);
 }
 
@@ -216,5 +213,3 @@ void AssExportFilterChain::PrepareFilters() {
 	}
 	instance->Unprepared.clear();
 }
-
-

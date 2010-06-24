@@ -18,9 +18,12 @@
 /// @brief Logging
 /// @ingroup libaegisub
 
-
+#ifndef AGI_PRE
 #include <stdio.h>
 #include <string.h>
+
+#include <memory>
+#endif
 
 #include "libaegisub/log.h"
 #include "libaegisub/mutex.h"
@@ -31,7 +34,7 @@ namespace agi {
 	namespace log {
 
 /// Global log sink.
-LogSink *log = new LogSink();
+std::auto_ptr<LogSink> log(new LogSink());
 
 /// Short Severity ID
 /// Keep this ordered the same as Severity
