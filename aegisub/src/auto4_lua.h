@@ -59,35 +59,32 @@ class wxWindow;
 namespace Automation4 {
 
 
-	/// DOCME
 	/// @class LuaAssFile
-	/// @brief DOCME
-	///
-	/// DOCME
+	/// @brief Object wrapping an AssFile object for modification through Lua
 	class LuaAssFile {
 	private:
 
-		/// DOCME
+		/// Pointer to file being modified
 		AssFile *ass;
 
-		/// DOCME
+		/// Lua state the object exists in
 		lua_State *L;
 
 
-		/// DOCME
+		/// Is the feature this object is created for read-only?
 		bool can_modify;
 
-		/// DOCME
+		/// Are we allowed to set undo points in the feature?
 		bool can_set_undo;
 		void CheckAllowModify(); // throws an error if modification is disallowed
 
 
-		/// DOCME
+		/// Cursor for last access into file
 		std::list<AssEntry*>::iterator last_entry_ptr;
-
-		/// DOCME
+		/// Index for last access into file
 		int last_entry_id;
-		void GetAssEntry(int n); // set last_entry_ptr to point to item n
+		/// Move last_entry_ptr to index n
+		void GetAssEntry(int n);
 
 		static int ObjectIndexRead(lua_State *L);
 		static int ObjectIndexWrite(lua_State *L);
