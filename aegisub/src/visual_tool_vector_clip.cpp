@@ -46,6 +46,7 @@
 #include "gl/glext.h"
 #endif
 
+#include <algorithm>
 #endif
 
 #include "config.h"
