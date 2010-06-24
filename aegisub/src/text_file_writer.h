@@ -73,3 +73,11 @@ public:
 
 	void WriteLineToFile(wxString line, bool addLineBreak=true);
 };
+
+#if wxUSE_UNICODE_UTF8
+#define wxSTRING_ENCODING "utf-8"
+#elif defined(_WIN32)
+#define wxSTRING_ENCODING "utf-16le"
+#else
+#error wx must be built with wxUSE_UNICODE_UTF8
+#endif

@@ -63,7 +63,8 @@ TextFileWriter::TextFileWriter(wxString const& filename, wxString encoding)
 	}
 
 	if (encoding.empty()) encoding = lagi_wxString(OPT_GET("App/Save Charset")->GetString());
-	conv.reset(new agi::charset::IconvWrapper("utf-8", encoding.c_str(), true));
+	if (encoding.Lower() != wxSTRING_ENCODING)
+		conv.reset(new agi::charset::IconvWrapper(wxSTRING_ENCODING, encoding.c_str(), true));
 
 	// Write the BOM
 	try {
@@ -88,8 +89,15 @@ TextFileWriter::~TextFileWriter() {
 void TextFileWriter::WriteLineToFile(wxString line, bool addLineBreak) {
 	if (addLineBreak) line += L"\n";
 
-	std::string buf = conv->Convert(line.utf8_str().data());
-	file.write(buf.data(), buf.size());
+	// On non-windows this cast does nothing
+	const char *data = reinterpret_cast<const char *>(line.wx_str());
+	size_t len = line.size() * sizeof(wxStringCharType);
+
+	if (conv.get()) {
+		std::string buf = conv->Convert(std::string(data, len));
+		file.write(buf.data(), buf.size());
+	}
+	else {
+		file.write(data, len);
+	}
 }
-
-

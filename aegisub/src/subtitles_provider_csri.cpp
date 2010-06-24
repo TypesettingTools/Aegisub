@@ -44,6 +44,7 @@
 
 #include "ass_file.h"
 #include "subtitles_provider_csri.h"
+#include "text_file_writer.h"
 #include "video_context.h"
 
 
@@ -101,14 +102,14 @@ void CSRISubtitlesProvider::LoadSubtitles(AssFile *subs) {
 	// Open from memory
 	if (canOpenMem) {
 		std::vector<char> data;
-		subs->SaveMemory(data,_T("UTF-8"));
+		subs->SaveMemory(data,wxSTRING_ENCODING);
 		instance = csri_open_mem(renderer,&data[0],data.size(),NULL);
 	}
 
 	// Open from disk
 	else {
 		wxString subsFileName = VideoContext::Get()->GetTempWorkFile();
-		subs->Save(subsFileName,false,false,_T("UTF-8"));
+		subs->Save(subsFileName,false,false,wxSTRING_ENCODING);
 		instance = csri_open_file(renderer,subsFileName.mb_str(wxConvUTF8),NULL);
 	}
 }
