@@ -61,6 +61,13 @@ class OptionValue {
 protected:
 	void NotifyChanged();
 
+	OptionValueErrorInvalidType TypeError(std::string type, std::string op = " retrieve ") const {
+		return OptionValueErrorInvalidType("Attempt to" + op + type + " with non-" + type + " value " + GetName());
+	}
+	OptionValueErrorInvalidListType ListTypeError(std::string type, std::string op = " retrieve ") const {
+		return OptionValueErrorInvalidListType("Attempt to" + op + type + " with non-" + type + " list " + GetName());
+	}
+
 public:
 	OptionValue() {};
 	virtual ~OptionValue() {};
@@ -86,42 +93,42 @@ public:
 	virtual bool IsDefault() const = 0;
 	virtual void Reset() = 0;
 
-	virtual std::string GetString() const { throw OptionValueErrorInvalidType("Attempt to retrieve string from non-string value"); }
-	virtual int64_t GetInt() const { throw OptionValueErrorInvalidType("Attempt to retrieve int from non-int value"); }
-	virtual double GetDouble() const { throw OptionValueErrorInvalidType("Attempt to retrieve double from non-double value"); }
-	virtual Colour GetColour() const { throw OptionValueErrorInvalidType("Attempt to retrieve colour from non-colour value"); }
-	virtual bool GetBool() const { throw OptionValueErrorInvalidType("Attempt to retrieve bool from non-bool value"); }
+	virtual std::string GetString() const { throw TypeError("string"); }
+	virtual int64_t GetInt() const { throw TypeError("int"); }
+	virtual double GetDouble() const { throw TypeError("double"); }
+	virtual Colour GetColour() const { throw TypeError("colour"); }
+	virtual bool GetBool() const { throw TypeError("bool"); }
 
-	virtual void SetString(const std::string val) { throw OptionValueErrorInvalidType("Attempt to set string in a non-string value"); }
-	virtual void SetInt(const int64_t val) { throw OptionValueErrorInvalidType("Attempt to set int in a non-int value"); }
-	virtual void SetDouble(const double val) { throw OptionValueErrorInvalidType("Attempt to set double in a non-double value"); }
-	virtual void SetColour(const Colour val) { throw OptionValueErrorInvalidType("Attempt to set colour in a non-colour value"); }
-	virtual void SetBool(const bool val) { throw OptionValueErrorInvalidType("Attempt to set bool in a non-bool value"); }
+	virtual void SetString(const std::string val) { throw TypeError("string", " set "); }
+	virtual void SetInt(const int64_t val) { throw TypeError("int", " set "); }
+	virtual void SetDouble(const double val) { throw TypeError("double", " set "); }
+	virtual void SetColour(const Colour val) { throw TypeError("colour", " set "); }
+	virtual void SetBool(const bool val) { throw TypeError("bool", " set "); }
 
-	virtual std::string GetDefaultString() const { throw OptionValueErrorInvalidType("Attempt to retrieve string from non-string value"); }
-	virtual int64_t GetDefaultInt() const { throw OptionValueErrorInvalidType("Attempt to retrieve int from non-int value"); }
-	virtual double GetDefaultDouble() const { throw OptionValueErrorInvalidType("Attempt to retrieve double from non-double value"); }
-	virtual Colour GetDefaultColour() const { throw OptionValueErrorInvalidType("Attempt to retrieve colour from non-colour value"); }
-	virtual bool GetDefaultBool() const { throw OptionValueErrorInvalidType("Attempt to retrieve bool from non-bool value"); }
+	virtual std::string GetDefaultString() const { throw TypeError("string"); }
+	virtual int64_t GetDefaultInt() const { throw TypeError("int"); }
+	virtual double GetDefaultDouble() const { throw TypeError("double"); }
+	virtual Colour GetDefaultColour() const { throw TypeError("colour"); }
+	virtual bool GetDefaultBool() const { throw TypeError("bool"); }
 
 
-	virtual void GetListString(std::vector<std::string> &out) const { throw OptionValueErrorInvalidListType("Attempt to retrive string list from non-string list"); }
-	virtual void GetListInt(std::vector<int64_t> &out) const { throw OptionValueErrorInvalidListType("Attempt to retrive int list from non-int list"); }
-	virtual void GetListDouble(std::vector<double> &out) const { throw OptionValueErrorInvalidListType("Attempt to retrive double list from non-double list"); }
-	virtual void GetListColour(std::vector<Colour> &out) const { throw OptionValueErrorInvalidListType("Attempt to retrive colour list from non-colour list"); }
-	virtual void GetListBool(std::vector<bool> &out) const { throw OptionValueErrorInvalidListType("Attempt to retrive string bool from non-bool list"); }
+	virtual void GetListString(std::vector<std::string> &out) const { throw ListTypeError("string"); }
+	virtual void GetListInt(std::vector<int64_t> &out) const { throw ListTypeError("int"); }
+	virtual void GetListDouble(std::vector<double> &out) const { throw ListTypeError("double"); }
+	virtual void GetListColour(std::vector<Colour> &out) const { throw ListTypeError("colour"); }
+	virtual void GetListBool(std::vector<bool> &out) const { throw ListTypeError("string"); }
 
-	virtual void SetListString(const std::vector<std::string> val) { throw OptionValueErrorInvalidListType("Attempt to set string list in a non-string list"); }
-	virtual void SetListInt(const std::vector<int64_t> val) { throw OptionValueErrorInvalidListType("Attempt to set int list in a non-int list"); }
-	virtual void SetListDouble(const std::vector<double> val) { throw OptionValueErrorInvalidListType("Attempt to set double list in a non-double list"); }
-	virtual void SetListColour(const std::vector<Colour> val) { throw OptionValueErrorInvalidListType("Attempt to set colour list in a non-colour list"); }
-	virtual void SetListBool(const std::vector<bool> val) { throw OptionValueErrorInvalidListType("Attempt to set string in a non-bool list"); }
+	virtual void SetListString(const std::vector<std::string> val) { throw ListTypeError("string", " set "); }
+	virtual void SetListInt(const std::vector<int64_t> val) { throw ListTypeError("int", " set "); }
+	virtual void SetListDouble(const std::vector<double> val) { throw ListTypeError("double", " set "); }
+	virtual void SetListColour(const std::vector<Colour> val) { throw ListTypeError("colour", " set "); }
+	virtual void SetListBool(const std::vector<bool> val) { throw ListTypeError("string", " set "); }
 
-	virtual void GetDefaultListString(std::vector<std::string> &out) const { throw OptionValueErrorInvalidListType("Attempt to retrive string list from non-string list"); }
-	virtual void GetDefaultListInt(std::vector<int64_t> &out) const { throw OptionValueErrorInvalidListType("Attempt to retrive int list from non-int list"); }
-	virtual void GetDefaultListDouble(std::vector<double> &out) const { throw OptionValueErrorInvalidListType("Attempt to retrive double list from non-double list"); }
-	virtual void GetDefaultListColour(std::vector<Colour> &out) const { throw OptionValueErrorInvalidListType("Attempt to retrive colour list from non-colour list"); }
-	virtual void GetDefaultListBool(std::vector<bool> &out) const { throw OptionValueErrorInvalidListType("Attempt to retrive string bool from non-bool list"); }
+	virtual void GetDefaultListString(std::vector<std::string> &out) const { throw ListTypeError("string"); }
+	virtual void GetDefaultListInt(std::vector<int64_t> &out) const { throw ListTypeError("int"); }
+	virtual void GetDefaultListDouble(std::vector<double> &out) const { throw ListTypeError("double"); }
+	virtual void GetDefaultListColour(std::vector<Colour> &out) const { throw ListTypeError("colour"); }
+	virtual void GetDefaultListBool(std::vector<bool> &out) const { throw ListTypeError("string"); }
 
 
 	void Subscribe(OptionValueListener *listener, OptionValueListener::ChangeEvent function);
@@ -159,11 +166,11 @@ class OptionValueList: public OptionValue {
 protected:
 	OptionValueList() {};
 	virtual ~OptionValueList() {};
-	virtual void InsertString(const std::string val) { throw OptionValueErrorInvalidListType("Attempt to insert string in a non-string list"); }
-	virtual void InsertInt(const int64_t val) { throw OptionValueErrorInvalidListType("Attempt to insert int in a non-int list"); }
-	virtual void InsertDouble(const double val) { throw OptionValueErrorInvalidListType("Attempt to insert double in a non-double list"); }
-	virtual void InsertColour(const Colour val) { throw OptionValueErrorInvalidListType("Attempt insert set colour in a from non-colour list"); }
-	virtual void InsertBool(const bool val) { throw OptionValueErrorInvalidListType("Attempt to insert bool in a non-bool list"); }
+	virtual void InsertString(const std::string val) { throw ListTypeError("string", " insert "); }
+	virtual void InsertInt(const int64_t val) { throw ListTypeError("int", " insert "); }
+	virtual void InsertDouble(const double val) { throw ListTypeError("double", " insert "); }
+	virtual void InsertColour(const Colour val) { throw ListTypeError("colour", " insert "); }
+	virtual void InsertBool(const bool val) { throw ListTypeError("bool", " insert "); }
 };
 
 
