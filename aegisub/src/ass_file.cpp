@@ -64,8 +64,8 @@
 
 /// @brief AssFile constructor
 AssFile::AssFile () {
-	AssOverrideTagProto::LoadProtos();
-	Clear();
+	loaded = false;
+	Modified = false;
 }
 
 /// @brief AssFile destructor 

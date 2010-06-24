@@ -40,142 +40,88 @@
 
 #include "variable_data.h"
 
-class AssDialogueBlockOverride;
-
-/// DOCME
+/// Type of parameter; probably only used by the resample tool
 enum ASS_ParameterClass {
-
-	/// DOCME
 	PARCLASS_NORMAL,
-
-	/// DOCME
 	PARCLASS_ABSOLUTE_SIZE,
-
-	/// DOCME
 	PARCLASS_ABSOLUTE_POS_X,
-
-	/// DOCME
 	PARCLASS_ABSOLUTE_POS_Y,
-
-	/// DOCME
 	PARCLASS_RELATIVE_SIZE_X,
-
-	/// DOCME
 	PARCLASS_RELATIVE_SIZE_Y,
-
-	/// DOCME
 	PARCLASS_RELATIVE_TIME_START,
-
-	/// DOCME
 	PARCLASS_RELATIVE_TIME_END,
-
-	/// DOCME
 	PARCLASS_KARAOKE,
-
-	/// DOCME
 	PARCLASS_DRAWING
 };
 
-/// DOCME
+/// The parameter is absent unless the total number of parameters is the
+/// indicated number. Note that only arguments not at the end need to be marked
+/// as optional; this is just to know which parameters to skip when there are
+/// earlier optional arguments
 enum ASS_ParameterOptional {
-
-	/// DOCME
 	NOT_OPTIONAL = 0xFF,
-
-	/// DOCME
-	OPTIONAL_0 = 0x00,
-
-	/// DOCME
 	OPTIONAL_1 = 0x01,
-
-	/// DOCME
 	OPTIONAL_2 = 0x02,
-
-	/// DOCME
 	OPTIONAL_3 = 0x04,
-
-	/// DOCME
 	OPTIONAL_4 = 0x08,
-
-	/// DOCME
 	OPTIONAL_5 = 0x10,
-
-	/// DOCME
 	OPTIONAL_6 = 0x20,
-
-	/// DOCME
 	OPTIONAL_7 = 0x40
 };
 
 /// DOCME
 /// @class AssOverrideParameter
-/// @brief DOCME
-///
-/// DOCME
+/// @brief A single parameter to an override tag
 class AssOverrideParameter : public VariableData {
 public:
-
-	/// DOCME
+	/// Type of parameter
 	ASS_ParameterClass classification;
 
-	/// DOCME
-	bool ommited;
+	/// Is the parameter's value actually given?
+	bool omitted;
 
 	AssOverrideParameter();
-	~AssOverrideParameter();
-
-	void operator= (const AssOverrideParameter &param);
-	void CopyFrom (const AssOverrideParameter &param);
+	AssOverrideParameter(const AssOverrideParameter&);
+	void operator=(const AssOverrideParameter &param);
 };
 
 /// DOCME
 /// @class AssOverrideParamProto
-/// @brief DOCME
-///
-/// DOCME
-class AssOverrideParamProto {
-public:
-
-	/// DOCME
+/// @brief Prototype of a single override parameter
+struct AssOverrideParamProto {
+	/// ASS_ParameterOptional
 	int optional;
 
-	/// DOCME
+	/// Type of this parameter
 	VariableDataType type;
 
-	/// DOCME
-	AssOverrideParameter defaultValue;
-
-	/// DOCME
+	/// Semantic type of this parameter
 	ASS_ParameterClass classification;
 
-	AssOverrideParamProto (VariableDataType _type,int opt=NOT_OPTIONAL,ASS_ParameterClass classi=PARCLASS_NORMAL);
-	~AssOverrideParamProto();
+	AssOverrideParamProto (VariableDataType type, int opt=NOT_OPTIONAL, ASS_ParameterClass classi=PARCLASS_NORMAL);
 };
 
 /// DOCME
 /// @class AssOverrideTagProto
 /// @brief DOCME
-///
-/// DOCME
-class AssOverrideTagProto {
-public:
-	/// DOCME
+struct AssOverrideTagProto {
+	/// Name of the tag, with slash
 	wxString name;
-
-	/// DOCME
+	/// Parameters to this tag
 	std::vector<AssOverrideParamProto> params;
-
-	/// DOCME
-	static std::vector<AssOverrideTagProto> proto;
-
-	/// DOCME
-	static bool loaded;
-	static void LoadProtos();
-
 	typedef std::vector<AssOverrideTagProto>::iterator iterator;
 
-	AssOverrideTagProto();
-	~AssOverrideTagProto();
+	/// @brief Add a parameter to this tag prototype
+	/// @param type Data type of the parameter
+	/// @param classi Semantic type of the parameter
+	/// @param opt Situations in which this parameter is present
+	void AddParam(VariableDataType type, ASS_ParameterClass classi = PARCLASS_NORMAL, int opt = NOT_OPTIONAL);
+	/// @brief Convenience function for single-argument tags
+	/// @param name Name of the tag, with slash
+	/// @param type Data type of the parameter
+	/// @param classi Semantic type of the parameter
+	/// @param opt Situations in which this parameter is present
+	void Set(wxString name, VariableDataType type, ASS_ParameterClass classi = PARCLASS_NORMAL, int opt = NOT_OPTIONAL);
 };
 
 /// DOCME
@@ -184,25 +130,21 @@ public:
 ///
 /// DOCME
 class AssOverrideTag {
-private:
-
-	/// DOCME
 	bool valid;
 
 public:
-
-	/// DOCME
 	wxString Name;
-
-	/// DOCME
 	std::vector <AssOverrideParameter*> Params;
 
 	AssOverrideTag();
+	AssOverrideTag(wxString text);
 	~AssOverrideTag();
 
 	bool IsValid();
+	/// @brief Parses the parameters for the ass override tag
+	/// @param text All text between the name and the next \ or the end of the override block
 	void ParseParameters(const wxString &text, AssOverrideTagProto::iterator proto);
 	void Clear();
 	void SetText(const wxString &text);
-	wxString ToString();
+	operator wxString();
 };

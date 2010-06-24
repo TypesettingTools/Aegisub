@@ -110,7 +110,7 @@ void ParseAssKaraokeTags(const AssDialogue *line, AssKaraokeVector &syls)
 							syl.unstripped_text += _T("{");
 							brackets_open = true;
 						}
-						syl.unstripped_text += tag->ToString();
+						syl.unstripped_text += *tag;
 					}
 				}
 

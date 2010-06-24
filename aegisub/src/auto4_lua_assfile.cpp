@@ -946,7 +946,7 @@ namespace Automation4 {
 								ktext += _T("{");
 								brackets_open = true;
 							}
-							ktext += tag->ToString();
+							ktext += *tag;
 						}
 
 					}

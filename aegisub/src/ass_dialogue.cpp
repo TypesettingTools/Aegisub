@@ -47,7 +47,6 @@
 #include "utils.h"
 #include "vfr.h"
 
-/// @brief Constructs AssDialogue
 AssDialogue::AssDialogue()
 : Comment(false)
 , Layer(0)
@@ -109,29 +108,21 @@ AssDialogue::AssDialogue(wxString _data,int version)
 	}
 }
 
-/// @brief Destructor 
 AssDialogue::~AssDialogue () {
 	Clear();
 }
 
-/// @brief Clear 
 void AssDialogue::Clear () {
 	ClearBlocks();
 }
 
-/// @brief Clear blocks 
 void AssDialogue::ClearBlocks() {
-	using std::vector;
-	for (vector<AssDialogueBlock*>::iterator cur=Blocks.begin();cur!=Blocks.end();cur++) {
+	for (std::vector<AssDialogueBlock*>::iterator cur=Blocks.begin();cur!=Blocks.end();cur++) {
 		delete *cur;
 	}
 	Blocks.clear();
 }
 
-/// @brief Parse ASS Data 
-/// @param rawData 
-/// @param version 
-/// @return 
 bool AssDialogue::Parse(wxString rawData, int version) {
 	size_t pos = 0;
 	wxString temp;
@@ -224,92 +215,51 @@ bool AssDialogue::Parse(wxString rawData, int version) {
 	return true;
 }
 
-/// @brief Make data 
-/// @return 
-wxString AssDialogue::MakeData() {
-	// Prepare
-	static wxString final = _T("");
+wxString AssDialogue::GetData(bool ssa) {
+	wxString final;
 
-	// Write all final
-	if (Comment) final = _T("Comment: ");
-	else final = _T("Dialogue: ");
+	if (Comment) final = L"Comment: ";
+	else final = L"Dialogue: ";
 
-	final += wxString::Format(_T("%01i"),Layer);
-	final += _T(",");
+	if (ssa) final += L"Marked=0,";
 
-	final += Start.GetASSFormated() + _T(",");
-	final += End.GetASSFormated() + _T(",");
+	final += wxString::Format(L"%01i",Layer);
+	final += L",";
 
-	Style.Replace(_T(","),_T(";"));
-	Actor.Replace(_T(","),_T(";"));
-	final += Style + _T(",");
-	final += Actor + _T(",");
+	final += Start.GetASSFormated() + L",";
+	final += End.GetASSFormated() + L",";
+
+	Style.Replace(L",",L";");
+	Actor.Replace(L",",L";");
+	final += Style + L",";
+	final += Actor + L",";
 
 	final += GetMarginString(0);
-	final += _T(",");
+	final += L",";
 	final += GetMarginString(1);
-	final += _T(",");
+	final += L",";
 	final += GetMarginString(2);
-	final += _T(",");
+	final += L",";
 
-	Effect.Replace(_T(","),_T(";"));
-	final += Effect + _T(",");
+	Effect.Replace(L",",L";");
+	final += Effect + L",";
 	final += Text;
 
 	// Make sure that final has no line breaks
-	final.Replace(_T("\n"),_T(""));
-	final.Replace(_T("\r"),_T(""));
+	final.Replace(L"\n","");
+	final.Replace(L"\r","");
 
-	// Return final
 	return final;
 }
 
-/// @brief Get entry data 
-/// @return 
 const wxString AssDialogue::GetEntryData() {
-	return MakeData();
+	return GetData(false);
 }
 
-/// @brief Set entry data 
-/// @param newData 
-void AssDialogue::SetEntryData(wxString newData) {
-}
-
-/// @brief Get SSA version of Dialogue 
-/// @return 
 wxString AssDialogue::GetSSAText () {
-	// Prepare
-	wxString work = _T("");
-
-	// Write all work
-	if (Comment) work += _T("Comment: ");
-	else work += _T("Dialogue: ");
-
-	work += _T("Marked=0,");
-
-	work += Start.GetASSFormated() + _T(",");
-	work += End.GetASSFormated() + _T(",");
-
-	Style.Replace(_T(","),_T(";"));
-	Actor.Replace(_T(","),_T(";"));
-	work += Style + _T(",");
-	work += Actor + _T(",");
-
-	work += GetMarginString(0);
-	work += _T(",");
-	work += GetMarginString(1);
-	work += _T(",");
-	work += GetMarginString(2);
-	work += _T(",");
-
-	Effect.Replace(_T(","),_T(";"));
-	work += Effect + _T(",");
-	work += Text;
-
-	return work;
+	return GetData(true);
 }
 
-/// @brief Yea, I convert to ASS tags, then parse that. So sue me. -------------- Parse SRT tags 
 void AssDialogue::ParseSRTTags () {
 	// Search and replace
 	size_t total = 0;
@@ -350,7 +300,7 @@ void AssDialogue::ParseSRTTags () {
 
 		// Open tag
 		if (isOpen) {
-			wxString replaced = _T("");
+			wxString replaced;
 
 			// Color tag
 			if ((pos = work.find(_T("COLOR=\""),start)) != wxString::npos) {
@@ -441,15 +391,11 @@ void AssDialogue::ParseSRTTags () {
 	Text.Replace(_T("}{"),_T(""));
 }
 
-/// @brief Parse ASS tags 
 void AssDialogue::ParseASSTags () {
-	// Clear blocks
 	ClearBlocks();
 
-	// Is drawing?
 	int drawingLevel = 0;
 
-	// Loop through
 	const size_t len = Text.size();
 	size_t cur = 0;
 	size_t end = 0;
@@ -472,7 +418,6 @@ void AssDialogue::ParseASSTags () {
 				AssDialogueBlockPlain *block = new AssDialogueBlockPlain;
 				block->text = work;
 				Blocks.push_back(block);
-
 			}
 
 			else {
@@ -487,9 +432,8 @@ void AssDialogue::ParseASSTags () {
 				// Look for \p in block
 				std::vector<AssOverrideTag*>::iterator curTag;
 				for (curTag = block->Tags.begin();curTag != block->Tags.end();curTag++) {
-					AssOverrideTag *tag = *curTag;
-					if (tag->Name == _T("\\p")) {
-						drawingLevel = tag->Params.at(0)->Get<int>();
+					if ((*curTag)->Name == L"\\p") {
+						drawingLevel = (*curTag)->Params[0]->Get<int>(0);
 					}
 				}
 			}
@@ -535,16 +479,11 @@ void AssDialogue::ParseASSTags () {
 	}
 }
 
-/// @brief Strip tags 
 void AssDialogue::StripTags () {
-	static wxRegEx reg(_T("\\{[^\\{]*\\}"),wxRE_ADVANCED);
-	reg.Replace(&Text,_T(""));
+	Text = GetStrippedText();
 }
 
-/// @brief Strip a specific tag 
-/// @param tagName 
 void AssDialogue::StripTag (wxString tagName) {
-	// Parse
 	using std::list;
 	using std::vector;
 	ParseASSTags();
@@ -556,7 +495,7 @@ void AssDialogue::StripTag (wxString tagName) {
 			AssDialogueBlockOverride *over = dynamic_cast<AssDialogueBlockOverride*>(*cur);
 			wxString temp;
 			for (size_t i=0;i<over->Tags.size();i++) {
-				if (over->Tags[i]->Name != tagName) temp += over->Tags[i]->ToString();
+				if (over->Tags[i]->Name != tagName) temp += *over->Tags[i];
 			}
 
 			// Insert
@@ -565,14 +504,11 @@ void AssDialogue::StripTag (wxString tagName) {
 		else final += (*cur)->GetText();
 	}
 
-	// Update
 	ClearBlocks();
 	Text = final;
 }
 
-/// @brief  TODO: Improve this code ------------------- Convert tags to SRT 
 void AssDialogue::ConvertTagsToSRT () {
-	// Setup
 	using std::list;
 	using std::vector;
 	AssDialogueBlockOverride* curBlock;
@@ -669,11 +605,10 @@ void AssDialogue::ConvertTagsToSRT () {
 	ClearBlocks();
 }
 
-/// @brief Updates text from tags
 void AssDialogue::UpdateText () {
-	using std::vector;
-	Text = _T("");
-	for (vector<AssDialogueBlock*>::iterator cur=Blocks.begin();cur!=Blocks.end();cur++) {
+	if (Blocks.empty()) return;
+	Text.clear();
+	for (std::vector<AssDialogueBlock*>::iterator cur=Blocks.begin();cur!=Blocks.end();cur++) {
 		if ((*cur)->GetType() == BLOCK_OVERRIDE) {
 			Text += _T("{");
 			Text += (*cur)->GetText();
@@ -683,10 +618,9 @@ void AssDialogue::UpdateText () {
 	}
 }
 
-/// @brief Sets margin from a string 
-/// @param origvalue 
-/// @param which     
 void AssDialogue::SetMarginString(const wxString origvalue,int which) {
+	if (which < 0 || which >= 4) throw Aegisub::InvalidMarginIdError();
+
 	// Make it numeric
 	wxString strvalue = origvalue;
 	if (!strvalue.IsNumber()) {
@@ -707,14 +641,9 @@ void AssDialogue::SetMarginString(const wxString origvalue,int which) {
 	if (value > 9999) value = 9999;
 
 	// Assign
-	if (which < 0 || which >= 4) throw Aegisub::InvalidMarginIdError();
 	Margin[which] = value;
 }
 
-/// @brief Gets string for margin 
-/// @param which 
-/// @param pad   
-/// @return 
 wxString AssDialogue::GetMarginString(int which,bool pad) {
 	if (which < 0 || which >= 4) throw Aegisub::InvalidMarginIdError();
 	int value = Margin[which];
@@ -735,9 +664,6 @@ void AssDialogue::ProcessParameters(AssDialogueBlockOverride::ProcessParametersC
 	//ClearBlocks();
 }
 
-/// @brief Checks if two lines collide 
-/// @param target 
-/// @return 
 bool AssDialogue::CollidesWith(AssDialogue *target) {
 	if (!target) return false;
 	int a = Start.GetMS();
@@ -747,49 +673,20 @@ bool AssDialogue::CollidesWith(AssDialogue *target) {
 	return ((a < c) ? (c < b) : (a < d));
 }
 
-/// @brief Return just the text without any overrides 
-/// @return 
 wxString AssDialogue::GetStrippedText() const {
-	wxString justtext = wxString(_T(""));
-	bool inCode = false;
-	
-	for (size_t charindex = 0; charindex != Text.Len(); charindex++) {
-		if (Text[charindex] == '{') inCode = true;
-		else if (Text[charindex] == '}') inCode = false;
-		else if (!inCode) justtext = justtext + Text[charindex];
-	}
-	return justtext;
+	static wxRegEx reg(_T("\\{[^\\{]*\\}"),wxRE_ADVANCED);
+	wxString txt(Text);
+	reg.Replace(&txt,_T(""));
+	return txt;
 }
 
-/// @brief Clone 
-/// @return 
 AssEntry *AssDialogue::Clone() const {
 	return new AssDialogue(*this);
 }
 
-/// @brief Constructor  AssDialogueBlock
-AssDialogueBlock::AssDialogueBlock () {
-}
-
-/// @brief Destructor 
-AssDialogueBlock::~AssDialogueBlock () {
-}
-
-/// @brief Constructor  AssDialogueBlockPlain
-AssDialogueBlockPlain::AssDialogueBlockPlain () {
-}
-
-/// @brief Constructor  AssDialogueBlockDrawing
-AssDialogueBlockDrawing::AssDialogueBlockDrawing () {
-}
-
-/// @brief Multiply coordinates 
-/// @param mx 
-/// @param my 
-/// @param x  
-/// @param y  
 void AssDialogueBlockDrawing::TransformCoords(int mx,int my,double x,double y) {
 	// HACK: Implement a proper parser ffs!!
+	// Could use Spline but it'd be slower and this seems to work fine
 	wxStringTokenizer tkn(GetText(),_T(" "),wxTOKEN_DEFAULT);
 	wxString cur;
 	wxString final;
@@ -825,4 +722,3 @@ void AssDialogueBlockDrawing::TransformCoords(int mx,int my,double x,double y) {
 	final = final.Left(final.Length()-1);
 	text = final;
 }
-

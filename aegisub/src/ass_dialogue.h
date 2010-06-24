@@ -34,10 +34,6 @@
 /// @ingroup subs_storage
 ///
 
-
-////////////
-// Includes
-
 #ifndef AGI_PRE
 #include <vector>
 #endif
@@ -45,33 +41,15 @@
 #include "ass_entry.h"
 #include "ass_time.h"
 
-
-//////////////
-// Prototypes
-class AssOverrideParameter;
-class AssOverrideTag;
-class AssDialogueBlockPlain;
-class AssDialogueBlockOverride;
-class AssDialogueBlockDrawing;
-
-
-
-/// DOCME
 enum ASS_BlockType {
-
-	/// DOCME
 	BLOCK_BASE,
-
-	/// DOCME
 	BLOCK_PLAIN,
-
-	/// DOCME
 	BLOCK_OVERRIDE,
-
-	/// DOCME
 	BLOCK_DRAWING
 };
 
+class AssOverrideParameter;
+class AssOverrideTag;
 
 /// DOCME
 /// @class AssDialogueBlock
@@ -97,15 +75,14 @@ enum ASS_BlockType {
 /// @endverbatim
 class AssDialogueBlock {
 public:
-
 	/// DOCME
 	wxString text;
 
 	/// DOCME
 	AssDialogue *parent;
 
-	AssDialogueBlock();
-	virtual ~AssDialogueBlock();
+	AssDialogueBlock() { }
+	virtual ~AssDialogueBlock() { }
 
 	virtual ASS_BlockType GetType() = 0;
 
@@ -125,12 +102,8 @@ public:
 /// DOCME
 class AssDialogueBlockPlain : public AssDialogueBlock {
 public:
-
-	/// @brief DOCME
-	/// @return 
-	///
 	ASS_BlockType GetType() { return BLOCK_PLAIN; }
-	AssDialogueBlockPlain();
+	AssDialogueBlockPlain() { }
 };
 
 
@@ -142,16 +115,11 @@ public:
 /// DOCME
 class AssDialogueBlockDrawing : public AssDialogueBlock {
 public:
-
 	/// DOCME
 	int Scale;
 
-
-	/// @brief DOCME
-	/// @return 
-	///
 	ASS_BlockType GetType() { return BLOCK_DRAWING; }
-	AssDialogueBlockDrawing();
+	AssDialogueBlockDrawing() { }
 	void TransformCoords(int trans_x,int trans_y,double mult_x,double mult_y);
 };
 
@@ -164,7 +132,7 @@ public:
 /// DOCME
 class AssDialogueBlockOverride : public AssDialogueBlock {
 public:
-	AssDialogueBlockOverride();
+	AssDialogueBlockOverride() { }
 	~AssDialogueBlockOverride();
 
 	/// DOCME
@@ -195,14 +163,11 @@ public:
 ///
 /// DOCME
 class AssDialogue : public AssEntry {
-private:
-	wxString MakeData();
-
+	wxString GetData(bool ssa);
 public:
 
 	/// Contains information about each block of text
 	std::vector<AssDialogueBlock*> Blocks;
-
 
 	/// Is this a comment line?
 	bool Comment;
@@ -223,36 +188,54 @@ public:
 	/// Raw text data
 	wxString Text;
 
-
-	/// @brief DOCME
-	/// @return 
-	///
 	ASS_EntryType GetType() { return ENTRY_DIALOGUE; }
 
-	bool Parse(wxString data,int version=1);	// Parses raw ASS data into everything else
-	void ParseASSTags();			// Parses text to generate block information (doesn't update data)
-	void ParseSRTTags();			// Converts tags to ass format and calls ParseASSTags+UpdateData
-	void ClearBlocks();				// Clear all blocks, ALWAYS call this after you're done processing tags
+	/// @brief Parse raw ASS data into everything else
+	/// @param data ASS line
+	/// @param version ASS version to try first (4, 4+, ASS2)
+	/// @return Did it successfully parse?
+	bool Parse(wxString data,int version=1);
+	/// Parse text as ASS to generate block information
+	void ParseASSTags();
+	/// Parse text as SRT to generate block information
+	void ParseSRTTags();
+	/// Clear all blocks, ALWAYS call this after you're done processing tags
+	void ClearBlocks();
 
 	/// @brief Process parameters via callback 
-	/// @param callback The callback function to call per tag paramer
+	/// @param callback The callback function to call per tag parameter
 	/// @param userData User data to pass to callback function
-	void ProcessParameters(AssDialogueBlockOverride::ProcessParametersCallback callback,void *userData=NULL);	// Callback to process parameters
-	void ConvertTagsToSRT();		// Converts tags to SRT format
-	void StripTags();				// Strips all tags from the text
-	void StripTag(wxString tagName);// Strips a specific tag from the text
-	wxString GetStrippedText() const; // Gets text without tags
+	void ProcessParameters(AssDialogueBlockOverride::ProcessParametersCallback callback,void *userData=NULL);
+	/// Convert ASS tags to SRT tags
+	void ConvertTagsToSRT();
+	/// Strip all ASS tags from the text
+	void StripTags();
+	/// Strip a specific ASS tag from the text
+	void StripTag(wxString tagName);
+	/// Get text without tags
+	wxString GetStrippedText() const;
 
-	void UpdateText();				// Generates text from the override tags
+	/// If blocks have been parsed, update the text from their current value
+	void UpdateText();
 	const wxString GetEntryData();
-	void SetEntryData(wxString newData);
-	void Clear();					// Wipes all data
+	/// Do nothing
+	void SetEntryData(wxString) { }
+	/// Synonym for ClearBlocks
+	void Clear();
 
 
-	void SetMarginString(const wxString value,int which);	// Set string to a margin value (0 = left, 1 = right, 2 = vertical/top, 3 = bottom)
-	wxString GetMarginString(int which,bool pad=true);		// Returns the string of a margin value (0 = left, 1 = right, 2 = vertical/top, 3 = bottom)
+	/// @brief Set a margin 
+	/// @param value New value of the margin
+	/// @param which 0 = left, 1 = right, 2 = vertical/top, 3 = bottom
+	void SetMarginString(const wxString value,int which);
+	/// @brief Get a margin
+	/// @param which 0 = left, 1 = right, 2 = vertical/top, 3 = bottom
+	/// @param pad Pad the number to four digits
+	wxString GetMarginString(int which,bool pad=true);
+	/// Get the line as SSA rather than ASS
 	wxString GetSSAText();
-	bool CollidesWith(AssDialogue *target);					// Checks if two lines collide
+	/// Does this line collide with the passed line?
+	bool CollidesWith(AssDialogue *target);
 
 	AssEntry *Clone() const;
 

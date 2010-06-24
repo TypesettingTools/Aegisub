@@ -1290,7 +1290,7 @@ void SubsEditBox::SetOverride (wxString tagname,wxString preValue,int forcePos,b
 			//if (insert.Contains(override->Tags.at(i)->Name)) {
 			wxString name = override->Tags.at(i)->Name;
 			if (insertTags.Index(name) != wxNOT_FOUND || removeTag == name) {
-				shift -= override->Tags.at(i)->ToString().Length();
+				shift -= ((wxString)*override->Tags.at(i)).Length();
 				delete override->Tags.at(i);
 				override->Tags.erase(override->Tags.begin() + i);
 				i--;
@@ -1329,7 +1329,7 @@ void SubsEditBox::SetOverride (wxString tagname,wxString preValue,int forcePos,b
 			for (size_t i=0;i<override->Tags.size()-nInserted;i++) {
 				wxString name = override->Tags.at(i)->Name;
 				if (insert.Contains(name) || removeTag == name) {
-					shift -= override->Tags.at(i)->ToString().Length();
+					shift -= ((wxString)*override->Tags.at(i)).Length();
 					override->Tags.erase(override->Tags.begin() + i);
 					i--;
 				}

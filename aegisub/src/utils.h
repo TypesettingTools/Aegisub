@@ -108,3 +108,15 @@ static FORCEINLINE int ClampSignedInteger32(int x,int min,int max) {
 	x += max;
 	return x;
 }
+
+struct delete_ptr {
+	template<class T>
+	void operator()(T* ptr) const {
+		delete ptr;
+	}
+};
+template<class T>
+void delete_clear(T& container) {
+	std::for_each(container.begin(), container.end(), delete_ptr());
+	container.clear();
+}
