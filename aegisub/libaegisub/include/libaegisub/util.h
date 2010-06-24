@@ -22,6 +22,8 @@
 #include <string>
 #include <stdio.h>
 #include <time.h>
+
+#include <algorithm>
 #endif // LAGI_PRE
 
 #include <libaegisub/access.h>
