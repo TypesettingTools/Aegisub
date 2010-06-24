@@ -43,13 +43,13 @@
 #include "variable_data.h"
 
 /// @brief Constructor 
-VariableData::VariableData () {
+VariableData::VariableData() {
 	type = VARDATA_NONE;
 	value = NULL;
 }
 
 /// @brief Destructor 
-VariableData::~VariableData () {
+VariableData::~VariableData() {
 	DeleteValue ();
 }
 
@@ -64,7 +64,7 @@ void VariableData::DeleteValue () {
 		case VARDATA_TEXT: delete value_text; break;
 		case VARDATA_BOOL: delete value_bool; break;
 		case VARDATA_COLOUR: delete value_colour; break;
-		case VARDATA_BLOCK: delete value_block; break;
+		case VARDATA_BLOCK: delete *value_block; delete value_block; break;
 		default: break;
 	}
 	type = VARDATA_NONE;

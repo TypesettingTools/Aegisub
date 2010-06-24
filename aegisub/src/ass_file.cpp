@@ -70,7 +70,7 @@ AssFile::AssFile () {
 
 /// @brief AssFile destructor 
 AssFile::~AssFile() {
-	Clear();
+	delete_clear(Line);
 }
 
 void AssFile::Load (const wxString &_filename,wxString charset,bool addToRecent) {
