@@ -189,8 +189,8 @@ void VisualToolRotateZ::CommitHold() {
 
 /// @brief Get \\org pivot 
 void VisualToolRotateZ::PopulateFeatureList() {
-	// Get line
 	curDiag = GetActiveDialogueLine();
+	if (!curDiag) return;
 	GetLinePosition(curDiag,odx,ody,orgx,orgy);
 
 	// Set features
@@ -221,7 +221,7 @@ void VisualToolRotateZ::CommitDrag(VisualDraggableFeature* feature) {
 /// @brief Refresh 
 void VisualToolRotateZ::DoRefresh() {
 	AssDialogue *line = GetActiveDialogueLine();
+	if (!line) return;
 	GetLinePosition(line,odx,ody,orgx,orgy);
 	GetLineRotation(line,rx,ry,curAngle);
 }
-

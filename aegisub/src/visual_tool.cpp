@@ -410,32 +410,53 @@ void VisualTool<FeatureType>::SetEditbox(int lineN) {
 	}
 }
 
-/// @brief Get position of line 
-/// @param diag 
-/// @param x    
-/// @param y    
+enum TagFoundType {
+	TAG_NOT_FOUND = 0,
+	PRIMARY_TAG_FOUND,
+	ALT_TAG_FOUND
+};
+
+/// @brief Get the first value set for a tag
+/// @param line Line to get the value from
+/// @param tag  Tag to get the value of
+/// @param n    Number of parameters passed
+/// @return     Which tag (if any) was found
+template<class T>
+static TagFoundType get_value(const AssDialogue *line, wxString tag, size_t n, ...) {
+	wxString alt;
+	if (tag == L"\\pos") alt = L"\\move";
+	else if (tag == L"\\an") alt = L"\\a";
+	else if (tag == L"\\clip") alt = L"\\iclip";
+
+	for (size_t i = 0; i < line->Blocks.size(); i++) {
+		const AssDialogueBlockOverride *ovr = dynamic_cast<const AssDialogueBlockOverride*>(line->Blocks[i]);
+		if (!ovr) continue;
+
+		for (size_t j=0; j < ovr->Tags.size(); j++) {
+			const AssOverrideTag *cur = ovr->Tags[j];
+			if ((cur->Name == tag || cur->Name == alt) && cur->Params.size() >= n) {
+				va_list argp;
+				va_start(argp, n);
+				for (size_t j = 0; j < n; j++) {
+					T *val = va_arg(argp, T *);
+					*val = cur->Params[j]->Get<T>(*val);
+				}
+				va_end(argp);
+				return cur->Name == alt ? ALT_TAG_FOUND : PRIMARY_TAG_FOUND;
+			}
+		}
+	}
+	return TAG_NOT_FOUND;
+}
+
 template<class FeatureType>
 void VisualTool<FeatureType>::GetLinePosition(AssDialogue *diag,int &x, int &y) {
 	int orgx,orgy;
 	GetLinePosition(diag,x,y,orgx,orgy);
 }
 
-/// @brief DOCME
-/// @param diag 
-/// @param x    
-/// @param y    
-/// @param orgx 
-/// @param orgy 
 template<class FeatureType>
 void VisualTool<FeatureType>::GetLinePosition(AssDialogue *diag,int &x, int &y, int &orgx, int &orgy) {
-	if (!diag) {
-		x = INT_MIN;
-		y = INT_MIN;
-		orgx = INT_MIN;
-		orgy = INT_MIN;
-		return;
-	}
-
 	int margin[4];
 	for (int i=0;i<4;i++) margin[i] = diag->Margin[i];
 	int align = 2;
@@ -452,9 +473,8 @@ void VisualTool<FeatureType>::GetLinePosition(AssDialogue *diag,int &x, int &y, 
 	VideoContext::Get()->GetScriptSize(sw,sh);
 
 	// Process margins
-	margin[3] = margin[2];
 	margin[1] = sw - margin[1];
-	margin[3] = sh - margin[3];
+	margin[3] = sh - margin[2];
 
 	// Position
 	bool posSet = false;
@@ -462,59 +482,23 @@ void VisualTool<FeatureType>::GetLinePosition(AssDialogue *diag,int &x, int &y, 
 
 	// Overrides processing
 	diag->ParseASSTags();
-	AssDialogueBlockOverride *override;
-	AssOverrideTag *tag;
-	size_t blockn = diag->Blocks.size();
-	for (size_t i=0;i<blockn;i++) {
-		if (posSet && orgSet) break;
 
-		override = dynamic_cast<AssDialogueBlockOverride*>(diag->Blocks.at(i));
-		if (override) {
-			for (size_t j=0;j<override->Tags.size();j++) {
-				tag = override->Tags.at(j);
-
-				// Position
-				if ((tag->Name == L"\\pos" || tag->Name == L"\\move") && tag->Params.size() >= 2) {
-					if (!posSet) {
-						x = tag->Params[0]->Get<int>();
-						y = tag->Params[1]->Get<int>();
-						posSet = true;
-					}
-				}
-
-				// Alignment
-				else if ((tag->Name == L"\\an" || tag->Name == L"\\a") && tag->Params.size() >= 1) {
-					align = tag->Params[0]->Get<int>();
-					if (tag->Name == L"\\a") {
-						switch(align) {
-							case 1: case 2: case 3:
-								break;
-							case 5: case 6: case 7:
-								align += 2;
-								break;
-							case 9: case 10: case 11:
-								align -= 5;
-								break;
-							default:
-								align = 2;
-								break;
-						}
-					}
-				}
-
-				// Origin
-				else if (!orgSet && tag->Name == L"\\org" && tag->Params.size() >= 2) {
-					orgx = tag->Params[0]->Get<int>();
-					orgy = tag->Params[1]->Get<int>();
-					parent->FromScriptCoords(&orgx, &orgy);
-					orgSet = true;
-				}
+	if (!get_value<int>(diag, "\\pos", 2, &x, &y)) {
+		if (get_value<int>(diag, "\\an", 1, &align) == ALT_TAG_FOUND) {
+			switch(align) {
+				case 1: case 2: case 3:
+					break;
+				case 5: case 6: case 7:
+					align += 2;
+					break;
+				case 9: case 10: case 11:
+					align -= 5;
+					break;
+				default:
+					align = 2;
+					break;
 			}
 		}
-	}
-	diag->ClearBlocks();
-
-	if (!posSet) {
 		// Alignment type
 		int hor = (align - 1) % 3;
 		int vert = (align - 1) / 3;
@@ -530,154 +514,71 @@ void VisualTool<FeatureType>::GetLinePosition(AssDialogue *diag,int &x, int &y, 
 
 	parent->FromScriptCoords(&x, &y);
 
-	// No origin?
-	if (!orgSet) {
+	if (!get_value<int>(diag, "\\org", 2, &orgx, &orgy)) {
 		orgx = x;
 		orgy = y;
 	}
-}
-
-/// @brief Get the destination of move, if any 
-/// @param diag    
-/// @param hasMove 
-/// @param x1      
-/// @param y1      
-/// @param x2      
-/// @param y2      
-/// @param t1      
-/// @param t2      
-template<class FeatureType>
-void VisualTool<FeatureType>::GetLineMove(AssDialogue *diag,bool &hasMove,int &x1,int &y1,int &x2,int &y2,int &t1,int &t2) {
-	// Parse tags
-	hasMove = false;
-	diag->ParseASSTags();
-	AssDialogueBlockOverride *override;
-	AssOverrideTag *tag;
-	size_t blockn = diag->Blocks.size();
-
-	// For each block
-	for (size_t i=0;i<blockn;i++) {
-		override = dynamic_cast<AssDialogueBlockOverride*>(diag->Blocks.at(i));
-		if (override) {
-			for (size_t j=0;j<override->Tags.size();j++) {
-				tag = override->Tags.at(j);
-
-				// Position
-				if (tag->Name == L"\\move" && tag->Params.size() >= 4) {
-					hasMove = true;
-					x1 = tag->Params[0]->Get<int>();
-					y1 = tag->Params[1]->Get<int>();
-					x2 = tag->Params[2]->Get<int>();
-					y2 = tag->Params[3]->Get<int>();
-					parent->FromScriptCoords(&x1, &y1);
-					parent->FromScriptCoords(&x2, &y2);
-					if (tag->Params.size() >= 6 &&
-						!tag->Params[4]->ommited &&
-						!tag->Params[5]->ommited) {
-
-						t1 = tag->Params[4]->Get<int>();
-						t2 = tag->Params[5]->Get<int>();
-					}
-					return;
-				}
-			}
-		}
+	else {
+		parent->FromScriptCoords(&orgx, &orgy);
 	}
+
 	diag->ClearBlocks();
 }
 
-/// @brief Get line's rotation 
-/// @param diag 
-/// @param rx   
-/// @param ry   
-/// @param rz   
+template<class FeatureType>
+void VisualTool<FeatureType>::GetLineMove(AssDialogue *diag,bool &hasMove,int &x1,int &y1,int &x2,int &y2,int &t1,int &t2) {
+	diag->ParseASSTags();
+
+	hasMove =
+		get_value<int>(diag, "\\move", 6, &x1, &y1, &x2, &y2, &t1, &t2) ||
+		get_value<int>(diag, "\\move", 4, &x1, &y1, &x2, &y2);
+
+	if (hasMove) {
+		parent->FromScriptCoords(&x1, &y1);
+		parent->FromScriptCoords(&x2, &y2);
+	}
+
+	diag->ClearBlocks();
+}
+
 template<class FeatureType>
 void VisualTool<FeatureType>::GetLineRotation(AssDialogue *diag,float &rx,float &ry,float &rz) {
-	// Default values
-	rx = ry = rz = 0.0f;
-
-	// No dialogue
-	if (!diag) return;
+	rx = ry = rz = 0.f;
 
 	AssStyle *style = VideoContext::Get()->grid->ass->GetStyle(diag->Style);
 	if (style) {
 		rz = style->angle;
 	}
 
-	// Prepare overrides
 	diag->ParseASSTags();
-	AssDialogueBlockOverride *override;
-	AssOverrideTag *tag;
-	size_t blockn = diag->Blocks.size();
-	if (blockn == 0) {
-		diag->ClearBlocks();
-		return;
-	}
 
-	// Process override
-	override = dynamic_cast<AssDialogueBlockOverride*>(diag->Blocks.at(0));
-	if (override) {
-		for (size_t j=0;j<override->Tags.size();j++) {
-			tag = override->Tags.at(j);
-			if (tag->Name == L"\\frx" && tag->Params.size() == 1) {
-				rx = tag->Params[0]->Get<double>();
-			}
-			if (tag->Name == L"\\fry" && tag->Params.size() == 1) {
-				ry = tag->Params[0]->Get<double>();
-			}
-			if ((tag->Name == L"\\frz" || tag->Name == L"\fr") && tag->Params.size() == 1) {
-				rz = tag->Params[0]->Get<double>();
-			}
-		}
-	}
+	get_value<double>(diag, L"\\frx", 1, &rx);
+	get_value<double>(diag, L"\\fry", 1, &ry);
+	get_value<double>(diag, L"\\frz", 1, &rz);
+
 	diag->ClearBlocks();
 }
 
-/// @brief Get line's scale 
-/// @param diag  
-/// @param scalX 
-/// @param scalY 
 template<class FeatureType>
 void VisualTool<FeatureType>::GetLineScale(AssDialogue *diag,float &scalX,float &scalY) {
-	// Default values
-	scalX = scalY = 100.0f;
+	scalX = scalY = 100.f;
 
-	// Prepare overrides
+	AssStyle *style = VideoContext::Get()->grid->ass->GetStyle(diag->Style);
+	if (style) {
+		scalX = style->scalex;
+		scalY = style->scaley;
+	}
+
 	diag->ParseASSTags();
-	AssDialogueBlockOverride *override;
-	AssOverrideTag *tag;
-	size_t blockn = diag->Blocks.size();
-	if (blockn == 0) {
-		diag->ClearBlocks();
-		return;
-	}
 
-	// Process override
-	override = dynamic_cast<AssDialogueBlockOverride*>(diag->Blocks.at(0));
-	if (override) {
-		for (size_t j=0;j<override->Tags.size();j++) {
-			tag = override->Tags.at(j);
-			if (tag->Name == L"\\fscx" && tag->Params.size() == 1) {
-				scalX = tag->Params[0]->Get<double>();
-			}
-			if (tag->Name == L"\\fscy" && tag->Params.size() == 1) {
-				scalY = tag->Params[0]->Get<double>();
-			}
-		}
-	}
+	get_value<double>(diag, L"\\fscx", 1, &scalX);
+	get_value<double>(diag, L"\\fscy", 1, &scalY);
+
 	diag->ClearBlocks();
 }
 
-/// @brief Get line's clip 
-/// @param diag    
-/// @param x1      
-/// @param y1      
-/// @param x2      
-/// @param y2      
-/// @param inverse 
 template<class FeatureType>
 void VisualTool<FeatureType>::GetLineClip(AssDialogue *diag,int &x1,int &y1,int &x2,int &y2,bool &inverse) {
-	// Default values
 	x1 = y1 = 0;
 	int sw,sh;
 	VideoContext::Get()->GetScriptSize(sw,sh);
@@ -685,85 +586,35 @@ void VisualTool<FeatureType>::GetLineClip(AssDialogue *diag,int &x1,int &y1,int 
 	y2 = sh-1;
 	inverse = false;
 
-	// Prepare overrides
 	diag->ParseASSTags();
-	AssDialogueBlockOverride *override;
-	AssOverrideTag *tag;
-	size_t blockn = diag->Blocks.size();
-	if (blockn == 0) {
-		diag->ClearBlocks();
-		return;
-	}
-
-	// Process override
-	override = dynamic_cast<AssDialogueBlockOverride*>(diag->Blocks.at(0));
-	if (override) {
-		for (size_t j=0;j<override->Tags.size();j++) {
-			tag = override->Tags.at(j);
-			if (tag->Name == L"\\clip" && tag->Params.size() == 4) {
-				x1 = tag->Params[0]->Get<int>();
-				y1 = tag->Params[1]->Get<int>();
-				x2 = tag->Params[2]->Get<int>();
-				y2 = tag->Params[3]->Get<int>();
-				inverse = false;
-			}
-			else if (tag->Name == L"\\iclip" && tag->Params.size() == 4) {
-				x1 = tag->Params[0]->Get<int>();
-				y1 = tag->Params[1]->Get<int>();
-				x2 = tag->Params[2]->Get<int>();
-				y2 = tag->Params[3]->Get<int>();
-				inverse = true;
-			}
-		}
-	}
+	inverse = get_value<int>(diag, L"\\clip", 4, &x1, &y1, &x2, &y2) == ALT_TAG_FOUND;
 	diag->ClearBlocks();
 
 	parent->FromScriptCoords(&x1, &y1);
 	parent->FromScriptCoords(&x2, &y2);
 }
 
-/// @brief Get line vector clip, if it exists 
-/// @param diag    
-/// @param scale   
-/// @param inverse 
 template<class FeatureType>
 wxString VisualTool<FeatureType>::GetLineVectorClip(AssDialogue *diag,int &scale,bool &inverse) {
-	// Prepare overrides
-	wxString result;
 	scale = 1;
 	inverse = false;
 	diag->ParseASSTags();
-	AssDialogueBlockOverride *override;
-	AssOverrideTag *tag;
-	size_t blockn = diag->Blocks.size();
-	if (blockn == 0) {
-		diag->ClearBlocks();
-		return result;
-	}
 
-	// Process override
-	override = dynamic_cast<AssDialogueBlockOverride*>(diag->Blocks.at(0));
-	if (override) {
-		for (size_t j=0;j<override->Tags.size();j++) {
-			tag = override->Tags.at(j);
-			if (tag->Name == L"\\clip" || tag->Name == L"\\iclip") {
-				if (tag->Params.size() == 1) {
-					result = tag->Params[0]->Get<wxString>();
-				}
-				else if (tag->Params.size() == 2) {
-					scale = tag->Params[0]->Get<int>();
-					result = tag->Params[1]->Get<wxString>();
-				}
-				else if (tag->Params.size() == 4) {
-					int x1 = tag->Params[0]->Get<int>(),
-						y1 = tag->Params[1]->Get<int>(),
-						x2 = tag->Params[2]->Get<int>(),
-						y2 = tag->Params[3]->Get<int>();
-					result = wxString::Format(L"m %d %d l %d %d %d %d %d %d", x1, y1, x2, y1, x2, y2, x1, y2);
-				}
-				inverse = tag->Name == L"\\iclip";
-			}
-		}
+	int x1, y1, x2, y2;
+	TagFoundType res = get_value<int>(diag, L"\\clip", 4, &x1, &y1, &x2, &y2);
+	if (res) {
+		inverse = res == ALT_TAG_FOUND;
+		diag->ClearBlocks();
+		return wxString::Format(L"m %d %d l %d %d %d %d %d %d", x1, y1, x2, y1, x2, y2, x1, y2);
+	}
+	wxString result;
+	wxString scaleStr;
+	res = get_value<wxString>(diag, L"\\clip", 2, &scaleStr, &result);
+	inverse = res == ALT_TAG_FOUND;
+	if (!scaleStr.empty()) {
+		long s;
+		scaleStr.ToLong(&s);
+		scale = s;
 	}
 	diag->ClearBlocks();
 	return result;

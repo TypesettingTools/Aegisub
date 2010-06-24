@@ -58,7 +58,6 @@ VisualToolRotateXY::VisualToolRotateXY(VideoDisplay *parent, VideoState const& v
 
 /// @brief Draw 
 void VisualToolRotateXY::Draw() {
-	// Get line to draw
 	AssDialogue *line = GetActiveDialogueLine();
 	if (!line) return;
 
@@ -168,14 +167,13 @@ void VisualToolRotateXY::Draw() {
 
 /// @brief Start holding 
 bool VisualToolRotateXY::InitializeHold() {
+	if (!curDiag) return false;
 	GetLinePosition(curDiag,odx,ody,orgx,orgy);
 	GetLineRotation(curDiag,origAngleX,origAngleY,rz);
 	startAngleX = (orgy-video.y)*2.f;
 	startAngleY = (video.x-orgx)*2.f;
 	curAngleX = origAngleX;
 	curAngleY = origAngleY;
-	curDiag->StripTag(L"\\frx");
-	curDiag->StripTag(L"\\fry");
 
 	return true;
 }
@@ -220,8 +218,8 @@ void VisualToolRotateXY::CommitHold() {
 
 /// @brief Get \\org pivot 
 void VisualToolRotateXY::PopulateFeatureList() {
-	// Get line
 	curDiag = GetActiveDialogueLine();
+	if (!curDiag) return;
 	GetLinePosition(curDiag,odx,ody,orgx,orgy);
 
 	// Set features
@@ -252,6 +250,7 @@ void VisualToolRotateXY::CommitDrag(VisualDraggableFeature* feature) {
 /// @brief Refresh 
 void VisualToolRotateXY::DoRefresh() {
 	AssDialogue *line = GetActiveDialogueLine();
+	if (!line) return;
 	GetLinePosition(line,odx,ody,orgx,orgy);
 	GetLineRotation(line,curAngleX,curAngleY,rz);
 }

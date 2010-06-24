@@ -58,6 +58,7 @@
 #include "subtitle_format.h"
 #include "text_file_reader.h"
 #include "text_file_writer.h"
+#include "utils.h"
 #include "version.h"
 #include "vfr.h"
 
@@ -411,14 +412,11 @@ void AssFile::AddLine(wxString data,wxString group,int &version,wxString *outGro
 	return;
 }
 
-void AssFile::Clear () {
-	for (entryIter cur=Line.begin();cur != Line.end();cur++) {
-		delete *cur;
-	}
-	Line.clear();
+void AssFile::Clear() {
+	delete_clear(Line);
 
 	loaded = false;
-	filename = _T("");
+	filename.clear();
 	Modified = false;
 }
 
@@ -756,12 +754,7 @@ bool AssFile::IsModified() {
 
 void AssFile::FlagAsModified(wxString desc) {
 	if (!RedoStack.empty()) {
-		//StackPush();
-		//UndoStack.push_back(new AssFile(*UndoStack.back()));
-		for (std::list<AssFile*>::iterator cur=RedoStack.begin();cur!=RedoStack.end();cur++) {
-			delete *cur;
-		}
-		RedoStack.clear();
+		delete_clear(RedoStack);
 	}
 
 	Modified = true;
@@ -841,15 +834,8 @@ void AssFile::StackRedo() {
 }
 
 void AssFile::StackClear() {
-	for (std::list<AssFile*>::iterator cur=UndoStack.begin();cur!=UndoStack.end();cur++) {
-		delete *cur;
-	}
-	UndoStack.clear();
-
-	for (std::list<AssFile*>::iterator cur=RedoStack.begin();cur!=RedoStack.end();cur++) {
-		delete *cur;
-	}
-	RedoStack.clear();
+	delete_clear(UndoStack);
+	delete_clear(RedoStack);
 
 	Popping = false;
 }
