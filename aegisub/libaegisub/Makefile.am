@@ -4,7 +4,7 @@ AM_CXXFLAGS=
 DISTCLEANFILES=
 
 lib_LTLIBRARIES = libaegisub-2.2.la
-libaegisub_2_2_la_CPPFLAGS = -I../src/include -Iinclude -I. @WX_CPPFLAGS@ -pedantic
+libaegisub_2_2_la_CPPFLAGS = -I../src/include -Iinclude -I. @WX_CPPFLAGS@ -pedantic -DLAGI
 libaegisub_2_2_la_LDFLAGS = @ICONV_LDFLAGS@
 
 if PRECOMPILED_HEADER
