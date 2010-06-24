@@ -119,6 +119,50 @@ void DialogAttachments::UpdateList() {
 //////////////
 // Destructor
 DialogAttachments::~DialogAttachments() {
+
+	// Remove empty attachments sections from the file
+
+	std::list<AssEntry*>::iterator cur = AssFile::top->Line.end();
+	--cur;
+
+	bool found_attachments = false;
+	bool removed_any = false;
+	wxString last_section_name;
+
+	while (cur != AssFile::top->Line.begin()) {
+		if (!((*cur)->group == L"[Fonts]" || (*cur)->group == L"[Graphics]"))
+			break;
+
+		if ((*cur)->GetEntryData() == L"[Fonts]" || (*cur)->GetEntryData() == L"[Graphics]") {
+			if (found_attachments) continue;
+			// found section heading with no attachments in, remove it
+			wxString delgroup = (*cur)->group;
+			std::list<AssEntry*>::iterator di = cur;
+			while (++di != AssFile::top->Line.end() && (*di)->group == delgroup) {
+				delete *di;
+				AssFile::top->Line.erase(di);
+				di = cur;
+			}
+			di = cur;
+			--cur;
+			delete *di;
+			AssFile::top->Line.erase(di);
+			removed_any = true;
+			continue;
+		}
+
+		if (last_section_name != (*cur)->group)
+			found_attachments = false;
+		if (dynamic_cast<AssAttachment*>(*cur) != 0)
+			found_attachments = true;
+		last_section_name = (*cur)->group;
+
+		--cur;
+	}
+
+	if (removed_any) {
+		AssFile::top->FlagAsModified(_("remove empty attachments sections"));
+	}
 }
 
 
@@ -163,6 +207,8 @@ void DialogAttachments::OnAttachFont(wxCommandEvent &event) {
 		AssFile::top->InsertAttachment(newAttach);
 	}
 
+	AssFile::top->FlagAsModified(_("attach font file"));
+
 	// Update
 	UpdateList();
 }
@@ -195,6 +241,8 @@ void DialogAttachments::OnAttachGraphics(wxCommandEvent &event) {
 		newAttach->group = _T("[Graphics]");
 		AssFile::top->InsertAttachment(newAttach);
 	}
+
+	AssFile::top->FlagAsModified(_("attach graphics file"));
 
 	// Update
 	UpdateList();
@@ -243,6 +291,8 @@ void DialogAttachments::OnDelete(wxCommandEvent &event) {
 		AssFile::top->Line.remove((AssEntry*)wxUIntToPtr(listView->GetItemData(i)));
 		i = listView->GetNextSelected(i);
 	}
+
+	AssFile::top->FlagAsModified(_("remove attachment"));
 
 	// Update list
 	UpdateList();
