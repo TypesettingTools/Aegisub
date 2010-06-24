@@ -34,9 +34,6 @@
 /// @ingroup video_input
 ///
 
-
-///////////
-// Headers
 #include "config.h"
 
 #ifndef AGI_PRE
@@ -53,53 +50,36 @@
 
 
 /// @brief V2 Clear function 
-///
 void FrameRate::Clear () {
 	Frame.clear();
 }
 
-
-
 /// @brief V2 Add frame 
 /// @param ms 
-///
 void FrameRate::AddFrame(int ms) {
 	Frame.push_back(ms);
 }
 
-
-
 /// @brief V2 Get Average 
-///
 void FrameRate::CalcAverage() {
-
 	if (Frame.size() <= 1)
 		throw _("No timecodes to average");
 
 	AverageFrameRate = double(Frame.back()) / (Frame.size()-1);
 }
 
-
-
-/// @brief Constructor  FrameRate //////////////////////
-///
+/// @brief Constructor
 FrameRate::FrameRate() {
 	Unload();
 }
 
-
-
 /// @brief Destructor 
-///
 FrameRate::~FrameRate() {
 	Unload();
 }
 
-
-
 /// @brief Loads VFR file 
 /// @param filename 
-///
 void FrameRate::Load(wxString filename) {
 	using namespace std;
 	
@@ -241,11 +221,8 @@ void FrameRate::Load(wxString filename) {
 	config::mru->Add("Timecodes", STD_STR(filename));
 }
 
-
-
 /// @brief Save 
 /// @param filename 
-///
 void FrameRate::Save(wxString filename) {
 	TextFileWriter file(filename,_T("ASCII"));
 	file.WriteLineToFile(_T("# timecode format v2"));
@@ -254,10 +231,7 @@ void FrameRate::Save(wxString filename) {
 	}
 }
 
-
-
 /// @brief Unload 
-///
 void FrameRate::Unload () {
 	FrameRateType = NONE;
 	AverageFrameRate = 0;
@@ -268,11 +242,8 @@ void FrameRate::Unload () {
 	vfrFile = _T("");
 }
 
-
-
 /// @brief Sets to CFR 
 /// @param fps 
-///
 void FrameRate::SetCFR(double fps) {
 	Unload();
 	loaded = true;
@@ -280,13 +251,9 @@ void FrameRate::SetCFR(double fps) {
 	AverageFrameRate = fps;
 }
 
-
-
 /// @brief Sets to VFR 
 /// @param newTimes 
-///
 void FrameRate::SetVFR(std::vector<int> newTimes) {
-	// Prepare
 	Unload();
 
 	loaded = true;
@@ -299,22 +266,16 @@ void FrameRate::SetVFR(std::vector<int> newTimes) {
 	last_frame = (int)newTimes.size();
 }
 
-
-
 /// @brief Gets frame number at time 
 /// @param ms      
 /// @param useceil 
 /// @return 
-///
-int FrameRate::PFrameAtTime(int ms,bool useceil) {
+int FrameRate::PFrameAtTime(int ms,bool useceil) const {
 	// Check if it's loaded
 	if (!loaded) return -1;
 
-	// Normalize miliseconds
-	ms = MAX(ms,0);
-
 	// Get for constant frame rate
-	if (FrameRateType == CFR || Frame.size() == 0) {
+	if (FrameRateType == CFR || Frame.size() == 0 || ms < 0) {
 		double value = double(ms) * AverageFrameRate / 1000.0;
 		if (useceil) return (int)ceil(value);
 		else return (int)floor(value);
@@ -366,13 +327,10 @@ int FrameRate::PFrameAtTime(int ms,bool useceil) {
 	return -1;
 }
 
-
-
 /// @brief Gets time at frame 
 /// @param frame 
 /// @return 
-///
-int FrameRate::PTimeAtFrame(int frame) {
+int FrameRate::PTimeAtFrame(int frame) const {
 	// Not loaded
 	if (!loaded) return -1;
 
@@ -397,26 +355,20 @@ int FrameRate::PTimeAtFrame(int frame) {
 	return -1;
 }
 
-
-
 /// @brief otherwise for start frames returns the adjusted time for end frames when start=false Get correct frame at time 
 /// @param ms    
 /// @param start 
 /// @return 
-///
-int FrameRate::GetFrameAtTime(int ms,bool start) {
+int FrameRate::GetFrameAtTime(int ms,bool start) const {
 	return PFrameAtTime(ms,start);
 }
 
-
-
 /// @brief compensates and returns an end time when start=false Get correct time at frame 
-/// @param frame 
-/// @param start 
-/// @param exact 
+/// @param frame Frame number
+/// @param start Adjust for start time
+/// @param exact Don't do awful things to avoid rounding errors
 /// @return 
-///
-int FrameRate::GetTimeAtFrame(int frame,bool start,bool exact) {
+int FrameRate::GetTimeAtFrame(int frame,bool start,bool exact) const {
 	int finalTime;
 
 	// Exact, for display
@@ -439,121 +391,21 @@ int FrameRate::GetTimeAtFrame(int frame,bool start,bool exact) {
 	return finalTime;
 }
 
-
-
 /// @brief Get the current list of frames/times 
 /// @return 
-///
-std::vector<int> FrameRate::GetFrameTimeList() {
+std::vector<int> FrameRate::GetFrameTimeList() const {
 	return Frame;
 }
 
-
-
-/// @brief e.g., in a mix of 24fps and 30fps, returns 120fps Calculate the common FPS for evil stuff 
-/// @return 
-///
-double FrameRate::GetCommonFPS() {
-	// Variables
-	int curDist;
-	int lastDist = 0;
-	int sectionStart = 0;
-	double curFps;
-
-	// List of likely frame rates
-	std::vector<double> frameRates;
-	frameRates.push_back(15.0 / 1.001);
-	frameRates.push_back(15);
-	frameRates.push_back(24.0 / 1.001);
-	frameRates.push_back(24);
-	frameRates.push_back(30.0 / 1.001);
-	frameRates.push_back(30);
-	frameRates.push_back(120.0 / 1.001);
-	frameRates.push_back(120);
-
-	// List of rates found
-	std::vector<double> found;
-
-	// Find the relative fps of each area
-	for (unsigned int i=1;i<Frame.size();i++) {
-		// Find the current frame distance
-		curDist = Frame[i]-Frame[i-1];
-
-		// See if it's close enough to the last
-		if ((abs(curDist - lastDist) < 2 || i-1 == (unsigned) sectionStart) && i != Frame.size()-1) {
-			lastDist = curDist;
-			continue;
-		}
-
-		// Calculate section fps
-		curFps = (i - sectionStart - 1) * 1000.0 / double(Frame[i-1]-Frame[sectionStart]);
-		sectionStart = i;
-		lastDist = curDist;
-
-		// See if it's close enough to one of the likely rates
-		for (unsigned int j=0;j<frameRates.size();j++) {
-			if (curFps-0.01 <= frameRates[j] && curFps+0.01 >= frameRates[j]) {
-				curFps = frameRates[j];
-				break;
-			}
-		}
-
-		// See if it's on list
-		bool onList = false;
-		for (unsigned int j=0;j<found.size();j++) {
-			if (found[j] == curFps) {
-				onList = true;
-				break;
-			}
-		}
-
-		// If not, add it
-		if (!onList) found.push_back(curFps);
-	}
-
-	// Find common between them
-	double v1,v2,minInt,tempd;
-	int tempi1,tempi2;
-	while (found.size() > 1) {
-		// Extract last two values
-		v1 = found.back();
-		found.pop_back();
-		v2 = found.back();
-		found.pop_back();
-
-		// Divide them
-		v2 = v1/v2;
-
-		// Find what it takes to make it an integer
-		for (minInt = 1;minInt<20;minInt++) {
-			tempd = v2 * minInt;
-			tempi1 = (int)(tempd-0.001);
-			tempi2 = (int)(tempd+0.001);
-			if (tempi1 != tempi2) break;
-		}
-		if (minInt != 20) v1 = v1*minInt;
-
-		// See if it's close enough to one of the likely rates
-		for (unsigned int j=0;j<frameRates.size();j++) {
-			if (v1-0.01 <= frameRates[j] && v1+0.01 >= frameRates[j]) {
-				v1 = frameRates[j];
-				break;
-			}
-		}
-
-		// Re-insert obtained result
-		found.push_back(v1);
-	}
-
-	return found.back();
+bool FrameRate::operator==(FrameRate const& rgt) {
+	if (FrameRateType != rgt.FrameRateType) return false;
+	if (FrameRateType == NONE) return true;
+	if (FrameRateType == CFR) return AverageFrameRate == rgt.AverageFrameRate;
+	return Frame == rgt.Frame;
 }
-
-
 
 /// DOCME
 FrameRate VFR_Output;
 
 /// DOCME
 FrameRate VFR_Input;
-
-

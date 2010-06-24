@@ -34,29 +34,48 @@
 /// @ingroup export
 ///
 
-
-///////////
-// Headers
 #include "config.h"
+
+#ifndef AGI_PRE
+#include <utility>
+
+#include <wx/button.h>
+#include <wx/checkbox.h>
+#include <wx/panel.h>
+#include <wx/radiobut.h>
+#include <wx/sizer.h>
+#include <wx/stattext.h>
+#include <wx/textctrl.h>
+#endif
 
 #include "ass_dialogue.h"
 #include "ass_file.h"
 #include "ass_override.h"
 #include "export_framerate.h"
-#include "vfr.h"
+#include "utils.h"
 
-
-/// @brief Constructor 
+/// DOCME
+/// @class LineData
+/// @brief DOCME
 ///
+/// DOCME
+struct LineData {
+	AssDialogue *line;
+	int newStart;
+	int newEnd;
+	int newK;
+	int oldK;
+};
+
+/// IDs
+enum {
+	Get_Input_From_Video = 2000
+};
+
 AssTransformFramerateFilter::AssTransformFramerateFilter() {
 	initialized = false;
 }
 
-
-
-/// @brief Init 
-/// @return 
-///
 void AssTransformFramerateFilter::Init() {
 	if (initialized) return;
 	initialized = true;
@@ -67,27 +86,10 @@ void AssTransformFramerateFilter::Init() {
 	Output = NULL;
 }
 
-
-
-/// @brief Process 
-/// @param subs          
-/// @param export_dialog 
-///
 void AssTransformFramerateFilter::ProcessSubs(AssFile *subs, wxWindow *export_dialog) {
-	// Transform frame rate
-	if (Input->IsLoaded() && Output->IsLoaded()) {
-		if (Input->GetFrameRateType() == VFR || Output->GetFrameRateType() == VFR || Output->GetAverage() != Input->GetAverage()) {
-			TransformFrameRate(subs);
-		}
-	}
+	TransformFrameRate(subs);
 }
 
-
-
-/// @brief Get dialog 
-/// @param parent 
-/// @return 
-///
 wxWindow *AssTransformFramerateFilter::GetConfigDialogWindow(wxWindow *parent) {
 	wxWindow *base = new wxPanel(parent, -1);
 
@@ -146,11 +148,6 @@ wxWindow *AssTransformFramerateFilter::GetConfigDialogWindow(wxWindow *parent) {
 	return base;
 }
 
-
-
-/// @brief Load settings 
-/// @param IsDefault 
-///
 void AssTransformFramerateFilter::LoadSettings(bool IsDefault) {
 	if (IsDefault) {
 		Input = &VFR_Input;
@@ -168,149 +165,91 @@ void AssTransformFramerateFilter::LoadSettings(bool IsDefault) {
 		}
 		else Output = &VFR_Output;
 
-		// Reverse
 		if (Reverse->IsChecked()) {
-			FrameRate *temp = Output;
-			Output = Input;
-			Input = temp;
+			std::swap(Input, Output);
 		}
 	}
 }
 
+/// Truncate a time to centisecond precision
+int FORCEINLINE trunc_cs(int time) {
+	return (time / 10) * 10;
+}
 
-
-/// @brief Transform framerate in tags 
-/// @param name     
-/// @param n        
-/// @param curParam 
-/// @param curData  
-/// @return 
-///
 void AssTransformFramerateFilter::TransformTimeTags (wxString name,int n,AssOverrideParameter *curParam,void *curData) {
-	// Only modify anything if this is a number
 	VariableDataType type = curParam->GetType();
 	if (type != VARDATA_INT && type != VARDATA_FLOAT) return;
 
-	// Setup
-	LineData *lineData = (LineData*) curData;
-	AssDialogue *curDiag = lineData->line;;
-	bool start = true;
-	bool karaoke = false;
-	int mult = 1;
-	int value;
+	LineData *lineData = static_cast<LineData*>(curData);
+	AssDialogue *curDiag = lineData->line;
+
+	int parVal = curParam->Get<int>();
+
 	switch (curParam->classification) {
-		case PARCLASS_RELATIVE_TIME_START:
+		case PARCLASS_RELATIVE_TIME_START: {
+			int value = instance.ConvertTime(trunc_cs(curDiag->Start.GetMS()) + parVal) - lineData->newStart;
+
+			// An end time of 0 is actually the end time of the line, so ensure
+			// nonzero is never converted to 0
+			// Needed here rather than the end case because start/end here mean
+			// which end of the line the time is relative to, not whether it's
+			// the start or end time (compare \move and \fad)
+			if (value == 0 && parVal != 0) value = 1;
+			curParam->Set(value);
 			break;
+		}
 		case PARCLASS_RELATIVE_TIME_END:
-			start = false;
+			curParam->Set(lineData->newEnd - instance.ConvertTime(trunc_cs(curDiag->End.GetMS()) - parVal));
 			break;
-		case PARCLASS_KARAOKE:
-			karaoke = true;
-			mult = 10;
+		case PARCLASS_KARAOKE: {
+			int start = curDiag->Start.GetMS() / 10 + lineData->oldK + parVal;
+			int value = (instance.ConvertTime(start * 10) - lineData->newStart) / 10 - lineData->newK;
+			lineData->oldK += parVal;
+			lineData->newK += value;
+			curParam->Set(value);
 			break;
+		}
 		default:
 			return;
 	}
-
-	// Parameter value
-	int parVal = curParam->Get<int>() * mult;
-
-	// Karaoke preprocess
-	int curKarPos = 0;
-	if (karaoke) {
-		if (name == _T("\\k")) {
-			curKarPos = lineData->k;
-			lineData->k += parVal/10;
-		}
-		else if (name == _T("\\K") || name == _T("\\kf")) {
-			curKarPos = lineData->kf;
-			lineData->kf += parVal/10;
-		}
-		else if (name == _T("\\ko")) {
-			curKarPos = lineData->ko;
-			lineData->ko += parVal/10;
-		}
-		else throw wxString::Format(_T("Unknown karaoke tag! '%s'"), name.c_str());
-		curKarPos *= 10;
-		parVal += curKarPos;
-	}
-
-	// Start time
-	if (start) {
-		int newStart = instance.Input->GetTimeAtFrame(instance.Output->GetFrameAtTime(curDiag->Start.GetMS()));
-		int absTime = curDiag->Start.GetMS() + parVal;
-		value = instance.Input->GetTimeAtFrame(instance.Output->GetFrameAtTime(absTime)) - newStart;
-		
-		// An end time of 0 is actually the end time of the line, so ensure nonzero is never converted to 0
-		// Needed in the start case as well as the end one due to \t, whose end time needs the start time
-		// behavior
-		if (value == 0 && parVal != 0) value = 1;
-	}
-
-	// End time
-	else {
-		int newEnd = instance.Input->GetTimeAtFrame(instance.Output->GetFrameAtTime(curDiag->End.GetMS()));
-		int absTime = curDiag->End.GetMS() - parVal;
-		value = newEnd - instance.Input->GetTimeAtFrame(instance.Output->GetFrameAtTime(absTime));
-		if (value == 0 && parVal != 0) value = 1;
-	}
-
-	// Karaoke postprocess
-	if (karaoke) {
-		int post = instance.Input->GetTimeAtFrame(instance.Output->GetFrameAtTime(curDiag->Start.GetMS() + curKarPos));
-		int start = instance.Input->GetTimeAtFrame(instance.Output->GetFrameAtTime(curDiag->Start.GetMS()));
-		curKarPos = post-start;
-		value -= curKarPos;
-	}
-
-	curParam->Set<int>(value/mult);
 }
 
-
-
-/// @brief Transform framerate 
-/// @param subs 
-///
 void AssTransformFramerateFilter::TransformFrameRate(AssFile *subs) {
-	int n=0;
-
-	// Run through
-	using std::list;
-	AssEntry *curEntry;
-	AssDialogue *curDialogue;
+	if (!Input->IsLoaded() || !Output->IsLoaded() || Input == Output || *Input == *Output) return;
 	for (entryIter cur=subs->Line.begin();cur!=subs->Line.end();cur++) {
-		curEntry = *cur;
-		// why the christ was this ever done to begin with?
-		// yes, let's framerate compensate the start timestamp and then use the changed value to
-		// compensate it AGAIN 20 lines down? I DO NOT GET IT
-		// -Fluff
-		//curEntry->Start.SetMS(Input->GetTimeAtFrame(Output->GetFrameAtTime(curEntry->GetStartMS(),true),true));
-		curDialogue = dynamic_cast<AssDialogue*>(curEntry);
+		AssDialogue *curDialogue = dynamic_cast<AssDialogue*>(*cur);
 
-		// Update dialogue entries
 		if (curDialogue) {
-			// Line data
 			LineData data;
 			data.line = curDialogue;
-			data.k = 0;
-			data.kf = 0;
-			data.ko = 0;
+			data.newK = 0;
+			data.oldK = 0;
+			data.newStart = trunc_cs(ConvertTime(curDialogue->Start.GetMS()));
+			data.newEnd = trunc_cs(ConvertTime(curDialogue->End.GetMS()));
 
 			// Process stuff
 			curDialogue->ParseASSTags();
 			curDialogue->ProcessParameters(TransformTimeTags,&data);
-			curDialogue->Start.SetMS(Input->GetTimeAtFrame(Output->GetFrameAtTime(curDialogue->Start.GetMS(),true),true));
-			curDialogue->End.SetMS(Input->GetTimeAtFrame(Output->GetFrameAtTime(curDialogue->End.GetMS(),false),false));
+			curDialogue->Start.SetMS(data.newStart);
+			curDialogue->End.SetMS(data.newEnd);
 			curDialogue->UpdateText();
 			curDialogue->ClearBlocks();
-			n++;
 		}
 	}
 }
 
+int AssTransformFramerateFilter::ConvertTime(int time) {
+	int frame = Output->GetFrameAtTime(time, false);
+	int frameStart = Output->GetTimeAtFrame(frame, false, true);
+	int frameEnd = Output->GetTimeAtFrame(frame + 1, false, true);
+	int frameDur = frameEnd - frameStart;
+	double dist = double(time - frameStart) / frameDur;
 
+	int newStart = Input->GetTimeAtFrame(frame, false, true);
+	int newEnd = Input->GetTimeAtFrame(frame + 1, false, true);
+	int newDur = newEnd - newStart;
 
-/// DOCME
+	return newStart + newDur * dist;
+}
+
 AssTransformFramerateFilter AssTransformFramerateFilter::instance;
-
-

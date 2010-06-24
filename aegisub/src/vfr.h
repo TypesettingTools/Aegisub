@@ -42,9 +42,6 @@
 #pragma once
 
 
-///////////
-// Headers
-
 #ifndef AGI_PRE
 #include <list>
 #include <vector>
@@ -53,19 +50,10 @@
 #include <wx/string.h>
 #endif
 
-#include "include/aegisub/aegisub.h"
-
-
 /// DOCME
 enum ASS_FrameRateType {
-
-	/// DOCME
 	NONE,
-
-	/// DOCME
 	CFR,
-
-	/// DOCME
 	VFR
 };
 
@@ -97,8 +85,8 @@ private:
 	void Clear();
 
 	void CalcAverage();
-	int PFrameAtTime(int ms,bool useCeil=false);
-	int PTimeAtFrame(int frame);
+	int PFrameAtTime(int ms,bool useCeil=false) const;
+	int PTimeAtFrame(int frame) const;
 
 
 	/// DOCME
@@ -122,37 +110,33 @@ public:
 	void Save(wxString file);
 	void Unload();
 
-	int GetFrameAtTime(int ms,bool start=true);
-	int GetTimeAtFrame(int frame,bool start=true,bool exact=false);
+	int GetFrameAtTime(int ms,bool start=true) const;
+	int GetTimeAtFrame(int frame,bool start=true,bool exact=false) const;
 
 
 	/// @brief DOCME
 	/// @return 
 	///
-	double GetAverage() { return AverageFrameRate; };
+	double GetAverage() const { return AverageFrameRate; };
 
 	/// @brief DOCME
 	/// @return 
 	///
-	bool IsLoaded() { return loaded; };
+	bool IsLoaded() const { return loaded; };
 
 	/// @brief DOCME
 	/// @return 
 	///
-	ASS_FrameRateType GetFrameRateType() { return FrameRateType; };
+	ASS_FrameRateType GetFrameRateType() const { return FrameRateType; };
 
 	/// @brief DOCME
 	///
-	wxString GetFilename() { return vfrFile; };
+	wxString GetFilename() const { return vfrFile; };
 
-	std::vector<int> GetFrameTimeList();
-	double GetCommonFPS();
+	std::vector<int> GetFrameTimeList() const;
+
+	bool operator==(FrameRate const& rgt);
 };
 
-
-///////////
-// Globals
 extern FrameRate VFR_Output;
 extern FrameRate VFR_Input;
-
-

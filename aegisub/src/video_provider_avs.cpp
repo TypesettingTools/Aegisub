@@ -255,7 +255,6 @@ PClip AvisynthVideoProvider::OpenVideo(wxString _filename, bool mpeg2dec3_priori
 	// Read keyframes and timecodes from MKV file
 	isVfr = false;
 	FrameRate temp;
-	double overFps = 0;
 	bool mkvOpen = MatroskaWrapper::wrapper.IsOpen();
 	KeyFrames.Clear();
 	if (extension == _T(".mkv") || mkvOpen) {
@@ -273,7 +272,6 @@ PClip AvisynthVideoProvider::OpenVideo(wxString _filename, bool mpeg2dec3_priori
 			MatroskaWrapper::wrapper.SetToTimecodes(temp);
 			isVfr = temp.GetFrameRateType() == VFR;
 			if (isVfr) {
-				overFps = temp.GetCommonFPS();
 				MatroskaWrapper::wrapper.SetToTimecodes(VFR_Input);
 				MatroskaWrapper::wrapper.SetToTimecodes(VFR_Output);
 				trueFrameRate = temp;

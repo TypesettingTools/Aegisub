@@ -34,110 +34,61 @@
 /// @ingroup export
 ///
 
-
-
-
-///////////
-// Headers
-#ifndef AGI_PRE
-#include <wx/button.h>
-#include <wx/checkbox.h>
-#include <wx/panel.h>
-#include <wx/radiobut.h>
-#include <wx/sizer.h>
-#include <wx/stattext.h>
-#include <wx/textctrl.h>
-#endif
-
 #include "ass_export_filter.h"
 #include "vfr.h"
 
-
-//////////////
-// Prototypes
-class AssOverrideParameter;
 class AssDialogue;
-
-
+class AssOverrideParameter;
+class wxCheckBox;
+class wxRadioButton;
+class wxTextCtrl;
 
 /// DOCME
 /// @class AssTransformFramerateFilter
 /// @brief DOCME
-///
-/// DOCME
 class AssTransformFramerateFilter : public AssExportFilter {
-private:
-
-	/// DOCME
+	/// The singleton instance of this filter
 	static AssTransformFramerateFilter instance;
 
-	/// DOCME
+	// Yes, these are backwards
+	FrameRate *Input;  /// Destination frame rate
+	FrameRate *Output; /// Source frame rate
 
-	/// DOCME
-	FrameRate *Input,*Output;
-
-	/// DOCME
-
-	/// DOCME
 	FrameRate t1,t2;
 
+	wxTextCtrl *InputFramerate; /// Input frame rate text box
+	wxTextCtrl *OutputFramerate; /// Output frame rate text box
 
-	/// DOCME
-	wxTextCtrl *InputFramerate;
+	wxRadioButton *RadioOutputCFR; /// CFR radio control
+	wxRadioButton *RadioOutputVFR; /// VFR radio control
 
-	/// DOCME
-	wxTextCtrl *OutputFramerate;
+	wxCheckBox *Reverse; /// Switch input and output
 
-	/// DOCME
-	wxRadioButton *RadioOutputCFR;
-
-	/// DOCME
-	wxRadioButton *RadioOutputVFR;
-
-	/// DOCME
-	wxCheckBox *Reverse;
-
+	/// Constructor
 	AssTransformFramerateFilter();
+	
+	/// @brief Apply the transformation to a file
+	/// @param subs File to process
 	void TransformFrameRate(AssFile *subs);
-	static void TransformTimeTags(wxString name,int n,AssOverrideParameter *curParam,void *_curDiag);
+	/// @brief Transform a single tag
+	/// @param name Name of the tag
+	/// @param curParam Current parameter being processed
+	/// @param userdata LineData passed
+	static void TransformTimeTags(wxString name,int,AssOverrideParameter *curParam,void *userdata);
+	/// Initialize the singleton instance
 	void Init();
 
+	/// @brief Convert a time from the input frame rate to the output frame rate
+	/// @param time Time in ms to convert
+	/// @return Time in ms
+	///
+	/// This preserves two things:
+	///   1. The frame number
+	///   2. The relative distance between the beginning of the frame which time
+	///      is in and the beginning of the next frame
+	int ConvertTime(int time);
 public:
 	void ProcessSubs(AssFile *subs, wxWindow *export_dialog);
 	wxWindow *GetConfigDialogWindow(wxWindow *parent);
 	void LoadSettings(bool IsDefault);
 };
-
-
-
-/// DOCME
-/// @class LineData
-/// @brief DOCME
-///
-/// DOCME
-class LineData {
-public:
-
-	/// DOCME
-	AssDialogue *line;
-
-	/// DOCME
-	int k;
-
-	/// DOCME
-	int kf;
-
-	/// DOCME
-	int ko;
-};
-
-
-///////
-// IDs
-enum {
-
-	/// DOCME
-	Get_Input_From_Video = 2000
-};
-
-
