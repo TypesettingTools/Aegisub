@@ -22,6 +22,7 @@
 #include <fstream>
 #include <sstream>
 #include <map>
+#include <memory>
 
 #include "libaegisub/cajun/reader.h"
 #include "libaegisub/cajun/writer.h"
@@ -55,10 +56,10 @@ void Options::ConfigNext(std::istream& stream) {
 }
 
 void Options::ConfigUser() {
-	std::istream *stream;
+	std::auto_ptr<std::istream> stream;
 
 	try {
-		stream = agi::io::Open(config_file);
+		stream.reset(agi::io::Open(config_file));
 	} catch (const acs::AcsNotFound&) {
 		return;
 	}
@@ -66,7 +67,6 @@ void Options::ConfigUser() {
 	/// @todo Handle other errors such as parsing and notifying the user.
 	LoadConfig(*stream);
 	config_loaded = true;
-	delete stream;
 }
 
 

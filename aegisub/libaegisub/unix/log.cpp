@@ -37,7 +37,7 @@ void EmitSTDOUT::log(SinkMessage *sm) {
 //		tmtime.tm_mon,
 //		tmtime.tm_mday,
 
-	printf("%c %02d:%02d:%02d %ld <%-25s> [%s:%s:%d]  %s\n",
+	printf("%c %02d:%02d:%02d %ld <%-25s> [%s:%s:%d]  %.*s\n",
 		Severity_ID[sm->severity],
 		tmtime.tm_hour,
 		tmtime.tm_min,
@@ -47,8 +47,8 @@ void EmitSTDOUT::log(SinkMessage *sm) {
 		sm->file,
 		sm->func,
 		sm->line,
-		strndup(sm->message,
-		sm->len));
+		sm->len,
+		sm->message);
 }
 
 	} // namespace log

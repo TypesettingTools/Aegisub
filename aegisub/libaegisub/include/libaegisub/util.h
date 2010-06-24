@@ -34,5 +34,17 @@ namespace agi {
 	void Rename(const std::string& from, const std::string& to);
 	void time_log(agi_timeval &tv);
 
+	struct delete_ptr {
+		template<class T>
+		void operator()(T* ptr) const {
+			delete ptr;
+		}
+	};
+	template<class T>
+	void delete_clear(T& container) {
+		std::for_each(container.begin(), container.end(), delete_ptr());
+		container.clear();
+	}
+
 	} // namespace util
 } // namespace agi

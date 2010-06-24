@@ -77,11 +77,11 @@ struct SinkMessage {
 	/// @param file     File name
 	/// @param func     Function name
 	/// @param line     Source line
-	/// @param tv 		Log time
+	/// @param tv       Log time
 	SinkMessage(const char *section, Severity severity, const char *file,
             const char *func, int line, agi_timeval tv);
 
-	// Destructor
+	/// Destructor
 	~SinkMessage();
 
 	const char *section;	///< Section info eg "video/open" "video/seek" etc
@@ -105,13 +105,10 @@ class LogSink {
 	int64_t size;
 
 	/// Log sink
-	Sink *sink;
+	Sink sink;
 
 	/// List of function pointers to emitters
 	std::vector<Emitter*> emitters;
-
-	/// Whether to enable emitters
-	bool emit;
 
 public:
 	/// Constructor
@@ -124,24 +121,20 @@ public:
 	void log(SinkMessage *sm);
 
 	/// @brief Subscribe an emitter.
-	/// @param Function pointer to an emitter
-	/// @return ID for this Emitter
-	int Subscribe(Emitter &em);
+	/// @param em Emitter to add
+	void Subscribe(Emitter *em);
 
 	/// @brief Unsubscribe an emitter.
-	/// @param id ID to remove.
-	void Unsubscribe(const int &id);
+	/// @param em Emitter to remove
+	void Unsubscribe(Emitter *em);
 
 	/// @brief @get the complete (current) log.
 	/// @return Const pointer to internal sink.
-	const Sink* GetSink() { return sink; }
+	const Sink* GetSink() { return &sink; }
 };
 
 /// An emitter to produce human readable output for a log sink.
 class Emitter {
-	/// ID for this emitter
-	int id;
-
 public:
 	/// Constructor
 	Emitter();
@@ -162,9 +155,9 @@ public:
 
 /// Generates a message and submits it to the log sink.
 class Message {
-	char *buf;
 	const int len;
-	std::ostrstream *msg;
+	char *buf;
+	std::ostrstream msg;
 	SinkMessage *sm;
 
 public:
@@ -174,7 +167,7 @@ public:
 			const char *func,
 			int line);
 	~Message();
-	std::ostream& stream() { return *(msg); }
+	std::ostream& stream() { return msg; }
 };
 
 

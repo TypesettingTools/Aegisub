@@ -21,6 +21,8 @@
 #include "charset_ucd.h"
 
 #ifndef LAGI_PRE
+#include <memory>
+
 #include "../../universalchardet/nsCharSetProber.h"
 #endif
 
@@ -31,8 +33,7 @@ namespace agi {
 
 UCDetect::UCDetect(const std::string &file): nsUniversalDetector(NS_FILTER_ALL) {
 	{
-		std::ifstream *fp;
-		fp = io::Open(file);
+		std::auto_ptr<std::ifstream> fp(io::Open(file));
 
 		while (!mDone && !fp->eof()) {
 			char buf[512];

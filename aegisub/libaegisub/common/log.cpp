@@ -22,6 +22,8 @@
 #include <stdio.h>
 #include <string.h>
 
+#include <algorithm>
+#include <functional>
 #include <memory>
 #endif
 
@@ -40,99 +42,84 @@ std::auto_ptr<LogSink> log(new LogSink());
 /// Keep this ordered the same as Severity
 const char *Severity_ID = "EAWID";
 
-SinkMessage::SinkMessage(const char *section, Severity severity, const char *file,
-			const char *func, int line, agi_timeval tv):
-			section(section),
-			severity(severity),
-			file(file),
-			func(func),
-			line(line),
-			tv(tv) {
+SinkMessage::SinkMessage(const char *section, Severity severity,
+						 const char *file, const char *func, int line,
+						 agi_timeval tv)
+: section(section)
+, severity(severity)
+, file(file)
+, func(func)
+, line(line)
+, tv(tv)
+, message(NULL)
+, len(0)
+{
 }
 
 SinkMessage::~SinkMessage() {
-///@todo Memory cleanup
+	delete message;
 }
 
 
-LogSink::LogSink(): emit(0) {
-	sink = new Sink();
+LogSink::LogSink() {
 }
 
 LogSink::~LogSink() {
 /// @todo This needs to flush all log data to disk on quit.
-	if (emit) {
-		for (int i = emitters.size()-1; i >= 0; i--) {
-			delete emitters[i];
-		}
-	}
+	agi::util::delete_clear(sink);
 }
 
 
 void LogSink::log(SinkMessage *sm) {
-	sink->push_back(sm);
+	sink.push_back(sm);
 
-	if (emit) {
-		for (int i = emitters.size()-1; i >= 0; i--) {
-			emitters[i]->log(sm);
-		}
-	}
+	std::for_each(
+		emitters.begin(),
+		emitters.end(),
+		std::bind2nd(std::mem_fun(&Emitter::log), sm));
 }
 
-
-Emitter::~Emitter() {
+void LogSink::Subscribe(Emitter *em) {
+	emitters.push_back(em);
 }
 
-
-Emitter::Emitter() {
+void LogSink::Unsubscribe(Emitter *em) {
+	emitters.erase(std::remove(emitters.begin(), emitters.end(), em), emitters.end());
 }
-
-
-int LogSink::Subscribe(Emitter &em) {
-	emitters.push_back(&em);
-	emit = 1;
-	/// @todo This won't work since removing it will cause the id's to change,
-	///       it's good enough while this is being written.
-	return emitters.size();
-}
-
-
-void LogSink::Unsubscribe(const int &id) {
-	emitters.erase((emitters.begin()-1)+id);
-	if (emitters.size() == 0)
-		emit = 0;
-}
-
 
 Message::Message(const char *section,
 				Severity severity,
 				const char *file,
 				const char *func,
-				int line):
-				len(1024) {
-	buf = new char[len];
-	msg = new std::ostrstream(buf, len);
+				int line)
+: len(1024)
+, buf(new char[len])
+, msg(buf, len)
+{
 	agi_timeval tv;
 	util::time_log(tv);
 	sm = new SinkMessage(section, severity, file, func, line, tv);
 }
 
-
 Message::~Message() {
-	sm->message = msg->str();
-	sm->len = msg->pcount();
+	sm->message = msg.str();
+	sm->len = msg.pcount();
 	agi::log::log->log(sm);
-	delete msg;
 }
 
+Emitter::Emitter() {
+}
+
+Emitter::~Emitter() {
+	Disable();
+}
 
 void Emitter::Enable() {
-	id = agi::log::log->Subscribe(*(this));
+	agi::log::log->Subscribe(this);
 }
 
-
 void Emitter::Disable() {
-	agi::log::log->Unsubscribe(id);
+	agi::log::log->Unsubscribe(this);
 }
 
 

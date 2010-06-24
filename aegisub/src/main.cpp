@@ -144,8 +144,8 @@ void SetThreadName(DWORD dwThreadID, LPCSTR szThreadName) {
 ///
 bool AegisubApp::OnInit() {
 #ifdef _DEBUG
-	agi::log::EmitSTDOUT *emit_stdout = new agi::log::EmitSTDOUT();
-	emit_stdout->Enable();
+	agi::log::EmitSTDOUT emit_stdout;
+	emit_stdout.Enable();
 #endif
 
 	// App name (yeah, this is a little weird to get rid of an odd warning)
