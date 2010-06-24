@@ -79,12 +79,13 @@ AssAttachment::~AssAttachment() {
 /// @brief Clone 
 /// @return 
 ///
-AssEntry *AssAttachment::Clone() {
+AssEntry *AssAttachment::Clone() const {
 	// New object
 	AssAttachment *clone = new AssAttachment(filename);
 
 	// Copy fields
 	clone->data = data;
+	clone->group = group;
 
 	// Return
 	return clone;
