@@ -702,7 +702,17 @@ namespace Automation4 {
 		for (int i = 1; i <= n; i++) {
 			lua_pushvalue(L, i);
 			AssEntry *e = LuaToAssEntry(L);
-			laf->ass->Line.push_back(e);
+			if (e->GetType() == ENTRY_DIALOGUE) {
+				// find insertion point, looking backwards
+				std::list<AssEntry*>::iterator it = laf->ass->Line.end();
+				do { --it; } while ((*it)->GetType() != ENTRY_DIALOGUE);
+				// found last dialogue entry in file, move one past
+				++it;
+				laf->ass->Line.insert(it, e);
+			}
+			else {
+				laf->ass->Line.push_back(e);
+			}
 		}
 
 		return 0;
