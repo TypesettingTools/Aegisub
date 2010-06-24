@@ -847,8 +847,13 @@ void SubtitlesGrid::LoadFromAss (AssFile *_ass,bool keepSelection,bool dontModif
 
 	// Restore selection
 	if (keepSelection) {
-		for (size_t i=0;i<srows.size();i++) {
-			SelectRow(srows[i],true);
+		if (srows.empty() || srows[0] >= (signed)selMap.size()) {
+			SelectRow(selMap.size() - 1);
+		}
+		else {
+			for (size_t i=0;i<srows.size();i++) {
+				SelectRow(srows[i],true);
+			}
 		}
 	}
 
