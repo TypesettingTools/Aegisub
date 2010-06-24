@@ -144,7 +144,10 @@ DialogAttachments::~DialogAttachments() {
 			break;
 
 		if ((*cur)->GetEntryData() == L"[Fonts]" || (*cur)->GetEntryData() == L"[Graphics]") {
-			if (found_attachments) continue;
+			if (found_attachments) {
+				--cur;
+				continue;
+			}
 			// found section heading with no attachments in, remove it
 			wxString delgroup = (*cur)->group;
 			std::list<AssEntry*>::iterator di = cur;
