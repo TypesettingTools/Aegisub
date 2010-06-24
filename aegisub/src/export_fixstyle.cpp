@@ -34,28 +34,24 @@
 /// @ingroup export
 ///
 
-
-///////////
-// Headers
 #include "config.h"
+
+#ifndef AGI_PRE
+#include <algorithm>
+#include <functional>
+#endif
 
 #include "export_fixstyle.h"
 #include "ass_file.h"
 #include "ass_dialogue.h"
 #include "ass_style.h"
 
-
 /// @brief Constructor 
-///
 AssFixStylesFilter::AssFixStylesFilter() {
 	initialized = false;
 }
 
-
-
 /// @brief Init 
-/// @return 
-///
 void AssFixStylesFilter::Init() {
 	if (initialized) return;
 	initialized = true;
@@ -64,41 +60,24 @@ void AssFixStylesFilter::Init() {
 	description = _("Fixes styles by replacing any style that isn't available on file with Default.");
 }
 
-
-
 /// @brief Process 
 /// @param subs          
 /// @param export_dialog 
-///
 void AssFixStylesFilter::ProcessSubs(AssFile *subs, wxWindow *export_dialog) {
-	// Build styles list
 	wxArrayString styles = subs->GetStyles();
+	styles.Sort();
+	std::for_each(styles.begin(), styles.end(), std::mem_fun_ref(&wxString::MakeLower));
 	size_t n = styles.Count();
 
-	// Process lines
-	entryIter cur;
-	for (cur=subs->Line.begin();cur!=subs->Line.end();cur++) {
+	for (entryIter cur=subs->Line.begin();cur!=subs->Line.end();cur++) {
 		AssDialogue *diag = dynamic_cast<AssDialogue*>(*cur);
 		if (diag) {
-			// Try to find style and match case
-			bool found = false;
-			for (size_t i=0;i<n;i++) {
-				if (diag->Style.Lower() == styles[i].Lower()) {
-					diag->Style = styles[i];
-					found = true;
-					break;
-				}
+			if (!std::binary_search(styles.begin(), styles.end(), diag->Style.Lower())) {
+				diag->Style = L"Default";
 			}
-			
-			// Not found, fallback to default
-			if (!found) diag->Style = _T("Default");
 		}
 	}
 }
 
-
-
 /// DOCME
 AssFixStylesFilter AssFixStylesFilter::instance;
-
-
