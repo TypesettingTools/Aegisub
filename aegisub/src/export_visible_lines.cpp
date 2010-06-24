@@ -71,22 +71,18 @@ void AssLimitToVisibleFilter::ProcessSubs(AssFile *subs, wxWindow *export_dialog
 	// Nothing to do
 	if (frame == -1) return;
 
-	// Process
-	using std::list;
 	AssDialogue *diag;
 	entryIter cur, next = subs->Line.begin();
 	while (next != subs->Line.end()) {
-		// Set next
 		cur = next++;
 
-		// Is dialogue?
 		diag = AssEntry::GetAsDialogue(*cur);
 		if (diag) {
-			int f1 = VFR_Output.GetFrameAtTime(diag->Start.GetMS(),true);
-			int f2 = VFR_Output.GetFrameAtTime(diag->End.GetMS(),false);
-
 			// Invisible, remove frame
-			if (f1 > frame || f2 < frame) {
+			if (VFR_Output.GetFrameAtTime(diag->Start.GetMS(),true) > frame ||
+				VFR_Output.GetFrameAtTime(diag->End.GetMS(),false) < frame) {
+
+				delete *cur;
 				subs->Line.erase(cur);
 			}
 		}
