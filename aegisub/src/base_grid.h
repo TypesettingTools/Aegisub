@@ -47,6 +47,8 @@
 #include <wx/scrolbar.h>
 #endif
 
+#include "selection_controller.h"
+
 
 //////////////
 // Prototypes
@@ -70,7 +72,7 @@ public:
 /// @brief DOCME
 ///
 /// DOCME
-class BaseGrid : public wxWindow {
+class BaseGrid : public wxWindow, public BaseSelectionController<AssEntry> {
 private:
 
 	/// DOCME
@@ -128,6 +130,15 @@ protected:
 
 	/// DOCME
 	std::vector<int> selMap;
+
+public:
+	// SelectionController implementation
+	virtual void SetActiveLine(AssEntry *new_line) { }
+	virtual AssEntry * GetActiveLine() const { return 0; }
+	virtual void SetSelectedSet(const Selection &new_selection) { }
+	virtual void GetSelectedSet(Selection &selection) const { }
+	virtual void NextLine() { }
+	virtual void PrevLine() { }
 
 public:
 
