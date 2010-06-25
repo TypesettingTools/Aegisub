@@ -1868,6 +1868,14 @@
 				>
 			</File>
 		</Filter>
+		<Filter
+			Name="Controllers"
+			>
+			<File
+				RelativePath="..\..\src\selection_controller.h"
+				>
+			</File>
+		</Filter>
 	</Files>
 	<Globals>
 	</Globals>
