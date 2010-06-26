@@ -875,7 +875,8 @@ void SubtitlesGrid::InsertLine(AssDialogue *line,int n,bool after,bool update) {
 	else pos = ass->Line.end();
 	
 	entryIter newIter = ass->Line.insert(pos,line);
-	UpdateMaps();
+	line_iter_map[line] = newIter;
+	BaseGrid::UpdateMaps();
 
 	// Update
 	if (update) {
