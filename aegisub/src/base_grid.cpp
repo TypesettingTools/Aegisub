@@ -82,6 +82,9 @@ BaseGrid::BaseGrid(wxWindow* parent, wxWindowID id, const wxPoint& pos, const wx
 	lineHeight = 1; // non-zero to avoid div by 0
 	active_line = 0;
 
+	batch_level = 0;
+	batch_active_line_changed = false;
+
 	// Set scrollbar
 	scrollBar = new wxScrollBar(this,GRID_SCROLLBAR,wxDefaultPosition,wxDefaultSize,wxSB_VERTICAL);
 	scrollBar->SetScrollbar(0,10,100,10);
@@ -160,6 +163,8 @@ void BaseGrid::ClearMaps() {
 ///
 void BaseGrid::BeginBatch() {
 	//Freeze();
+
+	++batch_level;
 }
 
 
@@ -167,6 +172,18 @@ void BaseGrid::BeginBatch() {
 /// @brief End batch 
 ///
 void BaseGrid::EndBatch() {
+	--batch_level;
+	assert(batch_level >= 0);
+	if (batch_level == 0) {
+		if (batch_active_line_changed)
+			AnnounceActiveLineChanged(active_line);
+		batch_active_line_changed = false;
+		if (!batch_selection_added.empty() || !batch_selection_removed.empty())
+			AnnounceSelectedSetChanged(batch_selection_added, batch_selection_removed);
+		batch_selection_added.clear();
+		batch_selection_removed.clear();
+	}
+
 	//Thaw();
 	AdjustScrollbar();
 }
@@ -1250,4 +1267,38 @@ void BaseGrid::NextLine() {
 		MakeCellVisible(cur_line_i+1, 0, false);
 	}
 }
+
+
+void BaseGrid::AnnounceActiveLineChanged(AssDialogue *new_line) {
+	if (batch_level > 0)
+		batch_active_line_changed = true;
+	else
+		BaseSelectionController::AnnounceActiveLineChanged(new_line);
+}
+
+void BaseGrid::AnnounceSelectedSetChanged(const Selection &lines_added, const Selection &lines_removed) {
+	if (batch_level > 0) {
+		// Remove all previously added lines that are now removed
+		for (Selection::iterator it = batch_selection_added.begin(); it != batch_selection_added.end();) {
+			if (lines_removed.find(*it) != lines_removed.end())
+				it = batch_selection_added.erase(it);
+			else
+				++it;
+		}
+		// Remove all previously removed lines that are now added
+		for (Selection::iterator it = batch_selection_removed.begin(); it != batch_selection_removed.end();) {
+			if (lines_added.find(*it) != lines_added.end())
+				it = batch_selection_removed.erase(it);
+			else
+				++it;
+		}
+		// Add new stuff to batch sets
+		batch_selection_added.insert(lines_added.begin(), lines_added.end());
+		batch_selection_removed.insert(lines_removed.begin(), lines_removed.end());
+	}
+	else {
+		BaseSelectionController::AnnounceSelectedSetChanged(lines_added, lines_removed);
+	}
+}
+
 

@@ -110,6 +110,11 @@ private:
 	std::vector<AssDialogue*> index_line_map;
 	std::map<AssDialogue*,int> line_index_map;
 
+	int batch_level;
+	bool batch_active_line_changed;
+	Selection batch_selection_added;
+	Selection batch_selection_removed;
+
 protected:
 
 	/// DOCME
@@ -128,6 +133,10 @@ protected:
 
 	/// DOCME
 	int yPos;
+
+	// Re-implement functions from BaseSelectionController to add batching
+	void AnnounceActiveLineChanged(AssDialogue *new_line);
+	void AnnounceSelectedSetChanged(const Selection &lines_added, const Selection &lines_removed);
 
 public:
 	// SelectionController implementation
