@@ -105,6 +105,10 @@ private:
 
 	void DrawImage(wxDC &dc);
 
+	Selection selection;
+	std::vector<AssDialogue*> index_line_map;
+	std::map<AssDialogue*,int> line_index_map;
+
 protected:
 
 	/// DOCME
@@ -124,14 +128,11 @@ protected:
 	/// DOCME
 	int yPos;
 
-	/// DOCME
-	std::vector<int> selMap;
-
 public:
 	// SelectionController implementation
 	virtual void SetActiveLine(AssDialogue *new_line) { }
 	virtual AssDialogue * GetActiveLine() const { return 0; }
-	virtual void SetSelectedSet(const Selection &new_selection) { }
+	virtual void SetSelectedSet(const Selection &new_selection);
 	virtual void GetSelectedSet(Selection &selection) const;
 	virtual void NextLine() { }
 	virtual void PrevLine() { }
@@ -144,12 +145,6 @@ public:
 
 	/// DOCME
 	bool byFrame;
-
-	/// DOCME
-	std::vector<entryIter> diagMap;
-
-	/// DOCME
-	std::vector<AssDialogue *> diagPtrMap;
 
 	void AdjustScrollbar();
 	void SetColumnWidths();
@@ -167,7 +162,7 @@ public:
 	void SelectVisible();
 	wxArrayInt GetSelection(bool *continuous=NULL) const;
 
-	void Clear();
+	void ClearMaps();
 	void UpdateMaps();
 	void UpdateStyle();
 
@@ -176,6 +171,7 @@ public:
 	void MakeCellVisible(int row, int col,bool center=true);
 
 	AssDialogue *GetDialogue(int n) const;
+	int GetDialogueIndex(AssDialogue *diag) const;
 
 	BaseGrid(wxWindow* parent, wxWindowID id, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = wxWANTS_CHARS, const wxString& name = wxPanelNameStr);
 	~BaseGrid();

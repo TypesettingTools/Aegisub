@@ -628,10 +628,11 @@ void FrameMain::InitContents() {
 void FrameMain::DeInitContents() {
 	if (detachedVideo) detachedVideo->Destroy();
 	if (stylingAssistant) stylingAssistant->Destroy();
-	AssFile::StackReset();
-	delete AssFile::top;
+	SubsGrid->ClearMaps();
 	delete EditBox;
 	delete videoBox;
+	AssFile::StackReset();
+	delete AssFile::top;
 	HelpButton::ClearPages();
 }
 
@@ -698,17 +699,18 @@ void FrameMain::LoadSubtitles (wxString filename,wxString charset) {
 		}
 
 		// Proceed into loading
-		SubsGrid->Clear();
+		SubsGrid->ClearMaps();
 		AssFile::StackReset();
 		if (isFile) {
 			AssFile::top->Load(filename,charset);
-			SubsGrid->LoadFromAss(AssFile::top,false,true);
+			SubsGrid->SetSelectedSet(SubtitleSelectionController::Selection());
+			SubsGrid->UpdateMaps();
 			wxFileName fn(filename);
 			StandardPaths::SetPathValue(_T("?script"),fn.GetPath());
 			OPT_SET("Path/Last/Subtitles")->SetString(STD_STR(fn.GetPath()));
 		}
 		else {
-			SubsGrid->LoadDefault(AssFile::top);
+			SubsGrid->LoadDefault();
 			StandardPaths::SetPathValue(_T("?script"),_T(""));
 		}
 	}

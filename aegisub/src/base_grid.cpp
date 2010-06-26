@@ -100,6 +100,7 @@ BaseGrid::BaseGrid(wxWindow* parent, wxWindowID id, const wxPoint& pos, const wx
 /// @brief Destructor 
 ///
 BaseGrid::~BaseGrid() {
+	ClearMaps();
 	delete bmp;
 }
 
@@ -140,16 +141,16 @@ void BaseGrid::UpdateStyle() {
 
 /// @brief Clears grid 
 ///
-void BaseGrid::Clear () {
-	Selection lines_removed;
-	GetSelectedSet(lines_removed);
-	AnnounceSelectedSetChanged(Selection(), lines_removed);
+void BaseGrid::ClearMaps() {
+	Selection old_selection(selection);
 
-	diagMap.clear();
-	diagPtrMap.clear();
-	selMap.clear();
+	index_line_map.clear();
+	line_index_map.clear();
+	selection.clear();
 	yPos = 0;
 	AdjustScrollbar();
+
+	AnnounceSelectedSetChanged(Selection(), old_selection);
 }
 
 
@@ -211,34 +212,33 @@ void BaseGrid::MakeCellVisible(int row, int col,bool center) {
 /// @param select        
 ///
 void BaseGrid::SelectRow(int row, bool addToSelected, bool select) {
-	if (row < 0 || (size_t)row >= selMap.size()) return;
+	if (row < 0 || (size_t)row >= index_line_map.size()) return;
+
+	AssDialogue *line = index_line_map[row];
 
 	if (!addToSelected) {
-		// Sends change notifications for itself
-		ClearSelection();
+		Selection old_selection(selection);
+		selection.clear();
+		selection.insert(line);
+		AnnounceSelectedSetChanged(selection, old_selection);
 	}
 
-	if (select != !!selMap[row]) {
-		selMap[row] = select;
-		
-		if (!addToSelected) {
-			Refresh(false);
-		}
-		else {
-			int w = 0;
-			int h = 0;
-			GetClientSize(&w,&h);
-			RefreshRect(wxRect(0,(row+1-yPos)*lineHeight,w,lineHeight),false);
-		}
+	else if (select && selection.find(line) == selection.end()) {
+		selection.insert(line);
 
-		Selection lines_added;
-		Selection lines_removed;
-		if (select)
-			lines_added.insert(diagPtrMap[row]);
-		else
-			lines_removed.insert(diagPtrMap[row]);
+		Selection added;
+		added.insert(line);
 
-		AnnounceSelectedSetChanged(lines_added, lines_removed);
+		AnnounceSelectedSetChanged(added, Selection());
+	}
+
+	else if (!select && selection.find(line) != selection.end()) {
+		selection.erase(line);
+
+		Selection removed;
+		removed.insert(line);
+
+		AnnounceSelectedSetChanged(Selection(), removed);
 	}
 }
 
@@ -276,16 +276,11 @@ void BaseGrid::SelectVisible() {
 /// @brief Unselects all cells 
 ///
 void BaseGrid::ClearSelection() {
-	Selection lines_removed;
-	GetSelectedSet(lines_removed);
+	Selection old_selection(selection.begin(), selection.end());
 
-	int rows = selMap.size();
-	for (int i=0;i<rows;i++) {
-		selMap[i] = false;
-	}
-	Refresh(false);
+	selection.clear();
 
-	AnnounceSelectedSetChanged(Selection(), lines_removed);
+	AnnounceSelectedSetChanged(Selection(), old_selection);
 }
 
 
@@ -296,8 +291,9 @@ void BaseGrid::ClearSelection() {
 /// @return 
 ///
 bool BaseGrid::IsInSelection(int row, int) const {
-	if ((size_t)row >= selMap.size() || row < 0) return false;
-	return !!selMap[row];
+	if ((size_t)row >= index_line_map.size() || row < 0) return false;
+
+	return selection.find(index_line_map[row]) != selection.end();
 }
 
 
@@ -306,18 +302,27 @@ bool BaseGrid::IsInSelection(int row, int) const {
 /// @return 
 ///
 int BaseGrid::GetNumberSelection() const {
-	return std::count(selMap.begin(), selMap.end(), 1);
+	return selection.size();
 }
 
 
 
-/// @brief Gets first selected row 
-/// @return 
+/// @brief Gets first selected row index
+/// @return Row index of first selected row, -1 if no selection
 ///
 int BaseGrid::GetFirstSelRow() const {
-	std::vector<int>::const_iterator first = std::find(selMap.begin(), selMap.end(), 1);
-	if (first == selMap.end()) return -1;
-	return std::distance(selMap.begin(), first);
+	Selection::const_iterator it = selection.begin();
+
+	if (it == selection.end()) return -1;
+
+	int index = GetDialogueIndex(*it);
+
+	for (; it != selection.end(); ++it) {
+		int other_index = GetDialogueIndex(*it);
+		if (other_index < index) index = other_index;
+	}
+
+	return index;
 }
 
 
@@ -340,24 +345,25 @@ int BaseGrid::GetLastSelRow() const {
 /// @return Array with indices of selected lines
 ///
 wxArrayInt BaseGrid::GetSelection(bool *cont) const {
-	// Prepare
-	int nrows = GetRows();
 	int last = -1;
 	bool continuous = true;
-	wxArrayInt selections;
 
-	// Scan
-	for (int i=0;i<nrows;i++) {
-		if (selMap[i]) {
-			selections.Add(i);
-			if (last != -1 && i != last+1) continuous = false;
-			last = i;
-		}
+	std::set<int> sel_row_indices;
+
+	for (Selection::const_iterator it = selection.begin(); it != selection.end(); ++it) {
+		sel_row_indices.insert(GetDialogueIndex(*it));
 	}
 
-	// Return
+	// Iterating the int set yields a sorted list
+	wxArrayInt res;
+	for (std::set<int>::iterator it = sel_row_indices.begin(); it != sel_row_indices.end(); ++it) {
+		res.Add(*it);
+		if (last != -1 && *it != last+1) continuous = false;
+		last = *it;
+	}
+
 	if (cont) *cont = continuous;
-	return selections;
+	return res;
 }
 
 
@@ -366,7 +372,7 @@ wxArrayInt BaseGrid::GetSelection(bool *cont) const {
 /// @return 
 ///
 int BaseGrid::GetRows() const {
-	return diagMap.size();
+	return index_line_map.size();
 }
 
 
@@ -981,18 +987,24 @@ void BaseGrid::SetColumnWidths() {
 
 
 
-/// @brief Gets dialogue from map 
-/// @param n 
-/// @return 
+/// @brief Get dialogue by index
+/// @param n Index to look up
+/// @return Subtitle dialogue line for index, or 0 if invalid index
 ///
 AssDialogue *BaseGrid::GetDialogue(int n) const {
-	try {
-		if (n < 0 || (size_t)n >= diagMap.size()) return NULL;
-		return dynamic_cast<AssDialogue*>(*diagMap.at(n));
-	}
-	catch (...) {
-		return NULL;
-	}
+	if (n < 0 || n >= (int)index_line_map.size()) return 0;
+	return index_line_map[n];
+}
+
+
+
+/// @brief Get index by dialogue line
+/// @param diag Dialogue line to look up
+/// @return Subtitle index for object, or -1 if unknown subtitle
+int BaseGrid::GetDialogueIndex(AssDialogue *diag) const {
+	std::map<AssDialogue*,int>::const_iterator it = line_index_map.find(diag);
+	if (it != line_index_map.end()) return it->second;
+	else return -1;
 }
 
 
@@ -1015,37 +1027,17 @@ bool BaseGrid::IsDisplayed(AssDialogue *line) {
 /// @brief Update maps 
 ///
 void BaseGrid::UpdateMaps() {
-	// Store old
-	int len = selMap.size();
-	std::vector<AssDialogue *> tmpDiagPtrMap(diagPtrMap);
-	std::vector<int> tmpSelMap(selMap);
-
-	// Clear old
-	diagPtrMap.clear();
-	diagMap.clear();
-	selMap.clear();
+	index_line_map.clear();
+	line_index_map.clear();
 	
-	// Re-generate lines
 	for (entryIter cur=AssFile::top->Line.begin();cur != AssFile::top->Line.end();cur++) {
 		AssDialogue *curdiag = dynamic_cast<AssDialogue*>(*cur);
 		if (curdiag) {
-			// Find old pos
-			int sel = 0;
-			for (int i=0;i<len;i++) {
-				if (tmpDiagPtrMap[i] == curdiag) {
-					sel = tmpSelMap[i];
-					break;
-				}
-			}
-
-			// Add new
-			diagMap.push_back(cur);
-			diagPtrMap.push_back(curdiag);
-			selMap.push_back(sel);
+			line_index_map[curdiag] = (int)index_line_map.size();
+			index_line_map.push_back(curdiag);
 		}
 	}
 
-	// Refresh
 	Refresh(false);
 }
 
@@ -1211,12 +1203,14 @@ wxArrayInt BaseGrid::GetRangeArray(int n1,int n2) const {
 // SelectionController
 
 
-void BaseGrid::GetSelectedSet(Selection &selection) const {
-	for (size_t i = 0; i < selMap.size(); ++i) {
-		if (selMap[i] != 0) {
-			selection.insert(GetDialogue((int)i));
-		}
-	}
+void BaseGrid::GetSelectedSet(Selection &os) const {
+	os.insert(selection.begin(), selection.end());
 }
 
+
+void BaseGrid::SetSelectedSet(const Selection &new_selection) {
+	Selection old_selection(selection);
+	selection = new_selection;
+	AnnounceSelectedSetChanged(new_selection, old_selection);
+}
 

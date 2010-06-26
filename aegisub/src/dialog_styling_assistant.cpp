@@ -274,8 +274,7 @@ void DialogStyling::OnActivate(wxActivateEvent &event) {
 	PlayVideoButton->Enable(video->IsLoaded());
 	PlayAudioButton->Enable(audio->loaded);
 	// Update grid
-	if (grid->ass != AssFile::top)
-		grid->LoadFromAss(AssFile::top,false,true);
+	grid->UpdateMaps();
 	// Fix style list
 	Styles->Set(grid->ass->GetStyles());
 	// Fix line selection

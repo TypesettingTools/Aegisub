@@ -78,10 +78,6 @@ typedef std::list<AssEntry*>::iterator entryIter;
 /// DOCME
 class SubtitlesGrid: public BaseGrid {
 private:
-
-	/// DOCME
-	bool ready;
-
 	void OnPopupMenu(bool alternate=false);
 	void OnKeyDown(wxKeyEvent &event);
 
@@ -110,6 +106,8 @@ private:
 	void OnAudioClip(wxCommandEvent &event);
 	void OnShowColMenu(wxCommandEvent &event);
 
+	std::map<AssDialogue*,entryIter> line_iter_map;
+
 public:
 
 	/// DOCME
@@ -118,9 +116,11 @@ public:
 	SubtitlesGrid(FrameMain* parentFrame,wxWindow *parent, wxWindowID id, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = wxWANTS_CHARS, const wxString& name = wxPanelNameStr);
 	~SubtitlesGrid();
 
-	void LoadDefault(AssFile *ass=NULL);
-	void LoadFromAss(AssFile *ass=NULL,bool keepSelection=false,bool dontModify=false);
+	void LoadDefault();
 	void CommitChanges(bool force=false,bool videoOnly=false);
+
+	void ClearMaps();
+	void UpdateMaps();
 
 	void SetVideoToSubs(bool start);
 	void SetSubsToVideo(bool start);

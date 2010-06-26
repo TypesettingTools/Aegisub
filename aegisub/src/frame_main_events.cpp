@@ -1051,7 +1051,7 @@ void FrameMain::OnAutomationMacro (wxCommandEvent &event) {
 	int first_sel = SubsGrid->GetFirstSelRow();
 	// Clear all maps from the subs grid before running the macro
 	// The stuff done by the macro might invalidate some of the iterators held by the grid, which will cause great crashing
-	SubsGrid->Clear();
+	SubsGrid->ClearMaps();
 	// Run the macro...
 	activeMacroItems[event.GetId()-Menu_Automation_Macro]->Process(SubsGrid->ass, selected_lines, first_sel, this);
 	// Have the grid update its maps, this properly refreshes it to reflect the changed subs
@@ -1183,7 +1183,7 @@ void FrameMain::OnShiftToFrame (wxCommandEvent &) {
 void FrameMain::OnUndo(wxCommandEvent&) {
 	VideoContext::Get()->Stop();
 	AssFile::StackPop();
-	SubsGrid->LoadFromAss(AssFile::top,true);
+	SubsGrid->UpdateMaps();
 	AssFile::Popping = false;
 }
 
@@ -1191,7 +1191,7 @@ void FrameMain::OnUndo(wxCommandEvent&) {
 void FrameMain::OnRedo(wxCommandEvent&) {
 	VideoContext::Get()->Stop();
 	AssFile::StackRedo();
-	SubsGrid->LoadFromAss(AssFile::top,true);
+	SubsGrid->UpdateMaps();
 	AssFile::Popping = false;
 }
 
