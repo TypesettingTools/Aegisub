@@ -80,6 +80,7 @@ BaseGrid::BaseGrid(wxWindow* parent, wxWindowID id, const wxPoint& pos, const wx
 	holding = false;
 	byFrame = false;
 	lineHeight = 1; // non-zero to avoid div by 0
+	active_line = 0;
 
 	// Set scrollbar
 	scrollBar = new wxScrollBar(this,GRID_SCROLLBAR,wxDefaultPosition,wxDefaultSize,wxSB_VERTICAL);
@@ -492,7 +493,7 @@ void BaseGrid::DrawImage(wxDC &dc) {
 		// Check for collisions
 		bool collides = false;
 		if (curDiag) {
-			AssDialogue *sel = GetDialogue(editBox->linen);
+			AssDialogue *sel = GetActiveLine();
 			if (sel && sel != curDiag) {
 				if (curDiag->CollidesWith(sel)) collides = true;
 			}
@@ -636,10 +637,12 @@ void BaseGrid::DrawImage(wxDC &dc) {
 	}
 
 	// Draw currently active line border
-	dc.SetPen(wxPen(lagi_wxColour(OPT_GET("Colour/Subtitle Grid/Active Border")->GetColour())));
-	dc.SetBrush(*wxTRANSPARENT_BRUSH);
-	dy = (editBox->linen+1-yPos) * lineHeight;
-	dc.DrawRectangle(0,dy,w,lineHeight+1);
+	if (GetActiveLine()) {
+		dc.SetPen(wxPen(lagi_wxColour(OPT_GET("Colour/Subtitle Grid/Active Border")->GetColour())));
+		dc.SetBrush(*wxTRANSPARENT_BRUSH);
+		dy = (line_index_map[GetActiveLine()]+1-yPos) * lineHeight;
+		dc.DrawRectangle(0,dy,w,lineHeight+1);
+	}
 }
 
 
@@ -694,8 +697,8 @@ void BaseGrid::OnMouseEvent(wxMouseEvent &event) {
 	if (holding && !click) {
 		row = MID(0,row,GetRows()-1);
 	}
-	bool validRow = row >= 0 && row < GetRows();
-	if (!validRow) row = -1;
+	AssDialogue *dlg = GetDialogue(row);
+	if (!dlg) row = 0;
 
 	// Get focus
 	if (event.ButtonDown()) {
@@ -706,7 +709,7 @@ void BaseGrid::OnMouseEvent(wxMouseEvent &event) {
 
 	// Click type
 	bool startedHolding = false;
-	if (click && !holding && validRow) {
+	if (click && !holding && dlg!=0) {
 		holding = true;
 		startedHolding = true;
 		CaptureMouse();
@@ -736,7 +739,7 @@ void BaseGrid::OnMouseEvent(wxMouseEvent &event) {
 	}
 
 	// Click
-	if ((click || holding || dclick) && validRow) {
+	if ((click || holding || dclick) && dlg!=0) {
 		// Disable extending
 		extendRow = -1;
 
@@ -749,8 +752,8 @@ void BaseGrid::OnMouseEvent(wxMouseEvent &event) {
 
 		// Normal click
 		if ((click || dclick) && !shift && !ctrl && !alt) {
-			editBox->SetToLine(row);
-			if (dclick) VideoContext::Get()->JumpToTime(GetDialogue(row)->Start.GetMS());
+			SetActiveLine(dlg);
+			if (dclick) VideoContext::Get()->JumpToTime(dlg->Start.GetMS());
 			SelectRow(row,false);
 			parentFrame->UpdateToolbar();
 			lastRow = row;
@@ -759,7 +762,7 @@ void BaseGrid::OnMouseEvent(wxMouseEvent &event) {
 
 		// Keep selection
 		if (click && !shift && !ctrl && alt) {
-			editBox->SetToLine(row);
+			SetActiveLine(dlg);
 			return;
 		}
 
@@ -770,17 +773,16 @@ void BaseGrid::OnMouseEvent(wxMouseEvent &event) {
 				int i1 = row;
 				int i2 = lastRow;
 				if (i1 > i2) {
-					int aux = i1;
-					i1 = i2;
-					i2 = aux;
+					std::swap(i1, i2);
 				}
 
 				// Toggle each
-				bool notFirst = false;
+				Selection newsel;
 				for (int i=i1;i<=i2;i++) {
-					SelectRow(i,notFirst,true);
-					notFirst = true;
+					newsel.insert(GetDialogue(i));
 				}
+				SetSelectedSet(newsel);
+
 				parentFrame->UpdateToolbar();
 			}
 			return;
@@ -1038,6 +1040,11 @@ void BaseGrid::UpdateMaps() {
 		}
 	}
 
+	if (line_index_map.find(active_line) == line_index_map.end()) {
+		// this isn't supposed to happen
+		SetActiveLine(0);
+	}
+
 	Refresh(false);
 }
 
@@ -1106,14 +1113,14 @@ void BaseGrid::OnKeyPress(wxKeyEvent &event) {
 		// Move selection
 		if (!ctrl && !shift && !alt) {
 			// Move to extent first
-			int curLine = editBox->linen;
+			int curLine = GetDialogueIndex(GetActiveLine());
 			if (extendRow != -1) {
 				curLine = extendRow;
 				extendRow = -1;
 			}
 
 			int next = MID(0,curLine+dir*step,GetRows()-1);
-			editBox->SetToLine(next);
+			SetActiveLine(GetDialogue(next));
 			SelectRow(next);
 			MakeCellVisible(next,0,false);
 			return;
@@ -1122,8 +1129,8 @@ void BaseGrid::OnKeyPress(wxKeyEvent &event) {
 		// Move active only
 		if (alt && !shift && !ctrl) {
 			extendRow = -1;
-			int next = MID(0,editBox->linen+dir*step,GetRows()-1);
-			editBox->SetToLine(next);
+			int next = MID(0,GetDialogueIndex(GetActiveLine())+dir*step,GetRows()-1);
+			SetActiveLine(GetDialogue(next));
 			Refresh(false);
 			MakeCellVisible(next,0,false);
 			return;
@@ -1132,23 +1139,22 @@ void BaseGrid::OnKeyPress(wxKeyEvent &event) {
 		// Shift-selection
 		if (shift && !ctrl && !alt) {
 			// Find end
-			if (extendRow == -1) extendRow = editBox->linen;
+			if (extendRow == -1) GetDialogueIndex(GetActiveLine());
 			extendRow = MID(0,extendRow+dir*step,GetRows()-1);
 
 			// Set range
-			int i1 = editBox->linen;
+			int i1 = GetDialogueIndex(GetActiveLine());
 			int i2 = extendRow;
 			if (i2 < i1) {
-				int aux = i1;
-				i1 = i2;
-				i2 = aux;
+				std::swap(i1, i2);
 			}
 
 			// Select range
-			ClearSelection();
+			Selection newsel;
 			for (int i=i1;i<=i2;i++) {
-				SelectRow(i,true);
+				newsel.insert(GetDialogue(i));
 			}
+			SetSelectedSet(newsel);
 
 			MakeCellVisible(extendRow,0,false);
 			return;
@@ -1203,14 +1209,45 @@ wxArrayInt BaseGrid::GetRangeArray(int n1,int n2) const {
 // SelectionController
 
 
-void BaseGrid::GetSelectedSet(Selection &os) const {
-	os.insert(selection.begin(), selection.end());
-}
-
-
 void BaseGrid::SetSelectedSet(const Selection &new_selection) {
 	Selection old_selection(selection);
 	selection = new_selection;
 	AnnounceSelectedSetChanged(new_selection, old_selection);
+	Refresh(false);
+}
+
+
+void BaseGrid::SetActiveLine(AssDialogue *new_line) {
+	if (new_line != active_line) {
+		assert(new_line == 0 || line_index_map.find(new_line) != line_index_map.end());
+		active_line = new_line;
+		AnnounceActiveLineChanged(active_line);
+		Refresh(false);
+	}
+}
+
+
+void BaseGrid::PrevLine() {
+	int cur_line_i = GetDialogueIndex(GetActiveLine());
+	AssDialogue *prev_line = GetDialogue(cur_line_i-1);
+	if (prev_line) {
+		SetActiveLine(prev_line);
+		Selection newsel;
+		newsel.insert(prev_line);
+		SetSelectedSet(newsel);
+		MakeCellVisible(cur_line_i-1, 0, false);
+	}
+}
+
+void BaseGrid::NextLine() {
+	int cur_line_i = GetDialogueIndex(GetActiveLine());
+	AssDialogue *next_line = GetDialogue(cur_line_i+1);
+	if (next_line) {
+		SetActiveLine(next_line);
+		Selection newsel;
+		newsel.insert(next_line);
+		SetSelectedSet(newsel);
+		MakeCellVisible(cur_line_i+1, 0, false);
+	}
 }
 

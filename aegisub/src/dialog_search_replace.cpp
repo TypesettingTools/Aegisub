@@ -449,7 +449,7 @@ void SearchReplaceEngine::ReplaceNext(bool DoReplace) {
 		grid->SelectRow(curLine,false);
 		grid->MakeCellVisible(curLine,0);
 		if (field == 0) {
-			grid->editBox->SetToLine(curLine);
+			grid->SetActiveLine(grid->GetDialogue(curLine));
 			grid->editBox->TextEdit->SetSelectionU(pos,pos+replaceLen);
 		}
 		grid->EndBatch();

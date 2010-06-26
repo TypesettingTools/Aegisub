@@ -81,7 +81,6 @@ SubsEditBox::SubsEditBox (wxWindow *parent,SubtitlesGrid *gridp) : wxPanel(paren
 	textEditReady = true;
 	controlState = true;
 	setupDone = false;
-	linen = -2;
 
 	// Top controls
 	wxArrayString styles;
@@ -210,6 +209,8 @@ SubsEditBox::SubsEditBox (wxWindow *parent,SubtitlesGrid *gridp) : wxPanel(paren
 	setupDone = true;
 	SetSplitLineMode();
 	Update();
+
+	grid->AddSelectionListener(this);
 }
 
 
@@ -217,6 +218,7 @@ SubsEditBox::SubsEditBox (wxWindow *parent,SubtitlesGrid *gridp) : wxPanel(paren
 /// @brief Destructor 
 ///
 SubsEditBox::~SubsEditBox() {
+	grid->RemoveSelectionListener(this);
 	ActorBox->PopEventHandler(true);
 	Effect->PopEventHandler(true);
 	TextEdit->PopEventHandler(true);
@@ -265,7 +267,7 @@ void SubsEditBox::SetSplitLineMode(wxSize newSize) {
 ///
 void SubsEditBox::Update (bool timeOnly,bool weak,bool video) {
 	if (enabled) {
-		AssDialogue *curdiag = grid->GetDialogue(linen);
+		AssDialogue *curdiag = grid->GetActiveLine();
 		if (curdiag) {
 			// Controls
 			SetControlsState(true);
@@ -295,7 +297,7 @@ void SubsEditBox::Update (bool timeOnly,bool weak,bool video) {
 			}
 
 			// Audio
-			if (!weak) audio->SetDialogue(grid,curdiag,linen);
+			if (!weak) audio->SetDialogue(grid,curdiag,grid->GetDialogueIndex(curdiag));
 
 			// Video
 			VideoContext::Get()->curLine = curdiag;
@@ -336,52 +338,10 @@ void SubsEditBox::UpdateGlobals () {
 	ActorBox->Thaw();
 
 	// Set subs update
-	linen = -2;
 	TextEdit->SetSelection(0,0);
-	SetToLine(grid->GetFirstSelRow());
+	grid->SetActiveLine(grid->GetDialogue(grid->GetFirstSelRow()));
 }
 
-
-
-/// @brief Jump to a line 
-/// @param n    
-/// @param weak 
-///
-void SubsEditBox::SetToLine(int n,bool weak) {
-	// Set to nothing
-	if (n == -1) {
-		enabled = false;
-	}
-
-	// Set line
-	else if (grid->GetDialogue(n)) {
-		enabled = true;
-		if (n != linen) {
-			linen = n;
-			StartTime->Update();
-			EndTime->Update();
-			Duration->Update();
-		}
-	}
-
-	// Update controls
-	Update();
-
-	// Set video
-	if (VideoContext::Get()->IsLoaded() && !weak) {
-		bool sync;
-		if (Search.hasFocus) sync = OPT_GET("Tool/Search Replace/Video Update")->GetBool();
-		else sync = OPT_GET("Video/Subtitle Sync")->GetBool();
-
-		if (sync) {
-			VideoContext::Get()->Stop();
-			AssDialogue *cur = grid->GetDialogue(n);
-			if (cur) VideoContext::Get()->JumpToTime(cur->Start.GetMS());
-		}
-	}
-
-	TextEdit->EmptyUndoBuffer();
-}
 
 
 ///////////////
@@ -761,16 +721,16 @@ void SubsEditBox::OnDurationChange(wxCommandEvent &event) {
 void SubsEditBox::CommitTimes(bool start,bool end,bool fromStart,bool commit) {
 	// Get selection
 	if (!start && !end) return;
-	wxArrayInt sel = grid->GetSelection();
-	int n = sel.Count();
-	if (n == 0) return;
+	Selection sel;
+	grid->GetSelectedSet(sel);
+	if (sel.size() == 0) return;
 	AssDialogue *cur;
 	Duration->SetTime(EndTime->time.GetMS() - StartTime->time.GetMS());
 
 	// Update lines
-	for (int i=0;i<n;i++) {
-		if (grid->IsInSelection(linen)) cur = grid->GetDialogue(sel[i]);
-		else cur = grid->GetDialogue(linen);
+	for (Selection::iterator it = sel.begin(); it != sel.end(); ++it) {
+		if (sel.find(grid->GetActiveLine()) != sel.end()) cur = *it;
+		else cur = grid->GetActiveLine();
 		if (cur) {
 			// Set times
 			if (start) cur->Start = StartTime->time;
@@ -781,7 +741,7 @@ void SubsEditBox::CommitTimes(bool start,bool end,bool fromStart,bool commit) {
 				if (fromStart) cur->End = cur->Start;
 				else cur->Start = cur->End;
 			}
-			if (!grid->IsInSelection(linen)) break;
+			if (sel.find(grid->GetActiveLine()) == sel.end()) break;
 		}
 	}
 
@@ -792,7 +752,8 @@ void SubsEditBox::CommitTimes(bool start,bool end,bool fromStart,bool commit) {
 		Duration->Update();
 		grid->ass->FlagAsModified(_("modify times"));
 		grid->CommitChanges();
-		audio->SetDialogue(grid,grid->GetDialogue(sel[0]),sel[0]);
+		int sel0 = grid->GetFirstSelRow();
+		audio->SetDialogue(grid,grid->GetDialogue(sel0),sel0);
 		VideoContext::Get()->UpdateDisplays(false);
 	}
 }
@@ -962,54 +923,57 @@ void SubsEditBox::DoKeyPress(wxKeyEvent &event) {
 ///
 void SubsEditBox::Commit(bool stay) {
 	// Record pre-commit data
-	wxString oldText = grid->GetDialogue(linen)->Text;
-	int oldStart = grid->GetDialogue(linen)->Start.GetMS();
-	int oldEnd = grid->GetDialogue(linen)->End.GetMS();
+	AssDialogue *old_line = grid->GetActiveLine();
+	wxString oldText = old_line->Text;
+	int oldStart = old_line->Start.GetMS();
+	int oldEnd = old_line->End.GetMS();
 	// Update line
 	CommitText();
 
 	// Change text/time if needed for all selected lines
-	bool updated = false;
-	bool textNeedsCommit = grid->GetDialogue(linen)->Text != oldText;
-	bool timeNeedsCommit = grid->GetDialogue(linen)->Start.GetMS() != oldStart || grid->GetDialogue(linen)->End.GetMS() != oldEnd;
-	int nrows = grid->GetRows();
-	wxArrayInt sel = grid->GetSelection();
-	if (grid->IsInSelection(linen)) {
-		for (size_t i=0;i<sel.GetCount();i++) {
-			if (textNeedsCommit) grid->GetDialogue(sel[i])->Text = TextEdit->GetText();
+	bool textNeedsCommit = old_line->Text != oldText;
+	bool timeNeedsCommit = old_line->Start.GetMS() != oldStart || old_line->End.GetMS() != oldEnd;
+	Selection sel;
+	grid->GetSelectedSet(sel);
+	if (sel.find(old_line) != sel.end()) {
+		for (Selection::iterator it = sel.begin(); it != sel.end(); ++it) {
+			if (textNeedsCommit) {
+				(*it)->Text = TextEdit->GetText();
+			}
 			if (timeNeedsCommit) {
-				grid->GetDialogue(sel[i])->Start.SetMS(StartTime->time.GetMS());
-				grid->GetDialogue(sel[i])->End.SetMS(EndTime->time.GetMS());
+				(*it)->Start.SetMS(StartTime->time.GetMS());
+				(*it)->End.SetMS(EndTime->time.GetMS());
 			}
 		}
 	}
 
 	// Update file
-	if (!updated && textNeedsCommit) {
+	if (textNeedsCommit) {
 		grid->ass->FlagAsModified(_("editing"));
 		grid->CommitChanges();
 	}
-	else if (!updated && (StartTime->HasBeenModified() || EndTime->HasBeenModified())) 
+	else if (StartTime->HasBeenModified() || EndTime->HasBeenModified()) {
 		CommitTimes(StartTime->HasBeenModified(),EndTime->HasBeenModified(),StartTime->HasBeenModified(),true);
+	}
 
 	// Get next line if ctrl was not held down
 	if (!stay) {
 		int next;
-		if (!grid->IsInSelection(linen)) next = linen+1;
-		else next = grid->GetLastSelRow()+1;
+		if (sel.find(old_line) == sel.end())
+			next = grid->GetDialogueIndex(old_line)+1;
+		else
+			next = grid->GetLastSelRow()+1;
 		AssDialogue *cur = grid->GetDialogue(next-1);
-		if (next >= nrows) {
+		if (next >= grid->GetRows()) {
 			AssDialogue *newline = new AssDialogue;
 			newline->Start = cur->End;
 			newline->End.SetMS(cur->End.GetMS()+OPT_GET("Timing/Default Duration")->GetInt());
 			newline->Style = cur->Style;
 			grid->InsertLine(newline,next-1,true,true);
-			updated = true;
 		}
 		grid->SelectRow(next);
 		grid->MakeCellVisible(next,0);
-		SetToLine(next);
-		if (next >= nrows) return;
+		grid->SetActiveLine(grid->GetDialogue(next));
 	}
 }
 
@@ -1019,7 +983,7 @@ void SubsEditBox::Commit(bool stay) {
 /// @param weak 
 ///
 void SubsEditBox::CommitText(bool weak) {
-	AssDialogue *cur = grid->GetDialogue(linen);
+	AssDialogue *cur = grid->GetActiveLine();
 
 	// Update line
 	if (cur) {
@@ -1027,7 +991,7 @@ void SubsEditBox::CommitText(bool weak) {
 		cur->Text = TextEdit->GetText();
 
 		// Update times
-		if (grid->IsInSelection(linen)) {
+		if (grid->IsInSelection(grid->GetDialogueIndex(cur))) {
 			cur->Start = StartTime->time;
 			cur->End = EndTime->time;
 			if (cur->Start > cur->End) {
@@ -1039,7 +1003,7 @@ void SubsEditBox::CommitText(bool weak) {
 		// Update audio
 		if (!weak) {
 			grid->Refresh(false);
-			audio->SetDialogue(grid,cur,linen);
+			audio->SetDialogue(grid,cur,grid->GetDialogueIndex(cur));
 		}
 	}
 }
@@ -1115,7 +1079,7 @@ void SubsEditBox::SetOverride (wxString tagname,wxString preValue,int forcePos,b
 	bool isGeneric = false;
 	bool isFlag = false;
 	bool state = false;
-	AssStyle *style = grid->ass->GetStyle(grid->GetDialogue(linen)->Style);
+	AssStyle *style = grid->ass->GetStyle(grid->GetActiveLine()->Style);
 	AssStyle defStyle;
 	if (style == NULL) style = &defStyle; 
 	if (tagname == _T("\\b")) {
@@ -1447,4 +1411,37 @@ void SubsEditBox::OnButtonCommit(wxCommandEvent &event) {
 
 
 
+void SubsEditBox::OnActiveLineChanged(AssDialogue *new_line) {
+	// Set to nothing
+	enabled = (new_line != 0);
+
+	// Set line
+	if (enabled) {
+		StartTime->Update();
+		EndTime->Update();
+		Duration->Update();
+	}
+
+	// Update controls
+	Update();
+
+	// Set video
+	if (VideoContext::Get()->IsLoaded()) {
+		bool sync;
+		if (Search.hasFocus) sync = OPT_GET("Tool/Search Replace/Video Update")->GetBool();
+		else sync = OPT_GET("Video/Subtitle Sync")->GetBool();
+
+		if (sync) {
+			VideoContext::Get()->Stop();
+			if (new_line) VideoContext::Get()->JumpToTime(new_line->Start.GetMS());
+		}
+	}
+
+	TextEdit->EmptyUndoBuffer();
+}
+
+
+
+void SubsEditBox::OnSelectedSetChanged(const Selection &lines_added, const Selection &lines_removed) {
+}
 

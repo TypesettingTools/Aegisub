@@ -942,8 +942,8 @@ void AudioDisplay::SetFile(wxString file) {
 	assert(loaded == (provider != NULL));
 
 	// Set default selection
-	int n = grid->editBox->linen;
-	SetDialogue(grid,grid->GetDialogue(n),n);
+	AssDialogue *dlg = grid->GetActiveLine();
+	SetDialogue(grid,dlg,grid->GetDialogueIndex(dlg));
 }
 
 /// @brief Load from video 
@@ -2181,7 +2181,7 @@ void AudioDisplay::ChangeLine(int delta, bool block) {
 		// Set stuff
 		NeedCommit = false;
 		dialogue = NULL;
-		grid->editBox->SetToLine(next);
+		grid->SetActiveLine(grid->GetDialogue(next));
 		grid->SelectRow(next);
 		grid->MakeCellVisible(next,0,true);
 		if (!dialogue) UpdateImage(true);

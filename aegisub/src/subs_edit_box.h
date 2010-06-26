@@ -50,11 +50,13 @@
 #include <wx/spinctrl.h>
 #endif
 
+#include "selection_controller.h"
 #include "subs_edit_ctrl.h"
 
 
 //////////////
 // Prototypes
+class AssDialogue;
 class SubtitlesGrid;
 class TimeEdit;
 class SubsEditBox;
@@ -69,7 +71,7 @@ class wxStyledTextCtrl;
 /// @brief DOCME
 ///
 /// DOCME
-class SubsEditBox : public wxPanel {
+class SubsEditBox : public wxPanel, protected SelectionListener<AssDialogue> {
 	friend class SubsTextEditHandler;
 	friend class SubsTextEditCtrl;
 	friend class AudioDisplay;
@@ -232,10 +234,12 @@ private:
 	void OnEffectChange(wxCommandEvent &event);
 	void OnSize(wxSizeEvent &event);
 
-public:
+protected:
+	// SubtitleSelectionListener implementation
+	virtual void OnActiveLineChanged(AssDialogue *new_line);
+	virtual void OnSelectedSetChanged(const Selection &lines_added, const Selection &lines_removed);
 
-	/// DOCME
-	int linen;
+public:
 
 	/// DOCME
 	AudioDisplay *audio;
@@ -253,7 +257,6 @@ public:
 	void CommitText(bool weak=false);
 	void Update(bool timeOnly=false,bool weak=false,bool video=true);
 	void UpdateGlobals();
-	void SetToLine(int n,bool weak=false);
 	void UpdateFrameTiming();
 	void DoKeyPress(wxKeyEvent &event);
 	void Commit(bool stay);

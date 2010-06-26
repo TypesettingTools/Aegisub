@@ -210,7 +210,7 @@ void DialogStyling::JumpToLine(int n) {
 	// Update grid
 	grid->SelectRow(linen,false);
 	grid->MakeCellVisible(linen,0);
-	grid->editBox->SetToLine(linen);
+	grid->SetActiveLine(grid->GetDialogue(linen));
 
 	// Update display
 	if (PreviewCheck->IsChecked()) VideoContext::Get()->JumpToTime(line->Start.GetMS());

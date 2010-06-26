@@ -269,17 +269,19 @@ void DialogSelection::Process() {
 
 	// Select for modes 2 and 3
 	if (action == 2 || action == 3) {
+		SubtitleSelectionController::Selection newsel;
 		grid->ClearSelection();
 		int count = sels.Count();
-		if (count) {
-			grid->editBox->SetToLine(sels[0], true);
-		}
 		for (int i=0;i<count;i++) {
-			grid->SelectRow(sels[i],true);
+			newsel.insert(grid->GetDialogue(sels[i]));
+		}
+		grid->SetSelectedSet(newsel);
+		if (count) {
+			grid->SetActiveLine(grid->GetDialogue(sels[0]));
 		}
 	}
 	else if (firstSel > -1) {
-		grid->editBox->SetToLine(firstSel, true);
+		grid->SetActiveLine(grid->GetDialogue(firstSel));
 	}
 
 	// Message saying number selected

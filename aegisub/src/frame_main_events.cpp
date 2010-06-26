@@ -1459,21 +1459,12 @@ void FrameMain::OnFocusSeek(wxCommandEvent &) {
 
 /// @brief Previous line hotkey 
 void FrameMain::OnPrevLine(wxCommandEvent &) {
-	int next = EditBox->linen-1;
-	if (next < 0) return;
-	SubsGrid->SelectRow(next);
-	SubsGrid->MakeCellVisible(next,0);
-	EditBox->SetToLine(next);
+	SubsGrid->PrevLine();
 }
 
 /// @brief Next line hotkey 
 void FrameMain::OnNextLine(wxCommandEvent &) {
-	int nrows = SubsGrid->GetRows();
-	int next = EditBox->linen+1;
-	if (next >= nrows) return;
-	SubsGrid->SelectRow(next);
-	SubsGrid->MakeCellVisible(next,0);
-	EditBox->SetToLine(next);
+	SubsGrid->NextLine();
 }
 
 /// @brief Cycle through tag hiding modes 

@@ -269,7 +269,7 @@ void SubtitlesGrid::OnKeyDown(wxKeyEvent &event) {
 			if (n < nrows-1) {
 				SwapLines(n,n+1);
 				SelectRow(n+1);
-				editBox->SetToLine(n+1);
+				//editBox->SetToLine(n+1);
 			}
 			return;
 		}
@@ -279,7 +279,7 @@ void SubtitlesGrid::OnKeyDown(wxKeyEvent &event) {
 			if (n > 0) {
 				SwapLines(n-1,n);
 				SelectRow(n-1);
-				editBox->SetToLine(n-1);
+				//editBox->SetToLine(n-1);
 			}
 			return;
 		}
@@ -470,7 +470,7 @@ void SubtitlesGrid::OnInsertBefore (wxCommandEvent &event) {
 	// Insert it
 	InsertLine(def,n,false);
 	SelectRow(n);
-	editBox->SetToLine(n);
+	SetActiveLine(def);
 	EndBatch();
 }
 
@@ -502,7 +502,7 @@ void SubtitlesGrid::OnInsertAfter (wxCommandEvent &event) {
 	// Insert it
 	InsertLine(def,n,true);
 	SelectRow(n+1);
-	editBox->SetToLine(n+1);
+	SetActiveLine(def);
 	EndBatch();
 }
 
@@ -526,7 +526,7 @@ void SubtitlesGrid::OnInsertBeforeVideo (wxCommandEvent &event) {
 	// Insert it
 	InsertLine(def,n,false);
 	SelectRow(n);
-	editBox->SetToLine(n);
+	SetActiveLine(def);
 	EndBatch();
 }
 
@@ -550,7 +550,7 @@ void SubtitlesGrid::OnInsertAfterVideo (wxCommandEvent &event) {
 	// Insert it
 	InsertLine(def,n,true);
 	SelectRow(n+1);
-	editBox->SetToLine(n+1);
+	SetActiveLine(def);
 	EndBatch();
 }
 
@@ -828,11 +828,8 @@ void SubtitlesGrid::UpdateMaps() {
 		if (dlg) line_iter_map.insert(std::pair<AssDialogue*,entryIter>(dlg, it));
 	}
 
-	// Set edit box
 	if (editBox) {
-		int firstsel = GetFirstSelRow();
 		editBox->UpdateGlobals();
-		if (ass) editBox->SetToLine(firstsel);
 	}
 
 	// Finish setting layout
@@ -868,8 +865,10 @@ void SubtitlesGrid::SwapLines(int n1,int n2) {
 /// @param update 
 ///
 void SubtitlesGrid::InsertLine(AssDialogue *line,int n,bool after,bool update) {
-	AssDialogue *rel_line = GetDialogue(n) + (after?1:0);
-	entryIter pos = line_iter_map[rel_line];
+	AssDialogue *rel_line = GetDialogue(n + (after?1:0));
+	entryIter pos;
+	if (rel_line) pos = line_iter_map[rel_line];
+	else pos = ass->Line.end();
 	
 	entryIter newIter = ass->Line.insert(pos,line);
 	UpdateMaps();
@@ -1014,11 +1013,12 @@ void SubtitlesGrid::PasteLines(int n,bool pasteOver) {
 
 			// Set selection
 			if (!pasteOver) {
-				SelectRow(n);
-				for (int i=n+1;i<n+inserted;i++) {
-					SelectRow(i,true);
+				Selection newsel;
+				for (int i=n;i<n+inserted;i++) {
+					newsel.insert(GetDialogue(i));
 				}
-				editBox->SetToLine(n);
+				SetSelectedSet(newsel);
+				SetActiveLine(GetDialogue(GetFirstSelRow()));
 			}
 		}
 	}
@@ -1037,6 +1037,7 @@ void SubtitlesGrid::DeleteLines(wxArrayInt target, bool flagModified) {
 	// Check if it's wiping file
 	int deleted = 0;
 	entryIter before_first = line_iter_map[GetDialogue(0)]; --before_first;
+	int old_active_line_index = GetDialogueIndex(GetActiveLine());
 
 	// Delete lines
 	int size = target.Count();
@@ -1050,6 +1051,7 @@ void SubtitlesGrid::DeleteLines(wxArrayInt target, bool flagModified) {
 		AssDialogue *def = new AssDialogue;
 		++before_first;
 		ass->Line.insert(before_first, def);
+		old_active_line_index = 0;
 	}
 
 	// Update
@@ -1061,9 +1063,8 @@ void SubtitlesGrid::DeleteLines(wxArrayInt target, bool flagModified) {
 	}
 
 	// Update selected line
-	int newSelected = ClampSignedInteger32(editBox->linen, 0, GetRows()-1);
-	editBox->SetToLine(newSelected);
-	SelectRow(newSelected);
+	SelectRow(old_active_line_index);
+	SetActiveLine(GetDialogue(old_active_line_index));
 }
 
 
@@ -1118,10 +1119,13 @@ void SubtitlesGrid::JoinLines(int n1,int n2,bool concat) {
 	cur->Text = finalText;
 
 	// Delete remaining lines (this will auto commit)
-	DeleteLines(GetRangeArray(n1+1,n2));
+	DeleteLines(GetRangeArray(n1+1,n2), false);
+
+	ass->FlagAsModified(_("join lines"));
+	CommitChanges();
 
 	// Select new line
-	editBox->SetToLine(n1);
+	SetActiveLine(cur);
 	SelectRow(n1);
 }
 
@@ -1207,10 +1211,13 @@ void SubtitlesGrid::JoinAsKaraoke(int n1,int n2) {
 	cur->Text = finalText;
 
 	// Delete remaining lines (this will auto commit)
-	DeleteLines(GetRangeArray(n1+1,n2));
+	DeleteLines(GetRangeArray(n1+1,n2), false);
+
+	ass->FlagAsModified(_("join as karaoke"));
+	CommitChanges();
 
 	// Select new line
-	editBox->SetToLine(n1);
+	SetActiveLine(cur);
 	SelectRow(n1);
 }
 
@@ -1243,11 +1250,12 @@ void SubtitlesGrid::DuplicateLines(int n1,int n2,bool nextFrame) {
 	}
 
 	// Select new lines
-	SelectRow(n1+step,false);
-	for (int i=n1+1;i<=n2;i++) {
-		SelectRow(i+step,true);
+	Selection newsel;
+	for (int i=n1;i<=n2;i++) {
+		newsel.insert(GetDialogue(i+step));
 	}
-	editBox->SetToLine(n1+step);
+	SetSelectedSet(newsel);
+	SetActiveLine(GetDialogue(n1+step));
 }
 
 
@@ -1322,7 +1330,7 @@ void SubtitlesGrid::SplitLine(int n,int pos,int mode,wxString textIn) {
 	}
 
 	// Update editbox and audio
-	editBox->SetToLine(n);
+	//editBox->SetToLine(n);
 
 	// Commit
 	ass->FlagAsModified(_("split"));

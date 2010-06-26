@@ -290,7 +290,7 @@ void VisualTool<FeatureType>::Commit(bool full, wxString message) {
 template<class FeatureType>
 AssDialogue* VisualTool<FeatureType>::GetActiveDialogueLine() {
 	SubtitlesGrid *grid = VideoContext::Get()->grid;
-	AssDialogue *diag = grid->GetDialogue(grid->editBox->linen);
+	AssDialogue *diag = grid->GetActiveLine();
 	if (grid->IsDisplayed(diag))
 		return diag;
 	return NULL;
@@ -392,20 +392,21 @@ template<class FeatureType>
 void VisualTool<FeatureType>::SetEditbox(int lineN) {
 	VideoContext* con = VideoContext::Get();
 	if (lineN > -1) {
-		con->grid->editBox->SetToLine(lineN);
+		con->grid->SetActiveLine(con->grid->GetDialogue(lineN));
 		con->grid->SelectRow(lineN, true);
 	}
 	else {
-		wxArrayInt sel = GetSelection();
+		Selection sel;
+		con->grid->GetSelectedSet(sel);
 		// If there is a selection and the edit box's line is in it, do nothing
 		// Otherwise set the edit box if there is a selection or the selection
 		// to the edit box if there is no selection
 		if (sel.empty()) {
-			con->grid->SelectRow(con->grid->editBox->linen, true);
-			return;
+			sel.insert(con->grid->GetActiveLine());
+			con->grid->SetSelectedSet(sel);
 		}
-		else if (!std::binary_search(sel.begin(), sel.end(), con->grid->editBox->linen)) {
-			con->grid->editBox->SetToLine(sel[0]);
+		else if (sel.find(con->grid->GetActiveLine()) == sel.end()) {
+			con->grid->SetActiveLine(con->grid->GetDialogue(con->grid->GetFirstSelRow()));
 		}
 	}
 }

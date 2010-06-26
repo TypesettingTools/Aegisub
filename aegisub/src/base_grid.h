@@ -106,6 +106,7 @@ private:
 	void DrawImage(wxDC &dc);
 
 	Selection selection;
+	AssDialogue *active_line;
 	std::vector<AssDialogue*> index_line_map;
 	std::map<AssDialogue*,int> line_index_map;
 
@@ -130,12 +131,12 @@ protected:
 
 public:
 	// SelectionController implementation
-	virtual void SetActiveLine(AssDialogue *new_line) { }
-	virtual AssDialogue * GetActiveLine() const { return 0; }
+	virtual void SetActiveLine(AssDialogue *new_line);
+	virtual AssDialogue * GetActiveLine() const { return active_line; }
 	virtual void SetSelectedSet(const Selection &new_selection);
-	virtual void GetSelectedSet(Selection &selection) const;
-	virtual void NextLine() { }
-	virtual void PrevLine() { }
+	virtual void GetSelectedSet(Selection &res) const { res.insert(selection.begin(), selection.end()); }
+	virtual void NextLine();
+	virtual void PrevLine();
 
 public:
 

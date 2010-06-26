@@ -273,7 +273,7 @@ void DialogSpellChecker::SetWord(wxString word) {
 	int line = lastLine % grid->GetRows();
 	grid->SelectRow(line,false);
 	grid->MakeCellVisible(line,0);
-	grid->editBox->SetToLine(line);
+	grid->SetActiveLine(grid->GetDialogue(line));
 	grid->editBox->TextEdit->SetSelectionU(wordStart,wordEnd);
 	grid->EndBatch();
 

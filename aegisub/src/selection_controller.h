@@ -34,6 +34,10 @@
 /// @brief Interface declaration for the SubtitleSelectionController
 
 
+#ifndef AGI_SELECTION_CONTROLLER_H
+#define AGI_SELECTION_CONTROLLER_H
+
+
 #include <set>
 
 
@@ -103,6 +107,8 @@ public:
 	///
 	/// Calling this method should only cause a change notification to be sent if
 	/// the active line was actually changed.
+	///
+	/// This method must not affect the selected set.
 	virtual void SetActiveLine(ItemDataType *new_line) = 0;
 	
 	/// @brief Obtain the active line
@@ -211,3 +217,7 @@ public:
 	virtual void AddSelectionListener(SelectionListener *listener) { }
 	virtual void RemoveSelectionListener(SelectionListener *listener) { }
 };
+
+
+
+#endif // include guard

@@ -269,7 +269,7 @@ void SubsTextEditCtrl::UpdateStyle(int start, int _length) {
 	if (OPT_GET("Subtitle/Highlight/Syntax")->GetBool() == 0) return;
 
 	// Check if it's a template line
-	AssDialogue *diag = control->grid->GetDialogue(control->linen);
+	AssDialogue *diag = control->grid->GetActiveLine();
 	bool templateLine = diag && diag->Comment && diag->Effect.Lower().StartsWith(_T("template"));
 	//bool templateCodeLine = diag && diag->Comment && diag->Effect.Lower().StartsWith(_T("code"));
 
@@ -781,7 +781,7 @@ void SubsTextEditCtrl::SetTextTo(const wxString _text) {
 void SubsTextEditCtrl::OnMouseEvent(wxMouseEvent &event) {
 	// Right click
 	if (event.ButtonUp(wxMOUSE_BTN_RIGHT)) {
-		if (control->linen >= 0) {
+		if (control->grid->GetActiveLine() != 0) {
 			int pos = PositionFromPoint(event.GetPosition());
 			ShowPopupMenu(pos);
 			return;
@@ -1007,7 +1007,7 @@ void SubsTextEditCtrl::OnSplitLinePreserve (wxCommandEvent &event) {
 	to = GetReverseUnicodePosition(to);
 	// Call SplitLine() with the text currently in the editbox.
 	// This makes sure we split what the user sees, not the committed line.
-	control->grid->SplitLine(control->linen,from,0,GetText());
+	control->grid->SplitLine(control->grid->GetDialogueIndex(control->grid->GetActiveLine()),from,0,GetText());
 }
 
 
@@ -1022,7 +1022,7 @@ void SubsTextEditCtrl::OnSplitLineEstimate (wxCommandEvent &event) {
 	to = GetReverseUnicodePosition(to);
 	// Call SplitLine() with the text currently in the editbox.
 	// This makes sure we split what the user sees, not the committed line.
-	control->grid->SplitLine(control->linen,from,1,GetText());
+	control->grid->SplitLine(control->grid->GetDialogueIndex(control->grid->GetActiveLine()),from,1,GetText());
 }
 
 
