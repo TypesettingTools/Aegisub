@@ -79,7 +79,7 @@ public:
 /// @brief DOCME
 /// DOCME
 template<class FeatureType>
-class VisualTool : public IVisualTool, public SelectionChangeSubscriber {
+class VisualTool : public IVisualTool, protected SubtitleSelectionListener {
 private:
 	agi::OptionValue* realtime; /// Realtime updating option
 	int dragStartX; /// Starting x coordinate of the current drag, if any
@@ -187,6 +187,12 @@ protected:
 	typedef typename std::vector<FeatureType>::iterator feature_iterator;
 	typedef typename std::vector<FeatureType>::const_iterator feature_const_iterator;
 
+protected:
+	// SubtitleSelectionListener implementation
+	// (overridden by deriving classes too)
+	virtual void OnActiveLineChanged(AssDialogue *new_line) { }
+	virtual void OnSelectedSetChanged(const Selection &lines_added, const Selection &lines_removed) { }
+
 public:
 	/// @brief Handler for all mouse events
 	/// @param event Shockingly enough, the mouse event
@@ -201,9 +207,6 @@ public:
 	virtual void Draw()=0;
 	/// @brief Called by stuff when there's stuff
 	void Refresh();
-
-	/// Called by the grid when the selection changes
-	virtual void OnSelectionChange(bool, int, bool) { }
 
 	/// @brief Constructor
 	/// @param parent The VideoDisplay to use for coordinate conversion

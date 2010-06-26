@@ -121,27 +121,24 @@ void VisualToolDrag::DoRefresh() {
 	UpdateToggleButtons();
 }
 
-void VisualToolDrag::OnSelectionChange(bool clear, int row, bool selected) {
+void VisualToolDrag::OnSelectedSetChanged(const Selection &added, const Selection &removed) {
 	if (!externalChange) return;
 	externalChange = false;
-	if (clear) {
-		ClearSelection(false);
-	}
-	if (selected) {
-		for (size_t i = 0; i < features.size(); i++) {
-			if (features[i].lineN == row && features[i].type == DRAG_START) {
-				AddSelection(i);
-				break;
-			}
+
+	// Remove all deselected lines
+	for (size_t i = 0; i < features.size(); i++) {
+		if (removed.find(features[i].line) != removed.end()) {
+			RemoveSelection(i);
 		}
 	}
-	else {
-		for (size_t i = 0; i < features.size(); i++) {
-			if (features[i].lineN == row) {
-				RemoveSelection(i);
-			}
+
+	// And add all newly selected lines
+	for (size_t i = 0; i < features.size(); i++) {
+		if (added.find(features[i].line) != added.end() && features[i].type == DRAG_START) {
+			AddSelection(i);
 		}
 	}
+
 	externalChange = true;
 }
 

@@ -80,7 +80,6 @@ BaseGrid::BaseGrid(wxWindow* parent, wxWindowID id, const wxPoint& pos, const wx
 	holding = false;
 	byFrame = false;
 	lineHeight = 1; // non-zero to avoid div by 0
-	selChangeSub = NULL;
 
 	// Set scrollbar
 	scrollBar = new wxScrollBar(this,GRID_SCROLLBAR,wxDefaultPosition,wxDefaultSize,wxSB_VERTICAL);
@@ -142,6 +141,10 @@ void BaseGrid::UpdateStyle() {
 /// @brief Clears grid 
 ///
 void BaseGrid::Clear () {
+	Selection lines_removed;
+	GetSelectedSet(lines_removed);
+	AnnounceSelectedSetChanged(Selection(), lines_removed);
+
 	diagMap.clear();
 	diagPtrMap.clear();
 	selMap.clear();
@@ -209,7 +212,11 @@ void BaseGrid::MakeCellVisible(int row, int col,bool center) {
 ///
 void BaseGrid::SelectRow(int row, bool addToSelected, bool select) {
 	if (row < 0 || (size_t)row >= selMap.size()) return;
-	if (!addToSelected) ClearSelection();
+
+	if (!addToSelected) {
+		// Sends change notifications for itself
+		ClearSelection();
+	}
 
 	if (select != !!selMap[row]) {
 		selMap[row] = select;
@@ -224,7 +231,14 @@ void BaseGrid::SelectRow(int row, bool addToSelected, bool select) {
 			RefreshRect(wxRect(0,(row+1-yPos)*lineHeight,w,lineHeight),false);
 		}
 
-		if (selChangeSub) selChangeSub->OnSelectionChange(!addToSelected, row, select);
+		Selection lines_added;
+		Selection lines_removed;
+		if (select)
+			lines_added.insert(diagPtrMap[row]);
+		else
+			lines_removed.insert(diagPtrMap[row]);
+
+		AnnounceSelectedSetChanged(lines_added, lines_removed);
 	}
 }
 
@@ -233,6 +247,9 @@ void BaseGrid::SelectRow(int row, bool addToSelected, bool select) {
 /// @brief Selects visible lines 
 ///
 void BaseGrid::SelectVisible() {
+	Selection lines_removed;
+	GetSelectedSet(lines_removed);
+
 	int rows = GetRows();
 	bool selectedOne = false;
 	for (int i=0;i<rows;i++) {
@@ -247,6 +264,11 @@ void BaseGrid::SelectVisible() {
 			}
 		}
 	}
+
+	Selection lines_added;
+	GetSelectedSet(lines_added);
+
+	AnnounceSelectedSetChanged(lines_added, lines_removed);
 }
 
 
@@ -254,11 +276,16 @@ void BaseGrid::SelectVisible() {
 /// @brief Unselects all cells 
 ///
 void BaseGrid::ClearSelection() {
+	Selection lines_removed;
+	GetSelectedSet(lines_removed);
+
 	int rows = selMap.size();
 	for (int i=0;i<rows;i++) {
 		selMap[i] = false;
 	}
 	Refresh(false);
+
+	AnnounceSelectedSetChanged(Selection(), lines_removed);
 }
 
 
@@ -309,8 +336,8 @@ int BaseGrid::GetLastSelRow() const {
 
 
 /// @brief Gets all selected rows 
-/// @param[out] cont 
-/// @return 
+/// @param[out] cont Is the selection contiguous, i.e. free from holes
+/// @return Array with indices of selected lines
 ///
 wxArrayInt BaseGrid::GetSelection(bool *cont) const {
 	// Prepare
@@ -1177,6 +1204,19 @@ wxArrayInt BaseGrid::GetRangeArray(int n1,int n2) const {
 		target.Add(i);
 	}
 	return target;
+}
+
+
+
+// SelectionController
+
+
+void BaseGrid::GetSelectedSet(Selection &selection) const {
+	for (size_t i = 0; i < selMap.size(); ++i) {
+		if (selMap[i] != 0) {
+			selection.insert(GetDialogue((int)i));
+		}
+	}
 }
 
 

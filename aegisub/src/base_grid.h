@@ -60,11 +60,9 @@ class FrameMain;
 /// DOCME
 typedef std::list<AssEntry*>::iterator entryIter;
 
-class SelectionChangeSubscriber {
-public:
-	virtual void OnSelectionChange(bool clear, int row, bool selected) = 0;
-};
 
+typedef SelectionController<AssDialogue> SubtitleSelectionController;
+typedef SelectionListener<AssDialogue> SubtitleSelectionListener;
 
 
 /// DOCME
@@ -72,7 +70,7 @@ public:
 /// @brief DOCME
 ///
 /// DOCME
-class BaseGrid : public wxWindow, public BaseSelectionController<AssEntry> {
+class BaseGrid : public wxWindow, public BaseSelectionController<AssDialogue> {
 private:
 
 	/// DOCME
@@ -98,8 +96,6 @@ private:
 
 	/// DOCME
 	wxBitmap *bmp;
-
-	SelectionChangeSubscriber* selChangeSub;
 
 	void OnPaint(wxPaintEvent &event);
 	void OnSize(wxSizeEvent &event);
@@ -133,10 +129,10 @@ protected:
 
 public:
 	// SelectionController implementation
-	virtual void SetActiveLine(AssEntry *new_line) { }
-	virtual AssEntry * GetActiveLine() const { return 0; }
+	virtual void SetActiveLine(AssDialogue *new_line) { }
+	virtual AssDialogue * GetActiveLine() const { return 0; }
 	virtual void SetSelectedSet(const Selection &new_selection) { }
-	virtual void GetSelectedSet(Selection &selection) const { }
+	virtual void GetSelectedSet(Selection &selection) const;
 	virtual void NextLine() { }
 	virtual void PrevLine() { }
 
@@ -180,10 +176,6 @@ public:
 	void MakeCellVisible(int row, int col,bool center=true);
 
 	AssDialogue *GetDialogue(int n) const;
-
-	void RegisterSelectionChange(SelectionChangeSubscriber* sel) {
-		selChangeSub = sel;
-	}
 
 	BaseGrid(wxWindow* parent, wxWindowID id, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = wxWANTS_CHARS, const wxString& name = wxPanelNameStr);
 	~BaseGrid();

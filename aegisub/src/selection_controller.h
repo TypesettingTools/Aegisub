@@ -47,13 +47,21 @@ public:
 	/// Virtual destructor for safety
 	virtual ~SelectionListener() { }
 
-	/// @brief Called when the active subtitle line changes
-	/// @param new_line The subtitle line that is now the active line
+	/// @brief Called when the active line changes
+	/// @param new_line The line that is now the active line
+	///
+	/// In case new_line is 0, the active line was changed to none.
 	virtual void OnActiveLineChanged(ItemDataType *new_line) = 0;
 
 	/// @brief Called when the selected set changes
-	/// @param new_selection The subtitle line set that is now the selected set
-	virtual void OnSelectedSetChanged(const Selection &new_selection) = 0;
+	/// @param lines_added   Lines added to the selection
+	/// @param lines_removed Lines removed from the selection
+	///
+	/// Conceptually, removal happens before addition, for the purpose of this change notification.
+	///
+	/// In case the two sets overlap, the intersection are lines that were previously selected
+	/// and remain selected.
+	virtual void OnSelectedSetChanged(const Selection &lines_added, const Selection &lines_removed) = 0;
 };
 
 
@@ -165,11 +173,11 @@ protected:
 	}
 
 	/// Call OnSelectedSetChangedon all listeners
-	void AnnounceSelectedSetChanged(const Selection &new_selection)
+	void AnnounceSelectedSetChanged(const Selection &lines_added, const Selection &lines_removed)
 	{
 		for (SelectionListenerSet::iterator listener = listeners.begin(); listener != listeners.end(); ++listener)
 		{
-			(*listener)->OnSelectedSetChanged(new_selection);
+			(*listener)->OnSelectedSetChanged(lines_added, lines_removed);
 		}
 	}
 
