@@ -41,7 +41,6 @@
 // Includes
 #ifndef AGI_PRE
 #include <wx/frame.h>
-#include <wx/timer.h>
 #endif
 
 
@@ -63,12 +62,7 @@ public:
 	SplashScreen(wxWindow *parent);
 	~SplashScreen();
 
-	/// DOCME
-	wxTimer *autoClose;
-
 	void OnPaint(wxPaintEvent& event);
-	void OnMouseEvent(wxMouseEvent& event);
-	void OnTimer(wxTimerEvent &event);
 
 	DECLARE_EVENT_TABLE()
 };
