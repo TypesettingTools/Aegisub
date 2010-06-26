@@ -82,6 +82,7 @@
 /// @param parent 
 AudioDisplay::AudioDisplay(wxWindow *parent)
 : wxWindow (parent, -1, wxDefaultPosition, wxSize(200,OPT_GET("Audio/Display Height")->GetInt()), AudioDisplayWindowStyle , _T("Audio Display"))
+, grid(0)
 {
 	// Set variables
 	origImage = NULL;

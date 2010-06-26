@@ -799,6 +799,10 @@ void SubtitlesGrid::LoadDefault () {
 	ass = AssFile::top;
 	ass->LoadDefault();
 	UpdateMaps();
+
+	assert(!line_iter_map.empty());
+	SetActiveLine(GetDialogue(0));
+	SelectRow(0);
 }
 
 
