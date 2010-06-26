@@ -214,8 +214,8 @@ public:
 	virtual void GetSelectedSet(Selection &selection) const { }
 	virtual void NextLine() { }
 	virtual void PrevLine() { }
-	virtual void AddSelectionListener(SelectionListener *listener) { }
-	virtual void RemoveSelectionListener(SelectionListener *listener) { }
+	virtual void AddSelectionListener(SelectionListener<ItemDataType> *listener) { }
+	virtual void RemoveSelectionListener(SelectionListener<ItemDataType> *listener) { }
 };
 
 
