@@ -550,9 +550,9 @@ void VisualTool<FeatureType>::GetLineRotation(AssDialogue *diag,float &rx,float 
 
 	diag->ParseASSTags();
 
-	get_value<double>(diag, L"\\frx", 1, &rx);
-	get_value<double>(diag, L"\\fry", 1, &ry);
-	get_value<double>(diag, L"\\frz", 1, &rz);
+	get_value<float>(diag, L"\\frx", 1, &rx);
+	get_value<float>(diag, L"\\fry", 1, &ry);
+	get_value<float>(diag, L"\\frz", 1, &rz);
 
 	diag->ClearBlocks();
 }
@@ -569,8 +569,8 @@ void VisualTool<FeatureType>::GetLineScale(AssDialogue *diag,float &scalX,float 
 
 	diag->ParseASSTags();
 
-	get_value<double>(diag, L"\\fscx", 1, &scalX);
-	get_value<double>(diag, L"\\fscy", 1, &scalY);
+	get_value<float>(diag, L"\\fscx", 1, &scalX);
+	get_value<float>(diag, L"\\fscy", 1, &scalY);
 
 	diag->ClearBlocks();
 }

@@ -76,6 +76,9 @@ template<class T> static inline VariableDataType get_type();
 template<> inline VariableDataType get_type<int>() {
 	return VARDATA_INT;
 }
+template<> inline VariableDataType get_type<float>() {
+	return VARDATA_FLOAT;
+}
 template<> inline VariableDataType get_type<double>() {
 	return VARDATA_FLOAT;
 }
@@ -99,6 +102,7 @@ void VariableData::Set(T param) {
 	value = new T(param);
 }
 template void VariableData::Set<int>(int param);
+template void VariableData::Set<float>(float param);
 template void VariableData::Set<double>(double param);
 template void VariableData::Set<bool>(bool param);
 template void VariableData::Set(wxString param);
@@ -151,12 +155,19 @@ template<> int VariableData::Get<int>() const {
 }
 
 /// @brief Reads as a float 
-/// @return 
+/// @return
+template<> float VariableData::Get<float>() const {
+	if (!value) throw _T("Null parameter");
+	if (type == VARDATA_FLOAT) return (float)*value_float;
+	if (type == VARDATA_INT) return (float)(*value_int);
+	if (type == VARDATA_TEXT) return 0.0f;
+	throw _T("Wrong parameter type, should be float");
+}
 template<> double VariableData::Get<double>() const {
 	if (!value) throw _T("Null parameter");
 	if (type == VARDATA_FLOAT) return *value_float;
 	if (type == VARDATA_INT) return (float)(*value_int);
-	if (type == VARDATA_TEXT) return 0.0f;
+	if (type == VARDATA_TEXT) return 0.0;
 	throw _T("Wrong parameter type, should be float");
 }
 
