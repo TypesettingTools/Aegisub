@@ -238,7 +238,9 @@ void BaseGrid::SelectRow(int row, bool addToSelected, bool select) {
 	if (!addToSelected) {
 		Selection old_selection(selection);
 		selection.clear();
-		selection.insert(line);
+		if (select) {
+			selection.insert(line);
+		}
 		AnnounceSelectedSetChanged(selection, old_selection);
 	}
 

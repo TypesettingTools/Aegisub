@@ -382,7 +382,8 @@ wxArrayInt VisualTool<FeatureType>::GetSelection() {
 template<class FeatureType>
 void VisualTool<FeatureType>::ClearSelection(bool hard) {
 	if (hard) {
-		VideoContext::Get()->grid->SelectRow(0, false, false);
+		Selection sel;
+		VideoContext::Get()->grid->SetSelectedSet(sel);
 	}
 	selFeatures.clear();
 	lineSelCount.clear();
