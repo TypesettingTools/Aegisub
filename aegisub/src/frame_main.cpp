@@ -712,8 +712,11 @@ void FrameMain::LoadSubtitles (wxString filename,wxString charset) {
 		AssFile::StackReset();
 		if (isFile) {
 			AssFile::top->Load(filename,charset);
-			SubsGrid->SetSelectedSet(SubtitleSelectionController::Selection());
 			SubsGrid->UpdateMaps();
+			if (SubsGrid->GetRows()) {
+				SubsGrid->SetActiveLine(SubsGrid->GetDialogue(0));
+				SubsGrid->SelectRow(0);
+			}
 			wxFileName fn(filename);
 			StandardPaths::SetPathValue(_T("?script"),fn.GetPath());
 			OPT_SET("Path/Last/Subtitles")->SetString(STD_STR(fn.GetPath()));
