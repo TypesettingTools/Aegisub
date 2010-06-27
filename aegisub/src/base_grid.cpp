@@ -249,6 +249,11 @@ void BaseGrid::SelectRow(int row, bool addToSelected, bool select) {
 		added.insert(line);
 
 		AnnounceSelectedSetChanged(added, Selection());
+
+		int w = 0;
+		int h = 0;
+		GetClientSize(&w,&h);
+		RefreshRect(wxRect(0,(row+1-yPos)*lineHeight,w,lineHeight),false);
 	}
 
 	else if (!select && selection.find(line) != selection.end()) {
@@ -258,6 +263,11 @@ void BaseGrid::SelectRow(int row, bool addToSelected, bool select) {
 		removed.insert(line);
 
 		AnnounceSelectedSetChanged(Selection(), removed);
+
+		int w = 0;
+		int h = 0;
+		GetClientSize(&w,&h);
+		RefreshRect(wxRect(0,(row+1-yPos)*lineHeight,w,lineHeight),false);
 	}
 }
 
