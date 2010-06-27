@@ -403,8 +403,14 @@ FontsCollectorThread::FontsCollectorThread(AssFile *_subs,wxString _destination,
 /// @return 
 ///
 wxThread::ExitCode FontsCollectorThread::Entry() {
-	// Collect
-	Collect();
+	try {
+		Collect();
+	}
+	catch (...) {
+		collector->Update();
+		if (IsDetached() && TestDestroy()) Delete();
+		throw;
+	}
 
 	// After done, restore status
 	collector->Update();
