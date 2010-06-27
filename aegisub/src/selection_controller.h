@@ -165,14 +165,17 @@ public:
 /// be desirable in some special cases such as test drivers.
 template <typename ItemDataType>
 class BaseSelectionController : public SelectionController<ItemDataType> {
+public:
+	typedef typename SelectionController<ItemDataType>::Selection Selection;
+private:
 	typedef std::set<SelectionListener<ItemDataType> *> SelectionListenerSet;
-	std::set<SelectionListener<ItemDataType> *> listeners;
+	SelectionListenerSet listeners;
 
 protected:
 	/// Call OnActiveLineChanged on all listeners
 	void AnnounceActiveLineChanged(ItemDataType *new_line)
 	{
-		for (SelectionListenerSet::iterator listener = listeners.begin(); listener != listeners.end(); ++listener)
+		for (typename SelectionListenerSet::iterator listener = listeners.begin(); listener != listeners.end(); ++listener)
 		{
 			(*listener)->OnActiveLineChanged(new_line);
 		}
@@ -181,7 +184,7 @@ protected:
 	/// Call OnSelectedSetChangedon all listeners
 	void AnnounceSelectedSetChanged(const Selection &lines_added, const Selection &lines_removed)
 	{
-		for (SelectionListenerSet::iterator listener = listeners.begin(); listener != listeners.end(); ++listener)
+		for (typename SelectionListenerSet::iterator listener = listeners.begin(); listener != listeners.end(); ++listener)
 		{
 			(*listener)->OnSelectedSetChanged(lines_added, lines_removed);
 		}
@@ -207,6 +210,7 @@ public:
 template <typename ItemDataType>
 class DummySelectionController : public SelectionController<ItemDataType> {
 public:
+	typedef typename SelectionController<ItemDataType>::Selection Selection;
 	virtual ~DummySelectionController() { }
 	virtual void SetActiveLine(ItemDataType *new_line) { }
 	virtual ItemDataType * GetActiveLine() const { return 0; }
