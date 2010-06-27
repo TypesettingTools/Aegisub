@@ -790,7 +790,7 @@ void BaseGrid::OnMouseEvent(wxMouseEvent &event) {
 		}
 
 		// Block select
-		if ((click && shift && !ctrl && !alt) || (holding && !ctrl && !alt && !shift)) {
+		if ((click && shift && !alt) || (holding && !ctrl && !alt && !shift)) {
 			if (lastRow != -1) {
 				// Set boundaries
 				int i1 = row;
@@ -801,6 +801,7 @@ void BaseGrid::OnMouseEvent(wxMouseEvent &event) {
 
 				// Toggle each
 				Selection newsel;
+				if (ctrl) newsel = selection;
 				for (int i=i1;i<=i2;i++) {
 					newsel.insert(GetDialogue(i));
 				}
