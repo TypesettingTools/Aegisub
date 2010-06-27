@@ -775,6 +775,7 @@ void BaseGrid::OnMouseEvent(wxMouseEvent &event) {
 		if (click && ctrl && !shift && !alt) {
 			SelectRow(row,true,!IsInSelection(row,0));
 			parentFrame->UpdateToolbar();
+			lastRow = row;
 			return;
 		}
 
