@@ -774,6 +774,9 @@ void BaseGrid::OnMouseEvent(wxMouseEvent &event) {
 		// Toggle selected
 		if (click && ctrl && !shift && !alt) {
 			SelectRow(row,true,!IsInSelection(row,0));
+			if (dlg == GetActiveLine()) {
+				SetActiveLine(GetDialogue(GetFirstSelRow()));
+			}
 			parentFrame->UpdateToolbar();
 			lastRow = row;
 			return;
