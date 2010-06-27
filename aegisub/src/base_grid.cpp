@@ -778,12 +778,6 @@ void BaseGrid::OnMouseEvent(wxMouseEvent &event) {
 			return;
 		}
 
-		// Keep selection
-		if (click && !shift && !ctrl && alt) {
-			SetActiveLine(dlg);
-			return;
-		}
-
 		// Block select
 		if ((click && shift && !ctrl && !alt) || (holding && !ctrl && !alt && !shift)) {
 			if (lastRow != -1) {
