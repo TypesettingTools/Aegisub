@@ -477,10 +477,6 @@ void VisualTool<FeatureType>::GetLinePosition(AssDialogue *diag,int &x, int &y, 
 	margin[1] = sw - margin[1];
 	margin[3] = sh - margin[2];
 
-	// Position
-	bool posSet = false;
-	bool orgSet = false;
-
 	// Overrides processing
 	diag->ParseASSTags();
 
