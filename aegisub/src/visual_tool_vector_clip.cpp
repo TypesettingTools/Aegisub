@@ -318,6 +318,7 @@ bool VisualToolVectorClip::InitializeDrag(VisualToolVectorClipDraggableFeature* 
 		spline.erase(feature->curve);
 		CommitDrag(feature);
 		curFeature = NULL;
+		PopulateFeatureList();
 		ClearSelection(false);
 		Commit(true);
 		return false;

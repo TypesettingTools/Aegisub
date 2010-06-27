@@ -168,7 +168,7 @@ protected:
 	// @brief Called at the end of a drag
 	virtual void CommitDrag(FeatureType* feature) { }
 
-	/// @brief Called when there's stuff
+	/// @brief Called by Refresh when there's stuff
 	virtual void DoRefresh() { }
 
 	/// @brief Add a feature (and its line) to the selection
@@ -205,7 +205,7 @@ public:
 	virtual bool Update() { return false; };
 	/// @brief Draw stuff
 	virtual void Draw()=0;
-	/// @brief Called by stuff when there's stuff
+	/// @brief Called by stuff when there's stuff, and sometimes when there isn't stuff
 	void Refresh();
 
 	/// @brief Constructor
