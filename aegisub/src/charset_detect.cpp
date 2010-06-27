@@ -54,7 +54,6 @@
 namespace CharSetDetect {
 
 wxString GetEncoding(wxString const& filename) {
-	LOG_I("charset/file") << filename;
 	bool unknown = 0;
 
 	agi::charset::CharsetListDetected list;
@@ -72,9 +71,13 @@ wxString GetEncoding(wxString const& filename) {
 		// Get choice from user
 		wxArrayString choices;
 
+		std::string log_choice;
 		for (i_lst = list.begin(); i_lst != list.end(); ++i_lst) {
 			choices.Add(lagi_wxString(i_lst->second));
+			log_choice.append(" " + i_lst->second);
 		}
+
+		LOG_I("charset/file") << filename << " (" << log_choice << ")";
 
 		int choice = wxGetSingleChoiceIndex(_("Aegisub could not narrow down the character set to a single one.\nPlease pick one below:"),_("Choose character set"),choices);
 		if (choice == -1) throw _T("Canceled");
@@ -82,6 +85,7 @@ wxString GetEncoding(wxString const& filename) {
 	}
 
 	i_lst = list.begin();
+	LOG_I("charset/file") << filename << " (" << i_lst->second << ")";
 	return i_lst->second;
 }
 
