@@ -90,6 +90,8 @@ private:
 	void UpdateDrag(ClipCorner* feature);
 	void CommitDrag(ClipCorner* feature);
 
+	void DoRefresh();
+
 public:
 	VisualToolClip(VideoDisplay *parent, VideoState const& video, wxToolBar *);
 

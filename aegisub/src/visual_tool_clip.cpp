@@ -63,12 +63,9 @@ VisualToolClip::VisualToolClip(VideoDisplay *parent, VideoState const& video, wx
 
 /// @brief Draw 
 void VisualToolClip::Draw() {
-	// Get current line
 	AssDialogue *line = GetActiveDialogueLine();
 	if (!line) return;
 
-	// Get position
-	if (!dragging && !holding) GetLineClip(line,curX1,curY1,curX2,curY2,inverse);
 	int dx1 = curX1;
 	int dy1 = curY1;
 	int dx2 = curX2;
@@ -214,4 +211,10 @@ void VisualToolClip::UpdateDrag(ClipCorner* feature) {
 /// @param feature 
 void VisualToolClip::CommitDrag(ClipCorner*) {
 	CommitHold();
+}
+
+void VisualToolClip::DoRefresh() {
+	AssDialogue* line = GetActiveDialogueLine();
+	if (line)
+		GetLineClip(line,curX1,curY1,curX2,curY2,inverse);
 }
