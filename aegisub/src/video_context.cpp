@@ -289,7 +289,7 @@ void VideoContext::SetVideo(const wxString &filename) {
 				hasSubtitles = MatroskaWrapper::HasSubtitles(filename);
 			}
 
-			UpdateDisplays(true, true);
+			UpdateDisplays(true);
 		}
 		
 		catch (wxString &e) {

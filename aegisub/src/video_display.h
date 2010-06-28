@@ -96,6 +96,9 @@ class VideoDisplay: public wxGLCanvas {
 	/// @param alpha  The alpha of the mask
 	void DrawOverscanMask(int sizeH, int sizeV, wxColor color, double alpha) const;
 
+	/// Upload the image for the current frame to the video card
+	void UploadFrameData();
+
 	/// @brief Paint event 
 	void OnPaint(wxPaintEvent& event);
 	/// @brief Key event handler

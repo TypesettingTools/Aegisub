@@ -162,6 +162,8 @@ void VideoDisplay::SetFrame(int frameNumber) {
 	VideoContext *context = VideoContext::Get();
 	ControlSlider->SetValue(frameNumber);
 
+	currentFrame = frameNumber;
+
 	// Get time for frame
 	{
 		int time = VFR_Output.GetTimeAtFrame(frameNumber, true, true);
@@ -203,47 +205,51 @@ void VideoDisplay::SetFrame(int frameNumber) {
 	// Render the new frame
 	if (context->IsLoaded()) {
 		context->GetScriptSize(scriptW, scriptH);
-		if (!tool.get()) tool.reset(new VisualToolCross(this, video, toolBar));
 		tool->SetFrame(frameNumber);
 
-		AegiVideoFrame frame;
-		try {
-			frame = context->GetFrame(currentFrame);
-		}
-		catch (const wxChar *err) {
-			wxLogError(
-				L"Failed seeking video. The video file may be corrupt or incomplete.\n"
-				L"Error message reported: %s",
-				err);
-		}
-		catch (...) {
-			wxLogError(
-				L"Failed seeking video. The video file may be corrupt or incomplete.\n"
-				L"No further error message given.");
-		}
-		try {
-			videoOut->UploadFrameData(frame);
-		}
-		catch (const VideoOutInitException& err) {
-			wxLogError(
-				L"Failed to initialize video display. Closing other running programs and updating your video card drivers may fix this.\n"
-				L"Error message reported: %s",
-				err.GetMessage().c_str());
-			context->Reset();
-		}
-		catch (const VideoOutRenderException& err) {
-			wxLogError(
-				L"Could not upload video frame to graphics card.\n"
-				L"Error message reported: %s",
-				err.GetMessage().c_str());
-		}
+		UploadFrameData();
 	}
 	Render();
+}
 
-	currentFrame = frameNumber;
+void VideoDisplay::UploadFrameData() {
+	VideoContext *context = VideoContext::Get();
+	AegiVideoFrame frame;
+	try {
+		frame = context->GetFrame(currentFrame);
+	}
+	catch (const wxChar *err) {
+		wxLogError(
+			L"Failed seeking video. The video file may be corrupt or incomplete.\n"
+			L"Error message reported: %s",
+			err);
+	}
+	catch (...) {
+		wxLogError(
+			L"Failed seeking video. The video file may be corrupt or incomplete.\n"
+			L"No further error message given.");
+	}
+	try {
+		videoOut->UploadFrameData(frame);
+	}
+	catch (const VideoOutInitException& err) {
+		wxLogError(
+			L"Failed to initialize video display. Closing other running programs and updating your video card drivers may fix this.\n"
+			L"Error message reported: %s",
+			err.GetMessage().c_str());
+		context->Reset();
+	}
+	catch (const VideoOutRenderException& err) {
+		wxLogError(
+			L"Could not upload video frame to graphics card.\n"
+			L"Error message reported: %s",
+			err.GetMessage().c_str());
+	}
 }
 
 void VideoDisplay::Refresh() {
+	UploadFrameData();
+	if (!tool.get()) tool.reset(new VisualToolCross(this, video, toolBar));
 	tool->Refresh();
 	Render();
 }
