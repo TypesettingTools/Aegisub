@@ -213,8 +213,8 @@ FrameMain::FrameMain (wxArrayString args)
 	PerformVersionCheck(false);
 
 	StartupLog(_T("Display main window"));
-	Freeze();
 	Show();
+	Freeze();
 	SetDisplayMode(1, 1);
 	Thaw();
 
@@ -856,8 +856,9 @@ void FrameMain::SetDisplayMode(int video, int audio) {
 	showVideo = sv;
 	showAudio = sa;
 
-	// Stop
-	Freeze();
+	bool didFreeze = !IsFrozen();
+	if (didFreeze) Freeze();
+
 	VideoContext::Get()->Stop();
 
 	// Set display
@@ -871,9 +872,9 @@ void FrameMain::SetDisplayMode(int video, int audio) {
 	MainSizer->RecalcSizes();
 	MainSizer->Layout();
 	Layout();
-	Show(true);
 	if (showVideo) VideoContext::Get()->UpdateDisplays(true);
-	Thaw();
+
+	if (didFreeze) Thaw();
 }
 
 /// @brief Update title bar 
