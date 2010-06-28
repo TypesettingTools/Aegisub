@@ -143,7 +143,8 @@ public:
 	virtual void SetActiveLine(AssDialogue *new_line);
 	virtual AssDialogue * GetActiveLine() const { return active_line; }
 	virtual void SetSelectedSet(const Selection &new_selection);
-	virtual void GetSelectedSet(Selection &res) const { res.insert(selection.begin(), selection.end()); }
+	virtual void GetSelectedSet(Selection &res) const { res = selection; }
+	virtual Selection GetSelectedSet() const { return selection; }
 	virtual void NextLine();
 	virtual void PrevLine();
 

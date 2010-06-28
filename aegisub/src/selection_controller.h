@@ -131,6 +131,10 @@ public:
 	/// @param[out] selection Filled with the selected set on return
 	virtual void GetSelectedSet(Selection &selection) const = 0;
 
+	/// @brief Obtain the selected set
+	/// @return The selected set
+	virtual Selection GetSelectedSet() const = 0;
+
 	/// @brief Change the active line to the next in sequence
 	///
 	/// If there is no logical next line in sequence, no change happens. This should
