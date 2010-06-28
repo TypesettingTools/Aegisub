@@ -750,6 +750,7 @@ if test "$agi_cv_with_ffmpeg" = "yes" && test "$with_provider_ffmpegsource" = "y
 
   AC_AGI_COMPILE([postproc], [postproc], [$LIBPOSTPROC_CFLAGS], [$LIBPOSTPROC_LIBS],[
 extern "C" {
+#define __STDC_CONSTANT_MACROS
 #include <libpostproc/postprocess.h>
 }
 
