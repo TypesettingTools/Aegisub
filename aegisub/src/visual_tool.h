@@ -192,8 +192,6 @@ protected:
 
 	/// @brief Clear the selection
 	void ClearSelection();
-	/// @brief Get the currently selected lines
-	wxArrayInt GetSelection();
 
 	typedef typename std::vector<FeatureType>::iterator feature_iterator;
 	typedef typename std::vector<FeatureType>::const_iterator feature_const_iterator;

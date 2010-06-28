@@ -415,11 +415,6 @@ void VisualTool<FeatureType>::RemoveSelection(unsigned i) {
 }
 
 template<class FeatureType>
-wxArrayInt VisualTool<FeatureType>::GetSelection() {
-	return grid->GetSelection();
-}
-
-template<class FeatureType>
 void VisualTool<FeatureType>::ClearSelection() {
 	selFeatures.clear();
 	lineSelCount.clear();

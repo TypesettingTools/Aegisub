@@ -148,11 +148,9 @@ void VisualToolRotateZ::UpdateHold() {
 }
 
 void VisualToolRotateZ::CommitHold() {
-	wxArrayInt sel = grid->GetSelection();
-	for (wxArrayInt::const_iterator cur = sel.begin(); cur != sel.end(); ++cur) {
-		AssDialogue* line = grid->GetDialogue(*cur);
-		assert(line);
-		SetOverride(line, L"\\frz",wxString::Format(L"(%0.3g)",curAngle));
+	Selection sel = grid->GetSelectedSet();
+	for (Selection::const_iterator cur = sel.begin(); cur != sel.end(); ++cur) {
+		SetOverride(*cur, L"\\frz",wxString::Format(L"(%0.3g)",curAngle));
 	}
 }
 

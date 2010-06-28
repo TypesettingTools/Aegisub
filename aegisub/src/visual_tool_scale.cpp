@@ -147,12 +147,10 @@ void VisualToolScale::UpdateHold() {
 }
 
 void VisualToolScale::CommitHold() {
-	wxArrayInt sel = grid->GetSelection();
-	for (wxArrayInt::const_iterator cur = sel.begin(); cur != sel.end(); ++cur) {
-		AssDialogue* line = grid->GetDialogue(*cur);
-		assert(line);
-		SetOverride(line, L"\\fscx",wxString::Format(L"(%0.3g)",curScaleX));
-		SetOverride(line, L"\\fscy",wxString::Format(L"(%0.3g)",curScaleY));
+	Selection sel = grid->GetSelectedSet();
+	for (Selection::const_iterator cur = sel.begin(); cur != sel.end(); ++cur) {
+		SetOverride(*cur, L"\\fscx",wxString::Format(L"(%0.3g)",curScaleX));
+		SetOverride(*cur, L"\\fscy",wxString::Format(L"(%0.3g)",curScaleY));
 	}
 }
 

@@ -61,15 +61,12 @@ bool VisualToolCross::Update() {
 	dx -= vx;
 	dy -= vy;
 
-	SubtitlesGrid *grid = VideoContext::Get()->grid;
-	wxArrayInt sel = grid->GetSelection();
-	for (wxArrayInt::const_iterator cur = sel.begin(); cur != sel.end(); ++cur) {
-		AssDialogue *line = grid->GetDialogue(*cur);
-		if (!line) continue;
+	Selection sel = grid->GetSelectedSet();
+	for (Selection::const_iterator cur = sel.begin(); cur != sel.end(); ++cur) {
 		int x1, y1;
-		GetLinePosition(line, x1, y1);
+		GetLinePosition(*cur, x1, y1);
 		parent->ToScriptCoords(&x1, &y1);
-		SetOverride(line, L"\\pos", wxString::Format(L"(%i,%i)", x1 - dx, y1 - dy));
+		SetOverride(*cur, L"\\pos", wxString::Format(L"(%i,%i)", x1 - dx, y1 - dy));
 	}
 
 	Commit(true, _("positioning"));

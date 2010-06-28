@@ -93,15 +93,12 @@ void VisualToolDrag::UpdateToggleButtons() {
 /// @brief Toggle button pressed 
 /// @param event 
 void VisualToolDrag::OnSubTool(wxCommandEvent &) {
-	BaseGrid* grid = VideoContext::Get()->grid;
-	wxArrayInt sel = GetSelection();
+	Selection sel = grid->GetSelectedSet();
 	// Toggle \move <-> \pos
-	for (wxArrayInt::const_iterator cur = sel.begin(); cur != sel.end(); ++cur) {
+	for (Selection::const_iterator cur = sel.begin(); cur != sel.end(); ++cur) {
+		AssDialogue *line = *cur;
 		int x1,y1,x2,y2,t1,t2;
 		bool hasMove;
-
-		AssDialogue *line = grid->GetDialogue(*cur);
-		if (!line) continue;
 
 		GetLinePosition(line,x1,y1);
 		GetLineMove(line,hasMove,x1,y1,x2,y2,t1,t2);
@@ -335,31 +332,28 @@ bool VisualToolDrag::Update() {
 	dx -= vx;
 	dy -= vy;
 
-	SubtitlesGrid *grid = VideoContext::Get()->grid;
-	wxArrayInt sel = grid->GetSelection();
-	for (wxArrayInt::const_iterator cur = sel.begin(); cur != sel.end(); ++cur) {
-		AssDialogue* line = grid->GetDialogue(*cur);
-		if (!line) continue;
+	Selection sel = grid->GetSelectedSet();
+	for (Selection::const_iterator cur = sel.begin(); cur != sel.end(); ++cur) {
 		int x1 = 0, y1 = 0, x2 = 0, y2 = 0, t1 = INT_MIN, t2 = INT_MIN, orgx, orgy;
 		bool isMove;
 
-		GetLinePosition(line, x1, y1, orgx, orgy);
-		GetLineMove(line, isMove, x1, y1, x2, y2, t1, t2);
+		GetLinePosition(*cur, x1, y1, orgx, orgy);
+		GetLineMove(*cur, isMove, x1, y1, x2, y2, t1, t2);
 		parent->ToScriptCoords(&x1, &y1);
 		parent->ToScriptCoords(&x2, &y2);
 		parent->ToScriptCoords(&orgx, &orgy);
 
 		if (isMove) {
 			if (t1 > INT_MIN && t2 > INT_MIN)
-				SetOverride(line, L"\\move", wxString::Format(L"(%i,%i,%i,%i,%i,%i)", x1 - dx, y1 - dy, x2 - dx, y2 - dy, t1, t2));
+				SetOverride(*cur, L"\\move", wxString::Format(L"(%i,%i,%i,%i,%i,%i)", x1 - dx, y1 - dy, x2 - dx, y2 - dy, t1, t2));
 			else
-				SetOverride(line, L"\\move", wxString::Format(L"(%i,%i,%i,%i)", x1, y1, x2, y2));
+				SetOverride(*cur, L"\\move", wxString::Format(L"(%i,%i,%i,%i)", x1, y1, x2, y2));
 		}
 		else {
-			SetOverride(line, L"\\pos", wxString::Format(L"(%i,%i)", x1 - dx, y1 - dy));
+			SetOverride(*cur, L"\\pos", wxString::Format(L"(%i,%i)", x1 - dx, y1 - dy));
 		}
 		if (orgx != x1 || orgy != y1) {
-			SetOverride(line, L"\\org", wxString::Format(L"(%i,%i)", orgx - dx, orgy - dy));
+			SetOverride(*cur, L"\\org", wxString::Format(L"(%i,%i)", orgx - dx, orgy - dy));
 		}
 	}
 
