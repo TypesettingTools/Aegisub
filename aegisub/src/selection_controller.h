@@ -61,10 +61,7 @@ public:
 	/// @param lines_added   Lines added to the selection
 	/// @param lines_removed Lines removed from the selection
 	///
-	/// Conceptually, removal happens before addition, for the purpose of this change notification.
-	///
-	/// In case the two sets overlap, the intersection are lines that were previously selected
-	/// and remain selected.
+	/// The two sets must not intersect.
 	virtual void OnSelectedSetChanged(const Selection &lines_added, const Selection &lines_removed) = 0;
 };
 

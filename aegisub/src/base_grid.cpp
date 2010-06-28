@@ -61,6 +61,13 @@
 #include "video_context.h"
 #include "video_slider.h"
 
+template<class S1, class S2, class D>
+static inline void set_difference(const S1 &src1, const S2 &src2, D &dst) {
+	std::set_difference(
+		src1.begin(), src1.end(), src2.begin(), src2.end(),
+		std::inserter(dst, dst.begin()));
+}
+
 
 /// @brief Constructor 
 /// @param parent 
@@ -236,12 +243,9 @@ void BaseGrid::SelectRow(int row, bool addToSelected, bool select) {
 	AssDialogue *line = index_line_map[row];
 
 	if (!addToSelected) {
-		Selection old_selection(selection);
-		selection.clear();
-		if (select) {
-			selection.insert(line);
-		}
-		AnnounceSelectedSetChanged(selection, old_selection);
+		Selection sel;
+		if (select) sel.insert(line);
+		SetSelectedSet(sel);
 	}
 
 	else if (select && selection.find(line) == selection.end()) {
@@ -278,28 +282,22 @@ void BaseGrid::SelectRow(int row, bool addToSelected, bool select) {
 /// @brief Selects visible lines 
 ///
 void BaseGrid::SelectVisible() {
-	Selection lines_removed;
-	GetSelectedSet(lines_removed);
+	Selection new_selection;
 
 	int rows = GetRows();
 	bool selectedOne = false;
 	for (int i=0;i<rows;i++) {
-		if (IsDisplayed(GetDialogue(i))) {
+		AssDialogue *diag = GetDialogue(i);
+		if (IsDisplayed(diag)) {
 			if (!selectedOne) {
-				SelectRow(i,false);
 				MakeCellVisible(i,0);
 				selectedOne = true;
 			}
-			else {
-				SelectRow(i,true);
-			}
+			new_selection.insert(diag);
 		}
 	}
 
-	Selection lines_added;
-	GetSelectedSet(lines_added);
-
-	AnnounceSelectedSetChanged(lines_added, lines_removed);
+	SetSelectedSet(new_selection);
 }
 
 
@@ -1247,9 +1245,12 @@ wxArrayInt BaseGrid::GetRangeArray(int n1,int n2) const {
 
 
 void BaseGrid::SetSelectedSet(const Selection &new_selection) {
-	Selection old_selection(selection);
+	Selection inserted;
+	Selection removed;
+	set_difference(new_selection, selection, inserted);
+	set_difference(selection, new_selection, removed);
 	selection = new_selection;
-	AnnounceSelectedSetChanged(new_selection, old_selection);
+	AnnounceSelectedSetChanged(inserted, removed);
 	Refresh(false);
 }
 
@@ -1300,18 +1301,12 @@ void BaseGrid::AnnounceSelectedSetChanged(const Selection &lines_added, const Se
 	if (batch_level > 0) {
 		// Remove all previously added lines that are now removed
 		Selection temp;
-		std::set_difference(
-			batch_selection_added.begin(), batch_selection_added.end(),
-			lines_removed.begin(), lines_removed.end(),
-			std::inserter(temp, temp.begin()));
+		set_difference(batch_selection_added, lines_removed, temp);
 		std::swap(temp, batch_selection_added);
 		temp.clear();
 
 		// Remove all previously removed lines that are now added
-		std::set_difference(
-			batch_selection_removed.begin(), batch_selection_removed.end(),
-			lines_added.begin(), lines_added.end(),
-			std::inserter(temp, temp.begin()));
+		set_difference(batch_selection_removed, lines_added, temp);
 		std::swap(temp, batch_selection_removed);
 
 		// Add new stuff to batch sets
