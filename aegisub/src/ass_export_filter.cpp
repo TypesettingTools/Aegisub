@@ -208,6 +208,7 @@ FilterList *AssExportFilterChain::GetUnpreparedFilterList() {
 /// @brief Prepare filters 
 ///
 void AssExportFilterChain::PrepareFilters() {
+	if (!instance.get()) instance.reset(new AssExportFilterChain());
 	for (FilterList::iterator cur=instance->Unprepared.begin();cur!=instance->Unprepared.end();cur++) {
 		(*cur)->Init();
 	}
