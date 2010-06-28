@@ -265,7 +265,7 @@ void SubsEditBox::SetSplitLineMode(wxSize newSize) {
 /// @param timeOnly 
 /// @param weak     
 ///
-void SubsEditBox::Update (bool timeOnly,bool weak,bool video) {
+void SubsEditBox::Update (bool timeOnly,bool weak) {
 	if (enabled) {
 		AssDialogue *curdiag = grid->GetActiveLine();
 		if (curdiag) {
@@ -301,7 +301,6 @@ void SubsEditBox::Update (bool timeOnly,bool weak,bool video) {
 
 			// Video
 			VideoContext::Get()->curLine = curdiag;
-			if (video) VideoContext::Get()->UpdateDisplays(false);
 
 			TextEdit->EmptyUndoBuffer();
 		}

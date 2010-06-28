@@ -90,10 +90,8 @@ VisualTool<FeatureType>::VisualTool(VideoDisplay *parent, VideoState const& vide
 , ctrlDown(false)
 , altDown(false)
 {
-	if (VideoContext::Get()->IsLoaded()) {
-		frame_n = VideoContext::Get()->GetFrameN();
-		VideoContext::Get()->grid->AddSelectionListener(this);
-	}
+	frame_n = VideoContext::Get()->GetFrameN();
+	grid->AddSelectionListener(this);
 
 	PopulateFeatureList();
 }
@@ -284,7 +282,7 @@ void VisualTool<FeatureType>::Commit(bool full, wxString message) {
 	}
 	grid->CommitChanges(false,!full);
 	if (full)
-		grid->editBox->Update(false, true, false);
+		grid->editBox->Update(false, true);
 }
 
 template<class FeatureType>

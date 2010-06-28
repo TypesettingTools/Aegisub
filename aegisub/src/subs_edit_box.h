@@ -255,7 +255,7 @@ public:
 
 	void SetSplitLineMode(wxSize size=wxSize(-1,-1));
 	void CommitText(bool weak=false);
-	void Update(bool timeOnly=false,bool weak=false,bool video=true);
+	void Update(bool timeOnly=false,bool weak=false);
 	void UpdateGlobals();
 	void UpdateFrameTiming();
 	void DoKeyPress(wxKeyEvent &event);

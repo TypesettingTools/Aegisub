@@ -134,7 +134,6 @@ VideoDisplay::VideoDisplay(VideoBox *box, VideoSlider *ControlSlider, wxTextCtrl
 , SubsPosition(SubsPosition)
 , PositionDisplay(PositionDisplay)
 , videoOut(new VideoOutGL())
-, tool(new VisualToolCross(this, video, box->visualSubToolBar))
 , activeMode(Video_Mode_Standard)
 , toolBar(box->visualSubToolBar)
 , scriptW(INT_MIN)
@@ -326,16 +325,16 @@ void VideoDisplay::DrawOverscanMask(int sizeH, int sizeV, wxColor color, double 
 	gl.SetLineColour(wxColor(0, 0, 0), 0.0, 1);
 
 	// Draw sides
-	E(gl.DrawRectangle(gapH, 0, w-gapH, sizeV));               // Top
+	E(gl.DrawRectangle(gapH, 0, w-gapH, sizeV));   // Top
 	E(gl.DrawRectangle(w-sizeH, gapV, w, h-gapV)); // Right
 	E(gl.DrawRectangle(gapH, h-sizeV, w-gapH, h)); // Bottom
-	E(gl.DrawRectangle(0, gapV, sizeH, h-gapV));               // Left
+	E(gl.DrawRectangle(0, gapV, sizeH, h-gapV));   // Left
 
 	// Draw rounded corners
-	E(gl.DrawRing(gapH, gapV, rad1, rad2, 1.0, 180.0, 270.0));              // Top-left
-	E(gl.DrawRing(w-gapH, gapV, rad1, rad2, 1.0, 90.0, 180.0));       // Top-right
+	E(gl.DrawRing(gapH, gapV, rad1, rad2, 1.0, 180.0, 270.0));  // Top-left
+	E(gl.DrawRing(w-gapH, gapV, rad1, rad2, 1.0, 90.0, 180.0)); // Top-right
 	E(gl.DrawRing(w-gapH, h-gapV, rad1, rad2, 1.0, 0.0, 90.0)); // Bottom-right
-	E(gl.DrawRing(gapH, h-gapV, rad1, rad2, 1.0,270.0,360.0));        // Bottom-left
+	E(gl.DrawRing(gapH, h-gapV, rad1, rad2, 1.0,270.0,360.0));  // Bottom-left
 
 	E(glDisable(GL_BLEND));
 }

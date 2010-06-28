@@ -320,6 +320,8 @@ void VideoContext::RemoveDisplay(VideoDisplay *display) {
 /// @param full 
 ///
 void VideoContext::UpdateDisplays(bool full) {
+	if (!loaded) return;
+
 	for (std::list<VideoDisplay*>::iterator cur=displayList.begin();cur!=displayList.end();cur++) {
 		VideoDisplay *display = *cur;
 
