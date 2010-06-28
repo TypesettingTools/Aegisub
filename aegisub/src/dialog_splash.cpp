@@ -85,26 +85,19 @@ SplashScreen::SplashScreen(wxWindow *parent)
 	// Prepare
 	wxClientDC dc(this);
 	dc.DrawBitmap(splash,0,0);
-
-	autoClose = new wxTimer(this,5000);
-	autoClose->Start(5000,true);
 }
 
 
 //////////////
 // Destructor
 SplashScreen::~SplashScreen () {
-	// Kill timer
-	delete autoClose;
 }
 
 
 ///////////////
 // Event table
 BEGIN_EVENT_TABLE(SplashScreen, wxFrame)
-    EVT_MOUSE_EVENTS(SplashScreen::OnMouseEvent)
     EVT_PAINT(SplashScreen::OnPaint)
-	EVT_TIMER(5000,SplashScreen::OnTimer)
 END_EVENT_TABLE()
 
 
@@ -115,22 +108,3 @@ void SplashScreen::OnPaint(wxPaintEvent& event) {
 	dc.DrawBitmap(splash,0,0);
 }
 
-
-////////////////
-// Mouse events
-void SplashScreen::OnMouseEvent(wxMouseEvent& event) {
-	if (event.ButtonDown()) {
-		// Show tip of the day
-		Destroy();
-		TipOfTheDay::Show(par);
-	}
-}
-
-
-/////////
-// Timer
-void SplashScreen::OnTimer(wxTimerEvent &event) {
-	// Show tip of the day
-	Destroy();
-	TipOfTheDay::Show(par);
-}

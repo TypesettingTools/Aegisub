@@ -127,6 +127,21 @@ FrameMain::FrameMain (wxArrayString args)
 	wxPNGHandler *png = new wxPNGHandler;
 	wxImage::AddHandler(png);
 
+	// Splash screen
+	// It doesn't work properly on wxMac, and the jumping dock icon
+	// signals the same as the splash screen either way.
+	SplashScreen *splash = 0;
+#if !_DEBUG && !__WXMAC__
+	if (Options.AsBool(_T("Show Splash"))) {
+		splash = new SplashScreen(this);
+		splash->Show(true);
+		splash->Update();
+	}
+	else
+#endif
+
+	wxSafeYield();
+
 	// Storage for subs-file-local scripts
 #ifdef WITH_AUTOMATION
 	StartupLog(_T("Create local Automation script manager"));
@@ -156,22 +171,6 @@ FrameMain::FrameMain (wxArrayString args)
 	stylingAssistant = NULL;
 	StartupLog(_T("Initialize inner main window controls"));
 	InitContents();
-	StartupLog(_T("Display main window"));
-	Show();
-
-	// Splash screen
-	// It doesn't work properly on wxMac, and the jumping dock icon
-	// signals the same as the splash screen either way.
-#if !_DEBUG && !__WXMAC__
-	if (Options.AsBool(_T("Show Splash"))) {
-		SplashScreen *splash = new SplashScreen(this);
-		splash->Show(true);
-		splash->Update();
-	}
-	else
-#endif
-
-	wxSafeYield();
 
 	// Set autosave timer
 	StartupLog(_T("Set up Auto Save"));
@@ -207,6 +206,16 @@ FrameMain::FrameMain (wxArrayString args)
 		Options.Save();
 	}
 	PerformVersionCheck(false);
+
+	StartupLog(_T("Display main window"));
+	Show();
+	Freeze();
+	SetDisplayMode(-1, -1);
+	Thaw();
+
+	if (splash) {
+		delete splash;
+	}
 
 	//ShowFullScreen(true,wxFULLSCREEN_NOBORDER | wxFULLSCREEN_NOCAPTION);
 	StartupLog(_T("Leaving FrameMain constructor"));
@@ -815,9 +824,7 @@ int FrameMain::TryToCloseSubs(bool enableCancel) {
 // Set display mode
 void FrameMain::SetDisplayMode(int _showVid,int _showAudio) {
 	// Shown?
-	static bool firstRun = true;
-	if (!IsShownOnScreen() && !firstRun) return;
-	firstRun = false;
+	if (!IsShownOnScreen()) return;
 
 	// Automatic
 	if (_showVid == -1) _showVid = (VideoContext::Get()->IsLoaded() && !detachedVideo) ? 1 : 0;
@@ -830,8 +837,9 @@ void FrameMain::SetDisplayMode(int _showVid,int _showAudio) {
 	showAudio = _showAudio == 1;
 	showVideo = _showVid == 1;
 
-	// Stop
-	Freeze();
+	bool didFreeze = !IsFrozen();
+	if (didFreeze) Freeze();
+
 	VideoContext::Get()->Stop();
 
 	// Set display
@@ -846,9 +854,9 @@ void FrameMain::SetDisplayMode(int _showVid,int _showAudio) {
 	//videoBox->VideoSizer->Layout();
 	MainSizer->Layout();
 	Layout();
-	Show(true);
 	if (showVideo) VideoContext::Get()->UpdateDisplays(true);
-	Thaw();
+
+	if (didFreeze) Thaw();
 }
 
 

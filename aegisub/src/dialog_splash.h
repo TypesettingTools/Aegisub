@@ -42,7 +42,6 @@
 // Includes
 #include <wx/wxprec.h>
 #include <wx/frame.h>
-#include <wx/timer.h>
 
 
 ///////////////////////
@@ -55,11 +54,8 @@ private:
 public:
 	SplashScreen(wxWindow *parent);
 	~SplashScreen();
-	wxTimer *autoClose;
 
 	void OnPaint(wxPaintEvent& event);
-	void OnMouseEvent(wxMouseEvent& event);
-	void OnTimer(wxTimerEvent &event);
 
 	DECLARE_EVENT_TABLE()
 };
