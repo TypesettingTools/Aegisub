@@ -75,14 +75,13 @@ VisualTool<FeatureType>::VisualTool(VideoDisplay *parent, VideoState const& vide
 , dragStartX(0)
 , dragStartY(0)
 , selChanged(false)
+, grid(VideoContext::Get()->grid)
 , parent(parent)
 , holding(false)
-, curDiag(NULL)
 , dragging(false)
 , externalChange(true)
 , curFeature(NULL)
 , dragListOK(false)
-, frame_n(0)
 , video(video)
 , leftClick(false)
 , leftDClick(false)
@@ -90,19 +89,18 @@ VisualTool<FeatureType>::VisualTool(VideoDisplay *parent, VideoState const& vide
 , ctrlDown(false)
 , altDown(false)
 {
-	frame_n = VideoContext::Get()->GetFrameN();
+	frameNumber = VideoContext::Get()->GetFrameN();
+	curDiag = GetActiveDialogueLine();
 	grid->AddSelectionListener(this);
-
-	PopulateFeatureList();
 }
 
 template<class FeatureType>
 VisualTool<FeatureType>::~VisualTool() {
-	VideoContext::Get()->grid->RemoveSelectionListener(this);
+	grid->RemoveSelectionListener(this);
 }
 
 template<class FeatureType>
-void VisualTool<FeatureType>::OnMouseEvent (wxMouseEvent &event) {
+void VisualTool<FeatureType>::OnMouseEvent(wxMouseEvent &event) {
 	bool realTime = realtime->GetBool();
 	bool needRender = false;
 
@@ -129,6 +127,7 @@ void VisualTool<FeatureType>::OnMouseEvent (wxMouseEvent &event) {
 	if (!dragListOK) {
 		PopulateFeatureList();
 		dragListOK = true;
+		needRender = true;
 	}
 	if (!dragging) {
 		unsigned oldHigh = curFeatureI;
@@ -159,9 +158,7 @@ void VisualTool<FeatureType>::OnMouseEvent (wxMouseEvent &event) {
 			if (realTime) {
 				Commit();
 			}
-			else {
-				needRender = true;
-			}
+			needRender = true;
 		}
 		// end drag
 		else {
@@ -178,11 +175,8 @@ void VisualTool<FeatureType>::OnMouseEvent (wxMouseEvent &event) {
 						RemoveSelection(curFeatureI);
 					}
 					else {
-						// deselect everything else
-						ClearSelection();
-						AddSelection(curFeatureI);
+						SetSelection(curFeatureI);
 					}
-					SetEditbox();
 				}
 			}
 			else {
@@ -206,9 +200,7 @@ void VisualTool<FeatureType>::OnMouseEvent (wxMouseEvent &event) {
 				CommitHold();
 				Commit();
 			}
-			else {
-				needRender = true;
-			}
+			needRender = true;
 		}
 		// end hold
 		else {
@@ -218,7 +210,6 @@ void VisualTool<FeatureType>::OnMouseEvent (wxMouseEvent &event) {
 			CommitHold();
 			Commit(true);
 
-			curDiag = NULL;
 			parent->ReleaseMouse();
 			parent->SetFocus();
 		}
@@ -229,15 +220,17 @@ void VisualTool<FeatureType>::OnMouseEvent (wxMouseEvent &event) {
 			if (InitializeDrag(curFeature)) {
 				if (selFeatures.find(curFeatureI) == selFeatures.end()) {
 					selChanged = true;
-					if (!ctrlDown) {
-						ClearSelection();
+					if (ctrlDown) {
+						AddSelection(curFeatureI);
 					}
-					AddSelection(curFeatureI);
+					else {
+						SetSelection(curFeatureI);
+					}
 				}
 				else {
 					selChanged = false;
 				}
-				SetEditbox(curFeature->lineN);
+				if (curFeature->line) grid->SetActiveLine(curFeature->line);
 
 				dragStartX = video.x;
 				dragStartY = video.y;
@@ -248,21 +241,22 @@ void VisualTool<FeatureType>::OnMouseEvent (wxMouseEvent &event) {
 
 				dragging = true;
 				parent->CaptureMouse();
-				if (realTime) AssLimitToVisibleFilter::SetFrame(frame_n);
+				if (realTime) AssLimitToVisibleFilter::SetFrame(frameNumber);
 			}
 		}
 		// start hold
 		else {
 			if (!altDown) {
 				ClearSelection();
-				SetEditbox();
+				Selection sel;
+				sel.insert(grid->GetActiveLine());
+				grid->SetSelectedSet(sel);
 				needRender = true;
 			}
-			curDiag = GetActiveDialogueLine();
 			if (curDiag && InitializeHold()) {
 				holding = true;
 				parent->CaptureMouse();
-				if (realTime) AssLimitToVisibleFilter::SetFrame(frame_n);
+				if (realTime) AssLimitToVisibleFilter::SetFrame(frameNumber);
 			}
 		}
 	}
@@ -273,7 +267,7 @@ void VisualTool<FeatureType>::OnMouseEvent (wxMouseEvent &event) {
 
 template<class FeatureType>
 void VisualTool<FeatureType>::Commit(bool full, wxString message) {
-	SubtitlesGrid *grid = VideoContext::Get()->grid;
+	externalChange = false;
 	if (full) {
 		if (message.empty()) {
 			message = _("visual typesetting");
@@ -283,11 +277,11 @@ void VisualTool<FeatureType>::Commit(bool full, wxString message) {
 	grid->CommitChanges(false,!full);
 	if (full)
 		grid->editBox->Update(false, true);
+	externalChange = true;
 }
 
 template<class FeatureType>
 AssDialogue* VisualTool<FeatureType>::GetActiveDialogueLine() {
-	SubtitlesGrid *grid = VideoContext::Get()->grid;
 	AssDialogue *diag = grid->GetActiveLine();
 	if (grid->IsDisplayed(diag))
 		return diag;
@@ -332,20 +326,61 @@ void VisualTool<FeatureType>::DrawAllFeatures() {
 
 template<class FeatureType>
 void VisualTool<FeatureType>::Refresh() {
-	frame_n = VideoContext::Get()->GetFrameN();
 	if (externalChange) {
 		dragListOK = false;
-		DoRefresh();
+		curDiag = GetActiveDialogueLine();
+		OnFileChanged();
 	}
 }
+
+template<class FeatureType>
+void VisualTool<FeatureType>::SetFrame(int newFrameNumber) {
+	if (frameNumber == newFrameNumber) return;
+	OnFrameChanged();
+	AssDialogue *newCurDiag = GetActiveDialogueLine();
+	if (newCurDiag != curDiag) {
+		curDiag = newCurDiag;
+		OnLineChanged();
+	}
+}
+
+template<class FeatureType>
+void VisualTool<FeatureType>::OnActiveLineChanged(AssDialogue *new_line) {
+	if (new_line && !grid->IsDisplayed(new_line)) {
+		new_line = NULL;
+	}
+	if (new_line != curDiag) {
+		curDiag = new_line;
+		OnLineChanged();
+	}
+}
+
+
+template<class FeatureType>
+void VisualTool<FeatureType>::SetSelection(unsigned i) {
+	assert(i < features.size());
+
+	selFeatures.clear();
+	lineSelCount.clear();
+	selFeatures.insert(i);
+
+	AssDialogue *line = features[i].line;
+	if (line) {
+		lineSelCount[line] = 1;
+
+		Selection sel;
+		sel.insert(line);
+		grid->SetSelectedSet(sel);
+	}
+}
+
+
 template<class FeatureType>
 void VisualTool<FeatureType>::AddSelection(unsigned i) {
 	assert(i < features.size());
 
 	if (selFeatures.insert(i).second && features[i].line) {
-		lineSelCount[features[i].lineN] += 1;
-
-		SubtitlesGrid *grid = VideoContext::Get()->grid;
+		lineSelCount[features[i].line] += 1;
 		grid->SelectRow(features[i].lineN, true);
 	}
 }
@@ -357,57 +392,37 @@ void VisualTool<FeatureType>::RemoveSelection(unsigned i) {
 	if (selFeatures.erase(i) > 0 && features[i].line) {
 		// Deselect a line only if all features for that line have been
 		// deselected
-		int lineN = features[i].lineN;
-		lineSelCount[lineN] -= 1;
-		assert(lineSelCount[lineN] >= 0);
-		if (lineSelCount[lineN] <= 0) {
-			SubtitlesGrid *grid = VideoContext::Get()->grid;
-			grid->SelectRow(lineN, true, false);
+		AssDialogue* line = features[i].line;
+		lineSelCount[line] -= 1;
+		assert(lineSelCount[line] >= 0);
+		if (lineSelCount[line] <= 0) {
+			Selection sel = grid->GetSelectedSet();
 
-			// We may have just deselected the active line, so make sure the
-			// edit box is set to something sane
-			SetEditbox();
+			// Don't deselect the only selected line
+			if (sel.size() <= 1) return;
+
+			sel.erase(line);
+
+			// Set the active line to an arbitrary selected line if we just
+			// deselected the active line
+			if (line == grid->GetActiveLine()) {
+				grid->SetActiveLine(*sel.begin());
+			}
+
+			grid->SetSelectedSet(sel);
 		}
 	}
 }
 
 template<class FeatureType>
 wxArrayInt VisualTool<FeatureType>::GetSelection() {
-	return VideoContext::Get()->grid->GetSelection();
+	return grid->GetSelection();
 }
 
-
 template<class FeatureType>
-void VisualTool<FeatureType>::ClearSelection(bool hard) {
-	if (hard) {
-		Selection sel;
-		VideoContext::Get()->grid->SetSelectedSet(sel);
-	}
+void VisualTool<FeatureType>::ClearSelection() {
 	selFeatures.clear();
 	lineSelCount.clear();
-}
-
-template<class FeatureType>
-void VisualTool<FeatureType>::SetEditbox(int lineN) {
-	VideoContext* con = VideoContext::Get();
-	if (lineN > -1) {
-		con->grid->SetActiveLine(con->grid->GetDialogue(lineN));
-		con->grid->SelectRow(lineN, true);
-	}
-	else {
-		Selection sel;
-		con->grid->GetSelectedSet(sel);
-		// If there is a selection and the edit box's line is in it, do nothing
-		// Otherwise set the edit box if there is a selection or the selection
-		// to the edit box if there is no selection
-		if (sel.empty()) {
-			sel.insert(con->grid->GetActiveLine());
-			con->grid->SetSelectedSet(sel);
-		}
-		else if (sel.find(con->grid->GetActiveLine()) == sel.end()) {
-			con->grid->SetActiveLine(con->grid->GetDialogue(con->grid->GetFirstSelRow()));
-		}
-	}
 }
 
 enum TagFoundType {
@@ -461,7 +476,7 @@ void VisualTool<FeatureType>::GetLinePosition(AssDialogue *diag,int &x, int &y, 
 	for (int i=0;i<4;i++) margin[i] = diag->Margin[i];
 	int align = 2;
 
-	AssStyle *style = VideoContext::Get()->grid->ass->GetStyle(diag->Style);
+	AssStyle *style = grid->ass->GetStyle(diag->Style);
 	if (style) {
 		align = style->alignment;
 		for (int i=0;i<4;i++) {
@@ -541,7 +556,7 @@ template<class FeatureType>
 void VisualTool<FeatureType>::GetLineRotation(AssDialogue *diag,float &rx,float &ry,float &rz) {
 	rx = ry = rz = 0.f;
 
-	AssStyle *style = VideoContext::Get()->grid->ass->GetStyle(diag->Style);
+	AssStyle *style = grid->ass->GetStyle(diag->Style);
 	if (style) {
 		rz = style->angle;
 	}
@@ -559,7 +574,7 @@ template<class FeatureType>
 void VisualTool<FeatureType>::GetLineScale(AssDialogue *diag,float &scalX,float &scalY) {
 	scalX = scalY = 100.f;
 
-	AssStyle *style = VideoContext::Get()->grid->ass->GetStyle(diag->Style);
+	AssStyle *style = grid->ass->GetStyle(diag->Style);
 	if (style) {
 		scalX = style->scalex;
 		scalY = style->scaley;

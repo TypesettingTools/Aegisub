@@ -267,7 +267,10 @@ public:
 	void JumpToTime(int ms,bool exact=false);
 
 	void Refresh();
-	void UpdateDisplays(bool full);
+	/// @brief Update the video display
+	/// @param full Recalculate size and slider lengths
+	/// @param seek Update is just a seek and file has not changed
+	void UpdateDisplays(bool full, bool seek = false);
 
 	void GetScriptSize(int &w,int &h);
 	wxString GetTempWorkFile ();

@@ -48,137 +48,118 @@
 #include "video_display.h"
 #include "visual_tool_rotatexy.h"
 
-/// @brief Constructor 
-/// @param _parent 
 VisualToolRotateXY::VisualToolRotateXY(VideoDisplay *parent, VideoState const& video, wxToolBar *)
 : VisualTool<VisualDraggableFeature>(parent, video)
 {
 	DoRefresh();
 }
 
-/// @brief Draw 
 void VisualToolRotateXY::Draw() {
-	AssDialogue *line = GetActiveDialogueLine();
-	if (!line) return;
+	if (!curDiag) return;
 
 	// Pivot coordinates
 	int dx=0,dy=0;
-	if (dragging) GetLinePosition(line,dx,dy);
-	else GetLinePosition(line,dx,dy,orgx,orgy);
+	if (dragging) GetLinePosition(curDiag,dx,dy);
+	else GetLinePosition(curDiag,dx,dy,orgx,orgy);
 	dx = orgx;
 	dy = orgy;
 
-	// Rotation
-	float rx,ry;
-	GetLineRotation(line,rx,ry,rz);
-	if (line == curDiag) {
-		rx = curAngleX;
-		ry = curAngleY;
-	}
-
-	// Set colours
 	SetLineColour(colour[0]);
 	SetFillColour(colour[1],0.3f);
 
 	// Draw pivot
 	DrawAllFeatures();
-		
+
 	// Transform grid
 	glMatrixMode(GL_MODELVIEW);
 	glPushMatrix();
 	glLoadIdentity();
-	glTranslatef(dx,dy,0.0f);
+	glTranslatef(dx,dy,0.f);
 	float matrix[16] = { 2500, 0, 0, 0, 0, 2500, 0, 0, 0, 0, 1, 1, 0, 0, 2500, 2500 };
 	glMultMatrixf(matrix);
-	glScalef(1.0f,1.0f,8.0f);
-	if (ry != 0.0f) glRotatef(ry,0.0f,-1.0f,0.0f);
-	if (rx != 0.0f) glRotatef(rx,-1.0f,0.0f,0.0f);
-	if (rz != 0.0f) glRotatef(rz,0.0f,0.0f,-1.0f);
+	glScalef(1.f,1.f,8.f);
+	if (curAngleY != 0.f) glRotatef(curAngleY,0.f,-1.f,0.f);
+	if (curAngleX != 0.f) glRotatef(curAngleX,-1.f,0.f,0.f);
+	if (curAngleZ != 0.f) glRotatef(curAngleZ,0.f,0.f,-1.f);
 
 	// Draw grid
 	glShadeModel(GL_SMOOTH);
 	SetLineColour(colour[0],0.5f,2);
 	SetModeLine();
-	float r = colour[0].Red()/255.0f;
-	float g = colour[0].Green()/255.0f;
-	float b = colour[0].Blue()/255.0f;
+	float r = colour[0].Red()/255.f;
+	float g = colour[0].Green()/255.f;
+	float b = colour[0].Blue()/255.f;
 	glBegin(GL_LINES);
 	for (int i=0;i<11;i++) {
-		float a = 1.0f - abs(i-5)*0.18f;
+		float a = 1.f - abs(i-5)*0.18f;
 		int pos = 20*(i-5);
-		glColor4f(r,g,b,0.0f);
+		glColor4f(r,g,b,0.f);
 		glVertex2i(pos,120);
 		glColor4f(r,g,b,a);
 		glVertex2i(pos,0);
 		glVertex2i(pos,0);
-		glColor4f(r,g,b,0.0f);
+		glColor4f(r,g,b,0.f);
 		glVertex2i(pos,-120);
 		glVertex2i(120,pos);
 		glColor4f(r,g,b,a);
 		glVertex2i(0,pos);
 		glVertex2i(0,pos);
-		glColor4f(r,g,b,0.0f);
+		glColor4f(r,g,b,0.f);
 		glVertex2i(-120,pos);
 	}
 	glEnd();
 
 	// Draw vectors
-	SetLineColour(colour[3],1.0f,2);
+	SetLineColour(colour[3],1.f,2);
 	SetModeLine();
 	glBegin(GL_LINES);
-		glVertex3f(0.0f,0.0f,0.0f);
-		glVertex3f(50.0f,0.0f,0.0f);
-		glVertex3f(0.0f,0.0f,0.0f);
-		glVertex3f(0.0f,50.0f,0.0f);
-		glVertex3f(0.0f,0.0f,0.0f);
-		glVertex3f(0.0f,0.0f,50.0f);
+		glVertex3f(0.f,0.f,0.f);
+		glVertex3f(50.f,0.f,0.f);
+		glVertex3f(0.f,0.f,0.f);
+		glVertex3f(0.f,50.f,0.f);
+		glVertex3f(0.f,0.f,0.f);
+		glVertex3f(0.f,0.f,50.f);
 	glEnd();
 
 	// Draw arrow tops
 	glBegin(GL_TRIANGLE_FAN);
-		glVertex3f(60.0f,0.0f,0.0f);
-		glVertex3f(50.0f,-3.0f,-3.0f);
-		glVertex3f(50.0f,3.0f,-3.0f);
-		glVertex3f(50.0f,3.0f,3.0f);
-		glVertex3f(50.0f,-3.0f,3.0f);
-		glVertex3f(50.0f,-3.0f,-3.0f);
+		glVertex3f(60.f,0.f,0.f);
+		glVertex3f(50.f,-3.f,-3.f);
+		glVertex3f(50.f,3.f,-3.f);
+		glVertex3f(50.f,3.f,3.f);
+		glVertex3f(50.f,-3.f,3.f);
+		glVertex3f(50.f,-3.f,-3.f);
 	glEnd();
 	glBegin(GL_TRIANGLE_FAN);
-		glVertex3f(0.0f,60.0f,0.0f);
-		glVertex3f(-3.0f,50.0f,-3.0f);
-		glVertex3f(3.0f,50.0f,-3.0f);
-		glVertex3f(3.0f,50.0f,3.0f);
-		glVertex3f(-3.0f,50.0f,3.0f);
-		glVertex3f(-3.0f,50.0f,-3.0f);
+		glVertex3f(0.f,60.f,0.f);
+		glVertex3f(-3.f,50.f,-3.f);
+		glVertex3f(3.f,50.f,-3.f);
+		glVertex3f(3.f,50.f,3.f);
+		glVertex3f(-3.f,50.f,3.f);
+		glVertex3f(-3.f,50.f,-3.f);
 	glEnd();
 	glBegin(GL_TRIANGLE_FAN);
-		glVertex3f(0.0f,0.0f,60.0f);
-		glVertex3f(-3.0f,-3.0f,50.0f);
-		glVertex3f(3.0f,-3.0f,50.0f);
-		glVertex3f(3.0f,3.0f,50.0f);
-		glVertex3f(-3.0f,3.0f,50.0f);
-		glVertex3f(-3.0f,-3.0f,50.0f);
+		glVertex3f(0.f,0.f,60.f);
+		glVertex3f(-3.f,-3.f,50.f);
+		glVertex3f(3.f,-3.f,50.f);
+		glVertex3f(3.f,3.f,50.f);
+		glVertex3f(-3.f,3.f,50.f);
+		glVertex3f(-3.f,-3.f,50.f);
 	glEnd();
 
-	// Restore gl's state
 	glPopMatrix();
 	glShadeModel(GL_FLAT);
 }
 
-/// @brief Start holding 
 bool VisualToolRotateXY::InitializeHold() {
-	if (!curDiag) return false;
-	GetLinePosition(curDiag,odx,ody,orgx,orgy);
-	GetLineRotation(curDiag,origAngleX,origAngleY,rz);
 	startAngleX = (orgy-video.y)*2.f;
 	startAngleY = (video.x-orgx)*2.f;
-	curAngleX = origAngleX;
-	curAngleY = origAngleY;
+	origAngleX = curAngleX;
+	origAngleY = curAngleY;
 
 	return true;
 }
 
-/// @brief Update hold 
 void VisualToolRotateXY::UpdateHold() {
 	float screenAngleX = (orgy-video.y)*2.f;
 	float screenAngleY = (video.x-orgx)*2.f;
@@ -204,9 +185,7 @@ void VisualToolRotateXY::UpdateHold() {
 	}
 }
 
-/// @brief Commit hold 
 void VisualToolRotateXY::CommitHold() {
-	SubtitlesGrid *grid = VideoContext::Get()->grid;
 	wxArrayInt sel = grid->GetSelection();
 	for (wxArrayInt::const_iterator cur = sel.begin(); cur != sel.end(); ++cur) {
 		AssDialogue* line = grid->GetDialogue(*cur);
@@ -216,11 +195,11 @@ void VisualToolRotateXY::CommitHold() {
 	}
 }
 
-/// @brief Get \\org pivot 
 void VisualToolRotateXY::PopulateFeatureList() {
-	curDiag = GetActiveDialogueLine();
 	if (!curDiag) return;
-	GetLinePosition(curDiag,odx,ody,orgx,orgy);
+
+	int posx, posy;
+	GetLinePosition(curDiag,posx,posy,orgx,orgy);
 
 	// Set features
 	features.resize(1);
@@ -231,15 +210,11 @@ void VisualToolRotateXY::PopulateFeatureList() {
 	feat.type = DRAG_BIG_TRIANGLE;
 }
 
-/// @brief Update dragging of \\org 
-/// @param feature 
 void VisualToolRotateXY::UpdateDrag(VisualDraggableFeature* feature) {
 	orgx = feature->x;
 	orgy = feature->y;
 }
 
-/// @brief Commit dragging of \\org 
-/// @param feature 
 void VisualToolRotateXY::CommitDrag(VisualDraggableFeature* feature) {
 	int x = feature->x;
 	int y = feature->y;
@@ -247,11 +222,9 @@ void VisualToolRotateXY::CommitDrag(VisualDraggableFeature* feature) {
 	SetOverride(feature->line, L"\\org",wxString::Format(L"(%i,%i)",x,y));
 }
 
-/// @brief Refresh 
 void VisualToolRotateXY::DoRefresh() {
-	AssDialogue *line = GetActiveDialogueLine();
-	if (!line) return;
-	GetLinePosition(line,odx,ody,orgx,orgy);
-	GetLineRotation(line,curAngleX,curAngleY,rz);
+	if (!curDiag) return;
+	int posx, posy;
+	GetLinePosition(curDiag,posx,posy,orgx,orgy);
+	GetLineRotation(curDiag,curAngleX,curAngleY,curAngleZ);
 }
-

@@ -203,11 +203,12 @@ void VideoDisplay::SetFrame(int frameNumber) {
 	// Render the new frame
 	if (context->IsLoaded()) {
 		context->GetScriptSize(scriptW, scriptH);
-		tool->Refresh();
+		if (!tool.get()) tool.reset(new VisualToolCross(this, video, toolBar));
+		tool->SetFrame(frameNumber);
 
 		AegiVideoFrame frame;
 		try {
-			frame = context->GetFrame(frameNumber);
+			frame = context->GetFrame(currentFrame);
 		}
 		catch (const wxChar *err) {
 			wxLogError(
@@ -240,6 +241,11 @@ void VideoDisplay::SetFrame(int frameNumber) {
 	Render();
 
 	currentFrame = frameNumber;
+}
+
+void VideoDisplay::Refresh() {
+	tool->Refresh();
+	Render();
 }
 
 void VideoDisplay::SetFrameRange(int from, int to) {
@@ -419,7 +425,7 @@ void VideoDisplay::UpdateSize() {
 
 	tool->Refresh();
 
-	Refresh(false);
+	wxGLCanvas::Refresh(false);
 }
 
 void VideoDisplay::Reset() {

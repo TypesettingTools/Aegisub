@@ -48,42 +48,25 @@
 #include "video_display.h"
 #include "visual_tool_scale.h"
 
-/// @brief Constructor 
-/// @param _parent 
 VisualToolScale::VisualToolScale(VideoDisplay *parent, VideoState const& video, wxToolBar *)
 : VisualTool<VisualDraggableFeature>(parent, video)
 , curScaleX(0.f)
-, startScaleX(0.f)
 , origScaleX(0.f)
 , curScaleY(0.f)
-, startScaleY(0.f)
 , origScaleY(0.f)
 , startX(0)
 , startY(0)
 {
+	DoRefresh();
 }
 
-/// @brief Draw 
 void VisualToolScale::Draw() {
-	// Get line to draw
-	AssDialogue *line = GetActiveDialogueLine();
-	if (!line) return;
+	if (!curDiag) return;
 
-	// Get scale
-	if (line != curDiag) GetLineScale(line,curScaleX,curScaleY);
-
-	// Get line position and rotation
-	int dx,dy;
-	float rx,ry,rz;
-	GetLinePosition(line,dx,dy);
-	GetLineRotation(line,rx,ry,rz);
-
-	// Set dx/dy
 	int len = 160;
-	dx = MID(len/2+10,dx,video.w-len/2-30);
-	dy = MID(len/2+10,dy,video.h-len/2-30);
+	int dx = MID(len/2+10,posx,video.w-len/2-30);
+	int dy = MID(len/2+10,posy,video.h-len/2-30);
 
-	// Set colours
 	SetLineColour(colour[0]);
 	SetFillColour(colour[1],0.3f);
 
@@ -91,13 +74,13 @@ void VisualToolScale::Draw() {
 	glMatrixMode(GL_MODELVIEW);
 	glPushMatrix();
 	glLoadIdentity();
-	glTranslatef(dx,dy,0.0f);
+	glTranslatef(dx,dy,0.f);
 	float matrix[16] = { 2500, 0, 0, 0, 0, 2500, 0, 0, 0, 0, 1, 1, 0, 0, 2500, 2500 };
 	glMultMatrixf(matrix);
-	glScalef(1.0f,1.0f,8.0f);
-	if (ry != 0.0f) glRotatef(ry,0.0f,-1.0f,0.0f);
-	if (rx != 0.0f) glRotatef(rx,-1.0f,0.0f,0.0f);
-	if (rz != 0.0f) glRotatef(rz,0.0f,0.0f,-1.0f);
+	glScalef(1.f,1.f,8.f);
+	if (ry != 0.f) glRotatef(ry,0.f,-1.f,0.f);
+	if (rx != 0.f) glRotatef(rx,-1.f,0.f,0.f);
+	if (rz != 0.f) glRotatef(rz,0.f,0.f,-1.f);
 	
 	// Scale parameters
 	int lenx = int(1.6 * curScaleX);
@@ -106,46 +89,42 @@ void VisualToolScale::Draw() {
 	int drawY = len/2 + 10;
 
 	// Draw length markers
-	SetLineColour(colour[3],1.0f,2);
+	SetLineColour(colour[3],1.f,2);
 	DrawLine(-lenx/2,drawY+10,lenx/2,drawY+10);
 	DrawLine(drawX+10,-leny/2,drawX+10,leny/2);
-	SetLineColour(colour[0],1.0f,1);
+	SetLineColour(colour[0],1.f,1);
 	SetFillColour(colour[1],0.3f);
 	DrawCircle(lenx/2,drawY+10,4);
 	DrawCircle(drawX+10,-leny/2,4);
 
 	// Draw horizontal scale
-	SetLineColour(colour[0],1.0f,1);
+	SetLineColour(colour[0],1.f,1);
 	DrawRectangle(-len/2,drawY,len/2+1,drawY+5);
-	SetLineColour(colour[0],1.0f,2);
+	SetLineColour(colour[0],1.f,2);
 	DrawLine(-len/2+1,drawY+5,-len/2+1,drawY+15);
 	DrawLine(len/2,drawY+5,len/2,drawY+15);
 
 	// Draw vertical scale
-	SetLineColour(colour[0],1.0f,1);
+	SetLineColour(colour[0],1.f,1);
 	DrawRectangle(drawX,-len/2,drawX+5,len/2+1);
-	SetLineColour(colour[0],1.0f,2);
+	SetLineColour(colour[0],1.f,2);
 	DrawLine(drawX+5,-len/2+1,drawX+15,-len/2+1);
 	DrawLine(drawX+5,len/2,drawX+15,len/2);
 
-	// Restore gl's state
 	glPopMatrix();
 }
 
-/// @brief Start holding 
 bool VisualToolScale::InitializeHold() {
 	startX = video.x;
 	startY = video.y;
-	GetLineScale(curDiag,origScaleX,origScaleY);
-	curScaleX = origScaleX;
-	curScaleY = origScaleY;
+	origScaleX = curScaleX;
+	origScaleY = curScaleY; 
 	curDiag->StripTag(L"\\fscx");
 	curDiag->StripTag(L"\\fscy");
 
 	return true;
 }
 
-/// @brief Update hold 
 void VisualToolScale::UpdateHold() {
 	using std::max;
 	// Deltas
@@ -162,14 +141,12 @@ void VisualToolScale::UpdateHold() {
 
 	// Oh Snap
 	if (ctrlDown) {
-		curScaleX = floorf(curScaleX/25.f+.5f)*25.0f;
-		curScaleY = floorf(curScaleY/25.f+.5f)*25.0f;
+		curScaleX = floorf(curScaleX/25.f+.5f)*25.f;
+		curScaleY = floorf(curScaleY/25.f+.5f)*25.f;
 	}
 }
 
-/// @brief Commit hold 
 void VisualToolScale::CommitHold() {
-	SubtitlesGrid *grid = VideoContext::Get()->grid;
 	wxArrayInt sel = grid->GetSelection();
 	for (wxArrayInt::const_iterator cur = sel.begin(); cur != sel.end(); ++cur) {
 		AssDialogue* line = grid->GetDialogue(*cur);
@@ -177,4 +154,12 @@ void VisualToolScale::CommitHold() {
 		SetOverride(line, L"\\fscx",wxString::Format(L"(%0.3g)",curScaleX));
 		SetOverride(line, L"\\fscy",wxString::Format(L"(%0.3g)",curScaleY));
 	}
+}
+
+void VisualToolScale::DoRefresh() {
+	if (!curDiag) return;
+
+	GetLineScale(curDiag, curScaleX, curScaleY);
+	GetLinePosition(curDiag, posx, posy);
+	GetLineRotation(curDiag, rx, ry, rz);
 }

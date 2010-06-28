@@ -50,6 +50,7 @@
 
 class VideoDisplay;
 class AssDialogue;
+class SubtitlesGrid;
 struct VideoState;
 namespace agi {
 	class OptionValue;
@@ -71,6 +72,7 @@ public:
 	virtual bool Update()=0;
 	virtual void Draw()=0;
 	virtual void Refresh()=0;
+	virtual void SetFrame(int frame)=0;
 	virtual ~IVisualTool() { };
 };
 
@@ -89,25 +91,60 @@ private:
 	/// or NULL and -1 if there are none
 	void GetHighlightedFeature();
 
+	/// @brief Get the dialogue line currently in the edit box
+	/// @return NULL if the line is not active on the current frame
+	AssDialogue *GetActiveDialogueLine();
+
 	typedef typename std::set<int>::iterator selection_iterator;
 
 	std::set<int> selFeatures; /// Currently selected visual features
-	std::map<int, int> lineSelCount; /// Number of selected features for each line
-
-	/// @brief Set the edit box's active line, ensuring proper sync with grid
-	/// @param lineN Line number or -1 for automatic selection
-	///
-	/// This function ensures that the selection is not empty and that the line
-	/// displayed in the edit box is part of the selection, by either setting
-	/// the edit box to the selection or setting the selection to the edit
-	/// box's line, as is appropriate.
-	void SetEditbox(int lineN = -1);
+	std::map<AssDialogue*, int> lineSelCount; /// Number of selected features for each line
 
 	bool selChanged; /// Has the selection already been changed in the current click?
+
+	/// @brief Called when a hold is begun
+	/// @return Should the hold actually happen?
+	virtual bool InitializeHold() { return false; }
+	/// @brief Called on every mouse event during a hold
+	virtual void UpdateHold() { }
+	/// @brief Called at the end of a hold
+	virtual void CommitHold() { }
+
+	/// @brief Called when the feature list needs to be (re)generated
+	virtual void PopulateFeatureList() { }
+
+	/// @brief Called at the beginning of a drag
+	/// @param feature The visual feature clicked on
+	/// @return Should the drag happen?
+	virtual bool InitializeDrag(FeatureType* feature) { return true; }
+	/// @brief Called on every mouse event during a drag
+	/// @param feature The current feature to process; not necessarily the one clicked on
+	virtual void UpdateDrag(FeatureType* feature) { }
+	/// @brief Called at the end of a drag
+	virtual void CommitDrag(FeatureType* feature) { }
+
+	/// Called when the file is changed by something other than a visual tool
+	virtual void OnFileChanged() { DoRefresh(); }
+	/// Called when the frame number changes
+	virtual void OnFrameChanged() { }
+	/// Called when curDiag changes
+	virtual void OnLineChanged() { DoRefresh(); }
+	/// Generic refresh to simplify tools which do the same thing for any
+	/// external change (i.e. almost all of them). Called only by the above
+	/// methods.
+	virtual void DoRefresh() { }
+
+	/// @brief Called when there's stuff
+	/// @return Should the display rerender?
+	virtual bool Update() { return false; };
+	/// @brief Draw stuff
+	virtual void Draw()=0;
+
 protected:
+	SubtitlesGrid *grid;
 	VideoDisplay *parent; /// VideoDisplay which this belongs to, used to frame conversion
 	bool holding; /// Is a hold currently in progress?
-	AssDialogue *curDiag; /// Active dialogue line for a hold; only valid when holding = true
+	AssDialogue *curDiag; /// Active dialogue line; NULL if it is not visible on the current frame
 	bool dragging; /// Is a drag currently in progress?
 	bool externalChange; /// Only invalid drag lists when refreshing due to external changes
 
@@ -116,7 +153,7 @@ protected:
 	std::vector<FeatureType> features; /// List of features which are drawn and can be clicked on
 	bool dragListOK; /// Do the features not need to be regenerated?
 
-	int frame_n; /// Current frame number
+	int frameNumber; /// Current frame number
 	VideoState const& video; /// Mouse and video information
 
 	bool leftClick; /// Is a left click event currently being processed?
@@ -134,53 +171,27 @@ protected:
 	wxString GetLineVectorClip(AssDialogue *diag,int &scale,bool &inverse);
 	void SetOverride(AssDialogue* line, wxString tag, wxString value);
 
-	/// @brief Get the dialogue line currently in the edit box
-	/// @return NULL if the line is not active on the current frame
-	AssDialogue *GetActiveDialogueLine();
 	/// Draw all of the features in the list
 	void DrawAllFeatures();
 	/// @brief Commit the current file state
 	/// @param message Description of changes for undo
 	void Commit(bool full=false, wxString message = L"");
 
-	/// @brief Called when a hold is begun
-	/// @return Should the hold actually happen?
-	virtual bool InitializeHold() { return false; }
-
-	/// @brief Called on every mouse event during a hold
-	virtual void UpdateHold() { }
-
-	/// @brief Called at the end of a hold
-	virtual void CommitHold() { }
-
-	/// @brief Called when the feature list needs to be (re)generated
-	virtual void PopulateFeatureList() { }
-
-	/// @brief Called at the beginning of a drag
-	/// @param feature The visual feature clicked on
-	/// @return Should the drag happen?
-	virtual bool InitializeDrag(FeatureType* feature) { return true; }
-
-	/// @brief Called on every mouse event during a drag
-	/// @param feature The current feature to process; not necessarily the one clicked on
-	virtual void UpdateDrag(FeatureType* feature) { }
-
-	// @brief Called at the end of a drag
-	virtual void CommitDrag(FeatureType* feature) { }
-
-	/// @brief Called by Refresh when there's stuff
-	virtual void DoRefresh() { }
-
 	/// @brief Add a feature (and its line) to the selection
 	/// @param i Index in the feature list
 	void AddSelection(unsigned i);
+
 	/// @brief Remove a feature from the selection
 	/// @param i Index in the feature list
 	/// Also deselects lines if all features for that line have been deselected
 	void RemoveSelection(unsigned i);
+
+	/// @brief Set the selection to a single feature, deselecting everything else
+	/// @param i Index in the feature list
+	void SetSelection(unsigned i);
+
 	/// @brief Clear the selection
-	/// @param hard Should the grid's selection be cleared as well?
-	void ClearSelection(bool hard=true);
+	void ClearSelection();
 	/// @brief Get the currently selected lines
 	wxArrayInt GetSelection();
 
@@ -189,8 +200,7 @@ protected:
 
 protected:
 	// SubtitleSelectionListener implementation
-	// (overridden by deriving classes too)
-	virtual void OnActiveLineChanged(AssDialogue *new_line) { }
+	void OnActiveLineChanged(AssDialogue *new_line);
 	virtual void OnSelectedSetChanged(const Selection &lines_added, const Selection &lines_removed) { }
 
 public:
@@ -200,13 +210,13 @@ public:
 
 	/// @brief Event handler for the subtoolbar
 	virtual void OnSubTool(wxCommandEvent &) { }
-	/// @brief Called when there's stuff
-	/// @return Should the display rerender?
-	virtual bool Update() { return false; };
-	/// @brief Draw stuff
-	virtual void Draw()=0;
-	/// @brief Called by stuff when there's stuff, and sometimes when there isn't stuff
+
+	/// @brief Signal that the file has changed
 	void Refresh();
+	/// @brief Signal that the current frame number has changed
+	/// @param newFrameNumber The new frame number
+	void SetFrame(int newFrameNumber);
+
 
 	/// @brief Constructor
 	/// @param parent The VideoDisplay to use for coordinate conversion

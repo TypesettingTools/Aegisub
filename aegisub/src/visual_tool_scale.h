@@ -41,36 +41,20 @@
 /// @class VisualToolScale
 /// @brief DOCME
 class VisualToolScale : public VisualTool<VisualDraggableFeature> {
-private:
+	float curScaleX, origScaleX;
+	float curScaleY, origScaleY;
 
-	/// DOCME
-
-	/// DOCME
-
-	/// DOCME
-	float curScaleX,startScaleX,origScaleX;
-
-	/// DOCME
-
-	/// DOCME
-
-	/// DOCME
-	float curScaleY,startScaleY,origScaleY;
-
-	/// DOCME
-
-	/// DOCME
-	int startX,startY;
+	int startX, startY;
+	int posx, posy;
+	float rx, ry, rz;
 
 
-	/// @brief DOCME
-	///
 	bool InitializeHold();
 	void UpdateHold();
 	void CommitHold();
 
+	void DoRefresh();
+	void Draw();
 public:
 	VisualToolScale(VideoDisplay *parent, VideoState const& video, wxToolBar *);
-
-	void Draw();
 };

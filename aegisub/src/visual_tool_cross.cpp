@@ -43,26 +43,19 @@
 #include "video_display.h"
 #include "visual_tool_cross.h"
 
-/// @brief Constructor 
-/// @param _parent 
 VisualToolCross::VisualToolCross(VideoDisplay *parent, VideoState const& video, wxToolBar *)
 : VisualTool<VisualDraggableFeature>(parent, video)
 {
 }
-VisualToolCross::~VisualToolCross() { }
 
-/// @brief Update 
 bool VisualToolCross::Update() {
 	if (!leftDClick) return true;
-
-	AssDialogue* line = GetActiveDialogueLine();
-	if (!line) return true;
-
+	if (!curDiag) return true;
 
 	int dx, dy;
 	int vx = video.x;
 	int vy = video.y;
-	GetLinePosition(line, dx, dy);
+	GetLinePosition(curDiag, dx, dy);
 	parent->ToScriptCoords(&vx, &vy);
 	parent->ToScriptCoords(&dx, &dy);
 	dx -= vx;
@@ -71,7 +64,7 @@ bool VisualToolCross::Update() {
 	SubtitlesGrid *grid = VideoContext::Get()->grid;
 	wxArrayInt sel = grid->GetSelection();
 	for (wxArrayInt::const_iterator cur = sel.begin(); cur != sel.end(); ++cur) {
-		line = grid->GetDialogue(*cur);
+		AssDialogue *line = grid->GetDialogue(*cur);
 		if (!line) continue;
 		int x1, y1;
 		GetLinePosition(line, x1, y1);
@@ -83,7 +76,6 @@ bool VisualToolCross::Update() {
 	return false;
 }
 
-/// @brief Draw 
 void VisualToolCross::Draw() {
 	// Draw cross
 	glDisable(GL_LINE_SMOOTH);

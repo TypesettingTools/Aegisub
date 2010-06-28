@@ -44,12 +44,8 @@
 ///
 /// DOCME
 class VisualToolCross : public VisualTool<VisualDraggableFeature> {
-public:
-	VisualToolCross(VideoDisplay *parent, VideoState const& video, wxToolBar *);
-	~VisualToolCross();
-
 	bool Update();
 	void Draw();
+public:
+	VisualToolCross(VideoDisplay *parent, VideoState const& video, wxToolBar *);
 };
-
-

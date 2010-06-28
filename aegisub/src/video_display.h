@@ -148,7 +148,7 @@ class VideoDisplay: public wxGLCanvas {
 	void OnMode(const wxCommandEvent &event);
 	void SetMode(int mode);
 	/// @brief Switch the active tool to a new object of the specified class
-	/// @param T The class of the new visual typsetting tool
+	/// @param T The class of the new visual typesetting tool
 	template <class T> void SetTool();
 
 	/// The current script width
@@ -189,6 +189,8 @@ public:
 	/// @from Minimum frame number
 	/// @to Maximum frame number; must be >= from or strange things may happen
 	void SetFrameRange(int from, int to);
+	/// @brief Signal that the file has changed
+	void Refresh();
 
 	/// @brief Render the currently visible frame
 	void Render();

@@ -36,7 +36,7 @@
 #include "config.h"
 
 #ifndef AGI_PRE
-#include <math.h>
+#include <cmath>
 #endif
 
 #include "ass_dialogue.h"
@@ -48,50 +48,27 @@
 #include "video_display.h"
 #include "visual_tool_rotatez.h"
 
-/// @brief Constructor 
-/// @param _parent 
+static const float deg2rad = 3.1415926536f / 180.f;
+static const float rad2deg = 180.f / 3.1415926536f;
+
 VisualToolRotateZ::VisualToolRotateZ(VideoDisplay *parent, VideoState const& video, wxToolBar *)
 : VisualTool<VisualDraggableFeature>(parent, video)
 {
 	DoRefresh();
 }
 
-/// @brief Draw 
 void VisualToolRotateZ::Draw() {
-	// Get line to draw
-	AssDialogue *line = GetActiveDialogueLine();
-	if (!line) return;
+	if (!curDiag) return;
 
 	// Draw pivot
 	DrawAllFeatures();
 
-	// Radius
-	int dx=0,dy=0;
-	if (dragging) GetLinePosition(line,dx,dy);
-	else GetLinePosition(line,dx,dy,orgx,orgy);
-	int radius = (int) sqrt(double((dx-orgx)*(dx-orgx)+(dy-orgy)*(dy-orgy)));
+	int radius = (int)sqrt(double((posx-orgx)*(posx-orgx)+(posy-orgy)*(posy-orgy)));
 	int oRadius = radius;
 	if (radius < 50) radius = 50;
 
-	// Pivot coordinates
-	int odx = dx;
-	int ody = dy;
-	dx = orgx;
-	dy = orgy;
-
-	// Rotation
-	float rz;
-	GetLineRotation(line,rx,ry,rz);
-	if (line == curDiag) rz = curAngle;
-
-	// Get scale
-	float scalX = 100.0f;
-	float scalY = 100.0f;
-	GetLineScale(line,scalX,scalY);
-
-	// Get deltas
-	int deltax = int(cos(rz*3.1415926536/180.0)*radius);
-	int deltay = int(-sin(rz*3.1415926536/180.0)*radius);
+	int deltax = int(cos(curAngle*deg2rad)*radius);
+	int deltay = int(-sin(curAngle*deg2rad)*radius);
 
 	// Set colours
 	SetLineColour(colour[0]);
@@ -101,84 +78,76 @@ void VisualToolRotateZ::Draw() {
 	glMatrixMode(GL_MODELVIEW);
 	glPushMatrix();
 	glLoadIdentity();
-	glTranslatef(dx,dy,-1.0f);
+	glTranslatef(orgx,orgy,-1.f);
 	float matrix[16] = { 2500, 0, 0, 0, 0, 2500, 0, 0, 0, 0, 1, 1, 0, 0, 2500, 2500 };
 	glMultMatrixf(matrix);
-	glScalef(1.0f,1.0f,8.0f);
-	glRotatef(ry,0.0f,-1.0f,0.0f);
-	glRotatef(rx,-1.0f,0.0f,0.0f);
-	glScalef(scalX/100.0f,scalY/100.0f,1.0f);
+	glScalef(1.f,1.f,8.f);
+	glRotatef(ry,0.f,-1.f,0.f);
+	glRotatef(rx,-1.f,0.f,0.f);
+	glScalef(scaleX/100.f,scaleY/100.f,1.f);
 
 	// Draw the circle
 	DrawRing(0,0,radius+4,radius-4);
 
 	// Draw markers around circle
 	int markers = 6;
-	float markStart = -90.0f / markers;
-	float markEnd = markStart+(180.0f/markers);
+	float markStart = -90.f / markers;
+	float markEnd = markStart+(180.f/markers);
 	for (int i=0;i<markers;i++) {
-		float angle = i*(360.0f/markers);
+		float angle = i*(360.f/markers);
 		DrawRing(0,0,radius+30,radius+12,radius/radius,angle+markStart,angle+markEnd);
 	}
 
 	// Draw the baseline
-	SetLineColour(colour[3],1.0f,2);
+	SetLineColour(colour[3],1.f,2);
 	DrawLine(deltax,deltay,-deltax,-deltay);
 
 	// Draw the connection line
-	if (orgx != odx && orgy != ody) {
-		double angle = atan2(double(dy-ody),double(odx-dx)) + rz*3.1415926536/180.0;
+	if (orgx != posx || orgy != posy) {
+		double angle = atan2(double(orgy-posy),double(posx-orgx)) + curAngle*deg2rad;
 		int fx = int(cos(angle)*oRadius);
 		int fy = -int(sin(angle)*oRadius);
 		DrawLine(0,0,fx,fy);
-		int mdx = int(cos(rz*3.1415926536/180.0)*20);
-		int mdy = int(-sin(rz*3.1415926536/180.0)*20);
+		int mdx = int(cos(curAngle*deg2rad)*20);
+		int mdy = int(-sin(curAngle*deg2rad)*20);
 		DrawLine(fx-mdx,fy-mdy,fx+mdx,fy+mdy);
 	}
 
 	// Draw the rotation line
-	SetLineColour(colour[0],1.0f,1);
+	SetLineColour(colour[0],1.f,1);
 	SetFillColour(colour[1],0.3f);
 	DrawCircle(deltax,deltay,4);
 
-	// Restore
 	glPopMatrix();
 
 	// Draw line to mouse
 	if (!dragging && !curFeature && video.x > INT_MIN && video.y > INT_MIN) {
 		SetLineColour(colour[0]);
-		DrawLine(dx,dy,video.x,video.y);
+		DrawLine(orgx,orgy,video.x,video.y);
 	}
 }
 
-/// @brief Start holding 
 bool VisualToolRotateZ::InitializeHold() {
-	GetLinePosition(curDiag,odx,ody,orgx,orgy);
-	startAngle = atan2(double(orgy-video.y),double(video.x-orgx)) * 180.0 / 3.1415926535897932;
-	GetLineRotation(curDiag,rx,ry,origAngle);
-	curAngle = origAngle;
+	startAngle = atan2(double(orgy-video.y),double(video.x-orgx)) * rad2deg;
+	origAngle = curAngle;
 	curDiag->StripTag(L"\\frz");
 	curDiag->StripTag(L"\\fr");
 
 	return true;
 }
 
-/// @brief Update hold 
 void VisualToolRotateZ::UpdateHold() {
-	// Find angle
-	float screenAngle = atan2(double(orgy-video.y),double(video.x-orgx)) * 180.0 / 3.1415926535897932;
+	float screenAngle = atan2(double(orgy-video.y),double(video.x-orgx)) * rad2deg;
 	curAngle = fmodf(screenAngle - startAngle + origAngle + 360.f, 360.f);
 
 	// Oh Snap
 	if (ctrlDown) {
-		curAngle = floorf(curAngle/30.f+.5f)*30.0f;
-		if (curAngle > 359.0f) curAngle = 0.0f;
+		curAngle = floorf(curAngle/30.f+.5f)*30.f;
+		if (curAngle > 359.f) curAngle = 0.f;
 	}
 }
 
-/// @brief Commit hold 
 void VisualToolRotateZ::CommitHold() {
-	SubtitlesGrid *grid = VideoContext::Get()->grid;
 	wxArrayInt sel = grid->GetSelection();
 	for (wxArrayInt::const_iterator cur = sel.begin(); cur != sel.end(); ++cur) {
 		AssDialogue* line = grid->GetDialogue(*cur);
@@ -187,11 +156,8 @@ void VisualToolRotateZ::CommitHold() {
 	}
 }
 
-/// @brief Get \\org pivot 
 void VisualToolRotateZ::PopulateFeatureList() {
-	curDiag = GetActiveDialogueLine();
 	if (!curDiag) return;
-	GetLinePosition(curDiag,odx,ody,orgx,orgy);
 
 	// Set features
 	features.resize(1);
@@ -202,15 +168,11 @@ void VisualToolRotateZ::PopulateFeatureList() {
 	feat.type = DRAG_BIG_TRIANGLE;
 }
 
-/// @brief Update dragging of \\org 
-/// @param feature 
 void VisualToolRotateZ::UpdateDrag(VisualDraggableFeature* feature) {
 	orgx = feature->x;
 	orgy = feature->y;
 }
 
-/// @brief Commit dragging of \\org 
-/// @param feature 
 void VisualToolRotateZ::CommitDrag(VisualDraggableFeature* feature) {
 	int x = feature->x;
 	int y = feature->y;
@@ -218,10 +180,9 @@ void VisualToolRotateZ::CommitDrag(VisualDraggableFeature* feature) {
 	SetOverride(feature->line, L"\\org",wxString::Format(L"(%i,%i)",x,y));
 }
 
-/// @brief Refresh 
 void VisualToolRotateZ::DoRefresh() {
-	AssDialogue *line = GetActiveDialogueLine();
-	if (!line) return;
-	GetLinePosition(line,odx,ody,orgx,orgy);
-	GetLineRotation(line,rx,ry,curAngle);
+	if (!curDiag) return;
+	GetLinePosition(curDiag, posx, posy, orgx, orgy);
+	GetLineRotation(curDiag, rx, ry, curAngle);
+	GetLineScale(curDiag, scaleX, scaleY);
 }

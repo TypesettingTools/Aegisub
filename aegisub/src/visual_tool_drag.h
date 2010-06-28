@@ -80,16 +80,18 @@ private:
 
 	/// Set the pos/move button to the correct icon based on the active line
 	void UpdateToggleButtons();
-	void DoRefresh();
 
-protected:
 	// Overriding SubtitleSelectionListener inherited from base VisualTool<>
-	virtual void OnSelectedSetChanged(const Selection &lines_added, const Selection &lines_removed);
+	void OnSelectedSetChanged(const Selection &lines_added, const Selection &lines_removed);
 
-public:
-	VisualToolDrag(VideoDisplay *parent, VideoState const& video, wxToolBar *toolbar);
+	void OnFrameChanged();
+	void OnFileChanged();
+	void OnLineChanged();
 
 	void Draw();
 	bool Update();
+public:
+	VisualToolDrag(VideoDisplay *parent, VideoState const& video, wxToolBar *toolbar);
+
 	void OnSubTool(wxCommandEvent &event);
 };

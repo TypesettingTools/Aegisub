@@ -70,11 +70,10 @@ VisualToolDrag::VisualToolDrag(VideoDisplay *parent, VideoState const& video, wx
 void VisualToolDrag::UpdateToggleButtons() {
 	// Check which bitmap to use
 	bool toMove = true;
-	AssDialogue *line = GetActiveDialogueLine();
-	if (line) {
+	if (curDiag) {
 		int x1,y1,x2,y2,t1,t2;
 		bool hasMove;
-		GetLineMove(line,hasMove,x1,y1,x2,y2,t1,t2);
+		GetLineMove(curDiag,hasMove,x1,y1,x2,y2,t1,t2);
 		toMove = !hasMove;
 	}
 
@@ -117,13 +116,24 @@ void VisualToolDrag::OnSubTool(wxCommandEvent &) {
 	Refresh();
 }
 
-void VisualToolDrag::DoRefresh() {
+void VisualToolDrag::OnLineChanged() {
 	UpdateToggleButtons();
+}
+
+void VisualToolDrag::OnFileChanged() {
+	/// @todo be less dumb and preserve selections when possible
+	PopulateFeatureList();
+}
+
+void VisualToolDrag::OnFrameChanged() {
+	/// @todo be less dumb and preserve selections when possible
+	PopulateFeatureList();
 }
 
 void VisualToolDrag::OnSelectedSetChanged(const Selection &added, const Selection &removed) {
 	if (!externalChange) return;
 	externalChange = false;
+	grid->BeginBatch();
 
 	// Remove all deselected lines
 	for (size_t i = 0; i < features.size(); i++) {
@@ -139,6 +149,7 @@ void VisualToolDrag::OnSelectedSetChanged(const Selection &added, const Selectio
 		}
 	}
 
+	grid->EndBatch();
 	externalChange = true;
 }
 
@@ -193,7 +204,7 @@ void VisualToolDrag::Draw() {
 }
 
 void VisualToolDrag::PopulateFeatureList() {
-	ClearSelection(false);
+	ClearSelection();
 	primary = -1;
 	GenerateFeatures();
 }
@@ -267,7 +278,7 @@ bool VisualToolDrag::InitializeDrag(VisualToolDragDraggableFeature *feature) {
 /// @param feature 
 void VisualToolDrag::UpdateDrag(VisualToolDragDraggableFeature* feature) {
 	// Update "time" to reflect the time of the frame in which the feature is being dragged
-	int time = VFR_Output.GetTimeAtFrame(frame_n,true,true);
+	int time = VFR_Output.GetTimeAtFrame(frameNumber,true,true);
 	feature->time = MID(0,time - feature->line->Start.GetMS(),feature->line->End.GetMS()-feature->line->Start.GetMS());
 }
 
@@ -317,9 +328,8 @@ bool VisualToolDrag::Update() {
 		dy = features[primary].y;
 	}
 	else {
-		AssDialogue* line = GetActiveDialogueLine();
-		if (!line) return false;
-		GetLinePosition(line, dx, dy);
+		if (!curDiag) return false;
+		GetLinePosition(curDiag, dx, dy);
 	}
 	parent->ToScriptCoords(&dx, &dy);
 	dx -= vx;

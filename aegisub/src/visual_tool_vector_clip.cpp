@@ -56,6 +56,7 @@
 #include "video_display.h"
 #include "visual_tool_vector_clip.h"
 
+/// Button IDs
 enum {
 	BUTTON_DRAG = VISUAL_SUB_TOOL_START,
 	BUTTON_LINE,
@@ -68,17 +69,11 @@ enum {
 	BUTTON_LAST // Leave this at the end and don't use it
 };
 
-/// @brief Constructor 
-/// @param parent   
-/// @param _toolBar 
 VisualToolVectorClip::VisualToolVectorClip(VideoDisplay *parent, VideoState const& video, wxToolBar * toolBar)
 : VisualTool<VisualToolVectorClipDraggableFeature>(parent, video)
 , spline(*parent)
 , toolBar(toolBar)
 {
-	DoRefresh();
-	mode = 0;
-
 	// Create toolbar
 	toolBar->AddTool(BUTTON_DRAG,_("Drag"),GETIMAGE(visual_vector_clip_drag_24),_("Drag control points."),wxITEM_CHECK);
 	toolBar->AddTool(BUTTON_LINE,_("Line"),GETIMAGE(visual_vector_clip_line_24),_("Appends a line."),wxITEM_CHECK);
@@ -94,9 +89,8 @@ VisualToolVectorClip::VisualToolVectorClip(VideoDisplay *parent, VideoState cons
 	toolBar->Realize();
 	toolBar->Show(true);
 
-	// Set default mode
-	PopulateFeatureList();
-	if (features.size() == 0) SetMode(1);
+	DoRefresh();
+	SetMode(features.empty());
 }
 
 void VisualToolVectorClip::OnSubTool(wxCommandEvent &event) {
@@ -124,12 +118,10 @@ static bool is_move(SplineCurve const& c) {
 }
 
 void VisualToolVectorClip::Draw() {
+	if (!curDiag) return;
 	if (spline.empty()) return;
 
 	GL_EXT(PFNGLMULTIDRAWARRAYSPROC, glMultiDrawArrays);
-
-	AssDialogue *line = GetActiveDialogueLine();
-	if (!line) return;
 
 	// Parse vector
 	std::vector<float> points;
@@ -170,7 +162,7 @@ void VisualToolVectorClip::Draw() {
 
 	// Draw the actual rectangle
 	glColorMask(1,1,1,1);
-	SetLineColour(colour[3],0.0f);
+	SetLineColour(colour[3],0.f);
 	SetFillColour(wxColour(0,0,0),0.5f);
 
 	// VSFilter draws when the winding number is nonzero, so we want to draw the
@@ -181,8 +173,8 @@ void VisualToolVectorClip::Draw() {
 	glDisable(GL_STENCIL_TEST);
 
 	// Draw lines
-	SetFillColour(colour[3],0.0f);
-	SetLineColour(colour[3],1.0f,2);
+	SetFillColour(colour[3],0.f);
+	SetLineColour(colour[3],1.f,2);
 	SetModeLine();
 	glMultiDrawArrays(GL_LINE_LOOP, &start[0], &count[0], start.size());
 
@@ -272,7 +264,6 @@ void VisualToolVectorClip::MakeFeature(Spline::iterator cur) {
 	}
 }
 
-/// @brief Populate feature list 
 void VisualToolVectorClip::PopulateFeatureList() {
 	features.clear();
 	// This is perhaps a bit conservative as there can be up to 3N+1 features
@@ -283,21 +274,14 @@ void VisualToolVectorClip::PopulateFeatureList() {
 	}
 }
 
-/// @brief Update 
-/// @param feature 
 void VisualToolVectorClip::UpdateDrag(VisualToolVectorClipDraggableFeature* feature) {
 	spline.MovePoint(feature->curve,feature->point,Vector2D(feature->x,feature->y));
 }
 
-/// @brief Commit 
-/// @param feature 
-void VisualToolVectorClip::CommitDrag(VisualToolVectorClipDraggableFeature* feature) {
-	SetOverride(GetActiveDialogueLine(), inverse ? L"\\iclip" : L"\\clip", L"(" + spline.EncodeToASS() + L")");
+void VisualToolVectorClip::CommitDrag(VisualToolVectorClipDraggableFeature*) {
+	SetOverride(curDiag, inverse ? L"\\iclip" : L"\\clip", L"(" + spline.EncodeToASS() + L")");
 }
 
-/// @brief Clicked a feature 
-/// @param feature 
-/// @return 
 bool VisualToolVectorClip::InitializeDrag(VisualToolVectorClipDraggableFeature* feature) {
 	// Delete a control point
 	if (mode == 5) {
@@ -319,15 +303,13 @@ bool VisualToolVectorClip::InitializeDrag(VisualToolVectorClipDraggableFeature* 
 		CommitDrag(feature);
 		curFeature = NULL;
 		PopulateFeatureList();
-		ClearSelection(false);
+		ClearSelection();
 		Commit(true);
 		return false;
 	}
 	return true;
 }
 
-/// @brief Initialize hold 
-/// @return 
 bool VisualToolVectorClip::InitializeHold() {
 	// Insert line/bicubic
 	if (mode == 1 || mode == 2) {
@@ -348,7 +330,7 @@ bool VisualToolVectorClip::InitializeHold() {
 
 		// Insert
 		spline.push_back(curve);
-		ClearSelection(false);
+		ClearSelection();
 		MakeFeature(--spline.end());
 		UpdateHold();
 		return true;
@@ -401,7 +383,7 @@ bool VisualToolVectorClip::InitializeHold() {
 		}
 
 		// Commit
-		SetOverride(GetActiveDialogueLine(), inverse ? L"\\iclip" : L"\\clip", L"(" + spline.EncodeToASS() + L")");
+		SetOverride(curDiag, inverse ? L"\\iclip" : L"\\clip", L"(" + spline.EncodeToASS() + L")");
 		Commit(true);
 		DoRefresh();
 		return false;
@@ -409,7 +391,7 @@ bool VisualToolVectorClip::InitializeHold() {
 
 	// Freehand
 	if (mode == 6 || mode == 7) {
-		ClearSelection(false);
+		ClearSelection();
 		features.clear();
 		spline.clear();
 		SplineCurve curve;
@@ -422,7 +404,6 @@ bool VisualToolVectorClip::InitializeHold() {
 	return false;
 }
 
-/// @brief Update hold 
 void VisualToolVectorClip::UpdateHold() {
 	// Insert line
 	if (mode == 1) {
@@ -470,7 +451,6 @@ void VisualToolVectorClip::UpdateHold() {
 	}
 }
 
-/// @brief Commit hold 
 void VisualToolVectorClip::CommitHold() {
 	// Smooth spline
 	if (!holding && mode == 7) {
@@ -490,25 +470,19 @@ void VisualToolVectorClip::CommitHold() {
 	}
 }
 
-/// @brief Refresh 
 void VisualToolVectorClip::DoRefresh() {
-	if (!dragging && !holding) {
-		// Get line
-		AssDialogue *line = GetActiveDialogueLine();
-		if (!line) return;
+	if (!curDiag) return;
 
-		// Get clip vector
-		wxString vect;
-		int scale;
-		vect = GetLineVectorClip(line,scale,inverse);
-		spline.DecodeFromASS(vect);
-		SelectAll();
-		PopulateFeatureList();
-	}
+	wxString vect;
+	int scale;
+	vect = GetLineVectorClip(curDiag,scale,inverse);
+	spline.DecodeFromASS(vect);
+	SelectAll();
+	PopulateFeatureList();
 }
 
 void VisualToolVectorClip::SelectAll() {
-	ClearSelection(false);
+	ClearSelection();
 	for (size_t i = 0; i < features.size(); ++i) {
 		AddSelection(i);
 	}

@@ -229,6 +229,7 @@ void VideoContext::SetVideo(const wxString &filename) {
 
 			// Choose a provider
 			provider = VideoProviderFactoryManager::GetProvider(filename);
+			loaded = provider != NULL;
 
 			// Get subtitles provider
 			try {
@@ -288,14 +289,13 @@ void VideoContext::SetVideo(const wxString &filename) {
 				hasSubtitles = MatroskaWrapper::HasSubtitles(filename);
 			}
 
-			UpdateDisplays(true);
+			UpdateDisplays(true, true);
 		}
 		
 		catch (wxString &e) {
 			wxMessageBox(e,_T("Error setting video"),wxICON_ERROR | wxOK);
 		}
 	}
-	loaded = provider != NULL;
 }
 
 /// @brief Add new display 
@@ -316,10 +316,7 @@ void VideoContext::RemoveDisplay(VideoDisplay *display) {
 	displayList.remove(display);
 }
 
-/// @brief Update displays 
-/// @param full 
-///
-void VideoContext::UpdateDisplays(bool full) {
+void VideoContext::UpdateDisplays(bool full, bool seek) {
 	if (!loaded) return;
 
 	for (std::list<VideoDisplay*>::iterator cur=displayList.begin();cur!=displayList.end();cur++) {
@@ -329,7 +326,12 @@ void VideoContext::UpdateDisplays(bool full) {
 			display->UpdateSize();
 			display->SetFrameRange(0,GetLength()-1);
 		}
-		display->SetFrame(GetFrameN());
+		if (seek) {
+			display->SetFrame(GetFrameN());
+		}
+		else {
+			display->Refresh();
+		}
 	}
 
 	// Update audio display
@@ -361,17 +363,14 @@ void VideoContext::Refresh () {
 /// @return 
 ///
 void VideoContext::JumpToFrame(int n) {
-	// Loaded?
 	if (!loaded) return;
 
 	// Prevent intervention during playback
 	if (isPlaying && n != playNextFrame) return;
 
-	// Set frame number
 	frame_n = n;
 
-	// Display
-	UpdateDisplays(false);
+	UpdateDisplays(false, true);
 
 	// Update grid
 	static agi::OptionValue* highlight = OPT_GET("Subtitle/Grid/Highlight Subtitles in Frame");

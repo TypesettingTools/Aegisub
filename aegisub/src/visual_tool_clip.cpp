@@ -47,8 +47,6 @@
 #include "video_display.h"
 #include "visual_tool_clip.h"
 
-/// @brief Constructor 
-/// @param _parent 
 VisualToolClip::VisualToolClip(VideoDisplay *parent, VideoState const& video, wxToolBar *)
 : VisualTool<ClipCorner>(parent, video)
 , curX1(0)
@@ -57,14 +55,13 @@ VisualToolClip::VisualToolClip(VideoDisplay *parent, VideoState const& video, wx
 , curY2(video.h)
 , inverse(false)
 {
-	AssDialogue *line = GetActiveDialogueLine();
-	if (line) GetLineClip(line,curX1,curY1,curX2,curY2,inverse);
+	if (curDiag) {
+		GetLineClip(curDiag,curX1,curY1,curX2,curY2,inverse);
+	}
 }
 
-/// @brief Draw 
 void VisualToolClip::Draw() {
-	AssDialogue *line = GetActiveDialogueLine();
-	if (!line) return;
+	if (!curDiag) return;
 
 	int dx1 = curX1;
 	int dy1 = curY1;
@@ -95,7 +92,6 @@ void VisualToolClip::Draw() {
 	DrawAllFeatures();
 }
 
-/// @brief Start holding 
 bool VisualToolClip::InitializeHold() {
 	startX = video.x;
 	startY = video.y;
@@ -104,7 +100,6 @@ bool VisualToolClip::InitializeHold() {
 	return true;
 }
 
-/// @brief Update hold 
 void VisualToolClip::UpdateHold() {
 	// Coordinates
 	curX1 = startX;
@@ -121,12 +116,10 @@ void VisualToolClip::UpdateHold() {
 	curX2 = MID(0,curX2,video.w);
 	curY1 = MID(0,curY1,video.h);
 	curY2 = MID(0,curY2,video.h);
-	
-	// Features
+
 	PopulateFeatureList();
 }
 
-/// @brief Commit hold 
 void VisualToolClip::CommitHold() {
 	int x1 = curX1;
 	int x2 = curX2;
@@ -134,14 +127,12 @@ void VisualToolClip::CommitHold() {
 	int y2 = curY2;
 	parent->ToScriptCoords(&x1, &y1);
 	parent->ToScriptCoords(&x2, &y2);
-	SetOverride(GetActiveDialogueLine(), inverse ? L"\\iclip" : L"\\clip",wxString::Format(L"(%i,%i,%i,%i)",x1,y1,x2,y2));
+	SetOverride(curDiag, inverse ? L"\\iclip" : L"\\clip",wxString::Format(L"(%i,%i,%i,%i)",x1,y1,x2,y2));
 }
 
-/// @brief Populate feature list 
 void VisualToolClip::PopulateFeatureList() {
-	// Clear
 	if (features.size() != 4) {
-		ClearSelection(false);
+		ClearSelection();
 		features.clear();
 		features.resize(4);
 	}
@@ -180,17 +171,12 @@ void VisualToolClip::PopulateFeatureList() {
 	i++;
 }
 
-/// @brief Initialize 
-/// @param feature 
 bool VisualToolClip::InitializeDrag(ClipCorner*) {
-	curDiag = GetActiveDialogueLine();
 	curDiag->StripTag(L"\\clip");
 	curDiag->StripTag(L"\\iclip");
 	return true;
 }
 
-/// @brief Update drag 
-/// @param feature 
 void VisualToolClip::UpdateDrag(ClipCorner* feature) {
 	// Update brothers
 	feature->horiz->y = feature->y;
@@ -207,14 +193,20 @@ void VisualToolClip::UpdateDrag(ClipCorner* feature) {
 	if (curY1 > curY2) std::swap(curY1,curY2);
 }
 
-/// @brief Done dragging 
-/// @param feature 
 void VisualToolClip::CommitDrag(ClipCorner*) {
 	CommitHold();
 }
 
-void VisualToolClip::DoRefresh() {
-	AssDialogue* line = GetActiveDialogueLine();
-	if (line)
-		GetLineClip(line,curX1,curY1,curX2,curY2,inverse);
+void VisualToolClip::OnLineChanged() {
+	if (curDiag) {
+		GetLineClip(curDiag,curX1,curY1,curX2,curY2,inverse);
+		PopulateFeatureList();
+	}
+}
+
+void VisualToolClip::OnFileChanged() {
+	if (curDiag) {
+		GetLineClip(curDiag,curX1,curY1,curX2,curY2,inverse);
+		PopulateFeatureList();
+	}
 }

@@ -44,49 +44,24 @@
 ///
 /// DOCME
 class VisualToolRotateZ : public VisualTool<VisualDraggableFeature> {
-private:
+	float curAngle, startAngle, origAngle;
+	int orgx, orgy;
+	int posx, posy;
+	float rx, ry;
+	float scaleX, scaleY;
 
-	/// DOCME
-
-	/// DOCME
-
-	/// DOCME
-	float curAngle,startAngle,origAngle;
-
-	/// DOCME
-
-	/// DOCME
-
-	/// DOCME
-
-	/// DOCME
-	int orgx,orgy,odx,ody;
-
-	/// DOCME
-
-	/// DOCME
-	float rx,ry;
-
-
-	/// @brief DOCME
-	/// @return 
-	///
 	bool InitializeHold();
 	void UpdateHold();
 	void CommitHold();
 
-
-	/// @brief DOCME
-	///
 	void PopulateFeatureList();
 	void UpdateDrag(VisualDraggableFeature* feature);
 	void CommitDrag(VisualDraggableFeature* feature);
 
 	void DoRefresh();
 
-public:
-	VisualToolRotateZ(VideoDisplay *parent, VideoState const& video, wxToolBar *);
-
 	void Draw();
 	bool Update() { return true; }
+public:
+	VisualToolRotateZ(VideoDisplay *parent, VideoState const& video, wxToolBar *);
 };
