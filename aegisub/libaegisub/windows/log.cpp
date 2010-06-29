@@ -18,10 +18,14 @@
 /// @brief Windows logging
 /// @ingroup libaegisub
 
-
+#ifndef LAGI_PRE
 #include <stdio.h>
 #include <time.h>
 #include <string.h>
+
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
+#endif
 
 #include "libaegisub/log.h"
 #include "libaegisub/util.h"
@@ -34,11 +38,8 @@ void EmitSTDOUT::log(SinkMessage *sm) {
 	time_t time = sm->tv.tv_sec;
 	localtime_s(&tmtime, &time);
 
-//		tmtime.tm_year+1900,
-//		tmtime.tm_mon,
-//		tmtime.tm_mday,
-
-	printf("%c %02d:%02d:%02d %ld <%-25s> [%s:%s:%d]  %.*s\n",
+	char buff[1024];
+	_snprintf_s(buff, _TRUNCATE, "%c %02d:%02d:%02d %ld <%-25s> [%s:%s:%d]  %.*s\n",
 		Severity_ID[sm->severity],
 		tmtime.tm_hour,
 		tmtime.tm_min,
@@ -50,6 +51,7 @@ void EmitSTDOUT::log(SinkMessage *sm) {
 		sm->line,
 		sm->len,
 		sm->message);
+	OutputDebugStringA(buff);
 }
 	} // namespace log
 } // namespace agi
