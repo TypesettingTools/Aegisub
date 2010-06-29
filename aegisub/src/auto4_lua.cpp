@@ -510,7 +510,8 @@ namespace Automation4 {
 		// leave the new table on top of the stack
 		lua_newtable(L);
 		for (size_t i = 0; i != ints.size(); ++i) {
-			lua_pushinteger(L, ints[i]+1);
+			// We use zero-based indexing but Lua wants one-based, so add one
+			lua_pushinteger(L, ints[i] + 1);
 			lua_rawseti(L, -2, (int)i+1);
 		}
 	}
@@ -616,7 +617,8 @@ namespace Automation4 {
 			lua_pushnil(L);
 			while (lua_next(L, -2)) {
 				if (lua_isnumber(L, -1)) {
-					selected.push_back(lua_tointeger(L, -1));
+					// Lua uses one-based indexing but we want zero-based, so subtract one
+					selected.push_back(lua_tointeger(L, -1) - 1);
 				}
 				lua_pop(L, 1);
 			}
