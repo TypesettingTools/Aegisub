@@ -88,8 +88,8 @@ public:
 
 	/// DOCME
 	FrameMain *frame;
-#ifdef WITH_AUTOMATION
 
+#ifdef WITH_AUTOMATION
 	/// DOCME
 	Automation4::AutoloadScriptManager *global_scripts;
 #endif
@@ -115,6 +115,16 @@ public:
 	void OnFatalException();
 #endif
 
+#if defined(wxUSE_EXCEPTIONS)
+	// This function wraps all event handler calls anywhere in the application and is
+	// our ticket to catch exeptions happening in event handlers.
+    virtual void HandleEvent(wxEvtHandler *handler,
+                             wxEventFunction func,
+                             wxEvent& event) const;
+#else
+# error wxWidgets is compiled without exceptions support, Aegisub requires exceptions support in wxWidgets to run safely
+#endif
+
 	//int OnRun();
 	DECLARE_EVENT_TABLE()
 };
@@ -122,11 +132,7 @@ public:
 DECLARE_APP(AegisubApp)
 
 
-////////////////
-// Stack walker
 #if wxUSE_STACKWALKER == 1
-
-/// DOCME
 /// @class StackWalker
 /// @brief DOCME
 ///

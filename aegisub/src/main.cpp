@@ -340,6 +340,31 @@ void AegisubApp::OnFatalException() {
 #endif
 
 
+void AegisubApp::HandleEvent(wxEvtHandler *handler, wxEventFunction func, wxEvent& event) const {
+#define SHOW_EXCEPTION(str) wxMessageBox(str, L"Exception in event handler", wxOK|wxICON_ERROR|wxSTAY_ON_TOP)
+	try {
+		wxApp::HandleEvent(handler, func, event);
+	}
+	catch (const agi::Exception &e) {
+		SHOW_EXCEPTION(lagi_wxString(e.GetChainedMessage()));
+	}
+	catch (const std::exception &e) {
+		SHOW_EXCEPTION(wxString(e.what(), wxConvUTF8));
+	}
+	catch (const wchar_t *e) {
+		SHOW_EXCEPTION(wxString(e));
+	}
+	catch (const char *e) {
+		SHOW_EXCEPTION(wxString(e, wxConvUTF8));
+	}
+	catch (const wxString &e) {
+		SHOW_EXCEPTION(e);
+	}
+#undef SHOW_EXCEPTION
+}
+
+
+
 #if wxUSE_STACKWALKER == 1
 /// @brief Called at the start of walking the stack.
 /// @param cause cause of the crash.
