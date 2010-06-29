@@ -43,6 +43,7 @@
 #include <wx/button.h>
 #include <wx/panel.h>
 #include <wx/sizer.h>
+#include <wx/statbmp.h>
 #include <wx/statline.h>
 #include <wx/stattext.h>
 #include <wx/textctrl.h>
@@ -58,17 +59,8 @@
 /// @param parent Parent frame.
 ///
 AboutScreen::AboutScreen(wxWindow *parent)
-: wxDialog (parent, -1, _("About Aegisub"), wxDefaultPosition, wxSize(300,240), wxCAPTION | wxCLOSE_BOX , _("About Aegisub"))
+: wxDialog (parent, -1, _("About Aegisub"), wxDefaultPosition, wxDefaultSize, wxCAPTION | wxCLOSE_BOX , _("About Aegisub"))
 {
-	// Get splash
-	wxBitmap splash = GETIMAGE(splash_misc);
-	SetOwnBackgroundColour(wxColour(255,255,255));
-	SetForegroundColour(wxColour(0,0,0));
-
-	// Picture
-	wxSizer *PicSizer = new wxBoxSizer(wxHORIZONTAL);
-	PicSizer->Add(new BitmapControl(this,splash));
-
 	// Generate library string
 	wxString libString = _T("Aegisub includes portions from the following other projects:\n");
 	libString += _T("    wxWidgets - Copyright (c) Julian Smart, Robert Roebling et al;\n");
@@ -114,7 +106,7 @@ AboutScreen::AboutScreen(wxWindow *parent)
 	// Generate about string
 	wxString aboutString;
 	aboutString += wxString(_T("Aegisub ")) + GetAegisubShortVersionString() + _T(".\n");
-	aboutString += _T("Copyright (c) 2005-2009 Rodrigo Braz Monteiro, Niels Martin Hansen et al.\n\n");
+	aboutString += _T("Copyright (c) 2005-2010 Rodrigo Braz Monteiro, Niels Martin Hansen et al.\n\n");
 	aboutString += _T("Programmers:\n");
 	aboutString += _T("    Alysson Souza e Silva\n");
 	aboutString += _T("    Amar Takhar\n");
@@ -156,38 +148,17 @@ AboutScreen::AboutScreen(wxWindow *parent)
 	wxChar copySymbol = 0xA9;
 	aboutString.Replace(_T("(c)"),wxString(copySymbol));
 
-	// Text sizer
-	wxSizer *TextSizer = new wxBoxSizer(wxVERTICAL);
-	//TextSizer->Add(new wxStaticText(this,-1,aboutString),1);
-	TextSizer->Add(new wxTextCtrl(this,-1,aboutString,wxDefaultPosition,wxSize(410,200),wxTE_MULTILINE | wxTE_READONLY),1,wxEXPAND);
+	wxTextCtrl *textctrl = new wxTextCtrl(this, -1, aboutString, wxDefaultPosition, wxSize(-1,200), wxTE_MULTILINE|wxTE_READONLY|wxBORDER_NONE);
 
-	// Buttons panel
-	wxPanel *buttonPanel = new wxPanel(this,-1,wxDefaultPosition,wxDefaultSize,wxTAB_TRAVERSAL);
-	wxSizer *ButtonSizer = new wxBoxSizer(wxHORIZONTAL);
-	ButtonSizer->AddStretchSpacer(1);
-#ifndef __APPLE__
-	ButtonSizer->Add(new wxButton(buttonPanel,wxID_OK),0,wxALIGN_RIGHT | wxALL,7);
-#else
-	wxButton *okButton = new wxButton(buttonPanel,wxID_OK);
-	ButtonSizer->Add(okButton,0,wxALIGN_RIGHT | wxALL,7);
-	okButton->SetDefault();
-#endif
-	ButtonSizer->SetSizeHints(buttonPanel);
-	buttonPanel->SetSizer(ButtonSizer);
-
-	// Main sizer
 	wxSizer *MainSizer = new wxBoxSizer(wxVERTICAL);
-	MainSizer->Add(PicSizer,0,wxCENTER,0);
-	MainSizer->Add(TextSizer,0,wxEXPAND | wxALL,0);
-	MainSizer->Add(new wxStaticLine(this,wxID_ANY),0,wxEXPAND | wxALL,0);
-	MainSizer->Add(buttonPanel,0,wxEXPAND | wxBOTTOM | wxRIGHT | wxLEFT,0);
+	MainSizer->Add(new wxStaticBitmap(this, -1, GETIMAGE(splash_misc)), 0, wxCENTER, 0);
+	MainSizer->Add(new wxStaticLine(this, wxID_ANY), 0, wxEXPAND|wxALL, 0);
+	MainSizer->Add(textctrl, 0, wxEXPAND|wxALL, 0);
+	MainSizer->Add(new wxStaticLine(this, wxID_ANY), 0, wxEXPAND|wxALL, 0);
+	MainSizer->Add(CreateButtonSizer(wxOK), 0, wxEXPAND|wxALL, 6);
 
-	// Set sizer
-	MainSizer->SetSizeHints(this);
-	SetSizer(MainSizer);
-
-	// Draw logo
-	Centre();
+	SetSizerAndFit(MainSizer);
+	CentreOnParent();
 }
 
 
