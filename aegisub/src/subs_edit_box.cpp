@@ -120,25 +120,25 @@ SubsEditBox::SubsEditBox (wxWindow *parent,SubtitlesGrid *gridp) : wxPanel(paren
 	MarginV->SetMaxLength(4);
 
 	// Middle-bottom controls
-	Bold = new wxBitmapButton(this,BUTTON_BOLD,GETIMAGE(button_bold_24),wxDefaultPosition,wxSize(20,20));
+	Bold = new wxBitmapButton(this,BUTTON_BOLD,GETIMAGE(button_bold_16),wxDefaultPosition,wxDefaultSize);
 	Bold->SetToolTip(_("Bold"));
-	Italics = new wxBitmapButton(this,BUTTON_ITALICS,GETIMAGE(button_italics_24),wxDefaultPosition,wxSize(20,20));
+	Italics = new wxBitmapButton(this,BUTTON_ITALICS,GETIMAGE(button_italics_16),wxDefaultPosition,wxDefaultSize);
 	Italics->SetToolTip(_("Italics"));
-	Underline = new wxBitmapButton(this,BUTTON_UNDERLINE,GETIMAGE(button_underline_24),wxDefaultPosition,wxSize(20,20));
+	Underline = new wxBitmapButton(this,BUTTON_UNDERLINE,GETIMAGE(button_underline_16),wxDefaultPosition,wxDefaultSize);
 	Underline->SetToolTip(_("Underline"));
-	Strikeout = new wxBitmapButton(this,BUTTON_STRIKEOUT,GETIMAGE(button_strikeout_24),wxDefaultPosition,wxSize(20,20));
+	Strikeout = new wxBitmapButton(this,BUTTON_STRIKEOUT,GETIMAGE(button_strikeout_16),wxDefaultPosition,wxDefaultSize);
 	Strikeout->SetToolTip(_("Strikeout"));
-	FontName = new wxBitmapButton(this,BUTTON_FONT_NAME,GETIMAGE(button_fontname_24),wxDefaultPosition,wxSize(30,20));
+	FontName = new wxBitmapButton(this,BUTTON_FONT_NAME,GETIMAGE(button_fontname_16),wxDefaultPosition,wxDefaultSize);
 	FontName->SetToolTip(_("Font Face Name"));
-	Color1 = new wxBitmapButton(this,BUTTON_COLOR1,GETIMAGE(button_color_one_24),wxDefaultPosition,wxSize(30,20));
+	Color1 = new wxBitmapButton(this,BUTTON_COLOR1,GETIMAGE(button_color_one_16),wxDefaultPosition,wxDefaultSize);
 	Color1->SetToolTip(_("Primary color"));
-	Color2 = new wxBitmapButton(this,BUTTON_COLOR2,GETIMAGE(button_color_two_24),wxDefaultPosition,wxSize(30,20));
+	Color2 = new wxBitmapButton(this,BUTTON_COLOR2,GETIMAGE(button_color_two_16),wxDefaultPosition,wxDefaultSize);
 	Color2->SetToolTip(_("Secondary color"));
-	Color3 = new wxBitmapButton(this,BUTTON_COLOR3,GETIMAGE(button_color_three_24),wxDefaultPosition,wxSize(30,20));
+	Color3 = new wxBitmapButton(this,BUTTON_COLOR3,GETIMAGE(button_color_three_16),wxDefaultPosition,wxDefaultSize);
 	Color3->SetToolTip(_("Outline color"));
-	Color4 = new wxBitmapButton(this,BUTTON_COLOR4,GETIMAGE(button_color_four_24),wxDefaultPosition,wxSize(30,20));
+	Color4 = new wxBitmapButton(this,BUTTON_COLOR4,GETIMAGE(button_color_four_16),wxDefaultPosition,wxDefaultSize);
 	Color4->SetToolTip(_("Shadow color"));
-	CommitButton = new wxBitmapButton(this,BUTTON_COMMIT,GETIMAGE(button_audio_commit_24),wxDefaultPosition,wxSize(30,-1));
+	CommitButton = new wxBitmapButton(this,BUTTON_COMMIT,GETIMAGE(button_audio_commit_16),wxDefaultPosition,wxDefaultSize);
 	ToolTipManager::Bind(CommitButton,_("Commits the text (Enter). Hold Ctrl to stay in line (%KEY%)."),_T("Edit Box Commit"));
 	ByTime = new wxRadioButton(this,RADIO_TIME_BY_TIME,_("Time"),wxDefaultPosition,wxDefaultSize,wxRB_GROUP);
 	ByTime->SetToolTip(_("Time by h:mm:ss.cs"));
