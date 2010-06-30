@@ -326,11 +326,11 @@ void VideoContext::UpdateDisplays(bool full, bool seek) {
 			display->UpdateSize();
 			display->SetFrameRange(0,GetLength()-1);
 		}
-		if (seek) {
-			display->SetFrame(GetFrameN());
-		}
-		else {
+		if (!seek) {
 			display->Refresh();
+		}
+		if (seek || full) {
+			display->SetFrame(GetFrameN());
 		}
 	}
 
