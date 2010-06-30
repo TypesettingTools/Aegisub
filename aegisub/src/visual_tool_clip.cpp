@@ -58,6 +58,38 @@ VisualToolClip::VisualToolClip(VideoDisplay *parent, VideoState const& video, wx
 	if (curDiag) {
 		GetLineClip(curDiag,curX1,curY1,curX2,curY2,inverse);
 	}
+
+	Feature feat;
+	feat.type = DRAG_SMALL_CIRCLE;
+	features.resize(4, feat);
+
+	feature_iterator cur = features.begin();
+	feats[0] = &*(cur++);
+	feats[1] = &*(cur++);
+	feats[2] = &*(cur++);
+	feats[3] = &*(cur++);
+
+
+	// Top-left
+	int i = 0;
+	feats[i]->horiz = feats[1];
+	feats[i]->vert = feats[2];
+	i++;
+
+	// Top-right
+	feats[i]->horiz = feats[0];
+	feats[i]->vert = feats[3];
+	i++;
+
+	// Bottom-left
+	feats[i]->horiz = feats[3];
+	feats[i]->vert = feats[0];
+	i++;
+
+	// Bottom-right
+	feats[i]->horiz = feats[2];
+	feats[i]->vert = feats[1];
+	i++;
 }
 
 void VisualToolClip::Draw() {
@@ -101,7 +133,6 @@ bool VisualToolClip::InitializeHold() {
 }
 
 void VisualToolClip::UpdateHold() {
-	// Coordinates
 	curX1 = startX;
 	curY1 = startY;
 	curX2 = video.x;
@@ -117,7 +148,7 @@ void VisualToolClip::UpdateHold() {
 	curY1 = MID(0,curY1,video.h);
 	curY2 = MID(0,curY2,video.h);
 
-	PopulateFeatureList();
+	SetFeaturePositions();
 }
 
 void VisualToolClip::CommitHold() {
@@ -130,83 +161,57 @@ void VisualToolClip::CommitHold() {
 	SetOverride(curDiag, inverse ? L"\\iclip" : L"\\clip",wxString::Format(L"(%i,%i,%i,%i)",x1,y1,x2,y2));
 }
 
-void VisualToolClip::PopulateFeatureList() {
-	if (features.size() != 4) {
-		ClearSelection();
-		features.clear();
-		features.resize(4);
-	}
-
-	// Top-left
-	int i = 0;
-	features[i].x = curX1;
-	features[i].y = curY1;
-	features[i].horiz = &features[1];
-	features[i].vert = &features[2];
-	features[i].type = DRAG_SMALL_CIRCLE;
-	i++;
-
-	// Top-right
-	features[i].x = curX2;
-	features[i].y = curY1;
-	features[i].horiz = &features[0];
-	features[i].vert = &features[3];
-	features[i].type = DRAG_SMALL_CIRCLE;
-	i++;
-
-	// Bottom-left
-	features[i].x = curX1;
-	features[i].y = curY2;
-	features[i].horiz = &features[3];
-	features[i].vert = &features[0];
-	features[i].type = DRAG_SMALL_CIRCLE;
-	i++;
-
-	// Bottom-right
-	features[i].x = curX2;
-	features[i].y = curY2;
-	features[i].horiz = &features[2];
-	features[i].vert = &features[1];
-	features[i].type = DRAG_SMALL_CIRCLE;
-	i++;
-}
-
-bool VisualToolClip::InitializeDrag(ClipCorner*) {
+bool VisualToolClip::InitializeDrag(feature_iterator) {
 	curDiag->StripTag(L"\\clip");
 	curDiag->StripTag(L"\\iclip");
 	return true;
 }
 
-void VisualToolClip::UpdateDrag(ClipCorner* feature) {
+void VisualToolClip::UpdateDrag(feature_iterator feature) {
 	// Update brothers
 	feature->horiz->y = feature->y;
 	feature->vert->x = feature->x;
 
 	// Get "cur" from features
-	curX1 = features[0].x;
-	curX2 = features[3].x;
-	curY1 = features[0].y;
-	curY2 = features[3].y;
+	curX1 = feats[0]->x;
+	curX2 = feats[3]->x;
+	curY1 = feats[0]->y;
+	curY2 = feats[3]->y;
 
 	// Make sure p1 < p2
 	if (curX1 > curX2) std::swap(curX1,curX2);
 	if (curY1 > curY2) std::swap(curY1,curY2);
 }
 
-void VisualToolClip::CommitDrag(ClipCorner*) {
+void VisualToolClip::CommitDrag(feature_iterator) {
 	CommitHold();
 }
 
-void VisualToolClip::OnLineChanged() {
-	if (curDiag) {
-		GetLineClip(curDiag,curX1,curY1,curX2,curY2,inverse);
-		PopulateFeatureList();
-	}
+void VisualToolClip::SetFeaturePositions() {
+	// Top-left
+	int i = 0;
+	feats[i]->x = curX1;
+	feats[i]->y = curY1;
+	i++;
+
+	// Top-right
+	feats[i]->x = curX2;
+	feats[i]->y = curY1;
+	i++;
+
+	// Bottom-left
+	feats[i]->x = curX1;
+	feats[i]->y = curY2;
+	i++;
+
+	// Bottom-right
+	feats[i]->x = curX2;
+	feats[i]->y = curY2;
 }
 
-void VisualToolClip::OnFileChanged() {
+void VisualToolClip::DoRefresh() {
 	if (curDiag) {
 		GetLineClip(curDiag,curX1,curY1,curX2,curY2,inverse);
-		PopulateFeatureList();
+		SetFeaturePositions();
 	}
 }

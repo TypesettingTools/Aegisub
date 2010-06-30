@@ -44,16 +44,13 @@ class VisualToolRotateXY : public VisualTool<VisualDraggableFeature> {
 	float curAngleX,startAngleX,origAngleX;
 	float curAngleY,startAngleY,origAngleY;
 	float curAngleZ;
-	int orgx,orgy;
+	Feature *org;
 
 	bool InitializeHold();
 	void UpdateHold();
 	void CommitHold();
 
-
-	void PopulateFeatureList();
-	void UpdateDrag(VisualDraggableFeature* feature);
-	void CommitDrag(VisualDraggableFeature* feature);
+	void CommitDrag(feature_iterator feature);
 
 	void DoRefresh();
 

@@ -59,19 +59,20 @@ public:
 class VisualToolClip : public VisualTool<ClipCorner> {
 	int startX,startY,curX1,curY1,curX2,curY2;
 
+	ClipCorner *feats[4];
+
 	bool inverse;
 
 	bool InitializeHold();
 	void UpdateHold();
 	void CommitHold();
 
-	void OnLineChanged();
-	void OnFileChanged();
+	void DoRefresh();
+	void SetFeaturePositions();
 
-	void PopulateFeatureList();
-	bool InitializeDrag(ClipCorner* feature);
-	void UpdateDrag(ClipCorner* feature);
-	void CommitDrag(ClipCorner* feature);
+	bool InitializeDrag(feature_iterator feature);
+	void UpdateDrag(feature_iterator feature);
+	void CommitDrag(feature_iterator feature);
 
 	void Draw();
 public:

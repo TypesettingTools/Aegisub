@@ -76,28 +76,39 @@ public:
 	virtual ~IVisualTool() { };
 };
 
+struct ltaddr {
+	template<class T>
+	bool operator()(T lft, T rgt) const {
+		return &*lft < &*rgt;
+	}
+};
+
 /// DOCME
 /// @class VisualTool
 /// @brief DOCME
 /// DOCME
 template<class FeatureType>
 class VisualTool : public IVisualTool, protected SubtitleSelectionListener {
+protected:
+	typedef typename FeatureType Feature;
+	typedef typename std::list<FeatureType>::iterator feature_iterator;
+	typedef typename std::list<FeatureType>::const_iterator feature_const_iterator;
 private:
 	agi::OptionValue* realtime; /// Realtime updating option
 	int dragStartX; /// Starting x coordinate of the current drag, if any
 	int dragStartY; /// Starting y coordinate of the current drag, if any
 
-	/// Set curFeature and curFeatureI to the topmost feature under the mouse,
-	/// or NULL and -1 if there are none
+	/// Set curFeature to the topmost feature under the mouse, or end() if there
+	/// are none
 	void GetHighlightedFeature();
 
 	/// @brief Get the dialogue line currently in the edit box
 	/// @return NULL if the line is not active on the current frame
 	AssDialogue *GetActiveDialogueLine();
 
-	typedef typename std::set<int>::iterator selection_iterator;
+	typedef typename std::set<feature_iterator, ltaddr>::iterator selection_iterator;
 
-	std::set<int> selFeatures; /// Currently selected visual features
+	std::set<feature_iterator, ltaddr> selFeatures; /// Currently selected visual features
 	std::map<AssDialogue*, int> lineSelCount; /// Number of selected features for each line
 
 	bool selChanged; /// Has the selection already been changed in the current click?
@@ -110,18 +121,15 @@ private:
 	/// @brief Called at the end of a hold
 	virtual void CommitHold() { }
 
-	/// @brief Called when the feature list needs to be (re)generated
-	virtual void PopulateFeatureList() { }
-
 	/// @brief Called at the beginning of a drag
 	/// @param feature The visual feature clicked on
 	/// @return Should the drag happen?
-	virtual bool InitializeDrag(FeatureType* feature) { return true; }
+	virtual bool InitializeDrag(feature_iterator feature) { return true; }
 	/// @brief Called on every mouse event during a drag
 	/// @param feature The current feature to process; not necessarily the one clicked on
-	virtual void UpdateDrag(FeatureType* feature) { }
+	virtual void UpdateDrag(feature_iterator feature) { }
 	/// @brief Called at the end of a drag
-	virtual void CommitDrag(FeatureType* feature) { }
+	virtual void CommitDrag(feature_iterator feature) { }
 
 	/// Called when the file is changed by something other than a visual tool
 	virtual void OnFileChanged() { DoRefresh(); }
@@ -141,6 +149,9 @@ private:
 	virtual void Draw()=0;
 
 protected:
+	/// Read-only reference to the set of selected features for subclasses
+	const std::set<feature_iterator, ltaddr> &selectedFeatures;
+	typedef typename std::set<feature_iterator, ltaddr>::const_iterator sel_iterator;
 	SubtitlesGrid *grid;
 	VideoDisplay *parent; /// VideoDisplay which this belongs to, used to frame conversion
 	bool holding; /// Is a hold currently in progress?
@@ -148,10 +159,8 @@ protected:
 	bool dragging; /// Is a drag currently in progress?
 	bool externalChange; /// Only invalid drag lists when refreshing due to external changes
 
-	FeatureType* curFeature; /// Topmost feature under the mouse; generally only valid during a drag
-	unsigned curFeatureI; /// Index of the current feature in the list
-	std::vector<FeatureType> features; /// List of features which are drawn and can be clicked on
-	bool dragListOK; /// Do the features not need to be regenerated?
+	feature_iterator curFeature; /// Topmost feature under the mouse; generally only valid during a drag
+	std::list<FeatureType> features; /// List of features which are drawn and can be clicked on
 
 	int frameNumber; /// Current frame number
 	VideoState const& video; /// Mouse and video information
@@ -179,24 +188,20 @@ protected:
 
 	/// @brief Add a feature (and its line) to the selection
 	/// @param i Index in the feature list
-	void AddSelection(unsigned i);
+	void AddSelection(feature_iterator feat);
 
 	/// @brief Remove a feature from the selection
 	/// @param i Index in the feature list
 	/// Also deselects lines if all features for that line have been deselected
-	void RemoveSelection(unsigned i);
+	void RemoveSelection(feature_iterator feat);
 
 	/// @brief Set the selection to a single feature, deselecting everything else
 	/// @param i Index in the feature list
-	void SetSelection(unsigned i);
+	void SetSelection(feature_iterator feat);
 
 	/// @brief Clear the selection
 	void ClearSelection();
 
-	typedef typename std::vector<FeatureType>::iterator feature_iterator;
-	typedef typename std::vector<FeatureType>::const_iterator feature_const_iterator;
-
-protected:
 	// SubtitleSelectionListener implementation
 	void OnActiveLineChanged(AssDialogue *new_line);
 	virtual void OnSelectedSetChanged(const Selection &lines_added, const Selection &lines_removed) { }

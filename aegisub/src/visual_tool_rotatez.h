@@ -45,7 +45,7 @@
 /// DOCME
 class VisualToolRotateZ : public VisualTool<VisualDraggableFeature> {
 	float curAngle, startAngle, origAngle;
-	int orgx, orgy;
+	Feature *org;
 	int posx, posy;
 	float rx, ry;
 	float scaleX, scaleY;
@@ -54,9 +54,7 @@ class VisualToolRotateZ : public VisualTool<VisualDraggableFeature> {
 	void UpdateHold();
 	void CommitHold();
 
-	void PopulateFeatureList();
-	void UpdateDrag(VisualDraggableFeature* feature);
-	void CommitDrag(VisualDraggableFeature* feature);
+	void CommitDrag(feature_iterator feature);
 
 	void DoRefresh();
 

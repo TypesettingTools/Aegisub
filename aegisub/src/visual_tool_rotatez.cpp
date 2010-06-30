@@ -54,6 +54,9 @@ static const float rad2deg = 180.f / 3.1415926536f;
 VisualToolRotateZ::VisualToolRotateZ(VideoDisplay *parent, VideoState const& video, wxToolBar *)
 : VisualTool<VisualDraggableFeature>(parent, video)
 {
+	features.resize(1);
+	org = &features.back();
+	org->type = DRAG_BIG_TRIANGLE;
 	DoRefresh();
 }
 
@@ -63,7 +66,7 @@ void VisualToolRotateZ::Draw() {
 	// Draw pivot
 	DrawAllFeatures();
 
-	int radius = (int)sqrt(double((posx-orgx)*(posx-orgx)+(posy-orgy)*(posy-orgy)));
+	int radius = (int)sqrt(double((posx-org->x)*(posx-org->x)+(posy-org->y)*(posy-org->y)));
 	int oRadius = radius;
 	if (radius < 50) radius = 50;
 
@@ -78,7 +81,7 @@ void VisualToolRotateZ::Draw() {
 	glMatrixMode(GL_MODELVIEW);
 	glPushMatrix();
 	glLoadIdentity();
-	glTranslatef(orgx,orgy,-1.f);
+	glTranslatef(org->x,org->y,-1.f);
 	float matrix[16] = { 2500, 0, 0, 0, 0, 2500, 0, 0, 0, 0, 1, 1, 0, 0, 2500, 2500 };
 	glMultMatrixf(matrix);
 	glScalef(1.f,1.f,8.f);
@@ -103,8 +106,8 @@ void VisualToolRotateZ::Draw() {
 	DrawLine(deltax,deltay,-deltax,-deltay);
 
 	// Draw the connection line
-	if (orgx != posx || orgy != posy) {
-		double angle = atan2(double(orgy-posy),double(posx-orgx)) + curAngle*deg2rad;
+	if (org->x != posx || org->y != posy) {
+		double angle = atan2(double(org->y-posy),double(posx-org->x)) + curAngle*deg2rad;
 		int fx = int(cos(angle)*oRadius);
 		int fy = -int(sin(angle)*oRadius);
 		DrawLine(0,0,fx,fy);
@@ -121,14 +124,14 @@ void VisualToolRotateZ::Draw() {
 	glPopMatrix();
 
 	// Draw line to mouse
-	if (!dragging && !curFeature && video.x > INT_MIN && video.y > INT_MIN) {
+	if (!dragging && curFeature == features.end() && video.x > INT_MIN && video.y > INT_MIN) {
 		SetLineColour(colour[0]);
-		DrawLine(orgx,orgy,video.x,video.y);
+		DrawLine(org->x,org->y,video.x,video.y);
 	}
 }
 
 bool VisualToolRotateZ::InitializeHold() {
-	startAngle = atan2(double(orgy-video.y),double(video.x-orgx)) * rad2deg;
+	startAngle = atan2(double(org->y-video.y),double(video.x-org->x)) * rad2deg;
 	origAngle = curAngle;
 	curDiag->StripTag(L"\\frz");
 	curDiag->StripTag(L"\\fr");
@@ -137,7 +140,7 @@ bool VisualToolRotateZ::InitializeHold() {
 }
 
 void VisualToolRotateZ::UpdateHold() {
-	float screenAngle = atan2(double(orgy-video.y),double(video.x-orgx)) * rad2deg;
+	float screenAngle = atan2(double(org->y-video.y),double(video.x-org->x)) * rad2deg;
 	curAngle = fmodf(screenAngle - startAngle + origAngle + 360.f, 360.f);
 
 	// Oh Snap
@@ -154,33 +157,16 @@ void VisualToolRotateZ::CommitHold() {
 	}
 }
 
-void VisualToolRotateZ::PopulateFeatureList() {
-	if (!curDiag) return;
-
-	// Set features
-	features.resize(1);
-	VisualDraggableFeature &feat = features.back();
-	feat.x = orgx;
-	feat.y = orgy;
-	feat.line = curDiag;
-	feat.type = DRAG_BIG_TRIANGLE;
-}
-
-void VisualToolRotateZ::UpdateDrag(VisualDraggableFeature* feature) {
-	orgx = feature->x;
-	orgy = feature->y;
-}
-
-void VisualToolRotateZ::CommitDrag(VisualDraggableFeature* feature) {
+void VisualToolRotateZ::CommitDrag(feature_iterator feature) {
 	int x = feature->x;
 	int y = feature->y;
 	parent->ToScriptCoords(&x, &y);
-	SetOverride(feature->line, L"\\org",wxString::Format(L"(%i,%i)",x,y));
+	SetOverride(curDiag, L"\\org",wxString::Format(L"(%i,%i)",x,y));
 }
 
 void VisualToolRotateZ::DoRefresh() {
 	if (!curDiag) return;
-	GetLinePosition(curDiag, posx, posy, orgx, orgy);
+	GetLinePosition(curDiag, posx, posy, org->x, org->y);
 	GetLineRotation(curDiag, rx, ry, curAngle);
 	GetLineScale(curDiag, scaleX, scaleY);
 }

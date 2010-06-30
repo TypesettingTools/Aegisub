@@ -47,12 +47,8 @@
 class VisualToolDragDraggableFeature : public VisualDraggableFeature {
 public:
 	int time;
-	int parent;
-	VisualToolDragDraggableFeature()
-		: VisualDraggableFeature()
-		, time(0)
-		, parent(-1)
-	{ }
+	std::list<VisualToolDragDraggableFeature>::iterator parent;
+	VisualToolDragDraggableFeature() : VisualDraggableFeature(), time(0) { }
 };
 
 
@@ -62,21 +58,29 @@ public:
 ///
 /// DOCME
 class VisualToolDrag : public VisualTool<VisualToolDragDraggableFeature> {
-private:
-	wxToolBar *toolBar; /// The subtoolbar
-	int primary; /// The feature last clicked on
+	/// The subtoolbar for the move/pos conversion button
+	wxToolBar *toolBar;
+	/// The feature last clicked on for the double-click handler
+	/// Equal to curFeature during drags; possibly different at all other times
+	/// Null if no features have been clicked on or the last clicked on one no
+	/// longer exists
+	Feature *primary;
+	/// The last announced selection set
+	Selection selection;
+	int change;
 
 	/// When the button is pressed, will it convert the line to a move (vs. from
 	/// move to pos)? Used to avoid changing the button's icon unnecessarily
 	bool toggleMoveOnMove;
 
-	/// Regenerage features without touching the selection
-	void GenerateFeatures();
+	/// @brief Create the features for a line
+	/// @param diag Line to create the features for
+	/// @param pos Insertion point in the feature list
+	void MakeFeatures(AssDialogue *diag, feature_iterator pos);
+	void MakeFeatures(AssDialogue *diag);
 
-	void PopulateFeatureList();
-	bool InitializeDrag(VisualToolDragDraggableFeature* feature);
-	void UpdateDrag(VisualToolDragDraggableFeature* feature);
-	void CommitDrag(VisualToolDragDraggableFeature* feature);
+	bool InitializeDrag(feature_iterator feature);
+	void CommitDrag(feature_iterator feature);
 
 	/// Set the pos/move button to the correct icon based on the active line
 	void UpdateToggleButtons();

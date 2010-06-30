@@ -51,6 +51,9 @@
 VisualToolRotateXY::VisualToolRotateXY(VideoDisplay *parent, VideoState const& video, wxToolBar *)
 : VisualTool<VisualDraggableFeature>(parent, video)
 {
+	features.resize(1);
+	org = &features.back();
+	org->type = DRAG_BIG_TRIANGLE;
 	DoRefresh();
 }
 
@@ -60,9 +63,9 @@ void VisualToolRotateXY::Draw() {
 	// Pivot coordinates
 	int dx=0,dy=0;
 	if (dragging) GetLinePosition(curDiag,dx,dy);
-	else GetLinePosition(curDiag,dx,dy,orgx,orgy);
-	dx = orgx;
-	dy = orgy;
+	else GetLinePosition(curDiag,dx,dy,org->x,org->y);
+	dx = org->x;
+	dy = org->y;
 
 	SetLineColour(colour[0]);
 	SetFillColour(colour[1],0.3f);
@@ -152,8 +155,8 @@ void VisualToolRotateXY::Draw() {
 }
 
 bool VisualToolRotateXY::InitializeHold() {
-	startAngleX = (orgy-video.y)*2.f;
-	startAngleY = (video.x-orgx)*2.f;
+	startAngleX = (org->y-video.y)*2.f;
+	startAngleY = (video.x-org->x)*2.f;
 	origAngleX = curAngleX;
 	origAngleY = curAngleY;
 
@@ -161,8 +164,8 @@ bool VisualToolRotateXY::InitializeHold() {
 }
 
 void VisualToolRotateXY::UpdateHold() {
-	float screenAngleX = (orgy-video.y)*2.f;
-	float screenAngleY = (video.x-orgx)*2.f;
+	float screenAngleX = (org->y-video.y)*2.f;
+	float screenAngleY = (video.x-org->x)*2.f;
 
 	// Deltas
 	float deltaX = screenAngleX - startAngleX;
@@ -193,36 +196,16 @@ void VisualToolRotateXY::CommitHold() {
 	}
 }
 
-void VisualToolRotateXY::PopulateFeatureList() {
-	if (!curDiag) return;
-
-	int posx, posy;
-	GetLinePosition(curDiag,posx,posy,orgx,orgy);
-
-	// Set features
-	features.resize(1);
-	VisualDraggableFeature &feat = features.back();
-	feat.x = orgx;
-	feat.y = orgy;
-	feat.line = curDiag;
-	feat.type = DRAG_BIG_TRIANGLE;
-}
-
-void VisualToolRotateXY::UpdateDrag(VisualDraggableFeature* feature) {
-	orgx = feature->x;
-	orgy = feature->y;
-}
-
-void VisualToolRotateXY::CommitDrag(VisualDraggableFeature* feature) {
+void VisualToolRotateXY::CommitDrag(feature_iterator feature) {
 	int x = feature->x;
 	int y = feature->y;
 	parent->ToScriptCoords(&x, &y);
-	SetOverride(feature->line, L"\\org",wxString::Format(L"(%i,%i)",x,y));
+	SetOverride(curDiag, L"\\org",wxString::Format(L"(%i,%i)",x,y));
 }
 
 void VisualToolRotateXY::DoRefresh() {
 	if (!curDiag) return;
 	int posx, posy;
-	GetLinePosition(curDiag,posx,posy,orgx,orgy);
+	GetLinePosition(curDiag,posx,posy,org->x,org->y);
 	GetLineRotation(curDiag,curAngleX,curAngleY,curAngleZ);
 }

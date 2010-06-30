@@ -47,7 +47,6 @@ VisualDraggableFeature::VisualDraggableFeature()
 , origY(INT_MIN)
 , layer(0)
 , line(NULL)
-, lineN(-1)
 {
 }
 

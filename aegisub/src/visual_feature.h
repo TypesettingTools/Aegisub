@@ -81,7 +81,6 @@ public:
 	int layer; /// Layer; Higher = above
 
 	AssDialogue* line; /// The dialogue line this feature is for
-	int lineN; /// The line's index in the file
 
 	/// @brief Is the given point over this feature?
 	/// @param mx x coordinate to test

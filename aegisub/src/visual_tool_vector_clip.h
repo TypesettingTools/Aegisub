@@ -69,17 +69,19 @@ class VisualToolVectorClip : public VisualTool<VisualToolVectorClipDraggableFeat
 	/// @param mode 0-7
 	void SetMode(int mode);
 
+	void Save();
+
 	void SelectAll();
 	void MakeFeature(Spline::iterator cur);
+	void MakeFeatures();
 
 	bool InitializeHold();
 	void UpdateHold();
 	void CommitHold();
 
-	void PopulateFeatureList();
-	void UpdateDrag(VisualToolVectorClipDraggableFeature* feature);
-	void CommitDrag(VisualToolVectorClipDraggableFeature* feature);
-	bool InitializeDrag(VisualToolVectorClipDraggableFeature* feature);
+	void UpdateDrag(feature_iterator feature);
+	void CommitDrag(feature_iterator feature);
+	bool InitializeDrag(feature_iterator feature);
 
 	void DoRefresh();
 	void Draw();

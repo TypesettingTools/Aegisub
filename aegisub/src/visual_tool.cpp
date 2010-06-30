@@ -75,13 +75,12 @@ VisualTool<FeatureType>::VisualTool(VideoDisplay *parent, VideoState const& vide
 , dragStartX(0)
 , dragStartY(0)
 , selChanged(false)
+, selectedFeatures(selFeatures)
 , grid(VideoContext::Get()->grid)
 , parent(parent)
 , holding(false)
 , dragging(false)
 , externalChange(true)
-, curFeature(NULL)
-, dragListOK(false)
 , video(video)
 , leftClick(false)
 , leftDClick(false)
@@ -92,6 +91,7 @@ VisualTool<FeatureType>::VisualTool(VideoDisplay *parent, VideoState const& vide
 	frameNumber = VideoContext::Get()->GetFrameN();
 	curDiag = GetActiveDialogueLine();
 	grid->AddSelectionListener(this);
+	curFeature = features.begin();
 }
 
 template<class FeatureType>
@@ -124,35 +124,30 @@ void VisualTool<FeatureType>::OnMouseEvent(wxMouseEvent &event) {
 #endif
 	altDown = event.m_altDown;
 
-	if (!dragListOK) {
-		PopulateFeatureList();
-		dragListOK = true;
-		needRender = true;
-	}
 	if (!dragging) {
-		unsigned oldHigh = curFeatureI;
+		feature_iterator oldHigh = curFeature;
 		GetHighlightedFeature();
-		if (curFeatureI != oldHigh) needRender = true;
+		if (curFeature != oldHigh) needRender = true;
 	}
 
 	if (dragging) {
 		// continue drag
 		if (event.LeftIsDown()) {
 			for (selection_iterator cur = selFeatures.begin(); cur != selFeatures.end(); ++cur) {
-				features[*cur].x = (video.x - dragStartX + features[*cur].origX);
-				features[*cur].y = (video.y - dragStartY + features[*cur].origY);
+				(*cur)->x = (video.x - dragStartX + (*cur)->origX);
+				(*cur)->y = (video.y - dragStartY + (*cur)->origY);
 				if (shiftDown) {
 					if (abs(video.x - dragStartX) > abs(video.y - dragStartY)) {
-						features[*cur].y = features[*cur].origY;
+						(*cur)->y = (*cur)->origY;
 					}
 					else {
-						features[*cur].x = features[*cur].origX;
+						(*cur)->x = (*cur)->origX;
 					}
 				}
-				UpdateDrag(&features[*cur]);
+				UpdateDrag(*cur);
 
 				if (realTime) {
-					CommitDrag(&features[*cur]);
+					CommitDrag(*cur);
 				}
 			}
 			if (realTime) {
@@ -172,21 +167,21 @@ void VisualTool<FeatureType>::OnMouseEvent(wxMouseEvent &event) {
 				if (!selChanged) {
 					if (ctrlDown) {
 						// deselect this feature
-						RemoveSelection(curFeatureI);
+						RemoveSelection(curFeature);
 					}
 					else {
-						SetSelection(curFeatureI);
+						SetSelection(curFeature);
 					}
 				}
 			}
 			else {
 				for (selection_iterator cur = selFeatures.begin(); cur != selFeatures.end(); ++cur) {
-					CommitDrag(&features[*cur]);
+					CommitDrag(*cur);
 				}
 				Commit(true);
 			}
 
-			curFeature = NULL;
+			curFeature = features.end();
 			parent->ReleaseMouse();
 			parent->SetFocus();
 		}
@@ -216,27 +211,27 @@ void VisualTool<FeatureType>::OnMouseEvent(wxMouseEvent &event) {
 	}
 	else if (leftClick) {
 		// start drag
-		if (curFeature) {
-			if (InitializeDrag(curFeature)) {
-				if (selFeatures.find(curFeatureI) == selFeatures.end()) {
-					selChanged = true;
-					if (ctrlDown) {
-						AddSelection(curFeatureI);
-					}
-					else {
-						SetSelection(curFeatureI);
-					}
+		if (curFeature != features.end()) {
+			if (selFeatures.find(curFeature) == selFeatures.end()) {
+				selChanged = true;
+				if (ctrlDown) {
+					AddSelection(curFeature);
 				}
 				else {
-					selChanged = false;
+					SetSelection(curFeature);
 				}
-				if (curFeature->line) grid->SetActiveLine(curFeature->line);
+			}
+			else {
+				selChanged = false;
+			}
+			if (curFeature->line) grid->SetActiveLine(curFeature->line);
 
+			if (InitializeDrag(curFeature)) {
 				dragStartX = video.x;
 				dragStartY = video.y;
 				for (selection_iterator cur = selFeatures.begin(); cur != selFeatures.end(); ++cur) {
-					features[*cur].origX = features[*cur].x;
-					features[*cur].origY = features[*cur].y;
+					(*cur)->origX = (*cur)->x;
+					(*cur)->origY = (*cur)->y;
 				}
 
 				dragging = true;
@@ -291,13 +286,10 @@ AssDialogue* VisualTool<FeatureType>::GetActiveDialogueLine() {
 template<class FeatureType>
 void VisualTool<FeatureType>::GetHighlightedFeature() {
 	int highestLayerFound = INT_MIN;
-	curFeature = NULL;
-	curFeatureI = -1;
-	unsigned i = 0;
-	for (feature_iterator cur = features.begin(); cur != features.end(); ++cur, ++i) {
+	curFeature = features.end();
+	for (feature_iterator cur = features.begin(); cur != features.end(); ++cur) {
 		if (cur->IsMouseOver(video.x, video.y) && cur->layer > highestLayerFound) {
-			curFeature = &*cur;
-			curFeatureI = i;
+			curFeature = cur;
 			highestLayerFound = cur->layer;
 		}
 	}
@@ -305,30 +297,25 @@ void VisualTool<FeatureType>::GetHighlightedFeature() {
 
 template<class FeatureType>
 void VisualTool<FeatureType>::DrawAllFeatures() {
-	if (!dragListOK) {
-		PopulateFeatureList();
-		dragListOK = true;
-	}
-
 	SetLineColour(colour[0],1.0f,2);
-	for (unsigned i = 0; i < features.size(); ++i) {
+	for (feature_iterator cur = features.begin(); cur != features.end(); ++cur) {
 		int fill;
-		if (&features[i] == curFeature)
+		if (cur == curFeature)
 			fill = 2;
-		else if (selFeatures.find(i) != selFeatures.end())
+		else if (selFeatures.find(cur) != selFeatures.end())
 			fill = 3;
 		else
 			fill = 1;
 		SetFillColour(colour[fill],0.6f);
-		features[i].Draw(*this);
+		cur->Draw(*this);
 	}
 }
 
 template<class FeatureType>
 void VisualTool<FeatureType>::Refresh() {
 	if (externalChange) {
-		dragListOK = false;
 		curDiag = GetActiveDialogueLine();
+		curFeature = features.end();
 		OnFileChanged();
 	}
 }
@@ -336,6 +323,8 @@ void VisualTool<FeatureType>::Refresh() {
 template<class FeatureType>
 void VisualTool<FeatureType>::SetFrame(int newFrameNumber) {
 	if (frameNumber == newFrameNumber) return;
+	frameNumber = newFrameNumber;
+	curFeature = features.end();
 	OnFrameChanged();
 	AssDialogue *newCurDiag = GetActiveDialogueLine();
 	if (newCurDiag != curDiag) {
@@ -357,14 +346,13 @@ void VisualTool<FeatureType>::OnActiveLineChanged(AssDialogue *new_line) {
 
 
 template<class FeatureType>
-void VisualTool<FeatureType>::SetSelection(unsigned i) {
-	assert(i < features.size());
-
+void VisualTool<FeatureType>::SetSelection(feature_iterator feat) {
 	selFeatures.clear();
 	lineSelCount.clear();
-	selFeatures.insert(i);
 
-	AssDialogue *line = features[i].line;
+	selFeatures.insert(feat);
+
+	AssDialogue *line = feat->line;
 	if (line) {
 		lineSelCount[line] = 1;
 
@@ -376,23 +364,22 @@ void VisualTool<FeatureType>::SetSelection(unsigned i) {
 
 
 template<class FeatureType>
-void VisualTool<FeatureType>::AddSelection(unsigned i) {
-	assert(i < features.size());
-
-	if (selFeatures.insert(i).second && features[i].line) {
-		lineSelCount[features[i].line] += 1;
-		grid->SelectRow(features[i].lineN, true);
+void VisualTool<FeatureType>::AddSelection(feature_iterator feat) {
+	if (selFeatures.insert(feat).second && feat->line) {
+		lineSelCount[feat->line] += 1;
+		Selection sel = grid->GetSelectedSet();
+		if (sel.insert(feat->line).second) {
+			grid->SetSelectedSet(sel);
+		}
 	}
 }
 
 template<class FeatureType>
-void VisualTool<FeatureType>::RemoveSelection(unsigned i) {
-	assert(i < features.size());
-
-	if (selFeatures.erase(i) > 0 && features[i].line) {
+void VisualTool<FeatureType>::RemoveSelection(feature_iterator feat) {
+	if (selFeatures.erase(feat) > 0 && feat->line) {
 		// Deselect a line only if all features for that line have been
 		// deselected
-		AssDialogue* line = features[i].line;
+		AssDialogue* line = feat->line;
 		lineSelCount[line] -= 1;
 		assert(lineSelCount[line] >= 0);
 		if (lineSelCount[line] <= 0) {
