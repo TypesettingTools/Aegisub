@@ -91,7 +91,11 @@ void TextFileWriter::WriteLineToFile(wxString line, bool addLineBreak) {
 
 	// On non-windows this cast does nothing
 	const char *data = reinterpret_cast<const char *>(line.wx_str());
-	size_t len = line.size() * sizeof(wxStringCharType);
+#if wxUSE_UNICODE_UTF8
+	size_t len = line.utf8_length();
+#else
+	size_t len = line.length() * sizeof(wxStringCharType);
+#endif
 
 	if (conv.get()) {
 		std::string buf = conv->Convert(std::string(data, len));
