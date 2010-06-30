@@ -268,60 +268,42 @@ void FrameRate::SetVFR(std::vector<int> newTimes) {
 
 /// @brief Gets frame number at time 
 /// @param ms      
-/// @param useceil 
+/// @param start
 /// @return 
-int FrameRate::PFrameAtTime(int ms,bool useceil) const {
-	// Check if it's loaded
+int FrameRate::PFrameAtTime(int ms,bool start) const {
 	if (!loaded) return -1;
 
-	// Get for constant frame rate
+	// Lines begin on the first frame whose start time is greater than or equal
+	// to the line's start time, and are last visible on the last frame whose
+	// start time is less than (note: not equal) the line's end time
+
 	if (FrameRateType == CFR || Frame.size() == 0 || ms < 0) {
-		double value = double(ms) * AverageFrameRate / 1000.0;
-		if (useceil) return (int)ceil(value);
-		else return (int)floor(value);
+		double value = double(ms) * AverageFrameRate / 1000.;
+		if (start) return (int)ceil(value);
+		else return (int)floor(value - .0001);
 	}
-
-	// Get for variable frame rate
 	else if (FrameRateType == VFR) {
-		// Get last
-		double trueLast;
-		//if (useceil) trueLast = ceil(last_time);
-		//else trueLast = floor(last_time);
-		trueLast = Frame[Frame.size()-1];
-
 		// Inside VFR range
-		if (ms <= trueLast) {
-			// Prepare binary search
-			size_t start = 0;
-			size_t end = last_frame;
-			size_t cur;
-			bool largerEqual;
+		if (ms <= Frame.back()) {
+			int frame = std::distance(Frame.begin(), std::lower_bound(Frame.begin(), Frame.end(), ms));
+			if (!start && frame > 0) {
+				// In the end case, frame is the first frame in which the line
+				// is no longer visible, so subtract 1
 
-			// Do binary search
-			while (start <= end) {
-				// Current frame being checked
-				cur = (start+end)>>1;
+				// Don't need to worry about the equal case here as lower_bound
+				// finds the entry >= ms
 
-				// Is it larger or equal to searched time?
-				largerEqual = Frame[cur] >= ms;
-
-				// If it is, is the previous smaller?
-				// If so, this is the frame we're looking for
-				if (largerEqual && (cur == 0 || Frame[cur-1] < ms))	{
-					if (useceil) return (int)cur;
-					return (int)(cur)-1;
-				}
-				
-				// Not found, continue search
-				if (largerEqual) end = cur-1;
-				else start = cur+1;
+				// The frame > 0 check isn't actually correct -- the frame
+				// ending at time 0 should be -1, but parts of the program
+				// (like PTimeAtFrame below) assume that frames are positive
+				--frame;
 			}
+			return frame;
 		}
-		
 		// After VFR range
 		else {
-			if (useceil) return (int)(last_frame + ceil((ms-last_time) * AverageFrameRate / 1000));
-			else return (int)(last_frame + floor((ms-last_time) * AverageFrameRate / 1000));
+			if (start) return (int)(last_frame + ceil((ms-last_time) * AverageFrameRate / 1000.));
+			else return (int)(last_frame + floor((ms-last_time - .0001) * AverageFrameRate / 1000.));
 		}
 	}
 	return -1;
