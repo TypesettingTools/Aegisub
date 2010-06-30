@@ -1,5 +1,5 @@
 --[[
- Copyright (c) 2005-2006, Niels Martin Hansen, Rodrigo Braz Monteiro
+ Copyright (c) 2005-2010, Niels Martin Hansen, Rodrigo Braz Monteiro
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -39,21 +39,30 @@ end
 copy_line = table.copy
 
 -- Make a deep copy of a table
--- This will do infinite recursion if there's any circular references. (Eg. if you try to copy _G)
+-- Retains equality of table references inside the copy and handles self-referencing structures
 function table.copy_deep(srctab)
 	-- Table to hold subtables already copied, to avoid circular references causing infinite recursion
 	local circular = {}
 	local function do_copy(oldtab)
-		local newtab = {}
-		for key, val in pairs(newtab) do
-			if type(val) == "table" then
-				if not circular[val] then
-					circular[val] = do_copy(val)
+		-- Check if we know the source already
+		if circular[oldtab] then
+			-- Use already-made copy
+			return circular[oldtab]
+		else
+			-- Prepare a new table to copy into
+			local newtab = {}
+			-- Register it as known
+			circular[oldtab] = newtab
+			-- Copy fields
+			for key, val in pairs(oldtab) do
+				-- Copy tables recursively, everything else normally
+				if type(val) == "table" then
+					newtab[key] = do_copy(val)
+				else
+					newtab[key] = val
 				end
-				newtab[key] = circular[val]
-			else
-				newtab[key] = val
 			end
+			return newtab
 		end
 	end
 	return do_copy(srctab)
