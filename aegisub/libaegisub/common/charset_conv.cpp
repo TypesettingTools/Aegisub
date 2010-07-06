@@ -76,18 +76,14 @@ namespace agi {
 	namespace charset {
 
 #ifdef ICONV_POSIX
-class IconvWrapper::Converter {
-public:
-	Converter(bool, const char*) { }
-	size_t operator()(iconv_t cd, const char** inbuf, size_t* inbytesleft, char** outbuf, size_t* outbytesleft) {
-		return iconv(cd, ICONV_CONST_CAST(inbuf), inbytesleft, outbuf, outbytesleft);
-	}
+struct iconv_fallbacks {
 };
-#else
-class IconvWrapper::Converter : public iconv_fallbacks {
-private:
+#endif
+
+class Converter : public iconv_fallbacks {
 	bool subst;
-	char invalidRep[4];
+	int bomSize;
+	char invalidRep[8];
 	size_t invalidRepSize;
 	static void fallback(
 		unsigned int code,
@@ -107,32 +103,72 @@ private:
 	}
 public:
 	Converter(bool subst, const char* targetEnc)
-		: subst(subst)
+	: subst(subst)
 	{
+
+#ifndef ICONV_POSIX
 		data = this;
 		mb_to_uc_fallback = NULL;
 		mb_to_wc_fallback = NULL;
 		uc_to_mb_fallback = fallback;
 		wc_to_mb_fallback = NULL;
+#endif
 
-		char sbuff[] = "?";
-		const char* src = sbuff;
-		char* dst = invalidRep;
-		size_t dstLen = 4;
-		size_t srcLen = 1;
+		char buff[8];
 
 		iconv_t cd = iconv_open(GetRealEncodingName(targetEnc), "UTF-8");
 		assert(cd != iconv_invalid);
+
+		// Get BOM size (if any)
+		const char* src = "";
+		char *dst = buff;
+		size_t srcLen = 1;
+		size_t dstLen = 8;
+
 		size_t res = iconv(cd, ICONV_CONST_CAST(&src), &srcLen, &dst, &dstLen);
 		assert(res != iconv_failed);
 		assert(srcLen == 0);
-		iconv_close(cd);
+		src = buff;
+		bomSize = 0;
+		for (src = buff; src < dst; ++src) {
+			if (*src) {
+				bomSize = (8 - dstLen) / 2;
+				break;
+			}
+		}
+
+		// Get fallback character
+		char sbuff[] = "?";
+		src = sbuff;
+		dst = invalidRep;
+		dstLen = 4;
+		srcLen = 1;
+
+		res = operator()(cd, &src, &srcLen, &dst, &dstLen);
+		assert(res != iconv_failed);
+		assert(srcLen == 0);
 
 		invalidRepSize = 4 - dstLen;
+
+		iconv_close(cd);
 	}
 	size_t operator()(iconv_t cd, const char** inbuf, size_t* inbytesleft, char** outbuf, size_t* outbytesleft) {
+		// If this encoding has a forced BOM (i.e. it's UTF-16 or UTF-32 without
+		// a specified byte order), skip over it
+		if (bomSize > 0 && inbytesleft && *inbytesleft) {
+			// libiconv marks the bom as written after writing the first
+			// character after the bom rather than when it writes the bom, so
+			// convert at least one extra character
+			char bom[8];
+			char *dst = bom;
+			size_t dstSize = min(8, bomSize + *outbytesleft);
+			const char *src = *inbuf;
+			size_t srcSize = *inbytesleft;
+			iconv(cd, ICONV_CONST_CAST(&src), &srcSize, &dst, &dstSize);
+		}
 		size_t res = iconv(cd, ICONV_CONST_CAST(inbuf), inbytesleft, outbuf, outbytesleft);
 
+#ifndef ICONV_POSIX
 		if (!subst) return res;
 
 		// Save original errno so we can return it rather than the result from iconvctl
@@ -157,8 +193,8 @@ public:
 		}
 		if (res == iconv_failed && err == E2BIG && *outbytesleft == 0) {
 			// Check for E2BIG false positives
-			char buff[4];
-			size_t buffsize = 4;
+			char buff[8];
+			size_t buffsize = 8;
 			char* out = buff;
 			const char* in = *inbuf;
 			size_t insize = *inbytesleft;
@@ -167,7 +203,7 @@ public:
 			res = iconv(cd, ICONV_CONST_CAST(&in), &insize, &out, &buffsize);
 			// If no bytes of the output buffer were used, the original
 			// conversion may have been successful
-			if (buffsize == 4) {
+			if (buffsize == 8) {
 				err = errno;
 			}
 			else {
@@ -177,10 +213,10 @@ public:
 		}
 
 		errno = err;
+#endif
 		return res;
 	}
 };
-#endif
 
 // Calculate the size of NUL in the given character set
 static size_t NulSize(const char* encoding) {
@@ -188,6 +224,7 @@ static size_t NulSize(const char* encoding) {
 	// UTF-8 seems like the obvious choice
 	iconv_t cd = iconv_open(GetRealEncodingName(encoding), "UTF-8");
 	assert(cd != iconv_invalid);
+	Converter conv(false, GetRealEncodingName(encoding));
 
 	char dbuff[4];
 	char sbuff[] = "";
@@ -196,7 +233,7 @@ static size_t NulSize(const char* encoding) {
 	size_t dstLen = sizeof(dbuff);
 	size_t srcLen = 1;
 
-	size_t ret = iconv(cd, ICONV_CONST_CAST(&src), &srcLen, &dst, &dstLen);
+	size_t ret = conv(cd, &src, &srcLen, &dst, &dstLen);
 	assert(ret != iconv_failed);
 	assert(dst - dbuff > 0);
 	iconv_close(cd);

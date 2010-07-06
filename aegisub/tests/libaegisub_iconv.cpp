@@ -21,6 +21,7 @@
 #include <stdint.h>
 #include <libaegisub/charset_conv.h>
 
+
 #include "main.h"
 #include "util.h"
 
@@ -135,4 +136,12 @@ TEST(lagi_iconv, LocalSupport) {
 }
 TEST(lagi_iconv, wchar_tSupport) {
 	EXPECT_NO_THROW(IconvWrapper("UTF-8", "wchar_t"));
+}
+
+TEST(lagi_iconv, pretty_names) {
+	std::vector<std::string> names = GetEncodingsList<std::vector<std::string> >();
+	for (std::vector<std::string>::iterator cur = names.begin(); cur != names.end(); ++cur) {
+		EXPECT_NO_THROW(IconvWrapper("utf-8", cur->c_str()));
+		EXPECT_NO_THROW(IconvWrapper(cur->c_str(), "utf-8"));
+	}
 }
