@@ -31,6 +31,8 @@
 #include <libaegisub/charset_conv.h>
 #include <iconv.h>
 
+using std::min;
+
 // Check if we can use advanced fallback capabilities added in GNU's iconv
 // implementation
 #if !defined(_LIBICONV_VERSION) || _LIBICONV_VERSION < 0x010A || defined(LIBICONV_PLUG)
@@ -161,7 +163,7 @@ public:
 			// convert at least one extra character
 			char bom[8];
 			char *dst = bom;
-			size_t dstSize = min(8, bomSize + *outbytesleft);
+			size_t dstSize = min(8U, bomSize + *outbytesleft);
 			const char *src = *inbuf;
 			size_t srcSize = *inbytesleft;
 			iconv(cd, ICONV_CONST_CAST(&src), &srcSize, &dst, &dstSize);

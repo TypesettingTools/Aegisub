@@ -90,7 +90,7 @@ struct ltaddr {
 template<class FeatureType>
 class VisualTool : public IVisualTool, protected SubtitleSelectionListener {
 protected:
-	typedef typename FeatureType Feature;
+	typedef FeatureType Feature;
 	typedef typename std::list<FeatureType>::iterator feature_iterator;
 	typedef typename std::list<FeatureType>::const_iterator feature_const_iterator;
 private:

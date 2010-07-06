@@ -72,8 +72,8 @@ enum {
 
 template<class C, class O, class M>
 static void for_each_iter(C &container, O obj, M method) {
-	C::iterator end = container.end();
-	for (C::iterator cur = container.begin(); cur != end; ++cur) {
+	typename C::iterator end = container.end();
+	for (typename C::iterator cur = container.begin(); cur != end; ++cur) {
 		(obj ->* method)(cur);
 	}
 }
