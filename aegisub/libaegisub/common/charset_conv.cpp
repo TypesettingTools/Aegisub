@@ -282,7 +282,10 @@ size_t IconvWrapper::Convert(const char* source, size_t sourceSize, char *dest, 
 	if (sourceSize == (size_t)-1) {
 		sourceSize = SrcStrLen(source);
 	}
+
+	
 	size_t res = (*conv)(cd, &source, &sourceSize, &dest, &destSize);
+	if (res == 0) res = (*conv)(cd, NULL, NULL, &dest, &destSize);
 
 	if (res == iconv_failed) {
 		switch (errno) {
@@ -325,6 +328,7 @@ size_t IconvWrapper::RequiredBufferSize(const char* src, size_t srcLen) {
 		char* dst = buff;
 		size_t dstSize = sizeof(buff);
 		res = (*conv)(cd, &src, &srcLen, &dst, &dstSize);
+		(*conv)(cd, NULL, NULL, &dst, &dstSize);
 
 		charsWritten += dst - buff;
 	} while (res == iconv_failed && errno == E2BIG);
