@@ -24,6 +24,7 @@
 #include <time.h>
 
 #include <deque>
+#include <memory>
 #ifdef __DEPRECATED // Dodge GCC warnings
 # undef __DEPRECATED
 # include <strstream>

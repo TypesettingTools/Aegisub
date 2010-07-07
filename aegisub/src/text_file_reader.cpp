@@ -1,4 +1,4 @@
-// Copyright (c) 2010, Rodrigo Braz Monteiro, Thomas Goyne
+// Copyright (c) 2010, Thomas Goyne
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -43,120 +43,54 @@
 #include <algorithm>
 #include <fstream>
 #include <string>
+
+#include <wx/string.h>
 #endif
 
+#include <libaegisub/io.h>
 #include <libaegisub/log.h>
 
-#include "charset_conv.h"
 #include "charset_detect.h"
+#include "compat.h"
 #include "text_file_reader.h"
 
 TextFileReader::TextFileReader(wxString const& filename, wxString encoding, bool trim)
-: isBinary(false)
-, conv()
-, trim(trim)
-, readComplete(false)
-, currout(0)
-, outptr(0)
-, currentLine(0)
+: trim(trim)
+, isBinary(false)
 {
-#ifdef __WINDOWS__
-	file.open(filename.wc_str(),std::ios::in | std::ios::binary);
-#else
-	file.open(wxFNCONV(filename),std::ios::in | std::ios::binary);
-#endif
-	if (!file.is_open()) throw L"Failed opening file for reading.";
-
-	if (encoding.IsEmpty()) encoding = CharSetDetect::GetEncoding(filename);
+	if (encoding.empty()) encoding = CharSetDetect::GetEncoding(filename);
 	if (encoding == L"binary") {
 		isBinary = true;
 		return;
 	}
-	conv.reset(new agi::charset::IconvWrapper(encoding.c_str(), "wchar_t"));
+	file.reset(agi::io::Open(STD_STR(filename)));
+	iter = agi::line_iterator<wxString>(*file, STD_STR(encoding));
 }
 
 TextFileReader::~TextFileReader() {
 }
 
-wchar_t TextFileReader::GetWChar() {
-	// If there's already some converted characters waiting, return the next one
-	if (++currout < outptr) {
-		return *currout;
-	}
-
-	if (file.eof()) return 0;
-
-	// Otherwise convert another block
-	char    inbuf[64];
-	char    *inptr = inbuf;
-	size_t  inbytesleft = sizeof(inbuf) - 4;
-	int     bytesAdded = 0;
-	memset(inbuf, 0, inbytesleft);
-
-	outptr       = outbuf;
-	outbytesleft = sizeof(outbuf);
-	currout      = outbuf;
-
-	file.read(inbuf, inbytesleft);
-	inbytesleft = file.gcount();
-	if (inbytesleft == 0)
-		return 0;
-
-	do {
-		// Without this const_cast the wrong overload is chosen
-		size_t ret = conv->Convert(const_cast<const char**>(&inptr), &inbytesleft, reinterpret_cast<char **>(&outptr), &outbytesleft);
-		if (ret != (size_t)-1) break;
-
-		int err = errno;
-		// If 64 chars do not fit into 256 wchar_ts the environment is so bizzare that doing
-		// anything is probably futile
-		assert(err != E2BIG);
-
-		// (Hopefully) the edge of the buffer happened to split a multibyte character, so keep
-		// adding one byte to the input buffer until either it succeeds or we add enough bytes to
-		// complete any character
-		if (++bytesAdded > 3)
-			throw wxString::Format(L"Invalid input character found near line %u", currentLine);
-
-		file.read(inptr + inbytesleft, 1);
-		inbytesleft++;
-	} while (!file.eof() && file.gcount());
-
-	if (outptr > outbuf)
-		return *currout;
-
-	throw wxString::Format(L"Invalid input character found near line %u", currentLine);
-}
-
 wxString TextFileReader::ReadLineFromFile() {
-	wxString buffer;
-	buffer.Alloc(1024);
-
-	currentLine++;
-	// Read a line
-	wchar_t ch;
-	bool first = true;
-	// This doesn't work for \r deliminated files, but it's very unlikely
-	// that we'll run into one of those
-	for (ch = GetWChar(); ch != L'\n' && ch != 0; ch = GetWChar()) {
-		if (ch == L'\r') continue;
-		// Skip the BOM -- we don't need it as the encoding is already known
-		// and it sometimes causes conversion problems
-		if (ch == 0xFEFF && first) continue;
-
-		buffer += ch;
-		first = false;
-	}
-	if (ch == 0)
-		readComplete = true;
-
-	if (trim) {
-		buffer.Trim(true);
-		buffer.Trim(false);
-	}
-	return buffer;
+	wxString str = *iter;
+	++iter;
+	if (trim) str.Trim(true).Trim(false);
+	if (str.StartsWith(L"\uFEFF")) str = str.Mid(1);
+	return str;
 }
 
-bool TextFileReader::HasMoreLines() {
-	return !readComplete;
+namespace agi {
+#ifdef _WIN32
+	template<> void line_iterator<wxString>::init() {
+		conv.reset(new agi::charset::IconvWrapper(encoding.c_str(), "utf-16le"));
+	}
+	template<> bool line_iterator<wxString>::convert(std::string &str) {
+		value = wxString(str.c_str(), wxMBConvUTF16LE(), str.size());
+		return true;
+	}
+#else
+	template<> bool line_iterator<wxString>::convert(std::string &str) {
+		value = str;
+		return true;
+	}
+#endif
 }

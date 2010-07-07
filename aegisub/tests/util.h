@@ -19,10 +19,27 @@
 /// @ingroup util
 
 #include <string>
+#include <vector>
+
+#include <stdarg.h>
+
 namespace util {
 
 void copy(const std::string from, const std::string to);
 void remove(const std::string& file);
+
+template<typename T>
+static std::vector<T> make_vector(int len, ...) {
+	std::vector<T> vec(len);
+
+	va_list argp;
+	va_start(argp, len);
+	for (int i = 0; i < len; i++) {
+		vec[i] = va_arg(argp, T);
+	}
+	va_end(argp);
+	return vec;
+}
 
 } // namespace util
 

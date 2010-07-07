@@ -28,7 +28,11 @@
 #include <fstream>
 #include <iostream>
 #include <map>
+#ifdef _WIN32
 #include <memory>
+#else
+#include <tr1/memory>
+#endif
 #include <sstream>
 #include <string>
 

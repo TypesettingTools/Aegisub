@@ -233,6 +233,10 @@
 			>
 		</File>
 		<File
+			RelativePath="..\..\tests\libaegisub_line_iterator.cpp"
+			>
+		</File>
+		<File
 			RelativePath="..\..\tests\libaegisub_mru.cpp"
 			>
 		</File>

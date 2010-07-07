@@ -1,4 +1,4 @@
-// Copyright (c) 2010, Rodrigo Braz Monteiro
+// Copyright (c) 2010, Thomas Goyne
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -44,31 +44,15 @@
 #include <wx/string.h>
 #endif
 
-namespace agi { namespace charset {
-	class IconvWrapper;
-} }
+#include <libaegisub/line_iterator.h>
 
 /// @class TextFileReader
 /// @brief A line-based text file reader
 class TextFileReader {
-private:
-	bool isBinary;
-	std::ifstream file;
-	std::auto_ptr<agi::charset::IconvWrapper> conv;
+	std::auto_ptr<std::ifstream> file;
 	bool trim;
-	bool readComplete;
-
-	// Iconv buffers and state
-	wchar_t outbuf[256];
-	wchar_t *currout;
-	wchar_t *outptr;
-	size_t  outbytesleft;
-
-	/// Current line number
-	unsigned int currentLine;
-
-	/// @brief Read a single wchar_t from the file
-	wchar_t GetWChar();
+	bool isBinary;
+	agi::line_iterator<wxString> iter;
 
 	TextFileReader(const TextFileReader&);
 	TextFileReader& operator=(const TextFileReader&);
@@ -86,6 +70,6 @@ public:
 	/// @return The line, possibly trimmed
 	wxString ReadLineFromFile();
 	/// @brief Check if there are any more lines to read
-	bool HasMoreLines();
-	bool IsBinary() { return isBinary; }
+	bool HasMoreLines() const { return iter != agi::line_iterator<wxString>(); }
+	bool IsBinary() const { return isBinary; }
 };

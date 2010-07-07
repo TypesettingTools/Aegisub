@@ -54,7 +54,6 @@
 #ifdef WITH_AUTOMATION
 #include "auto4_base.h"
 #endif
-#include "charset_conv.h"
 #include "compat.h"
 #include "dialog_about.h"
 #include "dialog_attachments.h"

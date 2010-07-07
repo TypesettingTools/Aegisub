@@ -57,7 +57,6 @@
 #ifdef WITH_AVISYNTH
 #include "avisynth_wrap.h"
 #endif
-#include "charset_conv.h"
 #include "compat.h"
 #include "dialog_detached_video.h"
 #include "dialog_search_replace.h"

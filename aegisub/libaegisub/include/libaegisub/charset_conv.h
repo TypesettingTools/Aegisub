@@ -18,6 +18,8 @@
 /// @brief Wrapper for libiconv to present a more C++-friendly API
 /// @ingroup libaegisub
 
+#pragma once
+
 #ifndef LAGI_PRE
 #include <string.h>
 #include <memory>
