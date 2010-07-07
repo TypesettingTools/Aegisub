@@ -269,15 +269,37 @@ std::string IconvWrapper::Convert(std::string const& source) {
 	return dest;
 }
 void IconvWrapper::Convert(std::string const& source, std::string &dest) {
-	/// @todo Investigate if it's worth using ropes to avoid having to convert
-	///       everything twice. It probably isn't.
-	size_t len = RequiredBufferSize(source);
-	dest.resize(len);
+	char buff[512];
+
+	const char *src = source.data();
+	size_t srcLen = source.size();
+	size_t res;
+	do {
+		char *dst = buff;
+		size_t dstLen = sizeof(buff);
+		res = (*conv)(cd, &src, &srcLen, &dst, &dstLen);
+		if (res == 0) (*conv)(cd, NULL, NULL, &dst, &dstLen);
+
+		dest.append(buff, sizeof(buff) - dstLen);
+	} while (res == iconv_failed && errno == E2BIG);
 	
-	// This is technically invalid as C++03 does not require that strings use
-	// a single contiguous block of memory. However, no implementation has ever
-	// not done so and C++0x does require that it be contiguous
-	Convert(source.data(), source.size(), &dest[0], len);
+	if (res == iconv_failed) {
+		switch (errno) {
+			case EINVAL:
+				throw BadInput(
+					"One or more characters in the input string were not valid "
+					"characters in the given input encoding");
+			case EILSEQ:
+				throw BadOutput(
+					"One or more characters could not be converted to the "
+					"selected target encoding and the version of iconv "
+					"Aegisub was built with does not have useful fallbacks. "
+					"For best results, please build Aegisub using a recent "
+					"version of GNU iconv.");
+			default:
+				throw ConversionFailure("An unknown conversion failure occurred");
+		}
+	}
 }
 
 size_t IconvWrapper::Convert(const char* source, size_t sourceSize, char *dest, size_t destSize) {
@@ -307,7 +329,7 @@ size_t IconvWrapper::Convert(const char* source, size_t sourceSize, char *dest, 
 					"For best results, please build Aegisub using a recent "
 					"version of GNU iconv.");
 			default:
-				throw ConversionFailure("An unknown conversion failure occured");
+				throw ConversionFailure("An unknown conversion failure occurred");
 		}
 	}
 	return res;
