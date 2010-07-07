@@ -1,0 +1,4 @@
+# timecode format v1
+Assume 29.970030
+0,1,25
+1,2,25

@@ -1,0 +1,15 @@
+# timecode format v2
+0000.00000
+# why does this format even have comments?
+1000.00000
+# I can see them being vaguely useful in v1 timecodes
+2000.00000
+# I guess we could stick the name of the writing program in a comment
+3000.00000
+# but really, what's the point?
+4000.00000
+#nospace
+5000.00000
+6000.00000
+7000.00000
+8000.00000

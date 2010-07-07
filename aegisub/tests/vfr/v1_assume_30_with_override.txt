@@ -1,0 +1,3 @@
+# timecode format v1
+Assume 30
+20,50,19

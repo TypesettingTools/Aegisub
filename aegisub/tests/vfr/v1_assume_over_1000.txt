@@ -1,0 +1,2 @@
+# timecode format v1
+Assume 1000.1

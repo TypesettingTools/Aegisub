@@ -226,6 +226,10 @@
 				RelativePath="..\..\libaegisub\common\validator.cpp"
 				>
 			</File>
+			<File
+				RelativePath="..\..\libaegisub\common\vfr.cpp"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Windows"
@@ -345,6 +349,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\libaegisub\include\libaegisub\line_iterator.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\libaegisub\include\libaegisub\log.h"
 				>
 			</File>
@@ -382,6 +390,10 @@
 			</File>
 			<File
 				RelativePath="..\..\libaegisub\include\libaegisub\validator.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\libaegisub\include\libaegisub\vfr.h"
 				>
 			</File>
 		</Filter>

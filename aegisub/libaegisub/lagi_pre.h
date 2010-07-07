@@ -27,6 +27,8 @@
 #include <deque>
 #include <fstream>
 #include <iostream>
+#include <iterator>
+#include <numeric>
 #include <map>
 #ifdef _WIN32
 #include <memory>

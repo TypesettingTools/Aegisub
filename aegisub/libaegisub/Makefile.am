@@ -30,6 +30,7 @@ libaegisub_2_2_la_SOURCES = \
 	common/option_visit.cpp \
 	common/log.cpp \
 	common/validator.cpp \
+	common/vfr.cpp \
 	unix/util.cpp \
 	unix/io.cpp \
 	unix/access.cpp \

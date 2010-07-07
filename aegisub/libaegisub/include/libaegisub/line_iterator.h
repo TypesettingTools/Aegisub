@@ -38,7 +38,7 @@ namespace agi {
 
 /// @class line_iterator
 /// @brief An iterator over lines in a stream
-template<typename OutputType = std::string>
+template<class OutputType = std::string>
 class line_iterator : public std::iterator<std::input_iterator_tag, OutputType> {
 	std::istream *stream; ///< Stream to iterator over
 	bool valid; ///< Are there any more values to read?
@@ -151,7 +151,7 @@ public:
 	}
 };
 
-template<typename OutputType>
+template<class OutputType>
 void line_iterator<OutputType>::getline(std::string &str) {
 	union {
 		int32_t chr;
@@ -180,7 +180,7 @@ void line_iterator<OutputType>::getline(std::string &str) {
 	}
 }
 
-template<typename OutputType>
+template<class OutputType>
 void line_iterator<OutputType>::next() {
 	if (!valid) return;
 	if (!stream->good()) {
@@ -198,7 +198,7 @@ void line_iterator<OutputType>::next() {
 	}
 }
 
-template<typename OutputType>
+template<class OutputType>
 inline bool line_iterator<OutputType>::convert(std::string &str) {
 	std::istringstream ss(str);
 	ss >> value;
@@ -210,7 +210,7 @@ inline bool line_iterator<std::string>::convert(std::string &str) {
 	return true;
 }
 
-template<typename T>
+template<class T>
 void swap(agi::line_iterator<T> &lft, agi::line_iterator<T> &rgt) {
 	lft.swap(rgt);
 }

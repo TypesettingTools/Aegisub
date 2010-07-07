@@ -38,3 +38,8 @@ echo '{"String" : [{"string" : "This is a test"}, {"string" : "This is a test"}]
 echo '{"Integer" : [{"int" : 1}, {"int" : 1}]}' > data/option_array_integer
 echo '{"Double" : [{"double" : 2.1}, {"double" : 2.1}]}' > data/option_array_double
 echo '{"Bool" : [{"bool" : true}, {"bool" : true}]}' > data/option_array_bool
+
+mkdir data/vfr
+mkdir data/vfr/in
+mkdir data/vfr/out
+cp `dirname $0`/vfr/* data/vfr/in/

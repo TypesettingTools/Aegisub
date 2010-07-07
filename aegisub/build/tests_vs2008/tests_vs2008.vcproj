@@ -86,6 +86,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
+				CommandLine="cd &quot;$(ExecutableOutDir)&quot;&#x0D;&#x0A;&quot;$(ProjectDir)\..\..\tests\setup.bat&quot; &quot;$(ProjectDir)\..\..\tests&quot;&#x0D;&#x0A;"
 			/>
 		</Configuration>
 		<Configuration
@@ -246,6 +247,10 @@
 		</File>
 		<File
 			RelativePath="..\..\tests\libaegisub_util.cpp"
+			>
+		</File>
+		<File
+			RelativePath="..\..\tests\libaegisub_vfr.cpp"
 			>
 		</File>
 	</Files>

@@ -15,7 +15,8 @@ run_SOURCES = \
 		libaegisub_iconv.cpp \
 		libaegisub_line_iterator.cpp \
 		libaegisub_mru.cpp \
-		libaegisub_util.cpp
+		libaegisub_util.cpp \
+		libaegisub_vfr.cpp
 		
 run_SOURCES += \
 	*.h
