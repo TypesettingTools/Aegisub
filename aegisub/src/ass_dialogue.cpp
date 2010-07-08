@@ -223,10 +223,9 @@ wxString AssDialogue::GetData(bool ssa) const {
 	e.Replace(L",",L";");
 
 	wxString str = wxString::Format(
-		L"%s: %s%01d,%s,%s,%s,%s,%d,%d,%d,%s,%s",
+		L"%s: %s,%s,%s,%s,%s,%d,%d,%d,%s,%s",
 		Comment ? L"Comment" : L"Dialogue",
-		ssa ? L"Marked=0," : L"",
-		Layer,
+		ssa ? L"Marked=0" : wxString::Format("%01d", Layer).c_str(),
 		Start.GetASSFormated().c_str(),
 		End.GetASSFormated().c_str(),
 		s.c_str(), a.c_str(),
