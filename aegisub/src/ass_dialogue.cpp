@@ -215,43 +215,30 @@ bool AssDialogue::Parse(wxString rawData, int version) {
 }
 
 wxString AssDialogue::GetData(bool ssa) const {
-	wxString final;
-
-	if (Comment) final = L"Comment: ";
-	else final = L"Dialogue: ";
-
-	if (ssa) final += L"Marked=0,";
-
-	final += wxString::Format(L"%01i",Layer);
-	final += L",";
-
-	final += Start.GetASSFormated() + L",";
-	final += End.GetASSFormated() + L",";
-
 	wxString s = Style;
 	wxString a = Actor;
 	wxString e = Effect;
 	s.Replace(L",",L";");
 	a.Replace(L",",L";");
-	final += s + L",";
-	final += a + L",";
-
-	final += GetMarginString(0);
-	final += L",";
-	final += GetMarginString(1);
-	final += L",";
-	final += GetMarginString(2);
-	final += L",";
-
 	e.Replace(L",",L";");
-	final += e + L",";
-	final += Text;
+
+	wxString str = wxString::Format(
+		L"%s: %s%01d,%s,%s,%s,%s,%d,%d,%d,%s,%s",
+		Comment ? L"Comment" : L"Dialogue",
+		ssa ? L"Marked=0," : L"",
+		Layer,
+		Start.GetASSFormated().c_str(),
+		End.GetASSFormated().c_str(),
+		s.c_str(), a.c_str(),
+		Margin[0], Margin[1], Margin[2],
+		e.c_str(),
+		Text.c_str());
 
 	// Make sure that final has no line breaks
-	final.Replace(L"\n","");
-	final.Replace(L"\r","");
+	str.Replace(L"\n", "");
+	str.Replace(L"\r", "");
 
-	return final;
+	return str;
 }
 
 const wxString AssDialogue::GetEntryData() const {
