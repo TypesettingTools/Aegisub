@@ -34,52 +34,36 @@
 /// @ingroup subs_storage
 ///
 
-
-
-///////////
-// Headers
 #ifndef AGI_PRE
 #include <wx/colour.h>
 #endif
 
 #include "ass_entry.h"
 
-
-
 /// DOCME
 /// @class AssColor
 /// @brief DOCME
 ///
 /// DOCME
-class AssColor {
-public:
-
-	/// DOCME
-	int r;	// Red component
-
-	/// DOCME
-	int g;	// Green component
-
-	/// DOCME
-	int b;	// Blue component
-
-	/// DOCME
-	int a;	// Alpha component
+struct AssColor {
+	int r;	///< Red component
+	int g;	///< Green component
+	int b;	///< Blue component
+	int a;	///< Alpha component
 
 	AssColor();
-	AssColor(wxColour &color);
+	AssColor(int r, int g, int b, int a = 0);
+	AssColor(const wxColour &color);
 
-	bool operator==(AssColor &col) const;
-	bool operator!=(AssColor &col) const;
+	bool operator==(const AssColor &col) const;
+	bool operator!=(const AssColor &col) const;
 
 	wxColor GetWXColor();					// Return as a wxColor
 	void SetWXColor(const wxColor &color);	// Sets from a wxColor
 	void Parse(const wxString value);		// Parse SSA or ASS-style color
-	wxString GetASSFormatted(bool alpha,bool stripped=false,bool isStyle=false);	// Gets color formated in ASS format
-	wxString GetSSAFormatted();
+	wxString GetASSFormatted(bool alpha,bool stripped=false,bool isStyle=false) const;	// Gets color formated in ASS format
+	wxString GetSSAFormatted() const;
 };
-
-
 
 /// DOCME
 /// @class AssStyle
@@ -88,7 +72,6 @@ public:
 /// DOCME
 class AssStyle : public AssEntry {
 public:
-
 	/// DOCME
 	wxString name;
 
@@ -161,20 +144,21 @@ public:
 
 	/// @brief DOCME
 	///
-	ASS_EntryType GetType() { return ENTRY_STYLE; }
+	ASS_EntryType GetType() const { return ENTRY_STYLE; }
 
 	bool Parse(wxString data,int version=1);	// Parses raw ASS/SSA data into everything else
 	void UpdateData();				// Updates raw data
-	wxString GetSSAText();			// Retrieves SSA-formatted style
+	wxString GetSSAText() const;			// Retrieves SSA-formatted style
 
-	wxString GetMarginString(int which);					// Returns the margin value as a string (0 = left, 1 = right, 2 = vertical/top, 3 = bottom)
+	wxString GetMarginString(int which) const;					// Returns the margin value as a string (0 = left, 1 = right, 2 = vertical/top, 3 = bottom)
 	void SetMarginString(const wxString value,int which);	// Sets margin value from a string (0 = left, 1 = right, 2 = vertical/top, 3 = bottom)
 	static void GetEncodings(wxArrayString &encodingStrings);
 
 	AssEntry *Clone() const;
-	bool IsEqualTo(AssStyle *style);
+	bool IsEqualTo(AssStyle *style) const;
 
 	AssStyle();
+	AssStyle(AssStyle const&);
 	AssStyle(wxString data,int version=1);
 	~AssStyle();
 };

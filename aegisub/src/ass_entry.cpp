@@ -66,7 +66,7 @@ AssEntry::~AssEntry() {
 /// @brief Get SSA conversion 
 /// @return 
 ///
-wxString AssEntry::GetSSAText() {
+wxString AssEntry::GetSSAText() const {
 	// Special cases
 	if (data.Lower() == _T("[v4+ styles]")) return wxString(_T("[V4 Styles]"));
 	if (data.Lower() == _T("scripttype: v4.00+")) return wxString(_T("ScriptType: v4.00"));

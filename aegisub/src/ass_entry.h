@@ -125,17 +125,17 @@ public:
 	/// @brief DOCME
 	/// @return 
 	///
-	virtual ASS_EntryType GetType() { return ENTRY_BASE; }
+	virtual ASS_EntryType GetType() const { return ENTRY_BASE; }
 
 	/// @brief DOCME
 	/// @return 
 	///
-	virtual const wxString GetEntryData() { return data; }
+	virtual const wxString GetEntryData() const { return data; }
 
 	/// @brief DOCME
 	/// @param newData 
 	///
-	virtual void SetEntryData(wxString newData) { if (newData.IsEmpty()) data.Clear(); else data = newData; }
+	virtual void SetEntryData(wxString newData) { data = newData; }
 
-	virtual wxString GetSSAText();
+	virtual wxString GetSSAText() const;
 };

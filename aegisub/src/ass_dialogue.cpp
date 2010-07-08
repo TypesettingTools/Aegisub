@@ -214,7 +214,7 @@ bool AssDialogue::Parse(wxString rawData, int version) {
 	return true;
 }
 
-wxString AssDialogue::GetData(bool ssa) {
+wxString AssDialogue::GetData(bool ssa) const {
 	wxString final;
 
 	if (Comment) final = L"Comment: ";
@@ -228,10 +228,13 @@ wxString AssDialogue::GetData(bool ssa) {
 	final += Start.GetASSFormated() + L",";
 	final += End.GetASSFormated() + L",";
 
-	Style.Replace(L",",L";");
-	Actor.Replace(L",",L";");
-	final += Style + L",";
-	final += Actor + L",";
+	wxString s = Style;
+	wxString a = Actor;
+	wxString e = Effect;
+	s.Replace(L",",L";");
+	a.Replace(L",",L";");
+	final += s + L",";
+	final += a + L",";
 
 	final += GetMarginString(0);
 	final += L",";
@@ -240,8 +243,8 @@ wxString AssDialogue::GetData(bool ssa) {
 	final += GetMarginString(2);
 	final += L",";
 
-	Effect.Replace(L",",L";");
-	final += Effect + L",";
+	e.Replace(L",",L";");
+	final += e + L",";
 	final += Text;
 
 	// Make sure that final has no line breaks
@@ -251,11 +254,11 @@ wxString AssDialogue::GetData(bool ssa) {
 	return final;
 }
 
-const wxString AssDialogue::GetEntryData() {
+const wxString AssDialogue::GetEntryData() const {
 	return GetData(false);
 }
 
-wxString AssDialogue::GetSSAText () {
+wxString AssDialogue::GetSSAText () const {
 	return GetData(true);
 }
 
@@ -643,7 +646,7 @@ void AssDialogue::SetMarginString(const wxString origvalue,int which) {
 	Margin[which] = value;
 }
 
-wxString AssDialogue::GetMarginString(int which,bool pad) {
+wxString AssDialogue::GetMarginString(int which,bool pad) const {
 	if (which < 0 || which >= 4) throw Aegisub::InvalidMarginIdError();
 	int value = Margin[which];
 	if (pad) return wxString::Format(_T("%04i"),value);

@@ -34,8 +34,6 @@
 /// @ingroup subs_storage
 ///
 
-////////////
-// Includes
 #include "config.h"
 
 #ifndef AGI_PRE
@@ -48,27 +46,26 @@
 #include "ass_style.h"
 #include "utils.h"
 
-
-/// @brief Constructors  AssColor //////////////////////////
-///
 AssColor::AssColor () {
 	r=g=b=a=0;
 }
-
+AssColor::AssColor(int r, int g, int b, int a)
+: r(r)
+, g(g)
+, b(b)
+, a(a)
+{
+}
 
 /// @brief DOCME
 /// @param color 
 ///
-AssColor::AssColor (wxColour &color) {
+AssColor::AssColor (const wxColour &color) {
 	SetWXColor(color);
 }
 
-
-
 /// @brief Parse from SSA/ASS 
 /// @param value 
-/// @return 
-///
 void AssColor::Parse(const wxString value) {
 	if (value.Len() > 0 && value[0] == _T('#')) {
 		// HTML colour
@@ -101,20 +98,14 @@ void AssColor::Parse(const wxString value) {
 	a = (outval>>24)& 0xFF;
 }
 
-
-
 /// @brief Gets a wxColour 
 /// @return 
-///
 wxColour AssColor::GetWXColor() {
 	return wxColour(r,g,b,255-a);
 }
 
-
-
 /// @brief Sets color from wx 
 /// @param color 
-///
 void AssColor::SetWXColor(const wxColor &color) {
 	r = color.Red();
 	g = color.Green();
@@ -122,15 +113,12 @@ void AssColor::SetWXColor(const wxColor &color) {
 	//a = color.Alpha();
 }
 
-
-
 /// @brief Get formatted in ASS format 
 /// @param alpha    
 /// @param stripped 
 /// @param isStyle  
 /// @return 
-///
-wxString AssColor::GetASSFormatted (bool alpha,bool stripped,bool isStyle) {
+wxString AssColor::GetASSFormatted(bool alpha,bool stripped,bool isStyle) const {
 	wxString work;
 	if (!stripped) work += _T("&H");
 	if (alpha) work += wxString::Format(_T("%02X"),a);
@@ -139,93 +127,80 @@ wxString AssColor::GetASSFormatted (bool alpha,bool stripped,bool isStyle) {
 	return work;
 }
 
-
-
 /// @brief Get decimal formatted 
 /// @return 
-///
-wxString AssColor::GetSSAFormatted () {
+wxString AssColor::GetSSAFormatted() const {
 	long color = (a<<24)+(b<<16)+(g<<8)+r;
 	wxString output=wxString::Format(_T("%i"),(long)color);
 	return output;
 }
 
-
-
-/// @brief Operators 
-/// @param col 
-/// @return 
-///
-bool AssColor::operator==(AssColor &col) const {
+bool AssColor::operator==(const AssColor &col) const {
 	return r==col.r && g==col.g && b==col.b && a==col.a;
 }
 
-/// @brief DOCME
-/// @param col 
-/// @return 
-///
-bool AssColor::operator!=(AssColor &col) const {
-	return r!=col.r || g!=col.g || b!=col.b || a!=col.a;
+bool AssColor::operator!=(const AssColor &col) const {
+	return !(*this == col);
 }
 
-
-
-
-/// @brief Default Constructor  AssStyle /////////////////////////
-///
-AssStyle::AssStyle() {
-	group = _T("[V4+ Styles]");
-	
-	name = _T("Default");
-	font = _T("Arial");
-	fontsize = 20;
-
-	primary.r = 255;
-	primary.g = 255;
-	primary.b = 255;
-	primary.a = 0;
-	secondary.r = 255;
-	secondary.g = 0;
-	secondary.b = 0;
-	secondary.a = 0;
-	outline.r = 0;
-	outline.g = 0;
-	outline.b = 0;
-	outline.a = 0;
-	shadow.r = 0;
-	shadow.g = 0;
-	shadow.b = 0;
-	shadow.a = 0;
-
-	bold = false;
-	italic = false;
-	underline = false;
-	strikeout = false;
-
-	scalex = 100;
-	scaley = 100;
-	spacing = 0;
-	angle = 0.0;
-	borderstyle = 1;
-	outline_w = 2.0;
-	shadow_w = 2.0;
-	alignment = 2;
-	Margin[0] = 10;
-	Margin[1] = 10;
-	Margin[2] = 10;
-	Margin[3] = 10;
-	encoding = 1;
-	relativeTo = 1;
+AssStyle::AssStyle()
+: name(L"Default")
+, font(L"Arial")
+, fontsize(20.)
+, primary(255, 255, 255)
+, secondary(255, 0, 0)
+, outline(0, 0, 0)
+, shadow(0, 0, 0)
+, bold(false)
+, italic(false)
+, underline(false)
+, strikeout(false)
+, scalex(100.)
+, scaley(100.)
+, spacing(0.)
+, angle(0.)
+, borderstyle(1)
+, outline_w(2.)
+, shadow_w(2.)
+, alignment(2)
+, encoding(1)
+, relativeTo(1)
+{
+	group = L"[V4+ Styles]";
+	for (int i = 0; i < 4; i++)
+		Margin[i] = 10;
 
 	UpdateData();
 }
 
+AssStyle::AssStyle(const AssStyle& s)
+: name(s.name)
+, font(s.font)
+, fontsize(s.fontsize)
+, primary(s.primary)
+, secondary(s.secondary)
+, outline(s.outline)
+, shadow(s.shadow)
+, bold(s.bold)
+, italic(s.italic)
+, underline(s.underline)
+, strikeout(s.strikeout)
+, scalex(s.scalex)
+, scaley(s.scaley)
+, spacing(s.spacing)
+, angle(s.angle)
+, borderstyle(s.borderstyle)
+, outline_w(s.outline_w)
+, shadow_w(s.outline_w)
+, alignment(s.alignment)
+, encoding(s.encoding)
+, relativeTo(s.relativeTo)
+{
+	group = L"[V4+ Styles]";
+	memcpy(Margin, s.Margin, sizeof(Margin));
+	SetEntryData(s.GetEntryData());
+}
 
-
-/// @brief Constructor 
-/// @param _data   
-/// @param version 
-///
 AssStyle::AssStyle(wxString _data,int version) {
 	Valid = Parse(_data,version);
 	if (!Valid) {
@@ -234,14 +209,8 @@ AssStyle::AssStyle(wxString _data,int version) {
 	UpdateData();
 }
 
-
-
-/// @brief Destructor 
-///
 AssStyle::~AssStyle() {
 }
-
-
 
 /// @brief Parses value from ASS data 
 /// @param rawData 
@@ -449,8 +418,6 @@ bool AssStyle::Parse(wxString rawData,int version) {
 	return true;
 }
 
-
-
 /// @brief Writes data back to ASS (v4+) format 
 ///
 void AssStyle::UpdateData() {
@@ -475,8 +442,6 @@ void AssStyle::UpdateData() {
 	SetEntryData(final);
 }
 
-
-
 /// @brief Sets margin from a string 
 /// @param str   
 /// @param which 
@@ -492,24 +457,20 @@ void AssStyle::SetMarginString(const wxString str,int which) {
 	Margin[which] = value;
 }
 
-
-
 /// @brief Gets string for margin 
 /// @param which 
 /// @return 
 ///
-wxString AssStyle::GetMarginString(int which) {
+wxString AssStyle::GetMarginString(int which) const {
 	if (which < 0 || which >= 4) throw Aegisub::InvalidMarginIdError();
 	wxString result = wxString::Format(_T("%04i"),Margin[which]);
 	return result;
 }
 
-
-
 /// @brief Convert style to SSA string 
 /// @return 
 ///
-wxString AssStyle::GetSSAText() {
+wxString AssStyle::GetSSAText() const {
 	wxString output;
 	int align = 0;
 	switch (alignment) {
@@ -523,11 +484,13 @@ wxString AssStyle::GetSSAText() {
 		case 8: align = 6; break;
 		case 9: align = 7; break;
 	}
-	name.Replace(_T(","),_T(";"));
-	font.Replace(_T(","),_T(";"));
+	wxString n = name;
+	n.Replace(L",", L";");
+	wxString f = font;
+	f.Replace(L",", L";");
 
 	output = wxString::Format(_T("Style: %s,%s,%g,%s,%s,0,%s,%d,%d,%d,%g,%g,%d,%d,%d,%d,0,%i"),
-				  name.c_str(), font.c_str(), fontsize,
+				  n.c_str(), f.c_str(), fontsize,
 				  primary.GetSSAFormatted().c_str(),
 				  secondary.GetSSAFormatted().c_str(),
 				  shadow.GetSSAFormatted().c_str(),
@@ -538,47 +501,11 @@ wxString AssStyle::GetSSAText() {
 	return output;
 }
 
-
-
 /// @brief Clone 
 /// @return 
 ///
 AssEntry *AssStyle::Clone() const {
-	// Create clone
-	AssStyle *final = new AssStyle();
-
-	// Copy data
-	final->group = group;
-	final->Valid = Valid;
-	final->alignment = alignment;
-	final->angle = angle;
-	final->bold = bold;
-	final->borderstyle = borderstyle;
-	final->encoding = encoding;
-	final->font = font;
-	final->fontsize = fontsize;
-	final->italic = italic;
-	final->Margin[0] = Margin[0];
-	final->Margin[1] = Margin[1];
-	final->Margin[2] = Margin[2];
-	final->Margin[3] = Margin[3];
-	final->name = name;
-	final->outline = outline;
-	final->outline_w = outline_w;
-	final->primary = primary;
-	final->scalex = scalex;
-	final->scaley = scaley;
-	final->secondary = secondary;
-	final->shadow = shadow;
-	final->shadow_w = shadow_w;
-	final->spacing = spacing;
-	final->strikeout = strikeout;
-	final->underline = underline;
-	final->relativeTo = relativeTo;
-	final->SetEntryData(const_cast<AssStyle*>(this)->GetEntryData());
-
-	// Return
-	return final;
+	return new AssStyle(*this);
 }
 
 
@@ -587,7 +514,7 @@ AssEntry *AssStyle::Clone() const {
 /// @param style 
 /// @return 
 ///
-bool AssStyle::IsEqualTo(AssStyle *style) {
+bool AssStyle::IsEqualTo(AssStyle *style) const {
 	// memcmp won't work because strings won't match
 	if (style->alignment != alignment || 
 		style->angle != angle ||

@@ -163,7 +163,7 @@ public:
 ///
 /// DOCME
 class AssDialogue : public AssEntry {
-	wxString GetData(bool ssa);
+	wxString GetData(bool ssa) const;
 public:
 
 	/// Contains information about each block of text
@@ -188,7 +188,7 @@ public:
 	/// Raw text data
 	wxString Text;
 
-	ASS_EntryType GetType() { return ENTRY_DIALOGUE; }
+	ASS_EntryType GetType() const { return ENTRY_DIALOGUE; }
 
 	/// @brief Parse raw ASS data into everything else
 	/// @param data ASS line
@@ -217,7 +217,7 @@ public:
 
 	/// If blocks have been parsed, update the text from their current value
 	void UpdateText();
-	const wxString GetEntryData();
+	const wxString GetEntryData() const;
 	/// Do nothing
 	void SetEntryData(wxString) { }
 	/// Synonym for ClearBlocks
@@ -231,9 +231,9 @@ public:
 	/// @brief Get a margin
 	/// @param which 0 = left, 1 = right, 2 = vertical/top, 3 = bottom
 	/// @param pad Pad the number to four digits
-	wxString GetMarginString(int which,bool pad=true);
+	wxString GetMarginString(int which,bool pad=true) const;
 	/// Get the line as SSA rather than ASS
-	wxString GetSSAText();
+	wxString GetSSAText() const;
 	/// Does this line collide with the passed line?
 	bool CollidesWith(AssDialogue *target);
 

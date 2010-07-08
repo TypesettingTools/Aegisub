@@ -171,7 +171,7 @@ void AssTime::SetMS (int _ms) {
 /// @param msPrecision 
 /// @return 
 ///
-wxString AssTime::GetASSFormated (bool msPrecision) {
+wxString AssTime::GetASSFormated (bool msPrecision) const {
 	int h,m,s,ms;
 	int _ms = time;
 
