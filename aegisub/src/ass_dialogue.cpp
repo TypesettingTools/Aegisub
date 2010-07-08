@@ -45,7 +45,6 @@
 #include "ass_dialogue.h"
 #include "ass_override.h"
 #include "utils.h"
-#include "vfr.h"
 
 AssDialogue::AssDialogue()
 : Comment(false)

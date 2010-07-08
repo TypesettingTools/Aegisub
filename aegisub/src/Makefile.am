@@ -302,7 +302,6 @@ aegisub_2_2_SOURCES = \
 	variable_data.cpp \
 	vector2d.cpp \
 	version.cpp \
-	vfr.cpp \
 	video_box.cpp \
 	video_context.cpp \
 	video_display.cpp \

@@ -34,12 +34,8 @@
 /// @ingroup audio_ui
 ///
 
-
 #pragma once
 
-
-///////////
-// Headers
 #ifndef AGI_PRE
 #include <stdint.h>
 
@@ -52,9 +48,6 @@
 #include "audio_provider_manager.h"
 #include "audio_renderer_spectrum.h"
 
-
-//////////////
-// Prototypes
 class AssDialogue;
 class StreamAudioProvider;
 class SubtitlesGrid;
@@ -62,8 +55,6 @@ class AudioBox;
 class AudioKaraoke;
 class VideoProvider;
 class FrameMain;
-
-
 
 /// DOCME
 /// @class AudioDisplay
@@ -83,10 +74,8 @@ private:
 	/// DOCME
 	AssDialogue *dialogue;
 
-
 	/// DOCME
 	AudioSpectrum *spectrumRenderer;
-
 
 	/// DOCME
 	wxBitmap *origImage;
@@ -127,13 +116,11 @@ private:
 	/// DOCME
 	bool playingToEnd;
 
-
 	/// DOCME
 	bool needImageUpdate;
 
 	/// DOCME
 	bool needImageUpdateWeak;
-
 
 	/// DOCME
 	bool hasSel;
@@ -186,13 +173,11 @@ private:
 	/// DOCME
 	int holdSyl;
 
-
 	/// DOCME
 	int *peak;
 
 	/// DOCME
 	int *min;
-
 
 	/// DOCME
 	int scrubTime;
@@ -238,7 +223,6 @@ public:
 
 	/// DOCME
 	AudioPlayer *player;
-
 
 	/// DOCME
 	bool NeedCommit;
@@ -308,11 +292,8 @@ public:
 	DECLARE_EVENT_TABLE()
 };
 
-
 ///////
 // IDs
 enum {
-
-	/// DOCME
 	Audio_Update_Timer = 1700
 };

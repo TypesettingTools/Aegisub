@@ -34,9 +34,6 @@
 /// @ingroup video_input
 ///
 
-
-///////////
-// Headers
 #include "config.h"
 
 #include <libaegisub/log.h>
@@ -44,7 +41,7 @@
 #include "compat.h"
 #include "main.h"
 #include "options.h"
-#include "vfr.h"
+
 #ifdef WITH_AVISYNTH
 #include "video_provider_avs.h"
 #endif

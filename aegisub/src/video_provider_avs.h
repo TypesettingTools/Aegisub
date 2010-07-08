@@ -34,13 +34,9 @@
 /// @ingroup video_input
 ///
 
-
-///////////
-// Headers
 #ifdef WITH_AVISYNTH
 #include "avisynth_wrap.h"
 #include "include/aegisub/video_provider.h"
-
 
 /// DOCME
 /// @class AvisynthVideoProvider
@@ -48,8 +44,6 @@
 ///
 /// DOCME
 class AvisynthVideoProvider: public VideoProvider, AviSynthWrapper {
-private:
-
 	/// DOCME
 	VideoInfo vi;
 
@@ -75,27 +69,11 @@ private:
 
 
 	/// DOCME
-	double fps;
+	agi::vfr::Framerate real_fps;
+	agi::vfr::Framerate vfr_fps;
 
 	/// DOCME
-	wxArrayInt frameTime;
-
-	/// DOCME
-	bool byFrame;
-
-
-	/// DOCME
-	wxArrayInt KeyFrames;
-
-	/// DOCME
-	bool keyFramesLoaded;
-
-	/// DOCME
-	bool isVfr;
-
-	/// DOCME
-	FrameRate trueFrameRate;
-
+	std::vector<int> KeyFrames;
 
 	/// DOCME
 	PClip RGB32Video;
@@ -108,71 +86,15 @@ public:
 
 	const AegiVideoFrame GetFrame(int n);
 
-	/// @brief // properties
-	/// @return 
-	///
-	int GetPosition() { return last_fnum; };
-
-	/// @brief DOCME
-	/// @return 
-	///
-	int GetFrameCount() { return num_frames? num_frames: vi.num_frames; };
-
-	/// @brief DOCME
-	/// @return 
-	///
-	double GetFPS() { return (double)vi.fps_numerator/(double)vi.fps_denominator; };
-
-	/// @brief DOCME
-	/// @return 
-	///
-	int GetWidth() { return vi.width; };
-
-	/// @brief DOCME
-	/// @return 
-	///
-	int GetHeight() { return vi.height; };
-
-	/// @brief DOCME
-	/// @return 
-	///
-	bool AreKeyFramesLoaded() { return keyFramesLoaded; };
-
-	/// @brief DOCME
-	/// @return 
-	///
-	wxArrayInt GetKeyFrames() { return KeyFrames; };
-
-	/// @brief DOCME
-	/// @return 
-	///
-	bool IsVFR() { return isVfr; };
-
-	/// @brief DOCME
-	/// @return 
-	///
-	FrameRate GetTrueFrameRate() { return isVfr? trueFrameRate: FrameRate(); };
-
-	void OverrideFrameTimeList(wxArrayInt list);
-
-	/// @brief DOCME
-	/// @return 
-	///
-	bool IsNativelyByFrames() { return byFrame; }
-
-	/// @brief DOCME
-	/// @return 
-	///
-	bool NeedsVFRHack() { return true; }
-	wxString GetWarning();
-
-	/// @brief DOCME
-	/// @return 
-	///
-	wxString GetDecoderName() { return wxString(L"Avisynth/") + decoderName; }
+	int GetPosition() const { return last_fnum; };
+	int GetFrameCount() const { return num_frames? num_frames: vi.num_frames; };
+	agi::vfr::Framerate GetFPS() const { return vfr_fps.IsLoaded() ? vfr_fps : real_fps; };
+	int GetWidth() const { return vi.width; };
+	int GetHeight() const { return vi.height; };
+	std::vector<int> GetKeyFrames() const { return KeyFrames; };
+	wxString GetWarning() const;
+	wxString GetDecoderName() const { return wxString(L"Avisynth/") + decoderName; }
 };
-
-
 
 /// DOCME
 /// @class AvisynthVideoProviderFactory
@@ -188,7 +110,4 @@ public:
 	VideoProvider *CreateProvider(wxString video) { return new AvisynthVideoProvider(video); }
 };
 
-
 #endif
-
-

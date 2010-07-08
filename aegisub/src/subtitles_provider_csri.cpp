@@ -47,7 +47,6 @@
 #include "text_file_writer.h"
 #include "video_context.h"
 
-
 /// @brief Constructor 
 /// @param type 
 ///
@@ -56,16 +55,13 @@ CSRISubtitlesProvider::CSRISubtitlesProvider(wxString type) {
 	instance = NULL;
 }
 
-
-
 /// @brief Destructor 
 ///
 CSRISubtitlesProvider::~CSRISubtitlesProvider() {
+	if (!tempfile.empty()) wxRemoveFile(tempfile);
 	if (instance) csri_close(instance);
 	instance = NULL;
 }
-
-
 
 /// @brief Load subtitles 
 /// @param subs 
@@ -108,13 +104,15 @@ void CSRISubtitlesProvider::LoadSubtitles(AssFile *subs) {
 
 	// Open from disk
 	else {
-		wxString subsFileName = VideoContext::Get()->GetTempWorkFile();
-		subs->Save(subsFileName,false,false,wxSTRING_ENCODING);
-		instance = csri_open_file(renderer,subsFileName.mb_str(wxConvUTF8),NULL);
+		if (tempfile.empty()) {
+			tempfile = wxFileName::CreateTempFileName(_T("aegisub"));
+			wxRemoveFile(tempfile);
+			tempfile += L".ass";
+		}
+		subs->Save(tempfile,false,false,wxSTRING_ENCODING);
+		instance = csri_open_file(renderer,tempfile.utf8_str(),NULL);
 	}
 }
-
-
 
 /// @brief Draw subtitles 
 /// @param dst  
@@ -155,8 +153,6 @@ void CSRISubtitlesProvider::DrawSubtitles(AegiVideoFrame &dst,double time) {
 	csri_render(instance,&frame,time);
 }
 
-
-
 /// @brief Get CSRI subtypes 
 ///
 wxArrayString CSRISubtitlesProviderFactory::GetSubTypes() {
@@ -179,7 +175,4 @@ wxArrayString CSRISubtitlesProviderFactory::GetSubTypes() {
 	return final;
 }
 
-
 #endif // WITH_CSRI
-
-

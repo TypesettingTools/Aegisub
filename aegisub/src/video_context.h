@@ -38,6 +38,7 @@
 #include <time.h>
 
 #include <list>
+#include <memory>
 
 #include <wx/glcanvas.h>
 #include <wx/timer.h>
@@ -56,12 +57,14 @@
 #include <GL/glu.h>
 #endif
 
+#include <libaegisub/vfr.h>
 #include "video_frame.h"
 
 class SubtitlesGrid;
 class AudioProvider;
 class AudioDisplay;
 class AssDialogue;
+class KeyFrameFile;
 class SubtitlesProvider;
 class VideoProvider;
 class VideoDisplay;
@@ -77,11 +80,9 @@ namespace agi {
 /// DOCME
 class VideoContext : public wxEvtHandler {
 	friend class AudioProvider;
+	friend class KeyFrameFile;
 
 private:
-	/// DOCME
-	static VideoContext *instance;
-
 	/// DOCME
 	std::list<VideoDisplay*> displayList;
 
@@ -94,27 +95,14 @@ private:
 	/// DOCME
 	AegiVideoFrame tempFrame;
 
+	/// DOCME
+	std::auto_ptr<VideoProvider> provider;
 
 	/// DOCME
-	wxString tempfile;
+	std::auto_ptr<SubtitlesProvider> subsProvider;
 
 	/// DOCME
-	VideoProvider *provider;
-
-	/// DOCME
-	SubtitlesProvider *subsProvider;
-
-	/// DOCME
-	bool keyFramesLoaded;
-
-	/// DOCME
-	bool overKeyFramesLoaded;
-
-	/// DOCME
-	wxArrayInt KeyFrames;
-
-	/// DOCME
-	wxArrayInt overKeyFrames;
+	std::vector<int> keyFrames;
 
 	/// DOCME
 	wxString keyFramesFilename;
@@ -141,27 +129,16 @@ private:
 	int nextFrame;
 
 	/// DOCME
-	bool loaded;
-
-	/// DOCME
 	bool isPlaying;
 
 	/// DOCME
 	bool keepAudioSync;
 
 	/// DOCME
-
-	/// DOCME
-	int w,h;
-
-	/// DOCME
 	int frame_n;
 
 	/// DOCME
 	int length;
-
-	/// DOCME
-	double fps;
 
 	/// DOCME
 	double arValue;
@@ -171,23 +148,27 @@ private:
 
 	bool hasSubtitles;
 
+	wxString ovrTimecodeFile;
+
 	agi::OptionValue* playAudioOnStep;
 
 	void OnPlayTimer(wxTimerEvent &event);
+
+	agi::vfr::Framerate videoFPS;
+	agi::vfr::Framerate ovrFPS;
 
 public:
 	/// DOCME
 	SubtitlesGrid *grid;
 
-	/// DOCME
+	/// File name of currently open video, if any
 	wxString videoName;
-
-
-	/// DOCME
-	AssDialogue *curLine;
 
 	/// DOCME
 	AudioDisplay *audio;
+
+	const agi::vfr::Framerate &VFR_Input;
+	const agi::vfr::Framerate &VFR_Output;
 
 	VideoContext();
 	~VideoContext();
@@ -196,110 +177,114 @@ public:
 	void RemoveDisplay(VideoDisplay *display);
 
 
-	/// @brief DOCME
-	/// @return 
-	///
-	VideoProvider *GetProvider() { return provider; }
+	/// @brief Get the video provider used for the currently open video
+	VideoProvider *GetProvider() const { return provider.get(); }
 	AegiVideoFrame GetFrame(int n,bool raw=false);
 
+	/// @brief Save the currently displayed frame as an image
+	/// @param raw Should the frame have subtitles?
 	void SaveSnapshot(bool raw);
 
 	wxGLContext *GetGLContext(wxGLCanvas *canvas);
 
-	/// @brief DOCME
-	/// @return 
-	bool IsLoaded() { return loaded; }
+	/// @brief Is there a video loaded?
+	bool IsLoaded() const { return !!provider.get(); }
 
-	/// @brief DOCME
-	/// @return 
-	bool IsPlaying() { return isPlaying; }
+	/// @brief Is the video currently playing?
+	bool IsPlaying() const { return isPlaying; }
 
 	/// @brief Does the video file loaded have muxed subtitles that we can load?
-	bool HasSubtitles() {return hasSubtitles; }
+	bool HasSubtitles() const { return hasSubtitles; }
 
 	/// @brief DOCME
 	/// @param sync 
 	/// @return 
 	void EnableAudioSync(bool sync = true) { keepAudioSync = sync; }
 
+	/// @brief Get the width of the currently open video
+	int GetWidth() const;
 
-	/// @brief DOCME
-	/// @return 
-	int GetWidth() { return w; }
+	/// @brief Get the height of the currently open video
+	int GetHeight() const;
 
-	/// @brief DOCME
-	/// @return 
-	int GetHeight() { return h; }
+	/// @brief Get the length in frames of the currently open video
+	int GetLength() const { return length; }
 
-	/// @brief DOCME
-	/// @return 
-	int GetLength() { return length; }
+	/// @brief Get the current frame number
+	int GetFrameN() const { return frame_n; }
 
-	/// @brief DOCME
-	/// @return 
-	int GetFrameN() { return frame_n; }
-
-	/// @brief DOCME
-	/// @return 
-	double GetFPS() { return fps; }
-
-	/// @brief DOCME
-	/// @param _fps 
-	/// @return 
-	void SetFPS(double fps) { this->fps = fps; }
-
-	double GetARFromType(int type);
+	double GetARFromType(int type) const;
 	void SetAspectRatio(int type,double value=1.0);
 
 	/// @brief DOCME
 	/// @return 
-	int GetAspectRatioType() { return arType; }
+	int GetAspectRatioType() const { return arType; }
 
 	/// @brief DOCME
 	/// @return 
-	double GetAspectRatioValue() { return arValue; }
+	double GetAspectRatioValue() const { return arValue; }
 
+	/// @brief Open a new video
+	/// @param filename Video to open, or empty to close the current video
 	void SetVideo(const wxString &filename);
+	/// @brief Close the video, keyframes and timecodes
 	void Reset();
-	void Reload();
 
+	/// @brief Jump to the beginning of a frame
+	/// @param n Frame number to jump to
 	void JumpToFrame(int n);
-	void JumpToTime(int ms,bool exact=false);
+	/// @brief Jump to a time
+	/// @param ms Time to jump to in milliseconds
+	/// @param end Type of time
+	void JumpToTime(int ms, agi::vfr::Time end = agi::vfr::START);
 
+	/// @brief Refresh the subtitle provider
 	void Refresh();
+
 	/// @brief Update the video display
 	/// @param full Recalculate size and slider lengths
 	/// @param seek Update is just a seek and file has not changed
 	void UpdateDisplays(bool full, bool seek = false);
 
+	/// @brief Get the height and width of the current script
+	/// @param[out] w Width
+	/// @param[out] h Height
+	///
+	/// This probably shouldn't be in VideoContext
 	void GetScriptSize(int &w,int &h);
-	wxString GetTempWorkFile ();
 
+	/// Starting playing the video
 	void Play();
+	/// Play the next frame then stop
 	void PlayNextFrame();
+	/// Play the previous frame then stop
 	void PlayPrevFrame();
+	/// Seek to the beginning of the current line, then play to the end of it
 	void PlayLine();
+	/// Stop playing
 	void Stop();
 
-	wxArrayInt GetKeyFrames();
-	void SetKeyFrames(wxArrayInt frames);
-	void SetOverKeyFrames(wxArrayInt frames);
-	void CloseOverKeyFrames();
-	bool OverKeyFramesLoaded();
-	bool KeyFramesLoaded();
+	const std::vector<int>& GetKeyFrames() const { return keyFrames; };
+	wxString GetKeyFramesName() const { return keyFramesFilename; }
+	void LoadKeyframes(wxString filename);
+	void SaveKeyframes(wxString filename);
+	void CloseKeyframes();
+	bool OverKeyFramesLoaded() const { return !keyFramesFilename.empty(); }
+	bool KeyFramesLoaded() const { return !keyFrames.empty(); }
 
-	/// @brief DOCME
-	/// @return 
-	///
-	wxString GetKeyFramesName() { return keyFramesFilename; }
+	wxString GetTimecodesName() const { return ovrTimecodeFile; }
+	void LoadTimecodes(wxString filename);
+	void SaveTimecodes(wxString filename);
+	void CloseTimecodes();
+	bool OverTimecodesLoaded() const { return ovrFPS.IsLoaded(); }
+	bool TimecodesLoaded() const { return videoFPS.IsLoaded() || ovrFPS.IsLoaded(); };
 
-	/// @brief DOCME
-	/// @param name 
-	///
-	void SetKeyFramesName(wxString name) { keyFramesFilename = name; }
+	const agi::vfr::Framerate& FPS() const { return ovrFPS.IsLoaded() ? ovrFPS : videoFPS; }
+
+	int TimeAtFrame(int frame, agi::vfr::Time type = agi::vfr::EXACT) const;
+	int FrameAtTime(int time, agi::vfr::Time type = agi::vfr::EXACT) const;
 
 	static VideoContext *Get();
-	static void Clear();
 
 	DECLARE_EVENT_TABLE()
 };

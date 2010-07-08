@@ -34,9 +34,6 @@
 /// @ingroup video_input
 ///
 
-
-///////////
-// Headers
 #include "text_file_reader.h"
 
 
@@ -48,13 +45,13 @@
 class KeyFrameFile
 {
 public:
-	static void Load(wxString filename);
-	static void Save(wxString filename);
+	static std::vector<int> Load(wxString filename);
+	static void Save(wxString filename, std::vector<int> const& keyframes);
 private:
-	static void OpenAegiKeyFrames(TextFileReader& file, wxArrayInt& keyFrames);
-	static void OpenXviDKeyFrames(TextFileReader& file, wxArrayInt& keyFrames);
-	static void OpenDivXKeyFrames(TextFileReader& file, wxArrayInt& keyFrames);
-	static void Openx264KeyFrames(TextFileReader& file, wxArrayInt& keyFrames);
+	static void OpenAegiKeyFrames(TextFileReader& file, std::vector<int>& keyFrames);
+	static void OpenXviDKeyFrames(TextFileReader& file, std::vector<int>& keyFrames);
+	static void OpenDivXKeyFrames(TextFileReader& file, std::vector<int>& keyFrames);
+	static void Openx264KeyFrames(TextFileReader& file, std::vector<int>& keyFrames);
 };
 
 

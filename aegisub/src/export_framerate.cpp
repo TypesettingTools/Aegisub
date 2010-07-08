@@ -53,6 +53,7 @@
 #include "ass_override.h"
 #include "export_framerate.h"
 #include "utils.h"
+#include "video_context.h"
 
 /// DOCME
 /// @class LineData
@@ -93,11 +94,13 @@ void AssTransformFramerateFilter::ProcessSubs(AssFile *subs, wxWindow *export_di
 wxWindow *AssTransformFramerateFilter::GetConfigDialogWindow(wxWindow *parent) {
 	wxWindow *base = new wxPanel(parent, -1);
 
+	LoadSettings(true);
+
 	// Input sizer
 	wxSizer *InputSizer = new wxBoxSizer(wxHORIZONTAL);
 	wxString initialInput;
 	wxButton *FromVideo = new wxButton(base,Get_Input_From_Video,_("From Video"));
-	if (VFR_Input.IsLoaded()) initialInput = wxString::Format(_T("%2.3f"),VFR_Input.GetAverage());
+	if (Input->IsLoaded()) initialInput = wxString::Format(_T("%2.3f"),Input->FPS());
 	else {
 		initialInput = _T("23.976");
 		FromVideo->Enable(false);
@@ -119,7 +122,7 @@ wxWindow *AssTransformFramerateFilter::GetConfigDialogWindow(wxWindow *parent) {
 	// Output bottom line
 	RadioOutputCFR = new wxRadioButton(base,-1,_("Constant: "));
 	wxString initialOutput = initialInput;
-	if (VFR_Output.GetFrameRateType() != VFR) {
+	if (!Output->IsVFR()) {
 		RadioOutputVFR->Enable(false);
 		RadioOutputCFR->SetValue(true);
 	}
@@ -150,20 +153,20 @@ wxWindow *AssTransformFramerateFilter::GetConfigDialogWindow(wxWindow *parent) {
 
 void AssTransformFramerateFilter::LoadSettings(bool IsDefault) {
 	if (IsDefault) {
-		Input = &VFR_Input;
-		Output = &VFR_Output;
+		Input = &VideoContext::Get()->VFR_Input;
+		Output = &VideoContext::Get()->VFR_Output;
 	}
 	else {
 		double temp;
 		InputFramerate->GetValue().ToDouble(&temp);
-		t1.SetCFR(temp);
+		t1 = temp;
 		Input = &t1;
 		if (RadioOutputCFR->GetValue()) {
 			OutputFramerate->GetValue().ToDouble(&temp);
-			t2.SetCFR(temp);
+			t2 = temp;
 			Output = &t2;
 		}
-		else Output = &VFR_Output;
+		else Output = &VideoContext::Get()->VFR_Output;
 
 		if (Reverse->IsChecked()) {
 			std::swap(Input, Output);
@@ -215,7 +218,7 @@ void AssTransformFramerateFilter::TransformTimeTags (wxString name,int n,AssOver
 }
 
 void AssTransformFramerateFilter::TransformFrameRate(AssFile *subs) {
-	if (!Input->IsLoaded() || !Output->IsLoaded() || Input == Output || *Input == *Output) return;
+	if (!Input->IsLoaded() || !Output->IsLoaded()) return;
 	for (entryIter cur=subs->Line.begin();cur!=subs->Line.end();cur++) {
 		AssDialogue *curDialogue = dynamic_cast<AssDialogue*>(*cur);
 
@@ -225,7 +228,7 @@ void AssTransformFramerateFilter::TransformFrameRate(AssFile *subs) {
 			data.newK = 0;
 			data.oldK = 0;
 			data.newStart = trunc_cs(ConvertTime(curDialogue->Start.GetMS()));
-			data.newEnd = trunc_cs(ConvertTime(curDialogue->End.GetMS()));
+			data.newEnd = trunc_cs(ConvertTime(curDialogue->End.GetMS()) + 9);
 
 			// Process stuff
 			curDialogue->ParseASSTags();
@@ -239,15 +242,17 @@ void AssTransformFramerateFilter::TransformFrameRate(AssFile *subs) {
 }
 
 int AssTransformFramerateFilter::ConvertTime(int time) {
-	int frame = Output->GetFrameAtTime(time, false);
-	int frameStart = Output->GetTimeAtFrame(frame, false, true);
-	int frameEnd = Output->GetTimeAtFrame(frame + 1, false, true);
+	int frame = Output->FrameAtTime(time);
+	int frameStart = Output->TimeAtFrame(frame);
+	int frameEnd = Output->TimeAtFrame(frame + 1);
 	int frameDur = frameEnd - frameStart;
 	double dist = double(time - frameStart) / frameDur;
 
-	int newStart = Input->GetTimeAtFrame(frame, false, true);
-	int newEnd = Input->GetTimeAtFrame(frame + 1, false, true);
+	int newStart = Input->TimeAtFrame(frame);
+	int newEnd = Input->TimeAtFrame(frame + 1);
 	int newDur = newEnd - newStart;
+
+	int dongs = Input->FrameAtTime(newStart + newDur * dist, agi::vfr::END);
 
 	return newStart + newDur * dist;
 }

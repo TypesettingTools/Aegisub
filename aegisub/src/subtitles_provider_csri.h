@@ -34,15 +34,10 @@
 /// @ingroup subtitle_rendering
 ///
 
-
-///////////
-// Headers
-
 #ifdef WITH_CSRI
 
 #include "include/aegisub/subtitles_provider.h"
 #ifdef WIN32
-
 /// DOCME
 #define CSRIAPI
 #endif
@@ -53,21 +48,19 @@
 #include <csri/csri.h>
 #endif
 
-
 /// DOCME
 /// @class CSRISubtitlesProvider
 /// @brief DOCME
 ///
 /// DOCME
 class CSRISubtitlesProvider : public SubtitlesProvider {
-private:
-
 	/// DOCME
 	wxString subType;
 
 	/// DOCME
 	csri_inst *instance;
 
+	wxString tempfile;
 public:
 	CSRISubtitlesProvider(wxString subType);
 	~CSRISubtitlesProvider();
@@ -76,8 +69,6 @@ public:
 	void DrawSubtitles(AegiVideoFrame &dst,double time);
 };
 
-
-
 /// DOCME
 /// @class CSRISubtitlesProviderFactory
 /// @brief DOCME
@@ -85,7 +76,6 @@ public:
 /// DOCME
 class CSRISubtitlesProviderFactory : public SubtitlesProviderFactory {
 public:
-
 	/// @brief DOCME
 	/// @param subType
 	///
@@ -94,5 +84,3 @@ public:
 };
 
 #endif
-
-

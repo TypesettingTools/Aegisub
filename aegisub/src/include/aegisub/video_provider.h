@@ -34,16 +34,10 @@
 /// @ingroup main_headers video_input
 ///
 
-
 #pragma once
 
-
-//////////
-// Headers
-#include "aegisub.h"
-#include "vfr.h"
 #include "video_frame.h"
-
+#include <libaegisub/vfr.h>
 
 /// @class VideoProvider
 /// @brief DOCME
@@ -51,61 +45,30 @@
 /// DOCME
 class VideoProvider {
 public:
-
-	/// @brief // Virtual destructor
-	/// @return 
-	///
 	virtual ~VideoProvider() {}
 
 	// Override this method to actually get frames
 	virtual const AegiVideoFrame GetFrame(int n)=0;
 
 	// Override the following methods to get video information:
-	virtual int GetPosition()=0;				// Get the number of the last frame loaded
-	virtual int GetFrameCount()=0;				// Get total number of frames
-	virtual int GetWidth()=0;					// Returns the video width in pixels
-	virtual int GetHeight()=0;					// Returns the video height in pixels
-	virtual double GetFPS()=0;					// Get framerate in frames per second
-	virtual bool AreKeyFramesLoaded()=0;		// Returns true if keyframe info is loaded, false otherwise
-	virtual bool IsVFR()=0;						// Returns true if video is VFR
-	virtual wxArrayInt GetKeyFrames()=0;		// Returns list of keyframes
-	virtual FrameRate GetTrueFrameRate()=0;		// Returns magic VFR stuff
+	virtual int GetPosition() const=0;				///< Get the number of the last frame loaded
+	virtual int GetFrameCount() const=0;			///< Get total number of frames
+	virtual int GetWidth() const=0;					///< Returns the video width in pixels
+	virtual int GetHeight() const=0;				///< Returns the video height in pixels
+	virtual agi::vfr::Framerate GetFPS() const=0;	///< Get frame rate
+	virtual std::vector<int> GetKeyFrames() const=0;///< Returns list of keyframes
 
 
-	/// @brief // Use this to set any post-loading warnings, such as "being loaded with unreliable seeking"
-	/// @return 
-	///
-	virtual wxString GetWarning() { return L""; }
+	/// @brief Use this to set any post-loading warnings, such as "being loaded with unreliable seeking"
+	virtual wxString GetWarning() const { return L""; }
 
-
-	/// @brief // Name of decoder, e.g. "Avisynth/FFMpegSource"
-	/// @return 
-	///
-	virtual wxString GetDecoderName() { return L"Unknown"; }
-
+	/// @brief Name of decoder, e.g. "Avisynth/FFMpegSource"
+	virtual wxString GetDecoderName() const = 0;
 
 	/// @brief Does this provider want Aegisub to cache video frames?
 	/// @return Returns true if caching is desired, false otherwise.
-	virtual bool WantsCaching() { return false; }
-
-
-	/// @brief // For "special" providers that don't deal well with VFR (i.e. Avisynth)
-	/// @return 
-	///
-	virtual bool NeedsVFRHack() { return false; };					// Returns true if provider needs special VFR treatment
-
-	/// @brief DOCME
-	/// @return 
-	///
-	virtual bool IsNativelyByFrames() { return true; };
-
-	/// @brief DOCME
-	/// @param list 
-	///
-	virtual void OverrideFrameTimeList(std::vector<int> list) {}	// Override the list with the provided one, for VFR handling
+	virtual bool WantsCaching() const { return false; }
 };
-
-
 
 /// @class VideoProviderFactory
 /// @brief DOCME
@@ -119,5 +82,3 @@ public:
 	virtual ~VideoProviderFactory() {}
 	virtual VideoProvider *CreateProvider(wxString video)=0;
 };
-
-

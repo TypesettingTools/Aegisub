@@ -50,7 +50,6 @@
 #include "mkv_wrap.h"
 #include "options.h"
 #include "standard_paths.h"
-#include "vfr.h"
 #include "vfw_wrap.h"
 #include "video_context.h"
 #include "video_provider_avs.h"
@@ -63,13 +62,9 @@ AvisynthVideoProvider::AvisynthVideoProvider(wxString _filename) {
 	AVSTRACE(wxString::Format(_T("AvisynthVideoProvider: Creating new AvisynthVideoProvider: \"%s\", \"%s\""), _filename, _subfilename));
 	bool mpeg2dec3_priority = true;
 	RGB32Video = NULL;
-	fps = 0;
 	num_frames = 0;
 	last_fnum = -1;
-	byFrame = false;
-	KeyFrames.Clear();
-	keyFramesLoaded = false;
-	isVfr = false;
+	KeyFrames.clear();
 
 	AVSTRACE(_T("AvisynthVideoProvider: Opening video"));
 	RGB32Video = OpenVideo(_filename,mpeg2dec3_priority);
@@ -92,12 +87,6 @@ AvisynthVideoProvider::~AvisynthVideoProvider() {
 	AVSTRACE(_T("AvisynthVideoProvider: AvisynthVideoProvider destroyed"));
 }
 
-
-
-////////////////////////////////////// VIDEO PROVIDER //////////////////////////////////////
-
-
-
 /// @brief Actually open the video into Avisynth 
 /// @param _filename          
 /// @param mpeg2dec3_priority 
@@ -109,7 +98,6 @@ PClip AvisynthVideoProvider::OpenVideo(wxString _filename, bool mpeg2dec3_priori
 	AVSTRACE(_T("AvisynthVideoProvider::OpenVideo: Got AVS mutex"));
 	AVSValue script;
 
-	byFrame = false;
 	usedDirectShow = false;
 	decoderName = _("Unknown");
 
@@ -138,7 +126,6 @@ PClip AvisynthVideoProvider::OpenVideo(wxString _filename, bool mpeg2dec3_priori
 				AVSValue args[2] = { videoFilename, false };
 				script = env->Invoke("AviSource", AVSValue(args,2), argnames);
 				AVSTRACE(_T("AvisynthVideoProvider::OpenVideo: Successfully opened .avi file without audio"));
-				byFrame = true;
 				decoderName = _T("AviSource");
 			}
 			
@@ -155,10 +142,10 @@ PClip AvisynthVideoProvider::OpenVideo(wxString _filename, bool mpeg2dec3_priori
 			script = env->Invoke("Mpeg2Dec3_Mpeg2Source", videoFilename);
 			decoderName = _T("Mpeg2Dec3_Mpeg2Source");
 
-            //if avisynth is 2.5.7 beta 2 or newer old mpeg2decs will crash without this
+			//if avisynth is 2.5.7 beta 2 or newer old mpeg2decs will crash without this
 			if (env->FunctionExists("SetPlanarLegacyAlignment")) {
 				AVSValue args[2] = { script, true };
-        		script = env->Invoke("SetPlanarLegacyAlignment", AVSValue(args,2));
+				script = env->Invoke("SetPlanarLegacyAlignment", AVSValue(args,2));
 			}
 		}
 
@@ -168,8 +155,8 @@ PClip AvisynthVideoProvider::OpenVideo(wxString _filename, bool mpeg2dec3_priori
 			script = env->Invoke("Mpeg2Source", videoFilename);
 			decoderName = _T("DGDecode_Mpeg2Source");
 
-            //note that DGDecode will also have issues like if the version is too ancient but no sane person
-            //would use that anyway
+			//note that DGDecode will also have issues like if the version is too ancient but no sane person
+			//would use that anyway
 		}
 
 		else if (extension == _T(".d2v") && env->FunctionExists("Mpeg2Source")) {
@@ -177,9 +164,9 @@ PClip AvisynthVideoProvider::OpenVideo(wxString _filename, bool mpeg2dec3_priori
 			script = env->Invoke("Mpeg2Source", videoFilename);
 			decoderName = _T("Mpeg2Source");
 
-            //if avisynth is 2.5.7 beta 2 or newer old mpeg2decs will crash without this
-        	if (env->FunctionExists("SetPlanarLegacyAlignment"))
-        		script = env->Invoke("SetPlanarLegacyAlignment", script);
+			//if avisynth is 2.5.7 beta 2 or newer old mpeg2decs will crash without this
+			if (env->FunctionExists("SetPlanarLegacyAlignment"))
+				script = env->Invoke("SetPlanarLegacyAlignment", script);
 		}
 
 		// Some other format, such as mkv, mp4, ogm... try both flavors of DirectShowSource
@@ -253,30 +240,16 @@ PClip AvisynthVideoProvider::OpenVideo(wxString _filename, bool mpeg2dec3_priori
 	}
 
 	// Read keyframes and timecodes from MKV file
-	isVfr = false;
-	FrameRate temp;
 	bool mkvOpen = MatroskaWrapper::wrapper.IsOpen();
-	KeyFrames.Clear();
+	KeyFrames.clear();
 	if (extension == _T(".mkv") || mkvOpen) {
 		// Parse mkv
 		if (!mkvOpen) MatroskaWrapper::wrapper.Open(_filename);
 		
 		// Get keyframes
 		KeyFrames = MatroskaWrapper::wrapper.GetKeyFrames();
-		keyFramesLoaded = true;
-		
-		// Ask to override timecodes
-		int override = wxYES;
-		if (VFR_Output.IsLoaded()) override = wxMessageBox(_("You already have timecodes loaded. Replace them with the timecodes from the Matroska file?"),_("Replace timecodes?"),wxYES_NO | wxICON_QUESTION);
-		if (override == wxYES) {
-			MatroskaWrapper::wrapper.SetToTimecodes(temp);
-			isVfr = temp.GetFrameRateType() == VFR;
-			if (isVfr) {
-				MatroskaWrapper::wrapper.SetToTimecodes(VFR_Input);
-				MatroskaWrapper::wrapper.SetToTimecodes(VFR_Output);
-				trueFrameRate = temp;
-			}
-		}
+
+		MatroskaWrapper::wrapper.SetToTimecodes(vfr_fps);
 
 		// Close mkv
 		MatroskaWrapper::wrapper.Close();
@@ -284,16 +257,14 @@ PClip AvisynthVideoProvider::OpenVideo(wxString _filename, bool mpeg2dec3_priori
 // check if we have windows, if so we can load keyframes from AVI files using VFW
 #ifdef __WINDOWS__
 	else if (extension == _T(".avi")) {
-		keyFramesLoaded = false;
-		KeyFrames.Clear();
+		KeyFrames.clear();
 		KeyFrames = VFWWrapper::GetKeyFrames(_filename);
-		keyFramesLoaded = true;
 	}
 #endif /* __WINDOWS__ */
 
 	// Check if the file is all keyframes
 	bool isAllKeyFrames = true;
-	for (unsigned int i=1; i<KeyFrames.GetCount(); i++) {
+	for (unsigned int i=1; i<KeyFrames.size(); i++) {
 		// Is the last keyframe not this keyframe -1?
 		if (KeyFrames[i-1] != (int)(i-1)) {
 			// It's not all keyframes, go ahead
@@ -304,9 +275,10 @@ PClip AvisynthVideoProvider::OpenVideo(wxString _filename, bool mpeg2dec3_priori
 
 	// If it is all keyframes, discard the keyframe info as it is useless
 	if (isAllKeyFrames) {
-		KeyFrames.Clear();
-		keyFramesLoaded = false;
+		KeyFrames.clear();
 	}
+
+	real_fps = (double)vi.fps_numerator / vi.fps_denominator;
 
 	// Convert to RGB32
 	script = env->Invoke("ConvertToRGB32", script);
@@ -323,17 +295,10 @@ PClip AvisynthVideoProvider::OpenVideo(wxString _filename, bool mpeg2dec3_priori
 /// @param _n 
 /// @return 
 ///
-const AegiVideoFrame AvisynthVideoProvider::GetFrame(int _n) {
-	// Transform n if overriden
-	int n = _n;
-	if (frameTime.Count()) {
-		if (n < 0) n = 0;
-		if (n >= (signed) frameTime.Count()) n = frameTime.Count()-1;
-		int time = frameTime[n];
-		double curFps = (double)vi.fps_numerator/(double)vi.fps_denominator;
-		n = time * curFps / 1000.0;
+const AegiVideoFrame AvisynthVideoProvider::GetFrame(int n) {
+	if (vfr_fps.IsLoaded()) {
+		n = real_fps.FrameAtTime(vfr_fps.TimeAtFrame(n));
 	}
-
 	// Get avs frame
 	AVSTRACE(_T("AvisynthVideoProvider::GetFrame"));
 	wxMutexLocker lock(AviSynthMutex);
@@ -362,24 +327,11 @@ const AegiVideoFrame AvisynthVideoProvider::GetFrame(int _n) {
 	return final;
 }
 
-
-/// @brief Override frame times 
-/// @param list 
-///
-void AvisynthVideoProvider::OverrideFrameTimeList(wxArrayInt list) {
-	frameTime = list;
-	num_frames = frameTime.Count();
-}
-
-
-
 /// @brief Get warning 
 ///
-wxString AvisynthVideoProvider::GetWarning() {
+wxString AvisynthVideoProvider::GetWarning() const {
 	if (usedDirectShow) return L"Warning! The file is being opened using Avisynth's DirectShowSource, which has unreliable seeking. Frame numbers might not match the real number. PROCEED AT YOUR OWN RISK!";
 	else return L"";
 }
 
 #endif
-
-

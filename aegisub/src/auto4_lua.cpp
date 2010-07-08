@@ -64,7 +64,6 @@
 #include "options.h"
 #include "standard_paths.h"
 #include "text_file_reader.h"
-#include "vfr.h"
 #include "video_context.h"
 
 // This must be below the headers above.
@@ -504,8 +503,8 @@ namespace Automation4 {
 	{
 		int ms = (int)lua_tonumber(L, -1);
 		lua_pop(L, 1);
-		if (VFR_Output.IsLoaded()) {
-			lua_pushnumber(L, VFR_Output.GetFrameAtTime(ms, true));
+		if (VideoContext::Get()->TimecodesLoaded()) {
+			lua_pushnumber(L, VideoContext::Get()->FrameAtTime(ms, agi::vfr::START));
 			return 1;
 		} else {
 			lua_pushnil(L);
@@ -522,8 +521,8 @@ namespace Automation4 {
 	{
 		int frame = (int)lua_tonumber(L, -1);
 		lua_pop(L, 1);
-		if (VFR_Output.IsLoaded()) {
-			lua_pushnumber(L, VFR_Output.GetTimeAtFrame(frame, true));
+		if (VideoContext::Get()->TimecodesLoaded()) {
+			lua_pushnumber(L, VideoContext::Get()->TimeAtFrame(frame, agi::vfr::START));
 			return 1;
 		} else {
 			lua_pushnil(L);

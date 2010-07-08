@@ -34,13 +34,7 @@
 /// @ingroup subtitle_io
 ///
 
-
-
-
-///////////
-// Headers
 #include "subtitle_format.h"
-
 
 /// DOCME
 /// @class MicroDVDSubtitleFormat
@@ -59,5 +53,3 @@ public:
 	bool CanWriteFile(wxString filename);
 	void WriteFile(wxString filename,wxString encoding);
 };
-
-

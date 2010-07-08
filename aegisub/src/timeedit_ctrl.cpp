@@ -34,9 +34,6 @@
 /// @ingroup custom_control
 ///
 
-
-////////////
-// Includes
 #include "config.h"
 
 #ifndef AGI_PRE
@@ -51,8 +48,7 @@
 #include "main.h"
 #include "options.h"
 #include "timeedit_ctrl.h"
-#include "vfr.h"
-
+#include "video_context.h"
 
 #ifdef __WXGTK__
 /// Use the multiline style only on wxGTK to workaround some wxGTK bugs with the default singleline style.
@@ -62,7 +58,6 @@
 /// All other platforms than wxGTK.
 #define TimeEditWindowStyle wxTE_CENTRE
 #endif
-
 
 /// @brief Constructor 
 /// @param parent    
@@ -114,9 +109,6 @@ wxTextCtrl(parent,id,value,pos,size,TimeEditWindowStyle | style,validator,name)
 	Connect(wxEVT_KILL_FOCUS,wxFocusEventHandler(TimeEdit::OnKillFocus));
 }
 
-
-///////////////
-// Event table
 BEGIN_EVENT_TABLE(TimeEdit, wxTextCtrl)
 	EVT_MOUSE_EVENTS(TimeEdit::OnMouseEvent)
 	EVT_KEY_DOWN(TimeEdit::OnKeyDown)
@@ -124,30 +116,20 @@ BEGIN_EVENT_TABLE(TimeEdit, wxTextCtrl)
 	EVT_MENU(Time_Edit_Paste,TimeEdit::OnPaste)
 END_EVENT_TABLE()
 
-
-
 /// @brief Modified event 
 /// @param event 
-/// @return 
-///
 void TimeEdit::OnModified(wxCommandEvent &event) {
 	event.Skip();
 	if (!ready) return;
 	Modified();
 }
 
-
-
 /// @brief Modified function 
 /// @param byUser 
-/// @return 
-///
 void TimeEdit::Modified(bool byUser) {
-	// Lock
 	if (!ready) return;
 	ready = false;
 	
-	// Update
 	if (byFrame) Update();
 	else UpdateTime(byUser);
 
@@ -156,12 +138,8 @@ void TimeEdit::Modified(bool byUser) {
 		SetBackgroundColour(lagi_wxColour(OPT_GET("Colour/Background/Modified")->GetColour()));
 	}
 	modified = true;
-
-	// Done
 	ready = true;
 }
-
-
 
 /// @brief Set time and update stuff 
 /// @param ms          
@@ -174,18 +152,14 @@ void TimeEdit::SetTime(int ms,bool setModified) {
 	if (setModified && oldMs != ms) Modified(false);
 }
 
-
-
 /// @brief Toggles between set by frame and time 
 /// @param enable 
-/// @return 
-///
 void TimeEdit::SetByFrame(bool enable) {
 	if (enable == byFrame) return;
 
 	// By frames
 	if (enable) {
-		if (VFR_Output.IsLoaded()) {
+		if (VideoContext::Get()->IsLoaded()) {
 			byFrame = true;
 			UpdateText();
 		}
@@ -198,21 +172,17 @@ void TimeEdit::SetByFrame(bool enable) {
 	}
 }
 
-
-
 /// @brief Update text to reflect time value 
 ///
 void TimeEdit::UpdateText() {
 	ready = false;
 	if (byFrame) {
-		int frame_n = VFR_Output.GetFrameAtTime(time.GetMS(),!isEnd);
+		int frame_n = VideoContext::Get()->FrameAtTime(time.GetMS(),isEnd ? agi::vfr::END : agi::vfr::START);
 		SetValue(wxString::Format(_T("%i"),frame_n));
 	}
 	else SetValue(time.GetASSFormated());
 	ready = true;
 }
-
-
 
 /// @brief Update 
 ///
@@ -221,7 +191,7 @@ void TimeEdit::Update() {
 	if (byFrame) {
 		long temp;
 		GetValue().ToLong(&temp);
-		time.SetMS(VFR_Output.GetTimeAtFrame(temp,!isEnd));
+		time.SetMS(VideoContext::Get()->TimeAtFrame(temp,isEnd ? agi::vfr::END : agi::vfr::START));
 	}
 
 	// Update time if not on insertion mode
@@ -237,8 +207,6 @@ void TimeEdit::Update() {
 	}
 	modified = false;
 }
-
-
 
 /// @brief Reads value from a text control and update it 
 /// @param byUser 
@@ -272,8 +240,6 @@ void TimeEdit::UpdateTime(bool byUser) {
 		SetSelection(start,end);
 	}
 }
-
-
 
 /// @brief Key pressed 
 /// @param event 
@@ -316,8 +282,6 @@ void TimeEdit::OnKeyDown(wxKeyEvent &event) {
 	}
 }
 
-
-
 /// @brief Focus lost 
 /// @param event 
 ///
@@ -331,14 +295,10 @@ void TimeEdit::OnKillFocus(wxFocusEvent &event) {
 	event.Skip();
 }
 
-
 ///// Mouse/copy/paste events down here /////
-
 
 /// @brief Mouse event 
 /// @param event 
-/// @return 
-///
 void TimeEdit::OnMouseEvent(wxMouseEvent &event) {
 	// Right click context menu
 	if (event.RightUp()) {
@@ -355,8 +315,6 @@ void TimeEdit::OnMouseEvent(wxMouseEvent &event) {
 	event.Skip();
 }
 
-
-
 /// @brief Menu Copy 
 /// @param event 
 ///
@@ -367,8 +325,6 @@ void TimeEdit::OnCopy(wxCommandEvent &event) {
 	Refresh();
 }
 
-
-
 /// @brief Menu Paste 
 /// @param event 
 ///
@@ -378,10 +334,7 @@ void TimeEdit::OnPaste(wxCommandEvent &event) {
 	Refresh();
 }
 
-
-
 /// @brief Copy to clipboard 
-/// @return 
 ///
 void TimeEdit::CopyTime() {
 	// Frame
@@ -396,8 +349,6 @@ void TimeEdit::CopyTime() {
 		wxTheClipboard->Close();
 	}
 }
-
-
 
 /// @brief Paste from clipboard 
 ///
@@ -432,5 +383,3 @@ void TimeEdit::PasteTime() {
 		}
 	}
 }
-
-

@@ -50,7 +50,6 @@
 
 #include "ass_time.h"
 #include "utils.h"
-#include "vfr.h"
 
 
 /// @brief AssTime constructors

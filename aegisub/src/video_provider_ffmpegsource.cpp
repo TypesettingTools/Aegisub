@@ -38,8 +38,6 @@
 
 #ifdef WITH_FFMPEGSOURCE
 
-///////////
-// Headers
 #ifndef AGI_PRE
 #ifdef __WINDOWS__
 #include <objbase.h>
@@ -79,7 +77,6 @@ FFmpegSourceVideoProvider::FFmpegSourceVideoProvider(wxString filename) {
 
 	// clean up variables
 	VideoSource = NULL;
-	KeyFramesLoaded = false;
 	FrameNumber = -1;
 	ErrInfo.Buffer		= FFMSErrMsg;
 	ErrInfo.BufferSize	= sizeof(FFMSErrMsg);
@@ -197,7 +194,7 @@ void FFmpegSourceVideoProvider::LoadVideo(wxString filename) {
 			FFMS_DestroyIndex(Index);
 			Index = NULL;
 			ErrorMsg.Append(wxString::Format(_T("Couldn't find any video tracks: %s"), ErrInfo.Buffer));
-			throw ErrorMsg;	
+			throw ErrorMsg;
 		}
 	}
 
@@ -249,6 +246,7 @@ void FFmpegSourceVideoProvider::LoadVideo(wxString filename) {
 	const FFMS_FrameInfo *CurFrameData;
 
 	// build list of keyframes and timecodes
+	std::vector<int> TimecodesVector;
 	for (int CurFrameNum = 0; CurFrameNum < VideoInfo->NumFrames; CurFrameNum++) {
 		CurFrameData = FFMS_GetFrameInfo(FrameData, CurFrameNum);
 		if (CurFrameData == NULL) {
@@ -258,31 +256,16 @@ void FFmpegSourceVideoProvider::LoadVideo(wxString filename) {
 
 		// keyframe?
 		if (CurFrameData->KeyFrame)
-			KeyFramesList.Add(CurFrameNum);
+			KeyFramesList.push_back(CurFrameNum);
 
 		// calculate timestamp and add to timecodes vector
 		int Timestamp = (int)((CurFrameData->PTS * TimeBase->Num) / TimeBase->Den);
 		TimecodesVector.push_back(Timestamp);
 	}
-	KeyFramesLoaded = true;
-
-	// override already loaded timecodes?
-	Timecodes.SetVFR(TimecodesVector);
-	int OverrideTC = wxYES;
-	if (VFR_Output.IsLoaded()) {
-		OverrideTC = wxMessageBox(_("You already have timecodes loaded. Would you like to replace them with timecodes from the video file?"), _("Replace timecodes?"), wxYES_NO | wxICON_QUESTION);
-		if (OverrideTC == wxYES) {
-			VFR_Input.SetVFR(TimecodesVector);
-			VFR_Output.SetVFR(TimecodesVector);
-		}
-	} else { // no timecodes loaded, go ahead and apply
-		VFR_Input.SetVFR(TimecodesVector);
-		VFR_Output.SetVFR(TimecodesVector);
-	}
+	Timecodes = agi::vfr::Framerate(TimecodesVector);
 
 	FrameNumber = 0;
 }
-
 
 /// @brief Close video 
 ///
@@ -290,14 +273,11 @@ void FFmpegSourceVideoProvider::Close() {
 	FFMS_DestroyVideoSource(VideoSource);
 	VideoSource = NULL;
 
-	KeyFramesLoaded = false;
 	KeyFramesList.clear();
-	TimecodesVector.clear();
 	FrameNumber = -1;
+	Timecodes = agi::vfr::Framerate();
 	CurFrame.Clear();
 }
-
-
 
 /// @brief Get frame 
 /// @param _n 
@@ -323,48 +303,4 @@ const AegiVideoFrame FFmpegSourceVideoProvider::GetFrame(int _n) {
 	CurFrame.SetTo(SrcFrame->Data, Width, Height, SrcFrame->Linesize, FORMAT_RGB32);
 	return CurFrame;
 }
-
-
-
-/// @brief Utility functions 
-/// @return 
-///
-int FFmpegSourceVideoProvider::GetWidth() {
-	return Width;
-}
-
-
-/// @brief DOCME
-/// @return 
-///
-int FFmpegSourceVideoProvider::GetHeight() {
-	return Height;
-}
-
-
-/// @brief DOCME
-/// @return 
-///
-int FFmpegSourceVideoProvider::GetFrameCount() {
-	return VideoInfo->NumFrames;
-}
-
-
-/// @brief DOCME
-/// @return 
-///
-int FFmpegSourceVideoProvider::GetPosition() {
-	return FrameNumber;
-}
-
-
-/// @brief DOCME
-///
-double FFmpegSourceVideoProvider::GetFPS() {
-	return double(VideoInfo->FPSNumerator) / double(VideoInfo->FPSDenominator);
-}
-
-
 #endif /* WITH_FFMPEGSOURCE */
-
-

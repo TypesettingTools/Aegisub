@@ -34,12 +34,8 @@
 /// @ingroup subtitle_io
 ///
 
-
 #pragma once
 
-
-///////////
-// Headers
 #ifndef AGI_PRE
 #include <list>
 
@@ -49,13 +45,8 @@
 
 #include <libaegisub/exception.h>
 
-
-//////////////
-// Prototypes
 class AssFile;
 class AssEntry;
-
-
 
 /// DOCME
 /// @class SubtitleFormat
@@ -63,8 +54,6 @@ class AssEntry;
 ///
 /// DOCME
 class SubtitleFormat {
-private:
-
 	/// DOCME
 	bool isCopy;
 
@@ -74,7 +63,6 @@ private:
 	void Register();
 	void Remove();
 
-
 	/// DOCME
 	static std::list<SubtitleFormat*> formats;
 
@@ -82,7 +70,6 @@ private:
 	static bool loaded;
 
 protected:
-
 	/// DOCME
 	struct FPSRational {
 
@@ -95,7 +82,6 @@ protected:
 		/// DOCME
 		bool smpte_dropframe;
 	};
-
 
 	/// DOCME
 	std::list<AssEntry*> *Line;
@@ -131,7 +117,6 @@ public:
 
 	static wxString GetWildcards(int mode);
 
-
 	/// @brief DOCME
 	/// @param filename 
 	/// @return 
@@ -162,6 +147,4 @@ public:
 	static void DestroyFormats();
 };
 
-
 DEFINE_SIMPLE_EXCEPTION(SubtitleFormatParseError, agi::InvalidInputException, "subtitle_io/parse/generic")
-

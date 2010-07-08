@@ -65,7 +65,6 @@
 #include "subs_grid.h"
 #include "timeedit_ctrl.h"
 #include "utils.h"
-#include "vfr.h"
 #include "video_context.h"
 
 #ifdef __WXMAC__
@@ -295,7 +294,7 @@ void AudioDisplay::DoUpdateImage() {
 	if (OPT_GET("Audio/Display/Draw/Video Position")->GetBool()) {
 		if (VideoContext::Get()->IsLoaded()) {
 			dc.SetPen(wxPen(lagi_wxColour(OPT_GET("Colour/Audio Display/Play Cursor")->GetColour())));
-			int x = GetXAtMS(VFR_Output.GetTimeAtFrame(VideoContext::Get()->GetFrameN()));
+			int x = GetXAtMS(VideoContext::Get()->TimeAtFrame(VideoContext::Get()->GetFrameN()));
 			dc.DrawLine(x,0,x,h);
 		}
 	}
@@ -477,19 +476,19 @@ void AudioDisplay::DrawInactiveLines(wxDC &dc) {
 /// @brief Draw keyframe markers
 /// @param dc The DC to draw to.
 void AudioDisplay::DrawKeyframes(wxDC &dc) {
-	wxArrayInt KeyFrames = VideoContext::Get()->GetKeyFrames();
-	int nKeys = (int)KeyFrames.Count();
+	std::vector<int> KeyFrames = VideoContext::Get()->GetKeyFrames();
+	int nKeys = (int)KeyFrames.size();
 	dc.SetPen(wxPen(wxColour(255,0,255),1));
 
 	// Get min and max frames to care about
-	int minFrame = VFR_Output.GetFrameAtTime(GetMSAtX(0),true);
-	int maxFrame = VFR_Output.GetFrameAtTime(GetMSAtX(w),true);
+	int minFrame = VideoContext::Get()->FrameAtTime(GetMSAtX(0),agi::vfr::START);
+	int maxFrame = VideoContext::Get()->FrameAtTime(GetMSAtX(w),agi::vfr::END);
 
 	// Scan list
 	for (int i=0;i<nKeys;i++) {
 		int cur = KeyFrames[i];
 		if (cur >= minFrame && cur <= maxFrame) {
-			int x = GetXAtMS(VFR_Output.GetTimeAtFrame(cur,true));
+			int x = GetXAtMS(VideoContext::Get()->TimeAtFrame(cur,agi::vfr::START));
 			dc.DrawLine(x,0,x,h);
 		}
 		else if (cur > maxFrame) break;
@@ -1469,7 +1468,7 @@ void AudioDisplay::OnMouseEvent(wxMouseEvent& event) {
 	if (middleClick) {
 		SetFocus();
 		if (VideoContext::Get()->IsLoaded()) {
-			VideoContext::Get()->JumpToTime(GetMSAtX(x),true);
+			VideoContext::Get()->JumpToTime(GetMSAtX(x));
 		}
 	}
 
@@ -1719,13 +1718,13 @@ int AudioDisplay::GetBoundarySnap(int ms,int rangeX,bool shiftHeld,bool start) {
 	if (shiftHeld) snapKey = !snapKey;
 	if (snapKey && VideoContext::Get()->KeyFramesLoaded() && OPT_GET("Audio/Display/Draw/Keyframes")->GetBool()) {
 		int64_t keyMS;
-		wxArrayInt keyFrames = VideoContext::Get()->GetKeyFrames();
+		std::vector<int> keyFrames = VideoContext::Get()->GetKeyFrames();
 		int frame;
-		for (unsigned int i=0;i<keyFrames.Count();i++) {
+		for (unsigned int i=0;i<keyFrames.size();i++) {
 			frame = keyFrames[i];
 			if (!start) frame--;
 			if (frame < 0) frame = 0;
-			keyMS = VFR_Output.GetTimeAtFrame(frame,start);
+			keyMS = VideoContext::Get()->TimeAtFrame(frame,start ? agi::vfr::START : agi::vfr::END);
 			//if (start) keyX++;
 			if (GetXAtMS(keyMS) >= 0 && GetXAtMS(keyMS) < w) boundaries.Add(keyMS);
 		}

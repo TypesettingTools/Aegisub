@@ -35,7 +35,7 @@
 ///
 
 #include "ass_export_filter.h"
-#include "vfr.h"
+#include <libaegisub/vfr.h>
 
 class AssDialogue;
 class AssOverrideParameter;
@@ -51,10 +51,10 @@ class AssTransformFramerateFilter : public AssExportFilter {
 	static AssTransformFramerateFilter instance;
 
 	// Yes, these are backwards
-	FrameRate *Input;  /// Destination frame rate
-	FrameRate *Output; /// Source frame rate
+	const agi::vfr::Framerate *Input;  /// Destination frame rate
+	const agi::vfr::Framerate *Output; /// Source frame rate
 
-	FrameRate t1,t2;
+	agi::vfr::Framerate t1,t2;
 
 	wxTextCtrl *InputFramerate; /// Input frame rate text box
 	wxTextCtrl *OutputFramerate; /// Output frame rate text box

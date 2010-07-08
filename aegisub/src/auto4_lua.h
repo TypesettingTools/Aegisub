@@ -53,6 +53,7 @@
 #endif
 
 class wxWindow;
+namespace agi { namespace vfr { class Framerate; } }
 
 
 /// DOCME

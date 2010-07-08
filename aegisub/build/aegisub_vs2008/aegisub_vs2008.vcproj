@@ -1011,14 +1011,6 @@
 				RelativePath="..\..\src\vector2d.h"
 				>
 			</File>
-			<File
-				RelativePath="..\..\src\vfr.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\vfr.h"
-				>
-			</File>
 		</Filter>
 		<Filter
 			Name="Dialogs"

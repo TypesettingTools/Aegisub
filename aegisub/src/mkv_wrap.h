@@ -34,11 +34,6 @@
 /// @ingroup video_input
 ///
 
-
-
-
-///////////
-// Headers
 #ifndef AGI_PRE
 #include <stdint.h>
 #include <stdio.h>
@@ -48,14 +43,9 @@
 #endif
 
 #include "MatroskaParser.h"
-#include "vfr.h"
 
-
-//////////////
-// Prototypes
 class AssFile;
-
-
+namespace agi { namespace vfr { class Framerate; } }
 
 /// DOCME
 /// @class MkvStdIO
@@ -161,7 +151,7 @@ public:
 	void Close();
 	void Parse();
 
-	void SetToTimecodes(FrameRate &target);
+	void SetToTimecodes(agi::vfr::Framerate &target);
 
 	/// @brief DOCME
 	/// @return 

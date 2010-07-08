@@ -34,8 +34,6 @@
 /// @ingroup tools_ui
 ///
 
-////////////
-// Includes
 #include "config.h"
 
 #include "ass_dialogue.h"
@@ -49,11 +47,20 @@
 #include "subs_grid.h"
 #include "utils.h"
 #include "validators.h"
-#include "vfr.h"
 #include "video_box.h"
 #include "video_context.h"
 #include "video_display.h"
 
+/// Window IDs
+enum {
+	CHECK_ENABLE_LEADIN = 1850,
+	CHECK_ENABLE_LEADOUT,
+	CHECK_ENABLE_KEYFRAME,
+	CHECK_ENABLE_ADJASCENT,
+	BUTTON_SELECT_ALL,
+	BUTTON_SELECT_NONE,
+	TIMING_STYLE_LIST
+};
 
 /// @brief Constructor 
 /// @param parent 
@@ -62,7 +69,6 @@
 DialogTimingProcessor::DialogTimingProcessor(wxWindow *parent,SubtitlesGrid *_grid)
 : wxDialog(parent,-1,_("Timing Post-Processor"),wxDefaultPosition,wxSize(400,250),wxDEFAULT_DIALOG_STYLE)
 {
-	// Set icon
 	SetIcon(BitmapToIcon(GETIMAGE(timing_processor_toolbutton_24)));
 
 	// Set variables
@@ -74,7 +80,6 @@ DialogTimingProcessor::DialogTimingProcessor(wxWindow *parent,SubtitlesGrid *_gr
 	thresEndBefore = AegiIntegerToString(OPT_GET("Tool/Timing Post Processor/Threshold/Key End Before")->GetInt());
 	thresEndAfter = AegiIntegerToString(OPT_GET("Tool/Timing Post Processor/Threshold/Key End After")->GetInt());
 	adjsThresTime = AegiIntegerToString(OPT_GET("Tool/Timing Post Processor/Threshold/Adjacent")->GetInt());
-
 
 	// Styles box
 	wxSizer *LeftSizer = new wxStaticBoxSizer(wxVERTICAL,this,_("Apply to styles"));
@@ -201,11 +206,8 @@ DialogTimingProcessor::DialogTimingProcessor(wxWindow *parent,SubtitlesGrid *_gr
 
 	CenterOnParent();
 
-	// Update
 	UpdateControls();
 }
-
-
 
 /// @brief Update controls 
 ///
@@ -237,9 +239,6 @@ void DialogTimingProcessor::UpdateControls() {
 	ApplyButton->Enable(checked && (hasLeadIn->IsChecked() | hasLeadOut->IsChecked() | keysEnable->IsChecked() | adjsEnable->IsChecked()));
 }
 
-
-///////////////
-// Event table
 BEGIN_EVENT_TABLE(DialogTimingProcessor,wxDialog)
 	EVT_CHECKBOX(CHECK_ENABLE_LEADIN,DialogTimingProcessor::OnCheckBox)
 	EVT_CHECKBOX(CHECK_ENABLE_LEADOUT,DialogTimingProcessor::OnCheckBox)
@@ -251,21 +250,11 @@ BEGIN_EVENT_TABLE(DialogTimingProcessor,wxDialog)
 	EVT_BUTTON(BUTTON_SELECT_NONE,DialogTimingProcessor::OnSelectNone)
 END_EVENT_TABLE()
 
-
-
-/// @brief Checkbox clicked 
-/// @param event 
-///
-void DialogTimingProcessor::OnCheckBox(wxCommandEvent &event) {
+void DialogTimingProcessor::OnCheckBox(wxCommandEvent &) {
 	UpdateControls();
 }
 
-
-
-/// @brief Select all styles 
-/// @param event 
-///
-void DialogTimingProcessor::OnSelectAll(wxCommandEvent &event) {
+void DialogTimingProcessor::OnSelectAll(wxCommandEvent &) {
 	size_t len = StyleList->GetCount();
 	for (size_t i=0;i<len;i++) {
 		StyleList->Check(i);
@@ -273,12 +262,7 @@ void DialogTimingProcessor::OnSelectAll(wxCommandEvent &event) {
 	UpdateControls();
 }
 
-
-
-/// @brief Unselect all styles 
-/// @param event 
-///
-void DialogTimingProcessor::OnSelectNone(wxCommandEvent &event) {
+void DialogTimingProcessor::OnSelectNone(wxCommandEvent &) {
 	size_t len = StyleList->GetCount();
 	for (size_t i=0;i<len;i++) {
 		StyleList->Check(i,false);
@@ -286,12 +270,7 @@ void DialogTimingProcessor::OnSelectNone(wxCommandEvent &event) {
 	UpdateControls();
 }
 
-
-
-/// @brief Apply button pressed 
-/// @param event 
-///
-void DialogTimingProcessor::OnApply(wxCommandEvent &event) {
+void DialogTimingProcessor::OnApply(wxCommandEvent &) {
 	// Save settings
 	long temp = 0;
 	leadIn->GetValue().ToLong(&temp);
@@ -330,26 +309,16 @@ void DialogTimingProcessor::OnApply(wxCommandEvent &event) {
 		}
 	}
 
-	// Process
 	if (valid) Process();
-
-	// Error message
 	else wxMessageBox(wxString::Format(_("One of the lines in the file (%i) has negative duration. Aborting."),i),_("Invalid script"),wxICON_ERROR|wxOK);
 
-	// Close dialogue
 	EndModal(0);
 }
 
-
-
-/// @brief Get closest keyframe 
-/// @param frame 
-/// @return 
-///
 int DialogTimingProcessor::GetClosestKeyFrame(int frame) {
 	// Linear dumb search, not very efficient, but it doesn't really matter
 	int closest = 0;
-	size_t n = KeyFrames.Count();
+	size_t n = KeyFrames.size();
 	for (size_t i=0;i<n;i++) {
 		if (abs(KeyFrames[i]-frame) < abs(closest-frame)) {
 			closest = KeyFrames[i];
@@ -357,8 +326,6 @@ int DialogTimingProcessor::GetClosestKeyFrame(int frame) {
 	}
 	return closest;
 }
-
-
 
 /// @brief Check if style is listed 
 /// @param styleName 
@@ -372,9 +339,7 @@ bool DialogTimingProcessor::StyleOK(wxString styleName) {
 	return false;
 }
 
-
-
-/// @brief Sort dialogues 
+/// @brief Sort dialogues
 ///
 void DialogTimingProcessor::SortDialogues() {
 	// Copy from original to temporary list
@@ -400,8 +365,6 @@ void DialogTimingProcessor::SortDialogues() {
 	}
 }
 
-
-
 /// @brief Gets sorted dialogue 
 /// @param n 
 /// @return 
@@ -415,12 +378,9 @@ AssDialogue *DialogTimingProcessor::GetSortedDialogue(int n) {
 	}
 }
 
-
-
 /// @brief Actually process subtitles 
 ///
 void DialogTimingProcessor::Process() {
-	// Sort rows
 	SortDialogues();
 	int rows = Sorted.size();
 
@@ -539,8 +499,9 @@ void DialogTimingProcessor::Process() {
 	// Keyframe snapping
 	if (keysEnable->IsChecked()) {
 		// Get keyframes
-		KeyFrames = VideoContext::Get()->GetKeyFrames();
-		KeyFrames.Add(VideoContext::Get()->GetLength()-1);
+		VideoContext *con = VideoContext::Get();
+		KeyFrames = con->GetKeyFrames();
+		KeyFrames.push_back(con->GetLength()-1);
 
 		// Variables
 		int startF,endF;
@@ -563,19 +524,19 @@ void DialogTimingProcessor::Process() {
 			cur = GetSortedDialogue(i);
 
 			// Get start/end frames
-			startF = VFR_Output.GetFrameAtTime(cur->Start.GetMS(),true);
-			endF = VFR_Output.GetFrameAtTime(cur->End.GetMS(),false);
+			startF = con->FrameAtTime(cur->Start.GetMS(),agi::vfr::START);
+			endF = con->FrameAtTime(cur->End.GetMS(),agi::vfr::END);
 
 			// Get closest for start
 			closest = GetClosestKeyFrame(startF);
 			if ((closest > startF && closest-startF <= beforeStart) || (closest < startF && startF-closest <= afterStart)) {
-				cur->Start.SetMS(VFR_Output.GetTimeAtFrame(closest,true));
+				cur->Start.SetMS(con->TimeAtFrame(closest,agi::vfr::START));
 			}
 
 			// Get closest for end
 			closest = GetClosestKeyFrame(endF)-1;
 			if ((closest > endF && closest-endF <= beforeEnd) || (closest < endF && endF-closest <= afterEnd)) {
-				cur->End.SetMS(VFR_Output.GetTimeAtFrame(closest,false));
+				cur->End.SetMS(con->TimeAtFrame(closest,agi::vfr::END));
 			}
 		}
 	}
@@ -584,5 +545,3 @@ void DialogTimingProcessor::Process() {
 	grid->ass->FlagAsModified(_("timing processor"));
 	grid->CommitChanges();
 }
-
-

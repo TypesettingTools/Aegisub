@@ -61,9 +61,8 @@
 #include "subs_edit_box.h"
 #include "subs_grid.h"
 #include "utils.h"
-#include "vfr.h"
+#include "video_context.h"
 #include "video_display.h"
-
 
 /// @brief Constructor 
 /// @param parent 
@@ -92,7 +91,7 @@ DialogShiftTimes::DialogShiftTimes (wxWindow *parent,SubtitlesGrid *_grid)
 	ShiftTime->SetToolTip(_("Enter time in h:mm:ss.cs notation"));
 	RadioTime->SetToolTip(_("Shift by time"));
 	ShiftFrame->Disable();
-	if (!VFR_Output.IsLoaded()) RadioFrames->Disable();
+	if (!VideoContext::Get()->TimecodesLoaded()) RadioFrames->Disable();
 	else {
 		ShiftFrame->SetToolTip(_("Enter number of frames to shift by"));
 		RadioFrames->SetToolTip(_("Shift by frames"));

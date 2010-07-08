@@ -79,7 +79,6 @@
 #include "text_file_writer.h"
 #include "utils.h"
 #include "version.h"
-#include "vfr.h"
 #include "video_box.h"
 #include "video_context.h"
 #include "video_display.h"
@@ -642,6 +641,7 @@ void FrameMain::DeInitContents() {
 	AssFile::StackReset();
 	delete AssFile::top;
 	HelpButton::ClearPages();
+	VideoContext::Get()->audio = NULL;
 }
 
 /// @brief Update toolbar 
@@ -760,6 +760,8 @@ void FrameMain::LoadSubtitles (wxString filename,wxString charset) {
 
 	// Update title bar
 	UpdateTitle();
+
+	VideoContext::Get()->Refresh();
 }
 
 /// @brief Save subtitles 
@@ -949,7 +951,7 @@ void FrameMain::SynchronizeProject(bool fromSubs) {
 		int autoLoadMode = OPT_GET("App/Auto/Load Linked Files")->GetInt();
 		bool hasToLoad = false;
 		if (curSubsAudio != audioBox->audioName ||
-			curSubsVFR != VFR_Output.GetFilename() ||
+			curSubsVFR != VideoContext::Get()->GetTimecodesName() ||
 			curSubsVideo != VideoContext::Get()->videoName ||
 			curSubsKeyframes != VideoContext::Get()->GetKeyFramesName()
 #ifdef WITH_AUTOMATION
@@ -970,25 +972,18 @@ void FrameMain::SynchronizeProject(bool fromSubs) {
 		}
 
 		if (doLoad) {
-			// Variable frame rate
-			LoadVFR(curSubsVFR);
-
 			// Video
 			if (curSubsVideo != VideoContext::Get()->videoName) {
-				//if (curSubsVideo != _T("")) {
 				LoadVideo(curSubsVideo);
 				if (VideoContext::Get()->IsLoaded()) {
 					VideoContext::Get()->SetAspectRatio(videoAr,videoArValue);
 					videoBox->videoDisplay->SetZoom(videoZoom);
 					VideoContext::Get()->JumpToFrame(videoPos);
 				}
-				//}
 			}
 
-			// Keyframes
-			if (curSubsKeyframes != _T("")) {
-				KeyFrameFile::Load(curSubsKeyframes);
-			}
+			VideoContext::Get()->LoadTimecodes(curSubsVFR);
+			VideoContext::Get()->LoadKeyframes(curSubsKeyframes);
 
 			// Audio
 			if (curSubsAudio != audioBox->audioName) {
@@ -1058,7 +1053,7 @@ void FrameMain::SynchronizeProject(bool fromSubs) {
 		subs->SetScriptInfo(_T("Video Aspect Ratio"),ar);
 		subs->SetScriptInfo(_T("Video Zoom Percent"),zoom);
 		subs->SetScriptInfo(_T("Video Position"),seekpos);
-		subs->SetScriptInfo(_T("VFR File"),MakeRelativePath(VFR_Output.GetFilename(),AssFile::top->filename));
+		subs->SetScriptInfo(_T("VFR File"),MakeRelativePath(VideoContext::Get()->GetTimecodesName(),AssFile::top->filename));
 		subs->SetScriptInfo(_T("Keyframes File"),MakeRelativePath(VideoContext::Get()->GetKeyFramesName(),AssFile::top->filename));
 
 		// Store Automation script data
@@ -1104,26 +1099,11 @@ void FrameMain::SynchronizeProject(bool fromSubs) {
 void FrameMain::LoadVideo(wxString file,bool autoload) {
 	if (blockVideoLoad) return;
 	Freeze();
-	VideoContext::Get()->Stop();
 	try {
-		if (VideoContext::Get()->IsLoaded()) {
-			if (VFR_Output.GetFrameRateType() == VFR) {
-				if (!autoload) {
-					int result = wxMessageBox(_("You have timecodes loaded currently. Would you like to unload them?"), _("Unload timecodes?"), wxYES_NO, this);
-					if (result == wxYES) {
-						VFR_Output.Unload();
-					}
-				}
-			}
-			else {
-				VFR_Output.Unload();
-			}
-		}
 		VideoContext::Get()->SetVideo(file);
 	}
 	catch (const wchar_t *error) {
-		wxString err(error);
-		wxMessageBox(err, _T("Error opening video file"), wxOK | wxICON_ERROR, this);
+		wxMessageBox(error, _T("Error opening video file"), wxOK | wxICON_ERROR, this);
 	}
 	catch (...) {
 		wxMessageBox(_T("Unknown error"), _T("Error opening video file"), wxOK | wxICON_ERROR, this);
@@ -1199,41 +1179,15 @@ void FrameMain::LoadAudio(wxString filename,bool FromVideo) {
 	}
 }
 
-/// @brief Loads VFR 
-/// @param filename 
 void FrameMain::LoadVFR(wxString filename) {
-	VideoContext::Get()->Stop();
-	if (filename != _T("")) {
-		try {
-			VFR_Output.Load(filename);
-			SubsGrid->Refresh(false);
-		}
-
-		// Fail
-		catch (const wchar_t *error) {
-			wxString err(error);
-			wxMessageBox(err, _T("Error opening timecodes file"), wxOK | wxICON_ERROR, this);
-		}
-		catch (...) {
-			wxMessageBox(_T("Unknown error"), _T("Error opening timecodes file"), wxOK | wxICON_ERROR, this);
-		}
+	if (filename.empty()) {
+		VideoContext::Get()->CloseTimecodes();
 	}
-
 	else {
-		VFR_Output.Unload();
-		if (VideoContext::Get()->IsLoaded() && !VFR_Output.IsLoaded()) {
-			VFR_Output.SetCFR(VideoContext::Get()->GetFPS());
-		}
+		VideoContext::Get()->LoadTimecodes(filename);
 	}
-
 	SubsGrid->CommitChanges();
 	EditBox->UpdateFrameTiming();
-}
-
-/// @brief Saves VFR 
-/// @param filename 
-void FrameMain::SaveVFR(wxString filename) {
-	VFR_Output.Save(filename);
 }
 
 /// @brief Open help 

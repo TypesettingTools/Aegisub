@@ -34,11 +34,6 @@
 /// @ingroup tools_ui
 ///
 
-
-
-
-///////////
-// Headers
 #ifndef AGI_PRE
 #include <vector>
 
@@ -51,13 +46,8 @@
 #include <wx/textctrl.h>
 #endif
 
-
-//////////////
-// Prototypes
 class SubtitlesGrid;
 class AssDialogue;
-
-
 
 /// DOCME
 /// @class DialogTimingProcessor
@@ -65,18 +55,14 @@ class AssDialogue;
 ///
 /// DOCME
 class DialogTimingProcessor : public wxDialog {
-private:
-
 	/// DOCME
 	SubtitlesGrid *grid;
 
 	/// DOCME
 	wxStaticBoxSizer *KeyframesSizer;
 
-
 	/// DOCME
 	wxCheckBox *onlySelection;
-
 
 	/// DOCME
 	wxTextCtrl *leadIn;
@@ -89,7 +75,6 @@ private:
 
 	/// DOCME
 	wxCheckBox *hasLeadOut;
-
 
 	/// DOCME
 	wxCheckBox *keysEnable;
@@ -106,7 +91,6 @@ private:
 	/// DOCME
 	wxTextCtrl *keysEndAfter;
 
-
 	/// DOCME
 	wxCheckBox *adjsEnable;
 
@@ -115,7 +99,6 @@ private:
 
 	/// DOCME
 	wxSlider *adjacentBias;
-
 
 	/// DOCME
 	wxCheckListBox *StyleList;
@@ -138,9 +121,8 @@ private:
 	/// DOCME
 	wxString leadInTime,leadOutTime,thresStartBefore,thresStartAfter,thresEndBefore,thresEndAfter,adjsThresTime;
 
-
 	/// DOCME
-	wxArrayInt KeyFrames;
+	std::vector<int> KeyFrames;
 
 	void OnCheckBox(wxCommandEvent &event);
 	void OnSelectAll(wxCommandEvent &event);
@@ -152,7 +134,6 @@ private:
 	int GetClosestKeyFrame(int frame);
 	bool StyleOK(wxString styleName);
 
-
 	/// DOCME
 	std::vector<AssDialogue*> Sorted;
 	AssDialogue *GetSortedDialogue(int n);
@@ -162,31 +143,4 @@ public:
 	DialogTimingProcessor(wxWindow *parent,SubtitlesGrid *grid);
 
 	DECLARE_EVENT_TABLE()
-};
-
-
-///////
-// IDs
-enum {
-
-	/// DOCME
-	CHECK_ENABLE_LEADIN = 1850,
-
-	/// DOCME
-	CHECK_ENABLE_LEADOUT,
-
-	/// DOCME
-	CHECK_ENABLE_KEYFRAME,
-
-	/// DOCME
-	CHECK_ENABLE_ADJASCENT,
-
-	/// DOCME
-	BUTTON_SELECT_ALL,
-
-	/// DOCME
-	BUTTON_SELECT_NONE,
-
-	/// DOCME
-	TIMING_STYLE_LIST
 };

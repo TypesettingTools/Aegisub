@@ -299,9 +299,6 @@ void SubsEditBox::Update (bool timeOnly,bool weak) {
 			// Audio
 			if (!weak) audio->SetDialogue(grid,curdiag,grid->GetDialogueIndex(curdiag));
 
-			// Video
-			VideoContext::Get()->curLine = curdiag;
-
 			TextEdit->EmptyUndoBuffer();
 		}
 		else enabled = false;
@@ -550,7 +547,7 @@ void SubsEditBox::SetControlsState (bool state) {
 /// @brief Disables or enables frame timing 
 ///
 void SubsEditBox::UpdateFrameTiming () {
-	if (VideoContext::Get()->IsLoaded()) ByFrame->Enable(enabled);
+	if (VideoContext::Get()->TimecodesLoaded()) ByFrame->Enable(enabled);
 	else {
 		ByFrame->Enable(false);
 		ByTime->SetValue(true);

@@ -181,7 +181,7 @@ Framerate::Framerate(std::vector<int> const& timecodes)
 : timecodes(timecodes)
 {
 	validate_timecodes(timecodes);
-	fps = timecodes.size() / (timecodes.back() / 1000.);
+	fps = (timecodes.size() - 1) * 1000. / (timecodes.back() - timecodes.front());
 	last = timecodes.back();
 }
 
@@ -202,10 +202,6 @@ Framerate &Framerate::operator=(double fps) {
 	return *this = Framerate(fps);
 }
 
-bool Framerate::operator==(Framerate const& right) const {
-	return fps == right.fps && timecodes == right.timecodes;
-}
-
 Framerate::Framerate(std::string const& filename) : fps(0.) {
 	using namespace std;
 	auto_ptr<ifstream> file(agi::io::Open(filename));
@@ -214,7 +210,8 @@ Framerate::Framerate(std::string const& filename) : fps(0.) {
 	if (line == "# timecode format v2") {
 		copy(line_iterator<int>(*file, encoding), line_iterator<int>(), back_inserter(timecodes));
 		validate_timecodes(timecodes);
-		fps = timecodes.size() / (timecodes.back() / 1000.);
+		fps = (timecodes.size() - 1) * 1000. / (timecodes.back() - timecodes.front());
+		last = timecodes.back();
 		return;
 	}
 	if (line == "# timecode format v1" || line.substr(0, 7) == "Assume ") {

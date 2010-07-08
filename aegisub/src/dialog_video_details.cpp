@@ -66,7 +66,7 @@ DialogVideoDetails::DialogVideoDetails(wxWindow *parent)
 	int width = vprovider->GetWidth();
 	int height = vprovider->GetHeight();
 	int framecount = vprovider->GetFrameCount();
-	double fps = vprovider->GetFPS();
+	double fps = vprovider->GetFPS().FPS();
 
 	wxTextCtrl *fname_text = new wxTextCtrl(this, -1, VideoContext::Get()->videoName, wxDefaultPosition, wxSize(300,-1), wxTE_READONLY);
 	wxTextCtrl *fps_text = new wxTextCtrl(this, -1, wxString::Format(_T("%.3f"), fps), wxDefaultPosition, wxDefaultSize, wxTE_READONLY);

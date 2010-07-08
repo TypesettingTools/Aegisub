@@ -280,7 +280,6 @@ bool AegisubApp::OnInit() {
 ///
 int AegisubApp::OnExit() {
 	SubtitleFormat::DestroyFormats();
-	VideoContext::Clear();
 	delete plugins;
 	delete config::opt;
 	delete config::mru;

@@ -309,6 +309,7 @@ void YUV4MPEGVideoProvider::ParseFileHeader(const std::vector<wxString>& tags) {
 		fps_rat.den = t_fps_den;
 		pixfmt		= t_pixfmt	!= Y4M_PIXFMT_NONE	? t_pixfmt	: Y4M_PIXFMT_420JPEG;
 		imode		= t_imode	!= Y4M_ILACE_NOTSET	? t_imode	: Y4M_ILACE_UNKNOWN;
+		fps = double(fps_rat.num) / fps_rat.den;
 		inited = true;
 	}
 }
@@ -430,27 +431,3 @@ const AegiVideoFrame YUV4MPEGVideoProvider::GetFrame(int n) {
 
 	return dst_frame;
 }
-
-
-
-// Utility functions
-int YUV4MPEGVideoProvider::GetWidth() {
-	return w;
-}
-
-int YUV4MPEGVideoProvider::GetHeight() {
-	return h;
-}
-
-int YUV4MPEGVideoProvider::GetFrameCount() {
-	return num_frames;
-}
-
-int YUV4MPEGVideoProvider::GetPosition() {
-	return cur_fn;
-}
-
-double YUV4MPEGVideoProvider::GetFPS() {
-	return double(fps_rat.num) / double(fps_rat.den);
-}
-

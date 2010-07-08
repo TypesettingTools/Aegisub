@@ -37,8 +37,6 @@
 
 #pragma once
 
-////////////
-// Includes
 #ifndef AGI_PRE
 #include <list>
 #include <vector>
@@ -49,13 +47,11 @@
 
 #include "selection_controller.h"
 
-
-//////////////
-// Prototypes
 class AssEntry;
 class AssDialogue;
 class SubsEditBox;
 class FrameMain;
+class VideoContext;
 
 /// DOCME
 typedef std::list<AssEntry*>::iterator entryIter;
@@ -71,8 +67,6 @@ typedef SelectionListener<AssDialogue> SubtitleSelectionListener;
 ///
 /// DOCME
 class BaseGrid : public wxWindow, public BaseSelectionController<AssDialogue> {
-private:
-
 	/// DOCME
 	int lineHeight;
 
@@ -120,10 +114,11 @@ protected:
 	/// DOCME
 	FrameMain *parentFrame;
 
+	VideoContext *context;
+
 	/// DOCME
 	static const int columns = 10;
 	bool showCol[columns];
-
 
 	/// @brief DOCME
 	/// @param alternate

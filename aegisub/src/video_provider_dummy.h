@@ -36,18 +36,11 @@
 
 // The dummy video provider needs a header, since it needs to be created directly as a special case
 
-
-
-
-///////////
-// Headers
 #ifndef AGI_PRE
 #include <wx/colour.h>
 #endif
 
 #include "include/aegisub/video_provider.h"
-#include "vfr.h"
-
 
 /// DOCME
 /// @class DummyVideoProvider
@@ -55,8 +48,6 @@
 ///
 /// DOCME
 class DummyVideoProvider : public VideoProvider {
-private:
-
 	/// DOCME
 	int lastFrame;
 
@@ -64,7 +55,7 @@ private:
 	int framecount;
 
 	/// DOCME
-	double fps;
+	agi::vfr::Framerate fps;
 
 	/// DOCME
 	int width;
@@ -85,37 +76,11 @@ public:
 	const AegiVideoFrame GetFrame(int n);
 	static wxString MakeFilename(double fps, int frames, int _width, int _height, const wxColour &colour, bool pattern);
 
-	int GetPosition();
-	int GetFrameCount();
-
-	int GetWidth();
-	int GetHeight();
-	double GetFPS();
-
-
-	/// @brief DOCME
-	/// @return 
-	///
-	bool AreKeyFramesLoaded() { return false; };
-
-	/// @brief DOCME
-	/// @return 
-	///
-	wxArrayInt GetKeyFrames() { return wxArrayInt(); };
-
-	/// @brief DOCME
-	/// @return 
-	///
-	bool IsVFR() { return false; };
-
-	/// @brief DOCME
-	/// @return 
-	///
-	bool NeedsVFRHack() { return true; }
-
-	/// @brief DOCME
-	///
-	FrameRate GetTrueFrameRate() { return FrameRate(); };
-
-	wxString GetDecoderName();
+	int GetPosition() const { return lastFrame; }
+	int GetFrameCount() const { return framecount; }
+	int GetWidth() const { return width; }
+	int GetHeight() const { return height; }
+	agi::vfr::Framerate GetFPS() const { return fps; }
+	std::vector<int> GetKeyFrames() const { return std::vector<int>(); };
+	wxString GetDecoderName() const { return L"Dummy Video Provider"; }
 };

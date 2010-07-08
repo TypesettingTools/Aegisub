@@ -315,7 +315,6 @@ private:
 	void LoadVideo(wxString filename,bool autoload=false);
 	void LoadAudio(wxString filename,bool FromVideo=false);
 	void LoadVFR(wxString filename);
-	void SaveVFR(wxString filename);
 	void LoadSubtitles(wxString filename,wxString charset=_T(""));
 	bool SaveSubtitles(bool saveas=false,bool withCharset=false);
 	int TryToCloseSubs(bool enableCancel=true);

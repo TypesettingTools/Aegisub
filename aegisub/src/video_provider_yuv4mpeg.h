@@ -34,8 +34,6 @@
 /// @ingroup video_input
 ///
 
-
-
 #include "include/aegisub/video_provider.h"
 #ifndef AGI_PRE
 #include <stdio.h>
@@ -46,16 +44,12 @@
 #include <wx/log.h>
 #endif
 
-
 /// the maximum allowed header length, in bytes
 #define YUV4MPEG_HEADER_MAXLEN 128
-
-
 
 /// @class YUV4MPEGVideoProvider
 /// @brief Implements reading of YUV4MPEG uncompressed video files
 class YUV4MPEGVideoProvider : public VideoProvider {
-private:
 	/// Pixel formats
 	enum Y4M_PixelFormat {
 		Y4M_PIXFMT_NONE		= -1,	/// not set/unknown
@@ -131,6 +125,8 @@ private:
 		int den;	/// denominator
 	} fps_rat;		/// framerate
 
+	agi::vfr::Framerate fps;
+
 	/// a list of byte positions detailing where in the file
 	/// each frame header can be found
 	std::vector<int64_t> seek_table;
@@ -151,20 +147,13 @@ public:
 	~YUV4MPEGVideoProvider();
 
 	const AegiVideoFrame GetFrame(int n);
-	int GetPosition();
-	int GetFrameCount();
 
-	int GetWidth();
-	int GetHeight();
-	double GetFPS();
-
-	bool AreKeyFramesLoaded() { return false; }
-	wxArrayInt GetKeyFrames() { return wxArrayInt(); }
-	bool IsVFR() { return false; };
-	FrameRate GetTrueFrameRate() { return FrameRate(); }
-	wxString GetDecoderName() { return L"YUV4MPEG"; }
-	bool WantsCaching() { return true; }
+	int GetPosition() const               { return cur_fn; }
+	int GetFrameCount() const             { return num_frames; }
+	int GetWidth() const                  { return w; }
+	int GetHeight() const                 { return h; }
+	agi::vfr::Framerate GetFPS() const    { return fps; }
+	std::vector<int> GetKeyFrames() const { return std::vector<int>(); };
+	wxString GetDecoderName() const       { return L"YU4MPEG"; };
+	bool WantsCaching() const             { return true; };
 };
-
-
-

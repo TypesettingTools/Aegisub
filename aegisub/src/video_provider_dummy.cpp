@@ -34,9 +34,6 @@
 /// @ingroup video_input
 ///
 
-
-///////////
-// Headers
 #include "config.h"
 
 #ifndef AGI_PRE
@@ -45,18 +42,6 @@
 
 #include "colorspace.h"
 #include "video_provider_dummy.h"
-
-
-///////////
-// Factory
-// Shouldn't be needed
-/*class DummyVideoProviderFactory : public VideoProviderFactory {
-public:
-	VideoProvider *CreateProvider(wxString video,double fps=0.0) { return new DummyVideoProvider(video,fps); }
-	DummyVideoProviderFactory() : VideoProviderFactory(_T("dummy")) {}
-} registerDummyVideo; */
-
-
 
 /// @brief Constructor 
 /// @param _fps    
@@ -130,8 +115,6 @@ void DummyVideoProvider::Create(double _fps, int frames, int _width, int _height
 	}
 }
 
-
-
 /// @brief Parsing constructor 
 /// @param filename 
 ///
@@ -194,8 +177,6 @@ DummyVideoProvider::DummyVideoProvider(wxString filename)
 	Create(fps, _frames, _width, _height, wxColour(red, green, blue), pattern);
 }
 
-
-
 /// @brief Direct constructor 
 /// @param _fps    
 /// @param frames  
@@ -208,15 +189,11 @@ DummyVideoProvider::DummyVideoProvider(double _fps, int frames, int _width, int 
 	Create(_fps, frames, _width, _height, colour, pattern);
 }
 
-
-
 /// @brief Destructor 
 ///
 DummyVideoProvider::~DummyVideoProvider() {
 	frame.Clear();
 }
-
-
 
 /// @brief Construct a fake filename describing the video 
 /// @param fps     
@@ -231,8 +208,6 @@ wxString DummyVideoProvider::MakeFilename(double fps, int frames, int _width, in
 	return wxString::Format(_T("?dummy:%f:%d:%d:%d:%d:%d:%d:%s"), fps, frames, _width, _height, colour.Red(), colour.Green(), colour.Blue(), pattern?_T("c"):_T(""));
 }
 
-
-
 /// @brief Get frame 
 /// @param n 
 /// @return 
@@ -241,59 +216,3 @@ const AegiVideoFrame DummyVideoProvider::GetFrame(int n) {
 	lastFrame = n;
 	return frame;
 }
-
-
-
-/// @brief Get position 
-/// @return 
-///
-int DummyVideoProvider::GetPosition() {
-	return lastFrame;
-}
-
-
-
-/// @brief Get frame count 
-/// @return 
-///
-int DummyVideoProvider::GetFrameCount() {
-	return framecount;
-}
-
-
-
-/// @brief Get width 
-/// @return 
-///
-int DummyVideoProvider::GetWidth() {
-	return width;
-}
-
-
-
-/// @brief Get height 
-/// @return 
-///
-int DummyVideoProvider::GetHeight() {
-	return height;
-}
-
-
-
-/// @brief Get FPS 
-/// @return 
-///
-double DummyVideoProvider::GetFPS() {
-	return fps;
-}
-
-
-
-/// @brief Get decoder name 
-///
-wxString DummyVideoProvider::GetDecoderName() {
-	return L"Dummy Video Provider";
-}
-
-
-

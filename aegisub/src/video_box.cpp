@@ -58,7 +58,6 @@
 #include "subs_grid.h"
 #include "toggle_bitmap.h"
 #include "utils.h"
-#include "vfr.h"
 #include "video_box.h"
 #include "video_context.h"
 #include "video_display.h"

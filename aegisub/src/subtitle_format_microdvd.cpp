@@ -34,9 +34,6 @@
 /// @ingroup subtitle_io
 ///
 
-
-///////////
-// Headers
 #include "config.h"
 
 #ifndef AGI_PRE
@@ -48,42 +45,22 @@
 #include "subtitle_format_microdvd.h"
 #include "text_file_reader.h"
 #include "text_file_writer.h"
-#include "vfr.h"
+#include "video_context.h"
 
-
-/// @brief Get format name 
-/// @return 
-///
 wxString MicroDVDSubtitleFormat::GetName() {
 	return _T("MicroDVD");
 }
 
-
-
-/// @brief Get read wildcards 
-/// @return 
-///
 wxArrayString MicroDVDSubtitleFormat::GetReadWildcards() {
 	wxArrayString formats;
 	formats.Add(_T("sub"));
 	return formats;
 }
 
-
-
-/// @brief Get write wildcards 
-/// @return 
-///
 wxArrayString MicroDVDSubtitleFormat::GetWriteWildcards() {
 	return GetReadWildcards();
 }
 
-
-
-/// @brief Can read a file? 
-/// @param filename 
-/// @return 
-///
 bool MicroDVDSubtitleFormat::CanReadFile(wxString filename) {
 	// Return false immediately if extension is wrong
 	if (filename.Right(4).Lower() != _T(".sub")) return false;
@@ -98,43 +75,25 @@ bool MicroDVDSubtitleFormat::CanReadFile(wxString filename) {
 	return false;
 }
 
-
-
-/// @brief Can write a file? 
-/// @param filename 
-/// @return 
-///
 bool MicroDVDSubtitleFormat::CanWriteFile(wxString filename) {
 	return (filename.Right(4).Lower() == _T(".sub"));
 }
 
-
-
-/// @brief Read a file 
-/// @param filename      
-/// @param forceEncoding 
-/// @return 
-///
 void MicroDVDSubtitleFormat::ReadFile(wxString filename,wxString forceEncoding) {
-	// Load and prepare regexp
 	TextFileReader file(filename);
 	wxRegEx exp(_T("^[\\{\\[]([0-9]+)[\\}\\]][\\{\\[]([0-9]+)[\\}\\]](.*)$"),wxRE_ADVANCED);
 
-	// Load default
 	LoadDefault(false);
 
-	// Prepare conversion
-	FrameRate cfr;
-	FrameRate *rate = &cfr;
+	agi::vfr::Framerate cfr;
+	const agi::vfr::Framerate *rate = &cfr;
 
-	// Loop
 	bool isFirst = true;
 	FPSRational fps_rat;
 	double fps = 0.0;
 	while (file.HasMoreLines()) {
 		wxString line = file.ReadLineFromFile();
 		if (exp.Matches(line)) {
-			// Parse
 			long f1,f2;
 			exp.GetMatch(line,1).ToLong(&f1);
 			exp.GetMatch(line,2).ToLong(&f2);
@@ -147,7 +106,7 @@ void MicroDVDSubtitleFormat::ReadFile(wxString filename,wxString forceEncoding) 
 					try {
 						text.ToDouble(&fps);
 					}
-					catch (...) {}
+					catch (...) { }
 				}
 				isFirst = false;
 
@@ -155,24 +114,22 @@ void MicroDVDSubtitleFormat::ReadFile(wxString filename,wxString forceEncoding) 
 				if (fps <= 0.0) {
 					fps_rat = AskForFPS();
 					if (fps_rat.num == 0) return;
-					else if (fps_rat.num > 0) cfr.SetCFR(double(fps_rat.num)/double(fps_rat.den));
-					else rate = &VFR_Output;
+					else if (fps_rat.num > 0) cfr = double(fps_rat.num)/fps_rat.den;
+					else rate = &VideoContext::Get()->FPS();
 				}
 				else {
-					cfr.SetCFR(fps);
+					cfr = fps;
 					continue;
 				}
 			}
 
 			// Start and end times
 			int start,end;
-			start = rate->GetTimeAtFrame(f1,true);
-			end = rate->GetTimeAtFrame(f2,false);
+			start = rate->TimeAtFrame(f1,agi::vfr::START);
+			end = rate->TimeAtFrame(f2,agi::vfr::END);
 
-			// Process text
 			text.Replace(_T("|"),_T("\\N"));
 
-			// Create and insert line
 			AssDialogue *line = new AssDialogue();
 			line->group = _T("[Events]");
 			line->Style = _T("Default");
@@ -184,21 +141,15 @@ void MicroDVDSubtitleFormat::ReadFile(wxString filename,wxString forceEncoding) 
 	}
 }
 
-
-
-/// @brief Write a file 
-/// @param filename 
-/// @param encoding 
-///
 void MicroDVDSubtitleFormat::WriteFile(wxString filename,wxString encoding) {
-	// Set FPS
-	FrameRate cfr;
-	FrameRate *rate = &cfr;
+	agi::vfr::Framerate cfr;
+	const agi::vfr::Framerate *rate = &cfr;
+
 	FPSRational fps_rat = AskForFPS();
 	if (fps_rat.num == 0 || fps_rat.den == 0) return;
-	double fps = double(fps_rat.num) / double(fps_rat.den);
-	if (fps > 0.0) cfr.SetCFR(fps);
-	else rate = &VFR_Output;
+	double fps = double(fps_rat.num) / fps_rat.den;
+	if (fps > 0.0) cfr = fps;
+	else rate = &VideoContext::Get()->FPS();
 
 	// Convert file
 	CreateCopy();
@@ -208,12 +159,11 @@ void MicroDVDSubtitleFormat::WriteFile(wxString filename,wxString encoding) {
 	MergeIdentical();
 	ConvertTags(1,_T("|"));
 
-	// Open file
 	TextFileWriter file(filename,encoding);
 
 	// Write FPS line
-	if (rate->GetFrameRateType() != VFR) {
-		file.WriteLineToFile(wxString::Format(_T("{1}{1}%.6f"),rate->GetAverage()));
+	if (!rate->IsVFR()) {
+		file.WriteLineToFile(wxString::Format(_T("{1}{1}%.6f"),rate->FPS()));
 	}
 
 	// Write lines
@@ -221,17 +171,12 @@ void MicroDVDSubtitleFormat::WriteFile(wxString filename,wxString encoding) {
 	for (list<AssEntry*>::iterator cur=Line->begin();cur!=Line->end();cur++) {
 		AssDialogue *current = dynamic_cast<AssDialogue*>(*cur);
 		if (current && !current->Comment) {
-			// Prepare data
-			int start = rate->GetFrameAtTime(current->Start.GetMS(),true);
-			int end = rate->GetFrameAtTime(current->End.GetMS(),false);
+			int start = rate->FrameAtTime(current->Start.GetMS(),agi::vfr::START);
+			int end = rate->FrameAtTime(current->End.GetMS(),agi::vfr::END);
 
-			// Write data
 			file.WriteLineToFile(wxString::Format(_T("{%i}{%i}%s"),start,end,current->Text.c_str()));
 		}
 	}
 
-	// Clean up
 	ClearCopy();
 }
-
-

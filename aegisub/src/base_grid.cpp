@@ -34,9 +34,6 @@
 /// @ingroup main_ui
 ///
 
-
-////////////
-// Includes
 #include "config.h"
 
 #ifndef AGI_PRE
@@ -56,7 +53,6 @@
 #include "options.h"
 #include "subs_edit_box.h"
 #include "utils.h"
-#include "vfr.h"
 #include "video_box.h"
 #include "video_context.h"
 #include "video_slider.h"
@@ -79,6 +75,7 @@ static inline void set_difference(const S1 &src1, const S2 &src2, D &dst) {
 ///
 BaseGrid::BaseGrid(wxWindow* parent, wxWindowID id, const wxPoint& pos, const wxSize& size, long style, const wxString& name)
 : wxWindow(parent, id, pos, size, style, name)
+, context(VideoContext::Get())
 {
 	// Misc variables
 	lastRow = -1;
@@ -552,8 +549,8 @@ void BaseGrid::DrawImage(wxDC &dc) {
 			strings.Add(wxString::Format(_T("%i"),curRow+1));
 			strings.Add(wxString::Format(_T("%i"),curDiag->Layer));
 			if (byFrame) {
-				strings.Add(wxString::Format(_T("%i"),VFR_Output.GetFrameAtTime(curDiag->Start.GetMS(),true)));
-				strings.Add(wxString::Format(_T("%i"),VFR_Output.GetFrameAtTime(curDiag->End.GetMS(),false)));
+				strings.Add(wxString::Format(_T("%i"),context->FrameAtTime(curDiag->Start.GetMS(),agi::vfr::START)));
+				strings.Add(wxString::Format(_T("%i"),context->FrameAtTime(curDiag->End.GetMS(),agi::vfr::END)));
 			}
 			else {
 				strings.Add(curDiag->Start.GetASSFormated());
@@ -787,7 +784,7 @@ void BaseGrid::OnMouseEvent(wxMouseEvent &event) {
 		// Normal click
 		if ((click || dclick) && !shift && !ctrl && !alt) {
 			SetActiveLine(dlg);
-			if (dclick) VideoContext::Get()->JumpToTime(dlg->Start.GetMS());
+			if (dclick) context->JumpToTime(dlg->Start.GetMS());
 			SelectRow(row,false);
 			parentFrame->UpdateToolbar();
 			lastRow = row;
@@ -964,9 +961,9 @@ void BaseGrid::SetColumnWidths() {
 
 			// Times
 			if (byFrame) {
-				int tmp = VFR_Output.GetFrameAtTime(curDiag->Start.GetMS(),true);
+				int tmp = context->FrameAtTime(curDiag->Start.GetMS(),agi::vfr::START);
 				if (tmp > maxStart) maxStart = tmp;
-				tmp = VFR_Output.GetFrameAtTime(curDiag->End.GetMS(),true);
+				tmp = context->FrameAtTime(curDiag->End.GetMS(),agi::vfr::END);
 				if (tmp > maxEnd) maxEnd = tmp;
 			}
 		}
@@ -1053,8 +1050,8 @@ int BaseGrid::GetDialogueIndex(AssDialogue *diag) const {
 bool BaseGrid::IsDisplayed(AssDialogue *line) {
 	VideoContext* con = VideoContext::Get();
 	if (!con->IsLoaded()) return false;
-	int f1 = VFR_Output.GetFrameAtTime(line->Start.GetMS(),true);
-	int f2 = VFR_Output.GetFrameAtTime(line->End.GetMS(),false);
+	int f1 = con->FrameAtTime(line->Start.GetMS(),agi::vfr::START);
+	int f2 = con->FrameAtTime(line->End.GetMS(),agi::vfr::END);
 	if (f1 <= con->GetFrameN() && f2 >= con->GetFrameN()) return true;
 	return false;
 }
@@ -1106,7 +1103,7 @@ void BaseGrid::OnKeyPress(wxKeyEvent &event) {
 
 	// Left/right, forward to seek bar if video is loaded
 	if (key == WXK_LEFT || key == WXK_RIGHT) {
-		if (VideoContext::Get()->IsLoaded()) {
+		if (context->IsLoaded()) {
 			parentFrame->videoBox->videoSlider->SetFocus();
 			parentFrame->videoBox->videoSlider->GetEventHandler()->ProcessEvent(event);
 			return;
@@ -1197,8 +1194,8 @@ void BaseGrid::OnKeyPress(wxKeyEvent &event) {
 	}
 
 	// Other events, send to audio display
-	if (VideoContext::Get()->audio->loaded) {
-		VideoContext::Get()->audio->GetEventHandler()->ProcessEvent(event);
+	if (context->audio->loaded) {
+		context->audio->GetEventHandler()->ProcessEvent(event);
 	}
 	else event.Skip();
 }

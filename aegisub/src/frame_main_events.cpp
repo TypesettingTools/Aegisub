@@ -89,7 +89,6 @@
 #include "subs_grid.h"
 #include "toggle_bitmap.h"
 #include "utils.h"
-#include "vfr.h"
 #include "video_box.h"
 #include "video_context.h"
 #include "video_display.h"
@@ -336,8 +335,8 @@ void FrameMain::OnMenuOpen (wxMenuEvent &event) {
 		MenuBar->Enable(Menu_Video_AR_235,attached);
 		MenuBar->Enable(Menu_Video_AR_Custom,attached);
 		MenuBar->Enable(Menu_Video_Detach,state);
-		MenuBar->Enable(Menu_File_Save_VFR,VFR_Output.GetFrameRateType() == VFR);
-		MenuBar->Enable(Menu_File_Close_VFR,VFR_Output.GetFrameRateType() == VFR);
+		MenuBar->Enable(Menu_File_Save_VFR,VideoContext::Get()->TimecodesLoaded());
+		MenuBar->Enable(Menu_File_Close_VFR,VideoContext::Get()->OverTimecodesLoaded());
 		MenuBar->Enable(Menu_Video_Close_Keyframes,VideoContext::Get()->OverKeyFramesLoaded());
 		MenuBar->Enable(Menu_Video_Save_Keyframes,VideoContext::Get()->KeyFramesLoaded());
 		MenuBar->Enable(Menu_Video_Details,state);
@@ -399,7 +398,7 @@ void FrameMain::OnMenuOpen (wxMenuEvent &event) {
 		MenuBar->Enable(Menu_Subtitles_Insert,state);
 		state = count > 0 && continuous;
 		MenuBar->Enable(MENU_DUPLICATE,state);
-		state = count > 0 && continuous && VFR_Output.IsLoaded();
+		state = count > 0 && continuous && VideoContext::Get()->TimecodesLoaded();
 		MenuBar->Enable(MENU_DUPLICATE_NEXT_FRAME,state);
 		state = count == 2;
 		MenuBar->Enable(MENU_SWAP,state);
@@ -540,7 +539,7 @@ void FrameMain::OnOpenRecentTimecodes(wxCommandEvent &event) {
 /// @param event 
 void FrameMain::OnOpenRecentKeyframes(wxCommandEvent &event) {
 	int number = event.GetId()-Menu_Keyframes_Recent;
-	KeyFrameFile::Load(lagi_wxString(config::mru->GetEntry("Keyframes", number)));
+	VideoContext::Get()->LoadKeyframes(lagi_wxString(config::mru->GetEntry("Keyframes", number)));
 	videoBox->videoSlider->Refresh();
 	audioBox->audioDisplay->Update();
 	Refresh();
@@ -789,7 +788,7 @@ void FrameMain::OnSaveVFR(wxCommandEvent &) {
 		           + _("All Files") + _T(" (*.*)|*.*");
 	wxString filename = wxFileSelector(_("Save timecodes file"),path,_T(""),_T(""),str,wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
 	if (!filename.empty()) {
-		SaveVFR(filename);
+		VideoContext::Get()->SaveTimecodes(filename);
 		OPT_SET("Path/Last/Timecodes")->SetString(STD_STR(filename));
 	}
 }
@@ -797,19 +796,26 @@ void FrameMain::OnSaveVFR(wxCommandEvent &) {
 
 /// @brief Close VFR tags 
 void FrameMain::OnCloseVFR(wxCommandEvent &) {
-	LoadVFR(_T(""));
+	LoadVFR("");
 }
 
 /// @brief Open keyframes 
 void FrameMain::OnOpenKeyframes (wxCommandEvent &) {
 	// Pick file
 	wxString path = lagi_wxString(OPT_GET("Path/Last/Keyframes")->GetString());
-	wxString filename = wxFileSelector(_T("Select the keyframes file to open"),path,_T(""),_T(".txt"),_T("All supported formats (*.txt, *.pass, *.stats, *.log)|*.txt;*.pass;*.stats;*.log|All files (*.*)|*.*"),wxFD_FILE_MUST_EXIST | wxFD_OPEN);
-	if (filename.IsEmpty()) return;
+	wxString filename = wxFileSelector(
+		_T("Select the keyframes file to open"),
+		path,
+		_T("")
+		,_T(".txt"),
+		_T("All supported formats (*.txt, *.pass, *.stats, *.log)|*.txt;*.pass;*.stats;*.log|All files (*.*)|*.*"),
+		wxFD_FILE_MUST_EXIST | wxFD_OPEN);
+
+	if (filename.empty()) return;
 	OPT_SET("Path/Last/Keyframes")->SetString(STD_STR(filename));
 
 	// Load
-	KeyFrameFile::Load(filename);
+	VideoContext::Get()->LoadKeyframes(filename);
 	videoBox->videoSlider->Refresh();
 	audioBox->audioDisplay->Update();
 	Refresh();
@@ -817,7 +823,7 @@ void FrameMain::OnOpenKeyframes (wxCommandEvent &) {
 
 /// @brief Close keyframes 
 void FrameMain::OnCloseKeyframes (wxCommandEvent &) {
-	VideoContext::Get()->CloseOverKeyFrames();
+	VideoContext::Get()->CloseKeyframes();
 	videoBox->videoSlider->Refresh();
 	audioBox->audioDisplay->Update();
 	Refresh();
@@ -831,8 +837,7 @@ void FrameMain::OnSaveKeyframes (wxCommandEvent &) {
 	if (filename.IsEmpty()) return;
 	OPT_SET("Path/Last/Keyframes")->SetString(STD_STR(filename));
 
-	// Save
-	KeyFrameFile::Save(filename);
+	VideoContext::Get()->SaveKeyframes(filename);
 }
 
 /// @brief Zoom levels 
@@ -1064,118 +1069,100 @@ void FrameMain::OnAutomationMacro (wxCommandEvent &event) {
 
 /// @brief Snap subs to video 
 void FrameMain::OnSnapSubsStartToVid (wxCommandEvent &) {
-	if (VideoContext::Get()->IsLoaded() && SubsGrid->GetSelection().Count() > 0) {
-		SubsGrid->SetSubsToVideo(true);
-	}
+	SubsGrid->SetSubsToVideo(true);
 }
-
 
 /// @brief DOCME
 void FrameMain::OnSnapSubsEndToVid (wxCommandEvent &) {
-	if (VideoContext::Get()->IsLoaded() && SubsGrid->GetSelection().Count() > 0) {
-		SubsGrid->SetSubsToVideo(false);
-	}
+	SubsGrid->SetSubsToVideo(false);
 }
 
 /// @brief Jump video to subs 
 void FrameMain::OnSnapVidToSubsStart (wxCommandEvent &) {
-	if (VideoContext::Get()->IsLoaded() && SubsGrid->GetSelection().Count() > 0) {
-		SubsGrid->SetVideoToSubs(true);
-	}
+	SubsGrid->SetVideoToSubs(true);
 }
 
 
 /// @brief DOCME
 void FrameMain::OnSnapVidToSubsEnd (wxCommandEvent &) {
-	if (VideoContext::Get()->IsLoaded() && SubsGrid->GetSelection().Count() > 0) {
-		SubsGrid->SetVideoToSubs(false);
-	}
+	SubsGrid->SetVideoToSubs(false);
 }
 
 /// @brief Snap to scene 
 void FrameMain::OnSnapToScene (wxCommandEvent &) {
-	if (VideoContext::Get()->IsLoaded()) {
-		// Get frames
-		wxArrayInt sel = SubsGrid->GetSelection();
-		int curFrame = VideoContext::Get()->GetFrameN();
-		int prev = 0;
-		int next = 0;
-		int frame = 0;
-		wxArrayInt keyframes = VideoContext::Get()->GetKeyFrames();
-		size_t n = keyframes.Count();
-		bool found = false;
-		for (size_t i=0;i<n;i++) {
-			frame = keyframes[i];
+	VideoContext *con = VideoContext::Get();
+	if (!con->IsLoaded() || !con->KeyFramesLoaded()) return;
 
-			if (frame == curFrame) {
-				prev = frame;
-				if (i < n-1) next = keyframes[i+1];
-				else next = VideoContext::Get()->GetLength();
-				found = true;
-				break;
-			}
+	// Get frames
+	wxArrayInt sel = SubsGrid->GetSelection();
+	int curFrame = con->GetFrameN();
+	int prev = 0;
+	int next = 0;
 
-			if (frame > curFrame) {
-				if (i != 0) prev = keyframes[i-1];
-				else prev = 0;
-				next = frame;
-				found = true;
-				break;
-			}
-		}
-
-		// Last section?
-		if (!found) {
-			if (n > 0) prev = keyframes[n-1];
-			else prev = 0;
-			next = VideoContext::Get()->GetLength();
-		}
-
-		// Get times
-		int start_ms = VFR_Output.GetTimeAtFrame(prev,true);
-		int end_ms = VFR_Output.GetTimeAtFrame(next-1,false);
-		AssDialogue *cur;
-
-		// Update rows
-		for (size_t i=0;i<sel.Count();i++) {
-			cur = SubsGrid->GetDialogue(sel[i]);
-			cur->Start.SetMS(start_ms);
-			cur->End.SetMS(end_ms);
-		}
-
-		// Commit
-		SubsGrid->editBox->Update(true);
-		SubsGrid->ass->FlagAsModified(_("snap to scene"));
-		SubsGrid->CommitChanges();
+	const std::vector<int> &keyframes = con->GetKeyFrames();
+	if (curFrame < keyframes.front()) {
+		next = keyframes.front();
 	}
+	else if (curFrame >= keyframes.back()) {
+		prev = keyframes.back();
+		next = con->GetLength();
+	}
+	else {
+		std::vector<int>::const_iterator kf = std::lower_bound(keyframes.begin(), keyframes.end(), curFrame);
+		if (*kf == curFrame) {
+			prev = *kf;
+			next = *(kf + 1);
+		}
+		else {
+			prev = *(kf - 1);
+			next = *kf;
+		}
+	}
+
+	// Get times
+	int start_ms = con->TimeAtFrame(prev,agi::vfr::START);
+	int end_ms = con->TimeAtFrame(next-1,agi::vfr::END);
+	AssDialogue *cur;
+
+	// Update rows
+	for (size_t i=0;i<sel.Count();i++) {
+		cur = SubsGrid->GetDialogue(sel[i]);
+		cur->Start.SetMS(start_ms);
+		cur->End.SetMS(end_ms);
+	}
+
+	// Commit
+	SubsGrid->editBox->Update(true);
+	SubsGrid->ass->FlagAsModified(_("snap to scene"));
+	SubsGrid->CommitChanges();
 }
 
 /// @brief Shift to frame 
 void FrameMain::OnShiftToFrame (wxCommandEvent &) {
-	if (VideoContext::Get()->IsLoaded()) {
-		wxArrayInt sels = SubsGrid->GetSelection();
-		size_t n=sels.Count();
-		if (n == 0) return;
+	if (!VideoContext::Get()->IsLoaded()) return;
 
-		// Get shifting in ms
-		AssDialogue *cur = SubsGrid->GetDialogue(sels[0]);
-		if (!cur) return;
-		int shiftBy = VFR_Output.GetTimeAtFrame(VideoContext::Get()->GetFrameN(),true) - cur->Start.GetMS();
+	wxArrayInt sels = SubsGrid->GetSelection();
+	size_t n=sels.Count();
+	if (n == 0) return;
 
-		// Update
-		for (size_t i=0;i<n;i++) {
-			cur = SubsGrid->GetDialogue(sels[i]);
-			if (cur) {
-				cur->Start.SetMS(cur->Start.GetMS()+shiftBy);
-				cur->End.SetMS(cur->End.GetMS()+shiftBy);
-			}
+	// Get shifting in ms
+	AssDialogue *cur = SubsGrid->GetDialogue(sels[0]);
+	if (!cur) return;
+	int shiftBy = VideoContext::Get()->TimeAtFrame(VideoContext::Get()->GetFrameN(),agi::vfr::START) - cur->Start.GetMS();
+
+	// Update
+	for (size_t i=0;i<n;i++) {
+		cur = SubsGrid->GetDialogue(sels[i]);
+		if (cur) {
+			cur->Start.SetMS(cur->Start.GetMS()+shiftBy);
+			cur->End.SetMS(cur->End.GetMS()+shiftBy);
 		}
-
-		// Commit
-		SubsGrid->ass->FlagAsModified(_("shift to frame"));
-		SubsGrid->CommitChanges();
-		SubsGrid->editBox->Update(true,false);
 	}
+
+	// Commit
+	SubsGrid->ass->FlagAsModified(_("shift to frame"));
+	SubsGrid->CommitChanges();
+	SubsGrid->editBox->Update(true,false);
 }
 
 /// @brief Undo 

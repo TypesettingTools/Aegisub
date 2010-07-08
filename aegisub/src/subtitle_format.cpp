@@ -34,9 +34,6 @@
 /// @ingroup subtitle_io
 ///
 
-
-///////////
-// Headers
 #include "config.h"
 
 #ifndef AGI_PRE
@@ -55,8 +52,7 @@
 #include "subtitle_format_transtation.h"
 #include "subtitle_format_ttxt.h"
 #include "subtitle_format_txt.h"
-#include "vfr.h"
-
+#include "video_context.h"
 
 /// @brief Constructor 
 ///
@@ -66,23 +62,17 @@ SubtitleFormat::SubtitleFormat() {
 	isCopy = false;
 }
 
-
-
 /// @brief Destructor 
 ///
 SubtitleFormat::~SubtitleFormat () {
 	Remove();
 }
 
-
-
 /// DOCME
 std::list<SubtitleFormat*> SubtitleFormat::formats;
 
 /// DOCME
 bool SubtitleFormat::loaded = false;
-
-
 
 /// @brief Set target 
 /// @param file 
@@ -94,16 +84,12 @@ void SubtitleFormat::SetTarget(AssFile *file) {
 	assFile = file;
 }
 
-
-
 /// @brief Create copy 
 ///
 void SubtitleFormat::CreateCopy() {
 	SetTarget(new AssFile(*assFile));
 	isCopy = true;
 }
-
-
 
 /// @brief Clear copy 
 ///
@@ -115,15 +101,11 @@ void SubtitleFormat::ClearCopy() {
 	}
 }
 
-
-
 /// @brief Clear subtitles 
 ///
 void SubtitleFormat::Clear() {
 	assFile->Clear();
 }
-
-
 
 /// @brief Load default 
 /// @param defline 
@@ -131,8 +113,6 @@ void SubtitleFormat::Clear() {
 void SubtitleFormat::LoadDefault(bool defline) {
 	assFile->LoadDefault(defline);
 }
-
-
 
 /// @brief Add line 
 /// @param data     
@@ -142,8 +122,6 @@ void SubtitleFormat::LoadDefault(bool defline) {
 void SubtitleFormat::AddLine(wxString data,wxString group,int &version,wxString *outgroup) {
 	assFile->AddLine(data,group,version,outgroup);
 }
-
-
 
 /// @brief Add formats 
 ///
@@ -164,8 +142,6 @@ void SubtitleFormat::LoadFormats () {
 	loaded = true;
 }
 
-
-
 /// @brief Destroy formats 
 ///
 void SubtitleFormat::DestroyFormats () {
@@ -175,8 +151,6 @@ void SubtitleFormat::DestroyFormats () {
 	}
 	formats.clear();
 }
-
-
 
 /// @brief Get an appropriate reader 
 /// @param filename 
@@ -193,8 +167,6 @@ SubtitleFormat *SubtitleFormat::GetReader(wxString filename) {
 	return NULL;
 }
 
-
-
 /// @brief Get an appropriate writer 
 /// @param filename 
 /// @return 
@@ -210,8 +182,6 @@ SubtitleFormat *SubtitleFormat::GetWriter(wxString filename) {
 	return NULL;
 }
 
-
-
 /// @brief Register 
 /// @return 
 ///
@@ -222,8 +192,6 @@ void SubtitleFormat::Register() {
 	}
 	formats.push_back(this);
 }
-
-
 
 /// @brief Remove 
 /// @return 
@@ -238,8 +206,6 @@ void SubtitleFormat::Remove() {
 	}
 }
 
-
-
 /// @brief Get read wildcards 
 /// @return 
 ///
@@ -247,16 +213,12 @@ wxArrayString SubtitleFormat::GetReadWildcards() {
 	return wxArrayString();
 }
 
-
-
 /// @brief Get write wildcards 
 /// @return 
 ///
 wxArrayString SubtitleFormat::GetWriteWildcards() {
 	return wxArrayString();
 }
-
-
 
 /// @brief Get wildcard list 
 /// @param mode 
@@ -313,8 +275,6 @@ wxString SubtitleFormat::GetWildcards(int mode) {
 	return final;
 }
 
-
-
 /// @brief Ask the user to enter the FPS 
 /// @param showSMPTE 
 /// @return 
@@ -325,11 +285,12 @@ SubtitleFormat::FPSRational SubtitleFormat::AskForFPS(bool showSMPTE) {
 	fps_rat.smpte_dropframe = false; // ensure it's false by default
 	
 	// Video FPS
-	bool vidLoaded = VFR_Output.IsLoaded();
+	VideoContext *context = VideoContext::Get();
+	bool vidLoaded = context->TimecodesLoaded();
 	if (vidLoaded) {
 		wxString vidFPS;
-		if (VFR_Output.GetFrameRateType() == VFR) vidFPS = _T("VFR");
-		else vidFPS = wxString::Format(_T("%.3f"),VFR_Output.GetAverage());
+		if (context->FPS().IsVFR()) vidFPS = _T("VFR");
+		else vidFPS = wxString::Format(_T("%.3f"),context->FPS().FPS());
 		choices.Add(wxString::Format(_T("From video (%s)"),vidFPS.c_str()));
 	}
 	
@@ -403,15 +364,11 @@ SubtitleFormat::FPSRational SubtitleFormat::AskForFPS(bool showSMPTE) {
 	return fps_rat;
 }
 
-
-
 /// @brief Sort lines 
 ///
 void SubtitleFormat::SortLines() {
 	AssFile::Sort(*Line);
 }
-
-
 
 /// @brief Convert tags 
 /// @param format  
@@ -438,8 +395,6 @@ void SubtitleFormat::ConvertTags(int format,const wxString &lineEnd,bool mergeLi
 	}
 }
 
-
-
 /// @brief Remove all comment lines 
 ///
 void SubtitleFormat::StripComments() {
@@ -458,8 +413,6 @@ void SubtitleFormat::StripComments() {
 	}
 }
 
-
-
 /// @brief Remove all non-dialogue lines 
 ///
 void SubtitleFormat::StripNonDialogue() {
@@ -476,8 +429,6 @@ void SubtitleFormat::StripNonDialogue() {
 		}
 	}
 }
-
-
 
 /// @brief Helper function for RecombineOverlaps() 
 /// @param list   
@@ -500,7 +451,6 @@ static void InsertLineSortedIntoList(std::list<AssEntry*> &list, std::list<AssEn
 		list.push_back(newdlg);
 	}
 }
-
 
 /// @brief Split and merge lines so there are no overlapping lines 
 ///
@@ -580,8 +530,6 @@ void SubtitleFormat::RecombineOverlaps() {
 	}
 }
 
-
-
 /// @brief Merge identical lines that follow each other 
 ///
 void SubtitleFormat::MergeIdentical() {
@@ -608,6 +556,3 @@ void SubtitleFormat::MergeIdentical() {
 		}
 	}
 }
-
-
-

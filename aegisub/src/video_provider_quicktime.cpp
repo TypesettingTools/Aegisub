@@ -54,8 +54,6 @@
 #define MacOffsetRect OffsetRect
 #endif
 
-
-
 /// @brief DOCME
 /// @param filename 
 ///
@@ -99,16 +97,12 @@ QuickTimeVideoProvider::QuickTimeVideoProvider(wxString filename) {
 	}
 }
 
-
-
 /// @brief DOCME
 ///
 QuickTimeVideoProvider::~QuickTimeVideoProvider() {
 	Close();
 	DeInitQuickTime();
 }
-
-
 
 /// @brief DOCME
 ///
@@ -123,14 +117,9 @@ void QuickTimeVideoProvider::Close() {
 		DisposeHandle(in_dataref);
 	in_dataref = NULL;
 
-	keyframes.Clear();
+	keyframes.clear();
 	qt_timestamps.clear();
 }
-
-
-
-
-
 
 /// @brief DOCME
 /// @param _filename 
@@ -175,27 +164,10 @@ void QuickTimeVideoProvider::LoadVideo(const wxString _filename) {
 		throw wxString(_T("QuickTime video provider: failed to index file"));
 
 	// ask about vfr override etc
-	vfr_fps.SetVFR(timecodes);
-	int override_tc = wxYES;
-	if (VFR_Output.IsLoaded()) {
-		override_tc = wxMessageBox(_("You already have timecodes loaded. Would you like to replace them with timecodes from the video file?"), _("Replace timecodes?"), wxYES_NO | wxICON_QUESTION);
-		if (override_tc == wxYES) {
-			VFR_Input.SetVFR(timecodes);
-			VFR_Output.SetVFR(timecodes);
-		}
-	} else { // no timecodes loaded, go ahead and apply
-		VFR_Input.SetVFR(timecodes);
-		VFR_Output.SetVFR(timecodes);
-	}
-
-	// set assumed "cfr" fps (dunno if this is actually used anywhere)
-	double len_s = (double)GetMovieDuration(movie) / (double)GetMovieTimeScale(movie);
-	assumed_fps = (double)num_frames / len_s;
+	vfr_fps = agi::vfr::Framerate(timecodes);
 
 	cur_fn = 0;
 }
-
-
 
 /// @brief DOCME
 /// @return 
@@ -236,8 +208,6 @@ std::vector<int> QuickTimeVideoProvider::IndexFile() {
 
 	return timecodes;
 }
-
-
 
 /// @brief DOCME
 /// @param n 
@@ -283,76 +253,4 @@ const AegiVideoFrame QuickTimeVideoProvider::GetFrame(int n) {
 	return dst_frame;
 }
 
-
-
-
-
-/// @brief Utility functions 
-/// @return 
-///
-int QuickTimeVideoProvider::GetWidth() {
-	return w;
-}
-
-
-/// @brief DOCME
-/// @return 
-///
-int QuickTimeVideoProvider::GetHeight() {
-	return h;
-}
-
-
-/// @brief DOCME
-/// @return 
-///
-int QuickTimeVideoProvider::GetFrameCount() {
-	return num_frames;
-}
-
-
-/// @brief DOCME
-/// @return 
-///
-int QuickTimeVideoProvider::GetPosition() {
-	return cur_fn;
-}
-
-
-/// @brief DOCME
-/// @return 
-///
-double QuickTimeVideoProvider::GetFPS() {
-	return assumed_fps;
-}
-
-
-/// @brief DOCME
-/// @return 
-///
-bool QuickTimeVideoProvider::AreKeyFramesLoaded() { 
-	if (keyframes.GetCount() > 0)
-		return true;
-	else
-		return false;
-}
-
-
-/// @brief DOCME
-/// @return 
-///
-wxArrayInt QuickTimeVideoProvider::GetKeyFrames() {
-	return keyframes;
-}
-
-
-/// @brief DOCME
-///
-FrameRate QuickTimeVideoProvider::GetTrueFrameRate() {
-	return vfr_fps; 
-}
-
-
 #endif /* WITH_QUICKTIME */
-
-

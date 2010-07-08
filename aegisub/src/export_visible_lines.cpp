@@ -34,17 +34,13 @@
 /// @ingroup export
 ///
 
-
-///////////
-// Headers
 #include "config.h"
 
 #include "ass_dialogue.h"
 #include "ass_file.h"
 #include "ass_override.h"
 #include "export_visible_lines.h"
-#include "vfr.h"
-
+#include "video_context.h"
 
 /// @brief Constructor 
 ///
@@ -53,11 +49,6 @@ AssLimitToVisibleFilter::AssLimitToVisibleFilter() {
 	frame = -1;
 }
 
-
-
-/// @brief Init 
-/// @return 
-///
 void AssLimitToVisibleFilter::Init() {
 	if (initialized) return;
 	initialized = true;
@@ -67,15 +58,10 @@ void AssLimitToVisibleFilter::Init() {
 	description = _("Limit to Visible Lines");
 }
 
-
-
 /// @brief Process 
 /// @param subs          
 /// @param export_dialog 
-/// @return 
-///
 void AssLimitToVisibleFilter::ProcessSubs(AssFile *subs, wxWindow *export_dialog) {
-	// Nothing to do
 	if (frame == -1) return;
 
 	AssDialogue *diag;
@@ -86,8 +72,8 @@ void AssLimitToVisibleFilter::ProcessSubs(AssFile *subs, wxWindow *export_dialog
 		diag = dynamic_cast<AssDialogue*>(*cur);
 		if (diag) {
 			// Invisible, remove frame
-			if (VFR_Output.GetFrameAtTime(diag->Start.GetMS(),true) > frame ||
-				VFR_Output.GetFrameAtTime(diag->End.GetMS(),false) < frame) {
+			if (VideoContext::Get()->FrameAtTime(diag->Start.GetMS(),agi::vfr::START) > frame ||
+				VideoContext::Get()->FrameAtTime(diag->End.GetMS(),agi::vfr::END) < frame) {
 
 				delete *cur;
 				subs->Line.erase(cur);
@@ -96,8 +82,6 @@ void AssLimitToVisibleFilter::ProcessSubs(AssFile *subs, wxWindow *export_dialog
 	}
 }
 
-
-
 /// @brief Set limitation time 
 /// @param _frame 
 ///
@@ -105,9 +89,5 @@ void AssLimitToVisibleFilter::SetFrame(int _frame) {
 	instance.frame = _frame;
 }
 
-
-
 /// DOCME
 AssLimitToVisibleFilter AssLimitToVisibleFilter::instance;
-
-

@@ -60,7 +60,6 @@
 #include "text_file_writer.h"
 #include "utils.h"
 #include "version.h"
-#include "vfr.h"
 
 /// @brief AssFile constructor
 AssFile::AssFile () {

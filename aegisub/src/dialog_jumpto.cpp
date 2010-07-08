@@ -34,9 +34,6 @@
 /// @ingroup secondary_ui
 ///
 
-
-///////////
-// Headers
 #include "config.h"
 
 #ifndef AGI_PRE
@@ -50,22 +47,13 @@
 #include "dialog_jumpto.h"
 #include "libresrc/libresrc.h"
 #include "utils.h"
-#include "vfr.h"
 #include "video_context.h"
 
-
-///////
-// IDs
+/// Event IDs
 enum {
-
-	/// DOCME
 	TEXT_JUMP_TIME = 1100,
-
-	/// DOCME
 	TEXT_JUMP_FRAME
 };
-
-
 
 /// @brief Constructor 
 /// @param parent 
@@ -73,13 +61,12 @@ enum {
 DialogJumpTo::DialogJumpTo (wxWindow *parent)
 : wxDialog(parent, -1, _("Jump to"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE | wxWANTS_CHARS , _T("JumpTo"))
 {
-	// Set icon
 	SetIcon(BitmapToIcon(GETIMAGE(jumpto_button_24)));
 
 	// Set initial values
 	ready = false;
 	jumpframe = VideoContext::Get()->GetFrameN();
-	jumptime.SetMS(VFR_Output.GetTimeAtFrame(jumpframe,true,true));
+	jumptime.SetMS(VideoContext::Get()->TimeAtFrame(jumpframe));
 	wxString maxLength = wxString::Format(_T("%i"),VideoContext::Get()->GetLength()-1);
 
 	// Times
@@ -117,9 +104,6 @@ DialogJumpTo::DialogJumpTo (wxWindow *parent)
 	ready = true;
 }
 
-
-///////////////
-// Event table
 BEGIN_EVENT_TABLE(DialogJumpTo, wxDialog)
 	EVT_TEXT_ENTER(TEXT_JUMP_FRAME,DialogJumpTo::OnKey)
 	EVT_TEXT_ENTER(TEXT_JUMP_TIME,DialogJumpTo::OnKey)
@@ -129,41 +113,23 @@ BEGIN_EVENT_TABLE(DialogJumpTo, wxDialog)
 	EVT_TEXT(TEXT_JUMP_FRAME, DialogJumpTo::OnEditFrame)
 END_EVENT_TABLE()
 
-
-
-/// @brief Close 
-/// @param event 
-///
-void DialogJumpTo::OnCloseButton (wxCommandEvent &event) { OnClose(false); }
-
-/// @brief DOCME
-/// @param event 
-///
-void DialogJumpTo::OnOK (wxCommandEvent &event) { OnClose(true); }
-
-
+void DialogJumpTo::OnCloseButton (wxCommandEvent &) { OnClose(false); }
+void DialogJumpTo::OnOK (wxCommandEvent &) { OnClose(true); }
 
 /// @brief On Key pressed 
-/// @param event 
-///
-void DialogJumpTo::OnKey(wxCommandEvent &event) {
+void DialogJumpTo::OnKey(wxCommandEvent &) {
 	EndModal(0);
 	if (jumpframe > VideoContext::Get()->GetLength()-1) jumpframe = VideoContext::Get()->GetLength()-1;
 	VideoContext::Get()->JumpToFrame(jumpframe);
 }
 
-
-
 /// @brief On OK button pressed 
 /// @param ok 
-///
 void DialogJumpTo::OnClose(bool ok) {
 	EndModal(0);
 	if (jumpframe > VideoContext::Get()->GetLength()-1) jumpframe = VideoContext::Get()->GetLength()-1;
 	if (ok)	VideoContext::Get()->JumpToFrame(jumpframe);
 }
-
-
 
 /// @brief Time editbox changed 
 /// @param event 
@@ -173,18 +139,16 @@ void DialogJumpTo::OnEditTime (wxCommandEvent &event) {
 		ready = false;
 
 		// Update frame
-		long newframe = VFR_Output.GetFrameAtTime(JumpTime->time.GetMS());
+		long newframe = VideoContext::Get()->FrameAtTime(JumpTime->time.GetMS());
 		if (jumpframe != newframe) {
 			jumpframe = newframe;
-			JumpFrame->SetValue(wxString::Format(_T("%i"),jumpframe));
+			JumpFrame->ChangeValue(wxString::Format(_T("%i"),jumpframe));
 		}
 
 		ready = true;
 	}
 	else event.Skip();
 }
-
-
 
 /// @brief Frame editbox changed 
 /// @param event 
@@ -199,7 +163,7 @@ void DialogJumpTo::OnEditFrame (wxCommandEvent &event) {
 		JumpFrame->SetValue(wxString::Format(_T("%i"),jumpframe));
 
 		// Update time
-		int newtime = VFR_Output.GetTimeAtFrame(jumpframe,true,true);
+		int newtime = VideoContext::Get()->TimeAtFrame(jumpframe);
 		if (jumptime.GetMS() != newtime) {
 			jumptime.SetMS(newtime);
 			JumpTime->ChangeValue(jumptime.GetASSFormated());
@@ -209,5 +173,3 @@ void DialogJumpTo::OnEditFrame (wxCommandEvent &event) {
 	}
 	else event.Skip();
 }
-
-

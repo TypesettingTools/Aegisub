@@ -60,8 +60,8 @@
 #include "hotkeys.h"
 #include "options.h"
 #include "main.h"
+#include "subs_grid.h"
 #include "video_out_gl.h"
-#include "vfr.h"
 #include "video_box.h"
 #include "video_context.h"
 #include "video_slider.h"
@@ -166,7 +166,7 @@ void VideoDisplay::SetFrame(int frameNumber) {
 
 	// Get time for frame
 	{
-		int time = VFR_Output.GetTimeAtFrame(frameNumber, true, true);
+		int time = context->TimeAtFrame(frameNumber, agi::vfr::EXACT);
 		int h = time / 3600000;
 		int m = time % 3600000 / 60000;
 		int s = time % 60000 / 1000;
@@ -174,7 +174,7 @@ void VideoDisplay::SetFrame(int frameNumber) {
 
 		// Set the text box for frame number and time
 		PositionDisplay->SetValue(wxString::Format(L"%01i:%02i:%02i.%03i - %i", h, m, s, ms, frameNumber));
-		if (context->GetKeyFrames().Index(frameNumber) != wxNOT_FOUND) {
+		if (std::binary_search(context->GetKeyFrames().begin(), context->GetKeyFrames().end(), frameNumber)) {
 			// Set the background color to indicate this is a keyframe
 			PositionDisplay->SetBackgroundColour(lagi_wxColour(OPT_GET("Colour/Subtitle Grid/Background/Selection")->GetColour()));
 			PositionDisplay->SetForegroundColour(lagi_wxColour(OPT_GET("Colour/Subtitle Grid/Selection")->GetColour()));
@@ -189,7 +189,7 @@ void VideoDisplay::SetFrame(int frameNumber) {
 		int startOff = 0;
 		int endOff = 0;
 
-		if (AssDialogue *curLine = context->curLine) {
+		if (AssDialogue *curLine = context->grid->GetActiveLine()) {
 			startOff = time - curLine->Start.GetMS();
 			endOff = time - curLine->End.GetMS();
 		}

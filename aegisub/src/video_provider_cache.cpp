@@ -34,38 +34,42 @@
 /// @ingroup video_input
 ///
 
-
-///////////
-// Headers
 #include "config.h"
 #include "main.h"
 #include "options.h"
 
 #include "video_provider_cache.h"
 
+/// DOCME
+/// @class CachedFrame
+/// @brief DOCME
+///
+/// DOCME
+struct CachedFrame {
+	/// DOCME
+	AegiVideoFrame frame;
+
+	/// DOCME
+	int n;
+};
 
 /// @brief Constructor 
 /// @param parent 
 ///
-VideoProviderCache::VideoProviderCache(VideoProvider *parent) {
-	master = parent;
-	cacheMax = 0;
-	if (parent->WantsCaching())
-		cacheMax = OPT_GET("Provider/Video/Cache/Size")->GetInt() << 20; // convert MB to bytes
-	else
-		cacheMax = 0;
+VideoProviderCache::VideoProviderCache(VideoProvider *parent)
+: master(parent)
+, cacheMax(OPT_GET("Provider/Video/Cache/Size")->GetInt() << 20) // convert MB to bytes
+{
 }
-
-
 
 /// @brief Destructor 
 ///
 VideoProviderCache::~VideoProviderCache() {
-	delete master;
-	ClearCache();
+	while (cache.size()) {
+		cache.front().frame.Clear();
+		cache.pop_front();
+	}
 }
-
-
 
 /// @brief Get frame 
 /// @param n 
@@ -88,21 +92,14 @@ const AegiVideoFrame VideoProviderCache::GetFrame(int n) {
 	const AegiVideoFrame *srcFrame = &frame;
 
 	// Cache frame
-	pos = n;
 	Cache(n,*srcFrame);
 	return *srcFrame;
 }
 
-
 /// @brief Add to cache 
 /// @param n     
 /// @param frame 
-/// @return 
-///
 void VideoProviderCache::Cache(int n,const AegiVideoFrame frame) {
-	// Cache enabled?
-	if (cacheMax == 0) return;
-
 	// Cache full, use frame at front
 	if (GetCurCacheSize() >= cacheMax) {
 		cache.push_back(cache.front());
@@ -119,17 +116,6 @@ void VideoProviderCache::Cache(int n,const AegiVideoFrame frame) {
 	cache.back().frame.CopyFrom(frame);
 }
 
-
-
-/// @brief Clear cache 
-///
-void VideoProviderCache::ClearCache() {
-	while (cache.size()) {
-		cache.front().frame.Clear();
-		cache.pop_front();
-	}
-}
-
 /// @brief Get the current size of the cache
 /// @return Returns the size in bytes
 unsigned VideoProviderCache::GetCurCacheSize() {
@@ -138,103 +124,3 @@ unsigned VideoProviderCache::GetCurCacheSize() {
 		sz += i->frame.memSize;
 	return sz;
 }
-
-
-/// @brief Wrapper methods 
-/// @return 
-///
-int VideoProviderCache::GetPosition() {
-	return pos;
-}
-
-/// @brief DOCME
-/// @return 
-///
-int VideoProviderCache::GetFrameCount() {
-	return master->GetFrameCount();
-}
-
-/// @brief DOCME
-/// @return 
-///
-int VideoProviderCache::GetWidth() {
-	return master->GetWidth();
-}
-
-/// @brief DOCME
-/// @return 
-///
-int VideoProviderCache::GetHeight() {
-	return master->GetHeight();
-}
-
-/// @brief DOCME
-/// @return 
-///
-double VideoProviderCache::GetFPS() {
-	return master->GetFPS();
-}
-
-/// @brief DOCME
-/// @return 
-///
-bool VideoProviderCache::IsVFR() {
-	return master->IsVFR();
-}
-
-/// @brief DOCME
-/// @return 
-///
-bool VideoProviderCache::AreKeyFramesLoaded() {
-	return master->AreKeyFramesLoaded();
-}
-
-/// @brief DOCME
-/// @return 
-///
-wxArrayInt VideoProviderCache::GetKeyFrames() {
-	return master->GetKeyFrames();
-}
-
-/// @brief DOCME
-/// @return 
-///
-FrameRate VideoProviderCache::GetTrueFrameRate() {
-	return master->GetTrueFrameRate();
-}
-
-/// @brief DOCME
-/// @param list 
-///
-void VideoProviderCache::OverrideFrameTimeList(std::vector<int> list) {
-	master->OverrideFrameTimeList(list);
-}
-
-/// @brief DOCME
-/// @return 
-///
-bool VideoProviderCache::IsNativelyByFrames() {
-	return master->IsNativelyByFrames();
-}
-
-/// @brief DOCME
-/// @return 
-///
-bool VideoProviderCache::NeedsVFRHack() {
-	return master->NeedsVFRHack();
-}
-
-/// @brief DOCME
-/// @return 
-///
-wxString VideoProviderCache::GetWarning() {
-	return master->GetWarning();
-}
-
-/// @brief DOCME
-///
-wxString VideoProviderCache::GetDecoderName() {
-	return master->GetDecoderName();
-}
-
-

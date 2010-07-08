@@ -132,10 +132,6 @@ public:
 	bool IsVFR() const {return !timecodes.empty(); }
 	bool IsLoaded() const { return !timecodes.empty() || fps; };
 	double FPS() const { return fps; }
-
-	/// @brief Equality operator
-	/// @attention O(n) when both arguments are VFR
-	bool operator==(Framerate const& right) const;
 };
 
 }

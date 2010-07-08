@@ -34,34 +34,14 @@
 /// @ingroup video_input
 ///
 
-
-
-
-//////////
-// Headers
 #ifndef AGI_PRE
 #include <list>
+#include <memory>
 #endif
 
 #include "include/aegisub/video_provider.h"
-#include "vfr.h"
 
-
-/// DOCME
-/// @class CachedFrame
-/// @brief DOCME
-///
-/// DOCME
-class CachedFrame {
-public:
-
-	/// DOCME
-	AegiVideoFrame frame;
-
-	/// DOCME
-	int n;
-};
-
+struct CachedFrame;
 
 /// DOCME
 /// @class VideoProviderCache
@@ -69,10 +49,8 @@ public:
 ///
 /// DOCME
 class VideoProviderCache : public VideoProvider {
-private:
-
 	/// DOCME
-	VideoProvider *master;
+	std::auto_ptr<VideoProvider> master;
 
 	/// DOCME
 	unsigned int cacheMax;
@@ -80,16 +58,11 @@ private:
 	/// DOCME
 	std::list<CachedFrame> cache;
 
-	/// DOCME
-	int pos;
-
 	void Cache(int n,const AegiVideoFrame frame);
 	AegiVideoFrame GetCachedFrame(int n);
 
-protected:
 	// Cache functions
 	unsigned GetCurCacheSize();
-	void ClearCache();
 
 public:
 	// Base methods
@@ -98,20 +71,14 @@ public:
 	virtual ~VideoProviderCache();
 
 	// Override the following methods:
-	virtual int GetPosition();				// Get the number of the last frame loaded
-	virtual int GetFrameCount();			// Get total number of frames
-	virtual int GetWidth();					// Returns the video width in pixels
-	virtual int GetHeight();				// Returns the video height in pixels
-	virtual double GetFPS();				// Get framerate in frames per second
-	virtual bool AreKeyFramesLoaded();
-	virtual bool IsVFR();
-	virtual wxArrayInt GetKeyFrames();
-	virtual FrameRate GetTrueFrameRate();
-	virtual void OverrideFrameTimeList(std::vector<int> list);	// Override the list with the provided one, for VFR handling
-	virtual bool IsNativelyByFrames();
-	virtual bool NeedsVFRHack();
-	virtual wxString GetWarning();
-	virtual wxString GetDecoderName();
+	virtual int GetPosition() const               { return master->GetPosition(); }
+	virtual int GetFrameCount() const             { return master->GetFrameCount(); }
+	virtual int GetWidth() const                  { return master->GetWidth(); }
+	virtual int GetHeight() const                 { return master->GetHeight(); }
+	virtual agi::vfr::Framerate GetFPS() const    { return master->GetFPS(); }
+	virtual std::vector<int> GetKeyFrames() const { return master->GetKeyFrames(); }
+	virtual wxString GetWarning() const           { return master->GetWarning(); }
+	virtual wxString GetDecoderName() const       { return master->GetDecoderName(); }
+
+
 };
-
-

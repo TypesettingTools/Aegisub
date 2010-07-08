@@ -49,8 +49,6 @@
 
 
 #include "include/aegisub/video_provider.h"
-#include "vfr.h"
-
 
 /// DOCME
 /// @class QuickTimeVideoProvider
@@ -58,47 +56,42 @@
 ///
 /// DOCME
 class QuickTimeVideoProvider : public VideoProvider, QuickTimeProvider {
-private:
+	/// source object
+	Movie movie;
 
-	/// DOCME
-	Movie movie;			// source object
+	/// render buffer
+	GWorldPtr gw;
 
-	/// DOCME
-	GWorldPtr gw;			// render buffer
-
-	/// DOCME
-	Handle in_dataref;		// input data handle
+	/// input data handle
+	Handle in_dataref;
 
 
 	/// DOCME
 
-	/// DOCME
-	int w, h;				// width/height
+	/// width/height
+	int w, h;
 
-	/// DOCME
-	int num_frames;			// length of file in frames
+	/// length of file in frames
+	int num_frames;
 
-	/// DOCME
-	int cur_fn;				// current frame number
+	/// current frame number
+	int cur_fn;
 
-	/// DOCME
-	FrameRate vfr_fps;		// vfr framerate
+	/// vfr framerate
+	Framerate vfr_fps;
 
-	/// DOCME
-	double assumed_fps;		// average framerate
+	/// list of keyframes
+	std::vector<int> keyframes;
 
-	/// DOCME
-	wxArrayInt keyframes;	// list of keyframes
-
-	/// DOCME
-	std::vector<int> qt_timestamps;	 // qt timestamps (used for seeking)
+	/// qt timestamps (used for seeking)
+	std::vector<int> qt_timestamps;
 
 
-	/// DOCME
-	OSErr qt_err;			// quicktime error code
+	/// quicktime error code
+	OSErr qt_err;
 
-	/// DOCME
-	wxString errmsg;		// aegisub error message
+	/// aegisub error message
+	wxString errmsg;
 
 	void LoadVideo(const wxString filename);
 	std::vector<int> IndexFile();
@@ -109,33 +102,17 @@ public:
 	~QuickTimeVideoProvider();
 
 	const AegiVideoFrame GetFrame(int n);
-	int GetPosition();
-	int GetFrameCount();
 
-	int GetWidth();
-	int GetHeight();
-	double GetFPS();
-
-	/// @brief DOCME
-	/// @return 
-	///
-	bool IsVFR() { return true; };
-	FrameRate GetTrueFrameRate();
-	wxArrayInt GetKeyFrames();
-	bool QuickTimeVideoProvider::AreKeyFramesLoaded();
-
-	/// @brief DOCME
-	/// @return 
-	///
-	wxString GetDecoderName() { return L"QuickTime"; };
-
-	/// @brief DOCME
-	/// @return 
-	///
-	bool WantsCaching() { return true; };
+	int GetPosition() const               { return cur_fn; }
+	int GetFrameCount() const             { return num_frames; }
+	int GetWidth() const                  { return w; }
+	int GetHeight() const                 { return h; }
+	agi::vfr::Framerate GetFPS() const    { return vfr_fps; }
+	std::vector<int> GetKeyFrames() const { return keyframes; };
+	wxString GetDecoderName() const       { return L"QuickTime"; };
+	bool WantsCaching() const             { return true; };
+	wxString GetWarning() const           { return errmsg; }
 };
-
-
 
 /// DOCME
 /// @class QuickTimeVideoProviderFactory
@@ -151,7 +128,4 @@ public:
 	VideoProvider *CreateProvider(wxString video) { return new QuickTimeVideoProvider(video); }
 };
 
-
 #endif /* WITH_QUICKTIME */
-
-

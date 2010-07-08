@@ -57,7 +57,6 @@
 #include "subs_edit_box.h"
 #include "subs_grid.h"
 #include "utils.h"
-#include "vfr.h"
 #include "video_context.h"
 #include "video_display.h"
 #include "video_provider_manager.h"

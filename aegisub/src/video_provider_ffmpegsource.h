@@ -34,8 +34,6 @@
 /// @ingroup video_input ffms
 ///
 
-///////////
-// Headers
 #ifdef WITH_FFMPEGSOURCE
 #ifndef AGI_PRE
 #include <vector>
@@ -43,7 +41,6 @@
 
 #include "ffmpegsource_common.h"
 #include "include/aegisub/video_provider.h"
-#include "vfr.h"
 
 
 /// @class FFmpegSourceVideoProvider
@@ -56,10 +53,8 @@ private:
 	int Width;					/// width in pixels
 	int Height;					/// height in pixels
 	int FrameNumber;			/// current framenumber
-	wxArrayInt KeyFramesList;	/// list of keyframes
-	bool KeyFramesLoaded;		/// keyframe loading state
-	std::vector<int> TimecodesVector;	/// list of timestamps
-	FrameRate Timecodes;		/// vfr object
+	std::vector<int> KeyFramesList;	/// list of keyframes
+	agi::vfr::Framerate Timecodes;	/// vfr object
 	bool COMInited;				/// COM initialization state
 	
 	AegiVideoFrame CurFrame;	/// current video frame
@@ -76,34 +71,21 @@ public:
 	~FFmpegSourceVideoProvider();
 
 	const AegiVideoFrame GetFrame(int n);
-	int GetPosition();
-	int GetFrameCount();
 
-	int GetWidth();
-	int GetHeight();
-	double GetFPS();
+	int GetPosition() const { return FrameNumber; }
+	int GetFrameCount() const { return VideoInfo->NumFrames; }
+	int GetWidth() const { return Width; }
+	int GetHeight() const { return Height; }
+	agi::vfr::Framerate GetFPS() const { return Timecodes; }
 
-	/// @brief Reports keyframe status
-	/// @return	Returns true if keyframes are loaded, false otherwise.
-	bool AreKeyFramesLoaded() { return KeyFramesLoaded; };
 	/// @brief Gets a list of keyframes
 	/// @return	Returns a wxArrayInt of keyframes.
-	wxArrayInt GetKeyFrames() { return KeyFramesList; };
-	/// @brief Checks if source is VFR
-	/// @return	Returns true.
-	bool IsVFR() { return true; };
-	/// @brief Gets a VFR framerate object
-	/// @return Returns the framerate object.
-	FrameRate GetTrueFrameRate() { return Timecodes; };
-	/// @brief Gets the name of the provider
-	/// @return Returns "FFmpegSource".
-	wxString GetDecoderName() { return L"FFmpegSource"; }
+	std::vector<int> GetKeyFrames() const { return KeyFramesList; };
+	wxString GetDecoderName() const { return L"FFmpegSource"; }
 	/// @brief Gets the desired cache behavior.
 	/// @return Returns true.
-	bool WantsCaching() { return true; }
+	bool WantsCaching() const { return true; }
 };
-
-
 
 /// @class FFmpegSourceVideoProviderFactory
 /// @brief Creates a FFmpegSource video provider.
@@ -115,7 +97,4 @@ public:
 	VideoProvider *CreateProvider(wxString video) { return new FFmpegSourceVideoProvider(video); }
 };
 
-
 #endif /* WITH_FFMPEGSOURCE */
-
-

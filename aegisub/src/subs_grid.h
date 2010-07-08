@@ -34,11 +34,6 @@
 /// @ingroup main_ui
 ///
 
-
-
-
-////////////
-// Includes
 #ifndef AGI_PRE
 #include <fstream>
 #include <iostream>
@@ -54,9 +49,6 @@
 #include "audio_provider_manager.h"
 #include "base_grid.h"
 
-
-//////////////
-// Prototypes
 class AssFile;
 class AssEntry;
 class AssDialogue;
@@ -64,12 +56,8 @@ class SubsEditBox;
 class FrameMain;
 class AudioDisplay;
 
-
-
 /// DOCME
 typedef std::list<AssEntry*>::iterator entryIter;
-
-
 
 /// DOCME
 /// @class SubtitlesGrid

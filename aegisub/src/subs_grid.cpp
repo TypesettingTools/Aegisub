@@ -34,9 +34,6 @@
 /// @ingroup main_ui
 ///
 
-
-////////////
-// Includes
 #include "config.h"
 
 #ifndef AGI_PRE
@@ -61,13 +58,9 @@
 #include "subs_edit_box.h"
 #include "subs_grid.h"
 #include "utils.h"
-#include "vfr.h"
 #include "video_context.h"
 #include "video_display.h"
 
-
-///////////////
-// Event table
 BEGIN_EVENT_TABLE(SubtitlesGrid, BaseGrid)
 	EVT_KEY_DOWN(SubtitlesGrid::OnKeyDown)
 	EVT_MENU(MENU_SWAP,SubtitlesGrid::OnSwap)
@@ -171,14 +164,14 @@ void SubtitlesGrid::OnPopupMenu(bool alternate) {
 		state = (sels == 1);
 		menu.Append(MENU_INSERT_BEFORE,_("&Insert (before)"),_T("Inserts a line before current"))->Enable(state);
 		menu.Append(MENU_INSERT_AFTER,_("Insert (after)"),_T("Inserts a line after current"))->Enable(state);
-		state = (sels == 1 && VideoContext::Get()->IsLoaded());
+		state = (sels == 1 && context->IsLoaded());
 		menu.Append(MENU_INSERT_BEFORE_VIDEO,_("Insert at video time (before)"),_T("Inserts a line after current, starting at video time"))->Enable(state);
 		menu.Append(MENU_INSERT_AFTER_VIDEO,_("Insert at video time (after)"),_T("Inserts a line after current, starting at video time"))->Enable(state);
 		menu.AppendSeparator();
 
 		// Duplicate selection
 		menu.Append(MENU_DUPLICATE,_("&Duplicate"),_("Duplicate the selected lines"))->Enable(continuous);
-		menu.Append(MENU_DUPLICATE_NEXT_FRAME,_("&Duplicate and shift by 1 frame"),_("Duplicate lines and shift by one frame"))->Enable(continuous && VFR_Output.IsLoaded());
+		menu.Append(MENU_DUPLICATE_NEXT_FRAME,_("&Duplicate and shift by 1 frame"),_("Duplicate lines and shift by one frame"))->Enable(continuous && context->TimecodesLoaded());
 		menu.Append(MENU_SPLIT_BY_KARAOKE,_("Split (by karaoke)"),_("Uses karaoke timing to split line into multiple smaller lines"))->Enable(sels > 0);
 
 		// Swaps selection
@@ -318,7 +311,7 @@ void SubtitlesGrid::OnKeyDown(wxKeyEvent &event) {
 			}
 
 			// Duplicate and shift
-			if (VFR_Output.IsLoaded()) {
+			if (context->TimecodesLoaded()) {
 				if (Hotkeys.IsPressed(_T("Grid duplicate and shift one frame"))) {
 					DuplicateLines(n,n2,true);
 					return;
@@ -518,7 +511,7 @@ void SubtitlesGrid::OnInsertBeforeVideo (wxCommandEvent &event) {
 
 	// Create line to add
 	AssDialogue *def = new AssDialogue;
-	int video_ms = VFR_Output.GetTimeAtFrame(VideoContext::Get()->GetFrameN(),true);
+	int video_ms = context->TimeAtFrame(context->GetFrameN(),agi::vfr::START);
 	def->Start.SetMS(video_ms);
 	def->End.SetMS(video_ms+OPT_GET("Timing/Default Duration")->GetInt());
 	def->Style = GetDialogue(n)->Style;
@@ -542,7 +535,7 @@ void SubtitlesGrid::OnInsertAfterVideo (wxCommandEvent &event) {
 
 	// Create line to add
 	AssDialogue *def = new AssDialogue;
-	int video_ms = VFR_Output.GetTimeAtFrame(VideoContext::Get()->GetFrameN(),true);
+	int video_ms = context->TimeAtFrame(context->GetFrameN(),agi::vfr::START);
 	def->Start.SetMS(video_ms);
 	def->End.SetMS(video_ms+OPT_GET("Timing/Default Duration")->GetInt());
 	def->Style = GetDialogue(n)->Style;
@@ -819,7 +812,6 @@ void SubtitlesGrid::ClearMaps() {
 void SubtitlesGrid::UpdateMaps() {
 	BeginBatch();
 
-	VideoContext::Get()->curLine = NULL;
 	line_iter_map.clear();
 	BaseGrid::ClearMaps();
 
@@ -1244,9 +1236,9 @@ void SubtitlesGrid::DuplicateLines(int n1,int n2,bool nextFrame) {
 
 		// Shift to next frame
 		if (nextFrame) {
-			int posFrame = VFR_Output.GetFrameAtTime(cur->End.GetMS(),false) + 1;
-			cur->Start.SetMS(VFR_Output.GetTimeAtFrame(posFrame,true));
-			cur->End.SetMS(VFR_Output.GetTimeAtFrame(posFrame,false));
+			int posFrame = context->FrameAtTime(cur->End.GetMS(),agi::vfr::END) + 1;
+			cur->Start.SetMS(context->TimeAtFrame(posFrame,agi::vfr::START));
+			cur->End.SetMS(context->TimeAtFrame(posFrame,agi::vfr::END));
 		}
 
 		// Insert
@@ -1292,8 +1284,8 @@ void SubtitlesGrid::ShiftLineByTime(int n,int len,int type) {
 void SubtitlesGrid::ShiftLineByFrames(int n,int len,int type) {
 	AssDialogue *cur = GetDialogue(n);
 
-	if (type != 2) cur->Start.SetMS(VFR_Output.GetTimeAtFrame(len + VFR_Output.GetFrameAtTime(cur->Start.GetMS(),true),true));
-	if (type != 1) cur->End.SetMS(VFR_Output.GetTimeAtFrame(len + VFR_Output.GetFrameAtTime(cur->End.GetMS(),false),false));
+	if (type != 2) cur->Start.SetMS(context->TimeAtFrame(len + context->FrameAtTime(cur->Start.GetMS(),agi::vfr::START),agi::vfr::START));
+	if (type != 1) cur->End.SetMS(context->TimeAtFrame(len + context->FrameAtTime(cur->End.GetMS(),agi::vfr::END),agi::vfr::END));
 }
 
 
@@ -1394,19 +1386,19 @@ bool SubtitlesGrid::SplitLineByKaraoke(int lineNumber) {
 /// @param videoOnly 
 ///
 void SubtitlesGrid::CommitChanges(bool force,bool videoOnly) {
-	if (VideoContext::Get()->IsLoaded() || force) {
+	if (context->IsLoaded() || force) {
 		// Check if it's playing
 		bool playing = false;
-		if (VideoContext::Get()->IsPlaying()) {
+		if (context->IsPlaying()) {
 			playing = true;
-			VideoContext::Get()->Stop();
+			context->Stop();
 		}
 
 		// Update video
-		if (VideoContext::Get()->IsLoaded()) VideoContext::Get()->Refresh();
+		if (context->IsLoaded()) context->Refresh();
 
 		// Resume play
-		if (playing) VideoContext::Get()->Play();
+		if (playing) context->Play();
 	}
 
 	if (!videoOnly) {
@@ -1422,18 +1414,15 @@ void SubtitlesGrid::CommitChanges(bool force,bool videoOnly) {
 	}
 }
 
-
-
 /// @brief Set start to video pos 
 /// @param start 
 /// @return 
 ///
 void SubtitlesGrid::SetSubsToVideo(bool start) {
-	// Check if it's OK to do it
-	if (!VFR_Output.IsLoaded()) return;
+	if (!context->IsLoaded()) return;
 
 	// Get new time
-	int ms = VFR_Output.GetTimeAtFrame(VideoContext::Get()->GetFrameN(),start);
+	int ms = context->TimeAtFrame(context->GetFrameN(),start ? agi::vfr::START : agi::vfr::END);
 
 	// Update selection
 	wxArrayInt sel = GetSelection();
@@ -1468,9 +1457,9 @@ void SubtitlesGrid::SetVideoToSubs(bool start) {
 	AssDialogue *cur = GetDialogue(sel[0]);
 	if (cur) {
 		if (start) 
-			VideoContext::Get()->JumpToTime(cur->Start.GetMS());
+			context->JumpToTime(cur->Start.GetMS());
 		else 
-			VideoContext::Get()->JumpToFrame(VFR_Output.GetFrameAtTime(cur->End.GetMS(),false));
+			context->JumpToTime(cur->End.GetMS(), agi::vfr::END);
 	}
 }
 
