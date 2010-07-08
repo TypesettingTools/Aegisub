@@ -231,7 +231,7 @@ void Framerate::Save(std::string const& filename, int length) const {
 
 	out << "# timecode format v2\n";
 	std::copy(timecodes.begin(), timecodes.end(), std::ostream_iterator<int>(out, "\n"));
-	for (int written = timecodes.size(); written < length; ++written) {
+	for (int written = (int)timecodes.size(); written < length; ++written) {
 		out << TimeAtFrame(written) << std::endl;
 	}
 }
@@ -268,10 +268,10 @@ int Framerate::FrameAtTime(int ms, Time type) const {
 		return (int)floor((ms - timecodes.front()) * fps / 1000.);
 	}
 	if (ms > timecodes.back()) {
-		return round((ms - timecodes.back()) * fps / 1000.) + timecodes.size() - 1;
+		return round((ms - timecodes.back()) * fps / 1000.) + (int)timecodes.size() - 1;
 	}
 
-	return std::distance(std::lower_bound(timecodes.rbegin(), timecodes.rend(), ms, std::greater<int>()), timecodes.rend()) - 1;
+	return (int)std::distance(std::lower_bound(timecodes.rbegin(), timecodes.rend(), ms, std::greater<int>()), timecodes.rend()) - 1;
 }
 
 int Framerate::TimeAtFrame(int frame, Time type) const {

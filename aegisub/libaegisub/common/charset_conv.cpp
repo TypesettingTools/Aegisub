@@ -84,7 +84,7 @@ struct iconv_fallbacks {
 
 class Converter : public iconv_fallbacks {
 	bool subst;
-	int bomSize;
+	size_t bomSize;
 	char invalidRep[8];
 	size_t invalidRepSize;
 	static void fallback(
@@ -163,7 +163,7 @@ public:
 			// convert at least one extra character
 			char bom[8];
 			char *dst = bom;
-			size_t dstSize = min(8U, bomSize + *outbytesleft);
+			size_t dstSize = min((size_t)8, bomSize + *outbytesleft);
 			const char *src = *inbuf;
 			size_t srcSize = *inbytesleft;
 			iconv(cd, ICONV_CONST_CAST(&src), &srcSize, &dst, &dstSize);

@@ -47,7 +47,7 @@ class line_iterator : public std::iterator<std::input_iterator_tag, OutputType> 
 	std::tr1::shared_ptr<agi::charset::IconvWrapper> conv;
 	int cr; ///< CR character in the source encoding
 	int lf; ///< LF character in the source encoding
-	int width;  ///< width of LF character in the source encoding
+	size_t width;  ///< width of LF character in the source encoding
 
 	/// @brief Convert a string to the output type
 	/// @param str Line read from the file
@@ -161,11 +161,11 @@ void line_iterator<OutputType>::getline(std::string &str) {
 	for (;;) {
 		chr = 0;
 #ifdef _WIN32
-		int read = stream->rdbuf()->_Sgetn_s(buf, 4, width);
+		std::streamsize read = stream->rdbuf()->_Sgetn_s(buf, 4, width);
 #else
-		int read = stream->rdbuf()->sgetn(buf, width);
+		std::streamsize read = stream->rdbuf()->sgetn(buf, width);
 #endif
-		if (read < width) {
+		if (read < (std::streamsize)width) {
 			for (int i = 0; i < read; i++) {
 				str += buf[i];
 			}
