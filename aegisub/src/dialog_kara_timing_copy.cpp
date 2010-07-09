@@ -829,7 +829,7 @@ DialogKanjiTimer::DialogKanjiTimer(wxWindow *parent, SubtitlesGrid *_grid)
 	SetIcon(BitmapToIcon(GETIMAGE(kara_timing_copier_24)));
 
 	// Variables
-	subs = AssFile::top;
+	subs = _grid->ass;
 	grid = _grid;
 	currentSourceLine = subs->Line.begin();
 	currentDestinationLine = subs->Line.begin();

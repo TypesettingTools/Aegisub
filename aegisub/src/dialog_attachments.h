@@ -34,19 +34,9 @@
 /// @ingroup tools_ui
 ///
 
-
-
-
-///////////
-// Headers
-
-
-//////////////
-// Prototypes
+class AssFile;
 class wxListView;
 class wxListEvent;
-
-
 
 /// DOCME
 /// @class DialogAttachments
@@ -54,7 +44,7 @@ class wxListEvent;
 ///
 /// DOCME
 class DialogAttachments : public wxDialog {
-private:
+	AssFile *ass;
 
 	/// DOCME
 	wxListView *listView;
@@ -74,31 +64,17 @@ private:
 	void UpdateList();
 
 public:
-	DialogAttachments(wxWindow *parent);
+	DialogAttachments(wxWindow *parent, AssFile *ass);
 	~DialogAttachments();
 
 	DECLARE_EVENT_TABLE()
 };
 
-
-///////
-// IDs
+/// Event IDs
 enum {
-
-	/// DOCME
 	BUTTON_ATTACH_FONT = 1300,
-
-	/// DOCME
 	BUTTON_ATTACH_GRAPHICS,
-
-	/// DOCME
 	BUTTON_EXTRACT,
-
-	/// DOCME
 	BUTTON_DELETE,
-
-	/// DOCME
 	ATTACHMENT_LIST
 };
-
-

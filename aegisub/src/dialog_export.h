@@ -104,7 +104,7 @@ private:
 	void RefreshOptions();
 
 public:
-	DialogExport(wxWindow *parent);
+	DialogExport(wxWindow *parent, AssFile *subs);
 	~DialogExport();
 
 	DECLARE_EVENT_TABLE()

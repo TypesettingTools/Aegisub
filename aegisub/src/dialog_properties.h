@@ -34,17 +34,13 @@
 /// @ingroup secondary_ui
 ///
 
-
-
-
-///////////
-// Headers
 #ifndef AGI_PRE
 #include <wx/checkbox.h>
 #include <wx/combobox.h>
 #include <wx/textctrl.h>
 #endif
 
+class AssFile;
 
 /// DOCME
 /// @class DialogProperties
@@ -52,7 +48,7 @@
 ///
 /// DOCME
 class DialogProperties : public wxDialog {
-private:
+	AssFile *subs;
 
 	/// DOCME
 	wxTextCtrl *TitleEdit;
@@ -106,19 +102,13 @@ private:
 	int SetInfoIfDifferent(wxString key,wxString value);
 
 public:
-	DialogProperties(wxWindow *parent);
+	DialogProperties(wxWindow *parent, AssFile *subs);
 	~DialogProperties();
 
 	DECLARE_EVENT_TABLE()
 };
 
-
-///////
 // IDs
 enum {
-
-	/// DOCME
 	BUTTON_FROM_VIDEO = 1100
 };
-
-

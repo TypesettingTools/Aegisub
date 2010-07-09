@@ -88,8 +88,9 @@ DEFINE_EVENT_TYPE(EVT_ADD_TEXT)
 /// @brief Constructor 
 /// @param parent 
 ///
-DialogFontsCollector::DialogFontsCollector(wxWindow *parent)
+DialogFontsCollector::DialogFontsCollector(wxWindow *parent, AssFile *ass)
 : wxDialog(parent,-1,_("Fonts Collector"),wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE)
+, subs(ass)
 {
 	// Set icon
 	SetIcon(BitmapToIcon(GETIMAGE(font_collector_button_24)));
@@ -100,7 +101,7 @@ DialogFontsCollector::DialogFontsCollector(wxWindow *parent)
 	// Destination box
 	wxString dest = lagi_wxString(OPT_GET("Path/Fonts Collector Destination")->GetString());
 	if (dest == _T("?script")) {
-		wxFileName filename(AssFile::top->filename);
+		wxFileName filename(subs->filename);
 		dest = filename.GetPath();
 	}
 	while (dest.Right(1) == _T("/")) dest = dest.Left(dest.Length()-1);
@@ -232,14 +233,14 @@ void DialogFontsCollector::OnStart(wxCommandEvent &event) {
 	}
 
 	// Start thread
-	wxThread *worker = new FontsCollectorThread(AssFile::top,foldername,this);
+	wxThread *worker = new FontsCollectorThread(subs,foldername,this);
 	worker->Create();
 	worker->Run();
 
 	// Set options
 	if (action == 1 || action == 2) {
 		wxString dest = foldername;
-		wxFileName filename(AssFile::top->filename);
+		wxFileName filename(subs->filename);
 		if (filename.GetPath() == dest) {
 			dest = _T("?script");
 		}

@@ -54,12 +54,12 @@
 /// @brief Constructor 
 /// @param parent 
 ///
-DialogExport::DialogExport (wxWindow *parent)
+DialogExport::DialogExport (wxWindow *parent, AssFile *subs)
 : wxDialog (parent, -1, _("Export"), wxDefaultPosition, wxSize(200,100), wxCAPTION | wxCLOSE_BOX, _T("Export"))
 {
 	// Filter list
 	wxSizer *TopSizer = new wxStaticBoxSizer(wxVERTICAL,this,_("Filters"));
-	Export = new AssExporter(AssFile::top);
+	Export = new AssExporter(subs);
 	wxArrayString filters = Export->GetAllFilterNames();
 	FilterList = new wxCheckListBox(this, Filter_List_Box, wxDefaultPosition, wxSize(200,100), filters);
 

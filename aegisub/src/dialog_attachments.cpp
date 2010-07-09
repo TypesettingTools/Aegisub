@@ -62,8 +62,9 @@
 /// @brief Constructor 
 /// @param parent 
 ///
-DialogAttachments::DialogAttachments(wxWindow *parent)
+DialogAttachments::DialogAttachments(wxWindow *parent, AssFile *ass)
 : wxDialog(parent,-1,_("Attachment List"),wxDefaultPosition,wxDefaultSize,wxDEFAULT_DIALOG_STYLE)
+, ass(ass)
 {
 	// Set icon
 	SetIcon(BitmapToIcon(GETIMAGE(attach_button_24)));
@@ -111,7 +112,7 @@ void DialogAttachments::UpdateList() {
 
 	// Fill list
 	AssAttachment *attach;
-	for (std::list<AssEntry*>::iterator cur = AssFile::top->Line.begin();cur != AssFile::top->Line.end();cur++) {
+	for (std::list<AssEntry*>::iterator cur = ass->Line.begin();cur != ass->Line.end();cur++) {
 		attach = dynamic_cast<AssAttachment*>(*cur);
 		if (attach) {
 			// Add item
@@ -132,14 +133,14 @@ DialogAttachments::~DialogAttachments() {
 
 	// Remove empty attachments sections from the file
 
-	std::list<AssEntry*>::iterator cur = AssFile::top->Line.end();
+	std::list<AssEntry*>::iterator cur = ass->Line.end();
 	--cur;
 
 	bool found_attachments = false;
 	bool removed_any = false;
 	wxString last_section_name;
 
-	while (cur != AssFile::top->Line.begin()) {
+	while (cur != ass->Line.begin()) {
 		if (!((*cur)->group == L"[Fonts]" || (*cur)->group == L"[Graphics]"))
 			break;
 
@@ -151,15 +152,15 @@ DialogAttachments::~DialogAttachments() {
 			// found section heading with no attachments in, remove it
 			wxString delgroup = (*cur)->group;
 			std::list<AssEntry*>::iterator di = cur;
-			while (++di != AssFile::top->Line.end() && (*di)->group == delgroup) {
+			while (++di != ass->Line.end() && (*di)->group == delgroup) {
 				delete *di;
-				AssFile::top->Line.erase(di);
+				ass->Line.erase(di);
 				di = cur;
 			}
 			di = cur;
 			--cur;
 			delete *di;
-			AssFile::top->Line.erase(di);
+			ass->Line.erase(di);
 			removed_any = true;
 			continue;
 		}
@@ -174,7 +175,7 @@ DialogAttachments::~DialogAttachments() {
 	}
 
 	if (removed_any) {
-		AssFile::top->Commit(_("remove empty attachments sections"));
+		ass->Commit(_("remove empty attachments sections"));
 	}
 }
 
@@ -220,10 +221,10 @@ void DialogAttachments::OnAttachFont(wxCommandEvent &event) {
 			return;
 		}
 		newAttach->group = _T("[Fonts]");
-		AssFile::top->InsertAttachment(newAttach);
+		ass->InsertAttachment(newAttach);
 	}
 
-	AssFile::top->Commit(_("attach font file"));
+	ass->Commit(_("attach font file"));
 
 	// Update
 	UpdateList();
@@ -258,10 +259,10 @@ void DialogAttachments::OnAttachGraphics(wxCommandEvent &event) {
 			return;
 		}
 		newAttach->group = _T("[Graphics]");
-		AssFile::top->InsertAttachment(newAttach);
+		ass->InsertAttachment(newAttach);
 	}
 
-	AssFile::top->Commit(_("attach graphics file"));
+	ass->Commit(_("attach graphics file"));
 
 	// Update
 	UpdateList();
@@ -312,11 +313,11 @@ void DialogAttachments::OnDelete(wxCommandEvent &event) {
 	// Loop through items in list
 	int i = listView->GetFirstSelected();
 	while (i != -1) {
-		AssFile::top->Line.remove((AssEntry*)wxUIntToPtr(listView->GetItemData(i)));
+		ass->Line.remove((AssEntry*)wxUIntToPtr(listView->GetItemData(i)));
 		i = listView->GetNextSelected(i);
 	}
 
-	AssFile::top->Commit(_("remove attachment"));
+	ass->Commit(_("remove attachment"));
 
 	// Update list
 	UpdateList();

@@ -260,7 +260,7 @@ void DialogShiftTimes::OnOK(wxCommandEvent &event) {
 	if (didSomething) {
 		if (backward) len = -len;
 		wxString message = _T("");
-		wxFileName assfile(AssFile::top->filename);
+		wxFileName assfile(grid->ass->filename);
 		wxString filename = assfile.GetFullName();
 
 		// File

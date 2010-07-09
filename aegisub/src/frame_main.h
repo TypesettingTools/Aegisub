@@ -46,7 +46,7 @@
 #include <wx/timer.h>
 #endif
 
-
+class AssFile;
 class VideoDisplay;
 class VideoSlider;
 class VideoZoomSlider;
@@ -73,6 +73,7 @@ class FrameMain: public wxFrame {
 	friend class SubtitlesGrid;
 
 private:
+	AssFile *ass;
 
 	/// DOCME
 

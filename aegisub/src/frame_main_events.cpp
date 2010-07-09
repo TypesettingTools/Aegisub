@@ -435,16 +435,16 @@ void FrameMain::OnMenuOpen (wxMenuEvent &event) {
 	else if (curMenu == editMenu) {
 		// Undo state
 		wxMenuItem *item;
-		wxString undo_text = _("&Undo") + wxString(_T(" ")) + AssFile::top->GetUndoDescription() + wxString(_T("\t")) + Hotkeys.GetText(_T("Undo"));
+		wxString undo_text = _("&Undo") + wxString(_T(" ")) + ass->GetUndoDescription() + wxString(_T("\t")) + Hotkeys.GetText(_T("Undo"));
 		item = editMenu->FindItem(Menu_Edit_Undo);
 		item->SetItemLabel(undo_text);
-		item->Enable(!AssFile::top->IsUndoStackEmpty());
+		item->Enable(!ass->IsUndoStackEmpty());
 
 		// Redo state
-		wxString redo_text = _("&Redo") + wxString(_T(" ")) + AssFile::top->GetRedoDescription() + wxString(_T("\t")) + Hotkeys.GetText(_T("Redo"));
+		wxString redo_text = _("&Redo") + wxString(_T(" ")) + ass->GetRedoDescription() + wxString(_T("\t")) + Hotkeys.GetText(_T("Redo"));
 		item = editMenu->FindItem(Menu_Edit_Redo);
 		item->SetItemLabel(redo_text);
-		item->Enable(!AssFile::top->IsRedoStackEmpty());
+		item->Enable(!ass->IsRedoStackEmpty());
 
 		// Copy/cut/paste
 		wxArrayInt sels = SubsGrid->GetSelection();
@@ -765,7 +765,7 @@ void FrameMain::OnExportSubtitles(wxCommandEvent &) {
 	}
 #endif
 
-	DialogExport exporter(this);
+	DialogExport exporter(this, ass);
 	exporter.ShowModal();
 }
 
@@ -927,7 +927,7 @@ void FrameMain::OnShift(wxCommandEvent&) {
 /// @brief Open properties 
 void FrameMain::OnOpenProperties (wxCommandEvent &) {
 	VideoContext::Get()->Stop();
-	DialogProperties Properties(this);
+	DialogProperties Properties(this, ass);
 	int res = Properties.ShowModal();
 	if (res) {
 		SubsGrid->CommitChanges();
@@ -946,7 +946,7 @@ void FrameMain::OnOpenStylesManager(wxCommandEvent&) {
 /// @brief Open attachments 
 void FrameMain::OnOpenAttachments(wxCommandEvent&) {
 	VideoContext::Get()->Stop();
-	DialogAttachments attachments(this);
+	DialogAttachments attachments(this, ass);
 	attachments.ShowModal();
 }
 
@@ -955,7 +955,7 @@ void FrameMain::OnOpenTranslation(wxCommandEvent&) {
 	VideoContext::Get()->Stop();
 	int start = SubsGrid->GetFirstSelRow();
 	if (start == -1) start = 0;
-	DialogTranslation Trans(this,AssFile::top,SubsGrid,start,true);
+	DialogTranslation Trans(this,ass,SubsGrid,start,true);
 	Trans.ShowModal();
 }
 
@@ -968,7 +968,7 @@ void FrameMain::OnOpenSpellCheck (wxCommandEvent &) {
 /// @brief Open Fonts Collector 
 void FrameMain::OnOpenFontsCollector (wxCommandEvent &) {
 	VideoContext::Get()->Stop();
-	DialogFontsCollector Collector(this);
+	DialogFontsCollector Collector(this, ass);
 	Collector.ShowModal();
 }
 
@@ -1170,7 +1170,7 @@ void FrameMain::OnUndo(wxCommandEvent&) {
 	VideoContext::Get()->Stop();
 	std::vector<int> selected_lines = SubsGrid->GetAbsoluteSelection();
 	int active_line = SubsGrid->GetDialogueIndex(SubsGrid->GetActiveLine());
-	AssFile::top->Undo();
+	ass->Undo();
 	UpdateTitle();
 	SubsGrid->UpdateMaps();
 	SubsGrid->SetSelectionFromAbsolute(selected_lines);
@@ -1182,7 +1182,7 @@ void FrameMain::OnRedo(wxCommandEvent&) {
 	VideoContext::Get()->Stop();
 	std::vector<int> selected_lines = SubsGrid->GetAbsoluteSelection();
 	int active_line = SubsGrid->GetDialogueIndex(SubsGrid->GetActiveLine());
-	AssFile::top->Redo();
+	ass->Redo();
 	UpdateTitle();
 	SubsGrid->UpdateMaps();
 	SubsGrid->SetSelectionFromAbsolute(selected_lines);
@@ -1354,22 +1354,22 @@ void FrameMain::OnSelect (wxCommandEvent &) {
 
 /// @brief Sort subtitles by start time
 void FrameMain::OnSortStart (wxCommandEvent &) {
-	AssFile::top->Sort();
-	AssFile::top->Commit(_("sort"));
+	ass->Sort();
+	ass->Commit(_("sort"));
 	SubsGrid->UpdateMaps();
 	SubsGrid->CommitChanges();
 }
 /// @brief Sort subtitles by end time
 void FrameMain::OnSortEnd (wxCommandEvent &) {
-	AssFile::top->Sort(AssFile::CompEnd);
-	AssFile::top->Commit(_("sort"));
+	ass->Sort(AssFile::CompEnd);
+	ass->Commit(_("sort"));
 	SubsGrid->UpdateMaps();
 	SubsGrid->CommitChanges();
 }
 /// @brief Sort subtitles by style name
 void FrameMain::OnSortStyle (wxCommandEvent &) {
-	AssFile::top->Sort(AssFile::CompStyle);
-	AssFile::top->Commit(_("sort"));
+	ass->Sort(AssFile::CompStyle);
+	ass->Commit(_("sort"));
 	SubsGrid->UpdateMaps();
 	SubsGrid->CommitChanges();
 }
@@ -1385,9 +1385,9 @@ void FrameMain::OnOpenStylingAssistant (wxCommandEvent &) {
 void FrameMain::OnAutoSave(wxTimerEvent &) {
 	// Auto Save
 	try {
-		if (AssFile::top->loaded) {
+		if (ass->loaded) {
 			// Set path
-			wxFileName origfile(AssFile::top->filename);
+			wxFileName origfile(ass->filename);
 			wxString path = lagi_wxString(OPT_GET("Path/Auto/Save")->GetString());
 			if (path.IsEmpty()) path = origfile.GetPath();
 			wxFileName dstpath(path);
@@ -1406,7 +1406,7 @@ void FrameMain::OnAutoSave(wxTimerEvent &) {
 			wxFileName temp = dstpath;
 			temp.SetName(dstpath.GetName() + ".temp");
 
-			AssFile::top->Save(temp.GetFullPath(),false,false);
+			ass->Save(temp.GetFullPath(),false,false);
 			wxRenameFile(temp.GetFullPath(), dstpath.GetFullPath());
 
 			// Set status bar

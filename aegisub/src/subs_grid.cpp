@@ -100,12 +100,12 @@ END_EVENT_TABLE()
 /// @param style    
 /// @param name     
 ///
-SubtitlesGrid::SubtitlesGrid(FrameMain* parentFr, wxWindow *parent, wxWindowID id, const wxPoint& pos, const wxSize& size, long style, const wxString& name)
-                        : BaseGrid(parent,id,pos,size,style,name)
+SubtitlesGrid::SubtitlesGrid(FrameMain* parentFr, wxWindow *parent, wxWindowID id, AssFile *subs, const wxPoint& pos, const wxSize& size, long style, const wxString& name)
+: BaseGrid(parent,id,pos,size,style,name)
+, ass(subs)
 {
 	// Vars
 	byFrame = false;
-	ass = NULL;
 	editBox = NULL;
 	parentFrame = parentFr;
 }
@@ -789,7 +789,6 @@ void SubtitlesGrid::OnAudioClip(wxCommandEvent &event) {
 /// @param _ass 
 ///
 void SubtitlesGrid::LoadDefault () {
-	ass = AssFile::top;
 	ass->LoadDefault();
 	UpdateMaps();
 
@@ -814,8 +813,6 @@ void SubtitlesGrid::UpdateMaps() {
 
 	line_iter_map.clear();
 	BaseGrid::ClearMaps();
-
-	ass = AssFile::top;
 
 	BaseGrid::UpdateMaps();
 
@@ -1160,7 +1157,7 @@ void SubtitlesGrid::AdjoinLines(int n1,int n2,bool setStart) {
 	}
 
 	// Commit
-	AssFile::top->Commit(_("adjoin"));
+	ass->Commit(_("adjoin"));
 	CommitChanges();
 }
 

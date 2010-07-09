@@ -981,18 +981,6 @@ void BaseGrid::SetColumnWidths() {
 		endLen = fw + 10;
 	}
 
-	// Style length
-	if (false && AssFile::top) {
-		AssStyle *curStyle;
-		for (entryIter curIter=AssFile::top->Line.begin();curIter!=AssFile::top->Line.end();curIter++) {
-			curStyle = dynamic_cast<AssStyle*>(*curIter);
-			if (curStyle) {
-				dc.GetTextExtent(curStyle->name, &fw, &fh, NULL, NULL, &font);
-				if (fw > styleLen) styleLen = fw;
-			}
-		}
-	}
-
 	// Finish actor/effect/style
 	if (actorLen) actorLen += 10;
 	if (effectLen) effectLen += 10;

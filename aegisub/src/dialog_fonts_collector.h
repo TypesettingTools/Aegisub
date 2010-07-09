@@ -34,11 +34,6 @@
 /// @ingroup tools_ui font_collector
 ///
 
-
-
-
-////////////
-// Includes
 #ifndef AGI_PRE
 #include <wx/button.h>
 #include <wx/dialog.h>
@@ -48,9 +43,6 @@
 #include <wx/textctrl.h>
 #endif
 
-
-//////////////
-// Prototypes
 class AssFile;
 class AssOverrideParameter;
 class DialogFontsCollector;
@@ -58,16 +50,12 @@ class FrameMain;
 class wxZipOutputStream;
 class ScintillaTextCtrl;
 
-
-
 /// DOCME
 /// @class FontsCollectorThread
 /// @brief DOCME
 ///
 /// DOCME
 class FontsCollectorThread : public wxThread {
-private:
-
 	/// DOCME
 	AssFile *subs;
 
@@ -114,8 +102,6 @@ public:
 	static void GetFonts (wxString tagName,int par_n,AssOverrideParameter *param,void *usr);
 };
 
-
-
 /// DOCME
 /// @class DialogFontsCollector
 /// @brief DOCME
@@ -124,7 +110,7 @@ public:
 class DialogFontsCollector : public wxDialog {
 	friend class FontsCollectorThread;
 
-private:
+	AssFile *subs;
 
 	/// DOCME
 	wxTextCtrl *DestBox;
@@ -158,7 +144,7 @@ private:
 	void Update(int value=-1);
 
 public:
-	DialogFontsCollector(wxWindow *parent);
+	DialogFontsCollector(wxWindow *parent, AssFile *subs);
 	~DialogFontsCollector();
 
 	DECLARE_EVENT_TABLE()

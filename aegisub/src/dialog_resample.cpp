@@ -64,7 +64,7 @@ DialogResample::DialogResample(wxWindow *parent, SubtitlesGrid *_grid)
 	SetIcon(BitmapToIcon(GETIMAGE(resample_toolbutton_24)));
 
 	// Variables
-	AssFile *subs = AssFile::top;
+	AssFile *subs = _grid->ass;
 	grid = _grid;
 
 	// Margins
@@ -224,7 +224,7 @@ void DialogResample::DoResampleTags (wxString name,int n,AssOverrideParameter *c
 ///
 void DialogResample::OnResample (wxCommandEvent &event) {
 	// Resolutions
-	AssFile *subs = AssFile::top;
+	AssFile *subs = grid->ass;
 	int x1,y1;
 	subs->GetResolution(x1,y1);
 	long x2 = 0;

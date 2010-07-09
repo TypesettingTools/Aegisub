@@ -101,7 +101,7 @@ public:
 	/// DOCME
 	AssFile *ass;
 
-	SubtitlesGrid(FrameMain* parentFrame,wxWindow *parent, wxWindowID id, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = wxWANTS_CHARS, const wxString& name = wxPanelNameStr);
+	SubtitlesGrid(FrameMain* parentFrame,wxWindow *parent, wxWindowID id, AssFile *subs, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = wxWANTS_CHARS, const wxString& name = wxPanelNameStr);
 	~SubtitlesGrid();
 
 	void LoadDefault();

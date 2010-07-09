@@ -1014,9 +1014,8 @@ namespace Automation4 {
 			description = wxString(lua_tostring(L, 1), wxConvUTF8);
 			lua_pop(L, 1);
 		}
-		AssFile::top->Commit(description);
+		laf->ass->Commit(description);
 
-		laf->ass = AssFile::top; // make sure we're still working on the most recent undo point
 		return 0;
 	}
 
