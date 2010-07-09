@@ -1056,6 +1056,10 @@ void SubtitlesGrid::DeleteLines(wxArrayInt target, bool flagModified) {
 		CommitChanges();
 	}
 
+	if (old_active_line_index >= GetRows()) {
+		old_active_line_index = GetRows() - 1;
+	}
+
 	// Update selected line
 	SelectRow(old_active_line_index);
 	SetActiveLine(GetDialogue(old_active_line_index));
