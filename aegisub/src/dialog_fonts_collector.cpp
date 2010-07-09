@@ -514,7 +514,7 @@ void FontsCollectorThread::Collect() {
 			// Modify file if it was attaching
 			if (oper == 3 && someOk) {
 				wxMutexGuiEnter();
-				subs->FlagAsModified(_("font attachment"));
+				subs->Commit(_("font attachment"));
 				collector->main->SubsGrid->CommitChanges();
 				wxMutexGuiLeave();
 			}

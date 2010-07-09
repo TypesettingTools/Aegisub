@@ -435,16 +435,16 @@ void FrameMain::OnMenuOpen (wxMenuEvent &event) {
 	else if (curMenu == editMenu) {
 		// Undo state
 		wxMenuItem *item;
-		wxString undo_text = _("&Undo") + wxString(_T(" ")) + AssFile::GetUndoDescription() + wxString(_T("\t")) + Hotkeys.GetText(_T("Undo"));
+		wxString undo_text = _("&Undo") + wxString(_T(" ")) + AssFile::top->GetUndoDescription() + wxString(_T("\t")) + Hotkeys.GetText(_T("Undo"));
 		item = editMenu->FindItem(Menu_Edit_Undo);
 		item->SetItemLabel(undo_text);
-		item->Enable(!AssFile::IsUndoStackEmpty());
+		item->Enable(!AssFile::top->IsUndoStackEmpty());
 
 		// Redo state
-		wxString redo_text = _("&Redo") + wxString(_T(" ")) + AssFile::GetRedoDescription() + wxString(_T("\t")) + Hotkeys.GetText(_T("Redo"));
+		wxString redo_text = _("&Redo") + wxString(_T(" ")) + AssFile::top->GetRedoDescription() + wxString(_T("\t")) + Hotkeys.GetText(_T("Redo"));
 		item = editMenu->FindItem(Menu_Edit_Redo);
 		item->SetItemLabel(redo_text);
-		item->Enable(!AssFile::IsRedoStackEmpty());
+		item->Enable(!AssFile::top->IsRedoStackEmpty());
 
 		// Copy/cut/paste
 		wxArrayInt sels = SubsGrid->GetSelection();
@@ -1133,7 +1133,7 @@ void FrameMain::OnSnapToScene (wxCommandEvent &) {
 
 	// Commit
 	SubsGrid->editBox->Update(true);
-	SubsGrid->ass->FlagAsModified(_("snap to scene"));
+	SubsGrid->ass->Commit(_("snap to scene"));
 	SubsGrid->CommitChanges();
 }
 
@@ -1160,7 +1160,7 @@ void FrameMain::OnShiftToFrame (wxCommandEvent &) {
 	}
 
 	// Commit
-	SubsGrid->ass->FlagAsModified(_("shift to frame"));
+	SubsGrid->ass->Commit(_("shift to frame"));
 	SubsGrid->CommitChanges();
 	SubsGrid->editBox->Update(true,false);
 }
@@ -1168,17 +1168,17 @@ void FrameMain::OnShiftToFrame (wxCommandEvent &) {
 /// @brief Undo 
 void FrameMain::OnUndo(wxCommandEvent&) {
 	VideoContext::Get()->Stop();
-	AssFile::StackPop();
+	AssFile::top->Undo();
+	UpdateTitle();
 	SubsGrid->UpdateMaps();
-	AssFile::Popping = false;
 }
 
 /// @brief Redo 
 void FrameMain::OnRedo(wxCommandEvent&) {
 	VideoContext::Get()->Stop();
-	AssFile::StackRedo();
+	AssFile::top->Redo();
+	UpdateTitle();
 	SubsGrid->UpdateMaps();
-	AssFile::Popping = false;
 }
 
 /// @brief Find 
@@ -1347,21 +1347,21 @@ void FrameMain::OnSelect (wxCommandEvent &) {
 /// @brief Sort subtitles by start time
 void FrameMain::OnSortStart (wxCommandEvent &) {
 	AssFile::top->Sort();
-	AssFile::top->FlagAsModified(_("sort"));
+	AssFile::top->Commit(_("sort"));
 	SubsGrid->UpdateMaps();
 	SubsGrid->CommitChanges();
 }
 /// @brief Sort subtitles by end time
 void FrameMain::OnSortEnd (wxCommandEvent &) {
 	AssFile::top->Sort(AssFile::CompEnd);
-	AssFile::top->FlagAsModified(_("sort"));
+	AssFile::top->Commit(_("sort"));
 	SubsGrid->UpdateMaps();
 	SubsGrid->CommitChanges();
 }
 /// @brief Sort subtitles by style name
 void FrameMain::OnSortStyle (wxCommandEvent &) {
 	AssFile::top->Sort(AssFile::CompStyle);
-	AssFile::top->FlagAsModified(_("sort"));
+	AssFile::top->Commit(_("sort"));
 	SubsGrid->UpdateMaps();
 	SubsGrid->CommitChanges();
 }

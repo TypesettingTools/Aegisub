@@ -266,7 +266,7 @@ void VisualTool<FeatureType>::Commit(bool full, wxString message) {
 		if (message.empty()) {
 			message = _("visual typesetting");
 		}
-		grid->ass->FlagAsModified(message);
+		grid->ass->Commit(message);
 	}
 	grid->CommitChanges(false,!full);
 	if (full)

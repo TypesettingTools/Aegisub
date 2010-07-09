@@ -427,7 +427,7 @@ void SubtitlesGrid::OnSplitByKaraoke (wxCommandEvent &event) {
 		didSplit |= SplitLineByKaraoke(sels[i]);
 	}
 	if (didSplit) {
-		ass->FlagAsModified(_("splitting"));
+		ass->Commit(_("splitting"));
 		CommitChanges();
 	}
 	EndBatch();
@@ -692,7 +692,7 @@ void SubtitlesGrid::OnRecombine(wxCommandEvent &event) {
 		}
 
 		// Commit
-		ass->FlagAsModified(_("combining"));
+		ass->Commit(_("combining"));
 		CommitChanges();
 	}
 
@@ -848,7 +848,7 @@ void SubtitlesGrid::SwapLines(int n1,int n2) {
 	std::swap(*dlg1, *dlg2);
 	UpdateMaps();
 
-	ass->FlagAsModified(_("swap lines"));
+	ass->Commit(_("swap lines"));
 	CommitChanges();
 }
 
@@ -872,7 +872,7 @@ void SubtitlesGrid::InsertLine(AssDialogue *line,int n,bool after,bool update) {
 
 	// Update
 	if (update) {
-		ass->FlagAsModified(_("line insertion"));
+		ass->Commit(_("line insertion"));
 		CommitChanges();
 		AdjustScrollbar();
 	}
@@ -1005,7 +1005,7 @@ void SubtitlesGrid::PasteLines(int n,bool pasteOver) {
 			// Commit
 			UpdateMaps();
 			AdjustScrollbar();
-			ass->FlagAsModified(_("paste"));
+			ass->Commit(_("paste"));
 			CommitChanges();
 
 			// Set selection
@@ -1055,7 +1055,7 @@ void SubtitlesGrid::DeleteLines(wxArrayInt target, bool flagModified) {
 	UpdateMaps();
 	AdjustScrollbar();
 	if (flagModified) {
-		ass->FlagAsModified(_("delete"));
+		ass->Commit(_("delete"));
 		CommitChanges();
 	}
 
@@ -1118,7 +1118,7 @@ void SubtitlesGrid::JoinLines(int n1,int n2,bool concat) {
 	// Delete remaining lines (this will auto commit)
 	DeleteLines(GetRangeArray(n1+1,n2), false);
 
-	ass->FlagAsModified(_("join lines"));
+	ass->Commit(_("join lines"));
 	CommitChanges();
 
 	// Select new line
@@ -1160,7 +1160,7 @@ void SubtitlesGrid::AdjoinLines(int n1,int n2,bool setStart) {
 	}
 
 	// Commit
-	AssFile::top->FlagAsModified(_("adjoin"));
+	AssFile::top->Commit(_("adjoin"));
 	CommitChanges();
 }
 
@@ -1210,7 +1210,7 @@ void SubtitlesGrid::JoinAsKaraoke(int n1,int n2) {
 	// Delete remaining lines (this will auto commit)
 	DeleteLines(GetRangeArray(n1+1,n2), false);
 
-	ass->FlagAsModified(_("join as karaoke"));
+	ass->Commit(_("join as karaoke"));
 	CommitChanges();
 
 	// Select new line
@@ -1330,7 +1330,7 @@ void SubtitlesGrid::SplitLine(int n,int pos,int mode,wxString textIn) {
 	//editBox->SetToLine(n);
 
 	// Commit
-	ass->FlagAsModified(_("split"));
+	ass->Commit(_("split"));
 	CommitChanges();
 }
 
@@ -1439,7 +1439,7 @@ void SubtitlesGrid::SetSubsToVideo(bool start) {
 
 	// Commit
 	if (modified) {
-		ass->FlagAsModified(_("timing"));
+		ass->Commit(_("timing"));
 		CommitChanges();
 		editBox->Update(true);
 	}

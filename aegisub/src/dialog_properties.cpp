@@ -211,7 +211,7 @@ void DialogProperties::OnOK(wxCommandEvent &event) {
 	count += SetInfoIfDifferent(_T("Collisions"),col[collision->GetSelection()]);
 	count += SetInfoIfDifferent(_T("ScaledBorderAndShadow"),ScaleBorder->GetValue()? _T("yes") : _T("no"));
 
-	if (count) AssFile::top->FlagAsModified(_("property changes"));
+	if (count) AssFile::top->Commit(_("property changes"));
 
 	EndModal(count?1:0);
 }

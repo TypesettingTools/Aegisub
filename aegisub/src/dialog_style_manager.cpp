@@ -576,7 +576,7 @@ void DialogStyleManager::OnCopyToCurrent (wxCommandEvent &) {
 	for (list<wxString>::iterator name = copied.begin(); name != copied.end(); ++name) {
 		CurrentList->SetStringSelection(*name, true);
 	}
-	grid->ass->FlagAsModified(_("style copy"));
+	grid->ass->Commit(_("style copy"));
 	grid->CommitChanges();
 	wxCommandEvent dummy;
 	OnCurrentChange(dummy);
@@ -625,7 +625,7 @@ void DialogStyleManager::OnCurrentCopy (wxCommandEvent &) {
 	}
 	else delete temp;
 
-	grid->ass->FlagAsModified(_("style copy"));
+	grid->ass->Commit(_("style copy"));
 	grid->CommitChanges();
 	UpdateMoveButtons();
 }
@@ -678,7 +678,7 @@ void DialogStyleManager::PasteToCurrent() {
 				AssFile::top->InsertStyle(s);
 				LoadCurrentStyles(AssFile::top);
 
-				grid->ass->FlagAsModified(_("style paste"));
+				grid->ass->Commit(_("style paste"));
 				grid->CommitChanges();
 			}
 			else
@@ -822,7 +822,7 @@ void DialogStyleManager::OnCurrentDelete (wxCommandEvent &) {
 		CurrentCopy->Enable(false);
 		CurrentDelete->Enable(false);
 
-		grid->ass->FlagAsModified(_("style delete"));
+		grid->ass->Commit(_("style delete"));
 		grid->CommitChanges();
 	}
 	UpdateMoveButtons();
@@ -884,7 +884,7 @@ void DialogStyleManager::OnCurrentImport(wxCommandEvent &) {
 			// Update
 			if (modified) {
 				LoadCurrentStyles(grid->ass);
-				grid->ass->FlagAsModified(_("style import"));
+				grid->ass->Commit(_("style import"));
 				grid->CommitChanges();
 			}
 		}
@@ -1081,7 +1081,7 @@ void DialogStyleManager::MoveStyles(bool storage, int type) {
 		}
 
 		// Flag as modified
-		grid->ass->FlagAsModified(_("style move"));
+		grid->ass->Commit(_("style move"));
 		grid->CommitChanges();
 	}
 

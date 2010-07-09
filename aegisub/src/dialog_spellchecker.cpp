@@ -390,7 +390,7 @@ void DialogSpellChecker::Replace() {
 	lastPos = wordStart + replaceWord->GetValue().Length();
 
 	// Commit
-	grid->ass->FlagAsModified(_("Spell check replace"));
+	grid->ass->Commit(_("Spell check replace"));
 	grid->CommitChanges();
 }
 

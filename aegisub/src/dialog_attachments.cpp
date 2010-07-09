@@ -174,7 +174,7 @@ DialogAttachments::~DialogAttachments() {
 	}
 
 	if (removed_any) {
-		AssFile::top->FlagAsModified(_("remove empty attachments sections"));
+		AssFile::top->Commit(_("remove empty attachments sections"));
 	}
 }
 
@@ -223,7 +223,7 @@ void DialogAttachments::OnAttachFont(wxCommandEvent &event) {
 		AssFile::top->InsertAttachment(newAttach);
 	}
 
-	AssFile::top->FlagAsModified(_("attach font file"));
+	AssFile::top->Commit(_("attach font file"));
 
 	// Update
 	UpdateList();
@@ -261,7 +261,7 @@ void DialogAttachments::OnAttachGraphics(wxCommandEvent &event) {
 		AssFile::top->InsertAttachment(newAttach);
 	}
 
-	AssFile::top->FlagAsModified(_("attach graphics file"));
+	AssFile::top->Commit(_("attach graphics file"));
 
 	// Update
 	UpdateList();
@@ -316,7 +316,7 @@ void DialogAttachments::OnDelete(wxCommandEvent &event) {
 		i = listView->GetNextSelected(i);
 	}
 
-	AssFile::top->FlagAsModified(_("remove attachment"));
+	AssFile::top->Commit(_("remove attachment"));
 
 	// Update list
 	UpdateList();

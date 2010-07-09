@@ -62,26 +62,15 @@ typedef std::list<AssEntry*>::iterator entryIter;
 ///
 /// DOCME
 class AssFile {
-private:
-
-	/// DOCME
-	bool Modified;
-
-
-	/// DOCME
-	static std::list<AssFile*> UndoStack;
-
-	/// DOCME
-	static std::list<AssFile*> RedoStack;
-
-	/// DOCME
-	static bool StackModified;
-	static void StackClear();
-
-	wxString undodescription;
+	std::list<AssFile> UndoStack;
+	std::list<AssFile> RedoStack;
+	wxString undoDescription;
+	/// Revision counter for undo coalescing and modified state tracking
+	int commitId;
+	/// Last saved version of this file
+	int savedCommitId;
 
 public:
-
 	/// The lines in the file
 	std::list<AssEntry*> Line;
 	/// The filename of this file, if any
@@ -95,12 +84,10 @@ public:
 	~AssFile();
 
 	/// Does the file have unsaved changes?
-	bool IsModified();
-	/// @brief Flag the file as modified and push a copy onto the undo stack
-	/// @param desc Undo description
-	void FlagAsModified(wxString desc);
+	bool IsModified() const {return commitId != savedCommitId; };
 	/// Clear the file
 	void Clear();
+
 	/// Discard some parsed data to reduce the size of the undo stack
 	void CompressForStack();
 	/// @brief Load default file
@@ -119,6 +106,7 @@ public:
 	/// @return Pointer to style or NULL
 	AssStyle *GetStyle(wxString name);
 
+	void swap(AssFile &) throw();
 
 	/// @brief Load from a file
 	/// @param file File name
@@ -164,26 +152,23 @@ public:
 	/// @param[out] outGroup Group it was actually added to; attachments do something strange here
 	void AddLine(wxString data,wxString group,int &version,wxString *outGroup=NULL);
 
-	/// Pop subs from stack and set 'top' to it
-	static void StackPop();
-	/// Redo action on stack
-	static void StackRedo();
-	/// @brief Put a copy of 'top' on the stack
-	/// @param desc Undo message
-	static void StackPush(wxString desc);
-	/// Clear the stack. Do before loading new subtitles.
-	static void StackReset();
+	/// @brief Flag the file as modified and push a copy onto the undo stack
+	/// @param desc     Undo description
+	/// @param commitId Commit to amend rather than pushing a new commit
+	/// @return Unique identifier for the new undo group
+	int Commit(wxString desc, int commitId = -1);
+	/// @brief Undo the last set of changes to the file
+	void Undo();
+	/// @brief Redo the last undone changes
+	void Redo();
 	/// Check if undo stack is empty
-	static bool IsUndoStackEmpty();
+	bool IsUndoStackEmpty() const { return UndoStack.size() <= 1; };
 	/// Check if redo stack is empty
-	static bool IsRedoStackEmpty();
+	bool IsRedoStackEmpty() const { return RedoStack.empty(); };
 	/// Get the description of the first undoable change
-	static wxString GetUndoDescription();
+	wxString GetUndoDescription() const;
 	/// Get the description of the first redoable change
-	static wxString GetRedoDescription();
-
-	/// Flags the stack as popping. You must unset this after popping
-	static bool Popping;
+	wxString GetRedoDescription() const;
 
 	/// Current script file. It is "above" the stack.
 	static AssFile *top;

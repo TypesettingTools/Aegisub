@@ -570,6 +570,7 @@ void FrameMain::InitMenu() {
 
 /// @brief Initialize contents 
 void FrameMain::InitContents() {
+	AssFile::top = new AssFile;
 	// Set a background panel
 	StartupLog(_T("Create background panel"));
 	Panel = new wxPanel(this,-1,wxDefaultPosition,wxDefaultSize,wxTAB_TRAVERSAL | wxCLIP_CHILDREN);
@@ -590,8 +591,6 @@ void FrameMain::InitContents() {
 	StartupLog(_T("Create subtitles grid"));
 	SubsGrid = new SubtitlesGrid(this,Panel,-1,wxDefaultPosition,wxSize(600,100),wxWANTS_CHARS | wxSUNKEN_BORDER,_T("Subs grid"));
 	BottomSizer->Add(SubsGrid,1,wxEXPAND | wxLEFT | wxRIGHT | wxBOTTOM,0);
-	StartupLog(_T("Reset undo stack"));
-	AssFile::StackReset();
 	videoBox->videoSlider->grid = SubsGrid;
 	VideoContext::Get()->grid = SubsGrid;
 	StartupLog(_T("Reset video zoom"));
@@ -638,7 +637,6 @@ void FrameMain::DeInitContents() {
 	SubsGrid->ClearMaps();
 	delete EditBox;
 	delete videoBox;
-	AssFile::StackReset();
 	delete AssFile::top;
 	HelpButton::ClearPages();
 	VideoContext::Get()->audio = NULL;
@@ -708,7 +706,6 @@ void FrameMain::LoadSubtitles (wxString filename,wxString charset) {
 
 		// Proceed into loading
 		SubsGrid->ClearMaps();
-		AssFile::StackReset();
 		if (isFile) {
 			AssFile::top->Load(filename,charset);
 			SubsGrid->UpdateMaps();
@@ -1135,7 +1132,7 @@ void FrameMain::LoadVideo(wxString file,bool autoload) {
 					// Always change script res
 					SubsGrid->ass->SetScriptInfo(_T("PlayResX"), wxString::Format(_T("%d"), vidx));
 					SubsGrid->ass->SetScriptInfo(_T("PlayResY"), wxString::Format(_T("%d"), vidy));
-					SubsGrid->ass->FlagAsModified(_("Change script resolution"));
+					SubsGrid->ass->Commit(_("Change script resolution"));
 					SubsGrid->CommitChanges();
 					break;
 				case 0:
@@ -1350,8 +1347,8 @@ bool FrameMain::LoadList(wxArrayString list) {
 
 /// @brief Sets the descriptions for undo/redo 
 void FrameMain::SetUndoRedoDesc() {
-	editMenu->SetHelpString(0,_T("Undo ")+AssFile::GetUndoDescription());
-	editMenu->SetHelpString(1,_T("Redo ")+AssFile::GetRedoDescription());
+	editMenu->SetHelpString(0,_T("Undo ")+AssFile::top->GetUndoDescription());
+	editMenu->SetHelpString(1,_T("Redo ")+AssFile::top->GetRedoDescription());
 }
 
 /// @brief Check if ASSDraw is available 

@@ -311,7 +311,7 @@ void DialogShiftTimes::OnOK(wxCommandEvent &event) {
 	OPT_SET("Tool/Shift Times/Direction")->SetBool(backward);
 
 	// End dialog
-	grid->ass->FlagAsModified(_("shifting"));
+	grid->ass->Commit(_("shifting"));
 	grid->CommitChanges();
 	grid->UpdateMaps();
 	grid->editBox->Update();

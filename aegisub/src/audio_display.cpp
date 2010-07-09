@@ -1209,7 +1209,7 @@ void AudioDisplay::CommitChanges (bool nextLine) {
 
 		// Update grid
 		grid->editBox->Update(!karaoke->enabled);
-		grid->ass->FlagAsModified(_T(""));
+		grid->ass->Commit(_T(""));
 		grid->CommitChanges();
 		karaoke->SetSelection(karaSelStart, karaSelEnd);
 		blockUpdate = false;
