@@ -1168,17 +1168,25 @@ void FrameMain::OnShiftToFrame (wxCommandEvent &) {
 /// @brief Undo 
 void FrameMain::OnUndo(wxCommandEvent&) {
 	VideoContext::Get()->Stop();
+	std::vector<int> selected_lines = SubsGrid->GetAbsoluteSelection();
+	int active_line = SubsGrid->GetDialogueIndex(SubsGrid->GetActiveLine());
 	AssFile::top->Undo();
 	UpdateTitle();
 	SubsGrid->UpdateMaps();
+	SubsGrid->SetSelectionFromAbsolute(selected_lines);
+	SubsGrid->SetActiveLine(SubsGrid->GetDialogue(active_line));
 }
 
 /// @brief Redo 
 void FrameMain::OnRedo(wxCommandEvent&) {
 	VideoContext::Get()->Stop();
+	std::vector<int> selected_lines = SubsGrid->GetAbsoluteSelection();
+	int active_line = SubsGrid->GetDialogueIndex(SubsGrid->GetActiveLine());
 	AssFile::top->Redo();
 	UpdateTitle();
 	SubsGrid->UpdateMaps();
+	SubsGrid->SetSelectionFromAbsolute(selected_lines);
+	SubsGrid->SetActiveLine(SubsGrid->GetDialogue(active_line));
 }
 
 /// @brief Find 
