@@ -88,8 +88,6 @@ public:
 	/// Clear the file
 	void Clear();
 
-	/// Discard some parsed data to reduce the size of the undo stack
-	void CompressForStack();
 	/// @brief Load default file
 	/// @param defline Add a blank line to the file
 	void LoadDefault(bool defline=true);

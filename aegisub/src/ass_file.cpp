@@ -766,20 +766,12 @@ wxString AssFile::GetWildcardList(int mode) {
 	else return _T("");
 }
 
-void AssFile::CompressForStack() {
-	for (entryIter cur=Line.begin();cur!=Line.end();cur++) {
-		AssDialogue *diag = dynamic_cast<AssDialogue*>(*cur);
-		if (diag) diag->ClearBlocks();
-	}
-}
-
 int AssFile::Commit(wxString desc, int amendId) {
 	++commitId;
 	// Allow coalescing only if it's the last change and the file has not been
 	// saved since the last change
 	if (commitId == amendId+1 && RedoStack.empty() && savedCommitId != commitId) {
 		UndoStack.back() = *this;
-		UndoStack.back().CompressForStack();
 		return commitId;
 	}
 
@@ -788,7 +780,6 @@ int AssFile::Commit(wxString desc, int amendId) {
 	// Place copy on stack
 	undoDescription = desc;
 	UndoStack.push_back(*this);
-	UndoStack.back().CompressForStack();
 
 	// Cap depth
 	int depth = OPT_GET("Limits/Undo Levels")->GetInt();

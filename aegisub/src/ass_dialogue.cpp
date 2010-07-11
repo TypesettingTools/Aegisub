@@ -108,18 +108,11 @@ AssDialogue::AssDialogue(wxString _data,int version)
 }
 
 AssDialogue::~AssDialogue () {
-	Clear();
-}
-
-void AssDialogue::Clear () {
-	ClearBlocks();
+	delete_clear(Blocks);
 }
 
 void AssDialogue::ClearBlocks() {
-	for (std::vector<AssDialogueBlock*>::iterator cur=Blocks.begin();cur!=Blocks.end();cur++) {
-		delete *cur;
-	}
-	Blocks.clear();
+	delete_clear(Blocks);
 }
 
 bool AssDialogue::Parse(wxString rawData, int version) {

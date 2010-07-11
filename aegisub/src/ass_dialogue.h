@@ -220,9 +220,6 @@ public:
 	const wxString GetEntryData() const;
 	/// Do nothing
 	void SetEntryData(wxString) { }
-	/// Synonym for ClearBlocks
-	void Clear();
-
 
 	/// @brief Set a margin 
 	/// @param value New value of the margin
