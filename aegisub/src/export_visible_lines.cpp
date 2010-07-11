@@ -61,23 +61,19 @@ void AssLimitToVisibleFilter::Init() {
 /// @brief Process 
 /// @param subs          
 /// @param export_dialog 
-void AssLimitToVisibleFilter::ProcessSubs(AssFile *subs, wxWindow *export_dialog) {
+void AssLimitToVisibleFilter::ProcessSubs(AssFile *subs, wxWindow *) {
 	if (frame == -1) return;
 
-	AssDialogue *diag;
-	entryIter cur, next = subs->Line.begin();
-	while (next != subs->Line.end()) {
-		cur = next++;
+	int time = VideoContext::Get()->TimeAtFrame(frame);
 
-		diag = dynamic_cast<AssDialogue*>(*cur);
-		if (diag) {
-			// Invisible, remove frame
-			if (VideoContext::Get()->FrameAtTime(diag->Start.GetMS(),agi::vfr::START) > frame ||
-				VideoContext::Get()->FrameAtTime(diag->End.GetMS(),agi::vfr::END) < frame) {
-
-				delete *cur;
-				subs->Line.erase(cur);
-			}
+	for (entryIter cur = subs->Line.begin(); cur != subs->Line.end(); ) {
+		AssDialogue *diag = dynamic_cast<AssDialogue*>(*cur);
+		if (diag && (diag->Start.GetMS() > time || diag->End.GetMS() <= time)) {
+			delete *cur;
+			cur = subs->Line.erase(cur);
+		}
+		else {
+			++cur;
 		}
 	}
 }
