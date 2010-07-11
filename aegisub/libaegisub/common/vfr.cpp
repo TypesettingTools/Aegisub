@@ -242,9 +242,9 @@ static int round(double value) {
 
 int Framerate::FrameAtTime(int ms, Time type) const {
 	// With X ms per frame, this should return 0 for:
-	// EXACT: [0, X]
-	// START: [-X, 0]
-	// END:   [1, X + 1]
+	// EXACT: [0, X - 1]
+	// START: [1 - X , 0]
+	// END:   [1, X]
 
 	// There are two properties we take advantage of here:
 	//  1. START and END's ranges are adjacent, meaning doing the calculations
