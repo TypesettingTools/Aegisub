@@ -190,7 +190,7 @@ void SubtitlesGrid::OnPopupMenu(bool alternate) {
 		menu.Append(MENU_ADJOIN2,_("&Make times continuous (change end)"),_("Changes times of subs so end times begin on next's start time"))->Enable(state);
 
 		// Recombine selection
-		state = (sels == 2 || sels == 3) && continuous;
+		state = (sels > 1);
 		menu.Append(MENU_RECOMBINE,_("Recombine Lines"),_("Recombine subtitles when they have been split and merged"))->Enable(state);
 		menu.AppendSeparator();
 
@@ -621,83 +621,103 @@ void SubtitlesGrid::OnSetVideoToEnd(wxCommandEvent &event) {
 	EndBatch();
 }
 
-
+static void trim_text(AssDialogue *diag) {
+	static wxRegEx start(L"^( |\\t|\\\\[nNh])+");
+	static wxRegEx end(L"( |\\t|\\\\[nNh])+$");
+	start.ReplaceFirst(&diag->Text, "");
+	end.ReplaceFirst(&diag->Text, "");
+}
+static void expand_times(AssDialogue *src, AssDialogue *dst) {
+	using std::min;
+	using std::max;
+	dst->Start.SetMS(min(dst->Start.GetMS(), src->Start.GetMS()));
+	dst->End.SetMS(max(dst->End.GetMS(), src->End.GetMS()));
+}
 
 /// @brief Recombine 
-/// @param event 
-/// @return 
-///
-void SubtitlesGrid::OnRecombine(wxCommandEvent &event) {
-	// Get selection
-	bool cont;
-	wxArrayInt sel = GetSelection(&cont);
-	int nSel = sel.Count();
-	if ((nSel != 2 && nSel != 3) || !cont) throw _T("Invalid selection for recombining");
-	int n = sel[0];
+void SubtitlesGrid::OnRecombine(wxCommandEvent &) {
+	using namespace std;
 
-	// Get dialogues
-	AssDialogue *n1,*n2,*n3;
-	n1 = GetDialogue(n);
-	n2 = GetDialogue(n+1);
+	Selection selectedSet = GetSelectedSet();
+	if (selectedSet.size() < 2) return;
 
-	// 1,1+2,2 -> 1,2
-	if (nSel == 3) {
-		n3 = GetDialogue(n+2);
-		n1->End = n2->End;
-		n3->Start = n2->Start;
-		DeleteLines(GetRangeArray(n+1,n+1));
+	AssDialogue *activeLine = GetActiveLine();
+
+	vector<AssDialogue*> sel;
+	sel.reserve(selectedSet.size());
+	copy(selectedSet.begin(), selectedSet.end(), back_inserter(sel));
+	for_each(sel.begin(), sel.end(), trim_text);
+	sort(sel.begin(), sel.end(), &AssFile::CompStart);
+
+	typedef vector<AssDialogue*>::iterator diag_iter;
+	diag_iter end = sel.end() - 1;
+	for (diag_iter cur = sel.begin(); cur != end; ++cur) {
+		AssDialogue *d1 = *cur;
+		diag_iter d2 = cur + 1;
+
+		// 1, 1+2 (or 2+1), 2 gets turned into 1, 2, 2 so kill the duplicate
+		if (d1->Text == (*d2)->Text) {
+			expand_times(d1, *d2);
+			delete d1;
+			ass->Line.remove(d1);
+			continue;
+		}
+
+		// 1, 1+2, 1 turns into 1, 2, [empty]
+		if (d1->Text.empty()) {
+			delete d1;
+			ass->Line.remove(d1);
+			continue;
+		}
+
+		// 1, 1+2
+		while (d2 <= end && (*d2)->Text.StartsWith(d1->Text, &(*d2)->Text)) {
+			expand_times(*d2, d1);
+			trim_text(*d2);
+			++d2;
+		}
+
+		// 1, 2+1
+		while (d2 <= end && (*d2)->Text.EndsWith(d1->Text, &(*d2)->Text)) {
+			expand_times(*d2, d1);
+			trim_text(*d2);
+			++d2;
+		}
+
+		// 1+2, 2
+		while (d2 <= end && d1->Text.EndsWith((*d2)->Text, &d1->Text)) {
+			expand_times(d1, *d2);
+			trim_text(d1);
+			++d2;
+		}
+
+		// 2+1, 2
+		while (d2 <= end && d1->Text.StartsWith((*d2)->Text, &d1->Text)) {
+			expand_times(d1, *d2);
+			trim_text(d1);
+			++d2;
+		}
 	}
 
-	// 2 Line recombine
-	else {
-		// Trim dialogues
-		n1->Text.Trim(true).Trim(false);
-		n2->Text.Trim(true).Trim(false);
-
-		// Detect type
-		int type = -1;
-		bool invert = false;
-		if (n1->Text.Right(n2->Text.Length()) == n2->Text) type = 0;
-		else if (n1->Text.Left(n2->Text.Length()) == n2->Text) { type = 1; invert = true; }
-		else if (n2->Text.Left(n1->Text.Length()) == n1->Text) type = 1;
-		else if (n2->Text.Right(n1->Text.Length()) == n1->Text) { type = 0; invert = true; }
-		else {
-			// Unknown type
-			parentFrame->StatusTimeout(_T("Unable to recombine: Neither line is a suffix of the other one."));
-			return;
-		}
-
-		// Invert?
-		if (invert) {
-			n3 = n1;
-			n1 = n2;
-			n2 = n3;
-			n3 = NULL;
-		}
-
-		// 1+2,2 -> 1,2
-		if (type == 0) {
-			n1->Text = n1->Text.SubString(0, n1->Text.Length() - n2->Text.Length() - 1).Trim(true).Trim(false);
-			while (n1->Text.Left(2) == _T("\\N") || n1->Text.Left(2) == _T("\\n")) n1->Text = n1->Text.Mid(2);
-			while (n1->Text.Right(2) == _T("\\N") || n1->Text.Right(2) == _T("\\n")) n1->Text = n1->Text.Mid(0,n1->Text.Length()-2);
-			n2->Start = n1->Start;
-		}
-
-		// 1,1+2 -> 1,2
-		else if (type == 1) {
-			n2->Text = n2->Text.Mid(n1->Text.Length()).Trim(true).Trim(false);
-			while (n2->Text.Left(2) == _T("\\N") || n2->Text.Left(2) == _T("\\n")) n2->Text = n2->Text.Mid(2);
-			while (n2->Text.Right(2) == _T("\\N") || n2->Text.Right(2) == _T("\\n")) n2->Text = n2->Text.Mid(0,n2->Text.Length()-2);
-			n1->End = n2->End;
-		}
-
-		// Commit
-		ass->Commit(_("combining"));
-		CommitChanges();
-	}
-
-	// Adjust scrollbar
+	ass->Commit(_("combining"));
+	UpdateMaps();
+	CommitChanges();
 	AdjustScrollbar();
+
+	// Remove now non-existent lines from the selection
+	Selection lines;
+	transform(ass->Line.begin(), ass->Line.end(), inserter(lines, lines.begin()), cast<AssDialogue*>());
+	Selection newSel;
+	set_intersection(lines.begin(), lines.end(), selectedSet.begin(), selectedSet.end(), inserter(newSel, newSel.begin()));
+
+	if (newSel.empty()) return;
+
+	// Restore selection
+	SetSelectedSet(newSel);
+	if (find(newSel.begin(), newSel.end(), activeLine) == newSel.end()) {
+		activeLine = *newSel.begin();
+	}
+	SetActiveLine(activeLine);
 }
 
 
