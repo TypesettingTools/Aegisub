@@ -277,7 +277,7 @@ void VisualTool<FeatureType>::Commit(bool full, wxString message) {
 template<class FeatureType>
 AssDialogue* VisualTool<FeatureType>::GetActiveDialogueLine() {
 	AssDialogue *diag = grid->GetActiveLine();
-	if (grid->IsDisplayed(diag))
+	if (diag && grid->IsDisplayed(diag))
 		return diag;
 	return NULL;
 }
