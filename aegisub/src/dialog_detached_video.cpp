@@ -45,7 +45,6 @@
 #include "dialog_detached_video.h"
 #include "frame_main.h"
 #include "main.h"
-#include "options.h"
 #include "video_box.h"
 #include "video_context.h"
 #include "video_display.h"

@@ -36,7 +36,6 @@
 
 #include "config.h"
 #include "main.h"
-#include "options.h"
 
 #include "video_provider_cache.h"
 

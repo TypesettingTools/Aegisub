@@ -53,7 +53,6 @@
 #include "ass_time.h"
 #include "export_visible_lines.h"
 #include "main.h"
-#include "options.h"
 #include "subs_edit_box.h"
 #include "subs_grid.h"
 #include "utils.h"

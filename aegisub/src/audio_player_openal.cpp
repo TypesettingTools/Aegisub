@@ -48,7 +48,6 @@
 #include "audio_player_openal.h"
 #include "audio_provider_manager.h"
 #include "frame_main.h"
-#include "options.h"
 #include "utils.h"
 
 #ifdef __WINDOWS__

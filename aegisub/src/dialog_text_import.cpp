@@ -47,7 +47,6 @@
 #include "compat.h"
 #include "dialog_text_import.h"
 #include "main.h"
-#include "options.h"
 
 
 /// @brief Constructor 

@@ -43,7 +43,6 @@
 #include "charset_conv.h"
 #include "compat.h"
 #include "main.h"
-#include "options.h"
 #include "text_file_writer.h"
 
 

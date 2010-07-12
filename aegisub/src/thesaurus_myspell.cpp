@@ -50,7 +50,6 @@
 #include "compat.h"
 #include "mythes.hxx"
 #include "main.h"
-#include "options.h"
 #include "standard_paths.h"
 #include "thesaurus_myspell.h"
 #include "utils.h"

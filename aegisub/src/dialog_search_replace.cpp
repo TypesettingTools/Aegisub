@@ -50,7 +50,6 @@
 #include "dialog_search_replace.h"
 #include "frame_main.h"
 #include "main.h"
-#include "options.h"
 #include "subs_edit_box.h"
 #include "subs_grid.h"
 #include "video_display.h"

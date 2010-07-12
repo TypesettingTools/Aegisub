@@ -57,7 +57,6 @@
 #include "colorspace.h"
 #include "fft.h"
 #include "main.h"
-#include "options.h"
 #include "utils.h"
 
 

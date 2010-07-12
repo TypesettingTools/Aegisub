@@ -53,7 +53,6 @@
 #include "frame_main.h"
 #include "main.h"
 #include "md5.h"
-#include "options.h"
 #include "standard_paths.h"
 
 

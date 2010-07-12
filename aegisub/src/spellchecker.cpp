@@ -45,7 +45,6 @@
 
 #include "compat.h"
 #include "main.h"
-#include "options.h"
 #include "spellchecker_manager.h"
 
 

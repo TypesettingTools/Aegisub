@@ -61,7 +61,6 @@
 #include "auto4_lua_factory.h"
 #include "auto4_lua_scriptreader.h"
 #include "main.h"
-#include "options.h"
 #include "standard_paths.h"
 #include "text_file_reader.h"
 #include "video_context.h"

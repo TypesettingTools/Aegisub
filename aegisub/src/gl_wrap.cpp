@@ -50,7 +50,6 @@
 
 #endif
 
-#include "options.h"
 
 /// @brief Constructor 
 ///

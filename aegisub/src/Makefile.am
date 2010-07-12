@@ -267,7 +267,6 @@ aegisub_2_2_SOURCES = \
 	md5.c \
 	mkv_wrap.cpp \
 	mythes.cxx \
-	options.cpp \
 	plugin_manager.cpp \
 	preferences.cpp \
 	scintilla_text_ctrl.cpp \

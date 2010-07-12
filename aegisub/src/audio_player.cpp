@@ -61,7 +61,6 @@
 #endif
 #include "compat.h"
 #include "main.h"
-#include "options.h"
 
 
 

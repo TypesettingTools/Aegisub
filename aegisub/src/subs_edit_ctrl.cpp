@@ -46,7 +46,6 @@
 #include "ass_dialogue.h"
 #include "compat.h"
 #include "main.h"
-#include "options.h"
 #include "subs_edit_box.h"
 #include "subs_grid.h"
 #include "utils.h"

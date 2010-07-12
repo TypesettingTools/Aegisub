@@ -48,7 +48,6 @@
 #include "charset_conv.h"
 #include "gl_wrap.h"
 #include "mkv_wrap.h"
-#include "options.h"
 #include "standard_paths.h"
 #include "vfw_wrap.h"
 #include "video_context.h"

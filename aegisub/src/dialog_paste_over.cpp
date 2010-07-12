@@ -46,7 +46,6 @@
 #include "dialog_paste_over.h"
 #include "help_button.h"
 #include "main.h"
-#include "options.h"
 
 /// Button IDs
 enum {

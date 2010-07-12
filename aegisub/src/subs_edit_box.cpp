@@ -56,7 +56,6 @@
 #include "idle_field_event.h"
 #include "libresrc/libresrc.h"
 #include "main.h"
-#include "options.h"
 #include "subs_edit_box.h"
 #include "subs_grid.h"
 #include "timeedit_ctrl.h"

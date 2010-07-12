@@ -47,7 +47,6 @@
 #include "dialog_properties.h"
 #include "help_button.h"
 #include "libresrc/libresrc.h"
-#include "options.h"
 #include "utils.h"
 #include "validators.h"
 #include "video_context.h"

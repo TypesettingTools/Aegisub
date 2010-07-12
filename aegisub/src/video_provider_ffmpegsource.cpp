@@ -53,7 +53,6 @@
 #include "aegisub_endian.h"
 #include "include/aegisub/aegisub.h"
 #include "main.h"
-#include "options.h"
 #include "video_context.h"
 #include "video_provider_ffmpegsource.h"
 

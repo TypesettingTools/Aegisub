@@ -46,7 +46,6 @@
 
 #include "dialog_tip.h"
 #include "main.h"
-#include "options.h"
 
 
 /// @brief Constructor 

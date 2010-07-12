@@ -53,7 +53,6 @@
 #include "help_button.h"
 #include "libresrc/libresrc.h"
 #include "main.h"
-#include "options.h"
 #include "standard_paths.h"
 #include "subs_grid.h"
 #include "utils.h"

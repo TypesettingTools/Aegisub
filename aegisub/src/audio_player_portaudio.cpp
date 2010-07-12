@@ -47,7 +47,6 @@
 #include "audio_provider_manager.h"
 #include "charset_conv.h"
 #include "main.h"
-#include "options.h"
 #include "utils.h"
 #include <wx/log.h>
 

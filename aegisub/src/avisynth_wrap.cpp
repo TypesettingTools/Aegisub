@@ -43,7 +43,6 @@
 #ifdef WITH_AVISYNTH
 #include "avisynth_wrap.h"
 #include "main.h"
-#include "options.h"
 
 #ifdef DEBUG_AVISYNTH_CODE
 #ifndef AGI_PRE

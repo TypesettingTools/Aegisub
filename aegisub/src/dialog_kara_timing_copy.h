@@ -52,7 +52,6 @@
 #include "ass_entry.h"
 #include "ass_file.h"
 #include "kana_table.h"
-#include "options.h"
 
 
 //////////////

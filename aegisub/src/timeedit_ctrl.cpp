@@ -46,7 +46,6 @@
 #include "ass_time.h"
 #include "compat.h"
 #include "main.h"
-#include "options.h"
 #include "timeedit_ctrl.h"
 #include "video_context.h"
 

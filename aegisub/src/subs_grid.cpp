@@ -54,7 +54,6 @@
 #include "frame_main.h"
 #include "hotkeys.h"
 #include "main.h"
-#include "options.h"
 #include "subs_edit_box.h"
 #include "subs_grid.h"
 #include "utils.h"

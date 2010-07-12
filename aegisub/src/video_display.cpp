@@ -58,7 +58,6 @@
 
 #include "ass_dialogue.h"
 #include "hotkeys.h"
-#include "options.h"
 #include "main.h"
 #include "subs_grid.h"
 #include "video_out_gl.h"

@@ -43,7 +43,6 @@
 #include "compat.h"
 #include "keyframe.h"
 #include "main.h"
-#include "options.h"
 #include "text_file_reader.h"
 #include "text_file_writer.h"
 #include "video_context.h"

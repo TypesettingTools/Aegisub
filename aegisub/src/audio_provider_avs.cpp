@@ -53,7 +53,6 @@
 #include "charset_conv.h"
 #include "compat.h"
 #include "main.h"
-#include "options.h"
 #include "standard_paths.h"
 #include "utils.h"
 

@@ -41,7 +41,6 @@
 
 #include "compat.h"
 #include "main.h"
-#include "options.h"
 #ifdef WITH_CSRI
 #include "subtitles_provider_csri.h"
 #endif

@@ -48,7 +48,6 @@
 #include "dialog_dummy_video.h"
 #include "help_button.h"
 #include "main.h"
-#include "options.h"
 #include "utils.h"
 
 /// DOCME

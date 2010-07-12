@@ -43,7 +43,6 @@
 #include "compat.h"
 #include "dialog_text_import.h"
 #include "main.h"
-#include "options.h"
 #include "subtitle_format_txt.h"
 #include "text_file_reader.h"
 #include "text_file_writer.h"

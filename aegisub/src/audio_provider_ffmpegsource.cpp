@@ -51,7 +51,6 @@
 #include "audio_provider_ffmpegsource.h"
 #include "include/aegisub/aegisub.h"
 #include "main.h"
-#include "options.h"
 
 
 /// @brief Constructor 

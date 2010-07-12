@@ -55,7 +55,6 @@
 #include "help_button.h"
 #include "libresrc/libresrc.h"
 #include "main.h"
-#include "options.h"
 #include "subs_grid.h"
 #include "subs_preview.h"
 #include "subtitles_provider_manager.h"

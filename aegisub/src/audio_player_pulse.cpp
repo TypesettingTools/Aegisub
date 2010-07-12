@@ -48,7 +48,6 @@
 
 #include "audio_player_pulse.h"
 #include "audio_provider_manager.h"
-#include "options.h"
 #include "utils.h"
 
 

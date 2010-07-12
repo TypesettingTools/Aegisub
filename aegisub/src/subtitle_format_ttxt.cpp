@@ -43,7 +43,6 @@
 #include "ass_time.h"
 #include "compat.h"
 #include "main.h"
-#include "options.h"
 #include "subtitle_format_ttxt.h"
 
 

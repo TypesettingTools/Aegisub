@@ -50,7 +50,6 @@
 #include "compat.h"
 #include "frame_main.h"
 #include "main.h"
-#include "options.h"
 #include "subs_edit_box.h"
 #include "utils.h"
 #include "video_box.h"

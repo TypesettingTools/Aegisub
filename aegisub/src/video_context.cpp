@@ -64,7 +64,6 @@
 #include <libaegisub/access.h>
 #include "main.h"
 #include "mkv_wrap.h"
-#include "options.h"
 #include "standard_paths.h"
 #include "subs_edit_box.h"
 #include "subs_grid.h"

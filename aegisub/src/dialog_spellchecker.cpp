@@ -50,7 +50,6 @@
 #include "help_button.h"
 #include "libresrc/libresrc.h"
 #include "main.h"
-#include "options.h"
 #include "spellchecker_manager.h"
 #include "subs_edit_box.h"
 #include "subs_grid.h"

@@ -54,7 +54,6 @@
 #include "charset_detect.h"
 #include "compat.h"
 #include "main.h"
-#include "options.h"
 #include "subtitle_format.h"
 #include "text_file_reader.h"
 #include "text_file_writer.h"

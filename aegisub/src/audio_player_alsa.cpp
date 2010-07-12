@@ -51,7 +51,6 @@
 #include "main.h"
 #include "compat.h"
 #include "frame_main.h"
-#include "options.h"
 #include "utils.h"
 
 

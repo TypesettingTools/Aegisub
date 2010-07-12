@@ -70,7 +70,6 @@
 #include "auto4_base.h"
 #include "compat.h"
 #include "main.h"
-#include "options.h"
 #include "standard_paths.h"
 #include "string_codec.h"
 
