@@ -701,7 +701,6 @@ void SubtitlesGrid::OnRecombine(wxCommandEvent &) {
 	ass->Commit(_("combining"));
 	UpdateMaps();
 	CommitChanges();
-	AdjustScrollbar();
 
 	// Remove now non-existent lines from the selection
 	Selection lines;
@@ -809,44 +808,20 @@ void SubtitlesGrid::OnAudioClip(wxCommandEvent &event) {
 ///
 void SubtitlesGrid::LoadDefault () {
 	ass->LoadDefault();
+	ClearMaps();
 	UpdateMaps();
 
-	assert(!line_iter_map.empty());
 	SetActiveLine(GetDialogue(0));
 	SelectRow(0);
 }
 
-
-
-/// @brief Clear internal data structures
-void SubtitlesGrid::ClearMaps() {
-	line_iter_map.clear();
-	BaseGrid::ClearMaps();
-}
-
-
-
 /// @brief Update internal data structures
-void SubtitlesGrid::UpdateMaps() {
-	BeginBatch();
-
-	line_iter_map.clear();
-	BaseGrid::ClearMaps();
-
-	BaseGrid::UpdateMaps();
-
-	for (entryIter it = ass->Line.begin(); it != ass->Line.end(); ++it) {
-		AssDialogue *dlg = dynamic_cast<AssDialogue*>(*it);
-		if (dlg) line_iter_map.insert(std::pair<AssDialogue*,entryIter>(dlg, it));
-	}
+void SubtitlesGrid::UpdateMaps(bool preserve_selected_rows) {
+	BaseGrid::UpdateMaps(preserve_selected_rows);
 
 	if (editBox) {
 		editBox->UpdateGlobals();
 	}
-
-	// Finish setting layout
-	AdjustScrollbar();
-	EndBatch();
 }
 
 
@@ -862,7 +837,6 @@ void SubtitlesGrid::SwapLines(int n1,int n2) {
 	if (n1 == 0 || n2 == 0) return;
 	
 	std::swap(*dlg1, *dlg2);
-	UpdateMaps();
 
 	ass->Commit(_("swap lines"));
 	CommitChanges();
@@ -878,19 +852,15 @@ void SubtitlesGrid::SwapLines(int n1,int n2) {
 ///
 void SubtitlesGrid::InsertLine(AssDialogue *line,int n,bool after,bool update) {
 	AssDialogue *rel_line = GetDialogue(n + (after?1:0));
-	entryIter pos;
-	if (rel_line) pos = line_iter_map[rel_line];
-	else pos = ass->Line.end();
-	
+	entryIter pos = std::find(ass->Line.begin(), ass->Line.end(), rel_line);
+
 	entryIter newIter = ass->Line.insert(pos,line);
-	line_iter_map[line] = newIter;
 	BaseGrid::UpdateMaps();
 
 	// Update
 	if (update) {
 		ass->Commit(_("line insertion"));
 		CommitChanges();
-		AdjustScrollbar();
 	}
 }
 
@@ -1020,7 +990,6 @@ void SubtitlesGrid::PasteLines(int n,bool pasteOver) {
 		if (inserted > 0) {
 			// Commit
 			UpdateMaps();
-			AdjustScrollbar();
 			ass->Commit(_("paste"));
 			CommitChanges();
 
@@ -1047,16 +1016,20 @@ void SubtitlesGrid::PasteLines(int n,bool pasteOver) {
 /// @param flagModified 
 ///
 void SubtitlesGrid::DeleteLines(wxArrayInt target, bool flagModified) {
-	// Check if it's wiping file
-	int deleted = 0;
-	entryIter before_first = line_iter_map[GetDialogue(0)]; --before_first;
+	entryIter before_first = std::find_if(ass->Line.begin(), ass->Line.end(), cast<AssDialogue*>()); --before_first;
 	int old_active_line_index = GetDialogueIndex(GetActiveLine());
 
-	// Delete lines
-	int size = target.Count();
-	for (int i=0;i<size;i++) {
-		ass->Line.erase(line_iter_map[GetDialogue(target[i])]);
-		deleted++;
+	int row = -1;
+	int deleted = 0;
+	for (entryIter cur = ass->Line.begin(); cur != ass->Line.end();) {
+		if (dynamic_cast<AssDialogue*>(*cur) && ++row == target[deleted]) {
+			cur = ass->Line.erase(cur);
+			++deleted;
+			if (deleted == target.size()) break;
+		}
+		else {
+			++cur;
+		}
 	}
 
 	// Add default line if file was wiped
@@ -1067,21 +1040,12 @@ void SubtitlesGrid::DeleteLines(wxArrayInt target, bool flagModified) {
 		old_active_line_index = 0;
 	}
 
-	// Update
 	UpdateMaps();
-	AdjustScrollbar();
+
 	if (flagModified) {
 		ass->Commit(_("delete"));
 		CommitChanges();
 	}
-
-	if (old_active_line_index >= GetRows()) {
-		old_active_line_index = GetRows() - 1;
-	}
-
-	// Update selected line
-	SelectRow(old_active_line_index);
-	SetActiveLine(GetDialogue(old_active_line_index));
 }
 
 

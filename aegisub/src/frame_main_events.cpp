@@ -1049,19 +1049,14 @@ void FrameMain::OnAutomationMacro (wxCommandEvent &event) {
 #ifdef WITH_AUTOMATION
 	SubsGrid->BeginBatch();
 	// First get selection data
-	// This much be done before clearing the maps, since selection data are lost during that
 	std::vector<int> selected_lines = SubsGrid->GetAbsoluteSelection();
 	int first_sel = SubsGrid->GetFirstSelRow();
-	// Clear all maps from the subs grid before running the macro
-	// The stuff done by the macro might invalidate some of the iterators held by the grid, which will cause great crashing
-	SubsGrid->ClearMaps();
 	// Run the macro...
 	activeMacroItems[event.GetId()-Menu_Automation_Macro]->Process(SubsGrid->ass, selected_lines, first_sel, this);
 	// Have the grid update its maps, this properly refreshes it to reflect the changed subs
 	SubsGrid->UpdateMaps();
 	SubsGrid->SetSelectionFromAbsolute(selected_lines);
 	SubsGrid->CommitChanges(true, false);
-	SubsGrid->AdjustScrollbar();
 	SubsGrid->EndBatch();
 #endif
 }
@@ -1167,25 +1162,17 @@ void FrameMain::OnShiftToFrame (wxCommandEvent &) {
 /// @brief Undo 
 void FrameMain::OnUndo(wxCommandEvent&) {
 	VideoContext::Get()->Stop();
-	std::vector<int> selected_lines = SubsGrid->GetAbsoluteSelection();
-	int active_line = SubsGrid->GetDialogueIndex(SubsGrid->GetActiveLine());
 	ass->Undo();
 	UpdateTitle();
-	SubsGrid->UpdateMaps();
-	SubsGrid->SetSelectionFromAbsolute(selected_lines);
-	SubsGrid->SetActiveLine(SubsGrid->GetDialogue(active_line));
+	SubsGrid->UpdateMaps(true);
 }
 
 /// @brief Redo 
 void FrameMain::OnRedo(wxCommandEvent&) {
 	VideoContext::Get()->Stop();
-	std::vector<int> selected_lines = SubsGrid->GetAbsoluteSelection();
-	int active_line = SubsGrid->GetDialogueIndex(SubsGrid->GetActiveLine());
 	ass->Redo();
 	UpdateTitle();
-	SubsGrid->UpdateMaps();
-	SubsGrid->SetSelectionFromAbsolute(selected_lines);
-	SubsGrid->SetActiveLine(SubsGrid->GetDialogue(active_line));
+	SubsGrid->UpdateMaps(true);
 }
 
 /// @brief Find 

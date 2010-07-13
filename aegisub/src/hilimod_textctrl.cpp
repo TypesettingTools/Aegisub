@@ -42,7 +42,6 @@
 #include "compat.h"
 #include "hilimod_textctrl.h"
 #include "main.h"
-#include "options.h"
 
 
 /// @brief Constructor 

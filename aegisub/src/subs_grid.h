@@ -94,8 +94,6 @@ private:
 	void OnAudioClip(wxCommandEvent &event);
 	void OnShowColMenu(wxCommandEvent &event);
 
-	std::map<AssDialogue*,entryIter> line_iter_map;
-
 public:
 
 	/// DOCME
@@ -107,8 +105,7 @@ public:
 	void LoadDefault();
 	void CommitChanges(bool force=false,bool videoOnly=false);
 
-	void ClearMaps();
-	void UpdateMaps();
+	void UpdateMaps(bool preserve_selected_rows = false);
 
 	void SetVideoToSubs(bool start);
 	void SetSubsToVideo(bool start);

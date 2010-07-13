@@ -273,8 +273,6 @@ void DialogStyling::OnActivate(wxActivateEvent &event) {
 	// Enable/disable play video/audio buttons
 	PlayVideoButton->Enable(video->IsLoaded());
 	PlayAudioButton->Enable(audio->loaded);
-	// Update grid
-	grid->UpdateMaps();
 	// Fix style list
 	Styles->Set(grid->ass->GetStyles());
 	// Fix line selection

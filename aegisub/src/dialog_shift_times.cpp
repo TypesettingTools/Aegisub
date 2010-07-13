@@ -312,7 +312,6 @@ void DialogShiftTimes::OnOK(wxCommandEvent &event) {
 	// End dialog
 	grid->ass->Commit(_("shifting"));
 	grid->CommitChanges();
-	grid->UpdateMaps();
 	grid->editBox->Update();
 	EndModal(0);
 }

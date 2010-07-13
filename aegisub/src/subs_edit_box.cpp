@@ -333,8 +333,8 @@ void SubsEditBox::UpdateGlobals () {
 	ActorBox->Thaw();
 
 	// Set subs update
+	OnActiveLineChanged(grid->GetActiveLine());
 	TextEdit->SetSelection(0,0);
-	grid->SetActiveLine(grid->GetDialogue(grid->GetFirstSelRow()));
 }
 
 

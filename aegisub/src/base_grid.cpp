@@ -161,6 +161,85 @@ void BaseGrid::ClearMaps() {
 	AnnounceSelectedSetChanged(Selection(), old_selection);
 }
 
+/// @brief Update maps 
+///
+void BaseGrid::UpdateMaps(bool preserve_selected_rows) {
+	BeginBatch();
+	int active_row = line_index_map[active_line];
+
+	std::vector<int> sel_rows;
+	if (preserve_selected_rows) {
+		sel_rows.reserve(selection.size());
+		std::transform(selection.begin(), selection.end(), std::back_inserter(sel_rows),
+			std::bind1st(std::mem_fun(&BaseGrid::GetDialogueIndex), this));
+	}
+
+	index_line_map.clear();
+	line_index_map.clear();
+
+	for (entryIter cur=AssFile::top->Line.begin();cur != AssFile::top->Line.end();cur++) {
+		AssDialogue *curdiag = dynamic_cast<AssDialogue*>(*cur);
+		if (curdiag) {
+			line_index_map[curdiag] = (int)index_line_map.size();
+			index_line_map.push_back(curdiag);
+		}
+	}
+
+	if (preserve_selected_rows) {
+		Selection sel;
+
+		// If the file shrank enough that no selected rows are left, select the
+		// last row
+		if (sel_rows.empty()) {
+			sel_rows.push_back(index_line_map.size() - 1);
+		}
+		else if (sel_rows[0] >= (int)index_line_map.size()) {
+			sel_rows[0] = index_line_map.size() - 1;
+		}
+		for (size_t i = 0; i < sel_rows.size(); i++) {
+			if (sel_rows[i] >= (int)index_line_map.size()) break;
+			sel.insert(index_line_map[sel_rows[i]]);
+		}
+
+		SetSelectedSet(sel);
+	}
+	else {
+		Selection lines;
+		std::copy(index_line_map.begin(), index_line_map.end(), std::inserter(lines, lines.begin()));
+		Selection new_sel;
+		// Remove lines which no longer exist from the selection
+		set_intersection(selection.begin(), selection.end(),
+			lines.begin(), lines.end(),
+			std::inserter(new_sel, new_sel.begin()));
+
+		SetSelectedSet(new_sel);
+	}
+
+	// The active line may have ceased to exist; pick a new one if so
+	if (line_index_map.find(active_line) == line_index_map.end()) {
+		if (active_row < (int)index_line_map.size()) {
+			SetActiveLine(index_line_map[active_row]);
+		}
+		else if (preserve_selected_rows && !selection.empty()) {
+			SetActiveLine(index_line_map[sel_rows[0]]);
+		}
+		else {
+			SetActiveLine(index_line_map.back());
+		}
+	}
+
+	if (selection.empty() && active_line) {
+		Selection sel;
+		sel.insert(active_line);
+		SetSelectedSet(sel);
+	}
+
+	EndBatch();
+
+	Refresh(false);
+}
+
+
 
 
 /// @brief Begin batch 
@@ -858,7 +937,6 @@ void BaseGrid::ScrollTo(int y) {
 /// @brief Adjust scrollbar 
 ///
 void BaseGrid::AdjustScrollbar() {
-	// Variables
 	int w,h,sw,sh;
 	GetClientSize(&w,&h);
 	int drawPerScreen = h/lineHeight;
@@ -866,15 +944,12 @@ void BaseGrid::AdjustScrollbar() {
 	bool barToEnable = drawPerScreen < rows+2;
 	bool barEnabled = scrollBar->IsEnabled();
 
-	// Set yPos
 	yPos = MID(0,yPos,rows - drawPerScreen);
 
-	// Set size
 	scrollBar->Freeze();
 	scrollBar->GetSize(&sw,&sh);
 	scrollBar->SetSize(w-sw,0,sw,h);
 
-	// Set parameters
 	if (barEnabled) {
 		scrollBar->SetScrollbar(yPos,drawPerScreen,rows+2,drawPerScreen-2,true);
 	}
@@ -1042,32 +1117,6 @@ bool BaseGrid::IsDisplayed(AssDialogue *line) {
 	if (f1 <= con->GetFrameN() && f2 >= con->GetFrameN()) return true;
 	return false;
 }
-
-
-
-/// @brief Update maps 
-///
-void BaseGrid::UpdateMaps() {
-	index_line_map.clear();
-	line_index_map.clear();
-	
-	for (entryIter cur=AssFile::top->Line.begin();cur != AssFile::top->Line.end();cur++) {
-		AssDialogue *curdiag = dynamic_cast<AssDialogue*>(*cur);
-		if (curdiag) {
-			line_index_map[curdiag] = (int)index_line_map.size();
-			index_line_map.push_back(curdiag);
-		}
-	}
-
-	if (line_index_map.find(active_line) == line_index_map.end()) {
-		// this isn't supposed to happen
-		SetActiveLine(0);
-	}
-
-	Refresh(false);
-}
-
-
 
 /// @brief Key press 
 /// @param event 

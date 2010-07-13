@@ -169,7 +169,10 @@ public:
 	wxArrayInt GetSelection(bool *continuous=NULL) const;
 
 	void ClearMaps();
-	void UpdateMaps();
+	/// @brief Update the row <-> AssDialogue mappings
+	/// @param preserve_selected_rows Try to keep the same rows selected rather
+	///                               rather than the same lines
+	void UpdateMaps(bool preserve_selected_rows = false);
 	void UpdateStyle();
 
 	int GetRows() const;
