@@ -266,7 +266,7 @@ void FrameMain::RebuildRecentList(wxString listName,wxMenu *menu,int startID) {
 	wxString n;
 	wxArrayString entries = lagi_MRU_wxAS(listName);
 	for (size_t i=0;i<entries.Count();i++) {
-		n = wxString::Format(_T("%i"),i+1);
+		n = wxString::Format(_T("%ld"),i+1);
 		if (i < 9) n = _T("&") + n;
 		wxFileName shortname(entries[i]);
 		wxString filename = shortname.GetFullName();
