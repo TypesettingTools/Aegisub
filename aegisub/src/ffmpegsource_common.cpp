@@ -229,9 +229,9 @@ wxString FFmpegSourceProvider::GetCacheFilename(const wxString& _filename)
 
 	wxFileName filename(_filename);
 
-	// Generate string to be hashed
-	wxString toHash = filename.GetFullName() + wxString::Format(_T(":%i"),len)
-		+ wxString::Format(_T(":%i"), filename.GetModificationTime().GetTicks());
+	// Generate string to be hashed //
+	wxString toHash = wxString::Format(_T("%s %ld %ld"), filename.GetFullName(), len, filename.GetModificationTime().GetTicks());
+
 
 	// Get the MD5 digest of the string
 	const wchar_t *tmp = toHash.wc_str();
