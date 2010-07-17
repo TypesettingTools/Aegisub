@@ -100,7 +100,7 @@ void LogWindow::EmitLog::Write(agi::log::SinkMessage *sm) {
 #ifndef _WIN32
 	tm tmtime;
 	localtime_r(&sm->tv.tv_sec, &tmtime);
-	wxString log = wxString::Format("%c %02d:%02d:%02d %ld <%-25s> [%s:%s:%d]  %s\n",
+	wxString log = wxString::Format("%c %02d:%02d:%02d %-6ld <%-25s> [%s:%s:%d]  %s\n",
 		agi::log::Severity_ID[sm->severity],
 		tmtime.tm_hour,
 		tmtime.tm_min,
@@ -112,7 +112,7 @@ void LogWindow::EmitLog::Write(agi::log::SinkMessage *sm) {
 		sm->line,
 		strndup(sm->message, sm->len));
 #else
-	wxString log = wxString::Format("%c %ld <%-25s> [%s:%s:%d]  %s\n",
+	wxString log = wxString::Format("%c %-6ld <%-25s> [%s:%s:%d]  %s\n",
 		agi::log::Severity_ID[sm->severity],
 		sm->tv.tv_usec,
 		sm->section,
