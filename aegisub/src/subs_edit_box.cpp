@@ -286,7 +286,7 @@ void SubsEditBox::Update (bool timeOnly,bool weak) {
 				MarginV->SetValue(curdiag->GetMarginString(2,false));
 				Effect->SetValue(curdiag->Effect);
 				CommentBox->SetValue(curdiag->Comment);
-				StyleBox->Select(StyleBox->FindString(curdiag->Style));
+				StyleBox->SetValue(curdiag->Style);
 				ActorBox->SetValue(curdiag->Actor);
 				ActorBox->SetStringSelection(curdiag->Actor);
 
