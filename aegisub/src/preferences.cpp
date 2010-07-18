@@ -205,36 +205,6 @@ void Preferences::OnCancel(wxCommandEvent &event) {
 }
 
 
-#define PAGE_CREATE(name)                           \
-	wxPanel *panel = new wxPanel(book, -1);         \
-	book->AddPage(panel, name, true);               \
-	wxSizer *sizer = new wxBoxSizer(wxVERTICAL);    \
-
-#define SUBPAGE_CREATE(name)                        \
-	wxPanel *panel = new wxPanel(book, -1);         \
-	book->AddSubPage(panel, name, true);            \
-	wxSizer *sizer = new wxBoxSizer(wxVERTICAL);    \
-
-
-#define PAGE_SIZER(name, name_value)                                                           \
-	wxSizer *name_value##_sizer = new wxStaticBoxSizer(wxHORIZONTAL, panel, name);             \
-	sizer->Add(name_value##_sizer, 0,wxEXPAND, 5);                                             \
-	wxFlexGridSizer *name_value##_flex = new wxFlexGridSizer(2,5,5);                           \
-	name_value##_flex->AddGrowableCol(0,1);                                                    \
-	name_value##_sizer->Add(name_value##_flex, 1, wxEXPAND, 5);                                \
-	sizer->AddSpacer(8);
-
-// name_value##_flex->SetFlexibleDirection(wxVERTICAL);
-
-#define PAGE_END() \
-	panel->SetSizerAndFit(sizer);
-
-/// Skip a cell in a FlexGridSizer -- there's probably a better way to do this.
-#define CELL_SKIP(flex) \
-	flex->Add(new wxStaticText(panel, wxID_ANY , wxEmptyString), 0, wxALL, 5);
-
-
-
 class General: public OptionPage {
 public:
 	General(wxTreebook *book): OptionPage(book, _("General")) {
