@@ -49,57 +49,7 @@ DEFINE_BASE_EXCEPTION_NOINNER(PreferencesError, agi::Exception)
 DEFINE_SIMPLE_EXCEPTION_NOINNER(PreferenceIncorrectType, PreferencesError, "preferences/incorrect_type")
 DEFINE_SIMPLE_EXCEPTION_NOINNER(PreferenceNotSupported, PreferencesError, "preferences/not_supported")
 
-Preferences::Preferences(wxWindow *parent): wxDialog(parent, -1, _("Preferences"), wxDefaultPosition, wxSize(-1, 500)) {
-//	SetIcon(BitmapToIcon(GETIMAGE(options_button_24)));
 
-	book = new wxTreebook(this, -1, wxDefaultPosition, wxDefaultSize);
-
-	General(book);
-	Subtitles(book);
-	Audio(book);
-	Video(book);
-	Interface(book);
-	Interface_Colours(book);
-	Interface_Hotkeys(book);
-	Paths(book);
-	File_Associations(book);
-	Backup(book);
-	Automation(book);
-	Advanced(book);
-	Advanced_Interface(book);
-	Advanced_Audio(book);
-	Advanced_Video(book);
-
-	book->Fit();
-
-	/// @todo Save the last page and start with that page on next launch.
-	book->ChangeSelection(5);
-
-	// Bottom Buttons
-	wxStdDialogButtonSizer *stdButtonSizer = new wxStdDialogButtonSizer();
-	stdButtonSizer->AddButton(new wxButton(this,wxID_OK));
-	stdButtonSizer->AddButton(new wxButton(this,wxID_CANCEL));
-	stdButtonSizer->AddButton(new wxButton(this,wxID_APPLY));
-	stdButtonSizer->Realize();
-	wxSizer *buttonSizer = new wxBoxSizer(wxHORIZONTAL);
-	wxButton *defaultButton = new wxButton(this,2342,_("Restore Defaults"));
-	buttonSizer->Add(defaultButton,0,wxEXPAND);
-	buttonSizer->AddStretchSpacer(1);
-	buttonSizer->Add(stdButtonSizer,0,wxEXPAND);
-
-
-	// Main Sizer
-	wxSizer *mainSizer = new wxBoxSizer(wxVERTICAL);
-	mainSizer->Add(book, 1 ,wxEXPAND | wxALL, 5);
-	mainSizer->Add(buttonSizer,0,wxEXPAND | wxLEFT | wxRIGHT | wxBOTTOM,5);
-	SetSizerAndFit(mainSizer);
-	this->SetMinSize(wxSize(-1, 500));
-	this->SetMaxSize(wxSize(-1, 500));
-	CenterOnParent();
-
-
-
-}
 
 void Preferences::OptionChoice(wxPanel *parent, wxFlexGridSizer *flex, const wxString &name, const wxArrayString &choices, const char *opt_name) {
 	agi::OptionValue *opt = OPT_GET(opt_name);
@@ -194,6 +144,62 @@ void Preferences::OptionAdd(wxPanel *parent, wxFlexGridSizer *flex, const wxStri
 
 }
 
+
+
+
+
+Preferences::Preferences(wxWindow *parent): wxDialog(parent, -1, _("Preferences"), wxDefaultPosition, wxSize(-1, 500)) {
+//	SetIcon(BitmapToIcon(GETIMAGE(options_button_24)));
+
+	book = new wxTreebook(this, -1, wxDefaultPosition, wxDefaultSize);
+
+	General(book);
+	Subtitles(book);
+	Audio(book);
+	Video(book);
+	Interface(book);
+	Interface_Colours(book);
+	Interface_Hotkeys(book);
+	Paths(book);
+	File_Associations(book);
+	Backup(book);
+	Automation(book);
+	Advanced(book);
+	Advanced_Interface(book);
+	Advanced_Audio(book);
+	Advanced_Video(book);
+
+	book->Fit();
+
+	/// @todo Save the last page and start with that page on next launch.
+	book->ChangeSelection(5);
+
+	// Bottom Buttons
+	wxStdDialogButtonSizer *stdButtonSizer = new wxStdDialogButtonSizer();
+	stdButtonSizer->AddButton(new wxButton(this,wxID_OK));
+	stdButtonSizer->AddButton(new wxButton(this,wxID_CANCEL));
+	stdButtonSizer->AddButton(new wxButton(this,wxID_APPLY));
+	stdButtonSizer->Realize();
+	wxSizer *buttonSizer = new wxBoxSizer(wxHORIZONTAL);
+	wxButton *defaultButton = new wxButton(this,2342,_("Restore Defaults"));
+	buttonSizer->Add(defaultButton,0,wxEXPAND);
+	buttonSizer->AddStretchSpacer(1);
+	buttonSizer->Add(stdButtonSizer,0,wxEXPAND);
+
+
+	// Main Sizer
+	wxSizer *mainSizer = new wxBoxSizer(wxVERTICAL);
+	mainSizer->Add(book, 1 ,wxEXPAND | wxALL, 5);
+	mainSizer->Add(buttonSizer,0,wxEXPAND | wxLEFT | wxRIGHT | wxBOTTOM,5);
+	SetSizerAndFit(mainSizer);
+	this->SetMinSize(wxSize(-1, 500));
+	this->SetMaxSize(wxSize(-1, 500));
+	CenterOnParent();
+
+
+
+}
+
 Preferences::~Preferences() {
 
 }
@@ -243,24 +249,6 @@ void Preferences::OnCancel(wxCommandEvent &event) {
 
 
 
-void Preferences::Subtitles(wxTreebook *book) {
-	PAGE_CREATE(_("Subtitles"))
-
-	PAGE_SIZER(_("Options"), general)
-
-	OptionAdd(panel, general_flex, _("Enable call tips"), "App/Call Tips");
-	OptionAdd(panel, general_flex, _("Enable syntax highlighting"), "Subtitle/Highlight/Syntax");
-	OptionAdd(panel, general_flex, _("Link commiting of times"), "Subtitle/Edit Box/Link Time Boxes Commit");
-	OptionAdd(panel, general_flex, _("Overwrite-Insertion in time boxes"), "Subtitle/Time Edit/Insert Mode");
-
-	PAGE_SIZER(_("Grid"), grid)
-	OptionAdd(panel, grid_flex, _("Allow grid to take focus"), "Subtitle/Grid/Focus Allow");
-	OptionAdd(panel, grid_flex, _("Highlight visible subtitles"), "Subtitle/Grid/Highlight Subtitles in Frame");
-
-	PAGE_END()
-}
-
-
 void Preferences::General(wxTreebook *book) {
 
 	PAGE_CREATE(_("General"))
@@ -276,6 +264,24 @@ void Preferences::General(wxTreebook *book) {
 
 	PAGE_SIZER(_("Undo / Redo Settings"), undo)
 	OptionAdd(panel, undo_flex, _("Undo Levels"), "Limits/MRU");
+
+	PAGE_END()
+}
+
+
+void Preferences::Subtitles(wxTreebook *book) {
+	PAGE_CREATE(_("Subtitles"))
+
+	PAGE_SIZER(_("Options"), general)
+
+	OptionAdd(panel, general_flex, _("Enable call tips"), "App/Call Tips");
+	OptionAdd(panel, general_flex, _("Enable syntax highlighting"), "Subtitle/Highlight/Syntax");
+	OptionAdd(panel, general_flex, _("Link commiting of times"), "Subtitle/Edit Box/Link Time Boxes Commit");
+	OptionAdd(panel, general_flex, _("Overwrite-Insertion in time boxes"), "Subtitle/Time Edit/Insert Mode");
+
+	PAGE_SIZER(_("Grid"), grid)
+	OptionAdd(panel, grid_flex, _("Allow grid to take focus"), "Subtitle/Grid/Focus Allow");
+	OptionAdd(panel, grid_flex, _("Highlight visible subtitles"), "Subtitle/Grid/Highlight Subtitles in Frame");
 
 	PAGE_END()
 }
