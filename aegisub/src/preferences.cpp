@@ -141,8 +141,73 @@ void Preferences::OptionAdd(wxPanel *parent, wxFlexGridSizer *flex, const wxStri
 		default:
 			throw PreferenceNotSupported("Unsupported type");
 	}
-
 }
+
+
+class OptionPage: public wxPanel {
+public:
+	wxSizer *sizer;
+
+	OptionPage(wxTreebook *book, wxString name): wxPanel(book, -1) {
+		book->AddPage(this, name, true);
+		sizer = new wxBoxSizer(wxVERTICAL);
+	}
+
+	~OptionPage() {}
+
+	void OptionAdd(wxFlexGridSizer *&flex, const wxString &name, const char *opt_name, double min=0, double max=100, double inc=1) {
+
+		agi::OptionValue *opt = OPT_GET(opt_name);
+
+		int type = opt->GetType();
+
+		switch (type) {
+
+			case agi::OptionValue::Type_Bool: {
+				wxCheckBox *cb = new wxCheckBox(this, wxID_ANY, name);
+				flex->Add(cb, 1, wxEXPAND, 0);
+				cb->SetValue(opt->GetBool());
+				break;
+			}
+
+			case agi::OptionValue::Type_Int:
+			case agi::OptionValue::Type_Double: {
+				flex->Add(new wxStaticText(this, wxID_ANY, name), 1, wxALIGN_CENTRE_VERTICAL);
+				wxSpinCtrlDouble *scd = new wxSpinCtrlDouble(this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, min, max, opt->GetInt(), inc);
+				flex->Add(scd);
+
+				break;
+			}
+
+			case agi::OptionValue::Type_String: {
+				flex->Add(new wxStaticText(this, wxID_ANY, name), 1, wxALIGN_CENTRE_VERTICAL);
+				wxTextCtrl *text = new wxTextCtrl(this, wxID_ANY , lagi_wxString(opt->GetString()), wxDefaultPosition, wxDefaultSize);
+				flex->Add(text, 1, wxEXPAND);
+				break;
+			}
+
+			case agi::OptionValue::Type_Colour: {
+				flex->Add(new wxStaticText(this, wxID_ANY, name), 1, wxALIGN_CENTRE_VERTICAL);
+				flex->Add(new ColourButton(this, wxID_ANY, wxSize(40,10), lagi_wxColour(opt->GetColour())));
+				break;
+			}
+
+			default:
+				throw PreferenceNotSupported("Unsupported type");
+		}
+	}
+
+	wxFlexGridSizer* PageSizer(wxString name) {
+		wxSizer *tmp_sizer = new wxStaticBoxSizer(wxHORIZONTAL, this, name);
+		sizer->Add(tmp_sizer, 0,wxEXPAND, 5);
+		wxFlexGridSizer *flex = new wxFlexGridSizer(2,5,5);
+		flex->AddGrowableCol(0,1);
+		tmp_sizer->Add(flex, 1, wxEXPAND, 5);
+		sizer->AddSpacer(8);
+		return flex;
+	}
+
+};
 
 
 void Preferences::OnOK(wxCommandEvent &event) {
@@ -189,24 +254,25 @@ void Preferences::OnCancel(wxCommandEvent &event) {
 
 
 
-void Preferences::General(wxTreebook *book) {
+class General: public OptionPage {
+public:
+	General(wxTreebook *book): OptionPage(book, _("General")) {
 
-	PAGE_CREATE(_("General"))
+		wxFlexGridSizer *startup = PageSizer(_("Startup"));
+		OptionAdd(startup, _("Check for updates"), "App/Splash");
+		OptionAdd(startup, _("Show Splash Screen"), "App/Splash");
 
-	PAGE_SIZER(_("Startup"), startup)
-	OptionAdd(panel, startup_flex, _("Check for updates"), "App/Splash");
-	OptionAdd(panel, startup_flex, _("Show Splash Screen"), "App/Splash");
+		wxFlexGridSizer *recent = PageSizer(_("Recently Used Lists"));
+		OptionAdd(recent, _("Files"), "Limits/MRU");
+		OptionAdd(recent, _("Find/Replace"), "Limits/Find Replace");
+		sizer->AddSpacer(15);
 
-	PAGE_SIZER(_("Recently Used Lists"), recent)
-	OptionAdd(panel, recent_flex, _("Files"), "Limits/MRU");
-	OptionAdd(panel, recent_flex, _("Find/Replace"), "Limits/Find Replace");
-	sizer->AddSpacer(15);
+		wxFlexGridSizer *undo = PageSizer(_("Undo / Redo Settings"));
+		OptionAdd(undo, _("Undo Levels"), "Limits/MRU");
 
-	PAGE_SIZER(_("Undo / Redo Settings"), undo)
-	OptionAdd(panel, undo_flex, _("Undo Levels"), "Limits/MRU");
-
-	PAGE_END()
-}
+		SetSizerAndFit(sizer);
+	}
+};
 
 
 void Preferences::Subtitles(wxTreebook *book) {
@@ -508,8 +574,8 @@ Preferences::Preferences(wxWindow *parent): wxDialog(parent, -1, _("Preferences"
 //	SetIcon(BitmapToIcon(GETIMAGE(options_button_24)));
 
 	book = new wxTreebook(this, -1, wxDefaultPosition, wxDefaultSize);
+	general = new General(book);
 
-	General(book);
 	Subtitles(book);
 	Audio(book);
 	Video(book);
@@ -528,7 +594,7 @@ Preferences::Preferences(wxWindow *parent): wxDialog(parent, -1, _("Preferences"
 	book->Fit();
 
 	/// @todo Save the last page and start with that page on next launch.
-	book->ChangeSelection(5);
+	book->ChangeSelection(0);
 
 	// Bottom Buttons
 	wxStdDialogButtonSizer *stdButtonSizer = new wxStdDialogButtonSizer();

@@ -28,6 +28,8 @@
 
 #include "browse_button.h"
 
+class General;
+
 class Preferences: public wxDialog {
 	wxTreebook *book;
 
@@ -35,14 +37,14 @@ class Preferences: public wxDialog {
 	void OnCancel(wxCommandEvent &event);
 	void OnApply(wxCommandEvent &event);
 
-//	wxPanel *general;
+	General *general;
 
 //	void OptionAdd(wxPanel *parent, wxFlexGridSizer *flex, const wxString &name, const char *opt_name);
 	void OptionAdd(wxPanel *parent, wxFlexGridSizer *flex, const wxString &name, const char *opt_name, double min=0, double max=100, double inc=1);
 	void OptionChoice(wxPanel *parent, wxFlexGridSizer *flex, const wxString &name, const wxArrayString &choices, const char *opt_name);
 	void OptionBrowse(wxPanel *parent, wxFlexGridSizer *flex, const wxString &name, BrowseType browse_type, const char *opt_name);
 
-	void General(wxTreebook *book);
+	void General_old(wxTreebook *book);
 	void Subtitles(wxTreebook *book);
 	void Audio(wxTreebook *book);
 	void Video(wxTreebook *book);
