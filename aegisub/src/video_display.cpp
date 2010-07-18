@@ -148,6 +148,15 @@ VideoDisplay::~VideoDisplay () {
 	VideoContext::Get()->RemoveDisplay(this);
 }
 
+bool VideoDisplay::InitContext() {
+	if (!IsShownOnScreen()) return false;
+	if (!glContext.get()) {
+		glContext.reset(new wxGLContext(this));
+	}
+	SetCurrent(*glContext.get());
+	return true;
+}
+
 void VideoDisplay::ShowCursor(bool show) {
 	if (show) {
 		SetCursor(wxNullCursor);
@@ -212,6 +221,7 @@ void VideoDisplay::SetFrame(int frameNumber) {
 }
 
 void VideoDisplay::UploadFrameData() {
+	if (!InitContext()) return;
 	VideoContext *context = VideoContext::Get();
 	AegiVideoFrame frame;
 	try {
@@ -247,8 +257,9 @@ void VideoDisplay::UploadFrameData() {
 }
 
 void VideoDisplay::Refresh() {
-	UploadFrameData();
 	if (!tool.get()) tool.reset(new VisualToolCross(this, video, toolBar));
+	if (!InitContext()) return;
+	UploadFrameData();
 	tool->Refresh();
 	Render();
 }
@@ -258,13 +269,11 @@ void VideoDisplay::SetFrameRange(int from, int to) {
 }
 
 void VideoDisplay::Render() try {
-	if (!IsShownOnScreen()) return;
+	if (!InitContext()) return;
 	VideoContext *context = VideoContext::Get();
 	if (!context->IsLoaded()) return;
 	assert(wxIsMainThread());
 	assert(w > 0);
-
-	SetCurrent(*context->GetGLContext(this));
 
 	videoOut->Render(viewport_x, viewport_bottom, viewport_width, viewport_height);
 	E(glViewport(0, min(viewport_bottom, 0), w, h));

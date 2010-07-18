@@ -87,12 +87,6 @@ private:
 	std::list<VideoDisplay*> displayList;
 
 	/// DOCME
-	bool ownGlContext;
-
-	/// DOCME
-	wxGLContext *glContext;
-
-	/// DOCME
 	AegiVideoFrame tempFrame;
 
 	/// DOCME
@@ -184,8 +178,6 @@ public:
 	/// @brief Save the currently displayed frame as an image
 	/// @param raw Should the frame have subtitles?
 	void SaveSnapshot(bool raw);
-
-	wxGLContext *GetGLContext(wxGLCanvas *canvas);
 
 	/// @brief Is there a video loaded?
 	bool IsLoaded() const { return !!provider.get(); }

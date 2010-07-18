@@ -86,9 +86,7 @@ END_EVENT_TABLE()
 /// @brief Constructor 
 ///
 VideoContext::VideoContext()
-: ownGlContext(false)
-, glContext(NULL)
-, startFrame(-1)
+: startFrame(-1)
 , endFrame(-1)
 , playNextFrame(-1)
 , nextFrame(-1)
@@ -113,8 +111,6 @@ VideoContext::~VideoContext () {
 		delete audio->player;
 	}
 	tempFrame.Clear();
-	if (ownGlContext)
-		delete glContext;
 }
 
 VideoContext *VideoContext::Get() {
@@ -143,8 +139,6 @@ void VideoContext::Reset() {
 	isPlaying = false;
 	nextFrame = -1;
 
-	UpdateDisplays(true);
-
 	// Clean up video data
 	videoName.clear();
 	tempFrame.Clear();
@@ -161,9 +155,6 @@ void VideoContext::SetVideo(const wxString &filename) {
 
 	try {
 		grid->CommitChanges(true);
-
-		// Set GL context
-		GetGLContext(displayList.front())->SetCurrent(*displayList.front());
 
 		// Choose a provider
 		provider.reset(VideoProviderFactoryManager::GetProvider(filename));
@@ -284,14 +275,6 @@ void VideoContext::JumpToFrame(int n) {
 
 void VideoContext::JumpToTime(int ms, agi::vfr::Time end) {
 	JumpToFrame(FrameAtTime(ms, end));
-}
-
-wxGLContext *VideoContext::GetGLContext(wxGLCanvas *canvas) {
-	if (!glContext) {
-		glContext = new wxGLContext(canvas);
-		ownGlContext = true;
-	}
-	return glContext;
 }
 
 AegiVideoFrame VideoContext::GetFrame(int n,bool raw) {

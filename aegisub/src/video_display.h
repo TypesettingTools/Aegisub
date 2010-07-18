@@ -62,7 +62,7 @@ struct VideoState {
 
 /// @class VideoDisplay
 /// @brief DOCME
-class VideoDisplay: public wxGLCanvas {
+class VideoDisplay : public wxGLCanvas {
 	agi::OptionValue* alwaysShowTools;
 	/// The unscaled size of the displayed video
 	wxSize origSize;
@@ -146,6 +146,13 @@ class VideoDisplay: public wxGLCanvas {
 	int activeMode;
 	/// The toolbar used by individual typesetting tools
 	wxToolBar* toolBar;
+
+	/// The OpenGL context for this display
+	std::auto_ptr<wxGLContext> glContext;
+
+	/// @brief Initialize the gl context and set the active context to this one
+	/// @return Could the context be set?
+	bool InitContext();
 
 
 	void OnMode(const wxCommandEvent &event);
