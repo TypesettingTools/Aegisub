@@ -145,66 +145,6 @@ void Preferences::OptionAdd(wxPanel *parent, wxFlexGridSizer *flex, const wxStri
 }
 
 
-
-
-
-Preferences::Preferences(wxWindow *parent): wxDialog(parent, -1, _("Preferences"), wxDefaultPosition, wxSize(-1, 500)) {
-//	SetIcon(BitmapToIcon(GETIMAGE(options_button_24)));
-
-	book = new wxTreebook(this, -1, wxDefaultPosition, wxDefaultSize);
-
-	General(book);
-	Subtitles(book);
-	Audio(book);
-	Video(book);
-	Interface(book);
-	Interface_Colours(book);
-	Interface_Hotkeys(book);
-	Paths(book);
-	File_Associations(book);
-	Backup(book);
-	Automation(book);
-	Advanced(book);
-	Advanced_Interface(book);
-	Advanced_Audio(book);
-	Advanced_Video(book);
-
-	book->Fit();
-
-	/// @todo Save the last page and start with that page on next launch.
-	book->ChangeSelection(5);
-
-	// Bottom Buttons
-	wxStdDialogButtonSizer *stdButtonSizer = new wxStdDialogButtonSizer();
-	stdButtonSizer->AddButton(new wxButton(this,wxID_OK));
-	stdButtonSizer->AddButton(new wxButton(this,wxID_CANCEL));
-	stdButtonSizer->AddButton(new wxButton(this,wxID_APPLY));
-	stdButtonSizer->Realize();
-	wxSizer *buttonSizer = new wxBoxSizer(wxHORIZONTAL);
-	wxButton *defaultButton = new wxButton(this,2342,_("Restore Defaults"));
-	buttonSizer->Add(defaultButton,0,wxEXPAND);
-	buttonSizer->AddStretchSpacer(1);
-	buttonSizer->Add(stdButtonSizer,0,wxEXPAND);
-
-
-	// Main Sizer
-	wxSizer *mainSizer = new wxBoxSizer(wxVERTICAL);
-	mainSizer->Add(book, 1 ,wxEXPAND | wxALL, 5);
-	mainSizer->Add(buttonSizer,0,wxEXPAND | wxLEFT | wxRIGHT | wxBOTTOM,5);
-	SetSizerAndFit(mainSizer);
-	this->SetMinSize(wxSize(-1, 500));
-	this->SetMaxSize(wxSize(-1, 500));
-	CenterOnParent();
-
-
-
-}
-
-Preferences::~Preferences() {
-
-}
-
-
 void Preferences::OnOK(wxCommandEvent &event) {
 	EndModal(0);
 }
@@ -564,6 +504,61 @@ void Preferences::Advanced_Video(wxTreebook *book) {
 }
 
 
+Preferences::Preferences(wxWindow *parent): wxDialog(parent, -1, _("Preferences"), wxDefaultPosition, wxSize(-1, 500)) {
+//	SetIcon(BitmapToIcon(GETIMAGE(options_button_24)));
+
+	book = new wxTreebook(this, -1, wxDefaultPosition, wxDefaultSize);
+
+	General(book);
+	Subtitles(book);
+	Audio(book);
+	Video(book);
+	Interface(book);
+	Interface_Colours(book);
+	Interface_Hotkeys(book);
+	Paths(book);
+	File_Associations(book);
+	Backup(book);
+	Automation(book);
+	Advanced(book);
+	Advanced_Interface(book);
+	Advanced_Audio(book);
+	Advanced_Video(book);
+
+	book->Fit();
+
+	/// @todo Save the last page and start with that page on next launch.
+	book->ChangeSelection(5);
+
+	// Bottom Buttons
+	wxStdDialogButtonSizer *stdButtonSizer = new wxStdDialogButtonSizer();
+	stdButtonSizer->AddButton(new wxButton(this,wxID_OK));
+	stdButtonSizer->AddButton(new wxButton(this,wxID_CANCEL));
+	stdButtonSizer->AddButton(new wxButton(this,wxID_APPLY));
+	stdButtonSizer->Realize();
+	wxSizer *buttonSizer = new wxBoxSizer(wxHORIZONTAL);
+	wxButton *defaultButton = new wxButton(this,2342,_("Restore Defaults"));
+	buttonSizer->Add(defaultButton,0,wxEXPAND);
+	buttonSizer->AddStretchSpacer(1);
+	buttonSizer->Add(stdButtonSizer,0,wxEXPAND);
+
+
+	// Main Sizer
+	wxSizer *mainSizer = new wxBoxSizer(wxVERTICAL);
+	mainSizer->Add(book, 1 ,wxEXPAND | wxALL, 5);
+	mainSizer->Add(buttonSizer,0,wxEXPAND | wxLEFT | wxRIGHT | wxBOTTOM,5);
+	SetSizerAndFit(mainSizer);
+	this->SetMinSize(wxSize(-1, 500));
+	this->SetMaxSize(wxSize(-1, 500));
+	CenterOnParent();
+
+
+
+}
+
+Preferences::~Preferences() {
+
+}
 
 
 BEGIN_EVENT_TABLE(Preferences, wxDialog)
@@ -571,4 +566,3 @@ BEGIN_EVENT_TABLE(Preferences, wxDialog)
     EVT_BUTTON(wxID_CANCEL, Preferences::OnCancel)
     EVT_BUTTON(wxID_APPLY, Preferences::OnApply)
 END_EVENT_TABLE()
-
