@@ -29,6 +29,20 @@
 #include "browse_button.h"
 
 class General;
+class Subtitles;
+class Audio;
+//class Video;
+//class Interface;
+//class Interface_Colours;
+//class Interface_Hotkeys;
+//class Paths;
+//class File_Associations;
+//class Backup;
+//class Automation;
+//class Advanced;
+//class Advanced_Interface;
+//class Advanced_Audio;
+//class Advanced_Video;
 
 class Preferences: public wxDialog {
 	wxTreebook *book;
@@ -38,15 +52,26 @@ class Preferences: public wxDialog {
 	void OnApply(wxCommandEvent &event);
 
 	General *general;
+	Subtitles *subtitles;
+	Audio *audio;
+//	Video *video;
+//	Interface *interface;
+//	Interface_Colours *interface_colours;
+//	Interface_Hotkeys *interface_hotkeys;
+//	Paths *paths;
+//	File_Associations *file_associations;
+//	Backup *backup;
+//	Automation *automation;
+//	Advanced *advanced;
+//	Advanced_Interface *advanced_interface;
+//	Advanced_Audio *advanced_audio;
+//	Advanced_Video *advanced_video;
 
 //	void OptionAdd(wxPanel *parent, wxFlexGridSizer *flex, const wxString &name, const char *opt_name);
 	void OptionAdd(wxPanel *parent, wxFlexGridSizer *flex, const wxString &name, const char *opt_name, double min=0, double max=100, double inc=1);
 	void OptionChoice(wxPanel *parent, wxFlexGridSizer *flex, const wxString &name, const wxArrayString &choices, const char *opt_name);
 	void OptionBrowse(wxPanel *parent, wxFlexGridSizer *flex, const wxString &name, BrowseType browse_type, const char *opt_name);
 
-	void General_old(wxTreebook *book);
-	void Subtitles(wxTreebook *book);
-	void Audio(wxTreebook *book);
 	void Video(wxTreebook *book);
 	void Interface(wxTreebook *book);
 	void Interface_Colours(wxTreebook *book);
