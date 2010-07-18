@@ -1165,6 +1165,7 @@ void FrameMain::OnUndo(wxCommandEvent&) {
 	ass->Undo();
 	UpdateTitle();
 	SubsGrid->UpdateMaps(true);
+	VideoContext::Get()->Refresh();
 }
 
 /// @brief Redo 
@@ -1173,6 +1174,7 @@ void FrameMain::OnRedo(wxCommandEvent&) {
 	ass->Redo();
 	UpdateTitle();
 	SubsGrid->UpdateMaps(true);
+	VideoContext::Get()->Refresh();
 }
 
 /// @brief Find 
