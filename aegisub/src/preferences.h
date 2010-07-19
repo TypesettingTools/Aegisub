@@ -55,7 +55,7 @@ class Preferences: public wxDialog {
 	Subtitles *subtitles;
 	Audio *audio;
 	Video *video;
-	Interface *interface;
+	Interface *interface_;
 	Interface_Colours *interface_colours;
 	Interface_Hotkeys *interface_hotkeys;
 	Paths *paths;

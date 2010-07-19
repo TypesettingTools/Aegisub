@@ -472,9 +472,9 @@ public:
 class Advanced_Interface: public OptionPage {
 public:
 	Advanced_Interface(wxTreebook *book): OptionPage(book, _("Backup"), PAGE_SUB) {
-		wxFlexGridSizer *interface = PageSizer(_("Interface"));
+		wxFlexGridSizer *interface_ = PageSizer(_("Interface"));
 
-		interface->Add(new wxStaticText(this, wxID_ANY, _T("TBD..")), 0, wxALL, 5);
+		interface_->Add(new wxStaticText(this, wxID_ANY, _T("TBD..")), 0, wxALL, 5);
 
 		SetSizerAndFit(sizer);
 	}
@@ -554,7 +554,7 @@ Preferences::Preferences(wxWindow *parent): wxDialog(parent, -1, _("Preferences"
 	subtitles = new Subtitles(book);
 	audio = new Audio(book);
 	video = new Video(book);
-	interface = new Interface(book);
+	interface_ = new Interface(book);
 	interface_colours = new Interface_Colours(book);
 	interface_hotkeys = new Interface_Hotkeys(book);
 	paths = new Paths(book);
