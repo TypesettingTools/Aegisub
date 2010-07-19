@@ -62,10 +62,6 @@ public:
 
 	wxSizer *sizer;
 
-	void CellSkip(wxFlexGridSizer *&flex) {
-		flex->Add(new wxStaticText(this, wxID_ANY , wxEmptyString), 0, wxALL, 5);
-	}
-
 	OptionPage(wxTreebook *book, wxString name, int style = PAGE_DEFAULT):
 		wxScrolled<wxPanel>(book, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxVSCROLL) {
 
@@ -84,8 +80,11 @@ public:
 		sizer = new wxBoxSizer(wxVERTICAL);
 	}
 
-
 	~OptionPage() {}
+
+	void CellSkip(wxFlexGridSizer *&flex) {
+		flex->Add(new wxStaticText(this, wxID_ANY , wxEmptyString), 0, wxALL, 5);
+	}
 
 	void OptionAdd(wxFlexGridSizer *&flex, const wxString &name, const char *opt_name, double min=0, double max=100, double inc=1) {
 
@@ -186,8 +185,6 @@ public:
 		browse->Bind(text);
 		button_flex->Add(browse, 1, wxEXPAND);
 	}
-
-
 };
 
 
@@ -205,6 +202,7 @@ void Preferences::OnCancel(wxCommandEvent &event) {
 }
 
 
+/// General preferences page
 class General: public OptionPage {
 public:
 	General(wxTreebook *book): OptionPage(book, _("General")) {
@@ -226,6 +224,7 @@ public:
 };
 
 
+/// Subtitles preferences page
 class Subtitles: public OptionPage {
 public:
 	Subtitles(wxTreebook *book): OptionPage(book, _("Subtitles")) {
@@ -245,6 +244,7 @@ public:
 };
 
 
+/// Audio preferences page
 class Audio: public OptionPage {
 public:
 	Audio(wxTreebook *book): OptionPage(book, _("Audio")) {
@@ -280,6 +280,7 @@ public:
 };
 
 
+/// Video preferences page
 class Video: public OptionPage {
 public:
 	Video(wxTreebook *book): OptionPage(book, _("Video")) {
@@ -307,6 +308,7 @@ public:
 };
 
 
+/// Interface preferences page
 class Interface: public OptionPage {
 public:
 	Interface(wxTreebook *book): OptionPage(book, _("Interface")) {
@@ -322,6 +324,7 @@ public:
 };
 
 
+/// Interface Colours preferences subpage
 class Interface_Colours: public OptionPage {
 public:
 	Interface_Colours(wxTreebook *book): OptionPage(book, _("Colours"), PAGE_SCROLL|PAGE_SUB) {
@@ -372,6 +375,7 @@ public:
 };
 
 
+/// Interface Hotkeys preferences subpage
 class Interface_Hotkeys: public OptionPage {
 public:
 	Interface_Hotkeys(wxTreebook *book): OptionPage(book, _("Hotkeys"), PAGE_SUB) {
@@ -383,6 +387,7 @@ public:
 };
 
 
+/// Paths preferences page
 class Paths: public OptionPage {
 public:
 	Paths(wxTreebook *book): OptionPage(book, _("Paths")) {
@@ -395,6 +400,7 @@ public:
 };
 
 
+/// File Associations preferences page
 class File_Associations: public OptionPage {
 public:
 	File_Associations(wxTreebook *book): OptionPage(book, _("File Associations")) {
@@ -407,6 +413,7 @@ public:
 };
 
 
+/// Backup preferences page
 class Backup: public OptionPage {
 public:
 	Backup(wxTreebook *book): OptionPage(book, _("Backup")) {
@@ -427,6 +434,7 @@ public:
 
 
 
+/// Automation preferences page
 class Automation: public OptionPage {
 public:
 	Automation(wxTreebook *book): OptionPage(book, _("Automation")) {
@@ -453,6 +461,7 @@ public:
 };
 
 
+/// Advanced preferences page
 class Advanced: public OptionPage {
 public:
 	Advanced(wxTreebook *book): OptionPage(book, _("Advanced")) {
@@ -469,6 +478,7 @@ public:
 };
 
 
+/// Advanced Interface preferences subpage
 class Advanced_Interface: public OptionPage {
 public:
 	Advanced_Interface(wxTreebook *book): OptionPage(book, _("Backup"), PAGE_SUB) {
@@ -481,6 +491,7 @@ public:
 };
 
 
+/// Advanced Audio preferences subpage
 class Advanced_Audio: public OptionPage {
 public:
 	Advanced_Audio(wxTreebook *book): OptionPage(book, _("Audio"), PAGE_SUB) {
@@ -522,6 +533,7 @@ public:
 };
 
 
+/// Advanced Video preferences subpage
 class Advanced_Video: public OptionPage {
 public:
 	Advanced_Video(wxTreebook *book): OptionPage(book, _("Video")) {
@@ -598,7 +610,6 @@ Preferences::Preferences(wxWindow *parent): wxDialog(parent, -1, _("Preferences"
 }
 
 Preferences::~Preferences() {
-
 }
 
 
