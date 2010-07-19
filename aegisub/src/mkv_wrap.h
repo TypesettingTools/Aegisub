@@ -117,7 +117,7 @@ class MatroskaWrapper {
 private:
 
 	/// DOCME
-	wxArrayInt keyFrames;
+	std::vector<int> keyFrames;
 
 	/// DOCME
 	std::vector<double> timecodes;
@@ -162,7 +162,7 @@ public:
 	/// @return 
 	///
 	unsigned int GetFrameCount() { return timecodes.size(); }
-	wxArrayInt GetKeyFrames();
+	std::vector<int> GetKeyFrames();
 	void GetSubtitles(AssFile *target);
 	static bool HasSubtitles(wxString const& filename);
 

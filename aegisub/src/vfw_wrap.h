@@ -39,7 +39,9 @@
 
 ///////////
 // Headers
-
+#ifndef AGI_PRE
+#include <vector>
+#endif
 
 
 /// DOCME
@@ -49,7 +51,7 @@
 /// DOCME
 class VFWWrapper {
 public:
-	static wxArrayInt GetKeyFrames(wxString filename);
+	static std::vector<int> GetKeyFrames(wxString filename);
 };
 
 

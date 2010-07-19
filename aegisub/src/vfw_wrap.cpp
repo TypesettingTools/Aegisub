@@ -47,8 +47,8 @@
 /// @brief Get keyframe list 
 /// @param filename 
 ///
-wxArrayInt VFWWrapper::GetKeyFrames(wxString filename) {
-	wxArrayInt frames;
+std::vector<int> VFWWrapper::GetKeyFrames(wxString filename) {
+	std::vector<int> frames;
 
 #ifdef __WINDOWS__
 	// Init vfw
@@ -106,7 +106,7 @@ wxArrayInt VFWWrapper::GetKeyFrames(wxString filename) {
 	// Loop through stream
 	for (size_t i=0;i<frame_c;i++) {
 		if (AVIStreamIsKeyFrame(ppavi,(int)i)) {
-			frames.Add(i);
+			frames.push_back(i);
 		}
 	}
 

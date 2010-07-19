@@ -123,7 +123,7 @@ void MatroskaWrapper::Close() {
 		file = NULL;
 		delete input;
 	}
-	keyFrames.Clear();
+	keyFrames.clear();
 	timecodes.clear();
 }
 
@@ -132,7 +132,7 @@ void MatroskaWrapper::Close() {
 /// @brief Return keyframes 
 /// @return 
 ///
-wxArrayInt MatroskaWrapper::GetKeyFrames() {
+std::vector<int> MatroskaWrapper::GetKeyFrames() {
 	return keyFrames;
 }
 
@@ -153,7 +153,7 @@ bool operator < (MkvFrame &t1, MkvFrame &t2) {
 ///
 void MatroskaWrapper::Parse() {
 	// Clear keyframes and timecodes
-	keyFrames.Clear();
+	keyFrames.clear();
 	bytePos.Clear();
 	timecodes.clear();
 	frames.clear();
@@ -230,7 +230,7 @@ void MatroskaWrapper::Parse() {
 		int i = 0;
 		for (std::list<MkvFrame>::iterator cur=frames.begin();cur!=frames.end();cur++) {
 			curFrame = *cur;
-			if (curFrame.isKey) keyFrames.Add(i);
+			if (curFrame.isKey) keyFrames.push_back(i);
 			bytePos.Add(curFrame.filePos);
 			timecodes.push_back(curFrame.time);
 			i++;
@@ -243,7 +243,7 @@ void MatroskaWrapper::Parse() {
 		int i = 0;
 		for (std::list<MkvFrame>::iterator cur=frames.begin();cur!=frames.end();cur++) {
 			curFrame = *cur;
-			if (curFrame.isKey) keyFrames.Add(i);
+			if (curFrame.isKey) keyFrames.push_back(i);
 			bytePos.Add(curFrame.filePos);
 			i++;
 		}
