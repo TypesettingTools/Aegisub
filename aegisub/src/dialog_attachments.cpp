@@ -163,9 +163,11 @@ DialogAttachments::~DialogAttachments() {
 		--cur;
 	}
 
-	if (removed_any) {
-		AssFile::top->FlagAsModified(_("remove empty attachments sections"));
-	}
+	// Intentionally do not mark file as modified.
+	// This will lump the changes together with the next change.
+	// Two reasons:
+	// 1. Users won't be confused over an undo from a non-obvious action.
+	// 2. No need to send 2.1.9 to translators because of no new strings.
 }
 
 
