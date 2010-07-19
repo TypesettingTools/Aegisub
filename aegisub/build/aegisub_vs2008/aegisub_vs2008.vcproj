@@ -1251,6 +1251,18 @@
 				RelativePath="..\..\src\preferences.cpp"
 				>
 			</File>
+			<File
+				RelativePath="..\..\src\preferences.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\preferences_base.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\preferences_base.h"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Core"
