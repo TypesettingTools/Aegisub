@@ -258,9 +258,7 @@ aegisub_2_2_SOURCES = \
 	gl_text.cpp \
 	gl_wrap.cpp \
 	help_button.cpp \
-	hilimod_textctrl.cpp \
 	hotkeys.cpp \
-	idle_field_event.cpp \
 	kana_table.cpp \
 	keyframe.cpp \
 	main.cpp \
