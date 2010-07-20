@@ -34,19 +34,16 @@
 /// @ingroup main_ui
 ///
 
+#ifndef AGI_PRE
+#include <memory>
+#endif
 
-////////////
-// Includes
 #include "scintilla_text_ctrl.h"
-#include "spellchecker_manager.h"
-#include "thesaurus.h"
 
-
-//////////////
-// Prototypes
+class SpellChecker;
 class SubsEditBox;
-
-
+class SubtitlesGrid;
+class Thesaurus;
 
 /// DOCME
 /// @class SubsTextEditCtrl
@@ -54,13 +51,13 @@ class SubsEditBox;
 ///
 /// DOCME
 class SubsTextEditCtrl : public ScintillaTextCtrl {
-private:
+	/// DOCME
+	std::auto_ptr<SpellChecker> spellchecker;
 
 	/// DOCME
-	SpellChecker *spellchecker;
+	std::auto_ptr<Thesaurus> thesaurus;
 
-	/// DOCME
-	Thesaurus *thesaurus;
+	SubtitlesGrid *grid;
 
 
 	/// DOCME
@@ -87,87 +84,21 @@ private:
 	void OnMouseEvent(wxMouseEvent &event);
 	void OnSplitLinePreserve(wxCommandEvent &event);
 	void OnSplitLineEstimate(wxCommandEvent &event);
-	void OnCut(wxCommandEvent &event);
-	void OnCopy(wxCommandEvent &event);
-	void OnPaste(wxCommandEvent &event);
-	void OnUndo(wxCommandEvent &event);
-	void OnSelectAll(wxCommandEvent &event);
 	void OnAddToDictionary(wxCommandEvent &event);
 	void OnUseSuggestion(wxCommandEvent &event);
-	void OnUseThesaurusSuggestion(wxCommandEvent &event);
 	void OnSetDicLanguage(wxCommandEvent &event);
 	void OnSetThesLanguage(wxCommandEvent &event);
 	void OnLoseFocus(wxFocusEvent &event);
 
 public:
-
-	/// DOCME
-	SubsEditBox *control;
-
-	SubsTextEditCtrl(wxWindow* parent, wxWindowID id, const wxString& value = _T(""), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = 0, const wxValidator& validator = wxDefaultValidator, const wxString& name = wxTextCtrlNameStr);
+	SubsTextEditCtrl(wxWindow* parent, wxSize size, long style, SubtitlesGrid *grid);
 	~SubsTextEditCtrl();
 
-	void SetTextTo(const wxString text);
+	void SetTextTo(wxString text);
 	void UpdateStyle(int start=0,int length=-1);
 	void StyleSpellCheck(int start=0,int length=-1);
-	void UpdateCallTip();
+	void UpdateCallTip(wxStyledTextEvent &);
 	void SetStyles();
 
 	DECLARE_EVENT_TABLE()
 };
-
-
-///////
-// IDs
-enum {
-
-	/// DOCME
-	EDIT_MENU_SPLIT_PRESERVE = 1400,
-
-	/// DOCME
-	EDIT_MENU_SPLIT_ESTIMATE,
-
-	/// DOCME
-	EDIT_MENU_CUT,
-
-	/// DOCME
-	EDIT_MENU_COPY,
-
-	/// DOCME
-	EDIT_MENU_PASTE,
-
-	/// DOCME
-	EDIT_MENU_UNDO,
-
-	/// DOCME
-	EDIT_MENU_SELECT_ALL,
-
-	/// DOCME
-	EDIT_MENU_ADD_TO_DICT,
-
-	/// DOCME
-	EDIT_MENU_SUGGESTION,
-
-	/// DOCME
-	EDIT_MENU_SUGGESTIONS,
-
-	/// DOCME
-	EDIT_MENU_THESAURUS = 1450,
-
-	/// DOCME
-	EDIT_MENU_THESAURUS_SUGS,
-
-	/// DOCME
-	EDIT_MENU_DIC_LANGUAGE = 1600,
-
-	/// DOCME
-	EDIT_MENU_DIC_LANGS,
-
-	/// DOCME
-	EDIT_MENU_THES_LANGUAGE = 1700,
-
-	/// DOCME
-	EDIT_MENU_THES_LANGS
-};
-
-

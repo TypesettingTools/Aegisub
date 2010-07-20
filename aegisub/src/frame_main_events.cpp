@@ -85,6 +85,7 @@
 #include "preferences.h"
 #include "standard_paths.h"
 #include "subs_edit_box.h"
+#include "subs_edit_ctrl.h"
 #include "subs_grid.h"
 #include "toggle_bitmap.h"
 #include "utils.h"
@@ -223,7 +224,6 @@ BEGIN_EVENT_TABLE(FrameMain, wxFrame)
 	EVT_MENU(Grid_Next_Line,FrameMain::OnNextLine)
 	EVT_MENU(Grid_Prev_Line,FrameMain::OnPrevLine)
 	EVT_MENU(Grid_Toggle_Tags,FrameMain::OnToggleTags)
-	EVT_MENU(Edit_Box_Commit,FrameMain::OnEditBoxCommit)
 
 	EVT_MENU(Medusa_Play, FrameMain::OnMedusaPlay)
 	EVT_MENU(Medusa_Stop, FrameMain::OnMedusaStop)
@@ -573,7 +573,6 @@ void FrameMain::OnLog(wxCommandEvent &) {
 	LogWindow *log = new LogWindow(this);
 	log->Show(1);
 }
-
 
 /// @brief Open check updates
 void FrameMain::OnCheckUpdates(wxCommandEvent &) {
@@ -1056,7 +1055,7 @@ void FrameMain::OnAutomationMacro (wxCommandEvent &event) {
 	// Have the grid update its maps, this properly refreshes it to reflect the changed subs
 	SubsGrid->UpdateMaps();
 	SubsGrid->SetSelectionFromAbsolute(selected_lines);
-	SubsGrid->CommitChanges(true, false);
+	SubsGrid->CommitChanges();
 	SubsGrid->EndBatch();
 #endif
 }
@@ -1155,8 +1154,8 @@ void FrameMain::OnShiftToFrame (wxCommandEvent &) {
 
 	// Commit
 	SubsGrid->ass->Commit(_("shift to frame"));
-	SubsGrid->CommitChanges();
-	SubsGrid->editBox->Update(true,false);
+	SubsGrid->CommitChanges(false);
+	SubsGrid->editBox->Update(true);
 }
 
 /// @brief Undo 
@@ -1473,32 +1472,6 @@ void FrameMain::OnSetTags(wxCommandEvent &event) {
 	OPT_SET("Subtitle/Grid/Hide Overrides")->SetInt(event.GetId() - Menu_View_FullTags);
 	SubsGrid->Refresh(false);
 }
-
-/// @brief Commit Edit Box's changes 
-/// @param event 
-void FrameMain::OnEditBoxCommit(wxCommandEvent &event) {
-	// Find focus
-	wxWindow *focus = FindFocus();
-	if (!focus) return;
-
-	// Is the text edit
-	if (focus == EditBox->TextEdit) {
-		EditBox->Commit(true);
-		EditBox->Update(true);
-	}
-
-	// Other window
-	else {
-		//wxKeyEvent keyevent;
-		//keyevent.m_keyCode = WXK_RETURN;
-		//keyevent.m_controlDown = true;
-		//keyevent.SetEventType(wxEVT_KEY_DOWN);
-		wxCommandEvent keyevent(wxEVT_COMMAND_TEXT_ENTER,focus->GetId());
-		focus->GetEventHandler()->AddPendingEvent(keyevent);
-	}
-}
-
-
 
 /// @brief Choose a different language 
 void FrameMain::OnChooseLanguage (wxCommandEvent &) {

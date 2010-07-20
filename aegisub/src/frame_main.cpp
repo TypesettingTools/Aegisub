@@ -73,6 +73,7 @@
 #include "main.h"
 #include "standard_paths.h"
 #include "subs_edit_box.h"
+#include "subs_edit_ctrl.h"
 #include "subs_grid.h"
 #include "text_file_reader.h"
 #include "text_file_writer.h"
@@ -604,8 +605,7 @@ void FrameMain::InitContents() {
 
 	// Top sizer
 	StartupLog(_T("Create subtitle editing box"));
-	EditBox = new SubsEditBox(Panel,SubsGrid);
-	EditBox->audio = audioBox->audioDisplay;
+	EditBox = new SubsEditBox(Panel,SubsGrid, audioBox->audioDisplay);
 	StartupLog(_T("Arrange controls in sizers"));
 	ToolSizer = new wxBoxSizer(wxVERTICAL);
 	ToolSizer->Add(audioBox,0,wxEXPAND | wxBOTTOM,5);
@@ -863,7 +863,6 @@ void FrameMain::SetDisplayMode(int video, int audio) {
 
 	// Update
 	UpdateToolbar();
-	EditBox->SetSplitLineMode();
 	MainSizer->CalcMin();
 	MainSizer->RecalcSizes();
 	MainSizer->Layout();
@@ -1138,7 +1137,7 @@ void FrameMain::LoadVideo(wxString file,bool autoload) {
 		}
 	}
 
-	SubsGrid->CommitChanges(true);
+	SubsGrid->CommitChanges();
 	SetDisplayMode(1,-1);
 	EditBox->UpdateFrameTiming();
 
@@ -1229,7 +1228,6 @@ void FrameMain::SetAccelerators() {
 	entry.push_back(Hotkeys.GetAccelerator(_T("Video global zoom in"),Menu_Video_Zoom_In));
 	entry.push_back(Hotkeys.GetAccelerator(_T("Video global zoom out"),Menu_Video_Zoom_Out));
 	entry.push_back(Hotkeys.GetAccelerator(_T("Video global play"),Video_Frame_Play));
-	entry.push_back(Hotkeys.GetAccelerator(_T("Edit box commit"),Edit_Box_Commit));
 
 	// Medusa
 	bool medusaPlay = OPT_GET("Audio/Medusa Timing Hotkeys")->GetBool();

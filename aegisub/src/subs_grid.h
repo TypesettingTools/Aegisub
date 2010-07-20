@@ -56,7 +56,6 @@ class SubsEditBox;
 class FrameMain;
 class AudioDisplay;
 
-/// DOCME
 typedef std::list<AssEntry*>::iterator entryIter;
 
 /// DOCME
@@ -95,127 +94,120 @@ private:
 	void OnShowColMenu(wxCommandEvent &event);
 
 public:
-
-	/// DOCME
+	/// Currently open file
 	AssFile *ass;
 
 	SubtitlesGrid(FrameMain* parentFrame,wxWindow *parent, wxWindowID id, AssFile *subs, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = wxWANTS_CHARS, const wxString& name = wxPanelNameStr);
 	~SubtitlesGrid();
 
 	void LoadDefault();
-	void CommitChanges(bool force=false,bool videoOnly=false);
+	/// @brief Commit changes and update the current file
+	/// @param ebox Update the edit box
+	/// @param video Update the video display
+	/// @param complete Autosave (if enabled) and update other things which care about the file
+	void CommitChanges(bool ebox = true, bool video = true, bool complete = true);
 
 	void UpdateMaps(bool preserve_selected_rows = false);
 
+	/// @brief Jump to the start/end time of the current subtitle line
+	/// @param start Start vs. End time
 	void SetVideoToSubs(bool start);
+	/// @brief Set the start/end time of the current subtitle line to the current frame
+	/// @param start Start vs. End time
 	void SetSubsToVideo(bool start);
 
+	/// @brief Join the selected lines
+	/// @param n1     First line to join
+	/// @param n2     Last line to join
+	/// @param concat Concatenate the lines rather than discarding all past the first
 	void JoinLines(int first,int last,bool concat=true);
+	/// @brief Join selected lines as karaoke, with their relative times used for syllable lengths
+	/// @param n1 First line to join
+	/// @param n2 Last line to join
 	void JoinAsKaraoke(int first,int last);
+	/// @brief Adjoins selected lines, setting each line's start time to the previous line's end time
+	/// @param n1       First line to adjoin
+	/// @param n2       Last line to adjoin
+	/// @param setStart Set the start times (rather than end times)
 	void AdjoinLines(int first,int last,bool setStart);
-	void SplitLine(int lineNumber,int splitPosition,int mode,wxString splitText = _T(""));
+	/// @brief Split line at the given position
+	/// @param line Line to split
+	/// @param pos Position in line
+	/// @param estimateTimes Adjust the times based on the lengths of the halves
+	void SplitLine(AssDialogue *line,int splitPosition,bool estimateTimes);
+	/// @brief Split a line into as many new lines as there are karaoke syllables, timed as the syllables
+	/// @param lineNumber Line to split
+	/// @return Were changes made?
+	///
+	/// DOES NOT FLAG AS MODIFIED OR COMMIT CHANGES
 	bool SplitLineByKaraoke(int lineNumber);
+	/// @brief Duplicate lines
+	/// @param n1        First frame to duplicate
+	/// @param n2        Last frame to duplicate
+	/// @param nextFrame Set the new lines to start and end on the next frame
 	void DuplicateLines(int first,int last,bool nextFrame=false);
 
 	void SwapLines(int line1,int line2);
+	/// @brief  Shift line by time
+	/// @param n    Line to shift
+	/// @param len  ms to shift by
+	/// @param type 0: Start + End; 1: Start; 2: End
 	void ShiftLineByTime(int lineNumber,int len,int type);
+	/// @brief  Shift line by frames
+	/// @param n    Line to shift
+	/// @param len  frames to shift by
+	/// @param type 0: Start + End; 1: Start; 2: End
 	void ShiftLineByFrames(int lineNumber,int len,int type);
 
 	void InsertLine(AssDialogue *line,int position,bool insertAfter,bool update=true);
+	/// @brief Delete selected lines
+	/// @param target       Lines to delete
+	/// @param flagModified Commit the file afterwards
 	void DeleteLines(wxArrayInt lines, bool flagModified=true);
 
+	/// @brief Copy to clipboard
+	/// @param target Lines to copy
 	void CopyLines(wxArrayInt lines);
+	/// @brief Cut to clipboard
+	/// @param target Lines to cut
 	void CutLines(wxArrayInt lines);
 	void PasteLines(int pos,bool over=false);
 
+	/// Retrieve a list of selected lines in the actual ASS file (i.e. not as displayed in the grid but as represented in the file)
 	std::vector<int> GetAbsoluteSelection();
+	/// @brief Update list of selected lines from absolute selection
+	/// @param selection Sorted list of selections
 	void SetSelectionFromAbsolute(std::vector<int> &selection);
 
 	DECLARE_EVENT_TABLE()
 };
 
-
-///////
-// IDs
+/// Menu event IDs
 enum {
-
-	/// DOCME
 	MENU_GRID_START = 1200,
-
-	/// DOCME
 	MENU_INSERT_BEFORE,
-
-	/// DOCME
 	MENU_INSERT_AFTER,
-
-	/// DOCME
 	MENU_INSERT_BEFORE_VIDEO,
-
-	/// DOCME
 	MENU_INSERT_AFTER_VIDEO,
-
-	/// DOCME
 	MENU_SWAP,
-
-	/// DOCME
 	MENU_DUPLICATE,
-
-	/// DOCME
 	MENU_DUPLICATE_NEXT_FRAME,
-
-	/// DOCME
 	MENU_SPLIT_BY_KARAOKE,
-
-	/// DOCME
 	MENU_COPY,
-
-	/// DOCME
 	MENU_PASTE,
-
-	/// DOCME
 	MENU_CUT,
-
-	/// DOCME
 	MENU_DELETE,
-
-	/// DOCME
 	MENU_JOIN_CONCAT,
-
-	/// DOCME
 	MENU_JOIN_REPLACE,
-
-	/// DOCME
 	MENU_ADJOIN,
-
-	/// DOCME
 	MENU_ADJOIN2,
-
-	/// DOCME
 	MENU_JOIN_AS_KARAOKE,
-
-	/// DOCME
 	MENU_RECOMBINE,
-
-	/// DOCME
 	MENU_SET_START_TO_VIDEO,
-
-	/// DOCME
 	MENU_SET_END_TO_VIDEO,
-
-	/// DOCME
 	MENU_SET_VIDEO_TO_START,
-
-	/// DOCME
 	MENU_SET_VIDEO_TO_END,
-
-	/// DOCME
 	MENU_GRID_END,
-
-	/// DOCME
 	MENU_AUDIOCLIP,
-
-	/// DOCME
 	MENU_SHOW_COL = 1250 // Don't put anything after this
 };
-
-

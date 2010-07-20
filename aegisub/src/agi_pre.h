@@ -72,16 +72,19 @@
 #include <iostream>
 #include <list>
 #include <map>
-#ifdef _WIN32
-#include <memory>
-#else
-#include <tr1/memory>
-#endif
 #include <set>
 #include <sstream>
 #include <string>
 #include <utility>
 #include <vector>
+
+#ifdef _WIN32
+#include <functional>
+#include <memory>
+#else
+#include <tr1/functional>
+#include <tr1/memory>
+#endif
 
 #include "boost/shared_ptr.hpp"
 

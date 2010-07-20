@@ -34,21 +34,45 @@
 /// @ingroup main_ui
 ///
 
-
-////////////
-// Includes
 #include "config.h"
 
 #ifndef AGI_PRE
+#ifdef _WIN32
+#include <functional>
+#else
+#include <tr1/functional>
+#endif
 #include <wx/intl.h>
 #endif
 
 #include "ass_dialogue.h"
 #include "compat.h"
 #include "main.h"
+#include "spellchecker_manager.h"
 #include "subs_edit_box.h"
+#include "subs_edit_ctrl.h"
 #include "subs_grid.h"
+#include "thesaurus.h"
 #include "utils.h"
+
+/// Event ids
+enum {
+	EDIT_MENU_SPLIT_PRESERVE = 1400,
+	EDIT_MENU_SPLIT_ESTIMATE,
+	EDIT_MENU_CUT,
+	EDIT_MENU_COPY,
+	EDIT_MENU_PASTE,
+	EDIT_MENU_SELECT_ALL,
+	EDIT_MENU_ADD_TO_DICT,
+	EDIT_MENU_SUGGESTION,
+	EDIT_MENU_SUGGESTIONS,
+	EDIT_MENU_THESAURUS = 1450,
+	EDIT_MENU_THESAURUS_SUGS,
+	EDIT_MENU_DIC_LANGUAGE = 1600,
+	EDIT_MENU_DIC_LANGS,
+	EDIT_MENU_THES_LANGUAGE = 1700,
+	EDIT_MENU_THES_LANGS
+};
 
 
 /// @brief Edit box constructor 
@@ -62,8 +86,11 @@
 /// @param name      
 /// @return 
 ///
-SubsTextEditCtrl::SubsTextEditCtrl(wxWindow* parent, wxWindowID id, const wxString& value, const wxPoint& pos, const wxSize& wsize, long style, const wxValidator& validator, const wxString& name)
-: ScintillaTextCtrl(parent, id, value, pos, wsize, style, validator, name)
+SubsTextEditCtrl::SubsTextEditCtrl(wxWindow* parent, wxSize wsize, long style, SubtitlesGrid *grid)
+: ScintillaTextCtrl(parent, wxID_ANY, "", wxDefaultPosition, wsize, style)
+, spellchecker(SpellCheckerFactoryManager::GetSpellChecker())
+, thesaurus(Thesaurus::GetThesaurus())
+, grid(grid)
 {
 	// Set properties
 	SetWrapMode(wxSTC_WRAP_WORD);
@@ -83,127 +110,104 @@ SubsTextEditCtrl::SubsTextEditCtrl(wxWindow* parent, wxWindowID id, const wxStri
 	CmdKeyClear('T',wxSTC_SCMOD_CTRL | wxSTC_SCMOD_SHIFT);
 	CmdKeyClear('U',wxSTC_SCMOD_CTRL);
 
-	// Set spellchecker
-	spellchecker = SpellCheckerFactoryManager::GetSpellChecker();
-
-	// Set thesaurus
-	thesaurus = Thesaurus::GetThesaurus();
-	
 	// Prototypes for call tips
 	tipProtoN = -1;
-	proto.Add(_T("move(x1,y1,x2,y2)"));
-	proto.Add(_T("move(x1,y1,x2,y2,startTime,endTime)"));
-	proto.Add(_T("fn;FontName"));
-	proto.Add(_T("bord;Width"));
-	proto.Add(_T("xbord;Width"));
-	proto.Add(_T("ybord;Width"));
-	proto.Add(_T("shad;Depth"));
-	proto.Add(_T("xshad;Depth"));
-	proto.Add(_T("yshad;Depth"));
-	proto.Add(_T("be;Strength"));
-	proto.Add(_T("blur;Strength"));
-	proto.Add(_T("fscx;Scale"));
-	proto.Add(_T("fscy;Scale"));
-	proto.Add(_T("fsp;Spacing"));
-	proto.Add(_T("fs;FontSize"));
-	proto.Add(_T("fe;Encoding"));
-	proto.Add(_T("frx;Angle"));
-	proto.Add(_T("fry;Angle"));
-	proto.Add(_T("frz;Angle"));
-	proto.Add(_T("fr;Angle"));
-	proto.Add(_T("pbo;Offset"));
-	proto.Add(_T("clip(command)"));
-	proto.Add(_T("clip(scale,command)"));
-	proto.Add(_T("clip(x1,y1,x2,y2)"));
-	proto.Add(_T("iclip(command)"));
-	proto.Add(_T("iclip(scale,command)"));
-	proto.Add(_T("iclip(x1,y1,x2,y2)"));
-	proto.Add(_T("t(acceleration,tags)"));
-	proto.Add(_T("t(startTime,endTime,tags)"));
-	proto.Add(_T("t(startTime,endTime,acceleration,tags)"));
-	proto.Add(_T("pos(x,y)"));
-	proto.Add(_T("p;Exponent"));
-	proto.Add(_T("org(x,y)"));
-	proto.Add(_T("fade(startAlpha,middleAlpha,endAlpha,startIn,endIn,startOut,endOut)"));
-	proto.Add(_T("fad(startTime,endTime)"));
-	proto.Add(_T("c;Colour"));
-	proto.Add(_T("1c;Colour"));
-	proto.Add(_T("2c;Colour"));
-	proto.Add(_T("3c;Colour"));
-	proto.Add(_T("4c;Colour"));
-	proto.Add(_T("alpha;Alpha"));
-	proto.Add(_T("1a;Alpha"));
-	proto.Add(_T("2a;Alpha"));
-	proto.Add(_T("3a;Alpha"));
-	proto.Add(_T("4a;Alpha"));
-	proto.Add(_T("an;Alignment"));
-	proto.Add(_T("a;Alignment"));
-	proto.Add(_T("b;Weight"));
-	proto.Add(_T("i;1/0"));
-	proto.Add(_T("u;1/0"));
-	proto.Add(_T("s;1/0"));
-	proto.Add(_T("kf;Duration"));
-	proto.Add(_T("ko;Duration"));
-	proto.Add(_T("k;Duration"));
-	proto.Add(_T("K;Duration"));
-	proto.Add(_T("q;WrapStyle"));
-	proto.Add(_T("r;Style"));
-	proto.Add(_T("fax;Factor"));
-	proto.Add(_T("fay;Factor"));
+	proto.Add(L"move(x1,y1,x2,y2)");
+	proto.Add(L"move(x1,y1,x2,y2,startTime,endTime)");
+	proto.Add(L"fn;FontName");
+	proto.Add(L"bord;Width");
+	proto.Add(L"xbord;Width");
+	proto.Add(L"ybord;Width");
+	proto.Add(L"shad;Depth");
+	proto.Add(L"xshad;Depth");
+	proto.Add(L"yshad;Depth");
+	proto.Add(L"be;Strength");
+	proto.Add(L"blur;Strength");
+	proto.Add(L"fscx;Scale");
+	proto.Add(L"fscy;Scale");
+	proto.Add(L"fsp;Spacing");
+	proto.Add(L"fs;FontSize");
+	proto.Add(L"fe;Encoding");
+	proto.Add(L"frx;Angle");
+	proto.Add(L"fry;Angle");
+	proto.Add(L"frz;Angle");
+	proto.Add(L"fr;Angle");
+	proto.Add(L"pbo;Offset");
+	proto.Add(L"clip(command)");
+	proto.Add(L"clip(scale,command)");
+	proto.Add(L"clip(x1,y1,x2,y2)");
+	proto.Add(L"iclip(command)");
+	proto.Add(L"iclip(scale,command)");
+	proto.Add(L"iclip(x1,y1,x2,y2)");
+	proto.Add(L"t(acceleration,tags)");
+	proto.Add(L"t(startTime,endTime,tags)");
+	proto.Add(L"t(startTime,endTime,acceleration,tags)");
+	proto.Add(L"pos(x,y)");
+	proto.Add(L"p;Exponent");
+	proto.Add(L"org(x,y)");
+	proto.Add(L"fade(startAlpha,middleAlpha,endAlpha,startIn,endIn,startOut,endOut)");
+	proto.Add(L"fad(startTime,endTime)");
+	proto.Add(L"c;Colour");
+	proto.Add(L"1c;Colour");
+	proto.Add(L"2c;Colour");
+	proto.Add(L"3c;Colour");
+	proto.Add(L"4c;Colour");
+	proto.Add(L"alpha;Alpha");
+	proto.Add(L"1a;Alpha");
+	proto.Add(L"2a;Alpha");
+	proto.Add(L"3a;Alpha");
+	proto.Add(L"4a;Alpha");
+	proto.Add(L"an;Alignment");
+	proto.Add(L"a;Alignment");
+	proto.Add(L"b;Weight");
+	proto.Add(L"i;1/0");
+	proto.Add(L"u;1/0");
+	proto.Add(L"s;1/0");
+	proto.Add(L"kf;Duration");
+	proto.Add(L"ko;Duration");
+	proto.Add(L"k;Duration");
+	proto.Add(L"K;Duration");
+	proto.Add(L"q;WrapStyle");
+	proto.Add(L"r;Style");
+	proto.Add(L"fax;Factor");
+	proto.Add(L"fay;Factor");
+
+	using namespace std::tr1;
+
+	Bind(wxEVT_COMMAND_MENU_SELECTED, function<void (wxCommandEvent &)>(bind(&SubsTextEditCtrl::Cut, this)), EDIT_MENU_CUT);
+	Bind(wxEVT_COMMAND_MENU_SELECTED, function<void (wxCommandEvent &)>(bind(&SubsTextEditCtrl::Copy, this)), EDIT_MENU_COPY);
+	Bind(wxEVT_COMMAND_MENU_SELECTED, function<void (wxCommandEvent &)>(bind(&SubsTextEditCtrl::Paste, this)), EDIT_MENU_PASTE);
+	Bind(wxEVT_COMMAND_MENU_SELECTED, function<void (wxCommandEvent &)>(bind(&SubsTextEditCtrl::SelectAll, this)), EDIT_MENU_SELECT_ALL);
+
+	Bind(wxEVT_STC_STYLENEEDED, &SubsTextEditCtrl::UpdateCallTip, this);
 }
 
-
-
-/// @brief Destructor 
-///
 SubsTextEditCtrl::~SubsTextEditCtrl() {
-	delete spellchecker;
-	spellchecker = NULL;
-	delete thesaurus;
-	thesaurus = NULL;
 }
 
-
-///////////////////////
-// Control event table
 BEGIN_EVENT_TABLE(SubsTextEditCtrl,wxStyledTextCtrl)
 	EVT_MOUSE_EVENTS(SubsTextEditCtrl::OnMouseEvent)
 	EVT_KILL_FOCUS(SubsTextEditCtrl::OnLoseFocus)
 
 	EVT_MENU(EDIT_MENU_SPLIT_PRESERVE,SubsTextEditCtrl::OnSplitLinePreserve)
 	EVT_MENU(EDIT_MENU_SPLIT_ESTIMATE,SubsTextEditCtrl::OnSplitLineEstimate)
-	EVT_MENU(EDIT_MENU_CUT,SubsTextEditCtrl::OnCut)
-	EVT_MENU(EDIT_MENU_COPY,SubsTextEditCtrl::OnCopy)
-	EVT_MENU(EDIT_MENU_PASTE,SubsTextEditCtrl::OnPaste)
-	EVT_MENU(EDIT_MENU_UNDO,SubsTextEditCtrl::OnUndo)
-	EVT_MENU(EDIT_MENU_SELECT_ALL,SubsTextEditCtrl::OnSelectAll)
 	EVT_MENU(EDIT_MENU_ADD_TO_DICT,SubsTextEditCtrl::OnAddToDictionary)
 	EVT_MENU_RANGE(EDIT_MENU_SUGGESTIONS,EDIT_MENU_THESAURUS-1,SubsTextEditCtrl::OnUseSuggestion)
-	EVT_MENU_RANGE(EDIT_MENU_THESAURUS_SUGS,EDIT_MENU_DIC_LANGUAGE-1,SubsTextEditCtrl::OnUseThesaurusSuggestion)
+	EVT_MENU_RANGE(EDIT_MENU_THESAURUS_SUGS,EDIT_MENU_DIC_LANGUAGE-1,SubsTextEditCtrl::OnUseSuggestion)
 	EVT_MENU_RANGE(EDIT_MENU_DIC_LANGS,EDIT_MENU_THES_LANGUAGE-1,SubsTextEditCtrl::OnSetDicLanguage)
 	EVT_MENU_RANGE(EDIT_MENU_THES_LANGS,EDIT_MENU_THES_LANGS+100,SubsTextEditCtrl::OnSetThesLanguage)
 END_EVENT_TABLE()
 
-
-
-/// @brief Lose focus 
-/// @param event 
-///
 void SubsTextEditCtrl::OnLoseFocus(wxFocusEvent &event) {
 	CallTipCancel();
 	event.Skip();
 }
 
-
-
-/// @brief Set styles 
-///
 void SubsTextEditCtrl::SetStyles() {
-	// Styles
 	wxFont font = wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT);
 	font.SetEncoding(wxFONTENCODING_DEFAULT); // this solves problems with some fonts not working properly
 	wxString fontname = lagi_wxString(OPT_GET("Subtitle/Edit Box/Font Face")->GetString());
-	if (fontname != _T("")) font.SetFaceName(fontname);
+	if (!fontname.empty()) font.SetFaceName(fontname);
 	int size = OPT_GET("Subtitle/Edit Box/Font Size")->GetInt();
 
 	// Normal style
@@ -256,19 +260,11 @@ void SubsTextEditCtrl::SetStyles() {
 	IndicatorSetForeground(0,wxColour(255,0,0));
 }
 
-
-
-/// @brief Style a range 
-/// @param start   
-/// @param _length 
-/// @return 
-///
 void SubsTextEditCtrl::UpdateStyle(int start, int _length) {
-	// Styling enabled?
 	if (OPT_GET("Subtitle/Highlight/Syntax")->GetBool() == 0) return;
 
 	// Check if it's a template line
-	AssDialogue *diag = control->grid->GetActiveLine();
+	AssDialogue *diag = grid->GetActiveLine();
 	bool templateLine = diag && diag->Comment && diag->Effect.Lower().StartsWith(_T("template"));
 	//bool templateCodeLine = diag && diag->Comment && diag->Effect.Lower().StartsWith(_T("code"));
 
@@ -320,7 +316,7 @@ void SubsTextEditCtrl::UpdateStyle(int start, int _length) {
 		}
 
 		// Start override block
-		if (curChar == _T('{') && depth >= 0) {
+		if (curChar == '{' && depth >= 0) {
 			SetUnicodeStyling(curPos,ran,curStyle);
 			curPos += ran;
 			ran = 0;
@@ -331,7 +327,7 @@ void SubsTextEditCtrl::UpdateStyle(int start, int _length) {
 		}
 
 		// End override block
-		else if (curChar == _T('}') && depth <= 1) {
+		else if (curChar == '}' && depth <= 1) {
 			SetUnicodeStyling(curPos,ran,curStyle);
 			curPos += ran;
 			ran = 0;
@@ -342,21 +338,21 @@ void SubsTextEditCtrl::UpdateStyle(int start, int _length) {
 		}
 
 		// Karaoke template block
-		else if (templateLine && curChar == _T('!')) {
+		else if (templateLine && curChar == '!') {
 			// Apply previous style
 			SetUnicodeStyling(curPos,ran,curStyle);
 			curPos += ran;
 			ran = -1; // such that ran++ later on resets it to 0 !
 			// Eat entire template block
 			int endPos = i+1;
-			while (endPos < end && text[endPos] != _T('!'))
+			while (endPos < end && text[endPos] != '!')
 				endPos++;
 			SetUnicodeStyling(curPos,endPos-curPos+1,7);
 			curPos = endPos+1;
 			i = endPos+0;
 		}
 		// Karaoke template variable
-		else if (templateLine && curChar == _T('$')) {
+		else if (templateLine && curChar == '$') {
 			// Apply previous style
 			SetUnicodeStyling(curPos,ran,curStyle);
 			curPos += ran;
@@ -365,7 +361,7 @@ void SubsTextEditCtrl::UpdateStyle(int start, int _length) {
 			int endPos = i+1;
 			while (endPos < end) {
 				wxChar ch = text[endPos];
-				if ((ch >= _T('A') && ch <= _T('Z')) || (ch >= _T('a') && ch <= _T('z')) || ch == _T('_'))
+				if ((ch >= 'A' && ch <= 'Z') || (ch >= 'a' && ch <= 'z') || ch == '_')
 					endPos++;
 				else
 					break;
@@ -381,7 +377,7 @@ void SubsTextEditCtrl::UpdateStyle(int start, int _length) {
 			numMode = false;
 
 			// Is \n, \N or \h?
-			if (curChar == _T('\\') && (nextChar == 'n' || nextChar == 'N' || nextChar == 'h')) {
+			if (curChar == L'\\' && (nextChar == 'n' || nextChar == 'N' || nextChar == 'h')) {
 				SetUnicodeStyling(curPos,ran,curStyle);
 				curPos += ran;
 				ran = 1;
@@ -402,7 +398,7 @@ void SubsTextEditCtrl::UpdateStyle(int start, int _length) {
 		// Inside
 		else if (depth == 1) {
 			// Special character
-			if (curChar == _T('\\') || curChar == _T('(') || curChar == _T(')') || curChar == _T(',')) {
+			if (curChar == L'\\' || curChar == '(' || curChar == ')' || curChar == ',') {
 				if (curStyle != 2) {
 					SetUnicodeStyling(curPos,ran,curStyle);
 					curPos += ran;
@@ -414,7 +410,7 @@ void SubsTextEditCtrl::UpdateStyle(int start, int _length) {
 
 			else {
 				// Number
-				if (prevChar != _T('\\') && (numMode || (curChar >= '0' && curChar <= '9') || curChar == '.' || curChar == '&' || curChar == '+' || curChar == '-' || (curChar == 'H' && prevChar == '&'))) {
+				if (prevChar != L'\\' && (numMode || (curChar >= '0' && curChar <= '9') || curChar == '.' || curChar == '&' || curChar == '+' || curChar == '-' || (curChar == 'H' && prevChar == '&'))) {
 					if (curStyle != 5) {
 						SetUnicodeStyling(curPos,ran,curStyle);
 						curPos += ran;
@@ -433,8 +429,8 @@ void SubsTextEditCtrl::UpdateStyle(int start, int _length) {
 
 					// Set parameter if it's \fn or \r
 					int tagLen = 0;
-					if (text.Mid(curPos,2) == _T("fn")) tagLen = 2;
-					else if (text.Mid(curPos,1) == _T("r")) tagLen = 1;
+					if (text.Mid(curPos,2) == L"fn") tagLen = 2;
+					else if (text.Mid(curPos,1) == L"r") tagLen = 1;
 					if (tagLen) {
 						numMode = true;
 						ran = tagLen-1;
@@ -442,21 +438,21 @@ void SubsTextEditCtrl::UpdateStyle(int start, int _length) {
 					}
 
 					// Set drawing mode if it's \p
-					if (text.Mid(curPos,1) == _T("p")) {
+					if (text.Mid(curPos,1) == L"p") {
 						if (curPos+2 < (signed) text.Length()) {
 							// Disable
 							wxChar nextNext = text[curPos+2];
-							if ((nextNext == _T('\\') || nextNext == _T('}')) && nextChar == _T('0')) drawingMode = false;
+							if ((nextNext == L'\\' || nextNext == '}') && nextChar == '0') drawingMode = false;
 
 							// Enable
-							if (nextChar >= _T('1') && nextChar <= _T('9')) {
+							if (nextChar >= '1' && nextChar <= '9') {
 								for(int testPos = curPos+2;testPos < (signed) text.Length();testPos++) {
 									nextNext = text[testPos];
-									if (nextNext == _T('\\') || nextNext == _T('}')) {
+									if (nextNext == L'\\' || nextNext == '}') {
 										drawingMode = true;
 										break;
 									}
-									if (nextNext < _T('0') || nextNext > _T('9')) break;
+									if (nextNext < '0' || nextNext > '9') break;
 								}
 							}
 						}
@@ -469,21 +465,15 @@ void SubsTextEditCtrl::UpdateStyle(int start, int _length) {
 		ran++;
 	}
 	SetUnicodeStyling(curPos,ran,curStyle);
-
-	// Spell check
 	StyleSpellCheck(start,_length);
-
-	// Call tip
-	UpdateCallTip();
+	wxStyledTextEvent evt;
+	UpdateCallTip(evt);
 }
 
 
 
 /// @brief Update call tip 
-/// @return 
-///
-void SubsTextEditCtrl::UpdateCallTip() {
-	// Enabled?
+void SubsTextEditCtrl::UpdateCallTip(wxStyledTextEvent &) {
 	if (!OPT_GET("App/Call Tips")->GetBool()) return;
 
 	// Get position and text
@@ -503,11 +493,11 @@ void SubsTextEditCtrl::UpdateCallTip() {
 		else curChar = 0;
 
 		// Change depth
-		if (curChar == _T('{')) {
+		if (curChar == '{') {
 			depth++;
 			continue;
 		}
-		if (curChar == _T('}')) {
+		if (curChar == '}') {
 			depth--;
 			if (i >= pos && depth == 0) {
 				tagEnd = i-1;
@@ -527,13 +517,13 @@ void SubsTextEditCtrl::UpdateCallTip() {
 		if (depth == 1) {
 			// Inner depth
 			if (tagStart != -1) {
-				if (curChar == _T('(')) inDepth++;
-				else if (curChar == _T(')')) inDepth--;
+				if (curChar == '(') inDepth++;
+				else if (curChar == ')') inDepth--;
 			}
 
 			// Not inside parenthesis
 			if (inDepth == 0) {
-				if (prevChar == _T('\\')) {
+				if (prevChar == L'\\') {
 					// Found start
 					if (i <= pos) tagStart = i;
 
@@ -578,17 +568,17 @@ void SubsTextEditCtrl::UpdateCallTip() {
 		bool isEnd = false;
 
 		// Commas
-		if (curChar == _T(',')) {
+		if (curChar == ',') {
 			tagCommas++;
 			parN++;
 		}
 
 		// Parenthesis
-		else if (curChar == _T('(')) {
+		else if (curChar == '(') {
 			tagParenthesis++;
 			parN++;
 		}
-		else if (curChar == _T(')')) {
+		else if (curChar == ')') {
 			tagParenthesis++;
 			parN++;
 			isEnd = true;
@@ -603,7 +593,7 @@ void SubsTextEditCtrl::UpdateCallTip() {
 		// Parameter it's on
 		if (i == posInTag) {
 			parPos = parN;
-			if (curChar == _T(',') || curChar == _T('(') || curChar == _T(')')) {
+			if (curChar == ',' || curChar == '(' || curChar == ')') {
 				parPos--;
 			}
 		}
@@ -628,18 +618,18 @@ void SubsTextEditCtrl::UpdateCallTip() {
 	bool semiProto = false;
 	for (unsigned int i=0;i<proto.Count();i++) {
 		// Get prototype name
-		int div = proto[i].Find(_T(';'));
+		int div = proto[i].Find(';');
 		if (div != wxNOT_FOUND) protoName = proto[i].Left(div);
 		else {
-			div = proto[i].Find(_T('('));
+			div = proto[i].Find('(');
 			protoName = proto[i].Left(div);
 		}
 		
 		// Fix name
 		semiProto = false;
 		cleanProto = proto[i];
-		if (cleanProto.Freq(_T(';')) > 0) {
-			cleanProto.Replace(_T(";"),_T(""));
+		if (cleanProto.Freq(';') > 0) {
+			cleanProto.Replace(L";","");
 			semiProto = true;
 		}
 
@@ -649,7 +639,7 @@ void SubsTextEditCtrl::UpdateCallTip() {
 		else temp = tagName;
 		if (protoName == temp) {
 			// Parameter count match
-			if (proto[i].Freq(_T(',')) >= tagCommas) {
+			if (proto[i].Freq(',') >= tagCommas) {
 				// Found
 				useProto = proto[i];
 				protoN = i;
@@ -674,8 +664,8 @@ void SubsTextEditCtrl::UpdateCallTip() {
 	int delta = 0;
 	for (unsigned int i=0;i<useProto.Length();i++) {
 		wxChar curChar = useProto[i];
-		if (i == 0 || curChar == _T(',') || curChar == _T(';') || curChar == _T('(') || curChar == _T(')')) {
-			if (curChar == _T(';')) delta++;
+		if (i == 0 || curChar == ',' || curChar == ';' || curChar == '(' || curChar == ')') {
+			if (curChar == ';') delta++;
 			if (parN == parPos) highStart = i+1-delta;
 			else if (parN == parPos+1) highEnd = i;
 			parN++;
@@ -696,16 +686,8 @@ void SubsTextEditCtrl::UpdateCallTip() {
 	CallTipSetHighlight(highStart,highEnd);
 }
 
-
-
-/// @brief Spell check 
-/// @param start 
-/// @param len   
-/// @return 
-///
 void SubsTextEditCtrl::StyleSpellCheck(int start, int len) {
-	// See if it has a spellchecker
-	if (!spellchecker) return;
+	if (!spellchecker.get()) return;
 
 	// Results
 	wxString text = GetText();
@@ -737,50 +719,31 @@ void SubsTextEditCtrl::StyleSpellCheck(int start, int len) {
 	SetUnicodeStyling(text.Length(), 0, 0);
 }
 
-
-
-/// @brief Set text to a new value 
-/// @param _text 
-///
-void SubsTextEditCtrl::SetTextTo(const wxString _text) {
-	// Setup
-	control->textEditReady = false;
+void SubsTextEditCtrl::SetTextTo(wxString text) {
+	SetEvtHandlerEnabled(false);
 	Freeze();
-	wxString text = _text;
-	text.Replace(_T("\r\n"),_T("\\N"));
-	//text.Replace(_T("\n\r"),_T("\\N")); // never a valid linebreak
-	text.Replace(_T("\r"),_T("\\N"));
-	text.Replace(_T("\n"),_T("\\N"));
 
-	// Prepare
+	text.Replace(L"\r\n",L"\\N");
+	text.Replace(L"\r",L"\\N");
+	text.Replace(L"\n",L"\\N");
+
 	int from=0,to=0;
 	GetSelection(&from,&to);
 	Clear();
 
-	// Set text
 	SetText(text);
-
-	// Style
 	UpdateStyle();
 
 	// Restore selection
 	SetSelectionU(GetReverseUnicodePosition(from),GetReverseUnicodePosition(to));
 
-	// Finish
+	SetEvtHandlerEnabled(true);
 	Thaw();
-	control->textEditReady = true;
 }
 
-
-
-/// @brief Mouse event 
-/// @param event 
-/// @return 
-///
 void SubsTextEditCtrl::OnMouseEvent(wxMouseEvent &event) {
-	// Right click
 	if (event.ButtonUp(wxMOUSE_BTN_RIGHT)) {
-		if (control->grid->GetActiveLine() != 0) {
+		if (grid->GetActiveLine() != 0) {
 			int pos = PositionFromPoint(event.GetPosition());
 			ShowPopupMenu(pos);
 			return;
@@ -791,44 +754,30 @@ void SubsTextEditCtrl::OnMouseEvent(wxMouseEvent &event) {
 	GetParent()->GetEventHandler()->ProcessEvent(event);
 }
 
-
-
-/// @brief Show popup menu 
-/// @param activePos 
-///
 void SubsTextEditCtrl::ShowPopupMenu(int activePos) {
-	// Menu
 	wxMenu menu;
 
-	// Position
 	if (activePos == -1) activePos = GetCurrentPos();
 	activePos = GetReverseUnicodePosition(activePos);
 
-	// Get current word under cursor
 	currentWord = GetWordAtPosition(activePos);
 	currentWordPos = activePos;
 
-	// Spell check
-	//int style = GetStyleAt(activePos);
-	if (spellchecker && currentWord.Length()) {
-		// Spelled right?
+	if (spellchecker.get() && currentWord.Length()) {
 		bool rightSpelling = spellchecker->CheckWord(currentWord);
 
-		// Set font
 		wxFont font;
 		font.SetWeight(wxFONTWEIGHT_BOLD);
 
-		// Get suggestions
 		sugs.Clear();
 		sugs = spellchecker->GetSuggestions(currentWord);
 		int nSugs = sugs.Count();
 
-		// Spelled wrong
 		if (!rightSpelling) {
-			// No suggestions
-			if (!nSugs) menu.Append(EDIT_MENU_SUGGESTION,_("No correction suggestions"))->Enable(false);
+			if (!nSugs) {
+				menu.Append(EDIT_MENU_SUGGESTION,_("No correction suggestions"))->Enable(false);
+			}
 
-			// Build menu
 			for (int i=0;i<nSugs;i++) {
 				wxMenuItem *itm = new wxMenuItem(&menu, EDIT_MENU_SUGGESTIONS+i, sugs[i]);
 #ifdef __WINDOWS__
@@ -839,31 +788,23 @@ void SubsTextEditCtrl::ShowPopupMenu(int activePos) {
 
 			// Append "add word"
 			wxString add_to_dict_text(_("Add \"%s\" to dictionary"));
-			add_to_dict_text.Replace(_T("%s"), currentWord);
+			add_to_dict_text.Replace(L"%s", currentWord);
 			menu.Append(EDIT_MENU_ADD_TO_DICT,add_to_dict_text)->Enable(spellchecker->CanAddWord(currentWord));
 		}
-
 		// Spelled right
 		else {
-			// No suggestions
-			if (!nSugs) menu.Append(EDIT_MENU_SUGGESTION,_("No spell checker suggestions"))->Enable(false);
-
-			// Has suggestions
+			if (!nSugs) {
+				menu.Append(EDIT_MENU_SUGGESTION,_("No spell checker suggestions"))->Enable(false);
+			}
 			else {
 				// Build list
 				wxMenu *subMenu = new wxMenu();
 				for (int i=0;i<nSugs;i++) subMenu->Append(EDIT_MENU_SUGGESTIONS+i,sugs[i]);
 				menu.Append(-1,wxString::Format(_("Spell checker suggestions for \"%s\""),currentWord.c_str()), subMenu);
 			}
-
-			// Separator
-			//if (!thesaurus) menu.AppendSeparator();
 		}
-		
-		// Language list
-		wxArrayString langs = spellchecker->GetLanguageList();	// This probably should be cached...
 
-		// Current language
+		wxArrayString langs = spellchecker->GetLanguageList();	// This probably should be cached...
 		wxString curLang = lagi_wxString(OPT_GET("Tool/Spell Checker/Language")->GetString());
 
 		// Languages
@@ -891,7 +832,7 @@ void SubsTextEditCtrl::ShowPopupMenu(int activePos) {
 	}
 
 	// Thesaurus
-	if (thesaurus && currentWord.Length()) {
+	if (thesaurus.get() && currentWord.Length()) {
 		// Get results
 		ThesaurusEntryArray result;
 		thesaurus->Lookup(currentWord,result);
@@ -904,9 +845,7 @@ void SubsTextEditCtrl::ShowPopupMenu(int activePos) {
 			}
 		}
 
-		// Has suggestions
 		if (result.size()) {
-			// Set font
 			wxFont font;
 			font.SetStyle(wxFONTSTYLE_ITALIC);
 
@@ -938,18 +877,14 @@ void SubsTextEditCtrl::ShowPopupMenu(int activePos) {
 
 			// Thesaurus menu
 			wxString thes_suggestion_text(_("Thesaurus suggestions for \"%s\""));
-			thes_suggestion_text.Replace(_T("%s"), currentWord);
+			thes_suggestion_text.Replace(L"%s", currentWord);
 			menu.Append(-1,thes_suggestion_text,thesMenu);
 
 		}
 
-		// No suggestions
 		if (!result.size()) menu.Append(EDIT_MENU_THESAURUS,_("No thesaurus suggestions"))->Enable(false);
 
-		// Language list
 		wxArrayString langs = thesaurus->GetLanguageList();	// This probably should be cached...
-
-		// Current language
 		wxString curLang = lagi_wxString(OPT_GET("Tool/Thesaurus/Language")->GetString());
 
 		// Languages
@@ -977,8 +912,6 @@ void SubsTextEditCtrl::ShowPopupMenu(int activePos) {
 	}
 
 	// Standard actions
-	menu.Append(EDIT_MENU_UNDO,_("&Undo"))->Enable(CanUndo());
-	menu.AppendSeparator();
 	menu.Append(EDIT_MENU_CUT,_("Cu&t"))->Enable(GetSelectionStart()-GetSelectionEnd() != 0);
 	menu.Append(EDIT_MENU_COPY,_("&Copy"))->Enable(GetSelectionStart()-GetSelectionEnd() != 0);
 	menu.Append(EDIT_MENU_PASTE,_("&Paste"))->Enable(CanPaste());
@@ -990,139 +923,49 @@ void SubsTextEditCtrl::ShowPopupMenu(int activePos) {
 	menu.Append(EDIT_MENU_SPLIT_PRESERVE,_("Split at cursor (preserve times)"));
 	menu.Append(EDIT_MENU_SPLIT_ESTIMATE,_("Split at cursor (estimate times)"));
 
-	// Pop the menu
 	PopupMenu(&menu);
 }
 
-
-
-/// @brief Split line preserving times 
-/// @param event 
-///
-void SubsTextEditCtrl::OnSplitLinePreserve (wxCommandEvent &event) {
+void SubsTextEditCtrl::OnSplitLinePreserve (wxCommandEvent &) {
 	int from,to;
 	GetSelection(&from, &to);
 	from = GetReverseUnicodePosition(from);
-	to = GetReverseUnicodePosition(to);
-	// Call SplitLine() with the text currently in the editbox.
-	// This makes sure we split what the user sees, not the committed line.
-	control->grid->SplitLine(control->grid->GetDialogueIndex(control->grid->GetActiveLine()),from,0,GetText());
+	grid->SplitLine(grid->GetActiveLine(),from,0);
 }
 
-
-
-/// @brief Split line estimating times 
-/// @param event 
-///
-void SubsTextEditCtrl::OnSplitLineEstimate (wxCommandEvent &event) {
+void SubsTextEditCtrl::OnSplitLineEstimate (wxCommandEvent &) {
 	int from,to;
 	GetSelection(&from, &to);
 	from = GetReverseUnicodePosition(from);
-	to = GetReverseUnicodePosition(to);
-	// Call SplitLine() with the text currently in the editbox.
-	// This makes sure we split what the user sees, not the committed line.
-	control->grid->SplitLine(control->grid->GetDialogueIndex(control->grid->GetActiveLine()),from,1,GetText());
+	grid->SplitLine(grid->GetActiveLine(),from,1);
 }
 
-
-
-/// @brief Cut 
-/// @param event 
-///
-void SubsTextEditCtrl::OnCut(wxCommandEvent &event) {
-	Cut();
-}
-
-
-
-/// @brief Copy 
-/// @param event 
-///
-void SubsTextEditCtrl::OnCopy(wxCommandEvent &event) {
-	Copy();
-}
-
-
-
-/// @brief Paste 
-/// @param event 
-///
-void SubsTextEditCtrl::OnPaste(wxCommandEvent &event) {
-	Paste();
-}
-
-
-
-/// @brief Undo 
-/// @param event 
-///
-void SubsTextEditCtrl::OnUndo(wxCommandEvent &event) {
-	Undo();
-}
-
-
-
-/// @brief Select All 
-/// @param event 
-///
-void SubsTextEditCtrl::OnSelectAll(wxCommandEvent &event) {
-	SelectAll();
-}
-
-
-
-/// @brief Add word to dictionary 
-/// @param event 
-///
-void SubsTextEditCtrl::OnAddToDictionary(wxCommandEvent &event) {
-	if (spellchecker) spellchecker->AddWord(currentWord);
+void SubsTextEditCtrl::OnAddToDictionary(wxCommandEvent &) {
+	if (spellchecker.get()) spellchecker->AddWord(currentWord);
 	UpdateStyle();
 	SetFocus();
 }
 
-
-
-/// @brief Use suggestion 
-/// @param event 
-///
 void SubsTextEditCtrl::OnUseSuggestion(wxCommandEvent &event) {
-	// Get suggestion
-	wxString suggestion = sugs[event.GetId()-EDIT_MENU_SUGGESTIONS];
-	
-	// Get boundaries of text being replaced
-	int start,end;
-	GetBoundsOfWordAtPosition(currentWordPos,start,end);
-
-	// Replace
-	wxString text = GetText();
-	SetText(text.Left(MAX(0,start)) + suggestion + text.Mid(end+1));
-
-	// Set selection
-	SetSelectionU(start,start+suggestion.Length());
-	SetFocus();
-}
-
-
-
-
-/// @brief Use thesaurus suggestion 
-/// @param event 
-///
-void SubsTextEditCtrl::OnUseThesaurusSuggestion(wxCommandEvent &event) {
-	// Get suggestion
-	wxString suggestion = thesSugs[event.GetId()-EDIT_MENU_THESAURUS_SUGS];
+	wxString suggestion;
+	int sugIdx = event.GetId() - EDIT_MENU_THESAURUS_SUGS;
+	if (sugIdx >= 0) {
+		suggestion = thesSugs[sugIdx];
+	}
+	else {
+		suggestion = sugs[event.GetId() - EDIT_MENU_SUGGESTIONS];
+	}
 
 	// Stripe suggestion of parenthesis
-	int pos = suggestion.Find(_T("("));
+	int pos = suggestion.Find(L"(");
 	if (pos != wxNOT_FOUND) {
 		suggestion = suggestion.Left(pos-1);
 	}
-	
+
 	// Get boundaries of text being replaced
 	int start,end;
 	GetBoundsOfWordAtPosition(currentWordPos,start,end);
 
-	// Replace
 	wxString text = GetText();
 	SetText(text.Left(MAX(0,start)) + suggestion + text.Mid(end+1));
 
@@ -1131,13 +974,7 @@ void SubsTextEditCtrl::OnUseThesaurusSuggestion(wxCommandEvent &event) {
 	SetFocus();
 }
 
-
-
-/// @brief Set dictionary language 
-/// @param event 
-///
 void SubsTextEditCtrl::OnSetDicLanguage(wxCommandEvent &event) {
-	// Get language list
 	wxArrayString langs = spellchecker->GetLanguageList();
 
 	// Set dictionary
@@ -1147,17 +984,10 @@ void SubsTextEditCtrl::OnSetDicLanguage(wxCommandEvent &event) {
 	spellchecker->SetLanguage(lang);
 	OPT_SET("Tool/Spell Checker/Language")->SetString(STD_STR(lang));
 
-	// Update styling
 	UpdateStyle();
 }
 
-
-
-/// @brief Set thesaurus language 
-/// @param event 
-///
 void SubsTextEditCtrl::OnSetThesLanguage(wxCommandEvent &event) {
-	// Get language list
 	wxArrayString langs = thesaurus->GetLanguageList();
 
 	// Set language
@@ -1167,8 +997,5 @@ void SubsTextEditCtrl::OnSetThesLanguage(wxCommandEvent &event) {
 	thesaurus->SetLanguage(lang);
 	OPT_SET("Tool/Thesaurus/Language")->SetString(STD_STR(lang));
 
-	// Update styling
 	UpdateStyle();
 }
-
-

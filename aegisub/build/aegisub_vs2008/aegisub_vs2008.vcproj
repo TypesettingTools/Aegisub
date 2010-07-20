@@ -672,14 +672,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\hilimod_textctrl.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\hilimod_textctrl.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\scintilla_text_ctrl.cpp"
 				>
 			</File>
@@ -817,14 +809,6 @@
 			</File>
 			<File
 				RelativePath="..\..\src\font_file_lister_freetype.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\idle_field_event.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\idle_field_event.h"
 				>
 			</File>
 			<File

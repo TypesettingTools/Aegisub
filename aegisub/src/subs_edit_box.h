@@ -34,335 +34,175 @@
 /// @ingroup main_ui
 ///
 
-
-
-
-////////////
-// Includes
 #ifndef AGI_PRE
-#include <wx/button.h>
-#include <wx/checkbox.h>
-#include <wx/combobox.h>
-#include <wx/dcclient.h>
-#include <wx/dcmemory.h>
+#include <vector>
+
 #include <wx/panel.h>
-#include <wx/radiobut.h>
-#include <wx/spinctrl.h>
 #endif
 
 #include "selection_controller.h"
-#include "subs_edit_ctrl.h"
 
-
-//////////////
-// Prototypes
+class AudioDisplay;
 class AssDialogue;
 class SubtitlesGrid;
+class SubsTextEditCtrl;
 class TimeEdit;
-class SubsEditBox;
-class AudioDisplay;
-class HiliModTextCtrl;
+class wxButton;
+class wxCheckBox;
+class wxComboBox;
+class wxRadioButton;
+class wxSizer;
+class wxSpinCtrl;
 class wxStyledTextCtrl;
-
-
+class wxStyleTextEvent;
+class wxTextCtrl;
 
 /// DOCME
 /// @class SubsEditBox
-/// @brief DOCME
+/// @brief Main subtitle edit box
 ///
-/// DOCME
+/// Controls the text edit and all surrounding controls
 class SubsEditBox : public wxPanel, protected SelectionListener<AssDialogue> {
-	friend class SubsTextEditHandler;
-	friend class SubsTextEditCtrl;
 	friend class AudioDisplay;
 
-private:
+	enum TimeField {
+		TIME_START = 0,
+		TIME_END,
+		TIME_DURATION
+	};
 
-	/// DOCME
+	/// Currently active dialogue line
+	AssDialogue *line;
+	/// Last seen grid selection
+	Selection sel;
+
+	/// Are the buttons currently split into two lines?
 	bool splitLineMode;
-
-	/// DOCME
-	bool setupDone;
-
-	/// DOCME
-	bool enabled;
-
-	/// DOCME
-	bool textEditReady;
-
-	/// DOCME
+	/// Are the controls currently enabled?
 	bool controlState;
 
-	/// DOCME
+	wxColour disabledBgColour;
 	wxColour origBgColour;
 
-	/// DOCME
-	wxColour disabledBgColour;
-
-
-	/// DOCME
+	// Externally supplied controls
+	AudioDisplay *audio;
 	SubtitlesGrid *grid;
 
-	/// DOCME
+	// Box controls
 	wxCheckBox *CommentBox;
-
-	/// DOCME
 	wxComboBox *StyleBox;
-
-	/// DOCME
 	wxComboBox *ActorBox;
-
-	/// DOCME
 	TimeEdit *StartTime;
-
-	/// DOCME
 	TimeEdit *EndTime;
-
-	/// DOCME
 	TimeEdit *Duration;
-
-	/// DOCME
 	wxSpinCtrl *Layer;
-
-	/// DOCME
-	HiliModTextCtrl *MarginL;
-
-	/// DOCME
-	HiliModTextCtrl *MarginR;
-
-	/// DOCME
-	HiliModTextCtrl *MarginV;
-
-	/// DOCME
-	HiliModTextCtrl *Effect;
-
-	/// DOCME
+	wxTextCtrl *MarginL;
+	wxTextCtrl *MarginR;
+	wxTextCtrl *MarginV;
+	wxTextCtrl *Effect;
 	wxRadioButton *ByTime;
-
-	/// DOCME
 	wxRadioButton *ByFrame;
 
-	/// DOCME
-	wxCheckBox *SyntaxHighlight;
+	/// Buttons which turn on or off with the control
+	std::vector<wxButton*> ToggableButtons;
 
-
-	/// DOCME
-	wxButton *Bold;
-
-	/// DOCME
-	wxButton *Italics;
-
-	/// DOCME
-	wxButton *Underline;
-
-	/// DOCME
-	wxButton *Strikeout;
-
-	/// DOCME
-	wxButton *FontName;
-
-	/// DOCME
-	wxButton *Color1;
-
-	/// DOCME
-	wxButton *Color2;
-
-	/// DOCME
-	wxButton *Color3;
-
-	/// DOCME
-	wxButton *Color4;
-
-	/// DOCME
-	wxButton *CommitButton;
-
-
-	/// DOCME
 	wxSizer *TopSizer;
-
-	/// DOCME
 	wxSizer *MiddleBotSizer;
-
-	/// DOCME
 	wxSizer *MiddleSizer;
-
-	/// DOCME
 	wxSizer *MainSizer;
-
-	/// DOCME
-	wxSizer *DummySizer;
-
-	/// DOCME
 	wxSizer *BottomSizer;
 
 	void SetControlsState(bool state);
-	void CommitTimes(bool start,bool end,bool fromStart,bool commit=true);
+	/// @brief Update times of selected lines
+	/// @param field Field which changed
+	void CommitTimes(TimeField field);
+	/// @brief Commits the current edit box contents
+	/// @param desc Undo description to use
+	void CommitText(wxString desc);
 
-	int BlockAtPos(int pos);
+	/// Get block number at text position
+	int BlockAtPos(int pos) const;
 
-	void OnEditText(wxStyledTextEvent &event);
+	/// @brief Refresh the video display and move to the next line
+	/// @param stay Only refresh the video
+	void Commit(bool stay);
+
+	int timeCommitId[3];
+	int commitId;
+	wxString lastCommitType;
+
 	void OnNeedStyle(wxStyledTextEvent &event);
-	void OnCharAdded(wxStyledTextEvent &event);
-	void OnUpdateUI(wxStyledTextEvent &event);
+	void OnChange(wxStyledTextEvent &event);
+	void OnKeyDown(wxKeyEvent &event);
 
-	void OnButtonColor1(wxCommandEvent &event);
-	void OnButtonColor2(wxCommandEvent &event);
-	void OnButtonColor3(wxCommandEvent &event);
-	void OnButtonColor4(wxCommandEvent &event);
-	void OnButtonFontFace(wxCommandEvent &event);
-	void OnButtonBold(wxCommandEvent &event);
-	void OnButtonItalics(wxCommandEvent &event);
-	void OnButtonUnderline(wxCommandEvent &event);
-	void OnButtonStrikeout(wxCommandEvent &event);
-	void OnButtonCommit(wxCommandEvent &event);
+	void OnActiveLineChanged(AssDialogue *new_line);
+	void OnSelectedSetChanged(const Selection &, const Selection &);
 
-	void OnSyntaxBox(wxCommandEvent &event);
-	void OnFrameRadio(wxCommandEvent &event);
-	void OnTimeRadio(wxCommandEvent &event);
-	void OnKeyDown(wxStyledTextEvent &event);
+	void OnFrameTimeRadio(wxCommandEvent &event);
 	void OnStyleChange(wxCommandEvent &event);
 	void OnActorChange(wxCommandEvent &event);
 	void OnLayerEnter(wxCommandEvent &event);
 	void OnLayerChange(wxSpinEvent &event);
-	void OnStartTimeChange(wxCommandEvent &event);
-	void OnEndTimeChange(wxCommandEvent &event);
-	void OnDurationChange(wxCommandEvent &event);
-	void OnMarginLChange(wxCommandEvent &event);
-	void OnMarginRChange(wxCommandEvent &event);
-	void OnMarginVChange(wxCommandEvent &event);
-	void OnCommentChange(wxCommandEvent &event);
-	void OnEffectChange(wxCommandEvent &event);
+	void OnStartTimeChange(wxCommandEvent &);
+	void OnEndTimeChange(wxCommandEvent &);
+	void OnDurationChange(wxCommandEvent &);
+	void OnMarginLChange(wxCommandEvent &);
+	void OnMarginRChange(wxCommandEvent &);
+	void OnMarginVChange(wxCommandEvent &);
+	void OnCommentChange(wxCommandEvent &);
+	void OnEffectChange(wxCommandEvent &);
 	void OnSize(wxSizeEvent &event);
 
-protected:
-	// SubtitleSelectionListener implementation
-	virtual void OnActiveLineChanged(AssDialogue *new_line);
-	virtual void OnSelectedSetChanged(const Selection &lines_added, const Selection &lines_removed);
+	void OnFlagButton(wxCommandEvent &event);
+	void OnColorButton(wxCommandEvent &event);
+	void OnFontButton(wxCommandEvent &event);
+	void OnCommitButton(wxCommandEvent &);
 
+	/// @brief Set the value of a tag for the currently selected text
+	/// @param tag   Tag to set
+	/// @param value New value of tag
+	/// @param atEnd Set the value at the end of the selection rather than beginning
+	void SetTag(wxString tag, wxString value, bool atEnd = false);
+
+	/// @brief Callback function for the color picker
+	/// @param newColor New color selected in the picker
+	void SetColorCallback(wxColor newColor);
+
+	/// Which color is currently being set
+	wxString colorTag;
+
+	/// @brief Set a field in each selected line to a specified value
+	/// @param set   Callable which does the setting
+	/// @param value Value to pass to set
+	/// @param desc  Undo description to use
+	/// @param amend Coalesce sequences of commits of the same type
+	template<class T, class setter>
+	void SetSelectedRows(setter set, T value, wxString desc, bool amend = false);
+
+	/// @brief Set a field in each selected line to a specified value
+	/// @param field Field to set
+	/// @param value Value to set the field to
+	/// @param desc  Undo description to use
+	/// @param amend Coalesce sequences of commits of the same type
+	template<class T>
+	void SetSelectedRows(T AssDialogue::*field, T value, wxString desc, bool amend = false);
 public:
-
-	/// DOCME
-	AudioDisplay *audio;
-
-	/// DOCME
 	SubsTextEditCtrl *TextEdit;
 
-	SubsEditBox(wxWindow *parent,SubtitlesGrid *gridp);
+	/// @brief Constructor
+	/// @param parent Parent window
+	/// @param grid Associated grid
+	/// @param audio Associated audio display
+	SubsEditBox(wxWindow *parent, SubtitlesGrid *grid, AudioDisplay *audio);
 	~SubsEditBox();
 
-	void SetOverride (wxString tag,wxString preValue=_T(""),int pos=-1,bool getFocus=true);
-	void SetStyleFlag (wxString tag,wxString preValue=_T(""),int pos=-1);
-
-	void SetSplitLineMode(wxSize size=wxSize(-1,-1));
-	void CommitText(bool weak=false);
-	void Update(bool timeOnly=false,bool weak=false);
+	/// @brief Reload the current line from the file
+	/// @param timeOnly Only reload times
+	/// @param setAudio Also update the audio display
+	void Update(bool timeOnly = false, bool setAudio = true);
+	/// Reload non-line-specific things like styles from the file
 	void UpdateGlobals();
+
+	/// @brief Enable or disable frame timing mode
 	void UpdateFrameTiming();
-	void DoKeyPress(wxKeyEvent &event);
-	void Commit(bool stay);
-
-	DECLARE_EVENT_TABLE()
 };
-
-
-
-/// DOCME
-/// @class SubsEditBoxEvent
-/// @brief DOCME
-///
-/// DOCME
-class SubsEditBoxEvent : public wxEvtHandler {
-private:
-
-	/// DOCME
-	SubsEditBox *control;
-	void OnKeyPress(wxKeyEvent &event);
-
-public:
-	SubsEditBoxEvent(SubsEditBox *control);
-	DECLARE_EVENT_TABLE()
-};
-
-
-///////
-// IDs
-enum {
-
-	/// DOCME
-	EDIT_BOX = 1300,
-
-	/// DOCME
-	SYNTAX_BOX,
-
-	/// DOCME
-	RADIO_TIME_BY_FRAME,
-
-	/// DOCME
-	RADIO_TIME_BY_TIME,
-
-	/// DOCME
-	STYLE_COMBOBOX,
-
-	/// DOCME
-	ACTOR_COMBOBOX,
-
-	/// DOCME
-	LAYER_BOX,
-
-	/// DOCME
-	STARTTIME_BOX,
-
-	/// DOCME
-	ENDTIME_BOX,
-
-	/// DOCME
-	DURATION_BOX,
-
-	/// DOCME
-	MARGINL_BOX,
-
-	/// DOCME
-	MARGINR_BOX,
-
-	/// DOCME
-	MARGINV_BOX,
-
-	/// DOCME
-	EFFECT_BOX,
-
-	/// DOCME
-	COMMENT_CHECKBOX,
-
-
-	/// DOCME
-	BUTTON_BOLD,
-
-	/// DOCME
-	BUTTON_ITALICS,
-
-	/// DOCME
-	BUTTON_UNDERLINE,
-
-	/// DOCME
-	BUTTON_STRIKEOUT,
-
-	/// DOCME
-	BUTTON_FONT_NAME,
-
-	/// DOCME
-	BUTTON_COLOR1,
-
-	/// DOCME
-	BUTTON_COLOR2,
-
-	/// DOCME
-	BUTTON_COLOR3,
-
-	/// DOCME
-	BUTTON_COLOR4,
-
-	/// DOCME
-	BUTTON_COMMIT
-};
-
-

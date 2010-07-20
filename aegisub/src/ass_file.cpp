@@ -73,11 +73,12 @@ AssFile::AssFile ()
 {
 }
 
-/// @brief AssFile destructor 
+/// @brief AssFile destructor
 AssFile::~AssFile() {
 	delete_clear(Line);
 }
 
+/// @brief Load generic subs
 void AssFile::Load (const wxString &_filename,wxString charset,bool addToRecent) {
 	bool ok = false;
 	Clear();
@@ -447,11 +448,11 @@ void AssFile::LoadDefault (bool defline) {
 	AddLine(_T("PlayResX: 640"),_T("[Script Info]"),version);
 	AddLine(_T("PlayResY: 480"),_T("[Script Info]"),version);
 	AddLine(_T("ScaledBorderAndShadow: yes"),_T("[Script Info]"),version);
-	AddLine(_T(""),_T("[Script Info]"),version);
+	AddLine("",_T("[Script Info]"),version);
 	AddLine(_T("[V4+ Styles]"),_T("[V4+ Styles]"),version);
 	AddLine(_T("Format:  Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding"),_T("[V4+ Styles]"),version);
 	AddLine(defstyle.GetEntryData(),_T("[V4+ Styles]"),version);
-	AddLine(_T(""),_T("[V4+ Styles]"),version);
+	AddLine("",_T("[V4+ Styles]"),version);
 	AddLine(_T("[Events]"),_T("[Events]"),version);
 	AddLine(_T("Format:  Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text"),_T("[Events]"),version);
 
@@ -506,7 +507,7 @@ void AssFile::InsertStyle (AssStyle *style) {
 	// No styles found, add them
 	if (lastStyle == Line.end()) {
 		// Add space
-		curEntry = new AssEntry(_T(""));
+		curEntry = new AssEntry("");
 		curEntry->group = lastGroup;
 		Line.push_back(curEntry);
 
@@ -559,10 +560,10 @@ void AssFile::InsertAttachment (AssAttachment *attach) {
 	// Otherwise, create the [Fonts] group and insert
 	else {
 		int version=1;
-		AddLine(_T(""),Line.back()->group,version);
+		AddLine("",Line.back()->group,version);
 		AddLine(attach->group,attach->group,version);
 		Line.push_back(attach);
-		AddLine(_T(""),attach->group,version);
+		AddLine("",attach->group,version);
 	}
 }
 
@@ -640,7 +641,7 @@ void AssFile::SetScriptInfo(const wxString _key,const wxString value) {
 			// Found
 			if (curText.StartsWith(key)) {
 				// Set value
-				if (value != _T("")) {
+				if (value != "") {
 					wxString result = _key;
 					result += _T(": ");
 					result += value;
@@ -660,7 +661,7 @@ void AssFile::SetScriptInfo(const wxString _key,const wxString value) {
 
 		// Add
 		else if (GotIn) {
-			if (value != _T("")) {
+			if (value != "") {
 				wxString result = _key;
 				result += _T(": ");
 				result += value;
@@ -762,7 +763,7 @@ wxString AssFile::GetWildcardList(int mode) {
 	if (mode == 0) return SubtitleFormat::GetWildcards(0);
 	else if (mode == 1) return _T("Advanced Substation Alpha (*.ass)|*.ass");
 	else if (mode == 2) return SubtitleFormat::GetWildcards(1);
-	else return _T("");
+	else return "";
 }
 
 int AssFile::Commit(wxString desc, int amendId) {
@@ -844,9 +845,7 @@ void AssFile::Sort(std::list<AssEntry*> &lst, CompFunc comp) {
 		entryIter end = begin;
 		while (end != lst.end() && dynamic_cast<AssDialogue*>(*end)) ++end;
 
-		// std::list::sort doesn't support sorting only part of the list, but
-		// splice is constant-time, so just sort a temp list with only the part we
-		// want sorted
+		// used instead of std::list::sort for partial list sorting
 		std::list<AssEntry*> tmp;
 		tmp.splice(tmp.begin(), lst, begin, end);
 		tmp.sort(compE);

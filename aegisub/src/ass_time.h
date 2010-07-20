@@ -72,8 +72,8 @@ public:
 	int GetTimeMiliseconds();
 	int GetTimeCentiseconds();
 
-	int GetMS() const;					// Returns miliseconds
-	void SetMS(int ms);					// Sets values to miliseconds
+	int GetMS() const;					// Returns milliseconds
+	void SetMS(int ms);					// Sets values to milliseconds
 	void ParseASS(const wxString text);	// Sets value to text-form time, in ASS format
 	void ParseSRT(const wxString text);	// Sets value to text-form time, in SRT format
 	wxString GetASSFormated(bool ms=false) const; // Returns the ASS representation of time
@@ -87,6 +87,9 @@ bool operator <  (const AssTime &t1, const AssTime &t2);
 bool operator >  (const AssTime &t1, const AssTime &t2);
 bool operator <= (const AssTime &t1, const AssTime &t2);
 bool operator >= (const AssTime &t1, const AssTime &t2);
+// Arithmetic operators
+AssTime operator + (const AssTime &t1, const AssTime &t2);
+AssTime operator - (const AssTime &t1, const AssTime &t2);
 
 
 

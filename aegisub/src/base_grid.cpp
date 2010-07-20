@@ -42,11 +42,12 @@
 #include <wx/sizer.h>
 #endif
 
+#include "base_grid.h"
+
 #include "ass_dialogue.h"
 #include "ass_file.h"
 #include "ass_style.h"
 #include "audio_display.h"
-#include "base_grid.h"
 #include "compat.h"
 #include "frame_main.h"
 #include "main.h"
@@ -1112,10 +1113,10 @@ int BaseGrid::GetDialogueIndex(AssDialogue *diag) const {
 bool BaseGrid::IsDisplayed(AssDialogue *line) {
 	VideoContext* con = VideoContext::Get();
 	if (!con->IsLoaded()) return false;
-	int f1 = con->FrameAtTime(line->Start.GetMS(),agi::vfr::START);
-	int f2 = con->FrameAtTime(line->End.GetMS(),agi::vfr::END);
-	if (f1 <= con->GetFrameN() && f2 >= con->GetFrameN()) return true;
-	return false;
+	int frame = con->GetFrameN();
+	return
+		con->FrameAtTime(line->Start.GetMS(),agi::vfr::START) <= frame &&
+		con->FrameAtTime(line->End.GetMS(),agi::vfr::END) >= frame;
 }
 
 /// @brief Key press 

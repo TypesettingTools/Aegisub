@@ -51,7 +51,6 @@
 #include "ass_override.h"
 #include "ass_style.h"
 #include "ass_time.h"
-#include "export_visible_lines.h"
 #include "main.h"
 #include "subs_edit_box.h"
 #include "subs_grid.h"
@@ -155,8 +154,6 @@ void VisualTool<FeatureType>::OnMouseEvent(wxMouseEvent &event) {
 		}
 		// end drag
 		else {
-			if (realTime) AssLimitToVisibleFilter::SetFrame(-1);
-
 			dragging = false;
 
 			// mouse didn't move, fiddle with selection
@@ -197,8 +194,6 @@ void VisualTool<FeatureType>::OnMouseEvent(wxMouseEvent &event) {
 		}
 		// end hold
 		else {
-			if (realTime) AssLimitToVisibleFilter::SetFrame(-1);
-
 			holding = false;
 			CommitHold();
 			Commit(true);
@@ -234,7 +229,6 @@ void VisualTool<FeatureType>::OnMouseEvent(wxMouseEvent &event) {
 
 				dragging = true;
 				parent->CaptureMouse();
-				if (realTime) AssLimitToVisibleFilter::SetFrame(frameNumber);
 			}
 		}
 		// start hold
@@ -249,7 +243,6 @@ void VisualTool<FeatureType>::OnMouseEvent(wxMouseEvent &event) {
 			if (curDiag && InitializeHold()) {
 				holding = true;
 				parent->CaptureMouse();
-				if (realTime) AssLimitToVisibleFilter::SetFrame(frameNumber);
 			}
 		}
 	}
@@ -267,9 +260,7 @@ void VisualTool<FeatureType>::Commit(bool full, wxString message) {
 		}
 		grid->ass->Commit(message);
 	}
-	grid->CommitChanges(false,!full);
-	if (full)
-		grid->editBox->Update(false, true);
+	grid->CommitChanges(full);
 	externalChange = true;
 }
 

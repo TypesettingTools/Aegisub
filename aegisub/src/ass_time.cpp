@@ -322,6 +322,13 @@ bool operator != (const AssTime &t1, const AssTime &t2) {
 	return (t1.GetMS() != t2.GetMS());
 }
 
+AssTime operator + (const AssTime &t1, const AssTime &t2) {
+	return AssTime(t1.GetMS() + t2.GetMS());
+}
+
+AssTime operator - (const AssTime &t1, const AssTime &t2) {
+	return AssTime(t1.GetMS() - t2.GetMS());
+}
 
 
 /// DOCME

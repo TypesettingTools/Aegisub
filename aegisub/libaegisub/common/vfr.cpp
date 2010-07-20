@@ -22,8 +22,10 @@
 
 #ifndef LAGI_PRE
 #include <algorithm>
+#include <cmath>
 #include <functional>
 #include <iterator>
+#include <list>
 #include <numeric>
 #endif
 

@@ -46,7 +46,6 @@
 #include "dialog_resample.h"
 #include "help_button.h"
 #include "libresrc/libresrc.h"
-#include "subs_edit_box.h"
 #include "subs_grid.h"
 #include "utils.h"
 #include "validators.h"
@@ -323,7 +322,6 @@ void DialogResample::OnResample (wxCommandEvent &event) {
 	// Flag as modified
 	subs->Commit(_("resolution resampling"));
 	grid->CommitChanges();
-	grid->editBox->Update();
 	EndModal(0);
 }
 

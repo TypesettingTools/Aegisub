@@ -60,6 +60,7 @@
 #include "ass_time.h"
 #include "audio_display.h"
 #include "compat.h"
+#include "export_visible_lines.h"
 #include "keyframe.h"
 #include <libaegisub/access.h>
 #include "main.h"
@@ -98,6 +99,7 @@ VideoContext::VideoContext()
 , arType(0)
 , hasSubtitles(false)
 , playAudioOnStep(OPT_GET("Audio/Plays When Stepping Video"))
+, singleFrame(false)
 , grid(NULL)
 , audio(NULL)
 , VFR_Input(videoFPS)
@@ -245,8 +247,17 @@ void VideoContext::UpdateDisplays(bool full, bool seek) {
 	}
 }
 
-void VideoContext::Refresh () {
+void VideoContext::Refresh(bool full) {
 	if (subsProvider.get()) {
+		if (full) {
+			AssLimitToVisibleFilter::SetFrame(-1);
+			singleFrame = false;
+		}
+		else {
+			AssLimitToVisibleFilter::SetFrame(frame_n);
+			singleFrame = true;
+		}
+
 		AssExporter exporter(grid->ass);
 		exporter.AddAutoFilters();
 		try {
@@ -266,6 +277,10 @@ void VideoContext::JumpToFrame(int n) {
 	if (isPlaying && n != playNextFrame) return;
 
 	frame_n = n;
+
+	if (singleFrame) {
+		Refresh(true);
+	}
 
 	UpdateDisplays(false, true);
 
@@ -401,8 +416,8 @@ void VideoContext::PlayLine() {
 
 	// Set variables
 	isPlaying = true;
-	startFrame = FrameAtTime(curline->Start.GetMS(),agi::vfr::START);
-	endFrame = FrameAtTime(curline->End.GetMS(),agi::vfr::END);
+	startFrame = FrameAtTime(grid->GetActiveLine()->Start.GetMS(),agi::vfr::START);
+	endFrame = FrameAtTime(grid->GetActiveLine()->End.GetMS(),agi::vfr::END);
 
 	// Jump to start
 	playNextFrame = startFrame;

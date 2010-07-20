@@ -52,6 +52,7 @@
 #include "main.h"
 #include "spellchecker_manager.h"
 #include "subs_edit_box.h"
+#include "subs_edit_ctrl.h"
 #include "subs_grid.h"
 #include "utils.h"
 

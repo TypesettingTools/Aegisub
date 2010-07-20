@@ -102,10 +102,8 @@ wxTextCtrl(parent,id,value,pos,size,TimeEditWindowStyle | style,validator,name)
 	ready = true;
 	byFrame = false;
 	isEnd = false;
-	modified = false;
-	showModified = false;
-	Connect(wxEVT_COMMAND_TEXT_UPDATED,wxCommandEventHandler(TimeEdit::OnModified));
-	Connect(wxEVT_KILL_FOCUS,wxFocusEventHandler(TimeEdit::OnKillFocus));
+
+	Bind(wxEVT_COMMAND_TEXT_UPDATED, &TimeEdit::OnModified, this);
 }
 
 BEGIN_EVENT_TABLE(TimeEdit, wxTextCtrl)
@@ -119,52 +117,41 @@ END_EVENT_TABLE()
 /// @param event 
 void TimeEdit::OnModified(wxCommandEvent &event) {
 	event.Skip();
-	if (!ready) return;
 	Modified();
 }
 
 /// @brief Modified function 
-/// @param byUser 
-void TimeEdit::Modified(bool byUser) {
+void TimeEdit::Modified() {
 	if (!ready) return;
 	ready = false;
 	
 	if (byFrame) Update();
-	else UpdateTime(byUser);
+	else UpdateTime(true);
 
-	// Colour
-	if (showModified && !modified) {
-		SetBackgroundColour(lagi_wxColour(OPT_GET("Colour/Background/Modified")->GetColour()));
-	}
-	modified = true;
 	ready = true;
 }
 
 /// @brief Set time and update stuff 
 /// @param ms          
 /// @param setModified 
-///
-void TimeEdit::SetTime(int ms,bool setModified) {
-	int oldMs = time.GetMS();
-	time.SetMS(ms);
-	UpdateText();
-	if (setModified && oldMs != ms) Modified(false);
+void TimeEdit::SetTime(AssTime newTime) {
+	if (newTime != time) {
+		time = newTime;
+		UpdateText();
+	}
 }
 
 /// @brief Toggles between set by frame and time 
 /// @param enable 
-void TimeEdit::SetByFrame(bool enable) {
-	if (enable == byFrame) return;
+void TimeEdit::SetByFrame(bool enableByFrame) {
+	if (enableByFrame == byFrame) return;
 
-	// By frames
-	if (enable) {
+	if (enableByFrame) {
 		if (VideoContext::Get()->IsLoaded()) {
 			byFrame = true;
 			UpdateText();
 		}
 	}
-
-	// By actual time
 	else {
 		byFrame = false;
 		UpdateText();
@@ -172,44 +159,32 @@ void TimeEdit::SetByFrame(bool enable) {
 }
 
 /// @brief Update text to reflect time value 
-///
 void TimeEdit::UpdateText() {
 	ready = false;
 	if (byFrame) {
 		int frame_n = VideoContext::Get()->FrameAtTime(time.GetMS(),isEnd ? agi::vfr::END : agi::vfr::START);
-		SetValue(wxString::Format(_T("%i"),frame_n));
+		ChangeValue(wxString::Format("%i", frame_n));
 	}
-	else SetValue(time.GetASSFormated());
+	else ChangeValue(time.GetASSFormated());
 	ready = true;
 }
 
 /// @brief Update 
-///
 void TimeEdit::Update() {
-	// Update frame
 	if (byFrame) {
 		long temp;
 		GetValue().ToLong(&temp);
-		time.SetMS(VideoContext::Get()->TimeAtFrame(temp,isEnd ? agi::vfr::END : agi::vfr::START));
+		SetTime(VideoContext::Get()->TimeAtFrame(temp,isEnd ? agi::vfr::END : agi::vfr::START));
 	}
 
 	// Update time if not on insertion mode
 	else if (!OPT_GET("Subtitle/Time Edit/Insert Mode")->GetBool()) {
 		UpdateTime();
-		SetValue(time.GetASSFormated());
 	}
-
-	// Update modified status
-	if (modified && showModified) {
-		SetBackgroundColour(wxNullColour);
-		Refresh();
-	}
-	modified = false;
 }
 
 /// @brief Reads value from a text control and update it 
 /// @param byUser 
-///
 void TimeEdit::UpdateTime(bool byUser) {
 	bool insertion = OPT_GET("Subtitle/Time Edit/Insert Mode")->GetBool();
 	wxString text = GetValue();
@@ -235,14 +210,13 @@ void TimeEdit::UpdateTime(bool byUser) {
 	// Update time
 	time.ParseASS(text);
 	if (insertion) {
-		SetValue(time.GetASSFormated());
+		ChangeValue(time.GetASSFormated());
 		SetSelection(start,end);
 	}
 }
 
 /// @brief Key pressed 
 /// @param event 
-///
 void TimeEdit::OnKeyDown(wxKeyEvent &event) {
 	// Get key ID
 	int key = event.GetKeyCode();
@@ -281,19 +255,6 @@ void TimeEdit::OnKeyDown(wxKeyEvent &event) {
 	}
 }
 
-/// @brief Focus lost 
-/// @param event 
-///
-void TimeEdit::OnKillFocus(wxFocusEvent &event) {
-	if (!byFrame && !OPT_GET("Subtitle/Time Edit/Insert Mode")->GetBool()) {
-		if (time.GetASSFormated() != GetValue()) {
-			UpdateTime();
-			SetValue(time.GetASSFormated());
-		}
-	}
-	event.Skip();
-}
-
 ///// Mouse/copy/paste events down here /////
 
 /// @brief Mouse event 
@@ -315,9 +276,7 @@ void TimeEdit::OnMouseEvent(wxMouseEvent &event) {
 }
 
 /// @brief Menu Copy 
-/// @param event 
-///
-void TimeEdit::OnCopy(wxCommandEvent &event) {
+void TimeEdit::OnCopy(wxCommandEvent &) {
 	SetFocus();
 	SetSelection(0,GetValue().Length());
 	CopyTime();
@@ -325,18 +284,14 @@ void TimeEdit::OnCopy(wxCommandEvent &event) {
 }
 
 /// @brief Menu Paste 
-/// @param event 
-///
-void TimeEdit::OnPaste(wxCommandEvent &event) {
+void TimeEdit::OnPaste(wxCommandEvent &) {
 	SetFocus();
 	PasteTime();
 	Refresh();
 }
 
 /// @brief Copy to clipboard 
-///
 void TimeEdit::CopyTime() {
-	// Frame
 	if (byFrame) {
 		Copy();
 		return;
@@ -350,9 +305,7 @@ void TimeEdit::CopyTime() {
 }
 
 /// @brief Paste from clipboard 
-///
 void TimeEdit::PasteTime() {
-	// Frame
 	if (byFrame) {
 		Paste();
 		return;

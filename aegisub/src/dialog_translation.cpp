@@ -52,6 +52,7 @@
 #include "hotkeys.h"
 #include "libresrc/libresrc.h"
 #include "subs_edit_box.h"
+#include "subs_edit_ctrl.h"
 #include "subs_grid.h"
 #include "utils.h"
 #include "video_context.h"

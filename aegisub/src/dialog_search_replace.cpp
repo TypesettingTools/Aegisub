@@ -51,6 +51,7 @@
 #include "frame_main.h"
 #include "main.h"
 #include "subs_edit_box.h"
+#include "subs_edit_ctrl.h"
 #include "subs_grid.h"
 #include "video_display.h"
 
@@ -545,7 +546,6 @@ void SearchReplaceEngine::ReplaceAll() {
 	if (count > 0) {
 		grid->ass->Commit(_("replace"));
 		grid->CommitChanges();
-		grid->editBox->Update();
 		wxMessageBox(wxString::Format(_("%i matches were replaced."),count));
 	}
 

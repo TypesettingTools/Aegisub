@@ -221,6 +221,8 @@ public:
 	/// Do nothing
 	void SetEntryData(wxString) { }
 
+	template<int which>
+	void SetMarginString(const wxString value) { SetMarginString(value, which);}
 	/// @brief Set a margin 
 	/// @param value New value of the margin
 	/// @param which 0 = left, 1 = right, 2 = vertical/top, 3 = bottom

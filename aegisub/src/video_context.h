@@ -151,6 +151,8 @@ private:
 	agi::vfr::Framerate videoFPS;
 	agi::vfr::Framerate ovrFPS;
 
+	bool singleFrame;
+
 public:
 	/// DOCME
 	SubtitlesGrid *grid;
@@ -231,7 +233,9 @@ public:
 	void JumpToTime(int ms, agi::vfr::Time end = agi::vfr::START);
 
 	/// @brief Refresh the subtitle provider
-	void Refresh();
+	/// @param full Send the entire subtitle file to the renderer rather than
+	///             just the lines visible on the current frame
+	void Refresh(bool full = false);
 
 	/// @brief Update the video display
 	/// @param full Recalculate size and slider lengths

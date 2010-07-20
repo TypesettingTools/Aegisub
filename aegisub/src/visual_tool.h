@@ -47,6 +47,7 @@
 
 #include "base_grid.h"
 #include "gl_wrap.h"
+#include "selection_controller.h"
 
 class VideoDisplay;
 class AssDialogue;

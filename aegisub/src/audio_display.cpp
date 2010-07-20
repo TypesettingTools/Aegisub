@@ -61,6 +61,7 @@
 #include "main.h"
 #include "standard_paths.h"
 #include "subs_edit_box.h"
+#include "subs_edit_ctrl.h"
 #include "subs_grid.h"
 #include "timeedit_ctrl.h"
 #include "utils.h"
@@ -2320,8 +2321,8 @@ void AudioDisplay::OnLoseFocus(wxFocusEvent &event) {
 
 /// @brief Update time edit controls 
 void AudioDisplay::UpdateTimeEditCtrls() {
-	grid->editBox->StartTime->SetTime(curStartMS,true);
-	grid->editBox->EndTime->SetTime(curEndMS,true);
-	grid->editBox->Duration->SetTime(curEndMS-curStartMS,true);
+	grid->editBox->StartTime->SetTime(curStartMS);
+	grid->editBox->EndTime->SetTime(curEndMS);
+	grid->editBox->Duration->SetTime(curEndMS-curStartMS);
 }
 
