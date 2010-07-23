@@ -34,9 +34,6 @@
 /// @ingroup video_input
 ///
 
-
-///////////
-// Headers
 #include "config.h"
 
 #ifdef WITH_AVISYNTH
@@ -47,6 +44,7 @@
 
 #include "charset_conv.h"
 #include "gl_wrap.h"
+#include <libaegisub/log.h>
 #include "mkv_wrap.h"
 #include "standard_paths.h"
 #include "vfw_wrap.h"
@@ -58,32 +56,21 @@
 /// @param _filename 
 ///
 AvisynthVideoProvider::AvisynthVideoProvider(wxString _filename) {
-	AVSTRACE(wxString::Format(_T("AvisynthVideoProvider: Creating new AvisynthVideoProvider: \"%s\", \"%s\""), _filename, _subfilename));
 	bool mpeg2dec3_priority = true;
 	RGB32Video = NULL;
 	num_frames = 0;
 	last_fnum = -1;
 	KeyFrames.clear();
 
-	AVSTRACE(_T("AvisynthVideoProvider: Opening video"));
 	RGB32Video = OpenVideo(_filename,mpeg2dec3_priority);
-	AVSTRACE(_T("AvisynthVideoProvider: Video opened"));
 
 	vi = RGB32Video->GetVideoInfo();
-	AVSTRACE(_T("AvisynthVideoProvider: Got video info"));
-	AVSTRACE(_T("AvisynthVideoProvider: Done creating AvisynthVideoProvider"));
 }
-
-
 
 /// @brief Destructor 
 ///
 AvisynthVideoProvider::~AvisynthVideoProvider() {
-	AVSTRACE(_T("AvisynthVideoProvider: Destroying AvisynthVideoProvider"));
-	RGB32Video = NULL;
-	AVSTRACE(_T("AvisynthVideoProvider: Destroying frame"));
 	iframe.Clear();
-	AVSTRACE(_T("AvisynthVideoProvider: AvisynthVideoProvider destroyed"));
 }
 
 /// @brief Actually open the video into Avisynth 
@@ -92,9 +79,7 @@ AvisynthVideoProvider::~AvisynthVideoProvider() {
 /// @return 
 ///
 PClip AvisynthVideoProvider::OpenVideo(wxString _filename, bool mpeg2dec3_priority) {
-	AVSTRACE(_T("AvisynthVideoProvider::OpenVideo: Opening video"));
 	wxMutexLocker lock(AviSynthMutex);
-	AVSTRACE(_T("AvisynthVideoProvider::OpenVideo: Got AVS mutex"));
 	AVSValue script;
 
 	usedDirectShow = false;
@@ -110,34 +95,32 @@ PClip AvisynthVideoProvider::OpenVideo(wxString _filename, bool mpeg2dec3_priori
 		char *videoFilename = env->SaveString(fname.GetShortPath().mb_str(csConvLocal));
 
 		// Avisynth file, just import it
-		if (extension == _T(".avs")) { 
-			AVSTRACE(_T("AvisynthVideoProvider::OpenVideo: Opening .avs file with Import"));
+		if (extension == _T(".avs")) {
+			LOG_I("avisynth/video") << "Opening .avs file with Import";
 			script = env->Invoke("Import", videoFilename);
-			AVSTRACE(_T("AvisynthVideoProvider::OpenVideo: Finished"));
 			decoderName = _T("Import");
 		}
 
 		// Open avi file with AviSource
 		else if (extension == _T(".avi")) {
-			AVSTRACE(_T("AvisynthVideoProvider::OpenVideo: Opening .avi file with AviSource"));
+			LOG_I("avisynth/video") << "Opening .avi file with AviSource";
 			try {
 				const char *argnames[2] = { 0, "audio" };
 				AVSValue args[2] = { videoFilename, false };
 				script = env->Invoke("AviSource", AVSValue(args,2), argnames);
-				AVSTRACE(_T("AvisynthVideoProvider::OpenVideo: Successfully opened .avi file without audio"));
 				decoderName = _T("AviSource");
 			}
 			
 			// On Failure, fallback to DSS
 			catch (AvisynthError &) {
-				AVSTRACE(_T("Failed to open .avi file with AviSource, switching to DirectShowSource"));
+				LOG_I("avisynth/video") << "Failed to open .avi file with AviSource, switching to DirectShowSource";
 				goto directshowOpen;
 			}
 		}
 
 		// Open d2v with mpeg2dec3
 		else if (extension == _T(".d2v") && env->FunctionExists("Mpeg2Dec3_Mpeg2Source") && mpeg2dec3_priority) {
-			AVSTRACE(_T("AvisynthVideoProvider::OpenVideo: Opening .d2v file with Mpeg2Dec3_Mpeg2Source"));
+			LOG_I("avisynth/video") << "Opening .d2v file with Mpeg2Dec3_Mpeg2Source";
 			script = env->Invoke("Mpeg2Dec3_Mpeg2Source", videoFilename);
 			decoderName = _T("Mpeg2Dec3_Mpeg2Source");
 
@@ -150,7 +133,7 @@ PClip AvisynthVideoProvider::OpenVideo(wxString _filename, bool mpeg2dec3_priori
 
 		// If that fails, try opening it with DGDecode
 		else if (extension == _T(".d2v") && env->FunctionExists("DGDecode_Mpeg2Source")) {
-			AVSTRACE(_T("AvisynthVideoProvider::OpenVideo: Opening .d2v file with DGDecode_Mpeg2Source"));
+			LOG_I("avisynth/video") << "Opening .d2v file with DGDecode_Mpeg2Source";
 			script = env->Invoke("Mpeg2Source", videoFilename);
 			decoderName = _T("DGDecode_Mpeg2Source");
 
@@ -159,7 +142,7 @@ PClip AvisynthVideoProvider::OpenVideo(wxString _filename, bool mpeg2dec3_priori
 		}
 
 		else if (extension == _T(".d2v") && env->FunctionExists("Mpeg2Source")) {
-			AVSTRACE(_T("AvisynthVideoProvider::OpenVideo: Opening .d2v file with other Mpeg2Source"));
+			LOG_I("avisynth/video") << "Opening .d2v file with other Mpeg2Source";
 			script = env->Invoke("Mpeg2Source", videoFilename);
 			decoderName = _T("Mpeg2Source");
 
@@ -172,27 +155,21 @@ PClip AvisynthVideoProvider::OpenVideo(wxString _filename, bool mpeg2dec3_priori
 		else {
 			directshowOpen:
 
-			// DirectShowSource
-			AVSTRACE(_T("AvisynthVideoProvider::OpenVideo: Opening file with DirectShowSource"));
-
 			// Try loading DirectShowSource2
 			bool dss2 = false;
 			if (env->FunctionExists("dss2")) dss2 = true;
 			if (!dss2) {
 				wxFileName dss2path(StandardPaths::DecodePath(_T("?data/avss.dll")));
 				if (dss2path.FileExists()) {
-					AVSTRACE(_T("AvisynthVideoProvider::OpenVideo: Loading DirectShowSource2"));
 					env->Invoke("LoadPlugin",env->SaveString(dss2path.GetFullPath().mb_str(csConvLocal)));
-					AVSTRACE(_T("AvisynthVideoProvider::OpenVideo: Loaded DirectShowSource2"));
 				}
 			}
 
 			// If DSS2 loaded properly, try using it
 			dss2 = false;
 			if (env->FunctionExists("dss2")) {
-				AVSTRACE(_T("AvisynthVideoProvider::OpenVideo: Invoking DSS2"));
+				LOG_I("avisynth/video") << "Opening video with DSS2";
 				script = env->Invoke("DSS2", videoFilename);
-				AVSTRACE(_T("AvisynthVideoProvider::OpenVideo: Successfully opened file with DSS2"));
 				dss2 = true;
 				decoderName = _T("DSS2");
 			}
@@ -202,24 +179,22 @@ PClip AvisynthVideoProvider::OpenVideo(wxString _filename, bool mpeg2dec3_priori
 				// Load DirectShowSource.dll from app dir if it exists
 				wxFileName dsspath(StandardPaths::DecodePath(_T("?data/DirectShowSource.dll")));
 				if (dsspath.FileExists()) {
-					AVSTRACE(_T("AvisynthVideoProvider::OpenVideo: Loading DirectShowSource"));
 					env->Invoke("LoadPlugin",env->SaveString(dsspath.GetFullPath().mb_str(csConvLocal)));
-					AVSTRACE(_T("AvisynthVideoProvider::OpenVideo: Loaded DirectShowSource"));
 				}
 
 				// Then try using DSS
 				if (env->FunctionExists("DirectShowSource")) {
 					const char *argnames[3] = { 0, "video", "audio" };
 					AVSValue args[3] = { videoFilename, true, false };
+					LOG_I("avisynth/video") << "Opening video with DirectShowSource";
 					script = env->Invoke("DirectShowSource", AVSValue(args,3), argnames);
-					AVSTRACE(_T("AvisynthVideoProvider::OpenVideo: Successfully opened file with DSS without audio"));
 					usedDirectShow = true;
 					decoderName = _T("DirectShowSource");
 				}
 
 				// Failed to find a suitable function
 				else {
-					AVSTRACE(_T("AvisynthVideoProvider::OpenVideo: DSS function not found"));
+					LOG_E("avisynth/video") << "DSS function not found";
 					throw AvisynthError("No function suitable for opening the video found");
 				}
 			}
@@ -228,13 +203,13 @@ PClip AvisynthVideoProvider::OpenVideo(wxString _filename, bool mpeg2dec3_priori
 	
 	// Catch errors
 	catch (AvisynthError &err) {
-		AVSTRACE(_T("AvisynthVideoProvider::OpenVideo: Avisynth error: ") + wxString(err.msg,csConvLocal));
+		LOG_E("avisynth/video") << "Avisynth error: " << err.msg;
 		throw _T("AviSynth error: ") + wxString(err.msg,csConvLocal);
 	}
 
 	// Check if video was loaded properly
 	if (!script.IsClip() || !script.AsClip()->GetVideoInfo().HasVideo()) {
-		AVSTRACE(_T("AvisynthVideoProvider::OpenVideo: No suitable video found"));
+		LOG_E("avisynth/video") << "AvisynthVideoProvider::OpenVideo: No suitable video found";
 		throw _T("Avisynth: No usable video found in ") + _filename;
 	}
 
@@ -281,10 +256,8 @@ PClip AvisynthVideoProvider::OpenVideo(wxString _filename, bool mpeg2dec3_priori
 
 	// Convert to RGB32
 	script = env->Invoke("ConvertToRGB32", script);
-	AVSTRACE(_T("AvisynthVideoProvider::OpenVideo: Converted to RGB32"));
 
 	// Cache
-	AVSTRACE(_T("AvisynthVideoProvider::OpenVideo: Finished opening video, AVS mutex will be released now"));
 	return (env->Invoke("Cache", script)).AsClip();
 }
 
@@ -299,7 +272,6 @@ const AegiVideoFrame AvisynthVideoProvider::GetFrame(int n) {
 		n = real_fps.FrameAtTime(vfr_fps.TimeAtFrame(n));
 	}
 	// Get avs frame
-	AVSTRACE(_T("AvisynthVideoProvider::GetFrame"));
 	wxMutexLocker lock(AviSynthMutex);
 	PVideoFrame frame = RGB32Video->GetFrame(n,env);
 	int Bpp = vi.BitsPerPixel() / 8;

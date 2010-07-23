@@ -34,12 +34,6 @@
 /// @ingroup video_input audio_input
 ///
 
-
-
-
-///////////
-// Headers
-
 #ifdef WITH_AVISYNTH
 #ifndef AGI_PRE
 #include <windows.h>
@@ -47,26 +41,8 @@
 
 #include "avisynth.h"
 
-
-
 /// DOCME
 typedef IScriptEnvironment* __stdcall FUNC(int);
-
-
-////////////////////////////
-// Avisynth debugging stuff
-#ifdef DEBUG_AVISYNTH_CODE
-void DoAvsTrace(const wxString &s);
-
-/// DOCME
-#define AVSTRACE(s) DoAvsTrace(s)
-#else
-
-/// DOCME
-#define AVSTRACE(s)
-#endif
-
-
 
 /// DOCME
 /// @class AviSynthWrapper

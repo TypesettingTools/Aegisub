@@ -34,42 +34,11 @@
 /// @ingroup video_input audio_input
 ///
 
-
-////////////
-// Includes
-
 #include "config.h"
 
 #ifdef WITH_AVISYNTH
 #include "avisynth_wrap.h"
 #include "main.h"
-
-#ifdef DEBUG_AVISYNTH_CODE
-#ifndef AGI_PRE
-#include <wx/textfile.h>
-#endif
-#include "main.h"
-
-/// DOCME
-wxTextFile avs_trace_file;
-
-/// @brief DOCME
-/// @param s 
-///
-void DoAvsTrace(const wxString &s)
-{
-	if (!avs_trace_file.IsOpened()) {
-		if (!avs_trace_file.Open(AegisubApp::folderName + _T("avstrace.txt"))) {
-			avs_trace_file.Create(AegisubApp::folderName + _T("avstrace.txt"));
-		}
-		avs_trace_file.AddLine(_T(""));
-		avs_trace_file.AddLine(_T("======= NEW SESSION ======="));
-	}
-	avs_trace_file.AddLine(s);
-	avs_trace_file.Write();
-}
-#endif
-
 
 // Allocate storage for and initialise static members
 int AviSynthWrapper::avs_refcount = 0;
@@ -77,28 +46,21 @@ HINSTANCE AviSynthWrapper::hLib = NULL;
 IScriptEnvironment *AviSynthWrapper::env = NULL;
 wxMutex AviSynthWrapper::AviSynthMutex;
 
-
-
 /// @brief AviSynth constructor 
 ///
 AviSynthWrapper::AviSynthWrapper() {
 	if (!avs_refcount) {
-		AVSTRACE(_T("Avisynth not loaded, trying to load it now..."));
 		hLib=LoadLibrary(_T("avisynth.dll"));
 
 		if (hLib == NULL) {
-			AVSTRACE(_T("Avisynth loading failed"));
 			throw wxString(_T("Could not load avisynth.dll"));
 		}
-		AVSTRACE(_T("Avisynth loading successful"));
-		
+
 		FUNC *CreateScriptEnv = (FUNC*)GetProcAddress(hLib, "CreateScriptEnvironment");
 
 		if (CreateScriptEnv == NULL) {
-			AVSTRACE(_T("Failed to get address of CreateScriptEnv"));
-			throw wxString(_T("Failed to get function from avisynth.dll"));
+			throw wxString(_T("Failed to get address of CreateScriptEnv from avisynth.dll"));
 		}
-		AVSTRACE(_T("Got address of CreateScriptEnv"));
 
 		// Require Avisynth 2.5.6+?
 		if (OPT_GET("Provider/Avisynth/Allow Ancient")->GetBool())
@@ -107,45 +69,30 @@ AviSynthWrapper::AviSynthWrapper() {
 			env = CreateScriptEnv(AVISYNTH_INTERFACE_VERSION);
 
 		if (env == NULL) {
-			AVSTRACE(_T("Failed to create script environment"));
 			throw wxString(_T("Failed to create a new avisynth script environment. Avisynth is too old?"));
 		}
-		AVSTRACE(_T("Created script environment"));
 		// Set memory limit
 		const int memoryMax = OPT_GET("Provider/Avisynth/Memory Max")->GetInt();
 		if (memoryMax != 0) {
 			env->SetMemoryMax(memoryMax);
-			AVSTRACE(_T("Set Avisynth memory limit"));
 		}
 	}
 
 	avs_refcount++;
-	AVSTRACE(_T("Increased reference count"));
 }
-
-
 
 /// @brief AviSynth destructor 
 ///
 AviSynthWrapper::~AviSynthWrapper() {
-	AVSTRACE(_T("Decreasing reference count"));
 	if (!--avs_refcount) {
-		AVSTRACE(_T("Reference count reached zero, deleting environment"));
 		delete env;
-		AVSTRACE(_T("Environment deleted"));
 		FreeLibrary(hLib);
-		AVSTRACE(_T("Free'd library, unloading complete"));
 	}
 }
-
-
 
 /// @brief Get environment 
 ///
 IScriptEnvironment *AviSynthWrapper::GetEnv() {
 	return env;
 }
-
 #endif
-
-
