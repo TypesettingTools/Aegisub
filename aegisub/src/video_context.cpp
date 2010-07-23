@@ -156,12 +156,8 @@ void VideoContext::SetVideo(const wxString &filename) {
 	try {
 		grid->CommitChanges(true);
 
-		try {
-			provider.reset(new ThreadedFrameSource(filename, this), std::mem_fun(&ThreadedFrameSource::End));
-			videoProvider = provider->GetVideoProvider();
-		}
-		catch (wxString err) { wxMessageBox(L"Error while loading video: " + err, L"Video Error"); }
-		catch (const wchar_t *err) { wxMessageBox(L"Error while loading video: " + wxString(err), L"Video Error"); }
+		provider.reset(new ThreadedFrameSource(filename, this), std::mem_fun(&ThreadedFrameSource::End));
+		videoProvider = provider->GetVideoProvider();
 
 		keyFrames = videoProvider->GetKeyFrames();
 
@@ -198,7 +194,9 @@ void VideoContext::SetVideo(const wxString &filename) {
 
 		UpdateDisplays(true);
 	}
-
+	catch (const wchar_t *e) {
+		wxMessageBox(e,_T("Error setting video"),wxICON_ERROR | wxOK);
+	}
 	catch (const wxString &e) {
 		wxMessageBox(e,_T("Error setting video"),wxICON_ERROR | wxOK);
 	}
