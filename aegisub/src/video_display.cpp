@@ -60,6 +60,7 @@
 #include "hotkeys.h"
 #include "main.h"
 #include "subs_grid.h"
+#include "threaded_frame_source.h"
 #include "video_out_gl.h"
 #include "video_box.h"
 #include "video_context.h"
@@ -141,10 +142,12 @@ VideoDisplay::VideoDisplay(VideoBox *box, VideoSlider *ControlSlider, wxTextCtrl
 , freeSize(false)
 {
 	box->Bind(wxEVT_COMMAND_TOOL_CLICKED, &VideoDisplay::OnMode, this, Video_Mode_Standard, Video_Mode_Vector_Clip);
+	VideoContext::Get()->Bind(EVT_FRAME_READY, &VideoDisplay::UploadFrameData, this);
 	SetCursor(wxNullCursor);
 }
 
 VideoDisplay::~VideoDisplay () {
+	VideoContext::Get()->Unbind(EVT_FRAME_READY, &VideoDisplay::UploadFrameData, this);
 	VideoContext::Get()->RemoveDisplay(this);
 }
 
@@ -214,39 +217,23 @@ void VideoDisplay::SetFrame(int frameNumber) {
 	if (context->IsLoaded()) {
 		context->GetScriptSize(scriptW, scriptH);
 		tool->SetFrame(frameNumber);
-
-		UploadFrameData();
+		context->GetFrameAsync(currentFrame);
 	}
-	Render();
 }
 
-void VideoDisplay::UploadFrameData() {
+void VideoDisplay::UploadFrameData(FrameReadyEvent &evt) {
 	if (!InitContext()) return;
-	VideoContext *context = VideoContext::Get();
-	AegiVideoFrame frame;
+
 	try {
-		frame = context->GetFrame(currentFrame);
-	}
-	catch (const wxChar *err) {
-		wxLogError(
-			L"Failed seeking video. The video file may be corrupt or incomplete.\n"
-			L"Error message reported: %s",
-			err);
-	}
-	catch (...) {
-		wxLogError(
-			L"Failed seeking video. The video file may be corrupt or incomplete.\n"
-			L"No further error message given.");
-	}
-	try {
-		videoOut->UploadFrameData(frame);
+		videoOut->UploadFrameData(*evt.frame);
 	}
 	catch (const VideoOutInitException& err) {
 		wxLogError(
-			L"Failed to initialize video display. Closing other running programs and updating your video card drivers may fix this.\n"
+			L"Failed to initialize video display. Closing other running "
+			L"programs and updating your video card drivers may fix this.\n"
 			L"Error message reported: %s",
 			err.GetMessage().c_str());
-		context->Reset();
+		VideoContext::Get()->Reset();
 	}
 	catch (const VideoOutRenderException& err) {
 		wxLogError(
@@ -254,14 +241,14 @@ void VideoDisplay::UploadFrameData() {
 			L"Error message reported: %s",
 			err.GetMessage().c_str());
 	}
+	Render();
 }
 
 void VideoDisplay::Refresh() {
 	if (!tool.get()) tool.reset(new VisualToolCross(this, video, toolBar));
 	if (!InitContext()) return;
-	UploadFrameData();
+	VideoContext::Get()->GetFrameAsync(currentFrame);
 	tool->Refresh();
-	Render();
 }
 
 void VideoDisplay::SetFrameRange(int from, int to) {
@@ -597,14 +584,14 @@ void VideoDisplay::FromScriptCoords(int *x, int *y) const {
 
 void VideoDisplay::OnCopyToClipboard(wxCommandEvent &) {
 	if (wxTheClipboard->Open()) {
-		wxTheClipboard->SetData(new wxBitmapDataObject(wxBitmap(VideoContext::Get()->GetFrame(-1).GetImage(),24)));
+		wxTheClipboard->SetData(new wxBitmapDataObject(wxBitmap(VideoContext::Get()->GetFrame(currentFrame).GetImage(),24)));
 		wxTheClipboard->Close();
 	}
 }
 
 void VideoDisplay::OnCopyToClipboardRaw(wxCommandEvent &) {
 	if (wxTheClipboard->Open()) {
-		wxTheClipboard->SetData(new wxBitmapDataObject(wxBitmap(VideoContext::Get()->GetFrame(-1,true).GetImage(),24)));
+		wxTheClipboard->SetData(new wxBitmapDataObject(wxBitmap(VideoContext::Get()->GetFrame(currentFrame,true).GetImage(),24)));
 		wxTheClipboard->Close();
 	}
 }

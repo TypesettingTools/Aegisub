@@ -43,6 +43,7 @@
 #endif
 
 // Prototypes
+class FrameReadyEvent;
 class VideoSlider;
 class VideoBox;
 class VideoOutGL;
@@ -97,7 +98,7 @@ class VideoDisplay : public wxGLCanvas {
 	void DrawOverscanMask(int sizeH, int sizeV, wxColor color, double alpha) const;
 
 	/// Upload the image for the current frame to the video card
-	void UploadFrameData();
+	void UploadFrameData(FrameReadyEvent&);
 
 	/// @brief Paint event 
 	void OnPaint(wxPaintEvent& event);

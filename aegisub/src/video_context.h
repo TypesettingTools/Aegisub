@@ -65,8 +65,10 @@ class AudioProvider;
 class AudioDisplay;
 class AssDialogue;
 class KeyFrameFile;
-class SubtitlesProvider;
+class SubtitlesProviderErrorEvent;
+class ThreadedFrameSource;
 class VideoProvider;
+class VideoProviderErrorEvent;
 class VideoDisplay;
 
 namespace agi {
@@ -87,13 +89,10 @@ private:
 	std::list<VideoDisplay*> displayList;
 
 	/// DOCME
-	AegiVideoFrame tempFrame;
+	std::tr1::shared_ptr<VideoProvider> videoProvider;
 
 	/// DOCME
-	std::auto_ptr<VideoProvider> provider;
-
-	/// DOCME
-	std::auto_ptr<SubtitlesProvider> subsProvider;
+	std::tr1::shared_ptr<ThreadedFrameSource> provider;
 
 	/// DOCME
 	std::vector<int> keyFrames;
@@ -153,6 +152,9 @@ private:
 
 	bool singleFrame;
 
+	void OnVideoError(VideoProviderErrorEvent const& err);
+	void OnSubtitlesError(SubtitlesProviderErrorEvent const& err);
+
 public:
 	/// DOCME
 	SubtitlesGrid *grid;
@@ -174,15 +176,16 @@ public:
 
 
 	/// @brief Get the video provider used for the currently open video
-	VideoProvider *GetProvider() const { return provider.get(); }
-	AegiVideoFrame GetFrame(int n,bool raw=false);
+	VideoProvider *GetProvider() const { return videoProvider.get(); }
+	AegiVideoFrame const& GetFrame(int n, bool raw = false);
+	void GetFrameAsync(int n);
 
 	/// @brief Save the currently displayed frame as an image
 	/// @param raw Should the frame have subtitles?
 	void SaveSnapshot(bool raw);
 
 	/// @brief Is there a video loaded?
-	bool IsLoaded() const { return !!provider.get(); }
+	bool IsLoaded() const { return !!videoProvider.get(); }
 
 	/// @brief Is the video currently playing?
 	bool IsPlaying() const { return isPlaying; }
@@ -233,9 +236,7 @@ public:
 	void JumpToTime(int ms, agi::vfr::Time end = agi::vfr::START);
 
 	/// @brief Refresh the subtitle provider
-	/// @param full Send the entire subtitle file to the renderer rather than
-	///             just the lines visible on the current frame
-	void Refresh(bool full = false);
+	void Refresh();
 
 	/// @brief Update the video display
 	/// @param full Recalculate size and slider lengths

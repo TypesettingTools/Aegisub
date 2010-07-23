@@ -1383,14 +1383,6 @@
 				RelativePath="..\..\src\export_framerate.h"
 				>
 			</File>
-			<File
-				RelativePath="..\..\src\export_visible_lines.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\export_visible_lines.h"
-				>
-			</File>
 		</Filter>
 		<Filter
 			Name="Video backend"
@@ -1401,6 +1393,14 @@
 			</File>
 			<File
 				RelativePath="..\..\src\keyframe.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\threaded_frame_source.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\threaded_frame_source.h"
 				>
 			</File>
 			<File

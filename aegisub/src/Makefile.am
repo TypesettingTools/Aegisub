@@ -251,7 +251,6 @@ aegisub_2_2_SOURCES = \
 	export_clean_info.cpp \
 	export_fixstyle.cpp \
 	export_framerate.cpp \
-	export_visible_lines.cpp \
 	fft.cpp \
 	frame_main.cpp \
 	frame_main_events.cpp \
@@ -293,6 +292,7 @@ aegisub_2_2_SOURCES = \
 	thesaurus.cpp \
 	thesaurus_myspell.cpp \
 	timeedit_ctrl.cpp \
+	threaded_frame_source.cpp \
 	toggle_bitmap.cpp \
 	tooltip_manager.cpp \
 	utils.cpp \

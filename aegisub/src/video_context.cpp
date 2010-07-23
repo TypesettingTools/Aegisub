@@ -54,13 +54,12 @@
 #endif
 
 #include "ass_dialogue.h"
-#include "ass_exporter.h"
 #include "ass_file.h"
 #include "ass_style.h"
 #include "ass_time.h"
 #include "audio_display.h"
 #include "compat.h"
-#include "export_visible_lines.h"
+#include "include/aegisub/video_provider.h"
 #include "keyframe.h"
 #include <libaegisub/access.h>
 #include "main.h"
@@ -68,12 +67,11 @@
 #include "standard_paths.h"
 #include "subs_edit_box.h"
 #include "subs_grid.h"
-#include "subtitles_provider_manager.h"
+#include "threaded_frame_source.h"
 #include "utils.h"
 #include "video_box.h"
 #include "video_context.h"
 #include "video_display.h"
-#include "video_provider_manager.h"
 
 /// IDs
 enum {
@@ -105,6 +103,8 @@ VideoContext::VideoContext()
 , VFR_Input(videoFPS)
 , VFR_Output(ovrFPS)
 {
+	Bind(EVT_VIDEO_ERROR, &VideoContext::OnVideoError, this);
+	Bind(EVT_SUBTITLES_ERROR, &VideoContext::OnSubtitlesError, this);
 }
 
 VideoContext::~VideoContext () {
@@ -112,7 +112,6 @@ VideoContext::~VideoContext () {
 		delete audio->provider;
 		delete audio->player;
 	}
-	tempFrame.Clear();
 }
 
 VideoContext *VideoContext::Get() {
@@ -143,11 +142,10 @@ void VideoContext::Reset() {
 
 	// Clean up video data
 	videoName.clear();
-	tempFrame.Clear();
 
 	// Remove provider
+	videoProvider.reset();
 	provider.reset();
-	subsProvider.reset();
 }
 
 void VideoContext::SetVideo(const wxString &filename) {
@@ -158,20 +156,17 @@ void VideoContext::SetVideo(const wxString &filename) {
 	try {
 		grid->CommitChanges(true);
 
-		// Choose a provider
-		provider.reset(VideoProviderFactoryManager::GetProvider(filename));
-
-		// Get subtitles provider
 		try {
-			subsProvider.reset(SubtitlesProviderFactoryManager::GetProvider());
+			provider.reset(new ThreadedFrameSource(filename, this), std::mem_fun(&ThreadedFrameSource::End));
+			videoProvider = provider->GetVideoProvider();
 		}
-		catch (wxString err) { wxMessageBox(_T("Error while loading subtitles provider: ") + err,_T("Subtitles provider"));	}
-		catch (const wchar_t *err) { wxMessageBox(_T("Error while loading subtitles provider: ") + wxString(err),_T("Subtitles provider"));	}
+		catch (wxString err) { wxMessageBox(L"Error while loading video: " + err, L"Video Error"); }
+		catch (const wchar_t *err) { wxMessageBox(L"Error while loading video: " + wxString(err), L"Video Error"); }
 
-		keyFrames = provider->GetKeyFrames();
+		keyFrames = videoProvider->GetKeyFrames();
 
 		// Set frame rate
-		videoFPS = provider->GetFPS();
+		videoFPS = videoProvider->GetFPS();
 		if (ovrFPS.IsLoaded()) {
 			int ovr = wxMessageBox(_("You already have timecodes loaded. Would you like to replace them with timecodes from the video file?"), _("Replace timecodes?"), wxYES_NO | wxICON_QUESTION);
 			if (ovr == wxYES) {
@@ -181,7 +176,7 @@ void VideoContext::SetVideo(const wxString &filename) {
 		}
 
 		// Gather video parameters
-		length = provider->GetFrameCount();
+		length = videoProvider->GetFrameCount();
 
 		// Set filename
 		videoName = filename;
@@ -193,7 +188,7 @@ void VideoContext::SetVideo(const wxString &filename) {
 		frame_n = 0;
 
 		// Show warning
-		wxString warning = provider->GetWarning();
+		wxString warning = videoProvider->GetWarning();
 		if (!warning.empty()) wxMessageBox(warning,_T("Warning"),wxICON_WARNING | wxOK);
 
 		hasSubtitles = false;
@@ -204,16 +199,14 @@ void VideoContext::SetVideo(const wxString &filename) {
 		UpdateDisplays(true);
 	}
 
-	catch (wxString &e) {
+	catch (const wxString &e) {
 		wxMessageBox(e,_T("Error setting video"),wxICON_ERROR | wxOK);
 	}
 }
 
 void VideoContext::AddDisplay(VideoDisplay *display) {
-	for (std::list<VideoDisplay*>::iterator cur=displayList.begin();cur!=displayList.end();cur++) {
-		if ((*cur) == display) return;
-	}
-	displayList.push_back(display);
+	if (std::find(displayList.begin(), displayList.end(), display) == displayList.end())
+		displayList.push_back(display);
 }
 
 void VideoContext::RemoveDisplay(VideoDisplay *display) {
@@ -247,26 +240,10 @@ void VideoContext::UpdateDisplays(bool full, bool seek) {
 	}
 }
 
-void VideoContext::Refresh(bool full) {
-	if (subsProvider.get()) {
-		if (full) {
-			AssLimitToVisibleFilter::SetFrame(-1);
-			singleFrame = false;
-		}
-		else {
-			AssLimitToVisibleFilter::SetFrame(frame_n);
-			singleFrame = true;
-		}
+void VideoContext::Refresh() {
+	if (!IsLoaded()) return;
 
-		AssExporter exporter(grid->ass);
-		exporter.AddAutoFilters();
-		try {
-			std::auto_ptr<AssFile> exported(exporter.ExportTransform());
-			subsProvider->LoadSubtitles(exported.get());
-		}
-		catch (wxString err) { wxMessageBox(_T("Error while invoking subtitles provider: ") + err,_T("Subtitles provider")); }
-		catch (const wchar_t *err) { wxMessageBox(_T("Error while invoking subtitles provider: ") + wxString(err),_T("Subtitles provider")); }
-	}
+	provider->LoadSubtitles(grid->ass);
 	UpdateDisplays(false);
 }
 
@@ -278,10 +255,6 @@ void VideoContext::JumpToFrame(int n) {
 
 	frame_n = n;
 
-	if (singleFrame) {
-		Refresh(true);
-	}
-
 	UpdateDisplays(false, true);
 
 	static agi::OptionValue* highlight = OPT_GET("Subtitle/Grid/Highlight Subtitles in Frame");
@@ -292,33 +265,19 @@ void VideoContext::JumpToTime(int ms, agi::vfr::Time end) {
 	JumpToFrame(FrameAtTime(ms, end));
 }
 
-AegiVideoFrame VideoContext::GetFrame(int n,bool raw) {
-	// Current frame if -1
-	if (n == -1) n = frame_n;
+void VideoContext::GetFrameAsync(int n) {
+	provider->RequestFrame(n,videoFPS.TimeAtFrame(n)/1000.0);
+}
 
-	AegiVideoFrame frame = provider->GetFrame(n);
-
-	// Raster subtitles if available/necessary
-	if (!raw && subsProvider.get()) {
-		tempFrame.CopyFrom(frame);
-		try {
-			subsProvider->DrawSubtitles(tempFrame,videoFPS.TimeAtFrame(n)/1000.0);
-		}
-		catch (...) {
-			wxLogError(L"Subtitle rendering for the current frame failed.\n");
-		}
-		return tempFrame;
-	}
-
-	// Return pure frame
-	else return frame;
+AegiVideoFrame const& VideoContext::GetFrame(int n, bool raw) {
+	return provider->GetFrame(n, videoFPS.TimeAtFrame(n)/1000.0, raw);
 }
 
 int VideoContext::GetWidth() const {
-	return provider->GetWidth();
+	return videoProvider->GetWidth();
 }
 int VideoContext::GetHeight() const {
-	return provider->GetHeight();
+	return videoProvider->GetHeight();
 }
 
 void VideoContext::SaveSnapshot(bool raw) {
@@ -520,8 +479,8 @@ void VideoContext::SaveKeyframes(wxString filename) {
 
 void VideoContext::CloseKeyframes() {
 	keyFramesFilename.clear();
-	if (provider.get()) {
-		keyFrames = provider->GetKeyFrames();
+	if (videoProvider.get()) {
+		keyFrames = videoProvider->GetKeyFrames();
 	}
 	else {
 		keyFrames.clear();
@@ -570,4 +529,16 @@ int VideoContext::FrameAtTime(int time, agi::vfr::Time type) const {
 		return ovrFPS.FrameAtTime(time, type);
 	}
 	return videoFPS.FrameAtTime(time, type);
+}
+
+void VideoContext::OnVideoError(VideoProviderErrorEvent const& err) {
+	wxLogError(
+		L"Failed seeking video. The video file may be corrupt or incomplete.\n"
+		L"Error message reported: %s",
+		lagi_wxString(err.GetMessage()).c_str());
+}
+void VideoContext::OnSubtitlesError(SubtitlesProviderErrorEvent const& err) {
+	wxLogError(
+		L"Failed rendering subtitles. Error message reported: %s",
+		lagi_wxString(err.GetMessage()).c_str());
 }
