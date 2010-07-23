@@ -1200,14 +1200,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\dialog_tip.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\dialog_tip.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\dialog_translation.cpp"
 				>
 			</File>

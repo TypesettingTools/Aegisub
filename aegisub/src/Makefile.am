@@ -242,7 +242,6 @@ aegisub_2_2_SOURCES = \
 	dialog_styling_assistant.cpp \
 	dialog_text_import.cpp \
 	dialog_timing_processor.cpp \
-	dialog_tip.cpp \
 	dialog_translation.cpp \
 	dialog_version_check.cpp \
 	dialog_video_details.cpp \
