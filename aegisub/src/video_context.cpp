@@ -226,12 +226,12 @@ void VideoContext::UpdateDisplays(bool full, bool seek) {
 	for (std::list<VideoDisplay*>::iterator cur=displayList.begin();cur!=displayList.end();cur++) {
 		VideoDisplay *display = *cur;
 
+		if (!seek) {
+			display->Refresh();
+		}
 		if (full) {
 			display->UpdateSize();
 			display->SetFrameRange(0,GetLength()-1);
-		}
-		if (!seek) {
-			display->Refresh();
 		}
 		if (seek || full) {
 			display->SetFrame(GetFrameN());

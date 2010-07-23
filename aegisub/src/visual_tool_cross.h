@@ -34,9 +34,14 @@
 /// @ingroup visual_ts
 ///
 
+#ifndef AGI_PRE
+#include <tr1/memory>
+#endif
+
 #include "visual_feature.h"
 #include "visual_tool.h"
 
+class OpenGLText;
 
 /// DOCME
 /// @class VisualToolCross
@@ -46,6 +51,7 @@
 class VisualToolCross : public VisualTool<VisualDraggableFeature> {
 	bool Update();
 	void Draw();
+	std::tr1::shared_ptr<OpenGLText> glText;
 public:
 	VisualToolCross(VideoDisplay *parent, VideoState const& video, wxToolBar *);
 };

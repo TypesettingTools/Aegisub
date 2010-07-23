@@ -40,27 +40,30 @@
 #include <wx/bitmap.h>
 #include <wx/dcmemory.h>
 #include <wx/image.h>
+
 #include <algorithm>
 #endif
 
 #include "gl_text.h"
 #include "utils.h"
 
+#undef max
+
 
 /// @class OpenGLTextGlyph
 /// @brief Struct storing the information needed to draw a glyph
-class OpenGLTextGlyph {
-public:
-	wxString str; /// String containing the glyph(s) this is for
-	int tex;      /// OpenGL texture to draw for this glyph
-	float x1;     /// Left x coordinate of this glyph in the containing texture
-	float x2;     /// Right x coordinate of this glyph in the containing texture
-	float y1;     /// Left y coordinate of this glyph in the containing texture
-	float y2;     /// Right y coordinate of this glyph in the containing texture
-	int w;        /// Width of the glyph in pixels
-	int h;        /// Height of the glyph in pixels
+struct OpenGLTextGlyph {
+	wxString str; ///< String containing the glyph(s) this is for
+	int tex;      ///< OpenGL texture to draw for this glyph
+	float x1;     ///< Left x coordinate of this glyph in the containing texture
+	float x2;     ///< Right x coordinate of this glyph in the containing texture
+	float y1;     ///< Left y coordinate of this glyph in the containing texture
+	float y2;     ///< Right y coordinate of this glyph in the containing texture
+	int w;        ///< Width of the glyph in pixels
+	int h;        ///< Height of the glyph in pixels
+	wxFont font;  ///< Font used for this glyph
 
-	OpenGLTextGlyph(int value);
+	OpenGLTextGlyph(int value, wxFont const& font);
 	void Draw(int x,int y) const;
 };
 
@@ -68,14 +71,13 @@ public:
 /// @class OpenGLTextTexture
 /// @brief OpenGL texture which stores one or more glyphs as sprites
 class OpenGLTextTexture {
-private:
-	int x;      /// Next x coordinate at which a glyph can be inserted
-	int y;      /// Next y coordinate at which a glyph can be inserted
-	int nextY;  /// Y coordinate of the next line; tracked due to that lines
-	            /// are only as tall as needed to fit the glyphs in them
-	int width;  /// Width of the texture
-	int height; /// Height of the texture
-	GLuint tex; /// The texture
+	int x;      ///< Next x coordinate at which a glyph can be inserted
+	int y;      ///< Next y coordinate at which a glyph can be inserted
+	int nextY;  ///< Y coordinate of the next line; tracked due to that lines
+	            ///< are only as tall as needed to fit the glyphs in them
+	int width;  ///< Width of the texture
+	int height; ///< Height of the texture
+	GLuint tex; ///< The texture
 
 	/// Insert the glyph into this texture at the current coordinates
 	void Insert(OpenGLTextGlyph &glyph);
@@ -106,12 +108,7 @@ OpenGLText::OpenGLText()
 OpenGLText::~OpenGLText() {
 }
 
-OpenGLText& OpenGLText::GetInstance() {
-	static OpenGLText instance;
-	return instance;
-}
-
-void OpenGLText::DoSetFont(wxString face,int size,bool bold,bool italics) {
+void OpenGLText::SetFont(wxString face,int size,bool bold,bool italics) {
 	// No change required
 	if (size == fontSize && face == fontFace && bold == fontBold && italics == fontItalics) return;
 
@@ -129,14 +126,14 @@ void OpenGLText::DoSetFont(wxString face,int size,bool bold,bool italics) {
 	glyphs.clear();
 }
 
-void OpenGLText::DoSetColour(wxColour col,float alpha) {
+void OpenGLText::SetColour(wxColour col,float alpha) {
 	r = col.Red()   / 255.f;
 	g = col.Green() / 255.f;
 	b = col.Blue()  / 255.f;
 	a = alpha;
 }
 
-void OpenGLText::DoPrint(const wxString &text,int x,int y) {
+void OpenGLText::Print(const wxString &text,int x,int y) {
 	glEnable(GL_BLEND);
 	glEnable(GL_TEXTURE_2D);
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
@@ -181,7 +178,7 @@ void OpenGLText::DrawString(const wxString &text,int x,int y) {
 	}
 }
 
-void OpenGLText::DoGetExtent(wxString const& text, int &w, int &h) {
+void OpenGLText::GetExtent(wxString const& text, int &w, int &h) {
 	size_t len = text.Length();
 	lineHeight = 0;
 	int dx=0,dy=0;
@@ -222,7 +219,7 @@ OpenGLTextGlyph const& OpenGLText::GetGlyph(int i) {
 }
 
 OpenGLTextGlyph const& OpenGLText::CreateGlyph(int n) {
-	OpenGLTextGlyph &glyph = glyphs.insert(std::make_pair(n, OpenGLTextGlyph(n))).first->second;
+	OpenGLTextGlyph &glyph = glyphs.insert(std::make_pair(n, OpenGLTextGlyph(n, font))).first->second;
 
 	// Insert into some texture
 	bool ok = false;
@@ -235,7 +232,7 @@ OpenGLTextGlyph const& OpenGLText::CreateGlyph(int n) {
 
 	// No texture could fit it, create a new one
 	if (!ok) {
-		textures.push_back(boost::shared_ptr<OpenGLTextTexture>(new OpenGLTextTexture(glyph)));
+		textures.push_back(std::tr1::shared_ptr<OpenGLTextTexture>(new OpenGLTextTexture(glyph)));
 	}
 
 	return glyph;
@@ -245,12 +242,10 @@ OpenGLTextGlyph const& OpenGLText::CreateGlyph(int n) {
 /// @param w 
 /// @param h 
 OpenGLTextTexture::OpenGLTextTexture(OpenGLTextGlyph &glyph) {
-	using std::max;
-
 	x = y = nextY = 0;
-	width = max(SmallestPowerOf2(glyph.w), 64);
-	height = max(SmallestPowerOf2(glyph.h), 64);
-	width = height = max(width, height);
+	width = std::max(SmallestPowerOf2(glyph.w), 64);
+	height = std::max(SmallestPowerOf2(glyph.h), 64);
+	width = height = std::max(width, height);
 	tex = 0;
 
 	// Generate and bind
@@ -322,7 +317,7 @@ void OpenGLTextTexture::Insert(OpenGLTextGlyph &glyph) {
 	// Draw text and convert to image
 	dc.SetBackground(wxBrush(wxColour(0,0,0)));
 	dc.Clear();
-	dc.SetFont(OpenGLText::GetFont());
+	dc.SetFont(glyph.font);
 	dc.SetTextForeground(wxColour(255,255,255));
 	dc.DrawText(glyph.str,0,0);
 	wxImage img = bmp.ConvertToImage();
@@ -366,13 +361,14 @@ void OpenGLTextGlyph::Draw(int x,int y) const {
 }
 
 /// @brief DOCME
-OpenGLTextGlyph::OpenGLTextGlyph(int value)
+OpenGLTextGlyph::OpenGLTextGlyph(int value, wxFont const& font)
 : str(wxChar(value))
+, font(font)
 {
 	wxCoord desc,lead;
 
 	wxBitmap tempBmp(32, 32, 24);
 	wxMemoryDC dc(tempBmp);
-	dc.SetFont(OpenGLText::GetFont());
+	dc.SetFont(font);
 	dc.GetTextExtent(str,&w,&h,&desc,&lead);
 }

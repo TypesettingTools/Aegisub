@@ -36,8 +36,8 @@
 
 #ifndef AGI_PRE
 #include <map>
+#include <tr1/memory>
 #include <vector>
-#include "boost/shared_ptr.hpp"
 
 #include <wx/colour.h>
 #include <wx/font.h>
@@ -49,7 +49,7 @@
 #include <GL/gl.h>
 #endif
 
-class OpenGLTextGlyph;
+struct OpenGLTextGlyph;
 class OpenGLTextTexture;
 
 /// DOCME
@@ -61,8 +61,6 @@ typedef std::map<int,OpenGLTextGlyph> glyphMap;
 ///
 /// DOCME
 class OpenGLText {
-private:
-
 	/// DOCME
 
 	/// DOCME
@@ -95,10 +93,8 @@ private:
 	glyphMap glyphs;
 
 	/// DOCME
-	std::vector<boost::shared_ptr<OpenGLTextTexture> > textures;
+	std::vector<std::tr1::shared_ptr<OpenGLTextTexture> > textures;
 
-	OpenGLText();
-	~OpenGLText();
 	OpenGLText(OpenGLText const&);
 	OpenGLText& operator=(OpenGLText const&);
 
@@ -109,55 +105,32 @@ private:
 	/// @brief Create a new glyph
 	OpenGLTextGlyph const& CreateGlyph(int chr);
 
-	/// @brief Get the singleton OpenGLText instance
-	static OpenGLText& GetInstance();
+	void DrawString(const wxString &text,int x,int y);
+public:
+	/// @brief Get the currently active font
+	wxFont GetFont() const { return font; }
+
 	/// @brief Set the currently active font
 	/// @param face    Name of the desired font
 	/// @param size    Size in points of the desired font
 	/// @param bold    Should the font be bold?
 	/// @param italics Should the font be italic?
-	void DoSetFont(wxString face,int size,bool bold,bool italics);
+	void SetFont(wxString face,int size,bool bold,bool italics);
 	/// @brief Set the text color
 	/// @param col   Color
 	/// @param alpha Alpha value from 0.f-1.f
-	void DoSetColour(wxColour col,float alpha);
-	/// @brief Print a string onscreen
+	void SetColour(wxColour col,float alpha);
+	/// @brief Print a string on screen
 	/// @param text String to print
 	/// @param x    x coordinate
 	/// @param y    y coordinate
-	void DoPrint(const wxString &text,int x,int y);
-	void DrawString(const wxString &text,int x,int y);
+	void Print(const wxString &text,int x,int y);
 	/// @brief Get the extents of a string printed with the current font in pixels
 	/// @param text String to get extends of
 	/// @param[out] w    Width
 	/// @param[out] h    Height
-	void DoGetExtent(const wxString &text,int &w,int &h);
+	void GetExtent(const wxString &text,int &w,int &h);
 
-public:
-	/// @brief Get the currently active font
-	static wxFont GetFont() { return GetInstance().font; }
-
-	/// @brief Set the currently active font
-	/// @param face    Name of the desired font
-	/// @param size    Size in points of the desired font
-	/// @param bold    Should the font be bold?
-	/// @param italics Should the font be italic?
-	static void SetFont(wxString face=_T("Verdana"),int size=10,bool bold=true,bool italics=false) { GetInstance().DoSetFont(face,size,bold,italics); }
-
-	/// @brief Set the text color
-	/// @param col   Color
-	/// @param alpha Alpha value from 0.f-1.f
-	static void SetColour(wxColour col,float alpha=1.0f) { GetInstance().DoSetColour(col,alpha); }
-
-	/// @brief Print a string onscreen
-	/// @param text String to print
-	/// @param x    x coordinate
-	/// @param y    y coordinate
-	static void Print(const wxString &text,int x,int y) { GetInstance().DoPrint(text,x,y); }
-
-	/// @brief Get the extents of a string printed with the current font in pixels
-	/// @param text   String to get extends of
-	/// @param[out] w Width
-	/// @param[out] h Height
-	static void GetExtent(const wxString &text,int &w,int &h) { GetInstance().DoGetExtent(text,w,h); }
+	OpenGLText();
+	~OpenGLText();
 };

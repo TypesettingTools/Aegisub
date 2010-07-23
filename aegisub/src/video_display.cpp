@@ -437,7 +437,7 @@ void VideoDisplay::UpdateSize() {
 	video.w = w;
 	video.h = h;
 
-	tool->Refresh();
+	if (tool.get()) tool->Refresh();
 
 	wxGLCanvas::Refresh(false);
 }
