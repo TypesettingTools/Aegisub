@@ -174,6 +174,7 @@ void SubtitlesGrid::OnPopupMenu(bool alternate) {
 		menu.AppendSeparator();
 
 		// Adjoin selection
+		state = (sels >= 1 && continuous);
 		menu.Append(MENU_ADJOIN,_("&Make times continuous (change start)"),_("Changes times of subs so start times begin on previous's end time"))->Enable(state);
 		menu.Append(MENU_ADJOIN2,_("&Make times continuous (change end)"),_("Changes times of subs so end times begin on next's start time"))->Enable(state);
 
@@ -975,6 +976,14 @@ void SubtitlesGrid::JoinLines(int n1,int n2,bool concat) {
 }
 
 void SubtitlesGrid::AdjoinLines(int n1,int n2,bool setStart) {
+	if (n1 == n2) {
+		if (setStart) {
+			--n1;
+		}
+		else {
+			++n2;
+		}
+	}
 	// Set start
 	if (setStart) {
 		AssDialogue *prev = GetDialogue(n1);
