@@ -164,7 +164,7 @@ ThreadedFrameSource::ThreadedFrameSource(wxString videoFileName, wxEvtHandler *p
 	Run();
 }
 
-void ThreadedFrameSource::LoadSubtitles(AssFile *subs) {
+void ThreadedFrameSource::LoadSubtitles(AssFile *subs) throw() {
 	AssExporter exporter(subs);
 	exporter.AddAutoFilters();
 	AssFile *exported = exporter.ExportTransform();
@@ -175,7 +175,7 @@ void ThreadedFrameSource::LoadSubtitles(AssFile *subs) {
 	nextSubs.reset(exported);
 }
 
-void ThreadedFrameSource::RequestFrame(int frame, double time) {
+void ThreadedFrameSource::RequestFrame(int frame, double time) throw() {
 	wxMutexLocker locker(jobMutex);
 	nextTime  = time;
 	nextFrame = frame;

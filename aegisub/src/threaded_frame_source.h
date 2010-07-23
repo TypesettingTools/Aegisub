@@ -166,6 +166,6 @@ public:
 	SubtitlesProviderErrorEvent(wxString msg);
 };
 
-wxDECLARE_EVENT(EVT_FRAME_READY, FrameReadyEvent)
-wxDECLARE_EVENT(EVT_VIDEO_ERROR, VideoProviderErrorEvent)
-wxDECLARE_EVENT(EVT_SUBTITLES_ERROR, SubtitlesProviderErrorEvent)
+wxDECLARE_EVENT(EVT_FRAME_READY, FrameReadyEvent);
+wxDECLARE_EVENT(EVT_VIDEO_ERROR, VideoProviderErrorEvent);
+wxDECLARE_EVENT(EVT_SUBTITLES_ERROR, SubtitlesProviderErrorEvent);
