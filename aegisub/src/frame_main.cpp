@@ -62,7 +62,6 @@
 #include "dialog_search_replace.h"
 #include "dialog_splash.h"
 #include "dialog_styling_assistant.h"
-#include "dialog_tip.h"
 #include "dialog_version_check.h"
 #include "drop.h"
 #include "frame_main.h"
