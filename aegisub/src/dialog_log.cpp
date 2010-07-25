@@ -82,7 +82,6 @@ LogWindow::LogWindow(wxWindow *parent)
 
 /// @brief Destructor
 LogWindow::~LogWindow() {
-	emit_log->Disable();
 	delete emit_log;
 }
 
