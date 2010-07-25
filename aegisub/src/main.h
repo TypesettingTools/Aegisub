@@ -51,6 +51,13 @@
 // Prototypes
 class FrameMain;
 class PluginManager;
+#ifdef _DEBUG
+namespace agi {
+	namespace log {
+		class EmitSTDOUT;
+	}
+}
+#endif
 
 /// For holding all configuration-related objects and values.
 namespace config {
@@ -80,6 +87,11 @@ private:
 
 	void OnMouseWheel(wxMouseEvent &event);
 	void OnKey(wxKeyEvent &key);
+
+#ifdef _DEBUG
+	/// stdout log emitter
+	agi::log::EmitSTDOUT *emit_stdout;
+#endif
 
 public:
 
