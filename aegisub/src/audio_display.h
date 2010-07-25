@@ -49,7 +49,6 @@
 #include "audio_renderer_spectrum.h"
 
 class AssDialogue;
-class StreamAudioProvider;
 class SubtitlesGrid;
 class AudioBox;
 class AudioKaraoke;
@@ -179,18 +178,6 @@ private:
 	/// DOCME
 	int *min;
 
-	/// DOCME
-	int scrubTime;
-
-	/// DOCME
-	int64_t scrubLastPos;
-
-	/// DOCME
-	bool scrubbing;
-
-	/// DOCME
-	int scrubLastRate;
-
 	void OnPaint(wxPaintEvent &event);
 	void OnMouseEvent(wxMouseEvent &event);
 	void OnSize(wxSizeEvent &event);
@@ -217,9 +204,6 @@ public:
 
 	/// DOCME
 	AudioProvider *provider;
-
-	/// DOCME
-	StreamAudioProvider *scrubProvider;
 
 	/// DOCME
 	AudioPlayer *player;

@@ -523,14 +523,6 @@
 				RelativePath="..\..\src\audio_provider_ram.h"
 				>
 			</File>
-			<File
-				RelativePath="..\..\src\audio_provider_stream.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\audio_provider_stream.h"
-				>
-			</File>
 		</Filter>
 		<Filter
 			Name="Automation"
