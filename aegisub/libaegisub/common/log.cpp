@@ -80,11 +80,13 @@ void LogSink::log(SinkMessage *sm) {
 }
 
 void LogSink::Subscribe(Emitter *em) {
+	LOG_D("agi/log/emitter/subscribe") << "Subscribe: " << this;
 	emitters.push_back(em);
 }
 
 void LogSink::Unsubscribe(Emitter *em) {
 	emitters.erase(std::remove(emitters.begin(), emitters.end(), em), emitters.end());
+	LOG_D("agi/log/emitter/unsubscribe") << "Un-Ssubscribe: " << this;
 }
 
 Message::Message(const char *section,
