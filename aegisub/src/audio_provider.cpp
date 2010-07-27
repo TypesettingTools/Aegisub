@@ -53,9 +53,6 @@
 #endif
 #include "audio_provider_hd.h"
 #include "audio_provider_pcm.h"
-#ifdef WITH_QUICKTIME
-#include "audio_provider_quicktime.h"
-#endif
 #include "audio_provider_ram.h"
 #include "compat.h"
 #include "main.h"
@@ -317,9 +314,6 @@ void AudioProviderFactoryManager::RegisterProviders() {
 #endif
 #ifdef WITH_FFMPEGSOURCE
 	RegisterFactory(new FFmpegSourceAudioProviderFactory(),_T("FFmpegSource"));
-#endif
-#ifdef WITH_QUICKTIME
-	RegisterFactory(new QuickTimeAudioProviderFactory(), _T("QuickTime"));
 #endif
 }
 

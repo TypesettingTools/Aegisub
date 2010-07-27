@@ -508,14 +508,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\audio_provider_quicktime.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\audio_provider_quicktime.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\audio_provider_ram.cpp"
 				>
 			</File>
@@ -609,14 +601,6 @@
 			</File>
 			<File
 				RelativePath="..\..\src\mkv_wrap.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\quicktime_common.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\quicktime_common.h"
 				>
 			</File>
 			<File
@@ -1433,14 +1417,6 @@
 			</File>
 			<File
 				RelativePath="..\..\src\video_provider_manager.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\video_provider_quicktime.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\video_provider_quicktime.h"
 				>
 			</File>
 			<File

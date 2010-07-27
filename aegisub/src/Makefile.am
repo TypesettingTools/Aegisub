@@ -95,14 +95,6 @@ aegisub_2_2_LDADD += libaudiovideo_ffmpegsource.a ../libffms/libffmpegsource_aeg
 aegisub_2_2_LDFLAGS += @LIBPOSTPROC_LIBS@
 endif
 
-if HAVE_QUICKTIME
-noinst_LIBRARIES += libaudiovideo_quicktime.a
-libaudiovideo_quicktime_a_SOURCES = audio_provider_quicktime.cpp quicktime_common.cpp video_provider_quicktime.cpp
-libaudiovideo_quicktime_a_CPPFLAGS = -I/Developer/SDKs/MacOSX10.5.sdk/System/Library/Frameworks/QuickTime.framework/Versions/A/Headers
-aegisub_2_2_LDADD += libaudiovideo_quicktime.a
-aegisub_2_2_LDFLAGS += -framework QuickTime
-endif
-
 noinst_LIBRARIES += libsubtitle_provider.a
 libsubtitle_provider_a_SOURCES = subtitles_provider.cpp
 libsubtitle_provider_a_CPPFLAGS = @CSRI_CFLAGS@

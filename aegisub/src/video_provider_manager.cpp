@@ -50,9 +50,6 @@
 #include "video_provider_ffmpegsource.h"
 #endif
 #include "video_provider_manager.h"
-#ifdef WITH_QUICKTIME
-#include "video_provider_quicktime.h"
-#endif
 #include "video_provider_yuv4mpeg.h"
 
 
@@ -118,9 +115,6 @@ void VideoProviderFactoryManager::RegisterProviders() {
 #endif
 #ifdef WITH_FFMPEGSOURCE
 	RegisterFactory(new FFmpegSourceVideoProviderFactory(),_T("FFmpegSource"));
-#endif
-#ifdef WITH_QUICKTIME
-	RegisterFactory(new QuickTimeVideoProviderFactory(),_T("QuickTime"));
 #endif
 }
 

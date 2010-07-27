@@ -102,10 +102,6 @@
 #pragma comment(lib, "ffms2.lib")
 #endif
 
-#ifdef WITH_QUICKTIME
-#pragma comment(lib, "QTMLClient.lib")
-#endif
-
 #ifdef WITH_PORTAUDIO
 #pragma comment(lib,"portaudio_x86.lib")
 #endif
