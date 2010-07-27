@@ -37,6 +37,11 @@
 #pragma once
 
 #include <string>
+#ifdef _WIN32
+#include <memory>
+#else
+#include <tr1/memory>
+#endif
 
 /// @see aegisub.h
 namespace agi {
@@ -96,7 +101,7 @@ namespace agi {
 		std::string message;
 
 		/// An inner exception, the cause of this exception
-		Exception *inner;
+		std::tr1::shared_ptr<Exception> inner;
 
 	protected:
 
@@ -108,10 +113,9 @@ namespace agi {
 		/// the base class.
 		Exception(const std::string &msg, const Exception *inr = 0)
 			: message(msg)
-			, inner(0)
 		{
 			if (inr)
-				inner = inr->Copy();
+				inner.reset(inr->Copy());
 		}
 
 		/// @brief Default constructor, not implemented
@@ -120,16 +124,11 @@ namespace agi {
 		/// as it leaves the members un-initialised.
 		Exception();
 
+	public:
 		/// @brief Destructor
-		///
-		/// The inner exception is expected to have been duplicated in our constructor
-		/// and thus be owned by us.
 		virtual ~Exception()
 		{
-			delete inner;
 		}
-
-	public:
 
 		/// @brief Get the outer exception error message
 		/// @return Error message
@@ -141,7 +140,7 @@ namespace agi {
 		/// If there is an inner exception, prepend its chained error message to
 		/// our error message, with a CRLF between. Returns our own error message
 		/// alone if there is no inner exception.
-		std::string GetChainedMessage() const { if (inner) return inner->GetChainedMessage() + "\r\n" + GetMessage(); else return GetMessage(); }
+		std::string GetChainedMessage() const { if (inner.get()) return inner->GetChainedMessage() + "\r\n" + GetMessage(); else return GetMessage(); }
 		
 		/// @brief Exception class printable name
 		///
@@ -294,7 +293,7 @@ namespace agi {
 		const char * GetName() const { return "filesystem/not_accessible/not_found"; }
 
 		// Not documented, see  Aegisub::Exception class
-		Exception * Copy() const { return new FileNotFoundError(*this); }                    \
+		Exception * Copy() const { return new FileNotFoundError(*this); }
 	};
 
 
