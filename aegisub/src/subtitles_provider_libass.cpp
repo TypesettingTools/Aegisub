@@ -56,6 +56,7 @@ extern "C" {
 #include "subtitles_provider_libass.h"
 #include "utils.h"
 #include "video_context.h"
+#include "video_frame.h"
 
 
 /// @brief Handle libass messages

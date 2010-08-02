@@ -204,7 +204,7 @@ VideoProviderErrorEvent::VideoProviderErrorEvent(VideoProviderError const& err)
 	SetEventType(EVT_VIDEO_ERROR);
 }
 SubtitlesProviderErrorEvent::SubtitlesProviderErrorEvent(wxString err)
-: agi::Exception(err, NULL)
+: agi::Exception(STD_STR(err), NULL)
 {
 	SetEventType(EVT_SUBTITLES_ERROR);
 }

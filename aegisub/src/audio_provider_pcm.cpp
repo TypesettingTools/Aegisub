@@ -55,6 +55,7 @@
 
 #include "aegisub_endian.h"
 #include "audio_provider_pcm.h"
+#include "compat.h"
 #include "utils.h"
 
 
@@ -74,7 +75,7 @@ PCMAudioProvider::PCMAudioProvider(const wxString &filename)
 		0);
 
 	if (file_handle == INVALID_HANDLE_VALUE) {
-		throw agi::FileNotFoundError(filename);
+		throw agi::FileNotFoundError(STD_STR(filename));
 	}
 
 	LARGE_INTEGER li_file_size = {0};
@@ -103,7 +104,7 @@ PCMAudioProvider::PCMAudioProvider(const wxString &filename)
 	file_handle = open(filename.mb_str(*wxConvFileName), O_RDONLY);
 
 	if (file_handle == -1) {
-		throw agi::FileNotFoundError(filename);
+		throw agi::FileNotFoundError(STD_STR(filename));
 	}
 
 	struct stat filestats;
