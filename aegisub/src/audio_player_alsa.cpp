@@ -391,7 +391,6 @@ void AlsaPlayer::async_write_handler(snd_async_handler_t *pcm_callback)
 
 	void *buf = malloc(player->period * player->bpf);
 	while (frames >= player->period) {
-		unsigned long start = player->cur_frame;
 		player->provider->GetAudioWithVolume(buf, player->cur_frame, player->period, player->volume);
 		int err = snd_pcm_writei(player->pcm_handle, buf, player->period);
 		if(err == -EPIPE) {

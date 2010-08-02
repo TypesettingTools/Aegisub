@@ -124,8 +124,8 @@ void AssDialogueBlockOverride::ProcessParameters(AssDialogueBlockOverride::Proce
 }
 
 AssOverrideParamProto::AssOverrideParamProto(VariableDataType type,int opt,ASS_ParameterClass classi)
-: type(type)
-, optional(opt)
+: optional(opt)
+, type(type)
 , classification(classi)
 {
 }

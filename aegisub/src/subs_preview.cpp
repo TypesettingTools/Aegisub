@@ -61,10 +61,10 @@
 ///
 SubtitlesPreview::SubtitlesPreview(wxWindow *parent,int id,wxPoint pos,wxSize size,int winStyle,wxColour col)
 : wxWindow(parent,id,pos,size,winStyle)
+, style(new AssStyle)
 , backColour(col)
 , subFile(new AssFile)
 , line(new AssDialogue)
-, style(new AssStyle)
 {
 	line->Text = "{\\q2}preview";
 

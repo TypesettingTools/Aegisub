@@ -54,12 +54,13 @@
 /// @param filename The filename to open
 YUV4MPEGVideoProvider::YUV4MPEGVideoProvider(wxString fname)
 : sf(NULL)
+, inited(false)
 , w (0)
 , h (0)
+, num_frames(-1)
 , cur_fn(-1)
 , pixfmt(Y4M_PIXFMT_NONE)
 , imode(Y4M_ILACE_NOTSET)
-, num_frames(-1)
 {
 	fps_rat.num = -1;
 	fps_rat.den = 1;

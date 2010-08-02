@@ -156,26 +156,26 @@ void line_iterator<OutputType>::getline(std::string &str) {
 	union {
 		int32_t chr;
 		char buf[4];
-	};
+	} u;
 
 	for (;;) {
-		chr = 0;
+		u.chr = 0;
 #ifdef _WIN32
-		std::streamsize read = stream->rdbuf()->_Sgetn_s(buf, 4, width);
+		std::streamsize read = stream->rdbuf()->_Sgetn_s(u.buf, 4, width);
 #else
-		std::streamsize read = stream->rdbuf()->sgetn(buf, width);
+		std::streamsize read = stream->rdbuf()->sgetn(u.buf, width);
 #endif
 		if (read < (std::streamsize)width) {
 			for (int i = 0; i < read; i++) {
-				str += buf[i];
+				str += u.buf[i];
 			}
 			stream->setstate(std::ios::eofbit);
 			return;
 		}
-		if (chr == cr) continue;
-		if (chr == lf) return;
+		if (u.chr == cr) continue;
+		if (u.chr == lf) return;
 		for (int i = 0; i < read; i++) {
-			str += buf[i];
+			str += u.buf[i];
 		}
 	}
 }

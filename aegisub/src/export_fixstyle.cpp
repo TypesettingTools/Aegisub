@@ -67,7 +67,6 @@ void AssFixStylesFilter::ProcessSubs(AssFile *subs, wxWindow *export_dialog) {
 	wxArrayString styles = subs->GetStyles();
 	std::for_each(styles.begin(), styles.end(), std::mem_fun_ref(&wxString::MakeLower));
 	styles.Sort();
-	size_t n = styles.Count();
 
 	for (entryIter cur=subs->Line.begin();cur!=subs->Line.end();cur++) {
 		AssDialogue *diag = dynamic_cast<AssDialogue*>(*cur);

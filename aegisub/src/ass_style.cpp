@@ -174,7 +174,8 @@ AssStyle::AssStyle()
 }
 
 AssStyle::AssStyle(const AssStyle& s)
-: name(s.name)
+: AssEntry(s)
+, name(s.name)
 , font(s.font)
 , fontsize(s.fontsize)
 , primary(s.primary)

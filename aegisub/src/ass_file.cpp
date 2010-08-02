@@ -69,8 +69,8 @@ namespace std {
 
 /// @brief AssFile constructor
 AssFile::AssFile ()
-: loaded(false)
-, commitId(-1)
+: commitId(-1)
+, loaded(false)
 {
 }
 

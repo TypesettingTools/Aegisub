@@ -252,8 +252,6 @@ int AssTransformFramerateFilter::ConvertTime(int time) {
 	int newEnd = Input->TimeAtFrame(frame + 1);
 	int newDur = newEnd - newStart;
 
-	int dongs = Input->FrameAtTime(newStart + newDur * dist, agi::vfr::END);
-
 	return newStart + newDur * dist;
 }
 
