@@ -122,12 +122,12 @@ DummyVideoProvider::DummyVideoProvider(wxString filename)
 {
 	wxString params;
 	if (!filename.StartsWith(_T("?dummy:"), &params)) {
-		throw _T("Attempted creating dummy video provider with non-dummy filename");
+		throw agi::FileNotFoundError("Attempted creating dummy video provider with non-dummy filename");
 	}
 
 	wxStringTokenizer t(params, _T(":"));
 	if (t.CountTokens() < 7) {
-		throw _T("Too few fields in dummy video parameter list");
+		throw VideoOpenError("Too few fields in dummy video parameter list");
 	}
 
 	double fps;
@@ -136,37 +136,37 @@ DummyVideoProvider::DummyVideoProvider(wxString filename)
 
 	wxString field = t.GetNextToken();
 	if (!field.ToDouble(&fps)) {
-		throw _T("Unable to parse fps field in dummy video parameter list");
+		throw VideoOpenError("Unable to parse fps field in dummy video parameter list");
 	}
 
 	field = t.GetNextToken();
 	if (!field.ToLong(&_frames)) {
-		throw _T("Unable to parse framecount field in dummy video parameter list");
+		throw VideoOpenError("Unable to parse framecount field in dummy video parameter list");
 	}
 
 	field = t.GetNextToken();
 	if (!field.ToLong(&_width)) {
-		throw _T("Unable to parse width field in dummy video parameter list");
+		throw VideoOpenError("Unable to parse width field in dummy video parameter list");
 	}
 
 	field = t.GetNextToken();
 	if (!field.ToLong(&_height)) {
-		throw _T("Unable to parse height field in dummy video parameter list");
+		throw VideoOpenError("Unable to parse height field in dummy video parameter list");
 	}
 
 	field = t.GetNextToken();
 	if (!field.ToLong(&red)) {
-		throw _T("Unable to parse red colour field in dummy video parameter list");
+		throw VideoOpenError("Unable to parse red colour field in dummy video parameter list");
 	}
 
 	field = t.GetNextToken();
 	if (!field.ToLong(&green)) {
-		throw _T("Unable to parse green colour field in dummy video parameter list");
+		throw VideoOpenError("Unable to parse green colour field in dummy video parameter list");
 	}
 
 	field = t.GetNextToken();
 	if (!field.ToLong(&blue)) {
-		throw _T("Unable to parse bluecolour field in dummy video parameter list");
+		throw VideoOpenError("Unable to parse blue colour field in dummy video parameter list");
 	}
 
 	field = t.GetNextToken();

@@ -36,8 +36,6 @@
 
 #ifdef WITH_FFMPEGSOURCE
 
-///////////
-// Headers
 #ifndef AGI_PRE
 #include <map>
 
@@ -48,14 +46,11 @@
 #include <ffms.h>
 
 #include "dialog_progress.h"
-#include "include/aegisub/aegisub.h"
-
 
 /// Index all tracks
 #define FFMS_TRACKMASK_ALL		-1
 /// Index no tracks
 #define FFMS_TRACKMASK_NONE		0
-
 
 /// @class FFmpegSourceProvider
 /// @brief Base class for FFMS2 source providers; contains common functions etc
@@ -97,8 +92,6 @@ public:
 	virtual ~FFmpegSourceProvider() {}
 };
 
-
-
 /// @class FFmpegSourceCacheCleaner
 /// @brief Implements index cache cleaning functionality for the FFMS2 providers 
 class FFmpegSourceCacheCleaner : public wxThread {
@@ -112,8 +105,5 @@ public:
 	wxThread::ExitCode Entry();
 };
 
-
 #endif /* WITH_FFMPEGSOURCE */
-
-
 

@@ -43,6 +43,7 @@
 #endif
 
 #include "charset_conv.h"
+#include "compat.h"
 #include "gl_wrap.h"
 #include <libaegisub/log.h>
 #include "mkv_wrap.h"
@@ -51,174 +52,159 @@
 #include "video_context.h"
 #include "video_provider_avs.h"
 
-
 /// @brief Constructor 
 /// @param _filename 
 ///
-AvisynthVideoProvider::AvisynthVideoProvider(wxString _filename) {
-	bool mpeg2dec3_priority = true;
-	RGB32Video = NULL;
-	num_frames = 0;
-	last_fnum = -1;
-	KeyFrames.clear();
-
-	RGB32Video = OpenVideo(_filename,mpeg2dec3_priority);
+AvisynthVideoProvider::AvisynthVideoProvider(wxString filename) try
+: usedDirectShow(false)
+, decoderName(_("Unknown"))
+, num_frames(0)
+, last_fnum(-1)
+, RGB32Video(NULL)
+{
+	RGB32Video = OpenVideo(filename);
 
 	vi = RGB32Video->GetVideoInfo();
 }
+catch (AvisynthError const& err) {
+	throw VideoOpenError("Avisynth error: " + std::string(err.msg));
+}
 
 /// @brief Destructor 
-///
 AvisynthVideoProvider::~AvisynthVideoProvider() {
 	iframe.Clear();
 }
 
-/// @brief Actually open the video into Avisynth 
-/// @param _filename          
-/// @param mpeg2dec3_priority 
-/// @return 
-///
-PClip AvisynthVideoProvider::OpenVideo(wxString _filename, bool mpeg2dec3_priority) {
-	wxMutexLocker lock(AviSynthMutex);
-	AVSValue script;
+AVSValue AvisynthVideoProvider::Open(wxFileName const& fname, wxString const& extension) {
+	char *videoFilename = env->SaveString(fname.GetShortPath().mb_str(csConvLocal));
 
-	usedDirectShow = false;
-	decoderName = _("Unknown");
+	// Avisynth file, just import it
+	if (extension == L".avs") {
+		LOG_I("avisynth/video") << "Opening .avs file with Import";
+		decoderName = L"Import";
+		return env->Invoke("Import", videoFilename);
+	}
 
-	wxString extension = _filename.Right(4);
-	extension.LowerCase();
-
-	try {
-		// Prepare filename
-		//char *videoFilename = env->SaveString(_filename.mb_str(wxConvLocal));
-		wxFileName fname(_filename);
-		char *videoFilename = env->SaveString(fname.GetShortPath().mb_str(csConvLocal));
-
-		// Avisynth file, just import it
-		if (extension == _T(".avs")) {
-			LOG_I("avisynth/video") << "Opening .avs file with Import";
-			script = env->Invoke("Import", videoFilename);
-			decoderName = _T("Import");
+	// Open avi file with AviSource
+	if (extension == L".avi") {
+		LOG_I("avisynth/video") << "Opening .avi file with AviSource";
+		try {
+			const char *argnames[2] = { 0, "audio" };
+			AVSValue args[2] = { videoFilename, false };
+			decoderName = L"AviSource";
+			return env->Invoke("AviSource", AVSValue(args,2), argnames);
 		}
 
-		// Open avi file with AviSource
-		else if (extension == _T(".avi")) {
-			LOG_I("avisynth/video") << "Opening .avi file with AviSource";
-			try {
-				const char *argnames[2] = { 0, "audio" };
-				AVSValue args[2] = { videoFilename, false };
-				script = env->Invoke("AviSource", AVSValue(args,2), argnames);
-				decoderName = _T("AviSource");
-			}
-			
-			// On Failure, fallback to DSS
-			catch (AvisynthError &) {
-				LOG_I("avisynth/video") << "Failed to open .avi file with AviSource, switching to DirectShowSource";
-				goto directshowOpen;
-			}
-		}
-
-		// Open d2v with mpeg2dec3
-		else if (extension == _T(".d2v") && env->FunctionExists("Mpeg2Dec3_Mpeg2Source") && mpeg2dec3_priority) {
-			LOG_I("avisynth/video") << "Opening .d2v file with Mpeg2Dec3_Mpeg2Source";
-			script = env->Invoke("Mpeg2Dec3_Mpeg2Source", videoFilename);
-			decoderName = _T("Mpeg2Dec3_Mpeg2Source");
-
-			//if avisynth is 2.5.7 beta 2 or newer old mpeg2decs will crash without this
-			if (env->FunctionExists("SetPlanarLegacyAlignment")) {
-				AVSValue args[2] = { script, true };
-				script = env->Invoke("SetPlanarLegacyAlignment", AVSValue(args,2));
-			}
-		}
-
-		// If that fails, try opening it with DGDecode
-		else if (extension == _T(".d2v") && env->FunctionExists("DGDecode_Mpeg2Source")) {
-			LOG_I("avisynth/video") << "Opening .d2v file with DGDecode_Mpeg2Source";
-			script = env->Invoke("Mpeg2Source", videoFilename);
-			decoderName = _T("DGDecode_Mpeg2Source");
-
-			//note that DGDecode will also have issues like if the version is too ancient but no sane person
-			//would use that anyway
-		}
-
-		else if (extension == _T(".d2v") && env->FunctionExists("Mpeg2Source")) {
-			LOG_I("avisynth/video") << "Opening .d2v file with other Mpeg2Source";
-			script = env->Invoke("Mpeg2Source", videoFilename);
-			decoderName = _T("Mpeg2Source");
-
-			//if avisynth is 2.5.7 beta 2 or newer old mpeg2decs will crash without this
-			if (env->FunctionExists("SetPlanarLegacyAlignment"))
-				script = env->Invoke("SetPlanarLegacyAlignment", script);
-		}
-
-		// Some other format, such as mkv, mp4, ogm... try both flavors of DirectShowSource
-		else {
-			directshowOpen:
-
-			// Try loading DirectShowSource2
-			bool dss2 = false;
-			if (env->FunctionExists("dss2")) dss2 = true;
-			if (!dss2) {
-				wxFileName dss2path(StandardPaths::DecodePath(_T("?data/avss.dll")));
-				if (dss2path.FileExists()) {
-					env->Invoke("LoadPlugin",env->SaveString(dss2path.GetFullPath().mb_str(csConvLocal)));
-				}
-			}
-
-			// If DSS2 loaded properly, try using it
-			dss2 = false;
-			if (env->FunctionExists("dss2")) {
-				LOG_I("avisynth/video") << "Opening video with DSS2";
-				script = env->Invoke("DSS2", videoFilename);
-				dss2 = true;
-				decoderName = _T("DSS2");
-			}
-
-			// Try DirectShowSource
-			if (!dss2) {
-				// Load DirectShowSource.dll from app dir if it exists
-				wxFileName dsspath(StandardPaths::DecodePath(_T("?data/DirectShowSource.dll")));
-				if (dsspath.FileExists()) {
-					env->Invoke("LoadPlugin",env->SaveString(dsspath.GetFullPath().mb_str(csConvLocal)));
-				}
-
-				// Then try using DSS
-				if (env->FunctionExists("DirectShowSource")) {
-					const char *argnames[3] = { 0, "video", "audio" };
-					AVSValue args[3] = { videoFilename, true, false };
-					LOG_I("avisynth/video") << "Opening video with DirectShowSource";
-					script = env->Invoke("DirectShowSource", AVSValue(args,3), argnames);
-					usedDirectShow = true;
-					decoderName = _T("DirectShowSource");
-				}
-
-				// Failed to find a suitable function
-				else {
-					LOG_E("avisynth/video") << "DSS function not found";
-					throw AvisynthError("No function suitable for opening the video found");
-				}
-			}
+		// On Failure, fallback to DSS
+		catch (AvisynthError &) {
+			LOG_I("avisynth/video") << "Failed to open .avi file with AviSource, switching to DirectShowSource";
 		}
 	}
-	
-	// Catch errors
-	catch (AvisynthError &err) {
-		LOG_E("avisynth/video") << "Avisynth error: " << err.msg;
-		throw _T("AviSynth error: ") + wxString(err.msg,csConvLocal);
+
+	// Open d2v with mpeg2dec3
+	if (extension == L".d2v" && env->FunctionExists("Mpeg2Dec3_Mpeg2Source")) {
+		LOG_I("avisynth/video") << "Opening .d2v file with Mpeg2Dec3_Mpeg2Source";
+		AVSValue script = env->Invoke("Mpeg2Dec3_Mpeg2Source", videoFilename);
+		decoderName = L"Mpeg2Dec3_Mpeg2Source";
+
+		//if avisynth is 2.5.7 beta 2 or newer old mpeg2decs will crash without this
+		if (env->FunctionExists("SetPlanarLegacyAlignment")) {
+			AVSValue args[2] = { script, true };
+			script = env->Invoke("SetPlanarLegacyAlignment", AVSValue(args,2));
+		}
+		return script;
+	}
+
+	// If that fails, try opening it with DGDecode
+	if (extension == L".d2v" && env->FunctionExists("DGDecode_Mpeg2Source")) {
+		LOG_I("avisynth/video") << "Opening .d2v file with DGDecode_Mpeg2Source";
+		decoderName = L"DGDecode_Mpeg2Source";
+		return env->Invoke("Mpeg2Source", videoFilename);
+
+		//note that DGDecode will also have issues like if the version is too ancient but no sane person
+		//would use that anyway
+	}
+
+	if (extension == L".d2v" && env->FunctionExists("Mpeg2Source")) {
+		LOG_I("avisynth/video") << "Opening .d2v file with other Mpeg2Source";
+		AVSValue script = env->Invoke("Mpeg2Source", videoFilename);
+		decoderName = L"Mpeg2Source";
+
+		//if avisynth is 2.5.7 beta 2 or newer old mpeg2decs will crash without this
+		if (env->FunctionExists("SetPlanarLegacyAlignment"))
+			script = env->Invoke("SetPlanarLegacyAlignment", script);
+
+		return script;
+	}
+
+	// Try loading DirectShowSource2
+	if (!env->FunctionExists("dss2")) {
+		wxFileName dss2path(StandardPaths::DecodePath(_T("?data/avss.dll")));
+		if (dss2path.FileExists()) {
+			env->Invoke("LoadPlugin",env->SaveString(dss2path.GetFullPath().mb_str(csConvLocal)));
+		}
+	}
+
+	// If DSS2 loaded properly, try using it
+	if (env->FunctionExists("dss2")) {
+		LOG_I("avisynth/video") << "Opening file with DSS2";
+		decoderName = L"DSS2";
+		return env->Invoke("DSS2", videoFilename);
+	}
+
+	// Try DirectShowSource
+	// Load DirectShowSource.dll from app dir if it exists
+	wxFileName dsspath(StandardPaths::DecodePath(_T("?data/DirectShowSource.dll")));
+	if (dsspath.FileExists()) {
+		env->Invoke("LoadPlugin",env->SaveString(dsspath.GetFullPath().mb_str(csConvLocal)));
+	}
+
+	// Then try using DSS
+	if (env->FunctionExists("DirectShowSource")) {
+		const char *argnames[3] = { 0, "video", "audio" };
+		AVSValue args[3] = { videoFilename, true, false };
+		usedDirectShow = true;
+		decoderName = L"DirectShowSource";
+		LOG_I("avisynth/video") << "Opening file with DirectShowSource";
+		return env->Invoke("DirectShowSource", AVSValue(args,3), argnames);
+	}
+
+	// Failed to find a suitable function
+	LOG_E("avisynth/video") << "DSS function not found";
+	throw VideoNotSupported("No function suitable for opening the video found");
+}
+
+/// @brief Actually open the video into Avisynth 
+/// @param _filename          
+/// @return 
+///
+PClip AvisynthVideoProvider::OpenVideo(wxString filename) {
+	wxMutexLocker lock(AviSynthMutex);
+
+	wxFileName fname(filename);
+	if (!fname.FileExists())
+		throw agi::FileNotFoundError(STD_STR(filename));
+
+	AVSValue script;
+	wxString extension = filename.Right(4).Lower();
+	try {
+		script = Open(fname, extension);
+	}
+	catch (AvisynthError const& err) {
+		throw VideoOpenError("Avisynth error: " + std::string(err.msg));
 	}
 
 	// Check if video was loaded properly
 	if (!script.IsClip() || !script.AsClip()->GetVideoInfo().HasVideo()) {
-		LOG_E("avisynth/video") << "AvisynthVideoProvider::OpenVideo: No suitable video found";
-		throw _T("Avisynth: No usable video found in ") + _filename;
+		throw VideoNotSupported("No usable video found");
 	}
 
 	// Read keyframes and timecodes from MKV file
 	bool mkvOpen = MatroskaWrapper::wrapper.IsOpen();
 	KeyFrames.clear();
-	if (extension == _T(".mkv") || mkvOpen) {
+	if (extension == L".mkv" || mkvOpen) {
 		// Parse mkv
-		if (!mkvOpen) MatroskaWrapper::wrapper.Open(_filename);
+		if (!mkvOpen) MatroskaWrapper::wrapper.Open(filename);
 		
 		// Get keyframes
 		KeyFrames = MatroskaWrapper::wrapper.GetKeyFrames();
@@ -230,9 +216,9 @@ PClip AvisynthVideoProvider::OpenVideo(wxString _filename, bool mpeg2dec3_priori
 	}
 // check if we have windows, if so we can load keyframes from AVI files using VFW
 #ifdef __WINDOWS__
-	else if (extension == _T(".avi")) {
+	else if (extension == L".avi") {
 		KeyFrames.clear();
-		KeyFrames = VFWWrapper::GetKeyFrames(_filename);
+		KeyFrames = VFWWrapper::GetKeyFrames(filename);
 	}
 #endif /* __WINDOWS__ */
 
@@ -260,8 +246,6 @@ PClip AvisynthVideoProvider::OpenVideo(wxString _filename, bool mpeg2dec3_priori
 	// Cache
 	return (env->Invoke("Cache", script)).AsClip();
 }
-
-
 
 /// @brief Actually get a frame 
 /// @param _n 

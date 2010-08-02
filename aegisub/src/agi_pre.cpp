@@ -50,7 +50,5 @@
 // So unless we protect it by this, it gets included twice during production of precompiled
 // headers, which can cause problems with local includes.
 #ifndef AGI_PRE
-#include "config.h"
-
 #include "agi_pre.h"
 #endif

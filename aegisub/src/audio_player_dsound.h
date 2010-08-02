@@ -34,9 +34,6 @@
 /// @ingroup audio_output
 ///
 
-
-///////////
-// Headers
 #ifdef WITH_DIRECTSOUND
 
 #ifndef AGI_PRE
@@ -47,14 +44,8 @@
 
 #include "include/aegisub/audio_player.h"
 #include "include/aegisub/audio_provider.h"
-#include "utils.h"
 
-
-//////////////
-// Prototypes
 class DirectSoundPlayer;
-
-
 
 /// DOCME
 /// @class DirectSoundPlayerThread
@@ -93,8 +84,6 @@ detect which were actually changed and act accordingly.
 All but GetPosition() set appropriate fields and then raise the parameters changed event.
 */
 
-
-
 /// DOCME
 /// @class DirectSoundPlayer
 /// @brief DOCME
@@ -117,7 +106,6 @@ private:
 	/// DOCME
 	DWORD bufSize;
 
-
 	/// DOCME
 	volatile int64_t playPos;
 
@@ -130,7 +118,6 @@ private:
 	/// DOCME
 	DWORD startTime;
 
-
 	/// DOCME
 	IDirectSound8 *directSound;
 
@@ -138,7 +125,6 @@ private:
 	IDirectSoundBuffer8 *buffer;
 
 	bool FillBuffer(bool fill);
-
 
 	/// DOCME
 	DirectSoundPlayerThread *thread;
@@ -158,7 +144,6 @@ public:
 	///
 	bool IsPlaying() { return playing; }
 
-
 	/// @brief DOCME
 	/// @return 
 	///
@@ -171,7 +156,6 @@ public:
 	int64_t GetCurrentPosition();
 	void SetEndPosition(int64_t pos);
 	void SetCurrentPosition(int64_t pos);
-
 
 	/// @brief DOCME
 	/// @param vol 

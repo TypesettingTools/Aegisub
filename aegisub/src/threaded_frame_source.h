@@ -47,6 +47,7 @@
 class AssFile;
 class SubtitlesProvider;
 class VideoProvider;
+class VideoProviderError;
 
 /// @class ThreadedFrameSource
 /// @brief An asynchronous video decoding and subtitle rendering wrapper
@@ -155,7 +156,7 @@ public:
 	const char * GetName() const { return "video/error"; }
 	wxEvent *Clone() const { return new VideoProviderErrorEvent(*this); };
 	agi::Exception *Copy() const { return new VideoProviderErrorEvent(*this); };
-	VideoProviderErrorEvent(wxString msg);
+	VideoProviderErrorEvent(VideoProviderError const& err);
 };
 
 class SubtitlesProviderErrorEvent : public wxEvent, public agi::Exception {

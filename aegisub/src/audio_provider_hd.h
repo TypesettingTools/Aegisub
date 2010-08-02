@@ -47,8 +47,6 @@
 ///
 /// DOCME
 class HDAudioProvider : public AudioProvider {
-private:
-
 	/// DOCME
 	wxMutex diskmutex;
 
@@ -71,9 +69,6 @@ public:
 	HDAudioProvider(AudioProvider *source);
 	~HDAudioProvider();
 
-
-	/// @brief DOCME
-	///
 	bool AreSamplesNativeEndian() const { return samples_native_endian; }
 
 	void GetAudio(void *buf, int64_t start, int64_t count);

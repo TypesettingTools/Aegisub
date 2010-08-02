@@ -64,8 +64,6 @@ public:
 	int error;
 };
 
-
-
 /// DOCME
 /// @class MkvFrame
 /// @brief DOCME
@@ -82,7 +80,6 @@ public:
 
 	/// DOCME
 	int64_t filePos;
-
 
 	/// @brief DOCME
 	///
@@ -105,7 +102,6 @@ public:
 };
 
 bool operator < (MkvFrame &t1, MkvFrame &t2);
-
 
 
 /// DOCME
@@ -142,7 +138,6 @@ public:
 	MatroskaWrapper();
 	~MatroskaWrapper();
 
-
 	/// @brief DOCME
 	/// @return 
 	///
@@ -166,9 +161,6 @@ public:
 	void GetSubtitles(AssFile *target);
 	static bool HasSubtitles(wxString const& filename);
 
-
 	/// DOCME
 	static MatroskaWrapper wrapper;
 };
-
-

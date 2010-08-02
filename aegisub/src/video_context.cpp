@@ -74,6 +74,7 @@
 #include "video_box.h"
 #include "video_context.h"
 #include "video_display.h"
+#include "video_frame.h"
 
 /// IDs
 enum {
@@ -196,11 +197,13 @@ void VideoContext::SetVideo(const wxString &filename) {
 
 		UpdateDisplays(true);
 	}
-	catch (const wchar_t *e) {
-		wxMessageBox(e,_T("Error setting video"),wxICON_ERROR | wxOK);
+	catch (agi::UserCancelException const&) { }
+	catch (agi::FileNotAccessibleError const& err) {
+		config::mru->Remove("Video", STD_STR(filename));
+		wxMessageBox(lagi_wxString(err.GetMessage()), L"Error setting video", wxICON_ERROR | wxOK);
 	}
-	catch (const wxString &e) {
-		wxMessageBox(e,_T("Error setting video"),wxICON_ERROR | wxOK);
+	catch (VideoProviderError const& err) {
+		wxMessageBox(lagi_wxString(err.GetMessage()), L"Error setting video", wxICON_ERROR | wxOK);
 	}
 }
 

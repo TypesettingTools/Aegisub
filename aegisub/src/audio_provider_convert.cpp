@@ -34,9 +34,6 @@
 /// @ingroup audio_input
 ///
 
-
-///////////
-// Headers
 #include "config.h"
 
 #include "aegisub_endian.h"
@@ -47,8 +44,7 @@
 /// @brief Constructor 
 /// @param src 
 ///
-ConvertAudioProvider::ConvertAudioProvider(AudioProvider *src) {
-	source = src;
+ConvertAudioProvider::ConvertAudioProvider(AudioProvider *src) : source(src) {
 	channels = source->GetChannels();
 	num_samples = source->GetNumSamples();
 	sample_rate = source->GetSampleRate();
@@ -61,16 +57,6 @@ ConvertAudioProvider::ConvertAudioProvider(AudioProvider *src) {
 	num_samples *= sampleMult;
 }
 
-
-
-/// @brief Destructor 
-///
-ConvertAudioProvider::~ConvertAudioProvider() {
-	delete source;
-}
-
-
-
 /// @brief Convert to 16-bit 
 /// @param src   
 /// @param dst   
@@ -81,7 +67,6 @@ void ConvertAudioProvider::Make16Bit(const char *src, short *dst, int64_t count)
 		dst[i] = (short(src[i])-128)*255;
 	}
 }
-
 
 //////////////////////
 // Change sample rate
@@ -134,33 +119,19 @@ void ConvertAudioProvider::ChangeSampleRate(const short *src, short *dst, int64_
 	}
 }
 
-
-
 /// DOCME
 struct NullSampleConverter {
-
-	/// @brief DOCME
-	/// @param val 
-	/// @return 
-	///
 	inline short operator()(const short val) const {
 		return val;
 	}
 };
 
-
 /// DOCME
 struct EndianSwapSampleConverter {
-
-	/// @brief DOCME
-	/// @param val 
-	/// @return 
-	///
 	inline short operator()(const short val) const {
 		return (short)Endian::Reverse((uint16_t)val);
 	};
 };
-
 
 
 /// @brief Get audio 
@@ -234,7 +205,7 @@ AudioProvider *CreateConvertAudioProvider(AudioProvider *source_provider) {
 	{
 		// @todo add support for more bitdepths (i.e. 24- and 32-bit audio)
 		if (provider->GetBytesPerSample() > 2)
-			throw _T("Audio format converter: audio with bitdepths greater than 16 bits/sample is currently unsupported");
+			AudioOpenError("Audio format converter: audio with bitdepths greater than 16 bits/sample is currently unsupported");
 
 		provider = new ConvertAudioProvider(provider);
 	}
@@ -247,5 +218,3 @@ AudioProvider *CreateConvertAudioProvider(AudioProvider *source_provider) {
 
 	return provider;
 }
-
-

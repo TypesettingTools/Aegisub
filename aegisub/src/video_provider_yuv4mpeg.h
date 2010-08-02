@@ -131,11 +131,6 @@ class YUV4MPEGVideoProvider : public VideoProvider {
 	/// each frame header can be found
 	std::vector<int64_t> seek_table;
 
-	wxString errmsg;	/// error message
-
-	void LoadVideo(const wxString filename);
-	void Close();
-	
 	void CheckFileFormat();
 	void ParseFileHeader(const std::vector<wxString>& tags);
 	Y4M_FrameFlags ParseFrameHeader(const std::vector<wxString>& tags);

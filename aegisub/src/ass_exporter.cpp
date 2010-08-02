@@ -36,15 +36,10 @@
 
 #include "config.h"
 
-#ifndef AGI_PRE
-#include <memory>
-#endif
-
 #include "ass_export_filter.h"
 #include "ass_exporter.h"
 #include "ass_file.h"
 #include "frame_main.h"
-
 
 /// @brief Constructor 
 /// @param subs 
@@ -54,14 +49,10 @@ AssExporter::AssExporter (AssFile *subs) {
 	IsDefault = true;
 }
 
-
-
 /// @brief Destructor 
 ///
 AssExporter::~AssExporter () {
 }
-
-
 
 /// @brief Draw control settings 
 /// @param parent 
@@ -90,8 +81,6 @@ void AssExporter::DrawSettings(wxWindow *parent,wxSizer *AddTo) {
 	}
 }
 
-
-
 /// @brief Add filter to chain 
 /// @param name 
 ///
@@ -113,8 +102,6 @@ void AssExporter::AddFilter(wxString name) {
 	Filters.push_back(filter);
 }
 
-
-
 /// @brief Adds all autoexporting filters to chain 
 ///
 void AssExporter::AddAutoFilters() {
@@ -126,8 +113,6 @@ void AssExporter::AddAutoFilters() {
 		}
 	}
 }
-
-
 
 /// @brief Get name of all filters 
 /// @return 
@@ -141,8 +126,6 @@ wxArrayString AssExporter::GetAllFilterNames() {
 	}
 	return names;
 }
-
-
 
 /// @brief Transform for export 
 /// @param export_dialog 
@@ -162,8 +145,6 @@ AssFile *AssExporter::ExportTransform(wxWindow *export_dialog) {
 	return Subs;
 }
 
-
-
 /// @brief Export 
 /// @param filename      
 /// @param charset       
@@ -174,8 +155,6 @@ void AssExporter::Export(wxString filename, wxString charset, wxWindow *export_d
 	Subs->Save(filename,false,false,charset);
 }
 
-
-
 /// @brief Get window associated with name 
 /// @param name 
 /// @return 
@@ -185,8 +164,6 @@ wxSizer *AssExporter::GetSettingsSizer(wxString name) {
 	if (pos == Sizers.end()) return NULL;
 	else return pos->second;
 }
-
-
 
 /// @brief Get description of filter 
 /// @param name 
@@ -201,5 +178,3 @@ wxString AssExporter::GetDescription(wxString name) {
 	}
 	throw wxString::Format(_T("Filter not found: %s"), name.c_str());
 }
-
-

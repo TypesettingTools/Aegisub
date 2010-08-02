@@ -673,7 +673,7 @@ void FrameMain::LoadSubtitles (wxString filename,wxString charset) {
 	}
 
 	// Setup
-	bool isFile = (filename != _T(""));
+	bool isFile = !filename.empty();
 	bool isBinary = false;
 
 	// Load
@@ -681,7 +681,9 @@ void FrameMain::LoadSubtitles (wxString filename,wxString charset) {
 		// File exists?
 		if (isFile) {
 			wxFileName fileCheck(filename);
-			if (!fileCheck.FileExists()) throw _T("Selected file does not exist.");
+			if (!fileCheck.FileExists()) {
+				throw agi::FileNotFoundError(STD_STR(filename));
+			}
 
 			// Make sure that file isn't actually a timecode file
 			try {
@@ -697,8 +699,8 @@ void FrameMain::LoadSubtitles (wxString filename,wxString charset) {
 				}
 			}
 			catch (...) {
-				// if trying to load the file as timecodes fails it's fairly safe to assume that
-				// it is in fact not a timecode file
+				// if trying to load the file as timecodes fails it's fairly
+				// safe to assume that it is in fact not a timecode file
 			}
 		}
 
@@ -719,6 +721,11 @@ void FrameMain::LoadSubtitles (wxString filename,wxString charset) {
 			SubsGrid->LoadDefault();
 			StandardPaths::SetPathValue(_T("?script"),_T(""));
 		}
+	}
+	catch (agi::FileNotFoundError const&) {
+		wxMessageBox(filename + L" not found.", L"Error", wxOK | wxICON_ERROR, NULL);
+		config::mru->Remove("Subtitle", STD_STR(filename));
+		return;
 	}
 	catch (const wchar_t *err) {
 		wxMessageBox(wxString(err), _T("Error"), wxOK | wxICON_ERROR, NULL);
@@ -773,7 +780,7 @@ bool FrameMain::SaveSubtitles(bool saveas,bool withCharset) {
 		VideoContext::Get()->Stop();
 		wxString path = lagi_wxString(OPT_GET("Path/Last/Subtitles")->GetString());
 		wxFileName origPath(ass->filename);
-		filename = 	wxFileSelector(_("Save subtitles file"),path,origPath.GetName() + _T(".ass"),_T("ass"),AssFile::GetWildcardList(1),wxFD_SAVE | wxFD_OVERWRITE_PROMPT,this);
+		filename =  wxFileSelector(_("Save subtitles file"),path,origPath.GetName() + _T(".ass"),_T("ass"),AssFile::GetWildcardList(1),wxFD_SAVE | wxFD_OVERWRITE_PROMPT,this);
 	}
 
 	// Actually save

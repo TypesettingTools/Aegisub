@@ -49,17 +49,9 @@
 #error "Aegisub requires wxWidgets to be compiled with OpenGL support."
 #endif
 
-#ifdef __APPLE__
-#include <OpenGL/GL.h>
-#include <OpenGL/glu.h>
-#else
-#include <GL/gl.h>
-#include <GL/glu.h>
-#endif
-
 #include <libaegisub/vfr.h>
-#include "video_frame.h"
 
+class AegiVideoFrame;
 class SubtitlesGrid;
 class AudioProvider;
 class AudioDisplay;

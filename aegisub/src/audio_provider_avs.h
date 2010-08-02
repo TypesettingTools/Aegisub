@@ -35,7 +35,6 @@
 ///
 
 #ifdef WITH_AVISYNTH
-#include <Mmreg.h>
 #include "include/aegisub/audio_provider.h"
 #include "avisynth_wrap.h"
 
@@ -46,8 +45,6 @@
 ///
 /// DOCME
 class AvisynthAudioProvider : public AudioProvider, public AviSynthWrapper {
-private:
-
 	/// DOCME
 	wxString filename;
 
@@ -55,21 +52,18 @@ private:
 	PClip clip;
 
 	void LoadFromClip(AVSValue clip);
-	void OpenAVSAudio();
 	void SetFile();
-	void Unload();
 
 public:
 	AvisynthAudioProvider(wxString _filename);
-	~AvisynthAudioProvider();
 
-	wxString GetFilename();
-
+	wxString GetFilename() { return filename; }
 
 	/// @brief Only exists for x86 Windows, always delivers machine (little) endian
 	/// @return 
 	///
 	bool AreSamplesNativeEndian() const { return true; }
+	bool NeedsCache() const { return true; }
 
 	void GetAudio(void *buf, int64_t start, int64_t count);
 	void GetWaveForm(int *min,int *peak,int64_t start,int w,int h,int samples,float scale);

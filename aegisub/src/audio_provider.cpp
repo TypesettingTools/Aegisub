@@ -178,65 +178,68 @@ void AudioProvider::GetAudioWithVolume(void *buf, int64_t start, int64_t count, 
 ///
 AudioProvider *AudioProviderFactory::GetProvider(wxString filename, int cache) {
 	AudioProvider *provider = NULL;
+	bool found = false;
+	std::string msg;
 
 	if (!OPT_GET("Provider/Audio/PCM/Disable")->GetBool()) {
 		// Try a PCM provider first
-		provider = CreatePCMAudioProvider(filename);
-		if (provider) {
-			if (provider->GetBytesPerSample() == 2 && provider->GetSampleRate() >= 32000 && provider->GetChannels() == 1)
-				return provider;
-			else {
-				return CreateConvertAudioProvider(provider);
+		try {
+			provider = CreatePCMAudioProvider(filename);
+		}
+		catch (agi::FileNotFoundError const& err) {
+			msg = "PCM audio provider: " + err.GetMessage() + " not found.\n";
+		}
+		catch (AudioOpenError const& err) {
+			found = true;
+			msg += err.GetMessage();
+		}
+	}
+	if (!provider) {
+		std::vector<std::string> list = GetClasses(OPT_GET("Audio/Provider")->GetString());
+		if (list.empty()) throw AudioOpenError("No audio providers are available.");
+
+		for (unsigned int i=0;i<list.size();i++) {
+			try {
+				provider = Create(list[i], filename);
+				if (provider) break;
+			}
+			catch (agi::FileNotFoundError const& err) {
+				msg += list[i] + ": " + err.GetMessage() + " not found.\n";
+			}
+			catch (AudioOpenError const& err) {
+				found = true;
+				msg += list[i] + ": " + err.GetMessage();
 			}
 		}
 	}
-
-	// List of providers
-	std::vector<std::string> list = GetClasses(OPT_GET("Audio/Provider")->GetString());
-
-	if (list.empty()) throw _T("No audio providers are available.");
-
-	// Get provider
-	wxString error;
-	for (unsigned int i=0;i<list.size();i++) {
-		try {
-			provider = Create(list[i], filename);
-			if (provider) break;
+	if (!provider) {
+		if (found) {
+			throw AudioOpenError(msg);
 		}
-		catch (wxString err) { error += list[i] + _T(" factory: ") + err + _T("\n"); }
-		catch (const wxChar *err) { error += list[i] + _T(" factory: ") + wxString(err) + _T("\n"); }
-		catch (...) { error += list[i] + _T(" factory: Unknown error\n"); }
+		else {
+			throw agi::FileNotFoundError(STD_STR(filename));
+		}
 	}
+	bool needsCache = provider->NeedsCache();
 
-	// Failed
-	if (!provider) throw error;
-
-	// Give it a conversor if needed
+	// Give it a converter if needed
 	if (provider->GetBytesPerSample() != 2 || provider->GetSampleRate() < 32000 || provider->GetChannels() != 1)
 		provider = CreateConvertAudioProvider(provider);
 
 	// Change provider to RAM/HD cache if needed
 	if (cache == -1) cache = OPT_GET("Audio/Cache/Type")->GetInt();
-	if (cache) {
-		AudioProvider *final = NULL;
-
-		// Convert to RAM
-		if (cache == 1) final = new RAMAudioProvider(provider);
-		
-		// Convert to HD
-		if (cache == 2) final = new HDAudioProvider(provider);
-		
-		// Reassign
-		if (final) {
-			delete provider;
-			return final;
-		}
+	if (!cache || !needsCache) {
+		return provider;
 	}
 
-	return provider;
+	// Convert to RAM
+	if (cache == 1) return new RAMAudioProvider(provider);
+
+	// Convert to HD
+	if (cache == 2) return new HDAudioProvider(provider);
+
+	throw AudioOpenError("Unknown caching method");
 }
-
-
 
 /// @brief Register all providers 
 ///

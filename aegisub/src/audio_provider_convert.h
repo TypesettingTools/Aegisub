@@ -36,6 +36,9 @@
 
 #include "include/aegisub/audio_provider.h"
 
+#ifndef AGI_PRE
+#include <tr1/memory>
+#endif
 
 /// DOCME
 /// @class ConvertAudioProvider
@@ -43,32 +46,24 @@
 ///
 /// DOCME
 class ConvertAudioProvider : public AudioProvider {
-private:
-
 	/// DOCME
 	int sampleMult;
 
-
 	/// DOCME
-	AudioProvider *source;
+	std::tr1::shared_ptr<AudioProvider> source;
 	void Make16Bit(const char *src, short *dst, int64_t count);
 	template<class SampleConverter>
 	void ChangeSampleRate(const short *src, short *dst, int64_t count, const SampleConverter &converter);
 
 public:
 	ConvertAudioProvider(AudioProvider *source);
-	~ConvertAudioProvider();
 
-
-	/// @brief // That's one of the points of it! // By its nature, the ConvertAudioProvider always delivers machine endian:
-	/// @return 
-	///
+	/// By its nature, the ConvertAudioProvider always delivers machine endian.
+	/// That's one of the points of it!
 	bool AreSamplesNativeEndian() const { return true; }
 
 	void GetAudio(void *buf, int64_t start, int64_t count);
 
-	/// @brief DOCME
-	///
 	wxString GetFilename() { return source->GetFilename(); }
 };
 

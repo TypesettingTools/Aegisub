@@ -78,10 +78,11 @@ class AvisynthVideoProvider: public VideoProvider, AviSynthWrapper {
 	/// DOCME
 	PClip RGB32Video;
 
-	PClip OpenVideo(wxString _filename, bool mpeg2dec3_priority = true);
+	PClip OpenVideo(wxString filename);
+	AVSValue Open(wxFileName const& fname, wxString const& extension);
 
 public:
-	AvisynthVideoProvider(wxString _filename);
+	AvisynthVideoProvider(wxString filename);
 	~AvisynthVideoProvider();
 
 	const AegiVideoFrame GetFrame(int n);

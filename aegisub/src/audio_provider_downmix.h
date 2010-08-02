@@ -34,9 +34,11 @@
 /// @ingroup audio_input
 ///
 
-
 #include "include/aegisub/audio_provider.h"
 
+#ifndef AGI_PRE
+#include <tr1/memory>
+#endif
 
 /// DOCME
 /// @class DownmixingAudioProvider
@@ -44,20 +46,14 @@
 ///
 /// DOCME
 class DownmixingAudioProvider : public AudioProvider {
-private:
-
-	/// DOCME
-	AudioProvider *provider;
+	std::tr1::shared_ptr<AudioProvider> provider;
 
 	/// DOCME
 	int src_channels;
-
 public:
 	DownmixingAudioProvider(AudioProvider *source);
-	~DownmixingAudioProvider();
 
-
-	/// @brief // Downmixing requires samples to be native endian beforehand
+	/// @brief Downmixing requires samples to be native endian beforehand
 	///
 	bool AreSamplesNativeEndian() const { return true; }
 

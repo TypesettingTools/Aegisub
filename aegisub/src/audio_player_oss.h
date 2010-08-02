@@ -52,7 +52,6 @@
 
 #include "include/aegisub/audio_player.h"
 #include "include/aegisub/audio_provider.h"
-#include "utils.h"
 
 class OSSPlayer;
 
@@ -72,8 +71,6 @@ public:
 
     wxThread::ExitCode Entry();
 };
-
-
 
 /// DOCME
 /// @class OSSPlayer

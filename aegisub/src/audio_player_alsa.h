@@ -34,16 +34,12 @@
 /// @ingroup audio_output
 ///
 
-
 #ifdef WITH_ALSA
 
 #include <alsa/asoundlib.h>
 
 #include "include/aegisub/audio_player.h"
 #include "include/aegisub/audio_provider.h"
-#include "utils.h"
-
-
 
 /// DOCME
 /// @class AlsaPlayer
@@ -62,7 +58,6 @@ private:
 	/// DOCME
 	volatile float volume;
 
-
 	/// DOCME
 	volatile unsigned long start_frame; // first frame of playback
 
@@ -75,7 +70,6 @@ private:
 	/// DOCME
 	unsigned long bpf; // bytes per frame
 
-
 	/// DOCME
 	AudioProvider *provider;
 
@@ -87,7 +81,6 @@ private:
 
 	/// DOCME
 	snd_async_handler_t *pcm_callback;
-
 
 	/// DOCME
 	snd_pcm_format_t sample_format;
@@ -131,7 +124,6 @@ public:
 	int64_t GetCurrentPosition();
 	void SetEndPosition(int64_t pos);
 	void SetCurrentPosition(int64_t pos);
-
 
 	/// @brief DOCME
 	/// @param vol 

@@ -41,10 +41,7 @@
 #include <errno.h>
 
 #include <algorithm>
-#include <fstream>
 #include <string>
-
-#include <wx/string.h>
 #endif
 
 #include <libaegisub/io.h>

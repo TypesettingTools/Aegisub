@@ -34,9 +34,6 @@
 /// @ingroup main_ui video
 ///
 
-
-////////////
-// Includes
 #include "config.h"
 
 #ifndef AGI_PRE
@@ -44,7 +41,6 @@
 #include <wx/mimetype.h>
 #include <wx/rawbmp.h>
 #include <wx/statline.h>
-#include <wx/tglbtn.h>
 #endif
 
 #include "ass_dialogue.h"

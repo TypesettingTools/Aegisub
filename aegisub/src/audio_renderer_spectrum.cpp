@@ -260,7 +260,7 @@ public:
 			// Start sample number of the next line calculated
 			// line_length is half of the number of samples used to calculate a line, since half of the output from
 			// a Fourier transform of real data is redundant, and not interesting for the purpose of creating
-			// a frequenmcy/power spectrum.
+			// a frequency/power spectrum.
 			int64_t sample = start * line_length*2 + overlap*overlap_offset;
 
 			long len = length;

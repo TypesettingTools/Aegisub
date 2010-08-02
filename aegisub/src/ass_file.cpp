@@ -70,6 +70,7 @@ namespace std {
 /// @brief AssFile constructor
 AssFile::AssFile ()
 : loaded(false)
+, commitId(-1)
 {
 }
 
@@ -109,16 +110,17 @@ void AssFile::Load (const wxString &_filename,wxString charset,bool addToRecent)
 
 		// Read file
 		if (reader) {
-			reader->SetTarget(this);
+			AssFile temp;
+			reader->SetTarget(&temp);
 			reader->ReadFile(_filename,charset);
+			swap(temp);
 			ok = true;
 		}
 
 		// Couldn't find a type
 		else throw _T("Unknown file type.");
 	}
-
-	// String error
+	catch (agi::UserCancelException const&) { }
 	catch (const wchar_t *except) {
 		wxMessageBox(except,_T("Error loading file"),wxICON_ERROR | wxOK);
 	}
@@ -154,7 +156,7 @@ void AssFile::Load (const wxString &_filename,wxString charset,bool addToRecent)
 	savedCommitId = commitId;
 
 	// Add to recent
-	if (addToRecent) AddToRecent(_filename);
+	if (addToRecent && ok) AddToRecent(_filename);
 }
 
 void AssFile::Save(wxString _filename,bool setfilename,bool addToRecent,const wxString encoding) {

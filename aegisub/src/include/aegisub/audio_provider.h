@@ -40,6 +40,7 @@
 #include <wx/string.h>
 #endif
 
+#include <libaegisub/exception.h>
 #include "factory_manager.h"
 
 /// @class AudioProvider
@@ -88,6 +89,9 @@ public:
 	virtual bool AreSamplesNativeEndian() const = 0;
 
 	void GetWaveForm(int *min,int *peak,int64_t start,int w,int h,int samples,float scale);
+
+	/// @brief Does this provider benefit from external caching?
+	virtual bool NeedsCache() const { return false; }
 };
 
 /// DOCME
@@ -100,3 +104,9 @@ public:
 	static void RegisterProviders();
 	static AudioProvider *GetProvider(wxString filename, int cache=-1);
 };
+
+DEFINE_BASE_EXCEPTION_NOINNER(AudioProviderError, agi::Exception);
+DEFINE_SIMPLE_EXCEPTION_NOINNER(AudioOpenError, AudioProviderError, "audio/open/failed");
+
+/// Error of some sort occurred while decoding a frame
+DEFINE_SIMPLE_EXCEPTION_NOINNER(AudioDecodeError, AudioProviderError, "audio/error");

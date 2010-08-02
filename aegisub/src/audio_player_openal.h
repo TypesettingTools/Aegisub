@@ -34,11 +34,9 @@
 /// @ingroup audio_output
 ///
 
-
 #ifdef WITH_OPENAL
 #include "include/aegisub/audio_player.h"
 #include "include/aegisub/audio_provider.h"
-#include "utils.h"
 
 #ifdef __WINDOWS__
 #include <al.h>
@@ -68,7 +66,6 @@ private:
 	/// DOCME
 	volatile float volume;
 
-
 	/// DOCME
 	static const ALsizei num_buffers = 8;
 
@@ -77,7 +74,6 @@ private:
 
 	/// DOCME
 	ALsizei samplerate;
-
 
 	/// DOCME
 	volatile unsigned long start_frame; // first frame of playback
@@ -90,7 +86,6 @@ private:
 
 	/// DOCME
 	unsigned long bpf; // bytes per frame
-
 
 	/// DOCME
 	AudioProvider *provider;
@@ -106,7 +101,6 @@ private:
 
 	/// DOCME
 	ALuint source; // playback source
-
 
 	/// DOCME
 	ALsizei buf_first_free; // index into buffers, first free (unqueued) buffer
@@ -144,7 +138,6 @@ public:
 	int64_t GetCurrentPosition();
 	void SetEndPosition(int64_t pos);
 	void SetCurrentPosition(int64_t pos);
-
 
 	/// @brief DOCME
 	/// @param vol 

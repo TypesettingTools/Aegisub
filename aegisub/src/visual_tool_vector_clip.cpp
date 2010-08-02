@@ -37,12 +37,8 @@
 #include <wx/toolbar.h>
 
 #ifdef HAVE_APPLE_OPENGL_FRAMEWORK
-#include <OpenGL/GL.h>
-#include <OpenGL/glu.h>
 #include <OpenGL/glext.h>
 #else
-#include <GL/gl.h>
-#include <GL/glu.h>
 #include "gl/glext.h"
 #endif
 

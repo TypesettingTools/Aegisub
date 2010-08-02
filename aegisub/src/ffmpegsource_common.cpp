@@ -38,8 +38,6 @@
 
 #ifdef WITH_FFMPEGSOURCE
 
-///////////
-// Headers
 #ifndef AGI_PRE
 #include <map>
 #include <wx/dir.h>
@@ -98,7 +96,8 @@ FFMS_Index *FFmpegSourceProvider::DoIndexing(FFMS_Indexer *Indexer, const wxStri
 	// set up progress dialog callback
 	IndexingProgressDialog Progress;
 	Progress.IndexingCanceled = false;
-	Progress.ProgressDialog = new DialogProgress(AegisubApp::Get()->frame, _("Indexing"), &Progress.IndexingCanceled,
+	Progress.ProgressDialog = new DialogProgress(AegisubApp::Get()->frame,
+		_("Indexing"), &Progress.IndexingCanceled,
 		_("Reading timecodes and frame/sample data"), 0, 1);
 	Progress.ProgressDialog->Show();
 	Progress.ProgressDialog->SetProgress(0,1);
@@ -106,12 +105,14 @@ FFMS_Index *FFmpegSourceProvider::DoIndexing(FFMS_Indexer *Indexer, const wxStri
 	// index all audio tracks
 	FFMS_Index *Index = FFMS_DoIndexing(Indexer, Trackmask, FFMS_TRACKMASK_NONE, NULL, NULL, IndexEH,
 		FFmpegSourceProvider::UpdateIndexingProgress, &Progress, &ErrInfo);
+	Progress.ProgressDialog->Destroy();
+	if (Progress.IndexingCanceled) {
+		throw agi::UserCancelException("indexing cancelled by user");
+	}
 	if (Index == NULL) {
-		Progress.ProgressDialog->Destroy();
 		MsgString.Append(_T("Failed to index: ")).Append(wxString(ErrInfo.Buffer, wxConvUTF8));
 		throw MsgString;
 	}
-	Progress.ProgressDialog->Destroy();
 
 	// write index to disk for later use
 	// ignore write errors for now
@@ -124,8 +125,6 @@ FFMS_Index *FFmpegSourceProvider::DoIndexing(FFMS_Indexer *Indexer, const wxStri
 
 	return Index;
 }
-
-
 
 /// @brief Finds all tracks of the given type and return their track numbers and respective codec names 
 /// @param Indexer	The indexer object representing the source file
@@ -141,11 +140,8 @@ std::map<int,wxString> FFmpegSourceProvider::GetTracksOfType(FFMS_Indexer *Index
 			TrackList.insert(std::pair<int,wxString>(i, CodecName));
 		}
 	}
-	
 	return TrackList;
 }
-
-
 
 /// @brief Ask user for which track he wants to load 
 /// @param TrackList	A std::map with the track numbers as keys and codec names as values

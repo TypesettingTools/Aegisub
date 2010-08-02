@@ -42,6 +42,7 @@
 #include "subtitles_provider_csri.h"
 #include "text_file_writer.h"
 #include "video_context.h"
+#include "video_frame.h"
 
 /// @brief Constructor 
 /// @param type 

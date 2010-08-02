@@ -34,9 +34,6 @@
 /// @ingroup audio_input
 ///
 
-
-///////////
-// Headers
 #include "config.h"
 
 #include "audio_provider_dummy.h"
@@ -55,14 +52,10 @@ DummyAudioProvider::DummyAudioProvider(unsigned long dur_ms, bool _noise) {
 	num_samples = (int64_t)dur_ms * sample_rate / 1000;
 }
 
-
-
 /// @brief Destructor 
 ///
 DummyAudioProvider::~DummyAudioProvider() {
 }
-
-
 
 /// @brief Get audio 
 /// @param buf   
@@ -81,5 +74,3 @@ void DummyAudioProvider::GetAudio(void *buf, int64_t start, int64_t count) {
 			*workbuf++ = 0;
 	}
 }
-
-

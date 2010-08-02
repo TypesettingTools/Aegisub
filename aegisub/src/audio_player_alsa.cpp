@@ -34,9 +34,7 @@
 /// @ingroup audio_output
 ///
 
-
 #include "config.h"
-
 
 #ifdef WITH_ALSA
 
@@ -47,7 +45,6 @@
 #include "compat.h"
 #include "frame_main.h"
 #include "utils.h"
-
 
 /// @brief Constructor 
 ///

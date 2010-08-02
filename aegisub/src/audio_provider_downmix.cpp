@@ -45,7 +45,7 @@
 /// @brief Constructor 
 /// @param source 
 ///
-DownmixingAudioProvider::DownmixingAudioProvider(AudioProvider *source) {
+DownmixingAudioProvider::DownmixingAudioProvider(AudioProvider *source) : provider(source) {
 	filename = source->GetFilename();
 	channels = 1; // target
 	src_channels = source->GetChannels();
@@ -53,22 +53,11 @@ DownmixingAudioProvider::DownmixingAudioProvider(AudioProvider *source) {
 	bytes_per_sample = source->GetBytesPerSample();
 	sample_rate = source->GetSampleRate();
 
-	// We now own this
-	provider = source;
-
 	if (!(bytes_per_sample == 1 || bytes_per_sample == 2))
-		throw _T("Downmixing Audio Provider: Can only downmix 8 and 16 bit audio");
+		throw AudioOpenError("Downmixing Audio Provider: Can only downmix 8 and 16 bit audio");
 	if (!source->AreSamplesNativeEndian())
-		throw _T("Downmixing Audio Provider: Source must have machine endian samples");
+		throw AudioOpenError("Downmixing Audio Provider: Source must have machine endian samples");
 }
-
-
-/// @brief Destructor 
-///
-DownmixingAudioProvider::~DownmixingAudioProvider()	{
-		delete provider;
-}
-
 
 /// @brief Actual work happens here 
 /// @param buf   
@@ -95,7 +84,13 @@ void DownmixingAudioProvider::GetAudio(void *buf, int64_t start, int64_t count) 
 	// a pre-allocced block of memory...?
 	char *tmp = new char[count*bytes_per_sample*src_channels];
 
-	provider->GetAudio(tmp, start, count);
+	try {
+		provider->GetAudio(tmp, start, count);
+	}
+	catch (...) {
+		delete tmp;
+		throw;
+	}
 
 	// Now downmix
 	// Just average the samples over the channels (really bad if they're out of phase!)
@@ -128,5 +123,3 @@ void DownmixingAudioProvider::GetAudio(void *buf, int64_t start, int64_t count) 
 	// Done downmixing, free the work buffer
 	delete[] tmp;
 }
-
-

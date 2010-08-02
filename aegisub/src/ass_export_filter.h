@@ -34,12 +34,8 @@
 /// @ingroup export
 ///
 
-
 #pragma once
 
-
-///////////
-// Headers
 #ifndef AGI_PRE
 #include <list>
 #include <memory>
@@ -48,20 +44,13 @@
 #include <wx/window.h>
 #endif
 
-
-//////////////
-// Prototypes
 class AssFile;
 class AssExportFilter;
 class DialogExport;
 class AssExporter;
 
-
-
 /// DOCME
 typedef std::list<AssExportFilter*> FilterList;
-
-
 
 /// DOCME
 /// @class AssExportFilterChain
@@ -80,7 +69,6 @@ private:
 	/// DOCME
 	FilterList Unprepared;
 
-
 	/// DOCME
 	static std::auto_ptr<AssExportFilterChain> instance;
 	static FilterList *GetFilterList();
@@ -89,8 +77,6 @@ private:
 public:
 	static void PrepareFilters();
 };
-
-
 
 /// DOCME
 /// @class AssExportFilter
@@ -138,5 +124,4 @@ public:
 	virtual wxWindow *GetConfigDialogWindow(wxWindow *parent);	// Draw setup controls - this function may optionally be overridden.
 	virtual void LoadSettings(bool IsDefault);					// Config dialog is done - extract data now.
 };
-
 

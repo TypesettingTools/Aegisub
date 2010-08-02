@@ -920,6 +920,16 @@ void AudioDisplay::SetFile(wxString file) {
 			// Update
 			UpdateImage();
 		}
+		catch (agi::UserCancelException const&) {
+			return;
+		}
+		catch (agi::FileNotFoundError const& e) {
+			config::mru->Remove("Audio", STD_STR(file));
+			wxMessageBox(lagi_wxString(e.GetMessage()), L"Error loading audio",wxICON_ERROR | wxOK);
+		}
+		catch (AudioOpenError const& e) {
+			wxMessageBox(lagi_wxString(e.GetMessage()), L"Error loading audio",wxICON_ERROR | wxOK);
+		}
 		catch (const wxChar *e) {
 			if (player) { delete player; player = 0; }
 			if (provider) { delete provider; provider = 0; }

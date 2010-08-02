@@ -61,7 +61,6 @@ private:
 	
 	char FFMSErrMsg[1024];		/// FFMS error message
 	FFMS_ErrorInfo ErrInfo;		/// FFMS error codes/messages
-	wxString ErrorMsg;			/// wx-ified error message
 
 	void LoadVideo(wxString filename);
 	void Close();

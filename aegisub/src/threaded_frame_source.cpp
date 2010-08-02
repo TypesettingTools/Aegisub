@@ -67,8 +67,7 @@ AegiVideoFrame const& ThreadedFrameSource::ProcFrame(int frameNum, double time, 
 		try {
 			frame->CopyFrom(videoProvider->GetFrame(frameNum));
 		}
-		catch (const wchar_t *err) { throw VideoProviderErrorEvent(err); }
-		catch (wxString const& err) { throw VideoProviderErrorEvent(err); }
+		catch (VideoProviderError const& err) { throw VideoProviderErrorEvent(err); }
 	}
 
 	// This deliberately results in a call to LoadSubtitles while a render
@@ -107,7 +106,6 @@ AegiVideoFrame const& ThreadedFrameSource::ProcFrame(int frameNum, double time, 
 				}
 			}
 		}
-		catch (const wchar_t *err) { throw SubtitlesProviderErrorEvent(err); }
 		catch (wxString const& err) { throw SubtitlesProviderErrorEvent(err); }
 
 		provider->DrawSubtitles(*frame, time);
@@ -200,13 +198,13 @@ wxDEFINE_EVENT(EVT_FRAME_READY, FrameReadyEvent);
 wxDEFINE_EVENT(EVT_VIDEO_ERROR, VideoProviderErrorEvent);
 wxDEFINE_EVENT(EVT_SUBTITLES_ERROR, SubtitlesProviderErrorEvent);
 
-VideoProviderErrorEvent::VideoProviderErrorEvent(wxString msg)
-: agi::Exception(STD_STR(msg), NULL)
+VideoProviderErrorEvent::VideoProviderErrorEvent(VideoProviderError const& err)
+: agi::Exception(err.GetMessage(), &err)
 {
 	SetEventType(EVT_VIDEO_ERROR);
 }
-SubtitlesProviderErrorEvent::SubtitlesProviderErrorEvent(wxString msg)
-: agi::Exception(STD_STR(msg), NULL)
+SubtitlesProviderErrorEvent::SubtitlesProviderErrorEvent(wxString err)
+: agi::Exception(err, NULL)
 {
 	SetEventType(EVT_SUBTITLES_ERROR);
 }

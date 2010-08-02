@@ -46,6 +46,7 @@ HINSTANCE AviSynthWrapper::hLib = NULL;
 IScriptEnvironment *AviSynthWrapper::env = NULL;
 wxMutex AviSynthWrapper::AviSynthMutex;
 
+
 /// @brief AviSynth constructor 
 ///
 AviSynthWrapper::AviSynthWrapper() {
@@ -96,3 +97,4 @@ IScriptEnvironment *AviSynthWrapper::GetEnv() {
 	return env;
 }
 #endif
+

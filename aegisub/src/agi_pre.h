@@ -43,7 +43,7 @@
 #ifndef AGI_PRE_H
 
 /// @brief Inclusion guard.
-/// @todo Why is this even nessicary? GCC seems to include agi_pre.h twice for no reason.
+/// @todo Why is this even necessary? GCC seems to include agi_pre.h twice for no reason.
 #define AGI_PRE_H
 
 // C++ only

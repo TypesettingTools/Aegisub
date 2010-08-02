@@ -37,6 +37,7 @@
 #pragma once
 
 #include "video_frame.h"
+#include <libaegisub/exception.h>
 #include <libaegisub/vfr.h>
 
 /// @class VideoProvider
@@ -69,3 +70,12 @@ public:
 	/// @return Returns true if caching is desired, false otherwise.
 	virtual bool WantsCaching() const { return false; }
 };
+
+DEFINE_BASE_EXCEPTION_NOINNER(VideoProviderError, agi::Exception);
+/// File could be opened, but is not a supported format
+DEFINE_SIMPLE_EXCEPTION_NOINNER(VideoNotSupported, VideoProviderError, "video/open/notsupported");
+/// File appears to be a supported format, but could not be opened
+DEFINE_SIMPLE_EXCEPTION_NOINNER(VideoOpenError, VideoProviderError, "video/open/failed");
+
+/// Error of some sort occurred while decoding a frame
+DEFINE_SIMPLE_EXCEPTION_NOINNER(VideoDecodeError, VideoProviderError, "video/error");

@@ -40,7 +40,7 @@
 
 
 /// @class FFmpegSourceAudioProvider
-/// @brief Implents audio loading with the FFMS library.
+/// @brief Implements audio loading with the FFMS library.
 class FFmpegSourceAudioProvider : public AudioProvider, FFmpegSourceProvider {
 private:
 	FFMS_AudioSource *AudioSource;	/// audio source object
@@ -48,7 +48,6 @@ private:
 
 	char FFMSErrMsg[1024];			/// FFMS error message
 	FFMS_ErrorInfo ErrInfo;			/// FFMS error codes/messages
-	wxString ErrorMsg;				/// wx-ified error message
 
 	void Close();
 	void LoadAudio(wxString filename);
@@ -61,6 +60,7 @@ public:
 	/// @return Returns true.
 	/// FFMS always delivers native endian samples.
 	bool AreSamplesNativeEndian() const { return true; }
+	bool NeedsCache() const { return true; }
 
 	virtual void GetAudio(void *buf, int64_t start, int64_t count);
 };

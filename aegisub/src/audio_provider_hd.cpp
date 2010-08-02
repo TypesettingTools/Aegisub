@@ -34,14 +34,9 @@
 /// @ingroup audio_input
 ///
 
-
-///////////
-// Headers
 #include "config.h"
 
-
 #ifndef AGI_PRE
-#include <wx/file.h>
 #include <wx/filefn.h>
 #include <wx/filename.h>
 #endif
@@ -54,11 +49,11 @@
 #include "standard_paths.h"
 #include "utils.h"
 
-
 /// @brief Constructor 
 /// @param source 
 ///
-HDAudioProvider::HDAudioProvider(AudioProvider *source) {
+HDAudioProvider::HDAudioProvider(AudioProvider *src) {
+	std::auto_ptr<AudioProvider> source(src);
 	// Copy parameters
 	bytes_per_sample = source->GetBytesPerSample();
 	num_samples = source->GetNumSamples();
@@ -71,7 +66,7 @@ HDAudioProvider::HDAudioProvider(AudioProvider *source) {
 	wxLongLong freespace;
 	if (wxGetDiskSpace(DiskCachePath(), NULL, &freespace)) {
 		if (num_samples * channels * bytes_per_sample > freespace) {
-			throw wxString(_T("Not enough free disk space in "))+DiskCachePath()+wxString(_T(" to cache the audio"));
+			throw AudioOpenError("Not enough free disk space in " + STD_STR(DiskCachePath()) + " to cache the audio");
 		}
 	}
 
@@ -79,7 +74,7 @@ HDAudioProvider::HDAudioProvider(AudioProvider *source) {
 	diskCacheFilename = DiskCacheName();
 	file_cache.Create(diskCacheFilename,true,wxS_DEFAULT);
 	file_cache.Open(diskCacheFilename,wxFile::read_write);
-	if (!file_cache.IsOpened()) throw _T("Unable to write to audio disk cache.");
+	if (!file_cache.IsOpened()) throw AudioOpenError("Unable to write to audio disk cache.");
 
 	// Start progress
 	volatile bool canceled = false;
@@ -102,11 +97,9 @@ HDAudioProvider::HDAudioProvider(AudioProvider *source) {
 	if (canceled) {
 		file_cache.Close();
 		delete[] data;
-		throw wxString(_T("Audio loading cancelled by user"));
+		throw agi::UserCancelException("Audio loading cancelled by user");
 	}
 }
-
-
 
 /// @brief Destructor 
 ///
@@ -115,8 +108,6 @@ HDAudioProvider::~HDAudioProvider() {
 	wxRemoveFile(diskCacheFilename);
 	delete[] data;
 }
-
-
 
 /// @brief Get audio 
 /// @param buf   
@@ -152,8 +143,6 @@ void HDAudioProvider::GetAudio(void *buf, int64_t start, int64_t count) {
 	}
 }
 
-
-
 /// @brief Get disk cache path 
 /// @return 
 ///
@@ -165,8 +154,6 @@ wxString HDAudioProvider::DiskCachePath() {
 	// Specified
 	return DecodeRelativePath(path,StandardPaths::DecodePath(_T("?user/")));
 }
-
-
 
 /// @brief Get disk cache filename 
 ///
@@ -180,17 +167,6 @@ wxString HDAudioProvider::DiskCacheName() {
 		// File exists?
 		wxString curStringTry = DiskCachePath() + wxString::Format(pattern.c_str(),i);
 		if (!wxFile::Exists(curStringTry)) return curStringTry;
-
-		// Exists, see if it can be opened (disabled because wx doesn't seem to lock the files...)
-		if (false) {
-			wxFile test(curStringTry,wxFile::write);
-			if (test.IsOpened()) {
-				test.Close();
-				return curStringTry;
-			}
-		}
 	}
-	return _T("");
+	return L"";
 }
-
-

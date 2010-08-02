@@ -64,7 +64,6 @@
 PCMAudioProvider::PCMAudioProvider(const wxString &filename)
 {
 #ifdef _WINDOWS
-
 	file_handle = CreateFile(
 		filename.c_str(),
 		FILE_READ_DATA,
@@ -75,14 +74,13 @@ PCMAudioProvider::PCMAudioProvider(const wxString &filename)
 		0);
 
 	if (file_handle == INVALID_HANDLE_VALUE) {
-		wxLogWarning(_T("PCM audio provider: Could not open audio file for reading (%d)"), GetLastError());
-		throw "PCM audio provider: Could not open audio file for reading";
+		throw agi::FileNotFoundError(filename);
 	}
 
 	LARGE_INTEGER li_file_size = {0};
 	if (!GetFileSizeEx(file_handle, &li_file_size)) {
 		CloseHandle(file_handle);
-		throw "PCM audio provider: Failed getting file size";
+		throw AudioOpenError("Failed getting file size");
 	}
 	file_size = li_file_size.QuadPart;
 
@@ -95,7 +93,7 @@ PCMAudioProvider::PCMAudioProvider(const wxString &filename)
 
 	if (file_mapping == 0) {
 		CloseHandle(file_handle);
-		throw "PCM audio provider: Failed creating file mapping";
+		throw AudioOpenError("Failed creating file mapping");
 	}
 
 	current_mapping = 0;
@@ -105,49 +103,40 @@ PCMAudioProvider::PCMAudioProvider(const wxString &filename)
 	file_handle = open(filename.mb_str(*wxConvFileName), O_RDONLY);
 
 	if (file_handle == -1) {
-		throw "PCM audio provider: Could not open audio file for reading";
+		throw agi::FileNotFoundError(filename);
 	}
 
 	struct stat filestats;
 	memset(&filestats, 0, sizeof(filestats));
 	if (fstat(file_handle, &filestats)) {
 		close(file_handle);
-		throw "PCM audio provider: Could not stat file to get size";
+		throw AudioOpenError("Could not stat file to get size");
 	}
 	file_size = filestats.st_size;
 
 	current_mapping = 0;
-
 #endif
 }
-
-
 
 /// @brief DOCME
 ///
 PCMAudioProvider::~PCMAudioProvider()
 {
 #ifdef _WINDOWS
-
 	if (current_mapping) {
 		UnmapViewOfFile(current_mapping);
 	}
 
 	CloseHandle(file_mapping);
 	CloseHandle(file_handle);
-
 #else
-
 	if (current_mapping) {
 		munmap(current_mapping, mapping_length);
 	}
 
 	close(file_handle);
-
 #endif
 }
-
-
 
 /// @brief DOCME
 /// @param range_start  
@@ -157,14 +146,12 @@ PCMAudioProvider::~PCMAudioProvider()
 char * PCMAudioProvider::EnsureRangeAccessible(int64_t range_start, int64_t range_length)
 {
 	if (range_start + range_length > file_size) {
-		throw "PCM audio provider: Attempted to map beyond end of file";
+		throw AudioDecodeError("Attempted to map beyond end of file");
 	}
 
 	// Check whether the requested range is already visible
 	if (!current_mapping || range_start < mapping_start || range_start+range_length > mapping_start+(int64_t)mapping_length) {
-
 		// It's not visible, change the current mapping
-		
 		if (current_mapping) {
 #ifdef _WINDOWS
 			UnmapViewOfFile(current_mapping);
@@ -187,9 +174,8 @@ char * PCMAudioProvider::EnsureRangeAccessible(int64_t range_start, int64_t rang
 		// Make sure to always make a mapping at least as large as the requested range
 		if ((int64_t)mapping_length < range_length) {
 			if (range_length > (int64_t)(~(size_t)0))
-				throw "PCM audio provider: Requested range larger than max size_t, cannot create view of file";
-			else
-				mapping_length = range_length;
+				throw AudioDecodeError("Requested range larger than max size_t, cannot create view of file");
+			mapping_length = range_length;
 		}
 		// But also make sure we don't try to make a mapping larger than the file
 		if (mapping_start + (int64_t)mapping_length > file_size)
@@ -211,9 +197,8 @@ char * PCMAudioProvider::EnsureRangeAccessible(int64_t range_start, int64_t rang
 #endif
 
 		if (!current_mapping) {
-			throw "PCM audio provider: Failed mapping a view of the file";
+			throw AudioDecodeError("Failed mapping a view of the file");
 		}
-
 	}
 
 	assert(current_mapping);
@@ -225,8 +210,6 @@ char * PCMAudioProvider::EnsureRangeAccessible(int64_t range_start, int64_t rang
 	// Calculate a pointer into current mapping for the requested range
 	return ((char*)current_mapping) + rel_ofs;
 }
-
-
 
 /// @brief DOCME
 /// @param buf   
@@ -256,9 +239,7 @@ void PCMAudioProvider::GetAudio(void *buf, int64_t start, int64_t count)
 			buf = (char*)buf + samples_can_do * bytes_per_sample * channels;
 			start += samples_can_do;
 			count -= samples_can_do;
-
 		}
-
 		index++;
 	}
 
@@ -273,26 +254,17 @@ void PCMAudioProvider::GetAudio(void *buf, int64_t start, int64_t count)
 	}
 }
 
-
-// RIFF WAV PCM provider
-// Overview of RIFF WAV: <http://www.sonicspot.com/guide/wavefiles.html>
-
-
 /// DOCME
 /// @class RiffWavPCMAudioProvider
-/// @brief DOCME
+/// @brief RIFF WAV PCM provider
 ///
-/// DOCME
+/// Overview of RIFF WAV: <http://www.sonicspot.com/guide/wavefiles.html>
 class  RiffWavPCMAudioProvider : public PCMAudioProvider {
-private:
-
 	/// DOCME
 	struct ChunkHeader {
-
-		/// DOCME
+		/// Always "RIFF"
 		char type[4];
-
-		/// DOCME
+		/// File size minus sizeof(ChunkHeader) (i.e. 8)
 		uint32_t size;
 	};
 
@@ -302,29 +274,31 @@ private:
 		/// DOCME
 		ChunkHeader ch;
 
-		/// DOCME
+		/// Always "WAVE"
 		char format[4];
 	};
 
 	/// DOCME
 	struct fmtChunk {
 
-		/// DOCME
-		uint16_t compression; // compression format used -- 0x0001 = PCM
+		/// compression format used
+		/// We support only PCM (0x1)
+		uint16_t compression;
 
-		/// DOCME
+		/// Number of channels
 		uint16_t channels;
 
-		/// DOCME
+		/// Samples per second
 		uint32_t samplerate;
 
-		/// DOCME
-		uint32_t avg_bytes_sec; // can't always be trusted
+		/// Bytes per second
+		/// can't always be trusted
+		uint32_t avg_bytes_sec;
 
-		/// DOCME
+		/// Bytes per sample
 		uint16_t block_align;
 
-		/// DOCME
+		/// Bits per sample that are actually used; rest should be ignored
 		uint16_t significant_bits_sample;
 		// Here was supposed to be some more fields but we don't need them
 		// and just skipping by the size of the struct wouldn't be safe
@@ -359,16 +333,14 @@ public:
 		filename = _filename;
 
 		// Read header
-		// This should throw an exception if the mapping fails
 		void *filestart = EnsureRangeAccessible(0, sizeof(RIFFChunk));
-		assert(filestart);
 		RIFFChunk &header = *(RIFFChunk*)filestart;
 
 		// Check magic values
 		if (!CheckFourcc(header.ch.type, "RIFF"))
-			throw "RIFF PCM WAV audio provider: File is not a RIFF file";
+			throw AudioOpenError("File is not a RIFF file");
 		if (!CheckFourcc(header.format, "WAVE"))
-			throw "RIFF PCM WAV audio provider: File is not a RIFF WAV file";
+			throw AudioOpenError("File is not a RIFF WAV file");
 
 		// Count how much more data we can have in the entire file
 		// The first 4 bytes are already eaten by the header.format field
@@ -391,12 +363,13 @@ public:
 			filepos += sizeof(ch);
 
 			if (CheckFourcc(ch.type, "fmt ")) {
-				if (got_fmt_header) throw "RIFF PCM WAV audio provider: Invalid file, multiple 'fmt ' chunks";
+				if (got_fmt_header) throw AudioOpenError("Invalid file, multiple 'fmt ' chunks");
 				got_fmt_header = true;
 
 				fmtChunk &fmt = *(fmtChunk*)EnsureRangeAccessible(filepos, sizeof(fmtChunk));
 
-				if (Endian::LittleToMachine(fmt.compression) != 1) throw "RIFF PCM WAV audio provider: Can't use file, not PCM encoding";
+				if (Endian::LittleToMachine(fmt.compression) != 1)
+					throw AudioOpenError("Can't use file, not PCM encoding");
 
 				// Set stuff inherited from the AudioProvider class
 				sample_rate = Endian::LittleToMachine(fmt.samplerate);
@@ -408,7 +381,7 @@ public:
 				// This won't pick up 'data' chunks inside 'wavl' chunks
 				// since the 'wavl' chunks wrap those.
 
-				if (!got_fmt_header) throw "RIFF PCM WAV audio provider: Found 'data' chunk before 'fmt ' chunk, file is invalid.";
+				if (!got_fmt_header) throw AudioOpenError("Found 'data' chunk before 'fmt ' chunk, file is invalid.");
 
 				int64_t samples = Endian::LittleToMachine(ch.size) / bytes_per_sample;
 				int64_t frames = samples / channels;
@@ -431,8 +404,6 @@ public:
 		}
 	}
 
-
-
 	/// @brief DOCME
 	/// @return 
 	///
@@ -445,12 +416,6 @@ public:
 		return testvalue == Endian::LittleToMachine(testvalue);
 	}
 };
-
-
-
-// Sony Wave64 audio provider
-// Specs obtained at: <http://www.vcs.de/fileadmin/user_upload/MBS/PDF/Whitepaper/Informations_about_Sony_Wave64.pdf>
-
 
 /// DOCME
 static const uint8_t w64GuidRIFF[16] = {
@@ -482,43 +447,25 @@ static const uint8_t w64Guiddata[16] = {
 
 /// DOCME
 /// @class Wave64AudioProvider
-/// @brief DOCME
+/// @brief Sony Wave64 audio provider
 ///
-/// DOCME
+/// http://www.vcs.de/fileadmin/user_upload/MBS/PDF/Whitepaper/Informations_about_Sony_Wave64.pdf
 class Wave64AudioProvider : public PCMAudioProvider {
-private:
 	// Here's some copy-paste from the FFmpegSource2 code
 
-
-	/// DOCME
-	struct WaveFormatEx { 
-
-		/// DOCME
-		uint16_t wFormatTag; 
-
-		/// DOCME
-		uint16_t nChannels; 
-
-		/// DOCME
-		uint32_t nSamplesPerSec; 
-
-		/// DOCME
-		uint32_t nAvgBytesPerSec; 
-
-		/// DOCME
-		uint16_t nBlockAlign; 
-
-		/// DOCME
-		uint16_t wBitsPerSample; 
-
-		/// DOCME
-		uint16_t cbSize; 
+	/// http://msdn.microsoft.com/en-us/library/dd757720(VS.85).aspx
+	struct WaveFormatEx {
+		uint16_t wFormatTag;
+		uint16_t nChannels;
+		uint32_t nSamplesPerSec;
+		uint32_t nAvgBytesPerSec;
+		uint16_t nBlockAlign;
+		uint16_t wBitsPerSample;
+		uint16_t cbSize;
 	};
-
 
 	/// DOCME
 	struct RiffChunk {
-
 		/// DOCME
 		uint8_t riff_guid[16];
 
@@ -532,7 +479,6 @@ private:
 
 	/// DOCME
 	struct FormatChunk {
-
 		/// DOCME
 		uint8_t chunk_guid[16];
 
@@ -549,14 +495,12 @@ private:
 
 	/// DOCME
 	struct DataChunk {
-
 		/// DOCME
 		uint8_t chunk_guid[16];
 
 		/// DOCME
 		uint64_t chunk_size;
 	};
-
 
 	/// @brief DOCME
 	/// @param guid1 
@@ -581,7 +525,7 @@ public:
 		int64_t smallest_possible_file = sizeof(RiffChunk) + sizeof(FormatChunk) + sizeof(DataChunk);
 
 		if (file_size < smallest_possible_file)
-			throw "Wave64 audio provider: File is too small to be a Wave64 file";
+			throw AudioOpenError("File is too small to be a Wave64 file");
 
 		// Read header
 		// This should throw an exception if the mapping fails
@@ -591,9 +535,9 @@ public:
 
 		// Check magic values
 		if (!CheckGuid(header.riff_guid, w64GuidRIFF))
-			throw "Wave64 audio provider: File is not a Wave64 RIFF file";
+			throw AudioOpenError("File is not a Wave64 RIFF file");
 		if (!CheckGuid(header.format_guid, w64GuidWAVE))
-			throw "Wave64 audio provider: File is not a Wave64 WAVE file";
+			throw AudioOpenError("File is not a Wave64 WAVE file");
 
 		// Count how much more data we can have in the entire file
 		uint64_t data_left = Endian::LittleToMachine(header.file_size) - sizeof(RiffChunk);
@@ -613,25 +557,24 @@ public:
 
 			if (CheckGuid(chunk_guid, w64Guidfmt)) {
 				if (got_fmt_header)
-					throw "Wave64 audio provider: Bad file, found more than one 'fmt' chunk";
+					throw AudioOpenError("Bad file, found more than one 'fmt' chunk");
 
 				FormatChunk &fmt = *(FormatChunk*)EnsureRangeAccessible(filepos, sizeof(FormatChunk));
 				got_fmt_header = true;
 
 				if (Endian::LittleToMachine(fmt.format.wFormatTag) == 3)
-					throw "Wave64 audio provider: File is IEEE 32 bit float format which isn't supported. Bug the developers if this matters.";
+					throw AudioOpenError("File is IEEE 32 bit float format which isn't supported. Bug the developers if this matters.");
 				if (Endian::LittleToMachine(fmt.format.wFormatTag) != 1)
-					throw "Wave64 audio provider: Can't use file, not PCM encoding";
+					throw AudioOpenError("Can't use file, not PCM encoding");
 
 				// Set stuff inherited from the AudioProvider class
 				sample_rate = Endian::LittleToMachine(fmt.format.nSamplesPerSec);
 				channels = Endian::LittleToMachine(fmt.format.nChannels);
 				bytes_per_sample = (Endian::LittleToMachine(fmt.format.wBitsPerSample) + 7) / 8; // round up to nearest whole byte
 			}
-
 			else if (CheckGuid(chunk_guid, w64Guiddata)) {
 				if (!got_fmt_header)
-					throw "Wave64 audio provider: Found 'data' chunk before 'fmt ' chunk, file is invalid.";
+					throw AudioOpenError("Found 'data' chunk before 'fmt ' chunk, file is invalid.");
 
 				int64_t samples = chunk_size / bytes_per_sample;
 				int64_t frames = samples / channels;
@@ -652,8 +595,6 @@ public:
 		}
 	}
 
-
-
 	/// @brief DOCME
 	/// @return 
 	///
@@ -667,38 +608,23 @@ public:
 	}
 };
 
-
-
 /// @brief DOCME
 /// @param filename 
 ///
 AudioProvider *CreatePCMAudioProvider(const wxString &filename)
 {
-	AudioProvider *provider = 0;
-
-	// Try Microsoft/IBM RIFF WAV
+	std::string msg;
 	try {
-		provider = new RiffWavPCMAudioProvider(filename);
-		// don't bother trying with anything else if this works
-		return provider;
+		return new RiffWavPCMAudioProvider(filename);
 	}
-	catch (const char *msg) {
-		LOG_E("audio/provider/pcm") << "Creating PCM WAV reader failed with message: '" << msg << "' Trying other providers";
-		provider = 0;
+	catch (AudioOpenError const& err) {
+		msg = "RIFF PCM WAV audio provider: " + err.GetMessage();
 	}
-
-	// Try Sony Wave64
 	try {
-		provider = new Wave64AudioProvider(filename);
-		return provider;
+		return new Wave64AudioProvider(filename);
 	}
-	catch (const char *msg) {
-		LOG_E("audio/provider/pcm") << "Creating Wave64 reader failed with message: '" << msg << "' Trying other providers";
-		provider = 0;
+	catch (AudioOpenError const& err) {
+		msg += "\nWave64 audio provider: " + err.GetMessage();
+		throw AudioOpenError(msg);
 	}
-
-	// no providers could be created
-	return NULL;
 }
-
-

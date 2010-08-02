@@ -79,6 +79,4 @@ public:
 	virtual std::vector<int> GetKeyFrames() const { return master->GetKeyFrames(); }
 	virtual wxString GetWarning() const           { return master->GetWarning(); }
 	virtual wxString GetDecoderName() const       { return master->GetDecoderName(); }
-
-
 };

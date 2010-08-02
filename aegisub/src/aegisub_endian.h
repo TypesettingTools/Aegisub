@@ -131,16 +131,13 @@ namespace Endian {
 
 
 #ifndef HAVE_DYNAMIC_ENDIAN
-
-
 	// Regular, fast, templatized conditional reversing
-
-	template <class T>
 
 	/// @brief DOCME
 	/// @param val 
 	/// @return 
 	///
+	template <class T>
 	inline T LittleToMachine(T val)
 	{
 #ifdef HAVE_BIG_ENDIAN
@@ -152,12 +149,11 @@ namespace Endian {
 #endif
 	}
 
-	template <class T>
-
 	/// @brief DOCME
 	/// @param val 
 	/// @return 
 	///
+	template <class T>
 	inline T BigToMachine(T val)
 	{
 #ifdef HAVE_LITTLE_ENDIAN
@@ -169,12 +165,11 @@ namespace Endian {
 #endif
 	}
 
-	template <class T>
-
 	/// @brief DOCME
 	/// @param val 
 	/// @return 
 	///
+	template <class T>
 	inline T MachineToLittle(T val)
 	{
 #ifdef HAVE_BIG_ENDIAN
@@ -186,12 +181,11 @@ namespace Endian {
 #endif
 	}
 
-	template <class T>
-
 	/// @brief DOCME
 	/// @param val 
 	/// @return 
 	///
+	template <class T>
 	inline T MachineToBig(T val)
 	{
 #ifdef HAVE_LITTLE_ENDIAN
@@ -203,9 +197,7 @@ namespace Endian {
 #endif
 	}
 
-
 #else // HAVE_DYNAMIC_ENDIAN
-
 
 	// Dynamic endianness handling
 
@@ -216,13 +208,11 @@ namespace Endian {
 	// the endianness of the machine we are on, but it's the same
 	// code for any platform!
 
-
 	// Unions to pack together ints and get their physical bytes
 
 
 	/// DOCME
 	union bytes16 {
-
 		/// DOCME
 		uint8_t byte[2];
 
@@ -232,7 +222,6 @@ namespace Endian {
 
 	/// DOCME
 	union bytes32 {
-
 		/// DOCME
 		uint8_t byte[4];
 
@@ -242,14 +231,12 @@ namespace Endian {
 
 	/// DOCME
 	union bytes64 {
-
 		/// DOCME
 		uint8_t byte[8];
 
 		/// DOCME
 		uint64_t word;
 	};
-
 
 	// 16 bit words
 
@@ -456,8 +443,5 @@ namespace Endian {
 			 uint64_t(pack.byte[0]);
 	}
 
-
 #endif
-
 };
-

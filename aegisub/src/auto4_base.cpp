@@ -34,7 +34,6 @@
 /// @ingroup scripting
 ///
 
-
 #include "config.h"
 
 #ifdef WITH_AUTOMATION
@@ -47,15 +46,11 @@
 
 #include <wx/button.h>
 #include <wx/dcmemory.h>
-#include <wx/dialog.h>
 #include <wx/dir.h>
 #include <wx/filefn.h>
 #include <wx/filename.h>
-#include <wx/gauge.h>
 #include <wx/log.h>
 #include <wx/msgdlg.h>
-#include <wx/sizer.h>
-#include <wx/stattext.h>
 #include <wx/thread.h>
 #include <wx/tokenzr.h>
 #endif
@@ -73,12 +68,8 @@
 #include "standard_paths.h"
 #include "string_codec.h"
 
-
-
 /// DOCME
 namespace Automation4 {
-
-
 	/// @brief DOCME
 	/// @param style   
 	/// @param text    

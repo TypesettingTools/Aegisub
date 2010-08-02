@@ -38,7 +38,6 @@
 
 #ifndef AGI_PRE
 #include <errno.h>
-#include <stdint.h>
 
 #include <algorithm>
 #include <iterator>
@@ -54,16 +53,11 @@
 #include <libaegisub/vfr.h>
 #include "mkv_wrap.h"
 
-
 /// DOCME
 MatroskaWrapper MatroskaWrapper::wrapper;
 
-
-
 /// DOCME
 #define	CACHESIZE     65536
-
-
 
 /// @brief Constructor 
 ///
@@ -71,15 +65,11 @@ MatroskaWrapper::MatroskaWrapper() {
 	file = NULL;
 }
 
-
-
 /// @brief Destructor 
 ///
 MatroskaWrapper::~MatroskaWrapper() {
 	Close();
 }
-
-
 
 /// @brief Open file 
 /// @param filename 
@@ -112,8 +102,6 @@ void MatroskaWrapper::Open(wxString filename,bool parse) {
 	}
 }
 
-
-
 /// @brief Close file 
 /// @return 
 ///
@@ -127,16 +115,12 @@ void MatroskaWrapper::Close() {
 	timecodes.clear();
 }
 
-
-
 /// @brief Return keyframes 
 /// @return 
 ///
 std::vector<int> MatroskaWrapper::GetKeyFrames() {
 	return keyFrames;
 }
-
-
 
 /// @brief Comparison operator 
 /// @param t1 
@@ -146,8 +130,6 @@ std::vector<int> MatroskaWrapper::GetKeyFrames() {
 bool operator < (MkvFrame &t1, MkvFrame &t2) { 
 	return t1.time < t2.time;
 }
-
-
 
 /// @brief Actually parse 
 ///
@@ -200,7 +182,7 @@ void MatroskaWrapper::Parse() {
 				// Cancelled?
 				if (canceled) {
 					Close();
-					throw _T("Canceled");
+					throw agi::UserCancelException("Canceled");
 				}
 
 				// Identical to (frameN % 2048) == 0,
@@ -257,7 +239,6 @@ void MatroskaWrapper::Parse() {
 	}
 }
 
-
 static int mkv_round(double num) {
 	return (int)(num + .5);
 }
@@ -274,8 +255,6 @@ void MatroskaWrapper::SetToTimecodes(agi::vfr::Framerate &target) {
 	std::transform(timecodes.begin(), timecodes.end(), std::back_inserter(times), &mkv_round);
 	target = agi::vfr::Framerate(times);
 }
-
-
 
 /// @brief Get subtitles 
 /// @param target 
@@ -330,7 +309,7 @@ void MatroskaWrapper::GetSubtitles(AssFile *target) {
 		if (choice == -1) {
 			target->LoadDefault(true);
 			Close();
-			throw _T("Canceled.");
+			throw agi::UserCancelException("cancelled");
 		}
 		trackToRead = tracksFound[choice];
 	}
@@ -398,7 +377,7 @@ void MatroskaWrapper::GetSubtitles(AssFile *target) {
 			if (canceled) {
 				target->LoadDefault(true);
 				Close();
-				throw _T("Canceled");
+				throw agi::UserCancelException("cancelled");
 			}
 
 			// Read to temp
@@ -525,7 +504,6 @@ bool MatroskaWrapper::HasSubtitles(wxString const& filename) {
 #define std_ftell ftello
 #endif
 
-
 /// @brief STDIO class 
 /// @param _st    
 /// @param pos    
@@ -577,7 +555,6 @@ longlong StdIoScan(InputStream *_st, ulonglong start, unsigned signature) {
   return -1;
 }
 
-
 /// @brief This is used to limit readahead.
 /// @param _st 
 /// @return Cache size
@@ -585,7 +562,6 @@ longlong StdIoScan(InputStream *_st, ulonglong start, unsigned signature) {
 unsigned StdIoGetCacheSize(InputStream *_st) {
   return CACHESIZE;
 }
-
 
 /// @brief Get last error message
 /// @param _st 
@@ -596,7 +572,6 @@ const char *StdIoGetLastError(InputStream *_st) {
   return strerror(st->error);
 }
 
-
 /// @brief Memory allocation, this is done via stdlib
 /// @param _st  
 /// @param size 
@@ -605,7 +580,6 @@ const char *StdIoGetLastError(InputStream *_st) {
 void  *StdIoMalloc(InputStream *_st, size_t size) {
   return malloc(size);
 }
-
 
 /// @brief DOCME
 /// @param _st  
@@ -617,7 +591,6 @@ void  *StdIoRealloc(InputStream *_st, void *mem, size_t size) {
   return realloc(mem,size);
 }
 
-
 /// @brief DOCME
 /// @param _st 
 /// @param mem 
@@ -625,7 +598,6 @@ void  *StdIoRealloc(InputStream *_st, void *mem, size_t size) {
 void  StdIoFree(InputStream *_st, void *mem) {
   free(mem);
 }
-
 
 /// @brief DOCME
 /// @param _st 
@@ -636,7 +608,6 @@ void  StdIoFree(InputStream *_st, void *mem) {
 int   StdIoProgress(InputStream *_st, ulonglong cur, ulonglong max) {
   return 1;
 }
-
 
 /// @brief DOCME
 /// @param _st 
@@ -651,7 +622,6 @@ longlong StdIoGetFileSize(InputStream *_st) {
 	std_fseek(st->fp, cpos, SEEK_SET);
 	return epos;
 }
-
 
 /// @brief DOCME
 /// @param filename 
@@ -672,5 +642,4 @@ MkvStdIO::MkvStdIO(wxString filename) {
 		setvbuf(fp, NULL, _IOFBF, CACHESIZE);
 	}
 }
-
 

@@ -34,11 +34,7 @@
 /// @ingroup spelling
 ///
 
-
-///////////
-// Headers
 #include "config.h"
-
 
 #ifdef WITH_HUNSPELL
 
@@ -51,7 +47,6 @@
 #endif
 
 #include <libaegisub/log.h>
-#include <hunspell/hunspell.hxx>
 
 #include "charset_conv.h"
 #include "compat.h"
@@ -62,7 +57,6 @@
 #include "text_file_writer.h"
 #include "utils.h"
 
-
 /// @brief Constructor
 HunspellSpellChecker::HunspellSpellChecker() {
 	hunspell = NULL;
@@ -71,14 +65,10 @@ HunspellSpellChecker::HunspellSpellChecker() {
 	SetLanguage(lagi_wxString(OPT_GET("Tool/Spell Checker/Language")->GetString()));
 }
 
-
-
 /// @brief Destructor
 HunspellSpellChecker::~HunspellSpellChecker() {
 	Reset();
 }
-
-
 
 /// @brief Reset spelling library
 void HunspellSpellChecker::Reset() {
@@ -91,8 +81,6 @@ void HunspellSpellChecker::Reset() {
 	affpath.Clear();
 	dicpath.Clear();
 }
-
-
 
 /// @brief Can add to dictionary?
 /// @param word Word to check.
@@ -108,8 +96,6 @@ bool HunspellSpellChecker::CanAddWord(wxString word) {
 		return false;
 	}
 }
-
-
 
 /// @brief Add word to dictionary
 /// @param word Word to add.
@@ -171,8 +157,6 @@ void HunspellSpellChecker::AddWord(wxString word) {
 	}
 }
 
-
-
 /// @brief Check if the word is valid.
 /// @param word Word to check
 /// @return Whether word is valid or not.
@@ -186,8 +170,6 @@ bool HunspellSpellChecker::CheckWord(wxString word) {
 		return false;
 	}
 }
-
-
 
 /// @brief Get suggestions for word.
 /// @param word Word to get suggestions for
@@ -216,8 +198,6 @@ wxArrayString HunspellSpellChecker::GetSuggestions(wxString word) {
 
 	return suggestions;
 }
-
-
 
 /// @brief Get list of available dictionaries.
 /// @return List of available dictionaries
@@ -251,8 +231,6 @@ wxArrayString HunspellSpellChecker::GetLanguageList() {
 	// Return list
 	return list;
 }
-
-
 
 /// @brief Set language.
 /// @param language Language to set

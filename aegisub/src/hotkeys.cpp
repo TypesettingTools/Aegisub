@@ -34,15 +34,11 @@
 /// @ingroup main_ui
 ///
 
-
-///////////
-// Headers
 #include "config.h"
 
 #ifndef AGI_PRE
 #include <fstream>
 
-#include <wx/accel.h>
 #include <wx/filename.h>
 #include <wx/log.h>
 #endif
@@ -51,14 +47,12 @@
 #include "text_file_reader.h"
 #include "text_file_writer.h"
 
-
 /// @brief Constructors  HotkeyType //////////////////////////////////
 ///
 HotkeyType::HotkeyType() {
 	flags = 0;
 	keycode = 0;
 }
-
 
 /// @brief DOCME
 /// @param text 
@@ -68,8 +62,6 @@ HotkeyType::HotkeyType(wxString text,wxString name) {
 	Parse(text);
 	origName = name;
 }
-
-
 
 /// @brief Get string of hotkey 
 /// @return 
@@ -87,8 +79,6 @@ wxString HotkeyType::GetText() const {
 
 	return text;
 }
-
-
 
 /// @brief Parse text into hotkey 
 /// @param text 
@@ -150,8 +140,6 @@ void HotkeyType::Parse(wxString text) {
 	}
 }
 
-
-
 /// DOCME
 std::map<int,wxString> HotkeyType::keyName;
 
@@ -171,8 +159,6 @@ wxString HotkeyType::GetKeyName(int keycode) {
 	if (cur != keyName.end()) return cur->second;
 	else return wxString::Format(_T("[%i]"),keycode);
 }
-
-
 
 /// @brief Fill map 
 /// @return 
@@ -234,12 +220,8 @@ void HotkeyType::FillMap() {
 	}
 }
 
-
-
 /// DOCME
 HotkeyManager Hotkeys;
-
-
 
 /// @brief Constructor 
 ///
@@ -247,15 +229,11 @@ HotkeyManager::HotkeyManager() {
 	modified = false;
 }
 
-
-
 /// @brief Destructor 
 ///
 HotkeyManager::~HotkeyManager() {
 	key.clear();
 }
-
-
 
 /// @brief Save 
 /// @return 
@@ -277,8 +255,6 @@ void HotkeyManager::Save() {
 	// Close
 	modified = false;
 }
-
-
 
 /// @brief Load 
 /// @return 
@@ -353,13 +329,10 @@ void HotkeyManager::Load() {
 	Save();
 }
 
-
-
 /// @brief Set all hotkeys to the default values
 ///
 void HotkeyManager::LoadDefaults() {
 	modified = true;
-
 
 	/// @note () is used here instead of _T(). This is done so the strings can be extracted.
 	///       However, since this function is called before locale is set, it won't ever be translated.
@@ -503,8 +476,6 @@ void HotkeyManager::LoadDefaults() {
 	SetHotkey(_("Visual Tool Vector Clip"), _T("J"));
 }
 
-
-
 /// @brief Set hotkey 
 /// @param function 
 /// @param hotkey   
@@ -513,7 +484,6 @@ void HotkeyManager::SetHotkey(wxString function,HotkeyType hotkey) {
 	key[function.Lower()] = hotkey;
 	modified = true;
 }
-
 
 /// @brief DOCME
 /// @param function 
@@ -524,16 +494,12 @@ void HotkeyManager::SetHotkey(wxString function,wxString hotkey) {
 	modified = true;
 }
 
-
-
 /// @brief Set file 
 /// @param file 
 ///
 void HotkeyManager::SetFile(wxString file) {
 	filename = file;
 }
-
-
 
 /// @brief Get hotkey as text 
 /// @param function 
@@ -546,8 +512,6 @@ const wxString HotkeyManager::GetText(wxString function) const {
 	}
 	else throw _T("Hotkey not defined");
 }
-
-
 
 /// @brief Get hotkey as accelerator entry 
 /// @param function 
@@ -565,8 +529,6 @@ wxAcceleratorEntry HotkeyManager::GetAccelerator(wxString function,int id) const
 	else throw _T("Hotkey not defined");
 }
 
-
-
 /// @brief Set last key pressed 
 /// @param keypress 
 /// @param ctrl     
@@ -581,8 +543,6 @@ void HotkeyManager::SetPressed(int keypress,bool ctrl,bool alt,bool shift) {
 	if (shift) lastMod |= wxACCEL_SHIFT;
 }
 
-
-
 /// @brief Is pressed? 
 /// @param function 
 /// @return 
@@ -595,8 +555,6 @@ bool HotkeyManager::IsPressed(wxString function) const {
 	}
 	else throw _T("Hotkey not defined");
 }
-
-
 
 /// @brief Search for a hotkey 
 /// @param keycode 

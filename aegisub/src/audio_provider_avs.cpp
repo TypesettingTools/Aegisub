@@ -34,13 +34,9 @@
 /// @ingroup audio_input
 ///
 
-
-///////////
-// Headers
 #include "config.h"
 
 #ifdef WITH_AVISYNTH
-
 
 #ifndef AGI_PRE
 #include <Mmreg.h>
@@ -56,100 +52,59 @@
 #include "standard_paths.h"
 #include "utils.h"
 
-
 /// @brief Constructor 
 /// @param _filename 
 ///
-AvisynthAudioProvider::AvisynthAudioProvider(wxString _filename) {
-	filename = _filename;
-
-	try {
-		OpenAVSAudio();
-	}
-	catch (...) {
-		Unload();
-		throw;
-	}
-}
-
-
-
-/// @brief Destructor 
-///
-AvisynthAudioProvider::~AvisynthAudioProvider() {
-	Unload();
-}
-
-
-
-/// @brief Unload audio 
-///
-void AvisynthAudioProvider::Unload() {
-	// Clean up avisynth
-	clip = NULL;
-}
-
-
-
-/// @brief Load audio from avisynth 
-///
-void AvisynthAudioProvider::OpenAVSAudio() {
-	// Set variables
+AvisynthAudioProvider::AvisynthAudioProvider(wxString filename) try : filename(filename) {
 	AVSValue script;
-
-	// Prepare avisynth
 	wxMutexLocker lock(AviSynthMutex);
 
-	try {
-		// Include
-		if (filename.EndsWith(_T(".avs"))) {
-			wxFileName fn(filename);
-			char *fname = env->SaveString(fn.GetShortPath().mb_str(csConvLocal));
-			script = env->Invoke("Import", fname);
+	wxFileName fn(filename);
+	if (!fn.FileExists())
+		throw agi::FileNotFoundError(STD_STR(filename));
+
+	// Include
+	if (filename.EndsWith(_T(".avs"))) {
+		char *fname = env->SaveString(fn.GetShortPath().mb_str(csConvLocal));
+		script = env->Invoke("Import", fname);
+	}
+
+	// Use DirectShowSource
+	else {
+		const char * argnames[3] = { 0, "video", "audio" };
+		AVSValue args[3] = { env->SaveString(fn.GetShortPath().mb_str(csConvLocal)), false, true };
+
+		// Load DirectShowSource.dll from app dir if it exists
+		wxFileName dsspath(StandardPaths::DecodePath(_T("?data/DirectShowSource.dll")));
+		if (dsspath.FileExists()) {
+			env->Invoke("LoadPlugin",env->SaveString(dsspath.GetShortPath().mb_str(csConvLocal)));
 		}
 
-		// Use DirectShowSource
+		// Load audio with DSS if it exists
+		if (env->FunctionExists("DirectShowSource")) {
+			script = env->Invoke("DirectShowSource", AVSValue(args,3),argnames);
+		}
+		// Otherwise fail
 		else {
-			wxFileName fn(filename);
-			const char * argnames[3] = { 0, "video", "audio" };
-			AVSValue args[3] = { env->SaveString(fn.GetShortPath().mb_str(csConvLocal)), false, true };
-
-			// Load DirectShowSource.dll from app dir if it exists
-			wxFileName dsspath(StandardPaths::DecodePath(_T("?data/DirectShowSource.dll")));
-			if (dsspath.FileExists()) {
-				env->Invoke("LoadPlugin",env->SaveString(dsspath.GetShortPath().mb_str(csConvLocal)));
-			}
-
-			// Load audio with DSS if it exists
-			if (env->FunctionExists("DirectShowSource")) {
-				script = env->Invoke("DirectShowSource", AVSValue(args,3),argnames);
-			}
-			// Otherwise fail
-			else {
-				throw AvisynthError("No suitable audio source filter found. Try placing DirectShowSource.dll in the Aegisub application directory.");
-			}
+			throw AudioOpenError("No suitable audio source filter found. Try placing DirectShowSource.dll in the Aegisub application directory.");
 		}
+	}
 
-		LoadFromClip(script);
-	}
-	
-	catch (AvisynthError &err) {
-		throw wxString::Format(_T("AviSynth error: %s"), wxString(err.msg,csConvLocal));
-	}
+	LoadFromClip(script);
 }
-
-
+catch (AvisynthError &err) {
+	throw AudioOpenError("Avisynth error: " + std::string(err.msg));
+}
 
 /// @brief Read from environment 
 /// @param _clip 
 ///
 void AvisynthAudioProvider::LoadFromClip(AVSValue _clip) {	
-	// Prepare avisynth
 	AVSValue script;
 
 	// Check if it has audio
 	VideoInfo vi = _clip.AsClip()->GetVideoInfo();
-	if (!vi.HasAudio()) throw wxString(_T("No audio found."));
+	if (!vi.HasAudio()) throw AudioOpenError("No audio found.");
 
 	// Convert to one channel
 	char buffer[1024];
@@ -178,19 +133,8 @@ void AvisynthAudioProvider::LoadFromClip(AVSValue _clip) {
 	sample_rate = vi.SamplesPerSecond();
 	bytes_per_sample = vi.BytesPerAudioSample();
 
-	// Set
 	clip = tempclip;
 }
-
-
-
-/// @brief Get filename 
-/// @return 
-///
-wxString AvisynthAudioProvider::GetFilename() {
-	return filename;
-}
-
 
 /// @brief Get audio 
 /// @param buf   
@@ -223,7 +167,4 @@ void AvisynthAudioProvider::GetAudio(void *buf, int64_t start, int64_t count) {
 		clip->GetAudio(buf,start,count,env);
 	}
 }
-
 #endif
-
-
