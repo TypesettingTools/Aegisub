@@ -471,9 +471,21 @@ void VideoContext::SetAspectRatio(int type, double value) {
 
 void VideoContext::LoadKeyframes(wxString filename) {
 	if (filename == keyFramesFilename || filename.empty()) return;
-	keyFrames = KeyFrameFile::Load(filename);
-	keyFramesFilename = filename;
-	Refresh();
+	try {
+		keyFrames = KeyFrameFile::Load(filename);
+		keyFramesFilename = filename;
+		Refresh();
+	}
+	catch (const wchar_t *error) {
+		wxMessageBox(error, _T("Error opening keyframes file"), wxOK | wxICON_ERROR, NULL);
+	}
+	catch (agi::acs::AcsNotFound const&) {
+		wxLogError(L"Could not open file " + filename);
+		config::mru->Remove("Keyframes", STD_STR(filename));
+	}
+	catch (...) {
+		wxMessageBox(_T("Unknown error"), _T("Error opening keyframes file"), wxOK | wxICON_ERROR, NULL);
+	}
 }
 
 void VideoContext::SaveKeyframes(wxString filename) {
@@ -501,6 +513,7 @@ void VideoContext::LoadTimecodes(wxString filename) {
 	}
 	catch (const agi::acs::AcsError&) {
 		wxLogError(L"Could not open file " + filename);
+		config::mru->Remove("Timecodes", STD_STR(filename));
 	}
 	catch (const agi::vfr::Error& e) {
 		wxLogError(L"Timecode file parse error: %s", e.GetMessage().c_str());

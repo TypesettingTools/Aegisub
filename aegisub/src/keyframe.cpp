@@ -48,29 +48,19 @@
 #include "video_context.h"
 
 std::vector<int> KeyFrameFile::Load(wxString filename) {
-	try {
-		std::vector<int> keyFrames;
-		TextFileReader file(filename,_T("ASCII"));
+	std::vector<int> keyFrames;
+	TextFileReader file(filename,_T("ASCII"));
 
-		wxString cur = file.ReadLineFromFile();
-		// Detect type (Only Xvid, DivX, x264 and Aegisub's keyframe files are currently supported)
-		if (cur == _T("# keyframe format v1")) { OpenAegiKeyFrames(file, keyFrames); }
-		else if (cur.StartsWith(_T("# XviD 2pass stat file"))) { OpenXviDKeyFrames(file, keyFrames); }
-		else if (cur.StartsWith(_T("##map version"))) { OpenDivXKeyFrames(file, keyFrames); }
-		else if (cur.StartsWith(_T("#options:"))) { Openx264KeyFrames(file, keyFrames); }
-		else { throw(_T("Invalid or unsupported keyframes file.")); }
+	wxString cur = file.ReadLineFromFile();
+	// Detect type (Only Xvid, DivX, x264 and Aegisub's keyframe files are currently supported)
+	if (cur == _T("# keyframe format v1")) { OpenAegiKeyFrames(file, keyFrames); }
+	else if (cur.StartsWith(_T("# XviD 2pass stat file"))) { OpenXviDKeyFrames(file, keyFrames); }
+	else if (cur.StartsWith(_T("##map version"))) { OpenDivXKeyFrames(file, keyFrames); }
+	else if (cur.StartsWith(_T("#options:"))) { Openx264KeyFrames(file, keyFrames); }
+	else { throw(_T("Invalid or unsupported keyframes file.")); }
 
-		config::mru->Add("Keyframes", STD_STR(filename));
-		return keyFrames;
-	}
-	// Fail
-	catch (const wchar_t *error) {
-		wxMessageBox(error, _T("Error opening keyframes file"), wxOK | wxICON_ERROR, NULL);
-	}
-	catch (...) {
-		wxMessageBox(_T("Unknown error"), _T("Error opening keyframes file"), wxOK | wxICON_ERROR, NULL);
-	}
-	return std::vector<int>();
+	config::mru->Add("Keyframes", STD_STR(filename));
+	return keyFrames;
 }
 
 void KeyFrameFile::Save(wxString filename, std::vector<int> const& keyFrames) {
