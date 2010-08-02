@@ -40,6 +40,8 @@
 
 #include <list>
 #include <vector>
+
+#include <wx/dynarray.h>
 #endif
 
 #include "MatroskaParser.h"

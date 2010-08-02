@@ -42,6 +42,7 @@
 
 #include <wx/clipbrd.h>
 #include <wx/filename.h>
+#include <wx/regex.h>
 #include <wx/tokenzr.h>
 #endif
 

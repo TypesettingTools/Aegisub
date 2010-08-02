@@ -39,6 +39,7 @@
 
 #ifndef AGI_PRE
 #include <list>
+#include <map>
 #include <vector>
 
 #include <wx/grid.h>

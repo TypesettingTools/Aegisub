@@ -33,6 +33,8 @@
 /// @brief Vector clipping visual typesetting tool
 /// @ingroup visual_ts
 
+#include "visual_tool_vector_clip.h"
+
 #ifndef AGI_PRE
 #include <wx/toolbar.h>
 
@@ -51,7 +53,6 @@
 #include "libresrc/libresrc.h"
 #include "utils.h"
 #include "video_display.h"
-#include "visual_tool_vector_clip.h"
 
 /// Button IDs
 enum {

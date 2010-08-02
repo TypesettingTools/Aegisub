@@ -37,7 +37,9 @@
 #include "config.h"
 
 #ifndef AGI_PRE
+#include <wx/sizer.h>
 #include <wx/stattext.h>
+#include <wx/textctrl.h>
 #endif
 
 #include "dialog_video_details.h"

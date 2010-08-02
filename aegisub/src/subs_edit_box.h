@@ -54,7 +54,7 @@ class wxRadioButton;
 class wxSizer;
 class wxSpinCtrl;
 class wxStyledTextCtrl;
-class wxStyleTextEvent;
+class wxStyledTextEvent;
 class wxTextCtrl;
 
 /// DOCME

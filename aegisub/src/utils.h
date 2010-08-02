@@ -40,6 +40,7 @@
 #ifndef AGI_PRE
 #include <stdint.h>
 
+#include <algorithm>
 #include <utility>
 #include <vector>
 

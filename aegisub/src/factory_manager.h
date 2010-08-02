@@ -37,6 +37,7 @@
 #pragma once
 
 #ifndef AGI_PRE
+#include <algorithm>
 #include <cctype>
 #include <map>
 #include <vector>

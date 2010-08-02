@@ -37,6 +37,8 @@
 
 #ifndef AGI_PRE
 #include <fstream>
+#include <list>
+#include <vector>
 
 #include <wx/regex.h>
 #include <wx/tokenzr.h>

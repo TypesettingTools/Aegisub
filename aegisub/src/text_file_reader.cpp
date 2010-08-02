@@ -42,6 +42,8 @@
 
 #include <algorithm>
 #include <string>
+
+#include <wx/string.h>
 #endif
 
 #include <libaegisub/io.h>

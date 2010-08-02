@@ -41,19 +41,20 @@
 
 #include <wx/bitmap.h>
 #include <wx/scrolbar.h>
+#include <wx/timer.h>
 #include <wx/window.h>
 #endif
 
 #include "audio_renderer_spectrum.h"
 
+class AudioBox;
+class AudioKaraoke;
 class AudioPlayer;
 class AudioProvider;
 class AssDialogue;
-class SubtitlesGrid;
-class AudioBox;
-class AudioKaraoke;
-class VideoProvider;
 class FrameMain;
+class SubtitlesGrid;
+class VideoProvider;
 
 /// DOCME
 /// @class AudioDisplay

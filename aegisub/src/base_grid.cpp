@@ -39,6 +39,9 @@
 #ifndef AGI_PRE
 #include <algorithm>
 #include <iterator>
+
+#include <wx/dcclient.h>
+#include <wx/dcmemory.h>
 #include <wx/sizer.h>
 #endif
 
