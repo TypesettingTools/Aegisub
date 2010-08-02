@@ -34,12 +34,7 @@
 /// @ingroup audio_output
 ///
 
-
 #ifdef WITH_PULSEAUDIO
-
-
-///////////
-// Headers
 #ifndef AGI_PRE
 #include <stdio.h>
 #endif
@@ -50,13 +45,7 @@
 #include "include/aegisub/audio_provider.h"
 #include "utils.h"
 
-
-//////////////
-// Prototypes
 class PulseAudioPlayer;
-
-
-
 
 /// DOCME
 /// @class PulseAudioPlayer
@@ -170,22 +159,4 @@ public:
 	double GetVolume() { return volume; }
 };
 
-
-
-
-/// DOCME
-/// @class PulseAudioPlayerFactory
-/// @brief DOCME
-///
-/// DOCME
-class PulseAudioPlayerFactory : public AudioPlayerFactory {
-public:
-
-	/// @brief DOCME
-	///
-	AudioPlayer *CreatePlayer() { return new PulseAudioPlayer(); }
-};
-
 #endif
-
-

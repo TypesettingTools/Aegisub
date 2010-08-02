@@ -50,7 +50,7 @@
 #include "help_button.h"
 #include "libresrc/libresrc.h"
 #include "main.h"
-#include "spellchecker_manager.h"
+#include "include/aegisub/spellchecker.h"
 #include "subs_edit_box.h"
 #include "subs_edit_ctrl.h"
 #include "subs_grid.h"
@@ -96,7 +96,7 @@ DialogSpellChecker::DialogSpellChecker(wxFrame *parent)
 	SetIcon(BitmapToIcon(GETIMAGE(spellcheck_toolbutton_24)));
 
 	// Get spell checker
-	spellchecker = SpellCheckerFactoryManager::GetSpellChecker();
+	spellchecker = SpellCheckerFactory::GetSpellChecker();
 	if (!spellchecker) {
 		wxMessageBox(_T("No spellchecker available."),_T("Error"),wxICON_ERROR);
 		Destroy();

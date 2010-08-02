@@ -34,16 +34,13 @@
 /// @ingroup main
 ///
 
-
-///////////
-// Headers
 #include "config.h"
 
-#include "audio_player_manager.h"
-#include "audio_provider_manager.h"
+#include "include/aegisub/audio_player.h"
+#include "include/aegisub/audio_provider.h"
+#include "include/aegisub/spellchecker.h"
+#include "include/aegisub/subtitles_provider.h"
 #include "plugin_manager.h"
-#include "spellchecker_manager.h"
-#include "subtitles_provider_manager.h"
 #include "video_provider_manager.h"
 
 
@@ -59,15 +56,14 @@ PluginManager::PluginManager() {
 }
 
 
-
 /// @brief Destructor 
 ///
 PluginManager::~PluginManager() {
-	VideoProviderFactoryManager::ClearProviders();
-	AudioProviderFactoryManager::ClearProviders();
-	AudioPlayerFactoryManager::ClearProviders();
-	SubtitlesProviderFactoryManager::ClearProviders();
-	SpellCheckerFactoryManager::ClearProviders();
+	VideoProviderFactory::Clear();
+	AudioProviderFactory::Clear();
+	AudioPlayerFactory::Clear();
+	SubtitlesProviderFactory::Clear();
+	SpellCheckerFactory::Clear();
 
 #ifdef WITH_AUTO4_LUA
 	if (lua) {
@@ -85,11 +81,11 @@ PluginManager::~PluginManager() {
 void PluginManager::RegisterBuiltInPlugins() {
 	if (!init) {
 		// Managers
-		VideoProviderFactoryManager::RegisterProviders();
-		AudioProviderFactoryManager::RegisterProviders();
-		AudioPlayerFactoryManager::RegisterProviders();
-		SubtitlesProviderFactoryManager::RegisterProviders();
-		SpellCheckerFactoryManager::RegisterProviders();
+		VideoProviderFactory::RegisterProviders();
+		AudioProviderFactory::RegisterProviders();
+		AudioPlayerFactory::RegisterProviders();
+		SubtitlesProviderFactory::RegisterProviders();
+		SpellCheckerFactory::RegisterProviders();
 
 		// Automation languages
 #ifdef WITH_AUTO4_LUA
@@ -101,5 +97,3 @@ void PluginManager::RegisterBuiltInPlugins() {
 	// Done
 	init = true;
 }
-
-

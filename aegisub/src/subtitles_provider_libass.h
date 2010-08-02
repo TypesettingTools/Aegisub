@@ -34,12 +34,9 @@
 /// @ingroup subtitle_rendering
 ///
 
-///////////
-// Headers
-
 #ifdef WITH_LIBASS
 
-#include "subtitles_provider_manager.h"
+#include "include/aegisub/subtitles_provider.h"
 extern "C" {
 #ifdef __VISUALC__
 #include "stdint.h"
@@ -55,8 +52,6 @@ extern "C" {
 ///
 /// DOCME
 class LibassSubtitlesProvider : public SubtitlesProvider {
-private:
-
 	/// DOCME
 	static ASS_Library* ass_library;
 
@@ -67,27 +62,10 @@ private:
 	ASS_Track* ass_track;
 
 public:
-	LibassSubtitlesProvider();
+	LibassSubtitlesProvider(std::string);
 	~LibassSubtitlesProvider();
 
 	void LoadSubtitles(AssFile *subs);
 	void DrawSubtitles(AegiVideoFrame &dst,double time);
 };
-
-
-
-/// DOCME
-/// @class LibassSubtitlesProviderFactory
-/// @brief DOCME
-///
-/// DOCME
-class LibassSubtitlesProviderFactory : public SubtitlesProviderFactory {
-public:
-
-	/// @brief DOCME
-	/// @param subType
-	///
-	SubtitlesProvider *CreateProvider(wxString subType=_T("")) { return new LibassSubtitlesProvider(); }
-};
-
 #endif

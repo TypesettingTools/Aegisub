@@ -57,7 +57,7 @@
 #include "main.h"
 #include "subs_grid.h"
 #include "subs_preview.h"
-#include "subtitles_provider_manager.h"
+#include "include/aegisub/subtitles_provider.h"
 #include "utils.h"
 #include "validators.h"
 
@@ -361,7 +361,7 @@ DialogStyleEditor::DialogStyleEditor (wxWindow *parent, AssStyle *_style, Subtit
 	// Preview
 	SubsPreview = NULL;
 	PreviewText = NULL;
-	if (SubtitlesProviderFactoryManager::ProviderAvailable()) {
+	if (!SubtitlesProviderFactory::GetClasses().empty()) {
 		PreviewText = new wxTextCtrl(this,TEXT_PREVIEW,lagi_wxString(OPT_GET("Tool/Style Editor/Preview Text")->GetString()));
 		previewButton = new ColourButton(this,BUTTON_PREVIEW_COLOR,wxSize(45,16),lagi_wxColour(OPT_GET("Colour/Style Editor/Background/Preview")->GetColour()));
 		SubsPreview = new SubtitlesPreview(this,-1,wxDefaultPosition,wxSize(100,60),wxSUNKEN_BORDER,lagi_wxColour(OPT_GET("Colour/Style Editor/Background/Preview")->GetColour()));

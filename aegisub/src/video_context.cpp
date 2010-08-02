@@ -59,6 +59,8 @@
 #include "ass_time.h"
 #include "audio_display.h"
 #include "compat.h"
+#include "include/aegisub/audio_player.h"
+#include "include/aegisub/audio_provider.h"
 #include "include/aegisub/video_provider.h"
 #include "keyframe.h"
 #include <libaegisub/access.h>

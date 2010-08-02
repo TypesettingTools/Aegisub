@@ -34,20 +34,12 @@
 /// @ingroup main_headers subtitle_rendering
 ///
 
-
 #pragma once
 
-///////////
-// Headers
-#include "aegisub.h"
-#include "video_frame.h"
+#include "factory_manager.h"
 
-
-//////////////
-// Prototypes
 class AssFile;
-
-
+class AegiVideoFrame;
 
 /// @class SubtitlesProvider
 /// @brief DOCME
@@ -55,7 +47,7 @@ class AssFile;
 /// DOCME
 class SubtitlesProvider {
 public:
-	virtual ~SubtitlesProvider();
+	virtual ~SubtitlesProvider() { };
 
 	virtual void LoadSubtitles(AssFile *subs)=0;
 
@@ -63,22 +55,16 @@ public:
 	/// @param dst  
 	/// @param time 
 	///
-	virtual void DrawSubtitles(AegiVideoFrame &dst,double time) {}
+	virtual void DrawSubtitles(AegiVideoFrame &dst,double time)=0;
 };
 
-
-
-/// @class SubtitlesProviderFactory
+/// DOCME
+/// @class SubtitlesProviderFactoryManager
 /// @brief DOCME
 ///
 /// DOCME
-class SubtitlesProviderFactory {
+class SubtitlesProviderFactory : public Factory1<SubtitlesProvider, std::string> {
 public:
-
-	/// @brief DOCME
-	///
-	virtual ~SubtitlesProviderFactory() {}
-	virtual SubtitlesProvider *CreateProvider(wxString subType=_T(""))=0;
+	static SubtitlesProvider *GetProvider();
+	static void RegisterProviders();
 };
-
-

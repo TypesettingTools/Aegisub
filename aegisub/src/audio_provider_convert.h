@@ -34,9 +34,6 @@
 /// @ingroup audio_input
 ///
 
-
-///////////
-// Headers
 #include "include/aegisub/audio_provider.h"
 
 
@@ -66,7 +63,7 @@ public:
 	/// @brief // That's one of the points of it! // By its nature, the ConvertAudioProvider always delivers machine endian:
 	/// @return 
 	///
-	bool AreSamplesNativeEndian() { return true; }
+	bool AreSamplesNativeEndian() const { return true; }
 
 	void GetAudio(void *buf, int64_t start, int64_t count);
 
@@ -76,6 +73,3 @@ public:
 };
 
 AudioProvider *CreateConvertAudioProvider(AudioProvider *source_provider);
-
-
-

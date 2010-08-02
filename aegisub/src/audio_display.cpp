@@ -57,6 +57,8 @@
 #include "compat.h"
 #include "fft.h"
 #include "hotkeys.h"
+#include "include/aegisub/audio_player.h"
+#include "include/aegisub/audio_provider.h"
 #include "main.h"
 #include "standard_paths.h"
 #include "subs_edit_box.h"
@@ -895,14 +897,14 @@ void AudioDisplay::SetFile(wxString file) {
 				is_dummy = true;
 				provider = new DummyAudioProvider(150*60*1000, true); // 150 minutes noise
 			} else {
-				provider = AudioProviderFactoryManager::GetAudioProvider(file);
+				provider = AudioProviderFactory::GetProvider(file);
 			}
 #else
-			provider = AudioProviderFactoryManager::GetAudioProvider(file);
+			provider = AudioProviderFactory::GetProvider(file);
 #endif
 
 			// Get player
-			player = AudioPlayerFactoryManager::GetAudioPlayer();
+			player = AudioPlayerFactory::GetAudioPlayer();
 			player->SetDisplayTimer(&UpdateTimer);
 			player->SetProvider(provider);
 			player->OpenStream();

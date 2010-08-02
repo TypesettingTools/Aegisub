@@ -496,10 +496,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\audio_provider_manager.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\audio_provider_pcm.cpp"
 				>
 			</File>
@@ -1444,10 +1440,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\spellchecker_manager.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\thesaurus.cpp"
 				>
 			</File>
@@ -1569,10 +1561,6 @@
 			</File>
 			<File
 				RelativePath="..\..\src\subtitles_provider_libass.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\subtitles_provider_manager.h"
 				>
 			</File>
 		</Filter>

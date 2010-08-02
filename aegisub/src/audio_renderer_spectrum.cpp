@@ -53,6 +53,7 @@
 
 #include <libaegisub/log.h>
 
+#include "include/aegisub/audio_provider.h"
 #include "audio_renderer_spectrum.h"
 #include "colorspace.h"
 #include "fft.h"

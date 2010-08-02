@@ -45,7 +45,7 @@
 #include "ass_exporter.h"
 #include "ass_file.h"
 #include "compat.h"
-#include "subtitles_provider_manager.h"
+#include "include/aegisub/subtitles_provider.h"
 #include "video_provider_manager.h"
 
 // Test if a line is a dialogue line which is not visible at the given time
@@ -152,8 +152,8 @@ void *ThreadedFrameSource::Entry() {
 
 ThreadedFrameSource::ThreadedFrameSource(wxString videoFileName, wxEvtHandler *parent)
 : wxThread()
-, provider(SubtitlesProviderFactoryManager::GetProvider())
-, videoProvider(VideoProviderFactoryManager::GetProvider(videoFileName))
+, provider(SubtitlesProviderFactory::GetProvider())
+, videoProvider(VideoProviderFactory::GetProvider(videoFileName))
 , parent(parent)
 , nextTime(-1.)
 , jobReady(jobMutex)

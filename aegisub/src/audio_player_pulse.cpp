@@ -34,20 +34,15 @@
 /// @ingroup audio_output
 ///
 
-
 #include "config.h"
 
 #ifdef WITH_PULSEAUDIO
 
-
-///////////
-// Headers
 #ifndef AGI_PRE
 #include <stdio.h>
 #endif
 
 #include "audio_player_pulse.h"
-#include "audio_provider_manager.h"
 #include "utils.h"
 
 
@@ -451,7 +446,4 @@ void PulseAudioPlayer::pa_stream_notify(pa_stream *p, PulseAudioPlayer *thread)
 	thread->stream_notify.Post();
 }
 
-
 #endif // WITH_PULSEAUDIO
-
-

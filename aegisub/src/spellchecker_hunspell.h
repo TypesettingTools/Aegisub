@@ -49,7 +49,6 @@ namespace agi {
 	}
 }
 
-
 /// @class HunspellSpellChecker
 /// @brief Hunspell spell checker
 ///
@@ -88,19 +87,4 @@ public:
 	void SetLanguage(wxString language);
 };
 
-
-
-/// @class HunspellSpellCheckerFactory
-/// @brief Hunspell SpellChecker Factory
-///
-class HunspellSpellCheckerFactory : public SpellCheckerFactory {
-public:
-
-	/// @brief Create new Hunspell Spell checker.
-	///
-	SpellChecker *CreateSpellChecker() { return new HunspellSpellChecker(); }
-};
-
 #endif
-
-

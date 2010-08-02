@@ -1,4 +1,4 @@
-// Copyright (c) 2007-2008, Rodrigo Braz Monteiro
+// Copyright (c) 2010, Thomas Goyne <plorkyeran@aegisub.org>
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -34,117 +34,111 @@
 /// @ingroup utility
 ///
 
-
 #pragma once
 
-
-///////////
-// Headers
 #ifndef AGI_PRE
+#include <cctype>
 #include <map>
+#include <vector>
 
-#include <wx/arrstr.h>
 #include <wx/string.h>
 #endif
 
-
-/////////////////
-// Factory class
-template <class T>
-
-/// DOCME
-/// @class FactoryManager
-/// @brief DOCME
-///
-/// DOCME
-class FactoryManager {
+template <class func>
+class FactoryBase {
 protected:
+	typedef std::map<std::string, std::pair<bool, func> > map;
+	typedef typename map::iterator iterator;
 
-	/// DOCME
-	static std::map<wxString,T*> *factories;
+	static map *classes;
 
+	static void DoRegister(func function, std::string name, bool hide, std::vector<std::string> &subtypes) {
+		if (!classes) classes = new map;
 
-	/// @brief DOCME
-	///
-	static void ClearFactories() { 
-		if (factories && !factories->empty()) {
-			typename std::map<wxString,T*>::iterator iter;
-			for (iter = factories->begin(); iter != factories->end(); iter++) {
-				delete iter->second;
-			}
-			factories->clear(); 
+		if (subtypes.empty()) {
+			classes->insert(std::make_pair(name, std::make_pair(hide, function)));
 		}
-		delete factories;
-	}
-
-
-	/// @brief // Register one factory type (with possible subtypes)
-	/// @param factory  
-	/// @param name     
-	/// @param subTypes 
-	///
-	static void RegisterFactory(T* factory,wxString name, wxArrayString subTypes=wxArrayString()) {
-		// Create factories if it doesn't exist
-		if (factories == NULL) factories = new std::map<wxString,T*>;
-
-		// Prepare subtypes
-		if (subTypes.GetCount() == 0) subTypes.Add(_T(""));
 		else {
-			for (unsigned int i=0;i<subTypes.GetCount();i++) {
-				subTypes[i] = _T("/") + subTypes[i];
+			for (size_t i = 0; i < subtypes.size(); i++) {
+				classes->insert(std::make_pair(name + '/' + subtypes[i], std::make_pair(hide, function)));
 			}
-		}
-
-		// Insert each subtype
-		for (unsigned int i=0;i<subTypes.GetCount();i++) {
-			factories->insert(std::make_pair(name.Lower() + subTypes[i],factory));
 		}
 	}
 
+	static func Find(std::string name) {
+		if (!classes) return NULL;
 
-	/// @brief // Get a factory with name
-	/// @param name 
-	/// @return 
-	///
-	static T *GetFactory(wxString name) {
-		// No factories
-		if (factories == NULL) {
-			factories = new std::map<wxString,T*>;
-			return NULL;
-		}
-
-		// Search for factory that matches
-		typename std::map<wxString,T*>::iterator cur;
-		for (cur = factories->begin();cur != factories->end();cur++) {
-			if (cur->first.StartsWith(name)) return cur->second;
-		}
-
-		// None found
+		iterator factory = classes->find(name);
+		if (factory != classes->end()) return factory->second.second;
 		return NULL;
 	}
 
 public:
-
-	/// @brief // Virtual destructor
-	///
-	virtual ~FactoryManager() {
-		ClearFactories();
-	};
-
-
-	/// @brief // Get list of all factories, with favourite as first
-	/// @param favourite 
-	///
-	static wxArrayString GetFactoryList(wxString favourite=_T("")) {
-		if (factories == NULL) factories = new std::map<wxString,T*>;
-		wxArrayString list;
-		favourite = favourite.Lower();
-		for (typename std::map<wxString,T*>::iterator cur=factories->begin();cur!=factories->end();cur++) {
-			if (cur->first == favourite) list.Insert(cur->first,0);
-			else list.Add(cur->first);
+	static void Clear() {
+		delete classes;
+	}
+	static std::vector<std::string> GetClasses(std::string favourite="") {
+		std::vector<std::string> list;
+		if (!classes) return list;
+		std::string cmp;
+		std::transform(favourite.begin(), favourite.end(), favourite.begin(), ::tolower);
+		for (iterator cur=classes->begin();cur!=classes->end();cur++) {
+			cmp.clear();
+			std::transform(cur->first.begin(), cur->first.end(), std::back_inserter(cmp), ::tolower);
+			if (cmp == favourite) list.insert(list.begin(), cur->first);
+			else if (!cur->second.first) list.push_back(cur->first);
 		}
 		return list;
 	}
+	virtual ~FactoryBase() {
+		delete classes;
+	}
 };
 
+template<class Base>
+class Factory0 : public FactoryBase<Base *(*)()> {
+	typedef Base *(*func)();
+	template<class T>
+	static Base* create() {
+		return new T;
+	}
+public:
+	static Base* Create(std::string name) {
+		func factory = FactoryBase<func>::Find(name);
+		if (factory) {
+			return factory();
+		}
+		else {
+			return NULL;
+		}
+	}
 
+	template<class T>
+	static void Register(std::string name, bool hide = false, std::vector<std::string> subTypes = std::vector<std::string>()) {
+		DoRegister(&Factory0<Base>::create<T>, name, hide, subTypes);
+	}
+};
+
+template<class Base, class Arg1>
+class Factory1 : public FactoryBase<Base *(*)(Arg1)> {
+	typedef Base *(*func)(Arg1);
+	template<class T>
+	static Base* create(Arg1 a1) {
+		return new T(a1);
+	}
+public:
+	static Base* Create(std::string name, Arg1 a1) {
+		func factory = FactoryBase<func>::Find(name);
+		if (factory) {
+			return factory(a1);
+		}
+		else {
+			return NULL;
+		}
+	}
+
+	template<class T>
+	static void Register(std::string name, bool hide = false, std::vector<std::string> subTypes = std::vector<std::string>()) {
+		DoRegister(&Factory1<Base, Arg1>::create<T>, name, hide, subTypes);
+	}
+};

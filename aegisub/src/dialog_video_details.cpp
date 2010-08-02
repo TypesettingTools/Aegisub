@@ -34,17 +34,12 @@
 /// @ingroup secondary_ui
 ///
 
-
-///////////
-// Headers
 #include "config.h"
 
 #ifndef AGI_PRE
 #include <wx/stattext.h>
 #endif
 
-#include "audio_box.h"
-#include "audio_provider_manager.h"
 #include "dialog_video_details.h"
 #include "utils.h"
 #include "video_context.h"

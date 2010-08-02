@@ -34,19 +34,13 @@
 /// @ingroup audio_output
 ///
 
-
 #include "config.h"
 
 #ifdef WITH_OPENAL
 
-
-///////////
-// Headers
 #include <libaegisub/log.h>
 
-#include "audio_player_manager.h"
 #include "audio_player_openal.h"
-#include "audio_provider_manager.h"
 #include "frame_main.h"
 #include "utils.h"
 
@@ -61,13 +55,10 @@
 #include <AL/alc.h>
 #endif
 
-
 // Auto-link to OpenAL lib for MSVC
 #ifdef _MSC_VER
 #pragma comment(lib, "openal32.lib")
 #endif
-
-
 
 /// @brief Constructor 
 ///
@@ -79,8 +70,6 @@ OpenALPlayer::OpenALPlayer()
 	start_frame = cur_frame = end_frame = bpf = 0;
 	provider = 0;
 }
-
-
 
 /// @brief Destructor 
 ///
@@ -375,6 +364,3 @@ int64_t OpenALPlayer::GetCurrentPosition()
 
 
 #endif // WITH_OPENAL
-
-
-

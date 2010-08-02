@@ -183,25 +183,5 @@ public:
 	/// @return 
 	///
 	double GetVolume() { return volume; }
-
-	//wxMutex *GetMutex() { return &DSMutex; }
 };
-
-
-
-/// DOCME
-/// @class DirectSoundPlayerFactory
-/// @brief DOCME
-///
-/// DOCME
-class DirectSoundPlayerFactory : public AudioPlayerFactory {
-public:
-
-	/// @brief DOCME
-	///
-	AudioPlayer *CreatePlayer() { return new DirectSoundPlayer(); }
-};
-
 #endif
-
-

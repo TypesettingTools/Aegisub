@@ -20,6 +20,8 @@
 
 
 #ifndef AGI_PRE
+#include <iterator>
+
 #include <wx/checkbox.h>
 #include <wx/combobox.h>
 #include <wx/filefn.h>
@@ -37,10 +39,10 @@
 #include "libresrc/libresrc.h"
 #include "preferences.h"
 #include "main.h"
-#include "subtitles_provider_manager.h"
+#include "include/aegisub/audio_player.h"
+#include "include/aegisub/audio_provider.h"
+#include "include/aegisub/subtitles_provider.h"
 #include "video_provider_manager.h"
-#include "audio_player_manager.h"
-#include "audio_provider_manager.h"
 
 /// Define make all platform-specific options visible in a single view.
 #define SHOW_ALL 1
@@ -296,15 +298,20 @@ Advanced_Interface::Advanced_Interface(wxTreebook *book): OptionPage(book, _("Ba
 	SetSizerAndFit(sizer);
 }
 
+static wxArrayString vec_to_arrstr(std::vector<std::string> const& vec) {
+	wxArrayString arrstr;
+	std::copy(vec.begin(), vec.end(), std::back_inserter(arrstr));
+	return arrstr;
+}
 
 /// Advanced Audio preferences subpage
 Advanced_Audio::Advanced_Audio(wxTreebook *book): OptionPage(book, _("Audio"), PAGE_SUB) {
 	wxFlexGridSizer *expert = PageSizer(_("Expert"));
 
-	wxArrayString ap_choice = AudioProviderFactoryManager::GetFactoryList();
+	wxArrayString ap_choice = vec_to_arrstr(AudioProviderFactory::GetClasses());
 	OptionChoice(expert, _("Audio provider"), ap_choice, "Audio/Provider");
 
-	wxArrayString apl_choice = AudioPlayerFactoryManager::GetFactoryList();
+	wxArrayString apl_choice = vec_to_arrstr(AudioPlayerFactory::GetClasses());
 	OptionChoice(expert, _("Audio player"), apl_choice, "Audio/Player");
 
 	wxFlexGridSizer *cache = PageSizer(_("Cache"));
@@ -340,10 +347,10 @@ Advanced_Audio::Advanced_Audio(wxTreebook *book): OptionPage(book, _("Audio"), P
 Advanced_Video::Advanced_Video(wxTreebook *book): OptionPage(book, _("Video")) {
 	wxFlexGridSizer *expert = PageSizer(_("Expert"));
 
-	wxArrayString vp_choice = VideoProviderFactoryManager::GetFactoryList();
+	wxArrayString vp_choice = vec_to_arrstr(VideoProviderFactory::GetClasses());
 	OptionChoice(expert, _("Video provider"), vp_choice, "Video/Provider");
 
-	wxArrayString sp_choice = SubtitlesProviderFactoryManager::GetFactoryList();
+	wxArrayString sp_choice = vec_to_arrstr(SubtitlesProviderFactory::GetClasses());
 	OptionChoice(expert, _("Subtitle provider"), sp_choice, "Subtitle/Provider");
 
 

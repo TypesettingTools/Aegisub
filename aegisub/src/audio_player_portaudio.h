@@ -37,16 +37,12 @@
 
 #ifdef WITH_PORTAUDIO
 
-
-///////////
-// Headers
 #include "include/aegisub/audio_player.h"
 #include "include/aegisub/audio_provider.h"
 #include "utils.h"
 extern "C" {
 #include <portaudio.h>
 }
-
 
 /// @class PortAudioPlayer
 /// @brief PortAudio Player
@@ -126,16 +122,4 @@ public:
 
 	wxArrayString GetOutputDevices(wxString favorite);
 };
-
-
-/// @class PortAudioPlayerFactory
-/// @brief PortAudio Player Factory
-class PortAudioPlayerFactory : public AudioPlayerFactory {
-public:
-
-	/// @brief Create player
-	/// @return New PortAudio Player
-	AudioPlayer *CreatePlayer() { return new PortAudioPlayer(); }
-};
-
 #endif //ifdef WITH_PORTAUDIO

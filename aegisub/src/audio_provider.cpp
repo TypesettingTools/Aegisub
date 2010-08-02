@@ -35,15 +35,12 @@
 ///
 
 
-///////////
-// Headers
 #include "config.h"
 
 #ifndef AGI_PRE
 #include <wx/thread.h>
 #endif
 
-#include "audio_display.h"
 #ifdef WITH_AVISYNTH
 #include "audio_provider_avs.h"
 #endif
@@ -57,70 +54,16 @@
 #include "compat.h"
 #include "main.h"
 
-
-
-
 /// @brief Constructor 
 ///
-AudioProvider::AudioProvider() {
-	raw = NULL;
+AudioProvider::AudioProvider() : raw(NULL) {
 }
-
-
 
 /// @brief Destructor 
 ///
 AudioProvider::~AudioProvider() {
-	// Clear buffers
 	delete[] raw;
 }
-
-
-
-/// @brief Get number of channels 
-/// @return 
-///
-int AudioProvider::GetChannels() {
-	return channels;
-}
-
-
-
-/// @brief Get number of samples 
-/// @return 
-///
-int64_t AudioProvider::GetNumSamples() {
-	return num_samples;
-}
-
-
-
-/// @brief Get sample rate 
-/// @return 
-///
-int AudioProvider::GetSampleRate() {
-	return sample_rate;
-}
-
-
-
-/// @brief Get bytes per sample 
-/// @return 
-///
-int AudioProvider::GetBytesPerSample() {
-	return bytes_per_sample;
-}
-
-
-
-/// @brief Get filename 
-/// @return 
-///
-wxString AudioProvider::GetFilename() {
-	return filename;
-}
-
-
 
 /// @brief Get waveform 
 /// @param min     
@@ -193,8 +136,6 @@ void AudioProvider::GetWaveForm(int *min,int *peak,int64_t start,int w,int h,int
 	}
 }
 
-
-
 /// @brief Get audio with volume 
 /// @param buf    
 /// @param start  
@@ -230,15 +171,12 @@ void AudioProvider::GetAudioWithVolume(void *buf, int64_t start, int64_t count, 
 	}
 }
 
-
-
 /// @brief Get provider 
 /// @param filename 
 /// @param cache    
 /// @return 
 ///
-AudioProvider *AudioProviderFactoryManager::GetAudioProvider(wxString filename, int cache) {
-	// Prepare provider
+AudioProvider *AudioProviderFactory::GetProvider(wxString filename, int cache) {
 	AudioProvider *provider = NULL;
 
 	if (!OPT_GET("Provider/Audio/PCM/Disable")->GetBool()) {
@@ -248,27 +186,22 @@ AudioProvider *AudioProviderFactoryManager::GetAudioProvider(wxString filename, 
 			if (provider->GetBytesPerSample() == 2 && provider->GetSampleRate() >= 32000 && provider->GetChannels() == 1)
 				return provider;
 			else {
-				provider = CreateConvertAudioProvider(provider);
-				return provider;
+				return CreateConvertAudioProvider(provider);
 			}
 		}
 	}
 
 	// List of providers
-	wxArrayString list = GetFactoryList(lagi_wxString(OPT_GET("Audio/Provider")->GetString()));
+	std::vector<std::string> list = GetClasses(OPT_GET("Audio/Provider")->GetString());
 
-	// None available
-	if (list.Count() == 0) throw _T("No audio providers are available.");
+	if (list.empty()) throw _T("No audio providers are available.");
 
 	// Get provider
 	wxString error;
-	for (unsigned int i=0;i<list.Count();i++) {
+	for (unsigned int i=0;i<list.size();i++) {
 		try {
-			AudioProvider *prov = GetFactory(list[i])->CreateProvider(filename.wc_str());
-			if (prov) {
-				provider = prov;
-				break;
-			}
+			provider = Create(list[i], filename);
+			if (provider) break;
 		}
 		catch (wxString err) { error += list[i] + _T(" factory: ") + err + _T("\n"); }
 		catch (const wxChar *err) { error += list[i] + _T(" factory: ") + wxString(err) + _T("\n"); }
@@ -296,11 +229,10 @@ AudioProvider *AudioProviderFactoryManager::GetAudioProvider(wxString filename, 
 		// Reassign
 		if (final) {
 			delete provider;
-			provider = final;
+			return final;
 		}
 	}
 
-	// Return
 	return provider;
 }
 
@@ -308,26 +240,13 @@ AudioProvider *AudioProviderFactoryManager::GetAudioProvider(wxString filename, 
 
 /// @brief Register all providers 
 ///
-void AudioProviderFactoryManager::RegisterProviders() {
+void AudioProviderFactory::RegisterProviders() {
 #ifdef WITH_AVISYNTH
-	RegisterFactory(new AvisynthAudioProviderFactory(),_T("Avisynth"));
+	Register<AvisynthAudioProvider>("Avisynth");
 #endif
 #ifdef WITH_FFMPEGSOURCE
-	RegisterFactory(new FFmpegSourceAudioProviderFactory(),_T("FFmpegSource"));
+	Register<FFmpegSourceAudioProvider>("FFmpegSource");
 #endif
 }
 
-
-
-/// @brief Clear all providers 
-///
-void AudioProviderFactoryManager::ClearProviders() {
-	ClearFactories();
-}
-
-
-
-/// DOCME
-template <class AudioProviderFactory> std::map<wxString,AudioProviderFactory*>* FactoryManager<AudioProviderFactory>::factories=NULL;
-
-
+template<> AudioProviderFactory::map *FactoryBase<AudioProvider *(*)(wxString)>::classes = NULL;

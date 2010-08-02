@@ -42,7 +42,7 @@
 #include "ass_dialogue.h"
 #include "ass_file.h"
 #include "subtitle_format_dvd.h"
-#include "subtitles_provider_manager.h"
+#include "include/aegisub/subtitles_provider.h"
 #include "video_provider_dummy.h"
 
 
@@ -115,7 +115,7 @@ void DVDSubtitleFormat::GetSubPictureList(std::vector<SubPicture> &pics) {
 	pics.resize(count);
 
 	SubtitlesProvider *provider = NULL;
-	provider = SubtitlesProviderFactoryManager::GetProvider();
+	provider = SubtitlesProviderFactory::GetProvider();
 	provider->LoadSubtitles(GetAssFile());
 	//TessDllAPI tess;
 

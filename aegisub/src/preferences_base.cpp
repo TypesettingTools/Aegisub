@@ -37,10 +37,9 @@
 #include "libresrc/libresrc.h"
 #include "preferences.h"
 #include "main.h"
-#include "subtitles_provider_manager.h"
+#include "include/aegisub/audio_player.h"
+#include "include/aegisub/audio_provider.h"
 #include "video_provider_manager.h"
-#include "audio_player_manager.h"
-#include "audio_provider_manager.h"
 
 #include "preferences_base.h"
 

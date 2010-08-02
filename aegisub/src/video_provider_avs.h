@@ -95,19 +95,4 @@ public:
 	wxString GetWarning() const;
 	wxString GetDecoderName() const { return wxString(L"Avisynth/") + decoderName; }
 };
-
-/// DOCME
-/// @class AvisynthVideoProviderFactory
-/// @brief DOCME
-///
-/// DOCME
-class AvisynthVideoProviderFactory : public VideoProviderFactory {
-public:
-
-	/// @brief DOCME
-	/// @param video 
-	///
-	VideoProvider *CreateProvider(wxString video) { return new AvisynthVideoProvider(video); }
-};
-
 #endif

@@ -37,13 +37,9 @@
 
 #ifdef WITH_OSS
 
-///////////
-// Headers
 #include <libaegisub/log.h>
 
-#include "audio_player_manager.h"
 #include "audio_player_oss.h"
-#include "audio_provider_manager.h"
 #include "frame_main.h"
 #include "compat.h"
 #include "main.h"

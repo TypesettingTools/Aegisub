@@ -36,11 +36,6 @@
 
 
 #ifdef WITH_OPENAL
-
-
-///////////
-// Headers
-#include "audio_player_manager.h"
 #include "include/aegisub/audio_player.h"
 #include "include/aegisub/audio_provider.h"
 #include "utils.h"
@@ -55,8 +50,6 @@
 #include <AL/al.h>
 #include <AL/alc.h>
 #endif
-
-
 
 /// DOCME
 /// @class OpenALPlayer
@@ -164,23 +157,4 @@ public:
 	///
 	double GetVolume() { return volume; }
 };
-
-
-
-
-/// DOCME
-/// @class OpenALPlayerFactory
-/// @brief DOCME
-///
-/// DOCME
-class OpenALPlayerFactory : public AudioPlayerFactory {
-public:
-
-	/// @brief DOCME
-	///
-	AudioPlayer *CreatePlayer() { return new OpenALPlayer(); }
-};
-
 #endif
-
-

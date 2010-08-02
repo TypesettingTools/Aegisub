@@ -48,7 +48,7 @@
 #include "ass_dialogue.h"
 #include "compat.h"
 #include "main.h"
-#include "spellchecker_manager.h"
+#include "include/aegisub/spellchecker.h"
 #include "subs_edit_box.h"
 #include "subs_edit_ctrl.h"
 #include "subs_grid.h"
@@ -88,7 +88,7 @@ enum {
 ///
 SubsTextEditCtrl::SubsTextEditCtrl(wxWindow* parent, wxSize wsize, long style, SubtitlesGrid *grid)
 : ScintillaTextCtrl(parent, wxID_ANY, "", wxDefaultPosition, wsize, style)
-, spellchecker(SpellCheckerFactoryManager::GetSpellChecker())
+, spellchecker(SpellCheckerFactory::GetSpellChecker())
 , thesaurus(Thesaurus::GetThesaurus())
 , grid(grid)
 {

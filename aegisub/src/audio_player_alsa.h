@@ -37,9 +37,6 @@
 
 #ifdef WITH_ALSA
 
-
-///////////
-// Headers
 #include <alsa/asoundlib.h>
 
 #include "include/aegisub/audio_player.h"
@@ -148,22 +145,4 @@ public:
 	double GetVolume() { return volume; }
 };
 
-
-
-
-/// DOCME
-/// @class AlsaPlayerFactory
-/// @brief DOCME
-///
-/// DOCME
-class AlsaPlayerFactory : public AudioPlayerFactory {
-public:
-
-	/// @brief DOCME
-	///
-	AudioPlayer *CreatePlayer() { return new AlsaPlayer(); }
-};
-
 #endif
-
-

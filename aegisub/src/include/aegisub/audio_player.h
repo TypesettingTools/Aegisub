@@ -34,37 +34,26 @@
 /// @ingroup main_headers audio_output
 ///
 
-
 #pragma once
 
-
-///////////
-// Headers
 #ifndef AGI_PRE
 #include <wx/event.h>
 #include <wx/thread.h>
 #include <wx/timer.h>
 #endif
 
-#include "aegisub.h"
+#include "factory_manager.h"
 
-
-//////////////
-// Prototypes
 class AudioProvider;
-
-
 
 /// @class AudioPlayer
 /// @brief DOCME
 ///
 /// DOCME
 class AudioPlayer : public wxEvtHandler {
-private:
 	void OnStopAudio(wxCommandEvent &event);
 
 protected:
-
 	/// DOCME
 	AudioProvider *provider;
 
@@ -98,27 +87,20 @@ public:
 	virtual void SetEndPosition(int64_t pos)=0;
 	virtual void SetCurrentPosition(int64_t pos)=0;
 
-	virtual wxMutex *GetMutex();
+	virtual wxMutex *GetMutex() { return NULL; }
 
-	virtual void SetProvider(AudioProvider *provider);
-	AudioProvider *GetProvider();
+	virtual void SetProvider(AudioProvider *new_provider) { provider = new_provider; }
+	AudioProvider *GetProvider() const { return provider; }
 
-	void SetDisplayTimer(wxTimer *timer);
+	void SetDisplayTimer(wxTimer *timer) { displayTimer = timer; }
 
 	DECLARE_EVENT_TABLE()
 };
 
-
-
-/// @class AudioPlayerFactory
-/// @brief DOCME
-///
-/// DOCME
-class AudioPlayerFactory {
+class AudioPlayerFactory : public Factory0<AudioPlayer> {
 public:
-
-	/// @brief DOCME
-	///
-	virtual ~AudioPlayerFactory() {}
-	virtual AudioPlayer *CreatePlayer()=0;
+	static void RegisterProviders();
+	static AudioPlayer *GetAudioPlayer();
 };
+
+DECLARE_EVENT_TYPE(wxEVT_STOP_AUDIO, -1)

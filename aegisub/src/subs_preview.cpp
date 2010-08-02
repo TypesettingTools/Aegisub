@@ -47,7 +47,7 @@
 #include "ass_file.h"
 #include "ass_style.h"
 #include "subs_preview.h"
-#include "subtitles_provider_manager.h"
+#include "include/aegisub/subtitles_provider.h"
 #include "video_provider_dummy.h"
 
 
@@ -139,7 +139,7 @@ void SubtitlesPreview::OnSize(wxSizeEvent &evt) {
 	bmp.reset(new wxBitmap(w, h, -1));
 	vid.reset(new DummyVideoProvider(0.0, 10, w, h, backColour, true));
 	try {
-		provider.reset(SubtitlesProviderFactoryManager::GetProvider());
+		provider.reset(SubtitlesProviderFactory::GetProvider());
 	}
 	catch (...) {
 		wxMessageBox(

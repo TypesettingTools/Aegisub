@@ -34,9 +34,6 @@
 /// @ingroup subtitle_rendering
 ///
 
-
-///////////
-// Headers
 #include "config.h"
 
 #include "compat.h"
@@ -47,47 +44,22 @@
 #ifdef WITH_LIBASS
 #include "subtitles_provider_libass.h"
 #endif
-#include "subtitles_provider_manager.h"
-
-
-/// @brief Destructor 
-///
-SubtitlesProvider::~SubtitlesProvider() {
-}
-
-
-
-/// @brief Check if provider available (doesn't verify provider works!) 
-/// @return 
-///
-bool SubtitlesProviderFactoryManager::ProviderAvailable() {
-	// List of providers
-	wxArrayString list = GetFactoryList(lagi_wxString(OPT_GET("Subtitle/Provider")->GetString()));
-
-	// None available
-	return (list.Count() > 0);
-}
-
-
 
 /// @brief Get provider 
 /// @return 
 ///
-SubtitlesProvider* SubtitlesProviderFactoryManager::GetProvider() {
-	// List of providers
-	wxArrayString list = GetFactoryList(lagi_wxString(OPT_GET("Subtitle/Provider")->GetString()));
-
-	// None available
-	if (list.Count() == 0) throw _T("No subtitle providers are available.");
+SubtitlesProvider* SubtitlesProviderFactory::GetProvider() {
+	std::vector<std::string> list = GetClasses(OPT_GET("Subtitle/Provider")->GetString());
+	if (list.empty()) throw _T("No subtitle providers are available.");
 
 	// Get provider
 	wxString error;
-	for (unsigned int i=0;i<list.Count();i++) {
+	for (unsigned int i=0;i<list.size();i++) {
 		try {
-			size_t pos = list[i].Find(_T('/'));
-			wxString name = list[i].Left(pos);
-			wxString subType = list[i].Mid(pos+1);
-			SubtitlesProvider *provider = GetFactory(list[i])->CreateProvider(subType);
+			size_t pos = list[i].find('/');
+			std::string name = list[i].substr(0, pos);
+			std::string subType = pos < list[i].size() - 1 ? list[i].substr(pos + 1) : "";
+			SubtitlesProvider *provider = Create(list[i], subType);
 			if (provider) return provider;
 		}
 		catch (wxString err) { error += list[i] + _T(" factory: ") + err + _T("\n"); }
@@ -99,31 +71,15 @@ SubtitlesProvider* SubtitlesProviderFactoryManager::GetProvider() {
 	throw error;
 }
 
-
-
 /// @brief Register providers 
 ///
-void SubtitlesProviderFactoryManager::RegisterProviders() {
+void SubtitlesProviderFactory::RegisterProviders() {
 #ifdef WITH_CSRI
-	CSRISubtitlesProviderFactory *csri = new CSRISubtitlesProviderFactory();
-	RegisterFactory(csri,_T("CSRI"),csri->GetSubTypes());
+	Register<CSRISubtitlesProvider>("CSRI", false, CSRISubtitlesProvider::GetSubTypes());
 #endif
 #ifdef WITH_LIBASS
-	RegisterFactory(new LibassSubtitlesProviderFactory(),_T("libass"));
+	Register<LibassSubtitlesProvider>("libass");
 #endif
 }
 
-
-
-/// @brief Clear providers 
-///
-void SubtitlesProviderFactoryManager::ClearProviders() {
-	ClearFactories();
-}
-
-
-
-/// DOCME
-template <class SubtitlesProviderFactory> std::map<wxString,SubtitlesProviderFactory*>* FactoryManager<SubtitlesProviderFactory>::factories=NULL;
-
-
+template<> SubtitlesProviderFactory::map *FactoryBase<SubtitlesProvider *(*)(std::string)>::classes = NULL;

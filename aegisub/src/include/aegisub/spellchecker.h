@@ -34,19 +34,14 @@
 /// @ingroup main_headers spelling
 ///
 
-
 #pragma once
 
-
-///////////
-// Headers
 #ifndef AGI_PRE
 #include <wx/arrstr.h>
 #include <wx/string.h>
 #endif
 
-#include "aegisub.h"
-
+#include "factory_manager.h"
 
 /// @class SpellChecker
 /// @brief DOCME
@@ -54,15 +49,9 @@
 /// DOCME
 class SpellChecker {
 public:
-
-	/// @brief DOCME
-	///
-	SpellChecker() {}
-
 	/// @brief DOCME
 	///
 	virtual ~SpellChecker() {}
-
 
 	/// @brief DOCME
 	/// @param word 
@@ -83,19 +72,13 @@ public:
 	virtual void SetLanguage(wxString language)=0;
 };
 
-
-
-/// @class SpellCheckerFactory
+/// DOCME
+/// @class SpellCheckerFactoryManager
 /// @brief DOCME
 ///
 /// DOCME
-class SpellCheckerFactory {
+class SpellCheckerFactory : public Factory0<SpellChecker> {
 public:
-
-	/// @brief DOCME
-	///
-	virtual ~SpellCheckerFactory() {}
-	virtual SpellChecker *CreateSpellChecker()=0;
+	static SpellChecker *GetSpellChecker();
+	static void RegisterProviders();
 };
-
-

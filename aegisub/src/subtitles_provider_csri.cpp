@@ -34,11 +34,7 @@
 /// @ingroup subtitle_rendering
 ///
 
-
-///////////
-// Headers
 #include "config.h"
-
 
 #ifdef WITH_CSRI
 
@@ -50,39 +46,29 @@
 /// @brief Constructor 
 /// @param type 
 ///
-CSRISubtitlesProvider::CSRISubtitlesProvider(wxString type) {
-	subType = type;
-	instance = NULL;
+CSRISubtitlesProvider::CSRISubtitlesProvider(std::string type) : subType(type) {
 }
 
 /// @brief Destructor 
 ///
 CSRISubtitlesProvider::~CSRISubtitlesProvider() {
 	if (!tempfile.empty()) wxRemoveFile(tempfile);
-	if (instance) csri_close(instance);
-	instance = NULL;
 }
 
 /// @brief Load subtitles 
 /// @param subs 
 ///
 void CSRISubtitlesProvider::LoadSubtitles(AssFile *subs) {
-	// Close
-	if (instance) csri_close(instance);
-	instance = NULL;
-
 	// CSRI variables
 	csri_rend *cur,*renderer=NULL;
-	csri_info *info;
 
 	// Select renderer
 	bool canOpenMem = true;
 	for (cur = csri_renderer_default();cur;cur=csri_renderer_next(cur)) {
-		info = csri_renderer_info(cur);
-		wxString name(info->name,wxConvUTF8);
+		std::string name(csri_renderer_info(cur)->name);
 		if (name == subType) {
 			renderer = cur;
-			if (name.StartsWith(_T("vsfilter"))) canOpenMem = false;
+			if (name.find("vsfilter") != name.npos) canOpenMem = false;
 			break;
 		}
 	}
@@ -99,7 +85,7 @@ void CSRISubtitlesProvider::LoadSubtitles(AssFile *subs) {
 	if (canOpenMem) {
 		std::vector<char> data;
 		subs->SaveMemory(data,wxSTRING_ENCODING);
-		instance = csri_open_mem(renderer,&data[0],data.size(),NULL);
+		instance.reset(csri_open_mem(renderer,&data[0],data.size(),NULL), &csri_close);
 	}
 
 	// Open from disk
@@ -110,7 +96,7 @@ void CSRISubtitlesProvider::LoadSubtitles(AssFile *subs) {
 			tempfile += L".ass";
 		}
 		subs->Save(tempfile,false,false,wxSTRING_ENCODING);
-		instance = csri_open_file(renderer,tempfile.utf8_str(),NULL);
+		instance.reset(csri_open_file(renderer,tempfile.utf8_str(),NULL), &csri_close);
 	}
 }
 
@@ -121,7 +107,7 @@ void CSRISubtitlesProvider::LoadSubtitles(AssFile *subs) {
 ///
 void CSRISubtitlesProvider::DrawSubtitles(AegiVideoFrame &dst,double time) {
 	// Check if CSRI loaded properly
-	if (!instance) return;
+	if (!instance.get()) return;
 
 	// Load data into frame
 	csri_frame frame;
@@ -146,31 +132,19 @@ void CSRISubtitlesProvider::DrawSubtitles(AegiVideoFrame &dst,double time) {
 	format.width = dst.w;
 	format.height = dst.h;
 	format.pixfmt = frame.pixfmt;
-	int error = csri_request_fmt(instance,&format);
+	int error = csri_request_fmt(instance.get(),&format);
 	if (error) return;
 
 	// Render
-	csri_render(instance,&frame,time);
+	csri_render(instance.get(),&frame,time);
 }
 
 /// @brief Get CSRI subtypes 
 ///
-wxArrayString CSRISubtitlesProviderFactory::GetSubTypes() {
-	csri_info *info;
-	wxArrayString final;
+std::vector<std::string> CSRISubtitlesProvider::GetSubTypes() {
+	std::vector<std::string> final;
 	for (csri_rend *cur = csri_renderer_default();cur;cur = csri_renderer_next(cur)) {
-		// Get renderer name
-		info = csri_renderer_info(cur);
-		const char* buffer = info->name;
-
-		// wxWidgets isn't initialized, so h4x into a wxString
-		int len = strlen(buffer);
-		wxString str;
-		str.Alloc(len+1);
-		for (int i=0;i<len;i++) {
-			str.Append((wxChar)buffer[i]);
-		}
-		final.Add(str);
+		final.push_back(csri_renderer_info(cur)->name);
 	}
 	return final;
 }

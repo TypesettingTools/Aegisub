@@ -34,9 +34,6 @@
 /// @ingroup audio_ui
 ///
 
-
-///////////
-// Headers
 #include "config.h"
 
 #ifndef AGI_PRE
@@ -55,6 +52,7 @@
 #include "audio_karaoke.h"
 #include "frame_main.h"
 #include "hotkeys.h"
+#include "include/aegisub/audio_player.h"
 #include "libresrc/libresrc.h"
 #include "main.h"
 #include "toggle_bitmap.h"

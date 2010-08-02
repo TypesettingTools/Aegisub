@@ -57,7 +57,7 @@
 /// @param video 
 /// @return 
 ///
-VideoProvider *VideoProviderFactoryManager::GetProvider(wxString video) {
+VideoProvider *VideoProviderFactory::GetProvider(wxString video) {
 	// First check special case of dummy video
 	if (video.StartsWith(_T("?dummy:"))) {
 		return new DummyVideoProvider(video.wc_str());
@@ -73,21 +73,23 @@ VideoProvider *VideoProviderFactoryManager::GetProvider(wxString video) {
 		LOG_E("manager/video/provider/yuv4mpeg") << "Provider creation failed with reason: "<< temp.c_str() << " trying other providers";
 	}
 	catch (...) {
-		LOG_E("manager/video/provider/yuv4mpeg") << "Provider creation failed (uknown reason) trying other providers";
+		LOG_E("manager/video/provider/yuv4mpeg") << "Provider creation failed (unknown reason) trying other providers";
 	}
 
 	// List of providers
-	wxArrayString list = GetFactoryList(lagi_wxString(OPT_GET("Video/Provider")->GetString()));
+	std::vector<std::string> list = GetClasses(OPT_GET("Video/Provider")->GetString());
+	if (video.StartsWith("?dummy")) list.insert(list.begin(), "Dummy");
+	list.insert(list.begin(), "YUV4MPEG");
 
 	// None available
-	if (list.Count() == 0) throw _T("No video providers are available.");
+	if (list.empty()) throw _T("No video providers are available.");
 
 	// Get provider
 	wxString error;
-	for (unsigned int i=0;i<list.Count();i++) {
+	for (unsigned int i=0;i<list.size();i++) {
 		try {
 			// Create provider
-			VideoProvider *provider = GetFactory(list[i])->CreateProvider(video);
+			VideoProvider *provider = Create(list[i], video);
 			if (provider) {
 				// Cache if necessary
 				if (provider->WantsCaching()) {
@@ -105,30 +107,18 @@ VideoProvider *VideoProviderFactoryManager::GetProvider(wxString video) {
 	throw error;
 }
 
-
-
 /// @brief Register all providers 
 ///
-void VideoProviderFactoryManager::RegisterProviders() {
+void VideoProviderFactory::RegisterProviders() {
 #ifdef WITH_AVISYNTH
-	RegisterFactory(new AvisynthVideoProviderFactory(),_T("Avisynth"));
+	Register<AvisynthVideoProvider>("Avisynth");
 #endif
 #ifdef WITH_FFMPEGSOURCE
-	RegisterFactory(new FFmpegSourceVideoProviderFactory(),_T("FFmpegSource"));
+	Register<FFmpegSourceVideoProvider>("FFmpegSource");
 #endif
+	Register<DummyVideoProvider>("Dummy", true);
+	Register<YUV4MPEGVideoProvider>("YUV4MPEG", true);
 }
-
-
-
-/// @brief Clear all providers 
-///
-void VideoProviderFactoryManager::ClearProviders() {
-	ClearFactories();
-}
-
-
 
 /// DOCME
-template <class VideoProviderFactory> std::map<wxString,VideoProviderFactory*>* FactoryManager<VideoProviderFactory>::factories=NULL;
-
-
+template<> VideoProviderFactory::map *FactoryBase<VideoProvider *(*)(wxString)>::classes = NULL;

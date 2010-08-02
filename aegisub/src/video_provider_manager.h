@@ -34,30 +34,11 @@
 /// @ingroup video_input
 ///
 
-
-
-
-//////////
-// Headers
-#ifndef AGI_PRE
-#include <wx/intl.h>
-#endif
-
 #include "factory_manager.h"
 #include "include/aegisub/video_provider.h"
-#include "video_frame.h"
 
-
-/// DOCME
-/// @class VideoProviderFactoryManager
-/// @brief DOCME
-///
-/// DOCME
-class VideoProviderFactoryManager : public FactoryManager<VideoProviderFactory> {
+class VideoProviderFactory : public Factory1<VideoProvider, wxString> {
 public:
-	static void RegisterProviders();
 	static VideoProvider *GetProvider(wxString video);
-	static void ClearProviders();
+	static void RegisterProviders();
 };
-
-

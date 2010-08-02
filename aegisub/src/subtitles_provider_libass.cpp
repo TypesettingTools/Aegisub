@@ -34,10 +34,7 @@
 /// @ingroup subtitle_rendering
 ///
 
-///////////
-// Headers
 #include "config.h"
-
 
 #ifdef WITH_LIBASS
 
@@ -61,7 +58,6 @@ extern "C" {
 #include "video_context.h"
 
 
-
 /// @brief Handle libass messages
 ///
 static void msg_callback(int level, const char *fmt, va_list args, void *data) {
@@ -74,11 +70,9 @@ static void msg_callback(int level, const char *fmt, va_list args, void *data) {
 		LOG_D("subtitle/provider/libass") << buf;
 }
 
-
-
 /// @brief Constructor
 ///
-LibassSubtitlesProvider::LibassSubtitlesProvider() {
+LibassSubtitlesProvider::LibassSubtitlesProvider(std::string) {
 	// Initialize library
 	static bool first = true;
 	if (first) {
@@ -117,14 +111,10 @@ LibassSubtitlesProvider::LibassSubtitlesProvider() {
 	ass_set_fonts(ass_renderer, NULL, "Sans", 1, config_path, 1);
 }
 
-
-
 /// @brief Destructor
 ///
 LibassSubtitlesProvider::~LibassSubtitlesProvider() {
 }
-
-
 
 /// @brief Load subtitles
 /// @param subs
@@ -139,8 +129,6 @@ void LibassSubtitlesProvider::LoadSubtitles(AssFile *subs) {
 	ass_track = ass_read_memory(ass_library, &data[0], data.size(),(char *)"UTF-8");
 	if (!ass_track) throw _T("libass failed to load subtitles.");
 }
-
-
 
 /// DOCME
 #define _r(c)  ((c)>>24)
@@ -210,10 +198,7 @@ void LibassSubtitlesProvider::DrawSubtitles(AegiVideoFrame &frame,double time) {
 	}
 }
 
-
-
 /// DOCME
 ASS_Library* LibassSubtitlesProvider::ass_library;
-
 
 #endif // WITH_LIBASS

@@ -34,11 +34,7 @@
 /// @ingroup audio_input
 ///
 
-
-///////////
-// Headers
 #include "include/aegisub/audio_provider.h"
-
 
 /// DOCME
 /// @class DummyAudioProvider
@@ -58,9 +54,7 @@ public:
 
 	/// @brief DOCME
 	///
-	bool AreSamplesNativeEndian() { return true; }
+	bool AreSamplesNativeEndian() const { return true; }
 
 	void GetAudio(void *buf, int64_t start, int64_t count);
 };
-
-

@@ -34,9 +34,6 @@
 /// @ingroup audio_input
 ///
 
-
-///////////
-// Headers
 #ifdef WITH_AVISYNTH
 #include <Mmreg.h>
 #include "include/aegisub/audio_provider.h"
@@ -69,31 +66,12 @@ public:
 	wxString GetFilename();
 
 
-	/// @brief // Only exists for x86 Windows, always delivers machine (little) endian
+	/// @brief Only exists for x86 Windows, always delivers machine (little) endian
 	/// @return 
 	///
-	bool AreSamplesNativeEndian() { return true; }
+	bool AreSamplesNativeEndian() const { return true; }
 
 	void GetAudio(void *buf, int64_t start, int64_t count);
 	void GetWaveForm(int *min,int *peak,int64_t start,int w,int h,int samples,float scale);
 };
-
-
-
-/// DOCME
-/// @class AvisynthAudioProviderFactory
-/// @brief DOCME
-///
-/// DOCME
-class AvisynthAudioProviderFactory : public AudioProviderFactory {
-public:
-
-	/// @brief DOCME
-	/// @param file 
-	///
-	AudioProvider *CreateProvider(wxString file) { return new AvisynthAudioProvider(file); }
-};
-
 #endif
-
-

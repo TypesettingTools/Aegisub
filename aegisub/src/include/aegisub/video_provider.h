@@ -69,16 +69,3 @@ public:
 	/// @return Returns true if caching is desired, false otherwise.
 	virtual bool WantsCaching() const { return false; }
 };
-
-/// @class VideoProviderFactory
-/// @brief DOCME
-///
-/// DOCME
-class VideoProviderFactory {
-public:
-
-	/// @brief DOCME
-	///
-	virtual ~VideoProviderFactory() {}
-	virtual VideoProvider *CreateProvider(wxString video)=0;
-};

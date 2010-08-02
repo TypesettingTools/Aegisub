@@ -40,14 +40,9 @@
 
 #ifdef WITH_ALSA
 
-
-///////////
-// Headers
 #include <libaegisub/log.h>
 
 #include "audio_player_alsa.h"
-#include "audio_player_manager.h"
-#include "audio_provider_manager.h"
 #include "main.h"
 #include "compat.h"
 #include "frame_main.h"
@@ -65,16 +60,12 @@ AlsaPlayer::AlsaPlayer()
 	provider = 0;
 }
 
-
-
 /// @brief Destructor 
 ///
 AlsaPlayer::~AlsaPlayer()
 {
 	CloseStream();
 }
-
-
 
 /// @brief Open stream 
 ///
@@ -104,8 +95,6 @@ void AlsaPlayer::OpenStream()
 	// Now ready
 	open = true;
 }
-
-
 
 /// @brief DOCME
 ///
@@ -202,8 +191,6 @@ void AlsaPlayer::SetUpHardware()
 	snd_pcm_hw_params_free(hwparams);
 }
 
-
-
 /// @brief DOCME
 ///
 void AlsaPlayer::SetUpAsync()
@@ -249,8 +236,6 @@ void AlsaPlayer::SetUpAsync()
 	}
 }
 
-
-
 /// @brief Close stream 
 /// @return 
 ///
@@ -269,8 +254,6 @@ void AlsaPlayer::CloseStream()
 	// No longer working
 	open = false;
 }
-
-
 
 /// @brief Play 
 /// @param start 
@@ -301,8 +284,6 @@ void AlsaPlayer::Play(int64_t start,int64_t count)
 	if (displayTimer && !displayTimer->IsRunning()) displayTimer->Start(15);
 }
 
-
-
 /// @brief Stop 
 /// @param timerToo 
 /// @return 
@@ -326,8 +307,6 @@ void AlsaPlayer::Stop(bool timerToo)
         }
 }
 
-
-
 /// @brief DOCME
 /// @return 
 ///
@@ -335,8 +314,6 @@ bool AlsaPlayer::IsPlaying()
 {
 	return playing;
 }
-
-
 
 /// @brief Set end 
 /// @param pos 
@@ -346,8 +323,6 @@ void AlsaPlayer::SetEndPosition(int64_t pos)
 	end_frame = pos;
 }
 
-
-
 /// @brief Set current position 
 /// @param pos 
 ///
@@ -355,8 +330,6 @@ void AlsaPlayer::SetCurrentPosition(int64_t pos)
 {
 	cur_frame = pos;
 }
-
-
 
 /// @brief DOCME
 /// @return 
@@ -366,8 +339,6 @@ int64_t AlsaPlayer::GetStartPosition()
 	return start_frame;
 }
 
-
-
 /// @brief DOCME
 /// @return 
 ///
@@ -375,8 +346,6 @@ int64_t AlsaPlayer::GetEndPosition()
 {
 	return end_frame;
 }
-
-
 
 /// @brief Get current position 
 /// @return 
@@ -389,8 +358,6 @@ int64_t AlsaPlayer::GetCurrentPosition()
 	snd_pcm_delay(pcm_handle, &delay); // don't bother catching errors here
 	return cur_frame - delay;
 }
-
-
 
 /// @brief DOCME
 /// @param pcm_callback 
@@ -439,7 +406,4 @@ void AlsaPlayer::async_write_handler(snd_async_handler_t *pcm_callback)
 	free(buf);
 }
 
-
 #endif // WITH_ALSA
-
-

@@ -34,24 +34,13 @@
 /// @ingroup main_headers audio_input
 ///
 
-
 #pragma once
 
-
-///////////
-// Headers
 #ifndef AGI_PRE
 #include <wx/string.h>
 #endif
 
-#include "aegisub.h"
-
-
-//////////////
-// Prototypes
-class VideoProvider;
-
-
+#include "factory_manager.h"
 
 /// @class AudioProvider
 /// @brief DOCME
@@ -88,30 +77,26 @@ public:
 	AudioProvider();
 	virtual ~AudioProvider();
 
-	virtual wxString GetFilename();
+	virtual wxString GetFilename() const { return filename; };
 	virtual void GetAudio(void *buf, int64_t start, int64_t count)=0;
 	void GetAudioWithVolume(void *buf, int64_t start, int64_t count, double volume);
 
-	int64_t GetNumSamples();
-	int GetSampleRate();
-	int GetBytesPerSample();
-	int GetChannels();
-	virtual bool AreSamplesNativeEndian() = 0;
+	int64_t GetNumSamples() const { return num_samples; }
+	int GetSampleRate() const { return sample_rate; }
+	int GetBytesPerSample() const { return bytes_per_sample; }
+	int GetChannels() const { return channels; }
+	virtual bool AreSamplesNativeEndian() const = 0;
 
 	void GetWaveForm(int *min,int *peak,int64_t start,int w,int h,int samples,float scale);
 };
 
-
-
+/// DOCME
 /// @class AudioProviderFactory
 /// @brief DOCME
 ///
 /// DOCME
-class AudioProviderFactory {
+class AudioProviderFactory : public Factory1<AudioProvider, wxString> {
 public:
-
-	/// @brief DOCME
-	///
-	virtual ~AudioProviderFactory() {}
-	virtual AudioProvider *CreateProvider(wxString filename)=0;
+	static void RegisterProviders();
+	static AudioProvider *GetProvider(wxString filename, int cache=-1);
 };

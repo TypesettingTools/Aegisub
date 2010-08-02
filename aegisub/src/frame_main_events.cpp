@@ -34,7 +34,6 @@
 /// @ingroup main_ui
 
 
-////////////////// Include headers
 #include "config.h"
 
 #ifndef AGI_PRE
@@ -79,6 +78,7 @@
 #include "dialog_video_details.h"
 #include "frame_main.h"
 #include "hotkeys.h"
+#include "include/aegisub/audio_player.h"
 #include "keyframe.h"
 #include "libresrc/libresrc.h"
 #include "main.h"

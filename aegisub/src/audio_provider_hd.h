@@ -34,17 +34,12 @@
 /// @ingroup audio_input
 ///
 
-
-///////////
-// Headers
 #ifndef AGI_PRE
 #include <wx/file.h>
 #include <wx/thread.h>
 #endif
 
 #include "include/aegisub/audio_provider.h"
-
-
 
 /// DOCME
 /// @class HDAudioProvider
@@ -79,9 +74,7 @@ public:
 
 	/// @brief DOCME
 	///
-	bool AreSamplesNativeEndian() { return samples_native_endian; }
+	bool AreSamplesNativeEndian() const { return samples_native_endian; }
 
 	void GetAudio(void *buf, int64_t start, int64_t count);
 };
-
-

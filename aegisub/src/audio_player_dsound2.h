@@ -34,14 +34,11 @@
 /// @ingroup audio_output
 ///
 
-
 #ifdef WITH_DIRECTSOUND
 
 #include "include/aegisub/audio_player.h"
 
-
 class DirectSoundPlayer2Thread;
-
 
 /// @class DirectSoundPlayer2
 /// @brief New implementation of DirectSound-based audio player
@@ -50,7 +47,6 @@ class DirectSoundPlayer2Thread;
 /// and performs all playback operations, and use the player object as a proxy to
 /// send commands to the playback thread.
 class DirectSoundPlayer2 : public AudioPlayer {
-
 	/// The playback thread
 	DirectSoundPlayer2Thread *thread;
 
@@ -86,18 +82,4 @@ public:
 	void SetVolume(double vol);
 	double GetVolume();
 };
-
-
-
-/// @class DirectSoundPlayer2Factory
-/// @brief Factory class for DirectSoundPlayer2
-class DirectSoundPlayer2Factory : public AudioPlayerFactory {
-public:
-
-	/// @brief Create a DirectSoundPlayer2 object
-	AudioPlayer *CreatePlayer() { return new DirectSoundPlayer2(); }
-};
-
 #endif
-
-

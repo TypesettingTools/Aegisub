@@ -34,9 +34,6 @@
 /// @ingroup audio_output
 ///
 
-
-///////////
-// Headers
 #include "config.h"
 
 #ifdef WITH_ALSA
@@ -46,7 +43,6 @@
 #include "audio_player_dsound.h"
 #include "audio_player_dsound2.h"
 #endif
-#include "audio_player_manager.h"
 #ifdef WITH_OPENAL
 #include "audio_player_openal.h"
 #endif
@@ -62,16 +58,12 @@
 #include "compat.h"
 #include "main.h"
 
-
-
 /// @brief Constructor 
 ///
 AudioPlayer::AudioPlayer() {
 	provider = NULL;
 	displayTimer = NULL;
 }
-
-
 
 /// @brief Destructor 
 ///
@@ -82,44 +74,6 @@ AudioPlayer::~AudioPlayer() {
 	CloseStream();
 }
 
-
-
-/// @brief Set provider 
-/// @param _provider 
-///
-void AudioPlayer::SetProvider(AudioProvider *_provider) {
-	provider = _provider;
-}
-
-
-
-/// @brief Get provider 
-/// @return 
-///
-AudioProvider *AudioPlayer::GetProvider() {
-	return provider;
-}
-
-
-
-/// @brief Get mutex 
-/// @return 
-///
-wxMutex *AudioPlayer::GetMutex() {
-	return NULL;
-}
-
-
-
-/// @brief Set timer 
-/// @param timer 
-///
-void AudioPlayer::SetDisplayTimer(wxTimer *timer) {
-	displayTimer = timer;
-}
-
-
-
 /// @brief Ask to stop later 
 ///
 void AudioPlayer::RequestStop() {
@@ -128,15 +82,11 @@ void AudioPlayer::RequestStop() {
 	AddPendingEvent(event); // thread safe
 }
 
-
-/////////
-// Event
 DEFINE_EVENT_TYPE(wxEVT_STOP_AUDIO)
 
 BEGIN_EVENT_TABLE(AudioPlayer, wxEvtHandler)
 	EVT_COMMAND (1000, wxEVT_STOP_AUDIO, AudioPlayer::OnStopAudio)
 END_EVENT_TABLE()
-
 
 /// @brief DOCME
 /// @param event 
@@ -145,31 +95,23 @@ void AudioPlayer::OnStopAudio(wxCommandEvent &event) {
 	Stop(false);
 }
 
-
-
 /// @brief Get player 
 /// @return 
 ///
-AudioPlayer* AudioPlayerFactoryManager::GetAudioPlayer() {
-	// List of providers
-	wxArrayString list = GetFactoryList(lagi_wxString(OPT_GET("Audio/Player")->GetString()));
+AudioPlayer* AudioPlayerFactory::GetAudioPlayer() {
+	std::vector<std::string> list = GetClasses(OPT_GET("Audio/Player")->GetString());
+	if (list.empty()) throw _T("No audio players are available.");
 
-	// None available
-	if (list.Count() == 0) throw _T("No audio players are available.");
-
-	// Get provider
 	wxString error;
-	for (unsigned int i=0;i<list.Count();i++) {
+	for (unsigned int i=0;i<list.size();i++) {
 		try {
-			AudioPlayer *player = GetFactory(list[i])->CreatePlayer();
+			AudioPlayer *player = Create(list[i]);
 			if (player) return player;
 		}
 		catch (wxString err) { error += list[i] + _T(" factory: ") + err + _T("\n"); }
 		catch (const wxChar *err) { error += list[i] + _T(" factory: ") + wxString(err) + _T("\n"); }
 		catch (...) { error += list[i] + _T(" factory: Unknown error\n"); }
 	}
-
-	// Failed
 	throw error;
 }
 
@@ -177,40 +119,26 @@ AudioPlayer* AudioPlayerFactoryManager::GetAudioPlayer() {
 
 /// @brief Register all factories 
 ///
-void AudioPlayerFactoryManager::RegisterProviders() {
+void AudioPlayerFactory::RegisterProviders() {
 #ifdef WITH_ALSA
-	RegisterFactory(new AlsaPlayerFactory(),_T("ALSA"));
+	Register<AlsaPlayer>("ALSA");
 #endif
 #ifdef WITH_DIRECTSOUND
-	RegisterFactory(new DirectSoundPlayerFactory(),_T("DirectSound-old"));
-	RegisterFactory(new DirectSoundPlayer2Factory(),_T("DirectSound"));
+	Register<DirectSoundPlayer>("DirectSound-old");
+	Register<DirectSoundPlayer2>("DirectSound");
 #endif
 #ifdef WITH_OPENAL
-	RegisterFactory(new OpenALPlayerFactory(),_T("OpenAL"));
+	Register<OpenALPlayer>("OpenAL");
 #endif
 #ifdef WITH_PORTAUDIO
-	RegisterFactory(new PortAudioPlayerFactory(),_T("PortAudio"));
+	Register<PortAudioPlayer>("PortAudio");
 #endif
 #ifdef WITH_PULSEAUDIO
-	RegisterFactory(new PulseAudioPlayerFactory(),_T("PulseAudio"));
+	Register<PulseAudioPlayer>("PulseAudio");
 #endif
 #ifdef WITH_OSS
-	RegisterFactory(new OSSPlayerFactory(),_T("OSS"));
+	Register<OSSPlayer>("OSS");
 #endif
 }
 
-
-
-/// @brief Clear all factories 
-///
-void AudioPlayerFactoryManager::ClearProviders() {
-	ClearFactories();
-}
-
-
-
-/// DOCME
-template <class AudioPlayerFactory> std::map<wxString,AudioPlayerFactory*>* FactoryManager<AudioPlayerFactory>::factories=NULL;
-
-
-
+template<> AudioPlayerFactory::map *FactoryBase<AudioPlayer *(*)()>::classes = NULL;

@@ -436,7 +436,7 @@ public:
 	/// @brief DOCME
 	/// @return 
 	///
-	bool AreSamplesNativeEndian()
+	bool AreSamplesNativeEndian() const
 	{
 		// 8 bit samples don't consider endianness
 		if (bytes_per_sample < 2) return true;
@@ -657,7 +657,7 @@ public:
 	/// @brief DOCME
 	/// @return 
 	///
-	bool AreSamplesNativeEndian()
+	bool AreSamplesNativeEndian() const
 	{
 		// 8 bit samples don't consider endianness
 		if (bytes_per_sample < 2) return true;

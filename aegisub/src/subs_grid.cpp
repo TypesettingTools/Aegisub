@@ -45,10 +45,13 @@
 #include <wx/tokenzr.h>
 #endif
 
+#include "include/aegisub/audio_provider.h"
 #include "ass_file.h"
 #include "ass_karaoke.h"
 #include "ass_override.h"
 #include "ass_style.h"
+#include "audio_box.h"
+#include "audio_display.h"
 #include "charset_conv.h"
 #include "dialog_paste_over.h"
 #include "frame_main.h"

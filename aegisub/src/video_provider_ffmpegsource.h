@@ -86,15 +86,4 @@ public:
 	/// @return Returns true.
 	bool WantsCaching() const { return true; }
 };
-
-/// @class FFmpegSourceVideoProviderFactory
-/// @brief Creates a FFmpegSource video provider.
-class FFmpegSourceVideoProviderFactory : public VideoProviderFactory {
-public:
-	/// @brief Creates a FFmpegSource video provider.
-	/// @param video The video filename to open.
-	/// @return Returns the video provider.
-	VideoProvider *CreateProvider(wxString video) { return new FFmpegSourceVideoProvider(video); }
-};
-
 #endif /* WITH_FFMPEGSOURCE */

@@ -34,9 +34,6 @@
 /// @ingroup spelling
 ///
 
-
-///////////
-// Headers
 #include "config.h"
 
 #ifdef WITH_HUNSPELL
@@ -44,26 +41,22 @@
 #endif
 
 #include "compat.h"
+#include "include/aegisub/spellchecker.h"
 #include "main.h"
-#include "spellchecker_manager.h"
-
-
 
 /// @brief Get spell checker 
 /// @return 
 ///
-SpellChecker *SpellCheckerFactoryManager::GetSpellChecker() {
+SpellChecker *SpellCheckerFactory::GetSpellChecker() {
 	// List of providers
-	wxArrayString list = GetFactoryList(lagi_wxString(OPT_GET("Tool/Spell Checker/Backend")->GetString()));
-
-	// None available
-	if (list.Count() == 0) return 0; //throw _T("No spell checkers are available.");
+	std::vector<std::string> list = GetClasses(OPT_GET("Tool/Spell Checker/Backend")->GetString());
+	if (list.empty()) return NULL;
 
 	// Get provider
 	wxString error;
-	for (unsigned int i=0;i<list.Count();i++) {
+	for (unsigned int i=0;i<list.size();i++) {
 		try {
-			SpellChecker *checker = GetFactory(list[i])->CreateSpellChecker();
+			SpellChecker *checker = Create(list[i]);
 			if (checker) return checker;
 		}
 		catch (wxString err) { error += list[i] + _T(" factory: ") + err + _T("\n"); }
@@ -75,27 +68,12 @@ SpellChecker *SpellCheckerFactoryManager::GetSpellChecker() {
 	throw error;
 }
 
-
-
 /// @brief Register all providers 
 ///
-void SpellCheckerFactoryManager::RegisterProviders() {
+void SpellCheckerFactory::RegisterProviders() {
 #ifdef WITH_HUNSPELL
-	RegisterFactory(new HunspellSpellCheckerFactory(),_T("Hunspell"));
+	Register<HunspellSpellChecker>("Hunspell");
 #endif
 }
 
-
-
-/// @brief Clear all providers 
-///
-void SpellCheckerFactoryManager::ClearProviders() {
-	ClearFactories();
-}
-
-
-
-/// DOCME
-template <class SpellCheckerFactory> std::map<wxString,SpellCheckerFactory*>* FactoryManager<SpellCheckerFactory>::factories=NULL;
-
-
+template<> SpellCheckerFactory::map *FactoryBase<SpellChecker *(*)()>::classes = NULL;

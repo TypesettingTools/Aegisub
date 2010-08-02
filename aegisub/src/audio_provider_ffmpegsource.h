@@ -34,8 +34,6 @@
 /// @ingroup audio_input ffms
 ///
 
-///////////
-// Headers
 #ifdef WITH_FFMPEGSOURCE
 #include "include/aegisub/audio_provider.h"
 #include "ffmpegsource_common.h"
@@ -62,24 +60,8 @@ public:
 	/// @brief Checks sample endianness
 	/// @return Returns true.
 	/// FFMS always delivers native endian samples.
-	bool AreSamplesNativeEndian() { return true; }
+	bool AreSamplesNativeEndian() const { return true; }
 
 	virtual void GetAudio(void *buf, int64_t start, int64_t count);
 };
-
-
-
-/// @class FFmpegSourceAudioProviderFactory
-/// @brief Creates a FFmpegSource audio provider.
-class FFmpegSourceAudioProviderFactory : public AudioProviderFactory {
-public:
-	/// @brief Creates a FFmpegSource audio provider.
-	/// @param video The audio filename to open.
-	/// @return Returns the audio provider.
-	AudioProvider *CreateProvider(wxString file) { return new FFmpegSourceAudioProvider(file); }
-};
-
-#endif /* WITH_FFMPEGSOURCE */
-
-
-
+#endif

@@ -36,15 +36,11 @@
 ///
 /// Calculate and render a frequency-power spectrum for PCM audio data.
 
-
-
-
 #ifndef AGI_PRE
 #include <stdint.h>
 #endif
 
-#include "audio_provider_manager.h"
-
+class AudioProvider;
 
 // Specified and implemented in cpp file, interface is private to spectrum code
 class AudioSpectrumCacheManager;

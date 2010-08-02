@@ -34,9 +34,6 @@
 /// @ingroup audio_input
 ///
 
-
-///////////
-// Headers
 #ifndef AGI_PRE
 #include <vector>
 
@@ -116,7 +113,3 @@ public:
 
 // Construct the right PCM audio provider (if any) for the file
 AudioProvider *CreatePCMAudioProvider(const wxString &filename);
-
-
-
-
