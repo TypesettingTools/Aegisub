@@ -40,7 +40,7 @@
 #include "include/aegisub/audio_provider.h"
 
 
- "C" {
+extern "C" {
 #include <portaudio.h>
 }
 

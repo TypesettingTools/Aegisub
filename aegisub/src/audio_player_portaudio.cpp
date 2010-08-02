@@ -44,7 +44,7 @@
 #include <libaegisub/log.h>
 
 #include "audio_player_portaudio.h"
-#include "audio_provider_manager.h"
+#include "include/aegisub/audio_provider.h"
 #include "charset_conv.h"
 #include "main.h"
 #include "utils.h"
