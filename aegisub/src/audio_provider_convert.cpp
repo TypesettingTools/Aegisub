@@ -205,7 +205,7 @@ AudioProvider *CreateConvertAudioProvider(AudioProvider *source_provider) {
 	{
 		// @todo add support for more bitdepths (i.e. 24- and 32-bit audio)
 		if (provider->GetBytesPerSample() > 2)
-			AudioOpenError("Audio format converter: audio with bitdepths greater than 16 bits/sample is currently unsupported");
+			throw AudioOpenError("Audio format converter: audio with bitdepths greater than 16 bits/sample is currently unsupported");
 
 		provider = new ConvertAudioProvider(provider);
 	}
