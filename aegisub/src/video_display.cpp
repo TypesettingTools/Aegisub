@@ -407,7 +407,6 @@ void VideoDisplay::UpdateSize() {
 		SetMaxClientSize(size);
 
 		locked = true;
-		box->VideoSizer->Fit(box);
 		box->GetParent()->Layout();
 
 		// The sizer makes us use the full width, which at very low zoom levels
