@@ -946,7 +946,6 @@ void BaseGrid::AdjustScrollbar() {
 	int drawPerScreen = h/lineHeight;
 	int rows = GetRows();
 	bool barToEnable = drawPerScreen < rows+2;
-	bool barEnabled = scrollBar->IsEnabled();
 
 	yPos = MID(0,yPos,rows - drawPerScreen);
 
@@ -954,10 +953,10 @@ void BaseGrid::AdjustScrollbar() {
 	scrollBar->GetSize(&sw,&sh);
 	scrollBar->SetSize(w-sw,0,sw,h);
 
-	if (barEnabled) {
+	if (barToEnable != scrollBar->IsEnabled()) scrollBar->Enable(barToEnable);
+	if (barToEnable) {
 		scrollBar->SetScrollbar(yPos,drawPerScreen,rows+2,drawPerScreen-2,true);
 	}
-	if (barToEnable != barEnabled) scrollBar->Enable(barToEnable);
 	scrollBar->Thaw();
 }
 
