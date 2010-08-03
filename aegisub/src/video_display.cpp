@@ -402,13 +402,9 @@ void VideoDisplay::UpdateSize() {
 		viewport_width = w;
 		viewport_height = h;
 
-		// Sizers ignore SetClientSize/SetSize, so only use them to calculate
-		// what size is required after including the borders
-		SetClientSize(cw, ch);
-		GetSize(&cw, &ch);
 		wxSize size(cw, ch);
-		SetMinSize(size);
-		SetMaxSize(size);
+		SetMinClientSize(size);
+		SetMaxClientSize(size);
 
 		locked = true;
 		box->VideoSizer->Fit(box);
