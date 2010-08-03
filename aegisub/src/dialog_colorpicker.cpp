@@ -619,7 +619,7 @@ void ColorPickerRecent::LoadFromString(const wxString &recent_string)
 	while (toker.HasMoreTokens()) {
 		AssColor color;
 		color.Parse(toker.NextToken());
-		color.a = wxALPHA_OPAQUE;
+		color.a = 0; // opaque
 		colors.push_back(color.GetWXColor());
 	}
 	while ((int)colors.size() < rows*cols) {
@@ -790,10 +790,19 @@ void ColorPickerScreenDropper::OnMouse(wxMouseEvent &evt)
 			CaptureMouse();
 
 		} else if (x >= 0 && y >= 0 && x < resx && y < resy) {
-			wxMemoryDC capdc;
-			capdc.SelectObject(capture);
 			wxColour color;
+#ifdef __WXMAC__
+			// wxMemoryDC::GetPixel() isn't implemented on OS X
+			// Work around it by reading pixel data from the bitmap instead
+			wxAlphaPixelData cappd(capture);
+			wxAlphaPixelData::Iterator cappdi(cappd);
+			cappdi.MoveTo(cappd, x, y);
+			color.Set(cappdi.Red(), cappdi.Green(), cappdi.Blue());
+#else
+			wxMemoryDC capdc(capture);
 			capdc.GetPixel(x, y, &color);
+#endif
+			color = wxColour(color.Red(), color.Green(), color.Blue(), wxALPHA_OPAQUE);
 			AssColor ass(color);
 			wxCommandEvent evnt(wxDROPPER_SELECT, GetId());
 			evnt.SetString(ass.GetASSFormatted(false, false, false));
@@ -812,8 +821,14 @@ void ColorPickerScreenDropper::OnMouse(wxMouseEvent &evt)
 void ColorPickerScreenDropper::OnPaint(wxPaintEvent &evt)
 {
 	wxPaintDC pdc(this);
-	wxMemoryDC capdc;
-	capdc.SelectObject(capture);
+	
+#ifdef __WXMAC__
+	// See OnMouse() above
+	wxAlphaPixelData cappd(capture);
+	wxAlphaPixelData::Iterator cappdi(cappd);
+#else
+	wxMemoryDC capdc(capture);
+#endif
 
 	pdc.SetPen(*wxTRANSPARENT_PEN);
 
@@ -822,7 +837,12 @@ void ColorPickerScreenDropper::OnPaint(wxPaintEvent &evt)
 			if (x==0 && y==0 && integrated_dropper) continue;
 
 			wxColour color;
+#ifdef __WXMAC__
+			cappdi.MoveTo(cappd, x, y);
+			color.Set(cappdi.Red(), cappdi.Green(), cappdi.Blue());
+#else
 			capdc.GetPixel(x, y, &color);
+#endif
 			pdc.SetBrush(wxBrush(color));
 
 			pdc.DrawRectangle(x*magnification, y*magnification, magnification, magnification);
@@ -844,15 +864,20 @@ void ColorPickerScreenDropper::OnPaint(wxPaintEvent &evt)
 /// @param x 
 /// @param y 
 ///
+
 void ColorPickerScreenDropper::DropFromScreenXY(int x, int y)
 {
-	wxMemoryDC capdc;
-	capdc.SelectObject(capture);
+	wxMemoryDC capdc(capture);
 	wxScreenDC screen;
 
+#ifdef __WXMAC__
+	wxBitmap screenbmp = screen.GetAsBitmap().GetSubBitmap(wxRect(x-resx/2, y-resy/2, resx, resy));
+	capdc.DrawBitmap(screenbmp, 0, 0);
+#else
 	screen.StartDrawingOnTop();
 	capdc.Blit(0, 0, resx, resy, &screen, x-resx/2, y-resy/2);
 	screen.EndDrawingOnTop();
+#endif
 
 	Refresh(false);
 }
