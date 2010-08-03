@@ -276,11 +276,9 @@ void HotkeyManager::Load() {
 	TextFileReader file(filename);
 	wxString header;
 	try {
-		if (!file.IsBinary())
-			header = file.ReadLineFromFile();
+		header = file.ReadLineFromFile();
 	}
-	catch (wxString e) {
-		header = _T("");
+	catch (...) {
 	}
 	if (header != _T("[Hotkeys]")) {
 		wxFileName backupfn(filename);

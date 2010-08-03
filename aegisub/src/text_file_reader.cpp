@@ -55,13 +55,8 @@
 
 TextFileReader::TextFileReader(wxString const& filename, wxString encoding, bool trim)
 : trim(trim)
-, isBinary(false)
 {
 	if (encoding.empty()) encoding = CharSetDetect::GetEncoding(filename);
-	if (encoding == L"binary") {
-		isBinary = true;
-		return;
-	}
 	file.reset(agi::io::Open(STD_STR(filename)));
 	iter = agi::line_iterator<wxString>(*file, STD_STR(encoding));
 }

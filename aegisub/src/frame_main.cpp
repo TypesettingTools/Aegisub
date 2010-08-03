@@ -674,7 +674,6 @@ void FrameMain::LoadSubtitles (wxString filename,wxString charset) {
 
 	// Setup
 	bool isFile = !filename.empty();
-	bool isBinary = false;
 
 	// Load
 	try {
@@ -688,14 +687,11 @@ void FrameMain::LoadSubtitles (wxString filename,wxString charset) {
 			// Make sure that file isn't actually a timecode file
 			try {
 				TextFileReader testSubs(filename,charset);
-				isBinary = testSubs.IsBinary();
-				if (!isBinary && testSubs.HasMoreLines()) {
-					wxString cur = testSubs.ReadLineFromFile();
-					if (cur.Left(10) == _T("# timecode")) {
-						LoadVFR(filename);
-						OPT_SET("Path/Last/Timecodes")->SetString(STD_STR(fileCheck.GetPath()));
-						return;
-					}
+				wxString cur = testSubs.ReadLineFromFile();
+				if (cur.Left(10) == _T("# timecode")) {
+					LoadVFR(filename);
+					OPT_SET("Path/Last/Timecodes")->SetString(STD_STR(fileCheck.GetPath()));
+					return;
 				}
 			}
 			catch (...) {
@@ -742,7 +738,7 @@ void FrameMain::LoadSubtitles (wxString filename,wxString charset) {
 
 	// Save copy
 	wxFileName origfile(filename);
-	if (!isBinary && OPT_GET("App/Auto/Backup")->GetBool() && origfile.FileExists()) {
+	if (ass->CanSave() && OPT_GET("App/Auto/Backup")->GetBool() && origfile.FileExists()) {
 		// Get path
 		wxString path = lagi_wxString(OPT_GET("Path/Auto/Backup")->GetString());
 		if (path.IsEmpty()) path = origfile.GetPath();

@@ -51,7 +51,6 @@
 class TextFileReader {
 	std::auto_ptr<std::ifstream> file;
 	bool trim;
-	bool isBinary;
 	agi::line_iterator<wxString> iter;
 
 	TextFileReader(const TextFileReader&);
@@ -71,5 +70,4 @@ public:
 	wxString ReadLineFromFile();
 	/// @brief Check if there are any more lines to read
 	bool HasMoreLines() const { return iter != agi::line_iterator<wxString>(); }
-	bool IsBinary() const { return isBinary; }
 };
