@@ -195,6 +195,7 @@ void VideoContext::SetVideo(const wxString &filename) {
 			hasSubtitles = MatroskaWrapper::HasSubtitles(filename);
 		}
 
+		provider->LoadSubtitles(grid->ass);
 		UpdateDisplays(true);
 	}
 	catch (agi::UserCancelException const&) { }
