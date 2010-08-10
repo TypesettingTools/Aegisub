@@ -48,6 +48,7 @@
 #include "ass_file.h"
 #include "ass_style.h"
 #include "compat.h"
+#include "dialog_selected_choices.h"
 #include "dialog_style_editor.h"
 #include "dialog_style_manager.h"
 #include "help_button.h"
@@ -852,7 +853,7 @@ void DialogStyleManager::OnCurrentImport(wxCommandEvent &) {
 
 			// Get selection
 			wxArrayInt selections;
-			int res = wxGetSelectedChoices(selections,_("Choose styles to import:"),_("Import Styles"),styles);
+			int res = GetSelectedChoices(this,selections,_("Choose styles to import:"),_("Import Styles"),styles);
 			if (res == -1 || selections.Count() == 0) return;
 			bool modified = false;
 

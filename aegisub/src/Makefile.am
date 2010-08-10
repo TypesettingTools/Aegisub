@@ -224,6 +224,7 @@ aegisub_2_2_SOURCES = \
 	dialog_properties.cpp \
 	dialog_resample.cpp \
 	dialog_search_replace.cpp \
+	dialog_selected_choices.cpp \
 	dialog_selection.cpp \
 	dialog_shift_times.cpp \
 	dialog_spellchecker.cpp \

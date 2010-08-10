@@ -1100,6 +1100,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\dialog_selected_choices.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\dialog_selected_choices.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\dialog_selection.cpp"
 				>
 			</File>
