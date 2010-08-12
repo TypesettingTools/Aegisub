@@ -47,9 +47,6 @@
 #include "gl_text.h"
 #include "utils.h"
 
-#undef max
-
-
 /// @class OpenGLTextGlyph
 /// @brief Struct storing the information needed to draw a glyph
 struct OpenGLTextGlyph {

@@ -125,7 +125,6 @@ bool VisualToolScale::InitializeHold() {
 }
 
 void VisualToolScale::UpdateHold() {
-	using std::max;
 	// Deltas
 	int deltaX = video.x - startX;
 	int deltaY = startY - video.y;
@@ -135,8 +134,8 @@ void VisualToolScale::UpdateHold() {
 	}
 
 	// Calculate
-	curScaleX = max(deltaX*1.25f + origScaleX, 0.f);
-	curScaleY = max(deltaY*1.25f + origScaleY, 0.f);
+	curScaleX = std::max(deltaX*1.25f + origScaleX, 0.f);
+	curScaleY = std::max(deltaY*1.25f + origScaleY, 0.f);
 
 	// Oh Snap
 	if (ctrlDown) {

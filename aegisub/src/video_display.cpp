@@ -512,8 +512,7 @@ void VideoDisplay::OnKey(wxKeyEvent &event) {
 }
 
 void VideoDisplay::SetZoom(double value) {
-	using std::max;
-	zoomValue = max(value, .125);
+	zoomValue = std::max(value, .125);
 	zoomBox->SetValue(wxString::Format("%g%%", zoomValue * 100.));
 	UpdateSize();
 }

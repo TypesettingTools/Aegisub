@@ -50,10 +50,6 @@
 #include "video_display.h"
 #include "video_slider.h"
 
-#undef min
-#undef max
-
-
 /// @brief Constructor
 /// @param par FrameMain this was spawned from
 /// @param initialDisplaySize Initial size of the window

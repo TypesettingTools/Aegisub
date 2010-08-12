@@ -541,10 +541,8 @@ static void trim_text(AssDialogue *diag) {
 	end.ReplaceFirst(&diag->Text, "");
 }
 static void expand_times(AssDialogue *src, AssDialogue *dst) {
-	using std::min;
-	using std::max;
-	dst->Start.SetMS(min(dst->Start.GetMS(), src->Start.GetMS()));
-	dst->End.SetMS(max(dst->End.GetMS(), src->End.GetMS()));
+	dst->Start.SetMS(std::min(dst->Start.GetMS(), src->Start.GetMS()));
+	dst->End.SetMS(std::max(dst->End.GetMS(), src->End.GetMS()));
 }
 
 /// @brief Recombine 
