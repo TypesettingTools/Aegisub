@@ -116,7 +116,7 @@ public:
 
 	template<class T>
 	static void Register(std::string name, bool hide = false, std::vector<std::string> subTypes = std::vector<std::string>()) {
-		DoRegister(&Factory0<Base>::create<T>, name, hide, subTypes);
+		DoRegister(&Factory0<Base>::template create<T>, name, hide, subTypes);
 	}
 };
 
@@ -140,6 +140,6 @@ public:
 
 	template<class T>
 	static void Register(std::string name, bool hide = false, std::vector<std::string> subTypes = std::vector<std::string>()) {
-		DoRegister(&Factory1<Base, Arg1>::create<T>, name, hide, subTypes);
+		DoRegister(&Factory1<Base, Arg1>::template create<T>, name, hide, subTypes);
 	}
 };
