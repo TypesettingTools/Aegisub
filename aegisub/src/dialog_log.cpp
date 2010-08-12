@@ -40,13 +40,14 @@
 #include "config.h"
 
 #ifndef AGI_PRE
+#include <string>
+
 #include <wx/button.h>
 #include <wx/panel.h>
 #include <wx/sizer.h>
 #include <wx/statline.h>
 #include <wx/stattext.h>
 #endif
-#include <string.h>
 
 #include <time.h>
 #include "dialog_log.h"
@@ -109,7 +110,7 @@ void LogWindow::EmitLog::Write(agi::log::SinkMessage *sm) {
 		sm->file,
 		sm->func,
 		sm->line,
-		strndup(sm->message, sm->len));
+		std::string(sm->message, sm->len));
 #else
 	wxString log = wxString::Format("%c %-6ld <%-25s> [%s:%s:%d]  %s\n",
 		agi::log::Severity_ID[sm->severity],
