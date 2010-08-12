@@ -109,10 +109,6 @@ LibassSubtitlesProvider::LibassSubtitlesProvider(std::string) {
 	config_dir = OSX_GetBundleResourcesDirectory();
 	snprintf(config_path, MAXPATHLEN, "%s/etc/fonts/fonts.conf", config_dir);
 	free(config_dir);
-#elif defined(_WIN32)
-	wxString config_file = StandardPaths::DecodePath(L"?user/fonts/fonts.conf");
-	char config_path[MAX_PATH];
-	strcpy_s(config_path, sizeof config_path, config_file.utf8_str());
 #else
 	const char *config_path = NULL;
 #endif
