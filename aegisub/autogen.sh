@@ -173,7 +173,7 @@ fi
 
 
 $ECHO_N "checking for $INTLTOOLIZE >= $INTLTOOL_REQUIRED_VERSION ... "
-if (intltoolize --version) < /dev/null > /dev/null 2>&1; then
+if ($INTLTOOLIZE --version) < /dev/null > /dev/null 2>&1; then
     VER=`$INTLTOOLIZE --version \
          | grep intltoolize | sed "s/.* \([0-9.]*\)/\1/"`
     check_version $VER $INTLTOOL_REQUIRED_VERSION
