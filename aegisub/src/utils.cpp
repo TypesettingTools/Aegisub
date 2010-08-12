@@ -53,6 +53,8 @@
 #include <wx/stdpaths.h>
 #endif
 
+#include <libaegisub/log.h>
+
 #ifdef __APPLE__
 extern "C" {
 #include "libosxutil/libosxutil.h"
