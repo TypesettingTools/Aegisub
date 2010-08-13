@@ -273,7 +273,7 @@ void VideoDisplay::Render() try {
 	VideoContext *context = VideoContext::Get();
 	if (!context->IsLoaded()) return;
 	assert(wxIsMainThread());
-	assert(w > 0);
+	if (!viewport_height || !viewport_width) UpdateSize();
 
 	videoOut->Render(viewport_x, viewport_bottom, viewport_width, viewport_height);
 	E(glViewport(0, std::min(viewport_bottom, 0), w, h));
