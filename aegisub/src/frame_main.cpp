@@ -1099,13 +1099,12 @@ void FrameMain::LoadVideo(wxString file,bool autoload) {
 		int vidx = VideoContext::Get()->GetWidth(), vidy = VideoContext::Get()->GetHeight();
 
 		// Set zoom level based on video resolution and window size
-		double target_zoom = 1.;
+		double zoom = videoBox->videoDisplay->GetZoom();
 		wxSize windowSize = GetSize();
-		if (vidx*3 > windowSize.GetX()*2 || vidy*4 > windowSize.GetY()*3)
-			target_zoom = .5;
-		if (vidx*3 > windowSize.GetX()*4 || vidy*4 > windowSize.GetY()*6)
-			target_zoom = .25;
-		videoBox->videoDisplay->SetZoom(target_zoom);
+		if (vidx*3*zoom > windowSize.GetX()*4 || vidy*4*zoom > windowSize.GetY()*6)
+			videoBox->videoDisplay->SetZoom(zoom * .25);
+		else if (vidx*3*zoom > windowSize.GetX()*2 || vidy*4*zoom > windowSize.GetY()*3)
+			videoBox->videoDisplay->SetZoom(zoom * .5);
 
 		// Check that the video size matches the script video size specified
 		int scriptx = SubsGrid->ass->GetScriptInfoAsInt(_T("PlayResX"));
