@@ -57,12 +57,17 @@ typedef GLuint GLhandleARB;
 #define glGetProc(a) glXGetProcAddress((const GLubyte *)(a))
 #endif
 
+#if defined(__APPLE__)
+// Not required on OS X.
+#define GL_EXT(type, name)
+#else
+
 #define GL_EXT(type, name) \
 	static type name = reinterpret_cast<type>(glGetProc(#name)); \
 	if (!name) { \
 		name = & name ## Fallback; \
 	}
-
+#endif
 
 
 /// DOCME
