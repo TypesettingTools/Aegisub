@@ -579,9 +579,8 @@ void FrameMain::InitContents() {
 
 	// Video area;
 	StartupLog(_T("Create video box"));
-	videoBox = new VideoBox(Panel, false);
+	videoBox = new VideoBox(Panel, false, ZoomBox);
 	TopSizer->Add(videoBox,0,wxEXPAND,0);
-	videoBox->videoDisplay->zoomBox = ZoomBox;
 
 	// Subtitles area
 	StartupLog(_T("Create subtitles grid"));
@@ -589,8 +588,6 @@ void FrameMain::InitContents() {
 	BottomSizer->Add(SubsGrid,1,wxEXPAND | wxLEFT | wxRIGHT | wxBOTTOM,0);
 	videoBox->videoSlider->grid = SubsGrid;
 	VideoContext::Get()->grid = SubsGrid;
-	StartupLog(_T("Reset video zoom"));
-	videoBox->videoDisplay->SetZoom(OPT_GET("Video/Default Zoom")->GetInt() * .125 + .125);
 	Search.grid = SubsGrid;
 
 	// Audio area

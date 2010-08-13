@@ -169,12 +169,12 @@ class VideoDisplay : public wxGLCanvas {
 
 	VideoState video;
 
+	/// The dropdown box for selecting zoom levels
+	wxComboBox *zoomBox;
+
 public:
 	/// The VideoBox this display is contained in
 	VideoBox *box;
-
-	/// The dropdown box for selecting zoom levels
-	wxComboBox *zoomBox;
 
 	/// Whether the display can be freely resized by the user
 	bool freeSize;
@@ -186,7 +186,18 @@ public:
 	/// @param size   Window size. wxDefaultSize is (-1, -1) which indicates that wxWidgets should generate a default size for the window. If no suitable size can be found, the window will be sized to 20x20 pixels so that the window is visible but obviously not correctly sized.
 	/// @param style  Window style.
 	/// @param name   Window name.
-	VideoDisplay(VideoBox *box, VideoSlider *ControlSlider, wxTextCtrl *PositionDisplay, wxTextCtrl *SubsPosition, wxWindow* parent, wxWindowID id, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = 0, const wxString& name = wxPanelNameStr);
+	VideoDisplay(
+		VideoBox *box,
+		VideoSlider *ControlSlider,
+		wxTextCtrl *PositionDisplay,
+		wxTextCtrl *SubsPosition,
+		wxComboBox *zoomBox,
+		wxWindow* parent,
+		wxWindowID id,
+		const wxPoint& pos = wxDefaultPosition,
+		const wxSize& size = wxDefaultSize,
+		long style = 0,
+		const wxString& name = wxPanelNameStr);
 	~VideoDisplay();
 	/// @brief Reset the size of the display to the video size
 	void Reset();

@@ -63,7 +63,7 @@
 /// @param parent     
 /// @param isDetached 
 ///
-VideoBox::VideoBox(wxWindow *parent, bool isDetached) 
+VideoBox::VideoBox(wxWindow *parent, bool isDetached, wxComboBox *zoomBox)
 : wxPanel (parent,-1)
 {
 	// Parent
@@ -114,9 +114,8 @@ VideoBox::VideoBox(wxWindow *parent, bool isDetached)
 	visualToolBar->SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNFACE));
 
 	// Display
-	videoDisplay = new VideoDisplay(this,videoSlider,VideoPosition,VideoSubsPos,videoPage,-1,wxDefaultPosition,wxDefaultSize,wxSUNKEN_BORDER);
+	videoDisplay = new VideoDisplay(this,videoSlider,VideoPosition,VideoSubsPos,zoomBox,videoPage,-1,wxDefaultPosition,wxDefaultSize,wxSUNKEN_BORDER);
 	VideoContext::Get()->AddDisplay(videoDisplay);
-	videoDisplay->Reset();
 
 	// Set display
 	videoSlider->Display = videoDisplay;

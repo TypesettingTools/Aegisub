@@ -122,16 +122,25 @@ public:
 
 #define E(cmd) cmd; if (GLenum err = glGetError()) throw OpenGlException(L###cmd, err)
 
-using std::min;
-
-VideoDisplay::VideoDisplay(VideoBox *box, VideoSlider *ControlSlider, wxTextCtrl *PositionDisplay, wxTextCtrl *SubsPosition, wxWindow* parent, wxWindowID id, const wxPoint& pos, const wxSize& size, long style, const wxString& name)
+VideoDisplay::VideoDisplay(
+	VideoBox *box,
+	VideoSlider *ControlSlider,
+	wxTextCtrl *PositionDisplay,
+	wxTextCtrl *SubsPosition,
+	wxComboBox *zoomBox,
+	wxWindow* parent,
+	wxWindowID id,
+	const wxPoint& pos,
+	const wxSize& size,
+	long style,
+	const wxString& name)
 : wxGLCanvas (parent, id, attribList, pos, size, style, name)
 , alwaysShowTools(OPT_GET("Tool/Visual/Always Show"))
 , origSize(size)
 , currentFrame(-1)
 , w(8), h(8), viewport_x(0), viewport_width(0), viewport_bottom(0), viewport_top(0), viewport_height(0)
 , locked(false)
-, zoomValue(1.0)
+, zoomValue(OPT_GET("Video/Default Zoom")->GetInt() * .125 + .125)
 , ControlSlider(ControlSlider)
 , SubsPosition(SubsPosition)
 , PositionDisplay(PositionDisplay)
@@ -140,9 +149,11 @@ VideoDisplay::VideoDisplay(VideoBox *box, VideoSlider *ControlSlider, wxTextCtrl
 , toolBar(box->visualSubToolBar)
 , scriptW(INT_MIN)
 , scriptH(INT_MIN)
+, zoomBox(zoomBox)
 , box(box)
 , freeSize(false)
 {
+	if (zoomBox) zoomBox->SetValue(wxString::Format("%g%%", zoomValue * 100.));
 	box->Bind(wxEVT_COMMAND_TOOL_CLICKED, &VideoDisplay::OnMode, this, Video_Mode_Standard, Video_Mode_Vector_Clip);
 	VideoContext::Get()->Bind(EVT_FRAME_READY, &VideoDisplay::UploadFrameData, this);
 	SetCursor(wxNullCursor);
@@ -265,7 +276,7 @@ void VideoDisplay::Render() try {
 	assert(w > 0);
 
 	videoOut->Render(viewport_x, viewport_bottom, viewport_width, viewport_height);
-	E(glViewport(0, min(viewport_bottom, 0), w, h));
+	E(glViewport(0, std::min(viewport_bottom, 0), w, h));
 
 	E(glMatrixMode(GL_PROJECTION));
 	E(glLoadIdentity());
@@ -394,7 +405,7 @@ void VideoDisplay::UpdateSize() {
 		w = con->GetAspectRatioType() == 0 ? vidW * zoomValue : vidH * zoomValue * con->GetAspectRatioValue();
 
 		// Cap the canvas size to the window size
-		int cw = min(w, maxW), ch = min(h, maxH);
+		int cw = std::min(w, maxW), ch = std::min(h, maxH);
 
 		viewport_x = 0;
 		viewport_bottom = ch - h;
@@ -513,10 +524,11 @@ void VideoDisplay::OnKey(wxKeyEvent &event) {
 
 void VideoDisplay::SetZoom(double value) {
 	zoomValue = std::max(value, .125);
-	zoomBox->SetValue(wxString::Format("%g%%", zoomValue * 100.));
+	if (zoomBox) zoomBox->SetValue(wxString::Format("%g%%", zoomValue * 100.));
 	UpdateSize();
 }
 void VideoDisplay::SetZoomFromBox() {
+	if (!zoomBox) return;
 	wxString strValue = zoomBox->GetValue();
 	strValue.EndsWith(L"%", &strValue);
 	double value;

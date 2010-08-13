@@ -54,6 +54,7 @@ class VideoDisplay;
 class VideoSlider;
 class ToggleBitmap;
 class FrameMain;
+class wxComboBox;
 
 
 
@@ -104,7 +105,7 @@ public:
 	/// DOCME
 	VideoSlider *videoSlider;
 
-	VideoBox (wxWindow *parent, bool isDetached);
+	VideoBox (wxWindow *parent, bool isDetached, wxComboBox *zoomBox);
 
 	DECLARE_EVENT_TABLE()
 };
