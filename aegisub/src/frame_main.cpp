@@ -44,9 +44,6 @@
 #include <wx/tokenzr.h>
 #endif
 
-#ifdef __WXMAC__
-#include <Carbon/Carbon.h>
-#endif
 
 #include "ass_file.h"
 #include "audio_box.h"
@@ -902,8 +899,7 @@ void FrameMain::UpdateTitle() {
 
 #ifdef __WXMAC__
 	// On Mac, set the mark in the close button
-	WindowRef wnd = (WindowRef)GetHandle();
-	SetWindowModified(wnd, subsMod);
+	OSXSetModified(subsMod);
 #endif
 
 	// Get current title
