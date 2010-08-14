@@ -22,10 +22,10 @@ SUBDIRS = \
 	po
 
 osx-bundle:
-	@SHELL@ scripts/osx-bundle.sh "@BUNDLE_STRING@" @AEGISUB_VERSION_DATA@ DICT_DIR=$(DICT_DIR)
+	@SHELL@ tools/osx-bundle.sh "@BUNDLE_STRING@" @AEGISUB_VERSION_DATA@ DICT_DIR=$(DICT_DIR)
 
 osx-dmg:
-	@SHELL@ scripts/osx-dmg.sh "@BUNDLE_STRING@" "@DMG_STRING@"
+	@SHELL@ tools/osx-dmg.sh "@BUNDLE_STRING@" "@DMG_STRING@"
 
 osx-tinderbox-bundle:
 	@SHELL@ tools/osx-bundle.sh "$(T_BUNDLE)" @AEGISUB_VERSION_DATA@ DICT_DIR="$(DICT_DIR)"
