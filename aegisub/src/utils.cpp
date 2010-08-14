@@ -56,9 +56,7 @@
 #include <libaegisub/log.h>
 
 #ifdef __APPLE__
-extern "C" {
-#include "libosxutil/libosxutil.h"
-}
+#include <libaegisub/util_osx.h>
 #endif
 
 #include "utils.h"
@@ -459,8 +457,8 @@ void RestartAegisub() {
 	wxStandardPaths stand;
 	wxExecute(_T("\"") + stand.GetExecutablePath() + _T("\""));
 #elif defined(__WXMAC__)
-	char *bundle_path = OSX_GetBundlePath();
-	char *support_path = OSX_GetBundleSupportFilesDirectory();
+	char *bundle_path = agi::util::OSX_GetBundlePath();
+	char *support_path = agi::util::OSX_GetBundleSupportFilesDirectory();
 	if (!bundle_path || !support_path) return; // oops
 	wxString exec = wxString::Format(_T("\"%s/MacOS/restart-helper\" /usr/bin/open -n \"%s\"'"), wxString(support_path, wxConvUTF8).c_str(), wxString(bundle_path, wxConvUTF8).c_str());
 	LOG_I("util/restart/exec") << exec;

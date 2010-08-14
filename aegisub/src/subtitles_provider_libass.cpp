@@ -43,10 +43,8 @@
 #endif
 
 #ifdef __APPLE__
-extern "C" {
 #include <sys/param.h>
-#include "libosxutil/libosxutil.h"
-}
+#include <libaegisub/util_osx.h>
 #endif
 
 #include <libaegisub/log.h>
@@ -106,7 +104,7 @@ LibassSubtitlesProvider::LibassSubtitlesProvider(std::string) {
 	char config_path[MAXPATHLEN];
 	char *config_dir;
 
-	config_dir = OSX_GetBundleResourcesDirectory();
+	config_dir = agi::util::OSX_GetBundleResourcesDirectory();
 	snprintf(config_path, MAXPATHLEN, "%s/etc/fonts/fonts.conf", config_dir);
 	free(config_dir);
 #else

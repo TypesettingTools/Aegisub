@@ -4,12 +4,6 @@ noinst_LIBRARIES=
 AM_CXXFLAGS = 
 DISTCLEANFILES =
 
-if BUILD_DARWIN
-libosxutil_subdir = libosxutil
-libosxutil_lib = libosxutil/libosxutil.a
-libosxutil_ldflags = -framework CoreFoundation
-endif
-
 if PRECOMPILED_HEADER
 BUILT_SOURCES = agi_pre.h.gch
 precompiled_header = agi_pre.h
@@ -20,15 +14,14 @@ endif
 
 SUBDIRS = \
 	bitmaps \
-	libresrc \
-	$(libosxutil_subdir)
+	libresrc
 
 AM_CXXFLAGS += -DAEGISUB -Iinclude -I../libffms/include -I../libaegisub/include @WX_CPPFLAGS@ @OPENMP_CXXFLAGS@ @LIBAVFORMAT_CFLAGS@ @LIBAVCODEC_CFLAGS@ @LIBSWSCALE_CFLAGS@ @LIBAVUTIL_CFLAGS@
 
 bin_PROGRAMS = aegisub-2.2
-aegisub_2_2_LDADD = libresrc/libresrc.a $(libosxutil_lib) -L../libaegisub -laegisub-2.2
+aegisub_2_2_LDADD = libresrc/libresrc.a -L../libaegisub -laegisub-2.2
 aegisub_2_2_CPPFLAGS = @FREETYPE_CFLAGS@
-aegisub_2_2_LDFLAGS = @DEBUG_FLAGS@ @PROFILE_FLAGS@ @GL_LIBS@ @PTHREAD_LIBS@ @WX_LIBS@ $(libosxutil_ldflags) @CCMALLOC_LDFLAGS@ @EFENCE_LDFLAGS@
+aegisub_2_2_LDFLAGS = @DEBUG_FLAGS@ @PROFILE_FLAGS@ @GL_LIBS@ @PTHREAD_LIBS@ @WX_LIBS@ @CCMALLOC_LDFLAGS@ @EFENCE_LDFLAGS@
 LIBS += @FREETYPE_LIBS@ @FONTCONFIG_LIBS@ @CCMALLOC_LIBS@
 
 if PRECOMPILED_HEADER

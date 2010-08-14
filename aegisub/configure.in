@@ -1241,7 +1241,6 @@ po/Makefile.in
 reporter/Makefile
 src/Makefile
 src/bitmaps/Makefile
-src/libosxutil/Makefile
 src/libresrc/Makefile
 tools/Makefile
 universalchardet/Makefile

@@ -5,7 +5,7 @@ DISTCLEANFILES=
 
 lib_LTLIBRARIES = libaegisub-2.2.la
 libaegisub_2_2_la_CPPFLAGS = -I../src/include -Iinclude -I. @WX_CPPFLAGS@ -pedantic -DLAGI
-libaegisub_2_2_la_LDFLAGS = @ICONV_LDFLAGS@
+AM_LDFLAGS = @ICONV_LDFLAGS@ -L../universalchardet -luniversalchardet
 
 if PRECOMPILED_HEADER
 BUILT_SOURCES = lagi_pre.h.gch
@@ -18,6 +18,10 @@ if PRECOMPILED_HEADER
 lagi_pre.h.gch: lagi_pre.h
 	@CXX@ $(libaegisub_2_2_la_CPPFLAGS) @CXXFLAGS@ @DEBUG_FLAGS@ -fPIC -DPIC lagi_pre.h
 DISTCLEANFILES += lagi_pre.h.gch
+endif
+
+if BUILD_DARWIN
+AM_CXXFLAGS += -I/Developer/SDKs/MacOSX10.5.sdk/System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/LaunchServices.framework/Versions/A/Headers/
 endif
 
 libaegisub_2_2_la_SOURCES = \
@@ -35,6 +39,11 @@ libaegisub_2_2_la_SOURCES = \
 	unix/io.cpp \
 	unix/access.cpp \
 	unix/log.cpp
+
+if BUILD_DARWIN
+libaegisub_2_2_la_SOURCES += \
+	osx/util.cpp
+endif
 
 noinst_HEADERS = *.h
 

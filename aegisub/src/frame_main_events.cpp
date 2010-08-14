@@ -95,9 +95,7 @@
 #include "video_slider.h"
 
 #ifdef __APPLE__
-extern "C" {
-#include "libosxutil/libosxutil.h"
-}
+#include <libaegisub/util_osx.h>
 #endif
 
 BEGIN_EVENT_TABLE(FrameMain, wxFrame)
@@ -588,9 +586,10 @@ void FrameMain::OnContents(wxCommandEvent&) {
 /// @param event
 void FrameMain::OnFiles(wxCommandEvent&) {
 #ifdef __WXMAC__
-	char *shared_path = OSX_GetBundleSharedSupportDirectory();
+	char *shared_path = agi::util::OSX_GetBundleSharedSupportDirectory();
 	wxString help_path = wxString::Format(_T("%s/doc"), wxString(shared_path, wxConvUTF8).c_str());
-	OSX_OpenLocation(help_path.c_str());
+	agi::util::OSX_OpenLocation(help_path.c_str());
+	free(shared_path);
 #endif
 }
 
