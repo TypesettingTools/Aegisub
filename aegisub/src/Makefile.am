@@ -8,7 +8,7 @@ if PRECOMPILED_HEADER
 BUILT_SOURCES = agi_pre.h.gch
 precompiled_header = agi_pre.h
 AM_CXXFLAGS += -Winvalid-pch -fpch-deps -fpch-preprocess -include agi_pre.h
-nodist_aegisub_2_2_SOURCES = agi_pre.h.gch
+nodist_aegisub_3_0_SOURCES = agi_pre.h.gch
 DISTCLEANFILES += agi_pre.h.gch
 endif
 
@@ -18,10 +18,10 @@ SUBDIRS = \
 
 AM_CXXFLAGS += -DAEGISUB -Iinclude -I../libffms/include -I../libaegisub/include @WX_CPPFLAGS@ @OPENMP_CXXFLAGS@ @LIBAVFORMAT_CFLAGS@ @LIBAVCODEC_CFLAGS@ @LIBSWSCALE_CFLAGS@ @LIBAVUTIL_CFLAGS@
 
-bin_PROGRAMS = aegisub-2.2
-aegisub_2_2_LDADD = libresrc/libresrc.a -L../libaegisub -laegisub-2.2
-aegisub_2_2_CPPFLAGS = @FREETYPE_CFLAGS@
-aegisub_2_2_LDFLAGS = @DEBUG_FLAGS@ @PROFILE_FLAGS@ @GL_LIBS@ @PTHREAD_LIBS@ @WX_LIBS@ @CCMALLOC_LDFLAGS@ @EFENCE_LDFLAGS@
+bin_PROGRAMS = aegisub-3.0
+aegisub_3_0_LDADD = libresrc/libresrc.a -L../libaegisub -laegisub-3.0
+aegisub_3_0_CPPFLAGS = @FREETYPE_CFLAGS@
+aegisub_3_0_LDFLAGS = @DEBUG_FLAGS@ @PROFILE_FLAGS@ @GL_LIBS@ @PTHREAD_LIBS@ @WX_LIBS@ @CCMALLOC_LDFLAGS@ @EFENCE_LDFLAGS@
 LIBS += @FREETYPE_LIBS@ @FONTCONFIG_LIBS@ @CCMALLOC_LIBS@
 
 if PRECOMPILED_HEADER
@@ -31,75 +31,75 @@ agi_pre.h.gch: agi_pre.h
 endif
 
 if BUILD_DARWIN
-aegisub_2_2_LDFLAGS += -L/System/Library/Frameworks/OpenGL.framework/Versions/A/Libraries
+aegisub_3_0_LDFLAGS += -L/System/Library/Frameworks/OpenGL.framework/Versions/A/Libraries
 endif
 
 noinst_LIBRARIES += libaudio_player.a
 libaudio_player_a_SOURCES = audio_player.cpp
 libaudio_player_a_CPPFLAGS = @ALSA_CFLAGS@ @PORTAUDIO_CFLAGS@ @LIBPULSE_CFLAGS@ @OPENAL_CFLAGS@
-aegisub_2_2_LDADD += libaudio_player.a
+aegisub_3_0_LDADD += libaudio_player.a
 
 if HAVE_ALSA
 noinst_LIBRARIES += libaudio_alsa.a
 libaudio_alsa_a_SOURCES = audio_player_alsa.cpp
-aegisub_2_2_LDFLAGS += @ALSA_LDFLAGS@
-aegisub_2_2_LDADD += libaudio_alsa.a
+aegisub_3_0_LDFLAGS += @ALSA_LDFLAGS@
+aegisub_3_0_LDADD += libaudio_alsa.a
 endif
 
 if HAVE_PORTAUDIO
 noinst_LIBRARIES += libaudio_portaudio.a
 libaudio_portaudio_a_SOURCES = audio_player_portaudio.cpp
 libaudio_portaudio_a_CPPFLAGS = @PORTAUDIO_CFLAGS@
-aegisub_2_2_LDFLAGS += @PORTAUDIO_LIBS@
-aegisub_2_2_LDADD += libaudio_portaudio.a
+aegisub_3_0_LDFLAGS += @PORTAUDIO_LIBS@
+aegisub_3_0_LDADD += libaudio_portaudio.a
 endif
 
 if HAVE_PULSEAUDIO
 noinst_LIBRARIES += libaudio_pulseaudio.a
 libaudio_pulseaudio_a_SOURCES = audio_player_pulse.cpp
 libaudio_pulseaudio_a_CPPFLAGS = @LIBPULSE_CFLAGS@
-aegisub_2_2_LDFLAGS += @LIBPULSE_LIBS@
-aegisub_2_2_LDADD += libaudio_pulseaudio.a
+aegisub_3_0_LDFLAGS += @LIBPULSE_LIBS@
+aegisub_3_0_LDADD += libaudio_pulseaudio.a
 endif
 
 if HAVE_OPENAL
 noinst_LIBRARIES += libaudio_openal.a
 libaudio_openal_a_SOURCES = audio_player_openal.cpp
 libaudio_openal_a_CPPFLAGS = @OPENAL_CFLAGS@
-aegisub_2_2_LDFLAGS += @OPENAL_LIBS@
-aegisub_2_2_LDADD += libaudio_openal.a
+aegisub_3_0_LDFLAGS += @OPENAL_LIBS@
+aegisub_3_0_LDADD += libaudio_openal.a
 endif
 
 if HAVE_OSS
 noinst_LIBRARIES += libaudio_oss.a
 libaudio_oss_a_SOURCES = audio_player_oss.cpp
-aegisub_2_2_LDADD += libaudio_oss.a
+aegisub_3_0_LDADD += libaudio_oss.a
 endif
 
 if HAVE_FFMPEG
-aegisub_2_2_LDFLAGS += @LIBAVFORMAT_LIBS@ @LIBAVCODEC_LIBS@ @LIBSWSCALE_LIBS@ @LIBAVUTIL_LIBS@
+aegisub_3_0_LDFLAGS += @LIBAVFORMAT_LIBS@ @LIBAVCODEC_LIBS@ @LIBSWSCALE_LIBS@ @LIBAVUTIL_LIBS@
 endif
 
 if HAVE_PROVIDER_FFMPEGSOURCE
 noinst_LIBRARIES += libaudiovideo_ffmpegsource.a
 libaudiovideo_ffmpegsource_a_SOURCES = audio_provider_ffmpegsource.cpp video_provider_ffmpegsource.cpp ffmpegsource_common.cpp
 libaudiovideo_ffmpegsource_a_CPPFLAGS = @LIBAVFORMAT_CFLAGS@ @LIBAVCODEC_CFLAGS@ @LIBSWSCALE_CFLAGS@ @LIBAVUTIL_CFLAGS@ @LIBPOSTPROC_CFLAGS@
-aegisub_2_2_LDADD += libaudiovideo_ffmpegsource.a ../libffms/libffmpegsource_aegisub.a
-aegisub_2_2_LDFLAGS += @LIBPOSTPROC_LIBS@
+aegisub_3_0_LDADD += libaudiovideo_ffmpegsource.a ../libffms/libffmpegsource_aegisub.a
+aegisub_3_0_LDFLAGS += @LIBPOSTPROC_LIBS@
 endif
 
 noinst_LIBRARIES += libsubtitle_provider.a
 libsubtitle_provider_a_SOURCES = subtitles_provider.cpp
 libsubtitle_provider_a_CPPFLAGS = @CSRI_CFLAGS@
-aegisub_2_2_LDADD += libsubtitle_provider.a
+aegisub_3_0_LDADD += libsubtitle_provider.a
 
 if WITH_LIBASS
 noinst_LIBRARIES += libsubtitle_ass.a
 libsubtitle_ass_a_SOURCES = subtitles_provider_libass.cpp
 libsubtitle_ass_a_CPPFLAGS = @LIBASS_CFLAGS@ @ICONV_CFLAGS@
 LIBS += @LIBASS_LIBS@
-aegisub_2_2_LDADD += libsubtitle_ass.a
-aegisub_2_2_LDFLAGS += @FONTCONFIG_LIBS@
+aegisub_3_0_LDADD += libsubtitle_ass.a
+aegisub_3_0_LDFLAGS += @FONTCONFIG_LIBS@
 endif
 
 if WITH_CSRI
@@ -107,8 +107,8 @@ noinst_LIBRARIES += libsubtitle_csri.a
 libsubtitle_csri_a_SOURCES = subtitles_provider_csri.cpp
 libsubtitle_csri_a_CPPFLAGS = @ICONV_CFLAGS@ @CSRI_CFLAGS@
 LIBS += @CSRI_LIBS@
-aegisub_2_2_LDADD += libsubtitle_csri.a
-aegisub_2_2_LDFLAGS += @FONTCONFIG_LIBS@
+aegisub_3_0_LDADD += libsubtitle_csri.a
+aegisub_3_0_LDFLAGS += @FONTCONFIG_LIBS@
 endif
 
 if HAVE_AUTO4_LUA
@@ -116,14 +116,14 @@ noinst_LIBRARIES += libauto4_lua.a
 libauto4_lua_a_SOURCES = auto4_lua.cpp auto4_lua_assfile.cpp auto4_lua_dialog.cpp auto4_lua_scriptreader.cpp
 libauto4_lua_a_CPPFLAGS = @LUA_CFLAGS@
 LIBS += @LUA_LDFLAGS@
-aegisub_2_2_LDADD += libauto4_lua.a
+aegisub_3_0_LDADD += libauto4_lua.a
 endif
 
 if HAVE_HUNSPELL
 noinst_LIBRARIES += libmisc_hunspell.a
 libmisc_hunspell_a_SOURCES = spellchecker_hunspell.cpp
-aegisub_2_2_LDFLAGS += @HUNSPELL_LIBS@
-aegisub_2_2_LDADD += libmisc_hunspell.a
+aegisub_3_0_LDFLAGS += @HUNSPELL_LIBS@
+aegisub_3_0_LDADD += libmisc_hunspell.a
 endif
 
 if FONTLISTER_FREETYPE
@@ -137,11 +137,11 @@ endif
 noinst_LIBRARIES += libmisc_universalchardet.a
 libmisc_universalchardet_a_SOURCES = charset_detect.cpp text_file_reader.cpp
 libmisc_universalchardet_a_CPPFLAGS = -D_X86_
-aegisub_2_2_LDADD += libmisc_universalchardet.a ../universalchardet/libuniversalchardet.a
+aegisub_3_0_LDADD += libmisc_universalchardet.a ../universalchardet/libuniversalchardet.a
 
 ## These aren't built, but are listed here so 'make dist' can always find all the sources
 ## This should also list all Win32 specific files
-EXTRA_aegisub_2_2_SOURCES = \
+EXTRA_aegisub_3_0_SOURCES = \
 	$(precompiled_header) \
 	font_file_lister.cpp \
 	$(FONT_LISTER) \
@@ -163,7 +163,7 @@ EXTRA_aegisub_2_2_SOURCES = \
 	video_provider_avs.cpp
 
 
-aegisub_2_2_SOURCES = \
+aegisub_3_0_SOURCES = \
 	$(FFMPEG) \
 	$(HUNSPELL) \
 	$(LIBASS) \
@@ -305,7 +305,7 @@ aegisub_2_2_SOURCES = \
 	visual_tool_vector_clip.cpp
 
 
-aegisub_2_2_SOURCES += \
+aegisub_3_0_SOURCES += \
 	$(srcdir)/*.h \
 	$(srcdir)/include/aegisub/*.h \
     $(srcdir)/config/*.h

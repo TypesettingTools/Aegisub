@@ -2,16 +2,16 @@ AUTOMAKE_OPTIONS = foreign
 AM_CXXFLAGS =
 DISTCLEANFILES =
 
-bin_PROGRAMS = reporter-2.2
+bin_PROGRAMS = reporter-3.0
 
 if PRECOMPILED_HEADER
 BUILT_SOURCES = r_pre.h.gch
 AM_CXXFLAGS += -include r_pre.h -Winvalid-pch -fpch-deps -fpch-preprocess
-nodist_reporter_2_2_SOURCES = r_prec.h.gch
+nodist_reporter_3_0_SOURCES = r_prec.h.gch
 endif
 
-reporter_2_2_CPPFLAGS = -Iinclude @LIBCURL_CFLAGS@ @WX_CPPFLAGS@
-reporter_2_2_LDFLAGS = @WX_LIBS@ @LIBCURL_LIBS@
+reporter_3_0_CPPFLAGS = -Iinclude @LIBCURL_CFLAGS@ @WX_CPPFLAGS@
+reporter_3_0_LDFLAGS = @WX_LIBS@ @LIBCURL_LIBS@
 
 if PRECOMPILED_HEADER
 # This doesn't depend on Makefile on purpose, you should already know what you're doing when using this.
@@ -21,7 +21,7 @@ DISTCLEANFILES += r_pre.h.gch
 endif
 
 
-reporter_2_2_SOURCES = \
+reporter_3_0_SOURCES = \
 	aegisub.cpp \
 	main.cpp \
 	name_map.cpp \
@@ -33,19 +33,19 @@ reporter_2_2_SOURCES = \
 	view.cpp
 
 if BUILD_BSD
-reporter_2_2_SOURCES += platform_unix_bsd.cpp
+reporter_3_0_SOURCES += platform_unix_bsd.cpp
 endif
 
 if BUILD_LINUX
-reporter_2_2_SOURCES += platform_unix_linux.cpp
+reporter_3_0_SOURCES += platform_unix_linux.cpp
 endif
 
 if BUILD_DARWIN
-reporter_2_2_SOURCES += platform_unix_osx.cpp
+reporter_3_0_SOURCES += platform_unix_osx.cpp
 endif
 
 
-reporter_2_2_SOURCES += \
+reporter_3_0_SOURCES += \
 	*.h \
 	include/*.h
 
