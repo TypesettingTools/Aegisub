@@ -22,6 +22,7 @@ endif
 
 if BUILD_DARWIN
 AM_CXXFLAGS += -I/Developer/SDKs/MacOSX10.5.sdk/System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/LaunchServices.framework/Versions/A/Headers/
+AM_LDFLAGS += -L../universalchardet -luniversalchardet
 endif
 
 libaegisub_2_2_la_SOURCES = \
