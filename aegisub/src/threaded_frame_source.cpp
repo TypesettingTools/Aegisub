@@ -123,6 +123,7 @@ void *ThreadedFrameSource::Entry() {
 		}
 		if (nextTime == -1.) {
 			jobReady.Wait();
+			jobMutex.Unlock();
 			continue;
 		}
 
