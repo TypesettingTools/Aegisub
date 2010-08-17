@@ -280,7 +280,9 @@ void HotkeyManager::Load() {
 	}
 	catch (...) {
 	}
-	if (header != _T("[Hotkeys]")) {
+
+	// if (header != _T("[Hotkeys]")) {
+	if (!header.EndsWith(_T("[Hotkeys]"))) { // Workaround for OSX, will be useless when Hotkeys are redone.
 		wxFileName backupfn(filename);
 		backupfn.SetFullName(_T("hotkeys.bak"));
 		wxCopyFile(filename, backupfn.GetFullPath());
