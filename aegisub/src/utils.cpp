@@ -44,8 +44,6 @@
 #include <unistd.h>
 #endif
 
-#include <libaegisub/log.h>
-
 #include <wx/dcmemory.h>
 #include <wx/filename.h>
 #include <wx/log.h>
