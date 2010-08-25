@@ -38,8 +38,8 @@
 ///////////
 // Headers
 #ifndef AGI_PRE
+#include <tr1/memory>
 #include <vector>
-#include "boost/shared_ptr.hpp"
 #endif
 
 #include "ass_entry.h"
@@ -76,7 +76,7 @@ class AssAttachment : public AssEntry {
 private:
 
 	/// DOCME
-	boost::shared_ptr<AttachData> data;
+	std::tr1::shared_ptr<AttachData> data;
 
 	/// DOCME
 	wxString filename;

@@ -64,7 +64,7 @@ AssAttachment::AssAttachment(wxString _name) {
 
 	// Set data
 	filename = name;
-	data = boost::shared_ptr<AttachData> (new AttachData);
+	data = std::tr1::shared_ptr<AttachData> (new AttachData);
 }
 
 

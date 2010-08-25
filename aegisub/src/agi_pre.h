@@ -86,8 +86,6 @@
 #include <tr1/memory>
 #endif
 
-#include "boost/shared_ptr.hpp"
-
 // General headers
 #include <assert.h>
 #include <ctype.h>
