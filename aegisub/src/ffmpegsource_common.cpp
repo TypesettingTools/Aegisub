@@ -39,7 +39,9 @@
 #ifdef WITH_FFMPEGSOURCE
 
 #ifndef AGI_PRE
+#include <inttypes.h>
 #include <map>
+
 #include <wx/dir.h>
 #include <wx/choicdlg.h> // Keep this last so wxUSE_CHOICEDLG is set.
 #endif
@@ -210,7 +212,7 @@ FFMS_IndexErrorHandling FFmpegSourceProvider::GetErrorHandlingMode() {
 		return FFMS_IEH_STOP_TRACK; // questionable default?
 }
 
-
+#include <inttypes.h>
 /// @brief	Generates an unique name for the ffms2 index file and prepares the cache folder if it doesn't exist 
 /// @param filename	The name of the source file
 /// @return			Returns the generated filename.
@@ -225,8 +227,8 @@ wxString FFmpegSourceProvider::GetCacheFilename(const wxString& _filename)
 
 	wxFileName filename(_filename);
 
-	// Generate string to be hashed //
-	wxString toHash = wxString::Format(_T("%s %ld %ld"), filename.GetFullName(), len, filename.GetModificationTime().GetTicks());
+	// Generate string to be hashed
+	wxString toHash = wxString::Format("%s %" PRId64 " %" PRId64, filename.GetFullName(), len, (int64_t)filename.GetModificationTime().GetTicks());
 
 
 	// Get the MD5 digest of the string
