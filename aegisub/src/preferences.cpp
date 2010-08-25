@@ -344,7 +344,7 @@ Advanced_Audio::Advanced_Audio(wxTreebook *book): OptionPage(book, _("Audio"), P
 
 
 /// Advanced Video preferences subpage
-Advanced_Video::Advanced_Video(wxTreebook *book): OptionPage(book, _("Video")) {
+Advanced_Video::Advanced_Video(wxTreebook *book): OptionPage(book, _("Video"), PAGE_SUB) {
 	wxFlexGridSizer *expert = PageSizer(_("Expert"));
 
 	wxArrayString vp_choice = vec_to_arrstr(VideoProviderFactory::GetClasses());
