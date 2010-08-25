@@ -184,7 +184,12 @@ bool AegisubApp::OnInit() {
 		// Might be worth displaying an error in the second case
 	}
 #endif
-	config::opt->ConfigUser();
+	try {
+		config::opt->ConfigUser();
+	}
+	catch (agi::Exception const& err) {
+		wxMessageBox(L"Configuration file is invalid. Error reported:\n" + lagi_wxString(err.GetMessage()), L"Error");
+	}
 
 
 #ifdef __VISUALC__
