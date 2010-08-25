@@ -43,7 +43,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/MP"
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;NOMINMAX"
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;NOMINMAX;__STDC_FORMAT_MACROS"
 				MinimalRebuild="true"
 				UsePrecompiledHeader="2"
 				PrecompiledHeaderThrough="agi_pre.h"
@@ -109,7 +109,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				PreprocessorDefinitions="WIN32;WIN64;_DEBUG;_WINDOWS;NOMINMAX"
+				PreprocessorDefinitions="WIN32;WIN64;_DEBUG;_WINDOWS;NOMINMAX;__STDC_FORMAT_MACROS"
 				MinimalRebuild="true"
 				UsePrecompiledHeader="2"
 				PrecompiledHeaderThrough="agi_pre.h"
@@ -176,7 +176,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/MP"
-				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;NOMINMAX"
+				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;NOMINMAX;__STDC_FORMAT_MACROS"
 				UsePrecompiledHeader="2"
 				PrecompiledHeaderThrough="agi_pre.h"
 				ProgramDataBaseFileName="$(IntDir)\vc90.pdb"
@@ -245,7 +245,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				PreprocessorDefinitions="WIN32;WIN64;NDEBUG;_WINDOWS;NOMINMAX"
+				PreprocessorDefinitions="WIN32;WIN64;NDEBUG;_WINDOWS;NOMINMAX;__STDC_FORMAT_MACROS"
 				UsePrecompiledHeader="2"
 				PrecompiledHeaderThrough="agi_pre.h"
 				DisableSpecificWarnings="4267"

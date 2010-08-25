@@ -16,7 +16,7 @@ SUBDIRS = \
 	bitmaps \
 	libresrc
 
-AM_CXXFLAGS += -DAEGISUB -Iinclude -I../libffms/include -I../libaegisub/include @WX_CPPFLAGS@ @OPENMP_CXXFLAGS@ @LIBAVFORMAT_CFLAGS@ @LIBAVCODEC_CFLAGS@ @LIBSWSCALE_CFLAGS@ @LIBAVUTIL_CFLAGS@
+AM_CXXFLAGS += -DAEGISUB -D__STDC_FORMAT_MACROS -Iinclude -I../libffms/include -I../libaegisub/include @WX_CPPFLAGS@ @OPENMP_CXXFLAGS@ @LIBAVFORMAT_CFLAGS@ @LIBAVCODEC_CFLAGS@ @LIBSWSCALE_CFLAGS@ @LIBAVUTIL_CFLAGS@
 
 bin_PROGRAMS = aegisub-3.0
 aegisub_3_0_LDADD = libresrc/libresrc.a -L../libaegisub -laegisub-3.0
