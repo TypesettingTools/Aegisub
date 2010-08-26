@@ -158,6 +158,10 @@ Interface::Interface(wxTreebook *book): OptionPage(book, _("Interface")) {
 
 /// Interface Colours preferences subpage
 Interface_Colours::Interface_Colours(wxTreebook *book): OptionPage(book, _("Colours"), PAGE_SCROLL|PAGE_SUB) {
+	delete sizer;
+	wxSizer *main_sizer = new wxBoxSizer(wxHORIZONTAL);
+	sizer = new wxBoxSizer(wxVERTICAL);
+	main_sizer->Add(sizer);
 
 	wxFlexGridSizer *general = PageSizer(_("General"));
 	OptionAdd(general, _("Modified Background"), "Colour/Background/Modified");
@@ -177,6 +181,9 @@ Interface_Colours::Interface_Colours(wxTreebook *book): OptionPage(book, _("Colo
 	OptionAdd(audio, _("Line boundary inactive line"), "Colour/Audio Display/Line Boundary Inactive Line");
 	OptionAdd(audio, _("Syllable text"), "Colour/Audio Display/Syllable Text");
 	OptionAdd(audio, _("Syllable boundaries"), "Colour/Audio Display/Syllable Boundaries");
+
+	sizer = new wxBoxSizer(wxVERTICAL);
+	main_sizer->Add(sizer);
 
 	wxFlexGridSizer *syntax = PageSizer(_("Syntax Highlighting"));
 	OptionAdd(syntax, _("Normal"), "Colour/Subtitle/Syntax/Normal");
@@ -199,6 +206,8 @@ Interface_Colours::Interface_Colours(wxTreebook *book): OptionPage(book, _("Colo
 	OptionAdd(grid, _("Left Column"), "Colour/Subtitle Grid/Left Column");
 	OptionAdd(grid, _("Active Line Border"), "Colour/Subtitle Grid/Active Border");
 	OptionAdd(grid, _("Lines"), "Colour/Subtitle Grid/Lines");
+
+	sizer = main_sizer;
 
 	SetSizerAndFit(sizer);
 }
