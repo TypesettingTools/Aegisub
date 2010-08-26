@@ -105,9 +105,6 @@
 			"Waveform Modified" : "rgb(255, 230, 230)",
 			"Waveform Selected" : "rgb(255,255,255)"
 		},
-		"Background" : {
-			"Modified" : "rgb(192, 192, 255)"
-		},
 		"Style Editor" : {
 			"Background" : {
 				"Preview" : "rgb(125, 153, 176)"

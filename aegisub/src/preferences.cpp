@@ -159,12 +159,7 @@ Interface::Interface(wxTreebook *book, Preferences *parent): OptionPage(book, pa
 /// Interface Colours preferences subpage
 Interface_Colours::Interface_Colours(wxTreebook *book, Preferences *parent): OptionPage(book, parent, _("Colours"), PAGE_SCROLL|PAGE_SUB) {
 	delete sizer;
-	wxSizer *main_sizer = new wxBoxSizer(wxHORIZONTAL);
-	sizer = new wxBoxSizer(wxVERTICAL);
-	main_sizer->Add(sizer);
-
-	wxFlexGridSizer *general = PageSizer(_("General"));
-	OptionAdd(general, _("Modified Background"), "Colour/Background/Modified");
+	wxSizer *main_sizer = sizer = new wxBoxSizer(wxHORIZONTAL);
 
 	wxFlexGridSizer *audio = PageSizer(_("Audio Display"));
 	OptionAdd(audio, _("Play cursor"), "Colour/Audio Display/Play Cursor");
