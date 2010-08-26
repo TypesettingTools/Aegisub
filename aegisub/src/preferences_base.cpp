@@ -260,6 +260,10 @@ void Preferences::OnCancel(wxCommandEvent &event) {
 	EndModal(0);
 }
 
+static void PageChanged(wxBookCtrlEvent& evt) {
+	OPT_SET("Tool/Preferences/Page")->SetInt(evt.GetSelection());
+}
+
 Preferences::Preferences(wxWindow *parent): wxDialog(parent, -1, _("Preferences"), wxDefaultPosition, wxSize(-1, 500)) {
 //	SetIcon(BitmapToIcon(GETIMAGE(options_button_24)));
 
@@ -282,8 +286,8 @@ Preferences::Preferences(wxWindow *parent): wxDialog(parent, -1, _("Preferences"
 
 	book->Fit();
 
-	/// @todo Save the last page and start with that page on next launch.
-	book->ChangeSelection(0);
+	book->ChangeSelection(OPT_GET("Tool/Preferences/Page")->GetInt());
+	book->Bind(wxEVT_COMMAND_TREEBOOK_PAGE_CHANGED, &PageChanged);
 
 	// Bottom Buttons
 	wxStdDialogButtonSizer *stdButtonSizer = new wxStdDialogButtonSizer();
