@@ -197,11 +197,10 @@ FrameMain::FrameMain (wxArrayString args)
 
 	// Version checker
 	StartupLog(_T("Possibly perform automatic updates check"));
-	int option = OPT_GET("App/Auto/Check For Updates")->GetInt();
-	if (option == -1) {
+	if (OPT_GET("App/First Start")->GetBool()) {
+		OPT_SET("App/First Start")->SetBool(false);
 		int result = wxMessageBox(_("Do you want Aegisub to check for updates whenever it starts? You can still do it manually via the Help menu."),_("Check for updates?"),wxYES_NO);
-		option = (result == wxYES);
-		OPT_SET("App/Auto/Check For Updates")->SetInt(option);
+		OPT_SET("App/Auto/Check For Updates")->SetBool(result == wxYES);
 	}
 
 	PerformVersionCheck(false);

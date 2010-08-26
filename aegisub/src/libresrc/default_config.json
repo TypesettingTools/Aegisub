@@ -2,12 +2,13 @@
 	"App" : {
 		"Auto" : {
 			"Backup" : true,
-			"Check For Updates" : -1,
+			"Check For Updates" : true,
 			"Load Linked Files" : 2,
 			"Save Every Seconds" : 60,
 			"Save on Every Change" : false
 		},
 		"Call Tips" : false,
+		"First Start" : true,
 		"Local Config" : false,
 		"Locale" : -1,
 		"Maximized" : false,
