@@ -53,7 +53,7 @@
 General::General(wxTreebook *book): OptionPage(book, _("General")) {
 
 	wxFlexGridSizer *startup = PageSizer(_("Startup"));
-	OptionAdd(startup, _("Check for updates"), "App/Splash");
+	OptionAdd(startup, _("Check for updates"), "App/Auto/Check For Updates");
 	OptionAdd(startup, _("Show Splash Screen"), "App/Splash");
 
 	wxFlexGridSizer *recent = PageSizer(_("Recently Used Lists"));
