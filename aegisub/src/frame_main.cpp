@@ -92,6 +92,8 @@
 #define StartupLog(a)
 #endif
 
+static void autosave_timer_changed(wxTimer &timer, const agi::OptionValue &opt);
+
 FrameMain::FrameMain (wxArrayString args)
 : wxFrame ((wxFrame*)NULL,-1,_T(""),wxDefaultPosition,wxSize(920,700),wxDEFAULT_FRAME_STYLE | wxCLIP_CHILDREN)
 {
@@ -179,6 +181,7 @@ FrameMain::FrameMain (wxArrayString args)
 	if (time > 0) {
 		AutoSave.Start(time*1000);
 	}
+	OPT_GET("App/Auto/Save Every Seconds")->Subscribe(this, std::tr1::bind(autosave_timer_changed, std::tr1::ref(AutoSave), std::tr1::placeholders::_1));
 
 	// Set accelerator keys
 	StartupLog(_T("Install hotkeys"));
@@ -1345,4 +1348,14 @@ bool FrameMain::HasASSDraw() {
 #else
 	return false;
 #endif
+}
+
+static void autosave_timer_changed(wxTimer &timer, const agi::OptionValue &opt) {
+	int freq = opt.GetInt();
+	if (freq <= 0) {
+		timer.Stop();
+	}
+	else {
+		timer.Start(freq * 1000);
+	}
 }
