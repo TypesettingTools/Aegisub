@@ -19,6 +19,10 @@
 /// @see preferences_base.cpp
 /// @ingroup configuration_ui
 
+#include "browse_button.h"
+
+class Preferences;
+
 class OptionPage: public wxScrolled<wxPanel> {
 public:
 	enum Style {
@@ -28,8 +32,9 @@ public:
 	};
 
 	wxSizer *sizer;
+	Preferences *parent;
 
-	OptionPage(wxTreebook *book, wxString name, int style = PAGE_DEFAULT);
+	OptionPage(wxTreebook *book, Preferences *parent, wxString name, int style = PAGE_DEFAULT);
 	~OptionPage();
 
 	wxFlexGridSizer* PageSizer(wxString name);
@@ -39,10 +44,10 @@ public:
 	void OptionBrowse(wxFlexGridSizer *&flex, const wxString &name, BrowseType browse_type, const char *opt_name);
 };
 
-#define CLASS_PAGE(name)            \
-	class name: public OptionPage { \
-	public:                         \
-		name(wxTreebook *book);     \
+#define CLASS_PAGE(name)                             \
+	class name: public OptionPage {                  \
+	public:                                          \
+		name(wxTreebook *book, Preferences *parent); \
 	};
 
 CLASS_PAGE(General)

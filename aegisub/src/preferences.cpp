@@ -50,7 +50,7 @@
 #include "preferences_base.h"
 
 /// General preferences page
-General::General(wxTreebook *book): OptionPage(book, _("General")) {
+General::General(wxTreebook *book, Preferences *parent): OptionPage(book, parent, _("General")) {
 
 	wxFlexGridSizer *startup = PageSizer(_("Startup"));
 	OptionAdd(startup, _("Check for updates"), "App/Auto/Check For Updates");
@@ -69,7 +69,7 @@ General::General(wxTreebook *book): OptionPage(book, _("General")) {
 
 
 /// Subtitles preferences page
-Subtitles::Subtitles(wxTreebook *book): OptionPage(book, _("Subtitles")) {
+Subtitles::Subtitles(wxTreebook *book, Preferences *parent): OptionPage(book, parent, _("Subtitles")) {
 
 	wxFlexGridSizer *general = PageSizer(_("Options"));
 	OptionAdd(general, _("Enable call tips"), "App/Call Tips");
@@ -86,7 +86,7 @@ Subtitles::Subtitles(wxTreebook *book): OptionPage(book, _("Subtitles")) {
 
 
 /// Audio preferences page
-Audio::Audio(wxTreebook *book): OptionPage(book, _("Audio")) {
+Audio::Audio(wxTreebook *book, Preferences *parent): OptionPage(book, parent, _("Audio")) {
 
 	wxFlexGridSizer *general = PageSizer(_("Options"));
 	OptionAdd(general, _("Grab times from line upon selection"), "Audio/Grab Times on Select");
@@ -119,7 +119,7 @@ Audio::Audio(wxTreebook *book): OptionPage(book, _("Audio")) {
 
 
 /// Video preferences page
-Video::Video(wxTreebook *book): OptionPage(book, _("Video")) {
+Video::Video(wxTreebook *book, Preferences *parent): OptionPage(book, parent, _("Video")) {
 
 	wxFlexGridSizer *general = PageSizer(_("Options"));
 	OptionAdd(general, _("Show keyframes in slider"), "Video/Slider/Show Keyframes");
@@ -144,7 +144,7 @@ Video::Video(wxTreebook *book): OptionPage(book, _("Video")) {
 
 
 /// Interface preferences page
-Interface::Interface(wxTreebook *book): OptionPage(book, _("Interface")) {
+Interface::Interface(wxTreebook *book, Preferences *parent): OptionPage(book, parent, _("Interface")) {
 
 	wxFlexGridSizer *grid = PageSizer(_("Subtitle Grid"));
 	OptionBrowse(grid, _("Font face"), BROWSE_FONT, "Subtitle/Grid/Font Face");
@@ -157,7 +157,7 @@ Interface::Interface(wxTreebook *book): OptionPage(book, _("Interface")) {
 
 
 /// Interface Colours preferences subpage
-Interface_Colours::Interface_Colours(wxTreebook *book): OptionPage(book, _("Colours"), PAGE_SCROLL|PAGE_SUB) {
+Interface_Colours::Interface_Colours(wxTreebook *book, Preferences *parent): OptionPage(book, parent, _("Colours"), PAGE_SCROLL|PAGE_SUB) {
 	delete sizer;
 	wxSizer *main_sizer = new wxBoxSizer(wxHORIZONTAL);
 	sizer = new wxBoxSizer(wxVERTICAL);
@@ -214,7 +214,7 @@ Interface_Colours::Interface_Colours(wxTreebook *book): OptionPage(book, _("Colo
 
 
 /// Interface Hotkeys preferences subpage
-Interface_Hotkeys::Interface_Hotkeys(wxTreebook *book): OptionPage(book, _("Hotkeys"), PAGE_SUB) {
+Interface_Hotkeys::Interface_Hotkeys(wxTreebook *book, Preferences *parent): OptionPage(book, parent, _("Hotkeys"), PAGE_SUB) {
 
 	wxFlexGridSizer *hotkeys = PageSizer(_("Hotkeys"));
 	hotkeys->Add(new wxStaticText(this, wxID_ANY, _T("To be added after hotkey rewrite.")), 0, wxALL, 5);
@@ -223,7 +223,7 @@ Interface_Hotkeys::Interface_Hotkeys(wxTreebook *book): OptionPage(book, _("Hotk
 
 
 /// Paths preferences page class Paths: public OptionPage { public:
-Paths::Paths(wxTreebook *book): OptionPage(book, _("Paths")) {
+Paths::Paths(wxTreebook *book, Preferences *parent): OptionPage(book, parent, _("Paths")) {
 
 	wxFlexGridSizer *general = PageSizer(_("General"));
 	general->Add(new wxStaticText(this, wxID_ANY, _T("TBD..")), 0, wxALL, 5);
@@ -233,7 +233,7 @@ Paths::Paths(wxTreebook *book): OptionPage(book, _("Paths")) {
 
 
 /// File Associations preferences page
-File_Associations::File_Associations(wxTreebook *book): OptionPage(book, _("File Associations")) {
+File_Associations::File_Associations(wxTreebook *book, Preferences *parent): OptionPage(book, parent, _("File Associations")) {
 
 	wxFlexGridSizer *assoc = PageSizer(_("General"));
 	assoc->Add(new wxStaticText(this, wxID_ANY, _T("TBD..")), 0, wxALL, 5);
@@ -243,7 +243,7 @@ File_Associations::File_Associations(wxTreebook *book): OptionPage(book, _("File
 
 
 /// Backup preferences page
-Backup::Backup(wxTreebook *book): OptionPage(book, _("Backup")) {
+Backup::Backup(wxTreebook *book, Preferences *parent): OptionPage(book, parent, _("Backup")) {
 	wxFlexGridSizer *save = PageSizer(_("Automatic Save"));
 	OptionAdd(save, _("Enable"), "App/Auto/Backup");
 	CellSkip(save);
@@ -261,7 +261,7 @@ Backup::Backup(wxTreebook *book): OptionPage(book, _("Backup")) {
 
 
 /// Automation preferences page
-Automation::Automation(wxTreebook *book): OptionPage(book, _("Automation")) {
+Automation::Automation(wxTreebook *book, Preferences *parent): OptionPage(book, parent, _("Automation")) {
 	wxFlexGridSizer *general = PageSizer(_("General"));
 
 	OptionAdd(general, _("Base path"), "Path/Automation/Base");
@@ -285,7 +285,7 @@ Automation::Automation(wxTreebook *book): OptionPage(book, _("Automation")) {
 
 
 /// Advanced preferences page
-Advanced::Advanced(wxTreebook *book): OptionPage(book, _("Advanced")) {
+Advanced::Advanced(wxTreebook *book, Preferences *parent): OptionPage(book, parent, _("Advanced")) {
 	wxFlexGridSizer *general = PageSizer(_("General"));
 
 	wxStaticText *warning = new wxStaticText(this, wxID_ANY ,_("Changing these settings might result in bugs and/or crashes.  Do not touch these unless you know what you're doing."));
@@ -299,7 +299,7 @@ Advanced::Advanced(wxTreebook *book): OptionPage(book, _("Advanced")) {
 
 
 /// Advanced Interface preferences subpage
-Advanced_Interface::Advanced_Interface(wxTreebook *book): OptionPage(book, _("Backup"), PAGE_SUB) {
+Advanced_Interface::Advanced_Interface(wxTreebook *book, Preferences *parent): OptionPage(book, parent, _("Backup"), PAGE_SUB) {
 	wxFlexGridSizer *interface_ = PageSizer(_("Interface"));
 
 	interface_->Add(new wxStaticText(this, wxID_ANY, _T("TBD..")), 0, wxALL, 5);
@@ -314,7 +314,7 @@ static wxArrayString vec_to_arrstr(std::vector<std::string> const& vec) {
 }
 
 /// Advanced Audio preferences subpage
-Advanced_Audio::Advanced_Audio(wxTreebook *book): OptionPage(book, _("Audio"), PAGE_SUB) {
+Advanced_Audio::Advanced_Audio(wxTreebook *book, Preferences *parent): OptionPage(book, parent, _("Audio"), PAGE_SUB) {
 	wxFlexGridSizer *expert = PageSizer(_("Expert"));
 
 	wxArrayString ap_choice = vec_to_arrstr(AudioProviderFactory::GetClasses());
@@ -353,7 +353,7 @@ Advanced_Audio::Advanced_Audio(wxTreebook *book): OptionPage(book, _("Audio"), P
 
 
 /// Advanced Video preferences subpage
-Advanced_Video::Advanced_Video(wxTreebook *book): OptionPage(book, _("Video"), PAGE_SUB) {
+Advanced_Video::Advanced_Video(wxTreebook *book, Preferences *parent): OptionPage(book, parent, _("Video"), PAGE_SUB) {
 	wxFlexGridSizer *expert = PageSizer(_("Expert"));
 
 	wxArrayString vp_choice = vec_to_arrstr(VideoProviderFactory::GetClasses());

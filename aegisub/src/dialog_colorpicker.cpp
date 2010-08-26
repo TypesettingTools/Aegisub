@@ -891,6 +891,7 @@ wxColour GetColorFromUser(wxWindow *parent, wxColour original, ColorCallback cal
 {
 	DialogColorPicker dialog(parent, original, callback, userdata);
 	if (dialog.ShowModal() == wxID_OK) {
+		if (callback) callback(userdata, dialog.GetColor());
 		return dialog.GetColor();
 	} else {
 		if (callback) callback(userdata, original);

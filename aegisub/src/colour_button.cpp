@@ -47,8 +47,15 @@
 ColourButton::ColourButton(wxWindow* parent, wxWindowID id, const wxSize& size, wxColour col)
 : wxBitmapButton(parent, id, wxBitmap(size))
 , bmp(GetBitmapLabel())
+, colour(col)
 {
-	SetColour(col);
+	{
+		wxMemoryDC dc;
+		dc.SelectObject(bmp);
+		dc.SetBrush(wxBrush(colour));
+		dc.DrawRectangle(0,0,bmp.GetWidth(),bmp.GetHeight());
+	}
+	SetBitmapLabel(bmp);
 	Bind(wxEVT_COMMAND_BUTTON_CLICKED, &ColourButton::OnClick, this);
 }
 

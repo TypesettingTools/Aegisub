@@ -20,57 +20,30 @@
 /// @ingroup configuration_ui
 
 #ifndef AGI_PRE
+#include <map>
+
+#include <wx/any.h>
 #include <wx/dialog.h>
 #include <wx/event.h>
 #include <wx/treebook.h>
 #include <wx/listctrl.h>
 #endif
 
-#include "browse_button.h"
-
-class General;
-class Subtitles;
-class Audio;
-class Video;
-class Interface;
-class Interface_Colours;
-class Interface_Hotkeys;
-class Paths;
-class File_Associations;
-class Backup;
-class Automation;
-class Advanced;
-class Advanced_Interface;
-class Advanced_Audio;
-class Advanced_Video;
-
 class Preferences: public wxDialog {
 	wxTreebook *book;
+	wxButton *applyButton;
+
+	std::map<std::string, wxAny> pending_changes;
 
 	void OnOK(wxCommandEvent &event);
 	void OnCancel(wxCommandEvent &event);
 	void OnApply(wxCommandEvent &event);
 
-	General *general;
-	Subtitles *subtitles;
-	Audio *audio;
-	Video *video;
-	Interface *interface_;
-	Interface_Colours *interface_colours;
-	Interface_Hotkeys *interface_hotkeys;
-	Paths *paths;
-	File_Associations *file_associations;
-	Backup *backup;
-	Automation *automation;
-	Advanced *advanced;
-	Advanced_Interface *advanced_interface;
-	Advanced_Audio *advanced_audio;
-	Advanced_Video *advanced_video;
-
 public:
 	Preferences(wxWindow *parent);
 	~Preferences();
 
+	void SetOption(const char *name, wxAny value);
+
 	DECLARE_EVENT_TABLE()
 };
-
