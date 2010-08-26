@@ -86,6 +86,9 @@ private:
 	/// DOCME
 	std::tr1::shared_ptr<ThreadedFrameSource> provider;
 
+	/// Filename of currently open video
+	wxString videoFile;
+
 	/// DOCME
 	std::vector<int> keyFrames;
 
@@ -218,6 +221,8 @@ public:
 	void SetVideo(const wxString &filename);
 	/// @brief Close the video, keyframes and timecodes
 	void Reset();
+	/// @brief Close and reopen the current video
+	void Reload();
 
 	/// @brief Jump to the beginning of a frame
 	/// @param n Frame number to jump to

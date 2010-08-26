@@ -105,6 +105,25 @@ BaseGrid::BaseGrid(wxWindow* parent, wxWindowID id, const wxPoint& pos, const wx
 
 	// Set style
 	UpdateStyle();
+
+	agi::OptionValue::ChangeListener UpdateStyle(std::tr1::bind(&BaseGrid::UpdateStyle, this));
+	OPT_GET("Subtitle/Grid/Font Face")->Subscribe(this, UpdateStyle);
+	OPT_GET("Subtitle/Grid/Font Size")->Subscribe(this, UpdateStyle);
+
+	agi::OptionValue::ChangeListener Refresh(std::tr1::bind(&BaseGrid::Refresh, this, false, (wxRect*)NULL));
+	OPT_GET("Colour/Subtitle Grid/Active Border")->Subscribe(this, Refresh);
+	OPT_GET("Colour/Subtitle Grid/Background/Background")->Subscribe(this, Refresh);
+	OPT_GET("Colour/Subtitle Grid/Background/Comment")->Subscribe(this, Refresh);
+	OPT_GET("Colour/Subtitle Grid/Background/Inframe")->Subscribe(this, Refresh);
+	OPT_GET("Colour/Subtitle Grid/Background/Selected Comment")->Subscribe(this, Refresh);
+	OPT_GET("Colour/Subtitle Grid/Background/Selection")->Subscribe(this, Refresh);
+	OPT_GET("Colour/Subtitle Grid/Collision")->Subscribe(this, Refresh);
+	OPT_GET("Colour/Subtitle Grid/Header")->Subscribe(this, Refresh);
+	OPT_GET("Colour/Subtitle Grid/Left Column")->Subscribe(this, Refresh);
+	OPT_GET("Colour/Subtitle Grid/Lines")->Subscribe(this, Refresh);
+	OPT_GET("Colour/Subtitle Grid/Selection")->Subscribe(this, Refresh);
+	OPT_GET("Colour/Subtitle Grid/Standard")->Subscribe(this, Refresh);
+	OPT_GET("Subtitle/Grid/Highlight Subtitles in Frame")->Subscribe(this, Refresh);
 }
 
 

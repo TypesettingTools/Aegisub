@@ -180,7 +180,26 @@ SubsTextEditCtrl::SubsTextEditCtrl(wxWindow* parent, wxSize wsize, long style, S
 	Bind(wxEVT_COMMAND_MENU_SELECTED, function<void (wxCommandEvent &)>(bind(&SubsTextEditCtrl::SelectAll, this)), EDIT_MENU_SELECT_ALL);
 
 	Bind(wxEVT_STC_STYLENEEDED, &SubsTextEditCtrl::UpdateCallTip, this);
+
+	agi::OptionValue::ChangeListener SetStyles = bind(&SubsTextEditCtrl::SetStyles, this);
+
+	OPT_GET("Subtitle/Edit Box/Font Face")->Subscribe(this, SetStyles);
+	OPT_GET("Subtitle/Edit Box/Font Size")->Subscribe(this, SetStyles);
+	OPT_GET("Colour/Subtitle/Syntax/Normal")->Subscribe(this, SetStyles);
+	OPT_GET("Colour/Subtitle/Syntax/Brackets")->Subscribe(this, SetStyles);
+	OPT_GET("Colour/Subtitle/Syntax/Slashes")->Subscribe(this, SetStyles);
+	OPT_GET("Colour/Subtitle/Syntax/Highlight Tags")->Subscribe(this, SetStyles);
+	OPT_GET("Colour/Subtitle/Syntax/Error")->Subscribe(this, SetStyles);
+	OPT_GET("Colour/Subtitle/Syntax/Background/Error")->Subscribe(this, SetStyles);
+	OPT_GET("Colour/Subtitle/Syntax/Parameters")->Subscribe(this, SetStyles);
+	OPT_GET("Colour/Subtitle/Syntax/Line Break")->Subscribe(this, SetStyles);
+	OPT_GET("Colour/Subtitle/Syntax/Karaoke Template")->Subscribe(this, SetStyles);
+
+	OPT_GET("Subtitle/Highlight/Syntax")->Subscribe(this, bind(&SubsTextEditCtrl::UpdateStyle, this, 0, -1));
+	static wxStyledTextEvent evt;
+	OPT_GET("App/Call Tips")->Subscribe(this, bind(&SubsTextEditCtrl::UpdateCallTip, this, ref(evt)));
 }
+
 
 SubsTextEditCtrl::~SubsTextEditCtrl() {
 }
@@ -261,7 +280,11 @@ void SubsTextEditCtrl::SetStyles() {
 }
 
 void SubsTextEditCtrl::UpdateStyle(int start, int _length) {
-	if (OPT_GET("Subtitle/Highlight/Syntax")->GetBool() == 0) return;
+	if (!OPT_GET("Subtitle/Highlight/Syntax")->GetBool()) {
+		StartStyling(0,255);
+		SetUnicodeStyling(start, _length, 0);
+		return;
+	}
 
 	// Check if it's a template line
 	AssDialogue *diag = grid->GetActiveLine();

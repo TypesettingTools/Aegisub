@@ -57,8 +57,6 @@ class SubtitlesGrid;
 ///
 /// DOCME
 class VideoSlider: public wxWindow {
-private:
-
 	/// DOCME
 	int val;
 
@@ -96,27 +94,14 @@ public:
 	SubtitlesGrid *grid;
 
 	VideoSlider(wxWindow* parent, wxWindowID id);
+	~VideoSlider();
 
 	void NextFrame();
 	void PrevFrame();
 
 	void SetRange(int start,int end);
-	int GetValue();
+	int GetValue() const { return val; };
 	void SetValue(int value);
 
 	DECLARE_EVENT_TABLE()
 };
-
-
-///////
-// IDs
-enum {
-
-	/// DOCME
-	NextFrame = 1300,
-
-	/// DOCME
-	PrevFrame
-};
-
-

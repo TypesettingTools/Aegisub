@@ -108,6 +108,17 @@ VideoContext::VideoContext()
 {
 	Bind(EVT_VIDEO_ERROR, &VideoContext::OnVideoError, this);
 	Bind(EVT_SUBTITLES_ERROR, &VideoContext::OnSubtitlesError, this);
+
+	agi::OptionValue::ChangeListener providerChanged(std::tr1::bind(&VideoContext::Reload, this));
+	OPT_GET("Subtitle/Provider")->Subscribe(this, providerChanged);
+	OPT_GET("Video/Provider")->Subscribe(this, providerChanged);
+
+	// It would be nice to find a way to move these to the individual providers
+	OPT_GET("Provider/Avisynth/Allow Ancient")->Subscribe(this, providerChanged);
+	OPT_GET("Provider/Avisynth/Memory Max")->Subscribe(this, providerChanged);
+
+	OPT_GET("Provider/Video/FFmpegSource/Decoding Threads")->Subscribe(this, providerChanged);
+	OPT_GET("Provider/Video/FFmpegSource/Unsafe Seeking")->Subscribe(this, providerChanged);
 }
 
 VideoContext::~VideoContext () {
@@ -115,6 +126,8 @@ VideoContext::~VideoContext () {
 		delete audio->provider;
 		delete audio->player;
 	}
+	// Don't unsubscribe from option change notifications as the options object
+	// might not even exist anymore
 }
 
 VideoContext *VideoContext::Get() {
@@ -161,6 +174,7 @@ void VideoContext::SetVideo(const wxString &filename) {
 
 		provider.reset(new ThreadedFrameSource(filename, this), std::mem_fun(&ThreadedFrameSource::End));
 		videoProvider = provider->GetVideoProvider();
+		videoFile = filename;
 
 		keyFrames = videoProvider->GetKeyFrames();
 
@@ -205,6 +219,14 @@ void VideoContext::SetVideo(const wxString &filename) {
 	}
 	catch (VideoProviderError const& err) {
 		wxMessageBox(lagi_wxString(err.GetMessage()), L"Error setting video", wxICON_ERROR | wxOK);
+	}
+}
+
+void VideoContext::Reload() {
+	if (IsLoaded()) {
+		int frame = frame_n;
+		SetVideo(videoFile);
+		JumpToFrame(frame);
 	}
 }
 

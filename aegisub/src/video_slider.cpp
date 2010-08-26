@@ -52,6 +52,11 @@
 #include "video_display.h"
 #include "video_slider.h"
 
+/// IDs
+enum {
+	NextFrame = 1300,
+	PrevFrame
+};
 
 /// @brief Constructor 
 /// @param parent 
@@ -68,18 +73,12 @@ VideoSlider::VideoSlider (wxWindow* parent, wxWindowID id)
 	SetMinSize(wxSize(20, 25));
 	locked = false;
 	SetRange(0,1);
+	OPT_GET("Video/Slider/Show Keyframes")->Subscribe(this, std::tr1::bind(&wxWindow::Refresh, this, false, (wxRect*)NULL));
 }
 
-
-
-/// @brief Get value 
-/// @return 
-///
-int VideoSlider::GetValue() {
-	return val;
+VideoSlider::~VideoSlider() {
+	OPT_GET("Video/Slider/Show Keyframes")->Unsubscribe(this);
 }
-
-
 
 /// @brief Set value 
 /// @param value 

@@ -24,6 +24,12 @@
 #include <fstream>
 #include <map>
 #include <vector>
+
+#ifdef _WIN32
+#include <functional>
+#else
+#include <tr1/functional>
+#endif
 #endif
 
 #include <libaegisub/exception.h>
@@ -38,24 +44,16 @@ DEFINE_SIMPLE_EXCEPTION_NOINNER(OptionValueErrorInvalidType, OptionValueError, "
 DEFINE_SIMPLE_EXCEPTION_NOINNER(OptionValueErrorInvalidListType, OptionValueError, "options/array/invalid_type")
 
 
-class OptionValue;
 class ConfigVisitor;
-
-
-/// @class OptionValueListener
-/// Inherit from this class to get the proper type for the notification callback
-/// signature.
-class OptionValueListener {
-public:
-	/// @brief Type of a notification callback function for option value changes
-	typedef void (OptionValueListener::*ChangeEvent)(const OptionValue &option);
-};
-
 
 /// @class OptionValue
 /// Holds an actual option.
 class OptionValue {
-	typedef std::map<OptionValueListener*, OptionValueListener::ChangeEvent> ChangeListenerSet;
+public:
+	typedef std::tr1::function<void (const OptionValue &)> ChangeListener;
+
+private:
+	typedef std::map<void*, ChangeListener> ChangeListenerSet;
 	ChangeListenerSet listeners;
 
 protected:
@@ -131,9 +129,8 @@ public:
 	virtual void GetDefaultListBool(std::vector<bool> &out) const { throw ListTypeError("string"); }
 
 
-	void Subscribe(OptionValueListener *listener, OptionValueListener::ChangeEvent function);
-	void Unsubscribe(OptionValueListener *listener, OptionValueListener::ChangeEvent function);
-
+	void Subscribe(void *key, ChangeListener listener);
+	void Unsubscribe(void *key);
 };
 
 #define CONFIG_OPTIONVALUE(type_name, type)                                                   \

@@ -28,18 +28,18 @@ namespace agi {
 
 void OptionValue::NotifyChanged() {
 	for (ChangeListenerSet::const_iterator nfcb = listeners.begin(); nfcb != listeners.end(); ++nfcb) {
-		(nfcb->first->*(nfcb->second))(*this);
+		nfcb->second(*this);
 	}
 }
 
-void OptionValue::Subscribe(OptionValueListener *listener, OptionValueListener::ChangeEvent function) {
-	assert(listeners.find(listener) == listeners.end());
-	listeners[listener] = function;
+void OptionValue::Subscribe(void *key, ChangeListener listener) {
+	assert(listeners.find(key) == listeners.end());
+	listeners[key] = listener;
 }
 
-void OptionValue::Unsubscribe(OptionValueListener *listener, OptionValueListener::ChangeEvent function) {
-	assert(listeners.find(listener) != listeners.end() && listeners[listener] == function);
-	listeners.erase(listener);
+void OptionValue::Unsubscribe(void *key) {
+	assert(listeners.find(key) != listeners.end());
+	listeners.erase(key);
 }
 
 }
