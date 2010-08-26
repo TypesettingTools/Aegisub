@@ -311,6 +311,5 @@ aegisub_3_0_SOURCES += \
     $(srcdir)/config/*.h
 
 noinst_HEADERS = \
-	$(srcdir)/boost/*.hpp \
 	gl/glext.h \
 	$(srcdir)/*.hxx
