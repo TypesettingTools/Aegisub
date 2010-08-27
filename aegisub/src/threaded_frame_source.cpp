@@ -150,7 +150,7 @@ void *ThreadedFrameSource::Entry() {
 }
 
 ThreadedFrameSource::ThreadedFrameSource(wxString videoFileName, wxEvtHandler *parent)
-: wxThread()
+: wxThread(wxTHREAD_JOINABLE)
 , provider(SubtitlesProviderFactory::GetProvider())
 , videoProvider(VideoProviderFactory::GetProvider(videoFileName))
 , parent(parent)
@@ -161,6 +161,13 @@ ThreadedFrameSource::ThreadedFrameSource(wxString videoFileName, wxEvtHandler *p
 {
 	Create();
 	Run();
+}
+ThreadedFrameSource::~ThreadedFrameSource() {
+	run = false;
+	jobReady.Signal();
+	Wait();
+	frameBuffer[0].Clear();
+	frameBuffer[1].Clear();
 }
 
 void ThreadedFrameSource::LoadSubtitles(AssFile *subs) throw() {
@@ -183,16 +190,6 @@ void ThreadedFrameSource::RequestFrame(int frame, double time) throw() {
 
 AegiVideoFrame const& ThreadedFrameSource::GetFrame(int frame, double time, bool raw) {
 	return ProcFrame(frame, time, raw);
-}
-
-void ThreadedFrameSource::End() {
-	run = false;
-	jobReady.Signal();
-}
-
-ThreadedFrameSource::~ThreadedFrameSource() {
-	frameBuffer[0].Clear();
-	frameBuffer[1].Clear();
 }
 
 wxDEFINE_EVENT(EVT_FRAME_READY, FrameReadyEvent);

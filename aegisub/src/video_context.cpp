@@ -172,7 +172,7 @@ void VideoContext::SetVideo(const wxString &filename) {
 	try {
 		grid->CommitChanges(true);
 
-		provider.reset(new ThreadedFrameSource(filename, this), std::mem_fun(&ThreadedFrameSource::End));
+		provider.reset(new ThreadedFrameSource(filename, this));
 		videoProvider = provider->GetVideoProvider();
 		videoFile = filename;
 
@@ -580,4 +580,11 @@ void VideoContext::OnSubtitlesError(SubtitlesProviderErrorEvent const& err) {
 	wxLogError(
 		L"Failed rendering subtitles. Error message reported: %s",
 		lagi_wxString(err.GetMessage()).c_str());
+}
+
+void VideoContext::OnExit() {
+	// On unix wxThreadModule will shut down any still-running threads (and
+	// display a warning that it's doing so) before the destructor for
+	// VideoContext runs, so manually kill the thread
+	Get()->provider.reset();
 }

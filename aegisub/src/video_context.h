@@ -84,7 +84,7 @@ private:
 	std::tr1::shared_ptr<VideoProvider> videoProvider;
 
 	/// DOCME
-	std::tr1::shared_ptr<ThreadedFrameSource> provider;
+	std::auto_ptr<ThreadedFrameSource> provider;
 
 	/// Filename of currently open video
 	wxString videoFile;
@@ -279,6 +279,7 @@ public:
 	int FrameAtTime(int time, agi::vfr::Time type = agi::vfr::EXACT) const;
 
 	static VideoContext *Get();
+	static void OnExit();
 
 	DECLARE_EVENT_TABLE()
 };

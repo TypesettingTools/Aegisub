@@ -109,13 +109,6 @@ public:
 	/// @brief raw   Get raw frame without subtitles
 	AegiVideoFrame const& GetFrame(int frame, double time, bool raw = false);
 
-	/// @brief Non-blocking Delete
-	///
-	/// Needed due to that calling Delete while the thread is waiting on
-	/// jobReady results in a deadlock; as such this is the only safe way to
-	/// destroy a ThreadedFrameSource
-	void End();
-
 	std::tr1::shared_ptr<VideoProvider> GetVideoProvider() const { return videoProvider; }
 
 	/// @brief Constructor
