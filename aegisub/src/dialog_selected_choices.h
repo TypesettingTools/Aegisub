@@ -34,7 +34,11 @@
 /// @ingroup
 
 #ifndef AGI_PRE
+#include <wx/button.h>
 #include <wx/choicdlg.h>
+#include <wx/event.h>
+#include <wx/listbox.h>
+#include <wx/sizer.h>
 #endif
 
 /// @class SelectedChoicesDialog
