@@ -81,6 +81,7 @@ public:
 	void SetProgress(int cur,int max);
 	void SetText(wxString text);
 	void Run();
+	void Pulse();
 
 	DECLARE_EVENT_TABLE()
 };

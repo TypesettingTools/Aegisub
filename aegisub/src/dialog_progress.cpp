@@ -211,4 +211,6 @@ void DialogProgressThread::Close() {
 	dialog->GetEventHandler()->ProcessEvent(event);
 }
 
-
+void DialogProgress::Pulse() {
+	gauge->Pulse();
+}

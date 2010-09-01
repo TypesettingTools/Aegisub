@@ -45,6 +45,7 @@ extern "C" {
 #include "../libass/ass.h"
 }
 
+class FontConfigCacheThread;
 
 /// DOCME
 /// @class LibassSubtitlesProvider
@@ -61,11 +62,15 @@ class LibassSubtitlesProvider : public SubtitlesProvider {
 	/// DOCME
 	ASS_Track* ass_track;
 
+	static FontConfigCacheThread *cache_worker;
+
 public:
 	LibassSubtitlesProvider(std::string);
 	~LibassSubtitlesProvider();
 
 	void LoadSubtitles(AssFile *subs);
 	void DrawSubtitles(AegiVideoFrame &dst,double time);
+
+	static void CacheFonts();
 };
 #endif

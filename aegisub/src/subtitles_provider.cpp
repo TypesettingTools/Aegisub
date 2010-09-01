@@ -62,6 +62,7 @@ SubtitlesProvider* SubtitlesProviderFactory::GetProvider() {
 			SubtitlesProvider *provider = Create(list[i], subType);
 			if (provider) return provider;
 		}
+		catch (agi::UserCancelException const&) { throw; }
 		catch (wxString err) { error += list[i] + _T(" factory: ") + err + _T("\n"); }
 		catch (const wxChar *err) { error += list[i] + _T(" factory: ") + wxString(err) + _T("\n"); }
 		catch (...) { error += list[i] + _T(" factory: Unknown error\n"); }
@@ -79,6 +80,7 @@ void SubtitlesProviderFactory::RegisterProviders() {
 #endif
 #ifdef WITH_LIBASS
 	Register<LibassSubtitlesProvider>("libass");
+	LibassSubtitlesProvider::CacheFonts();
 #endif
 }
 
