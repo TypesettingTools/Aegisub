@@ -799,6 +799,10 @@ bool FrameMain::SaveSubtitles(bool saveas,bool withCharset) {
 			ass->Save(filename,true,true,charset);
 			UpdateTitle();
 		}
+		catch (const agi::Exception& err) {
+			wxMessageBox(lagi_wxString(err.GetMessage()), "Error", wxOK | wxICON_ERROR, NULL);
+			return false;
+		}
 		catch (const wchar_t *err) {
 			wxMessageBox(wxString(err), _T("Error"), wxOK | wxICON_ERROR, NULL);
 			return false;

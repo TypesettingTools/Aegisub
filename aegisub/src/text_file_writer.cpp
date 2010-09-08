@@ -40,6 +40,8 @@
 #include <fstream>
 #endif
 
+#include <libaegisub/io.h>
+
 #include "charset_conv.h"
 #include "compat.h"
 #include "main.h"
@@ -51,16 +53,8 @@
 /// @param encoding 
 ///
 TextFileWriter::TextFileWriter(wxString const& filename, wxString encoding)
-: conv() {
-#ifdef WIN32
-	file.open(filename.wc_str(),std::ios::out | std::ios::binary | std::ios::trunc);
-#else
-	file.open(wxFNCONV(filename),std::ios::out | std::ios::binary | std::ios::trunc);
-#endif
-	if (!file.is_open()) {
-		throw L"Failed opening file for writing.";
-	}
-
+: file(new agi::io::Save(STD_STR(filename)))
+, conv() {
 	if (encoding.empty()) encoding = lagi_wxString(OPT_GET("App/Save Charset")->GetString());
 	if (encoding.Lower() != wxSTRING_ENCODING)
 		conv.reset(new agi::charset::IconvWrapper(wxSTRING_ENCODING, encoding.c_str(), true));
@@ -98,9 +92,9 @@ void TextFileWriter::WriteLineToFile(wxString line, bool addLineBreak) {
 
 	if (conv.get()) {
 		std::string buf = conv->Convert(std::string(data, len));
-		file.write(buf.data(), buf.size());
+		file->Get().write(buf.data(), buf.size());
 	}
 	else {
-		file.write(data, len);
+		file->Get().write(data, len);
 	}
 }

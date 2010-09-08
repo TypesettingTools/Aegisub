@@ -47,6 +47,9 @@ namespace agi {
 	namespace charset {
 		class IconvWrapper;
 	}
+	namespace io {
+		class Save;
+	}
 }
 
 
@@ -56,10 +59,8 @@ namespace agi {
 ///
 /// DOCME
 class TextFileWriter {
-private:
-
 	/// DOCME
-	std::ofstream file;
+	std::auto_ptr<agi::io::Save> file;
 
 	/// DOCME
 	std::auto_ptr<agi::charset::IconvWrapper> conv;

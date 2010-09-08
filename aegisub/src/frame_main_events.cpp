@@ -1388,15 +1388,14 @@ void FrameMain::OnAutoSave(wxTimerEvent &) {
 				dstpath.SetFullName(name + L".AUTOSAVE.ass");
 			}
 
-			wxFileName temp = dstpath;
-			temp.SetName(dstpath.GetName() + ".temp");
-
-			ass->Save(temp.GetFullPath(),false,false);
-			wxRenameFile(temp.GetFullPath(), dstpath.GetFullPath());
+			ass->Save(dstpath.GetFullPath(),false,false);
 
 			// Set status bar
 			StatusTimeout(_("File backup saved as \"") + dstpath.GetFullPath() + _T("\"."));
 		}
+	}
+	catch (const agi::Exception& err) {
+		StatusTimeout(lagi_wxString("Exception when attempting to autosave file: " + err.GetMessage()));
 	}
 	catch (wxString err) {
 		StatusTimeout(_T("Exception when attempting to autosave file: ") + err);

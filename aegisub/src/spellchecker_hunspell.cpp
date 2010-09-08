@@ -152,7 +152,7 @@ void HunspellSpellChecker::AddWord(wxString word) {
 		writer.WriteLineToFile(wxString::Format(L"%i", dic.Count()));
 		for (unsigned int i=0;i<dic.Count();i++) writer.WriteLineToFile(dic[i]);
 	}
-	catch (const wchar_t*) {
+	catch (const agi::Exception&) {
 		// Failed to open file
 	}
 }
