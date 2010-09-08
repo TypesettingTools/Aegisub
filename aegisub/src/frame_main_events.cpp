@@ -1369,9 +1369,8 @@ void FrameMain::OnOpenStylingAssistant (wxCommandEvent &) {
 
 /// @brief Autosave the currently open file, if any
 void FrameMain::OnAutoSave(wxTimerEvent &) {
-	// Auto Save
 	try {
-		if (ass->loaded) {
+		if (ass->loaded && ass->IsModified()) {
 			// Set path
 			wxFileName origfile(ass->filename);
 			wxString path = lagi_wxString(OPT_GET("Path/Auto/Save")->GetString());
