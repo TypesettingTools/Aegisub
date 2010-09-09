@@ -75,16 +75,100 @@ static const char* GetRealEncodingName(const char* name) {
 namespace agi {
 	namespace charset {
 
+static size_t get_bom_size(iconv_t cd) {
+	// Most (but not all) iconv implementations automatically insert a BOM
+	// at the beginning of text converted to UTF-8, UTF-16 and UTF-32, but
+	// we usually don't want this, as some of the wxString using code
+	// assumes there is no BOM (as the exact encoding is known externally)
+	// As such, when doing conversions we will strip the BOM if it exists,
+	// then manually add it when writing files
+
+	char buff[8];
+	const char* src = "";
+	char *dst = buff;
+	size_t srcLen = 1;
+	size_t dstLen = 8;
+
+	size_t res = iconv(cd, ICONV_CONST_CAST(&src), &srcLen, &dst, &dstLen);
+	assert(res != iconv_failed);
+	assert(srcLen == 0);
+
+	size_t size = 0;
+	for (src = buff; src < dst; ++src) {
+		if (*src) ++size;
+	}
+	if (size) {
+		// If there is a BOM, it will always be at least as big as the NUL
+		size = std::max(size, (8 - dstLen) / 2);
+	}
+	return size;
+}
+
+static void eat_bom(iconv_t cd, size_t bomSize, const char** inbuf, size_t* inbytesleft, char** outbuf, size_t* outbytesleft) {
+	// If this encoding has a forced BOM (i.e. it's UTF-16 or UTF-32 without
+	// a specified byte order), skip over it
+	if (bomSize > 0 && inbytesleft && *inbytesleft) {
+		// libiconv marks the bom as written after writing the first
+		// character after the bom rather than when it writes the bom, so
+		// convert at least one extra character
+		char bom[8];
+		char *dst = bom;
+		size_t dstSize = std::min((size_t)8, bomSize + *outbytesleft);
+		const char *src = *inbuf;
+		size_t srcSize = *inbytesleft;
+		iconv(cd, ICONV_CONST_CAST(&src), &srcSize, &dst, &dstSize);
+	}
+}
+
 #ifdef ICONV_POSIX
-struct iconv_fallbacks {
+class Converter {
+	size_t bomSize;
+	iconv_t cd;
+public:
+	// subst is not used here because POSIX doesn't let you disable substitution
+	Converter(bool, const char* sourceEncoding, const char* destEncoding)
+		: cd(cd)
+	{
+		const char *dstEnc = GetRealEncodingName(destEncoding);
+		cd = iconv_open(dstEnc, "UTF-8");
+		if (cd == iconv_invalid) {
+			throw UnsupportedConversion(std::string(dstEnc) + " is not a supported character set");
+		}
+
+		bomSize = get_bom_size(cd);
+		iconv_close(cd);
+		cd = iconv_open(dstEnc, GetRealEncodingName(sourceEncoding));
+		if (cd == iconv_invalid) {
+			throw UnsupportedConversion(std::string("Cannot convert from ") + sourceEncoding + " to " + destEncoding);
+		}
+	}
+	~Converter() {
+		if (cd != iconv_invalid) iconv_close(cd);
+	}
+	size_t Convert(const char** inbuf, size_t* inbytesleft, char** outbuf, size_t* outbytesleft) {
+		eat_bom(cd, bomSize, inbuf, inbytesleft, outbuf, outbytesleft);
+
+		size_t res = iconv(cd, ICONV_CONST_CAST(inbuf), inbytesleft, outbuf, outbytesleft);
+
+		// This loop never does anything useful with a POSIX-compliant iconv
+		// implementation, but those don't seem to actually exist
+		while (res == iconv_failed && errno != E2BIG) {
+			++*inbuf;
+			--*inbytesleft;
+			res = iconv(cd, ICONV_CONST_CAST(inbuf), inbytesleft, outbuf, outbytesleft);
+		}
+
+		return res;
+	}
 };
-#endif
+
+#else
 
 class Converter : public iconv_fallbacks {
-	bool subst;
 	size_t bomSize;
 	char invalidRep[8];
 	size_t invalidRepSize;
+	iconv_t cd;
 	static void fallback(
 		unsigned int code,
 		void (*callback) (const char *buf, size_t buflen, void* callback_arg),
@@ -101,137 +185,88 @@ class Converter : public iconv_fallbacks {
 			callback(self->invalidRep, self->invalidRepSize, callback_arg);
 		}
 	}
+	Converter(Converter const&);
+	Converter& operator=(Converter const&);
 public:
-	Converter(bool subst, const char* targetEnc)
-	: subst(subst)
+	Converter(bool subst, const char* sourceEncoding, const char* destEncoding)
 	{
 
-#ifndef ICONV_POSIX
-		data = this;
-		mb_to_uc_fallback = NULL;
-		mb_to_wc_fallback = NULL;
-		uc_to_mb_fallback = fallback;
-		wc_to_mb_fallback = NULL;
-#endif
-
-		char buff[8];
-
-		iconv_t cd = iconv_open(GetRealEncodingName(targetEnc), "UTF-8");
-		assert(cd != iconv_invalid);
-
-		// Most (but not all) iconv implementations automatically insert a BOM
-		// at the beginning of text converted to UTF-8, UTF-16 and UTF-32, but
-		// we usually don't want this, as some of the wxString using code
-		// assumes there is no BOM (as the exact encoding is known externally)
-		// As such, when doing conversions we will strip the BOM if it exists,
-		// then manually add it when writing files
-
-		const char* src = "";
-		char *dst = buff;
-		size_t srcLen = 1;
-		size_t dstLen = 8;
-
-		size_t res = iconv(cd, ICONV_CONST_CAST(&src), &srcLen, &dst, &dstLen);
-		assert(res != iconv_failed);
-		assert(srcLen == 0);
-
-		bomSize = 0;
-		for (src = buff; src < dst; ++src) {
-			if (*src) ++bomSize;
+		const char *dstEnc = GetRealEncodingName(destEncoding);
+		cd = iconv_open(dstEnc, "UTF-8");
+		if (cd == iconv_invalid) {
+			throw UnsupportedConversion(std::string(dstEnc) + " is not a supported character set");
 		}
-		if (bomSize) {
-			// If there is a BOM, it will always be at least as big as the NUL
-			bomSize = std::min(bomSize, (8 - dstLen) / 2);
-		}
+
+		bomSize = get_bom_size(cd);
 
 		// Get fallback character
-		char sbuff[] = "?";
-		src = sbuff;
-		dst = invalidRep;
-		dstLen = 4;
-		srcLen = 1;
+		const char sbuff[] = "?";
+		const char *src = sbuff;
+		char *dst = invalidRep;
+		size_t dstLen = 4;
+		size_t srcLen = 1;
 
-		res = operator()(cd, &src, &srcLen, &dst, &dstLen);
+		size_t res = Convert(&src, &srcLen, &dst, &dstLen);
 		assert(res != iconv_failed);
 		assert(srcLen == 0);
 
 		invalidRepSize = 4 - dstLen;
 
 		iconv_close(cd);
-	}
-	size_t operator()(iconv_t cd, const char** inbuf, size_t* inbytesleft, char** outbuf, size_t* outbytesleft) {
-		// If this encoding has a forced BOM (i.e. it's UTF-16 or UTF-32 without
-		// a specified byte order), skip over it
-		if (bomSize > 0 && inbytesleft && *inbytesleft) {
-			// libiconv marks the bom as written after writing the first
-			// character after the bom rather than when it writes the bom, so
-			// convert at least one extra character
-			char bom[8];
-			char *dst = bom;
-			size_t dstSize = std::min((size_t)8, bomSize + *outbytesleft);
-			const char *src = *inbuf;
-			size_t srcSize = *inbytesleft;
-			iconv(cd, ICONV_CONST_CAST(&src), &srcSize, &dst, &dstSize);
+		cd = iconv_open(dstEnc, GetRealEncodingName(sourceEncoding));
+		if (cd == iconv_invalid) {
+			throw UnsupportedConversion(std::string("Cannot convert from ") + sourceEncoding + " to " + destEncoding);
 		}
-		size_t res = iconv(cd, ICONV_CONST_CAST(inbuf), inbytesleft, outbuf, outbytesleft);
 
-#ifndef ICONV_POSIX
-		if (!subst) return res;
+		if (subst) {
+			data = this;
+			mb_to_uc_fallback = NULL;
+			mb_to_wc_fallback = NULL;
+			uc_to_mb_fallback = fallback;
+			wc_to_mb_fallback = NULL;
 
-		// Save original errno so we can return it rather than the result from iconvctl
-		int err = errno;
-
-		// Some characters in the input string do not exist in the output encoding
-		if (res == iconv_failed && err == EILSEQ) {
-			// first try transliteration only
 			int transliterate = 1;
 			iconvctl(cd, ICONV_SET_TRANSLITERATE, &transliterate);
-			res = iconv(cd, ICONV_CONST_CAST(inbuf), inbytesleft, outbuf, outbytesleft);
-			err = errno;
-			transliterate = 0;
-			iconvctl(cd, ICONV_SET_TRANSLITERATE, &transliterate);
-		}
-		if (res == iconv_failed && err == EILSEQ) {
-			// Conversion still failed with transliteration enabled, so try our substitution
 			iconvctl(cd, ICONV_SET_FALLBACKS, this);
-			res = iconv(cd, ICONV_CONST_CAST(inbuf), inbytesleft, outbuf, outbytesleft);
-			err = errno;
-			iconvctl(cd, ICONV_SET_FALLBACKS, NULL);
 		}
-		if (res == iconv_failed && err == E2BIG && *outbytesleft == 0) {
-			// Check for E2BIG false positives
+	}
+	~Converter() {
+		if (cd != iconv_invalid) iconv_close(cd);
+	}
+	size_t Convert(const char** inbuf, size_t* inbytesleft, char** outbuf, size_t* outbytesleft) {
+		eat_bom(cd, bomSize, inbuf, inbytesleft, outbuf, outbytesleft);
+		size_t res = iconv(cd, ICONV_CONST_CAST(inbuf), inbytesleft, outbuf, outbytesleft);
+
+		if (res == iconv_failed && errno == E2BIG && *outbytesleft == 0) {
+			// libiconv checks if there are any bytes left in the output buffer
+			// before checking if the conversion would actually write any
+			// characters to the output buffer, resulting in occasional invalid
+			// E2BIG false positives
 			char buff[8];
 			size_t buffsize = 8;
 			char* out = buff;
 			const char* in = *inbuf;
 			size_t insize = *inbytesleft;
 
-			iconvctl(cd, ICONV_SET_FALLBACKS, this);
 			res = iconv(cd, ICONV_CONST_CAST(&in), &insize, &out, &buffsize);
 			// If no bytes of the output buffer were used, the original
 			// conversion may have been successful
-			if (buffsize == 8) {
-				err = errno;
-			}
-			else {
+			if (buffsize != 8) {
+				errno = E2BIG;
 				res = iconv_failed;
 			}
-			iconvctl(cd, ICONV_SET_FALLBACKS, NULL);
 		}
 
-		errno = err;
-#endif
 		return res;
 	}
 };
+#endif
 
 // Calculate the size of NUL in the given character set
 static size_t NulSize(const char* encoding) {
 	// We need a character set to convert from with a known encoding of NUL
 	// UTF-8 seems like the obvious choice
-	iconv_t cd = iconv_open(GetRealEncodingName(encoding), "UTF-8");
-	assert(cd != iconv_invalid);
-	Converter conv(false, GetRealEncodingName(encoding));
+	Converter cd(false, "UTF-8", encoding);
 
 	char dbuff[4];
 	char sbuff[] = "";
@@ -240,10 +275,9 @@ static size_t NulSize(const char* encoding) {
 	size_t dstLen = sizeof(dbuff);
 	size_t srcLen = 1;
 
-	size_t ret = conv(cd, &src, &srcLen, &dst, &dstLen);
+	size_t ret = cd.Convert(&src, &srcLen, &dst, &dstLen);
 	assert(ret != iconv_failed);
 	assert(dst - dbuff > 0);
-	iconv_close(cd);
 
 	return dst - dbuff;
 }
@@ -251,21 +285,14 @@ static size_t NulSize(const char* encoding) {
 IconvWrapper::IconvWrapper(const char* sourceEncoding, const char* destEncoding, bool enableSubst)
 : toNulLen(0)
 , fromNulLen(0)
-, conv(NULL)
+, conv(new Converter(enableSubst, sourceEncoding, destEncoding))
 {
-	cd = iconv_open(GetRealEncodingName(destEncoding), GetRealEncodingName(sourceEncoding));
-	if (cd == iconv_invalid) {
-		throw UnsupportedConversion(std::string("Cannot convert from ") + sourceEncoding + " to " + destEncoding);
-	}
-
-	// These need to be set only after we verify that the source and des
+	// These need to be set only after we verify that the source and dest
 	// charsets are valid
 	toNulLen = NulSize(destEncoding);
 	fromNulLen = NulSize(sourceEncoding);
-	conv.reset(new Converter(enableSubst, destEncoding));
 }
 IconvWrapper::~IconvWrapper() {
-	if (cd != iconv_invalid) iconv_close(cd);
 }
 
 std::string IconvWrapper::Convert(std::string const& source) {
@@ -282,8 +309,8 @@ void IconvWrapper::Convert(std::string const& source, std::string &dest) {
 	do {
 		char *dst = buff;
 		size_t dstLen = sizeof(buff);
-		res = (*conv)(cd, &src, &srcLen, &dst, &dstLen);
-		if (res == 0) (*conv)(cd, NULL, NULL, &dst, &dstLen);
+		res = conv->Convert(&src, &srcLen, &dst, &dstLen);
+		if (res == 0) conv->Convert(NULL, NULL, &dst, &dstLen);
 
 		dest.append(buff, sizeof(buff) - dstLen);
 	} while (res == iconv_failed && errno == E2BIG);
@@ -313,8 +340,8 @@ size_t IconvWrapper::Convert(const char* source, size_t sourceSize, char *dest, 
 	}
 
 	
-	size_t res = (*conv)(cd, &source, &sourceSize, &dest, &destSize);
-	if (res == 0) res = (*conv)(cd, NULL, NULL, &dest, &destSize);
+	size_t res = conv->Convert(&source, &sourceSize, &dest, &destSize);
+	if (res == 0) res = conv->Convert(NULL, NULL, &dest, &destSize);
 
 	if (res == iconv_failed) {
 		switch (errno) {
@@ -341,7 +368,7 @@ size_t IconvWrapper::Convert(const char* source, size_t sourceSize, char *dest, 
 }
 
 size_t IconvWrapper::Convert(const char** source, size_t* sourceSize, char** dest, size_t* destSize) {
-	return (*conv)(cd, source, sourceSize, dest, destSize);
+	return conv->Convert(source, sourceSize, dest, destSize);
 }
 
 size_t IconvWrapper::RequiredBufferSize(std::string const& str) {
@@ -356,8 +383,8 @@ size_t IconvWrapper::RequiredBufferSize(const char* src, size_t srcLen) {
 	do {
 		char* dst = buff;
 		size_t dstSize = sizeof(buff);
-		res = (*conv)(cd, &src, &srcLen, &dst, &dstSize);
-		(*conv)(cd, NULL, NULL, &dst, &dstSize);
+		res = conv->Convert(&src, &srcLen, &dst, &dstSize);
+		conv->Convert(NULL, NULL, &dst, &dstSize);
 
 		charsWritten += dst - buff;
 	} while (res == iconv_failed && errno == E2BIG);

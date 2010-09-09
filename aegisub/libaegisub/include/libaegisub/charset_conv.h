@@ -59,7 +59,6 @@ class Converter;
 
 /// @brief A C++ wrapper for iconv
 class IconvWrapper {
-	iconv_t cd;
 	size_t toNulLen;
 	size_t fromNulLen;
 	std::auto_ptr<Converter> conv;
