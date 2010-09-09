@@ -31,8 +31,6 @@
 #include <libaegisub/charset_conv.h>
 #include <iconv.h>
 
-using std::min;
-
 // Check if we can use advanced fallback capabilities added in GNU's iconv
 // implementation
 #if !defined(_LIBICONV_VERSION) || _LIBICONV_VERSION < 0x010A || defined(LIBICONV_PLUG)
@@ -121,7 +119,13 @@ public:
 		iconv_t cd = iconv_open(GetRealEncodingName(targetEnc), "UTF-8");
 		assert(cd != iconv_invalid);
 
-		// Get BOM size (if any)
+		// Most (but not all) iconv implementations automatically insert a BOM
+		// at the beginning of text converted to UTF-8, UTF-16 and UTF-32, but
+		// we usually don't want this, as some of the wxString using code
+		// assumes there is no BOM (as the exact encoding is known externally)
+		// As such, when doing conversions we will strip the BOM if it exists,
+		// then manually add it when writing files
+
 		const char* src = "";
 		char *dst = buff;
 		size_t srcLen = 1;
@@ -130,13 +134,14 @@ public:
 		size_t res = iconv(cd, ICONV_CONST_CAST(&src), &srcLen, &dst, &dstLen);
 		assert(res != iconv_failed);
 		assert(srcLen == 0);
-		src = buff;
+
 		bomSize = 0;
 		for (src = buff; src < dst; ++src) {
-			if (*src) {
-				bomSize = (8 - dstLen) / 2;
-				break;
-			}
+			if (*src) ++bomSize;
+		}
+		if (bomSize) {
+			// If there is a BOM, it will always be at least as big as the NUL
+			bomSize = std::min(bomSize, (8 - dstLen) / 2);
 		}
 
 		// Get fallback character
@@ -163,7 +168,7 @@ public:
 			// convert at least one extra character
 			char bom[8];
 			char *dst = bom;
-			size_t dstSize = min((size_t)8, bomSize + *outbytesleft);
+			size_t dstSize = std::min((size_t)8, bomSize + *outbytesleft);
 			const char *src = *inbuf;
 			size_t srcSize = *inbytesleft;
 			iconv(cd, ICONV_CONST_CAST(&src), &srcSize, &dst, &dstSize);
