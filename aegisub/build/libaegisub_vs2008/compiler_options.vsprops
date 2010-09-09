@@ -7,12 +7,12 @@
 	<Tool
 		Name="VCCLCompilerTool"
 		EnableIntrinsicFunctions="true"
+		PreprocessorDefinitions="_CRT_SECURE_NO_WARNINGS;NOMINMAX"
 		RuntimeLibrary="2"
 		OpenMP="true"
 		WarningLevel="3"
 		WarnAsError="true"
-        DebugInformationFormat="3"
-        PreprocessorDefinitions="_CRT_SECURE_NO_WARNINGS"
+		DebugInformationFormat="3"
 	/>
 	<Tool
 		Name="VCLinkerTool"

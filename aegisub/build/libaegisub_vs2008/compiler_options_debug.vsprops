@@ -10,13 +10,13 @@
 		InlineFunctionExpansion="0"
 		EnableIntrinsicFunctions="false"
 		WholeProgramOptimization="false"
-		PreprocessorDefinitions="DEBUG;_DEBUG;_CRT_SECURE_NO_WARNINGS"
+		PreprocessorDefinitions="DEBUG;_DEBUG;_CRT_SECURE_NO_WARNINGS;NOMINMAX"
 		BasicRuntimeChecks="3"
 		RuntimeLibrary="3"
 		BufferSecurityCheck="true"
 		EnableFunctionLevelLinking="true"
 		DebugInformationFormat="4"
-        EnablePREfast="true"
+		EnablePREfast="true"
 	/>
 	<Tool
 		Name="VCLinkerTool"
