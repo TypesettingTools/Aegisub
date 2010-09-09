@@ -2,7 +2,7 @@
 
 bin_PROGRAMS = run
 
-run_LDFLAGS= -L../libaegisub -laegisub-2.2 -lgtest @ICONV_LDFLAGS@ -L../universalchardet -luniversalchardet
+run_LDFLAGS= -L../libaegisub -laegisub-3.0 -lgtest @ICONV_LDFLAGS@ -L../universalchardet -luniversalchardet
 run_CPPFLAGS= -I../src/include -I../libaegisub/include
 
 
