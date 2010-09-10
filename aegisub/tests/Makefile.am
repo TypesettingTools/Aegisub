@@ -5,6 +5,9 @@ bin_PROGRAMS = run
 run_LDFLAGS= -L../libaegisub -laegisub-3.0 -lgtest @ICONV_LDFLAGS@ -L../universalchardet -luniversalchardet
 run_CPPFLAGS= -I../src/include -I../libaegisub/include
 
+if BUILD_DARWIN
+run_LDFLAGS += -framework ApplicationServices
+endif
 
 run_SOURCES = \
 		main.cpp \
