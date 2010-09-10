@@ -141,8 +141,8 @@ TEST(lagi_iconv, wchar_tSupport) {
 TEST(lagi_iconv, Roundtrip) {
 	std::vector<std::string> names = GetEncodingsList<std::vector<std::string> >();
 	for (std::vector<std::string>::iterator cur = names.begin(); cur != names.end(); ++cur) {
-		EXPECT_NO_THROW(IconvWrapper("utf-8", cur->c_str()));
-		EXPECT_NO_THROW(IconvWrapper(cur->c_str(), "utf-8"));
+		ASSERT_NO_THROW(IconvWrapper("utf-8", cur->c_str()));
+		ASSERT_NO_THROW(IconvWrapper(cur->c_str(), "utf-8"));
 		EXPECT_EQ(
 			"Jackdaws love my big sphinx of quartz",
 			IconvWrapper(cur->c_str(), "utf-8").Convert(
