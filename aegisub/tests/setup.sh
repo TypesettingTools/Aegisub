@@ -1,4 +1,6 @@
-chmod 664 data/*
+chmod 777 data/*
+chmod -R 777 data/
+
 rm -rf data
 mkdir -p data
 
@@ -42,4 +44,4 @@ echo '{"Bool" : [{"bool" : true}, {"bool" : true}]}' > data/option_array_bool
 mkdir data/vfr
 mkdir data/vfr/in
 mkdir data/vfr/out
-cp `dirname $0`/vfr/* data/vfr/in/
+cp vfr/* data/vfr/in/
