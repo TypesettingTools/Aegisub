@@ -139,14 +139,27 @@ void SetThreadName(DWORD dwThreadID, LPCSTR szThreadName) {
 #endif
 
 
-/// @brief Gets called when application starts, creates MainFrame ----------------------- Initialization function 
-/// @return 
-///
+/// @brief Handle wx assertions and redirct to the logging system.
+/// @param file File name
+/// @param line Line number
+/// @param func Function name
+/// @param cond Condition
+/// @param msg  Message
+static void wxAssertHandler(const wxString &file, int line, const wxString &func, const wxString &cond, const wxString &msg) {
+	LOG_A("wx/assert") << file << ":" << line << ":" << func << "() " << cond << ": " << msg;
+}
+
+
+/// @brief Gets called when application starts.
+/// @return bool
 bool AegisubApp::OnInit() {
 #ifdef _DEBUG
 	emit_stdout = new agi::log::EmitSTDOUT();
 	emit_stdout->Enable();
 #endif
+
+	// Install assertion handler
+	wxSetAssertHandler(wxAssertHandler);
 
 	// App name (yeah, this is a little weird to get rid of an odd warning)
 #if defined(__WXMSW__) || defined(__WXMAC__)
