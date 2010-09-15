@@ -39,7 +39,6 @@
 #ifdef WITH_FFMPEGSOURCE
 
 #ifndef AGI_PRE
-#define __STDC_FORMAT_MACROS
 #include <inttypes.h>
 #include <map>
 
