@@ -159,7 +159,7 @@ bool AegisubApp::OnInit() {
 #endif
 
 	// Install assertion handler
-	wxSetAssertHandler(wxAssertHandler);
+//	wxSetAssertHandler(wxAssertHandler);
 
 	// App name (yeah, this is a little weird to get rid of an odd warning)
 #if defined(__WXMSW__) || defined(__WXMAC__)
