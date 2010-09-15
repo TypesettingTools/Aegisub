@@ -115,22 +115,26 @@ AegiVideoFrame const& ThreadedFrameSource::ProcFrame(int frameNum, double time, 
 
 void *ThreadedFrameSource::Entry() {
 	while (!TestDestroy() && run) {
-		jobMutex.Lock();
-		if (nextSubs.get()) {
-			wxMutexLocker locker(fileMutex);
-			subs = nextSubs;
-			singleFrame = -1;
-		}
-		if (nextTime == -1.) {
-			jobReady.Wait();
-			jobMutex.Unlock();
-			continue;
-		}
+		double time;
+		int frameNum;
+		{
+			wxMutexLocker jobLocker(jobMutex);
 
-		double time = nextTime;
-		int frameNum = nextFrame;
-		nextTime = -1.;
-		jobMutex.Unlock();
+			if (nextTime == -1.) {
+				jobReady.Wait();
+				continue;
+			}
+
+			if (nextSubs.get()) {
+				wxMutexLocker fileLocker(fileMutex);
+				subs = nextSubs;
+				singleFrame = -1;
+			}
+
+			time = nextTime;
+			frameNum = nextFrame;
+			nextTime = -1.;
+		}
 
 		try {
 			AegiVideoFrame const& frame = ProcFrame(frameNum, time);
