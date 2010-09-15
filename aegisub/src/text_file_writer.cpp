@@ -53,7 +53,7 @@
 /// @param encoding 
 ///
 TextFileWriter::TextFileWriter(wxString const& filename, wxString encoding)
-: file(new agi::io::Save(STD_STR(filename)))
+: file(new agi::io::Save(STD_STR(filename), true))
 , conv() {
 	if (encoding.empty()) encoding = lagi_wxString(OPT_GET("App/Save Charset")->GetString());
 	if (encoding.Lower() != wxSTRING_ENCODING)
@@ -80,7 +80,11 @@ TextFileWriter::~TextFileWriter() {
 /// @param line         
 /// @param addLineBreak 
 void TextFileWriter::WriteLineToFile(wxString line, bool addLineBreak) {
+#ifdef _WIN32
+	if (addLineBreak) line += L"\r\n";
+#else
 	if (addLineBreak) line += L"\n";
+#endif
 
 	// On non-windows this cast does nothing
 	const char *data = reinterpret_cast<const char *>(line.wx_str());

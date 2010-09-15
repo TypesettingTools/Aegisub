@@ -47,7 +47,7 @@ std::ifstream* Open(const std::string &file) {
 }
 
 
-Save::Save(const std::string& file): file_name(file) {
+Save::Save(const std::string& file, bool binary): file_name(file) {
     LOG_D("agi/io/save/file") << file;
 	const std::string pwd = util::DirName(file);
 

@@ -47,7 +47,7 @@ class Save {
 	const std::string file_name;
 
 public:
-	Save(const std::string& file);
+	Save(const std::string& file, bool binary = false);
 	~Save();
 	std::ofstream& Get();
 };

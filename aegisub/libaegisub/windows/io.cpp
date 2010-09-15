@@ -52,7 +52,7 @@ std::ifstream* Open(const std::string &file) {
 }
 
 
-Save::Save(const std::string& file): file_name(file) {
+Save::Save(const std::string& file, bool binary): file_name(file) {
 	LOG_D("agi/io/save/file") << file;
 	const std::string pwd = util::DirName(file);
 
@@ -71,7 +71,7 @@ Save::Save(const std::string& file): file_name(file) {
 	///       Windows support is added.  The code in the destructor needs fixing
 	///       as well.
 	// This will open to file.XXXX. (tempfile)
-	fp = new std::ofstream(ConvertW(file + "_tmp").c_str());
+	fp = new std::ofstream(ConvertW(file + "_tmp").c_str(), binary ? std::ios::binary : std::ios::out);
 }
 
 Save::~Save() {
