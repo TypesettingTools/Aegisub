@@ -172,7 +172,7 @@ public:
 
 	/// @brief Get the video provider used for the currently open video
 	VideoProvider *GetProvider() const { return videoProvider.get(); }
-	AegiVideoFrame const& GetFrame(int n, bool raw = false);
+	std::tr1::shared_ptr<AegiVideoFrame> GetFrame(int n, bool raw = false);
 	void GetFrameAsync(int n);
 
 	/// @brief Save the currently displayed frame as an image

@@ -58,12 +58,15 @@ struct invisible_line : public std::unary_function<const AssEntry*, bool> {
 	}
 };
 
-AegiVideoFrame const& ThreadedFrameSource::ProcFrame(int frameNum, double time, bool raw) {
-	AegiVideoFrame *frame;
+static void delete_frame(AegiVideoFrame *frame) {
+	frame->Clear();
+	delete frame;
+}
+
+std::tr1::shared_ptr<AegiVideoFrame> ThreadedFrameSource::ProcFrame(int frameNum, double time, bool raw) {
+	std::tr1::shared_ptr<AegiVideoFrame> frame(new AegiVideoFrame, delete_frame);
 	{
 		wxMutexLocker locker(providerMutex);
-		frame = frameBuffer + frameBufferIdx;
-		frameBufferIdx = !frameBufferIdx;
 		try {
 			frame->CopyFrom(videoProvider->GetFrame(frameNum));
 		}
@@ -110,7 +113,7 @@ AegiVideoFrame const& ThreadedFrameSource::ProcFrame(int frameNum, double time, 
 
 		provider->DrawSubtitles(*frame, time);
 	}
-	return *frame;
+	return frame;
 }
 
 void *ThreadedFrameSource::Entry() {
@@ -137,10 +140,7 @@ void *ThreadedFrameSource::Entry() {
 		}
 
 		try {
-			AegiVideoFrame const& frame = ProcFrame(frameNum, time);
-
-			std::tr1::shared_ptr<wxMutexLocker> evtLock(new wxMutexLocker(evtMutex));
-			FrameReadyEvent *evt = new FrameReadyEvent(&frame, time, evtLock);
+			FrameReadyEvent *evt = new FrameReadyEvent(ProcFrame(frameNum, time), time);
 			evt->SetEventType(EVT_FRAME_READY);
 			parent->QueueEvent(evt);
 		}
@@ -160,7 +160,6 @@ ThreadedFrameSource::ThreadedFrameSource(wxString videoFileName, wxEvtHandler *p
 , parent(parent)
 , nextTime(-1.)
 , jobReady(jobMutex)
-, frameBufferIdx(0)
 , run(true)
 {
 	Create();
@@ -170,8 +169,6 @@ ThreadedFrameSource::~ThreadedFrameSource() {
 	run = false;
 	jobReady.Signal();
 	Wait();
-	frameBuffer[0].Clear();
-	frameBuffer[1].Clear();
 }
 
 void ThreadedFrameSource::LoadSubtitles(AssFile *subs) throw() {
@@ -192,7 +189,7 @@ void ThreadedFrameSource::RequestFrame(int frame, double time) throw() {
 	jobReady.Signal();
 }
 
-AegiVideoFrame const& ThreadedFrameSource::GetFrame(int frame, double time, bool raw) {
+std::tr1::shared_ptr<AegiVideoFrame> ThreadedFrameSource::GetFrame(int frame, double time, bool raw) {
 	return ProcFrame(frame, time, raw);
 }
 

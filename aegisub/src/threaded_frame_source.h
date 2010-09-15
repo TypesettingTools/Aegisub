@@ -76,17 +76,10 @@ class ThreadedFrameSource : public wxThread {
 
 	wxCondition jobReady;  ///< Signal for indicating that a frame has be requested
 
-	/// Frame buffers to render subtitles into
-	/// Two are needed so that a frame can be decoded/rendered while the GUI is
-	/// doing stuff with the other
-	AegiVideoFrame frameBuffer[2];
-	/// Next frame buffer to use
-	int frameBufferIdx;
-
 	bool run; ///< Should the thread continue to run
 
 	void *Entry();
-	AegiVideoFrame const& ProcFrame(int frameNum, double time, bool raw = false);
+	std::tr1::shared_ptr<AegiVideoFrame> ProcFrame(int frameNum, double time, bool raw = false);
 public:
 	/// @brief Load the passed subtitle file
 	/// @param subs File to load
@@ -107,7 +100,7 @@ public:
 	/// @brief frame Frame number
 	/// @brief time  Exact start time of the frame in seconds
 	/// @brief raw   Get raw frame without subtitles
-	AegiVideoFrame const& GetFrame(int frame, double time, bool raw = false);
+	std::tr1::shared_ptr<AegiVideoFrame> GetFrame(int frame, double time, bool raw = false);
 
 	std::tr1::shared_ptr<VideoProvider> GetVideoProvider() const { return videoProvider; }
 
@@ -121,24 +114,14 @@ public:
 /// @class FrameReadyEvent
 /// @brief Event which signals that a requested frame is ready
 class FrameReadyEvent : public wxEvent {
-	/// Externally passed mutex that is kept locked as long as this or a copy
-	/// of this exists. Used to ensure that the next FrameReadyEvent is not
-	/// announced until this one is fully processed.
-	///
-	/// Although tr1 does not require that shared_ptr be thread safe (due to
-	/// the standard having no concept of threads), all implementations have
-	/// at least a thread safe reference counter, which is all we happen to
-	/// need here.
-	std::tr1::shared_ptr<wxMutexLocker> mutex;
 public:
-	/// Frame which is ready; only guaranteed to be valid as long as this
-	/// event object exists
-	const AegiVideoFrame *frame;
+	/// Frame which is ready
+	std::tr1::shared_ptr<AegiVideoFrame> frame;
 	/// Time which was used for subtitle rendering
 	double time;
 	wxEvent *Clone() const { return new FrameReadyEvent(*this); };
-	FrameReadyEvent(const AegiVideoFrame *frame, double time, std::tr1::shared_ptr<wxMutexLocker> mutex)
-		: mutex(mutex), frame(frame), time(time) {
+	FrameReadyEvent(std::tr1::shared_ptr<AegiVideoFrame> frame, double time)
+		: frame(frame), time(time) {
 	}
 };
 

@@ -592,14 +592,14 @@ void VideoDisplay::FromScriptCoords(int *x, int *y) const {
 
 void VideoDisplay::OnCopyToClipboard(wxCommandEvent &) {
 	if (wxTheClipboard->Open()) {
-		wxTheClipboard->SetData(new wxBitmapDataObject(wxBitmap(VideoContext::Get()->GetFrame(currentFrame).GetImage(),24)));
+		wxTheClipboard->SetData(new wxBitmapDataObject(wxBitmap(VideoContext::Get()->GetFrame(currentFrame)->GetImage(),24)));
 		wxTheClipboard->Close();
 	}
 }
 
 void VideoDisplay::OnCopyToClipboardRaw(wxCommandEvent &) {
 	if (wxTheClipboard->Open()) {
-		wxTheClipboard->SetData(new wxBitmapDataObject(wxBitmap(VideoContext::Get()->GetFrame(currentFrame,true).GetImage(),24)));
+		wxTheClipboard->SetData(new wxBitmapDataObject(wxBitmap(VideoContext::Get()->GetFrame(currentFrame,true)->GetImage(),24)));
 		wxTheClipboard->Close();
 	}
 }

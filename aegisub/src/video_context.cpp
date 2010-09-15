@@ -295,7 +295,7 @@ void VideoContext::GetFrameAsync(int n) {
 	provider->RequestFrame(n,videoFPS.TimeAtFrame(n)/1000.0);
 }
 
-AegiVideoFrame const& VideoContext::GetFrame(int n, bool raw) {
+std::tr1::shared_ptr<AegiVideoFrame> VideoContext::GetFrame(int n, bool raw) {
 	return provider->GetFrame(n, videoFPS.TimeAtFrame(n)/1000.0, raw);
 }
 
@@ -341,7 +341,7 @@ void VideoContext::SaveSnapshot(bool raw) {
 		if (!tryPath.FileExists()) break;
 	}
 
-	GetFrame(frame_n,raw).GetImage().SaveFile(path,wxBITMAP_TYPE_PNG);
+	GetFrame(frame_n,raw)->GetImage().SaveFile(path,wxBITMAP_TYPE_PNG);
 }
 
 void VideoContext::GetScriptSize(int &sw,int &sh) {
