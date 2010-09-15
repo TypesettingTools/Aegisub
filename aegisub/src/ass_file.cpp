@@ -771,8 +771,8 @@ wxString AssFile::GetWildcardList(int mode) {
 int AssFile::Commit(wxString desc, int amendId) {
 	++commitId;
 	// Allow coalescing only if it's the last change and the file has not been
-	// saved since the last change
-	if (commitId == amendId+1 && RedoStack.empty() && savedCommitId != commitId) {
+	// saved since the last change and the undo stack isn't empty
+	if (commitId == amendId+1 && RedoStack.empty() && savedCommitId != commitId && !UndoStack.empty()) {
 		UndoStack.back() = *this;
 		return commitId;
 	}
