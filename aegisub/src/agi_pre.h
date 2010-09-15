@@ -86,6 +86,7 @@
 #include <tr1/memory>
 #endif
 
+#define __STDC_FORMAT_MACROS
 // General headers
 #include <assert.h>
 #include <ctype.h>
