@@ -172,22 +172,18 @@ void AssTime::SetMS (int _ms) {
 /// @return 
 ///
 wxString AssTime::GetASSFormated (bool msPrecision) const {
-	int h,m,s,ms;
-	int _ms = time;
+	int ms = time;
 
 	// Centisecond precision
 	msPrecision = msPrecision || UseMSPrecision;
-	if (!msPrecision) _ms = _ms/10*10;
+	if (!msPrecision) ms = ms/10*10;
 
-	// Reset
-	h = m = s = ms = 0;
-	if (_ms < 0) _ms = 0;
+	if (ms < 0) ms = 0;
 
-	// Hours
-	while (_ms >= 3600000) {
-		_ms -= 3600000;
-		h++;
-	}
+	int h = ms / (1000 * 60 * 60);
+	int m = (ms / (1000 * 60)) % 60;
+	int s = (ms / 1000) % 60;
+	ms = ms % 1000;
 
 	// Ass overflow
 	if (h > 9) {
@@ -196,19 +192,6 @@ wxString AssTime::GetASSFormated (bool msPrecision) const {
 		s = 59;
 		ms = 999;
 	}
-
-	// Minutes
-	while (_ms >= 60000) {
-		_ms -= 60000;
-		m++;
-	}
-
-	// Seconds
-	while (_ms >= 1000) {
-		_ms -= 1000;
-		s++;
-	}
-	ms = _ms;
 
 	if (msPrecision) return wxString::Format(_T("%01i:%02i:%02i.%03i"),h,m,s,ms);
 	else return wxString::Format(_T("%01i:%02i:%02i.%02i"),h,m,s,ms/10);
