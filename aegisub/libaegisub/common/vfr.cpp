@@ -58,6 +58,14 @@ static void validate_timecodes(std::vector<int> const& timecodes) {
 	std::accumulate(timecodes.begin()+1, timecodes.end(), timecodes.front(), is_increasing);
 }
 
+/// @brief Shift timecodes so that frame 0 starts at time 0
+/// @param timecodes List of timecodes to normalize
+static void normalize_timecodes(std::vector<int> &timecodes) {
+	if (int front = timecodes.front()) {
+		std::transform(timecodes.begin(), timecodes.end(), timecodes.begin(), std::bind2nd(std::minus<int>(), front));
+	}
+}
+
 // A "start,end,fps" line in a v1 timecode file
 struct TimecodeRange {
 	int start;
@@ -183,7 +191,8 @@ Framerate::Framerate(std::vector<int> const& timecodes)
 : timecodes(timecodes)
 {
 	validate_timecodes(timecodes);
-	fps = (timecodes.size() - 1) * 1000. / (timecodes.back() - timecodes.front());
+	normalize_timecodes(this->timecodes);
+	fps = (timecodes.size() - 1) * 1000. / timecodes.back();
 	last = timecodes.back();
 }
 
@@ -212,7 +221,8 @@ Framerate::Framerate(std::string const& filename) : fps(0.) {
 	if (line == "# timecode format v2") {
 		copy(line_iterator<int>(*file, encoding), line_iterator<int>(), back_inserter(timecodes));
 		validate_timecodes(timecodes);
-		fps = (timecodes.size() - 1) * 1000. / (timecodes.back() - timecodes.front());
+		normalize_timecodes(timecodes);
+		fps = (timecodes.size() - 1) * 1000. / timecodes.back();
 		last = timecodes.back();
 		return;
 	}
@@ -266,8 +276,8 @@ int Framerate::FrameAtTime(int ms, Time type) const {
 	if (timecodes.empty()) {
 		return (int)floor(ms * fps / 1000.);
 	}
-	if (ms < timecodes.front()) {
-		return (int)floor((ms - timecodes.front()) * fps / 1000.);
+	if (ms < 0) {
+		return (int)floor(ms * fps / 1000.);
 	}
 	if (ms > timecodes.back()) {
 		return round((ms - timecodes.back()) * fps / 1000.) + (int)timecodes.size() - 1;
@@ -294,7 +304,7 @@ int Framerate::TimeAtFrame(int frame, Time type) const {
 	}
 
 	if (frame < 0) {
-		return (int)ceil(frame / fps * 1000.) + timecodes.front();
+		return (int)ceil(frame / fps * 1000.);
 	}
 	if (frame >= (signed)timecodes.size()) {
 		return round((frame - timecodes.size() + 1) * 1000. / fps + last);
