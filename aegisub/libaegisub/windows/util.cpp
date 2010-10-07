@@ -39,11 +39,12 @@ namespace agi {
 using agi::charset::ConvertW;
 
 const std::string DirName(const std::string& path) {
-	if (path.find('/') == std::string::npos) {
-		return ".";
-	}
+	std::string::size_type pos = path.rfind('/');
 
-	return path.substr(0, path.rfind("/")+1);
+	if (pos == std::string::npos) pos = path.rfind('\\');
+	if (pos == std::string::npos) return ".";
+
+	return path.substr(0, pos+1);
 }
 
 void Rename(const std::string& from, const std::string& to) {
