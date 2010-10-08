@@ -97,6 +97,7 @@ std::tr1::shared_ptr<AegiVideoFrame> ThreadedFrameSource::ProcFrame(int frameNum
 					try {
 						std::swap(subs->Line, visible);
 						provider->LoadSubtitles(subs.get());
+						std::swap(subs->Line, visible);
 					}
 					catch(...) {
 						std::swap(subs->Line, visible);
