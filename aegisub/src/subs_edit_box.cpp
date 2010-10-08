@@ -120,11 +120,11 @@ template<class T>
 static T get_value(AssDialogue const& line, int blockn, T initial, wxString tag, wxString alt = "") {
 	for (int i = blockn; i >= 0; i--) {
 		AssDialogueBlockOverride *ovr = dynamic_cast<AssDialogueBlockOverride*>(line.Blocks[i]);
-		if (ovr) {
-			for (int j = (int)ovr->Tags.size() - 1; j >= 0; j--) {
-				if (ovr->Tags[j]->Name == tag || ovr->Tags[j]->Name == alt) {
-					return ovr->Tags[j]->Params[0]->Get<T>();
-				}
+		if (!ovr) continue;
+
+		for (int j = (int)ovr->Tags.size() - 1; j >= 0; j--) {
+			if (ovr->Tags[j]->Name == tag || ovr->Tags[j]->Name == alt) {
+				return ovr->Tags[j]->Params[0]->Get<T>(initial);
 			}
 		}
 	}
@@ -735,6 +735,7 @@ void SubsEditBox::SetTag(wxString tag, wxString value, bool atEnd) {
 				}
 				else {
 					ovr->Tags[i]->Params[0]->Set(value);
+					ovr->Tags[i]->Params[0]->omitted = false;
 					found = true;
 				}
 			}
