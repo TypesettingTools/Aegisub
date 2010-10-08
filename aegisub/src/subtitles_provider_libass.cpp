@@ -64,7 +64,7 @@
 /// @brief Handle libass messages
 ///
 static void msg_callback(int level, const char *fmt, va_list args, void *data) {
-	char buf[256];
+	char buf[1024];
 #ifdef _WIN32
 	vsprintf_s(buf, sizeof(buf), fmt, args);
 #else
