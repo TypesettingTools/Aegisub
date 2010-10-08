@@ -1172,8 +1172,9 @@ void BaseGrid::OnKeyPress(wxKeyEvent &event) {
 
 	// Select all
 	if (key == 'A' && ctrl && !alt && !shift) {
-		int rows = GetRows();
-		for (int i=0;i<rows;i++) SelectRow(i,true);
+		Selection sel;
+		std::copy(index_line_map.begin(), index_line_map.end(), std::inserter(sel, sel.end()));
+		SetSelectedSet(sel);
 	}
 
 	// Up/down
