@@ -228,7 +228,6 @@ void VideoDisplay::SetFrame(int frameNumber) {
 
 	// Render the new frame
 	if (context->IsLoaded()) {
-		context->GetScriptSize(scriptW, scriptH);
 		tool->SetFrame(frameNumber);
 		context->GetFrameAsync(currentFrame);
 	}
@@ -300,6 +299,7 @@ void VideoDisplay::Render() try {
 	}
 
 	if (video.x > INT_MIN || video.y > INT_MIN || alwaysShowTools->GetBool()) {
+		context->GetScriptSize(scriptW, scriptH);
 		tool->Draw();
 	}
 
