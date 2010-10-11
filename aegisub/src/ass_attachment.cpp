@@ -122,7 +122,7 @@ void AssAttachment::Finish() {
 /// @brief Get encoded data to write on file 
 /// @return 
 ///
-const wxString AssAttachment::GetEntryData() {
+const wxString AssAttachment::GetEntryData() const {
 	// Get data
 	const DataVec &dat = data->GetData();
 	int pos = 0;

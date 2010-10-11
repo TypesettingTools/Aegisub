@@ -91,7 +91,7 @@ public:
 	void Import(wxString filename);
 	wxString GetFileName(bool raw=false);
 
-	const wxString GetEntryData();
+	const wxString GetEntryData() const;
 
 	/// @brief DOCME
 	///
