@@ -417,8 +417,6 @@ void SearchReplaceEngine::ReplaceNext(bool DoReplace) {
 
 	// Found
 	if (found) {
-		grid->BeginBatch();
-
 		// If replacing
 		if (DoReplace) {
 			// Replace with regular expressions
@@ -452,7 +450,6 @@ void SearchReplaceEngine::ReplaceNext(bool DoReplace) {
 			grid->SetActiveLine(grid->GetDialogue(curLine));
 			grid->editBox->TextEdit->SetSelectionU(pos,pos+replaceLen);
 		}
-		grid->EndBatch();
 
 		// Update video
 		if (updateVideo) {
