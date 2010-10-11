@@ -279,6 +279,8 @@ bool AssFile::CanSave() {
 // I strongly advice you against touching this function unless you know what you're doing;
 // even moving things out of order might break ASS parsing - AMZ.
 void AssFile::AddLine(wxString data,wxString group,int &version,wxString *outGroup) {
+	if (data.empty()) return;
+
 	// Group
 	AssEntry *entry = NULL;
 	wxString origGroup = group;
@@ -344,7 +346,7 @@ void AssFile::AddLine(wxString data,wxString group,int &version,wxString *outGro
 	}
 
 	// Dialogue
-	if (lowGroup == _T("[events]")) {
+	else if (lowGroup == _T("[events]")) {
 		if (data.StartsWith(_T("Dialogue:")) || data.StartsWith(_T("Comment:"))) {
 			AssDialogue *diag = new AssDialogue(data,version);
 			//diag->ParseASSTags();

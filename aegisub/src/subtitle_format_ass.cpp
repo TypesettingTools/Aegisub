@@ -136,9 +136,6 @@ void ASSSubtitleFormat::ReadFile(wxString filename,wxString encoding) {
 			// Not-so-special case for other groups, just set it
 			else {
 				curgroup = wxbuffer;
-				// default from extension in all other sections
-				//version = 1;
-				//if (filename.Right(4).Lower() == _T(".ssa")) version = 0;
 			}
 		}
 
@@ -155,9 +152,6 @@ void ASSSubtitleFormat::ReadFile(wxString filename,wxString encoding) {
 			throw wxString(_T("Error processing line: ")) + wxbuffer;
 		}
 	}
-
-	// Add one last empty line in case it didn't end with one
-	if (!wxbuffer.IsEmpty()) AddLine(_T(""),curgroup,version);
 }
 
 
