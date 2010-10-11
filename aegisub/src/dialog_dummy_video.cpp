@@ -153,9 +153,8 @@ DialogDummyVideo::DialogDummyVideo(wxWindow *parent)
 	height = new wxTextCtrl(this, -1);
 	colour = new ColourButton(this, -1, wxSize(30, 17), lagi_wxColour(OPT_GET("Colour/Video Dummy/Last Colour")->GetColour()));
 	pattern = new wxCheckBox(this, -1, _("Checkerboard pattern"));
-	//fps = new wxComboBox(this, Dummy_Video_FPS, Options.AsText(_T("Video Dummy Last FPS")), wxDefaultPosition, wxDefaultSize, 0, 0, wxCB_DROPDOWN);
 	fps = new wxTextCtrl(this, Dummy_Video_FPS, wxString::Format("%f", OPT_GET("Video/Dummy/FPS")->GetDouble()));
-	length = new wxSpinCtrl(this, Dummy_Video_Length);
+	length = new wxSpinCtrl(this, Dummy_Video_Length, "", wxDefaultPosition, wxDefaultSize, 4096|wxALIGN_LEFT);
 	length_display = new wxStaticText(this, -1, _T(""));
 
 	// Support controls and layout
@@ -169,7 +168,7 @@ DialogDummyVideo::DialogDummyVideo(wxWindow *parent)
 	res_sizer->Add(height, 0, wxEXPAND);
 	fg->Add(res_sizer, 0, wxEXPAND);
 	fg->Add(new wxStaticText(this, -1, _("Colour:")), 0, wxALIGN_CENTRE_VERTICAL);
-	fg->Add(colour, 0, wxFIXED_MINSIZE|wxALIGN_LEFT|wxALIGN_CENTRE_VERTICAL);
+	fg->Add(colour, 0, wxALIGN_LEFT|wxALIGN_CENTRE_VERTICAL);
 	fg->AddStretchSpacer();
 	fg->Add(pattern, 0, wxALIGN_LEFT|wxALIGN_CENTRE_VERTICAL);
 	fg->Add(new wxStaticText(this, -1, _("Frame rate (fps):")), 0, wxALIGN_CENTRE_VERTICAL);
