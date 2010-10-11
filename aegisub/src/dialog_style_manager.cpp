@@ -58,6 +58,36 @@
 #include "subs_grid.h"
 #include "utils.h"
 
+/// IDs
+enum {
+	BUTTON_CATALOG_NEW = 1000,
+	BUTTON_CATALOG_DELETE,
+	BUTTON_STORAGE_COPYTO,
+	BUTTON_STORAGE_NEW,
+	BUTTON_STORAGE_EDIT,
+	BUTTON_STORAGE_COPY,
+	BUTTON_STORAGE_DELETE,
+	BUTTON_STORAGE_UP,
+	BUTTON_STORAGE_DOWN,
+	BUTTON_STORAGE_TOP,
+	BUTTON_STORAGE_BOTTOM,
+	BUTTON_STORAGE_SORT,
+	BUTTON_CURRENT_COPYTO,
+	BUTTON_CURRENT_NEW,
+	BUTTON_CURRENT_EDIT,
+	BUTTON_CURRENT_COPY,
+	BUTTON_CURRENT_DELETE,
+	BUTTON_CURRENT_IMPORT,
+	BUTTON_CURRENT_UP,
+	BUTTON_CURRENT_DOWN,
+	BUTTON_CURRENT_TOP,
+	BUTTON_CURRENT_BOTTOM,
+	BUTTON_CURRENT_SORT,
+	LIST_CATALOG,
+	LIST_STORAGE,
+	LIST_CURRENT
+};
+
 /// @brief Constructor 
 /// @param parent 
 /// @param _grid  
@@ -205,7 +235,7 @@ DialogStyleManager::DialogStyleManager (wxWindow *parent,SubtitlesGrid *_grid)
 	wxString selected_style;
 	if (_grid) {
 		AssDialogue *dia = _grid->GetDialogue(_grid->GetFirstSelRow());
-		if(dia)	selected_style = dia->Style;
+		if(dia) selected_style = dia->Style;
 	}
 
 	if (StorageList->GetCount() && StorageList->SetStringSelection(selected_style)) {
@@ -741,6 +771,7 @@ void DialogStyleManager::OnStorageNew (wxCommandEvent &) {
 		Store.style.push_back(temp);
 		Store.Save(CatalogList->GetString(CatalogList->GetSelection()));
 		LoadStorageStyles();
+		StorageList->SetStringSelection(temp->name);
 	}
 	else delete temp;
 	UpdateMoveButtons();
@@ -755,6 +786,7 @@ void DialogStyleManager::OnCurrentNew (wxCommandEvent &) {
 	if (modified) {
 		grid->ass->InsertStyle(temp);
 		LoadCurrentStyles(grid->ass);
+		CurrentList->SetStringSelection(temp->name);
 	}
 	else delete temp;
 	UpdateMoveButtons();
