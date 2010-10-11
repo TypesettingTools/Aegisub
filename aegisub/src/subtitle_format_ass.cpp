@@ -170,25 +170,27 @@ bool ASSSubtitleFormat::CanWriteFile(wxString filename) {
 /// @param _filename 
 /// @param encoding  
 ///
-void ASSSubtitleFormat::WriteFile(wxString _filename,wxString encoding) {
+void ASSSubtitleFormat::WriteFile(wxString filename,wxString encoding) {
 	// Open file
-	TextFileWriter file(_filename,encoding);
-	bool ssa = _filename.Right(4).Lower() == _T(".ssa");
+	TextFileWriter file(filename,encoding);
+	bool ssa = filename.Right(4).Lower() == _T(".ssa");
 
 	// Write lines
-	using std::list;
-	AssEntry *entry;
-	for (list<AssEntry*>::iterator cur=Line->begin();cur!=Line->end();) {
-		// Get entry
-		entry = *cur;
+	std::list<AssEntry*>::iterator last = Line->end(); --last;
+	wxString group = Line->front()->group;
+	for (std::list<AssEntry*>::iterator cur=Line->begin(); cur!=Line->end(); ++cur) {
+		// Add a blank line between each group
+		if ((*cur)->group != group) {
+			file.WriteLineToFile("");
+			group = (*cur)->group;
+		}
 
 		// Only add a line break if there is a next line
-		cur++;
-		bool lineBreak = cur != Line->end();
+		bool lineBreak = cur != last;
 
 		// Write line
-		if (ssa) file.WriteLineToFile(entry->GetSSAText(),lineBreak);
-		else file.WriteLineToFile(entry->GetEntryData(),lineBreak);
+		if (ssa) file.WriteLineToFile((*cur)->GetSSAText(),lineBreak);
+		else file.WriteLineToFile((*cur)->GetEntryData(),lineBreak);
 	}
 }
 
