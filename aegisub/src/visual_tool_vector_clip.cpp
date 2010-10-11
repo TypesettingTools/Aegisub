@@ -119,7 +119,7 @@ void VisualToolVectorClip::SetMode(int newMode) {
 // Substitute for glMultiDrawArrays for sub-1.4 OpenGL
 // Not required on OS X.
 #ifndef __APPLE__
-static void APIENTRY glMultiDrawArraysFallback(GLenum mode, GLint *first, GLsizei *count, GLsizei primcount) {
+static void APIENTRY glMultiDrawArraysFallback(GLenum mode, const GLint *first, const GLsizei *count, GLsizei primcount) {
 	for (int i = 0; i < primcount; ++i) {
 		glDrawArrays(mode, *first++, *count++);
 	}

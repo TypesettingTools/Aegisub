@@ -65,7 +65,7 @@ typedef GLuint GLhandleARB;
 #define GL_EXT(type, name) \
 	static type name = reinterpret_cast<type>(glGetProc(#name)); \
 	if (!name) { \
-		name = & name ## Fallback; \
+		name = reinterpret_cast<type>(& name ## Fallback); \
 	}
 #endif
 

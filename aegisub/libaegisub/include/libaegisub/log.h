@@ -39,7 +39,7 @@
 
 // These macros below aren't a perm solution, it will depend on how annoying they are through
 // actual usage, and also depends on msvc support.
-#define LOG_SINK(section, severity) agi::log::Message::Message(section, severity, __FILE__, __FUNCTION__, __LINE__).stream()
+#define LOG_SINK(section, severity) agi::log::Message(section, severity, __FILE__, __FUNCTION__, __LINE__).stream()
 #define LOG_E(section) LOG_SINK(section, agi::log::Exception)
 #define LOG_A(section) LOG_SINK(section, agi::log::Assert)
 #define LOG_W(section) LOG_SINK(section, agi::log::Warning)
