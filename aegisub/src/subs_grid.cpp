@@ -749,8 +749,9 @@ void SubtitlesGrid::SwapLines(int n1,int n2) {
 /// @param after  
 /// @param update 
 void SubtitlesGrid::InsertLine(AssDialogue *line,int n,bool after,bool update) {
-	AssDialogue *rel_line = GetDialogue(n + (after?1:0));
+	AssDialogue *rel_line = GetDialogue(n);
 	entryIter pos = std::find(ass->Line.begin(), ass->Line.end(), rel_line);
+	if (after) ++pos;
 
 	entryIter newIter = ass->Line.insert(pos,line);
 	BaseGrid::UpdateMaps();
