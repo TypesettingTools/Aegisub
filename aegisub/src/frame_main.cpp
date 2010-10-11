@@ -713,6 +713,7 @@ void FrameMain::LoadSubtitles (wxString filename,wxString charset) {
 			SubsGrid->LoadDefault();
 			StandardPaths::SetPathValue(_T("?script"),_T(""));
 		}
+		SubsGrid->SetColumnWidths();
 	}
 	catch (agi::FileNotFoundError const&) {
 		wxMessageBox(filename + L" not found.", L"Error", wxOK | wxICON_ERROR, NULL);
