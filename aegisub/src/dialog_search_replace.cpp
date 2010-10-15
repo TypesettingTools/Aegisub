@@ -351,7 +351,7 @@ void SearchReplaceEngine::ReplaceNext(bool DoReplace) {
 	int firstLine = 0;
 	if (sels.Count() > 0) firstLine = sels[0];
 	// if selection has changed reset values
-	if (firstLine < curLine) {
+	if (firstLine != curLine) {
 		curLine = firstLine;
 		Modified = false;
 		LastWasFind = true;
