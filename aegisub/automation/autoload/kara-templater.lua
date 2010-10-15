@@ -686,7 +686,7 @@ function apply_one_syllable_template(syl, line, template, tenv, varctx, subs, sk
 	
 	-- Check for right inline_fx
 	if t.fx and t.fx ~= syl.inline_fx then
-		aegisub.debug.out(5, "Syllable has wrong inline-fx (wanted '%s', got '%s'), skipping.\n", t.inline_fx, syl.inline_fx)
+		aegisub.debug.out(5, "Syllable has wrong inline-fx (wanted '%s', got '%s'), skipping.\n", t.fx, syl.inline_fx)
 		return 0
 	end
 	
