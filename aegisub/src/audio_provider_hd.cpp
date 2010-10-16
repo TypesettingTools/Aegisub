@@ -93,12 +93,12 @@ HDAudioProvider::HDAudioProvider(AudioProvider *src) {
 	file_cache.Seek(0);
 
 	// Finish
-	progress->Destroy();
 	if (canceled) {
 		file_cache.Close();
 		delete[] data;
 		throw agi::UserCancelException("Audio loading cancelled by user");
 	}
+	progress->Destroy();
 }
 
 /// @brief Destructor 

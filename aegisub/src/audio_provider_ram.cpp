@@ -99,11 +99,11 @@ RAMAudioProvider::RAMAudioProvider(AudioProvider *src) {
 	}
 
 	// Clean up progress
-	progress->Destroy();
 	if (canceled) {
 		Clear();
 		throw agi::UserCancelException("Audio loading cancelled by user");
 	}
+	progress->Destroy();
 }
 
 /// @brief Destructor 
