@@ -155,6 +155,10 @@ class VideoDisplay : public wxGLCanvas {
 	/// @return Could the context be set?
 	bool InitContext();
 
+	/// @brief Update the time relative to current subtitle line box
+	/// @param time Currently displayed frame's time
+	void UpdateRelativeTimes(int time);
+
 
 	void OnMode(const wxCommandEvent &event);
 	void SetMode(int mode);

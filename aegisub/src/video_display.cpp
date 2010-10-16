@@ -182,6 +182,27 @@ void VideoDisplay::ShowCursor(bool show) {
 		SetCursor(cursor);
 	}
 }
+
+void VideoDisplay::UpdateRelativeTimes(int time) {
+	wxString startSign;
+	wxString endSign;
+	int startOff = 0;
+	int endOff = 0;
+
+	if (AssDialogue *curLine = VideoContext::Get()->grid->GetActiveLine()) {
+		startOff = time - curLine->Start.GetMS();
+		endOff = time - curLine->End.GetMS();
+	}
+
+	// Positive signs
+	if (startOff > 0) startSign = L"+";
+	if (endOff > 0) endSign = L"+";
+
+	// Set the text box for time relative to active subtitle line
+	SubsPosition->SetValue(wxString::Format(L"%s%ims; %s%ims", startSign.c_str(), startOff, endSign.c_str(), endOff));
+}
+
+
 void VideoDisplay::SetFrame(int frameNumber) {
 	VideoContext *context = VideoContext::Get();
 	ControlSlider->SetValue(frameNumber);
@@ -208,22 +229,7 @@ void VideoDisplay::SetFrame(int frameNumber) {
 			PositionDisplay->SetForegroundColour(wxNullColour);
 		}
 
-		wxString startSign;
-		wxString endSign;
-		int startOff = 0;
-		int endOff = 0;
-
-		if (AssDialogue *curLine = context->grid->GetActiveLine()) {
-			startOff = time - curLine->Start.GetMS();
-			endOff = time - curLine->End.GetMS();
-		}
-
-		// Positive signs
-		if (startOff > 0) startSign = L"+";
-		if (endOff > 0) endSign = L"+";
-
-		// Set the text box for time relative to active subtitle line
-		SubsPosition->SetValue(wxString::Format(L"%s%ims; %s%ims", startSign.c_str(), startOff, endSign.c_str(), endOff));
+		UpdateRelativeTimes(time);
 	}
 
 	// Render the new frame
@@ -261,6 +267,7 @@ void VideoDisplay::Refresh() {
 	if (!InitContext()) return;
 	VideoContext::Get()->GetFrameAsync(currentFrame);
 	tool->Refresh();
+	UpdateRelativeTimes(VideoContext::Get()->TimeAtFrame(currentFrame, agi::vfr::EXACT));
 }
 
 void VideoDisplay::SetFrameRange(int from, int to) {
