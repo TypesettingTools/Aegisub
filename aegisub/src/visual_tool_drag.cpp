@@ -111,6 +111,7 @@ void VisualToolDrag::OnSubTool(wxCommandEvent &) {
 
 	Commit(true);
 	Refresh();
+	UpdateToggleButtons();
 }
 
 void VisualToolDrag::OnLineChanged() {
@@ -129,6 +130,7 @@ void VisualToolDrag::OnFileChanged() {
 			MakeFeatures(diag);
 		}
 	}
+	UpdateToggleButtons();
 }
 
 void VisualToolDrag::OnFrameChanged() {
