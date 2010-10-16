@@ -197,6 +197,7 @@ void BaseGrid::UpdateMaps(bool preserve_selected_rows) {
 			std::bind1st(std::mem_fun(&BaseGrid::GetDialogueIndex), this));
 	}
 
+	active_line = NULL;
 	index_line_map.clear();
 	line_index_map.clear();
 
@@ -239,7 +240,7 @@ void BaseGrid::UpdateMaps(bool preserve_selected_rows) {
 	}
 
 	// The active line may have ceased to exist; pick a new one if so
-	if (line_index_map.find(active_line) == line_index_map.end()) {
+	if (line_index_map.size() && line_index_map.find(active_line) == line_index_map.end()) {
 		if (active_row < (int)index_line_map.size()) {
 			SetActiveLine(index_line_map[active_row]);
 		}
