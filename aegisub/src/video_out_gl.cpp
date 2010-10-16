@@ -128,12 +128,12 @@ void VideoOutGL::DetectOpenGLCapabilities() {
 void VideoOutGL::InitTextures(int width, int height, GLenum format, int bpp, bool flipped) {
 	using namespace std;
 
-	frameFlipped = flipped;
 	// Do nothing if the frame size and format are unchanged
-	if (width == frameWidth && height == frameHeight && format == frameFormat) return;
+	if (width == frameWidth && height == frameHeight && format == frameFormat && flipped == frameFlipped) return;
 	frameWidth  = width;
 	frameHeight = height;
 	frameFormat = format;
+	frameFlipped = flipped;
 	LOG_I("video/out/gl") << "Video size: " << width << "x" << height;
 
 	DetectOpenGLCapabilities();
