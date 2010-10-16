@@ -544,7 +544,7 @@ void VideoContext::LoadTimecodes(wxString filename) {
 }
 void VideoContext::SaveTimecodes(wxString filename) {
 	try {
-		ovrFPS.Save(STD_STR(filename), IsLoaded() ? length : -1);
+		FPS().Save(STD_STR(filename), IsLoaded() ? length : -1);
 		config::mru->Add("Timecodes", STD_STR(filename));
 	}
 	catch(const agi::acs::AcsError&) {
