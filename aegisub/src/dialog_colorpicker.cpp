@@ -913,7 +913,6 @@ DialogColorPicker::DialogColorPicker(wxWindow *parent, wxColour initial_color, C
 	rgb_spectrum[2] =
 	hsl_spectrum    =
 	hsv_spectrum    = 0;
-	spectrum_dirty = true;
 
 	// generate spectrum slider bar images
 	wxImage sliderimg(slider_width, 256, true);
@@ -1162,6 +1161,7 @@ void DialogColorPicker::SetColor(wxColour new_color)
 	rgb_input[0]->SetValue(new_color.Red());
 	rgb_input[1]->SetValue(new_color.Green());
 	rgb_input[2]->SetValue(new_color.Blue());
+	spectrum_dirty = true;
 	UpdateFromRGB();
 }
 
