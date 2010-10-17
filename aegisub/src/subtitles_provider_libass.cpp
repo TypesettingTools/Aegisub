@@ -63,7 +63,7 @@
 
 /// @brief Handle libass messages
 ///
-static void msg_callback(int level, const char *fmt, va_list args, void *data) {
+static void msg_callback(int level, const char *fmt, va_list args, void *) {
 	if (level >= 7) return;
 	char buf[1024];
 #ifdef _WIN32
@@ -78,44 +78,76 @@ static void msg_callback(int level, const char *fmt, va_list args, void *data) {
 		LOG_D("subtitle/provider/libass") << buf;
 }
 
-static void load_config(ASS_Renderer *ass_renderer) {
+class FontConfigCacheThread : public wxThread {
+	ASS_Library *ass_library;
+	ASS_Renderer *ass_renderer;
+	FontConfigCacheThread** thisPtr;
+	ExitCode Entry() {
 #ifdef __APPLE__
-	char config_path[MAXPATHLEN];
-	char *config_dir;
+		char config_path[MAXPATHLEN];
+		char *config_dir;
 
-	config_dir = agi::util::OSX_GetBundleResourcesDirectory();
-	snprintf(config_path, MAXPATHLEN, "%s/etc/fonts/fonts.conf", config_dir);
-	free(config_dir);
+		config_dir = agi::util::OSX_GetBundleResourcesDirectory();
+		snprintf(config_path, MAXPATHLEN, "%s/etc/fonts/fonts.conf", config_dir);
+		free(config_dir);
 #else
-	const char *config_path = NULL;
+		const char *config_path = NULL;
 #endif
 
-	ass_set_fonts(ass_renderer, NULL, "Sans", 1, config_path, true);
+		if (ass_library) ass_renderer = ass_renderer_init(ass_library);
+		ass_set_fonts(ass_renderer, NULL, "Sans", 1, config_path, true);
+		if (ass_library) ass_renderer_done(ass_renderer);
+		*thisPtr = NULL;
+		return EXIT_SUCCESS;
+	}
+public:
+	FontConfigCacheThread(ASS_Library *ass_library, FontConfigCacheThread **thisPtr)
+		: ass_library(ass_library)
+		, ass_renderer(NULL)
+		, thisPtr(thisPtr)
+	{
+		*thisPtr = this;
+		Create();
+		Run();
+	}
+	FontConfigCacheThread(ASS_Renderer *ass_renderer, FontConfigCacheThread **thisPtr)
+		: ass_library(NULL)
+		, ass_renderer(ass_renderer)
+		, thisPtr(thisPtr)
+	{
+		*thisPtr = this;
+		Create();
+		Run();
+	}
+};
+
+static void wait_for_cache_thread(FontConfigCacheThread const * const & cache_worker) {
+	if (!cache_worker) return;
+
+	bool canceled;
+	DialogProgress *progress = new DialogProgress(AegisubApp::Get()->frame, L"", &canceled, L"Caching fonts", 0, 1);
+	progress->Show();
+	while (cache_worker) {
+		if (canceled) throw agi::UserCancelException("Font caching cancelled");
+		progress->Pulse();
+		wxYield();
+		wxMilliSleep(100);
+	}
+	progress->Destroy();
 }
 
 /// @brief Constructor
 ///
 LibassSubtitlesProvider::LibassSubtitlesProvider(std::string) {
-	if (cache_worker) {
-		bool canceled;
-		DialogProgress *progress = new DialogProgress(AegisubApp::Get()->frame, L"", &canceled, L"Caching fonts", 0, 1);
-		progress->Show();
-		while (cache_worker) {
-			if (canceled) throw agi::UserCancelException("Font caching cancelled");
-			progress->Pulse();
-			wxYield();
-			wxMilliSleep(100);
-		}
-		progress->Destroy();
-	}
-	ass_set_message_cb(ass_library, msg_callback, this);
+	wait_for_cache_thread(cache_worker);
 
 	// Initialize renderer
 	ass_track = NULL;
 	ass_renderer = ass_renderer_init(ass_library);
 	if (!ass_renderer) throw _T("ass_renderer_init failed");
 	ass_set_font_scale(ass_renderer, 1.);
-	load_config(ass_renderer);
+	new FontConfigCacheThread(ass_renderer, &cache_worker);
+	wait_for_cache_thread(cache_worker);
 }
 
 /// @brief Destructor
@@ -205,29 +237,9 @@ void LibassSubtitlesProvider::DrawSubtitles(AegiVideoFrame &frame,double time) {
 	}
 }
 
-class FontConfigCacheThread : public wxThread {
-	ASS_Library *ass_library;
-	FontConfigCacheThread** thisPtr;
-	ExitCode Entry() {
-		ASS_Renderer *ass_renderer = ass_renderer_init(ass_library);
-		load_config(ass_renderer);
-		ass_renderer_done(ass_renderer);
-		*thisPtr = NULL;
-		return EXIT_SUCCESS;
-	}
-public:
-	FontConfigCacheThread(ASS_Library *ass_library, FontConfigCacheThread **thisPtr)
-		: ass_library(ass_library)
-		, thisPtr(thisPtr)
-	{
-		*thisPtr = this;
-		Create();
-		Run();
-	}
-};
-
 void LibassSubtitlesProvider::CacheFonts() {
 	ass_library = ass_library_init();
+	ass_set_message_cb(ass_library, msg_callback, NULL);
 	new FontConfigCacheThread(ass_library, &cache_worker);
 }
 
