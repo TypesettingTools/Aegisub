@@ -87,13 +87,14 @@ namespace config {
 // wxWidgets macro
 IMPLEMENT_APP(AegisubApp)
 
+static const wchar_t *LastStartupState = NULL;
 
 #ifdef WITH_STARTUPLOG
 
 /// DOCME
 #define StartupLog(a) MessageBox(0, a, _T("Aegisub startup log"), 0)
 #else
-#define StartupLog(a)
+#define StartupLog(a) LastStartupState = a
 #endif
 
 #ifdef __VISUALC__
@@ -316,47 +317,50 @@ int AegisubApp::OnExit() {
 /// Message displayed when an exception has occurred.
 const static wxString exception_message = _("Oops, Aegisub has crashed!\n\nAn attempt has been made to save a copy of your file to:\n\n%s\n\nAegisub will now close.");
 
+static void UnhandledExeception(bool stackWalk) {
+	if (AssFile::top) {
+		// Current filename if any.
+		wxFileName file(AssFile::top->filename);
+		if (!file.HasName()) file.SetName(_T("untitled"));
+
+		// Set path and create if it doesn't exist.
+		file.SetPath(StandardPaths::DecodePath(_T("?user/recovered")));
+		if (!file.DirExists()) file.Mkdir();
+
+		// Save file
+		wxString filename = wxString::Format("%s/%s_%s.ass", file.GetPath(), wxDateTime::Now().Format("%Y-%m-%d-%H%M%S"), file.GetName());
+		AssFile::top->Save(filename,false,false);
+
+#if wxUSE_STACKWALKER == 1
+		if (stackWalk) {
+			StackWalker walker(_T("Fatal exception"));
+			walker.WalkFromException();
+		}
+#endif
+
+		// Inform user of crash.
+		wxMessageBox(wxString::Format(exception_message, filename.c_str()), _("Program error"), wxOK | wxICON_ERROR, NULL);
+	}
+	else if (LastStartupState) {
+#if wxUSE_STACKWALKER == 1
+		if (stackWalk) {
+			StackWalker walker(_T("Fatal exception"));
+			walker.WalkFromException();
+		}
+#endif
+		wxMessageBox(wxString::Format("Aegisub has crashed while starting up!\n\nThe last startup step attempted was: %s.", LastStartupState), _("Program error"), wxOK | wxICON_ERROR);
+	}
+}
+
 /// @brief Called during an unhandled exception
 void AegisubApp::OnUnhandledException() {
-	// Current filename if any.
-	wxFileName file(AssFile::top->filename);
-	if (!file.HasName()) file.SetName(_T("untitled"));
-
-	// Set path and create if it doesn't exist.
-	file.SetPath(StandardPaths::DecodePath(_T("?user/recovered")));
-	if (!file.DirExists()) file.Mkdir();
-
-	// Save file
-	wxString filename = wxString::Format("%s/%s_%s.ass", file.GetPath(), wxDateTime::Now().Format("%Y-%m-%d-%H%M%S"), file.GetName());
-	AssFile::top->Save(filename,false,false);
-
-	// Inform user of crash.
-	wxMessageBox(wxString::Format(exception_message, filename.c_str()), _("Program error"), wxOK | wxICON_ERROR, NULL);
+	UnhandledExeception(false);
 }
 
 
 /// @brief Called during a fatal exception.
 void AegisubApp::OnFatalException() {
-	// Current filename if any.
-	wxFileName file(AssFile::top->filename);
-	if (!file.HasName()) file.SetName(_T("untitled"));
-
-	// Set path and create if it doesn't exist.
-	file.SetPath(StandardPaths::DecodePath(_T("?user/recovered")));
-	if (!file.DirExists()) file.Mkdir();
-
-	// Save file
-	wxString filename = wxString::Format("%s/%s_%s.ass", file.GetPath(), wxDateTime::Now().Format("%Y-%m-%d-%H%M%S"), file.GetName());
-	AssFile::top->Save(filename,false,false);
-
-#if wxUSE_STACKWALKER == 1
-	// Stack walk
-	StackWalker walker(_T("Fatal exception"));
-	walker.WalkFromException();
-#endif
-
-	// Inform user of crash
-	wxMessageBox(wxString::Format(exception_message, filename.c_str()), _("Program error"), wxOK | wxICON_ERROR | wxSTAY_ON_TOP, NULL);
+	UnhandledExeception(true);
 }
 #endif
 
@@ -472,9 +476,10 @@ int AegisubApp::OnRun() {
 	}
 
 	// Catch errors
-	catch (wxString &err) { error = err; }
-	catch (wxChar *err) { error = err; }
-	catch (std::exception &e) {	error = wxString(_T("std::exception: ")) + wxString(e.what(),wxConvUTF8); }
+	catch (const wxString &err) { error = err; }
+	catch (const wxChar *err) { error = err; }
+	catch (const std::exception &e) { error = wxString(_T("std::exception: ")) + wxString(e.what(),wxConvUTF8); }
+	catch (const agi::Exception &e) { error = "agi::exception: " + lagi_wxString(e.GetChainedMessage()); }
 	catch (...) { error = _T("Program terminated in error."); }
 
 	// Report errors
