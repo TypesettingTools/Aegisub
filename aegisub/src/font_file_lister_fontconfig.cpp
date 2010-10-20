@@ -34,12 +34,9 @@
 /// @ingroup font_collector
 ///
 
-
-////////////
-// Includes
 #include "config.h"
 
-#ifndef WIN32
+#if !defined(_WIN32) || defined(WITH_FONTCONFIG)
 #include "font_file_lister_fontconfig.h"
 #include "charset_conv.h"
 
@@ -111,5 +108,3 @@ void FontConfigFontFileLister::DoClearData() {
 }
 
 #endif
-
-
