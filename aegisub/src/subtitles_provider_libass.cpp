@@ -153,6 +153,8 @@ LibassSubtitlesProvider::LibassSubtitlesProvider(std::string) {
 /// @brief Destructor
 ///
 LibassSubtitlesProvider::~LibassSubtitlesProvider() {
+	if (ass_track) ass_free_track(ass_track);
+	if (ass_renderer) ass_renderer_done(ass_renderer);
 }
 
 /// @brief Load subtitles
