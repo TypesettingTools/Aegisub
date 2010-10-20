@@ -93,7 +93,7 @@ wxArrayString GetName(FT_Face &face,int id) {
 			memcpy(str,name.string,name.string_len);
 			str[name.string_len] = 0;
 			str[name.string_len+1] = 0;
-			if (name.encoding_id == 0) final.Add(wxString(str, csConvLocal));
+			if (name.encoding_id == 0) final.Add(wxString(str));
 			else if (name.encoding_id == 1) {
 				wxMBConvUTF16BE conv;
 				wxString string(str,conv);

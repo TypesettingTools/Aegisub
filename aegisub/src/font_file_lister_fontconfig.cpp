@@ -70,7 +70,7 @@ wxArrayString FontConfigFontFileLister::DoGetFilesWithFace(wxString facename) {
 	if (FcPatternGetString(final, FC_FILE, 0, &filename) == FcResultMatch && FcPatternGetInteger(final, FC_INDEX, 0, &fontindex) == FcResultMatch) {
 		FcPatternGetString(final, FC_FAMILY, fontindex, &gotfamily);
 		if (strcmp((const char*)gotfamily,buffer) == 0) {
-			results.Add(wxString((char*) filename,csConvLocal));
+			results.Add(wxString((char*) filename));
 		}
 	}
 	FcPatternDestroy(final);
