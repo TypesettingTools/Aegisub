@@ -36,7 +36,7 @@
 
 #include "config.h"
 
-#if !defined(_WIN32) || defined(WITH_FONTCONFIG)
+#ifdef WITH_FONTCONFIG
 #include "font_file_lister_fontconfig.h"
 #include "charset_conv.h"
 

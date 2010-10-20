@@ -44,11 +44,7 @@
 #include <wx/string.h>
 #endif
 
-
-////////////
-// Typedefs
-#if defined(__WINDOWS__) || defined(__APPLE__)
-
+#ifdef WITH_FREETYPE2
 /// DOCME
 typedef struct FT_LibraryRec_ *FT_Library;
 #endif

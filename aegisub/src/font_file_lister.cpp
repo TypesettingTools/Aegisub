@@ -44,18 +44,14 @@
 #include <wx/tokenzr.h>
 #endif
 
-#if defined(__WINDOWS__) || defined(__APPLE__)
 #ifdef WITH_FREETYPE2
 #include "font_file_lister_freetype.h"
-/// DOCME
 #define FontListerClass FreetypeFontFileLister
+#elif defined(WITH_FONTCONFIG)
+#include "font_file_lister_fontconfig.h"
+#define FontListerClass FontConfigFontFileLister
 #else
 #include "font_file_lister.h"
-#endif // WITH_FREETYPE2
-#else
-#include "font_file_lister_fontconfig.h"
-/// DOCME
-#define FontListerClass FontConfigFontFileLister
 #endif
 
 #include "standard_paths.h"
@@ -236,5 +232,3 @@ void FontFileLister::LoadCache() {
 	catch (...) {
 	}
 }
-
-
