@@ -44,12 +44,12 @@
 #include <wx/tokenzr.h>
 #endif
 
-#ifdef WITH_FREETYPE2
-#include "font_file_lister_freetype.h"
-#define FontListerClass FreetypeFontFileLister
-#elif defined(WITH_FONTCONFIG)
+#ifdef WITH_FONTCONFIG
 #include "font_file_lister_fontconfig.h"
 #define FontListerClass FontConfigFontFileLister
+#elif defined(WITH_FREETYPE2)
+#include "font_file_lister_freetype.h"
+#define FontListerClass FreetypeFontFileLister
 #else
 #include "font_file_lister.h"
 #endif
