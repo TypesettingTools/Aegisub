@@ -423,11 +423,7 @@ void SubsEditBox::UpdateFrameTiming () {
 void SubsEditBox::OnKeyDown(wxKeyEvent &event) {
 	int key = event.GetKeyCode();
 	if (line && (key == WXK_RETURN || key == WXK_NUMPAD_ENTER)) {
-#ifdef __APPLE__
-		Commit(event.m_metaDown);
-#else
-		Commit(event.m_controlDown);
-#endif
+		NextLine();
 	}
 	else {
 		event.Skip();
@@ -435,18 +431,10 @@ void SubsEditBox::OnKeyDown(wxKeyEvent &event) {
 }
 
 void SubsEditBox::OnCommitButton(wxCommandEvent &) {
-#ifdef __APPLE__
-	Commit(wxGetMouseState().CmdDown());
-#else
-	Commit(wxGetMouseState().ControlDown());
-#endif
+	if (line) NextLine();
 }
 
-void SubsEditBox::Commit(bool stay) {
-	if (stay) {
-		VideoContext::Get()->Refresh();
-		return;
-	}
+void SubsEditBox::NextLine() {
 	int next = grid->GetLastSelRow() + 1;
 	if (next >= grid->GetRows()) {
 		AssDialogue *cur = grid->GetDialogue(next-1);
@@ -473,13 +461,12 @@ void SubsEditBox::OnChange(wxStyledTextEvent &event) {
 template<class T, class setter>
 void SubsEditBox::SetSelectedRows(setter set, T value, wxString desc, bool amend) {
 	using namespace std::tr1::placeholders;
-	static agi::OptionValue* realtime = OPT_GET("Video/Visual Realtime");
 
 	for_each(sel.begin(), sel.end(), std::tr1::bind(set, _1, value));
 
 	commitId = grid->ass->Commit(desc, (amend && desc == lastCommitType) ? commitId : -1);
 	lastCommitType = desc;
-	grid->CommitChanges(false, realtime->GetBool());
+	grid->CommitChanges(false);
 }
 
 template<class T>

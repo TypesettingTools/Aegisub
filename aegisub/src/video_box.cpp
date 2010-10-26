@@ -105,8 +105,6 @@ VideoBox::VideoBox(wxWindow *parent, bool isDetached, wxComboBox *zoomBox)
 	visualToolBar->AddTool(Video_Mode_Clip,_("Clip"),GETIMAGE(visual_clip_24),_("Clip subtitles to a rectangle."),wxITEM_RADIO);
 	visualToolBar->AddTool(Video_Mode_Vector_Clip,_("Vector Clip"),GETIMAGE(visual_vector_clip_24),_("Clip subtitles to a vectorial area."),wxITEM_RADIO);
 	visualToolBar->AddSeparator();
-	visualToolBar->AddTool(Video_Mode_Realtime,_("Realtime"),GETIMAGE(visual_realtime_24),_("Toggle realtime display of changes."),wxITEM_CHECK);
-	visualToolBar->ToggleTool(Video_Mode_Realtime,OPT_GET("Video/Visual Realtime")->GetBool());
 	visualToolBar->AddTool(Video_Mode_Help,_("Help"),GETIMAGE(visual_help_24),_("Open the manual page for Visual Typesetting."));
 	visualToolBar->Realize();
 	// Avoid ugly themed background on Vista and possibly also Win7
@@ -163,7 +161,6 @@ BEGIN_EVENT_TABLE(VideoBox, wxPanel)
 	EVT_BUTTON(Video_Stop, VideoBox::OnVideoStop)
 	EVT_TOGGLEBUTTON(Video_Auto_Scroll, VideoBox::OnVideoToggleScroll)
 
-	EVT_TOOL(Video_Mode_Realtime, VideoBox::OnToggleRealtime)
 	EVT_TOOL(Video_Mode_Help, VideoBox::OnHelp)
 END_EVENT_TABLE()
 
@@ -214,15 +211,6 @@ void VideoBox::OnVideoStop(wxCommandEvent &event) {
 void VideoBox::OnVideoToggleScroll(wxCommandEvent &event) {
 	OPT_SET("Video/Subtitle Sync")->SetBool(AutoScroll->GetValue());
 }
-
-/// @brief Realtime toggle 
-/// @param event 
-///
-void VideoBox::OnToggleRealtime(wxCommandEvent &event) {
-	OPT_SET("Video/Visual Realtime")->SetBool(event.IsChecked());
-}
-
-
 
 /// @brief Help 
 /// @param event 

@@ -123,9 +123,8 @@ class SubsEditBox : public wxPanel, protected SelectionListener<AssDialogue> {
 	/// Get block number at text position
 	int BlockAtPos(int pos) const;
 
-	/// @brief Refresh the video display and move to the next line
-	/// @param stay Only refresh the video
-	void Commit(bool stay);
+	/// @brief Move to the next line, creating it if needed
+	void NextLine();
 
 	int timeCommitId[3];
 	int commitId;

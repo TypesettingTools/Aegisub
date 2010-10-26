@@ -95,7 +95,6 @@ protected:
 	typedef typename std::list<FeatureType>::iterator feature_iterator;
 	typedef typename std::list<FeatureType>::const_iterator feature_const_iterator;
 private:
-	agi::OptionValue* realtime; /// Realtime updating option
 	int dragStartX; /// Starting x coordinate of the current drag, if any
 	int dragStartY; /// Starting y coordinate of the current drag, if any
 
@@ -185,7 +184,7 @@ protected:
 	void DrawAllFeatures();
 	/// @brief Commit the current file state
 	/// @param message Description of changes for undo
-	void Commit(bool full=false, wxString message = L"");
+	void Commit(wxString message = L"");
 
 	/// @brief Add a feature (and its line) to the selection
 	/// @param i Index in the feature list

@@ -69,7 +69,7 @@ bool VisualToolCross::Update() {
 		SetOverride(*cur, L"\\pos", wxString::Format(L"(%i,%i)", x1 - dx, y1 - dy));
 	}
 
-	Commit(true, _("positioning"));
+	Commit(_("positioning"));
 	return false;
 }
 

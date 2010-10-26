@@ -323,7 +323,7 @@ bool VisualToolVectorClip::InitializeDrag(feature_iterator feature) {
 
 	Save();
 	MakeFeatures();
-	Commit(true, _("delete control point"));
+	Commit(_("delete control point"));
 
 	return false;
 }
@@ -402,7 +402,7 @@ bool VisualToolVectorClip::InitializeHold() {
 		// Commit
 		Save();
 		MakeFeatures();
-		Commit(true);
+		Commit();
 		return false;
 	}
 

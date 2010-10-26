@@ -109,7 +109,7 @@ void VisualToolDrag::OnSubTool(wxCommandEvent &) {
 		else SetOverride(line, L"\\move",wxString::Format(L"(%i,%i,%i,%i,%i,%i)",x1,y1,x1,y1,0,line->End.GetMS() - line->Start.GetMS()));
 	}
 
-	Commit(true);
+	Commit();
 	Refresh();
 	UpdateToggleButtons();
 }
@@ -376,7 +376,7 @@ bool VisualToolDrag::Update() {
 		}
 	}
 
-	Commit(true, _("positioning"));
+	Commit(_("positioning"));
 
 	OnFileChanged();
 	return false;

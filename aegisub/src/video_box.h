@@ -70,7 +70,6 @@ private:
 	void OnVideoStop(wxCommandEvent &event);
 	void OnVideoToggleScroll(wxCommandEvent &event);
 
-	void OnToggleRealtime(wxCommandEvent &event);
 	void OnHelp(wxCommandEvent &event);
 
 public:
@@ -110,50 +109,19 @@ public:
 	DECLARE_EVENT_TABLE()
 };
 
-
-///////
 // IDs
 enum {
-
-	/// DOCME
 	Video_Play = 500,
-
-	/// DOCME
 	Video_Play_Line,
-
-	/// DOCME
 	Video_Stop,
-
-	/// DOCME
 	Video_Auto_Scroll,
 
-
-	/// DOCME
 	Video_Mode_Standard,
-
-	/// DOCME
 	Video_Mode_Drag,
-
-	/// DOCME
 	Video_Mode_Rotate_Z,
-
-	/// DOCME
 	Video_Mode_Rotate_XY,
-
-	/// DOCME
 	Video_Mode_Scale,
-
-	/// DOCME
 	Video_Mode_Clip,
-
-	/// DOCME
 	Video_Mode_Vector_Clip,
-
-	/// DOCME
-	Video_Mode_Realtime,
-
-	/// DOCME
 	Video_Mode_Help
 };
-
-

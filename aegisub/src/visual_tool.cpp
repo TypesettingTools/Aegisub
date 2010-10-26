@@ -62,8 +62,7 @@ const wxColour IVisualTool::colour[4] = {wxColour(106,32,19), wxColour(255,169,4
 
 template<class FeatureType>
 VisualTool<FeatureType>::VisualTool(VideoDisplay *parent, VideoState const& video)
-: realtime(OPT_GET("Video/Visual Realtime"))
-, dragStartX(0)
+: dragStartX(0)
 , dragStartY(0)
 , selChanged(false)
 , selectedFeatures(selFeatures)
@@ -92,7 +91,6 @@ VisualTool<FeatureType>::~VisualTool() {
 
 template<class FeatureType>
 void VisualTool<FeatureType>::OnMouseEvent(wxMouseEvent &event) {
-	bool realTime = realtime->GetBool();
 	bool needRender = false;
 
 	if (event.Leaving()) {
@@ -136,14 +134,9 @@ void VisualTool<FeatureType>::OnMouseEvent(wxMouseEvent &event) {
 					}
 				}
 				UpdateDrag(*cur);
-
-				if (realTime) {
-					CommitDrag(*cur);
-				}
+				CommitDrag(*cur);
 			}
-			if (realTime) {
-				Commit();
-			}
+			Commit();
 			needRender = true;
 		}
 		// end drag
@@ -167,7 +160,7 @@ void VisualTool<FeatureType>::OnMouseEvent(wxMouseEvent &event) {
 				for (selection_iterator cur = selFeatures.begin(); cur != selFeatures.end(); ++cur) {
 					CommitDrag(*cur);
 				}
-				Commit(true);
+				Commit();
 			}
 
 			curFeature = features.end();
@@ -179,22 +172,18 @@ void VisualTool<FeatureType>::OnMouseEvent(wxMouseEvent &event) {
 		// continue hold
 		if (event.LeftIsDown()) {
 			UpdateHold();
-
-			if (realTime) {
-				CommitHold();
-				Commit();
-			}
 			needRender = true;
 		}
 		// end hold
 		else {
 			holding = false;
-			CommitHold();
-			Commit(true);
 
 			parent->ReleaseMouse();
 			parent->SetFocus();
 		}
+		CommitHold();
+		Commit();
+
 	}
 	else if (leftClick) {
 		// start drag
@@ -246,15 +235,14 @@ void VisualTool<FeatureType>::OnMouseEvent(wxMouseEvent &event) {
 }
 
 template<class FeatureType>
-void VisualTool<FeatureType>::Commit(bool full, wxString message) {
+void VisualTool<FeatureType>::Commit(wxString message) {
 	externalChange = false;
-	if (full) {
-		if (message.empty()) {
-			message = _("visual typesetting");
-		}
-		grid->ass->Commit(message);
+	if (message.empty()) {
+		message = _("visual typesetting");
 	}
-	grid->CommitChanges(full);
+	grid->ass->Commit(message);
+
+	grid->CommitChanges();
 	externalChange = true;
 }
 
