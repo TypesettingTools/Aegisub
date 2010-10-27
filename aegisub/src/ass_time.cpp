@@ -112,7 +112,7 @@ void AssTime::ParseASS (const wxString text) {
 	}
 
 	// OK, set values
-	time = tms + tm*60000 + th*3600000;
+	SetMS(tms + tm*60000 + th*3600000);
 }
 
 
@@ -144,7 +144,7 @@ void AssTime::ParseSRT (const wxString _text) {
 	ms = tempv;
 
 	// Set value
-	time = ms + s*1000 + m*60000 + h*3600000;
+	SetMS(ms + s*1000 + m*60000 + h*3600000);
 }
 
 
@@ -161,8 +161,8 @@ int AssTime::GetMS () const {
 /// @brief DOCME
 /// @param _ms 
 ///
-void AssTime::SetMS (int _ms) {
-	time = _ms;
+void AssTime::SetMS (int ms) {
+	time = MID(0, ms, 10 * 60 * 60 * 1000 - 1);
 }
 
 
@@ -178,20 +178,10 @@ wxString AssTime::GetASSFormated (bool msPrecision) const {
 	msPrecision = msPrecision || UseMSPrecision;
 	if (!msPrecision) ms = ms/10*10;
 
-	if (ms < 0) ms = 0;
-
 	int h = ms / (1000 * 60 * 60);
 	int m = (ms / (1000 * 60)) % 60;
 	int s = (ms / 1000) % 60;
 	ms = ms % 1000;
-
-	// Ass overflow
-	if (h > 9) {
-		h = 9;
-		m = 59;
-		s = 59;
-		ms = 999;
-	}
 
 	if (msPrecision) return wxString::Format(_T("%01i:%02i:%02i.%03i"),h,m,s,ms);
 	else return wxString::Format(_T("%01i:%02i:%02i.%02i"),h,m,s,ms/10);
