@@ -64,6 +64,7 @@ template<class FeatureType>
 VisualTool<FeatureType>::VisualTool(VideoDisplay *parent, VideoState const& video)
 : dragStartX(0)
 , dragStartY(0)
+, commitId(-1)
 , selChanged(false)
 , selectedFeatures(selFeatures)
 , grid(VideoContext::Get()->grid)
@@ -232,6 +233,11 @@ void VisualTool<FeatureType>::OnMouseEvent(wxMouseEvent &event) {
 
 	if (Update() || needRender) parent->Render();
 	externalChange = true;
+
+	if (!event.LeftIsDown()) {
+		// Only coalesce the changes made in a single drag
+		commitId = -1;
+	}
 }
 
 template<class FeatureType>
@@ -240,7 +246,7 @@ void VisualTool<FeatureType>::Commit(wxString message) {
 	if (message.empty()) {
 		message = _("visual typesetting");
 	}
-	grid->ass->Commit(message);
+	commitId = grid->ass->Commit(message, commitId);
 
 	grid->CommitChanges();
 	externalChange = true;

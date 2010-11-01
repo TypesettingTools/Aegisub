@@ -98,6 +98,8 @@ private:
 	int dragStartX; /// Starting x coordinate of the current drag, if any
 	int dragStartY; /// Starting y coordinate of the current drag, if any
 
+	int commitId;
+
 	/// Set curFeature to the topmost feature under the mouse, or end() if there
 	/// are none
 	void GetHighlightedFeature();
