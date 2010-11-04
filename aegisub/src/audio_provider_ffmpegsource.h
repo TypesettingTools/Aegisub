@@ -43,14 +43,17 @@
 /// @brief Implements audio loading with the FFMS library.
 class FFmpegSourceAudioProvider : public AudioProvider, FFmpegSourceProvider {
 private:
-	FFMS_AudioSource *AudioSource;	/// audio source object
-	bool COMInited;					/// COM initialization state
+	FFMS_AudioSource *AudioSource;	///< audio source object
+	bool COMInited;					///< COM initialization state
 
-	char FFMSErrMsg[1024];			/// FFMS error message
-	FFMS_ErrorInfo ErrInfo;			/// FFMS error codes/messages
+	char FFMSErrMsg[1024];			///< FFMS error message
+	FFMS_ErrorInfo ErrInfo;			///< FFMS error codes/messages
 
 	void Close();
 	void LoadAudio(wxString filename);
+
+	/// Audio delay in samples
+	int64_t delay;
 
 public:
 	FFmpegSourceAudioProvider(wxString filename);
