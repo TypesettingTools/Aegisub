@@ -251,8 +251,8 @@
 				{"bool" : true}
 			],
 			"Focus Allow" : true,
-			"Font Face" : "",
-			"Font Size" : 10,
+			"Font Face" : "Tahoma",
+			"Font Size" : 8,
 			"Hide Overrides" : 1,
 			"Hide Overrides Char" : "☀",
 			"Highlight Subtitles in Frame" : true
