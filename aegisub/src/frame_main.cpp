@@ -57,7 +57,6 @@
 #include "compat.h"
 #include "dialog_detached_video.h"
 #include "dialog_search_replace.h"
-#include "dialog_splash.h"
 #include "dialog_styling_assistant.h"
 #include "dialog_version_check.h"
 #include "drop.h"
@@ -122,19 +121,6 @@ FrameMain::FrameMain (wxArrayString args)
 	// Create PNG handler
 	wxPNGHandler *png = new wxPNGHandler;
 	wxImage::AddHandler(png);
-
-	// Splash screen
-	// It doesn't work properly on wxMac, and the jumping dock icon
-	// signals the same as the splash screen either way.
-	SplashScreen *splash = 0;
-#if !_DEBUG && !__WXMAC__
-	if (OPT_GET("App/Splash")->GetBool()) {
-		splash = new SplashScreen(this);
-		splash->Show(true);
-		splash->Update();
-	}
-	else
-#endif
 
 	wxSafeYield();
 
@@ -213,10 +199,6 @@ FrameMain::FrameMain (wxArrayString args)
 	Freeze();
 	SetDisplayMode(1, 1);
 	Thaw();
-
-	if (splash) {
-		delete splash;
-	}
 
 	//ShowFullScreen(true,wxFULLSCREEN_NOBORDER | wxFULLSCREEN_NOCAPTION);
 	StartupLog(_T("Leaving FrameMain constructor"));

@@ -221,7 +221,6 @@ aegisub_3_0_SOURCES = \
 	dialog_selection.cpp \
 	dialog_shift_times.cpp \
 	dialog_spellchecker.cpp \
-	dialog_splash.cpp \
 	dialog_style_editor.cpp \
 	dialog_style_manager.cpp \
 	dialog_styling_assistant.cpp \
