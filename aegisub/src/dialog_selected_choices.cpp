@@ -37,6 +37,10 @@
 
 #include <numeric>
 
+#ifdef __VISUALC__
+#pragma warning(disable:4996)
+#endif
+
 SelectedChoicesDialog::SelectedChoicesDialog(wxWindow *parent, wxString const& message, wxString const& caption, wxArrayString const& choices) {
 	Create(parent, message, caption, choices);
 

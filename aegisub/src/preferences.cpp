@@ -54,7 +54,6 @@ General::General(wxTreebook *book, Preferences *parent): OptionPage(book, parent
 
 	wxFlexGridSizer *startup = PageSizer(_("Startup"));
 	OptionAdd(startup, _("Check for updates"), "App/Auto/Check For Updates");
-	OptionAdd(startup, _("Show Splash Screen"), "App/Splash");
 
 	wxFlexGridSizer *recent = PageSizer(_("Recently Used Lists"));
 	OptionAdd(recent, _("Files"), "Limits/MRU");
