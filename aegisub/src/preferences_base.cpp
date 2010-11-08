@@ -108,7 +108,7 @@ void OptionPage::CellSkip(wxFlexGridSizer *&flex) {
 
 void OptionPage::OptionAdd(wxFlexGridSizer *&flex, const wxString &name, const char *opt_name, double min, double max, double inc) {
 
-	agi::OptionValue *opt = OPT_GET(opt_name);
+	const agi::OptionValue *opt = OPT_GET(opt_name);
 
 	int type = opt->GetType();
 
@@ -162,7 +162,7 @@ void OptionPage::OptionAdd(wxFlexGridSizer *&flex, const wxString &name, const c
 
 
 void OptionPage::OptionChoice(wxFlexGridSizer *&flex, const wxString &name, const wxArrayString &choices, const char *opt_name) {
-	agi::OptionValue *opt = OPT_GET(opt_name);
+	const agi::OptionValue *opt = OPT_GET(opt_name);
 
 	flex->Add(new wxStaticText(this, wxID_ANY, name), 1, wxALIGN_CENTRE_VERTICAL);
 	wxComboBox *cb = new wxComboBox(this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, choices, wxCB_READONLY | wxCB_DROPDOWN);
@@ -197,7 +197,7 @@ wxFlexGridSizer* OptionPage::PageSizer(wxString name) {
 
 
 void OptionPage::OptionBrowse(wxFlexGridSizer *&flex, const wxString &name, BrowseType browse_type, const char *opt_name) {
-	agi::OptionValue *opt = OPT_GET(opt_name);
+	const agi::OptionValue *opt = OPT_GET(opt_name);
 
 	if (opt->GetType() != agi::OptionValue::Type_String)
 		throw PreferenceIncorrectType("Option must be agi::OptionValue::Type_String for BrowseButton.");

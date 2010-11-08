@@ -69,10 +69,17 @@ namespace config {
 namespace Automation4 { class AutoloadScriptManager; }
 
 /// Macro to get OptionValue object.
-#define OPT_GET(x) config::opt->Get(x)
+#define OPT_GET(x) const_cast<const agi::OptionValue *>(config::opt->Get(x))
 
 /// Macro to set OptionValue object.
 #define OPT_SET(x) config::opt->Get(x)
+
+/// Macro to subscribe to OptionValue changes
+#define OPT_SUB(x, ...) config::opt->Get(x)->Subscribe(__VA_ARGS__)
+
+/// Macro to unsubscribe to OptionValue changes
+#define OPT_UNSUB(x, ...) config::opt->Get(x)->Unsubscribe(__VA_ARGS__)
+
 
 /// DOCME
 /// @class AegisubApp

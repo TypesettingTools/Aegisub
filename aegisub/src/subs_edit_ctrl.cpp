@@ -183,21 +183,21 @@ SubsTextEditCtrl::SubsTextEditCtrl(wxWindow* parent, wxSize wsize, long style, S
 
 	agi::OptionValue::ChangeListener SetStyles = bind(&SubsTextEditCtrl::SetStyles, this);
 
-	OPT_GET("Subtitle/Edit Box/Font Face")->Subscribe(this, SetStyles);
-	OPT_GET("Subtitle/Edit Box/Font Size")->Subscribe(this, SetStyles);
-	OPT_GET("Colour/Subtitle/Syntax/Normal")->Subscribe(this, SetStyles);
-	OPT_GET("Colour/Subtitle/Syntax/Brackets")->Subscribe(this, SetStyles);
-	OPT_GET("Colour/Subtitle/Syntax/Slashes")->Subscribe(this, SetStyles);
-	OPT_GET("Colour/Subtitle/Syntax/Highlight Tags")->Subscribe(this, SetStyles);
-	OPT_GET("Colour/Subtitle/Syntax/Error")->Subscribe(this, SetStyles);
-	OPT_GET("Colour/Subtitle/Syntax/Background/Error")->Subscribe(this, SetStyles);
-	OPT_GET("Colour/Subtitle/Syntax/Parameters")->Subscribe(this, SetStyles);
-	OPT_GET("Colour/Subtitle/Syntax/Line Break")->Subscribe(this, SetStyles);
-	OPT_GET("Colour/Subtitle/Syntax/Karaoke Template")->Subscribe(this, SetStyles);
+	OPT_SUB("Subtitle/Edit Box/Font Face", this, SetStyles);
+	OPT_SUB("Subtitle/Edit Box/Font Size", this, SetStyles);
+	OPT_SUB("Colour/Subtitle/Syntax/Normal", this, SetStyles);
+	OPT_SUB("Colour/Subtitle/Syntax/Brackets", this, SetStyles);
+	OPT_SUB("Colour/Subtitle/Syntax/Slashes", this, SetStyles);
+	OPT_SUB("Colour/Subtitle/Syntax/Highlight Tags", this, SetStyles);
+	OPT_SUB("Colour/Subtitle/Syntax/Error", this, SetStyles);
+	OPT_SUB("Colour/Subtitle/Syntax/Background/Error", this, SetStyles);
+	OPT_SUB("Colour/Subtitle/Syntax/Parameters", this, SetStyles);
+	OPT_SUB("Colour/Subtitle/Syntax/Line Break", this, SetStyles);
+	OPT_SUB("Colour/Subtitle/Syntax/Karaoke Template", this, SetStyles);
 
-	OPT_GET("Subtitle/Highlight/Syntax")->Subscribe(this, bind(&SubsTextEditCtrl::UpdateStyle, this, 0, -1));
+	OPT_SUB("Subtitle/Highlight/Syntax", this, bind(&SubsTextEditCtrl::UpdateStyle, this, 0, -1));
 	static wxStyledTextEvent evt;
-	OPT_GET("App/Call Tips")->Subscribe(this, bind(&SubsTextEditCtrl::UpdateCallTip, this, ref(evt)));
+	OPT_SUB("App/Call Tips", this, bind(&SubsTextEditCtrl::UpdateCallTip, this, ref(evt)));
 }
 
 

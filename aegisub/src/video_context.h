@@ -138,7 +138,7 @@ private:
 
 	wxString ovrTimecodeFile;
 
-	agi::OptionValue* playAudioOnStep;
+	const agi::OptionValue* playAudioOnStep;
 
 	void OnPlayTimer(wxTimerEvent &event);
 

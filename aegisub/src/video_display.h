@@ -64,7 +64,7 @@ struct VideoState {
 /// @class VideoDisplay
 /// @brief DOCME
 class VideoDisplay : public wxGLCanvas {
-	agi::OptionValue* alwaysShowTools;
+	const agi::OptionValue* alwaysShowTools;
 	/// The unscaled size of the displayed video
 	wxSize origSize;
 

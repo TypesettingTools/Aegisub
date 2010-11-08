@@ -167,7 +167,7 @@ FrameMain::FrameMain (wxArrayString args)
 	if (time > 0) {
 		AutoSave.Start(time*1000);
 	}
-	OPT_GET("App/Auto/Save Every Seconds")->Subscribe(this, std::tr1::bind(autosave_timer_changed, std::tr1::ref(AutoSave), std::tr1::placeholders::_1));
+	OPT_SUB("App/Auto/Save Every Seconds", this, std::tr1::bind(autosave_timer_changed, std::tr1::ref(AutoSave), std::tr1::placeholders::_1));
 
 	// Set accelerator keys
 	StartupLog(_T("Install hotkeys"));

@@ -110,15 +110,15 @@ VideoContext::VideoContext()
 	Bind(EVT_SUBTITLES_ERROR, &VideoContext::OnSubtitlesError, this);
 
 	agi::OptionValue::ChangeListener providerChanged(std::tr1::bind(&VideoContext::Reload, this));
-	OPT_GET("Subtitle/Provider")->Subscribe(this, providerChanged);
-	OPT_GET("Video/Provider")->Subscribe(this, providerChanged);
+	OPT_SUB("Subtitle/Provider", this, providerChanged);
+	OPT_SUB("Video/Provider", this, providerChanged);
 
 	// It would be nice to find a way to move these to the individual providers
-	OPT_GET("Provider/Avisynth/Allow Ancient")->Subscribe(this, providerChanged);
-	OPT_GET("Provider/Avisynth/Memory Max")->Subscribe(this, providerChanged);
+	OPT_SUB("Provider/Avisynth/Allow Ancient", this, providerChanged);
+	OPT_SUB("Provider/Avisynth/Memory Max", this, providerChanged);
 
-	OPT_GET("Provider/Video/FFmpegSource/Decoding Threads")->Subscribe(this, providerChanged);
-	OPT_GET("Provider/Video/FFmpegSource/Unsafe Seeking")->Subscribe(this, providerChanged);
+	OPT_SUB("Provider/Video/FFmpegSource/Decoding Threads", this, providerChanged);
+	OPT_SUB("Provider/Video/FFmpegSource/Unsafe Seeking", this, providerChanged);
 }
 
 VideoContext::~VideoContext () {
@@ -259,7 +259,7 @@ void VideoContext::UpdateDisplays(bool full, bool seek) {
 
 	// Update audio display
 	if (audio && audio->loaded && audio->IsShownOnScreen()) {
-		static agi::OptionValue* opt = OPT_GET("Audio/Display/Draw/Video Position");
+		static const agi::OptionValue* opt = OPT_GET("Audio/Display/Draw/Video Position");
 		if (opt->GetBool()) {
 			audio->UpdateImage(false);
 		}
@@ -283,7 +283,7 @@ void VideoContext::JumpToFrame(int n) {
 
 	UpdateDisplays(false, true);
 
-	static agi::OptionValue* highlight = OPT_GET("Subtitle/Grid/Highlight Subtitles in Frame");
+	static const agi::OptionValue* highlight = OPT_GET("Subtitle/Grid/Highlight Subtitles in Frame");
 	if (!isPlaying && highlight->GetBool()) grid->Refresh(false);
 }
 
@@ -308,7 +308,7 @@ int VideoContext::GetHeight() const {
 
 void VideoContext::SaveSnapshot(bool raw) {
 	// Get folder
-	static agi::OptionValue* ssPath = OPT_GET("Path/Screenshot");
+	static const agi::OptionValue* ssPath = OPT_GET("Path/Screenshot");
 	wxString option = lagi_wxString(ssPath->GetString());
 	wxFileName videoFile(videoName);
 	wxString basepath;
