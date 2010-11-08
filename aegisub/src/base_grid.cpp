@@ -606,25 +606,12 @@ void BaseGrid::DrawImage(wxDC &dc) {
 	}
 
 	// Draw rows
-	int dx = 0;
-	int dy = 0;
-	int curColor = 0;
-	AssDialogue *curDiag;
 	for (int i=0;i<nDraw+1;i++) {
 		// Prepare
 		int curRow = i+yPos-1;
-		curDiag = (curRow>=0) ? GetDialogue(curRow) : NULL;
-		dx = 0;
-		dy = i*lineHeight;
-
-		// Check for collisions
+		AssDialogue *curDiag = GetDialogue(curRow);
+		int curColor = 0;
 		bool collides = false;
-		if (curDiag) {
-			AssDialogue *sel = GetActiveLine();
-			if (sel && sel != curDiag) {
-				if (curDiag->CollidesWith(sel)) collides = true;
-			}
-		}
 
 		// Text array
 		wxArrayString strings;
@@ -701,10 +688,14 @@ void BaseGrid::DrawImage(wxDC &dc) {
 			else if (inSel) curColor = 2;
 			else if (curDiag->Comment) curColor = 3;
 			else if (OPT_GET("Subtitle/Grid/Highlight Subtitles in Frame")->GetBool() && IsDisplayed(curDiag)) curColor = 4;
+
+			if (active_line != curDiag) {
+				collides = curDiag->CollidesWith(active_line);
+			}
 		}
 
 		else {
-			for (int j=0;j<11;j++) strings.Add(_T("?"));
+			strings.resize(11, L"?");
 		}
 
 		// Draw row background color
@@ -720,17 +711,17 @@ void BaseGrid::DrawImage(wxDC &dc) {
 		}
 
 		// Draw text
-		wxRect cur;
-		bool isCenter;
+		int dx = 0;
+		int dy = i*lineHeight;
 		for (int j=0;j<11;j++) {
 			// Check width
 			if (colWidth[j] == 0) continue;
 
 			// Is center?
-			isCenter = !(j == 4 || j == 5 || j == 6 || j == 10);
+			bool isCenter = !(j == 4 || j == 5 || j == 6 || j == 10);
 
 			// Calculate clipping
-			cur = wxRect(dx+4,dy,colWidth[j]-6,lineHeight);
+			wxRect cur(dx+4,dy,colWidth[j]-6,lineHeight);
 
 			// Set clipping
 			dc.DestroyClippingRegion();
@@ -740,7 +731,6 @@ void BaseGrid::DrawImage(wxDC &dc) {
 			dc.DrawLabel(strings[j],cur,isCenter ? wxALIGN_CENTER : (wxALIGN_CENTER_VERTICAL | wxALIGN_LEFT));
 			dx += colWidth[j];
 		}
-		//if (collides) dc.SetPen(wxPen(wxColour(255,0,0)));
 
 		// Draw grid
 		dc.DestroyClippingRegion();
@@ -752,8 +742,8 @@ void BaseGrid::DrawImage(wxDC &dc) {
 	}
 
 	// Draw grid columns
-	dx = 0;
 	if (drawGrid) {
+		int dx = 0;
 		dc.SetPen(wxPen(lagi_wxColour(OPT_GET("Colour/Subtitle Grid/Lines")->GetColour())));
 		for (int i=0;i<10;i++) {
 			dx += colWidth[i];
@@ -767,7 +757,7 @@ void BaseGrid::DrawImage(wxDC &dc) {
 	if (GetActiveLine()) {
 		dc.SetPen(wxPen(lagi_wxColour(OPT_GET("Colour/Subtitle Grid/Active Border")->GetColour())));
 		dc.SetBrush(*wxTRANSPARENT_BRUSH);
-		dy = (line_index_map[GetActiveLine()]+1-yPos) * lineHeight;
+		int dy = (line_index_map[GetActiveLine()]+1-yPos) * lineHeight;
 		dc.DrawRectangle(0,dy,w,lineHeight+1);
 	}
 }
