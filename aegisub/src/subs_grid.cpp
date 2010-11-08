@@ -1124,7 +1124,7 @@ void SubtitlesGrid::SplitLine(AssDialogue *n1,int pos,bool estimateTimes) {
 	}
 
 	ass->Commit(_("split"));
-	CommitChanges(false);
+	CommitChanges();
 }
 
 bool SubtitlesGrid::SplitLineByKaraoke(int lineNumber) {
