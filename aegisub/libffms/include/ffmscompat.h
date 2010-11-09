@@ -59,6 +59,11 @@
 #	else
 #		define AVSampleFormat SampleFormat
 #		define av_get_bits_per_sample_fmt av_get_bits_per_sample_format
+#		define AV_SAMPLE_FMT_U8		SAMPLE_FMT_U8
+#		define AV_SAMPLE_FMT_S16	SAMPLE_FMT_S16
+#		define AV_SAMPLE_FMT_S32	SAMPLE_FMT_S32
+#		define AV_SAMPLE_FMT_FLT	SAMPLE_FMT_FLT
+#		define AV_SAMPLE_FMT_DBL	SAMPLE_FMT_DBL
 #	endif
 #endif
 
