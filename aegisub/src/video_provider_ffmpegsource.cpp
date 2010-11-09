@@ -77,7 +77,11 @@ FFmpegSourceVideoProvider::FFmpegSourceVideoProvider(wxString filename)
 #endif
 	// initialize ffmpegsource
 	// FIXME: CPU detection?
+#if FFMS_VERSION >= ((2 << 24) | (14 << 16) | (0 << 8) | 0)
+	FFMS_Init(0, 1);
+#else
 	FFMS_Init(0);
+#endif
 
 	ErrInfo.Buffer		= FFMSErrMsg;
 	ErrInfo.BufferSize	= sizeof(FFMSErrMsg);

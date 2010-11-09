@@ -54,6 +54,12 @@
 #	if (LIBAVCODEC_VERSION_INT) < (AV_VERSION_INT(52,30,2))
 #		define AV_PKT_FLAG_KEY PKT_FLAG_KEY
 #	endif
+#	if (LIBAVCODEC_VERSION_INT) >= (AV_VERSION_INT(52,94,3)) // there are ~3 revisions where this will break but fixing that is :effort:
+#		undef SampleFormat
+#	else
+#		define AVSampleFormat SampleFormat
+#		define av_get_bits_per_sample_fmt av_get_bits_per_sample_format
+#	endif
 #endif
 
 #ifdef LIBSWSCALE_VERSION_INT
@@ -63,6 +69,5 @@
 #		define FFMS_SWS_CONST_PARAM const
 #	endif
 #endif
-
 
 #endif // FFMSCOMPAT_H

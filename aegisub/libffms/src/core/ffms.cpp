@@ -33,6 +33,8 @@ static bool FFmpegInited	= false;
 bool HasHaaliMPEG = false;
 bool HasHaaliOGG = false;
 int CPUFeatures = 0;
+bool GlobalUseUTF8Paths = false;
+
 
 #ifdef FFMS_WIN_DEBUG
 
@@ -70,11 +72,19 @@ void av_log_windebug_callback(void* ptr, int level, const char* fmt, va_list vl)
 
 #endif
 
-FFMS_API(void) FFMS_Init(int CPUFeatures) {
+FFMS_API(void) FFMS_Init(int CPUFeatures, int UseUTF8Paths) {
 	if (!FFmpegInited) {
 		av_register_all();
-#if defined(_WIN32) && defined(FFMS_USE_UTF8_PATHS) 
-		ffms_patch_lavf_file_open();
+#ifdef _WIN32
+		if (UseUTF8Paths) {
+			ffms_patch_lavf_file_open();
+			GlobalUseUTF8Paths = true;
+		}
+		else {
+			GlobalUseUTF8Paths = false;
+		}
+#else
+		GlobalUseUTF8Paths = false;
 #endif
 #ifdef FFMS_WIN_DEBUG
 		av_log_set_callback(av_log_windebug_callback);

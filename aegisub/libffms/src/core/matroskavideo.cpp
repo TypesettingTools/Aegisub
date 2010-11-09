@@ -23,8 +23,8 @@
 
 
 void FFMatroskaVideo::Free(bool CloseCodec) {
-	if (CS)
-		cs_Destroy(CS);
+	if (TCC)
+		delete TCC;
 	if (MC.ST.fp) {
 		mkv_Close(MF);
 		fclose(MC.ST.fp);
@@ -41,7 +41,7 @@ FFMatroskaVideo::FFMatroskaVideo(const char *SourceFile, int Track,
 	AVCodec *Codec = NULL;
 	CodecContext = NULL;
 	TrackInfo *TI = NULL;
-	CS = NULL;
+	TCC = NULL;
 	PacketNumber = 0;
 	VideoTrack = Track;
 	Frames = (*Index)[VideoTrack];
@@ -65,15 +65,8 @@ FFMatroskaVideo::FFMatroskaVideo(const char *SourceFile, int Track,
 
 	TI = mkv_GetTrackInfo(MF, VideoTrack);
 
-	if (TI->CompEnabled) {
-		CS = cs_Create(MF, VideoTrack, ErrorMessage, sizeof(ErrorMessage));
-		if (CS == NULL) {
-			Free(false);
-			std::ostringstream buf;
-			buf << "Can't create decompressor: " << ErrorMessage;
-			throw FFMS_Exception(FFMS_ERROR_PARSER, FFMS_ERROR_FILE_READ, buf.str());
-		}
-	}
+	if (TI->CompEnabled)
+		TCC = new TrackCompressionContext(MF, TI, VideoTrack);
 
 	CodecContext = avcodec_alloc_context();
 	if (avcodec_thread_init(CodecContext, Threads))
@@ -169,10 +162,10 @@ void FFMatroskaVideo::DecodeNextFrame() {
 		// in the other sources where less is done manually
 		const TFrameInfo &FI = Frames[Frames[PacketNumber].OriginalPos];
 		FrameSize = FI.FrameSize;
-		ReadFrame(FI.FilePos, FrameSize, CS, MC);
+		ReadFrame(FI.FilePos, FrameSize, TCC, MC);
 
 		Packet.data = MC.Buffer;
-		Packet.size = FrameSize;
+		Packet.size = (TCC && TCC->CompressionMethod == COMP_PREPEND) ? FrameSize + TCC->CompressedPrivateDataSize : FrameSize;
 		if (FI.KeyFrame)
 			Packet.flags = AV_PKT_FLAG_KEY;
 		else

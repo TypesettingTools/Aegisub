@@ -25,7 +25,9 @@ extern "C" {
 #include <libavformat/avformat.h>
 #include <libavcodec/avcodec.h>
 #include <libswscale/swscale.h>
+#ifdef WITH_LIBPOSTPROC
 #include <libpostproc/postprocess.h>
+#endif // WITH_LIBPOSTPROC
 }
 
 // must be included after ffmpeg headers
@@ -52,8 +54,10 @@ extern "C" {
 class FFMS_VideoSource {
 friend class FFSourceResources<FFMS_VideoSource>;
 private:
+#ifdef WITH_LIBPOSTPROC
 	pp_context_t *PPContext;
 	pp_mode_t *PPMode;
+#endif // WITH_LIBPOSTPROC
 	SwsContext *SWS;
 	int LastFrameHeight;
 	int LastFrameWidth;
@@ -113,7 +117,7 @@ class FFMatroskaVideo : public FFMS_VideoSource {
 private:
 	MatroskaFile *MF;
 	MatroskaReaderContext MC;
-    CompressedStream *CS;
+    TrackCompressionContext *TCC;
 	char ErrorMessage[256];
 	FFSourceResources<FFMS_VideoSource> Res;
 	size_t PacketNumber;
@@ -131,7 +135,6 @@ public:
 class FFHaaliVideo : public FFMS_VideoSource {
 private:
 	CComPtr<IMMContainer> pMMC;
-	std::vector<uint8_t> CodecPrivate;
 	AVBitStreamFilterContext *BitStreamFilter;
 	FFSourceResources<FFMS_VideoSource> Res;
 

@@ -27,6 +27,8 @@ void FFMS_VideoSource::GetFrameCheck(int n) {
 }
 
 void FFMS_VideoSource::SetPP(const char *PP) {
+
+#ifdef WITH_LIBPOSTPROC
 	if (PPMode)
 		pp_free_mode(PPMode);
 	PPMode = NULL;
@@ -43,9 +45,14 @@ void FFMS_VideoSource::SetPP(const char *PP) {
 
 	ReAdjustPP(CodecContext->pix_fmt, CodecContext->width, CodecContext->height);
 	OutputFrame(DecodeFrame);
+#else
+	throw FFMS_Exception(FFMS_ERROR_POSTPROCESSING, FFMS_ERROR_UNSUPPORTED,
+		"FFMS2 was not compiled with postprocessing support");
+#endif /* WITH_LIBPOSTPROC */
 }
 
 void FFMS_VideoSource::ResetPP() {
+#ifdef WITH_LIBPOSTPROC
 	if (PPContext)
 		pp_free_context(PPContext);
 	PPContext = NULL;
@@ -54,10 +61,12 @@ void FFMS_VideoSource::ResetPP() {
 		pp_free_mode(PPMode);
 	PPMode = NULL;
 
+#endif /* WITH_LIBPOSTPROC */
 	OutputFrame(DecodeFrame);
 }
 
 void FFMS_VideoSource::ReAdjustPP(PixelFormat VPixelFormat, int Width, int Height) {
+#ifdef WITH_LIBPOSTPROC
 	if (PPContext)
 		pp_free_context(PPContext);
 	PPContext = NULL;
@@ -82,7 +91,12 @@ void FFMS_VideoSource::ReAdjustPP(PixelFormat VPixelFormat, int Width, int Heigh
 
 	avpicture_free(&PPFrame);
 	avpicture_alloc(&PPFrame, VPixelFormat, Width, Height);
+#else
+	return;
+#endif /* WITH_LIBPOSTPROC */
+
 }
+
 
 static void CopyAVPictureFields(AVPicture &Picture, FFMS_Frame &Dst) {
 	for (int i = 0; i < 4; i++) {
@@ -99,6 +113,7 @@ FFMS_Frame *FFMS_VideoSource::OutputFrame(AVFrame *Frame) {
 			ReAdjustOutputFormat(TargetPixelFormats, TargetWidth, TargetHeight, TargetResizer);
 	}
 
+#ifdef WITH_LIBPOSTPROC
 	if (PPMode) {
 		pp_postprocess(const_cast<const uint8_t **>(Frame->data), Frame->linesize, PPFrame.data, PPFrame.linesize, CodecContext->width, CodecContext->height, Frame->qscale_table, Frame->qstride, PPMode, PPContext, Frame->pict_type | (Frame->qscale_type ? PP_PICT_TYPE_QP2 : 0));
 		if (SWS) {
@@ -119,6 +134,18 @@ FFMS_Frame *FFMS_VideoSource::OutputFrame(AVFrame *Frame) {
 			}		
 		}		
 	}
+#else // WITH_LIBPOSTPROC
+	if (SWS) {
+		sws_scale(SWS, const_cast<FFMS_SWS_CONST_PARAM uint8_t **>(Frame->data), Frame->linesize, 0, CodecContext->height, SWSFrame.data, SWSFrame.linesize);
+		CopyAVPictureFields(SWSFrame, LocalFrame);
+	} else {
+		// Special case to avoid ugly casts
+		for (int i = 0; i < 4; i++) {
+			LocalFrame.Data[i] = Frame->data[i];
+			LocalFrame.Linesize[i] = Frame->linesize[i];
+		}		
+	}		
+#endif // WITH_LIBPOSTPROC
 
 	LocalFrame.EncodedWidth = CodecContext->width;
 	LocalFrame.EncodedHeight = CodecContext->height;
@@ -157,8 +184,10 @@ FFMS_VideoSource::FFMS_VideoSource(const char *SourceFile, FFMS_Index *Index, in
 			"The index does not match the source file");
 
 	memset(&VP, 0, sizeof(VP));
+#ifdef WITH_LIBPOSTPROC
 	PPContext = NULL;
 	PPMode = NULL;
+#endif // WITH_LIBPOSTPROC
 	SWS = NULL;
 	LastFrameNum = 0;
 	CurrentFrame = 1;
@@ -176,21 +205,26 @@ FFMS_VideoSource::FFMS_VideoSource(const char *SourceFile, FFMS_Index *Index, in
 	DecodeFrame = avcodec_alloc_frame();
 
 	// Dummy allocations so the unallocated case doesn't have to be handled later
+#ifdef WITH_LIBPOSTPROC
 	avpicture_alloc(&PPFrame, PIX_FMT_GRAY8, 16, 16);
+#endif // WITH_LIBPOSTPROC
 	avpicture_alloc(&SWSFrame, PIX_FMT_GRAY8, 16, 16);
 }
 
 FFMS_VideoSource::~FFMS_VideoSource() {
+#ifdef WITH_LIBPOSTPROC
 	if (PPMode)
 		pp_free_mode(PPMode);
 
 	if (PPContext)
 		pp_free_context(PPContext);
 
+	avpicture_free(&PPFrame);
+#endif // WITH_LIBPOSTPROC
+
 	if (SWS)
 		sws_freeContext(SWS);
 
-	avpicture_free(&PPFrame);
 	avpicture_free(&SWSFrame);
 	av_freep(&DecodeFrame);
 }

@@ -66,7 +66,13 @@ FFmpegSourceAudioProvider::FFmpegSourceAudioProvider(wxString filename)
 	else if (res != RPC_E_CHANGED_MODE)
 		throw AudioOpenError("COM initialization failure");
 #endif
+	// initialize ffmpegsource
+	// FIXME: CPU detection?
+#if FFMS_VERSION >= ((2 << 24) | (14 << 16) | (0 << 8) | 0)
+	FFMS_Init(0, 1);
+#else
 	FFMS_Init(0);
+#endif
 
 	ErrInfo.Buffer		= FFMSErrMsg;
 	ErrInfo.BufferSize	= sizeof(FFMSErrMsg);

@@ -74,7 +74,7 @@ friend class FFSourceResources<FFMS_AudioSource>;
 protected:
 	TAudioCache AudioCache;
 	int64_t CurrentSample;
-	std::vector<uint8_t> DecodingBuffer;
+	AlignedBuffer<uint8_t> DecodingBuffer;
 	FFMS_Track Frames;
 	AVCodecContext *CodecContext;
 	int AudioTrack;
@@ -106,7 +106,7 @@ class FFMatroskaAudio : public FFMS_AudioSource {
 private:
 	MatroskaFile *MF;
 	MatroskaReaderContext MC;
-    CompressedStream *CS;
+    TrackCompressionContext *TCC;
 	char ErrorMessage[256];
 	FFSourceResources<FFMS_AudioSource> Res;
 	size_t PacketNumber;

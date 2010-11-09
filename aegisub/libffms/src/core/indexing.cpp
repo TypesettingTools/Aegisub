@@ -33,6 +33,10 @@ extern "C" {
 extern bool HasHaaliMPEG;
 extern bool HasHaaliOGG;
 
+#ifndef WITH_LIBPOSTPROC
+unsigned postproc_version(void) { return 0; } // ugly workaround to avoid lots of ifdeffing
+#endif // WITH_LIBPOSTPROC
+
 struct IndexHeader {
 	uint32_t Id;
 	uint32_t Version;
@@ -55,11 +59,12 @@ struct TrackHeader {
 		uint32_t UseDTS;
 };
 
+
 SharedVideoContext::SharedVideoContext(bool FreeCodecContext) {
 	CodecContext = NULL;
 	Parser = NULL;
-	CS = NULL;
 	this->FreeCodecContext = FreeCodecContext;
+	TCC = NULL;
 }
 
 SharedVideoContext::~SharedVideoContext() {
@@ -72,15 +77,15 @@ SharedVideoContext::~SharedVideoContext() {
 	if (Parser)
 		av_parser_close(Parser);
 
-	if (CS)
-		cs_Destroy(CS);
+	if (TCC)
+		delete TCC;
 }
 
 SharedAudioContext::SharedAudioContext(bool FreeCodecContext) {
 	W64Writer = NULL;
 	CodecContext = NULL;
 	CurrentSample = 0;
-	CS = NULL;
+	TCC = NULL;
 	this->FreeCodecContext = FreeCodecContext;
 }
 
@@ -92,8 +97,8 @@ SharedAudioContext::~SharedAudioContext() {
 			av_freep(&CodecContext);
 	}
 
-	if (CS)
-		cs_Destroy(CS);
+	if (TCC)
+		delete TCC;
 }
 
 TFrameInfo::TFrameInfo() {
@@ -322,6 +327,7 @@ void FFMS_Index::WriteIndex(const char *IndexFile) {
 	IH.LAVCVersion = avcodec_version();
 	IH.LSWSVersion = swscale_version();
 	IH.LPPVersion = postproc_version();
+	IH.LPPVersion = 0;
 	IH.FileSize = Filesize;
 	memcpy(IH.FileSignature, Digest, sizeof(Digest));
 
@@ -512,7 +518,7 @@ FFMS_Indexer *FFMS_Indexer::CreateIndexer(const char *Filename) {
 	}
 
 	// Do matroska indexing instead?
-	if (!strcmp(FormatContext->iformat->name, "matroska")) {
+	if (!strncmp(FormatContext->iformat->name, "matroska", 8)) {
 		av_close_input_file(FormatContext);
 		return new FFMatroskaIndexer(Filename);
 	}
@@ -560,8 +566,8 @@ void FFMS_Indexer::WriteAudio(SharedAudioContext &AudioContext, FFMS_Index *Inde
 			(*ANC)(SourceFile, Track, &AP, &WName[0], FNSize, ANCPrivate);
 			std::string WN(&WName[0]);
 			try {
-				AudioContext.W64Writer = new Wave64Writer(WN.c_str(), av_get_bits_per_sample_format(AudioContext.CodecContext->sample_fmt),
-					AudioContext.CodecContext->channels, AudioContext.CodecContext->sample_rate, (AudioContext.CodecContext->sample_fmt == SAMPLE_FMT_FLT) || (AudioContext.CodecContext->sample_fmt == SAMPLE_FMT_DBL));
+				AudioContext.W64Writer = new Wave64Writer(WN.c_str(), av_get_bits_per_sample_fmt(AudioContext.CodecContext->sample_fmt),
+					AudioContext.CodecContext->channels, AudioContext.CodecContext->sample_rate, (AudioContext.CodecContext->sample_fmt == AV_SAMPLE_FMT_FLT) || (AudioContext.CodecContext->sample_fmt == AV_SAMPLE_FMT_DBL));
 			} catch (...) {
 				throw FFMS_Exception(FFMS_ERROR_WAVE_WRITER, FFMS_ERROR_FILE_WRITE,
 					"Failed to write wave data");

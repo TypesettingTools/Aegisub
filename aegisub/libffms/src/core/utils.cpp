@@ -26,15 +26,12 @@
 #ifdef _WIN32
 #	define WIN32_LEAN_AND_MEAN
 #	include <windows.h>
-#ifdef FFMS_USE_UTF8_PATHS
 #	include <io.h>
 #	include <fcntl.h>
 extern "C" {
 #	include "libavutil/avstring.h"
 }
-#endif
-#endif
-
+#endif // _WIN32
 
 
 // Export the array but not its data type... fun...
@@ -51,6 +48,7 @@ extern const AVCodecTag ff_codec_wav_tags[];
 }
 
 extern int CPUFeatures;
+extern bool GlobalUseUTF8Paths;
 
 
 
@@ -81,6 +79,34 @@ int FFMS_Exception::CopyOut(FFMS_ErrorInfo *ErrorInfo) const {
 	return (_ErrorType << 16) | _SubType;
 }
 
+TrackCompressionContext::TrackCompressionContext(MatroskaFile *MF, TrackInfo *TI, unsigned int Track) {
+	CS = NULL;
+	CompressedPrivateData = NULL;
+	CompressedPrivateDataSize = 0;
+	CompressionMethod = TI->CompMethod;
+
+	if (CompressionMethod == COMP_ZLIB) {
+		char ErrorMessage[512];
+		CS = cs_Create(MF, Track, ErrorMessage, sizeof(ErrorMessage));
+		if (CS == NULL) {
+			std::ostringstream buf;
+			buf << "Can't create MKV track decompressor: " << ErrorMessage;
+			throw FFMS_Exception(FFMS_ERROR_PARSER, FFMS_ERROR_FILE_READ, buf.str());
+		}
+	} else if (CompressionMethod == COMP_PREPEND) {
+		CompressedPrivateData		= TI->CompMethodPrivate;
+		CompressedPrivateDataSize	= TI->CompMethodPrivateSize;
+	} else {
+		throw FFMS_Exception(FFMS_ERROR_PARSER, FFMS_ERROR_FILE_READ, 
+			"Can't create MKV track decompressor: unknown or unsupported compression method");
+	}
+}
+
+TrackCompressionContext::~TrackCompressionContext() {
+	if (CS)
+		cs_Destroy(CS);
+}
+
 int GetSWSCPUFlags() {
 	int Flags = 0;
 
@@ -101,6 +127,8 @@ int GetSWSCPUFlags() {
 int GetPPCPUFlags() {
 	int Flags = 0;
 
+#ifdef WITH_LIBPOSTPROC
+// not exactly a pretty solution but it'll never get called anyway
 	if (CPUFeatures & FFMS_CPU_CAPS_MMX)
 		Flags |= PP_CPU_CAPS_MMX;
 	if (CPUFeatures & FFMS_CPU_CAPS_MMX2)
@@ -109,6 +137,7 @@ int GetPPCPUFlags() {
 		Flags |= PP_CPU_CAPS_3DNOW;
 	if (CPUFeatures & FFMS_CPU_CAPS_ALTIVEC)
 		Flags |= PP_CPU_CAPS_ALTIVEC;
+#endif // WITH_LIBPOSTPROC
 
 	return Flags;
 }
@@ -132,8 +161,20 @@ FFMS_TrackType HaaliTrackTypeToFFTrackType(int TT) {
 	}
 }
 
-void ReadFrame(uint64_t FilePos, unsigned int &FrameSize, CompressedStream *CS, MatroskaReaderContext &Context) {
-	if (CS) {
+const char *GetLAVCSampleFormatName(AVSampleFormat s) {
+	switch (s) {
+		case AV_SAMPLE_FMT_U8:	return "8-bit unsigned integer";
+		case AV_SAMPLE_FMT_S16:	return "16-bit signed integer";
+		case AV_SAMPLE_FMT_S32:	return "32-bit signed integer";
+		case AV_SAMPLE_FMT_FLT:	return "Single-precision floating point";
+		case AV_SAMPLE_FMT_DBL:	return "Double-precision floating point";
+		default:				return "Unknown";
+	}
+}
+
+void ReadFrame(uint64_t FilePos, unsigned int &FrameSize, TrackCompressionContext *TCC, MatroskaReaderContext &Context) {
+	if (TCC && TCC->CS) {
+		CompressedStream *CS = TCC->CS;
 		unsigned int DecompressedFrameSize = 0;
 
 		cs_NextFrame(CS, FilePos, FrameSize);
@@ -171,7 +212,23 @@ void ReadFrame(uint64_t FilePos, unsigned int &FrameSize, CompressedStream *CS, 
 			throw FFMS_Exception(FFMS_ERROR_PARSER, FFMS_ERROR_SEEKING, buf.str());
 		}
 
-		if (Context.BufferSize < FrameSize) {
+		if (TCC && TCC->CompressionMethod == COMP_PREPEND) {
+			unsigned ReqBufsize = FrameSize + TCC->CompressedPrivateDataSize + 16;
+			if (Context.BufferSize < ReqBufsize) {
+				Context.BufferSize = FrameSize + TCC->CompressedPrivateDataSize;
+				Context.Buffer = (uint8_t *)realloc(Context.Buffer, ReqBufsize);
+				if (Context.Buffer == NULL)
+					throw FFMS_Exception(FFMS_ERROR_PARSER, FFMS_ERROR_ALLOCATION_FAILED, "Out of memory");
+			}
+
+			/* // maybe faster? maybe not?
+			for (int i=0; i < TCC->CompressedPrivateDataSize; i++)
+				*(Context.Buffer)++ = ((uint8_t *)TCC->CompressedPrivateData)[i];
+			*/
+			// screw it, memcpy and fuck the losers who use header compression
+			memcpy(Context.Buffer, TCC->CompressedPrivateData, TCC->CompressedPrivateDataSize);
+		}
+		else if (Context.BufferSize < FrameSize) {
 			Context.BufferSize = FrameSize;
 			Context.Buffer = (uint8_t *)realloc(Context.Buffer, Context.BufferSize + 16);
 			if (Context.Buffer == NULL)
@@ -179,8 +236,13 @@ void ReadFrame(uint64_t FilePos, unsigned int &FrameSize, CompressedStream *CS, 
 					"Out of memory");
 		}
 
-		size_t ReadBytes = fread(Context.Buffer, 1, FrameSize, Context.ST.fp);
+		uint8_t *TargetPtr = Context.Buffer;
+		if (TCC && TCC->CompressionMethod == COMP_PREPEND)
+			TargetPtr += TCC->CompressedPrivateDataSize;
+
+		size_t ReadBytes = fread(TargetPtr, 1, FrameSize, Context.ST.fp);
 		if (ReadBytes != FrameSize) {
+			return;
 			if (ReadBytes == 0) {
 				if (feof(Context.ST.fp)) {
 					throw FFMS_Exception(FFMS_ERROR_PARSER, FFMS_ERROR_FILE_READ,
@@ -210,8 +272,8 @@ void InitNullPacket(AVPacket &pkt) {
 
 void FillAP(FFMS_AudioProperties &AP, AVCodecContext *CTX, FFMS_Track &Frames) {
 	AP.SampleFormat = static_cast<FFMS_SampleFormat>(CTX->sample_fmt);
-	AP.BitsPerSample = av_get_bits_per_sample_format(CTX->sample_fmt);
-	if (CTX->sample_fmt == SAMPLE_FMT_S32 && CTX->bits_per_raw_sample)
+	AP.BitsPerSample = av_get_bits_per_sample_fmt(CTX->sample_fmt);
+	if (CTX->sample_fmt == AV_SAMPLE_FMT_S32 && CTX->bits_per_raw_sample)
 		AP.BitsPerSample = CTX->bits_per_raw_sample;
 
 	AP.Channels = CTX->channels;;
@@ -384,10 +446,12 @@ static wchar_t *dup_char_to_wchar(const char *s, unsigned int cp) {
 
 FILE *ffms_fopen(const char *filename, const char *mode) {
 #ifdef _WIN32
-	int codepage = CP_ACP;
-#ifdef FFMS_USE_UTF8_PATHS
-	codepage = CP_UTF8;
-#endif
+	unsigned int codepage;
+	if (GlobalUseUTF8Paths)
+		codepage = CP_UTF8;
+	else
+		codepage = CP_ACP;
+	
 	FILE *ret;
 	wchar_t *filename_wide	= dup_char_to_wchar(filename, codepage);
 	wchar_t *mode_wide		= dup_char_to_wchar(mode, codepage);
@@ -406,18 +470,9 @@ FILE *ffms_fopen(const char *filename, const char *mode) {
 }
 
 size_t ffms_mbstowcs (wchar_t *wcstr, const char *mbstr, size_t max) {
-#if defined(_WIN32) && defined(FFMS_USE_UTF8_PATHS)
-	// try utf8 first
-	int len = MultiByteToWideChar(CP_UTF8, MB_ERR_INVALID_CHARS, mbstr, -1, NULL, 0);
-	if (len > 0) {
-		MultiByteToWideChar(CP_UTF8, MB_ERR_INVALID_CHARS, mbstr, -1, wcstr, max);
-		return static_cast<size_t>(len);
-	}
-	// failed, use local ANSI codepage
-	else {
-		len = MultiByteToWideChar(CP_ACP, NULL, mbstr, -1, wcstr, max);
-		return static_cast<size_t>(len);
-	}
+#ifdef _WIN32
+	// this is only called by HaaliOpenFile anyway, so I think this is safe
+	return static_cast<size_t>(MultiByteToWideChar((GlobalUseUTF8Paths ? CP_UTF8 : CP_ACP), MB_ERR_INVALID_CHARS, mbstr, -1, wcstr, max));
 #else
 	return mbstowcs(wcstr, mbstr, max);
 #endif
@@ -430,10 +485,8 @@ void ffms_fstream::open(const char *filename, std::ios_base::openmode mode) {
 	// that takes a wchar_t* filename, which means you can't open unicode
 	// filenames with it on Windows. gg.
 #if defined(_WIN32) && !defined(__MINGW32__)
-	unsigned int codepage = CP_ACP;
-#if defined(FFMS_USE_UTF8_PATHS)
-	codepage = CP_UTF8;
-#endif /* defined(FFMS_USE_UTF8_PATHS) */
+	unsigned int codepage = GlobalUseUTF8Paths ? CP_UTF8 : CP_ACP;
+
 	wchar_t *filename_wide = dup_char_to_wchar(filename, codepage);
 	if (filename_wide)
 		std::fstream::open(filename_wide, mode);
@@ -441,9 +494,9 @@ void ffms_fstream::open(const char *filename, std::ios_base::openmode mode) {
 		std::fstream::open(filename, mode);
 
 	free(filename_wide);
-#else /* defined(_WIN32) && !defined(__MINGW32__) */
+#else // defined(_WIN32) && !defined(__MINGW32__)
 	std::fstream::open(filename, mode);
-#endif /* defined(_WIN32) && !defined(__MINGW32__) */
+#endif // defined(_WIN32) && !defined(__MINGW32__)
 }
 
 ffms_fstream::ffms_fstream(const char *filename, std::ios_base::openmode mode) {
@@ -451,12 +504,12 @@ ffms_fstream::ffms_fstream(const char *filename, std::ios_base::openmode mode) {
 }
 
 
-#if defined(_WIN32) && defined(FFMS_USE_UTF8_PATHS)
+#ifdef _WIN32
 int ffms_wchar_open(const char *fname, int oflags, int pmode) {
     wchar_t *wfname = dup_char_to_wchar(fname, CP_UTF8);
     if (wfname) {
         int ret = _wopen(wfname, oflags, pmode);
-        av_free(wfname);
+        free(wfname);
         return ret;
     }
     return -1;
@@ -500,7 +553,7 @@ void ffms_patch_lavf_file_open() {
 		proto->url_open = &ffms_lavf_file_open;
 	}
 }
-#endif /* defined(_WIN32) && defined(FFMS_USE_UTF8_PATHS) */
+#endif // _WIN32
 
 // End of filename hackery.
 

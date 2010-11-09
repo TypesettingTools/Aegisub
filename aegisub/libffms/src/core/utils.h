@@ -30,10 +30,13 @@
 
 extern "C" {
 #include "stdiostream.h"
+#include <libavutil/mem.h>
 #include <libavformat/avformat.h>
 #include <libavcodec/avcodec.h>
 #include <libswscale/swscale.h>
+#ifdef WITH_LIBPOSTPROC
 #include <libpostproc/postprocess.h>
+#endif // WITH_LIBPOSTPROC
 }
 
 // must be included after ffmpeg headers
@@ -135,12 +138,44 @@ public:
 	ffms_fstream(const char *filename, std::ios_base::openmode mode = std::ios_base::in | std::ios_base::out);
 };
 
+template <typename T>
+class AlignedBuffer {
+	T *buf;
+
+public:
+	AlignedBuffer(size_t n = 1) {
+		buf = (T*) av_malloc(sizeof(*buf) * n);
+		if (!buf) throw std::bad_alloc();
+	}
+	
+	~AlignedBuffer() {
+		av_free(buf);
+		buf = 0;
+	}
+	
+	const T &operator[] (size_t i) const { return buf[i]; }
+	T &operator[] (size_t i) { return buf[i]; }
+};
+
+
+class TrackCompressionContext {
+public:
+	CompressedStream *CS;
+	unsigned CompressionMethod;
+	void *CompressedPrivateData;
+	unsigned CompressedPrivateDataSize;
+
+	TrackCompressionContext(MatroskaFile *MF, TrackInfo *TI, unsigned int Track);
+	~TrackCompressionContext();
+};
+
+
 int GetSWSCPUFlags();
 int GetPPCPUFlags();
 void ClearErrorInfo(FFMS_ErrorInfo *ErrorInfo);
 FFMS_TrackType HaaliTrackTypeToFFTrackType(int TT);
-void ReadFrame(uint64_t FilePos, unsigned int &FrameSize, CompressedStream *CS, MatroskaReaderContext &Context);
-bool AudioFMTIsFloat(SampleFormat FMT);
+void ReadFrame(uint64_t FilePos, unsigned int &FrameSize, TrackCompressionContext *TCC, MatroskaReaderContext &Context);
+bool AudioFMTIsFloat(AVSampleFormat FMT);
 void InitNullPacket(AVPacket &pkt);
 void FillAP(FFMS_AudioProperties &AP, AVCodecContext *CTX, FFMS_Track &Frames);
 #ifdef HAALISOURCE
@@ -152,14 +187,15 @@ void InitializeCodecContextFromMatroskaTrackInfo(TrackInfo *TI, AVCodecContext *
 CodecID MatroskaToFFCodecID(char *Codec, void *CodecPrivate, unsigned int FourCC = 0, unsigned int BitsPerSample = 0);
 FILE *ffms_fopen(const char *filename, const char *mode);
 size_t ffms_mbstowcs (wchar_t *wcstr, const char *mbstr, size_t max);
-#if defined(_WIN32) && defined(FFMS_USE_UTF8_PATHS)
+#ifdef _WIN32
 void ffms_patch_lavf_file_open();
-#endif
+#endif // _WIN32
 #ifdef HAALISOURCE
 CComPtr<IMMContainer> HaaliOpenFile(const char *SourceFile, enum FFMS_Sources SourceMode);
-#endif
+#endif // HAALISOURCE
 void LAVFOpenFile(const char *SourceFile, AVFormatContext *&FormatContext);
 void CorrectNTSCRationalFramerate(int *Num, int *Den);
 void CorrectTimebase(FFMS_VideoProperties *VP, FFMS_TrackTimeBase *TTimebase);
+const char *GetLAVCSampleFormatName(AVSampleFormat s);
 
 #endif

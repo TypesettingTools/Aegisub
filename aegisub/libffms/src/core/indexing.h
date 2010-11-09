@@ -38,14 +38,13 @@
 #endif
 
 
-
 class SharedVideoContext {
 private:
 	bool FreeCodecContext;
 public:
 	AVCodecContext *CodecContext;
 	AVCodecParserContext *Parser;
-	CompressedStream *CS;
+	TrackCompressionContext *TCC;
 
 	SharedVideoContext(bool FreeCodecContext);
 	~SharedVideoContext();
@@ -58,7 +57,7 @@ public:
 	AVCodecContext *CodecContext;
 	Wave64Writer *W64Writer;
 	int64_t CurrentSample;
-	CompressedStream *CS;
+	TrackCompressionContext *TCC;
 
 	SharedAudioContext(bool FreeCodecContext);
 	~SharedAudioContext();
@@ -123,7 +122,7 @@ protected:
 	TAudioNameCallback ANC;
 	void *ANCPrivate;
 	const char *SourceFile;
-	std::vector<int16_t> DecodingBuffer;
+	AlignedBuffer<int16_t> DecodingBuffer;
 
 	int64_t Filesize;
 	uint8_t Digest[20];
