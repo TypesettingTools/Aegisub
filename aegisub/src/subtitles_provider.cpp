@@ -44,6 +44,9 @@
 #ifdef WITH_LIBASS
 #include "subtitles_provider_libass.h"
 #endif
+#if !defined(WITH_CSRI) && !defined(WITH_LIBASS)
+#include "include/aegisub/subtitles_provider.h"
+#endif
 
 /// @brief Get provider 
 /// @return 
