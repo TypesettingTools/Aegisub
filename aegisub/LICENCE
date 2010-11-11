@@ -34,7 +34,7 @@ The following directories and file are covered by their respective licenses as
 follows:
 
 libass/
- - GPL see libass/COPYING.
+ - ISC license. See libass/COPYING.
 
 libffms/
  - MIT license.

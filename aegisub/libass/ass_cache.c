@@ -3,19 +3,17 @@
  *
  * This file is part of libass.
  *
- * libass is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * Permission to use, copy, modify, and distribute this software for any
+ * purpose with or without fee is hereby granted, provided that the above
+ * copyright notice and this permission notice appear in all copies.
  *
- * libass is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with libass; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+ * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
 #include "config.h"
@@ -156,6 +154,8 @@ static int font_compare(void *key1, void *key2, size_t key_size)
         return 0;
     if (a->treat_family_as_pattern != b->treat_family_as_pattern)
         return 0;
+    if (a->vertical != b->vertical)
+        return 0;
     return 1;
 }
 
@@ -286,6 +286,11 @@ static void glyph_hash_dtor(void *key, size_t key_size, void *value,
 void *cache_add_glyph(Hashmap *glyph_cache, GlyphHashKey *key,
                       GlyphHashValue *val)
 {
+	if (val->glyph && val->glyph->format == FT_GLYPH_FORMAT_BITMAP) {
+		FT_Bitmap *bitmap = &((FT_BitmapGlyph) val->glyph)->bitmap;
+		glyph_cache->cache_size += bitmap->rows * bitmap->pitch;
+	}
+
     return hashmap_insert(glyph_cache, key, val);
 }
 

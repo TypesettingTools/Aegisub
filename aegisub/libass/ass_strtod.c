@@ -16,12 +16,14 @@
 #include <ctype.h>
 #include <errno.h>
 
+const
 static int maxExponent = 511;   /* Largest possible base 10 exponent.  Any
                                  * exponent larger than this will already
                                  * produce underflow or overflow, so there's
                                  * no need to worry about additional digits.
                                  */
 
+const
 static double powersOf10[] = {  /* Table giving binary powers of 10.  Entry */
     10.,                        /* is 10^2^i.  Used to convert decimal */
     100.,                       /* exponents into floating-point numbers. */
@@ -224,7 +226,7 @@ ass_strtod(string, endPtr)
         errno = ERANGE;
     }
     dblExp = 1.0;
-    for (d = powersOf10; exp != 0; exp >>= 1, d += 1) {
+    for (d = (double *) powersOf10; exp != 0; exp >>= 1, d += 1) {
         if (exp & 01) {
             dblExp *= *d;
         }

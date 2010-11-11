@@ -3,19 +3,17 @@
  *
  * This file is part of libass.
  *
- * libass is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * Permission to use, copy, modify, and distribute this software for any
+ * purpose with or without fee is hereby granted, provided that the above
+ * copyright notice and this permission notice appear in all copies.
  *
- * libass is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with libass; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+ * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
 #ifndef LIBASS_ASS_H
@@ -25,7 +23,7 @@
 #include <stdarg.h>
 #include "ass_types.h"
 
-#define LIBASS_VERSION 0x00908000
+#define LIBASS_VERSION 0x00911000
 
 /*
  * A linked list of images produced by an ass renderer.
@@ -75,11 +73,13 @@ ASS_Library *ass_library_init(void);
 void ass_library_done(ASS_Library *priv);
 
 /**
- * \brief Set private font directory.
- * It is used for saving embedded fonts and also in font lookup.
+ * \brief Set additional fonts directory.
+ * Optional directory that will be scanned for fonts recursively.  The fonts
+ * found are used for font lookup.
+ * NOTE: A valid font directory is not needed to support embedded fonts.
  *
  * \param priv library handle
- * \param fonts_dir private directory for font extraction
+ * \param fonts_dir directory with additional fonts
  */
 void ass_set_fonts_dir(ASS_Library *priv, const char *fonts_dir);
 
@@ -203,6 +203,8 @@ void ass_set_line_spacing(ASS_Renderer *priv, double line_spacing);
  * if fontconfig is used.
  * \param update whether fontconfig cache should be built/updated now.  Only
  * relevant if fontconfig is used.
+ *
+ * NOTE: font lookup must be configured before an ASS_Renderer can be used.
  */
 void ass_set_fonts(ASS_Renderer *priv, const char *default_font,
                    const char *default_family, int fc, const char *config,
@@ -297,7 +299,8 @@ void ass_free_event(ASS_Track *track, int eid);
 void ass_process_data(ASS_Track *track, char *data, int size);
 
 /**
- * \brief Parse Codec Private section of subtitle stream.
+ * \brief Parse Codec Private section of the subtitle stream, in Matroska
+ * format.  See the Matroska specification for details.
  * \param track target track
  * \param data string to parse
  * \param size length of data
@@ -305,8 +308,8 @@ void ass_process_data(ASS_Track *track, char *data, int size);
 void ass_process_codec_private(ASS_Track *track, char *data, int size);
 
 /**
- * \brief Parse a chunk of subtitle stream data. In Matroska,
- * this contains exactly 1 event (or a commentary).
+ * \brief Parse a chunk of subtitle stream data. A chunk contains exactly one
+ * event in Matroska format.  See the Matroska specification for details.
  * \param track track
  * \param data string to parse
  * \param size length of data
@@ -315,6 +318,12 @@ void ass_process_codec_private(ASS_Track *track, char *data, int size);
  */
 void ass_process_chunk(ASS_Track *track, char *data, int size,
                        long long timecode, long long duration);
+
+/**
+ * \brief Flush buffered events.
+ * \param track track
+*/
+void ass_flush_events(ASS_Track *track);
 
 /**
  * \brief Read subtitles from file.
