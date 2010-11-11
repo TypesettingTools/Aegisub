@@ -121,13 +121,13 @@ public:
 	}
 };
 
-static void wait_for_cache_thread(FontConfigCacheThread const * const & cache_worker) {
-	if (!cache_worker) return;
+static void wait_for_cache_thread(FontConfigCacheThread const * const * const cache_worker) {
+	if (!*cache_worker) return;
 
 	bool canceled;
 	DialogProgress *progress = new DialogProgress(AegisubApp::Get()->frame, L"", &canceled, L"Caching fonts", 0, 1);
 	progress->Show();
-	while (cache_worker) {
+	while (*cache_worker) {
 		if (canceled) throw agi::UserCancelException("Font caching cancelled");
 		progress->Pulse();
 		wxYield();
@@ -139,7 +139,7 @@ static void wait_for_cache_thread(FontConfigCacheThread const * const & cache_wo
 /// @brief Constructor
 ///
 LibassSubtitlesProvider::LibassSubtitlesProvider(std::string) {
-	wait_for_cache_thread(cache_worker);
+	wait_for_cache_thread(&cache_worker);
 
 	// Initialize renderer
 	ass_track = NULL;
@@ -147,7 +147,7 @@ LibassSubtitlesProvider::LibassSubtitlesProvider(std::string) {
 	if (!ass_renderer) throw _T("ass_renderer_init failed");
 	ass_set_font_scale(ass_renderer, 1.);
 	new FontConfigCacheThread(ass_renderer, &cache_worker);
-	wait_for_cache_thread(cache_worker);
+	wait_for_cache_thread(&cache_worker);
 }
 
 /// @brief Destructor
