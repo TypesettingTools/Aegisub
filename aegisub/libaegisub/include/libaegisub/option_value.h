@@ -139,8 +139,8 @@ public:
 		type value_default;                                                                   \
 		std::string name;                                                                     \
 	public:                                                                                   \
-		OptionValue##type_name(std::string member_name, type member_value):                   \
-						  value(member_value), name(member_name) {}                           \
+		OptionValue##type_name(std::string member_name, type member_value)                    \
+			: value(member_value), value_default(member_value), name(member_name) {}          \
 		type Get##type_name() const { return value; }                                         \
 		void Set##type_name(const type new_val) { value = new_val; NotifyChanged(); }         \
 		type GetDefault##type_name() const { return value_default; }                          \
