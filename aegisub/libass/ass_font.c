@@ -325,20 +325,23 @@ static int ass_strike_outline_glyph(FT_Face face, ASS_Font *font,
 
     // Add points to the outline
     if (under && ps) {
-        int pos, size;
-        pos = FT_MulFix(ps->underlinePosition, y_scale * font->scale_y);
-        size = FT_MulFix(ps->underlineThickness,
-                         y_scale * font->scale_y / 2);
+        int pos = FT_MulFix(ps->underlinePosition, y_scale * font->scale_y);
+        int size = FT_MulFix(ps->underlineThickness,
+                             y_scale * font->scale_y / 2);
+
+        FT_Vector points[4];
 
         if (pos > 0 || size <= 0)
             return 1;
 
-        FT_Vector points[4] = {
-            {.x = bear,      .y = pos + size},
-            {.x = advance,   .y = pos + size},
-            {.x = advance,   .y = pos - size},
-            {.x = bear,      .y = pos - size},
-        };
+        points[0].x = bear;
+        points[0].y = pos + size;
+        points[1].x = advance;
+        points[1].y = pos + size;
+        points[2].x = advance;
+        points[2].y = pos - size;
+        points[3].x = bear;
+        points[3].y = pos - size;
 
         if (dir == FT_ORIENTATION_TRUETYPE) {
             for (i = 0; i < 4; i++) {
@@ -356,19 +359,21 @@ static int ass_strike_outline_glyph(FT_Face face, ASS_Font *font,
     }
 
     if (through && os2) {
-        int pos, size;
-        pos = FT_MulFix(os2->yStrikeoutPosition, y_scale * font->scale_y);
-        size = FT_MulFix(os2->yStrikeoutSize, y_scale * font->scale_y / 2);
+        int pos = FT_MulFix(os2->yStrikeoutPosition, y_scale * font->scale_y);
+        int size = FT_MulFix(os2->yStrikeoutSize, y_scale * font->scale_y / 2);
+        FT_Vector points[4];
 
         if (pos < 0 || size <= 0)
             return 1;
 
-        FT_Vector points[4] = {
-            {.x = bear,      .y = pos + size},
-            {.x = advance,   .y = pos + size},
-            {.x = advance,   .y = pos - size},
-            {.x = bear,      .y = pos - size},
-        };
+        points[0].x = bear;
+        points[0].y = pos + size;
+        points[1].x = advance;
+        points[1].y = pos + size;
+        points[2].x = advance;
+        points[2].y = pos - size;
+        points[3].x = bear;
+        points[3].y = pos - size;
 
         if (dir == FT_ORIENTATION_TRUETYPE) {
             for (i = 0; i < 4; i++) {
@@ -446,9 +451,9 @@ FT_Glyph ass_font_get_glyph(void *fontconfig_priv, ASS_Font *font,
             face = font->faces[face_idx];
             index = FT_Get_Char_Index(face, ch);
             if (index == 0 && face->num_charmaps > 0) {
+                FT_CharMap cur = face->charmap;
                 ass_msg(font->library, MSGL_WARN,
                     "Glyph 0x%X not found, falling back to first charmap", ch);
-                FT_CharMap cur = face->charmap;
                 FT_Set_Charmap(face, face->charmaps[0]);
                 index = FT_Get_Char_Index(face, ch);
                 FT_Set_Charmap(face, cur);
@@ -512,15 +517,17 @@ FT_Glyph ass_font_get_glyph(void *fontconfig_priv, ASS_Font *font,
     }
 
     // Apply scaling and shift
-    FT_Matrix scale = { double_to_d16(font->scale_x), 0, 0,
-                        double_to_d16(font->scale_y) };
-    FT_Outline *outl = &((FT_OutlineGlyph) glyph)->outline;
-    FT_Outline_Transform(outl, &scale);
-    FT_Outline_Translate(outl, font->v.x, font->v.y);
-    glyph->advance.x *= font->scale_x;
+    {
+        FT_Matrix scale = { double_to_d16(font->scale_x), 0, 0,
+                            double_to_d16(font->scale_y) };
+        FT_Outline *outl = &((FT_OutlineGlyph) glyph)->outline;
+        FT_Outline_Transform(outl, &scale);
+        FT_Outline_Translate(outl, font->v.x, font->v.y);
+        glyph->advance.x *= font->scale_x;
 
-    ass_strike_outline_glyph(face, font, glyph, deco & DECO_UNDERLINE,
-                             deco & DECO_STRIKETHROUGH);
+        ass_strike_outline_glyph(face, font, glyph, deco & DECO_UNDERLINE,
+                                 deco & DECO_STRIKETHROUGH);
+    }
 
     return glyph;
 }
@@ -570,9 +577,9 @@ void ass_font_free(ASS_Font *font)
 static void
 get_contour_cbox(FT_BBox *box, FT_Vector *points, int start, int end)
 {
+    int i;
     box->xMin = box->yMin = INT_MAX;
     box->xMax = box->yMax = INT_MIN;
-    int i;
 
     for (i = start; i <= end; i++) {
         box->xMin = (points[i].x < box->xMin) ? points[i].x : box->xMin;
@@ -631,9 +638,10 @@ void fix_freetype_stroker(FT_OutlineGlyph glyph, int border_x, int border_y)
     // or contained in another contour
     end = -1;
     for (i = 0; i < nc; i++) {
+        int dir;
         start = end + 1;
         end = glyph->outline.contours[i];
-        int dir = get_contour_direction(glyph->outline.points, start, end);
+        dir = get_contour_direction(glyph->outline.points, start, end);
         valid_cont[i] = 1;
         if (dir == inside_direction) {
             for (j = 0; j < nc; j++) {
@@ -661,9 +669,10 @@ void fix_freetype_stroker(FT_OutlineGlyph glyph, int border_x, int border_y)
         check_inside:
         if (dir == inside_direction) {
             FT_BBox box;
+            int width, height;
             get_contour_cbox(&box, glyph->outline.points, start, end);
-            int width = box.xMax - box.xMin;
-            int height = box.yMax - box.yMin;
+            width = box.xMax - box.xMin;
+            height = box.yMax - box.yMin;
             if (width < border_x * 2 || height < border_y * 2) {
                 valid_cont[i] = 0;
                 modified = 1;

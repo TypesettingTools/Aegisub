@@ -365,11 +365,6 @@ static ASS_Image **
 render_glyph(ASS_Renderer *render_priv, Bitmap *bm, int dst_x, int dst_y,
              uint32_t color, uint32_t color2, int brk, ASS_Image **tail)
 {
-    // Inverse clipping in use?
-    if (render_priv->state.clip_mode)
-        return render_glyph_i(render_priv, bm, dst_x, dst_y, color, color2,
-                              brk, tail);
-
     // brk is relative to dst_x
     // color = color left of brk
     // color2 = color right of brk
@@ -377,6 +372,11 @@ render_glyph(ASS_Renderer *render_priv, Bitmap *bm, int dst_x, int dst_y,
     int clip_x0, clip_y0, clip_x1, clip_y1;
     int tmp;
     ASS_Image *img;
+
+    // Inverse clipping in use?
+    if (render_priv->state.clip_mode)
+        return render_glyph_i(render_priv, bm, dst_x, dst_y, color, color2,
+                              brk, tail);
 
     dst_x += bm->left;
     dst_y += bm->top;
@@ -599,8 +599,8 @@ static void blend_vector_clip(ASS_Renderer *render_priv,
         if (render_priv->settings.left_margin != 0 ||
             render_priv->settings.top_margin != 0) {
             FT_Vector trans = {
-                .x = int_to_d6(render_priv->settings.left_margin),
-                .y = -int_to_d6(render_priv->settings.top_margin),
+                int_to_d6(render_priv->settings.left_margin),
+                -int_to_d6(render_priv->settings.top_margin),
             };
             FT_Outline_Translate(&drawing->glyph->outline,
                                  trans.x, trans.y);
@@ -831,9 +831,10 @@ static void compute_string_bbox(TextInfo *info, DBBox *bbox)
                      d6_to_double(info->glyphs[0].pos.y);
 
         for (i = 0; i < info->length; ++i) {
+            double s, e;
             if (info->glyphs[i].skip) continue;
-            double s = d6_to_double(info->glyphs[i].pos.x);
-            double e = s + d6_to_double(info->glyphs[i].advance.x);
+            s = d6_to_double(info->glyphs[i].pos.x);
+            e = s + d6_to_double(info->glyphs[i].advance.x);
             bbox->xMin = FFMIN(bbox->xMin, s);
             bbox->xMax = FFMAX(bbox->xMax, e);
         }
@@ -963,21 +964,23 @@ static void draw_opaque_box(ASS_Renderer *render_priv, uint32_t ch,
     desc *= scale_y;
     desc += asc * (scale_y - 1.0);
 
-    FT_Vector points[4] = {
-        { .x = -sx,         .y = asc + sy },
-        { .x = adv + sx,    .y = asc + sy },
-        { .x = adv + sx,    .y = -desc - sy },
-        { .x = -sx,         .y = -desc - sy },
-    };
+    {
+        FT_Vector points[4] = {
+            { -sx,         asc + sy },
+            { adv + sx,    asc + sy },
+            { adv + sx,    -desc - sy },
+            { -sx,         -desc - sy },
+        };
 
-    FT_Outline_Done(render_priv->ftlibrary, &og->outline);
-    FT_Outline_New(render_priv->ftlibrary, 4, 1, &og->outline);
+        FT_Outline_Done(render_priv->ftlibrary, &og->outline);
+        FT_Outline_New(render_priv->ftlibrary, 4, 1, &og->outline);
 
-    ol = &og->outline;
-    ol->n_points = ol->n_contours = 0;
-    for (i = 0; i < 4; i++) {
-        ol->points[ol->n_points] = points[i];
-        ol->tags[ol->n_points++] = 1;
+        ol = &og->outline;
+        ol->n_points = ol->n_contours = 0;
+        for (i = 0; i < 4; i++) {
+            ol->points[ol->n_points] = points[i];
+            ol->tags[ol->n_points++] = 1;
+        }
     }
     ol->contours[ol->n_contours++] = ol->n_points - 1;
 }
@@ -1251,6 +1254,9 @@ get_bitmap_glyph(ASS_Renderer *render_priv, GlyphInfo *info)
             FT_Glyph outline;
             double scale_x = render_priv->font_scale_x;
 
+            // PAR correction scaling
+            FT_Matrix m = { double_to_d16(scale_x), 0, 0, double_to_d16(1.0) };
+
             FT_Glyph_Copy(info->glyph, &glyph);
             FT_Glyph_Copy(info->outline_glyph, &outline);
             // calculating rotation shift vector (from rotation origin to the glyph basepoint)
@@ -1263,10 +1269,6 @@ get_bitmap_glyph(ASS_Renderer *render_priv, GlyphInfo *info)
             transform_3d(shift, &glyph, &outline,
                          info->frx, info->fry, info->frz, fax_scaled,
                          fay_scaled, render_priv->font_scale, info->asc);
-
-            // PAR correction scaling
-            FT_Matrix m = { double_to_d16(scale_x), 0,
-                            0, double_to_d16(1.0) };
 
             // subpixel shift
             if (glyph) {
@@ -1555,9 +1557,10 @@ wrap_lines_smart(ASS_Renderer *render_priv, double max_text_width)
     for (i = 0; i < text_info->length; ++i) {
         cur = text_info->glyphs + i;
         if (cur->linebreak) {
+            double height;
             while (i < text_info->length && cur->skip && cur->symbol != '\n')
                 cur = text_info->glyphs + ++i;
-            double height =
+            height =
                 text_info->lines[cur_line - 1].desc +
                 text_info->lines[cur_line].asc;
             cur_line++;

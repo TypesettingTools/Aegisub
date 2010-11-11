@@ -99,7 +99,7 @@ ass_strtod(string, endPtr)
      */
 
     p = string;
-    while (isspace(*p)) {
+    while (isascii(*p) && isspace(*p)) {
         p += 1;
     }
     if (*p == '-') {
@@ -121,7 +121,7 @@ ass_strtod(string, endPtr)
     for (mantSize = 0; ; mantSize += 1)
     {
         c = *p;
-        if (!isdigit(c)) {
+        if (!isascii(*p) || !isdigit(c)) {
             if ((c != '.') || (decPt >= 0)) {
                 break;
             }
@@ -197,7 +197,7 @@ ass_strtod(string, endPtr)
             }
             expSign = 0;
         }
-        while (isdigit(*p)) {
+        while (isascii(*p) && isdigit(*p)) {
             exp = exp * 10 + (*p - '0');
             p += 1;
         }
