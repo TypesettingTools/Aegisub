@@ -34,10 +34,6 @@
 /// @ingroup spelling
 ///
 
-
-///////////
-// Headers
-
 #ifdef WITH_HUNSPELL
 
 #include <hunspell/hunspell.hxx>
@@ -53,37 +49,43 @@ namespace agi {
 /// @brief Hunspell spell checker
 ///
 class HunspellSpellChecker : public SpellChecker {
-private:
-
 	/// Hunspell instance
-	Hunspell *hunspell;
+	std::auto_ptr<Hunspell> hunspell;
 
 	/// Conversion buffer
-	agi::charset::IconvWrapper *conv;
-	agi::charset::IconvWrapper *rconv;
-
-	/// Path to .aff file
-	wxString affpath;
-
-	/// Path to .dic file
-	wxString dicpath;
+	std::auto_ptr<agi::charset::IconvWrapper> conv;
+	std::auto_ptr<agi::charset::IconvWrapper> rconv;
 
 	/// Path to user-local dictionary.
-	wxString usrdicpath;
-
-	void Reset();
+	wxString userDicPath;
 
 public:
 	HunspellSpellChecker();
 	~HunspellSpellChecker();
 
+	/// @brief Add word to dictionary
+	/// @param word Word to add.
 	void AddWord(wxString word);
+
+	/// @brief Can add to dictionary?
+	/// @param word Word to check.
+	/// @return Whether word can be added or not.
 	bool CanAddWord(wxString word);
 
+	/// @brief Check if the word is valid.
+	/// @param word Word to check
+	/// @return Whether word is valid or not.
 	bool CheckWord(wxString word);
+
+	/// @brief Get suggestions for word.
+	/// @param word Word to get suggestions for
+	/// @return List of suggestions
 	wxArrayString GetSuggestions(wxString word);
 
+	/// @brief Get a list of languages which dictionaries are present for
 	wxArrayString GetLanguageList();
+	/// @brief Set the spellchecker's language
+	/// @param language Language code
 	void SetLanguage(wxString language);
 };
 

@@ -1,4 +1,4 @@
-// Copyright (c) 2006, Rodrigo Braz Monteiro
+// Copyright (c) 2010, Thomas Goyne <plorkyeran@aegisub.org>
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -39,13 +39,16 @@
 #ifdef WITH_HUNSPELL
 
 #ifndef AGI_PRE
+#include <algorithm>
+#include <iterator>
+#include <list>
+
 #include <wx/dir.h>
 #include <wx/filename.h>
-#include <wx/log.h>
-#include <wx/txtstrm.h>
-#include <wx/wfstream.h>
 #endif
 
+#include <libaegisub/io.h>
+#include <libaegisub/line_iterator.h>
 #include <libaegisub/log.h>
 
 #include "charset_conv.h"
@@ -53,41 +56,16 @@
 #include "main.h"
 #include "spellchecker_hunspell.h"
 #include "standard_paths.h"
-#include "text_file_reader.h"
-#include "text_file_writer.h"
-#include "utils.h"
 
-/// @brief Constructor
 HunspellSpellChecker::HunspellSpellChecker() {
-	hunspell = NULL;
-	conv = NULL;
-	rconv = NULL;
 	SetLanguage(lagi_wxString(OPT_GET("Tool/Spell Checker/Language")->GetString()));
 }
 
-/// @brief Destructor
 HunspellSpellChecker::~HunspellSpellChecker() {
-	Reset();
 }
 
-/// @brief Reset spelling library
-void HunspellSpellChecker::Reset() {
-	delete hunspell;
-	hunspell = NULL;
-	delete conv;
-	conv = NULL;
-	delete rconv;
-	rconv = NULL;
-	affpath.Clear();
-	dicpath.Clear();
-}
-
-/// @brief Can add to dictionary?
-/// @param word Word to check.
-/// @return Whether word can be added or not.
-///
 bool HunspellSpellChecker::CanAddWord(wxString word) {
-	if (!hunspell) return false;
+	if (!hunspell.get()) return false;
 	try {
 		conv->Convert(STD_STR(word));
 		return true;
@@ -97,72 +75,52 @@ bool HunspellSpellChecker::CanAddWord(wxString word) {
 	}
 }
 
-/// @brief Add word to dictionary
-/// @param word Word to add.
-///
 void HunspellSpellChecker::AddWord(wxString word) {
-	// Dictionary OK?
-	if (!hunspell) return;
+	if (!hunspell.get()) return;
 
-	// Add to currently loaded file
+	std::string sword = STD_STR(word);
+
+	// Add it to the in-memory dictionary
 #ifdef WITH_OLD_HUNSPELL
-	hunspell->put_word(conv->Convert(STD_STR(word)).c_str());
+	hunspell->put_word(conv->Convert(sword).c_str());
 #else
-	hunspell->add(conv->Convert(STD_STR(word)).c_str());
+	hunspell->add(conv->Convert(sword).c_str());
 #endif
 
+	std::list<std::string> words;
+
 	// Ensure that the path exists
-	wxFileName fn(usrdicpath);
+	wxFileName fn(userDicPath);
 	if (!fn.DirExists()) {
 		wxFileName::Mkdir(fn.GetPath());
 	}
-
-	// Load dictionary
-	wxArrayString dic;
-	bool added = false;
-	if (fn.FileExists()) {	// Even if you ever want to remove this "if", keep the braces, so the stream closes at the end
-		bool first = true;
-		TextFileReader reader(usrdicpath, L"UTF-8");
-		while (reader.HasMoreLines()) {
-			wxString curLine = reader.ReadLineFromFile();
-			if (curLine.IsEmpty()) continue;
-
-			if (first) {
-				first = false;
-				if (curLine.IsNumber()) continue;
-			}
-
-			// See if word to be added goes here
-			if (!added && curLine.Lower() > word.Lower()) {
-				dic.Add(word);
-				added = true;
-			}
-
-			// Add to memory dictionary
-			dic.Add(curLine);
-		}
+	// Read the old contents of the user's dictionary
+	else {
+		std::auto_ptr<std::istream> stream(agi::io::Open(STD_STR(userDicPath)));
+		std::remove_copy_if(
+			++agi::line_iterator<std::string>(*stream.get()),
+			agi::line_iterator<std::string>(),
+			std::back_inserter(words),
+			std::mem_fun_ref(&std::string::empty));
 	}
 
-	// Not added yet
-	if (!added) dic.Add(word);
+	// Add the word
+	words.push_back(sword);
+	words.sort();
 
-	// Write back to disk
+	// Write the new dictionary
 	try {
-		TextFileWriter writer(usrdicpath, L"UTF-8");
-		writer.WriteLineToFile(wxString::Format(L"%i", dic.Count()));
-		for (unsigned int i=0;i<dic.Count();i++) writer.WriteLineToFile(dic[i]);
+		agi::io::Save writer(STD_STR(userDicPath));
+		writer.Get() << words.size() << "\n";
+		std::copy(words.begin(), words.end(), std::ostream_iterator<std::string>(writer.Get(), "\n"));
 	}
 	catch (const agi::Exception&) {
 		// Failed to open file
 	}
 }
 
-/// @brief Check if the word is valid.
-/// @param word Word to check
-/// @return Whether word is valid or not.
-///
 bool HunspellSpellChecker::CheckWord(wxString word) {
-	if (!hunspell) return true;
+	if (!hunspell.get()) return true;
 	try {
 		return hunspell->spell(conv->Convert(STD_STR(word)).c_str()) == 1;
 	}
@@ -171,111 +129,128 @@ bool HunspellSpellChecker::CheckWord(wxString word) {
 	}
 }
 
-/// @brief Get suggestions for word.
-/// @param word Word to get suggestions for
-/// @return List of suggestions
-///
 wxArrayString HunspellSpellChecker::GetSuggestions(wxString word) {
 	wxArrayString suggestions;
-	if (!hunspell) return suggestions;
+	if (!hunspell.get()) return suggestions;
 
-	try {
-		// Grab raw from Hunspell
-		char **results;
-		int n = hunspell->suggest(&results,conv->Convert(STD_STR(word)).c_str());
+	// Grab raw from Hunspell
+	char **results;
+	int n = hunspell->suggest(&results,conv->Convert(STD_STR(word)).c_str());
 
-		// Convert each
-		for (int i=0;i<n;i++) {
-			suggestions.Add(rconv->Convert(results[i]));
-			delete results[i];
+	suggestions.reserve(n);
+	// Convert each
+	for (int i = 0; i < n; ++i) {
+		try {
+			suggestions.Add(lagi_wxString(rconv->Convert(results[i])));
 		}
+		catch (agi::charset::ConvError const&) {
+			// Shouldn't ever actually happen...
+		}
+		delete results[i];
+	}
 
-		delete results;
-	}
-	catch (agi::charset::ConvError const&) {
-		return suggestions;
-	}
+	delete results;
 
 	return suggestions;
 }
 
-/// @brief Get list of available dictionaries.
-/// @return List of available dictionaries
-///
 wxArrayString HunspellSpellChecker::GetLanguageList() {
-	// Get dir name
-	wxString path = StandardPaths::DecodePathMaybeRelative(lagi_wxString(OPT_GET("Path/Dictionary")->GetString()), _T("?data")) + _T("/");
-	wxArrayString list;
-	wxFileName folder(path);
-	if (!folder.DirExists()) return list;
+	wxArrayString dic, aff;
 
-	// Get file lists
-	wxArrayString dic;
-	wxDir::GetAllFiles(path,&dic,_T("*.dic"),wxDIR_FILES);
-	wxArrayString aff;
-	wxDir::GetAllFiles(path,&aff,_T("*.aff"),wxDIR_FILES);
+	// Get list of dictionaries
+	wxString path = StandardPaths::DecodePath("?data/dictionaries/");
+	if (wxFileName::DirExists(path)) {
+		wxDir::GetAllFiles(path, &dic, "*.dic", wxDIR_FILES);
+		wxDir::GetAllFiles(path, &aff, "*.aff", wxDIR_FILES);
+	}
+	path = StandardPaths::DecodePath(lagi_wxString(OPT_GET("Path/Dictionary")->GetString()) + "/");
+	if (wxFileName::DirExists(path)) {
+		wxDir::GetAllFiles(path, &dic, "*.dic", wxDIR_FILES);
+		wxDir::GetAllFiles(path, &aff, "*.aff", wxDIR_FILES);
+	}
+	if (aff.empty()) return wxArrayString();
 
-	// For each dictionary match, see if it can find the corresponding .aff
-	for (unsigned int i=0;i<dic.Count();i++) {
-		wxString curAff = dic[i].Left(dic[i].Length()-4) + _T(".aff");
-		for (unsigned int j=0;j<aff.Count();j++) {
-			// Found match
-			if (curAff == aff[j]) {
-				wxFileName fname(curAff);
-				list.Add(fname.GetName());
-				break;
+	dic.Sort();
+	aff.Sort();
+
+	// Drop extensions
+	for (size_t i = 0; i < dic.size(); ++i) dic[i].resize(dic[i].size() - 4);
+	for (size_t i = 0; i < aff.size(); ++i) aff[i].resize(aff[i].size() - 4);
+
+	// Verify that each aff has a dic
+	wxArrayString ret;
+	for (size_t i = 0, j = 0; i < dic.size() && j < aff.size(); ) {
+		int cmp = dic[i].Cmp(aff[j]);
+		if (cmp < 0) ++i;
+		else if (cmp > 0) ++j;
+		else {
+			// Don't insert a language twice if it's in both the user dir and
+			// the app's dir
+			wxString name = wxFileName(aff[j]).GetName();
+			if (ret.empty() || name != ret.back())
+				ret.push_back(name);
+			++i;
+			++j;
+		}
+	}
+	return ret;
+}
+
+void HunspellSpellChecker::SetLanguage(wxString language) {
+	if (language.empty()) return;
+
+	wxString userDicRoot = StandardPaths::DecodePath(lagi_wxString(OPT_GET("Path/Dictionary")->GetString()));
+	wxString dataDicRoot = StandardPaths::DecodePath("?data/dictionaries");
+
+	// If the user has a dic/aff pair in their dictionary path for this language
+	// use that; otherwise use the one from Aegisub's install dir, adding words
+	// from the dic in the user's dictionary path if it exists
+	wxString affPath = wxString::Format("%s/%s.aff", userDicRoot, language);
+	wxString dicPath = wxString::Format("%s/%s.dic", userDicRoot, language);
+	userDicPath = wxString::Format("%s/user_%s.dic", userDicRoot, language);
+	if (!wxFileExists(affPath) || !wxFileExists(dicPath)) {
+		affPath = wxString::Format("%s/%s.aff", dataDicRoot, language);
+		dicPath = wxString::Format("%s/%s.dic", dataDicRoot, language);
+	}
+
+	LOG_I("dictionary/file") << dicPath;
+
+	if (!wxFileExists(affPath) || !wxFileExists(dicPath)) {
+		LOG_D("dictionary/file") << "Dictionary not found";
+		return;
+	}
+
+	hunspell.reset(new Hunspell(affPath.mb_str(csConvLocal), dicPath.mb_str(csConvLocal)));
+	if (!hunspell.get()) return;
+
+	conv.reset(new agi::charset::IconvWrapper("utf-8", hunspell->get_dic_encoding()));
+	rconv.reset(new agi::charset::IconvWrapper(hunspell->get_dic_encoding(), "utf-8"));
+
+	if (userDicPath == dicPath || !wxFileExists(userDicPath)) return;
+
+	try {
+		std::auto_ptr<std::istream> stream(agi::io::Open(STD_STR(userDicPath)));
+		agi::line_iterator<std::string> userDic(*stream.get());
+		agi::line_iterator<std::string> end;
+		++userDic; // skip entry count line
+		for (; userDic != end; ++userDic) {
+			if ((*userDic).empty()) continue;
+			try {
+#ifdef WITH_OLD_HUNSPELL
+				hunspell->put_word(conv->Convert(*userDic).c_str());
+#else
+				hunspell->add(conv->Convert(*userDic).c_str());
+#endif
+			}
+			catch (agi::charset::ConvError const&) {
+				// Normally this shouldn't happen, but some versions of Aegisub
+				// wrote words in the wrong charset
 			}
 		}
 	}
-
-	// Return list
-	return list;
-}
-
-/// @brief Set language.
-/// @param language Language to set
-///
-void HunspellSpellChecker::SetLanguage(wxString language) {
-	// Unload
-	Reset();
-	if (language.IsEmpty()) return;
-
-	// Get dir name
-	//FIXME: this should use ?user instead of ?data; however, since it apparently works already on win32, I'm not gonna mess with it right now :p
-	wxString path = StandardPaths::DecodePathMaybeRelative(lagi_wxString(OPT_GET("Path/Dictionary")->GetString()), _T("?data")) + _T("/");
-	wxString userPath = StandardPaths::DecodePath(_T("?user/dictionaries/user_"));
-
-	// Get affix and dictionary paths
-	affpath = wxString::Format("%s%s.aff", path, language);
-	dicpath = wxString::Format("%s%s.dic", path, language);
-	usrdicpath = wxString::Format("%s%s.dic", userPath, language);
-
-	LOG_I("dictionary/file") << dicpath;
-
-	// Check if language is available
-	if (!wxFileExists(affpath) || !wxFileExists(dicpath)) return;
-
-	// Load
-	hunspell = new Hunspell(affpath.mb_str(csConvLocal),dicpath.mb_str(csConvLocal));
-	conv = NULL;
-	if (hunspell) {
-		conv  = new agi::charset::IconvWrapper("wchar_t", hunspell->get_dic_encoding());
-		rconv = new agi::charset::IconvWrapper(hunspell->get_dic_encoding(), "wchar_t");
-		try {
-			TextFileReader reader(usrdicpath, L"UTF-8");
-			while (reader.HasMoreLines()) {
-				wxString curLine = reader.ReadLineFromFile();
-				if (curLine.IsEmpty() || curLine.IsNumber()) continue;
-#ifdef WITH_OLD_HUNSPELL
-				hunspell->put_word(conv->Convert(STD_STR(curLine)).c_str());
-#else
-				hunspell->add(conv->Convert(STD_STR(curLine)).c_str());
-#endif
-			}
-		}
-		catch (const wchar_t *) {
-			// file not found
-		}
+	catch (agi::Exception const&) {
+		// File ceased to exist between when we checked and when we tried to
+		// open it or we don't have permission to read it for whatever reason
 	}
 }
 
