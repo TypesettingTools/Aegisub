@@ -108,8 +108,11 @@ public:
 	, width(that.width)
 	{
 	}
-	OutputType operator*() const {
+	OutputType const& operator*() const {
 		return value;
+	}
+	OutputType const* operator->() const {
+		return &value;
 	}
 	line_iterator<OutputType>& operator++() {
 		next();

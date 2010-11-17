@@ -234,7 +234,7 @@ void HunspellSpellChecker::SetLanguage(wxString language) {
 		agi::line_iterator<std::string> end;
 		++userDic; // skip entry count line
 		for (; userDic != end; ++userDic) {
-			if ((*userDic).empty()) continue;
+			if (userDic->empty()) continue;
 			try {
 #ifdef WITH_OLD_HUNSPELL
 				hunspell->put_word(conv->Convert(*userDic).c_str());
