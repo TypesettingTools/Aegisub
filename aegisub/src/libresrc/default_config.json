@@ -161,7 +161,7 @@
 			"Base" : "?data/automation/",
 			"Include" : "?user/automation/include/|?data/automation/include/"
 		},
-		"Dictionary" : "?user/dictionary",
+		"Dictionary" : "?user/dictionaries",
 		"Fonts Collector Destination" : "?script",
 		"Last" : {
 			"Audio" : "",
