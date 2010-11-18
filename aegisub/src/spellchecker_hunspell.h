@@ -52,9 +52,12 @@ class HunspellSpellChecker : public SpellChecker {
 	/// Hunspell instance
 	std::auto_ptr<Hunspell> hunspell;
 
-	/// Conversion buffer
+	/// Conversions between the dictionary charset and utf-8
 	std::auto_ptr<agi::charset::IconvWrapper> conv;
 	std::auto_ptr<agi::charset::IconvWrapper> rconv;
+
+	/// Languages which we have dictionaries for
+	wxArrayString languages;
 
 	/// Path to user-local dictionary.
 	wxString userDicPath;

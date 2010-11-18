@@ -155,6 +155,8 @@ wxArrayString HunspellSpellChecker::GetSuggestions(wxString word) {
 }
 
 wxArrayString HunspellSpellChecker::GetLanguageList() {
+	if (!languages.empty()) return languages;
+
 	wxArrayString dic, aff;
 
 	// Get list of dictionaries
@@ -178,7 +180,6 @@ wxArrayString HunspellSpellChecker::GetLanguageList() {
 	for (size_t i = 0; i < aff.size(); ++i) aff[i].resize(aff[i].size() - 4);
 
 	// Verify that each aff has a dic
-	wxArrayString ret;
 	for (size_t i = 0, j = 0; i < dic.size() && j < aff.size(); ) {
 		int cmp = dic[i].Cmp(aff[j]);
 		if (cmp < 0) ++i;
@@ -187,13 +188,13 @@ wxArrayString HunspellSpellChecker::GetLanguageList() {
 			// Don't insert a language twice if it's in both the user dir and
 			// the app's dir
 			wxString name = wxFileName(aff[j]).GetName();
-			if (ret.empty() || name != ret.back())
-				ret.push_back(name);
+			if (languages.empty() || name != languages.back())
+				languages.push_back(name);
 			++i;
 			++j;
 		}
 	}
-	return ret;
+	return languages;
 }
 
 void HunspellSpellChecker::SetLanguage(wxString language) {
@@ -226,8 +227,6 @@ void HunspellSpellChecker::SetLanguage(wxString language) {
 	conv.reset(new agi::charset::IconvWrapper("utf-8", hunspell->get_dic_encoding()));
 	rconv.reset(new agi::charset::IconvWrapper(hunspell->get_dic_encoding(), "utf-8"));
 
-	if (userDicPath == dicPath || !wxFileExists(userDicPath)) return;
-
 	try {
 		std::auto_ptr<std::istream> stream(agi::io::Open(STD_STR(userDicPath)));
 		agi::line_iterator<std::string> userDic(*stream.get());
@@ -249,8 +248,7 @@ void HunspellSpellChecker::SetLanguage(wxString language) {
 		}
 	}
 	catch (agi::Exception const&) {
-		// File ceased to exist between when we checked and when we tried to
-		// open it or we don't have permission to read it for whatever reason
+		// File doesn't exist or we don't have permission to read it
 	}
 }
 

@@ -827,7 +827,7 @@ void SubsTextEditCtrl::ShowPopupMenu(int activePos) {
 			}
 		}
 
-		wxArrayString langs = spellchecker->GetLanguageList();	// This probably should be cached...
+		wxArrayString langs = spellchecker->GetLanguageList();
 		wxString curLang = lagi_wxString(OPT_GET("Tool/Spell Checker/Language")->GetString());
 
 		// Languages
