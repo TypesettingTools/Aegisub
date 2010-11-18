@@ -93,7 +93,7 @@ public:
 	void AddAutoFilters();
 	void DrawSettings(wxWindow *parent,wxSizer *AddTo);
 	void Export(wxString file, wxString charset, wxWindow *export_dialog=NULL);
-	AssFile *ExportTransform(wxWindow *export_dialog=NULL);
+	AssFile *ExportTransform(wxWindow *export_dialog=NULL,bool copy=false);
 	wxSizer *GetSettingsSizer(wxString name);
 
 	/// @brief DOCME

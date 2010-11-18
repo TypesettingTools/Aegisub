@@ -86,6 +86,10 @@ std::tr1::shared_ptr<AegiVideoFrame> ThreadedFrameSource::ProcFrame(int frameNum
 				// other lines will probably not be viewed before the file changes
 				// again), and if it's a different frame, export the entire file.
 				if (singleFrame == -1) {
+					AssExporter exporter(subs.get());
+					exporter.AddAutoFilters();
+					exporter.ExportTransform();
+
 					singleFrame = frameNum;
 					// Copying a nontrivially sized AssFile is fairly slow, so
 					// instead muck around with its innards to just temporarily
@@ -173,14 +177,12 @@ ThreadedFrameSource::~ThreadedFrameSource() {
 }
 
 void ThreadedFrameSource::LoadSubtitles(AssFile *subs) throw() {
-	AssExporter exporter(subs);
-	exporter.AddAutoFilters();
-	AssFile *exported = exporter.ExportTransform();
+	subs = new AssFile(*subs);
 	wxMutexLocker locker(jobMutex);
 	// Set nextSubs and let the worker thread move it to subs so that we don't
 	// have to lock fileMutex on the GUI thread, as that can be locked for
 	// extended periods of time with slow-rendering subtitles
-	nextSubs.reset(exported);
+	nextSubs.reset(subs);
 }
 
 void ThreadedFrameSource::RequestFrame(int frame, double time) throw() {

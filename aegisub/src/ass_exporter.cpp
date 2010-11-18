@@ -131,9 +131,9 @@ wxArrayString AssExporter::GetAllFilterNames() {
 /// @param export_dialog 
 /// @return 
 ///
-AssFile *AssExporter::ExportTransform(wxWindow *export_dialog) {
+AssFile *AssExporter::ExportTransform(wxWindow *export_dialog,bool copy) {
 	// Copy
-	AssFile *Subs = new AssFile(*OriginalSubs);
+	AssFile *Subs = copy ? new AssFile(*OriginalSubs) : OriginalSubs;
 
 	// Run filters
 	for (FilterList::iterator cur=Filters.begin();cur!=Filters.end();cur++) {
@@ -151,7 +151,7 @@ AssFile *AssExporter::ExportTransform(wxWindow *export_dialog) {
 /// @param export_dialog 
 ///
 void AssExporter::Export(wxString filename, wxString charset, wxWindow *export_dialog) {
-	std::auto_ptr<AssFile> Subs(ExportTransform(export_dialog));
+	std::auto_ptr<AssFile> Subs(ExportTransform(export_dialog,true));
 	Subs->Save(filename,false,false,charset);
 }
 
