@@ -16,7 +16,6 @@
 		BufferSecurityCheck="true"
 		EnableFunctionLevelLinking="true"
 		DebugInformationFormat="4"
-		EnablePREfast="true"
 	/>
 	<Tool
 		Name="VCLinkerTool"
