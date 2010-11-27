@@ -80,9 +80,6 @@
 #ifdef WITH_AUTOMATION
 #include "auto4_base.h"
 #endif
-#ifdef __WXMAC__
-#include <Carbon/Carbon.h>
-#endif
 
 
 
@@ -889,8 +886,7 @@ void FrameMain::UpdateTitle() {
 
 #ifdef __WXMAC__
 	// On Mac, set the mark in the close button
-	WindowRef wnd = (WindowRef)GetHandle();
-	SetWindowModified(wnd, subsMod);
+	OSXSetModified(subsMod);
 #endif
 
 	// Get current title
