@@ -36,6 +36,7 @@
 
 #ifdef WITH_HUNSPELL
 
+#include <memory>
 #include <hunspell/hunspell.hxx>
 
 #include "include/aegisub/spellchecker.h"
