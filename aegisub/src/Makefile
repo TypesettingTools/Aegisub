@@ -59,6 +59,7 @@ ifeq (yes, $(HAVE_PROVIDER_FFMPEGSOURCE))
 SRC_OPT += audio_provider_ffmpegsource.cpp video_provider_ffmpegsource.cpp ffmpegsource_common.cpp
 audio_provider_ffmpegsource.o video_provider_ffmpegsource.o ffmpegsource_common.o: \
 	CXXFLAGS += $(CFLAGS_FFMPEGSOURCE) $(CFLAGS_LIBAVFORMAT) $(CFLAGS_LIBAVCODEC) $(CFLAGS_LIBSWSCALE) $(CFLAGS_LIBAVUTIL) $(CFLAGS_LIBPOSTPROC)
+ffmpegsource_common.o: CXXFLAGS += -D__STDC_FORMAT_MACROS
 LDFLAGS += $(LDFLAGS_FFMPEGSOURCE) $(LDFLAGS_LIBAVFORMAT) $(LDFLAGS_LIBAVCODEC) $(LDFLAGS_LIBSWSCALE) $(LDFLAGS_LIBAVUTIL) $(LDFLAGS_LIBPOSTPROC)
 LDFLAGS_POST += $(LDFLAGS_FFMPEGSOURCE)
 endif
