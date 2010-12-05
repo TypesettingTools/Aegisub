@@ -7,7 +7,7 @@ PRECOMPILED_HEADER_NAME=agi_pre.h
 
 SUBDIRS = libresrc
 
-CXXFLAGS += -DAEGISUB -D__STDC_FORMAT_MACROS -I. -I..  -Iinclude -I../libaegisub/include $(CPPFLAGS_WX)
+CXXFLAGS += -DAEGISUB -I. -I..  -Iinclude -I../libaegisub/include $(CPPFLAGS_WX)
 
 LDFLAGS += -L../libaegisub -laegisub-3.0
 LDFLAGS += $(CFLAGS_DEBUG) $(CFLAGS_PROFILE) $(LDFLAGS_CCMALLOC) $(LDFLAGS_EFENCE)
