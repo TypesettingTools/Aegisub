@@ -10,21 +10,16 @@
 # directly.
 
 ACLOCAL=${ACLOCAL-aclocal-1.10}
-LIBTOOLIZE=${LIBTOOLIZE-libtoolize}
 AUTOHEADER=${AUTOHEADER-autoheader}
 AUTOMAKE=${AUTOMAKE-automake-1.10}
 AUTOCONF=${AUTOCONF-autoconf}
-GETTEXTIZE=${GETTEXTIZE-glib-gettextize}
-INTLTOOLIZE=${INTLTOOLIZE-intltoolize}
 
 
 GLIB_REQUIRED_VERSION=2.10.0
 AUTOCONF_REQUIRED_VERSION=2.54
 AUTOMAKE_REQUIRED_VERSION=1.10
-INTLTOOL_REQUIRED_VERSION=0.31
-LIBTOOL_REQUIRED_VERSION=1.5
 
-REQUIRED_M4="fontutil.m4 glib-gettext.m4 intltool.m4 intl.m4 pkg.m4 iconv.m4"
+REQUIRED_M4="fontutil.m4 gettext.m4 pkg.m4 iconv.m4"
 REQUIRED_M4_WX="wxwin29.m4 wxwin.m4"
 
 PROJECT="aegisub"
@@ -92,26 +87,6 @@ check_version ()
 DIE=0
 
 
-$ECHO_N "checking for libtool >= $LIBTOOL_REQUIRED_VERSION ... "
-if ($LIBTOOLIZE --version) < /dev/null > /dev/null 2>&1; then
-   LIBTOOLIZE=$LIBTOOLIZE
-elif (glibtoolize --version) < /dev/null > /dev/null 2>&1; then
-   LIBTOOLIZE=glibtoolize
-else
-    echo
-    echo "  You must have libtool installed to compile $PROJECT."
-    echo "  Install the appropriate package for your distribution,"
-    echo "  or get the source tarball at ftp://ftp.gnu.org/pub/gnu/"
-    echo
-    DIE=1
-fi
-
-if test x$LIBTOOLIZE != x; then
-    VER=`$LIBTOOLIZE --version \
-         | grep libtool | sed "s/.* \([0-9.]*\)[-a-z0-9]*$/\1/"`
-    check_version $VER $LIBTOOL_REQUIRED_VERSION
-fi
-
 $ECHO_N "checking for autoconf >= $AUTOCONF_REQUIRED_VERSION ... "
 if ($AUTOCONF --version) < /dev/null > /dev/null 2>&1; then
     VER=`$AUTOCONF --version | head -n 1 \
@@ -156,35 +131,6 @@ if test x$AUTOMAKE != x; then
     check_version $VER $AUTOMAKE_REQUIRED_VERSION
 fi
 
-
-$ECHO_N "checking for $GETTEXTIZE ... "
-if ($GETTEXTIZE --version) < /dev/null > /dev/null 2>&1; then
-    VER=`$GETTEXTIZE --version \
-         | grep glib-gettextize | sed "s/.* \([0-9.]*\)/\1/"`
-    check_version $VER $GLIB_REQUIRED_VERSION
-else
-    echo
-    echo "  You must have glib-gettextize installed to compile $PROJECT."
-    echo "  glib-gettextize is part of glib-2.0, so you should already"
-    echo "  have it. Make sure it is in your PATH."
-    echo
-    DIE=1
-fi
-
-
-$ECHO_N "checking for $INTLTOOLIZE >= $INTLTOOL_REQUIRED_VERSION ... "
-if ($INTLTOOLIZE --version) < /dev/null > /dev/null 2>&1; then
-    VER=`$INTLTOOLIZE --version \
-         | grep intltoolize | sed "s/.* \([0-9.]*\)/\1/"`
-    check_version $VER $INTLTOOL_REQUIRED_VERSION
-else
-    echo
-    echo "  You must have intltool installed to compile $PROJECT."
-    echo "  Get the latest version from"
-    echo "  ftp://ftp.gnome.org/pub/GNOME/sources/intltool/"
-    echo
-    DIE=1
-fi
 
 if test -z "$BIN_AWK"; then
   BIN_AWK=`which awk`
@@ -274,23 +220,11 @@ if test $RC -ne 0; then
    exit $RC
 fi
 
-echo "--- $LIBTOOLIZE ---"
-$LIBTOOLIZE --force || exit $?
-
 echo "--- $AUTOHEADER ---"
 $AUTOHEADER || exit $?
 
-echo "--- $AUTOMAKE ---"
-$AUTOMAKE --add-missing || exit $?
-
 echo "--- $AUTOCONF ---"
 $AUTOCONF || exit $?
-
-echo "--- $GETTEXTIZE ---"
-$GETTEXTIZE --force || exit $?
-
-echo "--- $INTLTOOLIZE ---"
-$INTLTOOLIZE --force --automake || exit $?
 
 cd $ORIGDIR
 

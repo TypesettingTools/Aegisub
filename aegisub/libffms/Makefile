@@ -1,11 +1,11 @@
-AUTOMAKE_OPTIONS = subdir-objects
+include ../Makefile.inc
 
-noinst_LIBRARIES = libffmpegsource_aegisub.a
+CXXFLAGS = -Icore -Iinclude -D__UNIX__ -DFFMS_EXPORTS -DHAVE_STRLCPY -D__STDC_CONSTANT_MACROS
+CXXFLAGS += $(CFLAGS_LIBAVFORMAT) $(CFLAGS_LIBAVCODEC) $(CFLAGS_LIBAVUTIL) $(CFLAGS_LIBPOSTPROC)
 
-AM_CPPFLAGS = -Icore -Iinclude -D__UNIX__ -DFFMS_EXPORTS -DHAVE_STRLCPY -D__STDC_CONSTANT_MACROS @LIBAVFORMAT_CFLAGS@ @LIBAVCODEC_CFLAGS@ @LIBSWSCALE_CFLAGS@ @LIBAVUTIL_CFLAGS@ @LIBPOSTPROC_CFLAGS@
+LIB = libffmpegsource_aegisub.a
 
-
-libffmpegsource_aegisub_a_SOURCES = \
+SRC = \
 	src/core/audiosource.cpp \
 	src/core/ffms.cpp \
 	src/core/indexing.cpp \
@@ -21,6 +21,11 @@ libffmpegsource_aegisub_a_SOURCES = \
 	src/core/videosource.cpp \
 	src/core/wave64writer.cpp
 
-libffmpegsource_aegisub_a_SOURCES += \
+HEADER = \
 	src/core/*.h \
 	include/*.h
+
+include ../Makefile.target
+
+
+

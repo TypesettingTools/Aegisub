@@ -1,0 +1,175 @@
+#  *** THERE ARE NO USER-EDITABLE ITEMS HERE. ***
+
+
+.PHONY: all install clean subdirs $(SUBDIRS)
+all: subdirs $(LIB) $(LIB_SHARED) $(PROGRAM)
+
+OBJ		= $(addsuffix .o, $(basename $(SRC)))
+DEP		= $(addsuffix .d, $(basename $(SRC)))
+
+###################
+# PLATFORM SPECIFIC
+###################
+
+ifeq (yes, $(BUILD_DARWIN))
+LIB_SHARED_LINK = $(LIB_SHARED_LINK_OSX)
+endif
+
+
+###########
+# LIBRARIES
+###########
+$(LIB) : $(OBJ)
+	$(BIN_AR) cru $@ $(OBJ)
+	$(BIN_RANLIB) $@
+
+ifdef LIB_SHARED
+LIB_SHARED_FULL = $(LIB_SHARED).$(LIB_VERSION)
+$(LIB_SHARED) : $(OBJ)
+	$(BIN_CXX) $(LIB_SHARED_LINK) $(OBJ) -o $(LIB_SHARED_FULL)
+	$(BIN_LN) -s $(LIB_SHARED_FULL) $(LIB_SHARED)
+
+CLEANFILES+= $(LIB_SHARED_FULL)
+endif
+
+
+##########
+# PROGRAMS
+##########
+$(PROGRAM): $(OBJ)
+	$(BIN_CXX) -o $@ $(LDFLAGS) $(OBJ) $(LDFLAGS_POST)
+
+
+##########
+# CLEANING
+##########
+clean: $(SUBDIRS)
+	$(BIN_RM) -f $(OBJ) $(CLEANFILES) $(LIB) $(LIB_SHARED) $(PROGRAM)
+
+distclean: clean
+	$(BIN_RM) -rf $(DISTCLEANFILES) $(DEP)
+ifdef PRECOMPILED_HEADER_NAME
+	$(BIN_RM) -f $(PRECOMPILED_HEADER_NAME).gch
+endif
+
+
+#########
+# INSTALL
+#########
+ifeq (install, $(MAKECMDGOALS))
+INSTALL_LIB 		= $(addprefix $(P_LIB)/, $(LIB_SHARED) $(LIB_SHARED_FULL))
+endif
+
+install: $(SUBDIRS) install-share install-program install-lib
+
+install-program:
+ifdef PROGRAM_INSTALL
+	@$(BIN_MKDIR) -p $(P_BINDIR)
+	@$(BIN_INSTALL) $(PROGRAM) $(P_BINDIR)/$(PROGRAM)
+endif
+
+install-lib:
+ifdef LIB_SHARED_INSTALL
+	$(BIN_MKDIR) -p $(P_LIB)
+	$(BIN_INSTALL) $(LIB_SHARED_FULL) $(P_LIB)/$(LIB_SHARED_FULL)
+	$(BIN_LN) -sf $(P_LIB)/$(LIB_SHARED_FULL) $(P_LIB)/$(LIB_SHARED)
+endif
+
+install-share:
+ifdef DATA_SHARE
+	@$(BIN_MKDIR) -p $(addprefix $(P_DATA)/, $(dir $(DATA_SHARE)))
+	@for i in $(DATA_SHARE); do \
+		$(BIN_ECHO) "$(BIN_INSTALL) $$i $(P_DATA)/$$i"; \
+		$(BIN_INSTALL) $$i $(P_DATA)/$$i; \
+	done
+endif
+ifdef DATA_SHARE_DOC
+	@$(BIN_MKDIR) -p $(addprefix $(P_DOC)/, $(dir $(DATA_SHARE_DOC)))
+	@for i in $(DATA_SHARE_DOC); do \
+		$(BIN_ECHO) "$(BIN_INSTALL) $$i $(P_DOC)/$$i"; \
+		$(BIN_INSTALL) $$i $(P_DOC)/$$i; \
+	done
+endif
+
+
+
+##############
+# DISTRIBUTION
+##############
+distdir:
+	@if ! test -f packages/distfile/distfile.sh; then \
+		echo "Please run this from the parent directory."; \
+		exit 1; \
+	fi
+	${SHELL} packages/distfile/distfile.sh
+
+distfiles: $(SUBDIRS)
+	@for i in $(SRC) $(HEADER) $(EXTRA_DIST); do \
+		echo $(CURDIR)/$$i; \
+	done
+
+
+########################
+# SUBDIRECTORY TRAVERSAL
+########################
+subdirs: $(SUBDIRS)
+
+$(SUBDIRS):
+	$(MAKE) -C $@ $(MAKECMDGOALS)
+
+# Set relations to ensure dependencies are built before their targets during parallel builds.
+src: universalchardet libass libffms tools libaegisub
+tests: libaegisub
+reporter: src
+
+
+
+
+####################
+# PRECOMPILED HEADER
+####################
+ifeq (yes, $(PRECOMPILED_HEADER))
+  ifdef PRECOMPILED_HEADER_NAME
+    CXXFLAGS += -include $(PRECOMPILED_HEADER_NAME) -Winvalid-pch -fpch-deps -fpch-preprocess
+    # This hack is required until we can use the 'private' keyword (gmake 3.82) to avoid all the
+    # per-object CXXFLAGS being triggered by the ($OBJ) line.
+    CXXFLAGS_GNU_MAKE_SUCKS := $(CXXFLAGS)
+    $(OBJ): | $(PRECOMPILED_HEADER_NAME).gch
+    $(PRECOMPILED_HEADER_NAME).gch: CXXFLAGS = $(CXXFLAGS_GNU_MAKE_SUCKS)
+  endif
+endif
+
+
+########
+# CCACHE
+########
+ifeq (yes, $(CCACHE_ENABLE))
+CXX_ENV		= $(CCACHE_ENV)
+BIN_CC		:= ccache $(BIN_CC)
+BIN_CXX		:= ccache $(BIN_CXX)
+endif
+
+
+##################
+# TRANSFORM RULES
+##################
+.SUFFIXES:
+.SUFFIXES: .o .c .cpp .cxx
+
+%.o: %.c
+	$(CXX_ENV) $(BIN_CC) $(CFLAGS_DEP) $(CFLAGS) $(CXXFLAGS) -c -o $@ $<
+
+%.o: %.cpp
+	$(CXX_ENV) $(BIN_CXX) $(CFLAGS_DEP) $(CPPFLAGS) $(CXXFLAGS) -c -o $@ $<
+
+%.o: %.cxx
+	$(CXX_ENV) $(BIN_CXX) $(CFLAGS_DEP) $(CPPFLAGS) $(CXXFLAGS) -c -o $@ $<
+
+$(PRECOMPILED_HEADER_NAME).gch: $(PRECOMPILED_HEADER_NAME)
+	$(CXX_ENV) $(BIN_CXX) $(CXXFLAGS) $(DEBUG_FLAGS) $<
+
+
+
+
+-include ($DEP)
+.SUFFIXES:

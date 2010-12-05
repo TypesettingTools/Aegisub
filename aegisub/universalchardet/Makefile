@@ -1,8 +1,10 @@
-noinst_LIBRARIES = libuniversalchardet.a
+include ../Makefile.inc
 
-AM_CPPFLAGS = -D_X86_
+LIB = libuniversalchardet.a
 
-libuniversalchardet_a_SOURCES = \
+CXXFLAGS += -D_X86_
+
+SRC = \
 	CharDistribution.cpp \
 	JpCntx.cpp \
 	LangBulgarianModel.cpp \
@@ -29,33 +31,7 @@ libuniversalchardet_a_SOURCES = \
 	nsUTF8Prober.cpp \
 	nsUniversalDetector.cpp
 
-libuniversalchardet_a_SOURCES += \
-	CharDistribution.h \
-	JpCntx.h \
-	nsBig5Prober.h \
-	nsCharSetProber.h \
-	nsCodingStateMachine.h \
-	nsEUCJPProber.h \
-	nsEUCKRProber.h \
-	nsEUCTWProber.h \
-	nsError.h \
-	nsEscCharsetProber.h \
-	nsGB2312Prober.h \
-	nsHebrewProber.h \
-	nsLatin1Prober.h \
-	nsMBCSGroupProber.h \
-	nsPkgInt.h \
-	nsSBCSGroupProber.h \
-	nsSBCharSetProber.h \
-	nsSJISProber.h \
-	nsUTF8Prober.h \
-	nsUniversalDetector.h \
-	nscore.h \
-	prcpucfg.h \
-	prmem.h \
-	protypes.h \
-	prtypes.h \
-	xpcom-config.h
+HEADER = *.h
 
 EXTRA_DIST = \
 	Big5Freq.tab \
@@ -63,3 +39,5 @@ EXTRA_DIST = \
 	EUCTWFreq.tab \
 	GB2312Freq.tab \
 	JISFreq.tab
+
+include ../Makefile.target

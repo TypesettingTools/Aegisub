@@ -1,8 +1,7 @@
-automationdir = $(aegisubdatadir)/automation
-share_docdir = $(aegisubdocdir)
+include ../Makefile.inc
 
 # share/
-data_auto4_lua = \
+DATA_AUTOMATION += \
 	autoload/cleantags-autoload.lua \
 	autoload/kara-templater.lua \
 	autoload/karaoke-auto-leadin.lua \
@@ -17,8 +16,7 @@ data_auto4_lua = \
 
 
 # share/doc
-
-data_general_doc = \
+DATA_GENERAL_DOC = \
 	demos/raytracer-test1.ass \
 	v4-docs/basic-function-interface.txt \
 	v4-docs/configuration-dialogs.txt \
@@ -29,27 +27,25 @@ data_general_doc = \
 	v4-docs/subtitle-data.txt \
 	v4-docs/template-scripting-ideas.ass
 
-data_auto4_lua_doc = \
+DATA_AUTOMATION_DOC += \
 	demos/future-windy-blur.lua \
 	demos/raytracer.lua
 
+all: ;
 
-nobase_share_doc_DATA =
-nobase_automation_DATA =
 
-if HAVE_AUTOMATION
-nobase_automation_DATA += $(data_general)
-nobase_share_doc_DATA += $(data_general_doc)
-endif
+install: install-share
+	@$(BIN_MKDIR) -p $(addprefix $(P_DATA)/automation/, $(dir $(DATA_AUTOMATION)))
+	@for i in $(DATA_AUTOMATION); do \
+		$(BIN_ECHO) "$(BIN_INSTALL) $$i $(P_DATA)/automation/$$i"; \
+		$(BIN_INSTALL) $$i $(P_DATA)/automation/$$i; \
+	done
 
-if HAVE_AUTO4_LUA
-nobase_automation_DATA += $(data_auto4_lua)
-nobase_share_doc_DATA += $(data_auto4_lua_doc)
-endif
-
+DATA_SHARE_DOC	= $(DATA_GENERAL_DOC) $(DATA_AUTOMATION_DOC)
 
 EXTRA_DIST = \
-	$(data_general) \
-	$(data_auto4_lua) \
-	$(data_general_doc) \
-	$(data_auto4_lua_doc)
+	$(DATA_AUTOMATION) \
+	$(DATA_GENERAL_DOC) \
+	$(DATA_AUTOMATION_DOC)
+
+include ../Makefile.target

@@ -1,0 +1,174 @@
+#########################
+# AEGISUB FEATURE SUPPORT
+#########################
+HAVE_ALSA					= @with_alsa@
+HAVE_AUTO4_LUA				= @with_auto4_lua@
+HAVE_AUTOMATION				= @with_automation@
+HAVE_FFMPEG					= @agi_cv_with_ffmpeg@
+HAVE_HUNSPELL				= @with_hunspell@
+HAVE_OPENAL					= @with_openal@
+HAVE_OPENMP					= @with_openmp@
+HAVE_OSS					= @with_oss@
+HAVE_PORTAUDIO				= @with_portaudio@
+HAVE_PROVIDER_FFMPEGSOURCE	= @with_provider_ffmpegsource@
+HAVE_PULSEAUDIO				= @with_pulseaudio@
+WITH_EXTERNAL_LIBASS		= @with_external_libass@
+WITH_LIBASS					= @with_libass@
+FOUND_AUDIO_PLAYER			= @found_audio_player@
+FOUND_VIDEO_PROVIDER		= @found_video_provider@
+
+
+###################
+# PLATFORM SETTINGS
+###################
+BUILD_BSD					= @build_bsd@
+BUILD_DARWIN				= @build_darwin@
+BUILD_DEFAULT				= @build_default@
+BUILD_LINUX					= @build_linux@
+
+
+#######
+# FLAGS
+#######
+CFLAGS				= @CFLAGS@
+CXXFLAGS			= @CXXFLAGS@
+CPPFLAGS			= @CPPFLAGS@
+CFLAGS_DEP			= -MD -MP
+LDFLAGS				= @LDFLAGS@
+INSTALL_FLAGS		= -m 664
+CCACHE_ENV			= CCACHE_SLOPPINESS=time_macros
+LIB_SHARED_LINK		= -shared -Wl,-soname -Wl,$(LIB_SHARED_FULL)
+LIB_SHARED_LINK_OSX	= -dynamiclib -Wl,-undefined -Wl,dynamic_lookup -compatibility_version $(LIB_VERSION) -current_version $(LIB_VERSION) -Wl,-single_module -mmacosx-version-min=10.5 -install_name ${CURDIR}/$(LIB_SHARED_FULL)
+
+
+#########
+# STRINGS
+#########
+AEGISUB_COMMAND			=@AEGISUB_COMMAND@
+AEGISUB_VERSION_DATA	=@AEGISUB_VERSION_DATA@
+BUILD_DATE				=@BUILD_DATE@
+PACKAGE_DEBUG			=@PACKAGE_DEBUG@
+SVN_REVISION			=@SVN_REVISION@
+DEBUG_FLAGS				=@DEBUG_FLAGS@
+# OS X
+BUNDLE_STRING			=@BUNDLE_STRING@
+DARWIN_ARCH				=@DARWIN_ARCH@
+DMG_STRING				=@DMG_STRING@
+GETTEXT_PACKAGE			=@GETTEXT_PACKAGE@
+
+
+#######
+# PATHS
+#######
+P_PREFIX				=@prefix@
+prefix					= ${P_PREFIX}
+P_PREFIX_EXEC			=@exec_prefix@
+exec_prefix				= ${P_PREFIX_EXEC}
+P_BINDIR				=@bindir@
+P_SBINDIR				=@sbindir@
+P_LIBEXEC				=@libexecdir@
+P_DATAROOT				=@datarootdir@
+P_SYSCONF				=@sysconfdir@
+P_SHAREDSTATE			=@sharedstatedir@
+P_LOCALSTATE			=@localstatedir@
+P_INCLUDE				=@includedir@
+P_LIB					=@libdir@
+P_LOCALE				=$(P_DATAROOT)/locale
+
+P_DESKTOP				=@P_DESKTOP@
+P_ICON					=@P_ICON@
+P_DATA					=$(P_DATAROOT)/aegisub/$(AEGISUB_VERSION_DATA)
+P_DOC					=$(P_DATAROOT)/doc/aegisub/$(AEGISUB_VERSION_DATA)
+
+
+
+###############
+# LIBRARY FLAGS
+###############
+CXXFLAGS_WX				= @WX_CXXFLAGS@
+CXXFLAGS_OPENMP			= @OPENMP_CXXFLAGS@
+
+CPPFLAGS_WX				= @WX_CPPFLAGS@
+
+CFLAGS_FONTCONFIG		= @FONTCONFIG_CFLAGS@
+CFLAGS_FREETYPE			= @FREETYPE_CFLAGS@
+CFLAGS_GL				= @GL_CFLAGS@
+CFLAGS_FFMPEGSOURCE		= -I../libffms/include
+CFLAGS_HUNSPELL			= @HUNSPELL_CFLAGS@
+CFLAGS_ICONV			= @ICONV_CFLAGS@
+CFLAGS_LIBASS			= -I../libass
+#CFLAGS_LIBASS			= @LIBASS_CFLAGS@
+CFLAGS_LIBAVCODEC		= @LIBAVCODEC_CFLAGS@
+CFLAGS_LIBAVFORMAT		= @LIBAVFORMAT_CFLAGS@
+CFLAGS_LIBAVUTIL		= @LIBAVUTIL_CFLAGS@
+CFLAGS_LIBCURL			= @LIBCURL_CFLAGS@
+CFLAGS_LIBPOSTPROC		= @LIBPOSTPROC_CFLAGS@
+CFLAGS_LIBPULSE			= @LIBPULSE_CFLAGS@
+CFLAGS_LIBSWSCALE		= @LIBSWSCALE_CFLAGS@
+CFLAGS_LUA				= @LUA_CFLAGS@
+CFLAGS_OPENAL			= @OPENAL_CFLAGS@
+CFLAGS_PORTAUDIO		= @PORTAUDIO_CFLAGS@
+CFLAGS_PTHREAD			= @PTHREAD_CFLAGS@
+CFLAGS_UCHARDET			= -I../universalchardet
+CFLAGS_WX				= @WX_CFLAGS@
+
+LDFLAGS_ALSA			= @ALSA_LDFLAGS@
+LDFLAGS_FONTCONFIG		= @FONTCONFIG_LIBS@
+LDFLAGS_FREETYPE		= @FREETYPE_LIBS@
+LDFLAGS_GL				= @GL_LIBS@
+LDFLAGS_FFMPEGSOURCE	= ../libffms/libffmpegsource_aegisub.a
+LDFLAGS_HUNSPELL		= @HUNSPELL_LIBS@
+LDFLAGS_ICONV			= @ICONV_LDFLAGS@
+LDFLAGS_LIBASS			= ../libass/libass_aegisub.a
+#LDFLAGS_LIBASS			= @LIBASS_LIBS@
+LDFLAGS_LIBAVCODEC		= @LIBAVCODEC_LIBS@
+LDFLAGS_LIBAVFORMAT		= @LIBAVFORMAT_LIBS@
+LDFLAGS_LIBAVUTIL		= @LIBAVUTIL_LIBS@
+LDFLAGS_LIBCURL			= @LIBCURL_LIBS@
+LDFLAGS_LIBPOSTPROC		= @LIBPOSTPROC_LIBS@
+LDFLAGS_LIBPULSE		= @LIBPULSE_LIBS@
+LDFLAGS_LIBSWSCALE		= @LIBSWSCALE_LIBS@
+LDFLAGS_LUA				= @LUA_LDFLAGS@
+LDFLAGS_OPENAL			= @OPENAL_LIBS@
+LDFLAGS_PTHREAD			= @PTHREAD_LIBS@
+LDFLAGS_PORTAUDIO		= @PORTAUDIO_LIBS@
+LDFLAGS_UCHARDET		?= ../universalchardet/libuniversalchardet.a
+LDFLAGS_WX				= @WX_LIBS@
+
+
+#####################
+# DEBUG / DEVELOPMENT
+#####################
+PRECOMPILED_HEADER		= @enable_gcc_prec@
+CCACHE_ENABLE			= @enable_ccache@
+LDFLAGS_CCMALLOC		= @CCMALLOC_LDFLAGS@
+LDFLAGS_DEBUG			= @DEBUG_FLAGS@
+LDFLAGS_EFENCE			= @EFENCE_LDFLAGS@
+LDFLAGS_GCOV			= @GCOV_LDFLAGS@
+
+CFLAGS_DEBUG			= @DEBUG_FLAGS@
+CFLAGS_EFENCE			= @EFENCE_LDFLAGS@
+CFLAGS_GCOV				= @GCOV_CFLAGS@
+
+
+##########
+# BINARIES
+##########
+BIN_AR			= ar
+BIN_RANLIB		= ranlib
+BIN_LN			= ln
+BIN_RM			= rm
+BIN_SHELL		= @SHELL@
+BIN_MV			= mv
+BIN_SED			= sed
+BIN_INSTALL 	= @INSTALL@
+BIN_MSGMERGE	= @MSGMERGE@
+BIN_XGETTEXT	= @XGETTEXT@
+BIN_MSGFMT		= @MSGFMT@
+BIN_CC			= @CC@
+BIN_CXX			= @CXX@
+BIN_CP			= cp
+BIN_MKDIR		= mkdir
+BIN_MKDIR_P		= mkdir -p
+BIN_ECHO		= echo
+BIN_TOUCH		= touch
