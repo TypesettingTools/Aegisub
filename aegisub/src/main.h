@@ -69,7 +69,7 @@ namespace config {
 namespace Automation4 { class AutoloadScriptManager; }
 
 /// Macro to get OptionValue object.
-#define OPT_GET(x) const_cast<const agi::OptionValue *>(config::opt->Get(x))
+#define OPT_GET(x) const_cast<const agi::OptionValue*>(config::opt->Get(x))
 
 /// Macro to set OptionValue object.
 #define OPT_SET(x) config::opt->Get(x)

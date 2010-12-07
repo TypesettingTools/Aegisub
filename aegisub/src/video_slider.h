@@ -34,22 +34,12 @@
 /// @ingroup custom_control
 ///
 
-
-
-
-////////////
-// Includes
 #ifndef AGI_PRE
 #include <wx/window.h>
 #endif
 
-
-////////////////////
-// Class prototypes
 class VideoDisplay;
 class SubtitlesGrid;
-
-
 
 /// DOCME
 /// @class VideoSlider

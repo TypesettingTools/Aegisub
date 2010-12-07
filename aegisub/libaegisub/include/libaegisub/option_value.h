@@ -18,22 +18,17 @@
 /// @brief Container for holding an actual option value.
 /// @ingroup libaegisub
 
-#ifndef LAGI_PRE
+#if !defined(AGI_PRE) && !defined(LAGI_PRE)
 #include <stdint.h>
 
 #include <fstream>
 #include <map>
 #include <vector>
-
-#ifdef _WIN32
-#include <functional>
-#else
-#include <tr1/functional>
-#endif
 #endif
 
-#include <libaegisub/exception.h>
 #include <libaegisub/colour.h>
+#include <libaegisub/exception.h>
+#include <libaegisub/signals.h>
 
 namespace agi {
 
@@ -49,15 +44,9 @@ class ConfigVisitor;
 /// @class OptionValue
 /// Holds an actual option.
 class OptionValue {
-public:
-	typedef std::tr1::function<void (const OptionValue &)> ChangeListener;
-
-private:
-	typedef std::map<void*, ChangeListener> ChangeListenerSet;
-	ChangeListenerSet listeners;
-
+	agi::signal::Signal<OptionValue const&> ValueChanged;
 protected:
-	void NotifyChanged();
+	void NotifyChanged() { ValueChanged(*this); }
 
 	OptionValueErrorInvalidType TypeError(std::string type, std::string op = " retrieve ") const {
 		return OptionValueErrorInvalidType("Attempt to" + op + type + " with non-" + type + " value " + GetName());
@@ -129,8 +118,7 @@ public:
 	virtual void GetDefaultListBool(std::vector<bool> &out) const { throw ListTypeError("string"); }
 
 
-	void Subscribe(void *key, ChangeListener listener);
-	void Unsubscribe(void *key);
+	DEFINE_SIGNAL_ADDERS(ValueChanged, Subscribe);
 };
 
 #define CONFIG_OPTIONVALUE(type_name, type)                                                   \

@@ -109,16 +109,15 @@ VideoContext::VideoContext()
 	Bind(EVT_VIDEO_ERROR, &VideoContext::OnVideoError, this);
 	Bind(EVT_SUBTITLES_ERROR, &VideoContext::OnSubtitlesError, this);
 
-	agi::OptionValue::ChangeListener providerChanged(std::tr1::bind(&VideoContext::Reload, this));
-	OPT_SUB("Subtitle/Provider", this, providerChanged);
-	OPT_SUB("Video/Provider", this, providerChanged);
+	OPT_SUB("Subtitle/Provider", &VideoContext::Reload, this);
+	OPT_SUB("Video/Provider", &VideoContext::Reload, this);
 
 	// It would be nice to find a way to move these to the individual providers
-	OPT_SUB("Provider/Avisynth/Allow Ancient", this, providerChanged);
-	OPT_SUB("Provider/Avisynth/Memory Max", this, providerChanged);
+	OPT_SUB("Provider/Avisynth/Allow Ancient", &VideoContext::Reload, this);
+	OPT_SUB("Provider/Avisynth/Memory Max", &VideoContext::Reload, this);
 
-	OPT_SUB("Provider/Video/FFmpegSource/Decoding Threads", this, providerChanged);
-	OPT_SUB("Provider/Video/FFmpegSource/Unsafe Seeking", this, providerChanged);
+	OPT_SUB("Provider/Video/FFmpegSource/Decoding Threads", &VideoContext::Reload, this);
+	OPT_SUB("Provider/Video/FFmpegSource/Unsafe Seeking", &VideoContext::Reload, this);
 }
 
 VideoContext::~VideoContext () {
@@ -126,8 +125,6 @@ VideoContext::~VideoContext () {
 		delete audio->provider;
 		delete audio->player;
 	}
-	// Don't unsubscribe from option change notifications as the options object
-	// might not even exist anymore
 }
 
 VideoContext *VideoContext::Get() {

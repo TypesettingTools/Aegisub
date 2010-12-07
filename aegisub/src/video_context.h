@@ -76,7 +76,6 @@ class VideoContext : public wxEvtHandler {
 	friend class AudioProvider;
 	friend class KeyFrameFile;
 
-private:
 	/// DOCME
 	std::list<VideoDisplay*> displayList;
 

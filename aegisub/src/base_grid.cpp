@@ -106,24 +106,23 @@ BaseGrid::BaseGrid(wxWindow* parent, wxWindowID id, const wxPoint& pos, const wx
 	// Set style
 	UpdateStyle();
 
-	agi::OptionValue::ChangeListener UpdateStyle(std::tr1::bind(&BaseGrid::UpdateStyle, this));
-	OPT_SUB("Subtitle/Grid/Font Face", this, UpdateStyle);
-	OPT_SUB("Subtitle/Grid/Font Size", this, UpdateStyle);
+	OPT_SUB("Subtitle/Grid/Font Face", &BaseGrid::UpdateStyle, this);
+	OPT_SUB("Subtitle/Grid/Font Size", &BaseGrid::UpdateStyle, this);
 
-	agi::OptionValue::ChangeListener Refresh(std::tr1::bind(&BaseGrid::Refresh, this, false, (wxRect*)NULL));
-	OPT_SUB("Colour/Subtitle Grid/Active Border", this, Refresh);
-	OPT_SUB("Colour/Subtitle Grid/Background/Background", this, Refresh);
-	OPT_SUB("Colour/Subtitle Grid/Background/Comment", this, Refresh);
-	OPT_SUB("Colour/Subtitle Grid/Background/Inframe", this, Refresh);
-	OPT_SUB("Colour/Subtitle Grid/Background/Selected Comment", this, Refresh);
-	OPT_SUB("Colour/Subtitle Grid/Background/Selection", this, Refresh);
-	OPT_SUB("Colour/Subtitle Grid/Collision", this, Refresh);
-	OPT_SUB("Colour/Subtitle Grid/Header", this, Refresh);
-	OPT_SUB("Colour/Subtitle Grid/Left Column", this, Refresh);
-	OPT_SUB("Colour/Subtitle Grid/Lines", this, Refresh);
-	OPT_SUB("Colour/Subtitle Grid/Selection", this, Refresh);
-	OPT_SUB("Colour/Subtitle Grid/Standard", this, Refresh);
-	OPT_SUB("Subtitle/Grid/Highlight Subtitles in Frame", this, Refresh);
+	std::tr1::function<void (agi::OptionValue const&)> Refresh(std::tr1::bind(&BaseGrid::Refresh, this, false, (wxRect*)NULL));
+	OPT_SUB("Colour/Subtitle Grid/Active Border", Refresh);
+	OPT_SUB("Colour/Subtitle Grid/Background/Background", Refresh);
+	OPT_SUB("Colour/Subtitle Grid/Background/Comment", Refresh);
+	OPT_SUB("Colour/Subtitle Grid/Background/Inframe", Refresh);
+	OPT_SUB("Colour/Subtitle Grid/Background/Selected Comment", Refresh);
+	OPT_SUB("Colour/Subtitle Grid/Background/Selection", Refresh);
+	OPT_SUB("Colour/Subtitle Grid/Collision", Refresh);
+	OPT_SUB("Colour/Subtitle Grid/Header", Refresh);
+	OPT_SUB("Colour/Subtitle Grid/Left Column", Refresh);
+	OPT_SUB("Colour/Subtitle Grid/Lines", Refresh);
+	OPT_SUB("Colour/Subtitle Grid/Selection", Refresh);
+	OPT_SUB("Colour/Subtitle Grid/Standard", Refresh);
+	OPT_SUB("Subtitle/Grid/Highlight Subtitles in Frame", Refresh);
 }
 
 

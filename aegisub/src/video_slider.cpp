@@ -73,11 +73,10 @@ VideoSlider::VideoSlider (wxWindow* parent, wxWindowID id)
 	SetMinSize(wxSize(20, 25));
 	locked = false;
 	SetRange(0,1);
-	OPT_SUB("Video/Slider/Show Keyframes", this, std::tr1::bind(&wxWindow::Refresh, this, false, (wxRect*)NULL));
+	OPT_SUB("Video/Slider/Show Keyframes", &wxWindow::Refresh, this, false, (wxRect*)NULL);
 }
 
 VideoSlider::~VideoSlider() {
-	OPT_UNSUB("Video/Slider/Show Keyframes", this);
 }
 
 /// @brief Set value 

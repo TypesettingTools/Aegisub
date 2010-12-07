@@ -181,23 +181,21 @@ SubsTextEditCtrl::SubsTextEditCtrl(wxWindow* parent, wxSize wsize, long style, S
 
 	Bind(wxEVT_STC_STYLENEEDED, &SubsTextEditCtrl::UpdateCallTip, this);
 
-	agi::OptionValue::ChangeListener SetStyles = bind(&SubsTextEditCtrl::SetStyles, this);
+	OPT_SUB("Subtitle/Edit Box/Font Face", &SubsTextEditCtrl::SetStyles, this);
+	OPT_SUB("Subtitle/Edit Box/Font Size", &SubsTextEditCtrl::SetStyles, this);
+	OPT_SUB("Colour/Subtitle/Syntax/Normal", &SubsTextEditCtrl::SetStyles, this);
+	OPT_SUB("Colour/Subtitle/Syntax/Brackets", &SubsTextEditCtrl::SetStyles, this);
+	OPT_SUB("Colour/Subtitle/Syntax/Slashes", &SubsTextEditCtrl::SetStyles, this);
+	OPT_SUB("Colour/Subtitle/Syntax/Highlight Tags", &SubsTextEditCtrl::SetStyles, this);
+	OPT_SUB("Colour/Subtitle/Syntax/Error", &SubsTextEditCtrl::SetStyles, this);
+	OPT_SUB("Colour/Subtitle/Syntax/Background/Error", &SubsTextEditCtrl::SetStyles, this);
+	OPT_SUB("Colour/Subtitle/Syntax/Parameters", &SubsTextEditCtrl::SetStyles, this);
+	OPT_SUB("Colour/Subtitle/Syntax/Line Break", &SubsTextEditCtrl::SetStyles, this);
+	OPT_SUB("Colour/Subtitle/Syntax/Karaoke Template", &SubsTextEditCtrl::SetStyles, this);
 
-	OPT_SUB("Subtitle/Edit Box/Font Face", this, SetStyles);
-	OPT_SUB("Subtitle/Edit Box/Font Size", this, SetStyles);
-	OPT_SUB("Colour/Subtitle/Syntax/Normal", this, SetStyles);
-	OPT_SUB("Colour/Subtitle/Syntax/Brackets", this, SetStyles);
-	OPT_SUB("Colour/Subtitle/Syntax/Slashes", this, SetStyles);
-	OPT_SUB("Colour/Subtitle/Syntax/Highlight Tags", this, SetStyles);
-	OPT_SUB("Colour/Subtitle/Syntax/Error", this, SetStyles);
-	OPT_SUB("Colour/Subtitle/Syntax/Background/Error", this, SetStyles);
-	OPT_SUB("Colour/Subtitle/Syntax/Parameters", this, SetStyles);
-	OPT_SUB("Colour/Subtitle/Syntax/Line Break", this, SetStyles);
-	OPT_SUB("Colour/Subtitle/Syntax/Karaoke Template", this, SetStyles);
-
-	OPT_SUB("Subtitle/Highlight/Syntax", this, bind(&SubsTextEditCtrl::UpdateStyle, this, 0, -1));
+	OPT_SUB("Subtitle/Highlight/Syntax", &SubsTextEditCtrl::UpdateStyle, this, 0, -1);
 	static wxStyledTextEvent evt;
-	OPT_SUB("App/Call Tips", this, bind(&SubsTextEditCtrl::UpdateCallTip, this, ref(evt)));
+	OPT_SUB("App/Call Tips", &SubsTextEditCtrl::UpdateCallTip, this, ref(evt));
 }
 
 
