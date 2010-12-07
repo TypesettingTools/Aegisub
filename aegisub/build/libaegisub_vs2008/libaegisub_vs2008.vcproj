@@ -450,6 +450,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\libaegisub\include\libaegisub\scoped_ptr.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\libaegisub\include\libaegisub\signals.h"
 				>
 			</File>
