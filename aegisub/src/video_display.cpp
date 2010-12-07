@@ -97,6 +97,7 @@ BEGIN_EVENT_TABLE(VideoDisplay, wxGLCanvas)
 	EVT_PAINT(VideoDisplay::OnPaint)
 	EVT_SIZE(VideoDisplay::OnSizeEvent)
 	EVT_ERASE_BACKGROUND(VideoDisplay::OnEraseBackground)
+	EVT_SHOW(VideoDisplay::OnShow)
 
 	EVT_MENU(VIDEO_MENU_COPY_COORDS,VideoDisplay::OnCopyCoords)
 	EVT_MENU(VIDEO_MENU_COPY_TO_CLIPBOARD,VideoDisplay::OnCopyToClipboard)
@@ -110,7 +111,7 @@ int attribList[] = { WX_GL_RGBA , WX_GL_DOUBLEBUFFER, WX_GL_STENCIL_SIZE, 8, 0 }
 
 /// @class VideoOutRenderException
 /// @extends VideoOutException
-/// @brief An OpenGL error occured while uploading or displaying a frame
+/// @brief An OpenGL error occurred while uploading or displaying a frame
 class OpenGlException : public agi::Exception {
 public:
 	OpenGlException(const wxChar *func, int err)
@@ -155,13 +156,18 @@ VideoDisplay::VideoDisplay(
 {
 	if (zoomBox) zoomBox->SetValue(wxString::Format("%g%%", zoomValue * 100.));
 	box->Bind(wxEVT_COMMAND_TOOL_CLICKED, &VideoDisplay::OnMode, this, Video_Mode_Standard, Video_Mode_Vector_Clip);
-	VideoContext::Get()->Bind(EVT_FRAME_READY, &VideoDisplay::UploadFrameData, this);
+
+	VideoContext *vc = VideoContext::Get();
+	vc->Bind(EVT_FRAME_READY, &VideoDisplay::UploadFrameData, this);
+	slots.push_back(vc->AddSeekListener(&VideoDisplay::SetFrame, this));
+	slots.push_back(vc->AddVideoOpenListener(&VideoDisplay::OnVideoOpen, this));
+	slots.push_back(vc->AddSubtitlesChangeListener(&VideoDisplay::Refresh, this));
+
 	SetCursor(wxNullCursor);
 }
 
 VideoDisplay::~VideoDisplay () {
 	VideoContext::Get()->Unbind(EVT_FRAME_READY, &VideoDisplay::UploadFrameData, this);
-	VideoContext::Get()->RemoveDisplay(this);
 }
 
 bool VideoDisplay::InitContext() {
@@ -205,7 +211,6 @@ void VideoDisplay::UpdateRelativeTimes(int time) {
 
 void VideoDisplay::SetFrame(int frameNumber) {
 	VideoContext *context = VideoContext::Get();
-	ControlSlider->SetValue(frameNumber);
 
 	currentFrame = frameNumber;
 
@@ -270,8 +275,9 @@ void VideoDisplay::Refresh() {
 	UpdateRelativeTimes(VideoContext::Get()->TimeAtFrame(currentFrame, agi::vfr::EXACT));
 }
 
-void VideoDisplay::SetFrameRange(int from, int to) {
-	ControlSlider->SetRange(from, to);
+void VideoDisplay::OnVideoOpen() {
+	UpdateSize();
+	Refresh();
 }
 
 void VideoDisplay::Render() try {
@@ -546,6 +552,10 @@ void VideoDisplay::SetZoomFromBox() {
 }
 double VideoDisplay::GetZoom() const {
 	return zoomValue;
+}
+
+void VideoDisplay::OnShow(wxShowEvent&) {
+	OnVideoOpen();
 }
 
 template<class T>

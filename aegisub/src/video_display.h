@@ -42,6 +42,8 @@
 #include <memory>
 #endif
 
+#include <libaegisub/signals.h>
+
 // Prototypes
 class FrameReadyEvent;
 class VideoSlider;
@@ -64,6 +66,9 @@ struct VideoState {
 /// @class VideoDisplay
 /// @brief DOCME
 class VideoDisplay : public wxGLCanvas {
+	/// Signals the display is connected to
+	std::list<agi::signal::Connection> slots;
+
 	const agi::OptionValue* alwaysShowTools;
 	/// The unscaled size of the displayed video
 	wxSize origSize;
@@ -159,6 +164,15 @@ class VideoDisplay : public wxGLCanvas {
 	/// @param time Currently displayed frame's time
 	void UpdateRelativeTimes(int time);
 
+	/// @brief Set this video display to the given frame
+	/// @frameNumber The desired frame number
+	void SetFrame(int frameNumber);
+	/// @brief Signal that the file has changed
+	void Refresh();
+	void OnVideoOpen();
+
+	void OnShow(wxShowEvent &event);
+
 
 	void OnMode(const wxCommandEvent &event);
 	void SetMode(int mode);
@@ -205,18 +219,6 @@ public:
 	~VideoDisplay();
 	/// @brief Reset the size of the display to the video size
 	void Reset();
-
-	/// @brief Set this video display to the given frame
-	/// @frameNumber The desired frame number
-	void SetFrame(int frameNumber);
-	/// @brief Get the number of the currently displayed framed
-	int GetFrame() const { return currentFrame; }
-	/// @brief Set the range of valid frame numbers for the slider
-	/// @from Minimum frame number
-	/// @to Maximum frame number; must be >= from or strange things may happen
-	void SetFrameRange(int from, int to);
-	/// @brief Signal that the file has changed
-	void Refresh();
 
 	/// @brief Render the currently visible frame
 	void Render();

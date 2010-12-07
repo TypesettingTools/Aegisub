@@ -46,6 +46,10 @@
 
 #include "base_grid.h"
 
+#include <libaegisub/signals.h>
+
+namespace agi { class OptionValue; }
+
 class AssFile;
 class AssEntry;
 class AssDialogue;
@@ -61,6 +65,8 @@ typedef std::list<AssEntry*>::iterator entryIter;
 /// DOCME
 class SubtitlesGrid: public BaseGrid {
 private:
+	agi::signal::Connection seekListener;
+
 	void OnPopupMenu(bool alternate=false);
 	void OnKeyDown(wxKeyEvent &event);
 
@@ -88,6 +94,8 @@ private:
 	void OnRecombine(wxCommandEvent &event);
 	void OnAudioClip(wxCommandEvent &event);
 	void OnShowColMenu(wxCommandEvent &event);
+
+	void OnHighlightVisibleChange(agi::OptionValue const& opt);
 
 public:
 	/// Currently open file

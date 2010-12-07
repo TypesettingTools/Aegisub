@@ -49,6 +49,7 @@
 #error "Aegisub requires wxWidgets to be compiled with OpenGL support."
 #endif
 
+#include <libaegisub/signals.h>
 #include <libaegisub/vfr.h>
 
 class AegiVideoFrame;
@@ -76,6 +77,17 @@ class VideoContext : public wxEvtHandler {
 	friend class AudioProvider;
 	friend class KeyFrameFile;
 
+	/// Current frame number changed
+	agi::signal::Signal<int> Seek;
+	/// A new video was opened
+	agi::signal::Signal<> VideoOpen;
+	/// Subtitles file changed
+	/// @todo Move this to AssFile
+	agi::signal::Signal<> SubtitlesChange;
+	/// New keyframes opened
+	agi::signal::Signal<std::vector<int> const&> KeyframesOpen;
+
+private:
 	/// DOCME
 	std::list<VideoDisplay*> displayList;
 
@@ -165,10 +177,6 @@ public:
 	VideoContext();
 	~VideoContext();
 
-	void AddDisplay(VideoDisplay *display);
-	void RemoveDisplay(VideoDisplay *display);
-
-
 	/// @brief Get the video provider used for the currently open video
 	VideoProvider *GetProvider() const { return videoProvider.get(); }
 	std::tr1::shared_ptr<AegiVideoFrame> GetFrame(int n, bool raw = false);
@@ -234,11 +242,6 @@ public:
 	/// @brief Refresh the subtitle provider
 	void Refresh();
 
-	/// @brief Update the video display
-	/// @param full Recalculate size and slider lengths
-	/// @param seek Update is just a seek and file has not changed
-	void UpdateDisplays(bool full, bool seek = false);
-
 	/// @brief Get the height and width of the current script
 	/// @param[out] w Width
 	/// @param[out] h Height
@@ -256,6 +259,11 @@ public:
 	void PlayLine();
 	/// Stop playing
 	void Stop();
+
+	DEFINE_SIGNAL_ADDERS(Seek, AddSeekListener)
+	DEFINE_SIGNAL_ADDERS(VideoOpen, AddVideoOpenListener)
+	DEFINE_SIGNAL_ADDERS(KeyframesOpen, AddKeyframesOpenListener)
+	DEFINE_SIGNAL_ADDERS(SubtitlesChange, AddSubtitlesChangeListener)
 
 	const std::vector<int>& GetKeyFrames() const { return keyFrames; };
 	wxString GetKeyFramesName() const { return keyFramesFilename; }

@@ -207,7 +207,8 @@ void VideoContext::SetVideo(const wxString &filename) {
 		}
 
 		provider->LoadSubtitles(grid->ass);
-		UpdateDisplays(true);
+		VideoOpen();
+		KeyframesOpen(keyFrames);
 	}
 	catch (agi::UserCancelException const&) { }
 	catch (agi::FileNotAccessibleError const& err) {
@@ -227,47 +228,11 @@ void VideoContext::Reload() {
 	}
 }
 
-void VideoContext::AddDisplay(VideoDisplay *display) {
-	if (std::find(displayList.begin(), displayList.end(), display) == displayList.end())
-		displayList.push_back(display);
-}
-
-void VideoContext::RemoveDisplay(VideoDisplay *display) {
-	displayList.remove(display);
-}
-
-void VideoContext::UpdateDisplays(bool full, bool seek) {
-	if (!IsLoaded()) return;
-
-	for (std::list<VideoDisplay*>::iterator cur=displayList.begin();cur!=displayList.end();cur++) {
-		VideoDisplay *display = *cur;
-
-		if (!seek) {
-			display->Refresh();
-		}
-		if (full) {
-			display->UpdateSize();
-			display->SetFrameRange(0,GetLength()-1);
-		}
-		if (seek || full) {
-			display->SetFrame(GetFrameN());
-		}
-	}
-
-	// Update audio display
-	if (audio && audio->loaded && audio->IsShownOnScreen()) {
-		static const agi::OptionValue* opt = OPT_GET("Audio/Display/Draw/Video Position");
-		if (opt->GetBool()) {
-			audio->UpdateImage(false);
-		}
-	}
-}
-
 void VideoContext::Refresh() {
 	if (!IsLoaded()) return;
 
 	provider->LoadSubtitles(grid->ass);
-	UpdateDisplays(false);
+	SubtitlesChange();
 }
 
 void VideoContext::JumpToFrame(int n) {
@@ -278,10 +243,7 @@ void VideoContext::JumpToFrame(int n) {
 
 	frame_n = n;
 
-	UpdateDisplays(false, true);
-
-	static const agi::OptionValue* highlight = OPT_GET("Subtitle/Grid/Highlight Subtitles in Frame");
-	if (!isPlaying && highlight->GetBool()) grid->Refresh(false);
+	Seek(n);
 }
 
 void VideoContext::JumpToTime(int ms, agi::vfr::Time end) {
@@ -481,12 +443,9 @@ double VideoContext::GetARFromType(int type) const {
 
 void VideoContext::SetAspectRatio(int type, double value) {
 	if (type != 4) value = GetARFromType(type);
-	if (value < 0.5) value = 0.5;
-	if (value > 5.0) value = 5.0;
 
 	arType = type;
-	arValue = value;
-	UpdateDisplays(true);
+	arValue = MID(.5, value, 5.);
 }
 
 void VideoContext::LoadKeyframes(wxString filename) {
@@ -494,7 +453,7 @@ void VideoContext::LoadKeyframes(wxString filename) {
 	try {
 		keyFrames = KeyFrameFile::Load(filename);
 		keyFramesFilename = filename;
-		Refresh();
+		KeyframesOpen(keyFrames);
 	}
 	catch (const wchar_t *error) {
 		wxMessageBox(error, _T("Error opening keyframes file"), wxOK | wxICON_ERROR, NULL);
@@ -520,7 +479,7 @@ void VideoContext::CloseKeyframes() {
 	else {
 		keyFrames.clear();
 	}
-	Refresh();
+	KeyframesOpen(keyFrames);
 }
 
 void VideoContext::LoadTimecodes(wxString filename) {

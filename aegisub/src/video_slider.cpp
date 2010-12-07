@@ -34,9 +34,6 @@
 /// @ingroup custom_control
 ///
 
-
-////////////
-// Includes
 #include "config.h"
 
 #ifndef AGI_PRE
@@ -66,17 +63,22 @@ VideoSlider::VideoSlider (wxWindow* parent, wxWindowID id)
 : wxWindow (parent,id,wxDefaultPosition,wxDefaultSize,wxWANTS_CHARS | wxFULL_REPAINT_ON_RESIZE)
 {
 	val = 0;
-	min = 0;
 	max = 1;
 	Display = NULL;
 	SetClientSize(20,25);
 	SetMinSize(wxSize(20, 25));
 	locked = false;
-	SetRange(0,1);
 	OPT_SUB("Video/Slider/Show Keyframes", &wxWindow::Refresh, this, false, (wxRect*)NULL);
+	VideoContext *vc = VideoContext::Get();
+	assert(vc);
+	vc->AddSeekListener(&VideoSlider::SetValue, this);
+	vc->AddVideoOpenListener(&VideoSlider::VideoOpened, this);
+	vc->AddKeyframesOpenListener(&VideoSlider::KeyframesChanged, this);
 }
 
 VideoSlider::~VideoSlider() {
+	VideoContext *vc = VideoContext::Get();
+	assert(vc);
 }
 
 /// @brief Set value 
@@ -84,29 +86,22 @@ VideoSlider::~VideoSlider() {
 /// @return 
 ///
 void VideoSlider::SetValue(int value) {
-	if (locked) return;
-	val = value;
-	if (val < min) val = min;
-	if (val > max) val = max;
+	if (val == value) return;
+	val = MID(0, value, max);
 	Refresh(false);
 }
 
-
-
-/// @brief Set range 
-/// @param from 
-/// @param to   
-///
-void VideoSlider::SetRange(int from,int to) {
-	if (from > to) from = to;
-	locked = false;
-	min = from;
-	max = to;
-	if (val < from) val = from;
-	if (val > to) val = to;
+void VideoSlider::VideoOpened() {
+	VideoContext *vc = VideoContext::Get();
+	max = vc->GetLength() - 1;
+	keyframes = vc->GetKeyFrames();
+	Refresh(false);
 }
 
-
+void VideoSlider::KeyframesChanged(std::vector<int> const& newKeyframes) {
+	keyframes = newKeyframes;
+	Refresh(false);
+}
 
 /// @brief Get value at X 
 /// @param x 
@@ -121,7 +116,7 @@ int VideoSlider::GetValueAtX(int x) {
 	if (w <= 10) return 0;
 
 	// Calculate
-	return (int64_t)(x-5)*(int64_t)(max-min)/(int64_t)(w-10)+min;
+	return (int64_t)(x-5)*(int64_t)max/(int64_t)(w-10);
 }
 
 
@@ -136,10 +131,10 @@ int VideoSlider::GetXAtValue(int value) {
 	GetClientSize(&w,&h);
 
 	// Special case
-	if (max-min <= 0) return 0;
+	if (max <= 0) return 0;
 
 	// Calculate
-	return (int64_t)(value-min)*(int64_t)(w-10)/(int64_t)(max-min)+5;
+	return (int64_t)value*(int64_t)(w-10)/(int64_t)max+5;
 }
 
 
@@ -151,7 +146,7 @@ void VideoSlider::NextFrame() {
 	if (VideoContext::Get()->IsPlaying()) return;
 
 	//don't request out of range frames
-	if (GetValue() < max) VideoContext::Get()->PlayNextFrame();
+	if (val < max) VideoContext::Get()->PlayNextFrame();
 	Refresh(false);
 	Update();
 }
@@ -165,14 +160,11 @@ void VideoSlider::PrevFrame() {
 	if (VideoContext::Get()->IsPlaying()) return;
 
 	//don't request out of range frames
-	if (GetValue() > min) VideoContext::Get()->PlayPrevFrame();
+	if (val > 0) VideoContext::Get()->PlayPrevFrame();
 	Refresh(false);
 	Update();
 }
 
-
-///////////////
-// Event table
 BEGIN_EVENT_TABLE(VideoSlider, wxWindow)
 	EVT_MOUSE_EVENTS(VideoSlider::OnMouse)
 	EVT_KEY_DOWN(VideoSlider::OnKeyDown)
@@ -181,22 +173,6 @@ BEGIN_EVENT_TABLE(VideoSlider, wxWindow)
 	EVT_KILL_FOCUS(VideoSlider::OnFocus)
 	EVT_ERASE_BACKGROUND(VideoSlider::OnEraseBackground)
 END_EVENT_TABLE()
-
-
-
-/// @brief Change position 
-/// @return 
-///
-void VideoSlider::UpdateVideo() {
-	if (Display) {
-		if (VideoContext::Get()->IsPlaying()) return;
-		locked = true;
-		VideoContext::Get()->JumpToFrame(GetValue());
-		locked = false;
-	}
-}
-
-
 
 /// @brief Mouse events 
 /// @param event 
@@ -214,7 +190,7 @@ void VideoSlider::OnMouse(wxMouseEvent &event) {
 		bool canDrag = wxWindow::FindFocus() == this;
 		if (!canDrag) {
 			int tolerance = 4;
-			int curX = GetXAtValue(GetValue());
+			int curX = GetXAtValue(val);
 			if (x-curX < -tolerance || x-curX > tolerance) canDrag = true;
 		}
 
@@ -237,14 +213,14 @@ void VideoSlider::OnMouse(wxMouseEvent &event) {
 				}
 
 				// Jump to frame
-				if (closest == GetValue()) return;
+				if (closest == val) return;
 				SetValue(closest);
 			}
 
 			// Normal click
 			else {
 				int go = GetValueAtX(x);
-				if (go == GetValue()) return;
+				if (go == val) return;
 				SetValue(go);
 			}
 			Refresh(false);
@@ -252,10 +228,10 @@ void VideoSlider::OnMouse(wxMouseEvent &event) {
 			// Playing?
 			if (VideoContext::Get()->IsPlaying()) {
 				VideoContext::Get()->Stop();
-				UpdateVideo();
+				VideoContext::Get()->JumpToFrame(val);
 				VideoContext::Get()->Play();
 			}
-			else UpdateVideo();
+			else VideoContext::Get()->JumpToFrame(val);
 		}
 
 		// Get focus
@@ -307,8 +283,8 @@ void VideoSlider::OnKeyDown(wxKeyEvent &event) {
 		// Fast move
 		if (!ctrl && !shift && alt) {
 			if (VideoContext::Get()->IsPlaying()) return;
-			int target = MID(min,GetValue() + direction * OPT_GET("Video/Slider/Fast Jump Step")->GetInt(),max);
-			if (target != GetValue()) VideoContext::Get()->JumpToFrame(target);
+			int target = MID(0,val + direction * OPT_GET("Video/Slider/Fast Jump Step")->GetInt(),max);
+			if (target != val) VideoContext::Get()->JumpToFrame(target);
 			return;
 		}
 
@@ -371,24 +347,20 @@ void VideoSlider::OnKeyDown(wxKeyEvent &event) {
 			if (direction != 0) {
 				// Prepare
 				int prevKey = 0;
-				int nextKey = VideoContext::Get()->GetLength()-1;
-				std::vector<int> KeyFrames = VideoContext::Get()->GetKeyFrames();
-				int keys = KeyFrames.size();
-				int cur = VideoContext::Get()->GetFrameN();
-				int i;
-				int temp;
+				int nextKey = max;
+				int keys = keyframes.size();
 
 				// Find previous keyframe
 				// This algorithm does unnecessary loops, but it ensures it works even if keyframes are out of order.
-				for (i=0;i<keys;i++) {
-					temp = KeyFrames[i];
-					if (temp < cur && temp > prevKey) prevKey = temp;
+				for (int i=0;i<keys;i++) {
+					int temp = keyframes[i];
+					if (temp < val && temp > prevKey) prevKey = temp;
 				}
 
 				// Find next keyframe
-				for (i=0;i<keys;i++) {
-					temp = KeyFrames[i];
-					if (temp > cur && temp < nextKey) nextKey = KeyFrames[i];
+				for (int i=0;i<keys;i++) {
+					int temp = keyframes[i];
+					if (temp > val && temp < nextKey) nextKey = temp;
 				}
 
 				if (direction == -1) VideoContext::Get()->JumpToFrame(prevKey);
@@ -477,16 +449,14 @@ void VideoSlider::DrawImage(wxDC &destdc) {
 	int curX;
 	if (Display && OPT_GET("Video/Slider/Show Keyframes")->GetBool()) {
 		dc.SetPen(wxPen(shad));
-		std::vector<int> KeyFrames = VideoContext::Get()->GetKeyFrames();
-		int keys = KeyFrames.size();
-		for (int i=0;i<keys;i++) {
-			curX = GetXAtValue(KeyFrames[i]);
+		for (size_t i=0;i<keyframes.size();i++) {
+			curX = GetXAtValue(keyframes[i]);
 			dc.DrawLine(curX,2,curX,8);
 		}
 	}
 
 	// Draw cursor
-	curX = GetXAtValue(GetValue());
+	curX = GetXAtValue(val);
 
 	// Fill bg
 	dc.SetBrush(wxBrush(face));
@@ -529,8 +499,6 @@ void VideoSlider::DrawImage(wxDC &destdc) {
 /// @brief Update image 
 ///
 void VideoSlider::UpdateImage () {
-	//wxClientDC dc(this);
-	//DrawImage(dc);
 	Refresh(false);
 }
 
@@ -542,5 +510,3 @@ void VideoSlider::UpdateImage () {
 void VideoSlider::OnFocus(wxFocusEvent &event) {
 	Refresh(false);
 }
-
-

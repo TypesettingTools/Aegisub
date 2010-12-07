@@ -47,11 +47,10 @@ class SubtitlesGrid;
 ///
 /// DOCME
 class VideoSlider: public wxWindow {
-	/// DOCME
-	int val;
+	std::vector<int> keyframes;
 
 	/// DOCME
-	int min;
+	int val;
 
 	/// DOCME
 	int max;
@@ -61,22 +60,20 @@ class VideoSlider: public wxWindow {
 
 	int GetValueAtX(int x);
 	int GetXAtValue(int value);
-	void UpdateVideo();
 	void DrawImage(wxDC &dc);
 	void UpdateImage();
+	void SetValue(int value);
+
+	void VideoOpened();
+	void KeyframesChanged(std::vector<int> const& newKeyframes);
 
 	void OnMouse(wxMouseEvent &event);
 	void OnKeyDown(wxKeyEvent &event);
 	void OnPaint(wxPaintEvent &event);
 	void OnFocus(wxFocusEvent &event);
-
-	/// @brief DOCME
-	/// @param event 
-	///
 	void OnEraseBackground(wxEraseEvent &event) {}
 
 public:
-
 	/// DOCME
 	VideoDisplay *Display;
 
@@ -88,10 +85,6 @@ public:
 
 	void NextFrame();
 	void PrevFrame();
-
-	void SetRange(int start,int end);
-	int GetValue() const { return val; };
-	void SetValue(int value);
 
 	DECLARE_EVENT_TABLE()
 };

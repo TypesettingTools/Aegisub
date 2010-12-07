@@ -113,7 +113,6 @@ VideoBox::VideoBox(wxWindow *parent, bool isDetached, wxComboBox *zoomBox)
 
 	// Display
 	videoDisplay = new VideoDisplay(this,videoSlider,VideoPosition,VideoSubsPos,zoomBox,videoPage,-1,wxDefaultPosition,wxDefaultSize,wxSUNKEN_BORDER);
-	VideoContext::Get()->AddDisplay(videoDisplay);
 
 	// Set display
 	videoSlider->Display = videoDisplay;

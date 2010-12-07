@@ -535,18 +535,13 @@ void FrameMain::OnOpenRecentTimecodes(wxCommandEvent &event) {
 /// @brief Open recent Keyframes entry 
 /// @param event 
 void FrameMain::OnOpenRecentKeyframes(wxCommandEvent &event) {
-	int number = event.GetId()-Menu_Keyframes_Recent;
-	VideoContext::Get()->LoadKeyframes(lagi_wxString(config::mru->GetEntry("Keyframes", number)));
-	videoBox->videoSlider->Refresh();
-	audioBox->audioDisplay->Update();
-	Refresh();
+	VideoContext::Get()->LoadKeyframes(lagi_wxString(config::mru->GetEntry("Keyframes", event.GetId()-Menu_Keyframes_Recent)));
 }
 
 /// @brief Open recent audio menu entry 
 /// @param event 
 void FrameMain::OnOpenRecentAudio(wxCommandEvent &event) {
-	int number = event.GetId()-Menu_Audio_Recent;
-	LoadAudio(lagi_wxString(config::mru->GetEntry("Audio", number)));
+	LoadAudio(lagi_wxString(config::mru->GetEntry("Audio", event.GetId()-Menu_Audio_Recent)));
 }
 
 /// @brief Open new Window 
@@ -813,17 +808,11 @@ void FrameMain::OnOpenKeyframes (wxCommandEvent &) {
 
 	// Load
 	VideoContext::Get()->LoadKeyframes(filename);
-	videoBox->videoSlider->Refresh();
-	audioBox->audioDisplay->Update();
-	Refresh();
 }
 
 /// @brief Close keyframes 
 void FrameMain::OnCloseKeyframes (wxCommandEvent &) {
 	VideoContext::Get()->CloseKeyframes();
-	videoBox->videoSlider->Refresh();
-	audioBox->audioDisplay->Update();
-	Refresh();
 }
 
 /// @brief Save keyframes 

@@ -58,7 +58,6 @@
 #include "fft.h"
 #include "hotkeys.h"
 #include "include/aegisub/audio_player.h"
-#include "include/aegisub/audio_provider.h"
 #include "main.h"
 #include "standard_paths.h"
 #include "subs_edit_box.h"
@@ -122,6 +121,11 @@ AudioDisplay::AudioDisplay(wxWindow *parent)
 	GetClientSize(&w,&h);
 	h -= OPT_GET("Audio/Display/Draw/Timeline")->GetBool() ? 20 : 0;
 	SetSamplesPercent(50,false);
+
+	VideoContext *vc = VideoContext::Get();
+	vc->AddKeyframesOpenListener(&AudioDisplay::Update, this);
+	if (OPT_GET("Audio/Display/Draw/Video Position")->GetBool())
+		vc->AddSeekListener(&AudioDisplay::UpdateImage, this, false);
 
 	// Set cursor
 	//wxCursor cursor(wxCURSOR_BLANK);
@@ -2221,4 +2225,3 @@ void AudioDisplay::UpdateTimeEditCtrls() {
 	grid->editBox->EndTime->SetTime(curEndMS);
 	grid->editBox->Duration->SetTime(curEndMS-curStartMS);
 }
-

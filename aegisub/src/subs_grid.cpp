@@ -62,7 +62,6 @@
 #include "subs_grid.h"
 #include "utils.h"
 #include "video_context.h"
-#include "video_display.h"
 
 BEGIN_EVENT_TABLE(SubtitlesGrid, BaseGrid)
 	EVT_KEY_DOWN(SubtitlesGrid::OnKeyDown)
@@ -107,6 +106,11 @@ SubtitlesGrid::SubtitlesGrid(FrameMain* parentFr, wxWindow *parent, wxWindowID i
 	byFrame = false;
 	editBox = NULL;
 	parentFrame = parentFr;
+
+	seekListener = VideoContext::Get()->AddSeekListener(&SubtitlesGrid::Refresh, this, false, (const wxRect *)NULL);
+
+	OnHighlightVisibleChange(*OPT_GET("Subtitle/Grid/Highlight Subtitles in Frame"));
+	OPT_SUB("Subtitle/Grid/Highlight Subtitles in Frame", &SubtitlesGrid::OnHighlightVisibleChange, this);
 }
 
 /// @brief Destructor 
@@ -665,7 +669,7 @@ void SubtitlesGrid::OnAudioClip(wxCommandEvent &) {
 
 	if (!filename.empty()) {
 		std::ofstream outfile(filename.mb_str(csConvLocal),std::ios::binary);
-		
+
 		size_t bufsize=(end-start)*provider->GetChannels()*provider->GetBytesPerSample();
 		int intval;
 		short shortval;
@@ -1272,4 +1276,13 @@ void SubtitlesGrid::SetSelectionFromAbsolute(std::vector<int> &selection) {
 	}
 
 	SetSelectedSet(newsel);
+}
+
+void SubtitlesGrid::OnHighlightVisibleChange(agi::OptionValue const& opt) {
+	if (opt.GetBool()) {
+		seekListener.Unblock();
+	}
+	else {
+		seekListener.Block();
+	}
 }

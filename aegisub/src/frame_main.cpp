@@ -852,7 +852,6 @@ void FrameMain::SetDisplayMode(int video, int audio) {
 	MainSizer->RecalcSizes();
 	MainSizer->Layout();
 	Layout();
-	if (showVideo) VideoContext::Get()->UpdateDisplays(true);
 
 	if (didFreeze) Thaw();
 }
@@ -1012,7 +1011,7 @@ void FrameMain::SynchronizeProject(bool fromSubs) {
 		wxString ar = _T("0");
 		wxString zoom = _T("6");
 		if (VideoContext::Get()->IsLoaded()) {
-			seekpos = wxString::Format(_T("%i"),videoBox->videoDisplay->GetFrame());
+			seekpos = wxString::Format(_T("%i"),VideoContext::Get()->GetFrameN());
 			zoom = wxString::Format(_T("%f"),videoBox->videoDisplay->GetZoom());
 
 			int arType = VideoContext::Get()->GetAspectRatioType();
@@ -1176,7 +1175,6 @@ void FrameMain::DetachVideo(bool detach) {
 		if (!detachedVideo) {
 			detachedVideo = new DialogDetachedVideo(this, videoBox->videoDisplay->GetClientSize());
 			detachedVideo->Show();
-			VideoContext::Get()->UpdateDisplays(true);
 		}
 	}
 	else if (detachedVideo) {
