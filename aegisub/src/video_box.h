@@ -34,11 +34,6 @@
 /// @ingroup main_ui video
 ///
 
-
-
-
-///////////
-// Headers
 #ifndef AGI_PRE
 #include <wx/panel.h>
 #include <wx/sizer.h>
@@ -47,9 +42,7 @@
 #include <wx/toolbar.h>
 #endif
 
-
-//////////////
-// Prototypes
+class AssFile;
 class VideoDisplay;
 class VideoSlider;
 class ToggleBitmap;
@@ -104,7 +97,7 @@ public:
 	/// DOCME
 	VideoSlider *videoSlider;
 
-	VideoBox (wxWindow *parent, bool isDetached, wxComboBox *zoomBox);
+	VideoBox (wxWindow *parent, bool isDetached, wxComboBox *zoomBox, AssFile *ass);
 
 	DECLARE_EVENT_TABLE()
 };

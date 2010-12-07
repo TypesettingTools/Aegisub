@@ -914,10 +914,7 @@ void FrameMain::OnShift(wxCommandEvent&) {
 void FrameMain::OnOpenProperties (wxCommandEvent &) {
 	VideoContext::Get()->Stop();
 	DialogProperties Properties(this, ass);
-	int res = Properties.ShowModal();
-	if (res) {
-		SubsGrid->CommitChanges();
-	}
+	Properties.ShowModal();
 }
 
 /// @brief Open styles manager 
@@ -925,8 +922,6 @@ void FrameMain::OnOpenStylesManager(wxCommandEvent&) {
 	VideoContext::Get()->Stop();
 	DialogStyleManager StyleManager(this,SubsGrid);
 	StyleManager.ShowModal();
-	EditBox->UpdateGlobals();
-	SubsGrid->CommitChanges();
 }
 
 /// @brief Open attachments 
@@ -1040,10 +1035,7 @@ void FrameMain::OnAutomationMacro (wxCommandEvent &event) {
 	int first_sel = SubsGrid->GetFirstSelRow();
 	// Run the macro...
 	activeMacroItems[event.GetId()-Menu_Automation_Macro]->Process(SubsGrid->ass, selected_lines, first_sel, this);
-	// Have the grid update its maps, this properly refreshes it to reflect the changed subs
-	SubsGrid->UpdateMaps();
 	SubsGrid->SetSelectionFromAbsolute(selected_lines);
-	SubsGrid->CommitChanges();
 	SubsGrid->EndBatch();
 #endif
 }
@@ -1113,9 +1105,7 @@ void FrameMain::OnSnapToScene (wxCommandEvent &) {
 	}
 
 	// Commit
-	SubsGrid->editBox->Update(true);
-	SubsGrid->ass->Commit(_("snap to scene"));
-	SubsGrid->CommitChanges();
+	SubsGrid->ass->Commit(_("snap to scene"), AssFile::COMMIT_TIMES);
 }
 
 /// @brief Shift to frame 
@@ -1141,27 +1131,19 @@ void FrameMain::OnShiftToFrame (wxCommandEvent &) {
 	}
 
 	// Commit
-	SubsGrid->ass->Commit(_("shift to frame"));
-	SubsGrid->CommitChanges(false);
-	SubsGrid->editBox->Update(true);
+	SubsGrid->ass->Commit(_("shift to frame"), AssFile::COMMIT_TIMES);
 }
 
 /// @brief Undo 
 void FrameMain::OnUndo(wxCommandEvent&) {
 	VideoContext::Get()->Stop();
 	ass->Undo();
-	UpdateTitle();
-	SubsGrid->UpdateMaps(true);
-	VideoContext::Get()->Refresh();
 }
 
 /// @brief Redo 
 void FrameMain::OnRedo(wxCommandEvent&) {
 	VideoContext::Get()->Stop();
 	ass->Redo();
-	UpdateTitle();
-	SubsGrid->UpdateMaps(true);
-	VideoContext::Get()->Refresh();
 }
 
 /// @brief Find 
@@ -1331,22 +1313,16 @@ void FrameMain::OnSelect (wxCommandEvent &) {
 void FrameMain::OnSortStart (wxCommandEvent &) {
 	ass->Sort();
 	ass->Commit(_("sort"));
-	SubsGrid->UpdateMaps();
-	SubsGrid->CommitChanges();
 }
 /// @brief Sort subtitles by end time
 void FrameMain::OnSortEnd (wxCommandEvent &) {
 	ass->Sort(AssFile::CompEnd);
 	ass->Commit(_("sort"));
-	SubsGrid->UpdateMaps();
-	SubsGrid->CommitChanges();
 }
 /// @brief Sort subtitles by style name
 void FrameMain::OnSortStyle (wxCommandEvent &) {
 	ass->Sort(AssFile::CompStyle);
 	ass->Commit(_("sort"));
-	SubsGrid->UpdateMaps();
-	SubsGrid->CommitChanges();
 }
 
 /// @brief Open styling assistant 
@@ -1535,7 +1511,6 @@ void FrameMain::OnMedusaShiftStartForward(wxCommandEvent &) {
 	audioBox->audioDisplay->curStartMS += 10;
 	audioBox->audioDisplay->Update();
 	audioBox->audioDisplay->wxWindow::Update();
-	audioBox->audioDisplay->UpdateTimeEditCtrls();
 }
 
 /// @brief DOCME
@@ -1543,7 +1518,6 @@ void FrameMain::OnMedusaShiftStartBack(wxCommandEvent &) {
 	audioBox->audioDisplay->curStartMS -= 10;
 	audioBox->audioDisplay->Update();
 	audioBox->audioDisplay->wxWindow::Update();
-	audioBox->audioDisplay->UpdateTimeEditCtrls();
 }
 
 /// @brief DOCME
@@ -1551,7 +1525,6 @@ void FrameMain::OnMedusaShiftEndForward(wxCommandEvent &) {
 	audioBox->audioDisplay->curEndMS += 10;
 	audioBox->audioDisplay->Update();
 	audioBox->audioDisplay->wxWindow::Update();
-	audioBox->audioDisplay->UpdateTimeEditCtrls();
 }
 
 /// @brief DOCME
@@ -1559,7 +1532,6 @@ void FrameMain::OnMedusaShiftEndBack(wxCommandEvent &) {
 	audioBox->audioDisplay->curEndMS -= 10;
 	audioBox->audioDisplay->Update();
 	audioBox->audioDisplay->wxWindow::Update();
-	audioBox->audioDisplay->UpdateTimeEditCtrls();
 }
 
 /// @brief DOCME
@@ -1589,4 +1561,12 @@ void FrameMain::OnMedusaPrev(wxCommandEvent &) {
 /// @brief DOCME
 void FrameMain::OnMedusaEnter(wxCommandEvent &) {
 	audioBox->audioDisplay->CommitChanges(true);
+}
+
+void FrameMain::OnSubtitlesFileChanged() {
+	if (OPT_GET("App/Auto/Save on Every Change")->GetBool()) {
+		if (ass->IsModified() && !ass->filename.empty()) SaveSubtitles(false);
+	}
+
+	UpdateTitle();
 }

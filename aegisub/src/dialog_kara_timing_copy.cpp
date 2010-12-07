@@ -941,8 +941,6 @@ void DialogKanjiTimer::OnClose(wxCommandEvent &event) {
 	}
 	if (modified) {
 		grid->ass->Commit(_("kanji timing"));
-		grid->CommitChanges();
-		grid->UpdateMaps();
 		LinesToChange.clear();
 	}
 	Close();

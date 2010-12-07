@@ -159,12 +159,11 @@ void bind_focus_handler(T *control, Event event, wxString value, wxString alt, w
 	control->Bind(event, handler);
 }
 
-SubsEditBox::SubsEditBox (wxWindow *parent, SubtitlesGrid *grid, AudioDisplay *audio)
+SubsEditBox::SubsEditBox(wxWindow *parent, SubtitlesGrid *grid)
 : wxPanel(parent, -1, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL | wxRAISED_BORDER, "SubsEditBox")
 , line(NULL)
 , splitLineMode(false)
 , controlState(true)
-, audio(audio)
 , grid(grid)
 {
 	grid->editBox = this;
@@ -329,12 +328,35 @@ SubsEditBox::SubsEditBox (wxWindow *parent, SubtitlesGrid *grid, AudioDisplay *a
 	OnSize(evt);
 
 	grid->AddSelectionListener(this);
+	grid->ass->AddCommitListener(&SubsEditBox::Update, this);
 }
 SubsEditBox::~SubsEditBox() {
 	grid->RemoveSelectionListener(this);
 }
 
-void SubsEditBox::Update(bool timeOnly, bool setAudio) {
+void SubsEditBox::Update(int type) {
+	if (type == AssFile::COMMIT_FULL || type == AssFile::COMMIT_UNDO) {
+		/// @todo maybe preserve selection over undo?
+		StyleBox->Clear();
+		StyleBox->Append(grid->ass->GetStyles());
+
+		ActorBox->Freeze();
+		ActorBox->Clear();
+		int nrows = grid->GetRows();
+		for (int i=0;i<nrows;i++) {
+			wxString actor = grid->GetDialogue(i)->Actor;
+			// OSX doesn't like combo boxes that are empty.
+			if (actor.empty()) actor = "Actor";
+			if (ActorBox->FindString(actor) == wxNOT_FOUND) {
+				ActorBox->Append(actor);
+			}
+		}
+		ActorBox->Thaw();
+
+		TextEdit->SetSelection(0,0);
+		return;
+	}
+
 	SetControlsState(!!line);
 	if (!line) {
 		return;
@@ -344,7 +366,7 @@ void SubsEditBox::Update(bool timeOnly, bool setAudio) {
 	StartTime->SetTime(line->Start);
 	EndTime->SetTime(line->End);
 	Duration->SetTime(line->End-line->Start);
-	if (!timeOnly) {
+	if (type != AssFile::COMMIT_TIMES) {
 		TextEdit->SetTextTo(line->Text);
 		Layer->SetValue(line->Layer);
 		MarginL->ChangeValue(line->GetMarginString(0,false));
@@ -357,32 +379,6 @@ void SubsEditBox::Update(bool timeOnly, bool setAudio) {
 		ActorBox->SetStringSelection(line->Actor);
 	}
 
-	if (setAudio) audio->SetDialogue(grid,line,grid->GetDialogueIndex(line));
-
-	SetEvtHandlerEnabled(true);
-}
-
-void SubsEditBox::UpdateGlobals() {
-	SetEvtHandlerEnabled(false);
-	StyleBox->Clear();
-	StyleBox->Append(grid->ass->GetStyles());
-
-	ActorBox->Freeze();
-	ActorBox->Clear();
-	int nrows = grid->GetRows();
-	for (int i=0;i<nrows;i++) {
-		wxString actor = grid->GetDialogue(i)->Actor;
-		// OSX doesn't like combo boxes that are empty.
-		if (actor.empty()) actor = "Actor";
-		if (ActorBox->FindString(actor) == wxNOT_FOUND) {
-			ActorBox->Append(actor);
-		}
-	}
-	ActorBox->Thaw();
-
-	// Set subs update
-	OnActiveLineChanged(grid->GetActiveLine());
-	TextEdit->SetSelection(0,0);
 	SetEvtHandlerEnabled(true);
 }
 
@@ -390,7 +386,7 @@ void SubsEditBox::OnActiveLineChanged(AssDialogue *new_line) {
 	SetEvtHandlerEnabled(false);
 	line = new_line;
 
-	Update();
+	Update(AssFile::COMMIT_TEXT);
 
 	/// @todo VideoContext should be doing this
 	if (VideoContext::Get()->IsLoaded()) {
@@ -464,9 +460,8 @@ void SubsEditBox::SetSelectedRows(setter set, T value, wxString desc, bool amend
 
 	for_each(sel.begin(), sel.end(), std::tr1::bind(set, _1, value));
 
-	commitId = grid->ass->Commit(desc, (amend && desc == lastCommitType) ? commitId : -1);
+	commitId = grid->ass->Commit(desc, AssFile::COMMIT_TEXT, (amend && desc == lastCommitType) ? commitId : -1);
 	lastCommitType = desc;
-	grid->CommitChanges(false);
 }
 
 template<class T>
@@ -476,7 +471,6 @@ void SubsEditBox::SetSelectedRows(T AssDialogue::*field, T value, wxString desc,
 
 void SubsEditBox::CommitText(wxString desc) {
 	SetSelectedRows(&AssDialogue::Text, TextEdit->GetText(), desc, true);
-	audio->SetDialogue(grid,line,grid->GetDialogueIndex(line));
 }
 
 void SubsEditBox::CommitTimes(TimeField field) {
@@ -499,10 +493,7 @@ void SubsEditBox::CommitTimes(TimeField field) {
 		}
 	}
 
-	timeCommitId[field] = grid->ass->Commit(_("modify times"), timeCommitId[field]);
-	grid->CommitChanges();
-	int sel0 = grid->GetFirstSelRow();
-	audio->SetDialogue(grid,grid->GetDialogue(sel0),sel0);
+	timeCommitId[field] = grid->ass->Commit(_("modify times"), AssFile::COMMIT_TIMES, timeCommitId[field]);
 }
 
 void SubsEditBox::OnSize(wxSizeEvent &evt) {

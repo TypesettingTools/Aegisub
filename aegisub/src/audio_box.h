@@ -60,6 +60,7 @@
 class AudioDisplay;
 class AudioKaraoke;
 class FrameMain;
+class SubtitlesGrid;
 class wxToggleButton;
 class ToggleBitmap;
 
@@ -197,7 +198,7 @@ public:
 	/// DOCME
 	bool karaokeMode;
 
-	AudioBox(wxWindow *parent);
+	AudioBox(wxWindow *parent, SubtitlesGrid *grid);
 	~AudioBox();
 
 	void SetFile(wxString file,bool FromVideo);

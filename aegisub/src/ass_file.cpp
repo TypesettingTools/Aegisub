@@ -757,12 +757,15 @@ wxString AssFile::GetWildcardList(int mode) {
 	else return "";
 }
 
-int AssFile::Commit(wxString desc, int amendId) {
+int AssFile::Commit(wxString desc, CommitType type, int amendId) {
+	assert(type != COMMIT_UNDO);
+
 	++commitId;
 	// Allow coalescing only if it's the last change and the file has not been
 	// saved since the last change
 	if (commitId == amendId+1 && RedoStack.empty() && savedCommitId != commitId) {
 		UndoStack.back() = *this;
+		AnnounceCommit(type);
 		return commitId;
 	}
 
@@ -778,6 +781,7 @@ int AssFile::Commit(wxString desc, int amendId) {
 		UndoStack.pop_front();
 	}
 
+	AnnounceCommit(type);
 	return commitId;
 }
 
@@ -788,6 +792,8 @@ void AssFile::Undo() {
 	std::swap(RedoStack.back(), *this);
 	UndoStack.pop_back();
 	*this = UndoStack.back();
+
+	AnnounceCommit(COMMIT_UNDO);
 }
 
 void AssFile::Redo() {
@@ -796,6 +802,8 @@ void AssFile::Redo() {
 	std::swap(*this, RedoStack.back());
 	UndoStack.push_back(*this);
 	RedoStack.pop_back();
+
+	AnnounceCommit(COMMIT_UNDO);
 }
 
 wxString AssFile::GetUndoDescription() const {

@@ -169,8 +169,7 @@ wxDialog (parent, -1, _("Styling assistant"), wxDefaultPosition, wxDefaultSize, 
 DialogStyling::~DialogStyling () {
 	GetPosition(&lastx, &lasty);
 	if (needCommit) {
-		grid->ass->Commit(_("style changes"));
-		grid->CommitChanges();
+		grid->ass->Commit(_("style changes"), AssFile::COMMIT_TEXT);
 	}
 }
 
@@ -232,8 +231,7 @@ void DialogStyling::SetStyle (wxString curName, bool jump) {
 	// Update grid/subs
 	grid->Refresh(false);
 	if (PreviewCheck->IsChecked()) {
-		grid->ass->Commit(_("styling assistant"));
-		grid->CommitChanges();
+		grid->ass->Commit(_("styling assistant"), AssFile::COMMIT_TEXT);
 	}
 	else needCommit = true;
 
@@ -264,8 +262,7 @@ void DialogStyling::OnActivate(wxActivateEvent &event) {
 	// Dialog lost focus
 	if (!event.GetActive()) {
 		if (needCommit) {
-			grid->ass->Commit(_("styling assistant"));
-			grid->CommitChanges();
+			grid->ass->Commit(_("styling assistant"), AssFile::COMMIT_TEXT);
 			needCommit = false;
 		}
 		return;

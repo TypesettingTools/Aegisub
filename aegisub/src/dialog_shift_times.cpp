@@ -309,8 +309,7 @@ void DialogShiftTimes::OnOK(wxCommandEvent &event) {
 	OPT_SET("Tool/Shift Times/Direction")->SetBool(backward);
 
 	// End dialog
-	grid->ass->Commit(_("shifting"));
-	grid->CommitChanges();
+	grid->ass->Commit(_("shifting"), AssFile::COMMIT_TIMES);
 	EndModal(0);
 }
 

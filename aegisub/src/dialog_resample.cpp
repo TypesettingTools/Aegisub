@@ -320,8 +320,7 @@ void DialogResample::OnResample (wxCommandEvent &event) {
 	subs->SetScriptInfo(_T("PlayResY"),wxString::Format(_T("%i"),y2));
 
 	// Flag as modified
-	subs->Commit(_("resolution resampling"));
-	grid->CommitChanges();
+	subs->Commit(_("resolution resampling"), AssFile::COMMIT_TEXT);
 	EndModal(0);
 }
 

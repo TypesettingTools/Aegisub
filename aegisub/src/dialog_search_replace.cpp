@@ -186,8 +186,6 @@ END_EVENT_TABLE()
 /// @param event 
 ///
 void DialogSearchReplace::OnClose (wxCommandEvent &event) {
-	Search.OnDialogClose();
-	// Just hide
 	Show(false);
 }
 
@@ -435,8 +433,7 @@ void SearchReplaceEngine::ReplaceNext(bool DoReplace) {
 			}
 
 			// Commit
-			grid->ass->Commit(_("replace"));
-			grid->CommitChanges();
+			grid->ass->Commit(_("replace"), AssFile::COMMIT_TEXT);
 		}
 
 		else {
@@ -453,7 +450,6 @@ void SearchReplaceEngine::ReplaceNext(bool DoReplace) {
 
 		// Update video
 		if (updateVideo) {
-			grid->CommitChanges();
 			grid->SetVideoToSubs(true);
 		}
 		else if (DoReplace) Modified = true;
@@ -541,8 +537,7 @@ void SearchReplaceEngine::ReplaceAll() {
 
 	// Commit
 	if (count > 0) {
-		grid->ass->Commit(_("replace"));
-		grid->CommitChanges();
+		grid->ass->Commit(_("replace"), AssFile::COMMIT_TEXT);
 		wxMessageBox(wxString::Format(_("%i matches were replaced."),count));
 	}
 
@@ -571,16 +566,6 @@ void SearchReplaceEngine::OnDialogOpen() {
 	matchLen = 0;
 	replaceLen = 0;
 }
-
-
-
-/// @brief Search dialog closed 
-///
-void SearchReplaceEngine::OnDialogClose() {
-	if (Modified) grid->CommitChanges();
-}
-
-
 
 /// @brief Open dialog 
 /// @param replace 

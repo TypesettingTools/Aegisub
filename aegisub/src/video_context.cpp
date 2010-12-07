@@ -30,7 +30,7 @@
 // $Id$
 
 /// @file video_context.cpp
-/// @brief Keep track of loaded video and video displays
+/// @brief Keep track of loaded video
 /// @ingroup video
 ///
 
@@ -73,7 +73,6 @@
 #include "utils.h"
 #include "video_box.h"
 #include "video_context.h"
-#include "video_display.h"
 #include "video_frame.h"
 
 /// IDs
@@ -100,7 +99,6 @@ VideoContext::VideoContext()
 , arType(0)
 , hasSubtitles(false)
 , playAudioOnStep(OPT_GET("Audio/Plays When Stepping Video"))
-, singleFrame(false)
 , grid(NULL)
 , audio(NULL)
 , VFR_Input(videoFPS)
@@ -167,8 +165,6 @@ void VideoContext::SetVideo(const wxString &filename) {
 	if (filename.empty()) return;
 
 	try {
-		grid->CommitChanges(true);
-
 		provider.reset(new ThreadedFrameSource(filename, this));
 		videoProvider = provider->GetVideoProvider();
 		videoFile = filename;
@@ -207,6 +203,7 @@ void VideoContext::SetVideo(const wxString &filename) {
 		}
 
 		provider->LoadSubtitles(grid->ass);
+		grid->ass->AddCommitListener(&VideoContext::SubtitlesChanged, this);
 		VideoOpen();
 		KeyframesOpen(keyFrames);
 	}
@@ -228,11 +225,16 @@ void VideoContext::Reload() {
 	}
 }
 
-void VideoContext::Refresh() {
+void VideoContext::SubtitlesChanged() {
 	if (!IsLoaded()) return;
 
+	bool wasPlaying = isPlaying;
+	Stop();
+
 	provider->LoadSubtitles(grid->ass);
-	SubtitlesChange();
+	GetFrameAsync(frame_n);
+
+	if (wasPlaying) Play();
 }
 
 void VideoContext::JumpToFrame(int n) {
@@ -446,6 +448,7 @@ void VideoContext::SetAspectRatio(int type, double value) {
 
 	arType = type;
 	arValue = MID(.5, value, 5.);
+	ARChange(arType, arValue);
 }
 
 void VideoContext::LoadKeyframes(wxString filename) {
@@ -488,7 +491,7 @@ void VideoContext::LoadTimecodes(wxString filename) {
 		ovrFPS = agi::vfr::Framerate(STD_STR(filename));
 		ovrTimecodeFile = filename;
 		config::mru->Add("Timecodes", STD_STR(filename));
-		Refresh();
+		SubtitlesChanged();
 	}
 	catch (const agi::acs::AcsError&) {
 		wxLogError(L"Could not open file " + filename);
@@ -510,7 +513,7 @@ void VideoContext::SaveTimecodes(wxString filename) {
 void VideoContext::CloseTimecodes() {
 	ovrFPS = agi::vfr::Framerate();
 	ovrTimecodeFile.clear();
-	Refresh();
+	SubtitlesChanged();
 }
 
 int VideoContext::TimeAtFrame(int frame, agi::vfr::Time type) const {

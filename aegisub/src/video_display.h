@@ -45,9 +45,10 @@
 #include <libaegisub/signals.h>
 
 // Prototypes
+class AssFile;
 class FrameReadyEvent;
-class VideoSlider;
 class VideoBox;
+class VideoContext;
 class VideoOutGL;
 class IVisualTool;
 class wxToolBar;
@@ -70,8 +71,9 @@ class VideoDisplay : public wxGLCanvas {
 	std::list<agi::signal::Connection> slots;
 
 	const agi::OptionValue* alwaysShowTools;
-	/// The unscaled size of the displayed video
-	wxSize origSize;
+
+	/// The video context providing video to this display
+	VideoContext *vc;
 
 	/// The frame number currently being displayed
 	int currentFrame;
@@ -91,9 +93,6 @@ class VideoDisplay : public wxGLCanvas {
 	int viewport_top;
 	/// The height of the video in screen pixels
 	int viewport_height;
-
-	/// Lock to disable mouse updates during resize operations
-	bool locked;
 
 	/// @brief Draw an overscan mask
 	/// @param sizeH  The amount of horizontal overscan on one side
@@ -134,9 +133,6 @@ class VideoDisplay : public wxGLCanvas {
 	/// The current zoom level, where 1.0 = 100%
 	double zoomValue;
 
-	/// The video position slider
-	VideoSlider *ControlSlider;
-
 	/// The display for the the video position relative to the current subtitle line
 	wxTextCtrl *SubsPosition;
 
@@ -167,12 +163,9 @@ class VideoDisplay : public wxGLCanvas {
 	/// @brief Set this video display to the given frame
 	/// @frameNumber The desired frame number
 	void SetFrame(int frameNumber);
-	/// @brief Signal that the file has changed
-	void Refresh();
+
 	void OnVideoOpen();
-
-	void OnShow(wxShowEvent &event);
-
+	void OnCommit(int type);
 
 	void OnMode(const wxCommandEvent &event);
 	void SetMode(int mode);
@@ -190,6 +183,8 @@ class VideoDisplay : public wxGLCanvas {
 	/// The dropdown box for selecting zoom levels
 	wxComboBox *zoomBox;
 
+	AssFile *model;
+
 public:
 	/// The VideoBox this display is contained in
 	VideoBox *box;
@@ -198,27 +193,14 @@ public:
 	bool freeSize;
 
 	/// @brief Constructor
-	/// @param parent Pointer to a parent window.
-	/// @param id     Window identifier. If -1, will automatically create an identifier.
-	/// @param pos    Window position. wxDefaultPosition is (-1, -1) which indicates that wxWidgets should generate a default position for the window.
-	/// @param size   Window size. wxDefaultSize is (-1, -1) which indicates that wxWidgets should generate a default size for the window. If no suitable size can be found, the window will be sized to 20x20 pixels so that the window is visible but obviously not correctly sized.
-	/// @param style  Window style.
-	/// @param name   Window name.
 	VideoDisplay(
 		VideoBox *box,
-		VideoSlider *ControlSlider,
 		wxTextCtrl *PositionDisplay,
 		wxTextCtrl *SubsPosition,
 		wxComboBox *zoomBox,
 		wxWindow* parent,
-		wxWindowID id,
-		const wxPoint& pos = wxDefaultPosition,
-		const wxSize& size = wxDefaultSize,
-		long style = 0,
-		const wxString& name = wxPanelNameStr);
+		AssFile *model);
 	~VideoDisplay();
-	/// @brief Reset the size of the display to the video size
-	void Reset();
 
 	/// @brief Render the currently visible frame
 	void Render();
@@ -227,7 +209,7 @@ public:
 	/// @param show Whether or not the cursor should be visible
 	void ShowCursor(bool show);
 	/// @brief Set the size of the display based on the current zoom and video resolution
-	void UpdateSize();
+	void UpdateSize(int arType = -1, double arValue = -1.);
 	/// @brief Set the zoom level
 	/// @param value The new zoom level
 	void SetZoom(double value);
@@ -244,7 +226,6 @@ public:
 	/// @param x x coordinate; in/out
 	/// @param y y coordinate; in/out
 	void FromScriptCoords(int *x, int *y) const;
-
 
 	DECLARE_EVENT_TABLE()
 };

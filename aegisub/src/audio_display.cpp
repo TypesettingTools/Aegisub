@@ -79,9 +79,9 @@
 
 /// @brief Constructor 
 /// @param parent 
-AudioDisplay::AudioDisplay(wxWindow *parent)
+AudioDisplay::AudioDisplay(wxWindow *parent, SubtitlesGrid *grid)
 : wxWindow (parent, -1, wxDefaultPosition, wxSize(200,OPT_GET("Audio/Display Height")->GetInt()), AudioDisplayWindowStyle , _T("Audio Display"))
-, grid(0)
+, grid(grid)
 {
 	// Set variables
 	origImage = NULL;
@@ -99,7 +99,6 @@ AudioDisplay::AudioDisplay(wxWindow *parent)
 	loaded = false;
 	temporary = false;
 	blockUpdate = false;
-	dontReadTimes = false;
 	holding = false;
 	draggingScale = false;
 	Position = 0;
@@ -126,6 +125,9 @@ AudioDisplay::AudioDisplay(wxWindow *parent)
 	vc->AddKeyframesOpenListener(&AudioDisplay::Update, this);
 	if (OPT_GET("Audio/Display/Draw/Video Position")->GetBool())
 		vc->AddSeekListener(&AudioDisplay::UpdateImage, this, false);
+
+	grid->AddSelectionListener(this);
+	commitListener = grid->ass->AddCommitListener(&AudioDisplay::OnCommit, this);
 
 	// Set cursor
 	//wxCursor cursor(wxCURSOR_BLANK);
@@ -1119,28 +1121,24 @@ void AudioDisplay::SetSelection(int start, int end) {
 /// @param diag  
 /// @param n     
 /// @return 
-void AudioDisplay::SetDialogue(SubtitlesGrid *_grid,AssDialogue *diag,int n) {
-	// Actual parameters
-	if (_grid) {
-		// Set variables
-		grid = _grid;
-		line_n = n;
-		dialogue = diag;
+void AudioDisplay::SetDialogue(SubtitlesGrid *,AssDialogue *diag,int n) {
+	// Set variables
+	line_n = n;
+	dialogue = diag;
 
-		// Set flags
-		diagUpdated = false;
-		NeedCommit = false;
+	// Set flags
+	diagUpdated = false;
+	NeedCommit = false;
 
-		// Set times
-		if (dialogue && !dontReadTimes && OPT_GET("Audio/Grab Times on Select")->GetBool()) {
-			int s = dialogue->Start.GetMS();
-			int e = dialogue->End.GetMS();
+	// Set times
+	if (dialogue && OPT_GET("Audio/Grab Times on Select")->GetBool()) {
+		int s = dialogue->Start.GetMS();
+		int e = dialogue->End.GetMS();
 
-			// Never do it for 0:00:00.00->0:00:00.00 lines
-			if (s != 0 || e != 0) {
-				curStartMS = s;
-				curEndMS = e;
-			}
+		// Never do it for 0:00:00.00->0:00:00.00 lines
+		if (s != 0 || e != 0) {
+			curStartMS = s;
+			curEndMS = e;
 		}
 	}
 
@@ -1163,11 +1161,11 @@ void AudioDisplay::SetDialogue(SubtitlesGrid *_grid,AssDialogue *diag,int n) {
 void AudioDisplay::CommitChanges (bool nextLine) {
 	// Loaded?
 	if (!loaded) return;
+	commitListener.Block();
 
 	// Check validity
-	bool textNeedsCommit = grid->GetDialogue(line_n)->Text != grid->editBox->TextEdit->GetText();
 	bool timeNeedsCommit = grid->GetDialogue(line_n)->Start.GetMS() != curStartMS || grid->GetDialogue(line_n)->End.GetMS() != curEndMS;
-	if (timeNeedsCommit || textNeedsCommit) NeedCommit = true;
+	NeedCommit = timeNeedsCommit;
 	bool wasKaraSplitting = false;
 	bool validCommit = true;
 	if (!karaoke->enabled && !karaoke->splitting) {
@@ -1208,7 +1206,7 @@ void AudioDisplay::CommitChanges (bool nextLine) {
 				curDiag->Start.SetMS(curStartMS);
 				curDiag->End.SetMS(curEndMS);
 			}
-			if (!karaoke->enabled && textNeedsCommit) {
+			if (!karaoke->enabled) {
 				// If user was editing karaoke stuff, that should take precedence of manual changes in the editbox,
 				// so only update from editbox when not in kara mode
 				curDiag->Text = grid->editBox->TextEdit->GetText();
@@ -1216,15 +1214,7 @@ void AudioDisplay::CommitChanges (bool nextLine) {
 			if (!grid->IsInSelection(line_n)) break;
 		}
 
-		// Update edit box
-		grid->editBox->StartTime->Update();
-		grid->editBox->EndTime->Update();
-		grid->editBox->Duration->Update();
-
-		// Update grid
-		grid->editBox->Update(!karaoke->enabled);
-		grid->ass->Commit(_T(""));
-		grid->CommitChanges();
+		grid->ass->Commit(_T(""), karaoke->enabled ? AssFile::COMMIT_TEXT : AssFile::COMMIT_TIMES);
 		karaoke->SetSelection(karaSelStart, karaSelEnd);
 		blockUpdate = false;
 	}
@@ -1240,24 +1230,19 @@ void AudioDisplay::CommitChanges (bool nextLine) {
 			def->End.SetMS(def->End.GetMS()+OPT_GET("Timing/Default Duration")->GetInt());
 			def->Style = grid->GetDialogue(line_n)->Style;
 			grid->InsertLine(def,line_n,true);
-			curStartMS = curEndMS;
-			curEndMS = curStartMS + OPT_GET("Timing/Default Duration")->GetInt();
 		}
-		else if (grid->GetDialogue(line_n+1)->Start.GetMS() == 0 && grid->GetDialogue(line_n+1)->End.GetMS() == 0) {
-			curStartMS = curEndMS;
-			curEndMS = curStartMS + OPT_GET("Timing/Default Duration")->GetInt();
+		int endMs = curEndMS;
+
+		grid->NextLine();
+		curStartMS = grid->GetActiveLine()->Start.GetMS();
+		curEndMS = grid->GetActiveLine()->End.GetMS();
+		if (curStartMS == 0 && curEndMS == 0) {
+			curStartMS = endMs;
+			curEndMS = endMs + OPT_GET("Timing/Default Duration")->GetInt();
 		}
-		else {
-			curStartMS = grid->GetDialogue(line_n+1)->Start.GetMS();
-			curEndMS = grid->GetDialogue(line_n+1)->End.GetMS();
-		}
-		
-		// Go to next
-		dontReadTimes = true;
-		ChangeLine(1,sel.GetCount() > 1 ? true : false);
-		dontReadTimes = false;
 	}
 
+	commitListener.Unblock();
 	Update();
 }
 
@@ -1277,7 +1262,6 @@ void AudioDisplay::AddLead(bool in,bool out) {
 	}
 
 	// Set changes
-	UpdateTimeEditCtrls();
 	NeedCommit = true;
 	if (OPT_GET("Audio/Auto/Commit")->GetBool()) CommitChanges();
 	Update();
@@ -1674,7 +1658,6 @@ void AudioDisplay::OnMouseEvent(wxMouseEvent& event) {
 					diagUpdated = false;
 					NeedCommit = true;
 					if (curStartMS <= curEndMS) {
-						UpdateTimeEditCtrls();
 						if (OPT_GET("Audio/Auto/Commit")->GetBool()) CommitChanges();
 					}
 
@@ -2218,10 +2201,12 @@ void AudioDisplay::OnLoseFocus(wxFocusEvent &event) {
 		Refresh(false);
 	}
 }
-
-/// @brief Update time edit controls 
-void AudioDisplay::UpdateTimeEditCtrls() {
-	grid->editBox->StartTime->SetTime(curStartMS);
-	grid->editBox->EndTime->SetTime(curEndMS);
-	grid->editBox->Duration->SetTime(curEndMS-curStartMS);
+void AudioDisplay::OnActiveLineChanged(AssDialogue *new_line) {
+	SetDialogue(grid,new_line,grid->GetDialogueIndex(new_line));
+}
+void AudioDisplay::OnSelectedSetChanged(const Selection &lines_added, const Selection &lines_removed) {
+}
+void AudioDisplay::OnCommit(int type) {
+	AssDialogue *line = grid->GetActiveLine();
+	SetDialogue(grid,line,grid->GetDialogueIndex(line));
 }

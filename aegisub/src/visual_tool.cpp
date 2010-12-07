@@ -246,9 +246,7 @@ void VisualTool<FeatureType>::Commit(wxString message) {
 	if (message.empty()) {
 		message = _("visual typesetting");
 	}
-	commitId = grid->ass->Commit(message, commitId);
-
-	grid->CommitChanges();
+	commitId = grid->ass->Commit(message, AssFile::COMMIT_TEXT, commitId);
 	externalChange = true;
 }
 

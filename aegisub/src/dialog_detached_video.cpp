@@ -45,6 +45,7 @@
 #include "dialog_detached_video.h"
 #include "frame_main.h"
 #include "main.h"
+#include "subs_grid.h"
 #include "video_box.h"
 #include "video_context.h"
 #include "video_display.h"
@@ -75,7 +76,7 @@ DialogDetachedVideo::DialogDetachedVideo(FrameMain *par, const wxSize &initialDi
 	wxPanel *panel = new wxPanel(this,-1,wxDefaultPosition,wxDefaultSize,wxTAB_TRAVERSAL | wxCLIP_CHILDREN);
 	
 	// Video area;
-	videoBox = new VideoBox(panel, true, NULL);
+	videoBox = new VideoBox(panel, true, NULL, VideoContext::Get()->grid->ass);
 	videoBox->videoDisplay->freeSize = true;
 	videoBox->videoDisplay->SetClientSize(initialDisplaySize);
 	videoBox->videoSlider->grid = par->SubsGrid;

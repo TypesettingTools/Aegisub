@@ -62,7 +62,6 @@ class SubtitlesProviderErrorEvent;
 class ThreadedFrameSource;
 class VideoProvider;
 class VideoProviderErrorEvent;
-class VideoDisplay;
 
 namespace agi {
 	class OptionValue;
@@ -77,20 +76,16 @@ class VideoContext : public wxEvtHandler {
 	friend class AudioProvider;
 	friend class KeyFrameFile;
 
-	/// Current frame number changed
+	/// Current frame number changed (new frame number)
 	agi::signal::Signal<int> Seek;
 	/// A new video was opened
 	agi::signal::Signal<> VideoOpen;
-	/// Subtitles file changed
-	/// @todo Move this to AssFile
-	agi::signal::Signal<> SubtitlesChange;
-	/// New keyframes opened
+	/// New keyframes opened (new keyframe data)
 	agi::signal::Signal<std::vector<int> const&> KeyframesOpen;
+	/// Aspect ratio was changed (type, value)
+	agi::signal::Signal<int, double> ARChange;
 
 private:
-	/// DOCME
-	std::list<VideoDisplay*> displayList;
-
 	/// DOCME
 	std::tr1::shared_ptr<VideoProvider> videoProvider;
 
@@ -155,8 +150,6 @@ private:
 
 	agi::vfr::Framerate videoFPS;
 	agi::vfr::Framerate ovrFPS;
-
-	bool singleFrame;
 
 	void OnVideoError(VideoProviderErrorEvent const& err);
 	void OnSubtitlesError(SubtitlesProviderErrorEvent const& err);
@@ -240,7 +233,7 @@ public:
 	void JumpToTime(int ms, agi::vfr::Time end = agi::vfr::START);
 
 	/// @brief Refresh the subtitle provider
-	void Refresh();
+	void SubtitlesChanged();
 
 	/// @brief Get the height and width of the current script
 	/// @param[out] w Width
@@ -263,7 +256,7 @@ public:
 	DEFINE_SIGNAL_ADDERS(Seek, AddSeekListener)
 	DEFINE_SIGNAL_ADDERS(VideoOpen, AddVideoOpenListener)
 	DEFINE_SIGNAL_ADDERS(KeyframesOpen, AddKeyframesOpenListener)
-	DEFINE_SIGNAL_ADDERS(SubtitlesChange, AddSubtitlesChangeListener)
+	DEFINE_SIGNAL_ADDERS(ARChange, AddARChangeListener)
 
 	const std::vector<int>& GetKeyFrames() const { return keyFrames; };
 	wxString GetKeyFramesName() const { return keyFramesFilename; }

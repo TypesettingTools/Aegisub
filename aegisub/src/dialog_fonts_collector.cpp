@@ -54,7 +54,6 @@
 #include "compat.h"
 #include "dialog_fonts_collector.h"
 #include "font_file_lister.h"
-#include "frame_main.h"
 #include "help_button.h"
 #include "libresrc/libresrc.h"
 #include "main.h"
@@ -93,9 +92,6 @@ DialogFontsCollector::DialogFontsCollector(wxWindow *parent, AssFile *ass)
 {
 	// Set icon
 	SetIcon(BitmapToIcon(GETIMAGE(font_collector_button_24)));
-
-	// Parent
-	main = (FrameMain*) parent;
 
 	// Destination box
 	wxString dest = lagi_wxString(OPT_GET("Path/Fonts Collector Destination")->GetString());
@@ -515,7 +511,6 @@ void FontsCollectorThread::Collect() {
 			if (oper == 3 && someOk) {
 				wxMutexGuiEnter();
 				subs->Commit(_("font attachment"));
-				collector->main->SubsGrid->CommitChanges();
 				wxMutexGuiLeave();
 			}
 		}

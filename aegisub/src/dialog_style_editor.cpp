@@ -580,8 +580,7 @@ void DialogStyleEditor::Apply (bool apply,bool close) {
 		*style = *work;
 		style->UpdateData();
 		if (isLocal) {
-			grid->ass->Commit(_("style change"));
-			grid->CommitChanges();
+			grid->ass->Commit(_("style change"), AssFile::COMMIT_TEXT);
 		}
 
 		// Exit

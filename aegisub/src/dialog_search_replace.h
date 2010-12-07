@@ -123,7 +123,6 @@ public:
 	void ReplaceAll();
 	void OpenDialog(bool HasReplace);
 	void OnDialogOpen();
-	void OnDialogClose();
 
 	SearchReplaceEngine();
 	friend class DialogSearchReplace;

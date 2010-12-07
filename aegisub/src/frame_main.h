@@ -322,6 +322,9 @@ private:
 	void RebuildRecentList(wxString listName,wxMenu *menu,int startID);
 	void SynchronizeProject(bool FromSubs=false);
 
+	void OnSubtitlesFileChanged();
+
+
 public:
 
 	/// DOCME

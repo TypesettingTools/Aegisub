@@ -45,6 +45,8 @@
 #include <wx/arrstr.h>
 #endif
 
+#include <libaegisub/signals.h>
+
 class FrameRate;
 class AssDialogue;
 class AssStyle;
@@ -69,6 +71,8 @@ class AssFile {
 	int commitId;
 	/// Last saved version of this file
 	int savedCommitId;
+
+	agi::signal::Signal<int> AnnounceCommit;
 
 public:
 	/// The lines in the file
@@ -150,11 +154,28 @@ public:
 	/// @param[out] outGroup Group it was actually added to; attachments do something strange here
 	void AddLine(wxString data,wxString group,int &version,wxString *outGroup=NULL);
 
+	/// Type of changes made in a commit
+	enum CommitType {
+		/// Entire file has been swapped for a different version of the same file
+		COMMIT_UNDO,
+		/// Potentially the entire file has been changed; any saved information
+		/// should be discarded
+		COMMIT_FULL,
+		/// The contents of lines have changed, but the number or order of lines
+		/// has not
+		COMMIT_TEXT,
+		/// Only the start and end times of lines has changed
+		COMMIT_TIMES
+	};
+
+	DEFINE_SIGNAL_ADDERS(AnnounceCommit, AddCommitListener)
+
 	/// @brief Flag the file as modified and push a copy onto the undo stack
 	/// @param desc     Undo description
+	/// @param type     Type of changes made to the file in this commit
 	/// @param commitId Commit to amend rather than pushing a new commit
 	/// @return Unique identifier for the new undo group
-	int Commit(wxString desc, int commitId = -1);
+	int Commit(wxString desc, CommitType type = COMMIT_FULL, int commitId = -1);
 	/// @brief Undo the last set of changes to the file
 	void Undo();
 	/// @brief Redo the last undone changes

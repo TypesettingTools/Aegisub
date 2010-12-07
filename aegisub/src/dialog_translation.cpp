@@ -357,9 +357,7 @@ void DialogTranslation::OnTransBoxKey(wxKeyEvent &event) {
 		// Update line
 		cur->UpdateText();
 		cur->ClearBlocks();
-		subs->Commit(_("translation assistant"));
-		grid->CommitChanges();
-		((FrameMain*)main)->UpdateTitle();
+		subs->Commit(_("translation assistant"), AssFile::COMMIT_TEXT);
 		UpdatePreview();
 
 		// Next

@@ -607,7 +607,6 @@ void DialogStyleManager::OnCopyToCurrent (wxCommandEvent &) {
 		CurrentList->SetStringSelection(*name, true);
 	}
 	grid->ass->Commit(_("style copy"));
-	grid->CommitChanges();
 	wxCommandEvent dummy;
 	OnCurrentChange(dummy);
 }
@@ -656,7 +655,6 @@ void DialogStyleManager::OnCurrentCopy (wxCommandEvent &) {
 	else delete temp;
 
 	grid->ass->Commit(_("style copy"));
-	grid->CommitChanges();
 	UpdateMoveButtons();
 }
 
@@ -709,7 +707,6 @@ void DialogStyleManager::PasteToCurrent() {
 				LoadCurrentStyles(grid->ass);
 
 				grid->ass->Commit(_("style paste"));
-				grid->CommitChanges();
 			}
 			else
 				wxMessageBox(_("Could not parse style"), _("Could not parse style"), wxOK | wxICON_EXCLAMATION , this);
@@ -855,7 +852,6 @@ void DialogStyleManager::OnCurrentDelete (wxCommandEvent &) {
 		CurrentDelete->Enable(false);
 
 		grid->ass->Commit(_("style delete"));
-		grid->CommitChanges();
 	}
 	UpdateMoveButtons();
 }
@@ -917,7 +913,6 @@ void DialogStyleManager::OnCurrentImport(wxCommandEvent &) {
 			if (modified) {
 				LoadCurrentStyles(grid->ass);
 				grid->ass->Commit(_("style import"));
-				grid->CommitChanges();
 			}
 		}
 		catch (...) {
@@ -1114,7 +1109,6 @@ void DialogStyleManager::MoveStyles(bool storage, int type) {
 
 		// Flag as modified
 		grid->ass->Commit(_("style move"));
-		grid->CommitChanges();
 	}
 
 	// Update

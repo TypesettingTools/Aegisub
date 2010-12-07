@@ -111,11 +111,23 @@ SubtitlesGrid::SubtitlesGrid(FrameMain* parentFr, wxWindow *parent, wxWindowID i
 
 	OnHighlightVisibleChange(*OPT_GET("Subtitle/Grid/Highlight Subtitles in Frame"));
 	OPT_SUB("Subtitle/Grid/Highlight Subtitles in Frame", &SubtitlesGrid::OnHighlightVisibleChange, this);
+	ass->AddCommitListener(&SubtitlesGrid::OnCommit, this);
 }
 
 /// @brief Destructor 
 SubtitlesGrid::~SubtitlesGrid() {
 	ClearMaps();
+}
+
+void SubtitlesGrid::OnCommit(int type) {
+	if (type == AssFile::COMMIT_FULL)
+		UpdateMaps();
+	else if (type == AssFile::COMMIT_UNDO)
+		UpdateMaps(true);
+
+	if (type != AssFile::COMMIT_TIMES)
+		SetColumnWidths();
+	Refresh(false);
 }
 
 /// @brief Popup menu 
@@ -385,7 +397,6 @@ void SubtitlesGrid::OnSplitByKaraoke (wxCommandEvent &) {
 	}
 	if (didSplit) {
 		ass->Commit(_("splitting"));
-		CommitChanges();
 	}
 	EndBatch();
 }
@@ -615,8 +626,6 @@ void SubtitlesGrid::OnRecombine(wxCommandEvent &) {
 	}
 
 	ass->Commit(_("combining"));
-	UpdateMaps();
-	CommitChanges();
 
 	// Remove now non-existent lines from the selection
 	Selection lines;
@@ -724,15 +733,6 @@ void SubtitlesGrid::LoadDefault () {
 	SelectRow(0);
 }
 
-/// @brief Update internal data structures
-void SubtitlesGrid::UpdateMaps(bool preserve_selected_rows) {
-	BaseGrid::UpdateMaps(preserve_selected_rows);
-
-	if (editBox) {
-		editBox->UpdateGlobals();
-	}
-}
-
 /// @brief Swaps two lines 
 /// @param n1 
 /// @param n2 
@@ -744,7 +744,6 @@ void SubtitlesGrid::SwapLines(int n1,int n2) {
 	std::swap(*dlg1, *dlg2);
 
 	ass->Commit(_("swap lines"));
-	CommitChanges();
 }
 
 /// @brief Insert a line 
@@ -758,12 +757,13 @@ void SubtitlesGrid::InsertLine(AssDialogue *line,int n,bool after,bool update) {
 	if (after) ++pos;
 
 	entryIter newIter = ass->Line.insert(pos,line);
-	BaseGrid::UpdateMaps();
 
 	// Update
 	if (update) {
 		ass->Commit(_("line insertion"));
-		CommitChanges();
+	}
+	else {
+		UpdateMaps();
 	}
 }
 
@@ -876,10 +876,7 @@ void SubtitlesGrid::PasteLines(int n,bool pasteOver) {
 
 		// Update data post-insertion
 		if (inserted > 0) {
-			// Commit
-			UpdateMaps();
-			ass->Commit(_("paste"));
-			CommitChanges();
+			ass->Commit(_("paste"), pasteOver ? AssFile::COMMIT_TEXT : AssFile::COMMIT_FULL);
 
 			// Set selection
 			if (!pasteOver) {
@@ -920,11 +917,11 @@ void SubtitlesGrid::DeleteLines(wxArrayInt target, bool flagModified) {
 		old_active_line_index = 0;
 	}
 
-	UpdateMaps();
-
 	if (flagModified) {
 		ass->Commit(_("delete"));
-		CommitChanges();
+	}
+	else {
+		UpdateMaps();
 	}
 }
 
@@ -975,7 +972,6 @@ void SubtitlesGrid::JoinLines(int n1,int n2,bool concat) {
 	DeleteLines(GetRangeArray(n1+1,n2), false);
 
 	ass->Commit(_("join lines"));
-	CommitChanges();
 
 	// Select new line
 	SetActiveLine(cur);
@@ -1016,7 +1012,6 @@ void SubtitlesGrid::AdjoinLines(int n1,int n2,bool setStart) {
 	}
 
 	ass->Commit(_("adjoin"));
-	CommitChanges();
 }
 
 void SubtitlesGrid::JoinAsKaraoke(int n1,int n2) {
@@ -1059,7 +1054,6 @@ void SubtitlesGrid::JoinAsKaraoke(int n1,int n2) {
 	DeleteLines(GetRangeArray(n1+1,n2), false);
 
 	ass->Commit(_("join as karaoke"));
-	CommitChanges();
 
 	// Select new line
 	SetActiveLine(cur);
@@ -1128,7 +1122,6 @@ void SubtitlesGrid::SplitLine(AssDialogue *n1,int pos,bool estimateTimes) {
 	}
 
 	ass->Commit(_("split"));
-	CommitChanges();
 }
 
 bool SubtitlesGrid::SplitLineByKaraoke(int lineNumber) {
@@ -1170,35 +1163,6 @@ bool SubtitlesGrid::SplitLineByKaraoke(int lineNumber) {
 	return true;
 }
 
-void SubtitlesGrid::CommitChanges(bool ebox, bool video, bool autosave) {
-	if (video && context->IsLoaded()) {
-		bool playing = false;
-		if (context->IsPlaying()) {
-			playing = true;
-			context->Stop();
-		}
-
-		context->Refresh();
-
-		if (playing) context->Play();
-	}
-
-	if (autosave) {
-		// Autosave if option is enabled
-		if (OPT_GET("App/Auto/Save on Every Change")->GetBool()) {
-			if (ass->IsModified() && !ass->filename.IsEmpty()) parentFrame->SaveSubtitles(false);
-		}
-
-		// Update parent frame
-		parentFrame->UpdateTitle();
-		SetColumnWidths();
-		Refresh(false);
-	}
-	if (ebox) {
-		editBox->Update(false, false);
-	}
-}
-
 void SubtitlesGrid::SetSubsToVideo(bool start) {
 	if (!context->IsLoaded()) return;
 
@@ -1218,9 +1182,7 @@ void SubtitlesGrid::SetSubsToVideo(bool start) {
 	}
 
 	if (modified) {
-		ass->Commit(_("timing"));
-		CommitChanges();
-		editBox->Update(true);
+		ass->Commit(_("timing"), AssFile::COMMIT_TIMES);
 	}
 }
 

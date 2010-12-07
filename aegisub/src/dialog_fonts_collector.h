@@ -46,7 +46,6 @@
 class AssFile;
 class AssOverrideParameter;
 class DialogFontsCollector;
-class FrameMain;
 class wxZipOutputStream;
 class ScintillaTextCtrl;
 
@@ -133,9 +132,6 @@ class DialogFontsCollector : public wxDialog {
 	/// DOCME
 	wxRadioBox *CollectAction;
 
-	/// DOCME
-	FrameMain *main;
-
 	void OnStart(wxCommandEvent &event);
 	void OnClose(wxCommandEvent &event);
 	void OnBrowse(wxCommandEvent &event);
@@ -161,5 +157,3 @@ struct ColourString {
 	/// DOCME
 	int colour;
 };
-
-

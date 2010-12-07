@@ -42,7 +42,6 @@
 
 #include "selection_controller.h"
 
-class AudioDisplay;
 class AssDialogue;
 class SubtitlesGrid;
 class SubsTextEditCtrl;
@@ -63,8 +62,6 @@ class wxTextCtrl;
 ///
 /// Controls the text edit and all surrounding controls
 class SubsEditBox : public wxPanel, protected SelectionListener<AssDialogue> {
-	friend class AudioDisplay;
-
 	enum TimeField {
 		TIME_START = 0,
 		TIME_END,
@@ -85,7 +82,6 @@ class SubsEditBox : public wxPanel, protected SelectionListener<AssDialogue> {
 	wxColour origBgColour;
 
 	// Externally supplied controls
-	AudioDisplay *audio;
 	SubtitlesGrid *grid;
 
 	// Box controls
@@ -185,22 +181,18 @@ class SubsEditBox : public wxPanel, protected SelectionListener<AssDialogue> {
 	/// @param amend Coalesce sequences of commits of the same type
 	template<class T>
 	void SetSelectedRows(T AssDialogue::*field, T value, wxString desc, bool amend = false);
+
+	/// @brief Reload the current line from the file
+	/// @param type AssFile::CommitType
+	void Update(int type);
 public:
 	SubsTextEditCtrl *TextEdit;
 
 	/// @brief Constructor
 	/// @param parent Parent window
 	/// @param grid Associated grid
-	/// @param audio Associated audio display
-	SubsEditBox(wxWindow *parent, SubtitlesGrid *grid, AudioDisplay *audio);
+	SubsEditBox(wxWindow *parent, SubtitlesGrid *grid);
 	~SubsEditBox();
-
-	/// @brief Reload the current line from the file
-	/// @param timeOnly Only reload times
-	/// @param setAudio Also update the audio display
-	void Update(bool timeOnly = false, bool setAudio = true);
-	/// Reload non-line-specific things like styles from the file
-	void UpdateGlobals();
 
 	/// @brief Enable or disable frame timing mode
 	void UpdateFrameTiming();

@@ -551,6 +551,8 @@ void FrameMain::InitMenu() {
 /// @brief Initialize contents 
 void FrameMain::InitContents() {
 	AssFile::top = ass = new AssFile;
+	ass->AddCommitListener(&FrameMain::OnSubtitlesFileChanged, this);
+
 	// Set a background panel
 	StartupLog(_T("Create background panel"));
 	Panel = new wxPanel(this,-1,wxDefaultPosition,wxDefaultSize,wxTAB_TRAVERSAL | wxCLIP_CHILDREN);
@@ -563,7 +565,7 @@ void FrameMain::InitContents() {
 
 	// Video area;
 	StartupLog(_T("Create video box"));
-	videoBox = new VideoBox(Panel, false, ZoomBox);
+	videoBox = new VideoBox(Panel, false, ZoomBox, ass);
 	TopSizer->Add(videoBox,0,wxEXPAND,0);
 
 	// Subtitles area
@@ -576,13 +578,13 @@ void FrameMain::InitContents() {
 
 	// Audio area
 	StartupLog(_T("Create audio box"));
-	audioBox = new AudioBox(Panel);
+	audioBox = new AudioBox(Panel, SubsGrid);
 	audioBox->frameMain = this;
 	VideoContext::Get()->audio = audioBox->audioDisplay;
 
 	// Top sizer
 	StartupLog(_T("Create subtitle editing box"));
-	EditBox = new SubsEditBox(Panel,SubsGrid, audioBox->audioDisplay);
+	EditBox = new SubsEditBox(Panel,SubsGrid);
 	StartupLog(_T("Arrange controls in sizers"));
 	ToolSizer = new wxBoxSizer(wxVERTICAL);
 	ToolSizer->Add(audioBox,0,wxEXPAND | wxBOTTOM,5);
@@ -682,7 +684,6 @@ void FrameMain::LoadSubtitles (wxString filename,wxString charset) {
 		SubsGrid->ClearMaps();
 		if (isFile) {
 			ass->Load(filename,charset);
-			SubsGrid->UpdateMaps();
 			if (SubsGrid->GetRows()) {
 				SubsGrid->SetActiveLine(SubsGrid->GetDialogue(0));
 				SubsGrid->SelectRow(0);
@@ -737,8 +738,6 @@ void FrameMain::LoadSubtitles (wxString filename,wxString charset) {
 
 	// Update title bar
 	UpdateTitle();
-
-	VideoContext::Get()->Refresh();
 }
 
 /// @brief Save subtitles 
@@ -1109,7 +1108,6 @@ void FrameMain::LoadVideo(wxString file,bool autoload) {
 					SubsGrid->ass->SetScriptInfo(_T("PlayResX"), wxString::Format(_T("%d"), vidx));
 					SubsGrid->ass->SetScriptInfo(_T("PlayResY"), wxString::Format(_T("%d"), vidy));
 					SubsGrid->ass->Commit(_("Change script resolution"));
-					SubsGrid->CommitChanges();
 					break;
 				case 0:
 				default:
@@ -1119,7 +1117,6 @@ void FrameMain::LoadVideo(wxString file,bool autoload) {
 		}
 	}
 
-	SubsGrid->CommitChanges();
 	SetDisplayMode(1,-1);
 	EditBox->UpdateFrameTiming();
 
@@ -1159,7 +1156,6 @@ void FrameMain::LoadVFR(wxString filename) {
 	else {
 		VideoContext::Get()->LoadTimecodes(filename);
 	}
-	SubsGrid->CommitChanges();
 	EditBox->UpdateFrameTiming();
 }
 

@@ -97,6 +97,8 @@ private:
 
 	void OnHighlightVisibleChange(agi::OptionValue const& opt);
 
+	void OnCommit(int type);
+
 public:
 	/// Currently open file
 	AssFile *ass;
@@ -105,13 +107,6 @@ public:
 	~SubtitlesGrid();
 
 	void LoadDefault();
-	/// @brief Commit changes and update the current file
-	/// @param ebox Update the edit box
-	/// @param video Update the video display
-	/// @param complete Autosave (if enabled) and update other things which care about the file
-	void CommitChanges(bool ebox = true, bool video = true, bool complete = true);
-
-	void UpdateMaps(bool preserve_selected_rows = false);
 
 	/// @brief Jump to the start/end time of the current subtitle line
 	/// @param start Start vs. End time

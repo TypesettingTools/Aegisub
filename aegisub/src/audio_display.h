@@ -45,7 +45,10 @@
 #include <wx/window.h>
 #endif
 
+#include <libaegisub/signals.h>
+
 #include "audio_renderer_spectrum.h"
+#include "selection_controller.h"
 
 class AudioBox;
 class AudioKaraoke;
@@ -61,7 +64,7 @@ class VideoProvider;
 /// @brief DOCME
 ///
 /// DOCME
-class AudioDisplay: public wxWindow {
+class AudioDisplay: public wxWindow, private SelectionListener<AssDialogue> {
 	friend class FrameMain;
 private:
 
@@ -201,6 +204,11 @@ private:
 	int GetBoundarySnap(int x,int range,bool shiftHeld,bool start=true);
 	void DoUpdateImage();
 
+	void OnActiveLineChanged(AssDialogue *new_line);
+	void OnSelectedSetChanged(const Selection &lines_added, const Selection &lines_removed);
+	void OnCommit(int);
+	agi::signal::Connection commitListener;
+
 public:
 
 	/// DOCME
@@ -235,7 +243,7 @@ public:
 	/// DOCME
 	wxTimer UpdateTimer;
 
-	AudioDisplay(wxWindow *parent);
+	AudioDisplay(wxWindow *parent, SubtitlesGrid *grid);
 	~AudioDisplay();
 
 	void UpdateImage(bool weak=false);
@@ -251,7 +259,6 @@ public:
 	void Next(bool play=true);
 	void Prev(bool play=true);
 
-	void UpdateTimeEditCtrls();
 	void CommitChanges(bool nextLine=false);
 	void AddLead(bool in,bool out);
 
