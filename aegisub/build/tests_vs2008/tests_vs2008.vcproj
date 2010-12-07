@@ -90,6 +90,65 @@
 			/>
 		</Configuration>
 		<Configuration
+			Name="Debug|x64"
+			ConfigurationType="4"
+			InheritedPropertySheets="..\aegisub_vs2008\compiler_options_debug.vsprops;..\aegisub_vs2008\compiler_options.vsprops;.\googletest_include.vsprops;..\aegisub_vs2008\libaegisub_include_dir.vsprops;.\test_exe_filename.vsprops"
+			CharacterSet="1"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+				TargetEnvironment="3"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				MinimalRebuild="true"
+				BasicRuntimeChecks="3"
+				RuntimeLibrary="3"
+				WarningLevel="3"
+				DebugInformationFormat="3"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLibrarianTool"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
 			Name="Release|Win32"
 			ConfigurationType="4"
 			InheritedPropertySheets="..\aegisub_vs2008\compiler_options_debug.vsprops;..\aegisub_vs2008\compiler_options.vsprops;.\googletest_include.vsprops;..\aegisub_vs2008\libaegisub_include_dir.vsprops;.\test_exe_filename.vsprops"
@@ -149,32 +208,24 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="Debug|x64"
-			ConfigurationType="4"
-			InheritedPropertySheets="..\aegisub_vs2008\compiler_options_debug.vsprops;..\aegisub_vs2008\compiler_options.vsprops;.\googletest_include.vsprops;..\aegisub_vs2008\libaegisub_include_dir.vsprops;.\test_exe_filename.vsprops"
-			CharacterSet="1"
-			>
-			<Tool
-				Name="VCMIDLTool"
-				TargetEnvironment="3"
-			/>
-			<Tool
-				Name="VCCLCompilerTool"
-				Optimization="0"
-				MinimalRebuild="true"
-				BasicRuntimeChecks="3"
-				RuntimeLibrary="3"
-				WarningLevel="3"
-				DebugInformationFormat="3"
-			/>
-		</Configuration>
-		<Configuration
 			Name="Release|x64"
 			ConfigurationType="4"
 			InheritedPropertySheets="..\aegisub_vs2008\compiler_options_debug.vsprops;..\aegisub_vs2008\compiler_options.vsprops;.\googletest_include.vsprops;..\aegisub_vs2008\libaegisub_include_dir.vsprops;.\test_exe_filename.vsprops"
 			CharacterSet="1"
 			WholeProgramOptimization="1"
 			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
 			<Tool
 				Name="VCMIDLTool"
 				TargetEnvironment="3"
@@ -187,6 +238,33 @@
 				EnableFunctionLevelLinking="true"
 				WarningLevel="3"
 				DebugInformationFormat="3"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLibrarianTool"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
 			/>
 		</Configuration>
 	</Configurations>
@@ -243,6 +321,10 @@
 		</File>
 		<File
 			RelativePath="..\..\tests\libaegisub_option.cpp"
+			>
+		</File>
+		<File
+			RelativePath="..\..\tests\libaegisub_signals.cpp"
 			>
 		</File>
 		<File

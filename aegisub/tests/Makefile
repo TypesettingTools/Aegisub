@@ -22,6 +22,7 @@ SRC = \
 		libaegisub_iconv.cpp \
 		libaegisub_line_iterator.cpp \
 		libaegisub_mru.cpp \
+		libaegisub_signals.cpp \
 		libaegisub_util.cpp \
 		libaegisub_vfr.cpp
 		
