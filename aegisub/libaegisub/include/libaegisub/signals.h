@@ -261,7 +261,7 @@ class Signal<void> : public detail::SignalBaseImpl<std::tr1::function<void ()> >
 public:
 	Signal() { }
 
-#ifdef _WIN32
+#if defined(_WIN32) || defined(__FreeBSD__)
 // MSVC incorrectly considers this not a template context due to it being fully
 // specified, making typename invalid here
 #define typename
