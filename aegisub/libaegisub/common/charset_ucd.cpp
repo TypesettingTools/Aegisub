@@ -22,11 +22,12 @@
 
 #ifndef LAGI_PRE
 #include <memory>
-
-#include "../../universalchardet/nsCharSetProber.h"
 #endif
 
 #include "libaegisub/io.h"
+
+#include "../../universalchardet/nsCharSetProber.h"
+
 
 namespace agi {
 	namespace charset {

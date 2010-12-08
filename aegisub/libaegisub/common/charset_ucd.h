@@ -22,6 +22,7 @@
 
 #ifndef LAGI_PRE
 #include <string>
+#endif
 
 #ifndef _WIN32
 #define _X86_ 1
@@ -30,8 +31,6 @@
 #include "../../universalchardet/nscore.h"
 #include "../../universalchardet/nsUniversalDetector.h"
 #include "../../universalchardet/nsMBCSGroupProber.h"
-#endif
-
 
 namespace agi {
 	namespace charset {
