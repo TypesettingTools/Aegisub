@@ -457,7 +457,7 @@ public:
 
 
 class AudioMarkerInteractionObject : public AudioDisplayInteractionObject {
-	// Object-pair being intracted with
+	// Object-pair being interacted with
 	AudioMarker *marker;
 	AudioTimingController *timing_controller;
 	// Audio display drag is happening on

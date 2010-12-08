@@ -58,6 +58,7 @@
 // Prototypes
 class AudioController;
 class AssDialogue;
+class AssFile;
 class AudioTimingController;
 class AudioDisplay;
 class AudioKaraoke;
@@ -107,7 +108,7 @@ class AudioBox : public wxPanel {
 	/// Karaoke box sizer
 	wxSizer *karaokeSizer;
 
-	/// Karaoke mode join syllabel button.
+	/// Karaoke mode join syllable button.
 	wxButton *JoinButton;
 
 	/// Karaoke mode split word button.
@@ -181,7 +182,7 @@ public:
 	/// DOCME
 	bool karaokeMode;
 
-	AudioBox(wxWindow *parent, AudioController *controller, SelectionController<AssDialogue> *selection_controller);
+	AudioBox(wxWindow *parent, AudioController *controller, SelectionController<AssDialogue> *selection_controller, AssFile *ass);
 	~AudioBox();
 
 	void SetKaraokeButtons();

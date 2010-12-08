@@ -62,11 +62,6 @@
 #include "toggle_bitmap.h"
 #include "tooltip_manager.h"
 
-// Stuff defines "min" and "max" as macros and breaks std::min and std::max in the process
-#undef min
-#undef max
-
-
 enum AudioBoxControlIDs {
 	Audio_Scrollbar = 1600,
 	Audio_Horizontal_Zoom,
@@ -108,7 +103,7 @@ enum AudioBoxControlIDs {
 /// @brief Constructor 
 /// @param parent 
 ///
-AudioBox::AudioBox(wxWindow *parent, AudioController *_controller, SelectionController<AssDialogue> *selection_controller)
+AudioBox::AudioBox(wxWindow *parent, AudioController *_controller, SelectionController<AssDialogue> *selection_controller, AssFile *ass)
 : wxPanel(parent,-1,wxDefaultPosition,wxDefaultSize,wxTAB_TRAVERSAL|wxBORDER_RAISED)
 , selection_controller(selection_controller)
 , controller(_controller)
@@ -256,7 +251,7 @@ AudioBox::AudioBox(wxWindow *parent, AudioController *_controller, SelectionCont
 
 	SetKaraokeButtons(); // Decide which one to show or hide.
 
-	timing_controller_dialogue = CreateDialogueTimingController(controller, selection_controller);
+	timing_controller_dialogue = CreateDialogueTimingController(controller, selection_controller, ass);
 	controller->SetTimingController(timing_controller_dialogue);
 }
 
@@ -490,8 +485,7 @@ void AudioBox::OnCommit(wxCommandEvent &event) {
 	LOG_D("audio/box") << "OnCommit";
 	audioDisplay->SetFocus();
 	LOG_D("audio/box") << "has set focus, now committing changes";
-	/// @todo Commit changes and go to next line if appropriate
-	//audioDisplay->CommitChanges(true);
+	controller->GetTimingController()->Commit();
 	LOG_D("audio/box") << "returning";
 }
 

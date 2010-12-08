@@ -39,8 +39,10 @@
 #include <wx/pen.h>
 #endif
 
-#include "ass_time.h"
 #include "ass_dialogue.h"
+#include "ass_file.h"
+#include "ass_time.h"
+#include "main.h"
 #include "selection_controller.h"
 #include "audio_controller.h"
 #include "audio_timing.h"
@@ -78,7 +80,7 @@ public:
 	/// @brief Move the marker to a new position
 	/// @param new_position The position to move the marker to, in audio samples
 	///
-	/// If the marker moves to the opposite side of the ohter marker in the pair,
+	/// If the marker moves to the opposite side of the other marker in the pair,
 	/// the styles of the two markers will be changed to match the new start/end
 	/// relationship of them.
 	void SetPosition(int64_t new_position);
@@ -94,8 +96,8 @@ public:
 	/// @param marker1 The first marker in the pair to make
 	/// @param marker2 The second marker in the pair to make
 	///
-	/// This checks that the markers aren't already part of a pair, and then sets their
-	/// "other" field. Positions and styles aren't affected.
+	/// This checks that the markers aren't already part of a pair, and then
+	/// sets their "other" field. Positions and styles aren't affected.
 	static void InitPair(AudioMarkerDialogueTiming *marker1, AudioMarkerDialogueTiming *marker2);
 };
 
@@ -118,7 +120,12 @@ class AudioTimingControllerDialogue : public AudioTimingController, private Sele
 	AudioMarkerDialogueTiming markers[2];
 
 	/// Has the timing been modified by the user?
+	/// If auto commit is enabled this will only be true very briefly following
+	/// changes
 	bool timing_modified;
+
+	/// Commit id for coalescing purposes when in auto commit mode
+	int commit_id;
 
 	/// Get the leftmost of the markers
 	AudioMarkerDialogueTiming *GetLeftMarker();
@@ -133,13 +140,30 @@ class AudioTimingControllerDialogue : public AudioTimingController, private Sele
 	/// Update the audio controller's selection
 	void UpdateSelection();
 
+	/// @brief Set the position of a marker and announce the change to the world
+	/// @param marker Marker to move
+	/// @param sample New position of the marker
+	void SetMarker(AudioMarkerDialogueTiming *marker, int64_t sample);
+
+	/// Autocommit option
+	const agi::OptionValue *auto_commit;
+
 	/// Selection controller managing the set of lines currently being timed
 	SelectionController<AssDialogue> *selection_controller;
 
-private:
+	agi::signal::Connection commit_slot;
+
+	/// @todo Dealing with the AssFile directly is probably not the best way to
+	///       handle committing, but anything better probably needs to wait for
+	///       the subtitle container work
+	AssFile *ass;
+
 	// SubtitleSelectionListener interface
 	virtual void OnActiveLineChanged(AssDialogue *new_line);
 	virtual void OnSelectedSetChanged(const Selection &lines_added, const Selection &lines_removed);
+
+	// AssFile events
+	void OnFileChanged(int type);
 
 public:
 	// AudioMarkerProvider interface
@@ -163,21 +187,18 @@ public:
 	// Specific interface
 
 	/// @brief Constructor
-	AudioTimingControllerDialogue(AudioController *audio_controller, SelectionController<AssDialogue> *selection_controller);
+	AudioTimingControllerDialogue(AudioController *audio_controller, SelectionController<AssDialogue> *selection_controller, AssFile *ass);
 	virtual ~AudioTimingControllerDialogue();
 };
 
 
 
-AudioTimingController *CreateDialogueTimingController(AudioController *audio_controller, SelectionController<AssDialogue> *selection_controller)
+AudioTimingController *CreateDialogueTimingController(AudioController *audio_controller, SelectionController<AssDialogue> *selection_controller, AssFile *ass)
 {
-	return new AudioTimingControllerDialogue(audio_controller, selection_controller);
+	return new AudioTimingControllerDialogue(audio_controller, selection_controller, ass);
 }
 
-
-
 // AudioMarkerDialogueTiming
-
 void AudioMarkerDialogueTiming::SetPosition(int64_t new_position)
 {
 	position = new_position;
@@ -228,8 +249,11 @@ void AudioMarkerDialogueTiming::InitPair(AudioMarkerDialogueTiming *marker1, Aud
 
 // AudioTimingControllerDialogue
 
-AudioTimingControllerDialogue::AudioTimingControllerDialogue(AudioController *audio_controller, SelectionController<AssDialogue> *selection_controller)
+AudioTimingControllerDialogue::AudioTimingControllerDialogue(AudioController *audio_controller, SelectionController<AssDialogue> *selection_controller, AssFile *ass)
 : timing_modified(false)
+, commit_id(-1)
+, ass(ass)
+, auto_commit(OPT_GET("Audio/Auto/Commit"))
 , audio_controller(audio_controller)
 , selection_controller(selection_controller)
 {
@@ -238,6 +262,7 @@ AudioTimingControllerDialogue::AudioTimingControllerDialogue(AudioController *au
 	AudioMarkerDialogueTiming::InitPair(&markers[0], &markers[1]);
 
 	selection_controller->AddSelectionListener(this);
+	commit_slot = ass->AddCommitListener(&AudioTimingControllerDialogue::OnFileChanged, this);
 }
 
 
@@ -278,21 +303,21 @@ void AudioTimingControllerDialogue::GetMarkers(const SampleRange &range, AudioMa
 		out_markers.push_back(&markers[1]);
 }
 
-
-
 void AudioTimingControllerDialogue::OnActiveLineChanged(AssDialogue *new_line)
 {
-	/// @todo Need to change policy to default commit at some point
-	Revert(); // revert will read and reset the selection/markers
+	Revert();
 }
-
-
 
 void AudioTimingControllerDialogue::OnSelectedSetChanged(const Selection &lines_added, const Selection &lines_removed)
 {
 	/// @todo Create new passive markers, perhaps
 }
 
+void AudioTimingControllerDialogue::OnFileChanged(int type) {
+	if (type == AssFile::COMMIT_UNDO || type == AssFile::COMMIT_FULL) return;
+
+	Revert();
+}
 
 
 wxString AudioTimingControllerDialogue::GetWarningMessage() const
@@ -342,12 +367,13 @@ void AudioTimingControllerDialogue::Prev()
 
 void AudioTimingControllerDialogue::Commit()
 {
-	/// @todo Make these depend on actual configuration
-	const bool next_line_on_commit = true;
-	const int default_duration = 5000; // milliseconds
-
 	int new_start_ms = audio_controller->MillisecondsFromSamples(GetLeftMarker()->GetPosition());
 	int new_end_ms = audio_controller->MillisecondsFromSamples(GetRightMarker()->GetPosition());
+
+	// If auto committing is enabled, timing_modified will be true iif it is an
+	// auto commit, as there is never pending changes to commit when the button
+	// is clicked
+	bool user_triggered = !(timing_modified && auto_commit->GetBool());
 
 	// Store back new times
 	if (timing_modified)
@@ -359,16 +385,33 @@ void AudioTimingControllerDialogue::Commit()
 			(*sub)->Start.SetMS(new_start_ms);
 			(*sub)->End.SetMS(new_end_ms);
 		}
-		/// @todo Set an undo point
+
+		commit_slot.Block();
+		if (user_triggered)
+		{
+			ass->Commit(_("timing"), AssFile::COMMIT_TIMES);
+			commit_id = -1; // never coalesce with a manually triggered commit
+		}
+		else
+			commit_id = ass->Commit(_("timing"), AssFile::COMMIT_TIMES, commit_id);
+
+		commit_slot.Unblock();
 		timing_modified = false;
 	}
 
-	// Assume that the next line might be zero-timed and should thus get a default timing
-	if (next_line_on_commit)
+	if (user_triggered && OPT_GET("Audio/Next Line on Commit")->GetBool())
 	{
-		markers[0].SetPosition(audio_controller->SamplesFromMilliseconds(new_end_ms));
-		markers[1].SetPosition(audio_controller->SamplesFromMilliseconds(new_end_ms + default_duration));
-		UpdateSelection();
+		/// @todo Old audio display created a new line if there was no next,
+		///       like the edit box, so maybe add a way to do that which both
+		///       this and the edit box can use
+		Next();
+		if (selection_controller->GetActiveLine()->End.GetMS() == 0) {
+			const int default_duration = OPT_GET("Timing/Default Duration")->GetInt();
+			markers[0].SetPosition(audio_controller->SamplesFromMilliseconds(new_end_ms));
+			markers[1].SetPosition(audio_controller->SamplesFromMilliseconds(new_end_ms + default_duration));
+			timing_modified = true;
+			UpdateSelection();
+		}
 	}
 }
 
@@ -376,8 +419,7 @@ void AudioTimingControllerDialogue::Commit()
 
 void AudioTimingControllerDialogue::Revert()
 {
-	AssDialogue *line = selection_controller->GetActiveLine();
-	if (line)
+	if (AssDialogue *line = selection_controller->GetActiveLine())
 	{
 		AssTime new_start = line->Start;
 		AssTime new_end = line->End;
@@ -418,10 +460,7 @@ AudioMarker * AudioTimingControllerDialogue::OnLeftClick(int64_t sample, int sen
 	{
 		// Clicked near the left marker:
 		// Insta-move it and start dragging it
-		left->SetPosition(sample);
-		AnnounceMarkerMoved(left);
-		timing_modified = true;
-		UpdateSelection();
+		SetMarker(left, sample);
 		return left;
 	}
 
@@ -435,10 +474,7 @@ AudioMarker * AudioTimingControllerDialogue::OnLeftClick(int64_t sample, int sen
 	// Clicked far from either marker:
 	// Insta-set the left marker to the clicked position and return the right as the dragged one,
 	// such that if the user does start dragging, he will create a new selection from scratch
-	left->SetPosition(sample);
-	AnnounceMarkerMoved(left);
-	timing_modified = true;
-	UpdateSelection();
+	SetMarker(left, sample);
 	return right;
 }
 
@@ -447,11 +483,7 @@ AudioMarker * AudioTimingControllerDialogue::OnLeftClick(int64_t sample, int sen
 AudioMarker * AudioTimingControllerDialogue::OnRightClick(int64_t sample, int sensitivity)
 {
 	AudioMarkerDialogueTiming *right = GetRightMarker();
-	
-	right->SetPosition(sample);
-	AnnounceMarkerMoved(right);
-	timing_modified = true;
-	UpdateSelection();
+	SetMarker(right, sample);
 	return right;
 }
 
@@ -461,11 +493,7 @@ void AudioTimingControllerDialogue::OnMarkerDrag(AudioMarker *marker, int64_t ne
 {
 	assert(marker == &markers[0] || marker == &markers[1]);
 
-	static_cast<AudioMarkerDialogueTiming*>(marker)->SetPosition(new_position);
-	AnnounceMarkerMoved(marker);
-	timing_modified = true;
-
-	UpdateSelection();
+	SetMarker(static_cast<AudioMarkerDialogueTiming*>(marker), new_position);
 }
 
 
@@ -475,4 +503,11 @@ void AudioTimingControllerDialogue::UpdateSelection()
 	AnnounceUpdatedPrimaryRange();
 }
 
-
+void AudioTimingControllerDialogue::SetMarker(AudioMarkerDialogueTiming *marker, int64_t sample)
+{
+	marker->SetPosition(sample);
+	AnnounceMarkerMoved(marker);
+	timing_modified = true;
+	if (auto_commit->GetBool()) Commit();
+	UpdateSelection();
+}

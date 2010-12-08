@@ -591,7 +591,7 @@ void FrameMain::InitContents() {
 
 	// Audio area
 	StartupLog(_T("Create audio box"));
-	audioBox = new AudioBox(audioSash, audioController, SubsGrid);
+	audioBox = new AudioBox(audioSash, audioController, SubsGrid, ass);
 	audioBox->frameMain = this;
 	audioSashSizer->Add(audioBox, 1, wxEXPAND);
 	audioSash->SetSizer(audioSashSizer);
