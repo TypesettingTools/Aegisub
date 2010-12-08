@@ -6,7 +6,7 @@ LIB_SHARED = libaegisub-3.0.so
 LIB_SHARED_INSTALL = yes
 LIB_VERSION = 3
 
-CXXFLAGS = -Iinclude -I../src -I.. -pedantic -DLAGI -fPIC -Wno-variadic-macros
+CXXFLAGS = -Iinclude -I../src -I.. -DLAGI -fPIC -Wno-variadic-macros
 
 PRECOMPILED_HEADER_NAME = lagi_pre.h
 lagi_pre.h.gch: CXXFLAGS := $(CXXFLAGS)
@@ -23,7 +23,6 @@ SRC = \
 	common/charset_ucd.cpp \
 	common/mru.cpp \
 	common/option.cpp \
-	common/option_value.cpp \
 	common/option_visit.cpp \
 	common/log.cpp \
 	common/validator.cpp \
