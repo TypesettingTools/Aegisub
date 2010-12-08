@@ -678,6 +678,9 @@ void AudioDisplay::SetZoomLevel(int new_zoom_level)
 
 	if (pixel_samples != new_samples_per_pixel)
 	{
+		int client_width = GetClientSize().GetWidth();
+		int64_t center_sample = int64_t(scroll_left + client_width / 2) * pixel_samples;
+
 		pixel_samples = new_samples_per_pixel;
 		audio_renderer->SetSamplesPerPixel(pixel_samples);
 
@@ -686,8 +689,10 @@ void AudioDisplay::SetZoomLevel(int new_zoom_level)
 		else
 			pixel_audio_width = 1;
 
-		scrollbar->ChangeLengths(pixel_audio_width, GetClientSize().GetWidth());
+		scrollbar->ChangeLengths(pixel_audio_width, client_width);
 		timeline->ChangeZoom(pixel_samples);
+
+		ScrollSampleToCenter(center_sample);
 
 		Refresh();
 	}
