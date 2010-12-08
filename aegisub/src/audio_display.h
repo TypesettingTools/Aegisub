@@ -38,6 +38,7 @@
 #pragma once
 
 #ifndef AGI_PRE
+#include <list>
 #include <stdint.h>
 
 #include <wx/bitmap.h>
@@ -47,6 +48,7 @@
 #endif
 
 #include <libaegisub/scoped_ptr.h>
+#include <libaegisub/signals.h>
 
 
 class AudioRenderer;
@@ -108,8 +110,9 @@ public:
 /// The audio display is the common view that allows the user to interact with the active
 /// timing controller. The audio display also renders audio according to the audio controller
 /// and the timing controller, using an audio renderer instance.
-class AudioDisplay: public wxWindow, private AudioControllerAudioEventListener, private AudioControllerTimingEventListener {
+class AudioDisplay: public wxWindow {
 private:
+	std::list<agi::signal::Connection> slots;
 
 	/// The audio renderer manager
 	agi::scoped_ptr<AudioRenderer> audio_renderer;
@@ -178,9 +181,8 @@ private:
 	/// @brief Remove the tracking cursor from the display
 	void RemoveTrackCursor();
 
-
-	/// Previous audio selection for optimising redraw when selection changes
-	AudioController::SampleRange old_selection;
+	/// Previous audio selection for optimizing redraw when selection changes
+	SampleRange old_selection;
 
 	/// @brief Reload all rendering settings from Options and reset caches
 	///
@@ -197,19 +199,10 @@ private:
 	/// wxWidgets input focus changed event
 	void OnFocus(wxFocusEvent &event);
 
-
-private:
 	// AudioControllerAudioEventListener implementation
 	virtual void OnAudioOpen(AudioProvider *provider);
-	virtual void OnAudioClose();
 	virtual void OnPlaybackPosition(int64_t sample_position);
-	virtual void OnPlaybackStop();
-
-	// AudioControllerTimingEventListener implementation
-	virtual void OnMarkersMoved();
 	virtual void OnSelectionChanged();
-	virtual void OnTimingControllerChanged();
-
 
 public:
 
@@ -261,7 +254,7 @@ public:
 	/// closer to the edge of the display than the margin. The edge that is not ensured to
 	/// be in view might be outside of view or might be closer to the display edge than the
 	/// margin.
-	void ScrollSampleRangeInView(const AudioController::SampleRange &range);
+	void ScrollSampleRangeInView(const SampleRange &range);
 
 
 	/// @brief Change the zoom level

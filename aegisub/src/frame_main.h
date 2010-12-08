@@ -47,10 +47,6 @@
 #include <wx/timer.h>
 #endif
 
-#ifndef AGI_AUDIO_CONTROLLER_INCLUDED
-#error You must include "audio_controller.h" before "frame_main.h"
-#endif
-
 class AssFile;
 class VideoDisplay;
 class VideoSlider;
@@ -63,6 +59,7 @@ class DialogDetachedVideo;
 class DialogStyling;
 class AegisubFileDropTarget;
 class AudioController;
+class AudioProvider;
 
 namespace Automation4 { class FeatureMacro; class ScriptManager; }
 
@@ -73,7 +70,7 @@ namespace Automation4 { class FeatureMacro; class ScriptManager; }
 /// @brief DOCME
 ///
 /// DOCME
-class FrameMain: public wxFrame, private AudioControllerAudioEventListener {
+class FrameMain: public wxFrame {
 	friend class AegisubFileDropTarget;
 	friend class AegisubApp;
 	friend class SubtitlesGrid;
@@ -327,13 +324,9 @@ private:
 	void RebuildRecentList(wxString listName,wxMenu *menu,int startID);
 	void SynchronizeProject(bool FromSubs=false);
 
-
-private:
 	// AudioControllerAudioEventListener implementation
-	virtual void OnAudioOpen(AudioProvider *provider);
-	virtual void OnAudioClose();
-	virtual void OnPlaybackPosition(int64_t sample_position);
-	virtual void OnPlaybackStop();
+	void OnAudioOpen(AudioProvider *provider);
+	void OnAudioClose();
 
 
 	void OnSubtitlesFileChanged();

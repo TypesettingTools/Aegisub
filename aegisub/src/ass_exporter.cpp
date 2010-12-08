@@ -39,7 +39,6 @@
 #include "ass_export_filter.h"
 #include "ass_exporter.h"
 #include "ass_file.h"
-#include "audio_controller.h"
 #include "frame_main.h"
 
 /// @brief Constructor 

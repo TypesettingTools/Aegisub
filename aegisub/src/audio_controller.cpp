@@ -74,71 +74,51 @@ bool operator < (int64_t a, const AudioMarkerKeyframe &b) { return a < b.GetPosi
 bool operator < (const AudioMarkerKeyframe &a, int64_t b) { return a.GetPosition() < b; }
 wxPen AudioMarkerKeyframe::style;
 
-class AudioMarkerProviderKeyframes : public AudioMarkerProvider, private AudioControllerAudioEventListener {
-	// GetMarkers needs to be const but still needs to modify this state, which is really
-	// just a cache... use the mutable "hack".
-	mutable int last_keyframes_revision;
-	mutable std::vector<AudioMarkerKeyframe> keyframe_samples;
-	AudioController *controller;
-	int64_t samplerate;
+class AudioMarkerProviderKeyframes : public AudioMarkerProvider {
+	VideoContext *vc;
 
-	void ReloadKeyframes() const
+	agi::signal::Connection keyframe_slot;
+	agi::signal::Connection audio_open_slot;
+
+	std::vector<AudioMarkerKeyframe> keyframe_samples;
+	AudioController *controller;
+
+	void OnKeyframesOpen(std::vector<int> const& raw_keyframes)
 	{
 		keyframe_samples.clear();
-
-		VideoContext *vc = VideoContext::Get();
-		if (!vc) return;
-
-		last_keyframes_revision = vc->GetKeyframesRevision();
-		const std::vector<int> &raw_keyframes = vc->GetKeyFrames();
 		keyframe_samples.reserve(raw_keyframes.size());
 		for (size_t i = 0; i < raw_keyframes.size(); ++i)
 		{
 			keyframe_samples.push_back(AudioMarkerKeyframe(
-				vc->TimeAtFrame(raw_keyframes[i]) * samplerate / 1000));
+				controller->SamplesFromMilliseconds(vc->TimeAtFrame(raw_keyframes[i]))));
 		}
 		std::sort(keyframe_samples.begin(), keyframe_samples.end());
+		AnnounceMarkerMoved();
 	}
 
 private:
 	// AudioControllerAudioEventListener implementation
-	virtual void OnAudioOpen(AudioProvider *provider)
+	void OnAudioOpen(AudioProvider *)
 	{
-		samplerate = provider->GetSampleRate();
-		ReloadKeyframes();
+		OnKeyframesOpen(vc->GetKeyFrames());
 	}
-	virtual void OnAudioClose() { }
-	virtual void OnPlaybackPosition(int64_t sample_position) { }
-	virtual void OnPlaybackStop() { }
 
 public:
 	AudioMarkerProviderKeyframes(AudioController *controller)
-		: controller(controller)
+		: vc(VideoContext::Get())
+		, keyframe_slot(vc->AddKeyframesOpenListener(&AudioMarkerProviderKeyframes::OnKeyframesOpen, this))
+		, audio_open_slot(controller->AddAudioOpenListener(&AudioMarkerProviderKeyframes::OnAudioOpen, this))
+		, controller(controller)
 	{
-		// Assume that a video context with keyframes revision 0 never has keyframes loaded
-		last_keyframes_revision = 0;
-		samplerate = 44100;
-		controller->AddAudioListener(this);
+		OnKeyframesOpen(vc->GetKeyFrames());
 	}
 
-	virtual ~AudioMarkerProviderKeyframes()
+	void GetMarkers(const SampleRange &range, AudioMarkerVector &out) const
 	{
-		controller->RemoveAudioListener(this);
-	}
-
-	void GetMarkers(const AudioController::SampleRange &range, AudioMarkerVector &out) const
-	{
-		VideoContext *vc = VideoContext::Get();
-		if (!vc) return;
-
-		// Re-read keyframe data if the revision number changed, the keyframe data probably did too
-		if (vc->GetKeyframesRevision() != last_keyframes_revision)
-			ReloadKeyframes();
-
 		// Find first and last keyframes inside the range
-		std::vector<AudioMarkerKeyframe>::iterator a = std::lower_bound(
+		std::vector<AudioMarkerKeyframe>::const_iterator a = std::lower_bound(
 			keyframe_samples.begin(), keyframe_samples.end(), range.begin());
-		std::vector<AudioMarkerKeyframe>::iterator b = std::upper_bound(
+		std::vector<AudioMarkerKeyframe>::const_iterator b = std::upper_bound(
 			keyframe_samples.begin(), keyframe_samples.end(), range.end());
 
 		// Place pointers to the markers in the output vector
@@ -147,22 +127,9 @@ public:
 	}
 };
 
-
-/// Type of the audio event listener container in AudioController
-typedef std::set<AudioControllerAudioEventListener *> AudioEventListenerSet;
-/// Type of the timing event listener container in AudioController
-typedef std::set<AudioControllerTimingEventListener *> TimingEventListenerSet;
-
-/// Macro to iterate audio event listeners in AudioController implementation
-#define AUDIO_LISTENERS(listener) for (AudioEventListenerSet::iterator listener = audio_event_listeners.begin(); listener != audio_event_listeners.end(); ++listener)
-/// Macro to iterate audio event listeners in AudioController implementation
-#define TIMING_LISTENERS(listener) for (TimingEventListenerSet::iterator listener = timing_event_listeners.begin(); listener != timing_event_listeners.end(); ++listener)
-
-
 AudioController::AudioController()
 : player(0)
 , provider(0)
-, timing_controller(0)
 , keyframes_marker_provider(new AudioMarkerProviderKeyframes(this))
 , playback_mode(PM_NotPlaying)
 , playback_timer(this)
@@ -195,10 +162,7 @@ void AudioController::OnPlaybackTimer(wxTimerEvent &event)
 	}
 	else
 	{
-		AUDIO_LISTENERS(l)
-		{
-			(*l)->OnPlaybackPosition(pos);
-		}
+		AnnouncePlaybackPosition(pos);
 	}
 }
 
@@ -312,10 +276,7 @@ void AudioController::OpenAudio(const wxString &url)
 	}
 
 	// Tell listeners about this.
-	AUDIO_LISTENERS(l)
-	{
-		(*l)->OnAudioOpen(provider);
-	}
+	AnnounceAudioOpen(provider);
 }
 
 
@@ -328,10 +289,7 @@ void AudioController::CloseAudio()
 	player = 0;
 	provider = 0;
 
-	AUDIO_LISTENERS(l)
-	{
-		(*l)->OnAudioClose();
-	}
+	AnnounceAudioClose();
 }
 
 
@@ -347,90 +305,37 @@ wxString AudioController::GetAudioURL() const
 	return _T("");
 }
 
-
-
-void AudioController::AddAudioListener(AudioControllerAudioEventListener *listener)
-{
-	audio_event_listeners.insert(listener);
-}
-
-
-void AudioController::RemoveAudioListener(AudioControllerAudioEventListener *listener)
-{
-	audio_event_listeners.erase(listener);
-}
-
-
-void AudioController::AddTimingListener(AudioControllerTimingEventListener *listener)
-{
-	timing_event_listeners.insert(listener);
-}
-
-
-void AudioController::RemoveTimingListener(AudioControllerTimingEventListener *listener)
-{
-	timing_event_listeners.erase(listener);
-}
-
-
-
 void AudioController::SetTimingController(AudioTimingController *new_controller)
 {
-	delete timing_controller;
-	timing_controller = new_controller;
-
-	TIMING_LISTENERS(l)
-	{
-		(*l)->OnTimingControllerChanged();
+	if (timing_controller.get() != new_controller) {
+		timing_controller.reset(new_controller);
+		timing_controller->AddMarkerMovedListener(std::tr1::bind(std::tr1::ref(AnnounceMarkerMoved)));
+		timing_controller->AddUpdatedPrimaryRangeListener(&AudioController::OnTimingControllerUpdatedPrimaryRange, this);
+		timing_controller->AddUpdatedStyleRangesListener(&AudioController::OnTimingControllerUpdatedStyleRanges, this);
 	}
+
+	AnnounceTimingControllerChanged();
 }
 
 
 
-void AudioController::OnTimingControllerUpdatedPrimaryRange(AudioTimingController *sending_controller)
+void AudioController::OnTimingControllerUpdatedPrimaryRange()
 {
-	assert(sending_controller != 0);
-	if (sending_controller != timing_controller)
-		return;
-	
 	if (playback_mode == PM_PrimaryRange)
 	{
 		player->SetEndPosition(timing_controller->GetPrimaryPlaybackRange().end());
 	}
 
-	TIMING_LISTENERS(l)
-	{
-		(*l)->OnSelectionChanged();
-	}
+	AnnounceSelectionChanged();
 }
 
 
-void AudioController::OnTimingControllerUpdatedStyleRanges(AudioTimingController *sending_controller)
+void AudioController::OnTimingControllerUpdatedStyleRanges()
 {
-	assert(sending_controller != 0);
-	if (sending_controller != timing_controller)
-		return;
-
 	/// @todo redraw and stuff, probably
 }
 
-
-void AudioController::OnTimingControllerMarkerMoved(AudioTimingController *sending_controller, AudioMarker *marker)
-{
-	assert(sending_controller != 0);
-	if (sending_controller != timing_controller)
-		return;
-
-	/// @todo shouldn't this be more detailed?
-	TIMING_LISTENERS(l)
-	{
-		(*l)->OnMarkersMoved();
-	}
-}
-
-
-
-void AudioController::PlayRange(const AudioController::SampleRange &range)
+void AudioController::PlayRange(const SampleRange &range)
 {
 	if (!IsAudioOpen()) return;
 
@@ -438,10 +343,7 @@ void AudioController::PlayRange(const AudioController::SampleRange &range)
 	playback_mode = PM_Range;
 	playback_timer.Start(20);
 
-	AUDIO_LISTENERS(l)
-	{
-		(*l)->OnPlaybackPosition(range.begin());
-	}
+	AnnouncePlaybackPosition(range.begin());
 }
 
 
@@ -461,10 +363,7 @@ void AudioController::PlayToEnd(int64_t start_sample)
 	playback_mode = PM_ToEnd;
 	playback_timer.Start(20);
 
-	AUDIO_LISTENERS(l)
-	{
-		(*l)->OnPlaybackPosition(start_sample);
-	}
+	AnnouncePlaybackPosition(start_sample);
 }
 
 
@@ -476,10 +375,7 @@ void AudioController::Stop()
 	playback_mode = PM_NotPlaying;
 	playback_timer.Stop();
 
-	AUDIO_LISTENERS(l)
-	{
-		(*l)->OnPlaybackStop();
-	}
+	AnnouncePlaybackStop();
 }
 
 
@@ -505,9 +401,9 @@ void AudioController::ResyncPlaybackPosition(int64_t new_position)
 }
 
 
-AudioController::SampleRange AudioController::GetPrimaryPlaybackRange() const
+SampleRange AudioController::GetPrimaryPlaybackRange() const
 {
-	if (timing_controller != 0)
+	if (timing_controller.get())
 	{
 		return timing_controller->GetPrimaryPlaybackRange();
 	}
@@ -522,6 +418,7 @@ void AudioController::GetMarkers(const SampleRange &range, AudioMarkerVector &ma
 {
 	/// @todo Find all sources of markers
 	keyframes_marker_provider->GetMarkers(range, markers);
+	if (timing_controller.get()) timing_controller->GetMarkers(range, markers);
 }
 
 
@@ -565,4 +462,3 @@ int64_t AudioController::MillisecondsFromSamples(int64_t samples) const
 
 	return millisamples / sr;
 }
-

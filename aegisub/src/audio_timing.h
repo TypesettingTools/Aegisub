@@ -38,17 +38,27 @@
 class AssDialogue;
 class AudioController;
 
+#include <libaegisub/signals.h>
 
 /// @class AudioTimingController
 /// @brief Base class for objects controlling audio timing
 ///
 /// There is just one active audio timing controller at a time per audio controller.
 /// The timing controller manages the timing mode and supplies markers that can be
-/// manupulated to the audio display, as well as the current selection.
+/// manipulated to the audio display, as well as the current selection.
 ///
 /// The timing controller must then be sent the marker drag events as well as clicks
 /// in empty areas of the audio display.
 class AudioTimingController : public AudioMarkerProvider {
+protected:
+	/// The primary playback range has changed, usually as a result of user interaction.
+	agi::signal::Signal<> AnnounceUpdatedPrimaryRange;
+
+	/// One or more rendering style ranges have changed in the timing controller.
+	agi::signal::Signal<> AnnounceUpdatedStyleRanges;
+
+	/// A marker has been updated in some way.
+	agi::signal::Signal<AudioMarker*> AnnounceMarkerMoved;
 public:
 	/// @brief Get any warning message to show in the audio display
 	/// @return The warning message to show, may be empty if there is none
@@ -58,13 +68,13 @@ public:
 	/// @return A sample range
 	///
 	/// This is used for "bring working area into view" operations.
-	virtual AudioController::SampleRange GetIdealVisibleSampleRange() const = 0;
+	virtual SampleRange GetIdealVisibleSampleRange() const = 0;
 
 	/// @brief Get the primary playback range
 	/// @return A sample range
 	///
 	/// Get the sample range the user is most likely to want to play back currently.
-	virtual AudioController::SampleRange GetPrimaryPlaybackRange() const = 0;
+	virtual SampleRange GetPrimaryPlaybackRange() const = 0;
 
 	/// @brief Does this timing mode have labels on the audio display?
 	/// @return True if this timing mode needs labels on the audio display.
@@ -122,9 +132,11 @@ public:
 	virtual void OnMarkerDrag(AudioMarker *marker, int64_t new_position) = 0;
 
 	/// @brief Destructor
-	///
-	/// Does nothing in the base class, only present for virtual destruction.
 	virtual ~AudioTimingController() { }
+
+	DEFINE_SIGNAL_ADDERS(AnnounceUpdatedPrimaryRange, AddUpdatedPrimaryRangeListener)
+	DEFINE_SIGNAL_ADDERS(AnnounceUpdatedStyleRanges, AddUpdatedStyleRangesListener)
+	DEFINE_SIGNAL_ADDERS(AnnounceMarkerMoved, AddMarkerMovedListener)
 };
 
 

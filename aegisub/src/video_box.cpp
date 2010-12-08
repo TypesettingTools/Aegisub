@@ -45,7 +45,6 @@
 
 #include "ass_dialogue.h"
 #include "ass_file.h"
-#include "audio_controller.h"
 #include "frame_main.h"
 #include "help_button.h"
 #include "libresrc/libresrc.h"

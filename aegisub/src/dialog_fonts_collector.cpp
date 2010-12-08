@@ -51,7 +51,6 @@
 #include "ass_file.h"
 #include "ass_override.h"
 #include "ass_style.h"
-#include "audio_controller.h"
 #include "compat.h"
 #include "dialog_fonts_collector.h"
 #include "font_file_lister.h"

@@ -496,7 +496,7 @@ public:
 
 			if (marker->CanSnap() && (default_snap != event.ShiftDown()))
 			{
-				AudioController::SampleRange snap_sample_range(
+				SampleRange snap_sample_range(
 					display->SamplesFromRelativeX(event.GetPosition().x - snap_range),
 					display->SamplesFromRelativeX(event.GetPosition().x + snap_range));
 				const AudioMarker *snap_marker = 0;
@@ -546,8 +546,13 @@ AudioDisplay::AudioDisplay(wxWindow *parent, AudioController *controller)
 
 	track_cursor_pos = -1;
 
-	controller->AddAudioListener(this);
-	controller->AddTimingListener(this);
+	slots.push_back(controller->AddAudioOpenListener(&AudioDisplay::OnAudioOpen, this));
+	slots.push_back(controller->AddAudioCloseListener(&AudioDisplay::OnAudioOpen, this, (AudioProvider*)0));
+	slots.push_back(controller->AddPlaybackPositionListener(&AudioDisplay::OnPlaybackPosition, this));
+	slots.push_back(controller->AddPlaybackStopListener(&AudioDisplay::RemoveTrackCursor, this));
+	slots.push_back(controller->AddTimingControllerListener(&AudioDisplay::Refresh, this, true, (const wxRect*)0));
+	slots.push_back(controller->AddMarkerMovedListener(&AudioDisplay::Refresh, this, true, (const wxRect*)0));
+	slots.push_back(controller->AddSelectionChangedListener(&AudioDisplay::OnSelectionChanged, this));
 
 	OPT_SUB("Audio/Spectrum", &AudioDisplay::ReloadRenderingSettings, this);
 
@@ -564,8 +569,6 @@ AudioDisplay::AudioDisplay(wxWindow *parent, AudioController *controller)
 
 AudioDisplay::~AudioDisplay()
 {
-	controller->RemoveAudioListener(this);
-	controller->RemoveTimingListener(this);
 }
 
 
@@ -614,7 +617,7 @@ void AudioDisplay::ScrollSampleToCenter(int64_t sample_position)
 }
 
 
-void AudioDisplay::ScrollSampleRangeInView(const AudioController::SampleRange &range)
+void AudioDisplay::ScrollSampleRangeInView(const SampleRange &range)
 {
 	int client_width = GetClientRect().GetWidth();
 	int range_begin = AbsoluteXFromSamples(range.begin());
@@ -810,7 +813,7 @@ void AudioDisplay::OnPaint(wxPaintEvent& event)
 	bool redraw_timeline = false;
 
 	/// @todo Get rendering style ranges from timing controller instead
-	AudioController::SampleRange sel_samples(controller->GetPrimaryPlaybackRange());
+	SampleRange sel_samples(controller->GetPrimaryPlaybackRange());
 	int selection_start = AbsoluteXFromSamples(sel_samples.begin());
 	int selection_end = AbsoluteXFromSamples(sel_samples.end());
 
@@ -856,12 +859,10 @@ void AudioDisplay::OnPaint(wxPaintEvent& event)
 			// Draw markers on top of it all
 			AudioMarkerVector markers;
 			const int foot_size = 6;
-			AudioController::SampleRange updrectsamples(
+			SampleRange updrectsamples(
 				SamplesFromRelativeX(updrect.x - foot_size),
 				SamplesFromRelativeX(updrect.x + updrect.width + foot_size));
 			controller->GetMarkers(updrectsamples, markers);
-			if (controller->GetTimingController())
-				controller->GetTimingController()->GetMarkers(updrectsamples, markers);
 			wxDCPenChanger pen_retainer(dc, wxPen());
 			wxDCBrushChanger brush_retainer(dc, wxBrush());
 			for (AudioMarkerVector::iterator marker_i = markers.begin(); marker_i != markers.end(); ++marker_i)
@@ -1184,35 +1185,15 @@ void AudioDisplay::OnAudioOpen(AudioProvider *_provider)
 	Refresh();
 }
 
-
-void AudioDisplay::OnAudioClose()
-{
-	OnAudioOpen(0);
-}
-
-
 void AudioDisplay::OnPlaybackPosition(int64_t sample_position)
 {
 	SetTrackCursor(AbsoluteXFromSamples(sample_position), false);
 }
 
-
-void AudioDisplay::OnPlaybackStop()
-{
-	RemoveTrackCursor();
-}
-
-
-void AudioDisplay::OnMarkersMoved()
-{
-	Refresh();
-}
-
-
 void AudioDisplay::OnSelectionChanged()
 {
 	/// @todo Handle rendering style ranges from timing controller instead
-	AudioController::SampleRange sel(controller->GetPrimaryPlaybackRange());
+	SampleRange sel(controller->GetPrimaryPlaybackRange());
 	scrollbar->SetSelection(AbsoluteXFromSamples(sel.begin()), AbsoluteXFromSamples(sel.length()));
 
 	if (sel.overlaps(old_selection))
@@ -1242,11 +1223,3 @@ void AudioDisplay::OnSelectionChanged()
 
 	old_selection = sel;
 }
-
-
-void AudioDisplay::OnTimingControllerChanged()
-{
-	Refresh();
-	/// @todo Do something more about the new timing controller?
-}
-

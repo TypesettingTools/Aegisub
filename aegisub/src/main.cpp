@@ -55,7 +55,6 @@
 #include "ass_file.h"
 #include "ass_time.h"
 #include "selection_controller.h"
-#include "audio_controller.h"
 #include "audio_box.h"
 #ifdef WITH_AUTOMATION
 #include "auto4_base.h"

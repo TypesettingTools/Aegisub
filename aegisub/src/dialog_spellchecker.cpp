@@ -44,7 +44,6 @@
 
 #include "ass_dialogue.h"
 #include "ass_file.h"
-#include "audio_controller.h"
 #include "compat.h"
 #include "dialog_spellchecker.h"
 #include "frame_main.h"

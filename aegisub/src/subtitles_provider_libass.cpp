@@ -50,7 +50,6 @@
 
 #include <libaegisub/log.h>
 
-#include "audio_controller.h"
 #include "ass_file.h"
 #include "dialog_progress.h"
 #include "frame_main.h"

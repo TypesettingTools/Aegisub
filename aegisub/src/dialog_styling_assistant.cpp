@@ -379,7 +379,7 @@ void DialogStyling::OnPlayVideoButton(wxCommandEvent &event) {
 /// @param event 
 ///
 void DialogStyling::OnPlayAudioButton(wxCommandEvent &event) {
-	audio->PlayRange(AudioController::SampleRange(
+	audio->PlayRange(SampleRange(
 		audio->SamplesFromMilliseconds(line->Start.GetMS()),
 		audio->SamplesFromMilliseconds(line->End.GetMS())));
 	TypeBox->SetFocus();

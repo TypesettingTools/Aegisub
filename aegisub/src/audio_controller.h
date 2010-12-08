@@ -48,9 +48,8 @@
 #endif
 
 #include <libaegisub/exception.h>
-
-#define AGI_AUDIO_CONTROLLER_INCLUDED 1
-
+#include <libaegisub/scoped_ptr.h>
+#include <libaegisub/signals.h>
 
 class AudioPlayer;
 class AudioProvider;
@@ -62,15 +61,78 @@ class AudioTimingController;
 class AudioMarker;
 class AudioMarkerProvider;
 
-
 typedef std::vector<const AudioMarker*> AudioMarkerVector;
 
+
+/// @class SampleRange
+/// @brief Represents an immutable range of audio samples
+class SampleRange {
+	int64_t _begin;
+	int64_t _end;
+
+public:
+	/// @brief Constructor
+	/// @param begin Index of the first sample to include in the range
+	/// @param end   Index of one past the last sample to include in the range
+	SampleRange(int64_t begin, int64_t end)
+		: _begin(begin)
+		, _end(end)
+	{
+		assert(end >= begin);
+	}
+
+	/// @brief Copy constructor, optionally adjusting the range
+	/// @param src          The range to duplicate
+	/// @param begin_adjust Number of samples to add to the start of the range
+	/// @param end_adjust   Number of samples to add to the end of the range
+	SampleRange(const SampleRange &src, int64_t begin_adjust = 0, int64_t end_adjust = 0)
+	{
+		_begin = src._begin + begin_adjust;
+		_end = src._end + end_adjust;
+		assert(_end >= _begin);
+	}
+
+	/// Get the number of samples in the range
+	int64_t length() const { return _end - _begin; }
+	/// Get the index of the first sample in the range
+	int64_t begin() const { return _begin; }
+	/// Get the index of one past the last sample in the range
+	int64_t end() const { return _end; }
+
+	/// Determine whether the range contains a given sample index
+	bool contains(int64_t sample) const { return sample >= begin() && sample < end(); }
+
+	/// Determine whether there is an overlap between two ranges
+	bool overlaps(const SampleRange &other) const
+	{
+		return other.contains(_begin)
+			|| other.contains(_end)
+			|| contains(other._begin)
+			|| contains(other._end);
+	}
+};
+
+/// @class AudioMarkerProvider
+/// @brief Abstract interface for audio marker providers
+class AudioMarkerProvider {
+protected:
+	/// One or more of the markers provided by this object have changed
+	agi::signal::Signal<> AnnounceMarkerMoved;
+public:
+	/// Virtual destructor, does nothing
+	virtual ~AudioMarkerProvider() { }
+
+	/// @brief Return markers in a sample range
+	virtual void GetMarkers(const SampleRange &range, AudioMarkerVector &out) const = 0;
+
+	DEFINE_SIGNAL_ADDERS(AnnounceMarkerMoved, AddMarkerMovedListener)
+};
 
 /// @class AudioController
 /// @brief Manage an open audio stream and UI state for it
 ///
 /// Keeps track of the UI interaction state of the open audio for a project, ie. what the current
-/// selection is, what moveable markers are on the audio, and any secondary non-moveable markers
+/// selection is, what movable markers are on the audio, and any secondary non-movable markers
 /// that are present.
 ///
 /// Changes in interaction are broadcast to all managed audio displays so they can redraw, and
@@ -85,65 +147,25 @@ typedef std::vector<const AudioMarker*> AudioMarkerVector;
 /// There is not supposed to be a way to get direct access to the audio providers or players owned
 /// by a controller. If some operation that isn't possible in the existing design is needed, the
 /// controller should be extended in some way to allow it.
-class AudioController : public wxEvtHandler {
-public:
-
-	/// @class SampleRange
-	/// @brief Represents an immutable range of audio samples
-	class SampleRange {
-		int64_t _begin;
-		int64_t _end;
-
-	public:
-		/// @brief Constructor
-		/// @param begin Index of the first sample to include in the range
-		/// @param end   Index of one past the last sample to include in the range
-		SampleRange(int64_t begin, int64_t end)
-			: _begin(begin)
-			, _end(end)
-		{
-			assert(end >= begin);
-		}
-
-		/// @brief Copy constructor, optionally adjusting the range
-		/// @param src          The range to duplicate
-		/// @param begin_adjust Number of samples to add to the start of the range
-		/// @param end_adjust   Number of samples to add to the end of the range
-		SampleRange(const SampleRange &src, int64_t begin_adjust = 0, int64_t end_adjust = 0)
-		{
-			_begin = src._begin + begin_adjust;
-			_end = src._end + end_adjust;
-			assert(_end >= _begin);
-		}
-
-		/// Get the number of samples in the range
-		int64_t length() const { return _end - _begin; }
-		/// Get the index of the first sample in the range
-		int64_t begin() const { return _begin; }
-		/// Get the index of one past the last sample in the range
-		int64_t end() const { return _end; }
-
-		/// Determine whether the range contains a given sample index
-		bool contains(int64_t sample) const { return sample >= begin() && sample < end(); }
-
-		/// Determine whether there is an overlap between two ranges
-		bool overlaps(const SampleRange &other) const
-		{
-			return other.contains(_begin)
-				|| other.contains(_end)
-				|| contains(other._begin)
-				|| contains(other._end);
-		}
-	};
-
-
+class AudioController : public wxEvtHandler, public AudioMarkerProvider {
 private:
+	/// A new audio stream was opened (and any previously open was closed)
+	agi::signal::Signal<AudioProvider*> AnnounceAudioOpen;
 
-	/// Listeners for audio-related events
-	std::set<AudioControllerAudioEventListener *> audio_event_listeners;
+	/// The current audio stream was closed
+	agi::signal::Signal<> AnnounceAudioClose;
 
-	/// Listeners for timing-related events
-	std::set<AudioControllerTimingEventListener *> timing_event_listeners;
+	/// Playback is in progress and the current position was updated
+	agi::signal::Signal<int64_t> AnnouncePlaybackPosition;
+
+	/// Playback has stopped
+	agi::signal::Signal<> AnnouncePlaybackStop;
+
+	/// The timing controller was replaced
+	agi::signal::Signal<> AnnounceTimingControllerChanged;
+
+	/// The selected time range changed
+	agi::signal::Signal<> AnnounceSelectionChanged;
 
 	/// The audio output object
 	AudioPlayer *player;
@@ -152,10 +174,10 @@ private:
 	AudioProvider *provider;
 
 	/// The current timing mode, if any; owned by the audio controller
-	AudioTimingController *timing_controller;
+	agi::scoped_ptr<AudioTimingController> timing_controller;
 
 	/// Provide keyframe data for audio displays
-	std::auto_ptr<AudioMarkerProvider> keyframes_marker_provider;
+	agi::scoped_ptr<AudioMarkerProvider> keyframes_marker_provider;
 
 
 	enum PlaybackMode {
@@ -174,6 +196,11 @@ private:
 	/// Event handler for the playback timer
 	void OnPlaybackTimer(wxTimerEvent &event);
 
+	/// @brief Timing controller signals primary playback range changed
+	void OnTimingControllerUpdatedPrimaryRange();
+
+	/// @brief Timing controller signals that the rendering style ranges have changed
+	void OnTimingControllerUpdatedStyleRanges();
 
 #ifdef wxHAS_POWER_EVENTS
 	/// Handle computer going into suspend mode by stopping audio and closing device
@@ -181,7 +208,6 @@ private:
 	/// Handle computer resuming from suspend by re-opening the audio device
 	void OnComputerResuming(wxPowerEvent &event);
 #endif
-
 
 public:
 
@@ -211,23 +237,6 @@ public:
 	///
 	/// The returned URL can be passed into OpenAudio() later to open the same stream again.
 	wxString GetAudioURL() const;
-
-
-	/// @brief Add an audio event listener
-	/// @param listener The listener to add
-	void AddAudioListener(AudioControllerAudioEventListener *listener);
-
-	/// @brief Remove an audio event listener
-	/// @param listener The listener to remove
-	void RemoveAudioListener(AudioControllerAudioEventListener *listener);
-
-	/// @brief Add a timing event listener
-	/// @param listener The listener to add
-	void AddTimingListener(AudioControllerTimingEventListener *listener);
-
-	/// @brief Remove a timing event listener
-	/// @param listener The listener to remove
-	void RemoveTimingListener(AudioControllerTimingEventListener *listener);
 
 
 	/// @brief Start or restart audio playback, playing a range
@@ -279,12 +288,9 @@ public:
 	/// @return An immutable SampleRange object
 	SampleRange GetPrimaryPlaybackRange() const;
 
-	/// @brief Get all static markers inside a range
+	/// @brief Get all markers inside a range
 	/// @param range   The sample range to retrieve markers for
 	/// @param markers Vector to fill found markers into
-	///
-	/// The markers retrieved are static markers the user can't interact with.
-	/// Markers for user interaction are obtained through the timing controller.
 	void GetMarkers(const SampleRange &range, AudioMarkerVector &markers) const;
 
 
@@ -304,38 +310,13 @@ public:
 
 	/// @brief Return the current timing controller
 	/// @return The current timing controller or 0
-	AudioTimingController * GetTimingController() const { return timing_controller; }
+	AudioTimingController * GetTimingController() const { return timing_controller.get(); }
 
 	/// @brief Change the current timing controller
 	/// @param new_mode The new timing controller or 0. This may be the same object as
 	/// the current timing controller, to signal that the timing controller has changed
 	/// the object being timed, eg. changed to a new dialogue line.
 	void SetTimingController(AudioTimingController *new_controller);
-
-
-	/// @brief Timing controller signals primary playback range changed
-	/// @param timing_controller The timing controller sending this notification
-	///
-	/// Only timing controllers should call this function. This function must be called
-	/// when the primary playback range is changed in the timing controller, usually
-	/// as a result of user interaction.
-	void OnTimingControllerUpdatedPrimaryRange(AudioTimingController *timing_controller);
-
-	/// @brief Timing controller signals that the rendering style ranges have changed
-	/// @param timing_controller The timing controller sending this notification
-	///
-	/// Only timing controllers should call this function. This function must be called
-	/// when one or more rendering style ranges have changed in the timing controller.
-	void OnTimingControllerUpdatedStyleRanges(AudioTimingController *timing_controller);
-
-	/// @brief Timing controller signals that an audio marker has moved
-	/// @param timing_controller The timing controller sending this notification
-	/// @param marker            The marker that was moved
-	///
-	/// Only timing controllers should call this function. This function must be called
-	/// when a marker owned by the timing controller has been updated in some way.
-	void OnTimingControllerMarkerMoved(AudioTimingController *timing_controller, AudioMarker *marker);
-
 
 	/// @brief Convert a count of audio samples to a time in milliseconds
 	/// @param samples Sample count to convert
@@ -346,56 +327,14 @@ public:
 	/// @param ms Time in milliseconds to convert
 	/// @return The index of the first sample that is wholly inside the millisecond
 	int64_t SamplesFromMilliseconds(int64_t ms) const;
+
+	DEFINE_SIGNAL_ADDERS(AnnounceAudioOpen,               AddAudioOpenListener)
+	DEFINE_SIGNAL_ADDERS(AnnounceAudioClose,              AddAudioCloseListener)
+	DEFINE_SIGNAL_ADDERS(AnnouncePlaybackPosition,        AddPlaybackPositionListener)
+	DEFINE_SIGNAL_ADDERS(AnnouncePlaybackStop,            AddPlaybackStopListener)
+	DEFINE_SIGNAL_ADDERS(AnnounceTimingControllerChanged, AddTimingControllerListener)
+	DEFINE_SIGNAL_ADDERS(AnnounceSelectionChanged,        AddSelectionChangedListener)
 };
-
-
-
-/// @class AudioControllerAudioEventListener
-/// @brief Abstract interface for objects that want audio events
-class AudioControllerAudioEventListener {
-public:
-	/// A new audio stream was opened (and any previously open was closed)
-	virtual void OnAudioOpen(AudioProvider *) = 0;
-
-	/// The current audio stream was closed
-	virtual void OnAudioClose() = 0;
-
-	/// Playback is in progress and ths current position was updated
-	virtual void OnPlaybackPosition(int64_t sample_position) = 0;
-
-	/// Playback has stopped
-	virtual void OnPlaybackStop() = 0;
-};
-
-
-/// @class AudioControllerTimingEventListener
-/// @brief Abstract interface for objects that want audio timing events
-class AudioControllerTimingEventListener {
-public:
-	/// One or more moveable markers were moved
-	virtual void OnMarkersMoved() = 0;
-
-	/// The selection was changed
-	virtual void OnSelectionChanged() = 0;
-
-	/// The timing controller was replaced
-	virtual void OnTimingControllerChanged() = 0;
-};
-
-
-
-/// @class AudioMarkerProvider
-/// @brief Abstract interface for audio marker providers
-class AudioMarkerProvider {
-public:
-	/// Virtual destructor, does nothing
-	virtual ~AudioMarkerProvider() { }
-
-	/// @brief Return markers in a sample range
-	virtual void GetMarkers(const AudioController::SampleRange &range, AudioMarkerVector &out) const = 0;
-};
-
-
 
 /// @class AudioMarker
 /// @brief A marker on the audio display
@@ -430,8 +369,6 @@ public:
 	/// at the position of the other marker if it is released while it is inside snapping range.
 	virtual bool CanSnap() const = 0;
 };
-
-
 
 namespace agi {
 	DEFINE_BASE_EXCEPTION(AudioControllerError, Exception);

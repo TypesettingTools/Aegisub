@@ -308,7 +308,7 @@ void VideoContext::PlayNextFrame() {
 	JumpToFrame(frame_n + 1);
 	// Start playing audio
 	if (playAudioOnStep->GetBool()) {
-		audio->PlayRange(AudioController::SampleRange(
+		audio->PlayRange(SampleRange(
 			audio->SamplesFromMilliseconds(TimeAtFrame(thisFrame)),
 			audio->SamplesFromMilliseconds(TimeAtFrame(thisFrame + 1))));
 	}
@@ -322,7 +322,7 @@ void VideoContext::PlayPrevFrame() {
 	JumpToFrame(frame_n -1);
 	// Start playing audio
 	if (playAudioOnStep->GetBool()) {
-		audio->PlayRange(AudioController::SampleRange(
+		audio->PlayRange(SampleRange(
 			audio->SamplesFromMilliseconds(TimeAtFrame(thisFrame - 1)),
 			audio->SamplesFromMilliseconds(TimeAtFrame(thisFrame))));
 	}
@@ -355,7 +355,7 @@ void VideoContext::PlayLine() {
 	if (!curline) return;
 
 	// Start playing audio
-	audio->PlayRange(AudioController::SampleRange(
+	audio->PlayRange(SampleRange(
 		audio->SamplesFromMilliseconds(curline->Start.GetMS()),
 		audio->SamplesFromMilliseconds(curline->End.GetMS())));
 

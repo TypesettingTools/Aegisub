@@ -38,7 +38,6 @@
 
 #include <libaegisub/log.h>
 
-#include "audio_controller.h"
 #include "audio_player_oss.h"
 #include "frame_main.h"
 #include "compat.h"

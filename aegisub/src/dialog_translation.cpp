@@ -444,7 +444,7 @@ void DialogTranslation::OnPlayVideoButton(wxCommandEvent &event) {
 /// @param event 
 ///
 void DialogTranslation::OnPlayAudioButton(wxCommandEvent &event) {
-	audio->PlayRange(AudioController::SampleRange(
+	audio->PlayRange(SampleRange(
 		audio->SamplesFromMilliseconds(current->Start.GetMS()),
 		audio->SamplesFromMilliseconds(current->End.GetMS())));
 	TransText->SetFocus();

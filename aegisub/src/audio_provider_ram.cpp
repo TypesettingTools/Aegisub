@@ -36,7 +36,6 @@
 
 #include "config.h"
 
-#include "audio_controller.h"
 #include "audio_provider_ram.h"
 #include "dialog_progress.h"
 #include "frame_main.h"

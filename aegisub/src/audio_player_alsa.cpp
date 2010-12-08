@@ -40,7 +40,6 @@
 
 #include <libaegisub/log.h>
 
-#include "audio_controller.h"
 #include "audio_player_alsa.h"
 #include "main.h"
 #include "compat.h"

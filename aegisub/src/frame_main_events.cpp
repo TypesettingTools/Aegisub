@@ -1517,8 +1517,8 @@ void FrameMain::OnMedusaStop(wxCommandEvent &) {
 
 	// Otherwise, play the last 500 ms
 	else {
-		AudioController::SampleRange sel(audioController->GetPrimaryPlaybackRange());
-		audioController->PlayRange(AudioController::SampleRange(
+		SampleRange sel(audioController->GetPrimaryPlaybackRange());
+		audioController->PlayRange(SampleRange(
 			sel.end() - audioController->SamplesFromMilliseconds(500),
 			sel.end()));;
 	}
@@ -1526,7 +1526,7 @@ void FrameMain::OnMedusaStop(wxCommandEvent &) {
 
 /// @brief DOCME
 void FrameMain::OnMedusaShiftStartForward(wxCommandEvent &) {
-	AudioController::SampleRange newsel(
+	SampleRange newsel(
 		audioController->GetPrimaryPlaybackRange(),
 		audioController->SamplesFromMilliseconds(10),
 		0);
@@ -1536,7 +1536,7 @@ void FrameMain::OnMedusaShiftStartForward(wxCommandEvent &) {
 
 /// @brief DOCME
 void FrameMain::OnMedusaShiftStartBack(wxCommandEvent &) {
-	AudioController::SampleRange newsel(
+	SampleRange newsel(
 		audioController->GetPrimaryPlaybackRange(),
 		-audioController->SamplesFromMilliseconds(10),
 		0);
@@ -1546,7 +1546,7 @@ void FrameMain::OnMedusaShiftStartBack(wxCommandEvent &) {
 
 /// @brief DOCME
 void FrameMain::OnMedusaShiftEndForward(wxCommandEvent &) {
-	AudioController::SampleRange newsel(
+	SampleRange newsel(
 		audioController->GetPrimaryPlaybackRange(),
 		0,
 		audioController->SamplesFromMilliseconds(10));
@@ -1556,7 +1556,7 @@ void FrameMain::OnMedusaShiftEndForward(wxCommandEvent &) {
 
 /// @brief DOCME
 void FrameMain::OnMedusaShiftEndBack(wxCommandEvent &) {
-	AudioController::SampleRange newsel(
+	SampleRange newsel(
 		audioController->GetPrimaryPlaybackRange(),
 		0,
 		-audioController->SamplesFromMilliseconds(10));
@@ -1566,16 +1566,16 @@ void FrameMain::OnMedusaShiftEndBack(wxCommandEvent &) {
 
 /// @brief DOCME
 void FrameMain::OnMedusaPlayBefore(wxCommandEvent &) {
-		AudioController::SampleRange sel(audioController->GetPrimaryPlaybackRange());
-		audioController->PlayRange(AudioController::SampleRange(
+		SampleRange sel(audioController->GetPrimaryPlaybackRange());
+		audioController->PlayRange(SampleRange(
 			sel.begin() - audioController->SamplesFromMilliseconds(500),
 			sel.begin()));;
 }
 
 /// @brief DOCME
 void FrameMain::OnMedusaPlayAfter(wxCommandEvent &) {
-		AudioController::SampleRange sel(audioController->GetPrimaryPlaybackRange());
-		audioController->PlayRange(AudioController::SampleRange(
+		SampleRange sel(audioController->GetPrimaryPlaybackRange());
+		audioController->PlayRange(SampleRange(
 			sel.end(),
 			sel.end() + audioController->SamplesFromMilliseconds(500)));;
 }
@@ -1623,16 +1623,6 @@ void FrameMain::OnAudioClose()
 	SetDisplayMode(-1, 0);
 }
 
-void FrameMain::OnPlaybackPosition(int64_t sample_position)
-{
-	// do nothing
-}
-
-void FrameMain::OnPlaybackStop()
-{
-	// do nothing
-}
-
 void FrameMain::OnSubtitlesFileChanged() {
 	if (OPT_GET("App/Auto/Save on Every Change")->GetBool()) {
 		if (ass->IsModified() && !ass->filename.empty()) SaveSubtitles(false);
@@ -1640,4 +1630,3 @@ void FrameMain::OnSubtitlesFileChanged() {
 
 	UpdateTitle();
 }
-

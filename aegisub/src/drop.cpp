@@ -43,7 +43,6 @@
 #include <wx/filename.h>
 #endif
 
-#include "audio_controller.h"
 #include "drop.h"
 #include "frame_main.h"
 

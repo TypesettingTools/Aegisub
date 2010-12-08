@@ -54,14 +54,11 @@
 #include <wx/tglbtn.h>
 #endif
 
-#ifndef AGI_AUDIO_CONTROLLER_INCLUDED
-#error You must include "audio_controller.h" before "audio_box.h"
-#endif
-
-
 //////////////
 // Prototypes
+class AudioController;
 class AssDialogue;
+class AudioTimingController;
 class AudioDisplay;
 class AudioKaraoke;
 class FrameMain;
@@ -80,7 +77,7 @@ class AudioBox : public wxPanel {
 	/// Selection controller used for timing controllers
 	SelectionController<AssDialogue> *selection_controller;
 	
-	/// The regular dalogue timing controller
+	/// The regular dialogue timing controller
 	AudioTimingController *timing_controller_dialogue;
 
 	/// DOCME

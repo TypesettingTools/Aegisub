@@ -255,7 +255,7 @@ AudioBox::AudioBox(wxWindow *parent, AudioController *_controller, SelectionCont
 	SetSizer(MainSizer);
 
 	SetKaraokeButtons(); // Decide which one to show or hide.
-	
+
 	timing_controller_dialogue = CreateDialogueTimingController(controller, selection_controller);
 	controller->SetTimingController(timing_controller_dialogue);
 }
@@ -425,8 +425,8 @@ void AudioBox::OnPrev(wxCommandEvent &event) {
 /// @param event 
 ///
 void AudioBox::OnPlay500Before(wxCommandEvent &event) {
-	AudioController::SampleRange times(controller->GetPrimaryPlaybackRange());
-	controller->PlayRange(AudioController::SampleRange(
+	SampleRange times(controller->GetPrimaryPlaybackRange());
+	controller->PlayRange(SampleRange(
 		times.begin() - controller->SamplesFromMilliseconds(500),
 		times.begin()));
 }
@@ -437,8 +437,8 @@ void AudioBox::OnPlay500Before(wxCommandEvent &event) {
 /// @param event 
 ///
 void AudioBox::OnPlay500After(wxCommandEvent &event) {
-	AudioController::SampleRange times(controller->GetPrimaryPlaybackRange());
-	controller->PlayRange(AudioController::SampleRange(
+	SampleRange times(controller->GetPrimaryPlaybackRange());
+	controller->PlayRange(SampleRange(
 		times.end(),
 		times.end() + controller->SamplesFromMilliseconds(500)));
 }
@@ -449,8 +449,8 @@ void AudioBox::OnPlay500After(wxCommandEvent &event) {
 /// @param event 
 ///
 void AudioBox::OnPlay500First(wxCommandEvent &event) {
-	AudioController::SampleRange times(controller->GetPrimaryPlaybackRange());
-	controller->PlayRange(AudioController::SampleRange(
+	SampleRange times(controller->GetPrimaryPlaybackRange());
+	controller->PlayRange(SampleRange(
 		times.begin(),
 		times.begin() + std::min(
 			controller->SamplesFromMilliseconds(500),
@@ -463,8 +463,8 @@ void AudioBox::OnPlay500First(wxCommandEvent &event) {
 /// @param event 
 ///
 void AudioBox::OnPlay500Last(wxCommandEvent &event) {
-	AudioController::SampleRange times(controller->GetPrimaryPlaybackRange());
-	controller->PlayRange(AudioController::SampleRange(
+	SampleRange times(controller->GetPrimaryPlaybackRange());
+	controller->PlayRange(SampleRange(
 		times.end() - std::min(
 			controller->SamplesFromMilliseconds(500),
 			times.length()),
