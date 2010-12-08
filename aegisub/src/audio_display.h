@@ -46,11 +46,7 @@
 #include <wx/window.h>
 #endif
 
-#include "selection_controller.h"
-
-#ifndef AGI_AUDIO_CONTROLLER_INCLUDED
-#error You must include "audio_controller.h" before "audio_display.h"
-#endif
+#include <libaegisub/scoped_ptr.h>
 
 
 class AudioRenderer;
@@ -83,7 +79,7 @@ public:
 	/// @return True to take mouse capture, false to release mouse capture
 	///
 	/// Assuming no object has the mouse capture, the audio display uses other methods
-	/// in the object implementing this interface to deterine whether a mouse event
+	/// in the object implementing this interface to determine whether a mouse event
 	/// should go to the object. If the mouse event goes to the object, this method
 	/// is called.
 	///
@@ -116,13 +112,13 @@ class AudioDisplay: public wxWindow, private AudioControllerAudioEventListener, 
 private:
 
 	/// The audio renderer manager
-	AudioRenderer *audio_renderer;
+	agi::scoped_ptr<AudioRenderer> audio_renderer;
 
-	/// The renderer for audio spectrums
-	AudioSpectrumRenderer *audio_spectrum_renderer;
+	/// The renderer for audio spectra
+	agi::scoped_ptr<AudioSpectrumRenderer> audio_spectrum_renderer;
 
 	/// The renderer for audio waveforms
-	AudioWaveformRenderer *audio_waveform_renderer;
+	agi::scoped_ptr<AudioWaveformRenderer> audio_waveform_renderer;
 
 	/// Our current audio provider
 	AudioProvider *provider;
@@ -132,10 +128,10 @@ private:
 
 
 	/// Scrollbar helper object
-	AudioDisplayScrollbar *scrollbar;
+	agi::scoped_ptr<AudioDisplayScrollbar> scrollbar;
 
 	/// Timeline helper object
-	AudioDisplayTimeline *timeline;
+	agi::scoped_ptr<AudioDisplayTimeline> timeline;
 
 
 	/// Current object on display being dragged, if any

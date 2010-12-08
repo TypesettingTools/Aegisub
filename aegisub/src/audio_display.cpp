@@ -536,20 +536,18 @@ public:
 
 
 
-AudioDisplay::AudioDisplay(wxWindow *parent, AudioController *_controller)
+AudioDisplay::AudioDisplay(wxWindow *parent, AudioController *controller)
 : wxWindow(parent, -1, wxDefaultPosition, wxDefaultSize, wxWANTS_CHARS|wxBORDER_SIMPLE)
+, audio_renderer(new AudioRenderer)
+, audio_spectrum_renderer(new AudioSpectrumRenderer)
+, audio_waveform_renderer(new AudioWaveformRenderer)
 , provider(0)
-, controller(_controller)
+, controller(controller)
+, scrollbar(new AudioDisplayScrollbar(this))
+, timeline(new AudioDisplayTimeline(this))
 , dragged_object(0)
 , old_selection(0, 0)
 {
-	scrollbar = new AudioDisplayScrollbar(this);
-	timeline = new AudioDisplayTimeline(this);
-
-	audio_renderer = new AudioRenderer;
-	audio_spectrum_renderer = new AudioSpectrumRenderer;
-	audio_waveform_renderer = new AudioWaveformRenderer;
-
 	scroll_left = 0;
 	pixel_audio_width = 0;
 	scale_amplitude = 1.0;
@@ -572,13 +570,6 @@ AudioDisplay::AudioDisplay(wxWindow *parent, AudioController *_controller)
 
 AudioDisplay::~AudioDisplay()
 {
-	delete audio_renderer;
-	delete audio_spectrum_renderer;
-	delete audio_waveform_renderer;
-
-	delete timeline;
-	delete scrollbar;
-
 	controller->RemoveAudioListener(this);
 	controller->RemoveTimingListener(this);
 }
@@ -778,9 +769,9 @@ void AudioDisplay::ReloadRenderingSettings()
 		spectrum_distance[spectrum_quality]);
 
 	if (OPT_GET("Audio/Spectrum")->GetBool())
-		audio_renderer->SetRenderer(audio_spectrum_renderer);
+		audio_renderer->SetRenderer(audio_spectrum_renderer.get());
 	else
-		audio_renderer->SetRenderer(audio_waveform_renderer);
+		audio_renderer->SetRenderer(audio_waveform_renderer.get());
 
 	audio_renderer->Invalidate();
 
@@ -957,9 +948,7 @@ void AudioDisplay::SetDraggedObject(AudioDisplayInteractionObject *new_obj)
 {
 	// Special case for audio markers being dragged: they use a temporary wrapper object
 	// which must be deleted when it is no longer used.
-	AudioMarkerInteractionObject *dragged_marker = dynamic_cast<AudioMarkerInteractionObject*>(dragged_object);
-	if (dragged_marker)
-		delete dragged_marker;
+	delete dynamic_cast<AudioMarkerInteractionObject*>(dragged_object);
 
 	dragged_object = new_obj;
 
@@ -1090,7 +1079,7 @@ void AudioDisplay::OnMouseEvent(wxMouseEvent& event)
 		if (!controller->IsPlaying())
 			RemoveTrackCursor();
 		if (scrollbar->OnMouseEvent(event))
-			SetDraggedObject(scrollbar);
+			SetDraggedObject(scrollbar.get());
 		return;
 	}
 
@@ -1101,7 +1090,7 @@ void AudioDisplay::OnMouseEvent(wxMouseEvent& event)
 		if (!controller->IsPlaying())
 			RemoveTrackCursor();
 		if (timeline->OnMouseEvent(event))
-			SetDraggedObject(timeline);
+			SetDraggedObject(timeline.get());
 		return;
 	}
 
