@@ -127,6 +127,8 @@ SRC += \
 	ass_style_storage.cpp \
 	ass_time.cpp \
 	audio_box.cpp \
+	audio_controller.cpp \
+	audio_colorscheme.cpp \
 	audio_display.cpp \
 	audio_karaoke.cpp \
 	audio_player.cpp \
@@ -138,6 +140,8 @@ SRC += \
 	audio_provider_ram.cpp \
 	audio_renderer.cpp \
 	audio_renderer_spectrum.cpp \
+	audio_renderer_waveform.cpp \
+	audio_timing_dialogue.cpp \
 	auto4_base.cpp \
 	avisynth_wrap.cpp \
 	base_grid.cpp \
