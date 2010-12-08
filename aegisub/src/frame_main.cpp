@@ -630,6 +630,7 @@ void FrameMain::DeInitContents() {
 	if (detachedVideo) detachedVideo->Destroy();
 	if (stylingAssistant) stylingAssistant->Destroy();
 	SubsGrid->ClearMaps();
+	delete audioBox;
 	delete EditBox;
 	delete videoBox;
 	delete ass;
