@@ -140,7 +140,7 @@ private:
 	void SetDraggedObject(AudioDisplayInteractionObject *new_obj);
 
 
-	/// Leftmost pixel in the vitual audio image being displayed
+	/// Leftmost pixel in the virtual audio image being displayed
 	int scroll_left;
 
 	/// Total width of the audio in pixels
@@ -182,6 +182,11 @@ private:
 	/// Previous audio selection for optimising redraw when selection changes
 	AudioController::SampleRange old_selection;
 
+	/// @brief Reload all rendering settings from Options and reset caches
+	///
+	/// This can be called if some rendering quality settings have been changed
+	/// in Options and need to be reloaded to take effect.
+	void ReloadRenderingSettings();
 
 	/// wxWidgets paint event
 	void OnPaint(wxPaintEvent &event);
@@ -302,13 +307,6 @@ public:
 	/// @brief Get amplitude scale factor
 	/// @return The amplitude scaling factor
 	float GetAmplitudeScale() const;
-
-
-	/// @brief Reload all rendering settings from Options and reset caches
-	///
-	/// This can be called if some rendering quality settings have been changed in Options
-	/// and need to be reloaded to take effect.
-	void ReloadRenderingSettings();
 
 
 	/// @brief Get a sample index from an X coordinate relative to current scroll

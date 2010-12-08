@@ -681,8 +681,6 @@ void FrameMain::OnCloseAudio (wxCommandEvent&) {
 /// @param event wxWidgets event object
 void FrameMain::OnAudioDisplayMode (wxCommandEvent &event) {
 	OPT_SET("Audio/Spectrum")->SetBool(event.GetId() == Menu_Audio_Spectrum);
-	/// @todo Remove this reload call when the audio display starts listening for option changes
-	audioBox->audioDisplay->ReloadRenderingSettings();
 }
 
 #ifdef _DEBUG

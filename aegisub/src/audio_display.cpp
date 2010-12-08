@@ -35,9 +35,6 @@
 /// @ingroup audio_ui
 ///
 
-
-///////////
-// Headers
 #include "config.h"
 
 #ifndef AGI_PRE
@@ -62,11 +59,6 @@
 #include "include/aegisub/audio_player.h"
 #include "main.h"
 #include "utils.h"
-
-
-#undef min
-#undef max
-
 
 class AudioDisplayScrollbar : public AudioDisplayInteractionObject {
 	static const int height = 10;
@@ -556,6 +548,8 @@ AudioDisplay::AudioDisplay(wxWindow *parent, AudioController *controller)
 
 	controller->AddAudioListener(this);
 	controller->AddTimingListener(this);
+
+	OPT_SUB("Audio/Spectrum", &AudioDisplay::ReloadRenderingSettings, this);
 
 	audio_renderer->SetAmplitudeScale(scale_amplitude);
 	SetZoomLevel(0);

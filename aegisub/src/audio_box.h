@@ -74,10 +74,6 @@ class ToggleBitmap;
 /// @class AudioBox
 /// @brief Panel with audio playback and timing controls, also containing an AudioDisplay
 class AudioBox : public wxPanel {
-	/// @todo Get rid of this ASAP, currently required for FrameMain to be able to notify
-	/// audio display about renderer having changed.
-	friend class FrameMain;
-
 	/// The audio display in the box
 	AudioDisplay *audioDisplay;
 	
