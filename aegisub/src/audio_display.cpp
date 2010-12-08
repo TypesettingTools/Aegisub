@@ -829,7 +829,9 @@ void AudioDisplay::OnPaint(wxPaintEvent& event)
 		wxRect updrect = region.GetRect();
 		// Work around wxMac issue, client border offsets update rectangles but does
 		// not affect drawing coordinates.
+#ifdef __WXMAC__
 		updrect.x += client_org.x; updrect.y += client_org.y;
+#endif
 
 		redraw_scrollbar |= scrollbar_bounds.Intersects(updrect);
 		redraw_timeline |= timeline_bounds.Intersects(updrect);
