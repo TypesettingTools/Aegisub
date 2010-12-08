@@ -105,10 +105,7 @@ public:
 	/// Determine whether there is an overlap between two ranges
 	bool overlaps(const SampleRange &other) const
 	{
-		return other.contains(_begin)
-			|| other.contains(_end)
-			|| contains(other._begin)
-			|| contains(other._end);
+		return other.contains(_begin) || contains(other._begin);
 	}
 };
 
