@@ -149,7 +149,6 @@ public:
 	/// DOCME
 	SubsEditBox *editBox;
 
-
 	/// DOCME
 	bool byFrame;
 

@@ -228,7 +228,7 @@ void FFmpegSourceAudioProvider::Close() {
 /// @param Start 
 /// @param Count 
 ///
-void FFmpegSourceAudioProvider::GetAudio(void *Buf, int64_t Start, int64_t Count) {
+void FFmpegSourceAudioProvider::GetAudio(void *Buf, int64_t Start, int64_t Count) const {
 	uint8_t *Buf2 = static_cast<uint8_t*>(Buf);
 	Start -= delay;
 	if (Start < 0) {

@@ -54,9 +54,14 @@
 #include <wx/tglbtn.h>
 #endif
 
+#ifndef AGI_AUDIO_CONTROLLER_INCLUDED
+#error You must include "audio_controller.h" before "audio_box.h"
+#endif
+
 
 //////////////
 // Prototypes
+class AssDialogue;
 class AudioDisplay;
 class AudioKaraoke;
 class FrameMain;
@@ -66,18 +71,21 @@ class ToggleBitmap;
 
 
 
-/// DOCME
 /// @class AudioBox
-/// @brief DOCME
-///
-/// DOCME
+/// @brief Panel with audio playback and timing controls, also containing an AudioDisplay
 class AudioBox : public wxPanel {
-	friend class AudioDisplay;
+	/// @todo Get rid of this ASAP, currently required for FrameMain to be able to notify
+	/// audio display about renderer having changed.
+	friend class FrameMain;
 
-private:
-
-	/// DOCME
-	wxScrollBar *audioScroll;
+	/// The audio display in the box
+	AudioDisplay *audioDisplay;
+	
+	/// Selection controller used for timing controllers
+	SelectionController<AssDialogue> *selection_controller;
+	
+	/// The regular dalogue timing controller
+	AudioTimingController *timing_controller_dialogue;
 
 	/// DOCME
 	wxSlider *HorizontalZoom;
@@ -99,9 +107,6 @@ private:
 
 	/// DOCME
 	wxSizer *DisplaySizer;
-
-	/// DOCME
-	wxSashWindow *Sash;
 
 	/// DOCME
 	ToggleBitmap *VerticalLink;
@@ -134,20 +139,12 @@ private:
 	ToggleBitmap *NextCommit;
 
 	/// DOCME
-	ToggleBitmap *MedusaMode;
-
-	/// DOCME
 	ToggleBitmap *AutoCommit;
 
-	/// DOCME
-	ToggleBitmap *SpectrumMode;
-
-	void OnScrollbar(wxScrollEvent &event);
 	void OnHorizontalZoom(wxScrollEvent &event);
 	void OnVerticalZoom(wxScrollEvent &event);
 	void OnVolume(wxScrollEvent &event);
 	void OnVerticalLink(wxCommandEvent &event);
-	void OnSash(wxSashEvent &event);
 
 	void OnPlaySelection(wxCommandEvent &event);
 	void OnPlayDialogue(wxCommandEvent &event);
@@ -171,14 +168,13 @@ private:
 
 	void OnAutoGoto(wxCommandEvent &event);
 	void OnAutoCommit(wxCommandEvent &event);
-	void OnMedusaMode(wxCommandEvent &event);
-	void OnSpectrumMode(wxCommandEvent &event);
 	void OnNextLineCommit(wxCommandEvent &event);
+
 
 public:
 
-	/// DOCME
-	AudioDisplay *audioDisplay;
+	/// The controller controlling this audio box
+	AudioController *controller;
 
 	/// DOCME
 	AudioKaraoke *audioKaraoke;
@@ -190,123 +186,14 @@ public:
 	FrameMain *frameMain;
 
 	/// DOCME
-	wxString audioName;
-
-	/// DOCME
-	bool loaded;
-
-	/// DOCME
 	bool karaokeMode;
 
-	AudioBox(wxWindow *parent, SubtitlesGrid *grid);
+	AudioBox(wxWindow *parent, AudioController *controller, SelectionController<AssDialogue> *selection_controller);
 	~AudioBox();
 
-	void SetFile(wxString file,bool FromVideo);
 	void SetKaraokeButtons();
 
 	DECLARE_EVENT_TABLE()
 };
 
 
-
-/// DOCME
-/// @class FocusEvent
-/// @brief DOCME
-///
-/// DOCME
-class FocusEvent : public wxEvtHandler {
-	
-private:
-	void OnSetFocus(wxFocusEvent &event);
-	DECLARE_EVENT_TABLE()
-};
-
-
-///////
-// IDs
-enum {
-
-	/// DOCME
-	Audio_Scrollbar = 1600,
-
-	/// DOCME
-	Audio_Horizontal_Zoom,
-
-	/// DOCME
-	Audio_Vertical_Zoom,
-
-	/// DOCME
-	Audio_Volume,
-
-	/// DOCME
-	Audio_Sash,
-
-	/// DOCME
-	Audio_Vertical_Link,
-
-	/// DOCME
-	Audio_Button_Play,
-
-	/// DOCME
-	Audio_Button_Stop,
-
-	/// DOCME
-	Audio_Button_Prev,
-
-	/// DOCME
-	Audio_Button_Next,
-
-	/// DOCME
-	Audio_Button_Play_500ms_Before,
-
-	/// DOCME
-	Audio_Button_Play_500ms_After,
-
-	/// DOCME
-	Audio_Button_Play_500ms_First,
-
-	/// DOCME
-	Audio_Button_Play_500ms_Last,
-
-	/// DOCME
-	Audio_Button_Play_Row,
-
-	/// DOCME
-	Audio_Button_Play_To_End,
-
-	/// DOCME
-	Audio_Button_Commit,
-
-	/// DOCME
-	Audio_Button_Karaoke,
-
-	/// DOCME
-	Audio_Button_Goto,
-
-	Audio_Button_Join,		/// Karaoke -> Enter join mode.
-	Audio_Button_Split,		/// Karaoke -> Enter split mode.
-	Audio_Button_Accept,	/// Karaoke -> Split/Join mode -> Accept.
-	Audio_Button_Cancel,	/// KAraoke -> Split/Join mode -> Cancel.
-
-	/// DOCME
-	Audio_Button_Leadin,
-
-	/// DOCME
-	Audio_Button_Leadout,
-
-
-	/// DOCME
-	Audio_Check_AutoCommit,
-
-	/// DOCME
-	Audio_Check_NextCommit,
-
-	/// DOCME
-	Audio_Check_AutoGoto,
-
-	/// DOCME
-	Audio_Check_Medusa,
-
-	/// DOCME
-	Audio_Check_Spectrum
-};

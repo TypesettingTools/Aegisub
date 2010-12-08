@@ -57,15 +57,12 @@ class AvisynthAudioProvider : public AudioProvider, public AviSynthWrapper {
 public:
 	AvisynthAudioProvider(wxString _filename);
 
-	wxString GetFilename() { return filename; }
+	wxString GetFilename() const { return filename; }
 
-	/// @brief Only exists for x86 Windows, always delivers machine (little) endian
-	/// @return 
-	///
 	bool AreSamplesNativeEndian() const { return true; }
 	bool NeedsCache() const { return true; }
 
-	void GetAudio(void *buf, int64_t start, int64_t count);
+	void GetAudio(void *buf, int64_t start, int64_t count) const;
 	void GetWaveForm(int *min,int *peak,int64_t start,int w,int h,int samples,float scale);
 };
 #endif

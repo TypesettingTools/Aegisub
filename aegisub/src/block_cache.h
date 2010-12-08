@@ -41,6 +41,8 @@
 #include <vector>
 #endif
 
+#define AGI_BLOCK_CACHE_INCLUDED 1
+
 
 /// @class BasicDataBlockFactory
 /// @brief Simple factory for allocating blocks for DataBlockCache
@@ -143,7 +145,7 @@ class DataBlockCache {
 		for (size_t bi = 0; bi < mb.blocks.size(); ++bi)
 		{
 			BlockT *b = mb.blocks[bi];
-			if (!b)
+			if (b)
 				factory.DisposeBlock(b);
 		}
 

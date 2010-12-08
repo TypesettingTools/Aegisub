@@ -140,6 +140,4 @@
 #pragma comment(lib, "libass.lib")
 #endif
 
-
 #endif // VisualC
-

@@ -36,6 +36,7 @@
 
 #include "config.h"
 
+#include "audio_controller.h"
 #include "audio_provider_ram.h"
 #include "dialog_progress.h"
 #include "frame_main.h"
@@ -131,7 +132,7 @@ void RAMAudioProvider::Clear() {
 /// @param start 
 /// @param count 
 ///
-void RAMAudioProvider::GetAudio(void *buf, int64_t start, int64_t count) {
+void RAMAudioProvider::GetAudio(void *buf, int64_t start, int64_t count) const {
 	// Requested beyond the length of audio
 	if (start+count > num_samples) {
 		int64_t oldcount = count;

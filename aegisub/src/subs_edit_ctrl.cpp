@@ -49,6 +49,7 @@
 #include "compat.h"
 #include "main.h"
 #include "include/aegisub/spellchecker.h"
+#include "selection_controller.h"
 #include "subs_edit_box.h"
 #include "subs_edit_ctrl.h"
 #include "subs_grid.h"

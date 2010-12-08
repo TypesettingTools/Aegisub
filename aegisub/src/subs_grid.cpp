@@ -51,8 +51,10 @@
 #include "ass_karaoke.h"
 #include "ass_override.h"
 #include "ass_style.h"
+#include "include/aegisub/audio_provider.h"
+#include "selection_controller.h"
+#include "audio_controller.h"
 #include "audio_box.h"
-#include "audio_display.h"
 #include "charset_conv.h"
 #include "dialog_paste_over.h"
 #include "frame_main.h"
@@ -204,7 +206,7 @@ void SubtitlesGrid::OnPopupMenu(bool alternate) {
 		menu.AppendSeparator();
 
 		//Make audio clip
-		state = parentFrame->audioBox->audioDisplay->loaded==true;
+		state = parentFrame->audioController->IsAudioOpen()==true;
 		menu.Append(MENU_AUDIOCLIP,_("Create audio clip"),_("Create an audio clip of the selected line"))->Enable(state);
 		menu.AppendSeparator();
 
@@ -646,8 +648,8 @@ void SubtitlesGrid::OnRecombine(wxCommandEvent &) {
 /// @brief Export audio clip of line 
 void SubtitlesGrid::OnAudioClip(wxCommandEvent &) {
 	int64_t num_samples,start=0,end=0,temp;
-	AudioDisplay *audioDisplay = parentFrame->audioBox->audioDisplay;
-	AudioProvider *provider = audioDisplay->provider;
+	AudioController *audioController = parentFrame->audioController;
+	const AudioProvider *provider = audioController->GetAudioProvider();
 	AssDialogue *cur;
 	wxArrayInt sel = GetSelection();
 
@@ -656,9 +658,9 @@ void SubtitlesGrid::OnAudioClip(wxCommandEvent &) {
 	for(unsigned int i=0;i!=sel.GetCount();i++) {
 		cur = GetDialogue(sel[i]);
 		
-		temp = audioDisplay->GetSampleAtMS(cur->Start.GetMS());
+		temp = audioController->SamplesFromMilliseconds(cur->Start.GetMS());
 		start = (i==0||temp<start)?temp:start;
-		temp = audioDisplay->GetSampleAtMS(cur->End.GetMS());
+		temp = audioController->SamplesFromMilliseconds(cur->End.GetMS());
 		end = (i==0||temp>end)?temp:end;
 	}
 

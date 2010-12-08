@@ -107,6 +107,12 @@
 //#define FINAL_RELEASE
 
 
+// Use FFTW instead of shipped FFT code
+// FFTW <http://fftw.org/> is a very fast library for computing the discrete fourier transform, but is a bit
+// tricky to get working on Windows, and has the additional problem of being GPL licensed.
+// Enable this option to use FFTW to get faster rendering of the audio spectrogram
+//#define WITH_FFTW
+//#pragma comment(lib,libfftw.lib)
 // Specify tags the update checker accepts
 // See <http://devel.aegisub.org/wiki/Technical/UpdateChecker> for details on tags.
 // Depending on who will be using your build, you may or may not want to have the

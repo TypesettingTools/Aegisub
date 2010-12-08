@@ -54,8 +54,9 @@
 #include "ass_export_filter.h"
 #include "ass_file.h"
 #include "ass_time.h"
+#include "selection_controller.h"
+#include "audio_controller.h"
 #include "audio_box.h"
-#include "audio_display.h"
 #ifdef WITH_AUTOMATION
 #include "auto4_base.h"
 #endif
@@ -68,7 +69,6 @@
 #include "libresrc/libresrc.h"
 #include "plugin_manager.h"
 #include "standard_paths.h"
-#include "subs_grid.h"
 #include "subtitle_format.h"
 #include "version.h"
 #include "video_context.h"
@@ -551,13 +551,14 @@ END_EVENT_TABLE()
 /// @param event 
 ///
 void AegisubApp::OnMouseWheel(wxMouseEvent &event) {
+	if (event.WasProcessed()) return;
 	wxPoint pt;
 	wxWindow *target = wxFindWindowAtPointer(pt);
-	if (frame && (target == frame->audioBox->audioDisplay || target == frame->SubsGrid)) {
+	/*if (frame && (target == frame->audioBox->audioDisplay || target == frame->SubsGrid)) {
 		if (target->IsShownOnScreen()) target->GetEventHandler()->ProcessEvent(event);
 		else event.Skip();
 	}
-	else event.Skip();
+	else event.Skip();*/
 }
 
 

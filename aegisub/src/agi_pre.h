@@ -157,6 +157,7 @@
 #include <wx/dataobj.h>
 #include <wx/datetime.h>
 #include <wx/dc.h>
+#include <wx/dcbuffer.h>
 #include <wx/dcclient.h>
 #include <wx/dcmemory.h>
 #include <wx/dcscreen.h>
@@ -199,6 +200,7 @@
 #include <wx/mstream.h>
 #include <wx/notebook.h>
 #include <wx/panel.h>
+#include <wx/power.h>
 #include <wx/protocol/http.h>
 #include <wx/radiobox.h>
 #include <wx/radiobut.h>

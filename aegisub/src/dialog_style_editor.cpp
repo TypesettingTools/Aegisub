@@ -55,6 +55,7 @@
 #include "help_button.h"
 #include "libresrc/libresrc.h"
 #include "main.h"
+#include "selection_controller.h"
 #include "subs_grid.h"
 #include "subs_preview.h"
 #include "include/aegisub/subtitles_provider.h"

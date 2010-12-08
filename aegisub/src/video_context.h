@@ -62,6 +62,7 @@ class SubtitlesProviderErrorEvent;
 class ThreadedFrameSource;
 class VideoProvider;
 class VideoProviderErrorEvent;
+class AudioController;
 
 namespace agi {
 	class OptionValue;
@@ -100,6 +101,10 @@ private:
 
 	/// DOCME
 	wxString keyFramesFilename;
+
+	/// Revision counter for keyframes, when the set of keyframes is changed this number changes
+	int keyframesRevision;
+
 
 	/// DOCME
 	wxMutex playMutex;
@@ -161,8 +166,8 @@ public:
 	/// File name of currently open video, if any
 	wxString videoName;
 
-	/// DOCME
-	AudioDisplay *audio;
+	/// The audio controller for this video context
+	AudioController *audio;
 
 	const agi::vfr::Framerate &VFR_Input;
 	const agi::vfr::Framerate &VFR_Output;
@@ -265,6 +270,7 @@ public:
 	void CloseKeyframes();
 	bool OverKeyFramesLoaded() const { return !keyFramesFilename.empty(); }
 	bool KeyFramesLoaded() const { return !keyFrames.empty(); }
+	int GetKeyframesRevision() const { return keyframesRevision; }
 
 	wxString GetTimecodesName() const { return ovrTimecodeFile; }
 	void LoadTimecodes(wxString filename);

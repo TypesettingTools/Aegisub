@@ -70,6 +70,10 @@ int AegiStringToFix(const wxString &str,size_t decimalPlaces,int start=0,int end
 wxIcon BitmapToIcon(wxBitmap bmp);
 void RestartAegisub();
 
+
+/// @brief Templated abs() function
+template <typename T> T tabs(T x) { return x < 0 ? -x : x; }
+
 #ifndef MIN
 #define MIN(a,b) ((a)<(b))?(a):(b)
 #endif

@@ -47,6 +47,7 @@
 				MinimalRebuild="true"
 				UsePrecompiledHeader="2"
 				PrecompiledHeaderThrough="agi_pre.h"
+				DebugInformationFormat="3"
 				DisableSpecificWarnings="4267"
 				ForcedIncludeFiles="agi_pre.h"
 			/>
@@ -113,6 +114,7 @@
 				MinimalRebuild="true"
 				UsePrecompiledHeader="2"
 				PrecompiledHeaderThrough="agi_pre.h"
+				DebugInformationFormat="3"
 				DisableSpecificWarnings="4267"
 				ForcedIncludeFiles="agi_pre.h"
 			/>
@@ -713,6 +715,14 @@
 			</File>
 			<File
 				RelativePath="..\..\src\aegisublocale.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\block_cache.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\block_cache.h"
 				>
 			</File>
 			<File
@@ -1700,6 +1710,22 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\audio_colorscheme.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\audio_colorscheme.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\audio_colorscheme.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\audio_colorscheme.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\audio_display.cpp"
 				>
 			</File>
@@ -1731,10 +1757,34 @@
 				RelativePath="..\..\src\audio_renderer_spectrum.h"
 				>
 			</File>
+			<File
+				RelativePath="..\..\src\audio_renderer_waveform.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\audio_renderer_waveform.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\audio_timing_dialogue.cpp"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Video UI"
 			>
+			<File
+				RelativePath="..\..\src\audio_renderer_waveform.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\audio_renderer_waveform.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\audio_timing_dialogue.cpp"
+				>
+			</File>
 			<File
 				RelativePath="..\..\src\video_box.cpp"
 				>
@@ -1799,6 +1849,18 @@
 		<Filter
 			Name="Controllers"
 			>
+			<File
+				RelativePath="..\..\src\audio_controller.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\audio_controller.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\audio_timing.h"
+				>
+			</File>
 			<File
 				RelativePath="..\..\src\selection_controller.h"
 				>

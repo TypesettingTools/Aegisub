@@ -65,77 +65,6 @@ AudioProvider::~AudioProvider() {
 	delete[] raw;
 }
 
-/// @brief Get waveform 
-/// @param min     
-/// @param peak    
-/// @param start   
-/// @param w       
-/// @param h       
-/// @param samples 
-/// @param scale   
-///
-void AudioProvider::GetWaveForm(int *min,int *peak,int64_t start,int w,int h,int samples,float scale) {
-	// Setup
-	int channels = GetChannels();
-	int n = w * samples;
-	for (int i=0;i<w;i++) {
-		peak[i] = 0;
-		min[i] = h;
-	}
-
-	// Prepare waveform
-	int cur;
-	int curvalue;
-
-	// Prepare buffers
-	int needLen = n*channels*bytes_per_sample;
-	if (raw) {
-		if (raw_len < needLen) {
-			delete[] raw;
-			raw = NULL;
-		}
-	}
-	if (!raw) {
-		raw_len = needLen;
-		raw = new char[raw_len];
-	}
-
-	if (bytes_per_sample == 1) {
-		// Read raw samples
-		unsigned char *raw_char = (unsigned char*) raw;
-		GetAudio(raw,start,n);
-		int amplitude = int(h*scale);
-
-		// Calculate waveform
-		for (int i=0;i<n;i++) {
-			cur = i/samples;
-			curvalue = h - (int(raw_char[i*channels])*amplitude)/0xFF;
-			if (curvalue > h) curvalue = h;
-			if (curvalue < 0) curvalue = 0;
-			if (curvalue < min[cur]) min[cur] = curvalue;
-			if (curvalue > peak[cur]) peak[cur] = curvalue;
-		}
-	}
-
-	if (bytes_per_sample == 2) {
-		// Read raw samples
-		short *raw_short = (short*) raw;
-		GetAudio(raw,start,n);
-		int half_h = h/2;
-		int half_amplitude = int(half_h * scale);
-
-		// Calculate waveform
-		for (int i=0;i<n;i++) {
-			cur = i/samples;
-			curvalue = half_h - (int(raw_short[i*channels])*half_amplitude)/0x8000;
-			if (curvalue > h) curvalue = h;
-			if (curvalue < 0) curvalue = 0;
-			if (curvalue < min[cur]) min[cur] = curvalue;
-			if (curvalue > peak[cur]) peak[cur] = curvalue;
-		}
-	}
-}
-
 /// @brief Get audio with volume 
 /// @param buf    
 /// @param start  
@@ -143,7 +72,7 @@ void AudioProvider::GetWaveForm(int *min,int *peak,int64_t start,int w,int h,int
 /// @param volume 
 /// @return 
 ///
-void AudioProvider::GetAudioWithVolume(void *buf, int64_t start, int64_t count, double volume) {
+void AudioProvider::GetAudioWithVolume(void *buf, int64_t start, int64_t count, double volume) const {
 	try {
 		GetAudio(buf,start,count);
 	}

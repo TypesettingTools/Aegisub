@@ -1,5 +1,4 @@
-// Copyright (c) 2005, 2006, Rodrigo Braz Monteiro
-// Copyright (c) 2006, 2007, Niels Martin Hansen
+// Copyright (c) 2009, Niels Martin Hansen
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -40,65 +39,102 @@
 #include <stdint.h>
 #endif
 
-class AudioProvider;
+#ifdef WITH_FFTW
+#include <fftw3.h>
+#endif
 
-// Specified and implemented in cpp file, interface is private to spectrum code
-class AudioSpectrumCacheManager;
 
 
-/// @class AudioSpectrum
+// Specified and implemented in cpp file, to avoid pulling in too much
+// complex template code in this header.
+class AudioSpectrumCache;
+struct AudioSpectrumCacheBlockFactory;
+
+
+
+/// @class AudioSpectrumRenderer
 /// @brief Render frequency-power spectrum graphs for audio data.
 ///
-/// Renders frequency-power spectrum graphs of PCM audio data using a fast fourier transform
-/// to derive the data. The frequency-power data are cached to avoid re-computing them
-/// frequently, and the cache size is limited by a configuration setting.
-///
-/// The spectrum image is rendered to a 32 bit RGB bitmap. Power data is scaled linearly
-/// and not logarithmically, since the rendering is done with limited precision, but
-/// an amplification factor can be specified to see different ranges.
-class AudioSpectrum {
-private:
+/// Renders frequency-power spectrum graphs of PCM audio data using a derivation function
+/// such as the fast fourier transform.
+class AudioSpectrumRenderer : public AudioRendererBitmapProvider {
+	friend struct AudioSpectrumCacheBlockFactory;
 
 	/// Internal cache management for the spectrum
-	AudioSpectrumCacheManager *cache;
+	AudioSpectrumCache *cache;
 
 	/// Colour table used for regular rendering
-	unsigned char colours_normal[256*3];
+	AudioColorScheme colors_normal;
 
 	/// Colour table used for rendering the audio selection
-	unsigned char colours_selected[256*3];
+	AudioColorScheme colors_selected;
 
-	/// The audio provider to use as source
-	AudioProvider *provider;
+	/// Binary logarithm of number of samples to use in deriving frequency-power data
+	size_t derivation_size;
 
-	unsigned long line_length; ///< Number of frequency components per line (half of number of samples)
-	unsigned long num_lines;   ///< Number of lines needed for the audio
-	unsigned int fft_overlaps; ///< Number of overlaps used in FFT
-	float power_scale;         ///< Amplification of displayed power
-	int minband;               ///< Smallest frequency band displayed
-	int maxband;               ///< Largest frequency band displayed
+	/// Binary logarithm of number of samples between the start of derivations
+	size_t derivation_dist;
+
+	/// @brief Reset in response to changing audio provider
+	///
+	/// Overrides the OnSetProvider event handler in the base class, to reset things
+	/// when the audio provider is changed.
+	void OnSetProvider();
+
+	/// @brief Recreates the cache
+	///
+	/// To be called when the number of blocks in cache might have changed,
+	// eg. new audio provider or new resolution.
+	void RecreateCache();
+
+	/// @brief Fill a block with frequency-power data for a time range
+	/// @param      block_index Index of the block to fill data for
+	/// @param[out] block       Address to write the data to
+	void FillBlock(size_t block_index, float *block);
+
+#ifdef WITH_FFTW
+	/// FFTW plan data
+	fftw_plan dft_plan;
+	/// Pre-allocated input array for FFTW
+	double *dft_input;
+	/// Pre-allocated output array for FFTW
+	fftw_complex *dft_output;
+#else
+	/// Pre-allocated scratch area for doing FFT derivations
+	float *fft_scratch;
+#endif
+
+	/// Pre-allocated scratch area for storing raw audio data
+	int16_t *audio_scratch;
 
 public:
 	/// @brief Constructor
-	/// @param _provider Audio provider to render spectrum data for.
-	///
-	/// Reads configuration data for the spectrum display and initialises itself following that.
-	AudioSpectrum(AudioProvider *_provider);
+	AudioSpectrumRenderer();
+
 	/// @brief Destructor
-	~AudioSpectrum();
+	virtual ~AudioSpectrumRenderer();
 
-	/// @brief Render a range of audio spectrum to a bitmap buffer.
-	/// @param range_start First audio sample in the range to render.
-	/// @param range_end   Last audio sample in the range to render.
-	/// @param selected    Use the alternate colour palette?
-	/// @param img         Pointer to 32 bit RGBX data
-	/// @param imgleft     Offset from left edge of bitmap to render to, in pixels
-	/// @param imgwidth    Width of bitmap to render, in pixels
-	/// @param imgpitch    Offset from one scanline to the next in the bitmap, in bytes
-	/// @param imgheight   Number of lines in the bitmap
-	void RenderRange(int64_t range_start, int64_t range_end, bool selected, unsigned char *img, int imgleft, int imgwidth, int imgpitch, int imgheight);
+	/// @brief Render a range of audio spectrum
+	/// @param bmp      [in,out] Bitmap to render into, also carries lenght information
+	/// @param start    First column of pixel data in display to render
+	/// @param selected Whether to use the alternate colour scheme
+	void Render(wxBitmap &bmp, int start, bool selected);
 
-	/// @brief Set the amplification to use when rendering.
-	/// @param _power_scale Amplification factor to use.
-	void SetScaling(float _power_scale);
+	/// @brief Render blank area
+	void RenderBlank(wxDC &dc, const wxRect &rect, bool selected);
+
+	/// @brief Set the derivation resolution
+	/// @param derivation_size Binary logarithm of number of samples to use in deriving frequency-power data
+	/// @param derivation_dist Binary logarithm of number of samples between the start of derivations
+	///
+	/// The derivations done will each use 2^derivation_size audio samples and at a distance
+	/// of 2^derivation_dist samples.
+	///
+	/// The derivation distance must be smaller than or equal to the size. If the distance
+	/// is specified too large, it will be clamped to the size.
+	void SetResolution(size_t derivation_size, size_t derivation_dist);
+
+	/// @brief Cleans up the cache
+	/// @param max_size Maximum size in bytes for the cache
+	void AgeCache(size_t max_size);
 };

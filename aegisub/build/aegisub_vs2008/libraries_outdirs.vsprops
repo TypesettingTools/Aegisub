@@ -7,6 +7,10 @@
 	IntermediateDirectory="$(OutDir)"
 	>
 	<Tool
+		Name="VCCLCompilerTool"
+		AdditionalIncludeDirectories="&quot;$(SolutionDir)include/&quot;;&quot;$(SolutionDir)include/$(PlatformName)/&quot;;&quot;$(SolutionDir)include/$(ConfigurationName)/&quot;;&quot;$(SolutionDir)include/$(PlatformName)/$(ConfigurationName)/&quot;"
+	/>
+	<Tool
 		Name="VCLibrarianTool"
 		OutputFile="$(LibraryOutDir)/$(ProjectName).lib"
 	/>

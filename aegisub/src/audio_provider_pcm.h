@@ -64,24 +64,24 @@ private:
 	HANDLE file_mapping;
 
 	/// DOCME
-	void *current_mapping;
+	mutable void *current_mapping;
 
 	/// DOCME
-	int64_t mapping_start;
+	mutable int64_t mapping_start;
 
 	/// DOCME
-	size_t mapping_length;
+	mutable size_t mapping_length;
 #else
 	int file_handle;
-	void *current_mapping;
-	off_t mapping_start;
-	size_t mapping_length;
+	mutable void *current_mapping;
+	mutable off_t mapping_start;
+	mutable size_t mapping_length;
 #endif
 
 protected:
 	PCMAudioProvider(const wxString &filename); // Create base object and open the file mapping
 	virtual ~PCMAudioProvider(); // Closes the file mapping
-	char * EnsureRangeAccessible(int64_t range_start, int64_t range_length); // Ensure that the given range of bytes are accessible in the file mapping and return a pointer to the first byte of the requested range
+	char * EnsureRangeAccessible(int64_t range_start, int64_t range_length) const; // Ensure that the given range of bytes are accessible in the file mapping and return a pointer to the first byte of the requested range
 
 
 	/// DOCME
@@ -108,7 +108,7 @@ protected:
 	IndexVector index_points;
 
 public:
-	virtual void GetAudio(void *buf, int64_t start, int64_t count);
+	virtual void GetAudio(void *buf, int64_t start, int64_t count) const;
 };
 
 // Construct the right PCM audio provider (if any) for the file

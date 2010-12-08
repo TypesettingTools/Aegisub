@@ -1,4 +1,4 @@
-// Copyright (c) 2005, 2006, 2007, Rodrigo Braz Monteiro, Niels Martin Hansen
+// Copyright (c) 2005-2009, Rodrigo Braz Monteiro, Niels Martin Hansen
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -48,6 +48,8 @@
 #include <libaegisub/log.h>
 
 #include "ass_override.h"
+#include "selection_controller.h"
+#include "audio_controller.h"
 #include "audio_box.h"
 #include "audio_display.h"
 #include "audio_karaoke.h"
@@ -634,7 +636,7 @@ void AudioKaraoke::Join() {
 
 	// Update
 	must_rebuild = true;
-	display->NeedCommit = true;
+	//display->NeedCommit = true;
 	display->Update();
 	Refresh(false);
 
@@ -678,7 +680,7 @@ void AudioKaraoke::EndSplit(bool commit) {
 	if (hasSplit) {
 		LOG_D("karaoke/audio") << "hassplit";
 		must_rebuild = true;
-		display->NeedCommit = true;
+		//display->NeedCommit = true;
 		SetSelection(first_sel);
 		display->Update();
 	}
@@ -879,8 +881,9 @@ void AudioKaraokeTagMenu::OnSelectItem(wxCommandEvent &event) {
 	// Update display
 	kara->must_rebuild = true;
 	//kara->Commit();
-	kara->display->NeedCommit = true;
-	kara->display->CommitChanges();
+	//kara->display->NeedCommit = true;
+	/// @todo Commit changes and stay on current line
+	//kara->display->CommitChanges();
 	//kara->display->Update();
 	kara->SetSelection(firstsel, lastsel);
 }

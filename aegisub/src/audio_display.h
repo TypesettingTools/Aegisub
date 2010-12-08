@@ -1,4 +1,5 @@
 // Copyright (c) 2005, Rodrigo Braz Monteiro
+// Copyright (c) 2009-2010, Niels Martin Hansen
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -45,247 +46,285 @@
 #include <wx/window.h>
 #endif
 
-#include <libaegisub/signals.h>
-
-#include "audio_renderer_spectrum.h"
 #include "selection_controller.h"
 
-class AudioBox;
+#ifndef AGI_AUDIO_CONTROLLER_INCLUDED
+#error You must include "audio_controller.h" before "audio_display.h"
+#endif
+
+
+class AudioRenderer;
+class AudioSpectrumRenderer;
+class AudioWaveformRenderer;
 class AudioKaraoke;
-class AudioPlayer;
 class AudioProvider;
-class AssDialogue;
-class FrameMain;
+class AudioPlayer;
 class SubtitlesGrid;
 class VideoProvider;
 
-/// DOCME
+class AudioBox;
+class SubtitlesGrid;
+class AssDialogue;
+class wxScrollBar;
+
+// Helper classes used in implementation of the audio display
+class AudioDisplayScrollbar;
+class AudioDisplayTimeline;
+class AudioDisplaySelection;
+
+
+
+/// @class AudioDisplayInteractionObject
+/// @brief Interface for objects on the audio display that can respond to mouse events
+class AudioDisplayInteractionObject {
+public:
+	/// @brief The user is interacting with the object using the mouse
+	/// @param event Mouse event data
+	/// @return True to take mouse capture, false to release mouse capture
+	///
+	/// Assuming no object has the mouse capture, the audio display uses other methods
+	/// in the object implementing this interface to deterine whether a mouse event
+	/// should go to the object. If the mouse event goes to the object, this method
+	/// is called.
+	///
+	/// If this method returns true, the audio display takes the mouse capture and
+	/// stores a pointer to the AudioDisplayInteractionObject interface for the object
+	/// and redirects the next mouse event to that object.
+	///
+	/// If the object that has the mouse capture returns false from this method, the
+	/// capture is released and regular processing is done for the next event.
+	///
+	/// If the object does not have mouse capture and returns false from this method,
+	/// no capture is taken or released and regular processing is done for the next
+	/// mouse event.
+	virtual bool OnMouseEvent(wxMouseEvent &event) = 0;
+
+	/// @brief Destructor
+	///
+	/// Empty virtual destructor for the cases that need it.
+	virtual ~AudioDisplayInteractionObject() { }
+};
+
+
 /// @class AudioDisplay
-/// @brief DOCME
+/// @brief Primary view/UI for interaction with audio timing
 ///
-/// DOCME
-class AudioDisplay: public wxWindow, private SelectionListener<AssDialogue> {
-	friend class FrameMain;
+/// The audio display is the common view that allows the user to interact with the active
+/// timing controller. The audio display also renders audio according to the audio controller
+/// and the timing controller, using an audio renderer instance.
+class AudioDisplay: public wxWindow, private AudioControllerAudioEventListener, private AudioControllerTimingEventListener {
 private:
 
-	/// DOCME
-	SubtitlesGrid *grid;
+	/// The audio renderer manager
+	AudioRenderer *audio_renderer;
 
-	/// DOCME
-	int line_n;
+	/// The renderer for audio spectrums
+	AudioSpectrumRenderer *audio_spectrum_renderer;
 
-	/// DOCME
-	AssDialogue *dialogue;
+	/// The renderer for audio waveforms
+	AudioWaveformRenderer *audio_waveform_renderer;
 
-	/// DOCME
-	AudioSpectrum *spectrumRenderer;
+	/// Our current audio provider
+	AudioProvider *provider;
 
-	/// DOCME
-	wxBitmap *origImage;
+	/// The controller managing us
+	AudioController *controller;
 
-	/// DOCME
-	wxBitmap *spectrumDisplay;
 
-	/// DOCME
-	wxBitmap *spectrumDisplaySelected;
+	/// Scrollbar helper object
+	AudioDisplayScrollbar *scrollbar;
 
-	/// DOCME
-	int64_t PositionSample;
+	/// Timeline helper object
+	AudioDisplayTimeline *timeline;
 
-	/// DOCME
-	float scale;
 
-	/// DOCME
-	int samples;
+	/// Current object on display being dragged, if any
+	AudioDisplayInteractionObject *dragged_object;
+	/// Change the dragged object and update mouse capture
+	void SetDraggedObject(AudioDisplayInteractionObject *new_obj);
 
-	/// DOCME
-	int64_t Position;
 
-	/// DOCME
-	int samplesPercent;
+	/// Leftmost pixel in the vitual audio image being displayed
+	int scroll_left;
 
-	/// DOCME
-	int oldCurPos;
+	/// Total width of the audio in pixels
+	int pixel_audio_width;
 
-	/// DOCME
-	bool hasFocus;
+	/// Horizontal zoom measured in audio samples per pixel
+	int pixel_samples;
 
-	/// DOCME
-	bool blockUpdate;
+	/// Amplitude scaling ("vertical zoom") as a factor, 1.0 is neutral
+	float scale_amplitude;
 
-	/// DOCME
-	bool dontReadTimes;
+	/// Top of the main audio area in pixels
+	int audio_top;
 
-	/// DOCME
-	bool playingToEnd;
+	/// Height of main audio area in pixels
+	int audio_height;
 
-	/// DOCME
-	bool needImageUpdate;
 
-	/// DOCME
-	bool needImageUpdateWeak;
+	/// Zoom level given as a number, see SetZoomLevel for details
+	int zoom_level;
+	// Mouse wheel zoom accumulator
+	int mouse_zoom_accum;
 
-	/// DOCME
-	bool hasSel;
 
-	/// DOCME
-	bool hasKaraoke;
+	/// Absolute pixel position of the tracking cursor (mouse or playback)
+	int track_cursor_pos;
+	/// Label to show by track cursor
+	wxString track_cursor_label;
+	/// Bounding rectangle last drawn track cursor label
+	wxRect track_cursor_label_rect;
+	/// @brief Move the tracking cursor
+	/// @param new_pos   New absolute pixel position of the tracking cursor
+	/// @param show_time Display timestamp by the tracking cursor?
+	void SetTrackCursor(int new_pos, bool show_time);
+	/// @brief Remove the tracking cursor from the display
+	void RemoveTrackCursor();
 
-	/// DOCME
-	bool diagUpdated;
 
-	/// DOCME
-	bool holding;
+	/// Previous audio selection for optimising redraw when selection changes
+	AudioController::SampleRange old_selection;
 
-	/// DOCME
-	bool draggingScale;
 
-	/// DOCME
-	int64_t selStart;
-
-	/// DOCME
-	int64_t selEnd;
-
-	/// DOCME
-	int64_t lineStart;
-
-	/// DOCME
-	int64_t lineEnd;
-
-	/// DOCME
-	int64_t selStartCap;
-
-	/// DOCME
-	int64_t selEndCap;
-
-	/// DOCME
-	int hold;
-
-	/// DOCME
-	int lastX;
-
-	/// DOCME
-	int lastDragX;
-
-	/// DOCME
-	int curStartMS;
-
-	/// DOCME
-	int curEndMS;
-
-	/// DOCME
-	int holdSyl;
-
-	/// DOCME
-	int *peak;
-
-	/// DOCME
-	int *min;
-
+	/// wxWidgets paint event
 	void OnPaint(wxPaintEvent &event);
+	/// wxWidgets mouse input event
 	void OnMouseEvent(wxMouseEvent &event);
+	/// wxWidgets control size changed event
 	void OnSize(wxSizeEvent &event);
-	void OnUpdateTimer(wxTimerEvent &event);
-	void OnKeyDown(wxKeyEvent &event);
-	void OnGetFocus(wxFocusEvent &event);
-	void OnLoseFocus(wxFocusEvent &event);
+	/// wxWidgets input focus changed event
+	void OnFocus(wxFocusEvent &event);
 
-	void UpdateSamples();
-	void Reset();
-	void DrawTimescale(wxDC &dc);
-	void DrawKeyframes(wxDC &dc);
-	void DrawInactiveLines(wxDC &dc);
-	void DrawWaveform(wxDC &dc,bool weak);
-	void DrawSpectrum(wxDC &dc,bool weak);
-	void GetDialoguePos(int64_t &start,int64_t &end,bool cap);
-	void GetKaraokePos(int64_t &start,int64_t &end,bool cap);
-	void UpdatePosition(int pos,bool IsSample=false);
 
-	int GetBoundarySnap(int x,int range,bool shiftHeld,bool start=true);
-	void DoUpdateImage();
+private:
+	// AudioControllerAudioEventListener implementation
+	virtual void OnAudioOpen(AudioProvider *provider);
+	virtual void OnAudioClose();
+	virtual void OnPlaybackPosition(int64_t sample_position);
+	virtual void OnPlaybackStop();
 
-	void OnActiveLineChanged(AssDialogue *new_line);
-	void OnSelectedSetChanged(const Selection &lines_added, const Selection &lines_removed);
-	void OnCommit(int);
-	agi::signal::Connection commitListener;
+	// AudioControllerTimingEventListener implementation
+	virtual void OnMarkersMoved();
+	virtual void OnSelectionChanged();
+	virtual void OnTimingControllerChanged();
+
 
 public:
 
-	/// DOCME
-	AudioProvider *provider;
-
-	/// DOCME
-	AudioPlayer *player;
-
-	/// DOCME
-	bool NeedCommit;
-
-	/// DOCME
-	bool loaded;
-
-	/// DOCME
-	bool temporary;
-
-	/// DOCME
-
-	/// DOCME
-	int w,h;
-
-	/// DOCME
-	AudioBox *box;
-
-	/// DOCME
-	AudioKaraoke *karaoke;
-
-	/// DOCME
-	wxScrollBar *ScrollBar;
-
-	/// DOCME
-	wxTimer UpdateTimer;
-
-	AudioDisplay(wxWindow *parent, SubtitlesGrid *grid);
+	AudioDisplay(wxWindow *parent, AudioController *controller);
 	~AudioDisplay();
 
-	void UpdateImage(bool weak=false);
-	void Update();
-	void RecreateImage();
-	void SetPosition(int pos);
-	void SetSamplesPercent(int percent,bool update=true,float pivot=0.5);
-	void SetScale(float scale);
-	void UpdateScrollbar();
-	void SetDialogue(SubtitlesGrid *_grid=NULL,AssDialogue *diag=NULL,int n=-1);
-	void MakeDialogueVisible(bool force=false);
-	void ChangeLine(int delta, bool block=false);
-	void Next(bool play=true);
-	void Prev(bool play=true);
 
-	void CommitChanges(bool nextLine=false);
-	void AddLead(bool in,bool out);
+	/// @brief Scroll the audio display
+	/// @param pixel_amount Number of pixels to scroll the view
+	///
+	/// A positive amount moves the display to the right, making later parts of the audio visible.
+	void ScrollBy(int pixel_amount);
 
-	void SetFile(wxString file);
-	void SetFromVideo();
-	void Reload();
+	/// @brief Scroll the audio display
+	/// @param pixel_position Absolute pixel to put at left edge of the audio display
+	///
+	/// This is the principal scrolling function. All other scrolling functions eventually
+	/// call this function to perform the actual scrolling.
+	void ScrollPixelToLeft(int pixel_position);
 
-	void Play(int start,int end);
-	void Stop();
+	/// @brief Scroll the audio display
+	/// @param pixel_position Absolute pixel to put in center of the audio display
+	void ScrollPixelToCenter(int pixel_position);
 
-	int64_t GetSampleAtX(int x);
-	int GetXAtSample(int64_t n);
-	int GetMSAtX(int64_t x);
-	int GetXAtMS(int64_t ms);
-	int GetMSAtSample(int64_t x);
-	int64_t GetSampleAtMS(int64_t ms);
-	int GetSyllableAtX(int x);
+	/// @brief Scroll the audio display
+	/// @param sample_position Audio sample to put at left edge of the audio display
+	void ScrollSampleToLeft(int64_t sample_position);
 
-	void GetTimesDialogue(int &start,int &end);
-	void GetTimesSelection(int &start,int &end);
-	void SetSelection(int start, int end);
+	/// @brief Scroll the audio display
+	/// @param sample_position Audio sample to put in center of the audio display
+	void ScrollSampleToCenter(int64_t sample_position);
+
+	/// @brief Scroll the audio display
+	/// @param range Range of audio samples to ensure is in view
+	///
+	/// If the entire range is already visible inside the display, nothing is scrolled. If
+	/// just one of the two endpoints is visible, the display is scrolled such that the
+	/// visible endpoint stays in view but more of the rest of the range becomes visible.
+	///
+	/// If the entire range fits inside the display, the display is centered over the range.
+	/// For this calculation, the display is considered smaller by some margins, see below.
+	///
+	/// If the range does not fit within the display with margins subtracted, the start of 
+	/// the range is ensured visible and as much of the rest of the range is brought into
+	/// view.
+	///
+	/// For the purpose of this function, a 5 percent margin is assumed at each end of the
+	/// audio display such that a range endpoint that is ensured to be in view never gets
+	/// closer to the edge of the display than the margin. The edge that is not ensured to
+	/// be in view might be outside of view or might be closer to the display edge than the
+	/// margin.
+	void ScrollSampleRangeInView(const AudioController::SampleRange &range);
+
+
+	/// @brief Change the zoom level
+	/// @param new_zoom_level The new zoom level to use
+	///
+	/// A zoom level of 0 is the default zoom level, all other levels are based on this.
+	/// Negative zoom levels zoom out, positive zoom in.
+	///
+	/// The zoom levels generally go from +30 to -30. It is possible to zoom in more than
+	/// +30 
+	void SetZoomLevel(int new_zoom_level);
+
+	/// @brief Get the zoom level
+	/// @return The zoom level
+	///
+	/// See SetZoomLevel for a description of zoom levels.
+	int GetZoomLevel() const;
+
+	/// @brief Get a textual description of a zoom level
+	/// @param level The zoom level to describe
+	/// @return A translated string describing a zoom level
+	///
+	/// The zoom level description can tell the user details about how much audio is
+	/// actually displayed.
+	wxString GetZoomLevelDescription(int level) const;
+
+	/// @brief Get the zoom factor in percent for a zoom level
+	/// @param level The zoom level to get the factor of
+	/// @return The zoom factor in percent
+	///
+	/// Positive: 125, 150, 175, 200, 225, ...
+	///
+	/// Negative: 90, 80, 70, 60, 50, 45, 40, 35, 30, 25, 20, 19, 18, 17, ..., 1
+	///
+	/// Too negative numbers get clamped.
+	static int GetZoomLevelFactor(int level);
+
+
+	/// @brief Set amplitude scale factor
+	/// @param scale New amplitude scale factor, 1.0 is no scaling
+	void SetAmplitudeScale(float scale);
+
+	/// @brief Get amplitude scale factor
+	/// @return The amplitude scaling factor
+	float GetAmplitudeScale() const;
+
+
+	/// @brief Reload all rendering settings from Options and reset caches
+	///
+	/// This can be called if some rendering quality settings have been changed in Options
+	/// and need to be reloaded to take effect.
+	void ReloadRenderingSettings();
+
+
+	/// @brief Get a sample index from an X coordinate relative to current scroll
+	int64_t SamplesFromRelativeX(int x) const { return (scroll_left + x) * pixel_samples; }
+	/// @brief Get a sample index from an absolute X coordinate
+	int64_t SamplesFromAbsoluteX(int x) const { return x * pixel_samples; }
+	/// @brief Get an X coordinate relative to the current scroll from a sample index
+	int RelativeXFromSamples(int64_t samples) const { return samples/pixel_samples - scroll_left; }
+	/// @brief Get an absolute X coordinate from a sample index
+	int AbsoluteXFromSamples(int64_t samples) const { return samples/pixel_samples; }
+
 
 	DECLARE_EVENT_TABLE()
 };
 
-///////
-// IDs
-enum {
-	Audio_Update_Timer = 1700
-};

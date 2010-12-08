@@ -46,8 +46,11 @@
 #endif
 
 
-/// DOCME
-namespace Automation4 { class ScriptManager; class Script; class AutoloadScriptManager; };
+namespace Automation4 {
+	class ScriptManager;
+	class AutoloadScriptManager;
+	class Script;
+};
 
 
 /// DOCME

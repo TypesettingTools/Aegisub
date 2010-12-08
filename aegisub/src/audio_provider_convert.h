@@ -51,9 +51,9 @@ class ConvertAudioProvider : public AudioProvider {
 
 	/// DOCME
 	std::tr1::shared_ptr<AudioProvider> source;
-	void Make16Bit(const char *src, short *dst, int64_t count);
+	void Make16Bit(const char *src, short *dst, int64_t count) const;
 	template<class SampleConverter>
-	void ChangeSampleRate(const short *src, short *dst, int64_t count, const SampleConverter &converter);
+	void ChangeSampleRate(const short *src, short *dst, int64_t count, const SampleConverter &converter) const;
 
 public:
 	ConvertAudioProvider(AudioProvider *source);
@@ -62,9 +62,9 @@ public:
 	/// That's one of the points of it!
 	bool AreSamplesNativeEndian() const { return true; }
 
-	void GetAudio(void *buf, int64_t start, int64_t count);
+	void GetAudio(void *buf, int64_t start, int64_t count) const;
 
-	wxString GetFilename() { return source->GetFilename(); }
+	wxString GetFilename() const { return source->GetFilename(); }
 };
 
 AudioProvider *CreateConvertAudioProvider(AudioProvider *source_provider);

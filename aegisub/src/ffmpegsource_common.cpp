@@ -48,6 +48,7 @@
 
 #include <libaegisub/log.h>
 
+#include "audio_controller.h"
 #include "compat.h"
 #include "ffmpegsource_common.h"
 #include "frame_main.h"

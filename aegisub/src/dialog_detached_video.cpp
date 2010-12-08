@@ -42,6 +42,7 @@
 #include <wx/display.h> /// Must be included last.
 #endif
 
+#include "audio_controller.h"
 #include "dialog_detached_video.h"
 #include "frame_main.h"
 #include "main.h"

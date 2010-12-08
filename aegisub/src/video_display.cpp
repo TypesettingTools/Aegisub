@@ -57,6 +57,7 @@
 #endif
 
 #include "video_display.h"
+#include "selection_controller.h"
 
 #include "ass_dialogue.h"
 #include "ass_file.h"

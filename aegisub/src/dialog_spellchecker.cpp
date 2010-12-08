@@ -44,6 +44,7 @@
 
 #include "ass_dialogue.h"
 #include "ass_file.h"
+#include "audio_controller.h"
 #include "compat.h"
 #include "dialog_spellchecker.h"
 #include "frame_main.h"
@@ -51,6 +52,7 @@
 #include "libresrc/libresrc.h"
 #include "main.h"
 #include "include/aegisub/spellchecker.h"
+#include "selection_controller.h"
 #include "subs_edit_box.h"
 #include "subs_edit_ctrl.h"
 #include "subs_grid.h"

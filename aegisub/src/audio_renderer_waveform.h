@@ -1,4 +1,4 @@
-// Copyright (c) 2005-2006, Rodrigo Braz Monteiro, Fredrik Mellbin
+// Copyright (c) 2010, Niels Martin Hansen
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -29,48 +29,49 @@
 //
 // $Id$
 
-/// @file audio_provider_dummy.cpp
-/// @brief Dummy (silence or noise) audio provider
-/// @ingroup audio_input
+/// @file audio_renderer_waveform.h
+/// @see audio_renderer_waveform.cpp
+/// @ingroup audio_ui
 ///
+/// Render a waveform display of PCM audio data
 
-#include "config.h"
-
-#include "audio_provider_dummy.h"
-#include "utils.h"
+#include <stdint.h>
 
 
-/// @brief Constructor 
-/// @param dur_ms 
-/// @param _noise 
-///
-DummyAudioProvider::DummyAudioProvider(unsigned long dur_ms, bool _noise) {
-	noise = _noise;
-	channels = 1;
-	sample_rate = 44100;
-	bytes_per_sample = 2;
-	num_samples = (int64_t)dur_ms * sample_rate / 1000;
-}
 
-/// @brief Destructor 
-///
-DummyAudioProvider::~DummyAudioProvider() {
-}
+class AudioWaveformRenderer : public AudioRendererBitmapProvider {
+	/// Colour table used for regular rendering
+	AudioColorScheme colors_normal;
 
-/// @brief Get audio 
-/// @param buf   
-/// @param start 
-/// @param count 
-///
-void DummyAudioProvider::GetAudio(void *buf, int64_t start, int64_t count) const {
-	short *workbuf = (short*)buf;
+	/// Colour table used for rendering the audio selection
+	AudioColorScheme colors_selected;
 
-	if (noise) {
-		while (--count > 0)
-			*workbuf++ = (rand() - RAND_MAX/2) * 10000 / RAND_MAX;
-	}
-	else {
-		while (--count > 0)
-			*workbuf++ = 0;
-	}
-}
+	/// Pre-allocated buffer for audio fetched from provider
+	char *audio_buffer;
+
+protected:
+	virtual void OnSetProvider();
+	virtual void OnSetSamplesPerPixel();
+
+public:
+	/// @brief Constructor
+	AudioWaveformRenderer();
+
+	/// @brief Destructor
+	virtual ~AudioWaveformRenderer();
+
+	/// @brief Render a range of audio waveform
+	/// @param bmp      [in,out] Bitmap to render into, also carries lenght information
+	/// @param start    First column of pixel data in display to render
+	/// @param selected Whether to use the alternate colour scheme
+	void Render(wxBitmap &bmp, int start, bool selected);
+
+	/// @brief Render blank area
+	void RenderBlank(wxDC &dc, const wxRect &rect, bool selected);
+
+	/// @brief Cleans up the cache
+	/// @param max_size Maximum size in bytes for the cache
+	///
+	/// Does nothing for waveform renderer, since it does not have a backend cache
+	void AgeCache(size_t max_size) { }
+};

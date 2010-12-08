@@ -55,6 +55,7 @@ class wxSpinCtrl;
 class wxStyledTextCtrl;
 class wxStyledTextEvent;
 class wxTextCtrl;
+class AudioController;
 
 /// DOCME
 /// @class SubsEditBox

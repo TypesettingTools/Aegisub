@@ -62,7 +62,7 @@ ConvertAudioProvider::ConvertAudioProvider(AudioProvider *src) : source(src) {
 /// @param dst   
 /// @param count 
 ///
-void ConvertAudioProvider::Make16Bit(const char *src, short *dst, int64_t count) {
+void ConvertAudioProvider::Make16Bit(const char *src, short *dst, int64_t count) const {
 	for (int64_t i=0;i<count;i++) {
 		dst[i] = (short(src[i])-128)*255;
 	}
@@ -80,7 +80,7 @@ template<class SampleConverter>
 /// @param count     
 /// @param converter 
 ///
-void ConvertAudioProvider::ChangeSampleRate(const short *src, short *dst, int64_t count, const SampleConverter &converter) {
+void ConvertAudioProvider::ChangeSampleRate(const short *src, short *dst, int64_t count, const SampleConverter &converter) const {
 	// Upsample by 2
 	if (sampleMult == 2) {
 		int64_t size = count/2;
@@ -139,7 +139,7 @@ struct EndianSwapSampleConverter {
 /// @param start       
 /// @param count       
 ///
-void ConvertAudioProvider::GetAudio(void *destination, int64_t start, int64_t count) {
+void ConvertAudioProvider::GetAudio(void *destination, int64_t start, int64_t count) const {
 	// Bits per sample
 	int srcBps = source->GetBytesPerSample();
 

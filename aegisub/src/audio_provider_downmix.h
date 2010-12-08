@@ -57,5 +57,5 @@ public:
 	///
 	bool AreSamplesNativeEndian() const { return true; }
 
-	void GetAudio(void *buf, int64_t start, int64_t count);
+	void GetAudio(void *buf, int64_t start, int64_t count) const;
 };

@@ -53,11 +53,13 @@
 #include <GL/glu.h>
 #endif
 
+#include "include/aegisub/audio_player.h"
+#include "include/aegisub/audio_provider.h"
 #include "ass_dialogue.h"
 #include "ass_file.h"
 #include "ass_style.h"
 #include "ass_time.h"
-#include "audio_display.h"
+#include "audio_controller.h"
 #include "compat.h"
 #include "include/aegisub/audio_player.h"
 #include "include/aegisub/audio_provider.h"
@@ -67,6 +69,7 @@
 #include "main.h"
 #include "mkv_wrap.h"
 #include "standard_paths.h"
+#include "selection_controller.h"
 #include "subs_edit_box.h"
 #include "subs_grid.h"
 #include "threaded_frame_source.h"
@@ -119,10 +122,6 @@ VideoContext::VideoContext()
 }
 
 VideoContext::~VideoContext () {
-	if (audio && audio->temporary) {
-		delete audio->provider;
-		delete audio->player;
-	}
 }
 
 VideoContext *VideoContext::Get() {
@@ -135,15 +134,7 @@ void VideoContext::Reset() {
 
 	keyFrames.clear();
 	videoFPS = agi::vfr::Framerate();
-
-	// Remove temporary audio provider
-	if (audio && audio->temporary) {
-		delete audio->provider;
-		audio->provider = NULL;
-		delete audio->player;
-		audio->player = NULL;
-		audio->temporary = false;
-	}
+	keyframesRevision++;
 
 	// Remove video data
 	frame_n = 0;
@@ -316,8 +307,11 @@ void VideoContext::PlayNextFrame() {
 	int thisFrame = frame_n;
 	JumpToFrame(frame_n + 1);
 	// Start playing audio
-	if (playAudioOnStep->GetBool())
-		audio->Play(TimeAtFrame(thisFrame),TimeAtFrame(thisFrame + 1));
+	if (playAudioOnStep->GetBool()) {
+		audio->PlayRange(AudioController::SampleRange(
+			audio->SamplesFromMilliseconds(TimeAtFrame(thisFrame)),
+			audio->SamplesFromMilliseconds(TimeAtFrame(thisFrame + 1))));
+	}
 }
 
 void VideoContext::PlayPrevFrame() {
@@ -327,8 +321,11 @@ void VideoContext::PlayPrevFrame() {
 	int thisFrame = frame_n;
 	JumpToFrame(frame_n -1);
 	// Start playing audio
-	if (playAudioOnStep->GetBool())
-		audio->Play(TimeAtFrame(thisFrame - 1),TimeAtFrame(thisFrame));
+	if (playAudioOnStep->GetBool()) {
+		audio->PlayRange(AudioController::SampleRange(
+			audio->SamplesFromMilliseconds(TimeAtFrame(thisFrame - 1)),
+			audio->SamplesFromMilliseconds(TimeAtFrame(thisFrame))));
+	}
 }
 
 void VideoContext::Play() {
@@ -342,7 +339,7 @@ void VideoContext::Play() {
 	endFrame = -1;
 
 	// Start playing audio
-	audio->Play(TimeAtFrame(startFrame),-1);
+	audio->PlayToEnd(audio->SamplesFromMilliseconds(TimeAtFrame(startFrame)));
 
 	//audio->Play will override this if we put it before, so put it after.
 	isPlaying = true;
@@ -358,7 +355,9 @@ void VideoContext::PlayLine() {
 	if (!curline) return;
 
 	// Start playing audio
-	audio->Play(curline->Start.GetMS(),curline->End.GetMS());
+	audio->PlayRange(AudioController::SampleRange(
+		audio->SamplesFromMilliseconds(curline->Start.GetMS()),
+		audio->SamplesFromMilliseconds(curline->End.GetMS())));
 
 	// Set variables
 	isPlaying = true;
@@ -417,7 +416,9 @@ void VideoContext::OnPlayTimer(wxTimerEvent &event) {
 	if (nextFrame == frame_n) return;
 
 	// Next frame is before or over 2 frames ahead, so force audio resync
-	if (audio->player && keepAudioSync && (nextFrame < frame_n || nextFrame > frame_n + 2)) audio->player->SetCurrentPosition(audio->GetSampleAtMS(TimeAtFrame(nextFrame)));
+	if (audio->IsPlaying() && keepAudioSync && (nextFrame < frame_n || nextFrame > frame_n + 2)) {
+		audio->ResyncPlaybackPosition(audio->SamplesFromMilliseconds(TimeAtFrame(nextFrame)));
+	}
 
 	// Jump to next frame
 	playNextFrame = nextFrame;
@@ -425,13 +426,13 @@ void VideoContext::OnPlayTimer(wxTimerEvent &event) {
 	JumpToFrame(nextFrame);
 
 	// Sync audio
-	if (keepAudioSync && nextFrame % 10 == 0 && audio && audio->provider && audio->player) {
-		int64_t audPos = audio->GetSampleAtMS(TimeAtFrame(nextFrame));
-		int64_t curPos = audio->player->GetCurrentPosition();
+	if (keepAudioSync && nextFrame % 10 == 0 && audio->IsPlaying()) {
+		int64_t audPos = audio->SamplesFromMilliseconds(TimeAtFrame(nextFrame));
+		int64_t curPos = audio->GetPlaybackPosition();
 		int delta = int(audPos-curPos);
 		if (delta < 0) delta = -delta;
-		int maxDelta = audio->provider->GetSampleRate();
-		if (delta > maxDelta) audio->player->SetCurrentPosition(audPos);
+		int maxDelta = audio->SamplesFromMilliseconds(1000);
+		if (delta > maxDelta) audio->ResyncPlaybackPosition(audPos);
 	}
 }
 
@@ -468,10 +469,12 @@ void VideoContext::LoadKeyframes(wxString filename) {
 	catch (...) {
 		wxMessageBox(_T("Unknown error"), _T("Error opening keyframes file"), wxOK | wxICON_ERROR, NULL);
 	}
+	keyframesRevision++;
 }
 
 void VideoContext::SaveKeyframes(wxString filename) {
 	KeyFrameFile::Save(filename, GetKeyFrames());
+	keyframesRevision++;
 }
 
 void VideoContext::CloseKeyframes() {
@@ -483,6 +486,7 @@ void VideoContext::CloseKeyframes() {
 		keyFrames.clear();
 	}
 	KeyframesOpen(keyFrames);
+	keyframesRevision++;
 }
 
 void VideoContext::LoadTimecodes(wxString filename) {

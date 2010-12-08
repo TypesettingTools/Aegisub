@@ -46,8 +46,8 @@ private:
 	FFMS_AudioSource *AudioSource;	///< audio source object
 	bool COMInited;					///< COM initialization state
 
-	char FFMSErrMsg[1024];			///< FFMS error message
-	FFMS_ErrorInfo ErrInfo;			///< FFMS error codes/messages
+	mutable char FFMSErrMsg[1024];			///< FFMS error message
+	mutable FFMS_ErrorInfo ErrInfo;			///< FFMS error codes/messages
 
 	void Close();
 	void LoadAudio(wxString filename);
@@ -65,6 +65,6 @@ public:
 	bool AreSamplesNativeEndian() const { return true; }
 	bool NeedsCache() const { return true; }
 
-	virtual void GetAudio(void *buf, int64_t start, int64_t count);
+	virtual void GetAudio(void *buf, int64_t start, int64_t count) const;
 };
 #endif

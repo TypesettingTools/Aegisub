@@ -46,8 +46,9 @@
 #include "ass_dialogue.h"
 #include "ass_file.h"
 #include "ass_style.h"
+#include "selection_controller.h"
+#include "audio_controller.h"
 #include "audio_box.h"
-#include "audio_display.h"
 #include "dialog_styling_assistant.h"
 #include "frame_main.h"
 #include "help_button.h"
@@ -72,8 +73,8 @@ wxDialog (parent, -1, _("Styling assistant"), wxDefaultPosition, wxDefaultSize, 
 
 	// Variables
 	grid = _grid;
-	audio = VideoContext::Get()->audio->box->audioDisplay;
-	video = video->Get();
+	audio = VideoContext::Get()->audio;
+	video = VideoContext::Get();
 	needCommit = false;
 	linen = -1;
 
@@ -269,7 +270,8 @@ void DialogStyling::OnActivate(wxActivateEvent &event) {
 	}
 	// Enable/disable play video/audio buttons
 	PlayVideoButton->Enable(video->IsLoaded());
-	PlayAudioButton->Enable(audio->loaded);
+	/// @todo Reinstate this when the audio controller is made reachable from here
+	//PlayAudioButton->Enable(audio->loaded);
 	// Fix style list
 	Styles->Set(grid->ass->GetStyles());
 	// Fix line selection
@@ -377,7 +379,9 @@ void DialogStyling::OnPlayVideoButton(wxCommandEvent &event) {
 /// @param event 
 ///
 void DialogStyling::OnPlayAudioButton(wxCommandEvent &event) {
-	audio->Play(line->Start.GetMS(),line->End.GetMS());
+	audio->PlayRange(AudioController::SampleRange(
+		audio->SamplesFromMilliseconds(line->Start.GetMS()),
+		audio->SamplesFromMilliseconds(line->End.GetMS())));
 	TypeBox->SetFocus();
 }
 
@@ -446,9 +450,12 @@ void StyleEditBox::OnKeyDown(wxKeyEvent &event) {
 
 	// Play audio
 	if (Hotkeys.IsPressed(_T("Styling Assistant Play Audio"))) {
+		/// @todo Reinstate this when the audio controller is made reachable from here
+		/*
 		if (diag->audio->loaded) {
 			diag->audio->Play(diag->line->Start.GetMS(),diag->line->End.GetMS());
 		}
+		*/
 		return;
 	}
 

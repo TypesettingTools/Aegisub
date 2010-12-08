@@ -46,8 +46,9 @@
 
 
 #include "ass_file.h"
+#include "selection_controller.h"
+#include "audio_controller.h"
 #include "audio_box.h"
-#include "audio_display.h"
 #ifdef WITH_AUTOMATION
 #include "auto4_base.h"
 #endif
@@ -114,8 +115,7 @@ FrameMain::FrameMain (wxArrayString args)
 	// Initialize flags
 	HasSelection = false;
 	menuCreated = false;
-	blockAudioLoad = false;
-	blockAudioLoad = false;
+	blockVideoLoad = false;
 
 	StartupLog(_T("Install PNG handler"));
 	// Create PNG handler
@@ -129,6 +129,10 @@ FrameMain::FrameMain (wxArrayString args)
 	StartupLog(_T("Create local Automation script manager"));
 	local_scripts = new Automation4::ScriptManager();
 #endif
+
+	// Contexts and controllers
+	audioController = new AudioController;
+	audioController->AddAudioListener(this);
 
 	// Create menu and tool bars
 	StartupLog(_T("Apply saved Maximized state"));
@@ -206,7 +210,10 @@ FrameMain::FrameMain (wxArrayString args)
 
 /// @brief FrameMain destructor 
 FrameMain::~FrameMain () {
+	VideoContext::Get()->SetVideo(_T(""));
+	audioController->CloseAudio();
 	DeInitContents();
+	delete audioController;
 #ifdef WITH_AUTOMATION
 	delete local_scripts;
 #endif
@@ -492,6 +499,9 @@ void FrameMain::InitMenu() {
 	AppendBitmapMenuItem(audioMenu, Menu_Audio_Close, _("&Close Audio"), _("Closes the currently open audio file"), GETIMAGE(close_audio_menu_16));
 	wxMenuItem *RecentAudParent = new wxMenuItem(audioMenu, Menu_File_Recent_Auds_Parent, _("Recent"), _T(""), wxITEM_NORMAL, RecentAuds);
 	audioMenu->Append(RecentAudParent);
+	audioMenu->AppendSeparator();
+	audioMenu->Append(Menu_Audio_Spectrum, _("Spectrum display"), _("Display audio as a frequency-power spectrogrph"), wxITEM_RADIO);
+	audioMenu->Append(Menu_Audio_Waveform, _("Waveform display"), _("Display audio as a linear amplitude graph"), wxITEM_RADIO);
 #ifdef _DEBUG
 	audioMenu->AppendSeparator();
 	audioMenu->Append(Menu_Audio_Open_Dummy, _T("Open 2h30 Blank Audio"), _T("Open a 150 minutes blank audio clip, for debugging"));
@@ -557,45 +567,52 @@ void FrameMain::InitContents() {
 	StartupLog(_T("Create background panel"));
 	Panel = new wxPanel(this,-1,wxDefaultPosition,wxDefaultSize,wxTAB_TRAVERSAL | wxCLIP_CHILDREN);
 
-	// Initialize sizers
-	StartupLog(_T("Create main sizers"));
-	MainSizer = new wxBoxSizer(wxVERTICAL);
-	TopSizer = new wxBoxSizer(wxHORIZONTAL);
-	BottomSizer = new wxBoxSizer(wxHORIZONTAL);
-
 	// Video area;
 	StartupLog(_T("Create video box"));
 	videoBox = new VideoBox(Panel, false, ZoomBox, ass);
-	TopSizer->Add(videoBox,0,wxEXPAND,0);
+	VideoContext::Get()->audio = audioController;
+	wxBoxSizer *videoSizer = new wxBoxSizer(wxVERTICAL);
+	videoSizer->Add(videoBox, 0, wxEXPAND);
+	videoSizer->AddStretchSpacer(1);
 
 	// Subtitles area
 	StartupLog(_T("Create subtitles grid"));
 	SubsGrid = new SubtitlesGrid(this,Panel,-1,ass,wxDefaultPosition,wxSize(600,100),wxWANTS_CHARS | wxSUNKEN_BORDER,_T("Subs grid"));
-	BottomSizer->Add(SubsGrid,1,wxEXPAND | wxLEFT | wxRIGHT | wxBOTTOM,0);
 	videoBox->videoSlider->grid = SubsGrid;
 	VideoContext::Get()->grid = SubsGrid;
 	Search.grid = SubsGrid;
 
+	// Tools area
+	StartupLog(_T("Create tool area splitter window"));
+	audioSash = new wxSashWindow(Panel, Main_AudioSash, wxDefaultPosition, wxDefaultSize, wxSW_3D|wxCLIP_CHILDREN);
+	wxBoxSizer *audioSashSizer = new wxBoxSizer(wxHORIZONTAL);
+	audioSash->SetSashVisible(wxSASH_BOTTOM, true);
+
 	// Audio area
 	StartupLog(_T("Create audio box"));
-	audioBox = new AudioBox(Panel, SubsGrid);
+	audioBox = new AudioBox(audioSash, audioController, SubsGrid);
 	audioBox->frameMain = this;
-	VideoContext::Get()->audio = audioBox->audioDisplay;
+	audioSashSizer->Add(audioBox, 1, wxEXPAND);
+	audioSash->SetSizer(audioSashSizer);
+	audioBox->Fit();
+	audioSash->SetMinimumSizeY(audioBox->GetSize().GetHeight());
 
-	// Top sizer
+	// Editing area
 	StartupLog(_T("Create subtitle editing box"));
 	EditBox = new SubsEditBox(Panel,SubsGrid);
-	StartupLog(_T("Arrange controls in sizers"));
-	ToolSizer = new wxBoxSizer(wxVERTICAL);
-	ToolSizer->Add(audioBox,0,wxEXPAND | wxBOTTOM,5);
-	ToolSizer->Add(EditBox,1,wxEXPAND,5);
-	TopSizer->Add(ToolSizer,1,wxEXPAND | wxLEFT | wxRIGHT | wxBOTTOM,5);
 
 	// Set sizers/hints
 	StartupLog(_T("Arrange main sizers"));
+	ToolsSizer = new wxBoxSizer(wxVERTICAL);
+	ToolsSizer->Add(audioSash, 0, wxEXPAND);
+	ToolsSizer->Add(EditBox, 1, wxEXPAND);
+	TopSizer = new wxBoxSizer(wxHORIZONTAL);
+	TopSizer->Add(videoSizer, 0, wxEXPAND, 0);
+	TopSizer->Add(ToolsSizer, 1, wxEXPAND | wxLEFT | wxRIGHT | wxBOTTOM, 5);
+	MainSizer = new wxBoxSizer(wxVERTICAL);
 	MainSizer->Add(new wxStaticLine(Panel),0,wxEXPAND | wxALL,0);
 	MainSizer->Add(TopSizer,0,wxEXPAND | wxALL,0);
-	MainSizer->Add(BottomSizer,1,wxEXPAND | wxALL,0);
+	MainSizer->Add(SubsGrid,1,wxEXPAND | wxALL,0);
 	Panel->SetSizer(MainSizer);
 	//MainSizer->SetSizeHints(Panel);
 	//SetSizer(MainSizer);
@@ -828,7 +845,7 @@ void FrameMain::SetDisplayMode(int video, int audio) {
 	else if (video)  sv = VideoContext::Get()->IsLoaded() && !detachedVideo;
 
 	if (audio == -1) sa = showAudio;
-	else if (audio)  sa = audioBox->loaded;
+	else if (audio)  sa = audioController->IsAudioOpen();
 
 	// See if anything changed
 	if (sv == showVideo && sa == showAudio) return;
@@ -842,8 +859,8 @@ void FrameMain::SetDisplayMode(int video, int audio) {
 	VideoContext::Get()->Stop();
 
 	// Set display
-	TopSizer->Show(videoBox,showVideo,true);
-	ToolSizer->Show(audioBox,showAudio,true);
+	TopSizer->Show(videoBox, showVideo, true);
+	ToolsSizer->Show(audioSash, showAudio, true);
 
 	// Update
 	UpdateToolbar();
@@ -881,7 +898,7 @@ void FrameMain::UpdateTitle() {
 	else newTitle << _("untitled");
 #endif
 
-#ifdef __WXMAC__
+#if defined(__WXMAC__) && !defined(__LP64__)
 	// On Mac, set the mark in the close button
 	OSXSetModified(subsMod);
 #endif
@@ -914,19 +931,19 @@ void FrameMain::SynchronizeProject(bool fromSubs) {
 		// Get new state info
 		ass->GetScriptInfo(_T("Video Position")).ToLong(&videoPos);
 		ass->GetScriptInfo(_T("Video Zoom Percent")).ToDouble(&videoZoom);
-		wxString curassVideo = DecodeRelativePath(ass->GetScriptInfo(_T("Video File")),ass->filename);
-		wxString curassVFR = DecodeRelativePath(ass->GetScriptInfo(_T("VFR File")),ass->filename);
-		wxString curassKeyframes = DecodeRelativePath(ass->GetScriptInfo(_T("Keyframes File")),ass->filename);
-		wxString curassAudio = DecodeRelativePath(ass->GetScriptInfo(_T("Audio File")),ass->filename);
+		wxString curSubsVideo = DecodeRelativePath(ass->GetScriptInfo(_T("Video File")),ass->filename);
+		wxString curSubsVFR = DecodeRelativePath(ass->GetScriptInfo(_T("VFR File")),ass->filename);
+		wxString curSubsKeyframes = DecodeRelativePath(ass->GetScriptInfo(_T("Keyframes File")),ass->filename);
+		wxString curSubsAudio = DecodeRelativePath(ass->GetScriptInfo(_T("Audio URI")),ass->filename);
 		wxString AutoScriptString = ass->GetScriptInfo(_T("Automation Scripts"));
 
 		// Check if there is anything to change
 		int autoLoadMode = OPT_GET("App/Auto/Load Linked Files")->GetInt();
 		bool hasToLoad = false;
-		if (curassAudio != audioBox->audioName ||
-			curassVFR != VideoContext::Get()->GetTimecodesName() ||
-			curassVideo != VideoContext::Get()->videoName ||
-			curassKeyframes != VideoContext::Get()->GetKeyFramesName()
+		if (curSubsAudio !=audioController->GetAudioURL() ||
+			curSubsVFR != VideoContext::Get()->GetTimecodesName() ||
+			curSubsVideo != VideoContext::Get()->videoName ||
+			curSubsKeyframes != VideoContext::Get()->GetKeyFramesName()
 #ifdef WITH_AUTOMATION
 			|| !AutoScriptString.IsEmpty() || local_scripts->GetScripts().size() > 0
 #endif
@@ -946,8 +963,8 @@ void FrameMain::SynchronizeProject(bool fromSubs) {
 
 		if (doLoad) {
 			// Video
-			if (curassVideo != VideoContext::Get()->videoName) {
-				LoadVideo(curassVideo);
+			if (curSubsVideo != VideoContext::Get()->videoName) {
+				LoadVideo(curSubsVideo);
 				if (VideoContext::Get()->IsLoaded()) {
 					VideoContext::Get()->SetAspectRatio(videoAr,videoArValue);
 					videoBox->videoDisplay->SetZoom(videoZoom);
@@ -955,13 +972,12 @@ void FrameMain::SynchronizeProject(bool fromSubs) {
 				}
 			}
 
-			VideoContext::Get()->LoadTimecodes(curassVFR);
-			VideoContext::Get()->LoadKeyframes(curassKeyframes);
+			VideoContext::Get()->LoadTimecodes(curSubsVFR);
+			VideoContext::Get()->LoadKeyframes(curSubsKeyframes);
 
 			// Audio
-			if (curassAudio != audioBox->audioName) {
-				if (curassAudio == _T("?video")) LoadAudio(_T(""),true);
-				else LoadAudio(curassAudio);
+			if (curSubsAudio != audioController->GetAudioURL()) {
+				audioController->OpenAudio(curSubsAudio);
 			}
 
 			// Automation scripts
@@ -1019,7 +1035,7 @@ void FrameMain::SynchronizeProject(bool fromSubs) {
 		}
 		
 		// Store audio data
-		ass->SetScriptInfo(_T("Audio File"),MakeRelativePath(audioBox->audioName,ass->filename));
+		ass->SetScriptInfo(_T("Audio URI"),MakeRelativePath(audioController->GetAudioURL(),ass->filename));
 
 		// Store video data
 		ass->SetScriptInfo(_T("Video File"),MakeRelativePath(VideoContext::Get()->videoName,ass->filename));
@@ -1124,31 +1140,6 @@ void FrameMain::LoadVideo(wxString file,bool autoload) {
 	Thaw();
 }
 
-/// @brief Loads audio 
-/// @param filename  
-/// @param FromVideo 
-void FrameMain::LoadAudio(wxString filename,bool FromVideo) {
-	if (blockAudioLoad) return;
-	VideoContext::Get()->Stop();
-	try {
-		audioBox->SetFile(filename,FromVideo);
-		SetDisplayMode(-1,1);
-	}
-	catch (const wchar_t *error) {
-		wxString err(error);
-		wxMessageBox(err, _T("Error opening audio file"), wxOK | wxICON_ERROR, this);
-	}
-	#ifdef WITH_AVISYNTH
-	catch (AvisynthError err) {
-		wxMessageBox (wxString(_T("AviSynth error: ")) + wxString(err.msg,wxConvUTF8), _T("Error loading audio"), wxOK | wxICON_ERROR);
-		return;
-	}
-	#endif
-	catch (...) {
-		wxMessageBox(_T("Unknown error"), _T("Error opening audio file"), wxOK | wxICON_ERROR, this);
-	}
-}
-
 void FrameMain::LoadVFR(wxString filename) {
 	if (filename.empty()) {
 		VideoContext::Get()->CloseTimecodes();
@@ -1208,7 +1199,7 @@ void FrameMain::SetAccelerators() {
 
 	// Medusa
 	bool medusaPlay = OPT_GET("Audio/Medusa Timing Hotkeys")->GetBool();
-	if (medusaPlay && audioBox->audioDisplay->loaded) {
+	if (medusaPlay && audioController->IsAudioOpen()) {
 		entry.push_back(Hotkeys.GetAccelerator(_T("Audio Medusa Play"),Medusa_Play));
 		entry.push_back(Hotkeys.GetAccelerator(_T("Audio Medusa Stop"),Medusa_Stop));
 		entry.push_back(Hotkeys.GetAccelerator(_T("Audio Medusa Play Before"),Medusa_Play_Before));
@@ -1294,7 +1285,6 @@ bool FrameMain::LoadList(wxArrayString list) {
 	}
 
 	// Set blocking
-	blockAudioLoad = (audio != _T(""));
 	blockVideoLoad = (video != _T(""));
 
 	// Load files
@@ -1305,10 +1295,8 @@ bool FrameMain::LoadList(wxArrayString list) {
 		blockVideoLoad = false;
 		LoadVideo(video);
 	}
-	if (blockAudioLoad) {
-		blockAudioLoad = false;
-		LoadAudio(audio);
-	}
+	if (!audio.IsEmpty())
+		audioController->OpenAudio(audio);
 
 	// Result
 	return ((subs != _T("")) || (audio != _T("")) || (video != _T("")));

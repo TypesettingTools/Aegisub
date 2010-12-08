@@ -1,4 +1,4 @@
-// Copyright (c) 2009, Niels Martin Hansen
+// Copyright (c) 2009-2010, Niels Martin Hansen
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -43,8 +43,6 @@
 #include <wx/gdicmn.h>
 #endif
 
-#include "block_cache.h"
-
 
 // Some forward declarations for outside stuff
 class AudioProvider;
@@ -52,6 +50,11 @@ class AudioProvider;
 // Forwards declarations for internal stuff
 class AudioRendererBitmapProvider;
 class AudioRenderer;
+
+
+#ifndef AGI_BLOCK_CACHE_INCLUDED
+#error You much include "block_cache.h" before "audio_renderer.h"
+#endif
 
 
 
@@ -111,8 +114,12 @@ class AudioRenderer {
 	AudioRendererBitmapCache bitmaps_normal;
 	/// Cached bitmaps for marked (selected) audio ranges
 	AudioRendererBitmapCache bitmaps_selected;
-	/// The maximum allowed size of the cache, in bytes
-	size_t cache_maxsize;
+	/// Number of blocks in the bitmap caches
+	size_t cache_numblocks;
+	/// The maximum allowed size of each bitmap cache, in bytes
+	size_t cache_bitmap_maxsize;
+	/// The maximum allowed size of the renderer's cache, in bytes
+	size_t cache_renderer_maxsize;
 
 	/// Actual renderer for bitmaps
 	AudioRendererBitmapProvider *renderer;
@@ -284,7 +291,7 @@ public:
 	AudioRendererBitmapProvider() : provider(0), pixel_samples(0) { };
 
 	/// @brief Destructor
-	~AudioRendererBitmapProvider() { }
+	virtual ~AudioRendererBitmapProvider() { }
 
 	/// @brief Rendering function
 	/// @param bmp      Bitmap to render to
@@ -294,6 +301,15 @@ public:
 	/// Deriving classes must implement this method. The bitmap in bmp holds
 	/// the width and height to render.
 	virtual void Render(wxBitmap &bmp, int start, bool selected) = 0;
+
+	/// @brief Blank audio rendering function
+	/// @param dc       The device context to render to
+	/// @param rect     The rectangle to fill with the image of blank audio
+	/// @param selected Whether to render as being selected or not
+	///
+	/// Deriving classes must implement this method. The rectangle has the height
+	/// of the entire canvas the audio is being rendered in.
+	virtual void RenderBlank(wxDC &dc, const wxRect &rect, bool selected) = 0;
 
 	/// @brief Change audio provider
 	/// @param provider Audio provider to change to

@@ -41,6 +41,7 @@
 #include <wx/filename.h>
 #endif
 
+#include "audio_controller.h"
 #include "audio_provider_hd.h"
 #include "compat.h"
 #include "dialog_progress.h"
@@ -114,7 +115,7 @@ HDAudioProvider::~HDAudioProvider() {
 /// @param start 
 /// @param count 
 ///
-void HDAudioProvider::GetAudio(void *buf, int64_t start, int64_t count) {
+void HDAudioProvider::GetAudio(void *buf, int64_t start, int64_t count) const {
 	// Requested beyond the length of audio
 	if (start+count > num_samples) {
 		int64_t oldcount = count;

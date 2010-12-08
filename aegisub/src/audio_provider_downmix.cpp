@@ -64,7 +64,7 @@ DownmixingAudioProvider::DownmixingAudioProvider(AudioProvider *source) : provid
 /// @param start 
 /// @param count 
 ///
-void DownmixingAudioProvider::GetAudio(void *buf, int64_t start, int64_t count) {
+void DownmixingAudioProvider::GetAudio(void *buf, int64_t start, int64_t count) const {
 	if (count == 0) return;
 
 	// We can do this ourselves

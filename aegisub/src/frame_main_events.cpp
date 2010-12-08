@@ -48,6 +48,8 @@
 
 #include "ass_dialogue.h"
 #include "ass_file.h"
+#include "selection_controller.h"
+#include "audio_controller.h"
 #include "audio_box.h"
 #include "audio_display.h"
 #ifdef WITH_AUTOMATION
@@ -84,6 +86,7 @@
 #include "main.h"
 #include "preferences.h"
 #include "standard_paths.h"
+#include "selection_controller.h"
 #include "subs_edit_box.h"
 #include "subs_edit_ctrl.h"
 #include "subs_grid.h"
@@ -103,6 +106,8 @@ BEGIN_EVENT_TABLE(FrameMain, wxFrame)
 	EVT_TIMER(StatusClear_Timer, FrameMain::OnStatusClear)
 
 	EVT_CLOSE(FrameMain::OnCloseWindow)
+
+	EVT_SASH_DRAGGED(Main_AudioSash, FrameMain::OnAudioBoxResize)
 
 	EVT_MENU_OPEN(FrameMain::OnMenuOpen)
 	EVT_MENU_RANGE(Menu_File_Recent,Menu_File_Recent+99, FrameMain::OnOpenRecentSubs)
@@ -155,6 +160,8 @@ BEGIN_EVENT_TABLE(FrameMain, wxFrame)
 	EVT_MENU(Menu_Audio_Open_File, FrameMain::OnOpenAudio)
 	EVT_MENU(Menu_Audio_Open_From_Video, FrameMain::OnOpenAudioFromVideo)
 	EVT_MENU(Menu_Audio_Close, FrameMain::OnCloseAudio)	
+	EVT_MENU(Menu_Audio_Spectrum, FrameMain::OnAudioDisplayMode)
+	EVT_MENU(Menu_Audio_Waveform, FrameMain::OnAudioDisplayMode)
 #ifdef _DEBUG
 	EVT_MENU(Menu_Audio_Open_Dummy, FrameMain::OnOpenDummyAudio)
 	EVT_MENU(Menu_Audio_Open_Dummy_Noise, FrameMain::OnOpenDummyNoiseAudio)
@@ -294,7 +301,7 @@ void FrameMain::OnMenuOpen (wxMenuEvent &event) {
 	// View menu
 	else if (curMenu == viewMenu) {
 		// Flags
-		bool aud = audioBox->audioDisplay->loaded;
+		bool aud = audioController->IsAudioOpen();
 		bool vid = VideoContext::Get()->IsLoaded() && !detachedVideo;
 
 		// Set states
@@ -365,11 +372,15 @@ void FrameMain::OnMenuOpen (wxMenuEvent &event) {
 
 	// Audio menu
 	else if (curMenu == audioMenu) {
-		bool state = audioBox->loaded;
+		bool state = audioController->IsAudioOpen();
 		bool vidstate = VideoContext::Get()->IsLoaded();
 
 		MenuBar->Enable(Menu_Audio_Open_From_Video,vidstate);
 		MenuBar->Enable(Menu_Audio_Close,state);
+
+		bool spectrum_enabled = OPT_GET("Audio/Spectrum")->GetBool();
+		MenuBar->Check(Menu_Audio_Spectrum, spectrum_enabled);
+		MenuBar->Check(Menu_Audio_Waveform, !spectrum_enabled);
 
 		// Rebuild recent
 		RebuildRecentList(_T("Audio"),RecentAuds,Menu_Audio_Recent);
@@ -541,7 +552,7 @@ void FrameMain::OnOpenRecentKeyframes(wxCommandEvent &event) {
 /// @brief Open recent audio menu entry 
 /// @param event 
 void FrameMain::OnOpenRecentAudio(wxCommandEvent &event) {
-	LoadAudio(lagi_wxString(config::mru->GetEntry("Audio", event.GetId()-Menu_Audio_Recent)));
+	audioController->OpenAudio(lagi_wxString(config::mru->GetEntry("Audio", event.GetId()-Menu_Audio_Recent)));
 }
 
 /// @brief Open new Window 
@@ -650,31 +661,40 @@ void FrameMain::OnOpenAudio (wxCommandEvent&) {
 				 + _("All files") + _T(" (*.*)|*.*");
 	wxString filename = wxFileSelector(_("Open audio file"),path,_T(""),_T(""),str,wxFD_OPEN | wxFD_FILE_MUST_EXIST);
 	if (!filename.empty()) {
-		LoadAudio(filename);
+		audioController->OpenAudio(filename);
 		OPT_SET("Path/Last/Audio")->SetString(STD_STR(filename));
 	}
 }
 
 /// @brief DOCME
 void FrameMain::OnOpenAudioFromVideo (wxCommandEvent&) {
-	LoadAudio(_T(""),true);
+	audioController->OpenAudio(_T("audio-video:cache"));
 }
 
 /// @brief DOCME
 void FrameMain::OnCloseAudio (wxCommandEvent&) {
-	LoadAudio(_T(""));
+	audioController->CloseAudio();
+}
+
+
+/// @brief Event handler for audio display renderer selection menu options
+/// @param event wxWidgets event object
+void FrameMain::OnAudioDisplayMode (wxCommandEvent &event) {
+	OPT_SET("Audio/Spectrum")->SetBool(event.GetId() == Menu_Audio_Spectrum);
+	/// @todo Remove this reload call when the audio display starts listening for option changes
+	audioBox->audioDisplay->ReloadRenderingSettings();
 }
 
 #ifdef _DEBUG
 
 /// @brief DOCME
 void FrameMain::OnOpenDummyAudio (wxCommandEvent&) {
-	LoadAudio(_T("?dummy"));
+	audioController->OpenAudio(_T("dummy-audio:silence?sr=44100&bd=16&ch=1&ln=396900000"));
 }
 
 /// @brief DOCME
 void FrameMain::OnOpenDummyNoiseAudio (wxCommandEvent&) {
-	LoadAudio(_T("?noise"));
+	audioController->OpenAudio(_T("dummy-audio:noise?sr=44100&bd=16&ch=1&ln=396900000"));
 }
 #endif
 
@@ -1245,7 +1265,7 @@ void FrameMain::OnSetARCustom (wxCommandEvent &) {
 void FrameMain::OnCloseWindow (wxCloseEvent &event) {
 	// Stop audio and video
 	VideoContext::Get()->Stop();
-	audioBox->audioDisplay->Stop();
+	audioController->Stop();
 
 	// Ask user if he wants to save first
 	bool canVeto = event.CanVeto();
@@ -1465,6 +1485,7 @@ void FrameMain::OnChooseLanguage (wxCommandEvent &) {
 
 /// @brief View standard 
 void FrameMain::OnViewStandard (wxCommandEvent &) {
+	if (!audioController->IsAudioOpen() || !VideoContext::Get()->IsLoaded()) return;
 	SetDisplayMode(1,1);
 }
 
@@ -1475,6 +1496,7 @@ void FrameMain::OnViewVideo (wxCommandEvent &) {
 
 /// @brief View audio 
 void FrameMain::OnViewAudio (wxCommandEvent &) {
+	if (!audioController->IsAudioOpen()) return;
 	SetDisplayMode(0,1);
 }
 
@@ -1485,82 +1507,132 @@ void FrameMain::OnViewSubs (wxCommandEvent &) {
 
 /// @brief Medusa shortcuts 
 void FrameMain::OnMedusaPlay(wxCommandEvent &) {
-	int start=0,end=0;
-	audioBox->audioDisplay->GetTimesSelection(start,end);
-	audioBox->audioDisplay->Play(start,end);
+	audioController->PlayPrimaryRange();
 }
 
 /// @brief DOCME
 void FrameMain::OnMedusaStop(wxCommandEvent &) {
 	// Playing, stop
-	if (audioBox->audioDisplay->player->IsPlaying()) {
-		audioBox->audioDisplay->Stop();
-		audioBox->audioDisplay->Refresh();
+	if (audioController->IsPlaying()) {
+		audioController->Stop();
 	}
 
 	// Otherwise, play the last 500 ms
 	else {
-		int	start=0,end=0;
-		audioBox->audioDisplay->GetTimesSelection(start,end);
-		audioBox->audioDisplay->Play(end-500,end);
+		AudioController::SampleRange sel(audioController->GetPrimaryPlaybackRange());
+		audioController->PlayRange(AudioController::SampleRange(
+			sel.end() - audioController->SamplesFromMilliseconds(500),
+			sel.end()));;
 	}
 }
 
 /// @brief DOCME
 void FrameMain::OnMedusaShiftStartForward(wxCommandEvent &) {
-	audioBox->audioDisplay->curStartMS += 10;
-	audioBox->audioDisplay->Update();
-	audioBox->audioDisplay->wxWindow::Update();
+	AudioController::SampleRange newsel(
+		audioController->GetPrimaryPlaybackRange(),
+		audioController->SamplesFromMilliseconds(10),
+		0);
+	/// @todo Make this use the timing controller instead
+	//audioController->SetSelection(newsel);
 }
 
 /// @brief DOCME
 void FrameMain::OnMedusaShiftStartBack(wxCommandEvent &) {
-	audioBox->audioDisplay->curStartMS -= 10;
-	audioBox->audioDisplay->Update();
-	audioBox->audioDisplay->wxWindow::Update();
+	AudioController::SampleRange newsel(
+		audioController->GetPrimaryPlaybackRange(),
+		-audioController->SamplesFromMilliseconds(10),
+		0);
+	/// @todo Make this use the timing controller instead
+	//audioController->SetSelection(newsel);
 }
 
 /// @brief DOCME
 void FrameMain::OnMedusaShiftEndForward(wxCommandEvent &) {
-	audioBox->audioDisplay->curEndMS += 10;
-	audioBox->audioDisplay->Update();
-	audioBox->audioDisplay->wxWindow::Update();
+	AudioController::SampleRange newsel(
+		audioController->GetPrimaryPlaybackRange(),
+		0,
+		audioController->SamplesFromMilliseconds(10));
+	/// @todo Make this use the timing controller instead
+	//audioController->SetSelection(newsel);
 }
 
 /// @brief DOCME
 void FrameMain::OnMedusaShiftEndBack(wxCommandEvent &) {
-	audioBox->audioDisplay->curEndMS -= 10;
-	audioBox->audioDisplay->Update();
-	audioBox->audioDisplay->wxWindow::Update();
+	AudioController::SampleRange newsel(
+		audioController->GetPrimaryPlaybackRange(),
+		0,
+		-audioController->SamplesFromMilliseconds(10));
+	/// @todo Make this use the timing controller instead
+	//audioController->SetSelection(newsel);
 }
 
 /// @brief DOCME
 void FrameMain::OnMedusaPlayBefore(wxCommandEvent &) {
-	int start=0,end=0;
-	audioBox->audioDisplay->GetTimesSelection(start,end);
-	audioBox->audioDisplay->Play(start-500,start);
+		AudioController::SampleRange sel(audioController->GetPrimaryPlaybackRange());
+		audioController->PlayRange(AudioController::SampleRange(
+			sel.begin() - audioController->SamplesFromMilliseconds(500),
+			sel.begin()));;
 }
 
 /// @brief DOCME
 void FrameMain::OnMedusaPlayAfter(wxCommandEvent &) {
-	int start=0,end=0;
-	audioBox->audioDisplay->GetTimesSelection(start,end);
-	audioBox->audioDisplay->Play(end,end+500);
+		AudioController::SampleRange sel(audioController->GetPrimaryPlaybackRange());
+		audioController->PlayRange(AudioController::SampleRange(
+			sel.end(),
+			sel.end() + audioController->SamplesFromMilliseconds(500)));;
 }
 
 /// @brief DOCME
 void FrameMain::OnMedusaNext(wxCommandEvent &) {
-	audioBox->audioDisplay->Next(false);
+	/// @todo Figure out how to handle this in the audio controller
+	//audioBox->audioDisplay->Next(false);
 }
 
 /// @brief DOCME
 void FrameMain::OnMedusaPrev(wxCommandEvent &) {
-	audioBox->audioDisplay->Prev(false);
+	/// @todo Figure out how to handle this in the audio controller
+	//audioBox->audioDisplay->Prev(false);
 }
 
 /// @brief DOCME
 void FrameMain::OnMedusaEnter(wxCommandEvent &) {
-	audioBox->audioDisplay->CommitChanges(true);
+	/// @todo Figure out how to handle this in the audio controller
+	//audioBox->audioDisplay->CommitChanges(true);
+}
+
+void FrameMain::OnAudioBoxResize(wxSashEvent &event)
+{
+	if (event.GetDragStatus() == wxSASH_STATUS_OUT_OF_RANGE)
+		return;
+
+	wxRect rect = event.GetDragRect();
+
+	if (rect.GetHeight() < audioSash->GetMinimumSizeY())
+		rect.SetHeight(audioSash->GetMinimumSizeY());
+
+	audioBox->SetMinSize(wxSize(-1, rect.GetHeight()));
+	Panel->Layout();
+	Refresh();
+}
+
+void FrameMain::OnAudioOpen(AudioProvider *provider)
+{
+	SetDisplayMode(-1, 1);
+}
+
+void FrameMain::OnAudioClose()
+{
+	SetDisplayMode(-1, 0);
+}
+
+void FrameMain::OnPlaybackPosition(int64_t sample_position)
+{
+	// do nothing
+}
+
+void FrameMain::OnPlaybackStop()
+{
+	// do nothing
 }
 
 void FrameMain::OnSubtitlesFileChanged() {
@@ -1570,3 +1642,4 @@ void FrameMain::OnSubtitlesFileChanged() {
 
 	UpdateTitle();
 }
+

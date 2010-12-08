@@ -56,6 +56,7 @@ class SubtitlesGrid;
 class DialogStyling;
 class AudioDisplay;
 class VideoContext;
+class AudioController;
 
 
 
@@ -142,7 +143,7 @@ public:
 	AssDialogue *line;
 
 	/// DOCME
-	AudioDisplay *audio;
+	AudioController *audio;
 
 	/// DOCME
 	VideoContext *video;

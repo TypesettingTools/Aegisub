@@ -50,7 +50,8 @@
 #include "ass_dialogue.h"
 #include "ass_file.h"
 #include "ass_style.h"
-#include "audio_display.h"
+#include "audio_controller.h"
+#include "selection_controller.h"
 #include "compat.h"
 #include "frame_main.h"
 #include "main.h"
@@ -1251,9 +1252,12 @@ void BaseGrid::OnKeyPress(wxKeyEvent &event) {
 	}
 
 	// Other events, send to audio display
+	/// @todo Reinstate this, or make a better solution, when audio is getting stabler again
+	/*
 	if (context->audio->loaded) {
 		context->audio->GetEventHandler()->ProcessEvent(event);
 	}
+	*/
 	else event.Skip();
 }
 

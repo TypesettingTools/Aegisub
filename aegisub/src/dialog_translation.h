@@ -45,6 +45,7 @@ class AudioDisplay;
 class ScintillaTextCtrl;
 class SubtitlesGrid;
 class VideoContext;
+class AudioController;
 
 
 /// DOCME
@@ -56,7 +57,7 @@ class DialogTranslation : public wxDialog {
 private:
 
 	/// DOCME
-	AudioDisplay *audio;
+	AudioController *audio;
 
 	/// DOCME
 	VideoContext *video;

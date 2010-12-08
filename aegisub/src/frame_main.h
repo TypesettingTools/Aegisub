@@ -43,7 +43,12 @@
 #include <wx/menu.h>
 #include <wx/panel.h>
 #include <wx/sizer.h>
+#include <wx/sashwin.h>
 #include <wx/timer.h>
+#endif
+
+#ifndef AGI_AUDIO_CONTROLLER_INCLUDED
+#error You must include "audio_controller.h" before "frame_main.h"
 #endif
 
 class AssFile;
@@ -57,6 +62,7 @@ class VideoBox;
 class DialogDetachedVideo;
 class DialogStyling;
 class AegisubFileDropTarget;
+class AudioController;
 
 namespace Automation4 { class FeatureMacro; class ScriptManager; }
 
@@ -67,7 +73,7 @@ namespace Automation4 { class FeatureMacro; class ScriptManager; }
 /// @brief DOCME
 ///
 /// DOCME
-class FrameMain: public wxFrame {
+class FrameMain: public wxFrame, private AudioControllerAudioEventListener {
 	friend class AegisubFileDropTarget;
 	friend class AegisubApp;
 	friend class SubtitlesGrid;
@@ -92,9 +98,6 @@ private:
 	/// DOCME
 	wxTimer StatusClear;
 
-
-	/// DOCME
-	bool blockAudioLoad;
 
 	/// DOCME
 	bool blockVideoLoad;
@@ -184,6 +187,8 @@ private:
 
 	void OnVideoPlay(wxCommandEvent &event);
 
+	void OnAudioBoxResize(wxSashEvent &event);
+
 	void OnOpenRecentSubs (wxCommandEvent &event);
 	void OnOpenRecentVideo (wxCommandEvent &event);
 	void OnOpenRecentAudio (wxCommandEvent &event);
@@ -239,6 +244,7 @@ private:
 	void OnOpenAudio (wxCommandEvent &event);
 	void OnOpenAudioFromVideo (wxCommandEvent &event);
 	void OnCloseAudio (wxCommandEvent &event);
+	void OnAudioDisplayMode (wxCommandEvent &event);
 #ifdef _DEBUG
 	void OnOpenDummyAudio(wxCommandEvent &event);
 	void OnOpenDummyNoiseAudio(wxCommandEvent &event);
@@ -313,7 +319,6 @@ private:
 	void OnMedusaPrev(wxCommandEvent &event);
 
 	void LoadVideo(wxString filename,bool autoload=false);
-	void LoadAudio(wxString filename,bool FromVideo=false);
 	void LoadVFR(wxString filename);
 	void LoadSubtitles(wxString filename,wxString charset=_T(""));
 	bool SaveSubtitles(bool saveas=false,bool withCharset=false);
@@ -322,21 +327,33 @@ private:
 	void RebuildRecentList(wxString listName,wxMenu *menu,int startID);
 	void SynchronizeProject(bool FromSubs=false);
 
+
+private:
+	// AudioControllerAudioEventListener implementation
+	virtual void OnAudioOpen(AudioProvider *provider);
+	virtual void OnAudioClose();
+	virtual void OnPlaybackPosition(int64_t sample_position);
+	virtual void OnPlaybackStop();
+
+
 	void OnSubtitlesFileChanged();
 
 
 public:
 
-	/// DOCME
+	/// The subtitle editing area
 	SubtitlesGrid *SubsGrid;
 
-	/// DOCME
+	/// The subtitle editing textbox
 	SubsEditBox *EditBox;
 
-	/// DOCME
+	/// Sash for resizing the audio area
+	wxSashWindow *audioSash;
+
+	/// The audio area
 	AudioBox *audioBox;
 
-	/// DOCME
+	/// The video area
 	VideoBox *videoBox;
 
 	/// DOCME
@@ -345,18 +362,19 @@ public:
 	/// DOCME
 	DialogStyling *stylingAssistant;
 
+	/// The audio controller for the open project
+	AudioController *audioController;
 
-	/// DOCME
+
+	/// Arranges things from top to bottom in the window
 	wxBoxSizer *MainSizer;
 
-	/// DOCME
+	/// Arranges video box and tool box from left to right
 	wxBoxSizer *TopSizer;
 
-	/// DOCME
-	wxBoxSizer *BottomSizer;
+	/// Arranges audio and editing areas top to bottom
+	wxBoxSizer *ToolsSizer;
 
-	/// DOCME
-	wxBoxSizer *ToolSizer;
 
 	FrameMain (wxArrayString args);
 	~FrameMain ();
@@ -435,6 +453,9 @@ enum {
 	Menu_Audio_Open_File,
 	Menu_Audio_Open_From_Video,
 	Menu_Audio_Close,
+
+	Menu_Audio_Spectrum,
+	Menu_Audio_Waveform,
 #ifdef _DEBUG
 	Menu_Audio_Open_Dummy,
 	Menu_Audio_Open_Dummy_Noise,
@@ -503,6 +524,12 @@ enum {
 	AutoSave_Timer,
 	StatusClear_Timer,
 
+
+	/// Id for the audio box resizing sash
+	Main_AudioSash,
+
+
+	/// DOCME
 	Video_Next_Frame,
 	Video_Prev_Frame,
 	Video_Focus_Seek,

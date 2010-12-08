@@ -79,16 +79,14 @@ public:
 	virtual ~AudioProvider();
 
 	virtual wxString GetFilename() const { return filename; };
-	virtual void GetAudio(void *buf, int64_t start, int64_t count)=0;
-	void GetAudioWithVolume(void *buf, int64_t start, int64_t count, double volume);
+	virtual void GetAudio(void *buf, int64_t start, int64_t count) const = 0;
+	void GetAudioWithVolume(void *buf, int64_t start, int64_t count, double volume) const;
 
 	int64_t GetNumSamples() const { return num_samples; }
-	int GetSampleRate() const { return sample_rate; }
+	int GetSampleRate() const     { return sample_rate; }
 	int GetBytesPerSample() const { return bytes_per_sample; }
-	int GetChannels() const { return channels; }
+	int GetChannels() const       { return channels; }
 	virtual bool AreSamplesNativeEndian() const = 0;
-
-	void GetWaveForm(int *min,int *peak,int64_t start,int w,int h,int samples,float scale);
 
 	/// @brief Does this provider benefit from external caching?
 	virtual bool NeedsCache() const { return false; }
