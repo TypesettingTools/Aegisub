@@ -127,9 +127,14 @@ void SubtitlesGrid::OnCommit(int type) {
 	else if (type == AssFile::COMMIT_UNDO)
 		UpdateMaps(true);
 
-	if (type != AssFile::COMMIT_TIMES)
+	if (type == AssFile::COMMIT_TIMES) {
+		// Refresh just the audio times columns
+		RefreshRect(wxRect(colWidth[0] + colWidth[1], 0, colWidth[2] + colWidth[3], GetClientSize().GetHeight()), false);
+	}
+	else {
 		SetColumnWidths();
-	Refresh(false);
+		Refresh(false);
+	}
 }
 
 /// @brief Popup menu 

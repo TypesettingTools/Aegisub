@@ -72,9 +72,6 @@ class BaseGrid : public wxWindow, public BaseSelectionController<AssDialogue> {
 	int lineHeight;
 
 	/// DOCME
-	int colWidth[16];
-
-	/// DOCME
 	int lastRow;
 
 	/// DOCME
@@ -111,6 +108,9 @@ class BaseGrid : public wxWindow, public BaseSelectionController<AssDialogue> {
 	Selection batch_selection_removed;
 
 protected:
+
+	/// DOCME
+	int colWidth[16];
 
 	/// DOCME
 	FrameMain *parentFrame;
