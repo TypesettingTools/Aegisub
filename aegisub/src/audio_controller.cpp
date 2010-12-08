@@ -214,7 +214,7 @@ void AudioController::OpenAudio(const wxString &url)
 		 *       in every channel even if one would be LFE.
 		 * "ln", length of signal in samples. ln/sr gives signal length in seconds.
 		 */
-		 provider = new DummyAudioProvider(5*30*60*1000, true);
+		 provider = new DummyAudioProvider(5*30*60*1000, path_part.StartsWith(L"noise"));
 	}
 	else if (url.StartsWith(_T("video-audio:"), &path_part))
 	{
