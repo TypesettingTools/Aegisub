@@ -275,6 +275,8 @@ void AudioController::OpenAudio(const wxString &url)
 		throw;
 	}
 
+	audio_url = url;
+
 	// Tell listeners about this.
 	AnnounceAudioOpen(provider);
 }
@@ -289,6 +291,8 @@ void AudioController::CloseAudio()
 	player = 0;
 	provider = 0;
 
+	audio_url.clear();
+
 	AnnounceAudioClose();
 }
 
@@ -301,8 +305,7 @@ bool AudioController::IsAudioOpen() const
 
 wxString AudioController::GetAudioURL() const
 {
-	/// @todo figure out how to get the url
-	return _T("");
+	return audio_url;
 }
 
 void AudioController::SetTimingController(AudioTimingController *new_controller)

@@ -179,6 +179,9 @@ private:
 	/// Provide keyframe data for audio displays
 	agi::scoped_ptr<AudioMarkerProvider> keyframes_marker_provider;
 
+	/// The URL of the currently open audio, if any
+	wxString audio_url;
+
 
 	enum PlaybackMode {
 		PM_NotPlaying,
