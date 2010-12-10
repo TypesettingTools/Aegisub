@@ -74,12 +74,12 @@ echo "---- Copying Aegisub locale files ----"
 # internal so we don't need an aegisub.mo file.
 mkdir -vp "${PKG_DIR}/Contents/Resources/en.lproj"
 
-for i in `cat po/LINGUAS`; do
-  if test -f "po/${i}.gmo"; then
+for i in `ls -1 po/*.mo|sed "s|po/\(.*\).mo|\1|"`; do
+  if test -f "po/${i}.mo"; then
     mkdir -p "${PKG_DIR}/Contents/Resources/${i}.lproj";
-    cp -v po/${i}.gmo "${PKG_DIR}/Contents/Resources/${i}.lproj/aegisub.mo";
+    cp -v po/${i}.mo "${PKG_DIR}/Contents/Resources/${i}.lproj/aegisub.mo";
   else
-    echo "${i}.gmo not found!"
+    echo "${i}.mo not found!"
 	exit 1
   fi;
 done
@@ -88,7 +88,7 @@ done
 echo
 echo "---- Copying WX locale files ----"
 
-for i in `cat po/LINGUAS`; do
+for i in `ls -1 po/*.mo|sed "s|po/\(.*\).mo|\1|"`; do
 #  WX_MO="${WX_PREFIX}/share/locale/${i}/LC_MESSAGES/wxstd.mo"
   WX_MO="${HOME_DIR}/wxstd/${i}.mo"
 
@@ -101,23 +101,15 @@ done
 
 
 echo
-echo "---- Binaries ----"
+echo " ---- Copying binary ----"
+cp -v src/${AEGISUB_BIN} "${PKG_DIR}/Contents/MacOS/aegisub"
 
-# XXX: Fix me
-# I'm not sure of the exact reason but libtool likes creating the binary in
-# either '.' or '.libs', the file in the parent is just a script that loads
-# the binary from .libs.  On ocassion it'll stop using the script and just
-# create the binary, this isn't the best way to check which one to copy but
-# it's a good enough hack until then.
 
-if test src/${AEGISUB_BIN} -nt src/.libs/${AEGISUB_BIN}; then
-  cp -v src/${AEGISUB_BIN} "${PKG_DIR}/Contents/MacOS/aegisub"
-else
-  cp -v src/.libs/${AEGISUB_BIN} "${PKG_DIR}/Contents/MacOS/aegisub" || exit $?
-fi
-
+echo
+echo " ---- Build / install restart-helper ----"
 echo cc -o "${PKG_DIR}/Contents/MacOS/restart-helper tools/osx-bundle-restart-helper.c"
 ${CC} -o "${PKG_DIR}/Contents/MacOS/restart-helper" tools/osx-bundle-restart-helper.c || exit $?
+
 
 echo
 echo "---- Libraries ----"
