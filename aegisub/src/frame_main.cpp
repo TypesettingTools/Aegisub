@@ -149,7 +149,7 @@ FrameMain::FrameMain (wxArrayString args)
 
 	// Set icon
 	StartupLog(_T("Set icon"));
-#ifdef _WINDOWS
+#ifdef _WIN32
 	SetIcon(wxICON(wxicon));
 #else
 	wxIcon icon;

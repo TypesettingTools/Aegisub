@@ -41,7 +41,7 @@
 #include <wx/thread.h>
 #endif
 
-#ifdef _WINDOWS
+#ifdef _WIN32
 #include <windows.h>
 #endif
 
@@ -55,7 +55,7 @@
 /// DOCME
 class PCMAudioProvider : public AudioProvider {
 private:
-#ifdef _WINDOWS
+#ifdef _WIN32
 
 	/// DOCME
 	HANDLE file_handle;

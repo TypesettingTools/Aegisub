@@ -64,7 +64,7 @@
 ///
 PCMAudioProvider::PCMAudioProvider(const wxString &filename)
 {
-#ifdef _WINDOWS
+#ifdef _WIN32
 	file_handle = CreateFile(
 		filename.c_str(),
 		FILE_READ_DATA,
@@ -123,7 +123,7 @@ PCMAudioProvider::PCMAudioProvider(const wxString &filename)
 ///
 PCMAudioProvider::~PCMAudioProvider()
 {
-#ifdef _WINDOWS
+#ifdef _WIN32
 	if (current_mapping) {
 		UnmapViewOfFile(current_mapping);
 	}
@@ -154,7 +154,7 @@ char * PCMAudioProvider::EnsureRangeAccessible(int64_t range_start, int64_t rang
 	if (!current_mapping || range_start < mapping_start || range_start+range_length > mapping_start+(int64_t)mapping_length) {
 		// It's not visible, change the current mapping
 		if (current_mapping) {
-#ifdef _WINDOWS
+#ifdef _WIN32
 			UnmapViewOfFile(current_mapping);
 #else
 			munmap(current_mapping, mapping_length);
@@ -184,7 +184,7 @@ char * PCMAudioProvider::EnsureRangeAccessible(int64_t range_start, int64_t rang
 		// We already checked that the requested range doesn't extend over the end of the file
 		// Hopefully this should ensure that small files are always mapped in their entirety
 
-#ifdef _WINDOWS
+#ifdef _WIN32
 		LARGE_INTEGER mapping_start_li;
 		mapping_start_li.QuadPart = mapping_start;
 		current_mapping = MapViewOfFile(
