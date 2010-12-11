@@ -46,9 +46,4 @@
 // MatroskaParser.c, as well as any possible future .c files.
 //
 
-// Generally agi_pre.h is set as a forced include for everything, including this file.
-// So unless we protect it by this, it gets included twice during production of precompiled
-// headers, which can cause problems with local includes.
-#ifndef AGI_PRE
 #include "agi_pre.h"
-#endif
