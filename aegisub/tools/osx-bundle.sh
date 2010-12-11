@@ -37,6 +37,12 @@ mkdir -v "${PKG_DIR}/Contents/SharedSupport/dictionaries"
 
 echo
 echo "---- Copying Skel Files ----"
+if ! test -f "tools/osx-bundle.sed"; then
+  echo
+  echo "NOT FOUND: tools/osx-bundle.sed";
+  exit 1;
+fi
+
 find ${SKEL_DIR} -type f -not -regex ".*.svn.*"
 cp ${SKEL_DIR}/Contents/Resources/*.icns "${PKG_DIR}/Contents/Resources"
 cp ${SKEL_DIR}/Contents/Resources/etc/fonts/fonts.dtd "${PKG_DIR}/Contents/Resources/etc/fonts"
