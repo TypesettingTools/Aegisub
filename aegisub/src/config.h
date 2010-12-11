@@ -2,6 +2,12 @@
 
 #ifdef _WIN32
 
+// Define min and max macros to identity.
+// This will prevent WinDef.h defining them to functions, which prevents
+// using std::min and std::max.
+#define min min
+#define max max
+
 // Windows specific settings
 #include "config/config_windows.h"
 
