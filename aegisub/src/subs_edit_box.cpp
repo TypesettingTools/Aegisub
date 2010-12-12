@@ -336,6 +336,7 @@ SubsEditBox::~SubsEditBox() {
 }
 
 void SubsEditBox::Update(int type) {
+	SetEvtHandlerEnabled(false);
 	if (type == AssFile::COMMIT_FULL || type == AssFile::COMMIT_UNDO) {
 		/// @todo maybe preserve selection over undo?
 		StyleBox->Clear();
@@ -355,15 +356,16 @@ void SubsEditBox::Update(int type) {
 		ActorBox->Thaw();
 
 		TextEdit->SetSelection(0,0);
+		SetEvtHandlerEnabled(true);
 		return;
 	}
 
 	SetControlsState(!!line);
 	if (!line) {
+		SetEvtHandlerEnabled(true);
 		return;
 	}
 
-	SetEvtHandlerEnabled(false);
 	StartTime->SetTime(line->Start);
 	EndTime->SetTime(line->End);
 	Duration->SetTime(line->End-line->Start);
