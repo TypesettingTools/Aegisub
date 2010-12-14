@@ -75,7 +75,7 @@ install-lib:
 ifdef LIB_SHARED_INSTALL
 	$(BIN_MKDIR) -p $(P_LIB)
 	$(BIN_INSTALL) $(LIB_SHARED_FULL) $(P_LIB)/$(LIB_SHARED_FULL)
-	$(BIN_LN) -sf $(P_LIB)/$(LIB_SHARED_FULL) $(P_LIB)/$(LIB_SHARED)
+	$(BIN_LN) -sf $(LIB_SHARED_FULL) $(P_LIB)/$(LIB_SHARED)
 endif
 
 install-share:
