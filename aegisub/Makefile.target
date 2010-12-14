@@ -1,5 +1,8 @@
 #  *** THERE ARE NO USER-EDITABLE ITEMS HERE. ***
-
+#
+# TODO:
+#       * DESTDIR= support for make install.
+#       * Allow variables to be overridden on the CL.
 
 .PHONY: all install clean subdirs $(SUBDIRS)
 all: subdirs $(LIB) $(LIB_SHARED) $(PROGRAM)
