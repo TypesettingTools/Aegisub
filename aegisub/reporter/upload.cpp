@@ -19,7 +19,9 @@
 /// @ingroup base io
 
 #ifndef R_PRECOMP
+#include <stdint.h>
 #include <stdlib.h>
+
 #include <wx/file.h>
 #endif
 
