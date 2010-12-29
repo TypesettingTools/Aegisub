@@ -67,6 +67,7 @@ VideoProvider *VideoProviderFactory::GetProvider(wxString video) {
 	std::string errors;
 	errors.reserve(1024);
 	for (int i = 0; i < (signed)list.size(); ++i) {
+		std::string err;
 		try {
 			VideoProvider *provider = Create(list[i], video);
 			LOG_I("manager/video/provider") << list[i] << ": opened " << STD_STR(video);
@@ -76,24 +77,25 @@ VideoProvider *VideoProviderFactory::GetProvider(wxString video) {
 			return provider;
 		}
 		catch (agi::FileNotFoundError const&) {
-			std::string err = list[i] + ": " + STD_STR(video) + " not found.";
-			errors += err + "\n";
-			LOG_D("manager/video/provider") << err;
+			err = list[i] + ": file not found.";
 			// Keep trying other providers as this one may just not be able to
 			// open a valid path
 		}
 		catch (VideoNotSupported const&) {
 			fileFound = true;
-			std::string err = list[i] + ": " + STD_STR(video) + " is not in a supported format.\n";
-			errors += err + "\n";
-			LOG_D("manager/video/provider") << err;
+			err = list[i] + ": video is not in a supported format.";
 		}
 		catch (VideoOpenError const& ex) {
 			fileSupported = true;
-			std::string err = list[i] + ": " + ex.GetMessage();
-			errors += err + "\n";
-			LOG_D("manager/video/provider") << err;
+			err = list[i] + ": " + ex.GetMessage();
 		}
+		catch (agi::vfr::Error const& ex) {
+			fileSupported = true;
+			err = list[i] + ": " + ex.GetMessage();
+		}
+		errors += err;
+		errors += "\n";
+		LOG_D("manager/video/provider") << err;
 	}
 
 	// No provider could open the file
