@@ -52,9 +52,6 @@ private:
 	void Close();
 	void LoadAudio(wxString filename);
 
-	/// Audio delay in samples
-	int64_t delay;
-
 public:
 	FFmpegSourceAudioProvider(wxString filename);
 	virtual ~FFmpegSourceAudioProvider();

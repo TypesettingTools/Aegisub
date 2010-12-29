@@ -190,9 +190,8 @@ void FFmpegSourceAudioProvider::LoadAudio(wxString filename) {
 
 	channels	= AudioInfo.Channels;
 	sample_rate	= AudioInfo.SampleRate;
-	delay       = AudioInfo.FirstTime * sample_rate;
-	num_samples = AudioInfo.NumSamples + delay;
-	if (channels <= 0 || sample_rate <= 0 || num_samples <= 0 || delay < 0)
+	num_samples = AudioInfo.NumSamples;
+	if (channels <= 0 || sample_rate <= 0 || num_samples <= 0)
 		throw AudioOpenError("sanity check failed, consult your local psychiatrist");
 
 	// FIXME: use the actual sample format too?
@@ -229,19 +228,7 @@ void FFmpegSourceAudioProvider::Close() {
 /// @param Count 
 ///
 void FFmpegSourceAudioProvider::GetAudio(void *Buf, int64_t Start, int64_t Count) const {
-	uint8_t *Buf2 = static_cast<uint8_t*>(Buf);
-	Start -= delay;
-	if (Start < 0) {
-		size_t Bytes = std::min(-Start, Count) * bytes_per_sample * channels;
-		memset(Buf2, 0, Bytes);
-
-		Count += Start;
-		if (Count <= 0) return;
-
-		Start = 0;
-		Buf2 += Bytes;
-	}
-	if (FFMS_GetAudio(AudioSource, Buf2, Start, Count, &ErrInfo)) {
+	if (FFMS_GetAudio(AudioSource, Buf, Start, Count, &ErrInfo)) {
 		throw AudioDecodeError(std::string("Failed to get audio samples: ") + ErrInfo.Buffer);
 	}
 }
