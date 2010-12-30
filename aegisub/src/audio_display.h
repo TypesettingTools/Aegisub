@@ -203,6 +203,7 @@ private:
 	virtual void OnAudioOpen(AudioProvider *provider);
 	virtual void OnPlaybackPosition(int64_t sample_position);
 	virtual void OnSelectionChanged();
+	void OnMarkerMoved();
 
 public:
 
