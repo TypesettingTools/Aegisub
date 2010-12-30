@@ -125,6 +125,7 @@ void *ThreadedFrameSource::Entry() {
 	while (!TestDestroy() && run) {
 		double time;
 		int frameNum;
+		std::auto_ptr<AssFile> newSubs;
 		{
 			wxMutexLocker jobLocker(jobMutex);
 
@@ -133,15 +134,16 @@ void *ThreadedFrameSource::Entry() {
 				continue;
 			}
 
-			if (nextSubs.get()) {
-				wxMutexLocker fileLocker(fileMutex);
-				subs = nextSubs;
-				singleFrame = -1;
-			}
-
 			time = nextTime;
 			frameNum = nextFrame;
 			nextTime = -1.;
+			newSubs = nextSubs;
+		}
+
+		if (newSubs.get()) {
+			wxMutexLocker fileLocker(fileMutex);
+			subs = newSubs;
+			singleFrame = -1;
 		}
 
 		try {

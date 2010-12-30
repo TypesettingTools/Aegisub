@@ -69,8 +69,8 @@ class ThreadedFrameSource : public wxThread {
 	/// it was last sent to the subtitle provider
 	int singleFrame;
 
-	wxMutex fileMutex;     ///< Mutex for subtitle file usage
-	wxMutex jobMutex;      ///< Mutex for nextFrame/nextTime
+	wxMutex fileMutex;     ///< Mutex for subs and singleFrame
+	wxMutex jobMutex;      ///< Mutex for nextFrame, nextTime and nextSubs
 	wxMutex providerMutex; ///< Mutex for video provider
 	wxMutex evtMutex;      ///< Mutex for FrameReadyEvents associated with this
 
