@@ -134,7 +134,6 @@ void VideoContext::Reset() {
 
 	keyFrames.clear();
 	videoFPS = agi::vfr::Framerate();
-	keyframesRevision++;
 
 	// Remove video data
 	frame_n = 0;
@@ -469,12 +468,10 @@ void VideoContext::LoadKeyframes(wxString filename) {
 	catch (...) {
 		wxMessageBox(_T("Unknown error"), _T("Error opening keyframes file"), wxOK | wxICON_ERROR, NULL);
 	}
-	keyframesRevision++;
 }
 
 void VideoContext::SaveKeyframes(wxString filename) {
 	KeyFrameFile::Save(filename, GetKeyFrames());
-	keyframesRevision++;
 }
 
 void VideoContext::CloseKeyframes() {
@@ -486,7 +483,6 @@ void VideoContext::CloseKeyframes() {
 		keyFrames.clear();
 	}
 	KeyframesOpen(keyFrames);
-	keyframesRevision++;
 }
 
 void VideoContext::LoadTimecodes(wxString filename) {

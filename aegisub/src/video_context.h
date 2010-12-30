@@ -102,10 +102,6 @@ private:
 	/// DOCME
 	wxString keyFramesFilename;
 
-	/// Revision counter for keyframes, when the set of keyframes is changed this number changes
-	int keyframesRevision;
-
-
 	/// DOCME
 	wxMutex playMutex;
 
@@ -270,7 +266,6 @@ public:
 	void CloseKeyframes();
 	bool OverKeyFramesLoaded() const { return !keyFramesFilename.empty(); }
 	bool KeyFramesLoaded() const { return !keyFrames.empty(); }
-	int GetKeyframesRevision() const { return keyframesRevision; }
 
 	wxString GetTimecodesName() const { return ovrTimecodeFile; }
 	void LoadTimecodes(wxString filename);
