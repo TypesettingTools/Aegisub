@@ -1206,13 +1206,15 @@ void AudioDisplay::OnSelectionChanged()
 	SampleRange sel(controller->GetPrimaryPlaybackRange());
 	scrollbar->SetSelection(AbsoluteXFromSamples(sel.begin()), AbsoluteXFromSamples(sel.length()));
 
+
+	int s1 = RelativeXFromSamples(sel.begin());
+	int e1 = RelativeXFromSamples(sel.end());
+	int s2 = RelativeXFromSamples(old_selection.begin());
+	int e2 = RelativeXFromSamples(old_selection.end());
+
 	if (sel.overlaps(old_selection))
 	{
 		// Only redraw the parts of the selection that changed, to avoid flicker
-		int s1 = RelativeXFromSamples(sel.begin());
-		int e1 = RelativeXFromSamples(sel.end());
-		int s2 = RelativeXFromSamples(old_selection.begin());
-		int e2 = RelativeXFromSamples(old_selection.end());
 		if (s1 != s2)
 		{
 			wxRect r(std::min(s1, s2)-10, audio_top, abs(s1-s2)+20, audio_height);
@@ -1226,7 +1228,8 @@ void AudioDisplay::OnSelectionChanged()
 	}
 	else
 	{
-		RefreshRect(wxRect(0, audio_top, GetClientSize().GetX(), audio_height));
+		RefreshRect(wxRect(s1 - 10, audio_top, e1 + 20, audio_height));
+		RefreshRect(wxRect(s2 - 10, audio_top, e2 + 20, audio_height));
 	}
 
 	RefreshRect(scrollbar->GetBounds());
