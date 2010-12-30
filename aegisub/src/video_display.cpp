@@ -130,7 +130,7 @@ VideoDisplay::VideoDisplay(
 	wxComboBox *zoomBox,
 	wxWindow* parent,
 	AssFile *model)
-: wxGLCanvas (parent, -1, attribList, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER, wxPanelNameStr)
+: wxGLCanvas (parent, -1, attribList, wxDefaultPosition, wxDefaultSize, 0, wxPanelNameStr)
 , alwaysShowTools(OPT_GET("Tool/Visual/Always Show"))
 , vc(VideoContext::Get())
 , currentFrame(-1)
