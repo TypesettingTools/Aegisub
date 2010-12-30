@@ -128,22 +128,25 @@ public:
 /// @class AudioController
 /// @brief Manage an open audio stream and UI state for it
 ///
-/// Keeps track of the UI interaction state of the open audio for a project, ie. what the current
-/// selection is, what movable markers are on the audio, and any secondary non-movable markers
-/// that are present.
+/// Keeps track of the UI interaction state of the open audio for a project,
+/// i.e. what the current selection is, what movable markers are on the audio,
+/// and any secondary non-movable markers that are present.
 ///
-/// Changes in interaction are broadcast to all managed audio displays so they can redraw, and
-/// the audio displays report all interactions back to the controller. There is a one to many
-/// relationship between controller and audio displays. There is at most one audio controller
-/// for an open subtitling project.
+/// Changes in interaction are broadcast to all managed audio displays so they
+/// can redraw, and the audio displays report all interactions back to the
+/// controller. There is a one to many relationship between controller and
+/// audio displays. There is at most one audio controller for an open
+/// subtitling project.
 ///
-/// Creates and destroys audio providers and players. This behaviour should at some point be moved
-/// to a separate class, as it adds too many responsibilities to this class, but at the time of
-/// writing, it would extend the scope of reworking components too much.
+/// Creates and destroys audio providers and players. This behaviour should at
+/// some point be moved to a separate class, as it adds too many
+/// responsibilities to this class, but at the time of writing, it would extend
+/// the scope of reworking components too much.
 ///
-/// There is not supposed to be a way to get direct access to the audio providers or players owned
-/// by a controller. If some operation that isn't possible in the existing design is needed, the
-/// controller should be extended in some way to allow it.
+/// There is not supposed to be a way to get direct access to the audio
+/// providers or players owned by a controller. If some operation that isn't
+/// possible in the existing design is needed, the controller should be
+/// extended in some way to allow it.
 class AudioController : public wxEvtHandler, public AudioMarkerProvider {
 private:
 	/// A new audio stream was opened (and any previously open was closed)
@@ -235,29 +238,31 @@ public:
 	/// @brief Get the URL for the current open audio stream
 	/// @return The URL for the audio stream
 	///
-	/// The returned URL can be passed into OpenAudio() later to open the same stream again.
+	/// The returned URL can be passed into OpenAudio() later to open the same
+	/// stream again.
 	wxString GetAudioURL() const;
 
 
 	/// @brief Start or restart audio playback, playing a range
 	/// @param range The range of audio to play back
 	///
-	/// The end of the played back range may be requested changed, but is not changed
-	/// automatically from any other operations.
+	/// The end of the played back range may be requested changed, but is not
+	/// changed automatically from any other operations.
 	void PlayRange(const SampleRange &range);
 
 	/// @brief Start or restart audio playback, playing the primary playback range
 	///
-	/// If the primary playback range is updated during playback, the end of the 
-	/// active playback range will be updated to match the new selection. The playback
-	/// end can not be changed in any other way.
+	/// If the primary playback range is updated during playback, the end of
+	/// the active playback range will be updated to match the new selection.
+	/// The playback end can not be changed in any other way.
 	void PlayPrimaryRange();
 
 	/// @brief Start or restart audio playback, playing from a point to the end of stream
 	/// @param start_sample Index of the sample to start playback at
 	///
-	/// Playback to end cannot be converted to a range playback like range playback can,
-	/// it will continue until the end is reached, it is stopped, or restarted.
+	/// Playback to end cannot be converted to a range playback like range
+	/// playback can, it will continue until the end is reached, it is stopped,
+	/// or restarted.
 	void PlayToEnd(int64_t start_sample);
 
 	/// @brief Stop all audio playback
@@ -276,9 +281,9 @@ public:
 	/// @brief If playing, restart playback from the specified position
 	/// @param new_position Sample index to restart playback from
 	///
-	/// This function can be used to re-synchronise audio playback to another source that
-	/// might not be able to keep up with the full speed, such as video playback in high
-	/// resolution or with complex subtitles.
+	/// This function can be used to re-synchronise audio playback to another
+	/// source that might not be able to keep up with the full speed, such as
+	/// video playback in high resolution or with complex subtitles.
 	///
 	/// This function only does something if audio is already playing.
 	void ResyncPlaybackPosition(int64_t new_position);
@@ -313,9 +318,10 @@ public:
 	AudioTimingController * GetTimingController() const { return timing_controller.get(); }
 
 	/// @brief Change the current timing controller
-	/// @param new_mode The new timing controller or 0. This may be the same object as
-	/// the current timing controller, to signal that the timing controller has changed
-	/// the object being timed, eg. changed to a new dialogue line.
+	/// @param new_mode The new timing controller or 0. This may be the same
+	/// object as the current timing controller, to signal that the timing
+	/// controller has changed the object being timed, e.g. changed to a new
+	/// dialogue line.
 	void SetTimingController(AudioTimingController *new_controller);
 
 	/// @brief Convert a count of audio samples to a time in milliseconds
@@ -364,9 +370,10 @@ public:
 	/// @brief Retrieve whether this marker participates in snapping
 	/// @return True if this marker may snap to other snappable markers
 	///
-	/// If a marker being dragged returns true from this method, and another marker which also
-	/// returns true from this method is within range, the marker being dragged will be positioned
-	/// at the position of the other marker if it is released while it is inside snapping range.
+	/// If a marker being dragged returns true from this method, and another
+	/// marker which also returns true from this method is within range, the
+	/// marker being dragged will be positioned at the position of the other
+	/// marker if it is released while it is inside snapping range.
 	virtual bool CanSnap() const = 0;
 };
 
