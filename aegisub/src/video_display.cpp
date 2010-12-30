@@ -312,7 +312,6 @@ void VideoDisplay::Render() try {
 		tool->Draw();
 	}
 
-	glFinish();
 	SwapBuffers();
 }
 catch (const VideoOutException &err) {
