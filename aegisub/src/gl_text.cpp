@@ -288,8 +288,9 @@ bool OpenGLTextTexture::TryToInsert(OpenGLTextGlyph &glyph) {
 		if (nextY+h > height) return false;
 		x = 0;
 		y = nextY;
-		nextY = y+h;
 		Insert(glyph);
+		x += w;
+		nextY = y+h;
 		return true;
 	}
 }
