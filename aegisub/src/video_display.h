@@ -42,7 +42,7 @@
 #include <memory>
 #endif
 
-#include <libaegisub/signals.h>
+#include <libaegisub/signal.h>
 
 // Prototypes
 class AssFile;

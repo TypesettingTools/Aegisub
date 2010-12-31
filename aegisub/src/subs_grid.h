@@ -46,7 +46,7 @@
 
 #include "base_grid.h"
 
-#include <libaegisub/signals.h>
+#include <libaegisub/signal.h>
 
 namespace agi { class OptionValue; }
 

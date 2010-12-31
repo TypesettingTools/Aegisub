@@ -28,7 +28,7 @@
 
 #include <libaegisub/colour.h>
 #include <libaegisub/exception.h>
-#include <libaegisub/signals.h>
+#include <libaegisub/signal.h>
 
 namespace agi {
 

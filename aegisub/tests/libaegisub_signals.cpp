@@ -18,7 +18,7 @@
 /// @brief agi::signals tests
 /// @ingroup 
 
-#include <libaegisub/signals.h>
+#include <libaegisub/signal.h>
 
 #include "main.h"
 

@@ -45,7 +45,7 @@
 #include <wx/arrstr.h>
 #endif
 
-#include <libaegisub/signals.h>
+#include <libaegisub/signal.h>
 
 class FrameRate;
 class AssDialogue;

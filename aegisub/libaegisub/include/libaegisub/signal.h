@@ -14,7 +14,7 @@
 //
 // $Id$
 
-/// @file signals.h
+/// @file signal.h
 /// @brief 
 /// @ingroup libaegisub
 

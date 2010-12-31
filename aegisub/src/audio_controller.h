@@ -49,7 +49,7 @@
 
 #include <libaegisub/exception.h>
 #include <libaegisub/scoped_ptr.h>
-#include <libaegisub/signals.h>
+#include <libaegisub/signal.h>
 
 class AudioPlayer;
 class AudioProvider;

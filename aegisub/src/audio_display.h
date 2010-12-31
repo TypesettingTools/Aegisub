@@ -48,7 +48,7 @@
 #endif
 
 #include <libaegisub/scoped_ptr.h>
-#include <libaegisub/signals.h>
+#include <libaegisub/signal.h>
 
 
 class AudioRenderer;

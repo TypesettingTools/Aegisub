@@ -49,7 +49,7 @@
 #error "Aegisub requires wxWidgets to be compiled with OpenGL support."
 #endif
 
-#include <libaegisub/signals.h>
+#include <libaegisub/signal.h>
 #include <libaegisub/vfr.h>
 
 class AegiVideoFrame;

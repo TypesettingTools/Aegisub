@@ -462,7 +462,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\libaegisub\include\libaegisub\signals.h"
+				RelativePath="..\..\libaegisub\include\libaegisub\signal.h"
 				>
 			</File>
 			<File

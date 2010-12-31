@@ -39,7 +39,7 @@ class AssDialogue;
 class AssFile;
 class AudioController;
 
-#include <libaegisub/signals.h>
+#include <libaegisub/signal.h>
 
 /// @class AudioTimingController
 /// @brief Base class for objects controlling audio timing
