@@ -45,3 +45,6 @@ mkdir data/vfr
 mkdir data/vfr/in
 mkdir data/vfr/out
 cp vfr/* data/vfr/in/
+
+mkdir data/keyframe
+cp keyframe/* data/keyframe

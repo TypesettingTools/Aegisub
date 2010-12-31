@@ -311,6 +311,10 @@
 			>
 		</File>
 		<File
+			RelativePath="..\..\tests\libaegisub_keyframe.cpp"
+			>
+		</File>
+		<File
 			RelativePath="..\..\tests\libaegisub_line_iterator.cpp"
 			>
 		</File>

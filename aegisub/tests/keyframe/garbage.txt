@@ -1,0 +1,1 @@
+EXPECT_THROW(Load("data/keyframe/garbage.txt"), Error);

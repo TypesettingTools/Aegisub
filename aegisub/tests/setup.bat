@@ -43,4 +43,7 @@ mkdir data\vfr
 mkdir data\vfr\in
 mkdir data\vfr\out
 
-xcopy %1\vfr data\vfr\in
+xcopy "%~dp0\vfr" data\vfr\in
+
+mkdir data\keyframe
+xcopy "%~dp0\keyframe" data\keyframe
