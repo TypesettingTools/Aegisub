@@ -106,7 +106,7 @@ private:
 public:
 	AudioMarkerProviderKeyframes(AudioController *controller)
 		: vc(VideoContext::Get())
-		, keyframe_slot(vc->AddKeyframesOpenListener(&AudioMarkerProviderKeyframes::OnKeyframesOpen, this))
+		, keyframe_slot(vc->AddKeyframesListener(&AudioMarkerProviderKeyframes::OnKeyframesOpen, this))
 		, audio_open_slot(controller->AddAudioOpenListener(&AudioMarkerProviderKeyframes::OnAudioOpen, this))
 		, controller(controller)
 	{

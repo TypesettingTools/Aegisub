@@ -74,7 +74,7 @@ VideoSlider::VideoSlider (wxWindow* parent, wxWindowID id)
 	assert(vc);
 	vc->AddSeekListener(&VideoSlider::SetValue, this);
 	vc->AddVideoOpenListener(&VideoSlider::VideoOpened, this);
-	vc->AddKeyframesOpenListener(&VideoSlider::KeyframesChanged, this);
+	vc->AddKeyframesListener(&VideoSlider::KeyframesChanged, this);
 }
 
 VideoSlider::~VideoSlider() {

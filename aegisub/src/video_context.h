@@ -81,6 +81,8 @@ class VideoContext : public wxEvtHandler {
 	agi::signal::Signal<> VideoOpen;
 	/// New keyframes opened (new keyframe data)
 	agi::signal::Signal<std::vector<int> const&> KeyframesOpen;
+	/// New timecodes opened (new timecode data)
+	agi::signal::Signal<agi::vfr::Framerate const&> TimecodesOpen;
 	/// Aspect ratio was changed (type, value)
 	agi::signal::Signal<int, double> ARChange;
 
@@ -254,7 +256,8 @@ public:
 
 	DEFINE_SIGNAL_ADDERS(Seek, AddSeekListener)
 	DEFINE_SIGNAL_ADDERS(VideoOpen, AddVideoOpenListener)
-	DEFINE_SIGNAL_ADDERS(KeyframesOpen, AddKeyframesOpenListener)
+	DEFINE_SIGNAL_ADDERS(KeyframesOpen, AddKeyframesListener)
+	DEFINE_SIGNAL_ADDERS(TimecodesOpen, AddTimecodesListener)
 	DEFINE_SIGNAL_ADDERS(ARChange, AddARChangeListener)
 
 	const std::vector<int>& GetKeyFrames() const { return keyFrames; };

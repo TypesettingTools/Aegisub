@@ -133,7 +133,10 @@ void VideoContext::Reset() {
 	StandardPaths::SetPathValue(_T("?video"), "");
 
 	keyFrames.clear();
+	keyFramesFilename.clear();
 	videoFPS = agi::vfr::Framerate();
+	KeyframesOpen(keyFrames);
+	if (!ovrFPS.IsLoaded()) TimecodesOpen(videoFPS);
 
 	// Remove video data
 	frame_n = 0;
@@ -196,6 +199,7 @@ void VideoContext::SetVideo(const wxString &filename) {
 		grid->ass->AddCommitListener(&VideoContext::SubtitlesChanged, this);
 		VideoOpen();
 		KeyframesOpen(keyFrames);
+		TimecodesOpen(FPS());
 	}
 	catch (agi::UserCancelException const&) { }
 	catch (agi::FileNotAccessibleError const& err) {
@@ -462,6 +466,7 @@ void VideoContext::LoadKeyframes(wxString filename) {
 			ovrFPS = agi::vfr::Framerate(kf.second);
 			ovrTimecodeFile.clear();
 			SubtitlesChanged();
+			TimecodesOpen(ovrFPS);
 		}
 		config::mru->Add("Keyframes", STD_STR(filename));
 	}
@@ -498,6 +503,7 @@ void VideoContext::LoadTimecodes(wxString filename) {
 		ovrTimecodeFile = filename;
 		config::mru->Add("Timecodes", STD_STR(filename));
 		SubtitlesChanged();
+		TimecodesOpen(ovrFPS);
 	}
 	catch (const agi::acs::AcsError&) {
 		wxLogError(L"Could not open file " + filename);
@@ -520,6 +526,7 @@ void VideoContext::CloseTimecodes() {
 	ovrFPS = agi::vfr::Framerate();
 	ovrTimecodeFile.clear();
 	SubtitlesChanged();
+	TimecodesOpen(videoFPS);
 }
 
 int VideoContext::TimeAtFrame(int frame, agi::vfr::Time type) const {

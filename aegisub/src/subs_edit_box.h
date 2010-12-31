@@ -57,6 +57,8 @@ class wxStyledTextEvent;
 class wxTextCtrl;
 class AudioController;
 
+namespace agi { namespace vfr { class Framerate; } }
+
 /// DOCME
 /// @class SubsEditBox
 /// @brief Main subtitle edit box
@@ -186,6 +188,9 @@ class SubsEditBox : public wxPanel, protected SelectionListener<AssDialogue> {
 	/// @brief Reload the current line from the file
 	/// @param type AssFile::CommitType
 	void Update(int type);
+
+	/// @brief Enable or disable frame timing mode
+	void UpdateFrameTiming(agi::vfr::Framerate const& fps);
 public:
 	SubsTextEditCtrl *TextEdit;
 
@@ -194,7 +199,4 @@ public:
 	/// @param grid Associated grid
 	SubsEditBox(wxWindow *parent, SubtitlesGrid *grid);
 	~SubsEditBox();
-
-	/// @brief Enable or disable frame timing mode
-	void UpdateFrameTiming();
 };

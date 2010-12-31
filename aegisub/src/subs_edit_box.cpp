@@ -211,6 +211,7 @@ SubsEditBox::SubsEditBox(wxWindow *parent, SubtitlesGrid *grid)
 
 	ByTime = new wxRadioButton(this,wxID_ANY,_("Time"),wxDefaultPosition,wxDefaultSize,wxRB_GROUP);
 	ByFrame = new wxRadioButton(this,wxID_ANY,_("Frame"));
+	ByFrame->Enable(false);
 
 	// Tooltips
 	CommentBox->SetToolTip(_("Comment this line out. Commented lines don't show up on screen."));
@@ -330,6 +331,7 @@ SubsEditBox::SubsEditBox(wxWindow *parent, SubtitlesGrid *grid)
 
 	grid->AddSelectionListener(this);
 	grid->ass->AddCommitListener(&SubsEditBox::Update, this);
+	VideoContext::Get()->AddTimecodesListener(&SubsEditBox::UpdateFrameTiming, this);
 }
 SubsEditBox::~SubsEditBox() {
 	grid->RemoveSelectionListener(this);
@@ -408,8 +410,10 @@ void SubsEditBox::OnSelectedSetChanged(const Selection &, const Selection &) {
 	sel = grid->GetSelectedSet();
 }
 
-void SubsEditBox::UpdateFrameTiming () {
-	if (VideoContext::Get()->TimecodesLoaded()) ByFrame->Enable(true);
+void SubsEditBox::UpdateFrameTiming(agi::vfr::Framerate const& fps) {
+	if (fps.IsLoaded()) {
+		ByFrame->Enable(true);
+	}
 	else {
 		ByFrame->Enable(false);
 		ByTime->SetValue(true);
@@ -565,8 +569,6 @@ void SubsEditBox::SetControlsState(bool state) {
 	ByTime->Enable(state);
 	for (size_t i = 0; i < ToggableButtons.size(); ++i)
 		ToggableButtons[i]->Enable(state);
-
-	UpdateFrameTiming();
 
 	if (!state) {
 		SetEvtHandlerEnabled(false);

@@ -1135,7 +1135,6 @@ void FrameMain::LoadVideo(wxString file,bool autoload) {
 	}
 
 	SetDisplayMode(1,-1);
-	EditBox->UpdateFrameTiming();
 
 	DetachVideo(VideoContext::Get()->IsLoaded() && OPT_GET("Video/Detached/Enabled")->GetBool());
 	Thaw();
@@ -1148,7 +1147,6 @@ void FrameMain::LoadVFR(wxString filename) {
 	else {
 		VideoContext::Get()->LoadTimecodes(filename);
 	}
-	EditBox->UpdateFrameTiming();
 }
 
 /// @brief Open help 
