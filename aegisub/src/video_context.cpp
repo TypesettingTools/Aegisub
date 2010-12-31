@@ -64,7 +64,7 @@
 #include "include/aegisub/audio_player.h"
 #include "include/aegisub/audio_provider.h"
 #include "include/aegisub/video_provider.h"
-#include "keyframe.h"
+#include <libaegisub/keyframe.h>
 #include <libaegisub/access.h>
 #include "main.h"
 #include "mkv_wrap.h"
@@ -454,24 +454,30 @@ void VideoContext::SetAspectRatio(int type, double value) {
 void VideoContext::LoadKeyframes(wxString filename) {
 	if (filename == keyFramesFilename || filename.empty()) return;
 	try {
-		keyFrames = KeyFrameFile::Load(filename);
+		std::pair<std::vector<int>, double> kf = agi::keyframe::Load(STD_STR(filename));
+		keyFrames = kf.first;
 		keyFramesFilename = filename;
 		KeyframesOpen(keyFrames);
+		if (kf.second != 0.) {
+			ovrFPS = agi::vfr::Framerate(kf.second);
+			ovrTimecodeFile.clear();
+			SubtitlesChanged();
+		}
+		config::mru->Add("Keyframes", STD_STR(filename));
 	}
-	catch (const wchar_t *error) {
-		wxMessageBox(error, _T("Error opening keyframes file"), wxOK | wxICON_ERROR, NULL);
-	}
-	catch (agi::acs::AcsNotFound const&) {
-		wxLogError(L"Could not open file " + filename);
+	catch (agi::keyframe::Error const& err) {
+		wxMessageBox(err.GetMessage(), "Error opening keyframes file", wxOK | wxICON_ERROR, NULL);
 		config::mru->Remove("Keyframes", STD_STR(filename));
 	}
-	catch (...) {
-		wxMessageBox(_T("Unknown error"), _T("Error opening keyframes file"), wxOK | wxICON_ERROR, NULL);
+	catch (agi::acs::AcsError const&) {
+		wxLogError(L"Could not open file " + filename);
+		config::mru->Remove("Keyframes", STD_STR(filename));
 	}
 }
 
 void VideoContext::SaveKeyframes(wxString filename) {
-	KeyFrameFile::Save(filename, GetKeyFrames());
+	agi::keyframe::Save(STD_STR(filename), GetKeyFrames(), FPS());
+	config::mru->Add("Keyframes", STD_STR(filename));
 }
 
 void VideoContext::CloseKeyframes() {

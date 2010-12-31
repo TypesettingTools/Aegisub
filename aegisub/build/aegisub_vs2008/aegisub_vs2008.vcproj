@@ -1362,14 +1362,6 @@
 			Name="Video backend"
 			>
 			<File
-				RelativePath="..\..\src\keyframe.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\keyframe.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\threaded_frame_source.cpp"
 				>
 			</File>

@@ -57,7 +57,6 @@ class SubtitlesGrid;
 class AudioProvider;
 class AudioDisplay;
 class AssDialogue;
-class KeyFrameFile;
 class SubtitlesProviderErrorEvent;
 class ThreadedFrameSource;
 class VideoProvider;
@@ -75,7 +74,6 @@ namespace agi {
 /// DOCME
 class VideoContext : public wxEvtHandler {
 	friend class AudioProvider;
-	friend class KeyFrameFile;
 
 	/// Current frame number changed (new frame number)
 	agi::signal::Signal<int> Seek;

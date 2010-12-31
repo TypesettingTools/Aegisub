@@ -276,6 +276,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\libaegisub\common\keyframe.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\libaegisub\common\log.cpp"
 				>
 			</File>
@@ -419,6 +423,10 @@
 			</File>
 			<File
 				RelativePath="..\..\libaegisub\include\libaegisub\io.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\libaegisub\include\libaegisub\keyframe.h"
 				>
 			</File>
 			<File

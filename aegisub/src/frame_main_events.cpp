@@ -81,7 +81,7 @@
 #include "frame_main.h"
 #include "hotkeys.h"
 #include "include/aegisub/audio_player.h"
-#include "keyframe.h"
+#include "libaegisub/charset_conv.h"
 #include "libresrc/libresrc.h"
 #include "main.h"
 #include "preferences.h"

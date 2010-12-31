@@ -194,7 +194,6 @@ SRC += \
 	help_button.cpp \
 	hotkeys.cpp \
 	kana_table.cpp \
-	keyframe.cpp \
 	main.cpp \
 	md5.c \
 	mkv_wrap.cpp \

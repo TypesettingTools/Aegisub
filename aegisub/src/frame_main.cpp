@@ -64,7 +64,6 @@
 #include "frame_main.h"
 #include "help_button.h"
 #include "hotkeys.h"
-#include "keyframe.h"
 #include "libresrc/libresrc.h"
 #include "main.h"
 #include "standard_paths.h"
