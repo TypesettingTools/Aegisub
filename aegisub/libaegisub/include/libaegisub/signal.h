@@ -110,7 +110,12 @@ namespace detail {
 		/// @brief Disconnect the passed slot from the signal
 		/// @param tok Token to disconnect
 		virtual void Disconnect(ConnectionToken *tok)=0;
+
+		/// Signals can't be copied
+		SignalBase(SignalBase const&);
+		SignalBase& operator=(SignalBase const&);
 	protected:
+		SignalBase() { }
 		/// @brief Notify a slot that it has been disconnected
 		/// @param tok Token to disconnect
 		///
