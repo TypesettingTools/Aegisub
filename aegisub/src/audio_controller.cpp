@@ -79,37 +79,46 @@ class AudioMarkerProviderKeyframes : public AudioMarkerProvider {
 
 	agi::signal::Connection keyframe_slot;
 	agi::signal::Connection audio_open_slot;
+	agi::signal::Connection timecode_slot;
 
 	std::vector<AudioMarkerKeyframe> keyframe_samples;
 	AudioController *controller;
 
-	void OnKeyframesOpen(std::vector<int> const& raw_keyframes)
+	void Update()
 	{
+		std::vector<int> const& keyframes = vc->GetKeyFrames();
+		agi::vfr::Framerate const& timecodes = vc->FPS();
+
+		if (keyframes.empty() || !timecodes.IsLoaded())
+		{
+			if (keyframe_samples.empty())
+			{
+				return;
+			}
+			keyframe_samples.clear();
+			AnnounceMarkerMoved();
+			return;
+		}
+
 		keyframe_samples.clear();
-		keyframe_samples.reserve(raw_keyframes.size());
-		for (size_t i = 0; i < raw_keyframes.size(); ++i)
+		keyframe_samples.reserve(keyframes.size());
+		for (size_t i = 0; i < keyframes.size(); ++i)
 		{
 			keyframe_samples.push_back(AudioMarkerKeyframe(
-				controller->SamplesFromMilliseconds(vc->TimeAtFrame(raw_keyframes[i]))));
+				controller->SamplesFromMilliseconds(timecodes.TimeAtFrame(keyframes[i]))));
 		}
 		AnnounceMarkerMoved();
-	}
-
-private:
-	// AudioControllerAudioEventListener implementation
-	void OnAudioOpen(AudioProvider *)
-	{
-		OnKeyframesOpen(vc->GetKeyFrames());
 	}
 
 public:
 	AudioMarkerProviderKeyframes(AudioController *controller)
 		: vc(VideoContext::Get())
-		, keyframe_slot(vc->AddKeyframesListener(&AudioMarkerProviderKeyframes::OnKeyframesOpen, this))
-		, audio_open_slot(controller->AddAudioOpenListener(&AudioMarkerProviderKeyframes::OnAudioOpen, this))
+		, keyframe_slot(vc->AddKeyframesListener(&AudioMarkerProviderKeyframes::Update, this))
+		, audio_open_slot(controller->AddAudioOpenListener(&AudioMarkerProviderKeyframes::Update, this))
+		, timecode_slot(vc->AddTimecodesListener(&AudioMarkerProviderKeyframes::Update, this))
 		, controller(controller)
 	{
-		OnKeyframesOpen(vc->GetKeyFrames());
+		Update();
 	}
 
 	void GetMarkers(const SampleRange &range, AudioMarkerVector &out) const
