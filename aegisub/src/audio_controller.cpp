@@ -148,6 +148,8 @@ AudioController::AudioController()
 	Bind(wxEVT_POWER_SUSPENDED, &AudioController::OnComputerSuspending, this);
 	Bind(wxEVT_POWER_RESUME, &AudioController::OnComputerResuming, this);
 #endif
+
+	keyframes_marker_provider->AddMarkerMovedListener(std::tr1::bind(std::tr1::ref(AnnounceMarkerMoved)));
 }
 
 
