@@ -92,7 +92,6 @@ class AudioMarkerProviderKeyframes : public AudioMarkerProvider {
 			keyframe_samples.push_back(AudioMarkerKeyframe(
 				controller->SamplesFromMilliseconds(vc->TimeAtFrame(raw_keyframes[i]))));
 		}
-		std::sort(keyframe_samples.begin(), keyframe_samples.end());
 		AnnounceMarkerMoved();
 	}
 

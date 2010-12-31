@@ -346,26 +346,14 @@ void VideoSlider::OnKeyDown(wxKeyEvent &event) {
 		// Snap to keyframe
 		if (shift && !ctrl && !alt) {
 			if (direction != 0) {
-				// Prepare
-				int prevKey = 0;
-				int nextKey = max;
-				int keys = keyframes.size();
+				std::vector<int>::iterator pos = std::lower_bound(keyframes.begin(), keyframes.end(), val);
 
-				// Find previous keyframe
-				// This algorithm does unnecessary loops, but it ensures it works even if keyframes are out of order.
-				for (int i=0;i<keys;i++) {
-					int temp = keyframes[i];
-					if (temp < val && temp > prevKey) prevKey = temp;
-				}
+				if (direction < 0 && val != 0 && (pos == keyframes.end() || *pos == val))
+					--pos;
+				if (direction > 0 && pos != keyframes.end())
+					++pos;
 
-				// Find next keyframe
-				for (int i=0;i<keys;i++) {
-					int temp = keyframes[i];
-					if (temp > val && temp < nextKey) nextKey = temp;
-				}
-
-				if (direction == -1) VideoContext::Get()->JumpToFrame(prevKey);
-				if (direction == 1) VideoContext::Get()->JumpToFrame(nextKey);
+				VideoContext::Get()->JumpToFrame(pos == keyframes.end() ? max : *pos);
 				return;
 			}
 		}
