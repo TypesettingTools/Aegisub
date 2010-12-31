@@ -74,17 +74,7 @@ void RestartAegisub();
 /// @brief Templated abs() function
 template <typename T> T tabs(T x) { return x < 0 ? -x : x; }
 
-#ifndef MIN
-#define MIN(a,b) ((a)<(b))?(a):(b)
-#endif
-
-#ifndef MAX
-#define MAX(a,b) ((a)>(b))?(a):(b)
-#endif
-
-#ifndef MID
-#define MID(a,b,c) MAX((a),MIN((b),(c)))
-#endif
+template<typename T> inline T mid(T a, T b, T c) { return std::max(a, std::min(b, c)); }
 
 #ifndef FORCEINLINE
 #ifdef __VISUALC__

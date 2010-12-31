@@ -292,7 +292,7 @@ void DirectSoundPlayer2Thread::Run()
 	int aim = waveFormat.nAvgBytesPerSec * (wanted_latency*buffer_length)/1000;
 	int min = DSBSIZE_MIN;
 	int max = DSBSIZE_MAX;
-	DWORD bufSize = MIN(MAX(min,aim),max); // size of entier playback buffer
+	DWORD bufSize = mid(min,aim,max); // size of entier playback buffer
 	DSBUFFERDESC desc;
 	desc.dwSize = sizeof(DSBUFFERDESC);
 	desc.dwFlags = DSBCAPS_GETCURRENTPOSITION2 | DSBCAPS_GLOBALFOCUS;

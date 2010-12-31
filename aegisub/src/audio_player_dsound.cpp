@@ -95,7 +95,7 @@ void DirectSoundPlayer::OpenStream() {
 	int aim = waveFormat.nAvgBytesPerSec * 15/100; // 150 ms buffer
 	int min = DSBSIZE_MIN;
 	int max = DSBSIZE_MAX;
-	bufSize = MIN(MAX(min,aim),max);
+	bufSize = std::min(std::max(min,aim),max);
 	DSBUFFERDESC desc;
 	desc.dwSize = sizeof(DSBUFFERDESC);
 	desc.dwFlags = DSBCAPS_GETCURRENTPOSITION2 | DSBCAPS_GLOBALFOCUS;

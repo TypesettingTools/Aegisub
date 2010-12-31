@@ -88,7 +88,7 @@ VideoSlider::~VideoSlider() {
 ///
 void VideoSlider::SetValue(int value) {
 	if (val == value) return;
-	val = MID(0, value, max);
+	val = mid(0, value, max);
 	Refresh(false);
 }
 
@@ -284,7 +284,7 @@ void VideoSlider::OnKeyDown(wxKeyEvent &event) {
 		// Fast move
 		if (!ctrl && !shift && alt) {
 			if (VideoContext::Get()->IsPlaying()) return;
-			int target = MID(0,val + direction * OPT_GET("Video/Slider/Fast Jump Step")->GetInt(),max);
+			int target = mid<int>(0,val + direction * OPT_GET("Video/Slider/Fast Jump Step")->GetInt(),max);
 			if (target != val) VideoContext::Get()->JumpToFrame(target);
 			return;
 		}

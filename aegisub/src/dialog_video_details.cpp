@@ -101,7 +101,7 @@ DialogVideoDetails::DialogVideoDetails(wxWindow *parent)
 ///
 wxString DialogVideoDetails::PrettyAR(int width, int height)
 {
-	int limit = (int)ceil(sqrt(double(MIN(width, height))));
+	int limit = (int)ceil(sqrt(double(std::min(width, height))));
 	for (int i=2;i<=limit;i++) {
 		while (width % i == 0 && height % i == 0) {
 			width /= i;

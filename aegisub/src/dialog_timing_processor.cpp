@@ -123,7 +123,7 @@ DialogTimingProcessor::DialogTimingProcessor(wxWindow *parent,SubtitlesGrid *_gr
 	wxStaticText *adjsThresText = new wxStaticText(this,-1,_("Threshold:"),wxDefaultPosition,wxDefaultSize,wxALIGN_CENTRE);
 	adjacentThres = new wxTextCtrl(this,-1,_T(""),wxDefaultPosition,wxSize(60,-1),0,NumValidator(&adjsThresTime));
 	adjacentThres->SetToolTip(_("Maximum difference between start and end time for two subtitles to be made continuous, in milliseconds."));
-	adjacentBias = new wxSlider(this,-1,MID(0,int(OPT_GET("Tool/Timing Post Processor/Adjacent Bias")->GetDouble()*100),100),0,100,wxDefaultPosition,wxSize(-1,20));
+	adjacentBias = new wxSlider(this,-1,mid(0,int(OPT_GET("Tool/Timing Post Processor/Adjacent Bias")->GetDouble()*100),100),0,100,wxDefaultPosition,wxSize(-1,20));
 	adjacentBias->SetToolTip(_("Sets how to set the adjoining of lines. If set totally to left, it will extend start time of the second line; if totally to right, it will extend the end time of the first line."));
 	AdjacentSizer->Add(adjsEnable,0,wxRIGHT|wxEXPAND,10);
 	AdjacentSizer->Add(adjsThresText,0,wxRIGHT|wxALIGN_CENTER,5);

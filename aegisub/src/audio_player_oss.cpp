@@ -295,11 +295,11 @@ OSSPlayerThread::OSSPlayerThread(OSSPlayer *par) : wxThread(wxTHREAD_JOINABLE)
 wxThread::ExitCode OSSPlayerThread::Entry() {
     // Use small enough writes for good timing accuracy with all
     // timing methods.
-    const int wsize = parent->rate / 25;
+    const unsigned long wsize = parent->rate / 25;
     void *buf = malloc(wsize * parent->bpf);
 
     while (!TestDestroy() && parent->cur_frame < parent->end_frame) {
-        int rsize = MIN(wsize, parent->end_frame - parent->cur_frame);
+        int rsize = std::min(wsize, parent->end_frame - parent->cur_frame);
         parent->provider->GetAudioWithVolume(buf, parent->cur_frame,
                                              rsize, parent->volume);
         int written = ::write(parent->dspdev, buf, rsize * parent->bpf);

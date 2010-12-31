@@ -487,12 +487,12 @@ void VideoDisplay::OnMouseEvent(wxMouseEvent& event) {
 	}
 
 	if (event.Leaving()) {
-		video.x  = INT_MIN;
-		video.y  = INT_MIN;
+		video.x = INT_MIN;
+		video.y = INT_MIN;
 	}
 	else {
-		video.x  = event.GetX();
-		video.y  = event.GetY();
+		video.x = event.GetX();
+		video.y = event.GetY();
 	}
 
 	tool->OnMouseEvent(event);

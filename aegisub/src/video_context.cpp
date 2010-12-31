@@ -447,7 +447,7 @@ void VideoContext::SetAspectRatio(int type, double value) {
 	if (type != 4) value = GetARFromType(type);
 
 	arType = type;
-	arValue = MID(.5, value, 5.);
+	arValue = mid(.5, value, 5.);
 	ARChange(arType, arValue);
 }
 

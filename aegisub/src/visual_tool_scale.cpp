@@ -63,8 +63,8 @@ void VisualToolScale::Draw() {
 	if (!curDiag) return;
 
 	int len = 160;
-	int dx = MID(len/2+10,posx,video.w-len/2-30);
-	int dy = MID(len/2+10,posy,video.h-len/2-30);
+	int dx = mid(len/2+10,posx,video.w-len/2-30);
+	int dy = mid(len/2+10,posy,video.h-len/2-30);
 
 	SetLineColour(colour[0]);
 	SetFillColour(colour[1],0.3f);

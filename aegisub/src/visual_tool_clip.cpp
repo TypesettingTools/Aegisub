@@ -142,10 +142,10 @@ void VisualToolClip::UpdateHold() {
 	if (curY1 > curY2) std::swap(curY1,curY2);
 
 	// Limit to video area
-	curX1 = MID(0,curX1,video.w);
-	curX2 = MID(0,curX2,video.w);
-	curY1 = MID(0,curY1,video.h);
-	curY2 = MID(0,curY2,video.h);
+	curX1 = mid(0,curX1,video.w);
+	curX2 = mid(0,curX2,video.w);
+	curY1 = mid(0,curY1,video.h);
+	curY2 = mid(0,curY2,video.h);
 
 	SetFeaturePositions();
 }

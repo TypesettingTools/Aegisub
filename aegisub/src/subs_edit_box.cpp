@@ -107,8 +107,8 @@ struct field_setter : public std::binary_function<AssDialogue*, T, void> {
 void get_selection(SubsTextEditCtrl *TextEdit, int &start, int &end) {
 	TextEdit->GetSelection(&start, &end);
 	int len = TextEdit->GetText().size();
-	start = MID(0,TextEdit->GetReverseUnicodePosition(start),len);
-	end = MID(0,TextEdit->GetReverseUnicodePosition(end),len);
+	start = mid(0,TextEdit->GetReverseUnicodePosition(start),len);
+	end = mid(0,TextEdit->GetReverseUnicodePosition(end),len);
 }
 
 /// @brief Get the value of a tag at a specified position in a line

@@ -99,7 +99,7 @@ void SplineCurve::Smooth(Vector2D const& P0,Vector2D const& P3,float smooth) {
 	// Validate
 	if (type != CURVE_LINE) return;
 	if (p1 == p2) return;
-	smooth = MID(0.f,smooth,1.f);
+	smooth = mid(0.f,smooth,1.f);
 
 	// Get points
 	Vector2D P1 = p1;
@@ -210,7 +210,7 @@ float SplineCurve::GetQuickDistance(Vector2D const& ref) const {
 /// @return 
 ///
 float SplineCurve::GetClosestSegmentPart(Vector2D const& pt1,Vector2D const& pt2,Vector2D const& pt3) const {
-	return MID(0.f,(pt3-pt1).Dot(pt2-pt1)/(pt2-pt1).SquareLen(),1.f);
+	return mid(0.f,(pt3-pt1).Dot(pt2-pt1)/(pt2-pt1).SquareLen(),1.f);
 }
 
 /// @brief Closest distance between p3 and segment p1-p2 

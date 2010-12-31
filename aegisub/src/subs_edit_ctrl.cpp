@@ -989,7 +989,7 @@ void SubsTextEditCtrl::OnUseSuggestion(wxCommandEvent &event) {
 	GetBoundsOfWordAtPosition(currentWordPos,start,end);
 
 	wxString text = GetText();
-	SetText(text.Left(MAX(0,start)) + suggestion + text.Mid(end+1));
+	SetText(text.Left(std::max(0,start)) + suggestion + text.Mid(end+1));
 
 	// Set selection
 	SetSelectionU(start,start+suggestion.Length());

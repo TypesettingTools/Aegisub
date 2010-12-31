@@ -99,7 +99,7 @@ void DialogProgress::SetProgress(int cur,int max) {
 
 	// Check if it's the main thread, if so, just process it now
 	if (wxIsMainThread()) {
-		gauge->SetValue(MID(0,value,100));
+		gauge->SetValue(mid(0,value,100));
 		wxYield();
 		return;
 	}
@@ -124,7 +124,7 @@ void DialogProgress::SetProgress(int cur,int max) {
 void DialogProgress::OnUpdateProgress(wxCommandEvent &event)
 {
 	int value = event.GetInt();
-	if (gauge->GetValue() != value) gauge->SetValue(MID(0,value,100));
+	if (gauge->GetValue() != value) gauge->SetValue(mid(0,value,100));
 	wxMutexLocker locker(mutex);
 	count--;
 }

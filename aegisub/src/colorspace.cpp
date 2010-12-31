@@ -311,7 +311,7 @@ void rgb_to_hsl(int R, int G, int B, unsigned char *H, unsigned char *S, unsigne
 	float r = R/255.f, g = G/255.f, b = B/255.f;
 	float h, s, l;
 
-	float maxrgb = MAX(r, MAX(g, b)), minrgb = MIN(r, MIN(g, b));
+	float maxrgb = std::max(r, std::max(g, b)), minrgb = std::min(r, std::min(g, b));
 
 	l = (minrgb + maxrgb) / 2;
 
@@ -356,7 +356,7 @@ void rgb_to_hsv(int R, int G, int B, unsigned char *H, unsigned char *S, unsigne
 	float r = R/255.f, g = G/255.f, b = B/255.f;
 	float h, s, v;
 
-	float maxrgb = MAX(r, MAX(g, b)), minrgb = MIN(r, MIN(g, b));
+	float maxrgb = std::max(r, std::max(g, b)), minrgb = std::min(r, std::min(g, b));
 
 	v = maxrgb;
 

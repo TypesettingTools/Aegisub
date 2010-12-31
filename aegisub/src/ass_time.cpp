@@ -162,7 +162,7 @@ int AssTime::GetMS () const {
 /// @param _ms 
 ///
 void AssTime::SetMS (int ms) {
-	time = MID(0, ms, 10 * 60 * 60 * 1000 - 1);
+	time = mid(0, ms, 10 * 60 * 60 * 1000 - 1);
 }
 
 

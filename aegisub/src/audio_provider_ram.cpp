@@ -70,7 +70,7 @@ RAMAudioProvider::RAMAudioProvider(AudioProvider *src) {
 	// Allocate cache blocks
 	try {
 		for (int i = 0; i < blockcount; i++) {
-			blockcache[i] = new char[MIN(CacheBlockSize,ssize-i*CacheBlockSize)];
+			blockcache[i] = new char[std::min<size_t>(CacheBlockSize,ssize-i*CacheBlockSize)];
 		}
 	}
 	catch (...) { 
@@ -162,8 +162,7 @@ void RAMAudioProvider::GetAudio(void *buf, int64_t start, int64_t count) const {
 		
 		// Copy
 		while (bytesremaining) {
-			int readsize=MIN(bytesremaining,CacheBlockSize); 
-			readsize = MIN(readsize,CacheBlockSize - start_offset);
+			int readsize = std::min<int>(bytesremaining, CacheBlockSize - start_offset); 
 
 			memcpy(charbuf,(char *)(blockcache[i++]+start_offset),readsize);
 
