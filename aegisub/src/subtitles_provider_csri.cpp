@@ -112,21 +112,15 @@ void CSRISubtitlesProvider::DrawSubtitles(AegiVideoFrame &dst,double time) {
 
 	// Load data into frame
 	csri_frame frame;
-	for (int i=0;i<4;i++) {
-		if (dst.flipped) {
-			frame.planes[i] = dst.data[i] + (dst.h-1) * dst.pitch[i];
-			frame.strides[i] = -(signed)dst.pitch[i];
-		}
-		else {
-			frame.planes[i] = dst.data[i];
-			frame.strides[i] = dst.pitch[i];
-		}
+	if (dst.flipped) {
+		frame.planes[0] = dst.data + (dst.h-1) * dst.pitch;
+		frame.strides[0] = -(signed)dst.pitch;
 	}
-	switch (dst.format) {
-		case FORMAT_RGB32: frame.pixfmt = CSRI_F_BGR_; break;
-		case FORMAT_RGB24: frame.pixfmt = CSRI_F_BGR; break;
-		default: frame.pixfmt = CSRI_F_BGR_;
+	else {
+		frame.planes[0] = dst.data;
+		frame.strides[0] = dst.pitch;
 	}
+	frame.pixfmt = CSRI_F_BGR_;
 
 	// Set format
 	csri_fmt format;

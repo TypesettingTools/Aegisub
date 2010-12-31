@@ -53,6 +53,7 @@
 #include "aegisub_endian.h"
 #include "compat.h"
 #include "main.h"
+#include "utils.h"
 #include "video_context.h"
 #include "video_provider_ffmpegsource.h"
 
@@ -273,23 +274,16 @@ void FFmpegSourceVideoProvider::Close() {
 /// @param _n 
 /// @return 
 ///
-const AegiVideoFrame FFmpegSourceVideoProvider::GetFrame(int _n) {
-	// don't try to seek to insane places
-	int n = _n;
-	if (n < 0)
-		n = 0;
-	if (n >= GetFrameCount())
-		n = GetFrameCount()-1;
-	// set position
-	FrameNumber = n;
+const AegiVideoFrame FFmpegSourceVideoProvider::GetFrame(int n) {
+	FrameNumber = mid(0, n, GetFrameCount() - 1);
 
 	// decode frame
-	const FFMS_Frame *SrcFrame = FFMS_GetFrame(VideoSource, n, &ErrInfo);
+	const FFMS_Frame *SrcFrame = FFMS_GetFrame(VideoSource, FrameNumber, &ErrInfo);
 	if (SrcFrame == NULL) {
 		throw VideoDecodeError(std::string("Failed to retrieve frame:") +  ErrInfo.Buffer);
 	}
 
-	CurFrame.SetTo(SrcFrame->Data, Width, Height, SrcFrame->Linesize, FORMAT_RGB32);
+	CurFrame.SetTo(SrcFrame->Data[0], Width, Height, SrcFrame->Linesize[0]);
 	return CurFrame;
 }
 #endif /* WITH_FFMPEGSOURCE */

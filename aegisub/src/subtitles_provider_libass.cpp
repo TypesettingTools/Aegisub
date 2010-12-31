@@ -208,11 +208,11 @@ void LibassSubtitlesProvider::DrawSubtitles(AegiVideoFrame &frame,double time) {
 
 		// Prepare copy
 		int src_stride = img->stride;
-		int dst_stride = frame.pitch[0];
+		int dst_stride = frame.pitch;
 		int dst_delta = dst_stride - img->w*4;
 		//int stride = std::min(src_stride,dst_stride);
 		const unsigned char *src = img->bitmap;
-		unsigned char *dst = frame.data[0] + (img->dst_y * dst_stride + img->dst_x * 4);
+		unsigned char *dst = frame.data + (img->dst_y * dst_stride + img->dst_x * 4);
 		unsigned int k,ck,t;
 
 		// Copy image to destination frame

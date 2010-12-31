@@ -89,21 +89,6 @@ template<typename T> inline T mid(T a, T b, T c) { return std::max(a, std::min(b
 #endif
 #endif
 
-/// @brief Code taken from http://bob.allegronetwork.com/prog/tricks.html#clamp Clamp integer to range 
-/// @param x   
-/// @param min 
-/// @param max 
-///
-static FORCEINLINE int ClampSignedInteger32(int x,int min,int max) {
-	x -= min;
-	x &= (~x) >> 31;
-	x += min;
-	x -= max;
-	x &= x >> 31;
-	x += max;
-	return x;
-}
-
 struct delete_ptr {
 	template<class T>
 	void operator()(T* ptr) const {

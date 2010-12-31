@@ -262,12 +262,11 @@ const AegiVideoFrame AvisynthVideoProvider::GetFrame(int n) {
 
 	// Aegisub's video frame
 	AegiVideoFrame &final = iframe;
-	final.format = FORMAT_RGB32;
 	final.flipped = true;
 	final.invertChannels = true;
 
 	// Set size properties
-	final.pitch[0] = frame->GetPitch();
+	final.pitch = frame->GetPitch();
 	final.w = frame->GetRowSize() / Bpp;
 	final.h = frame->GetHeight();
 
@@ -275,7 +274,7 @@ const AegiVideoFrame AvisynthVideoProvider::GetFrame(int n) {
 	final.Allocate();
 
 	// Copy
-	memcpy(final.data[0],frame->GetReadPtr(),final.pitch[0] * final.h);
+	memcpy(final.data,frame->GetReadPtr(),final.pitch * final.h);
 
 	// Set last number
 	last_fnum = n;

@@ -39,6 +39,7 @@
 #include <libaegisub/log.h>
 
 #include "compat.h"
+#include "utils.h"
 #include "video_provider_yuv4mpeg.h"
 
 // All of this cstdio bogus is because of one reason and one reason only:
@@ -69,7 +70,7 @@ YUV4MPEGVideoProvider::YUV4MPEGVideoProvider(wxString fname)
 		wxString filename = wxFileName(fname).GetShortPath();
 
 #ifdef WIN32
-		sf = _wfopen(filename.wc_str(), _T("rb"));
+		sf = _wfopen(filename.wc_str(), L"rb");
 #else
 		sf = fopen(filename.utf8_str(), "rb");
 #endif
@@ -195,7 +196,7 @@ std::vector<wxString> YUV4MPEGVideoProvider::ReadHeader(int64_t startpos, bool r
 void YUV4MPEGVideoProvider::ParseFileHeader(const std::vector<wxString>& tags) {
 	if (tags.size() <= 1)
 		throw VideoOpenError("ParseFileHeader: contentless header");
-	if (tags.front().Cmp(_T("YUV4MPEG2")))
+	if (tags.front().Cmp("YUV4MPEG2"))
 		throw VideoOpenError("ParseFileHeader: malformed header (bad magic)");
 
 	// temporary stuff
@@ -207,52 +208,54 @@ void YUV4MPEGVideoProvider::ParseFileHeader(const std::vector<wxString>& tags) {
 	Y4M_PixelFormat t_pixfmt	= Y4M_PIXFMT_NONE;
 
 	for (unsigned i = 1; i < tags.size(); i++) {
-		wxString tag = _T("");
+		wxString tag;
 		long tmp_long1 = 0;
 		long tmp_long2 = 0;
 
-		if (tags.at(i).StartsWith(_T("W"), &tag)) {
+		if (tags[i].StartsWith("W", &tag)) {
 			if (!tag.ToLong(&tmp_long1))
 				throw VideoOpenError("ParseFileHeader: invalid width");
 			t_w = (int)tmp_long1;
 		}
-		else if (tags.at(i).StartsWith(_T("H"), &tag)) {
+		else if (tags[i].StartsWith("H", &tag)) {
 			if (!tag.ToLong(&tmp_long1))
 				throw VideoOpenError("ParseFileHeader: invalid height");
 			t_h = (int)tmp_long1;
 		}
-		else if (tags.at(i).StartsWith(_T("F"), &tag)) {
+		else if (tags[i].StartsWith("F", &tag)) {
 			if (!(tag.BeforeFirst(':')).ToLong(&tmp_long1) && tag.AfterFirst(':').ToLong(&tmp_long2))
 				throw VideoOpenError("ParseFileHeader: invalid framerate");
 			t_fps_num = (int)tmp_long1;
 			t_fps_den = (int)tmp_long2;
 		}
-		else if (tags.at(i).StartsWith(_T("C"), &tag)) {
+		else if (tags[i].StartsWith("C", &tag)) {
 			// technically this should probably be case sensitive,
 			// but being liberal in what you accept doesn't hurt
-			if (!tag.CmpNoCase(_T("420")))				t_pixfmt = Y4M_PIXFMT_420JPEG; // is this really correct?
-			else if (!tag.CmpNoCase(_T("420jpeg")))		t_pixfmt = Y4M_PIXFMT_420JPEG; 
-			else if (!tag.CmpNoCase(_T("420mpeg2")))	t_pixfmt = Y4M_PIXFMT_420MPEG2;
-			else if (!tag.CmpNoCase(_T("420paldv")))	t_pixfmt = Y4M_PIXFMT_420PALDV;
-			else if (!tag.CmpNoCase(_T("411")))			t_pixfmt = Y4M_PIXFMT_411;
-			else if (!tag.CmpNoCase(_T("422")))			t_pixfmt = Y4M_PIXFMT_422;
-			else if (!tag.CmpNoCase(_T("444")))			t_pixfmt = Y4M_PIXFMT_444;
-			else if (!tag.CmpNoCase(_T("444alpha")))	t_pixfmt = Y4M_PIXFMT_444ALPHA;
-			else if (!tag.CmpNoCase(_T("mono")))		t_pixfmt = Y4M_PIXFMT_MONO;
+			tag.MakeLower();
+			if (tag == "420")			t_pixfmt = Y4M_PIXFMT_420JPEG; // is this really correct?
+			else if (tag == "420jpeg")	t_pixfmt = Y4M_PIXFMT_420JPEG;
+			else if (tag == "420mpeg2")	t_pixfmt = Y4M_PIXFMT_420MPEG2;
+			else if (tag == "420paldv")	t_pixfmt = Y4M_PIXFMT_420PALDV;
+			else if (tag == "411")		t_pixfmt = Y4M_PIXFMT_411;
+			else if (tag == "422")		t_pixfmt = Y4M_PIXFMT_422;
+			else if (tag == "444")		t_pixfmt = Y4M_PIXFMT_444;
+			else if (tag == "444alpha")	t_pixfmt = Y4M_PIXFMT_444ALPHA;
+			else if (tag == "mono")		t_pixfmt = Y4M_PIXFMT_MONO;
 			else
 				throw VideoOpenError("ParseFileHeader: invalid or unknown colorspace");
 		}
-		else if (tags.at(i).StartsWith(_T("I"), &tag)) {
-			if (!tag.CmpNoCase(_T("p")))		t_imode = Y4M_ILACE_PROGRESSIVE;
-			else if (!tag.CmpNoCase(_T("t")))	t_imode = Y4M_ILACE_TFF;
-			else if (!tag.CmpNoCase(_T("b")))	t_imode = Y4M_ILACE_BFF;
-			else if (!tag.CmpNoCase(_T("m")))	t_imode = Y4M_ILACE_MIXED;
-			else if (!tag.CmpNoCase(_T("?")))	t_imode = Y4M_ILACE_UNKNOWN;
+		else if (tags[i].StartsWith("I", &tag)) {
+			tag.MakeLower();
+			if (tag == "p")			t_imode = Y4M_ILACE_PROGRESSIVE;
+			else if (tag == "t")	t_imode = Y4M_ILACE_TFF;
+			else if (tag == "b")	t_imode = Y4M_ILACE_BFF;
+			else if (tag == "m")	t_imode = Y4M_ILACE_MIXED;
+			else if (tag == "?")	t_imode = Y4M_ILACE_UNKNOWN;
 			else
 				throw VideoOpenError("ParseFileHeader: invalid or unknown interlacing mode");
 		}
 		else
-			LOG_D("provider/video/yuv4mpeg") << "Unparsed tag: " << tags.at(i).c_str();
+			LOG_D("provider/video/yuv4mpeg") << "Unparsed tag: " << tags[i].c_str();
 	}
 
 	// The point of all this is to allow multiple YUV4MPEG2 headers in a single file
@@ -317,11 +320,11 @@ int YUV4MPEGVideoProvider::IndexFile() {
 			break; // no more headers
 
 		Y4M_FrameFlags flags = Y4M_FFLAG_NOTSET;
-		if (!tags.front().Cmp(_T("YUV4MPEG2"))) {
+		if (!tags.front().Cmp("YUV4MPEG2")) {
 			ParseFileHeader(tags);
 			continue;
 		}
-		else if (!tags.front().Cmp(_T("FRAME")))
+		else if (!tags.front().Cmp("FRAME"))
 			flags = ParseFrameHeader(tags);
 
 		if (flags == Y4M_FFLAG_NONE) {
@@ -329,7 +332,7 @@ int YUV4MPEGVideoProvider::IndexFile() {
 			seek_table.push_back(curpos);
 			// seek to next frame header start position
 			if (fseeko(sf, frame_sz, SEEK_CUR))
-				throw VideoOpenError(STD_STR(wxString::Format(_T("IndexFile: failed seeking to position %d"), curpos + frame_sz)));
+				throw VideoOpenError(STD_STR(wxString::Format("IndexFile: failed seeking to position %d", curpos + frame_sz)));
 		}
 		else {
 			/// @todo implement rff flags etc
@@ -339,60 +342,80 @@ int YUV4MPEGVideoProvider::IndexFile() {
 	return framecount;
 }
 
+// http://bob.allegronetwork.com/prog/tricks.html#clamp
+static FORCEINLINE int clamp(int x) {
+	x &= (~x) >> 31;
+	x -= 255;
+	x &= x >> 31;
+	x += 255;
+	return x;
+}
+
 /// @brief	Gets a given frame
 /// @param n	The frame number to return
 /// @return		The video frame
 const AegiVideoFrame YUV4MPEGVideoProvider::GetFrame(int n) {
-	// don't try to seek to insane places
-	if (n < 0)
-		n = 0;
-	if (n >= num_frames)
-		n = num_frames-1;
-	// set position
-	cur_fn = n;
+	cur_fn = mid(0, n, num_frames - 1);
 
-	VideoFrameFormat src_fmt, dst_fmt;
-	dst_fmt = FORMAT_RGB32;
-	int uv_width;
+	int uv_width = w / 2;
 	switch (pixfmt) {
 		case Y4M_PIXFMT_420JPEG:
 		case Y4M_PIXFMT_420MPEG2:
 		case Y4M_PIXFMT_420PALDV:
-			src_fmt = FORMAT_YV12; uv_width = w / 2; break;
-		case Y4M_PIXFMT_422:
-			src_fmt = FORMAT_YUY2; uv_width = w / 2; break; 
+			break;
 		/// @todo add support for more pixel formats
 		default:
-			throw _T("YUV4MPEG video provider: GetFrame: Unsupported source colorspace");
+			throw "YUV4MPEG video provider: GetFrame: Unsupported source colorspace";
 	}
-	
-	AegiVideoFrame tmp_frame;
 
-	tmp_frame.format = src_fmt;
-	tmp_frame.w = w;
-	tmp_frame.h = h;
-	tmp_frame.invertChannels = false;
-	tmp_frame.pitch[0] = w;
-	for (int i=1;i<=2;i++)
-		tmp_frame.pitch[i] = uv_width;
-	tmp_frame.Allocate();
+	std::vector<uint8_t> planes[3];
+	planes[0].resize(luma_sz);
+	planes[1].resize(chroma_sz);
+	planes[2].resize(chroma_sz);
 
 	fseeko(sf, seek_table[n], SEEK_SET);
 	size_t ret;
-	ret = fread(tmp_frame.data[0], luma_sz, 1, sf);
+	ret = fread(&planes[0][0], luma_sz, 1, sf);
 	if (ret != 1 || feof(sf) || ferror(sf))
-		throw _T("YUV4MPEG video provider: GetFrame: failed to read luma plane");
+		throw "YUV4MPEG video provider: GetFrame: failed to read luma plane";
 	for (int i = 1; i <= 2; i++) {
-		ret = fread(tmp_frame.data[i], chroma_sz, 1, sf);
+		ret = fread(&planes[i][0], chroma_sz, 1, sf);
 		if (ret != 1 || feof(sf) || ferror(sf))
-			throw _T("YUV4MPEG video provider: GetFrame: failed to read chroma planes");
+			throw "YUV4MPEG video provider: GetFrame: failed to read chroma planes";
 	}
 
 	AegiVideoFrame dst_frame;
 	dst_frame.invertChannels = true;
-	dst_frame.ConvertFrom(tmp_frame, dst_fmt);
+	dst_frame.w = w;
+	dst_frame.h = h;
+	dst_frame.pitch = w * 4;
+	dst_frame.Allocate();
 
-	tmp_frame.Clear();
+	const unsigned char *src_y = &planes[0][0];
+	const unsigned char *src_u = &planes[1][0];
+	const unsigned char *src_v = &planes[2][0];
+	unsigned char *dst = dst_frame.data;
+
+	for (int py = 0; py < h; ++py) {
+		for (int px = 0; px < w / 2; ++px) {
+			const int u = *src_u++ - 128;
+			const int v = *src_v++ - 128;
+			for (unsigned int i = 0; i < 2; ++i) {
+				const int y = (*src_y++ - 16) * 298;
+
+				*dst++ = clamp((y + 516 * u + 128) >> 8);			// Blue
+				*dst++ = clamp((y - 100 * u - 208 * v + 128) >> 8);	// Green
+				*dst++ = clamp((y + 409 * v + 128) >> 8);			// Red
+				*dst++ = 0;											// Alpha
+			}
+		}
+
+		// Roll back u/v on even lines
+		if (!(py & 1)) {
+			src_u -= uv_width;
+			src_v -= uv_width;
+		}
+	}
 
 	return dst_frame;
 }

@@ -279,7 +279,7 @@ void VideoOutGL::UploadFrameData(const AegiVideoFrame& frame) {
 	if (frame.h == 0 || frame.w == 0) return;
 
 	GLuint format = frame.invertChannels ? GL_BGRA_EXT : GL_RGBA;
-	InitTextures(frame.w, frame.h, format, frame.GetBpp(0), frame.flipped);
+	InitTextures(frame.w, frame.h, format, frame.GetBpp(), frame.flipped);
 
 	// Set the row length, needed to be able to upload partial rows
 	CHECK_ERROR(glPixelStorei(GL_UNPACK_ROW_LENGTH, frame.w));
@@ -289,7 +289,7 @@ void VideoOutGL::UploadFrameData(const AegiVideoFrame& frame) {
 
 		CHECK_ERROR(glBindTexture(GL_TEXTURE_2D, ti.textureID));
 		CHECK_ERROR(glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, ti.sourceW,
-			ti.sourceH, format, GL_UNSIGNED_BYTE, frame.data[0] + ti.dataOffset));
+			ti.sourceH, format, GL_UNSIGNED_BYTE, frame.data + ti.dataOffset));
 	}
 
 	CHECK_ERROR(glPixelStorei(GL_UNPACK_ROW_LENGTH, 0));

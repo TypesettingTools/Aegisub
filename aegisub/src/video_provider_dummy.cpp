@@ -58,8 +58,8 @@ void DummyVideoProvider::Create(double _fps, int frames, int _width, int _height
 	width = _width;
 	height = _height;
 
-	frame = AegiVideoFrame(width,height,FORMAT_RGB32);
-	unsigned char *dst = frame.data[0];
+	frame = AegiVideoFrame(width,height);
+	unsigned char *dst = frame.data;
 	unsigned char r = colour.Red(), g = colour.Green(), b = colour.Blue();
 
 	unsigned char h, s, l, lr, lg, lb; // light variants
@@ -69,7 +69,7 @@ void DummyVideoProvider::Create(double _fps, int frames, int _width, int _height
 	hsl_to_rgb(h, s, l, &lr, &lg, &lb);
 
 	if (pattern) {
-		int ppitch = frame.pitch[0] / frame.GetBpp();
+		int ppitch = frame.pitch / frame.GetBpp();
 		for (unsigned int y = 0; y < frame.h; ++y) {
 			if ((y / 8) & 1) {
 				for (int x = 0; x < ppitch; ++x) {
@@ -106,7 +106,7 @@ void DummyVideoProvider::Create(double _fps, int frames, int _width, int _height
 		}
 	}
 	else {
-		for (int i=frame.pitch[0]*frame.h/frame.GetBpp();--i>=0;) {
+		for (int i=frame.pitch*frame.h/frame.GetBpp();--i>=0;) {
 			*dst++ = b;
 			*dst++ = g;
 			*dst++ = r;

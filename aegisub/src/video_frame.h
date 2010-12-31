@@ -34,41 +34,11 @@
 /// @ingroup video
 ///
 
-
 #pragma once
+
 #ifndef AGI_PRE
 #include <wx/image.h>
 #endif
-
-
-/// DOCME
-enum VideoFrameFormat {
-	/// DOCME
-	FORMAT_NONE		= 0x0000,
-
-	/// RGB, interleaved
-	FORMAT_RGB24	= 0x0001,
-
-	/// RGBA, interleaved
-	FORMAT_RGB32	= 0x0002,
-
-	/// YCbCr 4:2:2, planar
-	FORMAT_YUY2		= 0x0004,
-
-	/// YCbCr 4:2:0, planar
-	FORMAT_YV12		= 0x0008,
-
-	/// YCbCr 4:4:4, planar
-	FORMAT_YUV444	= 0x0010,
-
-	/// YCbCr 4:4:4 plus alpha, planar
-	FORMAT_YUV444A	= 0x0020,
-
-	/// Y only (greyscale)
-	FORMAT_YUVMONO	= 0x0040,
-};
-
-
 
 /// DOCME
 /// @class AegiVideoFrame
@@ -76,21 +46,23 @@ enum VideoFrameFormat {
 ///
 /// DOCME
 class AegiVideoFrame {
-private:
 	/// Whether the object owns its buffer. If this is false, **data should never be modified
 	bool ownMem;
+	/// @brief Reset values to the defaults
+	///
+	/// Note that this function DOES NOT deallocate memory.
+	/// Use Clear() for that
 	void Reset();
 
 public:
+	/// @brief Allocate memory if needed
 	void Allocate();
 
-	unsigned int memSize; /// The size in bytes of the frame buffer
+	/// The size in bytes of the frame buffer
+	unsigned int memSize;
 
-	/// Pointers to the data planes. Interleaved formats only use data[0]
-	unsigned char *data[4];
-
-	/// Data format
-	VideoFrameFormat format;
+	/// Pointer to the data planes
+	unsigned char *data;
 
 	/// Width in pixels
 	unsigned int w;
@@ -99,25 +71,33 @@ public:
 	unsigned int h;
 
 	// Pitch, that is, the number of bytes used by each row.
-	unsigned int pitch[4];
+	unsigned int pitch;
 
 	/// First row is actually the bottom one
 	bool flipped;
 
-	/// Swap Red and Blue channels or U and V planes (controls RGB versus BGR ordering etc)
+	/// Swap Red and Blue channels (controls RGB versus BGR ordering etc)
 	bool invertChannels;
 
 	AegiVideoFrame();
-	AegiVideoFrame(int width,int height,VideoFrameFormat format=FORMAT_RGB32);
+	AegiVideoFrame(unsigned int width, unsigned int height);
 
+	// @brief Clear this frame, freeing its memory if nessesary
 	void Clear();
+
+	/// @brief Copy from an AegiVideoFrame
+	/// @param source The frame to copy from
 	void CopyFrom(const AegiVideoFrame &source);
-	void ConvertFrom(const AegiVideoFrame &source, VideoFrameFormat newFormat=FORMAT_RGB32);
-	void SetTo(const unsigned char *const source[], int width, int height, const int pitch[4], VideoFrameFormat format);
 
+	/// @brief Set the frame to an externally allocated block of memory
+	/// @param source Target frame data
+	/// @param width The frame width in pixels
+	/// @param height The frame height in pixels
+	/// @param pitch The frame's pitch
+	/// @param format The frame's format
+	void SetTo(const unsigned char *source, unsigned int width, unsigned int height, unsigned int pitch);
 
+	/// @brief Get this frame as a wxImage
 	wxImage GetImage() const;
-	int GetBpp(int plane=0) const;
+	int GetBpp() const { return 4; };
 };
-
-
