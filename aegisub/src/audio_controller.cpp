@@ -142,11 +142,11 @@ AudioController::AudioController()
 , playback_mode(PM_NotPlaying)
 , playback_timer(this)
 {
-	Connect(playback_timer.GetId(), wxEVT_TIMER, (wxObjectEventFunction)&AudioController::OnPlaybackTimer);
+	Bind(wxEVT_TIMER, &AudioController::OnPlaybackTimer, this, playback_timer.GetId());
 
 #ifdef wxHAS_POWER_EVENTS
-	Connect(wxEVT_POWER_SUSPENDED, (wxObjectEventFunction)&AudioController::OnComputerSuspending);
-	Connect(wxEVT_POWER_RESUME, (wxObjectEventFunction)&AudioController::OnComputerResuming);
+	Bind(wxEVT_POWER_SUSPENDED, &AudioController::OnComputerSuspending, this);
+	Bind(wxEVT_POWER_RESUME, &AudioController::OnComputerResuming, this);
 #endif
 }
 
@@ -164,8 +164,8 @@ void AudioController::OnPlaybackTimer(wxTimerEvent &event)
 	if (!player->IsPlaying() ||
 		(playback_mode != PM_ToEnd && pos >= player->GetEndPosition()+200))
 	{
-		// The +200 is to allow the player to end the sound output cleanly, otherwise a popping
-		// artifact can sometimes be heard.
+		// The +200 is to allow the player to end the sound output cleanly,
+		// otherwise a popping artifact can sometimes be heard.
 		Stop();
 	}
 	else
