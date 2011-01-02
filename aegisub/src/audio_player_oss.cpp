@@ -36,6 +36,10 @@
 
 #ifdef WITH_OSS
 
+#ifndef AGI_PRE
+#include <sys/param.h>
+#endif
+
 #include <libaegisub/log.h>
 
 #include "audio_player_oss.h"
