@@ -36,10 +36,12 @@
 
 
 #ifndef AGI_PRE
+#include <list>
+#include <memory>
+
 #include <wx/glcanvas.h>
 #include <wx/combobox.h>
 #include <wx/textctrl.h>
-#include <memory>
 #endif
 
 #include <libaegisub/signal.h>
