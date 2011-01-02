@@ -177,7 +177,7 @@ bool AegisubApp::OnInit() {
 		const std::string conf_user(StandardPaths::DecodePath(_T("?user/config.json")));
 		config::opt = new agi::Options(conf_user, GET_DEFAULT_CONFIG(default_config));
 	} catch (agi::Exception& e) {
-		wxPrintf("Caught agi::Exception: %s -> %s\n", e.GetName(), e.GetMessage());
+		LOG_E("config/init") << "Caught exception: " << e.GetName() << " -> " << e.GetMessage();
 	}
 
 #ifdef __WXMSW__

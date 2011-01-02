@@ -997,7 +997,7 @@ void FrameMain::OnOpenPreferences (wxCommandEvent &) {
 		pref.ShowModal();
 
 	} catch (agi::Exception& e) {
-		wxPrintf("Caught agi::Exception: %s -> %s\n", e.GetName(), e.GetMessage());
+		LOG_E("dialog/preferences") << "Caught exception: " << e.GetName() << " -> " << e.GetMessage();
 	}
 }
 
