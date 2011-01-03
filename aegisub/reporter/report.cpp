@@ -23,6 +23,7 @@
 #include <wx/log.h>
 #endif
 
+#include <libaegisub/io.h>
 #include <libaegisub/cajun/elements.h>
 #include <libaegisub/cajun/writer.h>
 
@@ -50,7 +51,7 @@ Report::Report() {
 	general["Locale"] = json::String(p->Locale());
 	general["Language"] = json::String(p->Language());
 	general["System Language"] = json::String(p->SystemLanguage());
-
+	root["General"] = general;
 
 
 	json::Object aegisub;
@@ -76,7 +77,7 @@ Report::Report() {
 
 	json::Object hardware;
 	hardware["Memory Size"] = json::Number();
-
+	root["Hardware"] = hardware;
 
 	json::Object cpu;
 	cpu["Id"] = json::String(p->CPUId());
@@ -85,20 +86,21 @@ Report::Report() {
 	cpu["Cores"] = json::Number(p->CPUCores());
 	cpu["Features"] = json::String(p->CPUFeatures());
 	cpu["Features2"] = json::String(p->CPUFeatures2());
-
+	root["CPU"] = cpu;
 
 	json::Object display;
 	display["Depth"] = json::Number(p->DisplayDepth());
 	display["Size"] = json::String(p->DisplaySize());
 	display["Pixels Per Inch"] = json::String(p->DisplayPPI());
 
+		json::Object gl;
+		gl["Vendor"] = json::String(p->OpenGLVendor());
+		gl["Renderer"] = json::String(p->OpenGLRenderer());
+		gl["Version"] = json::String(p->OpenGLVersion());
+		gl["Extensions"] = json::String(p->OpenGLExt());
+		display["OpenGL"] = gl;
 
-	json::Object gl;
-	gl["Vendor"] = json::String(p->OpenGLVendor());
-	gl["Renderer"] = json::String(p->OpenGLRenderer());
-	gl["Version"] = json::String(p->OpenGLVersion());
-	gl["Extensions"] = json::String(p->OpenGLExt());
-	display["OpenGL"] = gl;
+	root["Display"] = display;
 
 
 #ifdef __WINDOWS__
@@ -109,6 +111,7 @@ Report::Report() {
 	windows["AntiVirus Installed"] = json::Boolean();
 	windows["Firewall Installed"] = json::Boolean();
 	windows["DLL"] = json::String();
+	root["Windows"] = windows;
 
 #endif
 
@@ -116,6 +119,7 @@ Report::Report() {
 	json::Object u_nix;
 	u_nix["Desktop Environment"] = json::String(p->DesktopEnvironment());
 	u_nix["Libraries"] = json::String(p->UnixLibraries());
+	root["Unix"] = u_nix;
 #endif
 
 #ifdef __APPLE__
@@ -123,11 +127,16 @@ Report::Report() {
 	osx["Patch"] = json::String(p->PatchLevel());
 	osx["QuickTime Extensions"] = json::String(p->QuickTimeExt());
 	osx["Model"] = json::String(p->HardwareModel());
+	root["OS X"] = osx;
 #endif
+
+	agi::io::Save file("./t.json");
+	json::Writer::Write(root, file.Get());
 
 }
 
 /// @brief Return Report as Text for the Clipboard.
-void Report::Save(wxString file) {
-//	doc.doc->Save(file);
+void Report::Save(std::string filename) {
+//	agi::io::Save file(filename);
+//	json::Writer::Write(root, file.Get());
 }

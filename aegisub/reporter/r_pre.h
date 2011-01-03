@@ -29,7 +29,7 @@
 #include <stdint.h>
 
 // C++ std
-#include <map>
+#include <sstream>
 
 // 3rd party packages.
 #include <curl/curl.h>

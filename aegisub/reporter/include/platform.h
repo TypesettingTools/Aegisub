@@ -48,22 +48,22 @@ public:
 	/// Architecture
 	/// @return Architecture name.
 	/// @retval 32 bit, 64 bit
-	const char* ArchName();
+	std::string ArchName();
 
 	/// OS Family
 	/// @return OS Family
 	/// @retval Unix, Windows, Mac
-	const char* OSFamily();
+	std::string OSFamily();
 
 	/// OS Name
 	/// @return OS Name
 	/// @retval FreeBSD, Windows, Mac
-	const char* OSName();
+	std::string OSName();
 
 	/// Endian
 	/// @return Endian
 	/// @retval Little endian, Big endian
-	const char* Endian();
+	std::string Endian();
 
 	//   From <wx/gdicmn.h>
 
@@ -75,12 +75,12 @@ public:
 	/// Display size
 	/// @return Size delimited by a space.
 	/// @retval "w h"
-	const char* DisplaySize();
+	std::string DisplaySize();
 
 	/// Pixels per inch
 	/// @return PPI
 	/// @retval Integer
-	const char* DisplayPPI();
+	std::string DisplayPPI();
 
 	//   Misc
 
@@ -92,12 +92,12 @@ public:
 	/// wxWidgets version
 	/// @return Version
 	/// @retval Major.Minor.Micro.Patch: 2.9.0.0
-	const char* wxVersion();
+	std::string wxVersion();
 
 	/// Locale
 	/// @return Locale name
 	/// @retval C,POSIX,<code>
-	const char* Locale();
+	std::string Locale();
 
 	/// Language currently in use
 	/// @return Language reporter is currently running in

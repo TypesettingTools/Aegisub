@@ -19,6 +19,7 @@
 /// @ingroup base
 
 #ifndef R_PRECOMP
+#include <sstream>
 #include <wx/string.h>
 #include <wx/app.h>
 #include <wx/gdicmn.h>	// Display* functions.
@@ -104,20 +105,20 @@ std::string Platform::GetVideoInfo(enum Platform::VideoInfo which) {
 	delete glc;
 }
 
-const char* Platform::ArchName() {
-	return plat.GetArchName().c_str();
+std::string Platform::ArchName() {
+	return std::string(plat.GetArchName());
 };
 
-const char* Platform::OSFamily() {
-	return plat.GetOperatingSystemFamilyName().c_str();
+std::string Platform::OSFamily() {
+	return std::string(plat.GetOperatingSystemFamilyName());
 };
 
-const char* Platform::OSName() {
-	return plat.GetOperatingSystemIdName().c_str();
+std::string Platform::OSName() {
+	return std::string(plat.GetOperatingSystemIdName());
 };
 
-const char* Platform::Endian() {
-	return plat.GetEndiannessName().c_str();
+std::string Platform::Endian() {
+	return std::string(plat.GetEndiannessName());
 };
 
 
@@ -125,22 +126,28 @@ int Platform::DisplayDepth() {
 	return wxDisplayDepth();
 }
 
-const char* Platform::DisplaySize() {
+std::string Platform::DisplaySize() {
 	int x, y;
 	wxDisplaySize(&x, &y);
-	return wxString::Format(L"%d %d", x, y).c_str();
+	std::stringstream ss;
+	ss << x << " " << y;
+	return ss.str();
 }
 
-const char* Platform::DisplayPPI() {
-	return wxString::Format(L"%d %d", wxGetDisplayPPI().GetWidth(), wxGetDisplayPPI().GetHeight()).c_str();
+std::string Platform::DisplayPPI() {
+	std::stringstream ss;
+	ss << wxGetDisplayPPI().GetWidth() << " " << wxGetDisplayPPI().GetHeight();
+	return ss.str();
 }
 
-const char* Platform::wxVersion() {
-	return wxString::Format(L"%d.%d.%d.%d", wxMAJOR_VERSION, wxMINOR_VERSION, wxRELEASE_NUMBER, wxSUBRELEASE_NUMBER).c_str();
+std::string Platform::wxVersion() {
+	std::stringstream ss;
+	ss << wxMAJOR_VERSION << "." << wxMINOR_VERSION << "." << wxRELEASE_NUMBER << "." << wxSUBRELEASE_NUMBER;
+	return ss.str();
 }
 
-const char* Platform::Locale() {
-	return wxLocale().GetSysName().c_str();
+std::string Platform::Locale() {
+	return std::string(wxLocale().GetSysName());
 }
 
 const char* Platform::Language() {

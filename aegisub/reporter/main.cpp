@@ -89,7 +89,6 @@ bool Reporter::OnInit()
 
 
 	mFrame *frame = new mFrame(_("Aegisub Reporter"));
-//	Report *r = new Report;
 
 	if (parser.Found("j")) {
 		r->Save("report.json");
@@ -99,7 +98,8 @@ bool Reporter::OnInit()
 
 	SetTopWindow(frame);
 
-//	frame->SetReport(r);
+	r = new Report;
+	frame->SetReport(r);
 
 	return true;
 }

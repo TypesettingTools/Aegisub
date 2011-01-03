@@ -19,9 +19,6 @@
 /// @ingroup base
 
 #ifndef R_PRECOMP
-#include <map>
-
-#include <wx/listctrl.h>
 #endif
 
 /// @class Report
@@ -33,7 +30,7 @@ public:
 	~Report() {};
 
 	/// Save JSON report to a file.
-	void Save(wxString file);
+	void Save(std::string filename);
 
 private:
 	wxLocale *locale;
