@@ -25,7 +25,7 @@ class PlatformUnix : public Platform {
 public:
 	PlatformUnix() {};
 	virtual ~PlatformUnix() {};
-	wxString OSVersion();
+	const std::string OSVersion();
 	wxString DesktopEnvironment();
 
 	// Hardware

@@ -23,6 +23,10 @@
 #include <wx/log.h>
 #endif
 
+#include <libaegisub/cajun/elements.h>
+#include <libaegisub/cajun/writer.h>
+
+
 #include "report.h"
 #include "include/platform.h"
 #include "aegisub.h"
@@ -36,102 +40,99 @@ Report::Report() {
 /// @return Document.
 Report::XMLReport Report::ReportCreate() {
 
-	// So we can use GetString() below.
-	locale = new wxLocale();
 
-	doc.doc = new wxXmlDocument();
+	json::Object root;
 
-	doc.report = new wxXmlNode(wxXML_ELEMENT_NODE, "report");
-	doc.doc->SetRoot(doc.report);
 	Platform *p = Platform::GetPlatform();
 
-	doc.general = new wxXmlNode(doc.report, wxXML_ELEMENT_NODE, "general");
-	Add(doc.general, "signature", p->Signature());
-	Add(doc.general, "date", p->Date());
-	Add(doc.general, "arch", p->ArchName());
-	Add(doc.general, "osfamily", p->OSFamily());
-	Add(doc.general, "osname", p->OSName());
-	Add(doc.general, "osendian", p->Endian());
-	Add(doc.general, "osversion", p->OSVersion());
-	Add(doc.general, "wxversion", p->wxVersion());
-	Add(doc.general, "locale", p->Locale());
-	Add(doc.general, "lang", p->Language());
-	Add(doc.general, "syslang", p->SystemLanguage());
+	json::Object general;
+	general["Signature"] = json::String(p->Signature());
+	general["Date"] = json::String(p->Date());
+	general["Architecture"] = json::String(p->ArchName());
+	general["OS Family"] = json::String(p->OSFamily());
+	general["OS Name"] = json::String(p->OSName());
+	general["Endian"] = json::String(p->Endian());
+	general["OS Version"] = json::String(p->OSVersion());
+	general["wx Version"] = json::String(p->wxVersion());
+	general["Locale"] = json::String(p->Locale());
+	general["Language"] = json::String(p->Language());
+	general["System Language"] = json::String(p->SystemLanguage());
 
-	doc.aegisub = new wxXmlNode(wxXML_ELEMENT_NODE, "aegisub");
+/*
+	doc.aegisub = new wxXmlNode(wxXML_ELEMENT_NODE, Aegisub);
 	doc.report->AddChild(doc.aegisub);
 
 	Aegisub *config = new Aegisub();
-	Add(doc.aegisub, "lastversion", config->Read("Config/last version"));
-	Add(doc.aegisub, "spelllang", config->Read("Config/spell checker language"));
-	Add(doc.aegisub, "thesauruslang", config->Read("Config/thesaurus language"));
-	Add(doc.aegisub, "audioplayer", config->Read("Config/audio player"));
-	Add(doc.aegisub, "audioprovider", config->Read("Config/audio provider"));
-	Add(doc.aegisub, "videoprovider", config->Read("Config/video provider"));
-	Add(doc.aegisub, "subtitleprovider", config->Read("Config/subtitles provider"));
-	Add(doc.aegisub, "savecharset", config->Read("Config/save charset"));
-	Add(doc.aegisub, "gridfontsize", config->Read("Config/grid font size"));
-	Add(doc.aegisub, "editfontsize", config->Read("Config/edit font size"));
-	Add(doc.aegisub, "spectrum", config->Read("Config/audio spectrum"));
-	Add(doc.aegisub, "spectrumqual", config->Read("Config/audio spectrum quality"));
-	Add(doc.aegisub, "calltips", config->Read("Config/call tips enabled"));
-	Add(doc.aegisub, "medusakeys", config->Read("Config/audio medusa timing hotkeys"));
+	Add(doc.aegisub, Last Version, config->Read("Config/last version"));
+	Add(doc.aegisub, Spelling Language, config->Read("Config/spell checker language"));
+	Add(doc.aegisub, Thesaurus Language, config->Read("Config/thesaurus language"));
+	Add(doc.aegisub, Audio Player, config->Read("Config/audio player"));
+	Add(doc.aegisub, Audio Provider, config->Read("Config/audio provider"));
+	Add(doc.aegisub, Video Provider, config->Read("Config/video provider"));
+	Add(doc.aegisub, Subtitles Provider, config->Read("Config/subtitles provider"));
+	Add(doc.aegisub, Save Charset, config->Read("Config/save charset"));
+	Add(doc.aegisub, Grid Font Size, config->Read("Config/grid font size"));
+	Add(doc.aegisub, Edit Font Size, config->Read("Config/edit font size"));
+	Add(doc.aegisub, Spectrum Enabled, config->Read("Config/audio spectrum"));
+	Add(doc.aegisub, Spectrum Quality, config->Read("Config/audio spectrum quality"));
+	Add(doc.aegisub, Call Tips Enabled, config->Read("Config/call tips enabled"));
+	Add(doc.aegisub, Medusa Hotkeys Enabled, config->Read("Config/audio medusa timing hotkeys"));
 
-	doc.hardware = new wxXmlNode(wxXML_ELEMENT_NODE, "hardware");
+	doc.hardware = new wxXmlNode(wxXML_ELEMENT_NODE, Hardware);
 	doc.report->AddChild(doc.hardware);
-	Add(doc.hardware, "memory", p->Memory());
+	Add(doc.hardware, Memory, p->Memory());
 
-	wxXmlNode *cpu = new wxXmlNode(wxXML_ELEMENT_NODE, "cpu");
+	wxXmlNode *cpu = new wxXmlNode(wxXML_ELEMENT_NODE, CPU);
 	doc.hardware->AddChild(cpu);
-	Add(cpu, "id", p->CPUId());
-	Add(cpu, "speed", p->CPUSpeed());
-	Add(cpu, "count", p->CPUCount());
-	Add(cpu, "cores", p->CPUCores());
-	Add(cpu, "features", p->CPUFeatures());
-	Add(cpu, "features2", p->CPUFeatures2());
+	Add(cpu, Id, p->CPUId());
+	Add(cpu, Speed, p->CPUSpeed());
+	Add(cpu, Count, p->CPUCount());
+	Add(cpu, Cores, p->CPUCores());
+	Add(cpu, Features, p->CPUFeatures());
+	Add(cpu, Features2, p->CPUFeatures2());
 
-	wxXmlNode *display = new wxXmlNode(wxXML_ELEMENT_NODE, "display");
+	wxXmlNode *display = new wxXmlNode(wxXML_ELEMENT_NODE, Display);
 	doc.hardware->AddChild(display);
-	Add(display, "depth", p->DisplayDepth());
-	Add(display, "colour", p->DisplayColour());
-	Add(display, "size", p->DisplaySize());
-	Add(display, "ppi", p->DisplayPPI());
+	Add(display, Depth, p->DisplayDepth());
+	Add(display, Colour Screen, p->DisplayColour());
+	Add(display, Size, p->DisplaySize());
+	Add(display, Pixels Per Inch, p->DisplayPPI());
 
-	wxXmlNode *display_gl = new wxXmlNode(wxXML_ELEMENT_NODE, "opengl");
+	wxXmlNode *display_gl = new wxXmlNode(wxXML_ELEMENT_NODE, OpenGL);
 	display->AddChild(display_gl);
 
-	Add(display_gl, "vendor", p->OpenGLVendor());
-	Add(display_gl, "renderer", p->OpenGLRenderer());
-	Add(display_gl, "version", p->OpenGLVersion());
-	Add(display_gl, "extensions", p->OpenGLExt());
+	Add(display_gl, Vendor, p->OpenGLVendor());
+	Add(display_gl, Renderer, p->OpenGLRenderer());
+	Add(display_gl, Version, p->OpenGLVersion());
+	Add(display_gl, Extensions, p->OpenGLExt());
 
 #ifdef __WINDOWS__
-	doc.windows = new wxXmlNode(wxXML_ELEMENT_NODE, "windows");
+	doc.windows = new wxXmlNode(wxXML_ELEMENT_NODE, Windows);
 	doc.report->AddChild(doc.windows);
-	Add(doc.windows, "sp", p->ServicePack());
-	Add(doc.windows, "graphicsver", p->DriverGraphicsVersion());
-	Add(doc.windows, "dshowfilter", p->DirectShowFilters());
-	Add(doc.windows, "antivirus", p->AntiVirus());
-	Add(doc.windows, "firewall", p->Firewall());
-	Add(doc.windows, "dll", p->DLLVersions());
+	Add(doc.windows, Service Pack, p->ServicePack());
+	Add(doc.windows, Graphics Driver Version, p->DriverGraphicsVersion());
+	Add(doc.windows, DirectShow Filters, p->DirectShowFilters());
+	Add(doc.windows, AntiVirus Installed, p->AntiVirus());
+	Add(doc.windows, Firewall Installed, p->Firewall());
+	Add(doc.windows, DLL, p->DLLVersions());
 #endif
 
 #ifdef __UNIX__
-	doc.unixx = new wxXmlNode(wxXML_ELEMENT_NODE, "unix");
+	doc.unixx = new wxXmlNode(wxXML_ELEMENT_NODE, Unix);
 	doc.report->AddChild(doc.unixx);
-	Add(doc.unixx, "desktopenv", p->DesktopEnvironment());
-	Add(doc.unixx, "lib", p->UnixLibraries());
+	Add(doc.unixx, Desktop Environment, p->DesktopEnvironment());
+	Add(doc.unixx, Libraries, p->UnixLibraries());
 #endif
 
 #ifdef __APPLE__
-	doc.osx = new wxXmlNode(wxXML_ELEMENT_NODE, "osx");
+	doc.osx = new wxXmlNode(wxXML_ELEMENT_NODE, OS X);
 	doc.report->AddChild(doc.osx);
-	Add(doc.osx, "patch", p->PatchLevel());
-	Add(doc.osx, "quicktimeext", p->QuickTimeExt());
-	Add(doc.osx, "model", p->HardwareModel());
+	Add(doc.osx, Patch, p->PatchLevel());
+	Add(doc.osx, QuickTime Extensions, p->QuickTimeExt());
+	Add(doc.osx, Model, p->HardwareModel());
 
 #endif
-
+*/
 	return doc;
 }
 

@@ -25,7 +25,7 @@ class PlatformWindows : public Platform {
 public:
 	PlatformWindows() {};
 	virtual ~PlatformWindows() {};
-	wxString OSVersion();
+	const std::string OSVersion();
 	wxString DesktopEnvironment();
 
 	// Hardware

@@ -48,29 +48,29 @@ public:
 	/// Architecture
 	/// @return Architecture name.
 	/// @retval 32 bit, 64 bit
-	wxString ArchName();
+	const char* ArchName();
 
 	/// OS Family
 	/// @return OS Family
 	/// @retval Unix, Windows, Mac
-	wxString OSFamily();
+	const char* OSFamily();
 
 	/// OS Name
 	/// @return OS Name
 	/// @retval FreeBSD, Windows, Mac
-	wxString OSName();
+	const char* OSName();
 
 	/// Endian
 	/// @return Endian
 	/// @retval Little endian, Big endian
-	wxString Endian();
+	const char* Endian();
 
 	//   From <wx/gdicmn.h>
 
 	/// Is the display colour
 	/// @return true/false
 	/// @retval 1, 0
-	wxString DisplayColour();
+	int DisplayColour();
 
 	/// Display depth
 	/// @return Depth
@@ -92,32 +92,32 @@ public:
 	/// Report signature
 	/// @return Signature
 	/// @retval SHA256 hash
-	wxString Signature();
+	std::string Signature();
 
 	/// wxWidgets version
 	/// @return Version
 	/// @retval Major.Minor.Micro.Patch: 2.9.0.0
-	wxString wxVersion();
+	const char* wxVersion();
 
 	/// Locale
 	/// @return Locale name
 	/// @retval C,POSIX,<code>
-	wxString Locale();
+	const char* Locale();
 
 	/// Language currently in use
 	/// @return Language reporter is currently running in
 	/// @retval Language code: en_US, en_CA...
-	wxString Language();
+	const char* Language();
 
 	/// System language
 	/// @return Language operating system is currently running in
 	/// @retval Language code: en_US, en_CA...
-	wxString SystemLanguage();
+	const char* SystemLanguage();
 
 	/// Date
 	/// @return Date
 	/// @retval Date in YYYY-MM-DD
-	wxString Date();
+	std::string Date();
 
 	/// Time
 	/// @return Time
@@ -138,7 +138,7 @@ public:
 	/// Operating System version
 	/// @return OS Version
 	/// @retval Any
-	virtual wxString OSVersion()=0;
+	virtual const std::string OSVersion()=0;
 
 	//   Hardware
 

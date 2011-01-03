@@ -32,7 +32,7 @@ extern "C" {
 }
 
 
-wxString PlatformUnix::OSVersion() {
+const std::string PlatformUnix::OSVersion() {
 	struct utsname name;
 	if (uname(&name) != -1) {
 		return name.release;

@@ -104,24 +104,25 @@ wxString Platform::GetVideoInfo(enum Platform::VideoInfo which) {
 	return value;
 }
 
-wxString Platform::ArchName() {
-	return plat.GetArchName();
+const char* Platform::ArchName() {
+	return plat.GetArchName().c_str();
 };
 
-wxString Platform::OSFamily() {
-	return plat.GetOperatingSystemFamilyName();
+const char* Platform::OSFamily() {
+	return plat.GetOperatingSystemFamilyName().c_str();
 };
 
-wxString Platform::OSName() {
-	return plat.GetOperatingSystemIdName();
+const char* Platform::OSName() {
+	return plat.GetOperatingSystemIdName().c_str();
 };
 
-wxString Platform::Endian() {
-	return plat.GetEndiannessName();
+const char* Platform::Endian() {
+	return plat.GetEndiannessName().c_str();
 };
 
-wxString Platform::DisplayColour() {
-	return wxString::Format(L"%d", wxColourDisplay());
+int Platform::DisplayColour() {
+	return wxColourDisplay();
+//wxString::Format(L"%d", wxColourDisplay());
 }
 
 wxString Platform::DisplayDepth() {
@@ -138,29 +139,29 @@ wxString Platform::DisplayPPI() {
 	return wxString::Format(L"%d %d", wxGetDisplayPPI().GetWidth(), wxGetDisplayPPI().GetHeight());
 }
 
-wxString Platform::wxVersion() {
-	return wxString::Format(L"%d.%d.%d.%d", wxMAJOR_VERSION, wxMINOR_VERSION, wxRELEASE_NUMBER, wxSUBRELEASE_NUMBER);
+const char* Platform::wxVersion() {
+	return wxString::Format(L"%d.%d.%d.%d", wxMAJOR_VERSION, wxMINOR_VERSION, wxRELEASE_NUMBER, wxSUBRELEASE_NUMBER).c_str();
 }
 
-wxString Platform::Locale() {
-	return wxLocale().GetSysName();
+const char* Platform::Locale() {
+	return wxLocale().GetSysName().c_str();
 }
 
-wxString Platform::Language() {
+const char* Platform::Language() {
 	const wxLanguageInfo *info = locale->GetLanguageInfo(locale->GetLanguage());
-	return info->CanonicalName;
+	return info->CanonicalName.c_str();
 }
 
-wxString Platform::SystemLanguage() {
+const char* Platform::SystemLanguage() {
 	const wxLanguageInfo *info = locale->GetLanguageInfo(locale->GetSystemLanguage());
-	return info->CanonicalName;
+	return info->CanonicalName.c_str();
 }
 
-wxString Platform::Date() {
+std::string Platform::Date() {
 	return "";
 }
 
-wxString Platform::Signature() {
+std::string Platform::Signature() {
 	return "";
 }
 

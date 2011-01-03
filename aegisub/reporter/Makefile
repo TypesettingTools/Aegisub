@@ -11,8 +11,8 @@ PRECOMPILED_HEADER_NAME=r_pre.h
 #nodist_reporter_3_0_SOURCES = r_prec.h.gch
 #endif
 
-CXXFLAGS += -Iinclude $(CFLAGS_WX)
-LDFLAGS += $(LDFLAGS_WX) $(LDFLAGS_LIBCURL)
+CXXFLAGS += -Iinclude $(CFLAGS_WX) -I../libaegisub/include
+LDFLAGS += $(LDFLAGS_WX) $(LDFLAGS_LIBCURL) -L../libaegisub -laegisub-3.0 $(LDFLAGS_UCHARDET) -rpath ../libaegisub
 
 #if PRECOMPILED_HEADER
 ## This doesn't depend on Makefile on purpose, you should already know what you're doing when using this.
