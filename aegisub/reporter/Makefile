@@ -28,7 +28,6 @@ upload.o: CXXFLAGS += $(CFLAGS_CURL)
 SRC = \
 	aegisub.cpp \
 	main.cpp \
-	name_map.cpp \
 	platform.cpp \
 	platform_unix.cpp \
 	progress.cpp \
