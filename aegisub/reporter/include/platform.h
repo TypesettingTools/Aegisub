@@ -209,8 +209,8 @@ public:
 	virtual wxString DriverGraphicsVersion()=0;
 
 	/// Directshow filters installed
-	/// @return wxXmlNode of filters installed
-	/// @retval A wxXmlNode in the format of:
+	/// @return json::Object of filters installed
+	/// @retval A json::Object format of:
 	/// \verbatim
 	/// <filter>
 	///   <name version="[version]">[name]</name>
@@ -229,12 +229,10 @@ public:
 	virtual wxString Firewall()=0;
 
 	/// DLL versions used
-	/// @return wxXmlNode of DLLs used
-	/// @retval A wxXmlNode in the format of:
+	/// @return json::Array of DLLs used
+	/// @retval A json::Array in the format of:
 	/// \verbatim
-	/// <dll>
-	///   <file version="[version]">[name]</file>
-	/// </dll>
+	/// { "version", "name" }
 	/// \endverbatim
 	virtual wxString DLLVersions()=0;
 #endif
@@ -244,13 +242,11 @@ public:
 	//@{
 #ifdef __UNIX__
 
-	/// Dynamic libraries used
-	/// @return wxXmlNode of libraries used
-	/// @retval A wxXmlNode in the format of:
+	/// Library versions used
+	/// @return json::Array of DLLs used
+	/// @retval A json::Array in the format of:
 	/// \verbatim
-	/// <lib>
-	///   <file version="[version]">[name]</file>
-	/// </lib>
+	/// { "version", "name" }
 	/// \endverbatim
 	virtual std::string UnixLibraries()=0;
 
@@ -271,12 +267,10 @@ public:
 	virtual wxString PatchLevel()=0;
 
 	/// QuickTime extensions
-	/// @return wxXmlNode of extensions used
-	/// @retval A wxXmlNode in the format of:
+	/// @return json::Array of extensions used
+	/// @retval A json::Array in the format of:
 	/// \verbatim
-	/// <quicktime>
-	///   <ext version="[version]">[name]</file>
-	/// </quicktime>
+	/// { "version", "name" }
 	/// \endverbatim
 	virtual wxString QuickTimeExt()=0;
 

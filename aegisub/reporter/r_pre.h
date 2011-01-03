@@ -66,6 +66,5 @@
 #include <wx/wx.h>
 #include <wx/wxchar.h>
 #include <wx/wxprec.h>
-#include <wx/xml/xml.h>
 
 #endif

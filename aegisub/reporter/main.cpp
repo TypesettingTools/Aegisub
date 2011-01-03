@@ -50,7 +50,7 @@ bool Reporter::OnInit()
 	static const wxCmdLineEntryDesc cmdLineDesc[] = {
 		{ wxCMD_LINE_SWITCH, "c", "crash",      "Launch in crash mode.",	wxCMD_LINE_VAL_NONE, NULL },
 		{ wxCMD_LINE_SWITCH, "r", "report",     "Launch in Report mode.",	wxCMD_LINE_VAL_NONE, NULL },
-		{ wxCMD_LINE_SWITCH, "x", "xml",		"Dump XML file",			wxCMD_LINE_VAL_NONE, NULL },
+		{ wxCMD_LINE_SWITCH, "j", "json",		"Dump JSON file",			wxCMD_LINE_VAL_NONE, NULL },
 		{ wxCMD_LINE_SWITCH, "h", "help",       "This help message",		wxCMD_LINE_VAL_NONE, wxCMD_LINE_OPTION_HELP },
 		{ wxCMD_LINE_NONE, NULL, NULL, NULL, wxCMD_LINE_VAL_NONE, NULL}
 	};
@@ -91,9 +91,9 @@ bool Reporter::OnInit()
 	mFrame *frame = new mFrame(_("Aegisub Reporter"));
 //	Report *r = new Report;
 
-	if (parser.Found("x")) {
-		r->Save("report.xml");
-		wxPrintf("Report saved to report.xml\n");
+	if (parser.Found("j")) {
+		r->Save("report.json");
+		std::cout << "Report saved to report.json" << std::endl;
 		return false;
 	}
 
@@ -160,6 +160,6 @@ void mFrame::Cancel(wxCommandEvent& WXUNUSED(event)) {
 void mFrame::Submit(wxCommandEvent& WXUNUSED(event)) {
 	Progress *progress = new Progress(this);
 	Upload *upload = new Upload(progress);
-	upload->Report(_("./test.xml"));
+	upload->Report(_("./test.json"));
 }
 

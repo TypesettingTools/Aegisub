@@ -33,13 +33,6 @@
 
 /// @brief Contstructor
 Report::Report() {
-	ReportCreate();
-}
-
-/// @brief Create report layout and add contents.
-/// @return Document.
-Report::XMLReport Report::ReportCreate() {
-
 
 	json::Object root;
 
@@ -132,10 +125,9 @@ Report::XMLReport Report::ReportCreate() {
 	osx["Model"] = json::String(p->HardwareModel());
 #endif
 
-	return doc;
 }
 
 /// @brief Return Report as Text for the Clipboard.
 void Report::Save(wxString file) {
-	doc.doc->Save(file);
+//	doc.doc->Save(file);
 }

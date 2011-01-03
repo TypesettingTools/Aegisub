@@ -47,7 +47,7 @@ Upload::~Upload() {
 }
 
 
-/// @brief Submit an XML report.
+/// @brief Submit a JSON report.
 /// @param report filename of the report.
 void Upload::Report(wxString report) {
 	wxFile file(report, wxFile::read);
