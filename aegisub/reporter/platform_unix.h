@@ -26,7 +26,7 @@ public:
 	PlatformUnix() {};
 	virtual ~PlatformUnix() {};
 	const std::string OSVersion();
-	wxString DesktopEnvironment();
+	const char* DesktopEnvironment();
 
 	// Hardware
 	virtual std::string CPUId() { return ""; }

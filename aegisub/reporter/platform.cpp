@@ -75,7 +75,7 @@ void Platform::Init() {
  * @brief Gather video adapter information via OpenGL
  *
  */
-wxString Platform::GetVideoInfo(enum Platform::VideoInfo which) {
+std::string Platform::GetVideoInfo(enum Platform::VideoInfo which) {
 	int attList[] = { WX_GL_RGBA, WX_GL_DOUBLEBUFFER, 0 };
 	wxGLCanvas *glc = new wxGLCanvas(wxTheApp->GetTopWindow(), wxID_ANY, attList, wxDefaultPosition, wxDefaultSize);
 	wxGLContext *ctx = new wxGLContext(glc, 0);
@@ -86,22 +86,22 @@ wxString Platform::GetVideoInfo(enum Platform::VideoInfo which) {
 
 	switch (which) {
 		case VIDEO_EXT:
-			value = wxString(glGetString(GL_EXTENSIONS));
+			return reinterpret_cast<const char*>(glGetString(GL_EXTENSIONS));
 		break;
 		case VIDEO_RENDERER:
-			value = wxString(glGetString(GL_RENDERER));
+			return reinterpret_cast<const char*>(glGetString(GL_RENDERER));
 		break;
 		case VIDEO_VENDOR:
-			value = wxString(glGetString(GL_VENDOR));
+			return reinterpret_cast<const char*>(glGetString(GL_VENDOR));
 		break;
 		case VIDEO_VERSION:
-			value = wxString(glGetString(GL_VERSION));
+			return reinterpret_cast<const char*>(glGetString(GL_VERSION));
+		default:
+			return "";
 	}
 
 	delete ctx;
 	delete glc;
-
-	return value;
 }
 
 const char* Platform::ArchName() {
@@ -120,23 +120,19 @@ const char* Platform::Endian() {
 	return plat.GetEndiannessName().c_str();
 };
 
-int Platform::DisplayColour() {
-	return wxColourDisplay();
-//wxString::Format(L"%d", wxColourDisplay());
+
+int Platform::DisplayDepth() {
+	return wxDisplayDepth();
 }
 
-wxString Platform::DisplayDepth() {
-	return wxString::Format(L"%d", wxDisplayDepth());
-}
-
-wxString Platform::DisplaySize() {
+const char* Platform::DisplaySize() {
 	int x, y;
 	wxDisplaySize(&x, &y);
-	return wxString::Format(L"%d %d", x, y);
+	return wxString::Format(L"%d %d", x, y).c_str();
 }
 
-wxString Platform::DisplayPPI() {
-	return wxString::Format(L"%d %d", wxGetDisplayPPI().GetWidth(), wxGetDisplayPPI().GetHeight());
+const char* Platform::DisplayPPI() {
+	return wxString::Format(L"%d %d", wxGetDisplayPPI().GetWidth(), wxGetDisplayPPI().GetHeight()).c_str();
 }
 
 const char* Platform::wxVersion() {
@@ -166,24 +162,24 @@ std::string Platform::Signature() {
 }
 
 #ifdef __UNIX__
-wxString Platform::DesktopEnvironment() {
+const char* Platform::DesktopEnvironment() {
 	return "";
 }
 #endif
 
-wxString Platform::OpenGLVendor() {
+std::string Platform::OpenGLVendor() {
 	return GetVideoInfo(VIDEO_VENDOR);
 }
 
-wxString Platform::OpenGLRenderer() {
+std::string Platform::OpenGLRenderer() {
 	return GetVideoInfo(VIDEO_RENDERER);
 }
 
-wxString Platform::OpenGLVersion() {
+std::string Platform::OpenGLVersion() {
 	return GetVideoInfo(VIDEO_VERSION);
 }
 
-wxString Platform::OpenGLExt() {
+std::string Platform::OpenGLExt() {
 	return GetVideoInfo(VIDEO_EXT);
 }
 

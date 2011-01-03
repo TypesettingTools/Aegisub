@@ -40,8 +40,8 @@ const std::string PlatformUnix::OSVersion() {
 	return "";
 }
 
-wxString PlatformUnix::DesktopEnvironment() {
-	return wxTheApp->GetTraits()->GetDesktopEnvironment();
+const char* PlatformUnix::DesktopEnvironment() {
+	return wxTheApp->GetTraits()->GetDesktopEnvironment().c_str();
 }
 
 

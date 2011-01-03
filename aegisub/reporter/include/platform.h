@@ -67,25 +67,20 @@ public:
 
 	//   From <wx/gdicmn.h>
 
-	/// Is the display colour
-	/// @return true/false
-	/// @retval 1, 0
-	int DisplayColour();
-
 	/// Display depth
 	/// @return Depth
 	/// @return Integer
-	wxString DisplayDepth();
+	int DisplayDepth();
 
 	/// Display size
 	/// @return Size delimited by a space.
 	/// @retval "w h"
-	wxString DisplaySize();
+	const char* DisplaySize();
 
 	/// Pixels per inch
 	/// @return PPI
 	/// @retval Integer
-	wxString DisplayPPI();
+	const char* DisplayPPI();
 
 	//   Misc
 
@@ -181,22 +176,22 @@ public:
 	/// OpenGL vendor
 	/// @return Vendor
 	/// @retval Any
-	virtual wxString OpenGLVendor();
+	virtual std::string OpenGLVendor();
 
 	/// OpenGL renderer
 	/// @return Renderer
 	/// @retval Any
-	virtual wxString OpenGLRenderer();
+	virtual std::string OpenGLRenderer();
 
 	/// OpenGL version
 	/// @return Renderer version
 	/// @retval Any
-	virtual wxString OpenGLVersion();
+	virtual std::string OpenGLVersion();
 
 	/// OpenGL extensions
 	/// @return OpenGL extensions
 	/// @retval Space delimited list of extensions
-	virtual wxString OpenGLExt();
+	virtual std::string OpenGLExt();
 	//@}
 
 	/// @name Windows
@@ -262,7 +257,7 @@ public:
 	/// Desktop environment
 	/// @return Environment
 	/// @retval Gnome, KDE, WindowMaker...
-	virtual wxString DesktopEnvironment()=0;
+	virtual const char* DesktopEnvironment()=0;
 #endif
 	//@}
 
@@ -313,6 +308,6 @@ private:
 	/// Retrieve OpenGL video information.
 	/// @param which Requested information
 	/// @return Video info.
-	wxString GetVideoInfo(enum Platform::VideoInfo which);
+	std::string GetVideoInfo(enum Platform::VideoInfo which);
 
 };

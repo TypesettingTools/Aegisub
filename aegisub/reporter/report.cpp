@@ -95,18 +95,17 @@ Report::XMLReport Report::ReportCreate() {
 
 
 	json::Object display;
-//	display["Depth"] = json::Number(p->DisplayDepth());
-//	display["Colour"] = json::Number(p->DisplayColour());
-//	display["Size"] = json::String(p->DisplaySize());
-//	display["Pixels Per Inch"] = json::Number(p->DisplayPPI());
+	display["Depth"] = json::Number(p->DisplayDepth());
+	display["Size"] = json::String(p->DisplaySize());
+	display["Pixels Per Inch"] = json::String(p->DisplayPPI());
 
 
-//	json::Object gl;
-//	gl["Vendor"] = json::String(p->OpenGLVendor());
-//	gl["Renderer"] = json::String(p->OpenGLRenderer());
-//	gl["Version"] = json::String(p->OpenGLVersion());
-//	gl["Extensions"] = json::String(p->OpenGLExt());
-//	display["OpenGL"] = gl;
+	json::Object gl;
+	gl["Vendor"] = json::String(p->OpenGLVendor());
+	gl["Renderer"] = json::String(p->OpenGLRenderer());
+	gl["Version"] = json::String(p->OpenGLVersion());
+	gl["Extensions"] = json::String(p->OpenGLExt());
+	display["OpenGL"] = gl;
 
 
 #ifdef __WINDOWS__
@@ -122,8 +121,8 @@ Report::XMLReport Report::ReportCreate() {
 
 #ifdef __UNIX__
 	json::Object u_nix;
-//	u_nix["Desktop Environment"] = json::String(p->DesktopEnvironment());
-//	u_nix["Libraries"] = json::String(p->UnixLibraries());
+	u_nix["Desktop Environment"] = json::String(p->DesktopEnvironment());
+	u_nix["Libraries"] = json::String(p->UnixLibraries());
 #endif
 
 #ifdef __APPLE__
