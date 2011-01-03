@@ -27,14 +27,14 @@ public:
 	virtual ~PlatformUnixBSD() {};
 
 	// Hardware
-	virtual wxString CPUId();
-	virtual wxString CPUSpeed();
-	virtual wxString CPUCores();
-	virtual wxString CPUCount();
-	virtual wxString CPUFeatures();
-	virtual wxString CPUFeatures2();
+	virtual std::string CPUId();
+	virtual std::string CPUSpeed();
+	virtual int CPUCores();
+	virtual int CPUCount();
+	virtual std::string CPUFeatures();
+	virtual std::string CPUFeatures2();
 	virtual uint64_t Memory();
 
 	// Unix Specific
-	virtual wxString UnixLibraries();
+	virtual std::string UnixLibraries();
 };

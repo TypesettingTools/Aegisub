@@ -86,137 +86,54 @@ Report::XMLReport Report::ReportCreate() {
 
 
 	json::Object cpu;
-	cpu["Id"] = json::String();
-	cpu["Speed"] = json::String();
-	cpu["Count"] = json::String();
-	cpu["Cores"] = json::String();
-	cpu["Features"] = json::String();
-	cpu["Features2"] = json::String();
+	cpu["Id"] = json::String(p->CPUId());
+	cpu["Speed"] = json::String(p->CPUSpeed());
+	cpu["Count"] = json::Number(p->CPUCount());
+	cpu["Cores"] = json::Number(p->CPUCores());
+	cpu["Features"] = json::String(p->CPUFeatures());
+	cpu["Features2"] = json::String(p->CPUFeatures2());
 
 
+	json::Object display;
+//	display["Depth"] = json::Number(p->DisplayDepth());
+//	display["Colour"] = json::Number(p->DisplayColour());
+//	display["Size"] = json::String(p->DisplaySize());
+//	display["Pixels Per Inch"] = json::Number(p->DisplayPPI());
 
-/*
-	wxXmlNode *cpu = new wxXmlNode(wxXML_ELEMENT_NODE, CPU);
-	doc.hardware->AddChild(cpu);
-	Add(cpu, Id, p->CPUId());
-	Add(cpu, Speed, p->CPUSpeed());
-	Add(cpu, Count, p->CPUCount());
-	Add(cpu, Cores, p->CPUCores());
-	Add(cpu, Features, p->CPUFeatures());
-	Add(cpu, Features2, p->CPUFeatures2());
 
-	wxXmlNode *display = new wxXmlNode(wxXML_ELEMENT_NODE, Display);
-	doc.hardware->AddChild(display);
-	Add(display, Depth, p->DisplayDepth());
-	Add(display, Colour Screen, p->DisplayColour());
-	Add(display, Size, p->DisplaySize());
-	Add(display, Pixels Per Inch, p->DisplayPPI());
+//	json::Object gl;
+//	gl["Vendor"] = json::String(p->OpenGLVendor());
+//	gl["Renderer"] = json::String(p->OpenGLRenderer());
+//	gl["Version"] = json::String(p->OpenGLVersion());
+//	gl["Extensions"] = json::String(p->OpenGLExt());
+//	display["OpenGL"] = gl;
 
-	wxXmlNode *display_gl = new wxXmlNode(wxXML_ELEMENT_NODE, OpenGL);
-	display->AddChild(display_gl);
-
-	Add(display_gl, Vendor, p->OpenGLVendor());
-	Add(display_gl, Renderer, p->OpenGLRenderer());
-	Add(display_gl, Version, p->OpenGLVersion());
-	Add(display_gl, Extensions, p->OpenGLExt());
 
 #ifdef __WINDOWS__
-	doc.windows = new wxXmlNode(wxXML_ELEMENT_NODE, Windows);
-	doc.report->AddChild(doc.windows);
-	Add(doc.windows, Service Pack, p->ServicePack());
-	Add(doc.windows, Graphics Driver Version, p->DriverGraphicsVersion());
-	Add(doc.windows, DirectShow Filters, p->DirectShowFilters());
-	Add(doc.windows, AntiVirus Installed, p->AntiVirus());
-	Add(doc.windows, Firewall Installed, p->Firewall());
-	Add(doc.windows, DLL, p->DLLVersions());
+	json::Object windows;
+	windows["Service Pack"] = json::String();
+	windows["Graphics Driver Version"] = json::String();
+	windows["DirectShow Filters"] = json::String();
+	windows["AntiVirus Installed"] = json::Boolean();
+	windows["Firewall Installed"] = json::Boolean();
+	windows["DLL"] = json::String();
+
 #endif
 
 #ifdef __UNIX__
-	doc.unixx = new wxXmlNode(wxXML_ELEMENT_NODE, Unix);
-	doc.report->AddChild(doc.unixx);
-	Add(doc.unixx, Desktop Environment, p->DesktopEnvironment());
-	Add(doc.unixx, Libraries, p->UnixLibraries());
+	json::Object u_nix;
+//	u_nix["Desktop Environment"] = json::String(p->DesktopEnvironment());
+//	u_nix["Libraries"] = json::String(p->UnixLibraries());
 #endif
 
 #ifdef __APPLE__
-	doc.osx = new wxXmlNode(wxXML_ELEMENT_NODE, OS X);
-	doc.report->AddChild(doc.osx);
-	Add(doc.osx, Patch, p->PatchLevel());
-	Add(doc.osx, QuickTime Extensions, p->QuickTimeExt());
-	Add(doc.osx, Model, p->HardwareModel());
-
+	json::Object osx;
+	osx["Patch"] = json::String(p->PatchLevel());
+	osx["QuickTime Extensions"] = json::String(p->QuickTimeExt());
+	osx["Model"] = json::String(p->HardwareModel());
 #endif
-*/
+
 	return doc;
-}
-
-/// @brief Add a new XML node.
-/// @param parent Parent nodee
-/// @param node Name of the new node
-/// @param text Contents
-void Report::Add(wxXmlNode *parent, wxString node, wxString text) {
-	// Using AddChild() keeps the nodes in their natural order. It's slower but our
-	// document is pretty small.  Doing it the faster way results in reverse-ordered nodes.
-	wxXmlNode *tmp = new wxXmlNode(wxXML_ELEMENT_NODE, node);
-	tmp->AddChild(new wxXmlNode(wxXML_TEXT_NODE, node, text));
-	parent->AddChild(tmp);
-}
-
-/// @brief Recursive function to populate listView and text-based for Clipboard.
-/// @param node Node to parse.
-/// @param listView wxListView to populate.
-void Report::ProcessNode(wxXmlNode *node, wxString *text, wxListView *listView) {
-	wxString node_name;
-	nameMap::iterator names;
-	nameMap nMap = HumanNames();
-
-	wxXmlNode *child = node->GetChildren();
-
-	while (child) {
-		wxString name = child->GetName();
-
-		if ((names = nMap.find(name)) != nMap.end()) {
-			node_name = locale->GetString(names->second);
-		} else {
-			wxLogDebug("Report::ProcessNode Unknown node found: \"%s\" (add it to nMap)\n", name);
-			node_name = name;
-		}
-
-		wxListItem column;
-		int row = listView->GetItemCount();
-		int depth = child->GetDepth();
-
-		if (child->GetChildren()->GetType() == wxXML_ELEMENT_NODE) {
-			int font_size = 15 - floor(depth * 2 + 0.5);
-			int bgcolour = 155 + (depth * 20);
-			listView->InsertItem(row,node_name);
-			listView->SetItemFont(row, wxFont(font_size, wxFONTFAMILY_SWISS, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD));
-			listView->SetItemBackgroundColour(row, wxColour(bgcolour,bgcolour,bgcolour, wxALPHA_OPAQUE));
-			if (depth == 1) text->Append("\n");
-			text->Append(wxString::Format("%s\n", node_name.Pad((depth*2)-2, ' ', 0)));
-			ProcessNode(child, text, listView);
-		} else {
-			wxString content = child->GetNodeContent();
-			listView->InsertItem(row,node_name);
-			listView->SetItem(row,1, content);
-			text->Append(wxString::Format("%-22s: %s\n", node_name.Pad((depth*2)-2, ' ', 0), content));
-		}
-
-		child = child->GetNext();
-	}
-}
-
-
-void Report::Fill(wxString *text, wxListView *listView) {
-
-	listView->InsertColumn(0, _("Entry"), wxLIST_FORMAT_RIGHT);
-	listView->InsertColumn(1, _("Text"), wxLIST_FORMAT_LEFT, 100);
-
-	ProcessNode(doc.report, text, listView);
-
-	listView->SetColumnWidth(0, wxLIST_AUTOSIZE);
-	listView->SetColumnWidth(1, wxLIST_AUTOSIZE);
-
 }
 
 /// @brief Return Report as Text for the Clipboard.

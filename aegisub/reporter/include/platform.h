@@ -145,33 +145,33 @@ public:
 	/// CPU ID string
 	/// @return CPU ID
 	/// @retval Any, ex: Intel(R) Pentium(R) M processor 1600MHz
-	virtual wxString CPUId()=0;
+	virtual std::string CPUId()=0;
 
 	/// CPU Speed
 	/// @return Speed
 	/// @retval Integer
-	virtual wxString CPUSpeed()=0;
+	virtual std::string CPUSpeed()=0;
 
 	/// CPU Count
 	/// @return Count
 	/// @retval Integer
-	virtual wxString CPUCount()=0;
+	virtual int CPUCount()=0;
 
 	/// CPU Cores
 	/// @return Cores
 	/// @retval Integer
-	virtual wxString CPUCores()=0;
+	virtual int CPUCores()=0;
 
 	/// CPU Features
 	/// @return Features set 1
 	/// @retval FPU,VME,DE,PSE,TSC,MSR...
-	virtual wxString CPUFeatures()=0;
+	virtual std::string CPUFeatures()=0;
 
 	/// CPU Features2
 	/// @return Features set 2
 	/// @retval CPU-specific features
 	/// @note "EST,TM2" on my P-M, or "SYSCALL,NX,MMX+,LM,3DNow!+,3DNow!" on an Opteron
-	virtual wxString CPUFeatures2()=0;
+	virtual std::string CPUFeatures2()=0;
 
 	/// System memory
 	/// @return Memory
@@ -257,7 +257,7 @@ public:
 	///   <file version="[version]">[name]</file>
 	/// </lib>
 	/// \endverbatim
-	virtual wxString UnixLibraries()=0;
+	virtual std::string UnixLibraries()=0;
 
 	/// Desktop environment
 	/// @return Environment

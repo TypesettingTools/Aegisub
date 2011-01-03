@@ -29,14 +29,14 @@ public:
 	wxString DesktopEnvironment();
 
 	// Hardware
-	virtual wxString CPUId() { return ""; }
-	virtual wxString CPUSpeed() { return ""; }
-	virtual wxString CPUCores() { return ""; }
-	virtual wxString CPUCount() { return ""; }
-	virtual wxString CPUFeatures() { return ""; }
-	virtual wxString CPUFeatures2() { return ""; }
+	virtual std::string CPUId() { return ""; }
+	virtual std::string CPUSpeed() { return ""; }
+	virtual int CPUCores() { return 0; }
+	virtual int CPUCount() { return 0; }
+	virtual std::string CPUFeatures() { return ""; }
+	virtual std::string CPUFeatures2() { return ""; }
 	virtual uint64_t Memory() { return 0; }
 
 	// Unix Specific
-	virtual wxString UnixLibraries()  { return ""; };
+	virtual std::string UnixLibraries()  { return ""; };
 };
