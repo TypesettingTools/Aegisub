@@ -34,7 +34,7 @@ public:
 	Platform() {};
 
 	/// Destructor
-	virtual ~Platform() {};
+	~Platform();
 
 	/// Get platform instance.
 	static Platform* GetPlatform();
@@ -290,6 +290,11 @@ private:
 	/// wxLocale instance.
 	wxLocale *locale;
 
+	/// wxGLCanvas.
+	wxGLCanvas *glc;
+
+	/// wxGLContext.
+	wxGLContext *ctx;
 
 	/// Available video information.
 	enum VideoInfo {

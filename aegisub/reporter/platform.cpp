@@ -70,6 +70,19 @@ Platform* Platform::GetPlatform() {
 void Platform::Init() {
 	locale = new wxLocale();
 	locale->Init();
+
+	int attList[] = { WX_GL_RGBA, WX_GL_DOUBLEBUFFER, 0 };
+	glc = new wxGLCanvas(wxTheApp->GetTopWindow(), wxID_ANY, attList, wxDefaultPosition, wxSize(0,0));
+	ctx = new wxGLContext(glc, 0);
+	wxGLCanvas &cr = *glc;
+	ctx->SetCurrent(cr);
+
+}
+
+Platform::~Platform() {
+	delete ctx;
+	delete glc;
+	delete locale;
 }
 
 /**
@@ -77,11 +90,6 @@ void Platform::Init() {
  *
  */
 std::string Platform::GetVideoInfo(enum Platform::VideoInfo which) {
-	int attList[] = { WX_GL_RGBA, WX_GL_DOUBLEBUFFER, 0 };
-	wxGLCanvas *glc = new wxGLCanvas(wxTheApp->GetTopWindow(), wxID_ANY, attList, wxDefaultPosition, wxDefaultSize);
-	wxGLContext *ctx = new wxGLContext(glc, 0);
-	wxGLCanvas &cr = *glc;
-	ctx->SetCurrent(cr);
 
 	wxString value;
 
@@ -101,8 +109,6 @@ std::string Platform::GetVideoInfo(enum Platform::VideoInfo which) {
 			return "";
 	}
 
-	delete ctx;
-	delete glc;
 }
 
 std::string Platform::ArchName() {
