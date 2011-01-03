@@ -62,12 +62,11 @@ wxString PlatformUnixBSD::CPUFeatures2() {
 	return "";
 };
 
-wxString PlatformUnixBSD::Memory() {
+uint64_t PlatformUnixBSD::Memory() {
 	uint64_t memory;
 	size_t len = sizeof(memory);
 	sysctlbyname("hw.physmem", &memory, &len, NULL, 0);
-	return wxString::Format("%d", memory);
-	return "";
+	return memory;
 };
 
 wxString PlatformUnixBSD::UnixLibraries() {

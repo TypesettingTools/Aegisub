@@ -176,7 +176,7 @@ public:
 	/// System memory
 	/// @return Memory
 	/// @retval Integer in bytes
-	virtual wxString Memory()=0;
+	virtual uint64_t Memory()=0;
 
 	/// OpenGL vendor
 	/// @return Vendor

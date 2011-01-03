@@ -44,34 +44,4 @@ wxString PlatformUnix::DesktopEnvironment() {
 	return wxTheApp->GetTraits()->GetDesktopEnvironment();
 }
 
-wxString PlatformUnix::CPUId() {
-	return "";
-};
 
-wxString PlatformUnix::CPUSpeed() {
-	return "";
-};
-
-wxString PlatformUnix::CPUCores() {
-	return "";
-};
-
-wxString PlatformUnix::CPUCount() {
-	return "";
-};
-
-wxString PlatformUnix::CPUFeatures() {
-	return "";
-};
-
-wxString PlatformUnix::CPUFeatures2() {
-	return "";
-};
-
-wxString PlatformUnix::Memory() {
-	return "";
-};
-
-wxString PlatformUnix::UnixLibraries() {
-	return "";
-};

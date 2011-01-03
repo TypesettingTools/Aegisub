@@ -58,30 +58,44 @@ Report::XMLReport Report::ReportCreate() {
 	general["Language"] = json::String(p->Language());
 	general["System Language"] = json::String(p->SystemLanguage());
 
+
+
+	json::Object aegisub;
+
+	/// I'll fix these at the end.
+	/*
+	Last Version
+	Spelling Language
+	Thesaurus Language
+	Audio Player
+	Audio Provider
+	Video Provider
+	Subtitles Provider
+	Save Charset
+	Grid Font Size
+	Edit Font Size
+	Spectrum Enabled
+	Spectrum Quality
+	Call Tips Enabled
+	Medusa Hotkeys Enabled
+	*/
+
+
+	json::Object hardware;
+	hardware["Memory Size"] = json::Number();
+
+
+	json::Object cpu;
+	cpu["Id"] = json::String();
+	cpu["Speed"] = json::String();
+	cpu["Count"] = json::String();
+	cpu["Cores"] = json::String();
+	cpu["Features"] = json::String();
+	cpu["Features2"] = json::String();
+
+
+
 /*
-	doc.aegisub = new wxXmlNode(wxXML_ELEMENT_NODE, Aegisub);
-	doc.report->AddChild(doc.aegisub);
-
-	Aegisub *config = new Aegisub();
-	Add(doc.aegisub, Last Version, config->Read("Config/last version"));
-	Add(doc.aegisub, Spelling Language, config->Read("Config/spell checker language"));
-	Add(doc.aegisub, Thesaurus Language, config->Read("Config/thesaurus language"));
-	Add(doc.aegisub, Audio Player, config->Read("Config/audio player"));
-	Add(doc.aegisub, Audio Provider, config->Read("Config/audio provider"));
-	Add(doc.aegisub, Video Provider, config->Read("Config/video provider"));
-	Add(doc.aegisub, Subtitles Provider, config->Read("Config/subtitles provider"));
-	Add(doc.aegisub, Save Charset, config->Read("Config/save charset"));
-	Add(doc.aegisub, Grid Font Size, config->Read("Config/grid font size"));
-	Add(doc.aegisub, Edit Font Size, config->Read("Config/edit font size"));
-	Add(doc.aegisub, Spectrum Enabled, config->Read("Config/audio spectrum"));
-	Add(doc.aegisub, Spectrum Quality, config->Read("Config/audio spectrum quality"));
-	Add(doc.aegisub, Call Tips Enabled, config->Read("Config/call tips enabled"));
-	Add(doc.aegisub, Medusa Hotkeys Enabled, config->Read("Config/audio medusa timing hotkeys"));
-
-	doc.hardware = new wxXmlNode(wxXML_ELEMENT_NODE, Hardware);
-	doc.report->AddChild(doc.hardware);
-	Add(doc.hardware, Memory, p->Memory());
-
 	wxXmlNode *cpu = new wxXmlNode(wxXML_ELEMENT_NODE, CPU);
 	doc.hardware->AddChild(cpu);
 	Add(cpu, Id, p->CPUId());

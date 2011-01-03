@@ -33,7 +33,7 @@ public:
 	virtual wxString CPUCount();
 	virtual wxString CPUFeatures();
 	virtual wxString CPUFeatures2();
-	virtual wxString Memory();
+	virtual uint64_t Memory();
 
 	// Unix Specific
 	virtual wxString UnixLibraries();

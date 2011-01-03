@@ -29,14 +29,14 @@ public:
 	wxString DesktopEnvironment();
 
 	// Hardware
-	virtual wxString CPUId();
-	virtual wxString CPUSpeed();
-	virtual wxString CPUCores();
-	virtual wxString CPUCount();
-	virtual wxString CPUFeatures();
-	virtual wxString CPUFeatures2();
-	virtual wxString Memory();
+	virtual wxString CPUId() { return ""; }
+	virtual wxString CPUSpeed() { return ""; }
+	virtual wxString CPUCores() { return ""; }
+	virtual wxString CPUCount() { return ""; }
+	virtual wxString CPUFeatures() { return ""; }
+	virtual wxString CPUFeatures2() { return ""; }
+	virtual uint64_t Memory() { return 0; }
 
 	// Unix Specific
-	virtual wxString UnixLibraries();
+	virtual wxString UnixLibraries()  { return ""; };
 };
