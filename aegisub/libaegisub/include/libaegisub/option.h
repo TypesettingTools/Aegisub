@@ -52,6 +52,14 @@ public:
 class Options {
 	friend class PutOptionVisitor;
 
+public:
+	/// Options class settings.
+	enum OptionSetting {
+		NONE       = 0x000,		///< Do nothing (default)
+		FLUSH_SKIP = 0x001,		///< Skip writing the config file to disk
+	};
+
+private:
 	/// Internal OptionValueMap
 	OptionValueMap values;
 
@@ -67,6 +75,9 @@ class Options {
 
 	/// Whether the user (final) config has been loaded
 	bool config_loaded;
+
+	/// Settings.
+	const OptionSetting setting;
 
 	/// @brief Load a config file into the Options object.
 	/// @param config Config to load.
@@ -85,7 +96,7 @@ public:
 	/// @brief Constructor
 	/// @param file User config that will be loaded from and written back to.
 	/// @param default_config Default configuration.
-	Options(const std::string &file, const std::string &default_config);
+	Options(const std::string &file, const std::string &default_config, const OptionSetting setting=NONE);
 
 	/// Destructor
 	~Options();

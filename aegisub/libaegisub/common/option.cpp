@@ -37,15 +37,19 @@
 
 namespace agi {
 
-Options::Options(const std::string &file, const std::string& default_config):
-							config_file(file), config_default(default_config), config_loaded(false) {
+Options::Options(const std::string &file, const std::string& default_config, const OptionSetting setting):
+							config_file(file), config_default(default_config), config_loaded(false), setting(setting) {
 	LOG_D("agi/options") << "New Options object";
 	std::istringstream stream(default_config);
 	LoadConfig(stream);
 }
 
 Options::~Options() {
-	Flush();
+
+	if ((setting & FLUSH_SKIP) != FLUSH_SKIP) {
+		Flush();
+	}
+
 	for (OptionValueMap::iterator i = values.begin(); i != values.end(); i++) {
 		delete i->second;
 	}
