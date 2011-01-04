@@ -29,11 +29,11 @@
 #include "platform_unix_linux.h"
 
 
-wxString PlatformUnixLinux::CPUId() {
+std::string PlatformUnixLinux::CPUId() {
     return getProcValue("/proc/cpuinfo", "model name\t");
 };
 
-wxString PlatformUnixLinux::CPUSpeed() {
+std::string PlatformUnixLinux::CPUSpeed() {
     return getProcValue("/proc/cpuinfo", "cpu MHz\t\t");
 };
 
@@ -42,14 +42,14 @@ wxString PlatformUnixLinux::CPUSpeed() {
 // due to SMT/HyperThreading.
 // For now report the logical CPU count and no number of cores; this seems
 // to make the most sense.
-wxString PlatformUnixLinux::CPUCores() {
+std::string PlatformUnixLinux::CPUCores() {
     return "";
 };
 
-wxString PlatformUnixLinux::CPUCount() {
+std::string PlatformUnixLinux::CPUCount() {
     // This returns the index of the last processor.
     // Increment and return as string.
-    wxString procIndex = getProcValue("/proc/cpuinfo", "processor\t");
+    std::string procIndex = getProcValue("/proc/cpuinfo", "processor\t");
     if (procIndex.IsNumber()) {
         long val = 0;
         procIndex.ToLong(&val);
@@ -60,16 +60,16 @@ wxString PlatformUnixLinux::CPUCount() {
     return "1";
 };
 
-wxString PlatformUnixLinux::CPUFeatures() {
+std::string PlatformUnixLinux::CPUFeatures() {
     return getProcValue("/proc/cpuinfo", "flags\t\t");
 };
 
-wxString PlatformUnixLinux::CPUFeatures2() {
+std::string PlatformUnixLinux::CPUFeatures2() {
     return "";
 };
 
-wxString PlatformUnixLinux::Memory() {
-    wxString memKb = getProcValue("/proc/meminfo", "MemTotal");
+std::string PlatformUnixLinux::Memory() {
+    std::string memKb = getProcValue("/proc/meminfo", "MemTotal");
     memKb = memKb.BeforeFirst(' ');
     if (memKb.IsNumber()) {
         long val = 0;
@@ -80,7 +80,7 @@ wxString PlatformUnixLinux::Memory() {
     return "";
 };
 
-wxString PlatformUnixLinux::UnixLibraries() {
+std::string PlatformUnixLinux::UnixLibraries() {
     return "";
 };
 
@@ -88,16 +88,16 @@ wxString PlatformUnixLinux::UnixLibraries() {
  * @brief Parse a /proc "key: value" style text file and extract a value.
  * @return The last valid value
  */
-wxString PlatformUnixLinux::getProcValue(const wxString path, const wxString key) {
-    const wxString prefix = wxString(key) + ":";
+std::string PlatformUnixLinux::getProcValue(const std::string path, const std::string key) {
+    const std::string prefix = std::string(key) + ":";
     wxTextFile *file = new wxTextFile(path);
-    wxString val = wxString();
+    std::string val = std::string();
 
     file->Open();
-    for (wxString str = file->GetFirstLine(); !file->Eof(); str = file->GetNextLine()) {
+    for (std::string str = file->GetFirstLine(); !file->Eof(); str = file->GetNextLine()) {
         str.Trim(false);
         if (str.StartsWith(prefix)) {
-            val = wxString(str.Mid(key.Len() + 1));
+            val = std::string(str.Mid(key.Len() + 1));
             val.Trim(false);
         }
     }

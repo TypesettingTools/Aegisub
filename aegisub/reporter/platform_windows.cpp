@@ -27,78 +27,78 @@
 #include "include/platform.h"
 #include "platform_windows.h"
 
-wxString PlatformWindows::OSVersion() {
+std::string PlatformWindows::OSVersion() {
 	return "";
 }
 
-wxString PlatformWindows::DesktopEnvironment() {
+std::string PlatformWindows::DesktopEnvironment() {
 	return wxTheApp->GetTraits()->GetDesktopEnvironment();
 }
 
-wxString PlatformWindows::CPUId() {
+std::string PlatformWindows::CPUId() {
 	return "";
 };
 
-wxString PlatformWindows::CPUSpeed() {
+std::string PlatformWindows::CPUSpeed() {
 	return "";
 };
 
-wxString PlatformWindows::CPUCores() {
+std::string PlatformWindows::CPUCores() {
 	return "";
 };
 
-wxString PlatformWindows::CPUCount() {
+std::string PlatformWindows::CPUCount() {
 	return "";
 };
 
-wxString PlatformWindows::CPUFeatures() {
+std::string PlatformWindows::CPUFeatures() {
 	return "";
 };
 
-wxString PlatformWindows::CPUFeatures2() {
+std::string PlatformWindows::CPUFeatures2() {
 	return "";
 };
 
-wxString PlatformWindows::Memory() {
+std::string PlatformWindows::Memory() {
 	return "";
 };
 
-wxString PlatformWindows::ServicePack() {
+std::string PlatformWindows::ServicePack() {
 	return "";
 };
 
-wxString PlatformWindows::DriverGraphicsVersion() {
+std::string PlatformWindows::DriverGraphicsVersion() {
 	return "";
 };
 
-wxString PlatformWindows::DirectShowFilters() {
+std::string PlatformWindows::DirectShowFilters() {
 	return "";
 };
 
-wxString PlatformWindows::AntiVirus() {
+std::string PlatformWindows::AntiVirus() {
 	return "";
 };
 
-wxString PlatformWindows::Firewall() {
+std::string PlatformWindows::Firewall() {
 	return "";
 };
 
-wxString PlatformWindows::DLLVersions() {
+std::string PlatformWindows::DLLVersions() {
 	return "";
 };
 
-wxString PlatformWindows::OpenGLVendor() {
+std::string PlatformWindows::OpenGLVendor() {
 	return "";
 };
 
-wxString PlatformWindows::OpenGLRenderer() {
+std::string PlatformWindows::OpenGLRenderer() {
 	return "";
 };
 
-wxString PlatformWindows::OpenGLVersion() {
+std::string PlatformWindows::OpenGLVersion() {
 	return "";
 };
 
-wxString PlatformWindows::OpenGLExt() {
+std::string PlatformWindows::OpenGLExt() {
 	return "";
 };

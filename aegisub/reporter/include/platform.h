@@ -117,12 +117,12 @@ public:
 	/// Time
 	/// @return Time
 	/// @retval Time in HH:MM:SS
-	wxString Time();
+	std::string Time();
 
 	/// TimeZone
 	/// @return TimeZone
 	/// @retval EST,EDT,JST...
-	wxString TimeZone();
+	std::string TimeZone();
 	//@}
 
 	/// @name Platform Specific
@@ -201,12 +201,12 @@ public:
 	/// Service pack
 	/// @return Service pack
 	/// @retval Any
-	virtual wxString ServicePack()=0;
+	virtual std::string ServicePack()=0;
 
 	/// Graphics driver version
 	/// @return Driver version
 	/// @retval Any
-	virtual wxString DriverGraphicsVersion()=0;
+	virtual std::string DriverGraphicsVersion()=0;
 
 	/// Directshow filters installed
 	/// @return json::Object of filters installed
@@ -216,17 +216,17 @@ public:
 	///   <name version="[version]">[name]</name>
 	/// </filter>
 	/// \endverbatim
-	virtual wxString DirectShowFilters()=0;
+	virtual std::string DirectShowFilters()=0;
 
 	/// AntiVirus installed
 	/// @return true/false
 	/// @retval 1,0
-	virtual wxString AntiVirus()=0;
+	virtual std::string AntiVirus()=0;
 
 	/// Firewall installed
 	/// @return true/false
 	/// @retval 1,0
-	virtual wxString Firewall()=0;
+	virtual std::string Firewall()=0;
 
 	/// DLL versions used
 	/// @return json::Array of DLLs used
@@ -234,7 +234,7 @@ public:
 	/// \verbatim
 	/// { "version", "name" }
 	/// \endverbatim
-	virtual wxString DLLVersions()=0;
+	virtual std::string DLLVersions()=0;
 #endif
 	//@}
 
@@ -264,7 +264,7 @@ public:
 	/// OS patch level
 	/// @return Patch level
 	/// @retval Any
-	virtual wxString PatchLevel()=0;
+	virtual std::string PatchLevel()=0;
 
 	/// QuickTime extensions
 	/// @return json::Array of extensions used
@@ -272,12 +272,12 @@ public:
 	/// \verbatim
 	/// { "version", "name" }
 	/// \endverbatim
-	virtual wxString QuickTimeExt()=0;
+	virtual std::string QuickTimeExt()=0;
 
 	/// Hardware model
 	/// @return Model
 	/// @retval Any
-	virtual wxString HardwareModel()=0;
+	virtual std::string HardwareModel()=0;
 #endif
 	//@}
 

@@ -30,6 +30,6 @@ private:
 public:
 	Aegisub();
 	~Aegisub();
-	void Config(wxString config);
-	wxString Read(wxString key);
+	void Config(std::string config);
+	std::string Read(std::string key);
 };

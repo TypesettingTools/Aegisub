@@ -26,28 +26,28 @@ public:
 	PlatformWindows() {};
 	virtual ~PlatformWindows() {};
 	const std::string OSVersion();
-	wxString DesktopEnvironment();
+	std::string DesktopEnvironment();
 
 	// Hardware
-	virtual wxString CPUId();
-	virtual wxString CPUSpeed();
-	virtual wxString CPUCores();
-	virtual wxString CPUCount();
-	virtual wxString CPUFeatures();
-	virtual wxString CPUFeatures2();
-	virtual wxString Memory();
+	virtual std::string CPUId();
+	virtual std::string CPUSpeed();
+	virtual std::string CPUCores();
+	virtual std::string CPUCount();
+	virtual std::string CPUFeatures();
+	virtual std::string CPUFeatures2();
+	virtual std::string Memory();
 
 	// OpenGL
-	virtual wxString OpenGLVendor();
-	virtual wxString OpenGLRenderer();
-	virtual wxString OpenGLVersion();
-	virtual wxString OpenGLExt();
+	virtual std::string OpenGLVendor();
+	virtual std::string OpenGLRenderer();
+	virtual std::string OpenGLVersion();
+	virtual std::string OpenGLExt();
 
 	// Windows Specific
-	virtual wxString ServicePack();
-	virtual wxString DriverGraphicsVersion();
-	virtual wxString DirectShowFilters();
-	virtual wxString AntiVirus();
-	virtual wxString Firewall();
-	virtual wxString DLLVersions();
+	virtual std::string ServicePack();
+	virtual std::string DriverGraphicsVersion();
+	virtual std::string DirectShowFilters();
+	virtual std::string AntiVirus();
+	virtual std::string Firewall();
+	virtual std::string DLLVersions();
 };

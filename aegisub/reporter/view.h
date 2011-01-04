@@ -36,7 +36,7 @@ public:
 
 private:
 	Report *r;
-	wxString *text;
+	std::string *text;
 	void CloseDialog(wxCommandEvent& event);
 	void Clipboard(wxCommandEvent& event);
 	DECLARE_EVENT_TABLE()

@@ -32,39 +32,39 @@ extern "C" {
 #include "platform_unix_osx.h"
 
 
-wxString PlatformUnixOSX::CPUId() {
+std::string PlatformUnixOSX::CPUId() {
 	char id[300];
 	size_t len = sizeof(id);
 	sysctlbyname("machdep.cpu.brand_string", &id, &len, NULL, 0);
 	return wxString::Format("%s", id);
 };
 
-wxString PlatformUnixOSX::CPUSpeed() {
+std::string PlatformUnixOSX::CPUSpeed() {
 	uint64_t speed;
 	size_t len = sizeof(speed);
 	sysctlbyname("hw.cpufrequency_max", &speed, &len, NULL, 0);
 	return wxString::Format("%d", speed / (1000*1000));
 };
 
-wxString PlatformUnixOSX::CPUCores() {
+std::string PlatformUnixOSX::CPUCores() {
 	return "";
 };
 
-wxString PlatformUnixOSX::CPUCount() {
+std::string PlatformUnixOSX::CPUCount() {
 	int proc;
 	size_t len = sizeof(proc);
 	sysctlbyname("hw.ncpu", &proc, &len, NULL, 0);
 	return wxString::Format("%d", proc);
 };
 
-wxString PlatformUnixOSX::CPUFeatures() {
+std::string PlatformUnixOSX::CPUFeatures() {
 	char feat[300];
 	size_t len = sizeof(feat);
 	sysctlbyname("machdep.cpu.features", &feat, &len, NULL, 0);
 	return wxString::Format("%s", feat);
 };
 
-wxString PlatformUnixOSX::CPUFeatures2() {
+std::string PlatformUnixOSX::CPUFeatures2() {
 	char feat[128];
 	size_t len = sizeof(feat);
 	sysctlbyname("machdep.cpu.extfeatures", &feat, &len, NULL, 0);
@@ -72,26 +72,26 @@ wxString PlatformUnixOSX::CPUFeatures2() {
 	return "";
 };
 
-wxString PlatformUnixOSX::Memory() {
+std::string PlatformUnixOSX::Memory() {
 	uint64_t memory;
 	size_t len = sizeof(memory);
 	sysctlbyname("hw.memsize", &memory, &len, NULL, 0);
 	return wxString::Format("%llu", memory);
 };
 
-wxString PlatformUnixOSX::UnixLibraries() {
+std::string PlatformUnixOSX::UnixLibraries() {
 	return "";
 };
 
-wxString PlatformUnixOSX::PatchLevel() {
+std::string PlatformUnixOSX::PatchLevel() {
 	return "";
 }
 
-wxString PlatformUnixOSX::QuickTimeExt() {
+std::string PlatformUnixOSX::QuickTimeExt() {
 	return "";
 }
 
-wxString PlatformUnixOSX::HardwareModel() {
+std::string PlatformUnixOSX::HardwareModel() {
 	char model[300];
 	size_t len = sizeof(model);
 	sysctlbyname("hw.model", &model, &len, NULL, 0);

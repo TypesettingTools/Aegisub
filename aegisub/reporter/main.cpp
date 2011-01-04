@@ -160,6 +160,6 @@ void mFrame::Cancel(wxCommandEvent& WXUNUSED(event)) {
 void mFrame::Submit(wxCommandEvent& WXUNUSED(event)) {
 	Progress *progress = new Progress(this);
 	Upload *upload = new Upload(progress);
-	upload->Report(_("./test.json"));
+	upload->Report("./test.json");
 }
 

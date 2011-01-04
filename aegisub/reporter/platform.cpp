@@ -91,7 +91,7 @@ Platform::~Platform() {
  */
 std::string Platform::GetVideoInfo(enum Platform::VideoInfo which) {
 
-	wxString value;
+	std::string value;
 
 	switch (which) {
 		case VIDEO_EXT:
@@ -198,15 +198,15 @@ std::string Platform::OpenGLExt() {
 
 #ifdef __APPLE__
 
-wxString Platform::PatchLevel() {
+std::string Platform::PatchLevel() {
 	return "";
 }
 
-wxString Platform::QuickTimeExt() {
+std::string Platform::QuickTimeExt() {
 	return "";
 }
 
-wxString Platform::HardwareModel() {
+std::string Platform::HardwareModel() {
 	return "";
 }
 

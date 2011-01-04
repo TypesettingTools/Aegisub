@@ -27,18 +27,18 @@ public:
 	virtual ~PlatformUnixOSX() {};
 
 	// Hardware
-	virtual wxString CPUId();
-	virtual wxString CPUSpeed();
-	virtual wxString CPUCores();
-	virtual wxString CPUCount();
-	virtual wxString CPUFeatures();
-	virtual wxString CPUFeatures2();
-	virtual wxString Memory();
+	virtual std::string CPUId();
+	virtual std::string CPUSpeed();
+	virtual std::string CPUCores();
+	virtual std::string CPUCount();
+	virtual std::string CPUFeatures();
+	virtual std::string CPUFeatures2();
+	virtual std::string Memory();
 
-	virtual wxString PatchLevel();
-	virtual wxString QuickTimeExt();
-	virtual wxString HardwareModel();
+	virtual std::string PatchLevel();
+	virtual std::string QuickTimeExt();
+	virtual std::string HardwareModel();
 
 	// Unix Specific
-	virtual wxString UnixLibraries();
+	virtual std::string UnixLibraries();
 };

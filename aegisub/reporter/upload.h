@@ -41,6 +41,6 @@ private:
 public:
 	Upload(Progress *prog);
 	~Upload();
-	void Report(wxString report);
+	void Report(std::string report);
 	bool SendFile(const char *url, wxFile &file);
 };
