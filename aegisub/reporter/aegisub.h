@@ -19,17 +19,20 @@
 /// @ingroup base
 
 #ifndef R_PRECOMP
-#include <wx/fileconf.h>
 #endif
+
+#include <libaegisub/option.h>
 
 /// @class Aegisub
 /// @brief Gather Aegisub information from the config file or otherwise.
 class Aegisub {
 private:
-	wxFileConfig *conf;
+	agi::Options *opt;
 public:
 	Aegisub();
 	~Aegisub();
-	void Config(std::string config);
-	std::string Read(std::string key);
+	const agi::OptionValue* Read(std::string key);
+	const std::string GetString(std::string key);
+	int64_t GetInt(std::string key);
+	bool GetBool(std::string key);
 };

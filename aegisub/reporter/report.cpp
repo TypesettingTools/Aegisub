@@ -38,6 +38,7 @@ Report::Report() {
 	json::Object root;
 
 	Platform *p = Platform::GetPlatform();
+	Aegisub a;
 
 	json::Object general;
 	general["Signature"] = json::String(p->Signature());
@@ -54,25 +55,30 @@ Report::Report() {
 	root["General"] = general;
 
 
-	json::Object aegisub;
 
-	/// I'll fix these at the end.
-	/*
-	Last Version
-	Spelling Language
-	Thesaurus Language
-	Audio Player
-	Audio Provider
-	Video Provider
-	Subtitles Provider
-	Save Charset
-	Grid Font Size
-	Edit Font Size
-	Spectrum Enabled
-	Spectrum Quality
-	Call Tips Enabled
-	Medusa Hotkeys Enabled
-	*/
+
+	try {
+		json::Object aegisub;
+		aegisub["Last Version"] = json::String(a.GetString("Version/Last Version"));
+		aegisub["Spelling Language"] = json::String(a.GetString("Tool/Spell Checker/Language"));
+		aegisub["Thesaurus Language"] = json::String(a.GetString("Tool/Thesaurus/Language"));
+		aegisub["Audio Player"] = json::String(a.GetString("Audio/Player"));
+		aegisub["Audio Provider"] = json::String(a.GetString("Audio/Provider"));
+		aegisub["Video Provider"] = json::String(a.GetString("Video/Provider"));
+		aegisub["Subtitles Provider"] = json::String(a.GetString("Subtitle/Provider"));
+		aegisub["Save Charset"] = json::String(a.GetString("App/Save Charset"));
+		aegisub["Grid Font Size"] = json::Number(a.GetInt("Grid/Font Size"));
+		aegisub["Edit Font Size"] = json::Number(a.GetInt("Subtitle/Edit Box/Font Size"));
+		aegisub["Spectrum Enabled"] = json::Boolean(a.GetBool("Audio/Spectrum"));
+		aegisub["Spectrum Quality"] = json::Number(a.GetInt("Audio/Renderer/Spectrum/Quality"));
+		aegisub["Call Tips Enabled"] = json::Boolean(a.GetBool("App/Call Tips"));
+		aegisub["Medusa Hotkeys Enabled"] = json::Boolean(a.GetBool("Audio/Medusa Timing Hotkeys"));
+
+		root["Aegisub"] = aegisub;
+	} catch(...) {
+		root["Aegisub"]["Error"] = json::String("Config file is corrupted");
+	}
+
 
 
 	json::Object hardware;
