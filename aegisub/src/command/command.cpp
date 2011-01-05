@@ -116,7 +116,6 @@ void init_command(CommandManager *cm) {
 	init_grid(cm);
 	init_help(cm);
 	init_keyframe(cm);
-	init_medusa(cm);
 	init_menu(cm);
 	init_recent(cm);
 	init_subtitle(cm);

@@ -16,7 +16,6 @@ SRC = \
 	grid.cpp \
 	help.cpp \
 	keyframe.cpp \
-	medusa.cpp \
 	menu.cpp \
 	recent.cpp \
 	subtitle.cpp \
