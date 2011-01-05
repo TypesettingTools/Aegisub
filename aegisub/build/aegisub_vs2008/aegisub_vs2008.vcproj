@@ -1902,7 +1902,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\command\menu.cpp"
+				RelativePath="..\..\src\command\menu_.cpp"
 				>
 			</File>
 			<File
