@@ -54,7 +54,7 @@
 #include <wx/spinctrl.h>
 #endif
 
-#include "aegisub/hotkey.h"
+#include "include/aegisub/hotkey.h"
 
 #include "ass_dialogue.h"
 #include "ass_file.h"

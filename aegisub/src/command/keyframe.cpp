@@ -36,17 +36,17 @@
 /// @ingroup command
 ///
 
-#include "config.h"
+#include "../config.h"
 
 #ifndef AGI_PRE
 #endif
 
 #include "command.h"
 
-#include "aegisub/context.h"
-#include "main.h"
-#include "compat.h"
-#include "video_context.h"
+#include "../include/aegisub/context.h"
+#include "../main.h"
+#include "../compat.h"
+#include "../video_context.h"
 
 namespace cmd {
 /// @defgroup cmd-keyframed Keyframe commands.

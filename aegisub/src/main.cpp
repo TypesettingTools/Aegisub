@@ -50,11 +50,11 @@
 #include <wx/utils.h>
 #endif
 
-#include "aegisub/menu.h"
+#include "include/aegisub/menu.h"
 #include "command/command.h"
 #include "command/icon.h"
-#include "aegisub/toolbar.h"
-#include "aegisub/hotkey.h"
+#include "include/aegisub/toolbar.h"
+#include "include/aegisub/hotkey.h"
 
 #include "ass_dialogue.h"
 #include "ass_export_filter.h"

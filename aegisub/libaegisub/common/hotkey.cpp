@@ -18,7 +18,7 @@
 /// @brief Hotkey handler
 /// @ingroup hotkey menu event window
 
-#include "config.h"
+#include "../config.h"
 
 #ifndef LAGI_PRE
 #include <math.h>

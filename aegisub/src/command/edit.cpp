@@ -36,19 +36,20 @@
 /// @ingroup command
 ///
 
-#include "config.h"
+#include "../config.h"
 
 #ifndef AGI_PRE
 #endif
 
 #include "command.h"
 
-#include "aegisub/context.h"
-#include "aegisub/context.h"
-#include "subs_edit_box.h"
-#include "subs_edit_ctrl.h"
-#include "dialog_search_replace.h"
-#include "video_context.h"
+#include "../ass_file.h"
+#include "../dialog_search_replace.h"
+#include "../include/aegisub/context.h"
+#include "../subs_edit_box.h"
+#include "../subs_edit_ctrl.h"
+#include "../subs_grid.h"
+#include "../video_context.h"
 
 namespace cmd {
 /// @defgroup cmd-edit Editing commands.

@@ -36,7 +36,7 @@
 /// @ingroup command
 ///
 
-#include "config.h"
+#include "../config.h"
 
 #ifndef AGI_PRE
 #include <wx/filedlg.h>
@@ -44,9 +44,10 @@
 
 #include "command.h"
 
-#include "aegisub/context.h"
-#include "compat.h"
-#include "main.h"
+#include "../audio_controller.h"
+#include "../compat.h"
+#include "../include/aegisub/context.h"
+#include "../main.h"
 
 namespace cmd {
 /// @defgroup cmd-audio Audio commands.

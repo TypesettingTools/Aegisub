@@ -36,17 +36,17 @@
 /// @ingroup command
 ///
 
-#include "config.h"
+#include "../config.h"
 
 #ifndef AGI_PRE
 #endif
 
 #include "command.h"
 
-#include "aegisub/context.h"
-#include "subs_grid.h"
-#include "main.h"
-#include "frame_main.h"
+#include "../include/aegisub/context.h"
+#include "../subs_grid.h"
+#include "../main.h"
+#include "../frame_main.h"
 
 namespace cmd {
 /// @defgroup cmd-grid Subtitle grid commands.

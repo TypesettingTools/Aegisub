@@ -32,7 +32,7 @@
 #include <libaegisub/json.h>
 #include <libaegisub/log.h>
 
-#include "aegisub/menu.h"
+#include "include/aegisub/menu.h"
 #include "command/command.h"
 #include "libresrc/libresrc.h"
 #include "main.h"

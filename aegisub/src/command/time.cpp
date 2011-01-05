@@ -36,19 +36,19 @@
 /// @ingroup command
 ///
 
-#include "config.h"
+#include "../config.h"
 
 #ifndef AGI_PRE
 #endif
 
 #include "command.h"
 
-#include "aegisub/context.h"
-#include "subs_grid.h"
-#include "video_context.h"
-#include "ass_dialogue.h"
-#include "dialog_shift_times.h"
-#include "ass_file.h"
+#include "../include/aegisub/context.h"
+#include "../subs_grid.h"
+#include "../video_context.h"
+#include "../ass_dialogue.h"
+#include "../dialog_shift_times.h"
+#include "../ass_file.h"
 
 namespace cmd {
 /// @defgroup cmd-time Time manipulation commands.

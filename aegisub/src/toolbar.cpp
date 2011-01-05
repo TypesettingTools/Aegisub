@@ -30,7 +30,7 @@
 #include <libaegisub/json.h>
 #include <libaegisub/log.h>
 
-#include "aegisub/toolbar.h"
+#include "include/aegisub/toolbar.h"
 #include "libresrc/libresrc.h"
 #include "command/command.h"
 

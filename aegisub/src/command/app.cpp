@@ -36,24 +36,24 @@
 /// @ingroup command
 ///
 
-#include "config.h"
+#include "../config.h"
 
 #ifndef AGI_PRE
 #endif
 
 #include "command.h"
 
-#include "aegisub/context.h"
-#include "main.h"
+#include "../include/aegisub/context.h"
+#include "../main.h"
 
-#include "dialog_about.h"
-#include "audio_controller.h"
-#include "frame_main.h"
-#include "video_context.h"
-#include "utils.h"
-#include "dialog_log.h"
-#include "preferences.h"
-#include "dialog_version_check.h"
+#include "../dialog_about.h"
+#include "../audio_controller.h"
+#include "../frame_main.h"
+#include "../video_context.h"
+#include "../utils.h"
+#include "../dialog_log.h"
+#include "../preferences.h"
+#include "../dialog_version_check.h"
 
 
 namespace cmd {

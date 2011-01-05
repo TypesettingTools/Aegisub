@@ -47,7 +47,7 @@
 #include <wx/timer.h>
 #endif
 
-#include "aegisub/context.h"
+#include "include/aegisub/context.h"
 
 
 class AssFile;

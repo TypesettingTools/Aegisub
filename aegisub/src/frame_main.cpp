@@ -46,9 +46,9 @@
 
 #include <libaegisub/log.h>
 
-#include "aegisub/menu.h"
-#include "aegisub/toolbar.h"
-#include "aegisub/hotkey.h"
+#include "include/aegisub/menu.h"
+#include "include/aegisub/toolbar.h"
+#include "include/aegisub/hotkey.h"
 
 #include "ass_file.h"
 #include "selection_controller.h"
@@ -64,6 +64,7 @@
 #include "command/command.h"
 #include "dialog_detached_video.h"
 #include "dialog_search_replace.h"
+#include "dialog_styling_assistant.h"
 #include "dialog_version_check.h"
 #include "drop.h"
 #include "frame_main.h"

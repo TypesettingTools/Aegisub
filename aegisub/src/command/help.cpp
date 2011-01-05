@@ -36,16 +36,16 @@
 /// @ingroup command
 ///
 
-#include "config.h"
+#include "../config.h"
 
 #ifndef AGI_PRE
 #endif
 
 #include "command.h"
-#include "aegisub/context.h"
+#include "../include/aegisub/context.h"
 
-#include "help_button.h" // help_contents
-#include "main.h"
+#include "../help_button.h" // help_contents
+#include "../main.h"
 
 namespace cmd {
 /// @defgroup cmd-help Help commands.

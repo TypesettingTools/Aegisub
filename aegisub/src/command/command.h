@@ -18,7 +18,7 @@
 /// @brief Command base class and main header.
 /// @ingroup command
 
-#include "aegisub/context.h"
+#include "../include/aegisub/context.h"
 #include "icon.h"
 
 DEFINE_BASE_EXCEPTION_NOINNER(CommandError, agi::Exception)

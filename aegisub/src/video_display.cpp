@@ -56,7 +56,7 @@
 #include <GL/glu.h>
 #endif
 
-#include "aegisub/hotkey.h"
+#include "include/aegisub/hotkey.h"
 
 #include "video_display.h"
 #include "selection_controller.h"

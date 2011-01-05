@@ -46,7 +46,7 @@
 #include <wx/sizer.h>
 #endif
 
-#include "aegisub/hotkey.h"
+#include "include/aegisub/hotkey.h"
 
 #include "base_grid.h"
 

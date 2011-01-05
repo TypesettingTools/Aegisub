@@ -36,25 +36,27 @@
 /// @ingroup command
 ///
 
-#include "config.h"
+#include "../config.h"
 
 #ifndef AGI_PRE
 #endif
 
 #include "command.h"
 
-#include "aegisub/context.h"
-#include "video_context.h"
-#include "main.h"
-#include "utils.h"
-#include "frame_main.h"
-#include "video_display.h"
-#include "dialog_detached_video.h"
-#include "dialog_video_details.h"
-#include "video_slider.h"
-#include "dialog_dummy_video.h"
-#include "compat.h"
-#include "dialog_jumpto.h"
+#include "../compat.h"
+#include "../frame_main.h"
+#include "../main.h"
+#include "../include/aegisub/context.h"
+#include "../dialog_detached_video.h"
+#include "../dialog_dummy_video.h"
+#include "../dialog_jumpto.h"
+#include "../dialog_video_details.h"
+#include "../subs_grid.h"
+#include "../utils.h"
+#include "../video_box.h"
+#include "../video_context.h"
+#include "../video_display.h"
+#include "../video_slider.h"
 
 namespace cmd {
 /// @defgroup cmd-video Video commands.

@@ -64,6 +64,7 @@ Command* CommandManager::get(std::string name) {
 	}
 	// XXX: throw
 	printf("cmd::id NOT FOUND (%s)\n", name.c_str());
+	return 0;
 }
 
 

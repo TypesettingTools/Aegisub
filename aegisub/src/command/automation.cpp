@@ -36,19 +36,19 @@
 /// @ingroup command
 ///
 
-#include "config.h"
+#include "../config.h"
 
 #ifndef AGI_PRE
 #endif
 
 #include "command.h"
 
-#include "main.h"
-#include "aegisub/context.h"
-#include "dialog_automation.h"
-#include "auto4_base.h"
-#include "video_context.h"
-#include "frame_main.h"
+#include "../main.h"
+#include "../include/aegisub/context.h"
+#include "../dialog_automation.h"
+#include "../auto4_base.h"
+#include "../video_context.h"
+#include "../frame_main.h"
 
 namespace cmd {
 /// @defgroup cmd-am Automation commands

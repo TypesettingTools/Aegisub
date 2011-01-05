@@ -1,15 +1,15 @@
 #pragma once // sigh.
 
-#include <wx/window.h>
-
-#include "ass_file.h"
-#include "subs_grid.h"
-#include "audio_box.h"
-#include "video_box.h"
-#include "dialog_detached_video.h"
-#include "auto4_base.h"
-#include "dialog_styling_assistant.h"
-#include "audio_controller.h"
+class wxWindow;
+class DialogStyling;
+class AudioBox;
+class AudioController;
+class DialogDetachedVideo;
+class AssFile;
+namespace Automation4 { class ScriptManager; }
+class SubsEditBox;
+class SubtitlesGrid;
+class VideoBox;
 
 namespace agi {
 

@@ -36,7 +36,7 @@
 /// @ingroup command
 ///
 
-#include "config.h"
+#include "../config.h"
 
 #ifndef AGI_PRE
 #include <wx/filedlg.h>
@@ -44,11 +44,11 @@
 
 #include "command.h"
 
-#include "aegisub/context.h"
-#include "video_context.h"
-#include "main.h"
-#include "compat.h"
-#include "subs_edit_box.h"
+#include "../include/aegisub/context.h"
+#include "../video_context.h"
+#include "../main.h"
+#include "../compat.h"
+#include "../subs_edit_box.h"
 
 namespace cmd {
 /// @defgroup cmd-timecode Timecode commands.

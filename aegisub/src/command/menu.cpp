@@ -34,14 +34,14 @@
 /// @ingroup command
 ///
 
-#include "config.h"
+#include "../config.h"
 
 #ifndef AGI_PRE
 #endif
 
 #include "command.h"
 
-#include "aegisub/context.h"
+#include "../include/aegisub/context.h"
 
 namespace cmd {
 /// @defgroup cmd-menu Main menu dropdown and submenu related commands.
@@ -86,7 +86,6 @@ public:
 	void operator()(agi::Context *c) {
 	}
 };
-
 
 /// Sort lines by column.
 class main_edit_sort_lines: public Command {

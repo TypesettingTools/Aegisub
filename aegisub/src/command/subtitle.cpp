@@ -36,7 +36,7 @@
 /// @ingroup command
 ///
 
-#include "config.h"
+#include "../config.h"
 
 #ifndef AGI_PRE
 #include <wx/filedlg.h>
@@ -47,15 +47,17 @@
 
 #include "command.h"
 
-#include "aegisub/context.h"
-#include "dialog_search_replace.h"
-#include "dialog_attachments.h"
-#include "video_context.h"
-#include "main.h"
-#include "frame_main.h"
-#include "compat.h"
-#include "dialog_properties.h"
-#include "dialog_spellchecker.h"
+#include "../ass_file.h"
+#include "../compat.h"
+#include "../dialog_attachments.h"
+#include "../dialog_properties.h"
+#include "../dialog_search_replace.h"
+#include "../dialog_spellchecker.h"
+#include "../frame_main.h"
+#include "../include/aegisub/context.h"
+#include "../main.h"
+#include "../subs_grid.h"
+#include "../video_context.h"
 
 
 namespace cmd {

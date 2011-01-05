@@ -31,9 +31,9 @@
 #include <libaegisub/log.h>
 #include <libaegisub/hotkey.h>
 
-#include "aegisub/hotkey.h"
+#include "include/aegisub/hotkey.h"
 
-#include "aegisub/toolbar.h"
+#include "include/aegisub/toolbar.h"
 #include "libresrc/libresrc.h"
 #include "command/command.h"
 #include "frame_main.h"

@@ -44,6 +44,7 @@
 #endif
 
 class AssFile;
+class AssStyle;
 class AssOverrideParameter;
 class DialogFontsCollector;
 class wxZipOutputStream;
