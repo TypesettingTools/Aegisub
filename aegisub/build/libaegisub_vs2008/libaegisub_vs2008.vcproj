@@ -276,6 +276,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\libaegisub\common\hotkey.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\libaegisub\common\json.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\libaegisub\common\keyframe.cpp"
 				>
 			</File>
@@ -297,6 +305,10 @@
 			</File>
 			<File
 				RelativePath="..\..\libaegisub\common\option_visit.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\libaegisub\common\path.cpp"
 				>
 			</File>
 			<File
@@ -422,7 +434,15 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\libaegisub\include\libaegisub\hotkey.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\libaegisub\include\libaegisub\io.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\libaegisub\include\libaegisub\json.h"
 				>
 			</File>
 			<File

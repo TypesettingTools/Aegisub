@@ -1282,15 +1282,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\frame_main_events.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\hotkeys.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\hotkeys.h"
+				RelativePath="..\..\src\hotkey.cpp"
 				>
 			</File>
 			<File
@@ -1299,6 +1291,10 @@
 			</File>
 			<File
 				RelativePath="..\..\src\main.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\menu.cpp"
 				>
 			</File>
 			<File
@@ -1319,6 +1315,10 @@
 			</File>
 			<File
 				RelativePath="..\..\src\subs_edit_box.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\toolbar.cpp"
 				>
 			</File>
 			<File
@@ -1674,7 +1674,19 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\include\aegisub\context.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\include\aegisub\exception.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\include\aegisub\hotkey.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\include\aegisub\menu.h"
 				>
 			</File>
 			<File
@@ -1683,6 +1695,10 @@
 			</File>
 			<File
 				RelativePath="..\..\src\include\aegisub\subtitles_provider.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\include\aegisub\toolbar.h"
 				>
 			</File>
 			<File
@@ -1835,6 +1851,82 @@
 			</File>
 			<File
 				RelativePath="..\..\src\selection_controller.h"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="Commands"
+			>
+			<File
+				RelativePath="..\..\src\command\app.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\command\audio.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\command\automation.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\command\command.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\command\command.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\command\edit.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\command\grid.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\command\help.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\command\icon.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\command\icon.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\command\keyframe.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\command\menu.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\command\recent.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\command\subtitle.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\command\time.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\command\timecode.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\command\tool.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\command\video.cpp"
 				>
 			</File>
 		</Filter>
