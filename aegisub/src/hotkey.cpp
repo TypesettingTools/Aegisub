@@ -36,7 +36,8 @@
 #include "aegisub/toolbar.h"
 #include "libresrc/libresrc.h"
 #include "command/command.h"
-
+#include "frame_main.h"
+#include "main.h"
 
 namespace hotkey {
 
@@ -68,6 +69,7 @@ void check(std::string context, int key_code, wchar_t key_char, int modifier) {
 
 	std::string command;
 	if (agi::hotkey::hotkey->Scan(context, combo, command) == 0) {
+		(*cmd::get(command))(&wxGetApp().frame->temp_context);
 	}
 
 }

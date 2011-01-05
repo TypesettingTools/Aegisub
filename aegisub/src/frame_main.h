@@ -94,9 +94,9 @@ public:
 	void DetachVideo(bool detach=true);
 	void LoadVFR(wxString filename);
 
-private:
-
 	agi::Context temp_context;
+
+private:
 
 	void cmd_call(wxCommandEvent& event);
 
