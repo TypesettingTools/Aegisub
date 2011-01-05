@@ -124,7 +124,7 @@ $(SUBDIRS):
 src: universalchardet libass libffms tools libaegisub
 tests: libaegisub
 reporter: src
-
+command: libresrc
 
 
 
