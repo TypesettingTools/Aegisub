@@ -55,7 +55,6 @@
 #include "audio_karaoke.h"
 #include "audio_timing.h"
 #include "frame_main.h"
-#include "hotkeys.h"
 #include "include/aegisub/audio_player.h"
 #include "libresrc/libresrc.h"
 #include "main.h"

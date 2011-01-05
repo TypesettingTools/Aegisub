@@ -93,7 +93,7 @@ class BaseGrid : public wxWindow, public BaseSelectionController<AssDialogue> {
 	void OnSize(wxSizeEvent &event);
 	void OnScroll(wxScrollEvent &event);
 	void OnMouseEvent(wxMouseEvent &event);
-	void OnKeyPress(wxKeyEvent &event);
+	void OnKeyDown(wxKeyEvent &event);
 
 	void DrawImage(wxDC &dc);
 

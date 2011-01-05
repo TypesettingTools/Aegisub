@@ -68,7 +68,7 @@ enum Severity {
 extern const char *Severity_ID;
 
 /// Global log sink.
-extern std::auto_ptr<LogSink> log;
+extern LogSink *log;
 
 /// Container to hold a single message
 struct SinkMessage {
@@ -111,9 +111,17 @@ class LogSink {
 	/// List of function pointers to emitters
 	std::vector<Emitter*> emitters;
 
+	/// Init time for log writing purposes.
+	agi_timeval time_start;
+
+	/// Directory to place logfiles.
+	const std::string dir_log;
+
+
 public:
 	/// Constructor
-	LogSink();
+	/// @param dir_log Directory to place log files.
+	LogSink(const std::string dir_log);
 
 	/// Destructor
 	~LogSink();

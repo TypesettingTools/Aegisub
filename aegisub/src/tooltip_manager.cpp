@@ -39,7 +39,6 @@
 // Headers
 #include "config.h"
 
-#include "hotkeys.h"
 #include "tooltip_manager.h"
 
 
@@ -113,7 +112,7 @@ void ToolTipBinding::Update() {
 	wxString finalTip = toolTip;
 	wxArrayString hotkeysLeft = hotkeys;
 	while (hotkeysLeft.Count()) {
-		finalTip.Replace(_T("%KEY%"),Hotkeys.GetText(hotkeysLeft[0]),false);
+//H		finalTip.Replace(_T("%KEY%"),Hotkeys.GetText(hotkeysLeft[0]),false);
 		hotkeysLeft.RemoveAt(0);
 	}
 	window->SetToolTip(finalTip);

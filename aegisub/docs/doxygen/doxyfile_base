@@ -12,7 +12,7 @@ OUTPUT_LANGUAGE        = English
 BRIEF_MEMBER_DESC      = YES
 REPEAT_BRIEF           = YES
 ABBREVIATE_BRIEF       = 
-ALWAYS_DETAILED_SEC    = YES
+ALWAYS_DETAILED_SEC    = NO
 INLINE_INHERITED_MEMB  = NO
 FULL_PATH_NAMES        = YES
 STRIP_FROM_PATH        = $(SRC_TRIM)
@@ -48,7 +48,7 @@ EXTRACT_PRIVATE        = YES
 EXTRACT_STATIC         = YES
 EXTRACT_LOCAL_CLASSES  = YES
 EXTRACT_LOCAL_METHODS  = YES
-EXTRACT_ANON_NSPACES   = YES
+EXTRACT_ANON_NSPACES   = NO
 HIDE_UNDOC_MEMBERS     = NO
 HIDE_UNDOC_CLASSES     = NO
 HIDE_FRIEND_COMPOUNDS  = NO
@@ -56,12 +56,12 @@ HIDE_IN_BODY_DOCS      = NO
 INTERNAL_DOCS          = NO
 CASE_SENSE_NAMES       = YES
 HIDE_SCOPE_NAMES       = NO
-SHOW_INCLUDE_FILES     = YES
+SHOW_INCLUDE_FILES     = NO
 INLINE_INFO            = YES
 SORT_MEMBER_DOCS       = YES
 SORT_BRIEF_DOCS        = NO
 SORT_GROUP_NAMES       = NO
-SORT_BY_SCOPE_NAME     = NO
+SORT_BY_SCOPE_NAME     = YES
 GENERATE_TODOLIST      = YES
 GENERATE_TESTLIST      = YES
 GENERATE_BUGLIST       = YES
@@ -111,7 +111,7 @@ INLINE_SOURCES         = NO
 STRIP_CODE_COMMENTS    = YES
 # FIXME: set these two to NO?
 REFERENCED_BY_RELATION = YES
-REFERENCES_RELATION    = YES
+REFERENCES_RELATION    = NO
 REFERENCES_LINK_SOURCE = YES
 USE_HTAGS              = NO
 VERBATIM_HEADERS       = YES
@@ -216,7 +216,12 @@ INCLUDE_PATH           =
 INCLUDE_FILE_PATTERNS  = 
 #PREDEFINED             =
 PREDEFINED             += WXUNUSED(x)= 
-EXPAND_AS_DEFINED      = 
+PREDEFINED             += "CMD_NAME(a)=const char* name() { return a; } ///< a"
+PREDEFINED             += "STR_MENU(a)=wxString StrMenu() const { return a; } ///< a"
+PREDEFINED             += "STR_DISP(a)=wxString StrDisplay() const { return a; } ///< a"
+PREDEFINED             += "STR_HELP(a)=wxString StrHelp() const { return a; } ///< a"
+
+#EXPAND_AS_DEFINED      = CMD_NAME STR_MENU STR_DISP STR_HELP
 SKIP_FUNCTION_MACROS   = YES
 #---------------------------------------------------------------------------
 # Configuration::additions related to external references   
@@ -260,3 +265,4 @@ DOT_CLEANUP            = YES
 # Options related to the search engine
 #---------------------------------------------------------------------------
 SEARCHENGINE           = NO
+SERVER_BASED_SEARCH    = YES

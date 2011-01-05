@@ -28,7 +28,8 @@
 #include <libaegisub/exception.h>
 
 namespace agi {
-namespace vfr {
+	/// Framerate handling.
+	namespace vfr {
 
 enum Time {
 	/// Use the actual frame times
@@ -134,5 +135,5 @@ public:
 	double FPS() const { return fps; }
 };
 
-}
-}
+	} // namespace vfr
+} // namespace agi

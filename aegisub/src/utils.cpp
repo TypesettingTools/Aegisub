@@ -47,7 +47,6 @@
 #include <wx/dcmemory.h>
 #include <wx/filename.h>
 #include <wx/log.h>
-#include <wx/menu.h>
 #include <wx/stdpaths.h>
 #endif
 
@@ -171,26 +170,6 @@ wxString PrettySize(int bytes) {
 	else if (size < 100) final = wxString::Format(_T("%.1f"),size);
 	else final = wxString::Format(_T("%.0f"),size);
 	return final + suffix[i];
-}
-
-
-
-/// @brief Append a menu item with bitmap 
-/// @param parentMenu 
-/// @param id         
-/// @param text       
-/// @param help       
-/// @param bmp        
-/// @param pos        
-/// @return 
-///
-wxMenuItem* AppendBitmapMenuItem (wxMenu* parentMenu,int id,wxString text,wxString help,wxBitmap bmp,int pos) {
-	wxMenuItem *cur = new wxMenuItem(parentMenu,id,text,help);
-	// Mac software does not use icons in menus so we shouldn't either
-	cur->SetBitmap(bmp);
-	if (pos == -1) parentMenu->Append(cur);
-	else parentMenu->Insert(pos,cur);
-	return cur;
 }
 
 

@@ -43,6 +43,8 @@
 #include <wx/recguard.h>
 #endif
 
+#include "aegisub/hotkey.h"
+
 #include "ass_dialogue.h"
 #include "ass_file.h"
 #include "ass_style.h"
@@ -52,7 +54,6 @@
 #include "dialog_styling_assistant.h"
 #include "frame_main.h"
 #include "help_button.h"
-#include "hotkeys.h"
 #include "libresrc/libresrc.h"
 #include "subs_edit_box.h"
 #include "subs_grid.h"
@@ -99,17 +100,17 @@ wxDialog (parent, -1, _("Styling assistant"), wxDefaultPosition, wxDefaultSize, 
 	// Shortcuts
 	//wxStaticText *Keys = new wxStaticText(this,-1,_("Enter:\t\tAccept changes\nPage up:\tPrevious line\nPage down:\tNext line\nEnd:\t\tPlay sound\nClick on list:\tSet style\nCtrl+enter:\tAccept without going to next"));
 	wxSizer *KeysInnerSizer = new wxGridSizer(2,0,5);
-	KeysInnerSizer->Add(new wxStaticText(this,-1,Hotkeys.GetText(_T("Styling Assistant Accept")) + _T(": ")));
+//H	KeysInnerSizer->Add(new wxStaticText(this,-1,Hotkeys.GetText(_T("Styling Assistant Accept")) + _T(": ")));
 	KeysInnerSizer->Add(new wxStaticText(this,-1,_("Accept changes")));
-	KeysInnerSizer->Add(new wxStaticText(this,-1,Hotkeys.GetText(_T("Styling Assistant Preview")) + _T(": ")));
+//H	KeysInnerSizer->Add(new wxStaticText(this,-1,Hotkeys.GetText(_T("Styling Assistant Preview")) + _T(": ")));
 	KeysInnerSizer->Add(new wxStaticText(this,-1,_("Preview changes")));
-	KeysInnerSizer->Add(new wxStaticText(this,-1,Hotkeys.GetText(_T("Styling Assistant Prev")) + _T(": ")));
+//H	KeysInnerSizer->Add(new wxStaticText(this,-1,Hotkeys.GetText(_T("Styling Assistant Prev")) + _T(": ")));
 	KeysInnerSizer->Add(new wxStaticText(this,-1,_("Previous line")));
-	KeysInnerSizer->Add(new wxStaticText(this,-1,Hotkeys.GetText(_T("Styling Assistant Next")) + _T(": ")));
+//H	KeysInnerSizer->Add(new wxStaticText(this,-1,Hotkeys.GetText(_T("Styling Assistant Next")) + _T(": ")));
 	KeysInnerSizer->Add(new wxStaticText(this,-1,_("Next line")));
-	KeysInnerSizer->Add(new wxStaticText(this,-1,Hotkeys.GetText(_T("Styling Assistant Play Video")) + _T(": ")));
+//H	KeysInnerSizer->Add(new wxStaticText(this,-1,Hotkeys.GetText(_T("Styling Assistant Play Video")) + _T(": ")));
 	KeysInnerSizer->Add(new wxStaticText(this,-1,_("Play Video")));
-	KeysInnerSizer->Add(new wxStaticText(this,-1,Hotkeys.GetText(_T("Styling Assistant Play Audio")) + _T(": ")));
+//H	KeysInnerSizer->Add(new wxStaticText(this,-1,Hotkeys.GetText(_T("Styling Assistant Play Audio")) + _T(": ")));
 	KeysInnerSizer->Add(new wxStaticText(this,-1,_("Play Audio")));
 	KeysInnerSizer->Add(new wxStaticText(this,-1,_("Click on list:")));
 	KeysInnerSizer->Add(new wxStaticText(this,-1,_("Select style")));
@@ -410,7 +411,14 @@ END_EVENT_TABLE()
 /// @return 
 ///
 void StyleEditBox::OnKeyDown(wxKeyEvent &event) {
+
+	hotkey::check("Styling Assistant", event.GetKeyCode(), event.GetUnicodeKey(), event.GetModifiers());
+	event.StopPropagation();
+
+//H I think most of this can be removed.
 	//int keycode = event.GetKeyCode();
+/*
+*
 #ifdef __APPLE__
 	Hotkeys.SetPressed(event.GetKeyCode(),event.m_metaDown,event.m_altDown,event.m_shiftDown);
 #else
@@ -451,11 +459,10 @@ void StyleEditBox::OnKeyDown(wxKeyEvent &event) {
 	// Play audio
 	if (Hotkeys.IsPressed(_T("Styling Assistant Play Audio"))) {
 		/// @todo Reinstate this when the audio controller is made reachable from here
-		/*
-		if (diag->audio->loaded) {
-			diag->audio->Play(diag->line->Start.GetMS(),diag->line->End.GetMS());
-		}
-		*/
+
+		//if (diag->audio->loaded) {
+		//	diag->audio->Play(diag->line->Start.GetMS(),diag->line->End.GetMS());
+		//}
 		return;
 	}
 
@@ -481,6 +488,7 @@ void StyleEditBox::OnKeyDown(wxKeyEvent &event) {
 	}
 
 	event.Skip();
+*/
 }
 
 

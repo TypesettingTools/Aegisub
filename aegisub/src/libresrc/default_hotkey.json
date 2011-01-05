@@ -1,0 +1,767 @@
+{
+	"Always" : {
+		"audio play" : [
+			{
+				"modifiers" : [],
+				"key" : "KP_5",
+				"enable" : false
+			}
+		],
+		"audio stop" : [
+			{
+				"modifiers" : [],
+				"key" : "KP_8",
+				"enable" : false
+			}
+		],
+		"timing shift start backward" : [
+			{
+				"modifiers" : [],
+				"key" : "KP_4",
+				"enable" : false
+			}
+		],
+		"timing shift start forward" : [
+			{
+				"modifiers" : [],
+				"key" : "KP_6",
+				"enable" : false
+			}
+		],
+		"timing shift end backward" : [
+			{
+				"modifiers" : [],
+				"key" : "KP_7",
+				"enable" : false
+			}
+		],
+		"timing shift end forward" : [
+			{
+				"modifiers" : [],
+				"key" : "KP_9",
+				"enable" : false
+			}
+		],
+		"audio play before selection begin" : [
+			{
+				"modifiers" : [],
+				"key" : "KP_1",
+				"enable" : false
+			}
+		],
+		"audio play after selection end" : [
+			{
+				"modifiers" : [],
+				"key" : "KP_3",
+				"enable" : false
+			}
+		],
+		"timing move to prev item" : [
+			{
+				"modifiers" : [],
+				"key" : "KP_0",
+				"enable" : false
+			}
+		],
+		"timing move to next item" : [
+			{
+				"modifiers" : [],
+				"key" : "KP_2",
+				"enable" : false
+			}
+		],
+		"timing commit" : [
+			{
+				"modifiers" : [],
+				"key" : "KP_Enter",
+				"enable" : false
+			}
+		]
+	},
+
+
+	"Default" : {
+		"app/exit" : [
+			{
+				"modifiers" : [ "C" ],
+				"key" : "Q",
+				"enable" : true
+			}
+		],
+		"app/options" : [
+			{
+				"modifiers" : [ "Alt" ],
+				"key" : "O",
+				"enable" : true
+			}
+		],
+		"audio play" : [
+			{
+				"modifiers" : [],
+				"key" : "Space",
+				"enable" : true
+			},
+			{
+				"modifiers" : [],
+				"key" : "S",
+				"enable" : true
+			}
+		],
+		"audio play after selection end" : [
+			{
+				"modifiers" : [],
+				"key" : "W",
+				"enable" : true
+			}
+		],
+		"audio play before selection begin" : [
+			{
+				"modifiers" : [],
+				"key" : "Q",
+				"enable" : true
+			}
+		],
+		"audio play toggle" : [
+			{
+				"modifiers" : [],
+				"key" : "B",
+				"enable" : true
+			}
+		],
+		"audio play selection begin" : [
+			{
+				"modifiers" : [],
+				"key" : "E",
+				"enable" : true
+			}
+		],
+		"audio play selection end" : [
+			{
+				"modifiers" : [],
+				"key" : "D",
+				"enable" : true
+			}
+		],
+		"audio play to end" : [
+			{
+				"modifiers" : [],
+				"key" : "T",
+				"enable" : true
+			}
+		],
+		"audio scroll left" : [
+			{
+				"modifiers" : [],
+				"key" : "A",
+				"enable" : true
+			}
+		],
+		"audio scroll right" : [
+			{
+				"modifiers" : [],
+				"key" : "F",
+				"enable" : true
+			}
+		],
+		"audio stop" : [
+			{
+				"modifiers" : [],
+				"key" : "H",
+				"enable" : true
+			}
+		],
+		"commit" : [
+			{
+				"modifiers" : [],
+				"key" : "Enter",
+				"enable" : true
+			},
+			{
+				"modifiers" : [],
+				"key" : "G",
+				"enable" : true
+			}
+		],
+		"commit and stay" : [
+			{
+				"modifiers" : [ "Ctrl" ],
+				"key" : "Enter",
+				"enable" : true
+			},
+			{
+				"modifiers" : [],
+				"key" : "F8",
+				"enable" : true
+			}
+		],
+		"edit/copy" : [
+			{
+				"modifiers" : [ "Ctrl" ],
+				"key" : "C",
+				"enable" : true
+			}
+		],
+		"edit/cut" : [
+			{
+				"modifiers" : [ "Ctrl" ],
+				"key" : "X",
+				"enable" : true
+			}
+		],
+		"edit/find_replace" : [
+			{
+				"modifiers" : [ "Ctrl" ],
+				"key" : "H",
+				"enable" : true
+			}
+		],
+		"edit/line/delete" : [
+			{
+				"modifiers" : [ "Ctrl" ],
+				"key" : "Delete",
+				"enable" : true
+			}
+		],
+		"edit/line/duplicate/shift" : [
+			{
+				"modifiers" : [ "Ctrl" ],
+				"key" : "D",
+				"enable" : true
+			}
+		],
+		"edit/paste" : [
+			{
+				"modifiers" : [ "Ctrl" ],
+				"key" : "V",
+				"enable" : true
+			}
+		],
+		"edit/paste/over" : [
+			{
+				"modifiers" : [ "Ctrl", "Shift" ],
+				"key" : "V",
+				"enable" : true
+			}
+		],
+		"edit/redo" : [
+			{
+				"modifiers" : [ "Ctrl", "Shift" ],
+				"key" : "V",
+				"enable" : true
+			}
+		],
+		"edit/undo" : [
+			{
+				"modifiers" : [ "Ctrl" ],
+				"key" : "Y",
+				"enable" : true
+			}
+		],
+		"grid/line/next" : [
+			{
+				"modifiers" : [ "Ctrl" ],
+				"key" : "KP_8",
+				"enable" : true
+			}
+		],
+		"grid/line/prev" : [
+			{
+				"modifiers" : [ "Ctrl" ],
+				"key" : "KP_2",
+				"enable" : true
+			}
+		],
+		"grid/swap/down" : [
+			{
+				"modifiers" : [ "Alt" ],
+				"key" : "Down",
+				"enable" : true
+			}
+		],
+		"grid/swap/up" : [
+			{
+				"modifiers" : [ "Alt" ],
+				"key" : "Up",
+				"enable" : true
+			}
+		],
+		"help/contents" : [
+			{
+				"modifiers" : [],
+				"key" : "F1",
+				"enable" : true
+			}
+		],
+		"subtitle/find" : [
+			{
+				"modifiers" : [ "Ctrl" ],
+				"key" : "F",
+				"enable" : true
+			}
+		],
+		"subtitle/find/next" : [
+			{
+				"modifiers" : [],
+				"key" : "F3",
+				"enable" : true
+			}
+		],
+		"subtitle/new" : [
+			{
+				"modifiers" : [ "Ctrl" ],
+				"key" : "N",
+				"enable" : true
+			}
+		],
+		"subtitle/open" : [
+			{
+				"modifiers" : [ "Ctrl" ],
+				"key" : "O",
+				"enable" : true
+			}
+		],
+		"subtitle/save" : [
+			{
+				"modifiers" : [ "Ctrl" ],
+				"key" : "S",
+				"enable" : true
+			},
+			{
+				"modifiers" : [],
+				"key" : "F2",
+				"enable" : true
+			}
+		],
+		"time/frame/current" : [
+			{
+				"modifiers" : [ "Ctrl" ],
+				"key" : "6",
+				"enable" : true
+			}
+		],
+		"time/shift" : [
+			{
+				"modifiers" : [ "Ctrl" ],
+				"key" : "I",
+				"enable" : true
+			}
+		],
+		"time/snap/end_video" : [
+			{
+				"modifiers" : [ "Ctrl" ],
+				"key" : "4",
+				"enable" : true
+			}
+		],
+		"time/snap/scene" : [
+			{
+				"modifiers" : [ "Ctrl" ],
+				"key" : "5",
+				"enable" : true
+			}
+		],
+		"time/snap/start_video" : [
+			{
+				"modifiers" : [ "Ctrl" ],
+				"key" : "3",
+				"enable" : true
+			}
+		],
+		"timing add lead in" : [
+			{
+				"modifiers" : [],
+				"key" : "C",
+				"enable" : true
+			}
+		],
+		"timing add lead out" : [
+			{
+				"modifiers" : [],
+				"key" : "V",
+				"enable" : true
+			}
+		],
+		"timing karaoke decrease length" : [
+			{
+				"modifiers" : [],
+				"key" : "KP_Subtract",
+				"enable" : true
+			}
+		],
+		"timing karaoke decrease length and shift following" : [
+			{
+				"modifiers" : [ "Shift" ],
+				"key" : "KP_Subtract",
+				"enable" : true
+			}
+		],
+		"timing karaoke increase length" : [
+			{
+				"modifiers" : [],
+				"key" : "KP_Add",
+				"enable" : true
+			}
+		],
+		"timing karaoke increase length and shift following" : [
+			{
+				"modifiers" : [ "Shift" ],
+				"key" : "KP_Add",
+				"enable" : true
+			}
+		],
+		"timing move to next item" : [
+			{
+				"modifiers" : [],
+				"key" : "X",
+				"enable" : true
+			}
+		],
+		"timing move to prev item" : [
+			{
+				"modifiers" : [],
+				"key" : "Z",
+				"enable" : true
+			}
+		],
+		"toggle global timing mode" : [
+			{
+				"modifiers" : [ "Ctrl" ],
+				"key" : "KP_Multiply",
+				"enable" : true
+			}
+		],
+		"video/focus_seek" : [
+			{
+				"modifiers" : [ "Ctrl" ],
+				"key" : "Space",
+				"enable" : true
+			}
+		],
+		"video/frame/next" : [
+			{
+				"modifiers" : [],
+				"key" : "Right",
+				"enable" : true
+			},
+			{
+				"modifiers" : [ "Ctrl" ],
+				"key" : "KP_6",
+				"enable" : true
+			}
+		],
+		"video/frame/play" : [
+			{
+				"modifiers" : [ "Ctrl" ],
+				"key" : "P",
+				"enable" : true
+			}
+		],
+		"video/frame/prev" : [
+			{
+				"modifiers" : [],
+				"key" : "Left",
+				"enable" : true
+			},
+			{
+				"modifiers" : [ "Ctrl" ],
+				"key" : "KP_4",
+				"enable" : true
+			}
+		],
+		"video/jump" : [
+			{
+				"modifiers" : [ "Ctrl" ],
+				"key" : "J",
+				"enable" : true
+			}
+		],
+		"video/jump/end" : [
+			{
+				"modifiers" : [ "Ctrl" ],
+				"key" : "2",
+				"enable" : true
+			}
+		],
+		"video/jump/start" : [
+			{
+				"modifiers" : [ "Ctrl" ],
+				"key" : "1",
+				"enable" : true
+			}
+		],
+		"video/zoom/in" : [
+			{
+				"modifiers" : [ "Ctrl" ],
+				"key" : "KP_Add",
+				"enable" : true
+			}
+		],
+		"video/zoom/out" : [
+			{
+				"modifiers" : [ "Ctrl" ],
+				"key" : "KP_Subtract",
+				"enable" : true
+			}
+		]
+	},
+
+	"Audio" : {
+		"timing move to next item" : [
+			{
+				"modifiers" : [],
+				"key" : "Right",
+				"enable" : true
+			}
+		],
+		"timing move to prev item" : [
+			{
+				"modifiers" : [],
+				"key" : "Left",
+				"enable" : true
+			}
+		]
+	},
+
+	"Video" : {
+		"video/frame/next" : [
+			{
+				"modifiers" : [],
+				"key" : "Right",
+				"enable" : true
+			}
+		],
+		"video/frame/prev" : [
+			{
+				"modifiers" : [],
+				"key" : "Left",
+				"enable" : true
+			}
+		],
+		"visual typesetting set tool crosshair" : [
+			{
+				"modifiers" : [],
+				"key" : "A",
+				"enable" : true
+			}
+		],
+		"visual typesetting set tool drag" : [
+			{
+				"modifiers" : [],
+				"key" : "S",
+				"enable" : true
+			}
+		],
+		"visual typesetting set tool rectangle clip" : [
+			{
+				"modifiers" : [],
+				"key" : "H",
+				"enable" : true
+			}
+		],
+		"visual typesetting set tool rotate xy" : [
+			{
+				"modifiers" : [],
+				"key" : "F",
+				"enable" : true
+			}
+		],
+		"visual typesetting set tool rotate z" : [
+			{
+				"modifiers" : [],
+				"key" : "D",
+				"enable" : true
+			}
+		],
+		"visual typesetting set tool scale" : [
+			{
+				"modifiers" : [],
+				"key" : "G",
+				"enable" : true
+			}
+		],
+		"visual typesetting set tool vector clip" : [
+			{
+				"modifiers" : [],
+				"key" : "J",
+				"enable" : true
+			}
+		]
+	},
+
+	"Styling Assistant" : {
+		"audio play" : [
+			{
+				"modifiers" : [],
+				"key" : "End",
+				"enable" : true
+			}
+		],
+		"styling assistant commit" : [
+			{
+				"modifiers" : [],
+				"key" : "Enter",
+				"enable" : true
+			}
+		],
+		"styling assistant next item" : [
+			{
+				"modifiers" : [],
+				"key" : "PageDown",
+				"enable" : true
+			}
+		],
+		"styling assistant prev item" : [
+			{
+				"modifiers" : [],
+				"key" : "PageUp",
+				"enable" : true
+			}
+		],
+		"styling assistant preview" : [
+			{
+				"modifiers" : [],
+				"key" : "F8",
+				"enable" : true
+			}
+		],
+		"video play" : [
+			{
+				"modifiers" : [],
+				"key" : "Home",
+				"enable" : true
+			}
+		]
+	},
+
+	"Timing Mode" : {
+		"audio play" : [
+			{
+				"modifiers" : [],
+				"key" : "KP_5",
+				"enable" : true
+			}
+		],
+		"audio play after selection end" : [
+			{
+				"modifiers" : [],
+				"key" : "KP_3",
+				"enable" : true
+			}
+		],
+		"audio play before selection begin" : [
+			{
+				"modifiers" : [],
+				"key" : "KP_1",
+				"enable" : true
+			}
+		],
+		"audio stop" : [
+			{
+				"modifiers" : [],
+				"key" : "KP_8",
+				"enable" : true
+			}
+		],
+		"timing commit" : [
+			{
+				"modifiers" : [],
+				"key" : "KP_Enter",
+				"enable" : true
+			}
+		],
+		"timing move to next item" : [
+			{
+				"modifiers" : [],
+				"key" : "KP_2",
+				"enable" : true
+			}
+		],
+		"timing move to prev item" : [
+			{
+				"modifiers" : [],
+				"key" : "KP_0",
+				"enable" : true
+			}
+		],
+		"timing shift end backward" : [
+			{
+				"modifiers" : [],
+				"key" : "KP_7",
+				"enable" : true
+			}
+		],
+		"timing shift end forward" : [
+			{
+				"modifiers" : [],
+				"key" : "KP_9",
+				"enable" : true
+			}
+		],
+		"timing shift start backward" : [
+			{
+				"modifiers" : [],
+				"key" : "KP_4",
+				"enable" : true
+			}
+		],
+		"timing shift start forward" : [
+			{
+				"modifiers" : [],
+				"key" : "KP_6",
+				"enable" : true
+			}
+		]
+	},
+
+	"Translation Assistant" : {
+		"audio play" : [
+			{
+				"modifiers" : [],
+				"key" : "End",
+				"enable" : true
+			}
+		],
+		"translation assiatant prev item" : [
+			{
+				"modifiers" : [],
+				"key" : "PageUp",
+				"enable" : true
+			}
+		],
+		"translation assistant commit" : [
+			{
+				"modifiers" : [],
+				"key" : "Enter",
+				"enable" : true
+			}
+		],
+		"translation assistant insert original" : [
+			{
+				"modifiers" : [],
+				"key" : "Insert",
+				"enable" : true
+			}
+		],
+		"translation assistant next item" : [
+			{
+				"modifiers" : [],
+				"key" : "PageDown",
+				"enable" : true
+			}
+		],
+		"translation assistant preview" : [
+			{
+				"modifiers" : [],
+				"key" : "F8",
+				"enable" : true
+			}
+		],
+		"video play" : [
+			{
+				"modifiers" : [],
+				"key" : "Home",
+				"enable" : true
+			}
+		]
+	}
+}

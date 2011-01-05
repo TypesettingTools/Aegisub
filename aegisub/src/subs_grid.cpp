@@ -46,7 +46,9 @@
 #include <wx/tokenzr.h>
 #endif
 
+#include "aegisub/hotkey.h"
 #include "include/aegisub/audio_provider.h"
+
 #include "ass_file.h"
 #include "ass_karaoke.h"
 #include "ass_override.h"
@@ -58,7 +60,6 @@
 #include "charset_conv.h"
 #include "dialog_paste_over.h"
 #include "frame_main.h"
-#include "hotkeys.h"
 #include "main.h"
 #include "subs_edit_box.h"
 #include "subs_grid.h"
@@ -246,6 +247,12 @@ void SubtitlesGrid::OnShowColMenu(wxCommandEvent &event) {
 /// @brief Process keyboard events 
 /// @param event 
 void SubtitlesGrid::OnKeyDown(wxKeyEvent &event) {
+
+	hotkey::check("Subtitle Grid", event.GetKeyCode(), event.GetUnicodeKey(), event.GetModifiers());
+	event.StopPropagation();
+
+//H Fix below.
+/*
 	// Get key
 #ifdef __APPLE__
 	Hotkeys.SetPressed(event.GetKeyCode(),event.m_metaDown,event.m_altDown,event.m_shiftDown);
@@ -330,6 +337,7 @@ void SubtitlesGrid::OnKeyDown(wxKeyEvent &event) {
 	}
 
 	event.Skip();
+*/
 }
 
 void SubtitlesGrid::OnDuplicate (wxCommandEvent &) {

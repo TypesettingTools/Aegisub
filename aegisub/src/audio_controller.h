@@ -33,6 +33,7 @@
 /// @see audio_controller.cpp
 /// @ingroup audio_ui
 
+#pragma once
 
 #ifndef AGI_PRE
 #include <memory>

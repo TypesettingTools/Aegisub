@@ -110,7 +110,7 @@ class VideoDisplay : public wxGLCanvas {
 	void OnPaint(wxPaintEvent& event);
 	/// @brief Key event handler
 	/// @param event 
-	void OnKey(wxKeyEvent &event);
+	void OnKeyDown(wxKeyEvent &event);
 	/// @brief Mouse event handler
 	/// @param event 
 	void OnMouseEvent(wxMouseEvent& event);

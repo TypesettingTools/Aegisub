@@ -63,11 +63,11 @@ namespace agi {
 	/// When throwing exceptions, throw temporaries, not heap allocated
 	/// objects. (C++ FAQ Lite 17.6.) I.e. this is correct:
 	/// @code
-	/// throw Aegisub::SomeException("Message for exception");
+	/// throw agi::SomeException("Message for exception");
 	/// @endcode
 	/// This is wrong:
 	/// @code
-	/// throw new Aegisub::SomeException("Remember this is the wrong way!");
+	/// throw new agi::SomeException("Remember this is the wrong way!");
 	/// @endcode
 	/// Exceptions must not be allocated on heap, because of the risks of
 	/// leaking memory that way. (C++ FAQ Lite 17.8.)
@@ -81,10 +81,10 @@ namespace agi {
 	/// try {
 	///     /* ... */
 	/// }
-	/// catch (Aegisub::UserCancelException &e) {
+	/// catch (agi::UserCancelException &e) {
 	///     /* handle the fact that the user cancelled */
 	/// }
-	/// catch (Aegisub::VideoInputException &e) {
+	/// catch (agi::VideoInputException &e) {
 	///     /* handle the video provider failing */
 	/// }
 	/// @endcode
@@ -238,8 +238,8 @@ namespace agi {
 	};
 
 
-	/// @class Aegisub::UserCancelException
-	/// @extends Aegisub::Exception
+	/// @class agi::UserCancelException
+	/// @extends agi::Exception
 	/// @brief Exception for "user cancel" events
 	///
 	/// I.e. when we want to abort an operation because the user requested that we do so.
@@ -253,8 +253,8 @@ namespace agi {
 	DEFINE_SIMPLE_EXCEPTION_NOINNER(UserCancelException,Exception,"nonerror/user_cancel")
 
 
-	/// @class Aegisub::InternalError
-	/// @extends Aegisub::Exception
+	/// @class agi::InternalError
+	/// @extends agi:Exception
 	/// @brief Errors that should never happen and point to some invalid assumption in the code
 	///
 	/// Throw an internal error when a sanity check fails, and the insanity should have
@@ -265,8 +265,8 @@ namespace agi {
 	DEFINE_SIMPLE_EXCEPTION(InternalError, Exception, "internal_error")
 
 
-	/// @class Aegisub::FileSystemError
-	/// @extends Aegisub::Exception
+	/// @class agi::FileSystemError
+	/// @extends agi::Exception
 	/// @brief Base class for errors related to the file system
 	///
 	/// This base class can not be instantiated.
@@ -274,8 +274,8 @@ namespace agi {
 	/// causes for errors.
 	DEFINE_BASE_EXCEPTION_NOINNER(FileSystemError,Exception)
 
-	/// @class Aegisub::FileNotAccessibleError
-	/// @extends Aegisub::FileSystemError
+	/// @class agi::FileNotAccessibleError
+	/// @extends agi::FileSystemError
 	/// @brief A file can't be accessed for some reason
 	DEFINE_SIMPLE_EXCEPTION_NOINNER(FileNotAccessibleError,FileSystemError,"filesystem/not_accessible")
 
@@ -289,16 +289,16 @@ namespace agi {
 		/// @param filename Name of the file that could not be found
 		FileNotFoundError(const std::string &filename) : FileNotAccessibleError(std::string("File not found: ") + filename) { }
 
-		// Not documented, see  Aegisub::Exception class
+		// Not documented, see  agi::Exception class
 		const char * GetName() const { return "filesystem/not_accessible/not_found"; }
 
-		// Not documented, see  Aegisub::Exception class
+		// Not documented, see  agi::Exception class
 		Exception * Copy() const { return new FileNotFoundError(*this); }
 	};
 
 
-	/// @class Aegisub::InvalidInputException
-	/// @extends Aegisub::Exception
+	/// @class agi::InvalidInputException
+	/// @extends agi::Exception
 	/// @brief Some input data were invalid and could not be processed
 	DEFINE_BASE_EXCEPTION(InvalidInputException,Exception)
 

@@ -27,6 +27,7 @@
 #include <libaegisub/exception.h>
 
 namespace agi {
+	/// Character set conversion and detection.
 	namespace charset {
 
 DEFINE_BASE_EXCEPTION_NOINNER(CharsetError, agi::Exception)

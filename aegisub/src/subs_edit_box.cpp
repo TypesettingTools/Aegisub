@@ -54,6 +54,8 @@
 #include <wx/spinctrl.h>
 #endif
 
+#include "aegisub/hotkey.h"
+
 #include "ass_dialogue.h"
 #include "ass_file.h"
 #include "ass_override.h"
@@ -424,6 +426,10 @@ void SubsEditBox::UpdateFrameTiming(agi::vfr::Framerate const& fps) {
 }
 
 void SubsEditBox::OnKeyDown(wxKeyEvent &event) {
+
+	hotkey::check("Subtitle Edit Box", event.GetKeyCode(), event.GetUnicodeKey(), event.GetModifiers());
+	event.StopPropagation();
+
 	int key = event.GetKeyCode();
 	if (line && (key == WXK_RETURN || key == WXK_NUMPAD_ENTER)) {
 		NextLine();

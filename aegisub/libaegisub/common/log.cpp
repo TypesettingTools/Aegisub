@@ -27,6 +27,9 @@
 #include <memory>
 #endif
 
+#include "libaegisub/cajun/elements.h"
+#include "libaegisub/cajun/writer.h"
+#include "libaegisub/io.h"
 #include "libaegisub/log.h"
 #include "libaegisub/mutex.h"
 #include "libaegisub/types.h"
@@ -36,7 +39,7 @@ namespace agi {
 	namespace log {
 
 /// Global log sink.
-std::auto_ptr<LogSink> log(new LogSink());
+LogSink *log;
 
 /// Short Severity ID
 /// Keep this ordered the same as Severity
@@ -61,11 +64,51 @@ SinkMessage::~SinkMessage() {
 }
 
 
-LogSink::LogSink() {
+LogSink::LogSink(const std::string dir_log): dir_log(dir_log) {
+	util::time_log(time_start);
 }
 
+/// @todo The log files need to be trimed after N amount.
 LogSink::~LogSink() {
-/// @todo This needs to flush all log data to disk on quit.
+	json::Object root;
+	json::Array array;
+
+	agi_timeval time_close;
+	util::time_log(time_close);
+
+	std::stringstream str;
+	str << dir_log << time_start.tv_sec << ".json";
+	io::Save file(str.str());
+
+	for (unsigned int i=0; i < sink.size(); i++) {
+		json::Object entry;
+		entry["sec"]		= json::Number(sink[i]->tv.tv_sec);
+		entry["usec"]		= json::Number(sink[i]->tv.tv_usec);
+		entry["severity"]	= json::Number(sink[i]->severity),
+		entry["section"]	= json::String(sink[i]->section);
+		entry["file"]		= json::String(sink[i]->file);
+		entry["func"]		= json::String(sink[i]->func);
+		entry["line"]		= json::Number(sink[i]->line);
+		entry["message"]	= json::String(std::string(sink[i]->message, sink[i]->len));
+
+		array.Insert(entry);
+	}
+
+	json::Array timeval_open;
+	timeval_open.Insert(json::Number(time_start.tv_sec));
+	timeval_open.Insert(json::Number(time_start.tv_usec));
+	root["timeval"]["open"] = timeval_open;
+
+	json::Array timeval_close;
+	timeval_close.Insert(json::Number(time_close.tv_sec));
+	timeval_close.Insert(json::Number(time_close.tv_usec));
+	root["timeval"]["close"] = timeval_close;
+
+
+	root["log"] = array;
+
+	json::Writer::Write(root, file.Get());
+
 	agi::util::delete_clear(sink);
 }
 

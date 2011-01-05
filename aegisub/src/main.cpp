@@ -50,6 +50,12 @@
 #include <wx/utils.h>
 #endif
 
+#include "aegisub/menu.h"
+#include "command/command.h"
+#include "command/icon.h"
+#include "aegisub/toolbar.h"
+#include "aegisub/hotkey.h"
+
 #include "ass_dialogue.h"
 #include "ass_export_filter.h"
 #include "ass_file.h"
@@ -63,7 +69,6 @@
 #include "compat.h"
 #include "export_framerate.h"
 #include "frame_main.h"
-#include "hotkeys.h"
 #include "main.h"
 #include "libresrc/libresrc.h"
 #include "plugin_manager.h"
@@ -75,6 +80,9 @@
 #include <libaegisub/io.h>
 #include <libaegisub/access.h>
 #include <libaegisub/log.h>
+#include <libaegisub/hotkey.h>
+
+
 
 namespace config {
 	agi::Options *opt;
@@ -153,10 +161,39 @@ static void wxAssertHandler(const wxString &file, int line, const wxString &func
 /// @brief Gets called when application starts.
 /// @return bool
 bool AegisubApp::OnInit() {
+
+	// logging.
+	const std::string path_log(StandardPaths::DecodePath(_T("?user/log/")));
+	wxFileName::Mkdir(path_log, 0777, wxPATH_MKDIR_FULL);
+	agi::log::log = new agi::log::LogSink(path_log);
+
+
 #ifdef _DEBUG
 	emit_stdout = new agi::log::EmitSTDOUT();
 	emit_stdout->Enable();
 #endif
+
+	// Init command manager
+	cmd::cm = new cmd::CommandManager();
+
+	// Init commands.
+	cmd::init_command(cmd::cm);
+
+	// Init hotkey keycode->name map.
+	hotkey::keycode_name_map_init();
+
+	// Init hotkeys.
+	const std::string conf_user_hotkey(StandardPaths::DecodePath(_T("?user/hotkey.json")));
+	agi::hotkey::hotkey = new agi::hotkey::Hotkey(conf_user_hotkey, GET_DEFAULT_CONFIG(default_hotkey));
+
+	// Init icons.
+	icon::icon_init();
+
+	// Generate menus.
+	menu::menu = new menu::Menu();
+
+	// Generate toolbars.
+	toolbar::toolbar = new toolbar::Toolbar();
 
 	// Install assertion handler
 //	wxSetAssertHandler(wxAssertHandler);
@@ -231,11 +268,6 @@ bool AegisubApp::OnInit() {
 		OPT_SET("Version/Last Version")->SetInt(GetSVNRevision());
 		AssTime::UseMSPrecision = OPT_GET("App/Nonstandard Milisecond Times")->GetBool();
 
-		// Set hotkeys file
-		StartupLog(_T("Load hotkeys"));
-		Hotkeys.SetFile(StandardPaths::DecodePath(_T("?user/hotkeys.dat")));
-		Hotkeys.Load();
-
 		StartupLog(_T("Initialize final locale"));
 
 		// Set locale
@@ -302,12 +334,18 @@ int AegisubApp::OnExit() {
 	delete plugins;
 	delete config::opt;
 	delete config::mru;
+	delete agi::hotkey::hotkey;
+
 #ifdef WITH_AUTOMATION
 	delete global_scripts;
 #endif
 #ifdef _DEBUG
 	delete emit_stdout;
 #endif
+
+	// Keep this last!
+	delete agi::log::log;
+
 	return wxApp::OnExit();
 }
 
@@ -562,14 +600,14 @@ void AegisubApp::OnMouseWheel(wxMouseEvent &event) {
 
 
 
-/// @brief Key pressed 
-/// @param event 
-///
+/// @brief Key pressed
+/// @param event wxEvent
+/// Noone has any idea what this does anymore.
 void AegisubApp::OnKey(wxKeyEvent &event) {
 	//frame->audioBox->audioDisplay->AddPendingEvent(event);
-	if (!event.GetSkipped()) {
-		event.Skip();
-	}
+//	if (!event.GetSkipped()) {
+//		event.Skip();
+//	}
 }
 
 

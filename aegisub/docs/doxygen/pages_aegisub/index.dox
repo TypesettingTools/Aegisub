@@ -1,5 +1,8 @@
 /** @mainpage
 
+<h2>Source Groups</h2>
+<table border="0" cellpadding="10">
+<tr><td>
 Main
  - @ref main
  - @ref main_headers
@@ -24,6 +27,8 @@ Dialogues
  - @ref thesaurus
  - @ref visual_ts
 
+</td>
+<td>
 Miscellanous
  - @ref build
  - @ref tools_ui
@@ -45,5 +50,27 @@ Video
  - @ref video
  - @ref video_input
  - @ref video_output
+
+</tr></td></table>
+
+<hr size="0" width="80%">
+
+
+<h2>Available Command List</h2>
+ - @ref cmd-app
+ - @ref cmd-audio
+ - @ref cmd-am
+ - @ref cmd-edit
+ - @ref cmd-grid
+ - @ref cmd-help
+ - @ref cmd-keyframed
+ - @ref cmd-menu
+ - @ref cmd-recent
+ - @ref cmd-subtitle
+ - @ref cmd-time
+ - @ref cmd-timecode
+ - @ref cmd-tool
+ - @ref cmd-video
+
 
 */

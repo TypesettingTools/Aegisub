@@ -34,6 +34,8 @@
 /// @ingroup main_ui
 ///
 
+#pragma once
+
 #ifndef AGI_PRE
 #include <fstream>
 #include <iostream>

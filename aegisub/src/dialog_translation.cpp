@@ -43,13 +43,14 @@
 #include <wx/settings.h>
 #endif
 
+#include "aegisub/hotkey.h"
+
 #include "ass_dialogue.h"
 #include "ass_file.h"
 #include "audio_controller.h"
 #include "dialog_translation.h"
 #include "frame_main.h"
 #include "help_button.h"
-#include "hotkeys.h"
 #include "libresrc/libresrc.h"
 #include "selection_controller.h"
 #include "subs_edit_box.h"
@@ -108,19 +109,19 @@ DialogTranslation::DialogTranslation (wxWindow *parent,AssFile *_subs,SubtitlesG
 	// Hotkeys
 	wxSizer *KeysSizer = new wxStaticBoxSizer(wxVERTICAL,this,_("Keys"));
 	wxSizer *KeysInnerSizer = new wxGridSizer(2,0,5);
-	KeysInnerSizer->Add(new wxStaticText(this,-1,Hotkeys.GetText(_T("Translation Assistant Accept")) + _T(": ")));
+//H	KeysInnerSizer->Add(new wxStaticText(this,-1,Hotkeys.GetText(_T("Translation Assistant Accept")) + _T(": ")));
 	KeysInnerSizer->Add(new wxStaticText(this,-1,_("Accept changes")));
-	KeysInnerSizer->Add(new wxStaticText(this,-1,Hotkeys.GetText(_T("Translation Assistant Preview")) + _T(": ")));
+//H	KeysInnerSizer->Add(new wxStaticText(this,-1,Hotkeys.GetText(_T("Translation Assistant Preview")) + _T(": ")));
 	KeysInnerSizer->Add(new wxStaticText(this,-1,_("Preview changes")));
-	KeysInnerSizer->Add(new wxStaticText(this,-1,Hotkeys.GetText(_T("Translation Assistant Prev")) + _T(": ")));
+//H	KeysInnerSizer->Add(new wxStaticText(this,-1,Hotkeys.GetText(_T("Translation Assistant Prev")) + _T(": ")));
 	KeysInnerSizer->Add(new wxStaticText(this,-1,_("Previous line")));
-	KeysInnerSizer->Add(new wxStaticText(this,-1,Hotkeys.GetText(_T("Translation Assistant Next")) + _T(": ")));
+//H	KeysInnerSizer->Add(new wxStaticText(this,-1,Hotkeys.GetText(_T("Translation Assistant Next")) + _T(": ")));
 	KeysInnerSizer->Add(new wxStaticText(this,-1,_("Next line")));
-	KeysInnerSizer->Add(new wxStaticText(this,-1,Hotkeys.GetText(_T("Translation Assistant Insert Original")) + _T(": ")));
+//H	KeysInnerSizer->Add(new wxStaticText(this,-1,Hotkeys.GetText(_T("Translation Assistant Insert Original")) + _T(": ")));
 	KeysInnerSizer->Add(new wxStaticText(this,-1,_("Insert original")));
-	KeysInnerSizer->Add(new wxStaticText(this,-1,Hotkeys.GetText(_T("Translation Assistant Play Video")) + _T(": ")));
+//H	KeysInnerSizer->Add(new wxStaticText(this,-1,Hotkeys.GetText(_T("Translation Assistant Play Video")) + _T(": ")));
 	KeysInnerSizer->Add(new wxStaticText(this,-1,_("Play Video")));
-	KeysInnerSizer->Add(new wxStaticText(this,-1,Hotkeys.GetText(_T("Translation Assistant Play Audio")) + _T(": ")));
+//H	KeysInnerSizer->Add(new wxStaticText(this,-1,Hotkeys.GetText(_T("Translation Assistant Play Audio")) + _T(": ")));
 	KeysInnerSizer->Add(new wxStaticText(this,-1,_("Play Audio")));
 	PreviewCheck = new wxCheckBox(this,PREVIEW_CHECK,_("Enable preview"));
 	PreviewCheck->SetValue(preview);
@@ -312,6 +313,11 @@ void DialogTranslationEvent::OnTransBoxKey(wxKeyEvent &event) { control->OnTrans
 /// @return 
 ///
 void DialogTranslation::OnTransBoxKey(wxKeyEvent &event) {
+	hotkey::check("Translation Assistant", event.GetKeyCode(), event.GetUnicodeKey(), event.GetModifiers());
+	event.StopPropagation();
+
+// H convert below to commands.
+/*
 #ifdef __APPLE__
 	Hotkeys.SetPressed(event.GetKeyCode(),event.m_metaDown,event.m_altDown,event.m_shiftDown);
 #else
@@ -355,7 +361,7 @@ void DialogTranslation::OnTransBoxKey(wxKeyEvent &event) {
 				break;
 			}
 		}
-		
+
 		// Update line
 		cur->UpdateText();
 		cur->ClearBlocks();
@@ -409,12 +415,10 @@ void DialogTranslation::OnTransBoxKey(wxKeyEvent &event) {
 	// Play audio
 	if (Hotkeys.IsPressed(_T("Translation Assistant Play Audio"))) {
 		/// @todo Reinstate this when the audio controller is made reachable from here
-		/*
-		if (audio->loaded) {
-			audio->Play(current->Start.GetMS(),current->End.GetMS());
-			TransText->SetFocus();
-		}
-		*/
+		//if (audio->loaded) {
+		//	audio->Play(current->Start.GetMS(),current->End.GetMS());
+		//	TransText->SetFocus();
+		//}
 		return;
 	}
 
@@ -426,6 +430,7 @@ void DialogTranslation::OnTransBoxKey(wxKeyEvent &event) {
 
 	// Skip anything else
 	event.Skip();
+*/
 }
 
 

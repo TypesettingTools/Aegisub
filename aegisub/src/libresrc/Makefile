@@ -20,9 +20,12 @@ bitmap.cpp: ../../tools/common-respack
 default_config.cpp: ../../tools/common-respack *.json
 	../../tools/common-respack \
 		default_config.cpp \
-		./default_mru.json \
 		./default_config.json \
-		./default_path.json
+		./default_hotkey.json \
+		./default_menu.json \
+		./default_mru.json \
+		./default_path.json \
+		./default_toolbar.json
 
 EXTRA_DIST = *.json
 

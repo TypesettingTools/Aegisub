@@ -1,4 +1,4 @@
-// Copyright (c) 2005, Rodrigo Braz Monteiro
+// Copyright (c) 2010, Amar Takhar
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -29,107 +29,11 @@
 //
 // $Id$
 
-/// @file hotkeys.h
-/// @see hotkeys.cpp
-/// @ingroup main_ui
+/// @file 
+/// @brief 
+/// @ingroup command
 ///
 
 
+namespace cmd {
 
-
-///////////
-// Headers
-#ifndef AGI_PRE
-#include <map>
-
-#include <wx/accel.h>
-#include <wx/string.h>
-#endif
-
-
-//////////////
-// Prototypes
-class DialogOptions;
-
-
-
-/// DOCME
-/// @class HotkeyType
-/// @brief DOCME
-///
-/// DOCME
-class HotkeyType {
-public:
-
-	/// DOCME
-	int flags;
-
-	/// DOCME
-	int keycode;
-
-	/// DOCME
-	wxString origName;
-
-	HotkeyType();
-	HotkeyType(wxString text,wxString name);
-	
-	void Parse(wxString text);
-	wxString GetText() const;
-
-
-	/// DOCME
-	static std::map<int,wxString> keyName;
-	static wxString GetKeyName(int keycode);
-	static void FillMap();
-};
-
-
-
-/// DOCME
-/// @class HotkeyManager
-/// @brief DOCME
-///
-/// DOCME
-class HotkeyManager {
-	friend class DialogOptions;
-private:
-
-	/// DOCME
-	bool modified;
-
-	/// DOCME
-	wxString filename;
-
-
-	/// DOCME
-	int lastKey;
-
-	/// DOCME
-	int lastMod;
-
-public:
-
-	/// DOCME
-	std::map<wxString,HotkeyType> key;
-
-	HotkeyManager();
-	~HotkeyManager();
-
-	void SetFile(wxString file);
-	void SetHotkey(wxString function,HotkeyType hotkey);
-	void SetHotkey(wxString function,wxString hotkey);
-	void Save();
-	void Load();
-	void LoadDefaults();
-	HotkeyType *Find(int keycode,int mod);
-
-	const wxString GetText(wxString function) const;
-	wxAcceleratorEntry GetAccelerator(wxString function,int id) const;
-	bool IsPressed(wxString function) const;
-	void SetPressed(int key,bool ctrl=false,bool alt=false,bool shift=false);
-};
-
-
-///////////////////
-// Global instance
-extern HotkeyManager Hotkeys;

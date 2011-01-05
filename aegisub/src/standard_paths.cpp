@@ -77,7 +77,7 @@ StandardPaths::StandardPaths() {
 	wxString userDir = paths.GetUserDataDir() + _T("-") + _T(AEGISUB_VERSION_DATA);
 #else
 	wxString dataDir = paths.GetDataDir() + _T("/") + _T(AEGISUB_VERSION_DATA);
-	wxString userDir = paths.GetUserDataDir() + _T("-") + _T(AEGISUB_VERSION_DATA);
+	wxString userDir = paths.GetUserConfigDir() + _T("/.aegisub-") + _T(AEGISUB_VERSION_DATA);
 #endif
 	wxString tempDir = paths.GetTempDir();
 

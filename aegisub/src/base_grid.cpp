@@ -42,8 +42,11 @@
 
 #include <wx/dcclient.h>
 #include <wx/dcmemory.h>
+#include <wx/kbdstate.h>
 #include <wx/sizer.h>
 #endif
+
+#include "aegisub/hotkey.h"
 
 #include "base_grid.h"
 
@@ -518,7 +521,7 @@ BEGIN_EVENT_TABLE(BaseGrid,wxWindow)
 	EVT_SIZE(BaseGrid::OnSize)
 	EVT_COMMAND_SCROLL(GRID_SCROLLBAR,BaseGrid::OnScroll)
 	EVT_MOUSE_EVENTS(BaseGrid::OnMouseEvent)
-	EVT_KEY_DOWN(BaseGrid::OnKeyPress)
+	EVT_KEY_DOWN(BaseGrid::OnKeyDown)
 END_EVENT_TABLE()
 
 
@@ -1142,10 +1145,14 @@ bool BaseGrid::IsDisplayed(AssDialogue *line) {
 /// @param event 
 /// @return 
 ///
-void BaseGrid::OnKeyPress(wxKeyEvent &event) {
+void BaseGrid::OnKeyDown(wxKeyEvent &event) {
 	// Get size
 	int w,h;
 	GetClientSize(&w,&h);
+
+	hotkey::check("Subtitle Grid", event.GetKeyCode(), event.GetUnicodeKey(), event.GetModifiers());
+	event.StopPropagation();
+
 
 	// Get scan code
 	int key = event.GetKeyCode();

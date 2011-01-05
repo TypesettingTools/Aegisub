@@ -44,6 +44,11 @@
 #include <wx/tokenzr.h>
 #endif
 
+#include <libaegisub/log.h>
+
+#include "aegisub/menu.h"
+#include "aegisub/toolbar.h"
+#include "aegisub/hotkey.h"
 
 #include "ass_file.h"
 #include "selection_controller.h"
@@ -56,14 +61,13 @@
 #include "avisynth_wrap.h"
 #endif
 #include "compat.h"
+#include "command/command.h"
 #include "dialog_detached_video.h"
 #include "dialog_search_replace.h"
-#include "dialog_styling_assistant.h"
 #include "dialog_version_check.h"
 #include "drop.h"
 #include "frame_main.h"
 #include "help_button.h"
-#include "hotkeys.h"
 #include "libresrc/libresrc.h"
 #include "main.h"
 #include "standard_paths.h"
@@ -97,6 +101,22 @@ FrameMain::FrameMain (wxArrayString args)
 : wxFrame ((wxFrame*)NULL,-1,_T(""),wxDefaultPosition,wxSize(920,700),wxDEFAULT_FRAME_STYLE | wxCLIP_CHILDREN)
 {
 	StartupLog(_T("Entering FrameMain constructor"));
+	temp_context.parent = this;
+
+	// Bind all commands.
+	// XXX: This is a hack for now, it will need to be dealt with when other frames are involved.
+	int count = cmd::count();
+	for (int i = 0; i < count; i++) {
+		Bind(wxEVT_COMMAND_MENU_SELECTED, &FrameMain::cmd_call, this, i);
+    }
+
+#ifdef __WXMAC__
+	Bind(FrameMain::OnAbout, &FrameMain::cmd_call, this, cmd::id("app/about"));
+#endif
+
+
+
+
 #ifdef __WXGTK__
 /* XXX HACK XXX
  * Gtk just got initialized. And if we're using the SCIM IME,
@@ -127,10 +147,12 @@ FrameMain::FrameMain (wxArrayString args)
 #ifdef WITH_AUTOMATION
 	StartupLog(_T("Create local Automation script manager"));
 	local_scripts = new Automation4::ScriptManager();
+	temp_context.local_scripts = local_scripts;
 #endif
 
 	// Contexts and controllers
 	audioController = new AudioController;
+	temp_context.audioController = audioController;
 	audioController->AddAudioOpenListener(&FrameMain::OnAudioOpen, this);
 	audioController->AddAudioCloseListener(&FrameMain::OnAudioClose, this);
 
@@ -161,22 +183,22 @@ FrameMain::FrameMain (wxArrayString args)
 	showAudio = true;
 	detachedVideo = NULL;
 	stylingAssistant = NULL;
+	temp_context.stylingAssistant = stylingAssistant;
 	StartupLog(_T("Initialize inner main window controls"));
 	InitContents();
 
 	// Set autosave timer
 	StartupLog(_T("Set up Auto Save"));
-	AutoSave.SetOwner(this,AutoSave_Timer);
+	AutoSave.SetOwner(this, ID_APP_TIMER_AUTOSAVE);
 	int time = OPT_GET("App/Auto/Save Every Seconds")->GetInt();
 	if (time > 0) {
 		AutoSave.Start(time*1000);
 	}
 	OPT_SUB("App/Auto/Save Every Seconds", autosave_timer_changed, &AutoSave, agi::signal::_1);
 
-	// Set accelerator keys
-	StartupLog(_T("Install hotkeys"));
-	PreviousFocus = NULL;
-	SetAccelerators();
+
+	PreviousFocus = NULL;						// Artifact from old hotkey removal not sure what it does.
+	temp_context.PreviousFocus = PreviousFocus;	// Artifact from old hotkey removal not sure what it does.
 
 	// Set drop target
 	StartupLog(_T("Set up drag/drop target"));
@@ -219,22 +241,24 @@ FrameMain::~FrameMain () {
 #endif
 }
 
+
+
+void FrameMain::cmd_call(wxCommandEvent& event) {
+	int id = event.GetId();
+	LOG_D("event/select") << "Id: " << id;
+	cmd::call(&temp_context, id);
+}
+
+
+
 /// @brief Initialize toolbar 
 void FrameMain::InitToolbar () {
 	// Create toolbar
 	wxSystemOptions::SetOption(_T("msw.remap"), 0);
 	Toolbar = CreateToolBar(wxTB_FLAT | wxTB_HORIZONTAL,-1,_T("Toolbar"));
 
-	// Subtitle control buttons
-	Toolbar->AddTool(Menu_File_New_Subtitles,_("New"),GETIMAGE(new_toolbutton_24),_("New subtitles"));
-	Toolbar->AddTool(Menu_File_Open_Subtitles,_("Open"),GETIMAGE(open_toolbutton_24),_("Open subtitles"));
-	Toolbar->AddTool(Menu_File_Save_Subtitles,_("Save"),GETIMAGE(save_toolbutton_24),_("Save subtitles"));
-	Toolbar->AddSeparator();
+	toolbar::toolbar->GetToolbar("main", Toolbar);
 
-	// Video zoom controls
-	Toolbar->AddTool(Menu_Video_JumpTo,_("Jump To..."),GETIMAGE(jumpto_button_24),wxNullBitmap,wxITEM_NORMAL,_("Jump video to time/frame"));
-	Toolbar->AddTool(Menu_Video_Zoom_In,_("Zoom in"),GETIMAGE(zoom_in_button_24),wxNullBitmap,wxITEM_NORMAL,_("Zoom video in"));
-	Toolbar->AddTool(Menu_Video_Zoom_Out,_("Zoom out"),GETIMAGE(zoom_out_button_24),wxNullBitmap,wxITEM_NORMAL,_("Zoom video out"));
 	wxArrayString choices;
 	for (int i=1;i<=24;i++) {
 		wxString toAdd = wxString::Format(_T("%i"),int(i*12.5));
@@ -242,73 +266,18 @@ void FrameMain::InitToolbar () {
 		toAdd += _T("%");
 		choices.Add(toAdd);
 	}
-	ZoomBox = new wxComboBox(Toolbar,Toolbar_Zoom_Dropdown,_T("75%"),wxDefaultPosition,wxDefaultSize,choices,wxCB_DROPDOWN);
+	ZoomBox = new wxComboBox(Toolbar,ID_TOOLBAR_ZOOM_DROPDOWN,_T("75%"),wxDefaultPosition,wxDefaultSize,choices,wxCB_DROPDOWN);
 	Toolbar->AddControl(ZoomBox);
 	Toolbar->AddSeparator();
-
-	// More video buttons
-	Toolbar->AddTool(Menu_Subs_Snap_Video_To_Start,_("Jump video to start"),GETIMAGE(video_to_substart_24),_("Jumps the video to the start frame of current subtitle"));
-	Toolbar->AddTool(Menu_Subs_Snap_Video_To_End,_("Jump video to end"),GETIMAGE(video_to_subend_24),_("Jumps the video to the end frame of current subtitle"));
-	Toolbar->AddTool(Menu_Subs_Snap_Start_To_Video,_("Snap start to video"),GETIMAGE(substart_to_video_24),_("Set start of selected subtitles to current video frame"));
-	Toolbar->AddTool(Menu_Subs_Snap_End_To_Video,_("Snap end to video"),GETIMAGE(subend_to_video_24),_("Set end of selected subtitles to current video frame"));
-	Toolbar->AddTool(Menu_Video_Select_Visible,_("Select visible"),GETIMAGE(select_visible_button_24),_("Selects all lines that are currently visible on video frame"));
-	Toolbar->AddTool(Menu_Video_Snap_To_Scene,_("Snap subtitles to scene"),GETIMAGE(snap_subs_to_scene_24),_("Snap selected subtitles so they match current scene start/end"));
-	Toolbar->AddTool(Menu_Video_Shift_To_Frame,_("Shift subtitles to frame"),GETIMAGE(shift_to_frame_24),_("Shift selected subtitles so first selected starts at this frame"));
-	Toolbar->AddSeparator();
-
-	// Property stuff
-	Toolbar->AddTool(Menu_Tools_Styles_Manager,_("Styles Manager"),GETIMAGE(style_toolbutton_24),_("Open Styles Manager"));
-	Toolbar->AddTool(Menu_Tools_Properties,_("Properties"),GETIMAGE(properties_toolbutton_24),_("Open Properties"));
-	Toolbar->AddTool(Menu_Tools_Attachments,_("Attachments"),GETIMAGE(attach_button_24),_("Open Attachment List"));
-	Toolbar->AddTool(Menu_Tools_Fonts_Collector,_("Fonts Collector"),GETIMAGE(font_collector_button_24),_("Open Fonts Collector"));
-	Toolbar->AddSeparator();
-
-	// Automation
-#ifdef WITH_AUTOMATION
-	Toolbar->AddTool(Menu_Tools_Automation,_("Automation"),GETIMAGE(automation_toolbutton_24),_("Open Automation manager"));
-	Toolbar->AddSeparator();
-#endif
-
-	// Tools
-	if (HasASSDraw()) {
-		Toolbar->AddTool(Menu_Tools_ASSDraw,_T("ASSDraw3"),GETIMAGE(assdraw_24),_("Launches ai-chan's \"ASSDraw3\" tool for vector drawing."));
-		Toolbar->AddSeparator();
-	}
-	Toolbar->AddTool(Menu_Edit_Shift,_("Shift Times"),GETIMAGE(shift_times_toolbutton_24),_("Open Shift Times Dialogue"));
-	Toolbar->AddTool(Menu_Tools_Styling,_("Styling Assistant"),GETIMAGE(styling_toolbutton_24),_("Open Styling Assistant"));
-	Toolbar->AddTool(Menu_Tools_Translation,_("Translation Assistant"),GETIMAGE(translation_toolbutton_24),_("Open Translation Assistant"));
-	Toolbar->AddTool(Menu_Tools_Resample,_("Resample"),GETIMAGE(resample_toolbutton_24),_("Resample Script Resolution"));
-	Toolbar->AddTool(Menu_Tools_Timing_Processor,_("Timing Post-Processor"),GETIMAGE(timing_processor_toolbutton_24),_("Open Timing Post-processor dialog"));
-	Toolbar->AddTool(Menu_Tools_Kanji_Timer,_("Kanji Timer"),GETIMAGE(kara_timing_copier_24),_("Open Kanji Timer dialog"));
-	Toolbar->AddTool(Menu_Tools_SpellCheck,_("Spell Checker"),GETIMAGE(spellcheck_toolbutton_24),_("Open Spell checker"));
-	Toolbar->AddSeparator();
-
-	// Options
-	Toolbar->AddTool(Menu_Tools_Options,_("Options"),GETIMAGE(options_button_24),_("Configure Aegisub"));
-	Toolbar->AddTool(Grid_Toggle_Tags,_("Cycle Tag Hidding Mode"),GETIMAGE(toggle_tag_hiding_24),_("Cycle through tag-hiding modes"));
 
 	// Update
 	Toolbar->Realize();
 }
 
 
-/// @brief DOCME
-/// @param item_text   
-/// @param hotkey_name 
-/// @return 
-wxString MakeHotkeyText(const wxString &item_text, const wxString &hotkey_name) {
-	return item_text + wxString(_T("\t")) + Hotkeys.GetText(hotkey_name);
- }
-
-
 /// @brief Initialize menu bar 
 void FrameMain::InitMenu() {
-	// Deinit menu if needed
-	if (menuCreated) {
-		SetMenuBar(NULL);
-		MenuBar->Destroy();
-	}
-	
+
 #ifdef __WXMAC__
 	// Make sure special menu items are placed correctly on Mac
 	wxApp::s_macAboutMenuItemId = Menu_Help_About;
@@ -317,250 +286,14 @@ void FrameMain::InitMenu() {
 	wxApp::s_macHelpMenuTitleName = _("&Help");
 #endif
 
-	// Generate menubar
-	MenuBar = new wxMenuBar();
-
-	// Create recent subs submenus
-	RecentSubs = new wxMenu();
-	RecentVids = new wxMenu();
-	RecentAuds = new wxMenu();
-	RecentTimecodes = new wxMenu();
-	RecentKeyframes = new wxMenu();
-
-	// Create file menu
-	fileMenu = new wxMenu();
-	AppendBitmapMenuItem(fileMenu,Menu_File_New_Subtitles, MakeHotkeyText(_("&New Subtitles"), _T("New Subtitles")), _("New subtitles"),GETIMAGE(new_toolbutton_16));
-	AppendBitmapMenuItem(fileMenu,Menu_File_Open_Subtitles, MakeHotkeyText(_("&Open Subtitles..."), _T("Open Subtitles")), _("Opens a subtitles file"),GETIMAGE(open_toolbutton_16));
-	AppendBitmapMenuItem(fileMenu,Menu_File_Open_Subtitles_Charset, _("&Open Subtitles with Charset..."), _("Opens a subtitles file with a specific charset"),GETIMAGE(open_with_toolbutton_16));
-	fileMenu->Append(Menu_File_Open_Subtitles_From_Video, _("Open Subtitles from &Video"), _("Opens the subtitles from the current video file"));
-	AppendBitmapMenuItem(fileMenu,Menu_File_Save_Subtitles, MakeHotkeyText(_("&Save Subtitles"), _T("Save Subtitles")), _("Saves subtitles"),GETIMAGE(save_toolbutton_16));
-	AppendBitmapMenuItem(fileMenu,Menu_File_Save_Subtitles_As, _("Save Subtitles as..."), _("Saves subtitles with another name"), GETIMAGE(save_as_toolbutton_16));
-	AppendBitmapMenuItem(fileMenu,Menu_File_Export_Subtitles, _("Export Subtitles..."), _("Saves a copy of subtitles with processing applied to it."), GETIMAGE(export_menu_16));
-	wxMenuItem *RecentParent = new wxMenuItem(fileMenu, Menu_File_Recent_Subs_Parent, _("Recent"), _T(""), wxITEM_NORMAL, RecentSubs);
-#ifndef __APPLE__
-	RecentParent->SetBitmap(GETIMAGE(blank_button_16));
-#endif
-	fileMenu->Append(RecentParent);
-	fileMenu->AppendSeparator();
-	AppendBitmapMenuItem (fileMenu,Menu_Tools_Properties, _("&Properties..."), _("Open script properties window"),GETIMAGE(properties_toolbutton_16));
-	AppendBitmapMenuItem (fileMenu,Menu_Tools_Attachments, _("&Attachments..."), _("Open the attachment list"), GETIMAGE(attach_button_16));
-	AppendBitmapMenuItem (fileMenu,Menu_Tools_Fonts_Collector, _("&Fonts Collector..."),_("Open fonts collector"), GETIMAGE(font_collector_button_16));
-	fileMenu->AppendSeparator();
-#ifndef __APPLE__
-	// Doesn't work on Mac, only one instance is ever allowed there from OS side
-	AppendBitmapMenuItem(fileMenu,Menu_File_New_Window, _("New Window"), _("Open a new application window"),GETIMAGE(new_window_menu_16));
-#endif
-	AppendBitmapMenuItem(fileMenu,Menu_File_Exit, MakeHotkeyText(_("E&xit"), _T("Exit")), _("Exit the application"),GETIMAGE(exit_button_16));
-	MenuBar->Append(fileMenu, _("&File"));
-
-	// Create Edit menu
-	// NOTE: Undo and Redo are actually controlled in frame_main_events, OnMenuOpen(). They will always be the first two items.
-	editMenu = new wxMenu();
-	AppendBitmapMenuItem(editMenu,Menu_Edit_Undo, MakeHotkeyText(_("&Undo"), _T("Undo")), _("Undoes last action"),GETIMAGE(undo_button_16));
-	AppendBitmapMenuItem(editMenu,Menu_Edit_Redo, MakeHotkeyText(_("&Redo"), _T("Redo")), _("Redoes last action"),GETIMAGE(redo_button_16));
-	editMenu->AppendSeparator();
-	AppendBitmapMenuItem(editMenu,Menu_Edit_Cut, MakeHotkeyText(_("Cut Lines"), _T("Cut")), _("Cut subtitles"), GETIMAGE(cut_button_16));
-	AppendBitmapMenuItem(editMenu,Menu_Edit_Copy, MakeHotkeyText(_("Copy Lines"), _T("Copy")), _("Copy subtitles"), GETIMAGE(copy_button_16));
-	AppendBitmapMenuItem(editMenu,Menu_Edit_Paste, MakeHotkeyText(_("Paste Lines"), _T("Paste")), _("Paste subtitles"), GETIMAGE(paste_button_16));
-	AppendBitmapMenuItem(editMenu,Menu_Edit_Paste_Over, MakeHotkeyText(_("Paste Lines Over..."), _T("Paste Over")) , _("Paste subtitles over others"),GETIMAGE(paste_over_button_16));
-	editMenu->AppendSeparator();
-	AppendBitmapMenuItem(editMenu,Menu_Edit_Find, MakeHotkeyText(_("&Find..."), _T("Find")), _("Find words in subtitles"),GETIMAGE(find_button_16));
-	AppendBitmapMenuItem(editMenu,Menu_Edit_Find_Next, MakeHotkeyText(_("Find Next"), _T("Find Next")), _("Find next match of last word"),GETIMAGE(find_next_menu_16));
-	AppendBitmapMenuItem(editMenu,Menu_Edit_Replace, MakeHotkeyText(_("Search and &Replace..."), _T("Replace")) , _("Find and replace words in subtitles"),GETIMAGE(find_replace_menu_16));
-	MenuBar->Append(editMenu, _("&Edit"));
-
-	// Create subtitles menu
-	subtitlesMenu = new wxMenu();
-	wxMenu *InsertMenu = new wxMenu;
-	wxMenuItem *InsertParent = new wxMenuItem(subtitlesMenu,Menu_Subtitles_Insert,_("&Insert Lines"),_T(""),wxITEM_NORMAL,InsertMenu);
-#ifndef __APPLE__
-	InsertParent->SetBitmap(GETIMAGE(blank_button_16));
-#endif
-	AppendBitmapMenuItem (subtitlesMenu,Menu_Tools_Styles_Manager, _("&Styles Manager..."), _("Open styles manager"), GETIMAGE(style_toolbutton_16));
-	AppendBitmapMenuItem (subtitlesMenu,Menu_Tools_Styling, _("St&yling Assistant..."), _("Open styling assistant"), GETIMAGE(styling_toolbutton_16));
-	AppendBitmapMenuItem (subtitlesMenu,Menu_Tools_Translation, _("&Translation Assistant..."),_("Open translation assistant"), GETIMAGE(translation_toolbutton_16));
-	AppendBitmapMenuItem (subtitlesMenu,Menu_Tools_Resample,_("Resample Resolution..."), _("Changes resolution and modifies subtitles to conform to change"), GETIMAGE(resample_toolbutton_16));
-	AppendBitmapMenuItem (subtitlesMenu,Menu_Tools_SpellCheck, _("Spe&ll Checker..."),_("Open spell checker"), GETIMAGE(spellcheck_toolbutton_16));
-	if (HasASSDraw()) {
-		subtitlesMenu->AppendSeparator();
-		AppendBitmapMenuItem (subtitlesMenu,Menu_Tools_ASSDraw,_T("ASSDraw3..."),_("Launches ai-chan's \"ASSDraw3\" tool for vector drawing."), GETIMAGE(assdraw_16));
-	}
-	subtitlesMenu->AppendSeparator();
-	AppendBitmapMenuItem(InsertMenu,MENU_INSERT_BEFORE,_("&Before Current"),_("Inserts a line before current"),GETIMAGE(blank_button_16));
-	AppendBitmapMenuItem(InsertMenu,MENU_INSERT_AFTER,_("&After Current"),_("Inserts a line after current"),GETIMAGE(blank_button_16));
-	AppendBitmapMenuItem(InsertMenu,MENU_INSERT_BEFORE_VIDEO,_("Before Current, at Video Time"),_("Inserts a line before current, starting at video time"),GETIMAGE(blank_button_16));
-	AppendBitmapMenuItem(InsertMenu,MENU_INSERT_AFTER_VIDEO,_("After Current, at Video Time"),_("Inserts a line after current, starting at video time"),GETIMAGE(blank_button_16));
-	subtitlesMenu->Append(InsertParent);
-	AppendBitmapMenuItem(subtitlesMenu,MENU_DUPLICATE,MakeHotkeyText(_("&Duplicate Lines"), _T("Grid duplicate rows")),_("Duplicate the selected lines"),GETIMAGE(blank_button_16));
-	AppendBitmapMenuItem(subtitlesMenu,MENU_DUPLICATE_NEXT_FRAME,MakeHotkeyText(_("&Duplicate and Shift by 1 Frame"), _T("Grid duplicate and shift one frame")),_("Duplicate lines and shift by one frame"),GETIMAGE(blank_button_16));
-	AppendBitmapMenuItem(subtitlesMenu,MENU_DELETE,MakeHotkeyText(_("Delete Lines"), _T("Grid delete rows")),_("Delete currently selected lines"),GETIMAGE(delete_button_16));
-	subtitlesMenu->AppendSeparator();
-	wxMenu *JoinMenu = new wxMenu;
-	wxMenuItem *JoinParent = new wxMenuItem(subtitlesMenu,Menu_Subtitles_Join,_("Join Lines"),_T(""),wxITEM_NORMAL,JoinMenu);
-#ifndef __APPLE__
-	JoinParent->SetBitmap(GETIMAGE(blank_button_16));
-#endif
-	AppendBitmapMenuItem(JoinMenu,MENU_JOIN_CONCAT,_("&Concatenate"),_("Joins selected lines in a single one, concatenating text together"),GETIMAGE(blank_button_16));
-	AppendBitmapMenuItem(JoinMenu,MENU_JOIN_REPLACE,_("Keep &First"),_("Joins selected lines in a single one, keeping text of first and discarding remaining"),GETIMAGE(blank_button_16));
-	AppendBitmapMenuItem(JoinMenu,MENU_JOIN_AS_KARAOKE,_("As &Karaoke"),_("Joins selected lines in a single one, as karaoke"),GETIMAGE(blank_button_16));
-	subtitlesMenu->Append(JoinParent);
-	AppendBitmapMenuItem(subtitlesMenu,MENU_RECOMBINE,_("Recombine Lines"),_("Recombine subtitles when they have been split and merged"),GETIMAGE(blank_button_16));
-	AppendBitmapMenuItem(subtitlesMenu,MENU_SPLIT_BY_KARAOKE,_("Split Lines (by karaoke)"),_("Uses karaoke timing to split line into multiple smaller lines"),GETIMAGE(blank_button_16));
-	subtitlesMenu->AppendSeparator();
-	wxMenu *SortMenu = new wxMenu;
-	wxMenuItem *SortParent = new wxMenuItem(subtitlesMenu,Menu_Subtitles_Sort_Start,_("Sort Lines"),_T(""),wxITEM_NORMAL,SortMenu);
-#ifndef __APPLE__
-	SortParent->SetBitmap(GETIMAGE(sort_times_button_16));
-#endif
-	AppendBitmapMenuItem(SortMenu,Menu_Subtitles_Sort_Start,_("&Start Time"),_("Sort all subtitles by their start times"),GETIMAGE(blank_button_16));
-	AppendBitmapMenuItem(SortMenu,Menu_Subtitles_Sort_End,_("&End Time"),_("Sort all subtitles by their end times"),GETIMAGE(blank_button_16));
-	AppendBitmapMenuItem(SortMenu,Menu_Subtitles_Sort_Style,_("St&yle Name"),_("Sort all subtitles by their style names"),GETIMAGE(blank_button_16));
-	subtitlesMenu->Append(SortParent);
-	AppendBitmapMenuItem(subtitlesMenu,MENU_SWAP,_("Swap Lines"),_("Swaps the two selected lines"),GETIMAGE(arrow_sort_16));
-	AppendBitmapMenuItem (subtitlesMenu,Menu_Edit_Select, MakeHotkeyText(_("Select Lines..."), _T("Select lines")), _("Selects lines based on defined criterea"),GETIMAGE(select_lines_button_16));
-	MenuBar->Append(subtitlesMenu, _("&Subtitles"));
-
-	// Create timing menu
-	timingMenu = new wxMenu();
-	AppendBitmapMenuItem(timingMenu,Menu_Edit_Shift, MakeHotkeyText(_("S&hift Times..."), _T("Shift times")), _("Shift subtitles by time or frames"),GETIMAGE(shift_times_toolbutton_16));
-	AppendBitmapMenuItem(timingMenu,Menu_Tools_Timing_Processor,_("Timing Post-Processor..."), _("Runs a post-processor for timing to deal with lead-ins, lead-outs, scene timing and etc."), GETIMAGE(timing_processor_toolbutton_16));
-	AppendBitmapMenuItem (timingMenu,Menu_Tools_Kanji_Timer,_("Kanji Timer..."),_("Open Kanji timer"),GETIMAGE(kara_timing_copier_16));
-	timingMenu->AppendSeparator();
-	AppendBitmapMenuItem(timingMenu,Menu_Subs_Snap_Start_To_Video, MakeHotkeyText(_("Snap Start to Video"), _T("Set Start To Video")), _("Set start of selected subtitles to current video frame"), GETIMAGE(substart_to_video_16));
-	AppendBitmapMenuItem(timingMenu,Menu_Subs_Snap_End_To_Video, MakeHotkeyText(_("Snap End to Video"), _T("Set End to Video")), _("Set end of selected subtitles to current video frame"), GETIMAGE(subend_to_video_16));
-	AppendBitmapMenuItem(timingMenu,Menu_Video_Snap_To_Scene, MakeHotkeyText(_("Snap to Scene"), _T("Snap to Scene")), _("Set start and end of subtitles to the keyframes around current video frame"), GETIMAGE(snap_subs_to_scene_16));
-	AppendBitmapMenuItem(timingMenu,Menu_Video_Shift_To_Frame, MakeHotkeyText(_("Shift to Current Frame"), _T("Shift by Current Time")), _("Shift selection so first selected line starts at current frame"), GETIMAGE(shift_to_frame_16));
-	timingMenu->AppendSeparator();
-	wxMenu *ContinuousMenu = new wxMenu;
-	wxMenuItem *ContinuousParent = new wxMenuItem(subtitlesMenu,-1,_("Make Times Continuous"),_T(""),wxITEM_NORMAL,ContinuousMenu);
-#ifndef __APPLE__
-	ContinuousParent->SetBitmap(GETIMAGE(blank_button_16));
-#endif
-	AppendBitmapMenuItem(ContinuousMenu,MENU_ADJOIN,_("Change &Start"),_("Changes times of subs so start times begin on previous's end time"),GETIMAGE(blank_button_16));
-	AppendBitmapMenuItem(ContinuousMenu,MENU_ADJOIN2,_("Change &End"),_("Changes times of subs so end times begin on next's start time"),GETIMAGE(blank_button_16));
-	timingMenu->Append(ContinuousParent);
-	MenuBar->Append(timingMenu, _("&Timing"));
-
-	// Create video menu
-	videoMenu = new wxMenu();
-	AppendBitmapMenuItem(videoMenu, Menu_File_Open_Video, _("&Open Video..."), _("Opens a video file"), GETIMAGE(open_video_menu_16));
-	AppendBitmapMenuItem(videoMenu, Menu_File_Close_Video, _("&Close Video"), _("Closes the currently open video file"), GETIMAGE(close_video_menu_16));
-	wxMenuItem *RecentVidParent = new wxMenuItem(videoMenu, Menu_File_Recent_Vids_Parent, _("Recent"), _T(""), wxITEM_NORMAL, RecentVids);
-	videoMenu->Append(RecentVidParent);
-	AppendBitmapMenuItem(videoMenu, Menu_Video_Dummy, _("Use Dummy Video..."), _("Opens a video clip with solid colour"), GETIMAGE(use_dummy_video_menu_16));
-	AppendBitmapMenuItem(videoMenu, Menu_Video_Details, _("Show Video Details..."), _("Shows video details"), GETIMAGE(show_video_details_menu_16));
-	videoMenu->AppendSeparator();
-	AppendBitmapMenuItem(videoMenu, Menu_File_Open_VFR, _("Open Timecodes File..."), _("Opens a VFR timecodes v1 or v2 file"), GETIMAGE(open_timecodes_menu_16));
-	AppendBitmapMenuItem(videoMenu, Menu_File_Save_VFR, _("Save Timecodes File..."), _("Saves a VFR timecodes v2 file"), GETIMAGE(save_timecodes_menu_16));
-	AppendBitmapMenuItem(videoMenu, Menu_File_Close_VFR, _("Close Timecodes File"), _("Closes the currently open timecodes file"), GETIMAGE(close_timecodes_menu_16))->Enable(false);
-	wxMenuItem *RecentTimesParent = new wxMenuItem(videoMenu, Menu_File_Recent_Timecodes_Parent, _("Recent"), _T(""), wxITEM_NORMAL, RecentTimecodes);
-	videoMenu->Append(RecentTimesParent);
-	videoMenu->AppendSeparator();
-	AppendBitmapMenuItem(videoMenu, Menu_Video_Load_Keyframes, _("Open Keyframes..."), _("Opens a keyframe list file"), GETIMAGE(open_keyframes_menu_16));
-	AppendBitmapMenuItem(videoMenu, Menu_Video_Save_Keyframes, _("Save Keyframes..."), _("Saves the current keyframe list"), GETIMAGE(save_keyframes_menu_16))->Enable(false);
-	AppendBitmapMenuItem(videoMenu, Menu_Video_Close_Keyframes, _("Close Keyframes"), _("Closes the currently open keyframes list"), GETIMAGE(close_keyframes_menu_16))->Enable(false);
-	wxMenuItem *RecentKeyframesParent = new wxMenuItem(videoMenu, Menu_File_Recent_Keyframes_Parent, _("Recent"), _T(""), wxITEM_NORMAL, RecentKeyframes);
-	videoMenu->Append(RecentKeyframesParent);
-	videoMenu->AppendSeparator();
-	AppendBitmapMenuItem(videoMenu, Menu_Video_Detach, _("Detach Video"), _("Detach video, displaying it in a separate Window."), GETIMAGE(detach_video_menu_16));
-	wxMenu *ZoomMenu = new wxMenu;
-	wxMenuItem *ZoomParent = new wxMenuItem(subtitlesMenu,Menu_View_Zoom,_("Set Zoom"),_T(""),wxITEM_NORMAL,ZoomMenu);
-#ifndef __APPLE__
-	ZoomParent->SetBitmap(GETIMAGE(set_zoom_menu_16));
-#endif
-	ZoomMenu->Append(Menu_View_Zoom_50, MakeHotkeyText(_T("&50%"), _T("Zoom 50%")), _("Set zoom to 50%"));
-	ZoomMenu->Append(Menu_View_Zoom_100, MakeHotkeyText(_T("&100%"), _T("Zoom 100%")), _("Set zoom to 100%"));
-	ZoomMenu->Append(Menu_View_Zoom_200, MakeHotkeyText(_T("&200%"), _T("Zoom 200%")), _("Set zoom to 200%"));
-	videoMenu->Append(ZoomParent);
-	wxMenu *AspectMenu = new wxMenu;
-	wxMenuItem *AspectParent = new wxMenuItem(subtitlesMenu,Menu_Video_AR,_("Override Aspect Ratio"),_T(""),wxITEM_NORMAL,AspectMenu);
-#ifndef __APPLE__
-	AspectParent->SetBitmap(GETIMAGE(override_aspect_menu_16));
-#endif
-	AspectMenu->AppendCheckItem(Menu_Video_AR_Default, _("&Default"), _("Leave video on original aspect ratio"));
-	AspectMenu->AppendCheckItem(Menu_Video_AR_Full, _("&Fullscreen (4:3)"), _("Forces video to 4:3 aspect ratio"));
-	AspectMenu->AppendCheckItem(Menu_Video_AR_Wide, _("&Widescreen (16:9)"), _("Forces video to 16:9 aspect ratio"));
-	AspectMenu->AppendCheckItem(Menu_Video_AR_235, _("&Cinematic (2.35)"), _("Forces video to 2.35 aspect ratio"));
-	AspectMenu->AppendCheckItem(Menu_Video_AR_Custom, _("Custom..."), _("Forces video to a custom aspect ratio"));
-	videoMenu->Append(AspectParent);
-	videoMenu->AppendCheckItem(Menu_Video_Overscan, _("Show Overscan Mask"), _("Show a mask over the video, indicating areas that might get cropped off by overscan on televisions."));
-//  This is broken as you can't use Check() on a menu item that has a bitmap.
-//	AppendBitmapMenuItem(videoMenu, Menu_Video_Overscan, _("Show Overscan Mask"), _("Show a mask over the video, indicating areas that might get cropped off by overscan on televisions."), GETIMAGE(show_overscan_menu_checked_16));
-	videoMenu->AppendSeparator();
-	AppendBitmapMenuItem(videoMenu,Menu_Video_JumpTo, MakeHotkeyText(_("&Jump to..."), _T("Video Jump")), _("Jump to frame or time"), GETIMAGE(jumpto_button_16));
-	AppendBitmapMenuItem(videoMenu,Menu_Subs_Snap_Video_To_Start, MakeHotkeyText(_("Jump Video to Start"), _T("Jump Video To Start")), _("Jumps the video to the start frame of current subtitle"), GETIMAGE(video_to_substart_16));
-	AppendBitmapMenuItem(videoMenu,Menu_Subs_Snap_Video_To_End, MakeHotkeyText(_("Jump Video to End"), _T("Jump Video To End")), _("Jumps the video to the end frame of current subtitle"), GETIMAGE(video_to_subend_16));
-	MenuBar->Append(videoMenu, _("&Video"));
-
-	// Create audio menu
-	audioMenu = new wxMenu();
-	AppendBitmapMenuItem(audioMenu, Menu_Audio_Open_File, _("&Open Audio File..."), _("Opens an audio file"), GETIMAGE(open_audio_menu_16));
-	AppendBitmapMenuItem(audioMenu, Menu_Audio_Open_From_Video, _("Open Audio from &Video"), _("Opens the audio from the current video file"), GETIMAGE(open_audio_from_video_menu_16));
-	AppendBitmapMenuItem(audioMenu, Menu_Audio_Close, _("&Close Audio"), _("Closes the currently open audio file"), GETIMAGE(close_audio_menu_16));
-	wxMenuItem *RecentAudParent = new wxMenuItem(audioMenu, Menu_File_Recent_Auds_Parent, _("Recent"), _T(""), wxITEM_NORMAL, RecentAuds);
-	audioMenu->Append(RecentAudParent);
-	audioMenu->AppendSeparator();
-	audioMenu->Append(Menu_Audio_Spectrum, _("Spectrum display"), _("Display audio as a frequency-power spectrogrph"), wxITEM_RADIO);
-	audioMenu->Append(Menu_Audio_Waveform, _("Waveform display"), _("Display audio as a linear amplitude graph"), wxITEM_RADIO);
-#ifdef _DEBUG
-	audioMenu->AppendSeparator();
-	audioMenu->Append(Menu_Audio_Open_Dummy, _T("Open 2h30 Blank Audio"), _T("Open a 150 minutes blank audio clip, for debugging"));
-	audioMenu->Append(Menu_Audio_Open_Dummy_Noise, _T("Open 2h30 Noise Audio"), _T("Open a 150 minutes noise-filled audio clip, for debugging"));
-#endif
-	MenuBar->Append(audioMenu, _("&Audio"));
-
-	// Create Automation menu
-#ifdef WITH_AUTOMATION
-	automationMenu = new wxMenu();
-	AppendBitmapMenuItem (automationMenu,Menu_Tools_Automation, _("&Automation..."),_("Open automation manager"), GETIMAGE(automation_toolbutton_16));
-	automationMenu->AppendSeparator();
-	MenuBar->Append(automationMenu, _("&Automation"));
-#endif
-
-	// Create view menu
-	viewMenu = new wxMenu();
-	AppendBitmapMenuItem(viewMenu,Menu_View_Language, _T("&Language..."), _("Select Aegisub interface language"), GETIMAGE(languages_menu_16));
-	AppendBitmapMenuItem(viewMenu,Menu_Tools_Options, MakeHotkeyText(_("&Options..."), _T("Options")), _("Configure Aegisub"), GETIMAGE(options_button_16));
-	viewMenu->AppendSeparator();
-	viewMenu->AppendRadioItem(Menu_View_Subs, _("Subs Only View"), _("Display subtitles only"));
-	viewMenu->AppendRadioItem(Menu_View_Video, _("Video+Subs View"), _("Display video and subtitles only"));
-	viewMenu->AppendRadioItem(Menu_View_Audio, _("Audio+Subs View"), _("Display audio and subtitles only"));
-	viewMenu->AppendRadioItem(Menu_View_Standard, _("Full view"), _("Display audio, video and subtitles"));
-	viewMenu->AppendSeparator();
-	viewMenu->AppendRadioItem(Menu_View_FullTags, _("Show Tags"), _("Show full override tags in the subtitle grid"));
-	viewMenu->AppendRadioItem(Menu_View_ShortTags, _("Simplify Tags"), _("Replace override tags in the subtitle grid with a simplified placeholder"));
-	viewMenu->AppendRadioItem(Menu_View_NoTags, _("Hide Tags"), _("Hide override tags in the subtitle grid"));
-	MenuBar->Append(viewMenu, _("Vie&w"));
-
-	// Create help menu
-	helpMenu = new wxMenu();
-	AppendBitmapMenuItem (helpMenu,Menu_Help_Contents, MakeHotkeyText(_("&Contents..."), _T("Help")), _("Help topics"), GETIMAGE(contents_button_16));
-#ifdef __WXMAC__
-	AppendBitmapMenuItem (helpMenu,Menu_Help_Files, MakeHotkeyText(_("&All Files") + _T("..."), _T("Help")), _("Help topics"), GETIMAGE(contents_button_16));
-#endif
-	helpMenu->AppendSeparator();
-	AppendBitmapMenuItem(helpMenu,Menu_Help_Website, _("&Website..."), _("Visit Aegisub's official website"),GETIMAGE(website_button_16));
-	AppendBitmapMenuItem(helpMenu,Menu_Help_Forums, _("&Forums..."), _("Visit Aegisub's forums"),GETIMAGE(forums_button_16));
-	AppendBitmapMenuItem(helpMenu,Menu_Help_BugTracker, _("&Bug Tracker..."), _("Visit Aegisub's bug tracker to report bugs and request new features"),GETIMAGE(bugtracker_button_16));
-	AppendBitmapMenuItem (helpMenu,Menu_Help_IRCChannel, _("&IRC Channel..."), _("Visit Aegisub's official IRC channel"), GETIMAGE(irc_button_16));
-#ifndef __WXMAC__
-	helpMenu->AppendSeparator();
-#endif
-	AppendBitmapMenuItem(helpMenu,Menu_Help_Check_Updates, _("&Check for Updates..."), _("Check to see if there is a new version of Aegisub available"),GETIMAGE(blank_button_16));
-	AppendBitmapMenuItem(helpMenu,Menu_Help_About, _("&About..."), _("About Aegisub"),GETIMAGE(about_menu_16));
-	AppendBitmapMenuItem(helpMenu,Menu_Help_Log, _("&Log window..."), _("Aegisub event log"),GETIMAGE(about_menu_16));
-	MenuBar->Append(helpMenu, _("&Help"));
-
-	// Set the bar as this frame's
-	SetMenuBar(MenuBar);
-
-	// Set menu created flag
-	menuCreated = true;
+	SetMenuBar(menu::menu->GetMainMenu());
 }
+
 
 /// @brief Initialize contents 
 void FrameMain::InitContents() {
 	AssFile::top = ass = new AssFile;
+	temp_context.ass = ass;
 	ass->AddCommitListener(&FrameMain::OnSubtitlesFileChanged, this);
 
 	// Set a background panel
@@ -570,6 +303,7 @@ void FrameMain::InitContents() {
 	// Video area;
 	StartupLog(_T("Create video box"));
 	videoBox = new VideoBox(Panel, false, ZoomBox, ass);
+	temp_context.videoBox = videoBox;
 	VideoContext::Get()->audio = audioController;
 	wxBoxSizer *videoSizer = new wxBoxSizer(wxVERTICAL);
 	videoSizer->Add(videoBox, 0, wxEXPAND);
@@ -578,19 +312,21 @@ void FrameMain::InitContents() {
 	// Subtitles area
 	StartupLog(_T("Create subtitles grid"));
 	SubsGrid = new SubtitlesGrid(this,Panel,-1,ass,wxDefaultPosition,wxSize(600,100),wxWANTS_CHARS | wxSUNKEN_BORDER,_T("Subs grid"));
+	temp_context.SubsGrid = SubsGrid;
 	videoBox->videoSlider->grid = SubsGrid;
 	VideoContext::Get()->grid = SubsGrid;
 	Search.grid = SubsGrid;
 
 	// Tools area
 	StartupLog(_T("Create tool area splitter window"));
-	audioSash = new wxSashWindow(Panel, Main_AudioSash, wxDefaultPosition, wxDefaultSize, wxSW_3D|wxCLIP_CHILDREN);
+	audioSash = new wxSashWindow(Panel, ID_SASH_MAIN_AUDIO, wxDefaultPosition, wxDefaultSize, wxSW_3D|wxCLIP_CHILDREN);
 	wxBoxSizer *audioSashSizer = new wxBoxSizer(wxHORIZONTAL);
 	audioSash->SetSashVisible(wxSASH_BOTTOM, true);
 
 	// Audio area
 	StartupLog(_T("Create audio box"));
 	audioBox = new AudioBox(audioSash, audioController, SubsGrid, ass);
+	temp_context.audioBox = audioBox;
 	audioBox->frameMain = this;
 	audioSashSizer->Add(audioBox, 1, wxEXPAND);
 	audioSash->SetSizer(audioSashSizer);
@@ -600,6 +336,7 @@ void FrameMain::InitContents() {
 	// Editing area
 	StartupLog(_T("Create subtitle editing box"));
 	EditBox = new SubsEditBox(Panel,SubsGrid);
+	temp_context.EditBox = EditBox;
 
 	// Set sizers/hints
 	StartupLog(_T("Arrange main sizers"));
@@ -647,17 +384,20 @@ void FrameMain::UpdateToolbar() {
 
 	// Update
 	wxToolBar* toolbar = GetToolBar();
-	toolbar->FindById(Menu_Video_JumpTo)->Enable(isVideo);
-	toolbar->FindById(Menu_Video_Zoom_In)->Enable(isVideo && !detachedVideo);
-	toolbar->FindById(Menu_Video_Zoom_Out)->Enable(isVideo && !detachedVideo);
+	toolbar->FindById(cmd::id("video/jump"))->Enable(isVideo);
+	toolbar->FindById(cmd::id("video/zoom/in"))->Enable(isVideo && !detachedVideo);
+	toolbar->FindById(cmd::id("video/zoom/out"))->Enable(isVideo && !detachedVideo);
 	ZoomBox->Enable(isVideo && !detachedVideo);
-	toolbar->FindById(Menu_Subs_Snap_Start_To_Video)->Enable(isVideo && selRows > 0);
-	toolbar->FindById(Menu_Subs_Snap_End_To_Video)->Enable(isVideo && selRows > 0);
-	toolbar->FindById(Menu_Subs_Snap_Video_To_Start)->Enable(isVideo && selRows == 1);
-	toolbar->FindById(Menu_Subs_Snap_Video_To_End)->Enable(isVideo && selRows == 1);
-	toolbar->FindById(Menu_Video_Select_Visible)->Enable(isVideo);
-	toolbar->FindById(Menu_Video_Snap_To_Scene)->Enable(isVideo && selRows > 0);
-	toolbar->FindById(Menu_Video_Shift_To_Frame)->Enable(isVideo && selRows > 0);
+
+	toolbar->FindById(cmd::id("video/jump/start"))->Enable(isVideo && selRows > 0);
+	toolbar->FindById(cmd::id("video/jump/end"))->Enable(isVideo && selRows > 0);
+
+	toolbar->FindById(cmd::id("time/snap/start_video"))->Enable(isVideo && selRows == 1);
+	toolbar->FindById(cmd::id("time/snap/end_video"))->Enable(isVideo && selRows == 1);
+
+	toolbar->FindById(cmd::id("subtitle/select/visible"))->Enable(isVideo);
+	toolbar->FindById(cmd::id("time/snap/scene"))->Enable(isVideo && selRows > 0);
+	toolbar->FindById(cmd::id("time/snap/frame"))->Enable(isVideo && selRows > 0);
 	toolbar->Realize();
 }
 
@@ -1160,6 +900,7 @@ void FrameMain::DetachVideo(bool detach) {
 	if (detach) {
 		if (!detachedVideo) {
 			detachedVideo = new DialogDetachedVideo(this, videoBox->videoDisplay->GetClientSize());
+			temp_context.detachedVideo = detachedVideo;
 			detachedVideo->Show();
 		}
 	}
@@ -1176,46 +917,10 @@ void FrameMain::DetachVideo(bool detach) {
 /// @param ms   
 void FrameMain::StatusTimeout(wxString text,int ms) {
 	SetStatusText(text,1);
-	StatusClear.SetOwner(this,StatusClear_Timer);
+	StatusClear.SetOwner(this, ID_APP_TIMER_STATUSCLEAR);
 	StatusClear.Start(ms,true);
 }
 
-/// @brief Setup accelerator table 
-void FrameMain::SetAccelerators() {
-	std::vector<wxAcceleratorEntry> entry;
-	entry.reserve(32);
-
-	// Standard
-	entry.push_back(Hotkeys.GetAccelerator(_T("Video global prev frame"),Video_Prev_Frame));
-	entry.push_back(Hotkeys.GetAccelerator(_T("Video global next frame"),Video_Next_Frame));
-	entry.push_back(Hotkeys.GetAccelerator(_T("Video global focus seek"),Video_Focus_Seek));
-	entry.push_back(Hotkeys.GetAccelerator(_T("Grid global prev line"),Grid_Prev_Line));
-	entry.push_back(Hotkeys.GetAccelerator(_T("Grid global next line"),Grid_Next_Line));
-	entry.push_back(Hotkeys.GetAccelerator(_T("Save Subtitles Alt"),Menu_File_Save_Subtitles));
-	entry.push_back(Hotkeys.GetAccelerator(_T("Video global zoom in"),Menu_Video_Zoom_In));
-	entry.push_back(Hotkeys.GetAccelerator(_T("Video global zoom out"),Menu_Video_Zoom_Out));
-	entry.push_back(Hotkeys.GetAccelerator(_T("Video global play"),Video_Frame_Play));
-
-	// Medusa
-	bool medusaPlay = OPT_GET("Audio/Medusa Timing Hotkeys")->GetBool();
-	if (medusaPlay && audioController->IsAudioOpen()) {
-		entry.push_back(Hotkeys.GetAccelerator(_T("Audio Medusa Play"),Medusa_Play));
-		entry.push_back(Hotkeys.GetAccelerator(_T("Audio Medusa Stop"),Medusa_Stop));
-		entry.push_back(Hotkeys.GetAccelerator(_T("Audio Medusa Play Before"),Medusa_Play_Before));
-		entry.push_back(Hotkeys.GetAccelerator(_T("Audio Medusa Play After"),Medusa_Play_After));
-		entry.push_back(Hotkeys.GetAccelerator(_T("Audio Medusa Next"),Medusa_Next));
-		entry.push_back(Hotkeys.GetAccelerator(_T("Audio Medusa Previous"),Medusa_Prev));
-		entry.push_back(Hotkeys.GetAccelerator(_T("Audio Medusa Shift Start Forward"),Medusa_Shift_Start_Forward));
-		entry.push_back(Hotkeys.GetAccelerator(_T("Audio Medusa Shift Start Back"),Medusa_Shift_Start_Back));
-		entry.push_back(Hotkeys.GetAccelerator(_T("Audio Medusa Shift End Forward"),Medusa_Shift_End_Forward));
-		entry.push_back(Hotkeys.GetAccelerator(_T("Audio Medusa Shift End Back"),Medusa_Shift_End_Back));
-		entry.push_back(Hotkeys.GetAccelerator(_T("Audio Medusa Enter"),Medusa_Enter));
-	}
-
-	// Set table
-	wxAcceleratorTable table(entry.size(),&entry[0]);
-	SetAcceleratorTable(table);
-}
 
 /// @brief Load list of files 
 /// @param list 
@@ -1304,6 +1009,7 @@ bool FrameMain::LoadList(wxArrayString list) {
 
 /// @brief Sets the descriptions for undo/redo 
 void FrameMain::SetUndoRedoDesc() {
+	wxMenu *editMenu = menu::menu->GetMenu("main/edit");
 	editMenu->SetHelpString(0,_T("Undo ")+ass->GetUndoDescription());
 	editMenu->SetHelpString(1,_T("Redo ")+ass->GetRedoDescription());
 }
@@ -1327,3 +1033,433 @@ static void autosave_timer_changed(wxTimer *timer, const agi::OptionValue &opt) 
 		timer->Start(freq * 1000);
 	}
 }
+BEGIN_EVENT_TABLE(FrameMain, wxFrame)
+	EVT_TIMER(ID_APP_TIMER_AUTOSAVE, FrameMain::OnAutoSave)
+	EVT_TIMER(ID_APP_TIMER_STATUSCLEAR, FrameMain::OnStatusClear)
+
+	EVT_CLOSE(FrameMain::OnCloseWindow)
+
+	EVT_SASH_DRAGGED(ID_SASH_MAIN_AUDIO, FrameMain::OnAudioBoxResize)
+
+	EVT_MENU_OPEN(FrameMain::OnMenuOpen)
+	EVT_KEY_DOWN(FrameMain::OnKeyDown)
+//	EVT_MENU(cmd::id("subtitle/new"), FrameMain::cmd_call)
+//	EVT_MENU(cmd::id("subtitle/open"), FrameMain::cmd_call)
+//	EVT_MENU(cmd::id("subtitle/save"), FrameMain::cmd_call)
+
+//	EVT_MENU_RANGE(MENU_GRID_START+1,MENU_GRID_END-1,FrameMain::OnGridEvent)
+//	EVT_COMBOBOX(Toolbar_Zoom_Dropdown, FrameMain::OnSetZoom)
+//	EVT_TEXT_ENTER(Toolbar_Zoom_Dropdown, FrameMain::OnSetZoom)
+
+#ifdef __WXMAC__
+   EVT_MENU(wxID_ABOUT, FrameMain::OnAbout)
+   EVT_MENU(wxID_EXIT, FrameMain::OnExit)
+#endif
+END_EVENT_TABLE()
+
+
+/// @brief Redirect grid events to grid 
+/// @param event 
+void FrameMain::OnGridEvent (wxCommandEvent &event) {
+	SubsGrid->GetEventHandler()->ProcessEvent(event);
+}
+
+/// @brief Rebuild recent list 
+/// @param listName 
+/// @param menu     
+/// @param startID  
+void FrameMain::RebuildRecentList(wxString listName,wxMenu *menu,int startID) {
+	// Wipe previous list
+	int count = (int)menu->GetMenuItemCount();
+	for (int i=count;--i>=0;) {
+		menu->Destroy(menu->FindItemByPosition(i));
+	}
+
+	// Rebuild
+	int added = 0;
+	wxString n;
+	wxArrayString entries = lagi_MRU_wxAS(listName);
+	for (size_t i=0;i<entries.Count();i++) {
+		n = wxString::Format(_T("%ld"),i+1);
+		if (i < 9) n = _T("&") + n;
+		wxFileName shortname(entries[i]);
+		wxString filename = shortname.GetFullName();
+		menu->Append(startID+i,n + _T(" ") + filename);
+		added++;
+	}
+
+	// Nothing added, add an empty placeholder
+	if (added == 0) menu->Append(startID,_("Empty"))->Enable(false);
+}
+
+/// @brief Menu is being opened 
+/// @param event 
+void FrameMain::OnMenuOpen (wxMenuEvent &event) {
+	// Get menu
+	wxMenuBar *MenuBar = menu::menu->GetMainMenu();
+
+	MenuBar->Freeze();
+	wxMenu *curMenu = event.GetMenu();
+
+	// File menu
+	if (curMenu == menu::menu->GetMenu("main/file")) {
+		// Rebuild recent
+		RebuildRecentList(_T("Subtitle"),menu::menu->GetMenu("recent/subtitle"), cmd::id("recent/subtitle"));
+
+		MenuBar->Enable(cmd::id("subtitle/open/video"),VideoContext::Get()->HasSubtitles());
+	}
+
+	// View menu
+	else if (curMenu == menu::menu->GetMenu("main/view")) {
+		// Flags
+		bool aud = audioController->IsAudioOpen();
+		bool vid = VideoContext::Get()->IsLoaded() && !detachedVideo;
+
+		// Set states
+		MenuBar->Enable(cmd::id("app/display/audio_subs"),aud);
+		MenuBar->Enable(cmd::id("app/display/video_subs"),vid);
+		MenuBar->Enable(cmd::id("app/display/full"),aud && vid);
+
+		// Select option
+		if (!showVideo && !showAudio) MenuBar->Check(cmd::id("app/display/subs"),true);
+		else if (showVideo && !showAudio) MenuBar->Check(cmd::id("app/display/video_subs"),true);
+		else if (showAudio && showVideo) MenuBar->Check(cmd::id("app/display/full"),true);
+		else MenuBar->Check(cmd::id("app/display/audio_subs"),true);
+
+		int sub_grid = OPT_GET("Subtitle/Grid/Hide Overrides")->GetInt();
+		if (sub_grid == 1) MenuBar->Check(cmd::id("grid/tags/show"), true);
+		if (sub_grid == 2) MenuBar->Check(cmd::id("grid/tags/simplify"), true);
+		if (sub_grid == 3) MenuBar->Check(cmd::id("grid/tags/hide"), true);
+
+
+	}
+
+	// Video menu
+	else if (curMenu == menu::menu->GetMenu("main/video")) {
+		bool state = VideoContext::Get()->IsLoaded();
+		bool attached = state && !detachedVideo;
+
+		// Set states
+		MenuBar->Enable(cmd::id("video/jump"),state);
+		MenuBar->Enable(cmd::id("video/jump/start"),state);
+		MenuBar->Enable(cmd::id("video/jump/end"),state);
+		MenuBar->Enable(cmd::id("main/video/set zoom"), attached);
+		MenuBar->Enable(cmd::id("video/zoom/50"),attached);
+		MenuBar->Enable(cmd::id("video/zoom/100"),attached);
+		MenuBar->Enable(cmd::id("video/zoom/200"),attached);
+		MenuBar->Enable(cmd::id("video/close"),state);
+		MenuBar->Enable(cmd::id("main/video/override ar"),attached);
+		MenuBar->Enable(cmd::id("video/aspect/default"),attached);
+		MenuBar->Enable(cmd::id("video/aspect/full"),attached);
+		MenuBar->Enable(cmd::id("video/aspect/wide"),attached);
+		MenuBar->Enable(cmd::id("video/aspect/cinematic"),attached);
+		MenuBar->Enable(cmd::id("video/aspect/custom"),attached);
+		MenuBar->Enable(cmd::id("video/detach"),state);
+		MenuBar->Enable(cmd::id("timecode/save"),VideoContext::Get()->TimecodesLoaded());
+		MenuBar->Enable(cmd::id("timecode/close"),VideoContext::Get()->OverTimecodesLoaded());
+		MenuBar->Enable(cmd::id("keyframe/close"),VideoContext::Get()->OverKeyFramesLoaded());
+		MenuBar->Enable(cmd::id("keyframe/save"),VideoContext::Get()->KeyFramesLoaded());
+		MenuBar->Enable(cmd::id("video/detach"),state);
+		MenuBar->Enable(cmd::id("video/show_overscan"),state);
+
+		// Set AR radio
+		int arType = VideoContext::Get()->GetAspectRatioType();
+		MenuBar->Check(cmd::id("video/aspect/default"),false);
+		MenuBar->Check(cmd::id("video/aspect/full"),false);
+		MenuBar->Check(cmd::id("video/aspect/wide"),false);
+		MenuBar->Check(cmd::id("video/aspect/cinematic"),false);
+		MenuBar->Check(cmd::id("video/aspect/custom"),false);
+		switch (arType) {
+			case 0: MenuBar->Check(cmd::id("video/aspect/default"),true); break;
+			case 1: MenuBar->Check(cmd::id("video/aspect/full"),true); break;
+			case 2: MenuBar->Check(cmd::id("video/aspect/wide"),true); break;
+			case 3: MenuBar->Check(cmd::id("video/aspect/cinematic"),true); break;
+			case 4: MenuBar->Check(cmd::id("video/aspect/custom"),true); break;
+		}
+
+		// Set overscan mask
+		MenuBar->Check(cmd::id("video/show_overscan"),OPT_GET("Video/Overscan Mask")->GetBool());
+
+		// Rebuild recent lists
+		RebuildRecentList(_T("Video"),menu::menu->GetMenu("recent/video"), cmd::id("recent/video"));
+		RebuildRecentList(_T("Timecodes"),menu::menu->GetMenu("recent/timecode"), cmd::id("recent/timecode"));
+		RebuildRecentList(_T("Keyframes"),menu::menu->GetMenu("recent/keyframe"), cmd::id("recent/keyframe"));
+	}
+
+	// Audio menu
+	else if (curMenu == menu::menu->GetMenu("main/audio")) {
+		bool state = audioController->IsAudioOpen();
+		bool vidstate = VideoContext::Get()->IsLoaded();
+
+		MenuBar->Enable(cmd::id("audio/open/video"),vidstate);
+		MenuBar->Enable(cmd::id("audio/close"),state);
+
+		// Rebuild recent
+		RebuildRecentList(_T("Audio"),menu::menu->GetMenu("recent/audio"), cmd::id("recent/audio"));
+	}
+
+	// Subtitles menu
+	else if (curMenu == menu::menu->GetMenu("main/subtitle")) {
+		// Variables
+		bool continuous;
+		wxArrayInt sels = SubsGrid->GetSelection(&continuous);
+		int count = sels.Count();
+		bool state,state2;
+
+		// Entries
+		state = count > 0;
+		MenuBar->Enable(cmd::id("subtitle/insert/before"),state);
+		MenuBar->Enable(cmd::id("subtitle/insert/after"),state);
+		MenuBar->Enable(cmd::id("edit/line/split/by_karaoke"),state);
+		MenuBar->Enable(cmd::id("edit/line/delete"),state);
+		state2 = count > 0 && VideoContext::Get()->IsLoaded();
+		MenuBar->Enable(cmd::id("subtitle/insert/before/videotime"),state2);
+		MenuBar->Enable(cmd::id("subtitle/insert/after/videotime"),state2);
+		MenuBar->Enable(cmd::id("main/subtitle/insert lines"),state);
+		state = count > 0 && continuous;
+		MenuBar->Enable(cmd::id("edit/line/duplicate"),state);
+		state = count > 0 && continuous && VideoContext::Get()->TimecodesLoaded();
+		MenuBar->Enable(cmd::id("edit/line/duplicate/shift"),state);
+		state = count == 2;
+		MenuBar->Enable(cmd::id("edit/line/swap"),state);
+		state = count >= 2 && continuous;
+		MenuBar->Enable(cmd::id("edit/line/join/concatenate"),state);
+		MenuBar->Enable(cmd::id("edit/line/join/keep_first"),state);
+		MenuBar->Enable(cmd::id("edit/line/join/as_karaoke"),state);
+		MenuBar->Enable(cmd::id("main/subtitle/join lines"),state);
+		state = (count == 2 || count == 3) && continuous;
+		MenuBar->Enable(cmd::id("edit/line/recombine"),state);
+	}
+
+	// Timing menu
+	else if (curMenu == menu::menu->GetMenu("main/timing")) {
+		// Variables
+		bool continuous;
+		wxArrayInt sels = SubsGrid->GetSelection(&continuous);
+		int count = sels.Count();
+
+		// Video related
+		bool state = VideoContext::Get()->IsLoaded();
+		MenuBar->Enable(cmd::id("time/snap/start_video"),state);
+		MenuBar->Enable(cmd::id("time/snap/end_video"),state);
+		MenuBar->Enable(cmd::id("time/snap/scene"),state);
+		MenuBar->Enable(cmd::id("time/frame/current"),state);
+
+		// Other
+		state = count >= 2 && continuous;
+		MenuBar->Enable(cmd::id("time/continous/start"),state);
+		MenuBar->Enable(cmd::id("time/continous/end"),state);
+	}
+
+	// Edit menu
+	else if (curMenu == menu::menu->GetMenu("main/edit")) {
+		wxMenu *editMenu = menu::menu->GetMenu("main/edit");
+
+		// Undo state
+		wxMenuItem *item;
+//H		wxString undo_text = _("&Undo") + wxString(_T(" ")) + ass->GetUndoDescription() + wxString(_T("\t")) + Hotkeys.GetText(_T("Undo"));
+// The bottom line needs to be fixed for the new hotkey system
+		wxString undo_text = _("&Undo") + wxString(_T(" ")) + ass->GetUndoDescription() + wxString(_T("\t")) + _T("Undo");
+		item = editMenu->FindItem(cmd::id("edit/undo"));
+		item->SetItemLabel(undo_text);
+		item->Enable(!ass->IsUndoStackEmpty());
+
+		// Redo state
+//H		wxString redo_text = _("&Redo") + wxString(_T(" ")) + ass->GetRedoDescription() + wxString(_T("\t")) + Hotkeys.GetText(_T("Redo"));
+// Same as above.
+		wxString redo_text = _("&Redo") + wxString(_T(" ")) + ass->GetRedoDescription() + wxString(_T("\t")) + _T("Redo");
+		item = editMenu->FindItem(cmd::id("edit/redo"));
+		item->SetItemLabel(redo_text);
+		item->Enable(!ass->IsRedoStackEmpty());
+
+		// Copy/cut/paste
+		wxArrayInt sels = SubsGrid->GetSelection();
+		bool can_copy = (sels.Count() > 0);
+
+		bool can_paste = true;
+		if (wxTheClipboard->Open()) {
+			can_paste = wxTheClipboard->IsSupported(wxDF_TEXT);
+			wxTheClipboard->Close();
+		}
+
+		MenuBar->Enable(cmd::id("edit/line/cut"),can_copy);
+		MenuBar->Enable(cmd::id("edit/line/copy"),can_copy);
+		MenuBar->Enable(cmd::id("edit/line/paste"),can_paste);
+		MenuBar->Enable(cmd::id("edit/line/paste/over"),can_copy&&can_paste);
+	}
+
+	// Automation menu
+#ifdef WITH_AUTOMATION
+	else if (curMenu == menu::menu->GetMenu("main/automation")) {
+		wxMenu *automationMenu = menu::menu->GetMenu("main/automation");
+
+		// Remove old macro items
+		for (unsigned int i = 0; i < activeMacroItems.size(); i++) {
+			wxMenu *p = 0;
+			wxMenuItem *it = MenuBar->FindItem(ID_MENU_AUTOMATION_MACRO + i, &p);
+			if (it)
+				p->Delete(it);
+		}
+		activeMacroItems.clear();
+
+		// Add new ones
+		int added = 0;
+		added += AddMacroMenuItems(automationMenu, wxGetApp().global_scripts->GetMacros());
+		added += AddMacroMenuItems(automationMenu, local_scripts->GetMacros());
+
+		// If none were added, show a ghosted notice
+		if (added == 0) {
+			automationMenu->Append(ID_MENU_AUTOMATION_MACRO, _("No Automation macros loaded"))->Enable(false);
+			activeMacroItems.push_back(0);
+		}
+	}
+#endif
+
+	MenuBar->Thaw();
+}
+
+/// @brief Macro menu creation helper 
+/// @param menu   
+/// @param macros 
+/// @return 
+int FrameMain::AddMacroMenuItems(wxMenu *menu, const std::vector<Automation4::FeatureMacro*> &macros) {
+#ifdef WITH_AUTOMATION
+	if (macros.empty()) {
+		return 0;
+	}
+
+	int id = activeMacroItems.size();;
+	for (std::vector<Automation4::FeatureMacro*>::const_iterator i = macros.begin(); i != macros.end(); ++i) {
+		wxMenuItem * m = menu->Append(ID_MENU_AUTOMATION_MACRO + id, (*i)->GetName(), (*i)->GetDescription());
+		m->Enable((*i)->Validate(SubsGrid->ass, SubsGrid->GetAbsoluteSelection(), SubsGrid->GetFirstSelRow()));
+		activeMacroItems.push_back(*i);
+		id++;
+	}
+
+	return macros.size();
+#else
+	return 0;
+#endif
+}
+
+/// @brief General handler for all Automation-generated menu items
+/// @param event 
+void FrameMain::OnAutomationMacro (wxCommandEvent &event) {
+#ifdef WITH_AUTOMATION
+	SubsGrid->BeginBatch();
+	// First get selection data
+	std::vector<int> selected_lines = SubsGrid->GetAbsoluteSelection();
+	int first_sel = SubsGrid->GetFirstSelRow();
+	// Run the macro...
+	activeMacroItems[event.GetId()-ID_MENU_AUTOMATION_MACRO]->Process(SubsGrid->ass, selected_lines, first_sel, this);
+	SubsGrid->SetSelectionFromAbsolute(selected_lines);
+	SubsGrid->EndBatch();
+#endif
+}
+
+
+/// @brief Window is attempted to be closed
+/// @param event
+void FrameMain::OnCloseWindow (wxCloseEvent &event) {
+	// Stop audio and video
+	VideoContext::Get()->Stop();
+	audioController->Stop();
+
+	// Ask user if he wants to save first
+	bool canVeto = event.CanVeto();
+	int result = TryToCloseSubs(canVeto);
+
+	// Store maximization state
+	OPT_SET("App/Maximized")->SetBool(IsMaximized());
+
+	// Abort/destroy
+	if (canVeto) {
+		if (result == wxCANCEL) event.Veto();
+		else Destroy();
+	}
+	else Destroy();
+}
+
+/// @brief Autosave the currently open file, if any
+void FrameMain::OnAutoSave(wxTimerEvent &) {
+	try {
+		if (ass->loaded && ass->IsModified()) {
+			// Set path
+			wxFileName origfile(ass->filename);
+			wxString path = lagi_wxString(OPT_GET("Path/Auto/Save")->GetString());
+			if (path.IsEmpty()) path = origfile.GetPath();
+			wxFileName dstpath(path);
+			if (!dstpath.IsAbsolute()) path = StandardPaths::DecodePathMaybeRelative(path, _T("?user/"));
+			dstpath.AssignDir(path);
+			if (!dstpath.DirExists()) wxMkdir(path);
+
+			wxString name = origfile.GetName();
+			if (name.IsEmpty()) {
+				dstpath.SetFullName("Untitled.AUTOSAVE.ass");
+			}
+			else {
+				dstpath.SetFullName(name + L".AUTOSAVE.ass");
+			}
+
+			ass->Save(dstpath.GetFullPath(),false,false);
+
+			// Set status bar
+			StatusTimeout(_("File backup saved as \"") + dstpath.GetFullPath() + _T("\"."));
+		}
+	}
+	catch (const agi::Exception& err) {
+		StatusTimeout(lagi_wxString("Exception when attempting to autosave file: " + err.GetMessage()));
+	}
+	catch (wxString err) {
+		StatusTimeout(_T("Exception when attempting to autosave file: ") + err);
+	}
+	catch (const wchar_t *err) {
+		StatusTimeout(_T("Exception when attempting to autosave file: ") + wxString(err));
+	}
+	catch (...) {
+		StatusTimeout(_T("Unhandled exception when attempting to autosave file."));
+	}
+}
+
+/// @brief Clear statusbar 
+void FrameMain::OnStatusClear(wxTimerEvent &) {
+	SetStatusText(_T(""),1);
+}
+
+void FrameMain::OnAudioBoxResize(wxSashEvent &event)
+{
+	if (event.GetDragStatus() == wxSASH_STATUS_OUT_OF_RANGE)
+		return;
+
+	wxRect rect = event.GetDragRect();
+
+	if (rect.GetHeight() < audioSash->GetMinimumSizeY())
+		rect.SetHeight(audioSash->GetMinimumSizeY());
+
+	audioBox->SetMinSize(wxSize(-1, rect.GetHeight()));
+	Panel->Layout();
+	Refresh();
+}
+
+void FrameMain::OnAudioOpen(AudioProvider *provider)
+{
+	SetDisplayMode(-1, 1);
+}
+
+void FrameMain::OnAudioClose()
+{
+	SetDisplayMode(-1, 0);
+}
+
+void FrameMain::OnSubtitlesFileChanged() {
+	if (OPT_GET("App/Auto/Save on Every Change")->GetBool()) {
+		if (ass->IsModified() && !ass->filename.empty()) SaveSubtitles(false);
+	}
+
+	UpdateTitle();
+}
+
+void FrameMain::OnKeyDown(wxKeyEvent &event) {
+	hotkey::check("Main Frame", event.GetKeyCode(), event.GetUnicodeKey(), event.GetModifiers());
+}
+

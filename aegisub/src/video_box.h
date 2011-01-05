@@ -34,6 +34,8 @@
 /// @ingroup main_ui video
 ///
 
+#pragma once
+
 #ifndef AGI_PRE
 #include <wx/panel.h>
 #include <wx/sizer.h>

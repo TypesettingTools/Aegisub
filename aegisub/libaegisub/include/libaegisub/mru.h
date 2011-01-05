@@ -97,7 +97,7 @@ private:
 	/// Internal MRUMap values.
 	MRUMap mru;
 
-	void Load(const std::string &key, const json::Array& array);
+	void Load(const std::string &key, const ::json::Array& array);
 	inline void Prune(MRUListMap& map);
 };
 
