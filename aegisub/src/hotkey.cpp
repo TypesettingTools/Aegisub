@@ -69,7 +69,10 @@ void check(std::string context, int key_code, wchar_t key_char, int modifier) {
 
 	std::string command;
 	if (agi::hotkey::hotkey->Scan(context, combo, command) == 0) {
-		(*cmd::get(command))(&wxGetApp().frame->temp_context);
+		/// The bottom line should be removed after all the hotkey commands are fixed.
+		/// This is to avoid pointless exceptions.
+		if (command.find("/") != std::string::npos)
+			(*cmd::get(command))(&wxGetApp().frame->temp_context);
 	}
 
 }
