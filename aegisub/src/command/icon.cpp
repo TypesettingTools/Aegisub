@@ -20,6 +20,8 @@
 
 
 #ifndef AGI_PRE
+#include <map>
+
 #include <wx/bitmap.h>
 #include <wx/image.h>
 #include <wx/mstream.h>

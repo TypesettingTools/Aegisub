@@ -18,8 +18,17 @@
 /// @brief Command base class and main header.
 /// @ingroup command
 
+
+#ifndef AGI_PRE
+#include <map>
+#endif
+
+#include <libaegisub/exception.h>
+
 #include "../include/aegisub/context.h"
 #include "icon.h"
+
+
 
 DEFINE_BASE_EXCEPTION_NOINNER(CommandError, agi::Exception)
 DEFINE_SIMPLE_EXCEPTION_NOINNER(CommandIconNone, CommandError, "command/icon")

@@ -36,6 +36,7 @@
 #include "config.h"
 
 #ifndef AGI_PRE
+#include <wx/clipbrd.h>
 #include <wx/filename.h>
 #include <wx/image.h>
 #include <wx/mimetype.h>

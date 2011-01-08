@@ -26,11 +26,15 @@
 #include <memory>
 #endif
 
+#include "libaegisub/hotkey.h"
+
 #include "libaegisub/access.h"
+#include "libaegisub/cajun/writer.h"
+#include "libaegisub/exception.h"
 #include "libaegisub/io.h"
 #include "libaegisub/json.h"
 #include "libaegisub/log.h"
-#include "libaegisub/hotkey.h"
+
 
 namespace agi {
 	namespace hotkey {
@@ -67,7 +71,7 @@ Hotkey::Hotkey(const std::string &file, const std::string &default_config):
     try {
 		stream = agi::io::Open(config_file);
 	} catch (const acs::AcsNotFound&) {
-stream = new std::istringstream(config_default);
+		stream = new std::istringstream(config_default);
     }
 
 

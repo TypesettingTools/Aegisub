@@ -39,6 +39,7 @@
 #include "../config.h"
 
 #ifndef AGI_PRE
+#include <wx/filename.h>
 #include <wx/filedlg.h>
 #include <wx/choicdlg.h>
 #endif
