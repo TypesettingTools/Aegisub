@@ -72,6 +72,7 @@ case "$target_or_host" in
 
   *-*-*bsd*)
     build_bsd="yes"
+	ICONV_CFLAGS="-I/usr/local/include"
   ;;
 
   *)

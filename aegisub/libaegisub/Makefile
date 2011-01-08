@@ -16,6 +16,7 @@ CXXFLAGS += -I/Developer/SDKs/MacOSX10.5.sdk/System/Library/Frameworks/CoreServi
 LDFLAGS += -L../universalchardet -luniversalchardet
 endif
 
+common/charset_conv.o: CXXFLAGS += $(CFLAGS_ICONV)
 
 SRC = \
 	common/charset.cpp \
