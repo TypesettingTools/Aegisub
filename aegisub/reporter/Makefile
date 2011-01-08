@@ -12,7 +12,7 @@ PRECOMPILED_HEADER_NAME=r_pre.h
 #endif
 
 CXXFLAGS += -Iinclude $(CFLAGS_WX) -I../libaegisub/include
-LDFLAGS += $(LDFLAGS_WX) $(LDFLAGS_LIBCURL) -L../libaegisub -laegisub-3.0 $(LDFLAGS_UCHARDET) -rpath ../libaegisub
+LDFLAGS += $(LDFLAGS_WX) $(LDFLAGS_LIBCURL) -L../libaegisub -laegisub-3.0 $(LDFLAGS_UCHARDET) -Wl,-rpath ../libaegisub
 
 #if PRECOMPILED_HEADER
 ## This doesn't depend on Makefile on purpose, you should already know what you're doing when using this.
