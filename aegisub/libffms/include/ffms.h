@@ -22,15 +22,15 @@
 #define FFMS_H
 
 // Version format: major - minor - micro - bump
-#define FFMS_VERSION ((2 << 24) | (14 << 16) | (0 << 8) | 0)
+#define FFMS_VERSION ((2 << 24) | (14 << 16) | (1 << 8) | 1)
 
 #include <stdint.h>
 
 #ifdef __cplusplus
-#	define EXTERN_C extern "C"
+#	define FFMS_EXTERN_C extern "C"
 #	define FFMS_CLASS_TYPE class
 #else
-#	define EXTERN_C
+#	define FFMS_EXTERN_C
 #	define FFMS_CLASS_TYPE struct
 #endif
 
@@ -38,16 +38,16 @@
 #	define FFMS_CC __stdcall
 #	ifdef _MSC_VER
 #		ifdef FFMS_EXPORTS
-#			define FFMS_API(ret) EXTERN_C __declspec(dllexport) ret FFMS_CC
+#			define FFMS_API(ret) FFMS_EXTERN_C __declspec(dllexport) ret FFMS_CC
 #		else
-#			define FFMS_API(ret) EXTERN_C __declspec(dllimport) ret FFMS_CC
+#			define FFMS_API(ret) FFMS_EXTERN_C __declspec(dllimport) ret FFMS_CC
 #		endif
 #	else
-#		define FFMS_API(ret) EXTERN_C ret FFMS_CC
+#		define FFMS_API(ret) FFMS_EXTERN_C ret FFMS_CC
 #	endif
 #else
 #	define FFMS_CC
-#	define FFMS_API(ret) EXTERN_C ret FFMS_CC
+#	define FFMS_API(ret) FFMS_EXTERN_C ret FFMS_CC
 #endif
 
 typedef struct {
@@ -106,7 +106,8 @@ enum FFMS_CPUFeatures {
 	FFMS_CPU_CAPS_MMX2		= 0x02,
 	FFMS_CPU_CAPS_3DNOW		= 0x04,
 	FFMS_CPU_CAPS_ALTIVEC	= 0x08,
-	FFMS_CPU_CAPS_BFIN		= 0x10
+	FFMS_CPU_CAPS_BFIN		= 0x10,
+	FFMS_CPU_CAPS_SSE2      = 0x20
 };
 
 enum FFMS_SeekMode {
@@ -178,6 +179,12 @@ enum FFMS_Resizers {
 	FFMS_RESIZER_SPLINE			= 0x0400
 };
 
+enum FFMS_AudioDelayModes {
+	FFMS_DELAY_NO_SHIFT				= -3,
+	FFMS_DELAY_TIME_ZERO			= -2,
+	FFMS_DELAY_FIRST_VIDEO_TRACK	= -1
+};
+
 typedef struct {
 	uint8_t *Data[4];
 	int Linesize[4];
@@ -244,7 +251,7 @@ FFMS_API(void) FFMS_Init(int CPUFeatures, int UseUTF8Paths);
 FFMS_API(int) FFMS_GetLogLevel();
 FFMS_API(void) FFMS_SetLogLevel(int Level);
 FFMS_API(FFMS_VideoSource *) FFMS_CreateVideoSource(const char *SourceFile, int Track, FFMS_Index *Index, int Threads, int SeekMode, FFMS_ErrorInfo *ErrorInfo);
-FFMS_API(FFMS_AudioSource *) FFMS_CreateAudioSource(const char *SourceFile, int Track, FFMS_Index *Index, FFMS_ErrorInfo *ErrorInfo);
+FFMS_API(FFMS_AudioSource *) FFMS_CreateAudioSource(const char *SourceFile, int Track, FFMS_Index *Index, int DelayMode, FFMS_ErrorInfo *ErrorInfo);
 FFMS_API(void) FFMS_DestroyVideoSource(FFMS_VideoSource *V);
 FFMS_API(void) FFMS_DestroyAudioSource(FFMS_AudioSource *A);
 FFMS_API(const FFMS_VideoProperties *) FFMS_GetVideoProperties(FFMS_VideoSource *V);
@@ -264,7 +271,7 @@ FFMS_API(int) FFMS_GetNumTracks(FFMS_Index *Index);
 FFMS_API(int) FFMS_GetNumTracksI(FFMS_Indexer *Indexer);
 FFMS_API(int) FFMS_GetTrackType(FFMS_Track *T);
 FFMS_API(int) FFMS_GetTrackTypeI(FFMS_Indexer *Indexer, int Track);
-FFMS_API(const char *) FFMS_GetCodecNameI(FFMS_Indexer *Indexer, int Track); 
+FFMS_API(const char *) FFMS_GetCodecNameI(FFMS_Indexer *Indexer, int Track);
 FFMS_API(int) FFMS_GetNumFrames(FFMS_Track *T);
 FFMS_API(const FFMS_FrameInfo *) FFMS_GetFrameInfo(FFMS_Track *T, int Frame);
 FFMS_API(FFMS_Track *) FFMS_GetTrackFromIndex(FFMS_Index *Index, int Track);

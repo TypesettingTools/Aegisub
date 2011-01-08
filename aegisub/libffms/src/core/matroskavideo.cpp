@@ -27,7 +27,6 @@ void FFMatroskaVideo::Free(bool CloseCodec) {
 		delete TCC;
 	if (MC.ST.fp) {
 		mkv_Close(MF);
-		fclose(MC.ST.fp);
 	}
 	if (CloseCodec)
 		avcodec_close(CodecContext);
@@ -57,7 +56,6 @@ FFMatroskaVideo::FFMatroskaVideo(const char *SourceFile, int Track,
 
 	MF = mkv_OpenEx(&MC.ST.base, 0, 0, ErrorMessage, sizeof(ErrorMessage));
 	if (MF == NULL) {
-		fclose(MC.ST.fp);
 		std::ostringstream buf;
 		buf << "Can't parse Matroska file: " << ErrorMessage;
 		throw FFMS_Exception(FFMS_ERROR_PARSER, FFMS_ERROR_FILE_READ, buf.str());
@@ -107,6 +105,14 @@ FFMatroskaVideo::FFMatroskaVideo(const char *SourceFile, int Track,
 	VP.ColorSpace = 0;
 	VP.ColorRange = 0;
 #endif
+	// these pixfmt's are deprecated but still used
+	if (
+		CodecContext->pix_fmt == PIX_FMT_YUVJ420P 
+		|| CodecContext->pix_fmt == PIX_FMT_YUVJ422P
+		|| CodecContext->pix_fmt == PIX_FMT_YUVJ444P
+	)
+		VP.ColorRange = AVCOL_RANGE_JPEG;
+
 	VP.FirstTime = ((Frames.front().PTS * Frames.TB.Num) / (double)Frames.TB.Den) / 1000;
 	VP.LastTime = ((Frames.back().PTS * Frames.TB.Num) / (double)Frames.TB.Den) / 1000;
 

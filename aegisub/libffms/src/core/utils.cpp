@@ -45,6 +45,8 @@ extern const AVCodecTag ff_codec_bmp_tags[];
 extern const CodecTags ff_mkv_codec_tags[];
 extern const AVCodecTag ff_codec_movvideo_tags[];
 extern const AVCodecTag ff_codec_wav_tags[];
+
+#include <libavutil/opt.h>
 }
 
 extern int CPUFeatures;
@@ -69,7 +71,7 @@ int FFMS_Exception::CopyOut(FFMS_ErrorInfo *ErrorInfo) const {
 	if (ErrorInfo) {
 		ErrorInfo->ErrorType = _ErrorType;
 		ErrorInfo->SubType = _SubType;
-		
+
 		if (ErrorInfo->BufferSize > 0) {
 			memset(ErrorInfo->Buffer, 0, ErrorInfo->BufferSize);
 			_Message.copy(ErrorInfo->Buffer, ErrorInfo->BufferSize - 1);
@@ -97,7 +99,7 @@ TrackCompressionContext::TrackCompressionContext(MatroskaFile *MF, TrackInfo *TI
 		CompressedPrivateData		= TI->CompMethodPrivate;
 		CompressedPrivateDataSize	= TI->CompMethodPrivateSize;
 	} else {
-		throw FFMS_Exception(FFMS_ERROR_PARSER, FFMS_ERROR_FILE_READ, 
+		throw FFMS_Exception(FFMS_ERROR_PARSER, FFMS_ERROR_FILE_READ,
 			"Can't create MKV track decompressor: unknown or unsupported compression method");
 	}
 }
@@ -107,8 +109,8 @@ TrackCompressionContext::~TrackCompressionContext() {
 		cs_Destroy(CS);
 }
 
-int GetSWSCPUFlags() {
-	int Flags = 0;
+int64_t GetSWSCPUFlags() {
+	int64_t Flags = 0;
 
 	if (CPUFeatures & FFMS_CPU_CAPS_MMX)
 		Flags |= SWS_CPU_CAPS_MMX;
@@ -120,14 +122,64 @@ int GetSWSCPUFlags() {
 		Flags |= SWS_CPU_CAPS_ALTIVEC;
 	if (CPUFeatures & FFMS_CPU_CAPS_BFIN)
 		Flags |= SWS_CPU_CAPS_BFIN;
+#ifdef SWS_CPU_CAPS_SSE2
+	if (CPUFeatures & FFMS_CPU_CAPS_SSE2)
+		Flags |= SWS_CPU_CAPS_SSE2;
+#endif
 
 	return Flags;
 }
 
+static int handle_jpeg(PixelFormat *format)
+{
+	switch (*format) {
+	case PIX_FMT_YUVJ420P: *format = PIX_FMT_YUV420P; return 1;
+	case PIX_FMT_YUVJ422P: *format = PIX_FMT_YUV422P; return 1;
+	case PIX_FMT_YUVJ444P: *format = PIX_FMT_YUV444P; return 1;
+	case PIX_FMT_YUVJ440P: *format = PIX_FMT_YUV440P; return 1;
+	default:                                          return 0;
+	}
+}
+SwsContext *GetSwsContext(int SrcW, int SrcH, PixelFormat SrcFormat, int DstW, int DstH, PixelFormat DstFormat, int64_t Flags, int ColorSpace) {
+#if LIBSWSCALE_VERSION_INT < AV_VERSION_INT(0, 12, 0)
+	return sws_getContext(SrcW, SrcH, SrcFormat, DstW, DstH, DstFormat, Flags, 0, 0, 0);
+#else
+	SwsContext *Context = sws_alloc_context();
+	if (!Context) return 0;
+
+	if (ColorSpace == -1)
+		ColorSpace = (SrcW > 1024 || SrcH >= 600) ? SWS_CS_ITU709 : SWS_CS_DEFAULT;
+
+	int SrcRange = handle_jpeg(&SrcFormat);
+	int DstRange = handle_jpeg(&DstFormat);
+
+	av_set_int(Context, "sws_flags", Flags);
+	av_set_int(Context, "srcw",       SrcW);
+	av_set_int(Context, "srch",       SrcH);
+	av_set_int(Context, "dstw",       DstW);
+	av_set_int(Context, "dsth",       DstH);
+	av_set_int(Context, "src_range",  SrcRange);
+	av_set_int(Context, "dst_range",  DstRange);
+	av_set_int(Context, "src_format", SrcFormat);
+	av_set_int(Context, "dst_format", DstFormat);
+
+	sws_setColorspaceDetails(Context, sws_getCoefficients(ColorSpace), SrcRange, sws_getCoefficients(ColorSpace), DstRange, 0, 1<<16, 1<<16);
+
+	if(sws_init_context(Context, 0, 0) < 0){
+		sws_freeContext(Context);
+		return 0;
+	}
+
+	return Context;
+#endif
+
+}
+
+
 int GetPPCPUFlags() {
 	int Flags = 0;
 
-#ifdef WITH_LIBPOSTPROC
+#ifdef FFMS_USE_POSTPROC
 // not exactly a pretty solution but it'll never get called anyway
 	if (CPUFeatures & FFMS_CPU_CAPS_MMX)
 		Flags |= PP_CPU_CAPS_MMX;
@@ -137,7 +189,7 @@ int GetPPCPUFlags() {
 		Flags |= PP_CPU_CAPS_3DNOW;
 	if (CPUFeatures & FFMS_CPU_CAPS_ALTIVEC)
 		Flags |= PP_CPU_CAPS_ALTIVEC;
-#endif // WITH_LIBPOSTPROC
+#endif // FFMS_USE_POSTPROC
 
 	return Flags;
 }
@@ -172,6 +224,17 @@ const char *GetLAVCSampleFormatName(AVSampleFormat s) {
 	}
 }
 
+template<class T> static void safe_realloc(T *&ptr, size_t size) {
+	void *newalloc = realloc(ptr, size);
+	if (newalloc) {
+		ptr = static_cast<T*>(newalloc);
+	}
+	else {
+		free(ptr);
+		ptr = 0;
+	}
+}
+
 void ReadFrame(uint64_t FilePos, unsigned int &FrameSize, TrackCompressionContext *TCC, MatroskaReaderContext &Context) {
 	if (TCC && TCC->CS) {
 		CompressedStream *CS = TCC->CS;
@@ -196,7 +259,7 @@ void ReadFrame(uint64_t FilePos, unsigned int &FrameSize, TrackCompressionContex
 
 			if (Context.BufferSize < DecompressedFrameSize + ReadBytes) {
 				Context.BufferSize = DecompressedFrameSize + ReadBytes;
-				Context.Buffer = (uint8_t *)realloc(Context.Buffer, Context.BufferSize + FF_INPUT_BUFFER_PADDING_SIZE);
+				safe_realloc(Context.Buffer, Context.BufferSize + FF_INPUT_BUFFER_PADDING_SIZE);
 				if (Context.Buffer == NULL)
 					throw FFMS_Exception(FFMS_ERROR_PARSER, FFMS_ERROR_ALLOCATION_FAILED,
 					"Out of memory");
@@ -216,7 +279,7 @@ void ReadFrame(uint64_t FilePos, unsigned int &FrameSize, TrackCompressionContex
 			unsigned ReqBufsize = FrameSize + TCC->CompressedPrivateDataSize + 16;
 			if (Context.BufferSize < ReqBufsize) {
 				Context.BufferSize = FrameSize + TCC->CompressedPrivateDataSize;
-				Context.Buffer = (uint8_t *)realloc(Context.Buffer, ReqBufsize);
+				safe_realloc(Context.Buffer, ReqBufsize);
 				if (Context.Buffer == NULL)
 					throw FFMS_Exception(FFMS_ERROR_PARSER, FFMS_ERROR_ALLOCATION_FAILED, "Out of memory");
 			}
@@ -230,7 +293,7 @@ void ReadFrame(uint64_t FilePos, unsigned int &FrameSize, TrackCompressionContex
 		}
 		else if (Context.BufferSize < FrameSize) {
 			Context.BufferSize = FrameSize;
-			Context.Buffer = (uint8_t *)realloc(Context.Buffer, Context.BufferSize + 16);
+			safe_realloc(Context.Buffer, Context.BufferSize + 16);
 			if (Context.Buffer == NULL)
 				throw FFMS_Exception(FFMS_ERROR_PARSER, FFMS_ERROR_ALLOCATION_FAILED,
 					"Out of memory");
@@ -279,9 +342,11 @@ void FillAP(FFMS_AudioProperties &AP, AVCodecContext *CTX, FFMS_Track &Frames) {
 	AP.Channels = CTX->channels;;
 	AP.ChannelLayout = CTX->channel_layout;
 	AP.SampleRate = CTX->sample_rate;
-	AP.NumSamples = (Frames.back()).SampleStart + (Frames.back()).SampleCount;
-	AP.FirstTime = ((Frames.front().PTS * Frames.TB.Num) / (double)Frames.TB.Den) / 1000;
-	AP.LastTime = ((Frames.back().PTS * Frames.TB.Num) / (double)Frames.TB.Den) / 1000;
+	if (Frames.size() > 0) {
+		AP.NumSamples = (Frames.back()).SampleStart + (Frames.back()).SampleCount;
+		AP.FirstTime = ((Frames.front().PTS * Frames.TB.Num) / (double)Frames.TB.Den) / 1000;
+		AP.LastTime = ((Frames.back().PTS * Frames.TB.Num) / (double)Frames.TB.Den) / 1000;
+	}
 }
 
 #ifdef HAALISOURCE
@@ -325,7 +390,7 @@ CodecID MatroskaToFFCodecID(char *Codec, void *CodecPrivate, unsigned int FourCC
 							case 16: CID = CODEC_ID_PCM_S16LE; break;
 							case 24: CID = CODEC_ID_PCM_S24LE; break;
 							case 32: CID = CODEC_ID_PCM_S32LE; break;
-						}	
+						}
 						break;
 					case CODEC_ID_PCM_S16BE:
 						switch (BitsPerSample) {
@@ -333,12 +398,12 @@ CodecID MatroskaToFFCodecID(char *Codec, void *CodecPrivate, unsigned int FourCC
 							case 16: CID = CODEC_ID_PCM_S16BE; break;
 							case 24: CID = CODEC_ID_PCM_S24BE; break;
 							case 32: CID = CODEC_ID_PCM_S32BE; break;
-						}	
+						}
 						break;
 					default:
 						break;
 				}
-				
+
 				return CID;
 			}
 	}
@@ -383,42 +448,80 @@ void InitializeCodecContextFromMatroskaTrackInfo(TrackInfo *TI, AVCodecContext *
 
 #ifdef HAALISOURCE
 
-void InitializeCodecContextFromHaaliInfo(CComQIPtr<IPropertyBag> pBag, AVCodecContext *CodecContext) {
-	if (pBag) {
-		CComVariant pV;
+FFCodecContext InitializeCodecContextFromHaaliInfo(CComQIPtr<IPropertyBag> pBag) {
+	CComVariant pV;
+	if (FAILED(pBag->Read(L"Type", &pV, NULL)) && SUCCEEDED(pV.ChangeType(VT_UI4)))
+		return FFCodecContext();
+
+	unsigned int TT = pV.uintVal;
+
+	FFCodecContext CodecContext(avcodec_alloc_context(), DeleteHaaliCodecContext);
+
+	unsigned int FourCC = 0;
+	if (TT == TT_VIDEO) {
+		pV.Clear();
+		if (SUCCEEDED(pBag->Read(L"Video.PixelWidth", &pV, NULL)) && SUCCEEDED(pV.ChangeType(VT_UI4)))
+			CodecContext->coded_width = pV.uintVal;
 
 		pV.Clear();
-		if (SUCCEEDED(pBag->Read(L"Type", &pV, NULL)) && SUCCEEDED(pV.ChangeType(VT_UI4))) {
+		if (SUCCEEDED(pBag->Read(L"Video.PixelHeight", &pV, NULL)) && SUCCEEDED(pV.ChangeType(VT_UI4)))
+			CodecContext->coded_height = pV.uintVal;
 
-			unsigned int TT = pV.uintVal;
+		pV.Clear();
+		if (SUCCEEDED(pBag->Read(L"FOURCC", &pV, NULL)) && SUCCEEDED(pV.ChangeType(VT_UI4)))
+			FourCC = pV.uintVal;
 
-			if (TT == TT_VIDEO) {
+		// Reconstruct the missing codec private part for VC1
+		FFMS_BITMAPINFOHEADER bih;
+		memset(&bih, 0, sizeof bih);
+		bih.biSize = sizeof bih;
+		bih.biCompression = FourCC;
+		bih.biBitCount = 24;
+		bih.biPlanes = 1;
+		bih.biHeight = CodecContext->coded_height;
 
-				pV.Clear();
-				if (SUCCEEDED(pBag->Read(L"Video.PixelWidth", &pV, NULL)) && SUCCEEDED(pV.ChangeType(VT_UI4)))
-					CodecContext->coded_width = pV.uintVal;
-
-				pV.Clear();
-				if (SUCCEEDED(pBag->Read(L"Video.PixelHeight", &pV, NULL)) && SUCCEEDED(pV.ChangeType(VT_UI4)))
-					CodecContext->coded_height = pV.uintVal;
-
-			} else if (TT == TT_AUDIO) {
-
-				pV.Clear();
-				if (SUCCEEDED(pBag->Read(L"Audio.SamplingFreq", &pV, NULL)) && SUCCEEDED(pV.ChangeType(VT_UI4)))
-					CodecContext->sample_rate = pV.uintVal;
-
-				pV.Clear();
-				if (SUCCEEDED(pBag->Read(L"Audio.BitDepth", &pV, NULL)) && SUCCEEDED(pV.ChangeType(VT_UI4)))
-					CodecContext->bits_per_coded_sample = pV.uintVal;
-
-				pV.Clear();
-				if (SUCCEEDED(pBag->Read(L"Audio.Channels", &pV, NULL)) && SUCCEEDED(pV.ChangeType(VT_UI4)))
-					CodecContext->channels = pV.uintVal;
-
-			}
+		pV.Clear();
+		if (SUCCEEDED(pBag->Read(L"CodecPrivate", &pV, NULL))) {
+			bih.biSize += vtSize(pV);
+			CodecContext->extradata = static_cast<uint8_t*>(av_malloc(bih.biSize));
+			memcpy(CodecContext->extradata, &bih, sizeof bih);
+			vtCopy(pV, CodecContext->extradata + sizeof bih);
 		}
-  	}
+		else {
+			CodecContext->extradata = static_cast<uint8_t*>(av_malloc(bih.biSize));
+			memcpy(CodecContext->extradata, &bih, sizeof bih);
+		}
+		CodecContext->extradata_size = bih.biSize;
+	}
+	else if (TT == TT_AUDIO) {
+		pV.Clear();
+		if (SUCCEEDED(pBag->Read(L"CodecPrivate", &pV, NULL))) {
+			CodecContext->extradata_size = vtSize(pV);
+			CodecContext->extradata = static_cast<uint8_t*>(av_malloc(CodecContext->extradata_size));
+			vtCopy(pV, CodecContext->extradata);
+		}
+
+		pV.Clear();
+		if (SUCCEEDED(pBag->Read(L"Audio.SamplingFreq", &pV, NULL)) && SUCCEEDED(pV.ChangeType(VT_UI4)))
+			CodecContext->sample_rate = pV.uintVal;
+
+		pV.Clear();
+		if (SUCCEEDED(pBag->Read(L"Audio.BitDepth", &pV, NULL)) && SUCCEEDED(pV.ChangeType(VT_UI4)))
+			CodecContext->bits_per_coded_sample = pV.uintVal;
+
+		pV.Clear();
+		if (SUCCEEDED(pBag->Read(L"Audio.Channels", &pV, NULL)) && SUCCEEDED(pV.ChangeType(VT_UI4)))
+			CodecContext->channels = pV.uintVal;
+	}
+
+	pV.Clear();
+	if (SUCCEEDED(pBag->Read(L"CodecID", &pV, NULL)) && SUCCEEDED(pV.ChangeType(VT_BSTR))) {
+		char CodecStr[2048];
+		wcstombs(CodecStr, pV.bstrVal, 2000);
+
+		CodecContext->codec = avcodec_find_decoder(MatroskaToFFCodecID(CodecStr, CodecContext->extradata, FourCC, CodecContext->bits_per_coded_sample));
+	}
+	return CodecContext;
 }
 
 #endif
@@ -451,7 +554,7 @@ FILE *ffms_fopen(const char *filename, const char *mode) {
 		codepage = CP_UTF8;
 	else
 		codepage = CP_ACP;
-	
+
 	FILE *ret;
 	wchar_t *filename_wide	= dup_char_to_wchar(filename, codepage);
 	wchar_t *mode_wide		= dup_char_to_wchar(mode, codepage);
@@ -603,12 +706,10 @@ CComPtr<IMMContainer> HaaliOpenFile(const char *SourceFile, enum FFMS_Sources So
 #endif
 
 void LAVFOpenFile(const char *SourceFile, AVFormatContext *&FormatContext) {
-	if (av_open_input_file(&FormatContext, SourceFile, NULL, 0, NULL) != 0) {
-		std::ostringstream buf;
-		buf << "Couldn't open '" << SourceFile << "'";
-		throw FFMS_Exception(FFMS_ERROR_PARSER, FFMS_ERROR_FILE_READ, buf.str());
-	}
-	
+	if (av_open_input_file(&FormatContext, SourceFile, NULL, 0, NULL) != 0)
+		throw FFMS_Exception(FFMS_ERROR_PARSER, FFMS_ERROR_FILE_READ,
+			std::string("Couldn't open '") + SourceFile + "'");
+
 	if (av_find_stream_info(FormatContext) < 0) {
 		av_close_input_file(FormatContext);
 		FormatContext = NULL;

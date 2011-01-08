@@ -42,7 +42,6 @@ FFMatroskaIndexer::FFMatroskaIndexer(const char *Filename) : FFMS_Indexer(Filena
 
 	MF = mkv_OpenEx(&MC.ST.base, 0, 0, ErrorMessage, sizeof(ErrorMessage));
 	if (MF == NULL) {
-		fclose(MC.ST.fp);
 		std::ostringstream buf;
 		buf << "Can't parse Matroska file: " << ErrorMessage;
 		throw FFMS_Exception(FFMS_ERROR_PARSER, FFMS_ERROR_FILE_READ, buf.str());
@@ -56,11 +55,9 @@ FFMatroskaIndexer::FFMatroskaIndexer(const char *Filename) : FFMS_Indexer(Filena
 
 FFMatroskaIndexer::~FFMatroskaIndexer() {
 	mkv_Close(MF);
-	fclose(MC.ST.fp);
 }
 
 FFMS_Index *FFMatroskaIndexer::DoIndexing() {
-	// char ErrorMessage[256];
 	std::vector<SharedAudioContext> AudioContexts(mkv_GetNumTracks(MF), SharedAudioContext(true));
 	std::vector<SharedVideoContext> VideoContexts(mkv_GetNumTracks(MF), SharedVideoContext(true));
 
@@ -71,60 +68,42 @@ FFMS_Index *FFMatroskaIndexer::DoIndexing() {
 		TrackInfo *TI = mkv_GetTrackInfo(MF, i);
 		TrackIndices->push_back(FFMS_Track(mkv_TruncFloat(mkv_GetTrackInfo(MF, i)->TimecodeScale), 1000000, HaaliTrackTypeToFFTrackType(mkv_GetTrackInfo(MF, i)->Type)));
 
-		if (HaaliTrackTypeToFFTrackType(TI->Type) == FFMS_TYPE_VIDEO && Codec[i] && (VideoContexts[i].Parser = av_parser_init(Codec[i]->id))) {
+		if (!Codec[i]) continue;
 
-			AVCodecContext *CodecContext = avcodec_alloc_context();
+		AVCodecContext *CodecContext = avcodec_alloc_context();
+		InitializeCodecContextFromMatroskaTrackInfo(TI, CodecContext);
 
-			InitializeCodecContextFromMatroskaTrackInfo(TI, CodecContext);
+		try {
+			if (TI->Type == TT_VIDEO && (VideoContexts[i].Parser = av_parser_init(Codec[i]->id))) {
+				if (avcodec_open(CodecContext, Codec[i]) < 0)
+					throw FFMS_Exception(FFMS_ERROR_CODEC, FFMS_ERROR_DECODING,
+						"Could not open video codec");
 
-			if (avcodec_open(CodecContext, Codec[i]) < 0) {
-				av_freep(&CodecContext);
-				throw FFMS_Exception(FFMS_ERROR_CODEC, FFMS_ERROR_DECODING,
-					"Could not open video codec");
+				if (TI->CompEnabled)
+					VideoContexts[i].TCC = new TrackCompressionContext(MF, TI, i);
+
+				VideoContexts[i].CodecContext = CodecContext;
+				VideoContexts[i].Parser->flags = PARSER_FLAG_COMPLETE_FRAMES;
 			}
+			else if (IndexMask & (1 << i) && TI->Type == TT_AUDIO) {
+				if (avcodec_open(CodecContext, Codec[i]) < 0)
+					throw FFMS_Exception(FFMS_ERROR_CODEC, FFMS_ERROR_DECODING,
+						"Could not open audio codec");
 
-			if (TI->CompEnabled)
-				VideoContexts[i].TCC = new TrackCompressionContext(MF, TI, i);
-
-			VideoContexts[i].CodecContext = CodecContext;
-			VideoContexts[i].Parser->flags = PARSER_FLAG_COMPLETE_FRAMES;
-		}
-
-		if (IndexMask & (1 << i) && TI->Type == TT_AUDIO) {
-			AVCodecContext *AudioCodecContext = avcodec_alloc_context();
-			InitializeCodecContextFromMatroskaTrackInfo(TI, AudioCodecContext);
-			AudioContexts[i].CodecContext = AudioCodecContext;
-
-			if (TI->CompEnabled) {
-				try {
+				if (TI->CompEnabled)
 					AudioContexts[i].TCC = new TrackCompressionContext(MF, TI, i);
-				} catch (FFMS_Exception &) {
-					av_freep(&AudioCodecContext);
-					AudioContexts[i].CodecContext = NULL;
-					throw;
-				}
-			}
 
-			AVCodec *AudioCodec = Codec[i];
-			if (AudioCodec == NULL) {
-				av_freep(&AudioCodecContext);
-				AudioContexts[i].CodecContext = NULL;
-				throw FFMS_Exception(FFMS_ERROR_CODEC, FFMS_ERROR_UNSUPPORTED,
-					"Audio codec not found");
+				AudioContexts[i].CodecContext = CodecContext;
+			} else {
+				IndexMask &= ~(1 << i);
+				av_freep(&CodecContext);
 			}
-
-			if (avcodec_open(AudioCodecContext, AudioCodec) < 0) {
-				av_freep(&AudioCodecContext);
-				AudioContexts[i].CodecContext = NULL;
-				throw FFMS_Exception(FFMS_ERROR_CODEC, FFMS_ERROR_DECODING,
-					"Could not open audio codec");
-			}
-		} else {
-			IndexMask &= ~(1 << i);
+		}
+		catch (...) {
+			av_freep(&CodecContext);
+			throw;
 		}
 	}
-
-	//
 
 	ulonglong StartTime, EndTime, FilePos;
 	unsigned int Track, FrameFlags, FrameSize;
@@ -133,13 +112,9 @@ FFMS_Index *FFMatroskaIndexer::DoIndexing() {
 
 	while (mkv_ReadFrame(MF, 0, &Track, &StartTime, &EndTime, &FilePos, &FrameSize, &FrameFlags) == 0) {
 		// Update progress
-		if (IC) {
-			if ((*IC)(ftello(MC.ST.fp), Filesize, ICPrivate))
-				throw FFMS_Exception(FFMS_ERROR_CANCELLED, FFMS_ERROR_USER,
-					"Cancelled by user");
-		}
-	
-		// Only create index entries for video for now to save space
+		if (IC && (*IC)(ftello(MC.ST.fp), Filesize, ICPrivate))
+			throw FFMS_Exception(FFMS_ERROR_CANCELLED, FFMS_ERROR_USER, "Cancelled by user");
+
 		if (mkv_GetTrackInfo(MF, Track)->Type == TT_VIDEO) {
 			uint8_t *OB;
 			int OBSize;
@@ -153,73 +128,18 @@ FFMS_Index *FFMatroskaIndexer::DoIndexing() {
 			(*TrackIndices)[Track].push_back(TFrameInfo::VideoFrameInfo(StartTime, RepeatPict, (FrameFlags & FRAME_KF) != 0, FilePos, FrameSize));
 		} else if (mkv_GetTrackInfo(MF, Track)->Type == TT_AUDIO && (IndexMask & (1 << Track))) {
 			TrackCompressionContext *TCC = AudioContexts[Track].TCC;
-			int64_t StartSample = AudioContexts[Track].CurrentSample;
 			unsigned int CompressedFrameSize = FrameSize;
-			AVCodecContext *AudioCodecContext = AudioContexts[Track].CodecContext;
 			ReadFrame(FilePos, FrameSize, TCC, MC);
 			TempPacket.data = MC.Buffer;
 			TempPacket.size = (TCC && TCC->CompressionMethod == COMP_PREPEND) ? FrameSize + TCC->CompressedPrivateDataSize : FrameSize;
-			if ((FrameFlags & FRAME_KF) != 0)
-				TempPacket.flags = AV_PKT_FLAG_KEY;
-			else
-				TempPacket.flags = 0;
+			TempPacket.flags = FrameFlags & FRAME_KF ? AV_PKT_FLAG_KEY : 0;
 
-			bool first = true;
-			int LastNumChannels;
-			int LastSampleRate;
-			AVSampleFormat LastSampleFormat;
-			while (TempPacket.size > 0) {
-				int dbsize = AVCODEC_MAX_AUDIO_FRAME_SIZE*10;
-				int Ret = avcodec_decode_audio3(AudioCodecContext, &DecodingBuffer[0], &dbsize, &TempPacket);
-				if (Ret < 0) {
-					if (ErrorHandling == FFMS_IEH_ABORT) {
-						throw FFMS_Exception(FFMS_ERROR_CODEC, FFMS_ERROR_DECODING,
-							"Audio decoding error");
-					} else if (ErrorHandling == FFMS_IEH_CLEAR_TRACK) {
-						(*TrackIndices)[Track].clear();
-						IndexMask &= ~(1 << Track);					
-						break;
-					} else if (ErrorHandling == FFMS_IEH_STOP_TRACK) {
-						IndexMask &= ~(1 << Track);					
-						break;
-					} else if (ErrorHandling == FFMS_IEH_IGNORE) {
-						break;
-					}
-				}
-				
-				if (first) {
-					LastNumChannels		= AudioCodecContext->channels;
-					LastSampleRate		= AudioCodecContext->sample_rate;
-					LastSampleFormat	= AudioCodecContext->sample_fmt;
-					first = false;
-				}
+			int64_t StartSample = AudioContexts[Track].CurrentSample;
+			int64_t SampleCount = IndexAudioPacket(Track, &TempPacket, AudioContexts[Track], *TrackIndices);
 
-				if (LastNumChannels != AudioCodecContext->channels || LastSampleRate != AudioCodecContext->sample_rate
-					|| LastSampleFormat != AudioCodecContext->sample_fmt) {
-					std::ostringstream buf;
-					buf <<
-						"Audio format change detected. This is currently unsupported."
-						<< " Channels: " << LastNumChannels << " -> " << AudioCodecContext->channels << ";"
-						<< " Sample rate: " << LastSampleRate << " -> " << AudioCodecContext->sample_rate << ";"
-						<< " Sample format: " << GetLAVCSampleFormatName(LastSampleFormat) << " -> "
-						<< GetLAVCSampleFormatName(AudioCodecContext->sample_fmt);
-					throw FFMS_Exception(FFMS_ERROR_UNSUPPORTED, FFMS_ERROR_DECODING, buf.str());
-				}
-
-				if (Ret > 0) {
-					TempPacket.size -= Ret;
-					TempPacket.data += Ret;
-				}
-
-				if (dbsize > 0)
-					AudioContexts[Track].CurrentSample += (dbsize * 8) / (av_get_bits_per_sample_fmt(AudioCodecContext->sample_fmt) * AudioCodecContext->channels);
-
-				if (DumpMask & (1 << Track))
-					WriteAudio(AudioContexts[Track], TrackIndices.get(), Track, dbsize);
-			}
-
-			(*TrackIndices)[Track].push_back(TFrameInfo::AudioFrameInfo(StartTime, StartSample,
-				static_cast<unsigned int>(AudioContexts[Track].CurrentSample - StartSample), (FrameFlags & FRAME_KF) != 0, FilePos, CompressedFrameSize));
+			if (SampleCount != 0)
+				(*TrackIndices)[Track].push_back(TFrameInfo::AudioFrameInfo(StartTime, StartSample,
+					SampleCount, (FrameFlags & FRAME_KF) != 0, FilePos, CompressedFrameSize));
 		}
 	}
 
@@ -236,8 +156,5 @@ FFMS_TrackType FFMatroskaIndexer::GetTrackType(int Track) {
 }
 
 const char *FFMatroskaIndexer::GetTrackCodec(int Track) {
-	if (Codec[Track])
-		return Codec[Track]->name;
-	else
-		return "Unsupported codec/Unknown codec name";
+	return Codec[Track] ? Codec[Track]->name : NULL;
 }

@@ -83,6 +83,15 @@ FFLAVFVideo::FFLAVFVideo(const char *SourceFile, int Track, FFMS_Index *Index,
 	VP.ColorSpace = 0;
 	VP.ColorRange = 0;
 #endif
+	// these pixfmt's are deprecated but still used
+	if (
+		CodecContext->pix_fmt == PIX_FMT_YUVJ420P 
+		|| CodecContext->pix_fmt == PIX_FMT_YUVJ422P
+		|| CodecContext->pix_fmt == PIX_FMT_YUVJ444P
+	)
+		VP.ColorRange = AVCOL_RANGE_JPEG;
+
+
 	VP.FirstTime = ((Frames.front().PTS * Frames.TB.Num) / (double)Frames.TB.Den) / 1000;
 	VP.LastTime = ((Frames.back().PTS * Frames.TB.Num) / (double)Frames.TB.Den) / 1000;
 
@@ -96,14 +105,13 @@ FFLAVFVideo::FFLAVFVideo(const char *SourceFile, int Track, FFMS_Index *Index,
 		VP.FPSNumerator = 30;
 	}
 
-	// Adjust framerate to match the duration of the first frame
-	for (size_t i = 1; i < Frames.size(); i++) {
-		if (Frames[i].PTS != Frames[0].PTS) {
-			unsigned int PTSDiff = (unsigned int)(Frames[i].PTS - Frames[0].PTS);
-			VP.FPSDenominator *= PTSDiff;
-			VP.FPSDenominator /= i;
-			break;
-		}
+	// Calculate the average framerate
+	if (Frames.size() >= 2) {
+		double PTSDiff = (double)(Frames.back().PTS - Frames.front().PTS);
+		double TD = (double)(Frames.TB.Den);
+		double TN = (double)(Frames.TB.Num);
+		VP.FPSDenominator = (unsigned int)(((double)1000000) / (double)((VP.NumFrames - 1) / ((PTSDiff * TN/TD) / (double)1000)));
+		VP.FPSNumerator = 1000000; 
 	}
 
 	// attempt to correct framerate to the proper NTSC fraction, if applicable

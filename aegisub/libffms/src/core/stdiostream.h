@@ -21,6 +21,8 @@
 #ifndef STDIOSTREAM_H
 #define STDIOSTREAM_H
 
+#undef __STRICT_ANSI__
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>

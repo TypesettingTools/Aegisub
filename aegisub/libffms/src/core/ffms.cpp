@@ -25,6 +25,11 @@
 #include "audiosource.h"
 #include "indexing.h"
 
+extern "C" {
+#include <libavutil/pixdesc.h>
+}
+
+
 #ifdef FFMS_WIN_DEBUG
 #	include <windows.h>
 #endif
@@ -41,33 +46,34 @@ bool GlobalUseUTF8Paths = false;
 extern "C" int av_log_level;
 
 void av_log_windebug_callback(void* ptr, int level, const char* fmt, va_list vl) {
-    static int print_prefix=1;
-    static int count;
-    static char line[1024], prev[1024];
-    AVClass* avc= ptr ? *(AVClass**)ptr : NULL;
-    if(level>av_log_level)
-        return;
-#undef fprintf
-    if(print_prefix && avc) {
-        snprintf(line, sizeof(line), "[%s @ %p]", avc->item_name(ptr), ptr);
-    }else
-        line[0]=0;
+	static int print_prefix=1;
+	static int count;
+	static char line[1024] = {0}, prev[1024] = {0};
+	AVClass* avc = ptr ? *(AVClass**)ptr : NULL;
+	if(level > av_log_level)
+		return;
 
-    vsnprintf(line + strlen(line), sizeof(line) - strlen(line), fmt, vl);
+	int written = 0;
+	if(print_prefix && avc) {
+		written = snprintf(line, sizeof(line), "[%s @ %p]", avc->item_name(ptr), ptr);
+	}
 
-    print_prefix= line[strlen(line)-1] == '\n';
-    if(print_prefix && !strcmp(line, prev)){
-        count++;
-        return;
-    }
-    if(count>0){
+	written += vsnprintf(line + written, sizeof(line) - written, fmt, vl);
+
+	print_prefix = line[written-1] == '\n';
+	line[sizeof(line) - 1] = 0;
+	if(print_prefix && !strcmp(line, prev)){
+		count++;
+		return;
+	}
+	if(count > 0){
 		std::stringstream ss;
 		ss << "    Last message repeated " << count << " times\n";
 		OutputDebugStringA(ss.str().c_str());
-        count=0;
-    }
+		count = 0;
+	}
 	OutputDebugStringA(line);
-    strcpy(prev, line);
+	strcpy(prev, line);
 }
 
 #endif
@@ -140,21 +146,21 @@ FFMS_API(FFMS_VideoSource *) FFMS_CreateVideoSource(const char *SourceFile, int 
 	}
 }
 
-FFMS_API(FFMS_AudioSource *) FFMS_CreateAudioSource(const char *SourceFile, int Track, FFMS_Index *Index, FFMS_ErrorInfo *ErrorInfo) {
+FFMS_API(FFMS_AudioSource *) FFMS_CreateAudioSource(const char *SourceFile, int Track, FFMS_Index *Index, int DelayMode, FFMS_ErrorInfo *ErrorInfo) {
 	try {
 		switch (Index->Decoder) {
 			case FFMS_SOURCE_LAVF:
-				return new FFLAVFAudio(SourceFile, Track, Index);
+				return new FFLAVFAudio(SourceFile, Track, *Index, DelayMode);
 			case FFMS_SOURCE_MATROSKA:
-				return new FFMatroskaAudio(SourceFile, Track, Index);
+				return new FFMatroskaAudio(SourceFile, Track, *Index, DelayMode);
 #ifdef HAALISOURCE
 			case FFMS_SOURCE_HAALIMPEG:
 				if (HasHaaliMPEG)
-					return new FFHaaliAudio(SourceFile, Track, Index, FFMS_SOURCE_HAALIMPEG);
+					return new FFHaaliAudio(SourceFile, Track, *Index, FFMS_SOURCE_HAALIMPEG, DelayMode);
 				throw FFMS_Exception(FFMS_ERROR_PARSER, FFMS_ERROR_NOT_AVAILABLE, "Haali MPEG/TS source unavailable");
 			case FFMS_SOURCE_HAALIOGG:
 				if (HasHaaliOGG)
-					return new FFHaaliAudio(SourceFile, Track, Index, FFMS_SOURCE_HAALIOGG);
+					return new FFHaaliAudio(SourceFile, Track, *Index, FFMS_SOURCE_HAALIOGG, DelayMode);
 				throw FFMS_Exception(FFMS_ERROR_PARSER, FFMS_ERROR_NOT_AVAILABLE, "Haali OGG/OGM source unavailable");
 #endif
 			default: 
@@ -440,7 +446,7 @@ FFMS_API(int) FFMS_WriteIndex(const char *IndexFile, FFMS_Index *Index, FFMS_Err
 }
 
 FFMS_API(int) FFMS_GetPixFmt(const char *Name) {
-	return avcodec_get_pix_fmt(Name);
+	return av_get_pix_fmt(Name);
 }
 
 FFMS_API(int) FFMS_GetPresentSources() {

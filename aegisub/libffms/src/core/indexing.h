@@ -19,8 +19,9 @@
 //  THE SOFTWARE.
 
 #ifndef INDEXING_H
-#define	INDEXING_H
+#define INDEXING_H
 
+#include <map>
 #include <memory>
 #include "utils.h"
 #include "wave64writer.h"
@@ -74,7 +75,7 @@ public:
 
 	TFrameInfo();
 	static TFrameInfo VideoFrameInfo(int64_t PTS, int RepeatPict, bool KeyFrame, int64_t FilePos = 0, unsigned int FrameSize = 0);
-	static TFrameInfo AudioFrameInfo(int64_t PTS, int64_t SampleStart, unsigned int SampleCount, bool KeyFrame, int64_t FilePos = 0, unsigned int FrameSize = 0);
+	static TFrameInfo AudioFrameInfo(int64_t PTS, int64_t SampleStart, int64_t SampleCount, bool KeyFrame, int64_t FilePos = 0, unsigned int FrameSize = 0);
 private:
 	TFrameInfo(int64_t PTS, int64_t SampleStart, unsigned int SampleCount, int RepeatPict, bool KeyFrame, int64_t FilePos, unsigned int FrameSize);
 };
@@ -86,7 +87,6 @@ public:
 	bool UseDTS;
 
 	int FindClosestVideoKeyFrame(int Frame);
-	int FindClosestAudioKeyFrame(int64_t Sample);
 	int FrameFromPTS(int64_t PTS);
 	int ClosestFrameFromPTS(int64_t PTS);
 	void WriteTimecodes(const char *TimecodeFile);
@@ -113,6 +113,7 @@ public:
 };
 
 class FFMS_Indexer {
+	std::map<int, FFMS_AudioProperties> LastAudioProperties;
 protected:
 	int IndexMask;
 	int DumpMask;
@@ -122,12 +123,14 @@ protected:
 	TAudioNameCallback ANC;
 	void *ANCPrivate;
 	const char *SourceFile;
-	AlignedBuffer<int16_t> DecodingBuffer;
+	AlignedBuffer<uint8_t> DecodingBuffer;
 
 	int64_t Filesize;
 	uint8_t Digest[20];
 
 	void WriteAudio(SharedAudioContext &AudioContext, FFMS_Index *Index, int Track, int DBSize);
+	void CheckAudioProperties(int Track, AVCodecContext *Context);
+	int64_t IndexAudioPacket(int Track, AVPacket *Packet, SharedAudioContext &Context, FFMS_Index &TrackIndices);
 public:
 	static FFMS_Indexer *CreateIndexer(const char *Filename);
 	FFMS_Indexer(const char *Filename);
@@ -144,8 +147,8 @@ public:
 };
 
 class FFLAVFIndexer : public FFMS_Indexer {
-private:
 	AVFormatContext *FormatContext;
+	void ReadTS(const AVPacket &Packet, int64_t &TS, bool &UseDTS);
 public:
 	FFLAVFIndexer(const char *Filename, AVFormatContext *FormatContext);
 	~FFLAVFIndexer();
@@ -177,9 +180,6 @@ private:
 	CComPtr<IMMContainer> pMMC;
 	int NumTracks;
 	FFMS_TrackType TrackType[32];
-	AVCodec *Codec[32];
-	std::vector<uint8_t> CodecPrivate[32];
-	int CodecPrivateSize[32];
 	CComQIPtr<IPropertyBag> PropertyBags[32];
 	int64_t Duration;
 public:
