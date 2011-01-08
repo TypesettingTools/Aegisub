@@ -78,7 +78,7 @@ Hotkey::Hotkey(const std::string &file, const std::string &default_config):
 	json::UnknownElement hotkey_root;
     try {
 		hotkey_root = agi::json_util::parse(stream);
-	} catch (json::Reader::ParseException& e) {
+	} catch (...) {
 		// There's definatly a better way to do this.
 		std::istringstream *stream = new std::istringstream(config_default);
 		hotkey_root = agi::json_util::parse(stream);
