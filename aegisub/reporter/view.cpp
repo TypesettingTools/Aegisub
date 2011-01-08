@@ -19,11 +19,12 @@
 /// @ingroup base
 
 #ifndef R_PRECOMP
-#include <wx/window.h>
-#include <wx/sizer.h>
 #include <wx/button.h>
 #include <wx/clipbrd.h>
 #include <wx/dataobj.h>
+#include <wx/sizer.h>
+#include <wx/listctrl.h>
+#include <wx/window.h>
 #endif
 
 #include "view.h"

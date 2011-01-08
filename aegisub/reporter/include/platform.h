@@ -20,9 +20,10 @@
 /// @ingroup base
 
 #ifndef R_PRECOMP
+#include <wx/intl.h>
+#include <wx/glcanvas.h>
 #include <wx/platinfo.h>
 #include <wx/string.h>
-#include <wx/intl.h>
 #endif
 
 /// @class Platform
