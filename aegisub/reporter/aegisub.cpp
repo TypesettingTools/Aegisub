@@ -19,12 +19,10 @@
 /// @ingroup base
 
 #ifndef R_PRECOMP
-#include <wx/wfstream.h>
-#include <wx/stdpaths.h>
 #endif
 
 #include "aegisub.h"
-
+#include "util.h"
 
 #ifdef __WINDOWS__
 #include "../src/config.h"
@@ -33,18 +31,8 @@
 #endif
 
 Aegisub::Aegisub() {
-	wxStandardPathsBase &paths = wxStandardPaths::Get();
-// Using ifdefs is a pain but it's much easier to centralise this.
-#if defined(__APPLE__)
-	std::string conf_user(wxString::Format("%s-%s/config.json", paths.GetUserDataDir(), _T(AEGISUB_VERSION_DATA)));
-#elif defined(__UNIX__)
-	std::string conf_user(wxString::Format("%s/.aegisub-%s/config.json", paths.GetUserConfigDir(), _T(AEGISUB_VERSION_DATA)));
-#else
-	std::string conf_user(wxString::Format("%s/Aegisub/config.json", paths.GetUserConfigDir()));
-#endif
-
 	std::string default_config("{}");
-	opt = new agi::Options(conf_user, default_config, agi::Options::FLUSH_SKIP);
+	opt = new agi::Options(config_path() + "config.json", default_config, agi::Options::FLUSH_SKIP);
 }
 
 

@@ -33,6 +33,7 @@ SRC = \
 	progress.cpp \
 	report.cpp \
 	upload.cpp \
+	util.cpp \
 	view.cpp
 
 

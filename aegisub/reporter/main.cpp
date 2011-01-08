@@ -22,25 +22,28 @@
 #include <locale.h>
 
 #include <wx/app.h>
-#include <wx/window.h>
-#include <wx/log.h>
+#include <wx/button.h>
 #include <wx/cmdline.h>
-#include <wx/wxchar.h>
+#include <wx/filename.h>
+#include <wx/panel.h>
 #include <wx/sizer.h>
 #include <wx/stattext.h>
-#include <wx/panel.h>
-#include <wx/font.h>
-#include <wx/button.h>
 #include <wx/textctrl.h>
-#include <wx/intl.h>
+#include <wx/window.h>
 #endif
+
+#include <libaegisub/log.h>
 
 #include "main.h"
 #include "upload.h"
+#include "util.h"
 
 /// @brief Init the reporter.
-bool Reporter::OnInit()
-{
+bool Reporter::OnInit() {
+
+	const std::string path_log(config_path() + "log/");
+	wxFileName::Mkdir(path_log, 0777, wxPATH_MKDIR_FULL);
+	agi::log::log = new agi::log::LogSink(path_log);
 //	if ( !wxApp::OnInit() )
 //		return false;
 
