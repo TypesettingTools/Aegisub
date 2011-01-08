@@ -41,7 +41,7 @@
 /// @brief Init the reporter.
 bool Reporter::OnInit() {
 
-	const std::string path_log(config_path() + "log/");
+	const std::string path_log(util::config_path() + "log/");
 	wxFileName::Mkdir(path_log, 0777, wxPATH_MKDIR_FULL);
 	agi::log::log = new agi::log::LogSink(path_log);
 //	if ( !wxApp::OnInit() )

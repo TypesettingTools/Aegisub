@@ -32,7 +32,7 @@
 
 Aegisub::Aegisub() {
 	std::string default_config("{}");
-	opt = new agi::Options(config_path() + "config.json", default_config, agi::Options::FLUSH_SKIP);
+	opt = new agi::Options(util::config_path() + "config.json", default_config, agi::Options::FLUSH_SKIP);
 }
 
 

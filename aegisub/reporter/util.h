@@ -19,6 +19,12 @@
 /// @ingroup base
 
 
+/// Utilities.
+namespace util {
+
 /// Return config path.
 /// @return Config path.
 std::string config_path();
+
+
+} // namespace util

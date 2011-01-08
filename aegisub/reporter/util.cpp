@@ -28,6 +28,8 @@
 #include "../acconf.h"
 
 
+namespace util {
+
 std::string config_path() {
 	wxStandardPathsBase &paths = wxStandardPaths::Get();
 
@@ -39,3 +41,6 @@ std::string config_path() {
 	return std::string(wxString::Format("%s/Aegisub/", paths.GetUserConfigDir()));
 #endif
 }
+
+
+} // namespace util
