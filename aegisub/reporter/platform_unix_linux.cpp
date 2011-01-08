@@ -42,22 +42,22 @@ std::string PlatformUnixLinux::CPUSpeed() {
 // due to SMT/HyperThreading.
 // For now report the logical CPU count and no number of cores; this seems
 // to make the most sense.
-std::string PlatformUnixLinux::CPUCores() {
-    return "";
+int PlatformUnixLinux::CPUCores() {
+    return -1;
 };
 
-std::string PlatformUnixLinux::CPUCount() {
+int PlatformUnixLinux::CPUCount() {
     // This returns the index of the last processor.
     // Increment and return as string.
-    std::string procIndex = getProcValue("/proc/cpuinfo", "processor\t");
+    wxString procIndex = getProcValue("/proc/cpuinfo", "processor\t");
     if (procIndex.IsNumber()) {
         long val = 0;
         procIndex.ToLong(&val);
-        return wxString::Format("%ld", val + 1);
+		return val + 1;
     }
 
     // Fallback
-    return "1";
+    return 1;
 };
 
 std::string PlatformUnixLinux::CPUFeatures() {
@@ -68,16 +68,16 @@ std::string PlatformUnixLinux::CPUFeatures2() {
     return "";
 };
 
-std::string PlatformUnixLinux::Memory() {
-    std::string memKb = getProcValue("/proc/meminfo", "MemTotal");
+uint64_t PlatformUnixLinux::Memory() {
+    wxString memKb = getProcValue("/proc/meminfo", "MemTotal");
     memKb = memKb.BeforeFirst(' ');
     if (memKb.IsNumber()) {
         long val = 0;
         memKb.ToLong(&val);
-        return wxString::Format("%ld", val * 1024);
+		return val * 1024;
     }
 
-    return "";
+    return -1;
 };
 
 std::string PlatformUnixLinux::UnixLibraries() {
@@ -88,22 +88,22 @@ std::string PlatformUnixLinux::UnixLibraries() {
  * @brief Parse a /proc "key: value" style text file and extract a value.
  * @return The last valid value
  */
-std::string PlatformUnixLinux::getProcValue(const std::string path, const std::string key) {
-    const std::string prefix = std::string(key) + ":";
+std::string PlatformUnixLinux::getProcValue(const wxString path, const wxString key) {
+    const wxString prefix = wxString(key) + ":";
     wxTextFile *file = new wxTextFile(path);
-    std::string val = std::string();
+    wxString val = std::string();
 
     file->Open();
-    for (std::string str = file->GetFirstLine(); !file->Eof(); str = file->GetNextLine()) {
+    for (wxString str = file->GetFirstLine(); !file->Eof(); str = file->GetNextLine()) {
         str.Trim(false);
         if (str.StartsWith(prefix)) {
-            val = std::string(str.Mid(key.Len() + 1));
+            val = wxString(str.Mid(key.Len() + 1));
             val.Trim(false);
         }
     }
 
     file->Close();
     delete file;
-    return val;
+    return std::string(val);
 };
 

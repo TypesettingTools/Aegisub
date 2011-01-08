@@ -38,5 +38,5 @@ public:
 	// Unix Specific
 	virtual std::string UnixLibraries();
 private:
-    virtual std::string getProcValue(const std::string path, const std::string key);
+    virtual std::string getProcValue(const wxString path, const wxString key);
 };
