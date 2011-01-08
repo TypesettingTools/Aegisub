@@ -148,7 +148,7 @@ Message::Message(const char *section,
 
 Message::~Message() {
 	sm->message = msg.str();
-	sm->len = msg.pcount();
+	sm->len = (size_t)msg.pcount();
 	agi::log::log->log(sm);
 }
 

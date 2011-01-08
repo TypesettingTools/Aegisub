@@ -39,7 +39,7 @@ UCDetect::UCDetect(const std::string &file): nsUniversalDetector(NS_FILTER_ALL) 
 		while (!mDone && !fp->eof()) {
 			char buf[512];
 			fp->read(buf, 512);
-			size_t bytes = fp->gcount();
+			size_t bytes = (size_t)fp->gcount();
 			HandleData(buf, bytes);
 		}
 	}
@@ -47,7 +47,7 @@ UCDetect::UCDetect(const std::string &file): nsUniversalDetector(NS_FILTER_ALL) 
 	DataEnd();
 
 	if (mDetectedCharset) {
-		list.insert(CLDPair(1, mDetectedCharset));
+		list.insert(CLDPair(1.f, mDetectedCharset));
 	} else {
 
 		switch (mInputState) {
@@ -64,7 +64,7 @@ UCDetect::UCDetect(const std::string &file): nsUniversalDetector(NS_FILTER_ALL) 
 				break;
 			}
 			case ePureAscii:
-				list.insert(CLDPair(1, "US-ASCII"));
+				list.insert(CLDPair(1.f, "US-ASCII"));
 				break;
 
 			default:
