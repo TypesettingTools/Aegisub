@@ -108,7 +108,7 @@ std::string Platform::GetVideoInfo(enum Platform::VideoInfo which) {
 		default:
 			return "";
 	}
-
+	return "";
 }
 
 std::string Platform::ArchName() {
