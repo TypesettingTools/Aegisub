@@ -29,11 +29,11 @@
 #endif
 
 #include "include/platform.h"
-//#include "platform_windows.h"
+#include "platform_windows.h"
 #include "platform_unix.h"
 #include "platform_unix_bsd.h"
-//#include "platform_unix_linux.h"
-//#include "platform_unix_osx.h"
+#include "platform_unix_linux.h"
+#include "platform_unix_osx.h"
 
 extern "C" {
 #ifdef __WXMAC__

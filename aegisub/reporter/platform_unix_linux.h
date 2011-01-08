@@ -29,11 +29,11 @@ public:
 	// Hardware
 	virtual std::string CPUId();
 	virtual std::string CPUSpeed();
-	virtual std::string CPUCores();
-	virtual std::string CPUCount();
+	virtual int CPUCores();
+	virtual int CPUCount();
 	virtual std::string CPUFeatures();
 	virtual std::string CPUFeatures2();
-	virtual std::string Memory();
+	virtual uint64_t Memory();
 
 	// Unix Specific
 	virtual std::string UnixLibraries();
