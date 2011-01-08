@@ -43,7 +43,6 @@ Aegisub::Aegisub() {
 	std::string conf_user(wxString::Format("%s/Aegisub/config.json", paths.GetUserConfigDir()));
 #endif
 
-std::cout << conf_user << std::endl;
 	std::string default_config("{}");
 	opt = new agi::Options(conf_user, default_config, agi::Options::FLUSH_SKIP);
 }
