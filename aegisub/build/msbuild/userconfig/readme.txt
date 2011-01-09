@@ -27,3 +27,18 @@ file that specifies a wxWidgets location:
 You should not check files placed in this folder into source control.
 
 Files must be named *.props to be used.
+
+
+Other properties of interest:
+
+Ft2IncludePath	- Path to Freetype2 include files
+Ft2LibraryPath	- Path to Freetype2 lib files
+Ft2LibraryName	- Name of Freetype2 library to link
+
+
+These may be useful to override in some cases, but the defaults should be fine for most:
+
+AegisubOutputBase	- Base directory for output files from compilation, defaults to solution file location
+AegisubBinaryDir	- Where executables are placed, derived from AegisubOutputBase by default
+AegisubLibraryDir	- Where lib files are placed, derived from AegisubOutputBase by default
+AegisubObjectDir	- Where intermediary files are placed, derived from AegisubOutputBase by default

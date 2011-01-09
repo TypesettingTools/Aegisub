@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+	<PropertyGroup>
+		<!-- Base for Aegisub source code -->
+		<AegisubSourceBase Condition="'$(AegisubSourceBase)'==''">$(MSBuildThisFileDirectory)..\..\</AegisubSourceBase>
+		<!-- Base for contrib libraries source code -->
+		<AegisubContribBase Condition="'$(AegisubContribBase)'==''">$(AegisubSourceBase)..\contrib\</AegisubContribBase>
+		<!-- Base for built files -->
+		<AegisubOutputBase Condition="'$(AegisubOutputBase)'==''">$(SolutionDir)</AegisubOutputBase>
+		<!-- Directory for built executables -->
+		<AegisubBinaryDir Condition="'$(AegisubBinaryDir)'==''">$(AegisubOutputBase)bin\</AegisubBinaryDir>
+		<!-- Directory for built static libraries and link libraries -->
+		<AegisubLibraryDir Condition="'$(AegisubLibraryDir)'==''">$(AegisubOutputBase)lib\$(Platform)\$(Configuration)\</AegisubLibraryDir>
+		<!-- Directory for built object files, intentionally using flat structure -->
+		<AegisubObjectDir Condition="'$(AegisubObjectDir)'==''">$(AegisubOutputBase)obj\$(ProjectName)-$(Platform)-$(Configuration)\</AegisubObjectDir>
+		<!-- Platform/configuration suffix for binaries -->
+		<AegisubPlatformSuffix Condition="'$(Configuration)'=='Debug'">$(PlatformArchitecture)d</AegisubPlatformSuffix>
+		<AegisubPlatformSuffix Condition="'$(Configuration)'=='Release'">$(PlatformArchitecture)</AegisubPlatformSuffix>
+		<AegisubPlatformSuffix Condition="'$(AegisubPlatformSuffix)'==''">(unk)</AegisubPlatformSuffix> <!-- fallback -->
+	</PropertyGroup>
+</Project>
