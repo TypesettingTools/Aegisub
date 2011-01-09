@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{5391A8B1-9C70-4DC4-92AD-D3E34C6B803F}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>lua51</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)'=='Debug'" Label="Configuration">
+    <UseDebugLibraries>true</UseDebugLibraries>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)'=='Release'" Label="Configuration">
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <!-- External property sheets -->
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(MSBuildThisFileDirectory)..\userconfig\*.props" Label="User configuration" />
+    <Import Project="$(MSBuildThisFileDirectory)..\paths.props" Label="Standard paths" />
+    <Import Project="$(MSBuildThisFileDirectory)..\standard-settings.props" Label="Standard compiler settings" />
+    <Import Project="$(MSBuildThisFileDirectory)..\standard-outdirs.props" Label="Standard output directories" />
+    <Import Project="$(MSBuildThisFileDirectory)lua51.props" Label="Lua 5.1 configuration" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros">
+    <SrcDir>$(AegisubContribBase)lua51\src\</SrcDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <PreprocessorDefinitions>LUA_BUILD_AS_DLL;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="$(SrcDir)lapi.c" />
+    <ClCompile Include="$(SrcDir)lauxlib.c" />
+    <ClCompile Include="$(SrcDir)lbaselib.c" />
+    <ClCompile Include="$(SrcDir)lcode.c" />
+    <ClCompile Include="$(SrcDir)ldblib.c" />
+    <ClCompile Include="$(SrcDir)ldebug.c" />
+    <ClCompile Include="$(SrcDir)ldo.c" />
+    <ClCompile Include="$(SrcDir)ldump.c" />
+    <ClCompile Include="$(SrcDir)lfunc.c" />
+    <ClCompile Include="$(SrcDir)lgc.c" />
+    <ClCompile Include="$(SrcDir)linit.c" />
+    <ClCompile Include="$(SrcDir)liolib.c" />
+    <ClCompile Include="$(SrcDir)llex.c" />
+    <ClCompile Include="$(SrcDir)lmathlib.c" />
+    <ClCompile Include="$(SrcDir)lmem.c" />
+    <ClCompile Include="$(SrcDir)loadlib.c" />
+    <ClCompile Include="$(SrcDir)lobject.c" />
+    <ClCompile Include="$(SrcDir)lopcodes.c" />
+    <ClCompile Include="$(SrcDir)loslib.c" />
+    <ClCompile Include="$(SrcDir)lparser.c" />
+    <ClCompile Include="$(SrcDir)lstate.c" />
+    <ClCompile Include="$(SrcDir)lstring.c" />
+    <ClCompile Include="$(SrcDir)lstrlib.c" />
+    <ClCompile Include="$(SrcDir)ltable.c" />
+    <ClCompile Include="$(SrcDir)ltablib.c" />
+    <ClCompile Include="$(SrcDir)ltm.c" />
+    <ClCompile Include="$(SrcDir)lundump.c" />
+    <ClCompile Include="$(SrcDir)lvm.c" />
+    <ClCompile Include="$(SrcDir)lzio.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="$(SrcDir)lapi.h" />
+    <ClInclude Include="$(SrcDir)lauxlib.h" />
+    <ClInclude Include="$(SrcDir)lcode.h" />
+    <ClInclude Include="$(SrcDir)ldebug.h" />
+    <ClInclude Include="$(SrcDir)ldo.h" />
+    <ClInclude Include="$(SrcDir)lfunc.h" />
+    <ClInclude Include="$(SrcDir)lgc.h" />
+    <ClInclude Include="$(SrcDir)llex.h" />
+    <ClInclude Include="$(SrcDir)llimits.h" />
+    <ClInclude Include="$(SrcDir)lmem.h" />
+    <ClInclude Include="$(SrcDir)lobject.h" />
+    <ClInclude Include="$(SrcDir)lopcodes.h" />
+    <ClInclude Include="$(SrcDir)lparser.h" />
+    <ClInclude Include="$(SrcDir)lstate.h" />
+    <ClInclude Include="$(SrcDir)lstring.h" />
+    <ClInclude Include="$(SrcDir)ltable.h" />
+    <ClInclude Include="$(SrcDir)ltm.h" />
+    <ClInclude Include="$(SrcDir)lua.h" />
+    <ClInclude Include="$(SrcDir)luaconf.h" />
+    <ClInclude Include="$(SrcDir)lualib.h" />
+    <ClInclude Include="$(SrcDir)lundump.h" />
+    <ClInclude Include="$(SrcDir)lvm.h" />
+    <ClInclude Include="$(SrcDir)lzio.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

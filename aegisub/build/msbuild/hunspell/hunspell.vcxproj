@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{CC791693-6B28-40AC-879D-64A6C16468E3}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>hunspell</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)'=='Debug'" Label="Configuration">
+    <UseDebugLibraries>true</UseDebugLibraries>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)'=='Release'" Label="Configuration">
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <!-- External property sheets -->
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(MSBuildThisFileDirectory)..\userconfig\*.props" Label="User configuration" />
+    <Import Project="$(MSBuildThisFileDirectory)..\paths.props" Label="Standard paths" />
+    <Import Project="$(MSBuildThisFileDirectory)..\standard-settings.props" Label="Standard compiler settings" />
+    <Import Project="$(MSBuildThisFileDirectory)..\standard-outdirs.props" Label="Standard output directories" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros">
+    <SrcDir>$(AegisubContribBase)hunspell\src\</SrcDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <PreprocessorDefinitions>HUNSPELL_STATIC;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(SrcDir)win_api;$(SrcDir)hunspell;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="$(SrcDir)hunspell\affentry.hxx" />
+    <ClInclude Include="$(SrcDir)hunspell\affixmgr.hxx" />
+    <ClInclude Include="$(SrcDir)hunspell\atypes.hxx" />
+    <ClInclude Include="$(SrcDir)hunspell\baseaffix.hxx" />
+    <ClInclude Include="$(SrcDir)hunspell\csutil.hxx" />
+    <ClInclude Include="$(SrcDir)hunspell\dictmgr.hxx" />
+    <ClInclude Include="$(SrcDir)hunspell\hashmgr.hxx" />
+    <ClInclude Include="$(SrcDir)hunspell\htypes.hxx" />
+    <ClInclude Include="$(SrcDir)hunspell\hunspell.h" />
+    <ClInclude Include="$(SrcDir)hunspell\hunspell.hxx" />
+    <ClInclude Include="$(SrcDir)hunspell\langnum.hxx" />
+    <ClInclude Include="$(SrcDir)hunspell\phonet.hxx" />
+    <ClInclude Include="$(SrcDir)hunspell\suggestmgr.hxx" />
+    <ClInclude Include="$(SrcDir)parsers\firstparser.hxx" />
+    <ClInclude Include="$(SrcDir)parsers\htmlparser.hxx" />
+    <ClInclude Include="$(SrcDir)parsers\latexparser.hxx" />
+    <ClInclude Include="$(SrcDir)parsers\manparser.hxx" />
+    <ClInclude Include="$(SrcDir)parsers\textparser.hxx" />
+    <ClInclude Include="$(SrcDir)win_api\config.h" />
+    <ClInclude Include="$(SrcDir)win_api\hunspelldll.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="$(SrcDir)hunspell\affentry.cxx" />
+    <ClCompile Include="$(SrcDir)hunspell\affixmgr.cxx" />
+    <ClCompile Include="$(SrcDir)hunspell\csutil.cxx" />
+    <ClCompile Include="$(SrcDir)hunspell\dictmgr.cxx" />
+    <ClCompile Include="$(SrcDir)hunspell\hashmgr.cxx" />
+    <ClCompile Include="$(SrcDir)hunspell\hunspell.cxx" />
+    <ClCompile Include="$(SrcDir)hunspell\phonet.cxx" />
+    <ClCompile Include="$(SrcDir)hunspell\suggestmgr.cxx" />
+    <ClCompile Include="$(SrcDir)parsers\firstparser.cxx" />
+    <ClCompile Include="$(SrcDir)parsers\htmlparser.cxx" />
+    <ClCompile Include="$(SrcDir)parsers\latexparser.cxx" />
+    <ClCompile Include="$(SrcDir)parsers\manparser.cxx" />
+    <ClCompile Include="$(SrcDir)parsers\testparser.cxx" />
+    <ClCompile Include="$(SrcDir)parsers\textparser.cxx" />
+    <ClCompile Include="$(SrcDir)win_api\hunspelldll.c">
+      <!-- Why is this file named .c when it's obviously C++ code -->
+      <CompileAs>CompileAsCpp</CompileAs>
+    </ClCompile>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
