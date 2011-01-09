@@ -79,7 +79,7 @@
 		<Configuration
 			Name="Debug|x64"
 			ConfigurationType="4"
-			InheritedPropertySheets=".\wxlib_include.vsprops;.\libraries_outdirs.vsprops;.\compiler_options_debug.vsprops;..\aegisub_vs2008\wxlib_lib64.vsprops;..\aegisub_vs2008\suffix_debug64.vsprops;.\precomp_header.vsprops"
+			InheritedPropertySheets=".\wxlib_include.vsprops;.\libraries_outdirs.vsprops;.\compiler_options_debug.vsprops;..\aegisub_vs2008\wxlib_lib64.vsprops;..\aegisub_vs2008\suffix_debug64.vsprops;.\precomp_header.vsprops;.\src_msvc_include_dir.vsprops;.\contrib_includedirs.vsprops"
 			CharacterSet="1"
 			>
 			<Tool
@@ -197,7 +197,7 @@
 		<Configuration
 			Name="Release|x64"
 			ConfigurationType="4"
-			InheritedPropertySheets=".\wxlib_include.vsprops;.\libraries_outdirs.vsprops;.\compiler_options.vsprops;..\aegisub_vs2008\wxlib_lib64.vsprops;..\aegisub_vs2008\suffix_release64.vsprops;.\precomp_header.vsprops"
+			InheritedPropertySheets=".\wxlib_include.vsprops;.\libraries_outdirs.vsprops;.\compiler_options.vsprops;..\aegisub_vs2008\wxlib_lib64.vsprops;..\aegisub_vs2008\suffix_release64.vsprops;.\precomp_header.vsprops;.\src_msvc_include_dir.vsprops;.\contrib_includedirs.vsprops"
 			CharacterSet="1"
 			WholeProgramOptimization="1"
 			>
