@@ -44,7 +44,6 @@
     <Import Project="$(MSBuildThisFileDirectory)..\paths.props" Label="Standard paths" />
     <Import Project="$(MSBuildThisFileDirectory)..\standard-settings.props" Label="Standard compiler settings" />
     <Import Project="$(MSBuildThisFileDirectory)..\standard-outdirs.props" Label="Standard output directories" />
-    <Import Project="$(MSBuildThisFileDirectory)lua51.props" Label="Lua 5.1 configuration" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros">
     <SrcDir>$(AegisubContribBase)lua51\src\</SrcDir>
