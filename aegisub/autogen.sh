@@ -19,7 +19,7 @@ GLIB_REQUIRED_VERSION=2.10.0
 AUTOCONF_REQUIRED_VERSION=2.54
 AUTOMAKE_REQUIRED_VERSION=1.10
 
-REQUIRED_M4="fontutil.m4 gettext.m4 pkg.m4 iconv.m4"
+REQUIRED_M4="fontutil.m4 gettext.m4 pkg.m4"
 REQUIRED_M4_WX="wxwin29.m4 wxwin.m4"
 
 PROJECT="aegisub"
@@ -129,30 +129,6 @@ if test x$AUTOMAKE != x; then
     VER=`$AUTOMAKE --version \
          | grep automake | sed "s/.* \([0-9.]*\)[-a-z0-9]*$/\1/"`
     check_version $VER $AUTOMAKE_REQUIRED_VERSION
-fi
-
-
-if test -z "$BIN_AWK"; then
-  BIN_AWK=`which awk`
-fi
-
-$ECHO_N "checking for AWK ... "
-if test -x "$BIN_AWK"; then
-  echo $BIN_AWK
-else
-    echo "not found"
-    echo
-    echo "  You must have 'awk' installed.  Please set"
-    echo "  BIN_AWK or add it to your PATH."
-    echo
-    DIE=1
-fi
-
-if test "$DIE" -eq 1; then
-    echo
-    echo "Please install/upgrade the missing tools and call me again."
-    echo	
-    exit 1
 fi
 
 
