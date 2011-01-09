@@ -40,7 +40,7 @@ UCDetect::UCDetect(const std::string &file): nsUniversalDetector(NS_FILTER_ALL) 
 			char buf[512];
 			fp->read(buf, 512);
 			size_t bytes = (size_t)fp->gcount();
-			HandleData(buf, bytes);
+			HandleData(buf, (PRUint32)bytes);
 		}
 	}
 
