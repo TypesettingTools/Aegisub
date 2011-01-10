@@ -31,3 +31,4 @@ SRC += \
 HEADER = *.h
 
 include ../../Makefile.target
+-include *.d

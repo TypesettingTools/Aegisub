@@ -26,6 +26,5 @@ HEADER = \
 	include/*.h
 
 include ../Makefile.target
-
-
+-include src/core/*.d
 

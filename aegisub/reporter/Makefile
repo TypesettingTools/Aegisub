@@ -55,3 +55,4 @@ HEADER = \
 	include/*.h
 
 include ../Makefile.target
+-include *.d

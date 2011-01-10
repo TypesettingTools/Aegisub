@@ -276,4 +276,4 @@ EXTRA_DIST= \
 	bitmaps/windows/icon.ico
 
 include ../Makefile.target
-
+-include *.d

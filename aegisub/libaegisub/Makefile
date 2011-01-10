@@ -48,3 +48,4 @@ HEADERS = \
 
 
 include ../Makefile.target
+-include */*.d

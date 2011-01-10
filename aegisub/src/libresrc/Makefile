@@ -36,3 +36,4 @@ CLEANFILES= \
 	default_config.h
 
 include ../../Makefile.target
+-include *.d

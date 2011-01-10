@@ -41,3 +41,5 @@ EXTRA_DIST = \
 	JISFreq.tab
 
 include ../Makefile.target
+-include *.d
+
