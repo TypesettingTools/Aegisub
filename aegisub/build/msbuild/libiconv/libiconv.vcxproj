@@ -44,7 +44,7 @@
     <Import Project="$(MSBuildThisFileDirectory)..\standard-outdirs.props" Label="Standard output directories" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros">
-    <SrcDir>$(AegisubContribBase)iconv\</SrcDir>
+    <SrcDir>..\..\..\..\contrib\iconv\</SrcDir>
   </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>

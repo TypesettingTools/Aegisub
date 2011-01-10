@@ -46,7 +46,7 @@
     <Import Project="$(MSBuildThisFileDirectory)..\standard-outdirs.props" Label="Standard output directories" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros">
-    <SrcDir>$(AegisubContribBase)hunspell\src\</SrcDir>
+    <SrcDir>..\..\..\..\contrib\hunspell\src\</SrcDir>
   </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>
