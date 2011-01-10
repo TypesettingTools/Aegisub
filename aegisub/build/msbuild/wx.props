@@ -1,37 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <!-- Some helper affixes -->
-  <PropertyGroup>
-    <WxLibDbgSuffix Condition="'$(Configuration)'=='Debug'">d</WxLibDbgSuffix>
-    <WxLibDbgSuffix Condition="'$(Configuration)'=='Release'"></WxLibDbgSuffix>
-    <WxLibBase>wxbase29u$(WxLibDbgSuffix)</WxLibBase>
-    <WxLibMsw>wxmsw29u$(WxLibDbgSuffix)</WxLibMsw>
-  </PropertyGroup>
-  
-  <!-- Tell the compiler where to search for wx headers and libraries -->
-  <PropertyGroup>
-    <IncludePath>$(WxLibraryPath)\mswu$(WxLibDbgSuffix)\;$(WxIncludePath);$(IncludePath)</IncludePath>
-    <LibraryPath>$(WxLibraryPath);$(LibraryPath)</LibraryPath>
-  </PropertyGroup>
-  
-  <!-- Tell the linker to use the appropriate wx libraries -->
-  <ItemDefinitionGroup>
-    <Link>
-      <AdditionalDependencies>
-        $(WxLibBase).lib;
-        $(WxLibBase)_net.lib;
-        $(WxLibBase)_xml.lib;
-        $(WxLibMsw)_core.lib;
-        $(WxLibMsw)_adv.lib;
-        $(WxLibMsw)_gl.lib;
-        $(WxLibMsw)_stc.lib;
-        wxscintilla$(WxLibDbgSuffix).lib;
-        wxzlib$(WxLibDbgSuffix).lib;
-        wxexpat$(WxLibDbgSuffix).lib;
-        wxregexu$(WxLibDbgSuffix).lib;
-        wxpng$(WxLibDbgSuffix).lib;
-        %(AdditionalDependencies)
-      </AdditionalDependencies>
-    </Link>
-  </ItemDefinitionGroup>
+	<PropertyGroup>
+		<_PropertySheetDisplayName>wxWidgets support</_PropertySheetDisplayName>
+	</PropertyGroup>
+
+	<!-- Some helper affixes -->
+	<PropertyGroup>
+		<WxLibDbgSuffix Condition="'$(Configuration)'=='Debug'">d</WxLibDbgSuffix>
+		<WxLibDbgSuffix Condition="'$(Configuration)'=='Release'"></WxLibDbgSuffix>
+	</PropertyGroup>
+
+	<!-- Tell the compiler where to search for wx headers and libraries -->
+	<PropertyGroup>
+		<IncludePath>$(WxLibraryPath)\mswu$(WxLibDbgSuffix)\;$(WxIncludePath);$(IncludePath)</IncludePath>
+		<LibraryPath>$(WxLibraryPath);$(LibraryPath)</LibraryPath>
+	</PropertyGroup>
+
+	<!-- Tell the linker to use the appropriate wx libraries -->
+	<ItemDefinitionGroup>
+		<Link>
+			<AdditionalDependencies>
+				wxbase29u$(WxLibDbgSuffix).lib;
+				wxbase29u$(WxLibDbgSuffix)_net.lib;
+				wxbase29u$(WxLibDbgSuffix)_xml.lib;
+				wxmsw29u$(WxLibDbgSuffix)_core.lib;
+				wxmsw29u$(WxLibDbgSuffix)_adv.lib;
+				wxmsw29u$(WxLibDbgSuffix)_gl.lib;
+				wxmsw29u$(WxLibDbgSuffix)_stc.lib;
+				wxscintilla$(WxLibDbgSuffix).lib;
+				wxzlib$(WxLibDbgSuffix).lib;
+				wxexpat$(WxLibDbgSuffix).lib;
+				wxregexu$(WxLibDbgSuffix).lib;
+				wxpng$(WxLibDbgSuffix).lib;
+				%(AdditionalDependencies)
+			</AdditionalDependencies>
+		</Link>
+	</ItemDefinitionGroup>
 </Project>

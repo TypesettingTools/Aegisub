@@ -1,25 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <PropertyGroup>
-    <OutDir Condition="'$(ConfigurationType)'=='DynamicLibrary'">$(AegisubBinaryDir)</OutDir>
-    <OutDir Condition="'$(ConfigurationType)'=='Application'">$(AegisubBinaryDir)</OutDir>
-    <OutDir Condition="'$(ConfigurationType)'=='StaticLibrary'">$(AegisubLibraryDir)</OutDir>
-    <IntDir>$(AegisubObjectDir)</IntDir>
-    <TargetName Condition="'$(ConfigurationType)'=='DynamicLibrary'">$(ProjectName)_$(AegisubPlatformSuffix)</TargetName>
-    <TargetName Condition="'$(ConfigurationType)'=='Application'">$(ProjectName)_$(AegisubPlatformSuffix)</TargetName>
-    <TargetName Condition="'$(ConfigurationType)'=='StaticLibrary'">$(ProjectName)</TargetName>
-  </PropertyGroup>
-  <ItemDefinitionGroup>
-    <ClCompile>
-      <ObjectFileName>$(IntDir)</ObjectFileName>
-    </ClCompile>
-    <Link>
-      <OutputFile>$(AegisubBinaryDir)$(TargetName)$(TargetExt)</OutputFile>
-      <ProgramDatabaseFile>$(AegisubBinaryDir)$(TargetName).pdb</ProgramDatabaseFile>
-      <ImportLibrary>$(AegisubLibraryDir)$(ProjectName).lib</ImportLibrary>
-    </Link>
-    <Lib>
-      <OutputFile>$(AegisubLibraryDir)$(ProjectName).lib</OutputFile>
-    </Lib>
-  </ItemDefinitionGroup>
+	<PropertyGroup>
+		<_PropertySheetDisplayName>Aegisub build output directories</_PropertySheetDisplayName>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<OutDir Condition="'$(ConfigurationType)'=='DynamicLibrary'">$(AegisubBinaryDir)</OutDir>
+		<OutDir Condition="'$(ConfigurationType)'=='Application'">$(AegisubBinaryDir)</OutDir>
+		<OutDir Condition="'$(ConfigurationType)'=='StaticLibrary'">$(AegisubLibraryDir)</OutDir>
+		<IntDir>$(AegisubObjectDir)</IntDir>
+		<TargetName Condition="'$(ConfigurationType)'=='DynamicLibrary'">$(ProjectName)_$(AegisubPlatformSuffix)</TargetName>
+		<TargetName Condition="'$(ConfigurationType)'=='Application'">$(ProjectName)_$(AegisubPlatformSuffix)</TargetName>
+		<TargetName Condition="'$(ConfigurationType)'=='StaticLibrary'">$(ProjectName)</TargetName>
+	</PropertyGroup>
+	<ItemDefinitionGroup>
+		<ClCompile>
+			<ObjectFileName>$(IntDir)</ObjectFileName>
+		</ClCompile>
+		<Link>
+			<OutputFile>$(AegisubBinaryDir)$(TargetName)$(TargetExt)</OutputFile>
+			<ProgramDatabaseFile>$(AegisubBinaryDir)$(TargetName).pdb</ProgramDatabaseFile>
+			<ImportLibrary>$(AegisubLibraryDir)$(ProjectName).lib</ImportLibrary>
+		</Link>
+		<Lib>
+			<OutputFile>$(AegisubLibraryDir)$(ProjectName).lib</OutputFile>
+		</Lib>
+	</ItemDefinitionGroup>
 </Project>
