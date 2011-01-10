@@ -48,7 +48,6 @@ EXTRA_DIST = \
 	svn_revision \
 	config.log \
 	install-sh \
-	Makefile.inc \
 	Makefile.inc.in \
 	Makefile.target
 
