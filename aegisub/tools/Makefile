@@ -3,8 +3,6 @@ include ../Makefile.inc
 PROGRAM = common-respack
 
 SRC			+= common-respack.cpp
-CPPFLAGS	+= $(CPPFLAGS_WX)
-LDFLAGS		+= $(LDFLAGS_WX)
 
 ifdef $(BUILD_DARWIN)
 bin_PROGRAMS += osx-bundle-restart-helper

@@ -1,154 +1,118 @@
-// Copyright (c) 2009, Thomas Goyne
-// All rights reserved.
+// Copyright (c) 2010, Amar Takhar <verm@aegisub.org>
 //
-// Redistribution and use in source and binary forms, with or without
-// modification, are permitted provided that the following conditions are met:
+// Permission to use, copy, modify, and distribute this software for any
+// purpose with or without fee is hereby granted, provided that the above
+// copyright notice and this permission notice appear in all copies.
 //
-// * Redistributions of source code must retain the above copyright notice,
-//   this list of conditions and the following disclaimer.
-// * Redistributions in binary form must reproduce the above copyright notice,
-//   this list of conditions and the following disclaimer in the documentation
-//   and/or other materials provided with the distribution.
-// * Neither the name of the Aegisub Group nor the names of its contributors
-//   may be used to endorse or promote products derived from this software
-//   without specific prior written permission.
+// THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+// WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+// MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+// ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+// WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+// ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+// OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 //
-// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-// AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-// IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
-// ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
-// LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
-// CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-// SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-// INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-// CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-// ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-// POSSIBILITY OF SUCH DAMAGE.
-//
-// -----------------------------------------------------------------------------
-//
-// AEGISUB
-//
-// Website: http://aegisub.cellosoft.com
-// Contact: mailto:zeratul@cellosoft.com
-//
+// $Id$
 
+/// @file common-respack.cpp
+/// @brief Load any file into a byte array.
+/// @ingroup util
+
+#include <iterator>
 #include <fstream>
 #include <iostream>
-#include <wx/dir.h>
-#include <wx/filename.h>
-#include <wx/string.h>
-#include <wx/regex.h>
-#include <wx/arrstr.h>
-using namespace std;
+#include <string>
 
-class FileIterator {
-private:
-	unsigned int currentItem;
-	bool inDir;
-	wxDir currentDir;
-	wxArrayString items;
-public:
-	FileIterator(int argc, const char **argv);
-	bool Next(wxString *filename);
-};
 
-FileIterator::FileIterator(int argc, const char **argv)
- : currentItem(2), inDir(false), currentDir(), items(argc, argv) {
-	 if (argc == 2) {
-		// No names passed on the command line, so read them from stdin
-		char buffer[1024];
-		while (cin.getline(buffer, 1024), cin.good()) {
-			items.Add(buffer);
+inline void clean(std::string &str) {
+	// Remove path.
+	std::string::size_type pos = str.rfind('/');
+	if (pos != std::string::npos) {
+		str = str.substr(pos+1, str.size());
+	}
+
+	// Chop extension.
+	pos = str.rfind('.');
+	if (pos != std::string::npos) {
+		str = str.substr(0, pos);
+	}
+
+	for (unsigned int i = 0; i != str.size(); i++) {
+		int c = (int)str[i];
+		if (((c >= 65) && (c <= 90)) ||   /* A-Z */
+			((c >= 97) && (c <= 122)) ||  /* a-z */
+			((c >= 48) && (c <= 57)) ||   /* 0-9 */
+			(c == 95)) {                  /* _ */
+
+			continue;
+		} else {
+			str.erase(i, 1);
 		}
 	}
 }
 
-bool FileIterator::Next(wxString *filename) {
-	// Currently iterating through a directory, just return the next file in that directory (if any)
-	if (inDir) {
-		if (currentDir.GetNext(filename)) {
-			wxString path = currentDir.GetName();
-			*filename = wxFileName(path, *filename).GetFullPath();
-			return true;
-		}
-		inDir = false;
-	}
-
-	// No more items
-	if (currentItem >= items.GetCount()) return false;
-		
-	wxFileName next;
-	wxString current = items[currentItem];
-	currentItem++;
-	
-	// Test if it's a directory
-	if (wxFileName::DirExists(current)) {
-		currentDir.Open(current);
-		if (currentDir.GetFirst(filename, "", wxDIR_FILES)) {
-			wxString path = currentDir.GetName();
-			*filename = wxFileName(path, *filename).GetFullPath();
-			inDir = true;
-			return true;
-		}
-		// dir is empty, process next item instead
-		return Next(filename);
-	}
-	// Test if it's a file
-	if (wxFileName::FileExists(current)) {
-		*filename = current;
-		return true;
-	}
-	
-	// Entry is neither a file nor a directory, just skip it
-	return Next(filename);
-}
 
 int main(int argc, const char *argv[]) {
-	if (argc < 2) {
+	// Need at least 3 arguments
+	if (argc != 4) {
+		std::cout << "Usage: <manifest>[in] <c++ file>[out] <header>[out]" << std::endl;
 		return 1;
 	}
-	wxFileName headerFileName(argv[1]);
-	headerFileName.SetExt(L"h");
-	ofstream outH(headerFileName.GetFullPath().char_str());
-	ofstream outC(argv[1]);
 
-	outC << "#include \"libresrc.h\"" << endl;
+	std::cout << "Manifest: " << argv[1] << "  CPP: " << argv[2] << "  Header: " << argv[3] << std::endl;
 
-	wxRegEx nameCleaner("[^A-Za-z_0-9]");
-	wxString filename;
-	FileIterator iter(argc, argv);
+	std::ifstream file_manifest(argv[1]);
+	std::ofstream file_cpp(argv[2]);
+	std::ofstream file_h(argv[3]);
 
-		outC << "#include \"libresrc.h\"" << endl;
-	while (iter.Next(&filename)) {
-		ifstream infile(filename.char_str(), ios::binary);
-		infile.seekg(0, ios::end);
-		int infile_end = infile.tellg();
-		infile.seekg(0, ios::beg);
 
-		wxFileName file(filename);
 
-		wxString identifier = file.GetName();
+	// If the manifest has a path use that as the base for finding files.
+	std::string manifest(argv[1]);
+	std::string path_base;
 
-		// Hack to work around inserting files in the current directory
-		if (file.GetDirs().Last() != ".")
-			identifier.Append("_" + file.GetDirs().Last());
+	std::string::size_type pos = manifest.rfind('/');
+	if (pos != std::string::npos) {
+		path_base = manifest.substr(0, pos+1);
+	}
 
-		nameCleaner.ReplaceAll(&identifier, "_");
 
-		std::string tmp(identifier.mb_str());
-		outC << "const unsigned char " << tmp << "[] = {";
-		bool first = true;
-		char c[1];
-		while (infile.read(c, 1).gcount() > 0) {
-			if (!first) outC << ",";
-			outC << (int)*(unsigned char *)c;
-			first = false;
+	file_cpp << "#include \"libresrc.h\"" << std::endl;
+
+
+	std::string file;
+	while (file_manifest) {
+		std::getline(file_manifest, file);
+		if (file.empty()) continue;
+
+		std::ifstream ifp((path_base + file).c_str());
+		std::istreambuf_iterator<char> ifp_i(ifp);
+		std::istreambuf_iterator<char> eof;
+
+
+		if (!ifp.is_open()) {
+			std::cout << "Error opening file: " << file << std::endl;
+			return 1;
 		}
-		outC << "};" << endl;
-		outH << "extern const unsigned char " << tmp << "[" << infile_end << "];" << endl;
+
+		std::string ident(file);
+		clean(ident);
+
+		file_cpp << "const unsigned char " << ident << "[] = {";
+
+		int length = 0;
+		while (ifp_i != eof) {
+			if (length > 0) file_cpp << ",";
+			file_cpp << (int)*ifp_i;
+
+			++ifp_i;
+			length++;
+		}
+
+		file_cpp << "};" << std::endl;
+		file_h << "extern const unsigned char " << ident << "[" << length << "];" << std::endl;
+
 	}
 
 	return 0;
 }
-
