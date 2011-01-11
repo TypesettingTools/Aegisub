@@ -52,6 +52,7 @@
 #include <wx/event.h>
 #include <wx/gbsizer.h>
 #include <wx/image.h>
+#include <wx/rawbmp.h>
 #include <wx/settings.h>
 #include <wx/sizer.h>
 #include <wx/spinctrl.h>

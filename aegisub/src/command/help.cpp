@@ -42,6 +42,8 @@
 #include <wx/msgdlg.h>
 #endif
 
+#include <libaegisub/util_osx.h>
+
 #include "command.h"
 #include "../include/aegisub/context.h"
 
