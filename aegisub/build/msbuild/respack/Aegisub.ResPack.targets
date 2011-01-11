@@ -45,10 +45,14 @@
 		Inputs="@(ResPack)"
 		Outputs="%(ResPack.OutputDir)%(ResPack.OutputName);%(ResPack.OutputDir)%(Respack.OutputHeader')"
 		>
+		<Error
+			Condition="!Exists('$(ResPackExe)')"
+			Text="The respack.exe program was not found, make sure it has been built and is at this location: $(ResPackExe)"
+			/>
 		<Exec
-			Command='$(ResPackExe) "@(ResPack)" "%(ResPack.OutputName)" "%(ResPack.OutputHeader)"'
+			Command="$(ResPackExe) &quot;@(ResPack -> '%(FullPath)')&quot; &quot;%(ResPack.OutputDir)%(ResPack.OutputName)&quot; &quot;%(ResPack.OutputDir)%(ResPack.OutputHeader)&quot;"
 			Outputs="%(ResPack.OutputName);%(ResPack.OutputHeader)"
-			WorkingDirectory="%(ResPack.OutputDir)"
+			WorkingDirectory="@(ResPack -> '%(RootDir)%(Directory)')"
 			/>
 	</Target>
 	
