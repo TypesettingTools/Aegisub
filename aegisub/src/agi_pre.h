@@ -242,7 +242,7 @@
 #include <wx/zipstrm.h>
 
 #ifdef HAVE_APPLE_OPENGL_FRAMEWORK
-#include <OpenGL/GL.h>
+#include <OpenGL/gl.h>
 #include <OpenGL/glu.h>
 #include <OpenGL/glext.h>
 #else

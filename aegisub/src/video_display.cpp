@@ -49,7 +49,7 @@
 #endif
 
 #ifdef __APPLE__
-#include <OpenGL/GL.h>
+#include <OpenGL/gl.h>
 #include <OpenGL/glu.h>
 #else
 #include <GL/gl.h>

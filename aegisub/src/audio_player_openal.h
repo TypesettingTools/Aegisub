@@ -42,8 +42,8 @@
 #include <al.h>
 #include <alc.h>
 #elif defined(__APPLE__)
-#include <OpenAL/AL.h>
-#include <OpenAL/ALC.h>
+#include <OpenAL/al.h>
+#include <OpenAL/alc.h>
 #else
 #include <AL/al.h>
 #include <AL/alc.h>

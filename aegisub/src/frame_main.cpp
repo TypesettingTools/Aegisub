@@ -113,7 +113,7 @@ FrameMain::FrameMain (wxArrayString args)
     }
 
 #ifdef __WXMAC__
-	Bind(FrameMain::OnAbout, &FrameMain::cmd_call, this, cmd::id("app/about"));
+//	Bind(FrameMain::OnAbout, &FrameMain::cmd_call, this, cmd::id("app/about"));
 #endif
 
 
@@ -282,10 +282,10 @@ void FrameMain::InitMenu() {
 
 #ifdef __WXMAC__
 	// Make sure special menu items are placed correctly on Mac
-	wxApp::s_macAboutMenuItemId = Menu_Help_About;
-	wxApp::s_macExitMenuItemId = Menu_File_Exit;
-	wxApp::s_macPreferencesMenuItemId = Menu_Tools_Options;
-	wxApp::s_macHelpMenuTitleName = _("&Help");
+//	wxApp::s_macAboutMenuItemId = Menu_Help_About;
+//	wxApp::s_macExitMenuItemId = Menu_File_Exit;
+//	wxApp::s_macPreferencesMenuItemId = Menu_Tools_Options;
+//	wxApp::s_macHelpMenuTitleName = _("&Help");
 #endif
 
 	SetMenuBar(menu::menu->GetMainMenu());
@@ -1054,8 +1054,8 @@ BEGIN_EVENT_TABLE(FrameMain, wxFrame)
 //	EVT_TEXT_ENTER(Toolbar_Zoom_Dropdown, FrameMain::OnSetZoom)
 
 #ifdef __WXMAC__
-   EVT_MENU(wxID_ABOUT, FrameMain::OnAbout)
-   EVT_MENU(wxID_EXIT, FrameMain::OnExit)
+//   EVT_MENU(wxID_ABOUT, FrameMain::OnAbout)
+//   EVT_MENU(wxID_EXIT, FrameMain::OnExit)
 #endif
 END_EVENT_TABLE()
 
