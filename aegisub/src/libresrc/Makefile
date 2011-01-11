@@ -15,17 +15,10 @@ HEADER= \
 all: bitmap.cpp default_config.cpp
 
 bitmap.cpp: ../../tools/common-respack
-	../../tools/common-respack bitmap.cpp ../bitmaps/16 ../bitmaps/24 ../bitmaps/misc/splash.png ../bitmaps/misc/wxicon.png
+	../../tools/common-respack ../bitmaps/manifest.respack bitmap.cpp bitmap.h
 
 default_config.cpp: ../../tools/common-respack *.json
-	../../tools/common-respack \
-		default_config.cpp \
-		./default_config.json \
-		./default_hotkey.json \
-		./default_menu.json \
-		./default_mru.json \
-		./default_path.json \
-		./default_toolbar.json
+	../../tools/common-respack manifest.respack default_config.cpp default_config.h
 
 EXTRA_DIST = *.json
 
