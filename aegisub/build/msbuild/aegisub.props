@@ -11,5 +11,6 @@
 		<Import Project="$(MSBuildThisFileDirectory)standard-outdirs.props" />
 		<Import Project="$(MSBuildThisFileDirectory)ft2.props" Condition="'$(AegisubUseFreetype)' == 'true'" />
 		<Import Project="$(MSBuildThisFileDirectory)wx.props" Condition="'$(AegisubUseWxWidgets)' == 'true'" />
+		<Import Project="$(MSBuildThisFileDirectory)directx.props" Condition="'$(AegisubUseDSound)' == 'true'" />
 	</ImportGroup>
 </Project>
