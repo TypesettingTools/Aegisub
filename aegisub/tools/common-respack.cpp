@@ -55,7 +55,7 @@ inline void clean(std::string &str) {
 
 
 int main(int argc, const char *argv[]) {
-	// Need at least 3 arguments
+	// Needs 3 arguments
 	if (argc != 4) {
 		std::cout << "Usage: <manifest>[in] <c++ file>[out] <header>[out]" << std::endl;
 		return 1;
