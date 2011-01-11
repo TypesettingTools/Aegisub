@@ -38,10 +38,7 @@
   <ImportGroup Label="ExtensionSettings">
   </ImportGroup>
   <ImportGroup Label="PropertySheets">
-    <Import Project="$(MSBuildThisFileDirectory)..\userconfig\*.props" Label="User configuration" />
-    <Import Project="$(MSBuildThisFileDirectory)..\paths.props" Label="Standard paths" />
-    <Import Project="$(MSBuildThisFileDirectory)..\standard-settings.props" Label="Standard compiler settings" />
-    <Import Project="$(MSBuildThisFileDirectory)..\standard-outdirs.props" Label="Standard output directories" />
+    <Import Project="$(MSBuildThisFileDirectory)..\aegisub.props" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros">
     <SrcDir>..\..\..\libaegisub\</SrcDir>

@@ -38,12 +38,8 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
   </ImportGroup>
-  <!-- External property sheets -->
   <ImportGroup Label="PropertySheets">
-    <Import Project="$(MSBuildThisFileDirectory)..\userconfig\*.props" Label="User configuration" />
-    <Import Project="$(MSBuildThisFileDirectory)..\paths.props" Label="Standard paths" />
-    <Import Project="$(MSBuildThisFileDirectory)..\standard-settings.props" Label="Standard compiler settings" />
-    <Import Project="$(MSBuildThisFileDirectory)..\standard-outdirs.props" Label="Standard output directories" />
+    <Import Project="$(MSBuildThisFileDirectory)..\aegisub.props" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros">
 	<SrcDir>..\..\..\..\contrib\lua51\src\</SrcDir>

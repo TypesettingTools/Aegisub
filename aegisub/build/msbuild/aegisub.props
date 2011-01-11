@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+	<PropertyGroup>
+		<_PropertySheetDisplayName>Aegisub project</_PropertySheetDisplayName>
+	</PropertyGroup>
+	
+	<ImportGroup Label="PropertySheets">
+		<Import Project="$(MSBuildThisFileDirectory)userconfig\*.props" />
+		<Import Project="$(MSBuildThisFileDirectory)paths.props" />
+		<Import Project="$(MSBuildThisFileDirectory)standard-settings.props" />
+		<Import Project="$(MSBuildThisFileDirectory)standard-outdirs.props" />
+		<Import Project="$(MSBuildThisFileDirectory)ft2.props" Condition="'$(AegisubUseFreetype)' == 'true'" />
+		<Import Project="$(MSBuildThisFileDirectory)wx.props" Condition="'$(AegisubUseWxWidgets)' == 'true'" />
+	</ImportGroup>
+</Project>
