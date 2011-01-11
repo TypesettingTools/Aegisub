@@ -100,7 +100,22 @@
       <ObjectFileName>$(IntDir)Common\</ObjectFileName>
       <XMLDocumentationFileName>$(IntDir)Common\</XMLDocumentationFileName>
     </ClCompile>
+    <ClCompile Include="$(SrcDir)common\hotkey.cpp">
+      <AssemblerListingLocation>$(IntDir)Common\</AssemblerListingLocation>
+      <ObjectFileName>$(IntDir)Common\</ObjectFileName>
+      <XMLDocumentationFileName>$(IntDir)Common\</XMLDocumentationFileName>
+    </ClCompile>
     <ClCompile Include="$(SrcDir)common\log.cpp">
+      <AssemblerListingLocation>$(IntDir)Common\</AssemblerListingLocation>
+      <ObjectFileName>$(IntDir)Common\</ObjectFileName>
+      <XMLDocumentationFileName>$(IntDir)Common\</XMLDocumentationFileName>
+    </ClCompile>
+    <ClCompile Include="$(SrcDir)common\json.cpp">
+      <AssemblerListingLocation>$(IntDir)Common\</AssemblerListingLocation>
+      <ObjectFileName>$(IntDir)Common\</ObjectFileName>
+      <XMLDocumentationFileName>$(IntDir)Common\</XMLDocumentationFileName>
+    </ClCompile>
+    <ClCompile Include="$(SrcDir)common\keyframe.cpp">
       <AssemblerListingLocation>$(IntDir)Common\</AssemblerListingLocation>
       <ObjectFileName>$(IntDir)Common\</ObjectFileName>
       <XMLDocumentationFileName>$(IntDir)Common\</XMLDocumentationFileName>
