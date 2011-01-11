@@ -150,7 +150,7 @@ AboutScreen::AboutScreen(wxWindow *parent)
 	wxTextCtrl *textctrl = new wxTextCtrl(this, -1, aboutString, wxDefaultPosition, wxSize(-1,200), wxTE_MULTILINE|wxTE_READONLY|wxBORDER_NONE);
 
 	wxSizer *MainSizer = new wxBoxSizer(wxVERTICAL);
-	MainSizer->Add(new wxStaticBitmap(this, -1, GETIMAGE(splash_misc)), 0, wxCENTER, 0);
+	MainSizer->Add(new wxStaticBitmap(this, -1, GETIMAGE(splash)), 0, wxCENTER, 0);
 	MainSizer->Add(new wxStaticLine(this, wxID_ANY), 0, wxEXPAND|wxALL, 0);
 	MainSizer->Add(textctrl, 0, wxEXPAND|wxALL, 0);
 	MainSizer->Add(new wxStaticLine(this, wxID_ANY), 0, wxEXPAND|wxALL, 0);

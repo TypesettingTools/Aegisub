@@ -176,7 +176,7 @@ FrameMain::FrameMain (wxArrayString args)
 	SetIcon(wxICON(wxicon));
 #else
 	wxIcon icon;
-	icon.CopyFromBitmap(GETIMAGE(wxicon_misc));
+	icon.CopyFromBitmap(GETIMAGE(wxicon));
 	SetIcon(icon);
 #endif
 
