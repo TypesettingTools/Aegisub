@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Source Files\Common">
+      <UniqueIdentifier>{4084442f-51e9-4c31-8d5a-c825e076c012}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Windows">
+      <UniqueIdentifier>{5af331b5-ea1f-493f-abf9-f5912e2350df}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="cajun">
+      <UniqueIdentifier>{1d2e187a-1681-4c30-8912-a4b5a5d0ab9d}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="$(SrcDir)common\charset_ucd.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="$(SrcDir)common\option_visit.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="$(SrcDir)config.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="$(SrcDir)include\libaegisub\access.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="$(SrcDir)include\libaegisub\charset.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="$(SrcDir)include\libaegisub\charset_conv.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="$(SrcDir)include\libaegisub\charset_conv_win.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="$(SrcDir)include\libaegisub\colour.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="$(SrcDir)include\libaegisub\exception.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="$(SrcDir)include\libaegisub\io.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="$(SrcDir)include\libaegisub\line_iterator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="$(SrcDir)include\libaegisub\log.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="$(SrcDir)include\libaegisub\mru.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="$(SrcDir)include\libaegisub\mutex.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="$(SrcDir)include\libaegisub\option.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="$(SrcDir)include\libaegisub\option_value.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="$(SrcDir)include\libaegisub\path.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="$(SrcDir)include\libaegisub\scoped_ptr.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="$(SrcDir)include\libaegisub\types.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="$(SrcDir)include\libaegisub\util.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="$(SrcDir)include\libaegisub\util_osx.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="$(SrcDir)include\libaegisub\util_win.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="$(SrcDir)include\libaegisub\validator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="$(SrcDir)include\libaegisub\vfr.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="$(SrcDir)lagi_pre.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="$(SrcDir)include\libaegisub\cajun\writer.h">
+      <Filter>cajun</Filter>
+    </ClInclude>
+    <ClInclude Include="$(SrcDir)include\libaegisub\cajun\visitor.h">
+      <Filter>cajun</Filter>
+    </ClInclude>
+    <ClInclude Include="$(SrcDir)include\libaegisub\cajun\elements.h">
+      <Filter>cajun</Filter>
+    </ClInclude>
+    <ClInclude Include="$(SrcDir)include\libaegisub\cajun\reader.h">
+      <Filter>cajun</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="$(SrcDir)windows\lagi_pre.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SrcDir)windows\access.cpp">
+      <Filter>Source Files\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SrcDir)common\charset.cpp">
+      <Filter>Source Files\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SrcDir)common\charset_conv.cpp">
+      <Filter>Source Files\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SrcDir)windows\charset_conv_win.cpp">
+      <Filter>Source Files\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SrcDir)common\charset_ucd.cpp">
+      <Filter>Source Files\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SrcDir)windows\io.cpp">
+      <Filter>Source Files\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SrcDir)windows\log.cpp">
+      <Filter>Source Files\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SrcDir)common\log.cpp">
+      <Filter>Source Files\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SrcDir)common\mru.cpp">
+      <Filter>Source Files\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SrcDir)common\option.cpp">
+      <Filter>Source Files\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SrcDir)common\option_visit.cpp">
+      <Filter>Source Files\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SrcDir)common\path.cpp">
+      <Filter>Source Files\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SrcDir)windows\util.cpp">
+      <Filter>Source Files\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SrcDir)common\validator.cpp">
+      <Filter>Source Files\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SrcDir)common\vfr.cpp">
+      <Filter>Source Files\Common</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="$(SrcDir)include\libaegisub\charsets.def">
+      <Filter>Header Files</Filter>
+    </None>
+    <None Include="$(SrcDir)include\libaegisub\cajun\elements.inl">
+      <Filter>cajun</Filter>
+    </None>
+    <None Include="$(SrcDir)include\libaegisub\cajun\reader.inl">
+      <Filter>cajun</Filter>
+    </None>
+    <None Include="$(SrcDir)include\libaegisub\cajun\writer.inl">
+      <Filter>cajun</Filter>
+    </None>
+  </ItemGroup>
+</Project>

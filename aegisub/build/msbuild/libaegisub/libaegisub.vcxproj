@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{BB3FED86-DB7A-4DC7-964A-260FB86CDE61}</ProjectGuid>
+    <RootNamespace>libaegisub</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)'=='Debug'" Label="Configuration">
+    <UseDebugLibraries>true</UseDebugLibraries>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)'=='Release'" Label="Configuration">
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(MSBuildThisFileDirectory)..\userconfig\*.props" Label="User configuration" />
+    <Import Project="$(MSBuildThisFileDirectory)..\paths.props" Label="Standard paths" />
+    <Import Project="$(MSBuildThisFileDirectory)..\standard-settings.props" Label="Standard compiler settings" />
+    <Import Project="$(MSBuildThisFileDirectory)..\standard-outdirs.props" Label="Standard output directories" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros">
+    <SrcDir>..\..\..\libaegisub\</SrcDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(SrcDir);$(SrcDir)include;$(AegisubContribBase)iconv\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>NOMINMAX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>lagi_pre.h</PrecompiledHeaderFile>
+      <ForcedIncludeFiles>lagi_pre.h</ForcedIncludeFiles>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="$(SrcDir)common\charset_ucd.h" />
+    <ClInclude Include="$(SrcDir)common\option_visit.h" />
+    <ClInclude Include="$(SrcDir)config.h" />
+    <ClInclude Include="$(SrcDir)include\libaegisub\access.h" />
+    <ClInclude Include="$(SrcDir)include\libaegisub\charset.h" />
+    <ClInclude Include="$(SrcDir)include\libaegisub\charset_conv.h" />
+    <ClInclude Include="$(SrcDir)include\libaegisub\charset_conv_win.h" />
+    <ClInclude Include="$(SrcDir)include\libaegisub\colour.h" />
+    <ClInclude Include="$(SrcDir)include\libaegisub\exception.h" />
+    <ClInclude Include="$(SrcDir)include\libaegisub\io.h" />
+    <ClInclude Include="$(SrcDir)include\libaegisub\line_iterator.h" />
+    <ClInclude Include="$(SrcDir)include\libaegisub\log.h" />
+    <ClInclude Include="$(SrcDir)include\libaegisub\mru.h" />
+    <ClInclude Include="$(SrcDir)include\libaegisub\mutex.h" />
+    <ClInclude Include="$(SrcDir)include\libaegisub\option.h" />
+    <ClInclude Include="$(SrcDir)include\libaegisub\option_value.h" />
+    <ClInclude Include="$(SrcDir)include\libaegisub\path.h" />
+    <ClInclude Include="$(SrcDir)include\libaegisub\scoped_ptr.h" />
+    <ClInclude Include="$(SrcDir)include\libaegisub\types.h" />
+    <ClInclude Include="$(SrcDir)include\libaegisub\util.h" />
+    <ClInclude Include="$(SrcDir)include\libaegisub\util_osx.h" />
+    <ClInclude Include="$(SrcDir)include\libaegisub\util_win.h" />
+    <ClInclude Include="$(SrcDir)include\libaegisub\validator.h" />
+    <ClInclude Include="$(SrcDir)include\libaegisub\vfr.h" />
+    <ClInclude Include="$(SrcDir)lagi_pre.h" />
+    <ClInclude Include="$(SrcDir)include\libaegisub\cajun\elements.h" />
+    <ClInclude Include="$(SrcDir)include\libaegisub\cajun\reader.h" />
+    <ClInclude Include="$(SrcDir)include\libaegisub\cajun\visitor.h" />
+    <ClInclude Include="$(SrcDir)include\libaegisub\cajun\writer.h" />
+  </ItemGroup>
+  <!-- Unfortunately MSBuild 4.0 doesn't offer a way to do item metadata transformations by functions, meaning lots of redundancy here -->
+  <ItemGroup>
+    <ClCompile Include="$(SrcDir)common\charset.cpp">
+      <AssemblerListingLocation>$(IntDir)Common\</AssemblerListingLocation>
+      <ObjectFileName>$(IntDir)Common\</ObjectFileName>
+      <XMLDocumentationFileName>$(IntDir)Common\</XMLDocumentationFileName>
+    </ClCompile>
+    <ClCompile Include="$(SrcDir)common\charset_conv.cpp">
+      <AssemblerListingLocation>$(IntDir)Common\</AssemblerListingLocation>
+      <ObjectFileName>$(IntDir)Common\</ObjectFileName>
+      <XMLDocumentationFileName>$(IntDir)Common\</XMLDocumentationFileName>
+    </ClCompile>
+    <ClCompile Include="$(SrcDir)common\charset_ucd.cpp">
+      <AssemblerListingLocation>$(IntDir)Common\</AssemblerListingLocation>
+      <ObjectFileName>$(IntDir)Common\</ObjectFileName>
+      <XMLDocumentationFileName>$(IntDir)Common\</XMLDocumentationFileName>
+    </ClCompile>
+    <ClCompile Include="$(SrcDir)common\log.cpp">
+      <AssemblerListingLocation>$(IntDir)Common\</AssemblerListingLocation>
+      <ObjectFileName>$(IntDir)Common\</ObjectFileName>
+      <XMLDocumentationFileName>$(IntDir)Common\</XMLDocumentationFileName>
+    </ClCompile>
+    <ClCompile Include="$(SrcDir)common\mru.cpp">
+      <AssemblerListingLocation>$(IntDir)Common\</AssemblerListingLocation>
+      <ObjectFileName>$(IntDir)Common\</ObjectFileName>
+      <XMLDocumentationFileName>$(IntDir)Common\</XMLDocumentationFileName>
+    </ClCompile>
+    <ClCompile Include="$(SrcDir)common\option.cpp">
+      <AssemblerListingLocation>$(IntDir)Common\</AssemblerListingLocation>
+      <ObjectFileName>$(IntDir)Common\</ObjectFileName>
+      <XMLDocumentationFileName>$(IntDir)Common\</XMLDocumentationFileName>
+    </ClCompile>
+    <ClCompile Include="$(SrcDir)common\option_visit.cpp">
+      <AssemblerListingLocation>$(IntDir)Common\</AssemblerListingLocation>
+      <ObjectFileName>$(IntDir)Common\</ObjectFileName>
+      <XMLDocumentationFileName>$(IntDir)Common\</XMLDocumentationFileName>
+    </ClCompile>
+    <ClCompile Include="$(SrcDir)common\path.cpp">
+      <AssemblerListingLocation>$(IntDir)Common\</AssemblerListingLocation>
+      <ObjectFileName>$(IntDir)Common\</ObjectFileName>
+      <XMLDocumentationFileName>$(IntDir)Common\</XMLDocumentationFileName>
+    </ClCompile>
+    <ClCompile Include="$(SrcDir)common\validator.cpp">
+      <AssemblerListingLocation>$(IntDir)Common\</AssemblerListingLocation>
+      <ObjectFileName>$(IntDir)Common\</ObjectFileName>
+      <XMLDocumentationFileName>$(IntDir)Common\</XMLDocumentationFileName>
+    </ClCompile>
+    <ClCompile Include="$(SrcDir)common\vfr.cpp">
+      <AssemblerListingLocation>$(IntDir)Common\</AssemblerListingLocation>
+      <ObjectFileName>$(IntDir)Common\</ObjectFileName>
+      <XMLDocumentationFileName>$(IntDir)Common\</XMLDocumentationFileName>
+    </ClCompile>
+    <ClCompile Include="$(SrcDir)windows\access.cpp">
+      <AssemblerListingLocation>$(IntDir)Windows\</AssemblerListingLocation>
+      <ObjectFileName>$(IntDir)Windows\</ObjectFileName>
+      <XMLDocumentationFileName>$(IntDir)Windows\</XMLDocumentationFileName>
+    </ClCompile>
+    <ClCompile Include="$(SrcDir)windows\charset_conv_win.cpp">
+      <AssemblerListingLocation>$(IntDir)Windows\</AssemblerListingLocation>
+      <ObjectFileName>$(IntDir)Windows\</ObjectFileName>
+      <XMLDocumentationFileName>$(IntDir)Windows\</XMLDocumentationFileName>
+    </ClCompile>
+    <ClCompile Include="$(SrcDir)windows\io.cpp">
+      <AssemblerListingLocation>$(IntDir)Windows\</AssemblerListingLocation>
+      <ObjectFileName>$(IntDir)Windows\</ObjectFileName>
+      <XMLDocumentationFileName>$(IntDir)Windows\</XMLDocumentationFileName>
+    </ClCompile>
+    <ClCompile Include="$(SrcDir)windows\lagi_pre.cpp">
+      <PrecompiledHeader>Create</PrecompiledHeader>
+      <PrecompiledHeaderFile>lagi_pre.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <ClCompile Include="$(SrcDir)windows\log.cpp">
+      <AssemblerListingLocation>$(IntDir)Windows\</AssemblerListingLocation>
+      <ObjectFileName>$(IntDir)Windows\</ObjectFileName>
+      <XMLDocumentationFileName>$(IntDir)Windows\</XMLDocumentationFileName>
+    </ClCompile>
+    <ClCompile Include="$(SrcDir)windows\util.cpp">
+      <AssemblerListingLocation>$(IntDir)Windows\</AssemblerListingLocation>
+      <ObjectFileName>$(IntDir)Windows\</ObjectFileName>
+      <XMLDocumentationFileName>$(IntDir)Windows\</XMLDocumentationFileName>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="$(SrcDir)include\libaegisub\charsets.def" />
+    <None Include="$(SrcDir)include\libaegisub\cajun\elements.inl" />
+    <None Include="$(SrcDir)include\libaegisub\cajun\reader.inl" />
+    <None Include="$(SrcDir)include\libaegisub\cajun\writer.inl" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
