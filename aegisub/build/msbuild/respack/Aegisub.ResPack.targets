@@ -69,4 +69,11 @@
 		</ItemGroup>
 	</Target>
 
+	<ItemGroup>
+		<PropertyPageSchema Include="$(MSBuildThisFileDirectory)$(MSBuildThisFileName).xml" />
+		<AvailableItemName Include="ResPack">
+			<Targets>ResPack</Targets>
+		</AvailableItemName>
+	</ItemGroup>
+
 </Project>

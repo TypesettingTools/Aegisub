@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <!-- VC boilerplate -->
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
@@ -22,27 +23,16 @@
     <ProjectGuid>{BD00D65F-24DA-4784-8860-3B972EA125FC}</ProjectGuid>
     <RootNamespace>libresrc</RootNamespace>
   </PropertyGroup>
-  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
-  <PropertyGroup Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)'=='Debug'" Label="Configuration">
-    <UseDebugLibraries>true</UseDebugLibraries>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)'=='Release'" Label="Configuration">
-    <UseDebugLibraries>false</UseDebugLibraries>
-    <WholeProgramOptimization>true</WholeProgramOptimization>
-  </PropertyGroup>
-  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
-  <ImportGroup Label="ExtensionSettings">
-  </ImportGroup>
-  <PropertyGroup>
+  <!-- Aegisub project configuration -->
+  <PropertyGroup Label="AegisubConfiguration">
+    <AegisubProjectType>lib</AegisubProjectType>
 	<AegisubUseWxWidgets>true</AegisubUseWxWidgets>
 	<SrcDir>..\..\..\src\libresrc\</SrcDir>
   </PropertyGroup>
   <ImportGroup Label="PropertySheets">
-    <Import Project="$(ProjectDir)..\aegisub.props" />
+    <Import Project="$(MSBuildThisFileDirectory)..\aegisub.props" />
   </ImportGroup>
+  <!-- Project specific configuration -->
   <ItemDefinitionGroup>
     <ClCompile>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -51,8 +41,10 @@
 		<OutputDir>$(MSBuildThisFileDirectory)..\..\..\src\libresrc\</OutputDir>
 	</ResPack>
   </ItemDefinitionGroup>
-  <PropertyGroup Label="UserMacros" />
-  <PropertyGroup />
+  <ImportGroup Label="ExtensionTargets">
+	<Import Project="$(MSBuildThisFileDirectory)..\respack\Aegisub.ResPack.targets" />
+  </ImportGroup>
+  <!-- Source files -->
   <ItemGroup>
 	<ResPack Include="..\..\..\src\libresrc\manifest.respack">
 		<OutputName>default_config.cpp</OutputName>
@@ -69,8 +61,4 @@
   <ItemGroup>
     <ClInclude Include="$(SrcDir)libresrc.h" />
   </ItemGroup>
-  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
-  <ImportGroup Label="ExtensionTargets">
-	<Import Project="$(MSBuildThisFileDirectory)..\respack\Aegisub.ResPack.targets" />
-  </ImportGroup>
 </Project>

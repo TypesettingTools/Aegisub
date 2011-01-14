@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <!-- VC boilerplate -->
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
@@ -22,27 +23,15 @@
     <ProjectGuid>{BB3FED86-DB7A-4DC7-964A-260FB86CDE61}</ProjectGuid>
     <RootNamespace>libaegisub</RootNamespace>
   </PropertyGroup>
-  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
-  <PropertyGroup Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
-    <CharacterSet>Unicode</CharacterSet>
+  <!-- Aegisub project configuration -->
+  <PropertyGroup Label="AegisubConfiguration">
+    <AegisubProjectType>lib</AegisubProjectType>
+    <SrcDir>..\..\..\libaegisub\</SrcDir>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)'=='Debug'" Label="Configuration">
-    <UseDebugLibraries>true</UseDebugLibraries>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)'=='Release'" Label="Configuration">
-    <UseDebugLibraries>false</UseDebugLibraries>
-    <WholeProgramOptimization>true</WholeProgramOptimization>
-  </PropertyGroup>
-  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
-  <ImportGroup Label="ExtensionSettings">
-  </ImportGroup>
   <ImportGroup Label="PropertySheets">
     <Import Project="$(MSBuildThisFileDirectory)..\aegisub.props" />
   </ImportGroup>
-  <PropertyGroup Label="UserMacros">
-    <SrcDir>..\..\..\libaegisub\</SrcDir>
-  </PropertyGroup>
+  <!-- Project specific configuration -->
   <ItemDefinitionGroup>
     <ClCompile>
       <AdditionalIncludeDirectories>$(SrcDir);$(SrcDir)include;$(AegisubContribBase)iconv\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -52,6 +41,7 @@
       <ForcedIncludeFiles>lagi_pre.h</ForcedIncludeFiles>
     </ClCompile>
   </ItemDefinitionGroup>
+  <!-- Source files -->
   <ItemGroup>
     <ClInclude Include="$(SrcDir)common\charset_ucd.h" />
     <ClInclude Include="$(SrcDir)common\option_visit.h" />
@@ -186,7 +176,4 @@
     <None Include="$(SrcDir)include\libaegisub\cajun\reader.inl" />
     <None Include="$(SrcDir)include\libaegisub\cajun\writer.inl" />
   </ItemGroup>
-  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
-  <ImportGroup Label="ExtensionTargets">
-  </ImportGroup>
 </Project>

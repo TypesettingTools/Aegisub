@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <!-- VC boilerplate -->
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
@@ -20,36 +21,24 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{5391A8B1-9C70-4DC4-92AD-D3E34C6B803F}</ProjectGuid>
-    <Keyword>Win32Proj</Keyword>
     <RootNamespace>lua51</RootNamespace>
   </PropertyGroup>
-  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
-  <PropertyGroup Label="Configuration">
-    <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <CharacterSet>Unicode</CharacterSet>
+  <!-- Aegisub project configuration -->
+  <PropertyGroup Label="AegisubConfiguration">
+    <AegisubProjectType>dll</AegisubProjectType>
+	<SrcDir>..\..\..\..\contrib\lua51\src\</SrcDir>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)'=='Debug'" Label="Configuration">
-    <UseDebugLibraries>true</UseDebugLibraries>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)'=='Release'" Label="Configuration">
-    <UseDebugLibraries>false</UseDebugLibraries>
-    <WholeProgramOptimization>true</WholeProgramOptimization>
-  </PropertyGroup>
-  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
-  <ImportGroup Label="ExtensionSettings">
-  </ImportGroup>
   <ImportGroup Label="PropertySheets">
     <Import Project="$(MSBuildThisFileDirectory)..\aegisub.props" />
   </ImportGroup>
-  <PropertyGroup Label="UserMacros">
-	<SrcDir>..\..\..\..\contrib\lua51\src\</SrcDir>
-  </PropertyGroup>
+  <!-- Project specific configuration -->
   <ItemDefinitionGroup>
     <ClCompile>
       <PreprocessorDefinitions>LUA_BUILD_AS_DLL;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
 	  <CompileAs>CompileAsCpp</CompileAs> <!-- We want to build Lua as C++ to get C++ name mangling -->
     </ClCompile>
   </ItemDefinitionGroup>
+  <!-- Source files -->
   <ItemGroup>
     <ClCompile Include="$(SrcDir)lapi.c" />
     <ClCompile Include="$(SrcDir)lauxlib.c" />
@@ -106,7 +95,4 @@
     <ClInclude Include="$(SrcDir)lvm.h" />
     <ClInclude Include="$(SrcDir)lzio.h" />
   </ItemGroup>
-  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
-  <ImportGroup Label="ExtensionTargets">
-  </ImportGroup>
 </Project>
