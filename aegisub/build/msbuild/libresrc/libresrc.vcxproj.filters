@@ -15,6 +15,14 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+	<ResPack Include="..\..\..\src\libresrc\manifest.respack">
+      <Filter>Resource Files</Filter>
+	</ResPack>
+	<ResPack Include="..\..\..\src\bitmaps\manifest.respack">
+      <Filter>Resource Files</Filter>
+	</ResPack>
+  </ItemGroup>
+  <ItemGroup>
     <ClCompile Include="..\..\..\src\libresrc\bitmap.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
