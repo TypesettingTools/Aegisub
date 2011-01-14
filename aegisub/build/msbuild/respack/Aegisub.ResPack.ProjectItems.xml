@@ -29,7 +29,7 @@
 
 	Aegisub Project http://www.aegisub.org/
 
-	$Id: Aegisub.ResPack.targets 5185 2011-01-14 03:47:57Z nielsm $
+	$Id$
 -->
 <ProjectSchemaDefinitions
     xmlns="http://schemas.microsoft.com/build/2009/properties">
