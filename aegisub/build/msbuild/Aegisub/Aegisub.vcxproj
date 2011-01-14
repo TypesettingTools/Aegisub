@@ -1,0 +1,448 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <!-- VC boilerplate -->
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{9DDDB9E5-E4A1-423D-A224-F6D4E5AAC06A}</ProjectGuid>
+    <RootNamespace>Aegisub</RootNamespace>
+  </PropertyGroup>
+  <!-- Aegisub project configuration -->
+  <PropertyGroup Label="AegisubConfiguration">
+    <AegisubProjectType>exe</AegisubProjectType>
+    <AegisubUseWxWidgets>true</AegisubUseWxWidgets>
+    <AegisubUseFreetype>true</AegisubUseFreetype>
+    <AegisubUseDSound>true</AegisubUseDSound>
+    <SrcDir>..\..\..\src\</SrcDir>
+  </PropertyGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(MSBuildThisFileDirectory)..\aegisub.props" />
+  </ImportGroup>
+  <!-- Project specific configuration -->
+  <PropertyGroup>
+	<TargetName>aegisub$(AegisubPlatformSuffix)</TargetName>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <PreprocessorDefinitions>__STDC_FORMAT_MACROS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <AdditionalIncludeDirectories>
+        $(SrcDir);
+        $(SrcDir)include\;
+        $(SrcDir)msvc\;
+        $(AegisubContribBase)lua51\src;
+        $(AegisubContribBase)hunspell\src;
+        $(AegisubContribBase)iconv\include;
+        $(AegisubSourceBase)libffms\include;
+        $(AegisubSourceBase)libaegisub\include;
+        %(AdditionalIncludeDirectories)
+	  </AdditionalIncludeDirectories>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>agi_pre.h</PrecompiledHeaderFile>
+      <ForcedIncludeFiles>agi_pre.h</ForcedIncludeFiles>
+    </ClCompile>
+    <Link>
+      <AdditionalLibraryDirectories>
+		$(AegisubLibraryDir);
+		$(AegisubSourceBase)libffms\lib;
+		%(AdditionalLibraryDirectories)
+	  </AdditionalLibraryDirectories>
+      <AdditionalDependencies>
+		libresrc.lib;
+		lua51.lib;
+		libiconv.lib;
+		libaegisub.lib;
+		hunspell.lib;
+		universalchardet.lib;
+		ffms2.lib;
+		csrihelper.lib;
+		%(AdditionalDependencies)
+	  </AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <!-- Source file -->
+  <ItemGroup>
+    <ClInclude Include="$(SrcDir)aegisublocale.h" />
+    <ClInclude Include="$(SrcDir)aegisub_endian.h" />
+    <ClInclude Include="$(SrcDir)agi_pre.h" />
+    <ClInclude Include="$(SrcDir)ass_attachment.h" />
+    <ClInclude Include="$(SrcDir)ass_dialogue.h" />
+    <ClInclude Include="$(SrcDir)ass_entry.h" />
+    <ClInclude Include="$(SrcDir)ass_exporter.h" />
+    <ClInclude Include="$(SrcDir)ass_export_filter.h" />
+    <ClInclude Include="$(SrcDir)ass_file.h" />
+    <ClInclude Include="$(SrcDir)ass_karaoke.h" />
+    <ClInclude Include="$(SrcDir)ass_override.h" />
+    <ClInclude Include="$(SrcDir)ass_style.h" />
+    <ClInclude Include="$(SrcDir)ass_style_storage.h" />
+    <ClInclude Include="$(SrcDir)ass_time.h" />
+    <ClInclude Include="$(SrcDir)audio_box.h" />
+    <ClInclude Include="$(SrcDir)audio_colorscheme.h" />
+    <ClInclude Include="$(SrcDir)audio_controller.h" />
+    <ClInclude Include="$(SrcDir)audio_display.h" />
+    <ClInclude Include="$(SrcDir)audio_karaoke.h" />
+    <ClInclude Include="$(SrcDir)audio_player_alsa.h" />
+    <ClInclude Include="$(SrcDir)audio_player_dsound.h" />
+    <ClInclude Include="$(SrcDir)audio_player_dsound2.h" />
+    <ClInclude Include="$(SrcDir)audio_player_openal.h" />
+    <ClInclude Include="$(SrcDir)audio_player_oss.h" />
+    <ClInclude Include="$(SrcDir)audio_player_portaudio.h" />
+    <ClInclude Include="$(SrcDir)audio_player_pulse.h" />
+    <ClInclude Include="$(SrcDir)audio_provider_avs.h" />
+    <ClInclude Include="$(SrcDir)audio_provider_convert.h" />
+    <ClInclude Include="$(SrcDir)audio_provider_downmix.h" />
+    <ClInclude Include="$(SrcDir)audio_provider_dummy.h" />
+    <ClInclude Include="$(SrcDir)audio_provider_ffmpegsource.h" />
+    <ClInclude Include="$(SrcDir)audio_provider_hd.h" />
+    <ClInclude Include="$(SrcDir)audio_provider_pcm.h" />
+    <ClInclude Include="$(SrcDir)audio_provider_ram.h" />
+    <ClInclude Include="$(SrcDir)audio_renderer.h" />
+    <ClInclude Include="$(SrcDir)audio_renderer_spectrum.h" />
+    <ClInclude Include="$(SrcDir)audio_renderer_waveform.h" />
+    <ClInclude Include="$(SrcDir)audio_timing.h" />
+    <ClInclude Include="$(SrcDir)auto4_base.h" />
+    <ClInclude Include="$(SrcDir)auto4_lua.h" />
+    <ClInclude Include="$(SrcDir)auto4_lua_factory.h" />
+    <ClInclude Include="$(SrcDir)auto4_lua_scriptreader.h" />
+    <ClInclude Include="$(SrcDir)avisynth.h" />
+    <ClInclude Include="$(SrcDir)avisynth_wrap.h" />
+    <ClInclude Include="$(SrcDir)base_grid.h" />
+    <ClInclude Include="$(SrcDir)block_cache.h" />
+    <ClInclude Include="$(SrcDir)browse_button.h" />
+    <ClInclude Include="$(SrcDir)charset_conv.h" />
+    <ClInclude Include="$(SrcDir)charset_detect.h" />
+    <ClInclude Include="$(SrcDir)colorspace.h" />
+    <ClInclude Include="$(SrcDir)colour_button.h" />
+    <ClInclude Include="$(SrcDir)command\command.h" />
+    <ClInclude Include="$(SrcDir)command\icon.h" />
+    <ClInclude Include="$(SrcDir)compat.h" />
+    <ClInclude Include="$(SrcDir)config.h" />
+    <ClInclude Include="$(SrcDir)dialog_about.h" />
+    <ClInclude Include="$(SrcDir)dialog_attachments.h" />
+    <ClInclude Include="$(SrcDir)dialog_automation.h" />
+    <ClInclude Include="$(SrcDir)dialog_colorpicker.h" />
+    <ClInclude Include="$(SrcDir)dialog_detached_video.h" />
+    <ClInclude Include="$(SrcDir)dialog_dummy_video.h" />
+    <ClInclude Include="$(SrcDir)dialog_export.h" />
+    <ClInclude Include="$(SrcDir)dialog_fonts_collector.h" />
+    <ClInclude Include="$(SrcDir)dialog_jumpto.h" />
+    <ClInclude Include="$(SrcDir)dialog_kara_timing_copy.h" />
+    <ClInclude Include="$(SrcDir)dialog_log.h" />
+    <ClInclude Include="$(SrcDir)dialog_paste_over.h" />
+    <ClInclude Include="$(SrcDir)dialog_progress.h" />
+    <ClInclude Include="$(SrcDir)dialog_properties.h" />
+    <ClInclude Include="$(SrcDir)dialog_resample.h" />
+    <ClInclude Include="$(SrcDir)dialog_search_replace.h" />
+    <ClInclude Include="$(SrcDir)dialog_selected_choices.h" />
+    <ClInclude Include="$(SrcDir)dialog_selection.h" />
+    <ClInclude Include="$(SrcDir)dialog_shift_times.h" />
+    <ClInclude Include="$(SrcDir)dialog_spellchecker.h" />
+    <ClInclude Include="$(SrcDir)dialog_style_editor.h" />
+    <ClInclude Include="$(SrcDir)dialog_style_manager.h" />
+    <ClInclude Include="$(SrcDir)dialog_styling_assistant.h" />
+    <ClInclude Include="$(SrcDir)dialog_text_import.h" />
+    <ClInclude Include="$(SrcDir)dialog_timing_processor.h" />
+    <ClInclude Include="$(SrcDir)dialog_translation.h" />
+    <ClInclude Include="$(SrcDir)dialog_version_check.h" />
+    <ClInclude Include="$(SrcDir)dialog_video_details.h" />
+    <ClInclude Include="$(SrcDir)drop.h" />
+    <ClInclude Include="$(SrcDir)export_clean_info.h" />
+    <ClInclude Include="$(SrcDir)export_fixstyle.h" />
+    <ClInclude Include="$(SrcDir)export_framerate.h" />
+    <ClInclude Include="$(SrcDir)factory_manager.h" />
+    <ClInclude Include="$(SrcDir)ffmpegsource_common.h" />
+    <ClInclude Include="$(SrcDir)fft.h" />
+    <ClInclude Include="$(SrcDir)font_file_lister.h" />
+    <ClInclude Include="$(SrcDir)font_file_lister_fontconfig.h" />
+    <ClInclude Include="$(SrcDir)font_file_lister_freetype.h" />
+    <ClInclude Include="$(SrcDir)frame_main.h" />
+    <ClInclude Include="$(SrcDir)gl_text.h" />
+    <ClInclude Include="$(SrcDir)gl_wrap.h" />
+    <ClInclude Include="$(SrcDir)help_button.h" />
+    <ClInclude Include="$(SrcDir)hotkeys.h" />
+    <ClInclude Include="$(SrcDir)kana_table.h" />
+    <ClInclude Include="$(SrcDir)keyframe.h" />
+    <ClInclude Include="$(SrcDir)main.h" />
+    <ClInclude Include="$(SrcDir)MatroskaParser.h" />
+    <ClInclude Include="$(SrcDir)md5.h" />
+    <ClInclude Include="$(SrcDir)mkv_wrap.h" />
+    <ClInclude Include="$(SrcDir)mythes.hxx" />
+    <ClInclude Include="$(SrcDir)plugin_manager.h" />
+    <ClInclude Include="$(SrcDir)preferences.h" />
+    <ClInclude Include="$(SrcDir)preferences_base.h" />
+    <ClInclude Include="$(SrcDir)scintilla_text_ctrl.h" />
+    <ClInclude Include="$(SrcDir)selection_controller.h" />
+    <ClInclude Include="$(SrcDir)spellchecker_hunspell.h" />
+    <ClInclude Include="$(SrcDir)spline.h" />
+    <ClInclude Include="$(SrcDir)spline_curve.h" />
+    <ClInclude Include="$(SrcDir)standard_paths.h" />
+    <ClInclude Include="$(SrcDir)static_bmp.h" />
+    <ClInclude Include="$(SrcDir)string_codec.h" />
+    <ClInclude Include="$(SrcDir)subs_edit_box.h" />
+    <ClInclude Include="$(SrcDir)subs_edit_ctrl.h" />
+    <ClInclude Include="$(SrcDir)subs_grid.h" />
+    <ClInclude Include="$(SrcDir)subs_preview.h" />
+    <ClInclude Include="$(SrcDir)subtitles_provider_csri.h" />
+    <ClInclude Include="$(SrcDir)subtitles_provider_libass.h" />
+    <ClInclude Include="$(SrcDir)subtitle_format.h" />
+    <ClInclude Include="$(SrcDir)subtitle_format_ass.h" />
+    <ClInclude Include="$(SrcDir)subtitle_format_dvd.h" />
+    <ClInclude Include="$(SrcDir)subtitle_format_encore.h" />
+    <ClInclude Include="$(SrcDir)subtitle_format_microdvd.h" />
+    <ClInclude Include="$(SrcDir)subtitle_format_mkv.h" />
+    <ClInclude Include="$(SrcDir)subtitle_format_srt.h" />
+    <ClInclude Include="$(SrcDir)subtitle_format_transtation.h" />
+    <ClInclude Include="$(SrcDir)subtitle_format_ttxt.h" />
+    <ClInclude Include="$(SrcDir)subtitle_format_txt.h" />
+    <ClInclude Include="$(SrcDir)text_file_reader.h" />
+    <ClInclude Include="$(SrcDir)text_file_writer.h" />
+    <ClInclude Include="$(SrcDir)thesaurus.h" />
+    <ClInclude Include="$(SrcDir)thesaurus_myspell.h" />
+    <ClInclude Include="$(SrcDir)threaded_frame_source.h" />
+    <ClInclude Include="$(SrcDir)timeedit_ctrl.h" />
+    <ClInclude Include="$(SrcDir)toggle_bitmap.h" />
+    <ClInclude Include="$(SrcDir)tooltip_manager.h" />
+    <ClInclude Include="$(SrcDir)utils.h" />
+    <ClInclude Include="$(SrcDir)validators.h" />
+    <ClInclude Include="$(SrcDir)variable_data.h" />
+    <ClInclude Include="$(SrcDir)vector2d.h" />
+    <ClInclude Include="$(SrcDir)version.h" />
+    <ClInclude Include="$(SrcDir)vfw_wrap.h" />
+    <ClInclude Include="$(SrcDir)video_box.h" />
+    <ClInclude Include="$(SrcDir)video_context.h" />
+    <ClInclude Include="$(SrcDir)video_display.h" />
+    <ClInclude Include="$(SrcDir)video_frame.h" />
+    <ClInclude Include="$(SrcDir)video_out_gl.h" />
+    <ClInclude Include="$(SrcDir)video_provider_avs.h" />
+    <ClInclude Include="$(SrcDir)video_provider_cache.h" />
+    <ClInclude Include="$(SrcDir)video_provider_dummy.h" />
+    <ClInclude Include="$(SrcDir)video_provider_ffmpegsource.h" />
+    <ClInclude Include="$(SrcDir)video_provider_manager.h" />
+    <ClInclude Include="$(SrcDir)video_provider_yuv4mpeg.h" />
+    <ClInclude Include="$(SrcDir)video_slider.h" />
+    <ClInclude Include="$(SrcDir)visual_feature.h" />
+    <ClInclude Include="$(SrcDir)visual_tool.h" />
+    <ClInclude Include="$(SrcDir)visual_tool_clip.h" />
+    <ClInclude Include="$(SrcDir)visual_tool_cross.h" />
+    <ClInclude Include="$(SrcDir)visual_tool_drag.h" />
+    <ClInclude Include="$(SrcDir)visual_tool_rotatexy.h" />
+    <ClInclude Include="$(SrcDir)visual_tool_rotatez.h" />
+    <ClInclude Include="$(SrcDir)visual_tool_scale.h" />
+    <ClInclude Include="$(SrcDir)visual_tool_vector_clip.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="$(SrcDir)aegisublocale.cpp" />
+    <ClCompile Include="$(SrcDir)agi_pre.cpp">
+      <PrecompiledHeader>Create</PrecompiledHeader>
+      <PrecompiledHeaderFile>agi_pre.h</PrecompiledHeaderFile>
+      <ForcedIncludeFiles>
+      </ForcedIncludeFiles>
+    </ClCompile>
+    <ClCompile Include="$(SrcDir)ass_attachment.cpp" />
+    <ClCompile Include="$(SrcDir)ass_dialogue.cpp" />
+    <ClCompile Include="$(SrcDir)ass_entry.cpp" />
+    <ClCompile Include="$(SrcDir)ass_exporter.cpp" />
+    <ClCompile Include="$(SrcDir)ass_export_filter.cpp" />
+    <ClCompile Include="$(SrcDir)ass_file.cpp" />
+    <ClCompile Include="$(SrcDir)ass_karaoke.cpp" />
+    <ClCompile Include="$(SrcDir)ass_override.cpp" />
+    <ClCompile Include="$(SrcDir)ass_style.cpp" />
+    <ClCompile Include="$(SrcDir)ass_style_storage.cpp" />
+    <ClCompile Include="$(SrcDir)ass_time.cpp" />
+    <ClCompile Include="$(SrcDir)audio_box.cpp" />
+    <ClCompile Include="$(SrcDir)audio_colorscheme.cpp" />
+    <ClCompile Include="$(SrcDir)audio_controller.cpp" />
+    <ClCompile Include="$(SrcDir)audio_display.cpp" />
+    <ClCompile Include="$(SrcDir)audio_karaoke.cpp" />
+    <ClCompile Include="$(SrcDir)audio_player.cpp" />
+    <ClCompile Include="$(SrcDir)audio_player_alsa.cpp" />
+    <ClCompile Include="$(SrcDir)audio_player_dsound.cpp" />
+    <ClCompile Include="$(SrcDir)audio_player_dsound2.cpp" />
+    <ClCompile Include="$(SrcDir)audio_player_openal.cpp" />
+    <ClCompile Include="$(SrcDir)audio_player_oss.cpp" />
+    <ClCompile Include="$(SrcDir)audio_player_portaudio.cpp" />
+    <ClCompile Include="$(SrcDir)audio_player_pulse.cpp" />
+    <ClCompile Include="$(SrcDir)audio_provider.cpp" />
+    <ClCompile Include="$(SrcDir)audio_provider_avs.cpp" />
+    <ClCompile Include="$(SrcDir)audio_provider_convert.cpp" />
+    <ClCompile Include="$(SrcDir)audio_provider_downmix.cpp" />
+    <ClCompile Include="$(SrcDir)audio_provider_dummy.cpp" />
+    <ClCompile Include="$(SrcDir)audio_provider_ffmpegsource.cpp" />
+    <ClCompile Include="$(SrcDir)audio_provider_hd.cpp" />
+    <ClCompile Include="$(SrcDir)audio_provider_pcm.cpp" />
+    <ClCompile Include="$(SrcDir)audio_provider_ram.cpp" />
+    <ClCompile Include="$(SrcDir)audio_renderer.cpp" />
+    <ClCompile Include="$(SrcDir)audio_renderer_spectrum.cpp" />
+    <ClCompile Include="$(SrcDir)audio_renderer_waveform.cpp" />
+    <ClCompile Include="$(SrcDir)audio_timing_dialogue.cpp" />
+    <ClCompile Include="$(SrcDir)auto4_base.cpp" />
+    <ClCompile Include="$(SrcDir)auto4_lua.cpp" />
+    <ClCompile Include="$(SrcDir)auto4_lua_assfile.cpp" />
+    <ClCompile Include="$(SrcDir)auto4_lua_dialog.cpp" />
+    <ClCompile Include="$(SrcDir)auto4_lua_scriptreader.cpp" />
+    <ClCompile Include="$(SrcDir)avisynth_wrap.cpp" />
+    <ClCompile Include="$(SrcDir)base_grid.cpp" />
+    <ClCompile Include="$(SrcDir)browse_button.cpp" />
+    <ClCompile Include="$(SrcDir)charset_conv.cpp" />
+    <ClCompile Include="$(SrcDir)charset_detect.cpp" />
+    <ClCompile Include="$(SrcDir)colorspace.cpp" />
+    <ClCompile Include="$(SrcDir)colour_button.cpp" />
+    <ClCompile Include="$(SrcDir)command\app.cpp" />
+    <ClCompile Include="$(SrcDir)command\audio.cpp" />
+    <ClCompile Include="$(SrcDir)command\automation.cpp" />
+    <ClCompile Include="$(SrcDir)command\command.cpp" />
+    <ClCompile Include="$(SrcDir)command\edit.cpp" />
+    <ClCompile Include="$(SrcDir)command\grid.cpp" />
+    <ClCompile Include="$(SrcDir)command\help.cpp" />
+    <ClCompile Include="$(SrcDir)command\icon.cpp" />
+    <ClCompile Include="$(SrcDir)command\keyframe.cpp" />
+    <ClCompile Include="$(SrcDir)command\menu_.cpp" />
+    <ClCompile Include="$(SrcDir)command\recent.cpp" />
+    <ClCompile Include="$(SrcDir)command\subtitle.cpp" />
+    <ClCompile Include="$(SrcDir)command\time.cpp" />
+    <ClCompile Include="$(SrcDir)command\timecode.cpp" />
+    <ClCompile Include="$(SrcDir)command\tool.cpp" />
+    <ClCompile Include="$(SrcDir)command\video.cpp" />
+    <ClCompile Include="$(SrcDir)compat.cpp" />
+    <ClCompile Include="$(SrcDir)dialog_about.cpp" />
+    <ClCompile Include="$(SrcDir)dialog_attachments.cpp" />
+    <ClCompile Include="$(SrcDir)dialog_automation.cpp" />
+    <ClCompile Include="$(SrcDir)dialog_colorpicker.cpp" />
+    <ClCompile Include="$(SrcDir)dialog_detached_video.cpp" />
+    <ClCompile Include="$(SrcDir)dialog_dummy_video.cpp" />
+    <ClCompile Include="$(SrcDir)dialog_export.cpp" />
+    <ClCompile Include="$(SrcDir)dialog_fonts_collector.cpp" />
+    <ClCompile Include="$(SrcDir)dialog_jumpto.cpp" />
+    <ClCompile Include="$(SrcDir)dialog_kara_timing_copy.cpp" />
+    <ClCompile Include="$(SrcDir)dialog_log.cpp" />
+    <ClCompile Include="$(SrcDir)dialog_paste_over.cpp" />
+    <ClCompile Include="$(SrcDir)dialog_progress.cpp" />
+    <ClCompile Include="$(SrcDir)dialog_properties.cpp" />
+    <ClCompile Include="$(SrcDir)dialog_resample.cpp" />
+    <ClCompile Include="$(SrcDir)dialog_search_replace.cpp" />
+    <ClCompile Include="$(SrcDir)dialog_selected_choices.cpp" />
+    <ClCompile Include="$(SrcDir)dialog_selection.cpp" />
+    <ClCompile Include="$(SrcDir)dialog_shift_times.cpp" />
+    <ClCompile Include="$(SrcDir)dialog_spellchecker.cpp" />
+    <ClCompile Include="$(SrcDir)dialog_style_editor.cpp" />
+    <ClCompile Include="$(SrcDir)dialog_style_manager.cpp" />
+    <ClCompile Include="$(SrcDir)dialog_styling_assistant.cpp" />
+    <ClCompile Include="$(SrcDir)dialog_text_import.cpp" />
+    <ClCompile Include="$(SrcDir)dialog_timing_processor.cpp" />
+    <ClCompile Include="$(SrcDir)dialog_translation.cpp" />
+    <ClCompile Include="$(SrcDir)dialog_version_check.cpp" />
+    <ClCompile Include="$(SrcDir)dialog_video_details.cpp" />
+    <ClCompile Include="$(SrcDir)drop.cpp" />
+    <ClCompile Include="$(SrcDir)export_clean_info.cpp" />
+    <ClCompile Include="$(SrcDir)export_fixstyle.cpp" />
+    <ClCompile Include="$(SrcDir)export_framerate.cpp" />
+    <ClCompile Include="$(SrcDir)ffmpegsource_common.cpp" />
+    <ClCompile Include="$(SrcDir)fft.cpp" />
+    <ClCompile Include="$(SrcDir)font_file_lister.cpp" />
+    <ClCompile Include="$(SrcDir)font_file_lister_fontconfig.cpp" />
+    <ClCompile Include="$(SrcDir)font_file_lister_freetype.cpp" />
+    <ClCompile Include="$(SrcDir)frame_main.cpp" />
+    <ClCompile Include="$(SrcDir)gl_text.cpp" />
+    <ClCompile Include="$(SrcDir)gl_wrap.cpp" />
+    <ClCompile Include="$(SrcDir)help_button.cpp" />
+    <ClCompile Include="$(SrcDir)hotkey.cpp" />
+    <ClCompile Include="$(SrcDir)kana_table.cpp" />
+    <ClCompile Include="$(SrcDir)main.cpp" />
+    <ClCompile Include="$(SrcDir)MatroskaParser.c">
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="$(SrcDir)md5.c">
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="$(SrcDir)menu.cpp" />
+    <ClCompile Include="$(SrcDir)mkv_wrap.cpp" />
+    <ClCompile Include="$(SrcDir)mythes.cxx" />
+    <ClCompile Include="$(SrcDir)plugin_manager.cpp" />
+    <ClCompile Include="$(SrcDir)preferences.cpp" />
+    <ClCompile Include="$(SrcDir)preferences_base.cpp" />
+    <ClCompile Include="$(SrcDir)scintilla_text_ctrl.cpp" />
+    <ClCompile Include="$(SrcDir)setup.cpp" />
+    <ClCompile Include="$(SrcDir)spellchecker.cpp" />
+    <ClCompile Include="$(SrcDir)spellchecker_hunspell.cpp" />
+    <ClCompile Include="$(SrcDir)spline.cpp" />
+    <ClCompile Include="$(SrcDir)spline_curve.cpp" />
+    <ClCompile Include="$(SrcDir)standard_paths.cpp" />
+    <ClCompile Include="$(SrcDir)static_bmp.cpp" />
+    <ClCompile Include="$(SrcDir)string_codec.cpp" />
+    <ClCompile Include="$(SrcDir)subs_edit_box.cpp" />
+    <ClCompile Include="$(SrcDir)subs_edit_ctrl.cpp" />
+    <ClCompile Include="$(SrcDir)subs_grid.cpp" />
+    <ClCompile Include="$(SrcDir)subs_preview.cpp" />
+    <ClCompile Include="$(SrcDir)subtitles_provider.cpp" />
+    <ClCompile Include="$(SrcDir)subtitles_provider_csri.cpp" />
+    <ClCompile Include="$(SrcDir)subtitles_provider_libass.cpp" />
+    <ClCompile Include="$(SrcDir)subtitle_format.cpp" />
+    <ClCompile Include="$(SrcDir)subtitle_format_ass.cpp" />
+    <ClCompile Include="$(SrcDir)subtitle_format_dvd.cpp" />
+    <ClCompile Include="$(SrcDir)subtitle_format_encore.cpp" />
+    <ClCompile Include="$(SrcDir)subtitle_format_microdvd.cpp" />
+    <ClCompile Include="$(SrcDir)subtitle_format_mkv.cpp" />
+    <ClCompile Include="$(SrcDir)subtitle_format_srt.cpp" />
+    <ClCompile Include="$(SrcDir)subtitle_format_transtation.cpp" />
+    <ClCompile Include="$(SrcDir)subtitle_format_ttxt.cpp" />
+    <ClCompile Include="$(SrcDir)subtitle_format_txt.cpp" />
+    <ClCompile Include="$(SrcDir)text_file_reader.cpp" />
+    <ClCompile Include="$(SrcDir)text_file_writer.cpp" />
+    <ClCompile Include="$(SrcDir)thesaurus.cpp" />
+    <ClCompile Include="$(SrcDir)thesaurus_myspell.cpp" />
+    <ClCompile Include="$(SrcDir)threaded_frame_source.cpp" />
+    <ClCompile Include="$(SrcDir)timeedit_ctrl.cpp" />
+    <ClCompile Include="$(SrcDir)toggle_bitmap.cpp" />
+    <ClCompile Include="$(SrcDir)toolbar.cpp" />
+    <ClCompile Include="$(SrcDir)tooltip_manager.cpp" />
+    <ClCompile Include="$(SrcDir)utils.cpp" />
+    <ClCompile Include="$(SrcDir)validators.cpp" />
+    <ClCompile Include="$(SrcDir)variable_data.cpp" />
+    <ClCompile Include="$(SrcDir)vector2d.cpp" />
+    <ClCompile Include="$(SrcDir)version.cpp" />
+    <ClCompile Include="$(SrcDir)vfw_wrap.cpp" />
+    <ClCompile Include="$(SrcDir)video_box.cpp" />
+    <ClCompile Include="$(SrcDir)video_context.cpp" />
+    <ClCompile Include="$(SrcDir)video_display.cpp" />
+    <ClCompile Include="$(SrcDir)video_frame.cpp" />
+    <ClCompile Include="$(SrcDir)video_out_gl.cpp" />
+    <ClCompile Include="$(SrcDir)video_provider_avs.cpp" />
+    <ClCompile Include="$(SrcDir)video_provider_cache.cpp" />
+    <ClCompile Include="$(SrcDir)video_provider_dummy.cpp" />
+    <ClCompile Include="$(SrcDir)video_provider_ffmpegsource.cpp" />
+    <ClCompile Include="$(SrcDir)video_provider_manager.cpp" />
+    <ClCompile Include="$(SrcDir)video_provider_yuv4mpeg.cpp" />
+    <ClCompile Include="$(SrcDir)video_slider.cpp" />
+    <ClCompile Include="$(SrcDir)visual_feature.cpp" />
+    <ClCompile Include="$(SrcDir)visual_tool.cpp" />
+    <ClCompile Include="$(SrcDir)visual_tool_clip.cpp" />
+    <ClCompile Include="$(SrcDir)visual_tool_cross.cpp" />
+    <ClCompile Include="$(SrcDir)visual_tool_drag.cpp" />
+    <ClCompile Include="$(SrcDir)visual_tool_rotatexy.cpp" />
+    <ClCompile Include="$(SrcDir)visual_tool_rotatez.cpp" />
+    <ClCompile Include="$(SrcDir)visual_tool_scale.cpp" />
+    <ClCompile Include="$(SrcDir)visual_tool_vector_clip.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="$(SrcDir)res.rc" />
+  </ItemGroup>
+</Project>
