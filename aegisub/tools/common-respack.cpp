@@ -83,7 +83,7 @@ int main(int argc, const char *argv[]) {
 		std::getline(file_manifest, file);
 		if (file.empty()) continue;
 
-		std::ifstream ifp((path_base + file).c_str());
+		std::ifstream ifp((path_base + file).c_str(), std::ios_base::in|std::ios_base::binary);
 
 		if (!ifp.is_open()) {
 			std::cout << "Error opening file: " << file << std::endl;
