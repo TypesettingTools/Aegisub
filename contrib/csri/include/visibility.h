@@ -26,7 +26,7 @@
 #include "acconf.h"
 #endif
 
-#ifdef _WIN32
+#if defined(_WIN32) && !defined(CSRI_NO_EXPORT)
 #define export __declspec(dllexport)
 #define internal
 #define hidden
