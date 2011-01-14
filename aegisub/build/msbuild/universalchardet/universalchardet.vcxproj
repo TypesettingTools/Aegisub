@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{7B56955D-5162-4698-AA5B-47484EDC8783}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>universalchardet</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)'=='Debug'" Label="Configuration">
+    <UseDebugLibraries>true</UseDebugLibraries>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)'=='Release'" Label="Configuration">
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(MSBuildThisFileDirectory)..\aegisub.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros">
+    <SrcDir>..\..\..\universalchardet\</SrcDir>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Include="$(SrcDir)Big5Freq.tab" />
+    <None Include="$(SrcDir)EUCKRFreq.tab" />
+    <None Include="$(SrcDir)EUCTWFreq.tab" />
+    <None Include="$(SrcDir)GB2312Freq.tab" />
+    <None Include="$(SrcDir)JISFreq.tab" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="$(SrcDir)CharDistribution.cpp" />
+    <ClCompile Include="$(SrcDir)JpCntx.cpp" />
+    <ClCompile Include="$(SrcDir)LangBulgarianModel.cpp" />
+    <ClCompile Include="$(SrcDir)LangCyrillicModel.cpp" />
+    <ClCompile Include="$(SrcDir)LangGreekModel.cpp" />
+    <ClCompile Include="$(SrcDir)LangHebrewModel.cpp" />
+    <ClCompile Include="$(SrcDir)LangHungarianModel.cpp" />
+    <ClCompile Include="$(SrcDir)LangThaiModel.cpp" />
+    <ClCompile Include="$(SrcDir)nsBig5Prober.cpp" />
+    <ClCompile Include="$(SrcDir)nsCharSetProber.cpp" />
+    <ClCompile Include="$(SrcDir)nsEscCharsetProber.cpp" />
+    <ClCompile Include="$(SrcDir)nsEscSM.cpp" />
+    <ClCompile Include="$(SrcDir)nsEUCJPProber.cpp" />
+    <ClCompile Include="$(SrcDir)nsEUCKRProber.cpp" />
+    <ClCompile Include="$(SrcDir)nsEUCTWProber.cpp" />
+    <ClCompile Include="$(SrcDir)nsGB2312Prober.cpp" />
+    <ClCompile Include="$(SrcDir)nsHebrewProber.cpp" />
+    <ClCompile Include="$(SrcDir)nsLatin1Prober.cpp" />
+    <ClCompile Include="$(SrcDir)nsMBCSGroupProber.cpp" />
+    <ClCompile Include="$(SrcDir)nsMBCSSM.cpp" />
+    <ClCompile Include="$(SrcDir)nsSBCharSetProber.cpp" />
+    <ClCompile Include="$(SrcDir)nsSBCSGroupProber.cpp" />
+    <ClCompile Include="$(SrcDir)nsSJISProber.cpp" />
+    <ClCompile Include="$(SrcDir)nsUniversalDetector.cpp" />
+    <ClCompile Include="$(SrcDir)nsUTF8Prober.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="$(SrcDir)CharDistribution.h" />
+    <ClInclude Include="$(SrcDir)JpCntx.h" />
+    <ClInclude Include="$(SrcDir)nsBig5Prober.h" />
+    <ClInclude Include="$(SrcDir)nsCharSetProber.h" />
+    <ClInclude Include="$(SrcDir)nsCodingStateMachine.h" />
+    <ClInclude Include="$(SrcDir)nscore.h" />
+    <ClInclude Include="$(SrcDir)nsError.h" />
+    <ClInclude Include="$(SrcDir)nsEscCharsetProber.h" />
+    <ClInclude Include="$(SrcDir)nsEUCJPProber.h" />
+    <ClInclude Include="$(SrcDir)nsEUCKRProber.h" />
+    <ClInclude Include="$(SrcDir)nsEUCTWProber.h" />
+    <ClInclude Include="$(SrcDir)nsGB2312Prober.h" />
+    <ClInclude Include="$(SrcDir)nsHebrewProber.h" />
+    <ClInclude Include="$(SrcDir)nsLatin1Prober.h" />
+    <ClInclude Include="$(SrcDir)nsMBCSGroupProber.h" />
+    <ClInclude Include="$(SrcDir)nsPkgInt.h" />
+    <ClInclude Include="$(SrcDir)nsSBCharSetProber.h" />
+    <ClInclude Include="$(SrcDir)nsSBCSGroupProber.h" />
+    <ClInclude Include="$(SrcDir)nsSJISProber.h" />
+    <ClInclude Include="$(SrcDir)nsUniversalDetector.h" />
+    <ClInclude Include="$(SrcDir)nsUTF8Prober.h" />
+    <ClInclude Include="$(SrcDir)prcpucfg.h" />
+    <ClInclude Include="$(SrcDir)prmem.h" />
+    <ClInclude Include="$(SrcDir)protypes.h" />
+    <ClInclude Include="$(SrcDir)prtypes.h" />
+    <ClInclude Include="$(SrcDir)xpcom-config.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
