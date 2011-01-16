@@ -34,11 +34,6 @@
 /// @ingroup tools_ui
 ///
 
-#pragma once
-
-
-///////////
-// Headers
 #ifndef AGI_PRE
 #include <wx/checkbox.h>
 #include <wx/colour.h>
@@ -61,8 +56,6 @@ class VideoContext;
 ///
 /// DOCME
 class StyleEditBox : public wxTextCtrl {
-private:
-
 	/// DOCME
 	DialogStyling *diag;
 	void OnKeyDown(wxKeyEvent &event);
@@ -83,10 +76,7 @@ public:
 class DialogStyling : public wxDialog {
 	friend class StyleEditBox;
 
-private:
-
-	/// DOCME
-	SubtitlesGrid *grid;
+	agi::Context *c;
 
 	/// DOCME
 	wxColour origColour;
@@ -130,18 +120,11 @@ private:
 	static int lastx, lasty;
 
 public:
-
 	/// DOCME
 	int linen;
 
 	/// DOCME
 	AssDialogue *line;
-
-	/// DOCME
-	AudioController *audio;
-
-	/// DOCME
-	VideoContext *video;
 
 	DialogStyling(agi::Context *context);
 	~DialogStyling ();
@@ -149,22 +132,4 @@ public:
 	void JumpToLine(int n);
 
 	DECLARE_EVENT_TABLE()
-};
-
-
-///////
-// IDs
-enum {
-
-	/// DOCME
-	ENTER_STYLE_BOX,
-
-	/// DOCME
-	STYLE_LIST,
-
-	/// DOCME
-	BUTTON_PLAY_VIDEO,
-
-	/// DOCME
-	BUTTON_PLAY_AUDIO
 };

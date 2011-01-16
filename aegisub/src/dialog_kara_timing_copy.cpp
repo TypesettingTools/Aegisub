@@ -53,6 +53,7 @@
 #include "ass_style.h"
 #include "dialog_kara_timing_copy.h"
 #include "help_button.h"
+#include "include/aegisub/context.h"
 #include "libresrc/libresrc.h"
 #include "main.h"
 #include "selection_controller.h"
@@ -68,7 +69,18 @@
 /// DOCME
 #define TEXT_LABEL_DEST _("Dest: ")
 
-
+// IDs
+enum {
+	BUTTON_KTSTART = 2500,
+	BUTTON_KTLINK,
+	BUTTON_KTUNLINK,
+	BUTTON_KTSKIPSOURCE,
+	BUTTON_KTSKIPDEST,
+	BUTTON_KTGOBACK,
+	BUTTON_KTACCEPT,
+	TEXT_SOURCE,
+	TEXT_DEST
+};
 
 /// DOCME
 /// @class KaraokeLineMatchDisplay
@@ -823,15 +835,15 @@ bool KaraokeLineMatchDisplay::UndoMatch()
 /// @param parent 
 /// @param _grid  
 ///
-DialogKanjiTimer::DialogKanjiTimer(wxWindow *parent, SubtitlesGrid *_grid)
-: wxDialog (parent,-1,_("Kanji timing"),wxDefaultPosition)
+DialogKanjiTimer::DialogKanjiTimer(agi::Context *c)
+: wxDialog(c->parent,-1,_("Kanji timing"),wxDefaultPosition)
 {
 	// Set icon
 	SetIcon(BitmapToIcon(GETIMAGE(kara_timing_copier_24)));
 
 	// Variables
-	subs = _grid->ass;
-	grid = _grid;
+	subs = c->ass;
+	grid = c->subsGrid;
 	currentSourceLine = subs->Line.begin();
 	currentDestinationLine = subs->Line.begin();
 
@@ -941,7 +953,7 @@ void DialogKanjiTimer::OnClose(wxCommandEvent &event) {
 		line->Text = p.second;
 	}
 	if (modified) {
-		grid->ass->Commit(_("kanji timing"));
+		subs->Commit(_("kanji timing"));
 		LinesToChange.clear();
 	}
 	Close();

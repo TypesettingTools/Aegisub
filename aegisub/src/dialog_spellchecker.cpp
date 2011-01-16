@@ -274,7 +274,7 @@ void DialogSpellChecker::SetWord(wxString word) {
 	grid->SelectRow(line,false);
 	grid->MakeCellVisible(line,0);
 	grid->SetActiveLine(grid->GetDialogue(line));
-	grid->editBox->TextEdit->SetSelectionU(wordStart,wordEnd);
+	context->editBox->TextEdit->SetSelectionU(wordStart,wordEnd);
 	grid->EndBatch();
 
 	addButton->Enable(spellchecker->CanAddWord(word));
@@ -381,16 +381,12 @@ bool DialogSpellChecker::FindOrDie() {
 /// @brief Replace 
 ///
 void DialogSpellChecker::Replace() {
-	// Get dialog
-	SubtitlesGrid *grid = context->subsGrid;
-	AssDialogue *diag = grid->GetDialogue(lastLine % grid->GetRows());
+	AssDialogue *diag = context->subsGrid->GetDialogue(lastLine % context->subsGrid->GetRows());
 
-	// Replace
 	diag->Text = diag->Text.Left(wordStart) + replaceWord->GetValue() + diag->Text.Mid(wordEnd);
 	lastPos = wordStart + replaceWord->GetValue().Length();
 
-	// Commit
-	grid->ass->Commit(_("Spell check replace"), AssFile::COMMIT_TEXT);
+	context->ass->Commit(_("Spell check replace"), AssFile::COMMIT_TEXT);
 }
 
 

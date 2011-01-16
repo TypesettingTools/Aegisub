@@ -36,11 +36,16 @@
 
 #include "config.h"
 
+#ifndef AGI_PRE
+#include <algorithm>
+#endif
+
 #include "ass_dialogue.h"
 #include "ass_file.h"
 #include "ass_time.h"
 #include "dialog_timing_processor.h"
 #include "help_button.h"
+#include "include/aegisub/context.h"
 #include "libresrc/libresrc.h"
 #include "main.h"
 #include "selection_controller.h"
@@ -62,28 +67,24 @@ enum {
 	TIMING_STYLE_LIST
 };
 
-/// @brief Constructor 
-/// @param parent 
-/// @param _grid  
-///
-DialogTimingProcessor::DialogTimingProcessor(wxWindow *parent,SubtitlesGrid *_grid)
-: wxDialog(parent,-1,_("Timing Post-Processor"),wxDefaultPosition,wxSize(400,250),wxDEFAULT_DIALOG_STYLE)
+DialogTimingProcessor::DialogTimingProcessor(agi::Context *c)
+: wxDialog(c->parent,-1,_("Timing Post-Processor"),wxDefaultPosition,wxSize(400,250),wxDEFAULT_DIALOG_STYLE)
+, c(c)
+, leadInTime(wxString::Format("%d", OPT_GET("Audio/Lead/IN")->GetInt()))
+, leadOutTime(wxString::Format("%d", OPT_GET("Audio/Lead/OUT")->GetInt()))
+, thresStartBefore(wxString::Format("%d", OPT_GET("Tool/Timing Post Processor/Threshold/Key Start Before")->GetInt()))
+, thresStartAfter(wxString::Format("%d", OPT_GET("Tool/Timing Post Processor/Threshold/Key Start After")->GetInt()))
+, thresEndBefore(wxString::Format("%d", OPT_GET("Tool/Timing Post Processor/Threshold/Key End Before")->GetInt()))
+, thresEndAfter(wxString::Format("%d", OPT_GET("Tool/Timing Post Processor/Threshold/Key End After")->GetInt()))
+, adjsThresTime(wxString::Format("%d", OPT_GET("Tool/Timing Post Processor/Threshold/Adjacent")->GetInt()))
 {
 	SetIcon(BitmapToIcon(GETIMAGE(timing_processor_toolbutton_24)));
 
 	// Set variables
-	grid = _grid;
-	leadInTime = AegiIntegerToString(OPT_GET("Audio/Lead/IN")->GetInt());
-	leadOutTime = AegiIntegerToString(OPT_GET("Audio/Lead/OUT")->GetInt());
-	thresStartBefore = AegiIntegerToString(OPT_GET("Tool/Timing Post Processor/Threshold/Key Start Before")->GetInt());
-	thresStartAfter = AegiIntegerToString(OPT_GET("Tool/Timing Post Processor/Threshold/Key Start After")->GetInt());
-	thresEndBefore = AegiIntegerToString(OPT_GET("Tool/Timing Post Processor/Threshold/Key End Before")->GetInt());
-	thresEndAfter = AegiIntegerToString(OPT_GET("Tool/Timing Post Processor/Threshold/Key End After")->GetInt());
-	adjsThresTime = AegiIntegerToString(OPT_GET("Tool/Timing Post Processor/Threshold/Adjacent")->GetInt());
 
 	// Styles box
 	wxSizer *LeftSizer = new wxStaticBoxSizer(wxVERTICAL,this,_("Apply to styles"));
-	wxArrayString styles = grid->ass->GetStyles();
+	wxArrayString styles = c->ass->GetStyles();
 	StyleList = new wxCheckListBox(this,TIMING_STYLE_LIST,wxDefaultPosition,wxSize(150,150),styles);
 	StyleList->SetToolTip(_("Select styles to process. Unchecked ones will be ignored."));
 	wxButton *all = new wxButton(this,BUTTON_SELECT_ALL,_("All"));
@@ -295,87 +296,57 @@ void DialogTimingProcessor::OnApply(wxCommandEvent &) {
 	OPT_SET("Tool/Timing Post Processor/Only Selection")->SetBool(onlySelection->IsChecked());
 
 	// Check if rows are valid
-	bool valid = true;
-	AssDialogue *tempDiag;
-	int i = 0;
-	for (std::list<AssEntry*>::iterator cur=grid->ass->Line.begin();cur!=grid->ass->Line.end();cur++) {
-		tempDiag = dynamic_cast<AssDialogue*>(*cur);
-		if (tempDiag) {
-			i++;
+	for (entryIter cur = c->ass->Line.begin(); cur != c->ass->Line.end(); ++cur) {
+		if (AssDialogue *tempDiag = dynamic_cast<AssDialogue*>(*cur)) {
 			if (tempDiag->Start.GetMS() > tempDiag->End.GetMS()) {
-				valid = false;
-				break;
+				wxMessageBox(
+					wxString::Format(
+						_("One of the lines in the file (%i) has negative duration. Aborting."),
+						std::distance(c->ass->Line.begin(), cur)),
+					_("Invalid script"),
+					wxICON_ERROR|wxOK);
+				EndModal(0);
+				return;
 			}
 		}
 	}
 
-	if (valid) Process();
-	else wxMessageBox(wxString::Format(_("One of the lines in the file (%i) has negative duration. Aborting."),i),_("Invalid script"),wxICON_ERROR|wxOK);
-
+	Process();
 	EndModal(0);
 }
 
 int DialogTimingProcessor::GetClosestKeyFrame(int frame) {
-	// Linear dumb search, not very efficient, but it doesn't really matter
-	int closest = 0;
-	size_t n = KeyFrames.size();
-	for (size_t i=0;i<n;i++) {
-		if (abs(KeyFrames[i]-frame) < abs(closest-frame)) {
-			closest = KeyFrames[i];
-		}
-	}
-	return closest;
+	std::vector<int>::iterator pos = lower_bound(KeyFrames.begin(), KeyFrames.end(), frame);
+	if (distance(pos, KeyFrames.end()) < 2) return KeyFrames.back();
+	return frame - *pos < *(pos + 1) - frame ? *pos : *(pos + 1);
 }
 
-/// @brief Check if style is listed 
-/// @param styleName 
-/// @return 
-///
-bool DialogTimingProcessor::StyleOK(wxString styleName) {
-	size_t len = StyleList->GetCount();
-	for (size_t i=0;i<len;i++) {
-		if (StyleList->GetString(i) == styleName && StyleList->IsChecked(i)) return true;
-	}
-	return false;
+static bool bad_line(std::set<wxString> *styles, AssDialogue *d) {
+	return !d || d->Comment || styles->find(d->Style) == styles->end();
 }
 
-/// @brief Sort dialogues
-///
 void DialogTimingProcessor::SortDialogues() {
-	// Copy from original to temporary list
-	std::list<AssDialogue*> temp;
-	AssDialogue *tempDiag;
-	int count = grid->GetRows();
-	for (int i=0;i<count;i++) {
-		tempDiag = grid->GetDialogue(i);
-		if (tempDiag && StyleOK(tempDiag->Style) && !tempDiag->Comment) {
-			if (!onlySelection->IsChecked() || grid->IsInSelection(i)) {
-				temp.push_back(tempDiag);
-			}
+	std::set<wxString> styles;
+	for (size_t i = 0; i < StyleList->GetCount(); ++i) {
+		if (StyleList->IsChecked(i)) {
+			styles.insert(StyleList->GetString(i));
 		}
 	}
 
-	// Sort temporary list
-	AssFile::Sort(temp);
-
-	// Copy temporary list to final vector
 	Sorted.clear();
-	for (std::list<AssDialogue*>::iterator cur=temp.begin();cur!=temp.end();cur++) {
-		Sorted.push_back(*cur);
+	Sorted.reserve(c->ass->Line.size());
+	if (onlySelection->IsChecked()) {
+		SelectionController<AssDialogue>::Selection sel = c->selectionController->GetSelectedSet();
+		remove_copy_if(sel.begin(), sel.end(), back_inserter(Sorted),
+			bind(bad_line, &styles, std::tr1::placeholders::_1));
 	}
-}
-
-/// @brief Gets sorted dialogue 
-/// @param n 
-/// @return 
-///
-AssDialogue *DialogTimingProcessor::GetSortedDialogue(int n) {
-	try {
-		return Sorted.at(n);
+	else {
+		std::vector<AssDialogue*> tmp(c->ass->Line.size());
+		transform(c->ass->Line.begin(), c->ass->Line.end(), back_inserter(tmp), cast<AssDialogue*>());
+		remove_copy_if(tmp.begin(), tmp.end(), back_inserter(Sorted),
+			bind(bad_line, &styles, std::tr1::placeholders::_1));
 	}
-	catch (...) {
-		return NULL;
-	}
+	sort(Sorted.begin(), Sorted.end(), AssFile::CompStart);
 }
 
 /// @brief Actually process subtitles 
@@ -394,121 +365,75 @@ void DialogTimingProcessor::Process() {
 
 	// Add lead-in/out
 	if (addIn || addOut) {
-		// Variables
-		AssDialogue *cur;
-		AssDialogue *comp;
-		int start,end;
-		int startLead,endLead;
-		int compStart,compEnd;
-
-		// For each row
 		for (int i=0;i<rows;i++) {
-			// Get line and check if it's OK
-			cur = GetSortedDialogue(i);
-
-			// Set variables
-			start = cur->Start.GetMS();
-			end = cur->End.GetMS();
-			if (addIn) startLead = start - inVal;
-			else startLead = start;
-			if (addOut) endLead = end + outVal;
-			else endLead = end;
+			AssDialogue *cur = Sorted[i];
 
 			// Compare to every previous line (yay for O(n^2)!) to see if it's OK to add lead-in
-			if (addIn) {
+			if (inVal) {
+				int startLead = cur->Start.GetMS() - inVal;
 				for (int j=0;j<i;j++) {
-					comp = GetSortedDialogue(j);
+					AssDialogue *comp = Sorted[j];
 
 					// Check if they don't already collide (ignore it in that case)
 					if (cur->CollidesWith(comp)) continue;
 
 					// Get comparison times
-					compEnd = comp->End.GetMS();
-
-					// Limit lead-in if needed
-					if (compEnd > startLead) startLead = compEnd;
+					startLead = std::max(startLead, comp->End.GetMS());
 				}
+				cur->Start.SetMS(startLead);
 			}
 
 			// Compare to every line to see how far can lead-out be extended
-			if (addOut) {
+			if (outVal) {
+				int endLead = cur->End.GetMS() + outVal;
 				for (int j=i+1;j<rows;j++) {
-					comp = GetSortedDialogue(j);
+					AssDialogue *comp = Sorted[j];
 
 					// Check if they don't already collide (ignore it in that case)
 					if (cur->CollidesWith(comp)) continue;
 
 					// Get comparison times
-					compStart = comp->Start.GetMS();
-
-					// Limit lead-in if needed
-					if (compStart < endLead) endLead = compStart;
+					endLead = std::min(endLead, comp->Start.GetMS());
 				}
+				cur->End.SetMS(endLead);
 			}
-
-			// Set times
-			cur->Start.SetMS(startLead);
-			cur->End.SetMS(endLead);
 		}
 	}
 
 	// Make adjacent
 	if (adjsEnable->IsChecked()) {
-		// Variables
-		AssDialogue *cur;
-		AssDialogue *prev = NULL;
-		int curStart,prevEnd;
+		AssDialogue *prev = Sorted.front();
+		
 		long adjsThres = 0;
-		int dist;
-
-		// Get threshold
 		adjacentThres->GetValue().ToLong(&adjsThres);
 
-		// Get bias
 		float bias = adjacentBias->GetValue() / 100.0;
 
-		// For each row
-		for (int i=0;i<rows;i++) {
-			// Get line and check if it's OK
-			cur = GetSortedDialogue(i);
-
-			// Check if previous is OK
-			if (!prev) {
-				prev = cur;
-				continue;
-			}
+		for (int i=1; i < rows;i++) {
+			AssDialogue *cur = Sorted[i];
 
 			// Check if they don't collide
 			if (cur->CollidesWith(prev)) continue;
 
 			// Compare distance
-			curStart = cur->Start.GetMS();
-			prevEnd = prev->End.GetMS();
-			dist = curStart-prevEnd;
+			int curStart = cur->Start.GetMS();
+			int prevEnd = prev->End.GetMS();
+			int dist = curStart-prevEnd;
 			if (dist > 0 && dist < adjsThres) {
 				int setPos = prevEnd+int(dist*bias);
 				cur->Start.SetMS(setPos);
 				prev->End.SetMS(setPos);
 			}
 
-			// Set previous
 			prev = cur;
 		}
 	}
 
 	// Keyframe snapping
 	if (keysEnable->IsChecked()) {
-		// Get keyframes
-		VideoContext *con = VideoContext::Get();
-		KeyFrames = con->GetKeyFrames();
-		KeyFrames.push_back(con->GetLength()-1);
+		KeyFrames = c->videoController->GetKeyFrames();
+		KeyFrames.push_back(c->videoController->GetLength() - 1);
 
-		// Variables
-		int startF,endF;
-		int closest;
-		AssDialogue *cur;
-
-		// Get variables
 		long beforeStart = 0;
 		long afterStart = 0;
 		long beforeEnd = 0;
@@ -518,29 +443,27 @@ void DialogTimingProcessor::Process() {
 		keysEndBefore->GetValue().ToLong(&beforeEnd);
 		keysEndAfter->GetValue().ToLong(&afterEnd);
 		
-		// For each row
 		for (int i=0;i<rows;i++) {
-			// Get line and check if it's OK
-			cur = GetSortedDialogue(i);
+			AssDialogue *cur = Sorted[i];
 
 			// Get start/end frames
-			startF = con->FrameAtTime(cur->Start.GetMS(),agi::vfr::START);
-			endF = con->FrameAtTime(cur->End.GetMS(),agi::vfr::END);
+			int startF = c->videoController->FrameAtTime(cur->Start.GetMS(),agi::vfr::START);
+			int endF = c->videoController->FrameAtTime(cur->End.GetMS(),agi::vfr::END);
 
 			// Get closest for start
-			closest = GetClosestKeyFrame(startF);
+			int closest = GetClosestKeyFrame(startF);
 			if ((closest > startF && closest-startF <= beforeStart) || (closest < startF && startF-closest <= afterStart)) {
-				cur->Start.SetMS(con->TimeAtFrame(closest,agi::vfr::START));
+				cur->Start.SetMS(c->videoController->TimeAtFrame(closest,agi::vfr::START));
 			}
 
 			// Get closest for end
 			closest = GetClosestKeyFrame(endF)-1;
 			if ((closest > endF && closest-endF <= beforeEnd) || (closest < endF && endF-closest <= afterEnd)) {
-				cur->End.SetMS(con->TimeAtFrame(closest,agi::vfr::END));
+				cur->End.SetMS(c->videoController->TimeAtFrame(closest,agi::vfr::END));
 			}
 		}
 	}
 
 	// Update grid
-	grid->ass->Commit(_("timing processor"), AssFile::COMMIT_TIMES);
+	c->ass->Commit(_("timing processor"), AssFile::COMMIT_TIMES);
 }

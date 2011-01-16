@@ -34,37 +34,42 @@
 /// @ingroup tools_ui
 ///
 
-
-///////////
-// Headers
 #include "config.h"
+
+#ifndef AGI_PRE
+#include <wx/msgdlg.h>
+#include <wx/sizer.h>
+#include <wx/stattext.h>
+#endif
 
 #include "ass_dialogue.h"
 #include "ass_file.h"
 #include "ass_override.h"
 #include "ass_style.h"
 #include "dialog_resample.h"
+#include "include/aegisub/context.h"
 #include "help_button.h"
 #include "libresrc/libresrc.h"
-#include "subs_grid.h"
 #include "utils.h"
 #include "validators.h"
 #include "video_context.h"
 
+// IDs
+enum {
+	BUTTON_DEST_FROM_VIDEO = 1520,
+	CHECK_ANAMORPHIC,
+	CHECK_SYMMETRICAL,
+	TEXT_MARGIN_T,
+	TEXT_MARGIN_L,
+	TEXT_MARGIN_R,
+	TEXT_MARGIN_B
+};
 
-/// @brief Constructor 
-/// @param parent 
-/// @param _grid  
-///
-DialogResample::DialogResample(wxWindow *parent, SubtitlesGrid *_grid)
-: wxDialog (parent,-1,_("Resample resolution"),wxDefaultPosition)
+DialogResample::DialogResample(agi::Context *c)
+: wxDialog(c->parent,-1,_("Resample resolution"),wxDefaultPosition)
 {
 	// Set icon
 	SetIcon(BitmapToIcon(GETIMAGE(resample_toolbutton_24)));
-
-	// Variables
-	AssFile *subs = _grid->ass;
-	grid = _grid;
 
 	// Margins
 	MarginSymmetrical = NULL;	// Do not remove this
@@ -93,7 +98,7 @@ DialogResample::DialogResample(wxWindow *parent, SubtitlesGrid *_grid)
 	wxSizer *ResBoxSizer = new wxStaticBoxSizer(wxVERTICAL,this,_("Resolution"));
 	wxSizer *ResSizer = new wxBoxSizer(wxHORIZONTAL);
 	int sw,sh;
-	subs->GetResolution(sw,sh);
+	c->ass->GetResolution(sw,sh);
 	ResXValue = wxString::Format(_T("%i"),sw);
 	ResYValue = wxString::Format(_T("%i"),sh);
 	ResX = new wxTextCtrl(this,-1,_T(""),wxDefaultPosition,wxSize(50,-1),0,NumValidator(&ResXValue));
@@ -222,10 +227,8 @@ void DialogResample::DoResampleTags (wxString name,int n,AssOverrideParameter *c
 /// @return 
 ///
 void DialogResample::OnResample (wxCommandEvent &event) {
-	// Resolutions
-	AssFile *subs = grid->ass;
 	int x1,y1;
-	subs->GetResolution(x1,y1);
+	c->ass->GetResolution(x1,y1);
 	long x2 = 0;
 	long y2 = 0;
 	ResX->GetValue().ToLong(&x2);
@@ -261,7 +264,7 @@ void DialogResample::OnResample (wxCommandEvent &event) {
 	// Iterate through subs
 	AssStyle *curStyle;
 	AssDialogue *curDiag;
-	for (entryIter cur=subs->Line.begin();cur!=subs->Line.end();cur++) {
+	for (entryIter cur=c->ass->Line.begin();cur!=c->ass->Line.end();cur++) {
 		// Apply to dialogues
 		curDiag = dynamic_cast<AssDialogue*>(*cur);
 		if (curDiag && !(curDiag->Comment && (curDiag->Effect.StartsWith(_T("template")) || curDiag->Effect.StartsWith(_T("code"))))) {
@@ -316,11 +319,11 @@ void DialogResample::OnResample (wxCommandEvent &event) {
 	}
 
 	// Change script resolution
-	subs->SetScriptInfo(_T("PlayResX"),wxString::Format(_T("%i"),x2));
-	subs->SetScriptInfo(_T("PlayResY"),wxString::Format(_T("%i"),y2));
+	c->ass->SetScriptInfo(_T("PlayResX"),wxString::Format(_T("%i"),x2));
+	c->ass->SetScriptInfo(_T("PlayResY"),wxString::Format(_T("%i"),y2));
 
 	// Flag as modified
-	subs->Commit(_("resolution resampling"), AssFile::COMMIT_TEXT);
+	c->ass->Commit(_("resolution resampling"), AssFile::COMMIT_TEXT);
 	EndModal(0);
 }
 
@@ -364,9 +367,5 @@ void DialogResample::OnMarginChange (wxCommandEvent &event) {
 	}
 }
 
-
-
 /// DOCME
 DialogResample *DialogResample::instance = NULL;
-
-

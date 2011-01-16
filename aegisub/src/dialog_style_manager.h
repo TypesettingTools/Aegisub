@@ -50,9 +50,7 @@
 
 #include "ass_style_storage.h"
 
-
-//////////////
-// Prototypes
+namespace agi { struct Context; }
 class AssFile;
 class AssStyle;
 class SubtitlesGrid;
@@ -65,18 +63,13 @@ class SubtitlesGrid;
 ///
 /// DOCME
 class DialogStyleManager : public wxDialog {
-private:
+	agi::Context *c;
 
 	/// DOCME
 	std::vector<AssStyle*> styleMap;
 
 	/// DOCME
 	std::vector<AssStyle*> styleStorageMap;
-
-
-	/// DOCME
-	SubtitlesGrid *grid;
-
 
 	/// DOCME
 	wxComboBox *CatalogList;
@@ -164,13 +157,8 @@ private:
 	/// DOCME
 	static int lastx, lasty;
 
-public:
-
 	/// DOCME
 	wxSizer *MainSizer;
-
-	DialogStyleManager(wxWindow *parent,SubtitlesGrid *grid);
-	~DialogStyleManager();
 
 	void OnClose (wxCommandEvent &event);
 	void OnChangeCatalog (wxCommandEvent &event);
@@ -204,23 +192,10 @@ public:
 	void PasteToCurrent();
 	void PasteToStorage();
 
-
-	DECLARE_EVENT_TABLE()
-};
-
-/// DOCME
-/// @class DialogStyleManagerEvent
-/// @brief DOCME
-///
-/// DOCME
-class DialogStyleManagerEvent : public wxEvtHandler {
-private:
-
-	/// DOCME
-	DialogStyleManager *control;
-	void OnKeyDown(wxKeyEvent &event);
-
 public:
-	DialogStyleManagerEvent(DialogStyleManager *control);
+
+	DialogStyleManager(agi::Context *context);
+	~DialogStyleManager();
+
 	DECLARE_EVENT_TABLE()
 };

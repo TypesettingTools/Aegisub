@@ -34,11 +34,6 @@
 /// @ingroup tools_ui kara_timing_copy
 ///
 
-
-
-
-///////////
-// Headers
 #ifndef AGI_PRE
 #include <vector>
 
@@ -53,13 +48,10 @@
 #include "ass_file.h"
 #include "kana_table.h"
 
-
-//////////////
-// Prototypes
-class SubtitlesGrid;
+namespace agi { struct Context; }
 class AssOverrideParameter;
 class KaraokeLineMatchDisplay;
-
+class SubtitlesGrid;
 
 
 /// DOCME
@@ -114,40 +106,7 @@ class DialogKanjiTimer : public wxDialog {
 	entryIter FindPrevStyleMatch(entryIter search_from, const wxString &search_style);
 
 public:
-	DialogKanjiTimer(wxWindow *parent, SubtitlesGrid *grid);
+	DialogKanjiTimer(agi::Context *context);
 	void OnKeyDown(wxKeyEvent &event);
 	DECLARE_EVENT_TABLE()
-};
-
-
-///////
-// IDs
-enum {
-
-	/// DOCME
-	BUTTON_KTSTART = 2500,
-
-	/// DOCME
-	BUTTON_KTLINK,
-
-	/// DOCME
-	BUTTON_KTUNLINK,
-
-	/// DOCME
-	BUTTON_KTSKIPSOURCE,
-
-	/// DOCME
-	BUTTON_KTSKIPDEST,
-
-	/// DOCME
-	BUTTON_KTGOBACK,
-
-	/// DOCME
-	BUTTON_KTACCEPT,
-
-	/// DOCME
-	TEXT_SOURCE,
-
-	/// DOCME
-	TEXT_DEST
 };

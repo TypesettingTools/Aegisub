@@ -114,7 +114,7 @@ struct time_frame_current : public Command {
 		}
 
 		// Commit
-		c->subsGrid->ass->Commit(_("shift to frame"), AssFile::COMMIT_TIMES);
+		c->ass->Commit(_("shift to frame"), AssFile::COMMIT_TIMES);
 	}
 };
 
@@ -128,7 +128,7 @@ struct time_shift : public Command {
 
 	void operator()(agi::Context *c) {
 		c->videoController->Stop();
-		DialogShiftTimes(c->parent, c->subsGrid).ShowModal();
+		DialogShiftTimes(c).ShowModal();
 	}
 };
 
@@ -226,7 +226,7 @@ struct time_snap_scene : public Command {
 		}
 
 		// Commit
-		c->subsGrid->ass->Commit(_("snap to scene"), AssFile::COMMIT_TIMES);
+		c->ass->Commit(_("snap to scene"), AssFile::COMMIT_TIMES);
 	}
 };
 

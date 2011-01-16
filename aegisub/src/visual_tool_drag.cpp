@@ -37,6 +37,7 @@
 
 #include "ass_dialogue.h"
 #include "ass_file.h"
+#include "include/aegisub/context.h"
 #include "libresrc/libresrc.h"
 #include "subs_grid.h"
 #include "utils.h"
@@ -64,7 +65,7 @@ VisualToolDrag::VisualToolDrag(VideoDisplay *parent, agi::Context *context, Vide
 	toolBar->Realize();
 	toolBar->Show(true);
 
-	grid->GetSelectedSet(selection);
+	c->selectionController->GetSelectedSet(selection);
 	OnFileChanged();
 }
 
@@ -124,9 +125,9 @@ void VisualToolDrag::OnFileChanged() {
 	ClearSelection();
 	primary = NULL;
 
-	for (int i = grid->GetRows() - 1; i >=0; i--) {
-		AssDialogue *diag = grid->GetDialogue(i);
-		if (BaseGrid::IsDisplayed(diag)) {
+	for (int i = c->subsGrid->GetRows() - 1; i >=0; i--) {
+		AssDialogue *diag = c->subsGrid->GetDialogue(i);
+		if (c->subsGrid->IsDisplayed(diag)) {
 			MakeFeatures(diag);
 		}
 	}
@@ -134,14 +135,14 @@ void VisualToolDrag::OnFileChanged() {
 }
 
 void VisualToolDrag::OnFrameChanged() {
-	if (primary && !BaseGrid::IsDisplayed(primary->line)) primary = NULL;
+	if (primary && !c->subsGrid->IsDisplayed(primary->line)) primary = NULL;
 
 	feature_iterator feat = features.begin();
 	feature_iterator end = features.end();
 
-	for (int i = grid->GetRows() - 1; i >=0; i--) {
-		AssDialogue *diag = grid->GetDialogue(i);
-		if (BaseGrid::IsDisplayed(diag)) {
+	for (int i = c->subsGrid->GetRows() - 1; i >=0; i--) {
+		AssDialogue *diag = c->subsGrid->GetDialogue(i);
+		if (c->subsGrid->IsDisplayed(diag)) {
 			// Features don't exist and should
 			if (feat == end || feat->line != diag) {
 				MakeFeatures(diag, feat);
@@ -163,10 +164,10 @@ void VisualToolDrag::OnFrameChanged() {
 }
 
 void VisualToolDrag::OnSelectedSetChanged(const Selection &added, const Selection &removed) {
-	grid->GetSelectedSet(selection);
+	c->selectionController->GetSelectedSet(selection);
 	if (!externalChange) return;
 	externalChange = false;
-	grid->BeginBatch();
+	c->subsGrid->BeginBatch();
 
 	for (feature_iterator cur = features.begin(); cur != features.end(); ++cur) {
 		// Remove all deselected lines
@@ -179,7 +180,7 @@ void VisualToolDrag::OnSelectedSetChanged(const Selection &added, const Selectio
 		}
 	}
 
-	grid->EndBatch();
+	c->subsGrid->EndBatch();
 	externalChange = true;
 }
 
@@ -290,7 +291,7 @@ bool VisualToolDrag::InitializeDrag(feature_iterator feature) {
 	// Set time of clicked feature to the current frame and shift all other
 	// selected features by the same amount
 	if (feature->type != DRAG_ORIGIN) {
-		int time = VideoContext::Get()->TimeAtFrame(frameNumber) - feature->line->Start.GetMS();
+		int time = c->videoController->TimeAtFrame(frameNumber) - feature->line->Start.GetMS();
 		int change = time - feature->time;
 
 		for (sel_iterator cur = selectedFeatures.begin(); cur != selectedFeatures.end(); ++cur) {

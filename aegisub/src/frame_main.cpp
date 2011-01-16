@@ -297,10 +297,10 @@ void FrameMain::InitContents() {
 	videoSizer->AddStretchSpacer(1);
 
 	StartupLog("Create subtitles grid");
-	context->subsGrid = SubsGrid = new SubtitlesGrid(this,Panel,-1,context->ass,wxDefaultPosition,wxSize(600,100),wxWANTS_CHARS | wxSUNKEN_BORDER,"Subs grid");
+	context->subsGrid = SubsGrid = new SubtitlesGrid(Panel,context.get(),wxSize(600,100),wxWANTS_CHARS | wxSUNKEN_BORDER,"Subs grid");
 	context->selectionController = context->subsGrid;
 	context->videoBox->videoSlider->grid = SubsGrid;
-	Search.grid = SubsGrid;
+	Search.context = context.get();
 
 	StartupLog("Create tool area splitter window");
 	audioSash = new wxSashWindow(Panel, ID_SASH_MAIN_AUDIO, wxDefaultPosition, wxDefaultSize, wxSW_3D|wxCLIP_CHILDREN);
@@ -316,7 +316,7 @@ void FrameMain::InitContents() {
 	audioSash->SetMinimumSizeY(audioBox->GetSize().GetHeight());
 
 	StartupLog("Create subtitle editing box");
-	context->editBox = EditBox = new SubsEditBox(Panel, SubsGrid);
+	context->editBox = EditBox = new SubsEditBox(Panel, context.get());
 
 	StartupLog("Arrange main sizers");
 	ToolsSizer = new wxBoxSizer(wxVERTICAL);
@@ -1085,7 +1085,7 @@ int FrameMain::AddMacroMenuItems(wxMenu *menu, const std::vector<Automation4::Fe
 	int id = activeMacroItems.size();;
 	for (std::vector<Automation4::FeatureMacro*>::const_iterator i = macros.begin(); i != macros.end(); ++i) {
 		wxMenuItem * m = menu->Append(ID_MENU_AUTOMATION_MACRO + id, (*i)->GetName(), (*i)->GetDescription());
-		m->Enable((*i)->Validate(SubsGrid->ass, SubsGrid->GetAbsoluteSelection(), SubsGrid->GetFirstSelRow()));
+		m->Enable((*i)->Validate(context->ass, SubsGrid->GetAbsoluteSelection(), SubsGrid->GetFirstSelRow()));
 		activeMacroItems.push_back(*i);
 		id++;
 	}
@@ -1105,7 +1105,7 @@ void FrameMain::OnAutomationMacro (wxCommandEvent &event) {
 	std::vector<int> selected_lines = SubsGrid->GetAbsoluteSelection();
 	int first_sel = SubsGrid->GetFirstSelRow();
 	// Run the macro...
-	activeMacroItems[event.GetId()-ID_MENU_AUTOMATION_MACRO]->Process(SubsGrid->ass, selected_lines, first_sel, this);
+	activeMacroItems[event.GetId()-ID_MENU_AUTOMATION_MACRO]->Process(context->ass, selected_lines, first_sel, this);
 	SubsGrid->SetSelectionFromAbsolute(selected_lines);
 	SubsGrid->EndBatch();
 #endif

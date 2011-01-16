@@ -52,11 +52,7 @@
 
 namespace agi { class OptionValue; }
 
-class AssFile;
 class AssEntry;
-class AssDialogue;
-class SubsEditBox;
-class FrameMain;
 
 typedef std::list<AssEntry*>::iterator entryIter;
 
@@ -66,7 +62,6 @@ typedef std::list<AssEntry*>::iterator entryIter;
 ///
 /// DOCME
 class SubtitlesGrid: public BaseGrid {
-private:
 	agi::signal::Connection seekListener;
 
 	void OnPopupMenu(bool alternate=false);
@@ -103,10 +98,7 @@ private:
 	void OnSubtitlesOpen();
 
 public:
-	/// Currently open file
-	AssFile *ass;
-
-	SubtitlesGrid(FrameMain* parentFrame,wxWindow *parent, wxWindowID id, AssFile *subs, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = wxWANTS_CHARS, const wxString& name = wxPanelNameStr);
+	SubtitlesGrid(wxWindow *parent, agi::Context *context, const wxSize& size = wxDefaultSize, long style = wxWANTS_CHARS, const wxString& name = wxPanelNameStr);
 	~SubtitlesGrid();
 
 	/// @brief Jump to the start/end time of the current subtitle line

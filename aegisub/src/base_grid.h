@@ -48,11 +48,10 @@
 
 #include "selection_controller.h"
 
+namespace agi { struct Context; }
 class AssEntry;
 class AssDialogue;
 class SubsEditBox;
-class FrameMain;
-class VideoContext;
 
 /// DOCME
 typedef std::list<AssEntry*>::iterator entryIter;
@@ -112,10 +111,7 @@ protected:
 	/// DOCME
 	int colWidth[16];
 
-	/// DOCME
-	FrameMain *parentFrame;
-
-	VideoContext *context;
+	agi::Context *context;
 
 	/// DOCME
 	static const int columns = 10;
@@ -145,10 +141,6 @@ public:
 	virtual void PrevLine();
 
 public:
-
-	/// DOCME
-	SubsEditBox *editBox;
-
 	/// DOCME
 	bool byFrame;
 
@@ -161,7 +153,7 @@ public:
 	void SelectRow(int row, bool addToSelected = false, bool select=true);
 	void ClearSelection();
 	bool IsInSelection(int row, int col=0) const;
-	static bool IsDisplayed(AssDialogue *line);
+	bool IsDisplayed(const AssDialogue *line) const;
 	int GetNumberSelection() const;
 	int GetFirstSelRow() const;
 	int GetLastSelRow() const;
@@ -182,7 +174,7 @@ public:
 	AssDialogue *GetDialogue(int n) const;
 	int GetDialogueIndex(AssDialogue *diag) const;
 
-	BaseGrid(wxWindow* parent, wxWindowID id, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = wxWANTS_CHARS, const wxString& name = wxPanelNameStr);
+	BaseGrid(wxWindow* parent, agi::Context *context, const wxSize& size = wxDefaultSize, long style = wxWANTS_CHARS, const wxString& name = wxPanelNameStr);
 	~BaseGrid();
 
 	DECLARE_EVENT_TABLE()

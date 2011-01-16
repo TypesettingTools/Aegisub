@@ -34,11 +34,6 @@
 /// @ingroup tools_ui
 ///
 
-
-
-
-///////////
-// Headers
 #ifndef AGI_PRE
 #include <wx/checkbox.h>
 #include <wx/dialog.h>
@@ -46,10 +41,7 @@
 #include <wx/textctrl.h>
 #endif
 
-
-//////////////
-// Prototypes
-class SubtitlesGrid;
+namespace agi { struct Context; }
 class AssOverrideParameter;
 
 
@@ -60,10 +52,7 @@ class AssOverrideParameter;
 ///
 /// DOCME
 class DialogResample : public wxDialog {
-private:
-
-	/// DOCME
-	SubtitlesGrid *grid;
+	agi::Context *c;
 
 	/// DOCME
 
@@ -119,34 +108,7 @@ private:
 	void DoResampleTags (wxString name,int n,AssOverrideParameter *curParam,void *_curDiag);
 
 public:
-	DialogResample(wxWindow *parent, SubtitlesGrid *grid);
+	DialogResample(agi::Context *context);
 
 	DECLARE_EVENT_TABLE()
-};
-
-
-///////
-// IDs
-enum {
-
-	/// DOCME
-	BUTTON_DEST_FROM_VIDEO = 1520,
-
-	/// DOCME
-	CHECK_ANAMORPHIC,
-
-	/// DOCME
-	CHECK_SYMMETRICAL,
-
-	/// DOCME
-	TEXT_MARGIN_T,
-
-	/// DOCME
-	TEXT_MARGIN_L,
-
-	/// DOCME
-	TEXT_MARGIN_R,
-
-	/// DOCME
-	TEXT_MARGIN_B
 };

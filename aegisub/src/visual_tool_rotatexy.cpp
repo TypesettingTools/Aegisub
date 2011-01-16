@@ -41,6 +41,7 @@
 
 #include "ass_dialogue.h"
 #include "ass_file.h"
+#include "include/aegisub/context.h"
 #include "subs_grid.h"
 #include "utils.h"
 #include "video_context.h"
@@ -188,7 +189,7 @@ void VisualToolRotateXY::UpdateHold() {
 }
 
 void VisualToolRotateXY::CommitHold() {
-	Selection sel = grid->GetSelectedSet();
+	Selection sel = c->selectionController->GetSelectedSet();
 	for (Selection::const_iterator cur = sel.begin(); cur != sel.end(); ++cur) {
 		SetOverride(*cur, L"\\frx",wxString::Format(L"(%0.3g)",curAngleX));
 		SetOverride(*cur, L"\\fry",wxString::Format(L"(%0.3g)",curAngleY));

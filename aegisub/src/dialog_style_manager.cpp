@@ -51,6 +51,7 @@
 #include "dialog_selected_choices.h"
 #include "dialog_style_editor.h"
 #include "dialog_style_manager.h"
+#include "include/aegisub/context.h"
 #include "help_button.h"
 #include "libresrc/libresrc.h"
 #include "main.h"
@@ -89,17 +90,11 @@ enum {
 	LIST_CURRENT
 };
 
-/// @brief Constructor 
-/// @param parent 
-/// @param _grid  
-DialogStyleManager::DialogStyleManager (wxWindow *parent,SubtitlesGrid *_grid)
-: wxDialog (parent,-1,_("Styles Manager"),wxDefaultPosition,wxDefaultSize,wxDEFAULT_DIALOG_STYLE,_T("DialogStylesManager"))
+DialogStyleManager::DialogStyleManager (agi::Context *context)
+: wxDialog (context->parent,-1,_("Styles Manager"),wxDefaultPosition,wxDefaultSize,wxDEFAULT_DIALOG_STYLE,_T("DialogStylesManager"))
+, c(context)
 {
-	// Set icon
 	SetIcon(BitmapToIcon(GETIMAGE(style_toolbutton_24)));
-
-	// Vars
-	grid = _grid;
 
 	// Catalog
 	wxSizer *CatalogBox = new wxStaticBoxSizer(wxHORIZONTAL,this,_("Catalog of available storages"));
@@ -225,18 +220,17 @@ DialogStyleManager::DialogStyleManager (wxWindow *parent,SubtitlesGrid *_grid)
 
 	// Populate lists
 	LoadCatalog();
-	LoadCurrentStyles(grid->ass);
+	LoadCurrentStyles(c->ass);
 
 	//Set key handlers for lists
-	CatalogList->PushEventHandler(new DialogStyleManagerEvent(this));
-	StorageList->PushEventHandler(new DialogStyleManagerEvent(this));
-	CurrentList->PushEventHandler(new DialogStyleManagerEvent(this));
+	CatalogList->Bind(wxEVT_KEY_DOWN, &DialogStyleManager::OnKeyDown, this);
+	StorageList->Bind(wxEVT_KEY_DOWN, &DialogStyleManager::OnKeyDown, this);
+	CurrentList->Bind(wxEVT_KEY_DOWN, &DialogStyleManager::OnKeyDown, this);
 
 	// Select default item
 	wxString selected_style;
-	if (_grid) {
-		AssDialogue *dia = _grid->GetDialogue(_grid->GetFirstSelRow());
-		if(dia) selected_style = dia->Style;
+	if (AssDialogue *dia = context->selectionController->GetActiveLine()) {
+		selected_style = dia->Style;
 	}
 
 	if (StorageList->GetCount() && StorageList->SetStringSelection(selected_style)) {
@@ -258,11 +252,8 @@ DialogStyleManager::DialogStyleManager (wxWindow *parent,SubtitlesGrid *_grid)
 DialogStyleManager::~DialogStyleManager() {
 	int sel = CatalogList->GetSelection();
 	if (sel != wxNOT_FOUND) {
-		grid->ass->SetScriptInfo(_T("Last Style Storage"),CatalogList->GetString(sel));
+		c->ass->SetScriptInfo("Last Style Storage",CatalogList->GetString(sel));
 	}
-	CatalogList->PopEventHandler(true);
-	StorageList->PopEventHandler(true);
-	CurrentList->PopEventHandler(true);
 	Store.Clear();
 }
 
@@ -299,7 +290,7 @@ void DialogStyleManager::LoadCatalog () {
 
 	// Set to default if available
 	StorageActions(false);
-	wxString pickStyle = grid->ass->GetScriptInfo(_T("Last Style Storage"));
+	wxString pickStyle = c->ass->GetScriptInfo(_T("Last Style Storage"));
 	if (pickStyle.IsEmpty()) pickStyle = _T("Default");
 	int opt = CatalogList->FindString(pickStyle, false);
 	if (opt != wxNOT_FOUND) {
@@ -492,7 +483,7 @@ void DialogStyleManager::OnStorageEdit (wxCommandEvent &) {
 	int n = StorageList->GetSelections(selections);
 	if (n == 1) {
 		AssStyle *selStyle = styleStorageMap[selections[0]];
-		DialogStyleEditor editor(this,selStyle,grid,false,&Store);
+		DialogStyleEditor editor(this,selStyle,c,false,&Store);
 		if (editor.ShowModal()) {
 			StorageList->SetString(selections[0],selStyle->name);
 			Store.Save(CatalogList->GetString(CatalogList->GetSelection()));
@@ -507,7 +498,7 @@ void DialogStyleManager::OnCurrentEdit (wxCommandEvent &) {
 	int n = CurrentList->GetSelections(selections);
 	if (n == 1) {
 		AssStyle *selStyle = styleMap[selections[0]];
-		DialogStyleEditor editor(this,selStyle,grid,true,&Store);
+		DialogStyleEditor editor(this,selStyle,c,true,&Store);
 		if (editor.ShowModal()) {
 			CurrentList->SetString(selections[0],selStyle->name);
 		}
@@ -599,15 +590,15 @@ void DialogStyleManager::OnCopyToCurrent (wxCommandEvent &) {
 		}
 		if (addStyle) {
 			AssStyle *temp = new AssStyle(*styleStorageMap.at(selections[i]));
-			grid->ass->InsertStyle(temp);
+			c->ass->InsertStyle(temp);
 			copied.push_back(styleName);
 		}
 	}
-	LoadCurrentStyles(grid->ass);
+	LoadCurrentStyles(c->ass);
 	for (list<wxString>::iterator name = copied.begin(); name != copied.end(); ++name) {
 		CurrentList->SetStringSelection(*name, true);
 	}
-	grid->ass->Commit(_("style copy"));
+	c->ass->Commit(_("style copy"));
 	wxCommandEvent dummy;
 	OnCurrentChange(dummy);
 }
@@ -623,7 +614,7 @@ void DialogStyleManager::OnStorageCopy (wxCommandEvent &) {
 	newName += temp->name;
 	temp->name = newName;
 
-	DialogStyleEditor editor(this,temp,grid,false,&Store,true);
+	DialogStyleEditor editor(this,temp,c,false,&Store,true);
 	int modified = editor.ShowModal();
 	if (modified) {
 		Store.style.push_back(temp);
@@ -646,16 +637,16 @@ void DialogStyleManager::OnCurrentCopy (wxCommandEvent &) {
 	newName += temp->name;
 	temp->name = newName;
 
-	DialogStyleEditor editor(this,temp,grid,true,&Store,true);
+	DialogStyleEditor editor(this,temp,c,true,&Store,true);
 	int modified = editor.ShowModal();
 	if (modified) {
-		grid->ass->InsertStyle(temp);
-		LoadCurrentStyles(grid->ass);
+		c->ass->InsertStyle(temp);
+		LoadCurrentStyles(c->ass);
 		CurrentList->SetStringSelection(temp->name); // but even without this, the copy/delete/copy-to-storage buttons stay enabled?
 	}
 	else delete temp;
 
-	grid->ass->Commit(_("style copy"));
+	c->ass->Commit(_("style copy"));
 	UpdateMoveButtons();
 }
 
@@ -700,14 +691,14 @@ void DialogStyleManager::PasteToCurrent() {
 		try {
 			s = new AssStyle(st.GetNextToken().Trim(true));
 			if (s->Valid) {
-				while (grid->ass->GetStyle(s->name) != NULL)
+				while (c->ass->GetStyle(s->name) != NULL)
 					s->name = _T("Copy of ") + s->name;
 
 				s->UpdateData();
-				grid->ass->InsertStyle(s);
-				LoadCurrentStyles(grid->ass);
+				c->ass->InsertStyle(s);
+				LoadCurrentStyles(c->ass);
 
-				grid->ass->Commit(_("style paste"));
+				c->ass->Commit(_("style paste"));
 			}
 			else
 				wxMessageBox(_("Could not parse style"), _("Could not parse style"), wxOK | wxICON_EXCLAMATION , this);
@@ -763,7 +754,7 @@ void DialogStyleManager::PasteToStorage() {
 void DialogStyleManager::OnStorageNew (wxCommandEvent &) {
 	AssStyle *temp = new AssStyle;
 
-	DialogStyleEditor editor(this,temp,grid,false,&Store,true);
+	DialogStyleEditor editor(this,temp,c,false,&Store,true);
 	int modified = editor.ShowModal();
 	if (modified) {
 		Store.style.push_back(temp);
@@ -779,11 +770,11 @@ void DialogStyleManager::OnStorageNew (wxCommandEvent &) {
 void DialogStyleManager::OnCurrentNew (wxCommandEvent &) {
 	AssStyle *temp = new AssStyle;
 
-	DialogStyleEditor editor(this,temp,grid,true,&Store,true);
+	DialogStyleEditor editor(this,temp,c,true,&Store,true);
 	int modified = editor.ShowModal();
 	if (modified) {
-		grid->ass->InsertStyle(temp);
-		LoadCurrentStyles(grid->ass);
+		c->ass->InsertStyle(temp);
+		LoadCurrentStyles(c->ass);
 		CurrentList->SetStringSelection(temp->name);
 	}
 	else delete temp;
@@ -841,10 +832,10 @@ void DialogStyleManager::OnCurrentDelete (wxCommandEvent &) {
 		AssStyle *temp;
 		for (int i=0;i<n;i++) {
 			temp = styleMap.at(selections[i]);
-			grid->ass->Line.remove(temp);
+			c->ass->Line.remove(temp);
 			delete temp;
 		}
-		LoadCurrentStyles(grid->ass);
+		LoadCurrentStyles(c->ass);
 
 		// Set buttons
 		MoveToStorage->Enable(false);
@@ -852,7 +843,7 @@ void DialogStyleManager::OnCurrentDelete (wxCommandEvent &) {
 		CurrentCopy->Enable(false);
 		CurrentDelete->Enable(false);
 
-		grid->ass->Commit(_("style delete"));
+		c->ass->Commit(_("style delete"));
 	}
 	UpdateMoveButtons();
 }
@@ -898,7 +889,7 @@ void DialogStyleManager::OnCurrentImport(wxCommandEvent &) {
 						// The GetString->FindString mess is a silly workaround for the fact that to vsfilter
 						// (and the duplicate check a few lines above), style names aren't case sensitive, but to the
 						// rest of Aegisub they are.
-						*(grid->ass->GetStyle(CurrentList->GetString(CurrentList->FindString(styles[selections[i]], false)))) = *temp.GetStyle(styles[selections[i]]);
+						*(c->ass->GetStyle(CurrentList->GetString(CurrentList->FindString(styles[selections[i]], false)))) = *temp.GetStyle(styles[selections[i]]);
 					}
 					continue;
 				}
@@ -907,13 +898,13 @@ void DialogStyleManager::OnCurrentImport(wxCommandEvent &) {
 				modified = true;
 				AssStyle *tempStyle = new AssStyle;
 				*tempStyle = *temp.GetStyle(styles[selections[i]]);
-				grid->ass->InsertStyle(tempStyle);
+				c->ass->InsertStyle(tempStyle);
 			}
 
 			// Update
 			if (modified) {
-				LoadCurrentStyles(grid->ass);
-				grid->ass->Commit(_("style import"));
+				LoadCurrentStyles(c->ass);
+				c->ass->Commit(_("style import"));
 			}
 		}
 		catch (...) {
@@ -990,8 +981,6 @@ void DialogStyleManager::OnCurrentSort (wxCommandEvent &) { MoveStyles(false,4);
 /// @param storage 
 /// @param type    
 void DialogStyleManager::MoveStyles(bool storage, int type) {
-	// Variables
-	AssFile *subs = grid->ass;
 	wxListBox *list;
 	if (storage) list = StorageList;
 	else list = CurrentList;
@@ -1097,19 +1086,19 @@ void DialogStyleManager::MoveStyles(bool storage, int type) {
 		// Replace styles
 		entryIter next;
 		int curn = 0;
-		for (entryIter cur=subs->Line.begin();cur!=subs->Line.end();cur = next) {
+		for (entryIter cur=c->ass->Line.begin();cur!=c->ass->Line.end();cur = next) {
 			next = cur;
 			next++;
 			AssStyle *style = dynamic_cast<AssStyle*>(*cur);
 			if (style) {
-				subs->Line.insert(cur,styls[curn]);
-				subs->Line.erase(cur);
+				c->ass->Line.insert(cur,styls[curn]);
+				c->ass->Line.erase(cur);
 				curn++;
 			}
 		}
 
 		// Flag as modified
-		grid->ass->Commit(_("style move"));
+		c->ass->Commit(_("style move"));
 	}
 
 	// Update
@@ -1183,16 +1172,3 @@ int DialogStyleManager::lastx = -1;
 
 /// DOCME
 int DialogStyleManager::lasty = -1;
-
-/// @brief DialogStyleManagerEvent stuff 
-/// @param ctrl 
-DialogStyleManagerEvent::DialogStyleManagerEvent(DialogStyleManager *ctrl) {
-	control = ctrl;
-}
-BEGIN_EVENT_TABLE(DialogStyleManagerEvent, wxEvtHandler)
-	EVT_KEY_DOWN(DialogStyleManagerEvent::OnKeyDown)
-END_EVENT_TABLE()
-
-void DialogStyleManagerEvent::OnKeyDown(wxKeyEvent &event) {
-	control->OnKeyDown(event); //we need to access controls, so rather than make the controls public...
-}

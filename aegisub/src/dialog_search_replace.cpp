@@ -34,9 +34,6 @@
 /// @ingroup secondary_ui
 ///
 
-
-///////////
-// Headers
 #include "config.h"
 
 #ifndef AGI_PRE
@@ -48,6 +45,7 @@
 #include "ass_dialogue.h"
 #include "ass_file.h"
 #include "dialog_search_replace.h"
+#include "include/aegisub/context.h"
 #include "frame_main.h"
 #include "main.h"
 #include "selection_controller.h"
@@ -56,6 +54,15 @@
 #include "subs_grid.h"
 #include "video_display.h"
 
+// IDs
+enum {
+	BUTTON_FIND_NEXT,
+	BUTTON_REPLACE_NEXT,
+	BUTTON_REPLACE_ALL,
+	CHECK_MATCH_CASE,
+	CHECK_REGEXP,
+	CHECK_UPDATE_VIDEO
+};
 
 /// @brief Constructor 
 /// @param parent      
@@ -234,7 +241,7 @@ void DialogSearchReplace::FindReplace(int mode) {
 			wxString ReplaceWith = ReplaceEdit->GetValue();
 			Search.ReplaceWith = ReplaceWith;
 			config::mru->Add("Replace", STD_STR(ReplaceWith));
-		}	
+		}
 	}
 
 	// Replace
@@ -346,7 +353,7 @@ void SearchReplaceEngine::ReplaceNext(bool DoReplace) {
 		return;
 	}
 	
-	wxArrayInt sels = grid->GetSelection();
+	wxArrayInt sels = context->subsGrid->GetSelection();
 	int firstLine = 0;
 	if (sels.Count() > 0) firstLine = sels[0];
 	// if selection has changed reset values
@@ -361,7 +368,7 @@ void SearchReplaceEngine::ReplaceNext(bool DoReplace) {
 
 	// Setup
 	int start = curLine;
-	int nrows = grid->GetRows();
+	int nrows = context->subsGrid->GetRows();
 	bool found = false;
 	wxString *Text = NULL;
 	size_t tempPos;
@@ -434,7 +441,7 @@ void SearchReplaceEngine::ReplaceNext(bool DoReplace) {
 			}
 
 			// Commit
-			grid->ass->Commit(_("replace"), AssFile::COMMIT_TEXT);
+			context->ass->Commit(_("replace"), AssFile::COMMIT_TEXT);
 		}
 
 		else {
@@ -442,16 +449,16 @@ void SearchReplaceEngine::ReplaceNext(bool DoReplace) {
 		}
 
 		// Select
-		grid->SelectRow(curLine,false);
-		grid->MakeCellVisible(curLine,0);
+		context->subsGrid->SelectRow(curLine,false);
+		context->subsGrid->MakeCellVisible(curLine,0);
 		if (field == 0) {
-			grid->SetActiveLine(grid->GetDialogue(curLine));
-			grid->editBox->TextEdit->SetSelectionU(pos,pos+replaceLen);
+			context->subsGrid->SetActiveLine(context->subsGrid->GetDialogue(curLine));
+			context->editBox->TextEdit->SetSelectionU(pos,pos+replaceLen);
 		}
 
 		// Update video
 		if (updateVideo) {
-			grid->SetVideoToSubs(true);
+			context->subsGrid->SetVideoToSubs(true);
 		}
 		else if (DoReplace) Modified = true;
 
@@ -468,7 +475,7 @@ void SearchReplaceEngine::ReplaceNext(bool DoReplace) {
 void SearchReplaceEngine::ReplaceAll() {
 	// Setup
 	wxString *Text;
-	int nrows = grid->GetRows();
+	int nrows = context->subsGrid->GetRows();
 	size_t count = 0;
 	int regFlags = wxRE_ADVANCED;
 	if (!matchCase) {
@@ -476,11 +483,11 @@ void SearchReplaceEngine::ReplaceAll() {
 		//else LookFor.MakeLower();
 	}
 	bool replaced;
-	grid->BeginBatch();
+	context->subsGrid->BeginBatch();
 
 	// Selection
 	bool hasSelection = false;
-	wxArrayInt sels = grid->GetSelection();
+	wxArrayInt sels = context->subsGrid->GetSelection();
 	if (sels.Count() > 0) hasSelection = true;
 	bool inSel = false;
 	if (affect == 1) inSel = true;
@@ -538,7 +545,7 @@ void SearchReplaceEngine::ReplaceAll() {
 
 	// Commit
 	if (count > 0) {
-		grid->ass->Commit(_("replace"), AssFile::COMMIT_TEXT);
+		context->ass->Commit(_("replace"), AssFile::COMMIT_TEXT);
 		wxMessageBox(wxString::Format(_("%i matches were replaced."),count));
 	}
 
@@ -546,7 +553,7 @@ void SearchReplaceEngine::ReplaceAll() {
 	else {
 		wxMessageBox(_("No matches found."));
 	}
-	grid->EndBatch();
+	context->subsGrid->EndBatch();
 	LastWasFind = false;
 }
 
@@ -556,7 +563,7 @@ void SearchReplaceEngine::ReplaceAll() {
 ///
 void SearchReplaceEngine::OnDialogOpen() {
 	// Set curline
-	wxArrayInt sels = grid->GetSelection();
+	wxArrayInt sels = context->subsGrid->GetSelection();
 	curLine = 0;
 	if (sels.Count() > 0) curLine = sels[0];
 
@@ -603,7 +610,7 @@ void SearchReplaceEngine::OpenDialog (bool replace) {
 /// @return 
 ///
 wxString *SearchReplaceEngine::GetText(int n,int field) {
-	AssDialogue *cur = grid->GetDialogue(n);
+	AssDialogue *cur = context->subsGrid->GetDialogue(n);
 	if (field == 0) return &cur->Text;
 	else if (field == 1) return &cur->Style;
 	else if (field == 2) return &cur->Actor;

@@ -46,8 +46,9 @@
 #include <wx/textctrl.h>
 #endif
 
-class SubtitlesGrid;
+namespace agi { struct Context; }
 class AssDialogue;
+class SubtitlesGrid;
 
 /// DOCME
 /// @class DialogTimingProcessor
@@ -55,8 +56,7 @@ class AssDialogue;
 ///
 /// DOCME
 class DialogTimingProcessor : public wxDialog {
-	/// DOCME
-	SubtitlesGrid *grid;
+	agi::Context *c;
 
 	/// DOCME
 	wxStaticBoxSizer *KeyframesSizer;
@@ -132,15 +132,13 @@ class DialogTimingProcessor : public wxDialog {
 	void UpdateControls();
 	void Process();
 	int GetClosestKeyFrame(int frame);
-	bool StyleOK(wxString styleName);
 
 	/// DOCME
 	std::vector<AssDialogue*> Sorted;
-	AssDialogue *GetSortedDialogue(int n);
 	void SortDialogues();
 
 public:
-	DialogTimingProcessor(wxWindow *parent,SubtitlesGrid *grid);
+	DialogTimingProcessor(agi::Context *c);
 
 	DECLARE_EVENT_TABLE()
 };

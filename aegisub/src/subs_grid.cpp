@@ -103,21 +103,15 @@ END_EVENT_TABLE()
 /// @param size     
 /// @param style    
 /// @param name     
-SubtitlesGrid::SubtitlesGrid(FrameMain* parentFr, wxWindow *parent, wxWindowID id, AssFile *subs, const wxPoint& pos, const wxSize& size, long style, const wxString& name)
-: BaseGrid(parent,id,pos,size,style,name)
-, ass(subs)
+SubtitlesGrid::SubtitlesGrid(wxWindow *parent, agi::Context *context,  const wxSize& size, long style, const wxString& name)
+: BaseGrid(parent,context,size,style,name)
+, seekListener(context->videoController->AddSeekListener(&SubtitlesGrid::Refresh, this, false, (const wxRect *)NULL))
 {
-	byFrame = false;
-	editBox = NULL;
-	parentFrame = parentFr;
-
-	seekListener = VideoContext::Get()->AddSeekListener(&SubtitlesGrid::Refresh, this, false, (const wxRect *)NULL);
-
 	OnHighlightVisibleChange(*OPT_GET("Subtitle/Grid/Highlight Subtitles in Frame"));
 	OPT_SUB("Subtitle/Grid/Highlight Subtitles in Frame", &SubtitlesGrid::OnHighlightVisibleChange, this);
 	OPT_SUB("Subtitle/Grid/Hide Overrides", std::tr1::bind(&SubtitlesGrid::Refresh, this, false, (const wxRect*)0));
-	ass->AddCommitListener(&SubtitlesGrid::OnSubtitlesCommit, this);
-	ass->AddFileOpenListener(&SubtitlesGrid::OnSubtitlesOpen, this);
+	context->ass->AddCommitListener(&SubtitlesGrid::OnSubtitlesCommit, this);
+	context->ass->AddFileOpenListener(&SubtitlesGrid::OnSubtitlesOpen, this);
 }
 
 /// @brief Destructor 
@@ -196,14 +190,14 @@ void SubtitlesGrid::OnPopupMenu(bool alternate) {
 		state = (sels == 1);
 		menu.Append(MENU_INSERT_BEFORE,_("&Insert (before)"),_T("Inserts a line before current"))->Enable(state);
 		menu.Append(MENU_INSERT_AFTER,_("Insert (after)"),_T("Inserts a line after current"))->Enable(state);
-		state = (sels == 1 && context->IsLoaded());
+		state = (sels == 1 && context->videoController->IsLoaded());
 		menu.Append(MENU_INSERT_BEFORE_VIDEO,_("Insert at video time (before)"),_T("Inserts a line after current, starting at video time"))->Enable(state);
 		menu.Append(MENU_INSERT_AFTER_VIDEO,_("Insert at video time (after)"),_T("Inserts a line after current, starting at video time"))->Enable(state);
 		menu.AppendSeparator();
 
 		// Duplicate selection
 		menu.Append(MENU_DUPLICATE,_("&Duplicate"),_("Duplicate the selected lines"))->Enable(continuous);
-		menu.Append(MENU_DUPLICATE_NEXT_FRAME,_("&Duplicate and shift by 1 frame"),_("Duplicate lines and shift by one frame"))->Enable(continuous && context->TimecodesLoaded());
+		menu.Append(MENU_DUPLICATE_NEXT_FRAME,_("&Duplicate and shift by 1 frame"),_("Duplicate lines and shift by one frame"))->Enable(continuous && context->videoController->TimecodesLoaded());
 		menu.Append(MENU_SPLIT_BY_KARAOKE,_("Split (by karaoke)"),_("Uses karaoke timing to split line into multiple smaller lines"))->Enable(sels > 0);
 
 		// Swaps selection
@@ -228,7 +222,7 @@ void SubtitlesGrid::OnPopupMenu(bool alternate) {
 		menu.AppendSeparator();
 
 		//Make audio clip
-		state = parentFrame->context->audioController->IsAudioOpen()==true;
+		state = context->audioController->IsAudioOpen();
 		menu.Append(MENU_AUDIOCLIP,_("Create audio clip"),_("Create an audio clip of the selected line"))->Enable(state);
 		menu.AppendSeparator();
 
@@ -343,7 +337,7 @@ void SubtitlesGrid::OnKeyDown(wxKeyEvent &event) {
 			}
 
 			// Duplicate and shift
-			if (context->TimecodesLoaded()) {
+			if (context->videoController->TimecodesLoaded()) {
 				if (Hotkeys.IsPressed(_T("Grid duplicate and shift one frame"))) {
 					DuplicateLines(n,n2,true);
 					return;
@@ -427,7 +421,7 @@ void SubtitlesGrid::OnSplitByKaraoke (wxCommandEvent &) {
 		didSplit |= SplitLineByKaraoke(sels[i]);
 	}
 	if (didSplit) {
-		ass->Commit(_("splitting"));
+		context->ass->Commit(_("splitting"));
 	}
 	EndBatch();
 }
@@ -498,7 +492,7 @@ void SubtitlesGrid::OnInsertBeforeVideo (wxCommandEvent &) {
 
 	// Create line to add
 	AssDialogue *def = new AssDialogue;
-	int video_ms = context->TimeAtFrame(context->GetFrameN(),agi::vfr::START);
+	int video_ms = context->videoController->TimeAtFrame(context->videoController->GetFrameN(),agi::vfr::START);
 	def->Start.SetMS(video_ms);
 	def->End.SetMS(video_ms+OPT_GET("Timing/Default Duration")->GetInt());
 	def->Style = GetDialogue(n)->Style;
@@ -518,7 +512,7 @@ void SubtitlesGrid::OnInsertAfterVideo (wxCommandEvent &) {
 
 	// Create line to add
 	AssDialogue *def = new AssDialogue;
-	int video_ms = context->TimeAtFrame(context->GetFrameN(),agi::vfr::START);
+	int video_ms = context->videoController->TimeAtFrame(context->videoController->GetFrameN(),agi::vfr::START);
 	def->Start.SetMS(video_ms);
 	def->End.SetMS(video_ms+OPT_GET("Timing/Default Duration")->GetInt());
 	def->Style = GetDialogue(n)->Style;
@@ -616,14 +610,14 @@ void SubtitlesGrid::OnRecombine(wxCommandEvent &) {
 		if (d1->Text == (*d2)->Text) {
 			expand_times(d1, *d2);
 			delete d1;
-			ass->Line.remove(d1);
+			context->ass->Line.remove(d1);
 			continue;
 		}
 
 		// 1, 1+2, 1 turns into 1, 2, [empty]
 		if (d1->Text.empty()) {
 			delete d1;
-			ass->Line.remove(d1);
+			context->ass->Line.remove(d1);
 			continue;
 		}
 
@@ -656,11 +650,11 @@ void SubtitlesGrid::OnRecombine(wxCommandEvent &) {
 		}
 	}
 
-	ass->Commit(_("combining"));
+	context->ass->Commit(_("combining"));
 
 	// Remove now non-existent lines from the selection
 	Selection lines;
-	transform(ass->Line.begin(), ass->Line.end(), inserter(lines, lines.begin()), cast<AssDialogue*>());
+	transform(context->ass->Line.begin(), context->ass->Line.end(), inserter(lines, lines.begin()), cast<AssDialogue*>());
 	Selection newSel;
 	set_intersection(lines.begin(), lines.end(), selectedSet.begin(), selectedSet.end(), inserter(newSel, newSel.begin()));
 
@@ -677,7 +671,7 @@ void SubtitlesGrid::OnRecombine(wxCommandEvent &) {
 /// @brief Export audio clip of line 
 void SubtitlesGrid::OnAudioClip(wxCommandEvent &) {
 	int64_t num_samples,start=0,end=0,temp;
-	AudioController *audioController = parentFrame->context->audioController;
+	AudioController *audioController = context->audioController;
 	const AudioProvider *provider = audioController->GetAudioProvider();
 	AssDialogue *cur;
 	wxArrayInt sel = GetSelection();
@@ -763,7 +757,7 @@ void SubtitlesGrid::SwapLines(int n1,int n2) {
 	
 	std::swap(*dlg1, *dlg2);
 
-	ass->Commit(_("swap lines"));
+	context->ass->Commit(_("swap lines"));
 }
 
 /// @brief Insert a line 
@@ -773,14 +767,14 @@ void SubtitlesGrid::SwapLines(int n1,int n2) {
 /// @param update 
 void SubtitlesGrid::InsertLine(AssDialogue *line,int n,bool after,bool update) {
 	AssDialogue *rel_line = GetDialogue(n);
-	entryIter pos = std::find(ass->Line.begin(), ass->Line.end(), rel_line);
+	entryIter pos = std::find(context->ass->Line.begin(), context->ass->Line.end(), rel_line);
 	if (after) ++pos;
 
-	entryIter newIter = ass->Line.insert(pos,line);
+	entryIter newIter = context->ass->Line.insert(pos,line);
 
 	// Update
 	if (update) {
-		ass->Commit(_("line insertion"));
+		context->ass->Commit(_("line insertion"));
 	}
 	else {
 		UpdateMaps();
@@ -896,7 +890,7 @@ void SubtitlesGrid::PasteLines(int n,bool pasteOver) {
 
 		// Update data post-insertion
 		if (inserted > 0) {
-			ass->Commit(_("paste"), pasteOver ? AssFile::COMMIT_TEXT : AssFile::COMMIT_FULL);
+			context->ass->Commit(_("paste"), pasteOver ? AssFile::COMMIT_TEXT : AssFile::COMMIT_FULL);
 
 			// Set selection
 			if (!pasteOver) {
@@ -913,14 +907,14 @@ void SubtitlesGrid::PasteLines(int n,bool pasteOver) {
 }
 
 void SubtitlesGrid::DeleteLines(wxArrayInt target, bool flagModified) {
-	entryIter before_first = std::find_if(ass->Line.begin(), ass->Line.end(), cast<AssDialogue*>()); --before_first;
+	entryIter before_first = std::find_if(context->ass->Line.begin(), context->ass->Line.end(), cast<AssDialogue*>()); --before_first;
 	int old_active_line_index = GetDialogueIndex(GetActiveLine());
 
 	int row = -1;
 	int deleted = 0;
-	for (entryIter cur = ass->Line.begin(); cur != ass->Line.end();) {
+	for (entryIter cur = context->ass->Line.begin(); cur != context->ass->Line.end();) {
 		if (dynamic_cast<AssDialogue*>(*cur) && ++row == target[deleted]) {
-			cur = ass->Line.erase(cur);
+			cur = context->ass->Line.erase(cur);
 			++deleted;
 			if (deleted == target.size()) break;
 		}
@@ -933,12 +927,12 @@ void SubtitlesGrid::DeleteLines(wxArrayInt target, bool flagModified) {
 	if (GetRows() == deleted) {
 		AssDialogue *def = new AssDialogue;
 		++before_first;
-		ass->Line.insert(before_first, def);
+		context->ass->Line.insert(before_first, def);
 		old_active_line_index = 0;
 	}
 
 	if (flagModified) {
-		ass->Commit(_("delete"));
+		context->ass->Commit(_("delete"));
 	}
 	else {
 		UpdateMaps();
@@ -991,7 +985,7 @@ void SubtitlesGrid::JoinLines(int n1,int n2,bool concat) {
 	// Delete remaining lines (this will auto commit)
 	DeleteLines(GetRangeArray(n1+1,n2), false);
 
-	ass->Commit(_("join lines"));
+	context->ass->Commit(_("join lines"));
 
 	// Select new line
 	SetActiveLine(cur);
@@ -1031,7 +1025,7 @@ void SubtitlesGrid::AdjoinLines(int n1,int n2,bool setStart) {
 		}
 	}
 
-	ass->Commit(_("adjoin"));
+	context->ass->Commit(_("adjoin"));
 }
 
 void SubtitlesGrid::JoinAsKaraoke(int n1,int n2) {
@@ -1073,7 +1067,7 @@ void SubtitlesGrid::JoinAsKaraoke(int n1,int n2) {
 	// Delete remaining lines (this will auto commit)
 	DeleteLines(GetRangeArray(n1+1,n2), false);
 
-	ass->Commit(_("join as karaoke"));
+	context->ass->Commit(_("join as karaoke"));
 
 	// Select new line
 	SetActiveLine(cur);
@@ -1091,9 +1085,9 @@ void SubtitlesGrid::DuplicateLines(int n1,int n2,bool nextFrame) {
 
 		// Shift to next frame
 		if (nextFrame) {
-			int posFrame = context->FrameAtTime(cur->End.GetMS(),agi::vfr::END) + 1;
-			cur->Start.SetMS(context->TimeAtFrame(posFrame,agi::vfr::START));
-			cur->End.SetMS(context->TimeAtFrame(posFrame,agi::vfr::END));
+			int posFrame = context->videoController->FrameAtTime(cur->End.GetMS(),agi::vfr::END) + 1;
+			cur->Start.SetMS(context->videoController->TimeAtFrame(posFrame,agi::vfr::START));
+			cur->End.SetMS(context->videoController->TimeAtFrame(posFrame,agi::vfr::END));
 		}
 
 		// Insert
@@ -1122,8 +1116,8 @@ void SubtitlesGrid::ShiftLineByFrames(int n,int len,int type) {
 	assert(type >= 0 && type <= 2);
 	AssDialogue *cur = GetDialogue(n);
 
-	if (type != 2) cur->Start.SetMS(context->TimeAtFrame(len + context->FrameAtTime(cur->Start.GetMS(),agi::vfr::START),agi::vfr::START));
-	if (type != 1) cur->End.SetMS(context->TimeAtFrame(len + context->FrameAtTime(cur->End.GetMS(),agi::vfr::END),agi::vfr::END));
+	if (type != 2) cur->Start.SetMS(context->videoController->TimeAtFrame(len + context->videoController->FrameAtTime(cur->Start.GetMS(),agi::vfr::START),agi::vfr::START));
+	if (type != 1) cur->End.SetMS(context->videoController->TimeAtFrame(len + context->videoController->FrameAtTime(cur->End.GetMS(),agi::vfr::END),agi::vfr::END));
 }
 
 void SubtitlesGrid::SplitLine(AssDialogue *n1,int pos,bool estimateTimes) {
@@ -1141,7 +1135,7 @@ void SubtitlesGrid::SplitLine(AssDialogue *n1,int pos,bool estimateTimes) {
 		n2->Start.SetMS(splitTime);
 	}
 
-	ass->Commit(_("split"));
+	context->ass->Commit(_("split"));
 }
 
 bool SubtitlesGrid::SplitLineByKaraoke(int lineNumber) {
@@ -1184,10 +1178,10 @@ bool SubtitlesGrid::SplitLineByKaraoke(int lineNumber) {
 }
 
 void SubtitlesGrid::SetSubsToVideo(bool start) {
-	if (!context->IsLoaded()) return;
+	if (!context->videoController->IsLoaded()) return;
 
 	// Get new time
-	int ms = context->TimeAtFrame(context->GetFrameN(),start ? agi::vfr::START : agi::vfr::END);
+	int ms = context->videoController->TimeAtFrame(context->videoController->GetFrameN(),start ? agi::vfr::START : agi::vfr::END);
 
 	// Update selection
 	wxArrayInt sel = GetSelection();
@@ -1202,7 +1196,7 @@ void SubtitlesGrid::SetSubsToVideo(bool start) {
 	}
 
 	if (modified) {
-		ass->Commit(_("timing"), AssFile::COMMIT_TIMES);
+		context->ass->Commit(_("timing"), AssFile::COMMIT_TIMES);
 	}
 }
 
@@ -1212,9 +1206,9 @@ void SubtitlesGrid::SetVideoToSubs(bool start) {
 	AssDialogue *cur = GetDialogue(sel[0]);
 	if (cur) {
 		if (start) 
-			context->JumpToTime(cur->Start.GetMS());
+			context->videoController->JumpToTime(cur->Start.GetMS());
 		else 
-			context->JumpToTime(cur->End.GetMS(), agi::vfr::END);
+			context->videoController->JumpToTime(cur->End.GetMS(), agi::vfr::END);
 	}
 }
 
@@ -1231,7 +1225,7 @@ std::vector<int> SubtitlesGrid::GetAbsoluteSelection() {
 	GetSelectedSet(sel);
 
 	int line_index = 0;
-	for (entryIter it = ass->Line.begin(); it != ass->Line.end(); ++it, ++line_index) {
+	for (entryIter it = context->ass->Line.begin(); it != context->ass->Line.end(); ++it, ++line_index) {
 		if (sel.find(dynamic_cast<AssDialogue*>(*it)) != sel.end())
 			result.push_back(line_index);
 	}
@@ -1248,11 +1242,11 @@ void SubtitlesGrid::SetSelectionFromAbsolute(std::vector<int> &selection) {
 	std::sort(selection.begin(), selection.end());
 
 	int i = 0;
-	std::list<AssEntry*>::iterator j = ass->Line.begin();
+	std::list<AssEntry*>::iterator j = context->ass->Line.begin();
 	
 	for (size_t selveci = 0; selveci < selection.size(); ++selveci) {
-		while (i != selection[selveci] && j != ass->Line.end()) ++i, ++j;
-		if (j == ass->Line.end()) break; /// @todo Report error somehow
+		while (i != selection[selveci] && j != context->ass->Line.end()) ++i, ++j;
+		if (j == context->ass->Line.end()) break; /// @todo Report error somehow
 		AssDialogue *dlg = dynamic_cast<AssDialogue*>(*j);
 		if (dlg) newsel.insert(dlg);
 	}

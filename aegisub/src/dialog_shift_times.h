@@ -34,26 +34,16 @@
 /// @ingroup secondary_ui
 ///
 
-
-
-
-///////////
-// Headers
 #ifndef AGI_PRE
 #include <wx/dialog.h>
-#include <wx/listbox.h>
-#include <wx/radiobox.h>
-#include <wx/radiobut.h>
 #endif
 
-#include "timeedit_ctrl.h"
-
-
-//////////////
-// Prototypes
-class SubtitlesGrid;
-
-
+namespace agi { struct Context; }
+class TimeEdit;
+class wxListBox;
+class wxRadioBox;
+class wxRadioButton;
+class wxTextCtrl;
 
 /// DOCME
 /// @class DialogShiftTimes
@@ -61,13 +51,10 @@ class SubtitlesGrid;
 ///
 /// DOCME
 class DialogShiftTimes : public wxDialog {
-private:
+	agi::Context *context;
 
 	/// DOCME
 	bool ready;
-
-	/// DOCME
-	SubtitlesGrid *grid;
 
 	/// DOCME
 	int shiftframe;
@@ -106,10 +93,6 @@ private:
 	void AppendToHistory(wxString text);
 	void LoadHistory(wxString filename);
 	void OnClear(wxCommandEvent &event);
-
-public:
-	DialogShiftTimes (wxWindow *parent,SubtitlesGrid *grid);
-
 	void OnKey(wxKeyEvent &event);
 	void OnClose(wxCommandEvent &event);
 	void OnOK(wxCommandEvent &event);
@@ -118,32 +101,8 @@ public:
 	void OnRadioTime(wxCommandEvent &event);
 	void OnRadioFrame(wxCommandEvent &event);
 
+public:
+	DialogShiftTimes (agi::Context *context);
+
 	DECLARE_EVENT_TABLE()
-};
-
-
-///////
-// IDs
-enum {
-
-	/// DOCME
-	TEXT_SHIFT_TIME = 1100,
-
-	/// DOCME
-	TEXT_SHIFT_FRAME,
-
-	/// DOCME
-	RADIO_BACKWARD,
-
-	/// DOCME
-	RADIO_FORWARD,
-
-	/// DOCME
-	RADIO_TIME,
-
-	/// DOCME
-	RADIO_FRAME,
-
-	/// DOCME
-	SHIFT_CLEAR_HISTORY
 };

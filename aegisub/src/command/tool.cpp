@@ -84,7 +84,7 @@ struct tool_export : public Command {
 
 	void operator()(agi::Context *c) {
 		c->videoController->Stop();
-		DialogResample(c->parent, c->subsGrid).ShowModal();
+		DialogResample(c).ShowModal();
 	}
 };
 
@@ -126,7 +126,7 @@ struct tool_resampleres : public Command {
 
 	void operator()(agi::Context *c) {
 		c->videoController->Stop();
-		DialogResample(c->parent, c->subsGrid).ShowModal();
+		DialogResample(c).ShowModal();
 	}
 };
 
@@ -155,7 +155,7 @@ struct tool_style_manager : public Command {
 
 	void operator()(agi::Context *c) {
 		c->videoController->Stop();
-		DialogStyleManager(c->parent, c->subsGrid).ShowModal();
+		DialogStyleManager(c).ShowModal();
 	}
 };
 
@@ -168,7 +168,7 @@ struct tool_time_kanji : public Command {
 	STR_HELP("Open Kanji timer.")
 
 	void operator()(agi::Context *c) {
-		DialogKanjiTimer(c->parent, c->subsGrid).ShowModal();
+		DialogKanjiTimer(c).ShowModal();
 	}
 };
 
@@ -181,7 +181,7 @@ struct tool_time_postprocess : public Command {
 	STR_HELP("Runs a post-processor for timing to deal with lead-ins, lead-outs, scene timing and etc.")
 
 	void operator()(agi::Context *c) {
-		DialogTimingProcessor(c->parent, c->subsGrid).ShowModal();
+		DialogTimingProcessor(c).ShowModal();
 	}
 };
 

@@ -41,6 +41,7 @@
 
 #include "ass_dialogue.h"
 #include "ass_file.h"
+#include "include/aegisub/context.h"
 #include "subs_grid.h"
 #include "utils.h"
 #include "video_context.h"
@@ -145,7 +146,7 @@ void VisualToolScale::UpdateHold() {
 }
 
 void VisualToolScale::CommitHold() {
-	Selection sel = grid->GetSelectedSet();
+	Selection sel = c->selectionController->GetSelectedSet();
 	for (Selection::const_iterator cur = sel.begin(); cur != sel.end(); ++cur) {
 		SetOverride(*cur, L"\\fscx",wxString::Format(L"(%0.3g)",curScaleX));
 		SetOverride(*cur, L"\\fscy",wxString::Format(L"(%0.3g)",curScaleY));

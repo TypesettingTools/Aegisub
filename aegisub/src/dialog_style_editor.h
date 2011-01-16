@@ -34,11 +34,6 @@
 /// @ingroup style_editor
 ///
 
-
-
-
-////////////
-// Includes
 #ifndef AGI_PRE
 #include <wx/checkbox.h>
 #include <wx/combobox.h>
@@ -49,15 +44,10 @@
 
 #include "colour_button.h"
 
-
-//////////////
-// Prototypes
+namespace agi { struct Context; }
 class AssStyle;
-class SubtitlesGrid;
 class SubtitlesPreview;
 class AssStyleStorage;
-
-
 
 /// DOCME
 /// @class DialogStyleEditor
@@ -65,7 +55,7 @@ class AssStyleStorage;
 ///
 /// DOCME
 class DialogStyleEditor : public wxDialog {
-private:
+	agi::Context *c;
 
 	/// DOCME
 	bool isLocal;
@@ -80,9 +70,6 @@ private:
 
 	/// DOCME
 	AssStyle *work;
-
-	/// DOCME
-	SubtitlesGrid *grid;
 
 	/// DOCME
 	AssStyleStorage *store;
@@ -218,7 +205,7 @@ private:
 	void OnPreviewColourChange (wxCommandEvent &event);
 
 public:
-	DialogStyleEditor(wxWindow *parent,AssStyle *style,SubtitlesGrid *grid,bool local,AssStyleStorage *store,bool newStyle=false);
+	DialogStyleEditor(wxWindow *parent,AssStyle *style, agi::Context *c,bool local,AssStyleStorage *store,bool newStyle=false);
 	~DialogStyleEditor();
 
 	void Apply (bool apply,bool close);

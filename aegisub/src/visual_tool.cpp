@@ -69,7 +69,7 @@ VisualTool<FeatureType>::VisualTool(VideoDisplay *parent, agi::Context *context,
 , commitId(-1)
 , selChanged(false)
 , selectedFeatures(selFeatures)
-, grid(context->subsGrid)
+, c(context)
 , parent(parent)
 , holding(false)
 , dragging(false)
@@ -81,15 +81,15 @@ VisualTool<FeatureType>::VisualTool(VideoDisplay *parent, agi::Context *context,
 , ctrlDown(false)
 , altDown(false)
 {
-	frameNumber = context->videoController->GetFrameN();
+	frameNumber = c->videoController->GetFrameN();
 	curDiag = GetActiveDialogueLine();
-	grid->AddSelectionListener(this);
+	c->selectionController->AddSelectionListener(this);
 	curFeature = features.begin();
 }
 
 template<class FeatureType>
 VisualTool<FeatureType>::~VisualTool() {
-	grid->RemoveSelectionListener(this);
+	c->selectionController->RemoveSelectionListener(this);
 }
 
 template<class FeatureType>
@@ -203,7 +203,7 @@ void VisualTool<FeatureType>::OnMouseEvent(wxMouseEvent &event) {
 			else {
 				selChanged = false;
 			}
-			if (curFeature->line) grid->SetActiveLine(curFeature->line);
+			if (curFeature->line) c->selectionController->SetActiveLine(curFeature->line);
 
 			if (InitializeDrag(curFeature)) {
 				dragStartX = video.x;
@@ -222,8 +222,8 @@ void VisualTool<FeatureType>::OnMouseEvent(wxMouseEvent &event) {
 			if (!altDown) {
 				ClearSelection();
 				Selection sel;
-				sel.insert(grid->GetActiveLine());
-				grid->SetSelectedSet(sel);
+				sel.insert(c->selectionController->GetActiveLine());
+				c->selectionController->SetSelectedSet(sel);
 				needRender = true;
 			}
 			if (curDiag && InitializeHold()) {
@@ -248,14 +248,14 @@ void VisualTool<FeatureType>::Commit(wxString message) {
 	if (message.empty()) {
 		message = _("visual typesetting");
 	}
-	commitId = grid->ass->Commit(message, AssFile::COMMIT_TEXT, commitId);
+	commitId = c->ass->Commit(message, AssFile::COMMIT_TEXT, commitId);
 	externalChange = true;
 }
 
 template<class FeatureType>
 AssDialogue* VisualTool<FeatureType>::GetActiveDialogueLine() {
-	AssDialogue *diag = grid->GetActiveLine();
-	if (diag && grid->IsDisplayed(diag))
+	AssDialogue *diag = c->selectionController->GetActiveLine();
+	if (diag && c->subsGrid->IsDisplayed(diag))
 		return diag;
 	return NULL;
 }
@@ -312,7 +312,7 @@ void VisualTool<FeatureType>::SetFrame(int newFrameNumber) {
 
 template<class FeatureType>
 void VisualTool<FeatureType>::OnActiveLineChanged(AssDialogue *new_line) {
-	if (new_line && !grid->IsDisplayed(new_line)) {
+	if (new_line && !c->subsGrid->IsDisplayed(new_line)) {
 		new_line = NULL;
 	}
 	if (new_line != curDiag) {
@@ -335,7 +335,7 @@ void VisualTool<FeatureType>::SetSelection(feature_iterator feat) {
 
 		Selection sel;
 		sel.insert(line);
-		grid->SetSelectedSet(sel);
+		c->selectionController->SetSelectedSet(sel);
 	}
 }
 
@@ -344,9 +344,9 @@ template<class FeatureType>
 void VisualTool<FeatureType>::AddSelection(feature_iterator feat) {
 	if (selFeatures.insert(feat).second && feat->line) {
 		lineSelCount[feat->line] += 1;
-		Selection sel = grid->GetSelectedSet();
+		Selection sel = c->selectionController->GetSelectedSet();
 		if (sel.insert(feat->line).second) {
-			grid->SetSelectedSet(sel);
+			c->selectionController->SetSelectedSet(sel);
 		}
 	}
 }
@@ -360,7 +360,7 @@ void VisualTool<FeatureType>::RemoveSelection(feature_iterator feat) {
 		lineSelCount[line] -= 1;
 		assert(lineSelCount[line] >= 0);
 		if (lineSelCount[line] <= 0) {
-			Selection sel = grid->GetSelectedSet();
+			Selection sel = c->selectionController->GetSelectedSet();
 
 			// Don't deselect the only selected line
 			if (sel.size() <= 1) return;
@@ -369,11 +369,11 @@ void VisualTool<FeatureType>::RemoveSelection(feature_iterator feat) {
 
 			// Set the active line to an arbitrary selected line if we just
 			// deselected the active line
-			if (line == grid->GetActiveLine()) {
-				grid->SetActiveLine(*sel.begin());
+			if (line == c->selectionController->GetActiveLine()) {
+				c->selectionController->SetActiveLine(*sel.begin());
 			}
 
-			grid->SetSelectedSet(sel);
+			c->selectionController->SetSelectedSet(sel);
 		}
 	}
 }
@@ -435,7 +435,7 @@ void VisualTool<FeatureType>::GetLinePosition(AssDialogue *diag,int &x, int &y, 
 	for (int i=0;i<4;i++) margin[i] = diag->Margin[i];
 	int align = 2;
 
-	AssStyle *style = grid->ass->GetStyle(diag->Style);
+	AssStyle *style = c->ass->GetStyle(diag->Style);
 	if (style) {
 		align = style->alignment;
 		for (int i=0;i<4;i++) {
@@ -444,7 +444,7 @@ void VisualTool<FeatureType>::GetLinePosition(AssDialogue *diag,int &x, int &y, 
 	}
 
 	int sw,sh;
-	VideoContext::Get()->GetScriptSize(sw,sh);
+	c->videoController->GetScriptSize(sw,sh);
 
 	// Process margins
 	margin[1] = sw - margin[1];
@@ -515,7 +515,7 @@ template<class FeatureType>
 void VisualTool<FeatureType>::GetLineRotation(AssDialogue *diag,float &rx,float &ry,float &rz) {
 	rx = ry = rz = 0.f;
 
-	AssStyle *style = grid->ass->GetStyle(diag->Style);
+	AssStyle *style = c->ass->GetStyle(diag->Style);
 	if (style) {
 		rz = style->angle;
 	}
@@ -533,7 +533,7 @@ template<class FeatureType>
 void VisualTool<FeatureType>::GetLineScale(AssDialogue *diag,float &scalX,float &scalY) {
 	scalX = scalY = 100.f;
 
-	AssStyle *style = grid->ass->GetStyle(diag->Style);
+	AssStyle *style = c->ass->GetStyle(diag->Style);
 	if (style) {
 		scalX = style->scalex;
 		scalY = style->scaley;
@@ -551,7 +551,7 @@ template<class FeatureType>
 void VisualTool<FeatureType>::GetLineClip(AssDialogue *diag,int &x1,int &y1,int &x2,int &y2,bool &inverse) {
 	x1 = y1 = 0;
 	int sw,sh;
-	VideoContext::Get()->GetScriptSize(sw,sh);
+	c->videoController->GetScriptSize(sw,sh);
 	x2 = sw-1;
 	y2 = sh-1;
 	inverse = false;

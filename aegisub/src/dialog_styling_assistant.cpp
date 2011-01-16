@@ -62,6 +62,14 @@
 #include "video_context.h"
 #include "video_display.h"
 
+// IDs
+enum {
+	ENTER_STYLE_BOX,
+	STYLE_LIST,
+	BUTTON_PLAY_VIDEO,
+	BUTTON_PLAY_AUDIO
+};
+
 
 /// @brief Constructor 
 /// @param parent 
@@ -69,16 +77,12 @@
 ///
 DialogStyling::DialogStyling(agi::Context *context)
 : wxDialog(context->parent, -1, _("Styling assistant"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER | wxMINIMIZE_BOX)
+, c(context)
+, needCommit(false)
+, linen(-1)
 {
 	// Set icon
 	SetIcon(BitmapToIcon(GETIMAGE(styling_toolbutton_24)));
-
-	// Variables
-	grid = context->subsGrid;
-	audio = context->audioController;
-	video = context->videoController;
-	needCommit = false;
-	linen = -1;
 
 	// Top sizer
 	wxSizer *TopSizer = new wxStaticBoxSizer(wxHORIZONTAL,this,_("Current line"));
@@ -86,7 +90,7 @@ DialogStyling::DialogStyling(agi::Context *context)
 	TopSizer->Add(CurLine,1,wxEXPAND,0);
 
 	// Left sizer
-	Styles = new wxListBox(this,STYLE_LIST,wxDefaultPosition,wxSize(150,180),grid->ass->GetStyles());
+	Styles = new wxListBox(this,STYLE_LIST,wxDefaultPosition,wxSize(150,180),context->ass->GetStyles());
 	wxSizer *LeftSizer = new wxStaticBoxSizer(wxVERTICAL,this,_("Styles available"));
 	LeftSizer->Add(Styles,1,wxEXPAND,0);
 
@@ -99,7 +103,6 @@ DialogStyling::DialogStyling(agi::Context *context)
 	RightTop->Add(TypeBox,1,wxEXPAND);
 
 	// Shortcuts
-	//wxStaticText *Keys = new wxStaticText(this,-1,_("Enter:\t\tAccept changes\nPage up:\tPrevious line\nPage down:\tNext line\nEnd:\t\tPlay sound\nClick on list:\tSet style\nCtrl+enter:\tAccept without going to next"));
 	wxSizer *KeysInnerSizer = new wxGridSizer(2,0,5);
 //H	KeysInnerSizer->Add(new wxStaticText(this,-1,Hotkeys.GetText(_T("Styling Assistant Accept")) + _T(": ")));
 	KeysInnerSizer->Add(new wxStaticText(this,-1,_("Accept changes")));
@@ -165,29 +168,24 @@ DialogStyling::DialogStyling(agi::Context *context)
 	origColour = TypeBox->GetBackgroundColour();
 }
 
-
-
 /// @brief Destructor 
 ///
 DialogStyling::~DialogStyling () {
 	GetPosition(&lastx, &lasty);
 	if (needCommit) {
-		grid->ass->Commit(_("style changes"), AssFile::COMMIT_TEXT);
+		c->ass->Commit(_("style changes"), AssFile::COMMIT_TEXT);
 	}
 }
-
-
 
 /// @brief Jump to line 
 /// @param n 
 /// @return 
 ///
 void DialogStyling::JumpToLine(int n) {
-	// Check stuff
 	if (n == -1) return;
 
 	// Get line
-	AssDialogue *nextLine = grid->GetDialogue(n);
+	AssDialogue *nextLine = c->subsGrid->GetDialogue(n);
 	if (!nextLine) return;
 	line = nextLine;
 
@@ -210,33 +208,29 @@ void DialogStyling::JumpToLine(int n) {
 	TypeBox->SetSelection(0,TypeBox->GetValue().Length());
 
 	// Update grid
-	grid->SelectRow(linen,false);
-	grid->MakeCellVisible(linen,0);
-	grid->SetActiveLine(grid->GetDialogue(linen));
+	c->subsGrid->SelectRow(linen,false);
+	c->subsGrid->MakeCellVisible(linen,0);
+	c->subsGrid->SetActiveLine(line);
 
 	// Update display
-	if (PreviewCheck->IsChecked()) VideoContext::Get()->JumpToTime(line->Start.GetMS());
+	if (PreviewCheck->IsChecked()) c->videoController->JumpToTime(line->Start.GetMS());
 }
-
-
 
 /// @brief Set style of current line 
 /// @param curName 
 /// @param jump    
 ///
 void DialogStyling::SetStyle (wxString curName, bool jump) {
-	// Get line
-	AssDialogue *line = grid->GetDialogue(linen);
-
-	// Update line
+	AssDialogue *line = c->subsGrid->GetDialogue(linen);
 	line->Style = curName;
 
 	// Update grid/subs
-	grid->Refresh(false);
 	if (PreviewCheck->IsChecked()) {
-		grid->ass->Commit(_("styling assistant"), AssFile::COMMIT_TEXT);
+		c->ass->Commit(_("styling assistant"), AssFile::COMMIT_TEXT);
 	}
-	else needCommit = true;
+	else {
+		needCommit = true;
+	}
 
 	// Next line
 	if (jump) JumpToLine(linen+1);
@@ -265,19 +259,18 @@ void DialogStyling::OnActivate(wxActivateEvent &event) {
 	// Dialog lost focus
 	if (!event.GetActive()) {
 		if (needCommit) {
-			grid->ass->Commit(_("styling assistant"), AssFile::COMMIT_TEXT);
+			c->ass->Commit(_("styling assistant"), AssFile::COMMIT_TEXT);
 			needCommit = false;
 		}
 		return;
 	}
 	// Enable/disable play video/audio buttons
-	PlayVideoButton->Enable(video->IsLoaded());
-	/// @todo Reinstate this when the audio controller is made reachable from here
-	//PlayAudioButton->Enable(audio->loaded);
+	PlayVideoButton->Enable(c->videoController->IsLoaded());
+	PlayAudioButton->Enable(c->audioController->IsAudioOpen());
 	// Fix style list
-	Styles->Set(grid->ass->GetStyles());
+	Styles->Set(c->ass->GetStyles());
 	// Fix line selection
-	JumpToLine(grid->GetFirstSelRow());
+	JumpToLine(c->subsGrid->GetFirstSelRow());
 }
 
 
@@ -372,7 +365,7 @@ void DialogStyling::OnListClicked(wxCommandEvent &event) {
 /// @param event 
 ///
 void DialogStyling::OnPlayVideoButton(wxCommandEvent &event) {
-	video->PlayLine();
+	c->videoController->PlayLine();
 	TypeBox->SetFocus();
 }
 
@@ -381,9 +374,9 @@ void DialogStyling::OnPlayVideoButton(wxCommandEvent &event) {
 /// @param event 
 ///
 void DialogStyling::OnPlayAudioButton(wxCommandEvent &event) {
-	audio->PlayRange(SampleRange(
-		audio->SamplesFromMilliseconds(line->Start.GetMS()),
-		audio->SamplesFromMilliseconds(line->End.GetMS())));
+	c->audioController->PlayRange(SampleRange(
+		c->audioController->SamplesFromMilliseconds(line->Start.GetMS()),
+		c->audioController->SamplesFromMilliseconds(line->End.GetMS())));
 	TypeBox->SetFocus();
 }
 
@@ -393,11 +386,10 @@ void DialogStyling::OnPlayAudioButton(wxCommandEvent &event) {
 /// @param parent 
 ///
 StyleEditBox::StyleEditBox(DialogStyling *parent)
-: wxTextCtrl(parent,ENTER_STYLE_BOX,_T(""),wxDefaultPosition,wxSize(180,-1),wxTE_PROCESS_ENTER)
+: wxTextCtrl(parent,ENTER_STYLE_BOX,"",wxDefaultPosition,wxSize(180,-1),wxTE_PROCESS_ENTER)
+, diag(parent)
 {
-	diag = parent;
 }
-
 
 ////////////////////////////
 // Event table for edit box
@@ -499,5 +491,3 @@ int DialogStyling::lastx = -1;
 
 /// DOCME
 int DialogStyling::lasty = -1;
-
-

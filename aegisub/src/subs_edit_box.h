@@ -42,8 +42,8 @@
 
 #include "selection_controller.h"
 
+namespace agi { struct Context; }
 class AssDialogue;
-class SubtitlesGrid;
 class SubsTextEditCtrl;
 class TimeEdit;
 class wxButton;
@@ -55,7 +55,6 @@ class wxSpinCtrl;
 class wxStyledTextCtrl;
 class wxStyledTextEvent;
 class wxTextCtrl;
-class AudioController;
 
 namespace agi { namespace vfr { class Framerate; } }
 
@@ -84,8 +83,7 @@ class SubsEditBox : public wxPanel, protected SelectionListener<AssDialogue> {
 	wxColour disabledBgColour;
 	wxColour origBgColour;
 
-	// Externally supplied controls
-	SubtitlesGrid *grid;
+	agi::Context *c;
 
 	// Box controls
 	wxCheckBox *CommentBox;
@@ -196,7 +194,6 @@ public:
 
 	/// @brief Constructor
 	/// @param parent Parent window
-	/// @param grid Associated grid
-	SubsEditBox(wxWindow *parent, SubtitlesGrid *grid);
+	SubsEditBox(wxWindow *parent, agi::Context *context);
 	~SubsEditBox();
 };

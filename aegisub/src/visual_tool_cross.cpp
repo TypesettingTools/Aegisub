@@ -36,6 +36,7 @@
 #include "config.h"
 
 #include "ass_file.h"
+#include "include/aegisub/context.h"
 #include "gl_text.h"
 #include "subs_grid.h"
 #include "video_context.h"
@@ -61,7 +62,7 @@ bool VisualToolCross::Update() {
 	dx -= vx;
 	dy -= vy;
 
-	Selection sel = grid->GetSelectedSet();
+	Selection sel = c->selectionController->GetSelectedSet();
 	for (Selection::const_iterator cur = sel.begin(); cur != sel.end(); ++cur) {
 		int x1, y1;
 		GetLinePosition(*cur, x1, y1);

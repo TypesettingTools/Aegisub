@@ -34,9 +34,6 @@
 /// @ingroup secondary_ui
 ///
 
-
-///////////
-// Headers
 #include "config.h"
 
 #ifndef AGI_PRE
@@ -46,6 +43,10 @@
 
 #include <wx/filefn.h>
 #include <wx/filename.h>
+#include <wx/listbox.h>
+#include <wx/radiobox.h>
+#include <wx/radiobut.h>
+#include <wx/textctrl.h>
 #endif
 
 #include "ass_dialogue.h"
@@ -53,28 +54,36 @@
 #include "ass_time.h"
 #include "charset_conv.h"
 #include "dialog_shift_times.h"
+#include "include/aegisub/context.h"
 #include "help_button.h"
 #include "libresrc/libresrc.h"
 #include "main.h"
 #include "standard_paths.h"
 #include "subs_grid.h"
+#include "timeedit_ctrl.h"
 #include "utils.h"
 #include "video_context.h"
-#include "video_display.h"
 
-/// @brief Constructor 
-/// @param parent 
-/// @param _grid  
-///
-DialogShiftTimes::DialogShiftTimes (wxWindow *parent,SubtitlesGrid *_grid)
-: wxDialog(parent, -1, _("Shift Times"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE, _T("JumpTo"))
+// IDs
+enum {
+	TEXT_SHIFT_TIME = 1100,
+	TEXT_SHIFT_FRAME,
+	RADIO_BACKWARD,
+	RADIO_FORWARD,
+	RADIO_TIME,
+	RADIO_FRAME,
+	SHIFT_CLEAR_HISTORY
+};
+
+DialogShiftTimes::DialogShiftTimes (agi::Context *context)
+: wxDialog(context->parent, -1, _("Shift Times"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE, _T("JumpTo"))
+, context(context)
 {
 	// Set icon
 	SetIcon(BitmapToIcon(GETIMAGE(shift_times_toolbutton_24)));
 
 	// Set initial values
 	ready = true;
-	grid = _grid;
 	shiftframe = 0;
 	
 	// Static-box sizers before anything else
@@ -168,7 +177,7 @@ DialogShiftTimes::DialogShiftTimes (wxWindow *parent,SubtitlesGrid *_grid)
 	if (OPT_GET("Tool/Shift Times/Direction")->GetBool()) DirectionBackward->SetValue(true);
 
 	// Has selection?
-	wxArrayInt sel = grid->GetSelection();
+	wxArrayInt sel = context->subsGrid->GetSelection();
 	if (sel.Count() == 0) {
 		SelChoice->Enable(1,false);
 		SelChoice->Enable(2,false);
@@ -226,8 +235,8 @@ void DialogShiftTimes::OnOK(wxCommandEvent &event) {
 	bool didSomething = false;
 
 	// Selection
-	int nrows = grid->GetRows();
-	wxArrayInt sel = grid->GetSelection();
+	int nrows = context->subsGrid->GetRows();
+	wxArrayInt sel = context->subsGrid->GetSelection();
 	int firstSel = 0;
 	if (sel.Count()) firstSel = sel[0];
 
@@ -247,9 +256,9 @@ void DialogShiftTimes::OnOK(wxCommandEvent &event) {
 
 	// Shift
 	for (int i=0;i<nrows;i++) {
-		if (allrows || (i >= firstSel && selOnward) || grid->IsInSelection(i,0)) {
-			if (byTime) grid->ShiftLineByTime(i,len,type);
-			else grid->ShiftLineByFrames(i,len,type);
+		if (allrows || (i >= firstSel && selOnward) || context->subsGrid->IsInSelection(i,0)) {
+			if (byTime) context->subsGrid->ShiftLineByTime(i,len,type);
+			else context->subsGrid->ShiftLineByFrames(i,len,type);
 			didSomething = true;
 		}
 	}
@@ -257,8 +266,8 @@ void DialogShiftTimes::OnOK(wxCommandEvent &event) {
 	// Add entry to history
 	if (didSomething) {
 		if (backward) len = -len;
-		wxString message = _T("");
-		wxFileName assfile(grid->ass->filename);
+		wxString message;
+		wxFileName assfile(context->ass->filename);
 		wxString filename = assfile.GetFullName();
 
 		// File
@@ -309,7 +318,7 @@ void DialogShiftTimes::OnOK(wxCommandEvent &event) {
 	OPT_SET("Tool/Shift Times/Direction")->SetBool(backward);
 
 	// End dialog
-	grid->ass->Commit(_("shifting"), AssFile::COMMIT_TIMES);
+	context->ass->Commit(_("shifting"), AssFile::COMMIT_TIMES);
 	EndModal(0);
 }
 

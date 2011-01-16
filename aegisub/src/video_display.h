@@ -47,7 +47,6 @@
 #include <libaegisub/signal.h>
 
 // Prototypes
-class AssFile;
 class FrameReadyEvent;
 class VideoBox;
 class VideoContext;
@@ -185,8 +184,6 @@ class VideoDisplay : public wxGLCanvas {
 
 	/// The dropdown box for selecting zoom levels
 	wxComboBox *zoomBox;
-
-	AssFile *model;
 
 public:
 	/// The VideoBox this display is contained in

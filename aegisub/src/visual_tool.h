@@ -155,7 +155,7 @@ protected:
 	/// Read-only reference to the set of selected features for subclasses
 	const std::set<feature_iterator, ltaddr> &selectedFeatures;
 	typedef typename std::set<feature_iterator, ltaddr>::const_iterator sel_iterator;
-	SubtitlesGrid *grid;
+	agi::Context *c;
 	VideoDisplay *parent; /// VideoDisplay which this belongs to, used to frame conversion
 	bool holding; /// Is a hold currently in progress?
 	AssDialogue *curDiag; /// Active dialogue line; NULL if it is not visible on the current frame

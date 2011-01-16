@@ -158,7 +158,7 @@ VideoDisplay::VideoDisplay(
 	slots.push_back(con->videoController->AddSeekListener(&VideoDisplay::SetFrame, this));
 	slots.push_back(con->videoController->AddVideoOpenListener(&VideoDisplay::OnVideoOpen, this));
 	slots.push_back(con->videoController->AddARChangeListener(&VideoDisplay::UpdateSize, this));
-	slots.push_back(model->AddCommitListener(&VideoDisplay::OnCommit, this));
+	slots.push_back(con->ass->AddCommitListener(&VideoDisplay::OnCommit, this));
 
 	SetCursor(wxNullCursor);
 }

@@ -46,9 +46,10 @@
 #include <wx/sizer.h>
 #endif
 
-#include "include/aegisub/hotkey.h"
-
 #include "base_grid.h"
+
+#include "include/aegisub/context.h"
+#include "include/aegisub/hotkey.h"
 
 #include "ass_dialogue.h"
 #include "ass_file.h"
@@ -70,33 +71,20 @@ static inline void set_difference(const S1 &src1, const S2 &src2, D &dst) {
 		std::inserter(dst, dst.begin()));
 }
 
-
-/// @brief Constructor 
-/// @param parent 
-/// @param id     
-/// @param pos    
-/// @param size   
-/// @param style  
-/// @param name   
-///
-BaseGrid::BaseGrid(wxWindow* parent, wxWindowID id, const wxPoint& pos, const wxSize& size, long style, const wxString& name)
-: wxWindow(parent, id, pos, size, style, name)
-, context(VideoContext::Get())
+BaseGrid::BaseGrid(wxWindow* parent, agi::Context *context, const wxSize& size, long style, const wxString& name)
+: wxWindow(parent, -1, wxDefaultPosition, size, style, name)
+, lineHeight(1) // non-zero to avoid div by 0
+, lastRow(-1)
+, extendRow(-1)
+, holding(false)
+, bmp(0)
+, active_line(0)
+, batch_level(0)
+, batch_active_line_changed(false)
+, context(context)
+, yPos(0)
+, byFrame(false)
 {
-	// Misc variables
-	lastRow = -1;
-	yPos = 0;
-	extendRow = -1;
-	bmp = NULL;
-	holding = false;
-	byFrame = false;
-	lineHeight = 1; // non-zero to avoid div by 0
-	active_line = 0;
-
-	batch_level = 0;
-	batch_active_line_changed = false;
-
-	// Set scrollbar
 	scrollBar = new wxScrollBar(this,GRID_SCROLLBAR,wxDefaultPosition,wxDefaultSize,wxSB_VERTICAL);
 	scrollBar->SetScrollbar(0,10,100,10);
 
@@ -128,16 +116,12 @@ BaseGrid::BaseGrid(wxWindow* parent, wxWindowID id, const wxPoint& pos, const wx
 	OPT_SUB("Subtitle/Grid/Highlight Subtitles in Frame", Refresh);
 }
 
-
-
 /// @brief Destructor 
 ///
 BaseGrid::~BaseGrid() {
 	ClearMaps();
 	delete bmp;
 }
-
-
 
 /// @brief Update style 
 ///
@@ -645,11 +629,11 @@ void BaseGrid::DrawImage(wxDC &dc) {
 		// Lines
 		else if (curDiag) {
 			// Set fields
-			strings.Add(wxString::Format(_T("%i"),curRow+1));
-			strings.Add(wxString::Format(_T("%i"),curDiag->Layer));
+			strings.Add(wxString::Format("%i",curRow+1));
+			strings.Add(wxString::Format("%i",curDiag->Layer));
 			if (byFrame) {
-				strings.Add(wxString::Format(_T("%i"),context->FrameAtTime(curDiag->Start.GetMS(),agi::vfr::START)));
-				strings.Add(wxString::Format(_T("%i"),context->FrameAtTime(curDiag->End.GetMS(),agi::vfr::END)));
+				strings.Add(wxString::Format("%i",context->videoController->FrameAtTime(curDiag->Start.GetMS(),agi::vfr::START)));
+				strings.Add(wxString::Format("%i",context->videoController->FrameAtTime(curDiag->End.GetMS(),agi::vfr::END)));
 			}
 			else {
 				strings.Add(curDiag->Start.GetASSFormated());
@@ -664,7 +648,7 @@ void BaseGrid::DrawImage(wxDC &dc) {
 
 			// Set text
 			int mode = OPT_GET("Subtitle/Grid/Hide Overrides")->GetInt();
-			wxString value = _T("");
+			wxString value;
 
 			// Hidden overrides
 			if (mode == 1 || mode == 2) {
@@ -878,7 +862,7 @@ void BaseGrid::OnMouseEvent(wxMouseEvent &event) {
 			if (dlg == GetActiveLine()) {
 				SetActiveLine(GetDialogue(GetFirstSelRow()));
 			}
-			parentFrame->UpdateToolbar();
+			wxGetApp().frame->UpdateToolbar();
 			lastRow = row;
 			return;
 		}
@@ -886,9 +870,9 @@ void BaseGrid::OnMouseEvent(wxMouseEvent &event) {
 		// Normal click
 		if ((click || dclick) && !shift && !ctrl && !alt) {
 			SetActiveLine(dlg);
-			if (dclick) context->JumpToTime(dlg->Start.GetMS());
+			if (dclick) context->videoController->JumpToTime(dlg->Start.GetMS());
 			SelectRow(row,false);
-			parentFrame->UpdateToolbar();
+			wxGetApp().frame->UpdateToolbar();
 			lastRow = row;
 			return;
 		}
@@ -917,7 +901,7 @@ void BaseGrid::OnMouseEvent(wxMouseEvent &event) {
 				}
 				SetSelectedSet(newsel);
 
-				parentFrame->UpdateToolbar();
+				wxGetApp().frame->UpdateToolbar();
 			}
 			return;
 		}
@@ -1058,9 +1042,9 @@ void BaseGrid::SetColumnWidths() {
 
 			// Times
 			if (byFrame) {
-				int tmp = context->FrameAtTime(curDiag->Start.GetMS(),agi::vfr::START);
+				int tmp = context->videoController->FrameAtTime(curDiag->Start.GetMS(),agi::vfr::START);
 				if (tmp > maxStart) maxStart = tmp;
-				tmp = context->FrameAtTime(curDiag->End.GetMS(),agi::vfr::END);
+				tmp = context->videoController->FrameAtTime(curDiag->End.GetMS(),agi::vfr::END);
 				if (tmp > maxEnd) maxEnd = tmp;
 			}
 		}
@@ -1132,13 +1116,12 @@ int BaseGrid::GetDialogueIndex(AssDialogue *diag) const {
 /// @param line 
 /// @return 
 ///
-bool BaseGrid::IsDisplayed(AssDialogue *line) {
-	VideoContext* con = VideoContext::Get();
-	if (!con->IsLoaded()) return false;
-	int frame = con->GetFrameN();
+bool BaseGrid::IsDisplayed(const AssDialogue *line) const {
+	if (!context->videoController->IsLoaded()) return false;
+	int frame = context->videoController->GetFrameN();
 	return
-		con->FrameAtTime(line->Start.GetMS(),agi::vfr::START) <= frame &&
-		con->FrameAtTime(line->End.GetMS(),agi::vfr::END) >= frame;
+		context->videoController->FrameAtTime(line->Start.GetMS(),agi::vfr::START) <= frame &&
+		context->videoController->FrameAtTime(line->End.GetMS(),agi::vfr::END) >= frame;
 }
 
 /// @brief Key press 
@@ -1166,7 +1149,7 @@ void BaseGrid::OnKeyDown(wxKeyEvent &event) {
 
 	// Left/right, forward to seek bar if video is loaded
 	if (key == WXK_LEFT || key == WXK_RIGHT) {
-		if (context->IsLoaded()) {
+		if (context->videoController->IsLoaded()) {
 			/// todo: is this nessesary, or can left/right just be in the Subtitle Grid category?
 			hotkey::check("Video", event.GetKeyCode(), event.GetUnicodeKey(), event.GetModifiers());
 		}

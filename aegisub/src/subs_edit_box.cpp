@@ -63,7 +63,7 @@
 #include "audio_controller.h"
 #include "dialog_colorpicker.h"
 #include "dialog_search_replace.h"
-#include "frame_main.h"
+#include "include/aegisub/context.h"
 #include "libresrc/libresrc.h"
 #include "main.h"
 #include "selection_controller.h"
@@ -162,15 +162,13 @@ void bind_focus_handler(T *control, Event event, wxString value, wxString alt, w
 	control->Bind(event, handler);
 }
 
-SubsEditBox::SubsEditBox(wxWindow *parent, SubtitlesGrid *grid)
+SubsEditBox::SubsEditBox(wxWindow *parent, agi::Context *context)
 : wxPanel(parent, -1, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL | wxRAISED_BORDER, "SubsEditBox")
 , line(NULL)
 , splitLineMode(false)
 , controlState(true)
-, grid(grid)
+, c(context)
 {
-	grid->editBox = this;
-
 	// Top controls
 	wxArrayString styles;
 	styles.Add(_T("Default"));
@@ -261,7 +259,7 @@ SubsEditBox::SubsEditBox(wxWindow *parent, SubtitlesGrid *grid)
 	MiddleBotSizer->Add(ByFrame,0,wxRIGHT | wxALIGN_CENTER | wxEXPAND,5);
 
 	// Text editor
-	TextEdit = new SubsTextEditCtrl(this, wxSize(300,50), wxBORDER_SUNKEN, grid);
+	TextEdit = new SubsTextEditCtrl(this, wxSize(300,50), wxBORDER_SUNKEN, c->subsGrid);
 	TextEdit->Bind(wxEVT_KEY_DOWN, &SubsEditBox::OnKeyDown, this);
 	TextEdit->SetUndoCollection(false);
 	BottomSizer = new wxBoxSizer(wxHORIZONTAL);
@@ -331,12 +329,12 @@ SubsEditBox::SubsEditBox(wxWindow *parent, SubtitlesGrid *grid)
 	wxSizeEvent evt;
 	OnSize(evt);
 
-	grid->AddSelectionListener(this);
-	grid->ass->AddCommitListener(&SubsEditBox::Update, this);
-	VideoContext::Get()->AddTimecodesListener(&SubsEditBox::UpdateFrameTiming, this);
+	c->subsGrid->AddSelectionListener(this);
+	c->ass->AddCommitListener(&SubsEditBox::Update, this);
+	context->videoController->AddTimecodesListener(&SubsEditBox::UpdateFrameTiming, this);
 }
 SubsEditBox::~SubsEditBox() {
-	grid->RemoveSelectionListener(this);
+	c->subsGrid->RemoveSelectionListener(this);
 }
 
 void SubsEditBox::Update(int type) {
@@ -344,13 +342,13 @@ void SubsEditBox::Update(int type) {
 	if (type == AssFile::COMMIT_FULL || type == AssFile::COMMIT_UNDO) {
 		/// @todo maybe preserve selection over undo?
 		StyleBox->Clear();
-		StyleBox->Append(grid->ass->GetStyles());
+		StyleBox->Append(c->ass->GetStyles());
 
 		ActorBox->Freeze();
 		ActorBox->Clear();
-		int nrows = grid->GetRows();
+		int nrows = c->subsGrid->GetRows();
 		for (int i=0;i<nrows;i++) {
-			wxString actor = grid->GetDialogue(i)->Actor;
+			wxString actor = c->subsGrid->GetDialogue(i)->Actor;
 			// OSX doesn't like combo boxes that are empty.
 			if (actor.empty()) actor = "Actor";
 			if (ActorBox->FindString(actor) == wxNOT_FOUND) {
@@ -396,20 +394,20 @@ void SubsEditBox::OnActiveLineChanged(AssDialogue *new_line) {
 	Update(AssFile::COMMIT_TEXT);
 
 	/// @todo VideoContext should be doing this
-	if (VideoContext::Get()->IsLoaded()) {
+	if (c->videoController->IsLoaded()) {
 		bool sync;
 		if (Search.hasFocus) sync = OPT_GET("Tool/Search Replace/Video Update")->GetBool();
 		else sync = OPT_GET("Video/Subtitle Sync")->GetBool();
 
 		if (sync) {
-			VideoContext::Get()->Stop();
-			VideoContext::Get()->JumpToTime(line->Start.GetMS());
+			c->videoController->Stop();
+			c->videoController->JumpToTime(line->Start.GetMS());
 		}
 	}
 	SetEvtHandlerEnabled(true);
 }
 void SubsEditBox::OnSelectedSetChanged(const Selection &, const Selection &) {
-	sel = grid->GetSelectedSet();
+	sel = c->subsGrid->GetSelectedSet();
 }
 
 void SubsEditBox::UpdateFrameTiming(agi::vfr::Framerate const& fps) {
@@ -421,7 +419,7 @@ void SubsEditBox::UpdateFrameTiming(agi::vfr::Framerate const& fps) {
 		ByTime->SetValue(true);
 		StartTime->SetByFrame(false);
 		EndTime->SetByFrame(false);
-		grid->SetByFrame(false);
+		c->subsGrid->SetByFrame(false);
 	}
 }
 
@@ -444,16 +442,16 @@ void SubsEditBox::OnCommitButton(wxCommandEvent &) {
 }
 
 void SubsEditBox::NextLine() {
-	int next = grid->GetLastSelRow() + 1;
-	if (next >= grid->GetRows()) {
-		AssDialogue *cur = grid->GetDialogue(next-1);
+	int next = c->subsGrid->GetLastSelRow() + 1;
+	if (next >= c->subsGrid->GetRows()) {
+		AssDialogue *cur = c->subsGrid->GetDialogue(next-1);
 		AssDialogue *newline = new AssDialogue;
 		newline->Start = cur->End;
 		newline->End = cur->End + OPT_GET("Timing/Default Duration")->GetInt();
 		newline->Style = cur->Style;
-		grid->InsertLine(newline,next-1,true,true);
+		c->subsGrid->InsertLine(newline,next-1,true,true);
 	}
-	grid->NextLine();
+	c->subsGrid->NextLine();
 }
 
 void SubsEditBox::OnChange(wxStyledTextEvent &event) {
@@ -473,7 +471,7 @@ void SubsEditBox::SetSelectedRows(setter set, T value, wxString desc, bool amend
 
 	for_each(sel.begin(), sel.end(), std::tr1::bind(set, _1, value));
 
-	commitId = grid->ass->Commit(desc, AssFile::COMMIT_TEXT, (amend && desc == lastCommitType) ? commitId : -1);
+	commitId = c->ass->Commit(desc, AssFile::COMMIT_TEXT, (amend && desc == lastCommitType) ? commitId : -1);
 	lastCommitType = desc;
 }
 
@@ -506,7 +504,7 @@ void SubsEditBox::CommitTimes(TimeField field) {
 		}
 	}
 
-	timeCommitId[field] = grid->ass->Commit(_("modify times"), AssFile::COMMIT_TIMES, timeCommitId[field]);
+	timeCommitId[field] = c->ass->Commit(_("modify times"), AssFile::COMMIT_TIMES, timeCommitId[field]);
 }
 
 void SubsEditBox::OnSize(wxSizeEvent &evt) {
@@ -547,7 +545,7 @@ void SubsEditBox::OnFrameTimeRadio(wxCommandEvent &event) {
 	StartTime->SetByFrame(byFrame);
 	EndTime->SetByFrame(byFrame);
 	Duration->SetByFrame(byFrame);
-	grid->SetByFrame(byFrame);
+	c->subsGrid->SetByFrame(byFrame);
 	event.Skip();
 }
 
@@ -634,14 +632,14 @@ void SubsEditBox::OnDurationChange(wxCommandEvent &) {
 }
 void SubsEditBox::OnMarginLChange(wxCommandEvent &) {
 	SetSelectedRows(std::mem_fun(&AssDialogue::SetMarginString<0>), MarginL->GetValue(), _("MarginL change"));
-	AssDialogue *cur = grid->GetDialogue(grid->GetFirstSelRow());
+	AssDialogue *cur = c->subsGrid->GetDialogue(c->subsGrid->GetFirstSelRow());
 	if (cur)
 		MarginL->ChangeValue(cur->GetMarginString(0,false));
 }
 
 void SubsEditBox::OnMarginRChange(wxCommandEvent &) {
 	SetSelectedRows(std::mem_fun(&AssDialogue::SetMarginString<1>), MarginR->GetValue(), _("MarginR change"));
-	AssDialogue *cur = grid->GetDialogue(grid->GetFirstSelRow());
+	AssDialogue *cur = c->subsGrid->GetDialogue(c->subsGrid->GetFirstSelRow());
 	if (cur)
 		MarginR->ChangeValue(cur->GetMarginString(1,false));
 }
@@ -653,7 +651,7 @@ static void set_margin_v(AssDialogue* diag, wxString value) {
 
 void SubsEditBox::OnMarginVChange(wxCommandEvent &) {
 	SetSelectedRows(set_margin_v, MarginV->GetValue(), _("MarginV change"));
-	AssDialogue *cur = grid->GetDialogue(grid->GetFirstSelRow());
+	AssDialogue *cur = c->subsGrid->GetDialogue(c->subsGrid->GetFirstSelRow());
 	if (cur)
 		MarginV->ChangeValue(cur->GetMarginString(2,false));
 }
@@ -746,7 +744,7 @@ void SubsEditBox::OnFlagButton(wxCommandEvent &evt) {
 	wxString tagname;
 	wxString desc;
 	bool state = false;
-	AssStyle *style = grid->ass->GetStyle(line->Style);
+	AssStyle *style = c->ass->GetStyle(line->Style);
 	AssStyle defStyle;
 	if (!style) style = &defStyle;
 	if (id == BUTTON_BOLD) {
@@ -797,7 +795,7 @@ void SubsEditBox::OnFontButton(wxCommandEvent &) {
 	int blockn = BlockAtPos(selstart);
 
 	wxFont startfont;
-	AssStyle *style = grid->ass->GetStyle(line->Style);
+	AssStyle *style = c->ass->GetStyle(line->Style);
 	AssStyle defStyle;
 	if (!style) style = &defStyle;
 
@@ -838,7 +836,7 @@ void SubsEditBox::OnColorButton(wxCommandEvent &evt) {
 	wxString alt;
 
 	wxColor color;
-	AssStyle *style = grid->ass->GetStyle(line->Style);
+	AssStyle *style = c->ass->GetStyle(line->Style);
 	AssStyle defStyle;
 	if (!style) style = &defStyle;
 	if (id == BUTTON_COLOR1) {
@@ -871,7 +869,7 @@ void SubsEditBox::OnColorButton(wxCommandEvent &evt) {
 
 	color = get_value(*line, blockn, color, colorTag, alt);
 	wxString initialText = line->Text;
-	wxColor newColor = GetColorFromUser<SubsEditBox, &SubsEditBox::SetColorCallback>(((AegisubApp*)wxTheApp)->frame, color, this);
+	wxColor newColor = GetColorFromUser<SubsEditBox, &SubsEditBox::SetColorCallback>(c->parent, color, this);
 	if (newColor == color) {
 		TextEdit->SetTextTo(initialText);
 		TextEdit->SetSelectionU(selstart, selend);

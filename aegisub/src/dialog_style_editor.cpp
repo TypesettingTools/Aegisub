@@ -52,6 +52,7 @@
 #include "ass_style_storage.h"
 #include "compat.h"
 #include "dialog_style_editor.h"
+#include "include/aegisub/context.h"
 #include "help_button.h"
 #include "libresrc/libresrc.h"
 #include "main.h"
@@ -63,123 +64,48 @@
 #include "validators.h"
 
 
-///////
 // IDs
 enum {
-
-	/// DOCME
 	BUTTON_STYLE_FONT = 1050,
-
-	/// DOCME
 	CHECKBOX_STYLE_BOLD,
-
-	/// DOCME
 	CHECKBOX_STYLE_ITALIC,
-
-	/// DOCME
 	CHECKBOX_STYLE_UNDERLINE,
-
-	/// DOCME
 	CHECKBOX_STYLE_STRIKEOUT,
-
-	/// DOCME
 	CHECKBOX_OUTLINE,
-
-	/// DOCME
 	BUTTON_COLOR_1,
-
-	/// DOCME
 	BUTTON_COLOR_2,
-
-	/// DOCME
 	BUTTON_COLOR_3,
-
-	/// DOCME
 	BUTTON_COLOR_4,
-
-	/// DOCME
 	BUTTON_PREVIEW_COLOR,
-
-	/// DOCME
 	RADIO_ALIGNMENT,
-
-	/// DOCME
 	TEXT_FONT_NAME,
-
-	/// DOCME
 	TEXT_FONT_SIZE,
-
-	/// DOCME
 	TEXT_ALPHA_1,
-
-	/// DOCME
 	TEXT_ALPHA_2,
-
-	/// DOCME
 	TEXT_ALPHA_3,
-
-	/// DOCME
 	TEXT_ALPHA_4,
-
-	/// DOCME
 	TEXT_MARGIN_L,
-
-	/// DOCME
 	TEXT_MARGIN_R,
-
-	/// DOCME
 	TEXT_MARGIN_V,
-
-	/// DOCME
 	TEXT_OUTLINE,
-
-	/// DOCME
 	TEXT_SHADOW,
-
-	/// DOCME
 	TEXT_SCALE_X,
-
-	/// DOCME
 	TEXT_SCALE_Y,
-
-	/// DOCME
 	TEXT_ANGLE,
-
-	/// DOCME
 	TEXT_SPACING,
-
-	/// DOCME
 	TEXT_PREVIEW,
-
-	/// DOCME
 	COMBO_ENCODING
 };
 
-
-
-/// @brief Constructor 
-/// @param parent 
-/// @param _style 
-/// @param _grid  
-/// @param local  
-/// @param _store 
-///
-DialogStyleEditor::DialogStyleEditor (wxWindow *parent, AssStyle *_style, SubtitlesGrid *_grid,bool local,AssStyleStorage *_store,bool newStyle)
+DialogStyleEditor::DialogStyleEditor (wxWindow *parent, AssStyle *style, agi::Context *c,bool local,AssStyleStorage *store,bool newStyle)
 : wxDialog (parent,-1,_("Style Editor"),wxDefaultPosition,wxDefaultSize,wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER,_T("DialogStyleEditor"))
+, c(c)
+, isLocal(local)
+, isNew(newStyle)
+, work(new AssStyle(*style))
+, store(store)
 {
-	// Set icon
 	SetIcon(BitmapToIcon(GETIMAGE(style_toolbutton_24)));
-
-	// Set variables
-	isLocal = local;
-	isNew = newStyle;
-	store = _store;
-
-	// Set styles
-	grid = _grid;
-	style = _style;
-	work = new AssStyle;
-	*work = *style;
 
 	// Prepare control values
 	FontSizeValue = AegiFloatToString(style->fontsize);
@@ -530,13 +456,13 @@ void DialogStyleEditor::Apply (bool apply,bool close) {
 
 		// Get list of existing styles
 		wxArrayString styles;
-		if (isLocal) styles = grid->ass->GetStyles();
+		if (isLocal) styles = c->ass->GetStyles();
 		else if (store) styles = store->GetNames();
 
 		// Check if style name is unique
 		for (unsigned int i=0;i<styles.Count();i++) {
 			if (newStyleName.CmpNoCase(styles[i]) == 0) {
-				if ((isLocal && (grid->ass->GetStyle(styles[i]) != style)) || (!isLocal && (store->GetStyle(styles[i]) != style))) {
+				if ((isLocal && (c->ass->GetStyle(styles[i]) != style)) || (!isLocal && (store->GetStyle(styles[i]) != style))) {
 					wxMessageBox(_T("There is already a style with this name. Please choose another name."),_T("Style name conflict."),wxICON_ERROR|wxOK);
 					return;
 				}
@@ -555,12 +481,12 @@ void DialogStyleEditor::Apply (bool apply,bool close) {
 
 				// Update
 				if (answer == wxYES) {
-					int n = grid->GetRows();
+					int n = c->subsGrid->GetRows();
 					wxArrayString strings;
 					strings.Add(work->name);
 					strings.Add(newStyleName);
 					for (int i=0;i<n;i++) {
-						AssDialogue *curDiag = grid->GetDialogue(i);
+						AssDialogue *curDiag = c->subsGrid->GetDialogue(i);
 						if (curDiag->Style == work->name) curDiag->Style = newStyleName;
 						curDiag->ParseASSTags();
 						curDiag->ProcessParameters(ReplaceStyle,&strings);
@@ -581,7 +507,7 @@ void DialogStyleEditor::Apply (bool apply,bool close) {
 		*style = *work;
 		style->UpdateData();
 		if (isLocal) {
-			grid->ass->Commit(_("style change"), AssFile::COMMIT_TEXT);
+			c->ass->Commit(_("style change"), AssFile::COMMIT_TEXT);
 		}
 
 		// Exit

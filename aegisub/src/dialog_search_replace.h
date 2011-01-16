@@ -34,11 +34,6 @@
 /// @ingroup secondary_ui
 ///
 
-
-
-
-///////////
-// Headers
 #ifndef AGI_PRE
 #include <wx/checkbox.h>
 #include <wx/combobox.h>
@@ -48,11 +43,7 @@
 #include <wx/textctrl.h>
 #endif
 
-
-//////////////
-// Prototypes
-class SubtitlesGrid;
-
+namespace agi { struct Context; }
 
 
 /// DOCME
@@ -61,8 +52,6 @@ class SubtitlesGrid;
 ///
 /// DOCME
 class SearchReplaceEngine {
-private:
-
 	/// DOCME
 	int curLine;
 
@@ -85,11 +74,10 @@ private:
 	bool hasReplace;
 
 	wxString *GetText(int n,int field);
-	
-public:
 
+public:
 	/// DOCME
-	SubtitlesGrid *grid;
+	agi::Context *context;
 
 	/// DOCME
 	bool isReg;
@@ -186,29 +174,3 @@ public:
 
 	DECLARE_EVENT_TABLE()
 };
-
-
-///////
-// IDs
-enum {
-
-	/// DOCME
-	BUTTON_FIND_NEXT,
-
-	/// DOCME
-	BUTTON_REPLACE_NEXT,
-
-	/// DOCME
-	BUTTON_REPLACE_ALL,
-
-	/// DOCME
-	CHECK_MATCH_CASE,
-
-	/// DOCME
-	CHECK_REGEXP,
-
-	/// DOCME
-	CHECK_UPDATE_VIDEO
-};
-
-
