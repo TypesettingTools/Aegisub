@@ -161,6 +161,12 @@ static void wxAssertHandler(const wxString &file, int line, const wxString &func
 /// @brief Gets called when application starts.
 /// @return bool
 bool AegisubApp::OnInit() {
+	// App name (yeah, this is a little weird to get rid of an odd warning)
+#if defined(__WXMSW__) || defined(__WXMAC__)
+	SetAppName(_T("Aegisub"));
+#else
+	SetAppName(_T("aegisub"));
+#endif
 
 	// logging.
 	const std::string path_log(StandardPaths::DecodePath(_T("?user/log/")));
@@ -197,13 +203,6 @@ bool AegisubApp::OnInit() {
 
 	// Install assertion handler
 //	wxSetAssertHandler(wxAssertHandler);
-
-	// App name (yeah, this is a little weird to get rid of an odd warning)
-#if defined(__WXMSW__) || defined(__WXMAC__)
-	SetAppName(_T("Aegisub"));
-#else
-	SetAppName(_T("aegisub"));
-#endif
 
 	const std::string conf_mru(StandardPaths::DecodePath(_T("?user/mru.json")));
 	config::mru = new agi::MRUManager(conf_mru, GET_DEFAULT_CONFIG(default_mru));
