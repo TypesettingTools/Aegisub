@@ -73,6 +73,8 @@ class AssFile {
 	int savedCommitId;
 
 	agi::signal::Signal<int> AnnounceCommit;
+	agi::signal::Signal<wxString> FileOpen;
+	agi::signal::Signal<> FileSave;
 
 public:
 	/// The lines in the file
@@ -169,6 +171,8 @@ public:
 	};
 
 	DEFINE_SIGNAL_ADDERS(AnnounceCommit, AddCommitListener)
+	DEFINE_SIGNAL_ADDERS(FileOpen, AddFileOpenListener)
+	DEFINE_SIGNAL_ADDERS(FileSave, AddFileSaveListener)
 
 	/// @brief Flag the file as modified and push a copy onto the undo stack
 	/// @param desc     Undo description

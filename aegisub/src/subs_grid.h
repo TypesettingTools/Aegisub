@@ -99,7 +99,8 @@ private:
 
 	void OnHighlightVisibleChange(agi::OptionValue const& opt);
 
-	void OnCommit(int type);
+	void OnSubtitlesCommit(int type);
+	void OnSubtitlesOpen();
 
 public:
 	/// Currently open file

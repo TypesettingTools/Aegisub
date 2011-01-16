@@ -88,7 +88,7 @@ class FrameMain: public wxFrame {
 public:
 	void StatusTimeout(wxString text,int ms=10000);
 	void SetDisplayMode(int showVid,int showAudio);
-	void LoadSubtitles(wxString filename,wxString charset=_T(""));
+	void LoadSubtitles(wxString filename,wxString charset="");
 	bool SaveSubtitles(bool saveas=false,bool withCharset=false);
 	void DetachVideo(bool detach=true);
 	void LoadVFR(wxString filename);
@@ -165,7 +165,7 @@ private:
 	int TryToCloseSubs(bool enableCancel=true);
 
 	void RebuildRecentList(const char *root_command, const char *mru_name);
-	void SynchronizeProject(bool FromSubs=false);
+	void SynchronizeProject();
 
 	// AudioControllerAudioEventListener implementation
 	void OnAudioOpen(AudioProvider *provider);
@@ -173,7 +173,8 @@ private:
 
 	void OnVideoOpen();
 
-	void OnSubtitlesFileChanged();
+	void OnSubtitlesCommit();
+	void OnSubtitlesOpen();
 
 public:
 

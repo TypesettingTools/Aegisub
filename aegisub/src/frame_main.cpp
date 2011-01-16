@@ -45,6 +45,7 @@
 #include <wx/tokenzr.h>
 #endif
 
+#include <libaegisub/access.h>
 #include <libaegisub/log.h>
 
 #include "include/aegisub/context.h"
@@ -210,7 +211,7 @@ FrameMain::FrameMain (wxArrayString args)
 
 	// Parse arguments
 	StartupLog(_T("Initialize empty file"));
-	LoadSubtitles(_T(""));
+	SubsGrid->LoadDefault();
 	StartupLog(_T("Load files specified on command line"));
 	LoadList(args);
 
@@ -298,7 +299,9 @@ void FrameMain::InitMenu() {
 void FrameMain::InitContents() {
 	AssFile::top = ass = new AssFile;
 	temp_context->ass = ass;
-	ass->AddCommitListener(&FrameMain::OnSubtitlesFileChanged, this);
+	ass->AddCommitListener(&FrameMain::OnSubtitlesCommit, this);
+	ass->AddFileOpenListener(&FrameMain::OnSubtitlesOpen, this);
+	ass->AddFileSaveListener(&FrameMain::UpdateTitle, this);
 
 	// Set a background panel
 	StartupLog(_T("Create background panel"));
@@ -410,59 +413,29 @@ void FrameMain::UpdateToolbar() {
 /// @brief Open subtitles 
 /// @param filename 
 /// @param charset  
-void FrameMain::LoadSubtitles (wxString filename,wxString charset) {
-	// First check if there is some loaded
-	if (ass && ass->loaded) {
+void FrameMain::LoadSubtitles(wxString filename,wxString charset) {
+	if (ass->loaded) {
 		if (TryToCloseSubs() == wxCANCEL) return;
 	}
 
-	// Setup
-	bool isFile = !filename.empty();
-
-	// Load
 	try {
-		// File exists?
-		if (isFile) {
-			wxFileName fileCheck(filename);
-			if (!fileCheck.FileExists()) {
-				throw agi::FileNotFoundError(STD_STR(filename));
+		// Make sure that file isn't actually a timecode file
+		try {
+			TextFileReader testSubs(filename,charset);
+			wxString cur = testSubs.ReadLineFromFile();
+			if (cur.Left(10) == _T("# timecode")) {
+				temp_context->videoContext->LoadTimecodes(filename);
+				return;
 			}
-
-			// Make sure that file isn't actually a timecode file
-			try {
-				TextFileReader testSubs(filename,charset);
-				wxString cur = testSubs.ReadLineFromFile();
-				if (cur.Left(10) == _T("# timecode")) {
-					LoadVFR(filename);
-					OPT_SET("Path/Last/Timecodes")->SetString(STD_STR(fileCheck.GetPath()));
-					return;
-				}
-			}
-			catch (...) {
-				// if trying to load the file as timecodes fails it's fairly
-				// safe to assume that it is in fact not a timecode file
-			}
+		}
+		catch (...) {
+			// if trying to load the file as timecodes fails it's fairly
+			// safe to assume that it is in fact not a timecode file
 		}
 
-		// Proceed into loading
-		SubsGrid->ClearMaps();
-		if (isFile) {
-			ass->Load(filename,charset);
-			if (SubsGrid->GetRows()) {
-				SubsGrid->SetActiveLine(SubsGrid->GetDialogue(0));
-				SubsGrid->SelectRow(0);
-			}
-			wxFileName fn(filename);
-			StandardPaths::SetPathValue(_T("?script"),fn.GetPath());
-			OPT_SET("Path/Last/Subtitles")->SetString(STD_STR(fn.GetPath()));
-		}
-		else {
-			SubsGrid->LoadDefault();
-			StandardPaths::SetPathValue(_T("?script"),_T(""));
-		}
-		SubsGrid->SetColumnWidths();
+		ass->Load(filename,charset);
 	}
-	catch (agi::FileNotFoundError const&) {
+	catch (agi::acs::AcsNotFound const&) {
 		wxMessageBox(filename + L" not found.", L"Error", wxOK | wxICON_ERROR, NULL);
 		config::mru->Remove("Subtitle", STD_STR(filename));
 		return;
@@ -479,29 +452,6 @@ void FrameMain::LoadSubtitles (wxString filename,wxString charset) {
 		wxMessageBox(_T("Unknown error"), _T("Error"), wxOK | wxICON_ERROR, NULL);
 		return;
 	}
-
-	// Save copy
-	wxFileName origfile(filename);
-	if (ass->CanSave() && OPT_GET("App/Auto/Backup")->GetBool() && origfile.FileExists()) {
-		// Get path
-		wxString path = lagi_wxString(OPT_GET("Path/Auto/Backup")->GetString());
-		if (path.IsEmpty()) path = origfile.GetPath();
-		wxFileName dstpath(path);
-		if (!dstpath.IsAbsolute()) path = StandardPaths::DecodePathMaybeRelative(path, _T("?user/"));
-		path += _T("/");
-		dstpath.Assign(path);
-		if (!dstpath.DirExists()) wxMkdir(path);
-
-		// Save
-		wxString backup = path + origfile.GetName() + _T(".ORIGINAL.") + origfile.GetExt();
-		wxCopyFile(filename,backup,true);
-	}
-
-	// Sync
-	SynchronizeProject(true);
-
-	// Update title bar
-	UpdateTitle();
 }
 
 /// @brief Save subtitles 
@@ -543,7 +493,6 @@ bool FrameMain::SaveSubtitles(bool saveas,bool withCharset) {
 		// Save
 		try {
 			ass->Save(filename,true,true,charset);
-			UpdateTitle();
 		}
 		catch (const agi::Exception& err) {
 			wxMessageBox(lagi_wxString(err.GetMessage()), "Error", wxOK | wxICON_ERROR, NULL);
@@ -621,28 +570,27 @@ void FrameMain::SetDisplayMode(int video, int audio) {
 
 /// @brief Update title bar 
 void FrameMain::UpdateTitle() {
-	// Determine if current subs are modified
 	bool subsMod = ass->IsModified();
 	
-	// Create ideal title
-	wxString newTitle = _T("");
-#ifndef __WXMAC__
+	wxString newTitle;
 	if (subsMod) newTitle << _T("* ");
-	if (ass->filename != _T("")) {
-		wxFileName file (ass->filename);
-		newTitle << file.GetFullName();
-	}
-	else newTitle << _("Untitled");
-	newTitle << _T(" - Aegisub ") << GetAegisubLongVersionString();
+	if (ass->filename.empty()) {
+		// Apple HIG says "untitled" should not be capitalised
+		// and the window is a document window, it shouldn't contain the app name
+		// (The app name is already present in the menu bar)
+#ifndef __WXMAC__
+		newTitle << _("Untitled");
 #else
-	// Apple HIG says "untitled" should not be capitalised
-	// and the window is a document window, it shouldn't contain the app name
-	// (The app name is already present in the menu bar)
-	if (ass->filename != _T("")) {
+		newTitle << _("untitled");
+#endif
+	}
+	else {
 		wxFileName file (ass->filename);
 		newTitle << file.GetFullName();
 	}
-	else newTitle << _("untitled");
+
+#ifndef __WXMAC__
+	newTitle << " - Aegisub " << GetAegisubLongVersionString();
 #endif
 
 #if defined(__WXMAC__) && !defined(__LP64__)
@@ -650,183 +598,70 @@ void FrameMain::UpdateTitle() {
 	OSXSetModified(subsMod);
 #endif
 
-	// Get current title
-	wxString curTitle = GetTitle();
-	if (curTitle != newTitle) SetTitle(newTitle);
+	if (GetTitle() != newTitle) SetTitle(newTitle);
 }
 
 /// @brief Updates subs with video/whatever data 
 /// @param fromSubs 
-void FrameMain::SynchronizeProject(bool fromSubs) {
-	// Retrieve data from subs
-	if (fromSubs) {
-		// Reset the state
-		long videoPos = 0;
-		long videoAr = 0;
-		double videoArValue = 0.0;
-		double videoZoom = 0.;
-
-		// Get AR
-		wxString arString = ass->GetScriptInfo(_T("Video Aspect Ratio"));
-		if (arString.Left(1) == _T("c")) {
-			videoAr = 4;
-			arString = arString.Mid(1);
-			arString.ToDouble(&videoArValue);
-		}
-		else if (arString.IsNumber()) arString.ToLong(&videoAr);
-
-		// Get new state info
-		ass->GetScriptInfo(_T("Video Position")).ToLong(&videoPos);
-		ass->GetScriptInfo(_T("Video Zoom Percent")).ToDouble(&videoZoom);
-		wxString curSubsVideo = DecodeRelativePath(ass->GetScriptInfo(_T("Video File")),ass->filename);
-		wxString curSubsVFR = DecodeRelativePath(ass->GetScriptInfo(_T("VFR File")),ass->filename);
-		wxString curSubsKeyframes = DecodeRelativePath(ass->GetScriptInfo(_T("Keyframes File")),ass->filename);
-		wxString curSubsAudio = DecodeRelativePath(ass->GetScriptInfo(_T("Audio URI")),ass->filename);
-		wxString AutoScriptString = ass->GetScriptInfo(_T("Automation Scripts"));
-
-		// Check if there is anything to change
-		int autoLoadMode = OPT_GET("App/Auto/Load Linked Files")->GetInt();
-		bool hasToLoad = false;
-		if (curSubsAudio !=audioController->GetAudioURL() ||
-			curSubsVFR != temp_context->videoContext->GetTimecodesName() ||
-			curSubsVideo != temp_context->videoContext->videoName ||
-			curSubsKeyframes != temp_context->videoContext->GetKeyFramesName()
-#ifdef WITH_AUTOMATION
-			|| !AutoScriptString.IsEmpty() || local_scripts->GetScripts().size() > 0
-#endif
-			) {
-			hasToLoad = true;
-		}
-
-		// Decide whether to load or not
-		bool doLoad = false;
-		if (hasToLoad) {
-			if (autoLoadMode == 1) doLoad = true;
-			else if (autoLoadMode == 2) {
-				int result = wxMessageBox(_("Do you want to load/unload the associated files?"),_("(Un)Load files?"),wxYES_NO);
-				if (result == wxYES) doLoad = true;
-			}
-		}
-
-		if (doLoad) {
-			// Video
-			if (!blockVideoLoad && curSubsVideo != temp_context->videoContext->videoName) {
-				temp_context->videoContext->SetVideo(curSubsVideo);
-				if (temp_context->videoContext->IsLoaded()) {
-					temp_context->videoContext->SetAspectRatio(videoAr,videoArValue);
-					videoBox->videoDisplay->SetZoom(videoZoom);
-					temp_context->videoContext->JumpToFrame(videoPos);
-				}
-			}
-
-			temp_context->videoContext->LoadTimecodes(curSubsVFR);
-			temp_context->videoContext->LoadKeyframes(curSubsKeyframes);
-
-			// Audio
-			if (curSubsAudio != audioController->GetAudioURL()) {
-				audioController->OpenAudio(curSubsAudio);
-			}
-
-			// Automation scripts
-#ifdef WITH_AUTOMATION
-			local_scripts->RemoveAll();
-			wxStringTokenizer tok(AutoScriptString, _T("|"), wxTOKEN_STRTOK);
-			wxFileName assfn(ass->filename);
-			wxString autobasefn(lagi_wxString(OPT_GET("Path/Automation/Base")->GetString()));
-			while (tok.HasMoreTokens()) {
-				wxString sfnames = tok.GetNextToken().Trim(true).Trim(false);
-				wxString sfnamel = sfnames.Left(1);
-				sfnames.Remove(0, 1);
-				wxString basepath;
-				if (sfnamel == _T("~")) {
-					basepath = assfn.GetPath();
-				} else if (sfnamel == _T("$")) {
-					basepath = autobasefn;
-				} else if (sfnamel == _T("/")) {
-					basepath = _T("");
-				} else {
-					wxLogWarning(_T("Automation Script referenced with unknown location specifier character.\nLocation specifier found: %s\nFilename specified: %s"),
-						sfnamel.c_str(), sfnames.c_str());
-					continue;
-				}
-				wxFileName sfname(sfnames);
-				sfname.MakeAbsolute(basepath);
-				if (sfname.FileExists()) {
-					sfnames = sfname.GetFullPath();
-					local_scripts->Add(Automation4::ScriptFactory::CreateFromFile(sfnames, true));
-				} else {
-					wxLogWarning(_T("Automation Script referenced could not be found.\nFilename specified: %s%s\nSearched relative to: %s\nResolved filename: %s"),
-						sfnamel.c_str(), sfnames.c_str(), basepath.c_str(), sfname.GetFullPath().c_str());
-				}
-			}
-#endif
-		}
-
-		// Display
-		SetDisplayMode(1,1);
-	}
-
+void FrameMain::SynchronizeProject() {
 	// Store data on ass
-	else {
-		// Setup
-		wxString seekpos = _T("0");
-		wxString ar = _T("0");
-		wxString zoom = _T("6");
-		if (temp_context->videoContext->IsLoaded()) {
-			seekpos = wxString::Format(_T("%i"),temp_context->videoContext->GetFrameN());
-			zoom = wxString::Format(_T("%f"),videoBox->videoDisplay->GetZoom());
+	wxString seekpos = _T("0");
+	wxString ar = _T("0");
+	wxString zoom = _T("6");
+	if (temp_context->videoContext->IsLoaded()) {
+		seekpos = wxString::Format(_T("%i"),temp_context->videoContext->GetFrameN());
+		zoom = wxString::Format(_T("%f"),videoBox->videoDisplay->GetZoom());
 
-			int arType = temp_context->videoContext->GetAspectRatioType();
-			if (arType == 4) ar = wxString(_T("c")) + AegiFloatToString(temp_context->videoContext->GetAspectRatioValue());
-			else ar = wxString::Format(_T("%i"),arType);
-		}
-		
-		// Store audio data
-		ass->SetScriptInfo(_T("Audio URI"),MakeRelativePath(audioController->GetAudioURL(),ass->filename));
-
-		// Store video data
-		ass->SetScriptInfo(_T("Video File"),MakeRelativePath(temp_context->videoContext->videoName,ass->filename));
-		ass->SetScriptInfo(_T("Video Aspect Ratio"),ar);
-		ass->SetScriptInfo(_T("Video Zoom Percent"),zoom);
-		ass->SetScriptInfo(_T("Video Position"),seekpos);
-		ass->SetScriptInfo(_T("VFR File"),MakeRelativePath(temp_context->videoContext->GetTimecodesName(),ass->filename));
-		ass->SetScriptInfo(_T("Keyframes File"),MakeRelativePath(temp_context->videoContext->GetKeyFramesName(),ass->filename));
-
-		// Store Automation script data
-		// Algorithm:
-		// 1. If script filename has Automation Base Path as a prefix, the path is relative to that (ie. "$")
-		// 2. Otherwise try making it relative to the ass filename
-		// 3. If step 2 failed, or absolut path is shorter than path relative to ass, use absolute path ("/")
-		// 4. Otherwise, use path relative to ass ("~")
-#ifdef WITH_AUTOMATION
-		wxString scripts_string;
-		wxString autobasefn(lagi_wxString(OPT_GET("Path/Automation/Base")->GetString()));
-
-		const std::vector<Automation4::Script*> &scripts = local_scripts->GetScripts();
-		for (unsigned int i = 0; i < scripts.size(); i++) {
-			Automation4::Script *script = scripts[i];
-
-			if (i != 0)
-				scripts_string += _T("|");
-
-			wxString autobase_rel, assfile_rel;
-			wxString scriptfn(script->GetFilename());
-			autobase_rel = MakeRelativePath(scriptfn, autobasefn);
-			assfile_rel = MakeRelativePath(scriptfn, ass->filename);
-
-			if (autobase_rel.size() <= scriptfn.size() && autobase_rel.size() <= assfile_rel.size()) {
-				scriptfn = _T("$") + autobase_rel;
-			} else if (assfile_rel.size() <= scriptfn.size() && assfile_rel.size() <= autobase_rel.size()) {
-				scriptfn = _T("~") + assfile_rel;
-			} else {
-				scriptfn = _T("/") + wxFileName(scriptfn).GetFullPath(wxPATH_UNIX);
-			}
-
-			scripts_string += scriptfn;
-		}
-		ass->SetScriptInfo(_T("Automation Scripts"), scripts_string);
-#endif
+		int arType = temp_context->videoContext->GetAspectRatioType();
+		if (arType == 4) ar = wxString(_T("c")) + AegiFloatToString(temp_context->videoContext->GetAspectRatioValue());
+		else ar = wxString::Format(_T("%i"),arType);
 	}
+	
+	// Store audio data
+	ass->SetScriptInfo(_T("Audio URI"),MakeRelativePath(audioController->GetAudioURL(),ass->filename));
+
+	// Store video data
+	ass->SetScriptInfo(_T("Video File"),MakeRelativePath(temp_context->videoContext->videoName,ass->filename));
+	ass->SetScriptInfo(_T("Video Aspect Ratio"),ar);
+	ass->SetScriptInfo(_T("Video Zoom Percent"),zoom);
+	ass->SetScriptInfo(_T("Video Position"),seekpos);
+	ass->SetScriptInfo(_T("VFR File"),MakeRelativePath(temp_context->videoContext->GetTimecodesName(),ass->filename));
+	ass->SetScriptInfo(_T("Keyframes File"),MakeRelativePath(temp_context->videoContext->GetKeyFramesName(),ass->filename));
+
+	// Store Automation script data
+	// Algorithm:
+	// 1. If script filename has Automation Base Path as a prefix, the path is relative to that (ie. "$")
+	// 2. Otherwise try making it relative to the ass filename
+	// 3. If step 2 failed, or absolut path is shorter than path relative to ass, use absolute path ("/")
+	// 4. Otherwise, use path relative to ass ("~")
+#ifdef WITH_AUTOMATION
+	wxString scripts_string;
+	wxString autobasefn(lagi_wxString(OPT_GET("Path/Automation/Base")->GetString()));
+
+	const std::vector<Automation4::Script*> &scripts = local_scripts->GetScripts();
+	for (unsigned int i = 0; i < scripts.size(); i++) {
+		Automation4::Script *script = scripts[i];
+
+		if (i != 0)
+			scripts_string += _T("|");
+
+		wxString autobase_rel, assfile_rel;
+		wxString scriptfn(script->GetFilename());
+		autobase_rel = MakeRelativePath(scriptfn, autobasefn);
+		assfile_rel = MakeRelativePath(scriptfn, ass->filename);
+
+		if (autobase_rel.size() <= scriptfn.size() && autobase_rel.size() <= assfile_rel.size()) {
+			scriptfn = _T("$") + autobase_rel;
+		} else if (assfile_rel.size() <= scriptfn.size() && assfile_rel.size() <= autobase_rel.size()) {
+			scriptfn = _T("~") + assfile_rel;
+		} else {
+			scriptfn = _T("/") + wxFileName(scriptfn).GetFullPath(wxPATH_UNIX);
+		}
+
+		scripts_string += scriptfn;
+	}
+	ass->SetScriptInfo(_T("Automation Scripts"), scripts_string);
+#endif
 }
 
 void FrameMain::OnVideoOpen() {
@@ -1453,12 +1288,120 @@ void FrameMain::OnAudioClose()
 	SetDisplayMode(-1, 0);
 }
 
-void FrameMain::OnSubtitlesFileChanged() {
+void FrameMain::OnSubtitlesCommit() {
 	if (OPT_GET("App/Auto/Save on Every Change")->GetBool()) {
 		if (ass->IsModified() && !ass->filename.empty()) SaveSubtitles(false);
 	}
 
 	UpdateTitle();
+}
+
+void FrameMain::OnSubtitlesOpen() {
+	UpdateTitle();
+
+	/// @todo figure out how to move this to the relevant controllers without
+	///       prompting for each file loaded/unloaded
+
+	// Load stuff from the new script
+	wxString curSubsVideo = DecodeRelativePath(ass->GetScriptInfo("Video File"),ass->filename);
+	wxString curSubsVFR = DecodeRelativePath(ass->GetScriptInfo("VFR File"),ass->filename);
+	wxString curSubsKeyframes = DecodeRelativePath(ass->GetScriptInfo("Keyframes File"),ass->filename);
+	wxString curSubsAudio = DecodeRelativePath(ass->GetScriptInfo("Audio URI"),ass->filename);
+	wxString AutoScriptString = ass->GetScriptInfo("Automation Scripts");
+
+	// Check if there is anything to change
+	int autoLoadMode = OPT_GET("App/Auto/Load Linked Files")->GetInt();
+	bool doLoad = false;
+	if (curSubsAudio != audioController->GetAudioURL() ||
+		curSubsVFR != temp_context->videoContext->GetTimecodesName() ||
+		curSubsVideo != temp_context->videoContext->videoName ||
+		curSubsKeyframes != temp_context->videoContext->GetKeyFramesName()
+#ifdef WITH_AUTOMATION
+		|| !AutoScriptString.IsEmpty() || local_scripts->GetScripts().size() > 0
+#endif
+		)
+	{
+		if (autoLoadMode == 1) {
+			doLoad = true;
+		}
+		else if (autoLoadMode == 2) {
+			doLoad = wxMessageBox(_("Do you want to load/unload the associated files?"), _("(Un)Load files?"), wxYES_NO) == wxYES;
+		}
+	}
+
+	if (doLoad) {
+		// Video
+		if (!blockVideoLoad && curSubsVideo != temp_context->videoContext->videoName) {
+			temp_context->videoContext->SetVideo(curSubsVideo);
+			if (temp_context->videoContext->IsLoaded()) {
+					long videoPos = 0;
+					long videoAr = 0;
+					double videoArValue = 0.0;
+					double videoZoom = 0.;
+
+					ass->GetScriptInfo("Video Position").ToLong(&videoPos);
+					ass->GetScriptInfo("Video Zoom Percent").ToDouble(&videoZoom);
+					wxString arString = ass->GetScriptInfo("Video Aspect Ratio");
+					if (arString.Left(1) == "c") {
+						videoAr = 4;
+						arString = arString.Mid(1);
+						arString.ToDouble(&videoArValue);
+					}
+					else if (arString.IsNumber()) {
+						arString.ToLong(&videoAr);
+					}
+
+				temp_context->videoContext->SetAspectRatio(videoAr,videoArValue);
+				videoBox->videoDisplay->SetZoom(videoZoom);
+				temp_context->videoContext->JumpToFrame(videoPos);
+			}
+		}
+
+		temp_context->videoContext->LoadTimecodes(curSubsVFR);
+		temp_context->videoContext->LoadKeyframes(curSubsKeyframes);
+
+		// Audio
+		if (curSubsAudio != audioController->GetAudioURL()) {
+			audioController->OpenAudio(curSubsAudio);
+		}
+
+		// Automation scripts
+#ifdef WITH_AUTOMATION
+		local_scripts->RemoveAll();
+		wxStringTokenizer tok(AutoScriptString, _T("|"), wxTOKEN_STRTOK);
+		wxFileName assfn(ass->filename);
+		wxString autobasefn(lagi_wxString(OPT_GET("Path/Automation/Base")->GetString()));
+		while (tok.HasMoreTokens()) {
+			wxString sfnames = tok.GetNextToken().Trim(true).Trim(false);
+			wxString sfnamel = sfnames.Left(1);
+			sfnames.Remove(0, 1);
+			wxString basepath;
+			if (sfnamel == _T("~")) {
+				basepath = assfn.GetPath();
+			} else if (sfnamel == _T("$")) {
+				basepath = autobasefn;
+			} else if (sfnamel == _T("/")) {
+				basepath = _T("");
+			} else {
+				wxLogWarning(_T("Automation Script referenced with unknown location specifier character.\nLocation specifier found: %s\nFilename specified: %s"),
+					sfnamel.c_str(), sfnames.c_str());
+				continue;
+			}
+			wxFileName sfname(sfnames);
+			sfname.MakeAbsolute(basepath);
+			if (sfname.FileExists()) {
+				sfnames = sfname.GetFullPath();
+				local_scripts->Add(Automation4::ScriptFactory::CreateFromFile(sfnames, true));
+			} else {
+				wxLogWarning(_T("Automation Script referenced could not be found.\nFilename specified: %s%s\nSearched relative to: %s\nResolved filename: %s"),
+					sfnamel.c_str(), sfnames.c_str(), basepath.c_str(), sfname.GetFullPath().c_str());
+			}
+		}
+#endif
+	}
+
+	// Display
+	SetDisplayMode(1,1);
 }
 
 void FrameMain::OnKeyDown(wxKeyEvent &event) {

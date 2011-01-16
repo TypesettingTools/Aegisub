@@ -231,7 +231,7 @@ struct subtitle_new : public Command {
 	STR_HELP("New subtitles.")
 
 	void operator()(agi::Context *c) {
-		wxGetApp().frame->LoadSubtitles(_T(""));
+		c->SubsGrid->LoadDefault();
 	}
 };
 
@@ -248,8 +248,6 @@ struct subtitle_open : public Command {
 		wxString filename = wxFileSelector(_("Open subtitles file"),path,_T(""),_T(""),AssFile::GetWildcardList(0),wxFD_OPEN | wxFD_FILE_MUST_EXIST);
 		if (!filename.empty()) {
 			wxGetApp().frame->LoadSubtitles(filename);
-			wxFileName filepath(filename);
-			OPT_SET("Path/Last/Subtitles")->SetString(STD_STR(filepath.GetPath()));
 		}
 	}
 };
@@ -273,7 +271,6 @@ struct subtitle_open_charset : public Command {
 			if (!charset.empty()) {
 				wxGetApp().frame->LoadSubtitles(filename,charset);
 			}
-			OPT_SET("Path/Last/Subtitles")->SetString(STD_STR(filename));
 		}
 	}
 };
