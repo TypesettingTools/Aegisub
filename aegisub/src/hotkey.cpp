@@ -72,7 +72,7 @@ void check(std::string context, int key_code, wchar_t key_char, int modifier) {
 		/// The bottom line should be removed after all the hotkey commands are fixed.
 		/// This is to avoid pointless exceptions.
 		if (command.find("/") != std::string::npos)
-			(*cmd::get(command))(&wxGetApp().frame->temp_context);
+			(*cmd::get(command))(wxGetApp().frame->temp_context.get());
 	}
 
 }

@@ -25,10 +25,9 @@
 
 #include <libaegisub/exception.h>
 
-#include "../include/aegisub/context.h"
 #include "icon.h"
 
-
+namespace agi { struct Context; }
 
 DEFINE_BASE_EXCEPTION_NOINNER(CommandError, agi::Exception)
 DEFINE_SIMPLE_EXCEPTION_NOINNER(CommandIconNone, CommandError, "command/icon")

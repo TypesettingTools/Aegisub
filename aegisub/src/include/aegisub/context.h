@@ -1,5 +1,3 @@
-#pragma once // sigh.
-
 class wxWindow;
 class DialogStyling;
 class AudioBox;

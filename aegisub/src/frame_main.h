@@ -47,8 +47,7 @@
 #include <wx/timer.h>
 #endif
 
-#include "include/aegisub/context.h"
-
+#include <libaegisub/scoped_ptr.h>
 
 class AssFile;
 class VideoDisplay;
@@ -64,6 +63,7 @@ class AegisubFileDropTarget;
 class AudioController;
 class AudioProvider;
 
+namespace agi { struct Context; }
 namespace Automation4 { class FeatureMacro; class ScriptManager; }
 
 
@@ -94,7 +94,7 @@ public:
 	void DetachVideo(bool detach=true);
 	void LoadVFR(wxString filename);
 
-	agi::Context temp_context;
+	agi::scoped_ptr<agi::Context> temp_context;
 
 private:
 

@@ -47,6 +47,7 @@
 
 #include <libaegisub/log.h>
 
+#include "include/aegisub/context.h"
 #include "include/aegisub/menu.h"
 #include "include/aegisub/toolbar.h"
 #include "include/aegisub/hotkey.h"
@@ -101,9 +102,10 @@ static void autosave_timer_changed(wxTimer *timer, const agi::OptionValue &opt);
 
 FrameMain::FrameMain (wxArrayString args)
 : wxFrame ((wxFrame*)NULL,-1,_T(""),wxDefaultPosition,wxSize(920,700),wxDEFAULT_FRAME_STYLE | wxCLIP_CHILDREN)
+, temp_context(new agi::Context)
 {
 	StartupLog(_T("Entering FrameMain constructor"));
-	temp_context.parent = this;
+	temp_context->parent = this;
 
 	// Bind all commands.
 	// XXX: This is a hack for now, it will need to be dealt with when other frames are involved.
@@ -149,12 +151,12 @@ FrameMain::FrameMain (wxArrayString args)
 #ifdef WITH_AUTOMATION
 	StartupLog(_T("Create local Automation script manager"));
 	local_scripts = new Automation4::ScriptManager();
-	temp_context.local_scripts = local_scripts;
+	temp_context->local_scripts = local_scripts;
 #endif
 
 	// Contexts and controllers
 	audioController = new AudioController;
-	temp_context.audioController = audioController;
+	temp_context->audioController = audioController;
 	audioController->AddAudioOpenListener(&FrameMain::OnAudioOpen, this);
 	audioController->AddAudioCloseListener(&FrameMain::OnAudioClose, this);
 
@@ -185,7 +187,7 @@ FrameMain::FrameMain (wxArrayString args)
 	showAudio = true;
 	detachedVideo = NULL;
 	stylingAssistant = NULL;
-	temp_context.stylingAssistant = stylingAssistant;
+	temp_context->stylingAssistant = stylingAssistant;
 	StartupLog(_T("Initialize inner main window controls"));
 	InitContents();
 
@@ -200,7 +202,7 @@ FrameMain::FrameMain (wxArrayString args)
 
 
 	PreviousFocus = NULL;						// Artifact from old hotkey removal not sure what it does.
-	temp_context.PreviousFocus = PreviousFocus;	// Artifact from old hotkey removal not sure what it does.
+	temp_context->PreviousFocus = PreviousFocus;	// Artifact from old hotkey removal not sure what it does.
 
 	// Set drop target
 	StartupLog(_T("Set up drag/drop target"));
@@ -248,7 +250,7 @@ FrameMain::~FrameMain () {
 void FrameMain::cmd_call(wxCommandEvent& event) {
 	int id = event.GetId();
 	LOG_D("event/select") << "Id: " << id;
-	cmd::call(&temp_context, id);
+	cmd::call(temp_context.get(), id);
 }
 
 
@@ -295,7 +297,7 @@ void FrameMain::InitMenu() {
 /// @brief Initialize contents 
 void FrameMain::InitContents() {
 	AssFile::top = ass = new AssFile;
-	temp_context.ass = ass;
+	temp_context->ass = ass;
 	ass->AddCommitListener(&FrameMain::OnSubtitlesFileChanged, this);
 
 	// Set a background panel
@@ -305,9 +307,9 @@ void FrameMain::InitContents() {
 	// Video area;
 	StartupLog(_T("Create video box"));
 	videoBox = new VideoBox(Panel, false, ZoomBox, ass);
-	temp_context.videoBox = videoBox;
-	temp_context.videoContext = VideoContext::Get();
-	temp_context.videoContext->audio = audioController;
+	temp_context->videoBox = videoBox;
+	temp_context->videoContext = VideoContext::Get();
+	temp_context->videoContext->audio = audioController;
 	wxBoxSizer *videoSizer = new wxBoxSizer(wxVERTICAL);
 	videoSizer->Add(videoBox, 0, wxEXPAND);
 	videoSizer->AddStretchSpacer(1);
@@ -315,9 +317,9 @@ void FrameMain::InitContents() {
 	// Subtitles area
 	StartupLog(_T("Create subtitles grid"));
 	SubsGrid = new SubtitlesGrid(this,Panel,-1,ass,wxDefaultPosition,wxSize(600,100),wxWANTS_CHARS | wxSUNKEN_BORDER,_T("Subs grid"));
-	temp_context.SubsGrid = SubsGrid;
+	temp_context->SubsGrid = SubsGrid;
 	videoBox->videoSlider->grid = SubsGrid;
-	temp_context.videoContext->grid = SubsGrid;
+	temp_context->videoContext->grid = SubsGrid;
 	Search.grid = SubsGrid;
 
 	// Tools area
@@ -329,7 +331,7 @@ void FrameMain::InitContents() {
 	// Audio area
 	StartupLog(_T("Create audio box"));
 	audioBox = new AudioBox(audioSash, audioController, SubsGrid, ass);
-	temp_context.audioBox = audioBox;
+	temp_context->audioBox = audioBox;
 	audioBox->frameMain = this;
 	audioSashSizer->Add(audioBox, 1, wxEXPAND);
 	audioSash->SetSizer(audioSashSizer);
@@ -339,7 +341,7 @@ void FrameMain::InitContents() {
 	// Editing area
 	StartupLog(_T("Create subtitle editing box"));
 	EditBox = new SubsEditBox(Panel,SubsGrid);
-	temp_context.EditBox = EditBox;
+	temp_context->EditBox = EditBox;
 
 	// Set sizers/hints
 	StartupLog(_T("Arrange main sizers"));
@@ -903,7 +905,7 @@ void FrameMain::DetachVideo(bool detach) {
 	if (detach) {
 		if (!detachedVideo) {
 			detachedVideo = new DialogDetachedVideo(this, videoBox->videoDisplay->GetClientSize());
-			temp_context.detachedVideo = detachedVideo;
+			temp_context->detachedVideo = detachedVideo;
 			detachedVideo->Show();
 		}
 	}
