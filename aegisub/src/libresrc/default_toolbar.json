@@ -13,6 +13,9 @@
 			"command" : "subtitle/save"
 		},
 		{
+			"type" : 100
+		},
+		{
 			"type" : 1,
 			"command" : "video/jump"
 		},
@@ -31,6 +34,9 @@
 		{
 			"type" : 1,
 			"command" : "video/jump/end"
+		},
+		{
+			"type" : 100
 		},
 		{
 			"type" : 1,
@@ -53,6 +59,9 @@
 			"command" : "time/snap/frame"
 		},
 		{
+			"type" : 100
+		},
+		{
 			"type" : 1,
 			"command" : "tool/style/manager"
 		},
@@ -69,12 +78,21 @@
 			"command" : "tool/font_collector"
 		},
 		{
+			"type" : 100
+		},
+		{
 			"type" : 1,
 			"command" : "am/manager"
 		},
 		{
+			"type" : 100
+		},
+		{
 			"type" : 1,
 			"command" : "tool/assdraw"
+		},
+		{
+			"type" : 100
 		},
 		{
 			"type" : 1,
@@ -105,12 +123,18 @@
 			"command" : "subtitle/spellcheck"
 		},
 		{
+			"type" : 100
+		},
+		{
 			"type" : 1,
 			"command" : "app/options"
 		},
 		{
 			"type" : 1,
 			"command" : "grid/tag/cycle_hiding"
+		},
+		{
+			"type" : 100
 		}
 	]
 }

@@ -71,8 +71,11 @@ void Toolbar::BuildToolbar(wxToolBar *toolbar, const json::Array& array) {
 	for (json::Array::const_iterator index(array.Begin()); index != array.End(); index++) {
 
 		const json::Object& obj = *index;
-		const json::Number& type_number = obj["type"];
-		int type = type_number.Value();
+		int type = static_cast<json::Number>(obj["type"]).Value();
+		if (type == Toolbar::Spacer) {
+			toolbar->AddSeparator();
+			continue;
+		}
 
 		const json::String& command = obj["command"];
 		cmd::Command *cmd = cmd::get(command.Value());

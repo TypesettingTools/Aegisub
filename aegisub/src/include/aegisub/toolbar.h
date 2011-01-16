@@ -53,6 +53,7 @@ private:
 
 	enum ToolbarTypes {
 		Standard = 1,
+		Spacer = 100
 	};
 
 	void BuildToolbar(wxToolBar *toolbar, const json::Array& array);
