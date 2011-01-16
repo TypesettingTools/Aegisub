@@ -105,9 +105,6 @@ private:
 	bool HasSelection;
 
 	/// DOCME
-	bool menuCreated;
-
-	/// DOCME
 	wxTimer AutoSave;
 
 	/// DOCME

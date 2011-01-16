@@ -107,7 +107,6 @@ FrameMain::FrameMain (wxArrayString args)
 , showVideo(true)
 , showAudio(true)
 , HasSelection(false)
-, menuCreated(false)
 , blockVideoLoad(false)
 {
 	StartupLog("Entering FrameMain constructor");
