@@ -277,15 +277,15 @@
 				},
 				{
 					"type" : 4,
-					"command" : "make times continous",
+					"command" : "make times continuous",
 					"contents" : [
 						{
 							"type" : 1,
-							"command" : "time/continous/start"
+							"command" : "time/continuous/start"
 						},
 						{
 							"type" : 1,
-							"command" : "time/continous/end"
+							"command" : "time/continuous/end"
 						}
 					]
 				}

@@ -65,31 +65,9 @@ class SubtitlesGrid: public BaseGrid {
 	agi::signal::Connection seekListener;
 
 	void OnPopupMenu(bool alternate=false);
+	void OnCommand(wxCommandEvent& event);
 	void OnKeyDown(wxKeyEvent &event);
 
-	void OnSwap(wxCommandEvent &event);
-	void OnDuplicate(wxCommandEvent &event);
-	void OnDuplicateNextFrame(wxCommandEvent &event);
-	void OnJoinConcat(wxCommandEvent &event);
-	void OnJoinReplace(wxCommandEvent &event);
-	void OnAdjoin(wxCommandEvent &event);
-	void OnAdjoin2(wxCommandEvent &event);
-	void OnInsertBefore(wxCommandEvent &event);
-	void OnInsertAfter(wxCommandEvent &event);
-	void OnInsertBeforeVideo(wxCommandEvent &event);
-	void OnInsertAfterVideo(wxCommandEvent &event);
-	void OnCopyLines(wxCommandEvent &event);
-	void OnCutLines(wxCommandEvent &event);
-	void OnPasteLines(wxCommandEvent &event);
-	void OnDeleteLines(wxCommandEvent &event);
-	void OnSetStartToVideo(wxCommandEvent &event);
-	void OnSetEndToVideo(wxCommandEvent &event);
-	void OnSetVideoToStart(wxCommandEvent &event);
-	void OnSetVideoToEnd(wxCommandEvent &event);
-	void OnJoinAsKaraoke(wxCommandEvent &event);
-	void OnSplitByKaraoke(wxCommandEvent &event);
-	void OnRecombine(wxCommandEvent &event);
-	void OnAudioClip(wxCommandEvent &event);
 	void OnShowColMenu(wxCommandEvent &event);
 
 	void OnHighlightVisibleChange(agi::OptionValue const& opt);
@@ -165,6 +143,8 @@ public:
 	void CutLines(wxArrayInt lines);
 	void PasteLines(int pos,bool over=false);
 
+	void RecombineLines();
+
 	/// Retrieve a list of selected lines in the actual ASS file (i.e. not as displayed in the grid but as represented in the file)
 	std::vector<int> GetAbsoluteSelection();
 	/// @brief Update list of selected lines from absolute selection
@@ -176,30 +156,5 @@ public:
 
 /// Menu event IDs
 enum {
-	MENU_GRID_START = 1200,
-	MENU_INSERT_BEFORE,
-	MENU_INSERT_AFTER,
-	MENU_INSERT_BEFORE_VIDEO,
-	MENU_INSERT_AFTER_VIDEO,
-	MENU_SWAP,
-	MENU_DUPLICATE,
-	MENU_DUPLICATE_NEXT_FRAME,
-	MENU_SPLIT_BY_KARAOKE,
-	MENU_COPY,
-	MENU_PASTE,
-	MENU_CUT,
-	MENU_DELETE,
-	MENU_JOIN_CONCAT,
-	MENU_JOIN_REPLACE,
-	MENU_ADJOIN,
-	MENU_ADJOIN2,
-	MENU_JOIN_AS_KARAOKE,
-	MENU_RECOMBINE,
-	MENU_SET_START_TO_VIDEO,
-	MENU_SET_END_TO_VIDEO,
-	MENU_SET_VIDEO_TO_START,
-	MENU_SET_VIDEO_TO_END,
-	MENU_GRID_END,
-	MENU_AUDIOCLIP,
 	MENU_SHOW_COL = 1250 // Don't put anything after this
 };

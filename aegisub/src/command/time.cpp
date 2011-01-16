@@ -57,8 +57,8 @@ namespace cmd {
 
 
 /// Changes times of subs so end times begin on next's start time.
-struct time_continous_end : public Command {
-	CMD_NAME("time/continous/end")
+struct time_continuous_end : public Command {
+	CMD_NAME("time/continuous/end")
 	STR_MENU("Change &End")
 	STR_DISP("Change End")
 	STR_HELP("Changes times of subs so end times begin on next's start time.")
@@ -71,8 +71,8 @@ struct time_continous_end : public Command {
 
 
 /// Changes times of subs so start times begin on previous's end time.
-struct time_continous_start : public Command {
-	CMD_NAME("time/continous/start")
+struct time_continuous_start : public Command {
+	CMD_NAME("time/continuous/start")
 	STR_MENU("Change &Start")
 	STR_DISP("Change Start")
 	STR_HELP("Changes times of subs so start times begin on previous's end time.")
@@ -289,8 +289,8 @@ struct time_sort_style : public Command {
 
 /// Init time/ commands.
 void init_time(CommandManager *cm) {
-	cm->reg(new time_continous_end());
-	cm->reg(new time_continous_start());
+	cm->reg(new time_continuous_end());
+	cm->reg(new time_continuous_start());
 	cm->reg(new time_frame_current());
 	cm->reg(new time_shift());
 	cm->reg(new time_snap_end_video());

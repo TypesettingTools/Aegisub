@@ -58,7 +58,7 @@ COMMAND_GROUP(main_subtitle_insert_lines, "main/subtitle/insert lines", "&Insert
 COMMAND_GROUP(main_subtitle_sort_lines, "main/subtitle/sort lines", "Sort Lines", "Sort Lines", "Sort lines by column.");
 COMMAND_GROUP(main_subtitle_join_lines, "main/subtitle/join lines", "Join Lines", "Join Lines", "Merge 2 or more lines together.");
 COMMAND_GROUP(main_timing, "main/timing", "&Timing", "Timing", "Time manipulation.");
-COMMAND_GROUP(main_timing_make_times_continous, "main/timing/make times continous", "Make Times Continous", "Make Times Continous", "Make time continous.");
+COMMAND_GROUP(main_timing_make_times_continuous, "main/timing/make times continuous", "Make Times Continuous", "Make Times Continuous", "Make time continuous.");
 COMMAND_GROUP(main_video, "main/video", "&Video", "Video", "Video operations.");
 COMMAND_GROUP(main_video_override_ar, "main/video/override ar", "Override AR", "Override AR", "Override Aspect Ratio");
 COMMAND_GROUP(main_video_set_zoom, "main/video/set zoom", "Set Zoom", "Set Zoom", "Set zoom level.");
@@ -80,7 +80,7 @@ void init_menu(CommandManager *cm) {
 	cm->reg(new main_subtitle_join_lines());
 	cm->reg(new main_subtitle_sort_lines());
 	cm->reg(new main_timing());
-	cm->reg(new main_timing_make_times_continous());
+	cm->reg(new main_timing_make_times_continuous());
 	cm->reg(new main_video());
 	cm->reg(new main_video_override_ar());
 	cm->reg(new main_video_set_zoom());

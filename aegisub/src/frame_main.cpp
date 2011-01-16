@@ -1001,8 +1001,8 @@ void FrameMain::OnMenuOpen (wxMenuEvent &event) {
 
 		// Other
 		state = count >= 2 && continuous;
-		MenuBar->Enable(cmd::id("time/continous/start"),state);
-		MenuBar->Enable(cmd::id("time/continous/end"),state);
+		MenuBar->Enable(cmd::id("time/continuous/start"),state);
+		MenuBar->Enable(cmd::id("time/continuous/end"),state);
 	}
 
 	// Edit menu

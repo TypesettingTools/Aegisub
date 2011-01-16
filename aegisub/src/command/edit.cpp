@@ -211,7 +211,7 @@ struct edit_line_recombine : public Command {
 	STR_HELP("Recombine subtitles when they have been split and merged.")
 
 	void operator()(agi::Context *c) {
-		//XXX: subs_grid.cpp
+		c->subsGrid->RecombineLines();
 	}
 };
 
