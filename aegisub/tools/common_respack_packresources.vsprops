@@ -6,6 +6,6 @@
 	>
 	<Tool
 		Name="VCPostBuildEventTool"
-		CommandLine="&quot;$(TargetPath)&quot; &quot;$(ProjectDir)\..\src\libresrc\bitmap.cpp&quot; &quot;$(ProjectDir)\..\src\bitmaps\16&quot; &quot;$(ProjectDir)\..\src\bitmaps\24&quot; &quot;$(ProjectDir)\..\src\bitmaps\misc&quot;&#x0D;&#x0A;&quot;$(TargetPath)&quot; &quot;$(ProjectDir)\..\src\libresrc\default_config.cpp&quot; &quot;$(ProjectDir)\..\src\libresrc\.\default_mru.json&quot; &quot;$(ProjectDir)\..\src\libresrc\.\default_config.json&quot; &quot;$(ProjectDir)\..\src\libresrc\.\default_hotkey.json&quot; &quot;$(ProjectDir)\..\src\libresrc\.\default_menu.json&quot; &quot;$(ProjectDir)\..\src\libresrc\.\default_path.json&quot; &quot;$(ProjectDir)\..\src\libresrc\.\default_toolbar.json&quot;&#x0D;&#x0A;"
+		CommandLine="&quot;$(TargetPath)&quot; &quot;$(ProjectDir)../src/libresrc/manifest.respack&quot; &quot;$(ProjectDir)../src/libresrc/default_config.cpp&quot; &quot;$(ProjectDir)../src/libresrc/default_config.h&quot;&#x0D;&#x0A;&quot;$(TargetPath)&quot; &quot;$(ProjectDir)../src/bitmaps/manifest.respack&quot; &quot;$(ProjectDir)../src/libresrc/bitmap.cpp&quot; &quot;$(ProjectDir)../src/libresrc/bitmap.h&quot;&#x0D;&#x0A;&#x0D;&#x0A;&#x0D;&#x0A;"
 	/>
 </VisualStudioPropertySheet>

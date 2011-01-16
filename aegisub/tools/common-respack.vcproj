@@ -22,7 +22,7 @@
 		<Configuration
 			Name="Debug|Win32"
 			ConfigurationType="1"
-			InheritedPropertySheets="..\build\aegisub_vs2008\libraries_outdirs.vsprops;..\build\aegisub_vs2008\wxlib_include.vsprops;..\build\aegisub_vs2008\wxlib_lib32.vsprops;.\common_respack_packresources.vsprops"
+			InheritedPropertySheets="..\build\aegisub_vs2008\libraries_outdirs.vsprops;.\common_respack_packresources.vsprops"
 			CharacterSet="1"
 			>
 			<Tool
@@ -93,7 +93,7 @@
 		<Configuration
 			Name="Debug|x64"
 			ConfigurationType="1"
-			InheritedPropertySheets="..\build\aegisub_vs2008\libraries_outdirs.vsprops;..\build\aegisub_vs2008\wxlib_include.vsprops;..\build\aegisub_vs2008\wxlib_lib64.vsprops;.\common_respack_packresources.vsprops"
+			InheritedPropertySheets="..\build\aegisub_vs2008\libraries_outdirs.vsprops;.\common_respack_packresources.vsprops"
 			CharacterSet="1"
 			>
 			<Tool
@@ -165,7 +165,7 @@
 		<Configuration
 			Name="Release|Win32"
 			ConfigurationType="1"
-			InheritedPropertySheets="..\build\aegisub_vs2008\libraries_outdirs.vsprops;..\build\aegisub_vs2008\wxlib_include.vsprops;..\build\aegisub_vs2008\wxlib_lib32.vsprops;.\common_respack_packresources.vsprops"
+			InheritedPropertySheets="..\build\aegisub_vs2008\libraries_outdirs.vsprops;.\common_respack_packresources.vsprops"
 			CharacterSet="1"
 			WholeProgramOptimization="1"
 			>
@@ -239,7 +239,7 @@
 		<Configuration
 			Name="Release|x64"
 			ConfigurationType="1"
-			InheritedPropertySheets="..\build\aegisub_vs2008\libraries_outdirs.vsprops;..\build\aegisub_vs2008\wxlib_include.vsprops;..\build\aegisub_vs2008\wxlib_lib64.vsprops;.\common_respack_packresources.vsprops"
+			InheritedPropertySheets="..\build\aegisub_vs2008\libraries_outdirs.vsprops;.\common_respack_packresources.vsprops"
 			CharacterSet="1"
 			WholeProgramOptimization="1"
 			>
