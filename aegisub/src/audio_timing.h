@@ -73,20 +73,22 @@ public:
 	/// @brief Get the primary playback range
 	/// @return A sample range
 	///
-	/// Get the sample range the user is most likely to want to play back currently.
+	/// Get the sample range the user is most likely to want to play back
+	/// currently.
 	virtual SampleRange GetPrimaryPlaybackRange() const = 0;
 
 	/// @brief Does this timing mode have labels on the audio display?
 	/// @return True if this timing mode needs labels on the audio display.
 	///
-	/// This is labels for things such as karaoke syllables. When labels are required, some vertical
-	/// space is set off for them in the drawing of the audio display.
+	/// This is labels for things such as karaoke syllables. When labels are
+	/// required, some vertical space is set off for them in the drawing of the
+	/// audio display.
 	virtual bool HasLabels() const = 0;
 
 	/// @brief Go to next timing unit
 	/// 
-	/// Advances the timing controller cursor to the next timing unit, for example the next dialogue
-	/// line or the next karaoke syllable.
+	/// Advances the timing controller cursor to the next timing unit, for
+	/// example the next dialogue line or the next karaoke syllable.
 	virtual void Next() = 0;
 
 	/// @brief Go to the previous timing unit
@@ -109,21 +111,24 @@ public:
 	/// @param sensitivity Distance in samples to consider markers as nearby
 	/// @return True if a marker is close by the given sample, as defined by sensitivity
 	///
-	/// This is solely for hit-testing against draggable markers, for controlling the mouse cursor.
+	/// This is solely for hit-testing against draggable markers, for
+	/// controlling the mouse cursor.
 	virtual bool IsNearbyMarker(int64_t sample, int sensitivity) const = 0;
 
 	/// @brief The user pressed the left button down at an empty place in the audio
 	/// @param sample      The audio sample index the user clicked
 	/// @param sensitivity Distance in samples to consider existing markers
-	/// @return An audio marker or 0. If a marker is returned and the user starts dragging
-	/// the mouse after pressing down the button, the returned marker is being dragged.
+	/// @return An audio marker or 0. If a marker is returned and the user
+	/// starts dragging the mouse after pressing down the button, the returned
+	/// marker is being dragged.
 	virtual AudioMarker * OnLeftClick(int64_t sample, int sensitivity) = 0;
 
 	/// @brief The user pressed the right button down at an empty place in the audio
 	/// @param sample      The audio sample index the user clicked
 	/// @param sensitivity Distance in samples to consider existing markers
-	/// @return An audio marker or 0. If a marker is returned and the user starts dragging
-	/// the mouse after pressing down the button, the returned marker is being dragged.
+	/// @return An audio marker or 0. If a marker is returned and the user
+	/// starts dragging the mouse after pressing down the button, the returned
+	/// marker is being dragged.
 	virtual AudioMarker * OnRightClick(int64_t sample, int sensitivity) = 0;
 
 	/// @brief The user dragged a timing marker
@@ -140,10 +145,9 @@ public:
 };
 
 
-
 /// @brief Create a standard dialogue audio timing controller
 /// @param audio_controller     The audio controller to own the timing controller
-/// @param selection_controller The selection controller to manage the set of lines being timed
+/// @param selection_controller The selection controller to manage the set of
+/// lines being timed
 /// @param ass                  The file being timed
 AudioTimingController *CreateDialogueTimingController(AudioController *audio_controller, SelectionController<AssDialogue> *selection_controller, AssFile *ass);
-
