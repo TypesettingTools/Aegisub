@@ -64,8 +64,7 @@
   </Target>
 
   <ItemGroup>
-    <PropertyPageSchema Include="$(MSBuildThisFileDirectory)Aegisub.SubWCRev.ProjectItems.xml" />
-    <PropertyPageSchema Include="$(MSBuildThisFileDirectory)Aegisub.SubWCRev.xml" />
+    <PropertyPageSchema Include="$(MSBuildThisFileDirectory)Aegisub.xml" />
     <ProjectTools Include="SubWCRev" />
     <AvailableItemName Include="SubWCRev">
       <Targets>SubWCRev</Targets>

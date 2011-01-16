@@ -35,7 +35,7 @@
     <Import Project="$(MSBuildThisFileDirectory)..\aegisub.props" />
   </ImportGroup>
   <!-- Project specific configuration -->
-  <Import Project="$(MSBuildThisFileDirectory)Aegisub.SubWCRev.targets" />
+  <Import Project="$(MSBuildThisFileDirectory)Aegisub.targets" />
   <PropertyGroup>
 	<TargetName>aegisub$(AegisubPlatformSuffix)</TargetName>
   </PropertyGroup>

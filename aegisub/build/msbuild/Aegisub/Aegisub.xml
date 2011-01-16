@@ -48,10 +48,11 @@
 
   <StringProperty
     Name="SubWCRevExe"
+	Subtype="file"
     Category="General"
     DisplayName="SubWCRev.exe"
     Description="Location of the SubWCRev.exe file used to process SVN working copies. Changes to this setting are stored in user settings, not in the main project file."
-    Default="$(SubWCRevExe)"
+    Default="SubWCRev.exe"
     >
     <StringProperty.DataSource>
       <DataSource Persistence="UserFile" ItemType="" HasConfigurationCondition="false" />
@@ -60,18 +61,21 @@
   
   <StringProperty
     Name="InputFile"
+	Subtype="file"
     Category="General"
     DisplayName="Input file"
     Description="Template file to insert data to."
     />
   <StringProperty
     Name="OutputFile"
+	Subtype="file"
     Category="General"
     DisplayName="Output file"
     Description="File to generate from the template file."
     />
   <StringProperty
     Name="Repository"
+	Subtype="folder"
     Category="General"
     DisplayName="Working copy location"
     Description="Location of SVN working copy to extract data from."
