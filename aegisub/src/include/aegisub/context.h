@@ -1,33 +1,37 @@
-class wxWindow;
-class DialogStyling;
+class AssFile;
 class AudioBox;
 class AudioController;
 class DialogDetachedVideo;
-class AssFile;
-namespace Automation4 { class ScriptManager; }
+class DialogStyling;
 class SubsEditBox;
 class SubtitlesGrid;
 class VideoBox;
 class VideoContext;
+class wxWindow;
+namespace Automation4 { class ScriptManager; }
 
 namespace agi {
 
 struct Context {
-	// Frames
-	wxWindow *parent;
-
-	DialogStyling *stylingAssistant;
-
-	AudioBox *audioBox;
-	AudioController *audioController;
-	DialogDetachedVideo *detachedVideo;
+	// Models
 	AssFile *ass;
 	Automation4::ScriptManager *local_scripts;
-	wxWindow *PreviousFocus;
+
+	// Controllers
+	AudioController *audioController;
+	VideoContext *videoContext;
+
+	// Things that should probably be in some sort of UI-context-model
+	wxWindow *parent;
+	wxWindow *previousFocus;
+
+	// Views (i.e. things that should eventually not be here at all)
+	AudioBox *audioBox;
+	DialogDetachedVideo *detachedVideo;
+	DialogStyling *stylingAssistant;
 	SubsEditBox *EditBox;
 	SubtitlesGrid *SubsGrid;
 	VideoBox *videoBox;
-	VideoContext *videoContext;
 };
 
 }
