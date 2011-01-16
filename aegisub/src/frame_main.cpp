@@ -1161,7 +1161,7 @@ void FrameMain::OnMenuOpen (wxMenuEvent &event) {
 		MenuBar->Enable(cmd::id("timecode/close"),VideoContext::Get()->OverTimecodesLoaded());
 		MenuBar->Enable(cmd::id("keyframe/close"),VideoContext::Get()->OverKeyFramesLoaded());
 		MenuBar->Enable(cmd::id("keyframe/save"),VideoContext::Get()->KeyFramesLoaded());
-		MenuBar->Enable(cmd::id("video/detach"),state);
+		MenuBar->Enable(cmd::id("video/details"),state);
 		MenuBar->Enable(cmd::id("video/show_overscan"),state);
 
 		// Set AR radio
