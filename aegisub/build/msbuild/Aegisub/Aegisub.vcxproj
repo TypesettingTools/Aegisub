@@ -82,10 +82,15 @@
       <OutputFile>$(AegisubSourceBase)build\svn-revision.h</OutputFile>
       <Repository>$(AegisubSourceBase)\.</Repository>
     </SubWCRev>
+    <CreateDefaultConfigurationHeader>
+      <TemplateFile>$(AegisubSourceBase)src\config\config_windows0.h</TemplateFile>
+      <TargetFile>$(AegisubSourceBase)src\config\config_windows.h</TargetFile>
+    </CreateDefaultConfigurationHeader>
   </ItemDefinitionGroup>
   <!-- Source files -->
   <ItemGroup>
     <SubWCRev Include="$(AegisubSourceBase)build\svn-revision-base.h" />
+    <CreateDefaultConfigurationHeader Include="$(AegisubSourceBase)src\config\config_windows.h" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(SrcDir)aegisublocale.h" />

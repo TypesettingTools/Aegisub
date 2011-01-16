@@ -32,24 +32,32 @@
   $Id$
 -->
 <Rule Name="SubWCRev" 
-    DisplayName="TortoiseSVN SubWCRev" 
+    DisplayName="Aegisub" 
     Order="110" 
     PageTemplate="tool"
     xmlns="http://schemas.microsoft.com/build/2009/properties">
 
 
   <Rule.Categories>
-    <Category Name="General" DisplayName="General" Description="General" />
+    <Category Name="BuildInfo" DisplayName="Build information" Description="Embed build information" />
   </Rule.Categories>
 
-  <Rule.DataSource>
-    <DataSource Persistence="ProjectFile" ItemType="SubWCRev" HasConfigurationCondition="false" />
-  </Rule.DataSource>
+  <StringProperty
+    Name="AegisubBuildCredit"
+    Category="BuildInfo"
+    DisplayName="Build credit"
+    Description="Name the build should be credited to. Appears in the about box, and in the title bar of development builds."
+    Default="Anonymous"
+    >
+    <StringProperty.DataSource>
+      <DataSource Persistence="UserFile" ItemType="" HasConfigurationCondition="false" />
+    </StringProperty.DataSource>
+  </StringProperty>
 
   <StringProperty
     Name="SubWCRevExe"
-	Subtype="file"
-    Category="General"
+    Subtype="file"
+    Category="BuildInfo"
     DisplayName="SubWCRev.exe"
     Description="Location of the SubWCRev.exe file used to process SVN working copies. Changes to this setting are stored in user settings, not in the main project file."
     Default="SubWCRev.exe"
@@ -61,25 +69,40 @@
   
   <StringProperty
     Name="InputFile"
-	Subtype="file"
-    Category="General"
+    Subtype="file"
+    Category="BuildInfo"
     DisplayName="Input file"
     Description="Template file to insert data to."
-    />
+    ReadOnly="true"
+    >
+    <StringProperty.DataSource>
+      <DataSource Persistence="ProjectFile" ItemType="SubWCRev" HasConfigurationCondition="false" />
+    </StringProperty.DataSource>
+  </StringProperty>
   <StringProperty
     Name="OutputFile"
-	Subtype="file"
-    Category="General"
+    Subtype="file"
+    Category="BuildInfo"
     DisplayName="Output file"
     Description="File to generate from the template file."
-    />
+    ReadOnly="true"
+    >
+    <StringProperty.DataSource>
+      <DataSource Persistence="ProjectFile" ItemType="SubWCRev" HasConfigurationCondition="false" />
+    </StringProperty.DataSource>
+  </StringProperty>
   <StringProperty
     Name="Repository"
-	Subtype="folder"
-    Category="General"
+    Subtype="folder"
+    Category="BuildInfo"
     DisplayName="Working copy location"
     Description="Location of SVN working copy to extract data from."
-    />
+    ReadOnly="true"
+    >
+    <StringProperty.DataSource>
+      <DataSource Persistence="ProjectFile" ItemType="SubWCRev" HasConfigurationCondition="false" />
+    </StringProperty.DataSource>
+  </StringProperty>
 
 
 </Rule>

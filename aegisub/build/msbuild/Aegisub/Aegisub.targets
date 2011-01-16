@@ -63,12 +63,44 @@
       />
   </Target>
 
+  <Target
+    Name="CreateDefaultConfigurationHeader"
+    BeforeTargets="PrepareForBuild"
+    Condition="'@(CreateDefaultConfigurationHeader)' != ''"
+    >
+    <PropertyGroup>
+      <AegisubMustCreateConfigurationHeader Condition="!Exists('%(CreateDefaultConfigurationHeader.TargetFile)')">true</AegisubMustCreateConfigurationHeader>
+    </PropertyGroup>
+    <Warning
+      Condition="'$(AegisubMustCreateConfigurationHeader)'=='true'"
+      Text="Creating default configuration file. You should edit this file to customise the build."
+      />
+    <Error
+      Condition="!Exists('%(CreateDefaultConfigurationHeader.TemplateFile)') and '$(AegisubMustCreateConfigurationHeader)'=='true'"
+      Text="The configuration file template was not found."
+      />
+    <Copy
+      Condition="'$(AegisubMustCreateConfigurationHeader)'=='true'"
+      SourceFiles="%(CreateDefaultConfigurationHeader.TemplateFile)"
+      DestinationFiles="%(CreateDefaultConfigurationHeader.TargetFile)"
+      />
+    <Message
+      Condition="'$(AegisubMustCreateConfigurationHeader)'=='true'"
+      Text="Created %(CreateDefaultConfigurationHeader.TargetFile)"
+      />
+  </Target>
+
+
+  <ItemDefinitionGroup Condition="'$(AegisubBuildCredit)'!=''">
+    <ClCompile>
+      <PreprocessorDefinitions>BUILD_CREDIT="$(AegisubBuildCredit)";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  
+
   <ItemGroup>
     <PropertyPageSchema Include="$(MSBuildThisFileDirectory)Aegisub.xml" />
-    <ProjectTools Include="SubWCRev" />
-    <AvailableItemName Include="SubWCRev">
-      <Targets>SubWCRev</Targets>
-    </AvailableItemName>
+    <ProjectTools Include="SubWCRev;CreateDefaultConfigurationHeader" />
   </ItemGroup>
 
 </Project>
