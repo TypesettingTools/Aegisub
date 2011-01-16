@@ -102,9 +102,6 @@ struct grid_tag_cycle_hiding : public Command {
 
 		// Set option
 		OPT_SET("Subtitle/Grid/Hide Overrides")->SetInt(tagMode);
-
-		// Refresh grid
-		c->SubsGrid->Refresh(false);
 	}
 };
 
@@ -118,7 +115,6 @@ struct grid_tags_hide : public Command {
 
 	void operator()(agi::Context *c) {
 		OPT_SET("Subtitle/Grid/Hide Overrides")->SetInt(2);
-		c->SubsGrid->Refresh(false);
 	}
 };
 
@@ -132,7 +128,6 @@ struct grid_tags_show : public Command {
 
 	void operator()(agi::Context *c) {
 		OPT_SET("Subtitle/Grid/Hide Overrides")->SetInt(0);
-		c->SubsGrid->Refresh(false);
 	}
 };
 
@@ -146,7 +141,6 @@ struct grid_tags_simplify : public Command {
 
 	void operator()(agi::Context *c) {
 		OPT_SET("Subtitle/Grid/Hide Overrides")->SetInt(1);
-		c->SubsGrid->Refresh(false);
 	}
 };
 

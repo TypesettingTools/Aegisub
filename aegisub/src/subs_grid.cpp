@@ -114,6 +114,7 @@ SubtitlesGrid::SubtitlesGrid(FrameMain* parentFr, wxWindow *parent, wxWindowID i
 
 	OnHighlightVisibleChange(*OPT_GET("Subtitle/Grid/Highlight Subtitles in Frame"));
 	OPT_SUB("Subtitle/Grid/Highlight Subtitles in Frame", &SubtitlesGrid::OnHighlightVisibleChange, this);
+	OPT_SUB("Subtitle/Grid/Hide Overrides", std::tr1::bind(&SubtitlesGrid::Refresh, this, false, (const wxRect*)0));
 	ass->AddCommitListener(&SubtitlesGrid::OnCommit, this);
 }
 
