@@ -1199,9 +1199,6 @@ void AudioDisplay::OnPlaybackPosition(int64_t sample_position)
 
 void AudioDisplay::OnSelectionChanged()
 {
-	/// @todo This is all currently completely pointless as the whole thing is
-	///       refreshed whenever a marker moves anyway
-
 	/// @todo Handle rendering style ranges from timing controller instead
 	SampleRange sel(controller->GetPrimaryPlaybackRange());
 	scrollbar->SetSelection(AbsoluteXFromSamples(sel.begin()), AbsoluteXFromSamples(sel.length()));

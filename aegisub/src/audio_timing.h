@@ -33,8 +33,6 @@
 /// @brief Construction-functions for timing controller objects
 /// @ingroup audio_ui
 
-
-
 class AssDialogue;
 class AssFile;
 class AudioController;
@@ -44,12 +42,13 @@ class AudioController;
 /// @class AudioTimingController
 /// @brief Base class for objects controlling audio timing
 ///
-/// There is just one active audio timing controller at a time per audio controller.
-/// The timing controller manages the timing mode and supplies markers that can be
-/// manipulated to the audio display, as well as the current selection.
+/// There is just one active audio timing controller at a time per audio
+/// controller. The timing controller manages the timing mode and supplies
+/// markers that can be manipulated to the audio display, as well as the
+/// current selection.
 ///
-/// The timing controller must then be sent the marker drag events as well as clicks
-/// in empty areas of the audio display.
+/// The timing controller must then be sent the marker drag events as well as
+/// clicks in empty areas of the audio display.
 class AudioTimingController : public AudioMarkerProvider {
 protected:
 	/// The primary playback range has changed, usually as a result of user interaction.

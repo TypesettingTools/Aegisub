@@ -506,7 +506,6 @@ void AudioTimingControllerDialogue::UpdateSelection()
 void AudioTimingControllerDialogue::SetMarker(AudioMarkerDialogueTiming *marker, int64_t sample)
 {
 	marker->SetPosition(sample);
-	AnnounceMarkerMoved(marker);
 	timing_modified = true;
 	if (auto_commit->GetBool()) Commit();
 	UpdateSelection();
