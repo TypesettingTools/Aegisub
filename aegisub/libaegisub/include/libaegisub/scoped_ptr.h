@@ -43,7 +43,7 @@ public:
 
 	void swap(scoped_ptr &b) { using std::swap; swap(ptr, b.ptr); }
 
-	scoped_ptr(T *ptr = NULL) : ptr(ptr){ }
+	explicit scoped_ptr(T *ptr = NULL) : ptr(ptr){ }
 	~scoped_ptr() { delete ptr; }
 };
 
