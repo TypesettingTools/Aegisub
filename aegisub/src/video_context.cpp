@@ -155,7 +155,10 @@ void VideoContext::Reset() {
 void VideoContext::SetVideo(const wxString &filename) {
 	Stop();
 	Reset();
-	if (filename.empty()) return;
+	if (filename.empty()) {
+		VideoOpen();
+		return;
+	}
 
 	try {
 		provider.reset(new ThreadedFrameSource(filename, this));

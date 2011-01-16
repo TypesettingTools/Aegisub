@@ -236,7 +236,7 @@ FrameMain::FrameMain (wxArrayString args)
 
 /// @brief FrameMain destructor 
 FrameMain::~FrameMain () {
-	VideoContext::Get()->SetVideo(_T(""));
+	temp_context->videoContext->SetVideo(_T(""));
 	audioController->CloseAudio();
 	DeInitContents();
 	delete audioController;
@@ -310,6 +310,7 @@ void FrameMain::InitContents() {
 	temp_context->videoBox = videoBox;
 	temp_context->videoContext = VideoContext::Get();
 	temp_context->videoContext->audio = audioController;
+	temp_context->videoContext->AddVideoOpenListener(&FrameMain::OnVideoOpen, this);
 	wxBoxSizer *videoSizer = new wxBoxSizer(wxVERTICAL);
 	videoSizer->Add(videoBox, 0, wxEXPAND);
 	videoSizer->AddStretchSpacer(1);
@@ -377,13 +378,13 @@ void FrameMain::DeInitContents() {
 	delete videoBox;
 	delete ass;
 	HelpButton::ClearPages();
-	VideoContext::Get()->audio = NULL;
+	temp_context->videoContext->audio = NULL;
 }
 
 /// @brief Update toolbar 
 void FrameMain::UpdateToolbar() {
 	// Collect flags
-	bool isVideo = VideoContext::Get()->IsLoaded();
+	bool isVideo = temp_context->videoContext->IsLoaded();
 	HasSelection = true;
 	int selRows = SubsGrid->GetNumberSelection();
 
@@ -514,7 +515,7 @@ bool FrameMain::SaveSubtitles(bool saveas,bool withCharset) {
 
 	// Failed, ask user
 	if (filename.IsEmpty()) {
-		VideoContext::Get()->Stop();
+		temp_context->videoContext->Stop();
 		wxString path = lagi_wxString(OPT_GET("Path/Last/Subtitles")->GetString());
 		wxFileName origPath(ass->filename);
 		filename =  wxFileSelector(_("Save subtitles file"),path,origPath.GetName() + _T(".ass"),_T("ass"),AssFile::GetWildcardList(1),wxFD_SAVE | wxFD_OVERWRITE_PROMPT,this);
@@ -588,7 +589,7 @@ void FrameMain::SetDisplayMode(int video, int audio) {
 	bool sv = false, sa = false;
 
 	if (video == -1) sv = showVideo;
-	else if (video)  sv = VideoContext::Get()->IsLoaded() && !detachedVideo;
+	else if (video)  sv = temp_context->videoContext->IsLoaded() && !detachedVideo;
 
 	if (audio == -1) sa = showAudio;
 	else if (audio)  sa = audioController->IsAudioOpen();
@@ -602,7 +603,7 @@ void FrameMain::SetDisplayMode(int video, int audio) {
 	bool didFreeze = !IsFrozen();
 	if (didFreeze) Freeze();
 
-	VideoContext::Get()->Stop();
+	temp_context->videoContext->Stop();
 
 	// Set display
 	TopSizer->Show(videoBox, showVideo, true);
@@ -687,9 +688,9 @@ void FrameMain::SynchronizeProject(bool fromSubs) {
 		int autoLoadMode = OPT_GET("App/Auto/Load Linked Files")->GetInt();
 		bool hasToLoad = false;
 		if (curSubsAudio !=audioController->GetAudioURL() ||
-			curSubsVFR != VideoContext::Get()->GetTimecodesName() ||
-			curSubsVideo != VideoContext::Get()->videoName ||
-			curSubsKeyframes != VideoContext::Get()->GetKeyFramesName()
+			curSubsVFR != temp_context->videoContext->GetTimecodesName() ||
+			curSubsVideo != temp_context->videoContext->videoName ||
+			curSubsKeyframes != temp_context->videoContext->GetKeyFramesName()
 #ifdef WITH_AUTOMATION
 			|| !AutoScriptString.IsEmpty() || local_scripts->GetScripts().size() > 0
 #endif
@@ -709,17 +710,17 @@ void FrameMain::SynchronizeProject(bool fromSubs) {
 
 		if (doLoad) {
 			// Video
-			if (curSubsVideo != VideoContext::Get()->videoName) {
-				LoadVideo(curSubsVideo);
-				if (VideoContext::Get()->IsLoaded()) {
-					VideoContext::Get()->SetAspectRatio(videoAr,videoArValue);
+			if (!blockVideoLoad && curSubsVideo != temp_context->videoContext->videoName) {
+				temp_context->videoContext->SetVideo(curSubsVideo);
+				if (temp_context->videoContext->IsLoaded()) {
+					temp_context->videoContext->SetAspectRatio(videoAr,videoArValue);
 					videoBox->videoDisplay->SetZoom(videoZoom);
-					VideoContext::Get()->JumpToFrame(videoPos);
+					temp_context->videoContext->JumpToFrame(videoPos);
 				}
 			}
 
-			VideoContext::Get()->LoadTimecodes(curSubsVFR);
-			VideoContext::Get()->LoadKeyframes(curSubsKeyframes);
+			temp_context->videoContext->LoadTimecodes(curSubsVFR);
+			temp_context->videoContext->LoadKeyframes(curSubsKeyframes);
 
 			// Audio
 			if (curSubsAudio != audioController->GetAudioURL()) {
@@ -771,12 +772,12 @@ void FrameMain::SynchronizeProject(bool fromSubs) {
 		wxString seekpos = _T("0");
 		wxString ar = _T("0");
 		wxString zoom = _T("6");
-		if (VideoContext::Get()->IsLoaded()) {
-			seekpos = wxString::Format(_T("%i"),VideoContext::Get()->GetFrameN());
+		if (temp_context->videoContext->IsLoaded()) {
+			seekpos = wxString::Format(_T("%i"),temp_context->videoContext->GetFrameN());
 			zoom = wxString::Format(_T("%f"),videoBox->videoDisplay->GetZoom());
 
-			int arType = VideoContext::Get()->GetAspectRatioType();
-			if (arType == 4) ar = wxString(_T("c")) + AegiFloatToString(VideoContext::Get()->GetAspectRatioValue());
+			int arType = temp_context->videoContext->GetAspectRatioType();
+			if (arType == 4) ar = wxString(_T("c")) + AegiFloatToString(temp_context->videoContext->GetAspectRatioValue());
 			else ar = wxString::Format(_T("%i"),arType);
 		}
 		
@@ -784,12 +785,12 @@ void FrameMain::SynchronizeProject(bool fromSubs) {
 		ass->SetScriptInfo(_T("Audio URI"),MakeRelativePath(audioController->GetAudioURL(),ass->filename));
 
 		// Store video data
-		ass->SetScriptInfo(_T("Video File"),MakeRelativePath(VideoContext::Get()->videoName,ass->filename));
+		ass->SetScriptInfo(_T("Video File"),MakeRelativePath(temp_context->videoContext->videoName,ass->filename));
 		ass->SetScriptInfo(_T("Video Aspect Ratio"),ar);
 		ass->SetScriptInfo(_T("Video Zoom Percent"),zoom);
 		ass->SetScriptInfo(_T("Video Position"),seekpos);
-		ass->SetScriptInfo(_T("VFR File"),MakeRelativePath(VideoContext::Get()->GetTimecodesName(),ass->filename));
-		ass->SetScriptInfo(_T("Keyframes File"),MakeRelativePath(VideoContext::Get()->GetKeyFramesName(),ass->filename));
+		ass->SetScriptInfo(_T("VFR File"),MakeRelativePath(temp_context->videoContext->GetTimecodesName(),ass->filename));
+		ass->SetScriptInfo(_T("Keyframes File"),MakeRelativePath(temp_context->videoContext->GetKeyFramesName(),ass->filename));
 
 		// Store Automation script data
 		// Algorithm:
@@ -828,69 +829,60 @@ void FrameMain::SynchronizeProject(bool fromSubs) {
 	}
 }
 
-/// @brief Loads video 
-/// @param file     
-/// @param autoload 
-void FrameMain::LoadVideo(wxString file,bool autoload) {
-	if (blockVideoLoad) return;
+void FrameMain::OnVideoOpen() {
+	if (!temp_context->videoContext->IsLoaded()) {
+		SetDisplayMode(0, -1);
+		DetachVideo(false);
+		return;
+	}
+
 	Freeze();
-	try {
-		VideoContext::Get()->SetVideo(file);
-	}
-	catch (const wchar_t *error) {
-		wxMessageBox(error, _T("Error opening video file"), wxOK | wxICON_ERROR, this);
-	}
-	catch (...) {
-		wxMessageBox(_T("Unknown error"), _T("Error opening video file"), wxOK | wxICON_ERROR, this);
-	}
+	int vidx = temp_context->videoContext->GetWidth(),
+		vidy = temp_context->videoContext->GetHeight();
 
-	if (VideoContext::Get()->IsLoaded()) {
-		int vidx = VideoContext::Get()->GetWidth(), vidy = VideoContext::Get()->GetHeight();
+	// Set zoom level based on video resolution and window size
+	double zoom = videoBox->videoDisplay->GetZoom();
+	wxSize windowSize = GetSize();
+	if (vidx*3*zoom > windowSize.GetX()*4 || vidy*4*zoom > windowSize.GetY()*6)
+		videoBox->videoDisplay->SetZoom(zoom * .25);
+	else if (vidx*3*zoom > windowSize.GetX()*2 || vidy*4*zoom > windowSize.GetY()*3)
+		videoBox->videoDisplay->SetZoom(zoom * .5);
 
-		// Set zoom level based on video resolution and window size
-		double zoom = videoBox->videoDisplay->GetZoom();
-		wxSize windowSize = GetSize();
-		if (vidx*3*zoom > windowSize.GetX()*4 || vidy*4*zoom > windowSize.GetY()*6)
-			videoBox->videoDisplay->SetZoom(zoom * .25);
-		else if (vidx*3*zoom > windowSize.GetX()*2 || vidy*4*zoom > windowSize.GetY()*3)
-			videoBox->videoDisplay->SetZoom(zoom * .5);
-
-		// Check that the video size matches the script video size specified
-		int scriptx = SubsGrid->ass->GetScriptInfoAsInt(_T("PlayResX"));
-		int scripty = SubsGrid->ass->GetScriptInfoAsInt(_T("PlayResY"));
-		if (scriptx != vidx || scripty != vidy) {
-			switch (OPT_GET("Video/Check Script Res")->GetInt()) {
-				case 1:
-					// Ask to change on mismatch
-					if (wxMessageBox(wxString::Format(_("The resolution of the loaded video and the resolution specified for the subtitles don't match.\n\nVideo resolution:\t%d x %d\nScript resolution:\t%d x %d\n\nChange subtitles resolution to match video?"), vidx, vidy, scriptx, scripty), _("Resolution mismatch"), wxYES_NO, this) != wxYES)
-						break;
-					// Fallthrough to case 2
-				case 2:
-					// Always change script res
-					SubsGrid->ass->SetScriptInfo(_T("PlayResX"), wxString::Format(_T("%d"), vidx));
-					SubsGrid->ass->SetScriptInfo(_T("PlayResY"), wxString::Format(_T("%d"), vidy));
-					SubsGrid->ass->Commit(_("Change script resolution"));
+	// Check that the video size matches the script video size specified
+	int scriptx = ass->GetScriptInfoAsInt("PlayResX");
+	int scripty = ass->GetScriptInfoAsInt("PlayResY");
+	if (scriptx != vidx || scripty != vidy) {
+		switch (OPT_GET("Video/Check Script Res")->GetInt()) {
+			case 1:
+				// Ask to change on mismatch
+				if (wxMessageBox(wxString::Format(_("The resolution of the loaded video and the resolution specified for the subtitles don't match.\n\nVideo resolution:\t%d x %d\nScript resolution:\t%d x %d\n\nChange subtitles resolution to match video?"), vidx, vidy, scriptx, scripty), _("Resolution mismatch"), wxYES_NO, this) != wxYES)
 					break;
-				case 0:
-				default:
-					// Never change
-					break;
-			}
+				// Fallthrough to case 2
+			case 2:
+				// Always change script res
+				ass->SetScriptInfo("PlayResX", wxString::Format("%d", vidx));
+				ass->SetScriptInfo("PlayResY", wxString::Format("%d", vidy));
+				ass->Commit(_("Change script resolution"));
+				break;
+			case 0:
+			default:
+				// Never change
+				break;
 		}
 	}
 
 	SetDisplayMode(1,-1);
 
-	DetachVideo(VideoContext::Get()->IsLoaded() && OPT_GET("Video/Detached/Enabled")->GetBool());
+	DetachVideo(OPT_GET("Video/Detached/Enabled")->GetBool());
 	Thaw();
 }
 
 void FrameMain::LoadVFR(wxString filename) {
 	if (filename.empty()) {
-		VideoContext::Get()->CloseTimecodes();
+		temp_context->videoContext->CloseTimecodes();
 	}
 	else {
-		VideoContext::Get()->LoadTimecodes(filename);
+		temp_context->videoContext->LoadTimecodes(filename);
 	}
 }
 
@@ -980,35 +972,35 @@ bool FrameMain::LoadList(wxArrayString list) {
 	audioList.Add(_T("m4a"));
 
 	// Scan list
-	wxString audio = _T("");
-	wxString video = _T("");
-	wxString subs = _T("");
+	wxString audio;
+	wxString video;
+	wxString subs;
 	wxString ext;
 	for (size_t i=0;i<List.Count();i++) {
 		wxFileName file(List[i]);
 		ext = file.GetExt().Lower();
 
-		if (subs.IsEmpty() && subsList.Index(ext) != wxNOT_FOUND) subs = List[i];
-		if (video.IsEmpty() && videoList.Index(ext) != wxNOT_FOUND) video = List[i];
-		if (audio.IsEmpty() && audioList.Index(ext) != wxNOT_FOUND) audio = List[i];
+		if (subs.empty() && subsList.Index(ext) != wxNOT_FOUND) subs = List[i];
+		if (video.empty() && videoList.Index(ext) != wxNOT_FOUND) video = List[i];
+		if (audio.empty() && audioList.Index(ext) != wxNOT_FOUND) audio = List[i];
 	}
 
 	// Set blocking
-	blockVideoLoad = (video != _T(""));
+	blockVideoLoad = !video.empty();
 
 	// Load files
-	if (subs != _T("")) {
+	if (subs.size()) {
 		LoadSubtitles(subs);
 	}
 	if (blockVideoLoad) {
 		blockVideoLoad = false;
-		LoadVideo(video);
+		temp_context->videoContext->SetVideo(video);
 	}
-	if (!audio.IsEmpty())
+	if (!audio.empty())
 		audioController->OpenAudio(audio);
 
 	// Result
-	return ((subs != _T("")) || (audio != _T("")) || (video != _T("")));
+	return subs.size() || audio.size() || video.size();
 }
 
 
@@ -1116,14 +1108,14 @@ void FrameMain::OnMenuOpen (wxMenuEvent &event) {
 		// Rebuild recent
 		RebuildRecentList("recent/subtitle", "Subtitle");
 
-		MenuBar->Enable(cmd::id("subtitle/open/video"),VideoContext::Get()->HasSubtitles());
+		MenuBar->Enable(cmd::id("subtitle/open/video"),temp_context->videoContext->HasSubtitles());
 	}
 
 	// View menu
 	else if (curMenu == menu::menu->GetMenu("main/view")) {
 		// Flags
 		bool aud = audioController->IsAudioOpen();
-		bool vid = VideoContext::Get()->IsLoaded() && !detachedVideo;
+		bool vid = temp_context->videoContext->IsLoaded() && !detachedVideo;
 
 		// Set states
 		MenuBar->Enable(cmd::id("app/display/audio_subs"),aud);
@@ -1146,7 +1138,7 @@ void FrameMain::OnMenuOpen (wxMenuEvent &event) {
 
 	// Video menu
 	else if (curMenu == menu::menu->GetMenu("main/video")) {
-		bool state = VideoContext::Get()->IsLoaded();
+		bool state = temp_context->videoContext->IsLoaded();
 		bool attached = state && !detachedVideo;
 
 		// Set states
@@ -1165,15 +1157,15 @@ void FrameMain::OnMenuOpen (wxMenuEvent &event) {
 		MenuBar->Enable(cmd::id("video/aspect/cinematic"),attached);
 		MenuBar->Enable(cmd::id("video/aspect/custom"),attached);
 		MenuBar->Enable(cmd::id("video/detach"),state);
-		MenuBar->Enable(cmd::id("timecode/save"),VideoContext::Get()->TimecodesLoaded());
-		MenuBar->Enable(cmd::id("timecode/close"),VideoContext::Get()->OverTimecodesLoaded());
-		MenuBar->Enable(cmd::id("keyframe/close"),VideoContext::Get()->OverKeyFramesLoaded());
-		MenuBar->Enable(cmd::id("keyframe/save"),VideoContext::Get()->KeyFramesLoaded());
+		MenuBar->Enable(cmd::id("timecode/save"),temp_context->videoContext->TimecodesLoaded());
+		MenuBar->Enable(cmd::id("timecode/close"),temp_context->videoContext->OverTimecodesLoaded());
+		MenuBar->Enable(cmd::id("keyframe/close"),temp_context->videoContext->OverKeyFramesLoaded());
+		MenuBar->Enable(cmd::id("keyframe/save"),temp_context->videoContext->KeyFramesLoaded());
 		MenuBar->Enable(cmd::id("video/details"),state);
 		MenuBar->Enable(cmd::id("video/show_overscan"),state);
 
 		// Set AR radio
-		int arType = VideoContext::Get()->GetAspectRatioType();
+		int arType = temp_context->videoContext->GetAspectRatioType();
 		MenuBar->Check(cmd::id("video/aspect/default"),false);
 		MenuBar->Check(cmd::id("video/aspect/full"),false);
 		MenuBar->Check(cmd::id("video/aspect/wide"),false);
@@ -1199,7 +1191,7 @@ void FrameMain::OnMenuOpen (wxMenuEvent &event) {
 	// Audio menu
 	else if (curMenu == menu::menu->GetMenu("main/audio")) {
 		bool state = audioController->IsAudioOpen();
-		bool vidstate = VideoContext::Get()->IsLoaded();
+		bool vidstate = temp_context->videoContext->IsLoaded();
 
 		MenuBar->Enable(cmd::id("audio/open/video"),vidstate);
 		MenuBar->Enable(cmd::id("audio/close"),state);
@@ -1222,13 +1214,13 @@ void FrameMain::OnMenuOpen (wxMenuEvent &event) {
 		MenuBar->Enable(cmd::id("subtitle/insert/after"),state);
 		MenuBar->Enable(cmd::id("edit/line/split/by_karaoke"),state);
 		MenuBar->Enable(cmd::id("edit/line/delete"),state);
-		state2 = count > 0 && VideoContext::Get()->IsLoaded();
+		state2 = count > 0 && temp_context->videoContext->IsLoaded();
 		MenuBar->Enable(cmd::id("subtitle/insert/before/videotime"),state2);
 		MenuBar->Enable(cmd::id("subtitle/insert/after/videotime"),state2);
 		MenuBar->Enable(cmd::id("main/subtitle/insert lines"),state);
 		state = count > 0 && continuous;
 		MenuBar->Enable(cmd::id("edit/line/duplicate"),state);
-		state = count > 0 && continuous && VideoContext::Get()->TimecodesLoaded();
+		state = count > 0 && continuous && temp_context->videoContext->TimecodesLoaded();
 		MenuBar->Enable(cmd::id("edit/line/duplicate/shift"),state);
 		state = count == 2;
 		MenuBar->Enable(cmd::id("edit/line/swap"),state);
@@ -1249,7 +1241,7 @@ void FrameMain::OnMenuOpen (wxMenuEvent &event) {
 		int count = sels.Count();
 
 		// Video related
-		bool state = VideoContext::Get()->IsLoaded();
+		bool state = temp_context->videoContext->IsLoaded();
 		MenuBar->Enable(cmd::id("time/snap/start_video"),state);
 		MenuBar->Enable(cmd::id("time/snap/end_video"),state);
 		MenuBar->Enable(cmd::id("time/snap/scene"),state);
@@ -1372,7 +1364,7 @@ void FrameMain::OnAutomationMacro (wxCommandEvent &event) {
 /// @param event
 void FrameMain::OnCloseWindow (wxCloseEvent &event) {
 	// Stop audio and video
-	VideoContext::Get()->Stop();
+	temp_context->videoContext->Stop();
 	audioController->Stop();
 
 	// Ask user if he wants to save first

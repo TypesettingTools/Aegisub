@@ -189,7 +189,7 @@ struct video_close : public Command {
 	STR_HELP("Closes the currently open video file.")
 
 	void operator()(agi::Context *c) {
-		wxGetApp().frame->LoadVideo(_T(""));
+		c->videoContext->SetVideo("");
 	}
 };
 
@@ -337,7 +337,7 @@ struct video_open : public Command {
 					 + _("All Files") + _T(" (*.*)|*.*");
 		wxString filename = wxFileSelector(_("Open video file"),path,_T(""),_T(""),str,wxFD_OPEN | wxFD_FILE_MUST_EXIST);
 		if (!filename.empty()) {
-			wxGetApp().frame->LoadVideo(filename);
+			c->videoContext->SetVideo(filename);
 			OPT_SET("Path/Last/Video")->SetString(STD_STR(filename));
 		}
 	}
@@ -354,7 +354,7 @@ struct video_open_dummy : public Command {
 	void operator()(agi::Context *c) {
 		wxString fn;
 		if (DialogDummyVideo::CreateDummyVideo(c->parent, fn)) {
-			wxGetApp().frame->LoadVideo(fn);
+			c->videoContext->SetVideo(fn);
 		}
 	}
 };

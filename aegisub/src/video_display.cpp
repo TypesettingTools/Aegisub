@@ -265,6 +265,7 @@ void VideoDisplay::UploadFrameData(FrameReadyEvent &evt) {
 }
 
 void VideoDisplay::OnVideoOpen() {
+	if (!vc->IsLoaded()) return;
 	UpdateSize();
 	currentFrame = 0;
 	vc->GetFrameAsync(0);

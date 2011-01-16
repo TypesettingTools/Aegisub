@@ -90,7 +90,6 @@ public:
 	void SetDisplayMode(int showVid,int showAudio);
 	void LoadSubtitles(wxString filename,wxString charset=_T(""));
 	bool SaveSubtitles(bool saveas=false,bool withCharset=false);
-	void LoadVideo(wxString filename,bool autoload=false);
 	void DetachVideo(bool detach=true);
 	void LoadVFR(wxString filename);
 
@@ -172,9 +171,9 @@ private:
 	void OnAudioOpen(AudioProvider *provider);
 	void OnAudioClose();
 
+	void OnVideoOpen();
 
 	void OnSubtitlesFileChanged();
-
 
 public:
 
