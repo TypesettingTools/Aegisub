@@ -76,7 +76,7 @@ public:
 	STR_HELP("Recent keyframes.")
 
 	void operator()(agi::Context *c) {
-//		VideoContext::Get()->LoadKeyframes(lagi_wxString(config::mru->GetEntry("Keyframes", event.GetId()-cmd::id("recent/keyframe"))));
+//		c->videoContext->LoadKeyframes(lagi_wxString(config::mru->GetEntry("Keyframes", event.GetId()-cmd::id("recent/keyframe"))));
 	}
 };
 

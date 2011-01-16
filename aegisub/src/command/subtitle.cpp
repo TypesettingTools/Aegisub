@@ -48,6 +48,7 @@
 
 #include "command.h"
 
+#include "../ass_dialogue.h"
 #include "../ass_file.h"
 #include "../compat.h"
 #include "../dialog_attachments.h"
@@ -75,9 +76,8 @@ public:
 	STR_HELP("Open the attachment list.")
 
 	void operator()(agi::Context *c) {
-		VideoContext::Get()->Stop();
-		DialogAttachments attachments(c->parent, c->ass);
-		attachments.ShowModal();
+		c->videoContext->Stop();
+		DialogAttachments(c->parent, c->ass).ShowModal();
 	}
 };
 
@@ -91,7 +91,7 @@ public:
 	STR_HELP("Find words in subtitles.")
 
 	void operator()(agi::Context *c) {
-		VideoContext::Get()->Stop();
+		c->videoContext->Stop();
 		Search.OpenDialog(false);
 	}
 };
@@ -106,11 +106,28 @@ public:
 	STR_HELP("Find next match of last word.")
 
 	void operator()(agi::Context *c) {
-		VideoContext::Get()->Stop();
+		c->videoContext->Stop();
 		Search.FindNext();
 	}
 };
 
+static void insert_subtitle_at_video(agi::Context *c, bool after) {
+	int n = c->SubsGrid->GetFirstSelRow();
+
+	// Create line to add
+	AssDialogue *def = new AssDialogue;
+	int video_ms = c->videoContext->TimeAtFrame(c->videoContext->GetFrameN(), agi::vfr::START);
+	def->Start.SetMS(video_ms);
+	def->End.SetMS(video_ms + OPT_GET("Timing/Default Duration")->GetInt());
+	def->Style = c->SubsGrid->GetDialogue(n)->Style;
+
+	// Insert it
+	c->SubsGrid->BeginBatch();
+	c->SubsGrid->InsertLine(def, n, after);
+	c->SubsGrid->SelectRow(n + after);
+	c->SubsGrid->SetActiveLine(def);
+	c->SubsGrid->EndBatch();
+}
 
 /// Inserts a line after current.
 class subtitle_insert_after: public Command {
@@ -121,10 +138,31 @@ public:
 	STR_HELP("Inserts a line after current.")
 
 	void operator()(agi::Context *c) {
-//XXX: subs_grid.cpp
+		int n = c->SubsGrid->GetFirstSelRow();
+		int nrows = c->SubsGrid->GetRows();
+
+		// Create line to add
+		AssDialogue *def = new AssDialogue;
+		if (n == nrows-1) {
+			def->Start = c->SubsGrid->GetDialogue(n)->End;
+			def->End = c->SubsGrid->GetDialogue(n)->End;
+			def->End.SetMS(def->End.GetMS()+OPT_GET("Timing/Default Duration")->GetInt());
+		}
+		else {
+			def->Start = c->SubsGrid->GetDialogue(n)->End;
+			def->End = c->SubsGrid->GetDialogue(n+1)->Start;
+		}
+		if (def->End.GetMS() < def->Start.GetMS()) def->End.SetMS(def->Start.GetMS()+OPT_GET("Timing/Default Duration")->GetInt());
+		def->Style = c->SubsGrid->GetDialogue(n)->Style;
+
+		// Insert it
+		c->SubsGrid->BeginBatch();
+		c->SubsGrid->InsertLine(def, n, true);
+		c->SubsGrid->SelectRow(n + 1);
+		c->SubsGrid->SetActiveLine(def);
+		c->SubsGrid->EndBatch();
 	}
 };
-
 
 /// Inserts a line after current, starting at video time.
 class subtitle_insert_after_videotime: public Command {
@@ -135,7 +173,7 @@ public:
 	STR_HELP("Inserts a line after current, starting at video time.")
 
 	void operator()(agi::Context *c) {
-//XXX: subs_grid.cpp
+		insert_subtitle_at_video(c, true);
 	}
 };
 
@@ -149,7 +187,31 @@ public:
 	STR_HELP("Inserts a line before current.")
 
 	void operator()(agi::Context *c) {
-//XXX: subs_grid.cpp
+		int n = c->SubsGrid->GetFirstSelRow();
+
+		// Create line to add
+		AssDialogue *def = new AssDialogue;
+		if (n == 0) {
+			def->Start.SetMS(0);
+			def->End = c->SubsGrid->GetDialogue(n)->Start;
+		}
+		else if (c->SubsGrid->GetDialogue(n-1)->End.GetMS() > c->SubsGrid->GetDialogue(n)->Start.GetMS()) {
+			def->Start.SetMS(c->SubsGrid->GetDialogue(n)->Start.GetMS()-OPT_GET("Timing/Default Duration")->GetInt());
+			def->End = c->SubsGrid->GetDialogue(n)->Start;
+		}
+		else {
+			def->Start = c->SubsGrid->GetDialogue(n-1)->End;
+			def->End = c->SubsGrid->GetDialogue(n)->Start;
+		}
+		if (def->End.GetMS() < def->Start.GetMS()) def->End.SetMS(def->Start.GetMS()+OPT_GET("Timing/Default Duration")->GetInt());
+		def->Style = c->SubsGrid->GetDialogue(n)->Style;
+
+		// Insert it
+		c->SubsGrid->BeginBatch();
+		c->SubsGrid->InsertLine(def, n, false);
+		c->SubsGrid->SelectRow(n);
+		c->SubsGrid->SetActiveLine(def);
+		c->SubsGrid->EndBatch();
 	}
 };
 
@@ -163,7 +225,7 @@ public:
 	STR_HELP("Inserts a line before current, starting at video time.")
 
 	void operator()(agi::Context *c) {
-//XXX: subs_grid.cpp
+		insert_subtitle_at_video(c, false);
 	}
 };
 
@@ -236,7 +298,7 @@ public:
 	STR_HELP("Opens the subtitles from the current video file.")
 
 	void operator()(agi::Context *c) {
-		wxGetApp().frame->LoadSubtitles(VideoContext::Get()->videoName, "binary");
+		wxGetApp().frame->LoadSubtitles(c->videoContext->videoName, "binary");
 	}
 };
 
@@ -250,9 +312,8 @@ public:
 	STR_HELP("Open script properties window.")
 
 	void operator()(agi::Context *c) {
-		VideoContext::Get()->Stop();
-		DialogProperties Properties(c->parent, c->ass);
-		Properties.ShowModal();
+		c->videoContext->Stop();
+		DialogProperties(c->parent, c->ass).ShowModal();
 	}
 };
 
@@ -295,7 +356,7 @@ public:
 	STR_HELP("Selects all lines that are currently visible on video frame.")
 
 	void operator()(agi::Context *c) {
-		VideoContext::Get()->Stop();
+		c->videoContext->Stop();
 		c->SubsGrid->SelectVisible();
 	}
 };
@@ -311,8 +372,8 @@ public:
 
 	void operator()(agi::Context *c) {
 //XXX: This is obscene, requires refactoring the spellchecker.
-//	VideoContext::Get()->Stop();
-//	new DialogSpellChecker;
+		c->videoContext->Stop();
+		new DialogSpellChecker(wxGetApp().frame);
 	}
 };
 

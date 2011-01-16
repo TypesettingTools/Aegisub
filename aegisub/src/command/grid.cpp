@@ -121,9 +121,8 @@ public:
 	STR_HELP("Hide override tags in the subtitle grid.")
 
 	void operator()(agi::Context *c) {
-//	XXX: Needs fixing.
-//		OPT_SET("Subtitle/Grid/Hide Overrides")->SetInt(event.GetId() - cmd::id("subtitle/tags/show"));
-//		SubsGrid->Refresh(false);
+		OPT_SET("Subtitle/Grid/Hide Overrides")->SetInt(2);
+		c->SubsGrid->Refresh(false);
 	}
 };
 
@@ -137,7 +136,8 @@ public:
 	STR_HELP("Show full override tags in the subtitle grid.")
 
 	void operator()(agi::Context *c) {
-		//XXX: see grid_tags_hide
+		OPT_SET("Subtitle/Grid/Hide Overrides")->SetInt(0);
+		c->SubsGrid->Refresh(false);
 	}
 };
 
@@ -151,7 +151,8 @@ public:
 	STR_HELP("Replace override tags in the subtitle grid with a simplified placeholder.")
 
 	void operator()(agi::Context *c) {
-		//XXX: see grid_tags_hide
+		OPT_SET("Subtitle/Grid/Hide Overrides")->SetInt(1);
+		c->SubsGrid->Refresh(false);
 	}
 };
 

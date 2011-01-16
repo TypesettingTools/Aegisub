@@ -72,8 +72,8 @@ public:
 	STR_HELP("Forces video to 2.35 aspect ratio.")
 
 	void operator()(agi::Context *c) {
-	VideoContext::Get()->Stop();
-	VideoContext::Get()->SetAspectRatio(3);
+	c->videoContext->Stop();
+	c->videoContext->SetAspectRatio(3);
 	wxGetApp().frame->SetDisplayMode(1,-1);
 	}
 };
@@ -88,9 +88,9 @@ public:
 	STR_HELP("Forces video to a custom aspect ratio.")
 
 	void operator()(agi::Context *c) {
-		VideoContext::Get()->Stop();
+		c->videoContext->Stop();
 
-		wxString value = wxGetTextFromUser(_("Enter aspect ratio in either:\n  decimal (e.g. 2.35)\n  fractional (e.g. 16:9)\n  specific resolution (e.g. 853x480)"),_("Enter aspect ratio"),AegiFloatToString(VideoContext::Get()->GetAspectRatioValue()));
+		wxString value = wxGetTextFromUser(_("Enter aspect ratio in either:\n  decimal (e.g. 2.35)\n  fractional (e.g. 16:9)\n  specific resolution (e.g. 853x480)"),_("Enter aspect ratio"),AegiFloatToString(c->videoContext->GetAspectRatioValue()));
 		if (value.IsEmpty()) return;
 
 		value.MakeLower();
@@ -118,7 +118,7 @@ public:
 				wxString denum = value.Mid(pos+1);
 				if (num.ToDouble(&a) && denum.ToDouble(&b) && b!=0) {
 					numval = a/b;
-					if (scale) c->videoBox->videoDisplay->SetZoom(b / VideoContext::Get()->GetHeight());
+					if (scale) c->videoBox->videoDisplay->SetZoom(b / c->videoContext->GetHeight());
 				}
 			}
 			else numval = 0.0;
@@ -129,7 +129,7 @@ public:
 
 		// Set value
 		else {
-			VideoContext::Get()->SetAspectRatio(4,numval);
+			c->videoContext->SetAspectRatio(4,numval);
 			wxGetApp().frame->SetDisplayMode(1,-1);
 		}
 	}
@@ -146,8 +146,8 @@ public:
 	STR_HELP("Leave video on original aspect ratio.")
 
 	void operator()(agi::Context *c) {
-		VideoContext::Get()->Stop();
-		VideoContext::Get()->SetAspectRatio(0);
+		c->videoContext->Stop();
+		c->videoContext->SetAspectRatio(0);
 		wxGetApp().frame->SetDisplayMode(1,-1);
 	}
 };
@@ -163,8 +163,8 @@ public:
 	STR_HELP("Forces video to 4:3 aspect ratio.")
 
 	void operator()(agi::Context *c) {
-		VideoContext::Get()->Stop();
-		VideoContext::Get()->SetAspectRatio(1);
+		c->videoContext->Stop();
+		c->videoContext->SetAspectRatio(1);
 		wxGetApp().frame->SetDisplayMode(1,-1);
 	}
 };
@@ -179,8 +179,8 @@ public:
 	STR_HELP("Forces video to 16:9 aspect ratio.")
 
 	void operator()(agi::Context *c) {
-		VideoContext::Get()->Stop();
-		VideoContext::Get()->SetAspectRatio(2);
+		c->videoContext->Stop();
+		c->videoContext->SetAspectRatio(2);
 		wxGetApp().frame->SetDisplayMode(1,-1);
 	}
 };
@@ -224,9 +224,8 @@ public:
 	STR_HELP("Shows video details.")
 
 	void operator()(agi::Context *c) {
-		VideoContext::Get()->Stop();
-		DialogVideoDetails videodetails(c->parent);
-		videodetails.ShowModal();
+		c->videoContext->Stop();
+		DialogVideoDetails(c->parent).ShowModal();
 	}
 };
 
@@ -275,7 +274,7 @@ public:
 	STR_HELP("Play video.")
 
 	void operator()(agi::Context *c) {
-		VideoContext::Get()->Play();
+		c->videoContext->Play();
 	}
 };
 
@@ -303,10 +302,9 @@ public:
 	STR_HELP("Jump to frame or time.")
 
 	void operator()(agi::Context *c) {
-		VideoContext::Get()->Stop();
-		if (VideoContext::Get()->IsLoaded()) {
-			DialogJumpTo JumpTo(c->parent);
-			JumpTo.ShowModal();
+		c->videoContext->Stop();
+		if (c->videoContext->IsLoaded()) {
+			DialogJumpTo(c->parent).ShowModal();
 			c->videoBox->videoSlider->SetFocus();
 		}
 	}
@@ -390,7 +388,7 @@ public:
 	void operator()(agi::Context *c) {
 //XXX: Fix to not require using an event. (maybe)
 //		OPT_SET("Video/Overscan Mask")->SetBool(event.IsChecked());
-		VideoContext::Get()->Stop();
+		c->videoContext->Stop();
 		c->videoBox->videoDisplay->Render();
 	}
 };
@@ -405,7 +403,7 @@ public:
 	STR_HELP("Set zoom to 100%.")
 
 	void operator()(agi::Context *c) {
-		VideoContext::Get()->Stop();
+		c->videoContext->Stop();
 		c->videoBox->videoDisplay->SetZoom(1.);
 	}
 };
@@ -421,7 +419,7 @@ public:
 	STR_HELP("Set zoom to 200%.")
 
 	void operator()(agi::Context *c) {
-		VideoContext::Get()->Stop();
+		c->videoContext->Stop();
 		c->videoBox->videoDisplay->SetZoom(2.);
 	}
 };
@@ -436,7 +434,7 @@ public:
 	STR_HELP("Set zoom to 50%.")
 
 	void operator()(agi::Context *c) {
-		VideoContext::Get()->Stop();
+		c->videoContext->Stop();
 		c->videoBox->videoDisplay->SetZoom(.5);
 	}
 };

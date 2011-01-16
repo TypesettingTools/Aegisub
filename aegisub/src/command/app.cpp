@@ -70,8 +70,7 @@ public:
 	STR_HELP("About Aegisub.")
 
 	void operator()(agi::Context *c) {
-		AboutScreen About(c->parent);
-		About.ShowModal();
+		AboutScreen(c->parent).ShowModal();
 	}
 };
 
@@ -85,7 +84,6 @@ public:
 	STR_HELP("Display audio and subtitles only.")
 
 	void operator()(agi::Context *c) {
-		if (!c->audioController->IsAudioOpen()) return;
 		wxGetApp().frame->SetDisplayMode(0,1);
 	}
 };
@@ -100,7 +98,6 @@ public:
 	STR_HELP("Display audio, video and subtitles.")
 
 	void operator()(agi::Context *c) {
-	if (!c->audioController->IsAudioOpen() || !VideoContext::Get()->IsLoaded()) return;
 		wxGetApp().frame->SetDisplayMode(1,1);
 	}
 };
@@ -143,7 +140,7 @@ public:
 	STR_HELP("Exit the application.")
 
 	void operator()(agi::Context *c) {
-		printf("XXX: not working yet\n");
+		wxGetApp().frame->Close();
 	}
 };
 
@@ -162,21 +159,16 @@ public:
 		int old = app->locale.curCode;
 		int newCode = app->locale.PickLanguage();
 		// Is OK?
-		if (newCode != -1) {
+		if (newCode != -1 && newCode != old) {
 			// Set code
 			OPT_SET("App/Locale")->SetInt(newCode);
 
-			// Language actually changed?
-			if (newCode != old) {
-				// Ask to restart program
-				int result = wxMessageBox(_T("Aegisub needs to be restarted so that the new language can be applied. Restart now?"),_T("Restart Aegisub?"),wxICON_QUESTION | wxYES_NO);
-				if (result == wxYES) {
-					// Restart Aegisub
-					if (wxGetApp().frame->Close()) {
-						RestartAegisub();
-						//wxStandardPaths stand;
-						//wxExecute(_T("\"") + stand.GetExecutablePath() + _T("\""));
-					}
+			// Ask to restart program
+			int result = wxMessageBox(_T("Aegisub needs to be restarted so that the new language can be applied. Restart now?"),_T("Restart Aegisub?"),wxICON_QUESTION | wxYES_NO);
+			if (result == wxYES) {
+				// Restart Aegisub
+				if (wxGetApp().frame->Close()) {
+					RestartAegisub();
 				}
 			}
 		}
@@ -193,8 +185,7 @@ public:
 	STR_HELP("Event log.")
 
 	void operator()(agi::Context *c) {
-		LogWindow *log = new LogWindow(c->parent);
-		log->Show(1);
+		(new LogWindow(c->parent))->Show(1);
 	}
 };
 
@@ -223,8 +214,7 @@ public:
 
 	void operator()(agi::Context *c) {
 		try {
-			Preferences pref(c->parent);
-			pref.ShowModal();
+			Preferences(c->parent).ShowModal();
 		} catch (agi::Exception& e) {
 			LOG_E("config/init") << "Caught exception: " << e.GetName() << " -> " << e.GetMessage();
 		}

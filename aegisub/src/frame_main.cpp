@@ -306,7 +306,8 @@ void FrameMain::InitContents() {
 	StartupLog(_T("Create video box"));
 	videoBox = new VideoBox(Panel, false, ZoomBox, ass);
 	temp_context.videoBox = videoBox;
-	VideoContext::Get()->audio = audioController;
+	temp_context.videoContext = VideoContext::Get();
+	temp_context.videoContext->audio = audioController;
 	wxBoxSizer *videoSizer = new wxBoxSizer(wxVERTICAL);
 	videoSizer->Add(videoBox, 0, wxEXPAND);
 	videoSizer->AddStretchSpacer(1);
@@ -316,7 +317,7 @@ void FrameMain::InitContents() {
 	SubsGrid = new SubtitlesGrid(this,Panel,-1,ass,wxDefaultPosition,wxSize(600,100),wxWANTS_CHARS | wxSUNKEN_BORDER,_T("Subs grid"));
 	temp_context.SubsGrid = SubsGrid;
 	videoBox->videoSlider->grid = SubsGrid;
-	VideoContext::Get()->grid = SubsGrid;
+	temp_context.videoContext->grid = SubsGrid;
 	Search.grid = SubsGrid;
 
 	// Tools area

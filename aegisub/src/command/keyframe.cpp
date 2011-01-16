@@ -63,7 +63,7 @@ public:
 	STR_HELP("Closes the currently open keyframes list.")
 
 	void operator()(agi::Context *c) {
-	    VideoContext::Get()->CloseKeyframes();
+		c->videoContext->CloseKeyframes();
 	}
 };
 
@@ -88,10 +88,8 @@ public:
 
 		if (filename.empty()) return;
 		OPT_SET("Path/Last/Keyframes")->SetString(STD_STR(filename));
-
-		// Load
-		VideoContext::Get()->LoadKeyframes(filename);
-		}
+		c->videoContext->LoadKeyframes(filename);
+	}
 };
 
 
@@ -106,9 +104,9 @@ public:
 	void operator()(agi::Context *c) {
 		wxString path = lagi_wxString(OPT_GET("Path/Last/Keyframes")->GetString());
 		wxString filename = wxFileSelector(_T("Select the Keyframes file to open"),path,_T(""),_T("*.key.txt"),_T("Text files (*.txt)|*.txt"),wxFD_OVERWRITE_PROMPT | wxFD_SAVE);
-		if (filename.IsEmpty()) return;
+		if (filename.empty()) return;
 		OPT_SET("Path/Last/Keyframes")->SetString(STD_STR(filename));
-		VideoContext::Get()->SaveKeyframes(filename);
+		c->videoContext->SaveKeyframes(filename);
 	}
 };
 

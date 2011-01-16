@@ -10,6 +10,7 @@ namespace Automation4 { class ScriptManager; }
 class SubsEditBox;
 class SubtitlesGrid;
 class VideoBox;
+class VideoContext;
 
 namespace agi {
 
@@ -28,6 +29,7 @@ struct Context {
 	SubsEditBox *EditBox;
 	SubtitlesGrid *SubsGrid;
 	VideoBox *videoBox;
+	VideoContext *videoContext;
 };
 
 }

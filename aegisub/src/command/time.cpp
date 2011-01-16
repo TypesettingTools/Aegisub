@@ -65,7 +65,8 @@ public:
 	STR_HELP("Changes times of subs so end times begin on next's start time.")
 
 	void operator()(agi::Context *c) {
-//XXX: subs_grid.cpp
+		wxArrayInt sels = c->SubsGrid->GetSelection();
+		c->SubsGrid->AdjoinLines(sels.front(), sels.back(), false);
 	}
 };
 
@@ -79,7 +80,8 @@ public:
 	STR_HELP("Changes times of subs so start times begin on previous's end time.")
 
 	void operator()(agi::Context *c) {
-//XXX: subs_grid.cpp
+		wxArrayInt sels = c->SubsGrid->GetSelection();
+		c->SubsGrid->AdjoinLines(sels.front(), sels.back(), true);
 	}
 
 };
@@ -94,7 +96,7 @@ public:
 	STR_HELP("Shift selection so first selected line starts at current frame.")
 
 	void operator()(agi::Context *c) {
-		if (!VideoContext::Get()->IsLoaded()) return;
+		if (!c->videoContext->IsLoaded()) return;
 
 		wxArrayInt sels = c->SubsGrid->GetSelection();
 		size_t n=sels.Count();
@@ -103,7 +105,7 @@ public:
 		// Get shifting in ms
 		AssDialogue *cur = c->SubsGrid->GetDialogue(sels[0]);
 		if (!cur) return;
-		int shiftBy = VideoContext::Get()->TimeAtFrame(VideoContext::Get()->GetFrameN(),agi::vfr::START) - cur->Start.GetMS();
+		int shiftBy = c->videoContext->TimeAtFrame(c->videoContext->GetFrameN(),agi::vfr::START) - cur->Start.GetMS();
 
 		// Update
 		for (size_t i=0;i<n;i++) {
@@ -129,9 +131,8 @@ public:
 	STR_HELP("Shift subtitles by time or frames.")
 
 	void operator()(agi::Context *c) {
-		VideoContext::Get()->Stop();
-		DialogShiftTimes Shift(c->parent, c->SubsGrid);
-		Shift.ShowModal();
+		c->videoContext->Stop();
+		DialogShiftTimes(c->parent, c->SubsGrid).ShowModal();
 	}
 };
 
@@ -160,7 +161,23 @@ public:
 	STR_HELP("Shift selected subtitles so first selected starts at this frame.")
 
 	void operator()(agi::Context *c) {
-//XXX: needs contents.
+		if (c->videoContext->IsLoaded()) return;
+
+		wxArrayInt sels = c->SubsGrid->GetSelection();
+		if (sels.empty()) return;
+
+		AssDialogue *cur = c->SubsGrid->GetDialogue(sels[0]);
+		if (!cur) return;
+		int shiftBy = c->videoContext->TimeAtFrame(c->videoContext->GetFrameN(),agi::vfr::START) - cur->Start.GetMS();
+
+		for (size_t i = 0; i < sels.size(); ++i) {
+			if (cur = c->SubsGrid->GetDialogue(sels[i])) {
+				cur->Start.SetMS(cur->Start.GetMS() + shiftBy);
+				cur->End.SetMS(cur->End.GetMS() + shiftBy);
+			}
+		}
+
+		c->ass->Commit(_("shift to frame"));
 	}
 };
 
@@ -174,7 +191,7 @@ public:
 	STR_HELP("Set start and end of subtitles to the keyframes around current video frame.")
 
 	void operator()(agi::Context *c) {
-		VideoContext *con = VideoContext::Get();
+		VideoContext *con = c->videoContext;
 		if (!con->IsLoaded() || !con->KeyFramesLoaded()) return;
 
 		// Get frames

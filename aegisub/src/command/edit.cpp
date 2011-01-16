@@ -101,7 +101,7 @@ public:
 	STR_HELP("Delete currently selected lines.")
 
 	void operator()(agi::Context *c) {
-//XXX: subs_grid.cpp
+		c->SubsGrid->DeleteLines(c->SubsGrid->GetSelection());
 	}
 };
 
@@ -115,7 +115,8 @@ public:
 	STR_HELP("Duplicate the selected lines.")
 
 	void operator()(agi::Context *c) {
-//XXX: subs_grid.cpp
+		wxArrayInt sels = c->SubsGrid->GetSelection();
+		c->SubsGrid->DuplicateLines(sels.front(), sels.back(), false);
 	}
 };
 
@@ -129,7 +130,8 @@ public:
 	STR_HELP("Duplicate lines and shift by one frame.")
 
 	void operator()(agi::Context *c) {
-//XXX: subs_grid.cpp
+		wxArrayInt sels = c->SubsGrid->GetSelection();
+		c->SubsGrid->DuplicateLines(sels.front(), sels.back(), true);
 	}
 };
 
@@ -143,7 +145,8 @@ public:
 	STR_HELP("Joins selected lines in a single one, as karaoke.")
 
 	void operator()(agi::Context *c) {
-//XXX: subs_grid.cpp
+		wxArrayInt sels = c->SubsGrid->GetSelection();
+		c->SubsGrid->JoinAsKaraoke(sels.front(), sels.back());
 	}
 };
 
@@ -157,7 +160,8 @@ public:
 	STR_HELP("Joins selected lines in a single one, concatenating text together.")
 
 	void operator()(agi::Context *c) {
-//XXX: subs_grid.cpp
+		wxArrayInt sels = c->SubsGrid->GetSelection();
+		c->SubsGrid->JoinLines(sels.front(), sels.back(), true);
 	}
 };
 
@@ -171,7 +175,8 @@ public:
 	STR_HELP("Joins selected lines in a single one, keeping text of first and discarding remaining.")
 
 	void operator()(agi::Context *c) {
-//XXX: subs_grid.cpp
+		wxArrayInt sels = c->SubsGrid->GetSelection();
+		c->SubsGrid->JoinLines(sels.front(), sels.back(), false);
 	}
 };
 
@@ -217,7 +222,7 @@ public:
 	STR_HELP("Recombine subtitles when they have been split and merged.")
 
 	void operator()(agi::Context *c) {
-//XXX: subs_grid.cpp
+		//XXX: subs_grid.cpp
 	}
 };
 
@@ -231,7 +236,16 @@ public:
 	STR_HELP("Uses karaoke timing to split line into multiple smaller lines.")
 
 	void operator()(agi::Context *c) {
-//XXX: subs_grid.cpp
+		c->SubsGrid->BeginBatch();
+		wxArrayInt sels = c->SubsGrid->GetSelection();
+		bool didSplit = false;
+		for (int i = sels.size() - 1; i >= 0; --i) {
+			didSplit |= c->SubsGrid->SplitLineByKaraoke(sels[i]);
+		}
+		if (didSplit) {
+			c->ass->Commit(_("splitting"));
+		}
+		c->SubsGrid->EndBatch();
 	}
 };
 
@@ -245,7 +259,8 @@ public:
 	STR_HELP("Swaps the two selected lines.")
 
 	void operator()(agi::Context *c) {
-//XXX: subs_grid.cpp
+		wxArrayInt sels = c->SubsGrid->GetSelection();
+		c->SubsGrid->SwapLines(sels.front(), sels.back());
 	}
 };
 
@@ -259,7 +274,7 @@ public:
 	STR_HELP("Redoes last action.")
 
 	void operator()(agi::Context *c) {
-		VideoContext::Get()->Stop();
+		c->videoContext->Stop();
 		c->ass->Redo();
 	}
 };
@@ -274,7 +289,7 @@ public:
 	STR_HELP("Find and replace words in subtitles.")
 
 	void operator()(agi::Context *c) {
-		VideoContext::Get()->Stop();
+		c->videoContext->Stop();
 		Search.OpenDialog(true);
 	}
 };
@@ -289,7 +304,7 @@ public:
 	STR_HELP("Undoes last action.")
 
 	void operator()(agi::Context *c) {
-		VideoContext::Get()->Stop();
+		c->videoContext->Stop();
 		c->ass->Undo();
 	}
 };

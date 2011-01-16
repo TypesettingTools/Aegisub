@@ -68,12 +68,13 @@ public:
 #ifdef __APPLE__
 		if (wxGetMouseState().CmdDown()) {
 #else
-			if (wxGetMouseState().ControlDown()) {
+		if (wxGetMouseState().ControlDown()) {
 #endif
-				wxGetApp().global_scripts->Reload();
-				if (wxGetMouseState().ShiftDown()) {
-					const std::vector<Automation4::Script*> scripts = c->local_scripts->GetScripts();
-					for (size_t i = 0; i < scripts.size(); ++i) {
+			wxGetApp().global_scripts->Reload();
+
+			if (wxGetMouseState().ShiftDown()) {
+				const std::vector<Automation4::Script*>& scripts = c->local_scripts->GetScripts();
+				for (size_t i = 0; i < scripts.size(); ++i) {
 					try {
 						scripts[i]->Reload();
 					} catch (const wchar_t *e) {
@@ -84,13 +85,14 @@ public:
 				}
 
 				wxGetApp().frame->StatusTimeout(_("Reloaded all Automation scripts"));
-			} else {
+			}
+			else {
 				wxGetApp().frame->StatusTimeout(_("Reloaded autoload Automation scripts"));
 			}
-		} else {
-			VideoContext::Get()->Stop();
-			DialogAutomation dlg(c->parent, c->local_scripts);
-			dlg.ShowModal();
+		}
+		else {
+			c->videoContext->Stop();
+			DialogAutomation(c->parent, c->local_scripts).ShowModal();
 		}
 #endif
 	}

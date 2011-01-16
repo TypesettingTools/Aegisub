@@ -85,9 +85,8 @@ public:
 	STR_HELP("Saves a copy of subtitles with processing applied to it.")
 
 	void operator()(agi::Context *c) {
-		VideoContext::Get()->Stop();
-		DialogResample diag(c->parent, c->SubsGrid);
-		diag.ShowModal();
+		c->videoContext->Stop();
+		DialogResample(c->parent, c->SubsGrid).ShowModal();
 	}
 };
 
@@ -101,9 +100,8 @@ public:
 	STR_HELP("Open fonts collector.")
 
 	void operator()(agi::Context *c) {
-		VideoContext::Get()->Stop();
-		DialogFontsCollector Collector(c->parent, c->ass);
-		Collector.ShowModal();
+		c->videoContext->Stop();
+		DialogFontsCollector(c->parent, c->ass).ShowModal();
 	}
 };
 
@@ -117,9 +115,8 @@ public:
 	STR_HELP("Selects lines based on defined criterea.")
 
 	void operator()(agi::Context *c) {
-		VideoContext::Get()->Stop();
-		DialogSelection select(c->parent, c->SubsGrid);
-		select.ShowModal();
+		c->videoContext->Stop();
+		DialogSelection(c->parent, c->SubsGrid).ShowModal();
 	}
 };
 
@@ -133,9 +130,8 @@ public:
 	STR_HELP("Changes resolution and modifies subtitles to conform to change.")
 
 	void operator()(agi::Context *c) {
-		VideoContext::Get()->Stop();
-		DialogResample diag(c->parent, c->SubsGrid);
-		diag.ShowModal();
+		c->videoContext->Stop();
+		DialogResample(c->parent, c->SubsGrid).ShowModal();
 	}
 };
 
@@ -149,7 +145,7 @@ public:
 	STR_HELP("Open styling assistant.")
 
 	void operator()(agi::Context *c) {
-		VideoContext::Get()->Stop();
+		c->videoContext->Stop();
 		if (!c->stylingAssistant) c->stylingAssistant = new DialogStyling(c->parent, c->SubsGrid);
 		c->stylingAssistant->Show(true);
 	}
@@ -165,9 +161,8 @@ public:
 	STR_HELP("Open styles manager.")
 
 	void operator()(agi::Context *c) {
-		VideoContext::Get()->Stop();
-		DialogStyleManager StyleManager(c->parent, c->SubsGrid);
-		StyleManager.ShowModal();
+		c->videoContext->Stop();
+		DialogStyleManager(c->parent, c->SubsGrid).ShowModal();
 	}
 };
 
@@ -181,8 +176,7 @@ public:
 	STR_HELP("Open Kanji timer.")
 
 	void operator()(agi::Context *c) {
-		DialogKanjiTimer kanjitimer(c->parent, c->SubsGrid);
-		kanjitimer.ShowModal();
+		DialogKanjiTimer(c->parent, c->SubsGrid).ShowModal();
 	}
 };
 
@@ -196,8 +190,7 @@ public:
 	STR_HELP("Runs a post-processor for timing to deal with lead-ins, lead-outs, scene timing and etc.")
 
 	void operator()(agi::Context *c) {
-		DialogTimingProcessor timing(c->parent, c->SubsGrid);
-		timing.ShowModal();
+		DialogTimingProcessor(c->parent, c->SubsGrid).ShowModal();
 	}
 };
 
@@ -211,11 +204,10 @@ public:
 	STR_HELP("Open translation assistant.")
 
 	void operator()(agi::Context *c) {
-		VideoContext::Get()->Stop();
+		c->videoContext->Stop();
 		int start = c->SubsGrid->GetFirstSelRow();
 		if (start == -1) start = 0;
-		DialogTranslation Trans(c->parent, c->ass, c->SubsGrid, start, true);
-		Trans.ShowModal();
+		DialogTranslation(c->parent, c->ass, c->SubsGrid, start, true).ShowModal();
 	}
 };
 

@@ -64,7 +64,7 @@ public:
 	STR_HELP("Closes the currently open timecodes file.")
 
 	void operator()(agi::Context *c) {
-		VideoContext::Get()->CloseTimecodes();
+		c->videoContext->CloseTimecodes();
 	}
 };
 
@@ -82,7 +82,7 @@ public:
 		wxString str = wxString(_("All Supported Types")) + _T("(*.txt)|*.txt|") + _("All Files") + _T(" (*.*)|*.*");
 		wxString filename = wxFileSelector(_("Open timecodes file"),path,_T(""),_T(""),str,wxFD_OPEN | wxFD_FILE_MUST_EXIST);
 		if (!filename.empty()) {
-			VideoContext::Get()->LoadTimecodes(filename);
+			c->videoContext->LoadTimecodes(filename);
 			OPT_SET("Path/Last/Timecodes")->SetString(STD_STR(filename));
 		}
 	}
@@ -102,7 +102,7 @@ public:
 		wxString str = wxString(_("All Supported Types")) + _T("(*.txt)|*.txt|") + _("All Files") + _T(" (*.*)|*.*");
 		wxString filename = wxFileSelector(_("Save timecodes file"),path,_T(""),_T(""),str,wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
 		if (!filename.empty()) {
-			VideoContext::Get()->SaveTimecodes(filename);
+			c->videoContext->SaveTimecodes(filename);
 			OPT_SET("Path/Last/Timecodes")->SetString(STD_STR(filename));
 		}
 	}

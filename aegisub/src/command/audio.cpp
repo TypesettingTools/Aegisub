@@ -141,7 +141,7 @@ public:
 	STR_HELP("Display audio as a frequency-power spectrograph.")
 
 	void operator()(agi::Context *c) {
-		printf("XXX: fixme\n");
+		OPT_SET("Audio/Spectrum")->SetBool(true);
 	}
 };
 
@@ -155,7 +155,7 @@ public:
 	STR_HELP("Display audio as a linear amplitude graph.")
 
 	void operator()(agi::Context *c) {
-		printf("XXX: fixme\n");
+		OPT_SET("Audio/Spectrum")->SetBool(false);
 	}
 };
 
