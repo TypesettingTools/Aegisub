@@ -140,6 +140,9 @@ FrameMain::FrameMain (wxArrayString args)
 	context->audioController->AddAudioOpenListener(&FrameMain::OnAudioOpen, this);
 	context->audioController->AddAudioCloseListener(&FrameMain::OnAudioClose, this);
 
+	// Initialized later due to that the selection controller is currently the subtitles grid
+	context->selectionController = 0;
+
 	context->videoController = VideoContext::Get(); // derp
 	context->videoController->audio = context->audioController;
 	context->videoController->AddVideoOpenListener(&FrameMain::OnVideoOpen, this);
@@ -294,6 +297,7 @@ void FrameMain::InitContents() {
 
 	StartupLog("Create subtitles grid");
 	context->subsGrid = SubsGrid = new SubtitlesGrid(this,Panel,-1,context->ass,wxDefaultPosition,wxSize(600,100),wxWANTS_CHARS | wxSUNKEN_BORDER,"Subs grid");
+	context->selectionController = context->subsGrid;
 	context->videoBox->videoSlider->grid = SubsGrid;
 	context->videoController->grid = SubsGrid;
 	Search.grid = SubsGrid;

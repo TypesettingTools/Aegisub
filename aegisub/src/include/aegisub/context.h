@@ -1,8 +1,10 @@
 class AssFile;
 class AudioBox;
 class AudioController;
+class AssDialogue;
 class DialogDetachedVideo;
 class DialogStyling;
+template<class T> class SelectionController;
 class SubsEditBox;
 class SubtitlesGrid;
 class VideoBox;
@@ -19,6 +21,7 @@ struct Context {
 
 	// Controllers
 	AudioController *audioController;
+	SelectionController<AssDialogue> *selectionController;
 	VideoContext *videoController;
 
 	// Things that should probably be in some sort of UI-context-model
