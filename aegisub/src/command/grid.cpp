@@ -62,7 +62,7 @@ struct grid_line_next : public Command {
 	STR_HELP("Move to the next subtitle line.")
 
 	void operator()(agi::Context *c) {
-		c->SubsGrid->NextLine();
+		c->subsGrid->NextLine();
 	}
 };
 
@@ -75,7 +75,7 @@ struct grid_line_prev : public Command {
 	STR_HELP("Move to the previous line.")
 
 	void operator()(agi::Context *c) {
-		c->SubsGrid->PrevLine();
+		c->subsGrid->PrevLine();
 	}
 };
 

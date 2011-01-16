@@ -62,7 +62,7 @@ struct keyframe_close : public Command {
 	STR_HELP("Closes the currently open keyframes list.")
 
 	void operator()(agi::Context *c) {
-		c->videoContext->CloseKeyframes();
+		c->videoController->CloseKeyframes();
 	}
 };
 
@@ -86,7 +86,7 @@ struct keyframe_open : public Command {
 
 		if (filename.empty()) return;
 		OPT_SET("Path/Last/Keyframes")->SetString(STD_STR(filename));
-		c->videoContext->LoadKeyframes(filename);
+		c->videoController->LoadKeyframes(filename);
 	}
 };
 
@@ -103,7 +103,7 @@ struct keyframe_save : public Command {
 		wxString filename = wxFileSelector(_T("Select the Keyframes file to open"),path,_T(""),_T("*.key.txt"),_T("Text files (*.txt)|*.txt"),wxFD_OVERWRITE_PROMPT | wxFD_SAVE);
 		if (filename.empty()) return;
 		OPT_SET("Path/Last/Keyframes")->SetString(STD_STR(filename));
-		c->videoContext->SaveKeyframes(filename);
+		c->videoController->SaveKeyframes(filename);
 	}
 };
 

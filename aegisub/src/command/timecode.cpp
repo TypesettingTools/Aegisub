@@ -63,7 +63,7 @@ struct timecode_close : public Command {
 	STR_HELP("Closes the currently open timecodes file.")
 
 	void operator()(agi::Context *c) {
-		c->videoContext->CloseTimecodes();
+		c->videoController->CloseTimecodes();
 	}
 };
 
@@ -80,7 +80,7 @@ struct timecode_open : public Command {
 		wxString str = wxString(_("All Supported Types")) + _T("(*.txt)|*.txt|") + _("All Files") + _T(" (*.*)|*.*");
 		wxString filename = wxFileSelector(_("Open timecodes file"),path,_T(""),_T(""),str,wxFD_OPEN | wxFD_FILE_MUST_EXIST);
 		if (!filename.empty()) {
-			c->videoContext->LoadTimecodes(filename);
+			c->videoController->LoadTimecodes(filename);
 			OPT_SET("Path/Last/Timecodes")->SetString(STD_STR(filename));
 		}
 	}
@@ -99,7 +99,7 @@ struct timecode_save : public Command {
 		wxString str = wxString(_("All Supported Types")) + _T("(*.txt)|*.txt|") + _("All Files") + _T(" (*.*)|*.*");
 		wxString filename = wxFileSelector(_("Save timecodes file"),path,_T(""),_T(""),str,wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
 		if (!filename.empty()) {
-			c->videoContext->SaveTimecodes(filename);
+			c->videoController->SaveTimecodes(filename);
 			OPT_SET("Path/Last/Timecodes")->SetString(STD_STR(filename));
 		}
 	}

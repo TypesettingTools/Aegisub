@@ -64,11 +64,11 @@ struct edit_line_copy : public Command {
 	STR_HELP("Copy subtitles.")
 
 	void operator()(agi::Context *c) {
-		if (c->parent->FindFocus() == c->EditBox->TextEdit) {
-			c->EditBox->TextEdit->Copy();
+		if (c->parent->FindFocus() == c->editBox->TextEdit) {
+			c->editBox->TextEdit->Copy();
 			return;
 		}
-		c->SubsGrid->CopyLines(c->SubsGrid->GetSelection());
+		c->subsGrid->CopyLines(c->subsGrid->GetSelection());
 	}
 };
 
@@ -81,11 +81,11 @@ struct edit_line_cut: public Command {
 	STR_HELP("Cut subtitles.")
 
 	void operator()(agi::Context *c) {
-		if (c->parent->FindFocus() == c->EditBox->TextEdit) {
-			c->EditBox->TextEdit->Cut();
+		if (c->parent->FindFocus() == c->editBox->TextEdit) {
+			c->editBox->TextEdit->Cut();
 			return;
 		}
-		c->SubsGrid->CutLines(c->SubsGrid->GetSelection());
+		c->subsGrid->CutLines(c->subsGrid->GetSelection());
 	}
 };
 
@@ -98,7 +98,7 @@ struct edit_line_delete : public Command {
 	STR_HELP("Delete currently selected lines.")
 
 	void operator()(agi::Context *c) {
-		c->SubsGrid->DeleteLines(c->SubsGrid->GetSelection());
+		c->subsGrid->DeleteLines(c->subsGrid->GetSelection());
 	}
 };
 
@@ -111,8 +111,8 @@ struct edit_line_duplicate : public Command {
 	STR_HELP("Duplicate the selected lines.")
 
 	void operator()(agi::Context *c) {
-		wxArrayInt sels = c->SubsGrid->GetSelection();
-		c->SubsGrid->DuplicateLines(sels.front(), sels.back(), false);
+		wxArrayInt sels = c->subsGrid->GetSelection();
+		c->subsGrid->DuplicateLines(sels.front(), sels.back(), false);
 	}
 };
 
@@ -125,8 +125,8 @@ struct edit_line_duplicate_shift : public Command {
 	STR_HELP("Duplicate lines and shift by one frame.")
 
 	void operator()(agi::Context *c) {
-		wxArrayInt sels = c->SubsGrid->GetSelection();
-		c->SubsGrid->DuplicateLines(sels.front(), sels.back(), true);
+		wxArrayInt sels = c->subsGrid->GetSelection();
+		c->subsGrid->DuplicateLines(sels.front(), sels.back(), true);
 	}
 };
 
@@ -139,8 +139,8 @@ struct edit_line_join_as_karaoke : public Command {
 	STR_HELP("Joins selected lines in a single one, as karaoke.")
 
 	void operator()(agi::Context *c) {
-		wxArrayInt sels = c->SubsGrid->GetSelection();
-		c->SubsGrid->JoinAsKaraoke(sels.front(), sels.back());
+		wxArrayInt sels = c->subsGrid->GetSelection();
+		c->subsGrid->JoinAsKaraoke(sels.front(), sels.back());
 	}
 };
 
@@ -153,8 +153,8 @@ struct edit_line_join_concatenate : public Command {
 	STR_HELP("Joins selected lines in a single one, concatenating text together.")
 
 	void operator()(agi::Context *c) {
-		wxArrayInt sels = c->SubsGrid->GetSelection();
-		c->SubsGrid->JoinLines(sels.front(), sels.back(), true);
+		wxArrayInt sels = c->subsGrid->GetSelection();
+		c->subsGrid->JoinLines(sels.front(), sels.back(), true);
 	}
 };
 
@@ -167,8 +167,8 @@ struct edit_line_join_keep_first : public Command {
 	STR_HELP("Joins selected lines in a single one, keeping text of first and discarding remaining.")
 
 	void operator()(agi::Context *c) {
-		wxArrayInt sels = c->SubsGrid->GetSelection();
-		c->SubsGrid->JoinLines(sels.front(), sels.back(), false);
+		wxArrayInt sels = c->subsGrid->GetSelection();
+		c->subsGrid->JoinLines(sels.front(), sels.back(), false);
 	}
 };
 
@@ -181,11 +181,11 @@ struct edit_line_paste : public Command {
 	STR_HELP("Paste subtitles.")
 
 	void operator()(agi::Context *c) {
-		if (c->parent->FindFocus() == c->EditBox->TextEdit) {
-			c->EditBox->TextEdit->Paste();
+		if (c->parent->FindFocus() == c->editBox->TextEdit) {
+			c->editBox->TextEdit->Paste();
 			return;
 		}
-		c->SubsGrid->PasteLines(c->SubsGrid->GetFirstSelRow());
+		c->subsGrid->PasteLines(c->subsGrid->GetFirstSelRow());
 	}
 };
 
@@ -198,7 +198,7 @@ struct edit_line_paste_over : public Command {
 	STR_HELP("Paste subtitles over others.")
 
 	void operator()(agi::Context *c) {
-		c->SubsGrid->PasteLines(c->SubsGrid->GetFirstSelRow(),true);
+		c->subsGrid->PasteLines(c->subsGrid->GetFirstSelRow(),true);
 	}
 };
 
@@ -224,16 +224,16 @@ struct edit_line_split_by_karaoke : public Command {
 	STR_HELP("Uses karaoke timing to split line into multiple smaller lines.")
 
 	void operator()(agi::Context *c) {
-		c->SubsGrid->BeginBatch();
-		wxArrayInt sels = c->SubsGrid->GetSelection();
+		c->subsGrid->BeginBatch();
+		wxArrayInt sels = c->subsGrid->GetSelection();
 		bool didSplit = false;
 		for (int i = sels.size() - 1; i >= 0; --i) {
-			didSplit |= c->SubsGrid->SplitLineByKaraoke(sels[i]);
+			didSplit |= c->subsGrid->SplitLineByKaraoke(sels[i]);
 		}
 		if (didSplit) {
 			c->ass->Commit(_("splitting"));
 		}
-		c->SubsGrid->EndBatch();
+		c->subsGrid->EndBatch();
 	}
 };
 
@@ -246,8 +246,8 @@ struct edit_line_swap : public Command {
 	STR_HELP("Swaps the two selected lines.")
 
 	void operator()(agi::Context *c) {
-		wxArrayInt sels = c->SubsGrid->GetSelection();
-		c->SubsGrid->SwapLines(sels.front(), sels.back());
+		wxArrayInt sels = c->subsGrid->GetSelection();
+		c->subsGrid->SwapLines(sels.front(), sels.back());
 	}
 };
 
@@ -260,7 +260,7 @@ struct edit_redo : public Command {
 	STR_HELP("Redoes last action.")
 
 	void operator()(agi::Context *c) {
-		c->videoContext->Stop();
+		c->videoController->Stop();
 		c->ass->Redo();
 	}
 };
@@ -274,7 +274,7 @@ struct edit_search_replace : public Command {
 	STR_HELP("Find and replace words in subtitles.")
 
 	void operator()(agi::Context *c) {
-		c->videoContext->Stop();
+		c->videoController->Stop();
 		Search.OpenDialog(true);
 	}
 };
@@ -288,7 +288,7 @@ struct edit_undo : public Command {
 	STR_HELP("Undoes last action.")
 
 	void operator()(agi::Context *c) {
-		c->videoContext->Stop();
+		c->videoController->Stop();
 		c->ass->Undo();
 	}
 };

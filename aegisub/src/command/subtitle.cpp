@@ -75,7 +75,7 @@ struct subtitle_attachment : public Command {
 	STR_HELP("Open the attachment list.")
 
 	void operator()(agi::Context *c) {
-		c->videoContext->Stop();
+		c->videoController->Stop();
 		DialogAttachments(c->parent, c->ass).ShowModal();
 	}
 };
@@ -89,7 +89,7 @@ struct subtitle_find : public Command {
 	STR_HELP("Find words in subtitles.")
 
 	void operator()(agi::Context *c) {
-		c->videoContext->Stop();
+		c->videoController->Stop();
 		Search.OpenDialog(false);
 	}
 };
@@ -103,27 +103,27 @@ struct subtitle_find_next : public Command {
 	STR_HELP("Find next match of last word.")
 
 	void operator()(agi::Context *c) {
-		c->videoContext->Stop();
+		c->videoController->Stop();
 		Search.FindNext();
 	}
 };
 
 static void insert_subtitle_at_video(agi::Context *c, bool after) {
-	int n = c->SubsGrid->GetFirstSelRow();
+	int n = c->subsGrid->GetFirstSelRow();
 
 	// Create line to add
 	AssDialogue *def = new AssDialogue;
-	int video_ms = c->videoContext->TimeAtFrame(c->videoContext->GetFrameN(), agi::vfr::START);
+	int video_ms = c->videoController->TimeAtFrame(c->videoController->GetFrameN(), agi::vfr::START);
 	def->Start.SetMS(video_ms);
 	def->End.SetMS(video_ms + OPT_GET("Timing/Default Duration")->GetInt());
-	def->Style = c->SubsGrid->GetDialogue(n)->Style;
+	def->Style = c->subsGrid->GetDialogue(n)->Style;
 
 	// Insert it
-	c->SubsGrid->BeginBatch();
-	c->SubsGrid->InsertLine(def, n, after);
-	c->SubsGrid->SelectRow(n + after);
-	c->SubsGrid->SetActiveLine(def);
-	c->SubsGrid->EndBatch();
+	c->subsGrid->BeginBatch();
+	c->subsGrid->InsertLine(def, n, after);
+	c->subsGrid->SelectRow(n + after);
+	c->subsGrid->SetActiveLine(def);
+	c->subsGrid->EndBatch();
 }
 
 /// Inserts a line after current.
@@ -134,29 +134,29 @@ struct subtitle_insert_after : public Command {
 	STR_HELP("Inserts a line after current.")
 
 	void operator()(agi::Context *c) {
-		int n = c->SubsGrid->GetFirstSelRow();
-		int nrows = c->SubsGrid->GetRows();
+		int n = c->subsGrid->GetFirstSelRow();
+		int nrows = c->subsGrid->GetRows();
 
 		// Create line to add
 		AssDialogue *def = new AssDialogue;
 		if (n == nrows-1) {
-			def->Start = c->SubsGrid->GetDialogue(n)->End;
-			def->End = c->SubsGrid->GetDialogue(n)->End;
+			def->Start = c->subsGrid->GetDialogue(n)->End;
+			def->End = c->subsGrid->GetDialogue(n)->End;
 			def->End.SetMS(def->End.GetMS()+OPT_GET("Timing/Default Duration")->GetInt());
 		}
 		else {
-			def->Start = c->SubsGrid->GetDialogue(n)->End;
-			def->End = c->SubsGrid->GetDialogue(n+1)->Start;
+			def->Start = c->subsGrid->GetDialogue(n)->End;
+			def->End = c->subsGrid->GetDialogue(n+1)->Start;
 		}
 		if (def->End.GetMS() < def->Start.GetMS()) def->End.SetMS(def->Start.GetMS()+OPT_GET("Timing/Default Duration")->GetInt());
-		def->Style = c->SubsGrid->GetDialogue(n)->Style;
+		def->Style = c->subsGrid->GetDialogue(n)->Style;
 
 		// Insert it
-		c->SubsGrid->BeginBatch();
-		c->SubsGrid->InsertLine(def, n, true);
-		c->SubsGrid->SelectRow(n + 1);
-		c->SubsGrid->SetActiveLine(def);
-		c->SubsGrid->EndBatch();
+		c->subsGrid->BeginBatch();
+		c->subsGrid->InsertLine(def, n, true);
+		c->subsGrid->SelectRow(n + 1);
+		c->subsGrid->SetActiveLine(def);
+		c->subsGrid->EndBatch();
 	}
 };
 
@@ -181,31 +181,31 @@ struct subtitle_insert_before : public Command {
 	STR_HELP("Inserts a line before current.")
 
 	void operator()(agi::Context *c) {
-		int n = c->SubsGrid->GetFirstSelRow();
+		int n = c->subsGrid->GetFirstSelRow();
 
 		// Create line to add
 		AssDialogue *def = new AssDialogue;
 		if (n == 0) {
 			def->Start.SetMS(0);
-			def->End = c->SubsGrid->GetDialogue(n)->Start;
+			def->End = c->subsGrid->GetDialogue(n)->Start;
 		}
-		else if (c->SubsGrid->GetDialogue(n-1)->End.GetMS() > c->SubsGrid->GetDialogue(n)->Start.GetMS()) {
-			def->Start.SetMS(c->SubsGrid->GetDialogue(n)->Start.GetMS()-OPT_GET("Timing/Default Duration")->GetInt());
-			def->End = c->SubsGrid->GetDialogue(n)->Start;
+		else if (c->subsGrid->GetDialogue(n-1)->End.GetMS() > c->subsGrid->GetDialogue(n)->Start.GetMS()) {
+			def->Start.SetMS(c->subsGrid->GetDialogue(n)->Start.GetMS()-OPT_GET("Timing/Default Duration")->GetInt());
+			def->End = c->subsGrid->GetDialogue(n)->Start;
 		}
 		else {
-			def->Start = c->SubsGrid->GetDialogue(n-1)->End;
-			def->End = c->SubsGrid->GetDialogue(n)->Start;
+			def->Start = c->subsGrid->GetDialogue(n-1)->End;
+			def->End = c->subsGrid->GetDialogue(n)->Start;
 		}
 		if (def->End.GetMS() < def->Start.GetMS()) def->End.SetMS(def->Start.GetMS()+OPT_GET("Timing/Default Duration")->GetInt());
-		def->Style = c->SubsGrid->GetDialogue(n)->Style;
+		def->Style = c->subsGrid->GetDialogue(n)->Style;
 
 		// Insert it
-		c->SubsGrid->BeginBatch();
-		c->SubsGrid->InsertLine(def, n, false);
-		c->SubsGrid->SelectRow(n);
-		c->SubsGrid->SetActiveLine(def);
-		c->SubsGrid->EndBatch();
+		c->subsGrid->BeginBatch();
+		c->subsGrid->InsertLine(def, n, false);
+		c->subsGrid->SelectRow(n);
+		c->subsGrid->SetActiveLine(def);
+		c->subsGrid->EndBatch();
 	}
 };
 
@@ -284,7 +284,7 @@ struct subtitle_open_video : public Command {
 	STR_HELP("Opens the subtitles from the current video file.")
 
 	void operator()(agi::Context *c) {
-		wxGetApp().frame->LoadSubtitles(c->videoContext->videoName, "binary");
+		wxGetApp().frame->LoadSubtitles(c->videoController->videoName, "binary");
 	}
 };
 
@@ -297,7 +297,7 @@ struct subtitle_properties : public Command {
 	STR_HELP("Open script properties window.")
 
 	void operator()(agi::Context *c) {
-		c->videoContext->Stop();
+		c->videoController->Stop();
 		DialogProperties(c->parent, c->ass).ShowModal();
 	}
 };
@@ -338,8 +338,8 @@ struct subtitle_select_visiblek : public Command {
 	STR_HELP("Selects all lines that are currently visible on video frame.")
 
 	void operator()(agi::Context *c) {
-		c->videoContext->Stop();
-		c->SubsGrid->SelectVisible();
+		c->videoController->Stop();
+		c->subsGrid->SelectVisible();
 	}
 };
 
@@ -352,7 +352,7 @@ struct subtitle_spellcheck : public Command {
 	STR_HELP("Open spell checker.")
 
 	void operator()(agi::Context *c) {
-		c->videoContext->Stop();
+		c->videoController->Stop();
 		new DialogSpellChecker(c);
 	}
 };

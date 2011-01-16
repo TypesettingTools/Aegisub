@@ -196,7 +196,7 @@ bool DialogSpellChecker::FindNext(int startLine,int startPos) {
 	if (startPos != -1) lastPos = 0;
 
 	// Get grid
-	SubtitlesGrid *grid = context->SubsGrid;
+	SubtitlesGrid *grid = context->subsGrid;
 	int rows = grid->GetRows();
 
 	// Loop through lines
@@ -269,7 +269,7 @@ void DialogSpellChecker::SetWord(wxString word) {
 	for (size_t i=0;i<sugs.Count();i++) suggestList->Append(sugs[i]);
 
 	// Show word on the main program interface
-	SubtitlesGrid *grid = context->SubsGrid;
+	SubtitlesGrid *grid = context->subsGrid;
 	int line = lastLine % grid->GetRows();
 	grid->SelectRow(line,false);
 	grid->MakeCellVisible(line,0);
@@ -382,7 +382,7 @@ bool DialogSpellChecker::FindOrDie() {
 ///
 void DialogSpellChecker::Replace() {
 	// Get dialog
-	SubtitlesGrid *grid = context->SubsGrid;
+	SubtitlesGrid *grid = context->subsGrid;
 	AssDialogue *diag = grid->GetDialogue(lastLine % grid->GetRows());
 
 	// Replace
@@ -435,7 +435,7 @@ void DialogSpellChecker::OnTakeSuggestion(wxCommandEvent &event) {
 ///
 bool DialogSpellChecker::GetFirstMatch() {
 	// Get selection
-	SubtitlesGrid *grid = context->SubsGrid;
+	SubtitlesGrid *grid = context->subsGrid;
 	wxArrayInt sel = grid->GetSelection();
 	firstLine = (sel.Count()>0) ? sel[0] : 0;
 	bool hasTypos = FindNext(firstLine,0);

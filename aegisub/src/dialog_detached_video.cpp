@@ -42,6 +42,7 @@
 #include <wx/display.h> /// Must be included last.
 #endif
 
+#include "include/aegisub/context.h"
 #include "dialog_detached_video.h"
 #include "frame_main.h"
 #include "main.h"
@@ -151,7 +152,7 @@ void DialogDetachedVideo::OnClose(wxCloseEvent &WXUNUSED(event)) {
 	FrameMain *par = parent;
 	OPT_SET("Video/Detached/Enabled")->SetBool(false);
 	Destroy();
-	par->detachedVideo = NULL;
+	par->context->detachedVideo = 0;
 	par->SetDisplayMode(1,-1);
 }
 

@@ -79,7 +79,7 @@ struct recent_keyframe_entry : public Command {
 	STR_HELP("Open recent keyframes.")
 
 	void operator()(agi::Context *c, int id) {
-		c->videoContext->LoadKeyframes(lagi_wxString(config::mru->GetEntry("Keyframes", id)));
+		c->videoController->LoadKeyframes(lagi_wxString(config::mru->GetEntry("Keyframes", id)));
 	}
 };
 
@@ -101,7 +101,7 @@ struct recent_timecode_entry : public Command {
 	STR_HELP("Open recent timecodes.")
 
 	void operator()(agi::Context *c, int id) {
-		c->videoContext->LoadTimecodes(lagi_wxString(config::mru->GetEntry("Timecodes", id)));
+		c->videoController->LoadTimecodes(lagi_wxString(config::mru->GetEntry("Timecodes", id)));
 	}
 };
 
@@ -112,7 +112,7 @@ struct recent_video_entry : public Command {
 	STR_HELP("Open recent videos.")
 
 	void operator()(agi::Context *c, int id) {
-		c->videoContext->SetVideo(lagi_wxString(config::mru->GetEntry("Video", id)));
+		c->videoController->SetVideo(lagi_wxString(config::mru->GetEntry("Video", id)));
 	}
 };
 

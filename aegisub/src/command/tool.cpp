@@ -83,8 +83,8 @@ struct tool_export : public Command {
 	STR_HELP("Saves a copy of subtitles with processing applied to it.")
 
 	void operator()(agi::Context *c) {
-		c->videoContext->Stop();
-		DialogResample(c->parent, c->SubsGrid).ShowModal();
+		c->videoController->Stop();
+		DialogResample(c->parent, c->subsGrid).ShowModal();
 	}
 };
 
@@ -97,7 +97,7 @@ struct tool_font_collector : public Command {
 	STR_HELP("Open fonts collector.")
 
 	void operator()(agi::Context *c) {
-		c->videoContext->Stop();
+		c->videoController->Stop();
 		DialogFontsCollector(c->parent, c->ass).ShowModal();
 	}
 };
@@ -111,8 +111,8 @@ struct tool_line_select : public Command {
 	STR_HELP("Selects lines based on defined criterea.")
 
 	void operator()(agi::Context *c) {
-		c->videoContext->Stop();
-		DialogSelection(c->parent, c->SubsGrid).ShowModal();
+		c->videoController->Stop();
+		DialogSelection(c->parent, c->subsGrid).ShowModal();
 	}
 };
 
@@ -125,8 +125,8 @@ struct tool_resampleres : public Command {
 	STR_HELP("Changes resolution and modifies subtitles to conform to change.")
 
 	void operator()(agi::Context *c) {
-		c->videoContext->Stop();
-		DialogResample(c->parent, c->SubsGrid).ShowModal();
+		c->videoController->Stop();
+		DialogResample(c->parent, c->subsGrid).ShowModal();
 	}
 };
 
@@ -139,8 +139,8 @@ struct tool_style_assistant : public Command {
 	STR_HELP("Open styling assistant.")
 
 	void operator()(agi::Context *c) {
-		c->videoContext->Stop();
-		if (!c->stylingAssistant) c->stylingAssistant = new DialogStyling(c->parent, c->SubsGrid);
+		c->videoController->Stop();
+		if (!c->stylingAssistant) c->stylingAssistant = new DialogStyling(c->parent, c->subsGrid);
 		c->stylingAssistant->Show(true);
 	}
 };
@@ -154,8 +154,8 @@ struct tool_style_manager : public Command {
 	STR_HELP("Open styles manager.")
 
 	void operator()(agi::Context *c) {
-		c->videoContext->Stop();
-		DialogStyleManager(c->parent, c->SubsGrid).ShowModal();
+		c->videoController->Stop();
+		DialogStyleManager(c->parent, c->subsGrid).ShowModal();
 	}
 };
 
@@ -168,7 +168,7 @@ struct tool_time_kanji : public Command {
 	STR_HELP("Open Kanji timer.")
 
 	void operator()(agi::Context *c) {
-		DialogKanjiTimer(c->parent, c->SubsGrid).ShowModal();
+		DialogKanjiTimer(c->parent, c->subsGrid).ShowModal();
 	}
 };
 
@@ -181,7 +181,7 @@ struct tool_time_postprocess : public Command {
 	STR_HELP("Runs a post-processor for timing to deal with lead-ins, lead-outs, scene timing and etc.")
 
 	void operator()(agi::Context *c) {
-		DialogTimingProcessor(c->parent, c->SubsGrid).ShowModal();
+		DialogTimingProcessor(c->parent, c->subsGrid).ShowModal();
 	}
 };
 
@@ -194,10 +194,10 @@ struct tool_translation_assistant : public Command {
 	STR_HELP("Open translation assistant.")
 
 	void operator()(agi::Context *c) {
-		c->videoContext->Stop();
-		int start = c->SubsGrid->GetFirstSelRow();
+		c->videoController->Stop();
+		int start = c->subsGrid->GetFirstSelRow();
 		if (start == -1) start = 0;
-		DialogTranslation(c->parent, c->ass, c->SubsGrid, start, true).ShowModal();
+		DialogTranslation(c->parent, c->ass, c->subsGrid, start, true).ShowModal();
 	}
 };
 

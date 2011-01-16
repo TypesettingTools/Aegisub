@@ -71,8 +71,8 @@ struct video_aspect_cinematic : public Command {
 	STR_HELP("Forces video to 2.35 aspect ratio.")
 
 	void operator()(agi::Context *c) {
-	c->videoContext->Stop();
-	c->videoContext->SetAspectRatio(3);
+	c->videoController->Stop();
+	c->videoController->SetAspectRatio(3);
 	wxGetApp().frame->SetDisplayMode(1,-1);
 	}
 };
@@ -86,9 +86,9 @@ struct video_aspect_custom : public Command {
 	STR_HELP("Forces video to a custom aspect ratio.")
 
 	void operator()(agi::Context *c) {
-		c->videoContext->Stop();
+		c->videoController->Stop();
 
-		wxString value = wxGetTextFromUser(_("Enter aspect ratio in either:\n  decimal (e.g. 2.35)\n  fractional (e.g. 16:9)\n  specific resolution (e.g. 853x480)"),_("Enter aspect ratio"),AegiFloatToString(c->videoContext->GetAspectRatioValue()));
+		wxString value = wxGetTextFromUser(_("Enter aspect ratio in either:\n  decimal (e.g. 2.35)\n  fractional (e.g. 16:9)\n  specific resolution (e.g. 853x480)"),_("Enter aspect ratio"),AegiFloatToString(c->videoController->GetAspectRatioValue()));
 		if (value.IsEmpty()) return;
 
 		value.MakeLower();
@@ -116,7 +116,7 @@ struct video_aspect_custom : public Command {
 				wxString denum = value.Mid(pos+1);
 				if (num.ToDouble(&a) && denum.ToDouble(&b) && b!=0) {
 					numval = a/b;
-					if (scale) c->videoBox->videoDisplay->SetZoom(b / c->videoContext->GetHeight());
+					if (scale) c->videoBox->videoDisplay->SetZoom(b / c->videoController->GetHeight());
 				}
 			}
 			else numval = 0.0;
@@ -127,7 +127,7 @@ struct video_aspect_custom : public Command {
 
 		// Set value
 		else {
-			c->videoContext->SetAspectRatio(4,numval);
+			c->videoController->SetAspectRatio(4,numval);
 			wxGetApp().frame->SetDisplayMode(1,-1);
 		}
 	}
@@ -143,8 +143,8 @@ struct video_aspect_default : public Command {
 	STR_HELP("Leave video on original aspect ratio.")
 
 	void operator()(agi::Context *c) {
-		c->videoContext->Stop();
-		c->videoContext->SetAspectRatio(0);
+		c->videoController->Stop();
+		c->videoController->SetAspectRatio(0);
 		wxGetApp().frame->SetDisplayMode(1,-1);
 	}
 };
@@ -159,8 +159,8 @@ struct video_aspect_full : public Command {
 	STR_HELP("Forces video to 4:3 aspect ratio.")
 
 	void operator()(agi::Context *c) {
-		c->videoContext->Stop();
-		c->videoContext->SetAspectRatio(1);
+		c->videoController->Stop();
+		c->videoController->SetAspectRatio(1);
 		wxGetApp().frame->SetDisplayMode(1,-1);
 	}
 };
@@ -174,8 +174,8 @@ struct video_aspect_wide : public Command {
 	STR_HELP("Forces video to 16:9 aspect ratio.")
 
 	void operator()(agi::Context *c) {
-		c->videoContext->Stop();
-		c->videoContext->SetAspectRatio(2);
+		c->videoController->Stop();
+		c->videoController->SetAspectRatio(2);
 		wxGetApp().frame->SetDisplayMode(1,-1);
 	}
 };
@@ -189,7 +189,7 @@ struct video_close : public Command {
 	STR_HELP("Closes the currently open video file.")
 
 	void operator()(agi::Context *c) {
-		c->videoContext->SetVideo("");
+		c->videoController->SetVideo("");
 	}
 };
 
@@ -216,7 +216,7 @@ struct video_details : public Command {
 	STR_HELP("Shows video details.")
 
 	void operator()(agi::Context *c) {
-		c->videoContext->Stop();
+		c->videoController->Stop();
 		DialogVideoDetails(c->parent).ShowModal();
 	}
 };
@@ -232,10 +232,10 @@ struct video_focus_seek : public Command {
 	void operator()(agi::Context *c) {
 		wxWindow *curFocus = wxWindow::FindFocus();
 		if (curFocus == c->videoBox->videoSlider) {
-			if (c->PreviousFocus) c->PreviousFocus->SetFocus();
+			if (c->previousFocus) c->previousFocus->SetFocus();
 		}
 		else {
-			c->PreviousFocus = curFocus;
+			c->previousFocus = curFocus;
 			c->videoBox->videoSlider->SetFocus();
 		}
 	}
@@ -250,7 +250,7 @@ struct video_frame_next : public Command {
 	STR_HELP("Seek to the next frame.")
 
 	void operator()(agi::Context *c) {
-		c->videoContext->NextFrame();
+		c->videoController->NextFrame();
 	}
 };
 
@@ -263,7 +263,7 @@ struct video_frame_play : public Command {
 	STR_HELP("Play video.")
 
 	void operator()(agi::Context *c) {
-		c->videoContext->Play();
+		c->videoController->Play();
 	}
 };
 
@@ -276,7 +276,7 @@ struct video_frame_prev : public Command {
 	STR_HELP("Seek to the previous frame.")
 
 	void operator()(agi::Context *c) {
-		c->videoContext->PrevFrame();
+		c->videoController->PrevFrame();
 	}
 };
 
@@ -289,8 +289,8 @@ struct video_jump : public Command {
 	STR_HELP("Jump to frame or time.")
 
 	void operator()(agi::Context *c) {
-		c->videoContext->Stop();
-		if (c->videoContext->IsLoaded()) {
+		c->videoController->Stop();
+		if (c->videoController->IsLoaded()) {
 			DialogJumpTo(c->parent).ShowModal();
 			c->videoBox->videoSlider->SetFocus();
 		}
@@ -306,7 +306,7 @@ struct video_jump_end : public Command {
 	STR_HELP("Jumps the video to the end frame of current subtitle.")
 
 	void operator()(agi::Context *c) {
-		c->SubsGrid->SetVideoToSubs(false);
+		c->subsGrid->SetVideoToSubs(false);
 	}
 };
 
@@ -319,7 +319,7 @@ struct video_jump_start : public Command {
 	STR_HELP("Jumps the video to the start frame of current subtitle.")
 
 	void operator()(agi::Context *c) {
-		c->SubsGrid->SetVideoToSubs(true);
+		c->subsGrid->SetVideoToSubs(true);
 	}
 };
 
@@ -337,7 +337,7 @@ struct video_open : public Command {
 					 + _("All Files") + _T(" (*.*)|*.*");
 		wxString filename = wxFileSelector(_("Open video file"),path,_T(""),_T(""),str,wxFD_OPEN | wxFD_FILE_MUST_EXIST);
 		if (!filename.empty()) {
-			c->videoContext->SetVideo(filename);
+			c->videoController->SetVideo(filename);
 			OPT_SET("Path/Last/Video")->SetString(STD_STR(filename));
 		}
 	}
@@ -354,7 +354,7 @@ struct video_open_dummy : public Command {
 	void operator()(agi::Context *c) {
 		wxString fn;
 		if (DialogDummyVideo::CreateDummyVideo(c->parent, fn)) {
-			c->videoContext->SetVideo(fn);
+			c->videoController->SetVideo(fn);
 		}
 	}
 };
@@ -370,7 +370,7 @@ struct video_show_overscan : public Command {
 	void operator()(agi::Context *c) {
 //XXX: Fix to not require using an event. (maybe)
 //		OPT_SET("Video/Overscan Mask")->SetBool(event.IsChecked());
-		c->videoContext->Stop();
+		c->videoController->Stop();
 		c->videoBox->videoDisplay->Render();
 	}
 };
@@ -385,7 +385,7 @@ public:
 	STR_HELP("Set zoom to 100%.")
 
 	void operator()(agi::Context *c) {
-		c->videoContext->Stop();
+		c->videoController->Stop();
 		c->videoBox->videoDisplay->SetZoom(1.);
 	}
 };
@@ -401,7 +401,7 @@ public:
 	STR_HELP("Set zoom to 200%.")
 
 	void operator()(agi::Context *c) {
-		c->videoContext->Stop();
+		c->videoController->Stop();
 		c->videoBox->videoDisplay->SetZoom(2.);
 	}
 };
@@ -416,7 +416,7 @@ public:
 	STR_HELP("Set zoom to 50%.")
 
 	void operator()(agi::Context *c) {
-		c->videoContext->Stop();
+		c->videoController->Stop();
 		c->videoBox->videoDisplay->SetZoom(.5);
 	}
 };

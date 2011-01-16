@@ -90,7 +90,7 @@ struct am_manager : public Command {
 			}
 		}
 		else {
-			c->videoContext->Stop();
+			c->videoController->Stop();
 			DialogAutomation(c->parent, c->local_scripts).ShowModal();
 		}
 #endif

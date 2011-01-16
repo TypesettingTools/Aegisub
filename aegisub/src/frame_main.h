@@ -93,13 +93,10 @@ public:
 	void DetachVideo(bool detach=true);
 	void LoadVFR(wxString filename);
 
-	agi::scoped_ptr<agi::Context> temp_context;
+	agi::scoped_ptr<agi::Context> context;
 
 private:
-
 	void cmd_call(wxCommandEvent& event);
-
-	AssFile *ass;
 
 	/// DOCME
 
@@ -131,17 +128,6 @@ private:
 
 	/// DOCME
 	wxComboBox *ZoomBox;
-
-
-	/// DOCME
-	wxWindow *PreviousFocus;
-
-#ifdef WITH_AUTOMATION
-
-	/// DOCME
-	Automation4::ScriptManager *local_scripts;
-#endif
-
 
 	/// DOCME
 	std::vector<Automation4::FeatureMacro*> activeMacroItems;
@@ -193,16 +179,6 @@ public:
 
 	/// The video area
 	VideoBox *videoBox;
-
-	/// DOCME
-	DialogDetachedVideo *detachedVideo;
-
-	/// DOCME
-	DialogStyling *stylingAssistant;
-
-	/// The audio controller for the open project
-	AudioController *audioController;
-
 
 	/// Arranges things from top to bottom in the window
 	wxBoxSizer *MainSizer;

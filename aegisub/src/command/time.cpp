@@ -64,8 +64,8 @@ struct time_continous_end : public Command {
 	STR_HELP("Changes times of subs so end times begin on next's start time.")
 
 	void operator()(agi::Context *c) {
-		wxArrayInt sels = c->SubsGrid->GetSelection();
-		c->SubsGrid->AdjoinLines(sels.front(), sels.back(), false);
+		wxArrayInt sels = c->subsGrid->GetSelection();
+		c->subsGrid->AdjoinLines(sels.front(), sels.back(), false);
 	}
 };
 
@@ -78,8 +78,8 @@ struct time_continous_start : public Command {
 	STR_HELP("Changes times of subs so start times begin on previous's end time.")
 
 	void operator()(agi::Context *c) {
-		wxArrayInt sels = c->SubsGrid->GetSelection();
-		c->SubsGrid->AdjoinLines(sels.front(), sels.back(), true);
+		wxArrayInt sels = c->subsGrid->GetSelection();
+		c->subsGrid->AdjoinLines(sels.front(), sels.back(), true);
 	}
 
 };
@@ -93,20 +93,20 @@ struct time_frame_current : public Command {
 	STR_HELP("Shift selection so first selected line starts at current frame.")
 
 	void operator()(agi::Context *c) {
-		if (!c->videoContext->IsLoaded()) return;
+		if (!c->videoController->IsLoaded()) return;
 
-		wxArrayInt sels = c->SubsGrid->GetSelection();
+		wxArrayInt sels = c->subsGrid->GetSelection();
 		size_t n=sels.Count();
 		if (n == 0) return;
 
 		// Get shifting in ms
-		AssDialogue *cur = c->SubsGrid->GetDialogue(sels[0]);
+		AssDialogue *cur = c->subsGrid->GetDialogue(sels[0]);
 		if (!cur) return;
-		int shiftBy = c->videoContext->TimeAtFrame(c->videoContext->GetFrameN(),agi::vfr::START) - cur->Start.GetMS();
+		int shiftBy = c->videoController->TimeAtFrame(c->videoController->GetFrameN(),agi::vfr::START) - cur->Start.GetMS();
 
 		// Update
 		for (size_t i=0;i<n;i++) {
-			cur = c->SubsGrid->GetDialogue(sels[i]);
+			cur = c->subsGrid->GetDialogue(sels[i]);
 			if (cur) {
 				cur->Start.SetMS(cur->Start.GetMS()+shiftBy);
 				cur->End.SetMS(cur->End.GetMS()+shiftBy);
@@ -114,7 +114,7 @@ struct time_frame_current : public Command {
 		}
 
 		// Commit
-		c->SubsGrid->ass->Commit(_("shift to frame"), AssFile::COMMIT_TIMES);
+		c->subsGrid->ass->Commit(_("shift to frame"), AssFile::COMMIT_TIMES);
 	}
 };
 
@@ -127,8 +127,8 @@ struct time_shift : public Command {
 	STR_HELP("Shift subtitles by time or frames.")
 
 	void operator()(agi::Context *c) {
-		c->videoContext->Stop();
-		DialogShiftTimes(c->parent, c->SubsGrid).ShowModal();
+		c->videoController->Stop();
+		DialogShiftTimes(c->parent, c->subsGrid).ShowModal();
 	}
 };
 
@@ -142,7 +142,7 @@ struct time_snap_end_video : public Command {
 	STR_HELP("Set end of selected subtitles to current video frame.")
 
 	void operator()(agi::Context *c) {
-		c->SubsGrid->SetSubsToVideo(false);
+		c->subsGrid->SetSubsToVideo(false);
 	}
 };
 
@@ -155,17 +155,17 @@ struct time_snap_frame : public Command {
 	STR_HELP("Shift selected subtitles so first selected starts at this frame.")
 
 	void operator()(agi::Context *c) {
-		if (c->videoContext->IsLoaded()) return;
+		if (c->videoController->IsLoaded()) return;
 
-		wxArrayInt sels = c->SubsGrid->GetSelection();
+		wxArrayInt sels = c->subsGrid->GetSelection();
 		if (sels.empty()) return;
 
-		AssDialogue *cur = c->SubsGrid->GetDialogue(sels[0]);
+		AssDialogue *cur = c->subsGrid->GetDialogue(sels[0]);
 		if (!cur) return;
-		int shiftBy = c->videoContext->TimeAtFrame(c->videoContext->GetFrameN(),agi::vfr::START) - cur->Start.GetMS();
+		int shiftBy = c->videoController->TimeAtFrame(c->videoController->GetFrameN(),agi::vfr::START) - cur->Start.GetMS();
 
 		for (size_t i = 0; i < sels.size(); ++i) {
-			if (cur = c->SubsGrid->GetDialogue(sels[i])) {
+			if (cur = c->subsGrid->GetDialogue(sels[i])) {
 				cur->Start.SetMS(cur->Start.GetMS() + shiftBy);
 				cur->End.SetMS(cur->End.GetMS() + shiftBy);
 			}
@@ -184,11 +184,11 @@ struct time_snap_scene : public Command {
 	STR_HELP("Set start and end of subtitles to the keyframes around current video frame.")
 
 	void operator()(agi::Context *c) {
-		VideoContext *con = c->videoContext;
+		VideoContext *con = c->videoController;
 		if (!con->IsLoaded() || !con->KeyFramesLoaded()) return;
 
 		// Get frames
-		wxArrayInt sel = c->SubsGrid->GetSelection();
+		wxArrayInt sel = c->subsGrid->GetSelection();
 		int curFrame = con->GetFrameN();
 		int prev = 0;
 		int next = 0;
@@ -220,13 +220,13 @@ struct time_snap_scene : public Command {
 
 		// Update rows
 		for (size_t i=0;i<sel.Count();i++) {
-			cur = c->SubsGrid->GetDialogue(sel[i]);
+			cur = c->subsGrid->GetDialogue(sel[i]);
 			cur->Start.SetMS(start_ms);
 			cur->End.SetMS(end_ms);
 		}
 
 		// Commit
-		c->SubsGrid->ass->Commit(_("snap to scene"), AssFile::COMMIT_TIMES);
+		c->subsGrid->ass->Commit(_("snap to scene"), AssFile::COMMIT_TIMES);
 	}
 };
 
@@ -239,7 +239,7 @@ struct time_snap_start_video : public Command {
 	STR_HELP("Set start of selected subtitles to current video frame.")
 
 	void operator()(agi::Context *c) {
-		c->SubsGrid->SetSubsToVideo(false);
+		c->subsGrid->SetSubsToVideo(false);
 	}
 };
 

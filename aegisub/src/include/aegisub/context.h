@@ -19,7 +19,7 @@ struct Context {
 
 	// Controllers
 	AudioController *audioController;
-	VideoContext *videoContext;
+	VideoContext *videoController;
 
 	// Things that should probably be in some sort of UI-context-model
 	wxWindow *parent;
@@ -29,8 +29,8 @@ struct Context {
 	AudioBox *audioBox;
 	DialogDetachedVideo *detachedVideo;
 	DialogStyling *stylingAssistant;
-	SubsEditBox *EditBox;
-	SubtitlesGrid *SubsGrid;
+	SubsEditBox *editBox;
+	SubtitlesGrid *subsGrid;
 	VideoBox *videoBox;
 };
 

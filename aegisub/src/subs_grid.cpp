@@ -46,6 +46,7 @@
 #include <wx/tokenzr.h>
 #endif
 
+#include "include/aegisub/context.h"
 #include "include/aegisub/hotkey.h"
 #include "include/aegisub/audio_provider.h"
 
@@ -227,7 +228,7 @@ void SubtitlesGrid::OnPopupMenu(bool alternate) {
 		menu.AppendSeparator();
 
 		//Make audio clip
-		state = parentFrame->audioController->IsAudioOpen()==true;
+		state = parentFrame->context->audioController->IsAudioOpen()==true;
 		menu.Append(MENU_AUDIOCLIP,_("Create audio clip"),_("Create an audio clip of the selected line"))->Enable(state);
 		menu.AppendSeparator();
 
@@ -676,7 +677,7 @@ void SubtitlesGrid::OnRecombine(wxCommandEvent &) {
 /// @brief Export audio clip of line 
 void SubtitlesGrid::OnAudioClip(wxCommandEvent &) {
 	int64_t num_samples,start=0,end=0,temp;
-	AudioController *audioController = parentFrame->audioController;
+	AudioController *audioController = parentFrame->context->audioController;
 	const AudioProvider *provider = audioController->GetAudioProvider();
 	AssDialogue *cur;
 	wxArrayInt sel = GetSelection();
