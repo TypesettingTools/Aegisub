@@ -55,11 +55,10 @@
 /// @brief Constructor
 /// @param par FrameMain this was spawned from
 /// @param initialDisplaySize Initial size of the window
-DialogDetachedVideo::DialogDetachedVideo(FrameMain *par, const wxSize &initialDisplaySize)
-: wxDialog(par,-1,_T("Detached Video"),wxDefaultPosition,wxSize(400,300),wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER | wxMAXIMIZE_BOX | wxMINIMIZE_BOX | wxWANTS_CHARS)
+DialogDetachedVideo::DialogDetachedVideo(FrameMain *parent, agi::Context *context, const wxSize &initialDisplaySize)
+: wxDialog(parent,-1,_T("Detached Video"),wxDefaultPosition,wxSize(400,300),wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER | wxMAXIMIZE_BOX | wxMINIMIZE_BOX | wxWANTS_CHARS)
+, parent(parent)
 {
-	parent = par;
-
 	// Set up window
 	int x = OPT_GET("Video/Detached/Last/X")->GetInt();
 	int y = OPT_GET("Video/Detached/Last/Y")->GetInt();
@@ -77,10 +76,10 @@ DialogDetachedVideo::DialogDetachedVideo(FrameMain *par, const wxSize &initialDi
 	wxPanel *panel = new wxPanel(this,-1,wxDefaultPosition,wxDefaultSize,wxTAB_TRAVERSAL | wxCLIP_CHILDREN);
 	
 	// Video area;
-	videoBox = new VideoBox(panel, true, NULL, VideoContext::Get()->grid->ass);
+	videoBox = new VideoBox(panel, true, NULL, context);
 	videoBox->videoDisplay->freeSize = true;
 	videoBox->videoDisplay->SetClientSize(initialDisplaySize);
-	videoBox->videoSlider->grid = par->SubsGrid;
+	videoBox->videoSlider->grid = context->subsGrid;
 
 	// Set sizer
 	wxSizer *mainSizer = new wxBoxSizer(wxVERTICAL);
@@ -97,7 +96,7 @@ DialogDetachedVideo::DialogDetachedVideo(FrameMain *par, const wxSize &initialDi
 	if (display_index == wxNOT_FOUND)
 	{
 		int caption_size = wxSystemSettings::GetMetric(wxSYS_CAPTION_Y, this);
-		Move(par->GetPosition() + wxPoint(caption_size, caption_size));
+		Move(parent->GetPosition() + wxPoint(caption_size, caption_size));
 	}
 	else
 	{
@@ -130,7 +129,7 @@ DialogDetachedVideo::DialogDetachedVideo(FrameMain *par, const wxSize &initialDi
 	OPT_SET("Video/Detached/Enabled")->SetBool(true);
 
 	// Copy the main accelerator table to this dialog
-	wxAcceleratorTable *table = par->GetAcceleratorTable();
+	wxAcceleratorTable *table = parent->GetAcceleratorTable();
 	SetAcceleratorTable(*table);
 }
 
@@ -149,11 +148,10 @@ END_EVENT_TABLE()
 /// @brief Close window
 /// @param event UNUSED
 void DialogDetachedVideo::OnClose(wxCloseEvent &WXUNUSED(event)) {
-	FrameMain *par = parent;
 	OPT_SET("Video/Detached/Enabled")->SetBool(false);
 	Destroy();
-	par->context->detachedVideo = 0;
-	par->SetDisplayMode(1,-1);
+	parent->context->detachedVideo = 0;
+	parent->SetDisplayMode(1,-1);
 }
 
 /// @brief Move window 

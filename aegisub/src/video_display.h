@@ -54,7 +54,9 @@ class VideoContext;
 class VideoOutGL;
 class IVisualTool;
 class wxToolBar;
+
 namespace agi {
+	struct Context;
 	class OptionValue;
 }
 
@@ -74,8 +76,7 @@ class VideoDisplay : public wxGLCanvas {
 
 	const agi::OptionValue* alwaysShowTools;
 
-	/// The video context providing video to this display
-	VideoContext *vc;
+	agi::Context *con;
 
 	/// The frame number currently being displayed
 	int currentFrame;
@@ -201,7 +202,7 @@ public:
 		wxTextCtrl *SubsPosition,
 		wxComboBox *zoomBox,
 		wxWindow* parent,
-		AssFile *model);
+		agi::Context *context);
 	~VideoDisplay();
 
 	/// @brief Render the currently visible frame

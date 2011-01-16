@@ -64,6 +64,7 @@ class VideoProviderErrorEvent;
 class AudioController;
 
 namespace agi {
+	struct Context;
 	class OptionValue;
 }
 
@@ -86,7 +87,8 @@ class VideoContext : public wxEvtHandler {
 	/// Aspect ratio was changed (type, value)
 	agi::signal::Signal<int, double> ARChange;
 
-private:
+	agi::Context *context;
+
 	/// DOCME
 	std::tr1::shared_ptr<VideoProvider> videoProvider;
 
@@ -159,20 +161,21 @@ private:
 	void OnSubtitlesSave();
 
 public:
-	/// DOCME
-	SubtitlesGrid *grid;
-
 	/// File name of currently open video, if any
 	wxString videoName;
-
-	/// The audio controller for this video context
-	AudioController *audio;
 
 	const agi::vfr::Framerate &VFR_Input;
 	const agi::vfr::Framerate &VFR_Output;
 
 	VideoContext();
 	~VideoContext();
+
+	/// @brief Set the context that this is the video controller for
+	/// @param context Initialized project context
+	///
+	/// Once this is no longer a singleton this can probably be moved into
+	/// the constructor
+	void SetContext(agi::Context *context);
 
 	/// @brief Get the video provider used for the currently open video
 	VideoProvider *GetProvider() const { return videoProvider.get(); }

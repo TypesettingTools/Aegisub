@@ -45,6 +45,7 @@
 #include "ass_override.h"
 #include "ass_style.h"
 #include "ass_time.h"
+#include "include/aegisub/context.h"
 #include "main.h"
 #include "selection_controller.h"
 #include "subs_edit_box.h"
@@ -62,13 +63,13 @@
 const wxColour IVisualTool::colour[4] = {wxColour(106,32,19), wxColour(255,169,40), wxColour(255,253,185), wxColour(187,0,0)};
 
 template<class FeatureType>
-VisualTool<FeatureType>::VisualTool(VideoDisplay *parent, VideoState const& video)
+VisualTool<FeatureType>::VisualTool(VideoDisplay *parent, agi::Context *context, VideoState const& video)
 : dragStartX(0)
 , dragStartY(0)
 , commitId(-1)
 , selChanged(false)
 , selectedFeatures(selFeatures)
-, grid(VideoContext::Get()->grid)
+, grid(context->subsGrid)
 , parent(parent)
 , holding(false)
 , dragging(false)
@@ -80,7 +81,7 @@ VisualTool<FeatureType>::VisualTool(VideoDisplay *parent, VideoState const& vide
 , ctrlDown(false)
 , altDown(false)
 {
-	frameNumber = VideoContext::Get()->GetFrameN();
+	frameNumber = context->videoController->GetFrameN();
 	curDiag = GetActiveDialogueLine();
 	grid->AddSelectionListener(this);
 	curFeature = features.begin();

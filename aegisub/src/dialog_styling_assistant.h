@@ -47,18 +47,13 @@
 #include <wx/textctrl.h>
 #endif
 
-
-//////////////
-// Prototypes
+namespace agi { struct Context; }
 class AssFile;
 class AssDialogue;
-class SubtitlesGrid;
-class DialogStyling;
-class AudioDisplay;
-class VideoContext;
 class AudioController;
-
-
+class DialogStyling;
+class SubtitlesGrid;
+class VideoContext;
 
 /// DOCME
 /// @class StyleEditBox
@@ -148,7 +143,7 @@ public:
 	/// DOCME
 	VideoContext *video;
 
-	DialogStyling (wxWindow *parent,SubtitlesGrid *grid);
+	DialogStyling(agi::Context *context);
 	~DialogStyling ();
 
 	void JumpToLine(int n);

@@ -46,8 +46,8 @@
 #include "video_display.h"
 #include "visual_tool_clip.h"
 
-VisualToolClip::VisualToolClip(VideoDisplay *parent, VideoState const& video, wxToolBar *)
-: VisualTool<ClipCorner>(parent, video)
+VisualToolClip::VisualToolClip(VideoDisplay *parent, agi::Context *context, VideoState const& video, wxToolBar *)
+: VisualTool<ClipCorner>(parent, context, video)
 , curX1(0)
 , curY1(0)
 , curX2(video.w)

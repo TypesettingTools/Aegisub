@@ -49,11 +49,12 @@
 #include "gl_wrap.h"
 #include "selection_controller.h"
 
-class VideoDisplay;
 class AssDialogue;
 class SubtitlesGrid;
+class VideoDisplay;
 struct VideoState;
 namespace agi {
+	struct Context;
 	class OptionValue;
 }
 
@@ -226,7 +227,7 @@ public:
 	/// @brief Constructor
 	/// @param parent The VideoDisplay to use for coordinate conversion
 	/// @param video Video and mouse information passing blob
-	VisualTool(VideoDisplay *parent, VideoState const& video);
+	VisualTool(VideoDisplay *parent, agi::Context *context, VideoState const& video);
 
 	/// @brief Destructor
 	virtual ~VisualTool();

@@ -44,14 +44,12 @@
 #include <wx/toolbar.h>
 #endif
 
-class AssFile;
+namespace agi { struct Context; }
 class VideoDisplay;
 class VideoSlider;
 class ToggleBitmap;
 class FrameMain;
 class wxComboBox;
-
-
 
 /// DOCME
 /// @class VideoBox
@@ -99,7 +97,7 @@ public:
 	/// DOCME
 	VideoSlider *videoSlider;
 
-	VideoBox (wxWindow *parent, bool isDetached, wxComboBox *zoomBox, AssFile *ass);
+	VideoBox(wxWindow *parent, bool isDetached, wxComboBox *zoomBox, agi::Context *context);
 
 	DECLARE_EVENT_TABLE()
 };

@@ -47,8 +47,8 @@
 #include "video_display.h"
 #include "visual_tool_rotatexy.h"
 
-VisualToolRotateXY::VisualToolRotateXY(VideoDisplay *parent, VideoState const& video, wxToolBar *)
-: VisualTool<VisualDraggableFeature>(parent, video)
+VisualToolRotateXY::VisualToolRotateXY(VideoDisplay *parent, agi::Context *context, VideoState const& video, wxToolBar *)
+: VisualTool<VisualDraggableFeature>(parent, context, video)
 {
 	features.resize(1);
 	org = &features.back();

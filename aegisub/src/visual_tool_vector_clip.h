@@ -87,7 +87,7 @@ class VisualToolVectorClip : public VisualTool<VisualToolVectorClipDraggableFeat
 	void Draw();
 	bool Update() { return mode >= 1 && mode <= 4; }
 public:
-	VisualToolVectorClip(VideoDisplay *parent, VideoState const& video, wxToolBar *toolbar);
+	VisualToolVectorClip(VideoDisplay *parent, agi::Context *context, VideoState const& video, wxToolBar *toolbar);
 
 	/// Subtoolbar button click handler
 	void OnSubTool(wxCommandEvent &event);

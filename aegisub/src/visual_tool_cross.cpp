@@ -42,8 +42,8 @@
 #include "video_display.h"
 #include "visual_tool_cross.h"
 
-VisualToolCross::VisualToolCross(VideoDisplay *parent, VideoState const& video, wxToolBar *)
-: VisualTool<VisualDraggableFeature>(parent, video)
+VisualToolCross::VisualToolCross(VideoDisplay *parent, agi::Context *context, VideoState const& video, wxToolBar *)
+: VisualTool<VisualDraggableFeature>(parent, context, video)
 , glText(new OpenGLText)
 {
 }

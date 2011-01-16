@@ -47,8 +47,8 @@
 #include "video_display.h"
 #include "visual_tool_scale.h"
 
-VisualToolScale::VisualToolScale(VideoDisplay *parent, VideoState const& video, wxToolBar *)
-: VisualTool<VisualDraggableFeature>(parent, video)
+VisualToolScale::VisualToolScale(VideoDisplay *parent, agi::Context *context, VideoState const& video, wxToolBar *)
+: VisualTool<VisualDraggableFeature>(parent, context, video)
 , curScaleX(0.f)
 , origScaleX(0.f)
 , curScaleY(0.f)

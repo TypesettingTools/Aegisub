@@ -40,9 +40,9 @@
 #include <wx/dialog.h>
 #endif
 
-class VideoBox;
+namespace agi { struct Context; }
 class FrameMain;
-
+class VideoBox;
 
 /// DOCME
 /// @class DialogDetachedVideo
@@ -63,7 +63,7 @@ private:
 	void OnMinimize(wxIconizeEvent &event);
 
 public:
-	DialogDetachedVideo(FrameMain *parent, const wxSize &initialDisplaySize);
+	DialogDetachedVideo(FrameMain *parent, agi::Context *context, const wxSize &initialDisplaySize);
 	~DialogDetachedVideo();
 
 	DECLARE_EVENT_TABLE()

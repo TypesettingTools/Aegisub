@@ -56,5 +56,5 @@ class VisualToolRotateXY : public VisualTool<VisualDraggableFeature> {
 
 	void Draw();
 public:
-	VisualToolRotateXY(VideoDisplay *parent, VideoState const& video, wxToolBar *);
+	VisualToolRotateXY(VideoDisplay *parent, agi::Context *context, VideoState const& video, wxToolBar *);
 };

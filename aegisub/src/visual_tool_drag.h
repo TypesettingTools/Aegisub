@@ -95,7 +95,7 @@ class VisualToolDrag : public VisualTool<VisualToolDragDraggableFeature> {
 	void Draw();
 	bool Update();
 public:
-	VisualToolDrag(VideoDisplay *parent, VideoState const& video, wxToolBar *toolbar);
+	VisualToolDrag(VideoDisplay *parent, agi::Context *context, VideoState const& video, wxToolBar *toolbar);
 
 	void OnSubTool(wxCommandEvent &event);
 };

@@ -39,13 +39,14 @@
 #include <wx/stattext.h>
 #endif
 
-class AssFile;
+namespace agi { struct Context; }
 class AssDialogue;
+class AssFile;
+class AudioController;
 class AudioDisplay;
 class ScintillaTextCtrl;
 class SubtitlesGrid;
 class VideoContext;
-class AudioController;
 
 
 /// DOCME
@@ -111,7 +112,7 @@ public:
 
 	/// DOCME
 	bool enablePreview;
-	DialogTranslation (wxWindow *parent,AssFile *subs,SubtitlesGrid *grid,int startrow=0,bool preview=false);
+	DialogTranslation(agi::Context *context, int startrow=0, bool preview=false);
 
 	void OnTransBoxKey(wxKeyEvent &event);
 

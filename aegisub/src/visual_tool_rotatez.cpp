@@ -50,8 +50,8 @@
 static const float deg2rad = 3.1415926536f / 180.f;
 static const float rad2deg = 180.f / 3.1415926536f;
 
-VisualToolRotateZ::VisualToolRotateZ(VideoDisplay *parent, VideoState const& video, wxToolBar *)
-: VisualTool<VisualDraggableFeature>(parent, video)
+VisualToolRotateZ::VisualToolRotateZ(VideoDisplay *parent, agi::Context *context, VideoState const& video, wxToolBar *)
+: VisualTool<VisualDraggableFeature>(parent, context, video)
 {
 	features.resize(1);
 	org = &features.back();

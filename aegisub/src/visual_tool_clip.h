@@ -76,5 +76,5 @@ class VisualToolClip : public VisualTool<ClipCorner> {
 
 	void Draw();
 public:
-	VisualToolClip(VideoDisplay *parent, VideoState const& video, wxToolBar *);
+	VisualToolClip(VideoDisplay *parent, agi::Context *context, VideoState const& video, wxToolBar *);
 };

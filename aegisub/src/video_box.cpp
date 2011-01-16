@@ -43,8 +43,8 @@
 #include <wx/statline.h>
 #endif
 
-#include "ass_dialogue.h"
-#include "ass_file.h"
+#include "include/aegisub/context.h"
+
 #include "frame_main.h"
 #include "help_button.h"
 #include "libresrc/libresrc.h"
@@ -64,7 +64,7 @@
 /// @param parent     
 /// @param isDetached 
 ///
-VideoBox::VideoBox(wxWindow *parent, bool isDetached, wxComboBox *zoomBox, AssFile *ass)
+VideoBox::VideoBox(wxWindow *parent, bool isDetached, wxComboBox *zoomBox, agi::Context *context)
 : wxPanel (parent,-1)
 {
 	// Parent
@@ -113,7 +113,7 @@ VideoBox::VideoBox(wxWindow *parent, bool isDetached, wxComboBox *zoomBox, AssFi
 	visualToolBar->SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNFACE));
 
 	// Display
-	videoDisplay = new VideoDisplay(this,VideoPosition,VideoSubsPos,zoomBox,videoPage,ass);
+	videoDisplay = new VideoDisplay(this,VideoPosition,VideoSubsPos,zoomBox,videoPage,context);
 
 	// Set display
 	videoSlider->Display = videoDisplay;

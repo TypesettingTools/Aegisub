@@ -53,5 +53,5 @@ class VisualToolCross : public VisualTool<VisualDraggableFeature> {
 	void Draw();
 	std::tr1::shared_ptr<OpenGLText> glText;
 public:
-	VisualToolCross(VideoDisplay *parent, VideoState const& video, wxToolBar *);
+	VisualToolCross(VideoDisplay *parent, agi::Context *context, VideoState const& video, wxToolBar *);
 };

@@ -43,6 +43,7 @@
 #include <wx/recguard.h>
 #endif
 
+#include "include/aegisub/context.h"
 #include "include/aegisub/hotkey.h"
 
 #include "ass_dialogue.h"
@@ -66,16 +67,16 @@
 /// @param parent 
 /// @param _grid  
 ///
-DialogStyling::DialogStyling (wxWindow *parent,SubtitlesGrid *_grid) :
-wxDialog (parent, -1, _("Styling assistant"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER | wxMINIMIZE_BOX)
+DialogStyling::DialogStyling(agi::Context *context)
+: wxDialog(context->parent, -1, _("Styling assistant"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER | wxMINIMIZE_BOX)
 {
 	// Set icon
 	SetIcon(BitmapToIcon(GETIMAGE(styling_toolbutton_24)));
 
 	// Variables
-	grid = _grid;
-	audio = VideoContext::Get()->audio;
-	video = VideoContext::Get();
+	grid = context->subsGrid;
+	audio = context->audioController;
+	video = context->videoController;
 	needCommit = false;
 	linen = -1;
 

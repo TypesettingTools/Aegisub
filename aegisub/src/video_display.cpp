@@ -56,6 +56,7 @@
 #include <GL/glu.h>
 #endif
 
+#include "include/aegisub/context.h"
 #include "include/aegisub/hotkey.h"
 
 #include "video_display.h"
@@ -130,10 +131,10 @@ VideoDisplay::VideoDisplay(
 	wxTextCtrl *SubsPosition,
 	wxComboBox *zoomBox,
 	wxWindow* parent,
-	AssFile *model)
+	agi::Context *c)
 : wxGLCanvas (parent, -1, attribList, wxDefaultPosition, wxDefaultSize, 0, wxPanelNameStr)
 , alwaysShowTools(OPT_GET("Tool/Visual/Always Show"))
-, vc(VideoContext::Get())
+, con(c)
 , currentFrame(-1)
 , w(8), h(8), viewport_x(0), viewport_width(0), viewport_bottom(0), viewport_top(0), viewport_height(0)
 , zoomValue(OPT_GET("Video/Default Zoom")->GetInt() * .125 + .125)
@@ -145,28 +146,25 @@ VideoDisplay::VideoDisplay(
 , scriptW(INT_MIN)
 , scriptH(INT_MIN)
 , zoomBox(zoomBox)
-, model(model)
 , box(box)
 , freeSize(false)
 {
-	assert(vc);
 	assert(box);
-	assert(model);
 
 	if (zoomBox) zoomBox->SetValue(wxString::Format("%g%%", zoomValue * 100.));
 	box->Bind(wxEVT_COMMAND_TOOL_CLICKED, &VideoDisplay::OnMode, this, Video_Mode_Standard, Video_Mode_Vector_Clip);
 
-	vc->Bind(EVT_FRAME_READY, &VideoDisplay::UploadFrameData, this);
-	slots.push_back(vc->AddSeekListener(&VideoDisplay::SetFrame, this));
-	slots.push_back(vc->AddVideoOpenListener(&VideoDisplay::OnVideoOpen, this));
-	slots.push_back(vc->AddARChangeListener(&VideoDisplay::UpdateSize, this));
+	con->videoController->Bind(EVT_FRAME_READY, &VideoDisplay::UploadFrameData, this);
+	slots.push_back(con->videoController->AddSeekListener(&VideoDisplay::SetFrame, this));
+	slots.push_back(con->videoController->AddVideoOpenListener(&VideoDisplay::OnVideoOpen, this));
+	slots.push_back(con->videoController->AddARChangeListener(&VideoDisplay::UpdateSize, this));
 	slots.push_back(model->AddCommitListener(&VideoDisplay::OnCommit, this));
 
 	SetCursor(wxNullCursor);
 }
 
 VideoDisplay::~VideoDisplay () {
-	vc->Unbind(EVT_FRAME_READY, &VideoDisplay::UploadFrameData, this);
+	con->videoController->Unbind(EVT_FRAME_READY, &VideoDisplay::UploadFrameData, this);
 }
 
 bool VideoDisplay::InitContext() {
@@ -194,7 +192,7 @@ void VideoDisplay::UpdateRelativeTimes(int time) {
 	int startOff = 0;
 	int endOff = 0;
 
-	if (AssDialogue *curLine = vc->grid->GetActiveLine()) {
+	if (AssDialogue *curLine = con->selectionController->GetActiveLine()) {
 		startOff = time - curLine->Start.GetMS();
 		endOff = time - curLine->End.GetMS();
 	}
@@ -213,7 +211,7 @@ void VideoDisplay::SetFrame(int frameNumber) {
 
 	// Get time for frame
 	{
-		int time = vc->TimeAtFrame(frameNumber, agi::vfr::EXACT);
+		int time = con->videoController->TimeAtFrame(frameNumber, agi::vfr::EXACT);
 		int h = time / 3600000;
 		int m = time % 3600000 / 60000;
 		int s = time % 60000 / 1000;
@@ -221,7 +219,7 @@ void VideoDisplay::SetFrame(int frameNumber) {
 
 		// Set the text box for frame number and time
 		PositionDisplay->SetValue(wxString::Format(L"%01i:%02i:%02i.%03i - %i", h, m, s, ms, frameNumber));
-		if (std::binary_search(vc->GetKeyFrames().begin(), vc->GetKeyFrames().end(), frameNumber)) {
+		if (std::binary_search(con->videoController->GetKeyFrames().begin(), con->videoController->GetKeyFrames().end(), frameNumber)) {
 			// Set the background color to indicate this is a keyframe
 			PositionDisplay->SetBackgroundColour(lagi_wxColour(OPT_GET("Colour/Subtitle Grid/Background/Selection")->GetColour()));
 			PositionDisplay->SetForegroundColour(lagi_wxColour(OPT_GET("Colour/Subtitle Grid/Selection")->GetColour()));
@@ -235,9 +233,9 @@ void VideoDisplay::SetFrame(int frameNumber) {
 	}
 
 	// Render the new frame
-	if (vc->IsLoaded()) {
+	if (con->videoController->IsLoaded()) {
 		tool->SetFrame(frameNumber);
-		vc->GetFrameAsync(currentFrame);
+		con->videoController->GetFrameAsync(currentFrame);
 	}
 }
 
@@ -253,7 +251,7 @@ void VideoDisplay::UploadFrameData(FrameReadyEvent &evt) {
 			L"programs and updating your video card drivers may fix this.\n"
 			L"Error message reported: %s",
 			err.GetMessage().c_str());
-		vc->Reset();
+		con->videoController->Reset();
 	}
 	catch (const VideoOutRenderException& err) {
 		wxLogError(
@@ -265,24 +263,24 @@ void VideoDisplay::UploadFrameData(FrameReadyEvent &evt) {
 }
 
 void VideoDisplay::OnVideoOpen() {
-	if (!vc->IsLoaded()) return;
+	if (!con->videoController->IsLoaded()) return;
 	UpdateSize();
 	currentFrame = 0;
-	vc->GetFrameAsync(0);
+	con->videoController->GetFrameAsync(0);
 	UpdateRelativeTimes(0);
-	if (!tool.get()) tool.reset(new VisualToolCross(this, video, toolBar));
+	if (!tool.get()) tool.reset(new VisualToolCross(this, con, video, toolBar));
 	tool->Refresh();
 }
 void VideoDisplay::OnCommit(int type) {
 	if (type == AssFile::COMMIT_FULL || type == AssFile::COMMIT_UNDO)
-		vc->GetScriptSize(scriptW, scriptH);
+		con->videoController->GetScriptSize(scriptW, scriptH);
 	if (tool.get()) tool->Refresh();
-	UpdateRelativeTimes(vc->TimeAtFrame(currentFrame, agi::vfr::EXACT));
+	UpdateRelativeTimes(con->videoController->TimeAtFrame(currentFrame, agi::vfr::EXACT));
 }
 
 void VideoDisplay::Render() try {
 	if (!InitContext()) return;
-	if (!vc->IsLoaded()) return;
+	if (!con->videoController->IsLoaded()) return;
 	assert(wxIsMainThread());
 	if (!viewport_height || !viewport_width) UpdateSize();
 
@@ -294,7 +292,7 @@ void VideoDisplay::Render() try {
 	E(glOrtho(0.0f, w, h, 0.0f, -1000.0f, 1000.0f));
 
 	if (OPT_GET("Video/Overscan Mask")->GetBool()) {
-		double ar = vc->GetAspectRatioValue();
+		double ar = con->videoController->GetAspectRatioValue();
 
 		// Based on BBC's guidelines: http://www.bbc.co.uk/guidelines/dq/pdf/tv/tv_standards_london.pdf
 		// 16:9 or wider
@@ -321,27 +319,27 @@ catch (const VideoOutException &err) {
 		L"An error occurred trying to render the video frame on the screen.\n"
 		L"Error message reported: %s",
 		err.GetMessage().c_str());
-	vc->Reset();
+	con->videoController->Reset();
 }
 catch (const OpenGlException &err) {
 	wxLogError(
 		L"An error occurred trying to render visual overlays on the screen.\n"
 		L"Error message reported: %s",
 		err.GetMessage().c_str());
-	vc->Reset();
+	con->videoController->Reset();
 }
 catch (const wchar_t *err) {
 	wxLogError(
 		L"An error occurred trying to render the video frame on the screen.\n"
 		L"Error message reported: %s",
 		err);
-	vc->Reset();
+	con->videoController->Reset();
 }
 catch (...) {
 	wxLogError(
 		L"An error occurred trying to render the video frame to screen.\n"
 		L"No further error message given.");
-	vc->Reset();
+	con->videoController->Reset();
 }
 
 void VideoDisplay::DrawOverscanMask(int sizeH, int sizeV, wxColor color, double alpha) const {
@@ -370,15 +368,15 @@ void VideoDisplay::DrawOverscanMask(int sizeH, int sizeV, wxColor color, double 
 }
 
 void VideoDisplay::UpdateSize(int arType, double arValue) {
-	if (!vc->IsLoaded()) return;
+	if (!con->videoController->IsLoaded()) return;
 	if (!IsShownOnScreen()) return;
 
-	int vidW = vc->GetWidth();
-	int vidH = vc->GetHeight();
+	int vidW = con->videoController->GetWidth();
+	int vidH = con->videoController->GetHeight();
 
 	if (arType == -1) {
-		arType = vc->GetAspectRatioType();
-		arValue = vc->GetAspectRatioValue();
+		arType = con->videoController->GetAspectRatioType();
+		arValue = con->videoController->GetAspectRatioValue();
 	}
 
 	if (freeSize) {
@@ -440,7 +438,7 @@ void VideoDisplay::UpdateSize(int arType, double arValue) {
 		SetEvtHandlerEnabled(true);
 	}
 
-	vc->GetScriptSize(scriptW, scriptH);
+	con->videoController->GetScriptSize(scriptW, scriptH);
 	video.w = w;
 	video.h = h;
 
@@ -462,7 +460,7 @@ void VideoDisplay::OnMouseEvent(wxMouseEvent& event) {
 	assert(w > 0);
 
 	// Disable when playing
-	if (vc->IsPlaying()) return;
+	if (con->videoController->IsPlaying()) return;
 
 	if (event.ButtonUp(wxMOUSE_BTN_RIGHT)) {
 		wxMenu menu;
@@ -546,7 +544,7 @@ double VideoDisplay::GetZoom() const {
 template<class T>
 void VideoDisplay::SetTool() {
 	tool.reset();
-	tool.reset(new T(this, video, toolBar));
+	tool.reset(new T(this, con, video, toolBar));
 	box->Bind(wxEVT_COMMAND_TOOL_CLICKED, &T::OnSubTool, static_cast<T*>(tool.get()), VISUAL_SUB_TOOL_START, VISUAL_SUB_TOOL_END);
 }
 void VideoDisplay::OnMode(const wxCommandEvent &event) {
@@ -594,24 +592,24 @@ void VideoDisplay::FromScriptCoords(int *x, int *y) const {
 
 void VideoDisplay::OnCopyToClipboard(wxCommandEvent &) {
 	if (wxTheClipboard->Open()) {
-		wxTheClipboard->SetData(new wxBitmapDataObject(wxBitmap(vc->GetFrame(currentFrame)->GetImage(),24)));
+		wxTheClipboard->SetData(new wxBitmapDataObject(wxBitmap(con->videoController->GetFrame(currentFrame)->GetImage(),24)));
 		wxTheClipboard->Close();
 	}
 }
 
 void VideoDisplay::OnCopyToClipboardRaw(wxCommandEvent &) {
 	if (wxTheClipboard->Open()) {
-		wxTheClipboard->SetData(new wxBitmapDataObject(wxBitmap(vc->GetFrame(currentFrame,true)->GetImage(),24)));
+		wxTheClipboard->SetData(new wxBitmapDataObject(wxBitmap(con->videoController->GetFrame(currentFrame,true)->GetImage(),24)));
 		wxTheClipboard->Close();
 	}
 }
 
 void VideoDisplay::OnSaveSnapshot(wxCommandEvent &) {
-	vc->SaveSnapshot(false);
+	con->videoController->SaveSnapshot(false);
 }
 
 void VideoDisplay::OnSaveSnapshotRaw(wxCommandEvent &) {
-	vc->SaveSnapshot(true);
+	con->videoController->SaveSnapshot(true);
 }
 
 void VideoDisplay::OnCopyCoords(wxCommandEvent &) {

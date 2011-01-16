@@ -140,7 +140,7 @@ struct tool_style_assistant : public Command {
 
 	void operator()(agi::Context *c) {
 		c->videoController->Stop();
-		if (!c->stylingAssistant) c->stylingAssistant = new DialogStyling(c->parent, c->subsGrid);
+		if (!c->stylingAssistant) c->stylingAssistant = new DialogStyling(c);
 		c->stylingAssistant->Show(true);
 	}
 };
@@ -197,7 +197,7 @@ struct tool_translation_assistant : public Command {
 		c->videoController->Stop();
 		int start = c->subsGrid->GetFirstSelRow();
 		if (start == -1) start = 0;
-		DialogTranslation(c->parent, c->ass, c->subsGrid, start, true).ShowModal();
+		DialogTranslation(c, start, true).ShowModal();
 	}
 };
 

@@ -43,6 +43,7 @@
 #include <wx/settings.h>
 #endif
 
+#include "include/aegisub/context.h"
 #include "include/aegisub/hotkey.h"
 
 #include "ass_dialogue.h"
@@ -68,19 +69,19 @@
 /// @param startrow 
 /// @param preview  
 ///
-DialogTranslation::DialogTranslation (wxWindow *parent,AssFile *_subs,SubtitlesGrid *_grid,int startrow,bool preview)
-: wxDialog(parent, -1, _("Translation Assistant"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER | wxMINIMIZE_BOX, _T("TranslationAssistant"))
+DialogTranslation::DialogTranslation(agi::Context *c, int startrow, bool preview)
+: wxDialog(c->parent, -1, _("Translation Assistant"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER | wxMINIMIZE_BOX, _T("TranslationAssistant"))
 {
 	// Set icon
 	SetIcon(BitmapToIcon(GETIMAGE(translation_toolbutton_24)));
 
 	// Set variables
 	enablePreview = preview;
-	main = parent;
-	subs = _subs;
-	grid = _grid;
-	audio = VideoContext::Get()->audio;
-	video = VideoContext::Get();
+	main = c->parent;
+	subs = c->ass;
+	grid = c->subsGrid;
+	audio = c->audioController;
+	video = c->videoController;
 
 	// Translation controls
 	OrigText = new ScintillaTextCtrl(this,TEXT_ORIGINAL,_T(""),wxDefaultPosition,wxSize(320,80));

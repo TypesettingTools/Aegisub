@@ -81,8 +81,8 @@ static void for_each_iter(C &container, O obj, M method) {
 	}
 }
 
-VisualToolVectorClip::VisualToolVectorClip(VideoDisplay *parent, VideoState const& video, wxToolBar * toolBar)
-: VisualTool<VisualToolVectorClipDraggableFeature>(parent, video)
+VisualToolVectorClip::VisualToolVectorClip(VideoDisplay *parent, agi::Context *context, VideoState const& video, wxToolBar * toolBar)
+: VisualTool<VisualToolVectorClipDraggableFeature>(parent, context, video)
 , spline(*parent)
 , toolBar(toolBar)
 {

@@ -53,8 +53,9 @@
 #include <GL/glu.h>
 #endif
 
-#include "include/aegisub/audio_player.h"
-#include "include/aegisub/audio_provider.h"
+#include <libaegisub/access.h>
+#include <libaegisub/keyframe.h>
+
 #include "ass_dialogue.h"
 #include "ass_file.h"
 #include "ass_style.h"
@@ -63,15 +64,13 @@
 #include "compat.h"
 #include "include/aegisub/audio_player.h"
 #include "include/aegisub/audio_provider.h"
+#include "include/aegisub/context.h"
 #include "include/aegisub/video_provider.h"
-#include <libaegisub/keyframe.h>
-#include <libaegisub/access.h>
 #include "main.h"
 #include "mkv_wrap.h"
-#include "standard_paths.h"
 #include "selection_controller.h"
+#include "standard_paths.h"
 #include "subs_edit_box.h"
-#include "subs_grid.h"
 #include "threaded_frame_source.h"
 #include "utils.h"
 #include "video_box.h"
@@ -102,8 +101,6 @@ VideoContext::VideoContext()
 , arType(0)
 , hasSubtitles(false)
 , playAudioOnStep(OPT_GET("Audio/Plays When Stepping Video"))
-, grid(NULL)
-, audio(NULL)
 , VFR_Input(videoFPS)
 , VFR_Output(ovrFPS)
 {
@@ -152,6 +149,12 @@ void VideoContext::Reset() {
 	provider.reset();
 }
 
+void VideoContext::SetContext(agi::Context *context) {
+	this->context = context;
+	context->ass->AddCommitListener(&VideoContext::OnSubtitlesCommit, this);
+	context->ass->AddCommitListener(&VideoContext::OnSubtitlesSave, this);
+}
+
 void VideoContext::SetVideo(const wxString &filename) {
 	Stop();
 	Reset();
@@ -198,9 +201,7 @@ void VideoContext::SetVideo(const wxString &filename) {
 			hasSubtitles = MatroskaWrapper::HasSubtitles(filename);
 		}
 
-		provider->LoadSubtitles(grid->ass);
-		grid->ass->AddCommitListener(&VideoContext::OnSubtitlesCommit, this);
-		grid->ass->AddCommitListener(&VideoContext::OnSubtitlesSave, this);
+		provider->LoadSubtitles(context->ass);
 		VideoOpen();
 		KeyframesOpen(keyFrames);
 		TimecodesOpen(FPS());
@@ -229,7 +230,7 @@ void VideoContext::OnSubtitlesCommit() {
 	bool wasPlaying = isPlaying;
 	Stop();
 
-	provider->LoadSubtitles(grid->ass);
+	provider->LoadSubtitles(context->ass);
 	GetFrameAsync(frame_n);
 
 	if (wasPlaying) Play();
@@ -237,11 +238,11 @@ void VideoContext::OnSubtitlesCommit() {
 
 void VideoContext::OnSubtitlesSave() {
 	if (!IsLoaded()) {
-		grid->ass->SetScriptInfo("Video File", "");
-		grid->ass->SetScriptInfo("Video Aspect Ratio", "");
-		grid->ass->SetScriptInfo("Video Position", "");
-		grid->ass->SetScriptInfo("VFR File", "");
-		grid->ass->SetScriptInfo("Keyframes File", "");
+		context->ass->SetScriptInfo("Video File", "");
+		context->ass->SetScriptInfo("Video Aspect Ratio", "");
+		context->ass->SetScriptInfo("Video Position", "");
+		context->ass->SetScriptInfo("VFR File", "");
+		context->ass->SetScriptInfo("Keyframes File", "");
 		return;
 	}
 
@@ -251,11 +252,11 @@ void VideoContext::OnSubtitlesSave() {
 	else
 		ar = wxString::Format("%d", arType);
 
-	grid->ass->SetScriptInfo("Video File", MakeRelativePath(videoName, grid->ass->filename));
-	grid->ass->SetScriptInfo("Video Aspect Ratio", ar);
-	grid->ass->SetScriptInfo("Video Position", wxString::Format("%d", frame_n));
-	grid->ass->SetScriptInfo("VFR File", MakeRelativePath(GetTimecodesName(), grid->ass->filename));
-	grid->ass->SetScriptInfo("Keyframes File", MakeRelativePath(GetKeyFramesName(), grid->ass->filename));
+	context->ass->SetScriptInfo("Video File", MakeRelativePath(videoName, context->ass->filename));
+	context->ass->SetScriptInfo("Video Aspect Ratio", ar);
+	context->ass->SetScriptInfo("Video Position", wxString::Format("%d", frame_n));
+	context->ass->SetScriptInfo("VFR File", MakeRelativePath(GetTimecodesName(), context->ass->filename));
+	context->ass->SetScriptInfo("Keyframes File", MakeRelativePath(GetKeyFramesName(), context->ass->filename));
 }
 
 void VideoContext::JumpToFrame(int n) {
@@ -327,7 +328,7 @@ void VideoContext::SaveSnapshot(bool raw) {
 }
 
 void VideoContext::GetScriptSize(int &sw,int &sh) {
-	grid->ass->GetResolution(sw,sh);
+	context->ass->GetResolution(sw,sh);
 }
 
 void VideoContext::NextFrame() {
@@ -337,9 +338,9 @@ void VideoContext::NextFrame() {
 	JumpToFrame(frame_n + 1);
 	// Start playing audio
 	if (playAudioOnStep->GetBool()) {
-		audio->PlayRange(SampleRange(
-			audio->SamplesFromMilliseconds(TimeAtFrame(frame_n - 1)),
-			audio->SamplesFromMilliseconds(TimeAtFrame(frame_n))));
+		context->audioController->PlayRange(SampleRange(
+			context->audioController->SamplesFromMilliseconds(TimeAtFrame(frame_n - 1)),
+			context->audioController->SamplesFromMilliseconds(TimeAtFrame(frame_n))));
 	}
 }
 
@@ -350,9 +351,9 @@ void VideoContext::PrevFrame() {
 	JumpToFrame(frame_n - 1);
 	// Start playing audio
 	if (playAudioOnStep->GetBool()) {
-		audio->PlayRange(SampleRange(
-			audio->SamplesFromMilliseconds(TimeAtFrame(frame_n)),
-			audio->SamplesFromMilliseconds(TimeAtFrame(frame_n + 1))));
+		context->audioController->PlayRange(SampleRange(
+			context->audioController->SamplesFromMilliseconds(TimeAtFrame(frame_n)),
+			context->audioController->SamplesFromMilliseconds(TimeAtFrame(frame_n + 1))));
 	}
 }
 
@@ -367,7 +368,7 @@ void VideoContext::Play() {
 	endFrame = -1;
 
 	// Start playing audio
-	audio->PlayToEnd(audio->SamplesFromMilliseconds(TimeAtFrame(startFrame)));
+	context->audioController->PlayToEnd(context->audioController->SamplesFromMilliseconds(TimeAtFrame(startFrame)));
 
 	//audio->Play will override this if we put it before, so put it after.
 	isPlaying = true;
@@ -379,18 +380,18 @@ void VideoContext::Play() {
 }
 
 void VideoContext::PlayLine() {
-	AssDialogue *curline = grid->GetActiveLine();
+	AssDialogue *curline = context->selectionController->GetActiveLine();
 	if (!curline) return;
 
 	// Start playing audio
-	audio->PlayRange(SampleRange(
-		audio->SamplesFromMilliseconds(curline->Start.GetMS()),
-		audio->SamplesFromMilliseconds(curline->End.GetMS())));
+	context->audioController->PlayRange(SampleRange(
+		context->audioController->SamplesFromMilliseconds(curline->Start.GetMS()),
+		context->audioController->SamplesFromMilliseconds(curline->End.GetMS())));
 
 	// Set variables
 	isPlaying = true;
-	startFrame = FrameAtTime(grid->GetActiveLine()->Start.GetMS(),agi::vfr::START);
-	endFrame = FrameAtTime(grid->GetActiveLine()->End.GetMS(),agi::vfr::END);
+	startFrame = FrameAtTime(context->selectionController->GetActiveLine()->Start.GetMS(),agi::vfr::START);
+	endFrame = FrameAtTime(context->selectionController->GetActiveLine()->End.GetMS(),agi::vfr::END);
 
 	// Jump to start
 	playNextFrame = startFrame;
@@ -408,7 +409,7 @@ void VideoContext::Stop() {
 	if (isPlaying) {
 		playback.Stop();
 		isPlaying = false;
-		audio->Stop();
+		context->audioController->Stop();
 	}
 }
 
@@ -444,8 +445,8 @@ void VideoContext::OnPlayTimer(wxTimerEvent &event) {
 	if (nextFrame == frame_n) return;
 
 	// Next frame is before or over 2 frames ahead, so force audio resync
-	if (audio->IsPlaying() && keepAudioSync && (nextFrame < frame_n || nextFrame > frame_n + 2)) {
-		audio->ResyncPlaybackPosition(audio->SamplesFromMilliseconds(TimeAtFrame(nextFrame)));
+	if (context->audioController->IsPlaying() && keepAudioSync && (nextFrame < frame_n || nextFrame > frame_n + 2)) {
+		context->audioController->ResyncPlaybackPosition(context->audioController->SamplesFromMilliseconds(TimeAtFrame(nextFrame)));
 	}
 
 	// Jump to next frame
@@ -454,18 +455,18 @@ void VideoContext::OnPlayTimer(wxTimerEvent &event) {
 	JumpToFrame(nextFrame);
 
 	// Sync audio
-	if (keepAudioSync && nextFrame % 10 == 0 && audio->IsPlaying()) {
-		int64_t audPos = audio->SamplesFromMilliseconds(TimeAtFrame(nextFrame));
-		int64_t curPos = audio->GetPlaybackPosition();
+	if (keepAudioSync && nextFrame % 10 == 0 && context->audioController->IsPlaying()) {
+		int64_t audPos = context->audioController->SamplesFromMilliseconds(TimeAtFrame(nextFrame));
+		int64_t curPos = context->audioController->GetPlaybackPosition();
 		int delta = int(audPos-curPos);
 		if (delta < 0) delta = -delta;
-		int maxDelta = audio->SamplesFromMilliseconds(1000);
-		if (delta > maxDelta) audio->ResyncPlaybackPosition(audPos);
+		int maxDelta = context->audioController->SamplesFromMilliseconds(1000);
+		if (delta > maxDelta) context->audioController->ResyncPlaybackPosition(audPos);
 	}
 }
 
 double VideoContext::GetARFromType(int type) const {
-	if (type == 0) return (double)VideoContext::Get()->GetWidth()/(double)VideoContext::Get()->GetHeight();
+	if (type == 0) return (double)GetWidth()/(double)GetHeight();
 	if (type == 1) return 4.0/3.0;
 	if (type == 2) return 16.0/9.0;
 	if (type == 3) return 2.35;

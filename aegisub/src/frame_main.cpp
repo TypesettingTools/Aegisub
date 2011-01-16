@@ -144,7 +144,6 @@ FrameMain::FrameMain (wxArrayString args)
 	context->selectionController = 0;
 
 	context->videoController = VideoContext::Get(); // derp
-	context->videoController->audio = context->audioController;
 	context->videoController->AddVideoOpenListener(&FrameMain::OnVideoOpen, this);
 
 	StartupLog("Initializing context frames");
@@ -192,6 +191,9 @@ FrameMain::FrameMain (wxArrayString args)
 	context->detachedVideo = 0;
 	context->stylingAssistant = 0;
 	InitContents();
+
+	StartupLog("Complete context initialization");
+	context->videoController->SetContext(context.get());
 
 	StartupLog("Set up Auto Save");
 	AutoSave.SetOwner(this, ID_APP_TIMER_AUTOSAVE);
@@ -290,7 +292,7 @@ void FrameMain::InitContents() {
 	Panel = new wxPanel(this,-1,wxDefaultPosition,wxDefaultSize,wxTAB_TRAVERSAL | wxCLIP_CHILDREN);
 
 	StartupLog("Create video box");
-	context->videoBox = videoBox = new VideoBox(Panel, false, ZoomBox, context->ass);
+	context->videoBox = videoBox = new VideoBox(Panel, false, ZoomBox, context.get());
 	wxBoxSizer *videoSizer = new wxBoxSizer(wxVERTICAL);
 	videoSizer->Add(videoBox , 0, wxEXPAND);
 	videoSizer->AddStretchSpacer(1);
@@ -299,7 +301,6 @@ void FrameMain::InitContents() {
 	context->subsGrid = SubsGrid = new SubtitlesGrid(this,Panel,-1,context->ass,wxDefaultPosition,wxSize(600,100),wxWANTS_CHARS | wxSUNKEN_BORDER,"Subs grid");
 	context->selectionController = context->subsGrid;
 	context->videoBox->videoSlider->grid = SubsGrid;
-	context->videoController->grid = SubsGrid;
 	Search.grid = SubsGrid;
 
 	StartupLog("Create tool area splitter window");
@@ -350,7 +351,6 @@ void FrameMain::DeInitContents() {
 	delete videoBox;
 	delete context->ass;
 	HelpButton::ClearPages();
-	context->videoController->audio = 0;
 }
 
 /// @brief Update toolbar 
@@ -650,7 +650,7 @@ void FrameMain::OpenHelp(wxString) {
 void FrameMain::DetachVideo(bool detach) {
 	if (detach) {
 		if (!context->detachedVideo) {
-			context->detachedVideo = new DialogDetachedVideo(this, videoBox->videoDisplay->GetClientSize());
+			context->detachedVideo = new DialogDetachedVideo(this, context.get(), videoBox->videoDisplay->GetClientSize());
 			context->detachedVideo->Show();
 		}
 	}

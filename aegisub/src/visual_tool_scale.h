@@ -56,5 +56,5 @@ class VisualToolScale : public VisualTool<VisualDraggableFeature> {
 	void DoRefresh();
 	void Draw();
 public:
-	VisualToolScale(VideoDisplay *parent, VideoState const& video, wxToolBar *);
+	VisualToolScale(VideoDisplay *parent, agi::Context *context, VideoState const& video, wxToolBar *);
 };

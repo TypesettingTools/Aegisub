@@ -54,8 +54,8 @@ static const DraggableFeatureType DRAG_END = DRAG_BIG_CIRCLE;
 /// @brief Constructor 
 /// @param _parent 
 /// @param toolBar 
-VisualToolDrag::VisualToolDrag(VideoDisplay *parent, VideoState const& video, wxToolBar * toolBar)
-: VisualTool<VisualToolDragDraggableFeature>(parent, video)
+VisualToolDrag::VisualToolDrag(VideoDisplay *parent, agi::Context *context, VideoState const& video, wxToolBar * toolBar)
+: VisualTool<VisualToolDragDraggableFeature>(parent, context, video)
 , toolBar(toolBar)
 , primary(NULL)
 , toggleMoveOnMove(true)
