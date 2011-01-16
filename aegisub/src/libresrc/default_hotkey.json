@@ -83,7 +83,7 @@
 	"Default" : {
 		"app/exit" : [
 			{
-				"modifiers" : [ "C" ],
+				"modifiers" : [ "Ctrl" ],
 				"key" : "Q",
 				"enable" : true
 			}
@@ -245,29 +245,29 @@
 		],
 		"edit/redo" : [
 			{
-				"modifiers" : [ "Ctrl", "Shift" ],
-				"key" : "V",
+				"modifiers" : [ "Ctrl" ],
+				"key" : "Y",
 				"enable" : true
 			}
 		],
 		"edit/undo" : [
 			{
 				"modifiers" : [ "Ctrl" ],
-				"key" : "Y",
+				"key" : "Z",
 				"enable" : true
 			}
 		],
 		"grid/line/next" : [
 			{
 				"modifiers" : [ "Ctrl" ],
-				"key" : "KP_8",
+				"key" : "KP_2",
 				"enable" : true
 			}
 		],
 		"grid/line/prev" : [
 			{
 				"modifiers" : [ "Ctrl" ],
-				"key" : "KP_2",
+				"key" : "KP_8",
 				"enable" : true
 			}
 		],
