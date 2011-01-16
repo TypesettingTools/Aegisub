@@ -69,10 +69,10 @@ class AudioMarkerDialogueTiming : public AudioMarker {
 
 public:
 	// AudioMarker interface
-	virtual int64_t GetPosition() const { return position; }
-	virtual wxPen GetStyle() const { return style; }
-	virtual FeetStyle GetFeet() const { return feet; }
-	virtual bool CanSnap() const { return true; }
+	int64_t GetPosition() const { return position; }
+	wxPen GetStyle() const { return style; }
+	FeetStyle GetFeet() const { return feet; }
+	bool CanSnap() const { return true; }
 
 public:
 	// Specific interface
@@ -159,36 +159,36 @@ class AudioTimingControllerDialogue : public AudioTimingController, private Sele
 	AssFile *ass;
 
 	// SubtitleSelectionListener interface
-	virtual void OnActiveLineChanged(AssDialogue *new_line);
-	virtual void OnSelectedSetChanged(const Selection &lines_added, const Selection &lines_removed);
+	void OnActiveLineChanged(AssDialogue *new_line);
+	void OnSelectedSetChanged(const Selection &lines_added, const Selection &lines_removed);
 
 	// AssFile events
 	void OnFileChanged(int type);
 
 public:
 	// AudioMarkerProvider interface
-	virtual void GetMarkers(const SampleRange &range, AudioMarkerVector &out_markers) const;
+	void GetMarkers(const SampleRange &range, AudioMarkerVector &out_markers) const;
 
 	// AudioTimingController interface
-	virtual wxString GetWarningMessage() const;
-	virtual SampleRange GetIdealVisibleSampleRange() const;
-	virtual SampleRange GetPrimaryPlaybackRange() const;
-	virtual bool HasLabels() const;
-	virtual void Next();
-	virtual void Prev();
-	virtual void Commit();
-	virtual void Revert();
-	virtual bool IsNearbyMarker(int64_t sample, int sensitivity) const;
-	virtual AudioMarker * OnLeftClick(int64_t sample, int sensitivity);
-	virtual AudioMarker * OnRightClick(int64_t sample, int sensitivity);
-	virtual void OnMarkerDrag(AudioMarker *marker, int64_t new_position);
+	wxString GetWarningMessage() const;
+	SampleRange GetIdealVisibleSampleRange() const;
+	SampleRange GetPrimaryPlaybackRange() const;
+	bool HasLabels() const;
+	void Next();
+	void Prev();
+	void Commit();
+	void Revert();
+	bool IsNearbyMarker(int64_t sample, int sensitivity) const;
+	AudioMarker * OnLeftClick(int64_t sample, int sensitivity);
+	AudioMarker * OnRightClick(int64_t sample, int sensitivity);
+	void OnMarkerDrag(AudioMarker *marker, int64_t new_position);
 
 public:
 	// Specific interface
 
 	/// @brief Constructor
 	AudioTimingControllerDialogue(AudioController *audio_controller, SelectionController<AssDialogue> *selection_controller, AssFile *ass);
-	virtual ~AudioTimingControllerDialogue();
+	~AudioTimingControllerDialogue();
 };
 
 
