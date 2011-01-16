@@ -199,7 +199,8 @@ void VideoContext::SetVideo(const wxString &filename) {
 		}
 
 		provider->LoadSubtitles(grid->ass);
-		grid->ass->AddCommitListener(&VideoContext::SubtitlesChanged, this);
+		grid->ass->AddCommitListener(&VideoContext::OnSubtitlesCommit, this);
+		grid->ass->AddCommitListener(&VideoContext::OnSubtitlesSave, this);
 		VideoOpen();
 		KeyframesOpen(keyFrames);
 		TimecodesOpen(FPS());
@@ -222,7 +223,7 @@ void VideoContext::Reload() {
 	}
 }
 
-void VideoContext::SubtitlesChanged() {
+void VideoContext::OnSubtitlesCommit() {
 	if (!IsLoaded()) return;
 
 	bool wasPlaying = isPlaying;
@@ -232,6 +233,29 @@ void VideoContext::SubtitlesChanged() {
 	GetFrameAsync(frame_n);
 
 	if (wasPlaying) Play();
+}
+
+void VideoContext::OnSubtitlesSave() {
+	if (!IsLoaded()) {
+		grid->ass->SetScriptInfo("Video File", "");
+		grid->ass->SetScriptInfo("Video Aspect Ratio", "");
+		grid->ass->SetScriptInfo("Video Position", "");
+		grid->ass->SetScriptInfo("VFR File", "");
+		grid->ass->SetScriptInfo("Keyframes File", "");
+		return;
+	}
+
+	wxString ar;
+	if (arType == 4)
+		ar = wxString::Format("c%g", arValue);
+	else
+		ar = wxString::Format("%d", arType);
+
+	grid->ass->SetScriptInfo("Video File", MakeRelativePath(videoName, grid->ass->filename));
+	grid->ass->SetScriptInfo("Video Aspect Ratio", ar);
+	grid->ass->SetScriptInfo("Video Position", wxString::Format("%d", frame_n));
+	grid->ass->SetScriptInfo("VFR File", MakeRelativePath(GetTimecodesName(), grid->ass->filename));
+	grid->ass->SetScriptInfo("Keyframes File", MakeRelativePath(GetKeyFramesName(), grid->ass->filename));
 }
 
 void VideoContext::JumpToFrame(int n) {
@@ -466,7 +490,7 @@ void VideoContext::LoadKeyframes(wxString filename) {
 		if (kf.second != 0.) {
 			ovrFPS = agi::vfr::Framerate(kf.second);
 			ovrTimecodeFile.clear();
-			SubtitlesChanged();
+			OnSubtitlesCommit();
 			TimecodesOpen(ovrFPS);
 		}
 		config::mru->Add("Keyframes", STD_STR(filename));
@@ -503,7 +527,7 @@ void VideoContext::LoadTimecodes(wxString filename) {
 		ovrFPS = agi::vfr::Framerate(STD_STR(filename));
 		ovrTimecodeFile = filename;
 		config::mru->Add("Timecodes", STD_STR(filename));
-		SubtitlesChanged();
+		OnSubtitlesCommit();
 		TimecodesOpen(ovrFPS);
 	}
 	catch (const agi::acs::AcsError&) {
@@ -526,7 +550,7 @@ void VideoContext::SaveTimecodes(wxString filename) {
 void VideoContext::CloseTimecodes() {
 	ovrFPS = agi::vfr::Framerate();
 	ovrTimecodeFile.clear();
-	SubtitlesChanged();
+	OnSubtitlesCommit();
 	TimecodesOpen(videoFPS);
 }
 

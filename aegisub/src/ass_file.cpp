@@ -172,34 +172,23 @@ void AssFile::Load(const wxString &_filename,wxString charset,bool addToRecent) 
 	FileOpen(filename);
 }
 
-void AssFile::Save(wxString _filename,bool setfilename,bool addToRecent,const wxString encoding) {
-	// Finds last dot
-	int i = 0;
-	for (i=(int)_filename.size();--i>=0;) {
-		if (_filename[i] == '.') break;
-	}
-	wxString extension = _filename.substr(i+1);
-	extension.Lower();
+void AssFile::Save(wxString filename, bool setfilename, bool addToRecent, wxString encoding) {
+	SubtitleFormat *writer = SubtitleFormat::GetWriter(filename);
+	if (!writer)
+		throw "Unknown file type.";
 
-	// Get writer
-	SubtitleFormat *writer = SubtitleFormat::GetWriter(_filename);
-
-	// Write file
-	if (writer) {
-		writer->SetTarget(this);
-		writer->WriteFile(_filename,encoding);
-	}
-
-	// Couldn't find a type
-	else throw _T("Unknown file type.");
-
-	// Add to recent
-	if (addToRecent) AddToRecent(_filename);
-
-	// Done
 	if (setfilename) {
 		savedCommitId = commitId;
-		filename = _filename;
+		filename = filename;
+	}
+
+	FileSave();
+
+	writer->SetTarget(this);
+	writer->WriteFile(filename, encoding);
+
+	if (addToRecent) {
+		AddToRecent(filename);
 	}
 }
 
@@ -776,6 +765,8 @@ AssStyle *AssFile::GetStyle(wxString name) {
 
 void AssFile::AddToRecent(wxString file) {
 	config::mru->Add("Subtitle", STD_STR(file));
+	wxFileName filepath(file);
+	OPT_SET("Path/Last/Subtitles")->SetString(STD_STR(filepath.GetPath()));
 }
 
 wxString AssFile::GetWildcardList(int mode) {

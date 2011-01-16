@@ -109,8 +109,6 @@ public:
 	SubtitlesGrid(FrameMain* parentFrame,wxWindow *parent, wxWindowID id, AssFile *subs, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = wxWANTS_CHARS, const wxString& name = wxPanelNameStr);
 	~SubtitlesGrid();
 
-	void LoadDefault();
-
 	/// @brief Jump to the start/end time of the current subtitle line
 	/// @param start Start vs. End time
 	void SetVideoToSubs(bool start);

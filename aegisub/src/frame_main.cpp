@@ -210,8 +210,6 @@ FrameMain::FrameMain (wxArrayString args)
 	SetDropTarget(new AegisubFileDropTarget(this));
 
 	// Parse arguments
-	StartupLog(_T("Initialize empty file"));
-	SubsGrid->LoadDefault();
 	StartupLog(_T("Load files specified on command line"));
 	LoadList(args);
 
@@ -458,57 +456,44 @@ void FrameMain::LoadSubtitles(wxString filename,wxString charset) {
 /// @param saveas      
 /// @param withCharset 
 /// @return 
-bool FrameMain::SaveSubtitles(bool saveas,bool withCharset) {
-	// Try to get filename from file
+bool FrameMain::SaveSubtitles(bool saveas, bool withCharset) {
 	wxString filename;
-	if (saveas == false && ass->CanSave()) filename = ass->filename;
+	if (!saveas && ass->CanSave()) {
+		filename = ass->filename;
+	}
 
-	// Failed, ask user
-	if (filename.IsEmpty()) {
+	if (filename.empty()) {
 		temp_context->videoContext->Stop();
 		wxString path = lagi_wxString(OPT_GET("Path/Last/Subtitles")->GetString());
 		wxFileName origPath(ass->filename);
-		filename =  wxFileSelector(_("Save subtitles file"),path,origPath.GetName() + _T(".ass"),_T("ass"),AssFile::GetWildcardList(1),wxFD_SAVE | wxFD_OVERWRITE_PROMPT,this);
+		filename =  wxFileSelector(_("Save subtitles file"), path, origPath.GetName() + ".ass", "ass", AssFile::GetWildcardList(1), wxFD_SAVE | wxFD_OVERWRITE_PROMPT, this);
+	}
+	if (filename.empty()) {
+		return false;
 	}
 
-	// Actually save
-	if (!filename.empty()) {
-		// Store path
-		wxFileName filepath(filename);
-		OPT_SET("Path/Last/Subtitles")->SetString(STD_STR(filepath.GetPath()));
-
-		// Fix me, ghetto hack for correct relative path generation in SynchronizeProject()
-		ass->filename = filename;
-
-		// Synchronize
-		SynchronizeProject();
-
-		// Get charset
-		wxString charset = _T("");
-		if (withCharset) {
-			charset = wxGetSingleChoice(_("Choose charset code:"), _T("Charset"),agi::charset::GetEncodingsList<wxArrayString>(),this,-1, -1,true,250,200);
-			if (charset.IsEmpty()) return false;
-		}
-
-		// Save
-		try {
-			ass->Save(filename,true,true,charset);
-		}
-		catch (const agi::Exception& err) {
-			wxMessageBox(lagi_wxString(err.GetMessage()), "Error", wxOK | wxICON_ERROR, NULL);
-			return false;
-		}
-		catch (const wchar_t *err) {
-			wxMessageBox(wxString(err), _T("Error"), wxOK | wxICON_ERROR, NULL);
-			return false;
-		}
-		catch (...) {
-			wxMessageBox(_T("Unknown error"), _T("Error"), wxOK | wxICON_ERROR, NULL);
-			return false;
-		}
-		return true;
+	wxString charset;
+	if (withCharset) {
+		charset = wxGetSingleChoice(_("Choose charset code:"), "Charset", agi::charset::GetEncodingsList<wxArrayString>(),this,-1, -1,true,250,200);
+		if (charset.empty()) return false;
 	}
-	return false;
+
+	try {
+		ass->Save(filename, true, true, charset);
+	}
+	catch (const agi::Exception& err) {
+		wxMessageBox(lagi_wxString(err.GetMessage()), "Error", wxOK | wxICON_ERROR, NULL);
+		return false;
+	}
+	catch (const wchar_t *err) {
+		wxMessageBox(wxString(err), _T("Error"), wxOK | wxICON_ERROR, NULL);
+		return false;
+	}
+	catch (...) {
+		wxMessageBox(_T("Unknown error"), _T("Error"), wxOK | wxICON_ERROR, NULL);
+		return false;
+	}
+	return true;
 }
 
 /// @brief Try to close subtitles 
@@ -627,41 +612,6 @@ void FrameMain::SynchronizeProject() {
 	ass->SetScriptInfo(_T("Video Position"),seekpos);
 	ass->SetScriptInfo(_T("VFR File"),MakeRelativePath(temp_context->videoContext->GetTimecodesName(),ass->filename));
 	ass->SetScriptInfo(_T("Keyframes File"),MakeRelativePath(temp_context->videoContext->GetKeyFramesName(),ass->filename));
-
-	// Store Automation script data
-	// Algorithm:
-	// 1. If script filename has Automation Base Path as a prefix, the path is relative to that (ie. "$")
-	// 2. Otherwise try making it relative to the ass filename
-	// 3. If step 2 failed, or absolut path is shorter than path relative to ass, use absolute path ("/")
-	// 4. Otherwise, use path relative to ass ("~")
-#ifdef WITH_AUTOMATION
-	wxString scripts_string;
-	wxString autobasefn(lagi_wxString(OPT_GET("Path/Automation/Base")->GetString()));
-
-	const std::vector<Automation4::Script*> &scripts = local_scripts->GetScripts();
-	for (unsigned int i = 0; i < scripts.size(); i++) {
-		Automation4::Script *script = scripts[i];
-
-		if (i != 0)
-			scripts_string += _T("|");
-
-		wxString autobase_rel, assfile_rel;
-		wxString scriptfn(script->GetFilename());
-		autobase_rel = MakeRelativePath(scriptfn, autobasefn);
-		assfile_rel = MakeRelativePath(scriptfn, ass->filename);
-
-		if (autobase_rel.size() <= scriptfn.size() && autobase_rel.size() <= assfile_rel.size()) {
-			scriptfn = _T("$") + autobase_rel;
-		} else if (assfile_rel.size() <= scriptfn.size() && assfile_rel.size() <= autobase_rel.size()) {
-			scriptfn = _T("~") + assfile_rel;
-		} else {
-			scriptfn = _T("/") + wxFileName(scriptfn).GetFullPath(wxPATH_UNIX);
-		}
-
-		scripts_string += scriptfn;
-	}
-	ass->SetScriptInfo(_T("Automation Scripts"), scripts_string);
-#endif
 }
 
 void FrameMain::OnVideoOpen() {
@@ -1402,6 +1352,46 @@ void FrameMain::OnSubtitlesOpen() {
 
 	// Display
 	SetDisplayMode(1,1);
+}
+
+void FrameMain::OnSubtitlesSave() {
+	UpdateTitle();
+
+	// Store Automation script data
+	// Algorithm:
+	// 1. If script filename has Automation Base Path as a prefix, the path is relative to that (ie. "$")
+	// 2. Otherwise try making it relative to the ass filename
+	// 3. If step 2 failed, or absolute path is shorter than path relative to ass, use absolute path ("/")
+	// 4. Otherwise, use path relative to ass ("~")
+#ifdef WITH_AUTOMATION
+	wxString scripts_string;
+	wxString autobasefn(lagi_wxString(OPT_GET("Path/Automation/Base")->GetString()));
+
+	const std::vector<Automation4::Script*> &scripts = local_scripts->GetScripts();
+	for (unsigned int i = 0; i < scripts.size(); i++) {
+		Automation4::Script *script = scripts[i];
+
+		if (i != 0)
+			scripts_string += _T("|");
+
+		wxString autobase_rel, assfile_rel;
+		wxString scriptfn(script->GetFilename());
+		autobase_rel = MakeRelativePath(scriptfn, autobasefn);
+		assfile_rel = MakeRelativePath(scriptfn, ass->filename);
+
+		if (autobase_rel.size() <= scriptfn.size() && autobase_rel.size() <= assfile_rel.size()) {
+			scriptfn = _T("$") + autobase_rel;
+		} else if (assfile_rel.size() <= scriptfn.size() && assfile_rel.size() <= autobase_rel.size()) {
+			scriptfn = _T("~") + assfile_rel;
+		} else {
+			scriptfn = _T("/") + wxFileName(scriptfn).GetFullPath(wxPATH_UNIX);
+		}
+
+		scripts_string += scriptfn;
+	}
+	ass->SetScriptInfo(_T("Automation Scripts"), scripts_string);
+#endif
+
 }
 
 void FrameMain::OnKeyDown(wxKeyEvent &event) {

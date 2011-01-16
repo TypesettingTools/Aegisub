@@ -175,6 +175,7 @@ private:
 
 	void OnSubtitlesCommit();
 	void OnSubtitlesOpen();
+	void OnSubtitlesSave();
 
 public:
 

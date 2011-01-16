@@ -752,17 +752,6 @@ void SubtitlesGrid::OnAudioClip(wxCommandEvent &) {
 	}
 }
 
-/// @brief Clears grid and sets it to default 
-/// @param _ass 
-void SubtitlesGrid::LoadDefault () {
-	ass->LoadDefault();
-	ClearMaps();
-	UpdateMaps();
-
-	SetActiveLine(GetDialogue(0));
-	SelectRow(0);
-}
-
 /// @brief Swaps two lines 
 /// @param n1 
 /// @param n2 

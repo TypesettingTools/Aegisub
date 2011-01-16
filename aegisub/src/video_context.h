@@ -155,6 +155,9 @@ private:
 	void OnVideoError(VideoProviderErrorEvent const& err);
 	void OnSubtitlesError(SubtitlesProviderErrorEvent const& err);
 
+	void OnSubtitlesCommit();
+	void OnSubtitlesSave();
+
 public:
 	/// DOCME
 	SubtitlesGrid *grid;
@@ -232,9 +235,6 @@ public:
 	/// @param ms Time to jump to in milliseconds
 	/// @param end Type of time
 	void JumpToTime(int ms, agi::vfr::Time end = agi::vfr::START);
-
-	/// @brief Refresh the subtitle provider
-	void SubtitlesChanged();
 
 	/// @brief Get the height and width of the current script
 	/// @param[out] w Width

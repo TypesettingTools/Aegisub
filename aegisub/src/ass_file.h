@@ -72,8 +72,14 @@ class AssFile {
 	/// Last saved version of this file
 	int savedCommitId;
 
+	/// A set of changes has been committed to the file (AssFile::CommitType)
 	agi::signal::Signal<int> AnnounceCommit;
+	/// A new file has been opened (filename)
 	agi::signal::Signal<wxString> FileOpen;
+	/// The file is about to be saved
+	/// This signal is intended for adding metadata such as video filename,
+	/// frame number, etc. Ideally this would all be done immediately rather
+	/// than waiting for a save, but that causes (more) issues with undo
 	agi::signal::Signal<> FileSave;
 
 public:
