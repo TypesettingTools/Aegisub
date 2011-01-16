@@ -83,8 +83,5 @@ public:
 	VideoSlider(wxWindow* parent, wxWindowID id);
 	~VideoSlider();
 
-	void NextFrame();
-	void PrevFrame();
-
 	DECLARE_EVENT_TABLE()
 };

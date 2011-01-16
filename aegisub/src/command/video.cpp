@@ -250,7 +250,7 @@ struct video_frame_next : public Command {
 	STR_HELP("Seek to the next frame.")
 
 	void operator()(agi::Context *c) {
-		c->videoBox->videoSlider->NextFrame();
+		c->videoContext->NextFrame();
 	}
 };
 
@@ -276,7 +276,7 @@ struct video_frame_prev : public Command {
 	STR_HELP("Seek to the previous frame.")
 
 	void operator()(agi::Context *c) {
-		c->videoBox->videoSlider->PrevFrame();
+		c->videoContext->PrevFrame();
 	}
 };
 

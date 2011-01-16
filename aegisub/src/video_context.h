@@ -246,9 +246,9 @@ public:
 	/// Starting playing the video
 	void Play();
 	/// Play the next frame then stop
-	void PlayNextFrame();
+	void NextFrame();
 	/// Play the previous frame then stop
-	void PlayPrevFrame();
+	void PrevFrame();
 	/// Seek to the beginning of the current line, then play to the end of it
 	void PlayLine();
 	/// Stop playing

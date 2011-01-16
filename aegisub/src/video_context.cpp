@@ -303,31 +303,29 @@ void VideoContext::GetScriptSize(int &sw,int &sh) {
 	grid->ass->GetResolution(sw,sh);
 }
 
-void VideoContext::PlayNextFrame() {
-	if (isPlaying)
+void VideoContext::NextFrame() {
+	if (!videoProvider.get() || isPlaying || frame_n == videoProvider->GetFrameCount())
 		return;
 
-	int thisFrame = frame_n;
 	JumpToFrame(frame_n + 1);
 	// Start playing audio
 	if (playAudioOnStep->GetBool()) {
 		audio->PlayRange(SampleRange(
-			audio->SamplesFromMilliseconds(TimeAtFrame(thisFrame)),
-			audio->SamplesFromMilliseconds(TimeAtFrame(thisFrame + 1))));
+			audio->SamplesFromMilliseconds(TimeAtFrame(frame_n - 1)),
+			audio->SamplesFromMilliseconds(TimeAtFrame(frame_n))));
 	}
 }
 
-void VideoContext::PlayPrevFrame() {
-	if (isPlaying)
+void VideoContext::PrevFrame() {
+	if (!videoProvider.get() || isPlaying || frame_n == 0)
 		return;
 
-	int thisFrame = frame_n;
-	JumpToFrame(frame_n -1);
+	JumpToFrame(frame_n - 1);
 	// Start playing audio
 	if (playAudioOnStep->GetBool()) {
 		audio->PlayRange(SampleRange(
-			audio->SamplesFromMilliseconds(TimeAtFrame(thisFrame - 1)),
-			audio->SamplesFromMilliseconds(TimeAtFrame(thisFrame))));
+			audio->SamplesFromMilliseconds(TimeAtFrame(frame_n)),
+			audio->SamplesFromMilliseconds(TimeAtFrame(frame_n + 1))));
 	}
 }
 

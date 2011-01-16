@@ -138,34 +138,6 @@ int VideoSlider::GetXAtValue(int value) {
 	return (int64_t)value*(int64_t)(w-10)/(int64_t)max+5;
 }
 
-
-
-/// @brief Next frame hotkey 
-/// @return 
-///
-void VideoSlider::NextFrame() {
-	if (VideoContext::Get()->IsPlaying()) return;
-
-	//don't request out of range frames
-	if (val < max) VideoContext::Get()->PlayNextFrame();
-	Refresh(false);
-	Update();
-}
-
-
-
-/// @brief Previous frame hotkey 
-/// @return 
-///
-void VideoSlider::PrevFrame() {
-	if (VideoContext::Get()->IsPlaying()) return;
-
-	//don't request out of range frames
-	if (val > 0) VideoContext::Get()->PlayPrevFrame();
-	Refresh(false);
-	Update();
-}
-
 BEGIN_EVENT_TABLE(VideoSlider, wxWindow)
 	EVT_MOUSE_EVENTS(VideoSlider::OnMouse)
 	EVT_KEY_DOWN(VideoSlider::OnKeyDown)
@@ -276,8 +248,8 @@ void VideoSlider::OnKeyDown(wxKeyEvent &event) {
 	if (direction) {
 		// Standard move
 		if (!ctrl && !shift && !alt) {
-			if (direction == 1) NextFrame();
-			else PrevFrame();
+			if (direction == 1) VideoContext::Get()->NextFrame();
+			else VideoContext::Get()->PrevFrame();
 			return;
 		}
 
