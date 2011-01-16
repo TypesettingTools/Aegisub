@@ -82,8 +82,6 @@ enum SubMenuID {
 /// DOCME
 class FrameMain: public wxFrame {
 	friend class AegisubFileDropTarget;
-	friend class AegisubApp;
-	friend class SubtitlesGrid;
 
 public:
 	void StatusTimeout(wxString text,int ms=10000);
