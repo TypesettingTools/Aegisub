@@ -95,105 +95,6 @@
 				"enable" : true
 			}
 		],
-		"audio play" : [
-			{
-				"modifiers" : [],
-				"key" : "Space",
-				"enable" : true
-			},
-			{
-				"modifiers" : [],
-				"key" : "S",
-				"enable" : true
-			}
-		],
-		"audio play after selection end" : [
-			{
-				"modifiers" : [],
-				"key" : "W",
-				"enable" : true
-			}
-		],
-		"audio play before selection begin" : [
-			{
-				"modifiers" : [],
-				"key" : "Q",
-				"enable" : true
-			}
-		],
-		"audio play toggle" : [
-			{
-				"modifiers" : [],
-				"key" : "B",
-				"enable" : true
-			}
-		],
-		"audio play selection begin" : [
-			{
-				"modifiers" : [],
-				"key" : "E",
-				"enable" : true
-			}
-		],
-		"audio play selection end" : [
-			{
-				"modifiers" : [],
-				"key" : "D",
-				"enable" : true
-			}
-		],
-		"audio play to end" : [
-			{
-				"modifiers" : [],
-				"key" : "T",
-				"enable" : true
-			}
-		],
-		"audio scroll left" : [
-			{
-				"modifiers" : [],
-				"key" : "A",
-				"enable" : true
-			}
-		],
-		"audio scroll right" : [
-			{
-				"modifiers" : [],
-				"key" : "F",
-				"enable" : true
-			}
-		],
-		"audio stop" : [
-			{
-				"modifiers" : [],
-				"key" : "H",
-				"enable" : true
-			}
-		],
-		"commit" : [
-			{
-				"modifiers" : [],
-				"key" : "Enter",
-				"enable" : true
-			},
-			{
-				"modifiers" : [],
-				"key" : "G",
-				"enable" : true
-			}
-		],
-		"commit and stay" : [
-			{
-				"modifiers" : [ "Ctrl" ],
-				"key" : "Enter",
-				"enable" : true
-			},
-			{
-				"modifiers" : [],
-				"key" : "F8",
-				"enable" : true
-			}
-		],
 		"edit/copy" : [
 			{
 				"modifiers" : [ "Ctrl" ],
@@ -367,69 +268,6 @@
 				"enable" : true
 			}
 		],
-		"timing add lead in" : [
-			{
-				"modifiers" : [],
-				"key" : "C",
-				"enable" : true
-			}
-		],
-		"timing add lead out" : [
-			{
-				"modifiers" : [],
-				"key" : "V",
-				"enable" : true
-			}
-		],
-		"timing karaoke decrease length" : [
-			{
-				"modifiers" : [],
-				"key" : "KP_Subtract",
-				"enable" : true
-			}
-		],
-		"timing karaoke decrease length and shift following" : [
-			{
-				"modifiers" : [ "Shift" ],
-				"key" : "KP_Subtract",
-				"enable" : true
-			}
-		],
-		"timing karaoke increase length" : [
-			{
-				"modifiers" : [],
-				"key" : "KP_Add",
-				"enable" : true
-			}
-		],
-		"timing karaoke increase length and shift following" : [
-			{
-				"modifiers" : [ "Shift" ],
-				"key" : "KP_Add",
-				"enable" : true
-			}
-		],
-		"timing move to next item" : [
-			{
-				"modifiers" : [],
-				"key" : "X",
-				"enable" : true
-			}
-		],
-		"timing move to prev item" : [
-			{
-				"modifiers" : [],
-				"key" : "Z",
-				"enable" : true
-			}
-		],
-		"toggle global timing mode" : [
-			{
-				"modifiers" : [ "Ctrl" ],
-				"key" : "KP_Multiply",
-				"enable" : true
-			}
-		],
 		"video/focus_seek" : [
 			{
 				"modifiers" : [ "Ctrl" ],
@@ -506,7 +344,153 @@
 	},
 
 	"Audio" : {
+		"audio play" : [
+			{
+				"modifiers" : [],
+				"key" : "Space",
+				"enable" : true
+			},
+			{
+				"modifiers" : [],
+				"key" : "S",
+				"enable" : true
+			}
+		],
+		"audio play after selection end" : [
+			{
+				"modifiers" : [],
+				"key" : "W",
+				"enable" : true
+			}
+		],
+		"audio play before selection begin" : [
+			{
+				"modifiers" : [],
+				"key" : "Q",
+				"enable" : true
+			}
+		],
+		"audio play toggle" : [
+			{
+				"modifiers" : [],
+				"key" : "B",
+				"enable" : true
+			}
+		],
+		"audio play selection begin" : [
+			{
+				"modifiers" : [],
+				"key" : "E",
+				"enable" : true
+			}
+		],
+		"audio play selection end" : [
+			{
+				"modifiers" : [],
+				"key" : "D",
+				"enable" : true
+			}
+		],
+		"audio play to end" : [
+			{
+				"modifiers" : [],
+				"key" : "T",
+				"enable" : true
+			}
+		],
+		"audio scroll left" : [
+			{
+				"modifiers" : [],
+				"key" : "A",
+				"enable" : true
+			}
+		],
+		"audio scroll right" : [
+			{
+				"modifiers" : [],
+				"key" : "F",
+				"enable" : true
+			}
+		],
+		"audio stop" : [
+			{
+				"modifiers" : [],
+				"key" : "H",
+				"enable" : true
+			}
+		],
+		"commit" : [
+			{
+				"modifiers" : [],
+				"key" : "Enter",
+				"enable" : true
+			},
+			{
+				"modifiers" : [],
+				"key" : "G",
+				"enable" : true
+			}
+		],
+		"commit and stay" : [
+			{
+				"modifiers" : [ "Ctrl" ],
+				"key" : "Enter",
+				"enable" : true
+			},
+			{
+				"modifiers" : [],
+				"key" : "F8",
+				"enable" : true
+			}
+		],
+		"timing add lead in" : [
+			{
+				"modifiers" : [],
+				"key" : "C",
+				"enable" : true
+			}
+		],
+		"timing add lead out" : [
+			{
+				"modifiers" : [],
+				"key" : "V",
+				"enable" : true
+			}
+		],
+		"timing karaoke decrease length" : [
+			{
+				"modifiers" : [],
+				"key" : "KP_Subtract",
+				"enable" : true
+			}
+		],
+		"timing karaoke decrease length and shift following" : [
+			{
+				"modifiers" : [ "Shift" ],
+				"key" : "KP_Subtract",
+				"enable" : true
+			}
+		],
+		"timing karaoke increase length" : [
+			{
+				"modifiers" : [],
+				"key" : "KP_Add",
+				"enable" : true
+			}
+		],
+		"timing karaoke increase length and shift following" : [
+			{
+				"modifiers" : [ "Shift" ],
+				"key" : "KP_Add",
+				"enable" : true
+			}
+		],
 		"timing move to next item" : [
+			{
+				"modifiers" : [],
+				"key" : "X",
+				"enable" : true
+			},
 			{
 				"modifiers" : [],
 				"key" : "Right",
@@ -516,10 +500,22 @@
 		"timing move to prev item" : [
 			{
 				"modifiers" : [],
+				"key" : "Z",
+				"enable" : true
+			},
+			{
+				"modifiers" : [],
 				"key" : "Left",
 				"enable" : true
 			}
-		]
+		],
+		"toggle global timing mode" : [
+			{
+				"modifiers" : [ "Ctrl" ],
+				"key" : "KP_Multiply",
+				"enable" : true
+			}
+		],
 	},
 
 	"Video" : {
