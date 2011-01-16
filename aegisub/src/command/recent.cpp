@@ -52,73 +52,11 @@ namespace cmd {
 /// @defgroup cmd-recent MRU (Most Recently Used) commands.
 /// @{
 
-
-/// Open recent audio.
-struct recent_audio : public Command {
-	CMD_NAME("recent/audio")
-	STR_MENU("Recent")
-	STR_DISP("Recent")
-	STR_HELP("Open recent audio.")
-
-	void operator()(agi::Context *c) {
-//		c->audioController->OpenAudio(lagi_wxString(config::mru->GetEntry("Audio", event.GetId()-cmd::id("recent/audio"))));
-	}
-};
-
-
-/// Recent keyframes.
-struct recent_keyframe : public Command {
-	CMD_NAME("recent/keyframe")
-	STR_MENU("Recent")
-	STR_DISP("Recent")
-	STR_HELP("Recent keyframes.")
-
-	void operator()(agi::Context *c) {
-//		c->videoContext->LoadKeyframes(lagi_wxString(config::mru->GetEntry("Keyframes", event.GetId()-cmd::id("recent/keyframe"))));
-	}
-};
-
-
-/// Recently opened subtitles.
-struct recent_subtitle : public Command {
-	CMD_NAME("recent/subtitle")
-	STR_MENU("Recent")
-	STR_DISP("Recent")
-	STR_HELP("Recently opened subtitles.")
-
-	void operator()(agi::Context *c) {
-//		int number = event.GetId()-cmd::id("recent/subtitle");
-//		wxGetApp().frame->LoadSubtitles(lagi_wxString(config::mru->GetEntry("Subtitle", number)));
-	}
-};
-
-
-/// Recent timecodes.
-struct recent_timecode : public Command {
-	CMD_NAME("recent/timecode")
-	STR_MENU("Recent")
-	STR_DISP("Recent")
-	STR_HELP("Recent timecodes.")
-
-	void operator()(agi::Context *c) {
-//		int number = event.GetId()-cmd::id("recent/timecode");
-//		wxGetApp().frame->LoadVFR(lagi_wxString(config::mru->GetEntry("Timecodes", number)));
-	}
-};
-
-
-/// Recently opened videos.
-struct recent_video : public Command {
-	CMD_NAME("recent/video")
-	STR_MENU("Recent")
-	STR_DISP("Recent")
-	STR_HELP("Recently opened videos.")
-
-	void operator()(agi::Context *c) {
-//		int number = event.GetId()-cmd::id("recent/video");
-//		wxGetApp().frame->LoadVideo(lagi_wxString(config::mru->GetEntry("Video", number)));
-	}
-};
+COMMAND_GROUP(recent_audio, "recent/audio", "Recent", "Recent", "Open recent audio.");
+COMMAND_GROUP(recent_keyframe, "recent/keyframe", "Recent", "Recent", "Open recent keyframes.");
+COMMAND_GROUP(recent_subtitle, "recent/subtitle", "Recent", "Recent", "Open recent subtitles.");
+COMMAND_GROUP(recent_timecode, "recent/timecode", "Recent", "Recent", "Open recent timecodes.");
+COMMAND_GROUP(recent_video, "recent/video", "Recent", "Recent", "Open recent video.");
 
 /// @}
 

@@ -39,6 +39,15 @@ DEFINE_SIMPLE_EXCEPTION_NOINNER(CommandIconInvalid, CommandError, "command/icon/
 #define STR_DISP(a) wxString StrDisplay() const { return a; }
 #define STR_HELP(a) wxString StrHelp() const { return a; }
 
+#define COMMAND_GROUP(cname, cmdname, menu, disp, help) \
+struct cname : public Command {                         \
+	CMD_NAME(cmdname)                                   \
+	STR_MENU(menu)                                      \
+	STR_DISP(disp)                                      \
+	STR_HELP(help)                                      \
+	void operator()(agi::Context *) { }                 \
+}
+
 /// Commands
 namespace cmd {
 	class CommandManager;

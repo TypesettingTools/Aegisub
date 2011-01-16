@@ -47,197 +47,23 @@ namespace cmd {
 /// @defgroup cmd-menu Main menu dropdown and submenu related commands.
 /// @{
 
+COMMAND_GROUP(main_audio, "main/audio", "Audio", "Audio", "Audio manipulation.");
+COMMAND_GROUP(main_automation, "main/automation", "Automation", "Automation", "Automation manipulation and scripts.");
+COMMAND_GROUP(main_edit, "main/edit", "&Edit", "Edit", "Editing operations.");
+COMMAND_GROUP(main_edit_sort_lines, "main/edit/sort lines", "Sort lines", "Sort lines", "Sort lines by column.");
+COMMAND_GROUP(main_file, "main/file", "&File", "File", "Operations on subtitles.");
+COMMAND_GROUP(main_help, "main/help", "Help", "Help", "Help options.");
+COMMAND_GROUP(main_subtitle, "main/subtitle", "&Subtitle", "Subtitle", "Subtitle manipulation.");
+COMMAND_GROUP(main_subtitle_insert_lines, "main/subtitle/insert lines", "&Insert Lines", "Insert Lines", "Insert lines into currently active subtitle file.");
+COMMAND_GROUP(main_subtitle_sort_lines, "main/subtitle/sort lines", "Sort Lines", "Sort Lines", "Sort lines by column.");
+COMMAND_GROUP(main_subtitle_join_lines, "main/subtitle/join lines", "Join Lines", "Join Lines", "Merge 2 or more lines together.");
+COMMAND_GROUP(main_timing, "main/timing", "&Timing", "Timing", "Time manipulation.");
+COMMAND_GROUP(main_timing_make_times_continous, "main/timing/make times continous", "Make Times Continous", "Make Times Continous", "Make time continous.");
+COMMAND_GROUP(main_video, "main/video", "&Video", "Video", "Video operations.");
+COMMAND_GROUP(main_video_override_ar, "main/video/override ar", "Override AR", "Override AR", "Override Aspect Ratio");
+COMMAND_GROUP(main_video_set_zoom, "main/video/set zoom", "Set Zoom", "Set Zoom", "Set zoom level.");
+COMMAND_GROUP(main_view, "main/view", "View", "View", "View options.");
 
-/// Audio manipulation.
-struct main_audio : public Command {
-	CMD_NAME("main/audio")
-	STR_MENU("Audio")
-	STR_DISP("Audio")
-	STR_HELP("Audio manipulation.")
-
-	void operator()(agi::Context *c) {
-	}
-};
-
-/// Automation manipulation and scripts.
-struct main_automation : public Command {
-	CMD_NAME("main/automation")
-	STR_MENU("Automation")
-	STR_DISP("Automation")
-	STR_HELP("Automation manipulation and scripts.")
-
-	void operator()(agi::Context *c) {
-	}
-};
-
-
-
-
-/// Editing operations.
-struct main_edit : public Command {
-	CMD_NAME("main/edit")
-	STR_MENU("&Edit")
-	STR_DISP("Edit")
-	STR_HELP("Editing operations.")
-
-	void operator()(agi::Context *c) {
-	}
-};
-
-/// Sort lines by column.
-struct main_edit_sort_lines : public Command {
-	CMD_NAME("main/edit/sort lines")
-	STR_MENU("Sort Lines")
-	STR_DISP("Sort Lines")
-	STR_HELP("Sort lines by column.")
-
-	void operator()(agi::Context *c) {
-	}
-};
-
-
-/// Operations on subtitles.
-struct main_file : public Command {
-	CMD_NAME("main/file")
-	STR_MENU("&File")
-	STR_DISP("File")
-	STR_HELP("Operations on subtitles.")
-
-	void operator()(agi::Context *c) {
-	}
-};
-
-
-/// Help options.
-struct main_help : public Command {
-	CMD_NAME("main/help")
-	STR_MENU("Help")
-	STR_DISP("Help")
-	STR_HELP("Help options.")
-
-	void operator()(agi::Context *c) {
-	}
-};
-
-
-/// Subtitle manipulation.
-struct main_main_subtitle : public Command {
-	CMD_NAME("main/subtitle")
-	STR_MENU("&Subtitle")
-	STR_DISP("Subtitle")
-	STR_HELP("Subtitle manipulation.")
-
-	void operator()(agi::Context *c) {
-	}
-};
-
-/// Insert lines into currently active subtitle file.
-struct main_subtitle_insert_lines : public Command {
-	CMD_NAME("main/subtitle/insert lines")
-	STR_MENU("&Insert Lines")
-	STR_DISP("Insert Lines")
-	STR_HELP("Insert lines into currently active subtitle file.")
-
-	void operator()(agi::Context *c) {
-	}
-};
-
-
-/// Sort lines by column.
-struct main_subtitle_sort_lines : public Command {
-	CMD_NAME("main/subtitle/sort lines")
-	STR_MENU("Sort Lines")
-	STR_DISP("Sort Lines")
-	STR_HELP("Sort lines by column.")
-
-	void operator()(agi::Context *c) {
-	}
-};
-
-
-/// Merge 2 or more lines together.
-struct main_subtitle_join_lines : public Command {
-	CMD_NAME("main/subtitle/join lines")
-	STR_MENU("Join Lines")
-	STR_DISP("Join Lines")
-	STR_HELP("Merge 2 or more lines together.")
-
-	void operator()(agi::Context *c) {
-	}
-};
-
-
-/// Time manipulation.
-struct main_timing : public Command {
-	CMD_NAME("main/timing")
-	STR_MENU("&Timing")
-	STR_DISP("Timing")
-	STR_HELP("Time manipulation.")
-
-	void operator()(agi::Context *c) {
-	}
-};
-
-
-/// Make time continous.
-struct main_timing_make_times_continous : public Command {
-	CMD_NAME("main/timing/make times continous")
-	STR_MENU("Make Times Continous")
-	STR_DISP("Make Times Continous")
-	STR_HELP("Make time continous.")
-
-	void operator()(agi::Context *c) {
-	}
-};
-
-
-/// Video operations.
-struct main_video : public Command {
-	CMD_NAME("main/video")
-	STR_MENU("&Video")
-	STR_DISP("Video")
-	STR_HELP("Video operations.")
-
-	void operator()(agi::Context *c) {
-	}
-};
-
-
-/// Override Aspect Ratio
-class main_video_override_ar:
-public Command { public:
-	CMD_NAME("main/video/override ar")
-	STR_MENU("Override AR")
-	STR_DISP("Override AR")
-	STR_HELP("Override Aspect Ratio")
-
-	void operator()(agi::Context *c) {
-	}
-};
-
-
-/// Set zoom level.
-struct main_video_set_zoom : public Command {
-	CMD_NAME("main/video/set zoom")
-	STR_MENU("Set Zoom")
-	STR_DISP("Set Zoom")
-	STR_HELP("Set zoom level.")
-
-	void operator()(agi::Context *c) {
-	}
-};
-
-
-/// View options.
-struct main_view : public Command {
-	CMD_NAME("main/view")
-	STR_MENU("View")
-	STR_DISP("View")
-	STR_HELP("View options.")
-
-	void operator()(agi::Context *c) {
-	}
-};
 
 /// @}
 
@@ -249,7 +75,7 @@ void init_menu(CommandManager *cm) {
 	cm->reg(new main_edit_sort_lines());
 	cm->reg(new main_file());
 	cm->reg(new main_help());
-	cm->reg(new main_main_subtitle());
+	cm->reg(new main_subtitle());
 	cm->reg(new main_subtitle_insert_lines());
 	cm->reg(new main_subtitle_join_lines());
 	cm->reg(new main_subtitle_sort_lines());
