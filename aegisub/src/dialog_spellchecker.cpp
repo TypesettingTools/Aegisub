@@ -34,8 +34,6 @@
 /// @ingroup unused spelling
 ///
 
-///////////
-// Headers
 #include "config.h"
 
 #ifndef AGI_PRE
@@ -46,10 +44,10 @@
 #include "ass_file.h"
 #include "compat.h"
 #include "dialog_spellchecker.h"
-#include "frame_main.h"
 #include "help_button.h"
 #include "libresrc/libresrc.h"
 #include "main.h"
+#include "include/aegisub/context.h"
 #include "include/aegisub/spellchecker.h"
 #include "selection_controller.h"
 #include "subs_edit_box.h"
@@ -90,8 +88,9 @@ enum {
 /// @param parent 
 /// @return 
 ///
-DialogSpellChecker::DialogSpellChecker(wxFrame *parent)
-: wxDialog(parent, -1, _("Spell Checker"), wxDefaultPosition, wxDefaultSize)
+DialogSpellChecker::DialogSpellChecker(agi::Context *context)
+: wxDialog(context->parent, -1, _("Spell Checker"), wxDefaultPosition, wxDefaultSize)
+, context(context)
 {
 	// Set icon
 	SetIcon(BitmapToIcon(GETIMAGE(spellcheck_toolbutton_24)));
@@ -197,7 +196,7 @@ bool DialogSpellChecker::FindNext(int startLine,int startPos) {
 	if (startPos != -1) lastPos = 0;
 
 	// Get grid
-	SubtitlesGrid *grid = ((FrameMain*)GetParent())->SubsGrid;
+	SubtitlesGrid *grid = context->SubsGrid;
 	int rows = grid->GetRows();
 
 	// Loop through lines
@@ -270,7 +269,7 @@ void DialogSpellChecker::SetWord(wxString word) {
 	for (size_t i=0;i<sugs.Count();i++) suggestList->Append(sugs[i]);
 
 	// Show word on the main program interface
-	SubtitlesGrid *grid = ((FrameMain*)GetParent())->SubsGrid;
+	SubtitlesGrid *grid = context->SubsGrid;
 	int line = lastLine % grid->GetRows();
 	grid->SelectRow(line,false);
 	grid->MakeCellVisible(line,0);
@@ -383,7 +382,7 @@ bool DialogSpellChecker::FindOrDie() {
 ///
 void DialogSpellChecker::Replace() {
 	// Get dialog
-	SubtitlesGrid *grid = ((FrameMain*)GetParent())->SubsGrid;
+	SubtitlesGrid *grid = context->SubsGrid;
 	AssDialogue *diag = grid->GetDialogue(lastLine % grid->GetRows());
 
 	// Replace
@@ -436,7 +435,7 @@ void DialogSpellChecker::OnTakeSuggestion(wxCommandEvent &event) {
 ///
 bool DialogSpellChecker::GetFirstMatch() {
 	// Get selection
-	SubtitlesGrid *grid = ((FrameMain*)GetParent())->SubsGrid;
+	SubtitlesGrid *grid = context->SubsGrid;
 	wxArrayInt sel = grid->GetSelection();
 	firstLine = (sel.Count()>0) ? sel[0] : 0;
 	bool hasTypos = FindNext(firstLine,0);

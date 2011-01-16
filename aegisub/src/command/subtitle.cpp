@@ -355,9 +355,8 @@ struct subtitle_spellcheck : public Command {
 	STR_HELP("Open spell checker.")
 
 	void operator()(agi::Context *c) {
-//XXX: This is obscene, requires refactoring the spellchecker.
 		c->videoContext->Stop();
-		new DialogSpellChecker(wxGetApp().frame);
+		new DialogSpellChecker(c);
 	}
 };
 

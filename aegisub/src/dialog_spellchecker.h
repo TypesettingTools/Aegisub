@@ -34,9 +34,6 @@
 /// @ingroup unused spelling
 ///
 
-
-///////////
-// Headers
 #ifndef AGI_PRE
 #include <map>
 
@@ -46,12 +43,8 @@
 #include <wx/textctrl.h>
 #endif
 
-
-//////////////
-// Prototypes
+namespace agi { struct Context; }
 class SpellChecker;
-
-
 
 /// DOCME
 /// @class DialogSpellChecker
@@ -59,7 +52,7 @@ class SpellChecker;
 ///
 /// DOCME
 class DialogSpellChecker : public wxDialog {
-private:
+	agi::Context *context;
 
 	/// DOCME
 	SpellChecker *spellchecker;
@@ -121,7 +114,7 @@ private:
 	void OnAdd(wxCommandEvent &event);
 
 public:
-	DialogSpellChecker(wxFrame *parent);
+	DialogSpellChecker(agi::Context *context);
 	~DialogSpellChecker();
 
 	DECLARE_EVENT_TABLE()
