@@ -35,16 +35,15 @@
     <Import Project="$(MSBuildThisFileDirectory)..\aegisub.props" />
   </ImportGroup>
   <!-- Project specific configuration -->
+  <Import Project="$(MSBuildThisFileDirectory)Aegisub.SubWCRev.targets" />
   <PropertyGroup>
 	<TargetName>aegisub$(AegisubPlatformSuffix)</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup>
+	<SubWCRev>
+	</SubWCRev>
     <ClCompile>
       <PreprocessorDefinitions>__STDC_FORMAT_MACROS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-    </ClCompile>
-  </ItemDefinitionGroup>
-  <ItemDefinitionGroup>
-    <ClCompile>
       <AdditionalIncludeDirectories>
         $(SrcDir);
         $(SrcDir)include\;
@@ -78,8 +77,16 @@
 		%(AdditionalDependencies)
 	  </AdditionalDependencies>
     </Link>
+    <SubWCRev>
+      <InputFile >$(AegisubSourceBase)build\svn-revision-base.h</InputFile>
+      <OutputFile>$(AegisubSourceBase)build\svn-revision.h</OutputFile>
+      <Repository>$(AegisubSourceBase)\.</Repository>
+    </SubWCRev>
   </ItemDefinitionGroup>
-  <!-- Source file -->
+  <!-- Source files -->
+  <ItemGroup>
+    <SubWCRev Include="$(AegisubSourceBase)build\svn-revision-base.h" />
+  </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(SrcDir)aegisublocale.h" />
     <ClInclude Include="$(SrcDir)aegisub_endian.h" />
