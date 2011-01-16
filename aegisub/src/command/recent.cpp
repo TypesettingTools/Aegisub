@@ -54,8 +54,7 @@ namespace cmd {
 
 
 /// Open recent audio.
-class recent_audio: public Command {
-public:
+struct recent_audio : public Command {
 	CMD_NAME("recent/audio")
 	STR_MENU("Recent")
 	STR_DISP("Recent")
@@ -68,8 +67,7 @@ public:
 
 
 /// Recent keyframes.
-class recent_keyframe: public Command {
-public:
+struct recent_keyframe : public Command {
 	CMD_NAME("recent/keyframe")
 	STR_MENU("Recent")
 	STR_DISP("Recent")
@@ -82,8 +80,7 @@ public:
 
 
 /// Recently opened subtitles.
-class recent_subtitle: public Command {
-public:
+struct recent_subtitle : public Command {
 	CMD_NAME("recent/subtitle")
 	STR_MENU("Recent")
 	STR_DISP("Recent")
@@ -97,8 +94,7 @@ public:
 
 
 /// Recent timecodes.
-class recent_timecode: public Command {
-public:
+struct recent_timecode : public Command {
 	CMD_NAME("recent/timecode")
 	STR_MENU("Recent")
 	STR_DISP("Recent")
@@ -112,8 +108,7 @@ public:
 
 
 /// Recently opened videos.
-class recent_video: public Command {
-public:
+struct recent_video : public Command {
 	CMD_NAME("recent/video")
 	STR_MENU("Recent")
 	STR_DISP("Recent")

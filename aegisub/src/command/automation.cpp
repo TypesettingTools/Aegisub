@@ -56,8 +56,7 @@ namespace cmd {
 
 
 /// Open automation manager.
-class am_manager: public Command {
-public:
+struct am_manager : public Command {
 	CMD_NAME("am/manager")
 	STR_MENU("&Automation..")
 	STR_DISP("Automation")

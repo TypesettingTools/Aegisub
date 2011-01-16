@@ -55,8 +55,7 @@ namespace cmd {
 
 
 /// Closes the currently open keyframes list.
-class keyframe_close: public Command {
-public:
+struct keyframe_close : public Command {
 	CMD_NAME("keyframe/close")
 	STR_MENU("Close Keyframes")
 	STR_DISP("Close Keyframes")
@@ -69,8 +68,7 @@ public:
 
 
 /// Opens a keyframe list file.
-class keyframe_open: public Command {
-public:
+struct keyframe_open : public Command {
 	CMD_NAME("keyframe/open")
 	STR_MENU("Open Keyframes..")
 	STR_DISP("Open Keyframes")
@@ -94,8 +92,7 @@ public:
 
 
 /// Saves the current keyframe list.
-class keyframe_save: public Command {
-public:
+struct keyframe_save : public Command {
 	CMD_NAME("keyframe/save")
 	STR_MENU("Save Keyframes..")
 	STR_DISP("Save Keyframes")

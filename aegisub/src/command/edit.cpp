@@ -57,8 +57,7 @@ namespace cmd {
 
 
 /// Copy subtitles.
-class edit_line_copy: public Command {
-public:
+struct edit_line_copy : public Command {
 	CMD_NAME("edit/line/copy")
 	STR_MENU("Copy Lines")
 	STR_DISP("Copy Lines")
@@ -75,8 +74,7 @@ public:
 
 
 /// Cut subtitles.
-class edit_line_cut: public Command {
-public:
+struct edit_line_cut: public Command {
 	CMD_NAME("edit/line/cut")
 	STR_MENU("Cut Lines")
 	STR_DISP("Cut Lines")
@@ -93,8 +91,7 @@ public:
 
 
 /// Delete currently selected lines.
-class edit_line_delete: public Command {
-public:
+struct edit_line_delete : public Command {
 	CMD_NAME("edit/line/delete")
 	STR_MENU("Delete Lines")
 	STR_DISP("Delete Lines")
@@ -107,8 +104,7 @@ public:
 
 
 /// Duplicate the selected lines.
-class edit_line_duplicate: public Command {
-public:
+struct edit_line_duplicate : public Command {
 	CMD_NAME("edit/line/duplicate")
 	STR_MENU("&Duplicate Lines")
 	STR_DISP("Duplicate Lines")
@@ -122,8 +118,7 @@ public:
 
 
 /// Duplicate lines and shift by one frame.
-class edit_line_duplicate_shift: public Command {
-public:
+struct edit_line_duplicate_shift : public Command {
 	CMD_NAME("edit/line/duplicate/shift")
 	STR_MENU("&Duplicate and Shift by 1 Frame")
 	STR_DISP("Duplicate and Shift by 1 Frame")
@@ -137,8 +132,7 @@ public:
 
 
 /// Joins selected lines in a single one, as karaoke.
-class edit_line_join_as_karaoke: public Command {
-public:
+struct edit_line_join_as_karaoke : public Command {
 	CMD_NAME("edit/line/join/as_karaoke")
 	STR_MENU("As &Karaoke")
 	STR_DISP("As Karaoke")
@@ -152,8 +146,7 @@ public:
 
 
 /// Joins selected lines in a single one, concatenating text together.
-class edit_line_join_concatenate: public Command {
-public:
+struct edit_line_join_concatenate : public Command {
 	CMD_NAME("edit/line/join/concatenate")
 	STR_MENU("&Concatenate")
 	STR_DISP("Concatenate")
@@ -167,8 +160,7 @@ public:
 
 
 /// Joins selected lines in a single one, keeping text of first and discarding remaining.
-class edit_line_join_keep_first: public Command {
-public:
+struct edit_line_join_keep_first : public Command {
 	CMD_NAME("edit/line/join/keep_first")
 	STR_MENU("Keep &First")
 	STR_DISP("Keep First")
@@ -182,8 +174,7 @@ public:
 
 
 /// Paste subtitles.
-class edit_line_paste: public Command {
-public:
+struct edit_line_paste : public Command {
 	CMD_NAME("edit/line/paste")
 	STR_MENU("Paste Lines")
 	STR_DISP("Paste Lines")
@@ -200,8 +191,7 @@ public:
 
 
 /// Paste subtitles over others.
-class edit_line_paste_over: public Command {
-public:
+struct edit_line_paste_over : public Command {
 	CMD_NAME("edit/line/paste/over")
 	STR_MENU("Paste Lines Over..")
 	STR_DISP("Paste Lines Over")
@@ -214,8 +204,7 @@ public:
 
 
 /// Recombine subtitles when they have been split and merged.
-class edit_line_recombine: public Command {
-public:
+struct edit_line_recombine : public Command {
 	CMD_NAME("edit/line/recombine")
 	STR_MENU("Recombine Lines")
 	STR_DISP("Recombine Lines")
@@ -228,8 +217,7 @@ public:
 
 
 /// Uses karaoke timing to split line into multiple smaller lines.
-class edit_line_split_by_karaoke: public Command {
-public:
+struct edit_line_split_by_karaoke : public Command {
 	CMD_NAME("edit/line/split/by_karaoke")
 	STR_MENU("Split Lines (by karaoke)")
 	STR_DISP("Split Lines (by karaoke)")
@@ -251,8 +239,7 @@ public:
 
 
 /// Swaps the two selected lines.
-class edit_line_swap: public Command {
-public:
+struct edit_line_swap : public Command {
 	CMD_NAME("edit/line/swap")
 	STR_MENU("Swap Lines")
 	STR_DISP("Swap Lines")
@@ -266,8 +253,7 @@ public:
 
 
 /// Redoes last action.
-class edit_redo: public Command {
-public:
+struct edit_redo : public Command {
 	CMD_NAME("edit/redo")
 	STR_MENU("&Redo")
 	STR_DISP("Redo")
@@ -281,8 +267,7 @@ public:
 
 
 /// Find and replace words in subtitles.
-class edit_search_replace: public Command {
-public:
+struct edit_search_replace : public Command {
 	CMD_NAME("edit/search_replace")
 	STR_MENU("Search and &Replace..")
 	STR_DISP("Search and Replace")
@@ -296,8 +281,7 @@ public:
 
 
 /// Undoes last action.
-class edit_undo: public Command {
-public:
+struct edit_undo : public Command {
 	CMD_NAME("edit/undo")
 	STR_MENU("&Undo")
 	STR_DISP("Undo")

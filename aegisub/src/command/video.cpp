@@ -64,8 +64,7 @@ namespace cmd {
 
 
 /// Forces video to 2.35 aspect ratio.
-class video_aspect_cinematic: public Command {
-public:
+struct video_aspect_cinematic : public Command {
 	CMD_NAME("video/aspect/cinematic")
 	STR_MENU("&Cinematic (2.35)")
 	STR_DISP("Cinematic (235)")
@@ -80,8 +79,7 @@ public:
 
 
 /// Forces video to a custom aspect ratio.
-class video_aspect_custom: public Command {
-public:
+struct video_aspect_custom : public Command {
 	CMD_NAME("video/aspect/custom")
 	STR_MENU("Custom..")
 	STR_DISP("Custom")
@@ -138,8 +136,7 @@ public:
 
 
 /// Leave video on original aspect ratio.
-class video_aspect_default: public Command {
-public:
+struct video_aspect_default : public Command {
 	CMD_NAME("video/aspect/default")
 	STR_MENU("&Default")
 	STR_DISP("Default")
@@ -155,8 +152,7 @@ public:
 
 
 /// Forces video to 4:3 aspect ratio.
-class video_aspect_full: public Command {
-public:
+struct video_aspect_full : public Command {
 	CMD_NAME("video/aspect/full")
 	STR_MENU("&Fullscreen (4:3)")
 	STR_DISP("Fullscreen (4:3)")
@@ -171,8 +167,7 @@ public:
 
 
 /// Forces video to 16:9 aspect ratio.
-class video_aspect_wide: public Command {
-public:
+struct video_aspect_wide : public Command {
 	CMD_NAME("video/aspect/wide")
 	STR_MENU("&Widescreen (16:9)")
 	STR_DISP("Widescreen (16:9)")
@@ -187,8 +182,7 @@ public:
 
 
 /// Closes the currently open video file.
-class video_close: public Command {
-public:
+struct video_close : public Command {
 	CMD_NAME("video/close")
 	STR_MENU("&Close Video")
 	STR_DISP("Close Video")
@@ -202,8 +196,7 @@ public:
 
 
 /// Detach video, displaying it in a separate Window.
-class video_detach: public Command {
-public:
+struct video_detach : public Command {
 	CMD_NAME("video/detach")
 	STR_MENU("Detach Video")
 	STR_DISP("Detach Video")
@@ -216,8 +209,7 @@ public:
 
 
 /// Shows video details.
-class video_details: public Command {
-public:
+struct video_details : public Command {
 	CMD_NAME("video/details")
 	STR_MENU("Show Video Details..")
 	STR_DISP("Show Video Details")
@@ -231,8 +223,7 @@ public:
 
 
 /// 
-class video_focus_seek: public Command {
-public:
+struct video_focus_seek : public Command {
 	CMD_NAME("video/focus_seek")
 	STR_MENU("XXX: no idea")
 	STR_DISP("XXX: no idea")
@@ -252,8 +243,7 @@ public:
 
 
 /// Seek to the next frame.
-class video_frame_next: public Command {
-public:
+struct video_frame_next : public Command {
 	CMD_NAME("video/frame/next")
 	STR_MENU("Next Frame")
 	STR_DISP("Next Frame")
@@ -266,8 +256,7 @@ public:
 
 
 /// Play video.
-class video_frame_play: public Command {
-public:
+struct video_frame_play : public Command {
 	CMD_NAME("video/frame/play")
 	STR_MENU("Play")
 	STR_DISP("Play")
@@ -280,8 +269,7 @@ public:
 
 
 /// Seek to the previous frame.
-class video_frame_prev: public Command {
-public:
+struct video_frame_prev : public Command {
 	CMD_NAME("video/frame/prev")
 	STR_MENU("Previous Frame")
 	STR_DISP("Previous Frame")
@@ -294,8 +282,7 @@ public:
 
 
 /// Jump to frame or time.
-class video_jump: public Command {
-public:
+struct video_jump : public Command {
 	CMD_NAME("video/jump")
 	STR_MENU("&Jump to..")
 	STR_DISP("Jump to")
@@ -312,8 +299,7 @@ public:
 
 
 /// Jumps the video to the end frame of current subtitle.
-class video_jump_end: public Command {
-public:
+struct video_jump_end : public Command {
 	CMD_NAME("video/jump/end")
 	STR_MENU("Jump Video to End")
 	STR_DISP("Jump Video to End")
@@ -326,8 +312,7 @@ public:
 
 
 /// Jumps the video to the start frame of current subtitle.
-class video_jump_start: public Command {
-public:
+struct video_jump_start : public Command {
 	CMD_NAME("video/jump/start")
 	STR_MENU("Jump Video to Start")
 	STR_DISP("Jump Video to Start")
@@ -340,8 +325,7 @@ public:
 
 
 /// Opens a video file.
-class video_open: public Command {
-public:
+struct video_open : public Command {
 	CMD_NAME("video/open")
 	STR_MENU("&Open Video..")
 	STR_DISP("Open Video")
@@ -361,8 +345,7 @@ public:
 
 
 /// Opens a video clip with solid colour.
-class video_open_dummy: public Command {
-public:
+struct video_open_dummy : public Command {
 	CMD_NAME("video/open/dummy")
 	STR_MENU("Use Dummy Video..")
 	STR_DISP("Use Dummy Video")
@@ -378,8 +361,7 @@ public:
 
 
 /// Show a mask over the video.
-class video_show_overscan: public Command {
-public:
+struct video_show_overscan : public Command {
 	CMD_NAME("video/show_overscan")
 	STR_MENU("Show Overscan Mask")
 	STR_DISP("Show Overscan Mask")
@@ -441,8 +423,7 @@ public:
 
 
 /// Zoom video in.
-class video_zoom_in: public Command {
-public:
+struct video_zoom_in : public Command {
 	CMD_NAME("video/zoom/in")
 	STR_MENU("Zoom In")
 	STR_DISP("Zoom In")
@@ -455,8 +436,7 @@ public:
 
 
 /// Zoom video out.
-class video_zoom_out: public Command {
-public:
+struct video_zoom_out : public Command {
 	CMD_NAME("video/zoom/out")
 	STR_MENU("Zoom Out")
 	STR_DISP("Zoom Out")

@@ -49,8 +49,7 @@ namespace cmd {
 
 
 /// Audio manipulation.
-class main_audio: public Command {
-public:
+struct main_audio : public Command {
 	CMD_NAME("main/audio")
 	STR_MENU("Audio")
 	STR_DISP("Audio")
@@ -61,8 +60,7 @@ public:
 };
 
 /// Automation manipulation and scripts.
-class main_automation: public Command {
-public:
+struct main_automation : public Command {
 	CMD_NAME("main/automation")
 	STR_MENU("Automation")
 	STR_DISP("Automation")
@@ -76,8 +74,7 @@ public:
 
 
 /// Editing operations.
-class main_edit: public Command {
-public:
+struct main_edit : public Command {
 	CMD_NAME("main/edit")
 	STR_MENU("&Edit")
 	STR_DISP("Edit")
@@ -88,8 +85,7 @@ public:
 };
 
 /// Sort lines by column.
-class main_edit_sort_lines: public Command {
-public:
+struct main_edit_sort_lines : public Command {
 	CMD_NAME("main/edit/sort lines")
 	STR_MENU("Sort Lines")
 	STR_DISP("Sort Lines")
@@ -101,8 +97,7 @@ public:
 
 
 /// Operations on subtitles.
-class main_file: public Command {
-public:
+struct main_file : public Command {
 	CMD_NAME("main/file")
 	STR_MENU("&File")
 	STR_DISP("File")
@@ -114,8 +109,7 @@ public:
 
 
 /// Help options.
-class main_help: public Command {
-public:
+struct main_help : public Command {
 	CMD_NAME("main/help")
 	STR_MENU("Help")
 	STR_DISP("Help")
@@ -127,8 +121,7 @@ public:
 
 
 /// Subtitle manipulation.
-class main_main_subtitle: public Command {
-public:
+struct main_main_subtitle : public Command {
 	CMD_NAME("main/subtitle")
 	STR_MENU("&Subtitle")
 	STR_DISP("Subtitle")
@@ -139,8 +132,7 @@ public:
 };
 
 /// Insert lines into currently active subtitle file.
-class main_subtitle_insert_lines: public Command {
-public:
+struct main_subtitle_insert_lines : public Command {
 	CMD_NAME("main/subtitle/insert lines")
 	STR_MENU("&Insert Lines")
 	STR_DISP("Insert Lines")
@@ -152,8 +144,7 @@ public:
 
 
 /// Sort lines by column.
-class main_subtitle_sort_lines: public Command {
-public:
+struct main_subtitle_sort_lines : public Command {
 	CMD_NAME("main/subtitle/sort lines")
 	STR_MENU("Sort Lines")
 	STR_DISP("Sort Lines")
@@ -165,8 +156,7 @@ public:
 
 
 /// Merge 2 or more lines together.
-class main_subtitle_join_lines: public Command {
-public:
+struct main_subtitle_join_lines : public Command {
 	CMD_NAME("main/subtitle/join lines")
 	STR_MENU("Join Lines")
 	STR_DISP("Join Lines")
@@ -178,8 +168,7 @@ public:
 
 
 /// Time manipulation.
-class main_timing: public Command {
-public:
+struct main_timing : public Command {
 	CMD_NAME("main/timing")
 	STR_MENU("&Timing")
 	STR_DISP("Timing")
@@ -191,8 +180,7 @@ public:
 
 
 /// Make time continous.
-class main_timing_make_times_continous: public Command {
-public:
+struct main_timing_make_times_continous : public Command {
 	CMD_NAME("main/timing/make times continous")
 	STR_MENU("Make Times Continous")
 	STR_DISP("Make Times Continous")
@@ -204,8 +192,7 @@ public:
 
 
 /// Video operations.
-class main_video: public Command {
-public:
+struct main_video : public Command {
 	CMD_NAME("main/video")
 	STR_MENU("&Video")
 	STR_DISP("Video")
@@ -230,8 +217,7 @@ public Command { public:
 
 
 /// Set zoom level.
-class main_video_set_zoom: public Command {
-public:
+struct main_video_set_zoom : public Command {
 	CMD_NAME("main/video/set zoom")
 	STR_MENU("Set Zoom")
 	STR_DISP("Set Zoom")
@@ -243,8 +229,7 @@ public:
 
 
 /// View options.
-class main_view: public Command {
-public:
+struct main_view : public Command {
 	CMD_NAME("main/view")
 	STR_MENU("View")
 	STR_DISP("View")

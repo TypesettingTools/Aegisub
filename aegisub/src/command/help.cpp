@@ -57,8 +57,7 @@ namespace cmd {
 
 
 /// Visit Aegisub's bug tracker.
-class help_bugs: public Command {
-public:
+struct help_bugs : public Command {
 	CMD_NAME("help/bugs")
 	STR_MENU("&Bug Tracker..")
 	STR_DISP("Bug Tracker")
@@ -80,8 +79,7 @@ public:
 
 
 /// Help topics.
-class help_contents: public Command {
-public:
+struct help_contents : public Command {
 	CMD_NAME("help/contents")
 	STR_MENU("&Contents..")
 	STR_DISP("Contents")
@@ -94,8 +92,7 @@ public:
 
 
 /// Resource files.
-class help_files: public Command {
-public:
+struct help_files : public Command {
 	CMD_NAME("help/files")
 	STR_MENU("&All Files")
 	STR_DISP("All Files")
@@ -113,8 +110,7 @@ public:
 
 
 /// Visit Aegisub's forums.
-class help_forums: public Command {
-public:
+struct help_forums : public Command {
 	CMD_NAME("help/forums")
 	STR_MENU("&Forums..")
 	STR_DISP("Forums")
@@ -127,8 +123,7 @@ public:
 
 
 /// Visit Aegisub's official IRC channel.
-class help_irc: public Command {
-public:
+struct help_irc : public Command {
 	CMD_NAME("help/irc")
 	STR_MENU("&IRC Channel..")
 	STR_DISP("IRC Channel")
@@ -141,8 +136,7 @@ public:
 
 
 /// Visit Aegisub's official website.
-class help_website: public Command {
-public:
+struct help_website : public Command {
 	CMD_NAME("help/website")
 	STR_MENU("&Website..")
 	STR_DISP("Website")

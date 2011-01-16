@@ -68,8 +68,7 @@ namespace cmd {
 
 
 /// Open the attachment list.
-class subtitle_attachment: public Command {
-public:
+struct subtitle_attachment : public Command {
 	CMD_NAME("subtitle/attachment")
 	STR_MENU("&Attachments..")
 	STR_DISP("Attachments")
@@ -83,8 +82,7 @@ public:
 
 
 /// Find words in subtitles.
-class subtitle_find: public Command {
-public:
+struct subtitle_find : public Command {
 	CMD_NAME("subtitle/find")
 	STR_MENU("&Find..")
 	STR_DISP("Find")
@@ -98,8 +96,7 @@ public:
 
 
 /// Find next match of last word.
-class subtitle_find_next: public Command {
-public:
+struct subtitle_find_next : public Command {
 	CMD_NAME("subtitle/find/next")
 	STR_MENU("Find Next")
 	STR_DISP("Find Next")
@@ -130,8 +127,7 @@ static void insert_subtitle_at_video(agi::Context *c, bool after) {
 }
 
 /// Inserts a line after current.
-class subtitle_insert_after: public Command {
-public:
+struct subtitle_insert_after : public Command {
 	CMD_NAME("subtitle/insert/after")
 	STR_MENU("&After Current")
 	STR_DISP("After Current")
@@ -165,8 +161,7 @@ public:
 };
 
 /// Inserts a line after current, starting at video time.
-class subtitle_insert_after_videotime: public Command {
-public:
+struct subtitle_insert_after_videotime : public Command {
 	CMD_NAME("subtitle/insert/after/videotime")
 	STR_MENU("After Current, at Video Time")
 	STR_DISP("After Current, at Video Time")
@@ -179,8 +174,7 @@ public:
 
 
 /// Inserts a line before current.
-class subtitle_insert_before: public Command {
-public:
+struct subtitle_insert_before : public Command {
 	CMD_NAME("subtitle/insert/before")
 	STR_MENU("&Before Current")
 	STR_DISP("Before Current")
@@ -217,8 +211,7 @@ public:
 
 
 /// Inserts a line before current, starting at video time.
-class subtitle_insert_before_videotime: public Command {
-public:
+struct subtitle_insert_before_videotime : public Command {
 	CMD_NAME("subtitle/insert/before/videotime")
 	STR_MENU("Before Current, at Video Time")
 	STR_DISP("Before Current, at Video Time")
@@ -231,8 +224,7 @@ public:
 
 
 /// New subtitles.
-class subtitle_new: public Command {
-public:
+struct subtitle_new : public Command {
 	CMD_NAME("subtitle/new")
 	STR_MENU("&New Subtitles")
 	STR_DISP("New Subtitles")
@@ -245,8 +237,7 @@ public:
 
 
 /// Opens a subtitles file.
-class subtitle_open: public Command {
-public:
+struct subtitle_open : public Command {
 	CMD_NAME("subtitle/open")
 	STR_MENU("&Open Subtitles..")
 	STR_DISP("Open Subtitles")
@@ -265,8 +256,7 @@ public:
 
 
 /// Opens a subtitles file with a specific charset.
-class subtitle_open_charset: public Command {
-public:
+struct subtitle_open_charset : public Command {
 	CMD_NAME("subtitle/open/charset")
 	STR_MENU("&Open Subtitles with Charset..")
 	STR_DISP("Open Subtitles with Charset")
@@ -290,8 +280,7 @@ public:
 
 
 /// Opens the subtitles from the current video file.
-class subtitle_open_video: public Command {
-public:
+struct subtitle_open_video : public Command {
 	CMD_NAME("subtitle/open/video")
 	STR_MENU("Open Subtitles from &Video")
 	STR_DISP("Open Subtitles from Video")
@@ -304,8 +293,7 @@ public:
 
 
 /// Open script properties window.
-class subtitle_properties: public Command {
-public:
+struct subtitle_properties : public Command {
 	CMD_NAME("subtitle/properties")
 	STR_MENU("&Properties..")
 	STR_DISP("Properties")
@@ -320,8 +308,7 @@ public:
 
 
 /// Saves subtitles.
-class subtitle_save: public Command {
-public:
+struct subtitle_save : public Command {
 	CMD_NAME("subtitle/save")
 	STR_MENU("&Save Subtitles")
 	STR_DISP("Save Subtitles")
@@ -334,8 +321,7 @@ public:
 
 
 /// Saves subtitles with another name.
-class subtitle_save_as: public Command {
-public:
+struct subtitle_save_as : public Command {
 	CMD_NAME("subtitle/save/as")
 	STR_MENU("Save Subtitles as..")
 	STR_DISP("Save Subtitles as")
@@ -348,8 +334,7 @@ public:
 
 
 /// Selects all lines that are currently visible on video frame.
-class subtitle_select_visiblek: public Command {
-public:
+struct subtitle_select_visiblek : public Command {
 	CMD_NAME("subtitle/select/visible")
 	STR_MENU("Select Visible")
 	STR_DISP("Select Visible")
@@ -363,8 +348,7 @@ public:
 
 
 /// Open spell checker.
-class subtitle_spellcheck: public Command {
-public:
+struct subtitle_spellcheck : public Command {
 	CMD_NAME("subtitle/spellcheck")
 	STR_MENU("Spe&ll Checker..")
 	STR_DISP("Spell Checker")
@@ -379,8 +363,7 @@ public:
 
 
 /// 
-class subtitle_tags_show: public Command {
-public:
+struct subtitle_tags_show : public Command {
 	CMD_NAME("subtitle/tags/show")
 	STR_MENU("XXX: No idea")
 	STR_DISP("XXX: No idea")

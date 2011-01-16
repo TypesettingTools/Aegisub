@@ -55,8 +55,7 @@ namespace cmd {
 
 
 /// Move to the next subtitle line.
-class grid_line_next: public Command {
-public:
+struct grid_line_next : public Command {
 	CMD_NAME("grid/line/next")
 	STR_MENU("Next Line")
 	STR_DISP("Next Line")
@@ -69,8 +68,7 @@ public:
 
 
 /// Move to the previous line.
-class grid_line_prev: public Command {
-public:
+struct grid_line_prev : public Command {
 	CMD_NAME("grid/line/prev")
 	STR_MENU("Previous Line")
 	STR_DISP("Previous Line")
@@ -83,8 +81,7 @@ public:
 
 
 /// Cycle through tag hiding modes.
-class grid_tag_cycle_hiding: public Command {
-public:
+struct grid_tag_cycle_hiding : public Command {
 	CMD_NAME("grid/tag/cycle_hiding")
 	STR_MENU("Cycle Tag Hiding")
 	STR_DISP("Cycle Tag Hiding")
@@ -113,8 +110,7 @@ public:
 
 
 /// Hide override tags in the subtitle grid.
-class grid_tags_hide: public Command {
-public:
+struct grid_tags_hide : public Command {
 	CMD_NAME("grid/tags/hide")
 	STR_MENU("Hide Tags")
 	STR_DISP("Hide Tags")
@@ -128,8 +124,7 @@ public:
 
 
 /// Show full override tags in the subtitle grid.
-class grid_tags_show: public Command {
-public:
+struct grid_tags_show : public Command {
 	CMD_NAME("grid/tags/show")
 	STR_MENU("Show Tags")
 	STR_DISP("Show Tags")
@@ -143,8 +138,7 @@ public:
 
 
 /// Replace override tags in the subtitle grid with a simplified placeholder.
-class grid_tags_simplify: public Command {
-public:
+struct grid_tags_simplify : public Command {
 	CMD_NAME("grid/tags/simplify")
 	STR_MENU("Simplify Tags")
 	STR_DISP("Simplify Tags")

@@ -56,8 +56,7 @@ namespace cmd {
 
 
 /// Closes the currently open timecodes file.
-class timecode_close: public Command {
-public:
+struct timecode_close : public Command {
 	CMD_NAME("timecode/close")
 	STR_MENU("Close Timecodes File")
 	STR_DISP("Close Timecodes File")
@@ -70,8 +69,7 @@ public:
 
 
 /// Opens a VFR timecodes v1 or v2 file.
-class timecode_open: public Command {
-public:
+struct timecode_open : public Command {
 	CMD_NAME("timecode/open")
 	STR_MENU("Open Timecodes File..")
 	STR_DISP("Open Timecodes File")
@@ -90,8 +88,7 @@ public:
 
 
 /// Saves a VFR timecodes v2 file.
-class timecode_save: public Command {
-public:
+struct timecode_save : public Command {
 	CMD_NAME("timecode/save")
 	STR_MENU("Save Timecodes File..")
 	STR_DISP("Save Timecodes File")

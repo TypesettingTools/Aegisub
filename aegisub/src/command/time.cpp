@@ -57,8 +57,7 @@ namespace cmd {
 
 
 /// Changes times of subs so end times begin on next's start time.
-class time_continous_end: public Command {
-public:
+struct time_continous_end : public Command {
 	CMD_NAME("time/continous/end")
 	STR_MENU("Change &End")
 	STR_DISP("Change End")
@@ -72,8 +71,7 @@ public:
 
 
 /// Changes times of subs so start times begin on previous's end time.
-class time_continous_start: public Command {
-public:
+struct time_continous_start : public Command {
 	CMD_NAME("time/continous/start")
 	STR_MENU("Change &Start")
 	STR_DISP("Change Start")
@@ -88,8 +86,7 @@ public:
 
 
 /// Shift selection so first selected line starts at current frame.
-class time_frame_current: public Command {
-public:
+struct time_frame_current : public Command {
 	CMD_NAME("time/frame/current")
 	STR_MENU("Shift to Current Frame")
 	STR_DISP("Shift to Current Frame")
@@ -123,8 +120,7 @@ public:
 
 
 /// Shift subtitles by time or frames.
-class time_shift: public Command {
-public:
+struct time_shift : public Command {
 	CMD_NAME("time/shift")
 	STR_MENU("S&hift Times..")
 	STR_DISP("Shift Times")
@@ -139,8 +135,7 @@ public:
 
 
 /// Set end of selected subtitles to current video frame.
-class time_snap_end_video: public Command {
-public:
+struct time_snap_end_video : public Command {
 	CMD_NAME("time/snap/end_video")
 	STR_MENU("Snap End to Video")
 	STR_DISP("Snap End to Video")
@@ -153,8 +148,7 @@ public:
 
 
 /// Shift selected subtitles so first selected starts at this frame.
-class time_snap_frame: public Command {
-public:
+struct time_snap_frame : public Command {
 	CMD_NAME("time/snap/frame")
 	STR_MENU("Shift Subtitles to Frame")
 	STR_DISP("Shift Subtitles to Frame")
@@ -183,8 +177,7 @@ public:
 
 
 /// Set start and end of subtitles to the keyframes around current video frame.
-class time_snap_scene: public Command {
-public:
+struct time_snap_scene : public Command {
 	CMD_NAME("time/snap/scene")
 	STR_MENU("Snap to Scene")
 	STR_DISP("Snap to Scene")
@@ -239,8 +232,7 @@ public:
 
 
 /// Set start of selected subtitles to current video frame.
-class time_snap_start_video: public Command {
-public:
+struct time_snap_start_video : public Command {
 	CMD_NAME("time/snap/start_video")
 	STR_MENU("Snap Start to Video")
 	STR_DISP("Snap Start to Video")
@@ -253,8 +245,7 @@ public:
 
 
 /// Sort all subtitles by their end times.
-class time_sort_end: public Command {
-public:
+struct time_sort_end : public Command {
 	CMD_NAME("time/sort/end")
 	STR_MENU("&End Time")
 	STR_DISP("End Time")
@@ -268,8 +259,7 @@ public:
 
 
 /// Sort all subtitles by their start times.
-class time_sort_start: public Command {
-public:
+struct time_sort_start : public Command {
 	CMD_NAME("time/sort/start")
 	STR_MENU("&Start Time")
 	STR_DISP("Start Time")
@@ -283,8 +273,7 @@ public:
 
 
 /// Sort all subtitles by their style names.
-class time_sort_style: public Command {
-public:
+struct time_sort_style : public Command {
 	CMD_NAME("time/sort/style")
 	STR_MENU("St&yle Name")
 	STR_DISP("Style Name")

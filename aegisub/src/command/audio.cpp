@@ -55,8 +55,7 @@ namespace cmd {
 
 
 /// Closes the currently open audio file.
-class audio_close: public Command {
-public:
+struct audio_close : public Command {
 	CMD_NAME("audio/close")
 	STR_MENU("&Close Audio")
 	STR_DISP("Close Audio")
@@ -69,8 +68,7 @@ public:
 
 
 /// Opens an audio file.
-class audio_open: public Command {
-public:
+struct audio_open : public Command {
 	CMD_NAME("audio/open")
 	STR_MENU("&Open Audio File..")
 	STR_DISP("Open Audio File")
@@ -91,8 +89,7 @@ public:
 
 
 /// Open a 150 minutes blank audio clip, for debugging.
-class audio_open_blank: public Command {
-public:
+struct audio_open_blank : public Command {
 	CMD_NAME("audio/open/blank")
 	STR_MENU("Open 2h30 Blank Audio")
 	STR_DISP("Open 2h30 Blank Audio")
@@ -105,8 +102,7 @@ public:
 
 
 /// Open a 150 minutes noise-filled audio clip, for debugging.
-class audio_open_noise: public Command {
-public:
+struct audio_open_noise : public Command {
 	CMD_NAME("audio/open/noise")
 	STR_MENU("Open 2h30 Noise Audio")
 	STR_DISP("Open 2h30 Noise Audio")
@@ -119,8 +115,7 @@ public:
 
 
 /// Opens the audio from the current video file.
-class audio_open_video: public Command {
-public:
+struct audio_open_video : public Command {
 	CMD_NAME("audio/open/video")
 	STR_MENU("Open Audio from &Video")
 	STR_DISP("Open Audio from Video")
@@ -133,8 +128,7 @@ public:
 
 
 /// Display audio as a frequency-power spectrograph.
-class audio_view_spectrum: public Command {
-public:
+struct audio_view_spectrum : public Command {
 	CMD_NAME("audio/view/spectrum")
 	STR_MENU("Spectrum Display")
 	STR_DISP("Spectrum Display")
@@ -147,8 +141,7 @@ public:
 
 
 /// Display audio as a linear amplitude graph.
-class audio_view_waveform: public Command {
-public:
+struct audio_view_waveform : public Command {
 	CMD_NAME("audio/view/waveform")
 	STR_MENU("Waveform Display")
 	STR_DISP("Waveform Display")
