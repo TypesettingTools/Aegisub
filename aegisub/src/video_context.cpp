@@ -43,6 +43,7 @@
 #include <wx/config.h>
 #include <wx/filename.h>
 #include <wx/image.h>
+#include <wx/msgdlg.h>
 #endif
 
 #ifdef __APPLE__

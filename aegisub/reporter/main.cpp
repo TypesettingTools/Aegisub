@@ -51,11 +51,11 @@ bool Reporter::OnInit() {
 
 
 	static const wxCmdLineEntryDesc cmdLineDesc[] = {
-		{ wxCMD_LINE_SWITCH, "c", "crash",      "Launch in crash mode.",	wxCMD_LINE_VAL_NONE, NULL },
-		{ wxCMD_LINE_SWITCH, "r", "report",     "Launch in Report mode.",	wxCMD_LINE_VAL_NONE, NULL },
-		{ wxCMD_LINE_SWITCH, "j", "json",		"Dump JSON file",			wxCMD_LINE_VAL_NONE, NULL },
+		{ wxCMD_LINE_SWITCH, "c", "crash",      "Launch in crash mode.",	wxCMD_LINE_VAL_NONE, 0 },
+		{ wxCMD_LINE_SWITCH, "r", "report",     "Launch in Report mode.",	wxCMD_LINE_VAL_NONE, 0 },
+		{ wxCMD_LINE_SWITCH, "j", "json",		"Dump JSON file",			wxCMD_LINE_VAL_NONE, 0 },
 		{ wxCMD_LINE_SWITCH, "h", "help",       "This help message",		wxCMD_LINE_VAL_NONE, wxCMD_LINE_OPTION_HELP },
-		{ wxCMD_LINE_NONE, NULL, NULL, NULL, wxCMD_LINE_VAL_NONE, NULL}
+		{ wxCMD_LINE_NONE, NULL, NULL, NULL, wxCMD_LINE_VAL_NONE, 0 }
 	};
 
 
