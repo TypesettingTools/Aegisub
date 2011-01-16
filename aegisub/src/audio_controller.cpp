@@ -43,6 +43,8 @@
 #include <wx/filename.h>
 #endif
 
+#include <libaegisub/io.h>
+
 #include "selection_controller.h"
 #include "audio_controller.h"
 #include "include/aegisub/audio_provider.h"
@@ -474,4 +476,40 @@ int64_t AudioController::MillisecondsFromSamples(int64_t samples) const
 	int64_t millisamples = samples * 1000;
 
 	return millisamples / sr;
+}
+
+void AudioController::SaveClip(wxString const& filename, SampleRange const& range) const
+{
+	if (filename.empty() || range.begin() > provider->GetNumSamples() || range.length() == 0) return;
+
+	agi::io::Save outfile(STD_STR(filename), true);
+	std::ofstream& out(outfile.Get());
+
+	size_t bytes_per_sample = provider->GetBytesPerSample() * provider->GetChannels();
+	size_t bufsize = range.length() * bytes_per_sample;
+
+	int intval;
+	short shortval;
+
+	out << "RIFF";
+	out.write((char*)&(intval=bufsize+36),4);
+	out<< "WAVEfmt ";
+	out.write((char*)&(intval=16),4);
+	out.write((char*)&(shortval=1),2);
+	out.write((char*)&(shortval=provider->GetChannels()),2);
+	out.write((char*)&(intval=provider->GetSampleRate()),4);
+	out.write((char*)&(intval=provider->GetSampleRate()*provider->GetChannels()*provider->GetBytesPerSample()),4);
+	out.write((char*)&(intval=provider->GetChannels()*provider->GetBytesPerSample()),2);
+	out.write((char*)&(shortval=provider->GetBytesPerSample()<<3),2);
+	out << "data";
+	out.write((char*)&bufsize,4);
+
+	//samples per read
+	size_t spr = 65536 / bytes_per_sample;
+	std::vector<char> buf(bufsize);
+	for(int64_t i = range.begin(); i < range.end(); i += spr) {
+		size_t len = std::min<size_t>(spr, range.end() - i);
+		provider->GetAudio(&buf[0], i, len);
+		out.write(&buf[0], len * bytes_per_sample);
+	}
 }

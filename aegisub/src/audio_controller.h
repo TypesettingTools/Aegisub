@@ -335,6 +335,11 @@ public:
 	/// @return The index of the first sample that is wholly inside the millisecond
 	int64_t SamplesFromMilliseconds(int64_t ms) const;
 
+	/// @brief Save a portion of the decoded loaded audio to a wav file
+	/// @param filename File to save to
+	/// @param range Range of samples to save
+	void SaveClip(wxString const& filename, SampleRange const& range) const;
+
 	DEFINE_SIGNAL_ADDERS(AnnounceAudioOpen,               AddAudioOpenListener)
 	DEFINE_SIGNAL_ADDERS(AnnounceAudioClose,              AddAudioCloseListener)
 	DEFINE_SIGNAL_ADDERS(AnnouncePlaybackPosition,        AddPlaybackPositionListener)

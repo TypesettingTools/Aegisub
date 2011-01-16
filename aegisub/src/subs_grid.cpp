@@ -216,7 +216,7 @@ void SubtitlesGrid::OnPopupMenu(bool alternate) {
 
 		//Make audio clip
 		state = context->audioController->IsAudioOpen();
-		//append_command(menu, "MENU_AUDIOCLIP", state);
+		append_command(menu, "audio/save/clip", state);
 		menu.AppendSeparator();
 
 
@@ -436,85 +436,6 @@ void SubtitlesGrid::RecombineLines() {
 	}
 	SetActiveLine(activeLine);
 }
-
-/// @brief Export audio clip of line 
-/*void SubtitlesGrid::OnAudioClip(wxCommandEvent &) {
-	int64_t num_samples,start=0,end=0,temp;
-	AudioController *audioController = context->audioController;
-	const AudioProvider *provider = audioController->GetAudioProvider();
-	AssDialogue *cur;
-	wxArrayInt sel = GetSelection();
-
-	num_samples = provider->GetNumSamples();
-	
-	for(unsigned int i=0;i!=sel.GetCount();i++) {
-		cur = GetDialogue(sel[i]);
-		
-		temp = audioController->SamplesFromMilliseconds(cur->Start.GetMS());
-		start = (i==0||temp<start)?temp:start;
-		temp = audioController->SamplesFromMilliseconds(cur->End.GetMS());
-		end = (i==0||temp>end)?temp:end;
-	}
-
-	if (start > num_samples) {
-		wxMessageBox(_("The starting point is beyond the length of the audio loaded."),_("Error"));
-		return;
-	}
-	if (start==end||end==0) {
-		wxMessageBox(_("There is no audio to save."),_("Error"));
-		return;
-	}
-
-	end=(end>num_samples)?num_samples:end;
-
-
-	wxString filename = wxFileSelector(_("Save audio clip"),_T(""),_T(""),_T("wav"),_T(""),wxFD_SAVE|wxFD_OVERWRITE_PROMPT,this);
-
-	if (!filename.empty()) {
-		std::ofstream outfile(filename.mb_str(csConvLocal),std::ios::binary);
-
-		size_t bufsize=(end-start)*provider->GetChannels()*provider->GetBytesPerSample();
-		int intval;
-		short shortval;
-
-		outfile << "RIFF";
-		outfile.write((char*)&(intval=bufsize+36),4);
-		outfile<< "WAVEfmt ";
-		outfile.write((char*)&(intval=16),4);
-		outfile.write((char*)&(shortval=1),2);
-		outfile.write((char*)&(shortval=provider->GetChannels()),2);
-		outfile.write((char*)&(intval=provider->GetSampleRate()),4);
-		outfile.write((char*)&(intval=provider->GetSampleRate()*provider->GetChannels()*provider->GetBytesPerSample()),4);
-		outfile.write((char*)&(intval=provider->GetChannels()*provider->GetBytesPerSample()),2);
-		outfile.write((char*)&(shortval=provider->GetBytesPerSample()<<3),2);
-		outfile << "data";
-		outfile.write((char*)&bufsize,4);
-
-		//samples per read
-		size_t spr = 65536/(provider->GetBytesPerSample()*provider->GetChannels());
-		for(int64_t i=start;i<end;i+=spr) {
-			int len=(i+(int64_t)spr>end)?(end-i):spr;
-			bufsize=len*(provider->GetBytesPerSample()*provider->GetChannels());
-			void *buf = malloc(bufsize);
-			if (buf) {
-				provider->GetAudio(buf,i,len);
-				outfile.write((char*)buf,bufsize);
-				free(buf);
-			}
-			else if (spr>128) {
-				//maybe we can allocate a smaller amount of memory
-				i-=spr; //effectively redo this loop again
-				spr=128;
-			}
-			else {
-				wxMessageBox(_("Couldn't allocate memory."),_("Error"),wxICON_ERROR | wxOK);
-				break; // don't return, we need to close the file
-			}
-		}
-		
-		outfile.close();
-	}
-}*/
 
 /// @brief Swaps two lines 
 /// @param n1 

@@ -44,10 +44,14 @@
 
 #include "command.h"
 
+#include "../ass_dialogue.h"
 #include "../audio_controller.h"
 #include "../compat.h"
 #include "../include/aegisub/context.h"
+#include "../selection_controller.h"
 #include "../main.h"
+
+typedef SelectionController<AssDialogue>::Selection Selection;
 
 namespace cmd {
 /// @defgroup cmd-audio Audio commands.
@@ -152,6 +156,24 @@ struct audio_view_waveform : public Command {
 	}
 };
 
+/// Save the audio for the selected lines..
+struct audio_save_clip : public Command {
+	CMD_NAME("audio/save/clip")
+	STR_MENU("Create audio clip")
+	STR_DISP("Create audio clip")
+	STR_HELP("Create an audio clip of the selected line")
+
+	void operator()(agi::Context *c) {
+		Selection sel = c->selectionController->GetSelectedSet();
+		for (Selection::iterator it = sel.begin(); it != sel.end(); ++it) {
+			c->audioController->SaveClip(
+				wxFileSelector(_("Save audio clip"), "", "", "wav", "", wxFD_SAVE|wxFD_OVERWRITE_PROMPT, c->parent),
+				SampleRange(c->audioController->SamplesFromMilliseconds((*it)->Start.GetMS()),
+							c->audioController->SamplesFromMilliseconds((*it)->End.GetMS())));
+		}
+	}
+};
+
 /// @}
 
 /// Init audio/ commands
@@ -163,6 +185,7 @@ void init_audio(CommandManager *cm) {
 	cm->reg(new audio_open_video());
 	cm->reg(new audio_view_spectrum());
 	cm->reg(new audio_view_waveform());
+	cm->reg(new audio_save_clip());
 }
 
 } // namespace cmd
