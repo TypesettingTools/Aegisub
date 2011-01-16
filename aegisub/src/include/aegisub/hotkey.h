@@ -24,19 +24,13 @@
 #include <math.h>
 
 #include <memory>
+#include <string>
 #endif
 
 #include <libaegisub/cajun/elements.h>
 
-
 namespace hotkey {
 
-
-typedef std::map<int, const char *> KCNameMap;
-
-extern KCNameMap kc_name_map;
-void keycode_name_map_init();
-bool keycode_name(const int &code, std::string &combo);
 void check(std::string context, int key_code, wchar_t key_char, int modifier);
 
 } // namespace hotkey

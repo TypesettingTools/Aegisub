@@ -24,6 +24,7 @@
 #include <math.h>
 
 #include <memory>
+#include <vector>
 #endif
 
 #include <libaegisub/io.h>
@@ -41,10 +42,22 @@
 
 namespace hotkey {
 
-typedef std::pair<int, const char *> KCNamePair;
+static std::vector<std::string> keycode_names;
 
-KCNameMap kc_name_map;
+static std::string const& get_keycode_name(int code);
+static void init_keycode_names();
 
+std::string const& keycode_name(int code) {
+	if (keycode_names.empty())
+		init_keycode_names();
+
+	if (static_cast<size_t>(code) > keycode_names.size()) {
+		static std::string str;
+		return str;
+	}
+
+	return keycode_names[code];
+}
 
 void check(std::string context, int key_code, wchar_t key_char, int modifier) {
 	std::string combo;
@@ -54,18 +67,8 @@ void check(std::string context, int key_code, wchar_t key_char, int modifier) {
 		if ((modifier & wxMOD_SHIFT) != 0) combo.append("Shift-");
 	}
 
-	if ((key_char != 0)
-		&& (key_code != WXK_BACK)
-		&& (key_code != WXK_RETURN)
-		&& (key_code != WXK_ESCAPE)
-		&& (key_code != WXK_SPACE)
-		&& (key_code != WXK_DELETE)) {
-		combo.append(wxString::Format("%c", key_char));
-	} else if (keycode_name(key_code, combo) == 1) {
-		std::stringstream ss;
-		ss << key_code;
-		combo.append(ss.str());
-	}
+	combo += keycode_name(key_code);
+	if (combo.empty()) return;
 
 	std::string command;
 	if (agi::hotkey::hotkey->Scan(context, combo, command) == 0) {
@@ -74,108 +77,106 @@ void check(std::string context, int key_code, wchar_t key_char, int modifier) {
 		if (command.find("/") != std::string::npos)
 			(*cmd::get(command))(wxGetApp().frame->context.get());
 	}
-
 }
 
 
-bool keycode_name(const int &code, std::string &combo) {
-	KCNameMap::iterator index;
+static inline void set_kc(std::vector<std::string> &vec, int code, std::string const& str) {
+	if (static_cast<size_t>(code) >= vec.size()) vec.resize(code * 2, "");
+	vec[code] = str;
+}
 
-	if ((index = kc_name_map.find(code)) != kc_name_map.end()) {
-		combo.append(index->second);
-		return 0;
+static void init_keycode_names() {
+	char str[] = { 0, 0 };
+	for (char i = 33; i < 127; ++i) {
+		str[0] = i;
+		set_kc(keycode_names, i, str);
 	}
-	return 1;
+	set_kc(keycode_names, WXK_TAB, "Tab");
+	set_kc(keycode_names, WXK_RETURN, "Return");
+	set_kc(keycode_names, WXK_ESCAPE, "Escape");
+	set_kc(keycode_names, WXK_SPACE, "Space");
+	set_kc(keycode_names, WXK_DELETE, "Delete");
+	set_kc(keycode_names, WXK_SHIFT, "Shift");
+	set_kc(keycode_names, WXK_ALT, "Alt");
+	set_kc(keycode_names, WXK_CONTROL, "Control");
+	set_kc(keycode_names, WXK_PAUSE, "Pause");
+	set_kc(keycode_names, WXK_END, "End");
+	set_kc(keycode_names, WXK_HOME, "Home");
+	set_kc(keycode_names, WXK_LEFT, "Left");
+	set_kc(keycode_names, WXK_UP, "Up");
+	set_kc(keycode_names, WXK_RIGHT, "Right");
+	set_kc(keycode_names, WXK_DOWN, "Down");
+	set_kc(keycode_names, WXK_PRINT, "Print");
+	set_kc(keycode_names, WXK_INSERT, "Insert");
+	set_kc(keycode_names, WXK_NUMPAD0, "KP_0");
+	set_kc(keycode_names, WXK_NUMPAD1, "KP_1");
+	set_kc(keycode_names, WXK_NUMPAD2, "KP_2");
+	set_kc(keycode_names, WXK_NUMPAD3, "KP_3");
+	set_kc(keycode_names, WXK_NUMPAD4, "KP_4");
+	set_kc(keycode_names, WXK_NUMPAD5, "KP_5");
+	set_kc(keycode_names, WXK_NUMPAD6, "KP_6");
+	set_kc(keycode_names, WXK_NUMPAD7, "KP_7");
+	set_kc(keycode_names, WXK_NUMPAD8, "KP_8");
+	set_kc(keycode_names, WXK_NUMPAD9, "KP_9");
+	set_kc(keycode_names, WXK_MULTIPLY, "Asterisk");
+	set_kc(keycode_names, WXK_ADD, "Plus");
+	set_kc(keycode_names, WXK_SUBTRACT, "Hyphen");
+	set_kc(keycode_names, WXK_DECIMAL, "Period");
+	set_kc(keycode_names, WXK_DIVIDE, "Slash");
+	set_kc(keycode_names, WXK_F1, "F1");
+	set_kc(keycode_names, WXK_F2, "F2");
+	set_kc(keycode_names, WXK_F3, "F3");
+	set_kc(keycode_names, WXK_F4, "F4");
+	set_kc(keycode_names, WXK_F5, "F5");
+	set_kc(keycode_names, WXK_F6, "F6");
+	set_kc(keycode_names, WXK_F7, "F7");
+	set_kc(keycode_names, WXK_F8, "F8");
+	set_kc(keycode_names, WXK_F9, "F9");
+	set_kc(keycode_names, WXK_F10, "F10");
+	set_kc(keycode_names, WXK_F11, "F11");
+	set_kc(keycode_names, WXK_F12, "F12");
+	set_kc(keycode_names, WXK_F13, "F13");
+	set_kc(keycode_names, WXK_F14, "F14");
+	set_kc(keycode_names, WXK_F15, "F15");
+	set_kc(keycode_names, WXK_F16, "F16");
+	set_kc(keycode_names, WXK_F17, "F17");
+	set_kc(keycode_names, WXK_F18, "F18");
+	set_kc(keycode_names, WXK_F19, "F19");
+	set_kc(keycode_names, WXK_F20, "F20");
+	set_kc(keycode_names, WXK_F21, "F21");
+	set_kc(keycode_names, WXK_F22, "F22");
+	set_kc(keycode_names, WXK_F23, "F23");
+	set_kc(keycode_names, WXK_F24, "F24");
+	set_kc(keycode_names, WXK_NUMLOCK, "Num_Lock");
+	set_kc(keycode_names, WXK_SCROLL, "Scroll_Lock");
+	set_kc(keycode_names, WXK_PAGEUP, "PageUp");
+	set_kc(keycode_names, WXK_PAGEDOWN, "PageDown");
+	set_kc(keycode_names, WXK_NUMPAD_SPACE, "KP_Space");
+	set_kc(keycode_names, WXK_NUMPAD_TAB, "KP_Tab");
+	set_kc(keycode_names, WXK_NUMPAD_ENTER, "KP_Return");
+	set_kc(keycode_names, WXK_NUMPAD_F1, "KP_F1");
+	set_kc(keycode_names, WXK_NUMPAD_F2, "KP_F2");
+	set_kc(keycode_names, WXK_NUMPAD_F3, "KP_F3");
+	set_kc(keycode_names, WXK_NUMPAD_F4, "KP_F4");
+	set_kc(keycode_names, WXK_NUMPAD_HOME, "KP_Home");
+	set_kc(keycode_names, WXK_NUMPAD_LEFT, "KP_Left");
+	set_kc(keycode_names, WXK_NUMPAD_UP, "KP_Up");
+	set_kc(keycode_names, WXK_NUMPAD_RIGHT, "KP_Right");
+	set_kc(keycode_names, WXK_NUMPAD_DOWN, "KP_Down");
+	set_kc(keycode_names, WXK_NUMPAD_PAGEUP, "KP_PageUp");
+	set_kc(keycode_names, WXK_NUMPAD_PAGEDOWN, "KP_PageDown");
+	set_kc(keycode_names, WXK_NUMPAD_END, "KP_End");
+	set_kc(keycode_names, WXK_NUMPAD_BEGIN, "KP_Begin");
+	set_kc(keycode_names, WXK_NUMPAD_INSERT, "KP_insert");
+	set_kc(keycode_names, WXK_NUMPAD_DELETE, "KP_Delete");
+	set_kc(keycode_names, WXK_NUMPAD_EQUAL, "KP_Equal");
+	set_kc(keycode_names, WXK_NUMPAD_MULTIPLY, "KP_Multiply");
+	set_kc(keycode_names, WXK_NUMPAD_ADD, "KP_Add");
+	set_kc(keycode_names, WXK_NUMPAD_SUBTRACT, "KP_Subtract");
+	set_kc(keycode_names, WXK_NUMPAD_DECIMAL, "KP_Decimal");
+	set_kc(keycode_names, WXK_NUMPAD_DIVIDE, "KP_Divide");
 }
 
-
-void keycode_name_map_init() {
-	kc_name_map.insert(KCNamePair(WXK_TAB, "Tab"));
-	kc_name_map.insert(KCNamePair(WXK_RETURN, "Return"));
-	kc_name_map.insert(KCNamePair(WXK_ESCAPE, "Escape"));
-	kc_name_map.insert(KCNamePair(WXK_SPACE, "Space"));
-	kc_name_map.insert(KCNamePair(WXK_DELETE, "Delete"));
-	kc_name_map.insert(KCNamePair(WXK_SHIFT, "Shift"));
-	kc_name_map.insert(KCNamePair(WXK_ALT, "Alt"));
-	kc_name_map.insert(KCNamePair(WXK_CONTROL, "Control"));
-	kc_name_map.insert(KCNamePair(WXK_PAUSE, "Pause"));
-	kc_name_map.insert(KCNamePair(WXK_END, "End"));
-	kc_name_map.insert(KCNamePair(WXK_HOME, "Home"));
-	kc_name_map.insert(KCNamePair(WXK_LEFT, "Left"));
-	kc_name_map.insert(KCNamePair(WXK_UP, "Up"));
-	kc_name_map.insert(KCNamePair(WXK_RIGHT, "Right"));
-	kc_name_map.insert(KCNamePair(WXK_DOWN, "Down"));
-	kc_name_map.insert(KCNamePair(WXK_PRINT, "Print"));
-	kc_name_map.insert(KCNamePair(WXK_INSERT, "Insert"));
-	kc_name_map.insert(KCNamePair(WXK_NUMPAD0, "KP_0"));
-	kc_name_map.insert(KCNamePair(WXK_NUMPAD1, "KP_1"));
-	kc_name_map.insert(KCNamePair(WXK_NUMPAD2, "KP_2"));
-	kc_name_map.insert(KCNamePair(WXK_NUMPAD3, "KP_3"));
-	kc_name_map.insert(KCNamePair(WXK_NUMPAD4, "KP_4"));
-	kc_name_map.insert(KCNamePair(WXK_NUMPAD5, "KP_5"));
-	kc_name_map.insert(KCNamePair(WXK_NUMPAD6, "KP_6"));
-	kc_name_map.insert(KCNamePair(WXK_NUMPAD7, "KP_7"));
-	kc_name_map.insert(KCNamePair(WXK_NUMPAD8, "KP_8"));
-	kc_name_map.insert(KCNamePair(WXK_NUMPAD9, "KP_9"));
-	kc_name_map.insert(KCNamePair(WXK_MULTIPLY, "Astrisk"));
-	kc_name_map.insert(KCNamePair(WXK_ADD, "Plus"));
-	kc_name_map.insert(KCNamePair(WXK_SUBTRACT, "Hyphen"));
-	kc_name_map.insert(KCNamePair(WXK_DECIMAL, "Period"));
-	kc_name_map.insert(KCNamePair(WXK_DIVIDE, "Slash"));
-	kc_name_map.insert(KCNamePair(WXK_F1, "F1"));
-	kc_name_map.insert(KCNamePair(WXK_F2, "F2"));
-	kc_name_map.insert(KCNamePair(WXK_F3, "F3"));
-	kc_name_map.insert(KCNamePair(WXK_F4, "F4"));
-	kc_name_map.insert(KCNamePair(WXK_F5, "F5"));
-	kc_name_map.insert(KCNamePair(WXK_F6, "F6"));
-	kc_name_map.insert(KCNamePair(WXK_F7, "F7"));
-	kc_name_map.insert(KCNamePair(WXK_F8, "F8"));
-	kc_name_map.insert(KCNamePair(WXK_F9, "F9"));
-	kc_name_map.insert(KCNamePair(WXK_F10, "F10"));
-	kc_name_map.insert(KCNamePair(WXK_F11, "F11"));
-	kc_name_map.insert(KCNamePair(WXK_F12, "F12"));
-	kc_name_map.insert(KCNamePair(WXK_F13, "F13"));
-	kc_name_map.insert(KCNamePair(WXK_F14, "F14"));
-	kc_name_map.insert(KCNamePair(WXK_F15, "F15"));
-	kc_name_map.insert(KCNamePair(WXK_F16, "F16"));
-	kc_name_map.insert(KCNamePair(WXK_F17, "F17"));
-	kc_name_map.insert(KCNamePair(WXK_F18, "F18"));
-	kc_name_map.insert(KCNamePair(WXK_F19, "F19"));
-	kc_name_map.insert(KCNamePair(WXK_F20, "F20"));
-	kc_name_map.insert(KCNamePair(WXK_F21, "F21"));
-	kc_name_map.insert(KCNamePair(WXK_F22, "F22"));
-	kc_name_map.insert(KCNamePair(WXK_F23, "F23"));
-	kc_name_map.insert(KCNamePair(WXK_F24, "F24"));
-	kc_name_map.insert(KCNamePair(WXK_NUMLOCK, "Num_Lock"));
-	kc_name_map.insert(KCNamePair(WXK_SCROLL, "Scroll_Lock"));
-	kc_name_map.insert(KCNamePair(WXK_PAGEUP, "PageUp"));
-	kc_name_map.insert(KCNamePair(WXK_PAGEDOWN, "PageDown"));
-	kc_name_map.insert(KCNamePair(WXK_NUMPAD_SPACE, "KP_Space"));
-	kc_name_map.insert(KCNamePair(WXK_NUMPAD_TAB, "KP_Tab"));
-	kc_name_map.insert(KCNamePair(WXK_NUMPAD_ENTER, "KP_Return"));
-	kc_name_map.insert(KCNamePair(WXK_NUMPAD_F1, "KP_F1"));
-	kc_name_map.insert(KCNamePair(WXK_NUMPAD_F2, "KP_F2"));
-	kc_name_map.insert(KCNamePair(WXK_NUMPAD_F3, "KP_F3"));
-	kc_name_map.insert(KCNamePair(WXK_NUMPAD_F4, "KP_F4"));
-	kc_name_map.insert(KCNamePair(WXK_NUMPAD_HOME, "KP_Home"));
-	kc_name_map.insert(KCNamePair(WXK_NUMPAD_LEFT, "KP_Left"));
-	kc_name_map.insert(KCNamePair(WXK_NUMPAD_UP, "KP_Up"));
-	kc_name_map.insert(KCNamePair(WXK_NUMPAD_RIGHT, "KP_Right"));
-	kc_name_map.insert(KCNamePair(WXK_NUMPAD_DOWN, "KP_Down"));
-	kc_name_map.insert(KCNamePair(WXK_NUMPAD_PAGEUP, "KP_PageUp"));
-	kc_name_map.insert(KCNamePair(WXK_NUMPAD_PAGEDOWN, "KP_PageDown"));
-	kc_name_map.insert(KCNamePair(WXK_NUMPAD_END, "KP_End"));
-	kc_name_map.insert(KCNamePair(WXK_NUMPAD_BEGIN, "KP_Begin"));
-	kc_name_map.insert(KCNamePair(WXK_NUMPAD_INSERT, "KP_insert"));
-	kc_name_map.insert(KCNamePair(WXK_NUMPAD_DELETE, "KP_Delete"));
-	kc_name_map.insert(KCNamePair(WXK_NUMPAD_EQUAL, "KP_Equal"));
-	kc_name_map.insert(KCNamePair(WXK_NUMPAD_MULTIPLY, "KP_Multiply"));
-	kc_name_map.insert(KCNamePair(WXK_NUMPAD_ADD, "KP_Add"));
-	kc_name_map.insert(KCNamePair(WXK_NUMPAD_SUBTRACT, "KP_Subtract"));
-	kc_name_map.insert(KCNamePair(WXK_NUMPAD_DECIMAL, "KP_Decimal"));
-	kc_name_map.insert(KCNamePair(WXK_NUMPAD_DIVIDE, "KP_Divide"));
-
-}
 
 } // namespace toolbar
 

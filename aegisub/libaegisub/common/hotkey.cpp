@@ -129,40 +129,38 @@ void Hotkey::BuildHotkey(std::string context, const json::Object& object) {
 }
 
 
-bool Hotkey::Scan(const std::string context, const std::string str, std::string &cmd) {
+bool Hotkey::Scan(const std::string &context, const std::string &str, std::string &cmd) {
 	HotkeyMap::iterator index;
 	std::pair<HotkeyMap::iterator, HotkeyMap::iterator> range;
 
 	range = map.equal_range(str);
 	std::string local, dfault;
 
-
 	for (index = range.first; index != range.second; ++index) {
-
-		std::string ctext = (*index).second->Context();
+		std::string ctext = index->second->Context();
 
 		if (ctext == "Always") {
-			cmd = (*index).second->CmdName();
+			cmd = index->second->CmdName();
 			LOG_D("agi/hotkey/found") << "Found: " << str << "  Context (req/found): " << context << "/Always   Command: " << cmd;
 			return 0;
 		} else if (ctext == "Default") {
-			dfault = (*index).second->CmdName();
+			dfault = index->second->CmdName();
 		} else if (ctext == context) {
-			local = (*index).second->CmdName();
+			local = index->second->CmdName();
 		}
 	}
 
-		if (!local.empty()) {
-			cmd = local;
-			LOG_D("agi/hotkey/found") << "Found: " << str << "  Context: " << context << "  Command: " << local;
-			return 0;
-		} else if (!dfault.empty()) {
-			cmd = dfault;
-			LOG_D("agi/hotkey/found") << "Found: " << str << "  Context (req/found): " << context << "/Default   Command: " << dfault;
-			return 0;
-		}
+	if (!local.empty()) {
+		cmd = local;
+		LOG_D("agi/hotkey/found") << "Found: " << str << "  Context: " << context << "  Command: " << local;
+		return 0;
+	} else if (!dfault.empty()) {
+		cmd = dfault;
+		LOG_D("agi/hotkey/found") << "Found: " << str << "  Context (req/found): " << context << "/Default   Command: " << dfault;
+		return 0;
+	}
 
-		return 1;
+	return 1;
 
 }
 

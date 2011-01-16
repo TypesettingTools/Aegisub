@@ -185,9 +185,6 @@ bool AegisubApp::OnInit() {
 	// Init commands.
 	cmd::init_command(cmd::cm);
 
-	// Init hotkey keycode->name map.
-	hotkey::keycode_name_map_init();
-
 	// Init hotkeys.
 	const std::string conf_user_hotkey(StandardPaths::DecodePath(_T("?user/hotkey.json")));
 	agi::hotkey::hotkey = new agi::hotkey::Hotkey(conf_user_hotkey, GET_DEFAULT_CONFIG(default_hotkey));
