@@ -1071,28 +1071,33 @@ void FrameMain::OnGridEvent (wxCommandEvent &event) {
 /// @param listName 
 /// @param menu     
 /// @param startID  
-void FrameMain::RebuildRecentList(wxString listName,wxMenu *menu,int startID) {
-	// Wipe previous list
+void FrameMain::RebuildRecentList(const char *root_command, const char *mru_name) {
+	wxMenu *menu = menu::menu->GetMenu(root_command);
+
 	int count = (int)menu->GetMenuItemCount();
 	for (int i=count;--i>=0;) {
 		menu->Destroy(menu->FindItemByPosition(i));
 	}
 
-	// Rebuild
-	int added = 0;
-	wxString n;
-	wxArrayString entries = lagi_MRU_wxAS(listName);
-	for (size_t i=0;i<entries.Count();i++) {
-		n = wxString::Format(_T("%ld"),i+1);
-		if (i < 9) n = _T("&") + n;
-		wxFileName shortname(entries[i]);
-		wxString filename = shortname.GetFullName();
-		menu->Append(startID+i,n + _T(" ") + filename);
-		added++;
+	const agi::MRUManager::MRUListMap *map_list = config::mru->Get(mru_name);
+	if (map_list->empty()) {
+		menu->Append(-1, _("Empty"))->Enable(false);
+		return;
 	}
 
-	// Nothing added, add an empty placeholder
-	if (added == 0) menu->Append(startID,_("Empty"))->Enable(false);
+	int i = 0;
+	for (agi::MRUManager::MRUListMap::const_iterator it = map_list->begin(); it != map_list->end(); ++it) {
+		std::stringstream ss;
+		ss << root_command;
+		ss << "/";
+		ss << i;
+
+		wxFileName shortname(lagi_wxString(it->second));
+
+		menu->Append(cmd::id(ss.str()),
+			wxString::Format("%s%d %s", i <= 9 ? "&" : "", i + 1, shortname.GetFullName()));
+		++i;
+	}
 }
 
 /// @brief Menu is being opened 
@@ -1107,7 +1112,7 @@ void FrameMain::OnMenuOpen (wxMenuEvent &event) {
 	// File menu
 	if (curMenu == menu::menu->GetMenu("main/file")) {
 		// Rebuild recent
-		RebuildRecentList(_T("Subtitle"),menu::menu->GetMenu("recent/subtitle"), cmd::id("recent/subtitle"));
+		RebuildRecentList("recent/subtitle", "Subtitle");
 
 		MenuBar->Enable(cmd::id("subtitle/open/video"),VideoContext::Get()->HasSubtitles());
 	}
@@ -1184,9 +1189,9 @@ void FrameMain::OnMenuOpen (wxMenuEvent &event) {
 		MenuBar->Check(cmd::id("video/show_overscan"),OPT_GET("Video/Overscan Mask")->GetBool());
 
 		// Rebuild recent lists
-		RebuildRecentList(_T("Video"),menu::menu->GetMenu("recent/video"), cmd::id("recent/video"));
-		RebuildRecentList(_T("Timecodes"),menu::menu->GetMenu("recent/timecode"), cmd::id("recent/timecode"));
-		RebuildRecentList(_T("Keyframes"),menu::menu->GetMenu("recent/keyframe"), cmd::id("recent/keyframe"));
+		RebuildRecentList("recent/video", "Video");
+		RebuildRecentList("recent/timecode", "Timecodes");
+		RebuildRecentList("recent/keyframe", "Keyframes");
 	}
 
 	// Audio menu
@@ -1198,7 +1203,7 @@ void FrameMain::OnMenuOpen (wxMenuEvent &event) {
 		MenuBar->Enable(cmd::id("audio/close"),state);
 
 		// Rebuild recent
-		RebuildRecentList(_T("Audio"),menu::menu->GetMenu("recent/audio"), cmd::id("recent/audio"));
+		RebuildRecentList("recent/audio", "Audio");
 	}
 
 	// Subtitles menu

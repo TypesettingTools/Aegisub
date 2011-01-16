@@ -165,7 +165,7 @@ private:
 
 	int TryToCloseSubs(bool enableCancel=true);
 
-	void RebuildRecentList(wxString listName,wxMenu *menu,int startID);
+	void RebuildRecentList(const char *root_command, const char *mru_name);
 	void SynchronizeProject(bool FromSubs=false);
 
 	// AudioControllerAudioEventListener implementation
