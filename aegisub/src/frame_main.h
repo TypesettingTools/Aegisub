@@ -137,6 +137,12 @@ private:
 	void InitContents();
 	void DeInitContents();
 
+	bool LoadList(wxArrayString list);
+	void UpdateTitle();
+
+	void InitMenu();
+
+	void SetUndoRedoDesc();
 
 	void OnKeyDown(wxKeyEvent &event);
 	void OnGridEvent (wxCommandEvent &event);
@@ -163,7 +169,6 @@ private:
 	void OnSubtitlesOpen();
 	void OnSubtitlesSave();
 
-public:
 
 	/// The subtitle editing area
 	SubtitlesGrid *SubsGrid;
@@ -189,20 +194,13 @@ public:
 	/// Arranges audio and editing areas top to bottom
 	wxBoxSizer *ToolsSizer;
 
+public:
+	FrameMain(wxArrayString args);
+	~FrameMain();
 
-	FrameMain (wxArrayString args);
-	~FrameMain ();
-
-	bool LoadList(wxArrayString list);
-	static void OpenHelp(wxString page=_T(""));
-	void UpdateTitle();
-
-	void InitMenu();
 	void UpdateToolbar();
-
-	void SetUndoRedoDesc();
+	static void OpenHelp(wxString page=_T(""));
 	bool HasASSDraw();
 
 	DECLARE_EVENT_TABLE()
 };
-

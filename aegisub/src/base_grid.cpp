@@ -1167,11 +1167,12 @@ void BaseGrid::OnKeyDown(wxKeyEvent &event) {
 	// Left/right, forward to seek bar if video is loaded
 	if (key == WXK_LEFT || key == WXK_RIGHT) {
 		if (context->IsLoaded()) {
-			parentFrame->videoBox->videoSlider->SetFocus();
-			parentFrame->videoBox->videoSlider->GetEventHandler()->ProcessEvent(event);
-			return;
+			/// todo: is this nessesary, or can left/right just be in the Subtitle Grid category?
+			hotkey::check("Video", event.GetKeyCode(), event.GetUnicodeKey(), event.GetModifiers());
 		}
-		event.Skip();
+		else {
+			event.Skip();
+		}
 		return;
 	}
 
