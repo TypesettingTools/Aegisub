@@ -25,12 +25,13 @@
 
 #include <memory>
 #include <string>
+#include <vector>
 #endif
-
-#include <libaegisub/cajun/elements.h>
 
 namespace hotkey {
 
-void check(std::string context, int key_code, wchar_t key_char, int modifier);
+void check(std::string const& context, int key_code, wchar_t key_char, int modifier);
+std::string get_hotkey_str_first(std::string const& context, std::string const& command);
+std::vector<std::string> get_hotkey_strs(std::string const& context, std::string const& command);
 
 } // namespace hotkey

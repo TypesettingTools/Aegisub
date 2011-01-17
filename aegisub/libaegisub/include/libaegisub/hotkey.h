@@ -22,6 +22,8 @@
 #include <math.h>
 
 #include <memory>
+#include <string>
+#include <vector>
 #endif
 
 #include <libaegisub/cajun/elements.h>
@@ -29,7 +31,6 @@
 
 namespace agi {
 	namespace hotkey {
-
 
 class Hotkey;
 /// Hotkey instance.
@@ -108,10 +109,16 @@ public:
 	/// @param[out] cmd Command found.
 	bool Scan(const std::string &context, const std::string &str, std::string &cmd) const;
 
+	/// Get the string representation of the hotkeys for the given command
+	/// @param context Context requested
+	/// @param command Command name
+	/// @return A vector of all hotkeys for that command in the context
+	std::vector<std::string> GetHotkeys(const std::string &context, const std::string &command) const;
+
 private:
 	typedef std::multimap<std::string, Combo*> HotkeyMap;	///< Map to hold Combo instances.
-	typedef std::pair<std::string, Combo*> HotkeyMapPair;	///< Pair for HotkeyMap.
-	HotkeyMap map;											///< HotkeyMap Instance.
+	HotkeyMap str_map;										///< String representation -> Combo
+	HotkeyMap cmd_map;										///< Command name -> Combo
 	const std::string config_file;							///< Default user config location.
 	const std::string config_default;						///< Default config.
 

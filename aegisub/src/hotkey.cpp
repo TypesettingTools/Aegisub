@@ -27,8 +27,6 @@
 #include <vector>
 #endif
 
-#include <libaegisub/io.h>
-#include <libaegisub/json.h>
 #include <libaegisub/log.h>
 #include <libaegisub/hotkey.h>
 
@@ -59,7 +57,7 @@ std::string const& keycode_name(int code) {
 	return keycode_names[code];
 }
 
-void check(std::string context, int key_code, wchar_t key_char, int modifier) {
+void check(std::string const& context, int key_code, wchar_t key_char, int modifier) {
 	std::string combo;
 	if ((modifier != wxMOD_NONE)) {
 		if ((modifier & wxMOD_CMD) != 0) combo.append("Ctrl-");
@@ -77,6 +75,15 @@ void check(std::string context, int key_code, wchar_t key_char, int modifier) {
 		if (command.find("/") != std::string::npos)
 			(*cmd::get(command))(wxGetApp().frame->context.get());
 	}
+}
+
+std::vector<std::string> get_hotkey_strs(std::string const& context, std::string const& command) {
+	return agi::hotkey::hotkey->GetHotkeys(context, command);
+}
+
+std::string get_hotkey_str_first(std::string const& context, std::string const& command) {
+	std::vector<std::string> strs = get_hotkey_strs(context, command);
+	return strs.empty() ? "" : strs.front();
 }
 
 

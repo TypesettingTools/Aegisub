@@ -26,6 +26,8 @@
 #include <memory>
 #endif
 
+#include <tuple>
+
 #include "libaegisub/hotkey.h"
 
 #include "libaegisub/access.h"
@@ -34,7 +36,6 @@
 #include "libaegisub/io.h"
 #include "libaegisub/json.h"
 #include "libaegisub/log.h"
-
 
 namespace agi {
 	namespace hotkey {
@@ -54,7 +55,8 @@ std::string Combo::StrMenu() {
 }
 
 void Hotkey::ComboInsert(Combo *combo) {
-    map.insert(HotkeyMapPair(combo->Str(), combo));
+	str_map.insert(make_pair(combo->Str(), combo));
+	cmd_map.insert(make_pair(combo->CmdName(), combo));
 }
 
 Hotkey::~Hotkey() {
@@ -68,45 +70,42 @@ Hotkey::Hotkey(const std::string &file, const std::string &default_config):
 
 	std::istream *stream;
 
-    try {
+	try {
 		stream = agi::io::Open(config_file);
 	} catch (const acs::AcsNotFound&) {
 		stream = new std::istringstream(config_default);
-    }
+	}
 
 
 	json::UnknownElement hotkey_root;
-    try {
+	try {
 		hotkey_root = agi::json_util::parse(stream);
 	} catch (...) {
-		// There's definatly a better way to do this.
-		std::istringstream *stream = new std::istringstream(config_default);
+		// There's definitely a better way to do this.
+		delete stream;
+		stream = new std::istringstream(config_default);
 		hotkey_root = agi::json_util::parse(stream);
 	}
 
 	json::Object object = hotkey_root;
 
-
 	for (json::Object::const_iterator index(object.Begin()); index != object.End(); index++) {
 		const json::Object::Member& member = *index;
 		const json::Object& obj = member.element;
 		BuildHotkey(member.name, obj);
-    }
+	}
 }
 
 
 void Hotkey::BuildHotkey(std::string context, const json::Object& object) {
-
 	for (json::Object::const_iterator index(object.Begin()); index != object.End(); index++) {
 		const json::Object::Member& member = *index;
-
-
 		const json::Array& array = member.element;
-		for (json::Array::const_iterator arr_index(array.Begin()); arr_index != array.End(); arr_index++) {
 
+		for (json::Array::const_iterator arr_index(array.Begin()); arr_index != array.End(); arr_index++) {
 			Combo *combo = new Combo(context, member.name);
 
-	        const json::Object& obj = *arr_index;
+			const json::Object& obj = *arr_index;
 
 			const json::Array& arr_mod = obj["modifiers"];
 
@@ -117,26 +116,19 @@ void Hotkey::BuildHotkey(std::string context, const json::Object& object) {
 				} // for arr_mod_index
 
 			}
-			const json::String& key = obj["key"];
-			combo->KeyInsert(key.Value());
-
-			const json::Boolean& enable = obj["enable"];
-			combo->Enable(enable);
+			combo->KeyInsert(static_cast<const json::String&>(obj["key"]).Value());
+			combo->Enable(static_cast<const json::Boolean&>(obj["enable"]).Value());
 
 			ComboInsert(combo);
 		} // for arr_index
 	} // for index
 }
 
-
 bool Hotkey::Scan(const std::string &context, const std::string &str, std::string &cmd) const {
-	HotkeyMap::const_iterator index;
-	std::pair<HotkeyMap::const_iterator, HotkeyMap::const_iterator> range;
-
-	range = map.equal_range(str);
 	std::string local, dfault;
 
-	for (index = range.first; index != range.second; ++index) {
+	HotkeyMap::const_iterator index, end;
+	for (std::tr1::tie(index, end) = str_map.equal_range(str); index != end; ++index) {
 		std::string ctext = index->second->Context();
 
 		if (ctext == "Always") {
@@ -161,7 +153,23 @@ bool Hotkey::Scan(const std::string &context, const std::string &str, std::strin
 	}
 
 	return 1;
+}
 
+std::vector<std::string> Hotkey::GetHotkeys(const std::string &context, const std::string &command) const {
+	std::vector<std::string> ret;
+
+	HotkeyMap::const_iterator it, end;
+	for (std::tr1::tie(it, end) = cmd_map.equal_range(command); it != end; ++it) {
+		std::string ctext = it->second->Context();
+		if (ctext == "Always" || ctext == "Default" || ctext == context) {
+			ret.push_back(it->second->StrMenu());
+		}
+	}
+
+	sort(ret.begin(), ret.end());
+	ret.erase(unique(ret.begin(), ret.end()), ret.end());
+
+	return ret;
 }
 
 void Hotkey::Flush() {
@@ -169,7 +177,7 @@ void Hotkey::Flush() {
 	json::Object root;
 
 	HotkeyMap::iterator index;
-	for (index = map.begin(); index != map.end(); ++index) {
+	for (index = str_map.begin(); index != str_map.end(); ++index) {
 
 		Combo::ComboMap combo_map(index->second->Get());
 

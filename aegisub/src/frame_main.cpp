@@ -1010,18 +1010,19 @@ void FrameMain::OnMenuOpen (wxMenuEvent &event) {
 		wxMenu *editMenu = menu::menu->GetMenu("main/edit");
 
 		// Undo state
-		wxMenuItem *item;
-//H		wxString undo_text = _("&Undo") + wxString(_T(" ")) + ass->GetUndoDescription() + wxString(_T("\t")) + Hotkeys.GetText(_T("Undo"));
-// The bottom line needs to be fixed for the new hotkey system
-		wxString undo_text = _("&Undo") + wxString(_T(" ")) + context->ass->GetUndoDescription() + wxString(_T("\t")) + _T("Undo");
-		item = editMenu->FindItem(cmd::id("edit/undo"));
+		wxString undo_text = wxString::Format("%s %s\t%s",
+			cmd::get("edit/undo")->StrMenu(),
+			context->ass->GetUndoDescription(),
+			hotkey::get_hotkey_str_first("Default", "edit/undo"));
+		wxMenuItem *item = editMenu->FindItem(cmd::id("edit/undo"));
 		item->SetItemLabel(undo_text);
 		item->Enable(!context->ass->IsUndoStackEmpty());
 
 		// Redo state
-//H		wxString redo_text = _("&Redo") + wxString(_T(" ")) + ass->GetRedoDescription() + wxString(_T("\t")) + Hotkeys.GetText(_T("Redo"));
-// Same as above.
-		wxString redo_text = _("&Redo") + wxString(_T(" ")) + context->ass->GetRedoDescription() + wxString(_T("\t")) + _T("Redo");
+		wxString redo_text = wxString::Format("%s %s\t%s",
+			cmd::get("edit/redo")->StrMenu(),
+			context->ass->GetRedoDescription(),
+			hotkey::get_hotkey_str_first("Default", "edit/redo"));
 		item = editMenu->FindItem(cmd::id("edit/redo"));
 		item->SetItemLabel(redo_text);
 		item->Enable(!context->ass->IsRedoStackEmpty());

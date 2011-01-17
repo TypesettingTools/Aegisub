@@ -28,11 +28,13 @@
 #include <wx/menuitem.h>
 #endif
 
+#include "include/aegisub/menu.h"
+
 #include <libaegisub/io.h>
 #include <libaegisub/json.h>
 #include <libaegisub/log.h>
 
-#include "include/aegisub/menu.h"
+#include "include/aegisub/hotkey.h"
 #include "command/command.h"
 #include "libresrc/libresrc.h"
 #include "main.h"
@@ -100,39 +102,32 @@ wxMenu* Menu::BuildMenu(std::string name, const json::Array& array, int submenu)
 		std::string name_submenu = name_sub + "/" + command.Value();
 
 
-		cmd::Command *cmd;
-		if (type == Menu::Submenu) {
-			cmd = cmd::get(name_submenu);
-		} else {
-			cmd = cmd::get(command.Value());
-		}
+		std::string cmd_name = type == Menu::Submenu ? name_submenu : command.Value();
+		cmd::Command *cmd = cmd::get(cmd_name);
 
-		wxString display = cmd->StrMenu();
+		wxString display = cmd->StrMenu() + "\t" + hotkey::get_hotkey_str_first("Default", cmd_name);
 		wxString descr = cmd->StrHelp();
-
-
-
 
 		switch (type) {
 			case Menu::Option: {
-				wxMenuItem *menu_item = new wxMenuItem(menu, cmd::id(command.Value()), wxString(display), wxString(descr), wxITEM_NORMAL);
+				wxMenuItem *menu_item = new wxMenuItem(menu, cmd::id(command.Value()), display, descr, wxITEM_NORMAL);
 				menu->Append(menu_item);
 			}
 			break;
 
 			case Menu::Check: {
-				menu->AppendCheckItem(cmd::id(command.Value()), wxString(display), wxString(descr));
+				menu->AppendCheckItem(cmd::id(command.Value()), display, descr);
 			}
 			break;
 
 			case Menu::Radio: {
-				menu->AppendRadioItem(cmd::id(command.Value()), wxString(display), wxString(descr));
+				menu->AppendRadioItem(cmd::id(command.Value()), display, descr);
 			}
 			break;
 
 			case Menu::Recent: {
 	 			wxMenu *menu_new = new wxMenu();
-				wxMenuItem *menu_item = new wxMenuItem(menu, cmd::id(command.Value()), wxString(display), wxString(descr), wxITEM_NORMAL, menu_new);
+				wxMenuItem *menu_item = new wxMenuItem(menu, cmd::id(command.Value()), display, descr, wxITEM_NORMAL, menu_new);
 				menu->Append(menu_item);
 				map.insert(MTPair(command.Value(), menu_new));
 
@@ -147,10 +142,10 @@ wxMenu* Menu::BuildMenu(std::string name, const json::Array& array, int submenu)
 				map.insert(MTPair(name_submenu, menu_new));
 
 				if (submenu) {
-					wxMenuItem *menu_item = new wxMenuItem(menu, cmd::id(name_sub), wxString(display), wxString(descr), wxITEM_NORMAL, menu_new);
+					wxMenuItem *menu_item = new wxMenuItem(menu, cmd::id(name_sub), display, descr, wxITEM_NORMAL, menu_new);
 					menu->Append(menu_item);
 				} else {
-					main_menu->Append(menu_new, wxString(display));
+					main_menu->Append(menu_new, display);
 				}
 			}
 			break;
