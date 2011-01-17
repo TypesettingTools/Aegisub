@@ -129,9 +129,9 @@ void Hotkey::BuildHotkey(std::string context, const json::Object& object) {
 }
 
 
-bool Hotkey::Scan(const std::string &context, const std::string &str, std::string &cmd) {
-	HotkeyMap::iterator index;
-	std::pair<HotkeyMap::iterator, HotkeyMap::iterator> range;
+bool Hotkey::Scan(const std::string &context, const std::string &str, std::string &cmd) const {
+	HotkeyMap::const_iterator index;
+	std::pair<HotkeyMap::const_iterator, HotkeyMap::const_iterator> range;
 
 	range = map.equal_range(str);
 	std::string local, dfault;

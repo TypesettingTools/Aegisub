@@ -106,7 +106,7 @@ public:
 	/// @param context  Context requested.
 	/// @param str      Hyphen separated key sequence.
 	/// @param[out] cmd Command found.
-	bool Scan(const std::string &context, const std::string &str, std::string &cmd);
+	bool Scan(const std::string &context, const std::string &str, std::string &cmd) const;
 
 private:
 	typedef std::multimap<std::string, Combo*> HotkeyMap;	///< Map to hold Combo instances.
