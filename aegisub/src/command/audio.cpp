@@ -44,8 +44,10 @@
 
 #include "command.h"
 
+#include "../selection_controller.h"
 #include "../ass_dialogue.h"
 #include "../audio_controller.h"
+#include "../audio_timing.h"
 #include "../compat.h"
 #include "../include/aegisub/context.h"
 #include "../selection_controller.h"
@@ -156,7 +158,7 @@ struct audio_view_waveform : public Command {
 	}
 };
 
-/// Save the audio for the selected lines..
+/// Save the audio for the selected lines.
 struct audio_save_clip : public Command {
 	CMD_NAME("audio/save/clip")
 	STR_MENU("Create audio clip")
@@ -174,18 +176,184 @@ struct audio_save_clip : public Command {
 	}
 };
 
+/// Play the current audio selection
+struct audio_play_selection : public Command {
+	CMD_NAME("audio/play/selection")
+	STR_MENU("Play audio selection")
+	STR_DISP("Play audio selection")
+	STR_HELP("Play selection")
+	void operator()(agi::Context *c) {
+		c->audioController->PlayPrimaryRange();
+	}
+};
+
+/// Stop playing audio
+struct audio_stop : public Command {
+	CMD_NAME("audio/stop")
+	STR_MENU("Stop playing")
+	STR_DISP("Stop playing")
+	STR_HELP("Stop")
+	void operator()(agi::Context *c) {
+		c->audioController->Stop();
+	}
+};
+
+/// Play 500 ms before the selected audio range
+struct audio_play_before : public Command {
+	CMD_NAME("audio/play/selection/before")
+	STR_MENU("Play 500 ms before selection")
+	STR_DISP("Play 500 ms before selection")
+	STR_HELP("Play 500 ms before selection")
+	void operator()(agi::Context *c) {
+		SampleRange times(c->audioController->GetPrimaryPlaybackRange());
+		c->audioController->PlayRange(SampleRange(
+			times.begin() - c->audioController->SamplesFromMilliseconds(500),
+			times.begin()));
+	}
+};
+
+/// Play 500 ms after the selected audio range
+struct audio_play_after : public Command {
+	CMD_NAME("audio/play/selection/after")
+	STR_MENU("Play 500 ms after selection")
+	STR_DISP("Play 500 ms after selection")
+	STR_HELP("Play 500 ms after selection")
+	void operator()(agi::Context *c) {
+		SampleRange times(c->audioController->GetPrimaryPlaybackRange());
+		c->audioController->PlayRange(SampleRange(
+			times.end(),
+			times.end() + c->audioController->SamplesFromMilliseconds(500)));
+	}
+};
+
+/// Play from the beginning of the audio range to the end of the file
+struct audio_play_end : public Command {
+	CMD_NAME("audio/play/selection/end")
+	STR_MENU("Play last 500 ms of selection")
+	STR_DISP("Play last 500 ms of selection")
+	STR_HELP("Play last 500 ms of selection")
+	void operator()(agi::Context *c) {
+		SampleRange times(c->audioController->GetPrimaryPlaybackRange());
+		c->audioController->PlayRange(SampleRange(
+			times.begin(),
+			times.begin() + std::min(
+				c->audioController->SamplesFromMilliseconds(500),
+				times.length())));
+	}
+};
+
+/// Play the first 500 ms of the audio range
+struct audio_play_begin : public Command {
+	CMD_NAME("audio/play/selection/begin")
+	STR_MENU("Play first 500 ms of selection")
+	STR_DISP("Play first 500 ms of selection")
+	STR_HELP("Play first 500 ms of selection")
+	void operator()(agi::Context *c) {
+		SampleRange times(c->audioController->GetPrimaryPlaybackRange());
+		c->audioController->PlayRange(SampleRange(
+			times.end() - std::min(
+				c->audioController->SamplesFromMilliseconds(500),
+				times.length()),
+			times.end()));
+	}
+};
+
+/// Play the last 500 ms of the audio range
+struct audio_play_to_end : public Command {
+	CMD_NAME("audio/play/to_end")
+	STR_MENU("Play from selection start to end of file")
+	STR_DISP("Play from selection start to end of file")
+	STR_HELP("Play from selection start to end of file")
+	void operator()(agi::Context *c) {
+		c->audioController->PlayToEnd(c->audioController->GetPrimaryPlaybackRange().begin());
+	}
+};
+
+/// Commit any pending audio timing changes
+/// @todo maybe move to time?
+struct audio_commit : public Command {
+	CMD_NAME("audio/commit")
+	STR_MENU("Commit")
+	STR_DISP("Commit")
+	STR_HELP("Commit")
+	void operator()(agi::Context *c) {
+		c->audioController->GetTimingController()->Commit();
+	}
+};
+
+/// Scroll the audio display to the current selection
+struct audio_go_to : public Command {
+	CMD_NAME("audio/?")
+	STR_MENU("Go to selection")
+	STR_DISP("Go to selection")
+	STR_HELP("Go to selection")
+	void operator()(agi::Context *c) {
+		//if (c->audioController->GetTimingController())
+			//audioDisplay->ScrollSampleRangeInView(c->audioController->GetTimingController()->GetIdealVisibleSampleRange());
+	}
+};
+
+static inline void toggle(const char *opt) {
+	OPT_SET(opt)->SetBool(!OPT_GET(opt)->GetBool());
+}
+
+/// Toggle autoscrolling the audio display to the selected line when switch lines
+struct audio_autoscroll : public Command {
+	CMD_NAME("audio/opt/autoscroll")
+	STR_MENU("Auto scrolls audio display to selected line")
+	STR_DISP("Auto scrolls audio display to selected line")
+	STR_HELP("Auto scrolls audio display to selected line")
+	void operator()(agi::Context *c) {
+		toggle("Audio/Auto/Scroll");
+	}
+};
+
+/// Toggle automatically committing changes made in the audio display
+struct audio_autocommit : public Command {
+	CMD_NAME("audio/opt/autocommit")
+	STR_MENU("Automatically commit all changes")
+	STR_DISP("Automatically commit all changes")
+	STR_HELP("Automatically commit all changes")
+	void operator()(agi::Context *c) {
+		toggle("Audio/Auto/Commit");
+	}
+};
+
+/// Toggle automatically advancing to the next line after a commit
+struct audio_autonext : public Command {
+	CMD_NAME("audio/opt/autonext")
+	STR_MENU("Auto goes to next line on commit")
+	STR_DISP("Auto goes to next line on commit")
+	STR_HELP("Auto goes to next line on commit")
+	void operator()(agi::Context *c) {
+		toggle("Audio/Next Line on Commit");
+	}
+};
+
 /// @}
 
 /// Init audio/ commands
 void init_audio(CommandManager *cm) {
-	cm->reg(new audio_close());
-	cm->reg(new audio_open());
-	cm->reg(new audio_open_blank());
-	cm->reg(new audio_open_noise());
-	cm->reg(new audio_open_video());
-	cm->reg(new audio_view_spectrum());
-	cm->reg(new audio_view_waveform());
-	cm->reg(new audio_save_clip());
+	cm->reg(new audio_autocommit);
+	cm->reg(new audio_autonext);
+	cm->reg(new audio_autoscroll);
+	cm->reg(new audio_close);
+	cm->reg(new audio_commit);
+	cm->reg(new audio_go_to);
+	cm->reg(new audio_open);
+	cm->reg(new audio_open_blank);
+	cm->reg(new audio_open_noise);
+	cm->reg(new audio_open_video);
+	cm->reg(new audio_play_after);
+	cm->reg(new audio_play_before);
+	cm->reg(new audio_play_begin);
+	cm->reg(new audio_play_end);
+	cm->reg(new audio_play_selection);
+	cm->reg(new audio_play_to_end);
+	cm->reg(new audio_save_clip);
+	cm->reg(new audio_stop);
+	cm->reg(new audio_view_spectrum);
+	cm->reg(new audio_view_waveform);
 }
 
 } // namespace cmd

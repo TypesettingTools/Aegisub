@@ -344,7 +344,7 @@
 	},
 
 	"Audio" : {
-		"audio play" : [
+		"audio/play/selection" : [
 			{
 				"modifiers" : [],
 				"key" : "Space",
@@ -356,70 +356,70 @@
 				"enable" : true
 			}
 		],
-		"audio play after selection end" : [
+		"audio/play/selection/after" : [
 			{
 				"modifiers" : [],
 				"key" : "W",
 				"enable" : true
 			}
 		],
-		"audio play before selection begin" : [
+		"audio/play/selection/before" : [
 			{
 				"modifiers" : [],
 				"key" : "Q",
 				"enable" : true
 			}
 		],
-		"audio play toggle" : [
+		"audio/play/toggle" : [
 			{
 				"modifiers" : [],
 				"key" : "B",
 				"enable" : true
 			}
 		],
-		"audio play selection begin" : [
+		"audio/play/selection/begin" : [
 			{
 				"modifiers" : [],
 				"key" : "E",
 				"enable" : true
 			}
 		],
-		"audio play selection end" : [
+		"audio/play/selection/end" : [
 			{
 				"modifiers" : [],
 				"key" : "D",
 				"enable" : true
 			}
 		],
-		"audio play to end" : [
+		"audio/play/to_end" : [
 			{
 				"modifiers" : [],
 				"key" : "T",
 				"enable" : true
 			}
 		],
-		"audio scroll left" : [
+		"audio/scroll/left" : [
 			{
 				"modifiers" : [],
 				"key" : "A",
 				"enable" : true
 			}
 		],
-		"audio scroll right" : [
+		"audio/scroll/right" : [
 			{
 				"modifiers" : [],
 				"key" : "F",
 				"enable" : true
 			}
 		],
-		"audio stop" : [
+		"audio/stop" : [
 			{
 				"modifiers" : [],
 				"key" : "H",
 				"enable" : true
 			}
 		],
-		"commit" : [
+		"audio/commit" : [
 			{
 				"modifiers" : [],
 				"key" : "Enter",
@@ -431,26 +431,14 @@
 				"enable" : true
 			}
 		],
-		"commit and stay" : [
-			{
-				"modifiers" : [ "Ctrl" ],
-				"key" : "Enter",
-				"enable" : true
-			},
-			{
-				"modifiers" : [],
-				"key" : "F8",
-				"enable" : true
-			}
-		],
-		"timing add lead in" : [
+		"time/lead/in" : [
 			{
 				"modifiers" : [],
 				"key" : "C",
 				"enable" : true
 			}
 		],
-		"timing add lead out" : [
+		"time/lead/out" : [
 			{
 				"modifiers" : [],
 				"key" : "V",
@@ -485,7 +473,7 @@
 				"enable" : true
 			}
 		],
-		"timing move to next item" : [
+		"time/next" : [
 			{
 				"modifiers" : [],
 				"key" : "X",
@@ -497,7 +485,7 @@
 				"enable" : true
 			}
 		],
-		"timing move to prev item" : [
+		"time/prev" : [
 			{
 				"modifiers" : [],
 				"key" : "Z",
@@ -515,7 +503,7 @@
 				"key" : "KP_Multiply",
 				"enable" : true
 			}
-		],
+		]
 	},
 
 	"Video" : {

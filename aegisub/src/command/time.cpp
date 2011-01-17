@@ -44,12 +44,15 @@
 
 #include "command.h"
 
+#include "../selection_controller.h"
+#include "../ass_dialogue.h"
+#include "../ass_file.h"
+#include "../audio_controller.h"
+#include "../audio_timing.h"
+#include "../dialog_shift_times.h"
 #include "../include/aegisub/context.h"
 #include "../subs_grid.h"
 #include "../video_context.h"
-#include "../ass_dialogue.h"
-#include "../dialog_shift_times.h"
-#include "../ass_file.h"
 
 namespace cmd {
 /// @defgroup cmd-time Time manipulation commands.
@@ -230,6 +233,26 @@ struct time_snap_scene : public Command {
 	}
 };
 
+struct time_add_lead_in : public Command {
+	CMD_NAME("time/lead/in")
+	STR_MENU("Add lead in")
+	STR_DISP("Add lead in")
+	STR_HELP("Add lead in")
+	void operator()(agi::Context *c) {
+		//audioDisplay->AddLead(true,false);
+	}
+};
+
+struct time_add_lead_out : public Command {
+	CMD_NAME("time/lead/out")
+	STR_MENU("Add lead out")
+	STR_DISP("Add lead out")
+	STR_HELP("Add lead out")
+	void operator()(agi::Context *c) {
+		//audioDisplay->AddLead(false,true);
+	}
+};
+
 
 /// Set start of selected subtitles to current video frame.
 struct time_snap_start_video : public Command {
@@ -285,21 +308,53 @@ struct time_sort_style : public Command {
 	}
 };
 
+/// Switch to the next timeable thing (line or syllable)
+struct time_next : public Command {
+	CMD_NAME("time/next")
+	STR_MENU("Next line")
+	STR_DISP("Next line")
+	STR_HELP("Next line")
+	void operator()(agi::Context *c) {
+		c->audioController->Stop();
+		if (c->audioController->GetTimingController())
+			c->audioController->GetTimingController()->Next();
+		c->audioController->PlayPrimaryRange();
+	}
+};
+
+/// Switch to the previous timeable thing (line or syllable)
+struct time_prev : public Command {
+	CMD_NAME("time/prev")
+	STR_MENU("Previous line")
+	STR_DISP("Previous line")
+	STR_HELP("Previous line")
+	void operator()(agi::Context *c) {
+		c->audioController->Stop();
+		if (c->audioController->GetTimingController())
+			c->audioController->GetTimingController()->Prev();
+		c->audioController->PlayPrimaryRange();
+	}
+};
+
 /// @}
 
 /// Init time/ commands.
 void init_time(CommandManager *cm) {
-	cm->reg(new time_continuous_end());
-	cm->reg(new time_continuous_start());
-	cm->reg(new time_frame_current());
-	cm->reg(new time_shift());
-	cm->reg(new time_snap_end_video());
-	cm->reg(new time_snap_frame());
-	cm->reg(new time_snap_scene());
-	cm->reg(new time_snap_start_video());
-	cm->reg(new time_sort_end());
-	cm->reg(new time_sort_start());
-	cm->reg(new time_sort_style());
+	cm->reg(new time_add_lead_in);
+	cm->reg(new time_add_lead_out);
+	cm->reg(new time_continuous_end);
+	cm->reg(new time_continuous_start);
+	cm->reg(new time_frame_current);
+	cm->reg(new time_next);
+	cm->reg(new time_prev);
+	cm->reg(new time_shift);
+	cm->reg(new time_snap_end_video);
+	cm->reg(new time_snap_frame);
+	cm->reg(new time_snap_scene);
+	cm->reg(new time_snap_start_video);
+	cm->reg(new time_sort_end);
+	cm->reg(new time_sort_start);
+	cm->reg(new time_sort_style);
 }
 
 } // namespace cmd
