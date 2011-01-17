@@ -308,8 +308,7 @@ void FrameMain::InitContents() {
 	audioSash->SetSashVisible(wxSASH_BOTTOM, true);
 
 	StartupLog("Create audio box");
-	context->audioBox = audioBox = new AudioBox(audioSash, context->audioController, SubsGrid, context->ass);
-	audioBox->frameMain = this;
+	context->audioBox = audioBox = new AudioBox(audioSash, context.get());
 	audioSashSizer->Add(audioBox, 1, wxEXPAND);
 	audioSash->SetSizer(audioSashSizer);
 	audioBox->Fit();

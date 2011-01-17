@@ -45,18 +45,19 @@
 #include <wx/mousestate.h>
 #endif
 
+#include "block_cache.h"
+#include "selection_controller.h"
 #include "ass_time.h"
 #include "audio_colorscheme.h"
 #include "audio_controller.h"
 #include "audio_display.h"
-#include "block_cache.h"
 #include "audio_renderer.h"
 #include "audio_renderer_spectrum.h"
 #include "audio_renderer_waveform.h"
-#include "selection_controller.h"
 #include "audio_timing.h"
-#include "include/aegisub/audio_provider.h"
 #include "include/aegisub/audio_player.h"
+#include "include/aegisub/audio_provider.h"
+#include "include/aegisub/hotkey.h"
 #include "main.h"
 #include "utils.h"
 
@@ -788,6 +789,7 @@ BEGIN_EVENT_TABLE(AudioDisplay, wxWindow)
 	EVT_SIZE(AudioDisplay::OnSize)
 	EVT_SET_FOCUS(AudioDisplay::OnFocus)
 	EVT_KILL_FOCUS(AudioDisplay::OnFocus)
+	EVT_KEY_DOWN(AudioDisplay::OnKeyDown)
 END_EVENT_TABLE()
 
 
@@ -1148,6 +1150,12 @@ void AudioDisplay::OnMouseEvent(wxMouseEvent& event)
 	}
 
 	/// @todo Handle middle click to seek video
+}
+
+void AudioDisplay::OnKeyDown(wxKeyEvent& event)
+{
+	hotkey::check("Audio", event.GetKeyCode(), event.GetUnicodeKey(), event.GetModifiers());
+	event.StopPropagation();
 }
 
 

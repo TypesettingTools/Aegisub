@@ -198,6 +198,8 @@ private:
 	void OnSize(wxSizeEvent &event);
 	/// wxWidgets input focus changed event
 	void OnFocus(wxFocusEvent &event);
+	/// wxWidgets keypress event
+	void OnKeyDown(wxKeyEvent& event);
 
 	// AudioControllerAudioEventListener implementation
 	virtual void OnAudioOpen(AudioProvider *provider);

@@ -37,9 +37,6 @@
 
 #pragma once
 
-
-///////////
-// Headers
 #ifndef AGI_PRE
 #include <wx/bmpbuttn.h>
 #include <wx/button.h>
@@ -54,20 +51,15 @@
 #include <wx/tglbtn.h>
 #endif
 
-//////////////
-// Prototypes
 class AudioController;
-class AssDialogue;
-class AssFile;
-class AudioTimingController;
 class AudioDisplay;
 class AudioKaraoke;
-class FrameMain;
-class SubtitlesGrid;
-class wxToggleButton;
+class AudioTimingController;
 class ToggleBitmap;
-
-
+namespace agi {
+	struct Context;
+	class OptionValue;
+}
 
 /// @class AudioBox
 /// @brief Panel with audio playback and timing controls, also containing an AudioDisplay
@@ -75,11 +67,14 @@ class AudioBox : public wxPanel {
 	/// The audio display in the box
 	AudioDisplay *audioDisplay;
 	
-	/// Selection controller used for timing controllers
-	SelectionController<AssDialogue> *selection_controller;
-	
+	/// The controller controlling this audio box
+	AudioController *controller;
+
 	/// The regular dialogue timing controller
 	AudioTimingController *timing_controller_dialogue;
+
+	/// Project context this operates on
+	agi::Context *context;
 
 	/// DOCME
 	wxSlider *HorizontalZoom;
@@ -89,21 +84,6 @@ class AudioBox : public wxPanel {
 
 	/// DOCME
 	wxSlider *VolumeBar;
-
-	/// DOCME
-	wxSizer *MainSizer;
-
-	/// DOCME
-	wxSizer *TopSizer;
-
-	/// DOCME
-	wxSizer *sashSizer;
-
-	/// DOCME
-	wxSizer *DisplaySizer;
-
-	/// DOCME
-	ToggleBitmap *VerticalLink;
 
 	/// Karaoke box sizer
 	wxSizer *karaokeSizer;
@@ -126,49 +106,19 @@ class AudioBox : public wxPanel {
 	/// Cancel/Accept sizer.
 	wxSizer *CancelAcceptSizer;
 
-	/// DOCME
-	ToggleBitmap *AutoScroll;
-
-	/// DOCME
-	ToggleBitmap *NextCommit;
-
-	/// DOCME
-	ToggleBitmap *AutoCommit;
-
 	void OnHorizontalZoom(wxScrollEvent &event);
 	void OnVerticalZoom(wxScrollEvent &event);
 	void OnVolume(wxScrollEvent &event);
-	void OnVerticalLink(wxCommandEvent &event);
+	void OnVerticalLink(agi::OptionValue const& opt);
 
-	void OnPlaySelection(wxCommandEvent &event);
-	void OnPlayDialogue(wxCommandEvent &event);
-	void OnStop(wxCommandEvent &event);
-	void OnNext(wxCommandEvent &event);
-	void OnPrev(wxCommandEvent &event);
-	void OnPlay500Before(wxCommandEvent &event);
-	void OnPlay500After(wxCommandEvent &event);
-	void OnPlay500First(wxCommandEvent &event);
-	void OnPlay500Last(wxCommandEvent &event);
-	void OnPlayToEnd(wxCommandEvent &event);
-	void OnCommit(wxCommandEvent &event);
 	void OnKaraoke(wxCommandEvent &event);
 	void OnJoin(wxCommandEvent &event);
 	void OnSplit(wxCommandEvent &event);
 	void OnCancel(wxCommandEvent &event);
 	void OnAccept(wxCommandEvent &event);
 	void OnGoto(wxCommandEvent &event);
-	void OnLeadIn(wxCommandEvent &event);
-	void OnLeadOut(wxCommandEvent &event);
 
-	void OnAutoGoto(wxCommandEvent &event);
-	void OnAutoCommit(wxCommandEvent &event);
-	void OnNextLineCommit(wxCommandEvent &event);
-
-
-public:
-
-	/// The controller controlling this audio box
-	AudioController *controller;
+	void OnCommand(wxCommandEvent &event);
 
 	/// DOCME
 	AudioKaraoke *audioKaraoke;
@@ -177,17 +127,14 @@ public:
 	wxBitmapToggleButton *KaraokeButton;
 
 	/// DOCME
-	FrameMain *frameMain;
-
-	/// DOCME
 	bool karaokeMode;
 
-	AudioBox(wxWindow *parent, AudioController *controller, SelectionController<AssDialogue> *selection_controller, AssFile *ass);
+public:
+
+	AudioBox(wxWindow *parent, agi::Context *context);
 	~AudioBox();
 
 	void SetKaraokeButtons();
 
 	DECLARE_EVENT_TABLE()
 };
-
-

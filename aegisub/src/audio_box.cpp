@@ -39,7 +39,6 @@
 #ifndef AGI_PRE
 #include <math.h>
 
-#include <wx/recguard.h>
 #include <wx/statline.h>
 #include <wx/tglbtn.h>
 #include <wx/laywin.h> // Keep this last so wxSW_3D is set.
@@ -47,72 +46,61 @@
 
 #include <libaegisub/log.h>
 
-#include "include/aegisub/audio_player.h"
 #include "selection_controller.h"
-#include "audio_controller.h"
 #include "audio_box.h"
+#include "audio_controller.h"
 #include "audio_display.h"
 #include "audio_karaoke.h"
 #include "audio_timing.h"
-#include "frame_main.h"
-#include "include/aegisub/audio_player.h"
+#include "command/command.h"
+#include "include/aegisub/context.h"
 #include "libresrc/libresrc.h"
 #include "main.h"
 #include "toggle_bitmap.h"
 #include "tooltip_manager.h"
+#include "utils.h"
 
 enum AudioBoxControlIDs {
 	Audio_Scrollbar = 1600,
 	Audio_Horizontal_Zoom,
 	Audio_Vertical_Zoom,
 	Audio_Volume,
-	Audio_Sash,
-	Audio_Vertical_Link,
-	Audio_Button_Play,
-	Audio_Button_Stop,
-	Audio_Button_Prev,
-	Audio_Button_Next,
-	Audio_Button_Play_500ms_Before,
-	Audio_Button_Play_500ms_After,
-	Audio_Button_Play_500ms_First,
-	Audio_Button_Play_500ms_Last,
-	Audio_Button_Play_Row,
-	Audio_Button_Play_To_End,
-	Audio_Button_Commit,
 	Audio_Button_Karaoke,
 	Audio_Button_Goto,
 
 	Audio_Button_Join,		/// Karaoke -> Enter join mode.
 	Audio_Button_Split,		/// Karaoke -> Enter split mode.
 	Audio_Button_Accept,	/// Karaoke -> Split/Join mode -> Accept.
-	Audio_Button_Cancel,	/// KAraoke -> Split/Join mode -> Cancel.
-
-	Audio_Button_Leadin,
-	Audio_Button_Leadout,
-
-	Audio_Check_AutoCommit,
-	Audio_Check_NextCommit,
-	Audio_Check_AutoGoto,
-	Audio_Check_Medusa,
-	Audio_Check_Spectrum
+	Audio_Button_Cancel		/// Karaoke -> Split/Join mode -> Cancel.
 };
 
+static void add_button(wxWindow *parent, wxSizer *sizer, int border, const char *command) {
+	cmd::Command *c = cmd::get(command);
+	wxBitmapButton *btn = new wxBitmapButton(parent, cmd::id(command), *c->Icon(16));
+	ToolTipManager::Bind(btn, c->StrHelp(), "Audio", command);
+	sizer->Add(btn, 0, wxRIGHT, border);
+}
+
+static void add_option(wxWindow *parent, wxSizer *sizer, int border, const char *command, const char *option) {
+	cmd::Command *c = cmd::get(command);
+	ToggleBitmap *btn = new ToggleBitmap(parent, cmd::id(command), *c->Icon(16), wxSize(20, -1));
+	ToolTipManager::Bind(btn, c->StrHelp(), "Audio", command);
+	btn->SetValue(OPT_GET(option)->GetBool());
+	sizer->Add(btn, 0, wxRIGHT | wxALIGN_CENTER | wxEXPAND, border);
+}
 
 
 /// @brief Constructor 
 /// @param parent 
 ///
-AudioBox::AudioBox(wxWindow *parent, AudioController *_controller, SelectionController<AssDialogue> *selection_controller, AssFile *ass)
-: wxPanel(parent,-1,wxDefaultPosition,wxDefaultSize,wxTAB_TRAVERSAL|wxBORDER_RAISED)
-, selection_controller(selection_controller)
-, controller(_controller)
+AudioBox::AudioBox(wxWindow *parent, agi::Context *context)
+: wxPanel(parent, -1, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL|wxBORDER_RAISED)
+, audioDisplay(new AudioDisplay(this, context->audioController))
+, controller(context->audioController)
+, timing_controller_dialogue(CreateDialogueTimingController(controller, context->selectionController, context->ass))
+, context(context)
+, karaokeMode(false)
 {
-	// Setup
-	karaokeMode = false;
-
-	// Sash and Display
-	audioDisplay = new AudioDisplay(this, controller);
-
 	// Zoom
 	HorizontalZoom = new wxSlider(this,Audio_Horizontal_Zoom,0,-50,30,wxDefaultPosition,wxSize(-1,20),wxSL_VERTICAL|wxSL_BOTH);
 	HorizontalZoom->SetToolTip(_("Horizontal zoom"));
@@ -125,9 +113,6 @@ AudioBox::AudioBox(wxWindow *parent, AudioController *_controller, SelectionCont
 		VolumeBar->SetValue(VerticalZoom->GetValue());
 		VolumeBar->Enable(false);
 	}
-	VerticalLink = new ToggleBitmap(this,Audio_Vertical_Link,GETIMAGE(toggle_audio_link_16));
-	VerticalLink->SetToolTip(_("Link vertical zoom and volume sliders"));
-	VerticalLink->SetValue(link);
 
 	// VertVol sider
 	wxSizer *VertVol = new wxBoxSizer(wxHORIZONTAL);
@@ -135,80 +120,44 @@ AudioBox::AudioBox(wxWindow *parent, AudioController *_controller, SelectionCont
 	VertVol->Add(VolumeBar,1,wxEXPAND,0);
 	wxSizer *VertVolArea = new wxBoxSizer(wxVERTICAL);
 	VertVolArea->Add(VertVol,1,wxEXPAND,0);
-	VertVolArea->Add(VerticalLink,0,wxEXPAND,0);
+
+	add_option(this, VertVolArea, 0, "audio/opt/vertical_link", "Audio/Link");
+	OPT_SUB("Audio/Link", bind(&AudioBox::OnVerticalLink, this, std::tr1::placeholders::_1));
 
 	// Top sizer
-	TopSizer = new wxBoxSizer(wxHORIZONTAL);
+	wxSizer *TopSizer = new wxBoxSizer(wxHORIZONTAL);
 	TopSizer->Add(audioDisplay,1,wxEXPAND,0);
 	TopSizer->Add(HorizontalZoom,0,wxEXPAND,0);
 	TopSizer->Add(VertVolArea,0,wxEXPAND,0);
 
 	// Buttons sizer
 	wxSizer *ButtonSizer = new wxBoxSizer(wxHORIZONTAL);
-	wxButton *temp;
-	temp = new wxBitmapButton(this,Audio_Button_Prev,GETIMAGE(button_prev_16),wxDefaultPosition,wxDefaultSize);
-	ToolTipManager::Bind(temp,_("Previous line or syllable"), "Audio", "time/prev");
-	ButtonSizer->Add(temp,0,wxRIGHT,0);
-	temp = new wxBitmapButton(this,Audio_Button_Next,GETIMAGE(button_next_16),wxDefaultPosition,wxDefaultSize);
-	ToolTipManager::Bind(temp,_("Next line/syllable"), "Audio", "time/next");
-	ButtonSizer->Add(temp,0,wxRIGHT,0);
-	temp = new wxBitmapButton(this,Audio_Button_Play,GETIMAGE(button_playsel_16),wxDefaultPosition,wxDefaultSize);
-	ToolTipManager::Bind(temp,_("Play selection"), "Audio", "audio/play/selection");
-	ButtonSizer->Add(temp,0,wxRIGHT,0);
-	/// @todo does this make any sense with default-commit?
-	temp = new wxBitmapButton(this,Audio_Button_Play_Row,GETIMAGE(button_playline_16),wxDefaultPosition,wxDefaultSize);
-	ToolTipManager::Bind(temp,_("Play current line"), "Audio", "Audio Play Original Line");
-	ButtonSizer->Add(temp,0,wxRIGHT,0);
-	temp = new wxBitmapButton(this,Audio_Button_Stop,GETIMAGE(button_stop_16),wxDefaultPosition,wxDefaultSize);
-	ToolTipManager::Bind(temp,_("Stop"), "Audio", "audio/stop");
-	ButtonSizer->Add(temp,0,wxRIGHT,10);
+	add_button(this, ButtonSizer, 0, "time/prev");
+	add_button(this, ButtonSizer, 0, "time/next");
+	add_button(this, ButtonSizer, 0, "audio/play/selection");
+	add_button(this, ButtonSizer, 10, "audio/stop");
 
-	temp = new wxBitmapButton(this,Audio_Button_Play_500ms_Before,GETIMAGE(button_playfivehbefore_16),wxDefaultPosition,wxDefaultSize);
-	ToolTipManager::Bind(temp,_("Play 500 ms before selection"), "Audio", "audio/play/selection/before");
-	ButtonSizer->Add(temp,0,wxRIGHT,0);
-	temp = new wxBitmapButton(this,Audio_Button_Play_500ms_After,GETIMAGE(button_playfivehafter_16),wxDefaultPosition,wxDefaultSize);
-	ToolTipManager::Bind(temp,_("Play 500 ms after selection"), "Audio", "audio/play/selection/after");
-	ButtonSizer->Add(temp,0,wxRIGHT,0);
-	temp = new wxBitmapButton(this,Audio_Button_Play_500ms_First,GETIMAGE(button_playfirstfiveh_16),wxDefaultPosition,wxDefaultSize);
-	ToolTipManager::Bind(temp,_("Play first 500ms of selection"), "Audio", "audio/play/selection/begin");
-	ButtonSizer->Add(temp,0,wxRIGHT,0);
-	temp = new wxBitmapButton(this,Audio_Button_Play_500ms_Last,GETIMAGE(button_playlastfiveh_16),wxDefaultPosition,wxDefaultSize);
-	ToolTipManager::Bind(temp,_("Play last 500ms of selection"), "Audio", "audio/play/selection/end");
-	ButtonSizer->Add(temp,0,wxRIGHT,0);
-	temp = new wxBitmapButton(this,Audio_Button_Play_To_End,GETIMAGE(button_playtoend_16),wxDefaultPosition,wxDefaultSize);
-	ToolTipManager::Bind(temp,_("Play from selection start to end of file"), "Audio", "audio/play/to_end");
-	ButtonSizer->Add(temp,0,wxRIGHT,10);
+	add_button(this, ButtonSizer, 0, "audio/play/selection/before");
+	add_button(this, ButtonSizer, 0, "audio/play/selection/after");
+	add_button(this, ButtonSizer, 0, "audio/play/selection/begin");
+	add_button(this, ButtonSizer, 0, "audio/play/selection/end");
+	add_button(this, ButtonSizer, 10, "audio/play/to_end");
 
-	temp = new wxBitmapButton(this,Audio_Button_Leadin,GETIMAGE(button_leadin_16),wxDefaultPosition,wxDefaultSize);
-	ToolTipManager::Bind(temp,_("Add lead in"), "Audio", "time/lead/in");
-	ButtonSizer->Add(temp,0,wxRIGHT,0);
-	temp = new wxBitmapButton(this,Audio_Button_Leadout,GETIMAGE(button_leadout_16),wxDefaultPosition,wxDefaultSize);
-	ToolTipManager::Bind(temp,_("Add lead out"), "Audio", "time/lead/out");
-	ButtonSizer->Add(temp,0,wxRIGHT,10);
+	add_button(this, ButtonSizer, 0, "time/lead/in");
+	add_button(this, ButtonSizer, 10, "time/lead/out");
 
-	temp = new wxBitmapButton(this,Audio_Button_Commit,GETIMAGE(button_audio_commit_16),wxDefaultPosition,wxDefaultSize);
-	ToolTipManager::Bind(temp,_("Commit changes"), "Audio", "audio/commit");
-	ButtonSizer->Add(temp,0,wxRIGHT,0);
-	temp = new wxBitmapButton(this,Audio_Button_Goto,GETIMAGE(button_audio_goto_16),wxDefaultPosition,wxDefaultSize);
+	add_button(this, ButtonSizer, 0, "audio/commit");
+	wxButton *temp = new wxBitmapButton(this,Audio_Button_Goto,GETIMAGE(button_audio_goto_16));
 	temp->SetToolTip(_("Go to selection"));
 	ButtonSizer->Add(temp,0,wxRIGHT,10);
 
-	AutoCommit = new ToggleBitmap(this,Audio_Check_AutoCommit,GETIMAGE(toggle_audio_autocommit_16), wxSize(20, -1));
-	AutoCommit->SetToolTip(_("Automatically commit all changes"));
-	AutoCommit->SetValue(OPT_GET("Audio/Auto/Commit")->GetBool());
-	ButtonSizer->Add(AutoCommit,0,wxRIGHT | wxALIGN_CENTER | wxEXPAND,0);
-	NextCommit = new ToggleBitmap(this,Audio_Check_NextCommit,GETIMAGE(toggle_audio_nextcommit_16), wxSize(20, -1));
-	NextCommit->SetToolTip(_("Auto goes to next line on commit"));
-	NextCommit->SetValue(OPT_GET("Audio/Next Line on Commit")->GetBool());
-	ButtonSizer->Add(NextCommit,0,wxRIGHT | wxALIGN_CENTER | wxEXPAND,0);
-	AutoScroll = new ToggleBitmap(this,Audio_Check_AutoGoto,GETIMAGE(toggle_audio_autoscroll_16), wxSize(20, -1));
-	AutoScroll->SetToolTip(_("Auto scrolls audio display to selected line"));
-	AutoScroll->SetValue(OPT_GET("Audio/Auto/Scroll")->GetBool());
-	ButtonSizer->Add(AutoScroll,0,wxRIGHT | wxALIGN_CENTER | wxEXPAND,10);
+	add_option(this, ButtonSizer, 0, "audio/opt/autocommit", "Audio/Auto/Commit");
+	add_option(this, ButtonSizer, 0, "audio/opt/autonext", "Audio/Next Line on Commit");
+	add_option(this, ButtonSizer, 10, "audio/opt/autoscroll", "Audio/Auto/Scroll");
 
 	ButtonSizer->AddStretchSpacer(1);
 
-	KaraokeButton = new wxBitmapToggleButton(this,Audio_Button_Karaoke,GETIMAGE(kara_mode_16),wxDefaultPosition,wxDefaultSize);
+	KaraokeButton = new wxBitmapToggleButton(this,Audio_Button_Karaoke,GETIMAGE(kara_mode_16));
 	KaraokeButton->SetToolTip(_("Toggle karaoke mode"));
 	ButtonSizer->Add(KaraokeButton,0,wxRIGHT|wxEXPAND,0);
 
@@ -216,17 +165,17 @@ AudioBox::AudioBox(wxWindow *parent, AudioController *_controller, SelectionCont
 	karaokeSizer = new wxBoxSizer(wxHORIZONTAL);
 
 	JoinSplitSizer = new wxBoxSizer(wxHORIZONTAL);
-	JoinButton = new wxBitmapButton(this,Audio_Button_Join,GETIMAGE(kara_join_16),wxDefaultPosition,wxDefaultSize);
+	JoinButton = new wxBitmapButton(this,Audio_Button_Join,GETIMAGE(kara_join_16));
 	JoinButton->SetToolTip(_("Join selected syllables"));
-	SplitButton = new wxBitmapButton(this,Audio_Button_Split,GETIMAGE(kara_split_16),wxDefaultPosition,wxDefaultSize);
+	SplitButton = new wxBitmapButton(this,Audio_Button_Split,GETIMAGE(kara_split_16));
 	SplitButton->SetToolTip(_("Enter split-mode"));
 	JoinSplitSizer->Add(JoinButton,0,wxRIGHT|wxEXPAND,0);
 	JoinSplitSizer->Add(SplitButton,0,wxRIGHT|wxEXPAND,0);
 
 	CancelAcceptSizer = new wxBoxSizer(wxHORIZONTAL);
-	CancelButton = new wxBitmapButton(this,Audio_Button_Cancel,GETIMAGE(kara_split_accept_16),wxDefaultPosition,wxDefaultSize);
+	CancelButton = new wxBitmapButton(this,Audio_Button_Cancel,GETIMAGE(kara_split_accept_16));
 	CancelButton->SetToolTip(_("Commit splits and leave split-mode"));
-	AcceptButton = new wxBitmapButton(this,Audio_Button_Accept,GETIMAGE(kara_split_cancel_16),wxDefaultPosition,wxDefaultSize);
+	AcceptButton = new wxBitmapButton(this,Audio_Button_Accept,GETIMAGE(kara_split_cancel_16));
 	AcceptButton->SetToolTip(_("Discard all splits and leave split-mode"));
 	CancelAcceptSizer->Add(CancelButton,0,wxRIGHT|wxEXPAND,0);
 	CancelAcceptSizer->Add(AcceptButton,0,wxRIGHT|wxEXPAND,0);
@@ -240,22 +189,20 @@ AudioBox::AudioBox(wxWindow *parent, AudioController *_controller, SelectionCont
 	karaokeSizer->Add(audioKaraoke,1,wxEXPAND,0);
 
 	// Main sizer
-	MainSizer = new wxBoxSizer(wxVERTICAL);
+	wxBoxSizer *MainSizer = new wxBoxSizer(wxVERTICAL);
 	MainSizer->Add(TopSizer,1,wxEXPAND|wxALL,3);
 	MainSizer->Add(ButtonSizer,0,wxEXPAND|wxBOTTOM|wxLEFT|wxRIGHT,3);
-	//MainSizer->Add(new wxStaticLine(this),0,wxEXPAND|wxTOP|wxBOTTOM,2);
 	MainSizer->Add(karaokeSizer,0,wxEXPAND|wxBOTTOM|wxLEFT|wxRIGHT,3);
 	MainSizer->AddSpacer(3);
-	//MainSizer->SetSizeHints(this);
 	SetSizer(MainSizer);
 
 	SetKaraokeButtons(); // Decide which one to show or hide.
 
-	timing_controller_dialogue = CreateDialogueTimingController(controller, selection_controller, ass);
 	controller->SetTimingController(timing_controller_dialogue);
+
+	Bind(wxEVT_COMMAND_BUTTON_CLICKED, &AudioBox::OnCommand, this);
+	Bind(wxEVT_COMMAND_TOGGLEBUTTON_CLICKED, &AudioBox::OnCommand, this);
 }
-
-
 
 /// @brief Destructor 
 ///
@@ -263,42 +210,29 @@ AudioBox::~AudioBox()
 {
 }
 
-
-
-///////////////
-// Event table
 BEGIN_EVENT_TABLE(AudioBox,wxPanel)
 	EVT_COMMAND_SCROLL(Audio_Horizontal_Zoom, AudioBox::OnHorizontalZoom)
 	EVT_COMMAND_SCROLL(Audio_Vertical_Zoom, AudioBox::OnVerticalZoom)
 	EVT_COMMAND_SCROLL(Audio_Volume, AudioBox::OnVolume)
 
-	EVT_BUTTON(Audio_Button_Play, AudioBox::OnPlaySelection)
-	EVT_BUTTON(Audio_Button_Play_Row, AudioBox::OnPlayDialogue)
-	EVT_BUTTON(Audio_Button_Stop, AudioBox::OnStop)
-	EVT_BUTTON(Audio_Button_Next, AudioBox::OnNext)
-	EVT_BUTTON(Audio_Button_Prev, AudioBox::OnPrev)
-	EVT_BUTTON(Audio_Button_Play_500ms_Before, AudioBox::OnPlay500Before)
-	EVT_BUTTON(Audio_Button_Play_500ms_After, AudioBox::OnPlay500After)
-	EVT_BUTTON(Audio_Button_Play_500ms_First, AudioBox::OnPlay500First)
-	EVT_BUTTON(Audio_Button_Play_500ms_Last, AudioBox::OnPlay500Last)
-	EVT_BUTTON(Audio_Button_Play_To_End, AudioBox::OnPlayToEnd)
-	EVT_BUTTON(Audio_Button_Commit, AudioBox::OnCommit)
 	EVT_BUTTON(Audio_Button_Goto, AudioBox::OnGoto)
 	EVT_BUTTON(Audio_Button_Join,AudioBox::OnJoin)
 	EVT_BUTTON(Audio_Button_Split,AudioBox::OnSplit)
 	EVT_BUTTON(Audio_Button_Cancel,AudioBox::OnCancel)
 	EVT_BUTTON(Audio_Button_Accept,AudioBox::OnAccept)
-	EVT_BUTTON(Audio_Button_Leadin,AudioBox::OnLeadIn)
-	EVT_BUTTON(Audio_Button_Leadout,AudioBox::OnLeadOut)
 
-	EVT_TOGGLEBUTTON(Audio_Vertical_Link, AudioBox::OnVerticalLink)
 	EVT_TOGGLEBUTTON(Audio_Button_Karaoke, AudioBox::OnKaraoke)
-	EVT_TOGGLEBUTTON(Audio_Check_AutoGoto,AudioBox::OnAutoGoto)
-	EVT_TOGGLEBUTTON(Audio_Check_AutoCommit,AudioBox::OnAutoCommit)
-	EVT_TOGGLEBUTTON(Audio_Check_NextCommit,AudioBox::OnNextLineCommit)
 END_EVENT_TABLE()
 
-
+void AudioBox::OnCommand(wxCommandEvent &event) {
+	if (event.GetId() < Audio_Scrollbar) {
+		cmd::call(context, event.GetId());
+		audioDisplay->SetFocus();
+	}
+	else {
+		event.Skip();
+	}
+}
 
 /// @brief Horizontal zoom bar changed 
 /// @param event 
@@ -309,192 +243,31 @@ void AudioBox::OnHorizontalZoom(wxScrollEvent &event) {
 	audioDisplay->SetZoomLevel(-event.GetPosition());
 }
 
-
-
-/// @brief Vertical zoom bar changed 
-/// @param event 
-///
 void AudioBox::OnVerticalZoom(wxScrollEvent &event) {
-	int pos = event.GetPosition();
-	if (pos < 1) pos = 1;
-	if (pos > 100) pos = 100;
-	float value = pow(float(pos)/50.0f,3);
+	int pos = mid(1, event.GetPosition(), 100);
+	double value = pow(pos / 50.0, 3);
 	audioDisplay->SetAmplitudeScale(value);
-	if (VerticalLink->GetValue()) {
-		controller->SetVolume(value);
+	if (!VolumeBar->IsEnabled()) {
 		VolumeBar->SetValue(pos);
+		controller->SetVolume(value);
 	}
 }
 
-
-
-/// @brief Volume bar changed 
-/// @param event 
-///
 void AudioBox::OnVolume(wxScrollEvent &event) {
-	if (!VerticalLink->GetValue()) {
-		int pos = event.GetPosition();
-		if (pos < 1) pos = 1;
-		if (pos > 100) pos = 100;
-		controller->SetVolume(pow(float(pos)/50.0f,3));
-	}
+	int pos = mid(1, event.GetPosition(), 100);
+	controller->SetVolume(pow(pos / 50.0, 3));
 }
 
-
-
-/// @brief Bars linked/unlinked 
-/// @param event 
-///
-void AudioBox::OnVerticalLink(wxCommandEvent &event) {
-	int pos = VerticalZoom->GetValue();
-	if (pos < 1) pos = 1;
-	if (pos > 100) pos = 100;
-	float value = pow(float(pos)/50.0f,3);
-	if (VerticalLink->GetValue()) {
+void AudioBox::OnVerticalLink(agi::OptionValue const& opt) {
+	if (opt.GetBool()) {
+		int pos = mid(1, VerticalZoom->GetValue(), 100);
+		double value = pow(pos / 50.0, 3);
 		controller->SetVolume(value);
 		VolumeBar->SetValue(pos);
 	}
-	VolumeBar->Enable(!VerticalLink->GetValue());
-
-	OPT_SET("Audio/Link")->SetBool(VerticalLink->GetValue());
+	VolumeBar->Enable(!opt.GetBool());
 }
 
-
-
-/// @brief Play selection 
-/// @param event 
-///
-void AudioBox::OnPlaySelection(wxCommandEvent &event) {
-	controller->PlayPrimaryRange();
-}
-
-
-
-/// @brief Play dialogue 
-/// @param event 
-///
-void AudioBox::OnPlayDialogue(wxCommandEvent &event) {
-	if (controller->GetTimingController())
-		controller->GetTimingController()->Revert();
-	controller->PlayPrimaryRange();
-}
-
-
-
-/// @brief Stop Playing 
-/// @param event 
-///
-void AudioBox::OnStop(wxCommandEvent &event) {
-	controller->Stop();
-}
-
-
-
-/// @brief Next 
-/// @param event 
-///
-void AudioBox::OnNext(wxCommandEvent &event) {
-	//audioDisplay->SetFocus();
-	controller->Stop();
-	if (controller->GetTimingController())
-		controller->GetTimingController()->Next();
-	controller->PlayPrimaryRange();
-}
-
-
-
-/// @brief Previous 
-/// @param event 
-///
-void AudioBox::OnPrev(wxCommandEvent &event) {
-	//audioDisplay->SetFocus();
-	controller->Stop();
-	if (controller->GetTimingController())
-		controller->GetTimingController()->Prev();
-	controller->PlayPrimaryRange();
-}
-
-
-
-/// @brief 500 ms before 
-/// @param event 
-///
-void AudioBox::OnPlay500Before(wxCommandEvent &event) {
-	SampleRange times(controller->GetPrimaryPlaybackRange());
-	controller->PlayRange(SampleRange(
-		times.begin() - controller->SamplesFromMilliseconds(500),
-		times.begin()));
-}
-
-
-
-/// @brief 500 ms after 
-/// @param event 
-///
-void AudioBox::OnPlay500After(wxCommandEvent &event) {
-	SampleRange times(controller->GetPrimaryPlaybackRange());
-	controller->PlayRange(SampleRange(
-		times.end(),
-		times.end() + controller->SamplesFromMilliseconds(500)));
-}
-
-
-
-/// @brief First 500 ms 
-/// @param event 
-///
-void AudioBox::OnPlay500First(wxCommandEvent &event) {
-	SampleRange times(controller->GetPrimaryPlaybackRange());
-	controller->PlayRange(SampleRange(
-		times.begin(),
-		times.begin() + std::min(
-			controller->SamplesFromMilliseconds(500),
-			times.length())));
-}
-
-
-
-/// @brief Last 500 ms 
-/// @param event 
-///
-void AudioBox::OnPlay500Last(wxCommandEvent &event) {
-	SampleRange times(controller->GetPrimaryPlaybackRange());
-	controller->PlayRange(SampleRange(
-		times.end() - std::min(
-			controller->SamplesFromMilliseconds(500),
-			times.length()),
-		times.end()));
-}
-
-
-
-/// @brief Start to end of file 
-/// @param event 
-///
-void AudioBox::OnPlayToEnd(wxCommandEvent &event) {
-	controller->PlayToEnd(controller->GetPrimaryPlaybackRange().begin());
-}
-
-
-
-/// @brief Commit changes 
-/// @param event 
-/// @return 
-///
-void AudioBox::OnCommit(wxCommandEvent &event) {
-	LOG_D("audio/box") << "OnCommit";
-	audioDisplay->SetFocus();
-	LOG_D("audio/box") << "has set focus, now committing changes";
-	controller->GetTimingController()->Commit();
-	LOG_D("audio/box") << "returning";
-}
-
-
-
-/// @brief Toggle karaoke 
-/// @param event 
-/// @return 
-///
 void AudioBox::OnKaraoke(wxCommandEvent &event) {
 	LOG_D("audio/box") << "OnKaraoke";
 	audioDisplay->SetFocus();
@@ -559,7 +332,7 @@ void AudioBox::OnJoin(wxCommandEvent &event) {
 void AudioBox::OnSplit(wxCommandEvent &event) {
 	LOG_D("audio/box") << "split";
 	audioDisplay->SetFocus();
-		audioKaraoke->BeginSplit();
+	audioKaraoke->BeginSplit();
 }
 
 /// @brief Cancel join/split in karaoke mode.
@@ -589,64 +362,3 @@ void AudioBox::OnGoto(wxCommandEvent &event) {
 	if (controller->GetTimingController())
 		audioDisplay->ScrollSampleRangeInView(controller->GetTimingController()->GetIdealVisibleSampleRange());
 }
-
-
-
-/// @brief Auto Goto 
-/// @param event 
-///
-void AudioBox::OnAutoGoto(wxCommandEvent &event) {
-	audioDisplay->SetFocus();
-	OPT_SET("Audio/Auto/Scroll")->SetBool(AutoScroll->GetValue());
-}
-
-
-
-/// @brief Auto Commit 
-/// @param event 
-///
-void AudioBox::OnAutoCommit(wxCommandEvent &event) {
-	audioDisplay->SetFocus();
-	OPT_SET("Audio/Auto/Commit")->SetBool(AutoCommit->GetValue());
-}
-
-
-
-/// @brief Next line on Commit 
-/// @param event 
-///
-void AudioBox::OnNextLineCommit(wxCommandEvent &event) {
-	audioDisplay->SetFocus();
-	OPT_SET("Audio/Next Line on Commit")->SetBool(NextCommit->GetValue());
-}
-
-
-
-/// @todo Put global audio hotkeys toggling into the menu bar
-/*
-void AudioBox::OnMedusaMode(wxCommandEvent &event) {
-	audioDisplay->SetFocus();
-	OPT_SET("Audio/Medusa Timing Hotkeys")->SetBool(MedusaMode->GetValue());
-	frameMain->SetAccelerators();
-}
-*/
-
-
-
-/// @brief Lead in/out 
-/// @param event 
-///
-void AudioBox::OnLeadIn(wxCommandEvent &event) {
-	audioDisplay->SetFocus();
-	//audioDisplay->AddLead(true,false);
-}
-
-
-/// @brief DOCME
-/// @param event 
-///
-void AudioBox::OnLeadOut(wxCommandEvent &event) {
-	audioDisplay->SetFocus();
-	//audioDisplay->AddLead(false,true);
-}
-

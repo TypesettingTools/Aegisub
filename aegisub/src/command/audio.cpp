@@ -330,6 +330,17 @@ struct audio_autonext : public Command {
 	}
 };
 
+/// Toggle linked vertical zoom and volume
+struct audio_vertical_link : public Command {
+	CMD_NAME("audio/opt/vertical_link")
+	STR_MENU("Link vertical zoom and volume sliders")
+	STR_DISP("Link vertical zoom and volume sliders")
+	STR_HELP("Link vertical zoom and volume sliders")
+	void operator()(agi::Context *c) {
+		toggle("Audio/Link");
+	}
+};
+
 /// @}
 
 /// Init audio/ commands
@@ -352,6 +363,7 @@ void init_audio(CommandManager *cm) {
 	cm->reg(new audio_play_to_end);
 	cm->reg(new audio_save_clip);
 	cm->reg(new audio_stop);
+	cm->reg(new audio_vertical_link);
 	cm->reg(new audio_view_spectrum);
 	cm->reg(new audio_view_waveform);
 }
