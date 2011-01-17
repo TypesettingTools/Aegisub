@@ -34,42 +34,16 @@
 /// @ingroup custom_control
 ///
 
-
-
-
-///////////
-// Headers
 #ifndef AGI_PRE
 #include <list>
+#include <vector>
 
 #include <wx/arrstr.h>
 #include <wx/string.h>
 #include <wx/window.h>
 #endif
 
-
-/// DOCME
-/// @class ToolTipBinding
-/// @brief DOCME
-///
-/// DOCME
-class ToolTipBinding {
-	friend class ToolTipManager;
-private:
-
-	/// DOCME
-	wxWindow *window;
-
-	/// DOCME
-	wxString toolTip;
-
-	/// DOCME
-	wxArrayString hotkeys;
-
-	void Update();
-};
-
-
+struct ToolTipBinding;
 
 /// DOCME
 /// @class ToolTipManager
@@ -77,37 +51,13 @@ private:
 ///
 /// DOCME
 class ToolTipManager {
-private:
-
-	/// @brief DOCME
-	///
-	ToolTipManager() {};
+	ToolTipManager();
+	~ToolTipManager();
 	ToolTipManager(ToolTipManager const&);
 	ToolTipManager& operator=(ToolTipManager const&);
 
-	static ToolTipManager &GetInstance();
-
-
-	/// DOCME
 	std::list<ToolTipBinding> tips;
 
-	void DoUpdate();
-	void AddTips(wxWindow *window,wxString tooltip,wxArrayString hotkeys);
-
 public:
-
-	/// @brief DOCME
-	///
-	static void Update() { GetInstance().DoUpdate(); }
-
-	/// @brief DOCME
-	/// @param window  
-	/// @param tooltip 
-	/// @param hotkeys 
-	///
-	static void Bind(wxWindow *window,wxString tooltip,wxArrayString hotkeys) { GetInstance().AddTips(window,tooltip,hotkeys); }
-	static void Bind(wxWindow *window,wxString tooltip,wxString hotkey=_T(""));
-	static void Bind(wxWindow *window,wxString tooltip,wxString hotkey1,wxString hotkey2);
+	static void Bind(wxWindow *window, wxString tooltip, const char *context, const char *command);
 };
-
-

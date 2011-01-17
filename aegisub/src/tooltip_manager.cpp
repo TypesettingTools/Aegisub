@@ -34,88 +34,44 @@
 /// @ingroup custom_control
 ///
 
-
-///////////
-// Headers
 #include "config.h"
 
 #include "tooltip_manager.h"
 
+#include "include/aegisub/hotkey.h"
 
-/// @brief Update all tips 
-///
-void ToolTipManager::DoUpdate() {
-	for (std::list<ToolTipBinding>::iterator cur=tips.begin();cur!=tips.end();cur++) {
-		(*cur).Update();
-	}
-}
+struct ToolTipBinding {
+	wxWindow *window;
+	wxString toolTip;
+	const char *command;
+	const char *context;
+	void Update();
+};
 
+ToolTipManager::ToolTipManager() { }
+ToolTipManager::~ToolTipManager() { }
 
-
-/// @brief Add a tip 
-/// @param window  
-/// @param tooltip 
-/// @param hotkeys 
-///
-void ToolTipManager::AddTips(wxWindow *window,wxString tooltip,wxArrayString hotkeys) {
-	ToolTipBinding tip;
-	tip.hotkeys = hotkeys;
-	tip.window = window;
-	tip.toolTip = tooltip;
+void ToolTipManager::Bind(wxWindow *window, wxString tooltip, const char *context, const char *command) {
+	ToolTipBinding tip = { window, tooltip, command, context };
 	tip.Update();
-	tips.push_back(tip);
-}
+	/// @todo bind to hotkey changed signal once such a thing exists
 
-
-
-/// @brief Single hotkey overload 
-/// @param window  
-/// @param tooltip 
-/// @param hotkey  
-///
-void ToolTipManager::Bind(wxWindow *window,wxString tooltip,wxString hotkey) {
-	wxArrayString hotkeys;
-	if (!hotkey.IsEmpty()) hotkeys.Add(hotkey);
-	Bind(window,tooltip,hotkeys);
-}
-
-
-
-/// @brief Two hotkeys overload 
-/// @param window  
-/// @param tooltip 
-/// @param hotkey1 
-/// @param hotkey2 
-///
-void ToolTipManager::Bind(wxWindow *window,wxString tooltip,wxString hotkey1,wxString hotkey2) {
-	wxArrayString hotkeys;
-	hotkeys.Add(hotkey1);
-	hotkeys.Add(hotkey2);
-	Bind(window,tooltip,hotkeys);
-}
-
-
-
-/// @brief Static instance 
-/// @return 
-///
-ToolTipManager &ToolTipManager::GetInstance() {
 	static ToolTipManager instance;
-	return instance;
+	instance.tips.push_back(tip);
 }
 
-
-
-/// @brief Update a tip 
-///
 void ToolTipBinding::Update() {
-	wxString finalTip = toolTip;
-	wxArrayString hotkeysLeft = hotkeys;
-	while (hotkeysLeft.Count()) {
-//H		finalTip.Replace(_T("%KEY%"),Hotkeys.GetText(hotkeysLeft[0]),false);
-		hotkeysLeft.RemoveAt(0);
+	std::vector<std::string> hotkeys = hotkey::get_hotkey_strs(context, command);
+
+	std::string str;
+	for (size_t i = 0; i < hotkeys.size(); ++i) {
+		if (i > 0) str += "/";
+		str += hotkeys[i];
 	}
-	window->SetToolTip(finalTip);
+	if (str.empty()) {
+		window->SetToolTip(toolTip);
+	}
+	else {
+		window->SetToolTip(toolTip + " (" + str + ")");
+	}
 }
-
-
