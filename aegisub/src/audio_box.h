@@ -34,9 +34,6 @@
 /// @ingroup audio_ui
 ///
 
-
-#pragma once
-
 #ifndef AGI_PRE
 #include <wx/bmpbuttn.h>
 #include <wx/button.h>
