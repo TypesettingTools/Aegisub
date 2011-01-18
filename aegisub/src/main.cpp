@@ -575,7 +575,6 @@ void AegisubApp::MacOpenFile(const wxString &filename) {
 // Event table
 BEGIN_EVENT_TABLE(AegisubApp,wxApp)
 	EVT_MOUSEWHEEL(AegisubApp::OnMouseWheel)
-	EVT_KEY_DOWN(AegisubApp::OnKey)
 END_EVENT_TABLE()
 
 
@@ -592,18 +591,6 @@ void AegisubApp::OnMouseWheel(wxMouseEvent &event) {
 		else event.Skip();
 	}
 	else event.Skip();*/
-}
-
-
-
-/// @brief Key pressed
-/// @param event wxEvent
-/// Noone has any idea what this does anymore.
-void AegisubApp::OnKey(wxKeyEvent &event) {
-	//frame->audioBox->audioDisplay->AddPendingEvent(event);
-//	if (!event.GetSkipped()) {
-//		event.Skip();
-//	}
 }
 
 

@@ -93,7 +93,6 @@ private:
 	PluginManager *plugins;
 
 	void OnMouseWheel(wxMouseEvent &event);
-	void OnKey(wxKeyEvent &key);
 
 #ifdef _DEBUG
 	/// stdout log emitter
