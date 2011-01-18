@@ -60,6 +60,7 @@
 #include "../main.h"
 #include "../subs_grid.h"
 #include "../video_context.h"
+#include "../utils.h"
 
 
 namespace cmd {
@@ -329,9 +330,24 @@ struct subtitle_save_as : public Command {
 	}
 };
 
+/// Selects all dialogue lines
+struct subtitle_select_all : public Command {
+	CMD_NAME("subtitle/select/all")
+	STR_MENU("Select All")
+	STR_DISP("Select All")
+	STR_HELP("Selects all dialogue lines.")
+
+	void operator()(agi::Context *c) {
+		SelectionController<AssDialogue>::Selection sel;
+		transform(c->ass->Line.begin(), c->ass->Line.end(),
+			inserter(sel, sel.begin()), cast<AssDialogue*>());
+		sel.erase(0);
+		c->selectionController->SetSelectedSet(sel);
+	}
+};
 
 /// Selects all lines that are currently visible on video frame.
-struct subtitle_select_visiblek : public Command {
+struct subtitle_select_visible : public Command {
 	CMD_NAME("subtitle/select/visible")
 	STR_MENU("Select Visible")
 	STR_DISP("Select Visible")
@@ -374,23 +390,24 @@ struct subtitle_tags_show : public Command {
 
 /// Init subtitle/ commands.
 void init_subtitle(CommandManager *cm) {
-	cm->reg(new subtitle_attachment());
-	cm->reg(new subtitle_find());
-	cm->reg(new subtitle_find_next());
-	cm->reg(new subtitle_insert_after());
-	cm->reg(new subtitle_insert_after_videotime());
-	cm->reg(new subtitle_insert_before());
-	cm->reg(new subtitle_insert_before_videotime());
-	cm->reg(new subtitle_new());
-	cm->reg(new subtitle_open());
-	cm->reg(new subtitle_open_charset());
-	cm->reg(new subtitle_open_video());
-	cm->reg(new subtitle_properties());
-	cm->reg(new subtitle_save());
-	cm->reg(new subtitle_save_as());
-	cm->reg(new subtitle_select_visiblek());
-	cm->reg(new subtitle_spellcheck());
-	cm->reg(new subtitle_tags_show());
+	cm->reg(new subtitle_attachment);
+	cm->reg(new subtitle_find);
+	cm->reg(new subtitle_find_next);
+	cm->reg(new subtitle_insert_after);
+	cm->reg(new subtitle_insert_after_videotime);
+	cm->reg(new subtitle_insert_before);
+	cm->reg(new subtitle_insert_before_videotime);
+	cm->reg(new subtitle_new);
+	cm->reg(new subtitle_open);
+	cm->reg(new subtitle_open_charset);
+	cm->reg(new subtitle_open_video);
+	cm->reg(new subtitle_properties);
+	cm->reg(new subtitle_save);
+	cm->reg(new subtitle_save_as);
+	cm->reg(new subtitle_select_all);
+	cm->reg(new subtitle_select_visible);
+	cm->reg(new subtitle_spellcheck);
+	cm->reg(new subtitle_tags_show);
 }
 
 

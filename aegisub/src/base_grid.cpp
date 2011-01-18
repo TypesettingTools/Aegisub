@@ -1129,13 +1129,11 @@ bool BaseGrid::IsDisplayed(const AssDialogue *line) const {
 /// @return 
 ///
 void BaseGrid::OnKeyDown(wxKeyEvent &event) {
-	// Get size
 	int w,h;
 	GetClientSize(&w,&h);
 
 	hotkey::check("Subtitle Grid", event.GetKeyCode(), event.GetUnicodeKey(), event.GetModifiers());
 	event.StopPropagation();
-
 
 	// Get scan code
 	int key = event.GetKeyCode();
@@ -1146,25 +1144,6 @@ void BaseGrid::OnKeyDown(wxKeyEvent &event) {
 #endif
 	bool alt = event.m_altDown;
 	bool shift = event.m_shiftDown;
-
-	// Left/right, forward to seek bar if video is loaded
-	if (key == WXK_LEFT || key == WXK_RIGHT) {
-		if (context->videoController->IsLoaded()) {
-			/// todo: is this nessesary, or can left/right just be in the Subtitle Grid category?
-			hotkey::check("Video", event.GetKeyCode(), event.GetUnicodeKey(), event.GetModifiers());
-		}
-		else {
-			event.Skip();
-		}
-		return;
-	}
-
-	// Select all
-	if (key == 'A' && ctrl && !alt && !shift) {
-		Selection sel;
-		std::copy(index_line_map.begin(), index_line_map.end(), std::inserter(sel, sel.end()));
-		SetSelectedSet(sel);
-	}
 
 	// Up/down
 	int dir = 0;
@@ -1240,15 +1219,9 @@ void BaseGrid::OnKeyDown(wxKeyEvent &event) {
 			return;
 		}
 	}
-
-	// Other events, send to audio display
-	/// @todo Reinstate this, or make a better solution, when audio is getting stabler again
-	/*
-	if (context->audio->loaded) {
-		context->audio->GetEventHandler()->ProcessEvent(event);
+	else {
+		hotkey::check("Audio", event.GetKeyCode(), event.GetUnicodeKey(), event.GetModifiers());
 	}
-	*/
-	else event.Skip();
 }
 
 

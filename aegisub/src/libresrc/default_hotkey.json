@@ -95,14 +95,14 @@
 				"enable" : true
 			}
 		],
-		"edit/copy" : [
+		"edit/line/copy" : [
 			{
 				"modifiers" : [ "Ctrl" ],
 				"key" : "C",
 				"enable" : true
 			}
 		],
-		"edit/cut" : [
+		"edit/line/cut" : [
 			{
 				"modifiers" : [ "Ctrl" ],
 				"key" : "X",
@@ -130,14 +130,14 @@
 				"enable" : true
 			}
 		],
-		"edit/paste" : [
+		"edit/line/paste" : [
 			{
 				"modifiers" : [ "Ctrl" ],
 				"key" : "V",
 				"enable" : true
 			}
 		],
-		"edit/paste/over" : [
+		"edit/line/paste/over" : [
 			{
 				"modifiers" : [ "Ctrl", "Shift" ],
 				"key" : "V",
@@ -567,6 +567,30 @@
 			{
 				"modifiers" : [],
 				"key" : "J",
+				"enable" : true
+			}
+		]
+	},
+
+	"Subtitle Grid" : {
+		"subtitle/select/all" : [
+			{
+				"modifiers" : [ "Ctrl" ],
+				"key" : "A",
+				"enable" : true
+			}
+		],
+		"video/frame/next" : [
+			{
+				"modifiers" : [],
+				"key" : "Right",
+				"enable" : true
+			}
+		],
+		"video/frame/prev" : [
+			{
+				"modifiers" : [],
+				"key" : "Left",
 				"enable" : true
 			}
 		]

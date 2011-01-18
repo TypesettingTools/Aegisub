@@ -246,8 +246,11 @@ struct edit_line_swap : public Command {
 	STR_HELP("Swaps the two selected lines.")
 
 	void operator()(agi::Context *c) {
-		wxArrayInt sels = c->subsGrid->GetSelection();
-		c->subsGrid->SwapLines(sels.front(), sels.back());
+		SelectionController<AssDialogue>::Selection sel = c->selectionController->GetSelectedSet();
+		if (sel.size() == 2) {
+			using std::swap;
+			swap(*sel.begin(), *sel.rbegin());
+		}
 	}
 };
 

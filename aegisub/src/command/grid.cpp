@@ -43,16 +43,18 @@
 
 #include "command.h"
 
+#include "../ass_dialogue.h"
+#include "../ass_file.h"
 #include "../include/aegisub/context.h"
 #include "../subs_grid.h"
 #include "../main.h"
 #include "../frame_main.h"
+#include "../utils.h"
+
 
 namespace cmd {
 /// @defgroup cmd-grid Subtitle grid commands.
 /// @{
-
-
 
 /// Move to the next subtitle line.
 struct grid_line_next : public Command {
@@ -144,17 +146,69 @@ struct grid_tags_simplify : public Command {
 	}
 };
 
+template<class T, class U>
+static bool move_one(T begin, T end, U value) {
+	T it = find(begin, end, value);
+	assert(it != end);
+
+	T prev = it;
+	++prev;
+	prev = find_if(prev, end, cast<U>());
+
+	if (prev != end) {
+		using std::swap;
+		swap(*it, *prev);
+		return true;
+	}
+	return false;
+}
+
+/// Swap the active line with the dialogue line above it
+struct grid_swap_up : public Command {
+	CMD_NAME("grid/swap/up")
+	STR_MENU("Move line up")
+	STR_DISP("Move line up")
+	STR_HELP("Move the selected line up one row")
+
+	void operator()(agi::Context *c) {
+		if (AssDialogue *line = c->selectionController->GetActiveLine()) {
+			if (move_one(c->ass->Line.rbegin(), c->ass->Line.rend(), line))
+				/// todo Maybe add COMMIT_ORDER, as the grid is the only thing
+				///      that needs to care about this
+				///      Probably not worth it
+				c->ass->Commit(_("swap lines"), AssFile::COMMIT_FULL);
+		}
+	}
+};
+
+/// Swap the active line with the dialogue line below it
+struct grid_swap_down : public Command {
+	CMD_NAME("grid/swap/down")
+		STR_MENU("Move line down")
+		STR_DISP("Move line down")
+		STR_HELP("Move the selected line down one row")
+
+		void operator()(agi::Context *c) {
+			if (AssDialogue *line = c->selectionController->GetActiveLine()) {
+				if (move_one(c->ass->Line.begin(), c->ass->Line.end(), line))
+					c->ass->Commit(_("swap lines"), AssFile::COMMIT_FULL);
+			}
+	}
+};
+
 /// @}
 
 
 /// Init grid/ commands.
 void init_grid(CommandManager *cm) {
-	cm->reg(new grid_line_next());
-	cm->reg(new grid_line_prev());
-	cm->reg(new grid_tag_cycle_hiding());
-	cm->reg(new grid_tags_hide());
-	cm->reg(new grid_tags_show());
-	cm->reg(new grid_tags_simplify());
+	cm->reg(new grid_line_next);
+	cm->reg(new grid_line_prev);
+	cm->reg(new grid_swap_down);
+	cm->reg(new grid_swap_up);
+	cm->reg(new grid_tag_cycle_hiding);
+	cm->reg(new grid_tags_hide);
+	cm->reg(new grid_tags_show);
+	cm->reg(new grid_tags_simplify);
 }
 
 } // namespace cmd

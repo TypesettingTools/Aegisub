@@ -69,7 +69,6 @@
 #include "video_context.h"
 
 BEGIN_EVENT_TABLE(SubtitlesGrid, BaseGrid)
-	EVT_KEY_DOWN(SubtitlesGrid::OnKeyDown)
 	EVT_MENU_RANGE(MENU_SHOW_COL,MENU_SHOW_COL+15,SubtitlesGrid::OnShowColMenu)
 END_EVENT_TABLE()
 
@@ -247,102 +246,6 @@ void SubtitlesGrid::OnShowColMenu(wxCommandEvent &event) {
 	Refresh(false);
 }
 
-/// @brief Process keyboard events 
-/// @param event 
-void SubtitlesGrid::OnKeyDown(wxKeyEvent &event) {
-
-	hotkey::check("Subtitle Grid", event.GetKeyCode(), event.GetUnicodeKey(), event.GetModifiers());
-	event.StopPropagation();
-
-//H Fix below.
-/*
-	// Get key
-#ifdef __APPLE__
-	Hotkeys.SetPressed(event.GetKeyCode(),event.m_metaDown,event.m_altDown,event.m_shiftDown);
-#else
-	Hotkeys.SetPressed(event.GetKeyCode(),event.m_controlDown,event.m_altDown,event.m_shiftDown);
-#endif
-
-	// Get selection
-	bool continuous = false;
-	wxArrayInt sels = GetSelection(&continuous);
-	int n_found = sels.Count();
-	int n = 0;
-	int n2 = 0;
-	int nrows = GetRows();
-	if (n_found > 0) {
-		n = sels[0];
-		n2 = sels[n_found-1];
-	}
-
-	if (n_found == 1) {
-		// Move down
-		if (Hotkeys.IsPressed(_T("Grid move row down"))) {
-			if (n < nrows-1) {
-				SwapLines(n,n+1);
-				SelectRow(n+1);
-				//editBox->SetToLine(n+1);
-			}
-			return;
-		}
-
-		// Move up
-		if (Hotkeys.IsPressed(_T("Grid move row up"))) {
-			if (n > 0) {
-				SwapLines(n-1,n);
-				SelectRow(n-1);
-				//editBox->SetToLine(n-1);
-			}
-			return;
-		}
-	}
-
-	if (n_found >= 1) {
-		// Copy
-		if (Hotkeys.IsPressed(_T("Copy"))) {
-			CopyLines(GetSelection());
-			return;
-		}
-
-		// Cut
-		if (Hotkeys.IsPressed(_T("Cut"))) {
-			CutLines(GetSelection());
-			return;
-		}
-
-		// Paste
-		if (Hotkeys.IsPressed(_T("Paste"))) {
-			PasteLines(GetFirstSelRow());
-			return;
-		}
-
-		// Delete
-		if (Hotkeys.IsPressed(_T("Grid delete rows"))) {
-			DeleteLines(GetSelection());
-			return;
-		}
-
-		if (continuous) {
-			// Duplicate
-			if (Hotkeys.IsPressed(_T("Grid duplicate rows"))) {
-				DuplicateLines(n,n2,false);
-				return;
-			}
-
-			// Duplicate and shift
-			if (context->videoController->TimecodesLoaded()) {
-				if (Hotkeys.IsPressed(_T("Grid duplicate and shift one frame"))) {
-					DuplicateLines(n,n2,true);
-					return;
-				}
-			}
-		}
-	}
-
-	event.Skip();
-*/
-}
-
 static void trim_text(AssDialogue *diag) {
 	static wxRegEx start(L"^( |\\t|\\\\[nNh])+");
 	static wxRegEx end(L"( |\\t|\\\\[nNh])+$");
@@ -435,19 +338,6 @@ void SubtitlesGrid::RecombineLines() {
 		activeLine = *newSel.begin();
 	}
 	SetActiveLine(activeLine);
-}
-
-/// @brief Swaps two lines 
-/// @param n1 
-/// @param n2 
-void SubtitlesGrid::SwapLines(int n1,int n2) {
-	AssDialogue *dlg1 = GetDialogue(n1);
-	AssDialogue *dlg2 = GetDialogue(n2);
-	if (n1 == 0 || n2 == 0) return;
-	
-	std::swap(*dlg1, *dlg2);
-
-	context->ass->Commit(_("swap lines"));
 }
 
 /// @brief Insert a line 

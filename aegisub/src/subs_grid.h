@@ -66,7 +66,6 @@ class SubtitlesGrid: public BaseGrid {
 
 	void OnPopupMenu(bool alternate=false);
 	void OnCommand(wxCommandEvent& event);
-	void OnKeyDown(wxKeyEvent &event);
 
 	void OnShowColMenu(wxCommandEvent &event);
 
@@ -117,7 +116,6 @@ public:
 	/// @param nextFrame Set the new lines to start and end on the next frame
 	void DuplicateLines(int first,int last,bool nextFrame=false);
 
-	void SwapLines(int line1,int line2);
 	/// @brief  Shift line by time
 	/// @param n    Line to shift
 	/// @param len  ms to shift by
