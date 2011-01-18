@@ -50,9 +50,6 @@ FFMS_Index *FFLAVFIndexer::DoIndexing() {
 			static_cast<FFMS_TrackType>(FormatContext->streams[i]->codec->codec_type)));
 
 		if (FormatContext->streams[i]->codec->codec_type == CODEC_TYPE_VIDEO) {
-			VideoContexts[i].Parser = av_parser_init(FormatContext->streams[i]->codec->codec_id);
-			if (!VideoContexts[i].Parser) continue;
-
 			AVCodec *VideoCodec = avcodec_find_decoder(FormatContext->streams[i]->codec->codec_id);
 			if (!VideoCodec)
 				throw FFMS_Exception(FFMS_ERROR_CODEC, FFMS_ERROR_UNSUPPORTED,
@@ -63,7 +60,9 @@ FFMS_Index *FFLAVFIndexer::DoIndexing() {
 					"Could not open video codec");
 
 			VideoContexts[i].CodecContext = FormatContext->streams[i]->codec;
-			VideoContexts[i].Parser->flags = PARSER_FLAG_COMPLETE_FRAMES;
+			VideoContexts[i].Parser = av_parser_init(FormatContext->streams[i]->codec->codec_id);
+			if (VideoContexts[i].Parser)
+				VideoContexts[i].Parser->flags = PARSER_FLAG_COMPLETE_FRAMES;
 			IndexMask |= 1 << i;
 		}
 		else if (IndexMask & (1 << i) && FormatContext->streams[i]->codec->codec_type == CODEC_TYPE_AUDIO) {

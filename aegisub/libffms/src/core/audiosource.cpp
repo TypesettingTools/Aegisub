@@ -238,7 +238,7 @@ void FFMS_AudioSource::GetAudio(void *Buf, int64_t Start, int64_t Count) {
 				while (NewPacketNumber > 0 && !Frames[NewPacketNumber].KeyFrame) --NewPacketNumber;
 
 				// Only seek forward if it'll actually result in moving forward
-				if (Start < CurrentSample || NewPacketNumber > PacketNumber) {
+				if (Start < CurrentSample || static_cast<size_t>(NewPacketNumber) > PacketNumber) {
 					PacketNumber = NewPacketNumber;
 					Decoded = 0;
 					CurrentSample = -1;
