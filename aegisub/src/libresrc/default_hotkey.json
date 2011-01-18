@@ -277,11 +277,6 @@
 		],
 		"video/frame/next" : [
 			{
-				"modifiers" : [],
-				"key" : "Right",
-				"enable" : true
-			},
-			{
 				"modifiers" : [ "Ctrl" ],
 				"key" : "KP_6",
 				"enable" : true
@@ -295,11 +290,6 @@
 			}
 		],
 		"video/frame/prev" : [
-			{
-				"modifiers" : [],
-				"key" : "Left",
-				"enable" : true
-			},
 			{
 				"modifiers" : [ "Ctrl" ],
 				"key" : "KP_4",
