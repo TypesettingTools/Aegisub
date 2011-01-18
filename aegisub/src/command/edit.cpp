@@ -39,10 +39,12 @@
 #include "../config.h"
 
 #ifndef AGI_PRE
+#include <algorithm>
 #endif
 
 #include "command.h"
 
+#include "../ass_dialogue.h"
 #include "../ass_file.h"
 #include "../dialog_search_replace.h"
 #include "../include/aegisub/context.h"
@@ -248,8 +250,12 @@ struct edit_line_swap : public Command {
 	void operator()(agi::Context *c) {
 		SelectionController<AssDialogue>::Selection sel = c->selectionController->GetSelectedSet();
 		if (sel.size() == 2) {
+			entryIter a = find(c->ass->Line.begin(), c->ass->Line.end(), *sel.begin());
+			entryIter b = find(c->ass->Line.begin(), c->ass->Line.end(), *sel.rbegin());
+
 			using std::swap;
-			swap(*sel.begin(), *sel.rbegin());
+			swap(*a, *b);
+			c->ass->Commit(_("swap lines"));
 		}
 	}
 };
