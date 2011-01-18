@@ -26,7 +26,11 @@
 #include <memory>
 #endif
 
+#ifdef _WIN32
 #include <tuple>
+#else
+#include <tr1/tuple>
+#endif
 
 #include "libaegisub/hotkey.h"
 
