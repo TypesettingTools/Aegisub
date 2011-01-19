@@ -424,9 +424,9 @@ void SubsEditBox::UpdateFrameTiming(agi::vfr::Framerate const& fps) {
 }
 
 void SubsEditBox::OnKeyDown(wxKeyEvent &event) {
-
-	hotkey::check("Subtitle Edit Box", event.GetKeyCode(), event.GetUnicodeKey(), event.GetModifiers());
 	event.StopPropagation();
+	if (hotkey::check("Subtitle Edit Box", event.GetKeyCode(), event.GetUnicodeKey(), event.GetModifiers()))
+		return;
 
 	int key = event.GetKeyCode();
 	if (line && (key == WXK_RETURN || key == WXK_NUMPAD_ENTER)) {

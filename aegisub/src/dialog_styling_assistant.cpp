@@ -405,7 +405,8 @@ END_EVENT_TABLE()
 ///
 void StyleEditBox::OnKeyDown(wxKeyEvent &event) {
 
-	hotkey::check("Styling Assistant", event.GetKeyCode(), event.GetUnicodeKey(), event.GetModifiers());
+	if (!hotkey::check("Styling Assistant", event.GetKeyCode(), event.GetUnicodeKey(), event.GetModifiers()))
+		event.Skip();
 	event.StopPropagation();
 
 //H I think most of this can be removed.

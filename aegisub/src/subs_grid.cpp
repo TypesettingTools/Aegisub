@@ -48,7 +48,6 @@
 
 #include "command/command.h"
 #include "include/aegisub/context.h"
-#include "include/aegisub/hotkey.h"
 #include "include/aegisub/audio_provider.h"
 
 #include "ass_file.h"

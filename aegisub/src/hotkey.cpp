@@ -45,7 +45,7 @@ static std::vector<std::string> keycode_names;
 static std::string const& get_keycode_name(int code);
 static void init_keycode_names();
 
-std::string const& keycode_name(int code) {
+static std::string const& keycode_name(int code) {
 	if (keycode_names.empty())
 		init_keycode_names();
 
@@ -57,7 +57,7 @@ std::string const& keycode_name(int code) {
 	return keycode_names[code];
 }
 
-void check(std::string const& context, int key_code, wchar_t key_char, int modifier) {
+bool check(std::string const& context, int key_code, wchar_t key_char, int modifier) {
 	std::string combo;
 	if ((modifier != wxMOD_NONE)) {
 		if ((modifier & wxMOD_CMD) != 0) combo.append("Ctrl-");
@@ -66,15 +66,18 @@ void check(std::string const& context, int key_code, wchar_t key_char, int modif
 	}
 
 	combo += keycode_name(key_code);
-	if (combo.empty()) return;
+	if (combo.empty()) return false;
 
 	std::string command;
 	if (agi::hotkey::hotkey->Scan(context, combo, command) == 0) {
 		/// The bottom line should be removed after all the hotkey commands are fixed.
 		/// This is to avoid pointless exceptions.
-		if (command.find("/") != std::string::npos)
+		if (command.find("/") != std::string::npos) {
 			(*cmd::get(command))(wxGetApp().frame->context.get());
+			return true;
+		}
 	}
+	return false;
 }
 
 std::vector<std::string> get_hotkey_strs(std::string const& context, std::string const& command) {

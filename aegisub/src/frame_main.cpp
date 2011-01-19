@@ -1362,6 +1362,7 @@ void FrameMain::OnSubtitlesSave() {
 }
 
 void FrameMain::OnKeyDown(wxKeyEvent &event) {
-	hotkey::check("Main Frame", event.GetKeyCode(), event.GetUnicodeKey(), event.GetModifiers());
+	if (!hotkey::check("Main Frame", event.GetKeyCode(), event.GetUnicodeKey(), event.GetModifiers()))
+		event.Skip();
 }
 

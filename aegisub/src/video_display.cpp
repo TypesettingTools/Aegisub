@@ -499,8 +499,9 @@ void VideoDisplay::OnMouseEvent(wxMouseEvent& event) {
 	ShowCursor(activeMode != Video_Mode_Standard);
 }
 void VideoDisplay::OnKeyDown(wxKeyEvent &event) {
-	hotkey::check("Video Display", event.GetKeyCode(), event.GetUnicodeKey(), event.GetModifiers());
 	event.StopPropagation();
+	if (hotkey::check("Video Display", event.GetKeyCode(), event.GetUnicodeKey(), event.GetModifiers()))
+		return;
 
 /*
 	int key = event.GetKeyCode();

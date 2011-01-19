@@ -314,7 +314,8 @@ void DialogTranslationEvent::OnTransBoxKey(wxKeyEvent &event) { control->OnTrans
 /// @return 
 ///
 void DialogTranslation::OnTransBoxKey(wxKeyEvent &event) {
-	hotkey::check("Translation Assistant", event.GetKeyCode(), event.GetUnicodeKey(), event.GetModifiers());
+	if (!hotkey::check("Translation Assistant", event.GetKeyCode(), event.GetUnicodeKey(), event.GetModifiers()))
+		event.Skip();
 	event.StopPropagation();
 
 // H convert below to commands.
