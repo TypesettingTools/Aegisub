@@ -32,6 +32,7 @@
   $Id$
 -->
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <!-- Update svn revision data file-target -->
   <PropertyGroup>
     <TSVNDir Condition="'$(TSVNDir)'==''">$(registry:HKEY_LOCAL_MACHINE\SOFTWARE\TortoiseSVN@Directory)</TSVNDir>
     <TSVNDir Condition="'$(TSVNDir)'==''">$(registry:HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\TortoiseSVN@Directory)</TSVNDir>
@@ -39,7 +40,6 @@
     <SubWCRevExe Condition="'$(SubWCRevExe)'==''">$(registry:HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\App Paths\SubWCRev.exe)</SubWCRevExe>
     <SubWCRevExe Condition="'$(SubWCRevExe)'==''">$(TSVNDir)\bin\SubWCRev.exe</SubWCRevExe>
   </PropertyGroup>
-  
   <Target
     Name="SubWCRev"
     BeforeTargets="ClCompile"
@@ -62,7 +62,19 @@
       Outputs="%(SubWCRevExe.Output)"
       />
   </Target>
+  <ItemDefinitionGroup>
+    <SubWCRev>
+      <InputFile >$(AegisubSourceBase)build\svn-revision-base.h</InputFile>
+      <OutputFile>$(AegisubSourceBase)build\svn-revision.h</OutputFile>
+      <Repository>$(AegisubSourceBase)\.</Repository>
+    </SubWCRev>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <SubWCRev Include="$(AegisubSourceBase)build\svn-revision-base.h" />
+  </ItemGroup>
 
+  
+  <!-- Create build configuration file if it does not exist-target -->
   <Target
     Name="CreateDefaultConfigurationHeader"
     BeforeTargets="PrepareForBuild"
@@ -89,15 +101,194 @@
       Text="Created %(CreateDefaultConfigurationHeader.TargetFile)"
       />
   </Target>
+  
+  
+  <!-- Default configuration -->
+  <Import Project="$(MSBuildThisFileDirectory)Aegisub.DefaultConfiguration.props" />
 
 
+  <!-- Build credit text -->
+  <PropertyGroup Condition="'$(AegisubUseConfigWindowsH)'=='false' and '$(AegisubBuildCredit)'==''">
+    <AegisubBuildCredit>Anonymous</AegisubBuildCredit>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(AegisubBuildCredit)'!=''">
     <ClCompile>
       <PreprocessorDefinitions>BUILD_CREDIT="$(AegisubBuildCredit)";%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
   </ItemDefinitionGroup>
   
+  <!-- Skip config_windows.h support -->
+  <ItemDefinitionGroup Condition="'$(AegisubUseConfigWindowsH)'=='false'">
+    <ClCompile>
+      <PreprocessorDefinitions>BUILD_SKIP_CONFIG_WINDOWS_H;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <!-- Use config_windows.h support -->
+  <ItemGroup Condition="'$(AegisubUseConfigWindowsH)'!='false'">
+    <CreateDefaultConfigurationHeader Include="$(AegisubSourceBase)src\config\config_windows.h">
+      <TemplateFile>$(AegisubSourceBase)src\config\config_windows0.h</TemplateFile>
+      <TargetFile>$(AegisubSourceBase)src\config\config_windows.h</TargetFile>
+    </CreateDefaultConfigurationHeader>
+  </ItemGroup>
+  
+  <!-- Automation Lua support -->
+  <ItemDefinitionGroup Condition="'$(AegisubUseAutomationLua)'=='true'">
+    <ClCompile>
+      <PreprocessorDefinitions Condition="'$(AegisubUseConfigWindowsH)'=='false'">WITH_AUTOMATION;WITH_AUTO4_LUA;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(AegisubContribBase)lua51\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>lua51.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  
+  <!-- Hunspell support -->
+  <ItemDefinitionGroup Condition="'$(AegisubUseHunspell)'=='true'">
+    <ClCompile>
+      <PreprocessorDefinitions Condition="'$(AegisubUseConfigWindowsH)'=='false'">WITH_HUNSPELL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(AegisubContribBase)hunspell\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>hunspell.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  
+  <!-- CSRI helper library support -->
+  <ItemDefinitionGroup Condition="'$(AegisubUseCsri)'=='HelperLibrary'">
+    <ClCompile>
+      <PreprocessorDefinitions Condition="'$(AegisubUseConfigWindowsH)'=='false'">WITH_CSRI;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>csrihelper.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  
+  <!-- CSRI external library support -->
+  <ItemDefinitionGroup Condition="'$(AegisubUseCsri)'=='External'">
+    <ClCompile>
+      <PreprocessorDefinitions Condition="'$(AegisubUseConfigWindowsH)'=='false'">WITH_CSRI;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <AdditionalLibraryDirectories>$(CsriLibraryPath);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>$(CsriLibraryName);%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  
+  <!-- libass support -->
+  <ItemDefinitionGroup Condition="'$(AegisubUseLibass)'=='true'">
+    <ClCompile>
+      <PreprocessorDefinitions Condition="'$(AegisubUseConfigWindowsH)'=='false'">WITH_LIBASS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(LibassIncludePath);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <AdditionalLibraryDirectories>$(LibassIncludePath);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>$(LibassLibraryName);%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
 
+  <!-- Freetype 2 support -->
+	<ItemDefinitionGroup Condition="'$(AegisubUseFreetype2)'=='true'">
+    <ClCompile>
+      <PreprocessorDefinitions Condition="'$(AegisubUseConfigWindowsH)'=='false'">WITH_FREETYPE2;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(Ft2IncludePath);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+		<Link>
+      <AdditionalLibraryDirectories>$(Ft2LibraryPath);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+			<AdditionalDependencies>$(Ft2LibraryName);%(AdditionalDependencies)</AdditionalDependencies>
+		</Link>
+	</ItemDefinitionGroup>
+  
+  <!-- FFmpegSource support -->
+  <ItemDefinitionGroup Condition="'$(AegisubUseFfms)'=='true'">
+    <ClCompile>
+      <PreprocessorDefinitions Condition="'$(AegisubUseConfigWindowsH)'=='false'">WITH_FFMPEGSOURCE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>__STDC_FORMAT_MACROS;%(PreprocessorDefinitions)</PreprocessorDefinitions> <!-- this one is needed regardless -->
+      <AdditionalIncludeDirectories>$(FFmpegSourceIncludePath);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <AdditionalLibraryDirectories>$(FFmpegSourceLibraryPath);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>$(FFmpegSourceLibraryName);%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  
+  <!-- Avisynth support -->
+  <ItemDefinitionGroup Condition="'$(AegisubUseAvisynth)'=='true'">
+    <ClCompile>
+      <PreprocessorDefinitions Condition="'$(AegisubUseConfigWindowsH)'=='false'">WITH_AVISYNTH;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  
+  <!-- FFTW support -->
+	<ItemDefinitionGroup Condition="'$(AegisubUseFftw)'=='true'">
+    <ClCompile>
+      <PreprocessorDefinitions Condition="'$(AegisubUseConfigWindowsH)'=='false'">WITH_FFTW;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(FftwIncludePath);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+		<Link>
+      <AdditionalLibraryDirectories>$(FftwLibraryPath);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+			<AdditionalDependencies>$(FftwLibraryName);%(AdditionalDependencies)</AdditionalDependencies>
+		</Link>
+	</ItemDefinitionGroup>
+
+  <!-- DirectSound support -->
+	<PropertyGroup>
+		<DirectXSDKDir Condition="'$(DirectXSDKDir)'==''">$(DXSDK_DIR)</DirectXSDKDir>
+	</PropertyGroup>
+	<ItemDefinitionGroup Condition="'$(AegisubUseDSound)'=='true'">
+    <ClCompile>
+      <PreprocessorDefinitions Condition="'$(AegisubUseConfigWindowsH)'=='false'">WITH_DIRECTSOUND;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(DXSDK_DIR)\Include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+		<Link>
+      <AdditionalLibraryDirectories Condition="'$(Platform)'=='Win32'">$(DirectXSDKDir)\Lib\x86\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories Condition="'$(Platform)'=='x64'">$(DirectXSDKDir)\Lib\x64\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+			<AdditionalDependencies>dsound.lib;dxguid.lib;%(AdditionalDependencies)</AdditionalDependencies>
+		</Link>
+	</ItemDefinitionGroup>
+	<Target Name="AegisubCheckDirectXSDK" BeforeTargets="PrepareForBuild" >
+		<Error
+			Condition="'$(DirectXSDKDir)'=='' or !Exists('$(DirectXSDKDir)\Include\dsound.h')"
+			Text="DirectX SDK not found, check that the DXSDK_DIR environment is set. If you do not want to use DirectSound set the AegisubUseDSound property to false in a user config."
+			/>
+	</Target>
+	<ItemGroup Condition="'$(AegisubUseDSound)'=='true'">
+		<AegisubCheckDirectXSDK Include="dsound" />
+	</ItemGroup>
+  
+  <!-- Special builds -->
+  <ItemDefinitionGroup Condition="'$(AegisubUseConfigWindowsH)'=='false'">
+    <ClCompile>
+      <PreprocessorDefinitions Condition="'$(AegisubSpecialBuild)'=='FinalRelease'">FINAL_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions Condition="'$(AegisubSpecialBuild)'=='StartupLog'">WITH_STARTUPLOG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  
+  <!-- General configuration, always required libraries -->
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <PreprocessorDefinitions>HAVE_LITTLE_ENDIAN;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>
+        $(SrcDir)include\;
+        $(SrcDir)msvc\;
+        $(AegisubContribBase)iconv\include;
+        $(AegisubSourceBase)libaegisub\include;
+        %(AdditionalIncludeDirectories)
+      </AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <AdditionalLibraryDirectories>$(AegisubLibraryDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>
+        libiconv.lib;
+        libresrc.lib;
+        libaegisub.lib;
+        universalchardet.lib;
+        %(AdditionalDependencies)
+      </AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  
+
+  <!-- Add property pages -->
   <ItemGroup>
     <PropertyPageSchema Include="$(MSBuildThisFileDirectory)Aegisub.xml" />
     <ProjectTools Include="SubWCRev;CreateDefaultConfigurationHeader" />

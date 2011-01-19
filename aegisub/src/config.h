@@ -9,7 +9,9 @@
 #define max max
 
 // Windows specific settings
+#ifndef BUILD_SKIP_CONFIG_WINDOWS_H
 #include "config/config_windows.h"
+#endif
 
 #else
 

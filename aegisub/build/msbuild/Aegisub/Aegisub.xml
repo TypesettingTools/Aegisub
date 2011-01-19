@@ -33,14 +33,249 @@
 -->
 <Rule Name="SubWCRev" 
     DisplayName="Aegisub" 
-    Order="110" 
+    Order="1" 
     PageTemplate="tool"
     xmlns="http://schemas.microsoft.com/build/2009/properties">
 
+  <Rule.DataSource>
+    <DataSource Persistence="UserFile" ItemType="" HasConfigurationCondition="true" />
+  </Rule.DataSource>
 
   <Rule.Categories>
+    <Category Name="Features" DisplayName="Features" Description="Control features to build" />
+    <Category Name="Paths" DisplayName="Library paths" Description="Configure third-party library paths" />
     <Category Name="BuildInfo" DisplayName="Build information" Description="Embed build information" />
   </Rule.Categories>
+  
+  <BoolProperty
+    Name="AegisubUseConfigWindowsH"
+    Category="Features"
+    DisplayName="Use config_windows.h"
+    Description="Specify whether to use config_windows.h or the configuration on this page to control features. The settings on this page still control automatic compiler and link settings for the features."
+    />
+
+  <BoolProperty
+    Name="AegisubUseAutomationLua"
+    Category="Features"
+    DisplayName="Use Automation 4 Lua"
+    Description="Specify whether to include Automation 4 support and the Lua engine. This is included and requires no configuration."
+    />
+
+  <BoolProperty
+    Name="AegisubUseDSound"
+    Category="Features"
+    DisplayName="Use DirectSound"
+    Description="Specify whether to use the DirectSound-based audio player. This requires the DirectX SDK installed."
+    />
+  <StringProperty
+    Subtype="folder"
+    Name="DirectXSDKPath"
+    Category="Paths"
+    DisplayName="DirectX SDK root path"
+    Description="Location of DirectX SDK installation for DirectSound support, this is usually auto-detected."
+    />
+
+  <BoolProperty
+    Name="AegisubUseAvisynth"
+    Category="Features"
+    DisplayName="Use Avisynth"
+    Description="Specify whether to support Avisynth for video and audio providers. This is experimental on x64."
+    />
+
+  <BoolProperty
+    Name="AegisubUseFfms"
+    Category="Features"
+    DisplayName="Use FFmpegSource2"
+    Description="Specify whether to support FFmpegSource2 for video and audio providers. You may need to configure the location of the library on the Library paths page."
+    />
+  <StringProperty
+    Subtype="folder"
+    Name="FFmpegSourceIncludePath"
+    Category="Paths"
+    DisplayName="FFmpegSource2 include path"
+    Description="Location of FFmpegSource2 include files"
+    />
+  <StringProperty
+    Subtype="folder"
+    Name="FFmpegSourceLibraryPath"
+    Category="Paths"
+    DisplayName="FFmpegSource2 library path"
+    Description="Location of FFmpegSource2 library files"
+    >
+    <StringProperty.DataSource>
+      <DataSource Persistence="UserFile" ItemType="" HasConfigurationCondition="true" />
+    </StringProperty.DataSource>
+  </StringProperty>
+  <StringProperty
+    Subtype="file"
+    Name="FFmpegSourceLibraryName"
+    Category="Paths"
+    DisplayName="FFmpegSource2 library name"
+    Description="Name of FFmpegSource2 library"
+    >
+    <StringProperty.DataSource>
+      <DataSource Persistence="UserFile" ItemType="" HasConfigurationCondition="true" />
+    </StringProperty.DataSource>
+  </StringProperty>
+
+  <BoolProperty
+    Name="AegisubUseFt2"
+    Category="Features"
+    DisplayName="Use Freetype 2"
+    Description="Specify whether to use Freetype 2 for font enumeration in the Font Collector. You will need to configure the location of the Freetype 2 library on the Library paths page."
+    />
+  <StringProperty
+    Subtype="folder"
+    Name="Ft2IncludePath"
+    Category="Paths"
+    DisplayName="Freetype 2 include path"
+    Description="Location of Freetype 2 include files"
+    />
+  <StringProperty
+    Subtype="folder"
+    Name="Ft2LibraryPath"
+    Category="Paths"
+    DisplayName="Freetype 2 library path"
+    Description="Location of Freetype 2 library files"
+    >
+    <StringProperty.DataSource>
+      <DataSource Persistence="UserFile" ItemType="" HasConfigurationCondition="true" />
+    </StringProperty.DataSource>
+  </StringProperty>
+  <StringProperty
+    Subtype="file"
+    Name="Ft2LibraryName"
+    Category="Paths"
+    DisplayName="Freetype 2 library name"
+    Description="Name of Freetype 2 library"
+    >
+    <StringProperty.DataSource>
+      <DataSource Persistence="UserFile" ItemType="" HasConfigurationCondition="true" />
+    </StringProperty.DataSource>
+  </StringProperty>
+
+  <BoolProperty
+    Name="AegisubUseHunspell"
+    Category="Features"
+    DisplayName="Use Hunspell"
+    Description="Specify whether to use the Hunspell spell checker library. This is included and requires no configuration."
+    />
+
+  <BoolProperty
+    Name="AegisubUseFftw"
+    Category="Features"
+    DisplayName="Use FFTW"
+    Description="Specify whether to use the FFTW fourier transformation library to speed up audio spectrum rendering. You will need to configure the location of the FFTW library on the Library paths page."
+    />
+  <StringProperty
+    Subtype="folder"
+    Name="FftwIncludePath"
+    Category="Paths"
+    DisplayName="FFTW include path"
+    Description="Location of FFTW include files"
+    />
+  <StringProperty
+    Subtype="folder"
+    Name="FftwLibraryPath"
+    Category="Paths"
+    DisplayName="FFTW library path"
+    Description="Location of FFTW library files"
+    >
+    <StringProperty.DataSource>
+      <DataSource Persistence="UserFile" ItemType="" HasConfigurationCondition="true" />
+    </StringProperty.DataSource>
+  </StringProperty>
+  <StringProperty
+    Subtype="file"
+    Name="FftwLibraryName"
+    Category="Paths"
+    DisplayName="FFTW library name"
+    Description="Name of FFTW library"
+    >
+    <StringProperty.DataSource>
+      <DataSource Persistence="UserFile" ItemType="" HasConfigurationCondition="true" />
+    </StringProperty.DataSource>
+  </StringProperty>
+
+  <BoolProperty
+    Name="AegisubUseLibass"
+    Category="Features"
+    DisplayName="Use libass"
+    Description="Specify whether to include support for the libass subtitle rendering library. You will need to configure the location of libass on the Library paths page."
+    />
+  <StringProperty
+    Subtype="folder"
+    Name="LibassIncludePath"
+    Category="Paths"
+    DisplayName="libass include path"
+    Description="Location of libass include files"
+    />
+  <StringProperty
+    Subtype="folder"
+    Name="LibassLibraryPath"
+    Category="Paths"
+    DisplayName="libass library path"
+    Description="Location of libass library files"
+    >
+    <StringProperty.DataSource>
+      <DataSource Persistence="UserFile" ItemType="" HasConfigurationCondition="true" />
+    </StringProperty.DataSource>
+  </StringProperty>
+  <StringProperty
+    Subtype="file"
+    Name="LibassLibraryName"
+    Category="Paths"
+    DisplayName="libass library name"
+    Description="Name of libass library"
+    >
+    <StringProperty.DataSource>
+      <DataSource Persistence="UserFile" ItemType="" HasConfigurationCondition="true" />
+    </StringProperty.DataSource>
+  </StringProperty>
+
+  <EnumProperty
+    Name="AegisubUseCsri"
+    DisplayName="Use CSRI subtitle renderer"
+    Description="Specify whether to include support for CSRI subtitle rendering. The included helper library dynamically loads CSRI renderers, while linking another library allows you to e.g. link VSFilter.dll directly."
+    Category="Features"
+    >
+    <EnumValue Name="HelperLibrary" DisplayName="Use included helper library" Description="Use the included helper library to dynamically load CSRI renderers." />
+    <EnumValue Name="External" DisplayName="Link other library" Description="Use another CSRI renderer" />
+    <EnumValue Name="false" DisplayName="No CSRI support" Description="Do not use CSRI" />
+  </EnumProperty>
+  <StringProperty
+    Subtype="folder"
+    Name="CsriLibraryPath"
+    Category="Paths"
+    DisplayName="External CSRI library path"
+    Description="Location of external CSRI library files, for when not using the CSRI helper library."
+    >
+    <StringProperty.DataSource>
+      <DataSource Persistence="UserFile" ItemType="" HasConfigurationCondition="true" />
+    </StringProperty.DataSource>
+  </StringProperty>
+  <StringProperty
+    Subtype="file"
+    Name="CsriLibraryName"
+    Category="Paths"
+    DisplayName="External CSRI library name"
+    Description="Name of external CSRI library, for when not using the CSRI helper library"
+    >
+    <StringProperty.DataSource>
+      <DataSource Persistence="UserFile" ItemType="" HasConfigurationCondition="true" />
+    </StringProperty.DataSource>
+  </StringProperty>
+
+  <EnumProperty
+    Name="AegisubSpecialBuild"
+    DisplayName="Special build"
+    Description="Make a special build of Aegisub, either enabling StartupLog to help end-users debug startup issues, or a Final Release whch displays version information differently."
+    Category="Features"
+    >
+    <EnumValue Name="false" DisplayName="Make a regular build" Description="A regular developer build is made" />
+    <EnumValue Name="StartupLog" DisplayName="Start-up logging" Description="Show messages during start-up to figure out where an error occurs" />
+    <EnumValue Name="FinalRelease" DisplayName="Final release" Description="Shows version information in a manner suited for stable releases for general distribution." />
+  </EnumProperty>
 
   <StringProperty
     Name="AegisubBuildCredit"

@@ -37,61 +37,16 @@
   <!-- Project specific configuration -->
   <Import Project="$(MSBuildThisFileDirectory)Aegisub.targets" />
   <PropertyGroup>
-	<TargetName>aegisub$(AegisubPlatformSuffix)</TargetName>
+    <TargetName>aegisub$(AegisubPlatformSuffix)</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup>
-	<SubWCRev>
-	</SubWCRev>
     <ClCompile>
-      <PreprocessorDefinitions>__STDC_FORMAT_MACROS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>
-        $(SrcDir);
-        $(SrcDir)include\;
-        $(SrcDir)msvc\;
-        $(AegisubContribBase)lua51\src;
-        $(AegisubContribBase)hunspell\src;
-        $(AegisubContribBase)iconv\include;
-        $(AegisubSourceBase)libffms\include;
-        $(AegisubSourceBase)libaegisub\include;
-        %(AdditionalIncludeDirectories)
-	  </AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>agi_pre.h</PrecompiledHeaderFile>
       <ForcedIncludeFiles>agi_pre.h</ForcedIncludeFiles>
     </ClCompile>
-    <Link>
-      <AdditionalLibraryDirectories>
-		$(AegisubLibraryDir);
-		$(AegisubSourceBase)libffms\lib;
-		%(AdditionalLibraryDirectories)
-	  </AdditionalLibraryDirectories>
-      <AdditionalDependencies>
-		libresrc.lib;
-		lua51.lib;
-		libiconv.lib;
-		libaegisub.lib;
-		hunspell.lib;
-		universalchardet.lib;
-		ffms2.lib;
-		csrihelper.lib;
-		%(AdditionalDependencies)
-	  </AdditionalDependencies>
-    </Link>
-    <SubWCRev>
-      <InputFile >$(AegisubSourceBase)build\svn-revision-base.h</InputFile>
-      <OutputFile>$(AegisubSourceBase)build\svn-revision.h</OutputFile>
-      <Repository>$(AegisubSourceBase)\.</Repository>
-    </SubWCRev>
-    <CreateDefaultConfigurationHeader>
-      <TemplateFile>$(AegisubSourceBase)src\config\config_windows0.h</TemplateFile>
-      <TargetFile>$(AegisubSourceBase)src\config\config_windows.h</TargetFile>
-    </CreateDefaultConfigurationHeader>
   </ItemDefinitionGroup>
   <!-- Source files -->
-  <ItemGroup>
-    <SubWCRev Include="$(AegisubSourceBase)build\svn-revision-base.h" />
-    <CreateDefaultConfigurationHeader Include="$(AegisubSourceBase)src\config\config_windows.h" />
-  </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(SrcDir)aegisublocale.h" />
     <ClInclude Include="$(SrcDir)aegisub_endian.h" />
