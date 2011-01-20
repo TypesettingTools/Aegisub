@@ -158,7 +158,6 @@ private:
 
 	void OnVideoOpen();
 
-	void OnSubtitlesCommit();
 	void OnSubtitlesOpen();
 	void OnSubtitlesSave();
 

@@ -126,7 +126,7 @@ FrameMain::FrameMain (wxArrayString args)
 
 	StartupLog("Initializing context models");
 	AssFile::top = context->ass = new AssFile;
-	context->ass->AddCommitListener(&FrameMain::OnSubtitlesCommit, this);
+	context->ass->AddCommitListener(&FrameMain::UpdateTitle, this);
 	context->ass->AddFileOpenListener(&FrameMain::OnSubtitlesOpen, this);
 	context->ass->AddFileSaveListener(&FrameMain::UpdateTitle, this);
 
@@ -1133,15 +1133,6 @@ void FrameMain::OnAudioOpen(AudioProvider *provider)
 void FrameMain::OnAudioClose()
 {
 	SetDisplayMode(-1, 0);
-}
-
-void FrameMain::OnSubtitlesCommit() {
-	if (OPT_GET("App/Auto/Save on Every Change")->GetBool()) {
-		if (context->ass->IsModified() && context->ass->CanSave())
-			(*cmd::get("subtitle/save"))(context.get());
-	}
-
-	UpdateTitle();
 }
 
 void FrameMain::OnSubtitlesOpen() {
