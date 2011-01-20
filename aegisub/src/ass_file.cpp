@@ -454,6 +454,7 @@ void AssFile::LoadDefault(bool defline) {
 	AddLine(_T("PlayResX: 640"),_T("[Script Info]"),version);
 	AddLine(_T("PlayResY: 480"),_T("[Script Info]"),version);
 	AddLine(_T("ScaledBorderAndShadow: yes"),_T("[Script Info]"),version);
+	AddLine(_T("Collisions: Normal"),_T("[Script Info]"),version);
 	AddLine("",_T("[Script Info]"),version);
 	AddLine(_T("[V4+ Styles]"),_T("[V4+ Styles]"),version);
 	AddLine(_T("Format:  Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding"),_T("[V4+ Styles]"),version);
