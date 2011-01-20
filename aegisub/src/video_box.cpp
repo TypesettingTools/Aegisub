@@ -45,7 +45,7 @@
 
 #include "include/aegisub/context.h"
 
-#include "frame_main.h"
+#include "command/command.h"
 #include "help_button.h"
 #include "libresrc/libresrc.h"
 #include "main.h"
@@ -53,51 +53,56 @@
 #include "subs_edit_box.h"
 #include "subs_grid.h"
 #include "toggle_bitmap.h"
+#include "tooltip_manager.h"
 #include "utils.h"
 #include "video_box.h"
 #include "video_context.h"
 #include "video_display.h"
 #include "video_slider.h"
 
+static void add_button(wxWindow *parent, wxSizer *sizer, const char *command) {
+	cmd::Command *c = cmd::get(command);
+	wxBitmapButton *btn = new wxBitmapButton(parent, cmd::id(command), *c->Icon(24));
+	ToolTipManager::Bind(btn, c->StrHelp(), "Video", command);
+	sizer->Add(btn, 0, wxTOP | wxLEFT | wxBOTTOM | wxALIGN_CENTER, 2);;
+}
 
-/// @brief Constructor 
-/// @param parent     
-/// @param isDetached 
-///
+static void add_option(wxWindow *parent, wxSizer *sizer, const char *command, const char *option) {
+	cmd::Command *c = cmd::get(command);
+	ToggleBitmap *btn = new ToggleBitmap(parent, cmd::id(command), *c->Icon(24));
+	ToolTipManager::Bind(btn, c->StrHelp(), "Video", command);
+	btn->SetValue(OPT_GET(option)->GetBool());
+	sizer->Add(btn, 0, wxTOP | wxLEFT | wxBOTTOM | wxALIGN_CENTER, 2);
+}
+
 VideoBox::VideoBox(wxWindow *parent, bool isDetached, wxComboBox *zoomBox, agi::Context *context)
 : wxPanel (parent,-1)
+, context(context)
 {
-	// Parent
-	videoPage = this;
-
 	// Visual controls sub-toolbar
-	visualSubToolBar = new wxToolBar(videoPage,-1,wxDefaultPosition,wxDefaultSize,wxTB_HORIZONTAL | wxTB_BOTTOM | wxTB_FLAT);
+	visualSubToolBar = new wxToolBar(this,-1,wxDefaultPosition,wxDefaultSize,wxTB_HORIZONTAL | wxTB_BOTTOM | wxTB_FLAT);
 
 	// Buttons
-	wxBitmapButton *VideoPlayButton = new wxBitmapButton(videoPage,Video_Play,GETIMAGE(button_play_24),wxDefaultPosition,wxSize(25,-1));
-	VideoPlayButton->SetToolTip(_("Play video starting on this position"));
-	wxBitmapButton *VideoPlayLineButton = new wxBitmapButton(videoPage,Video_Play_Line,GETIMAGE(button_playline_24),wxDefaultPosition,wxSize(25,-1));
-	VideoPlayLineButton->SetToolTip(_("Play current line"));
-	wxBitmapButton *VideoStopButton = new wxBitmapButton(videoPage,Video_Stop,GETIMAGE(button_pause_24),wxDefaultPosition,wxSize(25,-1));
-	VideoStopButton->SetToolTip(_("Stop video playback"));
-	AutoScroll = new ToggleBitmap(videoPage,Video_Auto_Scroll,GETIMAGE(toggle_video_autoscroll_24),wxSize(30,-1));
-	AutoScroll->SetToolTip(_("Toggle autoscroll of video"));
-	AutoScroll->SetValue(OPT_GET("Video/Subtitle Sync")->GetBool());
+	wxSizer *videoBottomSizer = new wxBoxSizer(wxHORIZONTAL);
+	add_button(this, videoBottomSizer, "video/play");
+	add_button(this, videoBottomSizer, "video/play/line");
+	add_button(this, videoBottomSizer, "video/stop");
+	add_option(this, videoBottomSizer, "video/opt/autoscroll", "Video/Subtitle Sync");
 
 	// Seek
-	videoSlider = new VideoSlider(videoPage,-1);
+	videoSlider = new VideoSlider(this,-1);
 	videoSlider->SetToolTip(_("Seek video."));
 
 	// Position
-	VideoPosition = new wxTextCtrl(videoPage,-1,_T(""),wxDefaultPosition,wxSize(110,20),wxTE_READONLY);
+	VideoPosition = new wxTextCtrl(this,-1,"",wxDefaultPosition,wxSize(110,20),wxTE_READONLY);
 	VideoPosition->SetToolTip(_("Current frame time and number."));
 
 	// Times of sub relative to video
-	VideoSubsPos = new wxTextCtrl(videoPage,-1,_T(""),wxDefaultPosition,wxSize(110,20),wxTE_READONLY);
+	VideoSubsPos = new wxTextCtrl(this,-1,"",wxDefaultPosition,wxSize(110,20),wxTE_READONLY);
 	VideoSubsPos->SetToolTip(_("Time of this frame relative to start and end of current subs."));
 
 	// Typesetting buttons
-	visualToolBar = new wxToolBar(videoPage,-1,wxDefaultPosition,wxDefaultSize,wxTB_VERTICAL|wxTB_FLAT|wxTB_NODIVIDER);
+	visualToolBar = new wxToolBar(this,-1,wxDefaultPosition,wxDefaultSize,wxTB_VERTICAL|wxTB_FLAT|wxTB_NODIVIDER);
 	visualToolBar->AddTool(Video_Mode_Standard,_("Standard"),GETIMAGE(visual_standard_24),_("Standard mode, double click sets position."),wxITEM_RADIO);
 	visualToolBar->AddTool(Video_Mode_Drag,_("Drag"),GETIMAGE(visual_move_24),_("Drag subtitles."),wxITEM_RADIO);
 	visualToolBar->AddTool(Video_Mode_Rotate_Z,_("Rotate Z"),GETIMAGE(visual_rotatez_24),_("Rotate subtitles on their Z axis."),wxITEM_RADIO);
@@ -106,14 +111,14 @@ VideoBox::VideoBox(wxWindow *parent, bool isDetached, wxComboBox *zoomBox, agi::
 	visualToolBar->AddTool(Video_Mode_Clip,_("Clip"),GETIMAGE(visual_clip_24),_("Clip subtitles to a rectangle."),wxITEM_RADIO);
 	visualToolBar->AddTool(Video_Mode_Vector_Clip,_("Vector Clip"),GETIMAGE(visual_vector_clip_24),_("Clip subtitles to a vectorial area."),wxITEM_RADIO);
 	visualToolBar->AddSeparator();
-	visualToolBar->AddTool(Video_Mode_Help,_("Help"),GETIMAGE(visual_help_24),_("Open the manual page for Visual Typesetting."));
+	visualToolBar->AddTool(cmd::id("help/video"),_("Help"),*cmd::get("help/video")->Icon(24),_("Open the manual page for Visual Typesetting."));
 	visualToolBar->Realize();
 	// Avoid ugly themed background on Vista and possibly also Win7
 	visualToolBar->SetBackgroundStyle(wxBG_STYLE_COLOUR);
 	visualToolBar->SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNFACE));
 
 	// Display
-	videoDisplay = new VideoDisplay(this,VideoPosition,VideoSubsPos,zoomBox,videoPage,context);
+	videoDisplay = new VideoDisplay(this,VideoPosition,VideoSubsPos,zoomBox,this,context);
 
 	// Set display
 	videoSlider->Display = videoDisplay;
@@ -128,17 +133,11 @@ VideoBox::VideoBox(wxWindow *parent, bool isDetached, wxComboBox *zoomBox, agi::
 	topTopSizer->Add(videoDisplay,1,highSizerFlags,0);
 	topSizer->Add(topTopSizer,1,wxEXPAND,0);
 	topSizer->Add(visualSubToolBar,0,wxEXPAND | wxBOTTOM,4);
-	topSizer->Add(new wxStaticLine(videoPage),0,wxEXPAND,0);
+	topSizer->Add(new wxStaticLine(this),0,wxEXPAND,0);
 
 	// Sizers
 	videoSliderSizer = new wxBoxSizer(wxHORIZONTAL);
 	videoSliderSizer->Add(videoSlider,1,wxEXPAND|wxLEFT,0);
-	wxSizer *videoBottomSizer = new wxBoxSizer(wxHORIZONTAL);
-	//videoBottomSizer->Add(zoomSlider,1,wxEXPAND,0);
-	videoBottomSizer->Add(VideoPlayButton,0,wxTOP|wxLEFT|wxBOTTOM|wxALIGN_CENTER,2);
-	videoBottomSizer->Add(VideoPlayLineButton,0,wxTOP|wxBOTTOM|wxALIGN_CENTER,2);
-	videoBottomSizer->Add(VideoStopButton,0,wxTOP|wxBOTTOM|wxALIGN_CENTER,2);
-	videoBottomSizer->Add(AutoScroll,0,wxTOP|wxBOTTOM|wxALIGN_CENTER|wxEXPAND,2);
 	videoBottomSizer->Add(VideoPosition,1,wxLEFT|wxALIGN_CENTER,5);
 	videoBottomSizer->Add(VideoSubsPos,1,wxALIGN_CENTER,0);
 
@@ -151,74 +150,20 @@ VideoBox::VideoBox(wxWindow *parent, bool isDetached, wxComboBox *zoomBox, agi::
 	if (!isDetached)
 		VideoSizer->AddStretchSpacer(1);
 	SetSizer(VideoSizer);
+
+	Bind(wxEVT_COMMAND_BUTTON_CLICKED, &VideoBox::OnButton, this);
+	Bind(wxEVT_COMMAND_TOGGLEBUTTON_CLICKED, &VideoBox::OnButton, this);
 }
 
-///////////////
-// Event table
-BEGIN_EVENT_TABLE(VideoBox, wxPanel)
-	EVT_BUTTON(Video_Play, VideoBox::OnVideoPlay)
-	EVT_BUTTON(Video_Play_Line, VideoBox::OnVideoPlayLine)
-	EVT_BUTTON(Video_Stop, VideoBox::OnVideoStop)
-	EVT_TOGGLEBUTTON(Video_Auto_Scroll, VideoBox::OnVideoToggleScroll)
-
-	EVT_TOOL(Video_Mode_Help, VideoBox::OnHelp)
-END_EVENT_TABLE()
-
-
-
-/// @brief Play video 
-/// @param event 
-///
-void VideoBox::OnVideoPlay(wxCommandEvent &event) {
-	VideoContext *ctx = VideoContext::Get();
+void VideoBox::OnButton(wxCommandEvent &evt) {
+	if (evt.GetId() >= Video_Mode_Standard) {
+		evt.Skip();
+		return;
+	}
 #ifdef __APPLE__
-	ctx->EnableAudioSync(wxGetMouseState().CmdDown() == false);
+	context->videoController->EnableAudioSync(!wxGetMouseState().CmdDown());
 #else
-	ctx->EnableAudioSync(wxGetMouseState().ControlDown() == false);
+	context->videoController->EnableAudioSync(!wxGetMouseState().ControlDown());
 #endif
-	ctx->Play();
+	cmd::call(context, evt.GetId());
 }
-
-
-
-/// @brief Play video line 
-/// @param event 
-///
-void VideoBox::OnVideoPlayLine(wxCommandEvent &event) {
-	VideoContext *ctx = VideoContext::Get();
-#ifdef __APPLE__
-	ctx->EnableAudioSync(wxGetMouseState().CmdDown() == false);
-#else
-	ctx->EnableAudioSync(wxGetMouseState().ControlDown() == false);
-#endif
-	ctx->PlayLine();
-}
-
-
-
-/// @brief Stop video 
-/// @param event 
-///
-void VideoBox::OnVideoStop(wxCommandEvent &event) {
-	VideoContext::Get()->Stop();
-}
-
-
-
-/// @brief Toggle autoscroll 
-/// @param event 
-///
-void VideoBox::OnVideoToggleScroll(wxCommandEvent &event) {
-	OPT_SET("Video/Subtitle Sync")->SetBool(AutoScroll->GetValue());
-}
-
-/// @brief Help 
-/// @param event 
-///
-void VideoBox::OnHelp(wxCommandEvent &event) {
-	HelpButton::OpenPage(_T("Visual Typesetting"));
-}
-
-
-
-

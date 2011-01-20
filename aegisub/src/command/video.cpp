@@ -254,20 +254,6 @@ struct video_frame_next : public Command {
 	}
 };
 
-
-/// Play video.
-struct video_frame_play : public Command {
-	CMD_NAME("video/frame/play")
-	STR_MENU("Play")
-	STR_DISP("Play")
-	STR_HELP("Play video.")
-
-	void operator()(agi::Context *c) {
-		c->videoController->Play();
-	}
-};
-
-
 /// Seek to the previous frame.
 struct video_frame_prev : public Command {
 	CMD_NAME("video/frame/prev")
@@ -347,7 +333,7 @@ struct video_open : public Command {
 /// Opens a video clip with solid colour.
 struct video_open_dummy : public Command {
 	CMD_NAME("video/open/dummy")
-	STR_MENU("Use Dummy Video..")
+	STR_MENU("Use Dummy Video...")
 	STR_DISP("Use Dummy Video")
 	STR_HELP("Opens a video clip with solid colour.")
 
@@ -359,6 +345,41 @@ struct video_open_dummy : public Command {
 	}
 };
 
+/// Toggle autoscrolling video when the active line changes
+struct video_opt_autoscroll : public Command {
+	CMD_NAME("video/opt/autoscroll")
+	STR_MENU("Toggle autoscroll of video")
+	STR_DISP("Toggle autoscroll of video")
+	STR_HELP("Toggle autoscroll of video")
+
+	void operator()(agi::Context *c) {
+		OPT_SET("Video/Subtitle Sync")->SetBool(!OPT_GET("Video/Subtitle Sync")->GetBool());
+	}
+};
+
+/// Play video.
+struct video_play : public Command {
+	CMD_NAME("video/play")
+	STR_MENU("Play")
+	STR_DISP("Play")
+	STR_HELP("Play video starting on this position")
+
+	void operator()(agi::Context *c) {
+		c->videoController->Play();
+	}
+};
+
+/// Play video for the active line.
+struct video_play_line : public Command {
+	CMD_NAME("video/play/line")
+	STR_MENU("Play line")
+	STR_DISP("Play line")
+	STR_HELP("Play current line")
+
+	void operator()(agi::Context *c) {
+		c->videoController->PlayLine();
+	}
+};
 
 /// Show a mask over the video.
 struct video_show_overscan : public Command {
@@ -390,7 +411,18 @@ public:
 	}
 };
 
+/// Stop video playback
+class video_stop: public Command {
+public:
+	CMD_NAME("video/stop")
+	STR_MENU("Stop video")
+	STR_DISP("Stop video")
+	STR_HELP("Stop video playback")
 
+	void operator()(agi::Context *c) {
+		c->videoController->Stop();
+	}
+};
 
 /// Set zoom to 200%.
 class video_zoom_200: public Command {
@@ -451,29 +483,32 @@ struct video_zoom_out : public Command {
 
 /// Init video/ commands.
 void init_video(CommandManager *cm) {
-	cm->reg(new video_aspect_cinematic());
-	cm->reg(new video_aspect_custom());
-	cm->reg(new video_aspect_default());
-	cm->reg(new video_aspect_full());
-	cm->reg(new video_aspect_wide());
-	cm->reg(new video_close());
-	cm->reg(new video_detach());
-	cm->reg(new video_details());
-	cm->reg(new video_focus_seek());
-	cm->reg(new video_frame_next());
-	cm->reg(new video_frame_play());
-	cm->reg(new video_frame_prev());
-	cm->reg(new video_jump());
-	cm->reg(new video_jump_end());
-	cm->reg(new video_jump_start());
-	cm->reg(new video_open());
-	cm->reg(new video_open_dummy());
-	cm->reg(new video_show_overscan());
-	cm->reg(new video_zoom_100());
-	cm->reg(new video_zoom_200());
-	cm->reg(new video_zoom_50());
-	cm->reg(new video_zoom_in());
-	cm->reg(new video_zoom_out());
+	cm->reg(new video_aspect_cinematic);
+	cm->reg(new video_aspect_custom);
+	cm->reg(new video_aspect_default);
+	cm->reg(new video_aspect_full);
+	cm->reg(new video_aspect_wide);
+	cm->reg(new video_close);
+	cm->reg(new video_detach);
+	cm->reg(new video_details);
+	cm->reg(new video_focus_seek);
+	cm->reg(new video_frame_next);
+	cm->reg(new video_frame_prev);
+	cm->reg(new video_jump);
+	cm->reg(new video_jump_end);
+	cm->reg(new video_jump_start);
+	cm->reg(new video_open);
+	cm->reg(new video_open_dummy);
+	cm->reg(new video_opt_autoscroll);
+	cm->reg(new video_play);
+	cm->reg(new video_play_line);
+	cm->reg(new video_show_overscan);
+	cm->reg(new video_stop);
+	cm->reg(new video_zoom_100);
+	cm->reg(new video_zoom_200);
+	cm->reg(new video_zoom_50);
+	cm->reg(new video_zoom_in);
+	cm->reg(new video_zoom_out);
 }
 
 } // namespace cmd

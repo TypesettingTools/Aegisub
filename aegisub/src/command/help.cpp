@@ -134,6 +134,17 @@ struct help_irc : public Command {
 	}
 };
 
+/// Open the manual page for Visual Typesetting.
+struct help_video : public Command {
+	CMD_NAME("help/video")
+	STR_MENU("&Visual Typesetting..")
+	STR_DISP("Visual Typesetting")
+	STR_HELP("Open the manual page for Visual Typesetting.")
+
+	void operator()(agi::Context *c) {
+		HelpButton::OpenPage("Visual Typesetting");
+	}
+};
 
 /// Visit Aegisub's official website.
 struct help_website : public Command {
@@ -151,12 +162,13 @@ struct help_website : public Command {
 
 /// Init help/ commands.
 void init_help(CommandManager *cm) {
-	cm->reg(new help_bugs());
-	cm->reg(new help_contents());
-	cm->reg(new help_files());
-	cm->reg(new help_forums());
-	cm->reg(new help_irc());
-	cm->reg(new help_website());
+	cm->reg(new help_bugs);
+	cm->reg(new help_contents);
+	cm->reg(new help_files);
+	cm->reg(new help_forums);
+	cm->reg(new help_irc);
+	cm->reg(new help_video);
+	cm->reg(new help_website);
 }
 
 } // namespace cmd

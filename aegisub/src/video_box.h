@@ -45,10 +45,9 @@
 #endif
 
 namespace agi { struct Context; }
+class ToggleBitmap;
 class VideoDisplay;
 class VideoSlider;
-class ToggleBitmap;
-class FrameMain;
 class wxComboBox;
 
 /// DOCME
@@ -57,14 +56,9 @@ class wxComboBox;
 ///
 /// DOCME
 class VideoBox : public wxPanel {
-private:
-	void OnVideoPlay(wxCommandEvent &event);
-	void OnVideoPlayLine(wxCommandEvent &event);
-	void OnVideoStop(wxCommandEvent &event);
-	void OnVideoToggleScroll(wxCommandEvent &event);
+	agi::Context *context;
 
-	void OnHelp(wxCommandEvent &event);
-
+	void OnButton(wxCommandEvent &evt);
 public:
 
 	/// DOCME
@@ -74,16 +68,10 @@ public:
 	wxToolBar *visualSubToolBar;
 
 	/// DOCME
-	ToggleBitmap *AutoScroll;
-
-	/// DOCME
 	wxBoxSizer *VideoSizer;
 
 	/// DOCME
 	wxBoxSizer *videoSliderSizer;
-
-	/// DOCME
-	wxWindow *videoPage;
 
 	/// DOCME
 	wxTextCtrl *VideoPosition;
@@ -98,23 +86,15 @@ public:
 	VideoSlider *videoSlider;
 
 	VideoBox(wxWindow *parent, bool isDetached, wxComboBox *zoomBox, agi::Context *context);
-
-	DECLARE_EVENT_TABLE()
 };
 
 // IDs
 enum {
-	Video_Play = 500,
-	Video_Play_Line,
-	Video_Stop,
-	Video_Auto_Scroll,
-
-	Video_Mode_Standard,
+	Video_Mode_Standard = 5000,
 	Video_Mode_Drag,
 	Video_Mode_Rotate_Z,
 	Video_Mode_Rotate_XY,
 	Video_Mode_Scale,
 	Video_Mode_Clip,
 	Video_Mode_Vector_Clip,
-	Video_Mode_Help
 };

@@ -282,7 +282,7 @@
 				"enable" : true
 			}
 		],
-		"video/frame/play" : [
+		"video/play" : [
 			{
 				"modifiers" : [ "Ctrl" ],
 				"key" : "P",
@@ -622,7 +622,7 @@
 				"enable" : true
 			}
 		],
-		"video play" : [
+		"video/play" : [
 			{
 				"modifiers" : [],
 				"key" : "Home",
@@ -754,7 +754,7 @@
 				"enable" : true
 			}
 		],
-		"video play" : [
+		"video/play" : [
 			{
 				"modifiers" : [],
 				"key" : "Home",
