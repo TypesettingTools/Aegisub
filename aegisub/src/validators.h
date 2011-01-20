@@ -34,11 +34,6 @@
 /// @ingroup custom_control utility
 ///
 
-
-
-
-///////////
-// Headers
 #ifndef AGI_PRE
 #include <wx/validate.h>
 #endif
@@ -46,38 +41,43 @@
 
 /// DOCME
 /// @class NumValidator
-/// @brief DOCME
+/// @brief wx validator that only allows valid numbers
 ///
 /// DOCME
 class NumValidator : public wxValidator {
-private:
+	double fValue; ///< Value if isFloat is true
+	int iValue;    ///< Value if isFloat is false
+	bool isFloat;  ///< Should decimals be allowed?
+	bool isSigned; ///< Can the number be negative?
 
-	/// DOCME
-	double fValue;
-
-	/// DOCME
-	int iValue;
-
-	/// DOCME
-	wxString* valPtr;
-
-
-	/// DOCME
-	bool isFloat;
-
-	/// DOCME
-	bool isSigned;
+	/// Polymorphic copy
 	wxObject* Clone() const;
+	/// Check if the value in the passed window is valid
 	bool Validate(wxWindow* parent);
+	/// Copy the currently stored value to the associated window
 	bool TransferToWindow();
+	/// Read the value in the associated window and validate it
 	bool TransferFromWindow();
 
+	/// Check a single character
+	/// @param chr Character to check
+	/// @param isFirst Is this the first character in the string?
+	/// @param canSign Can this character be a sign?
+	/// @param gotDecimal[in,out] Has a decimal been found? Set to true if a chr is a decimal
+	/// @return Is this character valid?
 	bool CheckCharacter(int chr,bool isFirst,bool canSign,bool &gotDecimal);
 
+	/// wx character event handler
 	void OnChar(wxKeyEvent& event);
 
 public:
-	NumValidator(wxString* valPtr = NULL,bool isfloat=false,bool issigned=false);
+	/// Constructor
+	/// @param val Initial value to set the associated control to
+	/// @param isfloat Allow floats, or just ints?
+	/// @param issigned Allow negative numbers?
+	NumValidator(wxString val = "", bool isfloat=false, bool issigned=false);
+
+	/// Copy constructor
 	NumValidator(const NumValidator& from);
 
 	DECLARE_EVENT_TABLE();

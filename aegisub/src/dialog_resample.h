@@ -55,11 +55,6 @@ class DialogResample : public wxDialog {
 	agi::Context *c;
 
 	/// DOCME
-
-	/// DOCME
-	wxString ResXValue,ResYValue;
-
-	/// DOCME
 	wxTextCtrl *ResX;
 
 	/// DOCME

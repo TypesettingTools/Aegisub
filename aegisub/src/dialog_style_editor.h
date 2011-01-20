@@ -74,35 +74,6 @@ class DialogStyleEditor : public wxDialog {
 	/// DOCME
 	AssStyleStorage *store;
 
-
-	/// DOCME
-	wxString FontSizeValue;
-
-	/// DOCME
-	wxString AlignmentValue;
-
-	/// DOCME
-	wxString OutlineValue;
-
-	/// DOCME
-	wxString ShadowValue;
-
-	/// DOCME
-	wxString ScaleXValue;
-
-	/// DOCME
-	wxString ScaleYValue;
-
-	/// DOCME
-	wxString AngleValue;
-
-	/// DOCME
-	wxString EncodingValue;
-
-	/// DOCME
-	wxString SpacingValue;
-
-
 	/// DOCME
 	wxTextCtrl *StyleName;
 

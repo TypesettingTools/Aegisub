@@ -91,12 +91,6 @@ class DialogProperties : public wxDialog {
 	wxCheckBox *ScaleBorder;
 
 
-	/// DOCME
-	wxString ResXValue;
-
-	/// DOCME
-	wxString ResYValue;
-
 	void OnOK(wxCommandEvent &event);
 	void OnSetFromVideo(wxCommandEvent &event);
 	int SetInfoIfDifferent(wxString key,wxString value);

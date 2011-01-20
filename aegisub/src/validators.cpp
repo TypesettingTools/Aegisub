@@ -34,9 +34,6 @@
 /// @ingroup custom_control utility
 ///
 
-
-///////////
-// Headers
 #include "config.h"
 
 #ifndef AGI_PRE
@@ -46,109 +43,67 @@
 #include "utils.h"
 #include "validators.h"
 
-
-/// @brief Constructor 
-/// @param _valPtr  
-/// @param isfloat  
-/// @param issigned 
-///
-NumValidator::NumValidator(wxString* _valPtr,bool isfloat,bool issigned) {
-	isFloat = isfloat;
-	isSigned = issigned;
-	valPtr = _valPtr;
-
-	// Get value
-	if (valPtr) {
-		if (isFloat) {
-			valPtr->ToDouble(&fValue);
-		}
-		else {
-			long tLong;
-			valPtr->ToLong(&tLong);
-			iValue = tLong;
-		}
+NumValidator::NumValidator(wxString val, bool isfloat, bool issigned)
+: isFloat(isfloat)
+, isSigned(issigned)
+{
+	if (isFloat) {
+		val.ToDouble(&fValue);
+	}
+	else {
+		long tLong;
+		val.ToLong(&tLong);
+		iValue = tLong;
 	}
 }
 
-
-
-/// @brief Copy constructor 
-/// @param from 
-///
 NumValidator::NumValidator(const NumValidator &from)
 : wxValidator()
+, fValue(from.fValue)
+, iValue(from.iValue)
+, isFloat(from.isFloat)
+, isSigned(from.isSigned)
 {
-	valPtr = from.valPtr;
-	isFloat = from.isFloat;
-	isSigned = from.isSigned;
 	SetWindow(from.GetWindow());
 }
 
-
-///////////////
-// Event table
 BEGIN_EVENT_TABLE(NumValidator, wxValidator)
-    EVT_CHAR(NumValidator::OnChar)
+	EVT_CHAR(NumValidator::OnChar)
 END_EVENT_TABLE()
 
-
-
-/// @brief Clone 
-/// @return 
-///
 wxObject* NumValidator::Clone() const {
-	NumValidator *clone = new NumValidator(valPtr,isFloat,isSigned);
-	return clone;
+	return new NumValidator(*this);
 }
 
-
-
-/// @brief Validate 
-/// @param parent 
-/// @return 
-///
 bool NumValidator::Validate(wxWindow* parent) {
 	wxTextCtrl *ctrl = (wxTextCtrl*) GetWindow();
 	wxString value = ctrl->GetValue();
 
-	// Is the control enabled?
-    if (!ctrl->IsEnabled()) return true;
+	if (!ctrl->IsEnabled()) return true;
 
-	// Check length
 	if (value.Length() < 1) return false;
 
-	// Check each character
 	bool gotDecimal = false;
-	for (size_t i=0;i<value.Length();i++) {
-		if (!CheckCharacter(value[i],i==0,true,gotDecimal)) return false;
+	for (size_t i = 0; i < value.Length(); i++) {
+		if (!CheckCharacter(value[i], !i, true, gotDecimal))
+			return false;
 	}
-
-	// All clear
 	return true;
 }
 
-
-
-/// @brief Check if a given character is valid 
-/// @param chr        
-/// @param isFirst    
-/// @param canSign    
-/// @param gotDecimal 
-/// @return 
-///
-bool NumValidator::CheckCharacter(int chr,bool isFirst,bool canSign,bool &gotDecimal) {
+bool NumValidator::CheckCharacter(int chr, bool isFirst, bool canSign, bool &gotDecimal) {
 	// Check sign
-	if (chr == _T('-') || chr == _T('+')) {
-		if (!isFirst || !canSign || !isSigned) return false;
-		else return true;
+	if (chr == '-' || chr == '+') {
+		return isFirst && canSign && isSigned;
 	}
 
 	// Don't allow anything before a sign
 	if (isFirst && !canSign) return false;
 
 	// Check decimal point
-	if (chr == _T('.') || chr == _T(',')) {
-		if (!isFloat || gotDecimal) return false;
+	if (chr == '.' || chr == ',') {
+		if (!isFloat || gotDecimal)
+			return false;
 		else {
 			gotDecimal = true;
 			return true;
@@ -156,16 +111,9 @@ bool NumValidator::CheckCharacter(int chr,bool isFirst,bool canSign,bool &gotDec
 	}
 
 	// Check digit
-	if (chr < _T('0') || chr > _T('9')) return false;
-	return true;
+	return chr >= '0' && chr <= '9';
 }
 
-
-
-/// @brief Filter keypresses 
-/// @param event 
-/// @return 
-///
 void NumValidator::OnChar(wxKeyEvent& event) {
 	wxTextCtrl *ctrl = (wxTextCtrl*) GetWindow();
 	wxString value = ctrl->GetValue();
@@ -188,15 +136,13 @@ void NumValidator::OnChar(wxKeyEvent& event) {
 	for (size_t i=0;i<value.Length();i++) {
 		if (i >= (unsigned)from && i < (unsigned)to) continue;
 		curchr = value[i];
-		if (curchr == _T('.') || curchr == _T(',')) decimals++;
-		if (curchr == _T('+') || curchr == _T('-')) signs++;
+		if (curchr == '.' || curchr == ',') decimals++;
+		if (curchr == '+' || curchr == '-') signs++;
 	}
 	bool gotDecimal = decimals > 0;
-	bool isFirst = from == 0;
-	bool canSign = signs == 0;
 
 	// Check character
-	if (!CheckCharacter(chr,isFirst,canSign,gotDecimal)) {
+	if (!CheckCharacter(chr,!from,!signs,gotDecimal)) {
 		if (!wxValidator::IsSilent()) wxBell();
 		return;
 	}
@@ -206,30 +152,21 @@ void NumValidator::OnChar(wxKeyEvent& event) {
 	return;
 }
 
-
-
-/// @brief Transfer to window 
-/// @return 
-///
 bool NumValidator::TransferToWindow() {
 	wxTextCtrl *ctrl = (wxTextCtrl*) GetWindow();
-	if (isFloat) ctrl->SetValue(wxString::Format(_T("%g"),fValue));
-	else ctrl->SetValue(wxString::Format(_T("%d"),iValue));
+	if (isFloat)
+		ctrl->SetValue(wxString::Format("%g",fValue));
+	else
+		ctrl->SetValue(wxString::Format("%d",iValue));
 
 	return true;
 }
 
-
-
-/// @brief Receive from window 
-///
 bool NumValidator::TransferFromWindow() {
 	wxTextCtrl *ctrl = (wxTextCtrl*) GetWindow();
 	wxString value = ctrl->GetValue();
 
-	// Validate
-	bool ok = Validate(ctrl);
-	if (!ok) return false;
+	if (!Validate(ctrl)) return false;
 
 	// Transfer
 	if (isFloat) {
@@ -243,5 +180,3 @@ bool NumValidator::TransferFromWindow() {
 
 	return true;
 }
-
-

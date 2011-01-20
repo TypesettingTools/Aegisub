@@ -107,21 +107,6 @@ class DialogTimingProcessor : public wxDialog {
 	wxButton *ApplyButton;
 
 	/// DOCME
-
-	/// DOCME
-
-	/// DOCME
-
-	/// DOCME
-
-	/// DOCME
-
-	/// DOCME
-
-	/// DOCME
-	wxString leadInTime,leadOutTime,thresStartBefore,thresStartAfter,thresEndBefore,thresEndAfter,adjsThresTime;
-
-	/// DOCME
 	std::vector<int> KeyFrames;
 
 	void OnCheckBox(wxCommandEvent &event);

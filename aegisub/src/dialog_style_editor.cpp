@@ -108,14 +108,14 @@ DialogStyleEditor::DialogStyleEditor (wxWindow *parent, AssStyle *style, agi::Co
 	SetIcon(BitmapToIcon(GETIMAGE(style_toolbutton_24)));
 
 	// Prepare control values
-	FontSizeValue = AegiFloatToString(style->fontsize);
-	OutlineValue = AegiFloatToString(style->outline_w);
-	ShadowValue = AegiFloatToString(style->shadow_w);
-	ScaleXValue = AegiFloatToString(style->scalex);
-	ScaleYValue = AegiFloatToString(style->scaley);
-	AngleValue = AegiFloatToString(style->angle);
-	EncodingValue = AegiIntegerToString(style->encoding);
-	SpacingValue = AegiFloatToString(style->spacing);
+	wxString FontSizeValue = AegiFloatToString(style->fontsize);
+	wxString OutlineValue = AegiFloatToString(style->outline_w);
+	wxString ShadowValue = AegiFloatToString(style->shadow_w);
+	wxString ScaleXValue = AegiFloatToString(style->scalex);
+	wxString ScaleYValue = AegiFloatToString(style->scaley);
+	wxString AngleValue = AegiFloatToString(style->angle);
+	wxString EncodingValue = AegiIntegerToString(style->encoding);
+	wxString SpacingValue = AegiFloatToString(style->spacing);
 	wxString alignValues[9] = { _T("7"),_T("8"),_T("9"),_T("4"),_T("5"),_T("6"),_T("1"),_T("2"),_T("3") };
 	wxArrayString fontList = wxFontEnumerator::GetFacenames();
 	fontList.Sort();
@@ -136,7 +136,7 @@ DialogStyleEditor::DialogStyleEditor (wxWindow *parent, AssStyle *style, agi::Co
 	// Create controls
 	StyleName = new wxTextCtrl(this,-1,style->name);
 	FontName = new wxComboBox(this,TEXT_FONT_NAME,style->font,wxDefaultPosition,wxSize(150,-1),0,0,wxCB_DROPDOWN);
-	FontSize = new wxTextCtrl(this,TEXT_FONT_SIZE,_T(""),wxDefaultPosition,wxSize(50,-1),0,NumValidator(&FontSizeValue,true,false));
+	FontSize = new wxTextCtrl(this,TEXT_FONT_SIZE,_T(""),wxDefaultPosition,wxSize(50,-1),0,NumValidator(FontSizeValue,true,false));
 	BoxBold = new wxCheckBox(this,CHECKBOX_STYLE_BOLD,_("Bold"));
 	BoxItalic = new wxCheckBox(this,CHECKBOX_STYLE_ITALIC,_("Italic"));
 	BoxUnderline = new wxCheckBox(this,CHECKBOX_STYLE_UNDERLINE,_("Underline"));
@@ -152,13 +152,13 @@ DialogStyleEditor::DialogStyleEditor (wxWindow *parent, AssStyle *style, agi::Co
 	for (int i=0;i<3;i++) margin[i] = new wxSpinCtrl(this,TEXT_MARGIN_L+i,AegiFloatToString(style->Margin[i]),wxDefaultPosition,wxSize(60,-1),wxSP_ARROW_KEYS,0,9999,style->Margin[i]);
 	margin[3] = 0;
 	Alignment = new wxRadioBox(this, RADIO_ALIGNMENT, _("Alignment"), wxDefaultPosition, wxDefaultSize, 9, alignValues, 3, wxRA_SPECIFY_COLS);
-	Outline = new wxTextCtrl(this,TEXT_OUTLINE,_T(""),wxDefaultPosition,wxSize(40,20),0,NumValidator(&OutlineValue,true,false));
-	Shadow = new wxTextCtrl(this,TEXT_SHADOW,_T(""),wxDefaultPosition,wxSize(40,20),0,NumValidator(&ShadowValue,true,false));
+	Outline = new wxTextCtrl(this,TEXT_OUTLINE,_T(""),wxDefaultPosition,wxSize(40,20),0,NumValidator(OutlineValue,true,false));
+	Shadow = new wxTextCtrl(this,TEXT_SHADOW,_T(""),wxDefaultPosition,wxSize(40,20),0,NumValidator(ShadowValue,true,false));
 	OutlineType = new wxCheckBox(this,CHECKBOX_OUTLINE,_("Opaque box"));
-	ScaleX = new wxTextCtrl(this,TEXT_SCALE_X,_T(""),wxDefaultPosition, wxSize(70,20),0,NumValidator(&ScaleXValue,true,false));
-	ScaleY = new wxTextCtrl(this,TEXT_SCALE_Y,_T(""),wxDefaultPosition, wxSize(70,20),0,NumValidator(&ScaleYValue,true,false));
-	Angle = new wxTextCtrl(this,TEXT_ANGLE,_T(""),wxDefaultPosition, wxSize(40,20),0,NumValidator(&AngleValue,true,true));
-	Spacing = new wxTextCtrl(this,TEXT_SPACING,_T(""),wxDefaultPosition,wxSize(40,20),0,NumValidator(&SpacingValue,true,true));
+	ScaleX = new wxTextCtrl(this,TEXT_SCALE_X,_T(""),wxDefaultPosition, wxSize(70,20),0,NumValidator(ScaleXValue,true,false));
+	ScaleY = new wxTextCtrl(this,TEXT_SCALE_Y,_T(""),wxDefaultPosition, wxSize(70,20),0,NumValidator(ScaleYValue,true,false));
+	Angle = new wxTextCtrl(this,TEXT_ANGLE,_T(""),wxDefaultPosition, wxSize(40,20),0,NumValidator(AngleValue,true,true));
+	Spacing = new wxTextCtrl(this,TEXT_SPACING,_T(""),wxDefaultPosition,wxSize(40,20),0,NumValidator(SpacingValue,true,true));
 	Encoding = new wxComboBox(this,COMBO_ENCODING,_T(""),wxDefaultPosition, wxDefaultSize, encodingStrings,wxCB_READONLY);
 
 	// Set control tooltips

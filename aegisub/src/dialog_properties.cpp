@@ -104,10 +104,8 @@ DialogProperties::DialogProperties (wxWindow *parent, AssFile *subs)
 
 	// Resolution box
 	wxSizer *ResSizer = new wxStaticBoxSizer(wxHORIZONTAL,this,_("Resolution"));
-	ResXValue = subs->GetScriptInfo(_T("PlayResX"));
-	ResYValue = subs->GetScriptInfo(_T("PlayResY"));
-	ResX = new wxTextCtrl(this,-1,_T(""),wxDefaultPosition,wxSize(50,20),0,NumValidator(&ResXValue));
-	ResY = new wxTextCtrl(this,-1,_T(""),wxDefaultPosition,wxSize(50,20),0,NumValidator(&ResYValue));
+	ResX = new wxTextCtrl(this,-1,_T(""),wxDefaultPosition,wxSize(50,20),0,NumValidator(subs->GetScriptInfo("PlayResX")));
+	ResY = new wxTextCtrl(this,-1,_T(""),wxDefaultPosition,wxSize(50,20),0,NumValidator(subs->GetScriptInfo("PlayResY")));
 	wxStaticText *ResText = new wxStaticText(this,-1,_T("x"));
 	wxButton *FromVideo = new wxButton(this,BUTTON_FROM_VIDEO,_("From video"));
 	if (!VideoContext::Get()->IsLoaded()) FromVideo->Enable(false);
