@@ -553,34 +553,6 @@ void FrameMain::UpdateTitle() {
 	if (GetTitle() != newTitle) SetTitle(newTitle);
 }
 
-/// @brief Updates subs with video/whatever data 
-/// @param fromSubs 
-void FrameMain::SynchronizeProject() {
-	// Store data on ass
-	wxString seekpos = _T("0");
-	wxString ar = _T("0");
-	wxString zoom = _T("6");
-	if (context->videoController->IsLoaded()) {
-		seekpos = wxString::Format(_T("%i"),context->videoController->GetFrameN());
-		zoom = wxString::Format(_T("%f"),videoBox->videoDisplay->GetZoom());
-
-		int arType = context->videoController->GetAspectRatioType();
-		if (arType == 4) ar = wxString(_T("c")) + AegiFloatToString(context->videoController->GetAspectRatioValue());
-		else ar = wxString::Format(_T("%i"),arType);
-	}
-	
-	// Store audio data
-	context->ass->SetScriptInfo(_T("Audio URI"),MakeRelativePath(context->audioController->GetAudioURL(),context->ass->filename));
-
-	// Store video data
-	context->ass->SetScriptInfo(_T("Video File"),MakeRelativePath(context->videoController->videoName,context->ass->filename));
-	context->ass->SetScriptInfo(_T("Video Aspect Ratio"),ar);
-	context->ass->SetScriptInfo(_T("Video Zoom Percent"),zoom);
-	context->ass->SetScriptInfo(_T("Video Position"),seekpos);
-	context->ass->SetScriptInfo(_T("VFR File"),MakeRelativePath(context->videoController->GetTimecodesName(),context->ass->filename));
-	context->ass->SetScriptInfo(_T("Keyframes File"),MakeRelativePath(context->videoController->GetKeyFramesName(),context->ass->filename));
-}
-
 void FrameMain::OnVideoOpen() {
 	if (!context->videoController->IsLoaded()) {
 		SetDisplayMode(0, -1);

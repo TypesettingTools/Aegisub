@@ -152,7 +152,6 @@ private:
 	int TryToCloseSubs(bool enableCancel=true);
 
 	void RebuildRecentList(const char *root_command, const char *mru_name);
-	void SynchronizeProject();
 
 	// AudioControllerAudioEventListener implementation
 	void OnAudioOpen(AudioProvider *provider);
