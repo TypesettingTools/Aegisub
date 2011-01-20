@@ -425,7 +425,7 @@ void FrameMain::LoadSubtitles(wxString filename,wxString charset) {
 /// @param saveas      
 /// @param withCharset 
 /// @return 
-bool FrameMain::SaveSubtitles(bool saveas, bool withCharset) {
+bool FrameMain::SaveSubtitles(bool saveas) {
 	wxString filename;
 	if (!saveas && context->ass->CanSave()) {
 		filename = context->ass->filename;
@@ -441,14 +441,8 @@ bool FrameMain::SaveSubtitles(bool saveas, bool withCharset) {
 		return false;
 	}
 
-	wxString charset;
-	if (withCharset) {
-		charset = wxGetSingleChoice(_("Choose charset code:"), "Charset", agi::charset::GetEncodingsList<wxArrayString>(),this,-1, -1,true,250,200);
-		if (charset.empty()) return false;
-	}
-
 	try {
-		context->ass->Save(filename, true, true, charset);
+		context->ass->Save(filename, true, true);
 	}
 	catch (const agi::Exception& err) {
 		wxMessageBox(lagi_wxString(err.GetMessage()), "Error", wxOK | wxICON_ERROR, NULL);
