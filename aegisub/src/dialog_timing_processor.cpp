@@ -220,7 +220,7 @@ void DialogTimingProcessor::UpdateControls() {
 	adjacentBias->Enable(adjsEnable->IsChecked());
 
 	// Keyframes are only available if timecodes are loaded
-	bool keysAvailable = VideoContext::Get()->KeyFramesLoaded();
+	bool keysAvailable = c->videoController->KeyFramesLoaded();
 	bool enableKeys = keysEnable->IsChecked() && keysAvailable;
 	keysStartBefore->Enable(enableKeys);
 	keysStartAfter->Enable(enableKeys);

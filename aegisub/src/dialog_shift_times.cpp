@@ -98,7 +98,7 @@ DialogShiftTimes::DialogShiftTimes (agi::Context *context)
 	ShiftTime->SetToolTip(_("Enter time in h:mm:ss.cs notation"));
 	RadioTime->SetToolTip(_("Shift by time"));
 	ShiftFrame->Disable();
-	if (!VideoContext::Get()->TimecodesLoaded()) RadioFrames->Disable();
+	if (!context->videoController->TimecodesLoaded()) RadioFrames->Disable();
 	else {
 		ShiftFrame->SetToolTip(_("Enter number of frames to shift by"));
 		RadioFrames->SetToolTip(_("Shift by frames"));

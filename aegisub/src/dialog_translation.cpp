@@ -259,9 +259,9 @@ bool DialogTranslation::JumpToLine(int n,int block) {
 void DialogTranslation::UpdatePreview () {
 	if (enablePreview) {
 		try {
-			if (VideoContext::Get()->IsLoaded()) {
+			if (video->IsLoaded()) {
 				AssDialogue *cur = grid->GetDialogue(curline);
-				VideoContext::Get()->JumpToTime(cur->Start.GetMS());
+				video->JumpToTime(cur->Start.GetMS());
 			}
 		}
 		catch (...) {
