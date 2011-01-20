@@ -303,7 +303,30 @@ struct subtitle_properties : public Command {
 	}
 };
 
+static void save_subtitles(agi::Context *c, wxString filename) {
+	if (filename.empty()) {
+		c->videoController->Stop();
+		wxString path = lagi_wxString(OPT_GET("Path/Last/Subtitles")->GetString());
+		wxFileName origPath(c->ass->filename);
+		filename = wxFileSelector(_("Save subtitles file"), path, origPath.GetName() + ".ass", "ass", AssFile::GetWildcardList(1), wxFD_SAVE | wxFD_OVERWRITE_PROMPT, c->parent);
+	}
+	if (filename.empty()) {
+		return;
+	}
 
+	try {
+		c->ass->Save(filename, true, true);
+	}
+	catch (const agi::Exception& err) {
+		wxMessageBox(lagi_wxString(err.GetMessage()), "Error", wxOK | wxICON_ERROR, NULL);
+	}
+	catch (const wchar_t *err) {
+		wxMessageBox(wxString(err), _T("Error"), wxOK | wxICON_ERROR, NULL);
+	}
+	catch (...) {
+		wxMessageBox(_T("Unknown error"), _T("Error"), wxOK | wxICON_ERROR, NULL);
+	}
+}
 
 /// Saves subtitles.
 struct subtitle_save : public Command {
@@ -313,7 +336,7 @@ struct subtitle_save : public Command {
 	STR_HELP("Saves subtitles.")
 
 	void operator()(agi::Context *c) {
-		wxGetApp().frame->SaveSubtitles(false);
+		save_subtitles(c, c->ass->CanSave() ? c->ass->filename : "");
 	}
 };
 
@@ -326,7 +349,7 @@ struct subtitle_save_as : public Command {
 	STR_HELP("Saves subtitles with another name.")
 
 	void operator()(agi::Context *c) {
-		wxGetApp().frame->SaveSubtitles(true);
+		save_subtitles(c, "");
 	}
 };
 

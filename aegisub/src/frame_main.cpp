@@ -421,44 +421,6 @@ void FrameMain::LoadSubtitles(wxString filename,wxString charset) {
 	}
 }
 
-/// @brief Save subtitles 
-/// @param saveas      
-/// @param withCharset 
-/// @return 
-bool FrameMain::SaveSubtitles(bool saveas) {
-	wxString filename;
-	if (!saveas && context->ass->CanSave()) {
-		filename = context->ass->filename;
-	}
-
-	if (filename.empty()) {
-		context->videoController->Stop();
-		wxString path = lagi_wxString(OPT_GET("Path/Last/Subtitles")->GetString());
-		wxFileName origPath(context->ass->filename);
-		filename =  wxFileSelector(_("Save subtitles file"), path, origPath.GetName() + ".ass", "ass", AssFile::GetWildcardList(1), wxFD_SAVE | wxFD_OVERWRITE_PROMPT, this);
-	}
-	if (filename.empty()) {
-		return false;
-	}
-
-	try {
-		context->ass->Save(filename, true, true);
-	}
-	catch (const agi::Exception& err) {
-		wxMessageBox(lagi_wxString(err.GetMessage()), "Error", wxOK | wxICON_ERROR, NULL);
-		return false;
-	}
-	catch (const wchar_t *err) {
-		wxMessageBox(wxString(err), _T("Error"), wxOK | wxICON_ERROR, NULL);
-		return false;
-	}
-	catch (...) {
-		wxMessageBox(_T("Unknown error"), _T("Error"), wxOK | wxICON_ERROR, NULL);
-		return false;
-	}
-	return true;
-}
-
 /// @brief Try to close subtitles 
 /// @param enableCancel 
 /// @return 
@@ -468,13 +430,15 @@ int FrameMain::TryToCloseSubs(bool enableCancel) {
 		if (enableCancel) flags |= wxCANCEL;
 		int result = wxMessageBox(_("Save before continuing?"), _("Unsaved changes"), flags,this);
 		if (result == wxYES) {
+			(*cmd::get("subtitle/save"))(context.get());
 			// If it fails saving, return cancel anyway
-			if (SaveSubtitles(false)) return wxYES;
-			else return wxCANCEL;
+			return context->ass->IsModified() ? wxCANCEL : wxYES;
 		}
 		return result;
 	}
-	else return wxYES;
+	else {
+		return wxYES;
+	}
 }
 
 /// @brief Set the video and audio display visibilty
@@ -1173,7 +1137,8 @@ void FrameMain::OnAudioClose()
 
 void FrameMain::OnSubtitlesCommit() {
 	if (OPT_GET("App/Auto/Save on Every Change")->GetBool()) {
-		if (context->ass->IsModified() && !context->ass->filename.empty()) SaveSubtitles(false);
+		if (context->ass->IsModified() && context->ass->CanSave())
+			(*cmd::get("subtitle/save"))(context.get());
 	}
 
 	UpdateTitle();
