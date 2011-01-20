@@ -41,6 +41,7 @@
 #endif
 
 class AssFile;
+namespace agi { struct Context; }
 
 /// DOCME
 /// @class DialogProperties
@@ -48,61 +49,37 @@ class AssFile;
 ///
 /// DOCME
 class DialogProperties : public wxDialog {
-	AssFile *subs;
+	agi::Context *c; ///< Project this dialog is adjusting the properties of
 
-	/// DOCME
-	wxTextCtrl *TitleEdit;
+	// metadata no one actually uses
+	wxTextCtrl *TitleEdit;         ///< Project title
+	wxTextCtrl *OrigScriptEdit;    ///< Original script credit
+	wxTextCtrl *TranslationEdit;   ///< Translation credit
+	wxTextCtrl *EditingEdit;       ///< Script editor credit
+	wxTextCtrl *TimingEdit;        ///< Script timing credit
+	wxTextCtrl *SyncEdit;          ///< Script sync credit
+	wxTextCtrl *UpdatedEdit;       ///< Name of last person to update the script
+	wxTextCtrl *UpdateDetailsEdit; ///< Description of last changes made
 
-	/// DOCME
-	wxTextCtrl *OrigScriptEdit;
+	// Things that effect rendering
+	wxComboBox *WrapStyle;   ///< Wrapping style for long lines
+	wxComboBox *collision;   ///< Collision resolution method
+	wxTextCtrl *ResX;        ///< Script x resolution
+	wxTextCtrl *ResY;        ///< Script y resolution
+	wxCheckBox *ScaleBorder; ///< If script resolution != video resolution how should borders be handled
 
-	/// DOCME
-	wxTextCtrl *TranslationEdit;
-
-	/// DOCME
-	wxTextCtrl *EditingEdit;
-
-	/// DOCME
-	wxTextCtrl *TimingEdit;
-
-	/// DOCME
-	wxTextCtrl *SyncEdit;
-
-	/// DOCME
-	wxTextCtrl *UpdatedEdit;
-
-	/// DOCME
-	wxTextCtrl *UpdateDetailsEdit;
-
-
-	/// DOCME
-	wxComboBox *WrapStyle;
-
-	/// DOCME
-	wxComboBox *collision;
-
-	/// DOCME
-	wxTextCtrl *ResX;
-
-	/// DOCME
-	wxTextCtrl *ResY;
-
-	/// DOCME
-	wxCheckBox *ScaleBorder;
-
-
+	/// OK button handler
 	void OnOK(wxCommandEvent &event);
+	/// Set script resolution to video resolution button
 	void OnSetFromVideo(wxCommandEvent &event);
-	int SetInfoIfDifferent(wxString key,wxString value);
+	/// Set a script info field
+	/// @param key Name of field
+	/// @param value New value
+	/// @return Did the valud actually need to be changed?
+	int SetInfoIfDifferent(wxString key, wxString value);
 
 public:
-	DialogProperties(wxWindow *parent, AssFile *subs);
-	~DialogProperties();
-
-	DECLARE_EVENT_TABLE()
-};
-
-// IDs
-enum {
-	BUTTON_FROM_VIDEO = 1100
+	/// Constructor
+	/// @param c Project context
+	DialogProperties(agi::Context *c);
 };

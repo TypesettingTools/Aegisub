@@ -299,7 +299,7 @@ struct subtitle_properties : public Command {
 
 	void operator()(agi::Context *c) {
 		c->videoController->Stop();
-		DialogProperties(c->parent, c->ass).ShowModal();
+		DialogProperties(c).ShowModal();
 	}
 };
 
@@ -309,9 +309,7 @@ static void save_subtitles(agi::Context *c, wxString filename) {
 		wxString path = lagi_wxString(OPT_GET("Path/Last/Subtitles")->GetString());
 		wxFileName origPath(c->ass->filename);
 		filename = wxFileSelector(_("Save subtitles file"), path, origPath.GetName() + ".ass", "ass", AssFile::GetWildcardList(1), wxFD_SAVE | wxFD_OVERWRITE_PROMPT, c->parent);
-	}
-	if (filename.empty()) {
-		return;
+		if (filename.empty()) return;
 	}
 
 	try {
@@ -321,10 +319,10 @@ static void save_subtitles(agi::Context *c, wxString filename) {
 		wxMessageBox(lagi_wxString(err.GetMessage()), "Error", wxOK | wxICON_ERROR, NULL);
 	}
 	catch (const wchar_t *err) {
-		wxMessageBox(wxString(err), _T("Error"), wxOK | wxICON_ERROR, NULL);
+		wxMessageBox(err, "Error", wxOK | wxICON_ERROR, NULL);
 	}
 	catch (...) {
-		wxMessageBox(_T("Unknown error"), _T("Error"), wxOK | wxICON_ERROR, NULL);
+		wxMessageBox("Unknown error", "Error", wxOK | wxICON_ERROR, NULL);
 	}
 }
 
