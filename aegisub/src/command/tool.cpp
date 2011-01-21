@@ -49,6 +49,7 @@
 #include "../dialog_fonts_collector.h"
 #include "../standard_paths.h" // tool_assdraw
 #include "../video_context.h" // tool_font_collector
+#include "../dialog_export.h"
 #include "../dialog_resample.h"
 #include "../dialog_selection.h"
 #include "../dialog_styling_assistant.h"
@@ -84,7 +85,7 @@ struct tool_export : public Command {
 
 	void operator()(agi::Context *c) {
 		c->videoController->Stop();
-		DialogResample(c).ShowModal();
+		DialogExport(c->parent, c->ass).ShowModal();
 	}
 };
 
