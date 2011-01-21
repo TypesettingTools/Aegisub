@@ -67,6 +67,7 @@ enum {
 
 DialogResample::DialogResample(agi::Context *c)
 : wxDialog(c->parent,-1,_("Resample resolution"),wxDefaultPosition)
+, c(c)
 {
 	// Set icon
 	SetIcon(BitmapToIcon(GETIMAGE(resample_toolbutton_24)));
