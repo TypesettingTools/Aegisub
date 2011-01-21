@@ -219,7 +219,7 @@ struct video_details : public Command {
 
 	void operator()(agi::Context *c) {
 		c->videoController->Stop();
-		DialogVideoDetails(c->parent).ShowModal();
+		DialogVideoDetails(c).ShowModal();
 	}
 };
 

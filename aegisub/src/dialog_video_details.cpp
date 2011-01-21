@@ -43,64 +43,18 @@
 #endif
 
 #include "dialog_video_details.h"
+
+#include "include/aegisub/context.h"
 #include "utils.h"
 #include "video_context.h"
 #include "video_provider_manager.h"
 
-
-/// @brief Constructor 
-/// @param parent 
-///
-DialogVideoDetails::DialogVideoDetails(wxWindow *parent)
-: wxDialog(parent , -1, _("Video Details"),wxDefaultPosition,wxDefaultSize)
-{
-	// Main controls
-	wxFlexGridSizer *fg = new wxFlexGridSizer(2, 5, 10);
-	wxBoxSizer *main_sizer = new wxBoxSizer(wxVERTICAL);
-	wxStaticBoxSizer *video_sizer = new wxStaticBoxSizer(wxVERTICAL,this,_("Video"));
-	VideoProvider *vprovider = VideoContext::Get()->GetProvider();
-
-	int width = vprovider->GetWidth();
-	int height = vprovider->GetHeight();
-	int framecount = vprovider->GetFrameCount();
-	double fps = vprovider->GetFPS().FPS();
-
-	wxTextCtrl *fname_text = new wxTextCtrl(this, -1, VideoContext::Get()->videoName, wxDefaultPosition, wxSize(300,-1), wxTE_READONLY);
-	wxTextCtrl *fps_text = new wxTextCtrl(this, -1, wxString::Format(_T("%.3f"), fps), wxDefaultPosition, wxDefaultSize, wxTE_READONLY);
-	wxTextCtrl *resolution_text = new wxTextCtrl(this, -1, wxString::Format(_T("%dx%d (%s)"), width, height, PrettyAR(width, height).c_str()), wxDefaultPosition, wxDefaultSize, wxTE_READONLY);
-	wxTextCtrl *length_text = new wxTextCtrl(this, -1, wxString::Format(_T("%d frames (%s)"), framecount, PrettyTimeStamp(framecount, fps).c_str()), wxDefaultPosition, wxDefaultSize, wxTE_READONLY);
-	wxTextCtrl *decoder_text = new wxTextCtrl(this, -1, vprovider->GetDecoderName().c_str(), wxDefaultPosition, wxDefaultSize, wxTE_READONLY);
-
-	fg->Add(new wxStaticText(this, -1, _("File name:")), 0, wxALIGN_CENTRE_VERTICAL | wxEXPAND);
-	fg->Add(fname_text, 0, wxALIGN_CENTRE_VERTICAL | wxEXPAND);
-	fg->Add(new wxStaticText(this, -1, _("FPS:")), 0, wxALIGN_CENTRE_VERTICAL | wxEXPAND);
-	fg->Add(fps_text, 0, wxALIGN_CENTRE_VERTICAL | wxEXPAND);
-	fg->Add(new wxStaticText(this, -1, _("Resolution:")), 0, wxALIGN_CENTRE_VERTICAL | wxEXPAND);
-	fg->Add(resolution_text, 0, wxALIGN_CENTRE_VERTICAL | wxEXPAND);
-	fg->Add(new wxStaticText(this, -1, _("Length:")), 0, wxALIGN_CENTRE_VERTICAL | wxEXPAND);
-	fg->Add(length_text, 0, wxALIGN_CENTRE_VERTICAL | wxEXPAND);
-	fg->Add(new wxStaticText(this, -1, _("Decoder:")), 0, wxALIGN_CENTRE_VERTICAL | wxEXPAND);
-	fg->Add(decoder_text, 0, wxALIGN_CENTRE_VERTICAL | wxEXPAND);
-
-	video_sizer->Add(fg);
-
-	main_sizer->Add(video_sizer, 1, wxALL|wxEXPAND, 5);
-	main_sizer->Add(CreateSeparatedButtonSizer(wxOK), 0, wxALL|wxEXPAND, 5);
-	main_sizer->SetSizeHints(this);
-	SetSizer(main_sizer);
-
-	CenterOnParent();
+static void make_field(wxWindow *parent, wxSizer *sizer, wxString const& name, wxString const& value) {
+	sizer->Add(new wxStaticText(parent, -1, name), 0, wxALIGN_CENTRE_VERTICAL | wxEXPAND);
+	sizer->Add(new wxTextCtrl(parent, -1, value, wxDefaultPosition, wxSize(300,-1), wxTE_READONLY), 0, wxALIGN_CENTRE_VERTICAL | wxEXPAND);
 }
 
-
-
-/// @brief PrettyAR 
-/// @param width  
-/// @param height 
-/// @return 
-///
-wxString DialogVideoDetails::PrettyAR(int width, int height)
-{
+static wxString pretty_ar(int width, int height) {
 	int limit = (int)ceil(sqrt(double(std::min(width, height))));
 	for (int i=2;i<=limit;i++) {
 		while (width % i == 0 && height % i == 0) {
@@ -108,23 +62,41 @@ wxString DialogVideoDetails::PrettyAR(int width, int height)
 			height /= i;
 		}
 	}
-	return wxString::Format(_T("%d:%d"), width, height);
+	return wxString::Format("%d:%d", width, height);
 }
 
-
-
-/// @brief PrettyTimeStamp 
-/// @param frames 
-/// @param fps    
-///
-wxString DialogVideoDetails::PrettyTimeStamp(int frames, double fps)
-{
+static wxString pretty_time_stamp(int frames, double fps) {
 	int tt = int(frames / fps * 1000);
 	int cs = tt % 1000; tt /= 1000;
 	int s = tt % 60; tt /= 60;
 	int m = tt % 60; tt /= 60;
 	int h = tt;
-	return wxString::Format(_T("%d:%02d:%02d.%03d"), h, m, s, cs);
+	return wxString::Format("%d:%02d:%02d.%03d", h, m, s, cs);
 }
 
+DialogVideoDetails::DialogVideoDetails(agi::Context *c)
+: wxDialog(c->parent , -1, _("Video Details"))
+{
+	int width = c->videoController->GetWidth();
+	int height = c->videoController->GetHeight();
+	int framecount = c->videoController->GetLength();
+	double fps = c->videoController->FPS().FPS();
 
+	wxFlexGridSizer *fg = new wxFlexGridSizer(2, 5, 10);
+	make_field(this, fg, _("File name:"), c->videoController->videoName);
+	make_field(this, fg, _("FPS:"), wxString::Format("%.3f", fps));
+	make_field(this, fg, _("Resolution:"), wxString::Format("%dx%d (%s)", width, height, pretty_ar(width, height)));
+	make_field(this, fg, _("Length:"), wxString::Format("%d frames (%s)", framecount, pretty_time_stamp(framecount, fps)));
+	make_field(this, fg, _("Decoder:"), c->videoController->GetProvider()->GetDecoderName());
+
+	wxStaticBoxSizer *video_sizer = new wxStaticBoxSizer(wxVERTICAL,this,_("Video"));
+	video_sizer->Add(fg);
+
+	wxBoxSizer *main_sizer = new wxBoxSizer(wxVERTICAL);
+	main_sizer->Add(video_sizer, 1, wxALL|wxEXPAND, 5);
+	main_sizer->Add(CreateSeparatedButtonSizer(wxOK), 0, wxALL|wxEXPAND, 5);
+	main_sizer->SetSizeHints(this);
+	SetSizer(main_sizer);
+
+	CenterOnParent();
+}

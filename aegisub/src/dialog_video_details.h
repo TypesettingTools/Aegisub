@@ -34,36 +34,16 @@
 /// @ingroup secondary_ui
 ///
 
-
-
-///////////
-// Headers
 #ifndef AGI_PRE
 #include <wx/dialog.h>
 #endif
 
+namespace agi { struct Context; }
 
-/// DOCME
 /// @class DialogVideoDetails
-/// @brief DOCME
-///
-/// DOCME
-class DialogVideoDetails : public wxDialog {
-private:
-	wxString PrettyTimeStamp(int frames, double fps);
-	wxString PrettyAR(int width, int height);
-	
-
-	/// DOCME
-
-	/// DOCME
-	int width, height;
-
-	/// DOCME
-
-	/// DOCME
-	int framecount, fps;
-
-public:
-	DialogVideoDetails(wxWindow *parent);
+/// @brief Display information about the video in a dialog
+struct DialogVideoDetails : public wxDialog {
+	/// Constructor
+	/// @param c Project context
+	DialogVideoDetails(agi::Context *c);
 };
