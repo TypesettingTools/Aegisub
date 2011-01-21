@@ -36,6 +36,10 @@
 
 #include "config.h"
 
+#ifndef AGI_PRE
+#include <algorithm>
+#endif
+
 #include "ass_export_filter.h"
 #include "ass_file.h"
 
