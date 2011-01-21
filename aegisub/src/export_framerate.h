@@ -85,6 +85,9 @@ class AssTransformFramerateFilter : public AssExportFilter {
 	///   2. The relative distance between the beginning of the frame which time
 	///      is in and the beginning of the next frame
 	int ConvertTime(int time);
+
+	/// From Video click handler
+	void OnFpsFromVideo(wxCommandEvent &);
 public:
 	/// Constructor
 	AssTransformFramerateFilter();

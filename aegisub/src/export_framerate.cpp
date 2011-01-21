@@ -55,11 +55,6 @@
 #include "utils.h"
 #include "video_context.h"
 
-/// IDs
-enum {
-	Get_Input_From_Video = 2000
-};
-
 AssTransformFramerateFilter::AssTransformFramerateFilter()
 : AssExportFilter(_("Transform Framerate"), _("Transform subtitle times, including those in override tags, from an input framerate to an output framerate.\n\nThis is useful for converting regular time subtitles to VFRaC time subtitles for hardsubbing.\nIt can also be used to convert subtitles to a different speed video, such as NTSC to PAL speedup."), 1000)
 , Input(0)
@@ -79,9 +74,11 @@ wxWindow *AssTransformFramerateFilter::GetConfigDialogWindow(wxWindow *parent) {
 	// Input sizer
 	wxSizer *InputSizer = new wxBoxSizer(wxHORIZONTAL);
 	wxString initialInput;
-	wxButton *FromVideo = new wxButton(base,Get_Input_From_Video,_("From Video"));
-	if (Input->IsLoaded())
+	wxButton *FromVideo = new wxButton(base,-1,_("From Video"));
+	if (Input->IsLoaded()) {
 		initialInput = wxString::Format("%2.3f",Input->FPS());
+		FromVideo->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &AssTransformFramerateFilter::OnFpsFromVideo, this);
+	}
 	else {
 		initialInput = "23.976";
 		FromVideo->Enable(false);
@@ -130,6 +127,10 @@ wxWindow *AssTransformFramerateFilter::GetConfigDialogWindow(wxWindow *parent) {
 	// Window
 	base->SetSizerAndFit(MainSizer);
 	return base;
+}
+
+void AssTransformFramerateFilter::OnFpsFromVideo(wxCommandEvent &) {
+	InputFramerate->SetValue(wxString::Format("%g", VideoContext::Get()->FPS().FPS()));
 }
 
 void AssTransformFramerateFilter::LoadSettings(bool IsDefault) {
