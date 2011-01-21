@@ -67,6 +67,8 @@
 #endif
 #include "charset_conv.h"
 #include "compat.h"
+#include "export_clean_info.h"
+#include "export_fixstyle.h"
 #include "export_framerate.h"
 #include "frame_main.h"
 #include "main.h"
@@ -285,8 +287,10 @@ bool AegisubApp::OnInit() {
 #endif
 
 		// Load export filters
-		StartupLog(_T("Prepare export filters"));
-		AssExportFilterChain::PrepareFilters();
+		StartupLog(L"Register export filters");
+		AssExportFilterChain::Register(new AssFixStylesFilter);
+		AssExportFilterChain::Register(new AssTransformCleanInfoFilter);
+		AssExportFilterChain::Register(new AssTransformFramerateFilter);
 
 		// Get parameter subs
 		StartupLog(_T("Parse command line"));

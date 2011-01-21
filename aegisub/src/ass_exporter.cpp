@@ -67,13 +67,13 @@ void AssExporter::DrawSettings(wxWindow *parent,wxSizer *AddTo) {
 	for (FilterList::iterator cur=begin;cur!=end;cur++) {
 		// Make sure to construct static box sizer first, so it won't overlap
 		// the controls on wxMac.
-		box = new wxStaticBoxSizer(wxVERTICAL,parent,(*cur)->RegisterName);
+		box = new wxStaticBoxSizer(wxVERTICAL,parent,(*cur)->name);
 		window = (*cur)->GetConfigDialogWindow(parent);
 		if (window) {
 			box->Add(window,0,wxEXPAND,0);
 			AddTo->Add(box,0,wxEXPAND | wxLEFT | wxRIGHT | wxBOTTOM,5);
 			AddTo->Show(box,false);
-			Sizers[(*cur)->RegisterName] = box;
+			Sizers[(*cur)->name] = box;
 		}
 		else {
 			delete box;
@@ -90,13 +90,14 @@ void AssExporter::AddFilter(wxString name) {
 	FilterList::iterator begin = AssExportFilterChain::GetFilterList()->begin();
 	FilterList::iterator end = AssExportFilterChain::GetFilterList()->end();
 	for (FilterList::iterator cur=begin;cur!=end;cur++) {
-		if ((*cur)->RegisterName == name) {
+		if ((*cur)->name == name) {
 			filter = *cur;
+			break;
 		}
 	}
 	
 	// Check
-	if (!filter) throw wxString::Format(_T("Filter not found: %s"), name.c_str());
+	if (!filter) throw wxString::Format("Filter not found: %s", name.c_str());
 
 	// Add to list
 	Filters.push_back(filter);
@@ -122,7 +123,7 @@ wxArrayString AssExporter::GetAllFilterNames() {
 	FilterList::iterator begin = AssExportFilterChain::GetFilterList()->begin();
 	FilterList::iterator end = AssExportFilterChain::GetFilterList()->end();
 	for (FilterList::iterator cur=begin;cur!=end;cur++) {
-		if (!(*cur)->hidden) names.Add((*cur)->RegisterName);
+		if (!(*cur)->hidden) names.Add((*cur)->name);
 	}
 	return names;
 }
@@ -172,9 +173,9 @@ wxString AssExporter::GetDescription(wxString name) {
 	FilterList::iterator begin = AssExportFilterChain::GetFilterList()->begin();
 	FilterList::iterator end = AssExportFilterChain::GetFilterList()->end();
 	for (FilterList::iterator cur=begin;cur!=end;cur++) {
-		if ((*cur)->RegisterName == name) {
+		if ((*cur)->name == name) {
 			return (*cur)->GetDescription();
 		}
 	}
-	throw wxString::Format(_T("Filter not found: %s"), name.c_str());
+	throw wxString::Format("Filter not found: %s", name.c_str());
 }

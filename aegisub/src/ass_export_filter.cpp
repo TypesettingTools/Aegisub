@@ -39,178 +39,53 @@
 #include "ass_export_filter.h"
 #include "ass_file.h"
 
-
-/// @brief Constructor 
-///
-AssExportFilter::AssExportFilter() {
-	hidden = false;
-	autoExporter = false;
-	initialized = false;
-	FilterList *fil = AssExportFilterChain::GetUnpreparedFilterList();
-	fil->push_back(this);
+AssExportFilter::AssExportFilter(wxString const& name, wxString const& description, int priority)
+: name(name)
+, priority(priority)
+, autoExporter(false)
+, hidden(false)
+, description(description)
+{
 }
 
-
-
-/// @brief Destructor 
-///
-AssExportFilter::~AssExportFilter() {
-	try {
-		Unregister();
-	}
-	catch (...) {
-		// Ignore error
-	}
-}
-
-
-
-/// @brief Register 
-/// @param name     
-/// @param priority 
-///
-void AssExportFilter::Register (wxString name,int priority) {
-	// Check if it's registered
-	//   Changed this to an assert, since this kind of error should really only happen during dev. -jfs
-	//   (Actually the list of regged filters should rather be looped through and check that this object isn't in.)
-	assert(RegisterName == _T(""));
-
+void AssExportFilterChain::Register(AssExportFilter *filter) {
 	// Remove pipes from name
-	name.Replace(_T("|"),_T(""));
+	filter->name.Replace("|", "");
+
+	FilterList::iterator begin = GetFilterList()->begin();
+	FilterList::iterator end = GetFilterList()->end();
 
 	int filter_copy = 0;
-	wxString tmpnam;
-	if (filter_copy == 0) {
-		tmpnam = name;
-	} else {
+	wxString tmpnam = filter->name;
+	if (false) {
 try_new_name:
-		tmpnam = wxString::Format(_T("%s (%d)"), name.c_str(), filter_copy);
+		tmpnam = wxString::Format("%s (%d)", filter->name, filter_copy);
 	}
 
 	// Check if name exists
-	FilterList::iterator begin = AssExportFilterChain::GetFilterList()->begin();
-	FilterList::iterator end = AssExportFilterChain::GetFilterList()->end();
 	for (FilterList::iterator cur=begin;cur!=end;cur++) {
-		if ((*cur)->RegisterName == tmpnam) {
+		if ((*cur)->name == tmpnam) {
 			// Instead of just failing and making a big noise about it, let multiple filters share name, but append something to the later arrivals -jfs
 			filter_copy++;
 			goto try_new_name;
 		}
 	}
 
-	// Set name
-	RegisterName = tmpnam;
-	Priority = priority;
+	filter->name = tmpnam;
 
 	// Look for place to insert
-	bool inserted = false;
-	for (FilterList::iterator cur=begin;cur!=end;cur++) {
-		if ((*cur)->Priority < Priority) {
-			AssExportFilterChain::GetFilterList()->insert(cur,this);
-			inserted = true;
-			break;
-		}
-	}
-	if (!inserted) AssExportFilterChain::GetFilterList()->push_back(this);
+	while (begin != end && (*begin)->priority >= filter->priority) ++begin;
+	GetFilterList()->insert(begin, filter);
 }
 
+void AssExportFilterChain::Unregister(AssExportFilter *filter) {
+	if (find(GetFilterList()->begin(), GetFilterList()->end(), filter) == GetFilterList()->end())
+		throw wxString::Format("Unregister export filter: name \"%s\" is not registered.", filter->name);
 
-
-/// @brief Unregister 
-///
-void AssExportFilter::Unregister () {
-	// Check if it's registered
-	if (!IsRegistered()) throw wxString::Format(_T("Unregister export filter: name \"%s\" is not registered."), RegisterName.c_str());
-
-	// Unregister
-	RegisterName = _T("");
-	AssExportFilterChain::GetFilterList()->remove(this);
+	GetFilterList()->remove(filter);
 }
 
-
-
-/// @brief Checks if it's registered 
-/// @return 
-///
-bool AssExportFilter::IsRegistered() {
-	// Check name
-	if (RegisterName.IsEmpty()) {
-		return false;
-	}
-
-	// Check list
-	bool found = false;
-	FilterList::iterator begin = AssExportFilterChain::GetFilterList()->begin();
-	FilterList::iterator end = AssExportFilterChain::GetFilterList()->end();
-	for (FilterList::iterator cur=begin;cur!=end;cur++) {
-		if ((*cur) == this) {
-			found = true;
-			break;
-		}
-	}
-	return found;
-}
-
-
-
-/// @brief Get sizer 
-/// @param parent 
-/// @return 
-///
-wxWindow *AssExportFilter::GetConfigDialogWindow(wxWindow *parent) {
-	return NULL;
-}
-
-
-
-/// @brief Config dialog OK 
-/// @param IsDefault 
-///
-void AssExportFilter::LoadSettings(bool IsDefault) {
-}
-
-
-
-/// @brief Description reader 
-/// @return 
-///
-const wxString& AssExportFilter::GetDescription() const {
-	return description;
-}
-
-
-
-/// DOCME
-std::auto_ptr<AssExportFilterChain> AssExportFilterChain::instance;
-
-
-
-/// @brief Get list 
-/// @return 
-///
 FilterList *AssExportFilterChain::GetFilterList() {
-	if (!instance.get()) instance.reset(new AssExportFilterChain());
-	return &(instance->Filters);
-}
-
-
-
-/// @brief Get unprepared list 
-/// @return 
-///
-FilterList *AssExportFilterChain::GetUnpreparedFilterList() {
-	if (!instance.get()) instance.reset(new AssExportFilterChain());
-	return &(instance->Unprepared);
-}
-
-
-
-/// @brief Prepare filters 
-///
-void AssExportFilterChain::PrepareFilters() {
-	if (!instance.get()) instance.reset(new AssExportFilterChain());
-	for (FilterList::iterator cur=instance->Unprepared.begin();cur!=instance->Unprepared.end();cur++) {
-		(*cur)->Init();
-	}
-	instance->Unprepared.clear();
+	static FilterList instance;
+	return &instance;
 }

@@ -46,37 +46,22 @@
 #include "ass_dialogue.h"
 #include "ass_style.h"
 
-/// @brief Constructor 
-AssFixStylesFilter::AssFixStylesFilter() {
-	initialized = false;
-}
-
-/// @brief Init 
-void AssFixStylesFilter::Init() {
-	if (initialized) return;
-	initialized = true;
+AssFixStylesFilter::AssFixStylesFilter()
+: AssExportFilter(_("Fix Styles"), _("Fixes styles by replacing any style that isn't available on file with Default."), -5000)
+{
 	autoExporter = true;
-	Register(_("Fix Styles"),-5000);
-	description = _("Fixes styles by replacing any style that isn't available on file with Default.");
 }
 
-/// @brief Process 
-/// @param subs          
-/// @param export_dialog 
-void AssFixStylesFilter::ProcessSubs(AssFile *subs, wxWindow *export_dialog) {
+void AssFixStylesFilter::ProcessSubs(AssFile *subs, wxWindow *) {
 	wxArrayString styles = subs->GetStyles();
-	std::for_each(styles.begin(), styles.end(), std::mem_fun_ref(&wxString::MakeLower));
+	for_each(styles.begin(), styles.end(), std::mem_fun_ref(&wxString::MakeLower));
 	styles.Sort();
 
 	for (entryIter cur=subs->Line.begin();cur!=subs->Line.end();cur++) {
-		AssDialogue *diag = dynamic_cast<AssDialogue*>(*cur);
-		if (diag) {
+		if (AssDialogue *diag = dynamic_cast<AssDialogue*>(*cur)) {
 			if (!std::binary_search(styles.begin(), styles.end(), diag->Style.Lower())) {
-				diag->Style = L"Default";
+				diag->Style = "Default";
 			}
 		}
 	}
 }
-
-/// DOCME
-AssFixStylesFilter AssFixStylesFilter::instance;

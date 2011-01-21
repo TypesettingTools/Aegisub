@@ -45,38 +45,36 @@ class wxTextCtrl;
 
 /// DOCME
 /// @class AssTransformFramerateFilter
-/// @brief DOCME
+/// @brief Transform subtitle times, including those in override tags, from an input framerate to an output framerate
 class AssTransformFramerateFilter : public AssExportFilter {
-	/// The singleton instance of this filter
-	static AssTransformFramerateFilter instance;
+	AssDialogue *line;
+	int newStart;
+	int newEnd;
+	int newK;
+	int oldK;
 
 	// Yes, these are backwards
-	const agi::vfr::Framerate *Input;  /// Destination frame rate
-	const agi::vfr::Framerate *Output; /// Source frame rate
+	const agi::vfr::Framerate *Input;  ///< Destination frame rate
+	const agi::vfr::Framerate *Output; ///< Source frame rate
 
 	agi::vfr::Framerate t1,t2;
 
-	wxTextCtrl *InputFramerate; /// Input frame rate text box
-	wxTextCtrl *OutputFramerate; /// Output frame rate text box
+	wxTextCtrl *InputFramerate; ///< Input frame rate text box
+	wxTextCtrl *OutputFramerate; ///< Output frame rate text box
 
-	wxRadioButton *RadioOutputCFR; /// CFR radio control
-	wxRadioButton *RadioOutputVFR; /// VFR radio control
+	wxRadioButton *RadioOutputCFR; ///< CFR radio control
+	wxRadioButton *RadioOutputVFR; ///< VFR radio control
 
-	wxCheckBox *Reverse; /// Switch input and output
+	wxCheckBox *Reverse; ///< Switch input and output
 
-	/// Constructor
-	AssTransformFramerateFilter();
-	
 	/// @brief Apply the transformation to a file
 	/// @param subs File to process
 	void TransformFrameRate(AssFile *subs);
 	/// @brief Transform a single tag
 	/// @param name Name of the tag
 	/// @param curParam Current parameter being processed
-	/// @param userdata LineData passed
+	/// @param userdata Filter instance
 	static void TransformTimeTags(wxString name,int,AssOverrideParameter *curParam,void *userdata);
-	/// Initialize the singleton instance
-	void Init();
 
 	/// @brief Convert a time from the input frame rate to the output frame rate
 	/// @param time Time in ms to convert
@@ -88,6 +86,8 @@ class AssTransformFramerateFilter : public AssExportFilter {
 	///      is in and the beginning of the next frame
 	int ConvertTime(int time);
 public:
+	/// Constructor
+	AssTransformFramerateFilter();
 	void ProcessSubs(AssFile *subs, wxWindow *export_dialog);
 	wxWindow *GetConfigDialogWindow(wxWindow *parent);
 	void LoadSettings(bool IsDefault);

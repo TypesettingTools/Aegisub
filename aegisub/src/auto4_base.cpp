@@ -291,11 +291,10 @@ namespace Automation4 {
 	///
 	FeatureFilter::FeatureFilter(const wxString &_name, const wxString &_description, int _priority)
 		: Feature(SCRIPTFEATURE_FILTER, _name)
-		, AssExportFilter()
+		, AssExportFilter(_name, _description, _priority)
 		, config_dialog(0)
 	{
-		description = _description; // from AssExportFilter
-		Register(_name, _priority);
+		AssExportFilterChain::Register(this);
 	}
 
 
@@ -303,7 +302,7 @@ namespace Automation4 {
 	///
 	FeatureFilter::~FeatureFilter()
 	{
-		Unregister();
+		AssExportFilterChain::Unregister(this);
 	}
 
 

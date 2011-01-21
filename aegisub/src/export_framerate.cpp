@@ -55,36 +55,16 @@
 #include "utils.h"
 #include "video_context.h"
 
-/// DOCME
-/// @class LineData
-/// @brief DOCME
-///
-/// DOCME
-struct LineData {
-	AssDialogue *line;
-	int newStart;
-	int newEnd;
-	int newK;
-	int oldK;
-};
-
 /// IDs
 enum {
 	Get_Input_From_Video = 2000
 };
 
-AssTransformFramerateFilter::AssTransformFramerateFilter() {
-	initialized = false;
-}
-
-void AssTransformFramerateFilter::Init() {
-	if (initialized) return;
-	initialized = true;
-	autoExporter = true;
-	Register(_("Transform Framerate"),1000);
-	description = _("Transform subtitle times, including those in override tags, from an input framerate to an output framerate.\n\nThis is useful for converting regular time subtitles to VFRaC time subtitles for hardsubbing.\nIt can also be used to convert subtitles to a different speed video, such as NTSC to PAL speedup.");
-	Input = NULL;
-	Output = NULL;
+AssTransformFramerateFilter::AssTransformFramerateFilter()
+: AssExportFilter(_("Transform Framerate"), _("Transform subtitle times, including those in override tags, from an input framerate to an output framerate.\n\nThis is useful for converting regular time subtitles to VFRaC time subtitles for hardsubbing.\nIt can also be used to convert subtitles to a different speed video, such as NTSC to PAL speedup."), 1000)
+, Input(0)
+, Output(0)
+{
 }
 
 void AssTransformFramerateFilter::ProcessSubs(AssFile *subs, wxWindow *export_dialog) {
@@ -100,9 +80,10 @@ wxWindow *AssTransformFramerateFilter::GetConfigDialogWindow(wxWindow *parent) {
 	wxSizer *InputSizer = new wxBoxSizer(wxHORIZONTAL);
 	wxString initialInput;
 	wxButton *FromVideo = new wxButton(base,Get_Input_From_Video,_("From Video"));
-	if (Input->IsLoaded()) initialInput = wxString::Format(_T("%2.3f"),Input->FPS());
+	if (Input->IsLoaded())
+		initialInput = wxString::Format("%2.3f",Input->FPS());
 	else {
-		initialInput = _T("23.976");
+		initialInput = "23.976";
 		FromVideo->Enable(false);
 	}
 	InputFramerate = new wxTextCtrl(base,-1,initialInput,wxDefaultPosition,wxSize(60,20));
@@ -179,18 +160,18 @@ int FORCEINLINE trunc_cs(int time) {
 	return (time / 10) * 10;
 }
 
-void AssTransformFramerateFilter::TransformTimeTags (wxString name,int n,AssOverrideParameter *curParam,void *curData) {
+void AssTransformFramerateFilter::TransformTimeTags(wxString name,int n,AssOverrideParameter *curParam,void *curData) {
 	VariableDataType type = curParam->GetType();
 	if (type != VARDATA_INT && type != VARDATA_FLOAT) return;
 
-	LineData *lineData = static_cast<LineData*>(curData);
-	AssDialogue *curDiag = lineData->line;
+	AssTransformFramerateFilter *instance = static_cast<AssTransformFramerateFilter*>(curData);
+	AssDialogue *curDiag = instance->line;
 
 	int parVal = curParam->Get<int>();
 
 	switch (curParam->classification) {
 		case PARCLASS_RELATIVE_TIME_START: {
-			int value = instance.ConvertTime(trunc_cs(curDiag->Start.GetMS()) + parVal) - lineData->newStart;
+			int value = instance->ConvertTime(trunc_cs(curDiag->Start.GetMS()) + parVal) - instance->newStart;
 
 			// An end time of 0 is actually the end time of the line, so ensure
 			// nonzero is never converted to 0
@@ -202,13 +183,13 @@ void AssTransformFramerateFilter::TransformTimeTags (wxString name,int n,AssOver
 			break;
 		}
 		case PARCLASS_RELATIVE_TIME_END:
-			curParam->Set(lineData->newEnd - instance.ConvertTime(trunc_cs(curDiag->End.GetMS()) - parVal));
+			curParam->Set(instance->newEnd - instance->ConvertTime(trunc_cs(curDiag->End.GetMS()) - parVal));
 			break;
 		case PARCLASS_KARAOKE: {
-			int start = curDiag->Start.GetMS() / 10 + lineData->oldK + parVal;
-			int value = (instance.ConvertTime(start * 10) - lineData->newStart) / 10 - lineData->newK;
-			lineData->oldK += parVal;
-			lineData->newK += value;
+			int start = curDiag->Start.GetMS() / 10 + instance->oldK + parVal;
+			int value = (instance->ConvertTime(start * 10) - instance->newStart) / 10 - instance->newK;
+			instance->oldK += parVal;
+			instance->newK += value;
 			curParam->Set(value);
 			break;
 		}
@@ -223,18 +204,17 @@ void AssTransformFramerateFilter::TransformFrameRate(AssFile *subs) {
 		AssDialogue *curDialogue = dynamic_cast<AssDialogue*>(*cur);
 
 		if (curDialogue) {
-			LineData data;
-			data.line = curDialogue;
-			data.newK = 0;
-			data.oldK = 0;
-			data.newStart = trunc_cs(ConvertTime(curDialogue->Start.GetMS()));
-			data.newEnd = trunc_cs(ConvertTime(curDialogue->End.GetMS()) + 9);
+			line = curDialogue;
+			newK = 0;
+			oldK = 0;
+			newStart = trunc_cs(ConvertTime(curDialogue->Start.GetMS()));
+			newEnd = trunc_cs(ConvertTime(curDialogue->End.GetMS()) + 9);
 
 			// Process stuff
 			curDialogue->ParseASSTags();
-			curDialogue->ProcessParameters(TransformTimeTags,&data);
-			curDialogue->Start.SetMS(data.newStart);
-			curDialogue->End.SetMS(data.newEnd);
+			curDialogue->ProcessParameters(TransformTimeTags, this);
+			curDialogue->Start.SetMS(newStart);
+			curDialogue->End.SetMS(newEnd);
 			curDialogue->UpdateText();
 			curDialogue->ClearBlocks();
 		}
@@ -254,5 +234,3 @@ int AssTransformFramerateFilter::ConvertTime(int time) {
 
 	return newStart + newDur * dist;
 }
-
-AssTransformFramerateFilter AssTransformFramerateFilter::instance;

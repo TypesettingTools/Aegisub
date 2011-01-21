@@ -34,32 +34,16 @@
 /// @ingroup export
 ///
 
-
-
-
-///////////
-// Headers
 #include "ass_export_filter.h"
 
 
 /// DOCME
 /// @class AssTransformCleanInfoFilter
-/// @brief DOCME
+/// @brief Removes all but the absolutely required fields from the Script Info section
 ///
 /// DOCME
 class AssTransformCleanInfoFilter : public AssExportFilter {
-private:
-
-	/// DOCME
-	static AssTransformCleanInfoFilter instance;
-
-	AssTransformCleanInfoFilter();
-	void Init();
-
 public:
 	void ProcessSubs(AssFile *subs, wxWindow *export_dialog);
-	wxWindow *GetConfigDialogWindow(wxWindow *parent);
-	void LoadSettings(bool IsDefault);
+	AssTransformCleanInfoFilter();
 };
-
-

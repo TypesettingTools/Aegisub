@@ -34,9 +34,6 @@
 /// @ingroup export
 ///
 
-
-///////////
-// Headers
 #include "config.h"
 
 #include "ass_dialogue.h"
@@ -44,33 +41,12 @@
 #include "ass_override.h"
 #include "export_clean_info.h"
 
-
-/// @brief Constructor 
-///
-AssTransformCleanInfoFilter::AssTransformCleanInfoFilter() {
-	initialized = false;
+AssTransformCleanInfoFilter::AssTransformCleanInfoFilter()
+: AssExportFilter(_("Clean Script Info"), _("Removes all but the absolutely required fields from the Script Info section. You might want to run this on files that you plan to distribute in original form."))
+{
 }
 
-
-
-/// @brief Init 
-/// @return 
-///
-void AssTransformCleanInfoFilter::Init() {
-	if (initialized) return;
-	initialized = true;
-	autoExporter = false;
-	Register(_("Clean Script Info"),0);
-	description = _("Removes all but the absolutely required fields from the Script Info section. You might want to run this on files that you plan to distribute in original form.");
-}
-
-
-
-/// @brief Process 
-/// @param subs          
-/// @param export_dialog 
-///
-void AssTransformCleanInfoFilter::ProcessSubs(AssFile *subs, wxWindow *export_dialog) {
+void AssTransformCleanInfoFilter::ProcessSubs(AssFile *subs, wxWindow *) {
 	using std::list;
 	AssEntry *curEntry;
 	entryIter cur, next = subs->Line.begin();
@@ -78,53 +54,28 @@ void AssTransformCleanInfoFilter::ProcessSubs(AssFile *subs, wxWindow *export_di
 		cur = next++;
 
 		curEntry = *cur;
-		if (curEntry->group != _T("[Script Info]")) {
+		if (curEntry->group != "[Script Info]") {
 			continue;
 		}
-		if (curEntry->GetEntryData().IsEmpty()) {
+		if (curEntry->GetEntryData().empty()) {
 			continue;
 		}
-		if (curEntry->GetEntryData() == _T("[Script Info]")) {
+		if (curEntry->GetEntryData() == "[Script Info]") {
 			continue;
 		}
-		if (curEntry->GetEntryData().Left(1) == _T(";")) {
+		if (curEntry->GetEntryData().Left(1) == ";") {
 			continue;
 		}
 
 		wxString field = curEntry->GetEntryData().Left(curEntry->GetEntryData().Find(_T(':'))).Lower();
-		if (field != _T("scripttype") &&
-			field != _T("collisions") &&
-			field != _T("playresx") &&
-			field != _T("playresy") &&
-			field != _T("wrapstyle") &&
-			field != _T("scaledborderandshadow")) {
+		if (field != "scripttype" &&
+			field != "collisions" &&
+			field != "playresx" &&
+			field != "playresy" &&
+			field != "wrapstyle" &&
+			field != "scaledborderandshadow") {
 			delete curEntry;
 			subs->Line.erase(cur);
 		}
 	}
 }
-
-
-
-/// @brief Get dialog 
-/// @param parent 
-/// @return 
-///
-wxWindow *AssTransformCleanInfoFilter::GetConfigDialogWindow(wxWindow *parent) {
-	return 0;
-}
-
-
-
-/// @brief Load settings 
-/// @param IsDefault 
-///
-void AssTransformCleanInfoFilter::LoadSettings(bool IsDefault) {
-}
-
-
-
-/// DOCME
-AssTransformCleanInfoFilter AssTransformCleanInfoFilter::instance;
-
-

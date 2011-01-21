@@ -34,29 +34,18 @@
 /// @ingroup export
 ///
 
-
-
-
-///////////
-// Headers
 #include "ass_export_filter.h"
 
 
 /// DOCME
 /// @class AssFixStylesFilter
-/// @brief DOCME
+/// @brief Fixes styles by replacing any style that isn't available on file with Default
 ///
 /// DOCME
 class AssFixStylesFilter : public AssExportFilter {
-private:
-
-	/// DOCME
-	static AssFixStylesFilter instance;
-	AssFixStylesFilter();
-	void Init();
-
 public:
 	void ProcessSubs(AssFile *subs, wxWindow *export_dialog);
+	AssFixStylesFilter();
 };
 
 

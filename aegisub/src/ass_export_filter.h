@@ -58,24 +58,19 @@ typedef std::list<AssExportFilter*> FilterList;
 ///
 /// DOCME
 class AssExportFilterChain {
-	friend class AssExportFilter;
 	friend class AssExporter;
 
-private:
-
-	/// DOCME
+	/// The list of registered filters
 	FilterList Filters;
 
-	/// DOCME
-	FilterList Unprepared;
-
-	/// DOCME
-	static std::auto_ptr<AssExportFilterChain> instance;
+	/// Get the singleton instance
 	static FilterList *GetFilterList();
-	static FilterList *GetUnpreparedFilterList();
-
+	AssExportFilterChain() { }
 public:
-	static void PrepareFilters();
+	/// Register an export filter
+	static void Register(AssExportFilter *filter);
+	/// Unregister an export filter; must have been registered
+	static void Unregister(AssExportFilter *filter);
 };
 
 /// DOCME
@@ -87,41 +82,33 @@ class AssExportFilter {
 	friend class AssExporter;
 	friend class AssExportFilterChain;
 
-private:
+	/// This filter's name
+	wxString name;
 
-	/// DOCME
-	wxString RegisterName;
-
-	/// DOCME
-	int Priority;
+	/// Higher priority = run earlier
+	int priority;
 
 protected:
-
-	/// DOCME
+	/// Should this filter be used when sending subtitles to the subtitle provider
 	bool autoExporter;
 
-	/// DOCME
+	/// Should this filter be hidden from the user
 	bool hidden;
 
-	/// DOCME
-	bool initialized;
-
-	/// DOCME
+	/// User-visible description of this filter
 	wxString description;
 
-	void Register(wxString name,int priority=0);				// Register the filter with specific name. Higher priority filters get the file to process first.
-	void Unregister();											// Unregister the filter instance
-	bool IsRegistered();										// Is this instance registered as a filter?
-	virtual void Init()=0;										// Tell it to initialize itself
-
 public:
-	AssExportFilter();
-	virtual ~AssExportFilter();
+	AssExportFilter(wxString const& name, wxString const& description, int priority = 0);
+	virtual ~AssExportFilter() { };
 
-	const wxString& GetDescription() const;
+	const wxString& GetDescription() const { return description; }
 
-	virtual void ProcessSubs(AssFile *subs, wxWindow *export_dialog=0)=0;					// Process subtitles - this function must be overriden.
-	virtual wxWindow *GetConfigDialogWindow(wxWindow *parent);	// Draw setup controls - this function may optionally be overridden.
-	virtual void LoadSettings(bool IsDefault);					// Config dialog is done - extract data now.
+	/// Process subtitles
+	virtual void ProcessSubs(AssFile *subs, wxWindow *export_dialog=0)=0;
+	/// Draw setup controls
+	virtual wxWindow *GetConfigDialogWindow(wxWindow *parent) { return 0; }
+	/// Config dialog is done - extract data now.
+	virtual void LoadSettings(bool IsDefault) { }
 };
 
