@@ -45,49 +45,45 @@
 #endif
 
 #include "dialog_jumpto.h"
+
+#include "include/aegisub/context.h"
+#include "ass_time.h"
 #include "libresrc/libresrc.h"
+#include "timeedit_ctrl.h"
 #include "utils.h"
 #include "video_context.h"
 
-/// Event IDs
-enum {
-	TEXT_JUMP_TIME = 1100,
-	TEXT_JUMP_FRAME
-};
-
-/// @brief Constructor 
-/// @param parent 
-///
-DialogJumpTo::DialogJumpTo (wxWindow *parent)
-: wxDialog(parent, -1, _("Jump to"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE | wxWANTS_CHARS , _T("JumpTo"))
+DialogJumpTo::DialogJumpTo(agi::Context *c)
+: wxDialog(c->parent, -1, _("Jump to"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE | wxWANTS_CHARS , "JumpTo")
+, c(c)
+, jumpframe(c->videoController->GetFrameN())
 {
 	SetIcon(BitmapToIcon(GETIMAGE(jumpto_button_24)));
 
 	// Set initial values
-	ready = false;
-	jumpframe = VideoContext::Get()->GetFrameN();
-	jumptime.SetMS(VideoContext::Get()->TimeAtFrame(jumpframe));
-	wxString maxLength = wxString::Format(_T("%i"),VideoContext::Get()->GetLength()-1);
+	AssTime jumptime;
+	jumptime.SetMS(c->videoController->TimeAtFrame(jumpframe));
+	wxString maxLength = wxString::Format("%i",c->videoController->GetLength() - 1);
 
 	// Times
 	wxStaticText *LabelFrame = new wxStaticText(this,-1,_("Frame: "),wxDefaultPosition,wxSize(60,20));
 	wxStaticText *LabelTime = new wxStaticText(this,-1,_("Time: "),wxDefaultPosition,wxSize(60,20));
-	JumpFrame = new wxTextCtrl(this,TEXT_JUMP_FRAME,wxString::Format(_T("%i"),jumpframe),wxDefaultPosition,wxSize(60,20),wxTE_PROCESS_ENTER);
-	JumpFrame->SetMaxLength(maxLength.Len());
-	JumpTime = new TimeEdit(this,TEXT_JUMP_TIME,jumptime.GetASSFormated(),wxDefaultPosition,wxSize(60,20),wxTE_PROCESS_ENTER);
+	JumpFrame = new wxTextCtrl(this,-1,wxString::Format("%i",jumpframe),wxDefaultPosition,wxSize(60,20),wxTE_PROCESS_ENTER);
+	JumpFrame->SetMaxLength(maxLength.size());
+	JumpTime = new TimeEdit(this,-1,jumptime.GetASSFormated(),wxDefaultPosition,wxSize(60,20),wxTE_PROCESS_ENTER);
 	wxSizer *FrameSizer = new wxBoxSizer(wxHORIZONTAL);
 	wxSizer *TimeSizer = new wxBoxSizer(wxHORIZONTAL);
 	FrameSizer->Add(LabelFrame,0,wxALIGN_CENTER_VERTICAL,0);
 	FrameSizer->Add(JumpFrame,1,wxLEFT,5);
 	TimeSizer->Add(LabelTime,0,wxALIGN_CENTER_VERTICAL,0);
 	TimeSizer->Add(JumpTime,1,wxLEFT,5);
-	wxSizer *TimesSizer = new wxStaticBoxSizer(wxVERTICAL, this, _T(""));
+	wxSizer *TimesSizer = new wxStaticBoxSizer(wxVERTICAL, this, "");
 	TimesSizer->Add(FrameSizer,0,wxEXPAND | wxBOTTOM,5);
 	TimesSizer->Add(TimeSizer,0,wxEXPAND,0);
 
 	// Buttons
-	wxButton *OKButton = new wxButton(this,wxID_OK);
-	wxButton *CancelButton = new wxButton(this,wxID_CANCEL);
+	wxButton *OKButton = new wxButton(this, wxID_OK);
+	wxButton *CancelButton = new wxButton(this, wxID_CANCEL);
 	wxSizer *ButtonSizer = new wxBoxSizer(wxHORIZONTAL);
 	ButtonSizer->Add(OKButton,1,wxRIGHT,5);
 	ButtonSizer->Add(CancelButton,0,0,0);
@@ -101,75 +97,34 @@ DialogJumpTo::DialogJumpTo (wxWindow *parent)
 	SetSizer(MainSizer);
 	MainSizer->SetSizeHints(this);
 	CenterOnParent();
-	ready = true;
+
+	Bind(wxEVT_COMMAND_TEXT_ENTER, &DialogJumpTo::OnOK, this);
+	Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DialogJumpTo::OnOK, this, wxID_OK);
+	Bind(wxEVT_COMMAND_BUTTON_CLICKED, std::tr1::bind(&DialogJumpTo::EndModal, this, 0), wxID_CANCEL);
+	JumpTime->Bind(wxEVT_COMMAND_TEXT_UPDATED, &DialogJumpTo::OnEditTime, this);
+	JumpFrame->Bind(wxEVT_COMMAND_TEXT_UPDATED, &DialogJumpTo::OnEditFrame, this);
 }
 
-BEGIN_EVENT_TABLE(DialogJumpTo, wxDialog)
-	EVT_TEXT_ENTER(TEXT_JUMP_FRAME,DialogJumpTo::OnKey)
-	EVT_TEXT_ENTER(TEXT_JUMP_TIME,DialogJumpTo::OnKey)
-	EVT_BUTTON(wxID_CANCEL,DialogJumpTo::OnCloseButton)
-	EVT_BUTTON(wxID_OK,DialogJumpTo::OnOK)
-	EVT_TEXT(TEXT_JUMP_TIME, DialogJumpTo::OnEditTime)
-	EVT_TEXT(TEXT_JUMP_FRAME, DialogJumpTo::OnEditFrame)
-END_EVENT_TABLE()
-
-void DialogJumpTo::OnCloseButton (wxCommandEvent &) { OnClose(false); }
-void DialogJumpTo::OnOK (wxCommandEvent &) { OnClose(true); }
-
-/// @brief On Key pressed 
-void DialogJumpTo::OnKey(wxCommandEvent &) {
+void DialogJumpTo::OnOK(wxCommandEvent &) {
 	EndModal(0);
-	if (jumpframe > VideoContext::Get()->GetLength()-1) jumpframe = VideoContext::Get()->GetLength()-1;
-	VideoContext::Get()->JumpToFrame(jumpframe);
+	c->videoController->JumpToFrame(std::min<int>(jumpframe, c->videoController->GetLength() - 1));
 }
 
-/// @brief On OK button pressed 
-/// @param ok 
-void DialogJumpTo::OnClose(bool ok) {
-	EndModal(0);
-	if (jumpframe > VideoContext::Get()->GetLength()-1) jumpframe = VideoContext::Get()->GetLength()-1;
-	if (ok)	VideoContext::Get()->JumpToFrame(jumpframe);
-}
-
-/// @brief Time editbox changed 
-/// @param event 
-///
-void DialogJumpTo::OnEditTime (wxCommandEvent &event) {
-	if (ready) {
-		ready = false;
-
-		// Update frame
-		long newframe = VideoContext::Get()->FrameAtTime(JumpTime->time.GetMS());
-		if (jumpframe != newframe) {
-			jumpframe = newframe;
-			JumpFrame->ChangeValue(wxString::Format(_T("%i"),jumpframe));
-		}
-
-		ready = true;
+void DialogJumpTo::OnEditTime (wxCommandEvent &) {
+	long newframe = c->videoController->FrameAtTime(JumpTime->time.GetMS());
+	if (jumpframe != newframe) {
+		jumpframe = newframe;
+		JumpFrame->ChangeValue(wxString::Format("%i", jumpframe));
 	}
-	else event.Skip();
 }
 
-/// @brief Frame editbox changed 
-/// @param event 
-///
 void DialogJumpTo::OnEditFrame (wxCommandEvent &event) {
-	if (ready) {
-		ready = false;
+	JumpFrame->GetValue().ToLong(&jumpframe);
+	JumpFrame->ChangeValue(wxString::Format("%i", jumpframe));
 
-		// Update frame
-		JumpFrame->GetValue().ToLong(&jumpframe);
-
-		JumpFrame->SetValue(wxString::Format(_T("%i"),jumpframe));
-
-		// Update time
-		int newtime = VideoContext::Get()->TimeAtFrame(jumpframe);
-		if (jumptime.GetMS() != newtime) {
-			jumptime.SetMS(newtime);
-			JumpTime->ChangeValue(jumptime.GetASSFormated());
-		}
-
-		ready = true;
+	int newtime = c->videoController->TimeAtFrame(jumpframe);
+	if (JumpTime->time.GetMS() != newtime) {
+		JumpTime->time.SetMS(newtime);
+		JumpTime->ChangeValue(JumpTime->time.GetASSFormated());
 	}
-	else event.Skip();
 }

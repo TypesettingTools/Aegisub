@@ -277,7 +277,7 @@ struct video_jump : public Command {
 	void operator()(agi::Context *c) {
 		c->videoController->Stop();
 		if (c->videoController->IsLoaded()) {
-			DialogJumpTo(c->parent).ShowModal();
+			DialogJumpTo(c).ShowModal();
 			c->videoBox->videoSlider->SetFocus();
 		}
 	}

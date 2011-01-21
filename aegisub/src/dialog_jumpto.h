@@ -34,14 +34,8 @@
 /// @ingroup secondary_ui
 ///
 
-
-
-
-///////////
-// Headers
-#include "ass_time.h"
-#include "timeedit_ctrl.h"
-
+class TimeEdit;
+namespace agi { struct Context; }
 
 /// DOCME
 /// @class DialogJumpTo
@@ -49,34 +43,20 @@
 ///
 /// DOCME
 class DialogJumpTo : public wxDialog {
-private:
+	agi::Context *c;       ///< Project context
+	long jumpframe;        ///< Target frame to jump to
+	TimeEdit *JumpTime;    ///< Target time edit control
+	wxTextCtrl *JumpFrame; ///< Target frame edit control
 
-	/// DOCME
-	bool ready;
-
-	/// DOCME
-	long jumpframe;
-
-	/// DOCME
-	AssTime jumptime;
-
-
-	/// DOCME
-	TimeEdit *JumpTime;
-
-	/// DOCME
-	wxTextCtrl *JumpFrame;
-
-	void OnKey(wxCommandEvent &event);
-	void OnCloseButton(wxCommandEvent &event);
+	/// Enter/OK button handler
 	void OnOK(wxCommandEvent &event);
+	/// Update target frame on target time changed
 	void OnEditTime(wxCommandEvent &event);
+	/// Update target time on target frame changed
 	void OnEditFrame(wxCommandEvent &event);
-	void OnClose(bool ok);
 
 public:
-	DialogJumpTo (wxWindow *parent);
-
-
-	DECLARE_EVENT_TABLE()
+	/// Constructor
+	/// @param c Project context
+	DialogJumpTo(agi::Context *c);
 };
