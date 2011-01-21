@@ -35,10 +35,14 @@
 ///
 
 #ifndef AGI_PRE
+#include <vector>
+
 #include <wx/window.h>
 #endif
 
-class VideoDisplay;
+#include <libaegisub/signal.h>
+
+class VideoContext;
 class SubtitlesGrid;
 
 /// DOCME
@@ -47,24 +51,26 @@ class SubtitlesGrid;
 ///
 /// DOCME
 class VideoSlider: public wxWindow {
-	std::vector<int> keyframes;
+	VideoContext *vc;           ///< Video controller
+	SubtitlesGrid *grid;        ///< temp hack; remove this once event forwarding is killed
+	std::vector<int> keyframes; ///< Currently loaded keyframes
+	std::vector<agi::signal::Connection> slots;
 
-	/// DOCME
-	int val;
+	int val; ///< Current frame number
+	int max; ///< Last frame number
 
-	/// DOCME
-	int max;
-
-	/// DOCME
-	bool locked;
-
+	/// Get the frame number for the given x coordinate
 	int GetValueAtX(int x);
+	/// Get the x-coordinate for a frame number
 	int GetXAtValue(int value);
+	/// Render the slider
 	void DrawImage(wxDC &dc);
-	void UpdateImage();
+	/// Set the position of the slider
 	void SetValue(int value);
 
+	/// Video open event handler
 	void VideoOpened();
+	/// Keyframe open even handler
 	void KeyframesChanged(std::vector<int> const& newKeyframes);
 
 	void OnMouse(wxMouseEvent &event);
@@ -74,14 +80,7 @@ class VideoSlider: public wxWindow {
 	void OnEraseBackground(wxEraseEvent &event) {}
 
 public:
-	/// DOCME
-	VideoDisplay *Display;
-
-	/// DOCME
-	SubtitlesGrid *grid;
-
-	VideoSlider(wxWindow* parent, wxWindowID id);
-	~VideoSlider();
+	VideoSlider(wxWindow* parent, agi::Context *c);
 
 	DECLARE_EVENT_TABLE()
 };

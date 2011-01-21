@@ -90,7 +90,7 @@ VideoBox::VideoBox(wxWindow *parent, bool isDetached, wxComboBox *zoomBox, agi::
 	add_option(this, videoBottomSizer, "video/opt/autoscroll", "Video/Subtitle Sync");
 
 	// Seek
-	videoSlider = new VideoSlider(this,-1);
+	videoSlider = new VideoSlider(this, context);
 	videoSlider->SetToolTip(_("Seek video."));
 
 	// Position
@@ -119,9 +119,6 @@ VideoBox::VideoBox(wxWindow *parent, bool isDetached, wxComboBox *zoomBox, agi::
 
 	// Display
 	videoDisplay = new VideoDisplay(this,VideoPosition,VideoSubsPos,zoomBox,this,context);
-
-	// Set display
-	videoSlider->Display = videoDisplay;
 
 	// Top sizer
 	// Detached and attached video needs different flags, see bugs #742 and #853

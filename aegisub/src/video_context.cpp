@@ -266,7 +266,7 @@ void VideoContext::JumpToFrame(int n) {
 	// Prevent intervention during playback
 	if (isPlaying && n != playNextFrame) return;
 
-	frame_n = n;
+	frame_n = mid(0, n, GetLength() - 1);
 
 	Seek(n);
 }

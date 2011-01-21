@@ -43,6 +43,8 @@
 
 #include "command.h"
 
+#include "../ass_dialogue.h"
+#include "../ass_time.h"
 #include "../compat.h"
 #include "../frame_main.h"
 #include "../main.h"
@@ -254,6 +256,66 @@ struct video_frame_next : public Command {
 	}
 };
 
+/// Seek to the next subtitle boundary.
+struct video_frame_next_boundary : public Command {
+	CMD_NAME("video/frame/next/boundary")
+	STR_MENU("Next Boundary")
+	STR_DISP("Next Boundary")
+	STR_HELP("Seek to the next subtitle boundary.")
+
+	void operator()(agi::Context *c) {
+		AssDialogue *active_line = c->selectionController->GetActiveLine();
+		if (!active_line) return;
+
+		int target = c->videoController->FrameAtTime(active_line->Start.GetMS(), agi::vfr::START);
+		if (target > c->videoController->GetFrameN()) {
+			c->videoController->JumpToFrame(target);
+			return;
+		}
+
+		target = c->videoController->FrameAtTime(active_line->End.GetMS(), agi::vfr::END);
+		if (target > c->videoController->GetFrameN()) {
+			c->videoController->JumpToFrame(target);
+			return;
+		}
+
+		c->selectionController->NextLine();
+		AssDialogue *new_line = c->selectionController->GetActiveLine();
+		if (new_line != active_line)
+		c->videoController->JumpToTime(new_line->Start.GetMS());
+	}
+};
+
+/// Seek to the next keyframe.
+struct video_frame_next_keyframe : public Command {
+	CMD_NAME("video/frame/next/keyframe")
+	STR_MENU("Next Keyframe")
+	STR_DISP("Next Keyframe")
+	STR_HELP("Seek to the next keyframe.")
+
+	void operator()(agi::Context *c) {
+		std::vector<int> const& kf = c->videoController->GetKeyFrames();
+		std::vector<int>::const_iterator pos = lower_bound(kf.begin(), kf.end(), c->videoController->GetFrameN());
+		if (pos != kf.end()) ++pos;
+
+		c->videoController->JumpToFrame(pos == kf.end() ? c->videoController->GetFrameN() - 1 : *pos);
+	}
+};
+
+/// Fast jump forward
+struct video_frame_next_large : public Command {
+	CMD_NAME("video/frame/next/large")
+	STR_MENU("Fast jump forward")
+	STR_DISP("Fast jump forward")
+	STR_HELP("Fast jump forward.")
+
+	void operator()(agi::Context *c) {
+		c->videoController->JumpToFrame(
+			c->videoController->GetFrameN() +
+			OPT_GET("Video/Slider/Fast Jump Step")->GetInt());
+	}
+};
+
 /// Seek to the previous frame.
 struct video_frame_prev : public Command {
 	CMD_NAME("video/frame/prev")
@@ -266,6 +328,68 @@ struct video_frame_prev : public Command {
 	}
 };
 
+/// Seek to the previous subtitle boundary.
+struct video_frame_prev_boundary : public Command {
+	CMD_NAME("video/frame/prev/boundary")
+	STR_MENU("Previous Boundary")
+	STR_DISP("Previous Boundary")
+	STR_HELP("Seek to the previous subtitle boundary.")
+
+	void operator()(agi::Context *c) {
+		AssDialogue *active_line = c->selectionController->GetActiveLine();
+		if (!active_line) return;
+
+		int target = c->videoController->FrameAtTime(active_line->End.GetMS(), agi::vfr::END);
+		if (target < c->videoController->GetFrameN()) {
+			c->videoController->JumpToFrame(target);
+			return;
+		}
+
+		target = c->videoController->FrameAtTime(active_line->Start.GetMS(), agi::vfr::START);
+		if (target < c->videoController->GetFrameN()) {
+			c->videoController->JumpToFrame(target);
+			return;
+		}
+
+		c->selectionController->PrevLine();
+		AssDialogue *new_line = c->selectionController->GetActiveLine();
+		if (new_line != active_line)
+			c->videoController->JumpToTime(new_line->End.GetMS(), agi::vfr::END);
+	}
+};
+
+/// Seek to the previous keyframe.
+struct video_frame_prev_keyframe : public Command {
+	CMD_NAME("video/frame/prev/keyframe")
+	STR_MENU("Previous Keyframe")
+	STR_DISP("Previous Keyframe")
+	STR_HELP("Seek to the previous keyframe.")
+
+	void operator()(agi::Context *c) {
+		int frame = c->videoController->GetFrameN();
+		std::vector<int> const& kf = c->videoController->GetKeyFrames();
+		std::vector<int>::const_iterator pos = lower_bound(kf.begin(), kf.end(), frame);
+
+		if (frame != 0 && (pos == kf.end() || *pos == frame))
+			--pos;
+
+		c->videoController->JumpToFrame(*pos);
+	}
+};
+
+/// Fast jump backwards
+struct video_frame_prev_large : public Command {
+	CMD_NAME("video/frame/prev/large")
+	STR_MENU("Fast jump backwards")
+	STR_DISP("Fast jump backwards")
+	STR_HELP("Fast jump backwards")
+
+	void operator()(agi::Context *c) {
+		c->videoController->JumpToFrame(
+			c->videoController->GetFrameN() -
+			OPT_GET("Video/Slider/Fast Jump Step")->GetInt());
+	}
+};
 
 /// Jump to frame or time.
 struct video_jump : public Command {
@@ -493,7 +617,13 @@ void init_video(CommandManager *cm) {
 	cm->reg(new video_details);
 	cm->reg(new video_focus_seek);
 	cm->reg(new video_frame_next);
+	cm->reg(new video_frame_next_boundary);
+	cm->reg(new video_frame_next_keyframe);
+	cm->reg(new video_frame_next_large);
 	cm->reg(new video_frame_prev);
+	cm->reg(new video_frame_prev_boundary);
+	cm->reg(new video_frame_prev_keyframe);
+	cm->reg(new video_frame_prev_large);
 	cm->reg(new video_jump);
 	cm->reg(new video_jump_end);
 	cm->reg(new video_jump_start);

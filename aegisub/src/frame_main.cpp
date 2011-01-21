@@ -298,7 +298,6 @@ void FrameMain::InitContents() {
 	StartupLog("Create subtitles grid");
 	context->subsGrid = SubsGrid = new SubtitlesGrid(Panel,context.get(),wxSize(600,100),wxWANTS_CHARS | wxSUNKEN_BORDER,"Subs grid");
 	context->selectionController = context->subsGrid;
-	context->videoBox->videoSlider->grid = SubsGrid;
 	Search.context = context.get();
 
 	StartupLog("Create tool area splitter window");

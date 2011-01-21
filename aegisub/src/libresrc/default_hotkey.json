@@ -504,9 +504,51 @@
 				"enable" : true
 			}
 		],
+		"video/frame/next/boundary" : [
+			{
+				"modifiers" : [ "Ctrl" ],
+				"key" : "Right",
+				"enable" : true
+			}
+		],
+		"video/frame/next/keyframe" : [
+			{
+				"modifiers" : [ "Shift" ],
+				"key" : "Right",
+				"enable" : true
+			}
+		],
+		"video/frame/next/large" : [
+			{
+				"modifiers" : [ "Alt" ],
+				"key" : "Right",
+				"enable" : true
+			}
+		],
 		"video/frame/prev" : [
 			{
 				"modifiers" : [],
+				"key" : "Left",
+				"enable" : true
+			}
+		],
+		"video/frame/prev/boundary" : [
+			{
+				"modifiers" : [ "Ctrl" ],
+				"key" : "Left",
+				"enable" : true
+			}
+		],
+		"video/frame/prev/keyframe" : [
+			{
+				"modifiers" : [ "Shift" ],
+				"key" : "Left",
+				"enable" : true
+			}
+		],
+		"video/frame/prev/large" : [
+			{
+				"modifiers" : [ "Alt" ],
 				"key" : "Left",
 				"enable" : true
 			}

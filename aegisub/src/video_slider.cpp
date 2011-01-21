@@ -40,52 +40,30 @@
 #include <wx/settings.h>
 #endif
 
-#include "ass_dialogue.h"
+#include "include/aegisub/context.h"
+#include "include/aegisub/hotkey.h"
 #include "main.h"
-#include "subs_edit_box.h"
 #include "selection_controller.h"
 #include "subs_grid.h"
 #include "utils.h"
 #include "video_context.h"
-#include "video_display.h"
 #include "video_slider.h"
 
-/// IDs
-enum {
-	NextFrame = 1300,
-	PrevFrame
-};
-
-/// @brief Constructor 
-/// @param parent 
-/// @param id     
-///
-VideoSlider::VideoSlider (wxWindow* parent, wxWindowID id)
-: wxWindow (parent,id,wxDefaultPosition,wxDefaultSize,wxWANTS_CHARS | wxFULL_REPAINT_ON_RESIZE)
+VideoSlider::VideoSlider (wxWindow* parent, agi::Context *c)
+: wxWindow(parent, -1, wxDefaultPosition, wxDefaultSize, wxWANTS_CHARS | wxFULL_REPAINT_ON_RESIZE)
+, vc(c->videoController)
+, grid(c->subsGrid)
+, val(0)
+, max(1)
 {
-	val = 0;
-	max = 1;
-	Display = NULL;
 	SetClientSize(20,25);
 	SetMinSize(wxSize(20, 25));
-	locked = false;
-	OPT_SUB("Video/Slider/Show Keyframes", &wxWindow::Refresh, this, false, (wxRect*)NULL);
-	VideoContext *vc = VideoContext::Get();
-	assert(vc);
-	vc->AddSeekListener(&VideoSlider::SetValue, this);
-	vc->AddVideoOpenListener(&VideoSlider::VideoOpened, this);
-	vc->AddKeyframesListener(&VideoSlider::KeyframesChanged, this);
+	slots.push_back(OPT_SUB("Video/Slider/Show Keyframes", &wxWindow::Refresh, this, false, (wxRect*)NULL));
+	slots.push_back(vc->AddSeekListener(&VideoSlider::SetValue, this));
+	slots.push_back(vc->AddVideoOpenListener(&VideoSlider::VideoOpened, this));
+	slots.push_back(vc->AddKeyframesListener(&VideoSlider::KeyframesChanged, this));
 }
 
-VideoSlider::~VideoSlider() {
-	VideoContext *vc = VideoContext::Get();
-	assert(vc);
-}
-
-/// @brief Set value 
-/// @param value 
-/// @return 
-///
 void VideoSlider::SetValue(int value) {
 	if (val == value) return;
 	val = mid(0, value, max);
@@ -93,7 +71,6 @@ void VideoSlider::SetValue(int value) {
 }
 
 void VideoSlider::VideoOpened() {
-	VideoContext *vc = VideoContext::Get();
 	max = vc->GetLength() - 1;
 	keyframes = vc->GetKeyFrames();
 	Refresh(false);
@@ -104,37 +81,21 @@ void VideoSlider::KeyframesChanged(std::vector<int> const& newKeyframes) {
 	Refresh(false);
 }
 
-/// @brief Get value at X 
-/// @param x 
-/// @return 
-///
 int VideoSlider::GetValueAtX(int x) {
-	// Get dimensions
 	int w,h;
 	GetClientSize(&w,&h);
 
 	// Special case
 	if (w <= 10) return 0;
 
-	// Calculate
 	return (int64_t)(x-5)*(int64_t)max/(int64_t)(w-10);
 }
 
-
-
-/// @brief Get X at value 
-/// @param value 
-/// @return 
-///
 int VideoSlider::GetXAtValue(int value) {
-	// Get dimensions
-	int w,h;
-	GetClientSize(&w,&h);
-
-	// Special case
 	if (max <= 0) return 0;
 
-	// Calculate
+	int w,h;
+	GetClientSize(&w,&h);
 	return (int64_t)value*(int64_t)(w-10)/(int64_t)max+5;
 }
 
@@ -147,223 +108,79 @@ BEGIN_EVENT_TABLE(VideoSlider, wxWindow)
 	EVT_ERASE_BACKGROUND(VideoSlider::OnEraseBackground)
 END_EVENT_TABLE()
 
-/// @brief Mouse events 
-/// @param event 
-/// @return 
-///
 void VideoSlider::OnMouse(wxMouseEvent &event) {
-	// Coordinates
 	int x = event.GetX();
-	//int y = event.GetY();
-	bool shift = event.m_shiftDown;
 
-	// Left click
 	if (event.ButtonIsDown(wxMOUSE_BTN_LEFT)) {
-		// Check if it's OK to drag
-		bool canDrag = wxWindow::FindFocus() == this;
-		if (!canDrag) {
-			int tolerance = 4;
-			int curX = GetXAtValue(val);
-			if (x-curX < -tolerance || x-curX > tolerance) canDrag = true;
+		// If the slider didn't already have focus, don't seek if the user
+		// clicked very close to the current location as they were probably
+		// just trying to focus the slider
+		if (wxWindow::FindFocus() != this && abs(x - GetXAtValue(val)) < 4) {
+			SetFocus();
+			return;
 		}
 
-		// Drag
-		if (canDrag) {
-			// Shift click to snap to keyframe
-			if (shift && Display) {
-				std::vector<int> KeyFrames = VideoContext::Get()->GetKeyFrames();
-				int keys = KeyFrames.size();
-				int clickedFrame = GetValueAtX(x);
-				int closest = 0;
-				int cur;
+		// Shift click to snap to keyframe
+		if (event.m_shiftDown) {
+			int clickedFrame = GetValueAtX(x);
+			std::vector<int>::const_iterator pos = lower_bound(keyframes.begin(), keyframes.end(), clickedFrame);
+			if (pos == keyframes.end())
+				--pos;
+			else if (pos + 1 != keyframes.end() && clickedFrame - *pos > (*pos + 1) - clickedFrame)
+				++pos;
 
-				// Find closest
-				for (int i=0;i<keys;i++) {
-					cur = KeyFrames[i];
-					if (abs(cur-clickedFrame) < abs(closest-clickedFrame)) {
-						closest = cur;
-					}
-				}
-
-				// Jump to frame
-				if (closest == val) return;
-				SetValue(closest);
-			}
-
-			// Normal click
-			else {
-				int go = GetValueAtX(x);
-				if (go == val) return;
-				SetValue(go);
-			}
-			Refresh(false);
-
-			// Playing?
-			if (VideoContext::Get()->IsPlaying()) {
-				VideoContext::Get()->Stop();
-				VideoContext::Get()->JumpToFrame(val);
-				VideoContext::Get()->Play();
-			}
-			else VideoContext::Get()->JumpToFrame(val);
+			if (*pos == val) return;
+			SetValue(*pos);
 		}
 
-		// Get focus
+		// Normal click
+		else {
+			int go = GetValueAtX(x);
+			if (go == val) return;
+			SetValue(go);
+		}
+
+		if (vc->IsPlaying()) {
+			vc->Stop();
+			vc->JumpToFrame(val);
+			vc->Play();
+		}
+		else
+			vc->JumpToFrame(val);
 		SetFocus();
+		return;
 	}
 
-	// Right/middle click
 	if (event.ButtonDown(wxMOUSE_BTN_RIGHT) || event.ButtonDown(wxMOUSE_BTN_MIDDLE)) {
 		SetFocus();
 	}
 
-	// Something else
-	else if (!VideoContext::Get()->IsPlaying()) event.Skip();
+	else if (!vc->IsPlaying())
+		event.Skip();
 }
 
-
-
-/// @brief Key down event 
-/// @param event 
-/// @return 
-///
 void VideoSlider::OnKeyDown(wxKeyEvent &event) {
-	if (VideoContext::Get()->IsPlaying()) return;
+	if (vc->IsPlaying()) return;
 
-	// Get flags
-	int key = event.GetKeyCode();
-#ifdef __APPLE__
-	bool ctrl = event.m_metaDown;
-#else
-	bool ctrl = event.m_controlDown;
-#endif
-	bool alt = event.m_altDown;
-	bool shift = event.m_shiftDown;
-	int direction = 0;
-
-	// Pick direction
-	if (key == WXK_LEFT) direction = -1;
-	else if (key == WXK_RIGHT) direction = 1;
-
-	// If a direction was actually pressed
-	if (direction) {
-		// Standard move
-		if (!ctrl && !shift && !alt) {
-			if (direction == 1) VideoContext::Get()->NextFrame();
-			else VideoContext::Get()->PrevFrame();
-			return;
-		}
-
-		// Fast move
-		if (!ctrl && !shift && alt) {
-			if (VideoContext::Get()->IsPlaying()) return;
-			int target = mid<int>(0,val + direction * OPT_GET("Video/Slider/Fast Jump Step")->GetInt(),max);
-			if (target != val) VideoContext::Get()->JumpToFrame(target);
-			return;
-		}
-
-		// Boundaries
-		if (ctrl && !shift && !alt) {
-			// Prepare
-			wxArrayInt sel = grid->GetSelection();
-			int cur;
-			if (sel.Count() > 0) cur = sel[0];
-			else {
-				grid->SetActiveLine(grid->GetDialogue(0));
-				grid->SelectRow(0);
-				cur = 0;
-			}
-			AssDialogue *curDiag = grid->GetDialogue(cur);
-			if (!curDiag) return;
-
-			// Jump to next sub boundary
-			if (direction != 0) {
-				int target1 = VideoContext::Get()->FrameAtTime(curDiag->Start.GetMS(),agi::vfr::START);
-				int target2 = VideoContext::Get()->FrameAtTime(curDiag->End.GetMS(),agi::vfr::END);
-				bool drawn = false;
-
-				// Forward
-				if (direction == 1) {
-					if (VideoContext::Get()->GetFrameN() < target1) VideoContext::Get()->JumpToFrame(target1);
-					else if (VideoContext::Get()->GetFrameN() < target2) VideoContext::Get()->JumpToFrame(target2);
-					else {
-						if (cur+1 >= grid->GetRows()) return;
-						grid->SetActiveLine(grid->GetDialogue(cur+1));
-						grid->SelectRow(cur+1);
-						grid->MakeCellVisible(cur+1,0);
-						grid->SetVideoToSubs(true);
-						grid->Refresh(false);
-						drawn = true;
-					}
-					return;
-				}
-
-				// Backward
-				else {
-					if (VideoContext::Get()->GetFrameN() > target2) VideoContext::Get()->JumpToFrame(target2);
-					else if (VideoContext::Get()->GetFrameN() > target1) VideoContext::Get()->JumpToFrame(target1);
-					else {
-						if (cur-1 < 0) return;
-						grid->SetActiveLine(grid->GetDialogue(cur-1));
-						grid->SelectRow(cur-1);
-						grid->MakeCellVisible(cur-1,0);
-						grid->SetVideoToSubs(false);
-						grid->Refresh(false);
-						drawn = true;
-					}
-					return;
-				}
-			}
-		}
-
-		// Snap to keyframe
-		if (shift && !ctrl && !alt) {
-			if (direction != 0) {
-				std::vector<int>::iterator pos = std::lower_bound(keyframes.begin(), keyframes.end(), val);
-
-				if (direction < 0 && val != 0 && (pos == keyframes.end() || *pos == val))
-					--pos;
-				if (direction > 0 && pos != keyframes.end())
-					++pos;
-
-				VideoContext::Get()->JumpToFrame(pos == keyframes.end() ? max : *pos);
-				return;
-			}
-		}
-	}
+	if (hotkey::check("Video", event.GetKeyCode(), event.GetUnicodeKey(), event.GetModifiers()))
+		return;
 
 	// Forward up/down to grid
-	if (key == WXK_UP || key == WXK_DOWN) {
+	if (event.GetKeyCode() == WXK_UP || event.GetKeyCode() == WXK_DOWN) {
 		grid->GetEventHandler()->ProcessEvent(event);
 		grid->SetFocus();
-		return;
-	}
-
-	// Forward other keys to video display
-	if (Display) {
-		Display->GetEventHandler()->ProcessEvent(event);
 		return;
 	}
 
 	event.Skip();
 }
 
-
-
-/// @brief Paint event 
-/// @param event 
-///
 void VideoSlider::OnPaint(wxPaintEvent &event) {
 	wxPaintDC dc(this);
 	DrawImage(dc);
 }
 
-
-
-/// @brief Draw image 
-/// @param destdc 
-///
 void VideoSlider::DrawImage(wxDC &destdc) {
-	// Get dimensions
 	int w,h;
 	GetClientSize(&w,&h);
 
@@ -408,7 +225,7 @@ void VideoSlider::DrawImage(wxDC &destdc) {
 
 	// Draw keyframes
 	int curX;
-	if (Display && OPT_GET("Video/Slider/Show Keyframes")->GetBool()) {
+	if (OPT_GET("Video/Slider/Show Keyframes")->GetBool()) {
 		dc.SetPen(wxPen(shad));
 		for (size_t i=0;i<keyframes.size();i++) {
 			curX = GetXAtValue(keyframes[i]);
@@ -455,19 +272,6 @@ void VideoSlider::DrawImage(wxDC &destdc) {
 	destdc.Blit(0,0,w,h,&dc,0,0);
 }
 
-
-
-/// @brief Update image 
-///
-void VideoSlider::UpdateImage () {
-	Refresh(false);
-}
-
-
-
-/// @brief Focus change 
-/// @param event 
-///
 void VideoSlider::OnFocus(wxFocusEvent &event) {
 	Refresh(false);
 }
