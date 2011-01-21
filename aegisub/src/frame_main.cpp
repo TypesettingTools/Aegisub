@@ -106,7 +106,6 @@ FrameMain::FrameMain (wxArrayString args)
 , context(new agi::Context)
 , showVideo(true)
 , showAudio(true)
-, HasSelection(false)
 , blockVideoLoad(false)
 {
 	StartupLog("Entering FrameMain constructor");
@@ -329,8 +328,6 @@ void FrameMain::InitContents() {
 	MainSizer->Add(TopSizer,0,wxEXPAND | wxALL,0);
 	MainSizer->Add(SubsGrid,1,wxEXPAND | wxALL,0);
 	Panel->SetSizer(MainSizer);
-	//MainSizer->SetSizeHints(Panel);
-	//SetSizer(MainSizer);
 
 	StartupLog("Perform layout");
 	Layout();
@@ -355,7 +352,6 @@ void FrameMain::DeInitContents() {
 void FrameMain::UpdateToolbar() {
 	// Collect flags
 	bool isVideo = context->videoController->IsLoaded();
-	HasSelection = true;
 	int selRows = SubsGrid->GetNumberSelection();
 
 	// Update
@@ -568,11 +564,6 @@ void FrameMain::LoadVFR(wxString filename) {
 	}
 }
 
-/// @brief Open help 
-void FrameMain::OpenHelp(wxString) {
-	HelpButton::OpenPage(_T("Main"));
-}
-
 /// @brief Detach video window 
 /// @param detach 
 void FrameMain::DetachVideo(bool detach) {
@@ -684,14 +675,6 @@ bool FrameMain::LoadList(wxArrayString list) {
 	return subs.size() || audio.size() || video.size();
 }
 
-
-/// @brief Sets the descriptions for undo/redo 
-void FrameMain::SetUndoRedoDesc() {
-	wxMenu *editMenu = menu::menu->GetMenu("main/edit");
-	editMenu->SetHelpString(0,_T("Undo ")+context->ass->GetUndoDescription());
-	editMenu->SetHelpString(1,_T("Redo ")+context->ass->GetRedoDescription());
-}
-
 /// @brief Check if ASSDraw is available 
 bool FrameMain::HasASSDraw() {
 #ifdef __WINDOWS__
@@ -721,11 +704,7 @@ BEGIN_EVENT_TABLE(FrameMain, wxFrame)
 
 	EVT_MENU_OPEN(FrameMain::OnMenuOpen)
 	EVT_KEY_DOWN(FrameMain::OnKeyDown)
-//	EVT_MENU(cmd::id("subtitle/new"), FrameMain::cmd_call)
-//	EVT_MENU(cmd::id("subtitle/open"), FrameMain::cmd_call)
-//	EVT_MENU(cmd::id("subtitle/save"), FrameMain::cmd_call)
 
-//	EVT_MENU_RANGE(MENU_GRID_START+1,MENU_GRID_END-1,FrameMain::OnGridEvent)
 //	EVT_COMBOBOX(Toolbar_Zoom_Dropdown, FrameMain::OnSetZoom)
 //	EVT_TEXT_ENTER(Toolbar_Zoom_Dropdown, FrameMain::OnSetZoom)
 
@@ -734,13 +713,6 @@ BEGIN_EVENT_TABLE(FrameMain, wxFrame)
 //   EVT_MENU(wxID_EXIT, FrameMain::OnExit)
 #endif
 END_EVENT_TABLE()
-
-
-/// @brief Redirect grid events to grid 
-/// @param event 
-void FrameMain::OnGridEvent (wxCommandEvent &event) {
-	SubsGrid->GetEventHandler()->ProcessEvent(event);
-}
 
 /// @brief Rebuild recent list 
 /// @param listName 

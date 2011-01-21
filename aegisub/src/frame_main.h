@@ -101,9 +101,6 @@ private:
 	bool showVideo,showAudio;
 
 	/// DOCME
-	bool HasSelection;
-
-	/// DOCME
 	wxTimer AutoSave;
 
 	/// DOCME
@@ -136,10 +133,7 @@ private:
 
 	void InitMenu();
 
-	void SetUndoRedoDesc();
-
 	void OnKeyDown(wxKeyEvent &event);
-	void OnGridEvent (wxCommandEvent &event);
 	void OnMenuOpen (wxMenuEvent &event);
 
 	void OnAudioBoxResize(wxSashEvent &event);
@@ -191,7 +185,6 @@ public:
 	~FrameMain();
 
 	void UpdateToolbar();
-	static void OpenHelp(wxString page=_T(""));
 	bool HasASSDraw();
 
 	DECLARE_EVENT_TABLE()
