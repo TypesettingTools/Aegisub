@@ -69,7 +69,7 @@ DialogDetachedVideo::DialogDetachedVideo(FrameMain *parent, agi::Context *contex
 	SetExtraStyle((GetExtraStyle() & ~wxWS_EX_BLOCK_EVENTS) | wxWS_EX_PROCESS_UI_UPDATES);
 
 	// Set title
-	wxFileName fn(VideoContext::Get()->videoName);
+	wxFileName fn(context->videoController->videoName);
 	SetTitle(wxString::Format(_("Video: %s"),fn.GetFullName().c_str()));
 
 	// Set a background panel

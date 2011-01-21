@@ -103,7 +103,7 @@ DialogResample::DialogResample(agi::Context *c)
 	ResY = new wxTextCtrl(this,-1,"",wxDefaultPosition,wxSize(50,-1),0,NumValidator(wxString::Format("%i",sh)));
 	wxStaticText *ResText = new wxStaticText(this,-1,_("x"));
 	wxButton *FromVideo = new wxButton(this,BUTTON_DEST_FROM_VIDEO,_("From video"));
-	if (!VideoContext::Get()->IsLoaded()) FromVideo->Enable(false);
+	if (!c->videoController->IsLoaded()) FromVideo->Enable(false);
 	ResSizer->Add(ResX,1,wxRIGHT,5);
 	ResSizer->Add(ResText,0,wxALIGN_CENTER | wxRIGHT,5);
 	ResSizer->Add(ResY,1,wxRIGHT,5);
@@ -331,8 +331,8 @@ void DialogResample::OnResample (wxCommandEvent &event) {
 /// @param event 
 ///
 void DialogResample::OnGetDestRes (wxCommandEvent &event) {
-	ResX->SetValue(wxString::Format(_T("%i"),VideoContext::Get()->GetWidth()));
-	ResY->SetValue(wxString::Format(_T("%i"),VideoContext::Get()->GetHeight()));
+	ResX->SetValue(wxString::Format(_T("%i"),c->videoController->GetWidth()));
+	ResY->SetValue(wxString::Format(_T("%i"),c->videoController->GetHeight()));
 }
 
 
