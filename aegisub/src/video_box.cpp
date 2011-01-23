@@ -45,7 +45,10 @@
 
 #include "include/aegisub/context.h"
 
+#include "ass_dialogue.h"
+#include "ass_file.h"
 #include "command/command.h"
+#include "compat.h"
 #include "help_button.h"
 #include "libresrc/libresrc.h"
 #include "main.h"
@@ -118,7 +121,7 @@ VideoBox::VideoBox(wxWindow *parent, bool isDetached, wxComboBox *zoomBox, agi::
 	visualToolBar->SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNFACE));
 
 	// Display
-	videoDisplay = new VideoDisplay(this,isDetached,VideoPosition,VideoSubsPos,zoomBox,this,context);
+	videoDisplay = new VideoDisplay(this,isDetached,zoomBox,this,context);
 
 	// Top sizer
 	// Detached and attached video needs different flags, see bugs #742 and #853
@@ -133,14 +136,14 @@ VideoBox::VideoBox(wxWindow *parent, bool isDetached, wxComboBox *zoomBox, agi::
 	topSizer->Add(new wxStaticLine(this),0,wxEXPAND,0);
 
 	// Sizers
-	videoSliderSizer = new wxBoxSizer(wxHORIZONTAL);
+	wxSizer *videoSliderSizer = new wxBoxSizer(wxHORIZONTAL);
 	videoSliderSizer->Add(videoSlider,1,wxEXPAND|wxLEFT,0);
 	videoBottomSizer->Add(VideoPosition,1,wxLEFT|wxALIGN_CENTER,5);
 	videoBottomSizer->Add(VideoSubsPos,1,wxALIGN_CENTER,0);
 
 	// If we're detached we do want to fill out as much space we can.
 	// But if we're in the main window, the subs grid needs space more than us.
-	VideoSizer = new wxBoxSizer(wxVERTICAL);
+	wxSizer *VideoSizer = new wxBoxSizer(wxVERTICAL);
 	VideoSizer->Add(topSizer,isDetached?1:0,wxEXPAND,0);
 	VideoSizer->Add(videoSliderSizer,0,wxEXPAND,0);
 	VideoSizer->Add(videoBottomSizer,0,wxEXPAND,0);
@@ -150,6 +153,12 @@ VideoBox::VideoBox(wxWindow *parent, bool isDetached, wxComboBox *zoomBox, agi::
 
 	Bind(wxEVT_COMMAND_BUTTON_CLICKED, &VideoBox::OnButton, this);
 	Bind(wxEVT_COMMAND_TOGGLEBUTTON_CLICKED, &VideoBox::OnButton, this);
+
+	slots.push_back(context->videoController->AddSeekListener(&VideoBox::UpdateTimeBoxes, this));
+	slots.push_back(context->videoController->AddKeyframesListener(&VideoBox::UpdateTimeBoxes, this));
+	slots.push_back(context->videoController->AddTimecodesListener(&VideoBox::UpdateTimeBoxes, this));
+	slots.push_back(context->videoController->AddVideoOpenListener(&VideoBox::UpdateTimeBoxes, this));
+	slots.push_back(context->ass->AddCommitListener(&VideoBox::UpdateTimeBoxes, this));
 }
 
 void VideoBox::OnButton(wxCommandEvent &evt) {
@@ -163,4 +172,40 @@ void VideoBox::OnButton(wxCommandEvent &evt) {
 	context->videoController->EnableAudioSync(!wxGetMouseState().ControlDown());
 #endif
 	cmd::call(context, evt.GetId());
+}
+
+void VideoBox::UpdateTimeBoxes() {
+	if (!context->videoController->IsLoaded()) return;
+
+	int frame = context->videoController->GetFrameN();
+	int time = context->videoController->TimeAtFrame(frame, agi::vfr::EXACT);
+
+	int h = time / 3600000;
+	int m = time % 3600000 / 60000;
+	int s = time % 60000 / 1000;
+	int ms = time % 1000;
+
+	// Set the text box for frame number and time
+	VideoPosition->SetValue(wxString::Format("%01i:%02i:%02i.%03i - %i", h, m, s, ms, frame));
+	if (binary_search(context->videoController->GetKeyFrames().begin(), context->videoController->GetKeyFrames().end(), frame)) {
+		// Set the background color to indicate this is a keyframe
+		VideoPosition->SetBackgroundColour(lagi_wxColour(OPT_GET("Colour/Subtitle Grid/Background/Selection")->GetColour()));
+		VideoPosition->SetForegroundColour(lagi_wxColour(OPT_GET("Colour/Subtitle Grid/Selection")->GetColour()));
+	}
+	else {
+		VideoPosition->SetBackgroundColour(wxNullColour);
+		VideoPosition->SetForegroundColour(wxNullColour);
+	}
+
+	AssDialogue *active_line = context->selectionController->GetActiveLine();
+	if (!active_line) {
+		VideoSubsPos->SetValue("");
+	}
+	else {
+		VideoSubsPos->SetValue(wxString::Format(
+			"%+dms; %+dms",
+			time - active_line->Start.GetMS(),
+			time - active_line->End.GetMS()));
+	}
+
 }

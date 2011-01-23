@@ -62,7 +62,6 @@
 #include "video_display.h"
 #include "selection_controller.h"
 
-#include "ass_dialogue.h"
 #include "ass_file.h"
 #include "main.h"
 #include "subs_grid.h"
@@ -125,8 +124,6 @@ public:
 VideoDisplay::VideoDisplay(
 	VideoBox *box,
 	bool freeSize,
-	wxTextCtrl *PositionDisplay,
-	wxTextCtrl *SubsPosition,
 	wxComboBox *zoomBox,
 	wxWindow* parent,
 	agi::Context *c)
@@ -136,8 +133,6 @@ VideoDisplay::VideoDisplay(
 , currentFrame(-1)
 , w(8), h(8), viewport_x(0), viewport_width(0), viewport_bottom(0), viewport_top(0), viewport_height(0)
 , zoomValue(OPT_GET("Video/Default Zoom")->GetInt() * .125 + .125)
-, SubsPosition(SubsPosition)
-, PositionDisplay(PositionDisplay)
 , videoOut(new VideoOutGL())
 , activeMode(Video_Mode_Standard)
 , toolBar(box->visualSubToolBar)
@@ -189,51 +184,8 @@ void VideoDisplay::ShowCursor(bool show) {
 	}
 }
 
-void VideoDisplay::UpdateRelativeTimes(int time) {
-	wxString startSign;
-	wxString endSign;
-	int startOff = 0;
-	int endOff = 0;
-
-	if (AssDialogue *curLine = con->selectionController->GetActiveLine()) {
-		startOff = time - curLine->Start.GetMS();
-		endOff = time - curLine->End.GetMS();
-	}
-
-	// Positive signs
-	if (startOff > 0) startSign = L"+";
-	if (endOff > 0) endSign = L"+";
-
-	// Set the text box for time relative to active subtitle line
-	SubsPosition->SetValue(wxString::Format(L"%s%ims; %s%ims", startSign.c_str(), startOff, endSign.c_str(), endOff));
-}
-
-
 void VideoDisplay::SetFrame(int frameNumber) {
 	currentFrame = frameNumber;
-
-	// Get time for frame
-	{
-		int time = con->videoController->TimeAtFrame(frameNumber, agi::vfr::EXACT);
-		int h = time / 3600000;
-		int m = time % 3600000 / 60000;
-		int s = time % 60000 / 1000;
-		int ms = time % 1000;
-
-		// Set the text box for frame number and time
-		PositionDisplay->SetValue(wxString::Format(L"%01i:%02i:%02i.%03i - %i", h, m, s, ms, frameNumber));
-		if (std::binary_search(con->videoController->GetKeyFrames().begin(), con->videoController->GetKeyFrames().end(), frameNumber)) {
-			// Set the background color to indicate this is a keyframe
-			PositionDisplay->SetBackgroundColour(lagi_wxColour(OPT_GET("Colour/Subtitle Grid/Background/Selection")->GetColour()));
-			PositionDisplay->SetForegroundColour(lagi_wxColour(OPT_GET("Colour/Subtitle Grid/Selection")->GetColour()));
-		}
-		else {
-			PositionDisplay->SetBackgroundColour(wxNullColour);
-			PositionDisplay->SetForegroundColour(wxNullColour);
-		}
-
-		UpdateRelativeTimes(time);
-	}
 
 	// Render the new frame
 	if (con->videoController->IsLoaded()) {
@@ -277,7 +229,6 @@ void VideoDisplay::OnCommit(int type) {
 	if (type == AssFile::COMMIT_FULL || type == AssFile::COMMIT_UNDO)
 		con->videoController->GetScriptSize(scriptW, scriptH);
 	if (tool.get()) tool->Refresh();
-	UpdateRelativeTimes(con->videoController->TimeAtFrame(currentFrame, agi::vfr::EXACT));
 }
 
 void VideoDisplay::Render() try {
@@ -535,9 +486,6 @@ void VideoDisplay::SetZoomFromBox() {
 		zoomValue = value / 100.;
 		UpdateSize();
 	}
-}
-double VideoDisplay::GetZoom() const {
-	return zoomValue;
 }
 
 template<class T>

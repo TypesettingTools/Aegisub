@@ -52,7 +52,6 @@
 #include "subs_grid.h"
 #include "utils.h"
 #include "validators.h"
-#include "video_box.h"
 #include "video_context.h"
 #include "video_display.h"
 

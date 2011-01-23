@@ -131,12 +131,6 @@ class VideoDisplay : public wxGLCanvas {
 	/// The current zoom level, where 1.0 = 100%
 	double zoomValue;
 
-	/// The display for the the video position relative to the current subtitle line
-	wxTextCtrl *SubsPosition;
-
-	/// The display for the absolute time of the video position
-	wxTextCtrl *PositionDisplay;
-
 	/// The video renderer
 	std::auto_ptr<VideoOutGL> videoOut;
 
@@ -153,10 +147,6 @@ class VideoDisplay : public wxGLCanvas {
 	/// @brief Initialize the gl context and set the active context to this one
 	/// @return Could the context be set?
 	bool InitContext();
-
-	/// @brief Update the time relative to current subtitle line box
-	/// @param time Currently displayed frame's time
-	void UpdateRelativeTimes(int time);
 
 	/// @brief Set this video display to the given frame
 	/// @frameNumber The desired frame number
@@ -197,8 +187,6 @@ public:
 	VideoDisplay(
 		VideoBox *box,
 		bool isDetached,
-		wxTextCtrl *PositionDisplay,
-		wxTextCtrl *SubsPosition,
 		wxComboBox *zoomBox,
 		wxWindow* parent,
 		agi::Context *context);
@@ -213,7 +201,7 @@ public:
 	/// @brief Set the zoom level to that indicated by the dropdown
 	void SetZoomFromBox();
 	/// @brief Get the current zoom level
-	double GetZoom() const;
+	double GetZoom() const { return zoomValue; }
 
 	/// @brief Convert a point from screen to script coordinate frame
 	/// @param x x coordinate; in/out

@@ -60,7 +60,6 @@
 #include "main.h"
 #include "subs_edit_box.h"
 #include "utils.h"
-#include "video_box.h"
 #include "video_context.h"
 #include "video_slider.h"
 

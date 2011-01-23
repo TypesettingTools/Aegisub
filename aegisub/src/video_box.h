@@ -37,12 +37,16 @@
 #pragma once
 
 #ifndef AGI_PRE
+#include <list>
+
 #include <wx/panel.h>
 #include <wx/sizer.h>
 #include <wx/textctrl.h>
 #include <wx/tglbtn.h>
 #include <wx/toolbar.h>
 #endif
+
+#include <libaegisub/signal.h>
 
 namespace agi { struct Context; }
 class ToggleBitmap;
@@ -56,9 +60,16 @@ class wxComboBox;
 ///
 /// DOCME
 class VideoBox : public wxPanel {
-	agi::Context *context;
+	std::list<agi::signal::Connection> slots;
+	agi::Context *context;     ///< Project context
+	wxTextCtrl *VideoPosition; ///< Current frame/time
+	wxTextCtrl *VideoSubsPos;  ///< Time relative to the active subtitle line
 
+	/// Handle a click on the play/pause buttons
 	void OnButton(wxCommandEvent &evt);
+
+	/// Update VideoPosition and VideoSubsPos
+	void UpdateTimeBoxes();
 public:
 
 	/// DOCME
@@ -66,18 +77,6 @@ public:
 
 	/// DOCME
 	wxToolBar *visualSubToolBar;
-
-	/// DOCME
-	wxBoxSizer *VideoSizer;
-
-	/// DOCME
-	wxBoxSizer *videoSliderSizer;
-
-	/// DOCME
-	wxTextCtrl *VideoPosition;
-
-	/// DOCME
-	wxTextCtrl *VideoSubsPos;
 
 	/// DOCME
 	VideoDisplay *videoDisplay;
