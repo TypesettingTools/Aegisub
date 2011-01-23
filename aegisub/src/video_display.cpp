@@ -265,12 +265,11 @@ void VideoDisplay::UploadFrameData(FrameReadyEvent &evt) {
 void VideoDisplay::OnVideoOpen() {
 	if (!con->videoController->IsLoaded()) return;
 	UpdateSize();
-	currentFrame = 0;
-	con->videoController->GetFrameAsync(0);
-	UpdateRelativeTimes(0);
 	if (!tool.get()) tool.reset(new VisualToolCross(this, con, video, toolBar));
+	SetFrame(0);
 	tool->Refresh();
 }
+
 void VideoDisplay::OnCommit(int type) {
 	if (type == AssFile::COMMIT_FULL || type == AssFile::COMMIT_UNDO)
 		con->videoController->GetScriptSize(scriptW, scriptH);
