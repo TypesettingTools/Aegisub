@@ -97,9 +97,6 @@ enum {
 BEGIN_EVENT_TABLE(VideoDisplay, wxGLCanvas)
 	EVT_MOUSE_EVENTS(VideoDisplay::OnMouseEvent)
 	EVT_KEY_DOWN(VideoDisplay::OnKeyDown)
-	EVT_PAINT(VideoDisplay::OnPaint)
-	EVT_SIZE(VideoDisplay::OnSizeEvent)
-	EVT_ERASE_BACKGROUND(VideoDisplay::OnEraseBackground)
 
 	EVT_MENU(VIDEO_MENU_COPY_COORDS,VideoDisplay::OnCopyCoords)
 	EVT_MENU(VIDEO_MENU_COPY_TO_CLIPBOARD,VideoDisplay::OnCopyToClipboard)
@@ -127,6 +124,7 @@ public:
 
 VideoDisplay::VideoDisplay(
 	VideoBox *box,
+	bool freeSize,
 	wxTextCtrl *PositionDisplay,
 	wxTextCtrl *SubsPosition,
 	wxComboBox *zoomBox,
@@ -147,7 +145,7 @@ VideoDisplay::VideoDisplay(
 , scriptH(INT_MIN)
 , zoomBox(zoomBox)
 , box(box)
-, freeSize(false)
+, freeSize(freeSize)
 {
 	assert(box);
 
@@ -159,6 +157,11 @@ VideoDisplay::VideoDisplay(
 	slots.push_back(con->videoController->AddVideoOpenListener(&VideoDisplay::OnVideoOpen, this));
 	slots.push_back(con->videoController->AddARChangeListener(&VideoDisplay::UpdateSize, this));
 	slots.push_back(con->ass->AddCommitListener(&VideoDisplay::OnCommit, this));
+
+	Bind(wxEVT_PAINT, std::tr1::bind(&VideoDisplay::Render, this));
+	if (freeSize) {
+		Bind(wxEVT_SIZE, &VideoDisplay::OnSizeEvent, this);
+	}
 
 	SetCursor(wxNullCursor);
 }
@@ -443,15 +446,11 @@ void VideoDisplay::UpdateSize(int arType, double arValue) {
 
 	if (tool.get()) tool->Refresh();
 
-	wxGLCanvas::Refresh(false);
-}
-
-void VideoDisplay::OnPaint(wxPaintEvent&) {
-	Render();
+	Refresh(false);
 }
 
 void VideoDisplay::OnSizeEvent(wxSizeEvent &event) {
-	if (freeSize) UpdateSize();
+	UpdateSize();
 	event.Skip();
 }
 

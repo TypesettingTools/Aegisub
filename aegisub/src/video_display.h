@@ -106,8 +106,6 @@ class VideoDisplay : public wxGLCanvas {
 	/// Upload the image for the current frame to the video card
 	void UploadFrameData(FrameReadyEvent&);
 
-	/// @brief Paint event 
-	void OnPaint(wxPaintEvent& event);
 	/// @brief Key event handler
 	/// @param event 
 	void OnKeyDown(wxKeyEvent &event);
@@ -115,8 +113,6 @@ class VideoDisplay : public wxGLCanvas {
 	/// @param event 
 	void OnMouseEvent(wxMouseEvent& event);
 
-	/// @brief NOP event handler
-	void OnEraseBackground(wxEraseEvent &) {}
 	/// @brief Recalculate video positioning and scaling when the available area or zoom changes
 	/// @param event
 	void OnSizeEvent(wxSizeEvent &event);
@@ -185,16 +181,22 @@ class VideoDisplay : public wxGLCanvas {
 	/// The dropdown box for selecting zoom levels
 	wxComboBox *zoomBox;
 
-public:
 	/// The VideoBox this display is contained in
 	VideoBox *box;
 
 	/// Whether the display can be freely resized by the user
 	bool freeSize;
 
+	/// @brief Set the cursor to either default or blank
+	/// @param show Whether or not the cursor should be visible
+	void ShowCursor(bool show);
+	/// @brief Set the size of the display based on the current zoom and video resolution
+	void UpdateSize(int arType = -1, double arValue = -1.);
+public:
 	/// @brief Constructor
 	VideoDisplay(
 		VideoBox *box,
+		bool isDetached,
 		wxTextCtrl *PositionDisplay,
 		wxTextCtrl *SubsPosition,
 		wxComboBox *zoomBox,
@@ -205,11 +207,6 @@ public:
 	/// @brief Render the currently visible frame
 	void Render();
 
-	/// @brief Set the cursor to either default or blank
-	/// @param show Whether or not the cursor should be visible
-	void ShowCursor(bool show);
-	/// @brief Set the size of the display based on the current zoom and video resolution
-	void UpdateSize(int arType = -1, double arValue = -1.);
 	/// @brief Set the zoom level
 	/// @param value The new zoom level
 	void SetZoom(double value);

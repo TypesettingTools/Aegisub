@@ -77,7 +77,6 @@ DialogDetachedVideo::DialogDetachedVideo(FrameMain *parent, agi::Context *contex
 	
 	// Video area;
 	videoBox = new VideoBox(panel, true, NULL, context);
-	videoBox->videoDisplay->freeSize = true;
 	videoBox->videoDisplay->SetClientSize(initialDisplaySize);
 
 	// Set sizer
