@@ -34,8 +34,6 @@
 /// @ingroup main_ui video
 ///
 
-#pragma once
-
 #ifndef AGI_PRE
 #include <list>
 
