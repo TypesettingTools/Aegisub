@@ -151,10 +151,7 @@ FrameMain::FrameMain (wxArrayString args)
 
 	StartupLog("Binding commands");
 	// XXX: This is a hack for now, it will need to be dealt with when other frames are involved.
-	int count = cmd::count();
-	for (int i = 0; i < count; i++) {
-		Bind(wxEVT_COMMAND_MENU_SELECTED, &FrameMain::cmd_call, this, i);
-	}
+	Bind(wxEVT_COMMAND_MENU_SELECTED, &FrameMain::cmd_call, this);
 
 #ifdef __WXMAC__
 //	Bind(FrameMain::OnAbout, &FrameMain::cmd_call, this, cmd::id("app/about"));
@@ -242,7 +239,8 @@ FrameMain::~FrameMain () {
 void FrameMain::cmd_call(wxCommandEvent& event) {
 	int id = event.GetId();
 	LOG_D("event/select") << "Id: " << id;
-	cmd::call(context.get(), id);
+	if (id < cmd::count())
+		cmd::call(context.get(), id);
 }
 
 /// @brief Initialize toolbar 
