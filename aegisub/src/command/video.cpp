@@ -513,9 +513,7 @@ struct video_show_overscan : public Command {
 	STR_HELP("Show a mask over the video, indicating areas that might get cropped off by overscan on televisions.")
 
 	void operator()(agi::Context *c) {
-//XXX: Fix to not require using an event. (maybe)
-//		OPT_SET("Video/Overscan Mask")->SetBool(event.IsChecked());
-		c->videoController->Stop();
+		OPT_SET("Video/Overscan Mask")->SetBool(!OPT_GET("Video/Overscan Mask")->GetBool());
 		c->videoBox->videoDisplay->Render();
 	}
 };
