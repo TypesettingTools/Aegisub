@@ -31,6 +31,8 @@
 
 namespace ffms {
 
+/// @class Audio
+/// Audio file support.
 class Audio {
     FFMS_AudioSource *AudioSource;  ///< audio source object
     bool COMInited;                 ///< COM initialization state

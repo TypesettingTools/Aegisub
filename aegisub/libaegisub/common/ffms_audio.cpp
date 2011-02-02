@@ -39,7 +39,7 @@ Audio::Audio(std::string filename)
 #ifdef WIN32
 	HRESULT res;
 	res = CoInitializeEx(NULL, COINIT_APARTMENTTHREADED);
-	if (SUCCEEDED(res)) 
+	if (SUCCEEDED(res))
 		COMInited = true;
 	else if (res != RPC_E_CHANGED_MODE)
 		throw AudioOpenError("COM initialization failure");
@@ -128,7 +128,7 @@ void Audio::LoadAudio(std::string filename) {
 		}
 	}
 	// no valid index exists and the file only has one audio track, index it
-	else if (TrackNumber < 0) 
+	else if (TrackNumber < 0)
 		TrackNumber = FFMS_TRACKMASK_ALL;
 	// else: do nothing (keep track mask as it is)
 
