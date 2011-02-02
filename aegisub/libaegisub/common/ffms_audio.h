@@ -29,7 +29,8 @@
 #include <map>
 #endif
 
-namespace ffms {
+namespace agi {
+	namespace ffms {
 
 /// @class Audio
 /// Audio file support.
@@ -56,4 +57,5 @@ class Audio {
 
 };
 
-} // namespace ffms
+	} // namespace ffms
+} // namespace agi
