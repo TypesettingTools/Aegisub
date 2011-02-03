@@ -21,8 +21,12 @@
 
 #include "config.h"
 
-//#include "utils.h"
 #include "libaegisub/media_video_frame.h"
+
+#ifndef LAGI_PRE
+#include <assert.h>
+#include <string.h>
+#endif
 
 namespace agi {
 	namespace media {
