@@ -17,6 +17,9 @@ LDFLAGS += -L../universalchardet -luniversalchardet
 endif
 
 common/charset_conv.o: CXXFLAGS += $(CFLAGS_ICONV)
+common/ffms.o: CXXFLAGS += $(CFLAGS_FFMPEGSOURCE) $(CFLAGS_LIBAVFORMAT) $(CFLAGS_LIBAVCODEC) $(CFLAGS_LIBSWSCALE) $(CFLAGS_LIBAVUTIL) $(CFLAGS_LIBPOSTPROC)
+common/ffms_audio.o: CXXFLAGS += $(CFLAGS_FFMPEGSOURCE) $(CFLAGS_LIBAVFORMAT) $(CFLAGS_LIBAVCODEC) $(CFLAGS_LIBSWSCALE) $(CFLAGS_LIBAVUTIL) $(CFLAGS_LIBPOSTPROC)
+common/ffms_video.o: CXXFLAGS += $(CFLAGS_FFMPEGSOURCE) $(CFLAGS_LIBAVFORMAT) $(CFLAGS_LIBAVCODEC) $(CFLAGS_LIBSWSCALE) $(CFLAGS_LIBAVUTIL) $(CFLAGS_LIBPOSTPROC)
 
 SRC = \
 	common/charset.cpp \
@@ -31,6 +34,10 @@ SRC = \
 	common/log.cpp \
 	common/validator.cpp \
 	common/vfr.cpp \
+	media/ffms_audio.cpp \
+	media/ffms_common.cpp \
+	media/ffms_video.cpp \
+	media/video_frame.cpp \
 	unix/util.cpp \
 	unix/io.cpp \
 	unix/access.cpp \
