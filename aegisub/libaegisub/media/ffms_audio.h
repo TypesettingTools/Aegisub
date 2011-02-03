@@ -29,12 +29,14 @@
 #include <map>
 #endif
 
+#include "ffms_common.h"
+
 namespace agi {
 	namespace ffms {
 
 /// @class Audio
 /// Audio file support.
-class Audio {
+class Audio : public FFmpegSourceProvider {
     FFMS_AudioSource *AudioSource;  ///< audio source object
     bool COMInited;                 ///< COM initialization state
 
@@ -43,6 +45,11 @@ class Audio {
 
     void Close();
     void LoadAudio(std::string filename);
+
+	int channels;
+	int64_t num_samples; // for one channel, ie. number of PCM frames
+	int sample_rate;
+	int bytes_per_sample;
 
     Audio(std::string filename);
     virtual ~Audio();

@@ -28,13 +28,14 @@
 #include "libaegisub/media_video_frame.h"
 #include "libaegisub/vfr.h"
 #include "libaegisub/exception.h"
+#include "ffms_common.h"
 
 namespace agi {
 	namespace ffms {
 
 /// @class FFmpegSourceVideoProvider
 /// @brief Implements video loading through the FFMS library.
-class Video {
+class Video : public FFmpegSourceProvider {
 private:
 	FFMS_VideoSource *VideoSource;			/// video source object
 	const FFMS_VideoProperties *VideoInfo;	/// video properties

@@ -25,6 +25,7 @@
 #endif
 
 #include "ffms_audio.h"
+#include "libaegisub/media.h"
 
 namespace agi {
 	namespace ffms {
@@ -161,9 +162,9 @@ void Audio::LoadAudio(std::string filename) {
 //	}
 
 #if FFMS_VERSION >= ((2 << 24) | (14 << 16) | (1 << 8) | 0)
-	AudioSource = FFMS_CreateAudioSource(FileNameShort.utf8_str(), TrackNumber, Index, -1, &ErrInfo);
+	AudioSource = FFMS_CreateAudioSource(filename.c_str(), TrackNumber, Index, -1, &ErrInfo);
 #else
-	AudioSource = FFMS_CreateAudioSource(FileNameShort.utf8_str(), TrackNumber, Index, &ErrInfo);
+	AudioSource = FFMS_CreateAudioSource(filename.c_str(), TrackNumber, Index, &ErrInfo);
 #endif
 	FFMS_DestroyIndex(Index);
 	Index = NULL;
@@ -197,9 +198,9 @@ Audio::~Audio() {
 	Close();
 }
 
-/// @brief Clean up 
+/// @brief Clean up
 ///
-void FFmpegSourceAudioProvider::Close() {
+void Audio::Close() {
 	if (AudioSource) FFMS_DestroyAudioSource(AudioSource);
 #ifdef WIN32
 	if (COMInited)

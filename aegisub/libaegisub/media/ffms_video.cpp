@@ -36,6 +36,7 @@
 
 #include "ffms_video.h"
 #include "libaegisub/media.h"
+#include "libaegisub/util.h"
 
 //#include "aegisub_endian.h"
 //#include "compat.h"
@@ -265,7 +266,7 @@ void Video::Close() {
 /// @return 
 ///
 const media::AegiVideoFrame Video::GetFrame(int n) {
-	FrameNumber = mid(0, n, GetFrameCount() - 1);
+	FrameNumber = util::mid(0, n, GetFrameCount() - 1);
 
 	// decode frame
 	const FFMS_Frame *SrcFrame = FFMS_GetFrame(VideoSource, FrameNumber, &ErrInfo);
