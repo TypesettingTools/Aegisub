@@ -151,8 +151,8 @@ std::map<int,std::string> FFmpegSourceProvider::GetTracksOfType(FFMS_Indexer *In
 /// @param TrackList	A std::map with the track numbers as keys and codec names as values
 /// @param Type			The track type to ask about
 /// @return				Returns the track number chosen (an integer >= 0) on success, or a negative integer if the user cancelled.
-/*
 int FFmpegSourceProvider::AskForTrackSelection(const std::map<int,std::string> &TrackList, FFMS_TrackType Type) {
+/*
 	std::vector<int> TrackNumbers;
 	wxArrayString Choices;
 	std::string TypeName = "";
@@ -174,8 +174,8 @@ int FFmpegSourceProvider::AskForTrackSelection(const std::map<int,std::string> &
 		return Choice;
 	else
 		return TrackNumbers[Choice];
-}
 */
+}
 
 
 /// @brief Set ffms2 log level according to setting in config.dat
@@ -263,11 +263,11 @@ std::string toHash = "XXX";
 return "XXX";
 }
 
-/*
 
 /// @brief		Starts the cache cleaner thread
 /// @return		True on success, false if the thread could not be started.
 bool FFmpegSourceProvider::CleanCache() {
+/*
 	LOG_D("provider/ffmpegsource/cache") << "attempting to start thread";
 
 	FFmpegSourceCacheCleaner *CleaningThread = new FFmpegSourceCacheCleaner(this);
@@ -287,8 +287,9 @@ bool FFmpegSourceProvider::CleanCache() {
 
 	LOG_D("provider/ffmpegsource/cache") << "thread started successfully";
 	return true;
+*/
 }
-
+/*
 
 
 /// @brief constructor 
