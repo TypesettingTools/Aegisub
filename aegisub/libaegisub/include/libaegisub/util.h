@@ -32,6 +32,8 @@
 namespace agi {
 	namespace util {
 
+	template<typename T> inline T mid(T a, T b, T c) { return std::max(a, std::min(b, c)); }
+
 	const std::string DirName(const std::string& path);
 	void Rename(const std::string& from, const std::string& to);
 	void time_log(agi_timeval &tv);
