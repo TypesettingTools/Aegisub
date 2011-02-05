@@ -21,7 +21,7 @@
 
 #include "config.h"
 
-#include "libaegisub/media_video_frame.h"
+#include "libmedia/video_frame.h"
 
 #ifndef LAGI_PRE
 #include <assert.h>

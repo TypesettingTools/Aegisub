@@ -25,10 +25,10 @@
 //#include "ffmpegsource_common.h"
 //#include "include/aegisub/video_provider.h"
 #include "../../libffms/include/ffms.h"
-#include "libaegisub/media_video_frame.h"
+#include "libmedia/video_frame.h"
 #include "libaegisub/vfr.h"
 #include "libaegisub/exception.h"
-#include "ffms_common.h"
+#include "../common/ffms_common.h"
 
 namespace agi {
 	namespace ffms {

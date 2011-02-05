@@ -35,7 +35,7 @@
 #endif
 
 #include "ffms_video.h"
-#include "libaegisub/media.h"
+#include "libmedia/exception.h"
 #include "libaegisub/util.h"
 
 //#include "aegisub_endian.h"

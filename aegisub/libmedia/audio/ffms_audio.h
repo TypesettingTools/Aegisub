@@ -29,7 +29,7 @@
 #include <map>
 #endif
 
-#include "ffms_common.h"
+#include "../common/ffms_common.h"
 
 namespace agi {
 	namespace ffms {

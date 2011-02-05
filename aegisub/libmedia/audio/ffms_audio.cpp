@@ -25,7 +25,7 @@
 #endif
 
 #include "ffms_audio.h"
-#include "libaegisub/media.h"
+#include "libmedia/exception.h"
 
 namespace agi {
 	namespace ffms {
