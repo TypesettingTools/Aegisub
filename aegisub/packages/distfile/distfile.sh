@@ -2,6 +2,8 @@
 SRCDIR=`pwd`
 TMPFILE=`mktemp /tmp/aegisub_dist.XXXXXX`
 EXTRA=`find . -name Makefile -or -name wscript`
+distdir?=aegisub-pkg
+
 rm -rf aegisub-pkg
 
 if ! test -d src; then
@@ -16,7 +18,7 @@ gmake distfiles \
 
 for i in ${EXTRA}; do
 	echo "aegisub-pkg/$i";
-	./install-sh -m 0644 $i aegisub-pkg/$i;
+	./install-sh -m 0644 $i ${distdir}/$i;
 done
 
 sh ${TMPFILE}
