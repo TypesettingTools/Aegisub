@@ -35,7 +35,6 @@
 #endif
 
 #include "ffms_video.h"
-#include "libmedia/exception.h"
 #include "libaegisub/util.h"
 
 //#include "aegisub_endian.h"
@@ -45,7 +44,7 @@
 //#include "video_context.h"
 //#include "video_provider_ffmpegsource.h"
 
-namespace agi {
+namespace media {
 	namespace ffms {
 
 /// @brief Constructor
@@ -266,7 +265,7 @@ void Video::Close() {
 /// @return 
 ///
 const media::AegiVideoFrame Video::GetFrame(int n) {
-	FrameNumber = util::mid(0, n, GetFrameCount() - 1);
+	FrameNumber = agi::util::mid(0, n, GetFrameCount() - 1);
 
 	// decode frame
 	const FFMS_Frame *SrcFrame = FFMS_GetFrame(VideoSource, FrameNumber, &ErrInfo);
@@ -280,4 +279,4 @@ const media::AegiVideoFrame Video::GetFrame(int n) {
 #endif /* WITH_FFMPEGSOURCE */
 
 	} // namespace ffms
-} // namespace agi
+} // namespace media

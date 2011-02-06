@@ -22,20 +22,19 @@
 #include <vector>
 #endif
 
-//#include "ffmpegsource_common.h"
-//#include "include/aegisub/video_provider.h"
-#include "../../libffms/include/ffms.h"
-#include "libmedia/video_frame.h"
-#include "libaegisub/vfr.h"
-#include "libaegisub/exception.h"
-#include "../common/ffms_common.h"
+#include <libaegisub/exception.h>
 
-namespace agi {
+#include "../../libffms/include/ffms.h"
+#include "libaegisub/vfr.h"
+#include "../common/ffms_common.h"
+#include "libmedia/video.h"
+
+namespace media {
 	namespace ffms {
 
 /// @class FFmpegSourceVideoProvider
 /// @brief Implements video loading through the FFMS library.
-class Video : public FFmpegSourceProvider {
+class Video : public VideoProvider, FFmpegSourceProvider {
 private:
 	FFMS_VideoSource *VideoSource;			/// video source object
 	const FFMS_VideoProperties *VideoInfo;	/// video properties
@@ -77,4 +76,4 @@ public:
 
 
 	} // namespace ffms
-} // namespace agi
+} // namespace media
