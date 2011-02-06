@@ -83,5 +83,5 @@ DEFINE_SIMPLE_EXCEPTION_NOINNER(VideoOpenError, VideoProviderError, "video/open/
 /// Error of some sort occurred while decoding a frame
 DEFINE_SIMPLE_EXCEPTION_NOINNER(VideoDecodeError, VideoProviderError, "video/error");
 
-// namespace media
+} // namespace media
 
