@@ -37,9 +37,11 @@
 #include "config.h"
 
 #include "aegisub_endian.h"
-#include "audio_provider_convert.h"
-#include "audio_provider_downmix.h"
+#include "convert.h"
+#include "downmix.h"
 
+
+namespace media {
 
 /// @brief Constructor 
 /// @param src 
@@ -218,3 +220,6 @@ AudioProvider *CreateConvertAudioProvider(AudioProvider *source_provider) {
 
 	return provider;
 }
+
+} // namespace
+

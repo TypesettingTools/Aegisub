@@ -34,11 +34,13 @@
 /// @ingroup audio_input
 ///
 
-#include "include/aegisub/audio_provider.h"
+#include "libmedia/audio.h"
 
 #ifndef AGI_PRE
 #include <tr1/memory>
 #endif
+
+namespace media {
 
 /// DOCME
 /// @class DownmixingAudioProvider
@@ -59,3 +61,6 @@ public:
 
 	void GetAudio(void *buf, int64_t start, int64_t count) const;
 };
+
+} // namespace
+

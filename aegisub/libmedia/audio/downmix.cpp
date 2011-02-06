@@ -39,8 +39,10 @@
 // Headers
 #include "config.h"
 
-#include "audio_provider_downmix.h"
+#include "downmix.h"
 
+
+namespace media {
 
 /// @brief Constructor 
 /// @param source 
@@ -123,3 +125,6 @@ void DownmixingAudioProvider::GetAudio(void *buf, int64_t start, int64_t count) 
 	// Done downmixing, free the work buffer
 	delete[] tmp;
 }
+
+} // namespace
+

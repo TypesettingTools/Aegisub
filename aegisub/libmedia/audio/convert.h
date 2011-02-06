@@ -34,11 +34,13 @@
 /// @ingroup audio_input
 ///
 
-#include "include/aegisub/audio_provider.h"
+#include "libmedia/audio.h"
 
 #ifndef AGI_PRE
 #include <tr1/memory>
 #endif
+
+namespace media {
 
 /// DOCME
 /// @class ConvertAudioProvider
@@ -64,7 +66,10 @@ public:
 
 	void GetAudio(void *buf, int64_t start, int64_t count) const;
 
-	wxString GetFilename() const { return source->GetFilename(); }
+	std::string GetFilename() const { return source->GetFilename(); }
 };
 
 AudioProvider *CreateConvertAudioProvider(AudioProvider *source_provider);
+
+} // namespace
+

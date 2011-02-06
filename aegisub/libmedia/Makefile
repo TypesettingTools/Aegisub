@@ -25,6 +25,8 @@ endif
 
 SRC = \
 	common/video_frame.cpp \
+	audio/downmix.cpp \
+	audio/convert.cpp \
 	$(SRC_OPT)
 
 HEADERS = \
