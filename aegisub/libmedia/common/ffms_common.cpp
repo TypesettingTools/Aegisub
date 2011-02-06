@@ -57,7 +57,7 @@
 //#include "md5.h"
 //#include "standard_paths.h"
 
-namespace agi {
+namespace media {
 	namespace ffms {
 
 /// @brief Callback function that updates the indexing progress dialog
@@ -389,4 +389,4 @@ wxThread::ExitCode FFmpegSourceCacheCleaner::Entry() {
 
 
 	} // namespace ffms
-} // namespace agi
+} // namespace media

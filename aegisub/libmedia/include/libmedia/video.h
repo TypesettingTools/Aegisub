@@ -36,9 +36,12 @@
 
 #pragma once
 
-#include "video_frame.h"
+#include <libmedia/video_frame.h>
 #include <libaegisub/exception.h>
 #include <libaegisub/vfr.h>
+
+
+namespace media {
 
 /// @class VideoProvider
 /// @brief DOCME
@@ -61,10 +64,10 @@ public:
 
 
 	/// @brief Use this to set any post-loading warnings, such as "being loaded with unreliable seeking"
-	virtual wxString GetWarning() const { return L""; }
+	virtual std::string GetWarning() const { return ""; }
 
 	/// @brief Name of decoder, e.g. "Avisynth/FFMpegSource"
-	virtual wxString GetDecoderName() const = 0;
+	virtual std::string GetDecoderName() const = 0;
 
 	/// @brief Does this provider want Aegisub to cache video frames?
 	/// @return Returns true if caching is desired, false otherwise.
@@ -79,3 +82,6 @@ DEFINE_SIMPLE_EXCEPTION_NOINNER(VideoOpenError, VideoProviderError, "video/open/
 
 /// Error of some sort occurred while decoding a frame
 DEFINE_SIMPLE_EXCEPTION_NOINNER(VideoDecodeError, VideoProviderError, "video/error");
+
+// namespace media
+

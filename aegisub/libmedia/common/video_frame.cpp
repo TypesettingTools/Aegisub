@@ -28,8 +28,7 @@
 #include <string.h>
 #endif
 
-namespace agi {
-	namespace media {
+namespace media {
 
 void AegiVideoFrame::Reset() {
 	// Zero variables
@@ -114,5 +113,4 @@ void AegiVideoFrame::SetTo(const unsigned char *source, unsigned int width, unsi
 	this->pitch = pitch;
 }
 
-	} // namespace media
-} // namespace agi
+} // namespace media

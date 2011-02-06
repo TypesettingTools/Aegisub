@@ -19,7 +19,7 @@
 /// @ingroup fmms audio
 
 #include "../../libffms/include/ffms.h"
-#include <libaegisub/exception.h>
+#include <libmedia/audio.h>
 
 #ifndef AGI_PRE
 #ifdef WIN32
@@ -30,13 +30,12 @@
 #endif
 
 #include "../common/ffms_common.h"
-
-namespace agi {
+namespace media {
 	namespace ffms {
 
 /// @class Audio
 /// Audio file support.
-class Audio : public FFmpegSourceProvider {
+class Audio : public AudioProvider, FFmpegSourceProvider {
     FFMS_AudioSource *AudioSource;  ///< audio source object
     bool COMInited;                 ///< COM initialization state
 
@@ -45,11 +44,6 @@ class Audio : public FFmpegSourceProvider {
 
     void Close();
     void LoadAudio(std::string filename);
-
-	int channels;
-	int64_t num_samples; // for one channel, ie. number of PCM frames
-	int sample_rate;
-	int bytes_per_sample;
 
     Audio(std::string filename);
     virtual ~Audio();
@@ -65,4 +59,4 @@ class Audio : public FFmpegSourceProvider {
 };
 
 	} // namespace ffms
-} // namespace agi
+} // namespace media

@@ -36,12 +36,10 @@
 
 #pragma once
 
-#ifndef AGI_PRE
-#include <wx/string.h>
-#endif
-
 #include <libaegisub/exception.h>
-#include "factory_manager.h"
+#include <libmedia/factory_manager.h>
+
+namespace media {
 
 /// @class AudioProvider
 /// @brief DOCME
@@ -72,13 +70,13 @@ protected:
 
 
 	/// DOCME
-	wxString filename;
+	std::string filename;
 
 public:
 	AudioProvider();
 	virtual ~AudioProvider();
 
-	virtual wxString GetFilename() const { return filename; };
+	virtual std::string GetFilename() const { return filename; };
 	virtual void GetAudio(void *buf, int64_t start, int64_t count) const = 0;
 	void GetAudioWithVolume(void *buf, int64_t start, int64_t count, double volume) const;
 
@@ -97,10 +95,10 @@ public:
 /// @brief DOCME
 ///
 /// DOCME
-class AudioProviderFactory : public Factory1<AudioProvider, wxString> {
+class AudioProviderFactory : public Factory1<AudioProvider, std::string> {
 public:
 	static void RegisterProviders();
-	static AudioProvider *GetProvider(wxString filename, int cache=-1);
+	static AudioProvider *GetProvider(std::string filename, int cache=-1);
 };
 
 DEFINE_BASE_EXCEPTION_NOINNER(AudioProviderError, agi::Exception);
@@ -108,3 +106,5 @@ DEFINE_SIMPLE_EXCEPTION_NOINNER(AudioOpenError, AudioProviderError, "audio/open/
 
 /// Error of some sort occurred while decoding a frame
 DEFINE_SIMPLE_EXCEPTION_NOINNER(AudioDecodeError, AudioProviderError, "audio/error");
+
+} // namespace media

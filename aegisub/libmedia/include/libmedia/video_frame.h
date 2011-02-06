@@ -22,8 +22,7 @@
 #ifndef LAGI_PRE
 #endif
 
-namespace agi {
-	namespace media {
+namespace media {
 
 /// DOCME
 /// @class AegiVideoFrame
@@ -85,5 +84,4 @@ public:
 	int GetBpp() const { return 4; };
 };
 
-	} // namespace media
-} // namespace agi
+} // namespace media

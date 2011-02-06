@@ -25,9 +25,10 @@
 #endif
 
 #include "ffms_audio.h"
-#include "libmedia/exception.h"
+#include "libmedia/audio.h"
 
-namespace agi {
+
+namespace media {
 	namespace ffms {
 
 
@@ -218,6 +219,5 @@ void Audio::GetAudio(void *Buf, int64_t Start, int64_t Count) const {
 		throw AudioDecodeError(std::string("Failed to get audio samples: ") + ErrInfo.Buffer);
 	}
 }
-
 	} // namespace ffms
-} // namespace agi
+} // namespace media

@@ -45,7 +45,7 @@
 
 #include "../../libffms/include/ffms.h"
 
-namespace agi {
+namespace media {
 	namespace ffms {
 
 //#include "dialog_progress.h"
@@ -111,4 +111,4 @@ public:
 #endif /* WITH_FFMPEGSOURCE */
 
 	} // namespace ffms
-} // namespace agi
+} // namespace media
