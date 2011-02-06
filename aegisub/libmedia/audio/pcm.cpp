@@ -59,6 +59,8 @@
 #include "utils.h"
 
 
+namespace media {
+
 /// @brief DOCME
 /// @param filename 
 ///
@@ -629,3 +631,6 @@ AudioProvider *CreatePCMAudioProvider(const wxString &filename)
 		throw AudioOpenError(msg);
 	}
 }
+
+} // namespace
+

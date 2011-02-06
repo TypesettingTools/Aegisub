@@ -48,6 +48,8 @@
 #include "include/aegisub/audio_provider.h"
 
 
+namespace media {
+
 /// DOCME
 /// @class PCMAudioProvider
 /// @brief DOCME
@@ -113,3 +115,6 @@ public:
 
 // Construct the right PCM audio provider (if any) for the file
 AudioProvider *CreatePCMAudioProvider(const wxString &filename);
+
+} // namespace
+

@@ -39,6 +39,8 @@
 #include "avisynth_wrap.h"
 
 
+namespace media {
+
 /// DOCME
 /// @class AvisynthAudioProvider
 /// @brief DOCME
@@ -66,3 +68,6 @@ public:
 	void GetWaveForm(int *min,int *peak,int64_t start,int w,int h,int samples,float scale);
 };
 #endif
+
+} // namespace
+

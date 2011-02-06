@@ -40,6 +40,8 @@
 #include "utils.h"
 
 
+namespace media {
+
 /// @brief Constructor 
 /// @param dur_ms 
 /// @param _noise 
@@ -74,3 +76,6 @@ void DummyAudioProvider::GetAudio(void *buf, int64_t start, int64_t count) const
 			*workbuf++ = 0;
 	}
 }
+
+} // namespace
+

@@ -52,6 +52,8 @@
 #include "standard_paths.h"
 #include "utils.h"
 
+namespace media {
+
 /// @brief Constructor 
 /// @param _filename 
 ///
@@ -168,3 +170,5 @@ void AvisynthAudioProvider::GetAudio(void *buf, int64_t start, int64_t count) co
 	}
 }
 #endif
+
+} // namespace

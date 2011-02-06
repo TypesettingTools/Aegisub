@@ -36,6 +36,8 @@
 
 #include "include/aegisub/audio_provider.h"
 
+namespace media {
+
 /// DOCME
 /// @class DummyAudioProvider
 /// @brief DOCME
@@ -52,3 +54,6 @@ public:
 	bool AreSamplesNativeEndian() const { return true; }
 	void GetAudio(void *buf, int64_t start, int64_t count) const;
 };
+
+} // namespace
+
