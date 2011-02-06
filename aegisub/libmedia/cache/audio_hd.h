@@ -35,12 +35,12 @@
 ///
 
 #ifndef AGI_PRE
-#include <wx/file.h>
-#include <wx/thread.h>
 #endif
 
-#include "include/aegisub/audio_provider.h"
+#include <libaegisub/mutex.h>
+#include "libmedia/audio.h"
 
+namespace media {
 /// DOCME
 /// @class HDAudioProvider
 /// @brief DOCME
@@ -48,13 +48,13 @@
 /// DOCME
 class HDAudioProvider : public AudioProvider {
 	/// DOCME
-	mutable wxMutex diskmutex;
+	mutable agi::Mutex diskmutex;
 
 	/// DOCME
-	mutable wxFile file_cache;
+	mutable std::fstream file_cache;
 
 	/// DOCME
-	wxString diskCacheFilename;
+	std::string diskCacheFilename;
 
 	/// DOCME
 	bool samples_native_endian;
@@ -62,8 +62,8 @@ class HDAudioProvider : public AudioProvider {
 	/// DOCME
 	char *data;
 
-	static wxString DiskCachePath();
-	static wxString DiskCacheName();
+	static std::string DiskCachePath();
+	static std::string DiskCacheName();
 
 public:
 	HDAudioProvider(AudioProvider *source);
@@ -73,3 +73,5 @@ public:
 
 	void GetAudio(void *buf, int64_t start, int64_t count) const;
 };
+
+} // namespace media
