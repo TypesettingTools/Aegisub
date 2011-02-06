@@ -43,6 +43,8 @@
 #include "colorspace.h"
 #include "video_provider_dummy.h"
 
+namespace media {
+
 /// @brief Constructor 
 /// @param _fps    
 /// @param frames  
@@ -216,3 +218,6 @@ const AegiVideoFrame DummyVideoProvider::GetFrame(int n) {
 	lastFrame = n;
 	return frame;
 }
+
+} // namespace media
+

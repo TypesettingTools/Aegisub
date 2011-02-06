@@ -44,6 +44,8 @@
 #include <wx/log.h>
 #endif
 
+namespace media {
+
 /// the maximum allowed header length, in bytes
 #define YUV4MPEG_HEADER_MAXLEN 128
 
@@ -152,3 +154,6 @@ public:
 	wxString GetDecoderName() const       { return L"YU4MPEG"; };
 	bool WantsCaching() const             { return true; };
 };
+
+} // namespace media
+

@@ -42,6 +42,8 @@
 #include "utils.h"
 #include "video_provider_yuv4mpeg.h"
 
+namespace media {
+
 // All of this cstdio bogus is because of one reason and one reason only:
 // MICROSOFT'S IMPLEMENTATION OF STD::FSTREAM DOES NOT SUPPORT FILES LARGER THAN 2 GB.
 // (yes, really)
@@ -419,3 +421,6 @@ const AegiVideoFrame YUV4MPEGVideoProvider::GetFrame(int n) {
 
 	return dst_frame;
 }
+
+} // namespace media
+

@@ -38,6 +38,8 @@
 #include "avisynth_wrap.h"
 #include "include/aegisub/video_provider.h"
 
+namespace media {
+
 /// DOCME
 /// @class AvisynthVideoProvider
 /// @brief DOCME
@@ -97,3 +99,6 @@ public:
 	wxString GetDecoderName() const { return wxString(L"Avisynth/") + decoderName; }
 };
 #endif
+
+} // namespace media
+

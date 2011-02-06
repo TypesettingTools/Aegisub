@@ -42,6 +42,8 @@
 
 #include "include/aegisub/video_provider.h"
 
+namespace media {
+
 /// DOCME
 /// @class DummyVideoProvider
 /// @brief DOCME
@@ -84,3 +86,6 @@ public:
 	std::vector<int> GetKeyFrames() const { return std::vector<int>(); };
 	wxString GetDecoderName() const { return L"Dummy Video Provider"; }
 };
+
+} // namespace media
+

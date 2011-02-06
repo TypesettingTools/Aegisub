@@ -52,6 +52,8 @@
 #include "video_context.h"
 #include "video_provider_avs.h"
 
+namespace media {
+
 /// @brief Constructor 
 /// @param _filename 
 ///
@@ -289,3 +291,5 @@ wxString AvisynthVideoProvider::GetWarning() const {
 }
 
 #endif
+
+} // namespace media
