@@ -102,7 +102,7 @@
 #ifndef GOOGLE_MUTEX_H_
 #define GOOGLE_MUTEX_H_
 
-#include "../../config.h"           // to figure out pthreads support
+#include "acconf.h"           // to figure out pthreads support
 
 #if defined(NO_THREADS)
   typedef int MutexType;      // to keep a lock-count
@@ -146,7 +146,7 @@
 #include <assert.h>
 #include <stdlib.h>      // for abort()
 
-#define MUTEX_NAMESPACE glog_internal_namespace_
+#define MUTEX_NAMESPACE agi
 
 namespace MUTEX_NAMESPACE {
 
