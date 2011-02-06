@@ -18,19 +18,6 @@ endif
 
 common/charset_conv.o: CXXFLAGS += $(CFLAGS_ICONV)
 
-#######################
-# AUDIO / VIDEO SUPPORT
-#######################
-ifeq (yes, $(HAVE_PROVIDER_FFMPEGSOURCE))
-SRC_OPT += media/ffms_audio.cpp media/ffms_common.cpp media/ffms_video.cpp
-common/ffms.o: CXXFLAGS += $(CFLAGS_FFMPEGSOURCE) $(CFLAGS_LIBAVFORMAT) $(CFLAGS_LIBAVCODEC) $(CFLAGS_LIBSWSCALE) $(CFLAGS_LIBAVUTIL) $(CFLAGS_LIBPOSTPROC)
-common/ffms_audio.o: CXXFLAGS += $(CFLAGS_FFMPEGSOURCE) $(CFLAGS_LIBAVFORMAT) $(CFLAGS_LIBAVCODEC) $(CFLAGS_LIBSWSCALE) $(CFLAGS_LIBAVUTIL) $(CFLAGS_LIBPOSTPROC)
-common/ffms_video.o: CXXFLAGS += $(CFLAGS_FFMPEGSOURCE) $(CFLAGS_LIBAVFORMAT) $(CFLAGS_LIBAVCODEC) $(CFLAGS_LIBSWSCALE) $(CFLAGS_LIBAVUTIL) $(CFLAGS_LIBPOSTPROC)
-#LDFLAGS += $(LDFLAGS_FFMPEGSOURCE) $(LDFLAGS_LIBAVFORMAT) $(LDFLAGS_LIBAVCODEC) $(LDFLAGS_LIBSWSCALE) $(LDFLAGS_LIBAVUTIL) $(LDFLAGS_LIBPOSTPROC)
-LDFLAGS_POST += $(LDFLAGS_FFMPEGSOURCE)
-endif
-
-
 SRC = \
 	common/charset.cpp \
 	common/charset_conv.cpp \
@@ -44,12 +31,10 @@ SRC = \
 	common/log.cpp \
 	common/validator.cpp \
 	common/vfr.cpp \
-	media/video_frame.cpp \
 	unix/util.cpp \
 	unix/io.cpp \
 	unix/access.cpp \
-	unix/log.cpp \
-	$(SRC_OPT)
+	unix/log.cpp
 
 ifeq (yes, $(BUILD_DARWIN))
 SRC += \
