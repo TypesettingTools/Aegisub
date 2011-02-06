@@ -29,6 +29,7 @@ SRC = \
 	audio/convert.cpp \
 	audio/dummy_audio.cpp \
 	audio/pcm.cpp \
+	cache/audio_ram.cpp \
 	$(SRC_OPT)
 
 HEADERS = \

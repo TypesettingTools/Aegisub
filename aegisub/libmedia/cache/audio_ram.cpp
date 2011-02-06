@@ -36,12 +36,13 @@
 
 #include "config.h"
 
-#include "audio_provider_ram.h"
-#include "dialog_progress.h"
-#include "frame_main.h"
-#include "main.h"
-#include "utils.h"
+#include "audio_ram.h"
+//#include "dialog_progress.h"
+//#include "frame_main.h"
+//#include "main.h"
+//#include "utils.h"
 
+namespace media {
 
 /// DOCME
 #define CacheBits ((22))
@@ -86,16 +87,17 @@ RAMAudioProvider::RAMAudioProvider(AudioProvider *src) {
 	filename = source->GetFilename();
 
 	// Start progress
+//XXX fixme:
 	volatile bool canceled = false;
-	DialogProgress *progress = new DialogProgress(AegisubApp::Get()->frame,_("Load audio"),&canceled,_("Reading into RAM"),0,source->GetNumSamples());
-	progress->Show();
-	progress->SetProgress(0,1);
+//	DialogProgress *progress = new DialogProgress(AegisubApp::Get()->frame,_("Load audio"),&canceled,_("Reading into RAM"),0,source->GetNumSamples());
+//	progress->Show();
+//	progress->SetProgress(0,1);
 
 	// Read cache
 	int readsize = CacheBlockSize / source->GetBytesPerSample();
 	for (int i=0;i<blockcount && !canceled; i++) {
 		source->GetAudio((char*)blockcache[i],i*readsize, i == blockcount-1 ? (source->GetNumSamples() - i*readsize) : readsize);
-		progress->SetProgress(i,blockcount-1);
+//		progress->SetProgress(i,blockcount-1);
 	}
 
 	// Clean up progress
@@ -103,7 +105,7 @@ RAMAudioProvider::RAMAudioProvider(AudioProvider *src) {
 		Clear();
 		throw agi::UserCancelException("Audio loading cancelled by user");
 	}
-	progress->Destroy();
+//	progress->Destroy();
 }
 
 /// @brief Destructor 
@@ -173,3 +175,5 @@ void RAMAudioProvider::GetAudio(void *buf, int64_t start, int64_t count) const {
 		}
 	}
 }
+
+} // namespace media

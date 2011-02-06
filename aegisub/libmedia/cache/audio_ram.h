@@ -34,8 +34,9 @@
 /// @ingroup audio_input
 ///
 
-#include "include/aegisub/audio_provider.h"
+#include "libmedia/audio.h"
 
+namespace media {
 /// DOCME
 /// @class RAMAudioProvider
 /// @brief DOCME
@@ -60,3 +61,5 @@ public:
 	bool AreSamplesNativeEndian() const { return samples_native_endian; }
 	void GetAudio(void *buf, int64_t start, int64_t count) const;
 };
+
+} // namespace media
