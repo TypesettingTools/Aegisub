@@ -36,8 +36,7 @@
 
 #include "config.h"
 
-#include "audio_provider_dummy.h"
-#include "utils.h"
+#include "dummy_audio.h"
 
 
 namespace media {

@@ -34,7 +34,7 @@
 /// @ingroup audio_input
 ///
 
-#include "include/aegisub/audio_provider.h"
+#include "libmedia/audio.h"
 
 namespace media {
 

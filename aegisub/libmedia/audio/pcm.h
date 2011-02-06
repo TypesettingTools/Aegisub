@@ -36,16 +36,13 @@
 
 #ifndef AGI_PRE
 #include <vector>
-
-#include <wx/file.h>
-#include <wx/thread.h>
 #endif
 
 #ifdef _WIN32
 #include <windows.h>
 #endif
 
-#include "include/aegisub/audio_provider.h"
+#include "libmedia/audio.h"
 
 
 namespace media {
@@ -81,7 +78,7 @@ private:
 #endif
 
 protected:
-	PCMAudioProvider(const wxString &filename); // Create base object and open the file mapping
+	PCMAudioProvider(const std::string &filename); // Create base object and open the file mapping
 	virtual ~PCMAudioProvider(); // Closes the file mapping
 	char * EnsureRangeAccessible(int64_t range_start, int64_t range_length) const; // Ensure that the given range of bytes are accessible in the file mapping and return a pointer to the first byte of the requested range
 
@@ -114,7 +111,7 @@ public:
 };
 
 // Construct the right PCM audio provider (if any) for the file
-AudioProvider *CreatePCMAudioProvider(const wxString &filename);
+AudioProvider *CreatePCMAudioProvider(const std::string &filename);
 
 } // namespace
 

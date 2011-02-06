@@ -27,6 +27,8 @@ SRC = \
 	common/video_frame.cpp \
 	audio/downmix.cpp \
 	audio/convert.cpp \
+	audio/dummy_audio.cpp \
+	audio/pcm.cpp \
 	$(SRC_OPT)
 
 HEADERS = \

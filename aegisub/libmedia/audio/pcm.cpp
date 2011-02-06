@@ -46,17 +46,14 @@
 #include <sys/stat.h>
 #endif
 
-#include <wx/file.h>
-#include <wx/filename.h>
-#include <wx/log.h>
 #endif
 
 #include <libaegisub/log.h>
 
 #include "aegisub_endian.h"
-#include "audio_provider_pcm.h"
-#include "compat.h"
-#include "utils.h"
+#include "pcm.h"
+//#include "compat.h"
+//#include "utils.h"
 
 
 namespace media {
@@ -64,7 +61,7 @@ namespace media {
 /// @brief DOCME
 /// @param filename 
 ///
-PCMAudioProvider::PCMAudioProvider(const wxString &filename)
+PCMAudioProvider::PCMAudioProvider(const std::string &filename)
 {
 #ifdef _WIN32
 	file_handle = CreateFile(
@@ -103,10 +100,10 @@ PCMAudioProvider::PCMAudioProvider(const wxString &filename)
 
 #else
 
-	file_handle = open(filename.mb_str(*wxConvFileName), O_RDONLY);
+	file_handle = open(filename.c_str(), O_RDONLY);
 
 	if (file_handle == -1) {
-		throw agi::FileNotFoundError(STD_STR(filename));
+		throw agi::FileNotFoundError(filename);
 	}
 
 	struct stat filestats;
@@ -330,7 +327,7 @@ public:
 	/// @brief DOCME
 	/// @param _filename 
 	///
-	RiffWavPCMAudioProvider(const wxString &_filename)
+	RiffWavPCMAudioProvider(const std::string &_filename)
 		: PCMAudioProvider(_filename)
 	{
 		filename = _filename;
@@ -520,7 +517,7 @@ public:
 	/// @brief DOCME
 	/// @param _filename 
 	///
-	Wave64AudioProvider(const wxString &_filename)
+	Wave64AudioProvider(const std::string &_filename)
 		: PCMAudioProvider(_filename)
 	{
 		filename = _filename;
@@ -614,7 +611,7 @@ public:
 /// @brief DOCME
 /// @param filename 
 ///
-AudioProvider *CreatePCMAudioProvider(const wxString &filename)
+AudioProvider *CreatePCMAudioProvider(const std::string &filename)
 {
 	std::string msg;
 	try {
