@@ -35,9 +35,11 @@
 ///
 
 #include "config.h"
-#include "main.h"
+//#include "main.h"
 
-#include "video_provider_cache.h"
+#include "video_cache.h"
+
+namespace media {
 
 /// DOCME
 /// @class CachedFrame
@@ -57,7 +59,7 @@ struct CachedFrame {
 ///
 VideoProviderCache::VideoProviderCache(VideoProvider *parent)
 : master(parent)
-, cacheMax(OPT_GET("Provider/Video/Cache/Size")->GetInt() << 20) // convert MB to bytes
+//XXX: , cacheMax(OPT_GET("Provider/Video/Cache/Size")->GetInt() << 20) // convert MB to bytes
 {
 }
 
@@ -123,3 +125,5 @@ unsigned VideoProviderCache::GetCurCacheSize() {
 		sz += i->frame.memSize;
 	return sz;
 }
+
+} // namespace media

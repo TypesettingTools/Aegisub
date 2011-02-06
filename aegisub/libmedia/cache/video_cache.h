@@ -39,7 +39,9 @@
 #include <memory>
 #endif
 
-#include "include/aegisub/video_provider.h"
+#include "libmedia/video.h"
+
+namespace media {
 
 struct CachedFrame;
 
@@ -77,6 +79,8 @@ public:
 	virtual int GetHeight() const                 { return master->GetHeight(); }
 	virtual agi::vfr::Framerate GetFPS() const    { return master->GetFPS(); }
 	virtual std::vector<int> GetKeyFrames() const { return master->GetKeyFrames(); }
-	virtual wxString GetWarning() const           { return master->GetWarning(); }
-	virtual wxString GetDecoderName() const       { return master->GetDecoderName(); }
+	virtual std::string GetWarning() const           { return master->GetWarning(); }
+	virtual std::string GetDecoderName() const       { return master->GetDecoderName(); }
 };
+
+} // namespace media

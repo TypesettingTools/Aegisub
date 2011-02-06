@@ -30,6 +30,7 @@ SRC = \
 	audio/dummy_audio.cpp \
 	audio/pcm.cpp \
 	cache/audio_ram.cpp \
+	cache/video_cache.cpp \
 	$(SRC_OPT)
 
 HEADERS = \
