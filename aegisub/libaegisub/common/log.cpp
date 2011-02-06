@@ -31,7 +31,6 @@
 #include "libaegisub/cajun/writer.h"
 #include "libaegisub/io.h"
 #include "libaegisub/log.h"
-#include "libaegisub/mutex.h"
 #include "libaegisub/types.h"
 #include "libaegisub/util.h"
 
