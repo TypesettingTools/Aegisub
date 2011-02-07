@@ -1,32 +1,30 @@
 {
-	"Backup" : "^CONFIG/backup",
-	"Autosave" : "^CONFIG/autosave",
-	"Data" : "",
-	"User" : "",
-	"Temp" : "",
+	"Autosave" : "^CONFIG/autosave/",
+	"Backup" : "^CONFIG/backup/",
+	"Catalog" : "^CONFIG/catalog/",
+	"Crash" : "^CONFIG/crash/",
 	"Dictionary" : {
-		"Local" : {
-			"Lang" : "^CONFIG/dictionary/lang",
-			"Thesarus" : "^CONFIG/dictionary/thesaurus",
-			"Personal" : "^CONFIG/dictionary/personal"
-		},
-		"Lang" : [],
-		"Thesaurus" : []
+		"Lang" : [
+			{ "string" : "^CONFIG/dictionary/lang/" }
+		],
+		"Personal" : [
+			{ "string" : "^CONFIG/dictionary/personal/" }
+		],
+		"Thesarus" : [
+			{ "string" : "^CONFIG/dictionary/thesaurus/" }
+		]
 	},
-	"Automation" : {
-		"Autoload" : [],
-		"Include" : []
-	},
-	"Crash" : "^CONFIG/crash",
 	"Font" : {
 		"FontConfig" : {
-				"Cache" : "^CONFIG/fontconfig_cache"
+			"Cache" : "^CONFIG/fontconfig_cache/"
 		}
 	},
 	"Last" : {
-		"Video" : "",
+		"Audio" : "^VIDEO",
 		"Subtitle" : "^VIDEO",
-		"Audio" : "^VIDEO"
+		"Video" : "^USER"
 	},
-	"Log" : "^CONFIG/log"
+	"Log" : "^CONFIG/log/",
+	"Shift History" : "^CONFIG",
+	"Temp" : "^TEMP"
 }
