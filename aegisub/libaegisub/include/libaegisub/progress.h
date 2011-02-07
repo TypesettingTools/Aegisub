@@ -50,10 +50,9 @@ public:
 
 class StdioProgressSinkFactory : public ProgressSinkFactory {
 private:
-	FILE *file;
 
 public:
-	StdioProgressSinkFactory(FILE *file) : file(file) { }
+	StdioProgressSinkFactory();
 	virtual ProgressSink * create_progress_sink(const std::string &title) const;
 };
 

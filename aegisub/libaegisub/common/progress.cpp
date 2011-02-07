@@ -19,7 +19,12 @@
 /// @ingroup libaegisub
 
 #ifndef LAG_PRE
+#include <assert.h>
+
 #include <string>
+#include <iomanip>
+#include <iostream>
+#include <cmath>
 #endif
 
 #include "libaegisub/progress.h"
@@ -42,14 +47,13 @@ ProgressSink * NullProgressSinkFactory::create_progress_sink(const std::string &
 
 class StdioProgressSink : public ProgressSink {
 private:
-	FILE *file;
 	std::string operation;
 	float progress;
 
 	void print();
 
 public:
-	StdioProgressSink(FILE *file, const std::string &title);
+	StdioProgressSink(const std::string &title);
 	virtual ~StdioProgressSink();
 	virtual void set_progress(int steps, int max);
 	virtual void set_operation(const std::string &operation);
@@ -57,21 +61,20 @@ public:
 };
 
 ProgressSink * StdioProgressSinkFactory::create_progress_sink(const std::string &title) const {
-	return new StdioProgressSink(file, title);
+	return new StdioProgressSink(title);
 }
 
 
-StdioProgressSink::StdioProgressSink(FILE *file, const std::string &title)
-: file(file)
-, operation(title)
+StdioProgressSink::StdioProgressSink(const std::string &title)
+: operation(title)
 , progress(0) {
-	fprintf(file, "=== %s ===\n", title.c_str());
+	std::cout << title << ": ";
 	print();
 }
 
 StdioProgressSink::~StdioProgressSink()
 {
-	fprintf(file, "\n -===-\n");
+	std::cout << "end" << std::endl;
 }
 
 
@@ -82,7 +85,7 @@ void StdioProgressSink::set_progress(int steps, int max) {
 	float old_progress = progress;
 	progress = (100.f * steps)/max;
 
-	if (fabs(progress-old_progress) > 0.8)
+	if (std::fabs(progress-old_progress) > 0.8)
 	{
 		print();
 	}
@@ -96,7 +99,7 @@ void StdioProgressSink::set_operation(const std::string &operation) {
 
 
 void StdioProgressSink::print() {
-	fprintf(file, "%s: %.1f%%\r", operation.c_str(), progress);
+	std::cout << operation << ": " << std::setprecision(2) << progress << std::endl;
 }
 
 
