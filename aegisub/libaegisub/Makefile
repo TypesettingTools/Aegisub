@@ -17,6 +17,7 @@ LDFLAGS += -L../universalchardet -luniversalchardet
 endif
 
 common/charset_conv.o: CXXFLAGS += $(CFLAGS_ICONV)
+unix/path.o: CXXFLAGS += -DDIR_DATA=\"$(P_DATA)\" -DDIR_DOC=\"$(P_DOC)\"
 
 SRC = \
 	common/charset.cpp \
@@ -27,6 +28,7 @@ SRC = \
 	common/mru.cpp \
 	common/option.cpp \
 	common/option_visit.cpp \
+	common/path.cpp \
 	common/progress.cpp \
 	common/keyframe.cpp \
 	common/log.cpp \
@@ -35,7 +37,8 @@ SRC = \
 	unix/util.cpp \
 	unix/io.cpp \
 	unix/access.cpp \
-	unix/log.cpp
+	unix/log.cpp \
+	unix/path.cpp
 
 ifeq (yes, $(BUILD_DARWIN))
 SRC += \

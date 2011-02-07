@@ -1,4 +1,4 @@
-// Copyright (c) 2010, Amar Takhar <verm@aegisub.org>
+// Copyright (c) 2010-2011, Amar Takhar <verm@aegisub.org>
 //
 // Permission to use, copy, modify, and distribute this software for any
 // purpose with or without fee is hereby granted, provided that the above
@@ -18,46 +18,37 @@
 /// @brief Common paths.
 /// @ingroup libaegisub
 
-#include "acconf.h"
+#include "../commit/acconf.h"
 
+#include <string>
 #include <libaegisub/path.h>
 
 namespace agi {
 
-const char *Path::Data() {
-	std::string tmp;
-	tmp.assign(INSTALL_PREFIX);
-	tmp.append("-");
-	tmp.append(AEGISUB_VERSION_DATA);
-	return tmp.c_str();
+const std::string Path::Data() {
+	return DIR_DATA;
 }
 
-const char *Path::Doc() {
-	std::string tmp;
-	tmp.assign(INSTALL_PREFIX);
-	tmp.append("-");
-	tmp.append(AEGISUB_VERSION_DATA);
-	return tmp.c_str();
+const std::string Path::Doc() {
+	return DIR_DOC;
 }
 
-const char *Path::User() {
-	std::string tmp;
-	tmp.assign("~/.aegisub-");
-	tmp.append(AEGISUB_VERSION_DATA);
-	return tmp.c_str();
+const std::string Path::User() {
+	return "~/";
 }
 
-const char *Path::Locale() {
-	std::string tmp;
-	tmp.assign("~/.aegisub-");
-	tmp.append(AEGISUB_VERSION_DATA);
-	return tmp.c_str();
+const std::string Path::Locale() {
+	std::string tmp("~/.aegisub-");
+	return tmp.append(AEGISUB_VERSION_DATA);
 }
 
+const std::string Path::Config() {
+	std::string tmp("~/.aegisub-");
+	return tmp.append(AEGISUB_VERSION_DATA);
+}
 
-const char *Path::Temp() {
-	const char *tmp = "/tmp";
-	return tmp;
+const std::string Path::Temp() {
+	return "/tmp/";
 }
 
 } // namespace agi
