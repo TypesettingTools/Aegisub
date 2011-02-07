@@ -338,6 +338,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\libaegisub\windows\path.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\libaegisub\windows\lagi_pre.cpp"
 				>
 				<FileConfiguration
