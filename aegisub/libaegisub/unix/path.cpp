@@ -18,10 +18,15 @@
 /// @brief Common paths.
 /// @ingroup libaegisub
 
-#include "../commit/acconf.h"
 
+#include "config.h"
+
+#ifndef LAGI_PRE
 #include <string>
+#endif
+
 #include <libaegisub/path.h>
+
 
 namespace agi {
 
