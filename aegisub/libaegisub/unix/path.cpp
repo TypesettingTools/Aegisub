@@ -38,7 +38,8 @@ const std::string home() {
 	char *ehome;
 	ehome = getenv("HOME");
 	if (ehome == NULL) {
-		//XXX: explode here.
+		printf("The HOME environment variable must be set\n");
+		exit(1);
 	}
 	std::string home(ehome);
 	free(ehome);
