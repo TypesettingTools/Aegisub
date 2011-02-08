@@ -1,4 +1,4 @@
-// Copyright (c) 2011,  <@aegisub.org>
+// Copyright (c) 2011, Niels Martin Hansen <nielsm@aegisub.org>
 //
 // Permission to use, copy, modify, and distribute this software for any
 // purpose with or without fee is hereby granted, provided that the above
@@ -26,31 +26,95 @@
 #endif
 
 #include <libaegisub/path.h>
+#include <libaegisub/charset_conv_win.h>
+
+
+namespace {
+#include <Shlobj.h>
+#include <Shellapi.h>
+
+const std::string WinGetFolderPath(int folder) {
+	wchar_t path[MAX_PATH+1] = {0};
+	HRESULT res = SHGetFolderPathW(
+		0,      // hwndOwner
+		folder, // nFolder
+		0,      // hToken
+		0,      // dwFlags
+		path    // pszPath
+		);
+	if (FAILED(res))
+		throw new agi::PathErrorInternal; //< @fixme error message?
+	else
+		return agi::charset::ConvertW(std::wstring(path));
+}
+
+std::string get_install_path() {
+	static std::string install_path;
+	static bool install_path_valid = false;
+	
+	if (install_path_valid == false) {
+		// Excerpt from <http://msdn.microsoft.com/en-us/library/bb776391.aspx>:
+		// lpCmdLine [in]
+		//     If this parameter is an empty string the function returns
+		//     the path to the current executable file.
+		int argc;
+		LPWSTR *argv = CommandLineToArgvW(L"", &argc);
+		
+		wchar_t path[MAX_PATH+1] = {0};
+		wchar_t *fn;
+		DWORD res = GetFullPathNameW(argv, MAX_PATH, path, &fn);
+		LocalFree(argv);
+		
+		if (res > 0 && GetLastError() == 0) {
+			*fn = "\0"; // fn points to filename part of path, set an end marker there
+			install_path = agi::charset::ConvertW(std::wstring(path));
+			install_path_valid = true;
+		} else {
+			throw new agi::PathErrorInternal;
+		}
+	}
+
+	return install_path;
+}
+
+};
+
 
 namespace agi {
 
 const std::string Path::Data() {
-	return "";
+	return get_install_path;
 }
 
 const std::string Path::Doc() {
-	return "";
+	std::string path = Data();
+	path.append("docs\\");
+	return path;
 }
 
 const std::string Path::User() {
-	return "";
+	return WinGetFolderPath(CSIDL_PERSONAL);
 }
 
 const std::string Path::Locale() {
-	return "";
+	std::string path = Data();
+	path.append("locale\\");
+	return path;
 }
 
 const std::string Path::Config() {
-	return "";
+	std::string path = WinGetFolderPath(CSIDL_APPDATA);
+	path.append("Aegisub-");
+	path.append(AEGISUB_VERSION_DATA);
+	return path;
 }
 
 const std::string Path::Temp() {
-	return "";
+	wchar_t path[MAX_PATH+1] = {0};
+	if (GetTempPath(MAX_PATH, path) == 0)
+		throw new PathErrorInternal;
+	else
+		return charset::ConvertW(std::wstring(path));
 }
 
 } // namespace agi
