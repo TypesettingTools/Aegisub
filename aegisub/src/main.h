@@ -46,6 +46,7 @@
 #include "aegisublocale.h"
 #include <libaegisub/mru.h>
 #include <libaegisub/option.h>
+#include <libaegisub/path.h>
 
 //////////////
 // Prototypes
@@ -63,6 +64,7 @@ namespace agi {
 namespace config {
 	extern agi::Options *opt; 		///< Options
 	extern agi::MRUManager *mru;	///< Most Recently Used
+	extern agi::Path *path;			///< Paths
 }
 
 /// DOCME
@@ -79,6 +81,12 @@ namespace Automation4 { class AutoloadScriptManager; }
 
 /// Macro to unsubscribe to OptionValue changes
 #define OPT_UNSUB(x, ...) config::opt->Get(x)->Unsubscribe(__VA_ARGS__)
+
+/// Macro to get a path.
+#define PATH_GET(x) AegisubApp::Get()->path->Get(x)
+
+/// Macro to set a path.
+#define PATH_SET(x, y) AegisubApp::Get()->path->Set(x, y)
 
 
 /// DOCME
