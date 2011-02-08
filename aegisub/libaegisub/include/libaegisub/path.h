@@ -22,7 +22,6 @@
 #endif
 
 #include <libaegisub/exception.h>
-#include <libaegisub/option.h>
 
 namespace agi {
 
@@ -30,6 +29,8 @@ DEFINE_BASE_EXCEPTION_NOINNER(PathError, Exception)
 DEFINE_SIMPLE_EXCEPTION_NOINNER(PathErrorNotFound, PathError, "path/not_found")
 DEFINE_SIMPLE_EXCEPTION_NOINNER(PathErrorInvalid, PathError, "path/invalid")
 DEFINE_SIMPLE_EXCEPTION_NOINNER(PathErrorInternal, PathError, "path")
+
+class Options;
 
 /// @class Path
 // Internal representation of all paths in aegisub.
@@ -73,7 +74,10 @@ public:
 
 	/// @brief Decode a path
 	/// @param path Decode a path in-place.
-	const void Decode(std::string &path);
+	void Decode(std::string &path);
+
+	/// Configuration directory
+	static const std::string Config();
 
 private:
 	/// Location of path config file.
@@ -102,7 +106,6 @@ private:
 
 protected:
 	const std::string Data();	///< Shared resources
-	const std::string Config();	///< Configuration directory
 	const std::string Doc();	///< Documents
 	const std::string User();	///< User config directory
 	const std::string Temp();	///< Temporary storage

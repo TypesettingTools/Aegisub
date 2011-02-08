@@ -25,6 +25,7 @@
 #include "libaegisub/access.h"
 #include "libaegisub/log.h"
 #include "libaegisub/path.h"
+#include "libaegisub/option.h"
 
 namespace agi {
 
