@@ -17,7 +17,7 @@ LDFLAGS += -L../universalchardet -luniversalchardet
 endif
 
 common/charset_conv.o: CXXFLAGS += $(CFLAGS_ICONV)
-unix/path.o: CXXFLAGS += -DDIR_DATA=\"$(P_DATA)\" -DDIR_DOC=\"$(P_DOC)\"
+unix/path.o: CXXFLAGS += -DP_DATA=\"$(P_DATA)\" -DP_DOC=\"$(P_DOC)\" -DP_LOCALE=\"$(P_LOCALE)\"
 
 SRC = \
 	common/charset.cpp \

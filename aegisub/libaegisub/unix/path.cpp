@@ -22,6 +22,9 @@
 #include "config.h"
 
 #ifndef LAGI_PRE
+#include <stdio.h>
+#include <stdlib.h>
+
 #include <string>
 #endif
 
@@ -30,26 +33,40 @@
 
 namespace agi {
 
+
+const std::string home() {
+	char *ehome;
+	ehome = getenv("HOME");
+	if (ehome == NULL) {
+		//XXX: explode here.
+	}
+	std::string home(ehome);
+	free(ehome);
+	return home;
+}
+
+
 const std::string Path::Data() {
-	return DIR_DATA;
+	return P_DATA;
 }
 
 const std::string Path::Doc() {
-	return DIR_DOC;
+	return P_DOC;
 }
 
 const std::string Path::User() {
-	return "~/";
+	return home();
 }
 
 const std::string Path::Locale() {
-	std::string tmp("~/.aegisub-");
-	return tmp.append(AEGISUB_VERSION_DATA);
+	return P_LOCALE;
 }
 
 const std::string Path::Config() {
-	std::string tmp("~/.aegisub-");
-	return tmp.append(AEGISUB_VERSION_DATA);
+	std::string tmp(home());
+	tmp.append("/.aegisub-");
+	tmp.append(AEGISUB_VERSION_DATA);
+	return tmp.append("/");
 }
 
 const std::string Path::Temp() {
