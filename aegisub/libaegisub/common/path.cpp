@@ -84,7 +84,7 @@ void Path::ListSet(const char *name, std::vector<std::string> list) {
 }
 
 
-const void Path::Decode(std::string &path) {
+void Path::Decode(std::string &path) {
 	if (path[0] != 94) // "^"
 		return;
 	try {
