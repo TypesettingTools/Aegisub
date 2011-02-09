@@ -65,6 +65,11 @@ TEST_F(lagi_util, UtilRenameExNotFound) {
 	EXPECT_THROW(util::Rename("./data/nonexistent", ""), acs::AcsNotFound);
 }
 
+TEST_F(lagi_util, Utilstr_lower) {
+	std::string str("-!ABCDEFGHIJKLMNOPQRSTUVWXYZ123");
+	util::str_lower(str);
+	EXPECT_STREQ(str.c_str(), "-!abcdefghijklmnopqrstuvwxyz123");
+}
 
 
 } // namespace agi
