@@ -14,10 +14,10 @@
 			{ "string" : "^CONFIG/dictionary/thesaurus/" }
 		]
 	},
-	"Font" : {
-		"FontConfig" : {
-			"Cache" : "^CONFIG/fontconfig_cache/"
-		}
+	"Cache" : {
+		"FontConfig" : "^CONFIG/cache/fontconfig/",
+		"FFmpegSource" : "^CONFIG/cache/ffmpegsource/"
+
 	},
 	"Last" : {
 		"Audio" : "^VIDEO",
