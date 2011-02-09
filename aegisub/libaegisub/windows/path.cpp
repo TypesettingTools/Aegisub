@@ -27,6 +27,7 @@
 
 #include <libaegisub/path.h>
 #include <libaegisub/charset_conv_win.h>
+#include <libaegisub/util_win.h>
 
 
 namespace {
@@ -43,7 +44,7 @@ const std::string WinGetFolderPath(int folder) {
 		path    // pszPath
 		);
 	if (FAILED(res))
-		throw new agi::PathErrorInternal; //< @fixme error message?
+		throw new agi::PathErrorInternal("SHGetFolderPath() failed"); //< @fixme error message?
 	else
 		return agi::charset::ConvertW(std::wstring(path));
 }
@@ -62,15 +63,15 @@ std::string get_install_path() {
 		
 		wchar_t path[MAX_PATH+1] = {0};
 		wchar_t *fn;
-		DWORD res = GetFullPathNameW(argv, MAX_PATH, path, &fn);
+		DWORD res = GetFullPathNameW(argv[0], MAX_PATH, path, &fn);
 		LocalFree(argv);
 		
 		if (res > 0 && GetLastError() == 0) {
-			*fn = "\0"; // fn points to filename part of path, set an end marker there
+			*fn = '\0'; // fn points to filename part of path, set an end marker there
 			install_path = agi::charset::ConvertW(std::wstring(path));
 			install_path_valid = true;
 		} else {
-			throw new agi::PathErrorInternal;
+			throw new agi::PathErrorInternal(agi::util::ErrorString(GetLastError()));
 		}
 	}
 
@@ -83,7 +84,7 @@ std::string get_install_path() {
 namespace agi {
 
 const std::string Path::Data() {
-	return get_install_path;
+	return get_install_path();
 }
 
 const std::string Path::Doc() {
@@ -104,15 +105,15 @@ const std::string Path::Locale() {
 
 const std::string Path::Config() {
 	std::string path = WinGetFolderPath(CSIDL_APPDATA);
-	path.append("Aegisub-");
-	path.append(AEGISUB_VERSION_DATA);
+	path.append("Aegisub3");
+	/// @fixme should get version number in a more dynamic manner
 	return path;
 }
 
 const std::string Path::Temp() {
 	wchar_t path[MAX_PATH+1] = {0};
 	if (GetTempPath(MAX_PATH, path) == 0)
-		throw new PathErrorInternal;
+		throw new PathErrorInternal(util::ErrorString(GetLastError()));
 	else
 		return charset::ConvertW(std::wstring(path));
 }
