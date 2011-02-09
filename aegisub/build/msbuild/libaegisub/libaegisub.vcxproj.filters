@@ -107,6 +107,21 @@
     <ClInclude Include="$(SrcDir)include\libaegisub\cajun\reader.h">
       <Filter>cajun</Filter>
     </ClInclude>
+    <ClInclude Include="$(SrcDir)include\libaegisub\hotkey.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="$(SrcDir)include\libaegisub\json.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="$(SrcDir)include\libaegisub\keyframe.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="$(SrcDir)include\libaegisub\progress.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="$(SrcDir)include\libaegisub\signal.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(SrcDir)windows\lagi_pre.cpp">
@@ -164,6 +179,12 @@
       <Filter>Source Files\Common</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)common\keyframe.cpp">
+      <Filter>Source Files\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SrcDir)windows\path.cpp">
+      <Filter>Source Files\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SrcDir)common\progress.cpp">
       <Filter>Source Files\Common</Filter>
     </ClCompile>
   </ItemGroup>

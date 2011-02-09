@@ -43,16 +43,20 @@
   </ItemDefinitionGroup>
   <!-- Source files -->
   <ItemGroup>
+    <ClInclude Include="$(SrcDir)lagi_pre.h" />
+    <ClInclude Include="$(SrcDir)config.h" />
     <ClInclude Include="$(SrcDir)common\charset_ucd.h" />
     <ClInclude Include="$(SrcDir)common\option_visit.h" />
-    <ClInclude Include="$(SrcDir)config.h" />
     <ClInclude Include="$(SrcDir)include\libaegisub\access.h" />
     <ClInclude Include="$(SrcDir)include\libaegisub\charset.h" />
     <ClInclude Include="$(SrcDir)include\libaegisub\charset_conv.h" />
     <ClInclude Include="$(SrcDir)include\libaegisub\charset_conv_win.h" />
     <ClInclude Include="$(SrcDir)include\libaegisub\colour.h" />
     <ClInclude Include="$(SrcDir)include\libaegisub\exception.h" />
+    <ClInclude Include="$(SrcDir)include\libaegisub\hotkey.h" />
     <ClInclude Include="$(SrcDir)include\libaegisub\io.h" />
+    <ClInclude Include="$(SrcDir)include\libaegisub\json.h" />
+    <ClInclude Include="$(SrcDir)include\libaegisub\keyframe.h" />
     <ClInclude Include="$(SrcDir)include\libaegisub\line_iterator.h" />
     <ClInclude Include="$(SrcDir)include\libaegisub\log.h" />
     <ClInclude Include="$(SrcDir)include\libaegisub\mru.h" />
@@ -60,14 +64,15 @@
     <ClInclude Include="$(SrcDir)include\libaegisub\option.h" />
     <ClInclude Include="$(SrcDir)include\libaegisub\option_value.h" />
     <ClInclude Include="$(SrcDir)include\libaegisub\path.h" />
+    <ClInclude Include="$(SrcDir)include\libaegisub\progress.h" />
     <ClInclude Include="$(SrcDir)include\libaegisub\scoped_ptr.h" />
+    <ClInclude Include="$(SrcDir)include\libaegisub\signal.h" />
     <ClInclude Include="$(SrcDir)include\libaegisub\types.h" />
     <ClInclude Include="$(SrcDir)include\libaegisub\util.h" />
     <ClInclude Include="$(SrcDir)include\libaegisub\util_osx.h" />
     <ClInclude Include="$(SrcDir)include\libaegisub\util_win.h" />
     <ClInclude Include="$(SrcDir)include\libaegisub\validator.h" />
     <ClInclude Include="$(SrcDir)include\libaegisub\vfr.h" />
-    <ClInclude Include="$(SrcDir)lagi_pre.h" />
     <ClInclude Include="$(SrcDir)include\libaegisub\cajun\elements.h" />
     <ClInclude Include="$(SrcDir)include\libaegisub\cajun\reader.h" />
     <ClInclude Include="$(SrcDir)include\libaegisub\cajun\visitor.h" />
@@ -75,6 +80,10 @@
   </ItemGroup>
   <!-- Unfortunately MSBuild 4.0 doesn't offer a way to do item metadata transformations by functions, meaning lots of redundancy here -->
   <ItemGroup>
+    <ClCompile Include="$(SrcDir)windows\lagi_pre.cpp">
+      <PrecompiledHeader>Create</PrecompiledHeader>
+      <PrecompiledHeaderFile>lagi_pre.h</PrecompiledHeaderFile>
+    </ClCompile>
     <ClCompile Include="$(SrcDir)common\charset.cpp">
       <AssemblerListingLocation>$(IntDir)Common\</AssemblerListingLocation>
       <ObjectFileName>$(IntDir)Common\</ObjectFileName>
@@ -95,17 +104,17 @@
       <ObjectFileName>$(IntDir)Common\</ObjectFileName>
       <XMLDocumentationFileName>$(IntDir)Common\</XMLDocumentationFileName>
     </ClCompile>
-    <ClCompile Include="$(SrcDir)common\log.cpp">
-      <AssemblerListingLocation>$(IntDir)Common\</AssemblerListingLocation>
-      <ObjectFileName>$(IntDir)Common\</ObjectFileName>
-      <XMLDocumentationFileName>$(IntDir)Common\</XMLDocumentationFileName>
-    </ClCompile>
     <ClCompile Include="$(SrcDir)common\json.cpp">
       <AssemblerListingLocation>$(IntDir)Common\</AssemblerListingLocation>
       <ObjectFileName>$(IntDir)Common\</ObjectFileName>
       <XMLDocumentationFileName>$(IntDir)Common\</XMLDocumentationFileName>
     </ClCompile>
     <ClCompile Include="$(SrcDir)common\keyframe.cpp">
+      <AssemblerListingLocation>$(IntDir)Common\</AssemblerListingLocation>
+      <ObjectFileName>$(IntDir)Common\</ObjectFileName>
+      <XMLDocumentationFileName>$(IntDir)Common\</XMLDocumentationFileName>
+    </ClCompile>
+    <ClCompile Include="$(SrcDir)common\log.cpp">
       <AssemblerListingLocation>$(IntDir)Common\</AssemblerListingLocation>
       <ObjectFileName>$(IntDir)Common\</ObjectFileName>
       <XMLDocumentationFileName>$(IntDir)Common\</XMLDocumentationFileName>
@@ -126,6 +135,11 @@
       <XMLDocumentationFileName>$(IntDir)Common\</XMLDocumentationFileName>
     </ClCompile>
     <ClCompile Include="$(SrcDir)common\path.cpp">
+      <AssemblerListingLocation>$(IntDir)Common\</AssemblerListingLocation>
+      <ObjectFileName>$(IntDir)Common\</ObjectFileName>
+      <XMLDocumentationFileName>$(IntDir)Common\</XMLDocumentationFileName>
+    </ClCompile>
+    <ClCompile Include="$(SrcDir)common\progress.cpp">
       <AssemblerListingLocation>$(IntDir)Common\</AssemblerListingLocation>
       <ObjectFileName>$(IntDir)Common\</ObjectFileName>
       <XMLDocumentationFileName>$(IntDir)Common\</XMLDocumentationFileName>
@@ -155,11 +169,12 @@
       <ObjectFileName>$(IntDir)Windows\</ObjectFileName>
       <XMLDocumentationFileName>$(IntDir)Windows\</XMLDocumentationFileName>
     </ClCompile>
-    <ClCompile Include="$(SrcDir)windows\lagi_pre.cpp">
-      <PrecompiledHeader>Create</PrecompiledHeader>
-      <PrecompiledHeaderFile>lagi_pre.h</PrecompiledHeaderFile>
-    </ClCompile>
     <ClCompile Include="$(SrcDir)windows\log.cpp">
+      <AssemblerListingLocation>$(IntDir)Windows\</AssemblerListingLocation>
+      <ObjectFileName>$(IntDir)Windows\</ObjectFileName>
+      <XMLDocumentationFileName>$(IntDir)Windows\</XMLDocumentationFileName>
+    </ClCompile>
+    <ClCompile Include="$(SrcDir)windows\path.cpp">
       <AssemblerListingLocation>$(IntDir)Windows\</AssemblerListingLocation>
       <ObjectFileName>$(IntDir)Windows\</ObjectFileName>
       <XMLDocumentationFileName>$(IntDir)Windows\</XMLDocumentationFileName>
