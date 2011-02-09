@@ -46,7 +46,7 @@ const std::string Path::Get(const char *name) {
 	std::string path;
 	try {
 		path = std::string(opt->Get(name)->GetString());
-	} catch (OptionErrorNotFound& e) {
+	} catch (OptionErrorNotFound&) {
 		throw PathErrorNotFound("Invalid path key");
 	}
 
@@ -67,7 +67,7 @@ void Path::Set(const char *name, const std::string &path) {
 
 	try {
 		opt->Get(name)->SetString(set);
-	} catch (OptionErrorNotFound& e) {
+	} catch (OptionErrorNotFound&) {
 		throw PathErrorNotFound("Invalid path key");
 	}
 
@@ -136,7 +136,7 @@ void Path::Decode(std::string &path) {
 
 		throw PathErrorInvalid("Invalid cookie used");
 
-	} catch (OptionErrorNotFound& e) {
+	} catch (OptionErrorNotFound&) {
 		throw PathErrorInternal("Failed to find key in Decode");
 	}
 }
