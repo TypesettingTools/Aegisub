@@ -38,21 +38,24 @@
 #include "config.h"
 
 #ifndef AGI_PRE
-#include <wx/thread.h>
 #endif
 
 #ifdef WITH_AVISYNTH
-#include "audio_provider_avs.h"
+#include "../audio/avs_audio.h"
 #endif
-#include "audio_provider_convert.h"
+#include "../audio/convert.h"
 #ifdef WITH_FFMPEGSOURCE
-#include "audio_provider_ffmpegsource.h"
+#include "../audio/ffms_audio.h"
 #endif
-#include "audio_provider_hd.h"
-#include "audio_provider_pcm.h"
-#include "audio_provider_ram.h"
-#include "compat.h"
-#include "main.h"
+#include "../cache/audio_hd.h"
+#include "../cache/audio_ram.h"
+#include "../audio/pcm.h"
+
+
+//#include "compat.h"
+//#include "main.h"
+
+namespace media {
 
 /// @brief Constructor 
 ///
@@ -105,12 +108,13 @@ void AudioProvider::GetAudioWithVolume(void *buf, int64_t start, int64_t count, 
 /// @param cache    
 /// @return 
 ///
-AudioProvider *AudioProviderFactory::GetProvider(wxString filename, int cache) {
+AudioProvider *AudioProviderFactory::GetProvider(std::string filename, int cache) {
 	AudioProvider *provider = NULL;
 	bool found = false;
 	std::string msg;
 
-	if (!OPT_GET("Provider/Audio/PCM/Disable")->GetBool()) {
+//XXX	if (!OPT_GET("Provider/Audio/PCM/Disable")->GetBool()) {
+	if (1) {
 		// Try a PCM provider first
 		try {
 			provider = CreatePCMAudioProvider(filename);
@@ -124,7 +128,9 @@ AudioProvider *AudioProviderFactory::GetProvider(wxString filename, int cache) {
 		}
 	}
 	if (!provider) {
-		std::vector<std::string> list = GetClasses(OPT_GET("Audio/Provider")->GetString());
+//XXX		std::vector<std::string> list = GetClasses(OPT_GET("Audio/Provider")->GetString());
+		std::vector<std::string> list = GetClasses("ffmpegsource");
+
 		if (list.empty()) throw AudioOpenError("No audio providers are available.");
 
 		for (unsigned int i=0;i<list.size();i++) {
@@ -146,7 +152,7 @@ AudioProvider *AudioProviderFactory::GetProvider(wxString filename, int cache) {
 			throw AudioOpenError(msg);
 		}
 		else {
-			throw agi::FileNotFoundError(STD_STR(filename));
+			throw agi::FileNotFoundError(filename);
 		}
 	}
 	bool needsCache = provider->NeedsCache();
@@ -156,7 +162,8 @@ AudioProvider *AudioProviderFactory::GetProvider(wxString filename, int cache) {
 		provider = CreateConvertAudioProvider(provider);
 
 	// Change provider to RAM/HD cache if needed
-	if (cache == -1) cache = OPT_GET("Audio/Cache/Type")->GetInt();
+//XXX	if (cache == -1) cache = OPT_GET("Audio/Cache/Type")->GetInt();
+	if (cache == -1) cache = 1;
 	if (!cache || !needsCache) {
 		return provider;
 	}
@@ -177,8 +184,10 @@ void AudioProviderFactory::RegisterProviders() {
 	Register<AvisynthAudioProvider>("Avisynth");
 #endif
 #ifdef WITH_FFMPEGSOURCE
-	Register<FFmpegSourceAudioProvider>("FFmpegSource");
+	Register<ffms::FFmpegSourceAudioProvider>("FFmpegSource");
 #endif
 }
 
-template<> AudioProviderFactory::map *FactoryBase<AudioProvider *(*)(wxString)>::classes = NULL;
+template<> AudioProviderFactory::map *FactoryBase<AudioProvider *(*)(std::string)>::classes = NULL;
+
+} // namespace media

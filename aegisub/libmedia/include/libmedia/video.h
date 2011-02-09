@@ -74,6 +74,14 @@ public:
 	virtual bool WantsCaching() const { return false; }
 };
 
+
+class VideoProviderFactory : public Factory1<VideoProvider, wxString> {
+public:
+	static VideoProvider *GetProvider(wxString video);
+	static void RegisterProviders();
+};
+
+
 DEFINE_BASE_EXCEPTION_NOINNER(VideoProviderError, agi::Exception);
 /// File could be opened, but is not a supported format
 DEFINE_SIMPLE_EXCEPTION_NOINNER(VideoNotSupported, VideoProviderError, "video/open/notsupported");
@@ -82,6 +90,7 @@ DEFINE_SIMPLE_EXCEPTION_NOINNER(VideoOpenError, VideoProviderError, "video/open/
 
 /// Error of some sort occurred while decoding a frame
 DEFINE_SIMPLE_EXCEPTION_NOINNER(VideoDecodeError, VideoProviderError, "video/error");
+
 
 } // namespace media
 
