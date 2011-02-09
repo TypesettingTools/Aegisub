@@ -36,6 +36,11 @@
 
 #pragma once
 
+#ifndef MAGI_PRE
+#include <string>
+#endif
+
+#include <libmedia/factory_manager.h>
 #include <libmedia/video_frame.h>
 #include <libaegisub/exception.h>
 #include <libaegisub/vfr.h>
@@ -75,9 +80,9 @@ public:
 };
 
 
-class VideoProviderFactory : public Factory1<VideoProvider, wxString> {
+class VideoProviderFactory : public Factory1<VideoProvider, std::string> {
 public:
-	static VideoProvider *GetProvider(wxString video);
+	static VideoProvider *GetProvider(std::string video);
 	static void RegisterProviders();
 };
 
