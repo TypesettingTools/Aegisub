@@ -28,6 +28,7 @@
 #include <fstream>
 #include <iostream>
 #include <iterator>
+#include <locale>
 #include <numeric>
 #include <map>
 #include <sstream>
