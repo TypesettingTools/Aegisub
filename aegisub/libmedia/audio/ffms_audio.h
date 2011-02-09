@@ -35,7 +35,7 @@ namespace media {
 
 /// @class Audio
 /// Audio file support.
-class Audio : public AudioProvider, FFmpegSourceProvider {
+class FFmpegSourceAudioProvider : public AudioProvider, FFmpegSourceProvider {
     FFMS_AudioSource *AudioSource;  ///< audio source object
     bool COMInited;                 ///< COM initialization state
 
@@ -45,8 +45,9 @@ class Audio : public AudioProvider, FFmpegSourceProvider {
     void Close();
     void LoadAudio(std::string filename);
 
-    Audio(std::string filename);
-    virtual ~Audio();
+public:
+	FFmpegSourceAudioProvider(std::string filename);
+    virtual ~FFmpegSourceAudioProvider();
 
     /// @brief Checks sample endianness
     /// @return Returns true.

@@ -35,7 +35,7 @@ namespace media {
 /// @brief Constructor
 /// @param filename
 ///
-Audio::Audio(std::string filename)
+FFmpegSourceAudioProvider::FFmpegSourceAudioProvider(std::string filename)
 : AudioSource(NULL)
 , COMInited(false)
 {
@@ -72,7 +72,7 @@ Audio::Audio(std::string filename)
 /// @brief Load audio file 
 /// @param filename 
 ///
-void Audio::LoadAudio(std::string filename) {
+void FFmpegSourceAudioProvider::LoadAudio(std::string filename) {
 //	wxString FileNameShort = wxFileName(filename).GetShortPath();
 
 	FFMS_Indexer *Indexer = FFMS_CreateIndexer(filename.c_str(), &ErrInfo);
@@ -195,13 +195,13 @@ void Audio::LoadAudio(std::string filename) {
 
 /// @brief Destructor 
 ///
-Audio::~Audio() {
+FFmpegSourceAudioProvider::~FFmpegSourceAudioProvider() {
 	Close();
 }
 
 /// @brief Clean up
 ///
-void Audio::Close() {
+void FFmpegSourceAudioProvider::Close() {
 	if (AudioSource) FFMS_DestroyAudioSource(AudioSource);
 #ifdef WIN32
 	if (COMInited)
@@ -214,7 +214,7 @@ void Audio::Close() {
 /// @param Start 
 /// @param Count 
 ///
-void Audio::GetAudio(void *Buf, int64_t Start, int64_t Count) const {
+void FFmpegSourceAudioProvider::GetAudio(void *Buf, int64_t Start, int64_t Count) const {
 	if (FFMS_GetAudio(AudioSource, Buf, Start, Count, &ErrInfo)) {
 		throw AudioDecodeError(std::string("Failed to get audio samples: ") + ErrInfo.Buffer);
 	}
