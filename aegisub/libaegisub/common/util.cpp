@@ -1,4 +1,4 @@
-// Copyright (c) 2010, Amar Takhar <verm@aegisub.org>
+// Copyright (c) 2011, Amar Takhar <verm@aegisub.org>
 //
 // Permission to use, copy, modify, and distribute this software for any
 // purpose with or without fee is hereby granted, provided that the above
@@ -14,42 +14,26 @@
 //
 // $Id$
 
-/// @file util.h
-/// @brief Public interface for general utilities.
+/// @file util.cpp
+/// @brief Unix utility methods.
 /// @ingroup libaegisub
 
 #ifndef LAGI_PRE
-#include <string>
-#include <stdio.h>
-#include <time.h>
+#endif
 
-#include <algorithm>
-#endif // LAGI_PRE
+#include <locale>
 
-#include <libaegisub/access.h>
-#include <libaegisub/types.h>
+#include "libaegisub/util.h"
 
 namespace agi {
 	namespace util {
 
-	template<typename T> inline T mid(T a, T b, T c) { return std::max(a, std::min(b, c)); }
 
-	const std::string DirName(const std::string& path);
-	void Rename(const std::string& from, const std::string& to);
-	void time_log(agi_timeval &tv);
-	void str_lower(std::string &str);
-
-	struct delete_ptr {
-		template<class T>
-		void operator()(T* ptr) const {
-			delete ptr;
-		}
-	};
-	template<class T>
-	void delete_clear(T& container) {
-		std::for_each(container.begin(), container.end(), delete_ptr());
-		container.clear();
+void str_lower(std::string &str) {
+	for (size_t i=0; i < str.length(); ++i) {
+		str[i] = std::tolower(str[i]);
 	}
+}
 
 	} // namespace util
 } // namespace agi

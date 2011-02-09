@@ -31,6 +31,7 @@ SRC = \
 	common/path.cpp \
 	common/progress.cpp \
 	common/keyframe.cpp \
+	common/util.cpp \
 	common/log.cpp \
 	common/validator.cpp \
 	common/vfr.cpp \
