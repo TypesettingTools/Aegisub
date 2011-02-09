@@ -24,8 +24,9 @@ endif
 
 
 SRC = \
-	common/video_frame.cpp \
 	common/audio_manager.cpp \
+	common/video_frame.cpp \
+	common/video_manager.cpp \
 	audio/downmix.cpp \
 	audio/convert.cpp \
 	audio/dummy_audio.cpp \

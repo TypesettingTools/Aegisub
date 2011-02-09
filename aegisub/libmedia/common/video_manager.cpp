@@ -36,30 +36,34 @@
 
 #include "config.h"
 
+#ifndef MAGI_PRE
+#include <string>
+#endif
+
 #include <libaegisub/log.h>
 
-#include "compat.h"
-#include "main.h"
+#include "libmedia/video.h"
 
 #ifdef WITH_AVISYNTH
-#include "video_provider_avs.h"
+#include "../video/avs_video.h"
 #endif
-#include "video_provider_cache.h"
-#include "video_provider_dummy.h"
+#include "../cache/video_cache.h"
+//XXX: needs fixing. #include "../video/dummy_video.h"
 #ifdef WITH_FFMPEGSOURCE
-#include "video_provider_ffmpegsource.h"
+#include "../video/ffms_video.h"
 #endif
-#include "video_provider_manager.h"
-#include "video_provider_yuv4mpeg.h"
+//XXX: needs fixing. #include "../video/yuv4mpeg.h"
 
+namespace media {
 
 /// @brief Get provider 
 /// @param video 
 /// @return 
 ///
-VideoProvider *VideoProviderFactory::GetProvider(wxString video) {
-	std::vector<std::string> list = GetClasses(OPT_GET("Video/Provider")->GetString());
-	if (video.StartsWith("?dummy")) list.insert(list.begin(), "Dummy");
+VideoProvider *VideoProviderFactory::GetProvider(std::string video) {
+//XXX	std::vector<std::string> list = GetClasses(OPT_GET("Video/Provider")->GetString());
+	std::vector<std::string> list = GetClasses("ffmpegsource");
+	if (video.find("?dummy") == 0) list.insert(list.begin(), "Dummy");
 	list.insert(list.begin(), "YUV4MPEG");
 
 	bool fileFound = false;
@@ -70,7 +74,7 @@ VideoProvider *VideoProviderFactory::GetProvider(wxString video) {
 		std::string err;
 		try {
 			VideoProvider *provider = Create(list[i], video);
-			LOG_I("manager/video/provider") << list[i] << ": opened " << STD_STR(video);
+			LOG_I("manager/video/provider") << list[i] << ": opened " << video;
 			if (provider->WantsCaching()) {
 				return new VideoProviderCache(provider);
 			}
@@ -99,10 +103,10 @@ VideoProvider *VideoProviderFactory::GetProvider(wxString video) {
 	}
 
 	// No provider could open the file
-	LOG_E("manager/video/provider") << "Could not open " << STD_STR(video);
-	std::string msg = "Could not open " + STD_STR(video) + ":\n" + errors;
+	LOG_E("manager/video/provider") << "Could not open " << video;
+	std::string msg = "Could not open " + video + ":\n" + errors;
 
-	if (!fileFound) throw agi::FileNotFoundError(STD_STR(video));
+	if (!fileFound) throw agi::FileNotFoundError(video);
 	if (!fileSupported) throw VideoNotSupported(msg);
 	throw VideoOpenError(msg);
 }
@@ -114,10 +118,12 @@ void VideoProviderFactory::RegisterProviders() {
 	Register<AvisynthVideoProvider>("Avisynth");
 #endif
 #ifdef WITH_FFMPEGSOURCE
-	Register<FFmpegSourceVideoProvider>("FFmpegSource");
+	Register<ffms::FFmpegSourceVideoProvider>("FFmpegSource");
 #endif
-	Register<DummyVideoProvider>("Dummy", true);
-	Register<YUV4MPEGVideoProvider>("YUV4MPEG", true);
+//XXX	Register<DummyVideoProvider>("Dummy", true);
+//XXX	Register<YUV4MPEGVideoProvider>("YUV4MPEG", true);
 }
 
-template<> VideoProviderFactory::map *FactoryBase<VideoProvider *(*)(wxString)>::classes = NULL;
+template<> VideoProviderFactory::map *FactoryBase<VideoProvider *(*)(std::string)>::classes = NULL;
+
+} // namespace media
