@@ -20,8 +20,17 @@
 
 #include <gtest/gtest.h>
 
+#include <libaegisub/log.h>
+
 int main(int argc, char **argv) {
-  ::testing::InitGoogleTest(&argc, argv);
-  return RUN_ALL_TESTS();
+	int retval;
+	agi::log::log = new agi::log::LogSink("./");
+	::testing::InitGoogleTest(&argc, argv);
+
+	retval = RUN_ALL_TESTS();
+
+	delete agi::log::log;
+
+	return retval;
 }
 
