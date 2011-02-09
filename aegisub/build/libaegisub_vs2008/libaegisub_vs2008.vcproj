@@ -290,6 +290,9 @@
 			<File
 				RelativePath="..\..\libaegisub\common\log.cpp"
 				>
+			<File
+				RelativePath="..\..\libaegisub\common\util.cpp"
+				>
 			</File>
 			<File
 				RelativePath="..\..\libaegisub\common\mru.cpp"
