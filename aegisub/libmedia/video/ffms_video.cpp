@@ -49,7 +49,7 @@ namespace media {
 
 /// @brief Constructor
 /// @param filename The filename to open
-Video::Video(std::string filename)
+FFmpegSourceVideoProvider::FFmpegSourceVideoProvider(std::string filename)
 : VideoSource(NULL)
 , VideoInfo(NULL)
 , Width(-1)
@@ -95,14 +95,14 @@ Video::Video(std::string filename)
 
 
 /// @brief Destructor 
-Video::~Video() {
+FFmpegSourceVideoProvider::~FFmpegSourceVideoProvider() {
 	Close();
 }
 
 
 /// @brief Opens video 
 /// @param filename The filename to open
-void Video::LoadVideo(std::string filename) {
+void FFmpegSourceVideoProvider::LoadVideo(std::string filename) {
 
 	FFMS_Indexer *Indexer = FFMS_CreateIndexer(filename.c_str(), &ErrInfo);
 	if (Indexer == NULL) {
@@ -252,7 +252,7 @@ void Video::LoadVideo(std::string filename) {
 
 /// @brief Close video 
 ///
-void Video::Close() {
+void FFmpegSourceVideoProvider::Close() {
 	if (VideoSource) FFMS_DestroyVideoSource(VideoSource);
 #ifdef WIN32
 	if (COMInited)
@@ -264,7 +264,7 @@ void Video::Close() {
 /// @param _n 
 /// @return 
 ///
-const media::AegiVideoFrame Video::GetFrame(int n) {
+const media::AegiVideoFrame FFmpegSourceVideoProvider::GetFrame(int n) {
 	FrameNumber = agi::util::mid(0, n, GetFrameCount() - 1);
 
 	// decode frame

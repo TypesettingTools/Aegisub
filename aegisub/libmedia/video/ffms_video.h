@@ -34,7 +34,7 @@ namespace media {
 
 /// @class FFmpegSourceVideoProvider
 /// @brief Implements video loading through the FFMS library.
-class Video : public VideoProvider, FFmpegSourceProvider {
+class FFmpegSourceVideoProvider : public VideoProvider, FFmpegSourceProvider {
 private:
 	FFMS_VideoSource *VideoSource;			/// video source object
 	const FFMS_VideoProperties *VideoInfo;	/// video properties
@@ -55,8 +55,8 @@ private:
 	void Close();
 
 public:
-	Video(std::string filename);
-	~Video();
+	FFmpegSourceVideoProvider(std::string filename);
+	~FFmpegSourceVideoProvider();
 
 	const media::AegiVideoFrame GetFrame(int n);
 
@@ -69,6 +69,7 @@ public:
 	/// @brief Gets a list of keyframes
 	/// @return	Returns a vector<int> of keyframes.
 	std::vector<int> GetKeyFrames() const { return KeyFramesList; };
+	std::string GetDecoderName() const { return "FFmpegSource"; }
 	/// @brief Gets the desired cache behavior.
 	/// @return Returns true.
 	bool WantsCaching() const { return true; }
