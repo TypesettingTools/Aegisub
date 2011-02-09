@@ -167,11 +167,6 @@ void FFmpegSourceVideoProvider::LoadVideo(std::string filename) {
 	// update access time of index file so it won't get cleaned away
 //XXX:	wxFileName(CacheName).Touch();
 
-	// we have now read the index and may proceed with cleaning the index cache
-	if (!CleanCache()) {
-		//do something?
-	}
-
 	// track number still not set?
 	if (TrackNumber < 0) {
 		// just grab the first track

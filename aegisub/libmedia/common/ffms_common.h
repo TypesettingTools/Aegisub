@@ -58,7 +58,6 @@ namespace media {
 /// @class FFmpegSourceProvider
 /// @brief Base class for FFMS2 source providers; contains common functions etc
 class FFmpegSourceProvider {
-	friend class FFmpegSourceCacheCleaner;
 public:
 	/// Logging level constants from avutil/log.h
 	enum FFMS_LogLevel {
@@ -79,10 +78,6 @@ public:
 //		DialogProgress *ProgressDialog;
 	};
 
-	/// Mutex preventing two cache cleaner threads from running at the same time
-//	static wxMutex CleaningInProgress;
-	bool CleanCache();
-
 	static int FFMS_CC UpdateIndexingProgress(int64_t Current, int64_t Total, void *Private);
 
 	FFMS_Index *DoIndexing(FFMS_Indexer *Indexer, const std::string& Cachename, int Trackmask, FFMS_IndexErrorHandling IndexEH);
@@ -93,19 +88,6 @@ public:
 	FFMS_IndexErrorHandling GetErrorHandlingMode();
 
 	virtual ~FFmpegSourceProvider() {}
-};
-
-/// @class FFmpegSourceCacheCleaner
-/// @brief Implements index cache cleaning functionality for the FFMS2 providers 
-class FFmpegSourceCacheCleaner {
-private:
-	FFmpegSourceProvider *parent;
-
-public:
-	FFmpegSourceCacheCleaner(FFmpegSourceProvider *par);
-
-	~FFmpegSourceCacheCleaner() {};
-//	wxThread::ExitCode Entry();
 };
 
 #endif /* WITH_FFMPEGSOURCE */
