@@ -24,9 +24,6 @@ endif
 
 
 SRC = \
-	common/audio_manager.cpp \
-	common/video_frame.cpp \
-	common/video_manager.cpp \
 	audio/downmix.cpp \
 	audio/convert.cpp \
 	audio/dummy_audio.cpp \
@@ -34,6 +31,10 @@ SRC = \
 	cache/audio_ram.cpp \
 	cache/audio_hd.cpp \
 	cache/video_cache.cpp \
+	common/audio_manager.cpp \
+	common/video_frame.cpp \
+	common/video_manager.cpp \
+	video/yuv4mpeg.cpp \
 	$(SRC_OPT)
 
 HEADERS = \

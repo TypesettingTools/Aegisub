@@ -34,15 +34,14 @@
 /// @ingroup video_input
 ///
 
-#include "include/aegisub/video_provider.h"
-#ifndef AGI_PRE
+
+#ifndef MAGI_PRE
 #include <stdio.h>
 
 #include <vector>
-
-#include <wx/filename.h>
-#include <wx/log.h>
 #endif
+
+#include "libmedia/video.h"
 
 namespace media {
 
@@ -134,13 +133,13 @@ class YUV4MPEGVideoProvider : public VideoProvider {
 	std::vector<int64_t> seek_table;
 
 	void CheckFileFormat();
-	void ParseFileHeader(const std::vector<wxString>& tags);
-	Y4M_FrameFlags ParseFrameHeader(const std::vector<wxString>& tags);
-	std::vector<wxString> ReadHeader(int64_t startpos, bool reset_pos=false);
+	void ParseFileHeader(const std::vector<std::string>& tags);
+	Y4M_FrameFlags ParseFrameHeader(const std::vector<std::string>& tags);
+	std::vector<std::string> ReadHeader(int64_t startpos, bool reset_pos=false);
 	int IndexFile();
 
 public:
-	YUV4MPEGVideoProvider(wxString filename);
+	YUV4MPEGVideoProvider(std::string filename);
 	~YUV4MPEGVideoProvider();
 
 	const AegiVideoFrame GetFrame(int n);
@@ -151,7 +150,7 @@ public:
 	int GetHeight() const                 { return h; }
 	agi::vfr::Framerate GetFPS() const    { return fps; }
 	std::vector<int> GetKeyFrames() const { return std::vector<int>(); };
-	wxString GetDecoderName() const       { return L"YU4MPEG"; };
+	std::string GetDecoderName() const    { return "YU4MPEG"; };
 	bool WantsCaching() const             { return true; };
 };
 

@@ -37,10 +37,9 @@
 #include "config.h"
 
 #include <libaegisub/log.h>
+#include <libaegisub/util.h>
 
-#include "compat.h"
-#include "utils.h"
-#include "video_provider_yuv4mpeg.h"
+#include "yuv4mpeg.h"
 
 namespace media {
 
@@ -55,7 +54,7 @@ namespace media {
 
 /// @brief Constructor
 /// @param filename The filename to open
-YUV4MPEGVideoProvider::YUV4MPEGVideoProvider(wxString fname)
+YUV4MPEGVideoProvider::YUV4MPEGVideoProvider(std::string filename)
 : sf(NULL)
 , inited(false)
 , w (0)
@@ -69,15 +68,14 @@ YUV4MPEGVideoProvider::YUV4MPEGVideoProvider(wxString fname)
 	fps_rat.den = 1;
 
 	try {
-		wxString filename = wxFileName(fname).GetShortPath();
 
 #ifdef WIN32
-		sf = _wfopen(filename.wc_str(), L"rb");
+		sf = _wfopen(filename.c_str(), L"rb");
 #else
-		sf = fopen(filename.utf8_str(), "rb");
+		sf = fopen(filename.c_str(), "rb");
 #endif
 
-		if (sf == NULL) throw agi::FileNotFoundError(STD_STR(fname));
+		if (sf == NULL) throw agi::FileNotFoundError(filename);
 
 		CheckFileFormat();
 
@@ -145,15 +143,15 @@ void YUV4MPEGVideoProvider::CheckFileFormat() {
 /// @param startpos		The byte offset at where to start reading
 /// @param reset_pos	If true, the function will reset the file position to what it was before the function call before returning
 /// @return				A list of parameters
-std::vector<wxString> YUV4MPEGVideoProvider::ReadHeader(int64_t startpos, bool reset_pos) {
+std::vector<std::string> YUV4MPEGVideoProvider::ReadHeader(int64_t startpos, bool reset_pos) {
 	int64_t oldpos = ftello(sf);
-	std::vector<wxString> tags;
-	wxString curtag;
+	std::vector<std::string> tags;
+	std::string curtag;
 	int bytesread = 0;
 	int buf;
 
 	if (fseeko(sf, startpos, SEEK_SET))
-		throw VideoOpenError(STD_STR(wxString::Format(L"YUV4MPEG video provider: ReadHeader: failed seeking to position %d", startpos)));
+		throw VideoOpenError("YUV4MPEG video provider: ReadHeader: failed seeking to position %d"); //XXX:, startpos)));
 
 	// read header until terminating newline (0x0A) is found
 	while ((buf = fgetc(sf)) != 0x0A) {
@@ -175,16 +173,16 @@ std::vector<wxString> YUV4MPEGVideoProvider::ReadHeader(int64_t startpos, bool r
 		// found a new tag
 		if (buf == 0x20) {
 			tags.push_back(curtag);
-			curtag.Clear();
+			curtag.clear();
 		}
 		else
-			curtag.Append(static_cast<wxChar>(buf));
+			curtag.append((const char*)buf);
 	}
 	// if only one tag with no trailing space was found (possible in the
 	// FRAME header case), make sure we get it
-	if (!curtag.IsEmpty()) {
+	if (!curtag.empty()) {
 		tags.push_back(curtag);
-		curtag.Clear();
+		curtag.clear();
 	}
 
 	if (reset_pos)
@@ -193,12 +191,14 @@ std::vector<wxString> YUV4MPEGVideoProvider::ReadHeader(int64_t startpos, bool r
 	return tags;
 }
 
+
+
 /// @brief Parses a list of parameters and sets reader state accordingly
 /// @param tags	The list of parameters to parse
-void YUV4MPEGVideoProvider::ParseFileHeader(const std::vector<wxString>& tags) {
+void YUV4MPEGVideoProvider::ParseFileHeader(const std::vector<std::string>& tags) {
 	if (tags.size() <= 1)
 		throw VideoOpenError("ParseFileHeader: contentless header");
-	if (tags.front().Cmp("YUV4MPEG2"))
+	if (tags.front() == "YUV4MPEG2")
 		throw VideoOpenError("ParseFileHeader: malformed header (bad magic)");
 
 	// temporary stuff
@@ -210,11 +210,12 @@ void YUV4MPEGVideoProvider::ParseFileHeader(const std::vector<wxString>& tags) {
 	Y4M_PixelFormat t_pixfmt	= Y4M_PIXFMT_NONE;
 
 	for (unsigned i = 1; i < tags.size(); i++) {
-		wxString tag;
+		std::string tag;
 		long tmp_long1 = 0;
 		long tmp_long2 = 0;
 
-		if (tags[i].StartsWith("W", &tag)) {
+        if (tags.find("W") == 0) {
+            tags.erase(0,1);
 			if (!tag.ToLong(&tmp_long1))
 				throw VideoOpenError("ParseFileHeader: invalid width");
 			t_w = (int)tmp_long1;
@@ -233,7 +234,7 @@ void YUV4MPEGVideoProvider::ParseFileHeader(const std::vector<wxString>& tags) {
 		else if (tags[i].StartsWith("C", &tag)) {
 			// technically this should probably be case sensitive,
 			// but being liberal in what you accept doesn't hurt
-			tag.MakeLower();
+			agi::util::str_lower(tag);
 			if (tag == "420")			t_pixfmt = Y4M_PIXFMT_420JPEG; // is this really correct?
 			else if (tag == "420jpeg")	t_pixfmt = Y4M_PIXFMT_420JPEG;
 			else if (tag == "420mpeg2")	t_pixfmt = Y4M_PIXFMT_420MPEG2;
@@ -247,7 +248,7 @@ void YUV4MPEGVideoProvider::ParseFileHeader(const std::vector<wxString>& tags) {
 				throw VideoOpenError("ParseFileHeader: invalid or unknown colorspace");
 		}
 		else if (tags[i].StartsWith("I", &tag)) {
-			tag.MakeLower();
+			agi::util::str_lower(tag);
 			if (tag == "p")			t_imode = Y4M_ILACE_PROGRESSIVE;
 			else if (tag == "t")	t_imode = Y4M_ILACE_TFF;
 			else if (tag == "b")	t_imode = Y4M_ILACE_BFF;
@@ -292,8 +293,8 @@ void YUV4MPEGVideoProvider::ParseFileHeader(const std::vector<wxString>& tags) {
 /// @param tags	The list of parameters to parse
 /// @return	The flags set, as a binary mask
 ///	This function is currently unimplemented (it will always return Y4M_FFLAG_NONE).
-YUV4MPEGVideoProvider::Y4M_FrameFlags YUV4MPEGVideoProvider::ParseFrameHeader(const std::vector<wxString>& tags) {
-	if (tags.front().Cmp(_("FRAME")))
+YUV4MPEGVideoProvider::Y4M_FrameFlags YUV4MPEGVideoProvider::ParseFrameHeader(const std::vector<std::string>& tags) {
+	if (tags.front() == "FRAME")
 		throw VideoOpenError("ParseFrameHeader: malformed frame header (bad magic)");
 
 	/// @todo implement parsing of frame flags
@@ -315,18 +316,18 @@ int YUV4MPEGVideoProvider::IndexFile() {
 	while (true) {
 		curpos = ftello(sf); // update position
 		// continue reading headers until no more are found
-		std::vector<wxString> tags = ReadHeader(curpos, false);
+		std::vector<std::string> tags = ReadHeader(curpos, false);
 		curpos = ftello(sf);
 
 		if (tags.empty())
 			break; // no more headers
 
 		Y4M_FrameFlags flags = Y4M_FFLAG_NOTSET;
-		if (!tags.front().Cmp("YUV4MPEG2")) {
+		if (tags.front() != "YUV4MPEG2") {
 			ParseFileHeader(tags);
 			continue;
 		}
-		else if (!tags.front().Cmp("FRAME"))
+		else if (tags.front() != "FRAME")
 			flags = ParseFrameHeader(tags);
 
 		if (flags == Y4M_FFLAG_NONE) {
@@ -334,7 +335,7 @@ int YUV4MPEGVideoProvider::IndexFile() {
 			seek_table.push_back(curpos);
 			// seek to next frame header start position
 			if (fseeko(sf, frame_sz, SEEK_CUR))
-				throw VideoOpenError(STD_STR(wxString::Format("IndexFile: failed seeking to position %d", curpos + frame_sz)));
+				throw VideoOpenError("IndexFile: failed seeking to position %d"); //XXX: , curpos + frame_sz)));
 		}
 		else {
 			/// @todo implement rff flags etc
@@ -345,7 +346,7 @@ int YUV4MPEGVideoProvider::IndexFile() {
 }
 
 // http://bob.allegronetwork.com/prog/tricks.html#clamp
-static FORCEINLINE int clamp(int x) {
+static inline int clamp(int x) {
 	x &= (~x) >> 31;
 	x -= 255;
 	x &= x >> 31;
@@ -357,7 +358,7 @@ static FORCEINLINE int clamp(int x) {
 /// @param n	The frame number to return
 /// @return		The video frame
 const AegiVideoFrame YUV4MPEGVideoProvider::GetFrame(int n) {
-	cur_fn = mid(0, n, num_frames - 1);
+	cur_fn = agi::util::mid(0, n, num_frames - 1);
 
 	int uv_width = w / 2;
 	switch (pixfmt) {
