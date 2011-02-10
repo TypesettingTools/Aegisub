@@ -19,9 +19,15 @@
 /// @ingroup libaegisub
 
 #ifndef LAGI_PRE
+#include <stdio.h>
+#include <stdlib.h>
+
+#include <errno.h>
+
+#include <climits>
+#include <locale>
 #endif
 
-#include <locale>
 
 #include "libaegisub/util.h"
 
@@ -33,6 +39,18 @@ void str_lower(std::string &str) {
 	for (size_t i=0; i < str.length(); ++i) {
 		str[i] = std::tolower(str[i]);
 	}
+}
+
+int strtoi(std::string &str) {
+	long l = strtol(str.c_str(), NULL, 10);
+
+	if (errno == ERANGE)
+		throw("Cannot convert to long (invalid range)");
+
+	if ((l < INT_MIN) || (l > INT_MAX))
+		throw("Cannot convert to int (invalid range)");
+
+	return (int)l;
 }
 
 	} // namespace util

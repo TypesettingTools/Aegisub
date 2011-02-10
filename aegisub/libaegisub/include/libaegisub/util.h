@@ -38,6 +38,7 @@ namespace agi {
 	void Rename(const std::string& from, const std::string& to);
 	void time_log(agi_timeval &tv);
 	void str_lower(std::string &str);
+	int strtoi(std::string &str);
 
 	struct delete_ptr {
 		template<class T>

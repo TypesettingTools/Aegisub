@@ -71,5 +71,33 @@ TEST_F(lagi_util, Utilstr_lower) {
 	EXPECT_STREQ(str.c_str(), "-!abcdefghijklmnopqrstuvwxyz123");
 }
 
+TEST_F(lagi_util, UtilstrtoiInvalidRange) {
+	std::string str("2147483650");
+	EXPECT_ANY_THROW(util::strtoi(str));
+
+	str.assign("-2147483650");
+	EXPECT_ANY_THROW(util::strtoi(str));
+}
+
+TEST_F(lagi_util, UtilstrtoiInvalidString) {
+	std::string str("bottles of beer on the wall");
+	EXPECT_EQ(util::strtoi(str), 0);
+}
+
+TEST_F(lagi_util, UtilstrtoiNumberWithString) {
+	std::string str("24 bottles of beer on the wall");
+	EXPECT_EQ(util::strtoi(str), 24);
+}
+
+TEST_F(lagi_util, UtilstrtoiValidString) {
+	std::string str("24");
+	int i;
+
+	EXPECT_NO_THROW(i = util::strtoi(str));
+	EXPECT_EQ(i, 24);
+}
+
+
+
 
 } // namespace agi
