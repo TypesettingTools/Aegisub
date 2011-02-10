@@ -32,12 +32,28 @@
 namespace agi {
 	namespace util {
 
+	// Calculate midpoint from a list of Integers
 	template<typename T> inline T mid(T a, T b, T c) { return std::max(a, std::min(b, c)); }
 
+	// Get the parent directory of a path.
+	// @param path Path to process.
 	const std::string DirName(const std::string& path);
+
+	// Rename a file.
+	// @param from Source.
+	// @param to   Destination.
 	void Rename(const std::string& from, const std::string& to);
+
+	// Get time sutable for logging mechinisms.
+	// @param tv timeval
 	void time_log(agi_timeval &tv);
+
+	// Make all alphabetic characters lowercase.
+	// @param str Input string
 	void str_lower(std::string &str);
+
+	// Convert a string to Integer.
+	// @param str Input string
 	int strtoi(std::string &str);
 
 	struct delete_ptr {
