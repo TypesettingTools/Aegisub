@@ -211,27 +211,32 @@ void YUV4MPEGVideoProvider::ParseFileHeader(const std::vector<std::string>& tags
 
 	for (unsigned i = 1; i < tags.size(); i++) {
 		std::string tag;
-		long tmp_long1 = 0;
-		long tmp_long2 = 0;
+		tag = tags[i];
 
-        if (tags.find("W") == 0) {
-            tags.erase(0,1);
-			if (!tag.ToLong(&tmp_long1))
+        if (tag.find("W") == 0) {
+            tag.erase(0,1);
+			t_w = agi::util::strtoi(tag);
+			if (t_w == 0)
 				throw VideoOpenError("ParseFileHeader: invalid width");
-			t_w = (int)tmp_long1;
 		}
-		else if (tags[i].StartsWith("H", &tag)) {
-			if (!tag.ToLong(&tmp_long1))
+		else if (tag.find("H") == 0) {
+            tag.erase(0,1);
+			t_h = agi::util::strtoi(tag);
+			if (t_h == 0)
 				throw VideoOpenError("ParseFileHeader: invalid height");
-			t_h = (int)tmp_long1;
 		}
-		else if (tags[i].StartsWith("F", &tag)) {
-			if (!(tag.BeforeFirst(':')).ToLong(&tmp_long1) && tag.AfterFirst(':').ToLong(&tmp_long2))
+		else if (tag.find("F") == 0) {
+            tag.erase(0,1);
+			int i = tag.find(":");
+			std::string num(tag.substr(0,i));
+			std::string den(tag.substr(i+1,den.size()));
+			t_fps_num = agi::util::strtoi(num);
+			t_fps_den = agi::util::strtoi(den);
+			if ((t_fps_num == 0) || (t_fps_den == 0))
 				throw VideoOpenError("ParseFileHeader: invalid framerate");
-			t_fps_num = (int)tmp_long1;
-			t_fps_den = (int)tmp_long2;
 		}
-		else if (tags[i].StartsWith("C", &tag)) {
+		else if (tag.find("C") == 0) {
+            tag.erase(0,1);
 			// technically this should probably be case sensitive,
 			// but being liberal in what you accept doesn't hurt
 			agi::util::str_lower(tag);
@@ -247,7 +252,8 @@ void YUV4MPEGVideoProvider::ParseFileHeader(const std::vector<std::string>& tags
 			else
 				throw VideoOpenError("ParseFileHeader: invalid or unknown colorspace");
 		}
-		else if (tags[i].StartsWith("I", &tag)) {
+		else if (tag.find("I") == 0) {
+            tag.erase(0,1);
 			agi::util::str_lower(tag);
 			if (tag == "p")			t_imode = Y4M_ILACE_PROGRESSIVE;
 			else if (tag == "t")	t_imode = Y4M_ILACE_TFF;
