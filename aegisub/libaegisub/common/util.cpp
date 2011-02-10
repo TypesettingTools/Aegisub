@@ -19,10 +19,12 @@
 /// @ingroup libaegisub
 
 #ifndef LAGI_PRE
-#include <stdio.h>
-#include <stdlib.h>
+#include <sys/param.h>
+#include <sys/mount.h>
 
 #include <errno.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 #include <climits>
 #include <locale>
@@ -41,6 +43,7 @@ void str_lower(std::string &str) {
 	}
 }
 
+
 int strtoi(std::string &str) {
 	long l = strtol(str.c_str(), NULL, 10);
 
@@ -49,6 +52,25 @@ int strtoi(std::string &str) {
 
 	return (int)l;
 }
+
+
+uint64_t freespace(std::string &path, PathType type) {
+	struct statfs fs;
+	std::string check(path);
+
+	if (type == TypeFile)
+		check.assign(DirName(path));
+
+	acs::CheckDirRead(check);
+
+	if ((statfs(check.c_str(), &fs)) == 0) {
+		return fs.f_bsize * fs.f_bavail;
+	} else {
+		/// @todo We need a collective set of exceptions for ENOTDIR, EIO etc.
+		throw("Failed getting free space");
+	}
+}
+
 
 	} // namespace util
 } // namespace agi

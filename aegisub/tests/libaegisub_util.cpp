@@ -97,6 +97,28 @@ TEST_F(lagi_util, UtilstrtoiValidString) {
 	EXPECT_EQ(i, 24);
 }
 
+TEST_F(lagi_util, UtilfreespaceFile) {
+	std::string path("./data/somefile");
+	EXPECT_NO_THROW(util::freespace(path, util::TypeFile));
+	EXPECT_ANY_THROW(util::freespace(path));
+
+}
+
+TEST_F(lagi_util, UtilfreespaceDir) {
+	std::string path("./data");
+	EXPECT_NO_THROW(util::freespace(path));
+}
+
+TEST_F(lagi_util, UtilfreespaceNoAccess) {
+	std::string path("./data/dir_access_denied");
+	EXPECT_THROW(util::freespace(path), acs::AcsAccess);
+}
+
+TEST_F(lagi_util, UtilfreespaceInvalid) {
+	std::string path("/nonexistent");
+	EXPECT_ANY_THROW(util::freespace(path));
+}
+
 
 
 

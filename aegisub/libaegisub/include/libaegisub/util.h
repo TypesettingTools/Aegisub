@@ -32,6 +32,13 @@
 namespace agi {
 	namespace util {
 
+
+	/// Whether the path is a file or directory.
+	enum PathType {
+		TypeFile,		///< File
+		TypeDir			///< Directory
+	};
+
 	// Calculate midpoint from a list of Integers
 	template<typename T> inline T mid(T a, T b, T c) { return std::max(a, std::min(b, c)); }
 
@@ -55,6 +62,11 @@ namespace agi {
 	// Convert a string to Integer.
 	// @param str Input string
 	int strtoi(std::string &str);
+
+	/// Check for amount of free space on a Path.
+	// @param path[in] Path to check
+	// @param type     PathType (default is TypeDir)
+	uint64_t freespace(std::string &path, PathType type=TypeDir);
 
 	struct delete_ptr {
 		template<class T>

@@ -10,6 +10,8 @@
 #include <stdint.h>
 #include <string.h>
 #include <sys/stat.h>
+#include <sys/param.h>
+#include <sys/mount.h>
 #ifdef HAVE_SYS_TIME_H
 #  include <sys/time.h>
 #else
