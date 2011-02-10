@@ -25,6 +25,7 @@
 
 // Common C++
 #include <deque>
+#include <climits>
 #include <fstream>
 #include <iostream>
 #include <iterator>
