@@ -44,11 +44,8 @@ void str_lower(std::string &str) {
 int strtoi(std::string &str) {
 	long l = strtol(str.c_str(), NULL, 10);
 
-	if (errno == ERANGE)
-		throw("Cannot convert to long (invalid range)");
-
-	if ((l < INT_MIN) || (l > INT_MAX))
-		throw("Cannot convert to int (invalid range)");
+	if ((errno == ERANGE) || (l < INT_MIN) || (l > INT_MAX))
+		return 0;
 
 	return (int)l;
 }

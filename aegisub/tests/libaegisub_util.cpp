@@ -73,10 +73,10 @@ TEST_F(lagi_util, Utilstr_lower) {
 
 TEST_F(lagi_util, UtilstrtoiInvalidRange) {
 	std::string str("2147483650");
-	EXPECT_ANY_THROW(util::strtoi(str));
+	EXPECT_EQ(util::strtoi(str), 0);
 
 	str.assign("-2147483650");
-	EXPECT_ANY_THROW(util::strtoi(str));
+	EXPECT_EQ(util::strtoi(str), 0);
 }
 
 TEST_F(lagi_util, UtilstrtoiInvalidString) {
