@@ -37,6 +37,7 @@
 #pragma once
 
 #include <libaegisub/exception.h>
+#include <libaegisub/progress.h>
 #include <libmedia/factory_manager.h>
 
 namespace media {
@@ -98,7 +99,7 @@ public:
 class AudioProviderFactory : public Factory1<AudioProvider, std::string> {
 public:
 	static void RegisterProviders();
-	static AudioProvider *GetProvider(std::string filename, int cache=-1);
+	static AudioProvider *GetProvider(std::string filename, agi::ProgressSinkFactory *progress_factory, int cache=-1);
 };
 
 DEFINE_BASE_EXCEPTION_NOINNER(AudioProviderError, agi::Exception);

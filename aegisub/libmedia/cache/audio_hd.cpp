@@ -37,26 +37,19 @@
 #include "config.h"
 
 #ifndef AGI_PRE
-//#include <wx/filefn.h>
-//#include <wx/filename.h>
 #endif
 
-#include "audio_hd.h"
-//#include "compat.h"
-//#include "dialog_progress.h"
-//#include "frame_main.h"
-//#include "main.h"
-//#include "standard_paths.h"
-//#include "utils.h"
-
 #include <libaegisub/io.h>
+
+#include "audio_hd.h"
+
 
 namespace media {
 
 /// @brief Constructor 
 /// @param source 
 ///
-HDAudioProvider::HDAudioProvider(AudioProvider *src) {
+HDAudioProvider::HDAudioProvider(AudioProvider *src,  agi::ProgressSinkFactory *progress_factory) {
 	std::auto_ptr<AudioProvider> source(src);
 	// Copy parameters
 	bytes_per_sample = source->GetBytesPerSample();
@@ -84,9 +77,9 @@ HDAudioProvider::HDAudioProvider(AudioProvider *src) {
 	if (!file_cache.is_open()) throw AudioOpenError("Unable to write to audio disk cache.");
 
 	// Start progress
-	volatile bool canceled = false;
-//	DialogProgress *progress = new DialogProgress(AegisubApp::Get()->frame,_T("Load audio"),&canceled,_T("Reading to Hard Disk cache"),0,num_samples);
-//	progress->Show();
+	ProgressSink *progress = progress_factory->create_progress_sink("Reading to Hard Disk cache");
+
+	volatile bool canceled = progress->get_cancelled();
 
 	// Write to disk
 	int block = 4096;
@@ -95,7 +88,7 @@ HDAudioProvider::HDAudioProvider(AudioProvider *src) {
 		if (block+i > num_samples) block = num_samples - i;
 		source->GetAudio(data,i,block);
 		file_cache.write(data,block * channels * bytes_per_sample);
-//		progress->SetProgress(i,num_samples);
+		progress->set_progress(i,num_samples);
 	}
 	file_cache.seekp(0);
 
@@ -105,7 +98,8 @@ HDAudioProvider::HDAudioProvider(AudioProvider *src) {
 		delete[] data;
 		throw agi::UserCancelException("Audio loading cancelled by user");
 	}
-//	progress->Destroy();
+
+	delete progress;
 }
 
 /// @brief Destructor 

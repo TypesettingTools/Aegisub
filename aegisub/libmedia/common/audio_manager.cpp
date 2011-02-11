@@ -108,7 +108,7 @@ void AudioProvider::GetAudioWithVolume(void *buf, int64_t start, int64_t count, 
 /// @param cache    
 /// @return 
 ///
-AudioProvider *AudioProviderFactory::GetProvider(std::string filename, int cache) {
+AudioProvider *AudioProviderFactory::GetProvider(std::string filename, agi::ProgressSinkFactory *progress_factory, int cache) {
 	AudioProvider *provider = NULL;
 	bool found = false;
 	std::string msg;
@@ -172,7 +172,7 @@ AudioProvider *AudioProviderFactory::GetProvider(std::string filename, int cache
 	if (cache == 1) return new RAMAudioProvider(provider);
 
 	// Convert to HD
-	if (cache == 2) return new HDAudioProvider(provider);
+	if (cache == 2) return new HDAudioProvider(provider, progress_factory);
 
 	throw AudioOpenError("Unknown caching method");
 }

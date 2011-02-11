@@ -38,6 +38,7 @@
 #endif
 
 #include <libaegisub/mutex.h>
+
 #include "libmedia/audio.h"
 
 namespace media {
@@ -66,7 +67,7 @@ class HDAudioProvider : public AudioProvider {
 	static std::string DiskCacheName();
 
 public:
-	HDAudioProvider(AudioProvider *source);
+	HDAudioProvider(AudioProvider *source, agi::ProgressSinkFactory *progress_factory);
 	~HDAudioProvider();
 
 	bool AreSamplesNativeEndian() const { return samples_native_endian; }
