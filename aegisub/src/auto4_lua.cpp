@@ -44,6 +44,7 @@
 #include "ass_style.h"
 #include "ass_file.h"
 #include "ass_override.h"
+#include "standard_paths.h"
 #include "text_file_reader.h"
 #include "options.h"
 
@@ -153,6 +154,26 @@ namespace Automation4 {
 			lua_setglobal(L, "loadfile");
 			lua_pushcfunction(L, LuaInclude);
 			lua_setglobal(L, "include");
+
+			// add include_path to the module load path
+			lua_getglobal(L, "package");
+			lua_pushstring(L, "path");
+			lua_pushstring(L, "path");
+			lua_gettable(L, -3);
+
+			wxStringTokenizer toker(Options.AsText(_T("Automation Include Path")), _T("|"), wxTOKEN_STRTOK);
+			while (toker.HasMoreTokens()) {
+				wxFileName path(StandardPaths::DecodePath(toker.GetNextToken()));
+				if (path.IsOk() && !path.IsRelative() && path.DirExists()) {
+					wxCharBuffer p = path.GetLongPath().utf8_str();
+					lua_pushfstring(L, ";%s/?.lua;%s/?/init.lua", p.data(), p.data());
+					lua_concat(L, 2);
+				}
+			}
+
+			lua_settable(L, -3);
+			lua_pop(L, 1); // pop package
+			_stackcheck.check_stack(0);
 
 			// prepare stuff in the registry
 			// reference to the script object
