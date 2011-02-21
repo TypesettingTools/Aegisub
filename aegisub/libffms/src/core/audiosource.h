@@ -28,7 +28,6 @@ extern "C" {
 
 #include <vector>
 #include <list>
-#include <sstream>
 #include <memory>
 #include "indexing.h"
 #include "utils.h"
@@ -46,93 +45,118 @@ extern "C" {
 #	include "guids.h"
 #endif
 
-class TAudioBlock {
-public:
-	int64_t Start;
-	int64_t Samples;
-	uint8_t *Data;
-
-	TAudioBlock(int64_t Start, int64_t Samples, uint8_t *SrcData, size_t SrcBytes);
-	~TAudioBlock();
-};
-
-class TAudioCache : private std::list<TAudioBlock *> {
-private:
-	int MaxCacheBlocks;
-	int BytesPerSample;
-	static bool AudioBlockComp(TAudioBlock *A, TAudioBlock *B);
-public:
-	TAudioCache();
-	~TAudioCache();
-	void Initialize(int BytesPerSample, int MaxCacheBlocks);
-	void CacheBlock(int64_t Start, int64_t Samples, uint8_t *SrcData);
-	int64_t FillRequest(int64_t Start, int64_t Samples, uint8_t *Dst);
-};
-
 class FFMS_AudioSource {
-friend class FFSourceResources<FFMS_AudioSource>;
+	struct AudioBlock {
+		int64_t Age;
+		int64_t Start;
+		int64_t Samples;
+		std::vector<uint8_t> Data;
+
+		AudioBlock(int64_t Start, int64_t Samples, uint8_t *SrcData, size_t SrcBytes)
+			: Start(Start)
+			, Samples(Samples)
+			, Data(SrcData, SrcData + SrcBytes)
+		{
+			static int64_t Now = 0;
+			Age = Now++;
+		}
+	};
+	typedef std::list<AudioBlock>::iterator CacheIterator;
+
+	// delay in samples to apply to the audio
+	int64_t Delay;
+	// cache of decoded audio blocks
+	std::list<AudioBlock> Cache;
+	// max size of the cache in blocks
+	size_t MaxCacheBlocks;
+	// pointer to last element of the cache which should never be deleted
+	CacheIterator CacheNoDelete;
+	// bytes per sample * number of channels
+	size_t BytesPerSample;
+	// Number of samples stored in the decoding buffer
+	size_t Decoded;
+
+	// Insert a block into the cache
+	void CacheBlock(CacheIterator &pos, int64_t Start, size_t Samples, uint8_t *SrcData);
+
+	// Called after seeking
+	virtual void Seek() { };
+	// Read the next packet from the file
+	virtual bool ReadPacket(AVPacket *) = 0;
+	virtual void FreePacket(AVPacket *) { }
 protected:
-	TAudioCache AudioCache;
+	// First sample which is stored in the decoding buffer
 	int64_t CurrentSample;
-	uint8_t *DecodingBuffer;
+	// Next packet to be read
+	size_t PacketNumber;
+	// Current audio frame
+	TFrameInfo *CurrentFrame;
+	// Track which this corresponds to
+	int TrackNumber;
+	// Number of packets which the demuxer requires to know where it is
+	// If -1, seeking is assumed to be impossible
+	int SeekOffset;
+
+	// Buffer which audio is decoded into
+	AlignedBuffer<uint8_t> DecodingBuffer;
 	FFMS_Track Frames;
-	AVCodecContext *CodecContext;
-	int AudioTrack;
+	FFCodecContext CodecContext;
 	FFMS_AudioProperties AP;
 
-	virtual void Free(bool CloseCodec) = 0;
+	void DecodeNextBlock();
+	// Initialization which has to be done after the codec is opened
+	void Init(FFMS_Index &Index, int DelayMode);
+
+	FFMS_AudioSource(const char *SourceFile, FFMS_Index &Index, int Track);
+
 public:
-	FFMS_AudioSource(const char *SourceFile, FFMS_Index *Index, int Track);
-	virtual ~FFMS_AudioSource();
+	virtual ~FFMS_AudioSource() { };
 	FFMS_Track *GetTrack() { return &Frames; }
-	const FFMS_AudioProperties& GetAudioProperties() { return AP; }
-	virtual void GetAudio(void *Buf, int64_t Start, int64_t Count) = 0;
-	void GetAudioCheck(int64_t Start, int64_t Count);
+	const FFMS_AudioProperties& GetAudioProperties() const { return AP; }
+	void GetAudio(void *Buf, int64_t Start, int64_t Count);
 };
 
 class FFLAVFAudio : public FFMS_AudioSource {
-private:
 	AVFormatContext *FormatContext;
-	FFSourceResources<FFMS_AudioSource> Res;
 
-	void DecodeNextAudioBlock(int64_t *Count);
-	void Free(bool CloseCodec);
+	bool ReadPacket(AVPacket *);
+	void FreePacket(AVPacket *);
+	void Seek();
+
 public:
-	FFLAVFAudio(const char *SourceFile, int Track, FFMS_Index *Index);
-	void GetAudio(void *Buf, int64_t Start, int64_t Count);
+	FFLAVFAudio(const char *SourceFile, int Track, FFMS_Index &Index, int DelayMode);
+	~FFLAVFAudio();
 };
 
 class FFMatroskaAudio : public FFMS_AudioSource {
-private:
 	MatroskaFile *MF;
 	MatroskaReaderContext MC;
-    CompressedStream *CS;
+	TrackInfo *TI;
+	std::auto_ptr<TrackCompressionContext> TCC;
 	char ErrorMessage[256];
-	FFSourceResources<FFMS_AudioSource> Res;
-	size_t PacketNumber;
 
-	void DecodeNextAudioBlock(int64_t *Count);
-	void Free(bool CloseCodec);
+	bool ReadPacket(AVPacket *);
+
 public:
-	FFMatroskaAudio(const char *SourceFile, int Track, FFMS_Index *Index);
-	void GetAudio(void *Buf, int64_t Start, int64_t Count);
+	FFMatroskaAudio(const char *SourceFile, int Track, FFMS_Index &Index, int DelayMode);
+	~FFMatroskaAudio();
 };
 
 #ifdef HAALISOURCE
 
 class FFHaaliAudio : public FFMS_AudioSource {
-private:
 	CComPtr<IMMContainer> pMMC;
-	std::vector<uint8_t> CodecPrivate;
-	FFSourceResources<FFMS_AudioSource> Res;
+	CComPtr<IMMFrame> pMMF;
 
-	void DecodeNextAudioBlock(int64_t *AFirstStartTime, int64_t *Count);
-	void Free(bool CloseCodec);
+	bool ReadPacket(AVPacket *);
+	void Seek();
+
 public:
-	FFHaaliAudio(const char *SourceFile, int Track, FFMS_Index *Index, enum FFMS_Sources SourceMode);
-	void GetAudio(void *Buf, int64_t Start, int64_t Count);
+	FFHaaliAudio(const char *SourceFile, int Track, FFMS_Index &Index, enum FFMS_Sources SourceMode, int DelayMode);
 };
 
 #endif // HAALISOURCE
+
+size_t GetSeekablePacketNumber(FFMS_Track const& Frames, size_t PacketNumber);
 
 #endif

@@ -60,7 +60,11 @@ FFmpegSourceAudioProvider::FFmpegSourceAudioProvider(wxString filename) {
 	else if (res != RPC_E_CHANGED_MODE)
 		throw _T("FFmpegSource video provider: COM initialization failure");
 #endif
+#if FFMS_VERSION >= ((2 << 24) | (14 << 16) | (0 << 8) | 0)
+	FFMS_Init(0, 1);
+#else
 	FFMS_Init(0);
+#endif
 
 	ErrInfo.Buffer		= FFMSErrMsg;
 	ErrInfo.BufferSize	= sizeof(FFMSErrMsg);
@@ -180,7 +184,11 @@ void FFmpegSourceAudioProvider::LoadAudio(wxString filename) {
 		// warn user?
 	}
 
+#if FFMS_VERSION >= ((2 << 24) | (14 << 16) | (1 << 8) | 0)
+	AudioSource = FFMS_CreateAudioSource(FileNameShort.utf8_str(), TrackNumber, Index, FFMS_DELAY_FIRST_VIDEO_TRACK, &ErrInfo);
+#else
 	AudioSource = FFMS_CreateAudioSource(FileNameShort.utf8_str(), TrackNumber, Index, &ErrInfo);
+#endif
 	FFMS_DestroyIndex(Index);
 	Index = NULL;
 	if (!AudioSource) {

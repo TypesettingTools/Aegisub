@@ -19,8 +19,9 @@
 //  THE SOFTWARE.
 
 #ifndef INDEXING_H
-#define	INDEXING_H
+#define INDEXING_H
 
+#include <map>
 #include <memory>
 #include "utils.h"
 #include "wave64writer.h"
@@ -38,14 +39,14 @@
 #endif
 
 
-
 class SharedVideoContext {
 private:
 	bool FreeCodecContext;
 public:
 	AVCodecContext *CodecContext;
 	AVCodecParserContext *Parser;
-	CompressedStream *CS;
+	AVBitStreamFilterContext *BitStreamFilter;
+	TrackCompressionContext *TCC;
 
 	SharedVideoContext(bool FreeCodecContext);
 	~SharedVideoContext();
@@ -58,7 +59,7 @@ public:
 	AVCodecContext *CodecContext;
 	Wave64Writer *W64Writer;
 	int64_t CurrentSample;
-	CompressedStream *CS;
+	TrackCompressionContext *TCC;
 
 	SharedAudioContext(bool FreeCodecContext);
 	~SharedAudioContext();
@@ -75,7 +76,7 @@ public:
 
 	TFrameInfo();
 	static TFrameInfo VideoFrameInfo(int64_t PTS, int RepeatPict, bool KeyFrame, int64_t FilePos = 0, unsigned int FrameSize = 0);
-	static TFrameInfo AudioFrameInfo(int64_t PTS, int64_t SampleStart, unsigned int SampleCount, bool KeyFrame, int64_t FilePos = 0, unsigned int FrameSize = 0);
+	static TFrameInfo AudioFrameInfo(int64_t PTS, int64_t SampleStart, int64_t SampleCount, bool KeyFrame, int64_t FilePos = 0, unsigned int FrameSize = 0);
 private:
 	TFrameInfo(int64_t PTS, int64_t SampleStart, unsigned int SampleCount, int RepeatPict, bool KeyFrame, int64_t FilePos, unsigned int FrameSize);
 };
@@ -84,15 +85,15 @@ class FFMS_Track : public std::vector<TFrameInfo> {
 public:
 	FFMS_TrackType TT;
 	FFMS_TrackTimeBase TB;
+	bool UseDTS;
 
 	int FindClosestVideoKeyFrame(int Frame);
-	int FindClosestAudioKeyFrame(int64_t Sample);
 	int FrameFromPTS(int64_t PTS);
 	int ClosestFrameFromPTS(int64_t PTS);
 	void WriteTimecodes(const char *TimecodeFile);
 
 	FFMS_Track();
-	FFMS_Track(int64_t Num, int64_t Den, FFMS_TrackType TT);
+	FFMS_Track(int64_t Num, int64_t Den, FFMS_TrackType TT, bool UseDTS = false);
 };
 
 class FFMS_Index : public std::vector<FFMS_Track> {
@@ -113,6 +114,7 @@ public:
 };
 
 class FFMS_Indexer {
+	std::map<int, FFMS_AudioProperties> LastAudioProperties;
 protected:
 	int IndexMask;
 	int DumpMask;
@@ -122,14 +124,18 @@ protected:
 	TAudioNameCallback ANC;
 	void *ANCPrivate;
 	const char *SourceFile;
-	int16_t *DecodingBuffer;
+	AlignedBuffer<uint8_t> DecodingBuffer;
+	FFMS_Sources Demuxer;
+	const char *FormatName;
 
 	int64_t Filesize;
 	uint8_t Digest[20];
 
 	void WriteAudio(SharedAudioContext &AudioContext, FFMS_Index *Index, int Track, int DBSize);
+	void CheckAudioProperties(int Track, AVCodecContext *Context);
+	int64_t IndexAudioPacket(int Track, AVPacket *Packet, SharedAudioContext &Context, FFMS_Index &TrackIndices);
 public:
-	static FFMS_Indexer *CreateIndexer(const char *Filename);
+	static FFMS_Indexer *CreateIndexer(const char *Filename, enum FFMS_Sources Demuxer = FFMS_SOURCE_DEFAULT);
 	FFMS_Indexer(const char *Filename);
 	virtual ~FFMS_Indexer();
 	void SetIndexMask(int IndexMask);
@@ -141,11 +147,13 @@ public:
 	virtual int GetNumberOfTracks() = 0;
 	virtual FFMS_TrackType GetTrackType(int Track) = 0;
 	virtual const char *GetTrackCodec(int Track) = 0;
+	virtual FFMS_Sources GetSourceType() = 0;
+	virtual const char *GetFormatName() = 0;
 };
 
 class FFLAVFIndexer : public FFMS_Indexer {
-private:
 	AVFormatContext *FormatContext;
+	void ReadTS(const AVPacket &Packet, int64_t &TS, bool &UseDTS);
 public:
 	FFLAVFIndexer(const char *Filename, AVFormatContext *FormatContext);
 	~FFLAVFIndexer();
@@ -153,6 +161,8 @@ public:
 	int GetNumberOfTracks();
 	FFMS_TrackType GetTrackType(int Track);
 	const char *GetTrackCodec(int Track);
+	const char *GetFormatName();
+	FFMS_Sources GetSourceType();
 };
 
 class FFMatroskaIndexer : public FFMS_Indexer {
@@ -167,6 +177,8 @@ public:
 	int GetNumberOfTracks();
 	FFMS_TrackType GetTrackType(int Track);
 	const char *GetTrackCodec(int Track);
+	const char *GetFormatName();
+	FFMS_Sources GetSourceType();
 };
 
 #ifdef HAALISOURCE
@@ -177,9 +189,6 @@ private:
 	CComPtr<IMMContainer> pMMC;
 	int NumTracks;
 	FFMS_TrackType TrackType[32];
-	AVCodec *Codec[32];
-	std::vector<uint8_t> CodecPrivate[32];
-	int CodecPrivateSize[32];
 	CComQIPtr<IPropertyBag> PropertyBags[32];
 	int64_t Duration;
 public:
@@ -188,6 +197,8 @@ public:
 	int GetNumberOfTracks();
 	FFMS_TrackType GetTrackType(int Track);
 	const char *GetTrackCodec(int Track);
+	const char *GetFormatName();
+	FFMS_Sources GetSourceType();
 };
 
 #endif // HAALISOURCE

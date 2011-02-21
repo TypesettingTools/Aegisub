@@ -23,11 +23,10 @@
 
 
 void FFMatroskaVideo::Free(bool CloseCodec) {
-	if (CS)
-		cs_Destroy(CS);
+	if (TCC)
+		delete TCC;
 	if (MC.ST.fp) {
 		mkv_Close(MF);
-		fclose(MC.ST.fp);
 	}
 	if (CloseCodec)
 		avcodec_close(CodecContext);
@@ -41,7 +40,7 @@ FFMatroskaVideo::FFMatroskaVideo(const char *SourceFile, int Track,
 	AVCodec *Codec = NULL;
 	CodecContext = NULL;
 	TrackInfo *TI = NULL;
-	CS = NULL;
+	TCC = NULL;
 	PacketNumber = 0;
 	VideoTrack = Track;
 	Frames = (*Index)[VideoTrack];
@@ -57,7 +56,6 @@ FFMatroskaVideo::FFMatroskaVideo(const char *SourceFile, int Track,
 
 	MF = mkv_OpenEx(&MC.ST.base, 0, 0, ErrorMessage, sizeof(ErrorMessage));
 	if (MF == NULL) {
-		fclose(MC.ST.fp);
 		std::ostringstream buf;
 		buf << "Can't parse Matroska file: " << ErrorMessage;
 		throw FFMS_Exception(FFMS_ERROR_PARSER, FFMS_ERROR_FILE_READ, buf.str());
@@ -65,18 +63,12 @@ FFMatroskaVideo::FFMatroskaVideo(const char *SourceFile, int Track,
 
 	TI = mkv_GetTrackInfo(MF, VideoTrack);
 
-	if (TI->CompEnabled) {
-		CS = cs_Create(MF, VideoTrack, ErrorMessage, sizeof(ErrorMessage));
-		if (CS == NULL) {
-			Free(false);
-			std::ostringstream buf;
-			buf << "Can't create decompressor: " << ErrorMessage;
-			throw FFMS_Exception(FFMS_ERROR_PARSER, FFMS_ERROR_FILE_READ, buf.str());
-		}
-	}
+	if (TI->CompEnabled)
+		TCC = new TrackCompressionContext(MF, TI, VideoTrack);
 
 	CodecContext = avcodec_alloc_context();
-	CodecContext->thread_count = Threads;
+	if (avcodec_thread_init(CodecContext, Threads))
+		CodecContext->thread_count = 1;
 
 	Codec = avcodec_find_decoder(MatroskaToFFCodecID(TI->CodecID, TI->CodecPrivate));
 	if (Codec == NULL)
@@ -113,6 +105,14 @@ FFMatroskaVideo::FFMatroskaVideo(const char *SourceFile, int Track,
 	VP.ColorSpace = 0;
 	VP.ColorRange = 0;
 #endif
+	// these pixfmt's are deprecated but still used
+	if (
+		CodecContext->pix_fmt == PIX_FMT_YUVJ420P 
+		|| CodecContext->pix_fmt == PIX_FMT_YUVJ422P
+		|| CodecContext->pix_fmt == PIX_FMT_YUVJ444P
+	)
+		VP.ColorRange = AVCOL_RANGE_JPEG;
+
 	VP.FirstTime = ((Frames.front().PTS * Frames.TB.Num) / (double)Frames.TB.Den) / 1000;
 	VP.LastTime = ((Frames.back().PTS * Frames.TB.Num) / (double)Frames.TB.Den) / 1000;
 
@@ -126,6 +126,11 @@ FFMatroskaVideo::FFMatroskaVideo(const char *SourceFile, int Track,
 		VP.FPSDenominator = (unsigned int)(PTSDiff * mkv_TruncFloat(TI->TimecodeScale) / (double)1000 / (double)(VP.NumFrames - 1) + 0.5);
 		VP.FPSNumerator = 1000000; 
 	}
+
+	// attempt to correct framerate to the proper NTSC fraction, if applicable
+	CorrectNTSCRationalFramerate(&VP.FPSNumerator, &VP.FPSDenominator);
+	// correct the timebase, if necessary
+	CorrectTimebase(&VP, &Frames.TB);
 
 	// Output the already decoded frame so it isn't wasted
 	OutputFrame(DecodeFrame);
@@ -147,6 +152,15 @@ void FFMatroskaVideo::DecodeNextFrame() {
 	InitNullPacket(Packet);
 
 	unsigned int FrameSize;
+
+	if (InitialDecode == -1) {
+		if (DelayCounter > CodecContext->has_b_frames) {
+			DelayCounter--;
+			goto Done;
+		} else {
+			InitialDecode = 0;
+		}
+	}
 	
 	while (PacketNumber < Frames.size()) {
 		// The additional indirection is because the packets are stored in
@@ -154,10 +168,10 @@ void FFMatroskaVideo::DecodeNextFrame() {
 		// in the other sources where less is done manually
 		const TFrameInfo &FI = Frames[Frames[PacketNumber].OriginalPos];
 		FrameSize = FI.FrameSize;
-		ReadFrame(FI.FilePos, FrameSize, CS, MC);
+		ReadFrame(FI.FilePos, FrameSize, TCC, MC);
 
 		Packet.data = MC.Buffer;
-		Packet.size = FrameSize;
+		Packet.size = (TCC && TCC->CompressionMethod == COMP_PREPEND) ? FrameSize + TCC->CompressedPrivateDataSize : FrameSize;
 		if (FI.KeyFrame)
 			Packet.flags = AV_PKT_FLAG_KEY;
 		else
@@ -167,15 +181,10 @@ void FFMatroskaVideo::DecodeNextFrame() {
 
 		avcodec_decode_video2(CodecContext, DecodeFrame, &FrameFinished, &Packet);
 
-		if (CodecContext->codec_id == CODEC_ID_MPEG4) {
-			if (IsPackedFrame(Packet)) {
-				MPEG4Counter++;
-			} else if (IsNVOP(Packet) && MPEG4Counter && FrameFinished) {
-				MPEG4Counter--;
-			} else if (IsNVOP(Packet) && !MPEG4Counter && !FrameFinished) {
-				goto Done;
-			}
-		}
+		if (!FrameFinished)
+			DelayCounter++;
+		if (DelayCounter > CodecContext->has_b_frames && !InitialDecode)
+			goto Done;
 
 		if (FrameFinished)
 			goto Done;
@@ -192,7 +201,8 @@ void FFMatroskaVideo::DecodeNextFrame() {
 		goto Error;
 
 Error:
-Done:;
+Done:
+	if (InitialDecode == 1) InitialDecode = -1;
 }
 
 FFMS_Frame *FFMatroskaVideo::GetFrame(int n) {
@@ -203,13 +213,18 @@ FFMS_Frame *FFMatroskaVideo::GetFrame(int n) {
 
 	int ClosestKF = Frames.FindClosestVideoKeyFrame(n);
 	if (CurrentFrame > n || ClosestKF > CurrentFrame + 10) {
-		MPEG4Counter = 0;
+		DelayCounter = 0;
+		InitialDecode = 1;
 		PacketNumber = ClosestKF;
 		CurrentFrame = ClosestKF;
 		avcodec_flush_buffers(CodecContext);
 	}
 
 	do {
+		if (CurrentFrame+CodecContext->has_b_frames >= n)
+			CodecContext->skip_frame = AVDISCARD_DEFAULT;
+		else
+			CodecContext->skip_frame = AVDISCARD_NONREF;
 		DecodeNextFrame();
 		CurrentFrame++;
 	} while (CurrentFrame <= n);

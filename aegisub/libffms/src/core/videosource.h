@@ -25,7 +25,9 @@ extern "C" {
 #include <libavformat/avformat.h>
 #include <libavcodec/avcodec.h>
 #include <libswscale/swscale.h>
+#ifdef FFMS_USE_POSTPROC
 #include <libpostproc/postprocess.h>
+#endif // FFMS_USE_POSTPROC
 }
 
 // must be included after ffmpeg headers
@@ -52,8 +54,10 @@ extern "C" {
 class FFMS_VideoSource {
 friend class FFSourceResources<FFMS_VideoSource>;
 private:
+#ifdef FFMS_USE_POSTPROC
 	pp_context_t *PPContext;
 	pp_mode_t *PPMode;
+#endif // FFMS_USE_POSTPROC
 	SwsContext *SWS;
 	int LastFrameHeight;
 	int LastFrameWidth;
@@ -73,7 +77,8 @@ protected:
 	FFMS_Track Frames;
 	int VideoTrack;
 	int	CurrentFrame;
-	int MPEG4Counter;
+	int DelayCounter;
+	int InitialDecode;
 	AVCodecContext *CodecContext;
 
 	FFMS_VideoSource(const char *SourceFile, FFMS_Index *Index, int Track);
@@ -112,7 +117,7 @@ class FFMatroskaVideo : public FFMS_VideoSource {
 private:
 	MatroskaFile *MF;
 	MatroskaReaderContext MC;
-    CompressedStream *CS;
+	TrackCompressionContext *TCC;
 	char ErrorMessage[256];
 	FFSourceResources<FFMS_VideoSource> Res;
 	size_t PacketNumber;
@@ -122,15 +127,14 @@ protected:
 	void Free(bool CloseCodec);
 public:
 	FFMatroskaVideo(const char *SourceFile, int Track, FFMS_Index *Index, int Threads);
-    FFMS_Frame *GetFrame(int n);
+	FFMS_Frame *GetFrame(int n);
 };
 
 #ifdef HAALISOURCE
 
 class FFHaaliVideo : public FFMS_VideoSource {
-private:
+	FFCodecContext HCodecContext;
 	CComPtr<IMMContainer> pMMC;
-	std::vector<uint8_t> CodecPrivate;
 	AVBitStreamFilterContext *BitStreamFilter;
 	FFSourceResources<FFMS_VideoSource> Res;
 
@@ -139,7 +143,7 @@ protected:
 	void Free(bool CloseCodec);
 public:
 	FFHaaliVideo(const char *SourceFile, int Track, FFMS_Index *Index, int Threads, enum FFMS_Sources SourceMode);
-    FFMS_Frame *GetFrame(int n);
+	FFMS_Frame *GetFrame(int n);
 };
 
 #endif // HAALISOURCE
