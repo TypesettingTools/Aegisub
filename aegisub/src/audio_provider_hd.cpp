@@ -92,10 +92,8 @@ HDAudioProvider::HDAudioProvider(AudioProvider *source) {
 	file_cache.Seek(0);
 
 	// Finish
-	if (!canceled) {
-		progress->Destroy();
-	}
-	else {
+	progress->Destroy();
+	if (canceled) {
 		file_cache.Close();
 		delete[] data;
 		throw wxString(_T("Audio loading cancelled by user"));

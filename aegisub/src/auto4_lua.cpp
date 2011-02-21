@@ -219,9 +219,9 @@ namespace Automation4 {
 			// load user script
 			LuaScriptReader script_reader(GetFilename());
 			if (lua_load(L, script_reader.reader_func, &script_reader, GetPrettyFilename().mb_str(wxConvUTF8))) {
-				wxString *err = new wxString(lua_tostring(L, -1), wxConvUTF8);
-				err->Prepend(_T("Error loading Lua script \"") + GetPrettyFilename() + _T("\":\n\n"));
-				throw err->c_str();
+				wxString err(lua_tostring(L, -1), wxConvUTF8);
+				err.Prepend(_T("Error loading Lua script \"") + GetPrettyFilename() + _T("\":\n\n"));
+				throw err;
 			}
 			_stackcheck.check_stack(1);
 			// and execute it
@@ -229,9 +229,9 @@ namespace Automation4 {
 			// don't thread this, as there's no point in it and it seems to break on wx 2.8.3, for some reason
 			if (lua_pcall(L, 0, 0, 0)) {
 				// error occurred, assumed to be on top of Lua stack
-				wxString *err = new wxString(lua_tostring(L, -1), wxConvUTF8);
-				err->Prepend(_T("Error initialising Lua script \"") + GetPrettyFilename() + _T("\":\n\n"));
-				throw err->c_str();
+				wxString err(lua_tostring(L, -1), wxConvUTF8);
+				err.Prepend(_T("Error initialising Lua script \"") + GetPrettyFilename() + _T("\":\n\n"));
+				throw err;
 			}
 			_stackcheck.check_stack(0);
 			lua_getglobal(L, "version");
@@ -273,6 +273,12 @@ namespace Automation4 {
 			description = wxString(e, wxConvUTF8);
 		}
 		catch (const wchar_t *e) {
+			Destroy();
+			loaded = false;
+			name = GetPrettyFilename();
+			description = e;
+		}
+		catch (const wxString& e) {
 			Destroy();
 			loaded = false;
 			name = GetPrettyFilename();

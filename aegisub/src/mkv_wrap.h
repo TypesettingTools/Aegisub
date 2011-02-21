@@ -58,6 +58,8 @@ class AssFile;
 class MkvStdIO : public InputStream {
 public:
 	MkvStdIO(wxString filename);
+	~MkvStdIO() { if (fp) fclose(fp); }
+
 	FILE *fp;
 	int error;
 };
