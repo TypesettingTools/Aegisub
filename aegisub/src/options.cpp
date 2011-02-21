@@ -90,7 +90,6 @@ void OptionsManager::LoadDefaults(bool onlyDefaults,bool doOverride) {
 
 // Broken on OS X during startup only.
 	SetBool(_T("Tips enabled"),false);
-	SetBool(_T("Show splash"),true);
 	SetBool(_T("Local config"),false);
 	SetInt(_T("Undo levels"),8);
 	SetInt(_T("Recent timecodes max"),16);

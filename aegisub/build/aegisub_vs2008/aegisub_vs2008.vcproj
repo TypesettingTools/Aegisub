@@ -1257,14 +1257,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\dialog_splash.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\dialog_splash.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\dialog_style_editor.cpp"
 				>
 			</File>

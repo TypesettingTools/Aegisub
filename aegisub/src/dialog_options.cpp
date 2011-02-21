@@ -111,7 +111,6 @@ DialogOptions::DialogOptions(wxWindow *parent)
 		wxSizer *genSizer1 = new wxStaticBoxSizer(wxHORIZONTAL,generalPage,_("Startup"));
 		wxFlexGridSizer *genSizer4 = new wxFlexGridSizer(2,5,5);
 
-		AddCheckBox(generalPage,genSizer4,_("Show Splash Screen"),_T("Show splash"));
 		AddCheckBox(generalPage,genSizer4,_("Auto Check for Updates"),_T("Auto check for updates"));
 #ifdef __WXMSW__
 		AddCheckBox(generalPage,genSizer4,_("Check File Associations on Start"),_T("Show Associations"));
