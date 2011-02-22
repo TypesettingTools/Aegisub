@@ -125,7 +125,7 @@ void AssFile::Load (const wxString _filename,const wxString charset,bool addToRe
 
 	// Real exception
 	catch (Aegisub::Exception &e) {
-		wxMessageBox(wxString(e.GetChainedMessage().c_str(), wxConvUTF8), L"Error loading file", wxICON_ERROR|wxOK);
+		wxMessageBox(e.GetChainedMessage(), L"Error loading file", wxICON_ERROR|wxOK);
 	}
 
 	// Other error
