@@ -304,7 +304,11 @@ getsyslang_fallback:
 #else
 static wxString GetSystemLanguage()
 {
-	return wxLocale::GetLanguageInfo(wxLocale::GetSystemLanguage())->CanonicalName;
+	try {
+		return wxLocale::GetLanguageInfo(wxLocale::GetSystemLanguage())->CanonicalName;
+	} catch (...) {
+		return _T("x-unk");
+	}
 }
 #endif
 
