@@ -1,0 +1,5238 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Meysam <meysam.ar@gmail.com>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: dialog_export.cpp:61
+msgid "Export"
+msgstr "خروجی گرفتن"
+
+#: dialog_export.cpp:64
+msgid "Filters"
+msgstr "فیلترها"
+
+#: dialog_export.cpp:95
+msgid "Move up"
+msgstr "انتقال به بالا"
+
+#: dialog_export.cpp:96
+msgid "Move down"
+msgstr "انتقال به پایین"
+
+#: dialog_export.cpp:97
+msgid "Select all"
+msgstr "انتخاب همه"
+
+#: dialog_export.cpp:98
+msgid "Select none"
+msgstr "انتخاب هیچ کدام"
+
+#: dialog_export.cpp:104
+msgid "Text encoding:"
+msgstr "رمز گذاری متن:"
+
+#: dialog_export.cpp:121
+msgid "Export..."
+msgstr "... خروجی گرفتن"
+
+#: dialog_export.cpp:202
+msgid "Export subtitles file"
+msgstr "خروجی گرفتن از زیرنویس"
+
+#: visual_tool_cross.cpp:80
+msgid "positioning"
+msgstr "موقعیت یابی"
+
+#: video_provider_quicktime.cpp:181
+#: video_provider_ffmpegsource.cpp:272
+msgid "You already have timecodes loaded. Would you like to replace them with timecodes from the video file?"
+msgstr " در حال حاضر بارگذاری شده اند.آیا میخواهید آنها را با کدهای زمانی ویدیو جایگزین کنید؟ (timecodes)کد های زمانی"
+
+#: video_provider_quicktime.cpp:181
+#: video_provider_avs.cpp:271
+#: video_provider_ffmpegsource.cpp:272
+msgid "Replace timecodes?"
+msgstr "با جایگزین کردن کد های زمانی موافقید؟"
+
+#: dialog_video_details.cpp:58
+msgid "Video Details"
+msgstr "مشخصات ویدیو"
+
+#: dialog_video_details.cpp:63
+#: dialog_options.cpp:623
+msgid "Video"
+msgstr "ویدیو"
+
+#: dialog_video_details.cpp:77
+msgid "File name:"
+msgstr "اسم فایل:"
+
+#: dialog_video_details.cpp:79
+msgid "FPS:"
+msgstr "FPS:"
+
+#: dialog_video_details.cpp:81
+msgid "Resolution:"
+msgstr "سایز تصویر :"
+
+#: dialog_video_details.cpp:83
+msgid "Length:"
+msgstr "طول:"
+
+#: dialog_video_details.cpp:85
+msgid "Decoder:"
+msgstr "دیکودر:"
+
+#: dialog_timing_processor.cpp:62
+#: frame_main.cpp:304
+msgid "Timing Post-Processor"
+msgstr "زمانبندی  پس از پردازش"
+
+#: dialog_timing_processor.cpp:78
+msgid "Apply to styles"
+msgstr "انجام تغییرات بر روی استایل"
+
+#: dialog_timing_processor.cpp:81
+msgid "Select styles to process. Unchecked ones will be ignored."
+msgstr "استایل مورد نظر را انتخاب کنید.استایل های انتخاب نده تغییر نمی یابند"
+
+#: dialog_timing_processor.cpp:82
+#: dialog_paste_over.cpp:94
+msgid "All"
+msgstr "همه"
+
+#: dialog_timing_processor.cpp:83
+msgid "Select all styles."
+msgstr "انتخاب تمام استایل ها"
+
+#: dialog_timing_processor.cpp:84
+#: dialog_paste_over.cpp:95
+msgid "None"
+msgstr "هیچ کدام"
+
+#: dialog_timing_processor.cpp:85
+msgid "Deselect all styles."
+msgstr "از انتخاب خارج شدن تمام استایل ها"
+
+#: dialog_timing_processor.cpp:88
+#: dialog_options.cpp:107
+#: dialog_options.cpp:223
+#: dialog_options.cpp:296
+#: dialog_options.cpp:364
+#: dialog_options.cpp:441
+#: dialog_options.cpp:475
+#: dialog_options.cpp:561
+#: frame_main.cpp:310
+#: dialog_properties.cpp:126
+#: hotkeys.cpp:379
+#: hotkeys.cpp:383
+msgid "Options"
+msgstr "تنظیمات"
+
+#: dialog_timing_processor.cpp:89
+msgid "Affect selection only"
+msgstr "تاثیر گذاری روی انتخاب شده ها"
+
+#: dialog_timing_processor.cpp:94
+msgid "Lead-in/Lead-out"
+msgstr "فاصله شروع/فاصله پایان"
+
+#: dialog_timing_processor.cpp:95
+msgid "Add lead in:"
+msgstr " اضافه کردن فاصله شروع"
+
+#: dialog_timing_processor.cpp:96
+msgid "Enable adding of lead-ins to lines."
+msgstr "فعالسازی اضافه کردن فاصله شروع به خط ها"
+
+#: dialog_timing_processor.cpp:99
+msgid "Lead in to be added, in milliseconds."
+msgstr "فاصله شروع به میلی ثانیه اضافه خواهد شد"
+
+#: dialog_timing_processor.cpp:100
+msgid "Add lead out:"
+msgstr " اضافه کردن فاصله پایان"
+
+#: dialog_timing_processor.cpp:101
+msgid "Enable adding of lead-outs to lines."
+msgstr "فعالسازی اضافه کردن فاصله پایان به خط ها"
+
+#: dialog_timing_processor.cpp:104
+msgid "Lead out to be added, in milliseconds."
+msgstr "فاصله پایان به میلی ثانیه اضافه خواهد شد"
+
+#: dialog_timing_processor.cpp:112
+msgid "Make adjacent subtitles continuous"
+msgstr "تبدیل زیرنویس های مجاور به صورت پیوسته"
+
+#: dialog_timing_processor.cpp:113
+#: dialog_timing_processor.cpp:131
+msgid "Enable"
+msgstr "فعال"
+
+#: dialog_timing_processor.cpp:114
+msgid "Enable snapping of subtitles together if they are within a certain distance of each other."
+msgstr "فعالسازی چسبیدن زیرنویس ها به هم در صورتی که نسبت به هم در فاصله معینی قرار دارند"
+
+#: dialog_timing_processor.cpp:116
+msgid "Threshold:"
+msgstr "آستانه :"
+
+#: dialog_timing_processor.cpp:118
+msgid "Maximum difference between start and end time for two subtitles to be made continuous, in milliseconds."
+msgstr "بیشترین فاصله بین شروع و پایان دو زیرنویس که نرم افزار زیرنویس ها را ادامه دار میکند به میلی ثانیه"
+
+#: dialog_timing_processor.cpp:120
+msgid "Sets how to set the adjoining of lines. If set totally to left, it will extend start time of the second line; if totally to right, it will extend the end time of the first line."
+msgstr " نحوه رفتار با خطوط مجاور یگدیگر را تنظیم میکند .اگر به طور کامل در  سمت چپ تنظیم شود زمان شروع خط دوم را افزایش خواهد داد و اگر به سمت راست برده شود زمان انتهایی خط اول را تغییر میدهد"
+
+#: dialog_timing_processor.cpp:124
+msgid "Bias: Start <- "
+msgstr "شروع<-"
+
+#: dialog_timing_processor.cpp:126
+msgid " -> End"
+msgstr "->پایان"
+
+#: dialog_timing_processor.cpp:129
+msgid "Keyframe snapping"
+msgstr "چسباندن به فریم های کلیدی"
+
+#: dialog_timing_processor.cpp:132
+msgid "Enable snapping of subtitles to nearest keyframe, if distance is within threshold."
+msgstr "فعالسازی چسبیدن زیرنویس به نزدیکترین فریم کلیدی در صورتی که فاصله آنها در یک حد معین باشد"
+
+#: dialog_timing_processor.cpp:134
+msgid "Starts before thres.:"
+msgstr "شروع قبل از آستانه:"
+
+#: dialog_timing_processor.cpp:136
+msgid "Threshold for 'before start' distance, that is, how many frames a subtitle must start before a keyframe to snap to it."
+msgstr "تعیین فاصله برای قبل از شروع ،این تعداد فریمی که زیرنویس باید قبل از یک فریم کلیدی  شروع شود را مشخص میکند"
+
+#: dialog_timing_processor.cpp:137
+msgid "Starts after thres.:"
+msgstr "شروع بعد از آستانه:"
+
+#: dialog_timing_processor.cpp:139
+msgid "Threshold for 'after start' distance, that is, how many frames a subtitle must start after a keyframe to snap to it."
+msgstr "تعیین فاصله برای بعد از شروع،این تعداد فریمی که زیرنویس باید بعد از یک فریم کلیدی  شروع شود را مشخص میکند"
+
+#: dialog_timing_processor.cpp:140
+msgid "Ends before thres.:"
+msgstr "پایان یافتن قبل از آستانه:"
+
+#: dialog_timing_processor.cpp:142
+msgid "Threshold for 'before end' distance, that is, how many frames a subtitle must end before a keyframe to snap to it."
+msgstr "تعیین فاصله برای قبل از پایان ،این تعداد فریمی که زیرنویس باید قبل از یک فریم کلیدی تمام شود را مشخص میکند"
+
+#: dialog_timing_processor.cpp:143
+msgid "Ends after thres.:"
+msgstr "پایان یافتن بعد از آستانه:"
+
+#: dialog_timing_processor.cpp:145
+msgid "Threshold for 'after end' distance, that is, how many frames a subtitle must end after a keyframe to snap to it."
+msgstr "تعیین فاصله برای  بعد از پایان ،این تعداد فریمی که زیرنویس باید بعد از یک فریم کلیدی تمام شود را مشخص میکند"
+
+#: dialog_timing_processor.cpp:336
+#, c-format
+msgid "One of the lines in the file (%i) has negative duration. Aborting."
+msgstr "  دارای زمان منفی است .این عمل انجام نشد(%i)یکی از خطوط فایل "
+
+#: dialog_timing_processor.cpp:336
+msgid "Invalid script"
+msgstr "اسکریپت نامعتبر"
+
+#: dialog_timing_processor.cpp:596
+msgid "timing processor"
+msgstr "پردازشگر زمانبندی"
+
+#: video_box.cpp:84
+msgid "Play video starting on this position"
+msgstr "پخش ویدیو از این نقطه "
+
+#: video_box.cpp:86
+msgid "Play current line"
+msgstr "پخش این خط"
+
+#: video_box.cpp:88
+msgid "Stop video playback"
+msgstr "توقف پخش ویدیو"
+
+#: video_box.cpp:90
+msgid "Toggle autoscroll of video"
+msgstr "دنبال کردن زمان ویدیو"
+
+#: video_box.cpp:95
+msgid "Seek video."
+msgstr "جستجوی ویدیو"
+
+#: video_box.cpp:99
+msgid "Current frame time and number."
+msgstr "زمان و شماره فریم کنونی"
+
+#: video_box.cpp:103
+msgid "Time of this frame relative to start and end of current subs."
+msgstr "زمان این فریم مرتبط با شروع و پایان زیرنویس کنونی است"
+
+#: video_box.cpp:107
+msgid "Standard"
+msgstr "استاندارد"
+
+#: video_box.cpp:107
+msgid "Standard mode, double click sets position."
+msgstr "حالت استاندارد، برای تنظیم مکان ها دابل کلیک کنید"
+
+#: video_box.cpp:108
+#: visual_tool_vector_clip.cpp:94
+msgid "Drag"
+msgstr "جابجایی"
+
+#: video_box.cpp:108
+msgid "Drag subtitles."
+msgstr "مکان زیرنویس را جابجا میکند"
+
+#: video_box.cpp:109
+msgid "Rotate Z"
+msgstr "Zچرخش "
+
+#: video_box.cpp:109
+msgid "Rotate subtitles on their Z axis."
+msgstr " میچرخاند Zزیر نویس را حول محور "
+
+#: video_box.cpp:110
+msgid "Rotate XY"
+msgstr "XYچرخش "
+
+#: video_box.cpp:110
+msgid "Rotate subtitles on their X and Y axes."
+msgstr " میچرخاند XYزیر نویس را حول محورهای "
+
+#: video_box.cpp:111
+msgid "Scale"
+msgstr "اندازه"
+
+#: video_box.cpp:111
+msgid "Scale subtitles on X and Y axes."
+msgstr " XYتغییر اندازه زیرنویس در محور"
+
+#: video_box.cpp:112
+msgid "Clip"
+msgstr "برش"
+
+#: video_box.cpp:112
+msgid "Clip subtitles to a rectangle."
+msgstr "زیرنویس را به صورت مستطیل برش میدهد"
+
+#: video_box.cpp:113
+msgid "Vector Clip"
+msgstr "برش برداری"
+
+#: video_box.cpp:113
+msgid "Clip subtitles to a vectorial area."
+msgstr "زیرنویس را به صورت برداری برش میدهد"
+
+#: video_box.cpp:115
+msgid "Realtime"
+msgstr "بیدرنگ"
+
+#: video_box.cpp:115
+msgid "Toggle realtime display of changes."
+msgstr "تغییرات را در همان لحظه نمایش میدهد"
+
+#: video_box.cpp:117
+#: hotkeys.cpp:378
+#: hotkeys.cpp:382
+msgid "Help"
+msgstr "راهنما"
+
+#: video_box.cpp:117
+msgid "Open the manual page for Visual Typesetting."
+msgstr "صفحه مرتبط را در راهنما باز میکند"
+
+#: video_provider_yuv4mpeg.cpp:320
+msgid "FRAME"
+msgstr "فریم"
+
+#: charset_detect.cpp:155
+msgid ""
+"Aegisub could not narrow down the character set to a single one.\n"
+"Please pick one below:"
+msgstr ""
+"نرم افزار قادر به انتخاب یک فرد نیست. \n"
+"لطفا شما یکی را انتخاب کنید:"
+
+#: charset_detect.cpp:155
+msgid "Choose character set"
+msgstr "انتخاب نوع کاراکتر ها"
+
+#: video_display.cpp:447
+msgid "Save PNG snapshot"
+msgstr "PNG ذخیره فریم به صورت "
+
+#: video_display.cpp:448
+msgid "Copy image to Clipboard"
+msgstr "کپی کردن عکس در حافظه"
+
+#: video_display.cpp:450
+msgid "Save PNG snapshot (no subtitles)"
+msgstr "(بدون زیرنویس)PNG ذخیره فریم به صورت "
+
+#: video_display.cpp:451
+msgid "Copy image to Clipboard (no subtitles)"
+msgstr "(کپی کردن عکس در حافظه (بدون زیرنویس"
+
+#: video_display.cpp:453
+msgid "Copy coordinates to Clipboard"
+msgstr "کپی مختصات در حافظه"
+
+#: dialog_selection.cpp:59
+msgid "Select"
+msgstr "انتخاب"
+
+#: dialog_selection.cpp:65
+msgid "Match"
+msgstr "تطبیق کردن"
+
+#: dialog_selection.cpp:67
+msgid "Match dialogues/comments"
+msgstr "تطبیق کردن صحبت ها یا نظرات"
+
+#: dialog_selection.cpp:70
+msgid "Matches"
+msgstr "مطابقت دارد"
+
+#: dialog_selection.cpp:71
+msgid "Doesn't Match"
+msgstr "مطابقت ندارد"
+
+#: dialog_selection.cpp:73
+#: dialog_search_replace.cpp:87
+msgid "Match case"
+msgstr "مطابقت کامل"
+
+#: dialog_selection.cpp:74
+msgid "Exact match"
+msgstr "مطابقت کامل"
+
+#: dialog_selection.cpp:75
+msgid "Contains"
+msgstr "شامل"
+
+#: dialog_selection.cpp:76
+msgid "Regular Expression match"
+msgstr "تطبیق بیان منظم"
+
+#: dialog_selection.cpp:80
+#: dialog_search_replace.cpp:101
+#: base_grid.cpp:494
+#: dialog_kara_timing_copy.cpp:842
+#: dialog_paste_over.cpp:85
+#: dialog_paste_over.cpp:97
+msgid "Text"
+msgstr "متن"
+
+#: dialog_selection.cpp:81
+#: dialog_options.cpp:226
+#: dialog_options.cpp:297
+#: dialog_options.cpp:476
+#: subs_grid.cpp:140
+#: dialog_search_replace.cpp:102
+#: base_grid.cpp:488
+#: dialog_paste_over.cpp:73
+msgid "Style"
+msgstr "استایل"
+
+#: dialog_selection.cpp:82
+#: subs_grid.cpp:141
+#: dialog_search_replace.cpp:103
+#: base_grid.cpp:489
+#: subs_edit_box.cpp:96
+#: dialog_paste_over.cpp:74
+msgid "Actor"
+msgstr "بازیگر"
+
+#: dialog_selection.cpp:83
+#: subs_grid.cpp:142
+#: dialog_search_replace.cpp:104
+#: base_grid.cpp:490
+#: subs_edit_box.cpp:99
+#: dialog_paste_over.cpp:84
+msgid "Effect"
+msgstr "افکت"
+
+#: dialog_selection.cpp:84
+#: dialog_search_replace.cpp:108
+msgid "In Field"
+msgstr "در زمینه"
+
+#: dialog_selection.cpp:87
+msgid "Dialogues"
+msgstr "صحبت ها"
+
+#: dialog_selection.cpp:88
+msgid "Comments"
+msgstr "نظرات"
+
+#: dialog_selection.cpp:92
+msgid "Set selection"
+msgstr "انتخاب مجموعه"
+
+#: dialog_selection.cpp:93
+msgid "Add to selection"
+msgstr "افزودن به انتخاب"
+
+#: dialog_selection.cpp:94
+msgid "Subtract from selection"
+msgstr "حذف از انتخاب"
+
+#: dialog_selection.cpp:95
+msgid "Intersect with selection"
+msgstr "اضافه به انتخاب"
+
+#: dialog_selection.cpp:96
+msgid "Action"
+msgstr " اقدام"
+
+#: dialog_selection.cpp:276
+#, c-format
+msgid "Selection was set to %i lines"
+msgstr " خط انتخاب شدند %i "
+
+#: dialog_selection.cpp:276
+#: dialog_selection.cpp:277
+#: dialog_selection.cpp:278
+msgid "Selection"
+msgstr "انتخاب"
+
+#: dialog_selection.cpp:277
+#, c-format
+msgid "%i lines were added to selection"
+msgstr "خط به انتخاب ها اضافه شدند%i "
+
+#: dialog_selection.cpp:278
+#, c-format
+msgid "%i lines were removed from selection"
+msgstr "خط از انتخاب ها حذف شدند%i "
+
+#: dialog_styling_assistant.cpp:69
+msgid "Styling assistant"
+msgstr "دستیار استایل"
+
+#: dialog_styling_assistant.cpp:82
+#: dialog_styling_assistant.cpp:83
+msgid "Current line"
+msgstr "خط جاری"
+
+#: dialog_styling_assistant.cpp:88
+msgid "Styles available"
+msgstr "استایل های موجود"
+
+#: dialog_styling_assistant.cpp:93
+msgid "Set style"
+msgstr "قرار دادن استایل"
+
+#: dialog_styling_assistant.cpp:94
+#: dialog_translation.cpp:108
+msgid "Keys"
+msgstr "کلید ها"
+
+#: dialog_styling_assistant.cpp:95
+#: dialog_translation.cpp:131
+msgid "Actions"
+msgstr "اقدامات"
+
+#: dialog_styling_assistant.cpp:103
+#: dialog_translation.cpp:111
+msgid "Accept changes"
+msgstr "پذیرفتن تغییرات"
+
+#: dialog_styling_assistant.cpp:105
+#: dialog_translation.cpp:113
+msgid "Preview changes"
+msgstr "پیش نمایش تغییرات"
+
+#: dialog_styling_assistant.cpp:107
+#: dialog_translation.cpp:115
+msgid "Previous line"
+msgstr "خط قبل"
+
+#: dialog_styling_assistant.cpp:109
+#: dialog_translation.cpp:117
+msgid "Next line"
+msgstr "خط بعد"
+
+#: dialog_styling_assistant.cpp:111
+#: dialog_styling_assistant.cpp:125
+#: dialog_translation.cpp:121
+#: dialog_translation.cpp:132
+msgid "Play Video"
+msgstr "پخش ویدیو"
+
+#: dialog_styling_assistant.cpp:113
+#: dialog_styling_assistant.cpp:126
+#: dialog_translation.cpp:123
+#: dialog_translation.cpp:133
+msgid "Play Audio"
+msgstr "پخش صدا"
+
+#: dialog_styling_assistant.cpp:114
+msgid "Click on list:"
+msgstr "کلیک بر روی لیست:"
+
+#: dialog_styling_assistant.cpp:115
+msgid "Select style"
+msgstr "انتخاب استایل"
+
+#: dialog_styling_assistant.cpp:118
+msgid "Enable preview (slow)"
+msgstr "(فعالسازی پیش نمایش(کند"
+
+#: dialog_styling_assistant.cpp:173
+msgid "style changes"
+msgstr "تغییرات استایل"
+
+#: dialog_styling_assistant.cpp:237
+#: dialog_styling_assistant.cpp:269
+msgid "styling assistant"
+msgstr "دستیار استایل"
+
+#: dialog_style_manager.cpp:68
+#: frame_main.cpp:283
+msgid "Styles Manager"
+msgstr "مدیریت استایل ها"
+
+#: dialog_style_manager.cpp:77
+msgid "Catalog of available storages"
+msgstr "فهرست مخازن در دسترس"
+
+#: dialog_style_manager.cpp:79
+#: dialog_style_manager.cpp:92
+#: dialog_style_manager.cpp:137
+#: frame_main.cpp:252
+msgid "New"
+msgstr "جدید"
+
+#: dialog_style_manager.cpp:80
+#: dialog_style_manager.cpp:95
+#: dialog_style_manager.cpp:140
+#: subs_grid.cpp:222
+msgid "Delete"
+msgstr "پاک کردن"
+
+#: dialog_style_manager.cpp:87
+msgid "Storage"
+msgstr "مخزن"
+
+#: dialog_style_manager.cpp:91
+msgid "Copy to current script ->"
+msgstr "کپی به اسکریپت کنونی ->"
+
+#: dialog_style_manager.cpp:93
+#: dialog_style_manager.cpp:138
+msgid "Edit"
+msgstr "ویرایش"
+
+#: dialog_style_manager.cpp:94
+#: dialog_style_manager.cpp:139
+#: hotkeys.cpp:403
+msgid "Copy"
+msgstr "کپی"
+
+#: dialog_style_manager.cpp:105
+#: dialog_style_manager.cpp:150
+msgid "Move style up."
+msgstr "حرکت استایل به بالا"
+
+#: dialog_style_manager.cpp:106
+#: dialog_style_manager.cpp:151
+msgid "Move style down."
+msgstr "حرکت استایل به پایین"
+
+#: dialog_style_manager.cpp:107
+#: dialog_style_manager.cpp:152
+msgid "Move style to top."
+msgstr "حرکت استایل به اول"
+
+#: dialog_style_manager.cpp:108
+#: dialog_style_manager.cpp:153
+msgid "Move style to bottom."
+msgstr "حرکت استایل به انتها"
+
+#: dialog_style_manager.cpp:109
+#: dialog_style_manager.cpp:154
+msgid "Sort styles alphabetically."
+msgstr "استایل ها را براساس الفبا مرتب کن"
+
+#: dialog_style_manager.cpp:129
+msgid "Current script"
+msgstr "اسکریپت کنونی"
+
+#: dialog_style_manager.cpp:134
+msgid "<- Copy to storage"
+msgstr "<-کپی به مخزن"
+
+#: dialog_style_manager.cpp:136
+msgid "Import from script..."
+msgstr "واردکردن ار اسکریپت"
+
+#: dialog_style_manager.cpp:440
+msgid "New storage name:"
+msgstr "نام مخزن جدید"
+
+#: dialog_style_manager.cpp:440
+msgid "New catalog entry"
+msgstr "فهرست جدید"
+
+#: dialog_style_manager.cpp:456
+msgid "A catalog with that name already exists."
+msgstr "یک فهرست با این نام موجود است"
+
+#: dialog_style_manager.cpp:456
+msgid "Catalog name conflict"
+msgstr "تداخل نام فهرست"
+
+#: dialog_style_manager.cpp:462
+#, c-format
+msgid ""
+"The specified catalog name contains one or more illegal characters. They have been replaced with underscores instead.\n"
+"The catalog has been renamed to \"%s\"."
+msgstr ""
+"اسمی که برای کاتالوگ انتخاب کرده اید دارای کاراکتر های غیر مجاز است که با چیز دیگری جایگزین شده است \n"
+"تغییر پیدا کرد \"%s\"نام کنونی کاتوگ به "
+
+#: dialog_style_manager.cpp:462
+msgid "Invalid characters"
+msgstr "کاراکتر نامعتبر"
+
+#: dialog_style_manager.cpp:493
+#, c-format
+msgid "Are you sure you want to delete the storage \"%s\" from the catalog?"
+msgstr "را  از لیست حذف کنید؟  \"%s\" آیا مطمئنید که می خواهید مخزن "
+
+#: dialog_style_manager.cpp:494
+msgid "Confirm delete"
+msgstr "تایید حذف کردن"
+
+#: dialog_style_manager.cpp:647
+#: dialog_style_manager.cpp:701
+msgid "style copy"
+msgstr "کپی استایل"
+
+#: dialog_style_manager.cpp:662
+#: dialog_style_manager.cpp:688
+#: dialog_style_editor.cpp:553
+msgid "Copy of "
+msgstr "کپی از"
+
+#: dialog_style_manager.cpp:757
+msgid "style paste"
+msgstr "چسباندن استایل"
+
+#: dialog_style_manager.cpp:761
+#: dialog_style_manager.cpp:764
+#: dialog_style_manager.cpp:800
+#: dialog_style_manager.cpp:803
+msgid "Could not parse style"
+msgstr "نرم افزار نمیتواند استایل را  تجزیه کند"
+
+#: dialog_style_manager.cpp:855
+#: dialog_style_manager.cpp:891
+msgid "Are you sure you want to delete these "
+msgstr "آیا شما واقعا قصد حذف اینها را دارید"
+
+#: dialog_style_manager.cpp:857
+#: dialog_style_manager.cpp:893
+msgid " styles?"
+msgstr "?استایل ها"
+
+#: dialog_style_manager.cpp:859
+#: dialog_style_manager.cpp:895
+msgid "Are you sure you want to delete this style?"
+msgstr "آیا شما واقعا قصد حذف این استایل را دارید؟"
+
+#: dialog_style_manager.cpp:860
+msgid "Confirm delete from storage"
+msgstr "تایید حذف از مخزن"
+
+#: dialog_style_manager.cpp:896
+msgid "Confirm delete from current"
+msgstr "تایید حذف "
+
+#: dialog_style_manager.cpp:912
+msgid "style delete"
+msgstr "حذف استایل"
+
+#: dialog_style_manager.cpp:927
+#: frame_main_events.cpp:774
+#: frame_main_events.cpp:794
+msgid "Open subtitles file"
+msgstr "بازکردن فایل زیرنویس"
+
+#: dialog_style_manager.cpp:943
+msgid "The selected file has no available styles."
+msgstr "فایل انتخاب شده هیچ استایلی ندارد"
+
+#: dialog_style_manager.cpp:943
+msgid "Error Importing Styles"
+msgstr "خطا در وارد کردن استایل ها"
+
+#: dialog_style_manager.cpp:949
+msgid "Choose styles to import:"
+msgstr "انتخاب استایل برای وارد کردن"
+
+#: dialog_style_manager.cpp:949
+msgid "Import Styles"
+msgstr "وارد کردن استایل"
+
+#: dialog_style_manager.cpp:980
+msgid "style import"
+msgstr "استایل را وارد میکند"
+
+#: dialog_style_manager.cpp:1180
+msgid "Are you sure? This cannot be undone!"
+msgstr "آیا شما مطمئنید؟این عمل قابل بازگشت است"
+
+#: dialog_style_manager.cpp:1180
+msgid "Sort styles"
+msgstr "مرتب کردن استایل ها"
+
+#: dialog_style_manager.cpp:1232
+msgid "style move"
+msgstr "حرکت استایل"
+
+#: dialog_options.cpp:132
+msgid "Startup"
+msgstr "شروع"
+
+#: dialog_options.cpp:135
+msgid "Show Splash Screen"
+msgstr "صفحه ابتدایی را نمایش بده"
+
+#: dialog_options.cpp:137
+#: dialog_version_check.cpp:478
+msgid "Auto Check for Updates"
+msgstr "جستجوی خودکار برای نسخه جدید"
+
+#: dialog_options.cpp:142
+msgid "Limits for levels and recent files"
+msgstr "محدود کردن مراحل و فایل های اخیر"
+
+#: dialog_options.cpp:145
+msgid "Maximum undo levels"
+msgstr "ماکزیمم مقدار مراحل بازگشت"
+
+#: dialog_options.cpp:145
+msgid "Maximum recent timecode files"
+msgstr "بیشترین فایل های کدهای زمانی اخیر"
+
+#: dialog_options.cpp:145
+msgid "Maximum recent keyframe files"
+msgstr "ماکزیمم مقدار فایل های فریم های کلیدی اخیر"
+
+#: dialog_options.cpp:145
+msgid "Maximum recent subtitle files"
+msgstr "ماکزیمم مقدار فایل های زیرنویس اخیر"
+
+#: dialog_options.cpp:145
+msgid "Maximum recent video files"
+msgstr "ماکزیمم مقدار فایل های ویدیوی اخیر"
+
+#: dialog_options.cpp:145
+msgid "Maximum recent audio files"
+msgstr "ماکزیمم مقدار فایل های صدای اخیر"
+
+#: dialog_options.cpp:145
+msgid "Maximum recent find strings"
+msgstr "ماکزیمم مقدار کلمات یافته شده اخیر"
+
+#: dialog_options.cpp:145
+msgid "Maximum recent replace strings"
+msgstr "ماکزیمم مقدار کلمات جایگزین شده اخیر"
+
+#: dialog_options.cpp:164
+msgid "Auto-save"
+msgstr "ذخیره اتوماتیک"
+
+#: dialog_options.cpp:166
+msgid "File paths"
+msgstr "مسیر فایل"
+
+#: dialog_options.cpp:168
+msgid "Miscellanea"
+msgstr "متفرقه"
+
+#: dialog_options.cpp:172
+msgid "Auto-backup"
+msgstr "پشتیبان گیری اتوماتیک"
+
+#: dialog_options.cpp:178
+msgid "Auto-save every"
+msgstr "ذخیره اتوماتیک هر"
+
+#: dialog_options.cpp:180
+msgid "seconds."
+msgstr ".ثانیه"
+
+#: dialog_options.cpp:183
+msgid "Auto-save path:"
+msgstr "مسیر ذخیره خودکار"
+
+#: dialog_options.cpp:191
+msgid "Auto-backup path:"
+msgstr "مسیر پشتیبان گیری خودکار"
+
+#: dialog_options.cpp:201
+msgid "Auto-load linked files:"
+msgstr "بارگذاری خودکار فایل های مرتبط"
+
+#: dialog_options.cpp:202
+#: dialog_options.cpp:372
+msgid "Never"
+msgstr "هیچ گاه"
+
+#: dialog_options.cpp:202
+#: dialog_options.cpp:372
+msgid "Always"
+msgstr "همیشه"
+
+#: dialog_options.cpp:202
+#: dialog_options.cpp:372
+msgid "Ask"
+msgstr "با پرسش"
+
+#: dialog_options.cpp:231
+msgid "Enable call tips"
+msgstr "فعال سازی فراخوانی راهنمایی ها"
+
+#: dialog_options.cpp:231
+msgid "Enable syntax highlighting"
+msgstr "  مشخص کننده روش فعالسازی "
+
+#: dialog_options.cpp:231
+msgid "Link commiting of times"
+msgstr "اجرای تغییرات در زمان ها"
+
+#: dialog_options.cpp:231
+msgid "Overwrite-Insertion in time boxes"
+msgstr "بازنویسی -وارد کردن در بخش های زمان"
+
+#: dialog_options.cpp:240
+msgid "Path to dictionary files:"
+msgstr "مسیر فایلهای دیکشنری:"
+
+#: dialog_options.cpp:250
+#: dialog_options.cpp:569
+#: dialog_properties.cpp:140
+msgid "Normal"
+msgstr "معمولی"
+
+#: dialog_options.cpp:250
+msgid "Brackets"
+msgstr "براکت ها"
+
+#: dialog_options.cpp:250
+msgid "Slashes and Parentheses"
+msgstr "اسلش ها و پرانتزها"
+
+#: dialog_options.cpp:250
+msgid "Tags"
+msgstr "تگ ها"
+
+#: dialog_options.cpp:250
+msgid "Parameters"
+msgstr "پارامتر ها"
+
+#: dialog_options.cpp:251
+#: options.cpp:495
+#: options.cpp:510
+#: subs_grid.cpp:747
+#: subs_grid.cpp:751
+#: subs_grid.cpp:797
+#: dialog_resample.cpp:237
+#: dialog_resample.cpp:241
+#: dialog_fonts_collector.cpp:209
+#: dialog_fonts_collector.cpp:218
+#: dialog_fonts_collector.cpp:227
+#: dialog_kara_timing_copy.cpp:962
+#: dialog_kara_timing_copy.cpp:964
+#: dialog_kara_timing_copy.cpp:1031
+msgid "Error"
+msgstr "خطا"
+
+#: dialog_options.cpp:251
+msgid "Error Background"
+msgstr "خطا  در پس زمینه"
+
+#: dialog_options.cpp:251
+msgid "Line Break"
+msgstr "شکستن خط"
+
+#: dialog_options.cpp:251
+msgid "Karaoke templates"
+msgstr "قالب های کاراوکه"
+
+#: dialog_options.cpp:251
+msgid "Modified Background"
+msgstr "پس زمینه زیرنویس های تغییر یافته"
+
+#: dialog_options.cpp:258
+msgid "Syntax highlighter - "
+msgstr "  مشخص کننده روش "
+
+#: dialog_options.cpp:269
+#: dialog_options.cpp:332
+msgid "Font: "
+msgstr "فونت:"
+
+#: dialog_options.cpp:303
+msgid "Allow grid to take focus"
+msgstr "به خطوط اجازه متمرکز شدن را بده"
+
+#: dialog_options.cpp:303
+msgid "Highlight subtitles that are currently visible in video"
+msgstr "متمایز کردن خطوطی که در حال حاضر در تصویر دیده می شوند"
+
+#: dialog_options.cpp:313
+msgid "Standard foreground"
+msgstr "پیش زمینه استاندارد"
+
+#: dialog_options.cpp:313
+msgid "Standard background"
+msgstr "پس زمینه استاندارد"
+
+#: dialog_options.cpp:313
+msgid "Selection foreground"
+msgstr "پیش زمینه انتخاب ها"
+
+#: dialog_options.cpp:314
+#: dialog_options.cpp:493
+msgid "Selection background"
+msgstr "پس زمینه انتخاب ها"
+
+#: dialog_options.cpp:314
+msgid "Comment background"
+msgstr "پس زمینه نظرات"
+
+#: dialog_options.cpp:314
+msgid "Selected comment background"
+msgstr "پس زمینه نظرات انتخاب شده"
+
+#: dialog_options.cpp:315
+msgid "Collision foreground"
+msgstr "پیش زمینه برخورد"
+
+#: dialog_options.cpp:315
+msgid "Line in frame background"
+msgstr "خطوط در پس زمینه فریم"
+
+#: dialog_options.cpp:315
+msgid "Header"
+msgstr "سربرگ"
+
+#: dialog_options.cpp:316
+msgid "Left Column"
+msgstr "ستون چپ"
+
+#: dialog_options.cpp:316
+msgid "Active Line Border"
+msgstr "حاشیه فعال خط"
+
+#: dialog_options.cpp:316
+msgid "Lines"
+msgstr "خط ها"
+
+#: dialog_options.cpp:345
+msgid "Replace override tags with: "
+msgstr "جایگزین کردن تگ ها با:"
+
+#: dialog_options.cpp:365
+#: dialog_options.cpp:526
+msgid "Advanced - EXPERT USERS ONLY"
+msgstr "پیشرفته-مخصوص افراد متخصص  "
+
+#: dialog_options.cpp:371
+msgid "Match video resolution on open: "
+msgstr "تنظیم ابعاد ویدیو در هنگام باز کردن "
+
+#: dialog_options.cpp:376
+msgid "Default Zoom: "
+msgstr "زوم پیش فرض"
+
+#: dialog_options.cpp:387
+msgid "Fast jump step in frames: "
+msgstr "پرش های سریع در فریم ها:"
+
+#: dialog_options.cpp:391
+msgid "Screenshot save path: "
+msgstr "مسیر ذخیره اسکرین شات:"
+
+#: dialog_options.cpp:397
+msgid "Show keyframes in slider"
+msgstr "نشان دادنفریم های کلیدی در نوار جستجوی زمانی"
+
+#: dialog_options.cpp:403
+msgid "Video provider: "
+msgstr "تهیه کننده ویدیو"
+
+#: dialog_options.cpp:408
+msgid "Subtitles provider: "
+msgstr "تهیه کننده زیرنویس ها"
+
+#: dialog_options.cpp:414
+msgid "Avisynth memory limit: "
+msgstr " Avisynth محدودیت حافظه  :"
+
+#: dialog_options.cpp:421
+msgid "Allow pre-2.56a Avisynth"
+msgstr "نسخه های قبل از2.56 Avisynthقبول "
+
+#: dialog_options.cpp:429
+#: dialog_options.cpp:550
+msgid ""
+"WARNING: Changing these settings might result in bugs,\n"
+"crashes, glitches and/or movax.\n"
+"Don't touch these unless you know what you're doing."
+msgstr ""
+"اخطار:تغییر دادن این تنظیمات ممکن است باعث \n"
+"مشکلاتی شود \n"
+"درصورتی که مطمئنید این تنظیمات را تغییر دهید "
+
+#: dialog_options.cpp:446
+msgid "Grab times from line upon selection"
+msgstr "تعیین زمان از زمان بالای خطوط انتخابی"
+
+#: dialog_options.cpp:447
+msgid "Default mouse wheel to zoom"
+msgstr "پیش فرض:چرخ ماوس برای زوم"
+
+#: dialog_options.cpp:448
+msgid "Lock scroll on Cursor"
+msgstr "ثابت ماندن در مکان نما"
+
+#: dialog_options.cpp:449
+msgid "Snap to keyframes"
+msgstr "چسبیدن به فریم کلیدی"
+
+#: dialog_options.cpp:450
+msgid "Snap to adjacent lines"
+msgstr "چسبیدن به خطوط مجاور"
+
+#: dialog_options.cpp:451
+msgid "Auto-focus on mouse over"
+msgstr "تمرکز خودکار برروی ماوس"
+
+#: dialog_options.cpp:455
+msgid "Don't show"
+msgstr "عدم نمایش"
+
+#: dialog_options.cpp:455
+msgid "Show previous"
+msgstr "نمایش قبلی "
+
+#: dialog_options.cpp:455
+msgid "Show all"
+msgstr "نمایش همه"
+
+#: dialog_options.cpp:456
+msgid "Default timing length"
+msgstr "مقدار پیش فرض زمانبندی"
+
+#: dialog_options.cpp:457
+msgid "Default lead-in length"
+msgstr "زمان فاصله شروع پیش فرض"
+
+#: dialog_options.cpp:458
+msgid "Default lead-out length"
+msgstr "زمان فاصله پایان پیش فرض"
+
+#: dialog_options.cpp:459
+msgid "Show inactive lines"
+msgstr "نمایش دادن خطوط غیر فعال"
+
+#: dialog_options.cpp:460
+msgid "Start-marker drag sensitivity"
+msgstr "حساسیت مشخص کننده منطقه شروع"
+
+#: dialog_options.cpp:481
+msgid "Draw secondary lines"
+msgstr "کشیدن خط  ثانویه"
+
+#: dialog_options.cpp:481
+msgid "Draw selection background"
+msgstr "کشیدن پس زمینه انتخاب شده ها"
+
+#: dialog_options.cpp:481
+msgid "Draw timeline"
+msgstr "کشیدن خط زمانی"
+
+#: dialog_options.cpp:482
+msgid "Draw cursor time"
+msgstr "کشیدن زمان مکان نما"
+
+#: dialog_options.cpp:482
+msgid "Draw keyframes"
+msgstr "کشیدن فریم های کلیدی"
+
+#: dialog_options.cpp:482
+msgid "Draw video position"
+msgstr "کشیدن مکان ویدیو"
+
+#: dialog_options.cpp:493
+msgid "Play cursor"
+msgstr "نشانگر پخش"
+
+#: dialog_options.cpp:493
+msgid "Background"
+msgstr "پس زمینه"
+
+#: dialog_options.cpp:494
+msgid "Selection background - modified"
+msgstr "پس زمینه انتخاب -تغییر یافته"
+
+#: dialog_options.cpp:494
+msgid "Seconds boundary"
+msgstr "مرز زمانی"
+
+#: dialog_options.cpp:494
+msgid "Waveform"
+msgstr "شکل موج"
+
+#: dialog_options.cpp:495
+msgid "Waveform - selection"
+msgstr "شکل موج-انتخاب شده ها"
+
+#: dialog_options.cpp:495
+msgid "Waveform - modified"
+msgstr "شکل موج-تغییر یافته ها"
+
+#: dialog_options.cpp:495
+msgid "Waveform - inactive"
+msgstr "شکل موج:غیر فعال ها"
+
+#: dialog_options.cpp:496
+msgid "Boundary - start"
+msgstr "مرز- شروع"
+
+#: dialog_options.cpp:496
+msgid "Boundary - end"
+msgstr "مرز- پایان"
+
+#: dialog_options.cpp:496
+msgid "Boundary - inactive"
+msgstr "مرز- غیر فعال"
+
+#: dialog_options.cpp:497
+msgid "Syllable text"
+msgstr "متن سیلاب"
+
+#: dialog_options.cpp:497
+msgid "Syllable boundary"
+msgstr "مرز سیلاب"
+
+#: dialog_options.cpp:530
+msgid "None (NOT RECOMMENDED)"
+msgstr "(هیچ کدام(توصیه نمیشود"
+
+#: dialog_options.cpp:530
+msgid "RAM"
+msgstr "رَم"
+
+#: dialog_options.cpp:530
+msgid "Hard Disk"
+msgstr "هارد دیسک"
+
+#: dialog_options.cpp:535
+msgid "Audio provider"
+msgstr "منبع صدا"
+
+#: dialog_options.cpp:536
+msgid "Audio player"
+msgstr "پخش کننده صدا"
+
+#: dialog_options.cpp:537
+msgid "Cache type"
+msgstr " نوع کش  "
+
+#: dialog_options.cpp:539
+msgid "Avisynth down-mixer"
+msgstr "Avisynth down-mixer"
+
+#: dialog_options.cpp:541
+msgid "HD cache path"
+msgstr " در هارد مسیرکش   "
+
+#: dialog_options.cpp:542
+msgid "HD cache name"
+msgstr "نام کش هارد"
+
+#: dialog_options.cpp:543
+msgid "Spectrum cutoff"
+msgstr "قطع طیف"
+
+#: dialog_options.cpp:544
+msgid "0 - Regular quality"
+msgstr "0- کیفیت معمولی "
+
+#: dialog_options.cpp:544
+msgid "1 - Better quality"
+msgstr "1- کیفیت بهتر"
+
+#: dialog_options.cpp:544
+msgid "2 - High quality"
+msgstr "2- کیفیت بالا"
+
+#: dialog_options.cpp:544
+msgid "3 - Insane quality"
+msgstr "3-کیفیت عالی"
+
+#: dialog_options.cpp:545
+msgid "Spectrum quality"
+msgstr "کیفیت طیف"
+
+#: dialog_options.cpp:546
+msgid "Spectrum cache memory max (MB)"
+msgstr "مقدار کش حافظه طیف نما به مگابایت"
+
+#: dialog_options.cpp:565
+msgid "Base path"
+msgstr "مسیر اصلی"
+
+#: dialog_options.cpp:566
+msgid "Include path"
+msgstr "مسیر قرار دادن"
+
+#: dialog_options.cpp:567
+msgid "Auto-load path"
+msgstr "مسیر بارگذاری خودکار"
+
+#: dialog_options.cpp:568
+msgid "0: Fatal"
+msgstr "0:کشنده"
+
+#: dialog_options.cpp:568
+msgid "1: Error"
+msgstr "1:خطا"
+
+#: dialog_options.cpp:568
+msgid "2: Warning"
+msgstr "2:اخطار"
+
+#: dialog_options.cpp:568
+msgid "3: Hint"
+msgstr "3:راهنمایی"
+
+#: dialog_options.cpp:568
+msgid "4: Debug"
+msgstr "4:اشکال زدایی"
+
+#: dialog_options.cpp:568
+msgid "5: Trace"
+msgstr "5:ردیابی"
+
+#: dialog_options.cpp:569
+msgid "Below Normal (recommended)"
+msgstr "(کمتر از معمول(توصیه شده"
+
+#: dialog_options.cpp:569
+msgid "Lowest"
+msgstr "پایین ترین"
+
+#: dialog_options.cpp:570
+msgid "No scripts"
+msgstr "اسکریپتی موجود نیست"
+
+#: dialog_options.cpp:570
+msgid "Subtitle-local scripts"
+msgstr "اسکریپت های زیرنویس محلی"
+
+#: dialog_options.cpp:570
+msgid "Global autoload scripts"
+msgstr "محل بارگذاری خودکار اسکریپت ها"
+
+#: dialog_options.cpp:570
+msgid "All scripts"
+msgstr "تمام اسکریپت ها"
+
+#: dialog_options.cpp:571
+msgid "Trace level"
+msgstr "سطح ردیابی"
+
+#: dialog_options.cpp:572
+msgid "Thread priority"
+msgstr "اولویت رشته"
+
+#: dialog_options.cpp:573
+msgid "Autoreload on Export"
+msgstr "بارگذاری مجدد خودکار هنگام خروجی گرفتن"
+
+#: dialog_options.cpp:591
+#: dialog_options.cpp:1131
+msgid "Function"
+msgstr "عملکرد"
+
+#: dialog_options.cpp:592
+#: dialog_options.cpp:1132
+msgid "Key"
+msgstr "کلید"
+
+#: dialog_options.cpp:606
+msgid "Set Hotkey..."
+msgstr "تعیین کلید میانبر"
+
+#: dialog_options.cpp:607
+msgid "Clear Hotkey"
+msgstr "حذف کلید میانبر"
+
+#: dialog_options.cpp:608
+#: ass_style.cpp:631
+msgid "Default"
+msgstr "پیش فرض"
+
+#: dialog_options.cpp:609
+msgid "Default All"
+msgstr "بازگشت همه به پیش فرض"
+
+#: dialog_options.cpp:619
+msgid "General"
+msgstr "عمومی"
+
+#: dialog_options.cpp:620
+msgid "File save/load"
+msgstr "ذخیره/بارگذاری فایل"
+
+#: dialog_options.cpp:621
+msgid "Subtitles edit box"
+msgstr "جعبه ویرایش زیرنویس"
+
+#: dialog_options.cpp:622
+msgid "Subtitles grid"
+msgstr "بخش نمایش خطوط زیرنویس"
+
+#: dialog_options.cpp:624
+msgid "Audio"
+msgstr "صدا"
+
+#: dialog_options.cpp:625
+msgid "Display"
+msgstr "نمایش"
+
+#: dialog_options.cpp:626
+msgid "Advanced"
+msgstr "پیشرفته"
+
+#: dialog_options.cpp:627
+#: frame_main.cpp:291
+msgid "Automation"
+msgstr "عملیات خودکار"
+
+#: dialog_options.cpp:628
+msgid "Hotkeys"
+msgstr "کلید های میانبر"
+
+#: dialog_options.cpp:642
+msgid "Restore Defaults"
+msgstr "برگشت به پیشفرض"
+
+#: dialog_options.cpp:759
+#: dialog_options.cpp:797
+#: dialog_options.cpp:941
+msgid "Aegisub must restart for the changes to take effect. Restart now?"
+msgstr "نرم افزار جهت اعمال تغییرات باید دوباره راه اندازی شود.آیا راه اندازی مجدد را میخواهید؟"
+
+#: dialog_options.cpp:759
+#: dialog_options.cpp:797
+#: dialog_options.cpp:941
+msgid "Restart Aegisub"
+msgstr " Aegisub راه اندازی مجدد"
+
+#: dialog_options.cpp:815
+msgid "Are you sure that you want to restore the defaults? All your settings will be overriden."
+msgstr "آیا مطمئنید که میخواهید همه را به پیش فرض برگردانید؟تمام تنظیمات شما از بین میرود"
+
+#: dialog_options.cpp:815
+msgid "Restore defaults?"
+msgstr "برگشت به پیشفرض؟"
+
+#: dialog_options.cpp:1155
+msgid "Press Key"
+msgstr "فشار کلید"
+
+#: dialog_options.cpp:1166
+#, c-format
+msgid "Press key to bind to \"%s\" or Esc to cancel."
+msgstr " برای خروجEscرا فشار دهید یا\"%s\" برای ترکیب دکمه"
+
+#: dialog_options.cpp:1205
+#, c-format
+msgid "The hotkey %s is already mapped to %s. If you proceed, that hotkey will be cleared. Proceed?"
+msgstr "  اختصاص یافته.اگر ادامه بدهید آن را پاک خوهید کرد.برای ادامه مطمئنید%sدر حال حاضر به %sکلید میانبر "
+
+#: dialog_options.cpp:1205
+msgid "Hotkey conflict"
+msgstr " تداخل در کلید های میانبر"
+
+#: subtitle_format.cpp:313
+msgid "All Supported Formats"
+msgstr "تمام فرمت های پشتیبانی شده"
+
+#: subtitle_format.cpp:340
+msgid "15.000 FPS"
+msgstr "15.000 FPS"
+
+#: subtitle_format.cpp:341
+msgid "23.976 FPS (Decimated NTSC)"
+msgstr "23.976 FPS (Decimated NTSC)"
+
+#: subtitle_format.cpp:342
+msgid "24.000 FPS (FILM)"
+msgstr "24.000 FPS (FILM)"
+
+#: subtitle_format.cpp:343
+msgid "25.000 FPS (PAL)"
+msgstr "25.000 FPS (PAL)"
+
+#: subtitle_format.cpp:344
+msgid "29.970 FPS (NTSC)"
+msgstr "29.970 FPS (NTSC)"
+
+#: subtitle_format.cpp:346
+msgid "29.970 FPS (NTSC with SMPTE dropframe)"
+msgstr "29.970 FPS (NTSC with SMPTE dropframe)"
+
+#: subtitle_format.cpp:347
+msgid "30.000 FPS"
+msgstr "30.000 FPS"
+
+#: subtitle_format.cpp:348
+msgid "50.000 FPS (PAL x2)"
+msgstr "50.000 FPS (PAL x2)"
+
+#: subtitle_format.cpp:349
+msgid "59.940 FPS (NTSC x2)"
+msgstr "59.940 FPS (NTSC x2)"
+
+#: subtitle_format.cpp:350
+msgid "60.000 FPS"
+msgstr "60.000 FPS"
+
+#: subtitle_format.cpp:351
+msgid "119.880 FPS (NTSC x4)"
+msgstr "119.880 FPS (NTSC x4)"
+
+#: subtitle_format.cpp:352
+msgid "120.000 FPS"
+msgstr "120.000 FPS"
+
+#: subtitle_format.cpp:355
+msgid "Please choose the appropriate FPS for the subtitles:"
+msgstr "مناسب را برای زیرنویس انتخاب کنید FPS لطفا "
+
+#: subtitle_format.cpp:355
+msgid "FPS"
+msgstr "FPS"
+
+#: dialog_text_import.cpp:54
+msgid "Text import options"
+msgstr "تنظیمات وارد کردن متن"
+
+#: dialog_text_import.cpp:63
+msgid "Actor separator:"
+msgstr ":جداکننده بخش بازیگر"
+
+#: dialog_text_import.cpp:65
+msgid "Comment starter:"
+msgstr "شروع کننده نظر:"
+
+#: ffmpegsource_common.cpp:99
+msgid "Indexing"
+msgstr "در حال نمایه سازی(indexing)"
+
+#: ffmpegsource_common.cpp:100
+msgid "Reading timecodes and frame/sample data"
+msgstr "در حال خواندن کدهای زمانی واطلاعات فریم ها"
+
+#: ffmpegsource_common.cpp:157
+msgid "video"
+msgstr "ویدیو"
+
+#: ffmpegsource_common.cpp:159
+msgid "audio"
+msgstr "صدا"
+
+#: ffmpegsource_common.cpp:162
+#, c-format
+msgid "Track %02d: %s"
+msgstr "Track %02d: %s"
+
+#: ffmpegsource_common.cpp:166
+#, c-format
+msgid "Multiple %s tracks detected, please choose the one you wish to load:"
+msgstr "هر کدام که مایل به بارگذاری هستید را انتخاب کنید تراک یافت شد%s  چندین"
+
+#: ffmpegsource_common.cpp:167
+#, c-format
+msgid "Choose %s track"
+msgstr "مسیر%s انتخاب"
+
+#: dialog_spellchecker.cpp:91
+#: frame_main.cpp:306
+msgid "Spell Checker"
+msgstr "بررسی املایی"
+
+#: dialog_spellchecker.cpp:130
+msgid "original"
+msgstr "اصلی"
+
+#: dialog_spellchecker.cpp:131
+msgid "replace with"
+msgstr "جایگذاری با"
+
+#: dialog_spellchecker.cpp:133
+msgid "Misspelled word:"
+msgstr "کلمات اشتباه:"
+
+#: dialog_spellchecker.cpp:135
+#: dialog_search_replace.cpp:80
+msgid "Replace with:"
+msgstr "جایگذاری با:"
+
+#: dialog_spellchecker.cpp:144
+#: dialog_search_replace.cpp:606
+#: hotkeys.cpp:397
+#: hotkeys.cpp:400
+msgid "Replace"
+msgstr "جایگذاری"
+
+#: dialog_spellchecker.cpp:145
+msgid "Replace All"
+msgstr "جایگذاری همه"
+
+#: dialog_spellchecker.cpp:146
+msgid "Ignore"
+msgstr "نادیده گرفتن"
+
+#: dialog_spellchecker.cpp:147
+msgid "Ignore all"
+msgstr "نادیده گرفتن همه"
+
+#: dialog_spellchecker.cpp:148
+msgid "Add to dictionary"
+msgstr "افزودن به لغت نامه"
+
+#: dialog_spellchecker.cpp:370
+msgid "Aegisub has finished checking spelling of this script."
+msgstr "نرم افزار بررسی املایی اسکریپت را به پایان برد"
+
+#: dialog_spellchecker.cpp:370
+#: dialog_spellchecker.cpp:445
+msgid "Spell checking complete."
+msgstr "بررسی املایی به اتمام رسید"
+
+#: dialog_spellchecker.cpp:391
+msgid "Spell check replace"
+msgstr "جایگزین کردن غلط های املایی"
+
+#: dialog_spellchecker.cpp:445
+msgid "Aegisub has found no spelling mistakes in this script."
+msgstr "نرم افزار هیچ اشتباه املایی در زیرنویس پیدا نکرده است"
+
+#: mkv_wrap.cpp:190
+#: mkv_wrap.cpp:423
+msgid "Parsing Matroska"
+msgstr "Parsing Matroska"
+
+#: mkv_wrap.cpp:190
+msgid "Reading keyframe and timecode data from Matroska file."
+msgstr " Matroska خواندن فریم های کلیدی و کدهای زمانی از فایل"
+
+#: mkv_wrap.cpp:423
+msgid "Reading subtitles from Matroska file."
+msgstr "Matroska خواندن زیرنویس از فایل"
+
+#: visual_tool.cpp:298
+#: visual_tool_drag.cpp:131
+msgid "visual typesetting"
+msgstr "حروف چینی دیداری"
+
+#: export_fixstyle.cpp:63
+msgid "Fix Styles"
+msgstr "تعمیر استایل ها"
+
+#: export_fixstyle.cpp:64
+msgid "Fixes styles by replacing any style that isn't available on file with Default."
+msgstr "تعمیر استایل هاییکه موجود نیستند با استایل پیشفرض"
+
+#: frame_main_events.cpp:278
+msgid "Empty"
+msgstr "خالی"
+
+#: frame_main_events.cpp:438
+#: frame_main.cpp:383
+#: subs_edit_ctrl.cpp:979
+msgid "&Undo"
+msgstr "برگشت"
+
+#: frame_main_events.cpp:439
+#: frame_main.cpp:383
+msgid "Undoes last action"
+msgstr "برگشت به آخرین تغییر"
+
+#: frame_main_events.cpp:441
+#: frame_main.cpp:384
+msgid "&Redo"
+msgstr "ازنو"
+
+#: frame_main_events.cpp:442
+#: frame_main.cpp:384
+msgid "Redoes last action"
+msgstr "انجام دوباره آخرین تغییر"
+
+#: frame_main_events.cpp:479
+msgid "No Automation macros loaded"
+msgstr "هیچ ماکروی عملیات خودکاری بارگذاری نشده است"
+
+#: frame_main_events.cpp:695
+#: frame_main_events.cpp:722
+msgid "Video Formats"
+msgstr "فرمت های ویدیو"
+
+#: frame_main_events.cpp:696
+#: frame_main_events.cpp:882
+#: frame_main_events.cpp:899
+msgid "All Files"
+msgstr "تمام فایل ها"
+
+#: frame_main_events.cpp:697
+msgid "Open video file"
+msgstr "گشودن فایل ویدیو"
+
+#: frame_main_events.cpp:721
+msgid "Audio Formats"
+msgstr "فرمت های صدا"
+
+#: frame_main_events.cpp:723
+msgid "All files"
+msgstr "تمام فایل ها"
+
+#: frame_main_events.cpp:724
+msgid "Open audio file"
+msgstr "گشودن فایل صدا"
+
+#: frame_main_events.cpp:796
+#: frame_main.cpp:807
+msgid "Choose charset code:"
+msgstr "کد نویسه گان را انتخاب کنید"
+
+#: frame_main_events.cpp:796
+msgid "Charset"
+msgstr "نویسه گان"
+
+#: frame_main_events.cpp:881
+#: frame_main_events.cpp:898
+msgid "All Supported Types"
+msgstr "تمام فرمت های پشتیبانی شده"
+
+#: frame_main_events.cpp:883
+msgid "Open timecodes file"
+msgstr "بازکردن فایل کدهای زمانی"
+
+#: frame_main_events.cpp:900
+msgid "Save timecodes file"
+msgstr "ذخیره فایل کدهای زمانی"
+
+#: frame_main_events.cpp:1253
+msgid "Reloaded all Automation scripts"
+msgstr "بارگذاری مجدد تمام اسکریپت های عملیات خودکار "
+
+#: frame_main_events.cpp:1256
+msgid "Reloaded autoload Automation scripts"
+msgstr "بارگذاری مجدد تمام اسکریپت های عملیات خودکار "
+
+#: frame_main_events.cpp:1393
+msgid "snap to scene"
+msgstr "چسبیدن به صحنه"
+
+#: frame_main_events.cpp:1427
+msgid "shift to frame"
+msgstr "انتقال به فریم"
+
+#: frame_main_events.cpp:1546
+msgid ""
+"Enter aspect ratio in either:\n"
+"  decimal (e.g. 2.35)\n"
+"  fractional (e.g. 16:9)\n"
+"  specific resolution (e.g. 853x480)"
+msgstr ""
+":نسبت طول به عرض را به صورت های وارد کنید \n"
+"  اعشاری مثل 2.35\n"
+"  16:9 کسری مثل \n"
+"  853x480 ابعاد مشخص مثل "
+
+#: frame_main_events.cpp:1546
+msgid "Enter aspect ratio"
+msgstr "وارد کردن نسبت طول به عرض تصویر"
+
+#: frame_main_events.cpp:1581
+msgid "Invalid value! Aspect ratio must be between 0.5 and 5.0."
+msgstr "مقدار نامعتبر است! نسبت طول به عرض تصویر باید بین 5. و5 باشد"
+
+#: frame_main_events.cpp:1581
+msgid "Invalid Aspect Ratio"
+msgstr "نسبت طول به عرض غیر معتبر"
+
+#: frame_main_events.cpp:1705
+msgid "sort"
+msgstr "مرتب سازی"
+
+#: frame_main_events.cpp:1754
+msgid "File backup saved as \""
+msgstr "فایل پشتیبان ذخیره شده با عنوان\""
+
+#: frame_main_events.cpp:1854
+msgid "ASS Override Tag mode set to "
+msgstr "وضعیت نمایش تگ ها تنظیم شده به:"
+
+#: frame_main_events.cpp:1855
+msgid "show full tags."
+msgstr "نمایش کامل تگ ها"
+
+#: frame_main_events.cpp:1856
+msgid "simplify tags."
+msgstr ".ساده کردن تگ ها"
+
+#: frame_main_events.cpp:1857
+msgid "hide tags."
+msgstr "پنهان کردن تگ ها"
+
+#: dialog_about.cpp:61
+#: frame_main.cpp:559
+msgid "About Aegisub"
+msgstr "Aegisub درباره  "
+
+#: dialog_about.cpp:113
+msgid "Translated into LANGUAGE by PERSON\n"
+msgstr "تر جمه شده به فارسی توسط میثم \n"
+
+#: dialog_about.cpp:154
+msgid ""
+"\n"
+"See the help file for full credits.\n"
+msgstr ""
+"\n"
+"برای دیدن تمام افرادی که در ساخت نرم افزار کمک کردند به فایل راهنما مراجعه کنید\n"
+
+#: dialog_about.cpp:155
+#, c-format
+msgid "Built by %s on %s."
+msgstr "%s در %s ساخته شده توسط "
+
+#: options.cpp:495
+#: options.cpp:510
+msgid "Configuration file is either invalid or corrupt. The current file will be backed up and replaced with a default file."
+msgstr "فایل تنظیمات خراب ویا نا معتبر است.از فایل کنونی پشتیبان گیری می شود و آن با فایل پیشفرض جایگزین خواهد شد"
+
+#: browse_button.cpp:62
+msgid "Browse..."
+msgstr "باز کردن...."
+
+#: browse_button.cpp:90
+msgid "Please choose the folder:"
+msgstr "اطفا فولدر را انتخاب نمایید:"
+
+#: dialog_automation.cpp:63
+msgid "Automation Manager"
+msgstr "مدیریت عملیات خودکار"
+
+#: dialog_automation.cpp:73
+msgid "&Add"
+msgstr "اضافه کردن"
+
+#: dialog_automation.cpp:74
+msgid "&Remove"
+msgstr "حذف"
+
+#: dialog_automation.cpp:75
+msgid "Re&load"
+msgstr "بارگذاری مجدد"
+
+#: dialog_automation.cpp:76
+msgid "Show &Info"
+msgstr "نمایش اطلاعات"
+
+#: dialog_automation.cpp:77
+msgid "Re&scan Autoload Dir"
+msgstr "بررسی مجدد مکان بارگذاری خودکار"
+
+#: dialog_automation.cpp:78
+#: dialog_version_check.cpp:485
+#: dialog_attachments.cpp:86
+msgid "&Close"
+msgstr "بستن"
+
+#: dialog_automation.cpp:82
+msgid "Name"
+msgstr "نام"
+
+#: dialog_automation.cpp:83
+msgid "Filename"
+msgstr "اسم فایل"
+
+#: dialog_automation.cpp:84
+msgid "Description"
+msgstr "توضیحات"
+
+#: dialog_automation.cpp:233
+msgid "Add Automation script"
+msgstr "اضافه کردن یک اسکریپت عملیات خودکار"
+
+#: dialog_automation.cpp:318
+#, c-format
+msgid ""
+"Total scripts loaded: %d\n"
+"Global scripts loaded: %d\n"
+"Local scripts loaded: %d\n"
+"\n"
+msgstr ""
+"تمام اسکریپت های بارگذاری شده: %d\n"
+"تمام اسکریپت های موجود: %d\n"
+"اسکریپت های محلی بارگذاری شده: %d\n"
+"\n"
+
+#: dialog_automation.cpp:323
+msgid "Scripting engines installed:\n"
+msgstr "موتور اسکریپت نصب شده:\n"
+
+#: dialog_automation.cpp:330
+#, c-format
+msgid ""
+"\n"
+"Script info:\n"
+"Name: %s\n"
+"Description: %s\n"
+"Author: %s\n"
+"Version: %s\n"
+"Full path: %s\n"
+"State: %s\n"
+"\n"
+"Features provided by script:\n"
+msgstr ""
+"\n"
+"مشخصات اسکریپت: \n"
+"%s نام:\n"
+"%s توضیحات:\n"
+"%s نویسنده:\n"
+"%s نسخه:\n"
+"%s مسیر کامل فایل:\n"
+"%s حالت:\n"
+"\n"
+"امکاناتی که توسط اسکریپت فراهم میشود:\n"
+
+#: dialog_automation.cpp:336
+msgid "Correctly loaded"
+msgstr "به درستی بارگذاری شده است"
+
+#: dialog_automation.cpp:336
+msgid "Failed to load"
+msgstr "بروز خطا در بارگذاری"
+
+#: dialog_automation.cpp:340
+msgid "    Macro: "
+msgstr "   ماکرو:   "
+
+#: dialog_automation.cpp:342
+msgid "    Export filter: "
+msgstr "  فیلتر خروجی:  "
+
+#: dialog_automation.cpp:344
+msgid "    Subtitle format handler: "
+msgstr "  مسئول فرمت های زیرنویس:"
+
+#: dialog_automation.cpp:352
+msgid "Automation Script Info"
+msgstr "عملیات خودکار مشخصات اسکریپت "
+
+#: subs_grid.cpp:136
+msgid "Line Number"
+msgstr "شماره خط"
+
+#: subs_grid.cpp:137
+#: dialog_paste_over.cpp:70
+msgid "Layer"
+msgstr "لایه"
+
+#: subs_grid.cpp:138
+#: base_grid.cpp:486
+msgid "Start"
+msgstr "شروع"
+
+#: subs_grid.cpp:139
+#: base_grid.cpp:487
+msgid "End"
+msgstr "پایان"
+
+#: subs_grid.cpp:143
+#: base_grid.cpp:491
+#: dialog_style_editor.cpp:315
+msgid "Left"
+msgstr "چپ"
+
+#: subs_grid.cpp:144
+#: base_grid.cpp:492
+#: dialog_style_editor.cpp:315
+msgid "Right"
+msgstr "راست"
+
+#: subs_grid.cpp:145
+#: base_grid.cpp:493
+#: dialog_style_editor.cpp:315
+msgid "Vert"
+msgstr "عمودی"
+
+#: subs_grid.cpp:169
+msgid "&Insert (before)"
+msgstr "(وارد کردن(قبل از"
+
+#: subs_grid.cpp:170
+msgid "Insert (after)"
+msgstr "(وارد کردن(بعد از"
+
+#: subs_grid.cpp:172
+msgid "Insert at video time (before)"
+msgstr "(وارد کردن در زمان ویدیو(قبل"
+
+#: subs_grid.cpp:173
+msgid "Insert at video time (after)"
+msgstr "(وارد کردن در زمان ویدیو(بعد"
+
+#: subs_grid.cpp:185
+msgid "&Duplicate"
+msgstr "تکثیر"
+
+#: subs_grid.cpp:185
+#: frame_main.cpp:418
+msgid "Duplicate the selected lines"
+msgstr "تکثیر خط های انتخابی"
+
+#: subs_grid.cpp:186
+msgid "&Duplicate and shift by 1 frame"
+msgstr "تکثیر و انتقال با فاصله یک فریم"
+
+#: subs_grid.cpp:186
+#: frame_main.cpp:419
+msgid "Duplicate lines and shift by one frame"
+msgstr "خط ها را تکثیر میکند و یک فرم انتقال میدهد "
+
+#: subs_grid.cpp:187
+msgid "Split (by karaoke)"
+msgstr "جداسازی بر اساس کاروکه"
+
+#: subs_grid.cpp:187
+#: frame_main.cpp:432
+msgid "Uses karaoke timing to split line into multiple smaller lines"
+msgstr "بر اساس زمانبندی کاروکه خط را به چندین خط کوچکتر تبدیل میکند"
+
+#: subs_grid.cpp:191
+msgid "&Swap"
+msgstr "تعویض"
+
+#: subs_grid.cpp:191
+#: frame_main.cpp:434
+msgid "Swaps the two selected lines"
+msgstr "تعویض دو خط انتخابی"
+
+#: subs_grid.cpp:195
+msgid "&Join (concatenate)"
+msgstr "(ترکیب(متمرکز"
+
+#: subs_grid.cpp:195
+#: frame_main.cpp:427
+msgid "Joins selected lines in a single one, concatenating text together"
+msgstr "تمام خط ها را در یک خط ترکیب میکند"
+
+#: subs_grid.cpp:196
+msgid "Join (keep first)"
+msgstr "ترکیب و نگه داشتن خط اول"
+
+#: subs_grid.cpp:196
+#: frame_main.cpp:428
+msgid "Joins selected lines in a single one, keeping text of first and discarding remaining"
+msgstr "خطوط انتخابی را ترکیب کرده و تنها متن خط ابتدا را نگه میدارد و بقیه خطوط را حذف میکند"
+
+#: subs_grid.cpp:197
+msgid "Join (as Karaoke)"
+msgstr "ترکیب به عنوان کاروکه"
+
+#: subs_grid.cpp:197
+msgid "Joins selected lines in a single one, making each line into a karaoke syllable"
+msgstr "خطوط انتخابی را ترکیب کرده و هر خط را به یک سیلاب کاروکه تبدیل میکند "
+
+#: subs_grid.cpp:201
+msgid "&Make times continuous (change start)"
+msgstr "(تبدیل زمانها به صورت ادامه دار(تغییر زمان های ابتدا"
+
+#: subs_grid.cpp:201
+#: frame_main.cpp:455
+msgid "Changes times of subs so start times begin on previous's end time"
+msgstr "زمانهای ابتدا را به صورتی تغییر میدهد که زیرنویس ها به صورت ادامه دار در بیایند"
+
+#: subs_grid.cpp:202
+msgid "&Make times continuous (change end)"
+msgstr "(تبدیل زمانها به صورت ادامه دار(تغییر زمان های انتها"
+
+#: subs_grid.cpp:202
+#: frame_main.cpp:456
+msgid "Changes times of subs so end times begin on next's start time"
+msgstr "زمانهای انتها را به صورتی تغییر میدهد که زیرنویس ها به صورت ادامه دار در بیایند"
+
+#: subs_grid.cpp:206
+#: frame_main.cpp:431
+msgid "Recombine Lines"
+msgstr "ترکیب خطوط"
+
+#: subs_grid.cpp:206
+#: frame_main.cpp:431
+msgid "Recombine subtitles when they have been split and merged"
+msgstr "ترکیب مجدد زیرنویس زمانی که آنها از یکدیگر جدا شده باشند"
+
+#: subs_grid.cpp:211
+msgid "Create audio clip"
+msgstr "ایجاد یک برش از صدا"
+
+#: subs_grid.cpp:211
+msgid "Create an audio clip of the selected line"
+msgstr "یک برش از صدای خط انتخابی ایجاد میکند"
+
+#: subs_grid.cpp:216
+#: timeedit_ctrl.cpp:345
+#: subs_edit_ctrl.cpp:982
+msgid "&Copy"
+msgstr "کپی"
+
+#: subs_grid.cpp:216
+msgid "Copies selected lines to clipboard"
+msgstr "کپی خطوط انتخابی در حافظه"
+
+#: subs_grid.cpp:217
+msgid "C&ut"
+msgstr "برش"
+
+#: subs_grid.cpp:217
+msgid "Cuts selected lines to clipboard"
+msgstr "برش متن خط انتخابی به "
+
+#: subs_grid.cpp:218
+#: timeedit_ctrl.cpp:346
+#: subs_edit_ctrl.cpp:983
+msgid "&Paste"
+msgstr "چسباندن"
+
+#: subs_grid.cpp:218
+msgid "Paste lines from clipboard"
+msgstr "چساندن خطوط از حافظه"
+
+#: subs_grid.cpp:222
+#: frame_main.cpp:420
+msgid "Delete currently selected lines"
+msgstr "حدف زیرنویس های انتخابی"
+
+#: subs_grid.cpp:444
+msgid "splitting"
+msgstr "جداسازی"
+
+#: subs_grid.cpp:713
+msgid "combining"
+msgstr "ترکیب"
+
+#: subs_grid.cpp:747
+msgid "The starting point is beyond the length of the audio loaded."
+msgstr "نقطه شروع بعد از اتمام زمان صدا بارگذاری شده قرار گرفته است"
+
+#: subs_grid.cpp:751
+msgid "There is no audio to save."
+msgstr ".هیچ صدایی برای ذخیره وجود ندارد"
+
+#: subs_grid.cpp:758
+msgid "Save audio clip"
+msgstr "ذخیره برش صدا"
+
+#: subs_grid.cpp:797
+msgid "Couldn't allocate memory."
+msgstr "نرم افزار قادر به تخصیص حافظه نیست"
+
+#: subs_grid.cpp:880
+#: subs_grid.cpp:881
+msgid "load"
+msgstr "بارگذاری"
+
+#: subs_grid.cpp:926
+msgid "swap lines"
+msgstr "تعویض خطوط"
+
+#: subs_grid.cpp:957
+msgid "line insertion"
+msgstr "وارد کردن خط"
+
+#: subs_grid.cpp:1093
+msgid "paste"
+msgstr "چسباندن"
+
+#: subs_grid.cpp:1139
+msgid "delete"
+msgstr "حذف"
+
+#: subs_grid.cpp:1245
+msgid "adjoin"
+msgstr " متصل کردن"
+
+#: subs_grid.cpp:1429
+msgid "split"
+msgstr "جدا سازی"
+
+#: subs_grid.cpp:1547
+msgid "timing"
+msgstr "زمانبندی"
+
+#: dialog_detached_video.cpp:76
+#, c-format
+msgid "Video: %s"
+msgstr " %s:ویدیو"
+
+#: ass_style.cpp:630
+msgid "ANSI"
+msgstr "ANSI"
+
+#: ass_style.cpp:632
+msgid "Symbol"
+msgstr "Symbol"
+
+#: ass_style.cpp:633
+msgid "Mac"
+msgstr "Mac"
+
+#: ass_style.cpp:634
+msgid "Shift_JIS"
+msgstr "Shift_JIS"
+
+#: ass_style.cpp:635
+msgid "Hangeul"
+msgstr "Hangeul"
+
+#: ass_style.cpp:636
+msgid "Johab"
+msgstr "Johab"
+
+#: ass_style.cpp:637
+msgid "GB2312"
+msgstr "GB2312"
+
+#: ass_style.cpp:638
+msgid "Chinese BIG5"
+msgstr "Chinese BIG5"
+
+#: ass_style.cpp:639
+msgid "Greek"
+msgstr "Greek"
+
+#: ass_style.cpp:640
+msgid "Turkish"
+msgstr "Turkish"
+
+#: ass_style.cpp:641
+msgid "Vietnamese"
+msgstr "Vietnamese"
+
+#: ass_style.cpp:642
+msgid "Hebrew"
+msgstr "Hebrew"
+
+#: ass_style.cpp:643
+msgid "Arabic"
+msgstr "Arabic"
+
+#: ass_style.cpp:644
+msgid "Baltic"
+msgstr "Baltic"
+
+#: ass_style.cpp:645
+msgid "Russian"
+msgstr "Russian"
+
+#: ass_style.cpp:646
+msgid "Thai"
+msgstr "Thai"
+
+#: ass_style.cpp:647
+msgid "East European"
+msgstr "East European"
+
+#: ass_style.cpp:648
+msgid "OEM"
+msgstr "OEM"
+
+#: video_provider_avs.cpp:114
+msgid "Unknown"
+msgstr "نامشخص"
+
+#: video_provider_avs.cpp:271
+msgid "You already have timecodes loaded. Replace them with the timecodes from the Matroska file?"
+msgstr "  جایگزین کنید؟ Matroska کدهی زمانی در ال حاضر بارگذاری شده اند.میخواهید آنها را با کدهای زمانی از فایل "
+
+#: dialog_search_replace.cpp:75
+msgid "Find what:"
+msgstr "مورد جستجو:"
+
+#: dialog_search_replace.cpp:88
+msgid "Use regular expressions"
+msgstr "استفاده از عبارات معمول"
+
+#: dialog_search_replace.cpp:89
+msgid "Update Video (slow)"
+msgstr "(بروزرسانی ویدیو (کند"
+
+#: dialog_search_replace.cpp:106
+#: dialog_shift_times.cpp:117
+msgid "All rows"
+msgstr "تمام خطوط"
+
+#: dialog_search_replace.cpp:107
+#: dialog_shift_times.cpp:117
+msgid "Selected rows"
+msgstr "خطوط انتخابی"
+
+#: dialog_search_replace.cpp:109
+msgid "Limit to"
+msgstr "محدود به"
+
+#: dialog_search_replace.cpp:124
+msgid "Find next"
+msgstr "یافتن بعدی"
+
+#: dialog_search_replace.cpp:128
+msgid "Replace next"
+msgstr "جایگذاری بعدی"
+
+#: dialog_search_replace.cpp:129
+msgid "Replace all"
+msgstr "جایگذاری همه"
+
+#: dialog_search_replace.cpp:445
+#: dialog_search_replace.cpp:558
+msgid "replace"
+msgstr "جایگذاری"
+
+#: dialog_search_replace.cpp:561
+#, c-format
+msgid "%i matches were replaced."
+msgstr "کلمه جایگزین شد %i "
+
+#: dialog_search_replace.cpp:566
+msgid "No matches found."
+msgstr "هیچ مشابهی یافت نشد "
+
+#: dialog_search_replace.cpp:606
+#: hotkeys.cpp:394
+msgid "Find"
+msgstr "یافتن"
+
+#: visual_tool_vector_clip.cpp:94
+msgid "Drag control points."
+msgstr "کشیدن نقاط کنترلی"
+
+#: visual_tool_vector_clip.cpp:95
+msgid "Line"
+msgstr "خط"
+
+#: visual_tool_vector_clip.cpp:95
+msgid "Appends a line."
+msgstr ".پیوست یک خط"
+
+#: visual_tool_vector_clip.cpp:96
+msgid "Bicubic"
+msgstr "Bicubic"
+
+#: visual_tool_vector_clip.cpp:96
+msgid "Appends a bezier bicubic curve."
+msgstr "Appends a bezier bicubic curve."
+
+#: visual_tool_vector_clip.cpp:98
+msgid "Convert"
+msgstr "تبدیل"
+
+#: visual_tool_vector_clip.cpp:98
+msgid "Converts a segment between line and bicubic."
+msgstr "یک بخش را بین خط و خط ضلعی تبدیل میکند"
+
+#: visual_tool_vector_clip.cpp:99
+msgid "Insert"
+msgstr "وارد کردن"
+
+#: visual_tool_vector_clip.cpp:99
+msgid "Inserts a control point."
+msgstr "وارد کردن یک نقطه کنترل"
+
+#: visual_tool_vector_clip.cpp:100
+msgid "Remove"
+msgstr "حذف"
+
+#: visual_tool_vector_clip.cpp:100
+msgid "Removes a control point."
+msgstr "حذف یک نقطه کنترل"
+
+#: visual_tool_vector_clip.cpp:102
+msgid "Freehand"
+msgstr "دست آزاد"
+
+#: visual_tool_vector_clip.cpp:102
+msgid "Draws a freehand shape."
+msgstr "طراحی شکل یه صورت دست آزاد"
+
+#: visual_tool_vector_clip.cpp:103
+msgid "Freehand smooth"
+msgstr "صاف کردن دست آزاد"
+
+#: visual_tool_vector_clip.cpp:103
+msgid "Draws a smoothed freehand shape."
+msgstr "اشکالی با خطوط صاف در حالت دست آزاد میکشد"
+
+#: export_clean_info.cpp:63
+msgid "Clean Script Info"
+msgstr "پاک کردن اطلاعات اسکریپت"
+
+#: export_clean_info.cpp:64
+msgid "Removes all but the absolutely required fields from the Script Info section. You might want to run this on files that you plan to distribute in original form."
+msgstr "بخشهای اضافی را حذف میکند"
+
+#: base_grid.cpp:484
+msgid "#"
+msgstr "#"
+
+#: base_grid.cpp:485
+msgid "L"
+msgstr "L"
+
+#: auto4_base.cpp:519
+#: dialog_kara_timing_copy.cpp:872
+msgid "Close"
+msgstr "بستن"
+
+#: auto4_base.cpp:521
+msgid "Script completed"
+msgstr "اسکریپت کامل شده است"
+
+#: auto4_base.cpp:1003
+#, c-format
+msgid "An Automation script failed to load. File name: '%s', error reported:"
+msgstr " :خطای گزارش شده,'%s'در بارگذاری یک اوتوماسیون خطایی به وجود آمده.اسم فایل:"
+
+#: auto4_base.cpp:1016
+#, c-format
+msgid "The file was not recognised as an Automation script: %s"
+msgstr "%s: فایل به عنوان فایل اتوماسیون شناخته نشد"
+
+#: auto4_base.cpp:1065
+msgid "File was not recognized as a script"
+msgstr "فایل به عنوان یک اسکریپت شناخنه نشد"
+
+#: dialog_resample.cpp:61
+msgid "Resample resolution"
+msgstr "تنظیم مجدد ابعاد تصویر "
+
+#: dialog_resample.cpp:72
+msgid "Margin offset"
+msgstr "جایجایی حاشیه"
+
+#: dialog_resample.cpp:76
+msgid "Symmetrical"
+msgstr "متقارن"
+
+#: dialog_resample.cpp:94
+#: dialog_properties.cpp:112
+msgid "Resolution"
+msgstr "ابعاد تصویر"
+
+#: dialog_resample.cpp:102
+msgid "x"
+msgstr "x"
+
+#: dialog_resample.cpp:103
+#: dialog_properties.cpp:118
+msgid "From video"
+msgstr "از ویدیو"
+
+#: dialog_resample.cpp:109
+msgid "Change aspect ratio"
+msgstr "تغییر نسیت طول به عرض تصویر"
+
+#: dialog_resample.cpp:241
+msgid "Invalid resolution: destination resolution cannot be 0 on either dimension."
+msgstr "ابعاد نامعتبر:ابعاد تصویر مقصد در هیچ محوری نمیتواند صفر باشد "
+
+#: dialog_resample.cpp:325
+msgid "resolution resampling"
+msgstr "تنظیم مجدد ابعاد نصویر"
+
+#: subs_edit_box.cpp:90
+msgid "Comment"
+msgstr "نظر"
+
+#: subs_edit_box.cpp:91
+msgid "Comment this line out. Commented lines don't show up on screen."
+msgstr "نظر شما در مورد این خط.این خطوط در صفحه نمایش داده نمیشود"
+
+#: subs_edit_box.cpp:93
+msgid "Style for this line."
+msgstr "استایل این خط"
+
+#: subs_edit_box.cpp:95
+msgid "Actor name for this speech. This is only for reference, and is mainly useless."
+msgstr "نام بازیگر گوینده صحبت.این تنها مرجع است،ودر واقع بی استفاده است"
+
+#: subs_edit_box.cpp:98
+msgid "Effect for this line. This can be used to store extra information for karaoke scripts, or for the effects supported by the renderer."
+msgstr "افکت برای این خط.این بخش برای ذخیره اطلاعات تکمیلی در اسکریپت های کاروکه استفاده میشود یا برای افکت هایی که رندر کننده از آن ها پشتیبانی میکند"
+
+#: subs_edit_box.cpp:103
+msgid "Layer number"
+msgstr "شماره لایه"
+
+#: subs_edit_box.cpp:105
+msgid "Start time"
+msgstr "زمان شروع"
+
+#: subs_edit_box.cpp:108
+msgid "End time"
+msgstr "زمان اتمام"
+
+#: subs_edit_box.cpp:112
+msgid "Line duration"
+msgstr "مدت زمان خط"
+
+#: subs_edit_box.cpp:115
+msgid "Left Margin (0 = default)"
+msgstr "(حاشیه چپ (0=پیشفرض"
+
+#: subs_edit_box.cpp:118
+msgid "Right Margin (0 = default)"
+msgstr "(حاشیه راست (0=پیشفرض"
+
+#: subs_edit_box.cpp:121
+msgid "Vertical Margin (0 = default)"
+msgstr "(حاشیه عمودی (0=پیشفرض"
+
+#: subs_edit_box.cpp:126
+#: dialog_style_editor.cpp:212
+msgid "Bold"
+msgstr "تو پر"
+
+#: subs_edit_box.cpp:128
+msgid "Italics"
+msgstr "کج"
+
+#: subs_edit_box.cpp:130
+#: dialog_style_editor.cpp:214
+msgid "Underline"
+msgstr "خط زیر"
+
+#: subs_edit_box.cpp:132
+#: dialog_style_editor.cpp:215
+msgid "Strikeout"
+msgstr "خط خوردن"
+
+#: subs_edit_box.cpp:134
+msgid "Font Face Name"
+msgstr "نام فونت"
+
+#: subs_edit_box.cpp:136
+msgid "Primary color"
+msgstr "رنگ اولیه"
+
+#: subs_edit_box.cpp:138
+msgid "Secondary color"
+msgstr "رنگ ثانویه"
+
+#: subs_edit_box.cpp:140
+msgid "Outline color"
+msgstr "رنگ حاشیه"
+
+#: subs_edit_box.cpp:142
+msgid "Shadow color"
+msgstr "رنگ سایه"
+
+#: subs_edit_box.cpp:144
+msgid "Commits the text (Enter). Hold Ctrl to stay in line (%KEY%)."
+msgstr " (%KEY%) برای ماندن در همین خط (Enter)اعمال بر روی متن"
+
+#: subs_edit_box.cpp:145
+msgid "Time"
+msgstr "زمان"
+
+#: subs_edit_box.cpp:146
+msgid "Time by h:mm:ss.cs"
+msgstr "Time by h:mm:ss.cs"
+
+#: subs_edit_box.cpp:147
+msgid "Frame"
+msgstr "فریم"
+
+#: subs_edit_box.cpp:148
+msgid "Time by frame number"
+msgstr "زمان بر اساس شماره فریم"
+
+#: subs_edit_box.cpp:626
+#: dialog_style_editor.cpp:590
+msgid "style change"
+msgstr "تعویض استایل"
+
+#: subs_edit_box.cpp:659
+msgid "actor change"
+msgstr "تغییر بازیگر"
+
+#: subs_edit_box.cpp:688
+#: subs_edit_box.cpp:716
+msgid "layer change"
+msgstr "تعویض لایه"
+
+#: subs_edit_box.cpp:802
+msgid "modify times"
+msgstr "تغییر زمان ها"
+
+#: subs_edit_box.cpp:828
+msgid "MarginL change"
+msgstr "تغییر حاشیه چپ"
+
+#: subs_edit_box.cpp:852
+msgid "MarginR change"
+msgstr "تغییر حاشیه راست"
+
+#: subs_edit_box.cpp:877
+msgid "MarginV change"
+msgstr "تغییر حاشیه عمودی"
+
+#: subs_edit_box.cpp:900
+msgid "effect change"
+msgstr "تغییر افکت"
+
+#: subs_edit_box.cpp:922
+msgid "comment change"
+msgstr "تغییر نظر"
+
+#: subs_edit_box.cpp:1003
+msgid "editing"
+msgstr "ویرایش"
+
+#: dialog_version_check.cpp:179
+#, c-format
+msgid ""
+"There was an error checking for updates to Aegisub:\n"
+"%s\n"
+"\n"
+"If other applications can access the Internet fine, this is probably a temporary server problem on our end."
+msgstr ""
+"در بروز رسانی مشکلی پیش آمده است\n"
+"%s\n"
+"\n"
+"اگر نرم افزار های دیگر به اینترنت دسترسی دارند پس احتمالا مشکل از سرور سایت است"
+
+#: dialog_version_check.cpp:183
+msgid "An unknown error occurred while checking for updates to Aegisub."
+msgstr "خطای ناشناخته در هنگام بررسی برای نسخه جدید رخ داده است"
+
+#: dialog_version_check.cpp:332
+msgid "Could not connect to updates server."
+msgstr "نرم افزار قادر نیست به سرور های به زوررسانی متصل شود"
+
+#: dialog_version_check.cpp:337
+#, c-format
+msgid "HTTP request failed, got HTTP response %d."
+msgstr "%d درخواست با مشکل روبرو شد.پاسخ دریافت شده بر این اساس است "
+
+#: dialog_version_check.cpp:409
+msgid "An update to Aegisub was found."
+msgstr "یک برورسانی برای نرم افزار یافته شد"
+
+#: dialog_version_check.cpp:413
+msgid "Several possible updates to Aegisub were found."
+msgstr "چندین بروزرسانی ممکن برای نرم افزار یافته شده"
+
+#: dialog_version_check.cpp:417
+msgid "There are no updates to Aegisub."
+msgstr "هیچ بروزرسانی موجود نمی باشد"
+
+#: dialog_version_check.cpp:451
+msgid "Version Checker"
+msgstr "یررسی شماره نسخه"
+
+#: dialog_version_check.cpp:483
+msgid "Remind me again in a &week"
+msgstr "هفته آینده به من یادآوری کن"
+
+#: frame_main.cpp:219
+msgid "Do you want Aegisub to check for updates whenever it starts? You can still do it manually via the Help menu."
+msgstr "آیا میخواهید نرم افزار به طور خودکار در زمان اجرا وجود نسخه جدید را بررسی کند؟شما هنوز هم میتوانید خدتان از بخش راهنما این کار را خوتان انجام بدهید"
+
+#: frame_main.cpp:219
+msgid "Check for updates?"
+msgstr "بررسی برای بروزرسانی؟"
+
+#: frame_main.cpp:252
+#: frame_main.cpp:357
+#: hotkeys.cpp:373
+msgid "New subtitles"
+msgstr "زیرنویس جدید "
+
+#: frame_main.cpp:253
+msgid "Open"
+msgstr "باز کردن"
+
+#: frame_main.cpp:253
+#: hotkeys.cpp:374
+msgid "Open subtitles"
+msgstr "باز کردن زیرنویس"
+
+#: frame_main.cpp:254
+msgid "Save"
+msgstr "ذخیره کردن"
+
+#: frame_main.cpp:254
+#: hotkeys.cpp:375
+msgid "Save subtitles"
+msgstr "ذخیره کردن زیرنویس"
+
+#: frame_main.cpp:258
+msgid "Jump To..."
+msgstr "پرش به..."
+
+#: frame_main.cpp:258
+msgid "Jump video to time/frame"
+msgstr "پرش ویدیو به زمان/فریم"
+
+#: frame_main.cpp:259
+msgid "Zoom in"
+msgstr "زوم کردن"
+
+#: frame_main.cpp:259
+msgid "Zoom video in"
+msgstr "زوم کردن  بر ویدیو"
+
+#: frame_main.cpp:260
+msgid "Zoom out"
+msgstr "از زوم خارج کردن"
+
+#: frame_main.cpp:260
+msgid "Zoom video out"
+msgstr "خارج کردن ویدو از زوم"
+
+#: frame_main.cpp:273
+msgid "Jump video to start"
+msgstr "پرش به ابتدای ویدیو"
+
+#: frame_main.cpp:273
+#: frame_main.cpp:507
+msgid "Jumps the video to the start frame of current subtitle"
+msgstr "ویدیو را به مکان اولین فریم خط زیرنویس پرش میدهد"
+
+#: frame_main.cpp:274
+msgid "Jump video to end"
+msgstr "پرش به انتهای ویدیو"
+
+#: frame_main.cpp:274
+#: frame_main.cpp:508
+msgid "Jumps the video to the end frame of current subtitle"
+msgstr "ویدیو را به مکان آخرین فریم خط زیرنویس پرش میدهد"
+
+#: frame_main.cpp:275
+msgid "Snap start to video"
+msgstr "چسباندن شروع به ویدیو"
+
+#: frame_main.cpp:275
+#: frame_main.cpp:445
+msgid "Set start of selected subtitles to current video frame"
+msgstr "شروع زیرنویس انتخاب شده را در این فریم قرار میدهد"
+
+#: frame_main.cpp:276
+msgid "Snap end to video"
+msgstr "چسباندن انتها به ویدیو"
+
+#: frame_main.cpp:276
+#: frame_main.cpp:446
+msgid "Set end of selected subtitles to current video frame"
+msgstr "پایان زیرنویس انتخاب شده را در این فریم قرار میدهد"
+
+#: frame_main.cpp:277
+msgid "Select visible"
+msgstr "انتخای رویت پذیرها"
+
+#: frame_main.cpp:277
+msgid "Selects all lines that are currently visible on video frame"
+msgstr "انتخاب تمام خطوطی را که در حال حاضر دیده میشوند"
+
+#: frame_main.cpp:278
+msgid "Snap subtitles to scene"
+msgstr "چسباندن ویدیو به صحنه"
+
+#: frame_main.cpp:278
+msgid "Snap selected subtitles so they match current scene start/end"
+msgstr "زیرنویس انتخابی را به صحنه می چسباند به صورتی که ابتدا و انتهای آن در ابتدا و انتهاب صحنه قرار بگیرد"
+
+#: frame_main.cpp:279
+msgid "Shift subtitles to frame"
+msgstr "انتقال زیرنویس به فریم "
+
+#: frame_main.cpp:279
+msgid "Shift selected subtitles so first selected starts at this frame"
+msgstr "انتقال زیرنویس انتخاب شده به صورتی که اولین خط انتخاب شده از این فریم آغاز میشود "
+
+#: frame_main.cpp:283
+msgid "Open Styles Manager"
+msgstr "گشودن مدیریت استایل"
+
+#: frame_main.cpp:284
+msgid "Properties"
+msgstr "مشخصات"
+
+#: frame_main.cpp:284
+msgid "Open Properties"
+msgstr "بازکردن مشخصات"
+
+#: frame_main.cpp:285
+msgid "Attachments"
+msgstr "ضمائم"
+
+#: frame_main.cpp:285
+msgid "Open Attachment List"
+msgstr "بازکردن لیست ضمائم"
+
+#: frame_main.cpp:286
+#: dialog_fonts_collector.cpp:90
+msgid "Fonts Collector"
+msgstr "جمع آور فونت ها"
+
+#: frame_main.cpp:286
+msgid "Open Fonts Collector"
+msgstr "گشودن جمع کننده فونت"
+
+#: frame_main.cpp:291
+msgid "Open Automation manager"
+msgstr "گشودن مدیریت عملیات خودکار "
+
+#: frame_main.cpp:297
+#: frame_main.cpp:410
+msgid "Launches ai-chan's \"ASSDraw3\" tool for vector drawing."
+msgstr "که برای طراحی برداری است میگشاید ai-chan نوشته شده توسط  \"ASSDraw3\"نرم افزار "
+
+#: frame_main.cpp:300
+#: dialog_shift_times.cpp:72
+#: hotkeys.cpp:393
+msgid "Shift Times"
+msgstr "انتقال زمانها"
+
+#: frame_main.cpp:300
+msgid "Open Shift Times Dialogue"
+msgstr "گشودن بخش انتقال زمان ها"
+
+#: frame_main.cpp:301
+msgid "Styling Assistant"
+msgstr "دستیار استایل"
+
+#: frame_main.cpp:301
+msgid "Open Styling Assistant"
+msgstr "گشودن دستیار استایل"
+
+#: frame_main.cpp:302
+#: dialog_translation.cpp:70
+msgid "Translation Assistant"
+msgstr ".دستیار ترجمه"
+
+#: frame_main.cpp:302
+msgid "Open Translation Assistant"
+msgstr "گشودن دستیار ترجمه"
+
+#: frame_main.cpp:303
+msgid "Resample"
+msgstr "تنظیم مجدد"
+
+#: frame_main.cpp:303
+msgid "Resample Script Resolution"
+msgstr "تنظیم مجدد ابعاد تصویر اسکریپت"
+
+#: frame_main.cpp:304
+msgid "Open Timing Post-processor dialog"
+msgstr "صفحه زمانبندی پس از پردازش را می گشاید"
+
+#: frame_main.cpp:305
+msgid "Kanji Timer"
+msgstr "زمانبندی کانجی "
+
+#: frame_main.cpp:305
+msgid "Open Kanji Timer dialog"
+msgstr "گشودن زمانبند گفتگو های کانجی"
+
+#: frame_main.cpp:306
+msgid "Open Spell checker"
+msgstr "باز کردن بررسی کننده املایی"
+
+#: frame_main.cpp:310
+#: frame_main.cpp:536
+msgid "Configure Aegisub"
+msgstr "تنظیم نرم افزار"
+
+#: frame_main.cpp:311
+msgid "Cycle Tag Hidding Mode"
+msgstr "تغییر وضعیت نمایش تگ ها"
+
+#: frame_main.cpp:311
+msgid "Cycle through tag-hiding modes"
+msgstr "تغییر وضعیت نمایش تگ ها"
+
+#: frame_main.cpp:342
+#: frame_main.cpp:560
+msgid "&Help"
+msgstr "راهنما"
+
+#: frame_main.cpp:357
+msgid "&New Subtitles"
+msgstr "زیرنویس جدید"
+
+#: frame_main.cpp:358
+msgid "&Open Subtitles..."
+msgstr "...باز کردن زیرنویس"
+
+#: frame_main.cpp:358
+msgid "Opens a subtitles file"
+msgstr "باز کردن یک فایل زیرنویس"
+
+#: frame_main.cpp:359
+msgid "&Open Subtitles with Charset..."
+msgstr "باز کردن زیرنویس با نویسه گان...  "
+
+#: frame_main.cpp:359
+msgid "Opens a subtitles file with a specific charset"
+msgstr "زیرنویس را با نویسگان خاصی می گشاید"
+
+#: frame_main.cpp:360
+msgid "&Save Subtitles"
+msgstr "ذخیره زیرنویس"
+
+#: frame_main.cpp:360
+msgid "Saves subtitles"
+msgstr "ذخیره زیرنویس"
+
+#: frame_main.cpp:361
+msgid "Save Subtitles as..."
+msgstr "...ذخیره زیرنویس با نام"
+
+#: frame_main.cpp:361
+msgid "Saves subtitles with another name"
+msgstr "ذخیره زیرنویس با نامی دیگر"
+
+#: frame_main.cpp:362
+msgid "Export Subtitles..."
+msgstr "خروجی گرفتن از زیرنویس..."
+
+#: frame_main.cpp:362
+msgid "Saves a copy of subtitles with processing applied to it."
+msgstr "ذخیره یک نسخه از زیرنویس با اعمال تغییرات داده شده"
+
+#: frame_main.cpp:363
+#: frame_main.cpp:464
+#: frame_main.cpp:472
+#: frame_main.cpp:478
+#: frame_main.cpp:516
+msgid "Recent"
+msgstr "اخیر"
+
+#: frame_main.cpp:369
+msgid "&Properties..."
+msgstr "مشخصات"
+
+#: frame_main.cpp:369
+msgid "Open script properties window"
+msgstr "گشودن پنجره مشخصات اسکریپت"
+
+#: frame_main.cpp:370
+msgid "&Attachments..."
+msgstr "ضمائم..."
+
+#: frame_main.cpp:370
+msgid "Open the attachment list"
+msgstr "گشودن لیست ضمائم"
+
+#: frame_main.cpp:371
+msgid "&Fonts Collector..."
+msgstr "جمع کننده فونت ها ..."
+
+#: frame_main.cpp:371
+msgid "Open fonts collector"
+msgstr "گشودن جمع کننده فونت ها"
+
+#: frame_main.cpp:375
+msgid "New Window"
+msgstr "پنجره جدید"
+
+#: frame_main.cpp:375
+msgid "Open a new application window"
+msgstr "گشودن یک پنجره جدید از نرم افزار"
+
+#: frame_main.cpp:377
+msgid "E&xit"
+msgstr "خروج"
+
+#: frame_main.cpp:377
+msgid "Exit the application"
+msgstr "خروج ار برنامه"
+
+#: frame_main.cpp:378
+msgid "&File"
+msgstr "فایل"
+
+#: frame_main.cpp:386
+msgid "Cut Lines"
+msgstr "برش خطوط"
+
+#: frame_main.cpp:386
+msgid "Cut subtitles"
+msgstr "برش زیرنویس ها"
+
+#: frame_main.cpp:387
+msgid "Copy Lines"
+msgstr "کپی خطوط"
+
+#: frame_main.cpp:387
+msgid "Copy subtitles"
+msgstr "کپی زیرنویس ها"
+
+#: frame_main.cpp:388
+msgid "Paste Lines"
+msgstr "چسباندن خطوط"
+
+#: frame_main.cpp:388
+msgid "Paste subtitles"
+msgstr "چسباندن زیرنویس ها"
+
+#: frame_main.cpp:389
+msgid "Paste Lines Over..."
+msgstr "چسباندن بر روی خطوط ..."
+
+#: frame_main.cpp:389
+msgid "Paste subtitles over others"
+msgstr "چسباندن خطوط بر روی خطوط دیگر ..."
+
+#: frame_main.cpp:391
+msgid "&Find..."
+msgstr "...یافتن"
+
+#: frame_main.cpp:391
+msgid "Find words in subtitles"
+msgstr "یافتن کلمات در زیرنویس"
+
+#: frame_main.cpp:392
+#: hotkeys.cpp:396
+#: hotkeys.cpp:399
+msgid "Find Next"
+msgstr "یافتن بعدی"
+
+#: frame_main.cpp:392
+msgid "Find next match of last word"
+msgstr "یافتن آخرین کلمه برابر"
+
+#: frame_main.cpp:393
+msgid "Search and &Replace..."
+msgstr "جستجو و جایگذاری..."
+
+#: frame_main.cpp:393
+msgid "Find and replace words in subtitles"
+msgstr "کلمات را در زیر نویس یافته و جایگذاری میکند"
+
+#: frame_main.cpp:394
+msgid "&Edit"
+msgstr "ویرایش"
+
+#: frame_main.cpp:399
+msgid "&Insert Lines"
+msgstr "افزودن خطوط"
+
+#: frame_main.cpp:403
+msgid "&Styles Manager..."
+msgstr "مدیریت استایل ها..."
+
+#: frame_main.cpp:403
+msgid "Open styles manager"
+msgstr "باز کردن مدیریت استایل ها"
+
+#: frame_main.cpp:404
+msgid "St&yling Assistant..."
+msgstr "دستیار استایل ..."
+
+#: frame_main.cpp:404
+msgid "Open styling assistant"
+msgstr "گشودن دستیار استایل ها"
+
+#: frame_main.cpp:405
+msgid "&Translation Assistant..."
+msgstr "دستیار ترجمه ..."
+
+#: frame_main.cpp:405
+msgid "Open translation assistant"
+msgstr "گشودن دستیار ترجمه"
+
+#: frame_main.cpp:406
+msgid "Resample Resolution..."
+msgstr "تنظیم مجدد ابعاد تصویر...."
+
+#: frame_main.cpp:406
+msgid "Changes resolution and modifies subtitles to conform to change"
+msgstr "ابعاد تصویر را تغییر میدهد و زیرنویس را برای نمایش در این ابعاد تنظیم میکند"
+
+#: frame_main.cpp:407
+msgid "Spe&ll Checker..."
+msgstr "بررسی کننده املایی..."
+
+#: frame_main.cpp:407
+msgid "Open spell checker"
+msgstr "گشودن بررسی کننده املایی"
+
+#: frame_main.cpp:413
+msgid "&Before Current"
+msgstr "قبل از کنونی"
+
+#: frame_main.cpp:413
+msgid "Inserts a line before current"
+msgstr "یک خط قبل از خط کنونی ایجاد میکند"
+
+#: frame_main.cpp:414
+msgid "&After Current"
+msgstr "بعد از کنونی"
+
+#: frame_main.cpp:414
+msgid "Inserts a line after current"
+msgstr "یک خط بعد از خط کنونی ایجاد میکند"
+
+#: frame_main.cpp:415
+msgid "Before Current, at Video Time"
+msgstr "قبل از کنونی،در زمان ویدیو"
+
+#: frame_main.cpp:415
+msgid "Inserts a line before current, starting at video time"
+msgstr "یک خط قبل از خط کنونی ،در زمان ویدیو ایجاد میکند"
+
+#: frame_main.cpp:416
+msgid "After Current, at Video Time"
+msgstr "بعد از کنونی،در زمان ویدیو"
+
+#: frame_main.cpp:416
+msgid "Inserts a line after current, starting at video time"
+msgstr "یک خط بعد از خط کنونی ،در زمان ویدیو ایجاد میکند"
+
+#: frame_main.cpp:418
+msgid "&Duplicate Lines"
+msgstr "تکثیر کردن خطوط"
+
+#: frame_main.cpp:419
+msgid "&Duplicate and Shift by 1 Frame"
+msgstr "تکثیر و انتقال با فاصله یک فریم"
+
+#: frame_main.cpp:420
+msgid "Delete Lines"
+msgstr "حذف خطوط"
+
+#: frame_main.cpp:423
+msgid "Join Lines"
+msgstr "پیوستن خطوط به هم"
+
+#: frame_main.cpp:427
+msgid "&Concatenate"
+msgstr "متمرکز"
+
+#: frame_main.cpp:428
+msgid "Keep &First"
+msgstr "نگهداشتن اولی"
+
+#: frame_main.cpp:429
+msgid "As &Karaoke"
+msgstr " به عنوان کاراوکه"
+
+#: frame_main.cpp:429
+msgid "Joins selected lines in a single one, as karaoke"
+msgstr "ترکیب خطوط به یکدیگر به صورت کاروکه"
+
+#: frame_main.cpp:432
+msgid "Split Lines (by karaoke)"
+msgstr "(جداسازی خطوط(به وسیله کاروکه"
+
+#: frame_main.cpp:434
+msgid "Swap Lines"
+msgstr "جابجایی خطوط"
+
+#: frame_main.cpp:435
+msgid "Select Lines..."
+msgstr "... انتخاب خطوط "
+
+#: frame_main.cpp:435
+msgid "Selects lines based on defined criterea"
+msgstr "انتخاب خطوط بر اساس خواسته های مطرح شده"
+
+#: frame_main.cpp:436
+msgid "&Subtitles"
+msgstr "زیرنویس ها"
+
+#: frame_main.cpp:440
+msgid "S&hift Times..."
+msgstr "... انتقال زمان ها"
+
+#: frame_main.cpp:440
+msgid "Shift subtitles by time or frames"
+msgstr "انتقال زیرنویس براساس زمان یا فریم"
+
+#: frame_main.cpp:441
+msgid "Sort by Time"
+msgstr "مرتب کردن براساس زمان"
+
+#: frame_main.cpp:441
+msgid "Sort all subtitles by their start times"
+msgstr "مرتب کردن تمام زیرنویس ها بوسیله زمان شروع آن ها"
+
+#: frame_main.cpp:442
+msgid "Timing Post-Processor..."
+msgstr "زمانبندی بعد از پردازش"
+
+#: frame_main.cpp:442
+msgid "Runs a post-processor for timing to deal with lead-ins, lead-outs, scene timing and etc."
+msgstr "نرم افزار مقدیر انتخاب شده در بخشهای مختلف را اعمال میکند "
+
+#: frame_main.cpp:443
+msgid "Kanji Timer..."
+msgstr "زمانبندی کانجی "
+
+#: frame_main.cpp:443
+msgid "Open Kanji timer"
+msgstr "زمانبندی کانجی را میگشاید"
+
+#: frame_main.cpp:445
+msgid "Snap Start to Video"
+msgstr "چسبیدن ابتدا به ویدیو"
+
+#: frame_main.cpp:446
+msgid "Snap End to Video"
+msgstr "چسبیدن انتها به ویدیو"
+
+#: frame_main.cpp:447
+#: hotkeys.cpp:417
+msgid "Snap to Scene"
+msgstr "چسبیدن به صحنه"
+
+#: frame_main.cpp:447
+msgid "Set start and end of subtitles to the keyframes around current video frame"
+msgstr "تنظیم شروع و پایان زیرنویس ها با فریم های کلیدی اطراف فریم کنونی"
+
+#: frame_main.cpp:448
+msgid "Shift to Current Frame"
+msgstr "انتقال به فریم کنونی"
+
+#: frame_main.cpp:448
+msgid "Shift selection so first selected line starts at current frame"
+msgstr "انتقال خطوط انتخابی در حالتی که از این فریم شروع شوند"
+
+#: frame_main.cpp:451
+msgid "Make Times Continuous"
+msgstr "ادامه دار کردن زمان ها"
+
+#: frame_main.cpp:455
+msgid "Change &Start"
+msgstr "تغییر ابتدا"
+
+#: frame_main.cpp:456
+msgid "Change &End"
+msgstr "تغییر انتها"
+
+#: frame_main.cpp:458
+msgid "&Timing"
+msgstr "زمانبندی"
+
+#: frame_main.cpp:462
+msgid "&Open Video..."
+msgstr "... بازکردن ویدیو"
+
+#: frame_main.cpp:462
+msgid "Opens a video file"
+msgstr "یک فایل ویدیو را باز میکند"
+
+#: frame_main.cpp:463
+msgid "&Close Video"
+msgstr "بستن ویدیو"
+
+#: frame_main.cpp:463
+msgid "Closes the currently open video file"
+msgstr "بستن فایل ویدیوی کنونی"
+
+#: frame_main.cpp:466
+msgid "Use Dummy Video..."
+msgstr "استفاده از ویدیوی ساختگی ...."
+
+#: frame_main.cpp:466
+msgid "Opens a video clip with solid colour"
+msgstr "ویدیویی با فقط یک رنگ را میگشاید"
+
+#: frame_main.cpp:467
+msgid "Show Video Details..."
+msgstr "...نمایش اطلاعات ویدیو"
+
+#: frame_main.cpp:467
+msgid "Shows video details"
+msgstr "اطلاعات ویدیو را نشان میدهد"
+
+#: frame_main.cpp:469
+msgid "Open Timecodes File..."
+msgstr "گشودن فایل کدهای زمانی "
+
+#: frame_main.cpp:469
+msgid "Opens a VFR timecodes v1 or v2 file"
+msgstr "فایل کدهای زمانی نسخه یک یا دو را می گشاید"
+
+#: frame_main.cpp:470
+msgid "Save Timecodes File..."
+msgstr "ذخیره فایل کد های زمانی "
+
+#: frame_main.cpp:470
+msgid "Saves a VFR timecodes v2 file"
+msgstr "فایل کدهای زمانی را به صورت نسخه دو ذخیره می کند"
+
+#: frame_main.cpp:471
+msgid "Close Timecodes File"
+msgstr "بستن فایل کدهای زمانی"
+
+#: frame_main.cpp:471
+msgid "Closes the currently open timecodes file"
+msgstr "کدهای زمانی که در حال حاضر باز هستند را میبندد"
+
+#: frame_main.cpp:475
+msgid "Open Keyframes..."
+msgstr "گشودن فریم های کلیدی...."
+
+#: frame_main.cpp:475
+msgid "Opens a keyframe list file"
+msgstr "یک لیست از فریم های کلیدی را میگشاید"
+
+#: frame_main.cpp:476
+msgid "Save Keyframes..."
+msgstr "...ذخیره فریم های کلیدی"
+
+#: frame_main.cpp:476
+msgid "Saves the current keyframe list"
+msgstr "لیست فریم های کلیدی کنونی را ذخیره میکند"
+
+#: frame_main.cpp:477
+msgid "Close Keyframes"
+msgstr "بستن فریم های کلیدی"
+
+#: frame_main.cpp:477
+msgid "Closes the currently open keyframes list"
+msgstr "لیست فریم های کلیدی کنونی را میبندد"
+
+#: frame_main.cpp:481
+msgid "Detach Video"
+msgstr "جداسازی ویدیو"
+
+#: frame_main.cpp:481
+msgid "Detach video, displaying it in a separate Window."
+msgstr "ویدیو را جدا کرده و در یک پنجره جدا نشان میدهد"
+
+#: frame_main.cpp:483
+msgid "Set Zoom"
+msgstr "تنظیم زوم"
+
+#: frame_main.cpp:487
+msgid "Set zoom to 50%"
+msgstr "تنظیم زوم به %50"
+
+#: frame_main.cpp:488
+msgid "Set zoom to 100%"
+msgstr "تنظیم زوم به %100"
+
+#: frame_main.cpp:489
+msgid "Set zoom to 200%"
+msgstr "تنظیم زوم به %200"
+
+#: frame_main.cpp:492
+msgid "Override Aspect Ratio"
+msgstr "تغییر نسبت طول به عرض تصویر"
+
+#: frame_main.cpp:496
+msgid "&Default"
+msgstr "پیشفرض"
+
+#: frame_main.cpp:496
+msgid "Leave video on original aspect ratio"
+msgstr "تغییر ندادن نسبت طول به عرض اصلی"
+
+#: frame_main.cpp:497
+msgid "&Fullscreen (4:3)"
+msgstr " (4:3) تمام صفحه"
+
+#: frame_main.cpp:497
+msgid "Forces video to 4:3 aspect ratio"
+msgstr "میکند  4:3  نسبت طول به عرض را"
+
+#: frame_main.cpp:498
+msgid "&Widescreen (16:9)"
+msgstr "(16:9) صفحه عریض"
+
+#: frame_main.cpp:498
+msgid "Forces video to 16:9 aspect ratio"
+msgstr " میکند 16:9 نسبت طول به عرض را "
+
+#: frame_main.cpp:499
+msgid "&Cinematic (2.35)"
+msgstr " (2.35) سینمایی"
+
+#: frame_main.cpp:499
+msgid "Forces video to 2.35 aspect ratio"
+msgstr " میکند 2.35 نسبت طول به عرض را "
+
+#: frame_main.cpp:500
+msgid "Custom..."
+msgstr "سفارشی..."
+
+#: frame_main.cpp:500
+msgid "Forces video to a custom aspect ratio"
+msgstr "تنظیم اجیاری ویدیو در نسبت طول به عرض دلخواه"
+
+#: frame_main.cpp:502
+msgid "Show Overscan Mask"
+msgstr "نمایش ماسک"
+
+#: frame_main.cpp:502
+msgid "Show a mask over the video, indicating areas that might get cropped off by overscan on televisions."
+msgstr "با نمایش ماسک بر روی ویدیو محل هایی که توسط تلویزیون در هنگام نمایش حذف میشوند را مشخص میکند"
+
+#: frame_main.cpp:506
+msgid "&Jump to..."
+msgstr "پرش به...."
+
+#: frame_main.cpp:506
+msgid "Jump to frame or time"
+msgstr "پرش به زمان یا فریم مورد نظر"
+
+#: frame_main.cpp:507
+#: hotkeys.cpp:413
+msgid "Jump Video to Start"
+msgstr "پرش به ابتدای ویدیو"
+
+#: frame_main.cpp:508
+#: hotkeys.cpp:414
+msgid "Jump Video to End"
+msgstr "پرش به انتهای ویدیو"
+
+#: frame_main.cpp:509
+msgid "&Video"
+msgstr "ویدیو"
+
+#: frame_main.cpp:513
+msgid "&Open Audio File..."
+msgstr "... باز کردن فایل صدا"
+
+#: frame_main.cpp:513
+msgid "Opens an audio file"
+msgstr "یک فایل صدا را باز میکند"
+
+#: frame_main.cpp:514
+msgid "Open Audio from &Video"
+msgstr "باز کردن صدا از ویدیو"
+
+#: frame_main.cpp:514
+msgid "Opens the audio from the current video file"
+msgstr "باز کردن صدا از فایل ویدیوی باز شده"
+
+#: frame_main.cpp:515
+msgid "&Close Audio"
+msgstr "بستن صدا"
+
+#: frame_main.cpp:515
+msgid "Closes the currently open audio file"
+msgstr "بستن فایل صدای باز شده "
+
+#: frame_main.cpp:523
+msgid "&Audio"
+msgstr "صدا"
+
+#: frame_main.cpp:528
+msgid "&Automation..."
+msgstr "عملیات خودکار"
+
+#: frame_main.cpp:528
+msgid "Open automation manager"
+msgstr "گشودن مدیریت خودکار"
+
+#: frame_main.cpp:530
+msgid "&Automation"
+msgstr "عملیات خودکار"
+
+#: frame_main.cpp:535
+msgid "Select Aegisub interface language"
+msgstr "تعیین زبان نرم افزار"
+
+#: frame_main.cpp:536
+msgid "&Options..."
+msgstr "... تنظیمات"
+
+#: frame_main.cpp:538
+msgid "Subs Only View"
+msgstr "نمایش تنها زیرنویس"
+
+#: frame_main.cpp:538
+msgid "Display subtitles only"
+msgstr "فقط زیرنویس را نشان می دهد"
+
+#: frame_main.cpp:539
+msgid "Video+Subs View"
+msgstr "نمایش ویدیو+زیرنویس  "
+
+#: frame_main.cpp:539
+msgid "Display video and subtitles only"
+msgstr "فقط ویدیو و زیرنویس را نشان میدهد"
+
+#: frame_main.cpp:540
+msgid "Audio+Subs View"
+msgstr "نمایش صدا+زیرنویس"
+
+#: frame_main.cpp:540
+msgid "Display audio and subtitles only"
+msgstr "فقط صدا و زیرنویس را نشان میدهد"
+
+#: frame_main.cpp:541
+msgid "Full view"
+msgstr "نمایش تمام اجزا"
+
+#: frame_main.cpp:541
+msgid "Display audio, video and subtitles"
+msgstr " تصویر و زیر نویس نمایش صدا،"
+
+#: frame_main.cpp:542
+msgid "Vie&w"
+msgstr "نمایش"
+
+#: frame_main.cpp:546
+msgid "&Contents..."
+msgstr "...محتویات"
+
+#: frame_main.cpp:546
+#: frame_main.cpp:548
+msgid "Help topics"
+msgstr "موضوعات راهنما"
+
+#: frame_main.cpp:548
+msgid "&All Files"
+msgstr "تمام فایل ها"
+
+#: frame_main.cpp:551
+msgid "&Website..."
+msgstr "...وب سایت"
+
+#: frame_main.cpp:551
+msgid "Visit Aegisub's official website"
+msgstr "بازدید از سایت رسمی نرم افزار"
+
+#: frame_main.cpp:552
+msgid "&Forums..."
+msgstr "... انجمن"
+
+#: frame_main.cpp:552
+msgid "Visit Aegisub's forums"
+msgstr "بازدید از انجمن نرم افزار"
+
+#: frame_main.cpp:553
+msgid "&Bug Tracker..."
+msgstr "....رهگیری اشکالات"
+
+#: frame_main.cpp:553
+msgid "Visit Aegisub's bug tracker to report bugs and request new features"
+msgstr "بازدید از بخش رهگیری اشکالات برای گزارش اشکالات یا درخواست امکانات جدید "
+
+#: frame_main.cpp:554
+msgid "&IRC Channel..."
+msgstr "اتاق گفتگو "
+
+#: frame_main.cpp:554
+msgid "Visit Aegisub's official IRC channel"
+msgstr "بازدید از اتاق گفتگوی رسمی نرم افزار"
+
+#: frame_main.cpp:558
+msgid "&Check for Updates..."
+msgstr "بررسی برای بروزرسانی...."
+
+#: frame_main.cpp:558
+msgid "Check to see if there is a new version of Aegisub available"
+msgstr "بررسی کن که آیا نسخه جدیدی برای نرم افزار موجود هست یا نه"
+
+#: frame_main.cpp:559
+msgid "&About..."
+msgstr "...درباره"
+
+#: frame_main.cpp:788
+msgid "Save subtitles file"
+msgstr "ذخیره فایل زیرنویس"
+
+#: frame_main.cpp:840
+msgid "Save before continuing?"
+msgstr "ذخیره قبل از ادامه؟"
+
+#: frame_main.cpp:840
+msgid "Unsaved changes"
+msgstr "تغییرات ذخیره نشده"
+
+#: frame_main.cpp:909
+msgid "Untitled"
+msgstr "بدون نام"
+
+#: frame_main.cpp:919
+msgid "untitled"
+msgstr "بدون نام"
+
+#: frame_main.cpp:987
+msgid "Do you want to load/unload the associated files?"
+msgstr "آیا میخواهید فایل مرتبط را بارگذاری/کنید؟"
+
+#: frame_main.cpp:987
+msgid "(Un)Load files?"
+msgstr "بارگذاری کردن/بستن فایل ها؟"
+
+#: frame_main.cpp:1136
+msgid "You have timecodes loaded currently. Would you like to unload them?"
+msgstr "شما کدهای زمانی را در حال حاضر بارگذاری کرده اید.آیا مایلید که آنها را ببندید؟"
+
+#: frame_main.cpp:1136
+msgid "Unload timecodes?"
+msgstr "بستن کدهای زمانی؟"
+
+#: frame_main.cpp:1176
+#, c-format
+msgid ""
+"The resolution of the loaded video and the resolution specified for the subtitles don't match.\n"
+"\n"
+"Video resolution:\t%d x %d\n"
+"Script resolution:\t%d x %d\n"
+"\n"
+"Change subtitles resolution to match video?"
+msgstr ""
+"ابعاد تصویر ویدیو با ابعادی که شما مشخص کرده اید همخوانی ندارد\n"
+"\n"
+"ابعاد ویدیو :\t%d x %d\n"
+"ابعاد اسکرییپت :\t%d x %d\n"
+"\n"
+"آیا مایلید که ابعاد زیرنویس به تناسب ویدیو تغییر کند؟ "
+
+#: frame_main.cpp:1176
+msgid "Resolution mismatch"
+msgstr "نا هماهنگ بودن ابعاد تصویر"
+
+#: frame_main.cpp:1183
+msgid "Change script resolution"
+msgstr "تغییر ابعاد اسکریپت"
+
+#: dialog_properties.cpp:65
+msgid "Script Properties"
+msgstr "مشخصات اسکریپت"
+
+#: dialog_properties.cpp:74
+msgid "Script"
+msgstr "اسکریپت"
+
+#: dialog_properties.cpp:75
+msgid "Title:"
+msgstr "عنوان:"
+
+#: dialog_properties.cpp:77
+msgid "Original script:"
+msgstr "اسکریپت اصلی:"
+
+#: dialog_properties.cpp:79
+msgid "Translation:"
+msgstr "ترجمه:"
+
+#: dialog_properties.cpp:81
+msgid "Editing:"
+msgstr "ویرایش:"
+
+#: dialog_properties.cpp:83
+msgid "Timing:"
+msgstr "زمانبندی:"
+
+#: dialog_properties.cpp:85
+msgid "Synch point:"
+msgstr "نقطه همگامی:"
+
+#: dialog_properties.cpp:87
+msgid "Updated by:"
+msgstr "بروز شده توسط:"
+
+#: dialog_properties.cpp:89
+msgid "Update details:"
+msgstr "جزییات بروز کردن:"
+
+#: dialog_properties.cpp:129
+msgid "0: Smart wrapping, top line is wider"
+msgstr "0:تنظیم نمایش خطوط هوشمند, خط بالا عریض تر است "
+
+#: dialog_properties.cpp:130
+msgid "1: End-of-line word wrapping, only \\N breaks"
+msgstr "1: \\Nتنظیم بر اساس پایان خطوط,جداسازی تنها در "
+
+#: dialog_properties.cpp:131
+msgid ""
+"2: No word wrapping, both \\n"
+" and \\N break"
+msgstr ""
+"2:\\N و\\n"
+" هیچ تنظیمی انجام نمی شود شکستن خطوط در "
+
+#: dialog_properties.cpp:132
+msgid "3: Smart wrapping, bottom line is wider"
+msgstr "3:تنظیم نمایش خطوط هشمند,خط زیرین عریض تر است"
+
+#: dialog_properties.cpp:137
+msgid "Wrap Style: "
+msgstr "پنهان کردن استایل:"
+
+#: dialog_properties.cpp:141
+msgid "Reverse"
+msgstr "معکوس"
+
+#: dialog_properties.cpp:146
+msgid "Collision: "
+msgstr "برخورد:"
+
+#: dialog_properties.cpp:148
+msgid "Scale Border and Shadow"
+msgstr "اندازه مرز و سایه"
+
+#: dialog_properties.cpp:149
+msgid "Scale border and shadow together with script/render resolution. If this is unchecked, relative border and shadow size will depend on renderer."
+msgstr "اندازه حاشیه و سایه با هم در اسکریت.اگر  انتخاب نشود رندر کننده این مقادیر را با توجه به اندازه حاشیه و سایه این مقدار را تعیین میکند"
+
+#: dialog_properties.cpp:214
+msgid "property changes"
+msgstr "تغییر مالکیت"
+
+#: dialog_translation.cpp:98
+msgid "Original"
+msgstr "اصلی"
+
+#: dialog_translation.cpp:99
+msgid "Translation"
+msgstr "ترجمه"
+
+#: dialog_translation.cpp:100
+msgid "Current line: ?"
+msgstr "خط کنونی:؟"
+
+#: dialog_translation.cpp:119
+msgid "Insert original"
+msgstr "وارد کردن اصلی"
+
+#: dialog_translation.cpp:124
+msgid "Enable preview"
+msgstr "فعال سازی پیشنمایش"
+
+#: dialog_translation.cpp:215
+#, c-format
+msgid "Current line: %i/%i"
+msgstr "%i/% i :خط کنونی"
+
+#: dialog_translation.cpp:361
+msgid "translation assistant"
+msgstr "دستیار ترجمه"
+
+#: dialog_translation.cpp:371
+msgid "No more lines to translate."
+msgstr "خط دیگری برای ترجمه وجود ندارد"
+
+#: audio_display.cpp:2390
+#: audio_display.cpp:2448
+msgid "Do you want to commit your changes? If you choose No, they will be discarded."
+msgstr "آیا میخواهید تغییرات شما اعمال شود؟اگر نه را انتخاب کنید تغییرات اعمال نخواهد شد"
+
+#: audio_display.cpp:2390
+#: audio_display.cpp:2448
+msgid "Commit?"
+msgstr "اجرا؟"
+
+#: audio_karaoke.cpp:862
+msgid "Karaoke tag"
+msgstr "تگ کاروکه"
+
+#: audio_karaoke.cpp:866
+msgid "Change karaoke tag to \\k"
+msgstr "\\k تغییرتگ های کاروکه به "
+
+#: audio_karaoke.cpp:867
+msgid "Change karaoke tag to \\kf"
+msgstr "\\kf تغییرتگ های کاروکه به "
+
+#: audio_karaoke.cpp:868
+msgid "Change karaoke tag to \\ko"
+msgstr "\\ko تغییرتگ های کاروکه به "
+
+#: export_framerate.cpp:64
+msgid "Transform Framerate"
+msgstr "تبدیل فریم ریت"
+
+#: export_framerate.cpp:65
+msgid "Transform subtitles times, including those in override tags, from input to output. This is most useful to convert CFR to VFR for hardsubbing. You usually DO NOT want to check this filter for softsubbing."
+msgstr "برای هاردساب کردن کاربرد دارد نه در سافت سابCFR to VFRتبدیل زمان زیرنویس را تغییر میدهد حتی آنهایی که تگ دارند.این  امکان برای  "
+
+#: export_framerate.cpp:97
+msgid "From Video"
+msgstr "از ویدیو"
+
+#: export_framerate.cpp:114
+msgid "Variable"
+msgstr "متغییر"
+
+#: export_framerate.cpp:118
+msgid "Constant: "
+msgstr "ثابت:"
+
+#: export_framerate.cpp:130
+msgid "Reverse transformation"
+msgstr "حرکت معکوس"
+
+#: export_framerate.cpp:138
+msgid "Input framerate: "
+msgstr "فریم ریت ورودی"
+
+#: export_framerate.cpp:140
+msgid "Output: "
+msgstr "خروجی:"
+
+#: audio_provider_ram.cpp:94
+msgid "Load audio"
+msgstr "بارگذاری صدا"
+
+#: audio_provider_ram.cpp:94
+msgid "Reading into RAM"
+msgstr "خواندن در رَم"
+
+#: dialog_style_editor.cpp:167
+msgid "Style Editor"
+msgstr "ویرایشگر استایل"
+
+#: dialog_style_editor.cpp:200
+msgid "Style name"
+msgstr "نام استایل"
+
+#: dialog_style_editor.cpp:201
+msgid "Font"
+msgstr "فونت"
+
+#: dialog_style_editor.cpp:202
+msgid "Colors"
+msgstr "رنگ ها"
+
+#: dialog_style_editor.cpp:203
+msgid "Margins"
+msgstr "حاشیه ها"
+
+#: dialog_style_editor.cpp:204
+#: dialog_style_editor.cpp:303
+msgid "Outline"
+msgstr "حاشیه"
+
+#: dialog_style_editor.cpp:205
+msgid "Miscellaneous"
+msgstr "متفرقه"
+
+#: dialog_style_editor.cpp:206
+msgid "Preview"
+msgstr "پیش نمایش"
+
+#: dialog_style_editor.cpp:213
+msgid "Italic"
+msgstr "کج"
+
+#: dialog_style_editor.cpp:226
+msgid "Alignment"
+msgstr "تنظیم"
+
+#: dialog_style_editor.cpp:229
+msgid "Opaque box"
+msgstr "جعبه مات"
+
+#: dialog_style_editor.cpp:237
+msgid "Style name."
+msgstr ".نام استایل"
+
+#: dialog_style_editor.cpp:238
+msgid "Font face."
+msgstr ".نام فونت"
+
+#: dialog_style_editor.cpp:239
+msgid "Font size."
+msgstr ".اندازه فونت"
+
+#: dialog_style_editor.cpp:240
+msgid "Choose primary color."
+msgstr ".انتخاب رنگ اولیه"
+
+#: dialog_style_editor.cpp:241
+msgid "Choose secondary color."
+msgstr ".انتخاب رنگ ثانویه"
+
+#: dialog_style_editor.cpp:242
+msgid "Choose outline color."
+msgstr "رنگ حاشیه را انتخاب کنید"
+
+#: dialog_style_editor.cpp:243
+msgid "Choose shadow color."
+msgstr ".انتخاب رنگ سایه"
+
+#: dialog_style_editor.cpp:244
+msgid "Set opacity, from 0 (opaque) to 255 (transparent)."
+msgstr "(تنظیم شفافیت از0(بدون شفافیت) تا 255(شفافیت کامل "
+
+#: dialog_style_editor.cpp:245
+msgid "Distance from left edge, in pixels."
+msgstr "فاصله از کناره چپ به پیکسل"
+
+#: dialog_style_editor.cpp:246
+msgid "Distance from right edge, in pixels."
+msgstr "فاصله از کناره راست به پیکسل"
+
+#: dialog_style_editor.cpp:247
+msgid "Distance from top/bottom edge, in pixels."
+msgstr "فاصله از کناره بالا/پایین به پیکسل"
+
+#: dialog_style_editor.cpp:248
+msgid "When selected, display an opaque box behind the subtitles instead of an outline around the text."
+msgstr "زمانی که انتخاب شده به جای حاشیه در پشت زیرنویس به نمایش در می آید"
+
+#: dialog_style_editor.cpp:249
+msgid "Outline width, in pixels."
+msgstr "مقدار حاشیه به پیکسل"
+
+#: dialog_style_editor.cpp:250
+msgid "Shadow distance, in pixels."
+msgstr "فاصله سایه ها به پیکسل"
+
+#: dialog_style_editor.cpp:251
+msgid "Scale X, in percentage."
+msgstr "به درصد Xاندازه در محور "
+
+#: dialog_style_editor.cpp:252
+msgid "Scale Y, in percentage."
+msgstr "به درصد Yاندازه در محور "
+
+#: dialog_style_editor.cpp:253
+msgid "Angle to rotate in Z axis, in degrees."
+msgstr " به درجه Z زاویه برای چرخش در محور "
+
+#: dialog_style_editor.cpp:254
+msgid "Encoding, only useful in unicode if the font doesn't have the proper unicode mapping."
+msgstr "تبدیل تنها در یونیکد موثر است"
+
+#: dialog_style_editor.cpp:255
+msgid "Character spacing, in pixels."
+msgstr "فاله گذاری کاراکتر ها به پیکسل"
+
+#: dialog_style_editor.cpp:256
+msgid "Alignment in screen, in numpad style."
+msgstr "تنظیم در تصویر بر اساس مدل صفحه عدد های کیبورد"
+
+#: dialog_style_editor.cpp:303
+msgid "Primary"
+msgstr "اولیه"
+
+#: dialog_style_editor.cpp:303
+msgid "Secondary"
+msgstr "ثانویه"
+
+#: dialog_style_editor.cpp:303
+msgid "Shadow"
+msgstr "سایه"
+
+#: dialog_style_editor.cpp:335
+msgid "Outline:"
+msgstr ":حاشیه"
+
+#: dialog_style_editor.cpp:337
+msgid "Shadow:"
+msgstr "سایه:"
+
+#: dialog_style_editor.cpp:345
+msgid "Scale X%:"
+msgstr ":% Xاندازه در محور "
+
+#: dialog_style_editor.cpp:347
+msgid "Scale Y%:"
+msgstr ":%Yاندازه در محور "
+
+#: dialog_style_editor.cpp:349
+msgid "Rotation:"
+msgstr "چرخش:"
+
+#: dialog_style_editor.cpp:351
+msgid "Spacing:"
+msgstr "فاصله گذاری:"
+
+#: dialog_style_editor.cpp:355
+msgid "Encoding:"
+msgstr "رمزگذاری:"
+
+#: dialog_style_editor.cpp:368
+msgid "Preview of current style."
+msgstr "پیش نمایش استایل کنونی:"
+
+#: dialog_style_editor.cpp:371
+msgid "Text to be used for the preview."
+msgstr "متنی که برای پیش نمایش استفاده می شود"
+
+#: dialog_style_editor.cpp:372
+msgid "Colour of preview background."
+msgstr "رنگ پس زمینه پیش نمایش"
+
+#: dialog_style_editor.cpp:381
+msgid "No subtitle providers available. Cannot preview subs."
+msgstr "هیچ نمایشگر زیرنویس موجود نیست. نرم افزار نمیتواند زیرنویس را پیش نمایش دهد  "
+
+#: dialog_style_editor.cpp:556
+msgid "Do you want to change all instances of this style in the script to this new name?"
+msgstr "آیا میخواهید که تمام خط ها با این استایل به استایل جدید تغییر پیدا کنند؟"
+
+#: dialog_style_editor.cpp:556
+msgid "Update script?"
+msgstr "بروزرسانی اسکریپت؟"
+
+#: dialog_style_editor.cpp:690
+msgid ""
+"You have chosen to use the \"Comic Sans\" font. As the programmer and a typesetter,\n"
+"I must urge you to reconsider. Comic Sans is the most abused font in the history\n"
+"of computing, so please avoid using it unless it's REALLY suitable. Thanks."
+msgstr "شما از فونتی استفاده میکنید که بسیار قدیمی است .پس تنها در صورتی از آن استفاده کنید که از کار خود مطمئن باشید"
+
+#: dialog_style_editor.cpp:690
+msgid "Warning"
+msgstr "اخطار"
+
+#: dialog_shift_times.cpp:83
+msgid "Shift by"
+msgstr "انتقال بوسیله"
+
+#: dialog_shift_times.cpp:84
+msgid "History"
+msgstr "تاریخ"
+
+#: dialog_shift_times.cpp:87
+#: dialog_jumpto.cpp:87
+msgid "Time: "
+msgstr "زمان:"
+
+#: dialog_shift_times.cpp:88
+msgid "Frames: "
+msgstr "فریم ها:"
+
+#: dialog_shift_times.cpp:91
+msgid "Enter time in h:mm:ss.cs notation"
+msgstr " h:mm:ss.cs وارد کردن زمان بر اساس "
+
+#: dialog_shift_times.cpp:92
+msgid "Shift by time"
+msgstr "انتقال بر اساس زمان"
+
+#: dialog_shift_times.cpp:96
+msgid "Enter number of frames to shift by"
+msgstr "مقدار فریم را برای انتقال وارد کنید"
+
+#: dialog_shift_times.cpp:97
+msgid "Shift by frames"
+msgstr "انتقال بر اساس فریم ها"
+
+#: dialog_shift_times.cpp:106
+msgid "Forward"
+msgstr "رو به جلو"
+
+#: dialog_shift_times.cpp:107
+msgid "Backward"
+msgstr "روبه عقب"
+
+#: dialog_shift_times.cpp:108
+msgid "Shifts subs forward, making them appear later. Use if they are appearing too soon."
+msgstr ".انتقال زیرنویس به جلو باعث میشود زیرنویس دیرتر ظاهر شود"
+
+#: dialog_shift_times.cpp:109
+msgid "Shifts subs backward, making them appear earlier. Use if they are appearing too late."
+msgstr ".انتقال زیرنویس به عقب باعث میشود زیرنویس زودتر ظاهر شود"
+
+#: dialog_shift_times.cpp:117
+msgid "Selection onward"
+msgstr "از خط انتخابی به بعد"
+
+#: dialog_shift_times.cpp:118
+msgid "Affect"
+msgstr "تاثیر بر"
+
+#: dialog_shift_times.cpp:121
+msgid "Start and End times"
+msgstr "زمانهای شروع و پایان"
+
+#: dialog_shift_times.cpp:121
+msgid "Start times only"
+msgstr "فقط زمانهای شروع"
+
+#: dialog_shift_times.cpp:121
+msgid "End times only"
+msgstr "فقط زمانهای پایان"
+
+#: dialog_shift_times.cpp:122
+#: dialog_paste_over.cpp:96
+msgid "Times"
+msgstr "زمان ها"
+
+#: dialog_shift_times.cpp:126
+msgid "Clear"
+msgstr "پاک کردن"
+
+#: dialog_shift_times.cpp:267
+msgid "unsaved, "
+msgstr ",ذخیره نشده"
+
+#: dialog_shift_times.cpp:272
+msgid " frames "
+msgstr "فریم ها"
+
+#: dialog_shift_times.cpp:275
+msgid "backward, "
+msgstr "رو به عقب"
+
+#: dialog_shift_times.cpp:276
+msgid "forward, "
+msgstr "رو به جلو"
+
+#: dialog_shift_times.cpp:279
+msgid "s+e, "
+msgstr "s+e, "
+
+#: dialog_shift_times.cpp:280
+msgid "s, "
+msgstr "s, "
+
+#: dialog_shift_times.cpp:281
+msgid "e, "
+msgstr "e, "
+
+#: dialog_shift_times.cpp:284
+msgid "all"
+msgstr "همه"
+
+#: dialog_shift_times.cpp:285
+#, c-format
+msgid "from %i onward"
+msgstr " به جلو % i از  "
+
+#: dialog_shift_times.cpp:287
+msgid "sel "
+msgstr "انتخاب شده ها"
+
+#: dialog_shift_times.cpp:315
+msgid "shifting"
+msgstr "انتقال"
+
+#: dialog_dummy_video.cpp:146
+msgid "Dummy video options"
+msgstr "تنظیمات ویدیوی ساختگی"
+
+#: dialog_dummy_video.cpp:154
+msgid "Checkerboard pattern"
+msgstr "الگوی شطرنجی"
+
+#: dialog_dummy_video.cpp:162
+msgid "Video resolution:"
+msgstr "سایز تصویر :"
+
+#: dialog_dummy_video.cpp:170
+msgid "Colour:"
+msgstr ":رنگ"
+
+#: dialog_dummy_video.cpp:174
+msgid "Frame rate (fps):"
+msgstr "فریم ریت (fps):"
+
+#: dialog_dummy_video.cpp:176
+msgid "Duration (frames):"
+msgstr "مقدار براساس فریم"
+
+#: dialog_dummy_video.cpp:303
+#, c-format
+msgid "Resulting duration: %d:%02d:%02d.%03d"
+msgstr "%d:%02d:%02d.%03d  :زمان بدست آمده"
+
+#: dialog_dummy_video.cpp:309
+msgid "Invalid fps or length value"
+msgstr "مقدار فریم بر ثانیه یا طول نامعتیر"
+
+#: dialog_attachments.cpp:64
+msgid "Attachment List"
+msgstr "لیست ضمائم"
+
+#: dialog_attachments.cpp:74
+msgid "E&xtract"
+msgstr "استخراج"
+
+#: dialog_attachments.cpp:75
+msgid "&Delete"
+msgstr "حذف"
+
+#: dialog_attachments.cpp:81
+msgid "Attach &Font"
+msgstr "ضمیمه کردن فونت"
+
+#: dialog_attachments.cpp:82
+msgid "Attach &Graphics"
+msgstr "ضمیمه کردن گرافیک"
+
+#: dialog_attachments.cpp:106
+msgid "Attachment name"
+msgstr "نام ضمیمه"
+
+#: dialog_attachments.cpp:107
+msgid "Size"
+msgstr "حجم"
+
+#: dialog_attachments.cpp:108
+msgid "Group"
+msgstr "گروه"
+
+#: dialog_attachments.cpp:156
+#: dialog_attachments.cpp:192
+msgid "Choose file to be attached"
+msgstr "فایل مورد نظر را برای ضمیمه انتخاب کنید"
+
+#: dialog_attachments.cpp:233
+msgid "Select the path to save the files to:"
+msgstr "مکانی را برای ذخیره فایل ها انتخاب کنید:"
+
+#: dialog_attachments.cpp:237
+msgid "Select the path to save the file to:"
+msgstr "مکانی را برای ذخیره فایل ها انتخاب کنید:"
+
+#: dialog_jumpto.cpp:74
+msgid "Jump to"
+msgstr "پرش به"
+
+#: dialog_jumpto.cpp:86
+msgid "Frame: "
+msgstr "فریم:"
+
+#: dialog_tip.cpp:56
+msgid "Aegisub can export subtitles to many different formats, character encodings, and even compensate Variable Frame Rate so you can hardsub them - it's all in the Export option in File menu."
+msgstr "این نرم افزار قادر به خروجی گرفتن از زیرنویس با فرمت های مختلف و فریم ریت های متغیر است.تمام تنظیمات را میتوانید در منوی فایل بخش خروجی گرفتن مشاهده کنید "
+
+#: dialog_tip.cpp:57
+msgid "You can easily translate subtitle files using the translation assistant."
+msgstr "شما میتوانید راحتی توسط دسیار ترجمه زیرنویس خود را ترجمه کنید"
+
+#: dialog_tip.cpp:58
+msgid "Styles can be stored in different storages, so that you can keep your projects organized."
+msgstr "استایل ها در مخازن مختلف ذخیره میشوند تا شما به راحتی بتوانید پروژه های مختلف خود را مدیریت کنید"
+
+#: dialog_tip.cpp:59
+msgid "Use keyboard shortcuts! They make your life easier, for example, Ctrl+Enter updates changes on current line without going to next. Check the manual for a complete list."
+msgstr "از کلید های میانبر صفحه کلید استفاده کنید"
+
+#: dialog_tip.cpp:60
+msgid "There is no reason to use the SSA format (as opposed to ASS). ASS is very similar, but adds some important functionality. Most importantly, however, is that only ASS supports certain override tags (such as \\pos and \\t). Those only work on SSA files because VSFilter/Textsub is merciful."
+msgstr " وجود ندارد.فرمت جدید بسیار بهتر از فرمت قدیمی میباشدSSA هچ دلیلی برای استفاده از فرمت "
+
+#: dialog_tip.cpp:61
+msgid "DON'T PANIC!"
+msgstr "!نگران نباشید"
+
+#: dialog_tip.cpp:62
+msgid "Aegisub has several features to make sure you will never lose your work. It will periodically save your subtitles to autosave folder, and will create a copy of subs whenever you open them, to autoback folder. Also, if it crashes, it will attempt to save a restore file."
+msgstr " ذخیره میکند.autosave  این نرم افزار برای اطمینان از اینکه فایل زیرنویس شما ازبین نرود چندین امکانات دارد.نرم افزار به طور خودکار زیرنویس شما را در فولدر  "
+
+#: dialog_tip.cpp:63
+msgid "The styling assistant is a practical way to set styles to each line, when each actor has a different style assigned to it."
+msgstr "دستار استایل روش خوبی برای قرار دادن استایل مخصوص به یک بازیگر است"
+
+#: dialog_tip.cpp:64
+msgid "The fonts collector is one of the most useful features, which resumes the boring task of hunting down fonts into a matter of a few clicks."
+msgstr "جمع کننده فونت یکی از بهترین امکنات موجود است که زحمت شما را بسیار کم خواهد کرد"
+
+#: dialog_tip.cpp:65
+msgid "When you are done with your subtitles and ready to distribute them, remember: say no to MP4, OGM or AVI. Matroska is your friend."
+msgstr " است Matroska هنگامی که قصد پخش زیرنویس آماده شده خود را دارید بهترین روش استفاده از  "
+
+#: dialog_tip.cpp:66
+msgid "Much like anything loaded via DirectShow, certain files may have a strange structure (such as h.264 into AVI or XviD will null frames) which may cause unreliable seeking (that is, video frames might be off by one frame). This is not an Aegisub bug - you may consider reencoding those videos before working with them."
+msgstr "بعضی از فرمت ها ممکن است ساختار عجیبی داشته اشند که جستجوی زمانی در آنها را مشکل میکند این مشکل از نرم افزار نیست.شما با تبدیل آنها میتوانید مشکل را برطرف کنید  "
+
+#: dialog_tip.cpp:67
+msgid "Try the spectrum mode for the audio display, it can make it much easier to spot where the important points in the audio are."
+msgstr "حالت نمایش طیف را برای نمایش صدا امتحان کنید.با این کار یافتن نقاط مهم صدا راحتتر پیدا میشود"
+
+#: dialog_tip.cpp:68
+msgid "If you decode your audio to a PCM WAV file before loading it in Aegisub, you don't have to wait for it to be decoded before you can use it."
+msgstr "تبدیل کنید دیگر  برای باز شدن آن توسط نرم افزار معطل نمی شوید PCM WAV اگر صدای فایل مورد نظر خود را به "
+
+#: dialog_tip.cpp:69
+msgid "Having video open is often more a nuisance than a help when timing subtitles. Timing with only audio open is often much easier. You can always adjust the subtitles to match the video later on."
+msgstr "باز بودن تصویر در هنگام زیرنویسی بعضی هنگام بجای کمک کردن در زمانبندی باعث سخت تر شدن آن می شود"
+
+#: dialog_tip.cpp:70
+msgid "If the audio doesn't seem to work properly during video playback, try loading audio separately. Just select Audio->Load from video, that usually makes the audio much more reliable."
+msgstr "اگر صدا در هنگام پخش تصویر به درستی کار نکرد صدا را به طور جداگانه بارگذاری کنید.از  صدا -> بارگذاری .با این عمل نرم افزار صدا را قابل اعتمادتر بارگذاری میکند."
+
+#: dialog_tip.cpp:71
+msgid "If anything goes wrong, blame movax."
+msgstr "اگر جایی اشتباه است میثم را سرزنش کنید"
+
+#: dialog_fonts_collector.cpp:106
+msgid "&Browse..."
+msgstr "مرور ...."
+
+#: dialog_fonts_collector.cpp:108
+#: dialog_fonts_collector.cpp:331
+msgid ""
+"Choose the folder where the fonts will be collected to.\n"
+"It will be created if it doesn't exist."
+msgstr ""
+"فولدری که فونت ها در آن قرار می گیرند را انتخاب کنید\n"
+"در صورت عدم وجود فولدر مذکور ساخته میشود"
+
+#: dialog_fonts_collector.cpp:111
+msgid "Destination"
+msgstr "مقصد"
+
+#: dialog_fonts_collector.cpp:117
+msgid "Check fonts for availability"
+msgstr "بررسی در دسترس بودن فونت ها"
+
+#: dialog_fonts_collector.cpp:118
+msgid "Copy fonts to folder"
+msgstr "کپی کردن فونت ها در فولدر"
+
+#: dialog_fonts_collector.cpp:119
+msgid "Copy fonts to zipped archive"
+msgstr "کپی کردن فونت ها در فایل زیپ"
+
+#: dialog_fonts_collector.cpp:120
+msgid "Attach fonts to current subtitles"
+msgstr "ضمیمه کردن فونت ها به زیرنویس کنونی"
+
+#: dialog_fonts_collector.cpp:122
+msgid "DEBUG: Verify all fonts in system"
+msgstr "اشکال زدایی:تمام فونت ها موجود در سیستم را بررسی کنید"
+
+#: dialog_fonts_collector.cpp:137
+msgid "Log"
+msgstr " صورت عملیات"
+
+#: dialog_fonts_collector.cpp:141
+msgid "&Start!"
+msgstr "!شروع"
+
+#: dialog_fonts_collector.cpp:209
+msgid "Invalid destination."
+msgstr "مقصد نامعتبر"
+
+#: dialog_fonts_collector.cpp:218
+msgid "Could not create destination folder."
+msgstr "پوشه مقصد را نمیتواندایجاد کند"
+
+#: dialog_fonts_collector.cpp:227
+msgid "Invalid path for .zip file."
+msgstr "مسیر نامعتبر برای فایل زیپ"
+
+#: dialog_fonts_collector.cpp:277
+msgid "Select archive file name"
+msgstr "برای فایل یک نام انتخاب کنید"
+
+#: dialog_fonts_collector.cpp:277
+msgid "Zip Archives (*.zip)|*.zip"
+msgstr "(*.zip)|*.zip فایل زیپ"
+
+#: dialog_fonts_collector.cpp:285
+msgid "Select folder to save fonts on"
+msgstr "انتخاب پوشه ای برای ذخیره فئنت ها در آن"
+
+#: dialog_fonts_collector.cpp:345
+msgid ""
+"Enter the name of the destination zip file to collect the fonts to.\n"
+"If a folder is entered, a default name will be used."
+msgstr ""
+"مقصد فایل زیپ را برای کپی فونت های انتخاب کنید\n"
+"اگر فقط یک فولدر انتخاب شود اسم پیش فرض برای فایل استفاده خواهد شد."
+
+#: dialog_fonts_collector.cpp:426
+msgid "Invalid destination directory."
+msgstr "دایرکتوری مقصد نامعتبر است"
+
+#: dialog_fonts_collector.cpp:439
+msgid "Collecting font data from system. This might take a while, depending on the number of fonts installed. Results are cached and subsequent executions will be faster...\n"
+msgstr "در حال جمع آوری اطلاعات فونت ها از سیستم میباشد.این عمل ممکن است مدتی به طول بیانجامد که بستگی به تعداد فونت های نصب شده در سیستم شما دارد\n"
+
+#: dialog_fonts_collector.cpp:441
+msgid "Done collecting font data."
+msgstr "جمع آوری اطلاعات فونت ها به اتمام رسید"
+
+#: dialog_fonts_collector.cpp:442
+msgid "Scanning file for fonts..."
+msgstr "بررسی فایل برای فونت ها..."
+
+#: dialog_fonts_collector.cpp:475
+msgid "Done."
+msgstr ".انجام شد"
+
+#: dialog_fonts_collector.cpp:477
+msgid "Checking fonts...\n"
+msgstr "...بررسی فونت ها\n"
+
+#: dialog_fonts_collector.cpp:478
+msgid "Copying fonts to folder...\n"
+msgstr "....درحال کپی کردن فونت ها به پوشه  \n"
+
+#: dialog_fonts_collector.cpp:479
+msgid "Copying fonts to archive...\n"
+msgstr "....درحال کپی کردن فونت ها به فایل زیپ  \n"
+
+#: dialog_fonts_collector.cpp:480
+msgid "Attaching fonts to file...\n"
+msgstr "....درحال ضمیمه کردن فونت ها به فایل  \n"
+
+#: dialog_fonts_collector.cpp:496
+#, c-format
+msgid ""
+"\n"
+"Finished writing to %s.\n"
+msgstr ""
+"\n"
+" %s نوشتن پایان یافت در  \n"
+
+#: dialog_fonts_collector.cpp:502
+msgid "Done. All fonts found."
+msgstr "انجام شد.تمام فونت ها پیدا شد"
+
+#: dialog_fonts_collector.cpp:505
+msgid "Done. All fonts copied."
+msgstr "تمام شد. همه فونت ها کپی شد"
+
+#: dialog_fonts_collector.cpp:510
+msgid "font attachment"
+msgstr "ضمیمه کردن فونت"
+
+#: dialog_fonts_collector.cpp:517
+msgid "Done. Some fonts could not be found."
+msgstr "تمام شد.تعدادی از فونت ها یافت نشد"
+
+#: dialog_fonts_collector.cpp:518
+msgid "Done. Some fonts could not be copied."
+msgstr "تمام شد. تعدادی از فونت ها کپی نمیشود"
+
+#: dialog_fonts_collector.cpp:541
+msgid "Not found.\n"
+msgstr ".یافت نشد\n"
+
+#: dialog_fonts_collector.cpp:547
+msgid "Found.\n"
+msgstr ".پیدا شد\n"
+
+#: dialog_fonts_collector.cpp:562
+#, c-format
+msgid "* Copied %s.\n"
+msgstr "%s کپی شد*\n"
+
+#: dialog_fonts_collector.cpp:566
+#, c-format
+msgid "* %s already exists on destination.\n"
+msgstr " در حال حاضر وجود دارد* %s \n"
+
+#: dialog_fonts_collector.cpp:569
+#, c-format
+msgid "* Failed to copy %s.\n"
+msgstr "نیست%s قادر به کپی کردن \n"
+
+#: dialog_fonts_collector.cpp:659
+#, c-format
+msgid "\"%s\" found on style \"%s\".\n"
+msgstr "\"%s\" در استایل پیدا شد \"%s\".\n"
+
+#: dialog_fonts_collector.cpp:660
+#, c-format
+msgid "\"%s\" found on dialogue line \"%d\".\n"
+msgstr " \"%s\"  یافته شد در خط\"%d\"\n"
+
+#: dialog_fonts_collector.cpp:661
+#, c-format
+msgid "\"%s\" found.\n"
+msgstr "\"%s\" یافته شد\n"
+
+#: dialog_kara_timing_copy.cpp:64
+msgid "Source: "
+msgstr "منبع:"
+
+#: dialog_kara_timing_copy.cpp:67
+msgid "Dest: "
+msgstr "مقصد:"
+
+#: dialog_kara_timing_copy.cpp:830
+msgid "Kanji timing"
+msgstr "کانجی زمانبندی"
+
+#: dialog_kara_timing_copy.cpp:843
+msgid "Styles"
+msgstr "استایل ها"
+
+#: dialog_kara_timing_copy.cpp:845
+msgid "Shortcut Keys"
+msgstr "کلید های میانبر"
+
+#: dialog_kara_timing_copy.cpp:846
+msgid "Commands"
+msgstr "دستورات"
+
+#: dialog_kara_timing_copy.cpp:854
+msgid "Attempt to interpolate kanji."
+msgstr "تلاش برای داخل کردن کانجی"
+
+#: dialog_kara_timing_copy.cpp:858
+msgid "Source Style"
+msgstr "استایل منبع"
+
+#: dialog_kara_timing_copy.cpp:860
+msgid "Dest Style"
+msgstr "استایل مقصد"
+
+#: dialog_kara_timing_copy.cpp:862
+msgid ""
+"When the destination textbox has focus, use the following keys:\n"
+"\n"
+"Right Arrow: Increase dest. selection length\n"
+"Left Arrow: Decrease dest. selection length\n"
+"Up Arrow: Increase source selection length\n"
+"Down Arrow: Decrease source selection length\n"
+"Enter: Link, accept line when done\n"
+"Backspace: Unlink last"
+msgstr ""
+":وقتی بخش زیرنویسی انتخاب شده باشد از کلید های زیر استفاده نمایید\n"
+"\n"
+" "
+
+#: dialog_kara_timing_copy.cpp:865
+msgid "Start!"
+msgstr "!شروع"
+
+#: dialog_kara_timing_copy.cpp:866
+msgid "Link"
+msgstr "لینک"
+
+#: dialog_kara_timing_copy.cpp:867
+msgid "Unlink"
+msgstr "جداسازی"
+
+#: dialog_kara_timing_copy.cpp:868
+msgid "Skip Source Line"
+msgstr "پرش از خط منبع"
+
+#: dialog_kara_timing_copy.cpp:869
+msgid "Skip Dest Line"
+msgstr "پرش از خط مقصد"
+
+#: dialog_kara_timing_copy.cpp:870
+msgid "Go Back a Line"
+msgstr "یک خط به عقب رفتن"
+
+#: dialog_kara_timing_copy.cpp:871
+msgid "Accept Line"
+msgstr "تایید خط"
+
+#: dialog_kara_timing_copy.cpp:948
+msgid "kanji timing"
+msgstr "زمانبندی کانجی"
+
+#: dialog_kara_timing_copy.cpp:962
+msgid "Select source and destination styles first."
+msgstr "ابتدا استایل منبع و مقصد را انتخاب کنید"
+
+#: dialog_kara_timing_copy.cpp:964
+msgid "The source and destination styles must be different."
+msgstr "استایل مبدا و مقصد باید با یکدیگر متفاوت باشد"
+
+#: dialog_kara_timing_copy.cpp:1031
+msgid "Group all of the source text."
+msgstr "تبدیل متن مبدا به یک گروه"
+
+#: subs_edit_ctrl.cpp:828
+msgid "No correction suggestions"
+msgstr "هیچ پیشنهادی برای تصحیح وجود ندارد"
+
+#: subs_edit_ctrl.cpp:840
+#, c-format
+msgid "Add \"%s\" to dictionary"
+msgstr "به لغت نامه \"%s\" افزودن"
+
+#: subs_edit_ctrl.cpp:848
+msgid "No spell checker suggestions"
+msgstr "هیچ پیشنهادی برای تصحیح وجود ندارد"
+
+#: subs_edit_ctrl.cpp:855
+#, c-format
+msgid "Spell checker suggestions for \"%s\""
+msgstr "\"%s\" پیشنهاد تصحیح کننده امایی برای "
+
+#: subs_edit_ctrl.cpp:875
+#: subs_edit_ctrl.cpp:961
+msgid "Disable"
+msgstr "غیر فعال"
+
+#: subs_edit_ctrl.cpp:888
+msgid "Spell checker language"
+msgstr "بررسی خطاهای املایی"
+
+#: subs_edit_ctrl.cpp:939
+#, c-format
+msgid "Thesaurus suggestions for \"%s\""
+msgstr "\"%s\"  پیشنهاد برای "
+
+#: subs_edit_ctrl.cpp:946
+msgid "No thesaurus suggestions"
+msgstr "هیچ پیشنهادی وجود ندارد"
+
+#: subs_edit_ctrl.cpp:974
+msgid "Thesaurus language"
+msgstr "بخش زبان"
+
+#: subs_edit_ctrl.cpp:981
+msgid "Cu&t"
+msgstr "برش"
+
+#: subs_edit_ctrl.cpp:985
+msgid "Select &All"
+msgstr "انتخاب همه"
+
+#: subs_edit_ctrl.cpp:989
+msgid "Split at cursor (preserve times)"
+msgstr "جداساری در نقطه مکان نما-حفظ زمان"
+
+#: subs_edit_ctrl.cpp:990
+msgid "Split at cursor (estimate times)"
+msgstr "جداساری در نقطه مکان نما-زمان تخمینی"
+
+#: audio_box.cpp:75
+msgid "Seek bar"
+msgstr "نوار جستجو"
+
+#: audio_box.cpp:93
+msgid "Horizontal zoom"
+msgstr "زوم افقی"
+
+#: audio_box.cpp:96
+msgid "Vertical zoom"
+msgstr "زوم عمودی"
+
+#: audio_box.cpp:99
+msgid "Audio Volume"
+msgstr "مقدار صدا"
+
+#: audio_box.cpp:106
+msgid "Link vertical zoom and volume sliders"
+msgstr "مرتبط کردن زوم عمودی با کنترل تنظیم صدا"
+
+#: audio_box.cpp:133
+msgid "Previous line or syllable (%KEY%/%KEY%)"
+msgstr "(%KEY%/%KEY%) خط/سیلاب قبلی"
+
+#: audio_box.cpp:136
+msgid "Next line/syllable (%KEY%/%KEY%)"
+msgstr "(%KEY%/%KEY%) خط/سیلاب بعدی"
+
+#: audio_box.cpp:139
+msgid "Play selection (%KEY%/%KEY%)"
+msgstr "(%KEY%/%KEY%) پخش محل انتخاب شده"
+
+#: audio_box.cpp:142
+msgid "Play current line (%KEY%)"
+msgstr "(%KEY%) پخش خط جاری"
+
+#: audio_box.cpp:145
+msgid "Stop (%KEY%)"
+msgstr "(%KEY%) توقف"
+
+#: audio_box.cpp:149
+msgid "Play 500 ms before selection (%KEY%)"
+msgstr " (%KEY%) پخش 500 میلی ثانیه قبل از محل انتخاب شده"
+
+#: audio_box.cpp:152
+msgid "Play 500 ms after selection (%KEY%)"
+msgstr " (%KEY%) پخش 500 میلی ثانیه بعد از محل انتخاب شده"
+
+#: audio_box.cpp:155
+msgid "Play first 500ms of selection (%KEY%)"
+msgstr " (%KEY%) پخش 500 میلی ثانیه اول محل انتخاب شده"
+
+#: audio_box.cpp:158
+msgid "Play last 500ms of selection (%KEY%)"
+msgstr " (%KEY%) پخش 500 میلی ثانیه آخر محل انتخاب شده"
+
+#: audio_box.cpp:161
+msgid "Play from selection start to end of file (%KEY%)"
+msgstr "پخش ار شروع محل انتخاب شده تا انتهای فایل"
+
+#: audio_box.cpp:165
+msgid "Add lead in (%KEY%)"
+msgstr "(%KEY%) افزودن فاصله شروع"
+
+#: audio_box.cpp:168
+msgid "Add lead out (%KEY%)"
+msgstr "(%KEY%) افزودن فاصله پایان"
+
+#: audio_box.cpp:172
+msgid "Commit changes (%KEY%/%KEY%)"
+msgstr " (%KEY%/%KEY%) اعمال تغییرات"
+
+#: audio_box.cpp:175
+msgid "Go to selection"
+msgstr "رفتن به محل انتخابی"
+
+#: audio_box.cpp:179
+msgid "Automatically commit all changes"
+msgstr "اعمال تمام تغییرات به صورت خودکار"
+
+#: audio_box.cpp:183
+msgid "Auto goes to next line on commit"
+msgstr "رفتن به خط بعدی به صورت خودکار"
+
+#: audio_box.cpp:187
+msgid "Auto scrolls audio display to selected line"
+msgstr "بردن مکان صدا به خط انتخابی"
+
+#: audio_box.cpp:191
+msgid "Spectrum analyzer mode"
+msgstr "حالت بررسی کننده طیف"
+
+#: audio_box.cpp:195
+msgid "Enable Medusa-Style Timing Shortcuts"
+msgstr "فعالسازی مدل کلیدهای میانبر نرم افزار مدوسا"
+
+#: audio_box.cpp:203
+msgid "Toggle karaoke mode"
+msgstr "برگشت به حالت کاروکه"
+
+#: audio_box.cpp:208
+msgid "Join selected syllables"
+msgstr "ترکیب سیلاب های انتخابی "
+
+#: audio_box.cpp:210
+msgid "Enter split-mode"
+msgstr "ورود به حالت جداسازی"
+
+#: audio_box.cpp:216
+msgid "Commit splits and leave split-mode"
+msgstr "اعمال جداسازی ها و خروج از حالت جداسازی"
+
+#: audio_box.cpp:218
+msgid "Discard all splits and leave split-mode"
+msgstr "اعمال نکردن جداسازی ها و خروج از حالت جداسازی"
+
+#: export_visible_lines.cpp:66
+#: export_visible_lines.cpp:67
+msgid "Limit to Visible Lines"
+msgstr "محدود کردن به خطوط مرئی"
+
+#: main.cpp:276
+#, c-format
+msgid ""
+"Oops, Aegisub has crashed!\n"
+"\n"
+"An attempt has been made to save a copy of your file to:\n"
+"\n"
+"%s\n"
+"\n"
+"Aegisub will now close."
+msgstr ""
+"نرم افزار از کار افتاد! \n"
+"\n"
+"یک کپی از فایل شما تهیه شده در: \n"
+"\n"
+"%s\n"
+"نرم افزار بسته خواهد شد"
+
+#: main.cpp:293
+#: main.cpp:318
+msgid "Program error"
+msgstr "خطا در برنامه"
+
+#: hotkeys.cpp:377
+#: hotkeys.cpp:381
+msgid "Exit"
+msgstr "خروج"
+
+#: hotkeys.cpp:386
+msgid "Edit Box Commit"
+msgstr "ویرایش بخش اعمال تغییرات "
+
+#: hotkeys.cpp:387
+msgid "Undo"
+msgstr "بازگرداندن"
+
+#: hotkeys.cpp:389
+#: hotkeys.cpp:391
+msgid "Redo"
+msgstr "بازچین"
+
+#: hotkeys.cpp:402
+msgid "Select Lines"
+msgstr "انتخاب خطوط"
+
+#: hotkeys.cpp:404
+msgid "Cut"
+msgstr "برش"
+
+#: hotkeys.cpp:405
+msgid "Paste"
+msgstr "چسباندن"
+
+#: hotkeys.cpp:406
+msgid "Paste Over"
+msgstr "چسپاندن بروی "
+
+#: hotkeys.cpp:409
+#: hotkeys.cpp:411
+msgid "Video Jump"
+msgstr "پرش ویدیو"
+
+#: hotkeys.cpp:415
+msgid "Set Start to Video"
+msgstr "مشخص کردن شروع ویدیو"
+
+#: hotkeys.cpp:416
+msgid "Set End to Video"
+msgstr "مشخص کردن پایان ویدیو"
+
+#: hotkeys.cpp:418
+msgid "Shift by Current Time"
+msgstr "انتقال براساس زمان کنونی"
+
+#: hotkeys.cpp:419
+msgid "Zoom 50%"
+msgstr "زوم %50"
+
+#: hotkeys.cpp:420
+msgid "Zoom 100%"
+msgstr "زوم %100"
+
+#: hotkeys.cpp:421
+msgid "Zoom 200%"
+msgstr "زوم %200"
+
+#: hotkeys.cpp:423
+msgid "Video global prev frame"
+msgstr " رفتن به فریم قبلی :ویدیو"
+
+#: hotkeys.cpp:424
+msgid "Video global next frame"
+msgstr "رفتن به فریم بعدی:ویدیو"
+
+#: hotkeys.cpp:425
+msgid "Video global focus seek"
+msgstr "تمرکز در جستجو:ویدیو"
+
+#: hotkeys.cpp:426
+msgid "Video global play"
+msgstr "پخش:ویدیو"
+
+#: hotkeys.cpp:427
+msgid "Grid global prev line"
+msgstr "خط قبلی :  ستون ها"
+
+#: hotkeys.cpp:428
+msgid "Grid global next line"
+msgstr "خط بعدی :  ستون ها"
+
+#: hotkeys.cpp:429
+msgid "Save Subtitles Alt"
+msgstr "ذخیره زیرنویس"
+
+#: hotkeys.cpp:430
+msgid "Video global zoom in"
+msgstr "زوم کردن :ویدیو"
+
+#: hotkeys.cpp:431
+msgid "Video global zoom out"
+msgstr "خروج از زوم :ویدیو"
+
+#: hotkeys.cpp:433
+msgid "Grid move row down"
+msgstr "حرکت ردیف به پایین:  ستون ها"
+
+#: hotkeys.cpp:434
+msgid "Grid move row up"
+msgstr "حرکت ردیف به بالا:  ستون ها"
+
+#: hotkeys.cpp:436
+#: hotkeys.cpp:438
+msgid "Grid delete rows"
+msgstr "حذف ردیف:  ستون ها"
+
+#: hotkeys.cpp:440
+msgid "Grid duplicate rows"
+msgstr "تکثیر ردیف:  ستون ها"
+
+#: hotkeys.cpp:441
+msgid "Grid duplicate and shift one frame"
+msgstr "تکثیر و انتقال با یک فریم:  ستون ها"
+
+#: hotkeys.cpp:443
+msgid "Audio Commit Alt"
+msgstr "اعمال تغییرات:صدا"
+
+#: hotkeys.cpp:444
+msgid "Audio Commit"
+msgstr "اعمال تغییرات:صدا"
+
+#: hotkeys.cpp:445
+msgid "Audio Commit (Stay)"
+msgstr "اعمال تغییرات"
+
+#: hotkeys.cpp:446
+msgid "Audio Prev Line"
+msgstr "خط قبلی:صدا"
+
+#: hotkeys.cpp:447
+msgid "Audio Prev Line Alt"
+msgstr "خط قبلی:صدا"
+
+#: hotkeys.cpp:448
+msgid "Audio Next Line"
+msgstr "پخش خط بعد"
+
+#: hotkeys.cpp:449
+msgid "Audio Next Line Alt"
+msgstr "پخش خط بعد:صدا"
+
+#: hotkeys.cpp:450
+msgid "Audio Play"
+msgstr "پخش:صدا "
+
+#: hotkeys.cpp:451
+msgid "Audio Play Alt"
+msgstr "پخش:صدا "
+
+#: hotkeys.cpp:452
+msgid "Audio Play or Stop"
+msgstr "پخش یا توقف:صدا "
+
+#: hotkeys.cpp:453
+msgid "Audio Stop"
+msgstr "توقف :صدا"
+
+#: hotkeys.cpp:454
+msgid "Audio Karaoke Increase Len"
+msgstr "افزایش زمان کاراوکه :صدا "
+
+#: hotkeys.cpp:455
+msgid "Audio Karaoke Decrease Len"
+msgstr "کاهش زمان کاراوکه :صدا "
+
+#: hotkeys.cpp:456
+msgid "Audio Karaoke Increase Len Shift"
+msgstr "افزایش زمان کاراوکه :صدا "
+
+#: hotkeys.cpp:457
+msgid "Audio Karaoke Decrease Len Shift"
+msgstr "کاهش زمان کاراوکه :صدا "
+
+#: hotkeys.cpp:458
+msgid "Audio Scroll Left"
+msgstr "حرکت به چپ :صدا "
+
+#: hotkeys.cpp:459
+msgid "Audio Scroll Right"
+msgstr "حرکت به راست :صدا "
+
+#: hotkeys.cpp:460
+msgid "Audio Play First 500ms"
+msgstr "صدا:پخش 500 میلی ثانیه اول"
+
+#: hotkeys.cpp:461
+msgid "Audio Play Last 500ms"
+msgstr "صدا:پخش 500 میلی ثانیه آخر"
+
+#: hotkeys.cpp:462
+msgid "Audio Play 500ms Before"
+msgstr "صدا:پخش 500 میلی ثانیه قبل"
+
+#: hotkeys.cpp:463
+msgid "Audio Play 500ms After"
+msgstr "صدا:پخش 500 میلی ثانیه بعد"
+
+#: hotkeys.cpp:464
+msgid "Audio Play To End"
+msgstr "صدا:پخش صدا تا پایان"
+
+#: hotkeys.cpp:465
+msgid "Audio Play Original Line"
+msgstr "صدا:پخش خط اصلی"
+
+#: hotkeys.cpp:466
+msgid "Audio Add Lead In"
+msgstr "صدا:افزودن فاصله شروع"
+
+#: hotkeys.cpp:467
+msgid "Audio Add Lead Out"
+msgstr "افزودن فاصله پایان :صدا"
+
+#: hotkeys.cpp:469
+msgid "Audio Medusa Toggle"
+msgstr "تعویض :صدا مدوسا"
+
+#: hotkeys.cpp:470
+msgid "Audio Medusa Play"
+msgstr "پخش :صدا مدوسا"
+
+#: hotkeys.cpp:471
+msgid "Audio Medusa Stop"
+msgstr "توقف :صدا مدوسا"
+
+#: hotkeys.cpp:472
+msgid "Audio Medusa Shift Start Back"
+msgstr "حرکت ابتدا به عقب :صدا مدوسا"
+
+#: hotkeys.cpp:473
+msgid "Audio Medusa Shift Start Forward"
+msgstr "حرکت ابتدا به جلو :صدا مدوسا"
+
+#: hotkeys.cpp:474
+msgid "Audio Medusa Shift End Back"
+msgstr "حرکت انتها به عقب :صدا مدوسا"
+
+#: hotkeys.cpp:475
+msgid "Audio Medusa Shift End Forward"
+msgstr "حرکت انتها به جلو :صدا مدوسا"
+
+#: hotkeys.cpp:476
+msgid "Audio Medusa Play Before"
+msgstr "پخش قبل از محل انتخابی :صدا مدوسا"
+
+#: hotkeys.cpp:477
+msgid "Audio Medusa Play After"
+msgstr "پخش بعد از محل انتخابی :صدا مدوسا"
+
+#: hotkeys.cpp:478
+msgid "Audio Medusa Next"
+msgstr "بعدی :صدا مدوسا"
+
+#: hotkeys.cpp:479
+msgid "Audio Medusa Previous"
+msgstr "قبلی :صدا مدوسا"
+
+#: hotkeys.cpp:480
+msgid "Audio Medusa Enter"
+msgstr "پذیرش :صدا مدوسا"
+
+#: hotkeys.cpp:482
+msgid "Translation Assistant Play Audio"
+msgstr "دستیار ترجمه:پخش صدا  "
+
+#: hotkeys.cpp:483
+msgid "Translation Assistant Play Video"
+msgstr "دستیار ترجمه :پخش ویدیو "
+
+#: hotkeys.cpp:484
+msgid "Translation Assistant Next"
+msgstr "دستیار ترجمه:بعدی"
+
+#: hotkeys.cpp:485
+msgid "Translation Assistant Prev"
+msgstr "دستیار ترجمه: قبلی"
+
+#: hotkeys.cpp:486
+msgid "Translation Assistant Accept"
+msgstr "دستیار ترجمه: پذیرش"
+
+#: hotkeys.cpp:487
+msgid "Translation Assistant Preview"
+msgstr "دستیار ترجمه: پیش نمایش"
+
+#: hotkeys.cpp:488
+msgid "Translation Assistant Insert Original"
+msgstr "دستیار ترجمه: قرار دادن خط اصلی"
+
+#: hotkeys.cpp:490
+msgid "Styling Assistant Play Audio"
+msgstr "دستیار استایل:پخش صدا"
+
+#: hotkeys.cpp:491
+msgid "Styling Assistant Play Video"
+msgstr "دستیار استایل:پخش ویدیو"
+
+#: hotkeys.cpp:492
+msgid "Styling Assistant Next"
+msgstr "دستیار استایل:بعد"
+
+#: hotkeys.cpp:493
+msgid "Styling Assistant Prev"
+msgstr "دستیار استایل:قبل"
+
+#: hotkeys.cpp:494
+msgid "Styling Assistant Accept"
+msgstr "دستیار استایل:تایید"
+
+#: hotkeys.cpp:495
+msgid "Styling Assistant Preview"
+msgstr "دستیار استایل:پیش نمایش"
+
+#: hotkeys.cpp:497
+msgid "Visual Tool Default"
+msgstr "ابزار دیداری:پیش فرض"
+
+#: hotkeys.cpp:498
+msgid "Visual Tool Drag"
+msgstr "ابزار دیداری:کشیدن"
+
+#: hotkeys.cpp:499
+msgid "Visual Tool Rotate Z"
+msgstr "Zابزار دیداری:چرخش"
+
+#: hotkeys.cpp:500
+msgid "Visual Tool Rotate X/Y"
+msgstr "X/Yابزار دیداری:چرخش"
+
+#: hotkeys.cpp:501
+msgid "Visual Tool Scale"
+msgstr "ابزار دیداری:اندازه"
+
+#: hotkeys.cpp:502
+msgid "Visual Tool Rectangular Clip"
+msgstr "ابزار دیداری:برش مستطیلی"
+
+#: hotkeys.cpp:503
+msgid "Visual Tool Vector Clip"
+msgstr "ابزار دیداری:برش برداری"
+
+#: vfr.cpp:75
+msgid "No timecodes to average"
+msgstr "هیچ کدهای زمانی برای میانگین وجود ندارد"
+
+#: dialog_paste_over.cpp:58
+msgid "Select Fields to Paste Over"
+msgstr "انتخاب بخش ها برای چسباندن به روی آنها"
+
+#: dialog_paste_over.cpp:64
+msgid "Fields"
+msgstr "بخش ها"
+
+#: dialog_paste_over.cpp:65
+msgid "Please select the fields that you want to paste over:"
+msgstr "لطفا بخش هایی را که می خواهید بر روی آنها اطلاعات را بچسبانید انتخاب نمایید"
+
+#: dialog_paste_over.cpp:71
+msgid "Start Time"
+msgstr "زمان شروع"
+
+#: dialog_paste_over.cpp:72
+msgid "End Time"
+msgstr "زمان اتمام"
+
+#: dialog_paste_over.cpp:75
+msgid "Margin Left"
+msgstr " حاشیه چپ"
+
+#: dialog_paste_over.cpp:76
+msgid "Margin Right"
+msgstr " حاشیه راست"
+
+#: dialog_paste_over.cpp:78
+msgid "Margin Vertical"
+msgstr " حاشیه عمودی"
+
+#: dialog_paste_over.cpp:81
+msgid "Margin Top"
+msgstr " حاشیه بالا"
+
+#: dialog_paste_over.cpp:82
+msgid "Margin Bottom"
+msgstr " حاشیه پایین"
+
+#: dialog_colorpicker.cpp:558
+msgid "Select Colour"
+msgstr "انتخاب رنگ"
+
+#: dialog_colorpicker.cpp:631
+msgid "Colour spectrum"
+msgstr "رنگ طیف "
+
+#: dialog_colorpicker.cpp:634
+msgid "RGB/R"
+msgstr "RGB/R"
+
+#: dialog_colorpicker.cpp:634
+msgid "RGB/G"
+msgstr "RGB/G"
+
+#: dialog_colorpicker.cpp:634
+msgid "RGB/B"
+msgstr "RGB/B"
+
+#: dialog_colorpicker.cpp:634
+msgid "HSL/L"
+msgstr "HSL/L"
+
+#: dialog_colorpicker.cpp:634
+msgid "HSV/H"
+msgstr "HSV/H"
+
+#: dialog_colorpicker.cpp:640
+msgid "RGB colour"
+msgstr "RGB colour"
+
+#: dialog_colorpicker.cpp:645
+msgid "HSL colour"
+msgstr "HSL colour"
+
+#: dialog_colorpicker.cpp:650
+msgid "HSV colour"
+msgstr "HSV colour"
+
+#: dialog_colorpicker.cpp:670
+msgid "Spectrum mode:"
+msgstr "حالت طیف:"
+
+#: dialog_colorpicker.cpp:682
+msgid "Red:"
+msgstr "قرمز:"
+
+#: dialog_colorpicker.cpp:684
+msgid "Green:"
+msgstr "سبز:"
+
+#: dialog_colorpicker.cpp:686
+msgid "Blue:"
+msgstr "آبی:"
+
+#: dialog_colorpicker.cpp:700
+#: dialog_colorpicker.cpp:710
+msgid "Hue:"
+msgstr "Hue:"
+
+#: dialog_colorpicker.cpp:702
+#: dialog_colorpicker.cpp:712
+msgid "Sat.:"
+msgstr "Sat.:"
+
+#: dialog_colorpicker.cpp:704
+msgid "Lum.:"
+msgstr "Lum.:"
+
+#: dialog_colorpicker.cpp:714
+msgid "Value:"
+msgstr "مقدار:"
+
+#: dialog_colorpicker.cpp:739
+msgid "Colour Picker"
+msgstr "انتخاب کننده رنگ"
+

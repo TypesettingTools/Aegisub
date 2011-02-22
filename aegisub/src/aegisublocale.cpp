@@ -154,6 +154,7 @@ wxArrayInt AegisubLocale::GetAvailableLanguages() {
 		_T("de"),
 		_T("el"),
 		_T("es"),
+		_T("fa"),
 		_T("fi"),
 		_T("fr_FR"),
 		_T("hu"),
