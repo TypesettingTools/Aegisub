@@ -245,7 +245,7 @@ function HSL_to_RGB(H, S, L)
 
 	end
 
-	return r, g, b
+	return math.floor(r*255+0.5), math.floor(g*255+0.5), math.floor(b*255+0.5)
 end
 
 -- Removes spaces at the start and end of string
