@@ -101,7 +101,7 @@ if test "$build_darwin" = "yes"; then
   fi
   AC_SUBST(DARWIN_ARCH)
 
-  CXXFLAGS_OSX="-I/Developer/SDKs/MacOSX10.4u.sdk/usr/include -mmacosx-version-min=10.4"
+  CXXFLAGS_OSX="-mmacosx-version-min=10.4"
 
   case "$target_or_host" in
     # 10.4
@@ -1395,7 +1395,7 @@ if test -z "$default_provider_audio"; then
 fi
 
 if test -z "$default_provider_subtitle"; then
-  default_provider_audio="NONE"
+  default_provider_subtitle="NONE"
 fi
 
 if test -z "$default_player_audio"; then
