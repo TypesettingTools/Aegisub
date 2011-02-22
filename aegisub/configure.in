@@ -197,6 +197,13 @@ else
   AC_MSG_RESULT([no])
 fi
 
+# Set tags for the update checker.
+if test "$build_darwin" = "yes"; then
+  AC_DEFINE(UPDATE_CHECKER_ACCEPT_TAGS, "osx unix source", [Do not change these from the default.])
+else
+  AC_DEFINE(UPDATE_CHECKER_ACCEPT_TAGS, "unix source", [Do not change these from the default.])
+fi
+
 
 ####################
 # Check for programs
