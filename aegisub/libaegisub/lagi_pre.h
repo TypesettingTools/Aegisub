@@ -11,7 +11,6 @@
 #include <string.h>
 #include <sys/stat.h>
 #include <sys/param.h>
-#include <sys/mount.h>
 #ifdef HAVE_SYS_TIME_H
 #  include <sys/time.h>
 #else
@@ -23,6 +22,11 @@
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #include <io.h>
+#endif
+
+// Unix C
+#ifndef _WIN32
+#  include <sys/mount.h> // yep, this exists on MacOS X as well, but not on Windows.
 #endif
 
 // Common C++

@@ -38,8 +38,9 @@ namespace agi {
 
 
 void str_lower(std::string &str) {
+	std::locale loc;
 	for (size_t i=0; i < str.length(); ++i) {
-		str[i] = std::tolower(str[i]);
+		str[i] = std::tolower(str[i], loc);
 	}
 }
 
@@ -51,24 +52,6 @@ int strtoi(std::string &str) {
 		return 0;
 
 	return (int)l;
-}
-
-
-uint64_t freespace(std::string &path, PathType type) {
-	struct statfs fs;
-	std::string check(path);
-
-	if (type == TypeFile)
-		check.assign(DirName(path));
-
-	acs::CheckDirRead(check);
-
-	if ((statfs(check.c_str(), &fs)) == 0) {
-		return fs.f_bsize * fs.f_bavail;
-	} else {
-		/// @todo We need a collective set of exceptions for ENOTDIR, EIO etc.
-		throw("Failed getting free space");
-	}
 }
 
 
