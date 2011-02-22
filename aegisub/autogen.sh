@@ -92,7 +92,7 @@ check_version ()
 DIE=0
 
 
-$ECHO_N "checking for libtool >= $LIBTOOL_REQUIRED_VERSION ... "
+$ECHO_N "checking for $LIBTOOLIZE >= $LIBTOOL_REQUIRED_VERSION ... "
 if ($LIBTOOLIZE --version) < /dev/null > /dev/null 2>&1; then
    LIBTOOLIZE=$LIBTOOLIZE
 elif (glibtoolize --version) < /dev/null > /dev/null 2>&1; then
@@ -112,7 +112,7 @@ if test x$LIBTOOLIZE != x; then
     check_version $VER $LIBTOOL_REQUIRED_VERSION
 fi
 
-$ECHO_N "checking for autoconf >= $AUTOCONF_REQUIRED_VERSION ... "
+$ECHO_N "checking for $AUTOCONF >= $AUTOCONF_REQUIRED_VERSION ... "
 if ($AUTOCONF --version) < /dev/null > /dev/null 2>&1; then
     VER=`$AUTOCONF --version | head -n 1 \
          | grep -iw autoconf | sed "s/.* \([0-9.]*\)[-a-z0-9]*$/\1/"`
@@ -128,7 +128,7 @@ fi
 
 
 # 1.11 comes after 1.10 beacuse 1.11 isn't fully supported.
-$ECHO_N "checking for automake >= $AUTOMAKE_REQUIRED_VERSION ... "
+$ECHO_N "checking for $AUTOMAKE >= $AUTOMAKE_REQUIRED_VERSION ... "
 if ($AUTOMAKE --version) < /dev/null > /dev/null 2>&1; then
    AUTOMAKE=$AUTOMAKE
    ACLOCAL=$ACLOCAL
@@ -173,7 +173,7 @@ fi
 
 
 $ECHO_N "checking for $INTLTOOLIZE >= $INTLTOOL_REQUIRED_VERSION ... "
-if (intltoolize --version) < /dev/null > /dev/null 2>&1; then
+if ($INTLTOOLIZE --version) < /dev/null > /dev/null 2>&1; then
     VER=`$INTLTOOLIZE --version \
          | grep intltoolize | sed "s/.* \([0-9.]*\)/\1/"`
     check_version $VER $INTLTOOL_REQUIRED_VERSION
