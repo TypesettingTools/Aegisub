@@ -22,6 +22,7 @@
 #include <string>
 #include <stdio.h>
 #include <time.h>
+#include <sys/statvfs.h>
 
 #include <algorithm>
 #endif // LAGI_PRE

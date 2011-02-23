@@ -60,7 +60,7 @@ void time_log(timeval &tv) {
 }
 
 uint64_t freespace(std::string &path, PathType type) {
-	struct statfs fs;
+	struct statvfs fs;
 	std::string check(path);
 
 	if (type == TypeFile)
@@ -68,7 +68,7 @@ uint64_t freespace(std::string &path, PathType type) {
 
 	acs::CheckDirRead(check);
 
-	if ((statfs(check.c_str(), &fs)) == 0) {
+	if ((statvfs(check.c_str(), &fs)) == 0) {
 		return fs.f_bsize * fs.f_bavail;
 	} else {
 		/// @todo We need a collective set of exceptions for ENOTDIR, EIO etc.

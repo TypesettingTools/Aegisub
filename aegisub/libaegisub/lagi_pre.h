@@ -26,7 +26,7 @@
 
 // Unix C
 #ifndef _WIN32
-#  include <sys/mount.h> // yep, this exists on MacOS X as well, but not on Windows.
+#  include <sys/statvfs.h>
 #endif
 
 // Common C++
