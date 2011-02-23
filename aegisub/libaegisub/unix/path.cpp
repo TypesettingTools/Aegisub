@@ -26,6 +26,7 @@
 #include <stdlib.h>
 
 #include <string>
+#include <vector>
 #endif
 
 #include <libaegisub/path.h>
