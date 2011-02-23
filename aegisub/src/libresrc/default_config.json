@@ -60,6 +60,9 @@
 		"Lock Scroll on Cursor" : false,
 		"Medusa Timing Hotkeys" : false,
 		"Next Line on Commit" : true,
+		"OSS" : {
+			"Device" : "/dev/dsp"
+		},
 		"Player" : "portaudio",
 		"Plays When Stepping Video" : false,
 		"Provider" : "ffmpegsource",
