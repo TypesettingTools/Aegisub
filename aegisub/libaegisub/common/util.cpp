@@ -19,9 +19,6 @@
 /// @ingroup libaegisub
 
 #ifndef LAGI_PRE
-#include <sys/param.h>
-#include <sys/mount.h>
-
 #include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
