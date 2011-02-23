@@ -10,7 +10,6 @@
 #include <stdint.h>
 #include <string.h>
 #include <sys/stat.h>
-#include <sys/param.h>
 #ifdef HAVE_SYS_TIME_H
 #  include <sys/time.h>
 #else
@@ -26,7 +25,8 @@
 
 // Unix C
 #ifndef _WIN32
-#  include <sys/statvfs.h>
+#include <sys/statvfs.h>
+#include <sys/param.h>
 #endif
 
 // Common C++
