@@ -42,7 +42,6 @@ const std::string home() {
 		exit(1);
 	}
 	std::string home(ehome);
-	free(ehome);
 	return home;
 }
 
