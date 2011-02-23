@@ -1,8 +1,8 @@
 AC_DEFUN([AC_AGI_COMPILE],[
-  aegisub_save_LDFLAGS="$LDFLAGS"
+  aegisub_save_LIBS="$LIBS"
   aegisub_save_CPPFLAGS="$CPPFLAGS"
   CPPFLAGS="$3"
-  LDFLAGS="$4"
+  LIBS="$4"
       AC_CACHE_CHECK(
         [whether $1 works], [agi_cv_with_$2],
         [AC_RUN_IFELSE([$5],
@@ -15,7 +15,7 @@ AC_DEFUN([AC_AGI_COMPILE],[
 		fi])
         ])
   CPPFLAGS="$aegisub_save_CPPFLAGS"
-  LDFLAGS="$aegisub_save_LDFLAGS"
+  LIBS="$aegisub_save_LIBS"
 ])
 
 
