@@ -93,6 +93,11 @@ public:
 	agi::scoped_ptr<agi::Context> context;
 
 private:
+    // XXX: Make Freeze()/Thaw() noops on GTK, this seems to be buggy
+#ifdef __WXGTK__
+    void Freeze(void) {}
+    void Thaw(void) {}
+#endif
 	void cmd_call(wxCommandEvent& event);
 
 	/// DOCME
