@@ -369,6 +369,52 @@ function apply_templates(meta, styles, subs, templates)
 		return ""
 	end
 	
+	tenv.recall = {}
+	setmetatable(tenv.recall, {
+		decorators = {},
+		__call = function(tab, name, default)
+			local decorator = getmetatable(tab).decorators[name]
+			if decorator then
+				name = decorator(tostring(name))
+			end
+			aegisub.debug.out(5, "Recalling '%s'\n", name)
+			return tab[name] or default
+		end,
+		decorator_line = function(name)
+			return string.format("_%s_%s", tostring(tenv.orgline), name)
+		end,
+		decorator_syl = function(name)
+			return string.format("_%s_%s", tostring(tenv.syl), name)
+		end,
+		decorator_basesyl = function(name)
+			return string.format("_%s_%s", tostring(tenv.basesyl), name)
+		end
+	})
+	tenv.remember = function(name, value, decorator)
+		getmetatable(tenv.recall).decorators[name] = decorator
+		if decorator then
+			name = decorator(tostring(name))
+		end
+		aegisub.debug.out(5, "Remembering '%s' as '%s'\n", name, tostring(value))
+		tenv.recall[name] = value
+		return value
+	end
+	tenv.remember_line = function(name, value)
+		return tenv.remember(name, value, getmetatable(tenv.recall).decorator_line)
+	end
+	tenv.remember_syl = function(name, value)
+		return tenv.remember(name, value, getmetatable(tenv.recall).decorator_syl)
+	end
+	tenv.remember_basesyl = function(name, value)
+		return tenv.remember(name, value, getmetatable(tenv.recall).decorator_basesyl)
+	end
+	tenv.remember_if = function(name, value, condition, decorator)
+		if condition then
+			return tenv.remember(name, value, decorator)
+		end
+		return value
+	end
+	
 	-- run all run-once code snippets
 	for k, t in pairs(templates.once) do
 		assert(t.code, "WTF, a 'once' template without code?")
