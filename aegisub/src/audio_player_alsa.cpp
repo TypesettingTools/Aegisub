@@ -1,4 +1,4 @@
-// Copyright (c) 2007, Niels Martin Hansen
+// Copyright (c) 2011, Niels Martin Hansen
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -29,8 +29,8 @@
 //
 // AEGISUB
 //
-// Website: http://aegisub.cellosoft.com
-// Contact: mailto:jiifurusu@gmail.com
+// Website: http://www.aegisub.org
+// Contact: mailto:nielsm@indvikleren.dk
 //
 
 
@@ -41,366 +41,519 @@
 
 ///////////
 // Headers
-#include <wx/wxprec.h>
-#include "audio_player_manager.h"
-#include "audio_provider_manager.h"
-#include "utils.h"
-#include "main.h"
-#include "frame_main.h"
 #include "audio_player_alsa.h"
+#include "include/aegisub/audio_provider.h"
+
+#include <alsa/asoundlib.h>
+
+#include <wx/wxprec.h>
+#include "utils.h"
+#include "frame_main.h"
 #include "options.h"
+#include <algorithm>
+
+class PthreadMutexLocker {
+	pthread_mutex_t &mutex;
+
+	PthreadMutexLocker(const PthreadMutexLocker &); // uncopyable
+	PthreadMutexLocker(); // no default
+
+public:
+	explicit PthreadMutexLocker(pthread_mutex_t &mutex) : mutex(mutex)
+	{
+		pthread_mutex_lock(&mutex);
+	}
+
+	~PthreadMutexLocker()
+	{
+		pthread_mutex_unlock(&mutex);
+	}
+
+	int WaitCondition(pthread_cond_t &cond)
+	{
+		return pthread_cond_wait(&cond, &mutex);
+	}
+
+	int WaitConditionTimeout(pthread_cond_t &cond, int ms)
+	{
+		timespec abstime;
+		clock_gettime(CLOCK_REALTIME, &abstime);
+		abstime.tv_nsec += ms * 1000000;
+		return pthread_cond_timedwait(&cond, &mutex, &abstime);
+	}
+};
 
 
-///////////////
-// Constructor
-AlsaPlayer::AlsaPlayer()
+class ScopedAliveFlag {
+	volatile bool &flag;
+
+	ScopedAliveFlag(const ScopedAliveFlag &); // uncopyable
+	ScopedAliveFlag(); // no default
+
+public:
+	explicit ScopedAliveFlag(volatile bool &var) : flag(var) { flag = true; }
+	~ScopedAliveFlag() { flag = false; }
+};
+
+
+struct PlaybackState {
+	pthread_mutex_t mutex;
+	pthread_cond_t cond;
+
+	volatile bool playing;
+	volatile bool alive;
+
+	volatile bool signal_start;
+	volatile bool signal_stop;
+	volatile bool signal_close;
+	volatile bool signal_volume;
+
+	volatile double volume;
+	volatile int64_t start_position;
+	volatile int64_t end_position;
+
+	AudioProvider *provider;
+	std::string device_name;
+
+	int64_t last_position;
+	timespec last_position_time;
+
+	PlaybackState()
+	{
+		pthread_mutex_init(&mutex, 0);
+		pthread_cond_init(&cond, 0);
+
+		Reset();
+		volume = 1.0;
+	}
+
+	~PlaybackState()
+	{
+		pthread_cond_destroy(&cond);
+		pthread_mutex_destroy(&mutex);
+	}
+
+	void Reset()
+	{
+		playing = false;
+		alive = false;
+		signal_start = false;
+		signal_stop = false;
+		signal_close = false;
+		signal_volume = false;
+		start_position = 0;
+		end_position = 0;
+		last_position = 0;
+		provider = 0;
+	}
+};
+
+
+class AlsaPlayer : public AudioPlayer {
+private:
+	PlaybackState ps;
+	pthread_t thread;
+	bool open;
+
+public:
+	AlsaPlayer();
+	~AlsaPlayer();
+
+	void OpenStream();
+	void CloseStream();
+
+	void Play(int64_t start, int64_t count);
+	void Stop(bool timerToo=true);
+	bool IsPlaying();
+
+	int64_t GetStartPosition();
+	int64_t GetEndPosition();
+	int64_t GetCurrentPosition();
+	void SetEndPosition(int64_t pos);
+	void SetCurrentPosition(int64_t pos);
+
+	void SetVolume(double vol);
+	double GetVolume();
+};
+
+
+
+void *playback_thread(void *arg)
 {
-	volume = 1.0f;
-	open = false;
-	playing = false;
-	start_frame = cur_frame = end_frame = bpf = 0;
-	provider = 0;
+	// This is exception-free territory!
+	// Return a pointer to a static string constant describing the error, or 0 on no error
+	PlaybackState &ps = *(PlaybackState*)arg;
+
+	PthreadMutexLocker ml(ps.mutex);
+	ScopedAliveFlag alive_flag(ps.alive);
+
+	snd_pcm_t *pcm = 0;
+	if (snd_pcm_open(&pcm, ps.device_name.c_str(), SND_PCM_STREAM_PLAYBACK, 0) != 0)
+		return "snd_pcm_open";
+	printf("alsa_player: opened pcm\n");
+
+do_setup:
+	snd_pcm_format_t pcm_format;
+	switch (ps.provider->GetBytesPerSample())
+	{
+	case 1:
+		printf("alsa_player: format U8\n");
+		pcm_format = SND_PCM_FORMAT_U8;
+		break;
+	case 2:
+		printf("alsa_player: format S16_LE\n");
+		pcm_format = SND_PCM_FORMAT_S16_LE;
+		break;
+	default:
+		snd_pcm_close(pcm);
+		return "snd_pcm_format_t";
+	}
+	if (snd_pcm_set_params(pcm,
+	                       pcm_format,
+	                       SND_PCM_ACCESS_RW_INTERLEAVED,
+	                       ps.provider->GetChannels(),
+	                       ps.provider->GetSampleRate(),
+	                       1, // allow resample
+	                       100*1000 // 100 milliseconds latency
+	                      ) != 0)
+		return "snd_pcm_set_params";
+	printf("alsa_player: set pcm params\n");
+
+	size_t framesize = ps.provider->GetChannels() * ps.provider->GetBytesPerSample();
+
+	ps.signal_close = false;
+	while (ps.signal_close == false)
+	{
+		// Wait for condition to trigger
+		if (!ps.signal_start)
+			ml.WaitCondition(ps.cond);
+		printf("alsa_player: outer loop, condition happened\n");
+
+		if (ps.signal_start == false || ps.end_position <= ps.start_position)
+		{
+			continue;
+		}
+
+		printf("alsa_player: starting playback\n");
+		int64_t position = ps.start_position;
+
+		// Playback position
+		ps.last_position = position;
+		clock_gettime(CLOCK_REALTIME, &ps.last_position_time);
+
+		// Initial buffer-fill
+		snd_pcm_sframes_t avail = std::min(snd_pcm_avail(pcm), (snd_pcm_sframes_t)(ps.end_position-position));
+		char *buf = new char[avail*framesize];
+		ps.provider->GetAudioWithVolume(buf, position, avail, ps.volume);
+		snd_pcm_sframes_t written = 0;
+		while (written <= 0)
+		{
+			written = snd_pcm_writei(pcm, buf, avail);
+			if (written == -ESTRPIPE)
+			{
+				snd_pcm_recover(pcm, written, 0);
+			}
+			else if (written <= 0)
+			{
+				delete[] buf;
+				snd_pcm_close(pcm);
+				printf("alsa_player: error filling buffer\n");
+				return "snd_pcm_writei";
+			}
+		}
+		delete[] buf;
+		position += written;
+
+		// Start playback
+		printf("alsa_player: initial buffer filled, hitting start\n");
+		snd_pcm_start(pcm);
+
+		ps.signal_start = false;
+		ps.signal_stop = false;
+
+		while (ps.signal_stop == false)
+		{
+			ScopedAliveFlag playing_flag(ps.playing);
+
+			// Sleep a bit, or until an event
+			ml.WaitConditionTimeout(ps.cond, 50);
+			//printf("alsa_player: playback loop, out of wait\n");
+
+			// Check for stop signal
+			if (ps.signal_stop == true)
+			{
+				printf("alsa_player: playback loop, stop signal\n");
+				snd_pcm_drop(pcm);
+				break;
+			}
+
+			// Playback position
+			snd_pcm_sframes_t delay;
+			if (snd_pcm_delay(pcm, &delay) == 0)
+			{
+				ps.last_position = position - delay;
+				clock_gettime(CLOCK_REALTIME, &ps.last_position_time);
+			}
+
+			// Fill buffer
+			avail = std::min(snd_pcm_avail(pcm), (snd_pcm_sframes_t)(ps.end_position-position));
+			buf = new char[avail*framesize];
+			ps.provider->GetAudioWithVolume(buf, position, avail, ps.volume);
+			written = 0;
+			while (written <= 0)
+			{
+				written = snd_pcm_writei(pcm, buf, avail);
+				if (written == -ESTRPIPE || written == -EPIPE)
+				{
+					snd_pcm_recover(pcm, written, 0);
+				}
+				else if (written == 0)
+				{
+					break;
+				}
+				else if (written < 0)
+				{
+					delete[] buf;
+					snd_pcm_close(pcm);
+					printf("alsa_player: error filling buffer, written=%d\n", written);
+					return "snd_pcm_writei";
+				}
+			}
+			delete[] buf;
+			position += written;
+			//printf("alsa_player: playback loop, filled buffer\n");
+
+			// Check for end of playback
+			if (position >= ps.end_position)
+			{
+				printf("alsa_player: playback loop, past end, draining\n");
+				snd_pcm_drain(pcm);
+				break;
+			}
+		}
+		ps.signal_stop = false;
+		printf("alsa_player: out of playback loop\n");
+
+		switch (snd_pcm_state(pcm))
+		{
+		case SND_PCM_STATE_OPEN:
+			// no clue what could have happened here, but start over
+			ps.signal_start = false;
+			ps.signal_stop = false;
+			goto do_setup;
+
+		case SND_PCM_STATE_SETUP:
+			// we lost the preparedness?
+			snd_pcm_prepare(pcm);
+			break;
+
+		case SND_PCM_STATE_DISCONNECTED:
+			// lost device, close the handle and return error
+			snd_pcm_close(pcm);
+			return "SND_PCM_STATE_DISCONNECTED";
+
+		default:
+			// everything else should either be fine or impossible (here)
+			break;
+		}
+	}
+	ps.signal_close = false;
+	printf("alsa_player: out of outer loop\n");
+
+	snd_pcm_close(pcm);
+
+	return 0;
 }
 
 
-//////////////
-// Destructor
+
+AlsaPlayer::AlsaPlayer()
+{
+	ps.Reset();
+	open = false;
+}
+
+
 AlsaPlayer::~AlsaPlayer()
 {
 	CloseStream();
 }
 
 
-///////////////
-// Open stream
 void AlsaPlayer::OpenStream()
 {
+	if (open) return;
+
 	CloseStream();
 
-	// Get provider
-	provider = GetProvider();
-	bpf = provider->GetChannels() * provider->GetBytesPerSample();
+	ps.Reset();
+	ps.provider = GetProvider();
 
-	// We want playback
-	stream = SND_PCM_STREAM_PLAYBACK;
-	// And get a device name
-	wxString device = Options.AsText(_T("Audio Alsa Device"));
+	wxString device_name = Options.AsText(_T("Audio ALSA Device"));
+	ps.device_name = std::string(device_name.utf8_str());
 
-	// Open device for blocking access
-	if (snd_pcm_open(&pcm_handle, device.mb_str(wxConvUTF8), stream, 0) < 0) { // supposedly we don't want SND_PCM_ASYNC even for async playback
-		throw _T("ALSA player: Error opening specified PCM device");
+	if (pthread_create(&thread, 0, &playback_thread, &ps) == 0)
+	{
+		open = true;
 	}
-
-	SetUpHardware();
-
-	// Register async handler
-	SetUpAsync();
-
-	// Now ready
-	open = true;
-}
-
-
-void AlsaPlayer::SetUpHardware()
-{
-	int dir;
-
-	// Allocate params structure
-	snd_pcm_hw_params_t *hwparams;
-	snd_pcm_hw_params_malloc(&hwparams);
-
-	// Get hardware params
-	if (snd_pcm_hw_params_any(pcm_handle, hwparams) < 0) {
-		throw _T("ALSA player: Error setting up default PCM device");
-	}
-
-	// Set stream format
-	if (snd_pcm_hw_params_set_access(pcm_handle, hwparams, SND_PCM_ACCESS_RW_INTERLEAVED) < 0) {
-		throw _T("ALSA player: Could not set interleaved stream format");
-	}
-
-	// Set sample format
-	switch (provider->GetBytesPerSample()) {
-		case 1:
-			sample_format = SND_PCM_FORMAT_S8;
-			break;
-		case 2:
-			sample_format = SND_PCM_FORMAT_S16_LE;
-			break;
-		default:
-			throw _T("ALSA player: Can only handle 8 and 16 bit sound");
-	}
-	if (snd_pcm_hw_params_set_format(pcm_handle, hwparams, sample_format) < 0) {
-		throw _T("ALSA player: Could not set sample format");
-	}
-
-	// Ask for resampling
-	if (snd_pcm_hw_params_set_rate_resample(pcm_handle, hwparams, 1) < 0) {
-		throw _T("ALSA player: Couldn't enable resampling");
-	}
-
-	// Set sample rate
-	rate = provider->GetSampleRate();
-	real_rate = rate;
-	if (snd_pcm_hw_params_set_rate_near(pcm_handle, hwparams, &real_rate, 0) < 0) {
-		throw _T("ALSA player: Could not set sample rate");
-	}
-	if (rate != real_rate) {
-		wxLogDebug(_T("ALSA player: Could not set ideal sample rate %d, using %d instead"), rate, real_rate);
-	}
-
-	// Set number of channels
-	if (snd_pcm_hw_params_set_channels(pcm_handle, hwparams, provider->GetChannels()) < 0) {
-		throw _T("ALSA player: Could not set number of channels");
-	}
-	printf("ALSA player: Set sample rate %u (wanted %u)\n", real_rate, rate);
-
-	// Set buffer size
-	unsigned int wanted_buflen = 1000000; // microseconds
-	buflen = wanted_buflen;
-	if (snd_pcm_hw_params_set_buffer_time_near(pcm_handle, hwparams, &buflen, &dir) < 0) {
-		throw _T("ALSA player: Couldn't set buffer length");
-	}
-	if (buflen != wanted_buflen) {
-		wxLogDebug(_T("ALSA player: Couldn't get wanted buffer size of %u, got %u instead"), wanted_buflen, buflen);
-	}
-	if (snd_pcm_hw_params_get_buffer_size(hwparams, &bufsize) < 0) {
-		throw _T("ALSA player: Couldn't get buffer size");
-	}
-	printf("ALSA player: Buffer size: %lu\n", bufsize);
-
-	// Set period (number of frames ideally written at a time)
-	// Somewhat arbitrary for now
-	unsigned int wanted_period = bufsize / 4;
-	period_len = wanted_period; // microseconds
-	if (snd_pcm_hw_params_set_period_time_near(pcm_handle, hwparams, &period_len, &dir) < 0) {
-		throw _T("ALSA player: Couldn't set period length");
-	}
-	if (period_len != wanted_period) {
-		wxLogDebug(_T("ALSA player: Couldn't get wanted period size of %d, got %d instead"), wanted_period, period_len);
-	}
-	if (snd_pcm_hw_params_get_period_size(hwparams, &period, &dir) < 0) {
-		throw _T("ALSA player: Couldn't get period size");
-	}
-	printf("ALSA player: Period size: %lu\n", period);
-
-	// Apply parameters
-	if (snd_pcm_hw_params(pcm_handle, hwparams) < 0) {
-		throw _T("ALSA player: Failed applying sound hardware settings");
-	}
-
-	// And free memory again
-	snd_pcm_hw_params_free(hwparams);
-}
-
-
-void AlsaPlayer::SetUpAsync()
-{
-	// Prepare software params struct
-	snd_pcm_sw_params_t *sw_params;
-	snd_pcm_sw_params_malloc (&sw_params);
-
-	// Get current parameters
-	if (snd_pcm_sw_params_current(pcm_handle, sw_params) < 0) {
-		throw _T("ALSA player: Couldn't get current SW params");
-	}
-
-	// How full the buffer must be before playback begins
-	if (snd_pcm_sw_params_set_start_threshold(pcm_handle, sw_params, bufsize - period) < 0) {
-		throw _T("ALSA player: Failed setting start threshold");
-	}
-
-	// The the largest write guaranteed never to block
-	if (snd_pcm_sw_params_set_avail_min(pcm_handle, sw_params, period) < 0) {
-		throw _T("ALSA player: Failed setting min available buffer");
-	}
-
-	// Apply settings
-	if (snd_pcm_sw_params(pcm_handle, sw_params) < 0) {
-		throw _T("ALSA player: Failed applying SW params");
-	}
-
-	// And free struct again
-	snd_pcm_sw_params_free(sw_params);
-
-	// Prepare for playback
-	snd_pcm_prepare(pcm_handle);
-	
-	// Write initial chunk of audio data (recommended by ALSA wiki)
-	void *empty = calloc(bpf, period * 2);
-	snd_pcm_writei(pcm_handle, empty, period * 2);
-	free(empty);
-
-	// Attach async handler
-	if (snd_async_add_pcm_handler(&pcm_callback, pcm_handle, async_write_handler, this) < 0) {
-		throw _T("ALSA player: Failed attaching async handler");
+	else
+	{
+		throw 1; // FIXME
 	}
 }
 
 
-////////////////
-// Close stream
 void AlsaPlayer::CloseStream()
 {
 	if (!open) return;
 
-	Stop();
+	{
+		PthreadMutexLocker ml(ps.mutex);
+		ps.signal_stop = true;
+		ps.signal_close = true;
+		printf("AlsaPlayer: close stream, stop+close signal\n");
+		pthread_cond_signal(&ps.cond);
+	}
 
-	// Remove async handler
-	snd_async_del_handler(pcm_callback);
+	pthread_join(thread, 0); // FIXME: check for errors
 
-	// Close device
-	snd_pcm_close(pcm_handle);
-
-	// No longer working
 	open = false;
 }
 
 
-////////
-// Play
-void AlsaPlayer::Play(int64_t start,int64_t count)
+void AlsaPlayer::Play(int64_t start, int64_t count)
 {
-	if (playing) {
-		// Quick reset
-		playing = false;
-		snd_pcm_drop(pcm_handle);
+	OpenStream();
+
+	{
+		PthreadMutexLocker ml(ps.mutex);
+		ps.signal_start = true;
+		ps.signal_stop = true; // make sure to stop any ongoing playback first
+		ps.start_position = start;
+		ps.end_position = start + count;
+		pthread_cond_signal(&ps.cond);
 	}
 
-	// Set params
-	start_frame = start;
-	cur_frame = start;
-	end_frame = start + count;
-	playing = true;
-
-	// Prepare a bit
-	snd_pcm_prepare (pcm_handle);
-
-	// And go!
-	snd_pcm_start(pcm_handle);
-	async_write_handler(pcm_callback);
-
-	// Update timer
 	if (displayTimer && !displayTimer->IsRunning()) displayTimer->Start(15);
 }
 
 
-////////
-// Stop
 void AlsaPlayer::Stop(bool timerToo)
 {
 	if (!open) return;
-	if (!playing) return;
 
-	// Reset data
-	playing = false;
-	start_frame = 0;
-	cur_frame = 0;
-	end_frame = 0;
+	{
+		PthreadMutexLocker ml(ps.mutex);
+		ps.signal_stop = true;
+		printf("AlsaPlayer: stop stream, stop signal\n");
+		pthread_cond_signal(&ps.cond);
+	}
 
-	// Then drop the playback
-	snd_pcm_drop(pcm_handle);
-
-        if (timerToo && displayTimer) {
-                displayTimer->Stop();
-        }
+	if (timerToo && displayTimer) {
+		    displayTimer->Stop();
+	}
 }
 
 
 bool AlsaPlayer::IsPlaying()
 {
-	return playing;
+	return open && ps.playing;
 }
 
 
-///////////
-// Set end
 void AlsaPlayer::SetEndPosition(int64_t pos)
 {
-	end_frame = pos;
+	if (!open) return;
+	PthreadMutexLocker ml(ps.mutex);
+	ps.end_position = pos;
 }
 
 
-////////////////////////
-// Set current position
 void AlsaPlayer::SetCurrentPosition(int64_t pos)
 {
-	cur_frame = pos;
+	if (!open) return;
+
+	PthreadMutexLocker ml(ps.mutex);
+
+	if (!ps.playing) return;
+
+	ps.start_position = pos;
+	ps.signal_start = true;
+	ps.signal_stop = true;
+	printf("AlsaPlayer: set position, stop+start signal\n");
+	pthread_cond_signal(&ps.cond);
 }
 
 
 int64_t AlsaPlayer::GetStartPosition()
 {
-	return start_frame;
+	if (!open) return 0;
+	return ps.start_position;
 }
 
 
 int64_t AlsaPlayer::GetEndPosition()
 {
-	return end_frame;
+	if (!open) return 0;
+	return ps.end_position;
 }
 
 
-////////////////////////
-// Get current position
 int64_t AlsaPlayer::GetCurrentPosition()
 {
-	// FIXME: this should be based on not duration played but actual sample being heard
-	// (during vidoeo playback, cur_frame might get changed to resync)
-	snd_pcm_sframes_t delay = 0;
-	snd_pcm_delay(pcm_handle, &delay); // don't bother catching errors here
-	return cur_frame - delay;
+	if (!open) return 0;
+
+	int64_t lastpos;
+	timespec lasttime;
+	int64_t samplerate;
+
+	{
+		//PthreadMutexLocker ml(ps.mutex);
+		lastpos = ps.last_position;
+		lasttime = ps.last_position_time;
+		samplerate = ps.provider->GetSampleRate();
+	}
+
+	timespec now;
+	clock_gettime(CLOCK_REALTIME, &now);
+
+	const double NANO = 1000000000; // nano- is 10^-9
+
+	double now_sec = now.tv_sec + now.tv_nsec/NANO;
+	double last_sec = lasttime.tv_sec + lasttime.tv_nsec/NANO;
+	double diff_sec = now_sec - last_sec;
+
+	int64_t pos = lastpos + (int64_t)(diff_sec * samplerate);
+	//printf("AlsaPlayer: current position = %lld\n", pos);
+
+	return pos;
 }
 
 
-void AlsaPlayer::async_write_handler(snd_async_handler_t *pcm_callback)
+void AlsaPlayer::SetVolume(double vol)
 {
-	// TODO: check for broken pipes in here and restore as needed
-	AlsaPlayer *player = (AlsaPlayer*)snd_async_handler_get_callback_private(pcm_callback);
+	if (!open) return;
+	PthreadMutexLocker ml(ps.mutex);
+	ps.volume = vol;
+	ps.signal_volume = true;
+	pthread_cond_signal(&ps.cond);
+}
 
-	if (player->cur_frame >= player->end_frame + player->rate) {
-		// More than a second past end of stream
-		snd_pcm_drain(player->pcm_handle);
-		player->playing = false;
-		return;
-	}
 
-	snd_pcm_sframes_t frames = snd_pcm_avail_update(player->pcm_handle);
-	
-	if (frames == -EPIPE) {
-		snd_pcm_prepare(player->pcm_handle);
-		frames = snd_pcm_avail_update(player->pcm_handle);
-	}
+double AlsaPlayer::GetVolume()
+{
+	if (!open) return 1.0;
+	PthreadMutexLocker ml(ps.mutex);
+	return ps.volume;
+}
 
-	// TODO: handle underrun
 
-	if (player->cur_frame >= player->end_frame) {
-		// Past end of stream, add some silence
-		void *buf = calloc(frames, player->bpf);
-		snd_pcm_writei(player->pcm_handle, buf, frames);
-		free(buf);
-		player->cur_frame += frames;
-		return;
-	}
-
-	void *buf = malloc(player->period * player->bpf);
-	while (frames >= player->period) {
-		unsigned long start = player->cur_frame;
-		player->provider->GetAudioWithVolume(buf, start, player->period, player->volume);
-		int err = snd_pcm_writei(player->pcm_handle, buf, player->period);
-		if(err == -EPIPE) {
-			snd_pcm_prepare(player->pcm_handle);
-		} else if (err < 0) {
-			// An error occured, stop playback
-			snd_pcm_drain(player->pcm_handle);
-			player->playing = false;
-			break;
-		}
-		player->cur_frame += err;
-		frames = snd_pcm_avail_update(player->pcm_handle);
-	}
-	free(buf);
+// The factory method
+AudioPlayer * AlsaPlayerFactory::CreatePlayer()
+{
+	return new AlsaPlayer();
 }
 
 
 #endif // WITH_ALSA
+
