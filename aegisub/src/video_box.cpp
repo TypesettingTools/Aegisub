@@ -98,7 +98,7 @@ VideoBox::VideoBox(wxWindow *parent, bool isDetached)
 	VideoSubsPos->SetToolTip(_("Time of this frame relative to start and end of current subs."));
 
 	// Display
-	videoDisplay = new VideoDisplay(videoPage,-1,wxDefaultPosition,wxDefaultSize,wxSUNKEN_BORDER);
+	videoDisplay = new VideoDisplay(videoPage,-1,wxDefaultPosition,wxDefaultSize,0);
 	videoDisplay->ControlSlider = videoSlider;
 	videoDisplay->PositionDisplay = VideoPosition;
 	videoDisplay->SubsPosition = VideoSubsPos;
@@ -134,7 +134,7 @@ VideoBox::VideoBox(wxWindow *parent, bool isDetached)
 	wxSizer *topSizer = new wxBoxSizer(wxVERTICAL);
 	visualSubToolBar->Show(false);
 	topTopSizer->Add(visualToolBar,0,highSizerFlags,0);
-	topTopSizer->Add(videoDisplay,1,highSizerFlags,0);
+	topTopSizer->Add(videoDisplay,0,highSizerFlags|wxALL,2);
 	topSizer->Add(topTopSizer,1,wxEXPAND,0);
 	topSizer->Add(visualSubToolBar,0,wxEXPAND | wxBOTTOM,4);
 	topSizer->Add(new wxStaticLine(videoPage),0,wxEXPAND,0);

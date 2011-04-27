@@ -400,21 +400,19 @@ void VideoDisplay::UpdateSize() {
 		else w = int(con->GetHeight() * zoomValue * con->GetAspectRatioValue());
 		h = int(con->GetHeight() * zoomValue);
 
-		// Sizers ignore SetClientSize/SetSize, so only use them to calculate
-		// what size is required after including the borders
-		SetClientSize(w,h);
-		GetSize(&w,&h);
+		// Set Min and Max sizes. This sets the outer size, not client size, so it
+		// depends on us not having any borders on the control.
 		wxSize size(w,h);
 		SetMinSize(size);
 		SetMaxSize(size);
 
+		// Then tell the sizer to re-fit for us.
 		locked = true;
 		box->VideoSizer->Fit(box);
 		box->GetParent()->Layout();
 
-		// The sizer makes us use the full width, which at very low zoom levels
-		// results in stretched video, so after using the sizer to update the 
-		// parent window sizes, reset our size to the correct value
+		// And finally properly resize to the wanted size, to avoid a glitch when
+		// switching between small zoom levels on Windows.
 		SetSize(w,h);
 
 		locked = false;
