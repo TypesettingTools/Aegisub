@@ -71,6 +71,11 @@ DialogTranslation::DialogTranslation (wxWindow *parent,AssFile *_subs,SubtitlesG
 	audio = VideoContext::Get()->audio;
 	video = video->Get();
 
+	// Create sizers (especially StaticBoxSizers) first to get control Z order right
+	wxSizer *TranslationSizer = new wxBoxSizer(wxVERTICAL);
+	wxSizer *OriginalTransSizer = new wxStaticBoxSizer(wxVERTICAL,this,_("Original"));
+	wxSizer *TranslatedSizer = new wxStaticBoxSizer(wxVERTICAL,this,_("Translation"));
+
 	// Translation controls
 	OrigText = new ScintillaTextCtrl(this,TEXT_ORIGINAL,_T(""),wxDefaultPosition,wxSize(320,80));
 	OrigText->SetWrapMode(wxSTC_WRAP_WORD);
@@ -85,9 +90,6 @@ DialogTranslation::DialogTranslation (wxWindow *parent,AssFile *_subs,SubtitlesG
 	TransText->SetFocus();
 
 	// Translation box
-	wxSizer *TranslationSizer = new wxBoxSizer(wxVERTICAL);
-	wxSizer *OriginalTransSizer = new wxStaticBoxSizer(wxVERTICAL,this,_("Original"));
-	wxSizer *TranslatedSizer = new wxStaticBoxSizer(wxVERTICAL,this,_("Translation"));
 	LineCount = new wxStaticText(this,-1,_("Current line: ?"));
 	OriginalTransSizer->Add(LineCount,0,wxBOTTOM,5);
 	OriginalTransSizer->Add(OrigText,1,wxEXPAND,0);
