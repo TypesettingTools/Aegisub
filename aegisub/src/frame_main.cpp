@@ -97,6 +97,14 @@ FrameMain::FrameMain (wxArrayString args)
 {
 	StartupLog(_T("Entering FrameMain constructor"));
 
+#ifdef __WXGTK__
+	// XXX HACK XXX
+	// We need to set LC_ALL to "" here for input methods to work reliably.
+	setlocale(LC_ALL, "");
+	// However LC_NUMERIC must be "C", otherwise some parsing fails.
+	setlocale(LC_NUMERIC, "C");
+#endif
+
 	// Set application's frame
 	AegisubApp::Get()->frame = this;
 
