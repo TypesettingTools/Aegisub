@@ -27,7 +27,7 @@
 
 
 extern "C" {
-#include <libavutil/sha.h>
+#include <libavutil/sha1.h>
 #include <zlib.h>
 }
 
@@ -188,9 +188,9 @@ void FFMS_Index::CalculateFileSignature(const char *Filename, int64_t *Filesize,
 			std::string("Failed to open '") + Filename + "' for hashing");
 
 	std::vector<uint8_t> FileBuffer(1024*1024, 0);
-	std::vector<uint8_t> ctxmem(av_sha_size);
-	AVSHA *ctx = (AVSHA *)(&ctxmem[0]);
-	av_sha_init(ctx, 160);
+	std::vector<uint8_t> ctxmem(av_sha1_size);
+	AVSHA1 *ctx = (AVSHA1 *)(&ctxmem[0]);
+	av_sha1_init(ctx);
 
 	try {
 		fread(&FileBuffer[0], 1, FileBuffer.size(), SFile);
@@ -198,7 +198,7 @@ void FFMS_Index::CalculateFileSignature(const char *Filename, int64_t *Filesize,
 			throw FFMS_Exception(FFMS_ERROR_PARSER, FFMS_ERROR_FILE_READ,
 				std::string("Failed to read '") + Filename + "' for hashing");
 
-		av_sha_update(ctx, &FileBuffer[0], FileBuffer.size());
+		av_sha1_update(ctx, &FileBuffer[0], FileBuffer.size());
 
 		fseeko(SFile, -(int)FileBuffer.size(), SEEK_END);
 		std::fill(FileBuffer.begin(), FileBuffer.end(), 0);
@@ -209,7 +209,7 @@ void FFMS_Index::CalculateFileSignature(const char *Filename, int64_t *Filesize,
 			throw FFMS_Exception(FFMS_ERROR_PARSER, FFMS_ERROR_FILE_READ, buf.str());
 		}
 
-		av_sha_update(ctx, &FileBuffer[0], FileBuffer.size());
+		av_sha1_update(ctx, &FileBuffer[0], FileBuffer.size());
 
 		fseeko(SFile, 0, SEEK_END);
 		if (ferror(SFile))
@@ -220,11 +220,11 @@ void FFMS_Index::CalculateFileSignature(const char *Filename, int64_t *Filesize,
 	}
 	catch (...) {
 		fclose(SFile);
-		av_sha_final(ctx, Digest);
+		av_sha1_final(ctx, Digest);
 		throw;
 	}
 	fclose(SFile);
-	av_sha_final(ctx, Digest);
+	av_sha1_final(ctx, Digest);
 }
 
 void FFMS_Index::Sort() {
