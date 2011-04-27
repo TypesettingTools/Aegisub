@@ -402,15 +402,15 @@ void AlsaPlayer::OpenStream()
 
 	if (err == EAGAIN)
 	{
-		throw _T("AlsaPlayer: Failed creating playback thread, too little resources");
+		wxLogError(_T("AlsaPlayer: Failed creating playback thread, too little resources"));
 	}
 	else if (err == EPERM)
 	{
-		throw _T("AlsaPlayer: Failed creating playback thread, permissions error");
+		wxLogError(_T("AlsaPlayer: Failed creating playback thread, permissions error"));
 	}
 	else if (err != 0)
 	{
-		throw _T("AlsaPlayer: Failed creating playback thread, unexpected error, report this to the developers");
+		wxLogError(_T("AlsaPlayer: Failed creating playback thread, unexpected error, report this to the developers"));
 	}
 }
 
@@ -437,7 +437,17 @@ void AlsaPlayer::CloseStream()
 	{
 		// Thread errored
 		wxString errstr((const char *)thread_result, wxConvUTF8);
-		throw wxString::Format(_T("AlsaPlayer: Error in thread: %s"), errstr.c_str());
+		if (errstr == _T("snd_pcm_open"))
+			errstr = _T("Could not open the specified PCM device");
+		else if (errstr == _T("snd_pcm_format_t"))
+			errstr = _T("Unsupported sample format");
+		else if (errstr == _T("snd_pcm_set_params"))
+			errstr = _T("Could not set stream format");
+		else if (errstr == _T("snd_pcm_writei"))
+			errstr = _T("Error sending audio data to device");
+		else if (errstr == _T("SND_PCM_STATE_DISCONNECTED"))
+			errstr = _T("The audio device was removed. Make sure an audio device is available and retry playback.");
+		wxLogError(_T("AlsaPlayer: Error in thread: %s"), errstr.c_str());
 	}
 	else if (err == 0 && thread_result == 0)
 	{
@@ -450,7 +460,7 @@ void AlsaPlayer::CloseStream()
 	else
 	{
 		// EDEADLK but the playback thread shouldn't be trying to join us
-		throw _T("AlsaPlayer: Unexpected thread error, report this to the developers");
+		wxLogError(_T("AlsaPlayer: Unexpected thread error, report this to the developers"));
 	}
 }
 
