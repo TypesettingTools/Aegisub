@@ -82,6 +82,10 @@ public:
 	void SetLogLevel();
 
 	virtual ~FFmpegSourceProvider() {}
+
+	struct CancelIndexingException {
+		int dummy;
+	};
 };
 
 

@@ -315,6 +315,9 @@ void VideoContext::SetVideo(const wxString &filename) {
 			UpdateDisplays(true);
 		}
 		
+		catch (VideoProvider::CancelVideoLoadException &) {
+			// ignore, the user didn't want this video anyway
+		}
 		catch (wxString &e) {
 			wxMessageBox(e,_T("Error setting video"),wxICON_ERROR | wxOK);
 		}

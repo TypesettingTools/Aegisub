@@ -95,8 +95,13 @@ FFMS_Index *FFmpegSourceProvider::DoIndexing(FFMS_Indexer *Indexer, const wxStri
 		FFmpegSourceProvider::UpdateIndexingProgress, &Progress, &ErrInfo);
 	if (Index == NULL) {
 		Progress.ProgressDialog->Destroy();
-		MsgString.Append(_T("Failed to index: ")).Append(wxString(ErrInfo.Buffer, wxConvUTF8));
-		throw MsgString;
+		if (ErrInfo.ErrorType == FFMS_ERROR_CANCELLED) {
+			throw CancelIndexingException();
+		}
+		else {
+			MsgString.Append(_T("Failed to index: ")).Append(wxString(ErrInfo.Buffer, wxConvUTF8));
+			throw MsgString;
+		}
 	}
 	Progress.ProgressDialog->Destroy();
 

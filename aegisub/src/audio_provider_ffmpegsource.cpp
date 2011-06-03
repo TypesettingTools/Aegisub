@@ -172,6 +172,9 @@ void FFmpegSourceAudioProvider::LoadAudio(wxString filename) {
 
 		try {
 			Index = DoIndexing(Indexer, CacheName, TrackMask, false);
+		} catch (FFmpegSourceProvider::CancelIndexingException &) {
+			// user wants to cancel, user gets to cancel!
+			throw CancelAudioLoadException();
 		} catch (wxString temp) {
 			ErrorMsg.Append(temp);
 			throw ErrorMsg;

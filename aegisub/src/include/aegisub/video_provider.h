@@ -78,6 +78,10 @@ public:
 	virtual bool NeedsVFRHack() { return false; };					// Returns true if provider needs special VFR treatment
 	virtual bool IsNativelyByFrames() { return true; };
 	virtual void OverrideFrameTimeList(std::vector<int> list) {}	// Override the list with the provided one, for VFR handling
+
+	struct CancelVideoLoadException {
+		int dummy;
+	};
 };
 
 

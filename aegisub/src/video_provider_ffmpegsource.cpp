@@ -130,7 +130,7 @@ void FFmpegSourceVideoProvider::LoadVideo(wxString filename) {
 		TrackNumber = AskForTrackSelection(TrackList, FFMS_TYPE_VIDEO);
 		// if it's still -1 here, user pressed cancel
 		if (TrackNumber == -1)
-			throw _T("FFmpegSource video provider: video loading cancelled by user");
+			throw CancelVideoLoadException();
 	}
 
 	// generate a name for the cache file
@@ -167,6 +167,8 @@ void FFmpegSourceVideoProvider::LoadVideo(wxString filename) {
 		try {
 			// ignore audio decoding errors here, we don't care right now
 			Index = DoIndexing(Indexer, CacheName, TrackMask, true);
+		} catch (FFmpegSourceProvider::CancelIndexingException &) {
+			throw CancelVideoLoadException();
 		} catch (wxString temp) {
 			ErrorMsg.Append(temp);
 			throw ErrorMsg;

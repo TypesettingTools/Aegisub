@@ -94,6 +94,7 @@ VideoProvider *VideoProviderFactoryManager::GetProvider(wxString video) {
 				return provider;
 			}
 		}
+		catch (VideoProvider::CancelVideoLoadException &) { throw; }
 		catch (wxString err) { error += list[i] + _T(" factory: ") + err + _T("\n"); }
 		catch (const wxChar *err) { error += list[i] + _T(" factory: ") + wxString(err) + _T("\n"); }
 		catch (...) { error += list[i] + _T(" factory: Unknown error\n"); }
