@@ -927,6 +927,11 @@ void AudioDisplay::SetFile(wxString file) {
 			// Update
 			UpdateImage();
 		}
+		catch (AudioProvider::CancelAudioLoadException &) {
+			if (player) { delete player; player = 0; }
+			if (provider) { delete provider; provider = 0; }
+			wxLogDebug(_T("AudioDisplay::SetFile: audio load cancelled"));
+		}
 		catch (const wxChar *e) {
 			if (player) { delete player; player = 0; }
 			if (provider) { delete provider; provider = 0; }

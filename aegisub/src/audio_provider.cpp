@@ -242,6 +242,10 @@ AudioProvider *AudioProviderFactoryManager::GetAudioProvider(wxString filename, 
 				break;
 			}
 		}
+		catch (AudioProvider::CancelAudioLoadException &) {
+			// user doesn't want to load anyway, get out
+			throw;
+		}
 		catch (wxString err) { error += list[i] + _T(" factory: ") + err + _T("\n"); }
 		catch (const wxChar *err) { error += list[i] + _T(" factory: ") + wxString(err) + _T("\n"); }
 		catch (...) { error += list[i] + _T(" factory: Unknown error\n"); }

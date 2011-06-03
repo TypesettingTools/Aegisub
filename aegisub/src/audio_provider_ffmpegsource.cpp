@@ -78,7 +78,12 @@ FFmpegSourceAudioProvider::FFmpegSourceAudioProvider(wxString filename) {
 
 	try {
 		LoadAudio(filename);
-	} catch (...) {
+	}
+	catch (CancelAudioLoadException &) {
+		// pass that on, so the user won't have to cancel multiple times
+		throw;
+	}
+	catch (...) {
 		Close();
 		throw;
 	}
@@ -112,7 +117,7 @@ void FFmpegSourceAudioProvider::LoadAudio(wxString filename) {
 		TrackNumber = AskForTrackSelection(TrackList, FFMS_TYPE_AUDIO);
 		// if it's still -1 here, user pressed cancel
 		if (TrackNumber == -1)
-			throw _T("FFmpegSource audio provider: audio loading cancelled by user");
+			throw CancelAudioLoadException();
 	}
 
 	// generate a name for the cache file
