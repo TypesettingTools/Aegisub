@@ -1,4 +1,4 @@
-; Copyright (c) 2007-2010, Niels Martin Hansen
+; Copyright (c) 2007-2011, Niels Martin Hansen
 ;
 ; Redistribution and use in source and binary forms, with or without
 ; modification, are permitted provided that the following conditions are met:
@@ -40,7 +40,7 @@ AppVersion=2.1.9
 AppPublisher=Aegisub Team
 AppPublisherURL=http://www.aegisub.org/
 AppSupportURL=http://forum.aegisub.org/
-AppCopyright=© 2005-2010 The Aegisub Team
+AppCopyright=© 2005-2011 The Aegisub Team
 VersionInfoVersion=2.1.9
 DefaultDirName={pf}\Aegisub
 DefaultGroupName=Aegisub
@@ -85,7 +85,7 @@ DestDir: {tmp}; Flags: dontcopy; Source: aegisub.bmp
 
 [Components]
 Name: codec; Description: Media formats support; Flags: fixed; Types: custom compact full
-Name: codec/vsfilter; Description: VSFilter 2.39e; Types: compact full custom; Flags: fixed
+Name: codec/vsfilter; Description: VSFilter 2.40; Types: compact full custom; Flags: fixed
 Name: auto; Description: Automation 4 scripting support; Types: compact full
 Name: auto/lua; Description: Lua; Types: compact full; Flags: checkablealone; Languages:
 
@@ -102,7 +102,8 @@ Type: files; Name: "{app}\csri\VSFilter-Aegisub.dll"; Components: codec/vsfilter
 Type: dirifempty; Name: "{app}\csri\"; Components: codec/vsfilter
 
 [Files]
-DestDir: {app}\automation\include; Source: src\automation\include\karaskel-auto4.lua; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/lua; Attribs: readonly
+DestDir: {app}\automation\autoload; Source: src\automation\autoload\kara-templater.lua; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/lua; Attribs: readonly
+DestDir: {app}\automation\include; Source: src\automation\include\utils-auto4.lua; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/lua; Attribs: readonly
 DestDir: {app}; Source: src\ffms2.dll; Flags: ignoreversion; Components: codec
 DestDir: {app}; Source: src\ffms2.pdb; Flags: ignoreversion; Components: codec and main/pdb
 DestDir: {app}; Source: src\vsfilter-aegisub32.dll; Flags: ignoreversion; Components: codec/vsfilter

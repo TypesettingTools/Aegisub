@@ -47,6 +47,6 @@ DestDir: {app}; Source: src\vsfilter-aegisub32.dll; Flags: ignoreversion; Compon
 
 [Components]
 Name: codec; Description: Media formats support; Flags: fixed; Types: custom compact full
-Name: codec/vsfilter; Description: VSFilter 2.39e; Types: compact full custom; Flags: fixed
+Name: codec/vsfilter; Description: VSFilter 2.40; Types: compact full custom; Flags: fixed
 
 

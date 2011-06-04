@@ -50,7 +50,8 @@ Source: ..\..\po\wxstd-es.mo;    DestDir: {app}\locale\es;    DestName: wxstd.mo
 Source: ..\..\po\el.mo;          DestDir: {app}\locale\el;    DestName: aegisub.mo; Flags: ignoreversion; Components: i18n/el
 Source: ..\..\po\wxstd-el.mo;    DestDir: {app}\locale\el;    DestName: wxstd.mo;   Flags: ignoreversion; Components: i18n/el
 Source: ..\..\po\fa.mo;          DestDir: {app}\locale\fa;    DestName: aegisub.mo; Flags: ignoreversion; Components: i18n/fa
-Source: ..\..\po\wxstd-fa.mo;    DestDir: {app}\locale\fa;    DestName: wxstd.mo;   Flags: ignoreversion; Components: i18n/fa
+; Farsi wxstd missing
+;Source: ..\..\po\wxstd-fa.mo;    DestDir: {app}\locale\fa;    DestName: wxstd.mo;   Flags: ignoreversion; Components: i18n/fa
 Source: ..\..\po\fi.mo;          DestDir: {app}\locale\fi;    DestName: aegisub.mo; Flags: ignoreversion; Components: i18n/fi
 Source: ..\..\po\wxstd-fi.mo;    DestDir: {app}\locale\fi;    DestName: wxstd.mo;   Flags: ignoreversion; Components: i18n/fi
 Source: ..\..\po\fr_FR.mo;       DestDir: {app}\locale\fr_FR; DestName: aegisub.mo; Flags: ignoreversion; Components: i18n/fr_FR
@@ -94,7 +95,7 @@ Name: i18n/hu;    Description: "Magyar nyelv (Hungarian)"; Types: full
 Name: i18n/it;    Description: "Italiano (Italian)"; Types: full
 Name: i18n/ja;    Description: "日本語 (Japanese)"; Types: full
 Name: i18n/ko;    Description: "한국어 (Korean)"; Types: full
-Name: i18n/fa;    Description: "فارسی (Persian)"; Types: full
+Name: i18n/fa;    Description: "فارسی (Farsi)"; Types: full
 Name: i18n/pl;    Description: "Język polski (Polish)"; Types: full
 Name: i18n/ru;    Description: "Русский язык (Russian)"; Types: full
 Name: i18n/es;    Description: "Español (Spanish)"; Types: full
