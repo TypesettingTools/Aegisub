@@ -1,0 +1,129 @@
+// Resource strings for file associations in the Windows shell.
+// Consider this file given to the public domain, or the closest local equivalent.
+// This file is UTF-8 encoded and must be included from 'assoc-strings.rc'
+
+// by nielsm
+LANGUAGE LANG_DANISH, SUBLANG_DEFAULT
+STRINGTABLE 
+BEGIN
+	10000 "Aegisub"
+	10001 "Opret og rediger smarte undertekster med Aegisub."
+	10101 "Aegisub undertekstfil"
+	10102 "Aegisub Advanced SSA undertekster"
+	10103 "Aegisub SubStation Alpha undertekster"
+	10104 "Aegisub SubRip text undertekster"
+	10105 "Aegisub MPEG-4 synkroniseret tekst"
+	10106 "Aegisub Matroska undertekster"
+	10107 "Aegisub råtekst fil"
+	10108 "Aegisub mediefil"
+	10109 "Aegisub lydfil"
+	10110 "Aegisub videofil"
+END
+
+// by tomman
+LANGUAGE LANG_SPANISH, SUBLANG_SPANISH_MODERN
+STRINGTABLE 
+BEGIN
+	10000 "Aegisub"
+	10001 "Crea y edita subtítulos estilizados con Aegisub."
+	10101 "Archivo de subtítulos de Aegisub"
+	10102 "Subtítulos Advanced SSA de Aegisub"
+	10103 "Subtítulos SubStation Alpha de Aegisub"
+	10104 "Subtítulos de texto SubRip de Aegisub"
+	10105 "Texto con tiempos MPEG-4 de Aegisub"
+	10106 "Subtítulos Matroska de Aegisub"
+	10107 "Archivo de texto en bruto de Aegisub"
+	10108 "Archivo de medios de Aegisub"
+	10109 "Archivo de audio de Aegisub"
+	10110 "Archivo de video de Aegisub"
+END
+
+// by Cesar
+LANGUAGE LANG_FRENCH, SUBLANG_FRENCH
+STRINGTABLE
+BEGIN
+       10000 "Aegisub"
+       10001 "Créer et éditer des sous-titres stylés avec Aegisub."
+       10101 "Fichiers sous-titres Aegisub"
+       10102 "Aegisub sous-titres Advanced SSA"
+       10103 "Aegisub sous-titres SubStation Alpha"
+       10104 "Aegisub sous-titres texte SubRip"
+       10105 "Aegisub texte minuté MPEG-4"
+       10106 "Aegisub sous-titres Matroska"
+       10107 "Aegisub fichier texte brut"
+       10108 "Aegisub fichier multimédia"
+       10109 "Aegisub fichier audio"
+       10110 "Aegisub fichier vidéo"
+END
+
+// by Gpower2
+LANGUAGE LANG_GREEK, SUBLANG_GREEK_GREECE
+STRINGTABLE 
+BEGIN
+        10000 "Aegisub"
+        10001 "Δημιουργία και επεξεργασία υποτίτλων με το Aegisub."
+        10101 "Αρχείο υποτίτλων Aegisub"
+        10102 "Αρχείο υποτίτλων Aegisub Advanced SSA"
+        10103 "Αρχείο υποτίτλων Aegisub SubStation Alpha"
+        10104 "Αρχείο υποτίτλων Aegisub SubRip"
+        10105 "Αρχείο υποτίτλων Aegisub MPEG-4 χρονισμένου κειμένου"
+        10106 "Αρχείο υποτίτλων Aegisub Matroska"
+        10107 "Αρχείο απλού κειμένου Aegisub"
+        10108 "Αρχείο πολυμέσων Aegisub"
+        10109 "Αρχείο ήχου Aegisub"
+        10110 "Αρχείο βίντεο Aegisub"
+END
+
+// by Sebastian Billau
+LANGUAGE LANG_GERMAN, SUBLANG_NEUTRAL
+STRINGTABLE
+BEGIN
+	10000 "Aegisub"
+	10001 "Erzeuge und bearbeite Untertitel mit Aegisub."
+	10101 "Aegisub Untertitel Datei"
+	10102 "Aegisub Advanced SSA Untertitel"
+	10103 "Aegisub SubStation Alpha Untertitel"
+	10104 "Aegisub SubRip Text-Untertitel"
+	10105 "Aegisub MPEG-4 Timed Text"
+	10106 "Aegisub Matroska Untertitel"
+	10107 "Aegisub RAW-Text Datei"
+	10108 "Aegisub Medien Datei"
+	10109 "Aegisub Audio Datei"
+	10110 "Aegisub Video Datei"
+END
+
+// by amz
+LANGUAGE LANG_PORTUGUESE, SUBLANG_PORTUGUESE_BRAZILIAN
+STRINGTABLE
+BEGIN
+	10000 "Aegisub"
+	10001 "Crie e edite legendas estilizadas com o Aegisub."
+	10101 "Arquivo de legendas do Aegisub"
+	10102 "Legendas Advanced SSA do Aegisub"
+	10103 "Legendas SubStation Alpha do Aegisub"
+	10104 "Legendas em texto SubRip do Aegisub"
+	10105 "Texto Temporizado MPEG-4 do Aegisub"
+	10106 "Legendas Matroska do Aegisub"
+	10107 "Arquivo de texto puro do Aegisub"
+	10108 "Arquivo de Mídia do Aegisub"
+	10109 "Arquivo de Áudio do Aegisub"
+	10110 "Arquivo de Vídeo do Aegisub"
+END
+
+// by Igor
+LANGUAGE LANG_RUSSIAN, SUBLANG_DEFAULT
+STRINGTABLE 
+BEGIN
+	10000 "Aegisub"
+	10001 "Aegisub позволяет создавать и редактировать стилизированные субтитры."
+	10101 "Файл субтитров Aegisub"
+	10102 "Субтитры Advanced SSA Aegisub"
+	10103 "Субтитры SubStation Alpha Aegisub"
+	10104 "Субтитры SubRip Aegisub"
+	10105 "MPEG-4 текст с временными метками Aegisub"
+	10106 "Субтитры Matroska Aegisub"
+	10107 "Простой текстовый файл Aegisub"
+	10108 "Медиа файл Aegisub"
+	10109 "Аудио файл Aegisub"
+	10110 "Видео файл Aegisub"
+END

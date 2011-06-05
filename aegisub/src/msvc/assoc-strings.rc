@@ -1,0 +1,36 @@
+// Resource strings for file associations in the Windows shell.
+// Consider this file given to the public domain, or the closest local equivalent.
+
+#include <winresrc.h>
+
+LANGUAGE LANG_ENGLISH, SUBLANG_DEFAULT
+STRINGTABLE 
+BEGIN
+	// Application "friendly name"
+	10000 "Aegisub"
+	// Description of application's purpose
+	10001 "Create and edit styled subtitles with Aegisub."
+	// Association name for generic subtitle formats
+	10101 "Aegisub subtitle file"
+	// Association name for .ass
+	10102 "Aegisub Advanced SSA subtitles"
+	// Association name for .ssa
+	10103 "Aegisub SubStation Alpha subtitles"
+	// Association name for .srt
+	10104 "Aegisub SubRip text subtitles"
+	// Association name for .ttxt
+	10105 "Aegisub MPEG-4 timed text"
+	// Association name for .mks
+	10106 "Aegisub Matroska subtitles"
+	// Association name for .txt
+	10107 "Aegisub raw text file"
+	// Association name for .mp4, .ogg and maybe other media containers (which could have either audio or video)
+	10108 "Aegisub media file"
+	// Association name for .mka, .mp3, .aac, .m4a, .wav, other audio formats
+	10109 "Aegisub audio file"
+	// Association name for .mkv, .avi, .avs, other video formats
+	10110 "Aegisub video file"
+END
+
+#pragma code_page(65001)
+#include "assoc-strings-utf8.rc"
