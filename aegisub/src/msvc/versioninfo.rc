@@ -1,0 +1,45 @@
+#include <winresrc.h>
+#include "../config/config_windows.h"
+
+#ifdef FINAL_RELEASE
+#define PRERELEASE_FLAG 0
+#else
+#define PRERELEASE_FLAG VS_FF_PRERELEASE
+#endif
+
+#ifdef _DEBUG
+#define DEBUG_FLAG VS_FF_DEBUG
+#else
+#define DEBUG_FLAG 0
+#endif
+
+LANGUAGE LANG_ENGLISH, SUBLANG_DEFAULT
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 2,1,9,0
+ PRODUCTVERSION 2,1,9,0
+ FILEFLAGSMASK VS_FFI_FILEFLAGSMASK
+ FILEFLAGS PRERELEASE_FLAG | DEBUG_FLAG
+ FILEOS VOS_NT_WINDOWS32
+ FILETYPE VFT_APP
+ FILESUBTYPE VFT2_UNKNOWN
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "000004b0"
+        BEGIN
+            VALUE "CompanyName", "Aegisub team"
+            VALUE "FileDescription", "Aegisub"
+            VALUE "FileVersion", "2.1.9"
+            VALUE "InternalName", "aegisub"
+            VALUE "LegalCopyright", "Copyright (C) 2005-2011"
+            VALUE "OriginalFilename", "aegisub.exe"
+            VALUE "ProductName", "Aegisub"
+            VALUE "ProductVersion", "2.1.9"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x0, 1200
+    END
+END
