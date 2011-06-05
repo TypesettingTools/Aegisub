@@ -1918,11 +1918,47 @@
 			</File>
 		</Filter>
 		<File
-			RelativePath="..\..\src\changelog.txt"
+			RelativePath="..\..\src\msvc\assoc-strings.rc"
 			>
+			<FileConfiguration
+				Name="Debug|Win32"
+				>
+				<Tool
+					Name="VCResourceCompilerTool"
+					Culture="1033"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Debug|x64"
+				>
+				<Tool
+					Name="VCResourceCompilerTool"
+					Culture="1033"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Release|Win32"
+				>
+				<Tool
+					Name="VCResourceCompilerTool"
+					Culture="1033"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Release|x64"
+				>
+				<Tool
+					Name="VCResourceCompilerTool"
+					Culture="1033"
+				/>
+			</FileConfiguration>
 		</File>
 		<File
 			RelativePath="..\..\src\res.rc"
+			>
+		</File>
+		<File
+			RelativePath="..\..\src\msvc\versioninfo.rc"
 			>
 		</File>
 	</Files>
