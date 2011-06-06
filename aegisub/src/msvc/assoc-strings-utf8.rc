@@ -110,6 +110,24 @@ BEGIN
 	10110 "Arquivo de Vídeo do Aegisub"
 END
 
+// by RiCON
+LANGUAGE LANG_PORTUGUESE, SUBLANG_PORTUGUESE
+STRINGTABLE
+BEGIN
+	10000 "Aegisub"
+	10001 "Criar e editar legendas estilizadas com Aegisub."
+	10101 "Ficheiro de legendas do Aegisub"
+	10102 "Ficheiro de legendas ASS do Aegisub"
+	10103 "Ficheiro de legendas SubStation Alpha do Aegisub"
+	10104 "Ficheiro de legendas SubRip do Aegisub"
+	10105 "Texto sincronizado MPEG-4 do Aegisub"
+	10106 "Legendas Matroska do Aegisub"
+	10107 "Ficheiro de texto simples do Aegisub"
+	10108 "Ficheiro de média do Aegisub"
+	10109 "Ficheiro de áudio do Aegisub"
+	10110 "Ficheiro de vídeo do Aegisub"
+END
+
 // by Igor
 LANGUAGE LANG_RUSSIAN, SUBLANG_DEFAULT
 STRINGTABLE 
