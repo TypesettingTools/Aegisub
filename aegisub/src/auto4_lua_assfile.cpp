@@ -637,7 +637,8 @@ namespace Automation4 {
 		int n = laf->last_entry_id;
 		for (int i = (int)ids.size()-2; i >= 0; --i) {
 			int id = ids[i];
-			while (id > n--) laf->last_entry_ptr--;
+			while (id < n)
+				n--, laf->last_entry_ptr--;
 			e = laf->last_entry_ptr++;
 			delete *e;
 			laf->ass->Line.erase(e);
