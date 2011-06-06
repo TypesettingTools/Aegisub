@@ -2565,7 +2565,7 @@ msgstr "Impostazioni salvate"
 
 #: dialog_style_manager.cpp:83
 msgid "Copy to current script ->"
-msgstr "Copia nello script corrento ->"
+msgstr "Copia nello script corrente ->"
 
 #: dialog_style_manager.cpp:85
 #: dialog_style_manager.cpp:130
@@ -3313,7 +3313,7 @@ msgstr "Manda video al frame finale del sottotitolo corrente"
 
 #: frame_main.cpp:244
 msgid "Snap start to video"
-msgstr "Fissa inizio del video"
+msgstr "Fissa a inizio del video"
 
 #: frame_main.cpp:244
 #: frame_main.cpp:408
@@ -3322,7 +3322,7 @@ msgstr "Imposta inizio del sottotitolo selezionato sul frame video corrente"
 
 #: frame_main.cpp:245
 msgid "Snap end to video"
-msgstr "Fissa fine del video"
+msgstr "Fissa a fine del video"
 
 #: frame_main.cpp:245
 #: frame_main.cpp:409
@@ -3643,7 +3643,7 @@ msgstr "Apre l'assistente agli stili"
 
 #: frame_main.cpp:368
 msgid "&Translation Assistant..."
-msgstr "Assisitente alla &Traduzione"
+msgstr "Assistente alla &Traduzione"
 
 #: frame_main.cpp:368
 msgid "Open translation assistant"
@@ -4197,7 +4197,7 @@ msgstr "Visita il bug tracker di Aegisub per riportare bug e richiedere nuove fu
 
 #: frame_main.cpp:522
 msgid "&IRC Channel..."
-msgstr "&IRC Channel..."
+msgstr "&Canale IRC..."
 
 #: frame_main.cpp:522
 msgid "Visit Aegisub's official IRC channel"

@@ -127,3 +127,20 @@ BEGIN
 	10109 "Аудио файл Aegisub"
 	10110 "Видео файл Aegisub"
 END
+
+// by Federico
+LANGUAGE LANG_ITALIAN, SUBLANG_NEUTRAL
+STRINGTABLE 
+BEGIN
+	10001 "Crea e modifica sottotitoli styled con Aegisub."
+	10101 "File sottotitolo Aegisub"
+	10102 "Sottotitoli Advanced SSA Aegisub"
+	10103 "Sottotitoli SubStation Alpha Aegisub"
+	10104 "Sottotitoli Subrip Text Aegisub"
+	10105 "MPEG-4 timed text Aegisub"
+	10106 "Sottotitoli Matroska Aegisub"
+	10107 "File di testo Aegisub"        
+	10108 "File media Aegisub"
+	10109 "File audio Aegisub"
+	10110 "File video Aegisub"
+END
