@@ -85,7 +85,7 @@ DestDir: {tmp}; Flags: dontcopy; Source: aegisub.bmp
 
 [Components]
 Name: codec; Description: Media formats support; Flags: fixed; Types: custom compact full
-Name: codec/vsfilter; Description: VSFilter 2.40; Types: compact full custom; Flags: fixed
+Name: codec/vsfilter; Description: VSFilter-Aegisub 2.40; Types: compact full custom; Flags: fixed
 Name: auto; Description: Automation 4 scripting support; Types: compact full
 Name: auto/lua; Description: Lua; Types: compact full; Flags: checkablealone; Languages:
 

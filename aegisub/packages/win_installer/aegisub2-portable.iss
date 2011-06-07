@@ -104,6 +104,8 @@ DestDir: {app}\Microsoft.VC90.CRT; Source: src\Microsoft.VC90.CRT\Microsoft.VC90
 DestDir: {app}\Microsoft.VC90.CRT; Source: src\Microsoft.VC90.CRT\msvcm90.dll; Components: main/runtime
 DestDir: {app}\Microsoft.VC90.CRT; Source: src\Microsoft.VC90.CRT\msvcp90.dll; Components: main/runtime
 DestDir: {app}\Microsoft.VC90.CRT; Source: src\Microsoft.VC90.CRT\msvcr90.dll; Components: main/runtime
+DestDir: {app}\Microsoft.VC90.MFC; Source: src\Microsoft.VC90.MFC\Microsoft.VC90.MFC.manifest; Components: main/runtime
+DestDir: {app}\Microsoft.VC90.MFC; Source: src\Microsoft.VC90.MFC\mfc90u.dll; Components: main/runtime
 DestDir: {app}\Microsoft.VC90.OPENMP; Source: src\Microsoft.VC90.OPENMP\Microsoft.VC90.OpenMP.manifest; Components: main/runtime
 DestDir: {app}\Microsoft.VC90.OPENMP; Source: src\Microsoft.VC90.OPENMP\vcomp90.dll; Components: main/runtime
 
