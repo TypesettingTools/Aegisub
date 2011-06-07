@@ -162,3 +162,21 @@ BEGIN
 	10109 "File audio Aegisub"
 	10110 "File video Aegisub"
 END
+
+// by Yuri
+LANGUAGE LANG_HUNGARIAN, SUBLANG_HUNGARIAN_HUNGARY
+STRINGTABLE 
+BEGIN
+	10000 "Aegisub"
+	10001 "Formázott feliratok létrehozása és szerkesztése az Aegisub nevű programmal."
+	10101 "Aegisub feliratfájl"
+	10102 "Aegisub Advanced SSA felirat"
+	10103 "Aegisub SubStation Alpha felirat"
+	10104 "Aegisub SubRip szöveges felirat"
+	10105 "Aegisub MPEG-4 időzített szöveg"
+	10106 "Aegisub Matroska felirat"
+	10107 "Aegisub nyers szövegfájl"
+	10108 "Aegisub médiafájl"
+	10109 "Aegisub hangfájl"
+	10110 "Aegisub videofájl"
+END
