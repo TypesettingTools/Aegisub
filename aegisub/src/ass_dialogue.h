@@ -170,7 +170,6 @@ public:
 
 	bool Parse(wxString data,int version=1);	// Parses raw ASS data into everything else
 	void ParseASSTags();			// Parses text to generate block information (doesn't update data)
-	void ParseSRTTags();			// Converts tags to ass format and calls ParseASSTags+UpdateData
 	void ClearBlocks();				// Clear all blocks, ALWAYS call this after you're done processing tags
 
 	void ProcessParameters(void (*callback)(wxString,int,AssOverrideParameter*,void *userData),void *userData=NULL);	// Callback to process parameters

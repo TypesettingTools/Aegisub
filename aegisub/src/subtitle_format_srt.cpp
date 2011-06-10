@@ -44,9 +44,238 @@
 #include "text_file_writer.h"
 #include "ass_dialogue.h"
 #include "ass_file.h"
+#include "ass_style.h"
+#include "colorspace.h"
 
 
 DEFINE_SIMPLE_EXCEPTION(SRTParseError, SubtitleFormatParseError, "subtitle_io/parse/srt")
+
+
+class SrtTagParser {
+
+	struct FontAttribs {
+		wxString face;
+		wxString size;
+		wxString color;
+	};
+
+	enum {
+		// leave 0 unused so indexing an unknown tag in the map won't clash 
+		TAG_BOLD_OPEN = 1,
+		TAG_BOLD_CLOSE,
+		TAG_ITALICS_OPEN,
+		TAG_ITALICS_CLOSE,
+		TAG_UNDERLINE_OPEN,
+		TAG_UNDERLINE_CLOSE,
+		TAG_STRIKEOUT_OPEN,
+		TAG_STRIKEOUT_CLOSE,
+		TAG_FONT_OPEN,
+		TAG_FONT_CLOSE,
+	};
+
+	wxRegEx tag_matcher;
+	wxRegEx attrib_matcher;
+	std::map<wxString,int> tag_name_cases;
+
+public:
+	SrtTagParser()
+	: tag_matcher(L"^(.*?)<(/?b|/?i|/?u|/?s|/?font)(.*?)>(.*)$", wxRE_ICASE|wxRE_ADVANCED)
+	, attrib_matcher(L"^[[:space:]](face|size|color)=('.*?'|\".*?\"|[^[:space:]]+)", wxRE_ICASE|wxRE_ADVANCED)
+	{
+		if (!tag_matcher.IsValid())
+			throw Aegisub::InternalError(L"Parsing SRT: Failed compiling tag matching regex", 0);
+		if (!attrib_matcher.IsValid())
+			throw Aegisub::InternalError(L"Parsing SRT: Failed compiling tag attribute matching regex", 0);
+
+		tag_name_cases[L"b"]  = TAG_BOLD_OPEN;
+		tag_name_cases[L"/b"] = TAG_BOLD_CLOSE;
+		tag_name_cases[L"i"]  = TAG_ITALICS_OPEN;
+		tag_name_cases[L"/i"] = TAG_ITALICS_CLOSE;
+		tag_name_cases[L"u"]  = TAG_UNDERLINE_OPEN;
+		tag_name_cases[L"/u"] = TAG_UNDERLINE_CLOSE;
+		tag_name_cases[L"s"]  = TAG_STRIKEOUT_OPEN;
+		tag_name_cases[L"/s"] = TAG_STRIKEOUT_CLOSE;
+		tag_name_cases[L"font"] = TAG_FONT_OPEN;
+		tag_name_cases[L"/font"] = TAG_FONT_CLOSE;
+	}
+
+	wxString ToAss(wxString srt)
+	{
+		int bold_level = 0;
+		int italics_level = 0;
+		int underline_level = 0;
+		int strikeout_level = 0;
+		std::vector<FontAttribs> font_stack;
+
+		wxString ass; // result to be built
+
+		while (!srt.IsEmpty())
+		{
+			if (!tag_matcher.Matches(srt))
+			{
+				// no more tags could be matched, end of string
+				ass.append(srt);
+				break;
+			}
+
+			// we found a tag, translate it
+			wxString pre_text  = tag_matcher.GetMatch(srt, 1);
+			wxString tag_name  = tag_matcher.GetMatch(srt, 2);
+			wxString tag_attrs = tag_matcher.GetMatch(srt, 3);
+			wxString post_text = tag_matcher.GetMatch(srt, 4);
+
+			// the text before the tag goes through unchanged
+			ass.append(pre_text);
+			// the text after the tag is the input for next iteration
+			srt = post_text;
+
+			switch (tag_name_cases[tag_name.Lower()])
+			{
+			case TAG_BOLD_OPEN:
+				if (bold_level == 0)
+					ass.append(L"{\\b1}");
+				bold_level++;
+				break;
+			case TAG_BOLD_CLOSE:
+				if (bold_level == 1)
+					ass.append(L"{\\b}");
+				if (bold_level > 0)
+					bold_level--;
+				break;
+			case TAG_ITALICS_OPEN:
+				if (italics_level == 0)
+					ass.append(L"{\\i1}");
+				italics_level++;
+				break;
+			case TAG_ITALICS_CLOSE:
+				if (italics_level == 1)
+					ass.append(L"{\\i}");
+				if (italics_level > 0)
+					italics_level--;
+				break;
+			case TAG_UNDERLINE_OPEN:
+				if (underline_level == 0)
+					ass.append(L"{\\u1}");
+				underline_level++;
+				break;
+			case TAG_UNDERLINE_CLOSE:
+				if (underline_level == 1)
+					ass.append(L"{\\u}");
+				if (underline_level > 0)
+					underline_level--;
+				break;
+			case TAG_STRIKEOUT_OPEN:
+				if (strikeout_level == 0)
+					ass.append(L"{\\s1}");
+				strikeout_level++;
+				break;
+			case TAG_STRIKEOUT_CLOSE:
+				if (strikeout_level == 1)
+					ass.append(L"{\\s}");
+				if (strikeout_level > 0)
+					strikeout_level--;
+				break;
+			case TAG_FONT_OPEN:
+				{
+					// new attributes to fill in
+					FontAttribs new_attribs;
+					FontAttribs old_attribs;
+					// start out with any previous ones on stack
+					if (font_stack.size() > 0)
+					{
+						old_attribs = font_stack.back();
+						new_attribs = old_attribs;
+					}
+					// now find all attributes on this font tag
+					while (attrib_matcher.Matches(tag_attrs))
+					{
+						// get attribute name and values
+						wxString attr_name = attrib_matcher.GetMatch(tag_attrs, 1);
+						wxString attr_value = attrib_matcher.GetMatch(tag_attrs, 2);
+						// clean them
+						attr_name.MakeLower();
+						if ((attr_value.StartsWith(L"'") && attr_value.EndsWith(L"'")) ||
+							(attr_value.StartsWith(L"\"") && attr_value.EndsWith(L"\"")))
+						{
+							attr_value = attr_value.Mid(1, attr_value.Len()-2);
+						}
+						// handle the attributes
+						if (attr_name == L"face")
+						{
+							new_attribs.face = wxString::Format(L"{\\fn%s}", attr_value.c_str());
+						}
+						else if (attr_name == L"size")
+						{
+							new_attribs.size = wxString::Format(L"{\\fs%s}", attr_value.c_str());
+						}
+						else if (attr_name == L"color")
+						{
+							wxColour wxcl = html_to_color(attr_value);
+							wxString colorstr = AssColor(wxcl).GetASSFormatted(false, false, false);
+							new_attribs.color = wxString::Format(L"{\\c%s}", colorstr.c_str());
+						}
+						// remove this attribute to prepare for the next
+						size_t attr_pos, attr_len;
+						attrib_matcher.GetMatch(&attr_pos, &attr_len, 0);
+						tag_attrs.erase(attr_pos, attr_len);
+					}
+					// the attributes changed from old are then written out
+					if (new_attribs.face != old_attribs.face)
+						ass.append(new_attribs.face);
+					if (new_attribs.size != old_attribs.size)
+						ass.append(new_attribs.size);
+					if (new_attribs.color != old_attribs.color)
+						ass.append(new_attribs.color);
+					// lastly dump the new attributes state onto the stack
+					font_stack.push_back(new_attribs);
+				}
+				break;
+			case TAG_FONT_CLOSE:
+				{
+					// this requires a font stack entry
+					if (font_stack.empty())
+						break;
+					// get the current attribs
+					FontAttribs cur_attribs = font_stack.back();
+					// remove them from the stack
+					font_stack.pop_back();
+					// if there are a previous attrib set, restore to those,
+					// otherwise restore to defaults
+					if (font_stack.size() > 0)
+					{
+						const FontAttribs &old_attribs = font_stack.back();
+						if (cur_attribs.face != old_attribs.face)
+							ass.append(old_attribs.face);
+						if (cur_attribs.size != old_attribs.face)
+							ass.append(old_attribs.size);
+						if (cur_attribs.color != old_attribs.color)
+							ass.append(old_attribs.color);
+					}
+					else
+					{
+						if (!cur_attribs.face.IsEmpty())
+							ass.append(L"{\\fn}");
+						if (!cur_attribs.size.IsEmpty())
+							ass.append(L"{\\fs}");
+						if (!cur_attribs.color.IsEmpty())
+							ass.append(L"{\\c}");
+					}
+				}
+				break;
+			default:
+				// unknown tag, replicate it in the output
+				ass.append(L"<").append(tag_name).append(tag_attrs).append(L">");
+				break;
+			}
+		}
+
+		// make it a little prettier, join tag groups
+		ass.Replace(L"}{", L"", true);
+
+		return ass;
+	}
+
+};
 
 
 /////////////
@@ -105,6 +334,8 @@ void SRTSubtitleFormat::ReadFile(wxString filename,wxString encoding) {
 	if (!timestamp_regex.IsValid())
 		throw Aegisub::InternalError(L"Parsing SRT: Failed compiling regex", 0);
 
+	SrtTagParser tag_parser;
+
 	int state = 1;
 	int line_num = 0;
 	int linebreak_debt = 0;
@@ -141,7 +372,7 @@ void SRTSubtitleFormat::ReadFile(wxString filename,wxString encoding) {
 found_timestamps:
 				if (line != 0) {
 					// finalise active line
-					line->ParseSRTTags();
+					line->Text = tag_parser.ToAss(line->Text);
 					line = 0;
 				}
 				// create new subtitle
@@ -224,7 +455,7 @@ found_timestamps:
 
 	if (line) {
 		// an unfinalised line
-		line->ParseSRTTags();
+		line->Text = tag_parser.ToAss(line->Text);
 	}
 }
 
