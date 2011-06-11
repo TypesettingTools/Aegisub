@@ -735,7 +735,7 @@ extern "C" {
 }
 
 int main (void) {
-  pp_context_t *PPContext = pp_get_context(704,480, 0);
+  pp_context *PPContext = pp_get_context(704,480, 0);
 
   if (!PPContext) return 1;
   pp_free_context(PPContext);
