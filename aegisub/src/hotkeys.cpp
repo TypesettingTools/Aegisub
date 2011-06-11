@@ -332,7 +332,11 @@ void HotkeyManager::LoadDefaults() {
 	SetHotkey(_("Help"),_T("Ctrl-?"));
 	SetHotkey(_("Options"),_T("Ctrl-,"));
 #else
+# ifdef _WIN32
 	SetHotkey(_("Exit"),_T("Alt-F4"));
+# else
+	SetHotkey(_("Exit"),_T("Ctrl-Q"));
+# endif
 	SetHotkey(_("Help"),_T("F1"));
 	SetHotkey(_("Options"),_T("Alt-O"));
 #endif
