@@ -115,6 +115,7 @@ TrackCompressionContext::~TrackCompressionContext() {
 int64_t GetSWSCPUFlags() {
 	int64_t Flags = 0;
 
+#ifdef SWS_CPU_CAPS_MMX
 	if (CPUFeatures & FFMS_CPU_CAPS_MMX)
 		Flags |= SWS_CPU_CAPS_MMX;
 	if (CPUFeatures & FFMS_CPU_CAPS_MMX2)
@@ -125,7 +126,6 @@ int64_t GetSWSCPUFlags() {
 		Flags |= SWS_CPU_CAPS_ALTIVEC;
 	if (CPUFeatures & FFMS_CPU_CAPS_BFIN)
 		Flags |= SWS_CPU_CAPS_BFIN;
-#ifdef SWS_CPU_CAPS_SSE2
 	if (CPUFeatures & FFMS_CPU_CAPS_SSE2)
 		Flags |= SWS_CPU_CAPS_SSE2;
 #endif
@@ -625,6 +625,7 @@ int ffms_wchar_open(const char *fname, int oflags, int pmode) {
     return -1;
 }
 
+#if LIBAVFORMAT_VERSION_INT < AV_VERSION_INT(53,0,3)
 static int ffms_lavf_file_open(URLContext *h, const char *filename, int flags) {
     int access;
     int fd;
@@ -662,6 +663,8 @@ void ffms_patch_lavf_file_open() {
 		proto->url_open = &ffms_lavf_file_open;
 	}
 }
+#endif
+
 #endif // _WIN32
 
 // End of filename hackery.

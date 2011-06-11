@@ -20,6 +20,9 @@
 
 #include "indexing.h"
 
+extern "C" {
+#include <libavutil/avutil.h>
+};
 
 
 FFLAVFIndexer::FFLAVFIndexer(const char *Filename, AVFormatContext *FormatContext) : FFMS_Indexer(Filename) {
@@ -49,7 +52,7 @@ FFMS_Index *FFLAVFIndexer::DoIndexing() {
 			FormatContext->streams[i]->time_base.den,
 			static_cast<FFMS_TrackType>(FormatContext->streams[i]->codec->codec_type)));
 
-		if (FormatContext->streams[i]->codec->codec_type == CODEC_TYPE_VIDEO) {
+		if (FormatContext->streams[i]->codec->codec_type == AVMEDIA_TYPE_VIDEO) {
 			AVCodec *VideoCodec = avcodec_find_decoder(FormatContext->streams[i]->codec->codec_id);
 			if (!VideoCodec)
 				throw FFMS_Exception(FFMS_ERROR_CODEC, FFMS_ERROR_UNSUPPORTED,
@@ -65,7 +68,7 @@ FFMS_Index *FFLAVFIndexer::DoIndexing() {
 				VideoContexts[i].Parser->flags = PARSER_FLAG_COMPLETE_FRAMES;
 			IndexMask |= 1 << i;
 		}
-		else if (IndexMask & (1 << i) && FormatContext->streams[i]->codec->codec_type == CODEC_TYPE_AUDIO) {
+		else if (IndexMask & (1 << i) && FormatContext->streams[i]->codec->codec_type == AVMEDIA_TYPE_AUDIO) {
 			AVCodecContext *AudioCodecContext = FormatContext->streams[i]->codec;
 
 			AVCodec *AudioCodec = avcodec_find_decoder(AudioCodecContext->codec_id);
@@ -105,7 +108,7 @@ FFMS_Index *FFLAVFIndexer::DoIndexing() {
 		bool KeyFrame = !!(Packet.flags & AV_PKT_FLAG_KEY);
 		ReadTS(Packet, LastValidTS[Track], (*TrackIndices)[Track].UseDTS);
 
-		if (FormatContext->streams[Track]->codec->codec_type == CODEC_TYPE_VIDEO) {
+		if (FormatContext->streams[Track]->codec->codec_type == AVMEDIA_TYPE_VIDEO) {
 			if (LastValidTS[Track] == ffms_av_nopts_value)
 				throw FFMS_Exception(FFMS_ERROR_INDEXING, FFMS_ERROR_PARSER,
 				"Invalid initial pts and dts");
@@ -121,7 +124,7 @@ FFMS_Index *FFLAVFIndexer::DoIndexing() {
 
 			(*TrackIndices)[Track].push_back(TFrameInfo::VideoFrameInfo(LastValidTS[Track], RepeatPict, KeyFrame, Packet.pos));
 		}
-		else if (FormatContext->streams[Track]->codec->codec_type == CODEC_TYPE_AUDIO) {
+		else if (FormatContext->streams[Track]->codec->codec_type == AVMEDIA_TYPE_AUDIO) {
 			int64_t StartSample = AudioContexts[Track].CurrentSample;
 			int64_t SampleCount = IndexAudioPacket(Track, &Packet, AudioContexts[Track], *TrackIndices);
 

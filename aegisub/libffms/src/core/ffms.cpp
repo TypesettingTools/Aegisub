@@ -43,14 +43,12 @@ bool GlobalUseUTF8Paths = false;
 
 #ifdef FFMS_WIN_DEBUG
 
-extern "C" int av_log_level;
-
 void av_log_windebug_callback(void* ptr, int level, const char* fmt, va_list vl) {
 	static int print_prefix=1;
 	static int count;
 	static char line[1024] = {0}, prev[1024] = {0};
 	AVClass* avc = ptr ? *(AVClass**)ptr : NULL;
-	if(level > av_log_level)
+	if(level > av_log_get_level())
 		return;
 
 	int written = 0;
@@ -83,7 +81,9 @@ FFMS_API(void) FFMS_Init(int CPUFeatures, int UseUTF8Paths) {
 		av_register_all();
 #ifdef _WIN32
 		if (UseUTF8Paths) {
+#if LIBAVFORMAT_VERSION_INT < AV_VERSION_INT(53,0,3)
 			ffms_patch_lavf_file_open();
+#endif
 			GlobalUseUTF8Paths = true;
 		}
 		else {
@@ -108,6 +108,10 @@ FFMS_API(void) FFMS_Init(int CPUFeatures, int UseUTF8Paths) {
 #endif
 		FFmpegInited = true;
 	}
+}
+
+FFMS_API(int) FFMS_GetVersion() {
+	return FFMS_VERSION;
 }
 
 FFMS_API(int) FFMS_GetLogLevel() {

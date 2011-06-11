@@ -27,13 +27,35 @@
 
 
 extern "C" {
-#include <libavutil/sha1.h>
+#include <libavutil/avutil.h>
+
+#if LIBAVUTIL_VERSION_INT > AV_VERSION_INT(50, 40, 1)
+#include <libavutil/sha.h>
+#else
+extern const int av_sha_size;
+struct AVSHA;
+int av_sha_init(struct AVSHA* context, int bits);
+void av_sha_update(struct AVSHA* context, const uint8_t* data, unsigned int len);
+void av_sha_final(struct AVSHA* context, uint8_t *digest);
+#endif
+
 #include <zlib.h>
 }
 
 #undef max
 
 #define INDEXID 0x53920873
+#ifdef __MINGW64__
+	#define ARCH 1
+#elif __MINGW32__
+	#define ARCH 2
+#elif _WIN32
+	#define ARCH 3
+#elif __i386__
+	#define ARCH 4
+#else
+	#define ARCH 5
+#endif
 
 extern bool HasHaaliMPEG;
 extern bool HasHaaliOGG;
@@ -45,6 +67,7 @@ unsigned postproc_version() { return 0; } // ugly workaround to avoid lots of if
 struct IndexHeader {
 	uint32_t Id;
 	uint32_t Version;
+	uint32_t Arch;
 	uint32_t Tracks;
 	uint32_t Decoder;
 	uint32_t LAVUVersion;
@@ -154,6 +177,8 @@ int FFMS_Track::ClosestFrameFromPTS(int64_t PTS) {
 	F.PTS = PTS;
 
 	iterator Pos = std::lower_bound(begin(), end(), F, PTSComparison);
+	if (Pos == end())
+		return size() - 1;
 	int Frame = std::distance(begin(), Pos);
 	if (Pos == begin() || FFABS(Pos->PTS - PTS) <= FFABS((Pos - 1)->PTS - PTS))
 		return Frame;
@@ -188,9 +213,9 @@ void FFMS_Index::CalculateFileSignature(const char *Filename, int64_t *Filesize,
 			std::string("Failed to open '") + Filename + "' for hashing");
 
 	std::vector<uint8_t> FileBuffer(1024*1024, 0);
-	std::vector<uint8_t> ctxmem(av_sha1_size);
-	AVSHA1 *ctx = (AVSHA1 *)(&ctxmem[0]);
-	av_sha1_init(ctx);
+	std::vector<uint8_t> ctxmem(av_sha_size);
+	AVSHA *ctx = (AVSHA*)(&ctxmem[0]);
+	av_sha_init(ctx, 160);
 
 	try {
 		fread(&FileBuffer[0], 1, FileBuffer.size(), SFile);
@@ -198,7 +223,7 @@ void FFMS_Index::CalculateFileSignature(const char *Filename, int64_t *Filesize,
 			throw FFMS_Exception(FFMS_ERROR_PARSER, FFMS_ERROR_FILE_READ,
 				std::string("Failed to read '") + Filename + "' for hashing");
 
-		av_sha1_update(ctx, &FileBuffer[0], FileBuffer.size());
+		av_sha_update(ctx, &FileBuffer[0], FileBuffer.size());
 
 		fseeko(SFile, -(int)FileBuffer.size(), SEEK_END);
 		std::fill(FileBuffer.begin(), FileBuffer.end(), 0);
@@ -209,7 +234,7 @@ void FFMS_Index::CalculateFileSignature(const char *Filename, int64_t *Filesize,
 			throw FFMS_Exception(FFMS_ERROR_PARSER, FFMS_ERROR_FILE_READ, buf.str());
 		}
 
-		av_sha1_update(ctx, &FileBuffer[0], FileBuffer.size());
+		av_sha_update(ctx, &FileBuffer[0], FileBuffer.size());
 
 		fseeko(SFile, 0, SEEK_END);
 		if (ferror(SFile))
@@ -220,11 +245,11 @@ void FFMS_Index::CalculateFileSignature(const char *Filename, int64_t *Filesize,
 	}
 	catch (...) {
 		fclose(SFile);
-		av_sha1_final(ctx, Digest);
+		av_sha_final(ctx, Digest);
 		throw;
 	}
 	fclose(SFile);
-	av_sha1_final(ctx, Digest);
+	av_sha_final(ctx, Digest);
 }
 
 void FFMS_Index::Sort() {
@@ -296,6 +321,7 @@ void FFMS_Index::WriteIndex(const char *IndexFile) {
 	IndexHeader IH;
 	IH.Id = INDEXID;
 	IH.Version = FFMS_VERSION;
+	IH.Arch = ARCH;
 	IH.Tracks = size();
 	IH.Decoder = Decoder;
 	IH.LAVUVersion = avutil_version();
@@ -393,6 +419,10 @@ void FFMS_Index::ReadIndex(const char *IndexFile) {
 	if (IH.Version != FFMS_VERSION)
 		throw FFMS_Exception(FFMS_ERROR_PARSER, FFMS_ERROR_FILE_READ,
 			std::string("'") + IndexFile + "' is the expected index version");
+
+	if (IH.Arch != ARCH)
+		throw FFMS_Exception(FFMS_ERROR_PARSER, FFMS_ERROR_FILE_READ,
+			std::string("'") + IndexFile + "' was not made with this FFMS2 binary");
 
 	if (IH.LAVUVersion != avutil_version() || IH.LAVFVersion != avformat_version() ||
 		IH.LAVCVersion != avcodec_version() || IH.LSWSVersion != swscale_version() ||

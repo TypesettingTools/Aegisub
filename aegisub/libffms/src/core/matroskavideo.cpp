@@ -67,8 +67,12 @@ FFMatroskaVideo::FFMatroskaVideo(const char *SourceFile, int Track,
 		TCC = new TrackCompressionContext(MF, TI, VideoTrack);
 
 	CodecContext = avcodec_alloc_context();
+#if LIBAVCODEC_VERSION_MAJOR >= 53 || (LIBAVCODEC_VERSION_MAJOR == 52 && LIBAVCODEC_VERSION_MINOR >= 112)
+	CodecContext->thread_count = Threads;
+#else
 	if (avcodec_thread_init(CodecContext, Threads))
 		CodecContext->thread_count = 1;
+#endif
 
 	Codec = avcodec_find_decoder(MatroskaToFFCodecID(TI->CodecID, TI->CodecPrivate));
 	if (Codec == NULL)

@@ -55,8 +55,8 @@ class FFMS_VideoSource {
 friend class FFSourceResources<FFMS_VideoSource>;
 private:
 #ifdef FFMS_USE_POSTPROC
-	pp_context_t *PPContext;
-	pp_mode_t *PPMode;
+	pp_context *PPContext;
+	pp_mode *PPMode;
 #endif // FFMS_USE_POSTPROC
 	SwsContext *SWS;
 	int LastFrameHeight;
