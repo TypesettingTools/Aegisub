@@ -53,6 +53,10 @@ FFMS_AudioSource::FFMS_AudioSource(const char *SourceFile, FFMS_Index &Index, in
 		throw FFMS_Exception(FFMS_ERROR_INDEX, FFMS_ERROR_FILE_MISMATCH,
 			"The index does not match the source file");
 }
+
+
+#define EXCESSIVE_CACHE_SIZE 400
+
 void FFMS_AudioSource::Init(FFMS_Index &Index, int DelayMode) {
 	// The first packet after a seek is often decoded incorrectly, which
 	// makes it impossible to ever correctly seek back to the beginning, so
@@ -70,6 +74,12 @@ void FFMS_AudioSource::Init(FFMS_Index &Index, int DelayMode) {
 	while (PacketNumber < Frames.size() &&
 		((Frames[0].PTS != ffms_av_nopts_value && Frames[PacketNumber].PTS == Frames[0].PTS) ||
 		 Cache.size() < 10)) {
+
+		if (Cache.size() >= MaxCacheBlocks - 1) {
+			 if (MaxCacheBlocks >= EXCESSIVE_CACHE_SIZE)
+				 throw FFMS_Exception(FFMS_ERROR_DECODING, FFMS_ERROR_ALLOCATION_FAILED, "Exceeded the search range for an initial valid audio PTS");
+			MaxCacheBlocks *= 2;
+		}
 
 		DecodeNextBlock();
 		if (Decoded)
