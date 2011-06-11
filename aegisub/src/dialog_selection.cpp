@@ -49,6 +49,7 @@
 #include "help_button.h"
 #include "subs_grid.h"
 #include "subs_edit_box.h"
+#include "frame_main.h"
 
 ///////////////
 // Constructor
@@ -273,9 +274,14 @@ void DialogSelection::Process() {
 	}
 
 	// Message saying number selected
-	if (action == 0) wxMessageBox(wxString::Format(_("Selection was set to %i lines"),count), _("Selection"), wxOK);
-	else if (action == 1) wxMessageBox(wxString::Format(_("%i lines were added to selection"),count), _("Selection"), wxOK);
-	else wxMessageBox(wxString::Format(_("%i lines were removed from selection"),count), _("Selection"), wxOK);
+	wxString msg;
+	if (action == 0) msg = wxString::Format(_("Selection was set to %i lines"),count);
+	else if (action == 1) wxString::Format(_("%i lines were added to selection"),count);
+	else wxString::Format(_("%i lines were removed from selection"),count);
+	// Only show a message box if nothing was done, otherwise in status bar
+	// FIXME: Should show a better message if nothing was done
+	if (count == 0) wxMessageBox(msg, _("Selection"), wxOK);
+	else static_cast<FrameMain*>(GetParent())->StatusTimeout(msg);
 }
 
 
