@@ -65,9 +65,10 @@ private:
 	wxArrayString proto;
 	int tipProtoN;
 
-	void ShowPopupMenu(int activePos=-1);
+	void ShowPopupMenu(int activePos, const wxPoint &popupPos);
 
 	void OnMouseEvent(wxMouseEvent &event);
+	void OnKeyDown(wxKeyEvent &event);
 	void OnSplitLinePreserve(wxCommandEvent &event);
 	void OnSplitLineEstimate(wxCommandEvent &event);
 	void OnCut(wxCommandEvent &event);

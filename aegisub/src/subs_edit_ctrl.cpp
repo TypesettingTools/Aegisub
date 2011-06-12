@@ -155,6 +155,7 @@ SubsTextEditCtrl::~SubsTextEditCtrl() {
 // Control event table
 BEGIN_EVENT_TABLE(SubsTextEditCtrl,wxStyledTextCtrl)
 	EVT_MOUSE_EVENTS(SubsTextEditCtrl::OnMouseEvent)
+	EVT_KEY_DOWN(SubsTextEditCtrl::OnKeyDown)
 	EVT_KILL_FOCUS(SubsTextEditCtrl::OnLoseFocus)
 
 	EVT_MENU(EDIT_MENU_SPLIT_PRESERVE,SubsTextEditCtrl::OnSplitLinePreserve)
@@ -751,7 +752,7 @@ void SubsTextEditCtrl::OnMouseEvent(wxMouseEvent &event) {
 	if (event.ButtonUp(wxMOUSE_BTN_RIGHT)) {
 		if (control->linen >= 0) {
 			int pos = PositionFromPoint(event.GetPosition());
-			ShowPopupMenu(pos);
+			ShowPopupMenu(pos, event.GetPosition());
 			return;
 		}
 	}
@@ -765,14 +766,24 @@ void SubsTextEditCtrl::OnMouseEvent(wxMouseEvent &event) {
 }
 
 
+void SubsTextEditCtrl::OnKeyDown(wxKeyEvent &event) {
+	if (event.GetKeyCode() == WXK_WINDOWS_MENU) {
+		int pos = this->GetCurrentPos();
+		ShowPopupMenu(pos, PointFromPosition(pos));
+		return;
+	}
+
+	event.Skip();
+}
+
+
 ///////////////////
 // Show popup menu
-void SubsTextEditCtrl::ShowPopupMenu(int activePos) {
+void SubsTextEditCtrl::ShowPopupMenu(int activePos, const wxPoint &popupPos) {
 	// Menu
 	wxMenu menu;
 
 	// Position
-	if (activePos == -1) activePos = GetCurrentPos();
 	activePos = GetReverseUnicodePosition(activePos);
 
 	// Get current word under cursor
@@ -962,7 +973,7 @@ void SubsTextEditCtrl::ShowPopupMenu(int activePos) {
 	menu.Append(EDIT_MENU_SPLIT_ESTIMATE,_("Split at cursor (estimate times)"));
 
 	// Pop the menu
-	PopupMenu(&menu);
+	PopupMenu(&menu, popupPos);
 }
 
 
