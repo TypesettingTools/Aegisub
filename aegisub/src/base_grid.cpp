@@ -990,7 +990,7 @@ void BaseGrid::OnKeyPress(wxKeyEvent &event) {
 	bool shift = event.m_shiftDown;
 
 	// The "menu" key, simulate a right-click
-	if (key == WXK_WINDOWS_MENU) {
+	if (key == WXK_MENU || key == WXK_WINDOWS_MENU) {
 		wxPoint pos;
 		pos.x = colWidth[0];
 		if (shift) {

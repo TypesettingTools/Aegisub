@@ -767,7 +767,7 @@ void SubsTextEditCtrl::OnMouseEvent(wxMouseEvent &event) {
 
 
 void SubsTextEditCtrl::OnKeyDown(wxKeyEvent &event) {
-	if (event.GetKeyCode() == WXK_WINDOWS_MENU) {
+	if (event.GetKeyCode() == WXK_MENU || event.GetKeyCode() == WXK_WINDOWS_MENU) {
 		int pos = this->GetCurrentPos();
 		ShowPopupMenu(pos, PointFromPosition(pos));
 		return;
