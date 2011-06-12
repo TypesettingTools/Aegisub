@@ -180,3 +180,21 @@ BEGIN
 	10109 "Aegisub hangfájl"
 	10110 "Aegisub videofájl"
 END
+
+// by Adam Rambousek
+LANGUAGE LANG_CZECH, SUBLANG_CZECH_CZECH_REPUBLIC
+STRINGTABLE 
+BEGIN
+       10000 "Aegisub"
+       10001 "Aegisub umožňuje tvorbu a úpravy stylovaných titulků."
+       10101 "Aegisub - titulky"
+       10102 "Aegisub - titulky Advanced SSA"
+       10103 "Aegisub - titulky SubStation Alpha"
+       10104 "Aegisub - titulky SubRip"
+       10105 "Aegisub - MPEG-4 timed text"
+       10106 "Aegisub - titulky Matroska"
+       10107 "Aegisub - čistý text"
+       10108 "Aegisub - multimediální soubor"
+       10109 "Aegisub - audio soubor"
+       10110 "Aegisub - video soubor"
+END
