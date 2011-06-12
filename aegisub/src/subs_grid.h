@@ -71,7 +71,7 @@ class SubtitlesGrid: public BaseGrid {
 private:
 	bool ready;
 
-	void OnPopupMenu(bool alternate=false);
+	void OnPopupMenu(bool alternate, const wxPoint &pos);
 	void OnKeyDown(wxKeyEvent &event);
 
 	void OnSwap(wxCommandEvent &event);

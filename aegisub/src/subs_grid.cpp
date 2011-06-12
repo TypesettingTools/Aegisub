@@ -110,7 +110,7 @@ SubtitlesGrid::~SubtitlesGrid() {
 
 //////////////
 // Popup menu
-void SubtitlesGrid::OnPopupMenu(bool alternate) {
+void SubtitlesGrid::OnPopupMenu(bool alternate, const wxPoint &pos) {
 	// Alternate
 	if (alternate) {
 		// Prepare strings
@@ -131,7 +131,7 @@ void SubtitlesGrid::OnPopupMenu(bool alternate) {
 		for (size_t i=0;i<strings.Count();i++) {
 			menu.Append(MENU_SHOW_COL + i,strings[i],_T(""),wxITEM_CHECK)->Check(showCol[i]);
 		}
-		PopupMenu(&menu);
+		PopupMenu(&menu, pos);
 
 		return;
 	}
@@ -203,7 +203,7 @@ void SubtitlesGrid::OnPopupMenu(bool alternate) {
 		// Delete
 		menu.Append(MENU_DELETE,_("Delete"),_("Delete currently selected lines"));
 
-		PopupMenu(&menu);
+		PopupMenu(&menu, pos);
 	}
 }
 

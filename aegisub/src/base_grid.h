@@ -79,7 +79,7 @@ protected:
 	FrameMain *parentFrame;
 	bool showCol[16];
 
-	virtual void OnPopupMenu(bool alternate=false) {}
+	virtual void OnPopupMenu(bool alternate, const wxPoint &pos) {}
 	void ScrollTo(int y);
 	int yPos;
 

@@ -712,7 +712,7 @@ void BaseGrid::OnMouseEvent(wxMouseEvent &event) {
 
 	// Popup
 	if (event.ButtonDown(wxMOUSE_BTN_RIGHT)) {
-		OnPopupMenu(headerClick);
+		OnPopupMenu(headerClick, event.GetPosition());
 	}
 
 	// Mouse wheel
@@ -988,6 +988,21 @@ void BaseGrid::OnKeyPress(wxKeyEvent &event) {
 #endif
 	bool alt = event.m_altDown;
 	bool shift = event.m_shiftDown;
+
+	// The "menu" key, simulate a right-click
+	if (key == WXK_WINDOWS_MENU) {
+		wxPoint pos;
+		pos.x = colWidth[0];
+		if (shift) {
+			pos.y = lineHeight/2;
+			OnPopupMenu(true, pos);
+		}
+		else {
+			pos.y = (editBox->linen+1-yPos) * lineHeight + lineHeight/2;
+			OnPopupMenu(false, pos);
+		}
+		return;
+	}
 
 	// Left/right, forward to seek bar if video is loaded
 	if (key == WXK_LEFT || key == WXK_RIGHT) {
