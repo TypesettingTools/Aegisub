@@ -4,7 +4,7 @@
 
 // by nielsm
 LANGUAGE LANG_DANISH, SUBLANG_DEFAULT
-STRINGTABLE 
+STRINGTABLE
 BEGIN
 	10000 "Aegisub"
 	10001 "Opret og rediger smarte undertekster med Aegisub."
@@ -22,7 +22,7 @@ END
 
 // by tomman
 LANGUAGE LANG_SPANISH, SUBLANG_SPANISH_MODERN
-STRINGTABLE 
+STRINGTABLE
 BEGIN
 	10000 "Aegisub"
 	10001 "Crea y edita subtítulos estilizados con Aegisub."
@@ -58,7 +58,7 @@ END
 
 // by Gpower2
 LANGUAGE LANG_GREEK, SUBLANG_GREEK_GREECE
-STRINGTABLE 
+STRINGTABLE
 BEGIN
         10000 "Aegisub"
         10001 "Δημιουργία και επεξεργασία υποτίτλων με το Aegisub."
@@ -130,7 +130,7 @@ END
 
 // by Igor
 LANGUAGE LANG_RUSSIAN, SUBLANG_DEFAULT
-STRINGTABLE 
+STRINGTABLE
 BEGIN
 	10000 "Aegisub"
 	10001 "Aegisub позволяет создавать и редактировать стилизированные субтитры."
@@ -148,7 +148,7 @@ END
 
 // by Federico
 LANGUAGE LANG_ITALIAN, SUBLANG_NEUTRAL
-STRINGTABLE 
+STRINGTABLE
 BEGIN
 	10001 "Crea e modifica sottotitoli styled con Aegisub."
 	10101 "File sottotitolo Aegisub"
@@ -165,7 +165,7 @@ END
 
 // by Yuri
 LANGUAGE LANG_HUNGARIAN, SUBLANG_HUNGARIAN_HUNGARY
-STRINGTABLE 
+STRINGTABLE
 BEGIN
 	10000 "Aegisub"
 	10001 "Formázott feliratok létrehozása és szerkesztése az Aegisub nevű programmal."
@@ -183,18 +183,54 @@ END
 
 // by Adam Rambousek
 LANGUAGE LANG_CZECH, SUBLANG_CZECH_CZECH_REPUBLIC
-STRINGTABLE 
+STRINGTABLE
 BEGIN
-       10000 "Aegisub"
-       10001 "Aegisub umožňuje tvorbu a úpravy stylovaných titulků."
-       10101 "Aegisub - titulky"
-       10102 "Aegisub - titulky Advanced SSA"
-       10103 "Aegisub - titulky SubStation Alpha"
-       10104 "Aegisub - titulky SubRip"
-       10105 "Aegisub - MPEG-4 timed text"
-       10106 "Aegisub - titulky Matroska"
-       10107 "Aegisub - čistý text"
-       10108 "Aegisub - multimediální soubor"
-       10109 "Aegisub - audio soubor"
-       10110 "Aegisub - video soubor"
+	10000 "Aegisub"
+	10001 "Aegisub umožňuje tvorbu a úpravy stylovaných titulků."
+	10101 "Aegisub - titulky"
+	10102 "Aegisub - titulky Advanced SSA"
+	10103 "Aegisub - titulky SubStation Alpha"
+	10104 "Aegisub - titulky SubRip"
+	10105 "Aegisub - MPEG-4 timed text"
+	10106 "Aegisub - titulky Matroska"
+	10107 "Aegisub - čistý text"
+	10108 "Aegisub - multimediální soubor"
+	10109 "Aegisub - audio soubor"
+	10110 "Aegisub - video soubor"
+END
+
+// by JEEB
+LANGUAGE LANG_FINNISH, SUBLANG_FINNISH_FINLAND
+STRINGTABLE
+BEGIN
+	10000 "Aegisub"
+	10001 "Aegisubin avulla voit luoda ja muokata tyylitettyjä tekstitystiedostoja."
+	10101 "Aegisub-tekstitystiedosto"
+	10102 "Advanced SSA Aegisub -tekstitystiedosto"
+	10103 "SubStation Alpha Aegisub -tekstitystiedosto"
+	10104 "SubRip Aegisub -tekstitystiedosto"
+	10105 "MPEG-4 timed text Aegisub -tekstitystiedosto"
+	10106 "Aegisub Matroska -tekstitystiedosto"
+	10107 "Aegisub-raakatekstitiedosto"
+	10108 "Aegisub-mediatiedosto"
+	10109 "Aegisub-äänitiedosto"
+	10110 "Aegisub-videotiedosto"
+END
+
+// by JEEB
+LANGUAGE LANG_JAPANESE
+STRINGTABLE
+BEGIN
+	10000 "Aegisub"
+	10001 "Aegisub でスタイルでカスタマイズできる字幕の作成・編集が可能になります。"
+	10101 "Aegisub 字幕ファイル"
+	10102 "Aegisub Advanced SSA 字幕ファイル"
+	10103 "Aegisub SubStation Alpha 字幕ファイル"
+	10104 "Aegisub SubRip 字幕ファイル"
+	10105 "Aegisub MPEG-4 timed text 字幕ファイル"
+	10106 "Aegisub Matroska 字幕ファイル"
+	10107 "Aegisub テキストファイル"
+	10108 "Aegisub メディアファイル"
+	10109 "Aegisub オーディオファイル"
+	10110 "Aegisub ビデオファイル"
 END
