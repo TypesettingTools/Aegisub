@@ -218,7 +218,7 @@ BEGIN
 END
 
 // by JEEB
-LANGUAGE LANG_JAPANESE
+LANGUAGE LANG_JAPANESE, SUBLANG_JAPANESE_JAPAN
 STRINGTABLE
 BEGIN
 	10000 "Aegisub"
@@ -233,4 +233,22 @@ BEGIN
 	10108 "Aegisub メディアファイル"
 	10109 "Aegisub オーディオファイル"
 	10110 "Aegisub ビデオファイル"
+END
+
+// by Hung. NGUYEN Manh
+LANGUAGE LANG_VIETNAMESE, SUBLANG_VIETNAMESE_VIETNAM
+STRINGTABLE
+BEGIN
+	10000 "Aegisub"
+	10001 "Tạo và chỉnh sửa phụ đề kèm kiểu dáng với Aegisub."
+	10101 "Tập tin phụ đề Aegisub"
+	10102 "Phụ đề Aegisub Advanced SSA"
+	10103 "Phụ đề Aegisub SubStation Alpha"
+	10104 "Phụ đề văn bản Aegisub SubRip"
+	10105 "Văn bản kèm thời gian Aegisub MPEG-4"
+	10106 "Phụ đề Aegisub Matroska"
+	10107 "Tập tin văn bản thô Aegisub"
+	10108 "Tập tin đa phương tiện Aegisub"
+	10109 "Tập tin âm thanh Aegisub"
+	10110 "Tập tin phim Aegisub"
 END
