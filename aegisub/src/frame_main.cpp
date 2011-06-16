@@ -1259,7 +1259,10 @@ wxArrayString FrameMain::GetEncodings() {
 	choices.Add(_T("ISO-8859-7"));
 	choices.Add(_T("ISO-8859-8"));
 	choices.Add(_T("ISO-8859-9"));
+	choices.Add(_T("ISO-8859-10"));
+	choices.Add(_T("ISO-8859-11"));
 	choices.Add(_T("ISO-8859-13"));
+	choices.Add(_T("ISO-8859-14"));
 	choices.Add(_T("ISO-8859-15"));
 	choices.Add(_T("WINDOWS-1250"));
 	choices.Add(_T("WINDOWS-1251"));
