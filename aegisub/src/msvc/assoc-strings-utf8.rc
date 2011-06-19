@@ -252,3 +252,21 @@ BEGIN
 	10109 "Tập tin âm thanh Aegisub"
 	10110 "Tập tin phim Aegisub"
 END
+
+// by Invi
+LANGUAGE LANG_POLISH, SUBLANG_POLISH_POLAND
+STRINGTABLE 
+BEGIN
+	10000 "Aegisub"
+	10001 "Tworzenie i edycja stylizowanych napisów programem Aegisub"
+	10101 "Aegisub plik napisów "
+	10102 "Aegisub napisy Advanced SSA"
+	10103 "Aegisub napisy SubStation Alpha"
+	10104 "Aegisub napisy SubRip text"
+	10105 "Aegisub napisy MPEG-4 timed text"
+	10106 "Aegisub napisy Matroska"
+	10107 "Aegisub plik tekstowy"
+	10108 "Aegisub plik multimedialny"
+	10109 "Aegisub plik audio"
+	10110 "Aegisub plik wideo"
+END
