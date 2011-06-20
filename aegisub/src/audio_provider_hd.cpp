@@ -77,22 +77,26 @@ HDAudioProvider::HDAudioProvider(AudioProvider *source) {
 
 	// Start progress
 	volatile bool canceled = false;
-	DialogProgress *progress = new DialogProgress(AegisubApp::Get()->frame,_T("Load audio"),&canceled,_T("Reading to Hard Disk cache"),0,num_samples);
-	progress->Show();
+	DialogProgress progress(AegisubApp::Get()->frame,_T("Load audio"),&canceled,_T("Reading to Hard Disk cache"),0,num_samples);
+	progress.Show();
 
 	// Write to disk
 	int block = 4096;
-	data = new char[block * channels * bytes_per_sample];
-	for (int64_t i=0;i<num_samples && !canceled; i+=block) {
-		if (block+i > num_samples) block = num_samples - i;
-		source->GetAudio(data,i,block);
-		file_cache.Write(data,block * channels * bytes_per_sample);
-		progress->SetProgress(i,num_samples);
+	try {
+		data = new char[block * channels * bytes_per_sample];
+		for (int64_t i=0;i<num_samples && !canceled; i+=block) {
+			if (block+i > num_samples) block = num_samples - i;
+			source->GetAudio(data,i,block);
+			file_cache.Write(data,block * channels * bytes_per_sample);
+			progress.SetProgress(i,num_samples);
+		}
+		file_cache.Seek(0);
 	}
-	file_cache.Seek(0);
+	catch (...) {
+		delete[] data;
+		throw;
+	}
 
-	// Finish
-	progress->Destroy();
 	if (canceled) {
 		file_cache.Close();
 		delete[] data;

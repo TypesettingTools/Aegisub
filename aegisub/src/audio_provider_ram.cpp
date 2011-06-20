@@ -87,20 +87,18 @@ RAMAudioProvider::RAMAudioProvider(AudioProvider *source) {
 
 	// Start progress
 	volatile bool canceled = false;
-	DialogProgress *progress = new DialogProgress(AegisubApp::Get()->frame,_("Load audio"),&canceled,_("Reading into RAM"),0,source->GetNumSamples());
-	progress->Show();
-	progress->SetProgress(0,1);
+	DialogProgress progress(AegisubApp::Get()->frame,_("Load audio"),&canceled,_("Reading into RAM"),0,source->GetNumSamples());
+	progress.Show();
+	progress.SetProgress(0,1);
 
 	// Read cache
 	int readsize = CacheBlockSize / source->GetBytesPerSample();
 	for (int i=0;i<blockcount && !canceled; i++) {
 		//tempclip->GetAudio((char*)blockcache[i],i*readsize, i == blockcount-1 ? (num_samples - i*readsize) : readsize,env);
 		source->GetAudio((char*)blockcache[i],i*readsize, i == blockcount-1 ? (source->GetNumSamples() - i*readsize) : readsize);
-		progress->SetProgress(i,blockcount-1);
+		progress.SetProgress(i,blockcount-1);
 	}
 
-	// Clean up progress
-	progress->Destroy();
 	if (canceled) {
 		Clear();
 		throw CancelAudioLoadException();
