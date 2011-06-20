@@ -59,7 +59,7 @@ class SrtTagParser {
 		wxString color;
 	};
 
-	enum {
+	enum TagType {
 		// leave 0 unused so indexing an unknown tag in the map won't clash 
 		TAG_BOLD_OPEN = 1,
 		TAG_BOLD_CLOSE,
@@ -75,12 +75,12 @@ class SrtTagParser {
 
 	wxRegEx tag_matcher;
 	wxRegEx attrib_matcher;
-	std::map<wxString,int> tag_name_cases;
+	std::map<wxString,TagType> tag_name_cases;
 
 public:
 	SrtTagParser()
 	: tag_matcher(L"^(.*?)<(/?b|/?i|/?u|/?s|/?font)(.*?)>(.*)$", wxRE_ICASE|wxRE_ADVANCED)
-	, attrib_matcher(L"^[[:space:]](face|size|color)=('.*?'|\".*?\"|[^[:space:]]+)", wxRE_ICASE|wxRE_ADVANCED)
+	, attrib_matcher(L"^[[:space:]]+(face|size|color)=('.*?'|\".*?\"|[^[:space:]]+)", wxRE_ICASE|wxRE_ADVANCED)
 	{
 		if (!tag_matcher.IsValid())
 			throw Aegisub::InternalError(L"Parsing SRT: Failed compiling tag matching regex", 0);
@@ -107,7 +107,7 @@ public:
 		int strikeout_level = 0;
 		std::vector<FontAttribs> font_stack;
 
-		wxString ass; // result to be built
+		wxString ass = L""; // result to be built
 
 		while (!srt.IsEmpty())
 		{
