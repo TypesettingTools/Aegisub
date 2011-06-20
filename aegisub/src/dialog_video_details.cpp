@@ -87,6 +87,8 @@ DialogVideoDetails::DialogVideoDetails(wxWindow *parent)
 	SetSizer(main_sizer);
 
 	CenterOnParent();
+
+	fname_text->SetFocus();
 }
 
 

@@ -103,6 +103,7 @@ DialogJumpTo::DialogJumpTo (wxWindow *parent)
 	SetSizer(MainSizer);
 	MainSizer->SetSizeHints(this);
 	CenterOnParent();
+	JumpFrame->SetFocus();
 	ready = true;
 }
 

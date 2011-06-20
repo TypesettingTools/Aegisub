@@ -357,6 +357,7 @@ DialogStyleEditor::DialogStyleEditor (wxWindow *parent, AssStyle *_style, Subtit
 	// Set sizer
 	MainSizer->SetSizeHints(this);
 	SetSizer(MainSizer);
+	StyleName->SetFocus();
 	LoadPosition();
 }
 

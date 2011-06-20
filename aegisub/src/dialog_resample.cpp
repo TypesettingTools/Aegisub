@@ -121,6 +121,7 @@ DialogResample::DialogResample(wxWindow *parent, SubtitlesGrid *_grid)
 	MainSizer->SetSizeHints(this);
 	SetSizer(MainSizer);
 	CenterOnParent();
+	ResX->SetFocus();
 	instance = this;
 }
 

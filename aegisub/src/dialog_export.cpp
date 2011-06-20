@@ -135,6 +135,7 @@ DialogExport::DialogExport (wxWindow *parent)
 	SetSizer(MainSizer);
 	RefreshOptions();
 	CenterOnParent();
+	FilterList->SetFocus();
 }
 
 

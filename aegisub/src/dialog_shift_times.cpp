@@ -143,6 +143,7 @@ DialogShiftTimes::DialogShiftTimes (wxWindow *parent,SubtitlesGrid *_grid)
 	SetSizer(MainSizer);
 	MainSizer->SetSizeHints(this);
 	CenterOnParent();
+	ShiftTime->SetFocus();
 
 	// Load values from options
 	if (!Options.AsBool(_T("Shift Times ByTime"))) {

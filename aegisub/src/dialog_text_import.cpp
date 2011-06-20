@@ -65,6 +65,7 @@ DialogTextImport::DialogTextImport()
 	main_sizer->Add(CreateSeparatedButtonSizer(wxOK|wxCANCEL), 0, wxALL|wxEXPAND, 5);
 	main_sizer->SetSizeHints(this);
 	SetSizer(main_sizer);
+	edit_separator->SetFocus();
 }
 
 //////////////

@@ -195,6 +195,7 @@ DialogDummyVideo::DialogDummyVideo(wxWindow *parent)
 	main_sizer->SetSizeHints(this);
 	SetSizer(main_sizer);
 	CenterOnParent();
+	resolution_shortcuts->SetFocus();
 }
 
 

@@ -106,6 +106,7 @@ DialogPasteOver::DialogPasteOver (wxWindow *parent)
 	SetSizer(MainSizer);
 	MainSizer->SetSizeHints(this);
 	Center();
+	ListBox->SetFocus();
 }
 
 

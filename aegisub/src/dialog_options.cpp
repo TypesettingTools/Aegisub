@@ -645,6 +645,7 @@ DialogOptions::DialogOptions(wxWindow *parent)
 	mainSizer->SetSizeHints(this);
 	SetSizerAndFit(mainSizer);
 	CenterOnParent();
+	book->SetFocus();
 
 	// Read
 	ReadFromOptions();

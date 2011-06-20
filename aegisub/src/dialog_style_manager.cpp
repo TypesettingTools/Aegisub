@@ -179,6 +179,7 @@ DialogStyleManager::DialogStyleManager (wxWindow *parent,SubtitlesGrid *_grid)
 	// Set sizer
 	SetSizer(MainSizer);
 	MainSizer->SetSizeHints(this);
+	CurrentList->SetFocus();
 
 	// Position window
 	if (lastx == -1 && lasty == -1) {
@@ -464,6 +465,7 @@ void DialogStyleManager::OnStorageEdit (wxCommandEvent &) {
 		}
 	}
 	UpdateMoveButtons();
+	StorageList->SetFocus();
 }
 
 /// @brief Edit style on current script 
@@ -478,6 +480,7 @@ void DialogStyleManager::OnCurrentEdit (wxCommandEvent &) {
 		}
 	}
 	UpdateMoveButtons();
+	CurrentList->SetFocus();
 }
 
 /// @brief Selection on current script changed 
@@ -540,6 +543,7 @@ void DialogStyleManager::OnCopyToStorage (wxCommandEvent &) {
 	}
 	wxCommandEvent dummy;
 	OnStorageChange(dummy);
+	CurrentList->SetFocus();
 }
 
 /// @brief Copy to Current 
@@ -576,6 +580,7 @@ void DialogStyleManager::OnCopyToCurrent (wxCommandEvent &) {
 	grid->CommitChanges();
 	wxCommandEvent dummy;
 	OnCurrentChange(dummy);
+	StorageList->SetFocus();
 }
 
 /// @brief Storage make copy 
@@ -596,6 +601,7 @@ void DialogStyleManager::OnStorageCopy (wxCommandEvent &) {
 		Store.Save(CatalogList->GetString(CatalogList->GetSelection()));
 		LoadStorageStyles();
 		StorageList->SetStringSelection(temp->name); // the copy/delete/copy-to-local buttons stay disabled after this?
+		StorageList->SetFocus();
 	}
 	else delete temp;
 	UpdateMoveButtons();
@@ -618,6 +624,7 @@ void DialogStyleManager::OnCurrentCopy (wxCommandEvent &) {
 		AssFile::top->InsertStyle(temp);
 		LoadCurrentStyles(AssFile::top);
 		CurrentList->SetStringSelection(temp->name); // but even without this, the copy/delete/copy-to-storage buttons stay enabled?
+		CurrentList->SetFocus();
 	}
 	else delete temp;
 
@@ -737,6 +744,7 @@ void DialogStyleManager::OnStorageNew (wxCommandEvent &) {
 		Store.style.push_back(temp);
 		Store.Save(CatalogList->GetString(CatalogList->GetSelection()));
 		LoadStorageStyles();
+		StorageList->SetFocus();
 	}
 	else delete temp;
 	UpdateMoveButtons();
@@ -751,6 +759,7 @@ void DialogStyleManager::OnCurrentNew (wxCommandEvent &) {
 	if (modified) {
 		AssFile::top->InsertStyle(temp);
 		LoadCurrentStyles(AssFile::top);
+		CurrentList->SetFocus();
 	}
 	else delete temp;
 	UpdateMoveButtons();
@@ -785,6 +794,7 @@ void DialogStyleManager::OnStorageDelete (wxCommandEvent &) {
 		StorageEdit->Enable(false);
 		StorageCopy->Enable(false);
 		StorageDelete->Enable(false);
+		StorageList->SetFocus();
 	}
 	UpdateMoveButtons();
 }
@@ -817,6 +827,7 @@ void DialogStyleManager::OnCurrentDelete (wxCommandEvent &) {
 		CurrentEdit->Enable(false);
 		CurrentCopy->Enable(false);
 		CurrentDelete->Enable(false);
+		CurrentList->SetFocus();
 
 		grid->ass->FlagAsModified(_("style delete"));
 		grid->CommitChanges();
@@ -1149,6 +1160,9 @@ void DialogStyleManager::OnKeyDown(wxKeyEvent &event) {
 			}
 
 			break;
+
+		default:
+			event.Skip();
 	}
 }
 //////////////////

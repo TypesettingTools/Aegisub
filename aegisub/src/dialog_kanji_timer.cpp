@@ -776,6 +776,7 @@ DialogKanjiTimer::DialogKanjiTimer(wxWindow *parent, SubtitlesGrid *_grid)
 
 	SetSizerAndFit(MainStackSizer);
 	CenterOnParent();
+	display->SetFocus();
 }
 
 

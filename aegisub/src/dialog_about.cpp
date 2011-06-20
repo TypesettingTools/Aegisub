@@ -174,6 +174,7 @@ AboutScreen::AboutScreen(wxWindow *parent)
 #endif
 	ButtonSizer->SetSizeHints(buttonPanel);
 	buttonPanel->SetSizer(ButtonSizer);
+	SetAffirmativeId(wxID_OK);
 
 	// Main sizer
 	wxSizer *MainSizer = new wxBoxSizer(wxVERTICAL);
@@ -185,6 +186,7 @@ AboutScreen::AboutScreen(wxWindow *parent)
 	// Set sizer
 	MainSizer->SetSizeHints(this);
 	SetSizer(MainSizer);
+	buttonPanel->SetFocus();
 
 	// Draw logo
 	Centre();

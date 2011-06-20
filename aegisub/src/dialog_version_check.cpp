@@ -518,6 +518,7 @@ VersionCheckerResultDialog::VersionCheckerResultDialog(const wxString &main_text
 
 	SetSizerAndFit(outer_sizer);
 	Centre();
+	close_button->SetFocus();
 }
 
 

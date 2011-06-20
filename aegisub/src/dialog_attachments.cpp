@@ -86,6 +86,8 @@ DialogAttachments::DialogAttachments(wxWindow *parent)
 	mainSizer->SetSizeHints(this);
 	SetSizer(mainSizer);
 	CenterOnParent();
+
+	listView->SetFocus();
 }
 
 

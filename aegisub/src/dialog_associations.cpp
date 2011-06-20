@@ -393,6 +393,7 @@ DialogAssociations::DialogAssociations (wxWindow *parent)
 
 	SetSizerAndFit(sizer);
 	CentreOnParent();
+	list->SetFocus();
 }
 
 

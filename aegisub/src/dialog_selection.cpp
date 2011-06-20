@@ -109,9 +109,7 @@ wxDialog (parent,-1,_("Select"),wxDefaultPosition,wxDefaultSize,wxCAPTION)
 	DialogueSizer->Add(MatchComments,0, wxEXPAND);
 	
 	// Buttons sizer
-	wxStdDialogButtonSizer *ButtonSizer = new wxStdDialogButtonSizer();
-	ButtonSizer->AddButton(new wxButton(this,wxID_OK));
-	ButtonSizer->AddButton(new wxButton(this,wxID_CANCEL));
+	wxStdDialogButtonSizer *ButtonSizer = CreateStdDialogButtonSizer(wxOK|wxCANCEL);
 	ButtonSizer->AddButton(new HelpButton(this,_T("Select Lines")));
 	ButtonSizer->Realize();
 
@@ -125,6 +123,7 @@ wxDialog (parent,-1,_("Select"),wxDefaultPosition,wxDefaultSize,wxCAPTION)
 	MainSizer->SetSizeHints(this);
 	SetSizer(MainSizer);
 	CenterOnParent();
+	Match->SetFocus();
 
 	// Load settings
 	Field->SetSelection(Options.AsInt(_T("Select Field")));

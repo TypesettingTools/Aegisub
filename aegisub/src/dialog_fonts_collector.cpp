@@ -149,6 +149,7 @@ DialogFontsCollector::DialogFontsCollector(wxWindow *parent)
 	SetSizer(MainSizer);
 	MainSizer->SetSizeHints(this);
 	CenterOnParent();
+	CollectAction->SetFocus();
 
 	// Run dummy event to update label
 	Update();

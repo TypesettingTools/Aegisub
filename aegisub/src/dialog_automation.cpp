@@ -105,6 +105,8 @@ DialogAutomation::DialogAutomation(wxWindow *parent, Automation4::ScriptManager 
 
 	RebuildList();
 	UpdateDisplay();
+
+	list->SetFocus();
 }
 
 

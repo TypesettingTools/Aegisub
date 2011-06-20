@@ -194,6 +194,8 @@ DialogTimingProcessor::DialogTimingProcessor(wxWindow *parent,SubtitlesGrid *_gr
 
 	CenterOnParent();
 
+	StyleList->SetFocus();
+
 	// Update
 	UpdateControls();
 }

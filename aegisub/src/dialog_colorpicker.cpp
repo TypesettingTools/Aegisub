@@ -669,6 +669,8 @@ DialogColorPicker::DialogColorPicker(wxWindow *parent, wxColour initial_color)
 	SetSizer(main_sizer);
 	main_sizer->SetSizeHints(this);
 
+	ass_input->SetFocus();
+
 	// Position window
 	if (lastx == -1 && lasty == -1) {
 		CenterOnParent();
