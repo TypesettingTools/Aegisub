@@ -79,8 +79,8 @@ class SrtTagParser {
 
 public:
 	SrtTagParser()
-	: tag_matcher(L"^(.*?)<(/?b|/?i|/?u|/?s|/?font)(.*?)>(.*)$", wxRE_ICASE|wxRE_ADVANCED)
-	, attrib_matcher(L"^[[:space:]]+(face|size|color)=('.*?'|\".*?\"|[^[:space:]]+)", wxRE_ICASE|wxRE_ADVANCED)
+	: tag_matcher(L"^(.*?)<(/?b|/?i|/?u|/?s|/?font)([^>]*)>(.*)$", wxRE_ICASE|wxRE_ADVANCED)
+	, attrib_matcher(L"^[[:space:]]+(face|size|color)=('[^']*'|\"[^\"]*\"|[^[:space:]]+)", wxRE_ICASE|wxRE_ADVANCED)
 	{
 		if (!tag_matcher.IsValid())
 			throw Aegisub::InternalError(L"Parsing SRT: Failed compiling tag matching regex", 0);
@@ -184,8 +184,8 @@ public:
 					if (font_stack.size() > 0)
 					{
 						old_attribs = font_stack.back();
-						new_attribs = old_attribs;
 					}
+					new_attribs = old_attribs;
 					// now find all attributes on this font tag
 					while (attrib_matcher.Matches(tag_attrs))
 					{
@@ -239,26 +239,31 @@ public:
 					FontAttribs cur_attribs = font_stack.back();
 					// remove them from the stack
 					font_stack.pop_back();
-					// if there are a previous attrib set, restore to those,
-					// otherwise restore to defaults
+					// grab the old attributes if there are any
+					FontAttribs old_attribs;
 					if (font_stack.size() > 0)
+						old_attribs = font_stack.back();
+					// then restore the attributes to previous settings
+					if (cur_attribs.face != old_attribs.face)
 					{
-						const FontAttribs &old_attribs = font_stack.back();
-						if (cur_attribs.face != old_attribs.face)
-							ass.append(old_attribs.face);
-						if (cur_attribs.size != old_attribs.face)
-							ass.append(old_attribs.size);
-						if (cur_attribs.color != old_attribs.color)
-							ass.append(old_attribs.color);
-					}
-					else
-					{
-						if (!cur_attribs.face.IsEmpty())
+						if (old_attribs.face.IsEmpty())
 							ass.append(L"{\\fn}");
-						if (!cur_attribs.size.IsEmpty())
+						else
+							ass.append(old_attribs.face);
+					}
+					if (cur_attribs.size != old_attribs.size)
+					{
+						if (old_attribs.size.IsEmpty())
 							ass.append(L"{\\fs}");
-						if (!cur_attribs.color.IsEmpty())
+						else
+							ass.append(old_attribs.size);
+					}
+					if (cur_attribs.color != old_attribs.color)
+					{
+						if (old_attribs.color.IsEmpty())
 							ass.append(L"{\\c}");
+						else
+							ass.append(old_attribs.color);
 					}
 				}
 				break;
