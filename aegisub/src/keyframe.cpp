@@ -91,6 +91,7 @@ void KeyFrameFile::Save(wxString filename) {
 	// Write header
 	TextFileWriter file(filename,_T("ASCII"));
 	file.WriteLineToFile(_T("# keyframe format v1"));
+	// Write the "fps" line although we won't be using it ourselves
 	file.WriteLineToFile(wxString::Format(_T("fps %f"),VideoContext::Get()->GetFPS()));
 
 	// Write keyframes
@@ -107,25 +108,11 @@ void KeyFrameFile::Save(wxString filename) {
 // Aegisub keyframes file
 void KeyFrameFile::OpenAegiKeyFrames(TextFileReader& file, wxArrayInt& keyFrames)
 {
-	double fps;
-	wxString cur = file.ReadLineFromFile();
-
-	// Read header
-	if (cur.Left(4) != _T("fps ")) throw _T("Invalid keyframes file, missing FPS.");
-	cur = cur.Mid(4);
-	cur.ToDouble(&fps);
-	if (fps == 0.0) throw _T("Invalid FPS.");
-
-	// Set FPS
-	if (!VideoContext::Get()->IsLoaded()) {
-		VideoContext::Get()->SetFPS(fps);
-		VFR_Input.SetCFR(fps);
-		if (!VFR_Output.IsLoaded()) VFR_Output.SetCFR(fps);
-	}
-
-	// Read lines
+	// This function used to look for an "fps" line first, that part was removed
+	// since keyframe files should not affect the framerate.
+	// That's what timecode files are for.
 	while (file.HasMoreLines()) {
-		cur = file.ReadLineFromFile();
+		wxString cur = file.ReadLineFromFile();
 		if (!cur.IsEmpty() && !cur.StartsWith(_T("#")) && cur.IsNumber()) {
 			long temp;
 			cur.ToLong(&temp);
