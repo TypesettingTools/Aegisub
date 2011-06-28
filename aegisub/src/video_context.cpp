@@ -333,6 +333,7 @@ void VideoContext::AddDisplay(VideoDisplay *display) {
 		if ((*cur) == display) return;
 	}
 	displayList.push_back(display);
+	UpdateDisplays(true);
 }
 
 
