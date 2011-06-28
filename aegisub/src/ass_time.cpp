@@ -151,6 +151,8 @@ int AssTime::GetMS () const {
 }
 
 void AssTime::SetMS (int _ms) {
+	// negative times do not make sense
+	if (_ms < 0) _ms = 0;
 	time = _ms;
 }
 
