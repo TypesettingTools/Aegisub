@@ -1,4 +1,4 @@
-// Copyright (c) 2005, Rodrigo Braz Monteiro
+// Copyright (c) 2009, Niels Martin Hansen
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -29,8 +29,8 @@
 //
 // AEGISUB
 //
-// Website: http://aegisub.cellosoft.com
-// Contact: mailto:zeratul@cellosoft.com
+// Website: http://www.aegisub.org/
+// Contact: mailto:nielsm@aegisub.org
 //
 
 
