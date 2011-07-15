@@ -18,8 +18,6 @@
 /// @brief Hotkey handler
 /// @ingroup hotkey menu event window
 
-#include "config.h"
-
 #ifndef AGI_PRE
 #include <math.h>
 

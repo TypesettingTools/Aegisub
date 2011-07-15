@@ -34,8 +34,6 @@
 /// @ingroup audio_output
 ///
 
-#include "config.h"
-
 #ifdef WITH_OSS
 #ifndef AGI_PRE
 #include <sys/ioctl.h>

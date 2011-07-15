@@ -18,8 +18,6 @@
 /// @brief Dynamic menu and toolbar generator.
 /// @ingroup menu toolbar
 
-#include "config.h"
-
 #ifndef AGI_PRE
 #include <map>
 
