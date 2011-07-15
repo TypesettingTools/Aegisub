@@ -402,7 +402,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\libaegisub\windows\util.cpp"
+				RelativePath="..\..\libaegisub\windows\util_win.cpp"
 				>
 			</File>
 		</Filter>
