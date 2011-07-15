@@ -18,20 +18,23 @@
 /// @brief Option interface.
 /// @ingroup libaegisub
 
+#include "libaegisub/option.h"
+
 #ifndef LAGI_PRE
 #include <fstream>
 #include <sstream>
 #include <map>
 #include <memory>
+#endif
 
 #include "libaegisub/cajun/reader.h"
 #include "libaegisub/cajun/writer.h"
 #include "libaegisub/cajun/elements.h"
-#endif
 
 #include "libaegisub/access.h"
 #include "libaegisub/io.h"
 #include "libaegisub/log.h"
+#include "libaegisub/option_value.h"
 
 #include "option_visit.h"
 

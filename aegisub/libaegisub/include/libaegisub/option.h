@@ -18,13 +18,13 @@
 /// @brief Public interface for option values.
 /// @ingroup libaegisub
 
+#pragma once
 
 #ifndef LAGI_PRE
 #include <fstream>
 #endif
 
 #include <libaegisub/exception.h>
-#include <libaegisub/option_value.h>
 
 namespace json {
 	class Object;
@@ -37,6 +37,7 @@ DEFINE_BASE_EXCEPTION_NOINNER(OptionError,Exception)
 DEFINE_SIMPLE_EXCEPTION_NOINNER(OptionErrorNotFound, OptionError, "options/not_found")
 DEFINE_SIMPLE_EXCEPTION_NOINNER(OptionErrorDuplicateKey, OptionError, "options/dump/duplicate")
 
+class OptionValue;
 
 /// This is a cool trick: make a class un-copyable, in this case we always want
 /// to update our *original* map, this will ensure that it is always updated in

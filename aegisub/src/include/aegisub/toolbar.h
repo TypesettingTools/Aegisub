@@ -24,8 +24,9 @@
 #include <wx/toolbar.h>
 #endif
 
-#include <libaegisub/cajun/elements.h>
 #include <libaegisub/exception.h>
+
+namespace json { class Array; }
 
 namespace toolbar {
 DEFINE_BASE_EXCEPTION_NOINNER(ToolbarError, agi::Exception)

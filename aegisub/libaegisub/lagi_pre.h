@@ -3,12 +3,13 @@
 #include "config.h"
 
 // Common C
-#include <errno.h>
-#include <math.h>
-#include <stdarg.h>
-#include <stdio.h>
+#include <cassert>
+#include <cerrno>
+#include <cmath>
+#include <cstdarg>
+#include <cstdio>
+#include <cstring>
 #include <stdint.h>
-#include <string.h>
 #include <sys/stat.h>
 #ifdef HAVE_SYS_TIME_H
 #  include <sys/time.h>
@@ -30,16 +31,21 @@
 #endif
 
 // Common C++
+#include <algorithm>
 #include <deque>
 #include <climits>
 #include <fstream>
+#include <functional>
 #include <iostream>
 #include <iterator>
+#include <list>
 #include <locale>
 #include <numeric>
 #include <map>
+#include <numeric>
 #include <sstream>
 #include <string>
+#include <vector>
 
 #ifdef _WIN32
 #include <functional>
@@ -56,10 +62,3 @@
 #else
 # include <strstream>
 #endif
-
-// Cajun
-#include "libaegisub/cajun/elements.h"
-#include "libaegisub/cajun/reader.h"
-#include "libaegisub/cajun/visitor.h"
-#include "libaegisub/cajun/writer.h"
-

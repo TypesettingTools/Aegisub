@@ -21,11 +21,11 @@
 #ifndef LAGI_PRE
 #include <fstream>
 #include <time.h>
+#endif
 
 #include "libaegisub/cajun/reader.h"
 #include "libaegisub/cajun/writer.h"
 #include "libaegisub/cajun/elements.h"
-#endif
 
 #include "libaegisub/access.h"
 #include "libaegisub/log.h"

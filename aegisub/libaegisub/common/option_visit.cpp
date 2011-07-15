@@ -26,21 +26,18 @@
 #endif
 
 #include <libaegisub/colour.h>
+#include <libaegisub/option_value.h>
 #include "option_visit.h"
 
 namespace agi {
 
-ConfigVisitor::ConfigVisitor(OptionValueMap &val, const std::string &member_name): values(val) {
-		// Corresponding code is in AddOptionValue()
-		name = member_name +  "/";
+ConfigVisitor::ConfigVisitor(OptionValueMap &val, const std::string &member_name)
+: values(val)
+, name(member_name + "/")
+{
 }
-
-ConfigVisitor::~ConfigVisitor() {
-}
-
 
 void ConfigVisitor::Visit(const json::Object& object) {
-
 	json::Object::const_iterator index(object.Begin()), index_end(object.End());
 
 	for (; index != index_end; ++index) {

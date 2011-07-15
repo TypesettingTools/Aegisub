@@ -19,14 +19,9 @@
 /// @see option_visit.cpp
 /// @ingroup libaegisub
 
-#ifndef LAGI_PRE
+#include "libaegisub/option.h"
 #include "libaegisub/cajun/elements.h"
 #include "libaegisub/cajun/visitor.h"
-#endif
-
-#pragma once
-
-#include "libaegisub/option.h"
 
 namespace agi {
 
@@ -36,7 +31,6 @@ DEFINE_SIMPLE_EXCEPTION_NOINNER(OptionJsonValueSingle, OptionJsonValueError, "op
 DEFINE_SIMPLE_EXCEPTION_NOINNER(OptionJsonValueNull, OptionJsonValueError, "options/value")
 
 class ConfigVisitor : public json::ConstVisitor {
-
 	OptionValueMap &values;
 	std::string name;
 	typedef std::pair<std::string, OptionValue*> OptionValuePair;
@@ -44,9 +38,7 @@ class ConfigVisitor : public json::ConstVisitor {
 	void AddOptionValue(OptionValue* opt);
 
 public:
-
 	ConfigVisitor(OptionValueMap &val, const std::string &member_name);
-	~ConfigVisitor();
 
 	void Visit(const json::Array& array);
 	void Visit(const json::Object& object);

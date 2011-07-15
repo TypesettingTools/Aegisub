@@ -18,12 +18,11 @@
 /// @brief Parse JSON files and return json::UnknownElement
 /// @ingroup libaegisub io
 
-
 #include <libaegisub/cajun/reader.h>
 #include <libaegisub/cajun/elements.h>
 
 namespace agi {
-    namespace json_util {
+	namespace json_util {
 
 /// Parse a JSON stream.
 /// @param stream JSON stream, this is deleted internally.

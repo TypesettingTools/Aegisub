@@ -46,6 +46,7 @@
 #include "aegisublocale.h"
 #include <libaegisub/mru.h>
 #include <libaegisub/option.h>
+#include <libaegisub/option_value.h>
 #include <libaegisub/path.h>
 
 //////////////

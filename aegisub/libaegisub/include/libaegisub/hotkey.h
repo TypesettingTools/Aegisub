@@ -26,8 +26,7 @@
 #include <vector>
 #endif
 
-#include <libaegisub/cajun/elements.h>
-
+namespace json { class Object; }
 
 namespace agi {
 	namespace hotkey {
@@ -125,7 +124,7 @@ private:
 	/// Build hotkey map.
 	/// @param context Context being parsed.
 	/// @param object  json::Object holding items for context being parsed.
-	void BuildHotkey(std::string context, const ::json::Object& object);
+	void BuildHotkey(std::string context, const json::Object& object);
 
 	/// Insert Combo into HotkeyMap instance.
 	/// @param combo Combo to insert.

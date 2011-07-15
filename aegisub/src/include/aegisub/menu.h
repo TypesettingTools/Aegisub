@@ -24,8 +24,9 @@
 #include <wx/menu.h>
 #endif
 
-#include <libaegisub/cajun/elements.h>
 #include <libaegisub/exception.h>
+
+namespace json { class Array; }
 
 namespace menu {
 DEFINE_BASE_EXCEPTION_NOINNER(MenuError, agi::Exception)
