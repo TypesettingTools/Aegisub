@@ -175,6 +175,10 @@ struct audio_save_clip : public Command {
 	STR_DISP("Create audio clip")
 	STR_HELP("Create an audio clip of the selected line")
 
+	bool Validate(const agi::Context *c) {
+		return c->audioController->IsAudioOpen() && !c->selectionController->GetSelectedSet().empty();
+	}
+
 	void operator()(agi::Context *c) {
 		Selection sel = c->selectionController->GetSelectedSet();
 		for (Selection::iterator it = sel.begin(); it != sel.end(); ++it) {

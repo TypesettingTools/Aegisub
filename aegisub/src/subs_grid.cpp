@@ -133,9 +133,9 @@ void SubtitlesGrid::OnCommand(wxCommandEvent& event) {
 		event.Skip();
 }
 
-static inline void append_command(wxMenu &menu, const char *name, bool state) {
+static inline void append_command(wxMenu &menu, const char *name, const agi::Context *context) {
 	cmd::Command *c = cmd::get(name);
-	menu.Append(cmd::id(name), c->StrMenu(), c->StrHelp())->Enable(state);
+	menu.Append(cmd::id(name), c->StrMenu(), c->StrHelp())->Enable(c->Validate(context));
 }
 
 /// @brief Popup menu 
@@ -166,67 +166,51 @@ void SubtitlesGrid::OnPopupMenu(bool alternate) {
 		return;
 	}
 
-	// Get selections
-	bool continuous;
-	wxArrayInt selections = GetSelection(&continuous);
-	int sels = selections.Count();
+	wxMenu menu;
 
-	// Show menu if at least one is selected
-	if (sels > 0) {
-		wxMenu menu;
-		bool state;
+	// Insert
+	append_command(menu, "subtitle/insert/before", context);
+	append_command(menu, "subtitle/insert/after", context);
+	append_command(menu, "subtitle/insert/before/videotime", context);
+	append_command(menu, "subtitle/insert/after/videotime", context);
+	menu.AppendSeparator();
 
-		// Insert
-		state = (sels == 1);
-		append_command(menu, "subtitle/insert/before", state);
-		append_command(menu, "subtitle/insert/after", state);
-		state = (sels == 1 && context->videoController->IsLoaded());
-		append_command(menu, "subtitle/insert/before/videotime", state);
-		append_command(menu, "subtitle/insert/after/videotime", state);
-		menu.AppendSeparator();
+	// Duplicate selection
+	append_command(menu, "edit/line/duplicate", context);
+	append_command(menu, "edit/line/duplicate/shift", context);
 
-		// Duplicate selection
-		append_command(menu, "edit/line/duplicate", state);
-		append_command(menu, "edit/line/duplicate/shift", state);
+	// Swaps selection
+	append_command(menu, "edit/line/swap", context);
 
-		// Swaps selection
-		state = (sels == 2);
-		append_command(menu, "edit/line/swap", state);
+	// Join selection
+	append_command(menu, "edit/line/join/concatenate", context);
+	append_command(menu, "edit/line/join/keep_first", context);
+	append_command(menu, "edit/line/join/as_karaoke", context);
+	menu.AppendSeparator();
 
-		// Join selection
-		state = (sels >= 2 && continuous);
-		append_command(menu, "edit/line/join/concatenate", state);
-		append_command(menu, "edit/line/join/keep_first", state);
-		append_command(menu, "edit/line/join/as_karaoke", state);
-		menu.AppendSeparator();
+	// Adjoin selection
+	append_command(menu, "time/continuous/start", context);
+	append_command(menu, "time/continuous/end", context);
 
-		// Adjoin selection
-		state = (sels >= 1 && continuous);
-		append_command(menu, "time/continuous/start", state);
-		append_command(menu, "time/continuous/end", state);
+	// Recombine selection
+	append_command(menu, "edit/line/recombine", context);
+	menu.AppendSeparator();
 
-		// Recombine selection
-		state = (sels > 1);
-		append_command(menu, "edit/line/recombine", state);
-		menu.AppendSeparator();
-
-		//Make audio clip
-		state = context->audioController->IsAudioOpen();
-		append_command(menu, "audio/save/clip", state);
-		menu.AppendSeparator();
+	//Make audio clip
+	append_command(menu, "audio/save/clip", context);
+	menu.AppendSeparator();
 
 
-		// Copy/cut/paste
-		append_command(menu, "edit/line/copy", true);
-		append_command(menu, "edit/line/cut", true);
-		append_command(menu, "edit/line/paste", true);
-		menu.AppendSeparator();
+	// Copy/cut/paste
+	append_command(menu, "edit/line/copy", context);
+	append_command(menu, "edit/line/cut", context);
+	append_command(menu, "edit/line/paste", context);
+	menu.AppendSeparator();
 
-		// Delete
-		append_command(menu, "edit/line/delete", true);
+	// Delete
+	append_command(menu, "edit/line/delete", context);
 
-		PopupMenu(&menu);
-	}
+	PopupMenu(&menu);
 }
 
 /// @brief Process a show/hide column event 
