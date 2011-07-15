@@ -136,7 +136,7 @@ public:
 	virtual AssDialogue * GetActiveLine() const { return active_line; }
 	virtual void SetSelectedSet(const Selection &new_selection);
 	virtual void GetSelectedSet(Selection &res) const { res = selection; }
-	virtual Selection GetSelectedSet() const { return selection; }
+	virtual Selection const& GetSelectedSet() const { return selection; }
 	virtual void NextLine();
 	virtual void PrevLine();
 

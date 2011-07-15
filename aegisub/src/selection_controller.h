@@ -127,7 +127,7 @@ public:
 
 	/// @brief Obtain the selected set
 	/// @return The selected set
-	virtual Selection GetSelectedSet() const = 0;
+	virtual Selection const& GetSelectedSet() const = 0;
 
 	/// @brief Change the active line to the next in sequence
 	///
