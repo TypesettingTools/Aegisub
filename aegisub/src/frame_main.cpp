@@ -702,6 +702,10 @@ static void validate(wxMenuBar *menu, const agi::Context *c, const char *command
 	menu->Enable(cmd::id(command), cmd::get(command)->Validate(c));
 }
 
+static void check(wxMenuBar *menu, const agi::Context *c, const char *command) {
+	menu->Check(cmd::id(command), cmd::get(command)->IsActive(c));
+}
+
 void FrameMain::OnMenuOpen (wxMenuEvent &event) {
 	wxMenuBar *MenuBar = menu::menu->GetMainMenu();
 
@@ -721,10 +725,9 @@ void FrameMain::OnMenuOpen (wxMenuEvent &event) {
 		else if (showAudio && showVideo) MenuBar->Check(cmd::id("app/display/full"),true);
 		else MenuBar->Check(cmd::id("app/display/audio_subs"),true);
 
-		int sub_grid = OPT_GET("Subtitle/Grid/Hide Overrides")->GetInt();
-		if (sub_grid == 1) MenuBar->Check(cmd::id("grid/tags/show"), true);
-		if (sub_grid == 2) MenuBar->Check(cmd::id("grid/tags/simplify"), true);
-		if (sub_grid == 3) MenuBar->Check(cmd::id("grid/tags/hide"), true);
+		check(MenuBar, context.get(), "grid/tags/show");
+		check(MenuBar, context.get(), "grid/tags/simplify");
+		check(MenuBar, context.get(), "grid/tags/hide");
 	}
 	// Video menu
 	else if (curMenu == menu::menu->GetMenu("main/video")) {
@@ -733,21 +736,13 @@ void FrameMain::OnMenuOpen (wxMenuEvent &event) {
 		validate(MenuBar, context.get(), "keyframe/close");
 		validate(MenuBar, context.get(), "keyframe/save");
 
-		int arType = context->videoController->GetAspectRatioType();
-		MenuBar->Check(cmd::id("video/aspect/default"),false);
-		MenuBar->Check(cmd::id("video/aspect/full"),false);
-		MenuBar->Check(cmd::id("video/aspect/wide"),false);
-		MenuBar->Check(cmd::id("video/aspect/cinematic"),false);
-		MenuBar->Check(cmd::id("video/aspect/custom"),false);
-		switch (arType) {
-			case 0: MenuBar->Check(cmd::id("video/aspect/default"),true); break;
-			case 1: MenuBar->Check(cmd::id("video/aspect/full"),true); break;
-			case 2: MenuBar->Check(cmd::id("video/aspect/wide"),true); break;
-			case 3: MenuBar->Check(cmd::id("video/aspect/cinematic"),true); break;
-			case 4: MenuBar->Check(cmd::id("video/aspect/custom"),true); break;
-		}
+		check(MenuBar, context.get(), "video/aspect/default");
+		check(MenuBar, context.get(), "video/aspect/full");
+		check(MenuBar, context.get(), "video/aspect/wide");
+		check(MenuBar, context.get(), "video/aspect/cinematic");
+		check(MenuBar, context.get(), "video/aspect/custom");
 
-		MenuBar->Check(cmd::id("video/show_overscan"),OPT_GET("Video/Overscan Mask")->GetBool());
+		check(MenuBar, context.get(), "video/show_overscan");
 
 		RebuildRecentList("recent/video", "Video");
 		RebuildRecentList("recent/timecode", "Timecodes");
