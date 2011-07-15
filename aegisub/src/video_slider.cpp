@@ -62,6 +62,10 @@ VideoSlider::VideoSlider (wxWindow* parent, agi::Context *c)
 	slots.push_back(vc->AddSeekListener(&VideoSlider::SetValue, this));
 	slots.push_back(vc->AddVideoOpenListener(&VideoSlider::VideoOpened, this));
 	slots.push_back(vc->AddKeyframesListener(&VideoSlider::KeyframesChanged, this));
+
+	if (vc->IsLoaded()) {
+		VideoOpened();
+	}
 }
 
 void VideoSlider::SetValue(int value) {

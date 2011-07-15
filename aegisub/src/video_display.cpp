@@ -162,6 +162,11 @@ VideoDisplay::VideoDisplay(
 	}
 
 	SetCursor(wxNullCursor);
+
+	if (con->videoController->IsLoaded()) {
+		con->videoController->GetScriptSize(scriptW, scriptH);
+		OnVideoOpen();
+	}
 }
 
 VideoDisplay::~VideoDisplay () {
