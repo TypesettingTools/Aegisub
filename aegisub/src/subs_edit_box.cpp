@@ -631,16 +631,12 @@ void SubsEditBox::OnDurationChange(wxCommandEvent &) {
 }
 void SubsEditBox::OnMarginLChange(wxCommandEvent &) {
 	SetSelectedRows(std::mem_fun(&AssDialogue::SetMarginString<0>), MarginL->GetValue(), _("MarginL change"));
-	AssDialogue *cur = c->subsGrid->GetDialogue(c->subsGrid->GetFirstSelRow());
-	if (cur)
-		MarginL->ChangeValue(cur->GetMarginString(0,false));
+	if (line) MarginL->ChangeValue(line->GetMarginString(0, false));
 }
 
 void SubsEditBox::OnMarginRChange(wxCommandEvent &) {
 	SetSelectedRows(std::mem_fun(&AssDialogue::SetMarginString<1>), MarginR->GetValue(), _("MarginR change"));
-	AssDialogue *cur = c->subsGrid->GetDialogue(c->subsGrid->GetFirstSelRow());
-	if (cur)
-		MarginR->ChangeValue(cur->GetMarginString(1,false));
+	if (line) MarginR->ChangeValue(line->GetMarginString(1, false));
 }
 
 static void set_margin_v(AssDialogue* diag, wxString value) {
@@ -650,9 +646,7 @@ static void set_margin_v(AssDialogue* diag, wxString value) {
 
 void SubsEditBox::OnMarginVChange(wxCommandEvent &) {
 	SetSelectedRows(set_margin_v, MarginV->GetValue(), _("MarginV change"));
-	AssDialogue *cur = c->subsGrid->GetDialogue(c->subsGrid->GetFirstSelRow());
-	if (cur)
-		MarginV->ChangeValue(cur->GetMarginString(2,false));
+	if (line) MarginV->ChangeValue(line->GetMarginString(2, false));
 }
 
 void SubsEditBox::OnEffectChange(wxCommandEvent &) {
