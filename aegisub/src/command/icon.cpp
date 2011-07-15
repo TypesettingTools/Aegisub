@@ -40,31 +40,25 @@ iconMap icon16;
 iconMap icon24;
 
 wxBitmap* get(std::string const& name, const int size) {
-
 	// XXX: This code will go away with dynamic icon generation so I'm not
 	//      concerned about it.
-	if (size == 16) {
+	if (size != 24) {
 		iconMap::iterator index;
 
 		if ((index = icon16.find(name)) != icon16.end()) {
 			return index->second;
 		}
 		printf("icon::get NOT FOUND (%s)\n", name.c_str());
-
-	} else if (size == 24) {
+	}
+	else {
 		iconMap::iterator index;
 
 		if ((index = icon24.find(name)) != icon24.end()) {
 			return index->second;
 		}
 		printf("icon::get NOT FOUND (%s)\n", name.c_str());
-	} else {
-		throw IconInvalid("Valid icon sizes are 16 or 24.");
 	}
-
-
-	wxBitmap *img = new wxBitmap(); // stub to silence compiler warnings.
-	return img;
+	return new wxBitmap();
 }
 
 
