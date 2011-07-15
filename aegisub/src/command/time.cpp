@@ -57,11 +57,38 @@
 
 namespace {
 	using cmd::Command;
+
+	struct validate_video_loaded : public Command {
+		bool Validate(const agi::Context *c) {
+			return c->videoController->IsLoaded();
+		}
+	};
+
+	struct validate_adjoinable : public Command {
+		bool Validate(const agi::Context *c) {
+			SelectionController<AssDialogue>::Selection sel = c->selectionController->GetSelectedSet();
+			if (sel.size() < 2) return false;
+
+			bool found = false;
+			for (entryIter it = c->ass->Line.begin(); it != c->ass->Line.end(); ++it) {
+				AssDialogue *diag = dynamic_cast<AssDialogue*>(*it);
+				if (!diag) continue;
+				if (sel.count(diag)) {
+					found = true;
+				}
+				else if (found) {
+					return false;
+				}
+			}
+			return true;
+		}
+	};
+
 /// @defgroup cmd-time Time manipulation commands.
 /// @{
 
 /// Changes times of subs so end times begin on next's start time.
-struct time_continuous_end : public Command {
+struct time_continuous_end : public validate_adjoinable {
 	CMD_NAME("time/continuous/end")
 	STR_MENU("Change &End")
 	STR_DISP("Change End")
@@ -75,7 +102,7 @@ struct time_continuous_end : public Command {
 
 
 /// Changes times of subs so start times begin on previous's end time.
-struct time_continuous_start : public Command {
+struct time_continuous_start : public validate_adjoinable {
 	CMD_NAME("time/continuous/start")
 	STR_MENU("Change &Start")
 	STR_DISP("Change Start")
@@ -90,7 +117,7 @@ struct time_continuous_start : public Command {
 
 
 /// Shift selection so first selected line starts at current frame.
-struct time_frame_current : public Command {
+struct time_frame_current : public validate_video_loaded {
 	CMD_NAME("time/frame/current")
 	STR_MENU("Shift to Current Frame")
 	STR_DISP("Shift to Current Frame")
@@ -139,7 +166,7 @@ struct time_shift : public Command {
 
 
 /// Set end of selected subtitles to current video frame.
-struct time_snap_end_video : public Command {
+struct time_snap_end_video : public validate_video_loaded {
 	CMD_NAME("time/snap/end_video")
 	STR_MENU("Snap End to Video")
 	STR_DISP("Snap End to Video")
@@ -152,7 +179,7 @@ struct time_snap_end_video : public Command {
 
 
 /// Shift selected subtitles so first selected starts at this frame.
-struct time_snap_frame : public Command {
+struct time_snap_frame : public validate_video_loaded {
 	CMD_NAME("time/snap/frame")
 	STR_MENU("Shift Subtitles to Frame")
 	STR_DISP("Shift Subtitles to Frame")
@@ -181,7 +208,7 @@ struct time_snap_frame : public Command {
 
 
 /// Set start and end of subtitles to the keyframes around current video frame.
-struct time_snap_scene : public Command {
+struct time_snap_scene : public validate_video_loaded {
 	CMD_NAME("time/snap/scene")
 	STR_MENU("Snap to Scene")
 	STR_DISP("Snap to Scene")
@@ -262,7 +289,7 @@ struct time_add_lead_out : public Command {
 
 
 /// Set start of selected subtitles to current video frame.
-struct time_snap_start_video : public Command {
+struct time_snap_start_video : public validate_video_loaded {
 	CMD_NAME("time/snap/start_video")
 	STR_MENU("Snap Start to Video")
 	STR_DISP("Snap Start to Video")

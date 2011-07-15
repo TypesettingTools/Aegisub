@@ -461,28 +461,14 @@ int BaseGrid::GetLastSelRow() const {
 
 
 /// @brief Gets all selected rows 
-/// @param[out] cont Is the selection contiguous, i.e. free from holes
 /// @return Array with indices of selected lines
 ///
-wxArrayInt BaseGrid::GetSelection(bool *cont) const {
-	int last = -1;
-	bool continuous = true;
-
-	std::set<int> sel_row_indices;
-
+wxArrayInt BaseGrid::GetSelection() const {
+	wxArrayInt res(selection.size());
 	for (Selection::const_iterator it = selection.begin(); it != selection.end(); ++it) {
-		sel_row_indices.insert(GetDialogueIndex(*it));
+		res.push_back(GetDialogueIndex(*it));
 	}
-
-	// Iterating the int set yields a sorted list
-	wxArrayInt res;
-	for (std::set<int>::iterator it = sel_row_indices.begin(); it != sel_row_indices.end(); ++it) {
-		res.Add(*it);
-		if (last != -1 && *it != last+1) continuous = false;
-		last = *it;
-	}
-
-	if (cont) *cont = continuous;
+	std::sort(res.begin(), res.end());
 	return res;
 }
 

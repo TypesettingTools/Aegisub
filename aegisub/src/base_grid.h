@@ -158,7 +158,7 @@ public:
 	int GetFirstSelRow() const;
 	int GetLastSelRow() const;
 	void SelectVisible();
-	wxArrayInt GetSelection(bool *continuous=NULL) const;
+	wxArrayInt GetSelection() const;
 
 	void ClearMaps();
 	/// @brief Update the row <-> AssDialogue mappings

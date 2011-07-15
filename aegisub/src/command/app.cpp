@@ -85,6 +85,10 @@ struct app_display_audio_subs : public Command {
 	void operator()(agi::Context *c) {
 		wxGetApp().frame->SetDisplayMode(0,1);
 	}
+
+	bool Validate(const agi::Context *c) {
+		return c->audioController->IsAudioOpen();
+	}
 };
 
 
@@ -97,6 +101,10 @@ struct app_display_full : public Command {
 
 	void operator()(agi::Context *c) {
 		wxGetApp().frame->SetDisplayMode(1,1);
+	}
+
+	bool Validate(const agi::Context *c) {
+		return c->audioController->IsAudioOpen() && c->videoController->IsLoaded() && !c->detachedVideo;
 	}
 };
 
@@ -123,6 +131,10 @@ struct app_display_video_subs : public Command {
 
 	void operator()(agi::Context *c) {
 		wxGetApp().frame->SetDisplayMode(1,0);
+	}
+
+	bool Validate(const agi::Context *c) {
+		return c->videoController->IsLoaded() && !c->detachedVideo;
 	}
 };
 

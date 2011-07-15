@@ -49,18 +49,25 @@
 #include "../audio_timing.h"
 #include "../compat.h"
 #include "../include/aegisub/context.h"
-#include "../selection_controller.h"
 #include "../main.h"
-
-typedef SelectionController<AssDialogue>::Selection Selection;
+#include "../selection_controller.h"
+#include "../video_context.h"
 
 namespace {
+	typedef SelectionController<AssDialogue>::Selection Selection;
 	using cmd::Command;
+
+	struct validate_audio_open : public Command {
+		bool Validate(const agi::Context *c) {
+			return c->audioController->IsAudioOpen();
+		}
+	};
+
 /// @defgroup cmd-audio Audio commands.
 /// @{
 
 /// Closes the currently open audio file.
-struct audio_close : public Command {
+struct audio_close : public validate_audio_open {
 	CMD_NAME("audio/close")
 	STR_MENU("&Close Audio")
 	STR_DISP("Close Audio")
@@ -126,6 +133,10 @@ struct audio_open_video : public Command {
 	STR_DISP("Open Audio from Video")
 	STR_HELP("Opens the audio from the current video file.")
 
+	bool Validate(const agi::Context *c) {
+		return c->videoController->IsLoaded();
+	}
+
 	void operator()(agi::Context *c) {
 		c->audioController->OpenAudio(_T("audio-video:cache"));
 	}
@@ -176,11 +187,12 @@ struct audio_save_clip : public Command {
 };
 
 /// Play the current audio selection
-struct audio_play_selection : public Command {
+struct audio_play_selection : public validate_audio_open {
 	CMD_NAME("audio/play/selection")
 	STR_MENU("Play audio selection")
 	STR_DISP("Play audio selection")
 	STR_HELP("Play selection")
+
 	void operator()(agi::Context *c) {
 		c->audioController->PlayPrimaryRange();
 	}
@@ -192,17 +204,23 @@ struct audio_stop : public Command {
 	STR_MENU("Stop playing")
 	STR_DISP("Stop playing")
 	STR_HELP("Stop")
+
+	bool Validate(const agi::Context *c) {
+		return c->audioController->IsPlaying();
+	}
+
 	void operator()(agi::Context *c) {
 		c->audioController->Stop();
 	}
 };
 
 /// Play 500 ms before the selected audio range
-struct audio_play_before : public Command {
+struct audio_play_before : public validate_audio_open {
 	CMD_NAME("audio/play/selection/before")
 	STR_MENU("Play 500 ms before selection")
 	STR_DISP("Play 500 ms before selection")
 	STR_HELP("Play 500 ms before selection")
+
 	void operator()(agi::Context *c) {
 		SampleRange times(c->audioController->GetPrimaryPlaybackRange());
 		c->audioController->PlayRange(SampleRange(
@@ -212,11 +230,12 @@ struct audio_play_before : public Command {
 };
 
 /// Play 500 ms after the selected audio range
-struct audio_play_after : public Command {
+struct audio_play_after : public validate_audio_open {
 	CMD_NAME("audio/play/selection/after")
 	STR_MENU("Play 500 ms after selection")
 	STR_DISP("Play 500 ms after selection")
 	STR_HELP("Play 500 ms after selection")
+
 	void operator()(agi::Context *c) {
 		SampleRange times(c->audioController->GetPrimaryPlaybackRange());
 		c->audioController->PlayRange(SampleRange(
@@ -226,11 +245,12 @@ struct audio_play_after : public Command {
 };
 
 /// Play from the beginning of the audio range to the end of the file
-struct audio_play_end : public Command {
+struct audio_play_end : public validate_audio_open {
 	CMD_NAME("audio/play/selection/end")
 	STR_MENU("Play last 500 ms of selection")
 	STR_DISP("Play last 500 ms of selection")
 	STR_HELP("Play last 500 ms of selection")
+
 	void operator()(agi::Context *c) {
 		SampleRange times(c->audioController->GetPrimaryPlaybackRange());
 		c->audioController->PlayRange(SampleRange(
@@ -242,11 +262,12 @@ struct audio_play_end : public Command {
 };
 
 /// Play the first 500 ms of the audio range
-struct audio_play_begin : public Command {
+struct audio_play_begin : public validate_audio_open {
 	CMD_NAME("audio/play/selection/begin")
 	STR_MENU("Play first 500 ms of selection")
 	STR_DISP("Play first 500 ms of selection")
 	STR_HELP("Play first 500 ms of selection")
+
 	void operator()(agi::Context *c) {
 		SampleRange times(c->audioController->GetPrimaryPlaybackRange());
 		c->audioController->PlayRange(SampleRange(
@@ -258,11 +279,12 @@ struct audio_play_begin : public Command {
 };
 
 /// Play the last 500 ms of the audio range
-struct audio_play_to_end : public Command {
+struct audio_play_to_end : public validate_audio_open {
 	CMD_NAME("audio/play/to_end")
 	STR_MENU("Play from selection start to end of file")
 	STR_DISP("Play from selection start to end of file")
 	STR_HELP("Play from selection start to end of file")
+
 	void operator()(agi::Context *c) {
 		c->audioController->PlayToEnd(c->audioController->GetPrimaryPlaybackRange().begin());
 	}
@@ -275,6 +297,7 @@ struct audio_commit : public Command {
 	STR_MENU("Commit")
 	STR_DISP("Commit")
 	STR_HELP("Commit")
+
 	void operator()(agi::Context *c) {
 		c->audioController->GetTimingController()->Commit();
 	}
@@ -286,6 +309,7 @@ struct audio_go_to : public Command {
 	STR_MENU("Go to selection")
 	STR_DISP("Go to selection")
 	STR_HELP("Go to selection")
+
 	void operator()(agi::Context *c) {
 		//if (c->audioController->GetTimingController())
 			//audioDisplay->ScrollSampleRangeInView(c->audioController->GetTimingController()->GetIdealVisibleSampleRange());
@@ -302,6 +326,7 @@ struct audio_autoscroll : public Command {
 	STR_MENU("Auto scrolls audio display to selected line")
 	STR_DISP("Auto scrolls audio display to selected line")
 	STR_HELP("Auto scrolls audio display to selected line")
+
 	void operator()(agi::Context *c) {
 		toggle("Audio/Auto/Scroll");
 	}
@@ -313,6 +338,7 @@ struct audio_autocommit : public Command {
 	STR_MENU("Automatically commit all changes")
 	STR_DISP("Automatically commit all changes")
 	STR_HELP("Automatically commit all changes")
+
 	void operator()(agi::Context *c) {
 		toggle("Audio/Auto/Commit");
 	}
@@ -324,6 +350,7 @@ struct audio_autonext : public Command {
 	STR_MENU("Auto goes to next line on commit")
 	STR_DISP("Auto goes to next line on commit")
 	STR_HELP("Auto goes to next line on commit")
+
 	void operator()(agi::Context *c) {
 		toggle("Audio/Next Line on Commit");
 	}
@@ -335,6 +362,7 @@ struct audio_vertical_link : public Command {
 	STR_MENU("Link vertical zoom and volume sliders")
 	STR_DISP("Link vertical zoom and volume sliders")
 	STR_HELP("Link vertical zoom and volume sliders")
+
 	void operator()(agi::Context *c) {
 		toggle("Audio/Link");
 	}
@@ -353,8 +381,10 @@ namespace cmd {
 		reg(new audio_commit);
 		reg(new audio_go_to);
 		reg(new audio_open);
+#if _DEBUG
 		reg(new audio_open_blank);
 		reg(new audio_open_noise);
+#endif
 		reg(new audio_open_video);
 		reg(new audio_play_after);
 		reg(new audio_play_before);

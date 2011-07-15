@@ -188,11 +188,10 @@ void SubtitlesGrid::OnPopupMenu(bool alternate) {
 		// Duplicate selection
 		append_command(menu, "edit/line/duplicate", state);
 		append_command(menu, "edit/line/duplicate/shift", state);
-		append_command(menu, "edit/line/join/as_karaoke", state);
 
 		// Swaps selection
 		state = (sels == 2);
-		//append_command(menu, "MENU_SWAP", state);
+		append_command(menu, "edit/line/swap", state);
 
 		// Join selection
 		state = (sels >= 2 && continuous);

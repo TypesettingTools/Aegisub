@@ -67,6 +67,18 @@ namespace {
 /// @defgroup cmd-subtitle Subtitle commands.
 /// @{
 
+struct validate_nonempty_selection : public Command {
+	bool Validate(const agi::Context *c) {
+		return !c->selectionController->GetSelectedSet().empty();
+	}
+};
+
+struct validate_nonempty_selection_video_loaded : public Command {
+	bool Validate(const agi::Context *c) {
+		return c->videoController->IsLoaded() && !c->selectionController->GetSelectedSet().empty();
+	}
+};
+
 /// Open the attachment list.
 struct subtitle_attachment : public Command {
 	CMD_NAME("subtitle/attachment")
@@ -127,7 +139,7 @@ static void insert_subtitle_at_video(agi::Context *c, bool after) {
 }
 
 /// Inserts a line after current.
-struct subtitle_insert_after : public Command {
+struct subtitle_insert_after : public validate_nonempty_selection {
 	CMD_NAME("subtitle/insert/after")
 	STR_MENU("&After Current")
 	STR_DISP("After Current")
@@ -161,7 +173,7 @@ struct subtitle_insert_after : public Command {
 };
 
 /// Inserts a line after current, starting at video time.
-struct subtitle_insert_after_videotime : public Command {
+struct subtitle_insert_after_videotime : public validate_nonempty_selection_video_loaded {
 	CMD_NAME("subtitle/insert/after/videotime")
 	STR_MENU("After Current, at Video Time")
 	STR_DISP("After Current, at Video Time")
@@ -174,7 +186,7 @@ struct subtitle_insert_after_videotime : public Command {
 
 
 /// Inserts a line before current.
-struct subtitle_insert_before : public Command {
+struct subtitle_insert_before : public validate_nonempty_selection {
 	CMD_NAME("subtitle/insert/before")
 	STR_MENU("&Before Current")
 	STR_DISP("Before Current")
@@ -211,7 +223,7 @@ struct subtitle_insert_before : public Command {
 
 
 /// Inserts a line before current, starting at video time.
-struct subtitle_insert_before_videotime : public Command {
+struct subtitle_insert_before_videotime : public validate_nonempty_selection_video_loaded {
 	CMD_NAME("subtitle/insert/before/videotime")
 	STR_MENU("Before Current, at Video Time")
 	STR_DISP("Before Current, at Video Time")
@@ -285,6 +297,10 @@ struct subtitle_open_video : public Command {
 
 	void operator()(agi::Context *c) {
 		wxGetApp().frame->LoadSubtitles(c->videoController->videoName, "binary");
+	}
+
+	bool Validate(const agi::Context *c) {
+		return c->videoController->IsLoaded() && c->videoController->HasSubtitles();
 	}
 };
 
@@ -376,6 +392,10 @@ struct subtitle_select_visible : public Command {
 	void operator()(agi::Context *c) {
 		c->videoController->Stop();
 		c->subsGrid->SelectVisible();
+	}
+
+	bool Validate(agi::Context *c) {
+		return c->videoController->IsLoaded();
 	}
 };
 

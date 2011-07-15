@@ -66,6 +66,17 @@ namespace cmd {
 		/// Command function
 		virtual void operator()(agi::Context *c)=0;
 
+		/// Check whether or not it makes sense to call this command at this time
+		/// @param c Project context
+		///
+		/// This function should be very fast, as it is called whenever a menu
+		/// containing this command is opened and is called periodically for
+		/// any commands used in a toolbar
+		///
+		/// Note that it is still legal to call commands when this returns
+		/// false. In this situation, commands should do nothing.
+		virtual bool Validate(const agi::Context *c) { return true; }
+
 		/// Destructor
 		virtual ~Command() { };
 	};

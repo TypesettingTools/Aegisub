@@ -62,6 +62,10 @@ struct keyframe_close : public Command {
 	STR_DISP("Close Keyframes")
 	STR_HELP("Closes the currently open keyframes list.")
 
+	bool Validate(const agi::Context *c) {
+		return c->videoController->OverKeyFramesLoaded();
+	}
+
 	void operator()(agi::Context *c) {
 		c->videoController->CloseKeyframes();
 	}
@@ -98,6 +102,10 @@ struct keyframe_save : public Command {
 	STR_MENU("Save Keyframes..")
 	STR_DISP("Save Keyframes")
 	STR_HELP("Saves the current keyframe list.")
+
+	bool Validate(const agi::Context *c) {
+		return c->videoController->KeyFramesLoaded();
+	}
 
 	void operator()(agi::Context *c) {
 		wxString path = lagi_wxString(OPT_GET("Path/Last/Keyframes")->GetString());

@@ -764,15 +764,6 @@ void FrameMain::OnMenuOpen (wxMenuEvent &event) {
 
 	// View menu
 	else if (curMenu == menu::menu->GetMenu("main/view")) {
-		// Flags
-		bool aud = context->audioController->IsAudioOpen();
-		bool vid = context->videoController->IsLoaded() && !context->detachedVideo;
-
-		// Set states
-		MenuBar->Enable(cmd::id("app/display/audio_subs"),aud);
-		MenuBar->Enable(cmd::id("app/display/video_subs"),vid);
-		MenuBar->Enable(cmd::id("app/display/full"),aud && vid);
-
 		// Select option
 		if (!showVideo && !showAudio) MenuBar->Check(cmd::id("app/display/subs"),true);
 		else if (showVideo && !showAudio) MenuBar->Check(cmd::id("app/display/video_subs"),true);
@@ -783,37 +774,14 @@ void FrameMain::OnMenuOpen (wxMenuEvent &event) {
 		if (sub_grid == 1) MenuBar->Check(cmd::id("grid/tags/show"), true);
 		if (sub_grid == 2) MenuBar->Check(cmd::id("grid/tags/simplify"), true);
 		if (sub_grid == 3) MenuBar->Check(cmd::id("grid/tags/hide"), true);
-
-
 	}
-
 	// Video menu
 	else if (curMenu == menu::menu->GetMenu("main/video")) {
-		bool state = context->videoController->IsLoaded();
-		bool attached = state && !context->detachedVideo;
-
 		// Set states
-		MenuBar->Enable(cmd::id("video/jump"),state);
-		MenuBar->Enable(cmd::id("video/jump/start"),state);
-		MenuBar->Enable(cmd::id("video/jump/end"),state);
-		MenuBar->Enable(cmd::id("main/video/set zoom"), attached);
-		MenuBar->Enable(cmd::id("video/zoom/50"),attached);
-		MenuBar->Enable(cmd::id("video/zoom/100"),attached);
-		MenuBar->Enable(cmd::id("video/zoom/200"),attached);
-		MenuBar->Enable(cmd::id("video/close"),state);
-		MenuBar->Enable(cmd::id("main/video/override ar"),attached);
-		MenuBar->Enable(cmd::id("video/aspect/default"),attached);
-		MenuBar->Enable(cmd::id("video/aspect/full"),attached);
-		MenuBar->Enable(cmd::id("video/aspect/wide"),attached);
-		MenuBar->Enable(cmd::id("video/aspect/cinematic"),attached);
-		MenuBar->Enable(cmd::id("video/aspect/custom"),attached);
-		MenuBar->Enable(cmd::id("video/detach"),state);
 		MenuBar->Enable(cmd::id("timecode/save"),context->videoController->TimecodesLoaded());
 		MenuBar->Enable(cmd::id("timecode/close"),context->videoController->OverTimecodesLoaded());
 		MenuBar->Enable(cmd::id("keyframe/close"),context->videoController->OverKeyFramesLoaded());
 		MenuBar->Enable(cmd::id("keyframe/save"),context->videoController->KeyFramesLoaded());
-		MenuBar->Enable(cmd::id("video/details"),state);
-		MenuBar->Enable(cmd::id("video/show_overscan"),state);
 
 		// Set AR radio
 		int arType = context->videoController->GetAspectRatioType();
@@ -861,13 +829,7 @@ void FrameMain::OnMenuOpen (wxMenuEvent &event) {
 
 		// Entries
 		state = count > 0;
-		MenuBar->Enable(cmd::id("subtitle/insert/before"),state);
-		MenuBar->Enable(cmd::id("subtitle/insert/after"),state);
-		MenuBar->Enable(cmd::id("edit/line/split/by_karaoke"),state);
-		MenuBar->Enable(cmd::id("edit/line/delete"),state);
 		state2 = count > 0 && context->videoController->IsLoaded();
-		MenuBar->Enable(cmd::id("subtitle/insert/before/videotime"),state2);
-		MenuBar->Enable(cmd::id("subtitle/insert/after/videotime"),state2);
 		MenuBar->Enable(cmd::id("main/subtitle/insert lines"),state);
 		state = count > 0 && continuous;
 		MenuBar->Enable(cmd::id("edit/line/duplicate"),state);

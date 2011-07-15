@@ -62,6 +62,10 @@ struct timecode_close : public Command {
 	STR_DISP("Close Timecodes File")
 	STR_HELP("Closes the currently open timecodes file.")
 
+	bool Validate(const agi::Context *c) {
+		return c->videoController->OverTimecodesLoaded();
+	}
+
 	void operator()(agi::Context *c) {
 		c->videoController->CloseTimecodes();
 	}
@@ -93,6 +97,10 @@ struct timecode_save : public Command {
 	STR_MENU("Save Timecodes File..")
 	STR_DISP("Save Timecodes File")
 	STR_HELP("Saves a VFR timecodes v2 file.")
+
+	bool Validate(const agi::Context *c) {
+		return c->videoController->TimecodesLoaded();
+	}
 
 	void operator()(agi::Context *c) {
 		wxString path = lagi_wxString(OPT_GET("Path/Last/Timecodes")->GetString());

@@ -58,8 +58,20 @@ namespace {
 /// @defgroup cmd-edit Editing commands.
 /// @{
 
+struct validate_sel_nonempty : public Command {
+	bool Validate(const agi::Context *c) {
+		return c->selectionController->GetSelectedSet().size() > 0;
+	}
+};
+
+struct validate_sel_multiple : public Command {
+	bool Validate(const agi::Context *c) {
+		return c->selectionController->GetSelectedSet().size() > 1;
+	}
+};
+
 /// Copy subtitles.
-struct edit_line_copy : public Command {
+struct edit_line_copy : public validate_sel_nonempty {
 	CMD_NAME("edit/line/copy")
 	STR_MENU("Copy Lines")
 	STR_DISP("Copy Lines")
@@ -76,7 +88,7 @@ struct edit_line_copy : public Command {
 
 
 /// Cut subtitles.
-struct edit_line_cut: public Command {
+struct edit_line_cut: public validate_sel_nonempty {
 	CMD_NAME("edit/line/cut")
 	STR_MENU("Cut Lines")
 	STR_DISP("Cut Lines")
@@ -93,7 +105,7 @@ struct edit_line_cut: public Command {
 
 
 /// Delete currently selected lines.
-struct edit_line_delete : public Command {
+struct edit_line_delete : public validate_sel_nonempty {
 	CMD_NAME("edit/line/delete")
 	STR_MENU("Delete Lines")
 	STR_DISP("Delete Lines")
@@ -106,7 +118,7 @@ struct edit_line_delete : public Command {
 
 
 /// Duplicate the selected lines.
-struct edit_line_duplicate : public Command {
+struct edit_line_duplicate : public validate_sel_nonempty {
 	CMD_NAME("edit/line/duplicate")
 	STR_MENU("&Duplicate Lines")
 	STR_DISP("Duplicate Lines")
@@ -125,6 +137,10 @@ struct edit_line_duplicate_shift : public Command {
 	STR_MENU("&Duplicate and Shift by 1 Frame")
 	STR_DISP("Duplicate and Shift by 1 Frame")
 	STR_HELP("Duplicate lines and shift by one frame.")
+
+	bool Validate(const agi::Context *c) {
+		return !c->selectionController->GetSelectedSet().empty() && c->videoController->IsLoaded();
+	}
 
 	void operator()(agi::Context *c) {
 		wxArrayInt sels = c->subsGrid->GetSelection();
@@ -174,7 +190,7 @@ static void combine_concat(AssDialogue *first, AssDialogue *second) {
 static void combine_drop(AssDialogue *, AssDialogue *) { }
 
 /// Joins selected lines in a single one, as karaoke.
-struct edit_line_join_as_karaoke : public Command {
+struct edit_line_join_as_karaoke : public validate_sel_multiple {
 	CMD_NAME("edit/line/join/as_karaoke")
 	STR_MENU("As &Karaoke")
 	STR_DISP("As Karaoke")
@@ -187,7 +203,7 @@ struct edit_line_join_as_karaoke : public Command {
 
 
 /// Joins selected lines in a single one, concatenating text together.
-struct edit_line_join_concatenate : public Command {
+struct edit_line_join_concatenate : public validate_sel_multiple {
 	CMD_NAME("edit/line/join/concatenate")
 	STR_MENU("&Concatenate")
 	STR_DISP("Concatenate")
@@ -200,7 +216,7 @@ struct edit_line_join_concatenate : public Command {
 
 
 /// Joins selected lines in a single one, keeping text of first and discarding remaining.
-struct edit_line_join_keep_first : public Command {
+struct edit_line_join_keep_first : public validate_sel_multiple {
 	CMD_NAME("edit/line/join/keep_first")
 	STR_MENU("Keep &First")
 	STR_DISP("Keep First")
@@ -219,6 +235,15 @@ struct edit_line_paste : public Command {
 	STR_DISP("Paste Lines")
 	STR_HELP("Paste subtitles.")
 
+	bool Validate(const agi::Context *c) {
+		if (wxTheClipboard->Open()) {
+			bool can_paste = wxTheClipboard->IsSupported(wxDF_TEXT);
+			wxTheClipboard->Close();
+			return can_paste;
+		}
+		return false;
+	}
+
 	void operator()(agi::Context *c) {
 		if (c->parent->FindFocus() == c->editBox->TextEdit) {
 			c->editBox->TextEdit->Paste();
@@ -236,6 +261,15 @@ struct edit_line_paste_over : public Command {
 	STR_DISP("Paste Lines Over")
 	STR_HELP("Paste subtitles over others.")
 
+	bool Validate(const agi::Context *c) {
+		if (wxTheClipboard->Open()) {
+			bool can_paste = wxTheClipboard->IsSupported(wxDF_TEXT);
+			wxTheClipboard->Close();
+			return can_paste && c->selectionController->GetSelectedSet().size();
+		}
+		return false;
+	}
+
 	void operator()(agi::Context *c) {
 		c->subsGrid->PasteLines(c->subsGrid->GetFirstSelRow(),true);
 	}
@@ -243,7 +277,7 @@ struct edit_line_paste_over : public Command {
 
 
 /// Recombine subtitles when they have been split and merged.
-struct edit_line_recombine : public Command {
+struct edit_line_recombine : public validate_sel_multiple {
 	CMD_NAME("edit/line/recombine")
 	STR_MENU("Recombine Lines")
 	STR_DISP("Recombine Lines")
@@ -256,7 +290,7 @@ struct edit_line_recombine : public Command {
 
 
 /// Uses karaoke timing to split line into multiple smaller lines.
-struct edit_line_split_by_karaoke : public Command {
+struct edit_line_split_by_karaoke : public validate_sel_nonempty {
 	CMD_NAME("edit/line/split/by_karaoke")
 	STR_MENU("Split Lines (by karaoke)")
 	STR_DISP("Split Lines (by karaoke)")
@@ -284,6 +318,10 @@ struct edit_line_swap : public Command {
 	STR_DISP("Swap Lines")
 	STR_HELP("Swaps the two selected lines.")
 
+	bool Validate(const agi::Context *c) {
+		return c->selectionController->GetSelectedSet().size() == 2;
+	}
+
 	void operator()(agi::Context *c) {
 		SelectionController<AssDialogue>::Selection sel = c->selectionController->GetSelectedSet();
 		if (sel.size() == 2) {
@@ -304,6 +342,10 @@ struct edit_redo : public Command {
 	STR_MENU("&Redo")
 	STR_DISP("Redo")
 	STR_HELP("Redoes last action.")
+
+	bool Validate(const agi::Context *c) {
+		return !c->ass->IsRedoStackEmpty();
+	}
 
 	void operator()(agi::Context *c) {
 		c->videoController->Stop();
@@ -332,6 +374,10 @@ struct edit_undo : public Command {
 	STR_MENU("&Undo")
 	STR_DISP("Undo")
 	STR_HELP("Undoes last action.")
+
+	bool Validate(const agi::Context *c) {
+		return !c->ass->IsUndoStackEmpty();
+	}
 
 	void operator()(agi::Context *c) {
 		c->videoController->Stop();
