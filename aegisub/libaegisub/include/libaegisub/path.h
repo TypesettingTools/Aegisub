@@ -22,6 +22,7 @@
 #endif
 
 #include <libaegisub/exception.h>
+#include <libaegisub/scoped_ptr.h>
 
 namespace agi {
 
@@ -97,7 +98,7 @@ private:
 	void Encode(std::string &path);
 
 	/// Options object.
-	Options *opt;
+	scoped_ptr<Options> opt;
 
 	/// @brief Locale files
 	/// @return Locale location

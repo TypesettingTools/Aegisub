@@ -22,24 +22,25 @@
 #include <vector>
 #endif
 
+#include "libaegisub/path.h"
+
 #include "libaegisub/access.h"
 #include "libaegisub/log.h"
-#include "libaegisub/path.h"
 #include "libaegisub/option.h"
 #include "libaegisub/option_value.h"
 
 namespace agi {
 
 Path::Path(const std::string &file, const std::string& default_path)
-: path_file(file),
-path_default(default_path) {
-	opt = new agi::Options(file, default_path);
+: path_file(file)
+, path_default(default_path)
+, opt(new agi::Options(file, default_path, Options::FLUSH_SKIP))
+{
 	opt->ConfigUser();
 	LOG_D("agi/path") << "New Path object";
 }
 
 Path::~Path() {
-	opt->Flush();
 }
 
 
@@ -71,7 +72,6 @@ void Path::Set(const char *name, const std::string &path) {
 	} catch (OptionErrorNotFound&) {
 		throw PathErrorNotFound("Invalid path key");
 	}
-
 }
 
 
