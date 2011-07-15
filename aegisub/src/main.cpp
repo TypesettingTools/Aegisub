@@ -334,6 +334,7 @@ int AegisubApp::OnExit() {
 	delete config::mru;
 	delete agi::hotkey::hotkey;
 	delete config::path;
+	delete menu::menu;
 	cmd::clear();
 
 #ifdef WITH_AUTOMATION
