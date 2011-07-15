@@ -85,7 +85,6 @@
 #include "video_slider.h"
 
 enum {
-	ID_TOOLBAR_ZOOM_DROPDOWN				= 11001,
 	ID_APP_TIMER_AUTOSAVE					= 12001,
 	ID_APP_TIMER_STATUSCLEAR				= 12002,
 	ID_MENU_AUTOMATION_MACRO				= 13006,
@@ -250,11 +249,8 @@ void FrameMain::cmd_call(wxCommandEvent& event) {
 
 void FrameMain::InitToolbar () {
 	wxSystemOptions::SetOption("msw.remap", 0);
-	Toolbar = CreateToolBar(wxTB_FLAT | wxTB_HORIZONTAL,-1,"Toolbar");
-
-	toolbar::toolbar->GetToolbar("main", Toolbar);
-
-	Toolbar->Realize();
+	toolbar::AttachToolbar(this, "main", context.get());
+	GetToolBar()->Realize();
 }
 
 void FrameMain::InitMenu() {
@@ -318,30 +314,6 @@ void FrameMain::InitContents() {
 	StartupLog("Set focus to edting box");
 	EditBox->TextEdit->SetFocus();
 	StartupLog("Leaving InitContents");
-}
-
-static void validate_toolbar(wxToolBar *toolbar, const char *command, const agi::Context *context) {
-	toolbar->FindById(cmd::id(command))->Enable(cmd::get(command)->Validate(context));
-}
-
-void FrameMain::UpdateToolbar() {
-	wxToolBar* toolbar = GetToolBar();
-	const agi::Context *c = context.get();
-
-	validate_toolbar(toolbar, "video/jump", c);
-	validate_toolbar(toolbar, "video/zoom/in", c);
-	validate_toolbar(toolbar, "video/zoom/out", c);
-
-	validate_toolbar(toolbar, "video/jump/start", c);
-	validate_toolbar(toolbar, "video/jump/end", c);
-
-	validate_toolbar(toolbar, "time/snap/start_video", c);
-	validate_toolbar(toolbar, "time/snap/end_video", c);
-
-	validate_toolbar(toolbar, "subtitle/select/visible", c);
-	validate_toolbar(toolbar, "time/snap/scene", c);
-	validate_toolbar(toolbar, "time/snap/frame", c);
-	toolbar->Realize();
 }
 
 void FrameMain::LoadSubtitles(wxString filename,wxString charset) {
@@ -427,7 +399,6 @@ void FrameMain::SetDisplayMode(int video, int audio) {
 	TopSizer->Show(videoBox, showVideo, true);
 	ToolsSizer->Show(audioSash, showAudio, true);
 
-	UpdateToolbar();
 	MainSizer->CalcMin();
 	MainSizer->RecalcSizes();
 	MainSizer->Layout();
@@ -535,7 +506,6 @@ void FrameMain::DetachVideo(bool detach) {
 		context->detachedVideo = 0;
 		SetDisplayMode(1,-1);
 	}
-	UpdateToolbar();
 }
 
 void FrameMain::StatusTimeout(wxString text,int ms) {

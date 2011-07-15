@@ -107,7 +107,6 @@ private:
 	bool blockVideoLoad;
 
 	wxPanel *Panel;
-	wxToolBar *Toolbar;  ///< The main toolbar
 	std::vector<Automation4::FeatureMacro*> activeMacroItems;
 
 	int AddMacroMenuItems(wxMenu *menu, const std::vector<Automation4::FeatureMacro*> &macros);
@@ -160,7 +159,6 @@ public:
 	FrameMain(wxArrayString args);
 	~FrameMain();
 
-	void UpdateToolbar();
 	bool HasASSDraw();
 
 	DECLARE_EVENT_TABLE()

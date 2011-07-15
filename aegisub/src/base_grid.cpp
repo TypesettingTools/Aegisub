@@ -687,7 +687,6 @@ void BaseGrid::OnMouseEvent(wxMouseEvent &event) {
 			if (dlg == GetActiveLine()) {
 				SetActiveLine(GetDialogue(GetFirstSelRow()));
 			}
-			wxGetApp().frame->UpdateToolbar();
 			lastRow = row;
 			return;
 		}
@@ -697,7 +696,6 @@ void BaseGrid::OnMouseEvent(wxMouseEvent &event) {
 			SetActiveLine(dlg);
 			if (dclick) context->videoController->JumpToTime(dlg->Start.GetMS());
 			SelectRow(row,false);
-			wxGetApp().frame->UpdateToolbar();
 			lastRow = row;
 			return;
 		}
@@ -725,8 +723,6 @@ void BaseGrid::OnMouseEvent(wxMouseEvent &event) {
 					newsel.insert(GetDialogue(i));
 				}
 				SetSelectedSet(newsel);
-
-				wxGetApp().frame->UpdateToolbar();
 			}
 			return;
 		}

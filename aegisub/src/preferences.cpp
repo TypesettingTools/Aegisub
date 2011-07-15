@@ -44,9 +44,6 @@
 #include "include/aegisub/subtitles_provider.h"
 #include "video_provider_manager.h"
 
-/// Define make all platform-specific options visible in a single view.
-#define SHOW_ALL 1
-
 #include "preferences_base.h"
 
 /// General preferences page
@@ -62,6 +59,9 @@ General::General(wxTreebook *book, Preferences *parent): OptionPage(book, parent
 
 	wxFlexGridSizer *undo = PageSizer(_("Undo / Redo Settings"));
 	OptionAdd(undo, _("Undo Levels"), "Limits/MRU");
+
+	wxFlexGridSizer *toolbar = PageSizer(_("Toolbar Settings"));
+	OptionAdd(toolbar, _("Toolbar Icon Size"), "App/Toolbar Icon Size");
 
 	SetSizerAndFit(sizer);
 }
@@ -335,7 +335,7 @@ Advanced_Audio::Advanced_Audio(wxTreebook *book, Preferences *parent): OptionPag
 
 	OptionAdd(spectrum, _("Cache memory max (MB)"), "Audio/Renderer/Spectrum/Memory Max", 2, 1024);
 
-#if defined(WIN32) || defined(SHOW_ALL)
+#if defined(WIN32) || defined(_DEBUG)
 	wxFlexGridSizer *windows = PageSizer(_("Windows Specific"));
 	const wxString adm_arr[3] = { _T("ConvertToMono"), _T("GetLeftChannel"), _T("GetRightChannel") };
 	wxArrayString adm_choice(3, adm_arr);
@@ -357,7 +357,7 @@ Advanced_Video::Advanced_Video(wxTreebook *book, Preferences *parent): OptionPag
 	OptionChoice(expert, _("Subtitle provider"), sp_choice, "Subtitle/Provider");
 
 
-#if defined(WIN32) || defined(SHOW_ALL)
+#if defined(WIN32) || defined(_DEBUG)
 	wxFlexGridSizer *windows = PageSizer(_("Windows Specific"));
 	OptionAdd(windows, _("Allow pre-2.56a Avisynth"), "Provider/Avisynth/Allow Ancient");
 	CellSkip(windows);

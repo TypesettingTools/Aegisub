@@ -1,4 +1,4 @@
-// Copyright (c) 2010, Amar Takhar <verm@aegisub.org>
+// Copyright (c) 2011, Thomas Goyne <plorkyeran@aegisub.org>
 //
 // Permission to use, copy, modify, and distribute this software for any
 // purpose with or without fee is hereby granted, provided that the above
@@ -19,42 +19,16 @@
 /// @ingroup menu toolbar
 
 #ifndef AGI_PRE
-#include <map>
-
-#include <wx/toolbar.h>
+#include <string>
 #endif
 
-#include <libaegisub/exception.h>
-
-namespace json { class Array; }
+namespace agi { struct Context; }
+class wxFrame;
 
 namespace toolbar {
-DEFINE_BASE_EXCEPTION_NOINNER(ToolbarError, agi::Exception)
-DEFINE_SIMPLE_EXCEPTION_NOINNER(ToolbarJsonValueArray, ToolbarError, "toolbar/value/array")
-DEFINE_SIMPLE_EXCEPTION_NOINNER(ToolbarInvalidName, ToolbarError, "toolbar/invalid")
-
-class Toolbar;
-extern Toolbar *toolbar;
-
-class Toolbar {
-public:
-	Toolbar();
-	~Toolbar();
-	void GetToolbar(std::string name, wxToolBar *toolbar);
-
-private:
-	typedef std::map<std::string, wxToolBar*> TbMap;
-	typedef std::pair<std::string, wxToolBar*> TbPair;
-
-	TbMap map;
-
-	enum ToolbarTypes {
-		Standard = 1,
-		Spacer = 100
-	};
-
-	void BuildToolbar(wxToolBar *toolbar, const json::Array& array);
-
-};
-
-} // namespace toolbar
+	/// Add the named toolbar to a window
+	/// @param frame Frame to attach the toolbar to
+	/// @param name Name of the toolbar
+	/// @param context Project context
+	void AttachToolbar(wxFrame *frame, std::string const& name, agi::Context *context);
+}

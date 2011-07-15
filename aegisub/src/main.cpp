@@ -198,9 +198,6 @@ bool AegisubApp::OnInit() {
 	// Generate menus.
 	menu::menu = new menu::Menu();
 
-	// Generate toolbars.
-	toolbar::toolbar = new toolbar::Toolbar();
-
 	// Install assertion handler
 //	wxSetAssertHandler(wxAssertHandler);
 

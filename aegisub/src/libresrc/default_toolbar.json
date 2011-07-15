@@ -1,140 +1,39 @@
 {
-	"main" : [
-		{
-			"type" : 1,
-			"command" : "subtitle/new"
-		},
-		{
-			"type" : 1,
-			"command" : "subtitle/open"
-		},
-		{
-			"type" : 1,
-			"command" : "subtitle/save"
-		},
-		{
-			"type" : 100
-		},
-		{
-			"type" : 1,
-			"command" : "video/jump"
-		},
-		{
-			"type" : 1,
-			"command" : "video/zoom/in"
-		},
-		{
-			"type" : 1,
-			"command" : "video/zoom/out"
-		},
-		{
-			"type" : 1,
-			"command" : "video/jump/start"
-		},
-		{
-			"type" : 1,
-			"command" : "video/jump/end"
-		},
-		{
-			"type" : 100
-		},
-		{
-			"type" : 1,
-			"command" : "time/snap/start_video"
-		},
-		{
-			"type" : 1,
-			"command" : "time/snap/end_video"
-		},
-		{
-			"type" : 1,
-			"command" : "subtitle/select/visible"
-		},
-		{
-			"type" : 1,
-			"command" : "time/snap/scene"
-		},
-		{
-			"type" : 1,
-			"command" : "time/snap/frame"
-		},
-		{
-			"type" : 100
-		},
-		{
-			"type" : 1,
-			"command" : "tool/style/manager"
-		},
-		{
-			"type" : 1,
-			"command" : "subtitle/properties"
-		},
-		{
-			"type" : 1,
-			"command" : "subtitle/attachment"
-		},
-		{
-			"type" : 1,
-			"command" : "tool/font_collector"
-		},
-		{
-			"type" : 100
-		},
-		{
-			"type" : 1,
-			"command" : "am/manager"
-		},
-		{
-			"type" : 100
-		},
-		{
-			"type" : 1,
-			"command" : "tool/assdraw"
-		},
-		{
-			"type" : 100
-		},
-		{
-			"type" : 1,
-			"command" : "time/shift"
-		},
-		{
-			"type" : 1,
-			"command" : "tool/style/assistant"
-		},
-		{
-			"type" : 1,
-			"command" : "tool/translation_assistant"
-		},
-		{
-			"type" : 1,
-			"command" : "tool/resampleres"
-		},
-		{
-			"type" : 1,
-			"command" : "tool/time/postprocess"
-		},
-		{
-			"type" : 1,
-			"command" : "tool/time/kanji"
-		},
-		{
-			"type" : 1,
-			"command" : "subtitle/spellcheck"
-		},
-		{
-			"type" : 100
-		},
-		{
-			"type" : 1,
-			"command" : "app/options"
-		},
-		{
-			"type" : 1,
-			"command" : "grid/tag/cycle_hiding"
-		},
-		{
-			"type" : 100
-		}
-	]
+    "main" : [
+        "subtitle/new",
+        "subtitle/open",
+        "subtitle/save",
+        "",
+        "video/jump",
+        "video/zoom/in",
+        "video/zoom/out",
+        "video/jump/start",
+        "video/jump/end",
+        "",
+        "time/snap/start_video",
+        "time/snap/end_video",
+        "subtitle/select/visible",
+        "time/snap/scene",
+        "time/snap/frame",
+        "",
+        "tool/style/manager",
+        "subtitle/properties",
+        "subtitle/attachment",
+        "tool/font_collector",
+        "",
+        "am/manager",
+        "",
+        "tool/assdraw",
+        "",
+        "time/shift",
+        "tool/style/assistant",
+        "tool/translation_assistant",
+        "tool/resampleres",
+        "tool/time/postprocess",
+        "tool/time/kanji",
+        "subtitle/spellcheck",
+        "",
+        "app/options",
+        "grid/tag/cycle_hiding"
+    ]
 }
