@@ -60,17 +60,15 @@ typedef std::list<AssExportFilter*> FilterList;
 class AssExportFilterChain {
 	friend class AssExporter;
 
-	/// The list of registered filters
-	FilterList Filters;
-
 	/// Get the singleton instance
 	static FilterList *GetFilterList();
-	AssExportFilterChain() { }
 public:
 	/// Register an export filter
 	static void Register(AssExportFilter *filter);
 	/// Unregister an export filter; must have been registered
 	static void Unregister(AssExportFilter *filter);
+	/// Unregister and delete all export filters
+	static void Clear();
 };
 
 /// DOCME

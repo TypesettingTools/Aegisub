@@ -339,6 +339,9 @@ int AegisubApp::OnExit() {
 #ifdef WITH_AUTOMATION
 	delete global_scripts;
 #endif
+
+	AssExportFilterChain::Clear();
+
 #ifdef _DEBUG
 	delete emit_stdout;
 #endif
