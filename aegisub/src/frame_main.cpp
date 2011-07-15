@@ -241,6 +241,8 @@ void FrameMain::cmd_call(wxCommandEvent& event) {
 	LOG_D("event/select") << "Id: " << id;
 	if (id < cmd::count())
 		cmd::call(context.get(), id);
+	else if (id >= ID_MENU_AUTOMATION_MACRO)
+		OnAutomationMacro(event);
 }
 
 /// @brief Initialize toolbar 
