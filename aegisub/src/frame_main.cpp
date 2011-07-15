@@ -346,28 +346,29 @@ void FrameMain::DeInitContents() {
 	HelpButton::ClearPages();
 }
 
+static void validate_toolbar(wxToolBar *toolbar, const char *command, const agi::Context *context) {
+	toolbar->FindById(cmd::id(command))->Enable(cmd::get(command)->Validate(context));
+}
+
 /// @brief Update toolbar 
 void FrameMain::UpdateToolbar() {
-	// Collect flags
-	bool isVideo = context->videoController->IsLoaded();
-	int selRows = SubsGrid->GetNumberSelection();
-
-	// Update
 	wxToolBar* toolbar = GetToolBar();
-	toolbar->FindById(cmd::id("video/jump"))->Enable(isVideo);
-	toolbar->FindById(cmd::id("video/zoom/in"))->Enable(isVideo && !context->detachedVideo);
-	toolbar->FindById(cmd::id("video/zoom/out"))->Enable(isVideo && !context->detachedVideo);
-	ZoomBox->Enable(isVideo && !context->detachedVideo);
+	const agi::Context *c = context.get();
+	ZoomBox->Enable(context->videoController->IsLoaded() && !context->detachedVideo);
 
-	toolbar->FindById(cmd::id("video/jump/start"))->Enable(isVideo && selRows > 0);
-	toolbar->FindById(cmd::id("video/jump/end"))->Enable(isVideo && selRows > 0);
+	validate_toolbar(toolbar, "video/jump", c);
+	validate_toolbar(toolbar, "video/zoom/in", c);
+	validate_toolbar(toolbar, "video/zoom/out", c);
 
-	toolbar->FindById(cmd::id("time/snap/start_video"))->Enable(isVideo && selRows == 1);
-	toolbar->FindById(cmd::id("time/snap/end_video"))->Enable(isVideo && selRows == 1);
+	validate_toolbar(toolbar, "video/jump/start", c);
+	validate_toolbar(toolbar, "video/jump/end", c);
 
-	toolbar->FindById(cmd::id("subtitle/select/visible"))->Enable(isVideo);
-	toolbar->FindById(cmd::id("time/snap/scene"))->Enable(isVideo && selRows > 0);
-	toolbar->FindById(cmd::id("time/snap/frame"))->Enable(isVideo && selRows > 0);
+	validate_toolbar(toolbar, "time/snap/start_video", c);
+	validate_toolbar(toolbar, "time/snap/end_video", c);
+
+	validate_toolbar(toolbar, "subtitle/select/visible", c);
+	validate_toolbar(toolbar, "time/snap/scene", c);
+	validate_toolbar(toolbar, "time/snap/frame", c);
 	toolbar->Realize();
 }
 
@@ -745,6 +746,10 @@ void FrameMain::RebuildRecentList(const char *root_command, const char *mru_name
 	}
 }
 
+static void validate(wxMenuBar *menu, const agi::Context *c, const char *command) {
+	menu->Enable(cmd::id(command), cmd::get(command)->Validate(c));
+}
+
 /// @brief Menu is being opened 
 /// @param event 
 void FrameMain::OnMenuOpen (wxMenuEvent &event) {
@@ -756,10 +761,8 @@ void FrameMain::OnMenuOpen (wxMenuEvent &event) {
 
 	// File menu
 	if (curMenu == menu::menu->GetMenu("main/file")) {
-		// Rebuild recent
 		RebuildRecentList("recent/subtitle", "Subtitle");
-
-		MenuBar->Enable(cmd::id("subtitle/open/video"),context->videoController->HasSubtitles());
+		validate(MenuBar, context.get(), "subtitle/open/video");
 	}
 
 	// View menu
@@ -777,11 +780,10 @@ void FrameMain::OnMenuOpen (wxMenuEvent &event) {
 	}
 	// Video menu
 	else if (curMenu == menu::menu->GetMenu("main/video")) {
-		// Set states
-		MenuBar->Enable(cmd::id("timecode/save"),context->videoController->TimecodesLoaded());
-		MenuBar->Enable(cmd::id("timecode/close"),context->videoController->OverTimecodesLoaded());
-		MenuBar->Enable(cmd::id("keyframe/close"),context->videoController->OverKeyFramesLoaded());
-		MenuBar->Enable(cmd::id("keyframe/save"),context->videoController->KeyFramesLoaded());
+		validate(MenuBar, context.get(), "timecode/save");
+		validate(MenuBar, context.get(), "timecode/close");
+		validate(MenuBar, context.get(), "keyframe/close");
+		validate(MenuBar, context.get(), "keyframe/save");
 
 		// Set AR radio
 		int arType = context->videoController->GetAspectRatioType();
@@ -809,61 +811,33 @@ void FrameMain::OnMenuOpen (wxMenuEvent &event) {
 
 	// Audio menu
 	else if (curMenu == menu::menu->GetMenu("main/audio")) {
-		bool state = context->audioController->IsAudioOpen();
-		bool vidstate = context->videoController->IsLoaded();
-
-		MenuBar->Enable(cmd::id("audio/open/video"),vidstate);
-		MenuBar->Enable(cmd::id("audio/close"),state);
-
-		// Rebuild recent
+		validate(MenuBar, context.get(), "audio/open/video");
+		validate(MenuBar, context.get(), "audio/close");
 		RebuildRecentList("recent/audio", "Audio");
 	}
 
 	// Subtitles menu
 	else if (curMenu == menu::menu->GetMenu("main/subtitle")) {
-		// Variables
-		bool continuous;
-		wxArrayInt sels = SubsGrid->GetSelection(&continuous);
-		int count = sels.Count();
-		bool state,state2;
-
-		// Entries
-		state = count > 0;
-		state2 = count > 0 && context->videoController->IsLoaded();
-		MenuBar->Enable(cmd::id("main/subtitle/insert lines"),state);
-		state = count > 0 && continuous;
-		MenuBar->Enable(cmd::id("edit/line/duplicate"),state);
-		state = count > 0 && continuous && context->videoController->TimecodesLoaded();
-		MenuBar->Enable(cmd::id("edit/line/duplicate/shift"),state);
-		state = count == 2;
-		MenuBar->Enable(cmd::id("edit/line/swap"),state);
-		state = count >= 2 && continuous;
-		MenuBar->Enable(cmd::id("edit/line/join/concatenate"),state);
-		MenuBar->Enable(cmd::id("edit/line/join/keep_first"),state);
-		MenuBar->Enable(cmd::id("edit/line/join/as_karaoke"),state);
-		MenuBar->Enable(cmd::id("main/subtitle/join lines"),state);
-		state = (count == 2 || count == 3) && continuous;
-		MenuBar->Enable(cmd::id("edit/line/recombine"),state);
+		validate(MenuBar, context.get(), "main/subtitle/insert lines");
+		validate(MenuBar, context.get(), "edit/line/duplicate");
+		validate(MenuBar, context.get(), "edit/line/duplicate/shift");
+		validate(MenuBar, context.get(), "edit/line/swap");
+		validate(MenuBar, context.get(), "edit/line/join/concatenate");
+		validate(MenuBar, context.get(), "edit/line/join/keep_first");
+		validate(MenuBar, context.get(), "edit/line/join/as_karaoke");
+		validate(MenuBar, context.get(), "main/subtitle/join lines");
+		validate(MenuBar, context.get(), "edit/line/recombine");
 	}
 
 	// Timing menu
 	else if (curMenu == menu::menu->GetMenu("main/timing")) {
-		// Variables
-		bool continuous;
-		wxArrayInt sels = SubsGrid->GetSelection(&continuous);
-		int count = sels.Count();
+		validate(MenuBar, context.get(), "time/snap/start_video");
+		validate(MenuBar, context.get(), "time/snap/end_video");
+		validate(MenuBar, context.get(), "time/snap/scene");
+		validate(MenuBar, context.get(), "time/frame/current");
 
-		// Video related
-		bool state = context->videoController->IsLoaded();
-		MenuBar->Enable(cmd::id("time/snap/start_video"),state);
-		MenuBar->Enable(cmd::id("time/snap/end_video"),state);
-		MenuBar->Enable(cmd::id("time/snap/scene"),state);
-		MenuBar->Enable(cmd::id("time/frame/current"),state);
-
-		// Other
-		state = count >= 2 && continuous;
-		MenuBar->Enable(cmd::id("time/continuous/start"),state);
-		MenuBar->Enable(cmd::id("time/continuous/end"),state);
+		validate(MenuBar, context.get(), "time/continuous/start");
+		validate(MenuBar, context.get(), "time/continuous/end");
 	}
 
 	// Edit menu
@@ -888,20 +862,10 @@ void FrameMain::OnMenuOpen (wxMenuEvent &event) {
 		item->SetItemLabel(redo_text);
 		item->Enable(!context->ass->IsRedoStackEmpty());
 
-		// Copy/cut/paste
-		wxArrayInt sels = SubsGrid->GetSelection();
-		bool can_copy = (sels.Count() > 0);
-
-		bool can_paste = true;
-		if (wxTheClipboard->Open()) {
-			can_paste = wxTheClipboard->IsSupported(wxDF_TEXT);
-			wxTheClipboard->Close();
-		}
-
-		MenuBar->Enable(cmd::id("edit/line/cut"),can_copy);
-		MenuBar->Enable(cmd::id("edit/line/copy"),can_copy);
-		MenuBar->Enable(cmd::id("edit/line/paste"),can_paste);
-		MenuBar->Enable(cmd::id("edit/line/paste/over"),can_copy&&can_paste);
+		validate(MenuBar, context.get(), "edit/line/cut");
+		validate(MenuBar, context.get(), "edit/line/copy");
+		validate(MenuBar, context.get(), "edit/line/paste");
+		validate(MenuBar, context.get(), "edit/line/paste/over");
 	}
 
 	// Automation menu
