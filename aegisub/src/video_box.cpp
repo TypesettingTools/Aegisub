@@ -78,7 +78,7 @@ static void add_option(wxWindow *parent, wxSizer *sizer, const char *command, co
 	sizer->Add(btn, 0, wxTOP | wxLEFT | wxBOTTOM | wxALIGN_CENTER, 2);
 }
 
-VideoBox::VideoBox(wxWindow *parent, bool isDetached, wxComboBox *zoomBox, agi::Context *context)
+VideoBox::VideoBox(wxWindow *parent, bool isDetached, agi::Context *context)
 : wxPanel (parent,-1)
 , context(context)
 {
@@ -103,6 +103,13 @@ VideoBox::VideoBox(wxWindow *parent, bool isDetached, wxComboBox *zoomBox, agi::
 	// Times of sub relative to video
 	VideoSubsPos = new wxTextCtrl(this,-1,"",wxDefaultPosition,wxSize(110,20),wxTE_READONLY);
 	VideoSubsPos->SetToolTip(_("Time of this frame relative to start and end of current subs."));
+
+	// Zoom box
+	wxArrayString choices;
+	for (int i = 1 ; i <= 24; ++i) {
+		choices.Add(wxString::Format("%g%%", i * 12.5));
+	}
+	zoomBox = new wxComboBox(this, -1, "75%", wxDefaultPosition, wxDefaultSize, choices, wxCB_DROPDOWN);
 
 	// Typesetting buttons
 	visualToolBar = new wxToolBar(this,-1,wxDefaultPosition,wxDefaultSize,wxTB_VERTICAL|wxTB_FLAT|wxTB_NODIVIDER);
@@ -140,6 +147,7 @@ VideoBox::VideoBox(wxWindow *parent, bool isDetached, wxComboBox *zoomBox, agi::
 	videoSliderSizer->Add(videoSlider,1,wxEXPAND|wxLEFT,0);
 	videoBottomSizer->Add(VideoPosition,1,wxLEFT|wxALIGN_CENTER,5);
 	videoBottomSizer->Add(VideoSubsPos,1,wxALIGN_CENTER,0);
+	videoBottomSizer->Add(zoomBox, 0, wxALIGN_CENTER, 5);
 
 	// If we're detached we do want to fill out as much space we can.
 	// But if we're in the main window, the subs grid needs space more than us.

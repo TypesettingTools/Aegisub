@@ -75,7 +75,7 @@ DialogDetachedVideo::DialogDetachedVideo(FrameMain *parent, agi::Context *contex
 	wxPanel *panel = new wxPanel(this,-1,wxDefaultPosition,wxDefaultSize,wxTAB_TRAVERSAL | wxCLIP_CHILDREN);
 	
 	// Video area;
-	videoBox = new VideoBox(panel, true, NULL, context);
+	videoBox = new VideoBox(panel, true, context);
 	videoBox->videoDisplay->SetClientSize(initialDisplaySize);
 
 	// Set sizer

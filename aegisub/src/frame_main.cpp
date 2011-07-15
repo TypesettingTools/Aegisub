@@ -254,17 +254,6 @@ void FrameMain::InitToolbar () {
 
 	toolbar::toolbar->GetToolbar("main", Toolbar);
 
-	wxArrayString choices;
-	for (int i=1;i<=24;i++) {
-		wxString toAdd = wxString::Format("%i",int(i*12.5));
-		if (i%2) toAdd += ".5";
-		toAdd += "%";
-		choices.Add(toAdd);
-	}
-	ZoomBox = new wxComboBox(Toolbar,ID_TOOLBAR_ZOOM_DROPDOWN,"75%",wxDefaultPosition,wxDefaultSize,choices,wxCB_DROPDOWN);
-	Toolbar->AddControl(ZoomBox);
-	Toolbar->AddSeparator();
-
 	Toolbar->Realize();
 }
 
@@ -286,7 +275,7 @@ void FrameMain::InitContents() {
 	Panel = new wxPanel(this,-1,wxDefaultPosition,wxDefaultSize,wxTAB_TRAVERSAL | wxCLIP_CHILDREN);
 
 	StartupLog("Create video box");
-	context->videoBox = videoBox = new VideoBox(Panel, false, ZoomBox, context.get());
+	context->videoBox = videoBox = new VideoBox(Panel, false, context.get());
 	wxBoxSizer *videoSizer = new wxBoxSizer(wxVERTICAL);
 	videoSizer->Add(videoBox , 0, wxEXPAND);
 	videoSizer->AddStretchSpacer(1);
@@ -338,7 +327,6 @@ static void validate_toolbar(wxToolBar *toolbar, const char *command, const agi:
 void FrameMain::UpdateToolbar() {
 	wxToolBar* toolbar = GetToolBar();
 	const agi::Context *c = context.get();
-	ZoomBox->Enable(context->videoController->IsLoaded() && !context->detachedVideo);
 
 	validate_toolbar(toolbar, "video/jump", c);
 	validate_toolbar(toolbar, "video/zoom/in", c);

@@ -62,6 +62,7 @@ class VideoBox : public wxPanel {
 	agi::Context *context;     ///< Project context
 	wxTextCtrl *VideoPosition; ///< Current frame/time
 	wxTextCtrl *VideoSubsPos;  ///< Time relative to the active subtitle line
+	wxComboBox *zoomBox;
 
 	/// Handle a click on the play/pause buttons
 	void OnButton(wxCommandEvent &evt);
@@ -82,7 +83,7 @@ public:
 	/// DOCME
 	VideoSlider *videoSlider;
 
-	VideoBox(wxWindow *parent, bool isDetached, wxComboBox *zoomBox, agi::Context *context);
+	VideoBox(wxWindow *parent, bool isDetached, agi::Context *context);
 };
 
 // IDs

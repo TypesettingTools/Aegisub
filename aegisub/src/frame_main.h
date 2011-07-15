@@ -108,7 +108,6 @@ private:
 
 	wxPanel *Panel;
 	wxToolBar *Toolbar;  ///< The main toolbar
-	wxComboBox *ZoomBox; ///< The video zoom dropdown in the main toolbar
 	std::vector<Automation4::FeatureMacro*> activeMacroItems;
 
 	int AddMacroMenuItems(wxMenu *menu, const std::vector<Automation4::FeatureMacro*> &macros);
