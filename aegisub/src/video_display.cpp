@@ -448,27 +448,20 @@ void VideoDisplay::OnMouseEvent(wxMouseEvent& event) {
 	ShowCursor(activeMode != Video_Mode_Standard);
 }
 void VideoDisplay::OnKeyDown(wxKeyEvent &event) {
-	event.StopPropagation();
-	if (hotkey::check("Video Display", event.GetKeyCode(), event.GetUnicodeKey(), event.GetModifiers()))
-		return;
-
-/*
-	int key = event.GetKeyCode();
-#ifdef __APPLE__
-	Hotkeys.SetPressed(key, event.m_metaDown, event.m_altDown, event.m_shiftDown);
-#else
-	Hotkeys.SetPressed(key, event.m_controlDown, event.m_altDown, event.m_shiftDown);
-#endif
-
-	if      (Hotkeys.IsPressed(L"Visual Tool Default"))          SetMode(Video_Mode_Standard);
-	else if (Hotkeys.IsPressed(L"Visual Tool Drag"))             SetMode(Video_Mode_Drag);
-	else if (Hotkeys.IsPressed(L"Visual Tool Rotate Z"))         SetMode(Video_Mode_Rotate_Z);
-	else if (Hotkeys.IsPressed(L"Visual Tool Rotate X/Y"))       SetMode(Video_Mode_Rotate_XY);
-	else if (Hotkeys.IsPressed(L"Visual Tool Scale"))            SetMode(Video_Mode_Scale);
-	else if (Hotkeys.IsPressed(L"Visual Tool Rectangular Clip")) SetMode(Video_Mode_Clip);
-	else if (Hotkeys.IsPressed(L"Visual Tool Vector Clip"))      SetMode(Video_Mode_Vector_Clip);
-	event.Skip();
-*/
+	/// @todo
+	int kc = event.GetKeyCode();
+	if      (kc == 'A') SetMode(Video_Mode_Standard);
+	else if (kc == 'S') SetMode(Video_Mode_Drag);
+	else if (kc == 'D') SetMode(Video_Mode_Rotate_Z);
+	else if (kc == 'F') SetMode(Video_Mode_Rotate_XY);
+	else if (kc == 'G') SetMode(Video_Mode_Scale);
+	else if (kc == 'H') SetMode(Video_Mode_Clip);
+	else if (kc == 'J') SetMode(Video_Mode_Vector_Clip);
+	else {
+		event.StopPropagation();
+		if (hotkey::check("Video Display", event.GetKeyCode(), event.GetUnicodeKey(), event.GetModifiers()))
+			return;
+	}
 }
 
 
