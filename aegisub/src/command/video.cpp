@@ -85,6 +85,10 @@ struct video_aspect_cinematic : public validator_video_attached {
 	STR_HELP("Forces video to 2.35 aspect ratio.")
 	CMD_TYPE(COMMAND_VALIDATE | COMMAND_RADIO)
 
+	bool IsActive(const agi::Context *c) {
+		return c->videoController->GetAspectRatioType() == 3;
+	}
+
 	void operator()(agi::Context *c) {
 		c->videoController->Stop();
 		c->videoController->SetAspectRatio(3);
@@ -99,6 +103,10 @@ struct video_aspect_custom : public validator_video_attached {
 	STR_DISP("Custom")
 	STR_HELP("Forces video to a custom aspect ratio.")
 	CMD_TYPE(COMMAND_VALIDATE | COMMAND_RADIO)
+
+	bool IsActive(const agi::Context *c) {
+		return c->videoController->GetAspectRatioType() == 4;
+	}
 
 	void operator()(agi::Context *c) {
 		c->videoController->Stop();
@@ -156,6 +164,10 @@ struct video_aspect_default : public validator_video_attached {
 	STR_HELP("Leave video on original aspect ratio.")
 	CMD_TYPE(COMMAND_VALIDATE | COMMAND_RADIO)
 
+	bool IsActive(const agi::Context *c) {
+		return c->videoController->GetAspectRatioType() == 0;
+	}
+
 	void operator()(agi::Context *c) {
 		c->videoController->Stop();
 		c->videoController->SetAspectRatio(0);
@@ -171,6 +183,10 @@ struct video_aspect_full : public validator_video_attached {
 	STR_HELP("Forces video to 4:3 aspect ratio.")
 	CMD_TYPE(COMMAND_VALIDATE | COMMAND_RADIO)
 
+	bool IsActive(const agi::Context *c) {
+		return c->videoController->GetAspectRatioType() == 1;
+	}
+
 	void operator()(agi::Context *c) {
 		c->videoController->Stop();
 		c->videoController->SetAspectRatio(1);
@@ -185,6 +201,10 @@ struct video_aspect_wide : public validator_video_attached {
 	STR_DISP("Widescreen (16:9)")
 	STR_HELP("Forces video to 16:9 aspect ratio.")
 	CMD_TYPE(COMMAND_VALIDATE | COMMAND_RADIO)
+
+	bool IsActive(const agi::Context *c) {
+		return c->videoController->GetAspectRatioType() == 2;
+	}
 
 	void operator()(agi::Context *c) {
 		c->videoController->Stop();
@@ -212,6 +232,10 @@ struct video_detach : public validator_video_loaded {
 	STR_DISP("Detach Video")
 	STR_HELP("Detach video, displaying it in a separate Window.")
 	CMD_TYPE(COMMAND_VALIDATE | COMMAND_TOGGLE)
+
+	bool IsActive(const agi::Context *c) {
+		return !!c->detachedVideo;
+	}
 
 	void operator()(agi::Context *c) {
 		wxGetApp().frame->DetachVideo(!c->detachedVideo);
@@ -479,6 +503,10 @@ struct video_opt_autoscroll : public Command {
 	STR_HELP("Toggle autoscroll of video")
 	CMD_TYPE(COMMAND_TOGGLE)
 
+	bool IsActive(const agi::Context *c) {
+		return OPT_GET("Video/Subtitle Sync")->GetBool();
+	}
+
 	void operator()(agi::Context *c) {
 		OPT_SET("Video/Subtitle Sync")->SetBool(!OPT_GET("Video/Subtitle Sync")->GetBool());
 	}
@@ -516,6 +544,10 @@ struct video_show_overscan : public validator_video_loaded {
 	STR_HELP("Show a mask over the video, indicating areas that might get cropped off by overscan on televisions.")
 	CMD_TYPE(COMMAND_VALIDATE | COMMAND_TOGGLE)
 
+	bool IsActive(const agi::Context *c) {
+		return OPT_GET("Video/Overscan Mask")->GetBool();
+	}
+
 	void operator()(agi::Context *c) {
 		OPT_SET("Video/Overscan Mask")->SetBool(!OPT_GET("Video/Overscan Mask")->GetBool());
 		c->videoBox->videoDisplay->Render();
@@ -530,6 +562,10 @@ public:
 	STR_DISP("100%")
 	STR_HELP("Set zoom to 100%.")
 	CMD_TYPE(COMMAND_VALIDATE | COMMAND_RADIO)
+
+	bool IsActive(const agi::Context *c) {
+		return c->videoBox->videoDisplay->GetZoom() == 1.;
+	}
 
 	void operator()(agi::Context *c) {
 		c->videoController->Stop();
@@ -559,6 +595,10 @@ public:
 	STR_HELP("Set zoom to 200%.")
 	CMD_TYPE(COMMAND_VALIDATE | COMMAND_RADIO)
 
+	bool IsActive(const agi::Context *c) {
+		return c->videoBox->videoDisplay->GetZoom() == 2.;
+	}
+
 	void operator()(agi::Context *c) {
 		c->videoController->Stop();
 		c->videoBox->videoDisplay->SetZoom(2.);
@@ -573,6 +613,10 @@ public:
 	STR_DISP("50%")
 	STR_HELP("Set zoom to 50%.")
 	CMD_TYPE(COMMAND_VALIDATE | COMMAND_RADIO)
+
+	bool IsActive(const agi::Context *c) {
+		return c->videoBox->videoDisplay->GetZoom() == .5;
+	}
 
 	void operator()(agi::Context *c) {
 		c->videoController->Stop();

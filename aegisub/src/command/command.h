@@ -109,7 +109,19 @@ namespace cmd {
 		///
 		/// Note that it is still legal to call commands when this returns
 		/// false. In this situation, commands should do nothing.
+		///
+		/// This function should be overridden iff the command's type flags
+		/// include COMMAND_VALIDATE
 		virtual bool Validate(const agi::Context *c) { return true; }
+
+		/// Is the selectable value represented by this command currently selected?
+		/// @param c Project context
+		///
+		/// As with Validate, this function should be very fast.
+		///
+		/// This function should be overridden iff the command's type flags
+		/// include COMMAND_TOGGLE or COMMAND_RADIO
+		virtual bool IsActive(const agi::Context *c) { return false; }
 
 		/// Destructor
 		virtual ~Command() { };
