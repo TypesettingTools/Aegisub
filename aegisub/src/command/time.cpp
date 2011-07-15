@@ -51,6 +51,7 @@
 #include "../audio_timing.h"
 #include "../dialog_shift_times.h"
 #include "../include/aegisub/context.h"
+#include "../main.h"
 #include "../subs_grid.h"
 #include "../video_context.h"
 
@@ -239,7 +240,10 @@ struct time_add_lead_in : public Command {
 	STR_DISP("Add lead in")
 	STR_HELP("Add lead in")
 	void operator()(agi::Context *c) {
-		//audioDisplay->AddLead(true,false);
+		if (AssDialogue *line = c->selectionController->GetActiveLine()) {
+			line->Start.SetMS(line->Start.GetMS() - OPT_GET("Audio/Lead/IN")->GetInt());
+			c->ass->Commit(_("add lead in"), AssFile::COMMIT_TIMES);
+		}
 	}
 };
 
@@ -249,7 +253,10 @@ struct time_add_lead_out : public Command {
 	STR_DISP("Add lead out")
 	STR_HELP("Add lead out")
 	void operator()(agi::Context *c) {
-		//audioDisplay->AddLead(false,true);
+		if (AssDialogue *line = c->selectionController->GetActiveLine()) {
+			line->End.SetMS(line->End.GetMS() + OPT_GET("Audio/Lead/OUT")->GetInt());
+			c->ass->Commit(_("add lead out"), AssFile::COMMIT_TIMES);
+		}
 	}
 };
 
