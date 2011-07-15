@@ -112,40 +112,31 @@ OptionValue* Options::Get(const std::string &name) {
 
 
 void Options::Flush() {
-
 	json::Object obj_out;
 
-	bool ok;
-
 	for (OptionValueMap::const_iterator i = values.begin(); i != values.end(); ++i) {
-
 		std::string key = i->first.substr(i->first.rfind("/")+1, i->first.size());
 
-		int type = i->second->GetType();
-
-		switch (type) {
-			case OptionValue::Type_String: {
-				ok = PutOption(obj_out, i->first, (json::String)i->second->GetString());
-			}
-			break;
+		switch (i->second->GetType()) {
+			case OptionValue::Type_String:
+				PutOption(obj_out, i->first, (json::String)i->second->GetString());
+				break;
 
 			case OptionValue::Type_Int:
-				ok = PutOption(obj_out, i->first, (json::Number)(const double)i->second->GetInt());
-			break;
+				PutOption(obj_out, i->first, (json::Number)(const double)i->second->GetInt());
+				break;
 
 			case OptionValue::Type_Double:
-				ok = PutOption(obj_out, i->first, (json::Number)i->second->GetDouble());
-			break;
+				PutOption(obj_out, i->first, (json::Number)i->second->GetDouble());
+				break;
 
-			case OptionValue::Type_Colour: {
-				std::string str = std::string(i->second->GetColour());
-				ok = PutOption(obj_out, i->first, (json::String)str);
-			}
-			break;
+			case OptionValue::Type_Colour:
+				PutOption(obj_out, i->first, (json::String)i->second->GetColour());
+				break;
 
 			case OptionValue::Type_Bool:
-				ok = PutOption(obj_out, i->first, (json::Boolean)i->second->GetBool());
-			break;
+				PutOption(obj_out, i->first, (json::Boolean)i->second->GetBool());
+				break;
 
 			case OptionValue::Type_List_String: {
 				std::vector<std::string> array_string;
@@ -159,7 +150,7 @@ void Options::Flush() {
 					array.Insert(obj);
 				}
 
-				ok = PutOption(obj_out, i->first, (json::Array)array);
+				PutOption(obj_out, i->first, (json::Array)array);
 			}
 			break;
 
@@ -174,7 +165,7 @@ void Options::Flush() {
 					obj["int"] = json::Number((const double)*i_int);
 					array.Insert(obj);
 				}
-				ok = PutOption(obj_out, i->first, (json::Array)array);
+				PutOption(obj_out, i->first, (json::Array)array);
 			}
 			break;
 
@@ -189,7 +180,7 @@ void Options::Flush() {
 					obj["double"] = json::Number(*i_double);
 					array.Insert(obj);
 				}
-				ok = PutOption(obj_out, i->first, (json::Array)array);
+				PutOption(obj_out, i->first, (json::Array)array);
 			}
 			break;
 
@@ -208,7 +199,7 @@ void Options::Flush() {
 
 					array.Insert(obj);
 				}
-				ok = PutOption(obj_out, i->first, (json::Array)array);
+				PutOption(obj_out, i->first, (json::Array)array);
 			}
 			break;
 
@@ -223,7 +214,7 @@ void Options::Flush() {
 					obj["bool"] = json::Boolean(*i_bool);
 					array.Insert(obj);
 				}
-				ok = PutOption(obj_out, i->first, (json::Array)array);
+				PutOption(obj_out, i->first, (json::Array)array);
 			}
 			break;
 		}
@@ -243,7 +234,7 @@ bool Options::PutOption(json::Object &obj, const std::string &path, const json::
 		if (pos != obj.End())
 			throw OptionErrorDuplicateKey("Key already exists");
 
-		obj.Insert(json::Object::Member(path, value));
+		obj[path] = value;
 		return true;
 	} else {
 		std::string thispart = path.substr(0, path.find("/"));
