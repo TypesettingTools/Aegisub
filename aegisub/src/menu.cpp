@@ -100,7 +100,14 @@ wxMenu* Menu::BuildMenu(std::string name, const json::Array& array, int submenu)
 
 
 		std::string cmd_name = type == Menu::Submenu ? name_submenu : command.Value();
-		cmd::Command *cmd = cmd::get(cmd_name);
+		cmd::Command *cmd;
+		try {
+			cmd = cmd::get(cmd_name);
+		}
+		catch (CommandNotFound const&) {
+			LOG_W("menu/command/not_found") << "Command '" << cmd_name << "' not found; skipping";
+			continue;
+		}
 
 		wxString display = cmd->StrMenu() + "\t" + hotkey::get_hotkey_str_first("Default", cmd_name);
 		wxString descr = cmd->StrHelp();

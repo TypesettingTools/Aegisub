@@ -33,6 +33,7 @@
 #endif
 
 #include <libaegisub/json.h>
+#include <libaegisub/log.h>
 #include <libaegisub/signal.h>
 
 namespace {
@@ -105,7 +106,14 @@ namespace {
 					AddSeparator();
 				}
 				else {
-					cmd::Command *command = cmd::get(command_name.Value());
+					cmd::Command *command;
+					try {
+						command = cmd::get(command_name.Value());
+					}
+					catch (CommandNotFound const&) {
+						LOG_W("toolbar/command/not_found") << "Command '" << command_name.Value() << "' not found; skipping";
+						continue;
+					}
 
 					wxBitmap const& bitmap = command->Icon(icon_size);
 					// this hack is needed because ???
