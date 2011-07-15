@@ -55,11 +55,8 @@ Menu::Menu() {
 
 	for (json::Object::const_iterator index(object.Begin()); index != object.End(); index++) {
 		const json::Object::Member& member = *index;
-//		const json::UnknownElement& element = member.element;
-
 		const json::Array& array = member.element;
-		BuildMenu(member.name, array);
-
+		delete BuildMenu(member.name, array);
 	}
 }
 
