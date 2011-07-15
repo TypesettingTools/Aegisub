@@ -73,7 +73,7 @@ struct tool_assdraw : public Command {
 	STR_HELP("Launch ASSDraw3 tool for vector drawing.")
 
 	void operator()(agi::Context *c) {
-		wxExecute(_T("\"") + StandardPaths::DecodePath(_T("?data/ASSDraw3.exe")) + _T("\""));
+		wxExecute("\"" + StandardPaths::DecodePath("?data/ASSDraw3.exe") + "\"");
 	}
 };
 
@@ -207,7 +207,6 @@ struct tool_translation_assistant : public Command {
 
 namespace cmd {
 	void init_tool() {
-		reg(new tool_assdraw);
 		reg(new tool_export);
 		reg(new tool_font_collector);
 		reg(new tool_line_select);
@@ -217,5 +216,10 @@ namespace cmd {
 		reg(new tool_time_kanji);
 		reg(new tool_time_postprocess);
 		reg(new tool_translation_assistant);
+#ifdef __WINDOWS__
+		if (wxFileName::FileExists(StandardPaths::DecodePath("?data/ASSDraw3.exe"))) {
+			reg(new tool_assdraw);
+		}
+#endif
 	}
 }
