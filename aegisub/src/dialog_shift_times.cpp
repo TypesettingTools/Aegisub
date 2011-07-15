@@ -256,7 +256,7 @@ void DialogShiftTimes::OnOK(wxCommandEvent &event) {
 
 	// Shift
 	for (int i=0;i<nrows;i++) {
-		if (allrows || (i >= firstSel && selOnward) || context->subsGrid->IsInSelection(i,0)) {
+		if (allrows || (i >= firstSel && selOnward) || context->subsGrid->IsInSelection(i)) {
 			if (byTime) context->subsGrid->ShiftLineByTime(i,len,type);
 			else context->subsGrid->ShiftLineByFrames(i,len,type);
 			didSomething = true;

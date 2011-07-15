@@ -680,11 +680,10 @@ void SubtitlesGrid::SetVideoToSubs(bool start) {
 /// @return 
 ///
 std::vector<int> SubtitlesGrid::GetAbsoluteSelection() {
-	std::vector<int> result;
-	result.reserve(GetNumberSelection());
+	Selection sel = GetSelectedSet();
 
-	Selection sel;
-	GetSelectedSet(sel);
+	std::vector<int> result;
+	result.reserve(sel.size());
 
 	int line_index = 0;
 	for (entryIter it = context->ass->Line.begin(); it != context->ass->Line.end(); ++it, ++line_index) {

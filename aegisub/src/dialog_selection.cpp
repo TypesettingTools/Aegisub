@@ -270,7 +270,6 @@ void DialogSelection::Process() {
 	// Select for modes 2 and 3
 	if (action == 2 || action == 3) {
 		SubtitleSelectionController::Selection newsel;
-		grid->ClearSelection();
 		int count = sels.Count();
 		for (int i=0;i<count;i++) {
 			newsel.insert(grid->GetDialogue(sels[i]));

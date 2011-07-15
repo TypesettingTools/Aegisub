@@ -67,26 +67,33 @@ typedef SelectionListener<AssDialogue> SubtitleSelectionListener;
 ///
 /// DOCME
 class BaseGrid : public wxWindow, public BaseSelectionController<AssDialogue> {
-	/// DOCME
-	int lineHeight;
-
-	/// DOCME
-	int lastRow;
-
-	/// DOCME
+	int lineHeight;         ///< Height of a line in pixels in the current font
+	int lastRow;            ///< ?
+	bool holding;           ///< Is a drag selection in process?
+	wxFont font;            ///< Current grid font
+	wxScrollBar *scrollBar; ///< The grid's scrollbar
+	wxBitmap *bmp;          ///< Back buffer which the grid is rendered into
+	bool byFrame;           ///< Should times be displayed as frame numbers
+	/// Row from which the selection shrinks/grows from when selecting via the
+	/// keyboard. Equal to the active row except for when using shift+up/down.
 	int extendRow;
 
-	/// DOCME
-	bool holding;
+	Selection selection;      ///< Currently selected lines
+	AssDialogue *active_line; ///< The currently active line or 0 if none
+	std::vector<AssDialogue*> index_line_map;  ///< Row number -> dialogue line
+	std::map<AssDialogue*,int> line_index_map; ///< Dialogue line -> row number
 
-	/// DOCME
-	wxFont font;
-
-	/// DOCME
-	wxScrollBar *scrollBar;
-
-	/// DOCME
-	wxBitmap *bmp;
+	/// Selection batch nesting depth; changes are commited only when this
+	/// hits zero
+	int batch_level;
+	/// Has the active line been changed in the current batch?
+	bool batch_active_line_changed;
+	/// Lines which will be added to the selection when the current batch is
+	/// completed; should be disjoint from selection
+	Selection batch_selection_added;
+	/// Lines which will be removed from the selection when the current batch
+	/// is completed; should be a subset of selection
+	Selection batch_selection_removed;
 
 	void OnPaint(wxPaintEvent &event);
 	void OnSize(wxSizeEvent &event);
@@ -95,36 +102,21 @@ class BaseGrid : public wxWindow, public BaseSelectionController<AssDialogue> {
 	void OnKeyDown(wxKeyEvent &event);
 
 	void DrawImage(wxDC &dc);
-
-	Selection selection;
-	AssDialogue *active_line;
-	std::vector<AssDialogue*> index_line_map;
-	std::map<AssDialogue*,int> line_index_map;
-
-	int batch_level;
-	bool batch_active_line_changed;
-	Selection batch_selection_added;
-	Selection batch_selection_removed;
-
-protected:
-
-	/// DOCME
-	int colWidth[16];
-
-	agi::Context *context;
-
-	/// DOCME
-	static const int columns = 10;
-	bool showCol[columns];
-
-	/// @brief DOCME
-	/// @param alternate
-	///
-	virtual void OnPopupMenu(bool alternate=false) {}
 	void ScrollTo(int y);
 
-	/// DOCME
+	virtual void OnPopupMenu(bool alternate = false) { }
+
+protected:
+	int colWidth[16];      ///< Width in pixels of each column
+	agi::Context *context; ///< Current project context
+
+	static const int columns = 10; ///< Total number of columns
+	bool showCol[columns]; ///< Column visibility mask
+
 	int yPos;
+
+	void AdjustScrollbar();
+	void SetColumnWidths();
 
 	// Re-implement functions from BaseSelectionController to add batching
 	void AnnounceActiveLineChanged(AssDialogue *new_line);
@@ -132,29 +124,21 @@ protected:
 
 public:
 	// SelectionController implementation
-	virtual void SetActiveLine(AssDialogue *new_line);
-	virtual AssDialogue * GetActiveLine() const { return active_line; }
-	virtual void SetSelectedSet(const Selection &new_selection);
-	virtual void GetSelectedSet(Selection &res) const { res = selection; }
-	virtual Selection const& GetSelectedSet() const { return selection; }
-	virtual void NextLine();
-	virtual void PrevLine();
+	void SetActiveLine(AssDialogue *new_line);
+	AssDialogue * GetActiveLine() const { return active_line; }
+	void SetSelectedSet(const Selection &new_selection);
+	void GetSelectedSet(Selection &res) const { res = selection; }
+	Selection const& GetSelectedSet() const { return selection; }
+	void NextLine();
+	void PrevLine();
 
-public:
-	/// DOCME
-	bool byFrame;
-
-	void AdjustScrollbar();
-	void SetColumnWidths();
 	void BeginBatch();
 	void EndBatch();
-	void SetByFrame (bool state);
+	void SetByFrame(bool state);
 
-	void SelectRow(int row, bool addToSelected = false, bool select=true);
-	void ClearSelection();
-	bool IsInSelection(int row, int col=0) const;
 	bool IsDisplayed(const AssDialogue *line) const;
-	int GetNumberSelection() const;
+	void SelectRow(int row, bool addToSelected = false, bool select=true);
+	bool IsInSelection(int row) const;
 	int GetFirstSelRow() const;
 	int GetLastSelRow() const;
 	void SelectVisible();
@@ -167,8 +151,7 @@ public:
 	void UpdateMaps(bool preserve_selected_rows = false);
 	void UpdateStyle();
 
-	int GetRows() const;
-	wxArrayInt GetRangeArray(int n1,int n2) const;
+	int GetRows() const { return index_line_map.size(); }
 	void MakeCellVisible(int row, int col,bool center=true);
 
 	AssDialogue *GetDialogue(int n) const;
@@ -179,14 +162,3 @@ public:
 
 	DECLARE_EVENT_TABLE()
 };
-
-
-///////
-// IDs
-enum {
-
-	/// DOCME
-	GRID_SCROLLBAR = 1730
-};
-
-

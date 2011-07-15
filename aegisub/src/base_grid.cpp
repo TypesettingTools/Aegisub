@@ -62,6 +62,10 @@
 #include "video_context.h"
 #include "video_slider.h"
 
+enum {
+	GRID_SCROLLBAR = 1730
+};
+
 template<class S1, class S2, class D>
 static inline void set_difference(const S1 &src1, const S2 &src2, D &dst) {
 	std::set_difference(
@@ -82,8 +86,8 @@ BaseGrid::BaseGrid(wxWindow* parent, agi::Context *context, const wxSize& size, 
 , context(context)
 , yPos(0)
 , byFrame(false)
+, scrollBar(new wxScrollBar(this, GRID_SCROLLBAR, wxDefaultPosition, wxDefaultSize, wxSB_VERTICAL))
 {
-	scrollBar = new wxScrollBar(this,GRID_SCROLLBAR,wxDefaultPosition,wxDefaultSize,wxSB_VERTICAL);
 	scrollBar->SetScrollbar(0,10,100,10);
 
 	wxBoxSizer *scrollbarpositioner = new wxBoxSizer(wxHORIZONTAL);
@@ -92,7 +96,6 @@ BaseGrid::BaseGrid(wxWindow* parent, agi::Context *context, const wxSize& size, 
 
 	SetSizerAndFit(scrollbarpositioner);
 
-	// Set style
 	UpdateStyle();
 
 	OPT_SUB("Subtitle/Grid/Font Face", &BaseGrid::UpdateStyle, this);
@@ -114,19 +117,14 @@ BaseGrid::BaseGrid(wxWindow* parent, agi::Context *context, const wxSize& size, 
 	OPT_SUB("Subtitle/Grid/Highlight Subtitles in Frame", Refresh);
 }
 
-/// @brief Destructor 
-///
 BaseGrid::~BaseGrid() {
 	ClearMaps();
 	delete bmp;
 }
 
-/// @brief Update style 
-///
 void BaseGrid::UpdateStyle() {
-	// Set font
 	wxString fontname = lagi_wxString(OPT_GET("Subtitle/Grid/Font Face")->GetString());
-	if (fontname.IsEmpty()) fontname = _T("Tahoma");
+	if (fontname.empty()) fontname = "Tahoma";
 	font.SetFaceName(fontname);
 	font.SetPointSize(OPT_GET("Subtitle/Grid/Font Size")->GetInt());
 	font.SetWeight(wxFONTWEIGHT_NORMAL);
@@ -136,15 +134,15 @@ void BaseGrid::UpdateStyle() {
 		wxClientDC dc(this);
 		dc.SetFont(font);
 		int fw,fh;
-		dc.GetTextExtent(_T("#TWFfgGhH"), &fw, &fh, NULL, NULL, &font);
-		lineHeight = fh+4;
+		dc.GetTextExtent("#TWFfgGhH", &fw, &fh, NULL, NULL, &font);
+		lineHeight = fh + 4;
 	}
 
 	// Set column widths
 	std::vector<bool> column_array;
 	OPT_GET("Subtitle/Grid/Column")->GetListBool(column_array);
 	assert(column_array.size() == columns);
-	for (int i=0;i<columns;i++) showCol[i] = column_array[i];
+	for (int i = 0; i < columns; ++i) showCol[i] = column_array[i];
 	SetColumnWidths();
 
 	// Update
@@ -152,10 +150,6 @@ void BaseGrid::UpdateStyle() {
 	Refresh();
 }
 
-
-
-/// @brief Clears grid 
-///
 void BaseGrid::ClearMaps() {
 	Selection old_selection(selection);
 
@@ -168,8 +162,6 @@ void BaseGrid::ClearMaps() {
 	AnnounceSelectedSetChanged(Selection(), old_selection);
 }
 
-/// @brief Update maps 
-///
 void BaseGrid::UpdateMaps(bool preserve_selected_rows) {
 	BeginBatch();
 	int active_row = line_index_map[active_line];
@@ -177,16 +169,15 @@ void BaseGrid::UpdateMaps(bool preserve_selected_rows) {
 	std::vector<int> sel_rows;
 	if (preserve_selected_rows) {
 		sel_rows.reserve(selection.size());
-		std::transform(selection.begin(), selection.end(), std::back_inserter(sel_rows),
-			std::bind1st(std::mem_fun(&BaseGrid::GetDialogueIndex), this));
+		transform(selection.begin(), selection.end(), back_inserter(sel_rows),
+			bind1st(std::mem_fun(&BaseGrid::GetDialogueIndex), this));
 	}
 
 	index_line_map.clear();
 	line_index_map.clear();
 
-	for (entryIter cur=AssFile::top->Line.begin();cur != AssFile::top->Line.end();cur++) {
-		AssDialogue *curdiag = dynamic_cast<AssDialogue*>(*cur);
-		if (curdiag) {
+	for (entryIter cur = context->ass->Line.begin(); cur != context->ass->Line.end(); ++cur) {
+		if (AssDialogue *curdiag = dynamic_cast<AssDialogue*>(*cur)) {
 			line_index_map[curdiag] = (int)index_line_map.size();
 			index_line_map.push_back(curdiag);
 		}
@@ -212,12 +203,12 @@ void BaseGrid::UpdateMaps(bool preserve_selected_rows) {
 	}
 	else {
 		Selection lines;
-		std::copy(index_line_map.begin(), index_line_map.end(), std::inserter(lines, lines.begin()));
+		copy(index_line_map.begin(), index_line_map.end(), inserter(lines, lines.begin()));
 		Selection new_sel;
 		// Remove lines which no longer exist from the selection
 		set_intersection(selection.begin(), selection.end(),
 			lines.begin(), lines.end(),
-			std::inserter(new_sel, new_sel.begin()));
+			inserter(new_sel, new_sel.begin()));
 
 		SetSelectedSet(new_sel);
 	}
@@ -226,7 +217,7 @@ void BaseGrid::UpdateMaps(bool preserve_selected_rows) {
 	// safe to touch the active line while processing a commit event which would
 	// cause this function to be called
 	AssDialogue *line = active_line;
-	active_line = NULL;
+	active_line = 0;
 
 	// The active line may have ceased to exist; pick a new one if so
 	if (line_index_map.size() && line_index_map.find(line) == line_index_map.end()) {
@@ -255,21 +246,10 @@ void BaseGrid::UpdateMaps(bool preserve_selected_rows) {
 	Refresh(false);
 }
 
-
-
-
-/// @brief Begin batch 
-///
 void BaseGrid::BeginBatch() {
-	//Freeze();
-
 	++batch_level;
 }
 
-
-
-/// @brief End batch 
-///
 void BaseGrid::EndBatch() {
 	--batch_level;
 	assert(batch_level >= 0);
@@ -283,37 +263,25 @@ void BaseGrid::EndBatch() {
 		batch_selection_removed.clear();
 	}
 
-	//Thaw();
 	AdjustScrollbar();
 }
 
-
-
-/// @brief Makes cell visible 
-/// @param row    
-/// @param col    
-/// @param center 
-///
-void BaseGrid::MakeCellVisible(int row, int col,bool center) {
-	// Update last row selection
+void BaseGrid::MakeCellVisible(int row, int col, bool center) {
 	lastRow = row;
 
-	// Get size
 	int w = 0;
 	int h = 0;
 	GetClientSize(&w,&h);
-	bool forceCenter = !center;
 
 	// Get min and max visible
 	int minVis = yPos+1;
 	int maxVis = yPos+h/lineHeight-3;
 
 	// Make visible
-	if (forceCenter || row < minVis || row > maxVis) {
+	if (!center || row < minVis || row > maxVis) {
 		if (center) {
 			ScrollTo(row - h/lineHeight/2 + 1);
 		}
-
 		else {
 			if (row < minVis) ScrollTo(row - 1);
 			if (row > maxVis) ScrollTo(row - h/lineHeight + 3);
@@ -321,13 +289,6 @@ void BaseGrid::MakeCellVisible(int row, int col,bool center) {
 	}
 }
 
-
-
-/// @brief Select a row 
-/// @param row           
-/// @param addToSelected 
-/// @param select        
-///
 void BaseGrid::SelectRow(int row, bool addToSelected, bool select) {
 	if (row < 0 || (size_t)row >= index_line_map.size()) return;
 
@@ -337,22 +298,17 @@ void BaseGrid::SelectRow(int row, bool addToSelected, bool select) {
 		Selection sel;
 		if (select) sel.insert(line);
 		SetSelectedSet(sel);
+		return;
 	}
 
-	else if (select && selection.find(line) == selection.end()) {
+	if (select && selection.find(line) == selection.end()) {
 		selection.insert(line);
 
 		Selection added;
 		added.insert(line);
 
 		AnnounceSelectedSetChanged(added, Selection());
-
-		int w = 0;
-		int h = 0;
-		GetClientSize(&w,&h);
-		RefreshRect(wxRect(0,(row+1-yPos)*lineHeight,w,lineHeight),false);
 	}
-
 	else if (!select && selection.find(line) != selection.end()) {
 		selection.erase(line);
 
@@ -360,18 +316,13 @@ void BaseGrid::SelectRow(int row, bool addToSelected, bool select) {
 		removed.insert(line);
 
 		AnnounceSelectedSetChanged(Selection(), removed);
-
-		int w = 0;
-		int h = 0;
-		GetClientSize(&w,&h);
-		RefreshRect(wxRect(0,(row+1-yPos)*lineHeight,w,lineHeight),false);
 	}
+
+	int w, h;
+	GetClientSize(&w, &h);
+	RefreshRect(wxRect(0, (row + 1 - yPos) * lineHeight, w, lineHeight), false);
 }
 
-
-
-/// @brief Selects visible lines 
-///
 void BaseGrid::SelectVisible() {
 	Selection new_selection;
 
@@ -391,52 +342,18 @@ void BaseGrid::SelectVisible() {
 	SetSelectedSet(new_selection);
 }
 
-
-
-/// @brief Unselects all cells 
-///
-void BaseGrid::ClearSelection() {
-	Selection old_selection(selection.begin(), selection.end());
-
-	selection.clear();
-
-	AnnounceSelectedSetChanged(Selection(), old_selection);
+bool BaseGrid::IsInSelection(int row) const {
+	return
+		static_cast<size_t>(row) < line_index_map.size() &&
+		selection.count(index_line_map[row]);
 }
 
-
-
-/// @brief Is cell in selection? 
-/// @param row 
-/// @param col 
-/// @return 
-///
-bool BaseGrid::IsInSelection(int row, int) const {
-	if ((size_t)row >= index_line_map.size() || row < 0) return false;
-
-	return selection.find(index_line_map[row]) != selection.end();
-}
-
-
-
-/// @brief Number of selected rows 
-/// @return 
-///
-int BaseGrid::GetNumberSelection() const {
-	return selection.size();
-}
-
-
-
-/// @brief Gets first selected row index
-/// @return Row index of first selected row, -1 if no selection
-///
 int BaseGrid::GetFirstSelRow() const {
+	if (selection.empty()) return -1;
+
 	Selection::const_iterator it = selection.begin();
 
-	if (it == selection.end()) return -1;
-
 	int index = GetDialogueIndex(*it);
-
 	for (; it != selection.end(); ++it) {
 		int other_index = GetDialogueIndex(*it);
 		if (other_index < index) index = other_index;
@@ -445,11 +362,6 @@ int BaseGrid::GetFirstSelRow() const {
 	return index;
 }
 
-
-
-/// @brief Gets last selected row from first block selection 
-/// @return 
-///
 int BaseGrid::GetLastSelRow() const {
 	int frow = GetFirstSelRow();
 	while (IsInSelection(frow)) {
@@ -458,32 +370,14 @@ int BaseGrid::GetLastSelRow() const {
 	return frow-1;
 }
 
-
-
-/// @brief Gets all selected rows 
-/// @return Array with indices of selected lines
-///
 wxArrayInt BaseGrid::GetSelection() const {
 	wxArrayInt res(selection.size());
-	for (Selection::const_iterator it = selection.begin(); it != selection.end(); ++it) {
-		res.push_back(GetDialogueIndex(*it));
-	}
+	transform(selection.begin(), selection.end(), std::back_inserter(res),
+		bind(&BaseGrid::GetDialogueIndex, this, std::tr1::placeholders::_1));
 	std::sort(res.begin(), res.end());
 	return res;
 }
 
-
-
-/// @brief Get number of rows 
-/// @return 
-///
-int BaseGrid::GetRows() const {
-	return index_line_map.size();
-}
-
-
-///////////////
-// Event table
 BEGIN_EVENT_TABLE(BaseGrid,wxWindow)
 	EVT_PAINT(BaseGrid::OnPaint)
 	EVT_SIZE(BaseGrid::OnSize)
@@ -492,60 +386,39 @@ BEGIN_EVENT_TABLE(BaseGrid,wxWindow)
 	EVT_KEY_DOWN(BaseGrid::OnKeyDown)
 END_EVENT_TABLE()
 
-
-
-/// @brief Paint event 
-/// @param event 
-///
-void BaseGrid::OnPaint (wxPaintEvent &event) {
-	// Prepare
+void BaseGrid::OnPaint(wxPaintEvent &event) {
 	wxPaintDC dc(this);
-	bool direct = false;
 
-	if (direct) {
-		DrawImage(dc);
-	}
-
-	else {
-		// Get size and pos
-		int w = 0;
-		int h = 0;
-		GetClientSize(&w,&h);
-		w -= scrollBar->GetSize().GetWidth();
-
-		// Prepare bitmap
-		if (bmp) {
-			if (bmp->GetWidth() < w || bmp->GetHeight() < h) {
-				delete bmp;
-				bmp = NULL;
-			}
-		}
-		if (!bmp) bmp = new wxBitmap(w,h);
-
-		// Draw bitmap
-		wxMemoryDC bmpDC;
-		bmpDC.SelectObject(*bmp);
-		DrawImage(bmpDC);
-		dc.Blit(0,0,w,h,&bmpDC,0,0);
-	}
-}
-
-
-
-/// @brief Draw image 
-/// @param dc 
-///
-void BaseGrid::DrawImage(wxDC &dc) {
 	// Get size and pos
 	int w = 0;
 	int h = 0;
 	GetClientSize(&w,&h);
 	w -= scrollBar->GetSize().GetWidth();
 
-	// Set font
+	// Prepare bitmap
+	if (bmp) {
+		if (bmp->GetWidth() < w || bmp->GetHeight() < h) {
+			delete bmp;
+			bmp = 0;
+		}
+	}
+	if (!bmp) bmp = new wxBitmap(w,h);
+
+	// Draw bitmap
+	wxMemoryDC bmpDC;
+	bmpDC.SelectObject(*bmp);
+	DrawImage(bmpDC);
+	dc.Blit(0,0,w,h,&bmpDC,0,0);
+}
+
+void BaseGrid::DrawImage(wxDC &dc) {
+	int w = 0;
+	int h = 0;
+	GetClientSize(&w,&h);
+	w -= scrollBar->GetSize().GetWidth();
+
 	dc.SetFont(font);
 
-	// Clear background
 	dc.SetBackground(wxBrush(lagi_wxColour(OPT_GET("Colour/Subtitle Grid/Background/Background")->GetColour())));
 	dc.Clear();
 
@@ -560,39 +433,33 @@ void BaseGrid::DrawImage(wxDC &dc) {
 	int maxH = (nDraw+1) * lineHeight;
 
 	// Row colors
-	std::vector<wxBrush> rowColors;
-	std::vector<wxColor> foreColors;
-	rowColors.push_back(wxBrush(lagi_wxColour(OPT_GET("Colour/Subtitle Grid/Background/Background")->GetColour())));					// 0 = Standard
-	foreColors.push_back(lagi_wxColour(OPT_GET("Colour/Subtitle Grid/Standard")->GetColour()));
-	rowColors.push_back(wxBrush(lagi_wxColour(OPT_GET("Colour/Subtitle Grid/Header")->GetColour())));						// 1 = Header
-	foreColors.push_back(lagi_wxColour(OPT_GET("Colour/Subtitle Grid/Standard")->GetColour()));
-	rowColors.push_back(wxBrush(lagi_wxColour(OPT_GET("Colour/Subtitle Grid/Background/Selection")->GetColour())));		// 2 = Selected
-	foreColors.push_back(lagi_wxColour(OPT_GET("Colour/Subtitle Grid/Selection")->GetColour()));
-	rowColors.push_back(wxBrush(lagi_wxColour(OPT_GET("Colour/Subtitle Grid/Background/Comment")->GetColour())));			// 3 = Commented
-	foreColors.push_back(lagi_wxColour(OPT_GET("Colour/Subtitle Grid/Selection")->GetColour()));
-	rowColors.push_back(wxBrush(lagi_wxColour(OPT_GET("Colour/Subtitle Grid/Background/Inframe")->GetColour())));			// 4 = Video Highlighted
-	foreColors.push_back(lagi_wxColour(OPT_GET("Colour/Subtitle Grid/Selection")->GetColour()));
-	rowColors.push_back(wxBrush(lagi_wxColour(OPT_GET("Colour/Subtitle Grid/Background/Selected Comment")->GetColour())));	// 5 = Commented & selected
-	foreColors.push_back(lagi_wxColour(OPT_GET("Colour/Subtitle Grid/Selection")->GetColour()));
+	wxColour text_standard(lagi_wxColour(OPT_GET("Colour/Subtitle Grid/Standard")->GetColour()));
+	wxColour text_selection(lagi_wxColour(OPT_GET("Colour/Subtitle Grid/Standard")->GetColour()));
+	wxColour text_collision(lagi_wxColour(OPT_GET("Colour/Subtitle Grid/Collision")->GetColour()));
+
+	wxBrush rowColors[] = {
+		wxBrush(lagi_wxColour(OPT_GET("Colour/Subtitle Grid/Background/Background")->GetColour())),
+		wxBrush(lagi_wxColour(OPT_GET("Colour/Subtitle Grid/Header")->GetColour())),
+		wxBrush(lagi_wxColour(OPT_GET("Colour/Subtitle Grid/Background/Selection")->GetColour())),
+		wxBrush(lagi_wxColour(OPT_GET("Colour/Subtitle Grid/Background/Comment")->GetColour())),
+		wxBrush(lagi_wxColour(OPT_GET("Colour/Subtitle Grid/Background/Inframe")->GetColour())),
+		wxBrush(lagi_wxColour(OPT_GET("Colour/Subtitle Grid/Background/Selected Comment")->GetColour())),
+	};
 
 	// First grid row
-	bool drawGrid = true;
-	if (drawGrid) {
-		dc.SetPen(wxPen(lagi_wxColour(OPT_GET("Colour/Subtitle Grid/Lines")->GetColour())));
-		dc.DrawLine(0,0,w,0);
-		dc.SetPen(*wxTRANSPARENT_PEN);
-	}
+	wxPen grid_pen(lagi_wxColour(OPT_GET("Colour/Subtitle Grid/Lines")->GetColour()));
+	dc.SetPen(grid_pen);
+	dc.DrawLine(0, 0, w, 0);
+	dc.SetPen(*wxTRANSPARENT_PEN);
 
 	// Draw rows
-	for (int i=0;i<nDraw+1;i++) {
-		// Prepare
-		int curRow = i+yPos-1;
-		AssDialogue *curDiag = GetDialogue(curRow);
+	for (int i = 0; i < nDraw + 1; i++) {
+		int curRow = i + yPos - 1;
 		int curColor = 0;
 		bool collides = false;
 
-		// Text array
 		wxArrayString strings;
+		strings.reserve(11);
 
 		// Header
 		if (i == 0) {
@@ -608,16 +475,17 @@ void BaseGrid::DrawImage(wxDC &dc) {
 			strings.Add(_("Vert"));
 			strings.Add(_("Text"));
 			curColor = 1;
+			dc.SetTextForeground(text_standard);
 		}
 
 		// Lines
-		else if (curDiag) {
+		else if (AssDialogue *curDiag = GetDialogue(curRow)) {
 			// Set fields
-			strings.Add(wxString::Format("%i",curRow+1));
-			strings.Add(wxString::Format("%i",curDiag->Layer));
+			strings.Add(wxString::Format("%i", curRow + 1));
+			strings.Add(wxString::Format("%i", curDiag->Layer));
 			if (byFrame) {
-				strings.Add(wxString::Format("%i",context->videoController->FrameAtTime(curDiag->Start.GetMS(),agi::vfr::START)));
-				strings.Add(wxString::Format("%i",context->videoController->FrameAtTime(curDiag->End.GetMS(),agi::vfr::END)));
+				strings.Add(wxString::Format("%i", context->videoController->FrameAtTime(curDiag->Start.GetMS(), agi::vfr::START)));
+				strings.Add(wxString::Format("%i", context->videoController->FrameAtTime(curDiag->End.GetMS(), agi::vfr::END)));
 			}
 			else {
 				strings.Add(curDiag->Start.GetASSFormated());
@@ -637,18 +505,22 @@ void BaseGrid::DrawImage(wxDC &dc) {
 			// Hidden overrides
 			if (mode == 1 || mode == 2) {
 				wxString replaceWith = lagi_wxString(OPT_GET("Subtitle/Grid/Hide Overrides Char")->GetString());
-				int textlen = curDiag->Text.Length();
-				int depth = 0;
-				wxChar curChar;
-				for (int j=0;j<textlen;j++) {
-					curChar = curDiag->Text[j];
-					if (curChar == _T('{')) depth = 1;
-					else if (curChar == _T('}')) {
-						depth--;
-						if (depth == 0 && mode == 1) value += replaceWith;
-						else if (depth < 0) depth = 0;
+				size_t textlen = curDiag->Text.size();
+				value.reserve(textlen);
+				bool in_comment = false;
+				for (size_t j = 0; j < textlen; ++j) {
+					wxChar curChar = curDiag->Text[j];
+					if (curChar == '{')
+						in_comment = true;
+					else if (in_comment && curChar == '}') {
+						if (mode == 1) {
+							value += replaceWith;
+						}
+						in_comment = false;
 					}
-					else if (depth != 1) value += curChar;
+					else {
+						value += curChar;
+					}
 				}
 			}
 
@@ -656,24 +528,29 @@ void BaseGrid::DrawImage(wxDC &dc) {
 			else value = curDiag->Text;
 
 			// Cap length and set text
-			if (value.Length() > 512) value = value.Left(512) + _T("...");
+			if (value.size() > 512) value = value.Left(512) + "...";
 			strings.Add(value);
 
 			// Set color
 			curColor = 0;
-			bool inSel = IsInSelection(curRow,0);
+			bool inSel = IsInSelection(curRow);
 			if (inSel && curDiag->Comment) curColor = 5;
 			else if (inSel) curColor = 2;
 			else if (curDiag->Comment) curColor = 3;
 			else if (OPT_GET("Subtitle/Grid/Highlight Subtitles in Frame")->GetBool() && IsDisplayed(curDiag)) curColor = 4;
 
-			if (active_line != curDiag) {
-				collides = curDiag->CollidesWith(active_line);
+			if (active_line != curDiag && curDiag->CollidesWith(active_line)) {
+				dc.SetTextForeground(text_collision);
+			}
+			else if (inSel) {
+				dc.SetTextForeground(text_selection);
+			}
+			else {
+				dc.SetTextForeground(text_standard);
 			}
 		}
-
 		else {
-			strings.resize(11, L"?");
+			strings.resize(11, "?");
 		}
 
 		// Draw row background color
@@ -682,54 +559,38 @@ void BaseGrid::DrawImage(wxDC &dc) {
 			dc.DrawRectangle((curColor == 1) ? 0 : colWidth[0],i*lineHeight+1,w,lineHeight);
 		}
 
-		// Set text color
-		if (collides) dc.SetTextForeground(lagi_wxColour(OPT_GET("Colour/Subtitle Grid/Collision")->GetColour()));
-		else {
-			dc.SetTextForeground(foreColors[curColor]);
-		}
-
 		// Draw text
 		int dx = 0;
 		int dy = i*lineHeight;
-		for (int j=0;j<11;j++) {
-			// Check width
+		for (int j = 0; j < 11; j++) {
 			if (colWidth[j] == 0) continue;
 
-			// Is center?
 			bool isCenter = !(j == 4 || j == 5 || j == 6 || j == 10);
 
-			// Calculate clipping
 			wxRect cur(dx+4,dy,colWidth[j]-6,lineHeight);
-
-			// Set clipping
 			dc.DestroyClippingRegion();
 			dc.SetClippingRegion(cur);
 
-			// Draw
-			dc.DrawLabel(strings[j],cur,isCenter ? wxALIGN_CENTER : (wxALIGN_CENTER_VERTICAL | wxALIGN_LEFT));
+			dc.DrawLabel(strings[j], cur, isCenter ? wxALIGN_CENTER : (wxALIGN_CENTER_VERTICAL | wxALIGN_LEFT));
 			dx += colWidth[j];
 		}
 
 		// Draw grid
 		dc.DestroyClippingRegion();
-		if (drawGrid) {
-			dc.SetPen(wxPen(lagi_wxColour(OPT_GET("Colour/Subtitle Grid/Lines")->GetColour())));
-			dc.DrawLine(0,dy+lineHeight,w,dy+lineHeight);
-			dc.SetPen(*wxTRANSPARENT_PEN);
-		}
+		dc.SetPen(grid_pen);
+		dc.DrawLine(0,dy+lineHeight,w,dy+lineHeight);
+		dc.SetPen(*wxTRANSPARENT_PEN);
 	}
 
 	// Draw grid columns
-	if (drawGrid) {
-		int dx = 0;
-		dc.SetPen(wxPen(lagi_wxColour(OPT_GET("Colour/Subtitle Grid/Lines")->GetColour())));
-		for (int i=0;i<10;i++) {
-			dx += colWidth[i];
-			dc.DrawLine(dx,0,dx,maxH);
-		}
-		dc.DrawLine(0,0,0,maxH);
-		dc.DrawLine(w-1,0,w-1,maxH);
+	int dx = 0;
+	dc.SetPen(wxPen(lagi_wxColour(OPT_GET("Colour/Subtitle Grid/Lines")->GetColour())));
+	for (int i=0;i<10;i++) {
+		dx += colWidth[i];
+		dc.DrawLine(dx,0,dx,maxH);
 	}
+	dc.DrawLine(0,0,0,maxH);
+	dc.DrawLine(w-1,0,w-1,maxH);
 
 	// Draw currently active line border
 	if (GetActiveLine()) {
@@ -740,22 +601,12 @@ void BaseGrid::DrawImage(wxDC &dc) {
 	}
 }
 
-
-
-/// @brief On size 
-/// @param event 
-///
 void BaseGrid::OnSize(wxSizeEvent &event) {
 	AdjustScrollbar();
 	SetColumnWidths();
 	Refresh(false);
 }
 
-
-
-/// @brief On scroll 
-/// @param event 
-///
 void BaseGrid::OnScroll(wxScrollEvent &event) {
 	int newPos = event.GetPosition();
 	if (yPos != newPos) {
@@ -764,14 +615,7 @@ void BaseGrid::OnScroll(wxScrollEvent &event) {
 	}
 }
 
-
-
-/// @brief Mouse events 
-/// @param event 
-/// @return 
-///
 void BaseGrid::OnMouseEvent(wxMouseEvent &event) {
-	// Window size
 	int w,h;
 	GetClientSize(&w,&h);
 
@@ -804,12 +648,12 @@ void BaseGrid::OnMouseEvent(wxMouseEvent &event) {
 
 	// Click type
 	bool startedHolding = false;
-	if (click && !holding && dlg!=0) {
+	if (click && !holding && dlg) {
 		holding = true;
 		startedHolding = true;
 		CaptureMouse();
 	}
-	if (!event.ButtonIsDown(wxMOUSE_BTN_LEFT) && holding) {
+	if (!event.LeftIsDown() && holding) {
 		holding = false;
 		ReleaseMouse();
 	}
@@ -834,13 +678,10 @@ void BaseGrid::OnMouseEvent(wxMouseEvent &event) {
 	}
 
 	// Click
-	if ((click || holding || dclick) && dlg!=0) {
-		// Disable extending
-		extendRow = -1;
-
+	if ((click || holding || dclick) && dlg) {
 		// Toggle selected
 		if (click && ctrl && !shift && !alt) {
-			bool isSel = IsInSelection(row,0);
+			bool isSel = IsInSelection(row);
 			if (isSel && selection.size() == 1) return;
 			SelectRow(row,true,!isSel);
 			if (dlg == GetActiveLine()) {
@@ -894,7 +735,7 @@ void BaseGrid::OnMouseEvent(wxMouseEvent &event) {
 	}
 
 	// Popup
-	if (event.ButtonDown(wxMOUSE_BTN_RIGHT)) {
+	if (event.RightDown()) {
 		OnPopupMenu(headerClick);
 	}
 
@@ -908,11 +749,6 @@ void BaseGrid::OnMouseEvent(wxMouseEvent &event) {
 	event.Skip();
 }
 
-
-
-/// @brief Scroll to 
-/// @param y 
-///
 void BaseGrid::ScrollTo(int y) {
 	int w,h;
 	GetClientSize(&w,&h);
@@ -924,10 +760,6 @@ void BaseGrid::ScrollTo(int y) {
 	}
 }
 
-
-
-/// @brief Adjust scrollbar 
-///
 void BaseGrid::AdjustScrollbar() {
 	int w,h,sw,sh;
 	GetClientSize(&w,&h);
@@ -948,11 +780,6 @@ void BaseGrid::AdjustScrollbar() {
 	scrollBar->Thaw();
 }
 
-
-
-/// @brief Set column widths 
-/// @return 
-///
 void BaseGrid::SetColumnWidths() {
 	if (!IsShownOnScreen()) return;
 
@@ -965,84 +792,73 @@ void BaseGrid::SetColumnWidths() {
 	wxClientDC dc(this);
 	dc.SetFont(font);
 	int fw,fh;
-	//dc.GetTextExtent(_T("#TWFfgGhH"), &fw, &fh, NULL, NULL, &font);
 
 	// O(1) widths
-	dc.GetTextExtent(_T("0000"), &fw, &fh, NULL, NULL, &font);
+	dc.GetTextExtent("0000", &fw, &fh, NULL, NULL, &font);
 	int marginLen = fw + 10;
-	dc.GetTextExtent(wxString::Format(_T("%i"),GetRows()), &fw, &fh, NULL, NULL, &font);
+	dc.GetTextExtent(wxString::Format("%i",GetRows()), &fw, &fh, NULL, NULL, &font);
 	int labelLen = fw + 10;
 	int startLen = 0;
 	int endLen = 0;
 	if (!byFrame) {
-		AssTime time;
-		dc.GetTextExtent(time.GetASSFormated(), &fw, &fh, NULL, NULL, &font);
-		startLen = fw + 10;
-		endLen = fw + 10;
+		dc.GetTextExtent(AssTime().GetASSFormated(), &fw, &fh, NULL, NULL, &font);
+		startLen = endLen = fw + 10;
 	}
 
 	// O(n) widths
-	bool showMargin[3];
-	showMargin[0] = showMargin[1] = showMargin[2] = false;
-	bool showLayer = false;
+	bool showMargin[3] = { false, false, false };
 	int styleLen = 0;
 	int actorLen = 0;
 	int effectLen = 0;
 	int maxLayer = 0;
 	int maxStart = 0;
 	int maxEnd = 0;
-	AssDialogue *curDiag;
-	for (int i=0;i<GetRows();i++) {
-		curDiag = GetDialogue(i);
-		if (curDiag) {
-			// Layer
-			if (curDiag->Layer > maxLayer) {
-				maxLayer = curDiag->Layer;
-				showLayer = true;
-			}
+	for (int i = 0; i < GetRows(); i++) {
+		AssDialogue *curDiag = GetDialogue(i);
+		maxLayer = std::max(maxLayer, curDiag->Layer);
 
-			// Actor
-			if (!curDiag->Actor.IsEmpty()) {
-				dc.GetTextExtent(curDiag->Actor, &fw, &fh, NULL, NULL, &font);
-				if (fw > actorLen) actorLen = fw;
-			}
+		// Actor
+		if (!curDiag->Actor.empty()) {
+			dc.GetTextExtent(curDiag->Actor, &fw, &fh, NULL, NULL, &font);
+			if (fw > actorLen) actorLen = fw;
+		}
 
-			// Style
-			if (!curDiag->Style.IsEmpty()) {
-				dc.GetTextExtent(curDiag->Style, &fw, &fh, NULL, NULL, &font);
-				if (fw > styleLen) styleLen = fw;
-			}
+		// Style
+		if (!curDiag->Style.empty()) {
+			dc.GetTextExtent(curDiag->Style, &fw, &fh, NULL, NULL, &font);
+			if (fw > styleLen) styleLen = fw;
+		}
 
-			// Effect
-			if (!curDiag->Effect.IsEmpty()) {
-				dc.GetTextExtent(curDiag->Effect, &fw, &fh, NULL, NULL, &font);
-				if (fw > effectLen) effectLen = fw;
-			}
+		// Effect
+		if (!curDiag->Effect.empty()) {
+			dc.GetTextExtent(curDiag->Effect, &fw, &fh, NULL, NULL, &font);
+			if (fw > effectLen) effectLen = fw;
+		}
 
-			// Margins
-			for (int j=0;j<3;j++) {
-				if (curDiag->Margin[j] != 0) showMargin[j] = true;
-			}
+		// Margins
+		for (int j=0;j<3;j++) {
+			if (curDiag->Margin[j]) showMargin[j] = true;
+		}
 
-			// Times
-			if (byFrame) {
-				int tmp = context->videoController->FrameAtTime(curDiag->Start.GetMS(),agi::vfr::START);
-				if (tmp > maxStart) maxStart = tmp;
-				tmp = context->videoController->FrameAtTime(curDiag->End.GetMS(),agi::vfr::END);
-				if (tmp > maxEnd) maxEnd = tmp;
-			}
+		// Times
+		if (byFrame) {
+			maxStart = std::max(maxStart, context->videoController->FrameAtTime(curDiag->Start.GetMS(), agi::vfr::START));
+			maxEnd = std::max(maxEnd, context->videoController->FrameAtTime(curDiag->End.GetMS(), agi::vfr::END));
 		}
 	}
 
 	// Finish layer
-	dc.GetTextExtent(wxString::Format(_T("%i"),maxLayer), &fw, &fh, NULL, NULL, &font);
-	int layerLen = fw + 10;
+	int layerLen = 0;
+	if (maxLayer > 0) {
+		dc.GetTextExtent(wxString::Format("%i", maxLayer), &fw, &fh, NULL, NULL, &font);
+		layerLen = fw + 10;
+	}
 
 	// Finish times
 	if (byFrame) {
-		dc.GetTextExtent(wxString::Format(_T("%i"),maxStart), &fw, &fh, NULL, NULL, &font);
+		dc.GetTextExtent(wxString::Format("%i", maxStart), &fw, &fh, NULL, NULL, &font);
 		startLen = fw + 10;
-		dc.GetTextExtent(wxString::Format(_T("%i"),maxEnd), &fw, &fh, NULL, NULL, &font);
+		dc.GetTextExtent(wxString::Format("%i", maxEnd), &fw, &fh, NULL, NULL, &font);
 		endLen = fw + 10;
 	}
 
@@ -1053,7 +869,7 @@ void BaseGrid::SetColumnWidths() {
 
 	// Set column widths
 	colWidth[0] = labelLen;
-	colWidth[1] = showLayer ? layerLen : 0;
+	colWidth[1] = layerLen;
 	colWidth[2] = startLen;
 	colWidth[3] = endLen;
 	colWidth[4] = styleLen;
@@ -1062,28 +878,23 @@ void BaseGrid::SetColumnWidths() {
 	for (int i=0;i<3;i++) colWidth[i+7] = showMargin[i] ? marginLen : 0;
 
 	// Hide columns
-	for (int i=0;i<columns;i++) {
+	for (int i = 0; i < columns; i++) {
 		if (!showCol[i]) colWidth[i] = 0;
 	}
 
 	// Set size of last
 	int total = 0;
-	for (int i=0;i<10;i++) total+= colWidth[i];
+	for (int i=0;i<10;i++) total += colWidth[i];
 	colWidth[10] = w-total;
 }
-
-
 
 /// @brief Get dialogue by index
 /// @param n Index to look up
 /// @return Subtitle dialogue line for index, or 0 if invalid index
-///
 AssDialogue *BaseGrid::GetDialogue(int n) const {
-	if (n < 0 || n >= (int)index_line_map.size()) return 0;
+	if (static_cast<size_t>(n) >= index_line_map.size()) return 0;
 	return index_line_map[n];
 }
-
-
 
 /// @brief Get index by dialogue line
 /// @param diag Dialogue line to look up
@@ -1091,15 +902,9 @@ AssDialogue *BaseGrid::GetDialogue(int n) const {
 int BaseGrid::GetDialogueIndex(AssDialogue *diag) const {
 	std::map<AssDialogue*,int>::const_iterator it = line_index_map.find(diag);
 	if (it != line_index_map.end()) return it->second;
-	else return -1;
+	return -1;
 }
 
-
-
-/// @brief Check if line is being displayed 
-/// @param line 
-/// @return 
-///
 bool BaseGrid::IsDisplayed(const AssDialogue *line) const {
 	if (!context->videoController->IsLoaded()) return false;
 	int frame = context->videoController->GetFrameN();
@@ -1108,10 +913,6 @@ bool BaseGrid::IsDisplayed(const AssDialogue *line) const {
 		context->videoController->FrameAtTime(line->End.GetMS(),agi::vfr::END) >= frame;
 }
 
-/// @brief Key press 
-/// @param event 
-/// @return 
-///
 void BaseGrid::OnKeyDown(wxKeyEvent &event) {
 	event.StopPropagation();
 	if (hotkey::check("Subtitle Grid", event.GetKeyCode(), event.GetUnicodeKey(), event.GetModifiers()))
@@ -1120,34 +921,28 @@ void BaseGrid::OnKeyDown(wxKeyEvent &event) {
 	int w,h;
 	GetClientSize(&w,&h);
 
-	// Get scan code
 	int key = event.GetKeyCode();
-#ifdef __APPLE__
-	bool ctrl = event.m_metaDown;
-#else
-	bool ctrl = event.m_controlDown;
-#endif
-	bool alt = event.m_altDown;
-	bool shift = event.m_shiftDown;
+	bool ctrl = event.CmdDown();
+	bool alt = event.AltDown();
+	bool shift = event.ShiftDown();
 
-	// Up/down
 	int dir = 0;
 	int step = 1;
 	if (key == WXK_UP) dir = -1;
-	if (key == WXK_DOWN) dir = 1;
-	if (key == WXK_PAGEUP) {
+	else if (key == WXK_DOWN) dir = 1;
+	else if (key == WXK_PAGEUP) {
 		dir = -1;
-		step = h/lineHeight - 2;
+		step = h / lineHeight - 2;
 	}
-	if (key == WXK_PAGEDOWN) {
+	else if (key == WXK_PAGEDOWN) {
 		dir = 1;
-		step = h/lineHeight - 2;
+		step = h / lineHeight - 2;
 	}
-	if (key == WXK_HOME) {
+	else if (key == WXK_HOME) {
 		dir = -1;
 		step = GetRows();
 	}
-	if (key == WXK_END) {
+	else if (key == WXK_END) {
 		dir = 1;
 		step = GetRows();
 	}
@@ -1156,51 +951,41 @@ void BaseGrid::OnKeyDown(wxKeyEvent &event) {
 	if (dir) {
 		// Move selection
 		if (!ctrl && !shift && !alt) {
-			// Move to extent first
-			int curLine = GetDialogueIndex(GetActiveLine());
-			if (extendRow != -1) {
-				curLine = extendRow;
-				extendRow = -1;
-			}
-
-			int next = mid(0,curLine+dir*step,GetRows()-1);
+			int next = mid(0, extendRow + dir * step, GetRows() - 1);
 			SetActiveLine(GetDialogue(next));
 			SelectRow(next);
-			MakeCellVisible(next,0,false);
+			MakeCellVisible(next, 0, false);
 			return;
 		}
 
 		// Move active only
-		if (alt && !shift && !ctrl) {
-			extendRow = -1;
-			int next = mid(0,GetDialogueIndex(GetActiveLine())+dir*step,GetRows()-1);
+		else if (alt && !shift && !ctrl) {
+			int next = mid(0, GetDialogueIndex(GetActiveLine()) + dir * step, GetRows() - 1);
 			SetActiveLine(GetDialogue(next));
 			Refresh(false);
-			MakeCellVisible(next,0,false);
+			MakeCellVisible(next, 0, false);
 			return;
 		}
 
 		// Shift-selection
-		if (shift && !ctrl && !alt) {
-			// Find end
-			if (extendRow == -1) GetDialogueIndex(GetActiveLine());
-			extendRow = mid(0,extendRow+dir*step,GetRows()-1);
+		else if (shift && !ctrl && !alt) {
+			extendRow = mid(0, extendRow + dir * step, GetRows() - 1);
 
 			// Set range
-			int i1 = GetDialogueIndex(GetActiveLine());
-			int i2 = extendRow;
-			if (i2 < i1) {
-				std::swap(i1, i2);
+			int begin = GetDialogueIndex(GetActiveLine());
+			int end = extendRow;
+			if (end < begin) {
+				std::swap(begin, end);
 			}
 
 			// Select range
 			Selection newsel;
-			for (int i=i1;i<=i2;i++) {
+			for (int i = begin; i <= end; i++) {
 				newsel.insert(GetDialogue(i));
 			}
 			SetSelectedSet(newsel);
 
-			MakeCellVisible(extendRow,0,false);
+			MakeCellVisible(extendRow, 0, false);
 			return;
 		}
 	}
@@ -1209,50 +994,15 @@ void BaseGrid::OnKeyDown(wxKeyEvent &event) {
 	}
 }
 
-
-
-/// @brief Sets display by frame or not 
-/// @param state 
-/// @return 
-///
-void BaseGrid::SetByFrame (bool state) {
-	// Check if it's already the same
+void BaseGrid::SetByFrame(bool state) {
 	if (byFrame == state) return;
 	byFrame = state;
 	SetColumnWidths();
 	Refresh(false);
 }
 
-
-
-/// @brief Generates an array covering inclusive range 
-/// @param n1 
-/// @param n2 
-///
-wxArrayInt BaseGrid::GetRangeArray(int n1,int n2) const {
-	// Swap if in wrong order
-	if (n2 < n1) {
-		int aux = n1;
-		n1 = n2;
-		n2 = aux;
-	}
-
-	// Generate array
-	wxArrayInt target;
-	for (int i=n1;i<=n2;i++) {
-		target.Add(i);
-	}
-	return target;
-}
-
-
-
-// SelectionController
-
-
 void BaseGrid::SetSelectedSet(const Selection &new_selection) {
-	Selection inserted;
-	Selection removed;
+	Selection inserted, removed;
 	set_difference(new_selection, selection, inserted);
 	set_difference(selection, new_selection, removed);
 	selection = new_selection;
@@ -1260,21 +1010,19 @@ void BaseGrid::SetSelectedSet(const Selection &new_selection) {
 	Refresh(false);
 }
 
-
 void BaseGrid::SetActiveLine(AssDialogue *new_line) {
 	if (new_line != active_line) {
-		assert(new_line == 0 || line_index_map.find(new_line) != line_index_map.end());
+		assert(new_line == 0 || line_index_map.count(new_line));
 		active_line = new_line;
 		AnnounceActiveLineChanged(active_line);
 		Refresh(false);
+		extendRow = GetDialogueIndex(new_line);
 	}
 }
 
-
 void BaseGrid::PrevLine() {
 	int cur_line_i = GetDialogueIndex(GetActiveLine());
-	AssDialogue *prev_line = GetDialogue(cur_line_i-1);
-	if (prev_line) {
+	if (AssDialogue *prev_line = GetDialogue(cur_line_i-1)) {
 		SetActiveLine(prev_line);
 		Selection newsel;
 		newsel.insert(prev_line);
@@ -1285,8 +1033,7 @@ void BaseGrid::PrevLine() {
 
 void BaseGrid::NextLine() {
 	int cur_line_i = GetDialogueIndex(GetActiveLine());
-	AssDialogue *next_line = GetDialogue(cur_line_i+1);
-	if (next_line) {
+	if (AssDialogue *next_line = GetDialogue(cur_line_i+1)) {
 		SetActiveLine(next_line);
 		Selection newsel;
 		newsel.insert(next_line);
@@ -1323,5 +1070,3 @@ void BaseGrid::AnnounceSelectedSetChanged(const Selection &lines_added, const Se
 		BaseSelectionController<AssDialogue>::AnnounceSelectedSetChanged(lines_added, lines_removed);
 	}
 }
-
-
