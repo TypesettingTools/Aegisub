@@ -48,7 +48,6 @@
 
 namespace agi { struct Context; }
 class AssDialogue;
-class SubtitlesGrid;
 
 /// DOCME
 /// @class DialogTimingProcessor

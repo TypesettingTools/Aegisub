@@ -59,7 +59,6 @@
 #include "main.h"
 #include "scintilla_text_ctrl.h"
 #include "selection_controller.h"
-#include "subs_grid.h"
 #include "utils.h"
 
 

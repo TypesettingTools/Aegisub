@@ -35,9 +35,6 @@
 /// @ingroup tools_ui kara_timing_copy
 ///
 
-
-///////////
-// Headers
 #include "config.h"
 
 #ifndef AGI_PRE
@@ -57,7 +54,6 @@
 #include "libresrc/libresrc.h"
 #include "main.h"
 #include "selection_controller.h"
-#include "subs_grid.h"
 #include "utils.h"
 #include "validators.h"
 #include "video_context.h"
@@ -827,14 +823,8 @@ bool KaraokeLineMatchDisplay::UndoMatch()
 	return true;
 }
 
-
-
-
-
 /// @brief Constructor 
 /// @param parent 
-/// @param _grid  
-///
 DialogKanjiTimer::DialogKanjiTimer(agi::Context *c)
 : wxDialog(c->parent,-1,_("Kanji timing"),wxDefaultPosition)
 {
@@ -843,7 +833,6 @@ DialogKanjiTimer::DialogKanjiTimer(agi::Context *c)
 
 	// Variables
 	subs = c->ass;
-	grid = c->subsGrid;
 	currentSourceLine = subs->Line.begin();
 	currentDestinationLine = subs->Line.begin();
 

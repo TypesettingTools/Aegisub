@@ -41,7 +41,6 @@
 
 #include "ass_dialogue.h"
 #include "ass_file.h"
-#include "subs_grid.h"
 #include "utils.h"
 #include "video_display.h"
 #include "visual_tool_clip.h"

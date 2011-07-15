@@ -49,7 +49,6 @@
 #include "libresrc/libresrc.h"
 #include "main.h"
 #include "selection_controller.h"
-#include "subs_grid.h"
 #include "utils.h"
 #include "validators.h"
 #include "video_context.h"

@@ -51,8 +51,6 @@
 namespace agi { struct Context; }
 class AssOverrideParameter;
 class KaraokeLineMatchDisplay;
-class SubtitlesGrid;
-
 
 /// DOCME
 /// @class DialogKanjiTimer
@@ -60,10 +58,6 @@ class SubtitlesGrid;
 ///
 /// DOCME
 class DialogKanjiTimer : public wxDialog {
-
-	/// DOCME
-	SubtitlesGrid *grid;
-
 	/// DOCME
 	AssFile *subs;
 

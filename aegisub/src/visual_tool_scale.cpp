@@ -42,7 +42,6 @@
 #include "ass_dialogue.h"
 #include "ass_file.h"
 #include "include/aegisub/context.h"
-#include "subs_grid.h"
 #include "utils.h"
 #include "video_context.h"
 #include "video_display.h"

@@ -50,6 +50,7 @@
 #include "../dialog_dummy_video.h"
 #include "../dialog_jumpto.h"
 #include "../dialog_video_details.h"
+#include "../selection_controller.h"
 #include "../subs_grid.h"
 #include "../utils.h"
 #include "../video_box.h"

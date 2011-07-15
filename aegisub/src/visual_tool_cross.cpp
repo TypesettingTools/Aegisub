@@ -38,7 +38,6 @@
 #include "ass_file.h"
 #include "include/aegisub/context.h"
 #include "gl_text.h"
-#include "subs_grid.h"
 #include "video_context.h"
 #include "video_display.h"
 #include "visual_tool_cross.h"
