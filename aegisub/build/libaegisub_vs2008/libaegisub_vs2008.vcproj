@@ -292,10 +292,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\libaegisub\common\util.cpp"
-				>
-			</File>
-			<File
 				RelativePath="..\..\libaegisub\common\mru.cpp"
 				>
 			</File>
@@ -313,6 +309,10 @@
 			</File>
 			<File
 				RelativePath="..\..\libaegisub\common\path.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\libaegisub\common\util.cpp"
 				>
 			</File>
 			<File
@@ -339,10 +339,6 @@
 			</File>
 			<File
 				RelativePath="..\..\libaegisub\windows\io.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\libaegisub\windows\path.cpp"
 				>
 			</File>
 			<File
@@ -400,6 +396,10 @@
 						ObjectFile="$(IntDir)\log_windows"
 					/>
 				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\libaegisub\windows\path_win.cpp"
+				>
 			</File>
 			<File
 				RelativePath="..\..\libaegisub\windows\util.cpp"

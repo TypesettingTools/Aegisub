@@ -35,42 +35,41 @@
 namespace agi {
 
 
-const std::string home() {
+std::string home() {
 	char *ehome;
 	ehome = getenv("HOME");
 	if (ehome == NULL) {
 		printf("The HOME environment variable must be set\n");
 		exit(1);
 	}
-	std::string home(ehome);
-	return home;
+	return ehome;
 }
 
 
-const std::string Path::Data() {
+std::string Path::Data() {
 	return P_DATA;
 }
 
-const std::string Path::Doc() {
+std::string Path::Doc() {
 	return P_DOC;
 }
 
-const std::string Path::User() {
+std::string Path::User() {
 	return home();
 }
 
-const std::string Path::Locale() {
+std::string Path::Locale() {
 	return P_LOCALE;
 }
 
-const std::string Path::Config() {
+std::string Path::Config() {
 	std::string tmp(home());
 	tmp.append("/.aegisub-");
 	tmp.append(AEGISUB_VERSION_DATA);
 	return tmp.append("/");
 }
 
-const std::string Path::Temp() {
+std::string Path::Temp() {
 	return "/tmp/";
 }
 

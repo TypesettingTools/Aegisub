@@ -42,7 +42,7 @@ Path::~Path() {
 }
 
 
-const std::string Path::Get(const char *name) {
+std::string Path::Get(const char *name) {
 	std::string path;
 	try {
 		path = std::string(opt->Get(name)->GetString());

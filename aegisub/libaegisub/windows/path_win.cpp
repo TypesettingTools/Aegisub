@@ -18,14 +18,12 @@
 /// @brief Common paths.
 /// @ingroup libaegisub
 
-
-#include "config.h"
-
 #ifndef LAGI_PRE
 #include <string>
 #endif
 
 #include <libaegisub/path.h>
+
 #include <libaegisub/charset_conv_win.h>
 #include <libaegisub/util_win.h>
 
@@ -34,7 +32,7 @@ namespace {
 #include <Shlobj.h>
 #include <Shellapi.h>
 
-const std::string WinGetFolderPath(int folder) {
+std::string WinGetFolderPath(int folder) {
 	wchar_t path[MAX_PATH+1] = {0};
 	HRESULT res = SHGetFolderPathW(
 		0,      // hwndOwner
@@ -44,16 +42,14 @@ const std::string WinGetFolderPath(int folder) {
 		path    // pszPath
 		);
 	if (FAILED(res))
-		throw new agi::PathErrorInternal("SHGetFolderPath() failed"); //< @fixme error message?
-	else
-		return agi::charset::ConvertW(std::wstring(path));
+		throw agi::PathErrorInternal("SHGetFolderPath() failed"); //< @fixme error message?
+
+	return agi::charset::ConvertW(path);
 }
 
 std::string get_install_path() {
 	static std::string install_path;
-	static bool install_path_valid = false;
-	
-	if (install_path_valid == false) {
+	if (install_path.empty()) {
 		// Excerpt from <http://msdn.microsoft.com/en-us/library/bb776391.aspx>:
 		// lpCmdLine [in]
 		//     If this parameter is an empty string the function returns
@@ -69,53 +65,46 @@ std::string get_install_path() {
 		if (res > 0 && GetLastError() == 0) {
 			*fn = '\0'; // fn points to filename part of path, set an end marker there
 			install_path = agi::charset::ConvertW(std::wstring(path));
-			install_path_valid = true;
 		} else {
-			throw new agi::PathErrorInternal(agi::util::ErrorString(GetLastError()));
+			throw agi::PathErrorInternal(agi::util::ErrorString(GetLastError()));
 		}
 	}
 
 	return install_path;
 }
 
-};
+}
 
 
 namespace agi {
 
-const std::string Path::Data() {
+std::string Path::Data() {
 	return get_install_path();
 }
 
-const std::string Path::Doc() {
-	std::string path = Data();
-	path.append("docs\\");
-	return path;
+std::string Path::Doc() {
+	return Data() + "docs\\";
 }
 
-const std::string Path::User() {
+std::string Path::User() {
 	return WinGetFolderPath(CSIDL_PERSONAL);
 }
 
-const std::string Path::Locale() {
-	std::string path = Data();
-	path.append("locale\\");
-	return path;
+std::string Path::Locale() {
+	return Data() + "locale\\";
 }
 
-const std::string Path::Config() {
-	std::string path = WinGetFolderPath(CSIDL_APPDATA);
-	path.append("Aegisub3");
+std::string Path::Config() {
+	return WinGetFolderPath(CSIDL_APPDATA) + "Aegisub3";
 	/// @fixme should get version number in a more dynamic manner
-	return path;
 }
 
-const std::string Path::Temp() {
+std::string Path::Temp() {
 	wchar_t path[MAX_PATH+1] = {0};
 	if (GetTempPath(MAX_PATH, path) == 0)
-		throw new PathErrorInternal(util::ErrorString(GetLastError()));
+		throw PathErrorInternal(util::ErrorString(GetLastError()));
 	else
-		return charset::ConvertW(std::wstring(path));
+		return charset::ConvertW(path);
 }
 
 } // namespace agi

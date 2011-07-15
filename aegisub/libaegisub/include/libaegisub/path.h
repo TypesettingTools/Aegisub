@@ -48,7 +48,7 @@ public:
 	/// @brief Get a path, this is automatically decoded.
 	/// @param name Path to get
 	/// @return Full path name in UTF-8
-	const std::string Get(const char *name);
+	std::string Get(const char *name);
 
 	/// @brief Set a path, this will be automaticalled encoded if a cookie matches.
 	/// @param[in] name Path name to save to.
@@ -70,14 +70,14 @@ public:
 	///   Windows: Documents folder
 	///   OS X: ~/Documents
 	///   Unix: ~ or Documents folder if set in the environment
-	const std::string Default();
+	std::string Default();
 
 	/// @brief Decode a path
 	/// @param path Decode a path in-place.
 	void Decode(std::string &path);
 
 	/// Configuration directory
-	static const std::string Config();
+	static std::string Config();
 
 private:
 	/// Location of path config file.
@@ -102,13 +102,13 @@ private:
 	/// @brief Locale files
 	/// @return Locale location
 	/// This is directly assessibly as the Locale directory will never change on any platform.
-	const std::string Locale();
+	std::string Locale();
 
 protected:
-	const std::string Data();	///< Shared resources
-	const std::string Doc();	///< Documents
-	const std::string User();	///< User config directory
-	const std::string Temp();	///< Temporary storage
+	std::string Data();	///< Shared resources
+	std::string Doc();	///< Documents
+	std::string User();	///< User config directory
+	std::string Temp();	///< Temporary storage
 };
 
 } // namespace agi
