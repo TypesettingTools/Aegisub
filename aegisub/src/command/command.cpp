@@ -107,4 +107,11 @@ namespace cmd {
 		init_tool();
 		init_video();
 	}
+
+	void clear() {
+		for (std::map<std::string, Command*>::iterator it = cmd_map.begin(); it != cmd_map.end(); ++it) {
+			delete it->second;
+		}
+		cmd_map.clear();
+	}
 }

@@ -152,4 +152,7 @@ namespace cmd {
 	/// Retrieve a Command object.
 	/// @param Command object.
 	Command* get(std::string const& name);
+
+	/// Unregister all commands
+	void clear();
 } // namespace cmd
