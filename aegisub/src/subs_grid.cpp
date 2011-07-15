@@ -517,59 +517,6 @@ void SubtitlesGrid::DeleteLines(wxArrayInt target, bool flagModified) {
 	}
 }
 
-void SubtitlesGrid::JoinLines(int n1,int n2,bool concat) {
-	int min_ms = INT_MAX;
-	int max_ms = INT_MIN;
-	wxString finalText;
-
-	// Collect data
-	AssDialogue *cur;
-	int start,end;
-	bool gotfirst = false;
-	bool gottime = false;
-	for (int i=n1;i<=n2;i++) {
-		// Get start and end time of current line
-		cur = GetDialogue(i);
-		start = cur->Start.GetMS();
-		end = cur->End.GetMS();
-
-		// Don't take the timing of zero lines
-		if (start != 0 || end != 0) {
-			if (start < min_ms) min_ms = start;
-			if (end > max_ms) max_ms = end;
-			gottime = true;
-		}
-
-		// Set text
-		if (concat || !gotfirst) {
-			if (gotfirst) finalText += _T("\\N");
-			gotfirst = true;
-			finalText += cur->Text;
-		}
-	}
-
-	// If it didn't get any times, then it's probably because they were all 0 lines.
-	if (!gottime) {
-		min_ms = 0;
-		max_ms = 0;
-	}
-
-	// Apply settings to first line
-	cur = GetDialogue(n1);
-	cur->Start.SetMS(min_ms);
-	cur->End.SetMS(max_ms);
-	cur->Text = finalText;
-
-	// Delete remaining lines (this will auto commit)
-	DeleteLines(GetRangeArray(n1+1,n2), false);
-
-	context->ass->Commit(_("join lines"));
-
-	// Select new line
-	SetActiveLine(cur);
-	SelectRow(n1);
-}
-
 void SubtitlesGrid::AdjoinLines(int n1,int n2,bool setStart) {
 	if (n1 == n2) {
 		if (setStart) {
@@ -604,52 +551,6 @@ void SubtitlesGrid::AdjoinLines(int n1,int n2,bool setStart) {
 	}
 
 	context->ass->Commit(_("adjoin"));
-}
-
-void SubtitlesGrid::JoinAsKaraoke(int n1,int n2) {
-	wxString finalText = _T("");
-
-	// Collect data
-	AssDialogue *cur;
-	int start,end;
-	int firststart = 0;
-	int lastend = -1;
-	int len1,len2;
-	for (int i=n1;i<=n2;i++) {
-		cur = GetDialogue(i);
-
-		// Get times
-		start = cur->Start.GetMS();
-		end = cur->End.GetMS();
-
-		// Get len
-		if (lastend == -1) {
-			lastend = start;
-			firststart = start;
-		}
-		len1 = (start - lastend) / 10;
-		len2 = (end - start) / 10;
-
-		// Create text
-		if (len1 != 0) finalText += _T("{\\k") + wxString::Format(_T("%i"),len1) + _T("}");
-		finalText += _T("{\\k") + wxString::Format(_T("%i"),len2) + _T("}") + cur->Text;
-		lastend = end;
-	}
-
-	// Apply settings to first line
-	cur = GetDialogue(n1);
-	cur->Start.SetMS(firststart);
-	cur->End.SetMS(lastend);
-	cur->Text = finalText;
-
-	// Delete remaining lines (this will auto commit)
-	DeleteLines(GetRangeArray(n1+1,n2), false);
-
-	context->ass->Commit(_("join as karaoke"));
-
-	// Select new line
-	SetActiveLine(cur);
-	SelectRow(n1);
 }
 
 void SubtitlesGrid::DuplicateLines(int n1,int n2,bool nextFrame) {

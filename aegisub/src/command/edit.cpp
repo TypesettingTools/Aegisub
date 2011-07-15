@@ -132,6 +132,46 @@ struct edit_line_duplicate_shift : public Command {
 	}
 };
 
+static void combine_lines(agi::Context *c, void (*combiner)(AssDialogue *, AssDialogue *), wxString const& message) {
+	SelectionController<AssDialogue>::Selection sel = c->selectionController->GetSelectedSet();
+
+	AssDialogue *first = 0;
+	entryIter out = c->ass->Line.begin();
+	for (entryIter it = c->ass->Line.begin(); it != c->ass->Line.end(); ++it) {
+		AssDialogue *diag = dynamic_cast<AssDialogue*>(*it);
+		if (!diag || !sel.count(diag)) {
+			*out++ = *it;
+			continue;
+		}
+		if (!first) {
+			first = diag;
+			*out++ = *it;
+			continue;
+		}
+
+		combiner(first, diag);
+
+		first->End.SetMS(diag->End.GetMS());
+		delete diag;
+	}
+
+	c->ass->Line.erase(out, c->ass->Line.end());
+	sel.clear();
+	sel.insert(first);
+	c->selectionController->SetActiveLine(first);
+	c->selectionController->SetSelectedSet(sel);
+	c->ass->Commit(message);
+}
+
+static void combine_karaoke(AssDialogue *first, AssDialogue *second) {
+	first->Text += wxString::Format("{\\k%d}%s", (second->Start.GetMS() - first->End.GetMS()) / 10, second->Text);
+}
+
+static void combine_concat(AssDialogue *first, AssDialogue *second) {
+	first->Text += L"\\N" + second->Text;
+}
+
+static void combine_drop(AssDialogue *, AssDialogue *) { }
 
 /// Joins selected lines in a single one, as karaoke.
 struct edit_line_join_as_karaoke : public Command {
@@ -141,8 +181,7 @@ struct edit_line_join_as_karaoke : public Command {
 	STR_HELP("Joins selected lines in a single one, as karaoke.")
 
 	void operator()(agi::Context *c) {
-		wxArrayInt sels = c->subsGrid->GetSelection();
-		c->subsGrid->JoinAsKaraoke(sels.front(), sels.back());
+		combine_lines(c, combine_karaoke, _("join as karaoke"));
 	}
 };
 
@@ -155,8 +194,7 @@ struct edit_line_join_concatenate : public Command {
 	STR_HELP("Joins selected lines in a single one, concatenating text together.")
 
 	void operator()(agi::Context *c) {
-		wxArrayInt sels = c->subsGrid->GetSelection();
-		c->subsGrid->JoinLines(sels.front(), sels.back(), true);
+		combine_lines(c, combine_concat, _("join lines"));
 	}
 };
 
@@ -169,8 +207,7 @@ struct edit_line_join_keep_first : public Command {
 	STR_HELP("Joins selected lines in a single one, keeping text of first and discarding remaining.")
 
 	void operator()(agi::Context *c) {
-		wxArrayInt sels = c->subsGrid->GetSelection();
-		c->subsGrid->JoinLines(sels.front(), sels.back(), false);
+		combine_lines(c, combine_drop, _("join lines"));
 	}
 };
 

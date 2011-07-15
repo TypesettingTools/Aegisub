@@ -85,15 +85,6 @@ public:
 	/// @param start Start vs. End time
 	void SetSubsToVideo(bool start);
 
-	/// @brief Join the selected lines
-	/// @param n1     First line to join
-	/// @param n2     Last line to join
-	/// @param concat Concatenate the lines rather than discarding all past the first
-	void JoinLines(int first,int last,bool concat=true);
-	/// @brief Join selected lines as karaoke, with their relative times used for syllable lengths
-	/// @param n1 First line to join
-	/// @param n2 Last line to join
-	void JoinAsKaraoke(int first,int last);
 	/// @brief Adjoins selected lines, setting each line's start time to the previous line's end time
 	/// @param n1       First line to adjoin
 	/// @param n2       Last line to adjoin
