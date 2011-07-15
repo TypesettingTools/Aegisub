@@ -21,15 +21,17 @@
 
 #ifndef AGI_PRE
 #include <map>
+#include <string>
+
+#include <wx/string.h>
 #endif
 
 #include <libaegisub/exception.h>
 
-#include "icon.h"
-
 namespace agi { struct Context; }
 
 DEFINE_BASE_EXCEPTION_NOINNER(CommandError, agi::Exception)
+DEFINE_SIMPLE_EXCEPTION_NOINNER(CommandNotFound, CommandError, "command/notfound")
 DEFINE_SIMPLE_EXCEPTION_NOINNER(CommandIconNone, CommandError, "command/icon")
 DEFINE_SIMPLE_EXCEPTION_NOINNER(CommandIconInvalid, CommandError, "command/icon/invalid")
 
@@ -49,23 +51,6 @@ struct cname : public Command {                         \
 
 /// Commands
 namespace cmd {
-	class CommandManager;
-	class Command;
-
-	/// CommandManager instance.
-	extern CommandManager *cm;
-
-	/// Init all commands.
-	/// @param cm CommandManager instance.
-	void init_command(CommandManager *cm);
-
-	// The following are nothing more than glorified macros.
-	int id(std::string name);					///< @see CommandManager::id
-	void call(agi::Context *c, const int id);	///< @see CommandManager::call
-	int count();								///< @see CommandManager::count
-	Command* get(std::string name);				///< @see CommandManager::get
-
-
 	/// Holds an individual Command
 	class Command {
 	public:
@@ -82,38 +67,32 @@ namespace cmd {
 		virtual void operator()(agi::Context *c)=0;
 
 		/// Destructor
-		virtual ~Command() {};
+		virtual ~Command() { };
 	};
 
+	/// Init all builtin commands.
+	void init_builtin_commands();
 
-	/// Manager for commands
-	class CommandManager {
-		typedef std::map<std::string, Command*> cmdMap;		///< Map to hold commands.
-		typedef std::pair<std::string, Command*> cmdPair;	///< Pair for command insertion.
-		cmdMap map;											///< Actual map.
+	/// Register a command.
+	/// @param cmd Command object.
+	void reg(Command *cmd);
 
-	public:
-		/// Register a command.
-		/// @param cmd Command object.
-		void reg(Command *cmd);
+	/// Retrieve an ID for event usage or otherwise
+	/// @param name Command name
+	/// @return Command ID
+	/// @note This is guaranteed to be unique.
+	int id(std::string const& name);
 
-		/// Retrieve an ID for event usage or otherwise
-		/// @param name Command name
-		/// @return Command ID
-		/// @note This is guaranteed to be unique.
-		int id(std::string name);
+	/// Call a command.
+	/// @param c  Current Context.
+	/// @param id ID for Command to call.
+	void call(agi::Context *c, int id);
 
-		/// Call a command.
-		/// @param c  Current Context.
-		/// @param id ID for Command to call.
-		void call(agi::Context *c, const int id);
+	/// Count number of commands.
+	/// @return ID number.
+	int count();
 
-		/// Count number of commands.
-		/// @return ID number.
-		int count() { return map.size(); }
-
-		/// Retrieve a Command object.
-		/// @param Command object.
-		Command* get(std::string name);
-	};
+	/// Retrieve a Command object.
+	/// @param Command object.
+	Command* get(std::string const& name);
 } // namespace cmd

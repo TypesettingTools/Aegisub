@@ -38,9 +38,6 @@
 
 #include "../config.h"
 
-#ifndef AGI_PRE
-#endif
-
 #include "command.h"
 
 #include "../ass_dialogue.h"
@@ -60,7 +57,8 @@
 #include "../video_display.h"
 #include "../video_slider.h"
 
-namespace cmd {
+namespace {
+	using cmd::Command;
 /// @defgroup cmd-video Video commands.
 /// @{
 
@@ -600,43 +598,43 @@ struct video_zoom_out : public Command {
 		c->videoBox->videoDisplay->SetZoom(c->videoBox->videoDisplay->GetZoom() - .125);
 	}
 };
+}
 
 /// @}
 
-/// Init video/ commands.
-void init_video(CommandManager *cm) {
-	cm->reg(new video_aspect_cinematic);
-	cm->reg(new video_aspect_custom);
-	cm->reg(new video_aspect_default);
-	cm->reg(new video_aspect_full);
-	cm->reg(new video_aspect_wide);
-	cm->reg(new video_close);
-	cm->reg(new video_detach);
-	cm->reg(new video_details);
-	cm->reg(new video_focus_seek);
-	cm->reg(new video_frame_next);
-	cm->reg(new video_frame_next_boundary);
-	cm->reg(new video_frame_next_keyframe);
-	cm->reg(new video_frame_next_large);
-	cm->reg(new video_frame_prev);
-	cm->reg(new video_frame_prev_boundary);
-	cm->reg(new video_frame_prev_keyframe);
-	cm->reg(new video_frame_prev_large);
-	cm->reg(new video_jump);
-	cm->reg(new video_jump_end);
-	cm->reg(new video_jump_start);
-	cm->reg(new video_open);
-	cm->reg(new video_open_dummy);
-	cm->reg(new video_opt_autoscroll);
-	cm->reg(new video_play);
-	cm->reg(new video_play_line);
-	cm->reg(new video_show_overscan);
-	cm->reg(new video_stop);
-	cm->reg(new video_zoom_100);
-	cm->reg(new video_zoom_200);
-	cm->reg(new video_zoom_50);
-	cm->reg(new video_zoom_in);
-	cm->reg(new video_zoom_out);
+namespace cmd {
+	void init_video() {
+		reg(new video_aspect_cinematic);
+		reg(new video_aspect_custom);
+		reg(new video_aspect_default);
+		reg(new video_aspect_full);
+		reg(new video_aspect_wide);
+		reg(new video_close);
+		reg(new video_detach);
+		reg(new video_details);
+		reg(new video_focus_seek);
+		reg(new video_frame_next);
+		reg(new video_frame_next_boundary);
+		reg(new video_frame_next_keyframe);
+		reg(new video_frame_next_large);
+		reg(new video_frame_prev);
+		reg(new video_frame_prev_boundary);
+		reg(new video_frame_prev_keyframe);
+		reg(new video_frame_prev_large);
+		reg(new video_jump);
+		reg(new video_jump_end);
+		reg(new video_jump_start);
+		reg(new video_open);
+		reg(new video_open_dummy);
+		reg(new video_opt_autoscroll);
+		reg(new video_play);
+		reg(new video_play_line);
+		reg(new video_show_overscan);
+		reg(new video_stop);
+		reg(new video_zoom_100);
+		reg(new video_zoom_200);
+		reg(new video_zoom_50);
+		reg(new video_zoom_in);
+		reg(new video_zoom_out);
+	}
 }
-
-} // namespace cmd

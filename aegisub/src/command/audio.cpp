@@ -54,10 +54,10 @@
 
 typedef SelectionController<AssDialogue>::Selection Selection;
 
-namespace cmd {
+namespace {
+	using cmd::Command;
 /// @defgroup cmd-audio Audio commands.
 /// @{
-
 
 /// Closes the currently open audio file.
 struct audio_close : public Command {
@@ -342,29 +342,30 @@ struct audio_vertical_link : public Command {
 
 /// @}
 
-/// Init audio/ commands
-void init_audio(CommandManager *cm) {
-	cm->reg(new audio_autocommit);
-	cm->reg(new audio_autonext);
-	cm->reg(new audio_autoscroll);
-	cm->reg(new audio_close);
-	cm->reg(new audio_commit);
-	cm->reg(new audio_go_to);
-	cm->reg(new audio_open);
-	cm->reg(new audio_open_blank);
-	cm->reg(new audio_open_noise);
-	cm->reg(new audio_open_video);
-	cm->reg(new audio_play_after);
-	cm->reg(new audio_play_before);
-	cm->reg(new audio_play_begin);
-	cm->reg(new audio_play_end);
-	cm->reg(new audio_play_selection);
-	cm->reg(new audio_play_to_end);
-	cm->reg(new audio_save_clip);
-	cm->reg(new audio_stop);
-	cm->reg(new audio_vertical_link);
-	cm->reg(new audio_view_spectrum);
-	cm->reg(new audio_view_waveform);
 }
 
-} // namespace cmd
+namespace cmd {
+	void init_audio() {
+		reg(new audio_autocommit);
+		reg(new audio_autonext);
+		reg(new audio_autoscroll);
+		reg(new audio_close);
+		reg(new audio_commit);
+		reg(new audio_go_to);
+		reg(new audio_open);
+		reg(new audio_open_blank);
+		reg(new audio_open_noise);
+		reg(new audio_open_video);
+		reg(new audio_play_after);
+		reg(new audio_play_before);
+		reg(new audio_play_begin);
+		reg(new audio_play_end);
+		reg(new audio_play_selection);
+		reg(new audio_play_to_end);
+		reg(new audio_save_clip);
+		reg(new audio_stop);
+		reg(new audio_vertical_link);
+		reg(new audio_view_spectrum);
+		reg(new audio_view_waveform);
+	}
+}

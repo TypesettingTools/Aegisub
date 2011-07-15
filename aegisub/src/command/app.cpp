@@ -47,17 +47,18 @@
 #include "../include/aegisub/context.h"
 #include "../main.h"
 
-#include "../dialog_about.h"
 #include "../audio_controller.h"
-#include "../frame_main.h"
-#include "../video_context.h"
-#include "../utils.h"
+#include "../dialog_about.h"
 #include "../dialog_log.h"
-#include "../preferences.h"
 #include "../dialog_version_check.h"
+#include "../frame_main.h"
+#include "../preferences.h"
+#include "../utils.h"
+#include "../video_context.h"
 
+namespace {
+	using cmd::Command;
 
-namespace cmd {
 /// @defgroup cmd-app Application related
 /// @{
 
@@ -225,21 +226,20 @@ struct app_updates : public Command {
 };
 
 /// @}
-
-/// Init app/ commands
-void init_app(CommandManager *cm) {
-	cm->reg(new app_about());
-	cm->reg(new app_display_audio_subs());
-	cm->reg(new app_display_full());
-	cm->reg(new app_display_subs());
-	cm->reg(new app_display_video_subs());
-	cm->reg(new app_exit());
-	cm->reg(new app_language());
-	cm->reg(new app_log());
-	cm->reg(new app_new_window());
-	cm->reg(new app_options());
-	cm->reg(new app_updates());
 }
 
-} // namespace cmd
-
+namespace cmd {
+	void init_app() {
+		reg(new app_about);
+		reg(new app_display_audio_subs);
+		reg(new app_display_full);
+		reg(new app_display_subs);
+		reg(new app_display_video_subs);
+		reg(new app_exit);
+		reg(new app_language);
+		reg(new app_log);
+		reg(new app_new_window);
+		reg(new app_options);
+		reg(new app_updates);
+	}
+}

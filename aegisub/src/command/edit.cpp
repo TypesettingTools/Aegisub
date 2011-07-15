@@ -53,10 +53,10 @@
 #include "../subs_grid.h"
 #include "../video_context.h"
 
-namespace cmd {
+namespace {
+	using cmd::Command;
 /// @defgroup cmd-edit Editing commands.
 /// @{
-
 
 /// Copy subtitles.
 struct edit_line_copy : public Command {
@@ -339,26 +339,26 @@ struct edit_undo : public Command {
 	}
 };
 
+}
 /// @}
 
-/// Init edit/ commands
-void init_edit(CommandManager *cm) {
-	cm->reg(new edit_line_copy());
-	cm->reg(new edit_line_cut());
-	cm->reg(new edit_line_delete());
-	cm->reg(new edit_line_duplicate());
-	cm->reg(new edit_line_duplicate_shift());
-	cm->reg(new edit_line_join_as_karaoke());
-	cm->reg(new edit_line_join_concatenate());
-	cm->reg(new edit_line_join_keep_first());
-	cm->reg(new edit_line_paste());
-	cm->reg(new edit_line_paste_over());
-	cm->reg(new edit_line_recombine());
-	cm->reg(new edit_line_split_by_karaoke());
-	cm->reg(new edit_line_swap());
-	cm->reg(new edit_redo());
-	cm->reg(new edit_search_replace());
-	cm->reg(new edit_undo());
+namespace cmd {
+	void init_edit() {
+		reg(new edit_line_copy);
+		reg(new edit_line_cut);
+		reg(new edit_line_delete);
+		reg(new edit_line_duplicate);
+		reg(new edit_line_duplicate_shift);
+		reg(new edit_line_join_as_karaoke);
+		reg(new edit_line_join_concatenate);
+		reg(new edit_line_join_keep_first);
+		reg(new edit_line_paste);
+		reg(new edit_line_paste_over);
+		reg(new edit_line_recombine);
+		reg(new edit_line_split_by_karaoke);
+		reg(new edit_line_swap);
+		reg(new edit_redo);
+		reg(new edit_search_replace);
+		reg(new edit_undo);
+	}
 }
-
-} // namespace cmd

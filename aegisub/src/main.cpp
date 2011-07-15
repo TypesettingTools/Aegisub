@@ -185,11 +185,8 @@ bool AegisubApp::OnInit() {
 	config::path = new agi::Path(path.append("path.json"), GET_DEFAULT_CONFIG(default_path));
 
 
-	// Init command manager
-	cmd::cm = new cmd::CommandManager();
-
 	// Init commands.
-	cmd::init_command(cmd::cm);
+	cmd::init_builtin_commands();
 
 	// Init hotkeys.
 	const std::string conf_user_hotkey(StandardPaths::DecodePath(_T("?user/hotkey.json")));

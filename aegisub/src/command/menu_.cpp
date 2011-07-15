@@ -43,7 +43,8 @@
 
 #include "../include/aegisub/context.h"
 
-namespace cmd {
+namespace {
+	using cmd::Command;
 /// @defgroup cmd-menu Main menu dropdown and submenu related commands.
 /// @{
 
@@ -63,28 +64,27 @@ COMMAND_GROUP(main_video, "main/video", "&Video", "Video", "Video operations.");
 COMMAND_GROUP(main_video_override_ar, "main/video/override ar", "Override AR", "Override AR", "Override Aspect Ratio");
 COMMAND_GROUP(main_video_set_zoom, "main/video/set zoom", "Set Zoom", "Set Zoom", "Set zoom level.");
 COMMAND_GROUP(main_view, "main/view", "View", "View", "View options.");
-
+}
 
 /// @}
 
-/// Init menu/ commands.
-void init_menu(CommandManager *cm) {
-	cm->reg(new main_audio());
-	cm->reg(new main_automation());
-	cm->reg(new main_edit());
-	cm->reg(new main_edit_sort_lines());
-	cm->reg(new main_file());
-	cm->reg(new main_help());
-	cm->reg(new main_subtitle());
-	cm->reg(new main_subtitle_insert_lines());
-	cm->reg(new main_subtitle_join_lines());
-	cm->reg(new main_subtitle_sort_lines());
-	cm->reg(new main_timing());
-	cm->reg(new main_timing_make_times_continuous());
-	cm->reg(new main_video());
-	cm->reg(new main_video_override_ar());
-	cm->reg(new main_video_set_zoom());
-	cm->reg(new main_view());
+namespace cmd {
+	void init_menu() {
+		reg(new main_audio);
+		reg(new main_automation);
+		reg(new main_edit);
+		reg(new main_edit_sort_lines);
+		reg(new main_file);
+		reg(new main_help);
+		reg(new main_subtitle);
+		reg(new main_subtitle_insert_lines);
+		reg(new main_subtitle_join_lines);
+		reg(new main_subtitle_sort_lines);
+		reg(new main_timing);
+		reg(new main_timing_make_times_continuous);
+		reg(new main_video);
+		reg(new main_video_override_ar);
+		reg(new main_video_set_zoom);
+		reg(new main_view);
+	}
 }
-
-} // namespace cmd

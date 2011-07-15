@@ -51,7 +51,8 @@
 #include "../compat.h"
 #include "../video_context.h"
 
-namespace cmd {
+namespace {
+	using cmd::Command;
 /// @defgroup cmd-recent MRU (Most Recently Used) commands.
 /// @{
 
@@ -134,25 +135,24 @@ public:
 		full_name = ss.str();
 	}
 };
-
+}
 /// @}
 
-/// Init recent/ commands.
-void init_recent(CommandManager *cm) {
-	cm->reg(new recent_audio());
-	cm->reg(new recent_keyframe());
-	cm->reg(new recent_subtitle());
-	cm->reg(new recent_timecode());
-	cm->reg(new recent_video());
+namespace cmd {
+	void init_recent() {
+		reg(new recent_audio);
+		reg(new recent_keyframe);
+		reg(new recent_subtitle);
+		reg(new recent_timecode);
+		reg(new recent_video);
 
-	/// @todo 16 is an implementation detail that maybe needs to be exposed
-	for (int i = 0; i < 16; ++i) {
-		cm->reg(new mru_wrapper<recent_audio_entry>(i));
-		cm->reg(new mru_wrapper<recent_keyframe_entry>(i));
-		cm->reg(new mru_wrapper<recent_subtitle_entry>(i));
-		cm->reg(new mru_wrapper<recent_timecode_entry>(i));
-		cm->reg(new mru_wrapper<recent_video_entry>(i));
+		/// @todo 16 is an implementation detail that maybe needs to be exposed
+		for (int i = 0; i < 16; ++i) {
+			reg(new mru_wrapper<recent_audio_entry>(i));
+			reg(new mru_wrapper<recent_keyframe_entry>(i));
+			reg(new mru_wrapper<recent_subtitle_entry>(i));
+			reg(new mru_wrapper<recent_timecode_entry>(i));
+			reg(new mru_wrapper<recent_video_entry>(i));
+		}
 	}
 }
-
-} // namespace cmd

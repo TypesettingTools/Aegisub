@@ -18,8 +18,6 @@
 /// @brief Icon for commands.
 /// @ingroup command
 
-#pragma once
-
 #ifndef AGI_PRE
 #include <wx/bitmap.h>
 #endif
@@ -31,5 +29,5 @@ DEFINE_SIMPLE_EXCEPTION_NOINNER(IconInvalid, IconError, "icon/invalid")
 
 namespace icon {
 	void icon_init();
-	wxBitmap* get(std::string name, const int size);
-} // namespace cmd
+	wxBitmap* get(std::string const& name, int size);
+}

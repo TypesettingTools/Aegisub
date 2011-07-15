@@ -38,9 +38,6 @@
 
 #include "../config.h"
 
-#ifndef AGI_PRE
-#endif
-
 #include "command.h"
 
 #include "../ass_dialogue.h"
@@ -51,8 +48,8 @@
 #include "../frame_main.h"
 #include "../utils.h"
 
-
-namespace cmd {
+namespace {
+	using cmd::Command;
 /// @defgroup cmd-grid Subtitle grid commands.
 /// @{
 
@@ -195,20 +192,18 @@ struct grid_swap_down : public Command {
 			}
 	}
 };
-
+}
 /// @}
 
-
-/// Init grid/ commands.
-void init_grid(CommandManager *cm) {
-	cm->reg(new grid_line_next);
-	cm->reg(new grid_line_prev);
-	cm->reg(new grid_swap_down);
-	cm->reg(new grid_swap_up);
-	cm->reg(new grid_tag_cycle_hiding);
-	cm->reg(new grid_tags_hide);
-	cm->reg(new grid_tags_show);
-	cm->reg(new grid_tags_simplify);
+namespace cmd {
+	void init_grid() {
+		reg(new grid_line_next);
+		reg(new grid_line_prev);
+		reg(new grid_swap_down);
+		reg(new grid_swap_up);
+		reg(new grid_tag_cycle_hiding);
+		reg(new grid_tags_hide);
+		reg(new grid_tags_show);
+		reg(new grid_tags_simplify);
+	}
 }
-
-} // namespace cmd

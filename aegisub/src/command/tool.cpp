@@ -59,7 +59,8 @@
 #include "../dialog_kara_timing_copy.h"
 #include "../subs_grid.h"
 
-namespace cmd {
+namespace {
+	using cmd::Command;
 /// @defgroup cmd-tool Various tool and utilities
 /// @{
 
@@ -201,22 +202,20 @@ struct tool_translation_assistant : public Command {
 		DialogTranslation(c, start, true).ShowModal();
 	}
 };
-
+}
 /// @}
 
-/// Init tool/ commands.
-void init_tool(CommandManager *cm) {
-	cm->reg(new tool_assdraw());
-	cm->reg(new tool_export());
-	cm->reg(new tool_font_collector());
-	cm->reg(new tool_line_select());
-	cm->reg(new tool_resampleres());
-	cm->reg(new tool_style_assistant());
-	cm->reg(new tool_style_manager());
-	cm->reg(new tool_time_kanji());
-	cm->reg(new tool_time_postprocess());
-	cm->reg(new tool_translation_assistant());
+namespace cmd {
+	void init_tool() {
+		reg(new tool_assdraw);
+		reg(new tool_export);
+		reg(new tool_font_collector);
+		reg(new tool_line_select);
+		reg(new tool_resampleres);
+		reg(new tool_style_assistant);
+		reg(new tool_style_manager);
+		reg(new tool_time_kanji);
+		reg(new tool_time_postprocess);
+		reg(new tool_translation_assistant);
+	}
 }
-
-
-} // namespace cmd

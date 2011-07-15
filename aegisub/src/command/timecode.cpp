@@ -50,10 +50,10 @@
 #include "../compat.h"
 #include "../subs_edit_box.h"
 
-namespace cmd {
+namespace {
+	using cmd::Command;
 /// @defgroup cmd-timecode Timecode commands.
 /// @{
-
 
 /// Closes the currently open timecodes file.
 struct timecode_close : public Command {
@@ -104,14 +104,13 @@ struct timecode_save : public Command {
 		}
 	}
 };
-
+}
 /// @}
 
-/// Init timecode/ commands.
-void init_timecode(CommandManager *cm) {
-	cm->reg(new timecode_close());
-	cm->reg(new timecode_open());
-	cm->reg(new timecode_save());
+namespace cmd {
+	void init_timecode() {
+		reg(new timecode_close);
+		reg(new timecode_open);
+		reg(new timecode_save);
+	}
 }
-
-} // namespace cmd

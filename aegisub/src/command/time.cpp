@@ -55,10 +55,10 @@
 #include "../subs_grid.h"
 #include "../video_context.h"
 
-namespace cmd {
+namespace {
+	using cmd::Command;
 /// @defgroup cmd-time Time manipulation commands.
 /// @{
-
 
 /// Changes times of subs so end times begin on next's start time.
 struct time_continuous_end : public Command {
@@ -342,26 +342,26 @@ struct time_prev : public Command {
 		c->audioController->PlayPrimaryRange();
 	}
 };
+}
 
 /// @}
 
-/// Init time/ commands.
-void init_time(CommandManager *cm) {
-	cm->reg(new time_add_lead_in);
-	cm->reg(new time_add_lead_out);
-	cm->reg(new time_continuous_end);
-	cm->reg(new time_continuous_start);
-	cm->reg(new time_frame_current);
-	cm->reg(new time_next);
-	cm->reg(new time_prev);
-	cm->reg(new time_shift);
-	cm->reg(new time_snap_end_video);
-	cm->reg(new time_snap_frame);
-	cm->reg(new time_snap_scene);
-	cm->reg(new time_snap_start_video);
-	cm->reg(new time_sort_end);
-	cm->reg(new time_sort_start);
-	cm->reg(new time_sort_style);
+namespace cmd {
+	void init_time() {
+		reg(new time_add_lead_in);
+		reg(new time_add_lead_out);
+		reg(new time_continuous_end);
+		reg(new time_continuous_start);
+		reg(new time_frame_current);
+		reg(new time_next);
+		reg(new time_prev);
+		reg(new time_shift);
+		reg(new time_snap_end_video);
+		reg(new time_snap_frame);
+		reg(new time_snap_scene);
+		reg(new time_snap_start_video);
+		reg(new time_sort_end);
+		reg(new time_sort_start);
+		reg(new time_sort_style);
+	}
 }
-
-} // namespace cmd

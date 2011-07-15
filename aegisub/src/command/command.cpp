@@ -19,111 +19,92 @@
 /// @ingroup command
 
 #include "command.h"
+#include "icon.h"
 #include <libaegisub/log.h>
 
 namespace cmd {
+	static std::map<std::string, Command*> cmd_map;
+	typedef std::map<std::string, Command*>::iterator iterator;
 
-CommandManager *cm;
+	static iterator find_command(std::string const& name) {
+		iterator it = cmd_map.find(name);
+		if (it == cmd_map.end()) throw CommandNotFound("'" + name + "' is not a valid command name");
+		return it;
+	}
 
-int id(std::string name) { return cm->id(name); }
-void call(agi::Context *c, const int id) { return cm->call(c, id); }
-int count() { return cm->count(); }
-Command* get(std::string name) { return cm->get(name); }
+	void reg(Command *cmd) {
+		cmd_map[cmd->name()] = cmd;
+	}
 
+	int id(std::string const& name) {
+		return distance(cmd_map.begin(), find_command(name));
+	}
 
-wxBitmap* Command::Icon(int size) {
-	if (size == 16) {
-		return icon::get(name(), 16);
-	} else if (size == 24) {
-		return icon::get(name(), 24);
-	} else {
-		throw CommandIconInvalid("Valid icon sizes are 16 or 24.");
+	int count() {
+		return cmd_map.size();
+	}
+
+	Command *get(std::string const& name) {
+		return find_command(name)->second;
+	}
+
+	void call(agi::Context *c, int id) {
+		std::map<std::string, Command*>::iterator index(cmd_map.begin());
+		advance(index, id);
+
+		if (index != cmd_map.end()) {
+			LOG_D("event/command") << index->first << " " << "(Id: " << id << ")";
+			(*index->second)(c);
+		} else {
+			LOG_W("event/command/not_found") << "EVENT ID NOT FOUND: " << id;
+			// XXX: throw
+		}
+	}
+
+	wxBitmap* Command::Icon(int size) {
+		if (size == 16) {
+			return icon::get(name(), 16);
+		} else if (size == 24) {
+			return icon::get(name(), 24);
+		} else {
+			throw CommandIconInvalid("Valid icon sizes are 16 or 24.");
+		}
+	}
+
+	// These forward declarations exist here since we don't want to expose
+	// them in a header, they're strictly internal-use.
+	void init_app();
+	void init_audio();
+	void init_automation();
+	void init_command();
+	void init_edit();
+	void init_grid();
+	void init_help();
+	void init_keyframe();
+	void init_medusa();
+	void init_menu();
+	void init_recent();
+	void init_subtitle();
+	void init_time();
+	void init_timecode();
+	void init_tool();
+	void init_video();
+
+	void init_builtin_commands() {
+		LOG_D("command/init") << "Populating command map";
+		init_app();
+		init_audio();
+		init_automation();
+		init_edit();
+		init_grid();
+		init_help();
+		init_keyframe();
+		init_menu();
+		init_recent();
+		init_subtitle();
+		init_time();
+		init_timecode();
+		init_tool();
+		init_video();
 	}
 }
-
-
-int CommandManager::id(std::string name) {
-
-	cmdMap::iterator index;
-
-	if ((index = map.find(name)) != map.end()) {
-		int id = std::distance(map.begin(), index);
-		return id;
-	}
-	// XXX: throw
-	printf("cmd::id NOT FOUND (%s)\n", name.c_str());
-	return 60003;
-}
-
-
-Command* CommandManager::get(std::string name) {
-	cmdMap::iterator index;
-
-	if ((index = map.find(name)) != map.end()) {
-		return index->second;
-	}
-	// XXX: throw
-	printf("cmd::id NOT FOUND (%s)\n", name.c_str());
-	return 0;
-}
-
-
-
-
-void CommandManager::call(agi::Context *c, const int id) {
-	cmdMap::iterator index(map.begin());
-	std::advance(index, id);
-
-	if (index != map.end()) {
-		LOG_D("event/command") << index->first << " " << "(Id: " << id << ")";
-		(*index->second)(c);
-	} else {
-		LOG_W("event/command/not_found") << "EVENT ID NOT FOUND: " << id;
-		// XXX: throw
-	}
-}
-
-
-void CommandManager::reg(Command *cmd) {
-	map.insert(cmdPair(cmd->name(), cmd));
-}
-
-
-// These forward declarations exist here since we don't want to expose
-// them in a header, they're strictly internal-use.
-void init_app(CommandManager *cm);
-void init_audio(CommandManager *cm);
-void init_automation(CommandManager *cm);
-void init_command(CommandManager *cm);
-void init_edit(CommandManager *cm);
-void init_grid(CommandManager *cm);
-void init_help(CommandManager *cm);
-void init_keyframe(CommandManager *cm);
-void init_medusa(CommandManager *cm);
-void init_menu(CommandManager *cm);
-void init_recent(CommandManager *cm);
-void init_subtitle(CommandManager *cm);
-void init_time(CommandManager *cm);
-void init_timecode(CommandManager *cm);
-void init_tool(CommandManager *cm);
-void init_video(CommandManager *cm);
-
-void init_command(CommandManager *cm) {
-	LOG_D("command/init") << "Populating command map";
-	init_app(cm);
-	init_audio(cm);
-	init_automation(cm);
-	init_edit(cm);
-	init_grid(cm);
-	init_help(cm);
-	init_keyframe(cm);
-	init_menu(cm);
-	init_recent(cm);
-	init_subtitle(cm);
-	init_time(cm);
-	init_timecode(cm);
-	init_tool(cm);
-	init_video(cm);
-}
-
-} // namespace cmd

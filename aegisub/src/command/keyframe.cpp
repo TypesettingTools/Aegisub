@@ -49,7 +49,8 @@
 #include "../compat.h"
 #include "../video_context.h"
 
-namespace cmd {
+namespace {
+	using cmd::Command;
 /// @defgroup cmd-keyframed Keyframe commands.
 /// @{
 
@@ -106,14 +107,13 @@ struct keyframe_save : public Command {
 		c->videoController->SaveKeyframes(filename);
 	}
 };
-
+}
 /// @}
 
-/// Init keyframe/ commands.
-void init_keyframe(CommandManager *cm) {
-	cm->reg(new keyframe_close());
-	cm->reg(new keyframe_open());
-	cm->reg(new keyframe_save());
+namespace cmd {
+	void init_keyframe() {
+		reg(new keyframe_close);
+		reg(new keyframe_open);
+		reg(new keyframe_save);
+	}
 }
-
-} // namespace cmd

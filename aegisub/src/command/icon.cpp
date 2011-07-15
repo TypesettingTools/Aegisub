@@ -39,7 +39,7 @@ typedef std::pair<std::string, wxBitmap*> iconPair;
 iconMap icon16;
 iconMap icon24;
 
-wxBitmap* get(std::string name, const int size) {
+wxBitmap* get(std::string const& name, const int size) {
 
 	// XXX: This code will go away with dynamic icon generation so I'm not
 	//      concerned about it.

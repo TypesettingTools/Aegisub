@@ -50,11 +50,10 @@
 #include "../help_button.h" // help_contents
 #include "../main.h"
 
-namespace cmd {
+namespace {
+	using cmd::Command;
 /// @defgroup cmd-help Help commands.
 /// @{
-
-
 
 /// Visit Aegisub's bug tracker.
 struct help_bugs : public Command {
@@ -157,18 +156,17 @@ struct help_website : public Command {
 		AegisubApp::OpenURL(_T("http://www.aegisub.org/"));
 	}
 };
-
+}
 /// @}
 
-/// Init help/ commands.
-void init_help(CommandManager *cm) {
-	cm->reg(new help_bugs);
-	cm->reg(new help_contents);
-	cm->reg(new help_files);
-	cm->reg(new help_forums);
-	cm->reg(new help_irc);
-	cm->reg(new help_video);
-	cm->reg(new help_website);
+namespace cmd {
+	void init_help() {
+		reg(new help_bugs);
+		reg(new help_contents);
+		reg(new help_files);
+		reg(new help_forums);
+		reg(new help_irc);
+		reg(new help_video);
+		reg(new help_website);
+	}
 }
-
-} // namespace cmd

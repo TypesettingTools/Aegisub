@@ -50,7 +50,8 @@
 #include "../video_context.h"
 #include "../frame_main.h"
 
-namespace cmd {
+namespace {
+	using cmd::Command;
 /// @defgroup cmd-am Automation commands
 /// @{
 
@@ -98,11 +99,10 @@ struct am_manager : public Command {
 };
 
 /// @}
-
-/// Init am/ commands. (automation)
-void init_automation(CommandManager *cm) {
-	cm->reg(new am_manager());
 }
 
-
-} // namespace cmd
+namespace cmd {
+	void init_automation() {
+		reg(new am_manager);
+	}
+}

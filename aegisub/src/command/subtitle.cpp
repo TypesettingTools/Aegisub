@@ -62,11 +62,10 @@
 #include "../video_context.h"
 #include "../utils.h"
 
-
-namespace cmd {
+namespace {
+	using cmd::Command;
 /// @defgroup cmd-subtitle Subtitle commands.
 /// @{
-
 
 /// Open the attachment list.
 struct subtitle_attachment : public Command {
@@ -406,30 +405,29 @@ struct subtitle_tags_show : public Command {
 //XXX: see grid.cpp:grid_tags_hide()
 	}
 };
+}
 
 /// @}
 
-/// Init subtitle/ commands.
-void init_subtitle(CommandManager *cm) {
-	cm->reg(new subtitle_attachment);
-	cm->reg(new subtitle_find);
-	cm->reg(new subtitle_find_next);
-	cm->reg(new subtitle_insert_after);
-	cm->reg(new subtitle_insert_after_videotime);
-	cm->reg(new subtitle_insert_before);
-	cm->reg(new subtitle_insert_before_videotime);
-	cm->reg(new subtitle_new);
-	cm->reg(new subtitle_open);
-	cm->reg(new subtitle_open_charset);
-	cm->reg(new subtitle_open_video);
-	cm->reg(new subtitle_properties);
-	cm->reg(new subtitle_save);
-	cm->reg(new subtitle_save_as);
-	cm->reg(new subtitle_select_all);
-	cm->reg(new subtitle_select_visible);
-	cm->reg(new subtitle_spellcheck);
-	cm->reg(new subtitle_tags_show);
+namespace cmd {
+	void init_subtitle() {
+		reg(new subtitle_attachment);
+		reg(new subtitle_find);
+		reg(new subtitle_find_next);
+		reg(new subtitle_insert_after);
+		reg(new subtitle_insert_after_videotime);
+		reg(new subtitle_insert_before);
+		reg(new subtitle_insert_before_videotime);
+		reg(new subtitle_new);
+		reg(new subtitle_open);
+		reg(new subtitle_open_charset);
+		reg(new subtitle_open_video);
+		reg(new subtitle_properties);
+		reg(new subtitle_save);
+		reg(new subtitle_save_as);
+		reg(new subtitle_select_all);
+		reg(new subtitle_select_visible);
+		reg(new subtitle_spellcheck);
+		reg(new subtitle_tags_show);
+	}
 }
-
-
-} // namespace cmd
