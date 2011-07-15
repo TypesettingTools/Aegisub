@@ -662,20 +662,6 @@ void SubtitlesGrid::SetSubsToVideo(bool start) {
 	}
 }
 
-void SubtitlesGrid::SetVideoToSubs(bool start) {
-	wxArrayInt sel = GetSelection();
-	if (sel.Count() == 0) return;
-	AssDialogue *cur = GetDialogue(sel[0]);
-	if (cur) {
-		if (start) 
-			context->videoController->JumpToTime(cur->Start.GetMS());
-		else 
-			context->videoController->JumpToTime(cur->End.GetMS(), agi::vfr::END);
-	}
-}
-
-
-
 /// @brief Retrieve a list of selected lines in the actual ASS file (ie. not as displayed in the grid but as represented in the file)
 /// @return 
 ///

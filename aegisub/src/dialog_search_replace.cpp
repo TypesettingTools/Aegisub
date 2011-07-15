@@ -41,9 +41,10 @@
 #include <wx/string.h>
 #endif
 
-#include "compat.h"
 #include "ass_dialogue.h"
 #include "ass_file.h"
+#include "command/command.h"
+#include "compat.h"
 #include "dialog_search_replace.h"
 #include "include/aegisub/context.h"
 #include "frame_main.h"
@@ -458,7 +459,7 @@ void SearchReplaceEngine::ReplaceNext(bool DoReplace) {
 
 		// Update video
 		if (updateVideo) {
-			context->subsGrid->SetVideoToSubs(true);
+			(*cmd::get("video/jump/start"))(context);
 		}
 		else if (DoReplace) Modified = true;
 

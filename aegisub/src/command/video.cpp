@@ -445,7 +445,9 @@ struct video_jump_end : public validator_video_loaded {
 	STR_HELP("Jumps the video to the end frame of current subtitle.")
 
 	void operator()(agi::Context *c) {
-		c->subsGrid->SetVideoToSubs(false);
+		if (AssDialogue *active_line = c->selectionController->GetActiveLine()) {
+			c->videoController->JumpToTime(active_line->End.GetMS(), agi::vfr::END);
+		}
 	}
 };
 
@@ -457,7 +459,9 @@ struct video_jump_start : public validator_video_loaded {
 	STR_HELP("Jumps the video to the start frame of current subtitle.")
 
 	void operator()(agi::Context *c) {
-		c->subsGrid->SetVideoToSubs(true);
+		if (AssDialogue *active_line = c->selectionController->GetActiveLine()) {
+			c->videoController->JumpToTime(active_line->Start.GetMS());
+		}
 	}
 };
 
