@@ -81,6 +81,7 @@ struct app_display_audio_subs : public Command {
 	STR_MENU("Audio+Subs View")
 	STR_DISP("Audio+Subs View")
 	STR_HELP("Display audio and subtitles only.")
+	CMD_TYPE(COMMAND_VALIDATE | COMMAND_RADIO)
 
 	void operator()(agi::Context *c) {
 		wxGetApp().frame->SetDisplayMode(0,1);
@@ -98,6 +99,7 @@ struct app_display_full : public Command {
 	STR_MENU("Full view")
 	STR_DISP("Full view")
 	STR_HELP("Display audio, video and subtitles.")
+	CMD_TYPE(COMMAND_VALIDATE | COMMAND_RADIO)
 
 	void operator()(agi::Context *c) {
 		wxGetApp().frame->SetDisplayMode(1,1);
@@ -115,6 +117,7 @@ struct app_display_subs : public Command {
 	STR_MENU("Subs Only View")
 	STR_DISP("Subs Only View")
 	STR_HELP("Display subtitles only.")
+	CMD_TYPE(COMMAND_VALIDATE | COMMAND_RADIO)
 
 	void operator()(agi::Context *c) {
 		wxGetApp().frame->SetDisplayMode(0,0);
@@ -128,6 +131,7 @@ struct app_display_video_subs : public Command {
 	STR_MENU("Video+Subs View")
 	STR_DISP("Video+Subs View")
 	STR_HELP("Display video and subtitles only.")
+	CMD_TYPE(COMMAND_VALIDATE | COMMAND_RADIO)
 
 	void operator()(agi::Context *c) {
 		wxGetApp().frame->SetDisplayMode(1,0);
@@ -180,7 +184,6 @@ struct app_language : public Command {
 		}
 	}
 };
-
 
 /// Event log.
 struct app_log : public Command {

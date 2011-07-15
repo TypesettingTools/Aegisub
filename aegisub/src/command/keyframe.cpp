@@ -61,6 +61,7 @@ struct keyframe_close : public Command {
 	STR_MENU("Close Keyframes")
 	STR_DISP("Close Keyframes")
 	STR_HELP("Closes the currently open keyframes list.")
+	CMD_TYPE(COMMAND_VALIDATE)
 
 	bool Validate(const agi::Context *c) {
 		return c->videoController->OverKeyFramesLoaded();
@@ -102,6 +103,7 @@ struct keyframe_save : public Command {
 	STR_MENU("Save Keyframes..")
 	STR_DISP("Save Keyframes")
 	STR_HELP("Saves the current keyframe list.")
+	CMD_TYPE(COMMAND_VALIDATE)
 
 	bool Validate(const agi::Context *c) {
 		return c->videoController->KeyFramesLoaded();

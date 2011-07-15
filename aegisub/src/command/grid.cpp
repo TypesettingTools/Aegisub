@@ -111,6 +111,7 @@ struct grid_tags_hide : public Command {
 	STR_MENU("Hide Tags")
 	STR_DISP("Hide Tags")
 	STR_HELP("Hide override tags in the subtitle grid.")
+	CMD_TYPE(COMMAND_RADIO)
 
 	void operator()(agi::Context *c) {
 		OPT_SET("Subtitle/Grid/Hide Overrides")->SetInt(2);
@@ -124,6 +125,7 @@ struct grid_tags_show : public Command {
 	STR_MENU("Show Tags")
 	STR_DISP("Show Tags")
 	STR_HELP("Show full override tags in the subtitle grid.")
+	CMD_TYPE(COMMAND_RADIO)
 
 	void operator()(agi::Context *c) {
 		OPT_SET("Subtitle/Grid/Hide Overrides")->SetInt(0);
@@ -137,6 +139,7 @@ struct grid_tags_simplify : public Command {
 	STR_MENU("Simplify Tags")
 	STR_DISP("Simplify Tags")
 	STR_HELP("Replace override tags in the subtitle grid with a simplified placeholder.")
+	CMD_TYPE(COMMAND_RADIO)
 
 	void operator()(agi::Context *c) {
 		OPT_SET("Subtitle/Grid/Hide Overrides")->SetInt(1);
@@ -166,6 +169,7 @@ struct grid_swap_up : public Command {
 	STR_MENU("Move line up")
 	STR_DISP("Move line up")
 	STR_HELP("Move the selected line up one row")
+	CMD_TYPE(COMMAND_VALIDATE)
 
 	bool Validate(agi::Context *c) {
 		return c->selectionController->GetActiveLine() != 0;
@@ -185,9 +189,10 @@ struct grid_swap_up : public Command {
 /// Swap the active line with the dialogue line below it
 struct grid_swap_down : public Command {
 	CMD_NAME("grid/swap/down")
-		STR_MENU("Move line down")
-		STR_DISP("Move line down")
-		STR_HELP("Move the selected line down one row")
+	STR_MENU("Move line down")
+	STR_DISP("Move line down")
+	STR_HELP("Move the selected line down one row")
+	CMD_TYPE(COMMAND_VALIDATE)
 
 	bool Validate(agi::Context *c) {
 		return c->selectionController->GetActiveLine() != 0;

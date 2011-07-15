@@ -68,12 +68,14 @@ namespace {
 /// @{
 
 struct validate_nonempty_selection : public Command {
+	CMD_TYPE(COMMAND_VALIDATE)
 	bool Validate(const agi::Context *c) {
 		return !c->selectionController->GetSelectedSet().empty();
 	}
 };
 
 struct validate_nonempty_selection_video_loaded : public Command {
+	CMD_TYPE(COMMAND_VALIDATE)
 	bool Validate(const agi::Context *c) {
 		return c->videoController->IsLoaded() && !c->selectionController->GetSelectedSet().empty();
 	}
@@ -294,6 +296,7 @@ struct subtitle_open_video : public Command {
 	STR_MENU("Open Subtitles from &Video")
 	STR_DISP("Open Subtitles from Video")
 	STR_HELP("Opens the subtitles from the current video file.")
+	CMD_TYPE(COMMAND_VALIDATE)
 
 	void operator()(agi::Context *c) {
 		wxGetApp().frame->LoadSubtitles(c->videoController->videoName, "binary");
@@ -388,6 +391,7 @@ struct subtitle_select_visible : public Command {
 	STR_MENU("Select Visible")
 	STR_DISP("Select Visible")
 	STR_HELP("Selects all lines that are currently visible on video frame.")
+	CMD_TYPE(COMMAND_VALIDATE)
 
 	void operator()(agi::Context *c) {
 		c->videoController->Stop();

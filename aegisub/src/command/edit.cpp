@@ -59,12 +59,14 @@ namespace {
 /// @{
 
 struct validate_sel_nonempty : public Command {
+	CMD_TYPE(COMMAND_VALIDATE)
 	bool Validate(const agi::Context *c) {
 		return c->selectionController->GetSelectedSet().size() > 0;
 	}
 };
 
 struct validate_sel_multiple : public Command {
+	CMD_TYPE(COMMAND_VALIDATE)
 	bool Validate(const agi::Context *c) {
 		return c->selectionController->GetSelectedSet().size() > 1;
 	}
@@ -137,6 +139,7 @@ struct edit_line_duplicate_shift : public Command {
 	STR_MENU("&Duplicate and Shift by 1 Frame")
 	STR_DISP("Duplicate and Shift by 1 Frame")
 	STR_HELP("Duplicate lines and shift by one frame.")
+	CMD_TYPE(COMMAND_VALIDATE)
 
 	bool Validate(const agi::Context *c) {
 		return !c->selectionController->GetSelectedSet().empty() && c->videoController->IsLoaded();
@@ -234,6 +237,7 @@ struct edit_line_paste : public Command {
 	STR_MENU("Paste Lines")
 	STR_DISP("Paste Lines")
 	STR_HELP("Paste subtitles.")
+	CMD_TYPE(COMMAND_VALIDATE)
 
 	bool Validate(const agi::Context *c) {
 		if (wxTheClipboard->Open()) {
@@ -260,6 +264,7 @@ struct edit_line_paste_over : public Command {
 	STR_MENU("Paste Lines Over..")
 	STR_DISP("Paste Lines Over")
 	STR_HELP("Paste subtitles over others.")
+	CMD_TYPE(COMMAND_VALIDATE)
 
 	bool Validate(const agi::Context *c) {
 		if (wxTheClipboard->Open()) {
@@ -317,6 +322,7 @@ struct edit_line_swap : public Command {
 	STR_MENU("Swap Lines")
 	STR_DISP("Swap Lines")
 	STR_HELP("Swaps the two selected lines.")
+	CMD_TYPE(COMMAND_VALIDATE)
 
 	bool Validate(const agi::Context *c) {
 		return c->selectionController->GetSelectedSet().size() == 2;
@@ -342,6 +348,7 @@ struct edit_redo : public Command {
 	STR_MENU("&Redo")
 	STR_DISP("Redo")
 	STR_HELP("Redoes last action.")
+	CMD_TYPE(COMMAND_VALIDATE | COMMAND_DYNAMIC_NAME)
 
 	bool Validate(const agi::Context *c) {
 		return !c->ass->IsRedoStackEmpty();
@@ -374,6 +381,7 @@ struct edit_undo : public Command {
 	STR_MENU("&Undo")
 	STR_DISP("Undo")
 	STR_HELP("Undoes last action.")
+	CMD_TYPE(COMMAND_VALIDATE | COMMAND_DYNAMIC_NAME)
 
 	bool Validate(const agi::Context *c) {
 		return !c->ass->IsUndoStackEmpty();

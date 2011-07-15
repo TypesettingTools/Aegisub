@@ -64,12 +64,14 @@ namespace {
 /// @{
 
 struct validator_video_loaded : public Command {
+	CMD_TYPE(COMMAND_VALIDATE)
 	bool Validate(const agi::Context *c) {
 		return c->videoController->IsLoaded();
 	}
 };
 
 struct validator_video_attached : public Command {
+	CMD_TYPE(COMMAND_VALIDATE)
 	bool Validate(const agi::Context *c) {
 		return c->videoController->IsLoaded() && !c->detachedVideo;
 	}
@@ -81,6 +83,7 @@ struct video_aspect_cinematic : public validator_video_attached {
 	STR_MENU("&Cinematic (2.35)")
 	STR_DISP("Cinematic (235)")
 	STR_HELP("Forces video to 2.35 aspect ratio.")
+	CMD_TYPE(COMMAND_VALIDATE | COMMAND_RADIO)
 
 	void operator()(agi::Context *c) {
 		c->videoController->Stop();
@@ -95,6 +98,7 @@ struct video_aspect_custom : public validator_video_attached {
 	STR_MENU("Custom..")
 	STR_DISP("Custom")
 	STR_HELP("Forces video to a custom aspect ratio.")
+	CMD_TYPE(COMMAND_VALIDATE | COMMAND_RADIO)
 
 	void operator()(agi::Context *c) {
 		c->videoController->Stop();
@@ -150,6 +154,7 @@ struct video_aspect_default : public validator_video_attached {
 	STR_MENU("&Default")
 	STR_DISP("Default")
 	STR_HELP("Leave video on original aspect ratio.")
+	CMD_TYPE(COMMAND_VALIDATE | COMMAND_RADIO)
 
 	void operator()(agi::Context *c) {
 		c->videoController->Stop();
@@ -164,6 +169,7 @@ struct video_aspect_full : public validator_video_attached {
 	STR_MENU("&Fullscreen (4:3)")
 	STR_DISP("Fullscreen (4:3)")
 	STR_HELP("Forces video to 4:3 aspect ratio.")
+	CMD_TYPE(COMMAND_VALIDATE | COMMAND_RADIO)
 
 	void operator()(agi::Context *c) {
 		c->videoController->Stop();
@@ -178,6 +184,7 @@ struct video_aspect_wide : public validator_video_attached {
 	STR_MENU("&Widescreen (16:9)")
 	STR_DISP("Widescreen (16:9)")
 	STR_HELP("Forces video to 16:9 aspect ratio.")
+	CMD_TYPE(COMMAND_VALIDATE | COMMAND_RADIO)
 
 	void operator()(agi::Context *c) {
 		c->videoController->Stop();
@@ -204,6 +211,7 @@ struct video_detach : public validator_video_loaded {
 	STR_MENU("Detach Video")
 	STR_DISP("Detach Video")
 	STR_HELP("Detach video, displaying it in a separate Window.")
+	CMD_TYPE(COMMAND_VALIDATE | COMMAND_TOGGLE)
 
 	void operator()(agi::Context *c) {
 		wxGetApp().frame->DetachVideo(!c->detachedVideo);
@@ -469,6 +477,7 @@ struct video_opt_autoscroll : public Command {
 	STR_MENU("Toggle autoscroll of video")
 	STR_DISP("Toggle autoscroll of video")
 	STR_HELP("Toggle autoscroll of video")
+	CMD_TYPE(COMMAND_TOGGLE)
 
 	void operator()(agi::Context *c) {
 		OPT_SET("Video/Subtitle Sync")->SetBool(!OPT_GET("Video/Subtitle Sync")->GetBool());
@@ -505,6 +514,7 @@ struct video_show_overscan : public validator_video_loaded {
 	STR_MENU("Show Overscan Mask")
 	STR_DISP("Show Overscan Mask")
 	STR_HELP("Show a mask over the video, indicating areas that might get cropped off by overscan on televisions.")
+	CMD_TYPE(COMMAND_VALIDATE | COMMAND_TOGGLE)
 
 	void operator()(agi::Context *c) {
 		OPT_SET("Video/Overscan Mask")->SetBool(!OPT_GET("Video/Overscan Mask")->GetBool());
@@ -519,6 +529,7 @@ public:
 	STR_MENU("&100%")
 	STR_DISP("100%")
 	STR_HELP("Set zoom to 100%.")
+	CMD_TYPE(COMMAND_VALIDATE | COMMAND_RADIO)
 
 	void operator()(agi::Context *c) {
 		c->videoController->Stop();
@@ -546,6 +557,7 @@ public:
 	STR_MENU("&200%")
 	STR_DISP("200%")
 	STR_HELP("Set zoom to 200%.")
+	CMD_TYPE(COMMAND_VALIDATE | COMMAND_RADIO)
 
 	void operator()(agi::Context *c) {
 		c->videoController->Stop();
@@ -560,6 +572,7 @@ public:
 	STR_MENU("&50%")
 	STR_DISP("50%")
 	STR_HELP("Set zoom to 50%.")
+	CMD_TYPE(COMMAND_VALIDATE | COMMAND_RADIO)
 
 	void operator()(agi::Context *c) {
 		c->videoController->Stop();

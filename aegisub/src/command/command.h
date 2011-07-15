@@ -39,6 +39,7 @@ DEFINE_SIMPLE_EXCEPTION_NOINNER(CommandIconInvalid, CommandError, "command/icon/
 #define STR_MENU(a) wxString StrMenu() const { return a; }
 #define STR_DISP(a) wxString StrDisplay() const { return a; }
 #define STR_HELP(a) wxString StrHelp() const { return a; }
+#define CMD_TYPE(a) int Type() const { using namespace cmd; return a; }
 
 #define COMMAND_GROUP(cname, cmdname, menu, disp, help) \
 struct cname : public Command {                         \
@@ -51,6 +52,35 @@ struct cname : public Command {                         \
 
 /// Commands
 namespace cmd {
+	enum CommandFlags {
+		/// Default command type
+		COMMAND_NORMAL       = 0,
+
+		/// Invoking this command toggles a setting of some sort. Any command
+		/// of this type should have IsActive implemented to signal the
+		/// current state of the thing being toggled, and invoking the command
+		/// twice should be a no-op
+		///
+		/// This is mutually exclusive with COMMAND_RADIO
+		COMMAND_TOGGLE       = 1,
+
+		/// Invoking this command sets a setting to a specific value. Any
+		/// command of this type should have IsActive implemented, and if
+		/// IsActive returns true, invoking the command should have no effect
+		///
+		/// This is mutually exclusive with COMMAND_TOGGLE
+		COMMAND_RADIO        = 2,
+
+		/// This command has an overridden Validate method
+		COMMAND_VALIDATE     = 4,
+
+		/// This command's name may change based on the state of the project
+		COMMAND_DYNAMIC_NAME = 8,
+
+		/// This command's icon may change based on the state of the project
+		COMMAND_DYNAMIC_ICON = 16
+	};
+
 	/// Holds an individual Command
 	class Command {
 	public:
@@ -58,6 +88,10 @@ namespace cmd {
 		virtual wxString StrMenu() const=0;			///< String for menu purposes including accelerators.
 		virtual wxString StrDisplay() const=0;		///< Plain string for display purposes.
 		virtual wxString StrHelp() const=0;			///< Short help string descripting the command purpose.
+
+		/// Get this command's type flags
+		/// @return Bitmask of CommandFlags
+		virtual int Type() const { return COMMAND_NORMAL; }
 
 		/// Request icon.
 		/// @param size Icon size.

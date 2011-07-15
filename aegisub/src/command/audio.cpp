@@ -58,6 +58,7 @@ namespace {
 	using cmd::Command;
 
 	struct validate_audio_open : public Command {
+		CMD_TYPE(COMMAND_VALIDATE)
 		bool Validate(const agi::Context *c) {
 			return c->audioController->IsAudioOpen();
 		}
@@ -132,6 +133,7 @@ struct audio_open_video : public Command {
 	STR_MENU("Open Audio from &Video")
 	STR_DISP("Open Audio from Video")
 	STR_HELP("Opens the audio from the current video file.")
+	CMD_TYPE(COMMAND_VALIDATE)
 
 	bool Validate(const agi::Context *c) {
 		return c->videoController->IsLoaded();
@@ -149,6 +151,7 @@ struct audio_view_spectrum : public Command {
 	STR_MENU("Spectrum Display")
 	STR_DISP("Spectrum Display")
 	STR_HELP("Display audio as a frequency-power spectrograph.")
+	CMD_TYPE(COMMAND_RADIO)
 
 	void operator()(agi::Context *c) {
 		OPT_SET("Audio/Spectrum")->SetBool(true);
@@ -162,6 +165,7 @@ struct audio_view_waveform : public Command {
 	STR_MENU("Waveform Display")
 	STR_DISP("Waveform Display")
 	STR_HELP("Display audio as a linear amplitude graph.")
+	CMD_TYPE(COMMAND_RADIO)
 
 	void operator()(agi::Context *c) {
 		OPT_SET("Audio/Spectrum")->SetBool(false);
@@ -174,6 +178,7 @@ struct audio_save_clip : public Command {
 	STR_MENU("Create audio clip")
 	STR_DISP("Create audio clip")
 	STR_HELP("Create an audio clip of the selected line")
+	CMD_TYPE(COMMAND_VALIDATE)
 
 	bool Validate(const agi::Context *c) {
 		return c->audioController->IsAudioOpen() && !c->selectionController->GetSelectedSet().empty();
@@ -208,6 +213,7 @@ struct audio_stop : public Command {
 	STR_MENU("Stop playing")
 	STR_DISP("Stop playing")
 	STR_HELP("Stop")
+	CMD_TYPE(COMMAND_VALIDATE)
 
 	bool Validate(const agi::Context *c) {
 		return c->audioController->IsPlaying();
@@ -330,6 +336,7 @@ struct audio_autoscroll : public Command {
 	STR_MENU("Auto scrolls audio display to selected line")
 	STR_DISP("Auto scrolls audio display to selected line")
 	STR_HELP("Auto scrolls audio display to selected line")
+	CMD_TYPE(COMMAND_TOGGLE)
 
 	void operator()(agi::Context *c) {
 		toggle("Audio/Auto/Scroll");
@@ -342,6 +349,7 @@ struct audio_autocommit : public Command {
 	STR_MENU("Automatically commit all changes")
 	STR_DISP("Automatically commit all changes")
 	STR_HELP("Automatically commit all changes")
+	CMD_TYPE(COMMAND_TOGGLE)
 
 	void operator()(agi::Context *c) {
 		toggle("Audio/Auto/Commit");
@@ -354,6 +362,7 @@ struct audio_autonext : public Command {
 	STR_MENU("Auto goes to next line on commit")
 	STR_DISP("Auto goes to next line on commit")
 	STR_HELP("Auto goes to next line on commit")
+	CMD_TYPE(COMMAND_TOGGLE)
 
 	void operator()(agi::Context *c) {
 		toggle("Audio/Next Line on Commit");
@@ -366,6 +375,7 @@ struct audio_vertical_link : public Command {
 	STR_MENU("Link vertical zoom and volume sliders")
 	STR_DISP("Link vertical zoom and volume sliders")
 	STR_HELP("Link vertical zoom and volume sliders")
+	CMD_TYPE(COMMAND_TOGGLE)
 
 	void operator()(agi::Context *c) {
 		toggle("Audio/Link");

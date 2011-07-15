@@ -61,6 +61,7 @@ struct timecode_close : public Command {
 	STR_MENU("Close Timecodes File")
 	STR_DISP("Close Timecodes File")
 	STR_HELP("Closes the currently open timecodes file.")
+	CMD_TYPE(COMMAND_VALIDATE)
 
 	bool Validate(const agi::Context *c) {
 		return c->videoController->OverTimecodesLoaded();
@@ -97,6 +98,7 @@ struct timecode_save : public Command {
 	STR_MENU("Save Timecodes File..")
 	STR_DISP("Save Timecodes File")
 	STR_HELP("Saves a VFR timecodes v2 file.")
+	CMD_TYPE(COMMAND_VALIDATE)
 
 	bool Validate(const agi::Context *c) {
 		return c->videoController->TimecodesLoaded();

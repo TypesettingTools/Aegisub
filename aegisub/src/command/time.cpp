@@ -59,12 +59,14 @@ namespace {
 	using cmd::Command;
 
 	struct validate_video_loaded : public Command {
+		CMD_TYPE(COMMAND_VALIDATE)
 		bool Validate(const agi::Context *c) {
 			return c->videoController->IsLoaded();
 		}
 	};
 
 	struct validate_adjoinable : public Command {
+		CMD_TYPE(COMMAND_VALIDATE)
 		bool Validate(const agi::Context *c) {
 			SelectionController<AssDialogue>::Selection sel = c->selectionController->GetSelectedSet();
 			if (sel.size() < 2) return false;
