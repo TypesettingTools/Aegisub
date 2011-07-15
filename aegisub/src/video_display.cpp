@@ -144,7 +144,10 @@ VideoDisplay::VideoDisplay(
 {
 	assert(box);
 
-	if (zoomBox) zoomBox->SetValue(wxString::Format("%g%%", zoomValue * 100.));
+	if (zoomBox) {
+		zoomBox->SetValue(wxString::Format("%g%%", zoomValue * 100.));
+		zoomBox->Bind(wxEVT_COMMAND_COMBOBOX_SELECTED, &VideoDisplay::SetZoomFromBox, this);
+	}
 	box->Bind(wxEVT_COMMAND_TOOL_CLICKED, &VideoDisplay::OnMode, this, Video_Mode_Standard, Video_Mode_Vector_Clip);
 
 	con->videoController->Bind(EVT_FRAME_READY, &VideoDisplay::UploadFrameData, this);
@@ -163,6 +166,9 @@ VideoDisplay::VideoDisplay(
 
 VideoDisplay::~VideoDisplay () {
 	con->videoController->Unbind(EVT_FRAME_READY, &VideoDisplay::UploadFrameData, this);
+	if (zoomBox) {
+		zoomBox->Unbind(wxEVT_COMMAND_COMBOBOX_SELECTED, &VideoDisplay::SetZoomFromBox, this);
+	}
 }
 
 bool VideoDisplay::InitContext() {
@@ -470,7 +476,7 @@ void VideoDisplay::SetZoom(double value) {
 	if (zoomBox) zoomBox->SetValue(wxString::Format("%g%%", zoomValue * 100.));
 	UpdateSize();
 }
-void VideoDisplay::SetZoomFromBox() {
+void VideoDisplay::SetZoomFromBox(wxCommandEvent &) {
 	if (!zoomBox) return;
 	wxString strValue = zoomBox->GetValue();
 	strValue.EndsWith(L"%", &strValue);
