@@ -49,31 +49,22 @@
 
 #include <libaegisub/scoped_ptr.h>
 
+class AegisubFileDropTarget;
 class AssFile;
+class AudioBox;
+class AudioController;
+class AudioProvider;
+class DialogDetachedVideo;
+class DialogStyling;
+class SubsEditBox;
+class SubtitlesGrid;
+class VideoBox;
 class VideoDisplay;
 class VideoSlider;
 class VideoZoomSlider;
-class SubtitlesGrid;
-class SubsEditBox;
-class AudioBox;
-class VideoBox;
-class DialogDetachedVideo;
-class DialogStyling;
-class AegisubFileDropTarget;
-class AudioController;
-class AudioProvider;
 
 namespace agi { struct Context; }
 namespace Automation4 { class FeatureMacro; class ScriptManager; }
-
-
-enum SubMenuID {
-	ID_TOOLBAR_ZOOM_DROPDOWN				= 11001,
-	ID_APP_TIMER_AUTOSAVE					= 12001,
-	ID_APP_TIMER_STATUSCLEAR				= 12002,
-	ID_MENU_AUTOMATION_MACRO				= 13006,
-	ID_SASH_MAIN_AUDIO						= 14001
-};
 
 /// DOCME
 /// @class FrameMain
@@ -84,8 +75,14 @@ class FrameMain: public wxFrame {
 	friend class AegisubFileDropTarget;
 
 public:
+	/// Set the status bar text
+	/// @param text New status bar text
+	/// @param ms Time in milliseconds that the message should be visible
 	void StatusTimeout(wxString text,int ms=10000);
-	void SetDisplayMode(int showVid,int showAudio);
+	/// @brief Set the video and audio display visibility
+	/// @param video -1: leave unchanged; 0: hide; 1: show
+	/// @param audio -1: leave unchanged; 0: hide; 1: show
+	void SetDisplayMode(int showVid, int showAudio);
 	void LoadSubtitles(wxString filename,wxString charset="");
 	void DetachVideo(bool detach=true);
 	void LoadVFR(wxString filename);
@@ -100,53 +97,42 @@ private:
 #endif
 	void cmd_call(wxCommandEvent& event);
 
-	/// DOCME
-
-	/// DOCME
-	bool showVideo,showAudio;
-
-	/// DOCME
-	wxTimer AutoSave;
-
-	/// DOCME
-	wxTimer StatusClear;
-
-
-	/// DOCME
+	bool showVideo;       ///< Is the video display shown?
+	bool showAudio;       ///< Is the audio display shown?
+	wxTimer AutoSave;     ///< Autosave timer
+	wxTimer StatusClear;  ///< Status bar timeout timer
+	/// Block video loading; used when both video and subtitles are opened at
+	/// the same time, so that the video associated with the subtitles (if any)
+	/// isn't loaded
 	bool blockVideoLoad;
 
-
-	/// DOCME
 	wxPanel *Panel;
-
-	/// DOCME
-	wxToolBar *Toolbar;
-
-	/// DOCME
-	wxComboBox *ZoomBox;
-
-	/// DOCME
+	wxToolBar *Toolbar;  ///< The main toolbar
+	wxComboBox *ZoomBox; ///< The video zoom dropdown in the main toolbar
 	std::vector<Automation4::FeatureMacro*> activeMacroItems;
+
 	int AddMacroMenuItems(wxMenu *menu, const std::vector<Automation4::FeatureMacro*> &macros);
 
 	void InitToolbar();
 	void InitContents();
-	void DeInitContents();
+	void InitMenu();
 
 	bool LoadList(wxArrayString list);
 	void UpdateTitle();
-
-	void InitMenu();
 
 	void OnKeyDown(wxKeyEvent &event);
 	void OnMenuOpen (wxMenuEvent &event);
 
 	void OnAudioBoxResize(wxSashEvent &event);
+	/// @brief Autosave the currently open file, if any
 	void OnAutoSave(wxTimerEvent &event);
 	void OnStatusClear(wxTimerEvent &event);
 	void OnCloseWindow (wxCloseEvent &event);
+	/// @brief General handler for all Automation-generated menu items
 	void OnAutomationMacro(wxCommandEvent &event);
 
+	/// Close the currently open subs, asking the user if they want to save if there are unsaved changes
+	/// @param enableCancel Should the user be able to cancel the close?
 	int TryToCloseSubs(bool enableCancel=true);
 
 	void RebuildRecentList(const char *root_command, const char *mru_name);
@@ -161,29 +147,15 @@ private:
 	void OnSubtitlesSave();
 
 
-	/// The subtitle editing area
-	SubtitlesGrid *SubsGrid;
+	SubtitlesGrid *SubsGrid; ///< The subtitle editing area
+	SubsEditBox *EditBox;    ///< The subtitle editing textbox
+	wxSashWindow *audioSash; ///< Sash for resizing the audio area
+	AudioBox *audioBox;      ///< The audio area
+	VideoBox *videoBox;      ///< The video area
 
-	/// The subtitle editing textbox
-	SubsEditBox *EditBox;
-
-	/// Sash for resizing the audio area
-	wxSashWindow *audioSash;
-
-	/// The audio area
-	AudioBox *audioBox;
-
-	/// The video area
-	VideoBox *videoBox;
-
-	/// Arranges things from top to bottom in the window
-	wxBoxSizer *MainSizer;
-
-	/// Arranges video box and tool box from left to right
-	wxBoxSizer *TopSizer;
-
-	/// Arranges audio and editing areas top to bottom
-	wxBoxSizer *ToolsSizer;
+	wxBoxSizer *MainSizer;  ///< Arranges things from top to bottom in the window
+	wxBoxSizer *TopSizer;   ///< Arranges video box and tool box from left to right
+	wxBoxSizer *ToolsSizer; ///< Arranges audio and editing areas top to bottom
 
 public:
 	FrameMain(wxArrayString args);

@@ -35,6 +35,8 @@
 
 #include "config.h"
 
+#include "frame_main.h"
+
 #ifndef AGI_PRE
 #include <wx/clipbrd.h>
 #include <wx/filename.h>
@@ -59,9 +61,6 @@
 #ifdef WITH_AUTOMATION
 #include "auto4_base.h"
 #endif
-#ifdef WITH_AVISYNTH
-#include "avisynth_wrap.h"
-#endif
 #include "compat.h"
 #include "command/command.h"
 #include "dialog_detached_video.h"
@@ -69,7 +68,6 @@
 #include "dialog_styling_assistant.h"
 #include "dialog_version_check.h"
 #include "drop.h"
-#include "frame_main.h"
 #include "help_button.h"
 #include "libresrc/libresrc.h"
 #include "main.h"
@@ -78,7 +76,6 @@
 #include "subs_edit_ctrl.h"
 #include "subs_grid.h"
 #include "text_file_reader.h"
-#include "text_file_writer.h"
 #include "utils.h"
 #include "version.h"
 #include "video_box.h"
@@ -87,21 +84,24 @@
 #include "video_provider_manager.h"
 #include "video_slider.h"
 
+enum {
+	ID_TOOLBAR_ZOOM_DROPDOWN				= 11001,
+	ID_APP_TIMER_AUTOSAVE					= 12001,
+	ID_APP_TIMER_STATUSCLEAR				= 12002,
+	ID_MENU_AUTOMATION_MACRO				= 13006,
+	ID_SASH_MAIN_AUDIO						= 14001
+};
 
 #ifdef WITH_STARTUPLOG
-
-/// DOCME
-#define StartupLog(a) MessageBox(0, a, _T("Aegisub startup log"), 0)
+#define StartupLog(a) MessageBox(0, a, "Aegisub startup log", 0)
 #else
-
-/// DOCME
 #define StartupLog(a)
 #endif
 
 static void autosave_timer_changed(wxTimer *timer, const agi::OptionValue &opt);
 
 FrameMain::FrameMain (wxArrayString args)
-: wxFrame ((wxFrame*)NULL,-1,_T(""),wxDefaultPosition,wxSize(920,700),wxDEFAULT_FRAME_STYLE | wxCLIP_CHILDREN)
+: wxFrame(0,-1,"",wxDefaultPosition,wxSize(920,700),wxDEFAULT_FRAME_STYLE | wxCLIP_CHILDREN)
 , context(new agi::Context)
 , showVideo(true)
 , showAudio(true)
@@ -120,7 +120,6 @@ FrameMain::FrameMain (wxArrayString args)
 	setlocale(LC_NUMERIC, "C");
 /* XXX HACK XXX */
 #endif
-
 
 	StartupLog("Initializing context models");
 	AssFile::top = context->ass = new AssFile;
@@ -220,15 +219,20 @@ FrameMain::FrameMain (wxArrayString args)
 	Show();
 	SetDisplayMode(1, 1);
 
-	//ShowFullScreen(true,wxFULLSCREEN_NOBORDER | wxFULLSCREEN_NOCAPTION);
 	StartupLog("Leaving FrameMain constructor");
 }
 
-/// @brief FrameMain destructor 
 FrameMain::~FrameMain () {
 	context->videoController->SetVideo("");
 	context->audioController->CloseAudio();
-	DeInitContents();
+	if (context->detachedVideo) context->detachedVideo->Destroy();
+	if (context->stylingAssistant) context->stylingAssistant->Destroy();
+	SubsGrid->ClearMaps();
+	delete audioBox;
+	delete EditBox;
+	delete videoBox;
+	delete context->ass;
+	HelpButton::ClearPages();
 	delete context->audioController;
 #ifdef WITH_AUTOMATION
 	delete context->local_scripts;
@@ -244,31 +248,26 @@ void FrameMain::cmd_call(wxCommandEvent& event) {
 		OnAutomationMacro(event);
 }
 
-/// @brief Initialize toolbar 
 void FrameMain::InitToolbar () {
-	// Create toolbar
-	wxSystemOptions::SetOption(_T("msw.remap"), 0);
-	Toolbar = CreateToolBar(wxTB_FLAT | wxTB_HORIZONTAL,-1,_T("Toolbar"));
+	wxSystemOptions::SetOption("msw.remap", 0);
+	Toolbar = CreateToolBar(wxTB_FLAT | wxTB_HORIZONTAL,-1,"Toolbar");
 
 	toolbar::toolbar->GetToolbar("main", Toolbar);
 
 	wxArrayString choices;
 	for (int i=1;i<=24;i++) {
-		wxString toAdd = wxString::Format(_T("%i"),int(i*12.5));
-		if (i%2) toAdd += _T(".5");
-		toAdd += _T("%");
+		wxString toAdd = wxString::Format("%i",int(i*12.5));
+		if (i%2) toAdd += ".5";
+		toAdd += "%";
 		choices.Add(toAdd);
 	}
-	ZoomBox = new wxComboBox(Toolbar,ID_TOOLBAR_ZOOM_DROPDOWN,_T("75%"),wxDefaultPosition,wxDefaultSize,choices,wxCB_DROPDOWN);
+	ZoomBox = new wxComboBox(Toolbar,ID_TOOLBAR_ZOOM_DROPDOWN,"75%",wxDefaultPosition,wxDefaultSize,choices,wxCB_DROPDOWN);
 	Toolbar->AddControl(ZoomBox);
 	Toolbar->AddSeparator();
 
-	// Update
 	Toolbar->Realize();
 }
 
-
-/// @brief Initialize menu bar 
 void FrameMain::InitMenu() {
 
 #ifdef __WXMAC__
@@ -282,8 +281,6 @@ void FrameMain::InitMenu() {
 	SetMenuBar(menu::menu->GetMainMenu());
 }
 
-
-/// @brief Initialize contents 
 void FrameMain::InitContents() {
 	StartupLog("Create background panel");
 	Panel = new wxPanel(this,-1,wxDefaultPosition,wxDefaultSize,wxTAB_TRAVERSAL | wxCLIP_CHILDREN);
@@ -334,23 +331,10 @@ void FrameMain::InitContents() {
 	StartupLog("Leaving InitContents");
 }
 
-/// @brief Deinitialize controls 
-void FrameMain::DeInitContents() {
-	if (context->detachedVideo) context->detachedVideo->Destroy();
-	if (context->stylingAssistant) context->stylingAssistant->Destroy();
-	SubsGrid->ClearMaps();
-	delete audioBox;
-	delete EditBox;
-	delete videoBox;
-	delete context->ass;
-	HelpButton::ClearPages();
-}
-
 static void validate_toolbar(wxToolBar *toolbar, const char *command, const agi::Context *context) {
 	toolbar->FindById(cmd::id(command))->Enable(cmd::get(command)->Validate(context));
 }
 
-/// @brief Update toolbar 
 void FrameMain::UpdateToolbar() {
 	wxToolBar* toolbar = GetToolBar();
 	const agi::Context *c = context.get();
@@ -372,9 +356,6 @@ void FrameMain::UpdateToolbar() {
 	toolbar->Realize();
 }
 
-/// @brief Open subtitles 
-/// @param filename 
-/// @param charset  
 void FrameMain::LoadSubtitles(wxString filename,wxString charset) {
 	if (context->ass->loaded) {
 		if (TryToCloseSubs() == wxCANCEL) return;
@@ -385,7 +366,7 @@ void FrameMain::LoadSubtitles(wxString filename,wxString charset) {
 		try {
 			TextFileReader testSubs(filename,charset);
 			wxString cur = testSubs.ReadLineFromFile();
-			if (cur.Left(10) == _T("# timecode")) {
+			if (cur.Left(10) == "# timecode") {
 				context->videoController->LoadTimecodes(filename);
 				return;
 			}
@@ -398,27 +379,24 @@ void FrameMain::LoadSubtitles(wxString filename,wxString charset) {
 		context->ass->Load(filename,charset);
 	}
 	catch (agi::acs::AcsNotFound const&) {
-		wxMessageBox(filename + L" not found.", L"Error", wxOK | wxICON_ERROR, NULL);
+		wxMessageBox(filename + " not found.", "Error", wxOK | wxICON_ERROR, NULL);
 		config::mru->Remove("Subtitle", STD_STR(filename));
 		return;
 	}
 	catch (const wchar_t *err) {
-		wxMessageBox(wxString(err), _T("Error"), wxOK | wxICON_ERROR, NULL);
+		wxMessageBox(wxString(err), "Error", wxOK | wxICON_ERROR, NULL);
 		return;
 	}
 	catch (wxString err) {
-		wxMessageBox(err, _T("Error"), wxOK | wxICON_ERROR, NULL);
+		wxMessageBox(err, "Error", wxOK | wxICON_ERROR, NULL);
 		return;
 	}
 	catch (...) {
-		wxMessageBox(_T("Unknown error"), _T("Error"), wxOK | wxICON_ERROR, NULL);
+		wxMessageBox("Unknown error", "Error", wxOK | wxICON_ERROR, NULL);
 		return;
 	}
 }
 
-/// @brief Try to close subtitles 
-/// @param enableCancel 
-/// @return 
 int FrameMain::TryToCloseSubs(bool enableCancel) {
 	if (context->ass->IsModified()) {
 		int flags = wxYES_NO;
@@ -436,9 +414,6 @@ int FrameMain::TryToCloseSubs(bool enableCancel) {
 	}
 }
 
-/// @brief Set the video and audio display visibilty
-/// @param video -1: leave unchanged; 0: hide; 1: show
-/// @param audio -1: leave unchanged; 0: hide; 1: show
 void FrameMain::SetDisplayMode(int video, int audio) {
 	if (!IsShownOnScreen()) return;
 
@@ -461,11 +436,9 @@ void FrameMain::SetDisplayMode(int video, int audio) {
 
 	context->videoController->Stop();
 
-	// Set display
 	TopSizer->Show(videoBox, showVideo, true);
 	ToolsSizer->Show(audioSash, showAudio, true);
 
-	// Update
 	UpdateToolbar();
 	MainSizer->CalcMin();
 	MainSizer->RecalcSizes();
@@ -475,10 +448,9 @@ void FrameMain::SetDisplayMode(int video, int audio) {
 	if (didFreeze) Thaw();
 }
 
-/// @brief Update title bar 
 void FrameMain::UpdateTitle() {
 	wxString newTitle;
-	if (context->ass->IsModified()) newTitle << _T("* ");
+	if (context->ass->IsModified()) newTitle << "* ";
 	if (context->ass->filename.empty()) {
 		// Apple HIG says "untitled" should not be capitalised
 		// and the window is a document window, it shouldn't contain the app name
@@ -563,8 +535,6 @@ void FrameMain::LoadVFR(wxString filename) {
 	}
 }
 
-/// @brief Detach video window 
-/// @param detach 
 void FrameMain::DetachVideo(bool detach) {
 	if (detach) {
 		if (!context->detachedVideo) {
@@ -580,21 +550,13 @@ void FrameMain::DetachVideo(bool detach) {
 	UpdateToolbar();
 }
 
-/// @brief Sets status and clear after n milliseconds
-/// @param text 
-/// @param ms   
 void FrameMain::StatusTimeout(wxString text,int ms) {
 	SetStatusText(text,1);
 	StatusClear.SetOwner(this, ID_APP_TIMER_STATUSCLEAR);
 	StatusClear.Start(ms,true);
 }
 
-
-/// @brief Load list of files 
-/// @param list 
-/// @return 
 bool FrameMain::LoadList(wxArrayString list) {
-	// Build list
 	wxArrayString List;
 	for (size_t i=0;i<list.Count();i++) {
 		wxFileName file(list[i]);
@@ -604,43 +566,43 @@ bool FrameMain::LoadList(wxArrayString list) {
 
 	// Video formats
 	wxArrayString videoList;
-	videoList.Add(_T("avi"));
-	videoList.Add(_T("mkv"));
-	videoList.Add(_T("mp4"));
-	videoList.Add(_T("d2v"));
-	videoList.Add(_T("mpg"));
-	videoList.Add(_T("mpeg"));
-	videoList.Add(_T("ogm"));
-	videoList.Add(_T("avs"));
-	videoList.Add(_T("wmv"));
-	videoList.Add(_T("asf"));
-	videoList.Add(_T("mov"));
-	videoList.Add(_T("rm"));
-	videoList.Add(_T("y4m"));
-	videoList.Add(_T("yuv"));
+	videoList.Add("avi");
+	videoList.Add("mkv");
+	videoList.Add("mp4");
+	videoList.Add("d2v");
+	videoList.Add("mpg");
+	videoList.Add("mpeg");
+	videoList.Add("ogm");
+	videoList.Add("avs");
+	videoList.Add("wmv");
+	videoList.Add("asf");
+	videoList.Add("mov");
+	videoList.Add("rm");
+	videoList.Add("y4m");
+	videoList.Add("yuv");
 
 	// Subtitle formats
 	wxArrayString subsList;
-	subsList.Add(_T("ass"));
-	subsList.Add(_T("ssa"));
-	subsList.Add(_T("srt"));
-	subsList.Add(_T("sub"));
-	subsList.Add(_T("txt"));
-	subsList.Add(_T("ttxt"));
+	subsList.Add("ass");
+	subsList.Add("ssa");
+	subsList.Add("srt");
+	subsList.Add("sub");
+	subsList.Add("txt");
+	subsList.Add("ttxt");
 
 	// Audio formats
 	wxArrayString audioList;
-	audioList.Add(_T("wav"));
-	audioList.Add(_T("mp3"));
-	audioList.Add(_T("ogg"));
-	audioList.Add(_T("wma"));
-	audioList.Add(_T("ac3"));
-	audioList.Add(_T("aac"));
-	audioList.Add(_T("mpc"));
-	audioList.Add(_T("ape"));
-	audioList.Add(_T("flac"));
-	audioList.Add(_T("mka"));
-	audioList.Add(_T("m4a"));
+	audioList.Add("wav");
+	audioList.Add("mp3");
+	audioList.Add("ogg");
+	audioList.Add("wma");
+	audioList.Add("ac3");
+	audioList.Add("aac");
+	audioList.Add("mpc");
+	audioList.Add("ape");
+	audioList.Add("flac");
+	audioList.Add("mka");
+	audioList.Add("m4a");
 
 	// Scan list
 	wxString audio;
@@ -656,7 +618,6 @@ bool FrameMain::LoadList(wxArrayString list) {
 		if (audio.empty() && audioList.Index(ext) != wxNOT_FOUND) audio = List[i];
 	}
 
-	// Set blocking
 	blockVideoLoad = !video.empty();
 
 	// Load files
@@ -670,14 +631,12 @@ bool FrameMain::LoadList(wxArrayString list) {
 	if (!audio.empty())
 		context->audioController->OpenAudio(audio);
 
-	// Result
 	return subs.size() || audio.size() || video.size();
 }
 
-/// @brief Check if ASSDraw is available 
 bool FrameMain::HasASSDraw() {
 #ifdef __WINDOWS__
-	wxFileName fn(StandardPaths::DecodePath(_T("?data/ASSDraw3.exe")));
+	wxFileName fn(StandardPaths::DecodePath("?data/ASSDraw3.exe"));
 	return fn.FileExists();
 #else
 	return false;
@@ -704,19 +663,12 @@ BEGIN_EVENT_TABLE(FrameMain, wxFrame)
 	EVT_MENU_OPEN(FrameMain::OnMenuOpen)
 	EVT_KEY_DOWN(FrameMain::OnKeyDown)
 
-//	EVT_COMBOBOX(Toolbar_Zoom_Dropdown, FrameMain::OnSetZoom)
-//	EVT_TEXT_ENTER(Toolbar_Zoom_Dropdown, FrameMain::OnSetZoom)
-
 #ifdef __WXMAC__
 //   EVT_MENU(wxID_ABOUT, FrameMain::OnAbout)
 //   EVT_MENU(wxID_EXIT, FrameMain::OnExit)
 #endif
 END_EVENT_TABLE()
 
-/// @brief Rebuild recent list 
-/// @param listName 
-/// @param menu     
-/// @param startID  
 void FrameMain::RebuildRecentList(const char *root_command, const char *mru_name) {
 	wxMenu *menu = menu::menu->GetMenu(root_command);
 
@@ -750,10 +702,7 @@ static void validate(wxMenuBar *menu, const agi::Context *c, const char *command
 	menu->Enable(cmd::id(command), cmd::get(command)->Validate(c));
 }
 
-/// @brief Menu is being opened 
-/// @param event 
 void FrameMain::OnMenuOpen (wxMenuEvent &event) {
-	// Get menu
 	wxMenuBar *MenuBar = menu::menu->GetMainMenu();
 
 	MenuBar->Freeze();
@@ -767,7 +716,6 @@ void FrameMain::OnMenuOpen (wxMenuEvent &event) {
 
 	// View menu
 	else if (curMenu == menu::menu->GetMenu("main/view")) {
-		// Select option
 		if (!showVideo && !showAudio) MenuBar->Check(cmd::id("app/display/subs"),true);
 		else if (showVideo && !showAudio) MenuBar->Check(cmd::id("app/display/video_subs"),true);
 		else if (showAudio && showVideo) MenuBar->Check(cmd::id("app/display/full"),true);
@@ -785,7 +733,6 @@ void FrameMain::OnMenuOpen (wxMenuEvent &event) {
 		validate(MenuBar, context.get(), "keyframe/close");
 		validate(MenuBar, context.get(), "keyframe/save");
 
-		// Set AR radio
 		int arType = context->videoController->GetAspectRatioType();
 		MenuBar->Check(cmd::id("video/aspect/default"),false);
 		MenuBar->Check(cmd::id("video/aspect/full"),false);
@@ -800,10 +747,8 @@ void FrameMain::OnMenuOpen (wxMenuEvent &event) {
 			case 4: MenuBar->Check(cmd::id("video/aspect/custom"),true); break;
 		}
 
-		// Set overscan mask
 		MenuBar->Check(cmd::id("video/show_overscan"),OPT_GET("Video/Overscan Mask")->GetBool());
 
-		// Rebuild recent lists
 		RebuildRecentList("recent/video", "Video");
 		RebuildRecentList("recent/timecode", "Timecodes");
 		RebuildRecentList("recent/keyframe", "Keyframes");
@@ -898,10 +843,6 @@ void FrameMain::OnMenuOpen (wxMenuEvent &event) {
 	MenuBar->Thaw();
 }
 
-/// @brief Macro menu creation helper 
-/// @param menu   
-/// @param macros 
-/// @return 
 int FrameMain::AddMacroMenuItems(wxMenu *menu, const std::vector<Automation4::FeatureMacro*> &macros) {
 #ifdef WITH_AUTOMATION
 	if (macros.empty()) {
@@ -922,8 +863,6 @@ int FrameMain::AddMacroMenuItems(wxMenu *menu, const std::vector<Automation4::Fe
 #endif
 }
 
-/// @brief General handler for all Automation-generated menu items
-/// @param event 
 void FrameMain::OnAutomationMacro (wxCommandEvent &event) {
 #ifdef WITH_AUTOMATION
 	SubsGrid->BeginBatch();
@@ -937,9 +876,6 @@ void FrameMain::OnAutomationMacro (wxCommandEvent &event) {
 #endif
 }
 
-
-/// @brief Window is attempted to be closed
-/// @param event
 void FrameMain::OnCloseWindow (wxCloseEvent &event) {
 	// Stop audio and video
 	context->videoController->Stop();
@@ -960,54 +896,47 @@ void FrameMain::OnCloseWindow (wxCloseEvent &event) {
 	else Destroy();
 }
 
-/// @brief Autosave the currently open file, if any
-void FrameMain::OnAutoSave(wxTimerEvent &) {
-	try {
+void FrameMain::OnAutoSave(wxTimerEvent &) try {
 		if (context->ass->loaded && context->ass->IsModified()) {
-			// Set path
 			wxFileName origfile(context->ass->filename);
 			wxString path = lagi_wxString(OPT_GET("Path/Auto/Save")->GetString());
 			if (path.IsEmpty()) path = origfile.GetPath();
 			wxFileName dstpath(path);
-			if (!dstpath.IsAbsolute()) path = StandardPaths::DecodePathMaybeRelative(path, _T("?user/"));
+		if (!dstpath.IsAbsolute()) path = StandardPaths::DecodePathMaybeRelative(path, "?user/");
 			dstpath.AssignDir(path);
 			if (!dstpath.DirExists()) wxMkdir(path);
 
 			wxString name = origfile.GetName();
-			if (name.IsEmpty()) {
+		if (name.empty()) {
 				dstpath.SetFullName("Untitled.AUTOSAVE.ass");
 			}
 			else {
-				dstpath.SetFullName(name + L".AUTOSAVE.ass");
+			dstpath.SetFullName(name + ".AUTOSAVE.ass");
 			}
 
 			context->ass->Save(dstpath.GetFullPath(),false,false);
 
-			// Set status bar
-			StatusTimeout(_("File backup saved as \"") + dstpath.GetFullPath() + _T("\"."));
+		StatusTimeout(_("File backup saved as \"") + dstpath.GetFullPath() + "\".");
 		}
 	}
 	catch (const agi::Exception& err) {
 		StatusTimeout(lagi_wxString("Exception when attempting to autosave file: " + err.GetMessage()));
 	}
 	catch (wxString err) {
-		StatusTimeout(_T("Exception when attempting to autosave file: ") + err);
+	StatusTimeout("Exception when attempting to autosave file: " + err);
 	}
 	catch (const wchar_t *err) {
-		StatusTimeout(_T("Exception when attempting to autosave file: ") + wxString(err));
+	StatusTimeout("Exception when attempting to autosave file: " + wxString(err));
 	}
 	catch (...) {
-		StatusTimeout(_T("Unhandled exception when attempting to autosave file."));
-	}
+	StatusTimeout("Unhandled exception when attempting to autosave file.");
 }
 
-/// @brief Clear statusbar 
 void FrameMain::OnStatusClear(wxTimerEvent &) {
-	SetStatusText(_T(""),1);
+	SetStatusText("",1);
 }
 
-void FrameMain::OnAudioBoxResize(wxSashEvent &event)
-{
+void FrameMain::OnAudioBoxResize(wxSashEvent &event) {
 	if (event.GetDragStatus() == wxSASH_STATUS_OUT_OF_RANGE)
 		return;
 
@@ -1021,13 +950,11 @@ void FrameMain::OnAudioBoxResize(wxSashEvent &event)
 	Refresh();
 }
 
-void FrameMain::OnAudioOpen(AudioProvider *provider)
-{
+void FrameMain::OnAudioOpen(AudioProvider *provider) {
 	SetDisplayMode(-1, 1);
 }
 
-void FrameMain::OnAudioClose()
-{
+void FrameMain::OnAudioClose() {
 	SetDisplayMode(-1, 0);
 }
 
@@ -1103,7 +1030,7 @@ void FrameMain::OnSubtitlesOpen() {
 		// Automation scripts
 #ifdef WITH_AUTOMATION
 		context->local_scripts->RemoveAll();
-		wxStringTokenizer tok(AutoScriptString, _T("|"), wxTOKEN_STRTOK);
+		wxStringTokenizer tok(AutoScriptString, "|", wxTOKEN_STRTOK);
 		wxFileName assfn(context->ass->filename);
 		wxString autobasefn(lagi_wxString(OPT_GET("Path/Automation/Base")->GetString()));
 		while (tok.HasMoreTokens()) {
@@ -1111,14 +1038,14 @@ void FrameMain::OnSubtitlesOpen() {
 			wxString sfnamel = sfnames.Left(1);
 			sfnames.Remove(0, 1);
 			wxString basepath;
-			if (sfnamel == _T("~")) {
+			if (sfnamel == "~") {
 				basepath = assfn.GetPath();
-			} else if (sfnamel == _T("$")) {
+			} else if (sfnamel == "$") {
 				basepath = autobasefn;
-			} else if (sfnamel == _T("/")) {
-				basepath = _T("");
+			} else if (sfnamel == "/") {
+				basepath = "";
 			} else {
-				wxLogWarning(_T("Automation Script referenced with unknown location specifier character.\nLocation specifier found: %s\nFilename specified: %s"),
+				wxLogWarning("Automation Script referenced with unknown location specifier character.\nLocation specifier found: %s\nFilename specified: %s",
 					sfnamel.c_str(), sfnames.c_str());
 				continue;
 			}
@@ -1128,7 +1055,7 @@ void FrameMain::OnSubtitlesOpen() {
 				sfnames = sfname.GetFullPath();
 				context->local_scripts->Add(Automation4::ScriptFactory::CreateFromFile(sfnames, true));
 			} else {
-				wxLogWarning(_T("Automation Script referenced could not be found.\nFilename specified: %s%s\nSearched relative to: %s\nResolved filename: %s"),
+				wxLogWarning("Automation Script referenced could not be found.\nFilename specified: %s%s\nSearched relative to: %s\nResolved filename: %s",
 					sfnamel.c_str(), sfnames.c_str(), basepath.c_str(), sfname.GetFullPath().c_str());
 			}
 		}
@@ -1157,7 +1084,7 @@ void FrameMain::OnSubtitlesSave() {
 		Automation4::Script *script = scripts[i];
 
 		if (i != 0)
-			scripts_string += _T("|");
+			scripts_string += "|";
 
 		wxString autobase_rel, assfile_rel;
 		wxString scriptfn(script->GetFilename());
@@ -1165,22 +1092,20 @@ void FrameMain::OnSubtitlesSave() {
 		assfile_rel = MakeRelativePath(scriptfn, context->ass->filename);
 
 		if (autobase_rel.size() <= scriptfn.size() && autobase_rel.size() <= assfile_rel.size()) {
-			scriptfn = _T("$") + autobase_rel;
+			scriptfn = "$" + autobase_rel;
 		} else if (assfile_rel.size() <= scriptfn.size() && assfile_rel.size() <= autobase_rel.size()) {
-			scriptfn = _T("~") + assfile_rel;
+			scriptfn = "~" + assfile_rel;
 		} else {
-			scriptfn = _T("/") + wxFileName(scriptfn).GetFullPath(wxPATH_UNIX);
+			scriptfn = "/" + wxFileName(scriptfn).GetFullPath(wxPATH_UNIX);
 		}
 
 		scripts_string += scriptfn;
 	}
-	context->ass->SetScriptInfo(_T("Automation Scripts"), scripts_string);
+	context->ass->SetScriptInfo("Automation Scripts", scripts_string);
 #endif
-
 }
 
 void FrameMain::OnKeyDown(wxKeyEvent &event) {
 	if (!hotkey::check("Main Frame", event.GetKeyCode(), event.GetUnicodeKey(), event.GetModifiers()))
 		event.Skip();
 }
-
