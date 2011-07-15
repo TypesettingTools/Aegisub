@@ -46,7 +46,6 @@
 
 #include <libaegisub/log.h>
 
-#include "selection_controller.h"
 #include "audio_box.h"
 #include "audio_controller.h"
 #include "audio_display.h"
@@ -57,6 +56,7 @@
 #include "libresrc/libresrc.h"
 #include "main.h"
 #include "toggle_bitmap.h"
+#include "selection_controller.h"
 #include "tooltip_manager.h"
 #include "utils.h"
 

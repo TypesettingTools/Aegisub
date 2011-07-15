@@ -53,7 +53,6 @@
 #endif
 
 #include "config.h"
-#include "selection_controller.h"
 
 #include "ass_dialogue.h"
 #include "libresrc/libresrc.h"

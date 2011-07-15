@@ -37,6 +37,8 @@ class AssDialogue;
 class AssFile;
 class AudioController;
 
+#include "selection_controller.h"
+
 #include <libaegisub/signal.h>
 
 /// @class AudioTimingController

@@ -44,7 +44,6 @@
 
 #include "command.h"
 
-#include "../selection_controller.h"
 #include "../ass_dialogue.h"
 #include "../ass_file.h"
 #include "../audio_controller.h"
@@ -52,6 +51,7 @@
 #include "../dialog_shift_times.h"
 #include "../include/aegisub/context.h"
 #include "../main.h"
+#include "../selection_controller.h"
 #include "../subs_grid.h"
 #include "../video_context.h"
 

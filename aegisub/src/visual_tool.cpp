@@ -47,7 +47,6 @@
 #include "ass_time.h"
 #include "include/aegisub/context.h"
 #include "main.h"
-#include "selection_controller.h"
 #include "subs_edit_box.h"
 #include "subs_grid.h"
 #include "utils.h"

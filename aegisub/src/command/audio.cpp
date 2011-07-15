@@ -44,7 +44,6 @@
 
 #include "command.h"
 
-#include "../selection_controller.h"
 #include "../ass_dialogue.h"
 #include "../audio_controller.h"
 #include "../audio_timing.h"

@@ -54,7 +54,6 @@
 #include "include/aegisub/hotkey.h"
 
 #include "ass_file.h"
-#include "selection_controller.h"
 #include "audio_controller.h"
 #include "audio_box.h"
 #ifdef WITH_AUTOMATION

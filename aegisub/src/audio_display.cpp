@@ -45,8 +45,6 @@
 #include <wx/mousestate.h>
 #endif
 
-#include "block_cache.h"
-#include "selection_controller.h"
 #include "ass_time.h"
 #include "audio_colorscheme.h"
 #include "audio_controller.h"
@@ -55,10 +53,12 @@
 #include "audio_renderer_spectrum.h"
 #include "audio_renderer_waveform.h"
 #include "audio_timing.h"
+#include "block_cache.h"
 #include "include/aegisub/audio_player.h"
 #include "include/aegisub/audio_provider.h"
 #include "include/aegisub/hotkey.h"
 #include "main.h"
+#include "selection_controller.h"
 #include "utils.h"
 
 class AudioDisplayScrollbar : public AudioDisplayInteractionObject {

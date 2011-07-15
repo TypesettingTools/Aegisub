@@ -43,19 +43,20 @@
 #include <wx/recguard.h>
 #endif
 
+#include "dialog_styling_assistant.h"
+
 #include "include/aegisub/context.h"
 #include "include/aegisub/hotkey.h"
 
 #include "ass_dialogue.h"
 #include "ass_file.h"
 #include "ass_style.h"
-#include "selection_controller.h"
-#include "audio_controller.h"
 #include "audio_box.h"
-#include "dialog_styling_assistant.h"
+#include "audio_controller.h"
 #include "frame_main.h"
 #include "help_button.h"
 #include "libresrc/libresrc.h"
+#include "selection_controller.h"
 #include "subs_edit_box.h"
 #include "subs_grid.h"
 #include "utils.h"

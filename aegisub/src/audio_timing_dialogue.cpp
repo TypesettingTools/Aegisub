@@ -42,13 +42,11 @@
 #include "ass_dialogue.h"
 #include "ass_file.h"
 #include "ass_time.h"
-#include "main.h"
-#include "selection_controller.h"
 #include "audio_controller.h"
 #include "audio_timing.h"
+#include "main.h"
+#include "selection_controller.h"
 #include "utils.h"
-
-
 
 /// @class AudioMarkerDialogueTiming
 /// @brief AudioMarker implementation for AudioTimingControllerDialogue

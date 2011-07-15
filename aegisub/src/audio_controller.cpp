@@ -45,13 +45,13 @@
 
 #include <libaegisub/io.h>
 
-#include "selection_controller.h"
 #include "audio_controller.h"
-#include "include/aegisub/audio_provider.h"
-#include "include/aegisub/audio_player.h"
 #include "audio_provider_dummy.h"
 #include "audio_timing.h"
 #include "compat.h"
+#include "include/aegisub/audio_player.h"
+#include "include/aegisub/audio_provider.h"
+#include "selection_controller.h"
 #include "video_context.h"
 
 class AudioMarkerKeyframe : public AudioMarker {

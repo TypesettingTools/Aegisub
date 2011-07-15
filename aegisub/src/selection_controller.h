@@ -33,13 +33,11 @@
 /// @ingroup controllers
 /// @brief Interface declaration for the SubtitleSelectionController
 
+#pragma once
 
-#ifndef AGI_SELECTION_CONTROLLER_H
-#define AGI_SELECTION_CONTROLLER_H
-
-
+#ifndef AGI_PRE
 #include <set>
-
+#endif
 
 /// @class SelectionListener
 /// @brief Abstract interface for classes wanting to subtitle selection change notifications
@@ -64,7 +62,6 @@ public:
 	/// The two sets must not intersect.
 	virtual void OnSelectedSetChanged(const Selection &lines_added, const Selection &lines_removed) = 0;
 };
-
 
 
 /// @class SelectionController
@@ -205,8 +202,6 @@ public:
 	}
 };
 
-
-
 /// Do-nothing selection controller, can be considered to always operate on an empty subtitle file
 template <typename ItemDataType>
 class DummySelectionController : public SelectionController<ItemDataType> {
@@ -222,7 +217,3 @@ public:
 	virtual void AddSelectionListener(SelectionListener<ItemDataType> *listener) { }
 	virtual void RemoveSelectionListener(SelectionListener<ItemDataType> *listener) { }
 };
-
-
-
-#endif // include guard

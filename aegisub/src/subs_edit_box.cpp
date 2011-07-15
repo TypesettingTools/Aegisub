@@ -66,7 +66,6 @@
 #include "include/aegisub/context.h"
 #include "libresrc/libresrc.h"
 #include "main.h"
-#include "selection_controller.h"
 #include "subs_edit_box.h"
 #include "subs_edit_ctrl.h"
 #include "subs_grid.h"

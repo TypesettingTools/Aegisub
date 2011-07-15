@@ -33,16 +33,12 @@
 /// @ingroup utility
 /// @brief Template class for creating caches for blocks of data
 
-
-
+#pragma once
 
 #ifndef AGI_PRE
 #include <algorithm>
 #include <vector>
 #endif
-
-#define AGI_BLOCK_CACHE_INCLUDED 1
-
 
 /// @class BasicDataBlockFactory
 /// @brief Simple factory for allocating blocks for DataBlockCache

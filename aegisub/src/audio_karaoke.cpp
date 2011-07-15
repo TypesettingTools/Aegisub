@@ -48,11 +48,11 @@
 #include <libaegisub/log.h>
 
 #include "ass_override.h"
-#include "selection_controller.h"
-#include "audio_controller.h"
 #include "audio_box.h"
+#include "audio_controller.h"
 #include "audio_display.h"
 #include "audio_karaoke.h"
+#include "selection_controller.h"
 
 /// @brief Empty constructor 
 ///

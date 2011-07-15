@@ -60,7 +60,6 @@
 #include "include/aegisub/hotkey.h"
 
 #include "video_display.h"
-#include "selection_controller.h"
 
 #include "ass_file.h"
 #include "main.h"
