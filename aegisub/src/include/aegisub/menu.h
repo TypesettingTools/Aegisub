@@ -27,8 +27,6 @@
 #include <libaegisub/cajun/elements.h>
 #include <libaegisub/exception.h>
 
-#pragma once
-
 namespace menu {
 DEFINE_BASE_EXCEPTION_NOINNER(MenuError, agi::Exception)
 DEFINE_SIMPLE_EXCEPTION_NOINNER(MenuJsonValueArray, MenuError, "menu/value/array")

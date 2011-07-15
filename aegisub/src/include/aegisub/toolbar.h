@@ -27,8 +27,6 @@
 #include <libaegisub/cajun/elements.h>
 #include <libaegisub/exception.h>
 
-#pragma once
-
 namespace toolbar {
 DEFINE_BASE_EXCEPTION_NOINNER(ToolbarError, agi::Exception)
 DEFINE_SIMPLE_EXCEPTION_NOINNER(ToolbarJsonValueArray, ToolbarError, "toolbar/value/array")
