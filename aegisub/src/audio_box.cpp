@@ -76,14 +76,14 @@ enum AudioBoxControlIDs {
 
 static void add_button(wxWindow *parent, wxSizer *sizer, int border, const char *command) {
 	cmd::Command *c = cmd::get(command);
-	wxBitmapButton *btn = new wxBitmapButton(parent, cmd::id(command), *c->Icon(16));
+	wxBitmapButton *btn = new wxBitmapButton(parent, cmd::id(command), c->Icon(16));
 	ToolTipManager::Bind(btn, c->StrHelp(), "Audio", command);
 	sizer->Add(btn, 0, wxRIGHT, border);
 }
 
 static void add_option(wxWindow *parent, wxSizer *sizer, int border, const char *command, const char *option) {
 	cmd::Command *c = cmd::get(command);
-	ToggleBitmap *btn = new ToggleBitmap(parent, cmd::id(command), *c->Icon(16), wxSize(20, -1));
+	ToggleBitmap *btn = new ToggleBitmap(parent, cmd::id(command), c->Icon(16), wxSize(20, -1));
 	ToolTipManager::Bind(btn, c->StrHelp(), "Audio", command);
 	btn->SetValue(OPT_GET(option)->GetBool());
 	sizer->Add(btn, 0, wxRIGHT | wxALIGN_CENTER | wxEXPAND, border);

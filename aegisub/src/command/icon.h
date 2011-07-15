@@ -29,5 +29,5 @@ DEFINE_SIMPLE_EXCEPTION_NOINNER(IconInvalid, IconError, "icon/invalid")
 
 namespace icon {
 	void icon_init();
-	wxBitmap* get(std::string const& name, int size);
+	wxBitmap const& get(std::string const& name, int size);
 }

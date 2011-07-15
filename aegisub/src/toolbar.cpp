@@ -107,9 +107,9 @@ namespace {
 				else {
 					cmd::Command *command = cmd::get(command_name.Value());
 
-					wxBitmap *bitmap = command->Icon(icon_size);
+					wxBitmap const& bitmap = command->Icon(icon_size);
 					// this hack is needed because ???
-					wxBitmap icon = bitmap->GetSubBitmap(wxRect(0, 0, bitmap->GetWidth(), bitmap->GetHeight()));
+					wxBitmap icon = bitmap.GetSubBitmap(wxRect(0, 0, bitmap.GetWidth(), bitmap.GetHeight()));
 
 					int flags = command->Type();
 					wxItemKind kind =

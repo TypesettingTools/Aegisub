@@ -65,14 +65,14 @@
 
 static void add_button(wxWindow *parent, wxSizer *sizer, const char *command) {
 	cmd::Command *c = cmd::get(command);
-	wxBitmapButton *btn = new wxBitmapButton(parent, cmd::id(command), *c->Icon(24));
+	wxBitmapButton *btn = new wxBitmapButton(parent, cmd::id(command), c->Icon(24));
 	ToolTipManager::Bind(btn, c->StrHelp(), "Video", command);
 	sizer->Add(btn, 0, wxTOP | wxLEFT | wxBOTTOM | wxALIGN_CENTER, 2);;
 }
 
 static void add_option(wxWindow *parent, wxSizer *sizer, const char *command, const char *option) {
 	cmd::Command *c = cmd::get(command);
-	ToggleBitmap *btn = new ToggleBitmap(parent, cmd::id(command), *c->Icon(24));
+	ToggleBitmap *btn = new ToggleBitmap(parent, cmd::id(command), c->Icon(24));
 	ToolTipManager::Bind(btn, c->StrHelp(), "Video", command);
 	btn->SetValue(OPT_GET(option)->GetBool());
 	sizer->Add(btn, 0, wxTOP | wxLEFT | wxBOTTOM | wxALIGN_CENTER, 2);
@@ -121,7 +121,7 @@ VideoBox::VideoBox(wxWindow *parent, bool isDetached, agi::Context *context)
 	visualToolBar->AddTool(Video_Mode_Clip,_("Clip"),GETIMAGE(visual_clip_24),_("Clip subtitles to a rectangle."),wxITEM_RADIO);
 	visualToolBar->AddTool(Video_Mode_Vector_Clip,_("Vector Clip"),GETIMAGE(visual_vector_clip_24),_("Clip subtitles to a vectorial area."),wxITEM_RADIO);
 	visualToolBar->AddSeparator();
-	visualToolBar->AddTool(cmd::id("help/video"),_("Help"),*cmd::get("help/video")->Icon(24),_("Open the manual page for Visual Typesetting."));
+	visualToolBar->AddTool(cmd::id("help/video"),_("Help"),cmd::get("help/video")->Icon(24),_("Open the manual page for Visual Typesetting."));
 	visualToolBar->Realize();
 	// Avoid ugly themed background on Vista and possibly also Win7
 	visualToolBar->SetBackgroundStyle(wxBG_STYLE_COLOUR);

@@ -95,7 +95,7 @@ namespace cmd {
 
 		/// Request icon.
 		/// @param size Icon size.
-		wxBitmap* Icon(int size);
+		wxBitmap const& Icon(int size);
 
 		/// Command function
 		virtual void operator()(agi::Context *c)=0;

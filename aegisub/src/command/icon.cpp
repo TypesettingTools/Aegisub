@@ -33,13 +33,12 @@
 #include "../libresrc/bitmap.h"
 
 namespace icon {
-typedef std::map<std::string, wxBitmap*> iconMap;
-typedef std::pair<std::string, wxBitmap*> iconPair;
+typedef std::map<std::string, wxBitmap> iconMap;
 
 iconMap icon16;
 iconMap icon24;
 
-wxBitmap* get(std::string const& name, const int size) {
+wxBitmap const& get(std::string const& name, const int size) {
 	// XXX: This code will go away with dynamic icon generation so I'm not
 	//      concerned about it.
 	if (size != 24) {
@@ -58,21 +57,21 @@ wxBitmap* get(std::string const& name, const int size) {
 		}
 		printf("icon::get NOT FOUND (%s)\n", name.c_str());
 	}
-	return new wxBitmap();
+	static wxBitmap empty;
+	return empty;
 }
 
 
-wxBitmap* getimage(const unsigned char *buff, size_t size) {
+wxBitmap getimage(const unsigned char *buff, size_t size) {
 	wxMemoryInputStream mem(buff, size);
 	wxImage img(mem);
-	wxBitmap *bitmap = new wxBitmap(img);
-    return bitmap;
+	return wxBitmap(img);
 }
 
 
 #define INSERT_ICON(a, b) \
-	icon16.insert(iconPair(a, getimage(b##_16, sizeof(b##_16)))); \
-	icon24.insert(iconPair(a, getimage(b##_24, sizeof(b##_24))));
+	icon16.insert(std::make_pair(a, getimage(b##_16, sizeof(b##_16)))); \
+	icon24.insert(std::make_pair(a, getimage(b##_24, sizeof(b##_24))));
 
 
 void icon_init() {

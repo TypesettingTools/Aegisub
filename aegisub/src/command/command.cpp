@@ -61,7 +61,7 @@ namespace cmd {
 		}
 	}
 
-	wxBitmap* Command::Icon(int size) {
+	wxBitmap const& Command::Icon(int size) {
 		if (size == 16) {
 			return icon::get(name(), 16);
 		} else if (size == 24) {
