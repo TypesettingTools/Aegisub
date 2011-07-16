@@ -40,6 +40,8 @@
 #include <wx/filedlg.h>
 #include <wx/filename.h>
 #include <wx/intl.h>
+#include <wx/msgdlg.h>
+#include <wx/textdlg.h>
 #include <wx/tokenzr.h>
 #include <wx/choicdlg.h> // Keep this last so wxUSE_CHOICEDLG is set.
 #endif

@@ -18,16 +18,25 @@
 /// @brief Unix utility methods.
 /// @ingroup libaegisub unix
 
+#include "config.h"
+
+#include "libaegisub/util.h"
+
 #ifndef LAGI_PRE
 #include <stdarg.h>
 #include <stdio.h>
+#include <sys/statvfs.h>
+#ifdef HAVE_SYS_TIME_H
+#include <sys/time.h>
+#else
+#include <time.h>
+#endif
 
 #include <string>
 #include <fstream>
 #endif
 
 #include <string.h>
-#include "libaegisub/util.h"
 
 namespace agi {
 	namespace util {
@@ -35,12 +44,10 @@ namespace agi {
 
 const std::string DirName(const std::string& path) {
     if (path.find('/') == std::string::npos) {
-		const std::string cwd(".");
-		return cwd;
+		return ".";
 	}
 
-	const std::string stripped = path.substr(0, path.rfind("/")+1);
-	return stripped;
+	return path.substr(0, path.rfind("/")+1);
 }
 
 void Rename(const std::string& from, const std::string& to) {

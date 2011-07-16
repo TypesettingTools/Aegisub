@@ -18,6 +18,8 @@
 /// @brief Unix IO methods.
 /// @ingroup libaegisub unix
 
+#include "config.h"
+
 #ifndef LAGI_PRE
 #include <sys/stat.h>
 #include <errno.h>

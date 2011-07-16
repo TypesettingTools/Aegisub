@@ -41,8 +41,12 @@
 
 #ifndef AGI_PRE
 #include <wx/config.h>
+#include <wx/dirdlg.h>
+#include <wx/filedlg.h>
 #include <wx/filename.h>
 #include <wx/fontenum.h>
+#include <wx/msgdlg.h>
+#include <wx/sizer.h>
 #include <wx/wfstream.h>
 #include <wx/zipstrm.h>
 #endif

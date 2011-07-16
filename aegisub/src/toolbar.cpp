@@ -29,6 +29,7 @@
 #ifndef AGI_PRE
 #include <vector>
 
+#include <wx/frame.h>
 #include <wx/toolbar.h>
 #endif
 

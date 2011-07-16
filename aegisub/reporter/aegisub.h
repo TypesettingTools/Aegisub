@@ -19,6 +19,7 @@
 /// @ingroup base
 
 #ifndef R_PRECOMP
+#include <stdint.h>
 #endif
 
 #include <libaegisub/option.h>

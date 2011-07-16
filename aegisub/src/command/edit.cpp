@@ -40,6 +40,8 @@
 
 #ifndef AGI_PRE
 #include <algorithm>
+
+#include <wx/clipbrd.h>
 #endif
 
 #include "command.h"

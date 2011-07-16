@@ -18,6 +18,7 @@
 /// @brief Unix logging
 /// @ingroup libaegisub
 
+#include "config.h"
 
 #include <stdio.h>
 #include <time.h>

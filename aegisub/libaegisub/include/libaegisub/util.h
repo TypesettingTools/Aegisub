@@ -19,11 +19,9 @@
 /// @ingroup libaegisub
 
 #ifndef LAGI_PRE
-#include <string>
-#include <stdio.h>
-#include <time.h>
-#include <sys/statvfs.h>
+#include <stdint.h>
 
+#include <string>
 #include <algorithm>
 #endif // LAGI_PRE
 

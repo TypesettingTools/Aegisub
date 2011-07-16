@@ -21,7 +21,6 @@
 #ifndef LAGI_PRE
 #include <errno.h>
 #include <stdio.h>
-#include <stdlib.h>
 
 #include <climits>
 #include <locale>

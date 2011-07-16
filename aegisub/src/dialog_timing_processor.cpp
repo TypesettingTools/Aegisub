@@ -38,6 +38,9 @@
 
 #ifndef AGI_PRE
 #include <algorithm>
+
+#include <wx/msgdlg.h>
+#include <wx/stattext.h>
 #endif
 
 #include "ass_dialogue.h"

@@ -41,6 +41,11 @@
 #include <deque>
 #include <vector>
 
+#include <wx/dcclient.h>
+#include <wx/msgdlg.h>
+#include <wx/settings.h>
+#include <wx/sizer.h>
+#include <wx/stattext.h>
 #include <wx/string.h>
 #endif
 

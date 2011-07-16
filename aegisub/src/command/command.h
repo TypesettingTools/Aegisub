@@ -23,6 +23,7 @@
 #include <map>
 #include <string>
 
+#include <wx/bitmap.h>
 #include <wx/string.h>
 #endif
 
