@@ -198,7 +198,7 @@ struct time_snap_frame : public validate_video_loaded {
 		int shiftBy = c->videoController->TimeAtFrame(c->videoController->GetFrameN(),agi::vfr::START) - cur->Start.GetMS();
 
 		for (size_t i = 0; i < sels.size(); ++i) {
-			if (cur = c->subsGrid->GetDialogue(sels[i])) {
+			if ((cur = c->subsGrid->GetDialogue(sels[i]))) {
 				cur->Start.SetMS(cur->Start.GetMS() + shiftBy);
 				cur->End.SetMS(cur->End.GetMS() + shiftBy);
 			}

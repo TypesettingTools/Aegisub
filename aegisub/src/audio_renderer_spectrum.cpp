@@ -118,7 +118,6 @@ AudioSpectrumRenderer::AudioSpectrumRenderer()
 , colors_selected(12)
 , derivation_size(8)
 , derivation_dist(8)
-, audio_scratch(0)
 #ifdef WITH_FFTW
 , dft_plan(0)
 , dft_input(0)
@@ -126,6 +125,7 @@ AudioSpectrumRenderer::AudioSpectrumRenderer()
 #else
 , fft_scratch(0)
 #endif
+, audio_scratch(0)
 {
 	colors_normal.InitIcyBlue_Normal();
 	colors_selected.InitIcyBlue_Selected();

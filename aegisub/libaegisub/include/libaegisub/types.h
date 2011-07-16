@@ -18,10 +18,6 @@
 /// @brief Platform specific types.
 /// @ingroup libaegisub
 
-#ifdef LAGI
-#include "config.h"
-#endif
-
 #ifndef LAGI_PRE
 #ifdef HAVE_SYS_TIME_H
 #  include <sys/time.h>

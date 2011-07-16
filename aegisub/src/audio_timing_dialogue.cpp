@@ -250,10 +250,10 @@ void AudioMarkerDialogueTiming::InitPair(AudioMarkerDialogueTiming *marker1, Aud
 AudioTimingControllerDialogue::AudioTimingControllerDialogue(AudioController *audio_controller, SelectionController<AssDialogue> *selection_controller, AssFile *ass)
 : timing_modified(false)
 , commit_id(-1)
-, ass(ass)
-, auto_commit(OPT_GET("Audio/Auto/Commit"))
 , audio_controller(audio_controller)
+, auto_commit(OPT_GET("Audio/Auto/Commit"))
 , selection_controller(selection_controller)
+, ass(ass)
 {
 	assert(audio_controller != 0);
 

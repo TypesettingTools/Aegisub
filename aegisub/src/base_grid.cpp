@@ -77,16 +77,16 @@ BaseGrid::BaseGrid(wxWindow* parent, agi::Context *context, const wxSize& size, 
 : wxWindow(parent, -1, wxDefaultPosition, size, style, name)
 , lineHeight(1) // non-zero to avoid div by 0
 , lastRow(-1)
-, extendRow(-1)
 , holding(false)
+, scrollBar(new wxScrollBar(this, GRID_SCROLLBAR, wxDefaultPosition, wxDefaultSize, wxSB_VERTICAL))
 , bmp(0)
+, byFrame(false)
+, extendRow(-1)
 , active_line(0)
 , batch_level(0)
 , batch_active_line_changed(false)
 , context(context)
 , yPos(0)
-, byFrame(false)
-, scrollBar(new wxScrollBar(this, GRID_SCROLLBAR, wxDefaultPosition, wxDefaultSize, wxSB_VERTICAL))
 {
 	scrollBar->SetScrollbar(0,10,100,10);
 
@@ -456,7 +456,6 @@ void BaseGrid::DrawImage(wxDC &dc) {
 	for (int i = 0; i < nDraw + 1; i++) {
 		int curRow = i + yPos - 1;
 		int curColor = 0;
-		bool collides = false;
 
 		wxArrayString strings;
 		strings.reserve(11);

@@ -1,6 +1,6 @@
-#define LAGI_PRE
-
 #include "config.h"
+
+#define LAGI_PRE
 
 // Common C
 #include <cassert>
