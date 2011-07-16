@@ -36,9 +36,6 @@
 ; This file declares all installables related to Aegisub Automation
 
 [Files]
-; Auto3 library
-DestDir: {app}; Source: src\libauto3_32.dll; Flags: ignoreversion solidbreak; Components: main
-DestDir: {app}; Source: src\libauto3_32.pdb; Flags: ignoreversion; Components: main/pdb
 ; auto4 main
 DestDir: {app}\automation\include; Source: src\automation\include\utils.lua; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/lua; Attribs: readonly
 DestDir: {app}\automation\include; Source: src\automation\include\utils-auto4.lua; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/lua; Attribs: readonly

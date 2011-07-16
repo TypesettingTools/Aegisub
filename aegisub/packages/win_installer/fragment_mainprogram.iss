@@ -45,6 +45,9 @@ Name: main/qcklnch; Description: Quick launch icon; Types: custom compact full
 DestDir: {app}; Source: src\aegisub32.exe; Flags: ignoreversion solidbreak; Components: main
 DestDir: {app}; Source: src\aegisub32.pdb; Flags: ignoreversion; Components: main/pdb
 DestDir: {app}; Source: license.txt; Flags: ignoreversion; Tasks: ; Languages: ; Components: main
+; Auto3 library
+DestDir: {app}; Source: src\libauto3_32.dll; Flags: ignoreversion solidbreak; Components: main
+DestDir: {app}; Source: src\libauto3_32.pdb; Flags: ignoreversion; Components: main/pdb
 
 [Icons]
 Name: {commonprograms}\Aegisub; Filename: {app}\aegisub32.exe; WorkingDir: {app}; IconIndex: 0; Components: main/icons; Comment: Create and edit subtitle files
