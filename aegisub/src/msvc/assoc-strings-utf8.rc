@@ -270,3 +270,39 @@ BEGIN
 	10109 "Aegisub plik audio"
 	10110 "Aegisub plik wideo"
 END
+
+// by Ben Tsui
+LANGUAGE LANG_CHINESE_SIMPLIFIED, SUBLANG_CHINESE_SIMPLIFIED
+STRINGTABLE
+BEGIN
+        10000 "Aegisub"
+        10001 "用Aegisub建立和编辑样式了的字幕。"
+        10101 "Aegisub字幕档"
+        10102 "Aegisub Advanced SSA字幕"
+        10103 "Aegisub SubStation Alpha字幕"
+        10104 "Aegisub SubRip文字字幕"
+        10105 "Aegisub MPEG-4 设定了的文字"
+        10106 "Aegisub Matroska字幕"
+        10107 "Aegisub原文字档"
+        10108 "Aegisub媒体档"
+        10109 "Aegisub音频档"
+        10110 "Aegisub影像档"
+END
+
+// by Ben Tsui
+LANGUAGE LANG_CHINESE_TRADITIONAL, SUBLANG_CHINESE_TRADITIONAL
+STRINGTABLE 
+BEGIN
+        10000 "Aegisub"
+        10001 "用Aegisub建立和編輯樣式了的字幕。"
+        10101 "Aegisub字幕檔"
+        10102 "Aegisub Advanced SSA字幕"
+        10103 "Aegisub SubStation Alpha字幕"
+        10104 "Aegisub SubRip文字字幕"
+        10105 "Aegisub MPEG-4 設定了的文字"
+        10106 "Aegisub Matroska字幕"
+        10107 "Aegisub原文字檔"
+        10108 "Aegisub媒體檔"
+        10109 "Aegisub音頻檔"
+        10110 "Aegisub影像檔"
+END
