@@ -55,12 +55,12 @@ endif
 #######################
 # AUDIO / VIDEO SUPPORT
 #######################
-ifeq (yes, $(HAVE_PROVIDER_FFMPEGSOURCE))
+ifeq (yes, $(WITH_FFMS))
 SRC_OPT += audio_provider_ffmpegsource.cpp video_provider_ffmpegsource.cpp ffmpegsource_common.cpp
 audio_provider_ffmpegsource.o video_provider_ffmpegsource.o ffmpegsource_common.o: \
-	CXXFLAGS += $(CFLAGS_FFMPEGSOURCE) $(CFLAGS_LIBAVFORMAT) $(CFLAGS_LIBAVCODEC) $(CFLAGS_LIBSWSCALE) $(CFLAGS_LIBAVUTIL) $(CFLAGS_LIBPOSTPROC)
+	CXXFLAGS += $(CFLAGS_FFMS)
 ffmpegsource_common.o: CXXFLAGS += -D__STDC_FORMAT_MACROS
-LDFLAGS += $(LDFLAGS_FFMPEGSOURCE) $(LDFLAGS_LIBAVFORMAT) $(LDFLAGS_LIBAVCODEC) $(LDFLAGS_LIBSWSCALE) $(LDFLAGS_LIBAVUTIL) $(LDFLAGS_LIBPOSTPROC)
+LDFLAGS += $(LDFLAGS_FFMPEGSOURCE)
 LDFLAGS_POST += $(LDFLAGS_FFMPEGSOURCE)
 endif
 
@@ -70,8 +70,8 @@ endif
 ###########
 ifeq (yes, $(WITH_LIBASS))
 SRC_OPT += subtitles_provider_libass.cpp
-subtitles_provider_libass.o: CXXFLAGS += $(CFLAGS_LIBASS)  $(CFLAGS_ICONV)
-LDFLAGS += $(LDFLAGS_LIBASS) $(LDFLAGS_ICONV) $(LDFLAGS_FONTCONFIG)
+subtitles_provider_libass.o: CXXFLAGS += $(CFLAGS_LIBASS)
+LDFLAGS += $(LDFLAGS_LIBASS)
 LDFLAGS_POST += $(LDFLAGS_LIBASS)
 endif
 
@@ -106,7 +106,7 @@ charset_detect.o:				CXXFLAGS += -D_X86_
 font_file_lister_fontconfig.o:	CXXFLAGS += $(CFLAGS_FONTCONFIG) $(CFLAGS_FREETYPE)
 font_file_lister.o:				CXXFLAGS += $(CFLAGS_FREETYPE)
 text_file_reader.o:				CXXFLAGS += -D_X86_
-video_provider_manager.o:		CXXFLAGS += $(CFLAGS_FFMPEGSOURCE)
+video_provider_manager.o:		CXXFLAGS += $(CFLAGS_FFMS)
 
 
 # Ensure any optional source files above are added for compilation.

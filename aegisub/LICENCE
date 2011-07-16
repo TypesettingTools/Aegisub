@@ -33,12 +33,6 @@ covered by another license in the file itself.
 The following directories and file are covered by their respective licenses as 
 follows:
 
-libass/
- - ISC license. See libass/COPYING.
-
-libffms/
- - MIT license.
-
 src/boost/
  - Boost Software License Version 1.0 see src/boost/LICENSE_1_0.txt.
 

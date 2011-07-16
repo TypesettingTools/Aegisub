@@ -1,13 +1,5 @@
 include Makefile.inc
 
-ifeq (yes, $(WITH_LIBASS))
-SUBDIRS += libass
-endif
-
-ifeq (yes, $(HAVE_PROVIDER_FFMPEGSOURCE))
-SUBDIRS += libffms
-endif
-
 SUBDIRS += \
 	universalchardet \
 	libaegisub \
