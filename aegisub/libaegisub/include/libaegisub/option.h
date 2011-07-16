@@ -22,6 +22,7 @@
 
 #ifndef LAGI_PRE
 #include <fstream>
+#include <map>
 #endif
 
 #include <libaegisub/exception.h>

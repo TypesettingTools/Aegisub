@@ -24,6 +24,8 @@
 #include "aegisub.h"
 #include "util.h"
 
+#include <libaegisub/option_value.h>
+
 #ifdef __WINDOWS__
 #include "../src/config.h"
 #else

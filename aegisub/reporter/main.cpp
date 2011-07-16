@@ -47,7 +47,7 @@ bool Reporter::OnInit() {
 //	if ( !wxApp::OnInit() )
 //		return false;
 
-	wxApp::CheckBuildOptions(WX_BUILD_OPTIONS_SIGNATURE, _("Reporter"));
+	wxApp::CheckBuildOptions(WX_BUILD_OPTIONS_SIGNATURE, _("Reporter").c_str());
 
 
 	static const wxCmdLineEntryDesc cmdLineDesc[] = {

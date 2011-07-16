@@ -21,6 +21,7 @@
 #ifndef LAGI_PRE
 #include <math.h>
 
+#include <map>
 #include <memory>
 #include <string>
 #include <vector>
