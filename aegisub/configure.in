@@ -25,7 +25,7 @@ m4_define([freetype_required_version], [9.7.0])
 m4_define([pkgconfig_required_version], [0.20])
 m4_define([wx_required_version], [2.9.0])
 m4_define([libass_required_version], [0.9.7])
-m4_define([ffms_required_version], [2.1.15])
+m4_define([ffms_required_version], [2.15])
 
 
 #######
