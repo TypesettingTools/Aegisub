@@ -55,7 +55,7 @@ endif
 #######################
 # AUDIO / VIDEO SUPPORT
 #######################
-ifeq (yes, $(WITH_FFMS))
+ifeq (yes, $(HAVE_FFMS))
 SRC_OPT += audio_provider_ffmpegsource.cpp video_provider_ffmpegsource.cpp ffmpegsource_common.cpp
 audio_provider_ffmpegsource.o video_provider_ffmpegsource.o ffmpegsource_common.o: \
 	CXXFLAGS += $(CFLAGS_FFMS)
@@ -68,7 +68,7 @@ endif
 ###########
 # SUBTITLES
 ###########
-ifeq (yes, $(WITH_LIBASS))
+ifeq (yes, $(HAVE_LIBASS))
 SRC_OPT += subtitles_provider_libass.cpp
 subtitles_provider_libass.o: CXXFLAGS += $(CFLAGS_LIBASS)
 LDFLAGS += $(LDFLAGS_LIBASS)
