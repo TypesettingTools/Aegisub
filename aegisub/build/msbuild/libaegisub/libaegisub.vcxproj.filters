@@ -145,7 +145,7 @@
     <ClCompile Include="$(SrcDir)windows\io.cpp">
       <Filter>Source Files\Windows</Filter>
     </ClCompile>
-    <ClCompile Include="$(SrcDir)windows\log.cpp">
+    <ClCompile Include="$(SrcDir)windows\log_win.cpp">
       <Filter>Source Files\Windows</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)common\log.cpp">
@@ -163,7 +163,7 @@
     <ClCompile Include="$(SrcDir)common\path.cpp">
       <Filter>Source Files\Common</Filter>
     </ClCompile>
-    <ClCompile Include="$(SrcDir)windows\util.cpp">
+    <ClCompile Include="$(SrcDir)windows\util_win.cpp">
       <Filter>Source Files\Windows</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)common\validator.cpp">
@@ -181,10 +181,13 @@
     <ClCompile Include="$(SrcDir)common\keyframe.cpp">
       <Filter>Source Files\Common</Filter>
     </ClCompile>
-    <ClCompile Include="$(SrcDir)windows\path.cpp">
+    <ClCompile Include="$(SrcDir)windows\path_win.cpp">
       <Filter>Source Files\Windows</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)common\progress.cpp">
+      <Filter>Source Files\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SrcDir)common\util.cpp">
       <Filter>Source Files\Common</Filter>
     </ClCompile>
   </ItemGroup>

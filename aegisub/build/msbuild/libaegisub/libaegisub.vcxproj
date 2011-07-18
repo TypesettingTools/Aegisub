@@ -78,112 +78,32 @@
     <ClInclude Include="$(SrcDir)include\libaegisub\cajun\visitor.h" />
     <ClInclude Include="$(SrcDir)include\libaegisub\cajun\writer.h" />
   </ItemGroup>
-  <!-- Unfortunately MSBuild 4.0 doesn't offer a way to do item metadata transformations by functions, meaning lots of redundancy here -->
   <ItemGroup>
     <ClCompile Include="$(SrcDir)windows\lagi_pre.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
       <PrecompiledHeaderFile>lagi_pre.h</PrecompiledHeaderFile>
     </ClCompile>
-    <ClCompile Include="$(SrcDir)common\charset.cpp">
-      <AssemblerListingLocation>$(IntDir)Common\</AssemblerListingLocation>
-      <ObjectFileName>$(IntDir)Common\</ObjectFileName>
-      <XMLDocumentationFileName>$(IntDir)Common\</XMLDocumentationFileName>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)common\charset_conv.cpp">
-      <AssemblerListingLocation>$(IntDir)Common\</AssemblerListingLocation>
-      <ObjectFileName>$(IntDir)Common\</ObjectFileName>
-      <XMLDocumentationFileName>$(IntDir)Common\</XMLDocumentationFileName>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)common\charset_ucd.cpp">
-      <AssemblerListingLocation>$(IntDir)Common\</AssemblerListingLocation>
-      <ObjectFileName>$(IntDir)Common\</ObjectFileName>
-      <XMLDocumentationFileName>$(IntDir)Common\</XMLDocumentationFileName>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)common\hotkey.cpp">
-      <AssemblerListingLocation>$(IntDir)Common\</AssemblerListingLocation>
-      <ObjectFileName>$(IntDir)Common\</ObjectFileName>
-      <XMLDocumentationFileName>$(IntDir)Common\</XMLDocumentationFileName>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)common\json.cpp">
-      <AssemblerListingLocation>$(IntDir)Common\</AssemblerListingLocation>
-      <ObjectFileName>$(IntDir)Common\</ObjectFileName>
-      <XMLDocumentationFileName>$(IntDir)Common\</XMLDocumentationFileName>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)common\keyframe.cpp">
-      <AssemblerListingLocation>$(IntDir)Common\</AssemblerListingLocation>
-      <ObjectFileName>$(IntDir)Common\</ObjectFileName>
-      <XMLDocumentationFileName>$(IntDir)Common\</XMLDocumentationFileName>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)common\log.cpp">
-      <AssemblerListingLocation>$(IntDir)Common\</AssemblerListingLocation>
-      <ObjectFileName>$(IntDir)Common\</ObjectFileName>
-      <XMLDocumentationFileName>$(IntDir)Common\</XMLDocumentationFileName>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)common\mru.cpp">
-      <AssemblerListingLocation>$(IntDir)Common\</AssemblerListingLocation>
-      <ObjectFileName>$(IntDir)Common\</ObjectFileName>
-      <XMLDocumentationFileName>$(IntDir)Common\</XMLDocumentationFileName>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)common\option.cpp">
-      <AssemblerListingLocation>$(IntDir)Common\</AssemblerListingLocation>
-      <ObjectFileName>$(IntDir)Common\</ObjectFileName>
-      <XMLDocumentationFileName>$(IntDir)Common\</XMLDocumentationFileName>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)common\option_visit.cpp">
-      <AssemblerListingLocation>$(IntDir)Common\</AssemblerListingLocation>
-      <ObjectFileName>$(IntDir)Common\</ObjectFileName>
-      <XMLDocumentationFileName>$(IntDir)Common\</XMLDocumentationFileName>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)common\path.cpp">
-      <AssemblerListingLocation>$(IntDir)Common\</AssemblerListingLocation>
-      <ObjectFileName>$(IntDir)Common\</ObjectFileName>
-      <XMLDocumentationFileName>$(IntDir)Common\</XMLDocumentationFileName>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)common\progress.cpp">
-      <AssemblerListingLocation>$(IntDir)Common\</AssemblerListingLocation>
-      <ObjectFileName>$(IntDir)Common\</ObjectFileName>
-      <XMLDocumentationFileName>$(IntDir)Common\</XMLDocumentationFileName>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)common\validator.cpp">
-      <AssemblerListingLocation>$(IntDir)Common\</AssemblerListingLocation>
-      <ObjectFileName>$(IntDir)Common\</ObjectFileName>
-      <XMLDocumentationFileName>$(IntDir)Common\</XMLDocumentationFileName>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)common\vfr.cpp">
-      <AssemblerListingLocation>$(IntDir)Common\</AssemblerListingLocation>
-      <ObjectFileName>$(IntDir)Common\</ObjectFileName>
-      <XMLDocumentationFileName>$(IntDir)Common\</XMLDocumentationFileName>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)windows\access.cpp">
-      <AssemblerListingLocation>$(IntDir)Windows\</AssemblerListingLocation>
-      <ObjectFileName>$(IntDir)Windows\</ObjectFileName>
-      <XMLDocumentationFileName>$(IntDir)Windows\</XMLDocumentationFileName>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)windows\charset_conv_win.cpp">
-      <AssemblerListingLocation>$(IntDir)Windows\</AssemblerListingLocation>
-      <ObjectFileName>$(IntDir)Windows\</ObjectFileName>
-      <XMLDocumentationFileName>$(IntDir)Windows\</XMLDocumentationFileName>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)windows\io.cpp">
-      <AssemblerListingLocation>$(IntDir)Windows\</AssemblerListingLocation>
-      <ObjectFileName>$(IntDir)Windows\</ObjectFileName>
-      <XMLDocumentationFileName>$(IntDir)Windows\</XMLDocumentationFileName>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)windows\log.cpp">
-      <AssemblerListingLocation>$(IntDir)Windows\</AssemblerListingLocation>
-      <ObjectFileName>$(IntDir)Windows\</ObjectFileName>
-      <XMLDocumentationFileName>$(IntDir)Windows\</XMLDocumentationFileName>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)windows\path.cpp">
-      <AssemblerListingLocation>$(IntDir)Windows\</AssemblerListingLocation>
-      <ObjectFileName>$(IntDir)Windows\</ObjectFileName>
-      <XMLDocumentationFileName>$(IntDir)Windows\</XMLDocumentationFileName>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)windows\util.cpp">
-      <AssemblerListingLocation>$(IntDir)Windows\</AssemblerListingLocation>
-      <ObjectFileName>$(IntDir)Windows\</ObjectFileName>
-      <XMLDocumentationFileName>$(IntDir)Windows\</XMLDocumentationFileName>
-    </ClCompile>
+    <ClCompile Include="$(SrcDir)common\charset.cpp" />
+    <ClCompile Include="$(SrcDir)common\charset_conv.cpp" />
+    <ClCompile Include="$(SrcDir)common\charset_ucd.cpp" />
+    <ClCompile Include="$(SrcDir)common\hotkey.cpp" />
+    <ClCompile Include="$(SrcDir)common\json.cpp" />
+    <ClCompile Include="$(SrcDir)common\keyframe.cpp" />
+    <ClCompile Include="$(SrcDir)common\log.cpp" />
+    <ClCompile Include="$(SrcDir)common\mru.cpp" />
+    <ClCompile Include="$(SrcDir)common\option.cpp" />
+    <ClCompile Include="$(SrcDir)common\option_visit.cpp" />
+    <ClCompile Include="$(SrcDir)common\path.cpp" />
+    <ClCompile Include="$(SrcDir)common\progress.cpp" />
+    <ClCompile Include="$(SrcDir)common\util.cpp" />
+    <ClCompile Include="$(SrcDir)common\validator.cpp" />
+    <ClCompile Include="$(SrcDir)common\vfr.cpp" />
+    <ClCompile Include="$(SrcDir)windows\access.cpp" />
+    <ClCompile Include="$(SrcDir)windows\charset_conv_win.cpp" />
+    <ClCompile Include="$(SrcDir)windows\io.cpp" />
+    <ClCompile Include="$(SrcDir)windows\log.cpp" />
+    <ClCompile Include="$(SrcDir)windows\path_win.cpp" />
+    <ClCompile Include="$(SrcDir)windows\util_win.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="$(SrcDir)include\libaegisub\charsets.def" />
