@@ -101,7 +101,7 @@
     <ClCompile Include="$(SrcDir)windows\access.cpp" />
     <ClCompile Include="$(SrcDir)windows\charset_conv_win.cpp" />
     <ClCompile Include="$(SrcDir)windows\io.cpp" />
-    <ClCompile Include="$(SrcDir)windows\log.cpp" />
+    <ClCompile Include="$(SrcDir)windows\log_win.cpp" />
     <ClCompile Include="$(SrcDir)windows\path_win.cpp" />
     <ClCompile Include="$(SrcDir)windows\util_win.cpp" />
   </ItemGroup>
