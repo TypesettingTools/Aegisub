@@ -169,7 +169,7 @@ void OptionsManager::LoadDefaults(bool onlyDefaults,bool doOverride) {
 	SetText(_T("Video Provider"),_T(DEFAULT_PROVIDER_VIDEO),1945);
 	#endif
 	SetBool(_T("FFmpeg allow unsafe seeking"),false);
-	SetInt(_T("FFmpegSource decoding threads"),1);
+	SetInt(_T("FFmpegSource threads"),-1);
 	SetBool(_T("Allow Ancient Avisynth"),false,1700);
 	#ifdef __WINDOWS__
 	SetText(_T("Subtitles Provider"),_T("csri/vsfilter_textsub"),1700);

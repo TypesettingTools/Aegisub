@@ -197,10 +197,8 @@ void FFmpegSourceVideoProvider::LoadVideo(wxString filename) {
 		}
 	}
 
-	// set thread count
-	int Threads = Options.AsInt(_T("FFmpegSource decoding threads"));
-	if (Threads < 1)
-		throw _T("FFmpegSource video provider: invalid decoding thread count");
+	//number of threads automatically determined by ffms2 if given a value < 1
+	int Threads = Options.AsInt(_T("FFmpegSource threads"));
 
 	// set seekmode
 	// TODO: give this its own option?
