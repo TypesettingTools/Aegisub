@@ -18,7 +18,7 @@
 /// @brief Common paths.
 /// @ingroup libaegisub
 
-#include "config.h"
+#include "../config.h"
 
 #ifndef LAGI_PRE
 #include <vector>
