@@ -42,7 +42,7 @@ extern "C" {
 #include "stdint.h"
 #endif
 
-#include "../libass/ass.h"
+#include <ass/ass.h>
 }
 
 class FontConfigCacheThread;
