@@ -227,7 +227,7 @@
 				"Size" : 32
 			},
 			"FFmpegSource" : {
-				"Decoding Threads" : 1,
+				"Decoding Threads" : -1,
 				"Unsafe Seeking" : false
 			}
 		}
