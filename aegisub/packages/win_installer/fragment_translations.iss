@@ -74,6 +74,9 @@ Source: ..\..\po\pl.mo;          DestDir: {app}\locale\pl;    DestName: aegisub.
 Source: ..\..\po\wxstd-pl.mo;    DestDir: {app}\locale\pl;    DestName: wxstd.mo;   Flags: ignoreversion; Components: i18n/pl
 Source: ..\..\po\ru.mo;          DestDir: {app}\locale\ru;    DestName: aegisub.mo; Flags: ignoreversion; Components: i18n/ru
 Source: ..\..\po\wxstd-ru.mo;    DestDir: {app}\locale\ru;    DestName: wxstd.mo;   Flags: ignoreversion; Components: i18n/ru
+Source: ..\..\po\sr_RS.mo;       DestDir: {app}\locale\sr_HS; DestName: aegisub.mo; Flags: ignoreversion; Components: i18n/sr
+Source: ..\..\po\sr_RS@latin.mo; DestDir: {app}\locale\sr_HS@latin; DestName: aegisub.mo; Flags: ignoreversion; Components: i18n/sr
+; Missing wxstd for Serbian
 Source: ..\..\po\vi.mo;          DestDir: {app}\locale\vi;    DestName: aegisub.mo; Flags: ignoreversion; Components: i18n/vi
 Source: ..\..\po\wxstd-vi.mo;    DestDir: {app}\locale\vi;    DestName: wxstd.mo;   Flags: ignoreversion; Components: i18n/vi
 Source: ..\..\po\zh_CN.mo;       DestDir: {app}\locale\zh_CN; DestName: aegisub.mo; Flags: ignoreversion; Components: i18n/zh_CN
@@ -104,6 +107,7 @@ Name: i18n/pl;    Description: "Język polski (Polish)"; Types: full
 Name: i18n/pt_BR; Description: "Português do Brasil (Brazilian Portuguese)"; Types: full
 Name: i18n/pt_PT; Description: "Português de Portugal (European Portuguese)"; Types: full
 Name: i18n/ru;    Description: "Русский язык (Russian)"; Types: full
+Name: i18n/sr;    Description: "Српски/Srpski (Serbian, Cyrillic and Latin)"; Types: full
 Name: i18n/es;    Description: "Español (Spanish)"; Types: full
 Name: i18n/vi;    Description: "Tiếng Việt (Vietnamese)"; Types: full
 
