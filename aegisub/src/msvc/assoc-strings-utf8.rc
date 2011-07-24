@@ -275,34 +275,70 @@ END
 LANGUAGE LANG_CHINESE_SIMPLIFIED, SUBLANG_CHINESE_SIMPLIFIED
 STRINGTABLE
 BEGIN
-        10000 "Aegisub"
-        10001 "用Aegisub建立和编辑样式了的字幕。"
-        10101 "Aegisub字幕档"
-        10102 "Aegisub Advanced SSA字幕"
-        10103 "Aegisub SubStation Alpha字幕"
-        10104 "Aegisub SubRip文字字幕"
-        10105 "Aegisub MPEG-4 设定了的文字"
-        10106 "Aegisub Matroska字幕"
-        10107 "Aegisub原文字档"
-        10108 "Aegisub媒体档"
-        10109 "Aegisub音频档"
-        10110 "Aegisub影像档"
+	10000 "Aegisub"
+	10001 "用Aegisub建立和编辑样式了的字幕。"
+	10101 "Aegisub字幕档"
+	10102 "Aegisub Advanced SSA字幕"
+	10103 "Aegisub SubStation Alpha字幕"
+	10104 "Aegisub SubRip文字字幕"
+	10105 "Aegisub MPEG-4 设定了的文字"
+	10106 "Aegisub Matroska字幕"
+	10107 "Aegisub原文字档"
+	10108 "Aegisub媒体档"
+	10109 "Aegisub音频档"
+	10110 "Aegisub影像档"
 END
 
 // by Ben Tsui
 LANGUAGE LANG_CHINESE_TRADITIONAL, SUBLANG_CHINESE_TRADITIONAL
 STRINGTABLE 
 BEGIN
-        10000 "Aegisub"
-        10001 "用Aegisub建立和編輯樣式了的字幕。"
-        10101 "Aegisub字幕檔"
-        10102 "Aegisub Advanced SSA字幕"
-        10103 "Aegisub SubStation Alpha字幕"
-        10104 "Aegisub SubRip文字字幕"
-        10105 "Aegisub MPEG-4 設定了的文字"
-        10106 "Aegisub Matroska字幕"
-        10107 "Aegisub原文字檔"
-        10108 "Aegisub媒體檔"
-        10109 "Aegisub音頻檔"
-        10110 "Aegisub影像檔"
+	10000 "Aegisub"
+	10001 "用Aegisub建立和編輯樣式了的字幕。"
+	10101 "Aegisub字幕檔"
+	10102 "Aegisub Advanced SSA字幕"
+	10103 "Aegisub SubStation Alpha字幕"
+	10104 "Aegisub SubRip文字字幕"
+	10105 "Aegisub MPEG-4 設定了的文字"
+	10106 "Aegisub Matroska字幕"
+	10107 "Aegisub原文字檔"
+	10108 "Aegisub媒體檔"
+	10109 "Aegisub音頻檔"
+	10110 "Aegisub影像檔"
+END
+
+// by Rancher
+LANGUAGE LANG_SERBIAN, SUBLANG_SERBIAN_LATIN
+STRINGTABLE 
+BEGIN
+	10000 "Egisub"
+	10001 "Pravite i uređujte složene titlove s Egisubom."
+	10101 "Svi titlovi"
+	10102 "Napredni ASS titlovi"
+	10103 "Napredni SSA titlovi"
+	10104 "SRT titlovi"
+	10105 "MPEG-4 titlovi"
+	10106 "Matroška titlovi"
+	10107 "Tekstualni titlovi"
+	10108 "Medijske datoteke"
+	10109 "Zvučne datoteke"
+	10110 "Video datoteke"
+END
+
+// by Rancher
+LANGUAGE LANG_SERBIAN, SUBLANG_SERBIAN_CYRILLIC
+STRINGTABLE 
+BEGIN
+	10000 "Егисуб"
+	10001 "Правите и уређујте сложене титлове с Егисубом."
+	10101 "Сви титлови"
+	10102 "Напредни ASS титлови"
+	10103 "Напредни SSA титлови"
+	10104 "SRT титлови"
+	10105 "MPEG-4 титлови"
+	10106 "Матрошка титлови"
+	10107 "Текстуални титлови"
+	10108 "Медијске датотеке"
+	10109 "Звучне датотеке"
+	10110 "Видео датотеке"
 END
