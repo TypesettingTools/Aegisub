@@ -101,7 +101,7 @@ static void init_keycode_names() {
 		set_kc(keycode_names, i, str);
 	}
 	set_kc(keycode_names, WXK_TAB, "Tab");
-	set_kc(keycode_names, WXK_RETURN, "Return");
+	set_kc(keycode_names, WXK_RETURN, "Enter");
 	set_kc(keycode_names, WXK_ESCAPE, "Escape");
 	set_kc(keycode_names, WXK_SPACE, "Space");
 	set_kc(keycode_names, WXK_DELETE, "Delete");
@@ -162,7 +162,7 @@ static void init_keycode_names() {
 	set_kc(keycode_names, WXK_PAGEDOWN, "PageDown");
 	set_kc(keycode_names, WXK_NUMPAD_SPACE, "KP_Space");
 	set_kc(keycode_names, WXK_NUMPAD_TAB, "KP_Tab");
-	set_kc(keycode_names, WXK_NUMPAD_ENTER, "KP_Return");
+	set_kc(keycode_names, WXK_NUMPAD_ENTER, "KP_Enter");
 	set_kc(keycode_names, WXK_NUMPAD_F1, "KP_F1");
 	set_kc(keycode_names, WXK_NUMPAD_F2, "KP_F2");
 	set_kc(keycode_names, WXK_NUMPAD_F3, "KP_F3");
