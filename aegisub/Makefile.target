@@ -160,7 +160,7 @@ endif
 .SUFFIXES: .o .c .cpp .cxx
 
 %.o: %.c
-	$(CXX_ENV) $(BIN_CC) $(CFLAGS_DEP) $(CFLAGS) $(CXXFLAGS) -c -o $@ $<
+	$(CXX_ENV) $(BIN_CC) $(CFLAGS_DEP) $(CFLAGS) -c -o $@ $<
 
 %.o: %.cpp
 	$(CXX_ENV) $(BIN_CXX) $(CFLAGS_DEP) $(CPPFLAGS) $(CXXFLAGS) -c -o $@ $<
