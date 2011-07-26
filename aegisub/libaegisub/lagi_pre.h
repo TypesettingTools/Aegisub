@@ -5,6 +5,7 @@
 // Common C
 #include <cassert>
 #include <cerrno>
+#include <climits>
 #include <cmath>
 #include <cstdarg>
 #include <cstdio>
@@ -33,14 +34,11 @@
 // Common C++
 #include <algorithm>
 #include <deque>
-#include <climits>
 #include <fstream>
-#include <functional>
 #include <iostream>
 #include <iterator>
 #include <list>
 #include <locale>
-#include <numeric>
 #include <map>
 #include <numeric>
 #include <sstream>
