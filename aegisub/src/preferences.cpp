@@ -209,7 +209,6 @@ Interface_Colours::Interface_Colours(wxTreebook *book, Preferences *parent): Opt
 
 /// Interface Hotkeys preferences subpage
 Interface_Hotkeys::Interface_Hotkeys(wxTreebook *book, Preferences *parent): OptionPage(book, parent, _("Hotkeys"), PAGE_SUB) {
-
 	wxFlexGridSizer *hotkeys = PageSizer(_("Hotkeys"));
 	hotkeys->Add(new wxStaticText(this, wxID_ANY, _T("To be added after hotkey rewrite.")), 0, wxALL, 5);
 	SetSizerAndFit(sizer);

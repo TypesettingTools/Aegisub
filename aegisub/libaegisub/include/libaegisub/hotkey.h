@@ -118,7 +118,6 @@ private:
 	HotkeyMap str_map;										///< String representation -> Combo
 	HotkeyMap cmd_map;										///< Command name -> Combo
 	const std::string config_file;							///< Default user config location.
-	const std::string config_default;						///< Default config.
 
 	/// Build hotkey map.
 	/// @param context Context being parsed.
