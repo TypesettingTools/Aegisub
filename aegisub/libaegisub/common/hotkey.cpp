@@ -160,6 +160,18 @@ std::vector<std::string> Hotkey::GetHotkeys(const std::string &context, const st
 	return ret;
 }
 
+std::string Hotkey::GetHotkey(const std::string &context, const std::string &command) const {
+	std::string ret;
+	HotkeyMap::const_iterator it, end;
+	for (std::tr1::tie(it, end) = cmd_map.equal_range(command); it != end; ++it) {
+		std::string ctext = it->second.Context();
+		if (ctext == context) return it->second.StrMenu();
+		if (ctext == "Default") ret = it->second.StrMenu();
+		else if (ret.empty() && ctext == "Always") it->second.StrMenu();
+	}
+	return ret;
+}
+
 void Hotkey::Flush() {
 	json::Object root;
 

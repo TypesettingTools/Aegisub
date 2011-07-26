@@ -85,8 +85,7 @@ std::vector<std::string> get_hotkey_strs(std::string const& context, std::string
 }
 
 std::string get_hotkey_str_first(std::string const& context, std::string const& command) {
-	std::vector<std::string> strs = get_hotkey_strs(context, command);
-	return strs.empty() ? "" : strs.front();
+	return agi::hotkey::hotkey->GetHotkey(context, command);
 }
 
 

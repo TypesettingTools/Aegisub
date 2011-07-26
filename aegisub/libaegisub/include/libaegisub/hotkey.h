@@ -107,6 +107,12 @@ public:
 	/// @return A vector of all hotkeys for that command in the context
 	std::vector<std::string> GetHotkeys(const std::string &context, const std::string &command) const;
 
+	/// Get a string representation of a hotkeys for the given command
+	/// @param context Context requested
+	/// @param command Command name
+	/// @return A hotkey for the given command or "" if there are none
+	std::string GetHotkey(const std::string &context, const std::string &command) const;
+
 private:
 	typedef std::multimap<std::string, Combo> HotkeyMap;	///< Map to hold Combo instances.
 	HotkeyMap str_map;										///< String representation -> Combo
