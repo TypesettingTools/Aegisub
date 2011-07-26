@@ -66,7 +66,7 @@ void time_log(timeval &tv) {
 	gettimeofday(&tv, (struct timezone *)NULL);
 }
 
-uint64_t freespace(std::string &path, PathType type) {
+uint64_t freespace(std::string const& path, PathType type) {
 	struct statvfs fs;
 	std::string check(path);
 

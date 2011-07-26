@@ -65,7 +65,7 @@ namespace agi {
 	/// Check for amount of free space on a Path.
 	// @param path[in] Path to check
 	// @param type     PathType (default is TypeDir)
-	uint64_t freespace(std::string &path, PathType type=TypeDir);
+	uint64_t freespace(std::string const& path, PathType type=TypeDir);
 
 	struct delete_ptr {
 		template<class T>

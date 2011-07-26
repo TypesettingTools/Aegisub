@@ -111,5 +111,19 @@ void time_log(agi_timeval &tv) {
 	tv.tv_usec = (long)(tmpres % 1000000UL);
 }
 
+uint64_t freespace(std::string const& path, PathType type) {
+	if (type == TypeFile)
+		return freespace(DirName(path));
+
+	ULARGE_INTEGER bytes_available;
+	if (GetDiskFreeSpaceEx(ConvertW(path).c_str(), &bytes_available, 0, 0))
+		return bytes_available.QuadPart;
+
+	acs::CheckDirRead(path);
+
+	/// @todo GetLastError -> Exception mapping
+	throw "Unknown error getting free space";
+}
+
 	} // namespace io
 } // namespace agi
