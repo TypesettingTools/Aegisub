@@ -18,13 +18,9 @@
 /// @brief Input validation.
 /// @ingroup libaegisub
 
-#ifndef LAGI_PRE
-#endif
-
 #include <libaegisub/colour.h>
 
 namespace agi {
-
 
 class Validator {
 public:

@@ -21,8 +21,7 @@
 #include "../config.h"
 
 #ifndef LAGI_PRE
-#include <math.h>
-
+#include <cmath>
 #include <memory>
 #endif
 

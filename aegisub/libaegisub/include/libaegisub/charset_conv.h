@@ -21,7 +21,7 @@
 #pragma once
 
 #ifndef LAGI_PRE
-#include <string.h>
+#include <cstring>
 #include <memory>
 #include <string>
 #include <vector>

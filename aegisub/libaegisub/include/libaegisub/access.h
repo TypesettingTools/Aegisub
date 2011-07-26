@@ -18,9 +18,6 @@
 /// @brief Public interface for access methods.
 /// @ingroup libaegisub
 
-#ifndef LAGI_PRE
-#endif
-
 #include <libaegisub/exception.h>
 
 namespace agi {

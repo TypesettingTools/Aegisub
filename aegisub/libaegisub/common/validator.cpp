@@ -18,9 +18,6 @@
 /// @brief Input validation.
 /// @ingroup libaegisub
 
-#ifndef LAGI_PRE
-#endif
-
 #include <libaegisub/validator.h>
 
 namespace agi {

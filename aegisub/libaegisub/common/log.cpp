@@ -18,11 +18,10 @@
 /// @brief Logging
 /// @ingroup libaegisub
 
-#ifndef AGI_PRE
-#include <stdio.h>
-#include <string.h>
-
+#ifndef LAGI_PRE
 #include <algorithm>
+#include <cstdio>
+#include <cstring>
 #include <functional>
 #include <memory>
 #endif

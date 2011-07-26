@@ -18,9 +18,6 @@
 /// @brief Common paths.
 /// @ingroup libaegisub
 
-#ifndef AGI_PRE
-#endif
-
 #include <libaegisub/exception.h>
 #include <libaegisub/scoped_ptr.h>
 

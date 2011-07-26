@@ -19,8 +19,7 @@
 /// @ingroup hotkey menu event window
 
 #ifndef LAGI_PRE
-#include <math.h>
-
+#include <cmath>
 #include <map>
 #include <memory>
 #include <string>

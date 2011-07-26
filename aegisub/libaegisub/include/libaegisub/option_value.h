@@ -18,7 +18,7 @@
 /// @brief Container for holding an actual option value.
 /// @ingroup libaegisub
 
-#if !defined(AGI_PRE) && !defined(LAGI_PRE)
+#ifndef LAGI_PRE
 #include <stdint.h>
 
 #include <fstream>

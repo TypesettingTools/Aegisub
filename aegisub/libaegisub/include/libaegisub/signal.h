@@ -20,7 +20,7 @@
 
 #pragma once
 
-#if !defined(AGI_PRE) && !defined(LAGI_PRE)
+#ifndef LAGI_PRE
 #ifdef _WIN32
 #include <functional>
 #include <map>

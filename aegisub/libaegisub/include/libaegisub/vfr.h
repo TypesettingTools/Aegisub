@@ -20,7 +20,7 @@
 
 #pragma once
 
-#if !defined(AGI_PRE) && !defined(LAGI_PRE)
+#ifndef LAGI_PRE
 #include <string>
 #include <vector>
 #endif

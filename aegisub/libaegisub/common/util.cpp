@@ -20,9 +20,9 @@
 
 #ifndef LAGI_PRE
 #include <errno.h>
-#include <stdio.h>
 
 #include <climits>
+#include <cstdio>
 #include <locale>
 #endif
 

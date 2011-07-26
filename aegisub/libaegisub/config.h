@@ -1,4 +1,4 @@
-#if !defined(AGI_PRE) && !defined(LAGI_PRE)
+#ifndef LAGI_PRE
 
 #ifdef _WIN32 // Windows specific settings
 #define HAVE_PTHREAD 1
