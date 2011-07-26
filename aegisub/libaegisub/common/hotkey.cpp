@@ -127,14 +127,14 @@ void Hotkey::BuildHotkey(std::string const& context, const json::Object& object)
 	} // for index
 }
 
-bool Hotkey::Scan(const std::string &context, const std::string &str, std::string &cmd) const {
+bool Hotkey::Scan(const std::string &context, const std::string &str, bool always, std::string &cmd) const {
 	std::string local, dfault;
 
 	HotkeyMap::const_iterator index, end;
 	for (std::tr1::tie(index, end) = str_map.equal_range(str); index != end; ++index) {
 		std::string const& ctext = index->second.Context();
 
-		if (ctext == "Always") {
+		if (always && ctext == "Always") {
 			cmd = index->second.CmdName();
 			LOG_D("agi/hotkey/found") << "Found: " << str << "  Context (req/found): " << context << "/Always   Command: " << cmd;
 			return 0;

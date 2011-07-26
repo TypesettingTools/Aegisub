@@ -69,7 +69,7 @@ bool check(std::string const& context, int key_code, wchar_t key_char, int modif
 	if (combo.empty()) return false;
 
 	std::string command;
-	if (agi::hotkey::hotkey->Scan(context, combo, command) == 0) {
+	if (agi::hotkey::hotkey->Scan(context, combo, OPT_GET("Audio/Medusa Timing Hotkeys")->GetBool(), command) == 0) {
 		/// The bottom line should be removed after all the hotkey commands are fixed.
 		/// This is to avoid pointless exceptions.
 		if (command.find("/") != std::string::npos) {
