@@ -40,9 +40,6 @@
 /// @note Make sure that you disable use of precompiled headers on md5.c and
 ///       MatroskaParser.c, as well as any possible future .c files.
 
-// C++ only
-#ifdef __cplusplus
-
 #include "config.h"
 
 /////////
@@ -245,8 +242,6 @@
 #include "gl/glext.h"
 #endif
 
-#ifdef _CRT_SECURE_NO_WARNINGS_DEFINED
+#ifndef _CRT_SECURE_NO_WARNINGS_DEFINED
 #undef _CRT_SECURE_NO_WARNINGS
 #endif
-
-#endif // C++

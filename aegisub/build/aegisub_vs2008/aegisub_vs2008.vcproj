@@ -810,6 +810,8 @@
 					<Tool
 						Name="VCCLCompilerTool"
 						UsePrecompiledHeader="0"
+						PrecompiledHeaderThrough=""
+						ForcedIncludeFiles="$(NOINHERIT)"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -850,6 +852,8 @@
 					<Tool
 						Name="VCCLCompilerTool"
 						UsePrecompiledHeader="0"
+						PrecompiledHeaderThrough=""
+						ForcedIncludeFiles="$(NOINHERIT)"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
