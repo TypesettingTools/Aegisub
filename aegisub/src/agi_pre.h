@@ -40,12 +40,6 @@
 /// @note Make sure that you disable use of precompiled headers on md5.c and
 ///       MatroskaParser.c, as well as any possible future .c files.
 
-#ifndef AGI_PRE_H
-
-/// @brief Inclusion guard.
-/// @todo Why is this even necessary? GCC seems to include agi_pre.h twice for no reason.
-#define AGI_PRE_H
-
 // C++ only
 #ifdef __cplusplus
 
@@ -256,5 +250,3 @@
 #endif
 
 #endif // C++
-
-#endif // AGI_PRE_H
