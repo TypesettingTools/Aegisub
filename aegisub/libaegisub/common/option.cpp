@@ -105,7 +105,7 @@ OptionValue* Options::Get(const std::string &name) {
 		return index->second;
 
 	LOG_E("option/get") << "agi::Options::Get Option not found: (" << name << ")";
-	throw OptionErrorNotFound("Option value not found");
+	throw OptionErrorNotFound("Option value not found: " + name);
 }
 
 
