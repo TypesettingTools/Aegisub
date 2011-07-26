@@ -23,11 +23,10 @@
 #include <time.h>
 #endif
 
-#include "libaegisub/cajun/reader.h"
 #include "libaegisub/cajun/writer.h"
-#include "libaegisub/cajun/elements.h"
 
 #include "libaegisub/access.h"
+#include "libaegisub/json.h"
 #include "libaegisub/log.h"
 #include "libaegisub/mru.h"
 #include "libaegisub/io.h"
@@ -37,26 +36,7 @@ namespace agi {
 MRUManager::MRUManager(const std::string &config, const std::string &default_config): config_name(config) {
 	LOG_D("agi/mru") << "Loading MRU List";
 
-	json::UnknownElement root;
-	std::istream *stream;
-
-	try {
-		stream = io::Open(config);
-	} catch (const acs::AcsNotFound&) {
-		stream = new std::istringstream(default_config);
-	}
-
-	try {
-		json::Reader::Read(root, *stream);
-	} catch (const json::Exception&) {
-		/// @todo Do something better here, maybe print the exact error
-//		std::cout << "json::Exception: " << e.what() << std::endl;
-
-		delete stream;
-		stream = new std::istringstream(default_config);
-		json::Reader::Read(root, *stream);
-	}
-
+	json::UnknownElement root = json_util::file(config, default_config);
 	const json::Object& root_new = (json::Object)root;
 
 	json::Object::const_iterator index_object(root_new.Begin()), index_objectEnd(root_new.End());
@@ -68,8 +48,6 @@ MRUManager::MRUManager(const std::string &config, const std::string &default_con
 
 		Load(member_name, (json::Array)element);
 	}
-
-	delete stream;
 }
 
 
@@ -83,7 +61,6 @@ MRUManager::~MRUManager() {
 
 
 void MRUManager::Add(const std::string &key, const std::string &entry) {
-
 	MRUMap::iterator index;
 
 	if ((index = mru.find(key)) != mru.end()) {
@@ -103,7 +80,6 @@ void MRUManager::Add(const std::string &key, const std::string &entry) {
 
 
 void MRUManager::Remove(const std::string &key, const std::string &entry) {
-
 	MRUMap::iterator index;
 
 	if ((index = mru.find(key)) != mru.end()) {
@@ -122,7 +98,6 @@ void MRUManager::Remove(const std::string &key, const std::string &entry) {
 
 
 const MRUManager::MRUListMap* MRUManager::Get(const std::string &key) {
-
 	MRUMap::iterator index;
 
 	if ((index = mru.find(key)) != mru.end()) {
@@ -134,10 +109,9 @@ const MRUManager::MRUListMap* MRUManager::Get(const std::string &key) {
 
 
 const std::string MRUManager::GetEntry(const std::string &key, const int entry) {
-
 	const MRUManager::MRUListMap *map = Get(key);
 
-	MRUListMap::const_iterator index = map->begin();;
+	MRUListMap::const_iterator index = map->begin();
 
 	if ((unsigned int)entry > map->size())
 		throw MRUErrorIndexOutOfRange("Requested element index is out of range.");
@@ -149,7 +123,6 @@ const std::string MRUManager::GetEntry(const std::string &key, const int entry) 
 
 
 void MRUManager::Flush() {
-
 	json::Object out;
 
 	for (MRUMap::const_iterator i = mru.begin(); i != mru.end(); ++i) {
@@ -192,7 +165,6 @@ inline void MRUManager::Prune(MRUListMap& map) {
 /// @param key List name.
 /// @param array json::Array of values.
 void MRUManager::Load(const std::string &key, const json::Array& array) {
-
 	json::Array::const_iterator index(array.Begin()), indexEnd(array.End());
 
 	MRUListMap *map = new MRUListMap();
@@ -203,10 +175,10 @@ void MRUManager::Load(const std::string &key, const json::Array& array) {
 		time_t time = (time_t)(json::Number)obj["time"];
 		std::string entry = (json::String)obj["entry"];
 
-		map->insert(std::pair<time_t, std::string>(time, entry));
+		map->insert(make_pair(time, entry));
 	}
 
-	mru.insert(std::pair<std::string, MRUListMap*>(key, map));
+	mru[key] = map;
 	Prune(*map);
 }
 

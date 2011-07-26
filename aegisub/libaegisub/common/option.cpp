@@ -85,10 +85,10 @@ void Options::LoadConfig(std::istream& stream) {
 	try {
 		json::Reader::Read(config_root, stream);
 	} catch (json::Reader::ParseException& e) {
-		std::cout << "json::ParseException: " << e.what() << ", Line/offset: " << e.m_locTokenBegin.m_nLine + 1 << '/' << e.m_locTokenBegin.m_nLineOffset + 1 << std::endl << std::endl;
+		LOG_E("option/load") << "json::ParseException: " << e.what() << ", Line/offset: " << e.m_locTokenBegin.m_nLine + 1 << '/' << e.m_locTokenBegin.m_nLineOffset + 1;
 	} catch (json::Exception& e) {
 		/// @todo Do something better here, maybe print the exact error
-		std::cout << "json::Exception: " << e.what() << std::endl;
+		LOG_E("option/load") << "json::Exception: " << e.what();
 	}
 
 	ConfigVisitor config_visitor(values, std::string(""));
@@ -99,13 +99,12 @@ void Options::LoadConfig(std::istream& stream) {
 
 
 OptionValue* Options::Get(const std::string &name) {
-
 	OptionValueMap::iterator index;
 
 	if ((index = values.find(name)) != values.end())
 		return index->second;
 
-	std::cout << "agi::Options::Get Option not found: (" << name << ")" << std::endl;
+	LOG_E("option/get") << "agi::Options::Get Option not found: (" << name << ")";
 	throw OptionErrorNotFound("Option value not found");
 }
 
