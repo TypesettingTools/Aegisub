@@ -39,16 +39,16 @@ void EmitSTDOUT::log(SinkMessage *sm) {
 	localtime_s(&tmtime, &time);
 
 	char buff[1024];
-	_snprintf_s(buff, _TRUNCATE, "%c %02d:%02d:%02d %-6ld <%-25s> [%s:%s:%d]  %.*s\n",
+	_snprintf_s(buff, _TRUNCATE, "%s (%d): %c %02d:%02d:%02d %-6ld <%-25s> [%s]  %.*s\n",
+		sm->file,
+		sm->line,
 		Severity_ID[sm->severity],
 		tmtime.tm_hour,
 		tmtime.tm_min,
 		tmtime.tm_sec,
 		sm->tv.tv_usec,
 		sm->section,
-		sm->file,
 		sm->func,
-		sm->line,
 		sm->len,
 		sm->message);
 	OutputDebugStringA(buff);
