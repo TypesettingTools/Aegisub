@@ -40,12 +40,6 @@
 /// @note Make sure that you disable use of precompiled headers on md5.c and
 ///       MatroskaParser.c, as well as any possible future .c files.
 
-#include "config.h"
-
-/////////
-// Setup
-#define AGI_PRE
-
 // Block msvc from complaining about not using msvc-specific versions for
 // insecure C functions.
 #ifdef _CRT_SECURE_NO_WARNINGS
@@ -54,55 +48,31 @@
 #define _CRT_SECURE_NO_WARNINGS
 #endif
 
-///////////////
-// STD headers
-#include <algorithm>
-#include <deque>
-#include <fstream>
-#include <iterator>
-#include <iostream>
-#include <list>
-#include <map>
-#include <set>
-#include <sstream>
-#include <string>
-#include <utility>
-#include <vector>
+#include "config.h"
 
-#ifdef _WIN32
-#include <functional>
-#include <memory>
-#else
-#include <tr1/functional>
-#include <tr1/memory>
-#endif
+#include "../libaegisub/lagi_pre.h"
+
+/////////
+// Setup
+#define AGI_PRE
+
+// Common C++
+#include <set>
 
 // General headers
-#include <assert.h>
 #include <ctype.h>
-#include <errno.h>
 #include <fcntl.h>
 #include <iconv.h>
 #include <inttypes.h>
 #include <locale.h>
-#include <math.h>
 #ifdef _OPENMP
 // Not all compilers have <omp.h> (example: MSVC Express)
 #include <omp.h>
 #endif
-#include <stdint.h>
-#include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
-#include <time.h>
 #include <wchar.h>
 
 #ifdef _WIN32
-// "Lean and mean" causes windows.h to include less stuff, mostly rarely-used things.
-// We can't build without being "lean and mean", some of the things included by it has
-// macros that clash with variable names around Aegisub causing strange build errors.
-#define WIN32_LEAN_AND_MEAN
-// Windows.h must always be the first one, it defines a load of important things
 #include <windows.h>
 #include <objbase.h>
 #include <mmsystem.h>
