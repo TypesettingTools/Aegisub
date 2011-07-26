@@ -68,25 +68,25 @@ TEST_F(lagi_util, UtilRenameExNotFound) {
 TEST_F(lagi_util, Utilstr_lower) {
 	std::string str("-!ABCDEFGHIJKLMNOPQRSTUVWXYZ123");
 	util::str_lower(str);
-	EXPECT_STREQ(str.c_str(), "-!abcdefghijklmnopqrstuvwxyz123");
+	EXPECT_STREQ("-!abcdefghijklmnopqrstuvwxyz123", str.c_str());
 }
 
 TEST_F(lagi_util, UtilstrtoiInvalidRange) {
 	std::string str("2147483650");
-	EXPECT_EQ(util::strtoi(str), 0);
+	EXPECT_EQ(0, util::strtoi(str));
 
 	str.assign("-2147483650");
-	EXPECT_EQ(util::strtoi(str), 0);
+	EXPECT_EQ(0, util::strtoi(str));
 }
 
 TEST_F(lagi_util, UtilstrtoiInvalidString) {
 	std::string str("bottles of beer on the wall");
-	EXPECT_EQ(util::strtoi(str), 0);
+	EXPECT_EQ(0, util::strtoi(str));
 }
 
 TEST_F(lagi_util, UtilstrtoiNumberWithString) {
 	std::string str("24 bottles of beer on the wall");
-	EXPECT_EQ(util::strtoi(str), 24);
+	EXPECT_EQ(24, util::strtoi(str));
 }
 
 TEST_F(lagi_util, UtilstrtoiValidString) {
@@ -94,7 +94,7 @@ TEST_F(lagi_util, UtilstrtoiValidString) {
 	int i;
 
 	EXPECT_NO_THROW(i = util::strtoi(str));
-	EXPECT_EQ(i, 24);
+	EXPECT_EQ(24, i);
 }
 
 TEST_F(lagi_util, UtilfreespaceFile) {
@@ -118,8 +118,5 @@ TEST_F(lagi_util, UtilfreespaceInvalid) {
 	std::string path("/nonexistent");
 	EXPECT_ANY_THROW(util::freespace(path));
 }
-
-
-
 
 } // namespace agi
