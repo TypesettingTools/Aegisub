@@ -405,7 +405,6 @@ END_EVENT_TABLE()
 /// @return 
 ///
 void StyleEditBox::OnKeyDown(wxKeyEvent &event) {
-
 	if (!hotkey::check("Styling Assistant", event.GetKeyCode(), event.GetUnicodeKey(), event.GetModifiers()))
 		event.Skip();
 	event.StopPropagation();

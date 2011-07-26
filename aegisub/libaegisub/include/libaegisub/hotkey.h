@@ -71,19 +71,10 @@ public:
 	/// Context this Combo is triggered in.
 	const std::string& Context() const { return context; }
 
-	/// Enable or disable Combo or "Hotkey".
-	/// @param e Bool state.
-	void Enable(bool e) { enable = e; }
-
-	/// Check whether Combo is currently enabled or disabled.
-	/// @return State.
-	bool IsEnabled() const { return enable; }
-
 private:
 	ComboMap key_map;				///< Map.
 	const std::string cmd_name;		///< Command name.
 	const std::string context;		///< Context
-	bool enable;					///< Enable/Disable state
 
 	/// Insert a key into the ComboMap.
 	/// @param key Key to insert.

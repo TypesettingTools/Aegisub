@@ -115,16 +115,13 @@ void Hotkey::BuildHotkey(std::string const& context, const json::Object& object)
 
 			const json::Array& arr_mod = obj["modifiers"];
 
-			if (arr_mod.Size() >  0) {
+			if (arr_mod.Size() > 0) {
 				for (json::Array::const_iterator arr_mod_index(arr_mod.Begin()); arr_mod_index != arr_mod.End(); arr_mod_index++) {
 					const json::String& key_mod = *arr_mod_index;
 					combo.KeyInsert(key_mod.Value());
 				} // for arr_mod_index
-
 			}
 			combo.KeyInsert(static_cast<const json::String&>(obj["key"]).Value());
-			combo.Enable(static_cast<const json::Boolean&>(obj["enable"]).Value());
-
 			ComboInsert(combo);
 		} // for arr_index
 	} // for index
@@ -195,7 +192,6 @@ void Hotkey::Flush() {
 		json::Object hotkey;
 		hotkey["modifiers"] = modifiers;
 		hotkey["key"] = json::String(combo_map.back());
-		hotkey["enable"] = json::Boolean(index->second.IsEnabled());
 
 		json::Object& context_obj = root[index->second.Context()];
 		json::Array& combo_array = context_obj[index->second.CmdName()];
