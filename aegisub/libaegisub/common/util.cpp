@@ -42,6 +42,7 @@ void str_lower(std::string &str) {
 
 
 int strtoi(std::string &str) {
+	errno = 0;
 	long l = strtol(str.c_str(), NULL, 10);
 
 	if ((errno == ERANGE) || (l < INT_MIN) || (l > INT_MAX))
