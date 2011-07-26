@@ -32,13 +32,13 @@ json::UnknownElement parse(std::istream *stream);
 /// Parse a JSON file.
 /// @param file Path JSON to file
 /// @return json::UnknownElement
-json::UnknownElement file(const std::string file);
+json::UnknownElement file(const std::string &file);
 
 /// Parse a json stream, with default handler.
 /// @param file Path to JSON file.
 /// @param Default config file to load incase of nonexistent file
 /// @return json::UnknownElement
-json::UnknownElement file(const std::string file, const std::string &default_config);
+json::UnknownElement file(const std::string &file, const std::string &default_config);
 
 
 	} // namespace json_util

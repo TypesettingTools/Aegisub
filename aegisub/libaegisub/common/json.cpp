@@ -27,6 +27,7 @@
 #include "libaegisub/access.h"
 #include "libaegisub/io.h"
 #include "libaegisub/json.h"
+#include "libaegisub/log.h"
 
 
 namespace agi {
@@ -38,36 +39,32 @@ json::UnknownElement parse(std::istream *stream) {
 	try {
 		json::Reader::Read(root, *stream);
 	} catch (json::Reader::ParseException& e) {
-		std::cout << "json::ParseException: " << e.what() << ", Line/offset: " << e.m_locTokenBegin.m_nLine + 1 << '/' << e.m_locTokenBegin.m_nLineOffset + 1 << std::endl << std::endl;
+		LOG_E("json/parse") << "json::ParseException: " << e.what() << ", Line/offset: " << e.m_locTokenBegin.m_nLine + 1 << '/' << e.m_locTokenBegin.m_nLineOffset + 1;
+		delete stream;
+		throw;
 	} catch (json::Exception& e) {
-		/// @todo Do something better here, maybe print the exact error
-		std::cout << "json::Exception: " << e.what() << std::endl;
+		LOG_E("json/parse") << "json::Exception: " << e.what();
+		delete stream;
+		throw;
 	}
 
 	delete stream;
 	return root;
 }
 
-
-json::UnknownElement file(const std::string file) {
+json::UnknownElement file(const std::string &file) {
 	return parse(io::Open(file));
 }
 
-
-json::UnknownElement file(const std::string file, const std::string &default_config) {
-
+json::UnknownElement file(const std::string &file, const std::string &default_config) {
 	try {
 		return parse(io::Open(file));
-
 	// We only want to catch this single error as anything else could
 	// reflect a deeper problem.  ie, failed i/o, wrong permissions etc.
 	} catch (const acs::AcsNotFound&) {
-
-		std::istringstream stream(default_config);
-		return parse(&stream);
+		return parse(new std::istringstream(default_config));
 	}
 }
-
 
 	} // namespace json_util
 } // namespace agi

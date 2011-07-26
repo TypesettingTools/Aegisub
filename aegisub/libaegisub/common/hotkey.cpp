@@ -74,25 +74,7 @@ Hotkey::Hotkey(const std::string &file, const std::string &default_config)
 {
 	LOG_D("hotkey/init") << "Generating hotkeys.";
 
-	std::istream *stream;
-
-	try {
-		stream = agi::io::Open(config_file);
-	} catch (const acs::AcsNotFound&) {
-		stream = new std::istringstream(config_default);
-	}
-
-
-	json::UnknownElement hotkey_root;
-	try {
-		hotkey_root = agi::json_util::parse(stream);
-	} catch (...) {
-		// There's definitely a better way to do this.
-		delete stream;
-		stream = new std::istringstream(config_default);
-		hotkey_root = agi::json_util::parse(stream);
-	}
-
+	json::UnknownElement hotkey_root = agi::json_util::file(config_file, config_default);
 	json::Object object = hotkey_root;
 
 	for (json::Object::const_iterator index(object.Begin()); index != object.End(); index++) {
