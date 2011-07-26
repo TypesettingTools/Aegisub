@@ -648,7 +648,7 @@ void FrameMain::RebuildRecentList(const char *root_command, const char *mru_name
 		ss << "/";
 		ss << i;
 
-		wxFileName shortname(lagi_wxString(it->second));
+		wxFileName shortname(lagi_wxString(*it));
 
 		menu->Append(cmd::id(ss.str()),
 			wxString::Format("%s%d %s", i <= 9 ? "&" : "", i + 1, shortname.GetFullName()));

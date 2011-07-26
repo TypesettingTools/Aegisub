@@ -20,6 +20,7 @@
 
 #ifndef LAGI_PRE
 #include <fstream>
+#include <list>
 #include <map>
 #endif
 
@@ -47,9 +48,7 @@ class MRUManager {
 
 public:
 	/// @brief Map for time->value pairs.
-	/// @param int         Last time loaded
-	/// @param std::string File or value that was last loaded.
-	typedef std::multimap<time_t, std::string, std::greater_equal<time_t> > MRUListMap;
+	typedef std::list<std::string> MRUListMap;
 
 	/// @brief Constructor
 	/// @param config File to load MRU values from
@@ -79,7 +78,7 @@ public:
 	/// @param key List name
 	/// @param entry 0-base position of entry
 	/// @exception MRUErrorInvalidKey thrown when an invalid key is used.
-	const std::string GetEntry(const std::string &key, const int entry);
+	std::string const& GetEntry(const std::string &key, size_t entry);
 
 	/// Write MRU lists to disk.
 	void Flush();
@@ -92,13 +91,14 @@ private:
 	/// @brief Map for MRUListMap values.
 	/// @param std::string Name
 	/// @param MRUListMap instance.
-	typedef std::map<std::string, MRUListMap*> MRUMap;
+	typedef std::map<std::string, MRUListMap> MRUMap;
 
 	/// Internal MRUMap values.
 	MRUMap mru;
 
 	void Load(const std::string &key, const ::json::Array& array);
 	inline void Prune(MRUListMap& map);
+	MRUListMap &Find(std::string const& key);
 };
 
 } // namespace agi

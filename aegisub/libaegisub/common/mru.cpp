@@ -18,18 +18,13 @@
 /// @brief Most Recently Used (MRU) Lists
 /// @ingroup libaegisub
 
-#ifndef LAGI_PRE
-#include <fstream>
-#include <time.h>
-#endif
-
 #include "libaegisub/cajun/writer.h"
 
 #include "libaegisub/access.h"
+#include "libaegisub/io.h"
 #include "libaegisub/json.h"
 #include "libaegisub/log.h"
 #include "libaegisub/mru.h"
-#include "libaegisub/io.h"
 
 namespace agi {
 
@@ -53,72 +48,42 @@ MRUManager::MRUManager(const std::string &config, const std::string &default_con
 
 MRUManager::~MRUManager() {
 	Flush();
+}
 
-	for (MRUMap::iterator i = mru.begin(); i != mru.end(); ++i) {
-		delete i->second;
-	}
+MRUManager::MRUListMap &MRUManager::Find(std::string const& key) {
+	MRUMap::iterator index = mru.find(key);
+	if (index == mru.end())
+		throw MRUErrorInvalidKey("Invalid key value");
+	return index->second;
 }
 
 
 void MRUManager::Add(const std::string &key, const std::string &entry) {
-	MRUMap::iterator index;
-
-	if ((index = mru.find(key)) != mru.end()) {
-		MRUListMap &map = *index->second;
-
-		// Remove the file before adding it.
-		Remove(key, entry);
-
-		map.insert(std::pair<time_t, std::string>(time(NULL), entry));
-
-		Prune(map);
-
-	} else {
-		throw MRUErrorInvalidKey("Invalid key value");
-	}
+	MRUListMap &map = Find(key);
+	map.remove(entry);
+	map.push_front(entry);
+	Prune(map);
 }
 
 
 void MRUManager::Remove(const std::string &key, const std::string &entry) {
-	MRUMap::iterator index;
-
-	if ((index = mru.find(key)) != mru.end()) {
-		MRUListMap &map = *index->second;
-		for (MRUListMap::iterator map_idx = map.begin(); map_idx != map.end();) {
-			if (map_idx->second == entry)
-				map.erase(map_idx++);
-			else
-				++map_idx;
-		}
-	} else {
-		throw MRUErrorInvalidKey("Invalid key value");
-	}
-
+	Find(key).remove(entry);
 }
 
 
 const MRUManager::MRUListMap* MRUManager::Get(const std::string &key) {
-	MRUMap::iterator index;
-
-	if ((index = mru.find(key)) != mru.end()) {
-		return index->second;
-	} else {
-		throw MRUErrorInvalidKey("Invalid key value");
-	}
+	return &Find(key);
 }
 
-
-const std::string MRUManager::GetEntry(const std::string &key, const int entry) {
+std::string const& MRUManager::GetEntry(const std::string &key, size_t entry) {
 	const MRUManager::MRUListMap *map = Get(key);
 
-	MRUListMap::const_iterator index = map->begin();
-
-	if ((unsigned int)entry > map->size())
+	if (entry > map->size())
 		throw MRUErrorIndexOutOfRange("Requested element index is out of range.");
 
-	std::advance(index, entry);
-
-	return index->second;
+	MRUListMap::const_iterator index = map->begin();
+	advance(index, entry);
+	return *index;
 }
 
 
@@ -126,61 +91,34 @@ void MRUManager::Flush() {
 	json::Object out;
 
 	for (MRUMap::const_iterator i = mru.begin(); i != mru.end(); ++i) {
-		json::Array array;
-		MRUListMap *map_list = i->second;
+		json::Array &array = out[i->first];
+		const MRUListMap &map_list = i->second;
 
-		for (MRUListMap::const_iterator i_lst = map_list->begin(); i_lst != map_list->end(); ++i_lst) {
-			json::Object obj;
-			obj["time"] = json::Number((double)i_lst->first);
-			obj["entry"] = json::String(i_lst->second);
-			array.Insert(obj);
+		for (MRUListMap::const_iterator i_lst = map_list.begin(); i_lst != map_list.end(); ++i_lst) {
+			array.Insert(json::String(*i_lst));
 		}
-
-		out[i->first] = array;
 	}
 
-	io::Save file(config_name);
-	std::ofstream& ofp = file.Get();
-	json::Writer::Write(out, ofp);
-
+	json::Writer::Write(out, io::Save(config_name).Get());
 }
 
 
 /// @brief Prune MRUListMap to the desired length.
 /// This uses the user-set values for MRU list length.
 inline void MRUManager::Prune(MRUListMap& map) {
-	unsigned int size = 16;
+	map.resize(std::min(16u, map.size()));
+}
 
-	MRUListMap::iterator index = map.begin();;
-
-	if (map.size() >= size) {
-		std::advance(index, size);
-
-		// Use a range incase the storage number shrinks.
-		map.erase(index, map.end());
-	}
+static json::String cast_str(json::UnknownElement const& e) {
+	return static_cast<json::String>(e);
 }
 
 /// @brief Load MRU Lists.
 /// @param key List name.
 /// @param array json::Array of values.
 void MRUManager::Load(const std::string &key, const json::Array& array) {
-	json::Array::const_iterator index(array.Begin()), indexEnd(array.End());
-
-	MRUListMap *map = new MRUListMap();
-
-	for (; index != indexEnd; ++index) {
-		const json::Object& obj = *index;
-
-		time_t time = (time_t)(json::Number)obj["time"];
-		std::string entry = (json::String)obj["entry"];
-
-		map->insert(make_pair(time, entry));
-	}
-
-	mru[key] = map;
-	Prune(*map);
+	transform(array.Begin(), array.End(), back_inserter(mru[key]), cast_str);
+	Prune(mru[key]);
 }
-
 
 }

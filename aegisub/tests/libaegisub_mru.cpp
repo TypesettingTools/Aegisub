@@ -48,13 +48,7 @@ TEST_F(lagi_mru, MRUConstructFromString) {
 
 TEST_F(lagi_mru, MRUConstructInvalid) {
 	util::copy("data/mru_invalid.json", "data/mru_tmp");
-
-	const std::string nonexistent("data/mru_tmp");
-	agi::MRUManager mru(nonexistent, default_mru);
-
-	// Make sure it didn't load from the file.
-	EXPECT_THROW(mru.Add("Invalid", "/path/to/file"), agi::MRUErrorInvalidKey);
-	EXPECT_NO_THROW(mru.Add("Valid_Int", "/path/to/file"));
+	EXPECT_ANY_THROW(agi::MRUManager("data/mru_tmp", default_mru));
 }
 
 TEST_F(lagi_mru, MRUEntryAdd) {
@@ -82,6 +76,25 @@ TEST_F(lagi_mru, MRUKeyValid) {
 	EXPECT_NO_THROW(mru.Add("Valid", "/path/to/file"));
 }
 
+TEST_F(lagi_mru, MRUAddSeveral) {
+	util::copy("data/mru_ok.json", "data/mru_tmp");
+	agi::MRUManager mru("data/mru_tmp", default_mru);
+
+	EXPECT_NO_THROW(mru.Add("Valid", "/file/1"));
+	EXPECT_NO_THROW(mru.Add("Valid", "/file/2"));
+	EXPECT_NO_THROW(mru.Add("Valid", "/file/3"));
+	EXPECT_NO_THROW(mru.Add("Valid", "/file/1"));
+	EXPECT_NO_THROW(mru.Add("Valid", "/file/1"));
+	EXPECT_NO_THROW(mru.Add("Valid", "/file/3"));
+
+	agi::MRUManager::MRUListMap::const_iterator entry = mru.Get("Valid")->begin();
+	EXPECT_STREQ("/file/3", (*entry++).c_str());
+	EXPECT_STREQ("/file/1", (*entry++).c_str());
+	EXPECT_STREQ("/file/2", (*entry++).c_str());
+	EXPECT_EQ(mru.Get("Valid")->end(), entry);
+}
+
+
 
 // Check to make sure an entry is really removed.  This was fixed in
 // r4347, the entry was being removed from a copy of the map internally.
@@ -94,6 +107,6 @@ TEST_F(lagi_mru, MRUEntryRemove_r4347) {
 	const agi::MRUManager::MRUListMap *map_list = mru.Get("Valid");
 	agi::MRUManager::MRUListMap::const_iterator i_lst = map_list->begin();
 
-	if ((i_lst != map_list->end()) && (i_lst->second == "/path/to/file"))
+	if ((i_lst != map_list->end()) && (*i_lst == "/path/to/file"))
 		FAIL() << "r4347 regression, Entry exists after remove";
 }

@@ -57,8 +57,8 @@ Menu::Menu() {
 		const json::Object::Member& member = *index;
 		const json::Array& array = member.element;
 		delete BuildMenu(member.name, array);
-	}
-}
+		}
+			}
 
 Menu::~Menu() {}
 
@@ -69,11 +69,11 @@ wxMenu* Menu::GetMenu(std::string name) {
 
 	if ((index = map.find(name)) != map.end()) {
 		return index->second;
-	}
+		}
 
 	LOG_E("menu/invalid") << "Invalid index name: " << name;
 	throw MenuInvalidName("Unknown index");
-}
+	}
 
 
 
@@ -92,7 +92,7 @@ wxMenu* Menu::BuildMenu(std::string name, const json::Array& array, int submenu)
 		if (type == Menu::Spacer) {
 			menu->AppendSeparator();
 			continue;
-		}
+	}
 
 
 		const json::String& command = obj["command"];
@@ -101,13 +101,13 @@ wxMenu* Menu::BuildMenu(std::string name, const json::Array& array, int submenu)
 
 		std::string cmd_name = type == Menu::Submenu ? name_submenu : command.Value();
 		cmd::Command *cmd;
-		try {
+	try {
 			cmd = cmd::get(cmd_name);
-		}
+	}
 		catch (CommandNotFound const&) {
 			LOG_W("menu/command/not_found") << "Command '" << cmd_name << "' not found; skipping";
 			continue;
-		}
+	}
 
 		wxString display = cmd->StrMenu() + "\t" + hotkey::get_hotkey_str_first("Default", cmd_name);
 		wxString descr = cmd->StrHelp();
@@ -116,17 +116,17 @@ wxMenu* Menu::BuildMenu(std::string name, const json::Array& array, int submenu)
 			case Menu::Option: {
 				wxMenuItem *menu_item = new wxMenuItem(menu, cmd::id(command.Value()), display, descr, wxITEM_NORMAL);
 				menu->Append(menu_item);
-			}
+	}
 			break;
 
 			case Menu::Check: {
 				menu->AppendCheckItem(cmd::id(command.Value()), display, descr);
-			}
+}
 			break;
 
 			case Menu::Radio: {
 				menu->AppendRadioItem(cmd::id(command.Value()), display, descr);
-			}
+	}
 			break;
 
 			case Menu::Recent: {
@@ -135,7 +135,7 @@ wxMenu* Menu::BuildMenu(std::string name, const json::Array& array, int submenu)
 				menu->Append(menu_item);
 				map.insert(MTPair(command.Value(), menu_new));
 
-			}
+	}
 			break;
 
 			case Menu::Submenu: {
@@ -150,10 +150,10 @@ wxMenu* Menu::BuildMenu(std::string name, const json::Array& array, int submenu)
 					menu->Append(menu_item);
 				} else {
 					main_menu->Append(menu_new, display);
-				}
-			}
-			break;
 		}
+	}
+			break;
+}
 
 	} // for index
 
