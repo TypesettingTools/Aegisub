@@ -1,12 +1,12 @@
 {
 	"Always" : {
-		"audio play" : [
+		"audio/play/selection" : [
 			{
 				"modifiers" : [],
 				"key" : "KP_5"
 			}
 		],
-		"audio stop" : [
+		"audio/stop" : [
 			{
 				"modifiers" : [],
 				"key" : "KP_8"
@@ -36,31 +36,31 @@
 				"key" : "KP_9"
 			}
 		],
-		"audio play before selection begin" : [
+		"audio/play/selection/before" : [
 			{
 				"modifiers" : [],
 				"key" : "KP_1"
 			}
 		],
-		"audio play after selection end" : [
+		"audio/play/selection/after" : [
 			{
 				"modifiers" : [],
 				"key" : "KP_3"
 			}
 		],
-		"timing move to prev item" : [
+		"time/prev" : [
 			{
 				"modifiers" : [],
 				"key" : "KP_0"
 			}
 		],
-		"timing move to next item" : [
+		"time/next" : [
 			{
 				"modifiers" : [],
 				"key" : "KP_2"
 			}
 		],
-		"timing commit" : [
+		"audio/commit" : [
 			{
 				"modifiers" : [],
 				"key" : "KP_Enter"
@@ -417,7 +417,7 @@
 				"key" : "Left"
 			}
 		],
-		"toggle global timing mode" : [
+		"app/toggle/global_hotkeys" : [
 			{
 				"modifiers" : [ "Ctrl" ],
 				"key" : "KP_Multiply"

@@ -227,11 +227,28 @@ struct app_options : public Command {
 	}
 };
 
+/// Toggle global override hotkeys (aka medusa mode).
+struct app_toggle_global_hotkeys : public Command {
+	CMD_NAME("app/toggle/global_hotkeys")
+	STR_MENU("Toggle global hotkey overrides")
+	STR_DISP("Toggle global hotkey overrides")
+	STR_HELP("Toggle global hotkey overrides.")
+	CMD_TYPE(COMMAND_TOGGLE)
+
+	bool IsActive(const agi::Context *c) {
+		return OPT_GET("Audio/Medusa Timing Hotkeys")->GetBool();
+	}
+
+	void operator()(agi::Context *c) {
+		agi::OptionValue *opt = OPT_SET("Audio/Medusa Timing Hotkeys");
+		opt->SetBool(!opt->GetBool());
+	}
+};
 
 /// Check to see if there is a new version of Aegisub available.
 struct app_updates : public Command {
 	CMD_NAME("app/updates")
-	STR_MENU("&Check for Updates..")
+	STR_MENU("&Check for Updates...")
 	STR_DISP("Check for Updates")
 	STR_HELP("Check to see if there is a new version of Aegisub available.")
 
@@ -255,6 +272,7 @@ namespace cmd {
 		reg(new app_log);
 		reg(new app_new_window);
 		reg(new app_options);
+		reg(new app_toggle_global_hotkeys);
 		reg(new app_updates);
 	}
 }

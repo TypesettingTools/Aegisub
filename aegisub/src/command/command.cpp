@@ -85,7 +85,6 @@ namespace cmd {
 	void init_grid();
 	void init_help();
 	void init_keyframe();
-	void init_medusa();
 	void init_menu();
 	void init_recent();
 	void init_subtitle();
