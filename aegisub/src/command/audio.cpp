@@ -140,7 +140,7 @@ struct audio_open_video : public Command {
 	}
 
 	void operator()(agi::Context *c) {
-		c->audioController->OpenAudio(_T("audio-video:cache"));
+		c->audioController->OpenAudio(c->videoController->videoName);
 	}
 };
 
