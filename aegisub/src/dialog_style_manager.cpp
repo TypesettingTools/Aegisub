@@ -57,6 +57,7 @@
 #include "help_button.h"
 #include "libresrc/libresrc.h"
 #include "main.h"
+#include "persist_location.h"
 #include "selection_controller.h"
 #include "standard_paths.h"
 #include "utils.h"
@@ -213,11 +214,7 @@ DialogStyleManager::DialogStyleManager (agi::Context *context)
 	MainSizer->SetSizeHints(this);
 
 	// Position window
-	if (lastx == -1 && lasty == -1) {
-		CenterOnParent();
-	} else {
-		Move(lastx, lasty);
-	}
+	persist.reset(new PersistLocation(this, "Tool/Style Manager"));
 
 	// Populate lists
 	LoadCatalog();
@@ -395,7 +392,6 @@ END_EVENT_TABLE()
 
 /// @brief Close 
 void DialogStyleManager::OnClose (wxCommandEvent &) {
-	GetPosition(&lastx, &lasty);
 	Close();
 }
 
@@ -1167,9 +1163,3 @@ void DialogStyleManager::OnKeyDown(wxKeyEvent &event) {
 			break;
 	}
 }
-
-/// DOCME
-int DialogStyleManager::lastx = -1;
-
-/// DOCME
-int DialogStyleManager::lasty = -1;

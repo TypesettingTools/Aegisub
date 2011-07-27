@@ -34,11 +34,6 @@
 /// @ingroup style_editor
 ///
 
-
-
-
-////////////
-// Includes
 #ifndef AGI_PRE
 #include <vector>
 
@@ -48,14 +43,13 @@
 #include <wx/listbox.h>
 #endif
 
+#include <libaegisub/scoped_ptr.h>
 #include "ass_style_storage.h"
 
 namespace agi { struct Context; }
 class AssFile;
 class AssStyle;
-class SubtitlesGrid;
-
-
+class PersistLocation;
 
 /// DOCME
 /// @class DialogStyleManager
@@ -64,6 +58,7 @@ class SubtitlesGrid;
 /// DOCME
 class DialogStyleManager : public wxDialog {
 	agi::Context *c;
+	agi::scoped_ptr<PersistLocation> persist;
 
 	/// DOCME
 	std::vector<AssStyle*> styleMap;
@@ -71,73 +66,28 @@ class DialogStyleManager : public wxDialog {
 	/// DOCME
 	std::vector<AssStyle*> styleStorageMap;
 
-	/// DOCME
 	wxComboBox *CatalogList;
-
-	/// DOCME
 	wxListBox *StorageList;
-
-	/// DOCME
 	wxListBox *CurrentList;
-
-	/// DOCME
 	wxButton *MoveToLocal;
-
-	/// DOCME
 	wxButton *StorageNew;
-
-	/// DOCME
 	wxButton *StorageEdit;
-
-	/// DOCME
 	wxButton *StorageCopy;
-
-	/// DOCME
 	wxButton *StorageDelete;
-
-	/// DOCME
 	wxButton *StorageMoveUp;
-
-	/// DOCME
 	wxButton *StorageMoveDown;
-
-	/// DOCME
 	wxButton *StorageMoveTop;
-
-	/// DOCME
 	wxButton *StorageMoveBottom;
-
-	/// DOCME
 	wxButton *StorageSort;
-
-	/// DOCME
 	wxButton *MoveToStorage;
-
-	/// DOCME
 	wxButton *CurrentNew;
-
-	/// DOCME
 	wxButton *CurrentEdit;
-
-	/// DOCME
 	wxButton *CurrentCopy;
-
-	/// DOCME
 	wxButton *CurrentDelete;
-
-	/// DOCME
 	wxButton *CurrentMoveUp;
-
-	/// DOCME
 	wxButton *CurrentMoveDown;
-
-	/// DOCME
 	wxButton *CurrentMoveTop;
-
-	/// DOCME
 	wxButton *CurrentMoveBottom;
-
-	/// DOCME
 	wxButton *CurrentSort;
 
 
@@ -150,12 +100,6 @@ class DialogStyleManager : public wxDialog {
 	void LoadStorageStyles ();
 	void UpdateMoveButtons();
 	void MoveStyles(bool storage,int type);
-
-
-	/// DOCME
-
-	/// DOCME
-	static int lastx, lasty;
 
 	/// DOCME
 	wxSizer *MainSizer;
@@ -193,7 +137,6 @@ class DialogStyleManager : public wxDialog {
 	void PasteToStorage();
 
 public:
-
 	DialogStyleManager(agi::Context *context);
 	~DialogStyleManager();
 
