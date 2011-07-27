@@ -197,8 +197,6 @@ void FFmpegSourceVideoProvider::LoadVideo(wxString filename) {
 
 	// set thread count
 	int Threads = OPT_GET("Provider/Video/FFmpegSource/Decoding Threads")->GetInt();
-	if (Threads < 1)
-		throw VideoOpenError("invalid decoding thread count");
 
 	// set seekmode
 	// TODO: give this its own option?
