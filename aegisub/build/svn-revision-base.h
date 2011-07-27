@@ -7,4 +7,4 @@
 
 #define BUILD_SVN_REVISION $WCREV$
 #define BUILD_SVN_DATE "$WCDATE$"
-#define BUILD_SVN_LOCALMODS $WCMODS?true:false$
+#define BUILD_SVN_LOCALMODS $WCMODS?"M":""$

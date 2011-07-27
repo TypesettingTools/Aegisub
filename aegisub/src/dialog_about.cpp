@@ -141,7 +141,7 @@ AboutScreen::AboutScreen(wxWindow *parent)
 	aboutString += translatorCredit;
 	aboutString += _T("\n") + libString;
 	aboutString += _("\nSee the help file for full credits.\n");
-	aboutString += wxString::Format(_("Built by %s on %s."), GetAegisubBuildCredit().c_str(), GetAegisubBuildTime().c_str());
+	aboutString += wxString::Format(_("Built by %s on %s."), GetAegisubBuildCredit(), GetAegisubBuildTime());
 
 	// Replace copyright symbol
 	wxChar copySymbol = 0xA9;

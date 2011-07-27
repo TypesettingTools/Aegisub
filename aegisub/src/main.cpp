@@ -531,7 +531,7 @@ int AegisubApp::OnRun() {
 			wxDateTime time = wxDateTime::Now();
 			wxString timeStr = _T("---") + time.FormatISODate() + _T(" ") + time.FormatISOTime() + _T("------------------");
 			file << std::endl << timeStr.mb_str(csConvLocal);
-			file << "\nVER - " << GetAegisubLongVersionString().mb_str(wxConvUTF8);
+			file << "\nVER - " << GetAegisubLongVersionString();
 			file << "\nEXC - Aegisub has crashed with unhandled exception \"" << error.mb_str(csConvLocal) <<"\".\n";
 			int formatLen = timeStr.Length();
 			char dashes[1024];

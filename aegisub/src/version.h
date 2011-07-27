@@ -34,20 +34,17 @@
 /// @ingroup main
 ///
 
-class wxString;
-
-// Version string appended in title bar of main window (quick identification of all elements of a build)
-wxString GetAegisubLongVersionString();
-// Version string used in About box, looks nicer
-wxString GetAegisubShortVersionString();
-// Timestamp of build, only shown in About box
-wxString GetAegisubBuildTime();
-// Name of who built the binary
-wxString GetAegisubBuildCredit();
-// Is release?
+/// Version string appended in title bar of main window (quick identification of all elements of a build)
+const char *GetAegisubLongVersionString();
+/// Version string used in About box, looks nicer
+const char *GetAegisubShortVersionString();
+/// Timestamp of build, only shown in About box
+const char *GetAegisubBuildTime();
+/// Name of who built the binary
+const char *GetAegisubBuildCredit();
+/// Is release?
 bool GetIsOfficialRelease();
-// Version number
-wxString GetVersionNumber();
-// Get SVN revision
+/// Version number
+const char *GetVersionNumber();
+/// Get SVN revision
 int GetSVNRevision();
-

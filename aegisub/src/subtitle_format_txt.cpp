@@ -212,7 +212,7 @@ void TXTSubtitleFormat::WriteFile(wxString filename,wxString encoding) {	using n
 	bool strip_formatting = true;
 
 	TextFileWriter file(filename, encoding);
-	file.WriteLineToFile(_T("# Exported by Aegisub ") + GetAegisubShortVersionString());
+	file.WriteLineToFile(wxString("# Exported by Aegisub ") + GetAegisubShortVersionString());
 
 	// Write the file
 	for (list<AssEntry*>::iterator l = Line->begin(); l != Line->end(); ++l) {

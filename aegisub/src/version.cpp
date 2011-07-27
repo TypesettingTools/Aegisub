@@ -36,193 +36,87 @@
 
 #include "config.h"
 
-#ifndef AGI_PRE
-#include <wx/datetime.h>
-#include <wx/string.h>
-#endif
-
 #include "version.h"
 
 #ifdef __WINDOWS__
 #include "../build/svn-revision.h"
+#endif
+
+#define STR_INT2(x) #x
+#define STR_INT(x) STR_INT2(x)
+
+#ifdef _DEBUG
+#define DEBUG_SUFFIX " [DEBUG VERSION]"
 #else
-
-#ifndef BUILD_SVN_REVISION
-
-/// DOCME
-#define BUILD_SVN_REVISION 0
+#define DEBUG_SUFFIX ""
 #endif
 
+#ifdef BUILD_CREDIT
+#define BUILD_CREDIT_SUFFIX ", " BUILD_CREDIT
+#else
+#define BUILD_CREDIT_SUFFIX ""
 #endif
 
+#ifndef BUILD_SVN_DATE
+#define BUILD_SVN_DATE __DATE__ " " __TIME__
+#endif
 
-/// DOCME
-#define _T_rec(X) _T(X)
-
-/// DOCME
-#define _T_stringize(X) _T(#X)
-
-/// DOCME
-#define _T_int(X) _T_stringize(X)
-
-
-/// DOCME
-#define BUILD_TIMESTAMP _T_rec(__DATE__) _T(" ") _T_rec(__TIME__)
+#ifndef BUILD_SVN_LOCALMODS
+#define BUILD_SVN_LOCALMODS ""
+#endif
 
 // Define FINAL_RELEASE to mark a build as a "final" version, ie. not pre-release version
 // In that case it won't include the SVN revision information
-
-
-/// DOCME
-struct VersionInfoStruct {
-
-	/// DOCME
-	const wxChar *VersionNumber;
-
-	/// DOCME
-	bool IsDebug;
-
-	/// DOCME
-	bool IsRelease;
-
-	/// DOCME
-	int SvnRev;
-
-	/// DOCME
-	const wxChar *BuildTime;
-
-	/// DOCME
-	const wxChar *BuildCredit;
-
-
-	/// DOCME
-	wxString LongVersionString;
-
-	/// DOCME
-	wxString ShortVersionString;
-
-
-	/// @brief // Generate the above data
-	///
-	VersionInfoStruct() {
-		wxString VersionStr;
-
-		SvnRev = BUILD_SVN_REVISION;
-
-#ifdef BUILD_SVN_DATE
-		BuildTime = _T_rec(BUILD_SVN_DATE);
-#else
-		BuildTime = BUILD_TIMESTAMP;
-#endif
-
-#ifdef BUILD_CREDIT
-		BuildCredit = _T(BUILD_CREDIT);
-#else
-		BuildCredit = _T("");
-#endif
-
-#ifdef _DEBUG
-		IsDebug = true;
-#else
-		IsDebug = false;
-#endif
-
 #ifdef FINAL_RELEASE
-		IsRelease = true;
-		VersionNumber = _T("3.0.0");
+#define VERSION_NUMBER "3.0.0"
 #else
-		IsRelease = false;
-		VersionNumber = _T("r") _T_int(BUILD_SVN_REVISION)
-# ifdef BUILD_SVN_LOCALMODS
-			_T("M")
-# endif
-			;
+#define VERSION_NUMBER "r" STR_INT(BUILD_SVN_REVISION) BUILD_SVN_LOCALMODS
 #endif
 
-		if (IsRelease)
-		{
-			// Short is used in about box
-			ShortVersionString = wxString::Format(_T("%s (built from SVN revision %d)"), VersionNumber, SvnRev);
-			// Long is used in title bar
-			LongVersionString = VersionNumber;
-		}
-		else
-		{
-			wxString buildcred;
+const char *GetAegisubLongVersionString() {
+#ifdef FINAL_RELEASE
+	return VERSION_NUMBER DEBUG_SUFFIX;
+#else
+	return VERSION_NUMBER " (development version" BUILD_CREDIT_SUFFIX ")" DEBUG_SUFFIX;
+#endif
+}
+
+const char *GetAegisubShortVersionString() {
+#ifdef FINAL_RELEASE
+	return VERSION_NUMBER " (built from SVN revision r" #BUILD_SVN_REVISION BUILD_SVN_LOCALMODS ")" DEBUG_SUFFIX;
+#else
+	return VERSION_NUMBER " (development version" BUILD_CREDIT_SUFFIX ")" DEBUG_SUFFIX;
+#endif
+}
+
+const char *GetAegisubBuildTime() {
+	return BUILD_SVN_DATE;
+}
+
+const char *GetAegisubBuildCredit() {
 #ifdef BUILD_CREDIT
-			buildcred += _T(", "); buildcred += BuildCredit;
+	return BUILD_CREDIT;
+#else
+	return "";
 #endif
-			ShortVersionString = wxString::Format(_T("%s (development version%s)"), VersionNumber, buildcred.c_str());
-			LongVersionString = ShortVersionString;
-		}
-
-		if (IsDebug)
-		{
-			ShortVersionString += _T(" [DEBUG VERSION]");
-			LongVersionString += _T(" [DEBUG VERSION]");
-		}
-	}
-};
-
-
-
-/// DOCME
-VersionInfoStruct versioninfo;
-
-
-
-/// @brief DOCME
-/// @return 
-///
-wxString GetAegisubLongVersionString() {
-	return versioninfo.LongVersionString;
 }
 
-
-/// @brief DOCME
-/// @return 
-///
-wxString GetAegisubShortVersionString() {
-	return versioninfo.ShortVersionString;
-}
-
-
-/// @brief DOCME
-/// @return 
-///
-wxString GetAegisubBuildTime() {
-	return versioninfo.BuildTime;
-}
-
-
-/// @brief DOCME
-/// @return 
-///
-wxString GetAegisubBuildCredit() {
-	return versioninfo.BuildCredit;
-}
-
-
-/// @brief DOCME
-/// @return 
-///
 bool GetIsOfficialRelease() {
-	return versioninfo.IsRelease;
+#ifdef FINAL_RELEASE
+	return true;
+#else
+	return false;
+#endif
 }
 
-
-/// @brief DOCME
-/// @return 
-///
-wxString GetVersionNumber() {
-	return versioninfo.VersionNumber;
+const char *GetVersionNumber() {
+	return VERSION_NUMBER;
 }
 
-
-/// @brief DOCME
-///
 int GetSVNRevision() {
-	return versioninfo.SvnRev;
+#ifdef BUILD_SVN_REVISION
+	return BUILD_SVN_REVISION;
+#else
+	return 0;
+#endif
 }
-
-
