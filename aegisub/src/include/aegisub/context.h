@@ -4,6 +4,7 @@ class AudioController;
 class AssDialogue;
 class DialogDetachedVideo;
 class DialogStyling;
+class DialogTranslation;
 template<class T> class SelectionController;
 class SubsEditBox;
 class SubtitlesGrid;
@@ -32,6 +33,7 @@ struct Context {
 	AudioBox *audioBox;
 	DialogDetachedVideo *detachedVideo;
 	DialogStyling *stylingAssistant;
+	DialogTranslation *translationAssistant;
 	SubsEditBox *editBox;
 	SubtitlesGrid *subsGrid;
 	VideoBox *videoBox;

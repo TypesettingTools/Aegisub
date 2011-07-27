@@ -374,6 +374,13 @@
 				"Key Start Before" : 5
 			}
 		},
+		"Translation Assistant" : {
+			"Last" : {
+				"X" : -1,
+				"Y" : -1
+			},
+			"Maximized" : false
+		},
 		"Visual" : {
 			"Always Show": true
 		}

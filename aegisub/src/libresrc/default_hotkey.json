@@ -579,43 +579,43 @@
 	},
 
 	"Translation Assistant" : {
-		"audio play" : [
+		"audio/play/selection" : [
 			{
 				"modifiers" : [],
 				"key" : "End"
 			}
 		],
-		"translation assiatant prev item" : [
+		"tool/translation_assistant/prev" : [
 			{
 				"modifiers" : [],
 				"key" : "PageUp"
 			}
 		],
-		"translation assistant commit" : [
+		"tool/translation_assistant/commit" : [
 			{
 				"modifiers" : [],
 				"key" : "Enter"
 			}
 		],
-		"translation assistant insert original" : [
+		"tool/translation_assistant/insert_original" : [
 			{
 				"modifiers" : [],
 				"key" : "Insert"
 			}
 		],
-		"translation assistant next item" : [
+		"tool/translation_assistant/next" : [
 			{
 				"modifiers" : [],
 				"key" : "PageDown"
 			}
 		],
-		"translation assistant preview" : [
+		"tool/translation_assistant/preview" : [
 			{
 				"modifiers" : [],
 				"key" : "F8"
 			}
 		],
-		"video/play" : [
+		"video/play/line" : [
 			{
 				"modifiers" : [],
 				"key" : "Home"

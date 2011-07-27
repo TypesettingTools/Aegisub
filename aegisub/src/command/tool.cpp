@@ -228,12 +228,81 @@ struct tool_translation_assistant : public Command {
 
 	void operator()(agi::Context *c) {
 		c->videoController->Stop();
-		int start = c->subsGrid->GetFirstSelRow();
-		if (start == -1) start = 0;
-		DialogTranslation(c, start, true).ShowModal();
+		DialogTranslation d(c);
+		c->translationAssistant = &d;
+		d.ShowModal();
+		c->translationAssistant = 0;
+	}
+};
+
+struct tool_translation_assistant_validator : public Command {
+	CMD_TYPE(COMMAND_VALIDATE)
+
+	bool Validate(agi::Context *c) {
+		return !!c->translationAssistant;
+	}
+};
+
+/// Commit changes and move to the next line.
+struct tool_translation_assistant_commit : public tool_translation_assistant_validator {
+	CMD_NAME("tool/translation_assistant/commit")
+	STR_MENU("&Accept changes")
+	STR_DISP("Accept changes")
+	STR_HELP("Commit changes and move to the next line.")
+
+	void operator()(agi::Context *c) {
+		c->translationAssistant->Commit(true);
+	}
+};
+
+/// Commit changes and stay on the current line.
+struct tool_translation_assistant_preview : public tool_translation_assistant_validator {
+	CMD_NAME("tool/translation_assistant/preview")
+	STR_MENU("&Preview changes")
+	STR_DISP("Preview changes")
+	STR_HELP("Commit changes and stay on the current line.")
+
+	void operator()(agi::Context *c) {
+		c->translationAssistant->Commit(false);
+	}
+};
+
+/// Move to the next line without committing changes.
+struct tool_translation_assistant_next : public tool_translation_assistant_validator {
+	CMD_NAME("tool/translation_assistant/next")
+	STR_MENU("&Next line")
+	STR_DISP("Next line")
+	STR_HELP("Move to the next line without committing changes.")
+
+	void operator()(agi::Context *c) {
+		c->translationAssistant->NextBlock();
+	}
+};
+
+/// Move to the previous line without committing changes.
+struct tool_translation_assistant_prev : public tool_translation_assistant_validator {
+	CMD_NAME("tool/translation_assistant/prev")
+	STR_MENU("&Prev line")
+	STR_DISP("Prev line")
+	STR_HELP("Move to the previous line without committing changes.")
+
+	void operator()(agi::Context *c) {
+		c->translationAssistant->PrevBlock();
 	}
 };
 }
+
+/// Insert the untranslated text.
+struct tool_translation_assistant_insert : public tool_translation_assistant_validator {
+	CMD_NAME("tool/translation_assistant/insert_original")
+	STR_MENU("&Insert Original")
+	STR_DISP("Insert Original")
+	STR_HELP("Insert the untranslated text.")
+
+	void operator()(agi::Context *c) {
+		c->translationAssistant->InsertOriginal();
+	}
+};
 /// @}
 
 namespace cmd {
@@ -254,5 +323,10 @@ namespace cmd {
 			reg(new tool_assdraw);
 		}
 #endif
+		reg(new tool_translation_assistant_commit);
+		reg(new tool_translation_assistant_preview);
+		reg(new tool_translation_assistant_next);
+		reg(new tool_translation_assistant_prev);
+		reg(new tool_translation_assistant_insert);
 	}
 }

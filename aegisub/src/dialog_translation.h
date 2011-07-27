@@ -1,29 +1,16 @@
-// Copyright (c) 2005, Rodrigo Braz Monteiro
-// All rights reserved.
+// Copyright (c) 2011, Thomas Goyne <plorkyeran@aegisub.org>
 //
-// Redistribution and use in source and binary forms, with or without
-// modification, are permitted provided that the following conditions are met:
+// Permission to use, copy, modify, and distribute this software for any
+// purpose with or without fee is hereby granted, provided that the above
+// copyright notice and this permission notice appear in all copies.
 //
-//   * Redistributions of source code must retain the above copyright notice,
-//     this list of conditions and the following disclaimer.
-//   * Redistributions in binary form must reproduce the above copyright notice,
-//     this list of conditions and the following disclaimer in the documentation
-//     and/or other materials provided with the distribution.
-//   * Neither the name of the Aegisub Group nor the names of its contributors
-//     may be used to endorse or promote products derived from this software
-//     without specific prior written permission.
-//
-// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-// AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-// IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
-// ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
-// LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
-// CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-// SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-// INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-// CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-// ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-// POSSIBILITY OF SUCH DAMAGE.
+// THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+// WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+// MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+// ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+// WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+// ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+// OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 //
 // Aegisub Project http://www.aegisub.org/
 //
@@ -31,118 +18,57 @@
 
 /// @file dialog_translation.h
 /// @see dialog_translation.cpp
-/// @ingroup tools_ui///
+/// @ingroup tools_ui
 
 #ifndef AGI_PRE
-#include <wx/checkbox.h>
 #include <wx/dialog.h>
-#include <wx/stattext.h>
 #endif
+
+#include <libaegisub/scoped_ptr.h>
 
 namespace agi { struct Context; }
 class AssDialogue;
-class AssFile;
-class AudioController;
-class AudioDisplay;
+class PersistLocation;
 class ScintillaTextCtrl;
-class SubtitlesGrid;
-class VideoContext;
+class wxStaticText;
+class wxCheckBox;
 
-
-/// DOCME
 /// @class DialogTranslation
-/// @brief DOCME
+/// @brief Assistant for translating subtitles in one language to another language
 ///
 /// DOCME
 class DialogTranslation : public wxDialog {
-private:
+	agi::Context *c;
 
-	/// DOCME
-	AudioController *audio;
+	/// The active line
+	AssDialogue *active_line;
+	/// Which dialogue block in the active line is currrently being translated
+	size_t cur_block;
 
-	/// DOCME
-	VideoContext *video;
+	/// Total number of dialogue lines in the file
+	size_t line_count;
+	/// Line number of the currently active line
+	size_t line_number;
 
-	/// DOCME
-	AssFile *subs;
+	wxStaticText *line_number_display;
+	ScintillaTextCtrl *original_text;
+	ScintillaTextCtrl *translated_text;
+	wxCheckBox *seek_video;
 
-	/// DOCME
-	SubtitlesGrid *grid;
+	agi::scoped_ptr<PersistLocation> persist;
 
-	/// DOCME
-	AssDialogue *current;
+	void OnPlayAudioButton(wxCommandEvent &);
+	void OnPlayVideoButton(wxCommandEvent &);
+	void OnKeyDown(wxKeyEvent &evt);
 
-	/// DOCME
-	wxWindow *main;
-
-	/// DOCME
-	int curline;
-
-	/// DOCME
-	int curblock;
-
-
-	/// DOCME
-	wxStaticText *LineCount;
-
-	/// DOCME
-	ScintillaTextCtrl *OrigText;
-
-	/// DOCME
-	ScintillaTextCtrl *TransText;
-
-	/// DOCME
-	wxCheckBox *PreviewCheck;
-
-	void OnMinimize(wxIconizeEvent &event);
-	void OnPlayAudioButton(wxCommandEvent &event);
-	void OnPlayVideoButton(wxCommandEvent &event);
-	void OnClose(wxCommandEvent &event);
-
-	bool JumpToLine(int n,int block);
-	void UpdatePreview();
-
-
-	/// DOCME
-
-	/// DOCME
-	static int lastx, lasty;
+	void UpdateDisplay();
 
 public:
+	DialogTranslation(agi::Context *context);
+	~DialogTranslation();
 
-	/// DOCME
-	bool enablePreview;
-	DialogTranslation(agi::Context *context, int startrow=0, bool preview=false);
-
-	void OnTransBoxKey(wxKeyEvent &event);
-
-	DECLARE_EVENT_TABLE()
-};
-
-/// DOCME
-/// @class DialogTranslationEvent
-/// @brief DOCME
-///
-/// DOCME
-class DialogTranslationEvent : public wxEvtHandler {
-private:
-
-	/// DOCME
-	DialogTranslation *control;
-
-	void OnPreviewCheck(wxCommandEvent &event);
-	void OnTransBoxKey(wxKeyEvent &event);
-
-public:
-	DialogTranslationEvent(DialogTranslation *control);
-	DECLARE_EVENT_TABLE()
-};
-
-/// Event IDs
-enum {
-	TEXT_ORIGINAL = 1100,
-	TEXT_TRANS,
-	PREVIEW_CHECK,
-	BUTTON_TRANS_PLAY_AUDIO,
-	BUTTON_TRANS_PLAY_VIDEO
+	bool NextBlock();
+	bool PrevBlock();
+	void Commit(bool next);
+	void InsertOriginal();
 };

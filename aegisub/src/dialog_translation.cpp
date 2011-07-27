@@ -1,29 +1,16 @@
-// Copyright (c) 2005, Rodrigo Braz Monteiro
-// All rights reserved.
+// Copyright (c) 2011, Thomas Goyne <plorkyeran@aegisub.org>
 //
-// Redistribution and use in source and binary forms, with or without
-// modification, are permitted provided that the following conditions are met:
+// Permission to use, copy, modify, and distribute this software for any
+// purpose with or without fee is hereby granted, provided that the above
+// copyright notice and this permission notice appear in all copies.
 //
-//   * Redistributions of source code must retain the above copyright notice,
-//     this list of conditions and the following disclaimer.
-//   * Redistributions in binary form must reproduce the above copyright notice,
-//     this list of conditions and the following disclaimer in the documentation
-//     and/or other materials provided with the distribution.
-//   * Neither the name of the Aegisub Group nor the names of its contributors
-//     may be used to endorse or promote products derived from this software
-//     without specific prior written permission.
-//
-// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-// AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-// IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
-// ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
-// LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
-// CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-// SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-// INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-// CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-// ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-// POSSIBILITY OF SUCH DAMAGE.
+// THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+// WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+// MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+// ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+// WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+// ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+// OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 //
 // Aegisub Project http://www.aegisub.org/
 //
@@ -34,14 +21,9 @@
 /// @ingroup tools_ui
 ///
 
-
-///////////
-// Headers
 #include "config.h"
 
-#ifndef AGI_PRE
-#include <wx/settings.h>
-#endif
+#include "dialog_translation.h"
 
 #include "include/aegisub/context.h"
 #include "include/aegisub/hotkey.h"
@@ -49,443 +31,238 @@
 #include "ass_dialogue.h"
 #include "ass_file.h"
 #include "audio_controller.h"
-#include "dialog_translation.h"
-#include "frame_main.h"
+#include "command/command.h"
 #include "help_button.h"
 #include "libresrc/libresrc.h"
+#include "persist_location.h"
+#include "scintilla_text_ctrl.h"
 #include "selection_controller.h"
-#include "subs_edit_box.h"
-#include "subs_edit_ctrl.h"
-#include "subs_grid.h"
 #include "utils.h"
 #include "video_context.h"
-#include "video_display.h"
 
+#ifndef AGI_PRE
+#include <wx/checkbox.h>
+#include <wx/settings.h>
+#include <wx/stattext.h>
+#endif
 
-/// @brief Constructor 
-/// @param parent   
-/// @param _subs    
-/// @param _grid    
-/// @param startrow 
-/// @param preview  
-///
-DialogTranslation::DialogTranslation(agi::Context *c, int startrow, bool preview)
-: wxDialog(c->parent, -1, _("Translation Assistant"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER | wxMINIMIZE_BOX, _T("TranslationAssistant"))
-{
-	// Set icon
-	SetIcon(BitmapToIcon(GETIMAGE(translation_toolbutton_24)));
-
-	// Set variables
-	enablePreview = preview;
-	main = c->parent;
-	subs = c->ass;
-	grid = c->subsGrid;
-	audio = c->audioController;
-	video = c->videoController;
-
-	// Translation controls
-	OrigText = new ScintillaTextCtrl(this,TEXT_ORIGINAL,_T(""),wxDefaultPosition,wxSize(320,80));
-	OrigText->SetWrapMode(wxSTC_WRAP_WORD);
-	OrigText->SetMarginWidth(1,0);
-	OrigText->StyleSetForeground(1,wxColour(10,60,200));
-	OrigText->SetReadOnly(true);
-	//OrigText->PushEventHandler(new DialogTranslationEvent(this));
-	TransText = new ScintillaTextCtrl(this,TEXT_TRANS,_T(""),wxDefaultPosition,wxSize(320,80));
-	TransText->SetWrapMode(wxSTC_WRAP_WORD);
-	TransText->SetMarginWidth(1,0);
-	TransText->PushEventHandler(new DialogTranslationEvent(this));
-	TransText->SetFocus();
-
-	// Translation box
-	wxSizer *TranslationSizer = new wxBoxSizer(wxVERTICAL);
-	wxSizer *OriginalTransSizer = new wxStaticBoxSizer(wxVERTICAL,this,_("Original"));
-	wxSizer *TranslatedSizer = new wxStaticBoxSizer(wxVERTICAL,this,_("Translation"));
-	LineCount = new wxStaticText(this,-1,_("Current line: ?"));
-	OriginalTransSizer->Add(LineCount,0,wxBOTTOM,5);
-	OriginalTransSizer->Add(OrigText,1,wxEXPAND,0);
-	TranslatedSizer->Add(TransText,1,wxEXPAND,0);
-	TranslationSizer->Add(OriginalTransSizer,1,wxEXPAND,0);
-	TranslationSizer->Add(TranslatedSizer,1,wxTOP|wxEXPAND,5);
-
-	// Hotkeys
-	wxSizer *KeysSizer = new wxStaticBoxSizer(wxVERTICAL,this,_("Keys"));
-	wxSizer *KeysInnerSizer = new wxGridSizer(2,0,5);
-//H	KeysInnerSizer->Add(new wxStaticText(this,-1,Hotkeys.GetText(_T("Translation Assistant Accept")) + _T(": ")));
-	KeysInnerSizer->Add(new wxStaticText(this,-1,_("Accept changes")));
-//H	KeysInnerSizer->Add(new wxStaticText(this,-1,Hotkeys.GetText(_T("Translation Assistant Preview")) + _T(": ")));
-	KeysInnerSizer->Add(new wxStaticText(this,-1,_("Preview changes")));
-//H	KeysInnerSizer->Add(new wxStaticText(this,-1,Hotkeys.GetText(_T("Translation Assistant Prev")) + _T(": ")));
-	KeysInnerSizer->Add(new wxStaticText(this,-1,_("Previous line")));
-//H	KeysInnerSizer->Add(new wxStaticText(this,-1,Hotkeys.GetText(_T("Translation Assistant Next")) + _T(": ")));
-	KeysInnerSizer->Add(new wxStaticText(this,-1,_("Next line")));
-//H	KeysInnerSizer->Add(new wxStaticText(this,-1,Hotkeys.GetText(_T("Translation Assistant Insert Original")) + _T(": ")));
-	KeysInnerSizer->Add(new wxStaticText(this,-1,_("Insert original")));
-//H	KeysInnerSizer->Add(new wxStaticText(this,-1,Hotkeys.GetText(_T("Translation Assistant Play Video")) + _T(": ")));
-	KeysInnerSizer->Add(new wxStaticText(this,-1,_("Play Video")));
-//H	KeysInnerSizer->Add(new wxStaticText(this,-1,Hotkeys.GetText(_T("Translation Assistant Play Audio")) + _T(": ")));
-	KeysInnerSizer->Add(new wxStaticText(this,-1,_("Play Audio")));
-	PreviewCheck = new wxCheckBox(this,PREVIEW_CHECK,_("Enable preview"));
-	PreviewCheck->SetValue(preview);
-	PreviewCheck->PushEventHandler(new DialogTranslationEvent(this));
-	KeysSizer->Add(KeysInnerSizer,0,wxEXPAND,0);
-	KeysSizer->Add(PreviewCheck,0,wxTOP,5);
-	
-	// Tool sizer
-	wxStaticBoxSizer *ToolSizer = new wxStaticBoxSizer(wxVERTICAL,this, _("Actions"));
-	wxButton *PlayVideoButton = new wxButton(this,BUTTON_TRANS_PLAY_VIDEO,_("Play Video"));
-	wxButton *PlayAudioButton = new wxButton(this,BUTTON_TRANS_PLAY_AUDIO,_("Play Audio"));
-	PlayVideoButton->Enable(video->IsLoaded());
-	/// @todo Reinstate this when the audio context is made reachable from here
-	//PlayAudioButton->Enable(audio->loaded);
-	ToolSizer->Add(PlayAudioButton,0,wxALL,5);
-	ToolSizer->Add(PlayVideoButton,0,wxLEFT | wxRIGHT | wxBOTTOM,5);
-
-	// Hotkeys + Tool sizer
-	wxBoxSizer *HTSizer = new wxBoxSizer(wxHORIZONTAL);
-	HTSizer->Add(KeysSizer,1,wxRIGHT | wxEXPAND,5);
-	HTSizer->Add(ToolSizer,0);
-
-	// Button sizer
-	wxStdDialogButtonSizer *ButtonSizer = new wxStdDialogButtonSizer();
-	ButtonSizer->AddButton(new wxButton(this,wxID_CANCEL));
-	ButtonSizer->AddButton(new HelpButton(this,_T("Translation Assistant")));
-	ButtonSizer->Realize();
-
-	// General layout
-	wxSizer *MainSizer = new wxBoxSizer(wxVERTICAL);
-	MainSizer->Add(TranslationSizer,1,wxALL | wxEXPAND,5);
-	MainSizer->Add(HTSizer,0,wxLEFT | wxRIGHT | wxBOTTOM | wxEXPAND,5);
-	MainSizer->Add(ButtonSizer,0,wxALIGN_RIGHT | wxLEFT | wxBOTTOM | wxRIGHT,5);
-
-	// Set sizer
-	SetSizer(MainSizer);
-	MainSizer->SetSizeHints(this);
-
-	// Position window
-	if (lastx == -1 && lasty == -1) {
-		CenterOnParent();
-	} else {
-		Move(lastx, lasty);
-	}
-
-	// Set subs/grid
-	JumpToLine(startrow,0);
-	UpdatePreview();
+static void add_hotkey(wxSizer *sizer, wxWindow *parent, const char *command, const char *text) {
+	sizer->Add(new wxStaticText(parent, -1, _(text)));
+	sizer->Add(new wxStaticText(parent, -1, hotkey::get_hotkey_str_first("Translation Assistant", command)));
 }
 
+DialogTranslation::DialogTranslation(agi::Context *c)
+: wxDialog(c->parent, -1, _("Translation Assistant"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER | wxMINIMIZE_BOX, "TranslationAssistant")
+, c(c)
+, active_line(c->selectionController->GetActiveLine())
+, cur_block(0)
+, line_count(count_if(c->ass->Line.begin(), c->ass->Line.end(), cast<AssDialogue*>()))
+, line_number(count_if(c->ass->Line.begin(), find(c->ass->Line.begin(), c->ass->Line.end(), active_line), cast<AssDialogue*>()) + 1)
+{
+	SetIcon(BitmapToIcon(GETIMAGE(translation_toolbutton_16)));
 
+	wxSizer *main_sizer = new wxBoxSizer(wxVERTICAL);
 
-/// @brief Jumps to line at block 
-/// @param n     
-/// @param block 
-/// @return 
-///
-bool DialogTranslation::JumpToLine(int n,int block) {
-	using std::vector;
-	AssDialogue *nextLine;
-	try {
-		nextLine = grid->GetDialogue(n);
-	} catch (...) {
-		return false;
-	}
-	if (!nextLine) return false;
-	current = nextLine;
+	wxSizer *translation_sizer = new wxBoxSizer(wxVERTICAL);
+	{
+		wxSizer *original_box = new wxStaticBoxSizer(wxVERTICAL, this, _("Original"));
 
-	// Count blocks
-	int nblocks = 0;
-	current->ParseASSTags();
-	size_t size_blocks = current->Blocks.size();
-	for (size_t i=0;i<size_blocks;i++) {
-		if (current->Blocks.at(i)->GetType() == BLOCK_PLAIN) nblocks++;
-	}
+		line_number_display = new wxStaticText(this, -1, "");
+		original_box->Add(line_number_display, 0, wxBOTTOM, 5);
 
-	// Wrap around
-	if (block == 0xFFFF) block = nblocks-1;
-	if (block < 0) {
-		block = 0xFFFF;
-		n--;
-		return JumpToLine(n,block);
-	}
-	if (block >= nblocks) {
-		block = 0;
-		n++;
-		return JumpToLine(n,block);
+		original_text = new ScintillaTextCtrl(this, -1, "", wxDefaultPosition, wxSize(320, 80));
+		original_text->SetWrapMode(wxSTC_WRAP_WORD);
+		original_text->SetMarginWidth(1, 0);
+		original_text->StyleSetForeground(1, wxColour(10, 60, 200));
+		original_text->SetReadOnly(true);
+		original_box->Add(original_text, 1, wxEXPAND, 0);
+
+		translation_sizer->Add(original_box, 1, wxEXPAND, 0);
 	}
 
-	// Set current
-	curline = n;
-	current = grid->GetDialogue(n);
-	curblock = block;
-	LineCount->SetLabel(wxString::Format(_("Current line: %i/%i"),curline+1,grid->GetRows()));
+	{
+		translated_text = new ScintillaTextCtrl(this, -1, "", wxDefaultPosition, wxSize(320, 80));
+		translated_text->SetWrapMode(wxSTC_WRAP_WORD);
+		translated_text->SetMarginWidth(1, 0);
+		translated_text->SetFocus();
+		translated_text->Bind(wxEVT_KEY_DOWN, &DialogTranslation::OnKeyDown, this);
 
-	// Update grid
-	grid->BeginBatch();
-	grid->SelectRow(curline);
-	grid->MakeCellVisible(curline,0);
-	grid->SetActiveLine(current);
-	grid->EndBatch();
+		wxSizer *translated_box = new wxStaticBoxSizer(wxVERTICAL, this, _("Translation"));
+		translated_box->Add(translated_text, 1, wxEXPAND, 0);
+		translation_sizer->Add(translated_box, 1, wxTOP|wxEXPAND, 5);
+	}
+	main_sizer->Add(translation_sizer, 1, wxALL | wxEXPAND, 5);
 
-	// Adds blocks
-	OrigText->SetReadOnly(false);
-	OrigText->ClearAll();
-	AssDialogueBlock *curBlock;
-	bool found = false;
-	int pos=-1;
-	for (vector<AssDialogueBlock*>::iterator cur=current->Blocks.begin();cur!=current->Blocks.end();cur++) {
-		curBlock = *cur;
-		if (curBlock->GetType() == BLOCK_PLAIN) {
-			pos++;
-			int curLen = OrigText->GetReverseUnicodePosition(OrigText->GetLength());
-			OrigText->AppendText(curBlock->text);
-			if (pos == block) {
-				OrigText->StartUnicodeStyling(curLen);
-				OrigText->SetUnicodeStyling(curLen,curBlock->text.Length(),1);
-				found = true;
-			}
+	wxSizer *right_box = new wxBoxSizer(wxHORIZONTAL);
+	{
+		wxSizer *hotkey_box = new wxStaticBoxSizer(wxVERTICAL, this, _("Keys"));
+
+		wxSizer *hotkey_grid = new wxGridSizer(2, 0, 5);
+		add_hotkey(hotkey_grid, this, "tool/translation_assistant/commit", "Accept changes");
+		add_hotkey(hotkey_grid, this, "tool/translation_assistant/preview", "Preview changes");
+		add_hotkey(hotkey_grid, this, "tool/translation_assistant/prev", "Previous line");
+		add_hotkey(hotkey_grid, this, "tool/translation_assistant/next", "Next line");
+		add_hotkey(hotkey_grid, this, "tool/translation_assistant/insert_original", "Insert original");
+		add_hotkey(hotkey_grid, this, "video/play/line", "Play Video");
+		add_hotkey(hotkey_grid, this, "audio/play/selection", "Play Audio");
+		hotkey_box->Add(hotkey_grid, 0, wxEXPAND, 0);
+
+		seek_video = new wxCheckBox(this, -1, _("Enable preview"));
+		seek_video->SetValue(true);
+		hotkey_box->Add(seek_video, 0, wxTOP, 5);
+
+		right_box->Add(hotkey_box, 1, wxRIGHT | wxEXPAND, 5);
+	}
+
+	{
+		wxStaticBoxSizer *actions_box = new wxStaticBoxSizer(wxVERTICAL, this, _("Actions"));
+
+		wxButton *play_audio = new wxButton(this, -1, _("Play Audio"));
+		play_audio->Enable(c->audioController->IsAudioOpen());
+		play_audio->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DialogTranslation::OnPlayAudioButton, this);
+		actions_box->Add(play_audio, 0, wxALL, 5);
+
+		wxButton *play_video = new wxButton(this, -1, _("Play Video"));
+		play_video->Enable(c->videoController->IsLoaded());
+		play_video->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DialogTranslation::OnPlayVideoButton, this);
+		actions_box->Add(play_video, 0, wxLEFT | wxRIGHT | wxBOTTOM, 5);
+
+		right_box->Add(actions_box, 0);
+	}
+	main_sizer->Add(right_box, 0, wxLEFT | wxRIGHT | wxBOTTOM | wxEXPAND, 5);
+
+	{
+		wxStdDialogButtonSizer *standard_buttons = new wxStdDialogButtonSizer();
+		standard_buttons->AddButton(new wxButton(this, wxID_CANCEL));
+		standard_buttons->AddButton(new HelpButton(this, "Translation Assistant"));
+		standard_buttons->Realize();
+		main_sizer->Add(standard_buttons, 0, wxALIGN_RIGHT | wxLEFT | wxBOTTOM | wxRIGHT, 5);
+	}
+
+	SetSizer(main_sizer);
+	main_sizer->SetSizeHints(this);
+
+	persist.reset(new PersistLocation(this, "Tool/Translation Assistant"));
+
+	Bind(wxEVT_KEY_DOWN, &DialogTranslation::OnKeyDown, this);
+	active_line->ParseASSTags();
+	UpdateDisplay();
+}
+
+DialogTranslation::~DialogTranslation() { }
+
+// Skip over override blocks, comments, and whitespace between blocks
+static bool bad_block(AssDialogueBlock *block) {
+	if (block->GetType() != BLOCK_PLAIN) return true;
+	wxString text = block->GetText();
+	if (text.Trim().Trim(false).empty()) return true;
+	if (text[0] == '{' && text.Last() == '}') return true;
+	return false;
+}
+
+bool DialogTranslation::NextBlock() {
+	do {
+		if (cur_block == active_line->Blocks.size() - 1) {
+			c->selectionController->NextLine();
+			AssDialogue *new_line = c->selectionController->GetActiveLine();
+			if (active_line == new_line || !new_line) return false;
+
+			active_line->ClearBlocks();
+			active_line = new_line;
+			active_line->ParseASSTags();
+			cur_block = 0;
+			++line_number;
 		}
-		else if (curBlock->GetType() == BLOCK_OVERRIDE) OrigText->AppendText(_T("{") + curBlock->text + _T("}"));
-	}
-	current->ClearBlocks();
-	OrigText->SetReadOnly(true);
+		else
+			++cur_block;
+	} while (bad_block(active_line->Blocks[cur_block]));
 
+	UpdateDisplay();
 	return true;
 }
 
+bool DialogTranslation::PrevBlock() {
+	do {
+		if (cur_block == 0) {
+			c->selectionController->PrevLine();
+			AssDialogue *new_line = c->selectionController->GetActiveLine();
+			if (active_line == new_line || !new_line) return false;
 
+			active_line->ClearBlocks();
+			active_line = new_line;
+			active_line->ParseASSTags();
+			cur_block = active_line->Blocks.size() - 1;
+			--line_number;
+		}
+		else
+			--cur_block;
+	} while (bad_block(active_line->Blocks[cur_block]));
 
-/// @brief Updates video preview 
-/// @return 
-///
-void DialogTranslation::UpdatePreview () {
-	if (enablePreview) {
-		try {
-			if (video->IsLoaded()) {
-				AssDialogue *cur = grid->GetDialogue(curline);
-				video->JumpToTime(cur->Start.GetMS());
+	UpdateDisplay();
+	return true;
+}
+
+void DialogTranslation::UpdateDisplay() {
+	line_number_display->SetLabel(wxString::Format(_("Current line: %d/%d"), line_number, line_count));
+
+	original_text->SetReadOnly(false);
+	original_text->ClearAll();
+
+	for (size_t i = 0; i < active_line->Blocks.size(); ++i) {
+		AssDialogueBlock *block = active_line->Blocks[i];
+		if (block->GetType() == BLOCK_PLAIN) {
+			int cur_size = original_text->GetReverseUnicodePosition(original_text->GetLength());
+			original_text->AppendText(block->text);
+			if (i == cur_block) {
+				original_text->StartUnicodeStyling(cur_size);
+				original_text->SetUnicodeStyling(cur_size, block->text.size(), 1);
 			}
 		}
-		catch (...) {
-			return;
+		else if (block->GetType() == BLOCK_OVERRIDE)
+			original_text->AppendText("{" + block->text + "}");
+	}
+
+	original_text->SetReadOnly(true);
+
+	if (seek_video->IsChecked()) c->videoController->JumpToTime(active_line->Start.GetMS());
+
+	translated_text->ClearAll();
+	translated_text->SetFocus();
+}
+
+void DialogTranslation::Commit(bool next) {
+	active_line->Blocks[cur_block]->text = translated_text->GetValue();
+	active_line->UpdateText();
+	c->ass->Commit(_("translation assistant"), AssFile::COMMIT_TEXT);
+
+	if (next) {
+		if (!NextBlock()) {
+			wxMessageBox(_("No more lines to translate."));
+			EndModal(1);
 		}
+	}
+	else {
+		UpdateDisplay();
 	}
 }
 
-///////////////
-// Event table
-BEGIN_EVENT_TABLE(DialogTranslation, wxDialog)
-	EVT_BUTTON(wxID_CANCEL,DialogTranslation::OnClose)
-	EVT_BUTTON(BUTTON_TRANS_PLAY_VIDEO,DialogTranslation::OnPlayVideoButton)
-	EVT_BUTTON(BUTTON_TRANS_PLAY_AUDIO,DialogTranslation::OnPlayAudioButton)
-END_EVENT_TABLE()
-
-
-/////////////////
-// Event handler
-
-
-/// @brief Constructor
-/// @param ctrl 
-///
-DialogTranslationEvent::DialogTranslationEvent(DialogTranslation *ctrl) {
-	control = ctrl;
-}
-
-// Event table
-BEGIN_EVENT_TABLE(DialogTranslationEvent, wxEvtHandler)
-	EVT_KEY_DOWN(DialogTranslationEvent::OnTransBoxKey)
-	EVT_CHECKBOX(PREVIEW_CHECK, DialogTranslationEvent::OnPreviewCheck)
-END_EVENT_TABLE()
-
-
-/// @brief Redirects
-/// @param event 
-///
-void DialogTranslationEvent::OnPreviewCheck(wxCommandEvent &event) { control->enablePreview = event.IsChecked(); }
-
-/// @brief DOCME
-/// @param event 
-///
-void DialogTranslationEvent::OnTransBoxKey(wxKeyEvent &event) { control->OnTransBoxKey(event); }
-
-
-
-/// @brief Key pressed event 
-/// @param event 
-/// @return 
-///
-void DialogTranslation::OnTransBoxKey(wxKeyEvent &event) {
-	if (!hotkey::check("Translation Assistant", event.GetKeyCode(), event.GetUnicodeKey(), event.GetModifiers()))
-		event.Skip();
-	event.StopPropagation();
-
-// H convert below to commands.
-/*
-#ifdef __APPLE__
-	Hotkeys.SetPressed(event.GetKeyCode(),event.m_metaDown,event.m_altDown,event.m_shiftDown);
-#else
-	Hotkeys.SetPressed(event.GetKeyCode(),event.m_controlDown,event.m_altDown,event.m_shiftDown);
-#endif
-
-	// Previous
-	if (Hotkeys.IsPressed(_T("Translation Assistant Prev"))) {
-		bool ok = JumpToLine(curline,curblock-1);
-		if (ok) {
-			TransText->ClearAll();
-			TransText->SetFocus();
-		}
-
-		UpdatePreview();
-		return;
-	}
-
-	// Next
-	if (Hotkeys.IsPressed(_T("Translation Assistant Next")) || (Hotkeys.IsPressed(_T("Translation Assistant Accept")) && TransText->GetValue().IsEmpty())) {
-		bool ok = JumpToLine(curline,curblock+1);
-		if (ok) {
-			TransText->ClearAll();
-			TransText->SetFocus();
-		}
-
-		UpdatePreview();
-		return;
-	}
-
-	// Accept (enter)
-	if (Hotkeys.IsPressed(_T("Translation Assistant Accept")) || Hotkeys.IsPressed(_T("Translation Assistant Preview"))) {
-		// Store
-		AssDialogue *cur = grid->GetDialogue(curline);
-		cur->ParseASSTags();
-		int nblock = -1;
-		for (unsigned int i=0;i<cur->Blocks.size();i++) {
-			if (cur->Blocks.at(i)->GetType() == BLOCK_PLAIN) nblock++;
-			if (nblock == curblock) {
-				cur->Blocks.at(i)->text = TransText->GetValue();
-				break;
-			}
-		}
-
-		// Update line
-		cur->UpdateText();
-		cur->ClearBlocks();
-		subs->Commit(_("translation assistant"), AssFile::COMMIT_TEXT);
-		UpdatePreview();
-
-		// Next
-		if (Hotkeys.IsPressed(_T("Translation Assistant Accept"))) {
-			// JumpToLine() returns false if the requested line doesn't exist.
-			// Assume that means we were on the last line.
-			if (!JumpToLine(curline,curblock+1)) {
-				wxMessageBox(_("No more lines to translate."));
-				EndModal(1);
-				return;
-			}
-			TransText->ClearAll();
-			TransText->SetFocus();
-		}
-		else JumpToLine(curline,curblock);
-		return;
-	}
-
-	// Insert original text (insert)
-	if (Hotkeys.IsPressed(_T("Translation Assistant Insert Original"))) {
-		using std::vector;
-		AssDialogueBlock *curBlock;
-		int pos = -1;
-		current->ParseASSTags();
-		for (vector<AssDialogueBlock*>::iterator cur=current->Blocks.begin();cur!=current->Blocks.end();cur++) {
-			curBlock = *cur;
-			if (curBlock->GetType() == BLOCK_PLAIN) {
-				pos++;
-				if (pos == curblock) {
-					TransText->AddText(curBlock->text);
-				}
-			}
-		}
-		current->ClearBlocks();
-		return;
-	}
-
-	// Play video
-	if (Hotkeys.IsPressed(_T("Translation Assistant Play Video"))) {
-		if (video->IsLoaded()) {
-			video->PlayLine();
-			TransText->SetFocus();
-		}
-		return;
-	}
-
-	// Play audio
-	if (Hotkeys.IsPressed(_T("Translation Assistant Play Audio"))) {
-		/// @todo Reinstate this when the audio controller is made reachable from here
-		//if (audio->loaded) {
-		//	audio->Play(current->Start.GetMS(),current->End.GetMS());
-		//	TransText->SetFocus();
-		//}
-		return;
-	}
-
-	// Close
-	if (event.GetKeyCode() == WXK_ESCAPE) EndModal(1);
-
-	// Ignore enter
-	if (event.GetKeyCode() == WXK_RETURN || event.GetKeyCode() == WXK_NUMPAD_ENTER) return;
-
-	// Skip anything else
-	event.Skip();
-*/
+void DialogTranslation::InsertOriginal() {
+	translated_text->AddText(active_line->Blocks[cur_block]->GetText());
 }
 
 
-
-/// @brief Play video button 
-/// @param event 
-///
-void DialogTranslation::OnPlayVideoButton(wxCommandEvent &event) {
-	video->PlayLine();
-	TransText->SetFocus();
+void DialogTranslation::OnKeyDown(wxKeyEvent &evt) {
+	if (!hotkey::check("Translation Assistant", evt.GetKeyCode(), evt.GetUnicodeKey(), evt.GetModifiers()))
+		evt.Skip();
+	evt.StopPropagation();
 }
 
-
-
-/// @brief Play audio button 
-/// @param event 
-///
-void DialogTranslation::OnPlayAudioButton(wxCommandEvent &event) {
-	audio->PlayRange(SampleRange(
-		audio->SamplesFromMilliseconds(current->Start.GetMS()),
-		audio->SamplesFromMilliseconds(current->End.GetMS())));
-	TransText->SetFocus();
+void DialogTranslation::OnPlayVideoButton(wxCommandEvent &) {
+	c->videoController->PlayLine();
+	translated_text->SetFocus();
 }
 
-
-
-/// @brief Close 
-/// @param event 
-///
-void DialogTranslation::OnClose (wxCommandEvent &event) {
-	GetPosition(&lastx, &lasty);
-	TransText->PopEventHandler(true);
-	PreviewCheck->PopEventHandler(true);
-	EndModal(0);
+void DialogTranslation::OnPlayAudioButton(wxCommandEvent &) {
+	cmd::call("audio/play/selection", c);
+	translated_text->SetFocus();
 }
-
-
-
-/// @brief Minimize 
-/// @param event 
-///
-void DialogTranslation::OnMinimize (wxIconizeEvent &event) {
-	//Iconize(true);
-	if (main) ((wxFrame*)main)->Iconize(true);
-	event.Skip();
-}
-
-
-
-/// DOCME
-int DialogTranslation::lastx = -1;
-
-/// DOCME
-int DialogTranslation::lasty = -1;
-
-
