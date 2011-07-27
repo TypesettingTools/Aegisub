@@ -509,15 +509,14 @@ void BaseGrid::DrawImage(wxDC &dc) {
 				bool in_comment = false;
 				for (size_t j = 0; j < textlen; ++j) {
 					wxChar curChar = curDiag->Text[j];
-					if (curChar == '{')
+					if (curChar == '{') {
+						if (!in_comment && mode == 1) value += replaceWith;
 						in_comment = true;
+					}
 					else if (in_comment && curChar == '}') {
-						if (mode == 1) {
-							value += replaceWith;
-						}
 						in_comment = false;
 					}
-					else {
+					else if (!in_comment) {
 						value += curChar;
 					}
 				}
