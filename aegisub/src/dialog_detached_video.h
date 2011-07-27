@@ -40,8 +40,11 @@
 #include <wx/dialog.h>
 #endif
 
+#include <libaegisub/scoped_ptr.h>
+
 namespace agi { struct Context; }
 class FrameMain;
+class PersistLocation;
 class VideoBox;
 
 /// DOCME
@@ -50,7 +53,7 @@ class VideoBox;
 ///
 /// DOCME
 class DialogDetachedVideo : public wxDialog {
-private:
+	agi::scoped_ptr<PersistLocation> persist;
 
 	/// DOCME
 	VideoBox *videoBox;
@@ -59,7 +62,6 @@ private:
 	FrameMain *parent;
 
 	void OnClose(wxCloseEvent &event);
-	void OnMove(wxMoveEvent &event);
 	void OnMinimize(wxIconizeEvent &event);
 
 public:

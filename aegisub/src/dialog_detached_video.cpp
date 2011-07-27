@@ -46,6 +46,7 @@
 #include "dialog_detached_video.h"
 #include "frame_main.h"
 #include "main.h"
+#include "persist_location.h"
 #include "video_box.h"
 #include "video_context.h"
 #include "video_display.h"
@@ -58,12 +59,6 @@ DialogDetachedVideo::DialogDetachedVideo(FrameMain *parent, agi::Context *contex
 : wxDialog(parent,-1,_T("Detached Video"),wxDefaultPosition,wxSize(400,300),wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER | wxMAXIMIZE_BOX | wxMINIMIZE_BOX | wxWANTS_CHARS)
 , parent(parent)
 {
-	// Set up window
-	int x = OPT_GET("Video/Detached/Last/X")->GetInt();
-	int y = OPT_GET("Video/Detached/Last/Y")->GetInt();
-	if (x != -1 && y != -1) SetPosition(wxPoint(x,y));
-	if (OPT_GET("Video/Detached/Maximized")->GetBool()) Maximize();
-
 	// Set obscure stuff
 	SetExtraStyle((GetExtraStyle() & ~wxWS_EX_BLOCK_EVENTS) | wxWS_EX_PROCESS_UI_UPDATES);
 
@@ -89,40 +84,18 @@ DialogDetachedVideo::DialogDetachedVideo(FrameMain *parent, agi::Context *contex
 	videoBox->SetMinSize(wxSize(1,1));
 	SetMinSize(wxSize(1,1));
 
+	persist.reset(new PersistLocation(this, "Video/Detached"));
+
 	int display_index = wxDisplay::GetFromWindow(this);
-	if (display_index == wxNOT_FOUND)
-	{
-		int caption_size = wxSystemSettings::GetMetric(wxSYS_CAPTION_Y, this);
-		Move(parent->GetPosition() + wxPoint(caption_size, caption_size));
-	}
-	else
-	{
+	// Ensure that the dialog is no larger than the screen
+	if (display_index != wxNOT_FOUND) {
 		wxRect bounds_rect = GetRect();
 		wxRect disp_rect = wxDisplay(display_index).GetClientArea();
-
-		// Ensure our x/y position is past the top left of the display
-		int new_x = std::max(bounds_rect.x, disp_rect.x);
-		int new_y = std::max(bounds_rect.y, disp_rect.y);
-		// Pick the smallest size of display and window.
-		// By doing this, we're guaranteed to get a width/height that fits on the display
-		// and won't have to adjust width/height any further.
-		int new_w = std::min(bounds_rect.width, disp_rect.width);
-		int new_h = std::min(bounds_rect.height, disp_rect.height);
-
-		// Check if bottom right corner is outside display and move inside then
-		if (new_x + new_w > disp_rect.x + disp_rect.width)
-			new_x = disp_rect.x + disp_rect.width - new_w;
-		if (new_y + new_h > disp_rect.y + disp_rect.height)
-			new_y = disp_rect.y + disp_rect.height - new_h;
-
-		SetSize(new_x, new_y, new_w, new_h, wxSIZE_ALLOW_MINUS_ONE);
+		SetSize(std::min(bounds_rect.width, disp_rect.width), std::min(bounds_rect.height, disp_rect.height));
 	}
 
 	// Update
 	parent->SetDisplayMode(0, -1);
-	GetPosition(&x, &y);
-	OPT_SET("Video/Detached/Last/X")->SetInt(x);
-	OPT_SET("Video/Detached/Last/Y")->SetInt(y);
 	OPT_SET("Video/Detached/Enabled")->SetBool(true);
 
 	// Copy the main accelerator table to this dialog
@@ -132,13 +105,11 @@ DialogDetachedVideo::DialogDetachedVideo(FrameMain *parent, agi::Context *contex
 
 /// @brief Destructor
 DialogDetachedVideo::~DialogDetachedVideo() {
-	OPT_SET("Video/Detached/Maximized")->SetBool(IsMaximized());
 }
 
 // Event table
 BEGIN_EVENT_TABLE(DialogDetachedVideo,wxDialog)
 	EVT_CLOSE(DialogDetachedVideo::OnClose)
-	EVT_MOVE(DialogDetachedVideo::OnMove)
 	EVT_ICONIZE(DialogDetachedVideo::OnMinimize)
 END_EVENT_TABLE()
 
@@ -149,14 +120,6 @@ void DialogDetachedVideo::OnClose(wxCloseEvent &WXUNUSED(event)) {
 	Destroy();
 	parent->context->detachedVideo = 0;
 	parent->SetDisplayMode(1,-1);
-}
-
-/// @brief Move window 
-/// @param event 
-void DialogDetachedVideo::OnMove(wxMoveEvent &event) {
-	wxPoint pos = event.GetPosition();
-	OPT_SET("Video/Detached/Last/X")->SetInt(pos.x);
-	OPT_SET("Video/Detached/Last/Y")->SetInt(pos.y);
 }
 
 /// @brief Minimize event handler

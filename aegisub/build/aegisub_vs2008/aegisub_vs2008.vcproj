@@ -894,6 +894,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\persist_location.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\persist_location.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\spline.cpp"
 				>
 			</File>

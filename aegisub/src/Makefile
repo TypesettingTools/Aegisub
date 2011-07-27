@@ -198,6 +198,7 @@ SRC += \
 	md5.c \
 	mkv_wrap.cpp \
 	mythes.cxx \
+	persist_location.cpp \
 	plugin_manager.cpp \
 	preferences.cpp \
 	preferences_base.cpp \
