@@ -1,29 +1,16 @@
-// Copyright (c) 2005, Rodrigo Braz Monteiro
-// All rights reserved.
+// Copyright (c) 2011, Thomas Goyne <plorkyeran@aegisub.org>
 //
-// Redistribution and use in source and binary forms, with or without
-// modification, are permitted provided that the following conditions are met:
+// Permission to use, copy, modify, and distribute this software for any
+// purpose with or without fee is hereby granted, provided that the above
+// copyright notice and this permission notice appear in all copies.
 //
-//   * Redistributions of source code must retain the above copyright notice,
-//     this list of conditions and the following disclaimer.
-//   * Redistributions in binary form must reproduce the above copyright notice,
-//     this list of conditions and the following disclaimer in the documentation
-//     and/or other materials provided with the distribution.
-//   * Neither the name of the Aegisub Group nor the names of its contributors
-//     may be used to endorse or promote products derived from this software
-//     without specific prior written permission.
-//
-// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-// AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-// IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
-// ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
-// LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
-// CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-// SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-// INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-// CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-// ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-// POSSIBILITY OF SUCH DAMAGE.
+// THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+// WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+// MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+// ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+// WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+// ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+// OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 //
 // Aegisub Project http://www.aegisub.org/
 //
@@ -34,102 +21,56 @@
 /// @ingroup tools_ui
 ///
 
+#include "selection_controller.h"
+
 #ifndef AGI_PRE
-#include <wx/checkbox.h>
-#include <wx/colour.h>
-#include <wx/dialog.h>
-#include <wx/listbox.h>
-#include <wx/textctrl.h>
+#include <wx/event.h>
 #endif
 
+#include <libaegisub/scoped_ptr.h>
+
 namespace agi { struct Context; }
-class AssFile;
 class AssDialogue;
-class AudioController;
-class DialogStyling;
-class SubtitlesGrid;
-class VideoContext;
-
-/// DOCME
-/// @class StyleEditBox
-/// @brief DOCME
-///
-/// DOCME
-class StyleEditBox : public wxTextCtrl {
-	/// DOCME
-	DialogStyling *diag;
-	void OnKeyDown(wxKeyEvent &event);
-
-public:
-	StyleEditBox(DialogStyling *parent);
-
-	DECLARE_EVENT_TABLE()
-};
-
-
+class PersistLocation;
+class wxButton;
+class wxCheckBox;
+class wxListBox;
+class wxTextCtrl;
 
 /// DOCME
 /// @class DialogStyling
 /// @brief DOCME
 ///
 /// DOCME
-class DialogStyling : public wxDialog {
-	friend class StyleEditBox;
-
+class DialogStyling : public wxDialog, public SelectionListener<AssDialogue> {
 	agi::Context *c;
 
-	/// DOCME
-	wxColour origColour;
+	wxButton *play_audio;
+	wxButton *play_video;
+	wxCheckBox *auto_seek;
+	wxListBox *style_list;
+	wxTextCtrl *current_line_text;
+	wxTextCtrl *style_name;
 
-	/// DOCME
-	bool needCommit;
+	void OnActivate(wxActivateEvent &evt);
+	void OnKeyDown(wxKeyEvent &evt);
+	void OnListClicked(wxCommandEvent &evt);
+	void OnListDoubleClicked(wxCommandEvent &evt);
+	void OnPlayAudioButton(wxCommandEvent &evt);
+	void OnPlayVideoButton(wxCommandEvent &evt);
+	void OnShow(wxShowEvent &evt);
+	void OnStyleBoxModified(wxCommandEvent &evt);
 
+	void OnActiveLineChanged(AssDialogue *);
+	void OnSelectedSetChanged(Selection const&, Selection const&) { }
 
-	/// DOCME
-	wxTextCtrl *CurLine;
+	AssDialogue *active_line;
 
-	/// DOCME
-	wxListBox *Styles;
-
-	/// DOCME
-	StyleEditBox *TypeBox;
-
-	/// DOCME
-	wxCheckBox *PreviewCheck;
-
-	/// DOCME
-	wxButton *PlayVideoButton;
-
-	/// DOCME
-	wxButton *PlayAudioButton;
-
-	void OnStyleBoxModified (wxCommandEvent &event);
-	void OnStyleBoxEnter (wxCommandEvent &event);
-	void OnListClicked (wxCommandEvent &event);
-	void OnKeyDown(wxKeyEvent &event);
-	void OnPlayVideoButton(wxCommandEvent &event);
-	void OnPlayAudioButton(wxCommandEvent &event);
-	void OnActivate(wxActivateEvent &event);
-
-	void SetStyle (wxString curName,bool jump=true);
-
-
-	/// DOCME
-
-	/// DOCME
-	static int lastx, lasty;
+	agi::scoped_ptr<PersistLocation> persist;
 
 public:
-	/// DOCME
-	int linen;
-
-	/// DOCME
-	AssDialogue *line;
+	void Commit(bool next);
 
 	DialogStyling(agi::Context *context);
-	~DialogStyling ();
-
-	void JumpToLine(int n);
-
-	DECLARE_EVENT_TABLE()
+	~DialogStyling();
 };

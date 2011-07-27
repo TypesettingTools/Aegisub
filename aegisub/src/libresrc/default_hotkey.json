@@ -540,37 +540,37 @@
 	},
 
 	"Styling Assistant" : {
-		"audio play" : [
+		"audio/play/selection" : [
 			{
 				"modifiers" : [],
 				"key" : "End"
 			}
 		],
-		"styling assistant commit" : [
+		"tool/styling_assistant/commit" : [
 			{
 				"modifiers" : [],
 				"key" : "Enter"
 			}
 		],
-		"styling assistant next item" : [
+		"grid/line/next" : [
 			{
 				"modifiers" : [],
 				"key" : "PageDown"
 			}
 		],
-		"styling assistant prev item" : [
+		"grid/line/prev" : [
 			{
 				"modifiers" : [],
 				"key" : "PageUp"
 			}
 		],
-		"styling assistant preview" : [
+		"tool/styling_assistant/preview" : [
 			{
 				"modifiers" : [],
 				"key" : "F8"
 			}
 		],
-		"video/play" : [
+		"video/play/line" : [
 			{
 				"modifiers" : [],
 				"key" : "Home"

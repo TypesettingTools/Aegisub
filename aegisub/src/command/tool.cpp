@@ -147,6 +147,37 @@ struct tool_style_assistant : public Command {
 	}
 };
 
+struct tool_styling_assistant_validator : public Command {
+	CMD_TYPE(COMMAND_VALIDATE)
+
+	bool Validate(agi::Context *c) {
+		return !!c->stylingAssistant;
+	}
+};
+
+/// Commit changes and move to the next line.
+struct tool_styling_assistant_commit : public tool_styling_assistant_validator {
+	CMD_NAME("tool/styling_assistant/commit")
+	STR_MENU("&Accept changes")
+	STR_DISP("Accept changes")
+	STR_HELP("Commit changes and move to the next line.")
+
+	void operator()(agi::Context *c) {
+		c->stylingAssistant->Commit(true);
+	}
+};
+
+/// Commit changes and stay on the current line.
+struct tool_styling_assistant_preview : public tool_styling_assistant_validator {
+	CMD_NAME("tool/styling_assistant/preview")
+	STR_MENU("&Preview changes")
+	STR_DISP("Preview changes")
+	STR_HELP("Commit changes and stay on the current line.")
+
+	void operator()(agi::Context *c) {
+		c->stylingAssistant->Commit(false);
+	}
+};
 
 /// Open styles manager.
 struct tool_style_manager : public Command {
@@ -212,6 +243,8 @@ namespace cmd {
 		reg(new tool_line_select);
 		reg(new tool_resampleres);
 		reg(new tool_style_assistant);
+		reg(new tool_styling_assistant_commit);
+		reg(new tool_styling_assistant_preview);
 		reg(new tool_style_manager);
 		reg(new tool_time_kanji);
 		reg(new tool_time_postprocess);

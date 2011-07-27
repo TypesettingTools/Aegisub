@@ -142,6 +142,11 @@ namespace cmd {
 	int id(std::string const& name);
 
 	/// Call a command.
+	/// @param name Name of the command to call.
+	/// @param c  Current Context.
+	void call(std::string const& name, agi::Context *c);
+
+	/// Call a command.
 	/// @param c  Current Context.
 	/// @param id ID for Command to call.
 	void call(agi::Context *c, int id);

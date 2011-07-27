@@ -1,29 +1,16 @@
-// Copyright (c) 2005, Rodrigo Braz Monteiro
-// All rights reserved.
+// Copyright (c) 2011, Thomas Goyne <plorkyeran@aegisub.org>
 //
-// Redistribution and use in source and binary forms, with or without
-// modification, are permitted provided that the following conditions are met:
+// Permission to use, copy, modify, and distribute this software for any
+// purpose with or without fee is hereby granted, provided that the above
+// copyright notice and this permission notice appear in all copies.
 //
-//   * Redistributions of source code must retain the above copyright notice,
-//     this list of conditions and the following disclaimer.
-//   * Redistributions in binary form must reproduce the above copyright notice,
-//     this list of conditions and the following disclaimer in the documentation
-//     and/or other materials provided with the distribution.
-//   * Neither the name of the Aegisub Group nor the names of its contributors
-//     may be used to endorse or promote products derived from this software
-//     without specific prior written permission.
-//
-// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-// AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-// IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
-// ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
-// LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
-// CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-// SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-// INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-// CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-// ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-// POSSIBILITY OF SUCH DAMAGE.
+// THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+// WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+// MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+// ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+// WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+// ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+// OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 //
 // Aegisub Project http://www.aegisub.org/
 //
@@ -35,13 +22,7 @@
 ///
 
 
-///////////
-// Headers
 #include "config.h"
-
-#ifndef AGI_PRE
-#include <wx/recguard.h>
-#endif
 
 #include "dialog_styling_assistant.h"
 
@@ -51,444 +32,238 @@
 #include "ass_dialogue.h"
 #include "ass_file.h"
 #include "ass_style.h"
-#include "audio_box.h"
 #include "audio_controller.h"
-#include "frame_main.h"
+#include "command/command.h"
 #include "help_button.h"
 #include "libresrc/libresrc.h"
-#include "selection_controller.h"
-#include "subs_edit_box.h"
-#include "subs_grid.h"
+#include "persist_location.h"
 #include "utils.h"
 #include "video_context.h"
-#include "video_display.h"
 
-// IDs
-enum {
-	ENTER_STYLE_BOX,
-	STYLE_LIST,
-	BUTTON_PLAY_VIDEO,
-	BUTTON_PLAY_AUDIO
-};
+#ifndef AGI_PRE
+#include <wx/checkbox.h>
+#include <wx/colour.h>
+#include <wx/dialog.h>
+#include <wx/listbox.h>
+#include <wx/textctrl.h>
+#endif
 
+static void add_hotkey(wxSizer *sizer, wxWindow *parent, const char *command, const char *text) {
+	sizer->Add(new wxStaticText(parent, -1, _(text)));
+	sizer->Add(new wxStaticText(parent, -1, hotkey::get_hotkey_str_first("Styling Assistant", command)));
+}
 
-/// @brief Constructor 
-/// @param parent 
-/// @param _grid  
-///
 DialogStyling::DialogStyling(agi::Context *context)
 : wxDialog(context->parent, -1, _("Styling assistant"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER | wxMINIMIZE_BOX)
 , c(context)
-, needCommit(false)
-, linen(-1)
+, active_line(0)
 {
-	// Set icon
 	SetIcon(BitmapToIcon(GETIMAGE(styling_toolbutton_24)));
 
-	// Top sizer
-	wxSizer *TopSizer = new wxStaticBoxSizer(wxHORIZONTAL,this,_("Current line"));
-	CurLine = new wxTextCtrl(this,-1,_("Current line"),wxDefaultPosition,wxSize(300,60),wxTE_MULTILINE | wxTE_READONLY);
-	TopSizer->Add(CurLine,1,wxEXPAND,0);
+	wxSizer *main_sizer = new wxBoxSizer(wxVERTICAL);
+	wxSizer *bottom_sizer = new wxBoxSizer(wxHORIZONTAL);
 
-	// Left sizer
-	Styles = new wxListBox(this,STYLE_LIST,wxDefaultPosition,wxSize(150,180),context->ass->GetStyles());
-	wxSizer *LeftSizer = new wxStaticBoxSizer(wxVERTICAL,this,_("Styles available"));
-	LeftSizer->Add(Styles,1,wxEXPAND,0);
-
-	// Right sizer
-	wxSizer *RightSizer = new wxBoxSizer(wxVERTICAL);
-	wxSizer *RightTop = new wxStaticBoxSizer(wxHORIZONTAL,this,_("Set style"));
-	wxSizer *RightMiddle = new wxStaticBoxSizer(wxVERTICAL,this,_("Keys"));
-	wxSizer *RightBottom = new wxStaticBoxSizer(wxHORIZONTAL,this,_("Actions"));
-	TypeBox = new StyleEditBox(this);
-	RightTop->Add(TypeBox,1,wxEXPAND);
-
-	// Shortcuts
-	wxSizer *KeysInnerSizer = new wxGridSizer(2,0,5);
-//H	KeysInnerSizer->Add(new wxStaticText(this,-1,Hotkeys.GetText(_T("Styling Assistant Accept")) + _T(": ")));
-	KeysInnerSizer->Add(new wxStaticText(this,-1,_("Accept changes")));
-//H	KeysInnerSizer->Add(new wxStaticText(this,-1,Hotkeys.GetText(_T("Styling Assistant Preview")) + _T(": ")));
-	KeysInnerSizer->Add(new wxStaticText(this,-1,_("Preview changes")));
-//H	KeysInnerSizer->Add(new wxStaticText(this,-1,Hotkeys.GetText(_T("Styling Assistant Prev")) + _T(": ")));
-	KeysInnerSizer->Add(new wxStaticText(this,-1,_("Previous line")));
-//H	KeysInnerSizer->Add(new wxStaticText(this,-1,Hotkeys.GetText(_T("Styling Assistant Next")) + _T(": ")));
-	KeysInnerSizer->Add(new wxStaticText(this,-1,_("Next line")));
-//H	KeysInnerSizer->Add(new wxStaticText(this,-1,Hotkeys.GetText(_T("Styling Assistant Play Video")) + _T(": ")));
-	KeysInnerSizer->Add(new wxStaticText(this,-1,_("Play Video")));
-//H	KeysInnerSizer->Add(new wxStaticText(this,-1,Hotkeys.GetText(_T("Styling Assistant Play Audio")) + _T(": ")));
-	KeysInnerSizer->Add(new wxStaticText(this,-1,_("Play Audio")));
-	KeysInnerSizer->Add(new wxStaticText(this,-1,_("Click on list:")));
-	KeysInnerSizer->Add(new wxStaticText(this,-1,_("Select style")));
-
-	// Right Middle
-	PreviewCheck = new wxCheckBox(this,-1,_("Enable preview (slow)"));
-	PreviewCheck->SetValue(true);
-	RightMiddle->Add(KeysInnerSizer,0,wxEXPAND | wxBOTTOM,5);
-	RightMiddle->Add(PreviewCheck,0,0,0);
-	RightMiddle->AddStretchSpacer(1);
-
-	// Rest of right sizer
-	PlayVideoButton = new wxButton(this,BUTTON_PLAY_VIDEO,_("Play Video"));
-	PlayAudioButton = new wxButton(this,BUTTON_PLAY_AUDIO,_("Play Audio"));
-	RightBottom->AddStretchSpacer(1);
-	RightBottom->Add(PlayAudioButton,0,wxLEFT | wxRIGHT | wxBOTTOM,5);
-	RightBottom->Add(PlayVideoButton,0,wxBOTTOM | wxRIGHT,5);
-	RightBottom->AddStretchSpacer(1);
-
-	RightSizer->Add(RightTop,0,wxEXPAND | wxBOTTOM,5);
-	RightSizer->Add(RightMiddle,0,wxEXPAND | wxBOTTOM,5);
-	RightSizer->Add(RightBottom,0,wxEXPAND,5);
-
-	// Bottom sizer
-	wxSizer *BottomSizer = new wxBoxSizer(wxHORIZONTAL);
-	BottomSizer->Add(LeftSizer,1,wxEXPAND | wxRIGHT,5);
-	BottomSizer->Add(RightSizer,1,wxEXPAND,0);
-
-	// Button sizer
-	wxStdDialogButtonSizer *ButtonSizer = new wxStdDialogButtonSizer();
-	ButtonSizer->AddButton(new wxButton(this,wxID_CANCEL));
-	ButtonSizer->AddButton(new HelpButton(this,_T("Styling Assistant")));
-	ButtonSizer->Realize();
-
-	// Main sizer
-	wxSizer *MainSizer = new wxBoxSizer(wxVERTICAL);
-	MainSizer->Add(TopSizer,0,wxEXPAND | wxALL,5);
-	MainSizer->Add(BottomSizer,1,wxEXPAND | wxLEFT | wxBOTTOM | wxRIGHT,5);
-	MainSizer->Add(ButtonSizer,0,wxEXPAND | wxBOTTOM | wxLEFT | wxRIGHT,5);
-	MainSizer->SetSizeHints(this);
-	SetSizer(MainSizer);
-
-	// Position window
-	if (lastx == -1 && lasty == -1) {
-		CenterOnParent();
-	} else {
-		Move(lastx, lasty);
+	{
+		wxSizer *cur_line_box = new wxStaticBoxSizer(wxHORIZONTAL, this, _("Current line"));
+		current_line_text = new wxTextCtrl(this, -1, _("Current line"), wxDefaultPosition, wxSize(300, 60), wxTE_MULTILINE | wxTE_READONLY);
+		cur_line_box->Add(current_line_text, 1, wxEXPAND, 0);
+		main_sizer->Add(cur_line_box, 0, wxEXPAND | wxALL, 5);
 	}
 
-	// h4x
-	origColour = TypeBox->GetBackgroundColour();
+	{
+		wxSizer *styles_box = new wxStaticBoxSizer(wxVERTICAL, this, _("Styles available"));
+		style_list = new wxListBox(this, -1, wxDefaultPosition, wxSize(150, 180), context->ass->GetStyles());
+		styles_box->Add(style_list, 1, wxEXPAND, 0);
+		bottom_sizer->Add(styles_box, 1, wxEXPAND | wxRIGHT, 5);
+	}
+
+	wxSizer *right_sizer = new wxBoxSizer(wxVERTICAL);
+	{
+		wxSizer *style_text_box = new wxStaticBoxSizer(wxHORIZONTAL, this, _("Set style"));
+		style_name = new wxTextCtrl(this, -1, "", wxDefaultPosition, wxSize(180, -1), wxTE_PROCESS_ENTER);
+		style_text_box->Add(style_name, 1, wxEXPAND);
+		right_sizer->Add(style_text_box, 0, wxEXPAND | wxBOTTOM, 5);
+	}
+
+	{
+		wxSizer *hotkey_box = new wxStaticBoxSizer(wxVERTICAL, this, _("Keys"));
+
+		wxSizer *hotkey_grid = new wxGridSizer(2, 0, 5);
+		add_hotkey(hotkey_grid, this, "tool/styling_assistant/commit", "Accept changes:");
+		add_hotkey(hotkey_grid, this, "tool/styling_assistant/preview", "Preview changes:");
+		add_hotkey(hotkey_grid, this, "grid/line/prev", "Previous line:");
+		add_hotkey(hotkey_grid, this, "grid/line/next", "Next line:");
+		add_hotkey(hotkey_grid, this, "video/play/line", "Play Video:");
+		add_hotkey(hotkey_grid, this, "audio/play/selection", "Play Audio:");
+		hotkey_grid->Add(new wxStaticText(this, -1, _("Click on list:")));
+		hotkey_grid->Add(new wxStaticText(this, -1, _("Select style")));
+
+		hotkey_box->Add(hotkey_grid, 0, wxEXPAND | wxBOTTOM, 5);
+
+		auto_seek = new wxCheckBox(this, -1, _("Seek video to line start time"));
+		auto_seek->SetValue(true);
+		hotkey_box->Add(auto_seek, 0, 0, 0);
+		hotkey_box->AddStretchSpacer(1);
+
+		right_sizer->Add(hotkey_box, 0, wxEXPAND | wxBOTTOM, 5);
+	}
+
+	{
+		wxSizer *actions_box = new wxStaticBoxSizer(wxHORIZONTAL, this, _("Actions"));
+		actions_box->AddStretchSpacer(1);
+
+		play_audio = new wxButton(this, -1, _("Play Audio"));
+		play_audio->Enable(c->audioController->IsAudioOpen());
+		actions_box->Add(play_audio, 0, wxLEFT | wxRIGHT | wxBOTTOM, 5);
+
+		play_video = new wxButton(this, -1, _("Play Video"));
+		play_video->Enable(c->videoController->IsLoaded());
+		actions_box->Add(play_video, 0, wxBOTTOM | wxRIGHT, 5);
+
+		actions_box->AddStretchSpacer(1);
+		right_sizer->Add(actions_box, 0, wxEXPAND, 5);
+	}
+	bottom_sizer->Add(right_sizer);
+	main_sizer->Add(bottom_sizer, 1, wxEXPAND | wxLEFT | wxBOTTOM | wxRIGHT, 5);
+
+	{
+		wxStdDialogButtonSizer *button_sizer = new wxStdDialogButtonSizer;
+		button_sizer->AddButton(new wxButton(this, wxID_CANCEL));
+		button_sizer->AddButton(new HelpButton(this, "Styling Assistant"));
+		button_sizer->Realize();
+
+		main_sizer->Add(button_sizer, 0, wxEXPAND | wxBOTTOM | wxLEFT | wxRIGHT, 5);
+	}
+
+	main_sizer->SetSizeHints(this);
+	SetSizer(main_sizer);
+
+	persist.reset(new PersistLocation(this, "Tool/Styling Assistant"));
+
+	c->selectionController->AddSelectionListener(this);
+	Bind(wxEVT_ACTIVATE, &DialogStyling::OnActivate, this);
+	Bind(wxEVT_KEY_DOWN, &DialogStyling::OnKeyDown, this);
+	Bind(wxEVT_SHOW, &DialogStyling::OnShow, this);
+	style_name->Bind(wxEVT_KEY_DOWN, &DialogStyling::OnKeyDown, this);
+	play_video->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DialogStyling::OnPlayVideoButton, this);
+	play_audio->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DialogStyling::OnPlayAudioButton, this);
+	style_list->Bind(wxEVT_COMMAND_LISTBOX_SELECTED, &DialogStyling::OnListClicked, this);
+	style_list->Bind(wxEVT_COMMAND_LISTBOX_DOUBLECLICKED, &DialogStyling::OnListDoubleClicked, this);
+	style_name->Bind(wxEVT_COMMAND_TEXT_UPDATED, &DialogStyling::OnStyleBoxModified, this);
+
+	OnActiveLineChanged(c->selectionController->GetActiveLine());
 }
 
-/// @brief Destructor 
-///
 DialogStyling::~DialogStyling () {
-	GetPosition(&lastx, &lasty);
-	if (needCommit) {
-		c->ass->Commit(_("style changes"), AssFile::COMMIT_TEXT);
-	}
+	c->stylingAssistant = 0;
+	c->selectionController->RemoveSelectionListener(this);
 }
 
-/// @brief Jump to line 
-/// @param n 
-/// @return 
-///
-void DialogStyling::JumpToLine(int n) {
-	if (n == -1) return;
-
-	// Get line
-	AssDialogue *nextLine = c->subsGrid->GetDialogue(n);
-	if (!nextLine) return;
-	line = nextLine;
-
-	// Set number
-	linen = n;
-
-	// Set text
-	CurLine->SetValue(line->Text);
-
-	// Set focus
-	TypeBox->SetFocus();
-	bool matched = false;
-	for (size_t i = 0; i < Styles->GetCount(); i++) {
-		if (TypeBox->GetValue().IsSameAs(Styles->GetString(i),true)) {
-			matched = true;
-			break;
-		}
-	}
-	if (!matched || TypeBox->GetValue().IsEmpty()) TypeBox->SetValue(Styles->GetString(0));
-	TypeBox->SetSelection(0,TypeBox->GetValue().Length());
-
-	// Update grid
-	c->subsGrid->SelectRow(linen,false);
-	c->subsGrid->MakeCellVisible(linen,0);
-	c->subsGrid->SetActiveLine(line);
-
-	// Update display
-	if (PreviewCheck->IsChecked()) c->videoController->JumpToTime(line->Start.GetMS());
+void DialogStyling::OnShow(wxShowEvent &evt) {
+	if (evt.IsShown())
+		evt.Skip();
+	else
+		Destroy();
 }
 
-/// @brief Set style of current line 
-/// @param curName 
-/// @param jump    
-///
-void DialogStyling::SetStyle (wxString curName, bool jump) {
-	AssDialogue *line = c->subsGrid->GetDialogue(linen);
-	line->Style = curName;
+void DialogStyling::OnActiveLineChanged(AssDialogue *new_line) {
+	if (!new_line) return;
+	active_line = new_line;
 
-	// Update grid/subs
-	if (PreviewCheck->IsChecked()) {
-		c->ass->Commit(_("styling assistant"), AssFile::COMMIT_TEXT);
-	}
-	else {
-		needCommit = true;
-	}
+	current_line_text->SetValue(active_line->Text);
+	style_name->SetValue(active_line->Style);
+	style_name->SetSelection(0, active_line->Style.size());
+	style_name->SetFocus();
 
-	// Next line
-	if (jump) JumpToLine(linen+1);
+	style_list->SetStringSelection(active_line->Style);
+
+	if (auto_seek->IsChecked() && IsActive())
+		c->videoController->JumpToTime(active_line->Start.GetMS());
 }
 
+void DialogStyling::Commit(bool next) {
+	if (!c->ass->GetStyle(style_name->GetValue())) return;
 
-///////////////
-// Event table
-BEGIN_EVENT_TABLE(DialogStyling,wxDialog)
-	EVT_ACTIVATE(DialogStyling::OnActivate)
-	EVT_BUTTON(BUTTON_PLAY_VIDEO, DialogStyling::OnPlayVideoButton)
-	EVT_BUTTON(BUTTON_PLAY_AUDIO, DialogStyling::OnPlayAudioButton)
-	//EVT_TEXT_ENTER(ENTER_STYLE_BOX, DialogStyling::OnStyleBoxEnter)
-	EVT_TEXT(ENTER_STYLE_BOX, DialogStyling::OnStyleBoxModified)
-	EVT_LISTBOX_DCLICK(STYLE_LIST, DialogStyling::OnListClicked)
-	EVT_KEY_DOWN(DialogStyling::OnKeyDown)
-END_EVENT_TABLE()
+	active_line->Style = style_name->GetValue();
+	c->ass->Commit(_("styling assistant"), AssFile::COMMIT_TEXT);
 
+	if (next) cmd::call("grid/line/next", c);
+}
 
+void DialogStyling::OnActivate(wxActivateEvent &) {
+	if (!IsActive()) return;
 
-/// @brief Dialog was De/Activated 
-/// @param event 
-/// @return 
-///
-void DialogStyling::OnActivate(wxActivateEvent &event) {
-	// Dialog lost focus
-	if (!event.GetActive()) {
-		if (needCommit) {
-			c->ass->Commit(_("styling assistant"), AssFile::COMMIT_TEXT);
-			needCommit = false;
-		}
+	play_video->Enable(c->videoController->IsLoaded());
+	play_audio->Enable(c->audioController->IsAudioOpen());
+
+	style_list->Set(c->ass->GetStyles());
+
+	if (auto_seek->IsChecked())
+		c->videoController->JumpToTime(active_line->Start.GetMS());
+
+	style_name->SetFocus();
+}
+
+void DialogStyling::OnStyleBoxModified(wxCommandEvent &event) {
+	long from, to;
+	style_name->GetSelection(&from, &to);
+	wxString prefix = style_name->GetValue().Left(from).Lower();
+
+	if (prefix.empty()) {
+		style_name->SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW));
 		return;
 	}
-	// Enable/disable play video/audio buttons
-	PlayVideoButton->Enable(c->videoController->IsLoaded());
-	PlayAudioButton->Enable(c->audioController->IsAudioOpen());
-	// Fix style list
-	Styles->Set(c->ass->GetStyles());
-	// Fix line selection
-	JumpToLine(c->subsGrid->GetFirstSelRow());
-}
 
-
-
-/// @brief Key pressed 
-/// @param event 
-///
-void DialogStyling::OnKeyDown(wxKeyEvent &event) {
-	int keycode = event.GetKeyCode();
-
-	// Previous line
-	if (keycode == WXK_PAGEUP) {
-		JumpToLine(linen-1);
-	}
-
-	// Next line
-	if (keycode == WXK_PAGEDOWN) {
-		JumpToLine(linen+1);
-	}
-
-	event.Skip();
-}
-
-
-
-/// @brief Edit box changed 
-/// @param event 
-/// @return 
-///
-void DialogStyling::OnStyleBoxModified (wxCommandEvent &event) {
-	// Recursion guard
-	static wxRecursionGuardFlag s_flag;
-	wxRecursionGuard guard(s_flag);
-	if (guard.IsInside()) return;
-
-	// Find partial style name
-	long from,to;
-	TypeBox->GetSelection(&from,&to);
-	wxString partial = TypeBox->GetValue().Left(from).Lower();
-	int len = partial.Length();
-
-	// Find first style that matches partial name
-	bool match = false;
-	int n = Styles->GetCount();
-	wxString curname;
-	for (int i=0;i<n;i++) {
-		curname = Styles->GetString(i);
-		if (curname.Left(len).Lower() == partial) {
-			match = true;
-			break;
+	// Find the first style name which the contents of the box could be the
+	// beginning of
+	for (size_t i = 0; i < style_list->GetCount(); ++i) {
+		wxString style = style_list->GetString(i);
+		if (style.Lower().StartsWith(prefix)) {
+			style_name->ChangeValue(style);
+			style_name->SetSelection(prefix.size(), style.size());
+			style_name->SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW));
+			style_name->Refresh();
+			return;
 		}
 	}
 
-	// Found
-	if (match) {
-		TypeBox->SetValue(curname);
-		TypeBox->SetSelection(from,curname.Length());
-		TypeBox->SetBackgroundColour(origColour);
-		TypeBox->Refresh();
-	}
-
-	// Not found
-	else {
-		TypeBox->SetBackgroundColour(wxColour(255,108,108));
-		TypeBox->Refresh();
-	}
+	style_name->SetBackgroundColour(wxColour(255, 108, 108));
+	style_name->Refresh();
 }
 
-
-
-/// @brief Enter pressed 
-/// @param event 
-///
-void DialogStyling::OnStyleBoxEnter (wxCommandEvent &event) {
-
+void DialogStyling::OnListClicked(wxCommandEvent &evt) {
+	style_name->ChangeValue(style_list->GetString(evt.GetInt()));
+	Commit(false);
+	style_name->SetFocus();
 }
 
-
-
-/// @brief Style list clicked 
-/// @param event 
-///
-void DialogStyling::OnListClicked(wxCommandEvent &event) {
-	int n = event.GetInt();
-	SetStyle(Styles->GetString(n));
-	Styles->SetSelection(wxNOT_FOUND);
-	TypeBox->SetFocus();
+void DialogStyling::OnListDoubleClicked(wxCommandEvent &evt) {
+	style_name->ChangeValue(style_list->GetString(evt.GetInt()));
+	Commit(true);
+	style_name->SetFocus();
 }
 
-
-/// @brief Play video button 
-/// @param event 
-///
-void DialogStyling::OnPlayVideoButton(wxCommandEvent &event) {
+void DialogStyling::OnPlayVideoButton(wxCommandEvent &) {
 	c->videoController->PlayLine();
-	TypeBox->SetFocus();
+	style_name->SetFocus();
 }
 
-
-/// @brief Play audio button 
-/// @param event 
-///
-void DialogStyling::OnPlayAudioButton(wxCommandEvent &event) {
-	c->audioController->PlayRange(SampleRange(
-		c->audioController->SamplesFromMilliseconds(line->Start.GetMS()),
-		c->audioController->SamplesFromMilliseconds(line->End.GetMS())));
-	TypeBox->SetFocus();
+void DialogStyling::OnPlayAudioButton(wxCommandEvent &) {
+	cmd::call("audio/play/selection", c);
+	style_name->SetFocus();
 }
 
-
-
-/// @brief Style edit box constructor 
-/// @param parent 
-///
-StyleEditBox::StyleEditBox(DialogStyling *parent)
-: wxTextCtrl(parent,ENTER_STYLE_BOX,"",wxDefaultPosition,wxSize(180,-1),wxTE_PROCESS_ENTER)
-, diag(parent)
-{
-}
-
-////////////////////////////
-// Event table for edit box
-BEGIN_EVENT_TABLE(StyleEditBox,wxTextCtrl)
-	EVT_KEY_DOWN(StyleEditBox::OnKeyDown)
-END_EVENT_TABLE()
-
-
-
-/// @brief Key pressed 
-/// @param event 
-/// @return 
-///
-void StyleEditBox::OnKeyDown(wxKeyEvent &event) {
-	if (!hotkey::check("Styling Assistant", event.GetKeyCode(), event.GetUnicodeKey(), event.GetModifiers()))
-		event.Skip();
-	event.StopPropagation();
-
-//H I think most of this can be removed.
-	//int keycode = event.GetKeyCode();
-/*
-*
-#ifdef __APPLE__
-	Hotkeys.SetPressed(event.GetKeyCode(),event.m_metaDown,event.m_altDown,event.m_shiftDown);
-#else
-	Hotkeys.SetPressed(event.GetKeyCode(),event.m_controlDown,event.m_altDown,event.m_shiftDown);
-#endif
-
-	// Backspace
-#ifdef __APPLE__
-	if (event.GetKeyCode() == WXK_BACK && !event.m_metaDown && !event.m_altDown && !event.m_shiftDown) {
-#else
-	if (event.GetKeyCode() == WXK_BACK && !event.m_controlDown && !event.m_altDown && !event.m_shiftDown) {
-#endif
-		long from,to;
-		GetSelection(&from,&to);
-		if (from > 0) SetSelection(from-1,to);
-	}
-
-	// Previous line
-	if (Hotkeys.IsPressed(_T("Styling Assistant Prev"))) {
-		diag->JumpToLine(diag->linen-1);
-		return;
-	}
-
-	// Next line
-	if (Hotkeys.IsPressed(_T("Styling Assistant Next"))) {
-		diag->JumpToLine(diag->linen+1);
-		return;
-	}
-
-	// Play video
-	if (Hotkeys.IsPressed(_T("Styling Assistant Play Video"))) {
-		if (diag->video->IsLoaded()) {
-			diag->video->PlayLine();
+void DialogStyling::OnKeyDown(wxKeyEvent &evt) {
+	if (!hotkey::check("Styling Assistant", evt.GetKeyCode(), evt.GetUnicodeKey(), evt.GetModifiers())) {
+		// Move the beginning of the selection back one character so that backspace
+		// actually does something
+		if (evt.GetKeyCode() == WXK_BACK && !evt.GetModifiers()) {
+			long from, to;
+			style_name->GetSelection(&from, &to);
+			if (from > 0)
+				style_name->SetSelection(from - 1, to);
 		}
-		return;
+		evt.Skip();
 	}
-
-	// Play audio
-	if (Hotkeys.IsPressed(_T("Styling Assistant Play Audio"))) {
-		/// @todo Reinstate this when the audio controller is made reachable from here
-
-		//if (diag->audio->loaded) {
-		//	diag->audio->Play(diag->line->Start.GetMS(),diag->line->End.GetMS());
-		//}
-		return;
-	}
-
-	// Enter key
-	if (Hotkeys.IsPressed(_T("Styling Assistant Accept")) || Hotkeys.IsPressed(_T("Styling Assistant Preview"))) {
-		// Make sure that entered style is valid
-		int n = diag->Styles->GetCount();
-		wxString curName;
-		bool match = false;
-		for (int i=0;i<n;i++) {
-			curName = diag->Styles->GetString(i);
-			if (curName == GetValue()) {
-				match = true;
-				break;
-			}
-		}
-
-		// Set style name
-		if (match) {
-			diag->SetStyle(curName,Hotkeys.IsPressed(_T("Styling Assistant Accept")));
-		}
-		return;
-	}
-
-	event.Skip();
-*/
+	evt.StopPropagation();
 }
-
-
-
-/// DOCME
-int DialogStyling::lastx = -1;
-
-/// DOCME
-int DialogStyling::lasty = -1;

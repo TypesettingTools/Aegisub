@@ -61,6 +61,10 @@ namespace cmd {
 		}
 	}
 
+	void call(std::string const& name, agi::Context*c) {
+		(*find_command(name)->second)(c);
+	}
+
 	wxBitmap const& Command::Icon(int size) {
 		if (size == 16) {
 			return icon::get(name(), 16);
