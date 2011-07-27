@@ -63,6 +63,8 @@
 #include <wx/tokenzr.h>
 #endif
 
+#include <libaegisub/scoped_ptr.h>
+
 #include "ass_style.h"
 #include "colorspace.h"
 #include "compat.h"
@@ -70,6 +72,7 @@
 #include "help_button.h"
 #include "libresrc/libresrc.h"
 #include "main.h"
+#include "persist_location.h"
 #include "utils.h"
 
 /// DOCME
@@ -213,7 +216,7 @@ DECLARE_EVENT_TYPE(wxDROPPER_SELECT, -1)
 ///
 /// DOCME
 class DialogColorPicker : public wxDialog {
-private:
+	agi::scoped_ptr<PersistLocation> persist;
 
 	/// DOCME
 	wxColour cur_color;
@@ -234,34 +237,19 @@ private:
 	wxChoice *colorspace_choice;
 
 	/// DOCME
-	static const int slider_width = 10; // width in pixels of the color slider control
+	static const int slider_width = 10; ///< width in pixels of the color slider control
 
-	/// DOCME
 	wxSpinCtrl *rgb_input[3];
-
-	/// DOCME
-	wxBitmap *rgb_spectrum[3];	// x/y spectrum bitmap where color "i" is excluded from
-
-	/// DOCME
-	wxBitmap *rgb_slider[3];	// z spectrum for color "i"
-
-	/// DOCME
+	wxBitmap *rgb_spectrum[3];	///< x/y spectrum bitmap where color "i" is excluded from
+	wxBitmap *rgb_slider[3];	///< z spectrum for color "i"
+	
 	wxSpinCtrl *hsl_input[3];
-
-	/// DOCME
-	wxBitmap *hsl_spectrum;		// h/s spectrum
-
-	/// DOCME
-	wxBitmap *hsl_slider;		// l spectrum
-
-	/// DOCME
+	wxBitmap *hsl_spectrum;		///< h/s spectrum
+	wxBitmap *hsl_slider;		///< l spectrum
+	
 	wxSpinCtrl *hsv_input[3];
-
-	/// DOCME
-	wxBitmap *hsv_spectrum;		// s/v spectrum
-
-	/// DOCME
-	wxBitmap *hsv_slider;		// h spectrum
+	wxBitmap *hsv_spectrum;		///< s/v spectrum
+	wxBitmap *hsv_slider;		///< h spectrum
 
 	/// DOCME
 	wxBitmap eyedropper_bitmap;
@@ -272,11 +260,8 @@ private:
 	/// DOCME
 	bool eyedropper_is_grabbed;
 
-	/// DOCME
-	wxTextCtrl *ass_input;		// ASS hex format input
-
-	/// DOCME
-	wxTextCtrl *html_input;		// HTML hex format input
+	wxTextCtrl *ass_input;		///< ASS hex format input
+	wxTextCtrl *html_input;		///< HTML hex format input
 
 	/// DOCME
 	wxStaticBitmap *preview_box;
@@ -322,11 +307,6 @@ private:
 	void OnDropperMouse(wxMouseEvent &evt);
 	void OnMouse(wxMouseEvent &evt);
 
-	/// DOCME
-
-	/// DOCME
-	static int lastx, lasty;
-
 	ColorCallback callback;
 	void *callbackUserdata;
 
@@ -341,59 +321,23 @@ public:
 };
 
 enum {
-
-	/// DOCME
 	SELECTOR_SPECTRUM = 4000,
-
-	/// DOCME
 	SELECTOR_SLIDER,
-
-	/// DOCME
 	SELECTOR_MODE,
-
-	/// DOCME
 	SELECTOR_RGB_R,
-
-	/// DOCME
 	SELECTOR_RGB_G,
-
-	/// DOCME
 	SELECTOR_RGB_B,
-
-	/// DOCME
 	SELECTOR_HSL_H,
-
-	/// DOCME
 	SELECTOR_HSL_S,
-
-	/// DOCME
 	SELECTOR_HSL_L,
-
-	/// DOCME
 	SELECTOR_HSV_H,
-
-	/// DOCME
 	SELECTOR_HSV_S,
-
-	/// DOCME
 	SELECTOR_HSV_V,
-
-	/// DOCME
 	SELECTOR_ASS_INPUT,
-
-	/// DOCME
 	SELECTOR_HTML_INPUT,
-
-	/// DOCME
 	SELECTOR_RECENT,
-
-	/// DOCME
 	SELECTOR_DROPPER,
-
-	/// DOCME
 	SELECTOR_DROPPER_PICK,
-
-	/// DOCME
 	BUTTON_RGBADJUST
 };
 
@@ -1111,13 +1055,6 @@ DialogColorPicker::DialogColorPicker(wxWindow *parent, wxColour initial_color, C
 	SetSizer(main_sizer);
 	main_sizer->SetSizeHints(this);
 
-	// Position window
-	if (lastx == -1 && lasty == -1) {
-		CenterOnParent();
-	} else {
-		Move(lastx, lasty);
-	}
-
 	// Fill the controls
 	updating_controls = false;
 	int mode = OPT_GET("Tool/Colour Picker/Mode")->GetInt();
@@ -1131,14 +1068,14 @@ DialogColorPicker::DialogColorPicker(wxWindow *parent, wxColour initial_color, C
 	screen_dropper_icon->Connect(wxEVT_MOTION, wxMouseEventHandler(DialogColorPicker::OnDropperMouse), 0, this);
 	screen_dropper_icon->Connect(wxEVT_LEFT_DOWN, wxMouseEventHandler(DialogColorPicker::OnDropperMouse), 0, this);
 	screen_dropper_icon->Connect(wxEVT_LEFT_UP, wxMouseEventHandler(DialogColorPicker::OnDropperMouse), 0, this);
+
+	persist.reset(new PersistLocation(this, "Tool/Colour Picker"));
 }
 
 /// @brief Destructor
 ///
 DialogColorPicker::~DialogColorPicker()
 {
-	GetPosition(&lastx, &lasty);
-
 	delete rgb_spectrum[0];
 	delete rgb_spectrum[1];
 	delete rgb_spectrum[2];
@@ -1802,10 +1739,3 @@ void DialogColorPicker::OnRGBAdjust(wxCommandEvent &evt)
 		wxTheClipboard->Close();
 	}
 }
-
-/// DOCME
-int DialogColorPicker::lastx = -1;
-
-/// DOCME
-int DialogColorPicker::lasty = -1;
-
