@@ -42,6 +42,8 @@
 
 #ifndef AGI_PRE
 #include <wx/checkbox.h>
+#include <wx/msgdlg.h>
+#include <wx/sizer.h>
 #include <wx/settings.h>
 #include <wx/stattext.h>
 #endif

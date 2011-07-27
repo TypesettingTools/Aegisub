@@ -28,6 +28,7 @@
 
 #ifndef AGI_PRE
 #include <wx/dialog.h>
+#include <wx/display.h>
 #endif
 
 PersistLocation::PersistLocation(wxDialog *dialog, std::string options_prefix)

@@ -43,8 +43,10 @@
 #ifndef AGI_PRE
 #include <wx/checkbox.h>
 #include <wx/colour.h>
-#include <wx/dialog.h>
 #include <wx/listbox.h>
+#include <wx/settings.h>
+#include <wx/sizer.h>
+#include <wx/stattext.h>
 #include <wx/textctrl.h>
 #endif
 
