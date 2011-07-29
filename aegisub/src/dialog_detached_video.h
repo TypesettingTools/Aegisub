@@ -34,16 +34,14 @@
 /// @ingroup main_ui
 ///
 
-#pragma once
-
 #ifndef AGI_PRE
 #include <wx/dialog.h>
 #endif
 
 #include <libaegisub/scoped_ptr.h>
+#include <libaegisub/signal.h>
 
 namespace agi { struct Context; }
-class FrameMain;
 class PersistLocation;
 class VideoBox;
 
@@ -53,20 +51,21 @@ class VideoBox;
 ///
 /// DOCME
 class DialogDetachedVideo : public wxDialog {
+	agi::Context *context;
+	agi::signal::Connection video_open;
 	agi::scoped_ptr<PersistLocation> persist;
 
-	/// DOCME
-	VideoBox *videoBox;
-
-	/// DOCME
-	FrameMain *parent;
-
-	void OnClose(wxCloseEvent &event);
-	void OnMinimize(wxIconizeEvent &event);
+	void OnClose(wxCloseEvent &);
+	/// Minimize event handler to hack around a wx bug
+	void OnMinimize(wxIconizeEvent &evt);
+	void OnKeyDown(wxKeyEvent &evt);
+	void OnVideoOpen();
 
 public:
-	DialogDetachedVideo(FrameMain *parent, agi::Context *context, const wxSize &initialDisplaySize);
+	/// @brief Constructor
+	/// @param context Project context
+	/// @param initialDisplaySize Initial size of the window
+	DialogDetachedVideo(agi::Context *context, const wxSize &initialDisplaySize);
+	/// Destructor
 	~DialogDetachedVideo();
-
-	DECLARE_EVENT_TABLE()
 };

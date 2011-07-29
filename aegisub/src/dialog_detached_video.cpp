@@ -38,39 +38,35 @@
 
 #ifndef AGI_PRE
 #include <wx/filename.h>
-#include <wx/settings.h>
 #include <wx/display.h> /// Must be included last.
 #endif
 
-#include "include/aegisub/context.h"
 #include "dialog_detached_video.h"
-#include "frame_main.h"
+
+#include "include/aegisub/context.h"
+#include "include/aegisub/hotkey.h"
+
 #include "main.h"
 #include "persist_location.h"
 #include "video_box.h"
 #include "video_context.h"
 #include "video_display.h"
-#include "video_slider.h"
 
-/// @brief Constructor
-/// @param par FrameMain this was spawned from
-/// @param initialDisplaySize Initial size of the window
-DialogDetachedVideo::DialogDetachedVideo(FrameMain *parent, agi::Context *context, const wxSize &initialDisplaySize)
-: wxDialog(parent,-1,_T("Detached Video"),wxDefaultPosition,wxSize(400,300),wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER | wxMAXIMIZE_BOX | wxMINIMIZE_BOX | wxWANTS_CHARS)
-, parent(parent)
+DialogDetachedVideo::DialogDetachedVideo(agi::Context *context, const wxSize &initialDisplaySize)
+: wxDialog(context->parent, -1, "Detached Video", wxDefaultPosition, wxSize(400,300), wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER | wxMAXIMIZE_BOX | wxMINIMIZE_BOX | wxWANTS_CHARS)
+, context(context)
+, video_open(context->videoController->AddVideoOpenListener(&DialogDetachedVideo::OnVideoOpen, this))
 {
 	// Set obscure stuff
 	SetExtraStyle((GetExtraStyle() & ~wxWS_EX_BLOCK_EVENTS) | wxWS_EX_PROCESS_UI_UPDATES);
 
-	// Set title
-	wxFileName fn(context->videoController->videoName);
-	SetTitle(wxString::Format(_("Video: %s"),fn.GetFullName().c_str()));
+	SetTitle(wxString::Format(_("Video: %s"), wxFileName(context->videoController->videoName).GetFullName()));
 
 	// Set a background panel
 	wxPanel *panel = new wxPanel(this,-1,wxDefaultPosition,wxDefaultSize,wxTAB_TRAVERSAL | wxCLIP_CHILDREN);
 	
 	// Video area;
-	videoBox = new VideoBox(panel, true, context);
+	VideoBox *videoBox = new VideoBox(panel, true, context);
 	videoBox->videoDisplay->SetClientSize(initialDisplaySize);
 
 	// Set sizer
@@ -95,40 +91,40 @@ DialogDetachedVideo::DialogDetachedVideo(FrameMain *parent, agi::Context *contex
 	}
 
 	// Update
-	parent->SetDisplayMode(0, -1);
 	OPT_SET("Video/Detached/Enabled")->SetBool(true);
 
-	// Copy the main accelerator table to this dialog
-	wxAcceleratorTable *table = parent->GetAcceleratorTable();
-	SetAcceleratorTable(*table);
+	Bind(wxEVT_CLOSE_WINDOW, &DialogDetachedVideo::OnClose, this);
+	Bind(wxEVT_ICONIZE, &DialogDetachedVideo::OnMinimize, this);
+	Bind(wxEVT_KEY_DOWN, &DialogDetachedVideo::OnKeyDown, this);
+
+	Show();
 }
 
-/// @brief Destructor
-DialogDetachedVideo::~DialogDetachedVideo() {
-}
+DialogDetachedVideo::~DialogDetachedVideo() { }
 
-// Event table
-BEGIN_EVENT_TABLE(DialogDetachedVideo,wxDialog)
-	EVT_CLOSE(DialogDetachedVideo::OnClose)
-	EVT_ICONIZE(DialogDetachedVideo::OnMinimize)
-END_EVENT_TABLE()
-
-/// @brief Close window
-/// @param event UNUSED
-void DialogDetachedVideo::OnClose(wxCloseEvent &WXUNUSED(event)) {
+void DialogDetachedVideo::OnClose(wxCloseEvent&) {
+	context->detachedVideo = 0;
 	OPT_SET("Video/Detached/Enabled")->SetBool(false);
 	Destroy();
-	parent->context->detachedVideo = 0;
-	parent->SetDisplayMode(1,-1);
 }
 
-/// @brief Minimize event handler
-/// @param event
 void DialogDetachedVideo::OnMinimize(wxIconizeEvent &event) {
 	if (event.IsIconized()) {
 		// Force the video display to repaint as otherwise the last displayed
 		// frame stays visible even though the dialog is minimized
 		Hide();
 		Show();
+	}
+}
+
+void DialogDetachedVideo::OnKeyDown(wxKeyEvent &evt) {
+	evt.StopPropagation();
+	hotkey::check("Video Display", evt.GetKeyCode(), evt.GetUnicodeKey(), evt.GetModifiers());
+}
+
+void DialogDetachedVideo::OnVideoOpen() {
+	if (!context->videoController->IsLoaded()) {
+		context->detachedVideo = 0;
+		Destroy();
 	}
 }

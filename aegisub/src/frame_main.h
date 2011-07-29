@@ -63,7 +63,7 @@ class VideoDisplay;
 class VideoSlider;
 class VideoZoomSlider;
 
-namespace agi { struct Context; }
+namespace agi { struct Context; class OptionValue; }
 namespace Automation4 { class FeatureMacro; class ScriptManager; }
 
 /// DOCME
@@ -84,7 +84,6 @@ public:
 	/// @param audio -1: leave unchanged; 0: hide; 1: show
 	void SetDisplayMode(int showVid, int showAudio);
 	void LoadSubtitles(wxString filename,wxString charset="");
-	void DetachVideo(bool detach=true);
 
 	agi::scoped_ptr<agi::Context> context;
 
@@ -139,6 +138,7 @@ private:
 	void OnAudioClose();
 
 	void OnVideoOpen();
+	void OnVideoDetach(agi::OptionValue const& opt);
 
 	void OnSubtitlesOpen();
 	void OnSubtitlesSave();

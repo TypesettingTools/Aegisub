@@ -238,7 +238,13 @@ struct video_detach : public validator_video_loaded {
 	}
 
 	void operator()(agi::Context *c) {
-		wxGetApp().frame->DetachVideo(!c->detachedVideo);
+		if (!c->detachedVideo) {
+			c->detachedVideo = new DialogDetachedVideo(c, c->videoBox->videoDisplay->GetClientSize());
+		}
+		else {
+			c->detachedVideo->Destroy();
+			c->detachedVideo = 0;
+		}
 	}
 };
 

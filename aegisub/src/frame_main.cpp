@@ -63,7 +63,6 @@
 #endif
 #include "compat.h"
 #include "command/command.h"
-#include "dialog_detached_video.h"
 #include "dialog_search_replace.h"
 #include "dialog_styling_assistant.h"
 #include "dialog_version_check.h"
@@ -183,6 +182,7 @@ FrameMain::FrameMain (wxArrayString args)
 	context->detachedVideo = 0;
 	context->stylingAssistant = 0;
 	InitContents();
+	OPT_SUB("Video/Detached/Enabled", &FrameMain::OnVideoDetach, this, agi::signal::_1);
 
 	StartupLog("Complete context initialization");
 	context->videoController->SetContext(context.get());
@@ -224,7 +224,6 @@ FrameMain::FrameMain (wxArrayString args)
 FrameMain::~FrameMain () {
 	context->videoController->SetVideo("");
 	context->audioController->CloseAudio();
-	if (context->detachedVideo) context->detachedVideo->Destroy();
 	if (context->stylingAssistant) context->stylingAssistant->Destroy();
 	SubsGrid->ClearMaps();
 	delete audioBox;
@@ -440,7 +439,6 @@ void FrameMain::UpdateTitle() {
 void FrameMain::OnVideoOpen() {
 	if (!context->videoController->IsLoaded()) {
 		SetDisplayMode(0, -1);
-		DetachVideo(false);
 		return;
 	}
 
@@ -481,22 +479,16 @@ void FrameMain::OnVideoOpen() {
 
 	SetDisplayMode(1,-1);
 
-	DetachVideo(OPT_GET("Video/Detached/Enabled")->GetBool());
+	if (OPT_GET("Video/Detached/Enabled")->GetBool())
+		cmd::call("video/detach", context.get());
 	Thaw();
 }
 
-void FrameMain::DetachVideo(bool detach) {
-	if (detach) {
-		if (!context->detachedVideo) {
-			context->detachedVideo = new DialogDetachedVideo(this, context.get(), videoBox->videoDisplay->GetClientSize());
-			context->detachedVideo->Show();
-		}
-	}
-	else if (context->detachedVideo) {
-		context->detachedVideo->Destroy();
-		context->detachedVideo = 0;
-		SetDisplayMode(1,-1);
-	}
+void FrameMain::OnVideoDetach(agi::OptionValue const& opt) {
+	if (opt.GetBool())
+		SetDisplayMode(0, -1);
+	else if (context->videoController->IsLoaded())
+		SetDisplayMode(1, -1);
 }
 
 void FrameMain::StatusTimeout(wxString text,int ms) {
