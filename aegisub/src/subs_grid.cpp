@@ -93,7 +93,6 @@ SubtitlesGrid::SubtitlesGrid(wxWindow *parent, agi::Context *context,  const wxS
 
 /// @brief Destructor 
 SubtitlesGrid::~SubtitlesGrid() {
-	ClearMaps();
 }
 
 void SubtitlesGrid::OnSubtitlesCommit(int type) {

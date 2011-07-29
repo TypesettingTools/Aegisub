@@ -64,7 +64,6 @@
 #include "compat.h"
 #include "command/command.h"
 #include "dialog_search_replace.h"
-#include "dialog_styling_assistant.h"
 #include "dialog_version_check.h"
 #include "drop.h"
 #include "help_button.h"
@@ -222,19 +221,26 @@ FrameMain::FrameMain (wxArrayString args)
 }
 
 FrameMain::~FrameMain () {
+	// Because the subs grid is the selection controller, it needs to stay
+	// alive significantly longer than the other child controls
+	SubsGrid->Reparent(0);
+	SubsGrid->Hide();
+
 	context->videoController->SetVideo("");
 	context->audioController->CloseAudio();
-	if (context->stylingAssistant) context->stylingAssistant->Destroy();
-	SubsGrid->ClearMaps();
-	delete audioBox;
-	delete EditBox;
-	delete videoBox;
+
+	// Ensure the children get destroyed before the project context is destroyed
+	DestroyChildren();
+	wxTheApp->ProcessPendingEvents();
+
 	delete context->ass;
 	HelpButton::ClearPages();
 	delete context->audioController;
 #ifdef WITH_AUTOMATION
 	delete context->local_scripts;
 #endif
+
+	SubsGrid->Destroy();
 }
 
 void FrameMain::cmd_call(wxCommandEvent& event) {
