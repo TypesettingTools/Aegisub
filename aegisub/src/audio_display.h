@@ -35,42 +35,30 @@
 /// @ingroup audio_ui
 ///
 
-#pragma once
-
 #ifndef AGI_PRE
 #include <list>
 #include <stdint.h>
 
-#include <wx/bitmap.h>
-#include <wx/scrolbar.h>
-#include <wx/timer.h>
+#include <wx/gdicmn.h>
+#include <wx/string.h>
 #include <wx/window.h>
 #endif
 
 #include <libaegisub/scoped_ptr.h>
 #include <libaegisub/signal.h>
 
+namespace agi { struct Context; }
 
 class AudioRenderer;
 class AudioSpectrumRenderer;
 class AudioWaveformRenderer;
 class AudioKaraoke;
 class AudioProvider;
-class AudioPlayer;
-class SubtitlesGrid;
-class VideoProvider;
-
-class AudioBox;
-class SubtitlesGrid;
-class AssDialogue;
-class wxScrollBar;
 
 // Helper classes used in implementation of the audio display
 class AudioDisplayScrollbar;
 class AudioDisplayTimeline;
 class AudioDisplaySelection;
-
-
 
 /// @class AudioDisplayInteractionObject
 /// @brief Interface for objects on the audio display that can respond to mouse events
@@ -113,6 +101,7 @@ public:
 class AudioDisplay: public wxWindow {
 private:
 	std::list<agi::signal::Connection> slots;
+	agi::Context *context;
 
 	/// The audio renderer manager
 	agi::scoped_ptr<AudioRenderer> audio_renderer;
@@ -209,7 +198,7 @@ private:
 
 public:
 
-	AudioDisplay(wxWindow *parent, AudioController *controller);
+	AudioDisplay(wxWindow *parent, AudioController *controller, agi::Context *context);
 	~AudioDisplay();
 
 

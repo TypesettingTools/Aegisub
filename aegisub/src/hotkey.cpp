@@ -20,22 +20,12 @@
 
 #include "config.h"
 
-#ifndef AGI_PRE
-#include <math.h>
-
-#include <memory>
-#include <vector>
-#endif
-
-#include <libaegisub/log.h>
 #include <libaegisub/hotkey.h>
 
 #include "include/aegisub/hotkey.h"
 
-#include "include/aegisub/toolbar.h"
 #include "libresrc/libresrc.h"
 #include "command/command.h"
-#include "frame_main.h"
 #include "main.h"
 
 namespace hotkey {
@@ -57,7 +47,7 @@ static std::string const& keycode_name(int code) {
 	return keycode_names[code];
 }
 
-bool check(std::string const& context, int key_code, wchar_t key_char, int modifier) {
+bool check(std::string const& context, agi::Context *c, int key_code, wchar_t key_char, int modifier) {
 	std::string combo;
 	if ((modifier != wxMOD_NONE)) {
 		if ((modifier & wxMOD_CMD) != 0) combo.append("Ctrl-");
@@ -73,7 +63,7 @@ bool check(std::string const& context, int key_code, wchar_t key_char, int modif
 		/// The bottom line should be removed after all the hotkey commands are fixed.
 		/// This is to avoid pointless exceptions.
 		if (command.find("/") != std::string::npos) {
-			(*cmd::get(command))(wxGetApp().frame->context.get());
+			(*cmd::get(command))(c);
 			return true;
 		}
 	}
@@ -187,5 +177,5 @@ static void init_keycode_names() {
 }
 
 
-} // namespace toolbar
+} // namespace hotkey
 

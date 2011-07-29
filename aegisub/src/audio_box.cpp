@@ -95,7 +95,7 @@ static void add_option(wxWindow *parent, wxSizer *sizer, int border, const char 
 ///
 AudioBox::AudioBox(wxWindow *parent, agi::Context *context)
 : wxPanel(parent, -1, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL|wxBORDER_RAISED)
-, audioDisplay(new AudioDisplay(this, context->audioController))
+, audioDisplay(new AudioDisplay(this, context->audioController, context))
 , controller(context->audioController)
 , timing_controller_dialogue(CreateDialogueTimingController(controller, context->selectionController, context->ass))
 , context(context)

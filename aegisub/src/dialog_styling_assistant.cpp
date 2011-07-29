@@ -256,7 +256,7 @@ void DialogStyling::OnPlayAudioButton(wxCommandEvent &) {
 }
 
 void DialogStyling::OnKeyDown(wxKeyEvent &evt) {
-	if (!hotkey::check("Styling Assistant", evt.GetKeyCode(), evt.GetUnicodeKey(), evt.GetModifiers())) {
+	if (!hotkey::check("Styling Assistant", c, evt.GetKeyCode(), evt.GetUnicodeKey(), evt.GetModifiers())) {
 		// Move the beginning of the selection back one character so that backspace
 		// actually does something
 		if (evt.GetKeyCode() == WXK_BACK && !evt.GetModifiers()) {

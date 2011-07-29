@@ -50,19 +50,18 @@
 
 VideoSlider::VideoSlider (wxWindow* parent, agi::Context *c)
 : wxWindow(parent, -1, wxDefaultPosition, wxDefaultSize, wxWANTS_CHARS | wxFULL_REPAINT_ON_RESIZE)
-, vc(c->videoController)
-, grid(c->subsGrid)
+, c(c)
 , val(0)
 , max(1)
 {
 	SetClientSize(20,25);
 	SetMinSize(wxSize(20, 25));
 	slots.push_back(OPT_SUB("Video/Slider/Show Keyframes", &wxWindow::Refresh, this, false, (wxRect*)NULL));
-	slots.push_back(vc->AddSeekListener(&VideoSlider::SetValue, this));
-	slots.push_back(vc->AddVideoOpenListener(&VideoSlider::VideoOpened, this));
-	slots.push_back(vc->AddKeyframesListener(&VideoSlider::KeyframesChanged, this));
+	slots.push_back(c->videoController->AddSeekListener(&VideoSlider::SetValue, this));
+	slots.push_back(c->videoController->AddVideoOpenListener(&VideoSlider::VideoOpened, this));
+	slots.push_back(c->videoController->AddKeyframesListener(&VideoSlider::KeyframesChanged, this));
 
-	if (vc->IsLoaded()) {
+	if (c->videoController->IsLoaded()) {
 		VideoOpened();
 	}
 }
@@ -74,8 +73,8 @@ void VideoSlider::SetValue(int value) {
 }
 
 void VideoSlider::VideoOpened() {
-	max = vc->GetLength() - 1;
-	keyframes = vc->GetKeyFrames();
+	max = c->videoController->GetLength() - 1;
+	keyframes = c->videoController->GetKeyFrames();
 	Refresh(false);
 }
 
@@ -143,13 +142,13 @@ void VideoSlider::OnMouse(wxMouseEvent &event) {
 			SetValue(go);
 		}
 
-		if (vc->IsPlaying()) {
-			vc->Stop();
-			vc->JumpToFrame(val);
-			vc->Play();
+		if (c->videoController->IsPlaying()) {
+			c->videoController->Stop();
+			c->videoController->JumpToFrame(val);
+			c->videoController->Play();
 		}
 		else
-			vc->JumpToFrame(val);
+			c->videoController->JumpToFrame(val);
 		SetFocus();
 		return;
 	}
@@ -158,20 +157,20 @@ void VideoSlider::OnMouse(wxMouseEvent &event) {
 		SetFocus();
 	}
 
-	else if (!vc->IsPlaying())
+	else if (!c->videoController->IsPlaying())
 		event.Skip();
 }
 
 void VideoSlider::OnKeyDown(wxKeyEvent &event) {
-	if (vc->IsPlaying()) return;
+	if (c->videoController->IsPlaying()) return;
 
-	if (hotkey::check("Video", event.GetKeyCode(), event.GetUnicodeKey(), event.GetModifiers()))
+	if (hotkey::check("Video", c, event.GetKeyCode(), event.GetUnicodeKey(), event.GetModifiers()))
 		return;
 
 	// Forward up/down to grid
 	if (event.GetKeyCode() == WXK_UP || event.GetKeyCode() == WXK_DOWN) {
-		grid->GetEventHandler()->ProcessEvent(event);
-		grid->SetFocus();
+		c->subsGrid->GetEventHandler()->ProcessEvent(event);
+		c->subsGrid->SetFocus();
 		return;
 	}
 

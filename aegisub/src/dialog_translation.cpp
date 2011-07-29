@@ -254,7 +254,7 @@ void DialogTranslation::InsertOriginal() {
 
 
 void DialogTranslation::OnKeyDown(wxKeyEvent &evt) {
-	if (!hotkey::check("Translation Assistant", evt.GetKeyCode(), evt.GetUnicodeKey(), evt.GetModifiers()))
+	if (!hotkey::check("Translation Assistant", c, evt.GetKeyCode(), evt.GetUnicodeKey(), evt.GetModifiers()))
 		evt.Skip();
 	evt.StopPropagation();
 }

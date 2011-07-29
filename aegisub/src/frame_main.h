@@ -74,20 +74,8 @@ namespace Automation4 { class FeatureMacro; class ScriptManager; }
 class FrameMain: public wxFrame {
 	friend class AegisubFileDropTarget;
 
-public:
-	/// Set the status bar text
-	/// @param text New status bar text
-	/// @param ms Time in milliseconds that the message should be visible
-	void StatusTimeout(wxString text,int ms=10000);
-	/// @brief Set the video and audio display visibility
-	/// @param video -1: leave unchanged; 0: hide; 1: show
-	/// @param audio -1: leave unchanged; 0: hide; 1: show
-	void SetDisplayMode(int showVid, int showAudio);
-	void LoadSubtitles(wxString filename,wxString charset="");
-
 	agi::scoped_ptr<agi::Context> context;
 
-private:
     // XXX: Make Freeze()/Thaw() noops on GTK, this seems to be buggy
 #ifdef __WXGTK__
     void Freeze(void) {}
@@ -159,6 +147,16 @@ public:
 	~FrameMain();
 
 	bool HasASSDraw();
+
+	/// Set the status bar text
+	/// @param text New status bar text
+	/// @param ms Time in milliseconds that the message should be visible
+	void StatusTimeout(wxString text,int ms=10000);
+	/// @brief Set the video and audio display visibility
+	/// @param video -1: leave unchanged; 0: hide; 1: show
+	/// @param audio -1: leave unchanged; 0: hide; 1: show
+	void SetDisplayMode(int showVid,int showAudio);
+	void LoadSubtitles(wxString filename,wxString charset="");
 
 	DECLARE_EVENT_TABLE()
 };

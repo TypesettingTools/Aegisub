@@ -464,7 +464,7 @@ void VideoDisplay::OnKeyDown(wxKeyEvent &event) {
 	else if (kc == 'J') SetMode(Video_Mode_Vector_Clip);
 	else {
 		event.StopPropagation();
-		if (hotkey::check("Video Display", event.GetKeyCode(), event.GetUnicodeKey(), event.GetModifiers()))
+		if (hotkey::check("Video Display", con, event.GetKeyCode(), event.GetUnicodeKey(), event.GetModifiers()))
 			return;
 	}
 }

@@ -54,7 +54,6 @@
 #include "audio_renderer_waveform.h"
 #include "audio_timing.h"
 #include "block_cache.h"
-#include "include/aegisub/audio_player.h"
 #include "include/aegisub/audio_provider.h"
 #include "include/aegisub/hotkey.h"
 #include "main.h"
@@ -529,8 +528,9 @@ public:
 
 
 
-AudioDisplay::AudioDisplay(wxWindow *parent, AudioController *controller)
+AudioDisplay::AudioDisplay(wxWindow *parent, AudioController *controller, agi::Context *context)
 : wxWindow(parent, -1, wxDefaultPosition, wxDefaultSize, wxWANTS_CHARS|wxBORDER_SIMPLE)
+, context(context)
 , audio_renderer(new AudioRenderer)
 , audio_spectrum_renderer(new AudioSpectrumRenderer)
 , audio_waveform_renderer(new AudioWaveformRenderer)
@@ -1154,7 +1154,7 @@ void AudioDisplay::OnMouseEvent(wxMouseEvent& event)
 
 void AudioDisplay::OnKeyDown(wxKeyEvent& event)
 {
-	if (!hotkey::check("Audio", event.GetKeyCode(), event.GetUnicodeKey(), event.GetModifiers()))
+	if (!hotkey::check("Audio", context, event.GetKeyCode(), event.GetUnicodeKey(), event.GetModifiers()))
 		event.Skip();
 	event.StopPropagation();
 }

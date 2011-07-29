@@ -42,6 +42,8 @@
 
 #include <libaegisub/signal.h>
 
+namespace agi { struct Context; }
+
 class VideoContext;
 class SubtitlesGrid;
 
@@ -51,8 +53,7 @@ class SubtitlesGrid;
 ///
 /// DOCME
 class VideoSlider: public wxWindow {
-	VideoContext *vc;           ///< Video controller
-	SubtitlesGrid *grid;        ///< temp hack; remove this once event forwarding is killed
+	agi::Context *c;
 	std::vector<int> keyframes; ///< Currently loaded keyframes
 	std::vector<agi::signal::Connection> slots;
 

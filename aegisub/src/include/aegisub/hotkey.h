@@ -19,16 +19,15 @@
 /// @ingroup hotkey menu event window
 
 #ifndef AGI_PRE
-#include <math.h>
-
-#include <memory>
 #include <string>
 #include <vector>
 #endif
 
+namespace agi { struct Context; }
+
 namespace hotkey {
 
-bool check(std::string const& context, int key_code, wchar_t key_char, int modifier);
+bool check(std::string const& context, agi::Context *c, int key_code, wchar_t key_char, int modifier);
 std::string get_hotkey_str_first(std::string const& context, std::string const& command);
 std::vector<std::string> get_hotkey_strs(std::string const& context, std::string const& command);
 
