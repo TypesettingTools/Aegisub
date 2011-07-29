@@ -485,15 +485,6 @@ void FrameMain::OnVideoOpen() {
 	Thaw();
 }
 
-void FrameMain::LoadVFR(wxString filename) {
-	if (filename.empty()) {
-		context->videoController->CloseTimecodes();
-	}
-	else {
-		context->videoController->LoadTimecodes(filename);
-	}
-}
-
 void FrameMain::DetachVideo(bool detach) {
 	if (detach) {
 		if (!context->detachedVideo) {

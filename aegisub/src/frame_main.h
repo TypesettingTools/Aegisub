@@ -85,7 +85,6 @@ public:
 	void SetDisplayMode(int showVid, int showAudio);
 	void LoadSubtitles(wxString filename,wxString charset="");
 	void DetachVideo(bool detach=true);
-	void LoadVFR(wxString filename);
 
 	agi::scoped_ptr<agi::Context> context;
 
