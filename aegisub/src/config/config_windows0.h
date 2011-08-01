@@ -75,10 +75,6 @@
 // audio player on Windows.
 // Requires: DirectX SDK (or Windows SDK 7.0)
 #define WITH_DIRECTSOUND
-#ifdef WITH_DIRECTSOUND
-# pragma comment(lib, "dsound.lib")
-# pragma comment(lib, "dxguid.lib")
-#endif
 
 
 // Enable Avisynth video and audio providers
