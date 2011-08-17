@@ -59,9 +59,17 @@ json::UnknownElement file(const std::string &file) {
 json::UnknownElement file(const std::string &file, const std::string &default_config) {
 	try {
 		return parse(io::Open(file));
-	// We only want to catch this single error as anything else could
-	// reflect a deeper problem.  ie, failed i/o, wrong permissions etc.
-	} catch (const acs::AcsNotFound&) {
+	}
+	catch (const acs::AcsNotFound&) {
+		// Not an error
+		return parse(new std::istringstream(default_config));
+	}
+	catch (json::Exception&) {
+		// Already logged in parse
+		return parse(new std::istringstream(default_config));
+	}
+	catch (agi::Exception& e) {
+		LOG_E("json/file") << "Unexpted error when reading config file " << file << ": " << e.GetMessage();
 		return parse(new std::istringstream(default_config));
 	}
 }
