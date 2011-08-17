@@ -67,7 +67,8 @@ DialogDetachedVideo::DialogDetachedVideo(agi::Context *context, const wxSize &in
 	
 	// Video area;
 	VideoBox *videoBox = new VideoBox(panel, true, context);
-	videoBox->videoDisplay->SetClientSize(initialDisplaySize);
+	videoBox->videoDisplay->SetMinClientSize(initialDisplaySize);
+	videoBox->Layout();
 
 	// Set sizer
 	wxSizer *mainSizer = new wxBoxSizer(wxVERTICAL);
@@ -90,7 +91,6 @@ DialogDetachedVideo::DialogDetachedVideo(agi::Context *context, const wxSize &in
 		SetSize(std::min(bounds_rect.width, disp_rect.width), std::min(bounds_rect.height, disp_rect.height));
 	}
 
-	// Update
 	OPT_SET("Video/Detached/Enabled")->SetBool(true);
 
 	Bind(wxEVT_CLOSE_WINDOW, &DialogDetachedVideo::OnClose, this);
