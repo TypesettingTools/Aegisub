@@ -191,12 +191,21 @@ void line_iterator<OutputType>::next() {
 		valid = false;
 		return;
 	}
-	std::string str;
-	getline(str);
-	if (conv.get()) {
-		str = conv->Convert(str);
+	std::string str, cstr, *target;
+	if (width == 1) {
+		std::getline(*stream, str);
 	}
-	if (!convert(str)) {
+	else {
+		getline(str);
+	}
+	if (conv.get()) {
+		conv->Convert(str, cstr);
+		target = &cstr;
+	}
+	else {
+		target = &str;
+	}
+	if (!convert(*target)) {
 		next();
 		return;
 	}
