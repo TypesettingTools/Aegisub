@@ -20,9 +20,11 @@
 
 #include "config.h"
 
+#include "include/aegisub/toolbar.h"
+
 #include "command/command.h"
 #include "include/aegisub/context.h"
-#include "include/aegisub/toolbar.h"
+#include "include/aegisub/hotkey.h"
 #include "libresrc/libresrc.h"
 #include "main.h"
 
@@ -56,6 +58,8 @@ namespace {
 		agi::Context *context;
 		/// Commands for each of the buttons
 		std::vector<cmd::Command *> commands;
+		/// Hotkey context
+		std::string ht_context;
 
 		/// Listener for icon size change signal
 		agi::signal::Connection icon_size_slot;
@@ -126,7 +130,20 @@ namespace {
 						flags & cmd::COMMAND_TOGGLE ? wxITEM_CHECK :
 						wxITEM_NORMAL;
 
-					AddTool(TOOL_ID_BASE + commands.size(), command->StrMenu(), icon, command->StrHelp(), kind);
+					wxString tooltip = command->StrHelp();
+
+					std::vector<std::string> hotkeys = hotkey::get_hotkey_strs(ht_context, command->name());
+
+					for (size_t i = 0; i < hotkeys.size(); ++i) {
+						if (i == 0)
+							tooltip += " (";
+						else
+							tooltip += "/";
+						tooltip += hotkeys[i];
+					}
+					if (hotkeys.size()) tooltip += ")";
+
+					AddTool(TOOL_ID_BASE + commands.size(), command->StrDisplay(), icon, tooltip, kind);
 
 					commands.push_back(command);
 					needs_onidle = needs_onidle || flags != cmd::COMMAND_NORMAL;
@@ -141,11 +158,13 @@ namespace {
 			Realize();
 		}
 	public:
-		Toolbar(wxWindow *parent, std::string const& name, agi::Context *c)
+		Toolbar(wxWindow *parent, std::string const& name, agi::Context *c, std::string const& ht_context)
 		: wxToolBar(parent, -1, wxDefaultPosition, wxDefaultSize, wxTB_FLAT | wxTB_HORIZONTAL)
 		, name(name)
 		, context(c)
+		, ht_context(ht_context)
 		, icon_size_slot(OPT_SUB("App/Toolbar Icon Size", &Toolbar::OnIconSizeChanged, this))
+		/// @todo bind to hotkey changed event when such a thing exists
 		{
 			Populate();
 			Bind(wxEVT_COMMAND_TOOL_CLICKED, &Toolbar::OnClick, this);
@@ -154,7 +173,7 @@ namespace {
 }
 
 namespace toolbar {
-	void AttachToolbar(wxFrame *frame, std::string const& name, agi::Context *c) {
-		frame->SetToolBar(new Toolbar(frame, name, c));
+	void AttachToolbar(wxFrame *frame, std::string const& name, agi::Context *c, std::string const& hotkey) {
+		frame->SetToolBar(new Toolbar(frame, name, c, hotkey));
 	}
 }

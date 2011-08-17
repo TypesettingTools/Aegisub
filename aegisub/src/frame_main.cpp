@@ -254,7 +254,7 @@ void FrameMain::cmd_call(wxCommandEvent& event) {
 
 void FrameMain::InitToolbar () {
 	wxSystemOptions::SetOption("msw.remap", 0);
-	toolbar::AttachToolbar(this, "main", context.get());
+	toolbar::AttachToolbar(this, "main", context.get(), "Default");
 	GetToolBar()->Realize();
 }
 

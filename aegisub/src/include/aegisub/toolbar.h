@@ -30,5 +30,6 @@ namespace toolbar {
 	/// @param frame Frame to attach the toolbar to
 	/// @param name Name of the toolbar
 	/// @param context Project context
-	void AttachToolbar(wxFrame *frame, std::string const& name, agi::Context *context);
+	/// @param hotkey Hotkey context for the tooltip
+	void AttachToolbar(wxFrame *frame, std::string const& name, agi::Context *context, std::string const& hotkey);
 }
