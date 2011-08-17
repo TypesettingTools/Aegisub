@@ -159,6 +159,8 @@ VideoBox::VideoBox(wxWindow *parent, bool isDetached, agi::Context *context)
 		VideoSizer->AddStretchSpacer(1);
 	SetSizer(VideoSizer);
 
+	UpdateTimeBoxes();
+
 	Bind(wxEVT_COMMAND_BUTTON_CLICKED, &VideoBox::OnButton, this);
 	Bind(wxEVT_COMMAND_TOGGLEBUTTON_CLICKED, &VideoBox::OnButton, this);
 
