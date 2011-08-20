@@ -9,14 +9,9 @@ if WITH_LIBASS
 libass = libass
 endif
 
-if HAVE_PROVIDER_FFMPEGSOURCE
-ffmpegsource = libffms
-endif
-
 SUBDIRS = \
 	$(univchardet) \
     $(libass) \
-	$(ffmpegsource) \
 	src \
 	automation \
 	po \

@@ -28,7 +28,7 @@ SUBDIRS = \
 	$(libauto3) \
 	$(libosxutil_subdir)
 
-AM_CXXFLAGS += -DAEGISUB -Iinclude -I../libffms/include @CXXFLAGS_OSX@ @WX_CPPFLAGS@ @OPENMP_CXXFLAGS@ @LIBAVFORMAT_CFLAGS@ @LIBAVCODEC_CFLAGS@ @LIBSWSCALE_CFLAGS@ @LIBAVUTIL_CFLAGS@
+AM_CXXFLAGS += -DAEGISUB -Iinclude @CXXFLAGS_OSX@ @WX_CPPFLAGS@ @OPENMP_CXXFLAGS@
 
 bin_PROGRAMS = aegisub-2.1
 aegisub_2_1_LDADD = libresrc/libresrc.a $(libosxutil_lib)
@@ -87,12 +87,8 @@ endif
 if HAVE_PROVIDER_FFMPEGSOURCE
 noinst_LIBRARIES += libaudiovideo_ffmpegsource.a
 libaudiovideo_ffmpegsource_a_SOURCES = audio_provider_ffmpegsource.cpp video_provider_ffmpegsource.cpp ffmpegsource_common.cpp
-libaudiovideo_ffmpegsource_a_CPPFLAGS = @LIBAVFORMAT_CFLAGS@ @LIBAVCODEC_CFLAGS@ @LIBSWSCALE_CFLAGS@ @LIBAVUTIL_CFLAGS@ @LIBPOSTPROC_CFLAGS@
-aegisub_2_1_LDADD += libaudiovideo_ffmpegsource.a ../libffms/libffmpegsource_aegisub.a @LIBPOSTPROC_LIBS@
-endif
-
-if HAVE_FFMPEG
-aegisub_2_1_LDADD += @LIBAVFORMAT_LIBS@ @LIBAVCODEC_LIBS@ @LIBSWSCALE_LIBS@ @LIBAVUTIL_LIBS@
+libaudiovideo_ffmpegsource_a_CPPFLAGS = @FFMS_CFLAGS@
+aegisub_2_1_LDADD += libaudiovideo_ffmpegsource.a @FFMS_LIBS@
 endif
 
 noinst_LIBRARIES += libsubtitle_provider.a
@@ -181,7 +177,6 @@ EXTRA_aegisub_2_1_SOURCES = \
 	audio_player_pulse.cpp \
 	audio_player_oss.cpp \
 	audio_provider_avs.cpp \
-	audio_provider_lavc.cpp \
 	auto4_auto3.cpp \
 	auto4_lua.cpp \
 	auto4_lua_assfile.cpp \
@@ -192,8 +187,6 @@ EXTRA_aegisub_2_1_SOURCES = \
 	auto4_ruby_dialog.cpp \
 	avisynth_wrap.cpp \
 	dialog_associations.cpp \
-	lavc_file.cpp \
-	lavc_keyframes.cpp \
 	setup.cpp \
 	spellchecker_hunspell.cpp \
 	stdwx.cpp \
@@ -201,13 +194,11 @@ EXTRA_aegisub_2_1_SOURCES = \
 	subtitles_provider_csri.cpp \
 	subtitles_provider_libass.cpp \
 	video_provider_avs.cpp \
-	video_provider_dshow.cpp \
-	video_provider_lavc.cpp
+	video_provider_dshow.cpp
 
 
 aegisub_2_1_SOURCES = \
 	$(AUTO3_LUA) \
-	$(FFMPEG) \
 	$(HUNSPELL) \
 	$(LIBASS) \
 	$(UNIVCHARSET) \

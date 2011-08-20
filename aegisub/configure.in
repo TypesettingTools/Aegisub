@@ -33,7 +33,7 @@ m4_define([perl_required_version], [5.004])
 m4_define([pkgconfig_required_version], [0.20])
 m4_define([ruby_required_version], [1.8])
 m4_define([wx_required_version], [2.8.1])
-m4_define([boost_required_version], [1.34])
+m4_define([ffms_required_version], [2.13.1])
 
 
 #######
@@ -629,128 +629,21 @@ AM_CONDITIONAL([HAVE_OSS], [test "$with_oss" != "no"])
 # Video / Audio Providers
 #########################
 
-AC_ARG_WITH(ffmpeg, [  --without-ffmpeg        build without FFMPEG support.
-                          Disables FFMPEG and FFmpegSource A/V providers.
-                          (default: auto)], [ffmpeg_disabled="(disabled)"; with_ffmpeg="no"])
 
-if test "$with_ffmpeg" != "no"; then
-  PKG_CHECK_MODULES(LIBAVCODEC,  libavcodec >= libavcodec_required_version, [], [with_ffmpeg="no"])
-  PKG_CHECK_MODULES(LIBAVFORMAT, libavformat >= libavformat_required_version, [], [with_ffmpeg="no"])
-  PKG_CHECK_MODULES(LIBSWSCALE,  libswscale >=  libswscale_required_version, [], [with_ffmpeg="no"])
-  PKG_CHECK_MODULES(LIBAVUTIL,  libavutil >= libavutil_required_version, [], [with_ffmpeg="no"])
+AC_ARG_WITH(provider-ffms,[  --without-ffms          disable FFmpegSource support (default: auto)],ffms_provider_disabled="(disabled)")
+
+if test "$with_provider_ffms" != "no"; then
+  PKG_CHECK_MODULES(FFMS, ffms2 >= ffms_required_version, [with_provider_ffms="yes"], [with_provider_ffms="no"])
 fi
 
-if test "$with_ffmpeg" != "no" && test "$enable_old_ffmpeg" != "yes"; then
-  AC_AGI_COMPILE([FFMPEG], [ffmpeg], [$LIBSWSCALE_CFLAGS $LIBAVCODEC_CFLAGS $LIBAVFORMAT_CFLAGS $LIBAVUTIL_CFLAGS], [$LIBSWSCALE_LIBS $LIBAVCODEC_LIBS $LIBAVFORMAT_LIBS $LIBAVUTIL_LIBS],[
-#ifndef __STDC_CONSTANT_MACROS
-#define __STDC_CONSTANT_MACROS
-#endif
-extern "C" {
-#include <libavformat/avformat.h>
-#include <libavcodec/avcodec.h>
-#include <libswscale/swscale.h>
-}
-
-int main (void) {
-  AVFormatContext *fc = NULL;
-  AVCodec *c = NULL;
-  SwsContext *swsc = NULL;
-
-  av_register_all();
-  fc = avformat_alloc_context();
-  if (fc == NULL) {
-    printf("avformat failure\n");
-    return 1;
-  }
-  av_free(fc);
-                               
-  avcodec_init();
-  avcodec_register_all();
-  c = avcodec_find_decoder(CODEC_ID_PCM_S16LE);
-  if (c == NULL) {
-    printf("avcodec failure\n");
-    return 1;
-  }
-
-  swsc = sws_getContext(704, 480, PIX_FMT_RGB32, 704, 480, PIX_FMT_YUV420P, SWS_BILINEAR, NULL, NULL, NULL);
-  if (swsc == NULL) {
-    printf("swscale failure\n");
-    return 1;
-  }
-  sws_freeContext(swsc);
-
-  return 0;
-} ])
+if test "$with_provider_ffms" == "yes"; then
+  AC_DEFINE(WITH_FFMPEGSOURCE, 1, [Enable FFmpegSource2 video provider])
+  found_video_provider="yes"
 fi
 
-if test "$agi_cv_with_ffmpeg" = "no" && test "$with_ffmpeg" != "no"; then
-  AC_MSG_WARN([FFMPEG detected, but it doesn't work...])
-  with_ffmpeg="no"
-fi
+AM_CONDITIONAL([HAVE_PROVIDER_FFMPEGSOURCE], [test "$with_provider_ffms" = "yes"])
 
-if test "$agi_cv_with_ffmpeg" = "yes" && test "$with_ffmpeg" != "no"; then
-  with_ffmpeg="yes"
-fi
-
-if test "$agi_cv_with_ffmpeg" = "no" || test "$with_ffmpeg" = "no"; then
-  ffmpegsource_provider_disabled="(disabled, requires FFMPEG)"
-  ffmpeg_provider_disabled="(disabled, requires FFMPEG)"
-  with_ffmpeg="no"
-fi
-
-AM_CONDITIONAL([HAVE_FFMPEG], [test "$agi_cv_with_ffmpeg" = "yes"])
-AC_SUBST(LIBAVFORMAT_LIBS)
-AC_SUBST(LIBAVFORMAT_CFLAGS)
-AC_SUBST(LIBAVCODEC_LIBS)
-AC_SUBST(LIBAVCODEC_CFLAGS)
-AC_SUBST(LIBSWSCALE_LIBS)
-AC_SUBST(LIBSWSCALE_CFLAGS)
-AC_SUBST(LIBAVUTIL_LIBS)
-AC_SUBST(LIBAVUTIL_CFLAGS)
-
-
-AC_ARG_WITH(provider-ffmpegsource, [  --without-provider-ffmpegsource
-                          build without FFmpegSource A/V provider.
-                          (default: auto)], ffmpegsource_provider_disabled="(disabled)", with_provider_ffmpegsource="yes")
-
-if test "$agi_cv_with_ffmpeg" = "yes" && test "$with_provider_ffmpegsource" = "yes"; then
-  PKG_CHECK_MODULES(LIBPOSTPROC,  libpostproc >= libpostproc_required_version, [], [with_libpostproc="no"])
-
-  AC_AGI_COMPILE([postproc], [postproc], [$LIBPOSTPROC_CFLAGS], [$LIBPOSTPROC_LIBS],[
-extern "C" {
-#define __STDC_CONSTANT_MACROS
-#include <libpostproc/postprocess.h>
-}
-
-int main (void) {
-  pp_context *PPContext = pp_get_context(704,480, 0);
-
-  if (!PPContext) return 1;
-  pp_free_context(PPContext);
-  return 0;
-} ])
-
-  if test "$agi_cv_with_postproc" = "yes"; then
-    found_video_provider="yes"
-    AC_DEFINE(WITH_FFMPEGSOURCE, 1, [Enable FFmpegSource2 Video Provider])
-  else
-    with_provider_ffmpegsource="no"
-  fi
-else
-  with_provider_ffmpegsource="no"
-fi
-
-#BOOST_REQUIRE([boost_required_version])
-#BOOST_FIND_HEADER([boost/format.hpp], [found_boost="no"; with_provider_ffmpegsource="no"])
-
-#if test "$found_boost" = "no"; then
-#  AC_MSG_WARN([Boost is required for FFmpegSource support.])
-#fi
-
-AM_CONDITIONAL([HAVE_PROVIDER_FFMPEGSOURCE], [test "$with_provider_ffmpegsource" = "yes"])
-AC_SUBST(LIBPOSTPROC_LIBS)
-AC_SUBST(LIBPOSTPROC_CFLAGS)
-
+AC_SUBST(FFMS_CFLAGS)
 
 
 ###################
@@ -1356,11 +1249,11 @@ AC_DEFINE_UNQUOTED([DEFAULT_PLAYER_AUDIO], ["$default_player_audio"], [Default a
 
 # Set some friendly strings if some of the above aren't detected.
 if test -z "$default_provider_video"; then
-  default_provider_video="NONE (requires ffmpeg)"
+  default_provider_video="NONE"
 fi
 
 if test -z "$default_provider_audio"; then
-  default_provider_audio="NONE (requires ffmpeg)"
+  default_provider_audio="NONE"
 fi
 
 if test -z "$default_provider_subtitle"; then
@@ -1390,7 +1283,6 @@ src/libresrc/Makefile
 src/libauto3/Makefile
 src/libosxutil/Makefile
 universalchardet/Makefile
-libffms/Makefile
 libass/Makefile
 automation/Makefile
 po/Makefile.in
@@ -1433,8 +1325,8 @@ if test -z "$found_video_provider"; then
 * virtual video clip with subtitles overlaid.
 * Currently we only support one video/audio provider on non-Windows
 * systems:
-*  - FFmpeg (libavcodec + libavformat)
-*    * http://ffmpeg.mplayerhq.hu/
+*  - FFmpegSource
+*    * http://code.google.com/p/ffmpegsource/
 ***********************************************************************
   ])
 fi
@@ -1467,12 +1359,8 @@ Audio Players
   PortAudio:             $with_portaudio $portaudio_disabled
   PulseAudio:            $with_pulseaudio $pulseaudio_disabled
 
-A/V Support
-  FFMPEG:                $with_ffmpeg $ffmpeg_disabled
-                         (required for video providers)
-
 A/V Providers
-  FFmpegSource:          $with_provider_ffmpegsource $ffmpegsource_provider_disabled
+  FFmpegSource:          $with_provider_ffms $ffms_provider_disabled
 
 Subtitle Providers:
   libASS                 $with_libass $libass_disabled $libass_default
