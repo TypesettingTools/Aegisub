@@ -275,7 +275,7 @@ KanaTable::~KanaTable()
 
 //////////
 // Insert
-void KanaTable::Insert(wchar_t *hira,wchar_t *kata,wchar_t *hep) {
+void KanaTable::Insert(const wchar_t *hira, const wchar_t *kata, const wchar_t *hep) {
 #ifdef _UNICODE
 	entries.push_back(KanaEntry(hira,kata,hep));
 #endif
