@@ -536,7 +536,7 @@ AM_CONDITIONAL([HAVE_PORTAUDIO], [test "$with_portaudio" != "no"])
 #############
 
 AC_ARG_WITH(pulseaudio,[  --with-pulseaudio       build with PulseAudio audio provider.
-                          (default: no)], [], [with_pulseaudio=no; pulseaudio_disabled="(disabled)"])
+                          (default: auto)], [pulseaudio_disabled="(disabled)"])
 if test "$with_pulseaudio" != "no"; then
   PKG_CHECK_MODULES(LIBPULSE, libpulse >= pulseaudio_required_version, [with_pulseaudio="yes"], [with_pulseaudio="no"])
 fi
@@ -1226,16 +1226,16 @@ AC_DEFINE_UNQUOTED([DEFAULT_PROVIDER_SUBTITLE], ["$default_provider_subtitle"], 
 if ! test -z "$with_player_audio"; then
     default_player_audio="$with_player_audio"
 else
-  if test "$build_linux" = "yes" && test "$with_alsa" = "yes"; then
-    default_player_audio="openal"
-  elif test "$build_darwin" = "yes" && test "$with_openal" = "yes"; then
-    default_player_audio="openal"
-  elif test "$with_portaudio" = "yes"; then
-    default_player_audio="portaudio"
-  elif test "$with_oss" = "yes"; then
-    default_player_audio="oss"
+  if test "$with_alsa" = "yes"; then
+    default_player_audio="alsa"
   elif test "$with_pulseaudio" = "yes"; then
     default_player_audio="pulseaudio"
+  elif test "$with_openal" = "yes"; then
+    default_player_audio="openal"
+  elif test "$with_oss" = "yes"; then
+    default_player_audio="oss"
+  elif test "$with_portaudio" = "yes"; then
+    default_player_audio="portaudio"
   fi
 fi
 AC_DEFINE_UNQUOTED([DEFAULT_PLAYER_AUDIO], ["$default_player_audio"], [Default audio player.])
