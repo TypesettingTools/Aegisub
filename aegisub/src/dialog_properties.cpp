@@ -164,7 +164,7 @@ DialogProperties::DialogProperties (wxWindow *parent)
 	SetSizer(MainSizer);
 	MainSizer->SetSizeHints(this);
 	CenterOnParent();
-	TitleLabel->SetFocus();
+	TitleEdit->SetFocus();
 }
 
 
