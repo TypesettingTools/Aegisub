@@ -28,11 +28,11 @@ SUBDIRS = \
 	$(libauto3) \
 	$(libosxutil_subdir)
 
-AM_CXXFLAGS += -DAEGISUB -Iinclude @CXXFLAGS_OSX@ @WX_CPPFLAGS@ @OPENMP_CXXFLAGS@
+AM_CXXFLAGS += -DAEGISUB -Iinclude @CXXFLAGS_OSX@ @WX_CXXFLAGS@ @OPENMP_CXXFLAGS@ @LIBASS_CFLAGS@
 
 bin_PROGRAMS = aegisub-2.1
 aegisub_2_1_LDADD = libresrc/libresrc.a $(libosxutil_lib)
-aegisub_2_1_CPPFLAGS = @FREETYPE_CFLAGS@
+aegisub_2_1_CXXFLAGS = @FREETYPE_CFLAGS@ $(AM_CXXFLAGS)
 aegisub_2_1_LDFLAGS = @DEBUG_FLAGS@ @PROFILE_FLAGS@ @GL_LIBS@ @PTHREAD_LIBS@ @WX_LIBS@ @ICONV_LIBS@ $(libosxutil_ldflags) @CCMALLOC_LDFLAGS@ @EFENCE_LDFLAGS@
 LIBS += @FREETYPE_LIBS@ @FONTCONFIG_LIBS@ @CCMALLOC_LIBS@
 
@@ -98,7 +98,6 @@ aegisub_2_1_LDADD += libsubtitle_provider.a
 if WITH_LIBASS
 noinst_LIBRARIES += libsubtitle_ass.a
 libsubtitle_ass_a_SOURCES = subtitles_provider_libass.cpp
-libsubtitle_ass_a_CPPFLAGS = @LIBASS_CFLAGS@
 LIBS += @LIBASS_LIBS@
 aegisub_2_1_LDADD += libsubtitle_ass.a
 endif
