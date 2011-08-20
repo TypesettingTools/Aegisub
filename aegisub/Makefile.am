@@ -5,13 +5,8 @@ if HAVE_UNIVCHARDET
 univchardet = universalchardet
 endif
 
-if WITH_LIBASS
-libass = libass
-endif
-
 SUBDIRS = \
 	$(univchardet) \
-    $(libass) \
 	src \
 	automation \
 	po \

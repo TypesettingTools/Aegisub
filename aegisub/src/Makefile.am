@@ -98,9 +98,9 @@ aegisub_2_1_LDADD += libsubtitle_provider.a
 if WITH_LIBASS
 noinst_LIBRARIES += libsubtitle_ass.a
 libsubtitle_ass_a_SOURCES = subtitles_provider_libass.cpp
-libsubtitle_ass_a_CPPFLAGS = @LIBASS_CFLAGS@ @ICONV_CFLAGS@
+libsubtitle_ass_a_CPPFLAGS = @LIBASS_CFLAGS@
 LIBS += @LIBASS_LIBS@
-aegisub_2_1_LDADD += libsubtitle_ass.a @FONTCONFIG_LIBS@
+aegisub_2_1_LDADD += libsubtitle_ass.a
 endif
 
 if HAVE_AUTO4_LUA
@@ -342,7 +342,7 @@ aegisub_2_1_SOURCES = \
 aegisub_2_1_SOURCES += \
 	$(srcdir)/*.h \
 	$(srcdir)/include/aegisub/*.h \
-    $(srcdir)/config/*.h
+	$(srcdir)/config/*.h
 
 noinst_HEADERS = \
 	$(srcdir)/boost/*.hpp \
@@ -352,3 +352,4 @@ noinst_HEADERS = \
 EXTRA_DIST = \
 	auto4_perldata.inc \
 	$(srcdir)/*.hxx
+
