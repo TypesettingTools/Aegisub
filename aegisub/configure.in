@@ -1196,7 +1196,7 @@ AC_ARG_WITH(player-audio, [  --with-player-audio=(alsa|openal|portaudio|pulseaud
 if ! test -z "$with_provider_video"; then
     default_provider_video="$with_provider_video"
 else
-  if test "$with_provider_ffmpegsource" = "yes"; then
+  if test "$with_provider_ffms" = "yes"; then
     default_provider_video="ffmpegsource"
   fi
 fi
@@ -1206,7 +1206,7 @@ AC_DEFINE_UNQUOTED([DEFAULT_PROVIDER_VIDEO], ["$default_provider_video"], [Defau
 if ! test -z "$with_provider_audio"; then
     default_provider_audio="$with_provider_audio"
 else
-  if test "$with_provider_ffmpegsource" = "yes"; then
+  if test "$with_provider_ffms" = "yes"; then
     default_provider_audio="ffmpegsource"
   fi
 fi
