@@ -104,7 +104,6 @@ endif
 
 noinst_LIBRARIES += libsubtitle_provider.a
 libsubtitle_provider_a_SOURCES = subtitles_provider.cpp
-libsubtitle_provider_a_CPPFLAGS = @CSRI_CFLAGS@
 aegisub_2_1_LDADD += libsubtitle_provider.a
 
 if WITH_LIBASS
@@ -113,14 +112,6 @@ libsubtitle_ass_a_SOURCES = subtitles_provider_libass.cpp
 libsubtitle_ass_a_CPPFLAGS = @LIBASS_CFLAGS@ @ICONV_CFLAGS@
 LIBS += @LIBASS_LIBS@
 aegisub_2_1_LDADD += libsubtitle_ass.a @FONTCONFIG_LIBS@
-endif
-
-if WITH_CSRI
-noinst_LIBRARIES += libsubtitle_csri.a
-libsubtitle_csri_a_SOURCES = subtitles_provider_csri.cpp
-libsubtitle_csri_a_CPPFLAGS = @ICONV_CFLAGS@ @CSRI_CFLAGS@
-LIBS += @CSRI_LIBS@
-aegisub_2_1_LDADD += libsubtitle_csri.a @FONTCONFIG_LIBS@
 endif
 
 if HAVE_AUTO4_LUA
