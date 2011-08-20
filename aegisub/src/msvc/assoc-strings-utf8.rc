@@ -342,3 +342,22 @@ BEGIN
 	10109 "Звучне датотеке"
 	10110 "Видео датотеке"
 END
+
+// by doplank
+LANGUAGE LANG_INDONESIAN, SUBLANG_INDONESIAN_INDONESIA
+STRINGTABLE
+BEGIN
+	10000 "Aegisub"
+	10001 "Membuat dan mengedit gaya takarir dengan Aegisub."
+	10101 "Berkas takarir-takarir Aegisub"
+	10102 "Takarir Advanced SSA Aegisub"
+	10103 "Takarir SubStation Alpha Aegisub"
+	10104 "Takarir SubRip Aegisub"
+	10105 "Takarir Teks MPEG-4 Aegisub"
+	10106 "Takarir Matroska Aegisub"
+	10107 "Berkas teks murni Aegisub"
+	10108 "Berkas media Aegisub"
+	10109 "Berkas Audio Aegisub"
+	10110 "Berkas Video Aegisub"
+END
+
