@@ -708,18 +708,6 @@ AC_SUBST(LIBSWSCALE_CFLAGS)
 AC_SUBST(LIBAVUTIL_LIBS)
 AC_SUBST(LIBAVUTIL_CFLAGS)
 
-AC_ARG_WITH(provider-BROKEN-ffmpeg, [  --with-provider-BROKEN-ffmpeg
-                          build with FFMPEG A/V provider. (default: no)]", [with_provider_ffmpeg="yes"])
-
-if test "$agi_cv_with_ffmpeg" = "yes" && test "$with_provider_BROKEN_ffmpeg" = "yes"; then
-  found_video_provider="yes"
-  AC_DEFINE(WITH_FFMPEG, 1, [Enable FFMPEG Video Provider])
-else
-  with_provider_ffmpeg="no"
-fi
-
-
-AM_CONDITIONAL([HAVE_PROVIDER_FFMPEG], [test "$with_provider_ffmpeg" = "yes"])
 
 AC_ARG_WITH(provider-ffmpegsource, [  --without-provider-ffmpegsource
                           build without FFmpegSource A/V provider.
@@ -1309,9 +1297,9 @@ AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE, "$GETTEXT_PACKAGE",
 #   it above.
 ####################################################################
 
-AC_ARG_WITH(provider-video, [  --with-provider-video=(ffmpegsource|ffmpeg)
+AC_ARG_WITH(provider-video, [  --with-provider-video=(ffmpegsource)
                           Default Video Provider. (default: ffmpegsource)])
-AC_ARG_WITH(provider-audio, [  --with-provider-audio=(ffmpegsource|ffmpeg)
+AC_ARG_WITH(provider-audio, [  --with-provider-audio=(ffmpegsource)
                           Default Audio Provider. (default: ffmpegsource)])
 AC_ARG_WITH(player-audio, [  --with-player-audio=(alsa|openal|portaudio|pulseaudio)
                           Default Audio Player (default: Linux/ALSA,
@@ -1323,8 +1311,6 @@ if ! test -z "$with_provider_video"; then
 else
   if test "$with_provider_ffmpegsource" = "yes"; then
     default_provider_video="ffmpegsource"
-  elif test "$with_provider_ffmpeg" = "yes"; then
-    default_provider_video="ffmpeg"
   fi
 fi
 AC_DEFINE_UNQUOTED([DEFAULT_PROVIDER_VIDEO], ["$default_provider_video"], [Default Video Provider.])
@@ -1335,8 +1321,6 @@ if ! test -z "$with_provider_audio"; then
 else
   if test "$with_provider_ffmpegsource" = "yes"; then
     default_provider_audio="ffmpegsource"
-  elif test "$with_provider_ffmpeg" = "yes"; then
-    default_provider_audio="ffmpeg"
   fi
 fi
 AC_DEFINE_UNQUOTED([DEFAULT_PROVIDER_AUDIO], ["$default_provider_audio"], [Default Video Provider.])
@@ -1488,7 +1472,6 @@ A/V Support
                          (required for video providers)
 
 A/V Providers
-  FFMPEG:                $with_provider_ffmpeg (deprecated)
   FFmpegSource:          $with_provider_ffmpegsource $ffmpegsource_provider_disabled
 
 Subtitle Providers:

@@ -497,14 +497,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\audio_provider_lavc.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\audio_provider_lavc.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\audio_provider_manager.h"
 				>
 			</File>
@@ -674,14 +666,6 @@
 			</File>
 			<File
 				RelativePath="..\..\src\gl_wrap.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\lavc_file.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\lavc_file.h"
 				>
 			</File>
 			<File
@@ -1485,14 +1469,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\lavc_keyframes.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\lavc_keyframes.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\video_frame.cpp"
 				>
 			</File>
@@ -1538,14 +1514,6 @@
 			</File>
 			<File
 				RelativePath="..\..\src\video_provider_ffmpegsource.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\video_provider_lavc.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\video_provider_lavc.h"
 				>
 			</File>
 			<File
