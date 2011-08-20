@@ -1495,3 +1495,39 @@ void SubtitlesGrid::SetSelectionFromAbsolute(std::vector<int> &selection) {
 		} else selMap[i] = false;
 	}
 }
+
+
+// Get number of columns in the grid
+int SubtitlesGrid::GetColumnCount() const {
+	return 11;
+}
+
+// Get header texts of the columns
+wxString SubtitlesGrid::GetColumnHeaderText(int column) const {
+	switch (column) {
+		case 0:
+			return _("#"); // line number
+		case 1:
+			return _("L"); // layer number
+		case 2:
+			return _("Start"); // start time
+		case 3:
+			return _("End");   // end time
+		case 4:
+			return _("Style");
+		case 5:
+			return _("Actor");
+		case 6:
+			return _("Effect");
+		case 7:
+			return _("Left");  // left margin
+		case 8:
+			return _("Right"); // right margin
+		case 9:
+			return _("Vert");  // vertical margin
+		case 10:
+			return _("Text");
+		default:
+			return L"";
+	}
+}

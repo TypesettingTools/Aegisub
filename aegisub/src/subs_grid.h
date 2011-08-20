@@ -99,6 +99,10 @@ private:
 	void OnAudioClip(wxCommandEvent &event);
 	void OnShowColMenu(wxCommandEvent &event);
 
+protected:
+	virtual int GetColumnCount() const;
+	virtual wxString GetColumnHeaderText(int column) const;
+
 public:
 	AssFile *ass;
 

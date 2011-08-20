@@ -431,17 +431,9 @@ void BaseGrid::DrawImage(wxDC &dc) {
 
 		// Header
 		if (i == 0) {
-			strings.Add(_("#"));
-			strings.Add(_("L"));
-			strings.Add(_("Start"));
-			strings.Add(_("End"));
-			strings.Add(_("Style"));
-			strings.Add(_("Actor"));
-			strings.Add(_("Effect"));
-			strings.Add(_("Left"));
-			strings.Add(_("Right"));
-			strings.Add(_("Vert"));
-			strings.Add(_("Text"));
+			for (int columnIndex = 0; columnIndex < GetColumnCount(); columnIndex++) {
+				strings.Add(GetColumnHeaderText(columnIndex));
+			}
 			curColor = 1;
 		}
 
@@ -780,7 +772,6 @@ void BaseGrid::SetColumnWidths() {
 	wxClientDC dc(this);
 	dc.SetFont(font);
 	int fw,fh;
-	//dc.GetTextExtent(_T("#TWFfgGhH"), &fw, &fh, NULL, NULL, &font);
 
 	// O(1) widths
 	dc.GetTextExtent(_T("0000"), &fw, &fh, NULL, NULL, &font);
@@ -887,6 +878,15 @@ void BaseGrid::SetColumnWidths() {
 	colWidth[5] = actorLen;
 	colWidth[6] = effectLen;
 	for (int i=0;i<3;i++) colWidth[i+7] = showMargin[i] ? marginLen : 0;
+
+	// Take header text widths into account
+	for (int i = 0; i < GetColumnCount(); i++) {
+		wxString headerText = GetColumnHeaderText(i);
+		dc.GetTextExtent(headerText, &fw, &fh, NULL, NULL, &font);
+		fw += 10;
+		if (colWidth[i] > 0 && fw > colWidth[i])
+			colWidth[i] = fw;
+	}
 
 	// Hide columns
 	for (int i=0;i<10;i++) {

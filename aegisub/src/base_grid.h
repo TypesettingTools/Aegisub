@@ -83,6 +83,11 @@ protected:
 	void ScrollTo(int y);
 	int yPos;
 
+	// these should be pure virtual, but that leads to crashes during construction
+	// (when BaseGrid is being constructed, but SubsGrid hasn't been constructed properly yet)
+	virtual int GetColumnCount() const { return 0; }
+	virtual wxString GetColumnHeaderText(int column) const { return L""; }
+
 public:
 	SubsEditBox *editBox;
 
