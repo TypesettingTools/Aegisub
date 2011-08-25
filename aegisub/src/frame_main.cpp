@@ -1325,6 +1325,12 @@ void FrameMain::SetAccelerators() {
 		entry.push_back(Hotkeys.GetAccelerator(_T("Audio Medusa Enter"),Medusa_Enter));
 	}
 
+	// Remove all invalid accelerators
+	struct AcceleratorInvalid {
+		bool operator() (const wxAcceleratorEntry &ac) { return !ac.IsOk(); }
+	};
+	entry.erase(std::remove_if(entry.begin(), entry.end(), AcceleratorInvalid()), entry.end());
+
 	// Set table
 	wxAcceleratorTable table(entry.size(),&entry[0]);
 	SetAcceleratorTable(table);
