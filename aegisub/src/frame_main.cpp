@@ -1327,7 +1327,7 @@ void FrameMain::SetAccelerators() {
 
 	// Remove all invalid accelerators
 	struct AcceleratorInvalid {
-		bool operator() (const wxAcceleratorEntry &ac) { return !ac.IsOk(); }
+		bool operator() (const wxAcceleratorEntry &ac) { return ac.GetKeyCode() == 0; }
 	};
 	entry.erase(std::remove_if(entry.begin(), entry.end(), AcceleratorInvalid()), entry.end());
 
