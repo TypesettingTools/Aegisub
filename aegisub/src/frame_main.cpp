@@ -602,38 +602,38 @@ void FrameMain::OnCloseWindow (wxCloseEvent &event) {
 }
 
 void FrameMain::OnAutoSave(wxTimerEvent &) try {
-		if (context->ass->loaded && context->ass->IsModified()) {
-			wxFileName origfile(context->ass->filename);
-			wxString path = lagi_wxString(OPT_GET("Path/Auto/Save")->GetString());
-			if (path.IsEmpty()) path = origfile.GetPath();
-			wxFileName dstpath(path);
+	if (context->ass->loaded && context->ass->IsModified()) {
+		wxFileName origfile(context->ass->filename);
+		wxString path = lagi_wxString(OPT_GET("Path/Auto/Save")->GetString());
+		if (path.IsEmpty()) path = origfile.GetPath();
+		wxFileName dstpath(path);
 		if (!dstpath.IsAbsolute()) path = StandardPaths::DecodePathMaybeRelative(path, "?user/");
-			dstpath.AssignDir(path);
-			if (!dstpath.DirExists()) wxMkdir(path);
+		dstpath.AssignDir(path);
+		if (!dstpath.DirExists()) wxMkdir(path);
 
-			wxString name = origfile.GetName();
+		wxString name = origfile.GetName();
 		if (name.empty()) {
-				dstpath.SetFullName("Untitled.AUTOSAVE.ass");
-			}
-			else {
+			dstpath.SetFullName("Untitled.AUTOSAVE.ass");
+		}
+		else {
 			dstpath.SetFullName(name + ".AUTOSAVE.ass");
-			}
+		}
 
-			context->ass->Save(dstpath.GetFullPath(),false,false);
+		context->ass->Save(dstpath.GetFullPath(),false,false);
 
 		StatusTimeout(_("File backup saved as \"") + dstpath.GetFullPath() + "\".");
-		}
 	}
-	catch (const agi::Exception& err) {
-		StatusTimeout(lagi_wxString("Exception when attempting to autosave file: " + err.GetMessage()));
-	}
-	catch (wxString err) {
+}
+catch (const agi::Exception& err) {
+	StatusTimeout(lagi_wxString("Exception when attempting to autosave file: " + err.GetMessage()));
+}
+catch (wxString err) {
 	StatusTimeout("Exception when attempting to autosave file: " + err);
-	}
-	catch (const wchar_t *err) {
+}
+catch (const wchar_t *err) {
 	StatusTimeout("Exception when attempting to autosave file: " + wxString(err));
-	}
-	catch (...) {
+}
+catch (...) {
 	StatusTimeout("Unhandled exception when attempting to autosave file.");
 }
 
