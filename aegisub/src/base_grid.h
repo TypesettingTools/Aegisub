@@ -97,7 +97,7 @@ class BaseGrid : public wxWindow, public BaseSelectionController<AssDialogue> {
 	void OnMouseEvent(wxMouseEvent &event);
 	void OnKeyDown(wxKeyEvent &event);
 
-	void DrawImage(wxDC &dc);
+	void DrawImage(wxDC &dc, bool paint_columns[]);
 	void ScrollTo(int y);
 
 	virtual void OnPopupMenu(bool alternate = false) { }

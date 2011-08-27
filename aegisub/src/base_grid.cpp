@@ -387,8 +387,6 @@ BEGIN_EVENT_TABLE(BaseGrid,wxWindow)
 END_EVENT_TABLE()
 
 void BaseGrid::OnPaint(wxPaintEvent &event) {
-	wxPaintDC dc(this);
-
 	// Get size and pos
 	int w = 0;
 	int h = 0;
@@ -404,14 +402,30 @@ void BaseGrid::OnPaint(wxPaintEvent &event) {
 	}
 	if (!bmp) bmp = new wxBitmap(w,h);
 
+	// Find which columns need to be repainted
+	bool paint_columns[11];
+	memset(paint_columns, 0, sizeof paint_columns);
+	for (wxRegionIterator region(GetUpdateRegion()); region; ++region)
+	{
+		wxRect updrect = region.GetRect();
+		int x = 0;
+		for (size_t i = 0; i < 11; ++i) {
+			if (updrect.x < x + colWidth[i] && updrect.x + updrect.width > x)
+				paint_columns[i] = true;
+			x += colWidth[i];
+		}
+	}
+
 	// Draw bitmap
 	wxMemoryDC bmpDC;
 	bmpDC.SelectObject(*bmp);
-	DrawImage(bmpDC);
+	DrawImage(bmpDC, paint_columns);
+
+	wxPaintDC dc(this);
 	dc.Blit(0,0,w,h,&bmpDC,0,0);
 }
 
-void BaseGrid::DrawImage(wxDC &dc) {
+void BaseGrid::DrawImage(wxDC &dc, bool paint_columns[]) {
 	int w = 0;
 	int h = 0;
 	GetClientSize(&w,&h);
@@ -453,26 +467,26 @@ void BaseGrid::DrawImage(wxDC &dc) {
 	dc.SetPen(*wxTRANSPARENT_PEN);
 
 	// Draw rows
+	wxString strings[11] = {
+		_("#"),
+		_("L"),
+		_("Start"),
+		_("End"),
+		_("Style"),
+		_("Actor"),
+		_("Effect"),
+		_("Left"),
+		_("Right"),
+		_("Vert"),
+		_("Text")
+	};
+
 	for (int i = 0; i < nDraw + 1; i++) {
 		int curRow = i + yPos - 1;
 		int curColor = 0;
 
-		wxArrayString strings;
-		strings.reserve(11);
-
 		// Header
 		if (i == 0) {
-			strings.Add(_("#"));
-			strings.Add(_("L"));
-			strings.Add(_("Start"));
-			strings.Add(_("End"));
-			strings.Add(_("Style"));
-			strings.Add(_("Actor"));
-			strings.Add(_("Effect"));
-			strings.Add(_("Left"));
-			strings.Add(_("Right"));
-			strings.Add(_("Vert"));
-			strings.Add(_("Text"));
 			curColor = 1;
 			dc.SetTextForeground(text_standard);
 		}
@@ -480,54 +494,48 @@ void BaseGrid::DrawImage(wxDC &dc) {
 		// Lines
 		else if (AssDialogue *curDiag = GetDialogue(curRow)) {
 			// Set fields
-			strings.Add(wxString::Format("%i", curRow + 1));
-			strings.Add(wxString::Format("%i", curDiag->Layer));
+			if (paint_columns[0]) strings[0] = wxString::Format("%i", curRow + 1);
+			if (paint_columns[1]) strings[1] = wxString::Format("%i", curDiag->Layer);
 			if (byFrame) {
-				strings.Add(wxString::Format("%i", context->videoController->FrameAtTime(curDiag->Start.GetMS(), agi::vfr::START)));
-				strings.Add(wxString::Format("%i", context->videoController->FrameAtTime(curDiag->End.GetMS(), agi::vfr::END)));
+				if (paint_columns[2]) strings[2] = wxString::Format("%i", context->videoController->FrameAtTime(curDiag->Start.GetMS(), agi::vfr::START));
+				if (paint_columns[3]) strings[3] = wxString::Format("%i", context->videoController->FrameAtTime(curDiag->End.GetMS(), agi::vfr::END));
 			}
 			else {
-				strings.Add(curDiag->Start.GetASSFormated());
-				strings.Add(curDiag->End.GetASSFormated());
+				if (paint_columns[2]) strings[2] = curDiag->Start.GetASSFormated();
+				if (paint_columns[3]) strings[3] = curDiag->End.GetASSFormated();
 			}
-			strings.Add(curDiag->Style);
-			strings.Add(curDiag->Actor);
-			strings.Add(curDiag->Effect);
-			strings.Add(curDiag->GetMarginString(0));
-			strings.Add(curDiag->GetMarginString(1));
-			strings.Add(curDiag->GetMarginString(2));
+			if (paint_columns[4]) strings[4] = curDiag->Style;
+			if (paint_columns[5]) strings[5] = curDiag->Actor;
+			if (paint_columns[6]) strings[6] = curDiag->Effect;
+			if (paint_columns[7]) strings[7] = curDiag->GetMarginString(0);
+			if (paint_columns[8]) strings[8] = curDiag->GetMarginString(1);
+			if (paint_columns[9]) strings[9] = curDiag->GetMarginString(2);
 
 			// Set text
-			int mode = OPT_GET("Subtitle/Grid/Hide Overrides")->GetInt();
-			wxString value;
+			if (paint_columns[10]) {
+				strings[10].clear();
+				int mode = OPT_GET("Subtitle/Grid/Hide Overrides")->GetInt();
 
-			// Hidden overrides
-			if (mode == 1 || mode == 2) {
-				wxString replaceWith = lagi_wxString(OPT_GET("Subtitle/Grid/Hide Overrides Char")->GetString());
-				size_t textlen = curDiag->Text.size();
-				value.reserve(textlen);
-				bool in_comment = false;
-				for (size_t j = 0; j < textlen; ++j) {
-					wxChar curChar = curDiag->Text[j];
-					if (curChar == '{') {
-						if (!in_comment && mode == 1) value += replaceWith;
-						in_comment = true;
+				// Hidden overrides
+				if (mode == 1 || mode == 2) {
+					wxString replaceWith = lagi_wxString(OPT_GET("Subtitle/Grid/Hide Overrides Char")->GetString());
+					strings[10].reserve(curDiag->Text.size());
+					size_t start = 0, pos;
+					while ((pos = curDiag->Text.find('{', start)) != wxString::npos) {
+						strings[10] += curDiag->Text.Mid(start, pos - start);
+						strings[10] += replaceWith;
+						start = curDiag->Text.find('}', pos);
+						if (start != wxString::npos) ++start;
 					}
-					else if (in_comment && curChar == '}') {
-						in_comment = false;
-					}
-					else if (!in_comment) {
-						value += curChar;
-					}
+					strings[10] += curDiag->Text.Mid(start);
 				}
+
+				// Show overrides
+				else strings[10] = curDiag->Text;
+
+				// Cap length and set text
+				if (strings[10].size() > 512) strings[10] = strings[10].Left(512) + "...";
 			}
-
-			// Show overrides
-			else value = curDiag->Text;
-
-			// Cap length and set text
-			if (value.size() > 512) value = value.Left(512) + "...";
-			strings.Add(value);
 
 			// Set color
 			curColor = 0;
@@ -548,7 +556,7 @@ void BaseGrid::DrawImage(wxDC &dc) {
 			}
 		}
 		else {
-			strings.resize(11, "?");
+			assert(false);
 		}
 
 		// Draw row background color
@@ -563,13 +571,19 @@ void BaseGrid::DrawImage(wxDC &dc) {
 		for (int j = 0; j < 11; j++) {
 			if (colWidth[j] == 0) continue;
 
-			bool isCenter = !(j == 4 || j == 5 || j == 6 || j == 10);
+			if (paint_columns[j]) {
+				wxSize ext = dc.GetTextExtent(strings[j]);
 
-			wxRect cur(dx+4,dy,colWidth[j]-6,lineHeight);
-			dc.DestroyClippingRegion();
-			dc.SetClippingRegion(cur);
+				int left = dx + 4;
+				int top = dy + (lineHeight - ext.GetHeight()) / 2;
 
-			dc.DrawLabel(strings[j], cur, isCenter ? wxALIGN_CENTER : (wxALIGN_CENTER_VERTICAL | wxALIGN_LEFT));
+				// Centered columns
+				if (!(j == 4 || j == 5 || j == 6 || j == 10)) {
+					left += (colWidth[j] - 6 - ext.GetWidth()) / 2;
+				}
+
+				dc.DrawText(strings[j], left, top);
+			}
 			dx += colWidth[j];
 		}
 
