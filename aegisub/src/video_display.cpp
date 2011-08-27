@@ -40,11 +40,12 @@
 #ifndef AGI_PRE
 #include <algorithm>
 
+#include <wx/combobox.h>
 #include <wx/clipbrd.h>
 #include <wx/dataobj.h>
 #include <wx/dcclient.h>
-#include <wx/glcanvas.h>
 #include <wx/menu.h>
+#include <wx/textctrl.h>
 #include <wx/toolbar.h>
 #endif
 

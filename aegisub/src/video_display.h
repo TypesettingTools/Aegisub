@@ -37,13 +37,11 @@
 
 #ifndef AGI_PRE
 #include <list>
-#include <memory>
 
 #include <wx/glcanvas.h>
-#include <wx/combobox.h>
-#include <wx/textctrl.h>
 #endif
 
+#include <libaegisub/scoped_ptr.h>
 #include <libaegisub/signal.h>
 
 // Prototypes
@@ -52,6 +50,8 @@ class VideoBox;
 class VideoContext;
 class VideoOutGL;
 class IVisualTool;
+class wxComboBox;
+class wxTextCtrl;
 class wxToolBar;
 
 namespace agi {
@@ -96,70 +96,21 @@ class VideoDisplay : public wxGLCanvas {
 	/// The height of the video in screen pixels
 	int viewport_height;
 
-	/// @brief Draw an overscan mask
-	/// @param sizeH  The amount of horizontal overscan on one side
-	/// @param sizeV  The amount of vertical overscan on one side
-	/// @param colour The color of the mask
-	/// @param alpha  The alpha of the mask
-	void DrawOverscanMask(int sizeH, int sizeV, wxColor color, double alpha) const;
-
-	/// Upload the image for the current frame to the video card
-	void UploadFrameData(FrameReadyEvent&);
-
-	/// @brief Key event handler
-	/// @param event 
-	void OnKeyDown(wxKeyEvent &event);
-	/// @brief Mouse event handler
-	/// @param event 
-	void OnMouseEvent(wxMouseEvent& event);
-
-	/// @brief Recalculate video positioning and scaling when the available area or zoom changes
-	/// @param event
-	void OnSizeEvent(wxSizeEvent &event);
-
-	/// @brief Copy coordinates of the mouse to the clipboard
-	void OnCopyCoords(wxCommandEvent &);
-	/// @brief Copy the currently display frame to the clipboard, with subtitles
-	void OnCopyToClipboard(wxCommandEvent &);
-	/// @brief Save the currently display frame to a file, with subtitles
-	void OnSaveSnapshot(wxCommandEvent &);
-	/// @brief Copy the currently display frame to the clipboard, without subtitles
-	void OnCopyToClipboardRaw(wxCommandEvent &);
-	/// @brief Save the currently display frame to a file, without subtitles
-	void OnSaveSnapshotRaw(wxCommandEvent &);
-
 	/// The current zoom level, where 1.0 = 100%
 	double zoomValue;
 
 	/// The video renderer
-	std::auto_ptr<VideoOutGL> videoOut;
+	agi::scoped_ptr<VideoOutGL> videoOut;
 
 	/// The active visual typesetting tool
-	std::auto_ptr<IVisualTool> tool;
+	agi::scoped_ptr<IVisualTool> tool;
 	/// The current tool's ID
 	int activeMode;
 	/// The toolbar used by individual typesetting tools
 	wxToolBar* toolBar;
 
 	/// The OpenGL context for this display
-	std::auto_ptr<wxGLContext> glContext;
-
-	/// @brief Initialize the gl context and set the active context to this one
-	/// @return Could the context be set?
-	bool InitContext();
-
-	/// @brief Set this video display to the given frame
-	/// @frameNumber The desired frame number
-	void SetFrame(int frameNumber);
-
-	void OnVideoOpen();
-	void OnCommit(int type);
-
-	void OnMode(const wxCommandEvent &event);
-	void SetMode(int mode);
-	/// @brief Switch the active tool to a new object of the specified class
-	/// @param T The class of the new visual typesetting tool
-	template <class T> void SetTool();
+	agi::scoped_ptr<wxGLContext> glContext;
 
 	/// The current script width
 	int scriptW;
@@ -177,6 +128,32 @@ class VideoDisplay : public wxGLCanvas {
 	/// Whether the display can be freely resized by the user
 	bool freeSize;
 
+	/// @brief Draw an overscan mask
+	/// @param sizeH  The amount of horizontal overscan on one side
+	/// @param sizeV  The amount of vertical overscan on one side
+	/// @param colour The color of the mask
+	/// @param alpha  The alpha of the mask
+	void DrawOverscanMask(int sizeH, int sizeV, wxColor color, double alpha) const;
+
+	/// Upload the image for the current frame to the video card
+	void UploadFrameData(FrameReadyEvent&);
+
+	/// @brief Initialize the gl context and set the active context to this one
+	/// @return Could the context be set?
+	bool InitContext();
+
+	/// @brief Set this video display to the given frame
+	/// @frameNumber The desired frame number
+	void SetFrame(int frameNumber);
+
+	void OnVideoOpen();
+	void OnCommit(int type);
+
+	void SetMode(int mode);
+	/// @brief Switch the active tool to a new object of the specified class
+	/// @param T The class of the new visual typesetting tool
+	template <class T> void SetTool();
+
 	/// @brief Set the cursor to either default or blank
 	/// @param show Whether or not the cursor should be visible
 	void ShowCursor(bool show);
@@ -184,6 +161,26 @@ class VideoDisplay : public wxGLCanvas {
 	void UpdateSize(int arType = -1, double arValue = -1.);
 	/// @brief Set the zoom level to that indicated by the dropdown
 	void SetZoomFromBox(wxCommandEvent&);
+
+	/// @brief Key event handler
+	void OnKeyDown(wxKeyEvent &event);
+	/// @brief Mouse event handler
+	void OnMouseEvent(wxMouseEvent& event);
+	/// @brief Recalculate video positioning and scaling when the available area or zoom changes
+	void OnSizeEvent(wxSizeEvent &event);
+	void OnMode(const wxCommandEvent &event);
+
+	/// @brief Copy coordinates of the mouse to the clipboard
+	void OnCopyCoords(wxCommandEvent &);
+	/// @brief Copy the currently display frame to the clipboard, with subtitles
+	void OnCopyToClipboard(wxCommandEvent &);
+	/// @brief Save the currently display frame to a file, with subtitles
+	void OnSaveSnapshot(wxCommandEvent &);
+	/// @brief Copy the currently display frame to the clipboard, without subtitles
+	void OnCopyToClipboardRaw(wxCommandEvent &);
+	/// @brief Save the currently display frame to a file, without subtitles
+	void OnSaveSnapshotRaw(wxCommandEvent &);
+
 public:
 	/// @brief Constructor
 	VideoDisplay(
