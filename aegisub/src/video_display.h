@@ -209,5 +209,10 @@ public:
 	/// @param y y coordinate; in/out
 	void FromScriptCoords(int *x, int *y) const;
 
+	/// Get the last seen position of the mouse in screen coordinates
+	/// @param[out] x x coordinate
+	/// @param[out] y y coordinate
+	void GetMousePosition(int *x, int *y) const;
+
 	DECLARE_EVENT_TABLE()
 };

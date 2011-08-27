@@ -565,4 +565,7 @@ void VideoDisplay::OnCopyCoords(wxCommandEvent &) {
 		wxTheClipboard->SetData(new wxTextDataObject(wxString::Format(L"%i,%i",x,y)));
 		wxTheClipboard->Close();
 	}
+void VideoDisplay::GetMousePosition(int *x, int *y) const {
+	*x = video.x;
+	*y = video.y;
 }

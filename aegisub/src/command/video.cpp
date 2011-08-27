@@ -225,6 +225,24 @@ struct video_close : public validator_video_loaded {
 	}
 };
 
+/// Copy the current coordinates of the mouse over the video to the clipboard.
+struct video_copy_coordinates : public validator_video_loaded {
+	CMD_NAME("video/copy_coordinates")
+	STR_MENU("Copy coordinates to Clipboard")
+	STR_DISP("Copy coordinates to Clipboard")
+	STR_HELP("Copy the current coordinates of the mouse over the video to the clipboard.")
+
+	void operator()(agi::Context *c) {
+		if (wxTheClipboard->Open()) {
+			int x, y;
+			c->videoBox->videoDisplay->GetMousePosition(&x, &y);
+			c->videoBox->videoDisplay->ToScriptCoords(&x, &y);
+			wxTheClipboard->SetData(new wxTextDataObject(wxString::Format("%d,%d", x, y)));
+			wxTheClipboard->Close();
+		}
+	}
+};
+
 /// Detach video, displaying it in a separate Window.
 struct video_detach : public validator_video_loaded {
 	CMD_NAME("video/detach")
@@ -276,6 +294,36 @@ struct video_focus_seek : public validator_video_loaded {
 		else {
 			c->previousFocus = curFocus;
 			c->videoBox->videoSlider->SetFocus();
+		}
+	}
+};
+
+/// Copy the current video frame to the clipboard, with subtitles
+struct video_frame_copy : public validator_video_loaded {
+	CMD_NAME("video/frame/copy")
+	STR_MENU("Copy image to Clipboard")
+	STR_DISP("Copy image to Clipboard")
+	STR_HELP("Copy the currently displayed frame to the clipboard.")
+
+	void operator()(agi::Context *c) {
+		if (wxTheClipboard->Open()) {
+			wxTheClipboard->SetData(new wxBitmapDataObject(wxBitmap(c->videoController->GetFrame(c->videoController->GetFrameN())->GetImage(),24)));
+			wxTheClipboard->Close();
+		}
+	}
+};
+
+/// Copy the current video frame to the clipboard, without subtitles
+struct video_frame_copy_raw : public validator_video_loaded {
+	CMD_NAME("video/frame/copy/raw")
+	STR_MENU("Copy image to Clipboard (no subtitles)")
+	STR_DISP("Copy image to Clipboard (no subtitles)")
+	STR_HELP("Copy the currently displayed frame to the clipboard, without the subtitles.")
+
+	void operator()(agi::Context *c) {
+		if (wxTheClipboard->Open()) {
+			wxTheClipboard->SetData(new wxBitmapDataObject(wxBitmap(c->videoController->GetFrame(c->videoController->GetFrameN(), true)->GetImage(),24)));
+			wxTheClipboard->Close();
 		}
 	}
 };
@@ -424,6 +472,30 @@ struct video_frame_prev_large : public validator_video_loaded {
 		c->videoController->JumpToFrame(
 			c->videoController->GetFrameN() -
 			OPT_GET("Video/Slider/Fast Jump Step")->GetInt());
+	}
+};
+
+/// Save the current video frame, with subtitles (if any)
+struct video_frame_save : public validator_video_loaded {
+	CMD_NAME("video/frame/save")
+	STR_MENU("Save PNG snapshot")
+	STR_DISP("Save PNG snapshot")
+	STR_HELP("Save the currently displayed frame to a PNG file in the video's directory.")
+
+	void operator()(agi::Context *c) {
+		c->videoController->SaveSnapshot(false);
+	}
+};
+
+/// Save the current video frame, without subtitles
+struct video_frame_save_raw : public validator_video_loaded {
+	CMD_NAME("video/frame/save/raw")
+	STR_MENU("Save PNG snapshot (no subtitles)")
+	STR_DISP("Save PNG snapshot (no subtitles)")
+	STR_HELP("Save the currently displayed frame without the subtitles to a PNG file in the video's directory.")
+
+	void operator()(agi::Context *c) {
+		c->videoController->SaveSnapshot(true);
 	}
 };
 
@@ -669,9 +741,12 @@ namespace cmd {
 		reg(new video_aspect_full);
 		reg(new video_aspect_wide);
 		reg(new video_close);
+		reg(new video_copy_coordinates);
 		reg(new video_detach);
 		reg(new video_details);
 		reg(new video_focus_seek);
+		reg(new video_frame_copy);
+		reg(new video_frame_copy_raw);
 		reg(new video_frame_next);
 		reg(new video_frame_next_boundary);
 		reg(new video_frame_next_keyframe);
@@ -680,6 +755,8 @@ namespace cmd {
 		reg(new video_frame_prev_boundary);
 		reg(new video_frame_prev_keyframe);
 		reg(new video_frame_prev_large);
+		reg(new video_frame_save);
+		reg(new video_frame_save_raw);
 		reg(new video_jump);
 		reg(new video_jump_end);
 		reg(new video_jump_start);
