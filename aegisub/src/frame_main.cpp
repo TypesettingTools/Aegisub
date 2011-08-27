@@ -239,24 +239,6 @@ FrameMain::~FrameMain () {
 	SubsGrid->Destroy();
 }
 
-void FrameMain::cmd_call(wxCommandEvent& event) {
-	int id = event.GetId();
-	LOG_D("event/select") << "Id: " << id;
-	if (id < cmd::count())
-		cmd::call(context.get(), id);
-}
-
-void FrameMain::OnMenuOpen(wxMenuEvent &event) {
-	if (wxMenu *menu = event.GetMenu()) {
-		wxMenuItemList& items = menu->GetMenuItems();
-		for (wxMenuItemList::iterator it = items.begin(); it != items.end(); ++it) {
-			if (wxMenu *submenu = (*it)->GetSubMenu()) {
-				submenu->GetEventHandler()->QueueEvent(event.Clone());
-			}
-		}
-	}
-}
-
 /// @brief Initialize toolbar 
 void FrameMain::InitToolbar () {
 	wxSystemOptions::SetOption("msw.remap", 0);

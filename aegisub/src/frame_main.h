@@ -81,7 +81,6 @@ class FrameMain: public wxFrame {
     void Freeze(void) {}
     void Thaw(void) {}
 #endif
-	void cmd_call(wxCommandEvent& event);
 
 	bool showVideo;       ///< Is the video display shown?
 	bool showAudio;       ///< Is the audio display shown?
@@ -104,7 +103,6 @@ class FrameMain: public wxFrame {
 	void UpdateTitle();
 
 	void OnKeyDown(wxKeyEvent &event);
-	void OnMenuOpen (wxMenuEvent &event);
 
 	void OnAudioBoxResize(wxSashEvent &event);
 	/// @brief Autosave the currently open file, if any
@@ -125,7 +123,6 @@ class FrameMain: public wxFrame {
 
 	void OnSubtitlesOpen();
 	void OnSubtitlesSave();
-
 
 	SubtitlesGrid *SubsGrid; ///< The subtitle editing area
 	SubsEditBox *EditBox;    ///< The subtitle editing textbox
