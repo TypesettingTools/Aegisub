@@ -152,7 +152,7 @@ void VideoContext::Reset() {
 void VideoContext::SetContext(agi::Context *context) {
 	this->context = context;
 	context->ass->AddCommitListener(&VideoContext::OnSubtitlesCommit, this);
-	context->ass->AddCommitListener(&VideoContext::OnSubtitlesSave, this);
+	context->ass->AddFileSaveListener(&VideoContext::OnSubtitlesSave, this);
 }
 
 void VideoContext::SetVideo(const wxString &filename) {
