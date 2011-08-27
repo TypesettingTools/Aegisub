@@ -143,7 +143,7 @@ namespace {
 					}
 					if (hotkeys.size()) tooltip += ")";
 
-					AddTool(TOOL_ID_BASE + commands.size(), command->StrDisplay(), icon, tooltip, kind);
+					AddTool(TOOL_ID_BASE + commands.size(), command->StrDisplay(context), icon, tooltip, kind);
 
 					commands.push_back(command);
 					needs_onidle = needs_onidle || flags != cmd::COMMAND_NORMAL;

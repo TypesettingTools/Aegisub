@@ -195,9 +195,6 @@ bool AegisubApp::OnInit() {
 	// Init icons.
 	icon::icon_init();
 
-	// Generate menus.
-	menu::menu = new menu::Menu();
-
 	// Install assertion handler
 //	wxSetAssertHandler(wxAssertHandler);
 
@@ -312,10 +309,12 @@ bool AegisubApp::OnInit() {
 		return false;
 	}
 
+#ifndef _DEBUG
 	catch (...) {
 		wxMessageBox(_T("Unhandled exception"),_T("Fatal error while initializing"));
 		return false;
 	}
+#endif
 
 	StartupLog(_T("Initialization complete"));
 	return true;
@@ -334,7 +333,6 @@ int AegisubApp::OnExit() {
 	delete config::mru;
 	delete agi::hotkey::hotkey;
 	delete config::path;
-	delete menu::menu;
 	cmd::clear();
 
 #ifdef WITH_AUTOMATION

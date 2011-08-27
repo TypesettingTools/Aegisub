@@ -99,7 +99,6 @@ class FrameMain: public wxFrame {
 
 	void InitToolbar();
 	void InitContents();
-	void InitMenu();
 
 	bool LoadList(wxArrayString list);
 	void UpdateTitle();
@@ -112,14 +111,10 @@ class FrameMain: public wxFrame {
 	void OnAutoSave(wxTimerEvent &event);
 	void OnStatusClear(wxTimerEvent &event);
 	void OnCloseWindow (wxCloseEvent &event);
-	/// @brief General handler for all Automation-generated menu items
-	void OnAutomationMacro(wxCommandEvent &event);
 
 	/// Close the currently open subs, asking the user if they want to save if there are unsaved changes
 	/// @param enableCancel Should the user be able to cancel the close?
 	int TryToCloseSubs(bool enableCancel=true);
-
-	void RebuildRecentList(const char *root_command, const char *mru_name);
 
 	// AudioControllerAudioEventListener implementation
 	void OnAudioOpen(AudioProvider *provider);

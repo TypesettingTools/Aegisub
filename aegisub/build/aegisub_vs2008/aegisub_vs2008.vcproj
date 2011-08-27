@@ -1916,10 +1916,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\command\menu_.cpp"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\command\recent.cpp"
 				>
 			</File>

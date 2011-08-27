@@ -134,7 +134,7 @@ void SubtitlesGrid::OnCommand(wxCommandEvent& event) {
 
 static inline void append_command(wxMenu &menu, const char *name, const agi::Context *context) {
 	cmd::Command *c = cmd::get(name);
-	menu.Append(cmd::id(name), c->StrMenu(), c->StrHelp())->Enable(c->Validate(context));
+	menu.Append(cmd::id(name), c->StrMenu(context), c->StrHelp())->Enable(c->Validate(context));
 }
 
 /// @brief Popup menu 

@@ -37,8 +37,8 @@ DEFINE_SIMPLE_EXCEPTION_NOINNER(CommandIconNone, CommandError, "command/icon")
 DEFINE_SIMPLE_EXCEPTION_NOINNER(CommandIconInvalid, CommandError, "command/icon/invalid")
 
 #define CMD_NAME(a) const char* name() { return a; }
-#define STR_MENU(a) wxString StrMenu() const { return a; }
-#define STR_DISP(a) wxString StrDisplay() const { return a; }
+#define STR_MENU(a) wxString StrMenu(const agi::Context *) const { return a; }
+#define STR_DISP(a) wxString StrDisplay(const agi::Context *) const { return a; }
 #define STR_HELP(a) wxString StrHelp() const { return a; }
 #define CMD_TYPE(a) int Type() const { using namespace cmd; return a; }
 
@@ -85,10 +85,15 @@ namespace cmd {
 	/// Holds an individual Command
 	class Command {
 	public:
-		virtual const char* name()=0;				///< Command name.
-		virtual wxString StrMenu() const=0;			///< String for menu purposes including accelerators.
-		virtual wxString StrDisplay() const=0;		///< Plain string for display purposes.
-		virtual wxString StrHelp() const=0;			///< Short help string descripting the command purpose.
+		/// Command name
+		virtual const char* name()=0;
+		/// String for menu purposes including accelerators, but not hotkeys
+		virtual wxString StrMenu(const agi::Context *) const=0;
+		/// Plain string for display purposes; should normally be the same as StrMenu
+		/// but without accelerators
+		virtual wxString StrDisplay(const agi::Context *) const=0;
+		/// Short help string descripting the command purpose.
+		virtual wxString StrHelp() const=0;
 
 		/// Get this command's type flags
 		/// @return Bitmask of CommandFlags

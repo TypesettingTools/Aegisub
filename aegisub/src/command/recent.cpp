@@ -57,9 +57,9 @@ namespace {
 /// @{
 
 COMMAND_GROUP(recent_audio, "recent/audio", "Recent", "Recent", "Open recent audio.");
-COMMAND_GROUP(recent_keyframe, "recent/keyframe", "Recent", "Recent", "Open recent keyframes.");
+COMMAND_GROUP(recent_keyframes, "recent/keyframe", "Recent", "Recent", "Open recent keyframes.");
 COMMAND_GROUP(recent_subtitle, "recent/subtitle", "Recent", "Recent", "Open recent subtitles.");
-COMMAND_GROUP(recent_timecode, "recent/timecode", "Recent", "Recent", "Open recent timecodes.");
+COMMAND_GROUP(recent_timecodes, "recent/timecodes", "Recent", "Recent", "Open recent timecodes.");
 COMMAND_GROUP(recent_video, "recent/video", "Recent", "Recent", "Open recent video.");
 
 struct recent_audio_entry : public Command {
@@ -73,8 +73,8 @@ struct recent_audio_entry : public Command {
 	}
 };
 
-struct recent_keyframe_entry : public Command {
-	CMD_NAME("recent/keyframe/")
+struct recent_keyframes_entry : public Command {
+	CMD_NAME("recent/keyframes/")
 	STR_MENU("Recent")
 	STR_DISP("Recent")
 	STR_HELP("Open recent keyframes.")
@@ -95,8 +95,8 @@ struct recent_subtitle_entry : public Command {
 	}
 };
 
-struct recent_timecode_entry : public Command {
-	CMD_NAME("recent/timecode/")
+struct recent_timecodes_entry : public Command {
+	CMD_NAME("recent/timecodes/")
 	STR_MENU("Recent")
 	STR_DISP("Recent")
 	STR_HELP("Open recent timecodes.")
@@ -141,17 +141,17 @@ public:
 namespace cmd {
 	void init_recent() {
 		reg(new recent_audio);
-		reg(new recent_keyframe);
+		reg(new recent_keyframes);
 		reg(new recent_subtitle);
-		reg(new recent_timecode);
+		reg(new recent_timecodes);
 		reg(new recent_video);
 
 		/// @todo 16 is an implementation detail that maybe needs to be exposed
 		for (int i = 0; i < 16; ++i) {
 			reg(new mru_wrapper<recent_audio_entry>(i));
-			reg(new mru_wrapper<recent_keyframe_entry>(i));
+			reg(new mru_wrapper<recent_keyframes_entry>(i));
 			reg(new mru_wrapper<recent_subtitle_entry>(i));
-			reg(new mru_wrapper<recent_timecode_entry>(i));
+			reg(new mru_wrapper<recent_timecodes_entry>(i));
 			reg(new mru_wrapper<recent_video_entry>(i));
 		}
 	}

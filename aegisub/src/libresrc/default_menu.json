@@ -1,580 +1,175 @@
 {
-	"main" : [
-		{
-			"type" : 4,
-			"command" : "file",
-			"contents" : [
-				{
-					"type" : 1,
-					"command" : "subtitle/new"
-				},
-				{
-					"type" : 1,
-					"command" : "subtitle/open"
-				},
-				{
-					"type" : 1,
-					"command" : "subtitle/open/charset"
-				},
-				{
-					"type" : 1,
-					"command" : "subtitle/open/video"
-				},
-				{
-					"type" : 1,
-					"command" : "subtitle/save"
-				},
-				{
-					"type" : 1,
-					"command" : "subtitle/save/as"
-				},
-				{
-					"type" : 1,
-					"command" : "tool/export"
-				},
-				{
-					"type" : 5,
-					"command" : "recent/subtitle"
-				},
-				{
-					"type" : 100
-				},
-				{
-					"type" : 1,
-					"command" : "subtitle/properties"
-				},
-				{
-					"type" : 1,
-					"command" : "subtitle/attachment"
-				},
-				{
-					"type" : 1,
-					"command" : "tool/font_collector"
-				},
-				{
-					"type" : 100
-				},
-				{
-					"type" : 1,
-					"command" : "app/new_window"
-				},
-				{
-					"type" : 1,
-					"command" : "app/exit"
-				}
-			]
-		},
-		{
-			"type" : 4,
-			"command" : "edit",
-			"contents" : [
-				{
-					"type" : 1,
-					"command" : "edit/undo"
-				},
-				{
-					"type" : 1,
-					"command" : "edit/redo"
-				},
-				{
-					"type" : 100
-				},
-				{
-					"type" : 1,
-					"command" : "edit/line/cut"
-				},
-				{
-					"type" : 1,
-					"command" : "edit/line/copy"
-				},
-				{
-					"type" : 1,
-					"command" : "edit/line/paste"
-				},
-				{
-					"type" : 1,
-					"command" : "edit/line/paste/over"
-				},
-				{
-					"type" : 100
-				},
-				{
-					"type" : 1,
-					"command" : "subtitle/find"
-				},
-				{
-					"type" : 1,
-					"command" : "subtitle/find/next"
-				},
-				{
-					"type" : 1,
-					"command" : "edit/search_replace"
-				}
-			]
-		},
-		{
-			"type" : 4,
-			"command" : "subtitle",
-			"contents" : [
-				{
-					"type" : 1,
-					"command" : "tool/style/manager"
-				},
-				{
-					"type" : 1,
-					"command" : "tool/style/assistant"
-				},
-				{
-					"type" : 1,
-					"command" : "tool/translation_assistant"
-				},
-				{
-					"type" : 1,
-					"command" : "tool/resampleres"
-				},
-				{
-					"type" : 1,
-					"command" : "subtitle/spellcheck"
-				},
-				{
-					"type" : 100
-				},
-				{
-					"type" : 1,
-					"command" : "tool/assdraw"
-				},
-				{
-					"type" : 4,
-					"command" : "insert lines",
-					"contents" : [
-						{
-							"type" : 1,
-							"command" : "subtitle/insert/before"
-						},
-						{
-							"type" : 1,
-							"command" : "subtitle/insert/after"
-						},
-						{
-							"type" : 1,
-							"command" : "subtitle/insert/before/videotime"
-						},
-						{
-							"type" : 1,
-							"command" : "subtitle/insert/after/videotime"
-						}
-					]
-				},
-				{
-					"type" : 1,
-					"command" : "edit/line/duplicate"
-				},
-				{
-					"type" : 1,
-					"command" : "edit/line/duplicate/shift"
-				},
-				{
-					"type" : 1,
-					"command" : "edit/line/delete"
-				},
-				{
-					"type" : 100
-				},
-				{
-					"type" : 4,
-					"command" : "join lines",
-					"contents" : [
-						{
-							"type" : 1,
-							"command" : "edit/line/join/concatenate"
-						},
-						{
-							"type" : 1,
-							"command" : "edit/line/join/keep_first"
-						},
-						{
-							"type" : 1,
-							"command" : "edit/line/join/as_karaoke"
-						}
-					]
-				},
-				{
-					"type" : 1,
-					"command" : "edit/line/recombine"
-				},
-				{
-					"type" : 1,
-					"command" : "edit/line/split/by_karaoke"
-				},
-				{
-					"type" : 100
-				},
-				{
-					"type" : 4,
-					"command" : "sort lines",
-					"contents" : [
-						{
-							"type" : 1,
-							"command" : "time/sort/start"
-						},
-						{
-							"type" : 1,
-							"command" : "time/sort/end"
-						},
-						{
-							"type" : 1,
-							"command" : "time/sort/style"
-						}
-					]
-				},
-				{
-					"type" : 1,
-					"command" : "edit/line/swap"
-				},
-				{
-					"type" : 1,
-					"command" : "tool/line/select"
-				}
-			]
-		},
-		{
-			"type" : 4,
-			"command" : "timing",
-			"contents" : [
-				{
-					"type" : 1,
-					"command" : "time/shift"
-				},
-				{
-					"type" : 1,
-					"command" : "tool/time/postprocess"
-				},
-				{
-					"type" : 1,
-					"command" : "tool/time/kanji"
-				},
-				{
-					"type" : 100
-				},
-				{
-					"type" : 1,
-					"command" : "time/snap/start_video"
-				},
-				{
-					"type" : 1,
-					"command" : "time/snap/end_video"
-				},
-				{
-					"type" : 1,
-					"command" : "time/snap/scene"
-				},
-				{
-					"type" : 1,
-					"command" : "time/frame/current"
-				},
-				{
-					"type" : 100
-				},
-				{
-					"type" : 4,
-					"command" : "make times continuous",
-					"contents" : [
-						{
-							"type" : 1,
-							"command" : "time/continuous/start"
-						},
-						{
-							"type" : 1,
-							"command" : "time/continuous/end"
-						}
-					]
-				}
-			]
-		},
-
-		{
-			"type" : 4,
-			"command" : "video",
-			"contents" : [
-				{
-					"type" : 1,
-					"command" : "video/open"
-				},
-				{
-					"type" : 1,
-					"command" : "video/close"
-				},
-				{
-					"type" : 5,
-					"command" : "recent/video"
-				},
-				{
-					"type" : 1,
-					"command" : "video/open/dummy"
-				},
-				{
-					"type" : 1,
-					"command" : "video/details"
-				},
-				{
-					"type" : 100
-				},
-				{
-					"type" : 1,
-					"command" : "timecode/open"
-				},
-				{
-					"type" : 1,
-					"command" : "timecode/save"
-				},
-				{
-					"type" : 1,
-					"command" : "timecode/close"
-				},
-				{
-					"type" : 5,
-					"command" : "recent/timecode"
-				},
-				{
-					"type" : 100
-				},
-				{
-					"type" : 1,
-					"command" : "keyframe/open"
-				},
-				{
-					"type" : 1,
-					"command" : "keyframe/save"
-				},
-				{
-					"type" : 1,
-					"command" : "keyframe/close"
-				},
-				{
-					"type" : 5,
-					"command" : "recent/keyframe"
-				},
-				{
-					"type" : 100
-				},
-				{
-					"type" : 1,
-					"command" : "video/detach"
-				},
-				{
-					"type" : 4,
-					"command" : "set zoom",
-					"contents" : [
-						{
-							"type" : 1,
-							"command" : "video/zoom/50"
-						},
-						{
-							"type" : 1,
-							"command" : "video/zoom/100"
-						},
-						{
-							"type" : 1,
-							"command" : "video/zoom/200"
-						}
-					]
-				},
-				{
-				"type" : 4,
-				"command" : "override ar",
-					"contents" : [
-						{
-							"type" : 2,
-							"command" : "video/aspect/default"
-						},
-						{
-							"type" : 2,
-							"command" : "video/aspect/full"
-						},
-						{
-							"type" : 2,
-							"command" : "video/aspect/wide"
-						},
-						{
-							"type" : 2,
-							"command" : "video/aspect/cinematic"
-						},
-						{
-							"type" : 2,
-							"command" : "video/aspect/custom"
-						}
-					]
-				},
-				{
-					"type" : 2,
-					"command" : "video/show_overscan"
-				},
-				{
-					"type" : 100
-				},
-				{
-					"type" : 1,
-					"command" : "video/jump"
-				},
-				{
-					"type" : 1,
-					"command" : "video/jump/start"
-				},
-				{
-						"type" : 1,
-						"command" : "video/jump/end"
-				}
-			]
-		},
-		{
-			"type" : 4,
-			"command" : "audio",
-			"contents" : [
-				{
-					"type" : 1,
-					"command" : "audio/open"
-				},
-				{
-					"type" : 1,
-					"command" : "audio/open/video"
-				},
-				{
-					"type" : 1,
-					"command" : "audio/close"
-				},
-				{
-					"type" : 5,
-					"command" : "recent/audio"
-				},
-				{
-					"type" : 100
-				},
-				{
-					"type" : 1,
-					"command" : "audio/view/spectrum"
-				},
-				{
-					"type" : 1,
-					"command" : "audio/view/waveform"
-				},
-				{
-					"type" : 1,
-					"command" : "audio/open/blank"
-				},
-				{
-					"type" : 1,
-					"command" : "audio/open/noise"
-				}
-			]
-		},
-		{
-			"type" : 4,
-			"command" : "automation",
-			"contents" : [
-				{
-					"type" : 1,
-					"command" : "am/manager"
-				},
-				{
-					"type" : 100
-				}
-			]
-		},
-		{
-			"type" : 4,
-			"command" : "view",
-			"contents" : [
-				{
-					"type" : 1,
-					"command" : "app/language"
-				},
-				{
-					"type" : 1,
-					"command" : "app/options"
-				},
-				{
-					"type" : 100
-				},
-				{
-					"type" : 3,
-					"command" : "app/display/subs"
-				},
-				{
-					"type" : 3,
-					"command" : "app/display/video_subs"
-				},
-				{
-					"type" : 3,
-					"command" : "app/display/audio_subs"
-				},
-				{
-					"type" : 3,
-					"command" : "app/display/full"
-				},
-				{
-					"type" : 100
-				},
-				{
-					"type" : 3,
-					"command" : "grid/tags/show"
-				},
-				{
-					"type" : 3,
-					"command" : "grid/tags/simplify"
-				},
-				{
-					"type" : 3,
-					"command" : "grid/tags/hide"
-				}
-			]
-		},
-		{
-			"type" : 4,
-			"command" : "help",
-			"contents" : [
-				{
-					"type" : 1,
-					"command" : "help/contents"
-				},
-				{
-					"type" : 100
-				},
-				{
-					"type" : 1,
-					"command" : "help/files"
-				},
-				{
-					"type" : 1,
-					"command" : "help/website"
-				},
-				{
-					"type" : 1,
-					"command" : "help/forums"
-				},
-				{
-					"type" : 1,
-					"command" : "help/bugs"
-				},
-				{
-					"type" : 100
-				},
-				{
-					"type" : 1,
-					"command" : "help/irc"
-				},
-				{
-					"type" : 1,
-					"command" : "app/updates"
-				},
-				{
-					"type" : 1,
-					"command" : "app/about"
-				},
-				{
-					"type" : 1,
-					"command" : "app/log"
-				}
-			]
-		}
-	]
+    "main" : [
+        { "submenu" : "main/file",       "text" : "&File" },
+        { "submenu" : "main/edit",       "text" : "&Edit" },
+        { "submenu" : "main/subtitle",   "text" : "&Subtitle" },
+        { "submenu" : "main/timing",     "text" : "&Timing" },
+        { "submenu" : "main/video",      "text" : "&Video" },
+        { "submenu" : "main/audio",      "text" : "&Audio" },
+        { "submenu" : "main/automation", "text" : "A&utomation" },
+        { "submenu" : "main/view",       "text" : "&View" },
+        { "submenu" : "main/help",       "text" : "&Help", "special" : "help" }
+    ],
+    "main/file" : [
+        { "command" : "subtitle/new" },
+        { "command" : "subtitle/open" },
+        { "command" : "subtitle/open/charset" },
+        { "command" : "subtitle/open/video" },
+        { "command" : "subtitle/save" },
+        { "command" : "subtitle/save/as" },
+        { "command" : "tool/export" },
+        { "recent" : "Subtitle" },
+        {},
+        { "command" : "subtitle/properties" },
+        { "command" : "subtitle/attachment" },
+        { "command" : "tool/font_collector" },
+        {},
+        { "command" : "app/new_window" },
+        { "command" : "app/exit", "special" : "exit" }
+    ],
+    "main/edit" : [
+        { "command" : "edit/undo" },
+        { "command" : "edit/redo" },
+        {},
+        { "command" : "edit/line/cut" },
+        { "command" : "edit/line/copy" },
+        { "command" : "edit/line/paste" },
+        { "command" : "edit/line/paste/over" },
+        {},
+        { "command" : "subtitle/find" },
+        { "command" : "subtitle/find/next" },
+        { "command" : "edit/search_replace" }
+    ],
+    "main/subtitle" : [
+        { "command" : "tool/style/manager" },
+        { "command" : "tool/style/assistant" },
+        { "command" : "tool/translation_assistant" },
+        { "command" : "tool/resampleres" },
+        { "command" : "subtitle/spellcheck" },
+        {},
+        { "command" : "tool/assdraw" },
+        { "submenu" : "main/subtitle/insert lines", "text" : "&Insert Lines" },
+        { "command" : "edit/line/duplicate" },
+        { "command" : "edit/line/duplicate/shift" },
+        { "command" : "edit/line/delete" },
+        {},
+        { "submenu" : "main/subtitle/join lines", "text" : "Join Lines" },
+        { "command" : "edit/line/recombine" },
+        { "command" : "edit/line/split/by_karaoke" },
+        {},
+        { "submenu" : "main/subtitle/sort lines", "text" : "Sort Lines" },
+        { "command" : "edit/line/swap" },
+        { "command" : "tool/line/select" }
+    ],
+    "main/subtitle/insert lines" : [
+        { "command" : "subtitle/insert/before" },
+        { "command" : "subtitle/insert/after" },
+        { "command" : "subtitle/insert/before/videotime" },
+        { "command" : "subtitle/insert/after/videotime" }
+    ],
+    "main/subtitle/join lines" : [
+        { "command" : "edit/line/join/concatenate" },
+        { "command" : "edit/line/join/keep_first" },
+        { "command" : "edit/line/join/as_karaoke" }
+    ],
+    "main/subtitle/sort lines" : [
+        { "command" : "time/sort/start" },
+        { "command" : "time/sort/end" },
+        { "command" : "time/sort/style" }
+    ],
+    "main/timing" : [
+        { "command" : "time/shift" },
+        { "command" : "tool/time/postprocess" },
+        { "command" : "tool/time/kanji" },
+        {},
+        { "command" : "time/snap/start_video" },
+        { "command" : "time/snap/end_video" },
+        { "command" : "time/snap/scene" },
+        { "command" : "time/frame/current" },
+        {},
+        { "submenu" : "main/timing/make times continuous", "text" : "Make Times Continuous" }
+    ],
+    "main/timing/make times continuous" : [
+        { "command" : "time/continuous/start" },
+        { "command" : "time/continuous/end" }
+    ],
+    "main/video" : [
+        { "command" : "video/open" },
+        { "command" : "video/close" },
+        { "recent" : "Video" },
+        { "command" : "video/open/dummy" },
+        { "command" : "video/details" },
+        {},
+        { "command" : "timecode/open" },
+        { "command" : "timecode/save" },
+        { "command" : "timecode/close" },
+        { "recent" : "Timecodes" },
+        {},
+        { "command" : "keyframe/open" },
+        { "command" : "keyframe/save" },
+        { "command" : "keyframe/close" },
+        { "recent" : "Keyframes" },
+        {},
+        { "command" : "video/detach" },
+        { "submenu" : "main/video/set zoom", "text" : "Set Zoom" },
+        { "submenu" : "main/video/override ar", "text" : "Override AR" },
+        { "command" : "video/show_overscan" },
+        {},
+        { "command" : "video/jump" },
+        { "command" : "video/jump/start" },
+        { "command" : "video/jump/end" }
+    ],
+    "main/video/set zoom" : [
+        { "command" : "video/zoom/50" },
+        { "command" : "video/zoom/100" },
+        { "command" : "video/zoom/200" }
+    ],
+    "main/video/override ar" : [
+        { "command" : "video/aspect/default" },
+        { "command" : "video/aspect/full" },
+        { "command" : "video/aspect/wide" },
+        { "command" : "video/aspect/cinematic" },
+        { "command" : "video/aspect/custom" }
+    ],
+    "main/audio" : [
+        { "command" : "audio/open" },
+        { "command" : "audio/open/video" },
+        { "command" : "audio/close" },
+        { "recent" : "Audio" },
+        {},
+        { "command" : "audio/view/spectrum" },
+        { "command" : "audio/view/waveform" },
+        { "command" : "audio/open/blank" },
+        { "command" : "audio/open/noise" }
+    ],
+    "main/automation" : [
+        { "command" : "am/manager" },
+        {}
+    ],
+    "main/view" : [
+        { "command" : "app/language" },
+        { "command" : "app/options", "special" : "options" },
+        {},
+        { "command" : "app/display/subs" },
+        { "command" : "app/display/video_subs" },
+        { "command" : "app/display/audio_subs" },
+        { "command" : "app/display/full" },
+        {},
+        { "command" : "grid/tags/show" },
+        { "command" : "grid/tags/simplify" },
+        { "command" : "grid/tags/hide" }
+    ],
+    "main/help" : [
+        { "command" : "help/contents" },
+        {},
+        { "command" : "help/files" },
+        { "command" : "help/website" },
+        { "command" : "help/forums" },
+        { "command" : "help/bugs" },
+        {},
+        { "command" : "help/irc" },
+        { "command" : "app/updates" },
+        { "command" : "app/about", "special" : "about" },
+        { "command" : "app/log" }
+    ]
 }

@@ -144,10 +144,6 @@ FrameMain::FrameMain (wxArrayString args)
 	context->previousFocus = 0;
 	AegisubApp::Get()->frame = this;
 
-	StartupLog("Binding commands");
-	// XXX: This is a hack for now, it will need to be dealt with when other frames are involved.
-	Bind(wxEVT_COMMAND_MENU_SELECTED, &FrameMain::cmd_call, this);
-
 #ifdef __WXMAC__
 //	Bind(FrameMain::OnAbout, &FrameMain::cmd_call, this, cmd::id("app/about"));
 #endif
@@ -163,7 +159,7 @@ FrameMain::FrameMain (wxArrayString args)
 	InitToolbar();
 
 	StartupLog("Initialize menu bar");
-	InitMenu();
+	menu::GetMenuBar("main", this, context.get());
 	
 	StartupLog("Create status bar");
 	CreateStatusBar(2);
@@ -248,27 +244,24 @@ void FrameMain::cmd_call(wxCommandEvent& event) {
 	LOG_D("event/select") << "Id: " << id;
 	if (id < cmd::count())
 		cmd::call(context.get(), id);
-	else if (id >= ID_MENU_AUTOMATION_MACRO)
-		OnAutomationMacro(event);
 }
 
+void FrameMain::OnMenuOpen(wxMenuEvent &event) {
+	if (wxMenu *menu = event.GetMenu()) {
+		wxMenuItemList& items = menu->GetMenuItems();
+		for (wxMenuItemList::iterator it = items.begin(); it != items.end(); ++it) {
+			if (wxMenu *submenu = (*it)->GetSubMenu()) {
+				submenu->GetEventHandler()->QueueEvent(event.Clone());
+			}
+		}
+	}
+}
+
+/// @brief Initialize toolbar 
 void FrameMain::InitToolbar () {
 	wxSystemOptions::SetOption("msw.remap", 0);
 	toolbar::AttachToolbar(this, "main", context.get(), "Default");
 	GetToolBar()->Realize();
-}
-
-void FrameMain::InitMenu() {
-
-#ifdef __WXMAC__
-	// Make sure special menu items are placed correctly on Mac
-//	wxApp::s_macAboutMenuItemId = Menu_Help_About;
-//	wxApp::s_macExitMenuItemId = Menu_File_Exit;
-//	wxApp::s_macPreferencesMenuItemId = Menu_Tools_Options;
-//	wxApp::s_macHelpMenuTitleName = _("&Help");
-#endif
-
-	SetMenuBar(menu::menu->GetMainMenu());
 }
 
 void FrameMain::InitContents() {
@@ -607,7 +600,6 @@ BEGIN_EVENT_TABLE(FrameMain, wxFrame)
 
 	EVT_SASH_DRAGGED(ID_SASH_MAIN_AUDIO, FrameMain::OnAudioBoxResize)
 
-	EVT_MENU_OPEN(FrameMain::OnMenuOpen)
 	EVT_KEY_DOWN(FrameMain::OnKeyDown)
 
 #ifdef __WXMAC__
@@ -615,208 +607,6 @@ BEGIN_EVENT_TABLE(FrameMain, wxFrame)
 //   EVT_MENU(wxID_EXIT, FrameMain::OnExit)
 #endif
 END_EVENT_TABLE()
-
-void FrameMain::RebuildRecentList(const char *root_command, const char *mru_name) {
-	wxMenu *menu = menu::menu->GetMenu(root_command);
-
-	int count = (int)menu->GetMenuItemCount();
-	for (int i=count;--i>=0;) {
-		menu->Destroy(menu->FindItemByPosition(i));
-	}
-
-	const agi::MRUManager::MRUListMap *map_list = config::mru->Get(mru_name);
-	if (map_list->empty()) {
-		menu->Append(-1, _("Empty"))->Enable(false);
-		return;
-	}
-
-	int i = 0;
-	for (agi::MRUManager::MRUListMap::const_iterator it = map_list->begin(); it != map_list->end(); ++it) {
-		std::stringstream ss;
-		ss << root_command;
-		ss << "/";
-		ss << i;
-
-		wxFileName shortname(lagi_wxString(*it));
-
-		menu->Append(cmd::id(ss.str()),
-			wxString::Format("%s%d %s", i <= 9 ? "&" : "", i + 1, shortname.GetFullName()));
-		++i;
-	}
-}
-
-static void validate(wxMenuBar *menu, const agi::Context *c, const char *command) {
-	menu->Enable(cmd::id(command), cmd::get(command)->Validate(c));
-}
-
-static void check(wxMenuBar *menu, const agi::Context *c, const char *command) {
-	menu->Check(cmd::id(command), cmd::get(command)->IsActive(c));
-}
-
-void FrameMain::OnMenuOpen (wxMenuEvent &event) {
-	wxMenuBar *MenuBar = menu::menu->GetMainMenu();
-
-	MenuBar->Freeze();
-	wxMenu *curMenu = event.GetMenu();
-
-	// File menu
-	if (curMenu == menu::menu->GetMenu("main/file")) {
-		RebuildRecentList("recent/subtitle", "Subtitle");
-		validate(MenuBar, context.get(), "subtitle/open/video");
-	}
-
-	// View menu
-	else if (curMenu == menu::menu->GetMenu("main/view")) {
-		if (!showVideo && !showAudio) MenuBar->Check(cmd::id("app/display/subs"),true);
-		else if (showVideo && !showAudio) MenuBar->Check(cmd::id("app/display/video_subs"),true);
-		else if (showAudio && showVideo) MenuBar->Check(cmd::id("app/display/full"),true);
-		else MenuBar->Check(cmd::id("app/display/audio_subs"),true);
-
-		check(MenuBar, context.get(), "grid/tags/show");
-		check(MenuBar, context.get(), "grid/tags/simplify");
-		check(MenuBar, context.get(), "grid/tags/hide");
-	}
-	// Video menu
-	else if (curMenu == menu::menu->GetMenu("main/video")) {
-		validate(MenuBar, context.get(), "timecode/save");
-		validate(MenuBar, context.get(), "timecode/close");
-		validate(MenuBar, context.get(), "keyframe/close");
-		validate(MenuBar, context.get(), "keyframe/save");
-
-		check(MenuBar, context.get(), "video/aspect/default");
-		check(MenuBar, context.get(), "video/aspect/full");
-		check(MenuBar, context.get(), "video/aspect/wide");
-		check(MenuBar, context.get(), "video/aspect/cinematic");
-		check(MenuBar, context.get(), "video/aspect/custom");
-
-		check(MenuBar, context.get(), "video/show_overscan");
-
-		RebuildRecentList("recent/video", "Video");
-		RebuildRecentList("recent/timecode", "Timecodes");
-		RebuildRecentList("recent/keyframe", "Keyframes");
-	}
-
-	// Audio menu
-	else if (curMenu == menu::menu->GetMenu("main/audio")) {
-		validate(MenuBar, context.get(), "audio/open/video");
-		validate(MenuBar, context.get(), "audio/close");
-		RebuildRecentList("recent/audio", "Audio");
-	}
-
-	// Subtitles menu
-	else if (curMenu == menu::menu->GetMenu("main/subtitle")) {
-		validate(MenuBar, context.get(), "main/subtitle/insert lines");
-		validate(MenuBar, context.get(), "edit/line/duplicate");
-		validate(MenuBar, context.get(), "edit/line/duplicate/shift");
-		validate(MenuBar, context.get(), "edit/line/swap");
-		validate(MenuBar, context.get(), "edit/line/join/concatenate");
-		validate(MenuBar, context.get(), "edit/line/join/keep_first");
-		validate(MenuBar, context.get(), "edit/line/join/as_karaoke");
-		validate(MenuBar, context.get(), "main/subtitle/join lines");
-		validate(MenuBar, context.get(), "edit/line/recombine");
-	}
-
-	// Timing menu
-	else if (curMenu == menu::menu->GetMenu("main/timing")) {
-		validate(MenuBar, context.get(), "time/snap/start_video");
-		validate(MenuBar, context.get(), "time/snap/end_video");
-		validate(MenuBar, context.get(), "time/snap/scene");
-		validate(MenuBar, context.get(), "time/frame/current");
-
-		validate(MenuBar, context.get(), "time/continuous/start");
-		validate(MenuBar, context.get(), "time/continuous/end");
-	}
-
-	// Edit menu
-	else if (curMenu == menu::menu->GetMenu("main/edit")) {
-		wxMenu *editMenu = menu::menu->GetMenu("main/edit");
-
-		// Undo state
-		wxString undo_text = wxString::Format("%s %s\t%s",
-			cmd::get("edit/undo")->StrMenu(),
-			context->ass->GetUndoDescription(),
-			hotkey::get_hotkey_str_first("Default", "edit/undo"));
-		wxMenuItem *item = editMenu->FindItem(cmd::id("edit/undo"));
-		item->SetItemLabel(undo_text);
-		item->Enable(!context->ass->IsUndoStackEmpty());
-
-		// Redo state
-		wxString redo_text = wxString::Format("%s %s\t%s",
-			cmd::get("edit/redo")->StrMenu(),
-			context->ass->GetRedoDescription(),
-			hotkey::get_hotkey_str_first("Default", "edit/redo"));
-		item = editMenu->FindItem(cmd::id("edit/redo"));
-		item->SetItemLabel(redo_text);
-		item->Enable(!context->ass->IsRedoStackEmpty());
-
-		validate(MenuBar, context.get(), "edit/line/cut");
-		validate(MenuBar, context.get(), "edit/line/copy");
-		validate(MenuBar, context.get(), "edit/line/paste");
-		validate(MenuBar, context.get(), "edit/line/paste/over");
-	}
-
-	// Automation menu
-#ifdef WITH_AUTOMATION
-	else if (curMenu == menu::menu->GetMenu("main/automation")) {
-		wxMenu *automationMenu = menu::menu->GetMenu("main/automation");
-
-		// Remove old macro items
-		for (unsigned int i = 0; i < activeMacroItems.size(); i++) {
-			wxMenu *p = 0;
-			wxMenuItem *it = MenuBar->FindItem(ID_MENU_AUTOMATION_MACRO + i, &p);
-			if (it)
-				p->Delete(it);
-		}
-		activeMacroItems.clear();
-
-		// Add new ones
-		int added = 0;
-		added += AddMacroMenuItems(automationMenu, wxGetApp().global_scripts->GetMacros());
-		added += AddMacroMenuItems(automationMenu, context->local_scripts->GetMacros());
-
-		// If none were added, show a ghosted notice
-		if (added == 0) {
-			automationMenu->Append(ID_MENU_AUTOMATION_MACRO, _("No Automation macros loaded"))->Enable(false);
-			activeMacroItems.push_back(0);
-		}
-	}
-#endif
-
-	MenuBar->Thaw();
-}
-
-int FrameMain::AddMacroMenuItems(wxMenu *menu, const std::vector<Automation4::FeatureMacro*> &macros) {
-#ifdef WITH_AUTOMATION
-	if (macros.empty()) {
-		return 0;
-	}
-
-	int id = activeMacroItems.size();;
-	for (std::vector<Automation4::FeatureMacro*>::const_iterator i = macros.begin(); i != macros.end(); ++i) {
-		wxMenuItem * m = menu->Append(ID_MENU_AUTOMATION_MACRO + id, (*i)->GetName(), (*i)->GetDescription());
-		m->Enable((*i)->Validate(context->ass, SubsGrid->GetAbsoluteSelection(), SubsGrid->GetFirstSelRow()));
-		activeMacroItems.push_back(*i);
-		id++;
-	}
-
-	return macros.size();
-#else
-	return 0;
-#endif
-}
-
-void FrameMain::OnAutomationMacro (wxCommandEvent &event) {
-#ifdef WITH_AUTOMATION
-	SubsGrid->BeginBatch();
-	// First get selection data
-	std::vector<int> selected_lines = SubsGrid->GetAbsoluteSelection();
-	int first_sel = SubsGrid->GetFirstSelRow();
-	// Run the macro...
-	activeMacroItems[event.GetId()-ID_MENU_AUTOMATION_MACRO]->Process(context->ass, selected_lines, first_sel, this);
-	SubsGrid->SetSelectionFromAbsolute(selected_lines);
-	SubsGrid->EndBatch();
-#endif
-}
 
 void FrameMain::OnCloseWindow (wxCloseEvent &event) {
 	// Stop audio and video

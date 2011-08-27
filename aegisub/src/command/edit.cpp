@@ -347,10 +347,15 @@ struct edit_line_swap : public Command {
 /// Redoes last action.
 struct edit_redo : public Command {
 	CMD_NAME("edit/redo")
-	STR_MENU("&Redo")
-	STR_DISP("Redo")
 	STR_HELP("Redoes last action.")
 	CMD_TYPE(COMMAND_VALIDATE | COMMAND_DYNAMIC_NAME)
+
+	wxString StrMenu(const agi::Context *c) const {
+		return wxString::Format(_("&Redo %s"), c->ass->GetRedoDescription());
+	}
+	wxString StrDisplay(const agi::Context *c) const {
+		return wxString::Format(_("Redo %s"), c->ass->GetRedoDescription());
+	}
 
 	bool Validate(const agi::Context *c) {
 		return !c->ass->IsRedoStackEmpty();
@@ -380,10 +385,15 @@ struct edit_search_replace : public Command {
 /// Undoes last action.
 struct edit_undo : public Command {
 	CMD_NAME("edit/undo")
-	STR_MENU("&Undo")
-	STR_DISP("Undo")
 	STR_HELP("Undoes last action.")
 	CMD_TYPE(COMMAND_VALIDATE | COMMAND_DYNAMIC_NAME)
+
+	wxString StrMenu(const agi::Context *c) const {
+		return wxString::Format(_("&Undo %s"), c->ass->GetUndoDescription());
+	}
+	wxString StrDisplay(const agi::Context *c) const {
+		return wxString::Format(_("Undo %s"), c->ass->GetUndoDescription());
+	}
 
 	bool Validate(const agi::Context *c) {
 		return !c->ass->IsUndoStackEmpty();
