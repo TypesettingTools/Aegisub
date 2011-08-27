@@ -88,7 +88,7 @@ enum {
 /// @return 
 ///
 SubsTextEditCtrl::SubsTextEditCtrl(wxWindow* parent, wxSize wsize, long style, SubtitlesGrid *grid)
-: ScintillaTextCtrl(parent, wxID_ANY, "", wxDefaultPosition, wsize, style)
+: ScintillaTextCtrl(parent, wxID_ANY)
 , spellchecker(SpellCheckerFactory::GetSpellChecker())
 , thesaurus(Thesaurus::GetThesaurus())
 , grid(grid)
@@ -279,8 +279,9 @@ void SubsTextEditCtrl::SetStyles() {
 }
 
 void SubsTextEditCtrl::UpdateStyle(int start, int _length) {
+	StartUnicodeStyling(0,255);
+
 	if (!OPT_GET("Subtitle/Highlight/Syntax")->GetBool()) {
-		StartStyling(0,255);
 		SetUnicodeStyling(start, _length, 0);
 		return;
 	}
@@ -311,7 +312,6 @@ void SubsTextEditCtrl::UpdateStyle(int start, int _length) {
 	bool drawingMode = false;		// for \p1 -> \p0 stuff
 
 	// Begin styling
-	StartStyling(0,255);
 	int ran = 0;		// length of current range
 	int depth = 0;		// brace nesting depth
 	int curStyle = 0;	// style to apply to current range

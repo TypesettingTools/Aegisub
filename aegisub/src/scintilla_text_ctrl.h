@@ -44,6 +44,7 @@
 ///
 /// DOCME
 class ScintillaTextCtrl : public wxStyledTextCtrl {
+	wxString text;
 public:
 	wxString GetWordAtPosition(int pos);
 	void GetBoundsOfWordAtPosition(int pos,int &start,int &end);
@@ -54,6 +55,5 @@ public:
 	void SetUnicodeStyling(int start,int length,int style);
 	void SetSelectionU(int start,int end);
 
-	ScintillaTextCtrl(wxWindow* parent, wxWindowID id, const wxString& value = _T(""), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = 0, const wxValidator& validator = wxDefaultValidator, const wxString& name = wxTextCtrlNameStr);
-	virtual ~ScintillaTextCtrl();
+	ScintillaTextCtrl(wxWindow* parent, wxWindowID id, const wxString& value = "", const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize);
 };
