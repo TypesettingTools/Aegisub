@@ -574,15 +574,6 @@ bool FrameMain::LoadList(wxArrayString list) {
 	return subs.size() || audio.size() || video.size();
 }
 
-bool FrameMain::HasASSDraw() {
-#ifdef __WINDOWS__
-	wxFileName fn(StandardPaths::DecodePath("?data/ASSDraw3.exe"));
-	return fn.FileExists();
-#else
-	return false;
-#endif
-}
-
 static void autosave_timer_changed(wxTimer *timer, const agi::OptionValue &opt) {
 	int freq = opt.GetInt();
 	if (freq <= 0) {

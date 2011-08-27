@@ -141,8 +141,6 @@ public:
 	FrameMain(wxArrayString args);
 	~FrameMain();
 
-	bool HasASSDraw();
-
 	/// Set the status bar text
 	/// @param text New status bar text
 	/// @param ms Time in milliseconds that the message should be visible
