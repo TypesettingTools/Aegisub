@@ -632,51 +632,34 @@ int AssFile::GetScriptInfoAsInt(const wxString key) {
 	return temp;
 }
 
-void AssFile::SetScriptInfo(const wxString _key,const wxString value) {
-	wxString key = _key;;
-	key.Lower();
-	key += _T(":");
-	std::list<AssEntry*>::iterator cur;
-	std::list<AssEntry*>::iterator prev;
-	bool GotIn = false;
+void AssFile::SetScriptInfo(wxString const& key, wxString const& value) {
+	wxString search_key = key.Lower() + ":";
+	size_t key_size = search_key.size();
+	std::list<AssEntry*>::iterator script_info_end;
+	bool found_script_info = false;
 
-	// Look for it
-	for (cur=Line.begin();cur!=Line.end();cur++) {
+	for (std::list<AssEntry*>::iterator cur = Line.begin(); cur != Line.end(); ++cur) {
 		if ((*cur)->group == _T("[Script Info]")) {
-			GotIn = true;
-			wxString curText = (*cur)->GetEntryData();
-			curText.Lower();
+			found_script_info = true;
+			wxString cur_text = (*cur)->GetEntryData().Left(key_size).Lower();
 
-			// Found
-			if (curText.StartsWith(key)) {
-				// Set value
-				if (value != "") {
-					wxString result = _key;
-					result += _T(": ");
-					result += value;
-					(*cur)->SetEntryData(result);
-				}
-
-				// Remove key
-				else {
+			if (cur_text == search_key) {
+				if (value.empty()) {
+					delete *cur;
 					Line.erase(cur);
-					return;
+				}
+				else {
+					(*cur)->SetEntryData(key + ": " + value);
 				}
 				return;
 			}
-
-			if (!(*cur)->GetEntryData().empty()) prev = cur;
+			script_info_end = cur;
 		}
-
-		// Add
-		else if (GotIn) {
-			if (value != "") {
-				wxString result = _key;
-				result += _T(": ");
-				result += value;
-				AssEntry *entry = new AssEntry(result);
-				entry->group = (*prev)->group;
-				Line.insert(++prev,entry);
+		else if (found_script_info) {
+			if (value.size()) {
+				AssEntry *entry = new AssEntry(key + ": " + value);
+				entry->group = "[Script Info]";
+				Line.insert(script_info_end, entry);
 			}
 			return;
 		}

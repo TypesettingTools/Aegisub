@@ -152,7 +152,7 @@ public:
 	/// Get the value in a [Script Info] key as string.
 	wxString GetScriptInfo(const wxString key);
 	/// Set the value of a [Script Info] key. Adds it if it doesn't exist.
-	void SetScriptInfo(const wxString key,const wxString value);
+	void SetScriptInfo(wxString key, wxString const& value);
 	// Add a ";" comment in the [Script Info] section
 	void AddComment(const wxString comment);
 	/// @brief Add a line to the file
