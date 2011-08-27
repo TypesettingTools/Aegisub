@@ -34,9 +34,6 @@
 /// @ingroup custom_control
 ///
 
-
-///////////
-// Headers
 #include "config.h"
 
 #ifndef AGI_PRE
@@ -47,125 +44,48 @@
 
 #include "toggle_bitmap.h"
 
+#include "command/command.h"
+#include "include/aegisub/context.h"
+#include "tooltip_manager.h"
 
-/// @brief Constructor 
-/// @param parent 
-/// @param id     
-/// @param image  
-/// @param size   
-///
-ToggleBitmap::ToggleBitmap(wxWindow *parent,wxWindowID id,const wxBitmap &image,const wxSize &size)
-: wxControl (parent,id,wxDefaultPosition,wxDefaultSize,wxSUNKEN_BORDER)
+ToggleBitmap::ToggleBitmap(wxWindow *parent, agi::Context *context, const char *cmd_name, int icon_size, const char *ht_ctx, wxSize const& size)
+: wxControl(parent, -1, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER)
+, context(context)
+, command(cmd::get(cmd_name))
+, img(command->Icon(icon_size))
 {
-	// Set variables
-	img = image;
-	state = false;
+	int w = size.GetWidth() != -1 ? size.GetWidth() : img.GetWidth();
+	int h = size.GetHeight() != -1 ? size.GetHeight() : img.GetHeight();
+	SetClientSize(w, h);
+	GetSize(&w, &h);
+	SetSizeHints(w, h, w, h);
 
-	// Set size
-	int w,h;
-	if (size.GetWidth() != -1) w = size.GetWidth();
-	else w = img.GetWidth();
-	if (size.GetHeight() != -1) h = size.GetHeight();
-	else h = img.GetHeight();
-	SetClientSize(w,h);
-	GetSize(&w,&h);
-	SetSizeHints(w,h,w,h);
+	ToolTipManager::Bind(this, command->StrHelp(), ht_ctx, cmd_name);
+	Bind(wxEVT_PAINT, &ToggleBitmap::OnPaint, this);
+	Bind(wxEVT_LEFT_DOWN, &ToggleBitmap::OnMouseEvent, this);
 }
 
-
-
-/// @brief Get state 
-/// @return 
-///
-bool ToggleBitmap::GetValue() {
-	return state;
-}
-
-
-
-/// @brief Set state 
-/// @param _state 
-///
-void ToggleBitmap::SetValue(bool _state) {
-	// Set flag
-	state = _state;
-
-	// Refresh
+void ToggleBitmap::OnMouseEvent(wxMouseEvent &) {
+	(*command)(context);
 	Refresh(false);
 }
 
-
-
-/// @brief Draw image 
-/// @param dc 
-///
-void ToggleBitmap::DrawImage(wxDC &dc) {
-	// Get size
+void ToggleBitmap::OnPaint(wxPaintEvent &) {
+	wxPaintDC dc(this);
 	int w,h;
 	GetClientSize(&w,&h);
 
 	// Get background color
-	wxColour bgColor;
-	if (state) bgColor = wxColour(0,255,0);
-	else bgColor = wxColour(255,0,0);
+	wxColour bgColor = command->IsActive(context) ? wxColour(0,255,0) : wxColour(255,0,0);
 	wxColor sysCol = wxSystemSettings::GetColour(wxSYS_COLOUR_BTNHIGHLIGHT);
-	int r,g,b;
-	r = (sysCol.Red() + bgColor.Red()) / 2;
-	g = (sysCol.Green() + bgColor.Green()) / 2;
-	b = (sysCol.Blue() + bgColor.Blue()) / 2;
-	bgColor.Set(r,g,b);
+	bgColor.Set(
+		(sysCol.Red() + bgColor.Red()) / 2,
+		(sysCol.Green() + bgColor.Green()) / 2,
+		(sysCol.Blue() + bgColor.Blue()) / 2);
 
-	// Draw background
 	dc.SetPen(*wxTRANSPARENT_PEN);
 	dc.SetBrush(wxBrush(bgColor));
-	dc.DrawRectangle(0,0,w,h);
-	
-	// Draw bitmap
-	dc.DrawBitmap(img,(w-img.GetWidth())/2,(h-img.GetHeight())/2,true);
+	dc.DrawRectangle(0, 0, w, h);
+
+	dc.DrawBitmap(img, (w - img.GetWidth()) / 2, (h - img.GetHeight()) / 2, true);
 }
-
-
-///////////////
-// Event table
-BEGIN_EVENT_TABLE(ToggleBitmap,wxControl)
-    EVT_MOUSE_EVENTS(ToggleBitmap::OnMouseEvent)
-    EVT_PAINT(ToggleBitmap::OnPaint)
-END_EVENT_TABLE()
-
-
-
-/// @brief Mouse events 
-/// @param event 
-///
-void ToggleBitmap::OnMouseEvent(wxMouseEvent &event) {
-	// Get mouse position
-	int x = event.GetX();
-	int y = event.GetY();
-	int w,h;
-	GetClientSize(&w,&h);
-	bool inside = true;
-	if (x < 0 || y < y || x >= w || y >= h) inside = false;
-
-	// Left click to toggle state
-	if (inside && event.ButtonDown(wxMOUSE_BTN_LEFT)) {
-		// Update
-		state = !state;
-		Refresh(false);
-
-		// Send event
-		wxCommandEvent sendEvent(wxEVT_COMMAND_TOGGLEBUTTON_CLICKED,GetId());
-		AddPendingEvent(sendEvent);
-	}
-}
-
-
-
-/// @brief Paint event 
-/// @param event 
-///
-void ToggleBitmap::OnPaint(wxPaintEvent &event) {
-	wxPaintDC dc(this);
-	DrawImage(dc);
-}
-
-

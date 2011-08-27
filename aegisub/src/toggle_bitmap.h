@@ -34,16 +34,13 @@
 /// @ingroup custom_control
 ///
 
-
-
-
-///////////
-// Headers
 #ifndef AGI_PRE
 #include <wx/bitmap.h>
 #include <wx/control.h>
 #endif
 
+namespace agi { struct Context; }
+namespace cmd { class Command; }
 
 /// DOCME
 /// @class ToggleBitmap
@@ -51,22 +48,13 @@
 ///
 /// DOCME
 class ToggleBitmap : public wxControl {
-private:
-
-	/// DOCME
+	agi::Context *context;
+	cmd::Command *command;
 	wxBitmap img;
 
-	/// DOCME
-	bool state;
-
-	void OnMouseEvent(wxMouseEvent &event);
-	void OnPaint(wxPaintEvent &event);
-	void DrawImage(wxDC &dc);
+	void OnMouseEvent(wxMouseEvent &evt);
+	void OnPaint(wxPaintEvent &evt);
 
 public:
-	ToggleBitmap(wxWindow *parent,wxWindowID id,const wxBitmap &image,const wxSize &size=wxDefaultSize);
-	bool GetValue();
-	void SetValue(bool state);
-
-	DECLARE_EVENT_TABLE()
+	ToggleBitmap(wxWindow *parent, agi::Context *context, const char *command, int icon_size, const char *ht_ctx, wxSize const& size = wxDefaultSize);
 };

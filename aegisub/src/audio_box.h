@@ -103,7 +103,6 @@ class AudioBox : public wxPanel {
 	void OnVerticalZoom(wxScrollEvent &event);
 	void OnVolume(wxScrollEvent &event);
 	void OnVerticalLink(agi::OptionValue const& opt);
-	void OnVerticalLinkButton(wxCommandEvent&);
 
 	void OnKaraoke(wxCommandEvent &);
 	void OnJoin(wxCommandEvent &);

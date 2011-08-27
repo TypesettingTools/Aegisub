@@ -66,7 +66,6 @@
 #include "main.h"
 #include "toggle_bitmap.h"
 #include "selection_controller.h"
-#include "tooltip_manager.h"
 #include "utils.h"
 
 enum AudioBoxControlIDs {
@@ -110,11 +109,7 @@ AudioBox::AudioBox(wxWindow *parent, agi::Context *context)
 	wxSizer *VertVolArea = new wxBoxSizer(wxVERTICAL);
 	VertVolArea->Add(VertVol,1,wxEXPAND,0);
 
-	cmd::Command *link_command = cmd::get("audio/opt/vertical_link");
-	ToggleBitmap *link_btn = new ToggleBitmap(this, cmd::id("audio/opt/vertical_link"), link_command->Icon(16), wxSize(20, -1));
-	ToolTipManager::Bind(link_btn, link_command->StrHelp(), "Audio", "audio/opt/vertical_link");
-	link_btn->SetValue(OPT_GET("Audio/Link")->GetBool());
-	link_btn->Bind(wxEVT_COMMAND_TOGGLEBUTTON_CLICKED, &AudioBox::OnVerticalLinkButton, this);
+	ToggleBitmap *link_btn = new ToggleBitmap(this, context, "audio/opt/vertical_link", 16, "Audio", wxSize(20, -1));
 	VertVolArea->Add(link_btn, 0, wxRIGHT | wxALIGN_CENTER | wxEXPAND, 0);
 	OPT_SUB("Audio/Link", bind(&AudioBox::OnVerticalLink, this, std::tr1::placeholders::_1));
 
@@ -185,10 +180,6 @@ BEGIN_EVENT_TABLE(AudioBox,wxPanel)
 
 	EVT_TOGGLEBUTTON(Audio_Button_Karaoke, AudioBox::OnKaraoke)
 END_EVENT_TABLE()
-
-void AudioBox::OnVerticalLinkButton(wxCommandEvent &) {
-	cmd::call("audio/opt/vertical_link", context);
-}
 
 void AudioBox::OnHorizontalZoom(wxScrollEvent &event) {
 	// Negate the value, we want zoom out to be on bottom and zoom in on top,

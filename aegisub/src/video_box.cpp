@@ -70,14 +70,6 @@ static void add_button(wxWindow *parent, wxSizer *sizer, const char *command) {
 	sizer->Add(btn, 0, wxTOP | wxLEFT | wxBOTTOM | wxALIGN_CENTER, 2);;
 }
 
-static void add_option(wxWindow *parent, wxSizer *sizer, const char *command, const char *option) {
-	cmd::Command *c = cmd::get(command);
-	ToggleBitmap *btn = new ToggleBitmap(parent, cmd::id(command), c->Icon(24));
-	ToolTipManager::Bind(btn, c->StrHelp(), "Video", command);
-	btn->SetValue(OPT_GET(option)->GetBool());
-	sizer->Add(btn, 0, wxTOP | wxLEFT | wxBOTTOM | wxALIGN_CENTER, 2);
-}
-
 VideoBox::VideoBox(wxWindow *parent, bool isDetached, agi::Context *context)
 : wxPanel (parent,-1)
 , context(context)
@@ -90,7 +82,7 @@ VideoBox::VideoBox(wxWindow *parent, bool isDetached, agi::Context *context)
 	add_button(this, videoBottomSizer, "video/play");
 	add_button(this, videoBottomSizer, "video/play/line");
 	add_button(this, videoBottomSizer, "video/stop");
-	add_option(this, videoBottomSizer, "video/opt/autoscroll", "Video/Subtitle Sync");
+	videoBottomSizer->Add(new ToggleBitmap(this, context, "video/opt/autoscroll", 24, "Video"), 0, wxTOP | wxLEFT | wxBOTTOM | wxALIGN_CENTER, 2);
 
 	// Seek
 	videoSlider = new VideoSlider(this, context);
