@@ -124,13 +124,8 @@ class DataBlockCache {
 	/// Factory object for blocks
 	BlockFactoryT factory;
 
-	/// Used in sorting the macroblocks by access count for aging
-	struct AccessData {
-		MacroBlock *mb;
-		AccessData(MacroBlock *_mb) : mb(_mb) { }
-		// Sort in decreasing order: most accesses first
-		bool operator < (const AccessData &other) const { return mb->access_count > other.mb->access_count; }
-	};
+	/// Used in sorting the macroblocks by accesas count for aging
+	static bool comp_access_count(const MacroBlock *lft, const MacroBlock *rgt) { return lft->access_count > rgt->access_count; }
 
 	/// @brief Dispose of all blocks in a macroblock and mark it empty
 	/// @param mb_index Index of macroblock to clear
@@ -212,39 +207,30 @@ public:
 		}
 
 		// Get a list of macro blocks sorted by access count
-		std::vector<AccessData> access_data;
-		access_data.reserve(data.size());
+		std::vector<MacroBlock*> access_data;
+		access_data.resize(data.size());
 		// For whatever reason, G++ pukes if I try using iterators here...
 		for (size_t mbi = 0; mbi != data.size(); ++mbi)
-			access_data.push_back(AccessData(&data[mbi]));
-		std::sort(access_data.begin(), access_data.end());
+			access_data[mbi] = &data[mbi];
+		sort(access_data.begin(), access_data.end(), comp_access_count);
 
 		// Sum up data size until we hit the max
 		size_t cur_size = 0;
 		size_t block_size = factory.GetBlockSize();
 		size_t mbi = 0;
-		for (; mbi < access_data.size(); ++mbi)
+		for (; mbi < access_data.size() && cur_size < max_size; ++mbi)
 		{
-			BlockArray &ba = access_data[mbi].mb->blocks;
-			for (size_t i = 0; i < ba.size(); ++i)
-			{
-				if (ba[i] != 0)
-					cur_size += block_size;
-			}
+			BlockArray &ba = access_data[mbi]->blocks;
+			cur_size += (ba.size() - std::count(ba.begin(), ba.end(), (BlockT*)0)) * block_size;
+
 			// Cut access count in half for live blocks, so parts that don't get accessed
 			// a lot will eventually be killed off.
-			access_data[mbi].mb->access_count /= 2;
-
-			if (cur_size >= max_size)
-			{
-				++mbi;
-				break;
-			}
+			access_data[mbi]->access_count /= 2;
 		}
 		// Hit max, clear all remaining blocks
-		for (; mbi < access_data.size(); ++mbi)
+		for (++mbi; mbi < access_data.size(); ++mbi)
 		{
-			KillMacroBlock(*access_data[mbi].mb);
+			KillMacroBlock(*access_data[mbi]);
 		}
 	}
 
