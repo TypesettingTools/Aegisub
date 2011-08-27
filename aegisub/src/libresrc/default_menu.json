@@ -197,5 +197,14 @@
         { "command" : "app/updates" },
         { "command" : "app/about", "special" : "about" },
         { "command" : "app/log" }
+    ],
+    "video_context" : [
+        { "command" : "video/frame/save" },
+        { "command" : "video/frame/copy" },
+        {},
+        { "command" : "video/frame/save/raw" },
+        { "command" : "video/frame/copy/raw" },
+        {},
+        { "command" : "video/copy_coordinates" }
     ]
 }

@@ -77,6 +77,8 @@ class VideoDisplay : public wxGLCanvas {
 
 	agi::Context *con;
 
+	agi::scoped_ptr<wxMenu> context_menu;
+
 	/// The frame number currently being displayed
 	int currentFrame;
 
@@ -169,17 +171,6 @@ class VideoDisplay : public wxGLCanvas {
 	/// @brief Recalculate video positioning and scaling when the available area or zoom changes
 	void OnSizeEvent(wxSizeEvent &event);
 	void OnMode(const wxCommandEvent &event);
-
-	/// @brief Copy coordinates of the mouse to the clipboard
-	void OnCopyCoords(wxCommandEvent &);
-	/// @brief Copy the currently display frame to the clipboard, with subtitles
-	void OnCopyToClipboard(wxCommandEvent &);
-	/// @brief Save the currently display frame to a file, with subtitles
-	void OnSaveSnapshot(wxCommandEvent &);
-	/// @brief Copy the currently display frame to the clipboard, without subtitles
-	void OnCopyToClipboardRaw(wxCommandEvent &);
-	/// @brief Save the currently display frame to a file, without subtitles
-	void OnSaveSnapshotRaw(wxCommandEvent &);
 
 public:
 	/// @brief Constructor

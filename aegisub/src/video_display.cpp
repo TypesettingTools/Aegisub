@@ -41,7 +41,6 @@
 #include <algorithm>
 
 #include <wx/combobox.h>
-#include <wx/clipbrd.h>
 #include <wx/dataobj.h>
 #include <wx/dcclient.h>
 #include <wx/menu.h>
@@ -59,12 +58,12 @@
 
 #include "include/aegisub/context.h"
 #include "include/aegisub/hotkey.h"
+#include "include/aegisub/menu.h"
 
 #include "video_display.h"
 
 #include "ass_file.h"
 #include "main.h"
-#include "subs_grid.h"
 #include "threaded_frame_source.h"
 #include "video_out_gl.h"
 #include "video_box.h"
@@ -78,30 +77,9 @@
 #include "visual_tool_scale.h"
 #include "visual_tool_vector_clip.h"
 
-
-// Menu item IDs
-enum {
-	/// Copy mouse coordinates to clipboard
-	VIDEO_MENU_COPY_COORDS = 1230,
-	/// Copy frame to clipboard with subtitles
-	VIDEO_MENU_COPY_TO_CLIPBOARD,
-	/// Copy frame to clipboard without subtitles
-	VIDEO_MENU_COPY_TO_CLIPBOARD_RAW,
-	/// Save frame with subtitles
-	VIDEO_MENU_SAVE_SNAPSHOT,
-	/// Save frame without subtitles
-	VIDEO_MENU_SAVE_SNAPSHOT_RAW
-};
-
 BEGIN_EVENT_TABLE(VideoDisplay, wxGLCanvas)
 	EVT_MOUSE_EVENTS(VideoDisplay::OnMouseEvent)
 	EVT_KEY_DOWN(VideoDisplay::OnKeyDown)
-
-	EVT_MENU(VIDEO_MENU_COPY_COORDS,VideoDisplay::OnCopyCoords)
-	EVT_MENU(VIDEO_MENU_COPY_TO_CLIPBOARD,VideoDisplay::OnCopyToClipboard)
-	EVT_MENU(VIDEO_MENU_SAVE_SNAPSHOT,VideoDisplay::OnSaveSnapshot)
-	EVT_MENU(VIDEO_MENU_COPY_TO_CLIPBOARD_RAW,VideoDisplay::OnCopyToClipboardRaw)
-	EVT_MENU(VIDEO_MENU_SAVE_SNAPSHOT_RAW,VideoDisplay::OnSaveSnapshotRaw)
 END_EVENT_TABLE()
 
 /// Attribute list for gl canvases; set the canvases to doublebuffered rgba with an 8 bit stencil buffer
@@ -418,18 +396,9 @@ void VideoDisplay::OnMouseEvent(wxMouseEvent& event) {
 	if (con->videoController->IsPlaying()) return;
 
 	if (event.ButtonUp(wxMOUSE_BTN_RIGHT)) {
-		wxMenu menu;
-		menu.Append(VIDEO_MENU_SAVE_SNAPSHOT,_("Save PNG snapshot"));
-		menu.Append(VIDEO_MENU_COPY_TO_CLIPBOARD,_("Copy image to Clipboard"));
-		menu.AppendSeparator();
-		menu.Append(VIDEO_MENU_SAVE_SNAPSHOT_RAW,_("Save PNG snapshot (no subtitles)"));
-		menu.Append(VIDEO_MENU_COPY_TO_CLIPBOARD_RAW,_("Copy image to Clipboard (no subtitles)"));
-		menu.AppendSeparator();
-		menu.Append(VIDEO_MENU_COPY_COORDS,_("Copy coordinates to Clipboard"));
-
-		// Show cursor and popup
+		if (!context_menu.get()) context_menu.reset(menu::GetMenu("video_context", con));
 		ShowCursor(true);
-		PopupMenu(&menu);
+		menu::OpenPopupMenu(context_menu.get(), this);
 		return;
 	}
 
@@ -535,36 +504,6 @@ void VideoDisplay::FromScriptCoords(int *x, int *y) const {
 	*y = (*y * viewport_height + sy / 2) / scriptH + viewport_top;
 }
 
-void VideoDisplay::OnCopyToClipboard(wxCommandEvent &) {
-	if (wxTheClipboard->Open()) {
-		wxTheClipboard->SetData(new wxBitmapDataObject(wxBitmap(con->videoController->GetFrame(currentFrame)->GetImage(),24)));
-		wxTheClipboard->Close();
-	}
-}
-
-void VideoDisplay::OnCopyToClipboardRaw(wxCommandEvent &) {
-	if (wxTheClipboard->Open()) {
-		wxTheClipboard->SetData(new wxBitmapDataObject(wxBitmap(con->videoController->GetFrame(currentFrame,true)->GetImage(),24)));
-		wxTheClipboard->Close();
-	}
-}
-
-void VideoDisplay::OnSaveSnapshot(wxCommandEvent &) {
-	con->videoController->SaveSnapshot(false);
-}
-
-void VideoDisplay::OnSaveSnapshotRaw(wxCommandEvent &) {
-	con->videoController->SaveSnapshot(true);
-}
-
-void VideoDisplay::OnCopyCoords(wxCommandEvent &) {
-	if (wxTheClipboard->Open()) {
-		int x = video.x;
-		int y = video.y;
-		ToScriptCoords(&x, &y);
-		wxTheClipboard->SetData(new wxTextDataObject(wxString::Format(L"%i,%i",x,y)));
-		wxTheClipboard->Close();
-	}
 void VideoDisplay::GetMousePosition(int *x, int *y) const {
 	*x = video.x;
 	*y = video.y;
