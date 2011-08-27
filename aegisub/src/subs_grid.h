@@ -53,6 +53,7 @@
 namespace agi { class OptionValue; }
 
 class AssEntry;
+class wxMenu;
 
 typedef std::list<AssEntry*>::iterator entryIter;
 
@@ -63,9 +64,9 @@ typedef std::list<AssEntry*>::iterator entryIter;
 /// DOCME
 class SubtitlesGrid: public BaseGrid {
 	agi::signal::Connection seekListener;
+	wxMenu *context_menu;
 
 	void OnPopupMenu(bool alternate=false);
-	void OnCommand(wxCommandEvent& event);
 
 	void OnShowColMenu(wxCommandEvent &event);
 

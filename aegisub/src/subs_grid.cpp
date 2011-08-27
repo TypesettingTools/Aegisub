@@ -49,17 +49,16 @@
 #include "command/command.h"
 #include "include/aegisub/context.h"
 #include "include/aegisub/audio_provider.h"
+#include "include/aegisub/menu.h"
 
 #include "ass_file.h"
 #include "ass_karaoke.h"
 #include "ass_override.h"
 #include "ass_style.h"
-#include "audio_box.h"
 #include "audio_controller.h"
 #include "charset_conv.h"
 #include "dialog_paste_over.h"
 #include "frame_main.h"
-#include "include/aegisub/audio_provider.h"
 #include "main.h"
 #include "subs_edit_box.h"
 #include "subs_grid.h"
@@ -70,29 +69,21 @@ BEGIN_EVENT_TABLE(SubtitlesGrid, BaseGrid)
 	EVT_MENU_RANGE(MENU_SHOW_COL,MENU_SHOW_COL+15,SubtitlesGrid::OnShowColMenu)
 END_EVENT_TABLE()
 
-/// @brief Constructor 
-/// @param parentFr 
-/// @param parent   
-/// @param id       
-/// @param pos      
-/// @param size     
-/// @param style    
-/// @param name     
 SubtitlesGrid::SubtitlesGrid(wxWindow *parent, agi::Context *context,  const wxSize& size, long style, const wxString& name)
 : BaseGrid(parent,context,size,style,name)
 , seekListener(context->videoController->AddSeekListener(&SubtitlesGrid::Refresh, this, false, (const wxRect *)NULL))
+, context_menu(0)
 {
 	OnHighlightVisibleChange(*OPT_GET("Subtitle/Grid/Highlight Subtitles in Frame"));
 	OPT_SUB("Subtitle/Grid/Highlight Subtitles in Frame", &SubtitlesGrid::OnHighlightVisibleChange, this);
 	OPT_SUB("Subtitle/Grid/Hide Overrides", std::tr1::bind(&SubtitlesGrid::Refresh, this, false, (const wxRect*)0));
 	context->ass->AddCommitListener(&SubtitlesGrid::OnSubtitlesCommit, this);
 	context->ass->AddFileOpenListener(&SubtitlesGrid::OnSubtitlesOpen, this);
-
-	Bind(wxEVT_COMMAND_MENU_SELECTED, &SubtitlesGrid::OnCommand, this);
 }
 
 /// @brief Destructor 
 SubtitlesGrid::~SubtitlesGrid() {
+	delete context_menu;
 }
 
 void SubtitlesGrid::OnSubtitlesCommit(int type) {
@@ -124,19 +115,6 @@ void SubtitlesGrid::OnSubtitlesOpen() {
 	SetColumnWidths();
 }
 
-void SubtitlesGrid::OnCommand(wxCommandEvent& event) {
-	int id = event.GetId();
-	if (id < MENU_SHOW_COL)
-		cmd::call(context, id);
-	else
-		event.Skip();
-}
-
-static inline void append_command(wxMenu &menu, const char *name, const agi::Context *context) {
-	cmd::Command *c = cmd::get(name);
-	menu.Append(cmd::id(name), c->StrMenu(context), c->StrHelp())->Enable(c->Validate(context));
-}
-
 /// @brief Popup menu 
 /// @param alternate 
 void SubtitlesGrid::OnPopupMenu(bool alternate) {
@@ -165,51 +143,8 @@ void SubtitlesGrid::OnPopupMenu(bool alternate) {
 		return;
 	}
 
-	wxMenu menu;
-
-	// Insert
-	append_command(menu, "subtitle/insert/before", context);
-	append_command(menu, "subtitle/insert/after", context);
-	append_command(menu, "subtitle/insert/before/videotime", context);
-	append_command(menu, "subtitle/insert/after/videotime", context);
-	menu.AppendSeparator();
-
-	// Duplicate selection
-	append_command(menu, "edit/line/duplicate", context);
-	append_command(menu, "edit/line/duplicate/shift", context);
-
-	// Swaps selection
-	append_command(menu, "edit/line/swap", context);
-
-	// Join selection
-	append_command(menu, "edit/line/join/concatenate", context);
-	append_command(menu, "edit/line/join/keep_first", context);
-	append_command(menu, "edit/line/join/as_karaoke", context);
-	menu.AppendSeparator();
-
-	// Adjoin selection
-	append_command(menu, "time/continuous/start", context);
-	append_command(menu, "time/continuous/end", context);
-
-	// Recombine selection
-	append_command(menu, "edit/line/recombine", context);
-	menu.AppendSeparator();
-
-	//Make audio clip
-	append_command(menu, "audio/save/clip", context);
-	menu.AppendSeparator();
-
-
-	// Copy/cut/paste
-	append_command(menu, "edit/line/copy", context);
-	append_command(menu, "edit/line/cut", context);
-	append_command(menu, "edit/line/paste", context);
-	menu.AppendSeparator();
-
-	// Delete
-	append_command(menu, "edit/line/delete", context);
-
-	PopupMenu(&menu);
+	if (!context_menu) context_menu = menu::GetMenu("grid_context", context);
+	menu::OpenPopupMenu(context_menu, this);
 }
 
 /// @brief Process a show/hide column event 
