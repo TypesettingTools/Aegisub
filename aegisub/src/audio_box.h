@@ -35,28 +35,24 @@
 ///
 
 #ifndef AGI_PRE
-#include <wx/bmpbuttn.h>
-#include <wx/button.h>
-#include <wx/menu.h>
 #include <wx/panel.h>
-#include <wx/sashwin.h>
-#include <wx/scrolbar.h>
-#include <wx/sizer.h>
-#include <wx/slider.h>
-#include <wx/string.h>
-#include <wx/textctrl.h>
-#include <wx/tglbtn.h>
 #endif
+
+namespace agi {
+	struct Context;
+	class OptionValue;
+}
 
 class AudioController;
 class AudioDisplay;
 class AudioKaraoke;
 class AudioTimingController;
-class ToggleBitmap;
-namespace agi {
-	struct Context;
-	class OptionValue;
-}
+class wxBitmapToggleButton;
+class wxButton;
+class wxCommandEvent;
+class wxScrollEvent;
+class wxSizer;
+class wxSlider;
 
 /// @class AudioBox
 /// @brief Panel with audio playback and timing controls, also containing an AudioDisplay
@@ -107,15 +103,13 @@ class AudioBox : public wxPanel {
 	void OnVerticalZoom(wxScrollEvent &event);
 	void OnVolume(wxScrollEvent &event);
 	void OnVerticalLink(agi::OptionValue const& opt);
+	void OnVerticalLinkButton(wxCommandEvent&);
 
-	void OnKaraoke(wxCommandEvent &event);
-	void OnJoin(wxCommandEvent &event);
-	void OnSplit(wxCommandEvent &event);
-	void OnCancel(wxCommandEvent &event);
-	void OnAccept(wxCommandEvent &event);
-	void OnGoto(wxCommandEvent &event);
-
-	void OnCommand(wxCommandEvent &event);
+	void OnKaraoke(wxCommandEvent &);
+	void OnJoin(wxCommandEvent &);
+	void OnSplit(wxCommandEvent &);
+	void OnCancel(wxCommandEvent &);
+	void OnAccept(wxCommandEvent &);
 
 	/// DOCME
 	AudioKaraoke *audioKaraoke;

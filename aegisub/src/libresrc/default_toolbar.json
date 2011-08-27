@@ -1,4 +1,28 @@
 {
+    "audio" : [
+        "time/prev",
+        "time/next",
+        "audio/play/selection",
+        "audio/stop",
+        "",
+        "audio/play/selection/before",
+        "audio/play/selection/after",
+        "audio/play/selection/begin",
+        "audio/play/selection/end",
+        "audio/play/to_end",
+        "",
+        "time/lead/in",
+        "time/lead/out",
+        "",
+        "audio/commit",
+        "audio/go_to",
+        "",
+        "audio/opt/autocommit",
+        "audio/opt/autonext",
+        "audio/opt/autoscroll",
+        "audio/opt/spectrum",
+        "app/toggle/global_hotkeys"
+    ],
     "main" : [
         "subtitle/new",
         "subtitle/open",

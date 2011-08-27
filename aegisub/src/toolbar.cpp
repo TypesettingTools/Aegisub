@@ -176,4 +176,8 @@ namespace toolbar {
 	void AttachToolbar(wxFrame *frame, std::string const& name, agi::Context *c, std::string const& hotkey) {
 		frame->SetToolBar(new Toolbar(frame, name, c, hotkey));
 	}
+
+	wxToolBar *GetToolbar(wxWindow *parent, std::string const& name, agi::Context *c, std::string const& hotkey) {
+		return new Toolbar(parent, name, c, hotkey);
+	}
 }

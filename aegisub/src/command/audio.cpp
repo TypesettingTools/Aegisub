@@ -323,7 +323,7 @@ struct audio_commit : public Command {
 
 /// Scroll the audio display to the current selection
 struct audio_go_to : public Command {
-	CMD_NAME("audio/?")
+	CMD_NAME("audio/go_to")
 	STR_MENU("Go to selection")
 	STR_DISP("Go to selection")
 	STR_HELP("Go to selection")
@@ -389,6 +389,23 @@ struct audio_autonext : public Command {
 	}
 };
 
+/// Toggle spectrum analyzer mode
+struct audio_toggle_spectrum : public Command {
+	CMD_NAME("audio/opt/spectrum")
+	STR_MENU("Spectrum analyzer mode")
+	STR_DISP("Spectrum analyzer mode")
+	STR_HELP("Spectrum analyzer mode")
+	CMD_TYPE(COMMAND_TOGGLE)
+
+	bool IsActive(const agi::Context *c) {
+		return OPT_GET("Audio/Spectrum")->GetBool();
+	}
+
+	void operator()(agi::Context *c) {
+		toggle("Audio/Spectrum");
+	}
+};
+
 /// Toggle linked vertical zoom and volume
 struct audio_vertical_link : public Command {
 	CMD_NAME("audio/opt/vertical_link")
@@ -432,6 +449,7 @@ namespace cmd {
 		reg(new audio_play_to_end);
 		reg(new audio_save_clip);
 		reg(new audio_stop);
+		reg(new audio_toggle_spectrum);
 		reg(new audio_vertical_link);
 		reg(new audio_view_spectrum);
 		reg(new audio_view_waveform);
