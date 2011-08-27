@@ -16,7 +16,6 @@ SRC = \
 	grid.cpp \
 	help.cpp \
 	keyframe.cpp \
-	menu_.cpp \
 	recent.cpp \
 	subtitle.cpp \
 	time.cpp \

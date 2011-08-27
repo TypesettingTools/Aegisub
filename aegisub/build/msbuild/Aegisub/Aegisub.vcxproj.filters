@@ -486,9 +486,6 @@
     <ClInclude Include="$(SrcDir)ffmpegsource_common.h">
       <Filter>AV support</Filter>
     </ClInclude>
-    <ClInclude Include="$(SrcDir)vfw_wrap.h">
-      <Filter>AV support</Filter>
-    </ClInclude>
     <ClInclude Include="$(SrcDir)MatroskaParser.h">
       <Filter>AV support</Filter>
     </ClInclude>
@@ -1004,9 +1001,6 @@
     <ClCompile Include="$(SrcDir)ffmpegsource_common.cpp">
       <Filter>AV support</Filter>
     </ClCompile>
-    <ClCompile Include="$(SrcDir)vfw_wrap.cpp">
-      <Filter>AV support</Filter>
-    </ClCompile>
     <ClCompile Include="$(SrcDir)MatroskaParser.c">
       <Filter>AV support</Filter>
     </ClCompile>
@@ -1185,9 +1179,6 @@
       <Filter>Commands</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)command\automation.cpp">
-      <Filter>Commands</Filter>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)command\menu_.cpp">
       <Filter>Commands</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)command\timecode.cpp">

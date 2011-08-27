@@ -193,7 +193,6 @@
     <ClInclude Include="$(SrcDir)variable_data.h" />
     <ClInclude Include="$(SrcDir)vector2d.h" />
     <ClInclude Include="$(SrcDir)version.h" />
-    <ClInclude Include="$(SrcDir)vfw_wrap.h" />
     <ClInclude Include="$(SrcDir)video_box.h" />
     <ClInclude Include="$(SrcDir)video_context.h" />
     <ClInclude Include="$(SrcDir)video_display.h" />
@@ -282,7 +281,6 @@
     <ClCompile Include="$(SrcDir)command\help.cpp" />
     <ClCompile Include="$(SrcDir)command\icon.cpp" />
     <ClCompile Include="$(SrcDir)command\keyframe.cpp" />
-    <ClCompile Include="$(SrcDir)command\menu_.cpp" />
     <ClCompile Include="$(SrcDir)command\recent.cpp" />
     <ClCompile Include="$(SrcDir)command\subtitle.cpp" />
     <ClCompile Include="$(SrcDir)command\time.cpp" />
@@ -386,7 +384,6 @@
     <ClCompile Include="$(SrcDir)variable_data.cpp" />
     <ClCompile Include="$(SrcDir)vector2d.cpp" />
     <ClCompile Include="$(SrcDir)version.cpp" />
-    <ClCompile Include="$(SrcDir)vfw_wrap.cpp" />
     <ClCompile Include="$(SrcDir)video_box.cpp" />
     <ClCompile Include="$(SrcDir)video_context.cpp" />
     <ClCompile Include="$(SrcDir)video_display.cpp" />
