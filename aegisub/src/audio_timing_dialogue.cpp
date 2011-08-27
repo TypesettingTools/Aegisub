@@ -150,6 +150,7 @@ class AudioTimingControllerDialogue : public AudioTimingController, private Sele
 	SelectionController<AssDialogue> *selection_controller;
 
 	agi::signal::Connection commit_slot;
+	agi::signal::Connection audio_open_slot;
 
 	/// @todo Dealing with the AssFile directly is probably not the best way to
 	///       handle committing, but anything better probably needs to wait for
@@ -261,6 +262,7 @@ AudioTimingControllerDialogue::AudioTimingControllerDialogue(AudioController *au
 
 	selection_controller->AddSelectionListener(this);
 	commit_slot = ass->AddCommitListener(&AudioTimingControllerDialogue::OnFileChanged, this);
+	audio_open_slot = audio_controller->AddAudioOpenListener(&AudioTimingControllerDialogue::Revert, this);
 }
 
 
@@ -303,7 +305,8 @@ void AudioTimingControllerDialogue::GetMarkers(const SampleRange &range, AudioMa
 
 void AudioTimingControllerDialogue::OnActiveLineChanged(AssDialogue *new_line)
 {
-	Revert();
+	if (audio_controller->IsAudioOpen())
+		Revert();
 }
 
 void AudioTimingControllerDialogue::OnSelectedSetChanged(const Selection &lines_added, const Selection &lines_removed)
