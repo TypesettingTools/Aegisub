@@ -53,10 +53,6 @@ class AssEntry;
 class AssDialogue;
 class SubsEditBox;
 
-/// DOCME
-typedef std::list<AssEntry*>::iterator entryIter;
-
-
 typedef SelectionController<AssDialogue> SubtitleSelectionController;
 typedef SelectionListener<AssDialogue> SubtitleSelectionListener;
 

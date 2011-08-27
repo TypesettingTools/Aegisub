@@ -34,8 +34,6 @@
 /// @ingroup main_ui
 ///
 
-#pragma once
-
 #ifndef AGI_PRE
 #include <fstream>
 #include <iostream>
@@ -54,8 +52,6 @@ namespace agi { class OptionValue; }
 
 class AssEntry;
 class wxMenu;
-
-typedef std::list<AssEntry*>::iterator entryIter;
 
 /// DOCME
 /// @class SubtitlesGrid
