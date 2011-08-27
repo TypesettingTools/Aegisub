@@ -44,41 +44,17 @@
 ///
 /// DOCME
 class AvisynthVideoProvider: public VideoProvider, AviSynthWrapper {
-	/// DOCME
+	AegiVideoFrame iframe;
+	wxString decoderName;
+	agi::vfr::Framerate fps;
+	std::vector<int> KeyFrames;
+	wxString warning;
+
+	PClip RGB32Video;
 	VideoInfo vi;
 
-	/// DOCME
-	AegiVideoFrame iframe;
-
-
-	/// DOCME
-	bool usedDirectShow;
-
-	/// DOCME
-	wxString rendererCallString;
-
-	/// DOCME
-	wxString decoderName;
-
-
-	/// DOCME
-	int num_frames;
-
-	/// DOCME
 	int last_fnum;
 
-
-	/// DOCME
-	agi::vfr::Framerate real_fps;
-	agi::vfr::Framerate vfr_fps;
-
-	/// DOCME
-	std::vector<int> KeyFrames;
-
-	/// DOCME
-	PClip RGB32Video;
-
-	PClip OpenVideo(wxString filename);
 	AVSValue Open(wxFileName const& fname, wxString const& extension);
 
 public:
@@ -88,12 +64,12 @@ public:
 	const AegiVideoFrame GetFrame(int n);
 
 	int GetPosition() const { return last_fnum; };
-	int GetFrameCount() const { return num_frames? num_frames: vi.num_frames; };
-	agi::vfr::Framerate GetFPS() const { return vfr_fps.IsLoaded() ? vfr_fps : real_fps; };
+	int GetFrameCount() const { return vi.num_frames; };
+	agi::vfr::Framerate GetFPS() const { return fps; };
 	int GetWidth() const { return vi.width; };
 	int GetHeight() const { return vi.height; };
 	std::vector<int> GetKeyFrames() const { return KeyFrames; };
-	wxString GetWarning() const;
-	wxString GetDecoderName() const { return wxString(L"Avisynth/") + decoderName; }
+	wxString GetWarning() const { return warning; }
+	wxString GetDecoderName() const { return decoderName; }
 };
 #endif

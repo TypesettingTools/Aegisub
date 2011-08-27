@@ -601,14 +601,6 @@
 				RelativePath="..\..\src\mkv_wrap.h"
 				>
 			</File>
-			<File
-				RelativePath="..\..\src\vfw_wrap.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\vfw_wrap.h"
-				>
-			</File>
 		</Filter>
 		<Filter
 			Name="Controls"
