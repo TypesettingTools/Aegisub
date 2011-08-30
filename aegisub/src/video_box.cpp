@@ -123,9 +123,11 @@ VideoBox::VideoBox(wxWindow *parent, bool isDetached)
 	visualToolBar->ToggleTool(Video_Mode_Realtime,Options.AsBool(_T("Video Visual Realtime")));
 	visualToolBar->AddTool(Video_Mode_Help,_("Help"),wxBITMAP(visual_help),_("Open the manual page for Visual Typesetting."));
 	visualToolBar->Realize();
+#ifdef __WXMSW__
 	// Avoid ugly themed background on Vista and possibly also Win7
 	visualToolBar->SetBackgroundStyle(wxBG_STYLE_COLOUR);
 	visualToolBar->SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNFACE));
+#endif
 
 	// Top sizer
 	// Detached and attached video needs different flags, see bugs #742 and #853
