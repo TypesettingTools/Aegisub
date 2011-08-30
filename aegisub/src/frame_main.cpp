@@ -1291,6 +1291,13 @@ void FrameMain::StatusTimeout(wxString text,int ms) {
 }
 
 
+// Helper for below
+namespace {
+	struct AcceleratorInvalid {
+		bool operator() (const wxAcceleratorEntry &ac) { return ac.GetKeyCode() == 0; }
+	};
+};
+
 ///////////////////////////
 // Setup accelerator table
 void FrameMain::SetAccelerators() {
@@ -1326,9 +1333,6 @@ void FrameMain::SetAccelerators() {
 	}
 
 	// Remove all invalid accelerators
-	struct AcceleratorInvalid {
-		bool operator() (const wxAcceleratorEntry &ac) { return ac.GetKeyCode() == 0; }
-	};
 	entry.erase(std::remove_if(entry.begin(), entry.end(), AcceleratorInvalid()), entry.end());
 
 	// Set table
