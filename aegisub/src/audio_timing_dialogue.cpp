@@ -260,6 +260,9 @@ AudioTimingControllerDialogue::AudioTimingControllerDialogue(AudioController *au
 
 	AudioMarkerDialogueTiming::InitPair(&markers[0], &markers[1]);
 
+	if (audio_controller->IsAudioOpen())
+		Revert();
+
 	selection_controller->AddSelectionListener(this);
 	commit_slot = ass->AddCommitListener(&AudioTimingControllerDialogue::OnFileChanged, this);
 	audio_open_slot = audio_controller->AddAudioOpenListener(&AudioTimingControllerDialogue::Revert, this);
