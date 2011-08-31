@@ -55,10 +55,12 @@
 #include "audio_timing.h"
 #include "block_cache.h"
 #include "include/aegisub/audio_provider.h"
+#include "include/aegisub/context.h"
 #include "include/aegisub/hotkey.h"
 #include "main.h"
 #include "selection_controller.h"
 #include "utils.h"
+#include "video_context.h"
 
 class AudioDisplayScrollbar : public AudioDisplayInteractionObject {
 	static const int height = 10;
@@ -1149,7 +1151,12 @@ void AudioDisplay::OnMouseEvent(wxMouseEvent& event)
 		}
 	}
 
-	/// @todo Handle middle click to seek video
+	if (event.MiddleDown())
+	{
+		context->videoController->JumpToTime(
+			controller->MillisecondsFromSamples(SamplesFromRelativeX(mousepos.x)),
+			agi::vfr::EXACT);
+	}
 }
 
 void AudioDisplay::OnKeyDown(wxKeyEvent& event)
