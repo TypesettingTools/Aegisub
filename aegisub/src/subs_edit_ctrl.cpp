@@ -182,6 +182,8 @@ SubsTextEditCtrl::SubsTextEditCtrl(wxWindow* parent, wxSize wsize, long style, S
 
 	Bind(wxEVT_STC_STYLENEEDED, &SubsTextEditCtrl::UpdateCallTip, this);
 
+	Bind(wxEVT_CONTEXT_MENU, &SubsTextEditCtrl::OnContextMenu, this);
+
 	OPT_SUB("Subtitle/Edit Box/Font Face", &SubsTextEditCtrl::SetStyles, this);
 	OPT_SUB("Subtitle/Edit Box/Font Size", &SubsTextEditCtrl::SetStyles, this);
 	OPT_SUB("Colour/Subtitle/Syntax/Normal", &SubsTextEditCtrl::SetStyles, this);
@@ -204,7 +206,6 @@ SubsTextEditCtrl::~SubsTextEditCtrl() {
 }
 
 BEGIN_EVENT_TABLE(SubsTextEditCtrl,wxStyledTextCtrl)
-	EVT_MOUSE_EVENTS(SubsTextEditCtrl::OnMouseEvent)
 	EVT_KILL_FOCUS(SubsTextEditCtrl::OnLoseFocus)
 
 	EVT_MENU(EDIT_MENU_SPLIT_PRESERVE,SubsTextEditCtrl::OnSplitLinePreserve)
@@ -763,23 +764,20 @@ void SubsTextEditCtrl::SetTextTo(wxString text) {
 	Thaw();
 }
 
-void SubsTextEditCtrl::OnMouseEvent(wxMouseEvent &event) {
-	if (event.ButtonUp(wxMOUSE_BTN_RIGHT)) {
-		if (grid->GetActiveLine() != 0) {
-			int pos = PositionFromPoint(event.GetPosition());
-			ShowPopupMenu(pos);
-			return;
-		}
+void SubsTextEditCtrl::OnContextMenu(wxContextMenuEvent &event) {
+	if (!grid->GetActiveLine())
+		return;
+
+	wxPoint pos = event.GetPosition();
+	int activePos;
+	if (pos == wxDefaultPosition) {
+		activePos = GetCurrentPos();
+	}
+	else {
+		activePos = PositionFromPoint(ScreenToClient(pos));
 	}
 
-	event.Skip();
-	GetParent()->GetEventHandler()->ProcessEvent(event);
-}
-
-void SubsTextEditCtrl::ShowPopupMenu(int activePos) {
 	wxMenu menu;
-
-	if (activePos == -1) activePos = GetCurrentPos();
 	activePos = GetReverseUnicodePosition(activePos);
 
 	currentWord = GetWordAtPosition(activePos);

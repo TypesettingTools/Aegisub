@@ -104,10 +104,10 @@ wxTextCtrl(parent,id,value,pos,size,TimeEditWindowStyle | style,validator,name)
 	isEnd = false;
 
 	Bind(wxEVT_COMMAND_TEXT_UPDATED, &TimeEdit::OnModified, this);
+	Bind(wxEVT_CONTEXT_MENU, &TimeEdit::OnContextMenu, this);
 }
 
 BEGIN_EVENT_TABLE(TimeEdit, wxTextCtrl)
-	EVT_MOUSE_EVENTS(TimeEdit::OnMouseEvent)
 	EVT_KEY_DOWN(TimeEdit::OnKeyDown)
 	EVT_MENU(Time_Edit_Copy,TimeEdit::OnCopy)
 	EVT_MENU(Time_Edit_Paste,TimeEdit::OnPaste)
@@ -259,20 +259,13 @@ void TimeEdit::OnKeyDown(wxKeyEvent &event) {
 
 /// @brief Mouse event 
 /// @param event 
-void TimeEdit::OnMouseEvent(wxMouseEvent &event) {
-	// Right click context menu
-	if (event.RightUp()) {
-		if (!byFrame && OPT_GET("Subtitle/Time Edit/Insert Mode")->GetBool()) {
-			wxMenu menu;
-			menu.Append(Time_Edit_Copy,_("&Copy"));
-			menu.Append(Time_Edit_Paste,_("&Paste"));
-			PopupMenu(&menu);
-			return;
-		}
+void TimeEdit::OnContextMenu(wxContextMenuEvent &event) {
+	if (!byFrame && OPT_GET("Subtitle/Time Edit/Insert Mode")->GetBool()) {
+		wxMenu menu;
+		menu.Append(Time_Edit_Copy,_("&Copy"));
+		menu.Append(Time_Edit_Paste,_("&Paste"));
+		PopupMenu(&menu);
 	}
-
-	// Allow other events through
-	event.Skip();
 }
 
 /// @brief Menu Copy 

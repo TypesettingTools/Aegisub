@@ -91,6 +91,7 @@ class BaseGrid : public wxWindow, public BaseSelectionController<AssDialogue> {
 	/// is completed; should be a subset of selection
 	Selection batch_selection_removed;
 
+	void OnContextMenu(wxContextMenuEvent &evt);
 	void OnPaint(wxPaintEvent &event);
 	void OnSize(wxSizeEvent &event);
 	void OnScroll(wxScrollEvent &event);
@@ -100,7 +101,8 @@ class BaseGrid : public wxWindow, public BaseSelectionController<AssDialogue> {
 	void DrawImage(wxDC &dc, bool paint_columns[]);
 	void ScrollTo(int y);
 
-	virtual void OnPopupMenu(bool alternate = false) { }
+	virtual void OpenHeaderContextMenu() { }
+	virtual void OpenBodyContextMenu() { }
 
 protected:
 	int colWidth[16];      ///< Width in pixels of each column

@@ -67,7 +67,7 @@ private:
 
 	/// DOCME
 	void OnModified(wxCommandEvent &event);
-	void OnMouseEvent(wxMouseEvent &event);
+	void OnContextMenu(wxContextMenuEvent &event);
 	void OnKeyDown(wxKeyEvent &event);
 	void OnCopy(wxCommandEvent &event);
 	void OnPaste(wxCommandEvent &event);

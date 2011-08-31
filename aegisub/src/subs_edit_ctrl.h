@@ -79,9 +79,7 @@ class SubsTextEditCtrl : public ScintillaTextCtrl {
 	/// DOCME
 	int tipProtoN;
 
-	void ShowPopupMenu(int activePos=-1);
-
-	void OnMouseEvent(wxMouseEvent &event);
+	void OnContextMenu(wxContextMenuEvent &);
 	void OnSplitLinePreserve(wxCommandEvent &event);
 	void OnSplitLineEstimate(wxCommandEvent &event);
 	void OnAddToDictionary(wxCommandEvent &event);

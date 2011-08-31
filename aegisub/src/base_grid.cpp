@@ -115,6 +115,8 @@ BaseGrid::BaseGrid(wxWindow* parent, agi::Context *context, const wxSize& size, 
 	OPT_SUB("Colour/Subtitle Grid/Selection", Refresh);
 	OPT_SUB("Colour/Subtitle Grid/Standard", Refresh);
 	OPT_SUB("Subtitle/Grid/Highlight Subtitles in Frame", Refresh);
+
+	Bind(wxEVT_CONTEXT_MENU, &BaseGrid::OnContextMenu, this);
 }
 
 BaseGrid::~BaseGrid() {
@@ -641,10 +643,9 @@ void BaseGrid::OnMouseEvent(wxMouseEvent &event) {
 #endif
 
 	// Row that mouse is over
-	bool click = event.ButtonDown(wxMOUSE_BTN_LEFT);
+	bool click = event.LeftDown();
 	bool dclick = event.LeftDClick();
 	int row = event.GetY()/lineHeight + yPos - 1;
-	bool headerClick = row < yPos;
 	if (holding && !click) {
 		row = mid(0,row,GetRows()-1);
 	}
@@ -742,11 +743,6 @@ void BaseGrid::OnMouseEvent(wxMouseEvent &event) {
 		return;
 	}
 
-	// Popup
-	if (event.RightDown()) {
-		OnPopupMenu(headerClick);
-	}
-
 	// Mouse wheel
 	if (event.GetWheelRotation() != 0) {
 		int step = 3 * event.GetWheelRotation() / event.GetWheelDelta();
@@ -755,6 +751,14 @@ void BaseGrid::OnMouseEvent(wxMouseEvent &event) {
 	}
 
 	event.Skip();
+}
+
+void BaseGrid::OnContextMenu(wxContextMenuEvent &evt) {
+	wxPoint pos = evt.GetPosition();
+	if (pos == wxDefaultPosition || ScreenToClient(pos).y > lineHeight)
+		OpenBodyContextMenu();
+	else
+		OpenHeaderContextMenu();
 }
 
 void BaseGrid::ScrollTo(int y) {

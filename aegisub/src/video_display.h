@@ -168,9 +168,13 @@ class VideoDisplay : public wxGLCanvas {
 	void OnKeyDown(wxKeyEvent &event);
 	/// @brief Mouse event handler
 	void OnMouseEvent(wxMouseEvent& event);
+	void OnMouseWheel(wxMouseEvent& event);
+	void OnMouseEnter(wxMouseEvent& event);
+	void OnMouseLeave(wxMouseEvent& event);
 	/// @brief Recalculate video positioning and scaling when the available area or zoom changes
 	void OnSizeEvent(wxSizeEvent &event);
 	void OnMode(const wxCommandEvent &event);
+	void OnContextMenu(wxContextMenuEvent&);
 
 public:
 	/// @brief Constructor
@@ -204,6 +208,4 @@ public:
 	/// @param[out] x x coordinate
 	/// @param[out] y y coordinate
 	void GetMousePosition(int *x, int *y) const;
-
-	DECLARE_EVENT_TABLE()
 };

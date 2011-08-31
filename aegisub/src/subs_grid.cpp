@@ -115,34 +115,29 @@ void SubtitlesGrid::OnSubtitlesOpen() {
 	SetColumnWidths();
 }
 
-/// @brief Popup menu 
-/// @param alternate 
-void SubtitlesGrid::OnPopupMenu(bool alternate) {
-	// Alternate
-	if (alternate) {
-		const wxString strings[] = {
-			_("Line Number"),
-			_("Layer"),
-			_("Start"),
-			_("End"),
-			_("Style"),
-			_("Actor"),
-			_("Effect"),
-			_("Left"),
-			_("Right"),
-			_("Vert"),
-		};
+void SubtitlesGrid::OpenHeaderContextMenu() {
+	const wxString strings[] = {
+		_("Line Number"),
+		_("Layer"),
+		_("Start"),
+		_("End"),
+		_("Style"),
+		_("Actor"),
+		_("Effect"),
+		_("Left"),
+		_("Right"),
+		_("Vert"),
+	};
 
-		// Create Menu
-		wxMenu menu;
-		for (size_t i=0;i<columns;i++) {
-			menu.Append(MENU_SHOW_COL + i,strings[i],_T(""),wxITEM_CHECK)->Check(showCol[i]);
-		}
-		PopupMenu(&menu);
-
-		return;
+	// Create Menu
+	wxMenu menu;
+	for (size_t i=0;i<columns;i++) {
+		menu.Append(MENU_SHOW_COL + i,strings[i],"",wxITEM_CHECK)->Check(showCol[i]);
 	}
+	PopupMenu(&menu);
+}
 
+void SubtitlesGrid::OpenBodyContextMenu() {
 	if (!context_menu) context_menu = menu::GetMenu("grid_context", context);
 	menu::OpenPopupMenu(context_menu, this);
 }

@@ -62,7 +62,8 @@ class SubtitlesGrid: public BaseGrid {
 	agi::signal::Connection seekListener;
 	wxMenu *context_menu;
 
-	void OnPopupMenu(bool alternate=false);
+	void OpenHeaderContextMenu();
+	void OpenBodyContextMenu();
 
 	void OnShowColMenu(wxCommandEvent &event);
 

@@ -77,11 +77,6 @@
 #include "visual_tool_scale.h"
 #include "visual_tool_vector_clip.h"
 
-BEGIN_EVENT_TABLE(VideoDisplay, wxGLCanvas)
-	EVT_MOUSE_EVENTS(VideoDisplay::OnMouseEvent)
-	EVT_KEY_DOWN(VideoDisplay::OnKeyDown)
-END_EVENT_TABLE()
-
 /// Attribute list for gl canvases; set the canvases to doublebuffered rgba with an 8 bit stencil buffer
 int attribList[] = { WX_GL_RGBA , WX_GL_DOUBLEBUFFER, WX_GL_STENCIL_SIZE, 8, 0 };
 
@@ -136,6 +131,14 @@ VideoDisplay::VideoDisplay(
 	if (freeSize) {
 		Bind(wxEVT_SIZE, &VideoDisplay::OnSizeEvent, this);
 	}
+	Bind(wxEVT_CONTEXT_MENU, &VideoDisplay::OnContextMenu, this);
+	Bind(wxEVT_KEY_DOWN, &VideoDisplay::OnKeyDown, this);
+	Bind(wxEVT_LEFT_DOWN, &VideoDisplay::OnMouseEvent, this);
+	Bind(wxEVT_LEFT_UP, &VideoDisplay::OnMouseEvent, this);
+	Bind(wxEVT_MOTION, &VideoDisplay::OnMouseEvent, this);
+	Bind(wxEVT_ENTER_WINDOW, &VideoDisplay::OnMouseEnter, this);
+	Bind(wxEVT_LEAVE_WINDOW, &VideoDisplay::OnMouseLeave, this);
+	Bind(wxEVT_MOUSEWHEEL, &VideoDisplay::OnMouseWheel, this);
 
 	SetCursor(wxNullCursor);
 
@@ -163,8 +166,7 @@ void VideoDisplay::ShowCursor(bool show) {
 		SetCursor(wxNullCursor);
 	}
 	else {
-		wxCursor cursor(wxCURSOR_BLANK);
-		SetCursor(cursor);
+		SetCursor(wxCursor(wxCURSOR_BLANK));
 	}
 }
 
@@ -395,33 +397,37 @@ void VideoDisplay::OnMouseEvent(wxMouseEvent& event) {
 	// Disable when playing
 	if (con->videoController->IsPlaying()) return;
 
-	if (event.ButtonUp(wxMOUSE_BTN_RIGHT)) {
-		if (!context_menu.get()) context_menu.reset(menu::GetMenu("video_context", con));
-		ShowCursor(true);
-		menu::OpenPopupMenu(context_menu.get(), this);
-		return;
-	}
-
-	if (event.ButtonDown(wxMOUSE_BTN_ANY)) {
+	if (event.ButtonDown())
 		SetFocus();
-	}
-	int wheel = event.GetWheelRotation();
-	if (wheel) {
-		SetZoom (zoomValue + .125 * (wheel / event.GetWheelDelta()));
-	}
 
-	if (event.Leaving()) {
-		video.x = INT_MIN;
-		video.y = INT_MIN;
-	}
-	else {
-		video.x = event.GetX();
-		video.y = event.GetY();
-	}
+	video.x = event.GetX();
+	video.y = event.GetY();
 
 	tool->OnMouseEvent(event);
-	ShowCursor(activeMode != Video_Mode_Standard);
 }
+
+void VideoDisplay::OnMouseEnter(wxMouseEvent& event) {
+	ShowCursor(activeMode != Video_Mode_Standard);
+	tool->OnMouseEvent(event);
+}
+
+void VideoDisplay::OnMouseLeave(wxMouseEvent& event) {
+	video.x = INT_MIN;
+	video.y = INT_MIN;
+	tool->OnMouseEvent(event);
+}
+
+void VideoDisplay::OnMouseWheel(wxMouseEvent& event) {
+	if (int wheel = event.GetWheelRotation())
+		SetZoom (zoomValue + .125 * (wheel / event.GetWheelDelta()));
+}
+
+void VideoDisplay::OnContextMenu(wxContextMenuEvent&) {
+	if (!context_menu.get()) context_menu.reset(menu::GetMenu("video_context", con));
+	ShowCursor(true);
+	menu::OpenPopupMenu(context_menu.get(), this);
+}
+
 void VideoDisplay::OnKeyDown(wxKeyEvent &event) {
 	/// @todo
 	int kc = event.GetKeyCode();
@@ -489,6 +495,7 @@ void VideoDisplay::SetMode(int mode) {
 
 	// Update size as the new typesetting tool may have changed the subtoolbar size
 	UpdateSize();
+	ShowCursor(activeMode != Video_Mode_Standard);
 }
 
 void VideoDisplay::ToScriptCoords(int *x, int *y) const {
