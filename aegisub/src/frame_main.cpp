@@ -409,6 +409,8 @@ void FrameMain::InitMenu() {
 	AppendBitmapMenuItem(timingMenu,Menu_Subs_Snap_End_To_Video, MakeHotkeyText(_("Snap End to Video"), _T("Set End to Video")), _("Set end of selected subtitles to current video frame"), wxBITMAP(subend_to_video));
 	AppendBitmapMenuItem(timingMenu,Menu_Video_Snap_To_Scene, MakeHotkeyText(_("Snap to Scene"), _T("Snap to Scene")), _("Set start and end of subtitles to the keyframes around current video frame"), wxBITMAP(snap_subs_to_scene));
 	AppendBitmapMenuItem(timingMenu,Menu_Video_Shift_To_Frame, MakeHotkeyText(_("Shift to Current Frame"), _T("Shift by Current Time")), _("Shift selection so first selected line starts at current frame"), wxBITMAP(shift_to_frame));
+	timingMenu->Append(Menu_Subs_Calculate_End_Time, _("Calculate End Time for Frame(s)"), _("Calculate end time based on reading speed of 14 chars per second"));
+
 	timingMenu->AppendSeparator();
 	wxMenu *ContinuousMenu = new wxMenu;
 	wxMenuItem *ContinuousParent = new wxMenuItem(subtitlesMenu,-1,_("Make Times Continuous"),_T(""),wxITEM_NORMAL,ContinuousMenu);

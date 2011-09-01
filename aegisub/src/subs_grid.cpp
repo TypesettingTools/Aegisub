@@ -1024,6 +1024,28 @@ void SubtitlesGrid::PasteLines(int n,bool pasteOver) {
 	EndBatch();
 }
 
+/// @brief Calculate the end time for a given set of subtitle strings 
+/// @param lines	   
+///
+void SubtitlesGrid::CalculateEndTimeForLines(wxArrayInt lines)
+{
+	AssDialogue *cur;
+	int nrows = lines.Count();
+	float charsPerSecond = 14.0;
+	for (int i=0;i<nrows;i++) {
+		int row = lines[i];
+		cur = GetDialogue(row);
+		int start = cur->Start.GetMS();
+		wxString text = cur->GetStrippedText();
+		float seconds = (float)text.Length() / charsPerSecond;
+		int lenms = seconds * 1000;
+		// make sure very short subtitles stay on for at least a second
+		if (lenms < 1000)
+			lenms = 1000;
+		cur->End.SetMS(start + lenms);
+	}
+	CommitChanges();
+}
 
 /////////////////////////
 // Delete selected lines

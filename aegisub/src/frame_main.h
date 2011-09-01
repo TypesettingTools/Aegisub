@@ -226,6 +226,8 @@ private:
 	void OnOpenKanjiTimer (wxCommandEvent &event);
 	void OnOpenVideoDetails (wxCommandEvent &event);
 	void OnOpenASSDraw (wxCommandEvent &event);
+    
+	void OnCalculateEndTime (wxCommandEvent &event);
 
 	void OnOpenOptions (wxCommandEvent &event);
 	void OnOpenLog (wxCommandEvent &event);
@@ -415,6 +417,7 @@ enum {
 	Menu_Subs_Snap_End_To_Video,
 	Menu_Subs_Snap_Video_To_Start,
 	Menu_Subs_Snap_Video_To_End,
+	Menu_Subs_Calculate_End_Time,
 	Menu_Video_Snap_To_Scene,
 	Menu_Video_Shift_To_Frame,
 
