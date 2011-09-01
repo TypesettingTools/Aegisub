@@ -591,40 +591,53 @@ void BaseGrid::OnMouseEvent(wxMouseEvent &event) {
 	GetClientSize(&w,&h);
 
 	// Modifiers
-	bool shift = event.m_shiftDown;
-	bool alt = event.m_altDown;
-#ifdef __APPLE__
-	bool ctrl = event.m_metaDown;
-#else
-	bool ctrl = event.m_controlDown;
-#endif
+	bool shift = event.ShiftDown();
+	bool alt = event.AltDown();
+	bool ctrl = event.CmdDown();
 
 	// Row that mouse is over
-	bool click = event.ButtonDown(wxMOUSE_BTN_LEFT);
+	bool click = event.LeftDown();
+	bool left_up = event.LeftUp();
 	bool dclick = event.LeftDClick();
-	int row = event.GetY()/lineHeight + yPos - 1;
-	bool headerClick = row < yPos;
-	if (holding && !click) {
-		row = MID(0,row,GetRows()-1);
+	int row = event.GetY() / lineHeight + yPos - 1;
+	if (holding) {
+		row = MID(0, row, GetRows() - 1);
 	}
-	bool validRow = row >= 0 && row < GetRows();
-	if (!validRow) row = -1;
+
+	// If holding is false the left up event has already been handled
+	if (left_up && !holding) {
+		return;
+	}
 
 	// Get focus
-	if (event.ButtonDown()) {
-		if (Options.AsBool(_T("Grid Allow Focus"))) {
-			SetFocus();
-		}
+	if (event.ButtonDown() && Options.AsBool(L"Grid Allow Focus")) {
+		SetFocus();
+	}
+
+	// Popup
+	if (event.RightDown()) {
+		OnPopupMenu(row < yPos, event.GetPosition());
+		return;
+	}
+
+	// Mouse wheel
+	if (event.GetWheelRotation() != 0) {
+		int step = 3 * event.GetWheelRotation() / event.GetWheelDelta();
+		ScrollTo(yPos - step);
+		return;
+	}
+
+	if (row < 0 || row >= GetRows()) {
+		return;
 	}
 
 	// Click type
-	bool startedHolding = false;
-	if (click && !holding && validRow) {
+	if (click) {
 		holding = true;
-		startedHolding = true;
+		if (!shift && !alt) lastRow = row;
 		CaptureMouse();
 	}
-	if (!event.ButtonIsDown(wxMOUSE_BTN_LEFT) && holding) {
+	if (left_up && holding) {
 		holding = false;
 		ReleaseMouse();
 	}
@@ -635,86 +648,80 @@ void BaseGrid::OnMouseEvent(wxMouseEvent &event) {
 		int minVis = yPos+1;
 		int maxVis = yPos+h/lineHeight-3;
 		int delta = 0;
-		if (row < minVis) delta = -1;
-		if (row > maxVis) delta = +1;
+		if (row < minVis) delta = -3;
+		if (row > maxVis) delta = +3;
 
-		// Scroll
 		if (delta) {
-			ScrollTo(yPos+delta*3);
-			if (startedHolding) {
+			ScrollTo(yPos + delta);
+
+			// End the hold if this was a mousedown to avoid accidental
+			// selection of extra lines
+			if (click) {
 				holding = false;
+				left_up = true;
 				ReleaseMouse();
 			}
 		}
 	}
 
-	// Click
-	if ((click || holding || dclick) && validRow) {
-		// Disable extending
-		extendRow = -1;
+	// Disable extending
+	extendRow = -1;
 
-		// Toggle selected
-		if (click && ctrl && !shift && !alt) {
-			SelectRow(row,true,!IsInSelection(row,0));
-			parentFrame->UpdateToolbar();
-			return;
-		}
+	// Toggle selected
+	if (left_up && ctrl && !shift && !alt) {
+		SelectRow(row,true,!IsInSelection(row,0));
+		parentFrame->UpdateToolbar();
+		return;
+	}
 
-		// Normal click
-		if ((click || dclick) && !shift && !ctrl && !alt) {
-			editBox->SetToLine(row);
-			if (dclick) VideoContext::Get()->JumpToFrame(VFR_Output.GetFrameAtTime(GetDialogue(row)->Start.GetMS(),true));
+	// Normal click
+	if (!shift && !ctrl && !alt) {
+		if (click || dclick) {
 			SelectRow(row,false);
 			parentFrame->UpdateToolbar();
-			lastRow = row;
-			return;
 		}
-
-		// Keep selection
-		if (click && !shift && !ctrl && alt) {
+		if (left_up || dclick) {
+			int old = editBox->linen;
 			editBox->SetToLine(row);
-			return;
+			RefreshRect(wxRect(0,(row+1-yPos)*lineHeight,w,lineHeight+2),false);
+			RefreshRect(wxRect(0,(old+1-yPos)*lineHeight,w,lineHeight+2),false);
 		}
 
-		// Block select
-		if ((click && shift && !ctrl && !alt) || (holding && !ctrl && !alt && !shift)) {
-			if (lastRow != -1) {
-				// Set boundaries
-				int i1 = row;
-				int i2 = lastRow;
-				if (i1 > i2) {
-					int aux = i1;
-					i1 = i2;
-					i2 = aux;
-				}
+		if (dclick)
+			VideoContext::Get()->JumpToFrame(VFR_Output.GetFrameAtTime(GetDialogue(row)->Start.GetMS(),true));
 
-				// Toggle each
-				bool notFirst = false;
-				for (int i=i1;i<=i2;i++) {
-					SelectRow(i,notFirst,true);
-					notFirst = true;
-				}
-				parentFrame->UpdateToolbar();
+		if (click || dclick || left_up)
+			return;
+	}
+
+	// Keep selection
+	if (left_up && !shift && !ctrl && alt) {
+		editBox->SetToLine(row);
+		return;
+	}
+
+	// Block select
+	if ((left_up && shift && !alt) || (holding && !ctrl && !alt && !shift)) {
+		if (lastRow != -1) {
+			// Set boundaries
+			int i1 = row;
+			int i2 = lastRow;
+			if (i1 > i2) {
+				int aux = i1;
+				i1 = i2;
+				i2 = aux;
 			}
-			return;
+
+			// Toggle each
+			bool notFirst = false;
+			for (int i=i1;i<=i2;i++) {
+				SelectRow(i,notFirst || ctrl,true);
+				notFirst = true;
+			}
+			parentFrame->UpdateToolbar();
 		}
-
 		return;
 	}
-
-	// Popup
-	if (event.ButtonDown(wxMOUSE_BTN_RIGHT)) {
-		OnPopupMenu(headerClick, event.GetPosition());
-	}
-
-	// Mouse wheel
-	if (event.GetWheelRotation() != 0) {
-		int step = 3 * event.GetWheelRotation() / event.GetWheelDelta();
-		ScrollTo(yPos - step);
-		return;
-	}
-
-	event.Skip();
 }
 
 
