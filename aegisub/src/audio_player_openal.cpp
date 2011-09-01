@@ -235,7 +235,7 @@ void OpenALPlayer::FillBuffers(ALsizei count)
 		ALsizei fill_len = buffer_length;
 		if (fill_len > (ALsizei)(end_frame - cur_frame)) fill_len = (ALsizei)(end_frame - cur_frame);
 		if (fill_len < 0) fill_len = 0;
-		wxLogDebug(_T("buffer_length=%d, fill_len=%d, end_frame-cur_frame=%d"), buffer_length, fill_len, end_frame-cur_frame);
+		wxLogDebug(_T("buffer_length=%d, fill_len=%d, end_frame-cur_frame=%d"), (int)buffer_length, (int)fill_len, (int)(end_frame-cur_frame));
 
 		if (fill_len > 0)
 			// Get fill_len frames of audio
@@ -285,7 +285,7 @@ void OpenALPlayer::Notify()
 		FillBuffers(newplayed);
 	}
 
-	wxLogDebug(_T("frames played=%d, num frames=%d"), (buffers_played - num_buffers) * buffer_length, end_frame - start_frame);
+	wxLogDebug(_T("frames played=%d, num frames=%d"), (int)((buffers_played - num_buffers) * buffer_length), (int)(end_frame - start_frame));
 	// Check that all of the selected audio plus one full set of buffers has been queued
 	if ((buffers_played - num_buffers) * buffer_length > (ALsizei)(end_frame - start_frame)) {
 		// Then stop

@@ -198,7 +198,7 @@ wxString FFmpegSourceProvider::GetCacheFilename(const wxString& filename)
 	}
 
 	// Generate string to be hashed
-	wxString toHash = filename + wxString::Format(_T(":%i"),len);
+	wxString toHash = filename + wxString::Format(_T(":%i"),(int)len);
 
 	// Get the MD5 digest of the string
 	const wchar_t *tmp = toHash.wc_str();
