@@ -297,7 +297,10 @@ void VideoDisplay::Render() try {
 
 	DrawTVEffects();
 
-	visual->Draw();
+	if (!context->IsPlaying())
+		visual->Draw();
+	else
+		ShowCursor(true);
 
 	glFinish();
 	SwapBuffers();
