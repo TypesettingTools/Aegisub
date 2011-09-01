@@ -133,8 +133,6 @@ public:
 	void CopyLines(wxArrayInt lines);
 	void CutLines(wxArrayInt lines);
 	void PasteLines(int pos,bool over=false);
-  
-	void CalculateEndTimeForLines(wxArrayInt lines);
 
 	std::vector<int> GetAbsoluteSelection();
 	void SetSelectionFromAbsolute(std::vector<int> &selection);

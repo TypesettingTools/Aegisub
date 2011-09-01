@@ -191,7 +191,6 @@ BEGIN_EVENT_TABLE(FrameMain, wxFrame)
 	EVT_MENU(Menu_Subs_Snap_End_To_Video, FrameMain::OnSnapSubsEndToVid)
 	EVT_MENU(Menu_Subs_Snap_Video_To_Start, FrameMain::OnSnapVidToSubsStart)
 	EVT_MENU(Menu_Subs_Snap_Video_To_End, FrameMain::OnSnapVidToSubsEnd)
-	EVT_MENU(Menu_Subs_Calculate_End_Time, FrameMain::OnCalculateEndTime)
 	EVT_MENU(Menu_Video_Snap_To_Scene, FrameMain::OnSnapToScene)
 	EVT_MENU(Menu_Video_Shift_To_Frame, FrameMain::OnShiftToFrame)
 
@@ -1206,13 +1205,6 @@ void FrameMain::OnSnapVidToSubsEnd (wxCommandEvent &event) {
 	}
 }
 
-/// @brief Handler for menu event to calculate the end times of subtitles
-/// @param event 
-///
-void FrameMain::OnCalculateEndTime (wxCommandEvent &event) {
-	if (SubsBox)
-		SubsBox->CalculateEndTimeForLines(SubsBox->GetSelection());
-}
 
 /////////////////
 // Snap to scene
