@@ -652,7 +652,7 @@ void BaseGrid::OnMouseEvent(wxMouseEvent &event) {
 		if (row > maxVis) delta = +3;
 
 		if (delta) {
-			ScrollTo(yPos + delta);
+			ScrollTo(MID(row - (h / lineHeight), yPos + delta, row));
 
 			// End the hold if this was a mousedown to avoid accidental
 			// selection of extra lines
