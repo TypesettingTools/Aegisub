@@ -248,7 +248,8 @@ void VideoDisplay::Render() try {
 	}
 
 	if (video.x > INT_MIN || video.y > INT_MIN || alwaysShowTools->GetBool()) {
-		tool->Draw();
+		if (!con->videoController->IsPlaying())
+			tool->Draw();
 	}
 
 	SwapBuffers();
