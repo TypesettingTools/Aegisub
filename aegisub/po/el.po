@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: Aegisub 2.1.9\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2011-06-04 01:20+0200\n"
-"PO-Revision-Date: 2011-06-04 18:29+0200\n"
+"PO-Revision-Date: 2011-09-11 15:49+0200\n"
 "Last-Translator: Gpower2 <gpower2@yahoo.com>\n"
 "Language-Team: Gpower2, Madarb <gpower2@yahoo.com, madarbwot@hotmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -505,7 +505,7 @@ msgstr "Ό&χι"
 
 #: dialog_attachments.cpp:58
 msgid "Attachment List"
-msgstr "Λίστα Επισυναπτόμενων"
+msgstr "Λίστα Συνημμένων"
 
 #: dialog_attachments.cpp:68
 msgid "E&xtract"
@@ -2682,12 +2682,12 @@ msgstr "Αδυναμία ανάγνωσης στυλ"
 #: dialog_style_manager.cpp:766
 #: dialog_style_manager.cpp:799
 msgid "Are you sure you want to delete these "
-msgstr "Είστε σίγουροι ότι θέλετε να διαγράψετε αυτά"
+msgstr "Είστε σίγουροι ότι θέλετε να διαγράψετε αυτά τα "
 
 #: dialog_style_manager.cpp:768
 #: dialog_style_manager.cpp:801
 msgid " styles?"
-msgstr " τα στυλ;"
+msgstr " στυλ;"
 
 #: dialog_style_manager.cpp:770
 #: dialog_style_manager.cpp:803
