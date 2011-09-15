@@ -45,10 +45,9 @@
 #include "command.h"
 
 #include "../include/aegisub/context.h"
-#include "../video_context.h"
-#include "../main.h"
 #include "../compat.h"
-#include "../subs_edit_box.h"
+#include "../main.h"
+#include "../video_context.h"
 
 namespace {
 	using cmd::Command;

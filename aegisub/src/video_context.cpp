@@ -71,7 +71,6 @@
 #include "mkv_wrap.h"
 #include "selection_controller.h"
 #include "standard_paths.h"
-#include "subs_edit_box.h"
 #include "threaded_frame_source.h"
 #include "utils.h"
 #include "video_context.h"

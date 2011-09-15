@@ -50,7 +50,6 @@
 #include "frame_main.h"
 #include "main.h"
 #include "selection_controller.h"
-#include "subs_edit_box.h"
 #include "subs_edit_ctrl.h"
 #include "subs_grid.h"
 #include "video_display.h"
@@ -454,7 +453,7 @@ void SearchReplaceEngine::ReplaceNext(bool DoReplace) {
 		context->subsGrid->MakeCellVisible(curLine,0);
 		if (field == 0) {
 			context->subsGrid->SetActiveLine(context->subsGrid->GetDialogue(curLine));
-			context->editBox->TextEdit->SetSelectionU(pos,pos+replaceLen);
+			context->editBox->SetSelectionU(pos,pos+replaceLen);
 		}
 
 		// Update video

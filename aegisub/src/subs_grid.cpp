@@ -60,7 +60,6 @@
 #include "dialog_paste_over.h"
 #include "frame_main.h"
 #include "main.h"
-#include "subs_edit_box.h"
 #include "subs_grid.h"
 #include "utils.h"
 #include "video_context.h"

@@ -274,7 +274,8 @@ void FrameMain::InitContents() {
 	audioSash->SetMinimumSizeY(audioBox->GetSize().GetHeight());
 
 	StartupLog("Create subtitle editing box");
-	context->editBox = EditBox = new SubsEditBox(Panel, context.get());
+	EditBox = new SubsEditBox(Panel, context.get());
+	context->editBox = EditBox->TextEdit;
 
 	StartupLog("Arrange main sizers");
 	ToolsSizer = new wxBoxSizer(wxVERTICAL);

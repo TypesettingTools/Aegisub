@@ -50,7 +50,6 @@
 #include "../ass_file.h"
 #include "../dialog_search_replace.h"
 #include "../include/aegisub/context.h"
-#include "../subs_edit_box.h"
 #include "../subs_edit_ctrl.h"
 #include "../subs_grid.h"
 #include "../video_context.h"
@@ -82,8 +81,8 @@ struct edit_line_copy : public validate_sel_nonempty {
 	STR_HELP("Copy subtitles.")
 
 	void operator()(agi::Context *c) {
-		if (c->parent->FindFocus() == c->editBox->TextEdit) {
-			c->editBox->TextEdit->Copy();
+		if (c->parent->FindFocus() == c->editBox) {
+			c->editBox->Copy();
 			return;
 		}
 		c->subsGrid->CopyLines(c->subsGrid->GetSelection());
@@ -99,8 +98,8 @@ struct edit_line_cut: public validate_sel_nonempty {
 	STR_HELP("Cut subtitles.")
 
 	void operator()(agi::Context *c) {
-		if (c->parent->FindFocus() == c->editBox->TextEdit) {
-			c->editBox->TextEdit->Cut();
+		if (c->parent->FindFocus() == c->editBox) {
+			c->editBox->Cut();
 			return;
 		}
 		c->subsGrid->CutLines(c->subsGrid->GetSelection());
@@ -251,8 +250,8 @@ struct edit_line_paste : public Command {
 	}
 
 	void operator()(agi::Context *c) {
-		if (c->parent->FindFocus() == c->editBox->TextEdit) {
-			c->editBox->TextEdit->Paste();
+		if (c->parent->FindFocus() == c->editBox) {
+			c->editBox->Paste();
 			return;
 		}
 		c->subsGrid->PasteLines(c->subsGrid->GetFirstSelRow());

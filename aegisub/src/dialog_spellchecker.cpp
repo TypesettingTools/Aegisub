@@ -36,11 +36,11 @@
 #include "ass_file.h"
 #include "compat.h"
 #include "help_button.h"
-#include "libresrc/libresrc.h"
-#include "main.h"
 #include "include/aegisub/context.h"
 #include "include/aegisub/spellchecker.h"
-#include "subs_edit_box.h"
+#include "libresrc/libresrc.h"
+#include "main.h"
+#include "selection_controller.h"
 #include "subs_edit_ctrl.h"
 #include "utils.h"
 
@@ -191,7 +191,7 @@ void DialogSpellChecker::OnClose(wxCommandEvent&) {
 
 bool DialogSpellChecker::FindNext() {
 	AssDialogue *active_line = context->selectionController->GetActiveLine();
-	int start_pos = context->editBox->TextEdit->GetReverseUnicodePosition(context->editBox->TextEdit->GetCurrentPos());
+	int start_pos = context->editBox->GetReverseUnicodePosition(context->editBox->GetCurrentPos());
 	int commit_id = -1;
 
 	if (CheckLine(active_line, start_pos, &commit_id))
@@ -266,7 +266,7 @@ void DialogSpellChecker::Replace() {
 	if (active_line->Text.Mid(word_start, word_end - word_start) == orig_word->GetValue()) {
 		active_line->Text = active_line->Text.Left(word_start) + replace_word->GetValue() + active_line->Text.Mid(word_end);
 		context->ass->Commit(_("spell check replace"), AssFile::COMMIT_DIAG_TEXT);
-		context->editBox->TextEdit->SetCurrentPos(context->editBox->TextEdit->GetUnicodePosition(word_start + replace_word->GetValue().size()));
+		context->editBox->SetCurrentPos(context->editBox->GetUnicodePosition(word_start + replace_word->GetValue().size()));
 	}
 }
 
@@ -278,8 +278,8 @@ void DialogSpellChecker::SetWord(wxString const& word) {
 	suggest_list->Clear();
 	suggest_list->Append(suggestions);
 
-	context->editBox->TextEdit->SetSelectionU(word_start, word_end);
-	context->editBox->TextEdit->SetCurrentPos(context->editBox->TextEdit->GetUnicodePosition(word_end));
+	context->editBox->SetSelectionU(word_start, word_end);
+	context->editBox->SetCurrentPos(context->editBox->GetUnicodePosition(word_end));
 
 	add_button->Enable(spellchecker->CanAddWord(word));
 }

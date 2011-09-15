@@ -6,7 +6,7 @@ class DialogDetachedVideo;
 class DialogStyling;
 class DialogTranslation;
 template<class T> class SelectionController;
-class SubsEditBox;
+class SubsTextEditCtrl;
 class SubtitlesGrid;
 class VideoBox;
 class VideoContext;
@@ -34,7 +34,7 @@ struct Context {
 	DialogDetachedVideo *detachedVideo;
 	DialogStyling *stylingAssistant;
 	DialogTranslation *translationAssistant;
-	SubsEditBox *editBox;
+	SubsTextEditCtrl *editBox;
 	SubtitlesGrid *subsGrid;
 	VideoBox *videoBox;
 };
