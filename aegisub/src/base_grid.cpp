@@ -343,12 +343,6 @@ void BaseGrid::SelectVisible() {
 	SetSelectedSet(new_selection);
 }
 
-bool BaseGrid::IsInSelection(int row) const {
-	return
-		static_cast<size_t>(row) < line_index_map.size() &&
-		selection.count(index_line_map[row]);
-}
-
 int BaseGrid::GetFirstSelRow() const {
 	if (selection.empty()) return -1;
 
@@ -361,14 +355,6 @@ int BaseGrid::GetFirstSelRow() const {
 	}
 
 	return index;
-}
-
-int BaseGrid::GetLastSelRow() const {
-	int frow = GetFirstSelRow();
-	while (IsInSelection(frow)) {
-		frow++;
-	}
-	return frow-1;
 }
 
 wxArrayInt BaseGrid::GetSelection() const {
@@ -540,7 +526,7 @@ void BaseGrid::DrawImage(wxDC &dc, bool paint_columns[]) {
 
 			// Set color
 			curColor = 0;
-			bool inSel = IsInSelection(curRow);
+			bool inSel = !!selection.count(curDiag);
 			if (inSel && curDiag->Comment) curColor = 5;
 			else if (inSel) curColor = 2;
 			else if (curDiag->Comment) curColor = 3;
@@ -693,7 +679,7 @@ void BaseGrid::OnMouseEvent(wxMouseEvent &event) {
 	if ((click || holding || dclick) && dlg) {
 		// Toggle selected
 		if (click && ctrl && !shift && !alt) {
-			bool isSel = IsInSelection(row);
+			bool isSel = !!selection.count(dlg);
 			if (isSel && selection.size() == 1) return;
 			SelectRow(row,true,!isSel);
 			if (dlg == GetActiveLine()) {
