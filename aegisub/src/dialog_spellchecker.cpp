@@ -1,450 +1,285 @@
-// Copyright (c) 2007, Rodrigo Braz Monteiro
-// All rights reserved.
+// Copyright (c) 2011, Thomas Goyne <plorkyeran@aegisub.org>
 //
-// Redistribution and use in source and binary forms, with or without
-// modification, are permitted provided that the following conditions are met:
+// Permission to use, copy, modify, and distribute this software for any
+// purpose with or without fee is hereby granted, provided that the above
+// copyright notice and this permission notice appear in all copies.
 //
-//   * Redistributions of source code must retain the above copyright notice,
-//     this list of conditions and the following disclaimer.
-//   * Redistributions in binary form must reproduce the above copyright notice,
-//     this list of conditions and the following disclaimer in the documentation
-//     and/or other materials provided with the distribution.
-//   * Neither the name of the Aegisub Group nor the names of its contributors
-//     may be used to endorse or promote products derived from this software
-//     without specific prior written permission.
-//
-// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-// AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-// IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
-// ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
-// LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
-// CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-// SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-// INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-// CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-// ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-// POSSIBILITY OF SUCH DAMAGE.
+// THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+// WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+// MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+// ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+// WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+// ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+// OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 //
 // Aegisub Project http://www.aegisub.org/
 //
 // $Id$
 
 /// @file dialog_spellchecker.cpp
-/// @brief Spell checker dialogue box, not used
-/// @ingroup unused spelling
+/// @brief Spell checker dialogue box
+/// @ingroup spelling
 ///
 
 #include "config.h"
 
 #ifndef AGI_PRE
+#include <wx/combobox.h>
 #include <wx/intl.h>
+#include <wx/listbox.h>
+#include <wx/textctrl.h>
 #endif
+
+#include "dialog_spellchecker.h"
 
 #include "ass_dialogue.h"
 #include "ass_file.h"
 #include "compat.h"
-#include "dialog_spellchecker.h"
 #include "help_button.h"
 #include "libresrc/libresrc.h"
 #include "main.h"
 #include "include/aegisub/context.h"
 #include "include/aegisub/spellchecker.h"
-#include "selection_controller.h"
 #include "subs_edit_box.h"
 #include "subs_edit_ctrl.h"
-#include "subs_grid.h"
 #include "utils.h"
 
-
-///////
-// IDs
-enum {
-
-	/// DOCME
-	BUTTON_REPLACE = 1720,
-
-	/// DOCME
-	BUTTON_IGNORE,
-
-	/// DOCME
-	BUTTON_REPLACE_ALL,
-
-	/// DOCME
-	BUTTON_IGNORE_ALL,
-
-	/// DOCME
-	BUTTON_ADD,
-
-	/// DOCME
-	LIST_SUGGESTIONS,
-
-	/// DOCME
-	LIST_LANGUAGES
-};
-
-
-
-/// @brief Constructor 
-/// @param parent 
-/// @return 
-///
 DialogSpellChecker::DialogSpellChecker(agi::Context *context)
-: wxDialog(context->parent, -1, _("Spell Checker"), wxDefaultPosition, wxDefaultSize)
+: wxDialog(context->parent, -1, _("Spell Checker"))
 , context(context)
+, spellchecker(SpellCheckerFactory::GetSpellChecker())
 {
-	// Set icon
 	SetIcon(BitmapToIcon(GETIMAGE(spellcheck_toolbutton_24)));
 
-	// Get spell checker
-	spellchecker = SpellCheckerFactory::GetSpellChecker();
-	if (!spellchecker) {
-		wxMessageBox(_T("No spellchecker available."),_T("Error"),wxICON_ERROR);
-		Destroy();
-		return;
-	}
+	wxSizer *main_sizer = new wxBoxSizer(wxVERTICAL);
 
-	// Get languages
-	langCodes = spellchecker->GetLanguageList();
-	wxArrayString langNames;
-	const wxLanguageInfo *info;
-	for (size_t i=0;i<langCodes.Count();i++) {
-		wxString name;
-		info = wxLocale::FindLanguageInfo(langCodes[i]);
-		if (info) name = info->Description;
-		else name = langCodes[i];
-		langNames.Add(name);
-	}
+	wxFlexGridSizer *current_word_sizer = new wxFlexGridSizer(2, 5, 5);
+	main_sizer->Add(current_word_sizer, wxSizerFlags().Expand().Border(wxALL, 5));
 
-	// Get current language
-	wxString curLang = lagi_wxString(OPT_GET("Tool/Spell Checker/Language")->GetString());
-	int curLangPos = langCodes.Index(curLang);
-	if (curLangPos == wxNOT_FOUND) {
-		curLangPos = langCodes.Index(_T("en"));
-		if (curLangPos == wxNOT_FOUND) {
-			curLangPos = langCodes.Index(_T("en_US"));
-			if (curLangPos == wxNOT_FOUND) {
-				curLangPos = 0;
-			}
+	wxSizer *bottom_sizer = new wxBoxSizer(wxHORIZONTAL);
+	main_sizer->Add(bottom_sizer, wxSizerFlags().Expand().Border(~wxTOP & wxALL, 5));
+
+	wxSizer *bottom_left_sizer = new wxBoxSizer(wxVERTICAL);
+	bottom_sizer->Add(bottom_left_sizer, wxSizerFlags().Expand().Border(wxRIGHT, 5));
+
+	wxSizer *actions_sizer = new wxBoxSizer(wxVERTICAL);
+	bottom_sizer->Add(actions_sizer, wxSizerFlags().Expand());
+
+	// Misspelled word and currently selected correction
+	current_word_sizer->AddGrowableCol(1, 1);
+	current_word_sizer->Add(new wxStaticText(this, -1, _("Misspelled word:")), 0, wxALIGN_CENTER_VERTICAL);
+	current_word_sizer->Add(orig_word = new wxTextCtrl(this, -1, _("original"), wxDefaultPosition, wxDefaultSize, wxTE_READONLY), wxSizerFlags(1).Expand());
+	current_word_sizer->Add(new wxStaticText(this, -1, _("Replace with:")), 0, wxALIGN_CENTER_VERTICAL);
+	current_word_sizer->Add(replace_word = new wxTextCtrl(this, -1, _("replace with")), wxSizerFlags(1).Expand());
+
+	// List of suggested corrections
+	suggest_list = new wxListBox(this, -1, wxDefaultPosition, wxSize(300, 150));
+	suggest_list->Bind(wxEVT_COMMAND_LISTBOX_SELECTED, &DialogSpellChecker::OnChangeSuggestion, this);
+	suggest_list->Bind(wxEVT_COMMAND_LISTBOX_DOUBLECLICKED, &DialogSpellChecker::OnReplace, this);
+	bottom_left_sizer->Add(suggest_list, wxSizerFlags(1).Expand());
+
+	// List of supported spellchecker languages
+	{
+		if (!spellchecker.get()) {
+			wxMessageBox("No spellchecker available.", "Error", wxICON_ERROR);
+			Destroy();
+			return;
 		}
+
+		dictionary_lang_codes = spellchecker->GetLanguageList();
+		if (dictionary_lang_codes.empty()) {
+			wxMessageBox("No spellchecker dictionaries available.", "Error", wxICON_ERROR);
+			Destroy();
+			return;
+		}
+
+		wxArrayString language_names(dictionary_lang_codes);
+		for (size_t i = 0; i < dictionary_lang_codes.size(); ++i) {
+			if (const wxLanguageInfo *info = wxLocale::FindLanguageInfo(dictionary_lang_codes[i]))
+				language_names[i] = info->Description;
+		}
+
+		language = new wxComboBox(this, -1, "", wxDefaultPosition, wxDefaultSize, language_names, wxCB_DROPDOWN | wxCB_READONLY);
+		wxString cur_lang = lagi_wxString(OPT_GET("Tool/Spell Checker/Language")->GetString());
+		int cur_lang_index = dictionary_lang_codes.Index(cur_lang);
+		if (cur_lang_index == wxNOT_FOUND) cur_lang_index = dictionary_lang_codes.Index("en");
+		if (cur_lang_index == wxNOT_FOUND) cur_lang_index = dictionary_lang_codes.Index("en_US");
+		if (cur_lang_index == wxNOT_FOUND) cur_lang_index = 0;
+		language->SetSelection(cur_lang_index);
+		language->Bind(wxEVT_COMMAND_COMBOBOX_SELECTED, &DialogSpellChecker::OnChangeLanguage, this);
+
+		bottom_left_sizer->Add(language, wxSizerFlags().Expand().Border(wxTOP, 5));
 	}
 
-	// Top sizer
-	origWord = new wxTextCtrl(this,-1,_("original"),wxDefaultPosition,wxDefaultSize,wxTE_READONLY);
-	replaceWord = new wxTextCtrl(this,-1,_("replace with"));
-	wxFlexGridSizer *topSizer = new wxFlexGridSizer(2,2,5,5);
-	topSizer->Add(new wxStaticText(this,-1,_("Misspelled word:")),0,wxALIGN_CENTER_VERTICAL);
-	topSizer->Add(origWord,1,wxEXPAND);
-	topSizer->Add(new wxStaticText(this,-1,_("Replace with:")),0,wxALIGN_CENTER_VERTICAL);
-	topSizer->Add(replaceWord,1,wxEXPAND);
-	topSizer->AddGrowableCol(1,1);
+	{
+		wxButton *button;
+		wxSizerFlags button_flags = wxSizerFlags().Expand().Bottom().Border(wxBOTTOM, 5);
 
-	// List
-	suggestList = new wxListBox(this,LIST_SUGGESTIONS,wxDefaultPosition,wxSize(300,150));
+		actions_sizer->Add(button = new wxButton(this, -1, _("Replace")), button_flags);
+		button->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DialogSpellChecker::OnReplace, this);
 
-	// Actions sizer
-	wxSizer *actionsSizer = new wxBoxSizer(wxVERTICAL);
-	actionsSizer->Add(new wxButton(this,BUTTON_REPLACE,_("Replace")),0,wxEXPAND | wxBOTTOM,5);
-	actionsSizer->Add(new wxButton(this,BUTTON_REPLACE_ALL,_("Replace All")),0,wxEXPAND | wxBOTTOM,5);
-	actionsSizer->Add(new wxButton(this,BUTTON_IGNORE,_("Ignore")),0,wxEXPAND | wxBOTTOM,5);
-	actionsSizer->Add(new wxButton(this,BUTTON_IGNORE_ALL,_("Ignore all")),0,wxEXPAND | wxBOTTOM,5);
-	actionsSizer->Add(addButton = new wxButton(this,BUTTON_ADD,_("Add to dictionary")),0,wxEXPAND | wxBOTTOM,5);
-	actionsSizer->Add(new HelpButton(this,_T("Spell Checker")),0,wxEXPAND | wxBOTTOM,0);
-	actionsSizer->AddStretchSpacer(1);
+		actions_sizer->Add(button = new wxButton(this, -1, _("Replace All")), button_flags);
+		button->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DialogSpellChecker::OnReplaceAll, this);
 
-	// Bottom sizer
-	language = new wxComboBox(this,LIST_LANGUAGES,_T(""),wxDefaultPosition,wxDefaultSize,langNames,wxCB_DROPDOWN | wxCB_READONLY);
-	language->SetSelection(curLangPos);
-	wxFlexGridSizer *botSizer = new wxFlexGridSizer(2,2,5,5);
-	botSizer->Add(suggestList,1,wxEXPAND);
-	botSizer->Add(actionsSizer,1,wxEXPAND);
-	botSizer->Add(language,0,wxEXPAND);
-	botSizer->Add(new wxButton(this,wxID_CANCEL),0,wxEXPAND);
-	botSizer->AddGrowableCol(0,1);
-	botSizer->AddGrowableRow(0,1);
-	//SetEscapeId(wxID_CLOSE);
+		actions_sizer->Add(button = new wxButton(this, -1, _("Ignore")), button_flags);
+		button->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DialogSpellChecker::OnIgnore, this);
 
-	// Main sizer
-	wxSizer *mainSizer = new wxBoxSizer(wxVERTICAL);
-	mainSizer->Add(topSizer,0,wxEXPAND | wxALL,5);
-	mainSizer->Add(botSizer,1,wxEXPAND | wxLEFT | wxRIGHT | wxBOTTOM,5);
-	SetSizer(mainSizer);
-	mainSizer->SetSizeHints(this);
+		actions_sizer->Add(button = new wxButton(this, -1, _("Ignore all")), button_flags);
+		button->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DialogSpellChecker::OnIgnoreAll, this);
+
+		actions_sizer->Add(add_button = new wxButton(this, -1, _("Add to dictionary")), button_flags);
+		button->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DialogSpellChecker::OnAdd, this);
+
+		actions_sizer->Add(new HelpButton(this, "Spell Checker"), button_flags);
+
+		actions_sizer->Add(new wxButton(this, wxID_CANCEL), button_flags.Border(0));
+	}
+
+	SetSizerAndFit(main_sizer);
 	CenterOnParent();
 
-	// Go to first match and show
-	if (GetFirstMatch()) ShowModal();
+	if (FindNext())
+		Show();
+
+	Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DialogSpellChecker::OnClose, this, wxID_CANCEL);
 }
 
-
-
-/// @brief Destructor 
-///
 DialogSpellChecker::~DialogSpellChecker() {
-	if (spellchecker) delete spellchecker;
 }
 
-
-
-/// @brief Find next match 
-/// @param startLine 
-/// @param startPos  
-/// @return 
-///
-bool DialogSpellChecker::FindNext(int startLine,int startPos) {
-	// Set start
-	if (startLine != -1) lastLine = startLine;
-	if (startPos != -1) lastPos = 0;
-
-	// Get grid
-	SubtitlesGrid *grid = context->subsGrid;
-	int rows = grid->GetRows();
-
-	// Loop through lines
-	for (int i=lastLine;i<rows+firstLine;i++) {
-		startFindNextOuterLoop:
-		// Get dialogue
-		int curLine = i % rows;
-		AssDialogue *diag = grid->GetDialogue(curLine);
-
-		// Find list of words in it
-		IntPairVector results;
-		GetWordBoundaries(diag->Text,results);
-
-		// Look for spelling mistakes
-		for (size_t j=0;j<results.size();j++) {
-			// Get word
-			int s = results[j].first;
-			if (s < lastPos) continue;
-			int e = results[j].second;
-			wxString word = diag->Text.Mid(s,e-s);
-
-			// Check if it's on auto ignore
-			if (autoIgnore.Index(word) != wxNOT_FOUND) continue;
-
-			// Mistake
-			if (!spellchecker->CheckWord(word)) {
-				// Set word
-				wordStart = s;
-				wordEnd = e;
-				lastLine = i;
-				lastPos = e;
-
-				// Auto replace?
-				if (autoReplace.find(word) != autoReplace.end()) {
-					// lol mad h4x
-					replaceWord->SetValue(autoReplace[word]);
-					Replace();
-					goto startFindNextOuterLoop;
-				}
-
-				// Proceed normally
-				SetWord(word);
-				return true;
-			}
-		}
-
-		// Go to next
-		lastPos = 0;
-	}
-
-	// None found
-	return false;
-}
-
-
-
-/// @brief Set word 
-/// @param word 
-///
-void DialogSpellChecker::SetWord(wxString word) {
-	// Get list of suggestions
-	wxArrayString sugs = spellchecker->GetSuggestions(word);
-
-	// Set fields
-	origWord->SetValue(word);
-	replaceWord->SetValue((sugs.Count()>0)? sugs[0] : word);
-
-	// Set suggestions list
-	suggestList->Clear();
-	for (size_t i=0;i<sugs.Count();i++) suggestList->Append(sugs[i]);
-
-	// Show word on the main program interface
-	SubtitlesGrid *grid = context->subsGrid;
-	int line = lastLine % grid->GetRows();
-	grid->SelectRow(line,false);
-	grid->MakeCellVisible(line,0);
-	grid->SetActiveLine(grid->GetDialogue(line));
-	context->editBox->TextEdit->SetSelectionU(wordStart,wordEnd);
-	grid->EndBatch();
-
-	addButton->Enable(spellchecker->CanAddWord(word));
-}
-
-
-///////////////
-// Event table
-BEGIN_EVENT_TABLE(DialogSpellChecker,wxDialog)
-	EVT_BUTTON(wxID_CANCEL,DialogSpellChecker::OnClose)
-	EVT_BUTTON(BUTTON_REPLACE,DialogSpellChecker::OnReplace)
-	EVT_BUTTON(BUTTON_REPLACE_ALL,DialogSpellChecker::OnReplaceAll)
-	EVT_BUTTON(BUTTON_IGNORE,DialogSpellChecker::OnIgnore)
-	EVT_BUTTON(BUTTON_IGNORE_ALL,DialogSpellChecker::OnIgnoreAll)
-	EVT_BUTTON(BUTTON_ADD,DialogSpellChecker::OnAdd)
-
-	EVT_COMBOBOX(LIST_LANGUAGES,DialogSpellChecker::OnChangeLanguage)
-	EVT_LISTBOX(LIST_SUGGESTIONS,DialogSpellChecker::OnChangeSuggestion)
-	EVT_LISTBOX_DCLICK(LIST_SUGGESTIONS,DialogSpellChecker::OnTakeSuggestion)
-END_EVENT_TABLE()
-
-
-
-/// @brief Close 
-/// @param event 
-///
-void DialogSpellChecker::OnClose(wxCommandEvent &event) {
-	Destroy();
-}
-
-
-
-/// @brief Replace 
-/// @param event 
-///
-void DialogSpellChecker::OnReplace(wxCommandEvent &event) {
+void DialogSpellChecker::OnReplace(wxCommandEvent&) {
 	Replace();
-	FindOrDie();
+	FindNext();
 }
 
+void DialogSpellChecker::OnReplaceAll(wxCommandEvent&) {
+	auto_replace[orig_word->GetValue()] = replace_word->GetValue();
 
-
-/// @brief Replace all errors 
-/// @param event 
-///
-void DialogSpellChecker::OnReplaceAll(wxCommandEvent &event) {
-	// Add word to autoreplace list
-	autoReplace[origWord->GetValue()] = replaceWord->GetValue();
-
-	// Replace
 	Replace();
-	FindOrDie();
+	FindNext();
 }
 
-
-
-/// @brief Ignore this error 
-/// @param event 
-///
-void DialogSpellChecker::OnIgnore(wxCommandEvent &event) {
-	// Next
-	FindOrDie();
+void DialogSpellChecker::OnIgnore(wxCommandEvent&) {
+	FindNext();
 }
 
-
-
-/// @brief Ignore all errors 
-/// @param event 
-///
-void DialogSpellChecker::OnIgnoreAll(wxCommandEvent &event) {
-	// Add word to autoignore list
-	autoIgnore.Add(origWord->GetValue());
-
-	// Next
-	FindOrDie();
+void DialogSpellChecker::OnIgnoreAll(wxCommandEvent&) {
+	auto_ignore.insert(orig_word->GetValue());
+	FindNext();
 }
 
-
-
-/// @brief Add to dictionary 
-/// @param event 
-///
-void DialogSpellChecker::OnAdd(wxCommandEvent &event) {
-	spellchecker->AddWord(origWord->GetValue());
-	FindOrDie();
+void DialogSpellChecker::OnAdd(wxCommandEvent&) {
+	spellchecker->AddWord(orig_word->GetValue());
+	FindNext();
 }
 
-
-
-/// @brief Goes to next... if it can't find one, close 
-/// @return 
-///
-bool DialogSpellChecker::FindOrDie() {
-	if (!FindNext()) {
-		wxMessageBox(_("Aegisub has finished checking spelling of this script."),_("Spell checking complete."));
-		Destroy();
-		return false;
-	}
-	return true;
-}
-
-
-
-/// @brief Replace 
-///
-void DialogSpellChecker::Replace() {
-	AssDialogue *diag = context->subsGrid->GetDialogue(lastLine % context->subsGrid->GetRows());
-
-	diag->Text = diag->Text.Left(wordStart) + replaceWord->GetValue() + diag->Text.Mid(wordEnd);
-	lastPos = wordStart + replaceWord->GetValue().Length();
-
-	context->ass->Commit(_("Spell check replace"), AssFile::COMMIT_TEXT);
-}
-
-
-
-/// @brief Change language 
-/// @param event 
-///
-void DialogSpellChecker::OnChangeLanguage(wxCommandEvent &event) {
-	// Change language code
-	wxString code = langCodes[language->GetSelection()];
+void DialogSpellChecker::OnChangeLanguage(wxCommandEvent&) {
+	wxString code = dictionary_lang_codes[language->GetSelection()];
 	spellchecker->SetLanguage(code);
 	OPT_SET("Tool/Spell Checker/Language")->SetString(STD_STR(code));
 
-	// Go back to first match
-	GetFirstMatch();
+	FindNext();
 }
 
-
-
-/// @brief Change suggestion 
-/// @param event 
-///
-void DialogSpellChecker::OnChangeSuggestion(wxCommandEvent &event) {
-	replaceWord->SetValue(suggestList->GetStringSelection());
+void DialogSpellChecker::OnChangeSuggestion(wxCommandEvent&) {
+	replace_word->SetValue(suggest_list->GetStringSelection());
 }
 
-
-
-/// @brief Suggestion box double clicked 
-/// @param event 
-///
-void DialogSpellChecker::OnTakeSuggestion(wxCommandEvent &event) {
-	// First line should be unnecessary due to event above, but you never know...
-	replaceWord->SetValue(suggestList->GetStringSelection());
-	Replace();
-	FindOrDie();
+void DialogSpellChecker::OnClose(wxCommandEvent&) {
+	Destroy();
 }
 
+bool DialogSpellChecker::FindNext() {
+	AssDialogue *active_line = context->selectionController->GetActiveLine();
+	int start_pos = context->editBox->TextEdit->GetReverseUnicodePosition(context->editBox->TextEdit->GetCurrentPos());
+	int commit_id = -1;
 
+	if (CheckLine(active_line, start_pos, &commit_id))
+		return true;
 
-/// @brief First match 
-///
-bool DialogSpellChecker::GetFirstMatch() {
-	// Get selection
-	SubtitlesGrid *grid = context->subsGrid;
-	wxArrayInt sel = grid->GetSelection();
-	firstLine = (sel.Count()>0) ? sel[0] : 0;
-	bool hasTypos = FindNext(firstLine,0);
+	AssDialogue *start_line = active_line;
+	std::list<AssEntry*>::iterator it = find(context->ass->Line.begin(), context->ass->Line.end(), active_line);
+	bool has_looped = false;
 
-	// File is already OK
-	if (!hasTypos) {
-		wxMessageBox(_("Aegisub has found no spelling mistakes in this script."),_("Spell checking complete."));
-		Destroy();
-		return false;
+	// Note that it is deliberate that the start line is checked twice, as if
+	// the cursor is past the first misspelled word in the current line, that
+	// word should be hit last
+	while(!has_looped || active_line != start_line) {
+		do {
+			// Wrap around to the beginning if we hit the end
+			if (++it == context->ass->Line.end()) {
+				it = context->ass->Line.begin();
+				has_looped = true;
+			}
+		} while (!(active_line = dynamic_cast<AssDialogue*>(*it)));
+
+		if (CheckLine(active_line, 0, &commit_id))
+			return true;
 	}
 
-	// OK
-	return true;
+	if (IsShown()) {
+		wxMessageBox(_("Aegisub has finished checking spelling of this script."), _("Spell checking complete."));
+		Close();
+	}
+	else {
+		wxMessageBox(_("Aegisub has found no spelling mistakes in this script."), _("Spell checking complete."));
+		Destroy();
+	}
+
+	return false;
 }
 
+bool DialogSpellChecker::CheckLine(AssDialogue *active_line, int start_pos, int *commit_id) {
+	IntPairVector results;
+	GetWordBoundaries(active_line->Text, results);
 
+	int shift = 0;
+	for (size_t j = 0; j < results.size(); ++j) {
+		word_start = results[j].first + shift;
+		if (word_start < start_pos) continue;
+		word_end = results[j].second + shift;
+		wxString word = active_line->Text.Mid(word_start, word_end - word_start);
+
+		if (auto_ignore.count(word) || spellchecker->CheckWord(word)) continue;
+
+		std::map<wxString, wxString>::const_iterator auto_rep = auto_replace.find(word);
+		if (auto_rep == auto_replace.end()) {
+			context->selectionController->SetActiveLine(active_line);
+			SelectionController<AssDialogue>::Selection sel;
+			sel.insert(active_line);
+			context->selectionController->SetSelectedSet(sel);
+			SetWord(word);
+			return true;
+		}
+
+		active_line->Text = active_line->Text.Left(word_start) + auto_rep->second + active_line->Text.Mid(word_end);
+		*commit_id = context->ass->Commit(_("spell check replace"), AssFile::COMMIT_DIAG_TEXT, *commit_id);
+		shift += auto_rep->second.size() - auto_rep->first.size();
+	}
+	return false;
+}
+
+void DialogSpellChecker::Replace() {
+	AssDialogue *active_line = context->selectionController->GetActiveLine();
+
+	// Only replace if the user hasn't changed the selection to something else
+	if (active_line->Text.Mid(word_start, word_end - word_start) == orig_word->GetValue()) {
+		active_line->Text = active_line->Text.Left(word_start) + replace_word->GetValue() + active_line->Text.Mid(word_end);
+		context->ass->Commit(_("spell check replace"), AssFile::COMMIT_DIAG_TEXT);
+		context->editBox->TextEdit->SetCurrentPos(context->editBox->TextEdit->GetUnicodePosition(word_start + replace_word->GetValue().size()));
+	}
+}
+
+void DialogSpellChecker::SetWord(wxString const& word) {
+	orig_word->SetValue(word);
+
+	wxArrayString suggestions = spellchecker->GetSuggestions(word);
+	replace_word->SetValue(suggestions.size() ? suggestions[0] : word);
+	suggest_list->Clear();
+	suggest_list->Append(suggestions);
+
+	context->editBox->TextEdit->SetSelectionU(word_start, word_end);
+	context->editBox->TextEdit->SetCurrentPos(context->editBox->TextEdit->GetUnicodePosition(word_end));
+
+	add_button->Enable(spellchecker->CanAddWord(word));
+}

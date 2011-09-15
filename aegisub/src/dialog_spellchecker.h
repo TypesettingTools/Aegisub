@@ -1,29 +1,16 @@
-// Copyright (c) 2007, Rodrigo Braz Monteiro
-// All rights reserved.
+// Copyright (c) 2011, Thomas Goyne <plorkyeran@aegisub.org>
 //
-// Redistribution and use in source and binary forms, with or without
-// modification, are permitted provided that the following conditions are met:
+// Permission to use, copy, modify, and distribute this software for any
+// purpose with or without fee is hereby granted, provided that the above
+// copyright notice and this permission notice appear in all copies.
 //
-//   * Redistributions of source code must retain the above copyright notice,
-//     this list of conditions and the following disclaimer.
-//   * Redistributions in binary form must reproduce the above copyright notice,
-//     this list of conditions and the following disclaimer in the documentation
-//     and/or other materials provided with the distribution.
-//   * Neither the name of the Aegisub Group nor the names of its contributors
-//     may be used to endorse or promote products derived from this software
-//     without specific prior written permission.
-//
-// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-// AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-// IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
-// ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
-// LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
-// CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-// SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-// INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-// CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-// ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-// POSSIBILITY OF SUCH DAMAGE.
+// THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+// WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+// MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+// ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+// WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+// ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+// OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 //
 // Aegisub Project http://www.aegisub.org/
 //
@@ -31,20 +18,25 @@
 
 /// @file dialog_spellchecker.h
 /// @see dialog_spellchecker.cpp
-/// @ingroup unused spelling
+/// @ingroup spelling
 ///
 
 #ifndef AGI_PRE
 #include <map>
+#include <set>
 
 #include <wx/dialog.h>
-#include <wx/combobox.h>
-#include <wx/listbox.h>
-#include <wx/textctrl.h>
 #endif
 
+#include <libaegisub/scoped_ptr.h>
+
 namespace agi { struct Context; }
+class AssDialogue;
 class SpellChecker;
+class wxButton;
+class wxComboBox;
+class wxListBox;
+class wxTextCtrl;
 
 /// DOCME
 /// @class DialogSpellChecker
@@ -52,72 +44,55 @@ class SpellChecker;
 ///
 /// DOCME
 class DialogSpellChecker : public wxDialog {
-	agi::Context *context;
+	agi::Context *context; ///< The project context
+	agi::scoped_ptr<SpellChecker> spellchecker; ///< The spellchecking engine
 
-	/// DOCME
-	SpellChecker *spellchecker;
+	/// Words which the user has indicated should always be corrected
+	std::map<wxString,wxString> auto_replace;
 
+	/// Words which the user has temporarily added to the dictionary
+	std::set<wxString> auto_ignore;
 
-	/// DOCME
-	std::map<wxString,wxString> autoReplace;
+	/// Dictionaries available
+	wxArrayString dictionary_lang_codes;
 
-	/// DOCME
-	wxArrayString autoIgnore;
+	int word_start; ///< Start index of the current misspelled word
+	int word_end; ///< End index of the current misspelled word
 
-	/// DOCME
-	wxArrayString langCodes;
+	wxTextCtrl *orig_word; ///< The word being corrected
+	wxTextCtrl *replace_word; ///< The replacement that will be used if "Replace" is clicked
+	wxListBox *suggest_list; ///< The list of suggested replacements
 
+	wxComboBox *language; ///< The list of available languages
+	wxButton *add_button; ///< Add word to currently active dictionary
 
-	/// DOCME
+	/// Find the next misspelled word and close the dialog if there are none
+	/// @return Are there any more misspelled words?
+	bool FindNext();
 
-	/// DOCME
-	int wordStart,wordEnd;
+	/// Check a single line for misspellings
+	/// @param active_line Line to check
+	/// @param start_pos Index in the line to start at
+	/// @param[in,out] commit_id Commit id for coalescing autoreplace commits
+	/// @return Was a misspelling found?
+	bool CheckLine(AssDialogue *active_line, int start_pos, int *commit_id);
 
-	/// DOCME
-	int lastLine;
-
-	/// DOCME
-	int lastPos;
-
-	/// DOCME
-	int firstLine;
-
-
-	/// DOCME
-	wxTextCtrl *origWord;
-
-	/// DOCME
-	wxTextCtrl *replaceWord;
-
-	/// DOCME
-	wxListBox *suggestList;
-
-	/// DOCME
-	wxComboBox *language;
-	wxButton *addButton;
-
-	bool FindOrDie();
-	bool FindNext(int startLine=-1,int startPos=-1);
-	bool GetFirstMatch();
-	void SetWord(wxString word);
+	/// Set the current word to be corrected
+	void SetWord(wxString const& word);
+	/// Correct the currently selected word
 	void Replace();
 
-	void OnChangeLanguage(wxCommandEvent &event);
-	void OnChangeSuggestion(wxCommandEvent &event);
-	void OnTakeSuggestion(wxCommandEvent &event);
+	void OnChangeLanguage(wxCommandEvent&);
+	void OnChangeSuggestion(wxCommandEvent&);
 
-	void OnClose(wxCommandEvent &event);
-	void OnReplace(wxCommandEvent &event);
-	void OnReplaceAll(wxCommandEvent &event);
-	void OnIgnore(wxCommandEvent &event);
-	void OnIgnoreAll(wxCommandEvent &event);
-	void OnAdd(wxCommandEvent &event);
+	void OnReplace(wxCommandEvent&);
+	void OnReplaceAll(wxCommandEvent&);
+	void OnIgnore(wxCommandEvent&);
+	void OnIgnoreAll(wxCommandEvent&);
+	void OnAdd(wxCommandEvent&);
+	void OnClose(wxCommandEvent&);
 
 public:
 	DialogSpellChecker(agi::Context *context);
 	~DialogSpellChecker();
-
-	DECLARE_EVENT_TABLE()
 };
-
-
