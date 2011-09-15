@@ -126,6 +126,32 @@ public:
 	DEFINE_SIGNAL_ADDERS(AnnounceMarkerMoved, AddMarkerMovedListener)
 };
 
+/// @class AudioLabelProvider
+/// @brief Abstract interface for audio label providers
+class AudioLabelProvider {
+protected:
+	/// One or more of the labels provided by this object have changed
+	agi::signal::Signal<> AnnounceLabelChanged;
+public:
+	/// A label for a range of samples on the audio display
+	struct AudioLabel {
+		/// Text of the label
+		wxString text;
+		/// Range which this label applies to
+		SampleRange range;
+	};
+
+	/// Virtual destructor, does nothing
+	virtual ~AudioLabelProvider() { }
+
+	/// @brief Get labels in a sample range
+	/// @param range Range of samples to get labels for
+	/// @param[out] out Vector which should be filled with the labels
+	virtual void GetLabels(SampleRange const& range, std::vector<AudioLabel> &out) const = 0;
+
+	DEFINE_SIGNAL_ADDERS(AnnounceLabelChanged, AddLabelChangedListener)
+};
+
 /// @class AudioController
 /// @brief Manage an open audio stream and UI state for it
 ///
@@ -148,7 +174,7 @@ public:
 /// providers or players owned by a controller. If some operation that isn't
 /// possible in the existing design is needed, the controller should be
 /// extended in some way to allow it.
-class AudioController : public wxEvtHandler, public AudioMarkerProvider {
+class AudioController : public wxEvtHandler, public AudioMarkerProvider, public AudioLabelProvider {
 private:
 	/// A new audio stream was opened (and any previously open was closed)
 	agi::signal::Signal<AudioProvider*> AnnounceAudioOpen;
@@ -298,6 +324,11 @@ public:
 	/// @param range   The sample range to retrieve markers for
 	/// @param markers Vector to fill found markers into
 	void GetMarkers(const SampleRange &range, AudioMarkerVector &markers) const;
+
+	/// @brief Get all labels inside a range
+	/// @param range   The sample range to retrieve labels for
+	/// @param labels Vector to fill found labels into
+	void GetLabels(const SampleRange &range, std::vector<AudioLabel> &labels) const;
 
 
 	/// @brief Get the playback audio volume

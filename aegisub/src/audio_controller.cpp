@@ -325,6 +325,7 @@ void AudioController::SetTimingController(AudioTimingController *new_controller)
 	if (timing_controller.get() != new_controller) {
 		timing_controller.reset(new_controller);
 		timing_controller->AddMarkerMovedListener(std::tr1::bind(std::tr1::ref(AnnounceMarkerMoved)));
+		timing_controller->AddLabelChangedListener(std::tr1::bind(std::tr1::ref(AnnounceLabelChanged)));
 		timing_controller->AddUpdatedPrimaryRangeListener(&AudioController::OnTimingControllerUpdatedPrimaryRange, this);
 		timing_controller->AddUpdatedStyleRangesListener(&AudioController::OnTimingControllerUpdatedStyleRanges, this);
 	}
@@ -436,6 +437,10 @@ void AudioController::GetMarkers(const SampleRange &range, AudioMarkerVector &ma
 	if (timing_controller.get()) timing_controller->GetMarkers(range, markers);
 }
 
+void AudioController::GetLabels(const SampleRange &range, std::vector<AudioLabel> &labels) const
+{
+	if (timing_controller.get()) timing_controller->GetLabels(range, labels);
+}
 
 double AudioController::GetVolume() const
 {

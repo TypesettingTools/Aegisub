@@ -51,7 +51,7 @@ class AudioController;
 ///
 /// The timing controller must then be sent the marker drag events as well as
 /// clicks in empty areas of the audio display.
-class AudioTimingController : public AudioMarkerProvider {
+class AudioTimingController : public AudioMarkerProvider, public AudioLabelProvider {
 protected:
 	/// The primary playback range has changed, usually as a result of user interaction.
 	agi::signal::Signal<> AnnounceUpdatedPrimaryRange;
@@ -61,6 +61,9 @@ protected:
 
 	/// A marker has been updated in some way.
 	agi::signal::Signal<AudioMarker*> AnnounceMarkerMoved;
+
+	/// A label has been updated in some way.
+	agi::signal::Signal<AudioLabel*> AnnounceLabelChanged;
 public:
 	/// @brief Get any warning message to show in the audio display
 	/// @return The warning message to show, may be empty if there is none
@@ -144,6 +147,7 @@ public:
 	DEFINE_SIGNAL_ADDERS(AnnounceUpdatedPrimaryRange, AddUpdatedPrimaryRangeListener)
 	DEFINE_SIGNAL_ADDERS(AnnounceUpdatedStyleRanges, AddUpdatedStyleRangesListener)
 	DEFINE_SIGNAL_ADDERS(AnnounceMarkerMoved, AddMarkerMovedListener)
+	DEFINE_SIGNAL_ADDERS(AnnounceLabelChanged, AddLabelChangedListener)
 };
 
 

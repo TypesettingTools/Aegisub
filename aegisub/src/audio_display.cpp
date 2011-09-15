@@ -790,9 +790,8 @@ void AudioDisplay::OnPaint(wxPaintEvent& event)
 	int selection_start = AbsoluteXFromSamples(sel_samples.begin());
 	int selection_end = AbsoluteXFromSamples(sel_samples.end());
 
-	wxRegionIterator region(GetUpdateRegion());
 	wxPoint client_org = GetClientAreaOrigin();
-	while (region)
+	for (wxRegionIterator region(GetUpdateRegion()); region; ++region)
 	{
 		wxRect updrect = region.GetRect();
 		// Work around wxMac issue, client border offsets update rectangles but does
@@ -804,68 +803,99 @@ void AudioDisplay::OnPaint(wxPaintEvent& event)
 		redraw_scrollbar |= scrollbar_bounds.Intersects(updrect);
 		redraw_timeline |= timeline_bounds.Intersects(updrect);
 
-		if (audio_bounds.Intersects(updrect))
+		if (!audio_bounds.Intersects(updrect))
 		{
-			int p1, p2, p3, p4;
-			// p1 -> p2 = before selection
-			// p2 -> p3 = in selection
-			// p3 -> p4 = after selection
-			p1 = scroll_left + updrect.x;
-			p2 = selection_start;
-			p3 = selection_end;
-			p4 = p1 + updrect.width;
+			continue;
+		}
 
-			std::vector<RedrawSubregion> subregions;
+		// p1 -> p2 = before selection
+		// p2 -> p3 = in selection
+		// p3 -> p4 = after selection
+		int p1 = scroll_left + updrect.x;
+		int p2 = selection_start;
+		int p3 = selection_end;
+		int p4 = p1 + updrect.width;
 
-			if (p1 < p2)
-				subregions.push_back(RedrawSubregion(p1, std::min(p2, p4), false));
-			if (p4 > p2 && p1 < p3)
-				subregions.push_back(RedrawSubregion(std::max(p1, p2), std::min(p3, p4), true));
-			if (p4 > p3)
-				subregions.push_back(RedrawSubregion(std::max(p1, p3), p4, false));
+		std::vector<RedrawSubregion> subregions;
 
-			int x = updrect.x;
-			for (std::vector<RedrawSubregion>::iterator sr = subregions.begin(); sr != subregions.end(); ++sr)
+		if (p1 < p2)
+			subregions.push_back(RedrawSubregion(p1, std::min(p2, p4), false));
+		if (p4 > p2 && p1 < p3)
+			subregions.push_back(RedrawSubregion(std::max(p1, p2), std::min(p3, p4), true));
+		if (p4 > p3)
+			subregions.push_back(RedrawSubregion(std::max(p1, p3), p4, false));
+
+		int x = updrect.x;
+		for (std::vector<RedrawSubregion>::iterator sr = subregions.begin(); sr != subregions.end(); ++sr)
+		{
+			audio_renderer->Render(dc, wxPoint(x, audio_top), sr->x1, sr->x2 - sr->x1, sr->selected);
+			x += sr->x2 - sr->x1;
+		}
+
+		const int foot_size = 6;
+		SampleRange updrectsamples(
+			SamplesFromRelativeX(updrect.x - foot_size),
+			SamplesFromRelativeX(updrect.x + updrect.width + foot_size));
+
+		// Draw markers on top of it all
+		AudioMarkerVector markers;
+		controller->GetMarkers(updrectsamples, markers);
+		wxDCPenChanger pen_retainer(dc, wxPen());
+		wxDCBrushChanger brush_retainer(dc, wxBrush());
+		for (AudioMarkerVector::iterator marker_i = markers.begin(); marker_i != markers.end(); ++marker_i)
+		{
+			const AudioMarker *marker = *marker_i;
+			dc.SetPen(marker->GetStyle());
+			int marker_x = RelativeXFromSamples(marker->GetPosition());
+			dc.DrawLine(marker_x, audio_top, marker_x, audio_top+audio_height);
+			dc.SetBrush(wxBrush(marker->GetStyle().GetColour()));
+			dc.SetPen(*wxTRANSPARENT_PEN);
+			if (marker->GetFeet() & AudioMarker::Feet_Left)
 			{
-				audio_renderer->Render(dc, wxPoint(x, audio_top), sr->x1, sr->x2 - sr->x1, sr->selected);
-				x += sr->x2 - sr->x1;
+				wxPoint foot_top[3] = { wxPoint(-foot_size, 0), wxPoint(0, 0), wxPoint(0, foot_size) };
+				wxPoint foot_bot[3] = { wxPoint(-foot_size, 0), wxPoint(0, -foot_size), wxPoint(0, 0) };
+				dc.DrawPolygon(3, foot_top, marker_x, audio_top);
+				dc.DrawPolygon(3, foot_bot, marker_x, audio_top+audio_height);
 			}
-
-			// Draw markers on top of it all
-			AudioMarkerVector markers;
-			const int foot_size = 6;
-			SampleRange updrectsamples(
-				SamplesFromRelativeX(updrect.x - foot_size),
-				SamplesFromRelativeX(updrect.x + updrect.width + foot_size));
-			controller->GetMarkers(updrectsamples, markers);
-			wxDCPenChanger pen_retainer(dc, wxPen());
-			wxDCBrushChanger brush_retainer(dc, wxBrush());
-			for (AudioMarkerVector::iterator marker_i = markers.begin(); marker_i != markers.end(); ++marker_i)
+			if (marker->GetFeet() & AudioMarker::Feet_Right)
 			{
-				const AudioMarker *marker = *marker_i;
-				dc.SetPen(marker->GetStyle());
-				int marker_x = RelativeXFromSamples(marker->GetPosition());
-				dc.DrawLine(marker_x, audio_top, marker_x, audio_top+audio_height);
-				dc.SetBrush(wxBrush(marker->GetStyle().GetColour()));
-				dc.SetPen(*wxTRANSPARENT_PEN);
-				if (marker->GetFeet() & AudioMarker::Feet_Left)
-				{
-					wxPoint foot_top[3] = { wxPoint(-foot_size, 0), wxPoint(0, 0), wxPoint(0, foot_size) };
-					wxPoint foot_bot[3] = { wxPoint(-foot_size, 0), wxPoint(0, -foot_size), wxPoint(0, 0) };
-					dc.DrawPolygon(3, foot_top, marker_x, audio_top);
-					dc.DrawPolygon(3, foot_bot, marker_x, audio_top+audio_height);
-				}
-				if (marker->GetFeet() & AudioMarker::Feet_Right)
-				{
-					wxPoint foot_top[3] = { wxPoint(foot_size, 0), wxPoint(0, 0), wxPoint(0, foot_size) };
-					wxPoint foot_bot[3] = { wxPoint(foot_size, 0), wxPoint(0, -foot_size), wxPoint(0, 0) };
-					dc.DrawPolygon(3, foot_top, marker_x, audio_top);
-					dc.DrawPolygon(3, foot_bot, marker_x, audio_top+audio_height);
-				}
+				wxPoint foot_top[3] = { wxPoint(foot_size, 0), wxPoint(0, 0), wxPoint(0, foot_size) };
+				wxPoint foot_bot[3] = { wxPoint(foot_size, 0), wxPoint(0, -foot_size), wxPoint(0, 0) };
+				dc.DrawPolygon(3, foot_top, marker_x, audio_top);
+				dc.DrawPolygon(3, foot_bot, marker_x, audio_top+audio_height);
 			}
 		}
 
-		region++;
+		// Draw labels
+		std::vector<AudioLabelProvider::AudioLabel> labels;
+		controller->GetLabels(updrectsamples, labels);
+		if (!labels.empty())
+		{
+			wxDCFontChanger fc(dc);
+			wxFont font = dc.GetFont();
+			font.SetWeight(wxFONTWEIGHT_BOLD);
+			dc.SetFont(font);
+			dc.SetTextForeground(*wxWHITE);
+			for (size_t i = 0; i < labels.size(); ++i)
+			{
+				wxSize extent = dc.GetTextExtent(labels[i].text);
+				int left = RelativeXFromSamples(labels[i].range.begin());
+				int width = AbsoluteXFromSamples(labels[i].range.length());
+
+				// If it doesn't fit, truncate
+				if (width < extent.GetWidth())
+				{
+					dc.SetClippingRegion(left, audio_top + 4, width, extent.GetHeight());
+					dc.DrawText(labels[i].text, left, audio_top + 4);
+					dc.DestroyClippingRegion();
+				}
+				// Otherwise center in the range
+				else
+				{
+					dc.DrawText(labels[i].text, left + (width - extent.GetWidth()) / 2, audio_top + 4);
+				}
+			}
+		}
 	}
 
 	if (track_cursor_pos >= 0)
@@ -873,7 +903,7 @@ void AudioDisplay::OnPaint(wxPaintEvent& event)
 		wxDCPenChanger penchanger(dc, wxPen(*wxWHITE));
 		dc.DrawLine(track_cursor_pos-scroll_left, audio_top, track_cursor_pos-scroll_left, audio_top+audio_height);
 
-		if (!track_cursor_label.IsEmpty())
+		if (!track_cursor_label.empty())
 		{
 			wxDCFontChanger fc(dc);
 			wxFont font = dc.GetFont();
@@ -887,11 +917,13 @@ void AudioDisplay::OnPaint(wxPaintEvent& event)
 
 			int old_bg_mode = dc.GetBackgroundMode();
 			dc.SetBackgroundMode(wxTRANSPARENT);
+			// Draw border
 			dc.SetTextForeground(wxColour(64, 64, 64));
 			dc.DrawText(track_cursor_label, label_pos.x+1, label_pos.y+1);
 			dc.DrawText(track_cursor_label, label_pos.x+1, label_pos.y-1);
 			dc.DrawText(track_cursor_label, label_pos.x-1, label_pos.y+1);
 			dc.DrawText(track_cursor_label, label_pos.x-1, label_pos.y-1);
+			// Draw fill
 			dc.SetTextForeground(*wxWHITE);
 			dc.DrawText(track_cursor_label, label_pos.x, label_pos.y);
 			dc.SetBackgroundMode(old_bg_mode);
