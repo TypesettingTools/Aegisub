@@ -161,7 +161,7 @@ struct time_shift : public Command {
 
 	void operator()(agi::Context *c) {
 		c->videoController->Stop();
-		DialogShiftTimes(c).ShowModal();
+		(new DialogShiftTimes(c))->Show();
 	}
 };
 

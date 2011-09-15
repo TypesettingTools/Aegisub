@@ -338,7 +338,8 @@
 			"Affect" : 0,
 			"ByTime" : true,
 			"Direction" : true,
-			"Length" : 0,
+			"Frames" : 0,
+			"Time" : 0,
 			"Type" : 0
 		},
 		"Spell Checker" : {

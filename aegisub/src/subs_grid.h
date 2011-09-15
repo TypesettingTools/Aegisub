@@ -102,17 +102,6 @@ public:
 	/// @param nextFrame Set the new lines to start and end on the next frame
 	void DuplicateLines(int first,int last,bool nextFrame=false);
 
-	/// @brief  Shift line by time
-	/// @param n    Line to shift
-	/// @param len  ms to shift by
-	/// @param type 0: Start + End; 1: Start; 2: End
-	void ShiftLineByTime(int lineNumber,int len,int type);
-	/// @brief  Shift line by frames
-	/// @param n    Line to shift
-	/// @param len  frames to shift by
-	/// @param type 0: Start + End; 1: Start; 2: End
-	void ShiftLineByFrames(int lineNumber,int len,int type);
-
 	void InsertLine(AssDialogue *line,int position,bool insertAfter,bool update=true);
 	/// @brief Delete selected lines
 	/// @param target       Lines to delete

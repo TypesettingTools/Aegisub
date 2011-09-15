@@ -496,22 +496,6 @@ void SubtitlesGrid::DuplicateLines(int n1,int n2,bool nextFrame) {
 	SetActiveLine(GetDialogue(n1+step));
 }
 
-void SubtitlesGrid::ShiftLineByTime(int n,int len,int type) {
-	assert(type >= 0 && type <= 2);
-	AssDialogue *cur = GetDialogue(n);
-
-	if (type != 2) cur->Start.SetMS(cur->Start.GetMS() + len);
-	if (type != 1) cur->End.SetMS(cur->End.GetMS() + len);
-}
-
-void SubtitlesGrid::ShiftLineByFrames(int n,int len,int type) {
-	assert(type >= 0 && type <= 2);
-	AssDialogue *cur = GetDialogue(n);
-
-	if (type != 2) cur->Start.SetMS(context->videoController->TimeAtFrame(len + context->videoController->FrameAtTime(cur->Start.GetMS(),agi::vfr::START),agi::vfr::START));
-	if (type != 1) cur->End.SetMS(context->videoController->TimeAtFrame(len + context->videoController->FrameAtTime(cur->End.GetMS(),agi::vfr::END),agi::vfr::END));
-}
-
 void SubtitlesGrid::SplitLine(AssDialogue *n1,int pos,bool estimateTimes) {
 	AssDialogue *n2 = new AssDialogue(*n1);
 	InsertLine(n2,GetDialogueIndex(n1),true,false);
