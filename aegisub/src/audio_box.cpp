@@ -47,6 +47,7 @@
 #include <wx/statline.h>
 #include <wx/textctrl.h>
 #include <wx/tglbtn.h>
+#include <wx/toolbar.h>
 #include <wx/laywin.h> // Keep this last so wxSW_3D is set.
 #endif
 
