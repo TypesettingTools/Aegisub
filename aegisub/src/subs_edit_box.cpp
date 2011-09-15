@@ -328,12 +328,12 @@ SubsEditBox::SubsEditBox(wxWindow *parent, agi::Context *context)
 	wxSizeEvent evt;
 	OnSize(evt);
 
-	c->subsGrid->AddSelectionListener(this);
+	c->selectionController->AddSelectionListener(this);
 	file_changed_slot = c->ass->AddCommitListener(&SubsEditBox::Update, this);
 	context->videoController->AddTimecodesListener(&SubsEditBox::UpdateFrameTiming, this);
 }
 SubsEditBox::~SubsEditBox() {
-	c->subsGrid->RemoveSelectionListener(this);
+	c->selectionController->RemoveSelectionListener(this);
 }
 
 void SubsEditBox::Update(int type) {
@@ -348,13 +348,14 @@ void SubsEditBox::Update(int type) {
 		/// @todo maybe preserve selection over undo?
 		ActorBox->Freeze();
 		ActorBox->Clear();
-		int nrows = c->subsGrid->GetRows();
-		for (int i=0;i<nrows;i++) {
-			wxString actor = c->subsGrid->GetDialogue(i)->Actor;
-			// OSX doesn't like combo boxes that are empty.
-			if (actor.empty()) actor = "Actor";
-			if (ActorBox->FindString(actor) == wxNOT_FOUND) {
-				ActorBox->Append(actor);
+		for (entryIter it = c->ass->Line.begin(); it != c->ass->Line.end(); ++it) {
+			if (AssDialogue *diag = dynamic_cast<AssDialogue*>(*it)) {
+				wxString actor = diag->Actor;
+				// OSX doesn't like combo boxes that are empty.
+				if (actor.empty()) actor = "Actor";
+				if (ActorBox->FindString(actor) == wxNOT_FOUND) {
+					ActorBox->Append(actor);
+				}
 			}
 		}
 		ActorBox->Thaw();
@@ -416,7 +417,7 @@ void SubsEditBox::OnActiveLineChanged(AssDialogue *new_line) {
 	SetEvtHandlerEnabled(true);
 }
 void SubsEditBox::OnSelectedSetChanged(const Selection &, const Selection &) {
-	sel = c->subsGrid->GetSelectedSet();
+	sel = c->selectionController->GetSelectedSet();
 }
 
 void SubsEditBox::UpdateFrameTiming(agi::vfr::Framerate const& fps) {
@@ -451,16 +452,18 @@ void SubsEditBox::OnCommitButton(wxCommandEvent &) {
 }
 
 void SubsEditBox::NextLine() {
-	int next = c->subsGrid->GetLastSelRow() + 1;
-	if (next >= c->subsGrid->GetRows()) {
-		AssDialogue *cur = c->subsGrid->GetDialogue(next-1);
+	AssDialogue *cur = line;
+	c->selectionController->NextLine();
+	if (line == cur) {
 		AssDialogue *newline = new AssDialogue;
 		newline->Start = cur->End;
 		newline->End = cur->End + OPT_GET("Timing/Default Duration")->GetInt();
 		newline->Style = cur->Style;
-		c->subsGrid->InsertLine(newline,next-1,true,true);
+
+		entryIter pos = find(c->ass->Line.begin(), c->ass->Line.end(), line);
+		c->ass->Line.insert(++pos, newline);
+		c->ass->Commit(_("line insertion"), AssFile::COMMIT_DIAG_ADDREM);
 	}
-	c->subsGrid->NextLine();
 }
 
 void SubsEditBox::OnChange(wxStyledTextEvent &event) {
