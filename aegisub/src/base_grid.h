@@ -108,6 +108,11 @@ protected:
 	int colWidth[16];      ///< Width in pixels of each column
 	agi::Context *context; ///< Current project context
 
+	int time_cols_x; ///< Left edge of the times columns
+	int time_cols_w; ///< Width of the two times columns
+	int text_col_x; ///< Left edge of the text column
+	int text_col_w; ///< Width of the text column
+
 	static const int columns = 10; ///< Total number of columns
 	bool showCol[columns]; ///< Column visibility mask
 

@@ -442,7 +442,7 @@ void SearchReplaceEngine::ReplaceNext(bool DoReplace) {
 			}
 
 			// Commit
-			context->ass->Commit(_("replace"), AssFile::COMMIT_TEXT);
+			context->ass->Commit(_("replace"), AssFile::COMMIT_DIAG_TEXT);
 		}
 
 		else {
@@ -546,7 +546,7 @@ void SearchReplaceEngine::ReplaceAll() {
 
 	// Commit
 	if (count > 0) {
-		context->ass->Commit(_("replace"), AssFile::COMMIT_TEXT);
+		context->ass->Commit(_("replace"), AssFile::COMMIT_DIAG_TEXT);
 		wxMessageBox(wxString::Format(_("%i matches were replaced."),count));
 	}
 

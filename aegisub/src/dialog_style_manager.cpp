@@ -595,7 +595,7 @@ void DialogStyleManager::OnCopyToCurrent (wxCommandEvent &) {
 	for (list<wxString>::iterator name = copied.begin(); name != copied.end(); ++name) {
 		CurrentList->SetStringSelection(*name, true);
 	}
-	c->ass->Commit(_("style copy"));
+	c->ass->Commit(_("style copy"), AssFile::COMMIT_STYLES);
 	wxCommandEvent dummy;
 	OnCurrentChange(dummy);
 }
@@ -643,7 +643,7 @@ void DialogStyleManager::OnCurrentCopy (wxCommandEvent &) {
 	}
 	else delete temp;
 
-	c->ass->Commit(_("style copy"));
+	c->ass->Commit(_("style copy"), AssFile::COMMIT_STYLES);
 	UpdateMoveButtons();
 }
 
@@ -695,7 +695,7 @@ void DialogStyleManager::PasteToCurrent() {
 				c->ass->InsertStyle(s);
 				LoadCurrentStyles(c->ass);
 
-				c->ass->Commit(_("style paste"));
+				c->ass->Commit(_("style paste"), AssFile::COMMIT_STYLES);
 			}
 			else
 				wxMessageBox(_("Could not parse style"), _("Could not parse style"), wxOK | wxICON_EXCLAMATION , this);
@@ -840,7 +840,7 @@ void DialogStyleManager::OnCurrentDelete (wxCommandEvent &) {
 		CurrentCopy->Enable(false);
 		CurrentDelete->Enable(false);
 
-		c->ass->Commit(_("style delete"));
+		c->ass->Commit(_("style delete"), AssFile::COMMIT_STYLES);
 	}
 	UpdateMoveButtons();
 }
@@ -901,7 +901,7 @@ void DialogStyleManager::OnCurrentImport(wxCommandEvent &) {
 			// Update
 			if (modified) {
 				LoadCurrentStyles(c->ass);
-				c->ass->Commit(_("style import"));
+				c->ass->Commit(_("style import"), AssFile::COMMIT_STYLES);
 			}
 		}
 		catch (...) {
@@ -1095,7 +1095,7 @@ void DialogStyleManager::MoveStyles(bool storage, int type) {
 		}
 
 		// Flag as modified
-		c->ass->Commit(_("style move"));
+		c->ass->Commit(_("style move"), AssFile::COMMIT_STYLES);
 	}
 
 	// Update

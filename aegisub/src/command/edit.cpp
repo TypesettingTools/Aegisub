@@ -181,7 +181,7 @@ static void combine_lines(agi::Context *c, void (*combiner)(AssDialogue *, AssDi
 	sel.insert(first);
 	c->selectionController->SetActiveLine(first);
 	c->selectionController->SetSelectedSet(sel);
-	c->ass->Commit(message);
+	c->ass->Commit(message, AssFile::COMMIT_DIAG_ADDREM | AssFile::COMMIT_DIAG_FULL);
 }
 
 static void combine_karaoke(AssDialogue *first, AssDialogue *second) {
@@ -311,7 +311,7 @@ struct edit_line_split_by_karaoke : public validate_sel_nonempty {
 			didSplit |= c->subsGrid->SplitLineByKaraoke(sels[i]);
 		}
 		if (didSplit) {
-			c->ass->Commit(_("splitting"));
+			c->ass->Commit(_("splitting"), AssFile::COMMIT_DIAG_ADDREM | AssFile::COMMIT_DIAG_FULL);
 		}
 		c->subsGrid->EndBatch();
 	}
@@ -338,7 +338,7 @@ struct edit_line_swap : public Command {
 
 			using std::swap;
 			swap(*a, *b);
-			c->ass->Commit(_("swap lines"));
+			c->ass->Commit(_("swap lines"), AssFile::COMMIT_ORDER);
 		}
 	}
 };

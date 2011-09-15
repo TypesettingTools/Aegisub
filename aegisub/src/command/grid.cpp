@@ -190,10 +190,7 @@ struct grid_swap_up : public Command {
 	void operator()(agi::Context *c) {
 		if (AssDialogue *line = c->selectionController->GetActiveLine()) {
 			if (move_one(c->ass->Line.rbegin(), c->ass->Line.rend(), line))
-				/// @todo Maybe add COMMIT_ORDER, as the grid is the only thing
-				///       that needs to care about this
-				///       Probably not worth it
-				c->ass->Commit(_("swap lines"), AssFile::COMMIT_FULL);
+				c->ass->Commit(_("swap lines"), AssFile::COMMIT_ORDER);
 		}
 	}
 };
@@ -213,7 +210,7 @@ struct grid_swap_down : public Command {
 		void operator()(agi::Context *c) {
 			if (AssDialogue *line = c->selectionController->GetActiveLine()) {
 				if (move_one(c->ass->Line.begin(), c->ass->Line.end(), line))
-					c->ass->Commit(_("swap lines"), AssFile::COMMIT_FULL);
+					c->ass->Commit(_("swap lines"), AssFile::COMMIT_ORDER);
 			}
 	}
 };

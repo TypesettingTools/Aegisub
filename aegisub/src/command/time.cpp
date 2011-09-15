@@ -147,7 +147,7 @@ struct time_frame_current : public validate_video_loaded {
 		}
 
 		// Commit
-		c->ass->Commit(_("shift to frame"), AssFile::COMMIT_TIMES);
+		c->ass->Commit(_("shift to frame"), AssFile::COMMIT_DIAG_TIME);
 	}
 };
 
@@ -204,7 +204,7 @@ struct time_snap_frame : public validate_video_loaded {
 			}
 		}
 
-		c->ass->Commit(_("shift to frame"));
+		c->ass->Commit(_("shift to frame"), AssFile::COMMIT_DIAG_TIME);
 	}
 };
 
@@ -259,7 +259,7 @@ struct time_snap_scene : public validate_video_loaded {
 		}
 
 		// Commit
-		c->ass->Commit(_("snap to scene"), AssFile::COMMIT_TIMES);
+		c->ass->Commit(_("snap to scene"), AssFile::COMMIT_DIAG_TIME);
 	}
 };
 
@@ -271,7 +271,7 @@ struct time_add_lead_in : public Command {
 	void operator()(agi::Context *c) {
 		if (AssDialogue *line = c->selectionController->GetActiveLine()) {
 			line->Start.SetMS(line->Start.GetMS() - OPT_GET("Audio/Lead/IN")->GetInt());
-			c->ass->Commit(_("add lead in"), AssFile::COMMIT_TIMES);
+			c->ass->Commit(_("add lead in"), AssFile::COMMIT_DIAG_TIME);
 		}
 	}
 };
@@ -284,7 +284,7 @@ struct time_add_lead_out : public Command {
 	void operator()(agi::Context *c) {
 		if (AssDialogue *line = c->selectionController->GetActiveLine()) {
 			line->End.SetMS(line->End.GetMS() + OPT_GET("Audio/Lead/OUT")->GetInt());
-			c->ass->Commit(_("add lead out"), AssFile::COMMIT_TIMES);
+			c->ass->Commit(_("add lead out"), AssFile::COMMIT_DIAG_TIME);
 		}
 	}
 };
@@ -312,7 +312,7 @@ struct time_sort_end : public Command {
 
 	void operator()(agi::Context *c) {
 		c->ass->Sort(AssFile::CompEnd);
-		c->ass->Commit(_("sort"));
+		c->ass->Commit(_("sort"), AssFile::COMMIT_ORDER);
 	}
 };
 
@@ -326,7 +326,7 @@ struct time_sort_start : public Command {
 
 	void operator()(agi::Context *c) {
 		c->ass->Sort();
-		c->ass->Commit(_("sort"));
+		c->ass->Commit(_("sort"), AssFile::COMMIT_ORDER);
 	}
 };
 
@@ -340,7 +340,7 @@ struct time_sort_style : public Command {
 
 	void operator()(agi::Context *c) {
 		c->ass->Sort(AssFile::CompStyle);
-		c->ass->Commit(_("sort"));
+		c->ass->Commit(_("sort"), AssFile::COMMIT_ORDER);
 	}
 };
 

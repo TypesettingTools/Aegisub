@@ -247,7 +247,7 @@ void VisualTool<FeatureType>::Commit(wxString message) {
 	if (message.empty()) {
 		message = _("visual typesetting");
 	}
-	commitId = c->ass->Commit(message, AssFile::COMMIT_TEXT, commitId);
+	commitId = c->ass->Commit(message, AssFile::COMMIT_DIAG_TEXT, commitId);
 	externalChange = true;
 }
 

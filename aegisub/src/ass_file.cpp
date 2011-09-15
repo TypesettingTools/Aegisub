@@ -165,7 +165,7 @@ void AssFile::Load(const wxString &_filename,wxString charset,bool addToRecent) 
 	undoDescription.clear();
 	commitId = -1;
 	savedCommitId = 0;
-	Commit("");
+	Commit("", COMMIT_NEW);
 
 	// Add to recent
 	if (addToRecent) AddToRecent(filename);
@@ -468,7 +468,7 @@ void AssFile::LoadDefault(bool defline) {
 		AddLine(def.GetEntryData(),_T("[Events]"),version);
 	}
 
-	Commit("");
+	Commit("", COMMIT_NEW);
 	savedCommitId = commitId;
 	loaded = true;
 	StandardPaths::SetPathValue("?script", "");
@@ -760,14 +760,12 @@ wxString AssFile::GetWildcardList(int mode) {
 	else return "";
 }
 
-int AssFile::Commit(wxString desc, CommitType type, int amendId) {
-	assert(type != COMMIT_UNDO);
-
+int AssFile::Commit(wxString desc, int type, int amendId) {
 	++commitId;
 	// Allow coalescing only if it's the last change and the file has not been
 	// saved since the last change
 	if (commitId == amendId+1 && RedoStack.empty() && savedCommitId != commitId) {
-		UndoStack.back() = *this;
+			UndoStack.back() = *this;
 		AnnounceCommit(type);
 		return commitId;
 	}
@@ -801,7 +799,7 @@ void AssFile::Undo() {
 	UndoStack.pop_back();
 	*this = UndoStack.back();
 
-	AnnounceCommit(COMMIT_UNDO);
+	AnnounceCommit(COMMIT_NEW);
 }
 
 void AssFile::Redo() {
@@ -811,7 +809,7 @@ void AssFile::Redo() {
 	UndoStack.push_back(*this);
 	RedoStack.pop_back();
 
-	AnnounceCommit(COMMIT_UNDO);
+	AnnounceCommit(COMMIT_NEW);
 }
 
 wxString AssFile::GetUndoDescription() const {

@@ -898,6 +898,11 @@ void BaseGrid::SetColumnWidths() {
 	int total = 0;
 	for (int i=0;i<10;i++) total += colWidth[i];
 	colWidth[10] = w-total;
+
+	time_cols_x = labelLen + layerLen;
+	time_cols_w = startLen + endLen;
+	text_col_x = total;
+	text_col_w = colWidth[10];
 }
 
 /// @brief Get dialogue by index

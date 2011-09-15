@@ -212,7 +212,7 @@ void VideoDisplay::OnVideoOpen() {
 }
 
 void VideoDisplay::OnCommit(int type) {
-	if (type == AssFile::COMMIT_FULL || type == AssFile::COMMIT_UNDO)
+	if (type == AssFile::COMMIT_NEW || type & AssFile::COMMIT_SCRIPTINFO)
 		con->videoController->GetScriptSize(scriptW, scriptH);
 	if (tool.get()) tool->Refresh();
 }

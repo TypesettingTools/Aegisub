@@ -470,6 +470,7 @@ void DialogStyleEditor::Apply (bool apply,bool close) {
 		}
 
 		// Style name change
+		bool did_rename = false;
 		if (work->name != newStyleName) {
 			if (!isNew && isLocal) {
 				// See if user wants to update style name through script
@@ -481,6 +482,7 @@ void DialogStyleEditor::Apply (bool apply,bool close) {
 
 				// Update
 				if (answer == wxYES) {
+					did_rename = true;
 					int n = c->subsGrid->GetRows();
 					wxArrayString strings;
 					strings.Add(work->name);
@@ -507,7 +509,7 @@ void DialogStyleEditor::Apply (bool apply,bool close) {
 		*style = *work;
 		style->UpdateData();
 		if (isLocal) {
-			c->ass->Commit(_("style change"), AssFile::COMMIT_TEXT);
+			c->ass->Commit(_("style change"), AssFile::COMMIT_STYLES | (did_rename ? AssFile::COMMIT_DIAG_FULL : 0));
 		}
 
 		// Exit

@@ -187,7 +187,7 @@ void DialogStyling::Commit(bool next) {
 	if (!c->ass->GetStyle(style_name->GetValue())) return;
 
 	active_line->Style = style_name->GetValue();
-	c->ass->Commit(_("styling assistant"), AssFile::COMMIT_TEXT);
+	c->ass->Commit(_("styling assistant"), AssFile::COMMIT_DIAG_META);
 
 	if (next) cmd::call("grid/line/next", c);
 }

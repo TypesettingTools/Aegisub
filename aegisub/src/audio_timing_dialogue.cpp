@@ -319,9 +319,10 @@ void AudioTimingControllerDialogue::OnSelectedSetChanged(const Selection &lines_
 }
 
 void AudioTimingControllerDialogue::OnFileChanged(int type) {
-	if (type == AssFile::COMMIT_UNDO || type == AssFile::COMMIT_FULL) return;
-
-	Revert();
+	if (type & AssFile::COMMIT_DIAG_TIME)
+	{
+		Revert();
+	}
 }
 
 
@@ -387,11 +388,11 @@ void AudioTimingControllerDialogue::Commit()
 		commit_slot.Block();
 		if (user_triggered)
 		{
-			ass->Commit(_("timing"), AssFile::COMMIT_TIMES);
+			ass->Commit(_("timing"), AssFile::COMMIT_DIAG_TIME);
 			commit_id = -1; // never coalesce with a manually triggered commit
 		}
 		else
-			commit_id = ass->Commit(_("timing"), AssFile::COMMIT_TIMES, commit_id);
+			commit_id = ass->Commit(_("timing"), AssFile::COMMIT_DIAG_TIME, commit_id);
 
 		commit_slot.Unblock();
 		timing_modified = false;

@@ -322,7 +322,7 @@ void DialogResample::OnResample (wxCommandEvent &event) {
 	c->ass->SetScriptInfo(_T("PlayResY"),wxString::Format(_T("%i"),y2));
 
 	// Flag as modified
-	c->ass->Commit(_("resolution resampling"), AssFile::COMMIT_TEXT);
+	c->ass->Commit(_("resolution resampling"), AssFile::COMMIT_SCRIPTINFO | AssFile::COMMIT_DIAG_FULL);
 	EndModal(0);
 }
 

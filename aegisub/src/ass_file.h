@@ -164,16 +164,32 @@ public:
 
 	/// Type of changes made in a commit
 	enum CommitType {
-		/// Entire file has been swapped for a different version of the same file
-		COMMIT_UNDO,
 		/// Potentially the entire file has been changed; any saved information
-		/// should be discarded
-		COMMIT_FULL,
-		/// The contents of lines have changed, but the number or order of lines
-		/// has not
-		COMMIT_TEXT,
-		/// Only the start and end times of lines has changed
-		COMMIT_TIMES
+		/// should be discarded. Note that the active line and selected set
+		/// should not be touched in handlers for this, as they may not have
+		/// been updated yet
+		/// Note that it is intentional that this cannot be combined with
+		/// other commit types
+		COMMIT_NEW         = 0,
+		/// The order of lines in the file has changed
+		COMMIT_ORDER       = 0x1,
+		/// The script info section has changed in some way
+		COMMIT_SCRIPTINFO  = 0x2,
+		/// The styles have changed in some way
+		COMMIT_STYLES      = 0x4,
+		/// The attachments have changed in some way
+		COMMIT_ATTACHMENT  = 0x8,
+		/// Dialogue lines have been added or removed
+		/// Note that if the active dialogue line was removed, the active line
+		/// should be updated BEFORE committing
+		COMMIT_DIAG_ADDREM = 0x10,
+		/// The metadata fields of existing dialogue lines have changed
+		COMMIT_DIAG_META   = 0x20,
+		/// The start and/or end times of existing dialogue lines have changed
+		COMMIT_DIAG_TIME   = 0x40,
+		/// The text of existing dialogue lines have changed
+		COMMIT_DIAG_TEXT   = 0x80,
+		COMMIT_DIAG_FULL   = COMMIT_DIAG_META | COMMIT_DIAG_TIME | COMMIT_DIAG_TEXT,
 	};
 
 	DEFINE_SIGNAL_ADDERS(AnnounceCommit, AddCommitListener)
@@ -185,7 +201,7 @@ public:
 	/// @param type     Type of changes made to the file in this commit
 	/// @param commitId Commit to amend rather than pushing a new commit
 	/// @return Unique identifier for the new undo group
-	int Commit(wxString desc, CommitType type = COMMIT_FULL, int commitId = -1);
+	int Commit(wxString desc, int type, int commitId = -1);
 	/// @brief Undo the last set of changes to the file
 	void Undo();
 	/// @brief Redo the last undone changes

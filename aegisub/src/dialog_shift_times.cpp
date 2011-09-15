@@ -318,7 +318,7 @@ void DialogShiftTimes::OnOK(wxCommandEvent &event) {
 	OPT_SET("Tool/Shift Times/Direction")->SetBool(backward);
 
 	// End dialog
-	context->ass->Commit(_("shifting"), AssFile::COMMIT_TIMES);
+	context->ass->Commit(_("shifting"), AssFile::COMMIT_DIAG_TIME);
 	EndModal(0);
 }
 

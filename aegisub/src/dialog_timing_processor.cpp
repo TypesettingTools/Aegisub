@@ -466,5 +466,5 @@ void DialogTimingProcessor::Process() {
 	}
 
 	// Update grid
-	c->ass->Commit(_("timing processor"), AssFile::COMMIT_TIMES);
+	c->ass->Commit(_("timing processor"), AssFile::COMMIT_DIAG_TIME);
 }

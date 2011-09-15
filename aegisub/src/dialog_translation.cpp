@@ -235,7 +235,7 @@ void DialogTranslation::UpdateDisplay() {
 void DialogTranslation::Commit(bool next) {
 	active_line->Blocks[cur_block]->text = translated_text->GetValue();
 	active_line->UpdateText();
-	c->ass->Commit(_("translation assistant"), AssFile::COMMIT_TEXT);
+	c->ass->Commit(_("translation assistant"), AssFile::COMMIT_DIAG_TEXT);
 
 	if (next) {
 		if (!NextBlock()) {

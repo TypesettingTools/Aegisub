@@ -87,19 +87,20 @@ SubtitlesGrid::~SubtitlesGrid() {
 }
 
 void SubtitlesGrid::OnSubtitlesCommit(int type) {
-	if (type == AssFile::COMMIT_FULL)
-		UpdateMaps();
-	else if (type == AssFile::COMMIT_UNDO)
+	if (type == AssFile::COMMIT_NEW)
 		UpdateMaps(true);
+	else if (type & AssFile::COMMIT_ORDER || type & AssFile::COMMIT_DIAG_ADDREM)
+		UpdateMaps(false);
 
-	if (type == AssFile::COMMIT_TIMES) {
-		// Refresh just the audio times columns
-		RefreshRect(wxRect(colWidth[0] + colWidth[1], 0, colWidth[2] + colWidth[3], GetClientSize().GetHeight()), false);
-	}
-	else {
+	if (type & AssFile::COMMIT_DIAG_META) {
 		SetColumnWidths();
 		Refresh(false);
+		return;
 	}
+	if (type & AssFile::COMMIT_DIAG_TIME)
+		RefreshRect(wxRect(time_cols_x, 0, time_cols_w, GetClientSize().GetHeight()), false);
+	if (type & AssFile::COMMIT_DIAG_TEXT)
+		RefreshRect(wxRect(text_col_x, 0, text_col_w, GetClientSize().GetHeight()), false);
 }
 
 void SubtitlesGrid::OnSubtitlesOpen() {
@@ -232,15 +233,14 @@ void SubtitlesGrid::RecombineLines() {
 		}
 	}
 
-	context->ass->Commit(_("combining"));
-
 	// Remove now non-existent lines from the selection
 	Selection lines;
 	transform(context->ass->Line.begin(), context->ass->Line.end(), inserter(lines, lines.begin()), cast<AssDialogue*>());
 	Selection newSel;
 	set_intersection(lines.begin(), lines.end(), selectedSet.begin(), selectedSet.end(), inserter(newSel, newSel.begin()));
 
-	if (newSel.empty()) return;
+	if (newSel.empty())
+		newSel.insert(*lines.begin());
 
 	// Restore selection
 	SetSelectedSet(newSel);
@@ -248,6 +248,8 @@ void SubtitlesGrid::RecombineLines() {
 		activeLine = *newSel.begin();
 	}
 	SetActiveLine(activeLine);
+
+	context->ass->Commit(_("combining"), AssFile::COMMIT_DIAG_ADDREM | AssFile::COMMIT_DIAG_FULL);
 }
 
 /// @brief Insert a line 
@@ -264,7 +266,7 @@ void SubtitlesGrid::InsertLine(AssDialogue *line,int n,bool after,bool update) {
 
 	// Update
 	if (update) {
-		context->ass->Commit(_("line insertion"));
+		context->ass->Commit(_("line insertion"), AssFile::COMMIT_DIAG_ADDREM);
 	}
 	else {
 		UpdateMaps();
@@ -380,7 +382,7 @@ void SubtitlesGrid::PasteLines(int n,bool pasteOver) {
 
 		// Update data post-insertion
 		if (inserted > 0) {
-			context->ass->Commit(_("paste"), pasteOver ? AssFile::COMMIT_TEXT : AssFile::COMMIT_FULL);
+			context->ass->Commit(_("paste"), pasteOver ? AssFile::COMMIT_DIAG_FULL : AssFile::COMMIT_DIAG_ADDREM);
 
 			// Set selection
 			if (!pasteOver) {
@@ -422,7 +424,7 @@ void SubtitlesGrid::DeleteLines(wxArrayInt target, bool flagModified) {
 	}
 
 	if (flagModified) {
-		context->ass->Commit(_("delete"));
+		context->ass->Commit(_("delete"), AssFile::COMMIT_DIAG_ADDREM);
 	}
 	else {
 		UpdateMaps();
@@ -462,7 +464,7 @@ void SubtitlesGrid::AdjoinLines(int n1,int n2,bool setStart) {
 		}
 	}
 
-	context->ass->Commit(_("adjoin"));
+	context->ass->Commit(_("adjoin"), AssFile::COMMIT_DIAG_TIME);
 }
 
 void SubtitlesGrid::DuplicateLines(int n1,int n2,bool nextFrame) {
@@ -526,7 +528,7 @@ void SubtitlesGrid::SplitLine(AssDialogue *n1,int pos,bool estimateTimes) {
 		n2->Start.SetMS(splitTime);
 	}
 
-	context->ass->Commit(_("split"));
+	context->ass->Commit(_("split"), AssFile::COMMIT_DIAG_ADDREM | AssFile::COMMIT_DIAG_FULL);
 }
 
 bool SubtitlesGrid::SplitLineByKaraoke(int lineNumber) {
@@ -587,7 +589,7 @@ void SubtitlesGrid::SetSubsToVideo(bool start) {
 	}
 
 	if (modified) {
-		context->ass->Commit(_("timing"), AssFile::COMMIT_TIMES);
+		context->ass->Commit(_("timing"), AssFile::COMMIT_DIAG_TIME);
 	}
 }
 

@@ -449,7 +449,7 @@ void FrameMain::OnVideoOpen() {
 				// Always change script res
 				context->ass->SetScriptInfo("PlayResX", wxString::Format("%d", vidx));
 				context->ass->SetScriptInfo("PlayResY", wxString::Format("%d", vidy));
-				context->ass->Commit(_("Change script resolution"));
+				context->ass->Commit(_("Change script resolution"), AssFile::COMMIT_SCRIPTINFO);
 				break;
 			case 0:
 			default:

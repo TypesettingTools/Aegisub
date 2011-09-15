@@ -947,7 +947,7 @@ void DialogKanjiTimer::OnClose(wxCommandEvent &event) {
 		line->Text = p.second;
 	}
 	if (modified) {
-		subs->Commit(_("kanji timing"));
+		subs->Commit(_("kanji timing"), AssFile::COMMIT_DIAG_TEXT);
 		LinesToChange.clear();
 	}
 	Close();

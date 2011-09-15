@@ -338,11 +338,14 @@ SubsEditBox::~SubsEditBox() {
 
 void SubsEditBox::Update(int type) {
 	SetEvtHandlerEnabled(false);
-	if (type == AssFile::COMMIT_FULL || type == AssFile::COMMIT_UNDO) {
-		/// @todo maybe preserve selection over undo?
+
+	if (type == AssFile::COMMIT_NEW || type & AssFile::COMMIT_STYLES) {
 		StyleBox->Clear();
 		StyleBox->Append(c->ass->GetStyles());
+	}
 
+	if (type == AssFile::COMMIT_NEW) {
+		/// @todo maybe preserve selection over undo?
 		ActorBox->Freeze();
 		ActorBox->Clear();
 		int nrows = c->subsGrid->GetRows();
@@ -360,6 +363,7 @@ void SubsEditBox::Update(int type) {
 		SetEvtHandlerEnabled(true);
 		return;
 	}
+	if (!(type ^ AssFile::COMMIT_ORDER)) return;
 
 	SetControlsState(!!line);
 	if (!line) {
@@ -367,11 +371,17 @@ void SubsEditBox::Update(int type) {
 		return;
 	}
 
-	StartTime->SetTime(line->Start);
-	EndTime->SetTime(line->End);
-	Duration->SetTime(line->End-line->Start);
-	if (type != AssFile::COMMIT_TIMES) {
+	if (type & AssFile::COMMIT_DIAG_TIME) {
+		StartTime->SetTime(line->Start);
+		EndTime->SetTime(line->End);
+		Duration->SetTime(line->End-line->Start);
+	}
+
+	if (type & AssFile::COMMIT_DIAG_TEXT) {
 		TextEdit->SetTextTo(line->Text);
+	}
+
+	if (type & AssFile::COMMIT_DIAG_META) {
 		Layer->SetValue(line->Layer);
 		MarginL->ChangeValue(line->GetMarginString(0,false));
 		MarginR->ChangeValue(line->GetMarginString(1,false));
@@ -390,7 +400,7 @@ void SubsEditBox::OnActiveLineChanged(AssDialogue *new_line) {
 	SetEvtHandlerEnabled(false);
 	line = new_line;
 
-	Update(AssFile::COMMIT_TEXT);
+	Update(AssFile::COMMIT_DIAG_FULL);
 
 	/// @todo VideoContext should be doing this
 	if (c->videoController->IsLoaded()) {
@@ -465,22 +475,22 @@ void SubsEditBox::OnChange(wxStyledTextEvent &event) {
 }
 
 template<class T, class setter>
-void SubsEditBox::SetSelectedRows(setter set, T value, wxString desc, bool amend) {
+void SubsEditBox::SetSelectedRows(setter set, T value, wxString desc, int type, bool amend) {
 	using namespace std::tr1::placeholders;
 
 	for_each(sel.begin(), sel.end(), std::tr1::bind(set, _1, value));
 
-	commitId = c->ass->Commit(desc, AssFile::COMMIT_TEXT, (amend && desc == lastCommitType) ? commitId : -1);
+	commitId = c->ass->Commit(desc, type, (amend && desc == lastCommitType) ? commitId : -1);
 	lastCommitType = desc;
 }
 
 template<class T>
-void SubsEditBox::SetSelectedRows(T AssDialogue::*field, T value, wxString desc, bool amend) {
-	SetSelectedRows(field_setter<T>(field), value, desc, amend);
+void SubsEditBox::SetSelectedRows(T AssDialogue::*field, T value, wxString desc, int type, bool amend) {
+	SetSelectedRows(field_setter<T>(field), value, desc, type, amend);
 }
 
 void SubsEditBox::CommitText(wxString desc) {
-	SetSelectedRows(&AssDialogue::Text, TextEdit->GetText(), desc, true);
+	SetSelectedRows(&AssDialogue::Text, TextEdit->GetText(), desc, AssFile::COMMIT_DIAG_TEXT, true);
 }
 
 void SubsEditBox::CommitTimes(TimeField field) {
@@ -503,7 +513,7 @@ void SubsEditBox::CommitTimes(TimeField field) {
 		}
 	}
 
-	timeCommitId[field] = c->ass->Commit(_("modify times"), AssFile::COMMIT_TIMES, timeCommitId[field]);
+	timeCommitId[field] = c->ass->Commit(_("modify times"), AssFile::COMMIT_DIAG_TIME, timeCommitId[field]);
 }
 
 void SubsEditBox::OnSize(wxSizeEvent &evt) {
@@ -591,12 +601,12 @@ void SubsEditBox::SetControlsState(bool state) {
 
 
 void SubsEditBox::OnStyleChange(wxCommandEvent &) {
-	SetSelectedRows(&AssDialogue::Style, StyleBox->GetValue(), _("style change"));
+	SetSelectedRows(&AssDialogue::Style, StyleBox->GetValue(), _("style change"), AssFile::COMMIT_DIAG_META);
 }
 
 void SubsEditBox::OnActorChange(wxCommandEvent &) {
 	wxString actor = ActorBox->GetValue();
-	SetSelectedRows(&AssDialogue::Actor, actor, _("actor change"));
+	SetSelectedRows(&AssDialogue::Actor, actor, _("actor change"), AssFile::COMMIT_DIAG_META);
 
 	// Add actor to list
 	if (!actor.empty() && ActorBox->GetCount() && ActorBox->GetString(0).empty()) {
@@ -612,7 +622,7 @@ void SubsEditBox::OnLayerChange(wxSpinEvent &event) {
 }
 
 void SubsEditBox::OnLayerEnter(wxCommandEvent &) {
-	SetSelectedRows(&AssDialogue::Layer, Layer->GetValue(), _("layer change"));
+	SetSelectedRows(&AssDialogue::Layer, Layer->GetValue(), _("layer change"), AssFile::COMMIT_DIAG_META);
 }
 
 void SubsEditBox::OnStartTimeChange(wxCommandEvent &) {
@@ -630,12 +640,12 @@ void SubsEditBox::OnDurationChange(wxCommandEvent &) {
 	CommitTimes(TIME_DURATION);
 }
 void SubsEditBox::OnMarginLChange(wxCommandEvent &) {
-	SetSelectedRows(std::mem_fun(&AssDialogue::SetMarginString<0>), MarginL->GetValue(), _("MarginL change"));
+	SetSelectedRows(std::mem_fun(&AssDialogue::SetMarginString<0>), MarginL->GetValue(), _("MarginL change"), AssFile::COMMIT_DIAG_META);
 	if (line) MarginL->ChangeValue(line->GetMarginString(0, false));
 }
 
 void SubsEditBox::OnMarginRChange(wxCommandEvent &) {
-	SetSelectedRows(std::mem_fun(&AssDialogue::SetMarginString<1>), MarginR->GetValue(), _("MarginR change"));
+	SetSelectedRows(std::mem_fun(&AssDialogue::SetMarginString<1>), MarginR->GetValue(), _("MarginR change"), AssFile::COMMIT_DIAG_META);
 	if (line) MarginR->ChangeValue(line->GetMarginString(1, false));
 }
 
@@ -645,16 +655,16 @@ static void set_margin_v(AssDialogue* diag, wxString value) {
 }
 
 void SubsEditBox::OnMarginVChange(wxCommandEvent &) {
-	SetSelectedRows(set_margin_v, MarginV->GetValue(), _("MarginV change"));
+	SetSelectedRows(set_margin_v, MarginV->GetValue(), _("MarginV change"), AssFile::COMMIT_DIAG_META);
 	if (line) MarginV->ChangeValue(line->GetMarginString(2, false));
 }
 
 void SubsEditBox::OnEffectChange(wxCommandEvent &) {
-	SetSelectedRows(&AssDialogue::Effect, Effect->GetValue(), _("effect change"));
+	SetSelectedRows(&AssDialogue::Effect, Effect->GetValue(), _("effect change"), AssFile::COMMIT_DIAG_META);
 }
 
 void SubsEditBox::OnCommentChange(wxCommandEvent &event) {
-	SetSelectedRows(&AssDialogue::Comment, CommentBox->GetValue(), _("comment change"));
+	SetSelectedRows(&AssDialogue::Comment, CommentBox->GetValue(), _("comment change"), AssFile::COMMIT_DIAG_META);
 }
 
 int SubsEditBox::BlockAtPos(int pos) const {

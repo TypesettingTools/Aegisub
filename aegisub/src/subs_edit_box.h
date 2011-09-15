@@ -171,17 +171,19 @@ class SubsEditBox : public wxPanel, protected SelectionListener<AssDialogue> {
 	/// @param set   Callable which does the setting
 	/// @param value Value to pass to set
 	/// @param desc  Undo description to use
+	/// @param type  Commit type to use
 	/// @param amend Coalesce sequences of commits of the same type
 	template<class T, class setter>
-	void SetSelectedRows(setter set, T value, wxString desc, bool amend = false);
+	void SetSelectedRows(setter set, T value, wxString desc, int type, bool amend = false);
 
 	/// @brief Set a field in each selected line to a specified value
 	/// @param field Field to set
 	/// @param value Value to set the field to
 	/// @param desc  Undo description to use
+	/// @param type  Commit type to use
 	/// @param amend Coalesce sequences of commits of the same type
 	template<class T>
-	void SetSelectedRows(T AssDialogue::*field, T value, wxString desc, bool amend = false);
+	void SetSelectedRows(T AssDialogue::*field, T value, wxString desc, int type, bool amend = false);
 
 	/// @brief Reload the current line from the file
 	/// @param type AssFile::CommitType
