@@ -40,6 +40,8 @@
 #include <wx/panel.h>
 #endif
 
+#include <libaegisub/signal.h>
+
 #include "selection_controller.h"
 
 namespace agi { struct Context; }
@@ -84,6 +86,8 @@ class SubsEditBox : public wxPanel, protected SelectionListener<AssDialogue> {
 	wxColour origBgColour;
 
 	agi::Context *c;
+
+	agi::signal::Connection file_changed_slot;
 
 	// Box controls
 	wxCheckBox *CommentBox;

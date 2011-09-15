@@ -329,7 +329,7 @@ SubsEditBox::SubsEditBox(wxWindow *parent, agi::Context *context)
 	OnSize(evt);
 
 	c->subsGrid->AddSelectionListener(this);
-	c->ass->AddCommitListener(&SubsEditBox::Update, this);
+	file_changed_slot = c->ass->AddCommitListener(&SubsEditBox::Update, this);
 	context->videoController->AddTimecodesListener(&SubsEditBox::UpdateFrameTiming, this);
 }
 SubsEditBox::~SubsEditBox() {
@@ -465,12 +465,14 @@ void SubsEditBox::NextLine() {
 
 void SubsEditBox::OnChange(wxStyledTextEvent &event) {
 	if (line && TextEdit->GetText() != line->Text) {
+		file_changed_slot.Block();
 		if (event.GetModificationType() & wxSTC_MOD_INSERTTEXT) {
 			CommitText(_("insert text"));
 		}
 		else {
 			CommitText(_("delete text"));
 		}
+		file_changed_slot.Unblock();
 	}
 }
 
