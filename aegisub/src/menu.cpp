@@ -39,6 +39,9 @@
 #include <vector>
 
 #include <wx/app.h>
+#include <wx/filename.h>
+#include <wx/frame.h>
+#include <wx/menu.h>
 #include <wx/menuitem.h>
 #endif
 
@@ -301,6 +304,8 @@ void process_menu_item(wxMenu *parent, agi::Context *c, json::Object const& ele,
 			else if (special == "options")
 				wxApp::s_macPreferencesMenuItemId = id;
 		}
+#else
+		(void)id;
 #endif
 	}
 	catch (agi::Exception const& e) {

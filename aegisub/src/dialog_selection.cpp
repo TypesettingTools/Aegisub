@@ -28,6 +28,7 @@
 #ifndef AGI_PRE
 #include <wx/checkbox.h>
 #include <wx/combobox.h>
+#include <wx/msgdlg.h>
 #include <wx/radiobox.h>
 #include <wx/radiobut.h>
 #include <wx/regex.h>
@@ -80,7 +81,7 @@ std::tr1::function<bool (wxString)> get_predicate(int mode, wxRegEx *re, bool ma
 
 	switch (mode) {
 		case MODE_REGEXP:
-			return bind(&wxRegEx::Matches, re, _1, 0);
+			return bind(static_cast<bool (wxRegEx::*)(wxString const&,int) const>(&wxRegEx::Matches), re, _1, 0);
 		case MODE_EXACT:
 			if (match_case)
 				return bind(std::equal_to<wxString>(), match_text, _1);

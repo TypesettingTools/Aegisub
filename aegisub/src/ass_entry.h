@@ -93,7 +93,7 @@ namespace Aegisub {
 		///
 		const char *GetName() { return "internal_error/invalid_margin_id"; }
 	};
-};
+}
 
 
 

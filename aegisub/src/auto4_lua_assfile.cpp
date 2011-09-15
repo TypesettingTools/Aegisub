@@ -1015,7 +1015,7 @@ namespace Automation4 {
 			description = wxString(lua_tostring(L, 1), wxConvUTF8);
 			lua_pop(L, 1);
 		}
-		laf->ass->Commit(description);
+		laf->ass->Commit(description, AssFile::COMMIT_NEW);
 
 		return 0;
 	}

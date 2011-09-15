@@ -26,8 +26,10 @@
 
 namespace agi { struct Context; }
 
+class wxFrame;
 class wxMenu;
 class wxMenuBar;
+class wxWindow;
 
 namespace menu {
 	DEFINE_BASE_EXCEPTION_NOINNER(Error, agi::Exception)
