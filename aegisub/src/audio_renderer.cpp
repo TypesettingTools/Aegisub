@@ -140,9 +140,6 @@ void AudioRenderer::SetRenderer(AudioRendererBitmapProvider *_renderer)
 {
 	if (renderer == _renderer) return;
 
-	if (renderer)
-		renderer->SetProvider(0);
-
 	renderer = _renderer;
 	Invalidate();
 

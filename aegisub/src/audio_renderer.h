@@ -207,10 +207,6 @@ public:
 	/// can be functional.
 	///
 	/// Changing renderer invalidates all cached bitmaps.
-	///
-	/// The old renderer will have its audio provider reset to 0 and the new renderer will
-	/// have its audio provider set to the current. This is done in part to ensure that
-	/// the renderers have any internal caches cleared.
 	void SetRenderer(AudioRendererBitmapProvider *renderer);
 
 	/// @brief Change audio provider

@@ -90,18 +90,14 @@ class AudioDisplayScrollbar : public AudioDisplayInteractionObject {
 
 public:
 
-	AudioDisplayScrollbar(AudioDisplay *_display)
+	AudioDisplayScrollbar(AudioDisplay *display)
 		: dragging(false)
 		, data_length(1)
 		, page_length(1)
 		, position(0)
 		, sel_start(-1)
 		, sel_length(0)
-		, display(_display)
-	{
-	}
-
-	virtual ~AudioDisplayScrollbar()
+		, display(display)
 	{
 	}
 
@@ -118,15 +114,9 @@ public:
 	}
 
 
-	const wxRect & GetBounds() const
-	{
-		return bounds;
-	}
+	const wxRect & GetBounds() const { return bounds; }
 
-	int GetPosition() const
-	{
-		return position;
-	}
+	int GetPosition() const { return position; }
 
 	int SetPosition(int new_position)
 	{
@@ -137,13 +127,8 @@ public:
 		if (new_position < 0)
 			new_position = 0;
 
-		// This check is required to avoid mutual recursion with the display
-		if (new_position != position)
-		{
-			position = new_position;
-			RecalculateThumb();
-			display->ScrollPixelToLeft(position);
-		}
+		position = new_position;
+		RecalculateThumb();
 
 		return position;
 	}
@@ -170,7 +155,7 @@ public:
 			const int data_length_less_page = data_length - page_length;
 			const int shaft_length_less_thumb = bounds.width - thumb.width;
 
-			SetPosition(data_length_less_page * thumb_left / shaft_length_less_thumb);
+			display->ScrollPixelToLeft(data_length_less_page * thumb_left / shaft_length_less_thumb);
 
 			dragging = true;
 		}
@@ -264,10 +249,6 @@ public:
 	{
 	}
 
-	virtual ~AudioDisplayTimeline()
-	{
-	}
-
 	int GetHeight() const
 	{
 		int width, height;
@@ -284,10 +265,7 @@ public:
 		bounds.y = 0;
 	}
 
-	const wxRect & GetBounds() const
-	{
-		return bounds;
-	}
+	const wxRect & GetBounds() const { return bounds; }
 
 	void ChangeAudio(int64_t new_length, int new_samplerate)
 	{
@@ -339,15 +317,7 @@ public:
 
 	void SetPosition(int new_pixel_left)
 	{
-		if (new_pixel_left < 0)
-			new_pixel_left = 0;
-
-		if (new_pixel_left != pixel_left)
-		{
-			pixel_left = new_pixel_left;
-			display->ScrollPixelToLeft(pixel_left);
-		}
-
+		pixel_left = std::max(new_pixel_left, 0);
 	}
 
 	bool OnMouseEvent(wxMouseEvent &event)
@@ -359,7 +329,7 @@ public:
 		}
 		else if (event.LeftIsDown())
 		{
-			SetPosition(pixel_left - event.GetPosition().x + drag_lastpos.x);
+			display->ScrollPixelToLeft(pixel_left - event.GetPosition().x + drag_lastpos.x);
 
 			drag_lastpos = event.GetPosition();
 			dragging = true;
@@ -486,10 +456,6 @@ public:
 		default_snap = false;
 	}
 
-	virtual ~AudioMarkerInteractionObject()
-	{
-	}
-
 	virtual bool OnMouseEvent(wxMouseEvent &event)
 	{
 		if (event.Dragging())
@@ -534,8 +500,6 @@ AudioDisplay::AudioDisplay(wxWindow *parent, AudioController *controller, agi::C
 : wxWindow(parent, -1, wxDefaultPosition, wxDefaultSize, wxWANTS_CHARS|wxBORDER_SIMPLE)
 , context(context)
 , audio_renderer(new AudioRenderer)
-, audio_spectrum_renderer(new AudioSpectrumRenderer)
-, audio_waveform_renderer(new AudioWaveformRenderer)
 , provider(0)
 , controller(controller)
 , scrollbar(new AudioDisplayScrollbar(this))
@@ -590,15 +554,10 @@ void AudioDisplay::ScrollPixelToLeft(int pixel_position)
 	if (pixel_position < 0)
 		pixel_position = 0;
 
-	// This check is required to avoid needless redraws, but more importantly to
-	// avoid mutual recursion with the scrollbar and timeline.
-	if (pixel_position != scroll_left)
-	{
-		scroll_left = pixel_position;
-		scrollbar->SetPosition(scroll_left);
-		timeline->SetPosition(scroll_left);
-		Refresh();
-	}
+	scroll_left = pixel_position;
+	scrollbar->SetPosition(scroll_left);
+	timeline->SetPosition(scroll_left);
+	Refresh();
 }
 
 
@@ -757,28 +716,33 @@ float AudioDisplay::GetAmplitudeScale() const
 
 void AudioDisplay::ReloadRenderingSettings()
 {
-	int64_t spectrum_quality = OPT_GET("Audio/Renderer/Spectrum/Quality")->GetInt();
-#ifdef WITH_FFTW
-	// FFTW is so fast we can afford to upgrade quality by two levels
-	spectrum_quality += 2;
-#endif
-	if (spectrum_quality < 0) spectrum_quality = 0;
-	if (spectrum_quality > 5) spectrum_quality = 5;
-
-	// Quality indexes:        0  1  2  3   4   5
-	int spectrum_width[]    = {8, 9, 9, 9, 10, 11};
-	int spectrum_distance[] = {8, 8, 7, 6,  6,  5};
-
-	audio_spectrum_renderer->SetResolution(
-		spectrum_width[spectrum_quality],
-		spectrum_distance[spectrum_quality]);
-
 	if (OPT_GET("Audio/Spectrum")->GetBool())
-		audio_renderer->SetRenderer(audio_spectrum_renderer.get());
-	else
-		audio_renderer->SetRenderer(audio_waveform_renderer.get());
+	{
+		AudioSpectrumRenderer *audio_spectrum_renderer = new AudioSpectrumRenderer;
 
-	audio_renderer->Invalidate();
+		int64_t spectrum_quality = OPT_GET("Audio/Renderer/Spectrum/Quality")->GetInt();
+#ifdef WITH_FFTW
+		// FFTW is so fast we can afford to upgrade quality by two levels
+		spectrum_quality += 2;
+#endif
+		spectrum_quality = mid(0LL, spectrum_quality, 5LL);
+
+		// Quality indexes:        0  1  2  3   4   5
+		int spectrum_width[]    = {8, 9, 9, 9, 10, 11};
+		int spectrum_distance[] = {8, 8, 7, 6,  6,  5};
+
+		audio_spectrum_renderer->SetResolution(
+			spectrum_width[spectrum_quality],
+			spectrum_distance[spectrum_quality]);
+
+		audio_renderer_provider.reset(audio_spectrum_renderer);
+	}
+	else
+	{
+		audio_renderer_provider.reset(new AudioWaveformRenderer);
+	}
+
+	audio_renderer->SetRenderer(audio_renderer_provider.get());
 
 	Refresh();
 }
@@ -1230,13 +1194,11 @@ void AudioDisplay::OnSelectionChanged()
 		// Only redraw the parts of the selection that changed, to avoid flicker
 		if (s1 != s2)
 		{
-			wxRect r(std::min(s1, s2)-10, audio_top, abs(s1-s2)+20, audio_height);
-			RefreshRect(r);
+			RefreshRect(wxRect(std::min(s1, s2)-10, audio_top, abs(s1-s2)+20, audio_height));
 		}
 		if (e1 != e2)
 		{
-			wxRect r(std::min(e1, e2)-10, audio_top, abs(e1-e2)+20, audio_height);
-			RefreshRect(r);
+			RefreshRect(wxRect(std::min(e1, e2)-10, audio_top, abs(e1-e2)+20, audio_height));
 		}
 	}
 	else

@@ -50,8 +50,7 @@
 namespace agi { struct Context; }
 
 class AudioRenderer;
-class AudioSpectrumRenderer;
-class AudioWaveformRenderer;
+class AudioRendererBitmapProvider;
 class AudioKaraoke;
 class AudioProvider;
 
@@ -106,11 +105,8 @@ private:
 	/// The audio renderer manager
 	agi::scoped_ptr<AudioRenderer> audio_renderer;
 
-	/// The renderer for audio spectra
-	agi::scoped_ptr<AudioSpectrumRenderer> audio_spectrum_renderer;
-
-	/// The renderer for audio waveforms
-	agi::scoped_ptr<AudioWaveformRenderer> audio_waveform_renderer;
+	/// The current audio renderer
+	agi::scoped_ptr<AudioRendererBitmapProvider> audio_renderer_provider;
 
 	/// Our current audio provider
 	AudioProvider *provider;
@@ -191,9 +187,9 @@ private:
 	void OnKeyDown(wxKeyEvent& event);
 
 	// AudioControllerAudioEventListener implementation
-	virtual void OnAudioOpen(AudioProvider *provider);
-	virtual void OnPlaybackPosition(int64_t sample_position);
-	virtual void OnSelectionChanged();
+	void OnAudioOpen(AudioProvider *provider);
+	void OnPlaybackPosition(int64_t sample_position);
+	void OnSelectionChanged();
 	void OnMarkerMoved();
 
 public:
