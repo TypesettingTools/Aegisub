@@ -597,6 +597,9 @@
     <ClInclude Include="$(SrcDir)dialog_progress.h">
       <Filter>Utilities\UI utilities</Filter>
     </ClInclude>
+    <ClInclude Include="$(SrcDir)persist_location.h">
+      <Filter>Utilities\UI utilities</Filter>
+    </ClInclude>
     <ClInclude Include="$(SrcDir)dialog_log.h">
       <Filter>Utilities\Logging</Filter>
     </ClInclude>
@@ -1107,6 +1110,9 @@
       <Filter>Utilities\UI utilities</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)dialog_progress.cpp">
+      <Filter>Utilities\UI utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SrcDir)persist_location.cpp">
       <Filter>Utilities\UI utilities</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)dialog_log.cpp">
