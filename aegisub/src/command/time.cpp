@@ -165,7 +165,22 @@ struct time_shift : public Command {
 	}
 };
 
+static void snap_subs_video(agi::Context *c, bool start) {
+	std::set<AssDialogue*> sel = c->selectionController->GetSelectedSet();
 
+	if (!c->videoController->IsLoaded() || sel.empty()) return;
+
+	int ms = c->videoController->TimeAtFrame(c->videoController->GetFrameN(), start ? agi::vfr::START : agi::vfr::END);
+
+	for (std::set<AssDialogue*>::iterator it = sel.begin(); it != sel.end(); ++it) {
+		if (start)
+			(*it)->Start.SetMS(ms);
+		else
+			(*it)->End.SetMS(ms);
+	}
+
+		c->ass->Commit(_("timing"), AssFile::COMMIT_DIAG_TIME);
+}
 
 /// Set end of selected subtitles to current video frame.
 struct time_snap_end_video : public validate_video_loaded {
@@ -175,7 +190,7 @@ struct time_snap_end_video : public validate_video_loaded {
 	STR_HELP("Set end of selected subtitles to current video frame.")
 
 	void operator()(agi::Context *c) {
-		c->subsGrid->SetSubsToVideo(false);
+		snap_subs_video(c, false);
 	}
 };
 
@@ -298,7 +313,7 @@ struct time_snap_start_video : public validate_video_loaded {
 	STR_HELP("Set start of selected subtitles to current video frame.")
 
 	void operator()(agi::Context *c) {
-		c->subsGrid->SetSubsToVideo(false);
+		snap_subs_video(c, true);
 	}
 };
 

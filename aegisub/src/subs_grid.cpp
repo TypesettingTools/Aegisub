@@ -553,29 +553,6 @@ bool SubtitlesGrid::SplitLineByKaraoke(int lineNumber) {
 	return true;
 }
 
-void SubtitlesGrid::SetSubsToVideo(bool start) {
-	if (!context->videoController->IsLoaded()) return;
-
-	// Get new time
-	int ms = context->videoController->TimeAtFrame(context->videoController->GetFrameN(),start ? agi::vfr::START : agi::vfr::END);
-
-	// Update selection
-	wxArrayInt sel = GetSelection();
-	bool modified = false;
-	for (size_t i=0;i<sel.Count();i++) {
-		AssDialogue *cur = GetDialogue(sel[i]);
-		if (cur) {
-			modified = true;
-			if (start) cur->Start.SetMS(ms);
-			else cur->End.SetMS(ms);
-		}
-	}
-
-	if (modified) {
-		context->ass->Commit(_("timing"), AssFile::COMMIT_DIAG_TIME);
-	}
-}
-
 /// @brief Retrieve a list of selected lines in the actual ASS file (ie. not as displayed in the grid but as represented in the file)
 /// @return 
 ///

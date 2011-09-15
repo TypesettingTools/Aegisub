@@ -76,10 +76,6 @@ public:
 	SubtitlesGrid(wxWindow *parent, agi::Context *context, const wxSize& size = wxDefaultSize, long style = wxWANTS_CHARS, const wxString& name = wxPanelNameStr);
 	~SubtitlesGrid();
 
-	/// @brief Set the start/end time of the current subtitle line to the current frame
-	/// @param start Start vs. End time
-	void SetSubsToVideo(bool start);
-
 	/// @brief Adjoins selected lines, setting each line's start time to the previous line's end time
 	/// @param n1       First line to adjoin
 	/// @param n2       Last line to adjoin
