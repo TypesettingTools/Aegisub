@@ -324,25 +324,6 @@ void BaseGrid::SelectRow(int row, bool addToSelected, bool select) {
 	RefreshRect(wxRect(0, (row + 1 - yPos) * lineHeight, w, lineHeight), false);
 }
 
-void BaseGrid::SelectVisible() {
-	Selection new_selection;
-
-	int rows = GetRows();
-	bool selectedOne = false;
-	for (int i=0;i<rows;i++) {
-		AssDialogue *diag = GetDialogue(i);
-		if (IsDisplayed(diag)) {
-			if (!selectedOne) {
-				MakeCellVisible(i,0);
-				selectedOne = true;
-			}
-			new_selection.insert(diag);
-		}
-	}
-
-	SetSelectedSet(new_selection);
-}
-
 int BaseGrid::GetFirstSelRow() const {
 	if (selection.empty()) return -1;
 

@@ -394,8 +394,25 @@ struct subtitle_select_visible : public Command {
 	CMD_TYPE(COMMAND_VALIDATE)
 
 	void operator()(agi::Context *c) {
+		if (!c->videoController->IsLoaded()) return;
 		c->videoController->Stop();
-		c->subsGrid->SelectVisible();
+
+		SubtitleSelectionController::Selection new_selection;
+		int frame = c->videoController->GetFrameN();
+
+		for (entryIter it = c->ass->Line.begin(); it != c->ass->Line.end(); ++it) {
+			AssDialogue *diag = dynamic_cast<AssDialogue*>(*it);
+			if (diag &&
+				c->videoController->FrameAtTime(diag->Start.GetMS(), agi::vfr::START) <= frame &&
+				c->videoController->FrameAtTime(diag->End.GetMS(), agi::vfr::END) >= frame)
+			{
+				if (new_selection.empty())
+					c->selectionController->SetActiveLine(diag);
+				new_selection.insert(diag);
+			}
+		}
+
+		c->selectionController->SetSelectedSet(new_selection);
 	}
 
 	bool Validate(agi::Context *c) {

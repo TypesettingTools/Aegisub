@@ -142,7 +142,6 @@ public:
 	bool IsDisplayed(const AssDialogue *line) const;
 	void SelectRow(int row, bool addToSelected = false, bool select=true);
 	int GetFirstSelRow() const;
-	void SelectVisible();
 	wxArrayInt GetSelection() const;
 
 	void ClearMaps();
