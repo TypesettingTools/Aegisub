@@ -1,29 +1,16 @@
-// Copyright (c) 2005, Rodrigo Braz Monteiro
-// All rights reserved.
+// Copyright (c) 2011, Thomas Goyne <plorkyeran@aegisub.org>
 //
-// Redistribution and use in source and binary forms, with or without
-// modification, are permitted provided that the following conditions are met:
+// Permission to use, copy, modify, and distribute this software for any
+// purpose with or without fee is hereby granted, provided that the above
+// copyright notice and this permission notice appear in all copies.
 //
-//   * Redistributions of source code must retain the above copyright notice,
-//     this list of conditions and the following disclaimer.
-//   * Redistributions in binary form must reproduce the above copyright notice,
-//     this list of conditions and the following disclaimer in the documentation
-//     and/or other materials provided with the distribution.
-//   * Neither the name of the Aegisub Group nor the names of its contributors
-//     may be used to endorse or promote products derived from this software
-//     without specific prior written permission.
-//
-// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-// AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-// IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
-// ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
-// LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
-// CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-// SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-// INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-// CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-// ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-// POSSIBILITY OF SUCH DAMAGE.
+// THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+// WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+// MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+// ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+// WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+// ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+// OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 //
 // Aegisub Project http://www.aegisub.org/
 //
@@ -34,336 +21,261 @@
 /// @ingroup secondary_ui
 ///
 
-
-///////////
-// Headers
 #include "config.h"
 
+#include "dialog_selection.h"
+
 #ifndef AGI_PRE
+#include <wx/checkbox.h>
+#include <wx/combobox.h>
+#include <wx/radiobox.h>
+#include <wx/radiobut.h>
 #include <wx/regex.h>
-#include <wx/string.h>
+#include <wx/textctrl.h>
 #endif
 
 #include "ass_dialogue.h"
+#include "ass_file.h"
 #include "compat.h"
-#include "dialog_selection.h"
+#include "frame_main.h"
 #include "help_button.h"
+#include "include/aegisub/context.h"
 #include "main.h"
 #include "selection_controller.h"
-#include "subs_grid.h"
-#include "subs_edit_box.h"
 
+enum {
+	ACTION_SET = 0,
+	ACTION_ADD,
+	ACTION_SUB,
+	ACTION_INTERSECT
+};
 
-/// @brief Constructor 
-/// @param parent 
-/// @param _grid  
-///
-DialogSelection::DialogSelection(wxWindow *parent, SubtitlesGrid *_grid) :
-wxDialog (parent,-1,_("Select"),wxDefaultPosition,wxDefaultSize,wxCAPTION)
+enum {
+	FIELD_TEXT = 0,
+	FIELD_STYLE,
+	FIELD_ACTOR,
+	FIELD_EFFECT
+};
+
+enum {
+	MODE_EXACT = 0,
+	MODE_CONTAINS,
+	MODE_REGEXP
+};
+
+DEFINE_SIMPLE_EXCEPTION(BadRegex, agi::InvalidInputException, "bad_regex")
+
+static wxString AssDialogue::* get_field(int field_n) {
+	switch(field_n) {
+		case FIELD_TEXT:   return &AssDialogue::Text; break;
+		case FIELD_STYLE:  return &AssDialogue::Style; break;
+		case FIELD_ACTOR:  return &AssDialogue::Actor; break;
+		case FIELD_EFFECT: return &AssDialogue::Effect; break;
+		default: throw agi::InternalError("Bad field", 0);
+	}
+}
+
+std::tr1::function<bool (wxString)> get_predicate(int mode, wxRegEx *re, bool match_case, wxString const& match_text) {
+	using std::tr1::placeholders::_1;
+
+	switch (mode) {
+		case MODE_REGEXP:
+			return bind(&wxRegEx::Matches, re, _1, 0);
+		case MODE_EXACT:
+			if (match_case)
+				return bind(std::equal_to<wxString>(), match_text, _1);
+			else
+				return bind(std::equal_to<wxString>(), match_text.Lower(), bind(&wxString::Lower, _1));
+		case MODE_CONTAINS:
+			if (match_case)
+				return bind(&wxString::Contains, _1, match_text);
+			else
+				return bind(&wxString::Contains, bind(&wxString::Lower, _1), match_text.Lower());
+			break;
+		default: throw agi::InternalError("Bad mode", 0);
+	}
+}
+
+static std::set<AssDialogue*> process(wxString match_text, bool match_case, int mode, bool invert, bool comments, bool dialogue, int field_n, AssFile *ass) {
+	wxRegEx re;
+	if (mode == MODE_REGEXP) {
+		int flags = wxRE_ADVANCED;
+		if (!match_case)
+			flags |= wxRE_ICASE;
+		if (!re.Compile(match_text))
+			throw BadRegex("Syntax error in regular expression", 0);
+		match_case = false;
+	}
+
+	wxString AssDialogue::*field = get_field(field_n);
+	std::tr1::function<bool (wxString)> pred = get_predicate(mode, &re, match_case, match_text);
+
+	std::set<AssDialogue*> matches;
+	for (entryIter it = ass->Line.begin(); it != ass->Line.end(); ++it) {
+		AssDialogue *diag = dynamic_cast<AssDialogue*>(*it);
+		if (!diag) continue;
+		if (diag->Comment && !comments) continue;
+		if (!diag->Comment && !dialogue) continue;
+
+		if (pred(diag->*field) != invert)
+			matches.insert(diag);
+	}
+
+	return matches;
+}
+
+DialogSelection::DialogSelection(agi::Context *c) :
+wxDialog (c->parent, -1, _("Select"), wxDefaultPosition, wxDefaultSize, wxCAPTION)
+, con(c)
 {
-	// Variables
-	grid = _grid;
+	wxSizer *main_sizer = new wxBoxSizer(wxVERTICAL);
 
-	// Static-box sizers before anything else
-	wxSizer *MatchSizer = new wxStaticBoxSizer(wxVERTICAL,this,_("Match"));
-	wxSizer *MatchTopSizer = new wxBoxSizer(wxHORIZONTAL);
-	wxSizer *DialogueSizer = new wxStaticBoxSizer(wxHORIZONTAL,this,_("Match dialogues/comments"));
-	
-	// Matches box
-	Matches = new wxRadioButton(this,-1,_("Matches"),wxDefaultPosition,wxDefaultSize,wxRB_GROUP);
-	DoesntMatch = new wxRadioButton(this,-1,_("Doesn't Match"),wxDefaultPosition,wxDefaultSize,0);
-	Match = new wxTextCtrl(this,-1,lagi_wxString(OPT_GET("Tool/Select Lines/Text")->GetString()),wxDefaultPosition,wxSize(200,-1));
-	MatchCase = new wxCheckBox(this,-1,_("Match case"));
-	Exact = new wxRadioButton(this,-1,_("Exact match"),wxDefaultPosition,wxDefaultSize,wxRB_GROUP);
-	Contains = new wxRadioButton(this,-1,_("Contains"));
-	RegExp = new wxRadioButton(this,-1,_("Regular Expression match"));
+	wxSizerFlags main_flags = wxSizerFlags().Expand().Border();
 
-	// Fields box
-	wxArrayString field;
-	field.Add(_("Text"));
-	field.Add(_("Style"));
-	field.Add(_("Actor"));
-	field.Add(_("Effect"));
-	Field = new wxRadioBox(this,-1,_("In Field"),wxDefaultPosition,wxDefaultSize,field);
+	{
+		wxSizer *match_sizer = new wxStaticBoxSizer(wxVERTICAL, this, _("Match"));
+		{
+			wxSizerFlags radio_flags = wxSizerFlags().Border(wxLEFT | wxRIGHT);
+			wxSizer *match_radio_line = new wxBoxSizer(wxHORIZONTAL);
+			match_radio_line->Add(new wxRadioButton(this, -1, _("Matches"), wxDefaultPosition, wxDefaultSize, wxRB_GROUP), radio_flags);
+			match_radio_line->Add(select_unmatching_lines = new wxRadioButton(this, -1, _("Doesn't Match")), radio_flags);
+			match_radio_line->Add(case_sensitive = new wxCheckBox(this, -1, _("Match case")), radio_flags);
+			match_sizer->Add(match_radio_line);
+		}
+		match_sizer->Add(match_text = new wxTextCtrl(this, -1, lagi_wxString(OPT_GET("Tool/Select Lines/Text")->GetString())), main_flags);
 
-	// Dialogues/comments box
-	MatchDialogues = new wxCheckBox(this,MATCH_DIALOGUES_CHECKBOX,_("Dialogues"));
-	MatchComments = new wxCheckBox(this,MATCH_COMMENTS_CHECKBOX,_("Comments"));
+		main_sizer->Add(match_sizer, main_flags);
+	}
 
-	// Action box
-	wxArrayString actions;
-	actions.Add(_("Set selection"));
-	actions.Add(_("Add to selection"));
-	actions.Add(_("Subtract from selection"));
-	actions.Add(_("Intersect with selection"));
-	Action = new wxRadioBox(this,-1,_("Action"),wxDefaultPosition,wxDefaultSize,actions,1);
+	{
+		wxString modes[] = { _("Exact match"), _("Contains"), _("Regular Expression match") };
+		main_sizer->Add(match_mode = new wxRadioBox(this, -1, _("Mode"), wxDefaultPosition, wxDefaultSize, 3, modes, 1), main_flags);
+	}
 
-	// Matches box sizer
-	MatchTopSizer->Add(Matches,0,wxEXPAND|wxRIGHT,5);
-	MatchTopSizer->Add(DoesntMatch,0,wxEXPAND,0);
-	MatchTopSizer->AddStretchSpacer(1);
-	MatchSizer->Add(MatchTopSizer,0,wxEXPAND,0);
-	MatchSizer->Add(Match,1,wxTOP|wxEXPAND,5);
-	MatchSizer->Add(MatchCase,0,wxTOP|wxEXPAND,5);
-	MatchSizer->Add(Exact,0,wxTOP|wxEXPAND,5);
-	MatchSizer->Add(Contains,0,wxTOP|wxEXPAND,5);
-	MatchSizer->Add(RegExp,0,wxTOP|wxEXPAND,5);
+	{
+		wxString fields[] = { _("Text"), _("Style"), _("Actor"), _("Effect") };
+		main_sizer->Add(dialogue_field = new wxRadioBox(this, -1, _("In Field"), wxDefaultPosition, wxDefaultSize, 4, fields), main_flags);
+	}
 
-	// Dialogues / Comments box
-	DialogueSizer->Add(MatchDialogues,0, wxRIGHT|wxEXPAND,5);
-	DialogueSizer->Add(MatchComments,0, wxEXPAND);
-	
-	// Buttons sizer
-	wxStdDialogButtonSizer *ButtonSizer = new wxStdDialogButtonSizer();
-	ButtonSizer->AddButton(new wxButton(this,wxID_OK));
-	ButtonSizer->AddButton(new wxButton(this,wxID_CANCEL));
-	ButtonSizer->AddButton(new HelpButton(this,_T("Select Lines")));
-	ButtonSizer->Realize();
+	{
+		wxSizer *comment_sizer = new wxStaticBoxSizer(wxHORIZONTAL, this, _("Match dialogues/comments"));
+		comment_sizer->Add(apply_to_dialogue = new wxCheckBox(this, -1, _("Dialogues")), wxSizerFlags().Border());
+		comment_sizer->Add(apply_to_comments = new wxCheckBox(this, -1, _("Comments")), wxSizerFlags().Border());
+		main_sizer->Add(comment_sizer, main_flags);
+	}
 
-	// Main sizer
-	wxSizer *MainSizer = new wxBoxSizer(wxVERTICAL);
-	MainSizer->Add(MatchSizer,0,wxEXPAND|wxLEFT|wxTOP|wxRIGHT,5);
-	MainSizer->Add(Field,0,wxEXPAND|wxLEFT|wxRIGHT|wxTOP,5);
-	MainSizer->Add(DialogueSizer,0,wxEXPAND|wxLEFT|wxRIGHT|wxTOP,5);
-	MainSizer->Add(Action,0,wxEXPAND|wxLEFT|wxRIGHT|wxTOP,5);
-	MainSizer->Add(ButtonSizer,0,wxEXPAND|wxALL,5);
-	MainSizer->SetSizeHints(this);
-	SetSizer(MainSizer);
+	{
+		wxString actions[] = { _("Set selection"), _("Add to selection"), _("Subtract from selection"), _("Intersect with selection") };
+		main_sizer->Add(selection_change_type = new wxRadioBox(this, -1, _("Action"), wxDefaultPosition, wxDefaultSize, 4, actions, 1), main_flags);
+	}
+
+	main_sizer->Add(CreateButtonSizer(wxOK | wxCANCEL | wxHELP), main_flags);
+
+	SetSizerAndFit(main_sizer);
 	CenterOnParent();
 
-	// Load settings
-	Field->SetSelection(OPT_GET("Tool/Select/Field")->GetInt());
-	Action->SetSelection(OPT_GET("Tool/Select/Action")->GetInt());
-	MatchCase->SetValue(OPT_GET("Tool/Select Lines/Match/Case")->GetBool());
-	MatchDialogues->SetValue(OPT_GET("Tool/Select Lines/Match/Dialogue")->GetBool());
-	MatchComments->SetValue(OPT_GET("Tool/Select Lines/Match/Comment")->GetBool());
-	int condition = OPT_GET("Tool/Select/Condition")->GetInt();
-	int mode = OPT_GET("Tool/Select/Mode")->GetInt();
-	if (condition == 1) DoesntMatch->SetValue(true);
-	if (mode == 1) Contains->SetValue(true);
-	else if (mode == 2) RegExp->SetValue(true);
+	dialogue_field->SetSelection(OPT_GET("Tool/Select Lines/Field")->GetInt());
+	selection_change_type->SetSelection(OPT_GET("Tool/Select Lines/Action")->GetInt());
+	case_sensitive->SetValue(OPT_GET("Tool/Select Lines/Match/Case")->GetBool());
+	apply_to_dialogue->SetValue(OPT_GET("Tool/Select Lines/Match/Dialogue")->GetBool());
+	apply_to_comments->SetValue(OPT_GET("Tool/Select Lines/Match/Comment")->GetBool());
+	select_unmatching_lines->SetValue(!!OPT_GET("Tool/Select Lines/Condition")->GetInt());
+	match_mode->SetSelection(OPT_GET("Tool/Select Lines/Mode")->GetInt());
+
+	Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DialogSelection::Process, this, wxID_OK);
+	Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DialogSelection::OnClose, this, wxID_CANCEL);
+	Bind(wxEVT_COMMAND_BUTTON_CLICKED, std::tr1::bind(&HelpButton::OpenPage, "Select Lines"), wxID_HELP);
+	apply_to_comments->Bind(wxEVT_COMMAND_CHECKBOX_CLICKED, std::tr1::bind(&DialogSelection::OnDialogueCheckbox, this, apply_to_dialogue));
+	apply_to_dialogue->Bind(wxEVT_COMMAND_CHECKBOX_CLICKED, std::tr1::bind(&DialogSelection::OnDialogueCheckbox, this, apply_to_comments));
 }
 
+void DialogSelection::Process(wxCommandEvent&) {
+	std::set<AssDialogue*> matches;
 
-
-/// @brief Matching function 
-/// @param diag 
-/// @return 
-///
-bool DialogSelection::StringMatches(AssDialogue *diag) {
-	// Variables
-	wxString text;
-	wxString matching = Match->GetValue();
-	bool result = false;
-	int field = Field->GetSelection();
-
-	// Get text
-	if (field == 0) text = diag->Text;
-	else if (field == 1) text = diag->Style;
-	else if (field == 2) text = diag->Actor;
-	else if (field == 3) text = diag->Effect;
-
-	// RegExp?
-	bool isReg = false;
-	if (RegExp->GetValue()) {
-		isReg = true;
+	try {
+		matches = process(
+			match_text->GetValue(), case_sensitive->IsChecked(),
+			match_mode->GetSelection(), select_unmatching_lines->GetValue(),
+			apply_to_comments->IsChecked(), apply_to_dialogue->IsChecked(),
+			dialogue_field->GetSelection(), con->ass);
+	}
+	catch (agi::Exception const&) {
+		Close();
+		return;
 	}
 
-	// Case sensitivity
-	int regFlags = wxRE_ADVANCED;
-	if (!MatchCase->IsChecked()) {
-		if (isReg) regFlags |= wxRE_ICASE;
-		else {
-			text.LowerCase();
-			matching.LowerCase();
-		}
-	}
-	
-	// Dialogue/Comment
-	bool dial = MatchDialogues->GetValue();
-	bool comm = MatchComments->GetValue();	
-	if ((diag->Comment && !comm) || (!diag->Comment && !dial)) {
-		result = false;
-	}
+	int action = selection_change_type->GetSelection();
 
-	// Exact
-	else if (Exact->GetValue()) {
-		if (text == matching) result = true;
-	}
-	
-	// Contains
-	else if (Contains->GetValue()) {
-		if (text.Contains(matching)) result = true;
-	}
+	SelectionController<AssDialogue>::Selection old_sel, new_sel;
+	if (action != ACTION_SET)
+		con->selectionController->GetSelectedSet(old_sel);
 
-	// Regular expression
-	else if (isReg) {
-		wxRegEx regex (matching,regFlags);
-		if (regex.IsValid()) {
-			if (regex.Matches(text)) {
-				result = true;
+	wxString message;
+	size_t count;
+	switch (action) {
+		case ACTION_SET:
+			new_sel = matches;
+			switch (count = new_sel.size()) {
+				case 0:  message = _("Selection was set to no lines"); break;
+				case 1:  message = _("Selection was set to one line"); break;
+				default: message = wxString::Format(_("Selection was set to %u lines"), count);
 			}
+			break;
+
+		case ACTION_ADD:
+			set_union(old_sel.begin(), old_sel.end(), matches.begin(), matches.end(), inserter(new_sel, new_sel.begin()));
+			switch (count = new_sel.size() - old_sel.size()) {
+				case 0:  message = _("No lines were added to selection"); break;
+				case 1:  message = _("One line was added to selection"); break;
+				default: message = wxString::Format(_("%u lines were were added to selection"), count);
 			}
-		else result = false;
-	}
+			break;
 
-	// wtf?
-	else {
-		throw _T("Invalid mode");
-	}
-
-	// Result
-	if (Matches->GetValue()) return result;
-	else return !result;
-}
-
-
-
-/// @brief Process 
-///
-void DialogSelection::Process() {
-	// Prepare
-	AssDialogue *current;
-	int rows = grid->GetRows();
-	int action = Action->GetSelection();
-	bool replaceSel = (action == 0);
-	int firstSel = -1;
-	int count = 0;
-
-	// Build current selection list
-	wxArrayInt sels;
-	if (action == 2 || action == 3) {
-		sels = grid->GetSelection();
-	}
-
-	// Iterate
-	for (int i=0;i<rows;i++) {
-		current = grid->GetDialogue(i);
-		if (StringMatches(current)) {
-			// Set/Add to selection
-			if (action == 0 || action == 1) {
-				grid->SelectRow(i,!replaceSel);
-				if (replaceSel) firstSel = i;
-				replaceSel = false;
-				count++;
+		case ACTION_SUB:
+			set_difference(old_sel.begin(), old_sel.end(), matches.begin(), matches.end(), inserter(new_sel, new_sel.begin()));
+			switch (count = old_sel.size() - new_sel.size()) {
+				case 0:  message = _("No lines were removed from selection"); break;
+				case 1:  message = _("One line was removed from selection"); break;
+				default: message = wxString::Format(_("%u lines were were removed from selection"), count);
 			}
+			break;
 
-			// Subtract from selection
-			if (action == 2) {
-				if (sels.Index(i) != wxNOT_FOUND) {
-					sels.Remove(i);
-					count++;
-				}
+		case ACTION_INTERSECT:
+			set_intersection(old_sel.begin(), old_sel.end(), matches.begin(), matches.end(), inserter(new_sel, new_sel.begin()));
+			switch (count = old_sel.size() - new_sel.size()) {
+				case 0:  message = _("No lines were removed from selection"); break;
+				case 1:  message = _("One line was removed from selection"); break;
+				default: message = wxString::Format(_("%u lines were were removed from selection"), count);
 			}
-		}
-		else {
-			// Intersect with selection
-			if (action == 3) {
-				if (sels.Index(i) != wxNOT_FOUND) {
-					sels.Remove(i);
-					count++;
-				}
-			}
-		}
+			break;
 	}
 
-	// Select for modes 2 and 3
-	if (action == 2 || action == 3) {
-		SubtitleSelectionController::Selection newsel;
-		int count = sels.Count();
-		for (int i=0;i<count;i++) {
-			newsel.insert(grid->GetDialogue(sels[i]));
-		}
-		grid->SetSelectedSet(newsel);
-		if (count) {
-			grid->SetActiveLine(grid->GetDialogue(sels[0]));
-		}
-	}
-	else if (firstSel > -1) {
-		grid->SetActiveLine(grid->GetDialogue(firstSel));
-	}
+	if (count == 0)
+		wxMessageBox(message, _("Selection"), wxOK);
+	else
+		wxGetApp().frame->StatusTimeout(message);
 
-	// Message saying number selected
-	if (action == 0) wxMessageBox(wxString::Format(_("Selection was set to %i lines"),count), _("Selection"), wxOK);
-	else if (action == 1) wxMessageBox(wxString::Format(_("%i lines were added to selection"),count), _("Selection"), wxOK);
-	else wxMessageBox(wxString::Format(_("%i lines were removed from selection"),count), _("Selection"), wxOK);
+	if (new_sel.size() && !new_sel.count(con->selectionController->GetActiveLine()))
+		con->selectionController->SetActiveLine(*new_sel.begin());
+	con->selectionController->SetSelectedSet(new_sel);
+
+	Close();
 }
 
+void DialogSelection::OnClose(wxCommandEvent&) {
+	OPT_SET("Tool/Select Lines/Text")->SetString(STD_STR(match_text->GetValue()));
+	OPT_SET("Tool/Select Lines/Condition")->SetInt(select_unmatching_lines->GetValue());
+	OPT_SET("Tool/Select Lines/Field")->SetInt(dialogue_field->GetSelection());
+	OPT_SET("Tool/Select Lines/Action")->SetInt(selection_change_type->GetSelection());
+	OPT_SET("Tool/Select Lines/Mode")->SetInt(match_mode->GetSelection());
+	OPT_SET("Tool/Select Lines/Match/Case")->SetBool(case_sensitive->IsChecked());
+	OPT_SET("Tool/Select Lines/Match/Dialogue")->SetBool(apply_to_dialogue->IsChecked());
+	OPT_SET("Tool/Select Lines/Match/Comment")->SetBool(apply_to_comments->IsChecked());
 
-
-/// @brief Save settings 
-///
-void DialogSelection::SaveSettings() {
-	// Prepare settings
-	int action = Action->GetSelection();
-	int mode;
-	if (Exact->GetValue()) mode = 0;
-	else if (Contains->GetValue()) mode = 1;
-	else mode = 2;
-	int field = Field->GetSelection();
-	int condition;
-	if (Matches->GetValue()) condition = 0;
-	else condition = 1;
-
-	// Store
-	OPT_SET("Tool/Select Lines/Text")->SetString(STD_STR(Match->GetValue()));
-	OPT_SET("Tool/Select/Condition")->SetInt(condition);
-	OPT_SET("Tool/Select/Field")->SetInt(field);
-	OPT_SET("Tool/Select/Action")->SetInt(action);
-	OPT_SET("Tool/Select/Mode")->SetInt(mode);
-	OPT_SET("Tool/Select Lines/Match/Case")->SetBool(MatchCase->IsChecked());
-	OPT_SET("Tool/Select Lines/Match/Dialogue")->SetBool(MatchDialogues->IsChecked());
-	OPT_SET("Tool/Select Lines/Match/Comment")->SetBool(MatchComments->IsChecked());
+	Destroy();
 }
 
-
-///////////////
-// Event table
-BEGIN_EVENT_TABLE(DialogSelection,wxDialog)
-	EVT_BUTTON(wxID_OK,DialogSelection::OnOK)
-	EVT_BUTTON(wxID_CANCEL,DialogSelection::OnCancel)
-	EVT_CHECKBOX(MATCH_DIALOGUES_CHECKBOX, DialogSelection::OnDialogueCheckbox)	
-	EVT_CHECKBOX(MATCH_COMMENTS_CHECKBOX, DialogSelection::OnCommentCheckbox)	
-END_EVENT_TABLE()
-
-
-
-
-/// @brief Dialogue/Comment checkboxes 
-/// @param event 
-///
-void DialogSelection::OnDialogueCheckbox(wxCommandEvent &event) {
-	if(!event.IsChecked() && !MatchComments->GetValue())
-		MatchComments->SetValue(true);
+void DialogSelection::OnDialogueCheckbox(wxCheckBox *chk) {
+	if(!apply_to_dialogue->IsChecked() && !apply_to_comments->GetValue())
+		chk->SetValue(true);
 }
-
-
-/// @brief DOCME
-/// @param event 
-///
-void DialogSelection::OnCommentCheckbox(wxCommandEvent &event) {
-	if(!event.IsChecked() && !MatchDialogues->GetValue())
-		MatchDialogues->SetValue(true);
-}	
-	
-
-/// @brief OK pressed 
-/// @param event 
-///
-void DialogSelection::OnOK(wxCommandEvent &event) {
-	Process();
-	SaveSettings();
-	EndModal(0);
-}
-
-
-
-/// @brief Cancel pressed 
-/// @param event 
-///
-void DialogSelection::OnCancel(wxCommandEvent &event) {
-	SaveSettings();
-	EndModal(0);
-}
-
-

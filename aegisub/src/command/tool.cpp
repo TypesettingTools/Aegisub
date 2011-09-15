@@ -105,16 +105,15 @@ struct tool_font_collector : public Command {
 };
 
 
-/// Selects lines based on defined criterea.
+/// Selects lines based on defined criteria.
 struct tool_line_select : public Command {
 	CMD_NAME("tool/line/select")
 	STR_MENU("Select Lines..")
 	STR_DISP("Select Lines")
-	STR_HELP("Selects lines based on defined criterea.")
+	STR_HELP("Selects lines based on defined criteria.")
 
 	void operator()(agi::Context *c) {
-		c->videoController->Stop();
-		DialogSelection(c->parent, c->subsGrid).ShowModal();
+		(new DialogSelection(c))->Show();
 	}
 };
 

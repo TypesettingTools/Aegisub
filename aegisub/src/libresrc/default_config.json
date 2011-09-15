@@ -323,18 +323,16 @@
 			"Video Update" : false
 		},
 		"Select Lines" : {
+			"Action" : 0,
+			"Condition" : 0,
+			"Field" : 0,
 			"Match" : {
 				"Case" : false,
 				"Comment" : false,
 				"Dialogue" : true
 			},
+			"Mode" : 1,
 			"Text" : ""
-		},
-		"Select" : {
-			"Action" : 0,
-			"Condition" : 0,
-			"Field" : 0,
-			"Mode" : 1
 		},
 		"Shift Times" : {
 			"Affect" : 0,

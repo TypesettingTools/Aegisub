@@ -1,29 +1,16 @@
-// Copyright (c) 2005, Rodrigo Braz Monteiro
-// All rights reserved.
+// Copyright (c) 2011, Thomas Goyne <plorkyeran@aegisub.org>
 //
-// Redistribution and use in source and binary forms, with or without
-// modification, are permitted provided that the following conditions are met:
+// Permission to use, copy, modify, and distribute this software for any
+// purpose with or without fee is hereby granted, provided that the above
+// copyright notice and this permission notice appear in all copies.
 //
-//   * Redistributions of source code must retain the above copyright notice,
-//     this list of conditions and the following disclaimer.
-//   * Redistributions in binary form must reproduce the above copyright notice,
-//     this list of conditions and the following disclaimer in the documentation
-//     and/or other materials provided with the distribution.
-//   * Neither the name of the Aegisub Group nor the names of its contributors
-//     may be used to endorse or promote products derived from this software
-//     without specific prior written permission.
-//
-// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-// AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-// IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
-// ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
-// LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
-// CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-// SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-// INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-// CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-// ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-// POSSIBILITY OF SUCH DAMAGE.
+// THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+// WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+// MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+// ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+// WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+// ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+// OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 //
 // Aegisub Project http://www.aegisub.org/
 //
@@ -34,28 +21,16 @@
 /// @ingroup secondary_ui
 ///
 
-
-
-
-///////////
-// Headers
 #ifndef AGI_PRE
-#include <wx/checkbox.h>
-#include <wx/combobox.h>
 #include <wx/dialog.h>
-#include <wx/radiobox.h>
-#include <wx/radiobut.h>
-#include <wx/string.h>
-#include <wx/textctrl.h>
 #endif
 
-
-//////////////
-// Prototypes
-class SubtitlesGrid;
+namespace agi { struct Context; }
 class AssDialogue;
-
-
+class wxCheckBox;
+class wxRadioBox;
+class wxRadioButton;
+class wxTextCtrl;
 
 /// DOCME
 /// @class DialogSelection
@@ -63,67 +38,26 @@ class AssDialogue;
 ///
 /// DOCME
 class DialogSelection : public wxDialog {
-private:
+	agi::Context *con; ///< Project context
 
-	/// DOCME
-	SubtitlesGrid *grid;
+	wxTextCtrl *match_text; ///< Text to search for
+	wxCheckBox *case_sensitive; ///< Should the search be case-sensitive
+	wxCheckBox *apply_to_dialogue; ///< Select/deselect uncommented lines
+	wxCheckBox *apply_to_comments; ///< Select/deselect commented lines
+	wxRadioButton *select_unmatching_lines; ///< Select lines which don't match instead
+	wxRadioBox *selection_change_type; ///< What sort of action to take on the selection
+	wxRadioBox *dialogue_field; ///< Which dialogue field to look at
+	wxRadioBox *match_mode;
 
-	/// DOCME
-	wxTextCtrl *Match;
+	void Process(wxCommandEvent&);
 
-	/// DOCME
-	wxCheckBox *MatchCase;
+	/// Close event handler to save settings and destroy
+	void OnClose(wxCommandEvent&);
 
-	/// DOCME
-	wxCheckBox *MatchDialogues;
-
-	/// DOCME
-	wxCheckBox *MatchComments;
-
-	/// DOCME
-	wxRadioButton *Matches;
-
-	/// DOCME
-	wxRadioButton *DoesntMatch;
-
-	/// DOCME
-	wxRadioBox *Action;
-
-	/// DOCME
-	wxRadioBox *Field;
-
-	/// DOCME
-	wxRadioButton *Exact;
-
-	/// DOCME
-	wxRadioButton *Contains;
-
-	/// DOCME
-	wxRadioButton *RegExp;
-
-	void Process();
-	void SaveSettings();
-	bool StringMatches (AssDialogue *diag);
-
-	void OnOK (wxCommandEvent &event);
-	void OnCancel (wxCommandEvent &event);
-	void OnDialogueCheckbox(wxCommandEvent &event);
-	void OnCommentCheckbox(wxCommandEvent &event);
+	/// Dialogue/Comment check handler to ensure at least one is always checked
+	/// @param chk The checkbox to check if both are clear
+	void OnDialogueCheckbox(wxCheckBox *chk);
 
 public:
-	DialogSelection(wxWindow *parent, SubtitlesGrid *grid);
-
-	DECLARE_EVENT_TABLE()
-};
-
-
-///////
-// IDs
-enum {
-
-	/// DOCME
-	MATCH_DIALOGUES_CHECKBOX = 3000,
-
-	/// DOCME
-	MATCH_COMMENTS_CHECKBOX
+	DialogSelection(agi::Context *c);
 };
