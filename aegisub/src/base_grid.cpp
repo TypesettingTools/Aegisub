@@ -971,7 +971,6 @@ void BaseGrid::OnKeyDown(wxKeyEvent &event) {
 			int next = mid(0, extendRow + dir * step, GetRows() - 1);
 			SetActiveLine(GetDialogue(next));
 			SelectRow(next);
-			MakeCellVisible(next, 0, false);
 			return;
 		}
 
@@ -980,7 +979,6 @@ void BaseGrid::OnKeyDown(wxKeyEvent &event) {
 			int next = mid(0, GetDialogueIndex(GetActiveLine()) + dir * step, GetRows() - 1);
 			SetActiveLine(GetDialogue(next));
 			Refresh(false);
-			MakeCellVisible(next, 0, false);
 			return;
 		}
 
@@ -1032,6 +1030,7 @@ void BaseGrid::SetActiveLine(AssDialogue *new_line) {
 		assert(new_line == 0 || line_index_map.count(new_line));
 		active_line = new_line;
 		AnnounceActiveLineChanged(active_line);
+		MakeCellVisible(GetDialogueIndex(active_line), 0, false);
 		Refresh(false);
 		extendRow = GetDialogueIndex(new_line);
 	}
@@ -1044,7 +1043,6 @@ void BaseGrid::PrevLine() {
 		Selection newsel;
 		newsel.insert(prev_line);
 		SetSelectedSet(newsel);
-		MakeCellVisible(cur_line_i-1, 0, false);
 	}
 }
 
@@ -1055,7 +1053,6 @@ void BaseGrid::NextLine() {
 		Selection newsel;
 		newsel.insert(next_line);
 		SetSelectedSet(newsel);
-		MakeCellVisible(cur_line_i+1, 0, false);
 	}
 }
 
