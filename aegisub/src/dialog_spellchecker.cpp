@@ -79,6 +79,12 @@ DialogSpellChecker::DialogSpellChecker(wxFrame *parent)
 		return;
 	}
 
+	if (spellchecker->GetLanguageList().IsEmpty()) {
+		wxMessageBox(_("No dictionaries available."),_("Error"),wxICON_ERROR);
+		Destroy();
+		return;
+	}
+
 	// Get languages
 	langCodes = spellchecker->GetLanguageList();
 	wxArrayString langNames;
