@@ -178,6 +178,7 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/MP"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS"
+				StringPooling="true"
 				UsePrecompiledHeader="2"
 				PrecompiledHeaderThrough="stdwx.h"
 				ProgramDataBaseFileName="$(IntDir)\vc90.pdb"
@@ -197,6 +198,7 @@
 				Name="VCLinkerTool"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
+				OptimizeForWindows98="1"
 				TargetMachine="1"
 			/>
 			<Tool
