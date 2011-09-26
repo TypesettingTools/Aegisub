@@ -637,7 +637,7 @@ if test "$with_provider_ffms" != "no"; then
   PKG_CHECK_MODULES(FFMS, ffms2 >= ffms_required_version, [with_provider_ffms="yes"], [with_provider_ffms="no"])
 fi
 
-if test "$with_provider_ffms" == "yes"; then
+if test "$with_provider_ffms" = "yes"; then
   AC_DEFINE(WITH_FFMPEGSOURCE, 1, [Enable FFmpegSource2 video provider])
   found_video_provider="yes"
 fi
