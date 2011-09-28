@@ -52,6 +52,8 @@
 #include "audio_provider_pcm.h"
 #include "audio_provider_ram.h"
 #include "compat.h"
+#include "dialog_progress.h"
+#include "frame_main.h"
 #include "main.h"
 
 /// @brief Constructor 
@@ -161,11 +163,13 @@ AudioProvider *AudioProviderFactory::GetProvider(wxString filename, int cache) {
 		return provider;
 	}
 
+	DialogProgress progress(AegisubApp::Get()->frame, _("Load audio"));
+
 	// Convert to RAM
-	if (cache == 1) return new RAMAudioProvider(provider);
+	if (cache == 1) return new RAMAudioProvider(provider, &progress);
 
 	// Convert to HD
-	if (cache == 2) return new HDAudioProvider(provider);
+	if (cache == 2) return new HDAudioProvider(provider, &progress);
 
 	throw AudioOpenError("Unknown caching method");
 }

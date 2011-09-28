@@ -36,7 +36,10 @@
 
 #include "include/aegisub/audio_provider.h"
 
-namespace agi { class ProgressSink; }
+namespace agi {
+	class BackgroundRunner;
+	class ProgressSink;
+}
 
 /// DOCME
 /// @class RAMAudioProvider
@@ -57,7 +60,7 @@ class RAMAudioProvider : public AudioProvider {
 	void FillCache(AudioProvider *source, agi::ProgressSink *ps);
 
 public:
-	RAMAudioProvider(AudioProvider *source);
+	RAMAudioProvider(AudioProvider *source, agi::BackgroundRunner *br);
 	~RAMAudioProvider();
 
 	bool AreSamplesNativeEndian() const { return samples_native_endian; }

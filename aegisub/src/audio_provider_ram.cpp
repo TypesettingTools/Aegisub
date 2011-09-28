@@ -36,9 +36,11 @@
 
 #include "config.h"
 
+#include <libaegisub/background_runner.h>
+
 #include "audio_provider_ram.h"
-#include "dialog_progress.h"
-#include "frame_main.h"
+
+#include "compat.h"
 #include "main.h"
 #include "utils.h"
 
@@ -46,7 +48,7 @@
 
 #define CacheBlockSize ((1 << CacheBits))
 
-RAMAudioProvider::RAMAudioProvider(AudioProvider *src) {
+RAMAudioProvider::RAMAudioProvider(AudioProvider *src, agi::BackgroundRunner *br) {
 	std::auto_ptr<AudioProvider> source(src);
 
 	samples_native_endian = source->AreSamplesNativeEndian();
@@ -55,7 +57,7 @@ RAMAudioProvider::RAMAudioProvider(AudioProvider *src) {
 	int64_t ssize = source->GetNumSamples() * source->GetBytesPerSample();
 	blockcount = (ssize + CacheBlockSize - 1) >> CacheBits;
 	blockcache = new char*[blockcount];
-	memset(blockcache, blockcount * sizeof(char*), 0);
+	memset(blockcache, 0, blockcount * sizeof(char*));
 
 	// Allocate cache blocks
 	try {
@@ -75,8 +77,7 @@ RAMAudioProvider::RAMAudioProvider(AudioProvider *src) {
 	sample_rate = source->GetSampleRate();
 	filename = source->GetFilename();
 
-	DialogProgress progress(AegisubApp::Get()->frame, _("Load audio"), _("Reading into RAM"));
-	progress.Run(std::tr1::bind(&RAMAudioProvider::FillCache, this, src, std::tr1::placeholders::_1));
+	br->Run(std::tr1::bind(&RAMAudioProvider::FillCache, this, src, std::tr1::placeholders::_1));
 }
 
 RAMAudioProvider::~RAMAudioProvider() {
@@ -84,6 +85,8 @@ RAMAudioProvider::~RAMAudioProvider() {
 }
 
 void RAMAudioProvider::FillCache(AudioProvider *source, agi::ProgressSink *ps) {
+	ps->SetMessage(STD_STR(_("Reading into RAM")));
+
 	int64_t readsize = CacheBlockSize / source->GetBytesPerSample();
 	for (int i = 0; i < blockcount; i++) {
 		source->GetAudio((char*)blockcache[i], i * readsize, std::min(readsize, num_samples - i * readsize));

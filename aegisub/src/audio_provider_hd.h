@@ -41,7 +41,10 @@
 
 #include "include/aegisub/audio_provider.h"
 
-namespace agi { class ProgressSink; }
+namespace agi {
+	class BackgroundRunner;
+	class ProgressSink;
+}
 
 /// DOCME
 /// @class HDAudioProvider
@@ -70,7 +73,7 @@ class HDAudioProvider : public AudioProvider {
 	void FillCache(AudioProvider *src, agi::ProgressSink *ps);
 
 public:
-	HDAudioProvider(AudioProvider *source);
+	HDAudioProvider(AudioProvider *source, agi::BackgroundRunner *br);
 	~HDAudioProvider();
 
 	bool AreSamplesNativeEndian() const { return samples_native_endian; }

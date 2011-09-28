@@ -41,18 +41,16 @@
 #include <wx/filename.h>
 #endif
 
+#include <libaegisub/background_runner.h>
+
 #include "audio_provider_hd.h"
+
 #include "compat.h"
-#include "dialog_progress.h"
-#include "frame_main.h"
 #include "main.h"
 #include "standard_paths.h"
 #include "utils.h"
 
-
-
-
-HDAudioProvider::HDAudioProvider(AudioProvider *src) {
+HDAudioProvider::HDAudioProvider(AudioProvider *src, agi::BackgroundRunner *br) {
 	std::auto_ptr<AudioProvider> source(src);
 	// Copy parameters
 	bytes_per_sample = source->GetBytesPerSample();
@@ -76,8 +74,7 @@ HDAudioProvider::HDAudioProvider(AudioProvider *src) {
 	file_cache.Open(diskCacheFilename,wxFile::read_write);
 	if (!file_cache.IsOpened()) throw AudioOpenError("Unable to write to audio disk cache.");
 
-	DialogProgress progress(AegisubApp::Get()->frame, "Load audio", "Reading to Hard Disk cache");
-	progress.Run(bind(&HDAudioProvider::FillCache, this, src, std::tr1::placeholders::_1));
+	br->Run(bind(&HDAudioProvider::FillCache, this, src, std::tr1::placeholders::_1));
 }
 
 HDAudioProvider::~HDAudioProvider() {
@@ -87,6 +84,8 @@ HDAudioProvider::~HDAudioProvider() {
 }
 
 void HDAudioProvider::FillCache(AudioProvider *src, agi::ProgressSink *ps) {
+	ps->SetMessage(STD_STR(_("Reading to Hard Disk cache")));
+
 	int64_t block = 4096;
 	data = new char[block * channels * bytes_per_sample];
 	for (int64_t i = 0; i < num_samples; i += block) {
