@@ -43,9 +43,10 @@
 #include "plugin_manager.h"
 #include "video_provider_manager.h"
 
+#ifdef WITH_AUTO4_LUA
+#include "auto4_lua_factory.h"
+#endif
 
-/// @brief Constructor 
-///
 PluginManager::PluginManager() {
 	init = false;
 
@@ -55,9 +56,6 @@ PluginManager::PluginManager() {
 	
 }
 
-
-/// @brief Destructor 
-///
 PluginManager::~PluginManager() {
 	VideoProviderFactory::Clear();
 	AudioProviderFactory::Clear();
@@ -66,18 +64,11 @@ PluginManager::~PluginManager() {
 	SpellCheckerFactory::Clear();
 
 #ifdef WITH_AUTO4_LUA
-	if (lua) {
-		lua->Unregister(lua);
-		delete lua;
-		lua = NULL;
-	}
+	Automation4::ScriptFactory::Unregister(lua);
 #endif
 }
 
-
-
 /// @brief Registers all built-in plugins 
-///
 void PluginManager::RegisterBuiltInPlugins() {
 	if (!init) {
 		// Managers
@@ -90,7 +81,6 @@ void PluginManager::RegisterBuiltInPlugins() {
 		// Automation languages
 #ifdef WITH_AUTO4_LUA
 		lua = new Automation4::LuaScriptFactory();
-		lua->RegisterFactory();
 #endif
 	}
 

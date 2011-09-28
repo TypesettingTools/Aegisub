@@ -34,12 +34,7 @@
 /// @ingroup main
 ///
 
-
-
-#ifdef WITH_AUTO4_LUA
-#include "auto4_lua_factory.h"
-#endif
-
+namespace Automation4 { class ScriptFactory; }
 
 /// DOCME
 /// @class PluginManager
@@ -53,9 +48,7 @@ private:
 	bool init;
 
 #ifdef WITH_AUTO4_LUA
-
-	/// DOCME
-	Automation4::LuaScriptFactory *lua;
+	Automation4::ScriptFactory *lua;
 #endif
 
 public:

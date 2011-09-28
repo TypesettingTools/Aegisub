@@ -511,42 +511,48 @@ namespace Automation4 {
 		void Reload();
 	};
 
-
-
-	/// DOCME
-	/// @class ScriptFactory
-	/// @brief DOCME
-	///
-	/// DOCME
 	class ScriptFactory {
-	private:
-
-		/// DOCME
+		/// Vector of loaded script engines
 		static std::vector<ScriptFactory*> *factories;
+
+		wxString engine_name;
+		wxString filename_pattern;
+
+		/// Load a file, or return NULL if the file is not in a supported
+		/// format. If the file is in a supported format but is invalid, a
+		/// script should be returned which returns false from IsLoaded and
+		/// an appropriate error message from GetDescription.
+		///
+		/// This is private as it should only ever be called through
+		/// CreateFromFile
+		virtual Script* Produce(wxString const& filename) const = 0;
+
 	protected:
-
-		/// @brief DOCME
-		///
-		ScriptFactory() { }
-
-		/// @brief DOCME
-		///
+		ScriptFactory(wxString engine_name, wxString filename_pattern);
 		virtual ~ScriptFactory() { }
 
-		/// DOCME
-		wxString engine_name;
-
-		/// DOCME
-		wxString filename_pattern;
 	public:
-		virtual Script* Produce(const wxString &filename) const = 0;
-		const wxString& GetEngineName() const;
-		const wxString& GetFilenamePattern() const;
+		/// Name of this automation engine
+		const wxString& GetEngineName() const { return engine_name; }
+		/// Extension which this engine supports
+		const wxString& GetFilenamePattern() const { return filename_pattern; }
 
+		/// Register an automation engine. Calling code retains ownership of pointer
 		static void Register(ScriptFactory *factory);
+		/// Unregister and delete an automation engine
 		static void Unregister(ScriptFactory *factory);
-		static Script* CreateFromFile(const wxString &filename, bool log_errors);
-		static bool CanHandleScriptFormat(const wxString &filename);
+		/// Is there an automation engine registered which can open the file?
+		static bool CanHandleScriptFormat(wxString const& filename);
+
+		/// Get the full wildcard string for all loaded engines
+		static wxString GetWildcardStr();
+
+		/// Load a script from a file
+		/// @param filename Script to load
+		/// @param log_errors Should load errors be displayed?
+		/// @return Always returns a valid Script, even if no engine could load the file
+		static Script* CreateFromFile(wxString const& filename, bool log_errors);
+
 		static const std::vector<ScriptFactory*>& GetFactories();
 	};
 

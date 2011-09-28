@@ -34,27 +34,17 @@
 /// @ingroup scripting
 ///
 
-
-
-
 #include "auto4_base.h"
 
-
-/// DOCME
 namespace Automation4 {
-
-
 	/// DOCME
 	/// @class LuaScriptFactory
 	/// @brief DOCME
 	///
 	/// DOCME
 	class LuaScriptFactory : public ScriptFactory {
+		Script* Produce(const wxString &filename) const;
 	public:
 		LuaScriptFactory();
-		~LuaScriptFactory();
-		void RegisterFactory ();
-		Script* Produce(const wxString &filename) const;
 	};
-
 };

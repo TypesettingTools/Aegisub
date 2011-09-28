@@ -957,28 +957,12 @@ namespace Automation4 {
 		}
 	}
 
-	/// @brief // Factory methods
-	///
-	LuaScriptFactory::LuaScriptFactory() {}
-
-	/// @brief DOCME
-	///
-	LuaScriptFactory::~LuaScriptFactory() {}
-
-
-	/// @brief DOCME
-	///
-	void LuaScriptFactory::RegisterFactory ()
+	LuaScriptFactory::LuaScriptFactory()
+	: ScriptFactory("Lua", "*.lua")
 	{
-		engine_name = "Lua";
-		filename_pattern = "*.lua";
 		Register(this);
 	}
 
-
-	/// @brief DOCME
-	/// @param filename 
-	///
 	Script* LuaScriptFactory::Produce(const wxString &filename) const
 	{
 		// Just check if file extension is .lua
@@ -989,7 +973,6 @@ namespace Automation4 {
 			return 0;
 		}
 	}
-
 };
 
 #endif // WITH_AUTO4_LUA

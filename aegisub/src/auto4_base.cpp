@@ -994,129 +994,96 @@ namespace Automation4 {
 	}
 
 	// ScriptFactory
-
-
-	/// DOCME
 	std::vector<ScriptFactory*> *ScriptFactory::factories = 0;
 
-
-	/// @brief DOCME
-	/// @return 
-	///
-	const wxString& ScriptFactory::GetEngineName() const
+	ScriptFactory::ScriptFactory(wxString engine_name, wxString filename_pattern)
+	: engine_name(engine_name)
+	, filename_pattern(filename_pattern)
 	{
-		return engine_name;
 	}
 
-
-	/// @brief DOCME
-	/// @return 
-	///
-	const wxString& ScriptFactory::GetFilenamePattern() const
-	{
-		return filename_pattern;
-	}
-
-
-	/// @brief DOCME
-	/// @param factory 
-	///
 	void ScriptFactory::Register(ScriptFactory *factory)
 	{
-		if (!factories)
-			factories = new std::vector<ScriptFactory*>();
+		GetFactories();
 
-		for (std::vector<ScriptFactory*>::iterator i = factories->begin(); i != factories->end(); ++i) {
-			if (*i == factory) {
-				throw "Automation 4: Attempt to register the same script factory multiple times. This should never happen.";
-			}
-		}
+		if (find(factories->begin(), factories->end(), factory) != factories->end())
+			throw "Automation 4: Attempt to register the same script factory multiple times. This should never happen.";
+
 		factories->push_back(factory);
 	}
 
-
-	/// @brief DOCME
-	/// @param factory 
-	/// @return 
-	///
 	void ScriptFactory::Unregister(ScriptFactory *factory)
 	{
-		if (!factories)
-			factories = new std::vector<ScriptFactory*>();
+		if (!factories) return;
 
-		for (std::vector<ScriptFactory*>::iterator i = factories->begin(); i != factories->end(); ++i) {
-			if (*i == factory) {
-				factories->erase(i);
-				if (factories->empty()) delete factories;
-				return;
-			}
+		std::vector<ScriptFactory*>::iterator i = find(factories->begin(), factories->end(), factory);
+		if (i != factories->end()) {
+			delete *i;
+			factories->erase(i);
 		}
 	}
 
-
-	/// @brief DOCME
-	/// @param filename   
-	/// @param log_errors 
-	/// @return 
-	///
-	Script* ScriptFactory::CreateFromFile(const wxString &filename, bool log_errors)
+	Script* ScriptFactory::CreateFromFile(wxString const& filename, bool log_errors)
 	{
-		if (!factories)
-			factories = new std::vector<ScriptFactory*>();
+		GetFactories();
 
 		for (std::vector<ScriptFactory*>::iterator i = factories->begin(); i != factories->end(); ++i) {
-			try {
-				Script *s = (*i)->Produce(filename);
-				if (s) {
-					if (!s->GetLoadedState() && log_errors) {
-						wxLogError(_("An Automation script failed to load. File name: '%s', error reported:"), filename);
-						wxLogError(s->GetDescription());
-					}
-					return s;
-				}
-			}
-			catch (Script *e) {
-				// This was the wrong script factory, but it throwing a Script object means it did know what to do about the file
-				// Use this script object
-				return e;
+			Script *s = (*i)->Produce(filename);
+			if (s) {
+				if (!s->GetLoadedState() && log_errors)
+					wxLogError(_("An Automation script failed to load. File name: '%s', error reported: %s"), filename, s->GetDescription());
+				return s;
 			}
 		}
-		if (log_errors) {
-			wxLogWarning(_("The file was not recognised as an Automation script: %s"), filename);
-		}
+
+		if (log_errors)
+			wxLogError(_("The file was not recognised as an Automation script: %s"), filename);
+
 		return new UnknownScript(filename);
 	}
 
-
-	/// @brief DOCME
-	/// @param filename 
-	/// @return 
-	///
-	bool ScriptFactory::CanHandleScriptFormat(const wxString &filename)
+	bool ScriptFactory::CanHandleScriptFormat(wxString const& filename)
 	{
+		using std::tr1::placeholders::_1;
 		// Just make this always return true to bitch about unknown script formats in autoload
-
-		if (!factories)
-			factories = new std::vector<ScriptFactory*>();
-
-		for (std::vector<ScriptFactory*>::iterator i = factories->begin(); i != factories->end(); ++i) {
-			wxString pattern = (*i)->GetFilenamePattern();
-			if (filename.Matches(pattern)) return true;
-		}
-
-		return false;
+		GetFactories();
+		return find_if(factories->begin(), factories->end(),
+			bind(&wxString::Matches, filename, bind(&ScriptFactory::GetFilenamePattern, _1))) != factories->end();
 	}
 
-
-	/// @brief DOCME
-	/// @return 
-	///
 	const std::vector<ScriptFactory*>& ScriptFactory::GetFactories()
 	{
 		if (!factories)
 			factories = new std::vector<ScriptFactory*>();
 
 		return *factories;
+	}
+
+	wxString ScriptFactory::GetWildcardStr()
+	{
+		GetFactories();
+
+		wxString fnfilter, catchall;
+		for (size_t i = 0; i < factories->size(); ++i) {
+			const ScriptFactory *fact = (*factories)[i];
+			if (fact->GetEngineName().empty() || fact->GetFilenamePattern().empty())
+				continue;
+
+			fnfilter = wxString::Format("%s%s scripts (%s)|%s|", fnfilter, fact->GetEngineName(), fact->GetFilenamePattern(), fact->GetFilenamePattern());
+			catchall += fact->GetFilenamePattern() + ";";
+		}
+#ifdef __WINDOWS__
+		fnfilter += "All files|*.*";
+#else
+		fnfilter += "All files|*";
+#endif
+		if (!catchall.empty())
+			catchall.RemoveLast();
+
+		if (factories->size() > 1)
+			fnfilter = "All supported scripts|" + catchall + "|" + fnfilter;
+
+		return fnfilter;
 	}
 
 
