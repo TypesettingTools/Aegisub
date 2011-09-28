@@ -68,6 +68,69 @@ public:
 
 #define CACHESIZE     65536
 
+static void read_subtitles(agi::ProgressSink *ps, MatroskaFile *file, MkvStdIO *input, bool srt, bool ssa, double totalTime, AssFile *target) {
+	std::map<int, wxString> subList;
+	char *readBuf = 0;
+	size_t readBufSize = 0;
+
+	// Load blocks
+	ulonglong startTime, endTime, filePos;
+	unsigned int rt, frameSize, frameFlags;
+
+	while (mkv_ReadFrame(file,0,&rt,&startTime,&endTime,&filePos,&frameSize,&frameFlags) == 0) {
+		if (ps->IsCancelled()) {
+			delete readBuf;
+			return;
+		}
+
+		// Read to temp
+		if (frameSize > readBufSize) {
+			delete readBuf;
+			readBufSize = frameSize * 2;
+			readBuf = new char[readBufSize];
+		}
+
+		fseek(input->fp, filePos, SEEK_SET);
+		fread(readBuf, 1, frameSize, input->fp);
+		wxString blockString(readBuf, wxConvUTF8, frameSize);
+
+		// Get start and end times
+		longlong timecodeScaleLow = 1000000;
+		AssTime subStart,subEnd;
+		subStart.SetMS(startTime / timecodeScaleLow);
+		subEnd.SetMS(endTime / timecodeScaleLow);
+
+		// Process SSA/ASS
+		if (!srt) {
+			long order = 0, layer = 0;
+			blockString.BeforeFirst(',', &blockString).ToLong(&order);
+			blockString.BeforeFirst(',', &blockString).ToLong(&layer);
+
+			subList[order] = wxString::Format("Dialogue: %d,%s,%s,%s", layer, subStart.GetASSFormated(), subEnd.GetASSFormated(), blockString);
+		}
+		// Process SRT
+		else {
+			blockString = wxString::Format("Dialogue: 0,%s,%s,%s", subStart.GetASSFormated(), subEnd.GetASSFormated(), blockString);
+			blockString.Replace("\r\n","\\N");
+			blockString.Replace("\r","\\N");
+			blockString.Replace("\n","\\N");
+
+			subList[subList.size()] = blockString;
+		}
+
+		ps->SetProgress(startTime, totalTime);
+	}
+
+	delete readBuf;
+
+	// Insert into file
+	wxString group = "[Events]";
+	int version = ssa;
+	for (std::map<int, wxString>::iterator it = subList.begin(); it != subList.end(); ++it) {
+		target->AddLine(it->second, group, version, &group);
+	}
+}
+
 void MatroskaWrapper::GetSubtitles(wxString const& filename, AssFile *target) {
 	MkvStdIO input(filename);
 	char err[2048];
@@ -81,10 +144,6 @@ void MatroskaWrapper::GetSubtitles(wxString const& filename, AssFile *target) {
 		std::vector<unsigned> tracksFound;
 		wxArrayString tracksNames;
 		unsigned trackToRead;
-
-		// Haali's library variables
-		ulonglong startTime, endTime, filePos;
-		unsigned int rt, frameSize, frameFlags;
 
 		// Find tracks
 		for (unsigned track = 0; track < tracks; track++) {
@@ -122,14 +181,14 @@ void MatroskaWrapper::GetSubtitles(wxString const& filename, AssFile *target) {
 		}
 
 		// Picked track
-		// Get codec type (0 = ASS/SSA, 1 = SRT)
+		mkv_SetTrackMask(file, ~(1 << trackToRead));
 		trackInfo = mkv_GetTrackInfo(file,trackToRead);
 		wxString CodecID = wxString(trackInfo->CodecID,*wxConvCurrent);
-		int codecType = 0;
-		if (CodecID == "S_TEXT/UTF8") codecType = 1;
+		bool srt = CodecID == "S_TEXT/UTF8";
+		bool ssa = CodecID == "S_TEXT/SSA";
 
 		// Read private data if it's ASS/SSA
-		if (codecType == 0) {
+		if (!srt) {
 			// Read raw data
 			trackInfo = mkv_GetTrackInfo(file,trackToRead);
 			wxString privString((const char *)trackInfo->CodecPrivate, wxConvUTF8, trackInfo->CodecPrivateSize);
@@ -155,73 +214,9 @@ void MatroskaWrapper::GetSubtitles(wxString const& filename, AssFile *target) {
 		longlong timecodeScale = mkv_TruncFloat(trackInfo->TimecodeScale) * segInfo->TimecodeScale;
 
 		// Progress bar
-		int totalTime = int(double(segInfo->Duration) / timecodeScale);
-		volatile bool canceled = false;
-		DialogProgress *progress = new DialogProgress(NULL,_("Parsing Matroska"),&canceled,_("Reading subtitles from Matroska file."),0,totalTime);
-		progress->Show();
-		progress->SetProgress(0,1);
-
-		std::map<int, wxString> subList;
-		char *readBuf = 0;
-		size_t readBufSize = 0;
-
-		// Load blocks
-		mkv_SetTrackMask(file, ~(1 << trackToRead));
-		while (mkv_ReadFrame(file,0,&rt,&startTime,&endTime,&filePos,&frameSize,&frameFlags) == 0) {
-			if (canceled) {
-				delete readBuf;
-				throw agi::UserCancelException("cancelled");
-			}
-
-			// Read to temp
-			if (frameSize > readBufSize) {
-				delete readBuf;
-				readBufSize = frameSize * 2;
-				readBuf = new char[readBufSize];
-			}
-
-			fseek(input.fp, filePos, SEEK_SET);
-			fread(readBuf, 1, frameSize, input.fp);
-			wxString blockString(readBuf, wxConvUTF8, frameSize);
-
-			// Get start and end times
-			longlong timecodeScaleLow = 1000000;
-			AssTime subStart,subEnd;
-			subStart.SetMS(startTime / timecodeScaleLow);
-			subEnd.SetMS(endTime / timecodeScaleLow);
-
-			// Process SSA/ASS
-			if (codecType == 0) {
-				long order = 0, layer = 0;
-				blockString.BeforeFirst(',', &blockString).ToLong(&order);
-				blockString.BeforeFirst(',', &blockString).ToLong(&layer);
-
-				subList[order] = wxString::Format("Dialogue: %d,%s,%s,%s", layer, subStart.GetASSFormated(), subEnd.GetASSFormated(), blockString);
-			}
-			// Process SRT
-			else {
-				blockString = wxString::Format("Dialogue: 0,%s,%s,%s", subStart.GetASSFormated(), subEnd.GetASSFormated(), blockString);
-				blockString.Replace("\r\n","\\N");
-				blockString.Replace("\r","\\N");
-				blockString.Replace("\n","\\N");
-
-				subList[subList.size()] = blockString;
-			}
-
-			progress->SetProgress(int(double(startTime) / 1000000.0),totalTime);
-		}
-
-		delete readBuf;
-
-		// Insert into file
-		wxString group = "[Events]";
-		int version = (CodecID == "S_TEXT/SSA");
-		for (std::map<int, wxString>::iterator it = subList.begin(); it != subList.end(); ++it) {
-			target->AddLine(it->second,group,version,&group);
-		}
-
-		// Close progress bar
-		if (!canceled) progress->Destroy();
+		double totalTime = double(segInfo->Duration) / timecodeScale * 1000000.0;
+		DialogProgress progress(NULL, _("Parsing Matroska"), _("Reading subtitles from Matroska file."));
+		progress.Run(bind(read_subtitles, std::tr1::placeholders::_1, file, &input, srt, ssa, totalTime, target));
 	}
 	catch (...) {
 		mkv_Close(file);

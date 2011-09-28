@@ -41,6 +41,8 @@
 
 #include "include/aegisub/audio_provider.h"
 
+namespace agi { class ProgressSink; }
+
 /// DOCME
 /// @class HDAudioProvider
 /// @brief DOCME
@@ -64,6 +66,8 @@ class HDAudioProvider : public AudioProvider {
 
 	static wxString DiskCachePath();
 	static wxString DiskCacheName();
+
+	void FillCache(AudioProvider *src, agi::ProgressSink *ps);
 
 public:
 	HDAudioProvider(AudioProvider *source);

@@ -44,45 +44,50 @@
 #include <lua.hpp>
 #endif
 
-static void push_closure(lua_State *L, const char *name, lua_CFunction fn) {
-	lua_pushvalue(L, -3);
-	lua_pushcclosure(L, fn, 1);
-	lua_setfield(L, -2, name);
+namespace {
+	void set_field_to_closure(lua_State *L, const char *name, lua_CFunction fn, int ps_idx = -3)
+	{
+		lua_pushvalue(L, ps_idx);
+		lua_pushcclosure(L, fn, 1);
+		lua_setfield(L, -2, name);
+	}
+
+	void set_field_to_nil(lua_State *L, int idx, const char *name)
+	{
+		lua_pushnil(L);
+		lua_setfield(L, idx, name);
+	}
 }
 
 namespace Automation4 {
-	LuaProgressSink::LuaProgressSink(lua_State *L, wxWindow *parent, bool allow_config_dialog)
-		: ProgressSink(parent)
-		, L(L)
+	LuaProgressSink::LuaProgressSink(lua_State *L, ProgressSink *ps, bool allow_config_dialog)
+		: L(L)
 	{
-		LuaProgressSink **ud = (LuaProgressSink**)lua_newuserdata(L, sizeof(LuaProgressSink*));
-		*ud = this;
+		ProgressSink **ud = (ProgressSink**)lua_newuserdata(L, sizeof(ProgressSink*));
+		*ud = ps;
 
 		// register progress reporting stuff
 		lua_getglobal(L, "aegisub");
+
+		// Create aegisub.progress table
 		lua_newtable(L);
-
-		push_closure(L, "set", LuaSetProgress);
-		push_closure(L, "task", LuaSetTask);
-		push_closure(L, "title", LuaSetTitle);
-		push_closure(L, "is_cancelled", LuaGetCancelled);
-
+		set_field_to_closure(L, "set", LuaSetProgress);
+		set_field_to_closure(L, "task", LuaSetTask);
+		set_field_to_closure(L, "title", LuaSetTitle);
+		set_field_to_closure(L, "is_cancelled", LuaGetCancelled);
 		lua_setfield(L, -2, "progress");
 
+		// Create aegisub.debug table
 		lua_newtable(L);
-		lua_pushvalue(L, -3);
-		lua_pushcclosure(L, LuaDebugOut, 1);
-		lua_setfield(L, -2, "out");
+		set_field_to_closure(L, "out", LuaDebugOut);
 		lua_setfield(L, -2, "debug");
-		lua_pushvalue(L, -2);
-		lua_pushcclosure(L, LuaDebugOut, 1);
-		lua_setfield(L, -2, "log");
+
+		// Set aegisub.log
+		set_field_to_closure(L, "log", LuaDebugOut, -2);
 
 		if (allow_config_dialog) {
 			lua_newtable(L);
-			lua_pushvalue(L, -3);
-			lua_pushcclosure(L, LuaDisplayDialog, 1);
-			lua_setfield(L, -2, "display");
+			set_field_to_closure(L, "display", LuaDisplayDialog);
 			lua_setfield(L, -2, "dialog");
 		}
 
@@ -97,54 +102,50 @@ namespace Automation4 {
 	{
 		// remove progress reporting stuff
 		lua_getglobal(L, "aegisub");
-		lua_pushnil(L);
-		lua_setfield(L, -2, "progress");
-		lua_pushnil(L);
-		lua_setfield(L, -2, "debug");
+		set_field_to_nil(L, -2, "progress");
+		set_field_to_nil(L, -2, "debug");
 		lua_pop(L, 1);
-		lua_pushnil(L);
-		lua_setfield(L, LUA_REGISTRYINDEX, "progress_sink");
+
+		set_field_to_nil(L, LUA_REGISTRYINDEX, "progress_sink");
 	}
 
-	LuaProgressSink* LuaProgressSink::GetObjPointer(lua_State *L, int idx)
+	ProgressSink* LuaProgressSink::GetObjPointer(lua_State *L, int idx)
 	{
 		assert(lua_type(L, idx) == LUA_TUSERDATA);
-		void *ud = lua_touserdata(L, idx);
-		return *((LuaProgressSink**)ud);
+		return *((ProgressSink**)lua_touserdata(L, idx));
 	}
 
 	int LuaProgressSink::LuaSetProgress(lua_State *L)
 	{
-		GetObjPointer(L, lua_upvalueindex(1))->SetProgress(lua_tonumber(L, 1));
+		GetObjPointer(L, lua_upvalueindex(1))->SetProgress(lua_tonumber(L, 1), 100);
 		return 0;
 	}
 
 	int LuaProgressSink::LuaSetTask(lua_State *L)
 	{
-		GetObjPointer(L, lua_upvalueindex(1))->SetTask(wxString(lua_tostring(L, 1), wxConvUTF8));
+		GetObjPointer(L, lua_upvalueindex(1))->SetMessage(lua_tostring(L, 1));
 		return 0;
 	}
 
 	int LuaProgressSink::LuaSetTitle(lua_State *L)
 	{
-		GetObjPointer(L, lua_upvalueindex(1))->SetTitle(wxString(lua_tostring(L, 1), wxConvUTF8));
+		GetObjPointer(L, lua_upvalueindex(1))->SetTitle(lua_tostring(L, 1));
 		return 0;
 	}
 
 	int LuaProgressSink::LuaGetCancelled(lua_State *L)
 	{
-		lua_pushboolean(L, GetObjPointer(L, lua_upvalueindex(1))->cancelled);
+		lua_pushboolean(L, GetObjPointer(L, lua_upvalueindex(1))->IsCancelled());
 		return 1;
 	}
 
 	int LuaProgressSink::LuaDebugOut(lua_State *L)
 	{
-		LuaProgressSink *ps = GetObjPointer(L, lua_upvalueindex(1));
+		ProgressSink *ps = GetObjPointer(L, lua_upvalueindex(1));
 
 		// Check trace level
 		if (lua_isnumber(L, 1)) {
-			int level = lua_tointeger(L, 1);
-			if (level > ps->trace_level)
+			if (lua_tointeger(L, 1) > ps->GetTraceLevel())
 				return 0;
 			// remove trace level
 			lua_remove(L, 1);
@@ -166,14 +167,13 @@ namespace Automation4 {
 		}
 
 		// Top of stack is now a string to output
-		wxString msg(lua_tostring(L, 1), wxConvUTF8);
-		ps->AddDebugOutput(msg);
+		ps->Log(lua_tostring(L, 1));
 		return 0;
 	}
 
 	int LuaProgressSink::LuaDisplayDialog(lua_State *L)
 	{
-		LuaProgressSink *ps = GetObjPointer(L, lua_upvalueindex(1));
+		ProgressSink *ps = GetObjPointer(L, lua_upvalueindex(1));
 
 		// Check that two arguments were actually given
 		// If only one, add another empty table for buttons
@@ -185,19 +185,8 @@ namespace Automation4 {
 			lua_settop(L, 2);
 		}
 
-		// Send the "show dialog" event
-		// See comments in auto4_base.h for more info on this synchronisation
-		ShowConfigDialogEvent evt;
-
 		LuaConfigDialog dlg(L, true); // magically creates the config dialog structure etc
-		evt.config_dialog = &dlg;
-
-		wxSemaphore sema(0, 1);
-		evt.sync_sema = &sema;
-
-		ps->AddPendingEvent(evt);
-
-		sema.Wait();
+		ps->ShowConfigDialog(&dlg);
 
 		// more magic: puts two values on stack: button pushed and table with control results
 		return dlg.LuaReadBack(L);

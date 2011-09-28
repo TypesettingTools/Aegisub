@@ -324,7 +324,7 @@ namespace Automation4 {
 			name = GetPrettyFilename();
 			description = "Unknown error initialising Lua script";
 		}
-	}
+		}
 
 
 	/// @brief DOCME
@@ -503,7 +503,7 @@ namespace Automation4 {
 			lua_pushnil(L);
 			return 1;
 		}
-	}
+		}
 
 
 	/// @brief DOCME
@@ -521,7 +521,7 @@ namespace Automation4 {
 			lua_pushnil(L);
 			return 1;
 		}
-	}
+		}
 
 
 	/// @brief DOCME
@@ -543,62 +543,31 @@ namespace Automation4 {
 		}
 	}
 
-
-	// LuaThreadedCall
-
-
-	/// @brief DOCME
-	/// @param _L        
-	/// @param _nargs    
-	/// @param _nresults 
-	///
-	LuaThreadedCall::LuaThreadedCall(lua_State *_L, int _nargs, int _nresults)
-		: wxThread(wxTHREAD_JOINABLE)
-		, L(_L)
-		, nargs(_nargs)
-		, nresults(_nresults)
+	static void lua_threaded_call(ProgressSink *ps, lua_State *L, int nargs, int nresults, bool can_open_config)
 	{
-		int prio = OPT_GET("Automation/Lua/Thread Priority")->GetInt();
-		if (prio == 0) prio = 50; // normal
-		else if (prio == 1) prio = 30; // below normal
-		else if (prio == 2) prio = 10; // lowest
-		else prio = 50; // fallback normal
-		Create();
-		SetPriority(prio);
-		Run();
-	}
+		LuaProgressSink lps(L, ps, can_open_config);
 
-
-	/// @brief DOCME
-	/// @return 
-	///
-	wxThread::ExitCode LuaThreadedCall::Entry()
-	{
-		int result = lua_pcall(L, nargs, nresults, 0);
-
-		// see if there's a progress sink window to close
-		lua_getfield(L, LUA_REGISTRYINDEX, "progress_sink");
-		if (lua_isuserdata(L, -1)) {
-			LuaProgressSink *ps = LuaProgressSink::GetObjPointer(L, -1);
-
-			if (result) {
+		if (lua_pcall(L, nargs, nresults, 0)) {
 				// if the call failed, log the error here
-				wxString errmsg(lua_tostring(L, -2), wxConvUTF8);
-				ps->AddDebugOutput("\n\nLua reported a runtime error:\n");
-				ps->AddDebugOutput(errmsg);
+			ps->Log("\n\nLua reported a runtime error:\n");
+			ps->Log(lua_tostring(L, -1));
 				lua_pop(L, 1);
 			}
 
-			// don't bother protecting this with a mutex, it should be safe enough like this
-			ps->script_finished = true;
-			// tell wx to run its idle-events now, just to make the progress window notice earlier that we're done
-			wxWakeUpIdle();
-		}
-		lua_pop(L, 1);
-
 		lua_gc(L, LUA_GCCOLLECT, 0);
-		if (result) return (wxThread::ExitCode) 1;
-		else return 0;
+		}
+
+
+	// LuaThreadedCall
+	void LuaThreadedCall(lua_State *L, int nargs, int nresults, wxString const& title, wxWindow *parent, bool can_open_config)
+	{
+		BackgroundScriptRunner bsr(parent, title);
+		try {
+			bsr.Run(bind(lua_threaded_call, std::tr1::placeholders::_1, L, nargs, nresults, can_open_config));
+		}
+		catch (agi::UserCancelException const&) {
+			/// @todo perhaps this needs to continue up for exporting?
+		}
 	}
 
 
@@ -779,25 +748,16 @@ namespace Automation4 {
 	void LuaFeatureMacro::Process(AssFile *subs, std::vector<int> &selected, int active, wxWindow * const progress_parent)
 	{
 		GetFeatureFunction(1); // 1 = processing function
-
-		// prepare function call
 		LuaAssFile *subsobj = new LuaAssFile(L, subs, true, true);
-		(void) subsobj;
 		CreateIntegerArray(selected); // selected items
 		lua_pushinteger(L, -1); // active line
-
-		LuaProgressSink *ps = new LuaProgressSink(L, progress_parent);
-		ps->SetTitle(GetName());
 
 		// do call
 		// 3 args: subtitles, selected lines, active line
 		// 1 result: new selected lines
-		LuaThreadedCall call(L, 3, 1);
+		LuaThreadedCall(L, 3, 1, GetName(), progress_parent, true);
 
-		ps->ShowModal();
-		wxThread::ExitCode code = call.Wait();
-		(void) code; // ignore
-		//if (code) ThrowError();
+		subsobj->ProcessingComplete(GetName());
 
 		// top of stack will be selected lines array, if any was returned
 		if (lua_istable(L, -1)) {
@@ -815,8 +775,6 @@ namespace Automation4 {
 		}
 		// either way, there will be something on the stack
 		lua_pop(L, 1);
-
-		delete ps;
 	}
 
 
@@ -905,24 +863,11 @@ namespace Automation4 {
 		assert(lua_istable(L, -1));
 		stackcheck.check_stack(3);
 
-		LuaProgressSink *ps = new LuaProgressSink(L, export_dialog, false);
-		ps->SetTitle(GetName());
-		stackcheck.check_stack(3);
-
-		// do call
-		LuaThreadedCall call(L, 2, 0);
-
-		ps->ShowModal();
-		wxThread::ExitCode code = call.Wait();
-		(void) code;
-		//if (code) ThrowError();
+		LuaThreadedCall(L, 2, 0, AssExportFilter::GetName(), export_dialog, false);
 
 		stackcheck.check_stack(0);
 
-		// Just ensure that subsobj survives until here
-		(void) subsobj;
-
-		delete ps;
+		subsobj->ProcessingComplete();
 	}
 
 

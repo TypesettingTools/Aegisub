@@ -122,17 +122,7 @@ namespace Automation4 {
 		LuaAssFile(lua_State *L, AssFile *ass, bool can_modify = false, bool can_set_undo = false);
 	};
 
-
-
-	/// DOCME
-	/// @class LuaProgressSink
-	/// @brief DOCME
-	///
-	/// DOCME
-	class LuaProgressSink : public ProgressSink {
-	private:
-
-		/// DOCME
+	class LuaProgressSink {
 		lua_State *L;
 
 		static int LuaSetProgress(lua_State *L);
@@ -143,10 +133,10 @@ namespace Automation4 {
 		static int LuaDisplayDialog(lua_State *L);
 
 	public:
-		LuaProgressSink(lua_State *_L, wxWindow *parent, bool allow_config_dialog = true);
-		virtual ~LuaProgressSink();
+		LuaProgressSink(lua_State *L, ProgressSink *ps, bool allow_config_dialog = true);
+		~LuaProgressSink();
 
-		static LuaProgressSink* GetObjPointer(lua_State *L, int idx);
+		static ProgressSink* GetObjPointer(lua_State *L, int idx);
 	};
 
 
@@ -317,26 +307,7 @@ namespace Automation4 {
 
 
 
-	/// DOCME
-	/// @class LuaThreadedCall
-	/// @brief DOCME
-	///
-	/// DOCME
-	class LuaThreadedCall : public wxThread {
-	private:
-
-		/// DOCME
-		lua_State *L;
-
-		/// DOCME
-		int nargs;
-
-		/// DOCME
-		int nresults;
-	public:
-		LuaThreadedCall(lua_State *_L, int _nargs, int _nresults);
-		virtual ExitCode Entry();
-	};
+	void LuaThreadedCall(lua_State *L, int nargs, int nresults, wxString const& title, wxWindow *parent, bool can_open_config);
 
 
 

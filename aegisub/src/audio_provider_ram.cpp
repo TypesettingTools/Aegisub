@@ -42,38 +42,28 @@
 #include "main.h"
 #include "utils.h"
 
-
-/// DOCME
 #define CacheBits ((22))
 
-/// DOCME
 #define CacheBlockSize ((1 << CacheBits))
 
-/// @brief Constructor 
-/// @param source 
-///
 RAMAudioProvider::RAMAudioProvider(AudioProvider *src) {
 	std::auto_ptr<AudioProvider> source(src);
-	// Init
-	blockcache = NULL;
-	blockcount = 0;
+
 	samples_native_endian = source->AreSamplesNativeEndian();
 
 	// Allocate cache
 	int64_t ssize = source->GetNumSamples() * source->GetBytesPerSample();
 	blockcount = (ssize + CacheBlockSize - 1) >> CacheBits;
 	blockcache = new char*[blockcount];
-	for (int i = 0; i < blockcount; i++) {
-		blockcache[i] = NULL;
-	}
+	memset(blockcache, blockcount * sizeof(char*), 0);
 
 	// Allocate cache blocks
 	try {
 		for (int i = 0; i < blockcount; i++) {
-			blockcache[i] = new char[std::min<size_t>(CacheBlockSize,ssize-i*CacheBlockSize)];
+			blockcache[i] = new char[std::min<size_t>(CacheBlockSize, ssize - i * CacheBlockSize)];
 		}
 	}
-	catch (...) { 
+	catch (std::bad_alloc const&) {
 		Clear();
 		throw AudioOpenError("Couldn't open audio, not enough ram available.");
 	}
@@ -85,35 +75,27 @@ RAMAudioProvider::RAMAudioProvider(AudioProvider *src) {
 	sample_rate = source->GetSampleRate();
 	filename = source->GetFilename();
 
-	// Start progress
-	volatile bool canceled = false;
-	DialogProgress *progress = new DialogProgress(AegisubApp::Get()->frame,_("Load audio"),&canceled,_("Reading into RAM"),0,source->GetNumSamples());
-	progress->Show();
-	progress->SetProgress(0,1);
-
-	// Read cache
-	int readsize = CacheBlockSize / source->GetBytesPerSample();
-	for (int i=0;i<blockcount && !canceled; i++) {
-		source->GetAudio((char*)blockcache[i],i*readsize, i == blockcount-1 ? (source->GetNumSamples() - i*readsize) : readsize);
-		progress->SetProgress(i,blockcount-1);
-	}
-
-	// Clean up progress
-	if (canceled) {
-		Clear();
-		throw agi::UserCancelException("Audio loading cancelled by user");
-	}
-	progress->Destroy();
+	DialogProgress progress(AegisubApp::Get()->frame, _("Load audio"), _("Reading into RAM"));
+	progress.Run(std::tr1::bind(&RAMAudioProvider::FillCache, this, src, std::tr1::placeholders::_1));
 }
 
-/// @brief Destructor 
-///
 RAMAudioProvider::~RAMAudioProvider() {
 	Clear();
 }
 
-/// @brief Clear 
-///
+void RAMAudioProvider::FillCache(AudioProvider *source, agi::ProgressSink *ps) {
+	int64_t readsize = CacheBlockSize / source->GetBytesPerSample();
+	for (int i = 0; i < blockcount; i++) {
+		source->GetAudio((char*)blockcache[i], i * readsize, std::min(readsize, num_samples - i * readsize));
+
+		ps->SetProgress(i, (blockcount - 1));
+		if (ps->IsCancelled()) {
+			Clear();
+			return;
+		}
+	}
+}
+
 void RAMAudioProvider::Clear() {
 	// Free ram cache
 	if (blockcache) {
@@ -122,15 +104,8 @@ void RAMAudioProvider::Clear() {
 		}
 		delete [] blockcache;
 	}
-	blockcache = NULL;
-	blockcount = 0;
 }
 
-/// @brief Get audio 
-/// @param buf   
-/// @param start 
-/// @param count 
-///
 void RAMAudioProvider::GetAudio(void *buf, int64_t start, int64_t count) const {
 	// Requested beyond the length of audio
 	if (start+count > num_samples) {

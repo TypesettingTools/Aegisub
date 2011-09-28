@@ -1,31 +1,16 @@
-// Copyright (c) 2005, Rodrigo Braz Monteiro
-// All rights reserved.
+// Copyright (c) 2011, Thomas Goyne <plorkyeran@aegisub.org>
 //
-// Redistribution and use in source and binary forms, with or without
-// modification, are permitted provided that the following conditions are met:
+// Permission to use, copy, modify, and distribute this software for any
+// purpose with or without fee is hereby granted, provided that the above
+// copyright notice and this permission notice appear in all copies.
 //
-//   * Redistributions of source code must retain the above copyright notice,
-//     this list of conditions and the following disclaimer.
-//   * Redistributions in binary form must reproduce the above copyright notice,
-//     this list of conditions and the following disclaimer in the documentation
-//     and/or other materials provided with the distribution.
-//   * Neither the name of the Aegisub Group nor the names of its contributors
-//     may be used to endorse or promote products derived from this software
-//     without specific prior written permission.
-//
-// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-// AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-// IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
-// ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
-// LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
-// CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-// SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-// INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-// CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-// ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-// POSSIBILITY OF SUCH DAMAGE.
-//
-// Aegisub Project http://www.aegisub.org/
+// THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+// WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+// MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+// ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+// WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+// ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+// OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 //
 // $Id$
 
@@ -34,74 +19,52 @@
 /// @ingroup utility
 ///
 
-
-
-
-///////////
-// Headers
 #ifndef AGI_PRE
 #include <wx/dialog.h>
-#include <wx/gauge.h>
-#include <wx/stattext.h>
+#include <wx/timer.h>
 #endif
 
+#include <libaegisub/background_runner.h>
+#include <libaegisub/scoped_ptr.h>
+
+class DialogProgressSink;
+class wxButton;
+class wxGauge;
+class wxStaticText;
+class wxTextCtrl;
 
 /// DOCME
 /// @class DialogProgress
-/// @brief DOCME
-///
-/// DOCME
-class DialogProgress : public wxDialog {
-private:
+/// @brief Progress-bar dialog box for displaying during long operations
+class DialogProgress : public wxDialog, public agi::BackgroundRunner {
+	DialogProgressSink *ps;
 
-	/// DOCME
-	volatile int count;
-
-	/// DOCME
-	int virtualMax;
-
-	/// DOCME
-	wxMutex mutex;
-
-
-	/// DOCME
-	wxGauge *gauge;
-
-	/// DOCME
+	wxStaticText *title;
 	wxStaticText *text;
-	void OnCancel(wxCommandEvent &event);
-	void OnUpdateProgress(wxCommandEvent &event);
+	wxGauge *gauge;
+	wxButton *cancel_button;
+	wxTextCtrl *log_output;
+
+	wxTimer pulse_timer;
+
+	void OnSetTitle(wxThreadEvent &evt);
+	void OnSetMessage(wxThreadEvent &evt);
+	void OnSetProgress(wxThreadEvent &evt);
+	void OnSetIndeterminate(wxThreadEvent &evt);
+	void OnLog(wxThreadEvent &evt);
+	void OnComplete(wxThreadEvent &evt);
+
+	void OnShow(wxShowEvent&);
+	void OnCancel(wxCommandEvent &);
+	void OnPulseTimer(wxTimerEvent&);
 
 public:
+	/// Constructor
+	/// @param parent Parent window of the dialog
+	/// @param title Initial title of the dialog
+	/// @param message Initial message of the dialog
+	DialogProgress(wxWindow *parent, wxString const& title="", wxString const& message="");
 
-	/// DOCME
-	volatile bool *canceled;
-
-	DialogProgress(wxWindow *parent,wxString title,volatile bool *cancel,wxString message,int cur,int max);
-	void SetProgress(int cur,int max);
-	void SetText(wxString text);
-	void Run();
-	void Pulse();
-
-	DECLARE_EVENT_TABLE()
-};
-
-
-
-/// DOCME
-/// @class DialogProgressThread
-/// @brief DOCME
-///
-/// DOCME
-class DialogProgressThread : public wxThread {
-	DialogProgressThread(wxWindow *parent,wxString title,volatile bool *canceled,wxString message,int cur,int max);
-
-public:
-
-	/// DOCME
-	DialogProgress *dialog;
-
-	~DialogProgressThread();
-	wxThread::ExitCode Entry();
-	void Close();
+	/// BackgroundWorker implementation
+	void Run(std::tr1::function<void(agi::ProgressSink *)> task, int priority=-1);
 };

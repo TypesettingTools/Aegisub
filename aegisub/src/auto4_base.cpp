@@ -62,6 +62,7 @@
 #include "ass_style.h"
 #include "auto4_base.h"
 #include "compat.h"
+#include "dialog_progress.h"
 #include "include/aegisub/context.h"
 #include "main.h"
 #include "standard_paths.h"
@@ -292,7 +293,7 @@ namespace Automation4 {
 	FeatureFilter::FeatureFilter(const wxString &_name, const wxString &_description, int _priority)
 		: Feature(SCRIPTFEATURE_FILTER, _name)
 		, AssExportFilter(_name, _description, _priority)
-		, config_dialog(0)
+	, config_dialog(0)
 	{
 		AssExportFilterChain::Register(this);
 	}
@@ -311,7 +312,7 @@ namespace Automation4 {
 	///
 	wxString FeatureFilter::GetScriptSettingsIdentifier()
 	{
-		return inline_string_encode(wxString::Format("Automation Settings %s", GetName()));
+		return inline_string_encode(wxString::Format("Automation Settings %s", AssExportFilter::GetName()));
 	}
 
 
@@ -395,14 +396,6 @@ namespace Automation4 {
 		return !filename.Right(extension.Length()).CmpNoCase(extension);
 	}
 
-
-	// ShowConfigDialogEvent
-
-
-	/// DOCME
-	const wxEventType EVT_SHOW_CONFIG_DIALOG_t = wxNewEventType();
-
-
 	// ScriptConfigDialog
 
 
@@ -436,220 +429,72 @@ namespace Automation4 {
 
 
 	// ProgressSink
+	wxDEFINE_EVENT(EVT_SHOW_CONFIG_DIALOG, wxThreadEvent);
 
-
-	/// @brief DOCME
-	/// @param parent 
-	///
-	ProgressSink::ProgressSink(wxWindow *parent)
-		: wxDialog(parent, -1, "Automation", wxDefaultPosition, wxDefaultSize, wxBORDER_RAISED)
-		, debug_visible(false)
-		, data_updated(false)
-		, cancelled(false)
-		, has_inited(false)
-		, script_finished(false)
+	ProgressSink::ProgressSink(agi::ProgressSink *impl, BackgroundScriptRunner *bsr)
+	: impl(impl)
+	, bsr(bsr)
+	, trace_level(OPT_GET("Automation/Trace Level")->GetInt())
 	{
-		// make the controls
-		progress_display = new wxGauge(this, -1, 1000, wxDefaultPosition, wxSize(300, 20));
-		title_display = new wxStaticText(this, -1, "", wxDefaultPosition, wxDefaultSize, wxALIGN_CENTRE|wxST_NO_AUTORESIZE);
-		task_display = new wxStaticText(this, -1, "", wxDefaultPosition, wxDefaultSize, wxALIGN_CENTRE|wxST_NO_AUTORESIZE);
-		cancel_button = new wxButton(this, wxID_CANCEL);
-		debug_output = new wxTextCtrl(this, -1, "", wxDefaultPosition, wxSize(300, 120), wxTE_MULTILINE|wxTE_READONLY);
-
-		// put it in a sizer
-		sizer = new wxBoxSizer(wxVERTICAL);
-		sizer->Add(title_display, 0, wxEXPAND | wxALL, 5);
-		sizer->Add(progress_display, 0, wxALL&~wxTOP, 5);
-		sizer->Add(task_display, 0, wxEXPAND | wxLEFT | wxRIGHT | wxBOTTOM, 5);
-		sizer->Add(cancel_button, 0, wxALIGN_CENTER | wxLEFT | wxRIGHT | wxBOTTOM, 5);
-		sizer->Add(debug_output, 0, wxEXPAND | wxLEFT | wxRIGHT | wxBOTTOM, 5);
-		sizer->Show(debug_output, false);
-
-		// make the title a slightly larger font
-		wxFont title_font = title_display->GetFont();
-		int fontsize = title_font.GetPointSize();
-		title_font.SetPointSize(fontsize + fontsize/4 + fontsize/8);
-		title_font.SetWeight(wxFONTWEIGHT_BOLD);
-		title_display->SetFont(title_font);
-
-		// Set up a timer to regularly update the status
-		// It doesn't need an event handler attached, as just a the timer in itself
-		// will ensure that the idle event is fired
-		update_timer = new wxTimer();
-		update_timer->Start(50, false);
-
-		sizer->SetSizeHints(this);
-		SetSizer(sizer);
-		Center();
-
-		// Init trace level
-		trace_level = OPT_GET("Automation/Trace Level")->GetInt();
 	}
 
-
-	/// @brief DOCME
-	///
-	ProgressSink::~ProgressSink()
+	void ProgressSink::ShowConfigDialog(ScriptConfigDialog *config_dialog)
 	{
-		delete update_timer;
+		wxSemaphore sema(0, 1);
+		wxThreadEvent *evt = new wxThreadEvent(EVT_SHOW_CONFIG_DIALOG);
+		evt->SetPayload(std::make_pair(config_dialog, &sema));
+		bsr->QueueEvent(evt);
+		sema.Wait();
 	}
 
-
-	/// @brief DOCME
-	/// @param evt 
-	///
-	void ProgressSink::OnIdle(wxIdleEvent &evt)
+	BackgroundScriptRunner::BackgroundScriptRunner(wxWindow *parent, wxString const& title)
+	: impl(new DialogProgress(parent, title))
 	{
-		// The big glossy "update display" event
-		DoUpdateDisplay();
-
-		if (script_finished) {
-			if (!debug_visible) {
-				EndModal(0);
-			} else {
-				cancel_button->Enable(true);
-				cancel_button->SetLabel(_("Close"));
-				SetProgress(100.0);
-				SetTask(_("Script completed"));
-			}
-		}
+		impl->Bind(EVT_SHOW_CONFIG_DIALOG, &BackgroundScriptRunner::OnConfigDialog, this);
 	}
 
-
-	/// @brief DOCME
-	/// @return 
-	///
-	void ProgressSink::DoUpdateDisplay()
+	BackgroundScriptRunner::~BackgroundScriptRunner()
 	{
-		// If debug output isn't handled before the test for script_finished later,
-		// there might actually be some debug output but the debug_visible flag won't
-		// be set before the dialog closes itself.
-		wxMutexLocker lock(data_mutex);
-		if (!data_updated) return;
-		if (!pending_debug_output.IsEmpty()) {
-			if (!debug_visible) {
-				sizer->Show(debug_output, true);
-				Layout();
-				sizer->Fit(this);
-
-				debug_visible = true;
-			}
-
-			*debug_output << pending_debug_output;
-			debug_output->SetInsertionPointEnd();
-
-			pending_debug_output = "";
-		}
-
-		progress_display->SetValue((int)(progress*10));
-		task_display->SetLabel(task);
-		title_display->SetLabel(title);
-		data_updated = false;
 	}
 
-
-	/// @brief DOCME
-	/// @param _progress 
-	///
-	void ProgressSink::SetProgress(float _progress)
+	void BackgroundScriptRunner::OnConfigDialog(wxThreadEvent &evt)
 	{
-		wxMutexLocker lock(data_mutex);
-		progress = _progress;
-		data_updated = true;
+		std::pair<ScriptConfigDialog*, wxSemaphore*> payload = evt.GetPayload<std::pair<ScriptConfigDialog*, wxSemaphore*> >();
+
+		wxDialog w(impl.get(), -1, impl->GetTitle()); // container dialog box
+		wxBoxSizer *s = new wxBoxSizer(wxHORIZONTAL); // sizer for putting contents in
+		wxWindow *ww = payload.first->GetWindow(&w); // get/generate actual dialog contents
+		s->Add(ww, 0, wxALL, 5); // add contents to dialog
+		w.SetSizerAndFit(s);
+		w.CenterOnParent();
+		w.ShowModal();
+		payload.first->ReadBack();
+		payload.first->DeleteWindow();
+
+		payload.second->Post();
 	}
 
-
-	/// @brief DOCME
-	/// @param _task 
-	///
-	void ProgressSink::SetTask(const wxString &_task)
-	{
-		wxMutexLocker lock(data_mutex);
-		task = _task;
-		data_updated = true;
+	void BackgroundScriptRunner::QueueEvent(wxEvent *evt) {
+		wxQueueEvent(impl.get(), evt);
 	}
 
-
-	/// @brief DOCME
-	/// @param _title 
-	///
-	void ProgressSink::SetTitle(const wxString &_title)
+	// Convert a function taking an Automation4::ProgressSink to one taking an
+	// agi::ProgressSink so that we can pass it to an agi::BackgroundWorker
+	static void progress_sink_wrapper(std::tr1::function<void (ProgressSink*)> task, agi::ProgressSink *ps, BackgroundScriptRunner *bsr)
 	{
-		wxMutexLocker lock(data_mutex);
-		title = _title;
-		data_updated = true;
+		ProgressSink aps(ps, bsr);
+		task(&aps);
 	}
 
-
-	/// @brief DOCME
-	/// @param msg 
-	///
-	void ProgressSink::AddDebugOutput(const wxString &msg)
+	void BackgroundScriptRunner::Run(std::tr1::function<void (ProgressSink*)> task)
 	{
-		wxMutexLocker lock(data_mutex);
-		pending_debug_output << msg;
-		data_updated = true;
-	}
+		int prio = OPT_GET("Automation/Thread Priority")->GetInt();
+		if (prio == 0) prio = 50; // normal
+		else if (prio == 1) prio = 30; // below normal
+		else if (prio == 2) prio = 10; // lowest
+		else prio = 50; // fallback normal
 
-	BEGIN_EVENT_TABLE(ProgressSink, wxWindow)
-		EVT_INIT_DIALOG(ProgressSink::OnInit)
-		EVT_BUTTON(wxID_CANCEL, ProgressSink::OnCancel)
-		EVT_IDLE(ProgressSink::OnIdle)
-		EVT_SHOW_CONFIG_DIALOG(ProgressSink::OnConfigDialog)
-	END_EVENT_TABLE()
-
-
-	/// @brief DOCME
-	/// @param evt 
-	///
-	void ProgressSink::OnInit(wxInitDialogEvent &evt)
-	{
-		has_inited = true;
-	}
-
-
-	/// @brief DOCME
-	/// @param evt 
-	///
-	void ProgressSink::OnCancel(wxCommandEvent &evt)
-	{
-		if (!script_finished) {
-			cancelled = true;
-			cancel_button->Enable(false);
-		} else {
-			EndModal(0);
-		}
-	}
-
-
-	/// @brief DOCME
-	/// @param evt 
-	///
-	void ProgressSink::OnConfigDialog(ShowConfigDialogEvent &evt)
-	{
-		// assume we're in the GUI thread here
-
-		DoUpdateDisplay();
-
-		if (evt.config_dialog) {
-			wxDialog *w = new wxDialog(this, -1, title); // container dialog box
-			wxBoxSizer *s = new wxBoxSizer(wxHORIZONTAL); // sizer for putting contents in
-			wxWindow *ww = evt.config_dialog->GetWindow(w); // get/generate actual dialog contents
-			s->Add(ww, 0, wxALL, 5); // add contents to dialog
-			w->SetSizerAndFit(s);
-			w->CenterOnParent();
-			w->ShowModal();
-			evt.config_dialog->ReadBack();
-			evt.config_dialog->DeleteWindow();
-			delete w;
-		} else {
-			wxMessageBox("Uh... no config dialog?");
-		}
-
-		// See note in auto4_base.h
-		if (evt.sync_sema) {
-			evt.sync_sema->Post();
-		}
+		impl->Run(bind(progress_sink_wrapper, task, std::tr1::placeholders::_1, this), prio);
 	}
 
 
@@ -891,12 +736,12 @@ namespace Automation4 {
 			while (more) {
 				script_path.SetName(fn);
 				try {
-					wxString fullpath = script_path.GetFullPath();
-					if (ScriptFactory::CanHandleScriptFormat(fullpath)) {
-						Script *s = ScriptFactory::CreateFromFile(fullpath, true);
-						Add(s);
-						if (!s->GetLoadedState()) error_count++;
-					}
+				wxString fullpath = script_path.GetFullPath();
+				if (ScriptFactory::CanHandleScriptFormat(fullpath)) {
+					Script *s = ScriptFactory::CreateFromFile(fullpath, true);
+					Add(s);
+					if (!s->GetLoadedState()) error_count++;
+				}
 				}
 				catch (const char *e) {
 					error_count++;
@@ -1094,7 +939,7 @@ namespace Automation4 {
 	/// @param filename 
 	///
 	UnknownScript::UnknownScript(const wxString &filename)
-		: Script(filename)
+	: Script(filename)
 	{
 		wxFileName fn(filename);
 		name = fn.GetName();

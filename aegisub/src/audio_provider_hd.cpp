@@ -49,9 +49,9 @@
 #include "standard_paths.h"
 #include "utils.h"
 
-/// @brief Constructor 
-/// @param source 
-///
+
+
+
 HDAudioProvider::HDAudioProvider(AudioProvider *src) {
 	std::auto_ptr<AudioProvider> source(src);
 	// Copy parameters
@@ -76,44 +76,34 @@ HDAudioProvider::HDAudioProvider(AudioProvider *src) {
 	file_cache.Open(diskCacheFilename,wxFile::read_write);
 	if (!file_cache.IsOpened()) throw AudioOpenError("Unable to write to audio disk cache.");
 
-	// Start progress
-	volatile bool canceled = false;
-	DialogProgress *progress = new DialogProgress(AegisubApp::Get()->frame,"Load audio",&canceled,"Reading to Hard Disk cache",0,num_samples);
-	progress->Show();
-
-	// Write to disk
-	int block = 4096;
-	data = new char[block * channels * bytes_per_sample];
-	for (int64_t i=0;i<num_samples && !canceled; i+=block) {
-		if (block+i > num_samples) block = num_samples - i;
-		source->GetAudio(data,i,block);
-		file_cache.Write(data,block * channels * bytes_per_sample);
-		progress->SetProgress(i,num_samples);
-	}
-	file_cache.Seek(0);
-
-	// Finish
-	if (canceled) {
-		file_cache.Close();
-		delete[] data;
-		throw agi::UserCancelException("Audio loading cancelled by user");
-	}
-	progress->Destroy();
+	DialogProgress progress(AegisubApp::Get()->frame, "Load audio", "Reading to Hard Disk cache");
+	progress.Run(bind(&HDAudioProvider::FillCache, this, src, std::tr1::placeholders::_1));
 }
 
-/// @brief Destructor 
-///
 HDAudioProvider::~HDAudioProvider() {
 	file_cache.Close();
 	wxRemoveFile(diskCacheFilename);
 	delete[] data;
 }
 
-/// @brief Get audio 
-/// @param buf   
-/// @param start 
-/// @param count 
-///
+void HDAudioProvider::FillCache(AudioProvider *src, agi::ProgressSink *ps) {
+	int64_t block = 4096;
+	data = new char[block * channels * bytes_per_sample];
+	for (int64_t i = 0; i < num_samples; i += block) {
+		block = std::min(block, num_samples - i);
+		src->GetAudio(data, i, block);
+		file_cache.Write(data, block * channels * bytes_per_sample);
+		ps->SetProgress(i, num_samples);
+
+		if (ps->IsCancelled()) {
+			file_cache.Close();
+			wxRemoveFile(diskCacheFilename);
+			delete[] data;
+		}
+	}
+	file_cache.Seek(0);
+}
+
 void HDAudioProvider::GetAudio(void *buf, int64_t start, int64_t count) const {
 	// Requested beyond the length of audio
 	if (start+count > num_samples) {

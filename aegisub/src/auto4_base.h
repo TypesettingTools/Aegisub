@@ -50,6 +50,9 @@
 #include <wx/timer.h>
 #endif
 
+#include <libaegisub/background_runner.h>
+#include <libaegisub/exception.h>
+#include <libaegisub/scoped_ptr.h>
 #include <libaegisub/signal.h>
 
 #include "ass_export_filter.h"
@@ -58,6 +61,8 @@
 
 class AssFile;
 class AssStyle;
+class DialogProgress;
+class SubtitleFormat;
 class wxWindow;
 class wxDialog;
 class wxStopWatch;
@@ -264,137 +269,44 @@ namespace Automation4 {
 		virtual void Unserialise(const wxString &serialised) { }
 	};
 
+	class ProgressSink;
 
-	// Config dialog event class and related stuff (wx </3)
-	extern const wxEventType EVT_SHOW_CONFIG_DIALOG_t;
+	class BackgroundScriptRunner {
+		agi::scoped_ptr<DialogProgress> impl;
 
-
-	/// DOCME
-	/// @class ShowConfigDialogEvent
-	/// @brief DOCME
-	///
-	/// DOCME
-	class ShowConfigDialogEvent : public wxCommandEvent {
+		void OnConfigDialog(wxThreadEvent &evt);
 	public:
 
-		/// @brief DOCME
-		/// @param event
-		/// @return 
-		///
-		ShowConfigDialogEvent(const wxEventType &event = EVT_SHOW_CONFIG_DIALOG_t)
-			: wxCommandEvent(event)
-			, config_dialog(0)
-			, sync_sema(0) { };
+		void QueueEvent(wxEvent *evt);
 
+		void Run(std::tr1::function<void(ProgressSink*)> task);
 
-		/// @brief DOCME
-		/// @return 
-		///
-		virtual wxEvent *Clone() const { return new ShowConfigDialogEvent(*this); }
-
-
-		/// DOCME
-		ScriptConfigDialog *config_dialog;
-
-		/// DOCME
-		wxSemaphore *sync_sema;
+		BackgroundScriptRunner(wxWindow *parent, wxString const& title);
+		~BackgroundScriptRunner();
 	};
 
-
-	/// DOCME
-	typedef void (wxEvtHandler::*ShowConfigDialogEventFunction)(ShowConfigDialogEvent&);
-
-
-/// DOCME
-#define EVT_SHOW_CONFIG_DIALOG(fn) DECLARE_EVENT_TABLE_ENTRY( EVT_SHOW_CONFIG_DIALOG_t, -1, -1, (wxObjectEventFunction)(wxEventFunction)(ShowConfigDialogEventFunction)&fn, (wxObject*)0 ),
-
-
-
-	/// DOCME
-	/// @class ProgressSink
-	/// @brief DOCME
-	///
-	/// DOCME
-	class ProgressSink : public wxDialog {
-	private:
-
-		/// DOCME
-		wxBoxSizer *sizer;
-
-		/// DOCME
-		wxGauge *progress_display;
-
-		/// DOCME
-		wxButton *cancel_button;
-
-		/// DOCME
-		wxStaticText *title_display;
-
-		/// DOCME
-		wxStaticText *task_display;
-
-		/// DOCME
-		wxTextCtrl *debug_output;
-
-
-		/// DOCME
-		volatile bool debug_visible;
-
-		/// DOCME
-		volatile bool data_updated;
-
-
-		/// DOCME
-		float progress;
-
-		/// DOCME
-		wxString task;
-
-		/// DOCME
-		wxString title;
-
-		/// DOCME
-		wxString pending_debug_output;
-
-		/// DOCME
-		wxMutex data_mutex;
-
-
-		/// DOCME
-		wxTimer *update_timer;
-
-		void OnCancel(wxCommandEvent &evt);
-		void OnInit(wxInitDialogEvent &evt);
-		void OnIdle(wxIdleEvent &evt);
-		void OnConfigDialog(ShowConfigDialogEvent &evt);
-
-		void DoUpdateDisplay();
-
-	protected:
-
-		/// DOCME
-		volatile bool cancelled;
-
-		/// DOCME
+	/// A wrapper around agi::ProgressSink which adds the ability to open
+	/// dialogs on the GUI thread
+	class ProgressSink : public agi::ProgressSink {
+		agi::ProgressSink *impl;
+		BackgroundScriptRunner *bsr;
 		int trace_level;
-
-		ProgressSink(wxWindow *parent);
-		virtual ~ProgressSink();
-
 	public:
-		void SetProgress(float _progress);
-		void SetTask(const wxString &_task);
-		void SetTitle(const wxString &_title);
-		void AddDebugOutput(const wxString &msg);
+		void SetIndeterminate() { impl->SetIndeterminate(); }
+		void SetTitle(std::string const& title) { impl->SetTitle(title); }
+		void SetMessage(std::string const& msg) { impl->SetMessage(msg); }
+		void SetProgress(int cur, int max) { impl->SetProgress(cur, max); }
+		void Log(std::string const& str) { impl->Log(str); }
+		bool IsCancelled() { return impl->IsCancelled(); }
 
+		/// Show the passed dialog on the GUI thread, blocking the calling
+		/// thread until it closes
+		void ShowConfigDialog(ScriptConfigDialog *config_dialog);
 
-		/// DOCME
-		volatile bool has_inited;
+		/// Get the current automation trace level
+		int GetTraceLevel() const { return trace_level; }
 
-		/// DOCME
-		volatile bool script_finished;
-
-		DECLARE_EVENT_TABLE()
+		ProgressSink(agi::ProgressSink *impl, BackgroundScriptRunner *bsr);
 	};
 
 
@@ -511,6 +423,8 @@ namespace Automation4 {
 		void Reload();
 	};
 
+	/// Both a base class for script factories and a manager of registered
+	/// script factories
 	class ScriptFactory {
 		/// Vector of loaded script engines
 		static std::vector<ScriptFactory*> *factories;
@@ -556,12 +470,8 @@ namespace Automation4 {
 		static const std::vector<ScriptFactory*>& GetFactories();
 	};
 
-
-	/// DOCME
-	/// @class UnknownScript
-	/// @brief DOCME
-	///
-	/// DOCME
+	/// A script which represents a file not recognized by any registered
+	/// automation engines
 	class UnknownScript : public Script {
 	public:
 		UnknownScript(const wxString &filename);

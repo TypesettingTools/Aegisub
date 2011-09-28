@@ -86,9 +86,7 @@
 
 	"Automation" : {
 		"Autoreload Mode" : 1,
-		"Lua" : {
-			"Thread Priority" : 1
-		},
+		"Thread Priority" : 1,
 		"Trace Level" : 3
 	},
 

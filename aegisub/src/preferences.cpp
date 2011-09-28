@@ -267,7 +267,7 @@ Automation::Automation(wxTreebook *book, Preferences *parent): OptionPage(book, 
 
 	const wxString tp_arr[3] = { _("Normal"), _("Below Normal (recommended)"), _("Lowest") };
 	wxArrayString tp_choice(3, tp_arr);
-	OptionChoice(general, _("Thread priority"), tp_choice, "Automation/Lua/Thread Priority");
+	OptionChoice(general, _("Thread priority"), tp_choice, "Automation/Thread Priority");
 
 	const wxString ar_arr[4] = { _("No scripts"), _("Subtitle-local scripts"), _("Global autoload scripts"), _("All scripts") };
 	wxArrayString ar_choice(4, ar_arr);

@@ -45,8 +45,6 @@
 
 #include <ffms.h>
 
-#include "dialog_progress.h"
-
 /// Index all tracks
 #define FFMS_TRACKMASK_ALL		-1
 /// Index no tracks
@@ -70,18 +68,10 @@ public:
 		FFMS_LOG_DEBUG		= 48,
 	};
 
-	/// Indexing progress report dialog
-	struct IndexingProgressDialog {
-		volatile bool IndexingCanceled;
-		DialogProgress *ProgressDialog;
-	};
-
 	/// Mutex preventing two cache cleaner threads from running at the same time
 	static wxMutex CleaningInProgress;
 	bool CleanCache();
 
-	static int FFMS_CC UpdateIndexingProgress(int64_t Current, int64_t Total, void *Private);
-	
 	FFMS_Index *DoIndexing(FFMS_Indexer *Indexer, const wxString& Cachename, int Trackmask, FFMS_IndexErrorHandling IndexEH);
 	std::map<int,wxString> GetTracksOfType(FFMS_Indexer *Indexer, FFMS_TrackType Type);
 	int AskForTrackSelection(const std::map<int,wxString>& TrackList, FFMS_TrackType Type);

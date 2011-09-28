@@ -121,19 +121,17 @@ public:
 	}
 };
 
+static void do_wait(agi::ProgressSink *ps, FontConfigCacheThread const * const * const cache_worker) {
+	ps->SetIndeterminate();
+	while (*cache_worker && !ps->IsCancelled())
+		wxMilliSleep(100);
+}
+
 static void wait_for_cache_thread(FontConfigCacheThread const * const * const cache_worker) {
 	if (!*cache_worker) return;
 
-	bool canceled;
-	DialogProgress *progress = new DialogProgress(AegisubApp::Get()->frame, "", &canceled, "Caching fonts", 0, 1);
-	progress->Show();
-	while (*cache_worker) {
-		if (canceled) throw agi::UserCancelException("Font caching cancelled");
-		progress->Pulse();
-		wxYield();
-		wxMilliSleep(100);
-	}
-	progress->Destroy();
+	DialogProgress progress(AegisubApp::Get()->frame, "Updating font index", "This may take several minutes");
+	progress.Run(bind(do_wait, std::tr1::placeholders::_1, cache_worker));
 }
 
 /// @brief Constructor

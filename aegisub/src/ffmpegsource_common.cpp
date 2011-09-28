@@ -49,6 +49,7 @@
 #include <libaegisub/log.h>
 
 #include "compat.h"
+#include "dialog_progress.h"
 #include "ffmpegsource_common.h"
 #include "frame_main.h"
 #include "main.h"
@@ -58,26 +59,23 @@
 
 wxMutex FFmpegSourceProvider::CleaningInProgress;
 
-
 /// @brief Callback function that updates the indexing progress dialog
 /// @param Current	The current file positition in bytes
 /// @param Total	The total file size in bytes
-/// @param Private	A pointer to the progress dialog box to update 
+/// @param Private	A pointer to the progress sink to update 
 /// @return			Returns non-0 if indexing is cancelled, 0 otherwise.
 ///
-int FFMS_CC FFmpegSourceProvider::UpdateIndexingProgress(int64_t Current, int64_t Total, void *Private) {
-	IndexingProgressDialog *Progress = (IndexingProgressDialog *)Private;
-
-	if (Progress->IndexingCanceled)
-		return 1;
-
-	// no one cares about a little bit of a rounding error here anyway
-	Progress->ProgressDialog->SetProgress(((int64_t)1000*Current)/Total, 1000);
-	
-	return 0;
+static int FFMS_CC UpdateIndexingProgress(int64_t Current, int64_t Total, void *Private) {
+	agi::ProgressSink *ps = static_cast<agi::ProgressSink*>(Private);
+	ps->SetProgress(Current, Total);
+	return ps->IsCancelled();
 }
 
-
+/// A wrapper around FFMS_DoIndexing to make the signature void -> void
+static void DoIndexingWrapper(FFMS_Index **Ret, FFMS_Indexer *Indexer, int IndexMask, int ErrorHandling, void *ICPrivate, FFMS_ErrorInfo *ErrorInfo) {
+	*Ret = FFMS_DoIndexing(Indexer, IndexMask, FFMS_TRACKMASK_NONE, NULL, NULL, ErrorHandling,
+		UpdateIndexingProgress, ICPrivate, ErrorInfo);
+}
 
 /// @brief Does indexing of a source file
 /// @param Indexer		A pointer to the indexer object representing the file to be indexed
@@ -96,21 +94,12 @@ FFMS_Index *FFmpegSourceProvider::DoIndexing(FFMS_Indexer *Indexer, const wxStri
 	wxString MsgString;
 
 	// set up progress dialog callback
-	IndexingProgressDialog Progress;
-	Progress.IndexingCanceled = false;
-	Progress.ProgressDialog = new DialogProgress(AegisubApp::Get()->frame,
-		_("Indexing"), &Progress.IndexingCanceled,
-		_("Reading timecodes and frame/sample data"), 0, 1);
-	Progress.ProgressDialog->Show();
-	Progress.ProgressDialog->SetProgress(0,1);
+	DialogProgress Progress(AegisubApp::Get()->frame, _("Indexing"), _("Reading timecodes and frame/sample data"));
 
 	// index all audio tracks
-	FFMS_Index *Index = FFMS_DoIndexing(Indexer, Trackmask, FFMS_TRACKMASK_NONE, NULL, NULL, IndexEH,
-		FFmpegSourceProvider::UpdateIndexingProgress, &Progress, &ErrInfo);
-	Progress.ProgressDialog->Destroy();
-	if (Progress.IndexingCanceled) {
-		throw agi::UserCancelException("indexing cancelled by user");
-	}
+	FFMS_Index *Index;
+	Progress.Run(bind(DoIndexingWrapper, &Index, Indexer, Trackmask, IndexEH, std::tr1::placeholders::_1, &ErrInfo));
+
 	if (Index == NULL) {
 		MsgString.Append("Failed to index: ").Append(wxString(ErrInfo.Buffer, wxConvUTF8));
 		throw MsgString;
