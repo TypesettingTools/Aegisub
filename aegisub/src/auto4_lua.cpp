@@ -333,15 +333,25 @@ namespace Automation4 {
 		Create();
 	}
 
-	void LuaScript::RegisterCommand(LuaCommand *command) {
+	void LuaScript::RegisterCommand(LuaCommand *command)
+	{
+		for (size_t i = 0; i < macros.size(); ++i) {
+			if (macros[i]->name() == command->name()) {
+				luaL_error(L,
+					"A macro named '%s' is already defined in script '%s'",
+					command->StrDisplay(0).utf8_str().data(), name.utf8_str().data());
+			}
+		}
 		macros.push_back(command);
 	}
 
-	void LuaScript::UnregisterCommand(LuaCommand *command) {
+	void LuaScript::UnregisterCommand(LuaCommand *command)
+	{
 		macros.erase(remove(macros.begin(), macros.end(), command), macros.end());
 	}
 
-	void LuaScript::RegisterFilter(LuaExportFilter *filter) {
+	void LuaScript::RegisterFilter(LuaExportFilter *filter)
+	{
 		filters.push_back(filter);
 	}
 
