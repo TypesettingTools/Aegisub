@@ -59,30 +59,16 @@ namespace {
 /// Open automation manager.
 struct am_manager : public Command {
 	CMD_NAME("am/manager")
-	STR_MENU("&Automation..")
+	STR_MENU("&Automation...")
 	STR_DISP("Automation")
 	STR_HELP("Open automation manager.")
 
 	void operator()(agi::Context *c) {
-#ifdef __APPLE__
 		if (wxGetMouseState().CmdDown()) {
-#else
-		if (wxGetMouseState().ControlDown()) {
-#endif
 			wxGetApp().global_scripts->Reload();
 
 			if (wxGetMouseState().ShiftDown()) {
-				const std::vector<Automation4::Script*>& scripts = c->local_scripts->GetScripts();
-				for (size_t i = 0; i < scripts.size(); ++i) {
-					try {
-						scripts[i]->Reload();
-					} catch (const char *e) {
-						wxLogError(e);
-					} catch (...) {
-						wxLogError("An unknown error occurred reloading Automation script '%s'.", scripts[i]->GetName());
-					}
-				}
-
+				c->local_scripts->Reload();
 				wxGetApp().frame->StatusTimeout(_("Reloaded all Automation scripts"));
 			}
 			else {
