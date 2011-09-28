@@ -355,76 +355,31 @@ namespace Automation4 {
 	}
 
 	// ScriptManager
-
-
-	/// @brief DOCME
-	///
-	ScriptManager::ScriptManager()
-	{
-		// do nothing...?
-	}
-
-
-	/// @brief DOCME
-	///
 	ScriptManager::~ScriptManager()
 	{
 		RemoveAll();
 	}
 
-
-	/// @brief DOCME
-	/// @param script 
-	/// @return 
-	///
 	void ScriptManager::Add(Script *script)
 	{
-		for (std::vector<Script*>::iterator i = scripts.begin(); i != scripts.end(); ++i) {
-			if (script == *i) return;
-		}
-		scripts.push_back(script);
+		if (find(scripts.begin(), scripts.end(), script) == scripts.end())
+			scripts.push_back(script);
 	}
 
-
-	/// @brief DOCME
-	/// @param script 
-	/// @return 
-	///
 	void ScriptManager::Remove(Script *script)
 	{
-		for (std::vector<Script*>::iterator i = scripts.begin(); i != scripts.end(); ++i) {
-			if (script == *i) {
-				delete *i;
-				scripts.erase(i);
-				return;
-			}
+		std::vector<Script*>::iterator i = find(scripts.begin(), scripts.end(), script);
+		if (i != scripts.end()) {
+			delete *i;
+			scripts.erase(i);
 		}
 	}
 
-
-	/// @brief DOCME
-	///
 	void ScriptManager::RemoveAll()
 	{
-		for (std::vector<Script*>::iterator i = scripts.begin(); i != scripts.end(); ++i) {
-			delete *i;
-		}
-		scripts.clear();
+		delete_clear(scripts);
 	}
 
-
-	/// @brief DOCME
-	/// @return 
-	///
-	const std::vector<Script*>& ScriptManager::GetScripts() const
-	{
-		return scripts;
-	}
-
-
-	/// @brief DOCME
-	/// @return 
-	///
 	const std::vector<cmd::Command*>& ScriptManager::GetMacros()
 	{
 		macros.clear();
@@ -437,20 +392,12 @@ namespace Automation4 {
 
 
 	// AutoloadScriptManager
-
-
-	/// @brief DOCME
-	/// @param _path 
-	///
-	AutoloadScriptManager::AutoloadScriptManager(const wxString &_path)
-		: path(_path)
+	AutoloadScriptManager::AutoloadScriptManager(wxString const& path)
+	: path(path)
 	{
 		Reload();
 	}
 
-
-	/// @brief DOCME
-	///
 	void AutoloadScriptManager::Reload()
 	{
 		RemoveAll();
@@ -496,7 +443,8 @@ namespace Automation4 {
 		slots.push_back(c->ass->AddFileOpenListener(&LocalScriptManager::Reload, this));
 	}
 
-	void LocalScriptManager::Reload() {
+	void LocalScriptManager::Reload()
+	{
 		RemoveAll();
 
 		wxString local_scripts = context->ass->GetScriptInfo("Automation Scripts");
@@ -525,7 +473,6 @@ namespace Automation4 {
 			wxFileName sfname(trimmed);
 			sfname.MakeAbsolute(basepath);
 			if (sfname.FileExists()) {
-				wxString err;
 				Add(Automation4::ScriptFactory::CreateFromFile(sfname.GetFullPath(), true));
 			} else {
 				wxLogWarning("Automation Script referenced could not be found.\nFilename specified: %c%s\nSearched relative to: %s\nResolved filename: %s",
@@ -534,7 +481,8 @@ namespace Automation4 {
 		}
 	}
 
-	void LocalScriptManager::OnSubtitlesSave() {
+	void LocalScriptManager::OnSubtitlesSave()
+	{
 		// Store Automation script data
 		// Algorithm:
 		// 1. If script filename has Automation Base Path as a prefix, the path is relative to that (ie. "$")
@@ -614,6 +562,7 @@ namespace Automation4 {
 		if (log_errors)
 			wxLogError(_("The file was not recognised as an Automation script: %s"), filename);
 
+
 		return new UnknownScript(filename);
 	}
 
@@ -660,7 +609,6 @@ namespace Automation4 {
 
 		return fnfilter;
 	}
-
 
 	// UnknownScript
 	UnknownScript::UnknownScript(wxString const& filename)

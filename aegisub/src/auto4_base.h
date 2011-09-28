@@ -217,30 +217,25 @@ namespace Automation4 {
 		virtual std::vector<SubtitleFormat*> GetFormats() const=0;
 	};
 
-	/// DOCME
-	/// @class ScriptManager
-	/// @brief DOCME
-	///
-	/// DOCME
+	/// A manager of loaded automation scripts
 	class ScriptManager {
-	private:
-
-		/// DOCME
 		std::vector<Script*> scripts;
-
-
-		/// DOCME
 		std::vector<cmd::Command*> macros;
 
 	public:
-		ScriptManager();
-		virtual ~ScriptManager();		// Deletes all scripts managed
-		void Add(Script *script);		// Add a script to the manager. The ScriptManager takes owvership of the script and will automatically delete it.
-		void Remove(Script *script);	// Remove a script from the manager, and delete the Script object.
-		void RemoveAll();				// Deletes all scripts managed
+		/// Deletes all scripts managed
+		virtual ~ScriptManager();
+		/// Add a script to the manager. The ScriptManager takes ownership of the script and will automatically delete it.
+		void Add(Script *script);
+		/// Remove a script from the manager, and delete the Script object.
+		void Remove(Script *script);
+		/// Deletes all scripts managed
+		void RemoveAll();
+		/// Reload all scripts mananaged
 		virtual void Reload() = 0;
 
-		const std::vector<Script*>& GetScripts() const;
+		/// Get all managed scripts (both loaded and invalid)
+		const std::vector<Script*>& GetScripts() const { return scripts; }
 
 		const std::vector<cmd::Command*>& GetMacros();
 		// No need to have getters for the other kinds of features, I think.
@@ -258,18 +253,11 @@ namespace Automation4 {
 		void Reload();
 	};
 
-	/// DOCME
-	/// @class AutoloadScriptManager
-	/// @brief DOCME
-	///
-	/// DOCME
+	/// Manager for scripts in the autoload directory
 	class AutoloadScriptManager : public ScriptManager {
-	private:
-
-		/// DOCME
 		wxString path;
 	public:
-		AutoloadScriptManager(const wxString &_path);
+		AutoloadScriptManager(wxString const& path);
 		void Reload();
 	};
 
