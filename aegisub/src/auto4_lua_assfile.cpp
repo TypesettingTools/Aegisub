@@ -165,9 +165,6 @@ namespace Automation4 {
 			lua_pushstring(L, dia->Effect.mb_str(wxConvUTF8));
 			lua_setfield(L, -2, "effect");
 
-			lua_pushstring(L, ""); // tentative AS5 field
-			lua_setfield(L, -2, "userdata");
-
 			lua_pushstring(L, dia->Text.mb_str(wxConvUTF8));
 			lua_setfield(L, -2, "text");
 
@@ -237,9 +234,6 @@ namespace Automation4 {
 
 			lua_pushnumber(L, 2); // From STS.h: "0: window, 1: video, 2: undefined (~window)"
 			lua_setfield(L, -2, "relative_to");
-
-			lua_pushboolean(L, false); // vertical writing, tentative AS5 field
-			lua_setfield(L, -2, "vertical");
 
 			lua_pushstring(L, "style");
 
@@ -406,11 +400,6 @@ namespace Automation4 {
 			sty->UpdateData();
 
 			result = sty;
-
-		} else if (lclass == "styleex") {
-			lua_pushstring(L, "Found line with class 'styleex' which is not supported. Wait until AS5 is a reality.");
-			lua_error(L);
-			return 0;
 
 		} else if (lclass == "dialogue") {
 			GETBOOL(comment, "comment", "dialogue")
