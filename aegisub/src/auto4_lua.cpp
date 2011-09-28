@@ -120,6 +120,22 @@ namespace {
 		lua_pop(L, 1);
 		return ret;
 	}
+
+	void set_context(lua_State *L, const agi::Context *c)
+	{
+		// Explicit cast is needed to discard the const
+		lua_pushlightuserdata(L, (void *)c);
+		lua_setfield(L, LUA_REGISTRYINDEX, "project_context");
+	}
+
+	const agi::Context *get_context(lua_State *L)
+	{
+		lua_getfield(L, LUA_REGISTRYINDEX, "project_context");
+		assert(lua_islightuserdata(L, -1));
+		const agi::Context * c = static_cast<const agi::Context *>(lua_touserdata(L, -1));
+		lua_pop(L, 1);
+		return c;
+	}
 }
 
 	// LuaStackcheck
@@ -414,10 +430,11 @@ namespace Automation4 {
 
 	int LuaScript::LuaFrameFromMs(lua_State *L)
 	{
+		const agi::Context *c = get_context(L);
 		int ms = lua_tointeger(L, -1);
 		lua_pop(L, 1);
-		if (VideoContext::Get()->TimecodesLoaded())
-			lua_pushnumber(L, VideoContext::Get()->FrameAtTime(ms, agi::vfr::START));
+		if (c->videoController->TimecodesLoaded())
+			lua_pushnumber(L, c->videoController->FrameAtTime(ms, agi::vfr::START));
 		else
 			lua_pushnil(L);
 
@@ -426,10 +443,11 @@ namespace Automation4 {
 
 	int LuaScript::LuaMsFromFrame(lua_State *L)
 	{
+		const agi::Context *c = get_context(L);
 		int frame = lua_tointeger(L, -1);
 		lua_pop(L, 1);
-		if (VideoContext::Get()->TimecodesLoaded())
-			lua_pushnumber(L, VideoContext::Get()->TimeAtFrame(frame, agi::vfr::START));
+		if (c->videoController->TimecodesLoaded())
+			lua_pushnumber(L, c->videoController->TimeAtFrame(frame, agi::vfr::START));
 		else
 			lua_pushnil(L);
 		return 1;
@@ -437,14 +455,15 @@ namespace Automation4 {
 
 	int LuaScript::LuaVideoSize(lua_State *L)
 	{
-		VideoContext *ctx = VideoContext::Get();
-		if (ctx->IsLoaded()) {
-			lua_pushnumber(L, ctx->GetWidth());
-			lua_pushnumber(L, ctx->GetHeight());
-			lua_pushnumber(L, ctx->GetAspectRatioValue());
-			lua_pushnumber(L, ctx->GetAspectRatioType());
+		const agi::Context *c = get_context(L);
+		if (c->videoController->IsLoaded()) {
+			lua_pushnumber(L, c->videoController->GetWidth());
+			lua_pushnumber(L, c->videoController->GetHeight());
+			lua_pushnumber(L, c->videoController->GetAspectRatioValue());
+			lua_pushnumber(L, c->videoController->GetAspectRatioType());
 			return 4;
-		} else {
+		}
+		else {
 			lua_pushnil(L);
 			return 1;
 		}
@@ -586,6 +605,8 @@ namespace Automation4 {
 	{
 		if (!(cmd_type & cmd::COMMAND_VALIDATE)) return true;
 
+		set_context(L, c);
+
 		GetFeatureFunction("validate");
 		LuaAssFile *subsobj = new LuaAssFile(L, c->ass);
 		lua_pushinteger(L, transform_selection(L, c));
@@ -608,6 +629,8 @@ namespace Automation4 {
 
 	void LuaCommand::operator()(agi::Context *c)
 	{
+		set_context(L, c);
+
 		GetFeatureFunction("run");
 		LuaAssFile *subsobj = new LuaAssFile(L, c->ass, true, true);
 		lua_pushinteger(L, transform_selection(L, c));
@@ -656,6 +679,8 @@ namespace Automation4 {
 	bool LuaCommand::IsActive(const agi::Context *c)
 	{
 		if (!(cmd_type & cmd::COMMAND_TOGGLE)) return false;
+
+		set_context(L, c);
 
 		GetFeatureFunction("isactive");
 		LuaAssFile *subsobj = new LuaAssFile(L, c->ass);
@@ -748,6 +773,8 @@ namespace Automation4 {
 	{
 		if (!has_config)
 			return 0;
+
+		set_context(L, c);
 
 		GetFeatureFunction("config"); // 2 = config dialog function
 
