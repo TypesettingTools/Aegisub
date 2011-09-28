@@ -325,6 +325,8 @@ namespace Automation4 {
 	{
 		if (find(scripts.begin(), scripts.end(), script) == scripts.end())
 			scripts.push_back(script);
+
+		ScriptsChanged();
 	}
 
 	void ScriptManager::Remove(Script *script)
@@ -334,11 +336,14 @@ namespace Automation4 {
 			delete *i;
 			scripts.erase(i);
 		}
+
+		ScriptsChanged();
 	}
 
 	void ScriptManager::RemoveAll()
 	{
 		delete_clear(scripts);
+		ScriptsChanged();
 	}
 
 	const std::vector<cmd::Command*>& ScriptManager::GetMacros()
@@ -361,7 +366,7 @@ namespace Automation4 {
 
 	void AutoloadScriptManager::Reload()
 	{
-		RemoveAll();
+		delete_clear(scripts);
 
 		int error_count = 0;
 
@@ -386,7 +391,7 @@ namespace Automation4 {
 				wxString fullpath = script_path.GetFullPath();
 				if (ScriptFactory::CanHandleScriptFormat(fullpath)) {
 					Script *s = ScriptFactory::CreateFromFile(fullpath, true);
-					Add(s);
+					scripts.push_back(s);
 					if (!s->GetLoadedState()) error_count++;
 				}
 				more = dir.GetNext(&fn);
@@ -395,6 +400,8 @@ namespace Automation4 {
 		if (error_count > 0) {
 			wxLogWarning("One or more scripts placed in the Automation autoload directory failed to load\nPlease review the errors above, correct them and use the Reload Autoload dir button in Automation Manager to attempt loading the scripts again.");
 		}
+
+		ScriptsChanged();
 	}
 
 	LocalScriptManager::LocalScriptManager(agi::Context *c)
@@ -406,7 +413,7 @@ namespace Automation4 {
 
 	void LocalScriptManager::Reload()
 	{
-		RemoveAll();
+		delete_clear(scripts);
 
 		wxString local_scripts = context->ass->GetScriptInfo("Automation Scripts");
 		if (local_scripts.empty()) return;
@@ -434,12 +441,15 @@ namespace Automation4 {
 			wxFileName sfname(trimmed);
 			sfname.MakeAbsolute(basepath);
 			if (sfname.FileExists()) {
-				Add(Automation4::ScriptFactory::CreateFromFile(sfname.GetFullPath(), true));
-			} else {
+				scripts.push_back(Automation4::ScriptFactory::CreateFromFile(sfname.GetFullPath(), true));
+			}
+			else {
 				wxLogWarning("Automation Script referenced could not be found.\nFilename specified: %c%s\nSearched relative to: %s\nResolved filename: %s",
 					first_char, trimmed, basepath, sfname.GetFullPath());
 			}
 		}
+
+		ScriptsChanged();
 	}
 
 	void LocalScriptManager::OnSubtitlesSave()

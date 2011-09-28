@@ -22,8 +22,10 @@
 
 #include "include/aegisub/menu.h"
 
+#include "include/aegisub/context.h"
 #include "include/aegisub/hotkey.h"
 
+#include "auto4_base.h"
 #include "command/command.h"
 #include "compat.h"
 #include "libresrc/libresrc.h"
@@ -113,6 +115,14 @@ public:
 	}
 };
 
+struct menu_item_cmp {
+	wxMenuItem *item;
+	menu_item_cmp(wxMenuItem *item) : item(item) { }
+	bool operator()(std::pair<cmd::Command*, wxMenuItem*> o) const {
+		return o.second == item;
+	}
+};
+
 /// @class CommandManager
 /// @brief Event dispatcher to update menus on open and handle click events
 ///
@@ -169,6 +179,14 @@ public:
 			dynamic_items.push_back(std::make_pair(co, item));
 
 		return item->GetId();
+	}
+
+	/// Unregister a dynamic menu item
+	void Remove(wxMenuItem *item) {
+		std::deque<std::pair<cmd::Command*, wxMenuItem*> >::iterator it =
+			find_if(dynamic_items.begin(), dynamic_items.end(), menu_item_cmp(item));
+		if (it != dynamic_items.end())
+			dynamic_items.erase(it);
 	}
 
 	/// Create a MRU menu and register the needed handlers
@@ -280,12 +298,6 @@ void process_menu_item(wxMenu *parent, agi::Context *c, json::Object const& ele,
 		return;
 	}
 
-		if (special == "automation") {
-			/// @todo Actually implement this
-			parent->Append(-1, _("No Automation macros loaded"))->Enable(false);
-			return;
-		}
-
 	if (!read_entry(ele, "command", &command))
 		return;
 
@@ -325,6 +337,51 @@ wxMenu *build_menu(std::string const& name, agi::Context *c, CommandManager *cm,
 	return menu;
 }
 
+struct comp_str_menu {
+	agi::Context *c;
+	comp_str_menu(agi::Context *c) : c(c) { }
+	bool operator()(const cmd::Command *lft, const cmd::Command *rgt) const {
+		return lft->StrMenu(c) < rgt->StrMenu(c);
+	}
+};
+
+class AutomationMenu : public wxMenu {
+	agi::Context *c;
+	CommandManager *cm;
+	agi::signal::Connection global_slot;
+	agi::signal::Connection local_slot;
+
+	void Regenerate() {
+		wxMenuItemList &items = GetMenuItems();
+		for (size_t i = items.size() - 1; i >= 2; --i) {
+			cm->Remove(items[i]);
+			Delete(items[i]);
+		}
+
+		std::vector<cmd::Command*> macros = wxGetApp().global_scripts->GetMacros();
+		std::vector<cmd::Command*> local_macros = c->local_scripts->GetMacros();
+		copy(local_macros.begin(), local_macros.end(), back_inserter(macros));
+		sort(macros.begin(), macros.end(), comp_str_menu(c));
+
+		if (macros.empty())
+			Append(-1, _("No Automation macros loaded"))->Enable(false);
+		else {
+			for (size_t i = 0; i < macros.size(); ++i)
+				cm->AddCommand(macros[i], this, "");
+		}
+	}
+public:
+	AutomationMenu(agi::Context *c, CommandManager *cm)
+	: c(c)
+	, cm(cm)
+	, global_slot(wxGetApp().global_scripts->AddScriptChangeListener(&AutomationMenu::Regenerate, this))
+	, local_slot(c->local_scripts->AddScriptChangeListener(&AutomationMenu::Regenerate, this))
+	{
+		cm->AddCommand(cmd::get("am/manager"), this, "");
+		AppendSeparator();
+		Regenerate();
+	}
+};
 }
 
 namespace menu {
@@ -336,7 +393,14 @@ namespace menu {
 			std::string submenu, disp;
 			read_entry(*it, "submenu", &submenu);
 			read_entry(*it, "text", &disp);
-			menu->Append(build_menu(submenu, c, &menu->cm), lagi_wxString(disp));
+			if (!submenu.empty()) {
+				menu->Append(build_menu(submenu, c, &menu->cm), lagi_wxString(disp));
+			}
+			else {
+				read_entry(*it, "special", &submenu);
+				if (submenu == "automation")
+					menu->Append(new AutomationMenu(c, &menu->cm), lagi_wxString(disp));
+			}
 		}
 
 		window->SetMenuBar(menu);

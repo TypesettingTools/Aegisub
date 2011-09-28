@@ -26,15 +26,15 @@
         { "command" : "edit/line/delete" }
     ],
     "main" : [
-        { "submenu" : "main/file",       "text" : "&File" },
-        { "submenu" : "main/edit",       "text" : "&Edit" },
-        { "submenu" : "main/subtitle",   "text" : "&Subtitle" },
-        { "submenu" : "main/timing",     "text" : "&Timing" },
-        { "submenu" : "main/video",      "text" : "&Video" },
-        { "submenu" : "main/audio",      "text" : "&Audio" },
-        { "submenu" : "main/automation", "text" : "A&utomation" },
-        { "submenu" : "main/view",       "text" : "&View" },
-        { "submenu" : "main/help",       "text" : "&Help", "special" : "help" }
+        { "submenu" : "main/file",     "text" : "&File" },
+        { "submenu" : "main/edit",     "text" : "&Edit" },
+        { "submenu" : "main/subtitle", "text" : "&Subtitle" },
+        { "submenu" : "main/timing",   "text" : "&Timing" },
+        { "submenu" : "main/video",    "text" : "&Video" },
+        { "submenu" : "main/audio",    "text" : "&Audio" },
+        { "special" : "automation",    "text" : "A&utomation" },
+        { "submenu" : "main/view",     "text" : "&View" },
+        { "submenu" : "main/help",     "text" : "&Help", "special" : "help" }
     ],
     "main/file" : [
         { "command" : "subtitle/new" },
@@ -167,10 +167,6 @@
         { "command" : "audio/view/waveform" },
         { "command" : "audio/open/blank" },
         { "command" : "audio/open/noise" }
-    ],
-    "main/automation" : [
-        { "command" : "am/manager" },
-        {}
     ],
     "main/view" : [
         { "command" : "app/language" },

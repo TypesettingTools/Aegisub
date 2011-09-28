@@ -206,8 +206,11 @@ namespace Automation4 {
 
 	/// A manager of loaded automation scripts
 	class ScriptManager {
+	protected:
 		std::vector<Script*> scripts;
 		std::vector<cmd::Command*> macros;
+
+		agi::signal::Signal<> ScriptsChanged;
 
 	public:
 		/// Deletes all scripts managed
@@ -227,6 +230,8 @@ namespace Automation4 {
 		const std::vector<cmd::Command*>& GetMacros();
 		// No need to have getters for the other kinds of features, I think.
 		// They automatically register themselves in the relevant places.
+
+		DEFINE_SIGNAL_ADDERS(ScriptsChanged, AddScriptChangeListener)
 	};
 
 	/// Manager for scripts specified by a subtitle file
