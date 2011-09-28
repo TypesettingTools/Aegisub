@@ -1,29 +1,16 @@
-// Copyright (c) 2005, Rodrigo Braz Monteiro
-// All rights reserved.
+// Copyright (c) 2011, Thomas Goyne <plorkyeran@aegisub.org>
 //
-// Redistribution and use in source and binary forms, with or without
-// modification, are permitted provided that the following conditions are met:
+// Permission to use, copy, modify, and distribute this software for any
+// purpose with or without fee is hereby granted, provided that the above
+// copyright notice and this permission notice appear in all copies.
 //
-//   * Redistributions of source code must retain the above copyright notice,
-//     this list of conditions and the following disclaimer.
-//   * Redistributions in binary form must reproduce the above copyright notice,
-//     this list of conditions and the following disclaimer in the documentation
-//     and/or other materials provided with the distribution.
-//   * Neither the name of the Aegisub Group nor the names of its contributors
-//     may be used to endorse or promote products derived from this software
-//     without specific prior written permission.
-//
-// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-// AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-// IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
-// ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
-// LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
-// CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-// SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-// INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-// CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-// ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-// POSSIBILITY OF SUCH DAMAGE.
+// THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+// WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+// MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+// ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+// WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+// ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+// OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 //
 // Aegisub Project http://www.aegisub.org/
 //
@@ -34,155 +21,127 @@
 /// @ingroup audio_ui
 ///
 
-
-
-
-///////////
-// Headers
 #ifndef AGI_PRE
+#include <set>
 #include <vector>
 
-#include <wx/log.h>
-#include <wx/menu.h>
 #include <wx/window.h>
 #endif
 
-#include "ass_karaoke.h"
+#include <libaegisub/scoped_ptr.h>
+#include <libaegisub/signal.h>
 
+#include "selection_controller.h"
 
-//////////////
-// Prototypes
 class AssDialogue;
-class AssDialogueBlockOverride;
-class AssOverrideTag;
-class AssOverrideParameter;
-class AudioDisplay;
-class AudioBox;
-class AudioKaraokeTagMenu;
+class AssKaraoke;
+class wxButton;
 
+namespace agi { struct Context; }
 
-/// DOCME
-struct AudioKaraokeSyllable : AssKaraokeSyllable {
-
-	/// DOCME
-	int start_time; // centiseconds
-
-	/// DOCME
-	bool selected;
-
-	/// DOCME
-	std::vector<int> pending_splits;
-
-	/// DOCME
-	int display_w;
-
-	/// DOCME
-	int display_x;
-
-	AudioKaraokeSyllable();
-	AudioKaraokeSyllable(const AssKaraokeSyllable &base);
-};
-
-/// DOCME
-typedef std::vector<AudioKaraokeSyllable> AudioKaraokeVector;
-
-
-
-/// DOCME
 /// @class AudioKaraoke
-/// @brief DOCME
+/// @brief Syllable split and join UI for karaoke
 ///
-/// DOCME
-class AudioKaraoke : public wxWindow {
-	friend class AudioKaraokeTagMenu;
-private:
+/// This class has two main responsibilities: the syllable split/join UI, and
+/// the karaoke mode controller. The split/join UI consists of the dialogue
+/// line with spaces and lines at each syllable split point. Clicking on a line
+/// removes that \k tag; clicking anywhere else inserts a new \k tag with
+/// interpolated duration. Added or removed splits are not autocommitted and
+/// must be explicitly accepted or rejected. This is for two reasons:
+///   1. It's easy for a stray click on the split/join bar to go unnoticed,
+///      making autocommitting somewhat error-prone.
+///   2. When a line with zero \k tags is activated, it's automatically split
+///      at each space. This clearly should not automatically update the line
+///      (changing the active selection should never directly change the file
+///      itself), so there must be a notion of pending splits.
+///
+/// As the karaoke controller, it owns the AssKaraoke instance shared by this
+/// class and the karaoke timing controller, and is responsible for switching
+/// between timing controllers when entering and leaving karaoke mode. Ideally
+/// the creation of the dialogue timing controller should probably be done
+/// elsewhere, but there currently isn't any particularly appropriate place and
+/// it's not worth caring about. The KaraokeController duties should perhaps be
+/// split off into its own class, but at the moment they're insignificant
+/// enough that it's not worth it.
+///
+/// The shared AssKaraoke instance is primarily to improve the handling of
+/// pending splits. When a split is added removed, or a line is autosplit,
+/// the audio display immediately reflects the changes, but the file is not
+/// actually updated until the line is committed (which if auto-commit timing
+/// changes is on, will happen as soon as the user adjusts the timing of the
+/// new syllable).
+class AudioKaraoke : public wxWindow, private SelectionListener<AssDialogue> {
+	agi::Context *c; ///< Project context
+	agi::signal::Connection file_changed; ///< File changed slot
 
-	/// DOCME
-	AssDialogue *diag;
+	/// Currently active dialogue line
+	AssDialogue *active_line;
+	/// Karaoke data
+	agi::scoped_ptr<AssKaraoke> kara;
 
-	/// DOCME
-	AssDialogue *workDiag;
+	/// Current line's stripped text with spaces added between each syllable
+	wxString spaced_text;
 
-	/// DOCME
-	int startClickSyl;
+	/// Indexes in spaced_text which are the beginning of syllables
+	std::vector<int> syl_start_points;
 
-	/// DOCME
-	bool must_rebuild;
+	/// x coordinate in pixels of the separator lines of each syllable
+	std::vector<int> syl_lines;
 
+	/// Left x coordinate of each character in spaced_text in pixels
+	std::vector<int> char_x;
 
-	/// DOCME
-	int split_cursor_syl;
+	int char_height; ///< Maximum character height in pixels
+	int char_width; ///< Maximum character width in pixels
+	int mouse_pos; ///< Last x coordinate of the mouse
 
-	/// DOCME
-	int split_cursor_x;
+	wxFont split_font; ///< Font used in the split/join interface
 
-	void AutoSplit();
-	bool ParseDialogue(AssDialogue *diag);
+	bool enabled; ///< Is karaoke mode enabled?
 
-	int GetSylAtX(int x);
-	int SplitSyl(unsigned int n);
+	wxButton *accept_button; ///< Accept pending splits button
+	wxButton *cancel_button; ///< Revert pending changes
 
-	void OnPaint(wxPaintEvent &event);
-	void OnSize(wxSizeEvent &event);
+	wxWindow *split_area; ///< The split/join window
+
+	/// Load syllable data from the currently active line
+	void LoadFromLine();
+	/// Cache presentational data from the loaded syllable data
+	void SetDisplayText();
+
+	/// Helper function for context menu creation
+	void AddMenuItem(wxMenu &menu, wxString const& tag, wxString const& help, wxString const& selected);
+	/// Set the karaoke tags for the selected syllables to the indicated one
+	void SetTagType(wxString new_type);
+
+	/// Refresh the area of the display around a single character
+	/// @param pos Index in spaced_text
+	void LimitedRefresh(int pos);
+
+	/// Reset all pending split information and return to normal mode
+	void CancelSplit();
+	/// Apply any pending split information to the syllable data and return to normal mode
+	void AcceptSplit();
+
+	void OnActiveLineChanged(AssDialogue *new_line);
+	void OnContextMenu(wxContextMenuEvent&);
+	void OnEnableButton(wxCommandEvent &evt);
+	void OnFileChanged(int type);
 	void OnMouse(wxMouseEvent &event);
+	void OnPaint(wxPaintEvent &event);
+	void OnSelectedSetChanged(Selection const&, Selection const&) { }
 
 public:
+	/// Constructor
+	/// @param parent Parent window
+	/// @param c Project context
+	AudioKaraoke(wxWindow *parent, agi::Context *c);
+	/// Destructor
+	~AudioKaraoke();
 
-	/// DOCME
-	AudioDisplay *display;
+	/// Is karaoke mode currently enabled?
+	bool IsEnabled() const { return enabled; }
 
-	/// DOCME
-	AudioBox *box;
-
-
-	/// DOCME
-	int curSyllable;
-
-	/// DOCME
-	int selectionCount;
-
-	/// DOCME
-	bool enabled;
-
-	/// DOCME
-	bool splitting;
-
-	/// DOCME
-	AudioKaraokeVector syllables;
-
-	AudioKaraoke(wxWindow *parent);
-	virtual ~AudioKaraoke();
-
-	bool LoadFromDialogue(AssDialogue *diag);
-	void Commit();
-	void SetSyllable(int n);
-	void SetSelection(int start,int end=-1);
-	bool SyllableDelta(int n,int delta,int mode);
-
-	void Join();
-	void BeginSplit();
-	void EndSplit(bool commit=true);
-
-	DECLARE_EVENT_TABLE()
-};
-
-
-
-/// DOCME
-/// @class AudioKaraokeTagMenu
-/// @brief DOCME
-///
-/// DOCME
-class AudioKaraokeTagMenu : public wxMenu {
-private:
-
-	/// DOCME
-	AudioKaraoke *kara;
-
-	void OnSelectItem(wxCommandEvent &event);
-public:
-	AudioKaraokeTagMenu(AudioKaraoke *_kara);
-	virtual ~AudioKaraokeTagMenu();
-
-	DECLARE_EVENT_TABLE()
+	/// Enable or disable karaoke mode
+	void SetEnabled(bool enable);
 };

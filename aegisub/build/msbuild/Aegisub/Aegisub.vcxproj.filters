@@ -728,6 +728,9 @@
     <ClCompile Include="$(SrcDir)audio_timing_dialogue.cpp">
       <Filter>Audio\UI</Filter>
     </ClCompile>
+    <ClCompile Include="$(SrcDir)audio_timing_karaoke.cpp">
+      <Filter>Audio\UI</Filter>
+    </ClCompile>
     <ClCompile Include="$(SrcDir)command\app.cpp">
       <Filter>Commands</Filter>
     </ClCompile>

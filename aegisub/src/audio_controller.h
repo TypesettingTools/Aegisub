@@ -139,6 +139,7 @@ public:
 		wxString text;
 		/// Range which this label applies to
 		SampleRange range;
+		AudioLabel(wxString const& text, SampleRange const& range) : text(text), range(range) { }
 	};
 
 	/// Virtual destructor, does nothing

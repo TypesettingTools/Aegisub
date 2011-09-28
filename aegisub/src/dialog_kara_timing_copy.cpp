@@ -37,37 +37,35 @@
 
 #include "config.h"
 
+#include "dialog_kara_timing_copy.h"
+
 #ifndef AGI_PRE
 #include <deque>
-#include <vector>
 
+#include <wx/checkbox.h>
+#include <wx/combobox.h>
 #include <wx/dcclient.h>
+#include <wx/listctrl.h>
 #include <wx/msgdlg.h>
+#include <wx/regex.h>
 #include <wx/settings.h>
 #include <wx/sizer.h>
 #include <wx/stattext.h>
 #include <wx/string.h>
 #endif
 
+#include "ass_dialogue.h"
 #include "ass_file.h"
 #include "ass_karaoke.h"
-#include "ass_override.h"
-#include "ass_style.h"
-#include "dialog_kara_timing_copy.h"
 #include "help_button.h"
 #include "include/aegisub/context.h"
+#include "kana_table.h"
 #include "libresrc/libresrc.h"
 #include "main.h"
 #include "selection_controller.h"
 #include "utils.h"
-#include "validators.h"
-#include "video_context.h"
 
-
-/// DOCME
 #define TEXT_LABEL_SOURCE _("Source: ")
-
-/// DOCME
 #define TEXT_LABEL_DEST _("Dest: ")
 
 // IDs
@@ -89,126 +87,58 @@ enum {
 ///
 /// DOCME
 class KaraokeLineMatchDisplay : public wxControl {
+	typedef AssKaraoke::Syllable MatchSyllable;
 
-	/// DOCME
-	struct MatchSyllable {
-
-		/// DOCME
-		size_t dur;
-
-		/// DOCME
-		wxString text;
-
-		/// @brief DOCME
-		/// @param _dur  
-		/// @param _text 
-		///
-		MatchSyllable(int _dur, const wxString &_text) : dur(_dur), text(_text) { }
-	};
-
-	/// DOCME
 	struct MatchGroup {
-
-		/// DOCME
 		std::vector<MatchSyllable> src;
-
-		/// DOCME
-		typedef std::vector<MatchSyllable>::iterator SrcIterator;
-
-		/// DOCME
 		wxString dst;
-
-		/// DOCME
-		size_t duration;
-
-		/// DOCME
 		int last_render_width;
-
-		/// @brief DOCME
-		///
-		MatchGroup() : duration(0), last_render_width(0) { }
+		MatchGroup() : last_render_width(0) { }
 	};
 
-
-	/// DOCME
 	std::vector<MatchGroup> matched_groups;
-
-	/// DOCME
-	typedef std::vector<MatchGroup>::iterator MatchedGroupIterator;
-
-	/// DOCME
 	std::deque<MatchSyllable> unmatched_source;
-
-	/// DOCME
-	typedef std::deque<MatchSyllable>::iterator UnmatchedSourceIterator;
-
-	/// DOCME
 	wxString unmatched_destination;
 
-
-	/// DOCME
 	int last_total_matchgroup_render_width;
 
-
-	/// DOCME
 	size_t source_sel_length;
-
-	/// DOCME
 	size_t destination_sel_length;
 
-
-	/// DOCME
-	bool has_source, has_destination;
-
 	void OnPaint(wxPaintEvent &event);
-	void OnKeyboard(wxKeyEvent &event);
-	void OnFocusEvent(wxFocusEvent &event);
 
-
-	/// DOCME
-
-	/// DOCME
 	const wxString label_source, label_destination;
 
 public:
-	// Start processing a new line pair
-	void SetInputData(const AssDialogue *src, const AssDialogue *dst);
-	// Build and return the output line from the matched syllables
-	wxString GetOutputLine();
+	/// Start processing a new line pair
+	void SetInputData(AssDialogue *src, AssDialogue *dst);
+	/// Build and return the output line from the matched syllables
+	wxString GetOutputLine() const;
 
-	// Number of syllables not yet matched from source
-	size_t GetRemainingSource();
-	// Number of characters not yet matched from destination
-	size_t GetRemainingDestination();
+	/// Number of syllables not yet matched from source
+	size_t GetRemainingSource() const { return unmatched_source.size(); }
+	/// Number of characters not yet matched from destination
+	size_t GetRemainingDestination() const { return unmatched_destination.size(); }
 
 	// Adjust source and destination match lengths
 	void IncreaseSourceMatch();
 	void DecreaseSourceMatch();
 	void IncreseDestinationMatch();
 	void DecreaseDestinationMatch();
-	// Attempt to treat source as Japanese romaji, destination as Japanese kana+kanji, and make an automatic match
+	/// Attempt to treat source as Japanese romaji, destination as Japanese kana+kanji, and make an automatic match
 	void AutoMatchJapanese();
-	// Accept current selection and save match
+	/// Accept current selection and save match
 	bool AcceptMatch();
-	// Undo last match, adding it back to the unmatched input
+	/// Undo last match, adding it back to the unmatched input
 	bool UndoMatch();
 
 
-	// Constructor and destructor
-	KaraokeLineMatchDisplay(DialogKanjiTimer *parent);
-	~KaraokeLineMatchDisplay();
+	KaraokeLineMatchDisplay(wxWindow *parent);
 
-	wxSize GetBestSize();
-
-	DECLARE_EVENT_TABLE()
+	wxSize GetBestSize() const;
 };
 
-
-
-/// @brief DOCME
-/// @param parent 
-///
-KaraokeLineMatchDisplay::KaraokeLineMatchDisplay(DialogKanjiTimer *parent)
+KaraokeLineMatchDisplay::KaraokeLineMatchDisplay(wxWindow *parent)
 : wxControl(parent, -1, wxDefaultPosition, wxDefaultSize, wxBORDER_NONE|wxWANTS_CHARS)
 , label_source(TEXT_LABEL_SOURCE)
 , label_destination(TEXT_LABEL_DEST)
@@ -219,27 +149,19 @@ KaraokeLineMatchDisplay::KaraokeLineMatchDisplay(DialogKanjiTimer *parent)
 	wxSize best_size = GetBestSize();
 	SetMaxSize(wxSize(-1, best_size.GetHeight()));
 	SetMinSize(best_size);
+
+	Bind(wxEVT_SET_FOCUS, std::tr1::bind(&wxControl::Refresh, this, true, (const wxRect*)0));
+	Bind(wxEVT_KILL_FOCUS, std::tr1::bind(&wxControl::Refresh, this, true, (const wxRect*)0));
+	Bind(wxEVT_PAINT, &KaraokeLineMatchDisplay::OnPaint, this);
 }
 
-
-/// @brief DOCME
-///
-KaraokeLineMatchDisplay::~KaraokeLineMatchDisplay()
-{
-	// Nothing to do
-}
-
-
-/// @brief DOCME
-/// @return 
-///
-wxSize KaraokeLineMatchDisplay::GetBestSize()
+wxSize KaraokeLineMatchDisplay::GetBestSize() const
 {
 	int w_src, h_src, w_dst, h_dst;
 	GetTextExtent(label_source, &w_src, &h_src);
 	GetTextExtent(label_destination, &w_dst, &h_dst);
 
-	int min_width = (w_dst > w_src) ? w_dst : w_src;
+	int min_width = std::max(w_dst, w_src);
 
 	// Magic number 7:
 	// 1 pixel for top black border, 1 pixel white top border in first row, 1 pixel white bottom padding in first row
@@ -247,30 +169,13 @@ wxSize KaraokeLineMatchDisplay::GetBestSize()
 	return wxSize(min_width * 2, h_src + h_dst + 7);
 }
 
-
-BEGIN_EVENT_TABLE(KaraokeLineMatchDisplay,wxControl)
-	EVT_PAINT(KaraokeLineMatchDisplay::OnPaint)
-	EVT_KEY_DOWN(KaraokeLineMatchDisplay::OnKeyboard)
-	EVT_SET_FOCUS(KaraokeLineMatchDisplay::OnFocusEvent)
-	EVT_KILL_FOCUS(KaraokeLineMatchDisplay::OnFocusEvent)
-END_EVENT_TABLE()
-
-
-
-/// @brief DOCME
-/// @param dc  
-/// @param txt 
-/// @param x   
-/// @param y   
-/// @return 
-///
 int DrawBoxedText(wxDC &dc, const wxString &txt, int x, int y)
 {
 	int tw, th;
 	// Assume the pen, brush and font properties have already been set in the DC.
 	// Return the advance width, including box margins, borders etc
 
-	if (txt == "")
+	if (txt.empty())
 	{
 		// Empty string gets special handling:
 		// The box is drawn in shorter width, to emphasize it's empty
@@ -288,10 +193,6 @@ int DrawBoxedText(wxDC &dc, const wxString &txt, int x, int y)
 	}
 }
 
-
-/// @brief DOCME
-/// @param event 
-///
 void KaraokeLineMatchDisplay::OnPaint(wxPaintEvent &event)
 {
 	wxPaintDC dc(this);
@@ -422,50 +323,27 @@ void KaraokeLineMatchDisplay::OnPaint(wxPaintEvent &event)
 	}
 
 	// Remaining destination
-	dc.SetTextBackground(sel_back);
-	dc.SetTextForeground(sel_text);
-	dc.SetBrush(wxBrush(sel_back));
 	wxString txt = unmatched_destination.Left(destination_sel_length);
-	if (txt != "")
+	if (!txt.empty())
+	{
+		dc.SetTextBackground(sel_back);
+		dc.SetTextForeground(sel_text);
+		dc.SetBrush(wxBrush(sel_back));
 		next_x += DrawBoxedText(dc, txt, next_x, y_line2);
+	}
 
-	dc.SetTextBackground(inner_back);
-	dc.SetTextForeground(inner_text);
-	dc.SetBrush(wxBrush(inner_back));
 	txt = unmatched_destination.Mid(destination_sel_length);
-	if (txt != "")
+	if (!txt.empty())
+	{
+		dc.SetTextBackground(inner_back);
+		dc.SetTextForeground(inner_text);
+		dc.SetBrush(wxBrush(inner_back));
 		DrawBoxedText(dc, txt, next_x, y_line2);
+	}
 }
 
-
-/// @brief DOCME
-/// @param event 
-///
-void KaraokeLineMatchDisplay::OnKeyboard(wxKeyEvent &event)
+void KaraokeLineMatchDisplay::SetInputData(AssDialogue *src, AssDialogue *dst)
 {
-	((DialogKanjiTimer*)GetParent())->OnKeyDown(event);
-}
-
-
-/// @brief DOCME
-/// @param event 
-///
-void KaraokeLineMatchDisplay::OnFocusEvent(wxFocusEvent &event)
-{
-	Refresh(true);
-}
-
-
-
-/// @brief DOCME
-/// @param src 
-/// @param dst 
-///
-void KaraokeLineMatchDisplay::SetInputData(const AssDialogue *src, const AssDialogue *dst)
-{
-	has_source = src != 0;
-	has_destination = dst != 0;
-
 	last_total_matchgroup_render_width = 0;
 
 	matched_groups.clear();
@@ -474,16 +352,9 @@ void KaraokeLineMatchDisplay::SetInputData(const AssDialogue *src, const AssDial
 	source_sel_length = 0;
 	if (src)
 	{
-		AssDialogue *varsrc = dynamic_cast<AssDialogue*>(src->Clone());
-		varsrc->ParseASSTags();
-		AssKaraokeVector kara;
-		ParseAssKaraokeTags(varsrc, kara);
-		// Start from 1 instead of 0: The first syllable is actually everything before the first
-		for (size_t i = 1; i < kara.size(); ++i)
-		{
-			unmatched_source.push_back(MatchSyllable(kara[i].duration, kara[i].text));
-		}
-		delete varsrc;
+		AssKaraoke kara(src);
+		copy(kara.begin(), kara.end(), back_inserter(unmatched_source));
+		source_sel_length = 1;
 	}
 
 	unmatched_destination.clear();
@@ -491,120 +362,72 @@ void KaraokeLineMatchDisplay::SetInputData(const AssDialogue *src, const AssDial
 	if (dst)
 	{
 		unmatched_destination = dst->GetStrippedText();
+		if (!unmatched_destination.empty())
+		{
+			destination_sel_length = 1;
+		}
 	}
 
-	IncreaseSourceMatch();
-	IncreseDestinationMatch();
 	Refresh(true);
 }
 
-
-
-/// @brief DOCME
-/// @return 
-///
-wxString KaraokeLineMatchDisplay::GetOutputLine()
+wxString KaraokeLineMatchDisplay::GetOutputLine() const
 {
 	wxString res;
 
 	for (size_t i = 0; i < matched_groups.size(); ++i)
 	{
-		MatchGroup &match = matched_groups[i];
-		res = wxString::Format("%s{\\k%d}%s", res, match.duration, match.dst);
+		const MatchGroup &match = matched_groups[i];
+		int duration = 0;
+		for (size_t j = 0; j < match.src.size(); ++j)
+		{
+			duration += match.src[j].duration;
+		}
+		res = wxString::Format("%s{\\k%d}%s", res, duration, match.dst);
 	}
 
 	return res;
 }
 
-
-
-/// @brief DOCME
-/// @return 
-///
-size_t KaraokeLineMatchDisplay::GetRemainingSource()
-{
-	return unmatched_source.size();
-}
-
-
-/// @brief DOCME
-/// @return 
-///
-size_t KaraokeLineMatchDisplay::GetRemainingDestination()
-{
-	return unmatched_destination.size();
-}
-
-
-
-/// @brief DOCME
-///
 void KaraokeLineMatchDisplay::IncreaseSourceMatch()
 {
-	source_sel_length += 1;
-	if (source_sel_length > GetRemainingSource())
-		source_sel_length = GetRemainingSource();
+	source_sel_length = std::min(source_sel_length + 1, GetRemainingSource());
 	Refresh(true);
 }
 
-
-/// @brief DOCME
-///
 void KaraokeLineMatchDisplay::DecreaseSourceMatch()
 {
-	if (source_sel_length > 0)
-		source_sel_length -= 1;
+	source_sel_length = std::max(source_sel_length, 1u) - 1;
 	Refresh(true);
 }
 
-
-/// @brief DOCME
-///
 void KaraokeLineMatchDisplay::IncreseDestinationMatch()
 {
-	destination_sel_length += 1;
-	if (destination_sel_length > GetRemainingDestination())
-		destination_sel_length = GetRemainingDestination();
+	destination_sel_length = std::min(destination_sel_length + 1, GetRemainingDestination());
 	Refresh(true);
 }
 
-
-/// @brief DOCME
-///
 void KaraokeLineMatchDisplay::DecreaseDestinationMatch()
 {
-	if (destination_sel_length > 0)
-		destination_sel_length -= 1;
+	destination_sel_length = std::max(destination_sel_length, 1u) - 1;
 	Refresh(true);
 }
 
+/// Kana interpolation, in characters, unset to disable
+#define KANA_SEARCH_DISTANCE 3
 
-
-/// DOCME
-#define KANA_SEARCH_DISTANCE 3 //Kana interpolation, in characters, unset to disable
-
-/// DOCME
-#define ROMAJI_SEARCH_DISTANCE 4 //Romaji interpolation, in karaoke groups, unset to disable
-
-
-/// @brief DOCME
-/// @return 
-///
 void KaraokeLineMatchDisplay::AutoMatchJapanese()
 {
 	if (unmatched_source.size() < 1) return;
 
 	// Quick escape: If there's no destination left, take all remaining source.
 	// (Usually this means the user made a mistake.)
-	if (unmatched_destination.size() == 0)
+	if (unmatched_destination.empty())
 	{
 		source_sel_length = unmatched_source.size();
 		destination_sel_length = 0;
 		return;
 	}
-
-	KanaTable kt;
-	typedef std::list<KanaEntry>::const_iterator KanaIterator;
 
 	// We'll first see if we can do something with the first unmatched source syllable
 	wxString src(unmatched_source[0].text.Lower());
@@ -613,32 +436,35 @@ void KaraokeLineMatchDisplay::AutoMatchJapanese()
 	destination_sel_length = 0;
 
 	// Quick escape: If the source syllable is empty, return with first source syllable and empty destination
-	if (src.size() == 0)
+	if (src.empty())
 	{
 		return;
 	}
 
-	// Try to match the next source syllable against the destination.
-	// Do it "inverted", try all kana from the table and prefix-match them against the destination,
-	// then if it matches a prefix, try to match the hepburn for it agast the source; eat if it matches.
-	// Keep trying to match as long as there's text left in the source syllable or matching fails.
+	// Try to match the next source syllable against the destination.  Do it
+	// "inverted": try all kana from the table and prefix-match them against
+	// the destination, then if it matches a prefix, try to match the hepburn
+	// for it agast the source; eat if it matches.  Keep trying to match as
+	// long as there's text left in the source syllable or matching fails.
 	while (src.size() > 0)
 	{
 		wxString dst_hira_rest, dst_kata_rest, src_rest;
 		bool matched = false;
-		for (KanaIterator ke = kt.entries.begin(); ke != kt.entries.end(); ++ke)
+		for (KanaEntry *ke = KanaTable; ke->hiragana; ++ke)
 		{
-			bool hira_matches = dst.StartsWith(ke->hiragana, &dst_hira_rest) && !ke->hiragana.IsEmpty();
-			bool kata_matches = dst.StartsWith(ke->katakana, &dst_kata_rest);
-			bool roma_matches = src.StartsWith(ke->hepburn, &src_rest);
-
-			if ((hira_matches || kata_matches) && roma_matches)
+			if (src.StartsWith(ke->hepburn, &src_rest))
 			{
-				matched = true;
-				src = src_rest;
-				dst = hira_matches ? dst_hira_rest : dst_kata_rest;
-				destination_sel_length += (hira_matches?ke->hiragana:ke->katakana).size();
-				break;
+				bool hira_matches = dst.StartsWith(ke->hiragana, &dst_hira_rest) && *ke->hiragana;
+				bool kata_matches = dst.StartsWith(ke->katakana, &dst_kata_rest);
+
+				if (hira_matches || kata_matches)
+				{
+					matched = true;
+					src = src_rest;
+					dst = hira_matches ? dst_hira_rest : dst_kata_rest;
+					destination_sel_length += wcslen(hira_matches ? ke->hiragana : ke->katakana);
+					break;
+				}
 			}
 		}
 		if (!matched) break;
@@ -646,7 +472,7 @@ void KaraokeLineMatchDisplay::AutoMatchJapanese()
 
 	// The source might be empty now: That's good!
 	// That means we managed to match it all against destination text
-	if (src.size() == 0)
+	if (src.empty())
 	{
 		// destination_sel_length already has the appropriate value
 		// and source_sel_length was alredy 1
@@ -657,11 +483,8 @@ void KaraokeLineMatchDisplay::AutoMatchJapanese()
 	// Eat all whitespace at the start of the destination.
 	if (StringEmptyOrWhitespace(src))
 	{
-trycatchingmorespaces:
-		// ASCII space
-		if (unmatched_destination[destination_sel_length] == L'\x20') { ++destination_sel_length; goto trycatchingmorespaces; }
-		// Japanese fullwidth ('ideographic') space
-		if (unmatched_destination[destination_sel_length] == L'\u3000') { ++destination_sel_length; goto trycatchingmorespaces; }
+		while (IsWhitespace(unmatched_destination[destination_sel_length]))
+			++destination_sel_length;
 		// Now we've eaten all spaces in the destination as well
 		// so the selection lengths should be good
 		return;
@@ -679,15 +502,17 @@ trycatchingmorespaces:
 	}
 
 #ifdef KANA_SEARCH_DISTANCE
-	// Try to look up to KANA_SEARCH_DISTANCE characters ahead in destination, see if any of those
-	// are recognised kana. If there are any within the range, see if it matches a following syllable,
-	// at most 5 source syllables per character in source we're ahead.
-	// The number 5 comes from the kanji with the longest readings: 'uketamawa.ru' and 'kokorozashi'
-	// which each has a reading consisting of five kana.
-	// Only match the found kana in destination against the beginning of source syllables, not the
-	// middle of them.
-	// If a match is found, make a guess at how much source and destination should be selected based
-	// on the distances it was found at.
+	// Try to look up to KANA_SEARCH_DISTANCE characters ahead in destination,
+	// see if any of those are recognised kana. If there are any within the
+	// range, see if it matches a following syllable, at most 5 source
+	// syllables per character in source we're ahead.
+	// The number 5 comes from the kanji with the longest readings:
+	// 'uketamawa.ru' and 'kokorozashi' which each have a reading consisting of
+	// five kana.
+	// Only match the found kana in destination against the beginning of source
+	// syllables, not the middle of them.
+	// If a match is found, make a guess at how much source and destination
+	// should be selected based on the distances it was found at.
 	dst = unmatched_destination;
 	for (size_t lookahead = 0; lookahead < KANA_SEARCH_DISTANCE; ++lookahead)
 	{
@@ -696,15 +521,15 @@ trycatchingmorespaces:
 		// Find a position where hiragana or katakana matches
 		wxString matched_roma;
 		wxString matched_kana;
-		for (KanaIterator ke = kt.entries.begin(); ke != kt.entries.end(); ++ke)
+		for (KanaEntry *ke = KanaTable; ke->hiragana; ++ke)
 		{
-			if (!!ke->hiragana && dst.StartsWith(ke->hiragana))
+			if (*ke->hiragana && dst.StartsWith(ke->hiragana))
 			{
 				matched_roma = ke->hepburn;
 				matched_kana = ke->hiragana;
 				break;
 			}
-			if (!!ke->katakana && dst.StartsWith(ke->katakana))
+			if (*ke->katakana && dst.StartsWith(ke->katakana))
 			{
 				matched_roma = ke->hepburn;
 				matched_kana = ke->katakana;
@@ -718,7 +543,7 @@ trycatchingmorespaces:
 		// For the magic number 5, see big comment block above
 		int src_lookahead_max = (lookahead+1)*5;
 		int src_lookahead_pos = 0;
-		for (UnmatchedSourceIterator ss = unmatched_source.begin(); ss != unmatched_source.end(); ++ss)
+		for (std::deque<MatchSyllable>::iterator ss = unmatched_source.begin(); ss != unmatched_source.end(); ++ss)
 		{
 			// Check if we've gone too far ahead in the source
 			if (src_lookahead_pos++ >= src_lookahead_max) break;
@@ -748,11 +573,6 @@ trycatchingmorespaces:
 	}
 #endif
 
-#ifdef ROMAJI_SEARCH_DISTANCE
-	// Not re-implemented (yet?)
-	// So far testing shows that the kana-based interpolation works just fine by itself.
-#endif
-
 	// Okay so we didn't match anything. Aww.
 	// Just fail...
 	// We know from earlier that we do have both some source and some destination.
@@ -761,11 +581,6 @@ trycatchingmorespaces:
 	return;
 }
 
-
-
-/// @brief DOCME
-/// @return 
-///
 bool KaraokeLineMatchDisplay::AcceptMatch()
 {
 	MatchGroup match;
@@ -777,13 +592,8 @@ bool KaraokeLineMatchDisplay::AcceptMatch()
 	}
 
 	assert(source_sel_length <= unmatched_source.size());
-	for (; source_sel_length > 0; source_sel_length--)
-	{
-		match.src.push_back(unmatched_source.front());
-		match.duration += unmatched_source.front().dur;
-		unmatched_source.pop_front();
-	}
-	assert(source_sel_length == 0);
+	copy(unmatched_source.begin(), unmatched_source.begin() + source_sel_length, back_inserter(match.src));
+	source_sel_length = 0;
 
 	assert(destination_sel_length <= unmatched_destination.size());
 	match.dst = unmatched_destination.Left(destination_sel_length);
@@ -799,10 +609,6 @@ bool KaraokeLineMatchDisplay::AcceptMatch()
 	return true;
 }
 
-
-/// @brief DOCME
-/// @return 
-///
 bool KaraokeLineMatchDisplay::UndoMatch()
 {
 	if (matched_groups.empty())
@@ -813,11 +619,8 @@ bool KaraokeLineMatchDisplay::UndoMatch()
 	source_sel_length = group.src.size();
 	destination_sel_length = group.dst.size();
 
-	while (group.src.size() > 0)
-	{
-		unmatched_source.push_front(group.src.back());
-		group.src.pop_back();
-	}
+	copy(group.src.rbegin(), group.src.rend(), front_inserter(unmatched_source));
+	group.src.clear();
 
 	unmatched_destination = group.dst + unmatched_destination;
 
@@ -828,15 +631,11 @@ bool KaraokeLineMatchDisplay::UndoMatch()
 	return true;
 }
 
-/// @brief Constructor 
-/// @param parent 
 DialogKanjiTimer::DialogKanjiTimer(agi::Context *c)
 : wxDialog(c->parent,-1,_("Kanji timing"),wxDefaultPosition)
 {
-	// Set icon
 	SetIcon(BitmapToIcon(GETIMAGE(kara_timing_copier_24)));
 
-	// Variables
 	subs = c->ass;
 	currentSourceLine = subs->Line.begin();
 	currentDestinationLine = subs->Line.begin();
@@ -857,10 +656,11 @@ DialogKanjiTimer::DialogKanjiTimer(agi::Context *c)
 	Interpolate = new wxCheckBox(this,-1,_("Attempt to interpolate kanji."),wxDefaultPosition,wxDefaultSize,wxALIGN_LEFT);
 	Interpolate->SetValue(OPT_GET("Tool/Kanji Timer/Interpolation")->GetBool());
 
-	SourceStyle=new wxComboBox(this,-1,"",wxDefaultPosition,wxSize(160,-1),
-								 subs->GetStyles(),wxCB_READONLY,wxDefaultValidator,_("Source Style"));
-	DestStyle = new wxComboBox(this,-1,"",wxDefaultPosition,wxSize(160,-1),
-								 subs->GetStyles(),wxCB_READONLY,wxDefaultValidator,_("Dest Style"));
+	wxArrayString styles = subs->GetStyles();
+	SourceStyle = new wxComboBox(this, -1, "", wxDefaultPosition, wxSize(160, -1),
+		styles, wxCB_READONLY, wxDefaultValidator, _("Source Style"));
+	DestStyle = new wxComboBox(this, -1, "", wxDefaultPosition, wxSize(160, -1),
+		styles, wxCB_READONLY, wxDefaultValidator, _("Dest Style"));
 
 	wxStaticText *ShortcutKeys = new wxStaticText(this,-1,_("When the destination textbox has focus, use the following keys:\n\nRight Arrow: Increase dest. selection length\nLeft Arrow: Decrease dest. selection length\nUp Arrow: Increase source selection length\nDown Arrow: Decrease source selection length\nEnter: Link, accept line when done\nBackspace: Unlink last"));
 
@@ -913,11 +713,10 @@ DialogKanjiTimer::DialogKanjiTimer(agi::Context *c)
 
 	SetSizerAndFit(MainStackSizer);
 	CenterOnParent();
+
+	display->Bind(wxEVT_KEY_DOWN, &DialogKanjiTimer::OnKeyDown, this);
 }
 
-
-///////////////
-// Event table
 BEGIN_EVENT_TABLE(DialogKanjiTimer,wxDialog)
 	EVT_BUTTON(wxID_CLOSE,DialogKanjiTimer::OnClose)
 	EVT_BUTTON(BUTTON_KTSTART,DialogKanjiTimer::OnStart)
@@ -932,33 +731,22 @@ BEGIN_EVENT_TABLE(DialogKanjiTimer,wxDialog)
 	EVT_TEXT_ENTER(TEXT_DEST,DialogKanjiTimer::OnKeyEnter)
 END_EVENT_TABLE()
 
-
-/// @brief DOCME
-/// @param event 
-///
 void DialogKanjiTimer::OnClose(wxCommandEvent &event) {
 	OPT_SET("Tool/Kanji Timer/Interpolation")->SetBool(Interpolate->IsChecked());
-	bool modified = !LinesToChange.empty();
-	
-	while(LinesToChange.empty()==false) {
-		std::pair<entryIter,wxString> p = LinesToChange.back();
-		LinesToChange.pop_back();
-		AssDialogue *line = dynamic_cast<AssDialogue*>(*p.first);
-		line->Text = p.second;
+
+	for (size_t i = 0; i < LinesToChange.size(); ++i) {
+		LinesToChange[i].first->Text = LinesToChange[i].second;
 	}
-	if (modified) {
+
+	if (LinesToChange.size()) {
 		subs->Commit(_("kanji timing"), AssFile::COMMIT_DIAG_TEXT);
 		LinesToChange.clear();
 	}
 	Close();
 }
 
-
-/// @brief DOCME
-/// @param event 
-///
 void DialogKanjiTimer::OnStart(wxCommandEvent &event) {
-	if (SourceStyle->GetValue().Len() == 0 || DestStyle->GetValue().Len() == 0)
+	if (SourceStyle->GetValue().empty() || DestStyle->GetValue().empty())
 		wxMessageBox(_("Select source and destination styles first."),_("Error"),wxICON_EXCLAMATION | wxOK);
 	else if (SourceStyle->GetValue() == DestStyle->GetValue())
 		wxMessageBox(_("The source and destination styles must be different."),_("Error"),wxICON_EXCLAMATION | wxOK);
@@ -970,10 +758,6 @@ void DialogKanjiTimer::OnStart(wxCommandEvent &event) {
 	LinesToChange.clear();
 }
 
-
-/// @brief DOCME
-/// @param event 
-///
 void DialogKanjiTimer::OnLink(wxCommandEvent &event) {
 	if (display->AcceptMatch())
 		TryAutoMatch();
@@ -981,40 +765,24 @@ void DialogKanjiTimer::OnLink(wxCommandEvent &event) {
 		wxBell();
 }
 
-
-/// @brief DOCME
-/// @param event 
-///
 void DialogKanjiTimer::OnUnlink(wxCommandEvent &event) {
 	if (!display->UndoMatch())
 		wxBell();
 	// Don't auto-match here, undoing sets the selection to the undone match
 }
 
-
-/// @brief DOCME
-/// @param event 
-///
 void DialogKanjiTimer::OnSkipSource(wxCommandEvent &event) {
 	currentSourceLine = FindNextStyleMatch(currentSourceLine, SourceStyle->GetValue());
 	ResetForNewLine();
 }
 
-
-/// @brief DOCME
-/// @param event 
-///
 void DialogKanjiTimer::OnSkipDest(wxCommandEvent &event) {
 	currentDestinationLine = FindNextStyleMatch(currentDestinationLine, DestStyle->GetValue());
 	ResetForNewLine();
 }
 
-
-/// @brief DOCME
-/// @param event 
-///
 void DialogKanjiTimer::OnGoBack(wxCommandEvent &event) {
-	if (LinesToChange.empty()==false)
+	if (LinesToChange.size())
 		LinesToChange.pop_back(); //If we go back, then take out the modified line we saved.
 
 	currentSourceLine = FindPrevStyleMatch(currentSourceLine, SourceStyle->GetValue());
@@ -1022,17 +790,11 @@ void DialogKanjiTimer::OnGoBack(wxCommandEvent &event) {
 	ResetForNewLine();
 }
 
-
-/// @brief DOCME
-/// @param event 
-///
 void DialogKanjiTimer::OnAccept(wxCommandEvent &event) {
 	if (display->GetRemainingSource() > 0)
 		wxMessageBox(_("Group all of the source text."),_("Error"),wxICON_EXCLAMATION | wxOK);
 	else {
-		wxString OutputText = display->GetOutputLine();
-		std::pair<entryIter,wxString> ins(currentDestinationLine, OutputText);
-		LinesToChange.push_back(ins);
+		LinesToChange.push_back(std::make_pair(dynamic_cast<AssDialogue*>(*currentDestinationLine), display->GetOutputLine()));
 
 		currentSourceLine = FindNextStyleMatch(currentSourceLine, SourceStyle->GetValue());
 		currentDestinationLine = FindNextStyleMatch(currentDestinationLine, DestStyle->GetValue());
@@ -1040,11 +802,6 @@ void DialogKanjiTimer::OnAccept(wxCommandEvent &event) {
 	}
 }
 
-
-/// @brief DOCME
-/// @param event 
-/// @return 
-///
 void DialogKanjiTimer::OnKeyDown(wxKeyEvent &event) {
 	wxCommandEvent evt;
 	switch(event.GetKeyCode()) {
@@ -1074,10 +831,6 @@ void DialogKanjiTimer::OnKeyDown(wxKeyEvent &event) {
 	}
 }
 
-
-/// @brief DOCME
-/// @param event 
-///
 void DialogKanjiTimer::OnKeyEnter(wxCommandEvent &event) {
 	wxCommandEvent evt;
 
@@ -1091,10 +844,6 @@ void DialogKanjiTimer::OnKeyEnter(wxCommandEvent &event) {
 	}
 }
 
-
-
-/// @brief DOCME
-///
 void DialogKanjiTimer::ResetForNewLine()
 {
 	AssDialogue *src = 0;
@@ -1118,21 +867,12 @@ void DialogKanjiTimer::ResetForNewLine()
 	display->SetFocus();
 }
 
-
-/// @brief DOCME
-///
 void DialogKanjiTimer::TryAutoMatch()
 {
 	if (Interpolate->GetValue())
 		display->AutoMatchJapanese();
 }
 
-
-/// @brief DOCME
-/// @param search_from  
-/// @param search_style 
-/// @return 
-///
 entryIter DialogKanjiTimer::FindNextStyleMatch(entryIter search_from, const wxString &search_style)
 {
 	if (search_from == subs->Line.end()) return search_from;
@@ -1147,11 +887,6 @@ entryIter DialogKanjiTimer::FindNextStyleMatch(entryIter search_from, const wxSt
 	return search_from;
 }
 
-
-/// @brief DOCME
-/// @param search_from  
-/// @param search_style 
-///
 entryIter DialogKanjiTimer::FindPrevStyleMatch(entryIter search_from, const wxString &search_style)
 {
 	if (search_from == subs->Line.begin()) return search_from;
@@ -1165,5 +900,3 @@ entryIter DialogKanjiTimer::FindPrevStyleMatch(entryIter search_from, const wxSt
 
 	return search_from;
 }
-
-

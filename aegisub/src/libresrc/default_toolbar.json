@@ -21,7 +21,9 @@
         "audio/opt/autonext",
         "audio/opt/autoscroll",
         "audio/opt/spectrum",
-        "app/toggle/global_hotkeys"
+        "app/toggle/global_hotkeys",
+        "",
+        "audio/karaoke"
     ],
     "main" : [
         "subtitle/new",

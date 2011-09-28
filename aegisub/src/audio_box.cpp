@@ -61,7 +61,6 @@
 #include "audio_controller.h"
 #include "audio_display.h"
 #include "audio_karaoke.h"
-#include "audio_timing.h"
 #include "command/command.h"
 #include "libresrc/libresrc.h"
 #include "main.h"
@@ -86,9 +85,7 @@ AudioBox::AudioBox(wxWindow *parent, agi::Context *context)
 : wxPanel(parent, -1, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL|wxBORDER_RAISED)
 , audioDisplay(new AudioDisplay(this, context->audioController, context))
 , controller(context->audioController)
-, timing_controller_dialogue(CreateDialogueTimingController(controller, context->selectionController, context->ass))
 , context(context)
-, karaokeMode(false)
 {
 	// Zoom
 	HorizontalZoom = new wxSlider(this,Audio_Horizontal_Zoom,0,-50,30,wxDefaultPosition,wxSize(-1,20),wxSL_VERTICAL|wxSL_BOTH);
@@ -120,51 +117,15 @@ AudioBox::AudioBox(wxWindow *parent, agi::Context *context)
 	TopSizer->Add(HorizontalZoom,0,wxEXPAND,0);
 	TopSizer->Add(VertVolArea,0,wxEXPAND,0);
 
-	// Buttons sizer
-	wxSizer *ButtonSizer = new wxBoxSizer(wxHORIZONTAL);
-	KaraokeButton = new wxBitmapToggleButton(this,Audio_Button_Karaoke,GETIMAGE(kara_mode_16));
-	KaraokeButton->SetToolTip(_("Toggle karaoke mode"));
-	ButtonSizer->Add(KaraokeButton,0,wxRIGHT|wxEXPAND,0);
-
-	// Karaoke sizer
-	karaokeSizer = new wxBoxSizer(wxHORIZONTAL);
-
-	JoinSplitSizer = new wxBoxSizer(wxHORIZONTAL);
-	JoinButton = new wxBitmapButton(this,Audio_Button_Join,GETIMAGE(kara_join_16));
-	JoinButton->SetToolTip(_("Join selected syllables"));
-	SplitButton = new wxBitmapButton(this,Audio_Button_Split,GETIMAGE(kara_split_16));
-	SplitButton->SetToolTip(_("Enter split-mode"));
-	JoinSplitSizer->Add(JoinButton,0,wxRIGHT|wxEXPAND,0);
-	JoinSplitSizer->Add(SplitButton,0,wxRIGHT|wxEXPAND,0);
-
-	CancelAcceptSizer = new wxBoxSizer(wxHORIZONTAL);
-	CancelButton = new wxBitmapButton(this,Audio_Button_Cancel,GETIMAGE(kara_split_accept_16));
-	CancelButton->SetToolTip(_("Commit splits and leave split-mode"));
-	AcceptButton = new wxBitmapButton(this,Audio_Button_Accept,GETIMAGE(kara_split_cancel_16));
-	AcceptButton->SetToolTip(_("Discard all splits and leave split-mode"));
-	CancelAcceptSizer->Add(CancelButton,0,wxRIGHT|wxEXPAND,0);
-	CancelAcceptSizer->Add(AcceptButton,0,wxRIGHT|wxEXPAND,0);
-
-	karaokeSizer->Add(JoinSplitSizer,0,wxRIGHT|wxEXPAND,0);
-	karaokeSizer->Add(CancelAcceptSizer,0,wxRIGHT|wxEXPAND,0);
-
-	audioKaraoke = new AudioKaraoke(this);
-	audioKaraoke->box = this;
-	audioKaraoke->display = audioDisplay;
-	karaokeSizer->Add(audioKaraoke,1,wxEXPAND,0);
+	context->karaoke = new AudioKaraoke(this, context);
 
 	// Main sizer
 	wxBoxSizer *MainSizer = new wxBoxSizer(wxVERTICAL);
 	MainSizer->Add(TopSizer,1,wxEXPAND|wxALL,3);
 	MainSizer->Add(toolbar::GetToolbar(this, "audio", context, "Audio"),0,wxEXPAND|wxBOTTOM|wxLEFT|wxRIGHT,3);
-	MainSizer->Add(ButtonSizer);
-	MainSizer->Add(karaokeSizer,0,wxEXPAND|wxBOTTOM|wxLEFT|wxRIGHT,3);
+	MainSizer->Add(context->karaoke,0,wxEXPAND|wxBOTTOM|wxLEFT|wxRIGHT,3);
 	MainSizer->AddSpacer(3);
 	SetSizer(MainSizer);
-
-	SetKaraokeButtons(); // Decide which one to show or hide.
-
-	controller->SetTimingController(timing_controller_dialogue);
 }
 
 AudioBox::~AudioBox() { }
@@ -173,13 +134,6 @@ BEGIN_EVENT_TABLE(AudioBox,wxPanel)
 	EVT_COMMAND_SCROLL(Audio_Horizontal_Zoom, AudioBox::OnHorizontalZoom)
 	EVT_COMMAND_SCROLL(Audio_Vertical_Zoom, AudioBox::OnVerticalZoom)
 	EVT_COMMAND_SCROLL(Audio_Volume, AudioBox::OnVolume)
-
-	EVT_BUTTON(Audio_Button_Join,AudioBox::OnJoin)
-	EVT_BUTTON(Audio_Button_Split,AudioBox::OnSplit)
-	EVT_BUTTON(Audio_Button_Cancel,AudioBox::OnCancel)
-	EVT_BUTTON(Audio_Button_Accept,AudioBox::OnAccept)
-
-	EVT_TOGGLEBUTTON(Audio_Button_Karaoke, AudioBox::OnKaraoke)
 END_EVENT_TABLE()
 
 void AudioBox::OnHorizontalZoom(wxScrollEvent &event) {
@@ -211,73 +165,4 @@ void AudioBox::OnVerticalLink(agi::OptionValue const& opt) {
 		VolumeBar->SetValue(pos);
 	}
 	VolumeBar->Enable(!opt.GetBool());
-}
-
-void AudioBox::OnKaraoke(wxCommandEvent &) {
-	LOG_D("audio/box") << "OnKaraoke";
-	audioDisplay->SetFocus();
-	if (karaokeMode) {
-		LOG_D("audio/box") << "karaoke enabled, disabling";
-		if (audioKaraoke->splitting) {
-			audioKaraoke->EndSplit(false);
-		}
-		karaokeMode = false;
-		audioKaraoke->enabled = false;
-		/// @todo Replace this with changing timing controller
-		//audioDisplay->SetDialogue();
-		audioKaraoke->Refresh(false);
-	}
-
-	else {
-		LOG_D("audio/box") << "karaoke disabled, enabling";
-		karaokeMode = true;
-		audioKaraoke->enabled = true;
-		/// @todo Replace this with changing timing controller
-		//audioDisplay->SetDialogue();
-	}
-
-	SetKaraokeButtons();
-
-	LOG_D("audio/box") << "returning";
-}
-
-void AudioBox::SetKaraokeButtons() {
-	// What to enable
-	bool join,split;
-	join = audioKaraoke->enabled && (audioKaraoke->splitting || audioKaraoke->selectionCount>=2);
-	split = audioKaraoke->enabled;
-
-	// If we set focus here, the audio display will continually steal the focus
-	// when navigating via the grid and karaoke is enabled. So don't.
-	//audioDisplay->SetFocus();
-
-	JoinButton->Enable(join);
-	SplitButton->Enable(split);
-
-	karaokeSizer->Show(CancelAcceptSizer, audioKaraoke->splitting);
-	karaokeSizer->Show(JoinSplitSizer, !audioKaraoke->splitting);
-}
-
-void AudioBox::OnJoin(wxCommandEvent &) {
-	LOG_D("audio/box") << "join";
-	audioDisplay->SetFocus();
-	audioKaraoke->Join();
-}
-
-void AudioBox::OnSplit(wxCommandEvent &) {
-	LOG_D("audio/box") << "split";
-	audioDisplay->SetFocus();
-	audioKaraoke->BeginSplit();
-}
-
-void AudioBox::OnCancel(wxCommandEvent &) {
-	LOG_D("audio/box") << "cancel";
-	audioDisplay->SetFocus();
-	audioKaraoke->EndSplit(true);
-}
-
-void AudioBox::OnAccept(wxCommandEvent &) {
-	LOG_D("audio/box") << "accept";
-	audioDisplay->SetFocus();
-	audioKaraoke->EndSplit(false);
 }

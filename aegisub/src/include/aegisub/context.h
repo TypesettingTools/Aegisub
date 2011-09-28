@@ -2,6 +2,7 @@ class AssFile;
 class AudioBox;
 class AudioController;
 class AssDialogue;
+class AudioKaraoke;
 class DialogDetachedVideo;
 class DialogStyling;
 class DialogTranslation;
@@ -31,6 +32,7 @@ struct Context {
 
 	// Views (i.e. things that should eventually not be here at all)
 	AudioBox *audioBox;
+	AudioKaraoke *karaoke;
 	DialogDetachedVideo *detachedVideo;
 	DialogStyling *stylingAssistant;
 	DialogTranslation *translationAssistant;

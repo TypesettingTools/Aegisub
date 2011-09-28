@@ -45,8 +45,6 @@ namespace agi {
 
 class AudioController;
 class AudioDisplay;
-class AudioKaraoke;
-class AudioTimingController;
 class wxBitmapToggleButton;
 class wxButton;
 class wxCommandEvent;
@@ -63,9 +61,6 @@ class AudioBox : public wxPanel {
 	/// The controller controlling this audio box
 	AudioController *controller;
 
-	/// The regular dialogue timing controller
-	AudioTimingController *timing_controller_dialogue;
-
 	/// Project context this operates on
 	agi::Context *context;
 
@@ -78,53 +73,15 @@ class AudioBox : public wxPanel {
 	/// DOCME
 	wxSlider *VolumeBar;
 
-	/// Karaoke box sizer
-	wxSizer *karaokeSizer;
-
-	/// Karaoke mode join syllable button.
-	wxButton *JoinButton;
-
-	/// Karaoke mode split word button.
-	wxButton *SplitButton;
-
-	/// Karaoke mode split/join cancel button.
-	wxButton *CancelButton;
-
-	/// Karaoke mode split/join accept button.
-	wxButton *AcceptButton;
-
-	/// Join/Split button sizer.
-	wxSizer *JoinSplitSizer;
-
-	/// Cancel/Accept sizer.
-	wxSizer *CancelAcceptSizer;
-
 	void OnHorizontalZoom(wxScrollEvent &event);
 	void OnVerticalZoom(wxScrollEvent &event);
 	void OnVolume(wxScrollEvent &event);
 	void OnVerticalLink(agi::OptionValue const& opt);
 
-	void OnKaraoke(wxCommandEvent &);
-	void OnJoin(wxCommandEvent &);
-	void OnSplit(wxCommandEvent &);
-	void OnCancel(wxCommandEvent &);
-	void OnAccept(wxCommandEvent &);
-
-	/// DOCME
-	AudioKaraoke *audioKaraoke;
-
-	/// DOCME
-	wxBitmapToggleButton *KaraokeButton;
-
-	/// DOCME
-	bool karaokeMode;
-
 public:
 
 	AudioBox(wxWindow *parent, agi::Context *context);
 	~AudioBox();
-
-	void SetKaraokeButtons();
 
 	DECLARE_EVENT_TABLE()
 };

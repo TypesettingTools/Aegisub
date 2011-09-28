@@ -48,6 +48,7 @@
 
 #include "../ass_dialogue.h"
 #include "../ass_file.h"
+#include "../ass_karaoke.h"
 #include "../dialog_search_replace.h"
 #include "../include/aegisub/context.h"
 #include "../subs_edit_ctrl.h"
@@ -303,16 +304,7 @@ struct edit_line_split_by_karaoke : public validate_sel_nonempty {
 	STR_HELP("Uses karaoke timing to split line into multiple smaller lines.")
 
 	void operator()(agi::Context *c) {
-		c->subsGrid->BeginBatch();
-		wxArrayInt sels = c->subsGrid->GetSelection();
-		bool didSplit = false;
-		for (int i = sels.size() - 1; i >= 0; --i) {
-			didSplit |= c->subsGrid->SplitLineByKaraoke(sels[i]);
-		}
-		if (didSplit) {
-			c->ass->Commit(_("splitting"), AssFile::COMMIT_DIAG_ADDREM | AssFile::COMMIT_DIAG_FULL);
-		}
-		c->subsGrid->EndBatch();
+		AssKaraoke::SplitLines(c->selectionController->GetSelectedSet(), c);
 	}
 };
 

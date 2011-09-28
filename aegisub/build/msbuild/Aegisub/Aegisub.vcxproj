@@ -261,6 +261,7 @@
     <ClCompile Include="$(SrcDir)audio_renderer_spectrum.cpp" />
     <ClCompile Include="$(SrcDir)audio_renderer_waveform.cpp" />
     <ClCompile Include="$(SrcDir)audio_timing_dialogue.cpp" />
+    <ClCompile Include="$(SrcDir)audio_timing_karaoke.cpp" />
     <ClCompile Include="$(SrcDir)auto4_base.cpp" />
     <ClCompile Include="$(SrcDir)auto4_lua.cpp" />
     <ClCompile Include="$(SrcDir)auto4_lua_assfile.cpp" />

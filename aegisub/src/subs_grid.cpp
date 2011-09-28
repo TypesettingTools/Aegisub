@@ -51,8 +51,8 @@
 #include "include/aegisub/audio_provider.h"
 #include "include/aegisub/menu.h"
 
+#include "ass_dialogue.h"
 #include "ass_file.h"
-#include "ass_karaoke.h"
 #include "ass_override.h"
 #include "ass_style.h"
 #include "audio_controller.h"
@@ -512,45 +512,6 @@ void SubtitlesGrid::SplitLine(AssDialogue *n1,int pos,bool estimateTimes) {
 	}
 
 	context->ass->Commit(_("split"), AssFile::COMMIT_DIAG_ADDREM | AssFile::COMMIT_DIAG_FULL);
-}
-
-bool SubtitlesGrid::SplitLineByKaraoke(int lineNumber) {
-	AssDialogue *line = GetDialogue(lineNumber);
-
-	line->ParseASSTags();
-	AssKaraokeVector syls;
-	ParseAssKaraokeTags(line, syls);
-	line->ClearBlocks();
-
-	// If there's only 1 or 0 syllables, splitting would be counter-productive.
-	// 1 syllable means there's no karaoke tags in the line at all and that is
-	// the case that triggers bug #929.
-	if (syls.size() < 2) return false;
-
-	// Insert a new line for each syllable
-	int start_ms = line->Start.GetMS();
-	int nextpos = lineNumber;
-	for (AssKaraokeVector::iterator syl = syls.begin(); syl != syls.end(); ++syl)
-	{
-		// Skip blank lines
-		if (syl->unstripped_text.IsEmpty()) continue;
-
-		AssDialogue *nl = new AssDialogue(line->GetEntryData());
-		nl->Start.SetMS(start_ms);
-		start_ms += syl->duration * 10;
-		nl->End.SetMS(start_ms);
-		nl->Text = syl->unstripped_text;
-		InsertLine(nl, nextpos++, true, false);
-	}
-
-	// Remove the source line
-	{
-		wxArrayInt oia;
-		oia.Add(lineNumber);
-		DeleteLines(oia, false);
-	}
-
-	return true;
 }
 
 /// @brief Retrieve a list of selected lines in the actual ASS file (ie. not as displayed in the grid but as represented in the file)

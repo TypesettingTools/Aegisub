@@ -1,29 +1,16 @@
-// Copyright (c) 2007, Niels Martin Hansen
-// All rights reserved.
+// Copyright (c) 2011, Thomas Goyne <plorkyeran@aegisub.org>
 //
-// Redistribution and use in source and binary forms, with or without
-// modification, are permitted provided that the following conditions are met:
+// Permission to use, copy, modify, and distribute this software for any
+// purpose with or without fee is hereby granted, provided that the above
+// copyright notice and this permission notice appear in all copies.
 //
-//   * Redistributions of source code must retain the above copyright notice,
-//     this list of conditions and the following disclaimer.
-//   * Redistributions in binary form must reproduce the above copyright notice,
-//     this list of conditions and the following disclaimer in the documentation
-//     and/or other materials provided with the distribution.
-//   * Neither the name of the Aegisub Group nor the names of its contributors
-//     may be used to endorse or promote products derived from this software
-//     without specific prior written permission.
-//
-// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-// AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-// IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
-// ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
-// LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
-// CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-// SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-// INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-// CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-// ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-// POSSIBILITY OF SUCH DAMAGE.
+// THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+// WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+// MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+// ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+// WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+// ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+// OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 //
 // Aegisub Project http://www.aegisub.org/
 //
@@ -36,37 +23,79 @@
 
 
 #ifndef AGI_PRE
+#include <map>
+#include <set>
 #include <vector>
+
+#include <wx/string.h>
 #endif
 
-#include "ass_dialogue.h"
+#include <libaegisub/signal.h>
 
+namespace agi { struct Context; }
+class AssDialogue;
 
-/// DOCME
-struct AssKaraokeSyllable {
+/// @class AssKaraoke
+/// @brief Karaoke parser and parsed karaoke data model
+class AssKaraoke {
+public:
+	/// Parsed syllable data
+	struct Syllable {
+		int start_time; ///< Start time relative to time zero (not line start) in milliseconds
+		int duration;   ///< Duration in milliseconds
+		wxString text;  ///< Stripped syllable text
+		wxString tag_type; ///< \k, \kf or \ko
+		/// Non-karaoke override tags in this syllable. Key is an index in text
+		/// before which the value should be inserted
+		std::map<size_t, wxString> ovr_tags;
 
-	/// DOCME
-	int duration; // centiseconds
+		/// Get the text of this line with override tags and optionally the karaoke tag
+		wxString GetText(bool k_tag) const;
+	};
+private:
+	typedef std::map<size_t, wxString>::iterator ovr_iterator;
+	std::vector<Syllable> syls;
+	AssDialogue *active_line;
 
-	/// DOCME
-	wxString text; // stripped text of syllable
+	bool no_announce;
 
-	/// DOCME
-	wxString unstripped_text; // including misc. tags
+	agi::signal::Signal<> AnnounceSyllablesChanged;
 
-	/// DOCME
-	wxString type; // highlight type, \k \K \kf \ko (backslash included)
+public:
+	/// Constructor
+	/// @param line Initial line
+	/// @param auto_split Should the line automatically be split on spaces if there are no k tags?
+	AssKaraoke(AssDialogue *line = 0, bool auto_split = false);
 
-	/// DOCME
-	AssOverrideTag *tag; // parsed override tag for direct modification
+	/// Parse a dialogue line
+	void SetLine(AssDialogue *line, bool auto_split = false);
 
-	AssKaraokeSyllable();
+	/// Add a split before character pos in syllable syl_idx
+	void AddSplit(size_t syl_idx, size_t pos);
+	/// Remove the split at the given index
+	void RemoveSplit(size_t syl_idx);
+	/// Set the start time of a syllable in ms
+	void SetStartTime(size_t syl_idx, int time);
+
+	typedef std::vector<Syllable>::const_iterator iterator;
+
+	iterator begin() const { return syls.begin(); }
+	iterator end() const { return syls.end(); }
+	size_t size() const { return syls.size(); }
+
+	/// Get the line's text with k tags
+	wxString GetText() const;
+
+	/// Get the karaoke tag type used, with leading slash
+	/// @returns "\k", "\kf", or "\ko"
+	wxString GetTagType() const;
+	/// Set the tag type for all karaoke tags in this line
+	void SetTagType(wxString const& new_type);
+
+	/// Split lines so that each syllable is its own line
+	/// @param lines Lines to split
+	/// @param c Project context
+	static void SplitLines(std::set<AssDialogue*> const& lines, agi::Context *c);
+
+	DEFINE_SIGNAL_ADDERS(AnnounceSyllablesChanged, AddSyllablesChangedListener)
 };
-
-
-/// DOCME
-typedef std::vector<AssKaraokeSyllable> AssKaraokeVector;
-
-void ParseAssKaraokeTags(const AssDialogue *line, AssKaraokeVector &syls);
-
-

@@ -51,6 +51,10 @@
 		"Downmixer" : "ConvertToMono",
 		"Grab Times on Select" : true,
 		"Inactive Lines Display Mode" : 1,
+		"Karaoke" : {
+			"Font Face" : "Verdana",
+			"Font Size" : 9
+		},
 		"Lead" : {
 			"IN" : 200,
 			"OUT" : 300

@@ -142,6 +142,7 @@ SRC += \
 	audio_renderer_spectrum.cpp \
 	audio_renderer_waveform.cpp \
 	audio_timing_dialogue.cpp \
+	audio_timing_karaoke.cpp \
 	auto4_base.cpp \
 	avisynth_wrap.cpp \
 	base_grid.cpp \

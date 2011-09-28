@@ -35,22 +35,19 @@
 ///
 
 #ifndef AGI_PRE
+#include <list>
 #include <vector>
 
-#include <wx/checkbox.h>
-#include <wx/combobox.h>
 #include <wx/dialog.h>
-#include <wx/listctrl.h>
-#include <wx/regex.h>
 #endif
 
-#include "ass_entry.h"
-#include "ass_file.h"
-#include "kana_table.h"
-
 namespace agi { struct Context; }
-class AssOverrideParameter;
+class AssDialogue;
+class AssEntry;
+class AssFile;
 class KaraokeLineMatchDisplay;
+class wxComboBox;
+class wxCheckBox;
 
 /// DOCME
 /// @class DialogKanjiTimer
@@ -58,6 +55,8 @@ class KaraokeLineMatchDisplay;
 ///
 /// DOCME
 class DialogKanjiTimer : public wxDialog {
+	typedef std::list<AssEntry*>::iterator entryIter;
+
 	/// DOCME
 	AssFile *subs;
 
@@ -75,7 +74,7 @@ class DialogKanjiTimer : public wxDialog {
 
 
 	/// DOCME
-	std::vector<std::pair<entryIter,wxString> > LinesToChange;
+	std::vector<std::pair<AssDialogue*, wxString> > LinesToChange;
 
 	/// DOCME
 	entryIter currentSourceLine;
@@ -92,6 +91,7 @@ class DialogKanjiTimer : public wxDialog {
 	void OnGoBack(wxCommandEvent &event);
 	void OnAccept(wxCommandEvent &event);
 	inline void OnKeyEnter(wxCommandEvent &event);
+	void OnKeyDown(wxKeyEvent &event);
 
 	void ResetForNewLine();
 	void TryAutoMatch();
@@ -101,6 +101,5 @@ class DialogKanjiTimer : public wxDialog {
 
 public:
 	DialogKanjiTimer(agi::Context *context);
-	void OnKeyDown(wxKeyEvent &event);
 	DECLARE_EVENT_TABLE()
 };

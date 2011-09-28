@@ -46,6 +46,7 @@
 
 #include "../ass_dialogue.h"
 #include "../audio_controller.h"
+#include "../audio_karaoke.h"
 #include "../audio_timing.h"
 #include "../compat.h"
 #include "../include/aegisub/context.h"
@@ -423,6 +424,22 @@ struct audio_vertical_link : public Command {
 	}
 };
 
+/// Toggle karaoke mode
+struct audio_karaoke : public Command {
+	CMD_NAME("audio/karaoke")
+	STR_MENU("Toggle karaoke mode")
+	STR_DISP("Toggle karaoke mode")
+	STR_HELP("Toggle karaoke mode")
+	CMD_TYPE(COMMAND_TOGGLE)
+
+	bool IsActive(const agi::Context *c) {
+		return c->karaoke->IsEnabled();
+	}
+	void operator()(agi::Context *c) {
+		c->karaoke->SetEnabled(!c->karaoke->IsEnabled());
+	}
+};
+
 /// @}
 
 }
@@ -453,5 +470,6 @@ namespace cmd {
 		reg(new audio_vertical_link);
 		reg(new audio_view_spectrum);
 		reg(new audio_view_waveform);
+		reg(new audio_karaoke);
 	}
 }

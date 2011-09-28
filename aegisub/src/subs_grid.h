@@ -86,12 +86,6 @@ public:
 	/// @param pos Position in line
 	/// @param estimateTimes Adjust the times based on the lengths of the halves
 	void SplitLine(AssDialogue *line,int splitPosition,bool estimateTimes);
-	/// @brief Split a line into as many new lines as there are karaoke syllables, timed as the syllables
-	/// @param lineNumber Line to split
-	/// @return Were changes made?
-	///
-	/// DOES NOT FLAG AS MODIFIED OR COMMIT CHANGES
-	bool SplitLineByKaraoke(int lineNumber);
 	/// @brief Duplicate lines
 	/// @param n1        First frame to duplicate
 	/// @param n2        Last frame to duplicate

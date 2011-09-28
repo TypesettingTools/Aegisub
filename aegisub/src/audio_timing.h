@@ -35,8 +35,10 @@
 
 class AssDialogue;
 class AssFile;
-class AudioController;
+class AssKaraoke;
+namespace agi { struct Context; }
 
+#include "audio_controller.h"
 #include "selection_controller.h"
 
 #include <libaegisub/signal.h>
@@ -154,6 +156,11 @@ public:
 /// @brief Create a standard dialogue audio timing controller
 /// @param audio_controller     The audio controller to own the timing controller
 /// @param selection_controller The selection controller to manage the set of
-/// lines being timed
+///                             lines being timed
 /// @param ass                  The file being timed
 AudioTimingController *CreateDialogueTimingController(AudioController *audio_controller, SelectionController<AssDialogue> *selection_controller, AssFile *ass);
+
+/// @brief Create a karaoke audio timing controller
+/// @param c Project context
+/// @param kara Karaoke model
+AudioTimingController *CreateKaraokeTimingController(agi::Context *c, AssKaraoke *kara, agi::signal::Connection& file_changed);

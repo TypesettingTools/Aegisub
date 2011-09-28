@@ -34,54 +34,24 @@
 /// @ingroup kara_timing_copy
 ///
 
-
-///////////
-// Headers
 #ifndef AGI_PRE
 #include <list>
 
 #include <wx/string.h>
 #endif
 
-
 /// @class KanaEntry
 /// @brief Base class for Kana + Romaji tuples.
-class KanaEntry {
-public:
-
+struct KanaEntry {
 	/// Hiragana
-	wxString hiragana;
+	const wchar_t *hiragana;
 
 	/// Katakana
-	wxString katakana;
+	const wchar_t *katakana;
 
 	/// Hepburn romaji.
-	wxString hepburn;
-
-
-	/// @brief Constructor
-	KanaEntry() {}
-
-	KanaEntry(const wxString &hira, const wxString &kata, const wxString &hep) {
-		hiragana = hira;
-		katakana = kata;
-		hepburn = hep;
-	}
+	const wchar_t *hepburn;
 };
 
-
-
-/// @class KanaTable
-/// @brief Table of Hiragana, Katakana and Hepburn romaji tuples.
-///
-class KanaTable {
-private:
-	void Insert(const wchar_t *hira, const wchar_t *kata, const wchar_t *hep);
-
-public:
-
-	/// Memory list.
-	std::list<KanaEntry> entries;
-	KanaTable();
-	~KanaTable();
-};
+/// Table of Hiragana, Katakana and Hepburn romaji tuples.
+extern KanaEntry KanaTable[];
