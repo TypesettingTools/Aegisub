@@ -47,7 +47,6 @@ MRUManager::MRUManager(const std::string &config, const std::string &default_con
 
 
 MRUManager::~MRUManager() {
-	Flush();
 }
 
 MRUManager::MRUListMap &MRUManager::Find(std::string const& key) {
@@ -63,11 +62,15 @@ void MRUManager::Add(const std::string &key, const std::string &entry) {
 	map.remove(entry);
 	map.push_front(entry);
 	Prune(map);
+
+	Flush();
 }
 
 
 void MRUManager::Remove(const std::string &key, const std::string &entry) {
 	Find(key).remove(entry);
+
+	Flush();
 }
 
 
@@ -106,7 +109,7 @@ void MRUManager::Flush() {
 /// @brief Prune MRUListMap to the desired length.
 /// This uses the user-set values for MRU list length.
 inline void MRUManager::Prune(MRUListMap& map) {
-	map.resize(std::min(16u, map.size()));
+	map.resize(std::min<size_t>(16, map.size()));
 }
 
 static json::String cast_str(json::UnknownElement const& e) {
