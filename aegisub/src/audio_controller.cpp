@@ -45,12 +45,14 @@
 
 #include <libaegisub/io.h>
 
+#include "ass_file.h"
 #include "audio_controller.h"
 #include "audio_provider_dummy.h"
 #include "audio_timing.h"
 #include "compat.h"
 #include "include/aegisub/audio_player.h"
 #include "include/aegisub/audio_provider.h"
+#include "include/aegisub/context.h"
 #include "main.h"
 #include "selection_controller.h"
 #include "standard_paths.h"
@@ -139,8 +141,10 @@ public:
 	}
 };
 
-AudioController::AudioController()
-: player(0)
+AudioController::AudioController(agi::Context *context)
+: context(context)
+, subtitle_save_slot(context->ass->AddFileSaveListener(&AudioController::OnSubtitlesSave, this))
+, player(0)
 , provider(0)
 , keyframes_marker_provider(new AudioMarkerProviderKeyframes(this))
 , playback_mode(PM_NotPlaying)
@@ -358,6 +362,18 @@ void AudioController::OnTimingControllerUpdatedPrimaryRange()
 void AudioController::OnTimingControllerUpdatedStyleRanges()
 {
 	/// @todo redraw and stuff, probably
+}
+
+void AudioController::OnSubtitlesSave()
+{
+	if (IsAudioOpen())
+	{
+		context->ass->SetScriptInfo("Audio URI", audio_url);
+	}
+	else
+	{
+		context->ass->SetScriptInfo("Audio URI", "");
+	}
 }
 
 void AudioController::PlayRange(const SampleRange &range)

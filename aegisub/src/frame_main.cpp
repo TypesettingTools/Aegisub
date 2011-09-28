@@ -124,7 +124,7 @@ FrameMain::FrameMain (wxArrayString args)
 	context->local_scripts = new Automation4::LocalScriptManager(context.get());
 
 	StartupLog("Initializing context controls");
-	context->audioController = new AudioController;
+	context->audioController = new AudioController(context.get());
 	context->audioController->AddAudioOpenListener(&FrameMain::OnAudioOpen, this);
 	context->audioController->AddAudioCloseListener(&FrameMain::OnAudioClose, this);
 

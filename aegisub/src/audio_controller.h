@@ -54,6 +54,7 @@
 
 class AudioPlayer;
 class AudioProvider;
+namespace agi { struct Context; }
 
 // Declared below
 class AudioControllerAudioEventListener;
@@ -176,7 +177,12 @@ public:
 /// possible in the existing design is needed, the controller should be
 /// extended in some way to allow it.
 class AudioController : public wxEvtHandler, public AudioMarkerProvider, public AudioLabelProvider {
-private:
+	/// Project context this controller belongs to
+	agi::Context *context;
+
+	/// Slot for subtitles save signal
+	agi::signal::Connection subtitle_save_slot;
+
 	/// A new audio stream was opened (and any previously open was closed)
 	agi::signal::Signal<AudioProvider*> AnnounceAudioOpen;
 
@@ -233,6 +239,9 @@ private:
 	/// @brief Timing controller signals that the rendering style ranges have changed
 	void OnTimingControllerUpdatedStyleRanges();
 
+	/// Subtitles save slot which adds the audio uri to the subtitles
+	void OnSubtitlesSave();
+
 #ifdef wxHAS_POWER_EVENTS
 	/// Handle computer going into suspend mode by stopping audio and closing device
 	void OnComputerSuspending(wxPowerEvent &event);
@@ -243,7 +252,7 @@ private:
 public:
 
 	/// @brief Constructor
-	AudioController();
+	AudioController(agi::Context *context);
 
 	/// @brief Destructor
 	~AudioController();
