@@ -154,11 +154,8 @@ public:
 
 
 /// @brief Create a standard dialogue audio timing controller
-/// @param audio_controller     The audio controller to own the timing controller
-/// @param selection_controller The selection controller to manage the set of
-///                             lines being timed
-/// @param ass                  The file being timed
-AudioTimingController *CreateDialogueTimingController(AudioController *audio_controller, SelectionController<AssDialogue> *selection_controller, AssFile *ass);
+/// @param c Project context
+AudioTimingController *CreateDialogueTimingController(agi::Context *c);
 
 /// @brief Create a karaoke audio timing controller
 /// @param c Project context

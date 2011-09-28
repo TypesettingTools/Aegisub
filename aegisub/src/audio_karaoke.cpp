@@ -135,7 +135,7 @@ void AudioKaraoke::SetEnabled(bool en) {
 		accept_button->Enable(false);
 		cancel_button->Enable(false);
 		enabled = false;
-		c->audioController->SetTimingController(CreateDialogueTimingController(c->audioController, c->selectionController, c->ass));
+		c->audioController->SetTimingController(CreateDialogueTimingController(c));
 		new_size = wxSize(-1, 0);
 	}
 

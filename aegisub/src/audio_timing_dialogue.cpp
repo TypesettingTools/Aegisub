@@ -44,6 +44,7 @@
 #include "ass_time.h"
 #include "audio_controller.h"
 #include "audio_timing.h"
+#include "include/aegisub/context.h"
 #include "main.h"
 #include "selection_controller.h"
 #include "utils.h"
@@ -132,8 +133,8 @@ class AudioTimingControllerDialogue : public AudioTimingController, private Sele
 	AudioMarkerDialogueTiming *GetRightMarker();
 	const AudioMarkerDialogueTiming *GetRightMarker() const;
 
-	/// The owning audio controller
-	AudioController *audio_controller;
+	/// The owning project context
+	agi::Context *context;
 
 	/// Update the audio controller's selection
 	void UpdateSelection();
@@ -146,16 +147,8 @@ class AudioTimingControllerDialogue : public AudioTimingController, private Sele
 	/// Autocommit option
 	const agi::OptionValue *auto_commit;
 
-	/// Selection controller managing the set of lines currently being timed
-	SelectionController<AssDialogue> *selection_controller;
-
 	agi::signal::Connection commit_slot;
 	agi::signal::Connection audio_open_slot;
-
-	/// @todo Dealing with the AssFile directly is probably not the best way to
-	///       handle committing, but anything better probably needs to wait for
-	///       the subtitle container work
-	AssFile *ass;
 
 	// SubtitleSelectionListener interface
 	void OnActiveLineChanged(AssDialogue *new_line);
@@ -187,15 +180,15 @@ public:
 	// Specific interface
 
 	/// @brief Constructor
-	AudioTimingControllerDialogue(AudioController *audio_controller, SelectionController<AssDialogue> *selection_controller, AssFile *ass);
+	AudioTimingControllerDialogue(agi::Context *c);
 	~AudioTimingControllerDialogue();
 };
 
 
 
-AudioTimingController *CreateDialogueTimingController(AudioController *audio_controller, SelectionController<AssDialogue> *selection_controller, AssFile *ass)
+AudioTimingController *CreateDialogueTimingController(agi::Context *c)
 {
-	return new AudioTimingControllerDialogue(audio_controller, selection_controller, ass);
+	return new AudioTimingControllerDialogue(c);
 }
 
 // AudioMarkerDialogueTiming
@@ -249,30 +242,28 @@ void AudioMarkerDialogueTiming::InitPair(AudioMarkerDialogueTiming *marker1, Aud
 
 // AudioTimingControllerDialogue
 
-AudioTimingControllerDialogue::AudioTimingControllerDialogue(AudioController *audio_controller, SelectionController<AssDialogue> *selection_controller, AssFile *ass)
+AudioTimingControllerDialogue::AudioTimingControllerDialogue(agi::Context *c)
 : timing_modified(false)
 , commit_id(-1)
-, audio_controller(audio_controller)
+, context(c)
 , auto_commit(OPT_GET("Audio/Auto/Commit"))
-, selection_controller(selection_controller)
-, ass(ass)
 {
-	assert(audio_controller != 0);
+	assert(c->audioController != 0);
 
 	AudioMarkerDialogueTiming::InitPair(&markers[0], &markers[1]);
 
-	if (audio_controller->IsAudioOpen())
+	if (c->audioController->IsAudioOpen())
 		Revert();
 
-	selection_controller->AddSelectionListener(this);
-	commit_slot = ass->AddCommitListener(&AudioTimingControllerDialogue::OnFileChanged, this);
-	audio_open_slot = audio_controller->AddAudioOpenListener(&AudioTimingControllerDialogue::Revert, this);
+	c->selectionController->AddSelectionListener(this);
+	commit_slot = c->ass->AddCommitListener(&AudioTimingControllerDialogue::OnFileChanged, this);
+	audio_open_slot = c->audioController->AddAudioOpenListener(&AudioTimingControllerDialogue::Revert, this);
 }
 
 
 AudioTimingControllerDialogue::~AudioTimingControllerDialogue()
 {
-	selection_controller->RemoveSelectionListener(this);
+	context->selectionController->RemoveSelectionListener(this);
 }
 
 
@@ -309,7 +300,7 @@ void AudioTimingControllerDialogue::GetMarkers(const SampleRange &range, AudioMa
 
 void AudioTimingControllerDialogue::OnActiveLineChanged(AssDialogue *new_line)
 {
-	if (audio_controller->IsAudioOpen())
+	if (context->audioController->IsAudioOpen())
 		Revert();
 }
 
@@ -352,22 +343,22 @@ SampleRange AudioTimingControllerDialogue::GetPrimaryPlaybackRange() const
 
 void AudioTimingControllerDialogue::Next()
 {
-	selection_controller->NextLine();
+	context->selectionController->NextLine();
 }
 
 
 
 void AudioTimingControllerDialogue::Prev()
 {
-	selection_controller->PrevLine();
+	context->selectionController->PrevLine();
 }
 
 
 
 void AudioTimingControllerDialogue::Commit()
 {
-	int new_start_ms = audio_controller->MillisecondsFromSamples(GetLeftMarker()->GetPosition());
-	int new_end_ms = audio_controller->MillisecondsFromSamples(GetRightMarker()->GetPosition());
+	int new_start_ms = context->audioController->MillisecondsFromSamples(GetLeftMarker()->GetPosition());
+	int new_end_ms = context->audioController->MillisecondsFromSamples(GetRightMarker()->GetPosition());
 
 	// If auto committing is enabled, timing_modified will be true iif it is an
 	// auto commit, as there is never pending changes to commit when the button
@@ -378,7 +369,7 @@ void AudioTimingControllerDialogue::Commit()
 	if (timing_modified)
 	{
 		Selection sel;
-		selection_controller->GetSelectedSet(sel);
+		context->selectionController->GetSelectedSet(sel);
 		for (Selection::iterator sub = sel.begin(); sub != sel.end(); ++sub)
 		{
 			(*sub)->Start.SetMS(new_start_ms);
@@ -388,11 +379,11 @@ void AudioTimingControllerDialogue::Commit()
 		commit_slot.Block();
 		if (user_triggered)
 		{
-			ass->Commit(_("timing"), AssFile::COMMIT_DIAG_TIME);
+			context->ass->Commit(_("timing"), AssFile::COMMIT_DIAG_TIME);
 			commit_id = -1; // never coalesce with a manually triggered commit
 		}
 		else
-			commit_id = context->ass->Commit(_("timing"), AssFile::COMMIT_DIAG_TIME, commit_id, selection_controller->GetActiveLine());
+			commit_id = context->ass->Commit(_("timing"), AssFile::COMMIT_DIAG_TIME, commit_id, context->selectionController->GetActiveLine());
 
 		commit_slot.Unblock();
 		timing_modified = false;
@@ -404,10 +395,10 @@ void AudioTimingControllerDialogue::Commit()
 		///       like the edit box, so maybe add a way to do that which both
 		///       this and the edit box can use
 		Next();
-		if (selection_controller->GetActiveLine()->End.GetMS() == 0) {
+		if (context->selectionController->GetActiveLine()->End.GetMS() == 0) {
 			const int default_duration = OPT_GET("Timing/Default Duration")->GetInt();
-			markers[0].SetPosition(audio_controller->SamplesFromMilliseconds(new_end_ms));
-			markers[1].SetPosition(audio_controller->SamplesFromMilliseconds(new_end_ms + default_duration));
+			markers[0].SetPosition(context->audioController->SamplesFromMilliseconds(new_end_ms));
+			markers[1].SetPosition(context->audioController->SamplesFromMilliseconds(new_end_ms + default_duration));
 			timing_modified = true;
 			UpdateSelection();
 		}
@@ -418,15 +409,15 @@ void AudioTimingControllerDialogue::Commit()
 
 void AudioTimingControllerDialogue::Revert()
 {
-	if (AssDialogue *line = selection_controller->GetActiveLine())
+	if (AssDialogue *line = context->selectionController->GetActiveLine())
 	{
 		AssTime new_start = line->Start;
 		AssTime new_end = line->End;
 
 		if (new_start.GetMS() != 0 || new_end.GetMS() != 0)
 		{
-			markers[0].SetPosition(audio_controller->SamplesFromMilliseconds(new_start.GetMS()));
-			markers[1].SetPosition(audio_controller->SamplesFromMilliseconds(new_end.GetMS()));
+			markers[0].SetPosition(context->audioController->SamplesFromMilliseconds(new_start.GetMS()));
+			markers[1].SetPosition(context->audioController->SamplesFromMilliseconds(new_end.GetMS()));
 			timing_modified = false;
 			UpdateSelection();
 		}
