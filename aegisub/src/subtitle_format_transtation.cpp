@@ -34,65 +34,36 @@
 /// @ingroup subtitle_io
 ///
 
-
-///////////
-// Headers
 #include "config.h"
 
 #ifndef AGI_PRE
 #include <stdio.h>
 #endif
 
+#include "subtitle_format_transtation.h"
+
 #include "ass_dialogue.h"
 #include "ass_file.h"
 #include "ass_style.h"
 #include "ass_time.h"
-#include "subtitle_format_transtation.h"
 #include "text_file_writer.h"
 
-
-/// @brief Name 
-/// @return 
-///
-wxString TranStationSubtitleFormat::GetName() {
-	return "TranStation";
+TranStationSubtitleFormat::TranStationSubtitleFormat()
+: SubtitleFormat("TranStation")
+{
 }
 
-
-
-/// @brief Wildcards 
-/// @return 
-///
-wxArrayString TranStationSubtitleFormat::GetWriteWildcards() {
+wxArrayString TranStationSubtitleFormat::GetWriteWildcards() const {
 	wxArrayString formats;
 	formats.Add("transtation.txt");
 	return formats;
 }
 
-
-
-/// @brief Can write file? 
-/// @param filename 
-/// @return 
-///
-bool TranStationSubtitleFormat::CanWriteFile(wxString filename) {
-	return (filename.Right(16).Lower() == ".transtation.txt");
-}
-
-
-
-/// @brief Write file 
-/// @param _filename 
-/// @param encoding  
-/// @return 
-///
-void TranStationSubtitleFormat::WriteFile(wxString _filename,wxString encoding) {
-	// Get FPS
+void TranStationSubtitleFormat::WriteFile(wxString const& filename, wxString const& encoding) {
 	FPSRational fps_rat = AskForFPS(true);
 	if (fps_rat.num <= 0 || fps_rat.den <= 0) return;
 
-	// Open file
-	TextFileWriter file(_filename,encoding);
+	TextFileWriter file(filename, encoding);
 
 	// Convert to TranStation
 	CreateCopy();
@@ -101,45 +72,34 @@ void TranStationSubtitleFormat::WriteFile(wxString _filename,wxString encoding) 
 	RecombineOverlaps();
 	MergeIdentical();
 
-	// Write lines
-	using std::list;
-	AssDialogue *current	= NULL;
-	AssDialogue *next		= NULL;
-	for (list<AssEntry*>::iterator cur=Line->begin();cur!=Line->end();cur++) {
-		if (next) 
-			current = next;
-		next = dynamic_cast<AssDialogue*>(*cur);
+	AssDialogue *prev = 0;
+	for (std::list<AssEntry*>::iterator it = Line->begin(); it != Line->end(); ++it) {
+		AssDialogue *cur = dynamic_cast<AssDialogue*>(*it);
 
-		if (current && !current->Comment) {
-			// Write text
-			file.WriteLineToFile(ConvertLine(current,&fps_rat,(next && !next->Comment) ? next->Start.GetMS() : -1));
+		if (prev && cur) {
+			file.WriteLineToFile(ConvertLine(prev, &fps_rat, cur->Start.GetMS()));
 			file.WriteLineToFile("");
 		}
+
+		if (cur)
+			prev = cur;
 	}
+
 	// flush last line
-	if (next && !next->Comment)
-		file.WriteLineToFile(ConvertLine(next,&fps_rat,-1));
+	if (prev)
+		file.WriteLineToFile(ConvertLine(prev, &fps_rat, -1));
 
 	// Every file must end with this line
 	file.WriteLineToFile("SUB[");
 
-	// Clean up
 	ClearCopy();
 }
 
-
-/// @brief DOCME
-/// @param current     
-/// @param fps_rat     
-/// @param nextl_start 
-///
 wxString TranStationSubtitleFormat::ConvertLine(AssDialogue *current, FPSRational *fps_rat, int nextl_start) {
-	// Get line data
-	AssStyle *style = GetAssFile()->GetStyle(current->Style);
 	int valign = 0;
 	const char *halign = " "; // default is centered
 	const char *type = "N"; // no special style
-	if (style) {
+	if (AssStyle *style = GetAssFile()->GetStyle(current->Style)) {
 		if (style->alignment >= 4) valign = 4;
 		if (style->alignment >= 7) valign = 9;
 		if (style->alignment == 1 || style->alignment == 4 || style->alignment == 7) halign = "L";
@@ -162,16 +122,15 @@ wxString TranStationSubtitleFormat::ConvertLine(AssDialogue *current, FPSRationa
 		end.SetMS(end.GetMS() - ((1000*fps_rat->den)/fps_rat->num));
 
 	FractionalTime ft(":", fps_rat->num, fps_rat->den, fps_rat->smpte_dropframe);
-	wxString header = wxString::Format("SUB[%i%s%s ",valign,halign,type) + ft.FromAssTime(start) + ">" + ft.FromAssTime(end) + "]\r\n";
+	wxString header = wxString::Format("SUB[%i%s%s ", valign, halign, type) + ft.FromAssTime(start) + ">" + ft.FromAssTime(end) + "]\r\n";
 
 	// Process text
 	wxString lineEnd = "\r\n";
 	current->StripTags();
-	current->Text.Replace("\\h"," ",true);
-	current->Text.Replace("\\n",lineEnd,true);
-	current->Text.Replace("\\N",lineEnd,true);
-	while (current->Text.Replace(lineEnd+lineEnd,lineEnd,true)) {};
+	current->Text.Replace("\\h", " ", true);
+	current->Text.Replace("\\n", lineEnd, true);
+	current->Text.Replace("\\N", lineEnd, true);
+	while (current->Text.Replace(lineEnd + lineEnd, lineEnd, true));
 
 	return header + current->Text;
 }
-

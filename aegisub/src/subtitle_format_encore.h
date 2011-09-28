@@ -34,11 +34,6 @@
 /// @ingroup subtitle_io
 ///
 
-
-
-
-///////////
-// Headers
 #include "subtitle_format.h"
 
 
@@ -49,10 +44,7 @@
 /// DOCME
 class EncoreSubtitleFormat : public SubtitleFormat {
 public:
-	wxString GetName();
-	wxArrayString GetWriteWildcards();
-	bool CanWriteFile(wxString filename);
-	void WriteFile(wxString filename,wxString encoding);
+	EncoreSubtitleFormat();
+	wxArrayString GetWriteWildcards() const;
+	void WriteFile(wxString const& filename, wxString const& encoding);
 };
-
-

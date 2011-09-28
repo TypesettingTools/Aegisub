@@ -360,6 +360,7 @@ namespace Automation4 {
 	///
 	FeatureSubtitleFormat::FeatureSubtitleFormat(const wxString &_name, const wxString &_extension)
 		: Feature(SCRIPTFEATURE_SUBFORMAT, _name)
+		, SubtitleFormat(_name)
 		, extension(_extension)
 	{
 		// nothing to do

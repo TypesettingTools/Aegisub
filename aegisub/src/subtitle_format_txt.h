@@ -34,18 +34,7 @@
 /// @ingroup subtitle_io
 ///
 
-
-
-
-///////////
-// Headers
 #include "subtitle_format.h"
-
-
-//////////////
-// Prototypes
-class AssDialogue;
-
 
 /// DOCME
 /// @class TXTSubtitleFormat
@@ -53,17 +42,12 @@ class AssDialogue;
 ///
 /// DOCME
 class TXTSubtitleFormat : public SubtitleFormat {
-private:
-
 public:
-	wxString GetName();
-	wxArrayString GetReadWildcards();
-	wxArrayString GetWriteWildcards();
+	TXTSubtitleFormat();
+	wxArrayString GetReadWildcards() const;
+	wxArrayString GetWriteWildcards() const;
 
-	bool CanReadFile(wxString filename);
-	bool CanWriteFile(wxString filename);
-	void ReadFile(wxString filename,wxString forceEncoding);
-	void WriteFile(wxString filename, wxString encoding = "");
+	bool CanWriteFile(wxString const& filename) const;
+	void ReadFile(wxString const& filename, wxString const& forceEncoding);
+	void WriteFile(wxString const& filename, wxString const& encoding);
 };
-
-

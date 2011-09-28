@@ -34,57 +34,29 @@
 /// @ingroup subtitle_io
 ///
 
-
-///////////
-// Headers
 #include "config.h"
 
-#include "ass_dialogue.h"
 #include "subtitle_format_encore.h"
+
+#include "ass_dialogue.h"
 #include "text_file_writer.h"
 
-
-/// @brief Name 
-/// @return 
-///
-wxString EncoreSubtitleFormat::GetName() {
-	return "Adobe Encore";
+EncoreSubtitleFormat::EncoreSubtitleFormat()
+: SubtitleFormat("Adobe Encore")
+{
 }
 
-
-
-/// @brief Wildcards 
-/// @return 
-///
-wxArrayString EncoreSubtitleFormat::GetWriteWildcards() {
+wxArrayString EncoreSubtitleFormat::GetWriteWildcards() const {
 	wxArrayString formats;
 	formats.Add("encore.txt");
 	return formats;
 }
 
-
-
-/// @brief Can write file? 
-/// @param filename 
-/// @return 
-///
-bool EncoreSubtitleFormat::CanWriteFile(wxString filename) {
-	return (filename.Right(11).Lower() == ".encore.txt");
-}
-
-
-
-/// @brief Write file 
-/// @param _filename 
-/// @param encoding  
-///
-void EncoreSubtitleFormat::WriteFile(wxString _filename,wxString encoding) {
-	// Get FPS
+void EncoreSubtitleFormat::WriteFile(wxString const& filename, wxString const& encoding) {
 	FPSRational fps_rat = AskForFPS(true);
 	if (fps_rat.num <= 0 || fps_rat.den <= 0) return;
 
-	// Open file
-	TextFileWriter file(_filename,encoding);
+	TextFileWriter file(filename, encoding);
 
 	// Convert to encore
 	CreateCopy();
@@ -92,25 +64,20 @@ void EncoreSubtitleFormat::WriteFile(wxString _filename,wxString encoding) {
 	StripComments();
 	RecombineOverlaps();
 	MergeIdentical();
-	ConvertTags(1,"\r\n");
+	ConvertTags(1, "\r\n");
 
 	// Write lines
-	using std::list;
 	int i = 0;
 
 	// Encore wants ; instead of : if we're dealing with NTSC dropframe stuff
 	FractionalTime ft(fps_rat.smpte_dropframe ? ";" : ":", fps_rat.num, fps_rat.den, fps_rat.smpte_dropframe);
 
-	for (list<AssEntry*>::iterator cur=Line->begin();cur!=Line->end();cur++) {
-		AssDialogue *current = dynamic_cast<AssDialogue*>(*cur);
-		if (current && !current->Comment) {
+	for (std::list<AssEntry*>::iterator cur=Line->begin();cur!=Line->end();cur++) {
+		if (AssDialogue *current = dynamic_cast<AssDialogue*>(*cur)) {
 			++i;
 			file.WriteLineToFile(wxString::Format("%i %s %s %s", i, ft.FromAssTime(current->Start), ft.FromAssTime(current->End), current->Text));
 		}
 	}
 
-	// Clean up
 	ClearCopy();
 }
-
-

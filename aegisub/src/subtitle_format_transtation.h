@@ -34,13 +34,9 @@
 /// @ingroup subtitle_io
 ///
 
-
-
-
-///////////
-// Headers
 #include "subtitle_format.h"
 
+class AssDialogue;
 
 /// DOCME
 /// @class TranStationSubtitleFormat
@@ -48,14 +44,10 @@
 ///
 /// DOCME
 class TranStationSubtitleFormat : public SubtitleFormat {
-private:
 	wxString ConvertLine(AssDialogue *line, FPSRational *fps_rat, int nextl_start);
 
 public:
-	wxString GetName();
-	wxArrayString GetWriteWildcards();
-	bool CanWriteFile(wxString filename);
-	void WriteFile(wxString filename,wxString encoding);
+	TranStationSubtitleFormat();
+	wxArrayString GetWriteWildcards() const;
+	void WriteFile(wxString const& filename, wxString const& encoding);
 };
-
-

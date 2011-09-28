@@ -54,96 +54,113 @@ class AssEntry;
 ///
 /// DOCME
 class SubtitleFormat {
-	/// DOCME
+	wxString name;
 	bool isCopy;
-
-	/// DOCME
 	AssFile *assFile;
 
-	void Register();
-	void Remove();
+	/// Get this format's wildcards for a load dialog
+	virtual wxArrayString GetReadWildcards() const { return wxArrayString(); }
+	/// Get this format's wildcards for a save dialog
+	virtual wxArrayString GetWriteWildcards() const { return wxArrayString(); }
 
-	/// DOCME
+	/// List of loaded subtitle formats
 	static std::list<SubtitleFormat*> formats;
 
-	/// DOCME
-	static bool loaded;
-
 protected:
-	/// DOCME
 	struct FPSRational {
-
-		/// DOCME
 		int num;
-
-		/// DOCME
 		int den;
-
-		/// DOCME
 		bool smpte_dropframe;
 	};
 
-	/// DOCME
 	std::list<AssEntry*> *Line;
 
+	/// Copy the input subtitles file; must be called before making any changes
 	void CreateCopy();
+	/// Delete the subtitle file if we own it; should be called after processing
+	/// if CreateCopy was used
 	void ClearCopy();
+	/// Sort the lines by start time
 	void SortLines();
-	void ConvertTags(int format,const wxString &lineEnd,bool mergeLineBreaks=true);
-	//void Merge(bool identical,bool overlaps,bool stripComments,bool stripNonDialogue);
+	/// Strip tags or convert them to SRT
+	/// @param format 1: strip tags 2: SRT
+	/// @param lineEnd Newline character(s)
+	/// @param mergeLineBreaks Should multiple consecutive line breaks be merged into one?
+	void ConvertTags(int format, const wxString &lineEnd, bool mergeLineBreaks=true);
+	/// Remove All commented and empty lines
 	void StripComments();
+	/// Remove everything but the dialogue lines
 	void StripNonDialogue();
+	/// @brief Split and merge lines so there are no overlapping lines
+	///
+	/// Algorithm described at http://devel.aegisub.org/wiki/Technical/SplitMerge
 	void RecombineOverlaps();
+	/// Merge sequential identical lines
 	void MergeIdentical();
 
+	/// Clear the subtitle file
 	void Clear();
+	/// Load the default file
+	/// @param defline Add a blank line?
 	void LoadDefault(bool defline=true);
 
-	/// @brief DOCME
-	/// @return 
-	///
 	AssFile *GetAssFile() { return assFile; }
+	/// Add a line to the output file
+	/// @param data Line data
+	/// @param group File section
 	void AddLine(wxString data,wxString group,int &version,wxString *outgroup=NULL);
+	/// Prompt the user for a framerate to use
+	/// @param showSMPTE Include SMPTE as an option?
 	FPSRational AskForFPS(bool showSMPTE=false);
 
-	virtual wxString GetName()=0;
-	virtual wxArrayString GetReadWildcards();
-	virtual wxArrayString GetWriteWildcards();
-
 public:
-	SubtitleFormat();
+	/// Constructor
+	/// @param Subtitle format name
+	/// @note Automatically registers the format
+	SubtitleFormat(wxString const& name);
+	/// Destructor
+	/// @note Automatically unregisters the format
 	virtual ~SubtitleFormat();
+
+	/// Set the target file to write
 	void SetTarget(AssFile *file);
 
+	/// Get this format's name
+	wxString GetName() const { return name; }
+
+	/// @brief Check if the given file can be read by this format
+	///
+	/// Default implemention simply checks if the file's extension is in the
+	/// format's wildcard list
+	virtual bool CanReadFile(wxString const& filename) const;
+
+	/// @brief Check if the given file can be written by this format
+	///
+	/// Default implemention simply checks if the file's extension is in the
+	/// format's wildcard list
+	virtual bool CanWriteFile(wxString const& filename) const;
+
+	/// Load a subtitle file
+	/// @param filename File to load
+	/// @param forceEncoding Encoding to use or empty string for default
+	virtual void ReadFile(wxString const& filename, wxString const& forceEncoding="") { }
+
+	/// Save a subtitle file
+	/// @param filename File to write to
+	/// @param forceEncoding Encoding to use or empty string for default
+	virtual void WriteFile(wxString const& filename, wxString const& encoding="") { }
+
+	/// Get the wildcards for a save or load dialog
+	/// @param mode 0: load 1: save
 	static wxString GetWildcards(int mode);
 
-	/// @brief DOCME
-	/// @param filename 
-	/// @return 
-	///
-	virtual bool CanReadFile(wxString filename) { return false; };
-
-	/// @brief DOCME
-	/// @param filename 
-	/// @return 
-	///
-	virtual bool CanWriteFile(wxString filename) { return false; };
-
-	/// @brief DOCME
-	/// @param filename      
-	/// @param forceEncoding 
-	///
-	virtual void ReadFile(wxString filename,wxString forceEncoding="") { };
-
-	/// @brief DOCME
-	/// @param filename 
-	/// @param encoding 
-	///
-	virtual void WriteFile(wxString filename,wxString encoding="") { };
-
-	static SubtitleFormat *GetReader(wxString filename);
-	static SubtitleFormat *GetWriter(wxString filename);
+	/// Get a subtitle format that can read the given file or NULL if none can
+	static SubtitleFormat *GetReader(wxString const& filename);
+	/// Get a subtitle format that can write the given file or NULL if none can
+	static SubtitleFormat *GetWriter(wxString const& filename);
+	/// Initialize subtitle formats
 	static void LoadFormats();
+	/// Deinitialize subtitle formats
 	static void DestroyFormats();
 };
 

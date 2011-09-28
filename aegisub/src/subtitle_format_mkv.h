@@ -34,18 +34,7 @@
 /// @ingroup subtitle_io matroska
 ///
 
-
-
-
-///////////
-// Headers
 #include "subtitle_format.h"
-
-
-//////////////
-// Prototypes
-class AssDialogue;
-
 
 /// DOCME
 /// @class MKVSubtitleFormat
@@ -54,14 +43,8 @@ class AssDialogue;
 /// DOCME
 class MKVSubtitleFormat : public SubtitleFormat {
 public:
-	wxString GetName();
-	wxArrayString GetReadWildcards();
+	MKVSubtitleFormat();
+	wxArrayString GetReadWildcards() const;
 
-	bool CanReadFile(wxString filename);
-	void ReadFile(wxString filename,wxString forceEncoding);
-
-	bool CanWriteFile(wxString filename);
-	void WriteFile(wxString filename,wxString encoding);
+	void ReadFile(wxString const& filename, wxString const& forceEncoding);
 };
-
-

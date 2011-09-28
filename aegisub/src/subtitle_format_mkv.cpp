@@ -34,44 +34,18 @@
 /// @ingroup subtitle_io matroska
 ///
 
-
-///////////
-// Headers
 #include "config.h"
 
-#include "ass_dialogue.h"
-#include "ass_file.h"
-#include "mkv_wrap.h"
 #include "subtitle_format_mkv.h"
 
+#include "mkv_wrap.h"
 
-/// @brief Can read? 
-/// @param filename 
-/// @return 
-///
-bool MKVSubtitleFormat::CanReadFile(wxString filename) {
-	if (filename.Right(4).Lower() == ".mkv" || filename.Right(4).Lower() == ".mks"
-			|| filename.Right(4).Lower() == ".mka")
-		return true;
-	else
-		return false;
+MKVSubtitleFormat::MKVSubtitleFormat()
+: SubtitleFormat("Matroska")
+{
 }
 
-
-
-/// @brief Get name 
-/// @return 
-///
-wxString MKVSubtitleFormat::GetName() {
-	return "Matroska";
-}
-
-
-
-/// @brief Get read wildcards 
-/// @return 
-///
-wxArrayString MKVSubtitleFormat::GetReadWildcards() {
+wxArrayString MKVSubtitleFormat::GetReadWildcards() const {
 	wxArrayString formats;
 	formats.Add("mkv");
 	formats.Add("mka");
@@ -79,41 +53,8 @@ wxArrayString MKVSubtitleFormat::GetReadWildcards() {
 	return formats;
 }
 
-
-
-/// @brief Read file 
-/// @param filename 
-/// @param encoding 
-///
-void MKVSubtitleFormat::ReadFile(wxString filename,wxString encoding) {
-	// Open matroska
+void MKVSubtitleFormat::ReadFile(wxString const& filename, wxString const& encoding) {
 	MatroskaWrapper wrap;
-	wrap.Open(filename,false);
-
-	// Read subtitles in a temporary object
+	wrap.Open(filename, false);
 	wrap.GetSubtitles(GetAssFile());
-
-	// Close matroska
-	wrap.Close();
 }
-
-
-
-/// @brief Can write to file? 
-/// @param filename 
-/// @return 
-///
-bool MKVSubtitleFormat::CanWriteFile(wxString filename) {
-	return false;
-}
-
-
-
-/// @brief Write file 
-/// @param _filename 
-/// @param encoding  
-///
-void MKVSubtitleFormat::WriteFile(wxString _filename,wxString encoding) {
-}
-
-

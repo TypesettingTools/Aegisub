@@ -34,9 +34,6 @@
 /// @ingroup subtitle_io
 ///
 
-
-///////////
-// Headers
 #include "config.h"
 
 #ifndef AGI_PRE
@@ -52,67 +49,26 @@
 
 DEFINE_SIMPLE_EXCEPTION(SRTParseError, SubtitleFormatParseError, "subtitle_io/parse/srt")
 
-
-/// @brief Can read? 
-/// @param filename 
-/// @return 
-///
-bool SRTSubtitleFormat::CanReadFile(wxString filename) {
-	return (filename.Right(4).Lower() == ".srt");
+SRTSubtitleFormat::SRTSubtitleFormat()
+: SubtitleFormat("SubRip")
+{
 }
 
-
-
-/// @brief Can write? 
-/// @param filename 
-/// @return 
-///
-bool SRTSubtitleFormat::CanWriteFile(wxString filename) {
-	return (filename.Right(4).Lower() == ".srt");
-}
-
-
-
-/// @brief Get name 
-/// @return 
-///
-wxString SRTSubtitleFormat::GetName() {
-	return "SubRip";
-}
-
-
-
-/// @brief Get read wildcards 
-/// @return 
-///
-wxArrayString SRTSubtitleFormat::GetReadWildcards() {
+wxArrayString SRTSubtitleFormat::GetReadWildcards() const {
 	wxArrayString formats;
 	formats.Add("srt");
 	return formats;
 }
 
-
-
-/// @brief Get write wildcards 
-/// @return 
-///
-wxArrayString SRTSubtitleFormat::GetWriteWildcards() {
+wxArrayString SRTSubtitleFormat::GetWriteWildcards() const {
 	return GetReadWildcards();
 }
 
-
-
-/// @brief Read file 
-/// @param filename 
-/// @param encoding 
-///
-void SRTSubtitleFormat::ReadFile(wxString filename,wxString encoding) {
+void SRTSubtitleFormat::ReadFile(wxString const& filename, wxString const& encoding) {
 	using namespace std;
 
-	// Reader
 	TextFileReader file(filename,encoding);
 
-	// Default
 	LoadDefault(false);
 
 	// See parsing algorithm at <http://devel.aegisub.org/wiki/SubtitleFormats/SRT>
@@ -239,7 +195,7 @@ found_timestamps:
 	}
 
 	if (state == 1 || state == 2) {
-		throw SRTParseError(std::string("Parsing SRT: Incomplete file"), 0);
+		throw SRTParseError("Parsing SRT: Incomplete file", 0);
 	}
 
 	if (line) {
@@ -248,15 +204,8 @@ found_timestamps:
 	}
 }
 
-
-
-/// @brief Write file 
-/// @param _filename 
-/// @param encoding  
-///
-void SRTSubtitleFormat::WriteFile(wxString _filename,wxString encoding) {
-	// Open file
-	TextFileWriter file(_filename,encoding);
+void SRTSubtitleFormat::WriteFile(wxString const& filename, wxString const& encoding) {
+	TextFileWriter file(filename,encoding);
 
 	// Convert to SRT
 	CreateCopy();
@@ -274,22 +223,14 @@ void SRTSubtitleFormat::WriteFile(wxString _filename,wxString encoding) {
 
 	// Write lines
 	int i=1;
-	using std::list;
-	for (list<AssEntry*>::iterator cur=Line->begin();cur!=Line->end();cur++) {
-		AssDialogue *current = dynamic_cast<AssDialogue*>(*cur);
-		if (current && !current->Comment) {
-			// Write line
-			file.WriteLineToFile(wxString::Format("%i",i));
+	for (std::list<AssEntry*>::iterator cur=Line->begin();cur!=Line->end();cur++) {
+		if (AssDialogue *current = dynamic_cast<AssDialogue*>(*cur)) {
+			file.WriteLineToFile(wxString::Format("%i", i++));
 			file.WriteLineToFile(current->Start.GetSRTFormated() + " --> " + current->End.GetSRTFormated());
 			file.WriteLineToFile(current->Text);
 			file.WriteLineToFile("");
-
-			i++;
 		}
 	}
 
-	// Clean up
 	ClearCopy();
 }
-
-

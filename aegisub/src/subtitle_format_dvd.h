@@ -34,17 +34,11 @@
 /// @ingroup subtitle_io vobsub
 ///
 
-
-
-
-///////////
-// Headers
 #ifndef AGI_PRE
 #include <vector>
 #endif
 
 #include "subtitle_format.h"
-
 
 /// DOCME
 struct SubPicture {
@@ -55,17 +49,17 @@ struct SubPicture {
 	/// DOCME
 
 	/// DOCME
-	int x,y;
+	int x, y;
 
 	/// DOCME
 
 	/// DOCME
-	int w,h;
+	int w, h;
 
 	/// DOCME
 
 	/// DOCME
-	int start,end;
+	int start, end;
 };
 
 
@@ -81,12 +75,7 @@ struct RLEGroup {
 	/// DOCME
 	bool eol;
 
-	/// @brief DOCME
-	/// @param _col 
-	/// @param _len 
-	/// @param _eol 
-	///
-	RLEGroup(int _col,int _len,bool _eol) { col = _col; len = _len; eol = _eol; }
+	RLEGroup(int col, int len, bool eol) : col(col), len(len), eol(eol) { }
 };
 
 
@@ -97,14 +86,10 @@ struct RLEGroup {
 ///
 /// DOCME
 class DVDSubtitleFormat : public SubtitleFormat {
-private:
 	void GetSubPictureList(std::vector<SubPicture> &pics);
 
 public:
-	wxString GetName();
-	wxArrayString GetWriteWildcards();
-	bool CanWriteFile(wxString filename);
-	void WriteFile(wxString filename,wxString encoding);
+	DVDSubtitleFormat();
+	wxArrayString GetWriteWildcards() const;
+	void WriteFile(wxString const& filename, wxString const& encoding);
 };
-
-

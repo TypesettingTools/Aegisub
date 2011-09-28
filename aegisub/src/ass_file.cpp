@@ -104,16 +104,6 @@ void AssFile::Load(const wxString &_filename,wxString charset,bool addToRecent) 
 	catch (agi::UserCancelException const&) {
 		return;
 	}
-	catch (const char *except) {
-		wxMessageBox(except,"Error loading file",wxICON_ERROR | wxOK);
-		return;
-	}
-
-	catch (wxString &except) {
-		wxMessageBox(except,"Error loading file",wxICON_ERROR | wxOK);
-		return;
-	}
-
 	// Real exception
 	catch (agi::Exception &e) {
 		wxMessageBox(lagi_wxString(e.GetChainedMessage()), "Error loading file", wxICON_ERROR|wxOK);

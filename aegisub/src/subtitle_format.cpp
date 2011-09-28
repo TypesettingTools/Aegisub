@@ -41,6 +41,7 @@
 #include <wx/choicdlg.h> // Keep this last so wxUSE_CHOICEDLG is set.
 #endif
 
+#include "ass_dialogue.h"
 #include "ass_file.h"
 #include "subtitle_format.h"
 #include "subtitle_format_ass.h"
@@ -52,47 +53,42 @@
 #include "subtitle_format_transtation.h"
 #include "subtitle_format_ttxt.h"
 #include "subtitle_format_txt.h"
+#include "utils.h"
 #include "video_context.h"
 
-/// @brief Constructor 
-///
-SubtitleFormat::SubtitleFormat() {
-	Line = NULL;
-	Register();
-	isCopy = false;
+using namespace std::tr1::placeholders;
+
+SubtitleFormat::SubtitleFormat(wxString const& name)
+: name(name)
+, isCopy(0)
+, Line(0)
+{
+	formats.push_back(this);
 }
 
-/// @brief Destructor 
-///
-SubtitleFormat::~SubtitleFormat () {
-	Remove();
+SubtitleFormat::~SubtitleFormat() {
+	formats.remove(this);
 }
 
-/// DOCME
-std::list<SubtitleFormat*> SubtitleFormat::formats;
-
-/// DOCME
-bool SubtitleFormat::loaded = false;
-
-/// @brief Set target 
-/// @param file 
-///
 void SubtitleFormat::SetTarget(AssFile *file) {
 	ClearCopy();
-	if (!file) Line = NULL;
-	else Line = &file->Line;
+	Line = file ? &file->Line : 0;
 	assFile = file;
 }
 
-/// @brief Create copy 
-///
+bool SubtitleFormat::CanReadFile(wxString const& filename) const {
+	return GetReadWildcards().Index(filename.AfterLast('.'), false) != wxNOT_FOUND;
+}
+
+bool SubtitleFormat::CanWriteFile(wxString const& filename) const {
+	return GetWriteWildcards().Index(filename.AfterLast('.'), false) != wxNOT_FOUND;
+}
+
 void SubtitleFormat::CreateCopy() {
 	SetTarget(new AssFile(*assFile));
 	isCopy = true;
 }
 
-/// @brief Clear copy 
-///
 void SubtitleFormat::ClearCopy() {
 	if (isCopy) {
 		delete assFile;
@@ -101,184 +97,19 @@ void SubtitleFormat::ClearCopy() {
 	}
 }
 
-/// @brief Clear subtitles 
-///
 void SubtitleFormat::Clear() {
 	assFile->Clear();
 }
 
-/// @brief Load default 
-/// @param defline 
-///
 void SubtitleFormat::LoadDefault(bool defline) {
 	assFile->LoadDefault(defline);
 }
 
-/// @brief Add line 
-/// @param data     
-/// @param group    
-/// @param version  
-/// @param outgroup 
-void SubtitleFormat::AddLine(wxString data,wxString group,int &version,wxString *outgroup) {
-	assFile->AddLine(data,group,version,outgroup);
-}
-
-/// @brief Add formats 
-///
-void SubtitleFormat::LoadFormats () {
-	if (!loaded) {
-		new ASSSubtitleFormat();
-		new SRTSubtitleFormat();
-		new TXTSubtitleFormat();
-		new TTXTSubtitleFormat();
-		new MicroDVDSubtitleFormat();
-		new MKVSubtitleFormat();
-		new EncoreSubtitleFormat();
-		new TranStationSubtitleFormat();
-#ifdef _DEBUG
-		new DVDSubtitleFormat();
-#endif
-	}
-	loaded = true;
-}
-
-/// @brief Destroy formats 
-///
-void SubtitleFormat::DestroyFormats () {
-	std::list<SubtitleFormat*>::iterator cur;
-	for (cur=formats.begin();cur!=formats.end();cur = formats.begin()) {
-		delete *cur;
-	}
-	formats.clear();
-}
-
-/// @brief Get an appropriate reader 
-/// @param filename 
-/// @return 
-///
-SubtitleFormat *SubtitleFormat::GetReader(wxString filename) {
-	LoadFormats();
-	std::list<SubtitleFormat*>::iterator cur;
-	SubtitleFormat *reader;
-	for (cur=formats.begin();cur!=formats.end();cur++) {
-		reader = *cur;
-		if (reader->CanReadFile(filename)) return reader;
-	}
-	return NULL;
-}
-
-/// @brief Get an appropriate writer 
-/// @param filename 
-/// @return 
-///
-SubtitleFormat *SubtitleFormat::GetWriter(wxString filename) {
-	LoadFormats();
-	std::list<SubtitleFormat*>::iterator cur;
-	SubtitleFormat *writer;
-	for (cur=formats.begin();cur!=formats.end();cur++) {
-		writer = *cur;
-		if (writer->CanWriteFile(filename)) return writer;
-	}
-	return NULL;
-}
-
-/// @brief Register 
-/// @return 
-///
-void SubtitleFormat::Register() {
-	std::list<SubtitleFormat*>::iterator cur;
-	for (cur=formats.begin();cur!=formats.end();cur++) {
-		if (*cur == this) return;
-	}
-	formats.push_back(this);
-}
-
-/// @brief Remove 
-/// @return 
-///
-void SubtitleFormat::Remove() {
-	std::list<SubtitleFormat*>::iterator cur;
-	for (cur=formats.begin();cur!=formats.end();cur++) {
-		if (*cur == this) {
-			formats.erase(cur);
-			return;
-		}
-	}
-}
-
-/// @brief Get read wildcards 
-/// @return 
-///
-wxArrayString SubtitleFormat::GetReadWildcards() {
-	return wxArrayString();
-}
-
-/// @brief Get write wildcards 
-/// @return 
-///
-wxArrayString SubtitleFormat::GetWriteWildcards() {
-	return wxArrayString();
-}
-
-/// @brief Get wildcard list 
-/// @param mode 
-/// @return 
-///
-wxString SubtitleFormat::GetWildcards(int mode) {
-	// Ensure it's loaded
-	LoadFormats();
-
-	// Variables
-	wxArrayString all;
-	wxArrayString cur;
-	wxString wild;
-	wxString final;
-	wxString temp1;
-	wxString temp2;
-
-	// For each format
-	std::list<SubtitleFormat*>::iterator curIter;
-	SubtitleFormat *format;
-	for (curIter=formats.begin();curIter!=formats.end();curIter++) {
-		// Get list
-		format = *curIter;
-		if (mode == 0) cur = format->GetReadWildcards();
-		else if (mode == 1) cur = format->GetWriteWildcards();
-		temp1.Clear();
-		temp2.Clear();
-
-		// Has wildcards
-		if (cur.Count()) {
-			// Process entries
-			for (unsigned int i=0;i<cur.Count();i++) {
-				wild = "*." + cur[i];
-				all.Add(wild);
-				temp1 += wild + ",";
-				temp2 += wild + ";";
-			}
-
-			// Assemble final name
-			final += format->GetName() + " (" + temp1.Left(temp1.Length()-1) + ")|" + temp2.Left(temp2.Length()-1) + "|";
-		}
-	}
-
-	// Add "all formats" list
-	temp1.Clear();
-	temp2.Clear();
-	for (unsigned int i=0;i<all.Count();i++) {
-		temp1 += all[i] + ",";
-		temp2 += all[i] + ";";
-	}
-	final = wxString(_("All Supported Formats")) + " (" + temp1.Left(temp1.Length()-1) + ")|" + temp2.Left(temp2.Length()-1) + "|" + final.Left(final.Length()-1);
-
-	// Return final list
-	return final;
+void SubtitleFormat::AddLine(wxString data, wxString group, int &version, wxString *outgroup) {
+	assFile->AddLine(data, group, version, outgroup);
 }
 
 /// @brief Ask the user to enter the FPS 
-/// @param showSMPTE 
-/// @return 
-///
 SubtitleFormat::FPSRational SubtitleFormat::AskForFPS(bool showSMPTE) {
 	wxArrayString choices;
 	FPSRational fps_rat;
@@ -290,8 +121,8 @@ SubtitleFormat::FPSRational SubtitleFormat::AskForFPS(bool showSMPTE) {
 	if (vidLoaded) {
 		wxString vidFPS;
 		if (context->FPS().IsVFR()) vidFPS = "VFR";
-		else vidFPS = wxString::Format("%.3f",context->FPS().FPS());
-		choices.Add(wxString::Format("From video (%s)",vidFPS));
+		else vidFPS = wxString::Format("%.3f", context->FPS().FPS());
+		choices.Add(wxString::Format("From video (%s)", vidFPS));
 	}
 	
 	// Standard FPS values
@@ -310,7 +141,7 @@ SubtitleFormat::FPSRational SubtitleFormat::AskForFPS(bool showSMPTE) {
 	choices.Add(_("120.000 FPS"));
 
 	// Ask
-	int choice = wxGetSingleChoiceIndex(_("Please choose the appropriate FPS for the subtitles:"),_("FPS"),choices);
+	int choice = wxGetSingleChoiceIndex(_("Please choose the appropriate FPS for the subtitles:"), _("FPS"), choices);
 	if (choice == -1) {
 		fps_rat.num = 0;
 		fps_rat.den = 0;
@@ -364,195 +195,210 @@ SubtitleFormat::FPSRational SubtitleFormat::AskForFPS(bool showSMPTE) {
 	return fps_rat;
 }
 
-/// @brief Sort lines 
-///
 void SubtitleFormat::SortLines() {
 	AssFile::Sort(*Line);
 }
 
-/// @brief Convert tags 
-/// @param format  
-/// @param lineEnd 
-///
-void SubtitleFormat::ConvertTags(int format,const wxString &lineEnd,bool mergeLineBreaks) {
-	using std::list;
-	list<AssEntry*>::iterator next;
-	for (list<AssEntry*>::iterator cur=Line->begin();cur!=Line->end();cur++) {
-		AssDialogue *current = dynamic_cast<AssDialogue*>(*cur);
-		if (current) {
+void SubtitleFormat::ConvertTags(int format, const wxString &lineEnd, bool mergeLineBreaks) {
+	for (std::list<AssEntry*>::iterator cur = Line->begin(); cur != Line->end(); ++cur) {
+		if (AssDialogue *current = dynamic_cast<AssDialogue*>(*cur)) {
 			// Strip tags
 			if (format == 1) current->StripTags();
 			else if (format == 2) current->ConvertTagsToSRT();
 
 			// Replace line breaks
-			current->Text.Replace("\\h"," ",true);
-			current->Text.Replace("\\n",lineEnd,true);
-			current->Text.Replace("\\N",lineEnd,true);
+			current->Text.Replace("\\h", " ");
+			current->Text.Replace("\\n", lineEnd);
+			current->Text.Replace("\\N", lineEnd);
 			if (mergeLineBreaks) {
-				while (current->Text.Replace(lineEnd+lineEnd,lineEnd,true)) {};
+				while (current->Text.Replace(lineEnd+lineEnd, lineEnd));
 			}
 		}
 	}
 }
 
-/// @brief Remove all comment lines 
-///
 void SubtitleFormat::StripComments() {
-	using std::list;
-	list<AssEntry*>::iterator next;
-	
-	for (list<AssEntry*>::iterator cur = Line->begin(); cur != Line->end(); cur = next) {
-		next = cur;
-		next++;
-		
-		AssDialogue *dlg = dynamic_cast<AssDialogue*>(*cur);
-		if (dlg && (dlg->Comment || dlg->Text.IsEmpty())) {
-			delete *cur;
-			Line->erase(cur);
+	for (std::list<AssEntry*>::iterator it = Line->begin(); it != Line->end(); ) {
+		AssDialogue *diag = dynamic_cast<AssDialogue*>(*it);
+		if (!diag || (!diag->Comment && diag->Text.size()))
+			++it;
+		else {
+			delete *it;
+			Line->erase(it++);
 		}
 	}
 }
 
-/// @brief Remove all non-dialogue lines 
-///
 void SubtitleFormat::StripNonDialogue() {
-	using std::list;
-	list<AssEntry*>::iterator next;
-	
-	for (list<AssEntry*>::iterator cur = Line->begin(); cur != Line->end(); cur = next) {
-		next = cur;
-		next++;
-		
-		if (!dynamic_cast<AssDialogue*>(*cur)) {
-			delete *cur;
-			Line->erase(cur);
+	for (std::list<AssEntry*>::iterator it = Line->begin(); it != Line->end(); ) {
+		if (dynamic_cast<AssDialogue*>(*it))
+			++it;
+		else {
+			delete *it;
+			Line->erase(it++);
 		}
 	}
 }
 
-/// @brief Helper function for RecombineOverlaps() 
-/// @param list   
-/// @param next   
-/// @param newdlg 
-///
-static void InsertLineSortedIntoList(std::list<AssEntry*> &list, std::list<AssEntry*>::iterator next, AssDialogue *newdlg) {
-	std::list<AssEntry*>::iterator insertpos = next;
-	bool inserted = false;
-	while (insertpos != list.end()) {
-		AssDialogue *candidate = dynamic_cast<AssDialogue*>(*insertpos);
-		if (candidate && candidate->Start >= newdlg->Start) {
-			list.insert(insertpos, newdlg);
-			inserted = true;
-			break;
-		}
-		insertpos++;
-	}
-	if (!inserted) {
-		list.push_back(newdlg);
-	}
+static bool dialog_start_lt(AssEntry *pos, AssDialogue *to_insert) {
+	AssDialogue *diag = dynamic_cast<AssDialogue*>(pos);
+	return diag && diag->Start > to_insert->Start;
 }
 
 /// @brief Split and merge lines so there are no overlapping lines 
 ///
 /// Algorithm described at http://devel.aegisub.org/wiki/Technical/SplitMerge
 void SubtitleFormat::RecombineOverlaps() {
-	using std::list;
-	list<AssEntry*>::iterator next;
-	
-	for (list<AssEntry*>::iterator cur = Line->begin(); cur != Line->end(); cur = next) {
-		next = cur;
-		next++;
-		
-		if (next == Line->end()) break;
-		
+	std::list<AssEntry*>::iterator cur, next = Line->begin();
+	cur = next++;
+
+	for (; next != Line->end(); cur = next++) {
 		AssDialogue *prevdlg = dynamic_cast<AssDialogue*>(*cur);
 		AssDialogue *curdlg = dynamic_cast<AssDialogue*>(*next);
-		
-		if (curdlg && prevdlg && prevdlg->End > curdlg->Start) {
-			// Use names like in the algorithm description and prepare for erasing
-			// old dialogues from the list
-			list<AssEntry*>::iterator prev = cur;
-			cur = next;
-			next++;
-			
-			// std::list::insert() inserts items before the given iterator, so
-			// we need 'next' for inserting. 'prev' and 'cur' can safely be erased
-			// from the list now.
-			Line->erase(prev);
-			Line->erase(cur);
-			
-			//Is there an A part before the overlap?
-			if (curdlg->Start > prevdlg->Start) {
-				// Produce new entry with correct values
-				AssDialogue *newdlg = dynamic_cast<AssDialogue*>(prevdlg->Clone());
-				newdlg->Start = prevdlg->Start;
-				newdlg->End = curdlg->Start;
-				newdlg->Text = prevdlg->Text;
-				
-				InsertLineSortedIntoList(*Line, next, newdlg);
-			}
-			
-			// Overlapping A+B part
-			{
-				AssDialogue *newdlg = dynamic_cast<AssDialogue*>(prevdlg->Clone());
-				newdlg->Start = curdlg->Start;
-				newdlg->End = (prevdlg->End < curdlg->End) ? prevdlg->End : curdlg->End;
-				// Put an ASS format hard linewrap between lines
-				newdlg->Text = curdlg->Text + "\\N" + prevdlg->Text;
-				
-				InsertLineSortedIntoList(*Line, next, newdlg);
-			}
-			
-			// Is there an A part after the overlap?
-			if (prevdlg->End > curdlg->End) {
-				// Produce new entry with correct values
-				AssDialogue *newdlg = dynamic_cast<AssDialogue*>(prevdlg->Clone());
-				newdlg->Start = curdlg->End;
-				newdlg->End = prevdlg->End;
-				newdlg->Text = prevdlg->Text;
-				
-				InsertLineSortedIntoList(*Line, next, newdlg);
-			}
-			
-			// Is there a B part after the overlap?
-			if (curdlg->End > prevdlg->End) {
-				// Produce new entry with correct values
-				AssDialogue *newdlg = dynamic_cast<AssDialogue*>(prevdlg->Clone());
-				newdlg->Start = prevdlg->End;
-				newdlg->End = curdlg->End;
-				newdlg->Text = curdlg->Text;
-				
-				InsertLineSortedIntoList(*Line, next, newdlg);
-			}
-			
-			next--;
+
+		if (!curdlg || !prevdlg) continue;
+		if (prevdlg->End <= curdlg->Start) continue;
+
+		// Use names like in the algorithm description and prepare for erasing
+		// old dialogues from the list
+		std::list<AssEntry*>::iterator prev = cur;
+		cur = next;
+		next++;
+
+		// std::list::insert() inserts items before the given iterator, so
+		// we need 'next' for inserting. 'prev' and 'cur' can safely be erased
+		// from the list now.
+		Line->erase(prev);
+		Line->erase(cur);
+
+		//Is there an A part before the overlap?
+		if (curdlg->Start > prevdlg->Start) {
+			// Produce new entry with correct values
+			AssDialogue *newdlg = dynamic_cast<AssDialogue*>(prevdlg->Clone());
+			newdlg->Start = prevdlg->Start;
+			newdlg->End = curdlg->Start;
+			newdlg->Text = prevdlg->Text;
+
+			Line->insert(find_if(next, Line->end(), bind(dialog_start_lt, _1, newdlg)), newdlg);
 		}
+
+		// Overlapping A+B part
+		{
+			AssDialogue *newdlg = dynamic_cast<AssDialogue*>(prevdlg->Clone());
+			newdlg->Start = curdlg->Start;
+			newdlg->End = (prevdlg->End < curdlg->End) ? prevdlg->End : curdlg->End;
+			// Put an ASS format hard linewrap between lines
+			newdlg->Text = curdlg->Text + "\\N" + prevdlg->Text;
+
+			Line->insert(find_if(next, Line->end(), bind(dialog_start_lt, _1, newdlg)), newdlg);
+		}
+
+		// Is there an A part after the overlap?
+		if (prevdlg->End > curdlg->End) {
+			// Produce new entry with correct values
+			AssDialogue *newdlg = dynamic_cast<AssDialogue*>(prevdlg->Clone());
+			newdlg->Start = curdlg->End;
+			newdlg->End = prevdlg->End;
+			newdlg->Text = prevdlg->Text;
+
+			Line->insert(find_if(next, Line->end(), bind(dialog_start_lt, _1, newdlg)), newdlg);
+		}
+
+		// Is there a B part after the overlap?
+		if (curdlg->End > prevdlg->End) {
+			// Produce new entry with correct values
+			AssDialogue *newdlg = dynamic_cast<AssDialogue*>(prevdlg->Clone());
+			newdlg->Start = prevdlg->End;
+			newdlg->End = curdlg->End;
+			newdlg->Text = curdlg->Text;
+
+			Line->insert(find_if(next, Line->end(), bind(dialog_start_lt, _1, newdlg)), newdlg);
+		}
+
+		next--;
 	}
 }
 
 /// @brief Merge identical lines that follow each other 
-///
 void SubtitleFormat::MergeIdentical() {
-	using std::list;
-	list<AssEntry*>::iterator next;
+	std::list<AssEntry*>::iterator cur, next = Line->begin();
+	cur = next++;
 	
-	for (list<AssEntry*>::iterator cur = Line->begin(); cur != Line->end(); cur = next) {
-		next = cur;
-		next++;
-		
-		if (next == Line->end()) break;
-		
+	for (; next != Line->end(); cur = next++) {
 		AssDialogue *curdlg = dynamic_cast<AssDialogue*>(*cur);
 		AssDialogue *nextdlg = dynamic_cast<AssDialogue*>(*next);
 		
 		if (curdlg && nextdlg && curdlg->End == nextdlg->Start && curdlg->Text == nextdlg->Text) {
 			// Merge timing
-			nextdlg->Start = (nextdlg->Start < curdlg->Start ? nextdlg->Start : curdlg->Start);
-			nextdlg->End = (nextdlg->End > curdlg->End ? nextdlg->End : curdlg->End);
+			nextdlg->Start = std::min(nextdlg->Start, curdlg->Start);
+			nextdlg->End = std::max(nextdlg->End, curdlg->End);
 			
 			// Remove duplicate line
 			delete *cur;
 			Line->erase(cur);
 		}
 	}
+}
+
+std::list<SubtitleFormat*> SubtitleFormat::formats;
+
+void SubtitleFormat::LoadFormats() {
+	if (formats.empty()) {
+		new ASSSubtitleFormat();
+		new EncoreSubtitleFormat();
+		new MKVSubtitleFormat();
+		new MicroDVDSubtitleFormat();
+		new SRTSubtitleFormat();
+		new TTXTSubtitleFormat();
+		new TXTSubtitleFormat();
+		new TranStationSubtitleFormat();
+#ifdef _DEBUG
+		new DVDSubtitleFormat();
+#endif
+	}
+}
+
+void SubtitleFormat::DestroyFormats() {
+	for (std::list<SubtitleFormat*>::iterator it = formats.begin(); it != formats.end(); )
+		delete *it++;
+}
+
+template<class Cont, class Pred>
+SubtitleFormat *find_or_null(Cont &container, Pred pred) {
+	typename Cont::iterator it = find_if(container.begin(), container.end(), pred);
+	if (it == container.end())
+		return 0;
+	return *it;
+}
+
+SubtitleFormat *SubtitleFormat::GetReader(wxString const& filename) {
+	LoadFormats();
+	return find_or_null(formats, bind(&SubtitleFormat::CanReadFile, _1, filename));
+}
+
+SubtitleFormat *SubtitleFormat::GetWriter(wxString const& filename) {
+	LoadFormats();
+	return find_or_null(formats, bind(&SubtitleFormat::CanWriteFile, _1, filename));
+}
+
+wxString SubtitleFormat::GetWildcards(int mode) {
+	LoadFormats();
+
+	wxArrayString all;
+	wxString final;
+
+	std::list<SubtitleFormat*>::iterator curIter;
+	for (curIter=formats.begin();curIter!=formats.end();curIter++) {
+		SubtitleFormat *format = *curIter;
+		wxArrayString cur = mode == 0 ? format->GetReadWildcards() : format->GetWriteWildcards();
+		if (cur.empty()) continue;
+
+		for_each(cur.begin(), cur.end(), bind(&wxString::Prepend, _1, "*."));
+		copy(cur.begin(), cur.end(), std::back_inserter(all));
+		final += "|" + format->GetName() + " (" + wxJoin(cur, ',') + ")|" + wxJoin(cur, ';');
+	}
+
+	final.Prepend(_("All Supported Formats") + " (" + wxJoin(all, ',') + ")|" + wxJoin(all, ';'));
+
+	return final;
 }

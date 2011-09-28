@@ -47,41 +47,38 @@
 #include "text_file_writer.h"
 #include "video_context.h"
 
-wxString MicroDVDSubtitleFormat::GetName() {
-	return "MicroDVD";
+MicroDVDSubtitleFormat::MicroDVDSubtitleFormat()
+: SubtitleFormat("MicroDVD")
+{
 }
 
-wxArrayString MicroDVDSubtitleFormat::GetReadWildcards() {
+wxArrayString MicroDVDSubtitleFormat::GetReadWildcards() const {
 	wxArrayString formats;
 	formats.Add("sub");
 	return formats;
 }
 
-wxArrayString MicroDVDSubtitleFormat::GetWriteWildcards() {
+wxArrayString MicroDVDSubtitleFormat::GetWriteWildcards() const {
 	return GetReadWildcards();
 }
 
-bool MicroDVDSubtitleFormat::CanReadFile(wxString filename) {
+bool MicroDVDSubtitleFormat::CanReadFile(wxString const& filename) const {
 	// Return false immediately if extension is wrong
 	if (filename.Right(4).Lower() != ".sub") return false;
 
 	// Since there is an infinity of .sub formats, load first line and check if it's valid
 	TextFileReader file(filename);
 	if (file.HasMoreLines()) {
-		wxRegEx exp("^[\\{\\[]([0-9]+)[\\}\\]][\\{\\[]([0-9]+)[\\}\\]](.*)$",wxRE_ADVANCED);
+		wxRegEx exp("^[\\{\\[]([0-9]+)[\\}\\]][\\{\\[]([0-9]+)[\\}\\]](.*)$", wxRE_ADVANCED);
 		return exp.Matches(file.ReadLineFromFile());
 	}
 
 	return false;
 }
 
-bool MicroDVDSubtitleFormat::CanWriteFile(wxString filename) {
-	return (filename.Right(4).Lower() == ".sub");
-}
-
-void MicroDVDSubtitleFormat::ReadFile(wxString filename,wxString forceEncoding) {
+void MicroDVDSubtitleFormat::ReadFile(wxString const& filename, wxString const& forceEncoding) {
 	TextFileReader file(filename);
-	wxRegEx exp("^[\\{\\[]([0-9]+)[\\}\\]][\\{\\[]([0-9]+)[\\}\\]](.*)$",wxRE_ADVANCED);
+	wxRegEx exp("^[\\{\\[]([0-9]+)[\\}\\]][\\{\\[]([0-9]+)[\\}\\]](.*)$", wxRE_ADVANCED);
 
 	LoadDefault(false);
 
@@ -94,10 +91,10 @@ void MicroDVDSubtitleFormat::ReadFile(wxString filename,wxString forceEncoding) 
 	while (file.HasMoreLines()) {
 		wxString line = file.ReadLineFromFile();
 		if (exp.Matches(line)) {
-			long f1,f2;
-			exp.GetMatch(line,1).ToLong(&f1);
-			exp.GetMatch(line,2).ToLong(&f2);
-			wxString text = exp.GetMatch(line,3);
+			long f1, f2;
+			exp.GetMatch(line, 1).ToLong(&f1);
+			exp.GetMatch(line, 2).ToLong(&f2);
+			wxString text = exp.GetMatch(line, 3);
 
 			// If it's the first, check if it contains fps information
 			if (isFirst) {
@@ -123,25 +120,20 @@ void MicroDVDSubtitleFormat::ReadFile(wxString filename,wxString forceEncoding) 
 				}
 			}
 
-			// Start and end times
-			int start,end;
-			start = rate->TimeAtFrame(f1,agi::vfr::START);
-			end = rate->TimeAtFrame(f2,agi::vfr::END);
+			text.Replace("|", "\\N");
 
-			text.Replace("|","\\N");
-
-			AssDialogue *line = new AssDialogue();
+			AssDialogue *line = new AssDialogue;
 			line->group = "[Events]";
 			line->Style = "Default";
-			line->Start.SetMS(start);
-			line->End.SetMS(end);
+			line->Start.SetMS(rate->TimeAtFrame(f1, agi::vfr::START));
+			line->End.SetMS(rate->TimeAtFrame(f2, agi::vfr::END));
 			line->Text = text;
 			Line->push_back(line);
 		}
 	}
 }
 
-void MicroDVDSubtitleFormat::WriteFile(wxString filename,wxString encoding) {
+void MicroDVDSubtitleFormat::WriteFile(wxString const& filename, wxString const& encoding) {
 	agi::vfr::Framerate cfr;
 	const agi::vfr::Framerate *rate = &cfr;
 
@@ -157,24 +149,22 @@ void MicroDVDSubtitleFormat::WriteFile(wxString filename,wxString encoding) {
 	StripComments();
 	RecombineOverlaps();
 	MergeIdentical();
-	ConvertTags(1,"|");
+	ConvertTags(1, "|");
 
-	TextFileWriter file(filename,encoding);
+	TextFileWriter file(filename, encoding);
 
 	// Write FPS line
 	if (!rate->IsVFR()) {
-		file.WriteLineToFile(wxString::Format("{1}{1}%.6f",rate->FPS()));
+		file.WriteLineToFile(wxString::Format("{1}{1}%.6f", rate->FPS()));
 	}
 
 	// Write lines
-	using std::list;
-	for (list<AssEntry*>::iterator cur=Line->begin();cur!=Line->end();cur++) {
-		AssDialogue *current = dynamic_cast<AssDialogue*>(*cur);
-		if (current && !current->Comment) {
-			int start = rate->FrameAtTime(current->Start.GetMS(),agi::vfr::START);
-			int end = rate->FrameAtTime(current->End.GetMS(),agi::vfr::END);
+	for (std::list<AssEntry*>::iterator cur=Line->begin();cur!=Line->end();cur++) {
+		if (AssDialogue *current = dynamic_cast<AssDialogue*>(*cur)) {
+			int start = rate->FrameAtTime(current->Start.GetMS(), agi::vfr::START);
+			int end = rate->FrameAtTime(current->End.GetMS(), agi::vfr::END);
 
-			file.WriteLineToFile(wxString::Format("{%i}{%i}%s",start,end,current->Text));
+			file.WriteLineToFile(wxString::Format("{%i}{%i}%s", start, end, current->Text));
 		}
 	}
 

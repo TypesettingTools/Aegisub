@@ -34,114 +34,70 @@
 /// @ingroup subtitle_io
 ///
 
-
-///////////
-// Headers
 #include "config.h"
+
+#include "subtitle_format_txt.h"
 
 #include "ass_dialogue.h"
 #include "compat.h"
 #include "dialog_text_import.h"
 #include "main.h"
-#include "subtitle_format_txt.h"
 #include "text_file_reader.h"
 #include "text_file_writer.h"
 #include "version.h"
 
 
-/// @brief Can read? 
-/// @param filename 
-/// @return 
-///
-bool TXTSubtitleFormat::CanReadFile(wxString filename) {
-	return (filename.Right(4).Lower() == ".txt");
+TXTSubtitleFormat::TXTSubtitleFormat()
+: SubtitleFormat("Plain-Text")
+{
 }
 
-
-
-/// @brief Can write? 
-/// @param filename 
-/// @return 
-///
-bool TXTSubtitleFormat::CanWriteFile(wxString filename) {
-	return (filename.Right(4).Lower() == ".txt" && filename.Right(11).Lower() != ".encore.txt" && filename.Right(16).Lower() != ".transtation.txt");
-}
-
-
-
-/// @brief Get name 
-/// @return 
-///
-wxString TXTSubtitleFormat::GetName() {
-	return "Plain-Text";
-}
-
-
-
-/// @brief Get read wildcards 
-/// @return 
-///
-wxArrayString TXTSubtitleFormat::GetReadWildcards() {
+wxArrayString TXTSubtitleFormat::GetReadWildcards() const {
 	wxArrayString formats;
 	formats.Add("txt");
 	return formats;
 }
 
-
-
-/// @brief Get write wildcards 
-/// @return 
-///
-wxArrayString TXTSubtitleFormat::GetWriteWildcards() {
+wxArrayString TXTSubtitleFormat::GetWriteWildcards() const {
 	return GetReadWildcards();
 }
 
+bool TXTSubtitleFormat::CanWriteFile(wxString const& filename) const {
+	return (filename.Right(4).Lower() == ".txt" && filename.Right(11).Lower() != ".encore.txt" && filename.Right(16).Lower() != ".transtation.txt");
+}
 
-
-/// @brief Read file 
-/// @param filename 
-/// @param encoding 
-/// @return 
-///
-void TXTSubtitleFormat::ReadFile(wxString filename,wxString encoding) {	using namespace std;
-	// Import options
+void TXTSubtitleFormat::ReadFile(wxString const& filename, wxString const& encoding) {
+	using namespace std;
 	DialogTextImport dlg;
 	if (dlg.ShowModal() == wxID_CANCEL) return;
 
-	// Reader
-	TextFileReader file(filename,encoding,false);
+	TextFileReader file(filename, encoding, false);
 
-	// Default
 	LoadDefault(false);
 
-	// Data
 	wxString actor;
 	wxString separator = lagi_wxString(OPT_GET("Tool/Import/Text/Actor Separator")->GetString());
 	wxString comment = lagi_wxString(OPT_GET("Tool/Import/Text/Comment Starter")->GetString());
-	bool isComment = false;
 	int lines = 0;
 
 	// Parse file
-	AssDialogue *line = NULL;
 	while (file.HasMoreLines()) {
-		// Reads line
 		wxString value = file.ReadLineFromFile();
-		if(value.IsEmpty()) continue;
+		if(value.empty()) continue;
 
 		// Check if this isn't a timecodes file
-		if (value.StartsWith("# timecode")) {
-			throw "File is a timecode file, cannot load as subtitles.";
-		}
+		if (value.StartsWith("# timecode"))
+			throw SubtitleFormatParseError("File is a timecode file, cannot load as subtitles.", 0);
 
 		// Read comment data
-		isComment = false;
-		if (comment != "" && value.Left(comment.Length()) == comment) {
+		bool isComment = false;
+		if (!comment.empty() && value.StartsWith(comment)) {
 			isComment = true;
-			value = value.Mid(comment.Length());
+			value = value.Mid(comment.size());
 		}
 
 		// Read actor data
-		if (!isComment && separator != "") {
+		if (!isComment && !separator.empty()) {
 			if (value[0] != ' ' && value[0] != '\t') {
 				int pos = value.Find(separator);
 				if (pos != wxNOT_FOUND) {
@@ -149,7 +105,6 @@ void TXTSubtitleFormat::ReadFile(wxString filename,wxString encoding) {	using na
 					actor.Trim(false);
 					actor.Trim(true);
 					value = value.Mid(pos+1);
-					value.Trim(false);
 				}
 			}
 		}
@@ -157,16 +112,14 @@ void TXTSubtitleFormat::ReadFile(wxString filename,wxString encoding) {	using na
 		// Trim spaces at start
 		value.Trim(false);
 
+		if (value.empty())
+			isComment = true;
+
 		// Sets line up
-		line = new AssDialogue;
+		AssDialogue *line = new AssDialogue;
 		line->group = "[Events]";
 		line->Style = "Default";
-		if (isComment) line->Actor = "";
-		else line->Actor = actor;
-		if (value.IsEmpty()) {
-			line->Actor = "";
-			isComment = true;
-		}
+		line->Actor = isComment ? "" : line->Actor;
 		line->Comment = isComment;
 		line->Text = value;
 		line->Start.SetMS(0);
@@ -179,7 +132,7 @@ void TXTSubtitleFormat::ReadFile(wxString filename,wxString encoding) {	using na
 
 	// No lines?
 	if (lines == 0) {
-		line = new AssDialogue;
+		AssDialogue *line = new AssDialogue;
 		line->group = "[Events]";
 		line->Style = "Default";
 		line->Start.SetMS(0);
@@ -188,21 +141,15 @@ void TXTSubtitleFormat::ReadFile(wxString filename,wxString encoding) {	using na
 	}
 }
 
-
-
-/// @brief Write file 
-/// @param filename 
-/// @param encoding 
-///
-void TXTSubtitleFormat::WriteFile(wxString filename,wxString encoding) {	using namespace std;
+void TXTSubtitleFormat::WriteFile(wxString const& filename, wxString const& encoding) {
 	size_t num_actor_names = 0, num_dialogue_lines = 0;
 
 	// Detect number of lines with Actor field filled out
-	for (list<AssEntry*>::iterator l = Line->begin(); l != Line->end(); ++l) {
+	for (std::list<AssEntry*>::iterator l = Line->begin(); l != Line->end(); ++l) {
 		AssDialogue *dia = dynamic_cast<AssDialogue*>(*l);
 		if (dia && !dia->Comment) {
 			num_dialogue_lines++;
-			if (!dia->Actor.IsEmpty())
+			if (!dia->Actor.empty())
 				num_actor_names++;
 		}
 	}
@@ -215,7 +162,7 @@ void TXTSubtitleFormat::WriteFile(wxString filename,wxString encoding) {	using n
 	file.WriteLineToFile(wxString("# Exported by Aegisub ") + GetAegisubShortVersionString());
 
 	// Write the file
-	for (list<AssEntry*>::iterator l = Line->begin(); l != Line->end(); ++l) {
+	for (std::list<AssEntry*>::iterator l = Line->begin(); l != Line->end(); ++l) {
 		AssDialogue *dia = dynamic_cast<AssDialogue*>(*l);
 
 		if (dia) {
@@ -244,7 +191,7 @@ void TXTSubtitleFormat::WriteFile(wxString filename,wxString encoding) {	using n
 			}
 			out_line += out_text;
 
-			if (!out_text.IsEmpty()) {
+			if (!out_text.empty()) {
 				file.WriteLineToFile(out_line);
 			}
 		}
@@ -255,5 +202,3 @@ void TXTSubtitleFormat::WriteFile(wxString filename,wxString encoding) {	using n
 		}
 	}
 }
-
-
