@@ -168,7 +168,7 @@ void AssFile::Save(wxString filename, bool setfilename, bool addToRecent, wxStri
 
 	if (setfilename) {
 		savedCommitId = commitId;
-		filename = filename;
+		this->filename = filename;
 	}
 
 	FileSave();
