@@ -91,7 +91,7 @@ struct am_manager : public Command {
 		}
 		else {
 			c->videoController->Stop();
-			DialogAutomation(c->parent, c->local_scripts).ShowModal();
+			DialogAutomation(c).ShowModal();
 		}
 	}
 };

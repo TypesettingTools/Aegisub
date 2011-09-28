@@ -40,9 +40,7 @@
 #ifndef AGI_PRE
 #include <vector>
 
-#include <wx/button.h>
 #include <wx/dialog.h>
-#include <wx/listctrl.h>
 #endif
 
 
@@ -52,6 +50,11 @@ namespace Automation4 {
 	class Script;
 };
 
+namespace agi { struct Context; }
+
+class wxButton;
+class wxListEvent;
+class wxListView;
 
 /// DOCME
 /// @class DialogAutomation
@@ -59,84 +62,58 @@ namespace Automation4 {
 ///
 /// DOCME
 class DialogAutomation : public wxDialog {
-private:
+	agi::Context *context;
 
-	/// DOCME
+	/// Struct to attach a flag for global/local to scripts
 	struct ExtraScriptInfo {
-
-		/// DOCME
 		Automation4::Script *script;
-
-		/// DOCME
 		bool is_global;
 	};
 
-	/// DOCME
+	/// Currently loaded scripts
 	std::vector<ExtraScriptInfo> script_info;
 
-
-	/// DOCME
+	/// File-local script manager
 	Automation4::ScriptManager *local_manager;
 
-	/// DOCME
-	Automation4::AutoloadScriptManager *global_manager;
+	/// Global script manager
+	Automation4::ScriptManager *global_manager;
 
 
-	/// DOCME
+	/// List of loaded scripts
 	wxListView *list;
 
-	/// DOCME
+	/// Load a local script
 	wxButton *add_button;
 
-	/// DOCME
+	/// Unload a local script
 	wxButton *remove_button;
 
-	/// DOCME
+	/// Reload a script
 	wxButton *reload_button;
 
-	/// DOCME
+	/// Get a list of features provided by a script
 	wxButton *info_button;
 
-	/// DOCME
+	/// Rescan the autoload directories
 	wxButton *reload_autoload_button;
 
-	/// DOCME
+	/// Close the dialog
 	wxButton *close_button;
 
 	void RebuildList();
-	void AddScript(ExtraScriptInfo &ei);
+	void AddScript(Automation4::Script *script, bool is_global);
+	void SetScriptInfo(int i, Automation4::Script *script);
 	void UpdateDisplay();
 
-	void OnAdd(wxCommandEvent &evt);
-	void OnRemove(wxCommandEvent &evt);
-	void OnReload(wxCommandEvent &evt);
-	void OnInfo(wxCommandEvent &evt);
-	void OnReloadAutoload(wxCommandEvent &evt);
-	void OnSelectionChange(wxListEvent &evt);
+	void OnAdd(wxCommandEvent &);
+	void OnRemove(wxCommandEvent &);
+	void OnReload(wxCommandEvent &);
+
+	void OnInfo(wxCommandEvent &);
+	void OnReloadAutoload(wxCommandEvent &);
+	void OnSelectionChange(wxListEvent &);
 
 public:
-	DialogAutomation(wxWindow *parent, Automation4::ScriptManager *_local_manager);
-
-	DECLARE_EVENT_TABLE()
-};
-
-enum {
-
-	/// DOCME
-	Automation_List_Box = 1000,
-
-	/// DOCME
-	Automation_Add_Script,
-
-	/// DOCME
-	Automation_Remove_Script,
-
-	/// DOCME
-	Automation_Reload_Script,
-
-	/// DOCME
-	Automation_Show_Info,
-
-	/// DOCME
-	Automation_Reload_Autoload
+	DialogAutomation(agi::Context *context);
 };

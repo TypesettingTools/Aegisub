@@ -38,42 +38,52 @@
 #include "config.h"
 
 #ifndef AGI_PRE
+#include <wx/button.h>
 #include <wx/filedlg.h>
 #include <wx/filename.h>
+#include <wx/listctrl.h>
 #include <wx/log.h>
 #include <wx/msgdlg.h>
 #endif
 
+#include "dialog_automation.h"
+
 #include "auto4_base.h"
 #include "compat.h"
-#include "dialog_automation.h"
+#include "command/command.h"
 #include "help_button.h"
+#include "include/aegisub/context.h"
 #include "libresrc/libresrc.h"
 #include "main.h"
+#include "subtitle_format.h"
 #include "utils.h"
 
+using std::tr1::placeholders::_1;
 
-/// @brief DOCME
-/// @param parent         
-/// @param _local_manager 
-///
-DialogAutomation::DialogAutomation(wxWindow *parent, Automation4::ScriptManager *_local_manager)
-: wxDialog(parent, -1, _("Automation Manager"), wxDefaultPosition, wxDefaultSize)
+DialogAutomation::DialogAutomation(agi::Context *c)
+: wxDialog(c->parent, -1, _("Automation Manager"))
+, context(c)
+, local_manager(c->local_scripts)
+, global_manager(wxGetApp().global_scripts)
 {
-	// Set icon
 	SetIcon(BitmapToIcon(GETIMAGE(automation_toolbutton_24)));
 
-	local_manager = _local_manager;
-	global_manager = wxGetApp().global_scripts;
-
 	// create main controls
-	list = new wxListView(this, Automation_List_Box, wxDefaultPosition, wxSize(600, 175), wxLC_REPORT|wxLC_SINGLE_SEL);
-	add_button = new wxButton(this, Automation_Add_Script, _("&Add"));
-	remove_button = new wxButton(this, Automation_Remove_Script, _("&Remove"));
-	reload_button = new wxButton(this, Automation_Reload_Script, _("Re&load"));
-	info_button = new wxButton(this, Automation_Show_Info, _("Show &Info"));
-	reload_autoload_button = new wxButton(this, Automation_Reload_Autoload, _("Re&scan Autoload Dir"));
+	list = new wxListView(this, -1, wxDefaultPosition, wxSize(600, 175), wxLC_REPORT|wxLC_SINGLE_SEL);
+	add_button = new wxButton(this, -1, _("&Add"));
+	remove_button = new wxButton(this, -1, _("&Remove"));
+	reload_button = new wxButton(this, -1, _("Re&load"));
+	info_button = new wxButton(this, -1, _("Show &Info"));
+	reload_autoload_button = new wxButton(this, -1, _("Re&scan Autoload Dir"));
 	close_button = new wxButton(this, wxID_CANCEL, _("&Close"));
+
+	list->Bind(wxEVT_COMMAND_LIST_ITEM_SELECTED, &DialogAutomation::OnSelectionChange, this);
+	list->Bind(wxEVT_COMMAND_LIST_ITEM_DESELECTED, &DialogAutomation::OnSelectionChange, this);
+	add_button->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DialogAutomation::OnAdd, this);
+	remove_button->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DialogAutomation::OnRemove, this);
+	reload_button->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DialogAutomation::OnReload, this);
+	info_button->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DialogAutomation::OnInfo, this);
+	reload_autoload_button->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DialogAutomation::OnReloadAutoload, this);
 
 	// add headers to list view
 	list->InsertColumn(0, "", wxLIST_FORMAT_CENTER, 20);
@@ -98,10 +108,9 @@ DialogAutomation::DialogAutomation(wxWindow *parent, Automation4::ScriptManager 
 
 	// main layout
 	wxSizer *main_box = new wxBoxSizer(wxVERTICAL);
-	main_box->Add(list, 1, wxEXPAND|wxALL, 5);
-	main_box->Add(button_box, 0, wxEXPAND|(wxALL&~wxTOP), 5);
-	main_box->SetSizeHints(this);
-	SetSizer(main_box);
+	main_box->Add(list, wxSizerFlags(1).Expand().Border());
+	main_box->Add(button_box, wxSizerFlags().Expand().Border(wxALL & ~wxTOP));
+	SetSizerAndFit(main_box);
 	Center();
 
 	// why doesn't this work... the button gets the "default" decoration but doesn't answer to Enter
@@ -114,153 +123,88 @@ DialogAutomation::DialogAutomation(wxWindow *parent, Automation4::ScriptManager 
 	UpdateDisplay();
 }
 
+template<class Container, class Pred>
+static void for_each(Container const& c, Pred p)
+{
+	std::for_each(c.begin(), c.end(), p);
+}
 
-
-/// @brief DOCME
-///
 void DialogAutomation::RebuildList()
 {
 	script_info.clear();
 	list->DeleteAllItems();
 
-	// fill the list view
-	const std::vector<Automation4::Script*> &local_scripts = local_manager->GetScripts();
-	for (std::vector<Automation4::Script*>::const_iterator i = local_scripts.begin(); i != local_scripts.end(); ++i) {
-		ExtraScriptInfo ei;
-		ei.script = *i;
-		ei.is_global = false;
-		AddScript(ei);
-	}
-	const std::vector<Automation4::Script*> &global_scripts = global_manager->GetScripts();
-	for (std::vector<Automation4::Script*>::const_iterator i = global_scripts.begin(); i != global_scripts.end(); ++i) {
-		ExtraScriptInfo ei;
-		ei.script = *i;
-		ei.is_global = true;
-		AddScript(ei);
-	}
-
+	for_each(local_manager->GetScripts(), bind(&DialogAutomation::AddScript, this, _1, false));
+	for_each(global_manager->GetScripts(), bind(&DialogAutomation::AddScript, this, _1, true));
 }
 
-
-
-/// @brief DOCME
-/// @param ei 
-///
-void DialogAutomation::AddScript(ExtraScriptInfo &ei)
+void DialogAutomation::SetScriptInfo(int i, Automation4::Script *script)
 {
+	list->SetItem(i, 1, script->GetName());
+	list->SetItem(i, 2, wxFileName(script->GetFilename()).GetFullName());
+	list->SetItem(i, 3, script->GetDescription());
+	if (!script->GetLoadedState())
+		list->SetItemBackgroundColour(i, wxColour(255,128,128));
+}
+
+void DialogAutomation::AddScript(Automation4::Script *script, bool is_global)
+{
+	ExtraScriptInfo ei = { script, is_global };
 	script_info.push_back(ei);
 
 	wxListItem itm;
-	if (ei.is_global) {
-		itm.SetText("G");
-	} else {
-		itm.SetText("L");
-	}
+	itm.SetText(is_global ? "G" : "L");
 	itm.SetData((int)script_info.size()-1);
 	itm.SetId(list->GetItemCount());
-	int i = list->InsertItem(itm);
-	list->SetItem(i, 1, ei.script->GetName());
-	list->SetItem(i, 2, wxFileName(ei.script->GetFilename()).GetFullName());
-	list->SetItem(i, 3, ei.script->GetDescription());
-	if (ei.script->GetLoadedState() == false) {
-		list->SetItemBackgroundColour(i, wxColour(255,128,128));
-	}
+	SetScriptInfo(list->InsertItem(itm), script);
 }
 
-
-
-/// @brief DOCME
-///
 void DialogAutomation::UpdateDisplay()
 {
 	int i = list->GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
 	bool selected = i >= 0;
-	bool global = true;
-	if (selected) {
-		const ExtraScriptInfo &ei = script_info[list->GetItemData(i)];
-		global = ei.is_global;
-	}
+	bool local = selected && !script_info[list->GetItemData(i)].is_global;
 	add_button->Enable(true);
-	remove_button->Enable(selected && !global);
+	remove_button->Enable(local);
 	reload_button->Enable(selected);
 	info_button->Enable(true);
 	reload_autoload_button->Enable(true);
 	close_button->Enable(true);
 }
 
-
-BEGIN_EVENT_TABLE(DialogAutomation, wxDialog)
-	EVT_BUTTON(Automation_Add_Script,DialogAutomation::OnAdd)
-	EVT_BUTTON(Automation_Remove_Script,DialogAutomation::OnRemove)
-	EVT_BUTTON(Automation_Reload_Script,DialogAutomation::OnReload)
-	EVT_BUTTON(Automation_Show_Info,DialogAutomation::OnInfo)
-	EVT_BUTTON(Automation_Reload_Autoload,DialogAutomation::OnReloadAutoload)
-	EVT_LIST_ITEM_SELECTED(Automation_List_Box,DialogAutomation::OnSelectionChange)
-	EVT_LIST_ITEM_DESELECTED(Automation_List_Box,DialogAutomation::OnSelectionChange)
-END_EVENT_TABLE()
-
-
-
-/// @brief DOCME
-/// @param evt 
-///
-void DialogAutomation::OnAdd(wxCommandEvent &evt)
+template<class Container>
+static bool has_file(Container const& c, wxFileName const& fn)
 {
-	// build filename filter list
-	wxString fnfilter, catchall;
-	const std::vector<Automation4::ScriptFactory*> &factories = Automation4::ScriptFactory::GetFactories();
-	for (int i = 0; i < (int)factories.size(); i++) {
-		const Automation4::ScriptFactory *fact = factories[i];
-		if (fact->GetEngineName().IsEmpty() || fact->GetFilenamePattern().IsEmpty())
-			continue;
-		fnfilter = wxString::Format("%s%s scripts (%s)|%s|", fnfilter, fact->GetEngineName(), fact->GetFilenamePattern(), fact->GetFilenamePattern());
-		catchall << fact->GetFilenamePattern() << ";";
-	}
-#ifdef __WINDOWS__
-	fnfilter += "All files|*.*";
-#else
-	fnfilter += "All files|*";
-#endif
-	if (!catchall.IsEmpty()) {
-		catchall.RemoveLast();
-	}
-	if (factories.size() > 1) {
-		fnfilter = "All supported scripts|" + catchall + "|" + fnfilter;
-	}
-
-	wxString fname = wxFileSelector(_("Add Automation script"), lagi_wxString(OPT_GET("Path/Last/Automation")->GetString()), wxEmptyString, wxEmptyString, fnfilter, wxFD_OPEN|wxFD_FILE_MUST_EXIST, this);
-
-	if (!fname.IsEmpty()) {
-
-		wxFileName fnpath(fname);
-		OPT_SET("Path/Last/Automation")->SetString(STD_STR(fnpath.GetPath()));
-
-		// TODO: make sure each script is only loaded once. check in both local and global managers!!
-		// it doesn't break for macros, but will for export filters, and maybe for file formats,
-		// and makes for confusion in the UI anyhow
-
-		try {
-			ExtraScriptInfo ei;
-			ei.script = Automation4::ScriptFactory::CreateFromFile(fname, false);
-			local_manager->Add(ei.script);
-			ei.is_global = false;
-			AddScript(ei);
-		}
-		catch (const char *e) {
-			wxLogError(e);
-		}
-		catch (...) {
-			wxLogError("Unknown error loading script");
-		}
-	}
+	return find_if(c.begin(), c.end(),
+		bind(&wxFileName::SameAs, fn, bind(&Automation4::Script::GetFilename, _1), wxPATH_NATIVE)) != c.end();
 }
 
+void DialogAutomation::OnAdd(wxCommandEvent &)
+{
+	wxString fname = wxFileSelector(
+		_("Add Automation script"),
+		lagi_wxString(OPT_GET("Path/Last/Automation")->GetString()),
+		"", "",
+		Automation4::ScriptFactory::GetWildcardStr(),
+		wxFD_OPEN | wxFD_FILE_MUST_EXIST,
+		this);
 
-/// @brief DOCME
-/// @param evt 
-/// @return 
-///
-void DialogAutomation::OnRemove(wxCommandEvent &evt)
+	if (fname.empty()) return;
+
+	wxFileName fnpath(fname);
+	OPT_SET("Path/Last/Automation")->SetString(STD_STR(fnpath.GetPath()));
+
+	if (has_file(local_manager->GetScripts(), fnpath) || has_file(global_manager->GetScripts(), fnpath)) {
+		wxLogError("Script '%s' is already loaded", fname);
+		return;
+	}
+
+	Automation4::Script *script = Automation4::ScriptFactory::CreateFromFile(fname, true);
+	local_manager->Add(script);
+	AddScript(script, false);
+}
+
+void DialogAutomation::OnRemove(wxCommandEvent &)
 {
 	int i = list->GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
 	if (i < 0) return;
@@ -272,45 +216,22 @@ void DialogAutomation::OnRemove(wxCommandEvent &evt)
 	list->Select(i);
 }
 
-
-/// @brief DOCME
-/// @param evt 
-/// @return 
-///
-void DialogAutomation::OnReload(wxCommandEvent &evt)
+void DialogAutomation::OnReload(wxCommandEvent &)
 {
 	int i = list->GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
 	if (i < 0) return;
-	const ExtraScriptInfo &ei = script_info[list->GetItemData(i)];
 
-	try {
-		ei.script->Reload();
-	}
-	catch (const char *e) {
-		wxMessageBox(e, "Error reloading Automation script", wxOK|wxICON_ERROR, this);
-	}
-	catch (...) {
-		wxMessageBox("An unknown error occurred reloading Automation script.", "Error reloading Automation script", wxOK|wxICON_ERROR, this);
-	}
+	Automation4::Script *script = script_info[list->GetItemData(i)].script;
+	script->Reload();
 
-	list->SetItem(i, 1, ei.script->GetName());
-	list->SetItem(i, 2, wxFileName(ei.script->GetFilename()).GetFullName());
-	list->SetItem(i, 3, ei.script->GetDescription());
-	if (ei.script->GetLoadedState() == false) {
-		list->SetItemBackgroundColour(i, wxColour(255,128,128));
-	}
+	SetScriptInfo(i, script);
+
 }
 
-
-/// @brief DOCME
-/// @param evt 
-///
-void DialogAutomation::OnInfo(wxCommandEvent &evt)
+void DialogAutomation::OnInfo(wxCommandEvent &)
 {
 	int i = list->GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
-	ExtraScriptInfo *ei = 0;
-	if (i >= 0)
-		ei = &script_info[list->GetItemData(i)];
+	ExtraScriptInfo *ei = i >= 0 ? &script_info[list->GetItemData(i)] : 0;
 
 	wxString info = wxString::Format(
 		_("Total scripts loaded: %d\nGlobal scripts loaded: %d\nLocal scripts loaded: %d\n\n"),
@@ -320,9 +241,8 @@ void DialogAutomation::OnInfo(wxCommandEvent &evt)
 
 	info += _("Scripting engines installed:\n");
 	const std::vector<Automation4::ScriptFactory*> &factories = Automation4::ScriptFactory::GetFactories();
-	for (std::vector<Automation4::ScriptFactory*>::const_iterator c = factories.begin(); c != factories.end(); ++c) {
+	for (std::vector<Automation4::ScriptFactory*>::const_iterator c = factories.begin(); c != factories.end(); ++c)
 		info += wxString::Format("- %s (%s)\n", (*c)->GetEngineName(), (*c)->GetFilenamePattern());
-	}
 
 	if (ei) {
 		info += wxString::Format(_("\nScript info:\nName: %s\nDescription: %s\nAuthor: %s\nVersion: %s\nFull path: %s\nState: %s\n\nFeatures provided by script:\n"),
@@ -332,6 +252,7 @@ void DialogAutomation::OnInfo(wxCommandEvent &evt)
 			ei->script->GetVersion(),
 			ei->script->GetFilename(),
 			ei->script->GetLoadedState() ? _("Correctly loaded") : _("Failed to load"));
+
 		for (std::vector<Automation4::Feature*>::iterator f = ei->script->GetFeatures().begin(); f != ei->script->GetFeatures().end(); ++f) {
 			switch ((*f)->GetClass()) {
 				case Automation4::SCRIPTFEATURE_MACRO:
@@ -350,22 +271,14 @@ void DialogAutomation::OnInfo(wxCommandEvent &evt)
 	wxMessageBox(info, _("Automation Script Info"));
 }
 
-
-/// @brief DOCME
-/// @param evt 
-///
-void DialogAutomation::OnReloadAutoload(wxCommandEvent &evt)
+void DialogAutomation::OnReloadAutoload(wxCommandEvent &)
 {
 	global_manager->Reload();
 	RebuildList();
 	UpdateDisplay();
 }
 
-
-/// @brief DOCME
-/// @param evt 
-///
-void DialogAutomation::OnSelectionChange(wxListEvent &evt)
+void DialogAutomation::OnSelectionChange(wxListEvent &)
 {
 	UpdateDisplay();
 }
