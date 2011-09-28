@@ -81,11 +81,7 @@ void HunspellSpellChecker::AddWord(wxString word) {
 	std::string sword = STD_STR(word);
 
 	// Add it to the in-memory dictionary
-#ifdef WITH_OLD_HUNSPELL
-	hunspell->put_word(conv->Convert(sword).c_str());
-#else
 	hunspell->add(conv->Convert(sword).c_str());
-#endif
 
 	std::list<std::string> words;
 
@@ -235,11 +231,7 @@ void HunspellSpellChecker::SetLanguage(wxString language) {
 		for (; userDic != end; ++userDic) {
 			if (userDic->empty()) continue;
 			try {
-#ifdef WITH_OLD_HUNSPELL
-				hunspell->put_word(conv->Convert(*userDic).c_str());
-#else
 				hunspell->add(conv->Convert(*userDic).c_str());
-#endif
 			}
 			catch (agi::charset::ConvError const&) {
 				// Normally this shouldn't happen, but some versions of Aegisub
