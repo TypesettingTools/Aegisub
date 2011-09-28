@@ -485,7 +485,7 @@ void SubsEditBox::SetSelectedRows(setter set, T value, wxString desc, int type, 
 
 	for_each(sel.begin(), sel.end(), std::tr1::bind(set, _1, value));
 
-	commitId = c->ass->Commit(desc, type, (amend && desc == lastCommitType) ? commitId : -1);
+	commitId = c->ass->Commit(desc, type, (amend && desc == lastCommitType) ? commitId : -1, sel.size() == 1 ? *sel.begin() : 0);
 	lastCommitType = desc;
 }
 
@@ -518,7 +518,7 @@ void SubsEditBox::CommitTimes(TimeField field) {
 		}
 	}
 
-	timeCommitId[field] = c->ass->Commit(_("modify times"), AssFile::COMMIT_DIAG_TIME, timeCommitId[field]);
+	timeCommitId[field] = c->ass->Commit(_("modify times"), AssFile::COMMIT_DIAG_TIME, timeCommitId[field], sel.size() == 1 ? *sel.begin() : 0);
 }
 
 void SubsEditBox::OnSize(wxSizeEvent &evt) {

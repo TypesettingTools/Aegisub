@@ -197,11 +197,12 @@ public:
 	DEFINE_SIGNAL_ADDERS(FileSave, AddFileSaveListener)
 
 	/// @brief Flag the file as modified and push a copy onto the undo stack
-	/// @param desc     Undo description
-	/// @param type     Type of changes made to the file in this commit
-	/// @param commitId Commit to amend rather than pushing a new commit
+	/// @param desc        Undo description
+	/// @param type        Type of changes made to the file in this commit
+	/// @param commitId    Commit to amend rather than pushing a new commit
+	/// @param single_line Line which was changed, if only one line was
 	/// @return Unique identifier for the new undo group
-	int Commit(wxString desc, int type, int commitId = -1);
+	int Commit(wxString desc, int type, int commitId = -1, AssEntry *single_line = 0);
 	/// @brief Undo the last set of changes to the file
 	void Undo();
 	/// @brief Redo the last undone changes

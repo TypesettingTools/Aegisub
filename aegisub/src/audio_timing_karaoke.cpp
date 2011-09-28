@@ -226,7 +226,7 @@ void AudioTimingControllerKaraoke::GetMarkers(SampleRange const& range, AudioMar
 void AudioTimingControllerKaraoke::DoCommit() {
 	active_line->Text = kara->GetText();
 	file_changed_slot.Block();
-	commit_id = c->ass->Commit(_("karaoke timing"), AssFile::COMMIT_TEXT, commit_id);
+	commit_id = c->ass->Commit(_("karaoke timing"), AssFile::COMMIT_DIAG_TEXT, commit_id, active_line);
 	file_changed_slot.Unblock();
 }
 

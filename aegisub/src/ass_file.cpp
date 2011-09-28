@@ -760,12 +760,23 @@ wxString AssFile::GetWildcardList(int mode) {
 	else return "";
 }
 
-int AssFile::Commit(wxString desc, int type, int amendId) {
+int AssFile::Commit(wxString desc, int type, int amendId, AssEntry *single_line) {
 	++commitId;
 	// Allow coalescing only if it's the last change and the file has not been
 	// saved since the last change
 	if (commitId == amendId+1 && RedoStack.empty() && savedCommitId != commitId) {
+		// If only one line changed just modify it instead of copying the file
+		if (single_line) {
+			entryIter this_it = Line.begin(), undo_it = UndoStack.back().Line.begin();
+			while (*this_it != single_line) {
+				++this_it;
+				++undo_it;
+			}
+			**undo_it = *single_line;
+		}
+		else {
 			UndoStack.back() = *this;
+		}
 		AnnounceCommit(type);
 		return commitId;
 	}

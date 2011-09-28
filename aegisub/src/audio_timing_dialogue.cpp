@@ -392,7 +392,7 @@ void AudioTimingControllerDialogue::Commit()
 			commit_id = -1; // never coalesce with a manually triggered commit
 		}
 		else
-			commit_id = ass->Commit(_("timing"), AssFile::COMMIT_DIAG_TIME, commit_id);
+			commit_id = context->ass->Commit(_("timing"), AssFile::COMMIT_DIAG_TIME, commit_id, selection_controller->GetActiveLine());
 
 		commit_slot.Unblock();
 		timing_modified = false;
