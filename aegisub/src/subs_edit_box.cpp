@@ -463,6 +463,7 @@ void SubsEditBox::NextLine() {
 		entryIter pos = find(c->ass->Line.begin(), c->ass->Line.end(), line);
 		c->ass->Line.insert(++pos, newline);
 		c->ass->Commit(_("line insertion"), AssFile::COMMIT_DIAG_ADDREM);
+		c->selectionController->NextLine();
 	}
 }
 
