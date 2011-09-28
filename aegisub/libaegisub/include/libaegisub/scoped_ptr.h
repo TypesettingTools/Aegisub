@@ -20,6 +20,10 @@
 
 #pragma once
 
+#ifndef LAGI_PRE
+#include <algorithm>
+#endif
+
 namespace agi {
 
 /// @class scoped_ptr
@@ -36,14 +40,14 @@ public:
 	T* operator->() const { return ptr; }
 	T* get() const { return ptr; }
 
-	void reset(T *p = NULL) {
+	void reset(T *p = 0) {
 		delete ptr;
 		ptr = p;
 	}
 
 	void swap(scoped_ptr &b) { using std::swap; swap(ptr, b.ptr); }
 
-	explicit scoped_ptr(T *ptr = NULL) : ptr(ptr){ }
+	explicit scoped_ptr(T *ptr = 0) : ptr(ptr){ }
 	~scoped_ptr() { delete ptr; }
 };
 
