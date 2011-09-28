@@ -42,6 +42,7 @@
 #include <vector>
 
 #include <wx/dialog.h>
+#include <wx/filename.h>
 #include <wx/gauge.h>
 #include <wx/sizer.h>
 #include <wx/stattext.h>
@@ -312,63 +313,39 @@ namespace Automation4 {
 		ProgressSink(agi::ProgressSink *impl, BackgroundScriptRunner *bsr);
 	};
 
-
-
-	/// DOCME
-	/// @class Script
-	/// @brief DOCME
-	///
-	/// DOCME
 	class Script {
-	private:
-
-		/// DOCME
 		wxString filename;
 
 	protected:
-
-		/// DOCME
-		wxString name;
-
-		/// DOCME
-		wxString description;
-
-		/// DOCME
-		wxString author;
-
-		/// DOCME
-		wxString version;
-
-		/// DOCME
-		bool loaded; // is the script properly loaded?
-
-
-		/// DOCME
+		/// The automation include path, consisting of the user-specified paths
+		/// along with the script's path
 		wxPathList include_path;
-
-
-		/// DOCME
-		std::vector<Feature*> features;
-
-		Script(const wxString &_filename);
+		Script(wxString const& filename);
 
 	public:
-		virtual ~Script();
+		virtual ~Script() { }
 
+		/// Reload this script
 		virtual void Reload() = 0;
 
-		const wxString& GetFilename() const;
-		wxString GetPrettyFilename() const;
-		const wxString& GetName() const;
-		const wxString& GetDescription() const;
-		const wxString& GetAuthor() const;
-		const wxString& GetVersion() const;
-		bool GetLoadedState() const;
+		/// The script's file name with path
+		wxString GetFilename() const { return filename; }
+		/// The script's file name without path
+		wxString GetPrettyFilename() const { return wxFileName(filename).GetFullName(); }
+		/// The script's name. Not required to be unique.
+		virtual wxString GetName() const=0;
+		/// A short description of the script
+		virtual wxString GetDescription() const=0;
+		/// The author of the script
+		virtual wxString GetAuthor() const=0;
+		/// A version string that should not be used for anything but display
+		virtual wxString GetVersion() const=0;
+		/// Did the script load correctly?
+		virtual bool GetLoadedState() const=0;
 
-		std::vector<Feature*>& GetFeatures();
+		/// Get a list of features provided by this script
+		virtual std::vector<Feature*> GetFeatures() const=0;
 	};
-
-
 
 	/// DOCME
 	/// @class ScriptManager
@@ -477,11 +454,16 @@ namespace Automation4 {
 	/// automation engines
 	class UnknownScript : public Script {
 	public:
-		UnknownScript(const wxString &filename);
+		UnknownScript(wxString const& filename);
 
-		/// @brief DOCME
-		///
-		void Reload() { };
+		void Reload() { }
+
+		wxString GetName() const { return wxFileName(GetFilename()).GetName(); }
+		wxString GetDescription() const { return _("File was not recognized as a script"); }
+		wxString GetAuthor() const { return ""; }
+		wxString GetVersion() const { return ""; }
+		bool GetLoadedState() const { return false; }
+
+		std::vector<Feature*> GetFeatures() const { return std::vector<Feature*>(); }
 	};
-
 };

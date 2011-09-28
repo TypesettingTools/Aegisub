@@ -36,6 +36,8 @@
 
 #include "config.h"
 
+#include "auto4_base.h"
+
 #ifndef AGI_PRE
 #ifdef __WINDOWS__
 #include <tchar.h>
@@ -60,7 +62,6 @@
 
 #include "ass_file.h"
 #include "ass_style.h"
-#include "auto4_base.h"
 #include "compat.h"
 #include "dialog_progress.h"
 #include "include/aegisub/context.h"
@@ -497,20 +498,9 @@ namespace Automation4 {
 		impl->Run(bind(progress_sink_wrapper, task, std::tr1::placeholders::_1, this), prio);
 	}
 
-
 	// Script
-
-
-	/// @brief DOCME
-	/// @param _filename 
-	///
-	Script::Script(const wxString &_filename)
-		: filename(_filename)
-		, name("")
-		, description("")
-		, author("")
-		, version("")
-		, loaded(false)
+	Script::Script(wxString const& filename)
+	: filename(filename)
 	{
 		// copied from auto3
 		include_path.clear();
@@ -525,90 +515,6 @@ namespace Automation4 {
 			include_path.Add(path.GetLongPath());
 		}
 	}
-
-
-	/// @brief DOCME
-	///
-	Script::~Script()
-	{
-		for (std::vector<Feature*>::iterator f = features.begin(); f != features.end(); ++f) {
-			delete *f;
-		}
-	}
-
-
-	/// @brief DOCME
-	/// @return 
-	///
-	wxString Script::GetPrettyFilename() const
-	{
-		wxFileName fn(filename);
-		return fn.GetFullName();
-	}
-
-
-	/// @brief DOCME
-	/// @return 
-	///
-	const wxString& Script::GetFilename() const
-	{
-		return filename;
-	}
-
-
-	/// @brief DOCME
-	/// @return 
-	///
-	const wxString& Script::GetName() const
-	{
-		return name;
-	}
-
-
-	/// @brief DOCME
-	/// @return 
-	///
-	const wxString& Script::GetDescription() const
-	{
-		return description;
-	}
-
-
-	/// @brief DOCME
-	/// @return 
-	///
-	const wxString& Script::GetAuthor() const
-	{
-		return author;
-	}
-
-
-	/// @brief DOCME
-	/// @return 
-	///
-	const wxString& Script::GetVersion() const
-	{
-		return version;
-	}
-
-
-	/// @brief DOCME
-	/// @return 
-	///
-	bool Script::GetLoadedState() const
-	{
-		return loaded;
-	}
-
-
-	/// @brief DOCME
-	/// @return 
-	///
-	std::vector<Feature*>& Script::GetFeatures()
-	{
-		return features;
-	}
-
 
 	// ScriptManager
 
@@ -923,18 +829,8 @@ namespace Automation4 {
 
 
 	// UnknownScript
-
-
-	/// @brief DOCME
-	/// @param filename 
-	///
-	UnknownScript::UnknownScript(const wxString &filename)
-		: Script(filename)
+	UnknownScript::UnknownScript(wxString const& filename)
+	: Script(filename)
 	{
-		wxFileName fn(filename);
-		name = fn.GetName();
-		description = _("File was not recognized as a script");
-		loaded = false;
 	}
-
 };

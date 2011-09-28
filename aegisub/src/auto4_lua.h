@@ -271,45 +271,7 @@ namespace Automation4 {
 		void ThrowError();
 	};
 
-
-
-	/// DOCME
-	/// @class LuaScript
-	/// @brief DOCME
-	///
-	/// DOCME
-	class LuaScript : public Script {
-		friend class LuaFeature;
-
-	private:
-
-		/// DOCME
-		lua_State *L;
-
-		void Create(); // load script and create internal structures etc.
-		void Destroy(); // destroy internal structures, unreg features and delete environment
-
-		static LuaScript* GetScriptObject(lua_State *L);
-
-		static int LuaTextExtents(lua_State *L);
-		static int LuaInclude(lua_State *L);
-		static int LuaModuleLoader(lua_State *L);
-		static int LuaFrameFromMs(lua_State *L);
-		static int LuaMsFromFrame(lua_State *L);
-		static int LuaVideoSize(lua_State *L);
-
-	public:
-		LuaScript(const wxString &filename);
-		virtual ~LuaScript();
-
-		virtual void Reload();
-	};
-
-
-
 	void LuaThreadedCall(lua_State *L, int nargs, int nresults, wxString const& title, wxWindow *parent, bool can_open_config);
-
-
 
 	/// DOCME
 	/// @class LuaFeatureMacro
@@ -333,8 +295,6 @@ namespace Automation4 {
 		virtual bool Validate(AssFile *subs, const std::vector<int> &selected, int active);
 		virtual void Process(AssFile *subs, std::vector<int> &selected, int active, wxWindow * const progress_parent);
 	};
-
-
 
 	/// DOCME
 	/// @class LuaFeatureFilter
@@ -367,4 +327,45 @@ namespace Automation4 {
 		void ProcessSubs(AssFile *subs, wxWindow *export_dialog);
 	};
 
+	class LuaScript : public Script {
+		lua_State *L;
+
+		wxString name;
+		wxString description;
+		wxString author;
+		wxString version;
+
+		std::vector<Feature*> features;
+
+		/// load script and create internal structures etc.
+		void Create();
+		/// destroy internal structures, unreg features and delete environment
+		void Destroy();
+
+		static int LuaTextExtents(lua_State *L);
+		static int LuaInclude(lua_State *L);
+		static int LuaModuleLoader(lua_State *L);
+		static int LuaFrameFromMs(lua_State *L);
+		static int LuaMsFromFrame(lua_State *L);
+		static int LuaVideoSize(lua_State *L);
+
+	public:
+		LuaScript(const wxString &filename);
+		~LuaScript();
+
+		static LuaScript* GetScriptObject(lua_State *L);
+
+		int RegisterFeature(Feature *feature);
+
+		// Script implementation
+		void Reload();
+
+		wxString GetName() const { return name; }
+		wxString GetDescription() const { return description; }
+		wxString GetAuthor() const { return author; }
+		wxString GetVersion() const { return version; }
+		bool GetLoadedState() const { return L != 0; }
+
+		std::vector<Feature*> GetFeatures() const { return features; }
+	};
 };
