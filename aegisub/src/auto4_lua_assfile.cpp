@@ -167,7 +167,17 @@ namespace {
 		return 0;
 	}
 
+	int modification_mask(AssEntry *e)
+	{
+		switch (e->GetType())
+		{
+			case ENTRY_DIALOGUE: return AssFile::COMMIT_DIAG_ADDREM;
+			case ENTRY_STYLE: return AssFile::COMMIT_STYLES;
+			case ENTRY_ATTACHMENT: return AssFile::COMMIT_ATTACHMENT;
+			default: return AssFile::COMMIT_SCRIPTINFO;
 		}
+	}
+}
 
 namespace Automation4 {
 	void LuaAssFile::CheckAllowModify()
@@ -370,6 +380,9 @@ namespace Automation4 {
 
 	void LuaAssFile::SeekCursorTo(int n)
 	{
+		if (n <= 0 || n > (int)ass->Line.size())
+			luaL_error(L, "Requested out-of-range line from subtitle file: %d", n);
+
 		if (n < last_entry_id - n) {
 			// fastest to search from start
 			last_entry_ptr = ass->Line.begin();
@@ -390,18 +403,10 @@ namespace Automation4 {
 	{
 		switch (lua_type(L, 2)) {
 			case LUA_TNUMBER:
-			{
 				// read an indexed AssEntry
-
-				// get requested index
-				int reqid = lua_tointeger(L, 2);
-				if (reqid <= 0 || reqid > (int)ass->Line.size())
-					return luaL_error(L, "Requested out-of-range line from subtitle file: %d", reqid);
-
-				SeekCursorTo(reqid);
+				SeekCursorTo(lua_tointeger(L, 2));
 				AssEntryToLua(L, *last_entry_ptr);
 				return 1;
-			}
 
 			case LUA_TSTRING:
 			{
@@ -447,7 +452,6 @@ namespace Automation4 {
 		// after modifying the stack to match their expectations
 
 		CheckAllowModify();
-		is_modified = true;
 
 		int n = luaL_checkint(L, 2);
 		if (n < 0) {
@@ -468,6 +472,7 @@ namespace Automation4 {
 			if (!lua_isnil(L, 3)) {
 				// insert
 				AssEntry *e = LuaToAssEntry(L);
+				modification_type |= modification_mask(e);
 				SeekCursorTo(n);
 				delete *last_entry_ptr;
 				*last_entry_ptr = e;
@@ -502,7 +507,6 @@ namespace Automation4 {
 			ids.push_back(n);
 			--itemcount;
 		}
-		is_modified = true;
 
 		// sort the item id's so we can delete from last to first to preserve original numbering
 		sort(ids.begin(), ids.end());
@@ -514,6 +518,7 @@ namespace Automation4 {
 				--last_entry_ptr;
 				--last_entry_id;
 			}
+			modification_type |= modification_mask(*last_entry_ptr);
 			delete *last_entry_ptr;
 			ass->Line.erase(last_entry_ptr++);
 		}
@@ -523,14 +528,13 @@ namespace Automation4 {
 	{
 		CheckAllowModify();
 
-		is_modified = true;
-
 		int a = std::max<int>(luaL_checkinteger(L, 1), 1);
 		int b = std::min<int>(luaL_checkinteger(L, 2), ass->Line.size());
 
 		SeekCursorTo(a);
 
 		while (a++ <= b) {
+			modification_type |= modification_mask(*last_entry_ptr);
 			delete *last_entry_ptr;
 			ass->Line.erase(last_entry_ptr++);
 		}
@@ -539,7 +543,6 @@ namespace Automation4 {
 	void LuaAssFile::ObjectAppend(lua_State *L)
 	{
 		CheckAllowModify();
-		is_modified = true;
 
 		int n = lua_gettop(L);
 
@@ -551,6 +554,7 @@ namespace Automation4 {
 		for (int i = 1; i <= n; i++) {
 			lua_pushvalue(L, i);
 			AssEntry *e = LuaToAssEntry(L);
+			modification_type |= modification_mask(*last_entry_ptr);
 			if (e->GetType() == ENTRY_DIALOGUE) {
 				// find insertion point, looking backwards
 				std::list<AssEntry*>::iterator it = ass->Line.end();
@@ -577,11 +581,12 @@ namespace Automation4 {
 
 		SeekCursorTo(before);
 
-		is_modified = true;
 		int n = lua_gettop(L);
 		for (int i = 2; i <= n; i++) {
 			lua_pushvalue(L, i);
-			ass->Line.insert(last_entry_ptr, LuaToAssEntry(L));
+			AssEntry *e = LuaToAssEntry(L);
+			modification_type |= modification_mask(e);
+			ass->Line.insert(last_entry_ptr, e);
 			lua_pop(L, 1);
 		}
 
@@ -635,9 +640,9 @@ namespace Automation4 {
 		if (!can_set_undo)
 			luaL_error(L, "Attempt to set an undo point in a context where it makes no sense to do so.");
 
-		if (is_modified) {
-			ass->Commit(wxString(luaL_checkstring(L, 1), wxConvUTF8), AssFile::COMMIT_NEW);
-			is_modified = false;
+		if (modification_type) {
+			ass->Commit(wxString(luaL_checkstring(L, 1), wxConvUTF8), modification_type);
+			modification_type = 0;
 		}
 	}
 
@@ -650,9 +655,9 @@ namespace Automation4 {
 
 	void LuaAssFile::ProcessingComplete(wxString const& undo_description)
 	{
-		if (is_modified && can_set_undo && !undo_description.empty()) {
-			ass->Commit(undo_description, AssFile::COMMIT_NEW);
-			is_modified = false;
+		if (modification_type && can_set_undo && !undo_description.empty()) {
+			ass->Commit(undo_description, modification_type);
+			modification_type = 0;
 		}
 		references--;
 		if (!references) delete this;
@@ -663,12 +668,11 @@ namespace Automation4 {
 	, L(L)
 	, can_modify(can_modify)
 	, can_set_undo(can_set_undo)
+	, modification_type(0)
 	, references(2)
+	, last_entry_ptr(ass->Line.begin())
+	, last_entry_id(1)
 	{
-		// prepare cursor
-		last_entry_ptr = ass->Line.begin();
-		last_entry_id = 1;
-
 		// prepare userdata object
 		*static_cast<LuaAssFile**>(lua_newuserdata(L, sizeof(LuaAssFile**))) = this;
 

@@ -66,11 +66,11 @@ namespace Automation4 {
 		bool can_modify;
 		/// Is the feature allowed to set undo points?
 		bool can_set_undo;
-
-		/// Has the ass file been modified by the script?
-		bool is_modified;
 		/// throws an error if modification is disallowed
 		void CheckAllowModify();
+
+		/// How ass file been modified by the script since the last commit
+		int modification_type;
 
 		/// Reference count used to avoid deleting this until both lua and the
 		/// calling C++ code are done with it
