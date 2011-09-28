@@ -380,18 +380,18 @@ namespace Automation4 {
 
 	void LuaAssFile::SeekCursorTo(int n)
 	{
-		if (n <= 0 || n > (int)ass->Line.size())
+		if (n <= 0 || n > (int)lines.size())
 			luaL_error(L, "Requested out-of-range line from subtitle file: %d", n);
 
 		if (n < last_entry_id - n) {
 			// fastest to search from start
-			last_entry_ptr = ass->Line.begin();
+			last_entry_ptr = lines.begin();
 			last_entry_id = 1;
 		}
-		else if ((int)ass->Line.size() - last_entry_id < abs(last_entry_id - n)) {
+		else if ((int)lines.size() - last_entry_id < abs(last_entry_id - n)) {
 			// fastest to search from end
-			last_entry_ptr = ass->Line.end();
-			last_entry_id = ass->Line.size() + 1;
+			last_entry_ptr = lines.end();
+			last_entry_id = lines.size() + 1;
 		}
 		// otherwise fastest to search from cursor
 
@@ -415,7 +415,7 @@ namespace Automation4 {
 
 				if (strcmp(idx, "n") == 0) {
 					// get number of items
-					lua_pushnumber(L, ass->Line.size());
+					lua_pushnumber(L, lines.size());
 					return 1;
 				}
 
@@ -474,7 +474,7 @@ namespace Automation4 {
 				AssEntry *e = LuaToAssEntry(L);
 				modification_type |= modification_mask(e);
 				SeekCursorTo(n);
-				delete *last_entry_ptr;
+				lines_to_delete.push_back(*last_entry_ptr);
 				*last_entry_ptr = e;
 			}
 			else {
@@ -488,7 +488,7 @@ namespace Automation4 {
 
 	int LuaAssFile::ObjectGetLen(lua_State *L)
 	{
-		lua_pushnumber(L, ass->Line.size());
+		lua_pushnumber(L, lines.size());
 		return 1;
 	}
 
@@ -503,7 +503,7 @@ namespace Automation4 {
 
 		while (itemcount > 0) {
 			int n = luaL_checkint(L, itemcount);
-			luaL_argcheck(L, n > 0 && n <= (int)ass->Line.size(), itemcount, "Out of range line index");
+			luaL_argcheck(L, n > 0 && n <= (int)lines.size(), itemcount, "Out of range line index");
 			ids.push_back(n);
 			--itemcount;
 		}
@@ -519,8 +519,8 @@ namespace Automation4 {
 				--last_entry_id;
 			}
 			modification_type |= modification_mask(*last_entry_ptr);
-			delete *last_entry_ptr;
-			ass->Line.erase(last_entry_ptr++);
+			lines_to_delete.push_back(*last_entry_ptr);
+			lines.erase(last_entry_ptr++);
 		}
 	}
 
@@ -529,14 +529,14 @@ namespace Automation4 {
 		CheckAllowModify();
 
 		int a = std::max<int>(luaL_checkinteger(L, 1), 1);
-		int b = std::min<int>(luaL_checkinteger(L, 2), ass->Line.size());
+		int b = std::min<int>(luaL_checkinteger(L, 2), lines.size());
 
 		SeekCursorTo(a);
 
 		while (a++ <= b) {
 			modification_type |= modification_mask(*last_entry_ptr);
-			delete *last_entry_ptr;
-			ass->Line.erase(last_entry_ptr++);
+			lines_to_delete.push_back(*last_entry_ptr);
+			lines.erase(last_entry_ptr++);
 		}
 	}
 
@@ -546,7 +546,7 @@ namespace Automation4 {
 
 		int n = lua_gettop(L);
 
-		if (last_entry_ptr != ass->Line.begin()) {
+		if (last_entry_ptr != lines.begin()) {
 			last_entry_ptr--;
 			last_entry_id--;
 		}
@@ -557,14 +557,14 @@ namespace Automation4 {
 			modification_type |= modification_mask(*last_entry_ptr);
 			if (e->GetType() == ENTRY_DIALOGUE) {
 				// find insertion point, looking backwards
-				std::list<AssEntry*>::iterator it = ass->Line.end();
+				std::list<AssEntry*>::iterator it = lines.end();
 				do { --it; } while ((*it)->GetType() != ENTRY_DIALOGUE);
 				// found last dialogue entry in file, move one past
 				++it;
-				ass->Line.insert(it, e);
+				lines.insert(it, e);
 			}
 			else {
-				ass->Line.push_back(e);
+				lines.push_back(e);
 			}
 		}
 	}
@@ -576,7 +576,7 @@ namespace Automation4 {
 		int before = luaL_checkinteger(L, 1);
 
 		// + 1 to allow appending at the end of the file
-		luaL_argcheck(L, before > 0 && before <= (int)ass->Line.size() + 1, 1,
+		luaL_argcheck(L, before > 0 && before <= (int)lines.size() + 1, 1,
 			"Out of range line index");
 
 		SeekCursorTo(before);
@@ -586,7 +586,7 @@ namespace Automation4 {
 			lua_pushvalue(L, i);
 			AssEntry *e = LuaToAssEntry(L);
 			modification_type |= modification_mask(e);
-			ass->Line.insert(last_entry_ptr, e);
+			lines.insert(last_entry_ptr, e);
 			lua_pop(L, 1);
 		}
 
@@ -641,7 +641,12 @@ namespace Automation4 {
 			luaL_error(L, "Attempt to set an undo point in a context where it makes no sense to do so.");
 
 		if (modification_type) {
-			ass->Commit(wxString(luaL_checkstring(L, 1), wxConvUTF8), modification_type);
+			pending_commits.push_back(PendingCommit());
+			PendingCommit& back = pending_commits.back();
+
+			back.modification_type = modification_type;
+			back.mesage = wxString(luaL_checkstring(L, 1), wxConvUTF8);
+			back.lines = lines;
 			modification_type = 0;
 		}
 	}
@@ -655,10 +660,26 @@ namespace Automation4 {
 
 	void LuaAssFile::ProcessingComplete(wxString const& undo_description)
 	{
-		if (modification_type && can_set_undo && !undo_description.empty()) {
-			ass->Commit(undo_description, modification_type);
-			modification_type = 0;
+		// Apply any pending commits
+		for (std::deque<PendingCommit>::iterator it = pending_commits.begin(); it != pending_commits.end(); ++it) {
+			swap(ass->Line, it->lines);
+			ass->Commit(it->mesage, it->modification_type);
 		}
+
+		// Commit any changes after the last undo point was set
+		if (modification_type)
+			swap(ass->Line, lines);
+		if (modification_type && can_set_undo && !undo_description.empty())
+			ass->Commit(undo_description, modification_type);
+
+		delete_clear(lines_to_delete);
+
+		references--;
+		if (!references) delete this;
+	}
+
+	void LuaAssFile::Cancel()
+	{
 		references--;
 		if (!references) delete this;
 	}
@@ -670,7 +691,8 @@ namespace Automation4 {
 	, can_set_undo(can_set_undo)
 	, modification_type(0)
 	, references(2)
-	, last_entry_ptr(ass->Line.begin())
+	, lines(ass->Line)
+	, last_entry_ptr(lines.begin())
 	, last_entry_id(1)
 	{
 		// prepare userdata object

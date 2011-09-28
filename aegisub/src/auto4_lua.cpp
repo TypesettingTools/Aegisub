@@ -488,12 +488,7 @@ namespace Automation4 {
 	void LuaThreadedCall(lua_State *L, int nargs, int nresults, wxString const& title, wxWindow *parent, bool can_open_config)
 	{
 		BackgroundScriptRunner bsr(parent, title);
-		try {
-			bsr.Run(bind(lua_threaded_call, std::tr1::placeholders::_1, L, nargs, nresults, can_open_config));
-		}
-		catch (agi::UserCancelException const&) {
-			/// @todo perhaps this needs to continue up for exporting?
-		}
+		bsr.Run(bind(lua_threaded_call, std::tr1::placeholders::_1, L, nargs, nresults, can_open_config));
 	}
 
 	// LuaFeature
@@ -635,43 +630,46 @@ namespace Automation4 {
 		LuaAssFile *subsobj = new LuaAssFile(L, c->ass, true, true);
 		lua_pushinteger(L, transform_selection(L, c));
 
-		// do call
-		// 3 args: subtitles, selected lines, active line
-		// 1 result: new selected lines
-		LuaThreadedCall(L, 3, 1, StrDisplay(c), c->parent, true);
+		try {
+			LuaThreadedCall(L, 3, 1, StrDisplay(c), c->parent, true);
 
-		subsobj->ProcessingComplete(StrDisplay(c));
+			subsobj->ProcessingComplete(StrDisplay(c));
 
-		// top of stack will be selected lines array, if any was returned
-		if (lua_istable(L, -1)) {
-			std::set<AssDialogue*> sel;
-			entryIter it = c->ass->Line.begin();
-			int last_idx = 1;
-			lua_pushnil(L);
-			while (lua_next(L, -2)) {
-				if (lua_isnumber(L, -1)) {
-					int cur = lua_tointeger(L, -1);
-					if (cur < 1 || cur > (int)c->ass->Line.size()) {
-						wxLogError("Selected row %d is out of bounds (must be 1-%u)", cur, c->ass->Line.size());
-						break;
+			// top of stack will be selected lines array, if any was returned
+			if (lua_istable(L, -1)) {
+				std::set<AssDialogue*> sel;
+				entryIter it = c->ass->Line.begin();
+				int last_idx = 1;
+				lua_pushnil(L);
+				while (lua_next(L, -2)) {
+					if (lua_isnumber(L, -1)) {
+						int cur = lua_tointeger(L, -1);
+						if (cur < 1 || cur > (int)c->ass->Line.size()) {
+							wxLogError("Selected row %d is out of bounds (must be 1-%u)", cur, c->ass->Line.size());
+							break;
+						}
+
+						advance(it, cur - last_idx);
+
+						AssDialogue *diag = dynamic_cast<AssDialogue*>(*it);
+						if (!diag) {
+							wxLogError("Selected row %d is not a dialogue line", cur);
+							break;
+						}
+
+						sel.insert(diag);
+						last_idx = cur;
 					}
-
-					advance(it, cur - last_idx);
-
-					AssDialogue *diag = dynamic_cast<AssDialogue*>(*it);
-					if (!diag) {
-						wxLogError("Selected row %d is not a dialogue line", cur);
-						break;
-					}
-
-					sel.insert(diag);
-					last_idx = cur;
+					lua_pop(L, 1);
 				}
-				lua_pop(L, 1);
-			}
 
-			c->selectionController->SetSelectedSet(sel);
+				c->selectionController->SetSelectedSet(sel);
+			}
 		}
+		catch (agi::UserCancelException const&) {
+			subsobj->Cancel();
+		}
+
 		// either way, there will be something on the stack
 		lua_pop(L, 1);
 	}
@@ -762,11 +760,15 @@ namespace Automation4 {
 		assert(lua_istable(L, -1));
 		stackcheck.check_stack(3);
 
-		LuaThreadedCall(L, 2, 0, GetName(), export_dialog, false);
-
-		stackcheck.check_stack(0);
-
-		subsobj->ProcessingComplete();
+		try {
+			LuaThreadedCall(L, 2, 0, GetName(), export_dialog, false);
+			stackcheck.check_stack(0);
+			subsobj->ProcessingComplete();
+		}
+		catch (agi::UserCancelException const&) {
+			subsobj->Cancel();
+			throw;
+		}
 	}
 
 	ScriptDialog* LuaExportFilter::GenerateConfigDialog(wxWindow *parent, agi::Context *c)

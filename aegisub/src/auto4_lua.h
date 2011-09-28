@@ -35,6 +35,8 @@
 ///
 
 #ifndef AGI_PRE
+#include <deque>
+
 #include <wx/event.h>
 #include <wx/thread.h>
 #endif
@@ -53,6 +55,12 @@ namespace Automation4 {
 	/// @class LuaAssFile
 	/// @brief Object wrapping an AssFile object for modification through Lua
 	class LuaAssFile {
+		struct PendingCommit {
+			wxString mesage;
+			int modification_type;
+			std::list<AssEntry*> lines;
+		};
+
 		/// Pointer to file being modified
 		AssFile *ass;
 
@@ -72,6 +80,13 @@ namespace Automation4 {
 		/// Reference count used to avoid deleting this until both lua and the
 		/// calling C++ code are done with it
 		int references;
+
+		/// Set of subtitle lines being modified; initially a shallow copy of ass->Line
+		std::list<AssEntry*> lines;
+		/// Commits to apply once processing completes successfully
+		std::deque<PendingCommit> pending_commits;
+		/// Lines to delete once processing complete successfully
+		std::deque<AssEntry*> lines_to_delete;
 
 		/// Cursor for last access into file
 		std::list<AssEntry*>::iterator last_entry_ptr;
@@ -110,6 +125,9 @@ namespace Automation4 {
 		///                 they will be automatically committed with this
 		///                 description
 		void ProcessingComplete(wxString const& undo_description = "");
+
+		/// End processing without applying any changes made
+		void Cancel();
 
 		/// Constructor
 		/// @param L lua state
@@ -219,6 +237,14 @@ namespace Automation4 {
 		LuaFeature(lua_State *L);
 	};
 
+	/// Run a lua function on a background thread
+	/// @param L Lua state
+	/// @param nargs Number of arguments the function takes
+	/// @param nresults Number of values the function returns
+	/// @param title Title to use for the progress dialog
+	/// @param parent Parent window for the progress dialog
+	/// @param can_open_config Can the function open its own dialogs?
+	/// @throws agi::UserCancelException if the function fails to run to completion (either due to cancelling or errors)
 	void LuaThreadedCall(lua_State *L, int nargs, int nresults, wxString const& title, wxWindow *parent, bool can_open_config);
 
 	class LuaCommand : public cmd::Command, private LuaFeature {
