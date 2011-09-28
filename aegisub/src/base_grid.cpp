@@ -38,6 +38,7 @@
 
 #ifndef AGI_PRE
 #include <algorithm>
+#include <cmath>
 #include <iterator>
 
 #include <wx/dcclient.h>
@@ -174,6 +175,8 @@ void BaseGrid::UpdateMaps(bool preserve_selected_rows) {
 			bind1st(std::mem_fun(&BaseGrid::GetDialogueIndex), this));
 	}
 
+	size_t old_diag_count = index_line_map.size();
+
 	index_line_map.clear();
 	line_index_map.clear();
 
@@ -243,6 +246,9 @@ void BaseGrid::UpdateMaps(bool preserve_selected_rows) {
 	}
 
 	EndBatch();
+
+	if ((int)log10((double)old_diag_count) != (int)log10((double)index_line_map.size()))
+		SetColumnWidths();
 
 	Refresh(false);
 }
