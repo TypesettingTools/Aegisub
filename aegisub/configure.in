@@ -760,25 +760,15 @@ fi
 LIBS="$aegisub_save_LIBS"
 
 if test "$agi_cv_with_lua" = "yes"; then
-  with_automation="yes"
   with_auto4_lua="yes"
   AC_DEFINE(WITH_AUTO4_LUA, 1, [Enable Automation (auto4), requires lua])
 else
-  with_automation="no"
   with_auto4_lua="no"
 fi
 
 AC_SUBST(with_auto4_lua)
 AC_SUBST(LUA_CFLAGS)
 AC_SUBST(LUA_LDFLAGS)
-
-# Automation setup
-if test "$with_automation" = "yes"; then
-  AC_DEFINE(WITH_AUTOMATION, 1, [Enable Automation support, requires any automation language.])
-fi  
-AC_SUBST(with_automation)
-
-
 
 ################
 # Widget support

@@ -58,9 +58,7 @@
 #include "ass_file.h"
 #include "audio_controller.h"
 #include "audio_box.h"
-#ifdef WITH_AUTOMATION
 #include "auto4_base.h"
-#endif
 #include "compat.h"
 #include "command/command.h"
 #include "dialog_search_replace.h"
@@ -124,9 +122,7 @@ FrameMain::FrameMain (wxArrayString args)
 	context->ass->AddFileOpenListener(&FrameMain::OnSubtitlesOpen, this);
 	context->ass->AddFileSaveListener(&FrameMain::UpdateTitle, this);
 
-#ifdef WITH_AUTOMATION
 	context->local_scripts = new Automation4::ScriptManager();
-#endif
 
 	StartupLog("Initializing context controls");
 	context->audioController = new AudioController;
@@ -232,9 +228,7 @@ FrameMain::~FrameMain () {
 	delete context->ass;
 	HelpButton::ClearPages();
 	delete context->audioController;
-#ifdef WITH_AUTOMATION
 	delete context->local_scripts;
-#endif
 
 	SubsGrid->Destroy();
 }
@@ -684,9 +678,7 @@ void FrameMain::OnSubtitlesOpen() {
 		curSubsVFR != context->videoController->GetTimecodesName() ||
 		curSubsVideo != context->videoController->videoName ||
 		curSubsKeyframes != context->videoController->GetKeyFramesName()
-#ifdef WITH_AUTOMATION
 		|| !AutoScriptString.IsEmpty() || context->local_scripts->GetScripts().size() > 0
-#endif
 		)
 	{
 		if (autoLoadMode == 1) {
@@ -734,7 +726,6 @@ void FrameMain::OnSubtitlesOpen() {
 		}
 
 		// Automation scripts
-#ifdef WITH_AUTOMATION
 		context->local_scripts->RemoveAll();
 		wxStringTokenizer tok(AutoScriptString, "|", wxTOKEN_STRTOK);
 		wxFileName assfn(context->ass->filename);
@@ -765,7 +756,6 @@ void FrameMain::OnSubtitlesOpen() {
 					sfnamel, sfnames, basepath, sfname.GetFullPath());
 			}
 		}
-#endif
 	}
 
 	// Display
@@ -781,7 +771,6 @@ void FrameMain::OnSubtitlesSave() {
 	// 2. Otherwise try making it relative to the ass filename
 	// 3. If step 2 failed, or absolute path is shorter than path relative to ass, use absolute path ("/")
 	// 4. Otherwise, use path relative to ass ("~")
-#ifdef WITH_AUTOMATION
 	wxString scripts_string;
 	wxString autobasefn(lagi_wxString(OPT_GET("Path/Automation/Base")->GetString()));
 
@@ -808,7 +797,6 @@ void FrameMain::OnSubtitlesSave() {
 		scripts_string += scriptfn;
 	}
 	context->ass->SetScriptInfo("Automation Scripts", scripts_string);
-#endif
 }
 
 void FrameMain::OnKeyDown(wxKeyEvent &event) {

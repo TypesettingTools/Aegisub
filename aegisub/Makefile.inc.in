@@ -3,7 +3,6 @@
 #########################
 HAVE_ALSA					= @with_alsa@
 HAVE_AUTO4_LUA				= @with_auto4_lua@
-HAVE_AUTOMATION				= @with_automation@
 HAVE_HUNSPELL				= @with_hunspell@
 HAVE_OPENAL					= @with_openal@
 HAVE_OPENMP					= @with_openmp@

@@ -134,7 +134,7 @@
   <!-- Automation Lua support -->
   <ItemDefinitionGroup Condition="'$(AegisubUseAutomationLua)'=='true'">
     <ClCompile>
-      <PreprocessorDefinitions Condition="'$(AegisubUseConfigWindowsH)'=='false'">WITH_AUTOMATION;WITH_AUTO4_LUA;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions Condition="'$(AegisubUseConfigWindowsH)'=='false'">WITH_AUTO4_LUA;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(AegisubContribBase)lua51\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>

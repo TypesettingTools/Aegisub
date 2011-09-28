@@ -61,9 +61,7 @@
 #include "ass_file.h"
 #include "ass_time.h"
 #include "audio_box.h"
-#ifdef WITH_AUTOMATION
 #include "auto4_base.h"
-#endif
 #include "charset_conv.h"
 #include "compat.h"
 #include "export_clean_info.h"
@@ -276,10 +274,8 @@ bool AegisubApp::OnInit() {
 		plugins->RegisterBuiltInPlugins();
 
 		// Load Automation scripts
-#ifdef WITH_AUTOMATION
 		StartupLog("Load global Automation scripts");
 		global_scripts = new Automation4::AutoloadScriptManager(lagi_wxString(OPT_GET("Path/Automation/Autoload")->GetString()));
-#endif
 
 		// Load export filters
 		StartupLog("Register export filters");
@@ -335,9 +331,7 @@ int AegisubApp::OnExit() {
 	delete config::path;
 	cmd::clear();
 
-#ifdef WITH_AUTOMATION
 	delete global_scripts;
-#endif
 
 	AssExportFilterChain::Clear();
 

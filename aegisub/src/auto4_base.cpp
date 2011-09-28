@@ -36,8 +36,6 @@
 
 #include "config.h"
 
-#ifdef WITH_AUTOMATION
-
 #ifndef AGI_PRE
 #ifdef __WINDOWS__
 #include <tchar.h>
@@ -1059,7 +1057,3 @@ namespace Automation4 {
 	}
 
 };
-
-#endif // WITH_AUTOMATION
-
-

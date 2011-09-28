@@ -37,8 +37,6 @@
 
 #include "config.h"
 
-#ifdef WITH_AUTOMATION
-
 #ifndef AGI_PRE
 #include <wx/filedlg.h>
 #include <wx/filename.h>
@@ -371,7 +369,3 @@ void DialogAutomation::OnSelectionChange(wxListEvent &evt)
 {
 	UpdateDisplay();
 }
-
-#endif // WITH_AUTOMATION
-
-

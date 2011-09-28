@@ -64,7 +64,6 @@ struct am_manager : public Command {
 	STR_HELP("Open automation manager.")
 
 	void operator()(agi::Context *c) {
-#ifdef WITH_AUTOMATION
 #ifdef __APPLE__
 		if (wxGetMouseState().CmdDown()) {
 #else
@@ -94,7 +93,6 @@ struct am_manager : public Command {
 			c->videoController->Stop();
 			DialogAutomation(c->parent, c->local_scripts).ShowModal();
 		}
-#endif
 	}
 };
 

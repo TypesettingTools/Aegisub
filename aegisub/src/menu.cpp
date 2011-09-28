@@ -281,10 +281,8 @@ void process_menu_item(wxMenu *parent, agi::Context *c, json::Object const& ele,
 	}
 
 		if (special == "automation") {
-#ifdef WITH_AUTOMATION
 			/// @todo Actually implement this
 			parent->Append(-1, _("No Automation macros loaded"))->Enable(false);
-#endif
 			return;
 		}
 

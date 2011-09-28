@@ -116,10 +116,8 @@ public:
 	/// DOCME
 	FrameMain *frame;
 
-#ifdef WITH_AUTOMATION
 	/// DOCME
 	Automation4::AutoloadScriptManager *global_scripts;
-#endif
 
 
 	/// @brief DOCME
