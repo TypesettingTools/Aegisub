@@ -510,7 +510,7 @@ wxString KaraokeLineMatchDisplay::GetOutputLine()
 	for (size_t i = 0; i < matched_groups.size(); ++i)
 	{
 		MatchGroup &match = matched_groups[i];
-		res = wxString::Format("%s{\\k%d}%s", res.c_str(), match.duration, match.dst.c_str());
+		res = wxString::Format("%s{\\k%d}%s", res, match.duration, match.dst);
 	}
 
 	return res;

@@ -104,7 +104,7 @@ namespace Automation4 {
 		lf.lfClipPrecision = CLIP_DEFAULT_PRECIS;
 		lf.lfQuality = ANTIALIASED_QUALITY;
 		lf.lfPitchAndFamily = DEFAULT_PITCH|FF_DONTCARE;
-		_tcsncpy(lf.lfFaceName, style->font.c_str(), 32);
+		wcsncpy(lf.lfFaceName, style->font.wc_str(), 32);
 
 		HFONT thefont = CreateFontIndirect(&lf);
 		if (!thefont) return false;
@@ -311,7 +311,7 @@ namespace Automation4 {
 	///
 	wxString FeatureFilter::GetScriptSettingsIdentifier()
 	{
-		return inline_string_encode(wxString::Format("Automation Settings %s", GetName().c_str()));
+		return inline_string_encode(wxString::Format("Automation Settings %s", GetName()));
 	}
 
 
@@ -899,11 +899,11 @@ namespace Automation4 {
 				}
 				catch (const char *e) {
 					error_count++;
-					wxLogError("Error loading Automation script: %s\n%s", fn.c_str(), e);
+					wxLogError("Error loading Automation script: %s\n%s", fn, e);
 				}
 				catch (...) {
 					error_count++;
-					wxLogError("Error loading Automation script: %s\nUnknown error.", fn.c_str());
+					wxLogError("Error loading Automation script: %s\nUnknown error.", fn);
 				}
 				more = dir.GetNext(&fn);
 			}
@@ -991,7 +991,7 @@ namespace Automation4 {
 				Script *s = (*i)->Produce(filename);
 				if (s) {
 					if (!s->GetLoadedState() && log_errors) {
-						wxLogError(_("An Automation script failed to load. File name: '%s', error reported:"), filename.c_str());
+						wxLogError(_("An Automation script failed to load. File name: '%s', error reported:"), filename);
 						wxLogError(s->GetDescription());
 					}
 					return s;
@@ -1004,7 +1004,7 @@ namespace Automation4 {
 			}
 		}
 		if (log_errors) {
-			wxLogWarning(_("The file was not recognised as an Automation script: %s"), filename.c_str());
+			wxLogWarning(_("The file was not recognised as an Automation script: %s"), filename);
 		}
 		return new UnknownScript(filename);
 	}

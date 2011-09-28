@@ -535,7 +535,7 @@ void VideoContext::LoadTimecodes(wxString filename) {
 		config::mru->Remove("Timecodes", STD_STR(filename));
 	}
 	catch (const agi::vfr::Error& e) {
-		wxLogError("Timecode file parse error: %s", e.GetMessage().c_str());
+		wxLogError("Timecode file parse error: %s", e.GetMessage());
 	}
 }
 void VideoContext::SaveTimecodes(wxString filename) {
@@ -571,12 +571,12 @@ void VideoContext::OnVideoError(VideoProviderErrorEvent const& err) {
 	wxLogError(
 		"Failed seeking video. The video file may be corrupt or incomplete.\n"
 		"Error message reported: %s",
-		lagi_wxString(err.GetMessage()).c_str());
+		lagi_wxString(err.GetMessage()));
 }
 void VideoContext::OnSubtitlesError(SubtitlesProviderErrorEvent const& err) {
 	wxLogError(
 		"Failed rendering subtitles. Error message reported: %s",
-		lagi_wxString(err.GetMessage()).c_str());
+		lagi_wxString(err.GetMessage()));
 }
 
 void VideoContext::OnExit() {

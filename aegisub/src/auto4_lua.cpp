@@ -756,7 +756,7 @@ namespace Automation4 {
 		bool result;
 		if (err) {
 			wxString errmsg(lua_tostring(L, -1), wxConvUTF8);
-			wxLogWarning("Runtime error in Lua macro validation function:\n%s", errmsg.c_str());
+			wxLogWarning("Runtime error in Lua macro validation function:\n%s", errmsg);
 			result = false;
 		} else {
 			result = !!lua_toboolean(L, -1);
@@ -948,7 +948,7 @@ namespace Automation4 {
 		int err = lua_pcall(L, 2, 1, 0);
 		if (err) {
 			wxString errmsg(lua_tostring(L, -1), wxConvUTF8);
-			wxLogWarning("Runtime error in Lua macro validation function:\n%s", errmsg.c_str());
+			wxLogWarning("Runtime error in Lua macro validation function:\n%s", errmsg);
 			lua_pop(L, 1); // remove error message
 			return config_dialog = 0;
 		} else {

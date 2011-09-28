@@ -165,7 +165,7 @@ wxString HDAudioProvider::DiskCacheName() {
 	// Try from 00 to 99
 	for (int i=0;i<100;i++) {
 		// File exists?
-		wxString curStringTry = DiskCachePath() + wxString::Format(pattern.c_str(),i);
+		wxString curStringTry = DiskCachePath() + wxString::Format(pattern,i);
 		if (!wxFile::Exists(curStringTry)) return curStringTry;
 	}
 	return "";

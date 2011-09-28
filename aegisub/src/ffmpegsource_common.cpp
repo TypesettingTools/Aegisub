@@ -159,12 +159,12 @@ int FFmpegSourceProvider::AskForTrackSelection(const std::map<int,wxString> &Tra
 		TypeName = _("audio");
 	
 	for (std::map<int,wxString>::const_iterator i = TrackList.begin(); i != TrackList.end(); i++) {
-		Choices.Add(wxString::Format(_("Track %02d: %s"), i->first, i->second.c_str()));
+		Choices.Add(wxString::Format(_("Track %02d: %s"), i->first, i->second));
 		TrackNumbers.push_back(i->first);
 	}
 	
-	int Choice = wxGetSingleChoiceIndex(wxString::Format(_("Multiple %s tracks detected, please choose the one you wish to load:"), TypeName.c_str()),
-		wxString::Format(_("Choose %s track"), TypeName.c_str()), Choices);
+	int Choice = wxGetSingleChoiceIndex(wxString::Format(_("Multiple %s tracks detected, please choose the one you wish to load:"), TypeName),
+		wxString::Format(_("Choose %s track"), TypeName), Choices);
 
 	if (Choice < 0)
 		return Choice;
@@ -301,7 +301,7 @@ wxThread::ExitCode FFmpegSourceCacheCleaner::Entry() {
 	wxString cachedirname = StandardPaths::DecodePath("?user/ffms2cache/");
 	wxDir cachedir;
 	if (!cachedir.Open(cachedirname)) {
-		LOG_D("provider/ffmpegsource/cache") << "couldn't open cache directory " << cachedirname.c_str();
+		LOG_D("provider/ffmpegsource/cache") << "couldn't open cache directory " << STD_STR(cachedirname);
 		return (wxThread::ExitCode)1;
 	}
 
@@ -360,7 +360,7 @@ wxThread::ExitCode FFmpegSourceCacheCleaner::Entry() {
 
 		int64_t fsize = i->second.GetSize().GetValue();
 		if (!wxRemoveFile(i->second.GetFullPath())) {
-			LOG_D("provider/ffmpegsource/cache") << "failed to remove file " << i->second.GetFullPath().c_str();
+			LOG_D("provider/ffmpegsource/cache") << "failed to remove file " << STD_STR(i->second.GetFullPath());
 			continue;
 		}
 		cursize -= fsize;

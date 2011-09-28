@@ -820,7 +820,7 @@ void SubsTextEditCtrl::OnContextMenu(wxContextMenuEvent &event) {
 				// Build list
 				wxMenu *subMenu = new wxMenu();
 				for (int i=0;i<nSugs;i++) subMenu->Append(EDIT_MENU_SUGGESTIONS+i,sugs[i]);
-				menu.Append(-1,wxString::Format(_("Spell checker suggestions for \"%s\""),currentWord.c_str()), subMenu);
+				menu.Append(-1,wxString::Format(_("Spell checker suggestions for \"%s\""),currentWord), subMenu);
 			}
 		}
 

@@ -215,7 +215,7 @@ void DialogAutomation::OnAdd(wxCommandEvent &evt)
 		const Automation4::ScriptFactory *fact = factories[i];
 		if (fact->GetEngineName().IsEmpty() || fact->GetFilenamePattern().IsEmpty())
 			continue;
-		fnfilter = wxString::Format("%s%s scripts (%s)|%s|", fnfilter.c_str(), fact->GetEngineName().c_str(), fact->GetFilenamePattern().c_str(), fact->GetFilenamePattern().c_str());
+		fnfilter = wxString::Format("%s%s scripts (%s)|%s|", fnfilter, fact->GetEngineName(), fact->GetFilenamePattern(), fact->GetFilenamePattern());
 		catchall << fact->GetFilenamePattern() << ";";
 	}
 #ifdef __WINDOWS__
@@ -323,16 +323,16 @@ void DialogAutomation::OnInfo(wxCommandEvent &evt)
 	info += _("Scripting engines installed:\n");
 	const std::vector<Automation4::ScriptFactory*> &factories = Automation4::ScriptFactory::GetFactories();
 	for (std::vector<Automation4::ScriptFactory*>::const_iterator c = factories.begin(); c != factories.end(); ++c) {
-		info += wxString::Format("- %s (%s)\n", (*c)->GetEngineName().c_str(), (*c)->GetFilenamePattern().c_str());
+		info += wxString::Format("- %s (%s)\n", (*c)->GetEngineName(), (*c)->GetFilenamePattern());
 	}
 
 	if (ei) {
 		info += wxString::Format(_("\nScript info:\nName: %s\nDescription: %s\nAuthor: %s\nVersion: %s\nFull path: %s\nState: %s\n\nFeatures provided by script:\n"),
-			ei->script->GetName().c_str(),
-			ei->script->GetDescription().c_str(),
-			ei->script->GetAuthor().c_str(),
-			ei->script->GetVersion().c_str(),
-			ei->script->GetFilename().c_str(),
+			ei->script->GetName(),
+			ei->script->GetDescription(),
+			ei->script->GetAuthor(),
+			ei->script->GetVersion(),
+			ei->script->GetFilename(),
 			ei->script->GetLoadedState() ? _("Correctly loaded") : _("Failed to load"));
 		for (std::vector<Automation4::Feature*>::iterator f = ei->script->GetFeatures().begin(); f != ei->script->GetFeatures().end(); ++f) {
 			switch ((*f)->GetClass()) {

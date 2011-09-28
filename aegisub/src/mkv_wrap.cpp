@@ -88,7 +88,7 @@ void MatroskaWrapper::Open(wxString filename,bool parse) {
 		// Failed parsing
 		if (!file) {
 			delete input;
-			throw wxString("MatroskaParser error: " + wxString(err,wxConvUTF8)).c_str();
+			throw wxString("MatroskaParser error: " + wxString(err,wxConvUTF8));
 		}
 
 		// Parse

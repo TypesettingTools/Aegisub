@@ -191,14 +191,14 @@ void VideoDisplay::UploadFrameData(FrameReadyEvent &evt) {
 			"Failed to initialize video display. Closing other running "
 			"programs and updating your video card drivers may fix this.\n"
 			"Error message reported: %s",
-			err.GetMessage().c_str());
+			err.GetMessage());
 		con->videoController->Reset();
 	}
 	catch (const VideoOutRenderException& err) {
 		wxLogError(
 			"Could not upload video frame to graphics card.\n"
 			"Error message reported: %s",
-			err.GetMessage().c_str());
+			err.GetMessage());
 	}
 	Render();
 }
@@ -258,14 +258,14 @@ catch (const VideoOutException &err) {
 	wxLogError(
 		"An error occurred trying to render the video frame on the screen.\n"
 		"Error message reported: %s",
-		err.GetMessage().c_str());
+		err.GetMessage());
 	con->videoController->Reset();
 }
 catch (const OpenGlException &err) {
 	wxLogError(
 		"An error occurred trying to render visual overlays on the screen.\n"
 		"Error message reported: %s",
-		err.GetMessage().c_str());
+		err.GetMessage());
 	con->videoController->Reset();
 }
 catch (const char *err) {

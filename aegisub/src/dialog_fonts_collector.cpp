@@ -536,7 +536,7 @@ bool FontsCollectorThread::ProcessFont(wxString name) {
 	int action = collector->CollectAction->GetSelection();
 
 	// Font name
-	AppendText(wxString::Format(_T("\"%s\"... "),name.c_str()));
+	AppendText(wxString::Format("\"%s\"... ", name));
 
 	// Get font list
 	wxArrayString files = FontFileLister::GetFilesWithFace(name);
@@ -565,14 +565,14 @@ bool FontsCollectorThread::ProcessFont(wxString name) {
 		}
 
 		if (tempResult == 1) {
-			AppendText(wxString::Format(_("* Copied %s.\n"),files[i].c_str()),1);
+			AppendText(wxString::Format(_("* Copied %s.\n"),files[i]),1);
 		}
 		else if (tempResult == 2) {
 			wxFileName fn(files[i]);
-			AppendText(wxString::Format(_("* %s already exists on destination.\n"),fn.GetFullName().c_str()),3);
+			AppendText(wxString::Format(_("* %s already exists on destination.\n"),fn.GetFullName()),3);
 		}
 		else {
-			AppendText(wxString::Format(_("* Failed to copy %s.\n"),files[i].c_str()),2);
+			AppendText(wxString::Format(_("* Failed to copy %s.\n"),files[i]),2);
 			result = false;
 		}
 	}
@@ -662,9 +662,9 @@ void FontsCollectorThread::AddFont(wxString fontname,int mode) {
 	if (fonts.Index(fontname) == wxNOT_FOUND) {
 		fonts.Add(fontname);
 
-		if (mode == 0) AppendText(wxString::Format(_("\"%s\" found on style \"%s\".\n"), fontname.c_str(), curStyle->name.c_str()));
-		else if (mode == 1) AppendText(wxString::Format(_("\"%s\" found on dialogue line \"%d\".\n"), fontname.c_str(), curLine));
-		else AppendText(wxString::Format(_("\"%s\" found.\n"), fontname.c_str()));
+		if (mode == 0) AppendText(wxString::Format(_("\"%s\" found on style \"%s\".\n"), fontname, curStyle->name));
+		else if (mode == 1) AppendText(wxString::Format(_("\"%s\" found on dialogue line \"%d\".\n"), fontname, curLine));
+		else AppendText(wxString::Format(_("\"%s\" found.\n"), fontname));
 	}
 }
 

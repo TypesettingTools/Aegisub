@@ -138,7 +138,7 @@ namespace Automation4 {
 		}
 		lua_pop(L, 1);
 
-		LOG_D("automation/lua/dialog") << "created control: '" << name.c_str() << "', (" << x << "," << y << ")(" << width << "," << height << ", "<< hint.c_str();
+		LOG_D("automation/lua/dialog") << "created control: '" << STD_STR(name) << "', (" << x << "," << y << ")(" << width << "," << height << ", "<< STD_STR(hint);
 	}
 
 
@@ -1007,7 +1007,7 @@ badcontrol:
 			if (buttons.size() > 0) {
 				LOG_D("automation/lua/dialog") << "creating user buttons";
 				for (size_t i = 0; i < buttons.size(); ++i) {
-					LOG_D("automation/lua/dialog") << "button '" << buttons[i].c_str() << "' gets id " << 1001+(wxWindowID)i;
+					LOG_D("automation/lua/dialog") << "button '" << STD_STR(buttons[i]) << "' gets id " << 1001+(wxWindowID)i;
 
 					bs->Add(new wxButton(w, 1001+(wxWindowID)i, buttons[i]));
 				}
@@ -1054,7 +1054,7 @@ badcontrol:
 				LOG_D("automation/lua/dialog") << "default buttons, button 1 bushed, Ok button";
 				lua_pushboolean(L, 1);
 			} else {
-				LOG_D("automation/lua/dialog") << "user button: " << buttons.at(btn-1).c_str();
+				LOG_D("automation/lua/dialog") << "user button: " << STD_STR(buttons.at(btn-1));
 				// button_pushed is index+1 to reserve 0 for Cancel
 				lua_pushstring(L, buttons.at(btn-1).mb_str(wxConvUTF8));
 			}
@@ -1090,7 +1090,7 @@ badcontrol:
 			if (controls[i]->CanSerialiseValue()) {
 				wxString sn = inline_string_encode(controls[i]->name);
 				wxString sv = controls[i]->SerialiseValue();
-				res += wxString::Format("%s:%s|", sn.c_str(), sv.c_str());
+				res += wxString::Format("%s:%s|", sn, sv);
 			}
 		}
 

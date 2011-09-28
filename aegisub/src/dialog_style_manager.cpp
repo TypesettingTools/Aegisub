@@ -435,7 +435,7 @@ void DialogStyleManager::OnCatalogNew (wxCommandEvent &) {
 
 		// Warn about bad characters
 		if (badchars_removed > 0) {
-			wxMessageBox(wxString::Format(_("The specified catalog name contains one or more illegal characters. They have been replaced with underscores instead.\nThe catalog has been renamed to \"%s\"."), name.c_str()),_("Invalid characters"));
+			wxMessageBox(wxString::Format(_("The specified catalog name contains one or more illegal characters. They have been replaced with underscores instead.\nThe catalog has been renamed to \"%s\"."), name),_("Invalid characters"));
 		}
 
 		// Add to list of storages
@@ -462,7 +462,7 @@ void DialogStyleManager::OnCatalogDelete (wxCommandEvent &) {
 	int sel = CatalogList->GetSelection();
 	if (sel != wxNOT_FOUND) {
 		wxString name = CatalogList->GetString(sel);
-		wxString message = wxString::Format(_("Are you sure you want to delete the storage \"%s\" from the catalog?"), name.c_str());
+		wxString message = wxString::Format(_("Are you sure you want to delete the storage \"%s\" from the catalog?"), name);
 		int option = wxMessageBox(message, _("Confirm delete"), wxYES_NO | wxICON_EXCLAMATION , this);
 		if (option == wxYES) {
 			wxRemoveFile(StandardPaths::DecodePath("?user/catalog/" + name + ".sty"));
@@ -543,7 +543,7 @@ void DialogStyleManager::OnCopyToStorage (wxCommandEvent &) {
 		for (list<AssStyle *>::iterator style = Store.style.begin(); style != Store.style.end(); ++style) {
 			if ((*style)->name.CmpNoCase(styleName) == 0) {
 				addStyle = false;
-				if (wxYES == wxMessageBox(wxString::Format("There is already a style with the name \"%s\" on the current storage. Proceed and overwrite anyway?",styleName.c_str()), "Style name collision.", wxYES_NO)) {
+				if (wxYES == wxMessageBox(wxString::Format("There is already a style with the name \"%s\" on the current storage. Proceed and overwrite anyway?",styleName), "Style name collision.", wxYES_NO)) {
 					**style = *styleMap.at(selections[i]);
 					copied.push_back(styleName);
 				}
@@ -578,7 +578,7 @@ void DialogStyleManager::OnCopyToCurrent (wxCommandEvent &) {
 		for (std::vector<AssStyle *>::iterator style = styleMap.begin(); style != styleMap.end(); ++style) {
 			if ((*style)->name.CmpNoCase(styleName) == 0) {
 				addStyle = false;
-				if (wxYES == wxMessageBox(wxString::Format("There is already a style with the name \"%s\" on the current script. Proceed and overwrite anyway?",styleName.c_str()), "Style name collision.", wxYES_NO)) {
+				if (wxYES == wxMessageBox(wxString::Format("There is already a style with the name \"%s\" on the current script. Proceed and overwrite anyway?",styleName), "Style name collision.", wxYES_NO)) {
 					**style = *styleStorageMap.at(selections[i]);
 					copied.push_back(styleName);
 				}
@@ -879,7 +879,7 @@ void DialogStyleManager::OnCurrentImport(wxCommandEvent &) {
 				// Check if there is already a style with that name
 				int test = CurrentList->FindString(styles[selections[i]], false);
 				if (test != wxNOT_FOUND) {
-					int answer = wxMessageBox(wxString::Format("There is already a style with the name \"%s\" on the current script. Overwrite?",styles[selections[i]].c_str()),"Style name collision.",wxYES_NO);
+					int answer = wxMessageBox(wxString::Format("There is already a style with the name \"%s\" on the current script. Overwrite?",styles[selections[i]]),"Style name collision.",wxYES_NO);
 					if (answer == wxYES) {
 						// Overwrite
 						modified = true;

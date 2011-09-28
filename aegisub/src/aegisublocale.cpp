@@ -185,7 +185,7 @@ wxArrayInt AegisubLocale::GetAvailableLanguages() {
 
 		// If the locale file doesn't exist then don't list it as an option. 
 		wxString locDir = wxStandardPaths::Get().GetLocalizedResourcesDir(langs[i], wxStandardPathsBase::ResourceCat_Messages);
-		wxFileName file(wxString::Format("%s/%s.mo", locDir.c_str(), GETTEXT_PACKAGE));
+		wxFileName file(wxString::Format("%s/%s.mo", locDir, GETTEXT_PACKAGE));
 		if (lang && file.FileExists()) final.Add(lang->Language);
 	}
 #endif

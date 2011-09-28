@@ -174,7 +174,7 @@ void MicroDVDSubtitleFormat::WriteFile(wxString filename,wxString encoding) {
 			int start = rate->FrameAtTime(current->Start.GetMS(),agi::vfr::START);
 			int end = rate->FrameAtTime(current->End.GetMS(),agi::vfr::END);
 
-			file.WriteLineToFile(wxString::Format("{%i}{%i}%s",start,end,current->Text.c_str()));
+			file.WriteLineToFile(wxString::Format("{%i}{%i}%s",start,end,current->Text));
 		}
 	}
 

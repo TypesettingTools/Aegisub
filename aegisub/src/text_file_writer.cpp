@@ -57,7 +57,7 @@ TextFileWriter::TextFileWriter(wxString const& filename, wxString encoding)
 , conv() {
 	if (encoding.empty()) encoding = lagi_wxString(OPT_GET("App/Save Charset")->GetString());
 	if (encoding.Lower() != wxSTRING_ENCODING)
-		conv.reset(new agi::charset::IconvWrapper(wxSTRING_ENCODING, encoding.c_str(), true));
+		conv.reset(new agi::charset::IconvWrapper(wxSTRING_ENCODING, encoding.utf8_str(), true));
 
 	// Write the BOM
 	try {

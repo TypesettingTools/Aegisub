@@ -220,13 +220,13 @@ wxString AssDialogue::GetData(bool ssa) const {
 	wxString str = wxString::Format(
 		"%s: %s,%s,%s,%s,%s,%d,%d,%d,%s,%s",
 		Comment ? "Comment" : "Dialogue",
-		ssa ? "Marked=0" : wxString::Format("%01d", Layer).c_str(),
-		Start.GetASSFormated().c_str(),
-		End.GetASSFormated().c_str(),
-		s.c_str(), a.c_str(),
+		ssa ? "Marked=0" : wxString::Format("%01d", Layer),
+		Start.GetASSFormated(),
+		End.GetASSFormated(),
+		s, a,
 		Margin[0], Margin[1], Margin[2],
-		e.c_str(),
-		Text.c_str());
+		e,
+		Text);
 
 	// Make sure that final has no line breaks
 	str.Replace("\n", "");

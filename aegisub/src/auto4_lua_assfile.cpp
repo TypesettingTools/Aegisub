@@ -342,7 +342,7 @@ namespace Automation4 {
 		} else if (lclass == "info") {
 			GETSTRING(key, "key", "info")
 			GETSTRING(value, "value", "info")
-			result = new AssEntry(wxString::Format("%s: %s", key.c_str(), value.c_str()));
+			result = new AssEntry(wxString::Format("%s: %s", key, value));
 			result->group = "[Script Info]"; // just so it can be read correctly back
 
 		} else if (lclass == "format") {

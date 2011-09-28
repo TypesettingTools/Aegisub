@@ -100,7 +100,7 @@ struct help_files : public Command {
 	void operator()(agi::Context *c) {
 #ifdef __WXMAC__
 		char *shared_path = agi::util::OSX_GetBundleSharedSupportDirectory();
-		wxString help_path = wxString::Format("%s/doc", wxString(shared_path, wxConvUTF8).c_str());
+		wxString help_path = wxString::Format("%s/doc", wxString(shared_path, wxConvUTF8));
 		agi::util::OSX_OpenLocation(help_path.c_str());
 		free(shared_path);
 #endif

@@ -105,7 +105,7 @@ void EncoreSubtitleFormat::WriteFile(wxString _filename,wxString encoding) {
 		AssDialogue *current = dynamic_cast<AssDialogue*>(*cur);
 		if (current && !current->Comment) {
 			++i;
-			file.WriteLineToFile(wxString::Format("%i %s %s %s", i, ft.FromAssTime(current->Start).c_str(), ft.FromAssTime(current->End).c_str(), current->Text.c_str()));
+			file.WriteLineToFile(wxString::Format("%i %s %s %s", i, ft.FromAssTime(current->Start), ft.FromAssTime(current->End), current->Text));
 		}
 	}
 

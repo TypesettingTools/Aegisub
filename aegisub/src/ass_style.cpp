@@ -429,11 +429,11 @@ void AssStyle::UpdateData() {
 
 
 	final = wxString::Format("Style: %s,%s,%g,%s,%s,%s,%s,%d,%d,%d,%d,%g,%g,%g,%g,%d,%g,%g,%i,%i,%i,%i,%i",
-					  name.c_str(), font.c_str(), fontsize,
-					  primary.GetASSFormatted(true,false,true).c_str(),
-					  secondary.GetASSFormatted(true,false,true).c_str(),
-					  outline.GetASSFormatted(true,false,true).c_str(),
-					  shadow.GetASSFormatted(true,false,true).c_str(),
+					  name, font, fontsize,
+					  primary.GetASSFormatted(true,false,true),
+					  secondary.GetASSFormatted(true,false,true),
+					  outline.GetASSFormatted(true,false,true),
+					  shadow.GetASSFormatted(true,false,true),
 					  (bold? -1 : 0), (italic ? -1 : 0),
 					  (underline?-1:0),(strikeout?-1:0),
 					  scalex,scaley,spacing,angle,
@@ -491,10 +491,10 @@ wxString AssStyle::GetSSAText() const {
 	f.Replace(",", ";");
 
 	output = wxString::Format("Style: %s,%s,%g,%s,%s,0,%s,%d,%d,%d,%g,%g,%d,%d,%d,%d,0,%i",
-				  n.c_str(), f.c_str(), fontsize,
-				  primary.GetSSAFormatted().c_str(),
-				  secondary.GetSSAFormatted().c_str(),
-				  shadow.GetSSAFormatted().c_str(),
+				  n, f, fontsize,
+				  primary.GetSSAFormatted(),
+				  secondary.GetSSAFormatted(),
+				  shadow.GetSSAFormatted(),
 				  (bold? -1 : 0), (italic ? -1 : 0),
 				  borderstyle,outline_w,shadow_w,align,
 				  Margin[0],Margin[1],Margin[2],encoding);

@@ -99,7 +99,7 @@ void HelpButton::OpenPage(const wxString pageID) {
 		docsPath.Replace("\\","/");
 		docsPath = "/" + docsPath;
 #endif
-		wxString path = wxString::Format("file://%s/%s.html",docsPath.c_str(),page.c_str());
+		wxString path = wxString::Format("file://%s/%s.html",docsPath,page);
 		wxLaunchDefaultBrowser(path);
 	}
 }

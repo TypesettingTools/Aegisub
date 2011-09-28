@@ -116,7 +116,7 @@ void AssFile::Load(const wxString &_filename,wxString charset,bool addToRecent) 
 
 	// Real exception
 	catch (agi::Exception &e) {
-		wxMessageBox(wxString(e.GetChainedMessage().c_str(), wxConvUTF8), "Error loading file", wxICON_ERROR|wxOK);
+		wxMessageBox(lagi_wxString(e.GetChainedMessage()), "Error loading file", wxICON_ERROR|wxOK);
 		return;
 	}
 

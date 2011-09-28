@@ -752,7 +752,7 @@ void FrameMain::OnSubtitlesOpen() {
 				basepath = "";
 			} else {
 				wxLogWarning("Automation Script referenced with unknown location specifier character.\nLocation specifier found: %s\nFilename specified: %s",
-					sfnamel.c_str(), sfnames.c_str());
+					sfnamel, sfnames);
 				continue;
 			}
 			wxFileName sfname(sfnames);
@@ -762,7 +762,7 @@ void FrameMain::OnSubtitlesOpen() {
 				context->local_scripts->Add(Automation4::ScriptFactory::CreateFromFile(sfnames, true));
 			} else {
 				wxLogWarning("Automation Script referenced could not be found.\nFilename specified: %s%s\nSearched relative to: %s\nResolved filename: %s",
-					sfnamel.c_str(), sfnames.c_str(), basepath.c_str(), sfname.GetFullPath().c_str());
+					sfnamel, sfnames, basepath, sfname.GetFullPath());
 			}
 		}
 #endif

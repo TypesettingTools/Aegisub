@@ -255,7 +255,7 @@ void YUV4MPEGVideoProvider::ParseFileHeader(const std::vector<wxString>& tags) {
 				throw VideoOpenError("ParseFileHeader: invalid or unknown interlacing mode");
 		}
 		else
-			LOG_D("provider/video/yuv4mpeg") << "Unparsed tag: " << tags[i].c_str();
+			LOG_D("provider/video/yuv4mpeg") << "Unparsed tag: " << STD_STR(tags[i]);
 	}
 
 	// The point of all this is to allow multiple YUV4MPEG2 headers in a single file

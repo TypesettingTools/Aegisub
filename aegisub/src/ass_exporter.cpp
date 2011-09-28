@@ -97,7 +97,7 @@ void AssExporter::AddFilter(wxString name) {
 	}
 	
 	// Check
-	if (!filter) throw wxString::Format("Filter not found: %s", name.c_str());
+	if (!filter) throw wxString::Format("Filter not found: %s", name);
 
 	// Add to list
 	Filters.push_back(filter);
@@ -177,5 +177,5 @@ wxString AssExporter::GetDescription(wxString name) {
 			return (*cur)->GetDescription();
 		}
 	}
-	throw wxString::Format("Filter not found: %s", name.c_str());
+	throw wxString::Format("Filter not found: %s", name);
 }

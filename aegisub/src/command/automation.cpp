@@ -80,7 +80,7 @@ struct am_manager : public Command {
 					} catch (const char *e) {
 						wxLogError(e);
 					} catch (...) {
-						wxLogError("An unknown error occurred reloading Automation script '%s'.", scripts[i]->GetName().c_str());
+						wxLogError("An unknown error occurred reloading Automation script '%s'.", scripts[i]->GetName());
 					}
 				}
 

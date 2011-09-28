@@ -340,7 +340,7 @@ std::vector<wxString> tokenize(const wxString &text) {
 			else if (c == ')') {
 				parDepth--;
 				if (parDepth < 0) {
-					wxLogWarning("Unmatched parenthesis near '%s'!\nTag-parsing incomplete.", text.SubString(i, 10).c_str());
+					wxLogWarning("Unmatched parenthesis near '%s'!\nTag-parsing incomplete.", text.SubString(i, 10));
 					return paramList;
 				}
 				else if (parDepth == 0) {

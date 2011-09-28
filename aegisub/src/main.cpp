@@ -378,7 +378,7 @@ static void UnhandledExeception(bool stackWalk) {
 #endif
 
 		// Inform user of crash.
-		wxMessageBox(wxString::Format(exception_message, filename.c_str()), _("Program error"), wxOK | wxICON_ERROR, NULL);
+		wxMessageBox(wxString::Format(exception_message, filename), _("Program error"), wxOK | wxICON_ERROR, NULL);
 	}
 	else if (LastStartupState) {
 #if wxUSE_STACKWALKER == 1

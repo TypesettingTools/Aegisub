@@ -291,7 +291,7 @@ SubtitleFormat::FPSRational SubtitleFormat::AskForFPS(bool showSMPTE) {
 		wxString vidFPS;
 		if (context->FPS().IsVFR()) vidFPS = "VFR";
 		else vidFPS = wxString::Format("%.3f",context->FPS().FPS());
-		choices.Add(wxString::Format("From video (%s)",vidFPS.c_str()));
+		choices.Add(wxString::Format("From video (%s)",vidFPS));
 	}
 	
 	// Standard FPS values

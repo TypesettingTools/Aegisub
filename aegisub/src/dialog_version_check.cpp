@@ -342,7 +342,7 @@ void AegisubVersionCheckerThread::DoCheck()
 		GetSVNRevision(),
 		GetIsOfficialRelease()?1:0,
 		GetOSShortName(),
-		GetSystemLanguage().c_str());
+		GetSystemLanguage());
 
 	wxString path = base_updates_path + querystring;
 
