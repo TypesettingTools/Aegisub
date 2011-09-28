@@ -719,7 +719,10 @@ void FrameMain::OnSubtitlesOpen() {
 
 		// Audio
 		if (curSubsAudio != context->audioController->GetAudioURL()) {
-			context->audioController->OpenAudio(curSubsAudio);
+			if (!curSubsAudio)
+				context->audioController->CloseAudio();
+			else
+				context->audioController->OpenAudio(curSubsAudio);
 		}
 	}
 
