@@ -45,6 +45,7 @@
 
 class AssExportFilter;
 class AssFile;
+namespace agi { struct Context; }
 
 typedef std::list<AssExportFilter*> FilterList;
 
@@ -62,15 +63,15 @@ class AssExporter {
 	/// Filters which will be applied to the subtitles
 	FilterList filters;
 
-	/// Input subtitle file
-	AssFile *original_subs;
+	/// Input context
+	agi::Context *c;
 
 	/// Have the config windows been created, or should filters simply use
 	/// their default settings
 	bool is_default;
 
 public:
-	AssExporter(AssFile *subs);
+	AssExporter(agi::Context *c);
 	~AssExporter();
 
 	/// Get the names of all registered export filters

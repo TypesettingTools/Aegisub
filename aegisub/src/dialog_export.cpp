@@ -55,7 +55,7 @@
 DialogExport::DialogExport(agi::Context *c)
 : wxDialog(c->parent, -1, _("Export"), wxDefaultPosition, wxSize(200, 100), wxCAPTION | wxCLOSE_BOX, "Export")
 , c(c)
-, exporter(new AssExporter(c->ass))
+, exporter(new AssExporter(c))
 {
 	wxArrayString filters = exporter->GetAllFilterNames();
 	filter_list = new wxCheckListBox(this, -1, wxDefaultPosition, wxSize(200, 100), filters);

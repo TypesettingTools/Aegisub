@@ -45,6 +45,7 @@
 #include "ass_exporter.h"
 #include "ass_file.h"
 #include "compat.h"
+#include "include/aegisub/context.h"
 #include "include/aegisub/subtitles_provider.h"
 #include "video_provider_manager.h"
 
@@ -86,7 +87,13 @@ std::tr1::shared_ptr<AegiVideoFrame> ThreadedFrameSource::ProcFrame(int frameNum
 				// other lines will probably not be viewed before the file changes
 				// again), and if it's a different frame, export the entire file.
 				if (singleFrame == -1) {
-					AssExporter exporter(subs.get());
+					// This will crash if any of the export filters try to use
+					// anything but the subtitles, but that wouldn't be safe to
+					// do anyway
+					agi::Context c = { 0 };
+					c.ass = subs.get();
+
+					AssExporter exporter(&c);
 					exporter.AddAutoFilters();
 					exporter.ExportTransform();
 

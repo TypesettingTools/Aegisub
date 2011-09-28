@@ -52,11 +52,13 @@
 #include "ass_file.h"
 #include "ass_override.h"
 #include "export_framerate.h"
+#include "include/aegisub/context.h"
 #include "utils.h"
 #include "video_context.h"
 
 AssTransformFramerateFilter::AssTransformFramerateFilter()
 : AssExportFilter(_("Transform Framerate"), _("Transform subtitle times, including those in override tags, from an input framerate to an output framerate.\n\nThis is useful for converting regular time subtitles to VFRaC time subtitles for hardsubbing.\nIt can also be used to convert subtitles to a different speed video, such as NTSC to PAL speedup."), 1000)
+, c(0)
 , Input(0)
 , Output(0)
 {
@@ -66,10 +68,10 @@ void AssTransformFramerateFilter::ProcessSubs(AssFile *subs, wxWindow *) {
 	TransformFrameRate(subs);
 }
 
-wxWindow *AssTransformFramerateFilter::GetConfigDialogWindow(wxWindow *parent) {
+wxWindow *AssTransformFramerateFilter::GetConfigDialogWindow(wxWindow *parent, agi::Context *c) {
 	wxWindow *base = new wxPanel(parent, -1);
 
-	LoadSettings(true);
+	LoadSettings(true, c);
 
 	// Input sizer
 	wxSizer *InputSizer = new wxBoxSizer(wxHORIZONTAL);
@@ -130,13 +132,15 @@ wxWindow *AssTransformFramerateFilter::GetConfigDialogWindow(wxWindow *parent) {
 }
 
 void AssTransformFramerateFilter::OnFpsFromVideo(wxCommandEvent &) {
-	InputFramerate->SetValue(wxString::Format("%g", VideoContext::Get()->FPS().FPS()));
+	InputFramerate->SetValue(wxString::Format("%g", c->videoController->FPS().FPS()));
 }
 
-void AssTransformFramerateFilter::LoadSettings(bool IsDefault) {
-	if (IsDefault) {
-		Input = &VideoContext::Get()->VFR_Input;
-		Output = &VideoContext::Get()->VFR_Output;
+void AssTransformFramerateFilter::LoadSettings(bool is_default, agi::Context *c) {
+	this->c = c;
+
+	if (is_default) {
+		Input = &c->videoController->VFR_Input;
+		Output = &c->videoController->VFR_Output;
 	}
 	else {
 		double temp;
@@ -148,7 +152,7 @@ void AssTransformFramerateFilter::LoadSettings(bool IsDefault) {
 			t2 = temp;
 			Output = &t2;
 		}
-		else Output = &VideoContext::Get()->VFR_Output;
+		else Output = &c->videoController->VFR_Output;
 
 		if (Reverse->IsChecked()) {
 			std::swap(Input, Output);

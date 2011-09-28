@@ -46,8 +46,8 @@
 
 class AssFile;
 class AssExportFilter;
-class DialogExport;
-class AssExporter;
+
+namespace agi { struct Context; }
 
 /// DOCME
 typedef std::list<AssExportFilter*> FilterList;
@@ -111,9 +111,12 @@ public:
 	virtual void ProcessSubs(AssFile *subs, wxWindow *parent_window=0)=0;
 
 	/// Draw setup controls
-	virtual wxWindow *GetConfigDialogWindow(wxWindow *parent) { return 0; }
+	/// @param parent Parent window to add controls to
+	/// @param c Project context
+	virtual wxWindow *GetConfigDialogWindow(wxWindow *parent, agi::Context *c) { return 0; }
 
 	/// Load settings to use from the configuration dialog
 	/// @param is_default If true use default settings instead
-	virtual void LoadSettings(bool is_default) { }
+	/// @param c Project context
+	virtual void LoadSettings(bool is_default, agi::Context *c) { }
 };

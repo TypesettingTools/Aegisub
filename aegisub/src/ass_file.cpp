@@ -47,7 +47,6 @@
 
 #include "ass_attachment.h"
 #include "ass_dialogue.h"
-#include "ass_exporter.h"
 #include "ass_file.h"
 #include "ass_override.h"
 #include "ass_style.h"
@@ -222,12 +221,6 @@ void AssFile::SaveMemory(std::vector<char> &dst,const wxString encoding) {
 		dst.resize(targetSize);
 		memcpy(&dst[pos],buffer,lineSize);
 	}
-}
-
-void AssFile::Export(wxString _filename) {
-	AssExporter exporter(this);
-	exporter.AddAutoFilters();
-	exporter.Export(_filename,"UTF-8");
 }
 
 bool AssFile::CanSave() {
