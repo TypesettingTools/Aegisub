@@ -61,7 +61,7 @@
 using std::tr1::placeholders::_1;
 
 DialogAutomation::DialogAutomation(agi::Context *c)
-: wxDialog(c->parent, -1, _("Automation Manager"))
+: wxDialog(c->parent, -1, _("Automation Manager"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER)
 , context(c)
 , local_manager(c->local_scripts)
 , global_manager(wxGetApp().global_scripts)
