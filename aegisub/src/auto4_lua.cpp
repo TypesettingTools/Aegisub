@@ -744,7 +744,7 @@ namespace Automation4 {
 		subsobj->ProcessingComplete();
 	}
 
-	ScriptConfigDialog* LuaExportFilter::GenerateConfigDialog(wxWindow *parent, agi::Context *c)
+	ScriptDialog* LuaExportFilter::GenerateConfigDialog(wxWindow *parent, agi::Context *c)
 	{
 		if (!has_config)
 			return 0;
@@ -765,7 +765,7 @@ namespace Automation4 {
 			lua_pop(L, 1); // remove error message
 		} else {
 			// Create config dialogue from table on top of stack
-			config_dialog = new LuaConfigDialog(L, false);
+			config_dialog = new LuaDialog(L, false);
 		}
 
 		return config_dialog;

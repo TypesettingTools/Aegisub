@@ -39,6 +39,7 @@
 
 
 #ifndef AGI_PRE
+#include <list>
 #include <vector>
 
 #include <wx/dialog.h>
@@ -80,15 +81,15 @@ namespace Automation4 {
 	DEFINE_SIMPLE_EXCEPTION_NOINNER(MacroRunError, AutomationError, "automation/macro/generic")
 
 	// Calculate the extents of a text string given a style
-	bool CalculateTextExtents(AssStyle *style, wxString &text, double &width, double &height, double &descent, double &extlead);
+	bool CalculateTextExtents(AssStyle *style, wxString const& text, double &width, double &height, double &descent, double &extlead);
 
-	class ScriptConfigDialog;
+	class ScriptDialog;
 
 	class ExportFilter : public AssExportFilter {
-		ScriptConfigDialog *config_dialog;
+		ScriptDialog *config_dialog;
 
-		/// subclasses should implement this, producing a new ScriptConfigDialog
-		virtual ScriptConfigDialog* GenerateConfigDialog(wxWindow *parent, agi::Context *c) = 0;
+		/// subclasses should implement this, producing a new ScriptDialog
+		virtual ScriptDialog* GenerateConfigDialog(wxWindow *parent, agi::Context *c) = 0;
 
 	protected:
 		wxString GetScriptSettingsIdentifier();
@@ -103,40 +104,27 @@ namespace Automation4 {
 		// Subclasses must implement ProcessSubs from AssExportFilter
 	};
 
-
-	/// DOCME
-	/// @class ScriptConfigDialog
-	/// @brief DOCME
-	///
-	/// DOCME
-	class ScriptConfigDialog {
-	private:
-
-		/// DOCME
-		wxWindow *win;
-
-	protected:
-		virtual wxWindow* CreateWindow(wxWindow *parent) = 0;
-
+	/// A "dialog" which actually generates a non-top-level window that is then
+	/// either inserted into a dialog or into the export filter configuration
+	/// panel
+	class ScriptDialog {
 	public:
+		virtual ~ScriptDialog() { }
 
-		/// @brief DOCME
-		///
-		ScriptConfigDialog() : win(0) { }
+		/// Create a window with the given parent
+		virtual wxWindow *CreateWindow(wxWindow *parent) = 0;
 
-		/// @brief DOCME
-		///
-		virtual ~ScriptConfigDialog() { }
-		wxWindow* GetWindow(wxWindow *parent);
-		void DeleteWindow();
+		/// Read the values of the controls in this dialog and cache them in
+		/// some way so that they can be accessed from a background thread
 		virtual void ReadBack() = 0;
 
-		virtual wxString Serialise();
+		/// Serialize the values of the controls in this dialog to a string
+		/// suitable for storage in the subtitle script
+		virtual wxString Serialise() { return ""; }
 
-		/// @brief DOCME
-		/// @param serialised 
-		///
-		virtual void Unserialise(const wxString &serialised) { }
+		/// Restore the values of the controls in this dialog from a string
+		/// stored in the subtitle script
+		virtual void Unserialise(wxString const& serialised) { }
 	};
 
 	class ProgressSink;
@@ -144,9 +132,8 @@ namespace Automation4 {
 	class BackgroundScriptRunner {
 		agi::scoped_ptr<DialogProgress> impl;
 
-		void OnConfigDialog(wxThreadEvent &evt);
+		void OnDialog(wxThreadEvent &evt);
 	public:
-
 		void QueueEvent(wxEvent *evt);
 
 		void Run(std::tr1::function<void(ProgressSink*)> task);
@@ -171,7 +158,7 @@ namespace Automation4 {
 
 		/// Show the passed dialog on the GUI thread, blocking the calling
 		/// thread until it closes
-		void ShowConfigDialog(ScriptConfigDialog *config_dialog);
+		void ShowDialog(ScriptDialog *config_dialog);
 
 		/// Get the current automation trace level
 		int GetTraceLevel() const { return trace_level; }

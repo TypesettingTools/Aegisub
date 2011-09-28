@@ -136,111 +136,74 @@ namespace Automation4 {
 		static ProgressSink* GetObjPointer(lua_State *L, int idx);
 	};
 
-
-
-	/// DOCME
-	/// @class LuaConfigDialogControl
-	/// @brief DOCME
-	///
-	/// DOCME
-	class LuaConfigDialogControl {
+	/// Base class for controls in dialogs
+	class LuaDialogControl {
 	public:
+		/// Name of this control in the output table
+		wxString name;
 
-		/// DOCME
-		wxControl *cw; // control window
+		/// Tooltip of this control
+		wxString hint;
 
-		/// DOCME
-
-		/// DOCME
-		wxString name, hint;
-
-		/// DOCME
-
-		/// DOCME
-
-		/// DOCME
-
-		/// DOCME
 		int x, y, width, height;
 
+		/// Create the associated wxControl
 		virtual wxControl *Create(wxWindow *parent) = 0;
+
+		/// Get the default flags to use when inserting this control into a sizer
+		virtual int GetSizerFlags() const { return wxEXPAND; }
+
+		/// Read the current value of the control. Must not touch Lua as this is called on the GUI thread.
 		virtual void ControlReadBack() = 0;
+
+		/// Push the current value of the control onto the lua stack. Must not
+		/// touch the GUI as this may be called on a background thread.
 		virtual void LuaReadBack(lua_State *L) = 0;
 
+		/// Does this control have any user-changeable data that can be serialized?
+		virtual bool CanSerialiseValue() const { return false; }
 
-		/// @brief DOCME
-		/// @return 
-		///
-		virtual bool CanSerialiseValue() { return false; }
+		/// Serialize the control's current value so that it can be stored
+		/// in the script
+		virtual wxString SerialiseValue() const { return ""; }
 
-		/// @brief DOCME
-		/// @return 
-		///
-		virtual wxString SerialiseValue() { return ""; }
-
-		/// @brief DOCME
-		/// @param serialised 
-		///
+		/// Restore the control's value from a saved value in the script
 		virtual void UnserialiseValue(const wxString &serialised) { }
 
-		LuaConfigDialogControl(lua_State *L);
+		LuaDialogControl(lua_State *L);
 
-		/// @brief DOCME
-		///
-		virtual ~LuaConfigDialogControl() { }
+		/// Virtual destructor so this can safely be inherited from
+		virtual ~LuaDialogControl() { }
 	};
 
-
-	/// DOCME
-	/// @class LuaConfigDialog
-	/// @brief DOCME
-	///
-	/// DOCME
-	class LuaConfigDialog : public ScriptConfigDialog {
-	private:
-
-		/// DOCME
-		std::vector<LuaConfigDialogControl*> controls;
-
-		/// DOCME
+	/// A lua-generated dialog or panel in the export options dialog
+	class LuaDialog : public ScriptDialog {
+		/// Controls in this dialog
+		std::vector<LuaDialogControl*> controls;
+		/// The names of buttons in this dialog if non-default ones were used
 		std::vector<wxString> buttons;
 
-		/// DOCME
+		/// Does the dialog contain any buttons
 		bool use_buttons;
 
-
-		/// DOCME
-		/// @class ButtonEventHandler
-		/// @brief DOCME
-		///
-		/// DOCME
-		class ButtonEventHandler : public wxEvtHandler {
-		public:
-
-			/// DOCME
-			int *button_pushed;
-			void OnButtonPush(wxCommandEvent &evt);
-		};
-
-
-		/// DOCME
-		ButtonEventHandler *button_event;
-
-		/// DOCME
+		/// Id of the button pushed (once a button has been pushed)
 		int button_pushed;
 
-	protected:
-		wxWindow* CreateWindow(wxWindow *parent);
+		void OnButtonPush(wxCommandEvent &evt);
 
 	public:
-		LuaConfigDialog(lua_State *_L, bool include_buttons);
-		virtual ~LuaConfigDialog();
-		int LuaReadBack(lua_State *L); // read back internal structure to lua structures
+		LuaDialog(lua_State *L, bool include_buttons);
+		~LuaDialog();
 
+		/// Push the values of the controls in this dialog onto the lua stack
+		/// in a single table
+		int LuaReadBack(lua_State *L);
+
+		// ScriptDialog implementation
+		wxWindow* CreateWindow(wxWindow *parent);
 		wxString Serialise();
 		void Unserialise(const wxString &serialised);
-
-		void ReadBack(); // from auto4 base
+		void ReadBack();
 	};
 
 	class LuaFeature {
@@ -252,7 +215,6 @@ namespace Automation4 {
 		void UnregisterFeature();
 
 		void GetFeatureFunction(const char *function);
-		void ThrowError();
 
 		LuaFeature(lua_State *L);
 	};
@@ -285,12 +247,12 @@ namespace Automation4 {
 
 	class LuaExportFilter : public ExportFilter, private LuaFeature {
 		bool has_config;
-		LuaConfigDialog *config_dialog;
+		LuaDialog *config_dialog;
 
 	protected:
 		LuaExportFilter(lua_State *L);
 
-		ScriptConfigDialog* GenerateConfigDialog(wxWindow *parent, agi::Context *c);
+		ScriptDialog* GenerateConfigDialog(wxWindow *parent, agi::Context *c);
 	public:
 		static int LuaRegister(lua_State *L);
 

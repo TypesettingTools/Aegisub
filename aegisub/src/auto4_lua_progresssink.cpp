@@ -175,18 +175,8 @@ namespace Automation4 {
 	{
 		ProgressSink *ps = GetObjPointer(L, lua_upvalueindex(1));
 
-		// Check that two arguments were actually given
-		// If only one, add another empty table for buttons
-		if (lua_gettop(L) == 1) {
-			lua_newtable(L);
-		}
-		// If more than two, remove the excess
-		if (lua_gettop(L) > 2) {
-			lua_settop(L, 2);
-		}
-
-		LuaConfigDialog dlg(L, true); // magically creates the config dialog structure etc
-		ps->ShowConfigDialog(&dlg);
+		LuaDialog dlg(L, true); // magically creates the config dialog structure etc
+		ps->ShowDialog(&dlg);
 
 		// more magic: puts two values on stack: button pushed and table with control results
 		return dlg.LuaReadBack(L);

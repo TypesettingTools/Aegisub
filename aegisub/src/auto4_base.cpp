@@ -62,26 +62,19 @@
 
 #include "ass_file.h"
 #include "ass_style.h"
+#include "command/command.h"
 #include "compat.h"
 #include "dialog_progress.h"
 #include "include/aegisub/context.h"
 #include "main.h"
 #include "standard_paths.h"
 #include "string_codec.h"
+#include "subtitle_format.h"
 #include "utils.h"
 
 /// DOCME
 namespace Automation4 {
-	/// @brief DOCME
-	/// @param style   
-	/// @param text    
-	/// @param width   
-	/// @param height  
-	/// @param descent 
-	/// @param extlead 
-	/// @return 
-	///
-	bool CalculateTextExtents(AssStyle *style, wxString &text, double &width, double &height, double &descent, double &extlead)
+	bool CalculateTextExtents(AssStyle *style, wxString const& text, double &width, double &height, double &descent, double &extlead)
 	{
 		width = height = descent = extlead = 0;
 
@@ -219,7 +212,7 @@ namespace Automation4 {
 			wxString val = c->ass->GetScriptInfo(GetScriptSettingsIdentifier());
 			if (!val.empty())
 				config_dialog->Unserialise(val);
-			return config_dialog->GetWindow(parent);
+			return config_dialog->CreateWindow(parent);
 		}
 
 		return 0;
@@ -235,40 +228,8 @@ namespace Automation4 {
 		}
 	}
 
-	// ScriptConfigDialog
-
-
-	/// @brief DOCME
-	/// @param parent 
-	/// @return 
-	///
-	wxWindow* ScriptConfigDialog::GetWindow(wxWindow *parent)
-	{
-		if (win) return win;
-		return win = CreateWindow(parent);
-	}
-
-
-	/// @brief DOCME
-	///
-	void ScriptConfigDialog::DeleteWindow()
-	{
-		if (win) delete win;
-		win = 0;
-	}
-
-
-	/// @brief DOCME
-	/// @return 
-	///
-	wxString ScriptConfigDialog::Serialise()
-	{
-		return "";
-	}
-
-
 	// ProgressSink
-	wxDEFINE_EVENT(EVT_SHOW_CONFIG_DIALOG, wxThreadEvent);
+	wxDEFINE_EVENT(EVT_SHOW_DIALOG, wxThreadEvent);
 
 	ProgressSink::ProgressSink(agi::ProgressSink *impl, BackgroundScriptRunner *bsr)
 	: impl(impl)
@@ -277,10 +238,10 @@ namespace Automation4 {
 	{
 	}
 
-	void ProgressSink::ShowConfigDialog(ScriptConfigDialog *config_dialog)
+	void ProgressSink::ShowDialog(ScriptDialog *config_dialog)
 	{
 		wxSemaphore sema(0, 1);
-		wxThreadEvent *evt = new wxThreadEvent(EVT_SHOW_CONFIG_DIALOG);
+		wxThreadEvent *evt = new wxThreadEvent(EVT_SHOW_DIALOG);
 		evt->SetPayload(std::make_pair(config_dialog, &sema));
 		bsr->QueueEvent(evt);
 		sema.Wait();
@@ -289,27 +250,27 @@ namespace Automation4 {
 	BackgroundScriptRunner::BackgroundScriptRunner(wxWindow *parent, wxString const& title)
 	: impl(new DialogProgress(parent, title))
 	{
-		impl->Bind(EVT_SHOW_CONFIG_DIALOG, &BackgroundScriptRunner::OnConfigDialog, this);
+		impl->Bind(EVT_SHOW_DIALOG, &BackgroundScriptRunner::OnDialog, this);
 	}
 
 	BackgroundScriptRunner::~BackgroundScriptRunner()
 	{
 	}
 
-	void BackgroundScriptRunner::OnConfigDialog(wxThreadEvent &evt)
+	void BackgroundScriptRunner::OnDialog(wxThreadEvent &evt)
 	{
-		std::pair<ScriptConfigDialog*, wxSemaphore*> payload = evt.GetPayload<std::pair<ScriptConfigDialog*, wxSemaphore*> >();
+		std::pair<ScriptDialog*, wxSemaphore*> payload = evt.GetPayload<std::pair<ScriptDialog*, wxSemaphore*> >();
 
 		wxDialog w(impl.get(), -1, impl->GetTitle()); // container dialog box
 		wxBoxSizer *s = new wxBoxSizer(wxHORIZONTAL); // sizer for putting contents in
-		wxWindow *ww = payload.first->GetWindow(&w); // get/generate actual dialog contents
+		wxWindow *ww = payload.first->CreateWindow(&w); // generate actual dialog contents
 		s->Add(ww, 0, wxALL, 5); // add contents to dialog
 		w.SetSizerAndFit(s);
 		w.CenterOnParent();
 		w.ShowModal();
 		payload.first->ReadBack();
-		payload.first->DeleteWindow();
 
+		// Tell the calling thread it can wake up now
 		payload.second->Post();
 	}
 
