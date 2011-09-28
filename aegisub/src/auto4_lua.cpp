@@ -65,8 +65,6 @@
 #include "include/aegisub/context.h"
 #include "main.h"
 #include "selection_controller.h"
-#include "standard_paths.h"
-#include "subtitle_format.h"
 #include "video_context.h"
 #include "utils.h"
 
