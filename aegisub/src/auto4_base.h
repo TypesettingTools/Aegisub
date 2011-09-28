@@ -50,6 +50,8 @@
 #include <wx/timer.h>
 #endif
 
+#include <libaegisub/signal.h>
+
 #include "ass_export_filter.h"
 #include "subtitle_format.h"
 
@@ -60,6 +62,8 @@ class wxWindow;
 class wxDialog;
 class wxStopWatch;
 class wxPathList;
+
+namespace agi { struct Context; }
 
 
 DECLARE_EVENT_TYPE(wxEVT_AUTOMATION_SCRIPT_COMPLETED, -1)
@@ -472,6 +476,7 @@ namespace Automation4 {
 		void Add(Script *script);		// Add a script to the manager. The ScriptManager takes owvership of the script and will automatically delete it.
 		void Remove(Script *script);	// Remove a script from the manager, and delete the Script object.
 		void RemoveAll();				// Deletes all scripts managed
+		virtual void Reload() = 0;
 
 		const std::vector<Script*>& GetScripts() const;
 
@@ -480,7 +485,16 @@ namespace Automation4 {
 		// They automatically register themselves in the relevant places.
 	};
 
+	/// Manager for scripts specified by a subtitle file
+	class LocalScriptManager : public ScriptManager {
+		std::list<agi::signal::Connection> slots;
+		agi::Context *context;
 
+		void OnSubtitlesSave();
+	public:
+		LocalScriptManager(agi::Context *context);
+		void Reload();
+	};
 
 	/// DOCME
 	/// @class AutoloadScriptManager

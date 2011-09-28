@@ -62,9 +62,11 @@
 #include "ass_style.h"
 #include "auto4_base.h"
 #include "compat.h"
+#include "include/aegisub/context.h"
 #include "main.h"
 #include "standard_paths.h"
 #include "string_codec.h"
+#include "utils.h"
 
 /// DOCME
 namespace Automation4 {
@@ -912,7 +914,84 @@ namespace Automation4 {
 		}
 	}
 
+	LocalScriptManager::LocalScriptManager(agi::Context *c)
+	: context(c)
+	{
+		slots.push_back(c->ass->AddFileSaveListener(&LocalScriptManager::OnSubtitlesSave, this));
+		slots.push_back(c->ass->AddFileOpenListener(&LocalScriptManager::Reload, this));
+	}
 
+	void LocalScriptManager::Reload() {
+		RemoveAll();
+
+		wxString local_scripts = context->ass->GetScriptInfo("Automation Scripts");
+		if (local_scripts.empty()) return;
+
+		wxStringTokenizer tok(local_scripts, "|", wxTOKEN_STRTOK);
+		wxFileName assfn(context->ass->filename);
+		wxString autobasefn(lagi_wxString(OPT_GET("Path/Automation/Base")->GetString()));
+		while (tok.HasMoreTokens()) {
+			wxString trimmed = tok.GetNextToken().Trim(true).Trim(false);
+			char first_char = trimmed[0];
+			trimmed.Remove(0, 1);
+
+			wxString basepath;
+			if (first_char == '~') {
+				basepath = assfn.GetPath();
+			} else if (first_char == '$') {
+				basepath = autobasefn;
+			} else if (first_char == '/') {
+				basepath = "";
+			} else {
+				wxLogWarning("Automation Script referenced with unknown location specifier character.\nLocation specifier found: %c\nFilename specified: %s",
+					first_char, trimmed);
+				continue;
+			}
+			wxFileName sfname(trimmed);
+			sfname.MakeAbsolute(basepath);
+			if (sfname.FileExists()) {
+				wxString err;
+				Add(Automation4::ScriptFactory::CreateFromFile(sfname.GetFullPath(), true));
+			} else {
+				wxLogWarning("Automation Script referenced could not be found.\nFilename specified: %c%s\nSearched relative to: %s\nResolved filename: %s",
+					first_char, trimmed, basepath, sfname.GetFullPath());
+			}
+		}
+	}
+
+	void LocalScriptManager::OnSubtitlesSave() {
+		// Store Automation script data
+		// Algorithm:
+		// 1. If script filename has Automation Base Path as a prefix, the path is relative to that (ie. "$")
+		// 2. Otherwise try making it relative to the ass filename
+		// 3. If step 2 failed, or absolute path is shorter than path relative to ass, use absolute path ("/")
+		// 4. Otherwise, use path relative to ass ("~")
+		wxString scripts_string;
+		wxString autobasefn(lagi_wxString(OPT_GET("Path/Automation/Base")->GetString()));
+
+		for (size_t i = 0; i < GetScripts().size(); i++) {
+			Script *script = GetScripts()[i];
+
+			if (i != 0)
+				scripts_string += "|";
+
+			wxString autobase_rel, assfile_rel;
+			wxString scriptfn(script->GetFilename());
+			autobase_rel = MakeRelativePath(scriptfn, autobasefn);
+			assfile_rel = MakeRelativePath(scriptfn, context->ass->filename);
+
+			if (autobase_rel.size() <= scriptfn.size() && autobase_rel.size() <= assfile_rel.size()) {
+				scriptfn = "$" + autobase_rel;
+			} else if (assfile_rel.size() <= scriptfn.size() && assfile_rel.size() <= autobase_rel.size()) {
+				scriptfn = "~" + assfile_rel;
+			} else {
+				scriptfn = "/" + wxFileName(scriptfn).GetFullPath(wxPATH_UNIX);
+			}
+
+			scripts_string += scriptfn;
+		}
+		context->ass->SetScriptInfo("Automation Scripts", scripts_string);
+	}
 
 	// ScriptFactory
 

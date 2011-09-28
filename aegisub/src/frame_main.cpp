@@ -122,7 +122,7 @@ FrameMain::FrameMain (wxArrayString args)
 	context->ass->AddFileOpenListener(&FrameMain::OnSubtitlesOpen, this);
 	context->ass->AddFileSaveListener(&FrameMain::UpdateTitle, this);
 
-	context->local_scripts = new Automation4::ScriptManager();
+	context->local_scripts = new Automation4::LocalScriptManager(context.get());
 
 	StartupLog("Initializing context controls");
 	context->audioController = new AudioController;
@@ -678,7 +678,6 @@ void FrameMain::OnSubtitlesOpen() {
 		curSubsVFR != context->videoController->GetTimecodesName() ||
 		curSubsVideo != context->videoController->videoName ||
 		curSubsKeyframes != context->videoController->GetKeyFramesName()
-		|| !AutoScriptString.IsEmpty() || context->local_scripts->GetScripts().size() > 0
 		)
 	{
 		if (autoLoadMode == 1) {
@@ -724,38 +723,6 @@ void FrameMain::OnSubtitlesOpen() {
 		if (curSubsAudio != context->audioController->GetAudioURL()) {
 			context->audioController->OpenAudio(curSubsAudio);
 		}
-
-		// Automation scripts
-		context->local_scripts->RemoveAll();
-		wxStringTokenizer tok(AutoScriptString, "|", wxTOKEN_STRTOK);
-		wxFileName assfn(context->ass->filename);
-		wxString autobasefn(lagi_wxString(OPT_GET("Path/Automation/Base")->GetString()));
-		while (tok.HasMoreTokens()) {
-			wxString sfnames = tok.GetNextToken().Trim(true).Trim(false);
-			wxString sfnamel = sfnames.Left(1);
-			sfnames.Remove(0, 1);
-			wxString basepath;
-			if (sfnamel == "~") {
-				basepath = assfn.GetPath();
-			} else if (sfnamel == "$") {
-				basepath = autobasefn;
-			} else if (sfnamel == "/") {
-				basepath = "";
-			} else {
-				wxLogWarning("Automation Script referenced with unknown location specifier character.\nLocation specifier found: %s\nFilename specified: %s",
-					sfnamel, sfnames);
-				continue;
-			}
-			wxFileName sfname(sfnames);
-			sfname.MakeAbsolute(basepath);
-			if (sfname.FileExists()) {
-				sfnames = sfname.GetFullPath();
-				context->local_scripts->Add(Automation4::ScriptFactory::CreateFromFile(sfnames, true));
-			} else {
-				wxLogWarning("Automation Script referenced could not be found.\nFilename specified: %s%s\nSearched relative to: %s\nResolved filename: %s",
-					sfnamel, sfnames, basepath, sfname.GetFullPath());
-			}
-		}
 	}
 
 	// Display
@@ -764,39 +731,6 @@ void FrameMain::OnSubtitlesOpen() {
 
 void FrameMain::OnSubtitlesSave() {
 	UpdateTitle();
-
-	// Store Automation script data
-	// Algorithm:
-	// 1. If script filename has Automation Base Path as a prefix, the path is relative to that (ie. "$")
-	// 2. Otherwise try making it relative to the ass filename
-	// 3. If step 2 failed, or absolute path is shorter than path relative to ass, use absolute path ("/")
-	// 4. Otherwise, use path relative to ass ("~")
-	wxString scripts_string;
-	wxString autobasefn(lagi_wxString(OPT_GET("Path/Automation/Base")->GetString()));
-
-	const std::vector<Automation4::Script*> &scripts = context->local_scripts->GetScripts();
-	for (unsigned int i = 0; i < scripts.size(); i++) {
-		Automation4::Script *script = scripts[i];
-
-		if (i != 0)
-			scripts_string += "|";
-
-		wxString autobase_rel, assfile_rel;
-		wxString scriptfn(script->GetFilename());
-		autobase_rel = MakeRelativePath(scriptfn, autobasefn);
-		assfile_rel = MakeRelativePath(scriptfn, context->ass->filename);
-
-		if (autobase_rel.size() <= scriptfn.size() && autobase_rel.size() <= assfile_rel.size()) {
-			scriptfn = "$" + autobase_rel;
-		} else if (assfile_rel.size() <= scriptfn.size() && assfile_rel.size() <= autobase_rel.size()) {
-			scriptfn = "~" + assfile_rel;
-		} else {
-			scriptfn = "/" + wxFileName(scriptfn).GetFullPath(wxPATH_UNIX);
-		}
-
-		scripts_string += scriptfn;
-	}
-	context->ass->SetScriptInfo("Automation Scripts", scripts_string);
 }
 
 void FrameMain::OnKeyDown(wxKeyEvent &event) {
