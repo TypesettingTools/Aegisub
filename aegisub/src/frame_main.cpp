@@ -83,7 +83,6 @@
 enum {
 	ID_APP_TIMER_AUTOSAVE					= 12001,
 	ID_APP_TIMER_STATUSCLEAR				= 12002,
-	ID_MENU_AUTOMATION_MACRO				= 13006,
 	ID_SASH_MAIN_AUDIO						= 14001
 };
 
@@ -669,7 +668,6 @@ void FrameMain::OnSubtitlesOpen() {
 	wxString curSubsVFR = DecodeRelativePath(context->ass->GetScriptInfo("VFR File"),context->ass->filename);
 	wxString curSubsKeyframes = DecodeRelativePath(context->ass->GetScriptInfo("Keyframes File"),context->ass->filename);
 	wxString curSubsAudio = DecodeRelativePath(context->ass->GetScriptInfo("Audio URI"),context->ass->filename);
-	wxString AutoScriptString = context->ass->GetScriptInfo("Automation Scripts");
 
 	// Check if there is anything to change
 	int autoLoadMode = OPT_GET("App/Auto/Load Linked Files")->GetInt();

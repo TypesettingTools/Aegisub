@@ -64,7 +64,6 @@ class VideoSlider;
 class VideoZoomSlider;
 
 namespace agi { struct Context; class OptionValue; }
-namespace Automation4 { class FeatureMacro; class ScriptManager; }
 
 /// DOCME
 /// @class FrameMain
@@ -92,9 +91,6 @@ class FrameMain: public wxFrame {
 	bool blockVideoLoad;
 
 	wxPanel *Panel;
-	std::vector<Automation4::FeatureMacro*> activeMacroItems;
-
-	int AddMacroMenuItems(wxMenu *menu, const std::vector<Automation4::FeatureMacro*> &macros);
 
 	void InitToolbar();
 	void InitContents();
