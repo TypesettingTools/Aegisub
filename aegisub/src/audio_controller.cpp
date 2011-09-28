@@ -53,6 +53,7 @@
 #include "include/aegisub/audio_provider.h"
 #include "main.h"
 #include "selection_controller.h"
+#include "standard_paths.h"
 #include "video_context.h"
 
 class AudioMarkerKeyframe : public AudioMarker {
@@ -272,6 +273,8 @@ void AudioController::OpenAudio(const wxString &url)
 				&fnf);
 		}
 		provider = AudioProviderFactory::GetProvider(url);
+
+		StandardPaths::SetPathValue("?audio", fn.GetPath());
 	}
 
 	try
@@ -308,6 +311,8 @@ void AudioController::CloseAudio()
 	provider = 0;
 
 	audio_url.clear();
+
+	StandardPaths::SetPathValue("?audio", "");
 
 	AnnounceAudioClose();
 }
