@@ -255,7 +255,7 @@ void DialogAutomation::OnInfo(wxCommandEvent &)
 
 		std::vector<cmd::Command*> macros = ei->script->GetMacros();
 		for (std::vector<cmd::Command*>::const_iterator f = macros.begin(); f != macros.end(); ++f)
-			info += _("    Macro: ") + (*f)->StrDisplay(context) + "\n";
+			info += wxString::Format(_("    Macro: %s (%s)\n"),  (*f)->StrDisplay(context), (*f)->name());
 
 		std::vector<Automation4::ExportFilter*> filters = ei->script->GetFilters();
 		for (std::vector<Automation4::ExportFilter*>::const_iterator f = filters.begin(); f != filters.end(); ++f)
