@@ -88,15 +88,19 @@ class SubsTextEditCtrl : public ScintillaTextCtrl {
 	void OnSetThesLanguage(wxCommandEvent &event);
 	void OnLoseFocus(wxFocusEvent &event);
 
+	void SetStyle(int id, wxFont &font, std::string const& name);
+	void Subscribe(std::string const& name);
+
+	void StyleSpellCheck();
+	void UpdateCallTip(wxStyledTextEvent &);
+	void SetStyles();
+
 public:
 	SubsTextEditCtrl(wxWindow* parent, wxSize size, long style, SubtitlesGrid *grid);
 	~SubsTextEditCtrl();
 
 	void SetTextTo(wxString text);
-	void UpdateStyle(int start=0,int length=-1);
-	void StyleSpellCheck(int start=0,int length=-1);
-	void UpdateCallTip(wxStyledTextEvent &);
-	void SetStyles();
+	void UpdateStyle();
 
 	DECLARE_EVENT_TABLE()
 };

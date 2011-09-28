@@ -75,18 +75,6 @@ enum {
 	EDIT_MENU_THES_LANGS
 };
 
-
-/// @brief Edit box constructor 
-/// @param parent    
-/// @param id        
-/// @param value     
-/// @param pos       
-/// @param wsize     
-/// @param style     
-/// @param validator 
-/// @param name      
-/// @return 
-///
 SubsTextEditCtrl::SubsTextEditCtrl(wxWindow* parent, wxSize wsize, long style, SubtitlesGrid *grid)
 : ScintillaTextCtrl(parent, wxID_ANY)
 , spellchecker(SpellCheckerFactory::GetSpellChecker())
@@ -186,23 +174,31 @@ SubsTextEditCtrl::SubsTextEditCtrl(wxWindow* parent, wxSize wsize, long style, S
 
 	OPT_SUB("Subtitle/Edit Box/Font Face", &SubsTextEditCtrl::SetStyles, this);
 	OPT_SUB("Subtitle/Edit Box/Font Size", &SubsTextEditCtrl::SetStyles, this);
-	OPT_SUB("Colour/Subtitle/Syntax/Normal", &SubsTextEditCtrl::SetStyles, this);
-	OPT_SUB("Colour/Subtitle/Syntax/Brackets", &SubsTextEditCtrl::SetStyles, this);
-	OPT_SUB("Colour/Subtitle/Syntax/Slashes", &SubsTextEditCtrl::SetStyles, this);
-	OPT_SUB("Colour/Subtitle/Syntax/Highlight Tags", &SubsTextEditCtrl::SetStyles, this);
-	OPT_SUB("Colour/Subtitle/Syntax/Error", &SubsTextEditCtrl::SetStyles, this);
-	OPT_SUB("Colour/Subtitle/Syntax/Background/Error", &SubsTextEditCtrl::SetStyles, this);
-	OPT_SUB("Colour/Subtitle/Syntax/Parameters", &SubsTextEditCtrl::SetStyles, this);
-	OPT_SUB("Colour/Subtitle/Syntax/Line Break", &SubsTextEditCtrl::SetStyles, this);
-	OPT_SUB("Colour/Subtitle/Syntax/Karaoke Template", &SubsTextEditCtrl::SetStyles, this);
+	Subscribe("Normal");
+	Subscribe("Comment");
+	Subscribe("Drawing");
+	Subscribe("Brackets");
+	Subscribe("Slashes");
+	Subscribe("Tags");
+	Subscribe("Error");
+	Subscribe("Parameters");
+	Subscribe("Line Break");
+	Subscribe("Karaoke Template");
+	Subscribe("Karaoke Variable");
 
-	OPT_SUB("Subtitle/Highlight/Syntax", &SubsTextEditCtrl::UpdateStyle, this, 0, -1);
+	OPT_SUB("Subtitle/Highlight/Syntax", &SubsTextEditCtrl::UpdateStyle, this);
 	static wxStyledTextEvent evt;
 	OPT_SUB("App/Call Tips", &SubsTextEditCtrl::UpdateCallTip, this, ref(evt));
 }
 
 
 SubsTextEditCtrl::~SubsTextEditCtrl() {
+}
+
+void SubsTextEditCtrl::Subscribe(std::string const& name) {
+	OPT_SUB("Colour/Subtitle/Syntax/" + name, &SubsTextEditCtrl::SetStyles, this);
+	OPT_SUB("Colour/Subtitle/Syntax/Background/" + name, &SubsTextEditCtrl::SetStyles, this);
+	OPT_SUB("Colour/Subtitle/Syntax/Bold/" + name, &SubsTextEditCtrl::SetStyles, this);
 }
 
 BEGIN_EVENT_TABLE(SubsTextEditCtrl,wxStyledTextCtrl)
@@ -222,278 +218,206 @@ void SubsTextEditCtrl::OnLoseFocus(wxFocusEvent &event) {
 	event.Skip();
 }
 
+enum {
+	STYLE_NORMAL = 0,
+	STYLE_COMMENT,
+	STYLE_DRAWING,
+	STYLE_OVERRIDE,
+	STYLE_PUNCTUATION,
+	STYLE_TAG,
+	STYLE_ERROR,
+	STYLE_PARAMETER,
+	STYLE_LINE_BREAK,
+	STYLE_KARAOKE_TEMPLATE,
+	STYLE_KARAOKE_VARIABLE
+};
+
+void SubsTextEditCtrl::SetStyle(int id, wxFont &font, std::string const& name) {
+	StyleSetFont(id, font);
+	StyleSetBold(id, OPT_GET("Colour/Subtitle/Syntax/Bold/" + name)->GetBool());
+	StyleSetForeground(id, lagi_wxColour(OPT_GET("Colour/Subtitle/Syntax/" + name)->GetColour()));
+	const agi::OptionValue *background = OPT_GET("Colour/Subtitle/Syntax/Background/" + name);
+	if (background->GetType() == agi::OptionValue::Type_Colour)
+		StyleSetBackground(id, lagi_wxColour(background->GetColour()));
+}
+
 void SubsTextEditCtrl::SetStyles() {
 	wxFont font = wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT);
 	font.SetEncoding(wxFONTENCODING_DEFAULT); // this solves problems with some fonts not working properly
 	wxString fontname = lagi_wxString(OPT_GET("Subtitle/Edit Box/Font Face")->GetString());
 	if (!fontname.empty()) font.SetFaceName(fontname);
-	int size = OPT_GET("Subtitle/Edit Box/Font Size")->GetInt();
+	font.SetPointSize(OPT_GET("Subtitle/Edit Box/Font Size")->GetInt());
 
-	// Normal style
-	StyleSetFont(0,font);
-	StyleSetSize(0,size);
-	StyleSetForeground(0,lagi_wxColour(OPT_GET("Colour/Subtitle/Syntax/Normal")->GetColour()));
-
-	// Brackets style
-	StyleSetFont(1,font);
-	StyleSetSize(1,size);
-	StyleSetForeground(1,lagi_wxColour(OPT_GET("Colour/Subtitle/Syntax/Brackets")->GetColour()));
-
-	// Slashes/Parenthesis/Comma style
-	StyleSetFont(2,font);
-	StyleSetSize(2,size);
-	StyleSetForeground(2,lagi_wxColour(OPT_GET("Colour/Subtitle/Syntax/Slashes")->GetColour()));
-
-	// Tags style
-	StyleSetFont(3,font);
-	StyleSetSize(3,size);
-	StyleSetBold(3,true);
-	StyleSetForeground(3,lagi_wxColour(OPT_GET("Colour/Subtitle/Syntax/Highlight Tags")->GetColour()));
-
-	// Error style
-	StyleSetFont(4,font);
-	StyleSetSize(4,size);
-	StyleSetForeground(4,lagi_wxColour(OPT_GET("Colour/Subtitle/Syntax/Error")->GetColour()));
-	StyleSetBackground(4,lagi_wxColour(OPT_GET("Colour/Subtitle/Syntax/Background/Error")->GetColour()));
-
-	// Tag Parameters style
-	StyleSetFont(5,font);
-	StyleSetSize(5,size);
-	StyleSetForeground(5,lagi_wxColour(OPT_GET("Colour/Subtitle/Syntax/Parameters")->GetColour()));
-
-	// Line breaks style
-	StyleSetFont(6,font);
-	StyleSetSize(6,size);
-	StyleSetBold(6,true);
-	StyleSetForeground(6,lagi_wxColour(OPT_GET("Colour/Subtitle/Syntax/Line Break")->GetColour()));
-
-	// Karaoke template code block style
-	StyleSetFont(7,font);
-	StyleSetSize(7,size);
-	StyleSetBold(7,true);
-	//StyleSetItalic(7,true);
-	StyleSetForeground(7,lagi_wxColour(OPT_GET("Colour/Subtitle/Syntax/Karaoke Template")->GetColour()));
+	SetStyle(STYLE_NORMAL, font, "Normal");
+	SetStyle(STYLE_COMMENT, font, "Comment");
+	SetStyle(STYLE_DRAWING, font, "Drawing");
+	SetStyle(STYLE_OVERRIDE, font, "Brackets");
+	SetStyle(STYLE_PUNCTUATION, font, "Slashes");
+	SetStyle(STYLE_TAG, font, "Tags");
+	SetStyle(STYLE_ERROR, font, "Error");
+	SetStyle(STYLE_PARAMETER, font, "Parameters");
+	SetStyle(STYLE_LINE_BREAK, font, "Line Break");
+	SetStyle(STYLE_KARAOKE_TEMPLATE, font, "Karaoke Template");
+	SetStyle(STYLE_KARAOKE_VARIABLE, font, "Karaoke Variable");
 
 	// Misspelling indicator
 	IndicatorSetStyle(0,wxSTC_INDIC_SQUIGGLE);
 	IndicatorSetForeground(0,wxColour(255,0,0));
 }
 
-void SubsTextEditCtrl::UpdateStyle(int start, int _length) {
-	StartUnicodeStyling(0,255);
+void SubsTextEditCtrl::UpdateStyle() {
+	StartStyling(0,255);
+
+	std::string text = STD_STR(GetText());
 
 	if (!OPT_GET("Subtitle/Highlight/Syntax")->GetBool()) {
-		SetUnicodeStyling(start, _length, 0);
+		SetStyling(text.size(), 0);
 		return;
 	}
+
+	if (text.empty()) return;
 
 	// Check if it's a template line
 	AssDialogue *diag = grid->GetActiveLine();
 	bool templateLine = diag && diag->Comment && diag->Effect.Lower().StartsWith("template");
-	//bool templateCodeLine = diag && diag->Comment && diag->Effect.Lower().StartsWith("code");
 
-	// Template code lines get Lua highlighting instead of ASS highlighting
-	// This is broken and needs some extra work
-	/*if (templateCodeLine) {
-		SetLexer(wxSTC_LEX_LUA);
-		Colourise(start, start+_length);
-		return;
-	}
-	else {
-		SetLexer(wxSTC_LEX_CONTAINER);
-	}*/
+	bool in_parens = false;
+	bool in_unparened_arg = false;
+	bool in_draw_mode = false;
+	bool in_ovr = false;
+	bool in_karaoke_template = false;
 
-	// Set variables
-	wxString text = GetText();
-	int end = start + _length;
-	if (_length < 0) end = text.Length();
+	int range_len = 0;
+	int style = STYLE_NORMAL;
 
-	// Flags
-	bool numMode = false;			// everything is considered a number/parameter until this is unset
-	bool drawingMode = false;		// for \p1 -> \p0 stuff
+	char cur_char = 0;
+	char next_char = text[0];
 
-	// Begin styling
-	int ran = 0;		// length of current range
-	int depth = 0;		// brace nesting depth
-	int curStyle = 0;	// style to apply to current range
-	int curPos = 0;		// start of current range?
-	wxChar curChar = 0;
-	wxChar prevChar = 0;
-	wxChar nextChar = 0;
+	size_t eat_chars = 0;
 
-	// Loop through
-	for (int i=start;i<end;i++) {
+	for (size_t i = 0; i < text.size(); ++i) {
 		// Current/previous characters
-		prevChar = curChar;
-		curChar = text[i];
-		if (i<end-1) nextChar = text[i+1];
-		else nextChar = 0;
+		char prev_char = cur_char;
+		cur_char = next_char;
+		next_char = i + 1 < text.size() ? text[i + 1] : 0;
 
-		// Erroneous
-		if (depth < 0 || depth > 1) {
-			SetUnicodeStyling(curPos,ran,curStyle);
-			curPos += ran;
-			ran = 0;
-			curStyle = 4;
-			numMode = false;
+		if (eat_chars > 0) {
+			++range_len;
+			--eat_chars;
+			continue;
 		}
+
+		int new_style = style;
 
 		// Start override block
-		if (curChar == '{' && depth >= 0) {
-			SetUnicodeStyling(curPos,ran,curStyle);
-			curPos += ran;
-			ran = 0;
-			depth++;
-			if (depth == 1) curStyle = 1;
-			else curStyle = 4;
-			numMode = false;
+		if (cur_char == '{') {
+			new_style = in_ovr ? STYLE_ERROR : STYLE_OVERRIDE;
+			in_ovr = true;
+			in_parens = false;
 		}
-
 		// End override block
-		else if (curChar == '}' && depth <= 1) {
-			SetUnicodeStyling(curPos,ran,curStyle);
-			curPos += ran;
-			ran = 0;
-			depth--;
-			if (depth == 0) curStyle = 1;
-			else curStyle = 4;
-			numMode = false;
+		else if (cur_char == '}') {
+			new_style = in_ovr ? STYLE_OVERRIDE : STYLE_ERROR;
+			in_ovr = false;
 		}
-
-		// Karaoke template block
-		else if (templateLine && curChar == '!') {
-			// Apply previous style
-			SetUnicodeStyling(curPos,ran,curStyle);
-			curPos += ran;
-			ran = -1; // such that ran++ later on resets it to 0 !
-			// Eat entire template block
-			int endPos = i+1;
-			while (endPos < end && text[endPos] != '!')
-				endPos++;
-			SetUnicodeStyling(curPos,endPos-curPos+1,7);
-			curPos = endPos+1;
-			i = endPos+0;
+		// Start karaoke template
+		else if (templateLine && style != STYLE_KARAOKE_TEMPLATE && cur_char == '!') {
+			new_style = STYLE_KARAOKE_TEMPLATE;
+			in_karaoke_template = true;
 		}
-		// Karaoke template variable
-		else if (templateLine && curChar == '$') {
-			// Apply previous style
-			SetUnicodeStyling(curPos,ran,curStyle);
-			curPos += ran;
-			ran = -1; // such that ran++ later on resets it to 0 !
-			// Eat entire variable
-			int endPos = i+1;
-			while (endPos < end) {
-				wxChar ch = text[endPos];
-				if ((ch >= 'A' && ch <= 'Z') || (ch >= 'a' && ch <= 'z') || ch == '_')
-					endPos++;
-				else
-					break;
-			}
-			SetUnicodeStyling(curPos,endPos-curPos,7);
-			curPos = endPos;
-			i = curPos-1;
+		// End karaoke template
+		else if (style == STYLE_KARAOKE_TEMPLATE && cur_char == '!') {
+			in_karaoke_template = false;
 		}
-
-		// Outside
-		else if (depth == 0) {
-			// Reset number mode
-			numMode = false;
-
+		// Continue karaoke template
+		else if (in_karaoke_template) {
+			// Do nothing and just continue the karaoke template style
+		}
+		// Start karaoke template variable
+		else if (templateLine && style != STYLE_KARAOKE_TEMPLATE && cur_char == '$') {
+			new_style = STYLE_KARAOKE_VARIABLE;
+		}
+		// Continue karaoke template variable
+		else if (style == STYLE_KARAOKE_VARIABLE && ((cur_char >= 'A' && cur_char <= 'Z') || (cur_char >= 'a' && cur_char <= 'z') || cur_char == '_')) {
+			// Do nothing and just continue the karaoke variable style
+		}
+		// Plain text
+		else if (!in_ovr) {
 			// Is \n, \N or \h?
-			if (curChar == '\\' && (nextChar == 'n' || nextChar == 'N' || nextChar == 'h')) {
-				SetUnicodeStyling(curPos,ran,curStyle);
-				curPos += ran;
-				ran = 1;
-				curStyle = 6;
-				i++;
+			if (cur_char == '\\' && (next_char == 'n' || next_char == 'N' || next_char == 'h')) {
+				new_style = STYLE_LINE_BREAK;
+				eat_chars = 1;
 			}
-
-			// Normal text
-			else if (curStyle != 0) {
-				SetUnicodeStyling(curPos,ran,curStyle);
-				curPos += ran;
-				ran = 0;
-				if (drawingMode) curStyle = 6;
-				else curStyle = 0;
-			}
+			else if (in_draw_mode)
+				new_style = STYLE_DRAWING;
+			else
+				new_style = STYLE_NORMAL;
 		}
-
-		// Inside
-		else if (depth == 1) {
+		// Inside override tag
+		else {
 			// Special character
-			if (curChar == '\\' || curChar == '(' || curChar == ')' || curChar == ',') {
-				if (curStyle != 2) {
-					SetUnicodeStyling(curPos,ran,curStyle);
-					curPos += ran;
-					ran = 0;
-					curStyle = 2;
-					numMode = false;
-				}
+			if (cur_char == '\\' || cur_char == '(' || cur_char == ')' || cur_char == ',') {
+				new_style = STYLE_PUNCTUATION;
+				in_unparened_arg = false;
+
+				if (style == STYLE_TAG && cur_char == '(')
+					in_parens = true;
+				// This is technically wrong for nested tags, but it doesn't
+				// matter as \t doesn't have any arguments after the subtag(s)
+				else if (cur_char == ')')
+					in_parens = false;
 			}
-
-			else {
-				// Number
-				if (prevChar != '\\' && (numMode || (curChar >= '0' && curChar <= '9') || curChar == '.' || curChar == '&' || curChar == '+' || curChar == '-' || (curChar == 'H' && prevChar == '&'))) {
-					if (curStyle != 5) {
-						SetUnicodeStyling(curPos,ran,curStyle);
-						curPos += ran;
-						ran = 0;
-						curStyle = 5;
-						numMode = true;
+			// Beginning of a tag
+			else if (prev_char == '\\') {
+				new_style = STYLE_TAG;
+				// \r and \fn are special as their argument is an
+				// unparenthesized string
+				if (cur_char == 'r')
+					in_unparened_arg = true;
+				else if (cur_char == 'f' && next_char == 'n') {
+					eat_chars = 1;
+					in_unparened_arg = true;
+				}
+				// For \p we need to check if it's entering or leaving draw mode
+				// Luckily draw mode can't be set in the style, so no argument
+				// always means leave draw mode
+				else if (cur_char == 'p' && (next_char < 'a' || next_char > 'z')) {
+					in_draw_mode = false;
+					for (size_t idx = i + 1; idx < text.size(); ++idx) {
+						char c = text[idx];
+						// I have no idea why one would use leading zeros for
+						// the scale, but vsfilter allows it
+						if (c >= '1' && c <= '9')
+							in_draw_mode = true;
+						else if (c != '0')
+							break;
 					}
 				}
-
-				// Tag name
-				else if (curStyle != 3) {
-					SetUnicodeStyling(curPos,ran,curStyle);
-					curPos += ran;
-					ran = 0;
-					curStyle = 3;
-
-					// Set parameter if it's \fn or \r
-					int tagLen = 0;
-					if (text.Mid(curPos,2) == "fn") tagLen = 2;
-					else if (text.Mid(curPos,1) == "r") tagLen = 1;
-					if (tagLen) {
-						numMode = true;
-						ran = tagLen-1;
-						i+=ran;
-					}
-
-					// Set drawing mode if it's \p
-					if (text.Mid(curPos,1) == "p") {
-						if (curPos+2 < (signed) text.Length()) {
-							// Disable
-							wxChar nextNext = text[curPos+2];
-							if ((nextNext == '\\' || nextNext == '}') && nextChar == '0') drawingMode = false;
-
-							// Enable
-							if (nextChar >= '1' && nextChar <= '9') {
-								for(int testPos = curPos+2;testPos < (signed) text.Length();testPos++) {
-									nextNext = text[testPos];
-									if (nextNext == '\\' || nextNext == '}') {
-										drawingMode = true;
-										break;
-									}
-									if (nextNext < '0' || nextNext > '9') break;
-								}
-							}
-						}
-					}
-				}
+				// All tags start with letters or numbers
+				else if (cur_char < '0' || (cur_char > '9' && cur_char < 'A') || (cur_char > 'Z' && cur_char < 'a') || cur_char > 'z')
+					new_style = STYLE_ERROR;
+			}
+			else if ((in_parens && style != STYLE_TAG) || in_unparened_arg || (style == STYLE_TAG && ((cur_char < 'A' || cur_char > 'z') || (cur_char > 'Z' && cur_char < 'a')))) {
+				new_style = STYLE_PARAMETER;
+			}
+			else if (style != STYLE_TAG && style != STYLE_PARAMETER) {
+				new_style = STYLE_COMMENT;
 			}
 		}
 
-		// Increase ran length
-		ran++;
+		if (new_style != style) {
+			SetStyling(range_len, style);
+			style = new_style;
+			range_len = 0;
+		}
+
+		++range_len;
 	}
-	SetUnicodeStyling(curPos,ran,curStyle);
-	StyleSpellCheck(start,_length);
+	SetStyling(range_len, style);
+	StyleSpellCheck();
 	wxStyledTextEvent evt;
 	UpdateCallTip(evt);
 }
-
-
 
 /// @brief Update call tip 
 void SubsTextEditCtrl::UpdateCallTip(wxStyledTextEvent &) {
@@ -709,13 +633,13 @@ void SubsTextEditCtrl::UpdateCallTip(wxStyledTextEvent &) {
 	CallTipSetHighlight(highStart,highEnd);
 }
 
-void SubsTextEditCtrl::StyleSpellCheck(int start, int len) {
+void SubsTextEditCtrl::StyleSpellCheck() {
 	if (!spellchecker.get()) return;
 
 	// Results
 	wxString text = GetText();
 	IntPairVector results;
-	GetWordBoundaries(text,results,start,(len == -1) ? len : start+len);
+	GetWordBoundaries(text,results);
 
 	// Style
 	int count = results.size();
@@ -727,11 +651,7 @@ void SubsTextEditCtrl::StyleSpellCheck(int start, int len) {
 
 		// Check if it's valid
 		if (!spellchecker->CheckWord(curWord)) {
-			// Get length before it
-			int utf8len = GetUnicodePosition(s);
-
-			// Set styling
-			StartStyling(utf8len,32);
+			StartUnicodeStyling(s,32);
 			SetUnicodeStyling(s,e-s,32);
 		}
 	}
@@ -752,7 +672,6 @@ void SubsTextEditCtrl::SetTextTo(wxString text) {
 
 	int from=0,to=0;
 	GetSelection(&from,&to);
-	Clear();
 
 	SetText(text);
 	UpdateStyle();
@@ -999,10 +918,10 @@ void SubsTextEditCtrl::OnSetDicLanguage(wxCommandEvent &event) {
 
 	// Set dictionary
 	int index = event.GetId() - EDIT_MENU_DIC_LANGS - 1;
-	wxString lang;
-	if (index >= 0) lang = langs[index];
-	spellchecker->SetLanguage(lang);
-	OPT_SET("Tool/Spell Checker/Language")->SetString(STD_STR(lang));
+	if (index >= 0) {
+		spellchecker->SetLanguage(langs[index]);
+		OPT_SET("Tool/Spell Checker/Language")->SetString(STD_STR(langs[index]));
+	}
 
 	UpdateStyle();
 }
@@ -1012,10 +931,10 @@ void SubsTextEditCtrl::OnSetThesLanguage(wxCommandEvent &event) {
 
 	// Set language
 	int index = event.GetId() - EDIT_MENU_THES_LANGS - 1;
-	wxString lang;
-	if (index >= 0) lang = langs[index];
-	thesaurus->SetLanguage(lang);
-	OPT_SET("Tool/Thesaurus/Language")->SetString(STD_STR(lang));
+	if (index >= 0) {
+		thesaurus->SetLanguage(langs[index]);
+		OPT_SET("Tool/Thesaurus/Language")->SetString(STD_STR(langs[index]));
+	}
 
 	UpdateStyle();
 }

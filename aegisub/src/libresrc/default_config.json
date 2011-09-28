@@ -136,16 +136,42 @@
 		"Subtitle" : {
 			"Syntax" : {
 				"Background" : {
-					"Error" : "rgb(255, 200, 200)"
+					"Brackets" : "",
+					"Comment" : "",
+					"Drawing" : "",
+					"Error" : "rgb(255, 200, 200)",
+					"Karaoke Template" : "",
+					"Karaoke Variable" : "",
+					"Line Break" : "",
+					"Normal" : "",
+					"Parameters" : "",
+					"Slashes" : "",
+					"Tags" : ""
+				},
+				"Bold" : {
+					"Brackets" : false,
+					"Comment" : true,
+					"Drawing" : true,
+					"Error" : false,
+					"Karaoke Template" : true,
+					"Karaoke Variable" : true,
+					"Line Break" : true,
+					"Normal" : false,
+					"Parameters" : false,
+					"Slashes" : false,
+					"Tags" : true
 				},
 				"Brackets" : "rgb(20, 50, 255)",
+				"Comment" : "rgb(0,0,0)",
+				"Drawing" : "rgb(0,0,0)",
 				"Error" : "rgb(200, 0, 0)",
-				"Highlight Tags" : "rgb(90, 90, 90)",
 				"Karaoke Template" : "rgb(128, 0, 192)",
+				"Karaoke Variable" : "rgb(128, 0, 192)",
 				"Line Break" : "rgb(160, 160, 160)",
 				"Normal" : "rgb(0,0,0)",
 				"Parameters" : "rgb(40, 90, 40)",
-				"Slashes" : "rgb(255, 0, 200)"
+				"Slashes" : "rgb(255, 0, 200)",
+				"Tags" : "rgb(90, 90, 90)"
 			}
 		},
 		"Video Dummy" : {

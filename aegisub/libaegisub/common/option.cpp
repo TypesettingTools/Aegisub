@@ -91,7 +91,7 @@ void Options::LoadConfig(std::istream& stream) {
 		LOG_E("option/load") << "json::Exception: " << e.what();
 	}
 
-	ConfigVisitor config_visitor(values, std::string(""));
+	ConfigVisitor config_visitor(values, "");
 	config_root.Accept(config_visitor);
 }
 
