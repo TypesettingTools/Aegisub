@@ -39,41 +39,36 @@
 #include "ass_export_filter.h"
 #include "ass_exporter.h"
 #include "ass_file.h"
-#include "frame_main.h"
 
-/// @brief Constructor 
-/// @param subs 
-///
-AssExporter::AssExporter (AssFile *subs) {
-	OriginalSubs = subs;
-	IsDefault = true;
+static inline std::list<AssExportFilter*>::const_iterator filter_list_begin() {
+	return AssExportFilterChain::GetFilterList()->begin();
 }
 
-/// @brief Destructor 
-///
+static inline std::list<AssExportFilter*>::const_iterator filter_list_end() {
+	return AssExportFilterChain::GetFilterList()->end();
+}
+
+AssExporter::AssExporter(AssFile *subs)
+: original_subs(subs)
+, is_default(true)
+{
+}
+
 AssExporter::~AssExporter () {
 }
 
-/// @brief Draw control settings 
-/// @param parent 
-/// @param AddTo  
-///
-void AssExporter::DrawSettings(wxWindow *parent,wxSizer *AddTo) {
-	IsDefault = false;
-	wxWindow *window;
-	wxSizer *box;
-	FilterList::iterator begin = AssExportFilterChain::GetFilterList()->begin();
-	FilterList::iterator end = AssExportFilterChain::GetFilterList()->end();
-	for (FilterList::iterator cur=begin;cur!=end;cur++) {
+void AssExporter::DrawSettings(wxWindow *parent, wxSizer *target_sizer) {
+	is_default = false;
+	for (filter_iterator cur = filter_list_begin(); cur != filter_list_end(); ++cur) {
 		// Make sure to construct static box sizer first, so it won't overlap
 		// the controls on wxMac.
-		box = new wxStaticBoxSizer(wxVERTICAL,parent,(*cur)->name);
-		window = (*cur)->GetConfigDialogWindow(parent);
+		wxSizer *box = new wxStaticBoxSizer(wxVERTICAL, parent, (*cur)->GetName());
+		wxWindow *window = (*cur)->GetConfigDialogWindow(parent);
 		if (window) {
-			box->Add(window,0,wxEXPAND,0);
-			AddTo->Add(box,0,wxEXPAND | wxLEFT | wxRIGHT | wxBOTTOM,5);
-			AddTo->Show(box,false);
-			Sizers[(*cur)->name] = box;
+			box->Add(window, 0, wxEXPAND, 0);
+			target_sizer->Add(box, 0, wxEXPAND | wxLEFT | wxRIGHT | wxBOTTOM, 5);
+			target_sizer->Show(box, false);
+			Sizers[(*cur)->GetName()] = box;
 		}
 		else {
 			delete box;
@@ -81,101 +76,53 @@ void AssExporter::DrawSettings(wxWindow *parent,wxSizer *AddTo) {
 	}
 }
 
-/// @brief Add filter to chain 
-/// @param name 
-///
-void AssExporter::AddFilter(wxString name) {
-	// Get filter
-	AssExportFilter *filter = NULL;
-	FilterList::iterator begin = AssExportFilterChain::GetFilterList()->begin();
-	FilterList::iterator end = AssExportFilterChain::GetFilterList()->end();
-	for (FilterList::iterator cur=begin;cur!=end;cur++) {
-		if ((*cur)->name == name) {
-			filter = *cur;
-			break;
-		}
-	}
+void AssExporter::AddFilter(wxString const& name) {
+	AssExportFilter *filter = AssExportFilterChain::GetFilter(name);
 	
-	// Check
 	if (!filter) throw wxString::Format("Filter not found: %s", name);
 
-	// Add to list
-	Filters.push_back(filter);
+	filters.push_back(filter);
 }
 
-/// @brief Adds all autoexporting filters to chain 
-///
 void AssExporter::AddAutoFilters() {
-	FilterList::iterator begin = AssExportFilterChain::GetFilterList()->begin();
-	FilterList::iterator end = AssExportFilterChain::GetFilterList()->end();
-	for (FilterList::iterator cur=begin;cur!=end;cur++) {
-		if ((*cur)->autoExporter) {
-			Filters.push_back(*cur);
-		}
+	for (filter_iterator it = filter_list_begin(); it != filter_list_end(); ++it) {
+		if ((*it)->GetAutoApply())
+			filters.push_back(*it);
 	}
 }
 
-/// @brief Get name of all filters 
-/// @return 
-///
 wxArrayString AssExporter::GetAllFilterNames() {
 	wxArrayString names;
-	FilterList::iterator begin = AssExportFilterChain::GetFilterList()->begin();
-	FilterList::iterator end = AssExportFilterChain::GetFilterList()->end();
-	for (FilterList::iterator cur=begin;cur!=end;cur++) {
-		if (!(*cur)->hidden) names.Add((*cur)->name);
-	}
+	transform(filter_list_begin(), filter_list_end(),
+		std::back_inserter(names), std::mem_fun(&AssExportFilter::GetName));
 	return names;
 }
 
-/// @brief Transform for export 
-/// @param export_dialog 
-/// @return 
-///
-AssFile *AssExporter::ExportTransform(wxWindow *export_dialog,bool copy) {
-	// Copy
-	AssFile *Subs = copy ? new AssFile(*OriginalSubs) : OriginalSubs;
+AssFile *AssExporter::ExportTransform(wxWindow *export_dialog, bool copy) {
+	AssFile *subs = copy ? new AssFile(*original_subs) : original_subs;
 
-	// Run filters
-	for (FilterList::iterator cur=Filters.begin();cur!=Filters.end();cur++) {
-		(*cur)->LoadSettings(IsDefault);
-		(*cur)->ProcessSubs(Subs, export_dialog);
+	for (filter_iterator cur = filters.begin(); cur != filters.end(); cur++) {
+		(*cur)->LoadSettings(is_default);
+		(*cur)->ProcessSubs(subs, export_dialog);
 	}
 
-	// Done
-	return Subs;
+	return subs;
 }
 
-/// @brief Export 
-/// @param filename      
-/// @param charset       
-/// @param export_dialog 
-///
-void AssExporter::Export(wxString filename, wxString charset, wxWindow *export_dialog) {
-	std::auto_ptr<AssFile> Subs(ExportTransform(export_dialog,true));
-	Subs->Save(filename,false,false,charset);
+void AssExporter::Export(wxString const& filename, wxString const& charset, wxWindow *export_dialog) {
+	std::auto_ptr<AssFile> subs(ExportTransform(export_dialog, true));
+	subs->Save(filename, false, false, charset);
 }
 
-/// @brief Get window associated with name 
-/// @param name 
-/// @return 
-///
-wxSizer *AssExporter::GetSettingsSizer(wxString name) {
-	SizerMap::iterator pos = Sizers.find(name);
-	if (pos == Sizers.end()) return NULL;
-	else return pos->second;
+wxSizer *AssExporter::GetSettingsSizer(wxString const& name) {
+	std::map<wxString, wxSizer*>::iterator pos = Sizers.find(name);
+	if (pos == Sizers.end()) return 0;
+	return pos->second;
 }
 
-/// @brief Get description of filter 
-/// @param name 
-///
-wxString AssExporter::GetDescription(wxString name) {
-	FilterList::iterator begin = AssExportFilterChain::GetFilterList()->begin();
-	FilterList::iterator end = AssExportFilterChain::GetFilterList()->end();
-	for (FilterList::iterator cur=begin;cur!=end;cur++) {
-		if ((*cur)->name == name) {
-			return (*cur)->GetDescription();
-		}
-	}
+wxString const& AssExporter::GetDescription(wxString const& name) {
+	AssExportFilter *filter = AssExportFilterChain::GetFilter(name);
+	if (filter)
+		return filter->GetDescription();
 	throw wxString::Format("Filter not found: %s", name);
 }

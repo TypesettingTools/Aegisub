@@ -91,7 +91,7 @@ class AssTransformFramerateFilter : public AssExportFilter {
 public:
 	/// Constructor
 	AssTransformFramerateFilter();
-	void ProcessSubs(AssFile *subs, wxWindow *export_dialog);
+	void ProcessSubs(AssFile *subs, wxWindow *);
 	wxWindow *GetConfigDialogWindow(wxWindow *parent);
 	void LoadSettings(bool IsDefault);
 };

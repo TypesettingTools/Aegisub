@@ -86,7 +86,7 @@ struct tool_export : public Command {
 
 	void operator()(agi::Context *c) {
 		c->videoController->Stop();
-		DialogExport(c->parent, c->ass).ShowModal();
+		DialogExport(c).ShowModal();
 	}
 };
 

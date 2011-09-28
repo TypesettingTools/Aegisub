@@ -34,11 +34,6 @@
 /// @ingroup export
 ///
 
-
-
-
-///////////
-// Headers
 #ifndef AGI_PRE
 #include <wx/arrstr.h>
 #include <wx/sizer.h>
@@ -48,21 +43,10 @@
 #include <map>
 #endif
 
-
-//////////////
-// Prototypes
 class AssExportFilter;
 class AssFile;
 
-
-
-/// DOCME
 typedef std::list<AssExportFilter*> FilterList;
-
-/// DOCME
-typedef std::map<wxString,wxSizer*> SizerMap;
-
-
 
 /// DOCME
 /// @class AssExporter
@@ -70,36 +54,57 @@ typedef std::map<wxString,wxSizer*> SizerMap;
 ///
 /// DOCME
 class AssExporter {
-private:
+	typedef FilterList::const_iterator filter_iterator;
 
-	/// DOCME
-	SizerMap Sizers;
+	/// Sizers for configuration panels
+	std::map<wxString, wxSizer*> Sizers;
 
-	/// DOCME
-	FilterList Filters;
+	/// Filters which will be applied to the subtitles
+	FilterList filters;
 
-	/// DOCME
-	AssFile *OriginalSubs;
+	/// Input subtitle file
+	AssFile *original_subs;
 
-	/// DOCME
-	bool IsDefault;
+	/// Have the config windows been created, or should filters simply use
+	/// their default settings
+	bool is_default;
 
 public:
 	AssExporter(AssFile *subs);
 	~AssExporter();
 
+	/// Get the names of all registered export filters
 	wxArrayString GetAllFilterNames();
-	void AddFilter(wxString name);
+
+	/// Add the named filter to the list of filters to be run
+	/// @throws wxString if filter is not found
+	void AddFilter(wxString const& name);
+
+	/// Add all export filters which have indicated they should apply in
+	/// non-transform contexts
 	void AddAutoFilters();
-	void DrawSettings(wxWindow *parent,wxSizer *AddTo);
-	void Export(wxString file, wxString charset, wxWindow *export_dialog=NULL);
-	AssFile *ExportTransform(wxWindow *export_dialog=NULL,bool copy=false);
-	wxSizer *GetSettingsSizer(wxString name);
 
-	/// @brief DOCME
-	///
-	AssFile *GetOriginalSubs() { return OriginalSubs; }
-	wxString GetDescription(wxString name);
+	/// Run all added export filters
+	/// @param parent_window Parent window the filters should use when opening dialogs
+	/// @param copy Should the file be copied rather than transformed in-place?
+	/// @return The new subtitle file (which is the old one if copy is false)
+	AssFile *ExportTransform(wxWindow *parent_window = 0, bool copy = false);
+
+	/// Apply selected export filters and save with the given charset
+	/// @param file Target filename
+	/// @param charset Target charset
+	/// @param parent_window Parent window the filters should use when opening dialogs
+	void Export(wxString const& file, wxString const& charset, wxWindow *parent_window= 0);
+
+	/// Add configuration panels for all registered filters to the target sizer
+	/// @param parent Parent window for controls
+	/// @param target_sizer Sizer to add configuration panels to
+	void DrawSettings(wxWindow *parent, wxSizer *target_sizer);
+
+	/// Get the sizer created by DrawSettings for a specific filter
+	wxSizer *GetSettingsSizer(wxString const& name);
+
+	/// Get the description of the named export filter
+	/// @throws wxString if filter is not found
+	wxString const& GetDescription(wxString const& name);
 };
-
-

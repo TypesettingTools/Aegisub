@@ -44,6 +44,6 @@
 /// DOCME
 class AssTransformCleanInfoFilter : public AssExportFilter {
 public:
-	void ProcessSubs(AssFile *subs, wxWindow *export_dialog);
+	void ProcessSubs(AssFile *subs, wxWindow *);
 	AssTransformCleanInfoFilter();
 };

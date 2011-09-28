@@ -49,7 +49,6 @@
 AssFixStylesFilter::AssFixStylesFilter()
 : AssExportFilter(_("Fix Styles"), _("Fixes styles by replacing any style that isn't available on file with Default."), -5000)
 {
-	autoExporter = true;
 }
 
 void AssFixStylesFilter::ProcessSubs(AssFile *subs, wxWindow *) {

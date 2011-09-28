@@ -34,11 +34,6 @@
 /// @ingroup export
 ///
 
-
-
-
-///////////
-// Headers
 #ifndef AGI_PRE
 #include <map>
 
@@ -51,16 +46,10 @@
 #include <wx/textctrl.h>
 #endif
 
+#include <libaegisub/scoped_ptr.h>
 
-/// DOCME
-typedef std::map<wxString,wxSizer*> SizerMap;
-
-
-//////////////
-// Prototypes
 class AssExporter;
-
-
+namespace agi { struct Context; }
 
 /// DOCME
 /// @class DialogExport
@@ -68,73 +57,37 @@ class AssExporter;
 ///
 /// DOCME
 class DialogExport : public wxDialog {
-private:
+	agi::Context *c;
+
+	/// The export transform engine
+	agi::scoped_ptr<AssExporter> exporter;
+
+	/// The description of the currently selected export filter
+	wxTextCtrl *filter_description;
+
+	/// A list of all registered export filters
+	wxCheckListBox *filter_list;
+
+	/// A list of available target charsets
+	wxChoice *charset_list;
 
 	/// DOCME
-	AssExporter *Export;
+	wxSizer *opt_sizer;
 
-	/// DOCME
-	SizerMap SetupMap;
+	void OnProcess(wxCommandEvent &);
+	void OnMoveUp(wxCommandEvent &);
+	void OnMoveDown(wxCommandEvent &);
+	void OnSelectAll(wxCommandEvent &);
+	void OnSelectNone(wxCommandEvent &);
+	void OnCheck(wxCommandEvent &);
+	void OnChange(wxCommandEvent &);
 
-	/// DOCME
-	wxTextCtrl *Description;
-
-	/// DOCME
-	wxCheckListBox *FilterList;
-
-	/// DOCME
-	wxChoice *CharsetList;
-
-	/// DOCME
-	wxSizer *MainSizer;
-
-	/// DOCME
-	wxSizer *HorizSizer;
-
-	/// DOCME
-	wxSizer *OptionsSizer;
-
-	void OnProcess(wxCommandEvent &event);
-	void OnMoveUp(wxCommandEvent &event);
-	void OnMoveDown(wxCommandEvent &event);
-	void OnSelectAll(wxCommandEvent &event);
-	void OnSelectNone(wxCommandEvent &event);
-	void OnCheck(wxCommandEvent &event);
-	void OnChange(wxCommandEvent &event);
+	/// Set all the checkboxes
+	void SetAll(bool new_value);
+	/// Update which options sizers are shown
 	void RefreshOptions();
 
 public:
-	DialogExport(wxWindow *parent, AssFile *subs);
+	DialogExport(agi::Context *c);
 	~DialogExport();
-
-	DECLARE_EVENT_TABLE()
 };
-
-
-///////
-// IDs
-enum {
-
-	/// DOCME
-	Button_Process = 1400,
-
-	/// DOCME
-	Button_Move_Up,
-
-	/// DOCME
-	Button_Move_Down,
-
-	/// DOCME
-	Button_Select_All,
-
-	/// DOCME
-	Button_Select_None,
-
-	/// DOCME
-	Filter_List_Box,
-
-	/// DOCME
-	Charset_List_Box
-};
-
-

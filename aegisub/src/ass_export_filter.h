@@ -58,10 +58,7 @@ typedef std::list<AssExportFilter*> FilterList;
 ///
 /// DOCME
 class AssExportFilterChain {
-	friend class AssExporter;
-
-	/// Get the singleton instance
-	static FilterList *GetFilterList();
+	static FilterList *filters();
 public:
 	/// Register an export filter
 	static void Register(AssExportFilter *filter);
@@ -69,6 +66,11 @@ public:
 	static void Unregister(AssExportFilter *filter);
 	/// Unregister and delete all export filters
 	static void Clear();
+	/// Get a filter by name or NULL if it doesn't exist
+	static AssExportFilter *GetFilter(wxString const& name);
+
+	/// Get the list of registered filters
+	static const FilterList *GetFilterList();
 };
 
 /// DOCME
@@ -77,7 +79,8 @@ public:
 ///
 /// DOCME
 class AssExportFilter {
-	friend class AssExporter;
+	/// The filter chain needs to be able to muck around with filter names when
+	/// they're registered to avoid duplicates
 	friend class AssExportFilterChain;
 
 	/// This filter's name
@@ -86,27 +89,31 @@ class AssExportFilter {
 	/// Higher priority = run earlier
 	int priority;
 
-protected:
-	/// Should this filter be used when sending subtitles to the subtitle provider
-	bool autoExporter;
-
-	/// Should this filter be hidden from the user
-	bool hidden;
-
 	/// User-visible description of this filter
 	wxString description;
 
+	/// Should this filter be automatically applied when sending subtitles to
+	/// the renderer and exporting to non-ASS formats
+	bool auto_apply;
+
 public:
-	AssExportFilter(wxString const& name, wxString const& description, int priority = 0);
+	AssExportFilter(wxString const& name, wxString const& description, int priority = 0, bool auto_apply = false);
 	virtual ~AssExportFilter() { };
 
-	const wxString& GetDescription() const { return description; }
+	wxString const& GetName() const { return name; }
+	wxString const& GetDescription() const { return description; }
+	bool GetAutoApply() const { return auto_apply; }
 
 	/// Process subtitles
-	virtual void ProcessSubs(AssFile *subs, wxWindow *export_dialog=0)=0;
+	/// @param subs Subtitles to process
+	/// @param parent_window Window to use as the parent if the filter wishes
+	///                      to open a progress dialog
+	virtual void ProcessSubs(AssFile *subs, wxWindow *parent_window=0)=0;
+
 	/// Draw setup controls
 	virtual wxWindow *GetConfigDialogWindow(wxWindow *parent) { return 0; }
-	/// Config dialog is done - extract data now.
-	virtual void LoadSettings(bool IsDefault) { }
-};
 
+	/// Load settings to use from the configuration dialog
+	/// @param is_default If true use default settings instead
+	virtual void LoadSettings(bool is_default) { }
+};

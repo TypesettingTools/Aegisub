@@ -44,12 +44,11 @@
 #include "ass_file.h"
 #include "utils.h"
 
-AssExportFilter::AssExportFilter(wxString const& name, wxString const& description, int priority)
+AssExportFilter::AssExportFilter(wxString const& name, wxString const& description, int priority, bool auto_apply)
 : name(name)
 , priority(priority)
-, autoExporter(false)
-, hidden(false)
 , description(description)
+, auto_apply(auto_apply)
 {
 }
 
@@ -57,44 +56,45 @@ void AssExportFilterChain::Register(AssExportFilter *filter) {
 	// Remove pipes from name
 	filter->name.Replace("|", "");
 
-	FilterList::iterator begin = GetFilterList()->begin();
-	FilterList::iterator end = GetFilterList()->end();
+	int filter_copy = 1;
+	wxString name = filter->name;
+	// Find a unique name
+	while (GetFilter(name))
+		name = wxString::Format("%s (%d)", filter->name, filter_copy++);
 
-	int filter_copy = 0;
-	wxString tmpnam = filter->name;
-	if (false) {
-try_new_name:
-		tmpnam = wxString::Format("%s (%d)", filter->name, filter_copy);
-	}
-
-	// Check if name exists
-	for (FilterList::iterator cur=begin;cur!=end;cur++) {
-		if ((*cur)->name == tmpnam) {
-			// Instead of just failing and making a big noise about it, let multiple filters share name, but append something to the later arrivals -jfs
-			filter_copy++;
-			goto try_new_name;
-		}
-	}
-
-	filter->name = tmpnam;
+	filter->name = name;
 
 	// Look for place to insert
+	FilterList::iterator begin = filters()->begin();
+	FilterList::iterator end = filters()->end();
 	while (begin != end && (*begin)->priority >= filter->priority) ++begin;
-	GetFilterList()->insert(begin, filter);
+	filters()->insert(begin, filter);
 }
 
 void AssExportFilterChain::Unregister(AssExportFilter *filter) {
-	if (find(GetFilterList()->begin(), GetFilterList()->end(), filter) == GetFilterList()->end())
+	if (find(filters()->begin(), filters()->end(), filter) == filters()->end())
 		throw wxString::Format("Unregister export filter: name \"%s\" is not registered.", filter->name);
 
-	GetFilterList()->remove(filter);
+	filters()->remove(filter);
 }
 
-FilterList *AssExportFilterChain::GetFilterList() {
+FilterList *AssExportFilterChain::filters() {
 	static FilterList instance;
 	return &instance;
 }
 
+const FilterList *AssExportFilterChain::GetFilterList() {
+	return filters();
+}
+
 void AssExportFilterChain::Clear() {
-	delete_clear(*GetFilterList());
+	delete_clear(*filters());
+}
+
+AssExportFilter *AssExportFilterChain::GetFilter(wxString const& name) {
+	for (FilterList::iterator it = filters()->begin(); it != filters()->end(); ++it) {
+		if ((*it)->name == name)
+			return *it;
+	}
+	return 0;
 }

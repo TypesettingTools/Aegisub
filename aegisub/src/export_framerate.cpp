@@ -62,7 +62,7 @@ AssTransformFramerateFilter::AssTransformFramerateFilter()
 {
 }
 
-void AssTransformFramerateFilter::ProcessSubs(AssFile *subs, wxWindow *export_dialog) {
+void AssTransformFramerateFilter::ProcessSubs(AssFile *subs, wxWindow *) {
 	TransformFrameRate(subs);
 }
 
