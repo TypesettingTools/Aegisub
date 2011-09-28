@@ -212,7 +212,7 @@ void DialogSelection::Process(wxCommandEvent&) {
 		con->selectionController->GetSelectedSet(old_sel);
 
 	wxString message;
-	size_t count;
+	size_t count = 0;
 	switch (action) {
 		case ACTION_SET:
 			new_sel = matches;
