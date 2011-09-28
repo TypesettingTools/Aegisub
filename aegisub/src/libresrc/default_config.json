@@ -461,8 +461,6 @@
 			"Fast Jump Step" : 10,
 			"Show Keyframes" : true
 		},
-		"Subtitle Sync" : true,
-		"Threaded" : false,
-		"Visual Realtime" : true
+		"Subtitle Sync" : true
 	}
 }
