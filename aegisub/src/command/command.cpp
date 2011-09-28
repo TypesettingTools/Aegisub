@@ -37,29 +37,8 @@ namespace cmd {
 		cmd_map[cmd->name()] = cmd;
 	}
 
-	int id(std::string const& name) {
-		return distance(cmd_map.begin(), find_command(name));
-	}
-
-	int count() {
-		return cmd_map.size();
-	}
-
 	Command *get(std::string const& name) {
 		return find_command(name)->second;
-	}
-
-	void call(agi::Context *c, int id) {
-		std::map<std::string, Command*>::iterator index(cmd_map.begin());
-		advance(index, id);
-
-		if (index != cmd_map.end()) {
-			LOG_D("event/command") << index->first << " " << "(Id: " << id << ")";
-			(*index->second)(c);
-		} else {
-			LOG_W("event/command/not_found") << "EVENT ID NOT FOUND: " << id;
-			// XXX: throw
-		}
 	}
 
 	void call(std::string const& name, agi::Context*c) {

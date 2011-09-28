@@ -62,9 +62,10 @@
 #include "video_display.h"
 #include "video_slider.h"
 
-static void add_button(wxWindow *parent, wxSizer *sizer, const char *command) {
+static void add_button(wxWindow *parent, wxSizer *sizer, const char *command, agi::Context *context) {
 	cmd::Command *c = cmd::get(command);
-	wxBitmapButton *btn = new wxBitmapButton(parent, cmd::id(command), c->Icon(24));
+	wxBitmapButton *btn = new wxBitmapButton(parent, -1, c->Icon(24));
+	btn->Bind(wxEVT_COMMAND_BUTTON_CLICKED, std::tr1::bind(&cmd::Command::operator(), c, context));
 	ToolTipManager::Bind(btn, c->StrHelp(), "Video", command);
 	sizer->Add(btn, 0, wxTOP | wxLEFT | wxBOTTOM | wxALIGN_CENTER, 2);;
 }
@@ -78,9 +79,9 @@ VideoBox::VideoBox(wxWindow *parent, bool isDetached, agi::Context *context)
 
 	// Buttons
 	wxSizer *videoBottomSizer = new wxBoxSizer(wxHORIZONTAL);
-	add_button(this, videoBottomSizer, "video/play");
-	add_button(this, videoBottomSizer, "video/play/line");
-	add_button(this, videoBottomSizer, "video/stop");
+	add_button(this, videoBottomSizer, "video/play", context);
+	add_button(this, videoBottomSizer, "video/play/line", context);
+	add_button(this, videoBottomSizer, "video/stop", context);
 	videoBottomSizer->Add(new ToggleBitmap(this, context, "video/opt/autoscroll", 24, "Video"), 0, wxTOP | wxLEFT | wxBOTTOM | wxALIGN_CENTER, 2);
 
 	// Seek
@@ -112,7 +113,7 @@ VideoBox::VideoBox(wxWindow *parent, bool isDetached, agi::Context *context)
 	visualToolBar->AddTool(Video_Mode_Clip,_("Clip"),GETIMAGE(visual_clip_24),_("Clip subtitles to a rectangle."),wxITEM_RADIO);
 	visualToolBar->AddTool(Video_Mode_Vector_Clip,_("Vector Clip"),GETIMAGE(visual_vector_clip_24),_("Clip subtitles to a vectorial area."),wxITEM_RADIO);
 	visualToolBar->AddSeparator();
-	visualToolBar->AddTool(cmd::id("help/video"),_("Help"),cmd::get("help/video")->Icon(24),_("Open the manual page for Visual Typesetting."));
+	visualToolBar->AddTool(wxID_HELP,_("Help"),cmd::get("help/video")->Icon(24),_("Open the manual page for Visual Typesetting."));
 	visualToolBar->Realize();
 	// Avoid ugly themed background on Vista and possibly also Win7
 	visualToolBar->SetBackgroundStyle(wxBG_STYLE_COLOUR);
@@ -163,16 +164,8 @@ VideoBox::VideoBox(wxWindow *parent, bool isDetached, agi::Context *context)
 }
 
 void VideoBox::OnButton(wxCommandEvent &evt) {
-	if (evt.GetId() >= Video_Mode_Standard) {
-		evt.Skip();
-		return;
-	}
-#ifdef __APPLE__
 	context->videoController->EnableAudioSync(!wxGetMouseState().CmdDown());
-#else
-	context->videoController->EnableAudioSync(!wxGetMouseState().ControlDown());
-#endif
-	cmd::call(context, evt.GetId());
+	evt.Skip();
 }
 
 void VideoBox::UpdateTimeBoxes() {
