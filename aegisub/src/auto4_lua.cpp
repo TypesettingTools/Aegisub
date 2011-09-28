@@ -210,6 +210,7 @@ namespace Automation4 {
 			lua_pushcfunction(L, luaopen_io); lua_call(L, 0, 0);
 			lua_pushcfunction(L, luaopen_os); lua_call(L, 0, 0);
 			_stackcheck.check_stack(0);
+
 			// dofile and loadfile are replaced with include
 			lua_pushnil(L);
 			lua_setglobal(L, "dofile");
@@ -240,6 +241,12 @@ namespace Automation4 {
 			_stackcheck.check_stack(0);
 
 			// prepare stuff in the registry
+
+			// store the script's filename
+			lua_pushstring(L, wxFileName(GetFilename()).GetName().utf8_str().data());
+			lua_setfield(L, LUA_REGISTRYINDEX, "filename");
+			_stackcheck.check_stack(0);
+
 			// reference to the script object
 			lua_pushlightuserdata(L, this);
 			lua_setfield(L, LUA_REGISTRYINDEX, "aegisub");
@@ -539,11 +546,13 @@ namespace Automation4 {
 
 	LuaCommand::LuaCommand(lua_State *L)
 	: LuaFeature(L)
-	, cmd_name(std::string("automation/cmd/") + lua_tostring(L, 1))
 	, display(check_wxstring(L, 1))
 	, help(get_wxstring(L, 2))
 	, cmd_type(cmd::COMMAND_NORMAL)
 	{
+		lua_getfield(L, LUA_REGISTRYINDEX, "filename");
+		cmd_name = STD_STR(wxString::Format("automation/lua/%s/%s", get_wxstring(L, -1), check_wxstring(L, 1)));
+
 		if (!lua_isfunction(L, 3))
 			luaL_error(L, "The macro processing function must be a function");
 
