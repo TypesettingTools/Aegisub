@@ -133,7 +133,7 @@ struct video_aspect_custom : public validator_video_attached {
 			//Why bloat using Contains when we can just check the output of Find?
 			pos = value.Find(':');
 			if (pos==wxNOT_FOUND) pos = value.Find('/');
-			if (pos==wxNOT_FOUND&&value.Contains(_T('x'))) {
+			if (pos==wxNOT_FOUND&&value.Contains('x')) {
 				pos = value.Find('x');
 				scale=true;
 			}
@@ -556,9 +556,9 @@ struct video_open : public Command {
 
 	void operator()(agi::Context *c) {
 		wxString path = lagi_wxString(OPT_GET("Path/Last/Video")->GetString());
-		wxString str = wxString(_("Video Formats")) + _T(" (*.avi,*.mkv,*.mp4,*.avs,*.d2v,*.ogm,*.mpeg,*.mpg,*.vob,*.mov)|*.avi;*.avs;*.d2v;*.mkv;*.ogm;*.mp4;*.mpeg;*.mpg;*.vob;*.mov|")
-					 + _("All Files") + _T(" (*.*)|*.*");
-		wxString filename = wxFileSelector(_("Open video file"),path,_T(""),_T(""),str,wxFD_OPEN | wxFD_FILE_MUST_EXIST);
+		wxString str = wxString(_("Video Formats")) + " (*.avi,*.mkv,*.mp4,*.avs,*.d2v,*.ogm,*.mpeg,*.mpg,*.vob,*.mov)|*.avi;*.avs;*.d2v;*.mkv;*.ogm;*.mp4;*.mpeg;*.mpg;*.vob;*.mov|"
+					 + _("All Files") + " (*.*)|*.*";
+		wxString filename = wxFileSelector(_("Open video file"),path,"","",str,wxFD_OPEN | wxFD_FILE_MUST_EXIST);
 		if (!filename.empty()) {
 			c->videoController->SetVideo(filename);
 			OPT_SET("Path/Last/Video")->SetString(STD_STR(filename));

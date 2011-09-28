@@ -52,12 +52,12 @@ namespace Automation4 {
 	LuaScriptReader::LuaScriptReader(const wxString &filename)
 	{
 #ifdef WIN32
-		f = _tfopen(filename.c_str(), _T("rb"));
+		f = _wfopen(filename.wc_str(), L"rb");
 #else
 		f = fopen(filename.fn_str(), "rb");
 #endif
 		if (!f)
-			throw _T("Could not open script file");
+			throw "Could not open script file";
 		first = true;
 		databuf = new char[bufsize];
 	}
@@ -106,7 +106,7 @@ namespace Automation4 {
 						(b[0] == 0x2B && b[1] == 0x2F && b[2] == 0x76) || // utf7
 						(b[0] == 0x00 && b[2] == 0x00) || // looks like utf16be
 						(b[1] == 0x00 && b[3] == 0x00)) { // looks like utf16le
-							throw _T("The script file uses an unsupported character set. Only UTF-8 is supported.");
+							throw "The script file uses an unsupported character set. Only UTF-8 is supported.";
 					}
 					// assume utf8 without bom, and rewind file
 					fseek(f, 0, SEEK_SET);

@@ -106,8 +106,8 @@ void VisualToolDrag::OnSubTool(wxCommandEvent &) {
 		parent->ToScriptCoords(&x1, &y1);
 		parent->ToScriptCoords(&x2, &y2);
 
-		if (hasMove) SetOverride(line, L"\\pos",wxString::Format(L"(%i,%i)",x1,y1));
-		else SetOverride(line, L"\\move",wxString::Format(L"(%i,%i,%i,%i,%i,%i)",x1,y1,x1,y1,0,line->End.GetMS() - line->Start.GetMS()));
+		if (hasMove) SetOverride(line, "\\pos",wxString::Format("(%i,%i)",x1,y1));
+		else SetOverride(line, "\\move",wxString::Format("(%i,%i,%i,%i,%i,%i)",x1,y1,x1,y1,0,line->End.GetMS() - line->Start.GetMS()));
 	}
 
 	Commit();
@@ -308,7 +308,7 @@ void VisualToolDrag::CommitDrag(feature_iterator feature) {
 		int x = feature->x;
 		int y = feature->y;
 		parent->ToScriptCoords(&x, &y);
-		SetOverride(feature->line, L"\\org",wxString::Format(L"(%i,%i)",x,y));
+		SetOverride(feature->line, "\\org",wxString::Format("(%i,%i)",x,y));
 		return;
 	}
 
@@ -323,7 +323,7 @@ void VisualToolDrag::CommitDrag(feature_iterator feature) {
 
 	// Position
 	if (feature->parent == features.end()) {
-		SetOverride(feature->line, L"\\pos", wxString::Format(L"(%i,%i)", x1, y1));
+		SetOverride(feature->line, "\\pos", wxString::Format("(%i,%i)", x1, y1));
 	}
 	// Move
 	else {
@@ -331,7 +331,7 @@ void VisualToolDrag::CommitDrag(feature_iterator feature) {
 		int y2 = p->y;
 		parent->ToScriptCoords(&x2, &y2);
 
-		SetOverride(feature->line, L"\\move", wxString::Format(L"(%i,%i,%i,%i,%i,%i)", x1, y1, x2, y2, feature->time, p->time));
+		SetOverride(feature->line, "\\move", wxString::Format("(%i,%i,%i,%i,%i,%i)", x1, y1, x2, y2, feature->time, p->time));
 	}
 }
 bool VisualToolDrag::Update() {
@@ -365,15 +365,15 @@ bool VisualToolDrag::Update() {
 
 		if (isMove) {
 			if (t1 > INT_MIN && t2 > INT_MIN)
-				SetOverride(*cur, L"\\move", wxString::Format(L"(%i,%i,%i,%i,%i,%i)", x1 - dx, y1 - dy, x2 - dx, y2 - dy, t1, t2));
+				SetOverride(*cur, "\\move", wxString::Format("(%i,%i,%i,%i,%i,%i)", x1 - dx, y1 - dy, x2 - dx, y2 - dy, t1, t2));
 			else
-				SetOverride(*cur, L"\\move", wxString::Format(L"(%i,%i,%i,%i)", x1, y1, x2, y2));
+				SetOverride(*cur, "\\move", wxString::Format("(%i,%i,%i,%i)", x1, y1, x2, y2));
 		}
 		else {
-			SetOverride(*cur, L"\\pos", wxString::Format(L"(%i,%i)", x1 - dx, y1 - dy));
+			SetOverride(*cur, "\\pos", wxString::Format("(%i,%i)", x1 - dx, y1 - dy));
 		}
 		if (orgx != x1 || orgy != y1) {
-			SetOverride(*cur, L"\\org", wxString::Format(L"(%i,%i)", orgx - dx, orgy - dy));
+			SetOverride(*cur, "\\org", wxString::Format("(%i,%i)", orgx - dx, orgy - dy));
 		}
 	}
 

@@ -170,10 +170,10 @@ SubsEditBox::SubsEditBox(wxWindow *parent, agi::Context *context)
 {
 	// Top controls
 	wxArrayString styles;
-	styles.Add(_T("Default"));
+	styles.Add("Default");
 	CommentBox = new wxCheckBox(this,wxID_ANY,_("Comment"));
-	StyleBox = new wxComboBox(this,wxID_ANY,_T("Default"),wxDefaultPosition,wxSize(110,-1),styles,wxCB_READONLY | wxTE_PROCESS_ENTER);
-	ActorBox = new wxComboBox(this,wxID_ANY,_T("Actor"),wxDefaultPosition,wxSize(110,-1),styles,wxCB_DROPDOWN | wxTE_PROCESS_ENTER);
+	StyleBox = new wxComboBox(this,wxID_ANY,"Default",wxDefaultPosition,wxSize(110,-1),styles,wxCB_READONLY | wxTE_PROCESS_ENTER);
+	ActorBox = new wxComboBox(this,wxID_ANY,"Actor",wxDefaultPosition,wxSize(110,-1),styles,wxCB_DROPDOWN | wxTE_PROCESS_ENTER);
 	Effect = new wxTextCtrl(this,wxID_ANY,"",wxDefaultPosition,wxSize(80,-1),wxTE_PROCESS_ENTER);
 
 	// Middle controls
@@ -284,12 +284,12 @@ SubsEditBox::SubsEditBox(wxWindow *parent, agi::Context *context)
 	             (text.Blue() + origBgColour.Blue()) / 2);
 
 	// Setup placeholders for effect and actor boxes
-	bind_focus_handler(Effect, wxEVT_SET_FOCUS, "", L"Effect", text);
-	bind_focus_handler(Effect, wxEVT_KILL_FOCUS, L"Effect", "", grey);
+	bind_focus_handler(Effect, wxEVT_SET_FOCUS, "", "Effect", text);
+	bind_focus_handler(Effect, wxEVT_KILL_FOCUS, "Effect", "", grey);
 	Effect->SetForegroundColour(grey);
 
-	bind_focus_handler(ActorBox, wxEVT_SET_FOCUS, "", L"Actor", text);
-	bind_focus_handler(ActorBox, wxEVT_KILL_FOCUS, L"Actor", "", grey);
+	bind_focus_handler(ActorBox, wxEVT_SET_FOCUS, "", "Actor", text);
+	bind_focus_handler(ActorBox, wxEVT_KILL_FOCUS, "Actor", "", grey);
 	ActorBox->SetForegroundColour(grey);
 
 	TextEdit->Bind(wxEVT_STC_STYLENEEDED, &SubsEditBox::OnNeedStyle, this);
@@ -387,10 +387,10 @@ void SubsEditBox::Update(int type) {
 		MarginL->ChangeValue(line->GetMarginString(0,false));
 		MarginR->ChangeValue(line->GetMarginString(1,false));
 		MarginV->ChangeValue(line->GetMarginString(2,false));
-		Effect->ChangeValue(line->Effect.empty() ?  L"Effect" : line->Effect);
+		Effect->ChangeValue(line->Effect.empty() ?  "Effect" : line->Effect);
 		CommentBox->SetValue(line->Comment);
 		StyleBox->Select(StyleBox->FindString(line->Style));
-		ActorBox->ChangeValue(line->Actor.empty() ?  L"Actor" : line->Actor);
+		ActorBox->ChangeValue(line->Actor.empty() ?  "Actor" : line->Actor);
 		ActorBox->SetStringSelection(line->Actor);
 	}
 
@@ -716,7 +716,7 @@ void SubsEditBox::SetTag(wxString tag, wxString value, bool atEnd) {
 	}
 	else if (ovr) {
 		wxString alt;
-		if (tag == L"\\c") alt = L"\\1c";
+		if (tag == "\\c") alt = "\\1c";
 		// Remove old of same
 		bool found = false;
 		for (size_t i = 0; i < ovr->Tags.size(); i++) {
@@ -756,22 +756,22 @@ void SubsEditBox::OnFlagButton(wxCommandEvent &evt) {
 	AssStyle defStyle;
 	if (!style) style = &defStyle;
 	if (id == BUTTON_BOLD) {
-		tagname = L"\\b";
+		tagname = "\\b";
 		desc = _("toggle bold");
 		state = style->bold;
 	}
 	else if (id == BUTTON_ITALICS) {
-		tagname = L"\\i";
+		tagname = "\\i";
 		desc = _("toggle italic");
 		state = style->italic;
 	}
 	else if (id == BUTTON_UNDERLINE) {
-		tagname = L"\\u";
+		tagname = "\\u";
 		desc = _("toggle underline");
 		state = style->underline;
 	}
 	else if (id == BUTTON_STRIKEOUT) {
-		tagname = L"\\s";
+		tagname = "\\s";
 		desc = _("toggle strikeout");
 		state = style->strikeout;
 	}
@@ -807,11 +807,11 @@ void SubsEditBox::OnFontButton(wxCommandEvent &) {
 	AssStyle defStyle;
 	if (!style) style = &defStyle;
 
-	startfont.SetFaceName(get_value(*line, blockn, style->font, L"\\fn"));
-	startfont.SetPointSize(get_value(*line, blockn, (int)style->fontsize, L"\\fs"));
-	startfont.SetWeight(get_value(*line, blockn, style->bold, L"\\b") ? wxFONTWEIGHT_BOLD : wxFONTWEIGHT_NORMAL);
-	startfont.SetStyle(get_value(*line, blockn, style->italic, L"\\i") ? wxFONTSTYLE_ITALIC : wxFONTSTYLE_NORMAL);
-	startfont.SetUnderlined(get_value(*line, blockn, style->underline, L"\\u"));
+	startfont.SetFaceName(get_value(*line, blockn, style->font, "\\fn"));
+	startfont.SetPointSize(get_value(*line, blockn, (int)style->fontsize, "\\fs"));
+	startfont.SetWeight(get_value(*line, blockn, style->bold, "\\b") ? wxFONTWEIGHT_BOLD : wxFONTWEIGHT_NORMAL);
+	startfont.SetStyle(get_value(*line, blockn, style->italic, "\\i") ? wxFONTSTYLE_ITALIC : wxFONTSTYLE_NORMAL);
+	startfont.SetUnderlined(get_value(*line, blockn, style->underline, "\\u"));
 
 	wxFont font = wxGetFontFromUser(this, startfont);
 	if (!font.Ok() || font == startfont) {
@@ -820,19 +820,19 @@ void SubsEditBox::OnFontButton(wxCommandEvent &) {
 	}
 
 	if (font.GetFaceName() != startfont.GetFaceName()) {
-		SetTag(L"\\fn", font.GetFaceName());
+		SetTag("\\fn", font.GetFaceName());
 	}
 	if (font.GetPointSize() != startfont.GetPointSize()) {
-		SetTag(L"\\fs", wxString::Format("%i", font.GetPointSize()));
+		SetTag("\\fs", wxString::Format("%i", font.GetPointSize()));
 	}
 	if (font.GetWeight() != startfont.GetWeight()) {
-		SetTag(L"\\b", wxString::Format("%i", font.GetWeight() == wxFONTWEIGHT_BOLD));
+		SetTag("\\b", wxString::Format("%i", font.GetWeight() == wxFONTWEIGHT_BOLD));
 	}
 	if (font.GetStyle() != startfont.GetStyle()) {
-		SetTag(L"\\i", wxString::Format("%i", font.GetStyle() == wxFONTSTYLE_ITALIC));
+		SetTag("\\i", wxString::Format("%i", font.GetStyle() == wxFONTSTYLE_ITALIC));
 	}
 	if (font.GetUnderlined() != startfont.GetUnderlined()) {
-		SetTag(L"\\i", wxString::Format("%i", font.GetUnderlined()));
+		SetTag("\\i", wxString::Format("%i", font.GetUnderlined()));
 	}
 	line->ClearBlocks();
 	commitId = -1;
@@ -849,20 +849,20 @@ void SubsEditBox::OnColorButton(wxCommandEvent &evt) {
 	if (!style) style = &defStyle;
 	if (id == BUTTON_COLOR1) {
 		color = style->primary.GetWXColor();
-		colorTag = L"\\c";
-		alt = L"\\c1";
+		colorTag = "\\c";
+		alt = "\\c1";
 	}
 	else if (id == BUTTON_COLOR2) {
 		color = style->secondary.GetWXColor();
-		colorTag = L"\\2c";
+		colorTag = "\\2c";
 	}
 	else if (id == BUTTON_COLOR3) {
 		color = style->outline.GetWXColor();
-		colorTag = L"\\3c";
+		colorTag = "\\3c";
 	}
 	else if (id == BUTTON_COLOR4) {
 		color = style->shadow.GetWXColor();
-		colorTag = L"\\4c";
+		colorTag = "\\4c";
 	}
 	else {
 		return;

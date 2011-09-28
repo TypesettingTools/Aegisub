@@ -55,7 +55,7 @@
 /// @return 
 ///
 wxString TranStationSubtitleFormat::GetName() {
-	return _T("TranStation");
+	return "TranStation";
 }
 
 
@@ -65,7 +65,7 @@ wxString TranStationSubtitleFormat::GetName() {
 ///
 wxArrayString TranStationSubtitleFormat::GetWriteWildcards() {
 	wxArrayString formats;
-	formats.Add(_T("transtation.txt"));
+	formats.Add("transtation.txt");
 	return formats;
 }
 
@@ -76,7 +76,7 @@ wxArrayString TranStationSubtitleFormat::GetWriteWildcards() {
 /// @return 
 ///
 bool TranStationSubtitleFormat::CanWriteFile(wxString filename) {
-	return (filename.Right(16).Lower() == _T(".transtation.txt"));
+	return (filename.Right(16).Lower() == ".transtation.txt");
 }
 
 
@@ -113,7 +113,7 @@ void TranStationSubtitleFormat::WriteFile(wxString _filename,wxString encoding) 
 		if (current && !current->Comment) {
 			// Write text
 			file.WriteLineToFile(ConvertLine(current,&fps_rat,(next && !next->Comment) ? next->Start.GetMS() : -1));
-			file.WriteLineToFile(_T(""));
+			file.WriteLineToFile("");
 		}
 	}
 	// flush last line
@@ -121,7 +121,7 @@ void TranStationSubtitleFormat::WriteFile(wxString _filename,wxString encoding) 
 		file.WriteLineToFile(ConvertLine(next,&fps_rat,-1));
 
 	// Every file must end with this line
-	file.WriteLineToFile(_T("SUB["));
+	file.WriteLineToFile("SUB[");
 
 	// Clean up
 	ClearCopy();
@@ -137,19 +137,19 @@ wxString TranStationSubtitleFormat::ConvertLine(AssDialogue *current, FPSRationa
 	// Get line data
 	AssStyle *style = GetAssFile()->GetStyle(current->Style);
 	int valign = 0;
-	const wxChar *halign = _T(" "); // default is centered
-	const wxChar *type = _T("N"); // no special style
+	const char *halign = " "; // default is centered
+	const char *type = "N"; // no special style
 	if (style) {
 		if (style->alignment >= 4) valign = 4;
 		if (style->alignment >= 7) valign = 9;
-		if (style->alignment == 1 || style->alignment == 4 || style->alignment == 7) halign = _T("L");
-		if (style->alignment == 3 || style->alignment == 6 || style->alignment == 9) halign = _T("R");
-		if (style->italic) type = _T("I");
+		if (style->alignment == 1 || style->alignment == 4 || style->alignment == 7) halign = "L";
+		if (style->alignment == 3 || style->alignment == 6 || style->alignment == 9) halign = "R";
+		if (style->italic) type = "I";
 	}
 
 	// Hack: If an italics-tag (\i1) appears anywhere in the line,
 	// make it all italics
-	if (current->Text.Find(_T("\\i1")) != wxNOT_FOUND)type = _T("I");
+	if (current->Text.Find("\\i1") != wxNOT_FOUND) type = "I";
 
 	// Write header
 	AssTime start = current->Start;
@@ -161,15 +161,15 @@ wxString TranStationSubtitleFormat::ConvertLine(AssDialogue *current, FPSRationa
 	if (nextl_start > 0 && end.GetMS() == nextl_start)
 		end.SetMS(end.GetMS() - ((1000*fps_rat->den)/fps_rat->num));
 
-	FractionalTime ft(_T(":"), fps_rat->num, fps_rat->den, fps_rat->smpte_dropframe);
-	wxString header = wxString::Format(_T("SUB[%i%s%s "),valign,halign,type) + ft.FromAssTime(start) + _T(">") + ft.FromAssTime(end) + _T("]\r\n");
+	FractionalTime ft(":", fps_rat->num, fps_rat->den, fps_rat->smpte_dropframe);
+	wxString header = wxString::Format("SUB[%i%s%s ",valign,halign,type) + ft.FromAssTime(start) + ">" + ft.FromAssTime(end) + "]\r\n";
 
 	// Process text
-	wxString lineEnd = _T("\r\n");
+	wxString lineEnd = "\r\n";
 	current->StripTags();
-	current->Text.Replace(_T("\\h"),_T(" "),true);
-	current->Text.Replace(_T("\\n"),lineEnd,true);
-	current->Text.Replace(_T("\\N"),lineEnd,true);
+	current->Text.Replace("\\h"," ",true);
+	current->Text.Replace("\\n",lineEnd,true);
+	current->Text.Replace("\\N",lineEnd,true);
 	while (current->Text.Replace(lineEnd+lineEnd,lineEnd,true)) {};
 
 	return header + current->Text;

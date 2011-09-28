@@ -59,7 +59,7 @@
 /// @param size     
 ///
 BrowseButton::BrowseButton(wxWindow *parent,int id,wxString text,BrowseType _type,wxPoint position,wxSize size)
-: wxButton (parent,id,text == wxString(_T("")) ? wxString(_("Browse...")) : text,position,size)
+: wxButton (parent,id,text == wxString("") ? wxString(_("Browse...")) : text,position,size)
 {
 	type = _type;
 	ctrl[0] = NULL;
@@ -86,11 +86,11 @@ void BrowseButton::OnPressed(wxCommandEvent &event) {
 	// Folder
 	if (type == BROWSE_FOLDER) {
 		// For some reason I can't make this work on Mac... -jfs
-		wxString def = StandardPaths::DecodePathMaybeRelative(ctrl[0]->GetValue(), _T("?user/"));
+		wxString def = StandardPaths::DecodePathMaybeRelative(ctrl[0]->GetValue(), "?user/");
 		wxDirDialog dlg(0, _("Please choose the folder:"), def);
 		if (dlg.ShowModal() == wxID_OK) {
 			wxString dir = StandardPaths::EncodePath(dlg.GetPath());
-			if (dir != _T("")) ctrl[0]->SetValue(dir);
+			if (dir != "") ctrl[0]->SetValue(dir);
 		}
 	}
 
@@ -108,7 +108,7 @@ void BrowseButton::OnPressed(wxCommandEvent &event) {
 		font = wxGetFontFromUser(NULL,font);
 		if (font.IsOk()) {
 			ctrl[0]->SetValue(font.GetFaceName());
-			ctrl[1]->SetValue(wxString::Format(_T("%i"),font.GetPointSize()));
+			ctrl[1]->SetValue(wxString::Format("%i",font.GetPointSize()));
 		}
 	}
 }

@@ -151,7 +151,7 @@ std::vector<wxString> YUV4MPEGVideoProvider::ReadHeader(int64_t startpos, bool r
 	int buf;
 
 	if (fseeko(sf, startpos, SEEK_SET))
-		throw VideoOpenError(STD_STR(wxString::Format(L"YUV4MPEG video provider: ReadHeader: failed seeking to position %d", startpos)));
+		throw VideoOpenError(STD_STR(wxString::Format("YUV4MPEG video provider: ReadHeader: failed seeking to position %d", startpos)));
 
 	// read header until terminating newline (0x0A) is found
 	while ((buf = fgetc(sf)) != 0x0A) {

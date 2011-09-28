@@ -77,10 +77,10 @@ struct am_manager : public Command {
 				for (size_t i = 0; i < scripts.size(); ++i) {
 					try {
 						scripts[i]->Reload();
-					} catch (const wchar_t *e) {
+					} catch (const char *e) {
 						wxLogError(e);
 					} catch (...) {
-						wxLogError(_T("An unknown error occurred reloading Automation script '%s'."), scripts[i]->GetName().c_str());
+						wxLogError("An unknown error occurred reloading Automation script '%s'.", scripts[i]->GetName().c_str());
 					}
 				}
 

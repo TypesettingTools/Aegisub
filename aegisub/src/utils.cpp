@@ -93,8 +93,8 @@ int CountMatches(wxString parent,wxString child) {
 /// @return 
 ///
 wxString MakeRelativePath(wxString _path,wxString reference) {
-	if (_path.IsEmpty()) return _T("");
-	if (_path.Left(1) == _T("?")) return _path;
+	if (_path.IsEmpty()) return "";
+	if (_path.Left(1) == "?") return _path;
 	wxFileName path(_path);
 	wxFileName refPath(reference);
 	path.MakeRelativeTo(refPath.GetPath());
@@ -109,8 +109,8 @@ wxString MakeRelativePath(wxString _path,wxString reference) {
 /// @return 
 ///
 wxString DecodeRelativePath(wxString _path,wxString reference) {
-	if (_path.IsEmpty()) return _T("");
-	if (_path.Left(1) == _T("?")) return _path;
+	if (_path.IsEmpty()) return "";
+	if (_path.Left(1) == "?") return _path;
 	wxFileName path(_path);
 	wxFileName refPath(reference);
 	if (!path.IsAbsolute()) path.MakeAbsolute(refPath.GetPath());
@@ -127,7 +127,7 @@ wxString DecodeRelativePath(wxString _path,wxString reference) {
 /// @return 
 ///
 wxString AegiFloatToString(double value) {
-	return wxString::Format(_T("%g"),value);
+	return wxString::Format("%g",value);
 }
 
 /// @brief Int to string 
@@ -135,7 +135,7 @@ wxString AegiFloatToString(double value) {
 /// @return 
 ///
 wxString AegiIntegerToString(int value) {
-	return wxString::Format(_T("%i"),value);
+	return wxString::Format("%i",value);
 }
 
 /// @brief There shall be no kiB, MiB stuff here Pretty reading of size 
@@ -145,12 +145,12 @@ wxString AegiIntegerToString(int value) {
 wxString PrettySize(int bytes) {
 	// Suffixes
 	wxArrayString suffix;
-	suffix.Add(_T(""));
-	suffix.Add(_T(" kB"));
-	suffix.Add(_T(" MB"));
-	suffix.Add(_T(" GB"));
-	suffix.Add(_T(" TB"));
-	suffix.Add(_T(" PB"));
+	suffix.Add("");
+	suffix.Add(" kB");
+	suffix.Add(" MB");
+	suffix.Add(" GB");
+	suffix.Add(" TB");
+	suffix.Add(" PB");
 
 	// Set size
 	int i = 0;
@@ -166,9 +166,9 @@ wxString PrettySize(int bytes) {
 	
 	// Set number of decimal places
 	wxString final;
-	if (size < 10) final = wxString::Format(_T("%.2f"),size);
-	else if (size < 100) final = wxString::Format(_T("%.1f"),size);
-	else final = wxString::Format(_T("%.0f"),size);
+	if (size < 10) final = wxString::Format("%.2f",size);
+	else if (size < 100) final = wxString::Format("%.1f",size);
+	else final = wxString::Format("%.0f",size);
 	return final + suffix[i];
 }
 
@@ -334,12 +334,12 @@ int AegiStringToInt(const wxString &str,int start,int end) {
 	for (int pos=start;pos<end;pos++) {
 		// Get value and check if it's a number
 		int val = (int)(str[pos]);
-		if (val == _T(' ') || val == _T('\t')) continue;
-		if (val == _T('-')) sign = -1;
-		if (val < _T('0') || val > _T('9')) break;
+		if (val == ' ' || val == '\t') continue;
+		if (val == '-') sign = -1;
+		if (val < '0' || val > '9') break;
 
 		// Shift value to next decimal place and increment the value just read
-		value = value * 10 + (val - _T('0'));
+		value = value * 10 + (val - '0');
 	}
 
 	return value*sign;
@@ -368,19 +368,19 @@ int AegiStringToFix(const wxString &str,size_t decimalPlaces,int start,int end) 
 	for (int pos=start;pos<end;pos++) {
 		// Get value and check if it's a number
 		int val = (int)(str[pos]);
-		if (val == _T(' ') || val == _T('\t')) continue;
-		if (val == _T('-')) sign = -1;
+		if (val == ' ' || val == '\t') continue;
+		if (val == '-') sign = -1;
 
 		// Switch to minor
-		if (val == _T('.') || val == _T(',')) {
+		if (val == '.' || val == ',') {
 			if (inMinor) break;
 			inMinor = true;
 			dst = &minor;
 			mCount = 0;
 			continue;
 		}
-		if (val < _T('0') || val > _T('9')) break;
-		*dst = (*dst * 10) + (val - _T('0'));
+		if (val < '0' || val > '9') break;
+		*dst = (*dst * 10) + (val - '0');
 		mCount++;
 	}
 
@@ -432,12 +432,12 @@ wxIcon BitmapToIcon(wxBitmap iconBmp) {
 void RestartAegisub() {
 #if defined(__WXMSW__)
 	wxStandardPaths stand;
-	wxExecute(_T("\"") + stand.GetExecutablePath() + _T("\""));
+	wxExecute("\"" + stand.GetExecutablePath() + "\"");
 #elif defined(__WXMAC__)
 	char *bundle_path = agi::util::OSX_GetBundlePath();
 	char *support_path = agi::util::OSX_GetBundleSupportFilesDirectory();
 	if (!bundle_path || !support_path) return; // oops
-	wxString exec = wxString::Format(_T("\"%s/MacOS/restart-helper\" /usr/bin/open -n \"%s\"'"), wxString(support_path, wxConvUTF8).c_str(), wxString(bundle_path, wxConvUTF8).c_str());
+	wxString exec = wxString::Format("\"%s/MacOS/restart-helper\" /usr/bin/open -n \"%s\"'", wxString(support_path, wxConvUTF8).c_str(), wxString(bundle_path, wxConvUTF8).c_str());
 	LOG_I("util/restart/exec") << exec;
 	wxExecute(exec);
 	free(bundle_path);

@@ -100,7 +100,7 @@ void AudioPlayer::OnStopAudio(wxCommandEvent &event) {
 ///
 AudioPlayer* AudioPlayerFactory::GetAudioPlayer() {
 	std::vector<std::string> list = GetClasses(OPT_GET("Audio/Player")->GetString());
-	if (list.empty()) throw _T("No audio players are available.");
+	if (list.empty()) throw "No audio players are available.";
 
 	wxString error;
 	for (unsigned int i=0;i<list.size();i++) {
@@ -108,9 +108,9 @@ AudioPlayer* AudioPlayerFactory::GetAudioPlayer() {
 			AudioPlayer *player = Create(list[i]);
 			if (player) return player;
 		}
-		catch (wxString err) { error += list[i] + _T(" factory: ") + err + _T("\n"); }
-		catch (const wxChar *err) { error += list[i] + _T(" factory: ") + wxString(err) + _T("\n"); }
-		catch (...) { error += list[i] + _T(" factory: Unknown error\n"); }
+		catch (wxString err) { error += list[i] + " factory: " + err + "\n"; }
+		catch (const wxChar *err) { error += list[i] + " factory: " + wxString(err) + "\n"; }
+		catch (...) { error += list[i] + " factory: Unknown error\n"; }
 	}
 	throw error;
 }

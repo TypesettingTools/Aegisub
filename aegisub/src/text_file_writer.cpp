@@ -81,9 +81,9 @@ TextFileWriter::~TextFileWriter() {
 /// @param addLineBreak 
 void TextFileWriter::WriteLineToFile(wxString line, bool addLineBreak) {
 #ifdef _WIN32
-	if (addLineBreak) line += L"\r\n";
+	if (addLineBreak) line += "\r\n";
 #else
-	if (addLineBreak) line += L"\n";
+	if (addLineBreak) line += "\n";
 #endif
 
 	// On non-windows this cast does nothing

@@ -157,8 +157,8 @@ void SubtitlesGrid::OnShowColMenu(wxCommandEvent &event) {
 }
 
 static void trim_text(AssDialogue *diag) {
-	static wxRegEx start(L"^( |\\t|\\\\[nNh])+");
-	static wxRegEx end(L"( |\\t|\\\\[nNh])+$");
+	static wxRegEx start("^( |\\t|\\\\[nNh])+");
+	static wxRegEx end("( |\\t|\\\\[nNh])+$");
 	start.ReplaceFirst(&diag->Text, "");
 	end.ReplaceFirst(&diag->Text, "");
 }
@@ -274,12 +274,12 @@ void SubtitlesGrid::InsertLine(AssDialogue *line,int n,bool after,bool update) {
 
 void SubtitlesGrid::CopyLines(wxArrayInt target) {
 	// Prepare text
-	wxString data = _T("");
+	wxString data = "";
 	AssDialogue *cur;
 	int nrows = target.Count();
 	bool first = true;
 	for (int i=0;i<nrows;i++) {
-		if (!first) data += _T("\r\n");
+		if (!first) data += "\r\n";
 		first = false;
 		cur = GetDialogue(target[i]);
 		data += cur->GetEntryData();
@@ -323,7 +323,7 @@ void SubtitlesGrid::PasteLines(int n,bool pasteOver) {
 		// Insert data
 		int inserted = 0;
 		std::vector<bool> pasteOverOptions;
-		wxStringTokenizer token (data,_T("\r\n"),wxTOKEN_STRTOK);
+		wxStringTokenizer token (data,"\r\n",wxTOKEN_STRTOK);
 		while (token.HasMoreTokens()) {
 			// Convert data into an AssDialogue
 			wxString curdata = token.GetNextToken();

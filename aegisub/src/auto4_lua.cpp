@@ -197,7 +197,7 @@ namespace Automation4 {
 			lua_pushstring(L, "path");
 			lua_gettable(L, -3);
 
-			wxStringTokenizer toker(lagi_wxString(OPT_GET("Path/Automation/Include")->GetString()), _T("|"), wxTOKEN_STRTOK);
+			wxStringTokenizer toker(lagi_wxString(OPT_GET("Path/Automation/Include")->GetString()), "|", wxTOKEN_STRTOK);
 			while (toker.HasMoreTokens()) {
 				wxFileName path(StandardPaths::DecodePath(toker.GetNextToken()));
 				if (path.IsOk() && !path.IsRelative() && path.DirExists()) {
@@ -256,7 +256,7 @@ namespace Automation4 {
 			LuaScriptReader script_reader(GetFilename());
 			if (lua_load(L, script_reader.reader_func, &script_reader, GetPrettyFilename().mb_str(wxConvUTF8))) {
 				wxString err(lua_tostring(L, -1), wxConvUTF8);
-				err.Prepend(_T("Error loading Lua script \"") + GetPrettyFilename() + _T("\":\n\n"));
+				err.Prepend("Error loading Lua script \"" + GetPrettyFilename() + "\":\n\n");
 				throw err;
 			}
 			_stackcheck.check_stack(1);
@@ -266,7 +266,7 @@ namespace Automation4 {
 			if (lua_pcall(L, 0, 0, 0)) {
 				// error occurred, assumed to be on top of Lua stack
 				wxString err(lua_tostring(L, -1), wxConvUTF8);
-				err.Prepend(_T("Error initialising Lua script \"") + GetPrettyFilename() + _T("\":\n\n"));
+				err.Prepend("Error initialising Lua script \"" + GetPrettyFilename() + "\":\n\n");
 				throw err;
 			}
 			_stackcheck.check_stack(0);
@@ -276,7 +276,7 @@ namespace Automation4 {
 					lua_pop(L, 1); // just to avoid tripping the stackcheck in debug
 					// So this is an auto3 script...
 					// Throw it as an exception, the script factory manager will catch this and use the auto3 script instead of this script object
-					throw _T("Attempted to load an Automation 3 script as an Automation 4 Lua script. Automation 3 is no longer supported.");
+					throw "Attempted to load an Automation 3 script as an Automation 4 Lua script. Automation 3 is no longer supported.";
 				}
 			}
 			lua_getglobal(L, "script_name");
@@ -308,12 +308,6 @@ namespace Automation4 {
 			name = GetPrettyFilename();
 			description = wxString(e, wxConvUTF8);
 		}
-		catch (const wchar_t *e) {
-			Destroy();
-			loaded = false;
-			name = GetPrettyFilename();
-			description = e;
-		}
 		catch (const wxString& e) {
 			Destroy();
 			loaded = false;
@@ -328,7 +322,7 @@ namespace Automation4 {
 			Destroy();
 			loaded = false;
 			name = GetPrettyFilename();
-			description = _T("Unknown error initialising Lua script");
+			description = "Unknown error initialising Lua script";
 		}
 	}
 
@@ -435,10 +429,10 @@ namespace Automation4 {
 		wxString package_paths(lua_tostring(L, -1), wxConvUTF8);
 		lua_pop(L, 2);
 
-		wxStringTokenizer toker(package_paths, L";", wxTOKEN_STRTOK);
+		wxStringTokenizer toker(package_paths, ";", wxTOKEN_STRTOK);
 		while (toker.HasMoreTokens()) {
 			wxString filename = toker.GetNextToken();
-			filename.Replace(L"?", module);
+			filename.Replace("?", module);
 			if (wxFileName::FileExists(filename)) {
 				LuaScriptReader script_reader(filename);
 				if (lua_load(L, script_reader.reader_func, &script_reader, filename.utf8_str())) {
@@ -590,7 +584,7 @@ namespace Automation4 {
 			if (result) {
 				// if the call failed, log the error here
 				wxString errmsg(lua_tostring(L, -2), wxConvUTF8);
-				ps->AddDebugOutput(_T("\n\nLua reported a runtime error:\n"));
+				ps->AddDebugOutput("\n\nLua reported a runtime error:\n");
 				ps->AddDebugOutput(errmsg);
 				lua_pop(L, 1);
 			}
@@ -762,7 +756,7 @@ namespace Automation4 {
 		bool result;
 		if (err) {
 			wxString errmsg(lua_tostring(L, -1), wxConvUTF8);
-			wxLogWarning(_T("Runtime error in Lua macro validation function:\n%s"), errmsg.c_str());
+			wxLogWarning("Runtime error in Lua macro validation function:\n%s", errmsg.c_str());
 			result = false;
 		} else {
 			result = !!lua_toboolean(L, -1);
@@ -954,7 +948,7 @@ namespace Automation4 {
 		int err = lua_pcall(L, 2, 1, 0);
 		if (err) {
 			wxString errmsg(lua_tostring(L, -1), wxConvUTF8);
-			wxLogWarning(_T("Runtime error in Lua macro validation function:\n%s"), errmsg.c_str());
+			wxLogWarning("Runtime error in Lua macro validation function:\n%s", errmsg.c_str());
 			lua_pop(L, 1); // remove error message
 			return config_dialog = 0;
 		} else {
@@ -1195,8 +1189,8 @@ namespace Automation4 {
 	///
 	void LuaScriptFactory::RegisterFactory ()
 	{
-		engine_name = _T("Lua");
-		filename_pattern = _T("*.lua");
+		engine_name = "Lua";
+		filename_pattern = "*.lua";
 		Register(this);
 	}
 
@@ -1208,7 +1202,7 @@ namespace Automation4 {
 	{
 		// Just check if file extension is .lua
 		// Reject anything else
-		if (filename.Right(4).Lower() == _T(".lua")) {
+		if (filename.Right(4).Lower() == ".lua") {
 			return new LuaScript(filename);
 		} else {
 			return 0;

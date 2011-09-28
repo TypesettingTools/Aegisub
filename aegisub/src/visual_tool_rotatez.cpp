@@ -132,8 +132,8 @@ void VisualToolRotateZ::Draw() {
 bool VisualToolRotateZ::InitializeHold() {
 	startAngle = atan2(double(org->y-video.y),double(video.x-org->x)) * rad2deg;
 	origAngle = curAngle;
-	curDiag->StripTag(L"\\frz");
-	curDiag->StripTag(L"\\fr");
+	curDiag->StripTag("\\frz");
+	curDiag->StripTag("\\fr");
 
 	return true;
 }
@@ -152,7 +152,7 @@ void VisualToolRotateZ::UpdateHold() {
 void VisualToolRotateZ::CommitHold() {
 	Selection sel = c->selectionController->GetSelectedSet();
 	for (Selection::const_iterator cur = sel.begin(); cur != sel.end(); ++cur) {
-		SetOverride(*cur, L"\\frz",wxString::Format(L"(%0.3g)",curAngle));
+		SetOverride(*cur, "\\frz",wxString::Format("(%0.3g)",curAngle));
 	}
 }
 
@@ -160,7 +160,7 @@ void VisualToolRotateZ::CommitDrag(feature_iterator feature) {
 	int x = feature->x;
 	int y = feature->y;
 	parent->ToScriptCoords(&x, &y);
-	SetOverride(curDiag, L"\\org",wxString::Format(L"(%i,%i)",x,y));
+	SetOverride(curDiag, "\\org",wxString::Format("(%i,%i)",x,y));
 }
 
 void VisualToolRotateZ::DoRefresh() {

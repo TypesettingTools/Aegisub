@@ -99,11 +99,11 @@ DialogFontsCollector::DialogFontsCollector(wxWindow *parent, AssFile *ass)
 
 	// Destination box
 	wxString dest = lagi_wxString(OPT_GET("Path/Fonts Collector Destination")->GetString());
-	if (dest == _T("?script")) {
+	if (dest == "?script") {
 		wxFileName filename(subs->filename);
 		dest = filename.GetPath();
 	}
-	while (dest.Right(1) == _T("/")) dest = dest.Left(dest.Length()-1);
+	while (dest.Right(1) == "/") dest = dest.Left(dest.Length()-1);
 	DestBox = new wxTextCtrl(this,-1,dest,wxDefaultPosition,wxSize(250,20),0);
 	BrowseButton = new wxButton(this,BROWSE_BUTTON,_("&Browse..."));
 	wxSizer *DestBottomSizer = new wxBoxSizer(wxHORIZONTAL);
@@ -123,13 +123,13 @@ DialogFontsCollector::DialogFontsCollector(wxWindow *parent, AssFile *ass)
 #ifdef _DEBUG
 	choices.Add(_("DEBUG: Verify all fonts in system"));
 #endif
-	CollectAction = new wxRadioBox(this,RADIO_BOX,_T("Action"),wxDefaultPosition,wxDefaultSize,choices,1);
+	CollectAction = new wxRadioBox(this,RADIO_BOX, "Action",wxDefaultPosition,wxDefaultSize,choices,1);
 	size_t lastAction = OPT_GET("Tool/Fonts Collector/Action")->GetInt();
 	if (lastAction >= choices.GetCount()) lastAction = 0;
 	CollectAction->SetSelection(lastAction);
 
 	// Log box
-	LogBox = new ScintillaTextCtrl(this,-1,_T(""),wxDefaultPosition,wxSize(300,210));
+	LogBox = new ScintillaTextCtrl(this,-1,"",wxDefaultPosition,wxSize(300,210));
 	LogBox->SetWrapMode(wxSTC_WRAP_WORD);
 	LogBox->SetMarginWidth(1,0);
 	LogBox->SetReadOnly(true);
@@ -146,7 +146,7 @@ DialogFontsCollector::DialogFontsCollector(wxWindow *parent, AssFile *ass)
 	wxStdDialogButtonSizer *ButtonSizer = new wxStdDialogButtonSizer();
 	ButtonSizer->AddButton(StartButton);
 	ButtonSizer->AddButton(CloseButton);
-	ButtonSizer->AddButton(new HelpButton(this,_T("Fonts Collector")));
+	ButtonSizer->AddButton(new HelpButton(this,"Fonts Collector"));
 	ButtonSizer->SetAffirmativeButton(StartButton);
 	ButtonSizer->Realize();
 
@@ -275,7 +275,7 @@ void DialogFontsCollector::OnBrowse(wxCommandEvent &event) {
 	// Chose file name
 	if (CollectAction->GetSelection()==2) {
 		wxFileName fname(DestBox->GetValue());
-		wxString dest = wxFileSelector(_("Select archive file name"),DestBox->GetValue(),fname.GetFullName(),_T(".zip"),_("Zip Archives (*.zip)|*.zip"),wxFD_SAVE|wxFD_OVERWRITE_PROMPT);
+		wxString dest = wxFileSelector(_("Select archive file name"),DestBox->GetValue(),fname.GetFullName(),".zip",_("Zip Archives (*.zip)|*.zip"),wxFD_SAVE|wxFD_OVERWRITE_PROMPT);
 		if (!dest.empty()) {
 			DestBox->SetValue(dest);
 		}
@@ -321,7 +321,7 @@ void DialogFontsCollector::Update(int value) {
 		DestBox->Enable(false);
 		BrowseButton->Enable(false);
 		DestLabel->Enable(false);
-		DestLabel->SetLabel(_T("N/A\n"));
+		DestLabel->SetLabel("N/A\n");
 	}
 
 	// Collect to folder
@@ -332,7 +332,7 @@ void DialogFontsCollector::Update(int value) {
 		DestLabel->SetLabel(_("Choose the folder where the fonts will be collected to.\nIt will be created if it doesn't exist."));
 
 		// Remove filename from browse box
-		if (dst.Right(4) == _T(".zip")) {
+		if (dst.Right(4) == ".zip") {
 			wxFileName fn(dst);
 			DestBox->SetValue(fn.GetPath());
 		}
@@ -346,9 +346,9 @@ void DialogFontsCollector::Update(int value) {
 		DestLabel->SetLabel(_("Enter the name of the destination zip file to collect the fonts to.\nIf a folder is entered, a default name will be used."));
 
 		// Add filename to browse box
-		if (dst.Right(4) != _T(".zip")) {
-			wxFileName fn(dst + _T("//"));
-			fn.SetFullName(_T("fonts.zip"));
+		if (dst.Right(4) != ".zip") {
+			wxFileName fn(dst + "//");
+			fn.SetFullName("fonts.zip");
 			DestBox->SetValue(fn.GetFullPath());
 		}
 	}

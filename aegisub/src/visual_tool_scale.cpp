@@ -118,8 +118,8 @@ bool VisualToolScale::InitializeHold() {
 	startY = video.y;
 	origScaleX = curScaleX;
 	origScaleY = curScaleY; 
-	curDiag->StripTag(L"\\fscx");
-	curDiag->StripTag(L"\\fscy");
+	curDiag->StripTag("\\fscx");
+	curDiag->StripTag("\\fscy");
 
 	return true;
 }
@@ -147,8 +147,8 @@ void VisualToolScale::UpdateHold() {
 void VisualToolScale::CommitHold() {
 	Selection sel = c->selectionController->GetSelectedSet();
 	for (Selection::const_iterator cur = sel.begin(); cur != sel.end(); ++cur) {
-		SetOverride(*cur, L"\\fscx",wxString::Format(L"(%0.3g)",curScaleX));
-		SetOverride(*cur, L"\\fscy",wxString::Format(L"(%0.3g)",curScaleY));
+		SetOverride(*cur, "\\fscx",wxString::Format("(%0.3g)",curScaleX));
+		SetOverride(*cur, "\\fscy",wxString::Format("(%0.3g)",curScaleY));
 	}
 }
 

@@ -55,7 +55,7 @@
 /// @param parent 
 ///
 DialogExport::DialogExport (wxWindow *parent, AssFile *subs)
-: wxDialog (parent, -1, _("Export"), wxDefaultPosition, wxSize(200,100), wxCAPTION | wxCLOSE_BOX, _T("Export"))
+: wxDialog (parent, -1, _("Export"), wxDefaultPosition, wxSize(200,100), wxCAPTION | wxCLOSE_BOX, "Export")
 {
 	// Filter list
 	wxSizer *TopSizer = new wxStaticBoxSizer(wxVERTICAL,this,_("Filters"));
@@ -64,8 +64,8 @@ DialogExport::DialogExport (wxWindow *parent, AssFile *subs)
 	FilterList = new wxCheckListBox(this, Filter_List_Box, wxDefaultPosition, wxSize(200,100), filters);
 
 	// Get selected filters
-	wxString selected = Export->GetOriginalSubs()->GetScriptInfo(_T("Export filters"));
-	wxStringTokenizer token(selected, _T("|"));
+	wxString selected = Export->GetOriginalSubs()->GetScriptInfo("Export filters");
+	wxStringTokenizer token(selected, "|");
 	int n = 0;
 	while (token.HasMoreTokens()) {
 		wxString cur = token.GetNextToken();
@@ -95,7 +95,7 @@ DialogExport::DialogExport (wxWindow *parent, AssFile *subs)
 	TopButtons->Add(new wxButton(this,Button_Select_None,_("Select none"),wxDefaultPosition,wxSize(80,-1)),1,wxEXPAND | wxRIGHT,0);
 
 	// Description field
-	Description = new wxTextCtrl(this, -1, _T(""), wxDefaultPosition, wxSize(200,60), wxTE_MULTILINE | wxTE_READONLY);
+	Description = new wxTextCtrl(this, -1, "", wxDefaultPosition, wxSize(200,60), wxTE_MULTILINE | wxTE_READONLY);
 
 	// Charset dropdown list
 	wxStaticText *charset_list_label = new wxStaticText(this, -1, _("Text encoding:"));
@@ -103,8 +103,8 @@ DialogExport::DialogExport (wxWindow *parent, AssFile *subs)
 	wxSizer *charset_list_sizer = new wxBoxSizer(wxHORIZONTAL);
 	charset_list_sizer->Add(charset_list_label, 0, wxALIGN_CENTER | wxRIGHT, 5);
 	charset_list_sizer->Add(CharsetList, 1, wxEXPAND);
-	if (!CharsetList->SetStringSelection(Export->GetOriginalSubs()->GetScriptInfo(_T("Export Encoding")))) {
-		CharsetList->SetStringSelection(_T("Unicode (UTF-8)"));
+	if (!CharsetList->SetStringSelection(Export->GetOriginalSubs()->GetScriptInfo("Export Encoding"))) {
+		CharsetList->SetStringSelection("Unicode (UTF-8)");
 	}
 
 	// Top sizer
@@ -118,7 +118,7 @@ DialogExport::DialogExport (wxWindow *parent, AssFile *subs)
 	wxButton *process = new wxButton(this,Button_Process,_("Export..."));
 	ButtonSizer->AddButton(process);
 	ButtonSizer->AddButton(new wxButton(this,wxID_CANCEL));
-	ButtonSizer->AddButton(new HelpButton(this,_T("Export")));
+	ButtonSizer->AddButton(new HelpButton(this,"Export"));
 	ButtonSizer->SetAffirmativeButton(process);
 	ButtonSizer->Realize();
 
@@ -149,12 +149,12 @@ DialogExport::~DialogExport() {
 	wxString infoList;
 	for (unsigned int i=0;i<FilterList->GetCount();i++) {
 		if (FilterList->IsChecked(i)) {
-			infoList += FilterList->GetString(i) + _T("|");
+			infoList += FilterList->GetString(i) + "|";
 			n++;
 		}
 	}
 	if (n > 0) infoList = infoList.Left(infoList.Length()-1);
-	Export->GetOriginalSubs()->SetScriptInfo(_T("Export filters"),infoList);
+	Export->GetOriginalSubs()->SetScriptInfo("Export filters",infoList);
 
 	// Delete exporter
 	if (Export) delete Export;
@@ -196,7 +196,7 @@ END_EVENT_TABLE()
 ///
 void DialogExport::OnProcess(wxCommandEvent &event) {
 	// Get destination
-	wxString filename = wxFileSelector(_("Export subtitles file"),_T(""),_T(""),_T(""),AssFile::GetWildcardList(2),wxFD_SAVE | wxFD_OVERWRITE_PROMPT,this);
+	wxString filename = wxFileSelector(_("Export subtitles file"),"","","",AssFile::GetWildcardList(2),wxFD_SAVE | wxFD_OVERWRITE_PROMPT,this);
 	if (filename.empty()) return;
 
 	// Add filters
@@ -209,18 +209,18 @@ void DialogExport::OnProcess(wxCommandEvent &event) {
 	// Export
 	try {
 		wxBusyCursor busy;
-		Export->GetOriginalSubs()->SetScriptInfo(_T("Export Encoding"), CharsetList->GetStringSelection());
+		Export->GetOriginalSubs()->SetScriptInfo("Export Encoding", CharsetList->GetStringSelection());
 		Export->Export(filename, CharsetList->GetStringSelection(), this);
 	}
-	catch (const wchar_t *error) {
+	catch (const char *error) {
 		wxString err(error);
-		wxMessageBox(err, _T("Error exporting subtitles"), wxOK | wxICON_ERROR, this);
+		wxMessageBox(err, "Error exporting subtitles", wxOK | wxICON_ERROR, this);
 	}
 	catch (const agi::charset::ConvError& err) {
-		wxMessageBox(err.GetMessage(), _T("Error exporting subtitles"), wxOK | wxICON_ERROR, this);
+		wxMessageBox(err.GetMessage(), "Error exporting subtitles", wxOK | wxICON_ERROR, this);
 	}
 	catch (...) {
-		wxMessageBox(_T("Unknown error"), _T("Error exporting subtitles"), wxOK | wxICON_ERROR, this);
+		wxMessageBox("Unknown error", "Error exporting subtitles", wxOK | wxICON_ERROR, this);
 	}
 
 	// Close dialog

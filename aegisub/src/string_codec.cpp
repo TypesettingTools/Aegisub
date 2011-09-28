@@ -48,12 +48,12 @@
 wxString inline_string_encode(const wxString &input)
 {
 	const size_t inlen = input.length();
-	wxString output(_T(""));
+	wxString output("");
 	output.Alloc(inlen);
 	for (size_t i = 0; i < inlen; i++) {
 		wxChar c = input[i];
 		if (c <= 0x1F || c == 0x23 || c == 0x2C || c == 0x3A || c == 0x7C) {
-			output << wxString::Format(_T("#%02X"), c);
+			output << wxString::Format("#%02X", c);
 		} else {
 			output << c;
 		}
@@ -68,11 +68,11 @@ wxString inline_string_encode(const wxString &input)
 wxString inline_string_decode(const wxString &input)
 {
 	const size_t inlen = input.length();
-	wxString output(_T(""));
+	wxString output("");
 	output.Alloc(inlen);
 	size_t i = 0;
 	while (i < inlen) {
-		if (input[i] == _T('#')) {
+		if (input[i] == '#') {
 			// check if there's actually enough extra characters at the end of the string
 			if (inlen - i < 3)
 				break;

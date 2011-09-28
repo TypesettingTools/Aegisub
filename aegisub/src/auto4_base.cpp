@@ -311,7 +311,7 @@ namespace Automation4 {
 	///
 	wxString FeatureFilter::GetScriptSettingsIdentifier()
 	{
-		return inline_string_encode(wxString::Format(_T("Automation Settings %s"), GetName().c_str()));
+		return inline_string_encode(wxString::Format("Automation Settings %s", GetName().c_str()));
 	}
 
 
@@ -430,7 +430,7 @@ namespace Automation4 {
 	///
 	wxString ScriptConfigDialog::Serialise()
 	{
-		return _T("");
+		return "";
 	}
 
 
@@ -441,7 +441,7 @@ namespace Automation4 {
 	/// @param parent 
 	///
 	ProgressSink::ProgressSink(wxWindow *parent)
-		: wxDialog(parent, -1, _T("Automation"), wxDefaultPosition, wxDefaultSize, wxBORDER_RAISED)
+		: wxDialog(parent, -1, "Automation", wxDefaultPosition, wxDefaultSize, wxBORDER_RAISED)
 		, debug_visible(false)
 		, data_updated(false)
 		, cancelled(false)
@@ -450,10 +450,10 @@ namespace Automation4 {
 	{
 		// make the controls
 		progress_display = new wxGauge(this, -1, 1000, wxDefaultPosition, wxSize(300, 20));
-		title_display = new wxStaticText(this, -1, _T(""), wxDefaultPosition, wxDefaultSize, wxALIGN_CENTRE|wxST_NO_AUTORESIZE);
-		task_display = new wxStaticText(this, -1, _T(""), wxDefaultPosition, wxDefaultSize, wxALIGN_CENTRE|wxST_NO_AUTORESIZE);
+		title_display = new wxStaticText(this, -1, "", wxDefaultPosition, wxDefaultSize, wxALIGN_CENTRE|wxST_NO_AUTORESIZE);
+		task_display = new wxStaticText(this, -1, "", wxDefaultPosition, wxDefaultSize, wxALIGN_CENTRE|wxST_NO_AUTORESIZE);
 		cancel_button = new wxButton(this, wxID_CANCEL);
-		debug_output = new wxTextCtrl(this, -1, _T(""), wxDefaultPosition, wxSize(300, 120), wxTE_MULTILINE|wxTE_READONLY);
+		debug_output = new wxTextCtrl(this, -1, "", wxDefaultPosition, wxSize(300, 120), wxTE_MULTILINE|wxTE_READONLY);
 
 		// put it in a sizer
 		sizer = new wxBoxSizer(wxVERTICAL);
@@ -537,7 +537,7 @@ namespace Automation4 {
 			*debug_output << pending_debug_output;
 			debug_output->SetInsertionPointEnd();
 
-			pending_debug_output = _T("");
+			pending_debug_output = "";
 		}
 
 		progress_display->SetValue((int)(progress*10));
@@ -642,7 +642,7 @@ namespace Automation4 {
 			evt.config_dialog->DeleteWindow();
 			delete w;
 		} else {
-			wxMessageBox(_T("Uh... no config dialog?"));
+			wxMessageBox("Uh... no config dialog?");
 		}
 
 		// See note in auto4_base.h
@@ -660,16 +660,16 @@ namespace Automation4 {
 	///
 	Script::Script(const wxString &_filename)
 		: filename(_filename)
-		, name(_T(""))
-		, description(_T(""))
-		, author(_T(""))
-		, version(_T(""))
+		, name("")
+		, description("")
+		, author("")
+		, version("")
 		, loaded(false)
 	{
 		// copied from auto3
 		include_path.clear();
 		include_path.EnsureFileAccessible(filename);
-		wxStringTokenizer toker(lagi_wxString(OPT_GET("Path/Automation/Include")->GetString()), _T("|"), wxTOKEN_STRTOK);
+		wxStringTokenizer toker(lagi_wxString(OPT_GET("Path/Automation/Include")->GetString()), "|", wxTOKEN_STRTOK);
 		while (toker.HasMoreTokens()) {
 			// todo? make some error reporting here
 			wxFileName path(StandardPaths::DecodePath(toker.GetNextToken()));
@@ -871,21 +871,21 @@ namespace Automation4 {
 
 		int error_count = 0;
 
-		wxStringTokenizer tok(path, _T("|"), wxTOKEN_STRTOK);
+		wxStringTokenizer tok(path, "|", wxTOKEN_STRTOK);
 		while (tok.HasMoreTokens()) {
 			wxDir dir;
 			wxString dirname = StandardPaths::DecodePath(tok.GetNextToken());
 			if (!dir.Exists(dirname)) {
-				//wxLogWarning(_T("A directory was specified in the Automation autoload path, but it doesn't exist: %s"), dirname.c_str());
+				//wxLogWarning("A directory was specified in the Automation autoload path, but it doesn't exist: %s", dirname.c_str());
 				continue;
 			}
 			if (!dir.Open(dirname)) {
-				//wxLogWarning(_T("Failed to open a directory in the Automation autoload path: %s"), dirname.c_str());
+				//wxLogWarning("Failed to open a directory in the Automation autoload path: %s", dirname.c_str());
 				continue;
 			}
 
 			wxString fn;
-			wxFileName script_path(dirname + _T("/"), _T(""));
+			wxFileName script_path(dirname + "/", "");
 			bool more = dir.GetFirst(&fn, wxEmptyString, wxDIR_FILES);
 			while (more) {
 				script_path.SetName(fn);
@@ -897,19 +897,19 @@ namespace Automation4 {
 						if (!s->GetLoadedState()) error_count++;
 					}
 				}
-				catch (const wchar_t *e) {
+				catch (const char *e) {
 					error_count++;
-					wxLogError(_T("Error loading Automation script: %s\n%s"), fn.c_str(), e);
+					wxLogError("Error loading Automation script: %s\n%s", fn.c_str(), e);
 				}
 				catch (...) {
 					error_count++;
-					wxLogError(_T("Error loading Automation script: %s\nUnknown error."), fn.c_str());
+					wxLogError("Error loading Automation script: %s\nUnknown error.", fn.c_str());
 				}
 				more = dir.GetNext(&fn);
 			}
 		}
 		if (error_count > 0) {
-			wxLogWarning(_T("One or more scripts placed in the Automation autoload directory failed to load\nPlease review the errors above, correct them and use the Reload Autoload dir button in Automation Manager to attempt loading the scripts again."));
+			wxLogWarning("One or more scripts placed in the Automation autoload directory failed to load\nPlease review the errors above, correct them and use the Reload Autoload dir button in Automation Manager to attempt loading the scripts again.");
 		}
 	}
 
@@ -950,7 +950,7 @@ namespace Automation4 {
 
 		for (std::vector<ScriptFactory*>::iterator i = factories->begin(); i != factories->end(); ++i) {
 			if (*i == factory) {
-				throw _T("Automation 4: Attempt to register the same script factory multiple times. This should never happen.");
+				throw "Automation 4: Attempt to register the same script factory multiple times. This should never happen.";
 			}
 		}
 		factories->push_back(factory);

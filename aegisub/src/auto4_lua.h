@@ -171,7 +171,7 @@ namespace Automation4 {
 		/// @brief DOCME
 		/// @return 
 		///
-		virtual wxString SerialiseValue() { return _T(""); }
+		virtual wxString SerialiseValue() { return ""; }
 
 		/// @brief DOCME
 		/// @param serialised 

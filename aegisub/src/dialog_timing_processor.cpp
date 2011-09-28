@@ -104,12 +104,12 @@ DialogTimingProcessor::DialogTimingProcessor(agi::Context *c)
 	hasLeadIn = new wxCheckBox(this,CHECK_ENABLE_LEADIN,_("Add lead in:"));
 	hasLeadIn->SetToolTip(_("Enable adding of lead-ins to lines."));
 	hasLeadIn->SetValue(OPT_GET("Tool/Timing Post Processor/Enable/Lead/IN")->GetBool());
-	leadIn = new wxTextCtrl(this,-1,_T(""),wxDefaultPosition,wxSize(80,-1),0,NumValidator(leadInTime));
+	leadIn = new wxTextCtrl(this,-1,"",wxDefaultPosition,wxSize(80,-1),0,NumValidator(leadInTime));
 	leadIn->SetToolTip(_("Lead in to be added, in milliseconds."));
 	hasLeadOut = new wxCheckBox(this,CHECK_ENABLE_LEADOUT,_("Add lead out:"));
 	hasLeadOut->SetToolTip(_("Enable adding of lead-outs to lines."));
 	hasLeadOut->SetValue(OPT_GET("Tool/Timing Post Processor/Enable/Lead/OUT")->GetBool());
-	leadOut = new wxTextCtrl(this,-1,_T(""),wxDefaultPosition,wxSize(80,-1),0,NumValidator(leadOutTime));
+	leadOut = new wxTextCtrl(this,-1,"",wxDefaultPosition,wxSize(80,-1),0,NumValidator(leadOutTime));
 	leadOut->SetToolTip(_("Lead out to be added, in milliseconds."));
 	LeadSizer->Add(hasLeadIn,0,wxRIGHT|wxEXPAND,5);
 	LeadSizer->Add(leadIn,0,wxRIGHT|wxEXPAND,5);
@@ -123,7 +123,7 @@ DialogTimingProcessor::DialogTimingProcessor(agi::Context *c)
 	adjsEnable->SetToolTip(_("Enable snapping of subtitles together if they are within a certain distance of each other."));
 	adjsEnable->SetValue(OPT_GET("Tool/Timing Post Processor/Enable/Adjacent")->GetBool());
 	wxStaticText *adjsThresText = new wxStaticText(this,-1,_("Threshold:"),wxDefaultPosition,wxDefaultSize,wxALIGN_CENTRE);
-	adjacentThres = new wxTextCtrl(this,-1,_T(""),wxDefaultPosition,wxSize(60,-1),0,NumValidator(adjsThresTime));
+	adjacentThres = new wxTextCtrl(this,-1,"",wxDefaultPosition,wxSize(60,-1),0,NumValidator(adjsThresTime));
 	adjacentThres->SetToolTip(_("Maximum difference between start and end time for two subtitles to be made continuous, in milliseconds."));
 	adjacentBias = new wxSlider(this,-1,mid(0,int(OPT_GET("Tool/Timing Post Processor/Adjacent Bias")->GetDouble()*100),100),0,100,wxDefaultPosition,wxSize(-1,20));
 	adjacentBias->SetToolTip(_("Sets how to set the adjoining of lines. If set totally to left, it will extend start time of the second line; if totally to right, it will extend the end time of the first line."));
@@ -141,16 +141,16 @@ DialogTimingProcessor::DialogTimingProcessor(agi::Context *c)
 	keysEnable->SetToolTip(_("Enable snapping of subtitles to nearest keyframe, if distance is within threshold."));
 	keysEnable->SetValue(OPT_GET("Tool/Timing Post Processor/Enable/Keyframe")->GetBool());
 	wxStaticText *textStartBefore = new wxStaticText(this,-1,_("Starts before thres.:"),wxDefaultPosition,wxDefaultSize,wxALIGN_CENTRE);
-	keysStartBefore = new wxTextCtrl(this,-1,_T(""),wxDefaultPosition,wxSize(60,-1),0,NumValidator(thresStartBefore));
+	keysStartBefore = new wxTextCtrl(this,-1,"",wxDefaultPosition,wxSize(60,-1),0,NumValidator(thresStartBefore));
 	keysStartBefore->SetToolTip(_("Threshold for 'before start' distance, that is, how many frames a subtitle must start before a keyframe to snap to it."));
 	wxStaticText *textStartAfter = new wxStaticText(this,-1,_("Starts after thres.:"),wxDefaultPosition,wxDefaultSize,wxALIGN_CENTRE);
-	keysStartAfter = new wxTextCtrl(this,-1,_T(""),wxDefaultPosition,wxSize(60,-1),0,NumValidator(thresStartAfter));
+	keysStartAfter = new wxTextCtrl(this,-1,"",wxDefaultPosition,wxSize(60,-1),0,NumValidator(thresStartAfter));
 	keysStartAfter->SetToolTip(_("Threshold for 'after start' distance, that is, how many frames a subtitle must start after a keyframe to snap to it."));
 	wxStaticText *textEndBefore = new wxStaticText(this,-1,_("Ends before thres.:"),wxDefaultPosition,wxDefaultSize,wxALIGN_CENTRE);
-	keysEndBefore = new wxTextCtrl(this,-1,_T(""),wxDefaultPosition,wxSize(60,-1),0,NumValidator(thresEndBefore));
+	keysEndBefore = new wxTextCtrl(this,-1,"",wxDefaultPosition,wxSize(60,-1),0,NumValidator(thresEndBefore));
 	keysEndBefore->SetToolTip(_("Threshold for 'before end' distance, that is, how many frames a subtitle must end before a keyframe to snap to it."));
 	wxStaticText *textEndAfter = new wxStaticText(this,-1,_("Ends after thres.:"),wxDefaultPosition,wxDefaultSize,wxALIGN_CENTRE);
-	keysEndAfter = new wxTextCtrl(this,-1,_T(""),wxDefaultPosition,wxSize(60,-1),0,NumValidator(thresEndAfter));
+	keysEndAfter = new wxTextCtrl(this,-1,"",wxDefaultPosition,wxSize(60,-1),0,NumValidator(thresEndAfter));
 	keysEndAfter->SetToolTip(_("Threshold for 'after end' distance, that is, how many frames a subtitle must end after a keyframe to snap to it."));
 	KeyframesFlexSizer->Add(keysEnable,0,wxRIGHT|wxEXPAND,10);
 	KeyframesFlexSizer->Add(textStartBefore,0,wxRIGHT|wxALIGN_CENTER,5);
@@ -170,7 +170,7 @@ DialogTimingProcessor::DialogTimingProcessor(agi::Context *c)
 	ApplyButton = new wxButton(this,wxID_OK);
 	ButtonSizer->AddButton(ApplyButton);
 	ButtonSizer->AddButton(new wxButton(this,wxID_CANCEL));
-	ButtonSizer->AddButton(new HelpButton(this,_T("Timing Processor")));
+	ButtonSizer->AddButton(new HelpButton(this,"Timing Processor"));
 	ButtonSizer->Realize();
 
 	// Right Sizer

@@ -78,7 +78,7 @@ DialogAutomation::DialogAutomation(wxWindow *parent, Automation4::ScriptManager 
 	close_button = new wxButton(this, wxID_CANCEL, _("&Close"));
 
 	// add headers to list view
-	list->InsertColumn(0, _T(""), wxLIST_FORMAT_CENTER, 20);
+	list->InsertColumn(0, "", wxLIST_FORMAT_CENTER, 20);
 	list->InsertColumn(1, _("Name"), wxLIST_FORMAT_LEFT, 140);
 	list->InsertColumn(2, _("Filename"), wxLIST_FORMAT_LEFT, 90);
 	list->InsertColumn(3, _("Description"), wxLIST_FORMAT_LEFT, 330);
@@ -94,7 +94,7 @@ DialogAutomation::DialogAutomation(wxWindow *parent, Automation4::ScriptManager 
 	button_box->AddSpacer(10);
 	button_box->Add(reload_autoload_button, 0);
 	button_box->AddSpacer(10);
-	button_box->Add(new HelpButton(this,_T("Automation Manager")), 0);
+	button_box->Add(new HelpButton(this,"Automation Manager"), 0);
 	button_box->Add(close_button, 0);
 	button_box->AddStretchSpacer(2);
 
@@ -154,9 +154,9 @@ void DialogAutomation::AddScript(ExtraScriptInfo &ei)
 
 	wxListItem itm;
 	if (ei.is_global) {
-		itm.SetText(_T("G"));
+		itm.SetText("G");
 	} else {
-		itm.SetText(_T("L"));
+		itm.SetText("L");
 	}
 	itm.SetData((int)script_info.size()-1);
 	itm.SetId(list->GetItemCount());
@@ -215,19 +215,19 @@ void DialogAutomation::OnAdd(wxCommandEvent &evt)
 		const Automation4::ScriptFactory *fact = factories[i];
 		if (fact->GetEngineName().IsEmpty() || fact->GetFilenamePattern().IsEmpty())
 			continue;
-		fnfilter = wxString::Format(_T("%s%s scripts (%s)|%s|"), fnfilter.c_str(), fact->GetEngineName().c_str(), fact->GetFilenamePattern().c_str(), fact->GetFilenamePattern().c_str());
-		catchall << fact->GetFilenamePattern() << _T(";");
+		fnfilter = wxString::Format("%s%s scripts (%s)|%s|", fnfilter.c_str(), fact->GetEngineName().c_str(), fact->GetFilenamePattern().c_str(), fact->GetFilenamePattern().c_str());
+		catchall << fact->GetFilenamePattern() << ";";
 	}
 #ifdef __WINDOWS__
-	fnfilter += _T("All files|*.*");
+	fnfilter += "All files|*.*";
 #else
-	fnfilter += _T("All files|*");
+	fnfilter += "All files|*";
 #endif
 	if (!catchall.IsEmpty()) {
 		catchall.RemoveLast();
 	}
 	if (factories.size() > 1) {
-		fnfilter = _T("All supported scripts|") + catchall + _T("|") + fnfilter;
+		fnfilter = "All supported scripts|" + catchall + "|" + fnfilter;
 	}
 
 	wxString fname = wxFileSelector(_("Add Automation script"), lagi_wxString(OPT_GET("Path/Last/Automation")->GetString()), wxEmptyString, wxEmptyString, fnfilter, wxFD_OPEN|wxFD_FILE_MUST_EXIST, this);
@@ -248,11 +248,11 @@ void DialogAutomation::OnAdd(wxCommandEvent &evt)
 			ei.is_global = false;
 			AddScript(ei);
 		}
-		catch (const wchar_t *e) {
+		catch (const char *e) {
 			wxLogError(e);
 		}
 		catch (...) {
-			wxLogError(_T("Unknown error loading script"));
+			wxLogError("Unknown error loading script");
 		}
 	}
 }
@@ -288,11 +288,11 @@ void DialogAutomation::OnReload(wxCommandEvent &evt)
 	try {
 		ei.script->Reload();
 	}
-	catch (const wchar_t *e) {
-		wxMessageBox(e, _T("Error reloading Automation script"), wxOK|wxICON_ERROR, this);
+	catch (const char *e) {
+		wxMessageBox(e, "Error reloading Automation script", wxOK|wxICON_ERROR, this);
 	}
 	catch (...) {
-		wxMessageBox(_T("An unknown error occurred reloading Automation script."), _T("Error reloading Automation script"), wxOK|wxICON_ERROR, this);
+		wxMessageBox("An unknown error occurred reloading Automation script.", "Error reloading Automation script", wxOK|wxICON_ERROR, this);
 	}
 
 	list->SetItem(i, 1, ei.script->GetName());
@@ -323,7 +323,7 @@ void DialogAutomation::OnInfo(wxCommandEvent &evt)
 	info += _("Scripting engines installed:\n");
 	const std::vector<Automation4::ScriptFactory*> &factories = Automation4::ScriptFactory::GetFactories();
 	for (std::vector<Automation4::ScriptFactory*>::const_iterator c = factories.begin(); c != factories.end(); ++c) {
-		info += wxString::Format(_T("- %s (%s)\n"), (*c)->GetEngineName().c_str(), (*c)->GetFilenamePattern().c_str());
+		info += wxString::Format("- %s (%s)\n", (*c)->GetEngineName().c_str(), (*c)->GetFilenamePattern().c_str());
 	}
 
 	if (ei) {
@@ -343,9 +343,9 @@ void DialogAutomation::OnInfo(wxCommandEvent &evt)
 				case Automation4::SCRIPTFEATURE_SUBFORMAT:
 					info += _("    Subtitle format handler: "); break;
 				default:
-					info += _T("    Unknown class: "); break;
+					info += "    Unknown class: "; break;
 			}
-			info += (*f)->GetName() + _T("\n");
+			info += (*f)->GetName() + "\n";
 		}
 	}
 

@@ -285,7 +285,7 @@ void VisualToolVectorClip::MakeFeatures() {
 }
 
 void VisualToolVectorClip::Save() {
-	SetOverride(curDiag, inverse ? L"\\iclip" : L"\\clip", L"(" + spline.EncodeToASS() + L")");
+	SetOverride(curDiag, inverse ? "\\iclip" : "\\clip", "(" + spline.EncodeToASS() + ")");
 }
 
 void VisualToolVectorClip::UpdateDrag(feature_iterator feature) {

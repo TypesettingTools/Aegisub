@@ -70,7 +70,7 @@ enum {
 /// @param name        
 ///
 DialogSearchReplace::DialogSearchReplace (wxWindow *parent,bool _hasReplace,wxString name)
-: wxDialog(parent, -1, name, wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE, _T("SearchReplace"))
+: wxDialog(parent, -1, name, wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE, "SearchReplace")
 {
 	// Setup
 	hasReplace = _hasReplace;
@@ -78,14 +78,14 @@ DialogSearchReplace::DialogSearchReplace (wxWindow *parent,bool _hasReplace,wxSt
 	// Find sizer
 	wxSizer *FindSizer = new wxFlexGridSizer(2,2,5,15);
 	wxArrayString FindHistory = lagi_MRU_wxAS("Find");
-	FindEdit = new wxComboBox(this,-1,_T(""),wxDefaultPosition,wxSize(300,-1),FindHistory,wxCB_DROPDOWN);
+	FindEdit = new wxComboBox(this,-1,"",wxDefaultPosition,wxSize(300,-1),FindHistory,wxCB_DROPDOWN);
 	//if (FindHistory.Count()) FindEdit->SetStringSelection(FindHistory[0]);
 	FindEdit->SetSelection(0);
 	FindSizer->Add(new wxStaticText(this,-1,_("Find what:")),0,wxRIGHT | wxALIGN_CENTER_VERTICAL,0);
 	FindSizer->Add(FindEdit,0,wxRIGHT,0);
 	if (hasReplace) {
 		wxArrayString ReplaceHistory = lagi_MRU_wxAS("Replace");
-		ReplaceEdit = new wxComboBox(this,-1,_T(""),wxDefaultPosition,wxSize(300,-1),ReplaceHistory,wxCB_DROPDOWN);
+		ReplaceEdit = new wxComboBox(this,-1,"",wxDefaultPosition,wxSize(300,-1),ReplaceHistory,wxCB_DROPDOWN);
 		FindSizer->Add(new wxStaticText(this,-1,_("Replace with:")),0,wxRIGHT | wxALIGN_CENTER_VERTICAL,0);
 		FindSizer->Add(ReplaceEdit,0,wxRIGHT,0);
 		ReplaceEdit->SetSelection(0);
@@ -515,7 +515,7 @@ void SearchReplaceEngine::ReplaceAll() {
 		// Normal replace
 		else {
 			if (!Search.matchCase) {
-				wxString Left = _T(""), Right = *Text;
+				wxString Left = "", Right = *Text;
 				int pos = 0;
 				Left.Alloc(Right.Len());
 				while (pos <= (int)(Right.Len() - LookFor.Len())) {
@@ -615,7 +615,7 @@ wxString *SearchReplaceEngine::GetText(int n,int field) {
 	else if (field == 1) return &cur->Style;
 	else if (field == 2) return &cur->Actor;
 	else if (field == 3) return &cur->Effect;
-	else throw wxString(_T("Invalid field"));
+	else throw wxString("Invalid field");
 }
 
 

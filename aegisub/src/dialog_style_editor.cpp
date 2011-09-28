@@ -98,7 +98,7 @@ enum {
 };
 
 DialogStyleEditor::DialogStyleEditor (wxWindow *parent, AssStyle *style, agi::Context *c,bool local,AssStyleStorage *store,bool newStyle)
-: wxDialog (parent,-1,_("Style Editor"),wxDefaultPosition,wxDefaultSize,wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER,_T("DialogStyleEditor"))
+: wxDialog (parent,-1,_("Style Editor"),wxDefaultPosition,wxDefaultSize,wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER,"DialogStyleEditor")
 , c(c)
 , isLocal(local)
 , isNew(newStyle)
@@ -116,7 +116,7 @@ DialogStyleEditor::DialogStyleEditor (wxWindow *parent, AssStyle *style, agi::Co
 	wxString AngleValue = AegiFloatToString(style->angle);
 	wxString EncodingValue = AegiIntegerToString(style->encoding);
 	wxString SpacingValue = AegiFloatToString(style->spacing);
-	wxString alignValues[9] = { _T("7"),_T("8"),_T("9"),_T("4"),_T("5"),_T("6"),_T("1"),_T("2"),_T("3") };
+	wxString alignValues[9] = { "7","8","9","4","5","6","1","2","3" };
 	wxArrayString fontList = wxFontEnumerator::GetFacenames();
 	fontList.Sort();
 
@@ -136,7 +136,7 @@ DialogStyleEditor::DialogStyleEditor (wxWindow *parent, AssStyle *style, agi::Co
 	// Create controls
 	StyleName = new wxTextCtrl(this,-1,style->name);
 	FontName = new wxComboBox(this,TEXT_FONT_NAME,style->font,wxDefaultPosition,wxSize(150,-1),0,0,wxCB_DROPDOWN);
-	FontSize = new wxTextCtrl(this,TEXT_FONT_SIZE,_T(""),wxDefaultPosition,wxSize(50,-1),0,NumValidator(FontSizeValue,true,false));
+	FontSize = new wxTextCtrl(this,TEXT_FONT_SIZE,"",wxDefaultPosition,wxSize(50,-1),0,NumValidator(FontSizeValue,true,false));
 	BoxBold = new wxCheckBox(this,CHECKBOX_STYLE_BOLD,_("Bold"));
 	BoxItalic = new wxCheckBox(this,CHECKBOX_STYLE_ITALIC,_("Italic"));
 	BoxUnderline = new wxCheckBox(this,CHECKBOX_STYLE_UNDERLINE,_("Underline"));
@@ -152,14 +152,14 @@ DialogStyleEditor::DialogStyleEditor (wxWindow *parent, AssStyle *style, agi::Co
 	for (int i=0;i<3;i++) margin[i] = new wxSpinCtrl(this,TEXT_MARGIN_L+i,AegiFloatToString(style->Margin[i]),wxDefaultPosition,wxSize(60,-1),wxSP_ARROW_KEYS,0,9999,style->Margin[i]);
 	margin[3] = 0;
 	Alignment = new wxRadioBox(this, RADIO_ALIGNMENT, _("Alignment"), wxDefaultPosition, wxDefaultSize, 9, alignValues, 3, wxRA_SPECIFY_COLS);
-	Outline = new wxTextCtrl(this,TEXT_OUTLINE,_T(""),wxDefaultPosition,wxSize(40,20),0,NumValidator(OutlineValue,true,false));
-	Shadow = new wxTextCtrl(this,TEXT_SHADOW,_T(""),wxDefaultPosition,wxSize(40,20),0,NumValidator(ShadowValue,true,false));
+	Outline = new wxTextCtrl(this,TEXT_OUTLINE,"",wxDefaultPosition,wxSize(40,20),0,NumValidator(OutlineValue,true,false));
+	Shadow = new wxTextCtrl(this,TEXT_SHADOW,"",wxDefaultPosition,wxSize(40,20),0,NumValidator(ShadowValue,true,false));
 	OutlineType = new wxCheckBox(this,CHECKBOX_OUTLINE,_("Opaque box"));
-	ScaleX = new wxTextCtrl(this,TEXT_SCALE_X,_T(""),wxDefaultPosition, wxSize(70,20),0,NumValidator(ScaleXValue,true,false));
-	ScaleY = new wxTextCtrl(this,TEXT_SCALE_Y,_T(""),wxDefaultPosition, wxSize(70,20),0,NumValidator(ScaleYValue,true,false));
-	Angle = new wxTextCtrl(this,TEXT_ANGLE,_T(""),wxDefaultPosition, wxSize(40,20),0,NumValidator(AngleValue,true,true));
-	Spacing = new wxTextCtrl(this,TEXT_SPACING,_T(""),wxDefaultPosition,wxSize(40,20),0,NumValidator(SpacingValue,true,true));
-	Encoding = new wxComboBox(this,COMBO_ENCODING,_T(""),wxDefaultPosition, wxDefaultSize, encodingStrings,wxCB_READONLY);
+	ScaleX = new wxTextCtrl(this,TEXT_SCALE_X,"",wxDefaultPosition, wxSize(70,20),0,NumValidator(ScaleXValue,true,false));
+	ScaleY = new wxTextCtrl(this,TEXT_SCALE_Y,"",wxDefaultPosition, wxSize(70,20),0,NumValidator(ScaleYValue,true,false));
+	Angle = new wxTextCtrl(this,TEXT_ANGLE,"",wxDefaultPosition, wxSize(40,20),0,NumValidator(AngleValue,true,true));
+	Spacing = new wxTextCtrl(this,TEXT_SPACING,"",wxDefaultPosition,wxSize(40,20),0,NumValidator(SpacingValue,true,true));
+	Encoding = new wxComboBox(this,COMBO_ENCODING,"",wxDefaultPosition, wxDefaultSize, encodingStrings,wxCB_READONLY);
 
 	// Set control tooltips
 	StyleName->SetToolTip(_("Style name."));
@@ -322,7 +322,7 @@ DialogStyleEditor::DialogStyleEditor (wxWindow *parent, AssStyle *style, agi::Co
 	okButton->SetDefault();
 	ButtonSizer->AddButton(new wxButton(this, wxID_CANCEL));
 	ButtonSizer->AddButton(new wxButton(this, wxID_APPLY));
-	ButtonSizer->AddButton(new HelpButton(this, _T("Style Editor")));
+	ButtonSizer->AddButton(new HelpButton(this, "Style Editor"));
 	ButtonSizer->AddButton(okButton);
 	ButtonSizer->Realize();
 
@@ -434,7 +434,7 @@ void DialogStyleEditor::OnSetColor4 (wxCommandEvent &event) { OnSetColor(4); }
 ///
 void ReplaceStyle(wxString tag,int n,AssOverrideParameter* param,void *userData) {
 	wxArrayString strings = *((wxArrayString*)userData);
-	if (tag == _T("\\r")) {
+	if (tag == "\\r") {
 		if (param->GetType() == VARDATA_TEXT) {
 			if (param->Get<wxString>() == strings[0]) {
 				param->Set(strings[1]);
@@ -463,7 +463,7 @@ void DialogStyleEditor::Apply (bool apply,bool close) {
 		for (unsigned int i=0;i<styles.Count();i++) {
 			if (newStyleName.CmpNoCase(styles[i]) == 0) {
 				if ((isLocal && (c->ass->GetStyle(styles[i]) != style)) || (!isLocal && (store->GetStyle(styles[i]) != style))) {
-					wxMessageBox(_T("There is already a style with this name. Please choose another name."),_T("Style name conflict."),wxICON_ERROR|wxOK);
+					wxMessageBox("There is already a style with this name. Please choose another name.","Style name conflict.",wxICON_ERROR|wxOK);
 					return;
 				}
 			}
@@ -475,7 +475,7 @@ void DialogStyleEditor::Apply (bool apply,bool close) {
 			if (!isNew && isLocal) {
 				// See if user wants to update style name through script
 				int answer = wxNO;
-				if (work->name != _T("Default")) answer = wxMessageBox(_("Do you want to change all instances of this style in the script to this new name?"),_("Update script?"),wxYES_NO | wxCANCEL);
+				if (work->name != "Default") answer = wxMessageBox(_("Do you want to change all instances of this style in the script to this new name?"),_("Update script?"),wxYES_NO | wxCANCEL);
 
 				// Cancel
 				if (answer == wxCANCEL) return;
@@ -545,7 +545,7 @@ void DialogStyleEditor::UpdateWorkStyle() {
 	// Update encoding
 	long templ = 0;
 	wxString enc = Encoding->GetValue();
-	enc.Left(enc.Find(_T("-"))-1).ToLong(&templ);
+	enc.Left(enc.Find("-")-1).ToLong(&templ);
 	work->encoding = templ;
 
 	// Angle and spacing
@@ -588,7 +588,7 @@ void DialogStyleEditor::OnChooseFont (wxCommandEvent &event) {
 	wxFont newfont = wxGetFontFromUser(this,oldfont);
 	if (newfont.Ok()) {
 		FontName->SetValue(newfont.GetFaceName());
-		FontSize->SetValue(wxString::Format(_T("%i"),newfont.GetPointSize()));
+		FontSize->SetValue(wxString::Format("%i",newfont.GetPointSize()));
 		BoxBold->SetValue(newfont.GetWeight() == wxFONTWEIGHT_BOLD);
 		BoxItalic->SetValue(newfont.GetStyle() == wxFONTSTYLE_ITALIC);
 		BoxUnderline->SetValue(newfont.GetUnderlined());
@@ -601,7 +601,7 @@ void DialogStyleEditor::OnChooseFont (wxCommandEvent &event) {
 		if (SubsPreview) SubsPreview->SetStyle(*work);
 
 		// Comic sans warning
-		if (newfont.GetFaceName() == _T("Comic Sans MS")) {
+		if (newfont.GetFaceName() == "Comic Sans MS") {
 			wxMessageBox(_("You have chosen to use the \"Comic Sans\" font. As the programmer and a typesetter,\nI must urge you to reconsider. Comic Sans is the most abused font in the history\nof computing, so please avoid using it unless it's REALLY suitable. Thanks."), _("Warning"), wxICON_EXCLAMATION | wxOK);
 		}
 	}
@@ -617,7 +617,7 @@ void DialogStyleEditor::OnSetColor (int n) {
 		case 2: modify = &work->secondary; break;
 		case 3: modify = &work->outline; break;
 		case 4: modify = &work->shadow; break;
-		default: throw _T("Internal error in style editor, attempted setting colour id outside range");
+		default: throw "Internal error in style editor, attempted setting colour id outside range";
 	}
 	modify->SetWXColor(colorButton[n-1]->GetColour());
 	if (SubsPreview) SubsPreview->SetStyle(*work);

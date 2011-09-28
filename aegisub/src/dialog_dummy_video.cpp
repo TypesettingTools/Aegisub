@@ -54,7 +54,7 @@
 struct ResolutionShortcut {
 
 	/// DOCME
-	const wxChar *name;
+	const char *name;
 
 	/// DOCME
 	int width;
@@ -65,15 +65,15 @@ struct ResolutionShortcut {
 
 /// DOCME
 static ResolutionShortcut resolutions[] = {
-	{_T("640x480 (SD fullscreen)"), 640, 480},
-	{_T("704x480 (SD anamorphic)"), 704, 480},
-	{_T("640x360 (SD widescreen)"), 640, 360},
-	{_T("704x396 (SD widescreen)"), 704, 396},
-	{_T("640x352 (SD widescreen MOD16)"), 640, 352},
-	{_T("704x400 (SD widescreen MOD16)"), 704, 400},
-	{_T("1280x720 (HD 720p)"), 1280, 720},
-	{_T("1920x1080 (HD 1080p)"), 1920, 1080},
-	{_T("1024x576 (SuperPAL widescreen)"), 1024, 576},
+	{"640x480 (SD fullscreen)", 640, 480},
+	{"704x480 (SD anamorphic)", 704, 480},
+	{"640x360 (SD widescreen)", 640, 360},
+	{"704x396 (SD widescreen)", 704, 396},
+	{"640x352 (SD widescreen MOD16)", 640, 352},
+	{"704x400 (SD widescreen MOD16)", 704, 400},
+	{"1280x720 (HD 720p)", 1280, 720},
+	{"1920x1080 (HD 1080p)", 1920, 1080},
+	{"1024x576 (SuperPAL widescreen)", 1024, 576},
 	{0, 0, 0}
 };
 
@@ -95,29 +95,29 @@ bool DialogDummyVideo::CreateDummyVideo(wxWindow *parent, wxString &out_filename
 
 		// Read back values and check sensibility
 		if (!dlg.fps->GetValue().ToDouble(&fps) || fps <= 0) {
-			wxLogWarning(_T("Invalid framerate specified, assuming 23.976"));
+			wxLogWarning("Invalid framerate specified, assuming 23.976");
 			fps = 24/1.001;
 		}
 		if (!dlg.width->GetValue().ToLong(&width) || width <= 0) {
-			wxLogWarning(_T("Invalid width specified"));
+			wxLogWarning("Invalid width specified");
 			width = 0;
 		}
 		if (!dlg.height->GetValue().ToLong(&height) || height <= 0) {
-			wxLogWarning(_T("Invalid height specified"));
+			wxLogWarning("Invalid height specified");
 			height = 0;
 		}
 		if (width == 0 && height == 0) {
-			wxLogWarning(_T("Assuming 640x480"));
+			wxLogWarning("Assuming 640x480");
 			width = 640; height = 480;
 		} else if (width == 0) {
 			width = height * 4 / 3;
-			wxLogWarning(_T("Assuming 4:3 fullscreen, %dx%d"), width, height);
+			wxLogWarning("Assuming 4:3 fullscreen, %dx%d", width, height);
 		} else if (height == 0) {
 			height = width * 3 / 4;
-			wxLogWarning(_T("Assuming 4:3 fullscreen, %dx%d"), width, height);
+			wxLogWarning("Assuming 4:3 fullscreen, %dx%d", width, height);
 		}
 		if ((length = dlg.length->GetValue()) <= 0) {
-			wxLogWarning(_T("Invalid duration, assuming 2 frames"));
+			wxLogWarning("Invalid duration, assuming 2 frames");
 			length = 2;
 		}
 		colour = dlg.colour->GetColour();
@@ -148,14 +148,14 @@ DialogDummyVideo::DialogDummyVideo(wxWindow *parent)
 {
 	// Main controls
 	length_display = 0;
-	resolution_shortcuts = new wxComboBox(this, Dummy_Video_Resolution_Shortcut, _T(""), wxDefaultPosition, wxDefaultSize, 0, 0, wxCB_READONLY);
+	resolution_shortcuts = new wxComboBox(this, Dummy_Video_Resolution_Shortcut, "", wxDefaultPosition, wxDefaultSize, 0, 0, wxCB_READONLY);
 	width = new wxTextCtrl(this, -1);
 	height = new wxTextCtrl(this, -1);
 	colour = new ColourButton(this, -1, wxSize(30, 17), lagi_wxColour(OPT_GET("Colour/Video Dummy/Last Colour")->GetColour()));
 	pattern = new wxCheckBox(this, -1, _("Checkerboard pattern"));
 	fps = new wxTextCtrl(this, Dummy_Video_FPS, wxString::Format("%f", OPT_GET("Video/Dummy/FPS")->GetDouble()));
 	length = new wxSpinCtrl(this, Dummy_Video_Length, "", wxDefaultPosition, wxDefaultSize, 4096|wxALIGN_LEFT);
-	length_display = new wxStaticText(this, -1, _T(""));
+	length_display = new wxStaticText(this, -1, "");
 
 	// Support controls and layout
 	wxFlexGridSizer *fg = new wxFlexGridSizer(2, 5, 5);
@@ -164,7 +164,7 @@ DialogDummyVideo::DialogDummyVideo(wxWindow *parent)
 	fg->AddStretchSpacer();
 	wxBoxSizer *res_sizer = new wxBoxSizer(wxHORIZONTAL);
 	res_sizer->Add(width, 0, wxEXPAND);
-	res_sizer->Add(new wxStaticText(this, -1, _T(" x ")), 0, wxALIGN_CENTRE_VERTICAL|wxFIXED_MINSIZE);
+	res_sizer->Add(new wxStaticText(this, -1, " x "), 0, wxALIGN_CENTRE_VERTICAL|wxFIXED_MINSIZE);
 	res_sizer->Add(height, 0, wxEXPAND);
 	fg->Add(res_sizer, 0, wxEXPAND);
 	fg->Add(new wxStaticText(this, -1, _("Colour:")), 0, wxALIGN_CENTRE_VERTICAL);
@@ -185,7 +185,7 @@ DialogDummyVideo::DialogDummyVideo(wxWindow *parent)
 	wxStdDialogButtonSizer *btnSizer = new wxStdDialogButtonSizer();
 	btnSizer->AddButton(ok_button);
 	btnSizer->AddButton(cancel_button);
-	btnSizer->AddButton(new HelpButton(this,_T("Dummy Video")));
+	btnSizer->AddButton(new HelpButton(this,"Dummy Video"));
 	btnSizer->Realize();
 	main_sizer->Add(new wxStaticLine(this,wxHORIZONTAL),0,wxALL|wxEXPAND,5);
 	main_sizer->Add(btnSizer,0,wxLEFT|wxRIGHT|wxBOTTOM|wxEXPAND,5);
@@ -204,11 +204,11 @@ DialogDummyVideo::DialogDummyVideo(wxWindow *parent)
 		lastres++;
 	}
 	pattern->SetValue(OPT_GET("Video/Dummy/Pattern")->GetBool());
-	/*fps->Append(_T("23.976"));
-	fps->Append(_T("29.97"));
-	fps->Append(_T("24"));
-	fps->Append(_T("25"));
-	fps->Append(_T("30"));*/
+	/*fps->Append("23.976");
+	fps->Append("29.97");
+	fps->Append("24");
+	fps->Append("25");
+	fps->Append("30");*/
 	width->ChangeValue(AegiIntegerToString(OPT_GET("Video/Dummy/Last/Width")->GetInt()));
 	height->ChangeValue(AegiIntegerToString(OPT_GET("Video/Dummy/Last/Height")->GetInt()));
 	length->SetRange(0, 0x10000000);
@@ -245,8 +245,8 @@ END_EVENT_TABLE()
 void DialogDummyVideo::OnResolutionShortcut(wxCommandEvent &evt)
 {
 	int rs = resolution_shortcuts->GetSelection();
-	width->ChangeValue(wxString::Format(_T("%d"), resolutions[rs].width));
-	height->ChangeValue(wxString::Format(_T("%d"), resolutions[rs].height));
+	width->ChangeValue(wxString::Format("%d", resolutions[rs].width));
+	height->ChangeValue(wxString::Format("%d", resolutions[rs].height));
 }
 
 

@@ -67,7 +67,7 @@ AssColor::AssColor (const wxColour &color) {
 /// @brief Parse from SSA/ASS 
 /// @param value 
 void AssColor::Parse(const wxString value) {
-	if (value.Len() > 0 && value[0] == _T('#')) {
+	if (value.Len() > 0 && value[0] == '#') {
 		// HTML colour
 		SetWXColor(wxColor(value));
 		return;
@@ -120,10 +120,10 @@ void AssColor::SetWXColor(const wxColor &color) {
 /// @return 
 wxString AssColor::GetASSFormatted(bool alpha,bool stripped,bool isStyle) const {
 	wxString work;
-	if (!stripped) work += _T("&H");
-	if (alpha) work += wxString::Format(_T("%02X"),a);
-	work += wxString::Format(_T("%02X%02X%02X"),b,g,r);
-	if (!stripped && !isStyle) work += _T("&");
+	if (!stripped) work += "&H";
+	if (alpha) work += wxString::Format("%02X",a);
+	work += wxString::Format("%02X%02X%02X",b,g,r);
+	if (!stripped && !isStyle) work += "&";
 	return work;
 }
 
@@ -131,7 +131,7 @@ wxString AssColor::GetASSFormatted(bool alpha,bool stripped,bool isStyle) const 
 /// @return 
 wxString AssColor::GetSSAFormatted() const {
 	long color = (a<<24)+(b<<16)+(g<<8)+r;
-	wxString output=wxString::Format(_T("%i"),(long)color);
+	wxString output=wxString::Format("%i",(long)color);
 	return output;
 }
 
@@ -144,8 +144,8 @@ bool AssColor::operator!=(const AssColor &col) const {
 }
 
 AssStyle::AssStyle()
-: name(L"Default")
-, font(L"Arial")
+: name("Default")
+, font("Arial")
 , fontsize(20.)
 , primary(255, 255, 255)
 , secondary(255, 0, 0)
@@ -166,7 +166,7 @@ AssStyle::AssStyle()
 , encoding(1)
 , relativeTo(1)
 {
-	group = L"[V4+ Styles]";
+	group = "[V4+ Styles]";
 	for (int i = 0; i < 4; i++)
 		Margin[i] = 10;
 
@@ -197,7 +197,7 @@ AssStyle::AssStyle(const AssStyle& s)
 , encoding(s.encoding)
 , relativeTo(s.relativeTo)
 {
-	group = L"[V4+ Styles]";
+	group = "[V4+ Styles]";
 	memcpy(Margin, s.Margin, sizeof(Margin));
 	SetEntryData(s.GetEntryData());
 }
@@ -205,7 +205,7 @@ AssStyle::AssStyle(const AssStyle& s)
 AssStyle::AssStyle(wxString _data,int version) {
 	Valid = Parse(_data,version);
 	if (!Valid) {
-		throw _T("[Error] Failed parsing line.");
+		throw "[Error] Failed parsing line.";
 	}
 	UpdateData();
 }
@@ -222,7 +222,7 @@ bool AssStyle::Parse(wxString rawData,int version) {
 	// Tokenize
 	wxString temp;
 	long templ;
-	wxStringTokenizer tkn(rawData.Trim(false).Mid(6),_T(","),wxTOKEN_RET_EMPTY_ALL);
+	wxStringTokenizer tkn(rawData.Trim(false).Mid(6),",",wxTOKEN_RET_EMPTY_ALL);
 
 	// Read name
 	if (!tkn.HasMoreTokens()) return false;
@@ -424,11 +424,11 @@ bool AssStyle::Parse(wxString rawData,int version) {
 void AssStyle::UpdateData() {
 	wxString final;
 
-	name.Replace(_T(","),_T(";"));
-	font.Replace(_T(","),_T(";"));
+	name.Replace(",",";");
+	font.Replace(",",";");
 
 
-	final = wxString::Format(_T("Style: %s,%s,%g,%s,%s,%s,%s,%d,%d,%d,%d,%g,%g,%g,%g,%d,%g,%g,%i,%i,%i,%i,%i"),
+	final = wxString::Format("Style: %s,%s,%g,%s,%s,%s,%s,%d,%d,%d,%d,%g,%g,%g,%g,%d,%g,%g,%i,%i,%i,%i,%i",
 					  name.c_str(), font.c_str(), fontsize,
 					  primary.GetASSFormatted(true,false,true).c_str(),
 					  secondary.GetASSFormatted(true,false,true).c_str(),
@@ -449,7 +449,7 @@ void AssStyle::UpdateData() {
 ///
 void AssStyle::SetMarginString(const wxString str,int which) {
 	if (which < 0 || which >= 4) throw Aegisub::InvalidMarginIdError();
-	if (!str.IsNumber()) throw _T("Invalid margin value");
+	if (!str.IsNumber()) throw "Invalid margin value";
 	long value;
 	str.ToLong(&value);
 	if (value < 0) value = 0;
@@ -464,7 +464,7 @@ void AssStyle::SetMarginString(const wxString str,int which) {
 ///
 wxString AssStyle::GetMarginString(int which) const {
 	if (which < 0 || which >= 4) throw Aegisub::InvalidMarginIdError();
-	wxString result = wxString::Format(_T("%04i"),Margin[which]);
+	wxString result = wxString::Format("%04i",Margin[which]);
 	return result;
 }
 
@@ -486,11 +486,11 @@ wxString AssStyle::GetSSAText() const {
 		case 9: align = 7; break;
 	}
 	wxString n = name;
-	n.Replace(L",", L";");
+	n.Replace(",", ";");
 	wxString f = font;
-	f.Replace(L",", L";");
+	f.Replace(",", ";");
 
-	output = wxString::Format(_T("Style: %s,%s,%g,%s,%s,0,%s,%d,%d,%d,%g,%g,%d,%d,%d,%d,0,%i"),
+	output = wxString::Format("Style: %s,%s,%g,%s,%s,0,%s,%d,%d,%d,%g,%g,%d,%d,%d,%d,0,%i",
 				  n.c_str(), f.c_str(), fontsize,
 				  primary.GetSSAFormatted().c_str(),
 				  secondary.GetSSAFormatted().c_str(),
@@ -554,25 +554,25 @@ bool AssStyle::IsEqualTo(AssStyle *style) const {
 ///
 void AssStyle::GetEncodings(wxArrayString &encodingStrings) {
 	encodingStrings.Clear();
-	encodingStrings.Add(wxString(_T("0 - ")) + _("ANSI"));
-	encodingStrings.Add(wxString(_T("1 - ")) + _("Default"));
-	encodingStrings.Add(wxString(_T("2 - ")) + _("Symbol"));
-	encodingStrings.Add(wxString(_T("77 - ")) + _("Mac"));
-	encodingStrings.Add(wxString(_T("128 - ")) + _("Shift_JIS"));
-	encodingStrings.Add(wxString(_T("129 - ")) + _("Hangeul"));
-	encodingStrings.Add(wxString(_T("130 - ")) + _("Johab"));
-	encodingStrings.Add(wxString(_T("134 - ")) + _("GB2312"));
-	encodingStrings.Add(wxString(_T("136 - ")) + _("Chinese BIG5"));
-	encodingStrings.Add(wxString(_T("161 - ")) + _("Greek"));
-	encodingStrings.Add(wxString(_T("162 - ")) + _("Turkish"));
-	encodingStrings.Add(wxString(_T("163 - ")) + _("Vietnamese"));
-	encodingStrings.Add(wxString(_T("177 - ")) + _("Hebrew"));
-	encodingStrings.Add(wxString(_T("178 - ")) + _("Arabic"));
-	encodingStrings.Add(wxString(_T("186 - ")) + _("Baltic"));
-	encodingStrings.Add(wxString(_T("204 - ")) + _("Russian"));
-	encodingStrings.Add(wxString(_T("222 - ")) + _("Thai"));
-	encodingStrings.Add(wxString(_T("238 - ")) + _("East European"));
-	encodingStrings.Add(wxString(_T("255 - ")) + _("OEM"));
+	encodingStrings.Add(wxString("0 - ") + _("ANSI"));
+	encodingStrings.Add(wxString("1 - ") + _("Default"));
+	encodingStrings.Add(wxString("2 - ") + _("Symbol"));
+	encodingStrings.Add(wxString("77 - ") + _("Mac"));
+	encodingStrings.Add(wxString("128 - ") + _("Shift_JIS"));
+	encodingStrings.Add(wxString("129 - ") + _("Hangeul"));
+	encodingStrings.Add(wxString("130 - ") + _("Johab"));
+	encodingStrings.Add(wxString("134 - ") + _("GB2312"));
+	encodingStrings.Add(wxString("136 - ") + _("Chinese BIG5"));
+	encodingStrings.Add(wxString("161 - ") + _("Greek"));
+	encodingStrings.Add(wxString("162 - ") + _("Turkish"));
+	encodingStrings.Add(wxString("163 - ") + _("Vietnamese"));
+	encodingStrings.Add(wxString("177 - ") + _("Hebrew"));
+	encodingStrings.Add(wxString("178 - ") + _("Arabic"));
+	encodingStrings.Add(wxString("186 - ") + _("Baltic"));
+	encodingStrings.Add(wxString("204 - ") + _("Russian"));
+	encodingStrings.Add(wxString("222 - ") + _("Thai"));
+	encodingStrings.Add(wxString("238 - ") + _("East European"));
+	encodingStrings.Add(wxString("255 - ") + _("OEM"));
 }
 
 

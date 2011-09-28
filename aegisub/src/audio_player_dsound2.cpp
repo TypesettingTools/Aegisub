@@ -199,7 +199,7 @@ class DirectSoundPlayer2Thread {
 	Win32KernelHandle error_happened;
 
 	/// Statically allocated error message text describing reason for error_happened being set
-	const wxChar *error_message;
+	const char *error_message;
 
 	/// Playback volume, 1.0 is "unchanged"
 	double volume;
@@ -261,7 +261,7 @@ void DirectSoundPlayer2Thread::Run()
 {
 
 /// Macro used to set error_message, error_happened and end the thread
-#define REPORT_ERROR(msg) { error_message = _T("DirectSoundPlayer2Thread: ") _T(msg); SetEvent(error_happened); return; }
+#define REPORT_ERROR(msg) { error_message = "DirectSoundPlayer2Thread: " msg; SetEvent(error_happened); return; }
 
 	COMInitialization COM_library;
 	try	{ COM_library.Init(); }
@@ -313,7 +313,7 @@ void DirectSoundPlayer2Thread::Run()
 	bfr7->Release();
 	bfr7 = 0;
 
-	//wx Log Debug(_T("DirectSoundPlayer2: Created buffer of %d bytes, supposed to be %d milliseconds or %d frames"), bufSize, WANTED_LATENCY*BUFFER_LENGTH, bufSize/provider->GetBytesPerSample());
+	//wx Log Debug("DirectSoundPlayer2: Created buffer of %d bytes, supposed to be %d milliseconds or %d frames", bufSize, WANTED_LATENCY*BUFFER_LENGTH, bufSize/provider->GetBytesPerSample());
 
 
 	// Now we're ready to roll!
@@ -638,10 +638,10 @@ void DirectSoundPlayer2Thread::CheckError()
 			throw error_message;
 
 		case WAIT_ABANDONED:
-			throw _T("The DirectShowPlayer2Thread error signal event was abandoned, somehow. This should not happen.");
+			throw "The DirectShowPlayer2Thread error signal event was abandoned, somehow. This should not happen.";
 
 		case WAIT_FAILED:
-			throw _T("Failed checking state of DirectShowPlayer2Thread error signal event.");
+			throw "Failed checking state of DirectShowPlayer2Thread error signal event.";
 
 		case WAIT_TIMEOUT:
 		default:
@@ -685,7 +685,7 @@ DirectSoundPlayer2Thread::DirectSoundPlayer2Thread(AudioProvider *provider, int 
 	thread_handle.handle = (HANDLE)_beginthreadex(0, 0, ThreadProc, this, 0, 0);
 
 	if (!thread_handle)
-		throw _T("Failed creating playback thread in DirectSoundPlayer2. This is bad.");
+		throw "Failed creating playback thread in DirectSoundPlayer2. This is bad.";
 
 	HANDLE running_or_error[] = { thread_running, error_happened };
 	switch (WaitForMultipleObjects(2, running_or_error, FALSE, INFINITE))
@@ -699,7 +699,7 @@ DirectSoundPlayer2Thread::DirectSoundPlayer2Thread(AudioProvider *provider, int 
 		throw error_message;
 
 	default:
-		throw _T("Failed wait for thread start or thread error in DirectSoundPlayer2. This is bad.");
+		throw "Failed wait for thread start or thread error in DirectSoundPlayer2. This is bad.";
 	}
 }
 
@@ -775,10 +775,10 @@ bool DirectSoundPlayer2Thread::IsPlaying()
 	switch (WaitForSingleObject(is_playing, 0))
 	{
 	case WAIT_ABANDONED:
-		throw _T("The DirectShowPlayer2Thread playback state event was abandoned, somehow. This should not happen.");
+		throw "The DirectShowPlayer2Thread playback state event was abandoned, somehow. This should not happen.";
 
 	case WAIT_FAILED:
-		throw _T("Failed checking state of DirectShowPlayer2Thread playback state event.");
+		throw "Failed checking state of DirectShowPlayer2Thread playback state event.";
 
 	case WAIT_OBJECT_0:
 		return true;
@@ -914,7 +914,7 @@ void DirectSoundPlayer2::OpenStream()
 	{
 		thread = new DirectSoundPlayer2Thread(GetProvider(), WantedLatency, BufferLength);
 	}
-	catch (const wxChar *msg)
+	catch (const char *msg)
 	{
 		LOG_E("audio/player/dsound") << msg;
 		wxLogError(msg);
@@ -933,7 +933,7 @@ void DirectSoundPlayer2::CloseStream()
 	{
 		delete thread;
 	}
-	catch (const wxChar *msg)
+	catch (const char *msg)
 	{
 		LOG_E("audio/player/dsound") << msg;
 		wxLogError(msg);
@@ -959,7 +959,7 @@ void DirectSoundPlayer2::SetProvider(AudioProvider *provider)
 
 		AudioPlayer::SetProvider(provider);
 	}
-	catch (const wxChar *msg)
+	catch (const char *msg)
 	{
 		LOG_E("audio/player/dsound") << msg;
 		wxLogError(msg);
@@ -980,7 +980,7 @@ void DirectSoundPlayer2::Play(int64_t start,int64_t count)
 
 		if (displayTimer && !displayTimer->IsRunning()) displayTimer->Start(15);
 	}
-	catch (const wxChar *msg)
+	catch (const char *msg)
 	{
 		LOG_E("audio/player/dsound") << msg;
 		wxLogError(msg);
@@ -1002,7 +1002,7 @@ void DirectSoundPlayer2::Stop(bool timerToo)
 			displayTimer->Stop();
 		}
 	}
-	catch (const wxChar *msg)
+	catch (const char *msg)
 	{
 		LOG_E("audio/player/dsound") << msg;
 		wxLogError(msg);
@@ -1020,7 +1020,7 @@ bool DirectSoundPlayer2::IsPlaying()
 		if (!IsThreadAlive()) return false;
 		return thread->IsPlaying();
 	}
-	catch (const wxChar *msg)
+	catch (const char *msg)
 	{
 		LOG_E("audio/player/dsound") << msg;
 		wxLogError(msg);
@@ -1041,7 +1041,7 @@ int64_t DirectSoundPlayer2::GetStartPosition()
 		if (!IsThreadAlive()) return 0;
 		return thread->GetStartFrame();
 	}
-	catch (const wxChar *msg)
+	catch (const char *msg)
 	{
 		LOG_E("audio/player/dsound") << msg;
 		wxLogError(msg);
@@ -1062,7 +1062,7 @@ int64_t DirectSoundPlayer2::GetEndPosition()
 		if (!IsThreadAlive()) return 0;
 		return thread->GetEndFrame();
 	}
-	catch (const wxChar *msg)
+	catch (const char *msg)
 	{
 		LOG_E("audio/player/dsound") << msg;
 		wxLogError(msg);
@@ -1083,7 +1083,7 @@ int64_t DirectSoundPlayer2::GetCurrentPosition()
 		if (!IsThreadAlive()) return 0;
 		return thread->GetCurrentFrame();
 	}
-	catch (const wxChar *msg)
+	catch (const char *msg)
 	{
 		LOG_E("audio/player/dsound") << msg;
 		wxLogError(msg);
@@ -1101,7 +1101,7 @@ void DirectSoundPlayer2::SetEndPosition(int64_t pos)
 	{
 		if (IsThreadAlive()) thread->SetEndFrame(pos);
 	}
-	catch (const wxChar *msg)
+	catch (const char *msg)
 	{
 		LOG_E("audio/player/dsound") << msg;
 		wxLogError(msg);
@@ -1120,7 +1120,7 @@ void DirectSoundPlayer2::SetCurrentPosition(int64_t pos)
 	{
 		if (IsThreadAlive()) thread->Play(pos, thread->GetEndFrame()-pos);
 	}
-	catch (const wxChar *msg)
+	catch (const char *msg)
 	{
 		LOG_E("audio/player/dsound") << msg;
 		wxLogError(msg);
@@ -1137,7 +1137,7 @@ void DirectSoundPlayer2::SetVolume(double vol)
 	{
 		if (IsThreadAlive()) thread->SetVolume(vol);
 	}
-	catch (const wxChar *msg)
+	catch (const char *msg)
 	{
 		LOG_E("audio/player/dsound") << msg;
 		wxLogError(msg);
@@ -1155,7 +1155,7 @@ double DirectSoundPlayer2::GetVolume()
 		if (!IsThreadAlive()) return 0;
 		return thread->GetVolume();
 	}
-	catch (const wxChar *msg)
+	catch (const char *msg)
 	{
 		LOG_E("audio/player/dsound") << msg;
 		wxLogError(msg);

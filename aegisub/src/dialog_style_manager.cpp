@@ -93,14 +93,14 @@ enum {
 };
 
 DialogStyleManager::DialogStyleManager (agi::Context *context)
-: wxDialog (context->parent,-1,_("Styles Manager"),wxDefaultPosition,wxDefaultSize,wxDEFAULT_DIALOG_STYLE,_T("DialogStylesManager"))
+: wxDialog (context->parent,-1,_("Styles Manager"),wxDefaultPosition,wxDefaultSize,wxDEFAULT_DIALOG_STYLE,"DialogStylesManager")
 , c(context)
 {
 	SetIcon(BitmapToIcon(GETIMAGE(style_toolbutton_24)));
 
 	// Catalog
 	wxSizer *CatalogBox = new wxStaticBoxSizer(wxHORIZONTAL,this,_("Catalog of available storages"));
-	CatalogList = new wxComboBox(this,LIST_CATALOG, _T(""), wxDefaultPosition, wxSize(-1,-1), 0, NULL, wxCB_READONLY | wxCB_READONLY, wxDefaultValidator, _T("Catalog List"));
+	CatalogList = new wxComboBox(this,LIST_CATALOG, "", wxDefaultPosition, wxSize(-1,-1), 0, NULL, wxCB_READONLY | wxCB_READONLY, wxDefaultValidator, "Catalog List");
 	wxButton *CatalogNew = new wxButton(this, BUTTON_CATALOG_NEW, _("New"));
 	wxButton *CatalogDelete = new wxButton(this, BUTTON_CATALOG_DELETE, _("Delete"));
 	CatalogBox->Add(CatalogList,1,wxEXPAND | wxRIGHT | wxALIGN_RIGHT,5);
@@ -197,7 +197,7 @@ DialogStyleManager::DialogStyleManager (agi::Context *context)
 	// Buttons
 	wxStdDialogButtonSizer *buttonSizer = new wxStdDialogButtonSizer();
 	buttonSizer->SetCancelButton(new wxButton(this, wxID_CLOSE));
-	buttonSizer->AddButton(new HelpButton(this,_T("Styles Manager")));
+	buttonSizer->AddButton(new HelpButton(this,"Styles Manager"));
 	buttonSizer->Realize();
 
 	// General layout
@@ -260,22 +260,22 @@ void DialogStyleManager::LoadCatalog () {
 	CatalogList->Clear();
 
 	// Create catalog if it doesn't exist
-	wxString dirname = StandardPaths::DecodePath(_T("?user/catalog/"));
+	wxString dirname = StandardPaths::DecodePath("?user/catalog/");
 	if (!wxDirExists(dirname)) {
 		if (!wxMkdir(dirname)) {
-			throw _T("Failed creating directory for style catalogues");
+			throw "Failed creating directory for style catalogues";
 		}
 		else {
 			// Create default style
 			Store.Clear();
 			AssStyle *defstyle = new AssStyle;
 			Store.style.push_back(defstyle);
-			Store.Save(_T("Default"));
+			Store.Save("Default");
 		}
 	}
 
 	// Get dir
-	dirname = StandardPaths::DecodePath(_T("?user/catalog/*.sty"));
+	dirname = StandardPaths::DecodePath("?user/catalog/*.sty");
 
 	// Populate
 	wxString curfile = wxFindFirstFile(dirname,wxFILE);
@@ -288,8 +288,8 @@ void DialogStyleManager::LoadCatalog () {
 
 	// Set to default if available
 	StorageActions(false);
-	wxString pickStyle = c->ass->GetScriptInfo(_T("Last Style Storage"));
-	if (pickStyle.IsEmpty()) pickStyle = _T("Default");
+	wxString pickStyle = c->ass->GetScriptInfo("Last Style Storage");
+	if (pickStyle.IsEmpty()) pickStyle = "Default";
 	int opt = CatalogList->FindString(pickStyle, false);
 	if (opt != wxNOT_FOUND) {
 		CatalogList->SetSelection(opt);
@@ -413,7 +413,7 @@ void DialogStyleManager::OnChangeCatalog (wxCommandEvent &) {
 
 /// @brief New catalog entry button
 void DialogStyleManager::OnCatalogNew (wxCommandEvent &) {
-	wxString name = wxGetTextFromUser(_("New storage name:"), _("New catalog entry"), _T(""), this);
+	wxString name = wxGetTextFromUser(_("New storage name:"), _("New catalog entry"), "", this);
 	if (!name.empty()) {
 		// Remove bad characters from the name
 		wxString badchars = wxFileName::GetForbiddenChars();
@@ -421,7 +421,7 @@ void DialogStyleManager::OnCatalogNew (wxCommandEvent &) {
 		for (size_t i = 0; i < name.Length(); ++i) {
 			for (size_t j = 0; j < badchars.Length(); ++j) {
 				if (name[i] == badchars[j]) {
-					name[i] = _T('_');
+					name[i] = '_';
 					++badchars_removed;
 				}
 			}
@@ -446,10 +446,10 @@ void DialogStyleManager::OnCatalogNew (wxCommandEvent &) {
 		StorageActions(true);
 
 		// Save
-		wxString dirname = StandardPaths::DecodePath(_T("?user/catalog/"));
+		wxString dirname = StandardPaths::DecodePath("?user/catalog/");
 		if (!wxDirExists(dirname)) {
 			if (!wxMkdir(dirname)) {
-				throw _T("Failed creating directory for style catalogues");
+				throw "Failed creating directory for style catalogues";
 			}
 		}
 		Store.Save(name);
@@ -465,7 +465,7 @@ void DialogStyleManager::OnCatalogDelete (wxCommandEvent &) {
 		wxString message = wxString::Format(_("Are you sure you want to delete the storage \"%s\" from the catalog?"), name.c_str());
 		int option = wxMessageBox(message, _("Confirm delete"), wxYES_NO | wxICON_EXCLAMATION , this);
 		if (option == wxYES) {
-			wxRemoveFile(StandardPaths::DecodePath(_T("?user/catalog/") + name + _T(".sty")));
+			wxRemoveFile(StandardPaths::DecodePath("?user/catalog/" + name + ".sty"));
 			CatalogList->Delete(sel);
 			StorageList->Clear();
 			StorageActions(false);
@@ -543,7 +543,7 @@ void DialogStyleManager::OnCopyToStorage (wxCommandEvent &) {
 		for (list<AssStyle *>::iterator style = Store.style.begin(); style != Store.style.end(); ++style) {
 			if ((*style)->name.CmpNoCase(styleName) == 0) {
 				addStyle = false;
-				if (wxYES == wxMessageBox(wxString::Format(_T("There is already a style with the name \"%s\" on the current storage. Proceed and overwrite anyway?"),styleName.c_str()), _T("Style name collision."), wxYES_NO)) {
+				if (wxYES == wxMessageBox(wxString::Format("There is already a style with the name \"%s\" on the current storage. Proceed and overwrite anyway?",styleName.c_str()), "Style name collision.", wxYES_NO)) {
 					**style = *styleMap.at(selections[i]);
 					copied.push_back(styleName);
 				}
@@ -578,7 +578,7 @@ void DialogStyleManager::OnCopyToCurrent (wxCommandEvent &) {
 		for (std::vector<AssStyle *>::iterator style = styleMap.begin(); style != styleMap.end(); ++style) {
 			if ((*style)->name.CmpNoCase(styleName) == 0) {
 				addStyle = false;
-				if (wxYES == wxMessageBox(wxString::Format(_T("There is already a style with the name \"%s\" on the current script. Proceed and overwrite anyway?"),styleName.c_str()), _T("Style name collision."), wxYES_NO)) {
+				if (wxYES == wxMessageBox(wxString::Format("There is already a style with the name \"%s\" on the current script. Proceed and overwrite anyway?",styleName.c_str()), "Style name collision.", wxYES_NO)) {
 					**style = *styleStorageMap.at(selections[i]);
 					copied.push_back(styleName);
 				}
@@ -651,13 +651,13 @@ void DialogStyleManager::OnCurrentCopy (wxCommandEvent &) {
 /// @param list 
 /// @param v    
 void DialogStyleManager::CopyToClipboard (wxListBox *list, std::vector<AssStyle*> v) {
-	wxString data = _T("");
+	wxString data = "";
 	AssStyle *s;
 	wxArrayInt selections;
 	list->GetSelections(selections);
 
 	for(int unsigned i=0;i<selections.size();i++) {
-		if (i!=0) data += _T("\r\n");
+		if (i!=0) data += "\r\n";
 		s = v.at(selections[i]);
 		s->UpdateData();
 		data += s->GetEntryData();
@@ -671,7 +671,7 @@ void DialogStyleManager::CopyToClipboard (wxListBox *list, std::vector<AssStyle*
 
 /// @brief Paste from clipboard 
 void DialogStyleManager::PasteToCurrent() {
-	wxString data = _T("");
+	wxString data = "";
 
 	if (wxTheClipboard->Open()) {
 		if (wxTheClipboard->IsSupported(wxDF_TEXT)) {
@@ -682,14 +682,14 @@ void DialogStyleManager::PasteToCurrent() {
 		wxTheClipboard->Close();
 	}
 
-	wxStringTokenizer st(data,_T('\n'));
+	wxStringTokenizer st(data,'\n');
 	while (st.HasMoreTokens()) {
 		AssStyle *s = NULL;
 		try {
 			s = new AssStyle(st.GetNextToken().Trim(true));
 			if (s->Valid) {
 				while (c->ass->GetStyle(s->name) != NULL)
-					s->name = _T("Copy of ") + s->name;
+					s->name = "Copy of " + s->name;
 
 				s->UpdateData();
 				c->ass->InsertStyle(s);
@@ -710,7 +710,7 @@ void DialogStyleManager::PasteToCurrent() {
 
 /// @brief DOCME
 void DialogStyleManager::PasteToStorage() {
-	wxString data = _T("");
+	wxString data = "";
 
 	if (wxTheClipboard->Open()) {
 		if (wxTheClipboard->IsSupported(wxDF_TEXT)) {
@@ -721,14 +721,14 @@ void DialogStyleManager::PasteToStorage() {
 		wxTheClipboard->Close();
 	}
 
-	wxStringTokenizer st(data,_T('\n'));
+	wxStringTokenizer st(data,'\n');
 	while (st.HasMoreTokens()) {
 		AssStyle *s = NULL;
 		try {
 			s = new AssStyle(st.GetNextToken().Trim(true));
 			if (s->Valid) {
 				while (Store.GetStyle(s->name) != NULL)
-					s->name = _T("Copy of ") + s->name;
+					s->name = "Copy of " + s->name;
 
 				s->UpdateData();
 				Store.style.push_back(s);
@@ -786,7 +786,7 @@ void DialogStyleManager::OnStorageDelete (wxCommandEvent &) {
 	wxString message;
 	if (n!=1) {
 		message = _("Are you sure you want to delete these ");
-		message += wxString::Format(_T("%i"),n);
+		message += wxString::Format("%i",n);
 		message += _(" styles?");
 	}
 	else message = _("Are you sure you want to delete this style?");
@@ -819,7 +819,7 @@ void DialogStyleManager::OnCurrentDelete (wxCommandEvent &) {
 	wxString message;
 	if (n!=1) {
 		message = _("Are you sure you want to delete these ");
-		message += wxString::Format(_T("%i"),n);
+		message += wxString::Format("%i",n);
 		message += _(" styles?");
 	}
 	else message = _("Are you sure you want to delete this style?");
@@ -849,7 +849,7 @@ void DialogStyleManager::OnCurrentDelete (wxCommandEvent &) {
 void DialogStyleManager::OnCurrentImport(wxCommandEvent &) {
 	// Get file name
 	wxString path = lagi_wxString(OPT_GET("Path/Last/Subtitles")->GetString());	
-	wxString filename = wxFileSelector(_("Open subtitles file"),path,_T(""),_T(""),AssFile::GetWildcardList(0),wxFD_OPEN | wxFD_FILE_MUST_EXIST);
+	wxString filename = wxFileSelector(_("Open subtitles file"),path,"","",AssFile::GetWildcardList(0),wxFD_OPEN | wxFD_FILE_MUST_EXIST);
 
 	if (!filename.IsEmpty()) {
 		// Save path
@@ -859,11 +859,11 @@ void DialogStyleManager::OnCurrentImport(wxCommandEvent &) {
 		try {
 			// Load file
 			AssFile temp;
-			temp.Load(filename,_T(""),false);
+			temp.Load(filename,"",false);
 
 			// Get styles
 			wxArrayString styles = temp.GetStyles();
-			if (styles.Count() == 0 || (styles.Count() == 1 && styles[0] == _T("Default"))) {
+			if (styles.Count() == 0 || (styles.Count() == 1 && styles[0] == "Default")) {
 				wxMessageBox(_("The selected file has no available styles."),_("Error Importing Styles"),wxOK);
 				return;
 			}
@@ -879,7 +879,7 @@ void DialogStyleManager::OnCurrentImport(wxCommandEvent &) {
 				// Check if there is already a style with that name
 				int test = CurrentList->FindString(styles[selections[i]], false);
 				if (test != wxNOT_FOUND) {
-					int answer = wxMessageBox(wxString::Format(_T("There is already a style with the name \"%s\" on the current script. Overwrite?"),styles[selections[i]].c_str()),_T("Style name collision."),wxYES_NO);
+					int answer = wxMessageBox(wxString::Format("There is already a style with the name \"%s\" on the current script. Overwrite?",styles[selections[i]].c_str()),"Style name collision.",wxYES_NO);
 					if (answer == wxYES) {
 						// Overwrite
 						modified = true;

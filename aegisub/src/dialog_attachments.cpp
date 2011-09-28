@@ -84,7 +84,7 @@ DialogAttachments::DialogAttachments(wxWindow *parent, AssFile *ass)
 	buttonSizer->Add(new wxButton(this,BUTTON_ATTACH_GRAPHICS,_("Attach &Graphics")),1,0,0);
 	buttonSizer->Add(extractButton,1,0,0);
 	buttonSizer->Add(deleteButton,1,0,0);
-	buttonSizer->Add(new HelpButton(this,_T("Attachment Manager")),1,wxLEFT,5);
+	buttonSizer->Add(new HelpButton(this,"Attachment Manager"),1,wxLEFT,5);
 	buttonSizer->Add(new wxButton(this,wxID_CANCEL,_("&Close")),1,0,0);
 
 	// Main sizer
@@ -140,10 +140,10 @@ DialogAttachments::~DialogAttachments() {
 	wxString last_section_name;
 
 	while (cur != ass->Line.begin()) {
-		if (!((*cur)->group == L"[Fonts]" || (*cur)->group == L"[Graphics]"))
+		if (!((*cur)->group == "[Fonts]" || (*cur)->group == "[Graphics]"))
 			break;
 
-		if ((*cur)->GetEntryData() == L"[Fonts]" || (*cur)->GetEntryData() == L"[Graphics]") {
+		if ((*cur)->GetEntryData() == "[Fonts]" || (*cur)->GetEntryData() == "[Graphics]") {
 			if (found_attachments) {
 				--cur;
 				continue;
@@ -202,7 +202,7 @@ void DialogAttachments::OnAttachFont(wxCommandEvent &event) {
 	wxArrayString filenames;
 	wxArrayString paths;
 	{
-		wxFileDialog diag (this,_("Choose file to be attached"), lagi_wxString(OPT_GET("Path/Fonts Collector Destination")->GetString()), _T(""), _T("Font Files (*.ttf)|*.ttf"), wxFD_OPEN | wxFD_FILE_MUST_EXIST | wxFD_MULTIPLE);
+		wxFileDialog diag (this,_("Choose file to be attached"), lagi_wxString(OPT_GET("Path/Fonts Collector Destination")->GetString()), "", "Font Files (*.ttf)|*.ttf", wxFD_OPEN | wxFD_FILE_MUST_EXIST | wxFD_MULTIPLE);
 		if (diag.ShowModal() == wxID_CANCEL) return;
 		diag.GetFilenames(filenames);
 		diag.GetPaths(paths);
@@ -219,7 +219,7 @@ void DialogAttachments::OnAttachFont(wxCommandEvent &event) {
 			delete newAttach;
 			return;
 		}
-		newAttach->group = _T("[Fonts]");
+		newAttach->group = "[Fonts]";
 		ass->InsertAttachment(newAttach);
 	}
 
@@ -240,7 +240,7 @@ void DialogAttachments::OnAttachGraphics(wxCommandEvent &event) {
 	wxArrayString filenames;
 	wxArrayString paths;
 	{
-		wxFileDialog diag (this,_("Choose file to be attached"), _T(""), _T(""), _T("Graphic Files (*.bmp,*.gif,*.jpg,*.ico,*.wmf)|*.bmp;*.gif;*.jpg;*.ico;*.wmf"), wxFD_OPEN | wxFD_FILE_MUST_EXIST | wxFD_MULTIPLE);
+		wxFileDialog diag (this,_("Choose file to be attached"), "", "", "Graphic Files (*.bmp,*.gif,*.jpg,*.ico,*.wmf)|*.bmp;*.gif;*.jpg;*.ico;*.wmf", wxFD_OPEN | wxFD_FILE_MUST_EXIST | wxFD_MULTIPLE);
 		if (diag.ShowModal() == wxID_CANCEL) return;
 		diag.GetFilenames(filenames);
 		diag.GetPaths(paths);
@@ -257,7 +257,7 @@ void DialogAttachments::OnAttachGraphics(wxCommandEvent &event) {
 			delete newAttach;
 			return;
 		}
-		newAttach->group = _T("[Graphics]");
+		newAttach->group = "[Graphics]";
 		ass->InsertAttachment(newAttach);
 	}
 
@@ -283,7 +283,7 @@ void DialogAttachments::OnExtract(wxCommandEvent &event) {
 		bool fullPath = false;
 
 		// Multiple or single?
-		if (listView->GetNextSelected(i) != -1) path = wxDirSelector(_("Select the path to save the files to:"),lagi_wxString(OPT_GET("Path/Fonts Collector Destination")->GetString())) + _T("/");
+		if (listView->GetNextSelected(i) != -1) path = wxDirSelector(_("Select the path to save the files to:"),lagi_wxString(OPT_GET("Path/Fonts Collector Destination")->GetString())) + "/";
 		else {
 			// Default path
 			wxString defPath = ((AssAttachment*) wxUIntToPtr(listView->GetItemData(i)))->GetFileName();

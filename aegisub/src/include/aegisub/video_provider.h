@@ -61,7 +61,7 @@ public:
 
 
 	/// @brief Use this to set any post-loading warnings, such as "being loaded with unreliable seeking"
-	virtual wxString GetWarning() const { return L""; }
+	virtual wxString GetWarning() const { return ""; }
 
 	/// @brief Name of decoder, e.g. "Avisynth/FFMpegSource"
 	virtual wxString GetDecoderName() const = 0;

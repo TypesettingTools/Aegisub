@@ -90,7 +90,7 @@ namespace Automation4 {
 		if (lua_isstring(L, -1)) {
 			name = wxString(lua_tostring(L, -1), wxConvUTF8);
 		} else {
-			name = _T("");
+			name = "";
 		}
 		lua_pop(L, 1);
 
@@ -134,7 +134,7 @@ namespace Automation4 {
 		if (lua_isstring(L, -1)) {
 			hint = wxString(lua_tostring(L, -1), wxConvUTF8);
 		} else {
-			hint = _T("");
+			hint = "";
 		}
 		lua_pop(L, 1);
 
@@ -520,7 +520,7 @@ nospin:
 			///
 			wxString SerialiseValue()
 			{
-				return wxString::Format(_T("%d"), value);
+				return wxString::Format("%d", value);
 			}
 
 
@@ -541,7 +541,7 @@ nospin:
 			///
 			wxControl *Create(wxWindow *parent)
 			{
-				wxSpinCtrl *scw = new wxSpinCtrl(parent, -1, wxString::Format(_T("%d"), value), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, min, max, value);
+				wxSpinCtrl *scw = new wxSpinCtrl(parent, -1, wxString::Format("%d", value), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, min, max, value);
 				scw->SetToolTip(hint);
 				cw = scw;
 				return cw;
@@ -833,7 +833,7 @@ nospin:
 			///
 			wxString SerialiseValue()
 			{
-				return value ? _T("1") : _T("0");
+				return value ? "1" : "0";
 			}
 
 
@@ -843,7 +843,7 @@ nospin:
 			void UnserialiseValue(const wxString &serialised)
 			{
 				// fixme? should this allow more different "false" values?
-				value = (serialised == _T("0")) ? false : true;
+				value = (serialised == "0") ? false : true;
 			}
 
 
@@ -934,26 +934,26 @@ skipbuttons:
 				LuaConfigDialogControl *ctl;
 
 				// Check control class and create relevant control
-				if (controlclass == _T("label")) {
+				if (controlclass == "label") {
 					ctl = new LuaControl::Label(L);
-				} else if (controlclass == _T("edit")) {
+				} else if (controlclass == "edit") {
 					ctl = new LuaControl::Edit(L);
-				} else if (controlclass == _T("intedit")) {
+				} else if (controlclass == "intedit") {
 					ctl = new LuaControl::IntEdit(L);
-				} else if (controlclass == _T("floatedit")) {
+				} else if (controlclass == "floatedit") {
 					ctl = new LuaControl::FloatEdit(L);
-				} else if (controlclass == _T("textbox")) {
+				} else if (controlclass == "textbox") {
 					ctl = new LuaControl::Textbox(L);
-				} else if (controlclass == _T("dropdown")) {
+				} else if (controlclass == "dropdown") {
 					ctl = new LuaControl::Dropdown(L);
-				} else if (controlclass == _T("checkbox")) {
+				} else if (controlclass == "checkbox") {
 					ctl = new LuaControl::Checkbox(L);
-				} else if (controlclass == _T("color")) {
+				} else if (controlclass == "color") {
 					ctl = new LuaControl::Color(L);
-				} else if (controlclass == _T("coloralpha")) {
+				} else if (controlclass == "coloralpha") {
 					// FIXME
 					ctl = new LuaControl::Edit(L);
-				} else if (controlclass == _T("alpha")) {
+				} else if (controlclass == "alpha") {
 					// FIXME
 					ctl = new LuaControl::Edit(L);
 				} else {
@@ -1081,7 +1081,7 @@ badcontrol:
 	wxString LuaConfigDialog::Serialise()
 	{
 		if (controls.size() == 0)
-			return _T("");
+			return "";
 
 		wxString res;
 
@@ -1090,7 +1090,7 @@ badcontrol:
 			if (controls[i]->CanSerialiseValue()) {
 				wxString sn = inline_string_encode(controls[i]->name);
 				wxString sv = controls[i]->SerialiseValue();
-				res += wxString::Format(_T("%s:%s|"), sn.c_str(), sv.c_str());
+				res += wxString::Format("%s:%s|", sn.c_str(), sv.c_str());
 			}
 		}
 
@@ -1108,12 +1108,12 @@ badcontrol:
 	void LuaConfigDialog::Unserialise(const wxString &serialised)
 	{
 		// Split by pipe
-		wxStringTokenizer tk(serialised, _T("|"));
+		wxStringTokenizer tk(serialised, "|");
 		while (tk.HasMoreTokens()) {
 			// Split by colon
 			wxString pair = tk.GetNextToken();
-			wxString name = inline_string_decode(pair.BeforeFirst(_T(':')));
-			wxString value = pair.AfterFirst(_T(':'));
+			wxString name = inline_string_decode(pair.BeforeFirst(':'));
+			wxString value = pair.AfterFirst(':');
 
 			// Hand value to all controls matching name
 			for (size_t i = 0; i < controls.size(); ++i) {

@@ -61,7 +61,7 @@ public:
 	/// @param filename File to open
 	/// @param enc      Encoding to use, or empty to autodetect
 	/// @param trim     Whether to trim whitespace from lines read
-	TextFileReader(wxString const& filename,wxString encoding=L"", bool trim=true);
+	TextFileReader(wxString const& filename,wxString encoding="", bool trim=true);
 	/// @brief Destructor
 	~TextFileReader();
 

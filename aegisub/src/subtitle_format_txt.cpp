@@ -54,7 +54,7 @@
 /// @return 
 ///
 bool TXTSubtitleFormat::CanReadFile(wxString filename) {
-	return (filename.Right(4).Lower() == _T(".txt"));
+	return (filename.Right(4).Lower() == ".txt");
 }
 
 
@@ -64,7 +64,7 @@ bool TXTSubtitleFormat::CanReadFile(wxString filename) {
 /// @return 
 ///
 bool TXTSubtitleFormat::CanWriteFile(wxString filename) {
-	return (filename.Right(4).Lower() == _T(".txt") && filename.Right(11).Lower() != _T(".encore.txt") && filename.Right(16).Lower() != _T(".transtation.txt"));
+	return (filename.Right(4).Lower() == ".txt" && filename.Right(11).Lower() != ".encore.txt" && filename.Right(16).Lower() != ".transtation.txt");
 }
 
 
@@ -73,7 +73,7 @@ bool TXTSubtitleFormat::CanWriteFile(wxString filename) {
 /// @return 
 ///
 wxString TXTSubtitleFormat::GetName() {
-	return _T("Plain-Text");
+	return "Plain-Text";
 }
 
 
@@ -83,7 +83,7 @@ wxString TXTSubtitleFormat::GetName() {
 ///
 wxArrayString TXTSubtitleFormat::GetReadWildcards() {
 	wxArrayString formats;
-	formats.Add(_T("txt"));
+	formats.Add("txt");
 	return formats;
 }
 
@@ -129,20 +129,20 @@ void TXTSubtitleFormat::ReadFile(wxString filename,wxString encoding) {	using na
 		if(value.IsEmpty()) continue;
 
 		// Check if this isn't a timecodes file
-		if (value.StartsWith(_T("# timecode"))) {
-			throw _T("File is a timecode file, cannot load as subtitles.");
+		if (value.StartsWith("# timecode")) {
+			throw "File is a timecode file, cannot load as subtitles.";
 		}
 
 		// Read comment data
 		isComment = false;
-		if (comment != _T("") && value.Left(comment.Length()) == comment) {
+		if (comment != "" && value.Left(comment.Length()) == comment) {
 			isComment = true;
 			value = value.Mid(comment.Length());
 		}
 
 		// Read actor data
-		if (!isComment && separator != _T("")) {
-			if (value[0] != _T(' ') && value[0] != _T('\t')) {
+		if (!isComment && separator != "") {
+			if (value[0] != ' ' && value[0] != '\t') {
 				int pos = value.Find(separator);
 				if (pos != wxNOT_FOUND) {
 					actor = value.Left(pos);
@@ -159,12 +159,12 @@ void TXTSubtitleFormat::ReadFile(wxString filename,wxString encoding) {	using na
 
 		// Sets line up
 		line = new AssDialogue;
-		line->group = _T("[Events]");
-		line->Style = _T("Default");
-		if (isComment) line->Actor = _T("");
+		line->group = "[Events]";
+		line->Style = "Default";
+		if (isComment) line->Actor = "";
 		else line->Actor = actor;
 		if (value.IsEmpty()) {
-			line->Actor = _T("");
+			line->Actor = "";
 			isComment = true;
 		}
 		line->Comment = isComment;
@@ -180,8 +180,8 @@ void TXTSubtitleFormat::ReadFile(wxString filename,wxString encoding) {	using na
 	// No lines?
 	if (lines == 0) {
 		line = new AssDialogue;
-		line->group = _T("[Events]");
-		line->Style = _T("Default");
+		line->group = "[Events]";
+		line->Style = "Default";
 		line->Start.SetMS(0);
 		line->End.SetMS(OPT_GET("Timing/Default Duration")->GetInt());
 		Line->push_back(line);
@@ -222,11 +222,11 @@ void TXTSubtitleFormat::WriteFile(wxString filename,wxString encoding) {	using n
 			wxString out_line;
 
 			if (dia->Comment) {
-				out_line = _T("# ");
+				out_line = "# ";
 			}
 
 			if (write_actors) {
-				out_line += dia->Actor + _T(": ");
+				out_line += dia->Actor + ": ";
 			}
 
 			wxString out_text;
@@ -251,7 +251,7 @@ void TXTSubtitleFormat::WriteFile(wxString filename,wxString encoding) {	using n
 		else {
 			// Not a dialogue line
 			// TODO: should any non-dia lines cause blank lines in output?
-			//file.WriteLineToFile(_T(""));
+			//file.WriteLineToFile("");
 		}
 	}
 }

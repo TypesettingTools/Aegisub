@@ -149,6 +149,6 @@ public:
 	int GetHeight() const                 { return h; }
 	agi::vfr::Framerate GetFPS() const    { return fps; }
 	std::vector<int> GetKeyFrames() const { return std::vector<int>(); };
-	wxString GetDecoderName() const       { return L"YU4MPEG"; };
+	wxString GetDecoderName() const       { return "YU4MPEG"; };
 	bool WantsCaching() const             { return true; };
 };

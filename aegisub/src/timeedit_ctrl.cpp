@@ -74,18 +74,18 @@ wxTextCtrl(parent,id,value,pos,size,TimeEditWindowStyle | style,validator,name)
 	// Set validator
 	wxTextValidator val(wxFILTER_INCLUDE_CHAR_LIST);
 	wxArrayString includes;
-	includes.Add(_T("0"));
-	includes.Add(_T("1"));
-	includes.Add(_T("2"));
-	includes.Add(_T("3"));
-	includes.Add(_T("4"));
-	includes.Add(_T("5"));
-	includes.Add(_T("6"));
-	includes.Add(_T("7"));
-	includes.Add(_T("8"));
-	includes.Add(_T("9"));
-	includes.Add(_T("."));
-	includes.Add(_T(":"));
+	includes.Add("0");
+	includes.Add("1");
+	includes.Add("2");
+	includes.Add("3");
+	includes.Add("4");
+	includes.Add("5");
+	includes.Add("6");
+	includes.Add("7");
+	includes.Add("8");
+	includes.Add("9");
+	includes.Add(".");
+	includes.Add(":");
 	val.SetIncludes(includes);
 	SetValidator(val);
 
@@ -193,7 +193,7 @@ void TimeEdit::UpdateTime(bool byUser) {
 		GetSelection(&start,&end);
 		if (start == end) {
 			wxString nextChar = text.Mid(start,1);
-			if (nextChar == _T(":") || nextChar == _T(".")) {
+			if (nextChar == ":" || nextChar == ".") {
 				wxString temp = text;
 				text = temp.Left(start-1);
 				text += nextChar;

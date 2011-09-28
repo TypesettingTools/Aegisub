@@ -251,14 +251,14 @@ wxString SubtitleFormat::GetWildcards(int mode) {
 		if (cur.Count()) {
 			// Process entries
 			for (unsigned int i=0;i<cur.Count();i++) {
-				wild = _T("*.") + cur[i];
+				wild = "*." + cur[i];
 				all.Add(wild);
-				temp1 += wild + _T(",");
-				temp2 += wild + _T(";");
+				temp1 += wild + ",";
+				temp2 += wild + ";";
 			}
 
 			// Assemble final name
-			final += format->GetName() + _T(" (") + temp1.Left(temp1.Length()-1) + _T(")|") + temp2.Left(temp2.Length()-1) + _T("|");
+			final += format->GetName() + " (" + temp1.Left(temp1.Length()-1) + ")|" + temp2.Left(temp2.Length()-1) + "|";
 		}
 	}
 
@@ -266,10 +266,10 @@ wxString SubtitleFormat::GetWildcards(int mode) {
 	temp1.Clear();
 	temp2.Clear();
 	for (unsigned int i=0;i<all.Count();i++) {
-		temp1 += all[i] + _T(",");
-		temp2 += all[i] + _T(";");
+		temp1 += all[i] + ",";
+		temp2 += all[i] + ";";
 	}
-	final = wxString(_("All Supported Formats")) + _T(" (") + temp1.Left(temp1.Length()-1) + _T(")|") + temp2.Left(temp2.Length()-1) + _T("|") + final.Left(final.Length()-1);
+	final = wxString(_("All Supported Formats")) + " (" + temp1.Left(temp1.Length()-1) + ")|" + temp2.Left(temp2.Length()-1) + "|" + final.Left(final.Length()-1);
 
 	// Return final list
 	return final;
@@ -289,9 +289,9 @@ SubtitleFormat::FPSRational SubtitleFormat::AskForFPS(bool showSMPTE) {
 	bool vidLoaded = context->TimecodesLoaded();
 	if (vidLoaded) {
 		wxString vidFPS;
-		if (context->FPS().IsVFR()) vidFPS = _T("VFR");
-		else vidFPS = wxString::Format(_T("%.3f"),context->FPS().FPS());
-		choices.Add(wxString::Format(_T("From video (%s)"),vidFPS.c_str()));
+		if (context->FPS().IsVFR()) vidFPS = "VFR";
+		else vidFPS = wxString::Format("%.3f",context->FPS().FPS());
+		choices.Add(wxString::Format("From video (%s)",vidFPS.c_str()));
 	}
 	
 	// Standard FPS values
@@ -385,9 +385,9 @@ void SubtitleFormat::ConvertTags(int format,const wxString &lineEnd,bool mergeLi
 			else if (format == 2) current->ConvertTagsToSRT();
 
 			// Replace line breaks
-			current->Text.Replace(_T("\\h"),_T(" "),true);
-			current->Text.Replace(_T("\\n"),lineEnd,true);
-			current->Text.Replace(_T("\\N"),lineEnd,true);
+			current->Text.Replace("\\h"," ",true);
+			current->Text.Replace("\\n",lineEnd,true);
+			current->Text.Replace("\\N",lineEnd,true);
 			if (mergeLineBreaks) {
 				while (current->Text.Replace(lineEnd+lineEnd,lineEnd,true)) {};
 			}
@@ -498,7 +498,7 @@ void SubtitleFormat::RecombineOverlaps() {
 				newdlg->Start = curdlg->Start;
 				newdlg->End = (prevdlg->End < curdlg->End) ? prevdlg->End : curdlg->End;
 				// Put an ASS format hard linewrap between lines
-				newdlg->Text = curdlg->Text + _T("\\N") + prevdlg->Text;
+				newdlg->Text = curdlg->Text + "\\N" + prevdlg->Text;
 				
 				InsertLineSortedIntoList(*Line, next, newdlg);
 			}

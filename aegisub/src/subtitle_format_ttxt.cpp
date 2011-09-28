@@ -50,7 +50,7 @@
 /// @return 
 ///
 wxString TTXTSubtitleFormat::GetName() {
-	return _T("MPEG-4 Streaming Text");
+	return "MPEG-4 Streaming Text";
 }
 
 
@@ -60,7 +60,7 @@ wxString TTXTSubtitleFormat::GetName() {
 ///
 wxArrayString TTXTSubtitleFormat::GetReadWildcards() {
 	wxArrayString formats;
-	formats.Add(_T("ttxt"));
+	formats.Add("ttxt");
 	return formats;
 }
 
@@ -81,7 +81,7 @@ wxArrayString TTXTSubtitleFormat::GetWriteWildcards() {
 /// @return 
 ///
 bool TTXTSubtitleFormat::CanReadFile(wxString filename) {
-	return (filename.Right(5).Lower() == _T(".ttxt"));
+	return (filename.Right(5).Lower() == ".ttxt");
 }
 
 
@@ -92,7 +92,7 @@ bool TTXTSubtitleFormat::CanReadFile(wxString filename) {
 ///
 bool TTXTSubtitleFormat::CanWriteFile(wxString filename) {
 	//return false;
-	return (filename.Right(5).Lower() == _T(".ttxt"));
+	return (filename.Right(5).Lower() == ".ttxt");
 }
 
 
@@ -107,17 +107,17 @@ void TTXTSubtitleFormat::ReadFile(wxString filename,wxString forceEncoding) {
 
 	// Load XML document
 	wxXmlDocument doc;
-	if (!doc.Load(filename)) throw _T("Failed loading TTXT XML file.");
+	if (!doc.Load(filename)) throw "Failed loading TTXT XML file.";
 
 	// Check root node name
-	if (doc.GetRoot()->GetName() != _T("TextStream")) throw _T("Invalid TTXT file.");
+	if (doc.GetRoot()->GetName() != "TextStream") throw "Invalid TTXT file.";
 
 	// Check version
-	wxString verStr = doc.GetRoot()->GetAttribute(_T("version"),_T(""));
+	wxString verStr = doc.GetRoot()->GetAttribute("version","");
 	version = -1;
-	if (verStr == _T("1.0")) version = 0;
-	else if (verStr == _T("1.1")) version = 1;
-	else throw wxString(_T("Unknown TTXT version: ") + verStr);
+	if (verStr == "1.0") version = 0;
+	else if (verStr == "1.1") version = 1;
+	else throw wxString("Unknown TTXT version: " + verStr);
 
 	// Get children
 	diag = NULL;
@@ -125,12 +125,12 @@ void TTXTSubtitleFormat::ReadFile(wxString filename,wxString forceEncoding) {
 	int lines = 0;
 	while (child) {
 		// Line
-		if (child->GetName() == _T("TextSample")) {
+		if (child->GetName() == "TextSample") {
 			if (ProcessLine(child)) lines++;
 		}
 
 		// Header
-		else if (child->GetName() == _T("TextStreamHeader")) {
+		else if (child->GetName() == "TextStreamHeader") {
 			ProcessHeader(child);
 		}
 
@@ -141,8 +141,8 @@ void TTXTSubtitleFormat::ReadFile(wxString filename,wxString forceEncoding) {
 	// No lines?
 	if (lines == 0) {
 		AssDialogue *line = new AssDialogue();
-		line->group = _T("[Events]");
-		line->Style = _T("Default");
+		line->group = "[Events]";
+		line->Style = "Default";
 		line->Start.SetMS(0);
 		line->End.SetMS(5000);
 		Line->push_back(line);
@@ -157,7 +157,7 @@ void TTXTSubtitleFormat::ReadFile(wxString filename,wxString forceEncoding) {
 ///
 bool TTXTSubtitleFormat::ProcessLine(wxXmlNode *node) {
 	// Get time
-	wxString sampleTime = node->GetAttribute(_T("sampleTime"),_T("00:00:00.000"));
+	wxString sampleTime = node->GetAttribute("sampleTime","00:00:00.000");
 	AssTime time;
 	time.ParseASS(sampleTime);
 
@@ -167,7 +167,7 @@ bool TTXTSubtitleFormat::ProcessLine(wxXmlNode *node) {
 
 	// Get text
 	wxString text;
-	if (version == 0) text = node->GetAttribute(_T("text"),_T(""));
+	if (version == 0) text = node->GetAttribute("text","");
 	else text = node->GetNodeContent();
 
 	// Create line
@@ -176,8 +176,8 @@ bool TTXTSubtitleFormat::ProcessLine(wxXmlNode *node) {
 		diag = new AssDialogue();
 		diag->Start.SetMS(time.GetMS());
 		diag->End.SetMS(36000000-10);
-		diag->group = _T("[Events]");
-		diag->Style = _T("Default");
+		diag->group = "[Events]";
+		diag->Style = "Default";
 		diag->Comment = false;
 
 		// Process text for 1.0
@@ -187,8 +187,8 @@ bool TTXTSubtitleFormat::ProcessLine(wxXmlNode *node) {
 			bool in = false;
 			bool first = true;
 			for (size_t i=0;i<text.Length();i++) {
-				if (text[i] == _T('\'')) {
-					if (!in && !first) finalText += _T("\\N");
+				if (text[i] == '\'') {
+					if (!in && !first) finalText += "\\N";
 					first = false;
 					in = !in;
 				}
@@ -199,8 +199,8 @@ bool TTXTSubtitleFormat::ProcessLine(wxXmlNode *node) {
 
 		// Process text for 1.1
 		else {
-			text.Replace(_T("\r"),_T(""));
-			text.Replace(_T("\n"),_T("\\N"));
+			text.Replace("\r","");
+			text.Replace("\n","\\N");
 			diag->Text = text;
 		}
 
@@ -234,8 +234,8 @@ void TTXTSubtitleFormat::WriteFile(wxString filename,wxString encoding) {
 
 	// Create XML structure
 	wxXmlDocument doc;
-	wxXmlNode *root = new wxXmlNode(NULL,wxXML_ELEMENT_NODE,_T("TextStream"));
-	root->AddAttribute(_T("version"),_T("1.1"));
+	wxXmlNode *root = new wxXmlNode(NULL,wxXML_ELEMENT_NODE,"TextStream");
+	root->AddAttribute("version","1.1");
 	doc.SetRoot(root);
 
 	// Create header
@@ -251,7 +251,7 @@ void TTXTSubtitleFormat::WriteFile(wxString filename,wxString encoding) {
 			WriteLine(root,current);
 			i++;
 		}
-		else throw _T("Unexpected line type in TTXT file");
+		else throw "Unexpected line type in TTXT file";
 	}
 
 	// Save XML
@@ -269,49 +269,49 @@ void TTXTSubtitleFormat::WriteFile(wxString filename,wxString encoding) {
 ///
 void TTXTSubtitleFormat::WriteHeader(wxXmlNode *root) {
 	// Write stream header
-	wxXmlNode *node = new wxXmlNode(wxXML_ELEMENT_NODE,_T("TextStreamHeader"));
-	node->AddAttribute(_T("width"),_T("400"));
-	node->AddAttribute(_T("height"),_T("60"));
-	node->AddAttribute(_T("layer"),_T("0"));
-	node->AddAttribute(_T("translation_x"),_T("0"));
-	node->AddAttribute(_T("translation_y"),_T("0"));
+	wxXmlNode *node = new wxXmlNode(wxXML_ELEMENT_NODE,"TextStreamHeader");
+	node->AddAttribute("width","400");
+	node->AddAttribute("height","60");
+	node->AddAttribute("layer","0");
+	node->AddAttribute("translation_x","0");
+	node->AddAttribute("translation_y","0");
 	root->AddChild(node);
 	root = node;
 
 	// Write sample description
-	node = new wxXmlNode(wxXML_ELEMENT_NODE,_T("TextSampleDescription"));
-	node->AddAttribute(_T("horizontalJustification"),_T("center"));
-	node->AddAttribute(_T("verticalJustification"),_T("bottom"));
-	node->AddAttribute(_T("backColor"),_T("0 0 0 0"));
-	node->AddAttribute(_T("verticalText"),_T("no"));
-	node->AddAttribute(_T("fillTextRegion"),_T("no"));
-	node->AddAttribute(_T("continuousKaraoke"),_T("no"));
-	node->AddAttribute(_T("scroll"),_T("None"));
+	node = new wxXmlNode(wxXML_ELEMENT_NODE,"TextSampleDescription");
+	node->AddAttribute("horizontalJustification","center");
+	node->AddAttribute("verticalJustification","bottom");
+	node->AddAttribute("backColor","0 0 0 0");
+	node->AddAttribute("verticalText","no");
+	node->AddAttribute("fillTextRegion","no");
+	node->AddAttribute("continuousKaraoke","no");
+	node->AddAttribute("scroll","None");
 	root->AddChild(node);
 	root = node;
 
 	// Write font table
-	node = new wxXmlNode(wxXML_ELEMENT_NODE,_T("FontTable"));
-	wxXmlNode *subNode = new wxXmlNode(wxXML_ELEMENT_NODE,_T("FontTableEntry"));
-	subNode->AddAttribute(_T("fontName"),_T("Sans"));
-	subNode->AddAttribute(_T("fontID"),_T("1"));
+	node = new wxXmlNode(wxXML_ELEMENT_NODE,"FontTable");
+	wxXmlNode *subNode = new wxXmlNode(wxXML_ELEMENT_NODE,"FontTableEntry");
+	subNode->AddAttribute("fontName","Sans");
+	subNode->AddAttribute("fontID","1");
 	node->AddChild(subNode);
 	root->AddChild(node);
 	
 	// Write text box
-	node = new wxXmlNode(wxXML_ELEMENT_NODE,_T("TextBox"));
-	node->AddAttribute(_T("top"),_T("0"));
-	node->AddAttribute(_T("left"),_T("0"));
-	node->AddAttribute(_T("bottom"),_T("60"));
-	node->AddAttribute(_T("right"),_T("400"));
+	node = new wxXmlNode(wxXML_ELEMENT_NODE,"TextBox");
+	node->AddAttribute("top","0");
+	node->AddAttribute("left","0");
+	node->AddAttribute("bottom","60");
+	node->AddAttribute("right","400");
 	root->AddChild(node);
 
 	// Write style
-	node = new wxXmlNode(wxXML_ELEMENT_NODE,_T("Style"));
-	node->AddAttribute(_T("styles"),_T("Normal"));
-	node->AddAttribute(_T("fontID"),_T("1"));
-	node->AddAttribute(_T("fontSize"),_T("18"));
-	node->AddAttribute(_T("color"),_T("ff ff ff ff"));
+	node = new wxXmlNode(wxXML_ELEMENT_NODE,"Style");
+	node->AddAttribute("styles","Normal");
+	node->AddAttribute("fontID","1");
+	node->AddAttribute("fontSize","18");
+	node->AddAttribute("color","ff ff ff ff");
 	root->AddChild(node);
 }
 
@@ -325,19 +325,19 @@ void TTXTSubtitleFormat::WriteLine(wxXmlNode *root, AssDialogue *line) {
 	// If it doesn't start at the end of previous, add blank
 	wxXmlNode *node,*subNode;
 	if (prev && prev->End != line->Start) {
-		node = new wxXmlNode(wxXML_ELEMENT_NODE,_T("TextSample"));
-		node->AddAttribute(_T("sampleTime"),_T("0") + prev->End.GetASSFormated(true));
-		node->AddAttribute(_T("xml:space"),_T("preserve"));
-		subNode = new wxXmlNode(wxXML_TEXT_NODE,_T(""),_T(""));
+		node = new wxXmlNode(wxXML_ELEMENT_NODE,"TextSample");
+		node->AddAttribute("sampleTime","0" + prev->End.GetASSFormated(true));
+		node->AddAttribute("xml:space","preserve");
+		subNode = new wxXmlNode(wxXML_TEXT_NODE,"","");
 		node->AddChild(subNode);
 		root->AddChild(node);
 	}
 
 	// Generate and insert node
-	node = new wxXmlNode(wxXML_ELEMENT_NODE,_T("TextSample"));
-	node->AddAttribute(_T("sampleTime"),_T("0") + line->Start.GetASSFormated(true));
-	node->AddAttribute(_T("xml:space"),_T("preserve"));
-	subNode = new wxXmlNode(wxXML_TEXT_NODE,_T(""),line->Text);
+	node = new wxXmlNode(wxXML_ELEMENT_NODE,"TextSample");
+	node->AddAttribute("sampleTime","0" + line->Start.GetASSFormated(true));
+	node->AddAttribute("xml:space","preserve");
+	subNode = new wxXmlNode(wxXML_TEXT_NODE,"",line->Text);
 	node->AddChild(subNode);
 	root->AddChild(node);
 
@@ -355,7 +355,7 @@ void TTXTSubtitleFormat::ConvertToTTXT () {
 	StripComments();
 	RecombineOverlaps();
 	MergeIdentical();
-	ConvertTags(1,_T("\r\n"));
+	ConvertTags(1,"\r\n");
 
 	// Find last line
 	AssTime lastTime;
@@ -371,8 +371,8 @@ void TTXTSubtitleFormat::ConvertToTTXT () {
 	AssDialogue *diag = new AssDialogue();
 	diag->Start.SetMS(lastTime.GetMS());
 	diag->End.SetMS(lastTime.GetMS()+OPT_GET("Timing/Default Duration")->GetInt());
-	diag->group = _T("[Events]");
-	diag->Style = _T("Default");
+	diag->group = "[Events]";
+	diag->Style = "Default";
 	diag->Comment = false;
 	Line->push_back(diag);
 }

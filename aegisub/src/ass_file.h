@@ -128,10 +128,10 @@ public:
 	/// @param setfilename Should the filename be changed to the passed path?
 	/// @param addToRecent Should the file be added to the MRU list?
 	/// @param encoding Encoding to use, or empty to let the writer decide (which usually means "App/Save Charset")
-	void Save(wxString file,bool setfilename=false,bool addToRecent=true,const wxString encoding=_T(""));
+	void Save(wxString file,bool setfilename=false,bool addToRecent=true,const wxString encoding="");
 	/// @brief Save to a memory buffer. Used for subtitle providers which support it
 	/// @param[out] dst Destination vector
-	void SaveMemory(std::vector<char> &dst,const wxString encoding=_T(""));
+	void SaveMemory(std::vector<char> &dst,const wxString encoding="");
 	/// @brief Saves exported copy, with effects applied
 	/// @param file Path to save to; file name is never set to this
 	void Export(wxString file);

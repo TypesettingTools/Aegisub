@@ -83,11 +83,11 @@ struct keyframe_open : public Command {
 	void operator()(agi::Context *c) {
 		wxString path = lagi_wxString(OPT_GET("Path/Last/Keyframes")->GetString());
 		wxString filename = wxFileSelector(
-			_T("Select the keyframes file to open"),
+			"Select the keyframes file to open",
 			path,
-			_T("")
-			,_T(".txt"),
-			_T("All supported formats (*.txt, *.pass, *.stats, *.log)|*.txt;*.pass;*.stats;*.log|All files (*.*)|*.*"),
+			""
+			,".txt",
+			"All supported formats (*.txt, *.pass, *.stats, *.log)|*.txt;*.pass;*.stats;*.log|All files (*.*)|*.*",
 			wxFD_FILE_MUST_EXIST | wxFD_OPEN);
 
 		if (filename.empty()) return;
@@ -111,7 +111,7 @@ struct keyframe_save : public Command {
 
 	void operator()(agi::Context *c) {
 		wxString path = lagi_wxString(OPT_GET("Path/Last/Keyframes")->GetString());
-		wxString filename = wxFileSelector(_T("Select the Keyframes file to open"),path,_T(""),_T("*.key.txt"),_T("Text files (*.txt)|*.txt"),wxFD_OVERWRITE_PROMPT | wxFD_SAVE);
+		wxString filename = wxFileSelector("Select the Keyframes file to open",path,"","*.key.txt","Text files (*.txt)|*.txt",wxFD_OVERWRITE_PROMPT | wxFD_SAVE);
 		if (filename.empty()) return;
 		OPT_SET("Path/Last/Keyframes")->SetString(STD_STR(filename));
 		c->videoController->SaveKeyframes(filename);

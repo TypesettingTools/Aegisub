@@ -57,7 +57,7 @@
 /// @param size     
 ///
 HelpButton::HelpButton(wxWindow *parent,wxString _page,wxPoint position,wxSize size)
-: wxButton (parent,wxID_HELP,_T(""),position,size)
+: wxButton (parent,wxID_HELP,"",position,size)
 {
 	id = _page;
 	Connect(GetId(),wxEVT_COMMAND_BUTTON_CLICKED,wxCommandEventHandler(HelpButton::OnPressed));
@@ -72,7 +72,7 @@ HelpButton::HelpButton(wxWindow *parent,wxString _page,wxPoint position,wxSize s
 void HelpButton::OnPressed(wxCommandEvent &event) {
 	// Verify if the page is valid
 	if (id.IsEmpty()) {
-		wxLogMessage(_T("TODO"));
+		wxLogMessage("TODO");
 		return;
 	}
 
@@ -91,15 +91,15 @@ void HelpButton::OpenPage(const wxString pageID) {
 	wxString page = (*pages)[pageID];
 
 	// Get the file type
-	wxFileType *type = wxTheMimeTypesManager->GetFileTypeFromExtension(_T("html"));
+	wxFileType *type = wxTheMimeTypesManager->GetFileTypeFromExtension("html");
 	if (type) {
-		//wxString path = StandardPaths::DecodePath(wxString::Format(_T("http://docs.aegisub.net/%s"),page.c_str()));
-		wxString docsPath = StandardPaths::DecodePath(_T("?data/docs"));
+		//wxString path = StandardPaths::DecodePath(wxString::Format("http://docs.aegisub.net/%s",page.c_str()));
+		wxString docsPath = StandardPaths::DecodePath("?data/docs");
 #ifdef __WINDOWS__
-		docsPath.Replace(_T("\\"),_T("/"));
-		docsPath = _T("/") + docsPath;
+		docsPath.Replace("\\","/");
+		docsPath = "/" + docsPath;
 #endif
-		wxString path = wxString::Format(_T("file://%s/%s.html"),docsPath.c_str(),page.c_str());
+		wxString path = wxString::Format("file://%s/%s.html",docsPath.c_str(),page.c_str());
 		wxLaunchDefaultBrowser(path);
 	}
 }
@@ -116,27 +116,27 @@ void HelpButton::InitStatic() {
 	if (!pages) {
 		pages = new std::map<wxString,wxString>;
 		std::map<wxString,wxString> &page = *pages;
-		page[_T("Attachment Manager")] = _T("Attachment_Manager");
-		page[_T("Automation Manager")] = _T("Automation_Manager");
-		page[_T("Colour Picker")] = _T("Colour_Picker");
-		page[_T("Dummy Video")] = _T("Dummy_video");
-		page[_T("Export")] = _T("Exporting");
-		page[_T("Fonts Collector")] = _T("Fonts_Collector");
-		page[_T("Kanji Timer")] = _T("Kanji_Timer");
-		page[_T("Main")] = _T("Main_Page");
-		page[_T("Options")] = _T("Options");
-		page[_T("Paste Over")] = _T("Paste_Over");
-		page[_T("Properties")] = _T("Properties");
-		page[_T("Resample resolution")] = _T("Resolution_Resampler");
-		page[_T("Shift Times")] = _T("Shift_Times");
-		page[_T("Select Lines")] = _T("Select_Lines");
-		page[_T("Spell Checker")] = _T("Spell_Checker");
-		page[_T("Style Editor")] = _T("Styles");
-		page[_T("Styles Manager")] = _T("Styles");
-		page[_T("Styling Assistant")] = _T("Styling_Assistant");
-		page[_T("Timing Processor")] = _T("Timing_Post-Processor");
-		page[_T("Translation Assistant")] = _T("Translation_Assistant");
-		page[_T("Visual Typesetting")] = _T("Visual_Typesetting");
+		page["Attachment Manager"] = "Attachment_Manager";
+		page["Automation Manager"] = "Automation_Manager";
+		page["Colour Picker"] = "Colour_Picker";
+		page["Dummy Video"] = "Dummy_video";
+		page["Export"] = "Exporting";
+		page["Fonts Collector"] = "Fonts_Collector";
+		page["Kanji Timer"] = "Kanji_Timer";
+		page["Main"] = "Main_Page";
+		page["Options"] = "Options";
+		page["Paste Over"] = "Paste_Over";
+		page["Properties"] = "Properties";
+		page["Resample resolution"] = "Resolution_Resampler";
+		page["Shift Times"] = "Shift_Times";
+		page["Select Lines"] = "Select_Lines";
+		page["Spell Checker"] = "Spell_Checker";
+		page["Style Editor"] = "Styles";
+		page["Styles Manager"] = "Styles";
+		page["Styling Assistant"] = "Styling_Assistant";
+		page["Timing Processor"] = "Timing_Post-Processor";
+		page["Translation Assistant"] = "Translation_Assistant";
+		page["Visual Typesetting"] = "Visual_Typesetting";
 	}
 }
 

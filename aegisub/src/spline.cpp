@@ -61,29 +61,29 @@ wxString Spline::EncodeToASS() {
 		switch (cur->type) {
 			case CURVE_POINT: {
 				if (lastCommand != 'm') {
-					result += L"m ";
+					result += "m ";
 					lastCommand = 'm';
 				}
 				int x = cur->p1.x;
 				int y = cur->p1.y;
 				scale.ToScriptCoords(&x, &y);
-				result += wxString::Format(L"%i %i ", x, y);
+				result += wxString::Format("%i %i ", x, y);
 				break;
 			}
 			case CURVE_LINE: {
 				if (lastCommand != 'l') {
-					result += L"l ";
+					result += "l ";
 					lastCommand = 'l';
 				}
 				int x = cur->p2.x;
 				int y = cur->p2.y;
 				scale.ToScriptCoords(&x, &y);
-				result += wxString::Format(L"%i %i ", x, y);
+				result += wxString::Format("%i %i ", x, y);
 				break;
 			}
 			case CURVE_BICUBIC: {
 				if (lastCommand != 'b') {
-					result += L"b ";
+					result += "b ";
 					lastCommand = 'b';
 				}
 				int x2 = cur->p2.x;
@@ -95,7 +95,7 @@ wxString Spline::EncodeToASS() {
 				scale.ToScriptCoords(&x2, &y2);
 				scale.ToScriptCoords(&x3, &y3);
 				scale.ToScriptCoords(&x4, &y4);
-				result += wxString::Format(L"%i %i %i %i %i %i ", x2, y2, x3, y3, x4, y4);
+				result += wxString::Format("%i %i %i %i %i %i ", x2, y2, x3, y3, x4, y4);
 				break;
 			}
 			default: break;
@@ -117,7 +117,7 @@ void Spline::DecodeFromASS(wxString str) {
 	int y = 0;
 
 	// Tokenize the string
-	wxStringTokenizer tkn(str,L" ");
+	wxStringTokenizer tkn(str," ");
 	while (tkn.HasMoreTokens()) {
 		wxString token = tkn.GetNextToken();
 
@@ -180,12 +180,12 @@ void Spline::DecodeFromASS(wxString str) {
 
 		// Got something else
 		else {
-			if (token == L"m") lastCommand = 'm';
-			else if (token == L"l") lastCommand = 'l';
-			else if (token == L"b") lastCommand = 'b';
-			else if (token == L"n") lastCommand = 'n';
-			else if (token == L"s") lastCommand = 's';
-			else if (token == L"c") lastCommand = 'c';
+			if (token == "m") lastCommand = 'm';
+			else if (token == "l") lastCommand = 'l';
+			else if (token == "b") lastCommand = 'b';
+			else if (token == "n") lastCommand = 'n';
+			else if (token == "s") lastCommand = 's';
+			else if (token == "c") lastCommand = 'c';
 		}
 	}
 }

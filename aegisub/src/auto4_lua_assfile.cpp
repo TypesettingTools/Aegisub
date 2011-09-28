@@ -102,7 +102,7 @@ namespace Automation4 {
 		if (StringEmptyOrWhitespace(raw)) {
 			lua_pushstring(L, "clear");
 
-		} else if (raw[0] == _T(';')) {
+		} else if (raw[0] == ';') {
 			// "text" field, same as "raw" but with semicolon stripped
 			wxString text(raw, 1, raw.size()-1);
 			lua_pushstring(L, text.mb_str(wxConvUTF8));
@@ -110,25 +110,25 @@ namespace Automation4 {
 
 			lua_pushstring(L, "comment");
 
-		} else if (raw[0] == _T('[')) {
+		} else if (raw[0] == '[') {
 			lua_pushstring(L, "head");
 
-		} else if (section.Lower() == _T("[script info]")) {
+		} else if (section.Lower() == "[script info]") {
 			// assumed "info" class
 
 			// first "key"
-			wxString key = raw.BeforeFirst(_T(':'));
+			wxString key = raw.BeforeFirst(':');
 			lua_pushstring(L, key.mb_str(wxConvUTF8));
 			lua_setfield(L, -2, "key");
 
 			// then "value"
-			wxString value = raw.AfterFirst(_T(':'));
+			wxString value = raw.AfterFirst(':');
 			lua_pushstring(L, value.mb_str(wxConvUTF8));
 			lua_setfield(L, -2, "value");
 
 			lua_pushstring(L, "info");
 
-		} else if (raw.Left(7).Lower() == _T("format:")) {
+		} else if (raw.Left(7).Lower() == "format:") {
 
 			// TODO: parse the format line; just use a tokenizer
 
@@ -325,33 +325,33 @@ namespace Automation4 {
 
 		GETSTRING(section, "section", "common")
 
-		if (lclass == _T("clear")) {
-			result = new AssEntry(_T(""));
+		if (lclass == "clear") {
+			result = new AssEntry("");
 			result->group = section;
 
-		} else if (lclass == _T("comment")) {
+		} else if (lclass == "comment") {
 			GETSTRING(raw, "text", "comment")
-			raw.Prepend(_T(";"));
+			raw.Prepend(";");
 			result = new AssEntry(raw);
 			result->group = section;
 
-		} else if (lclass == _T("head")) {
+		} else if (lclass == "head") {
 			result = new AssEntry(section);
 			result->group = section;
 
-		} else if (lclass == _T("info")) {
+		} else if (lclass == "info") {
 			GETSTRING(key, "key", "info")
 			GETSTRING(value, "value", "info")
-			result = new AssEntry(wxString::Format(_T("%s: %s"), key.c_str(), value.c_str()));
-			result->group = _T("[Script Info]"); // just so it can be read correctly back
+			result = new AssEntry(wxString::Format("%s: %s", key.c_str(), value.c_str()));
+			result->group = "[Script Info]"; // just so it can be read correctly back
 
-		} else if (lclass == _T("format")) {
+		} else if (lclass == "format") {
 			// ohshi- ...
 			// *FIXME* maybe ignore the actual data and just put some default stuff based on section?
-			result = new AssEntry(_T("Format: Auto4,Is,Broken"));
+			result = new AssEntry("Format: Auto4,Is,Broken");
 			result->group = section;
 
-		} else if (lclass == _T("style")) {
+		} else if (lclass == "style") {
 			GETSTRING(name, "name", "style")
 			GETSTRING(fontname, "fontname", "style")
 			GETFLOAT(fontsize, "fontsize", "style")
@@ -407,12 +407,12 @@ namespace Automation4 {
 
 			result = sty;
 
-		} else if (lclass == _T("styleex")) {
+		} else if (lclass == "styleex") {
 			lua_pushstring(L, "Found line with class 'styleex' which is not supported. Wait until AS5 is a reality.");
 			lua_error(L);
 			return 0;
 
-		} else if (lclass == _T("dialogue")) {
+		} else if (lclass == "dialogue") {
 			GETBOOL(comment, "comment", "dialogue")
 			GETINT(layer, "layer", "dialogue")
 			GETINT(start_time, "start_time", "dialogue")
@@ -883,9 +883,9 @@ namespace Automation4 {
 		int kcount = 0;
 		int kdur = 0;
 		int ktime = 0;
-		wxString ktag = _T("");
-		wxString ktext = _T("");
-		wxString ktext_stripped = _T("");
+		wxString ktag = "";
+		wxString ktext = "";
+		wxString ktext_stripped = "";
 
 		lua_newtable(L);
 
@@ -914,10 +914,10 @@ namespace Automation4 {
 					for (int j = 0; j < (int)ovr->Tags.size(); j++) {
 						AssOverrideTag *tag = ovr->Tags[j];
 
-						if (tag->IsValid() && tag->Name.Mid(0,2).CmpNoCase(_T("\\k")) == 0) {
+						if (tag->IsValid() && tag->Name.Mid(0,2).CmpNoCase("\\k") == 0) {
 							// karaoke tag
 							if (brackets_open) {
-								ktext += _T("}");
+								ktext += "}";
 								brackets_open = false;
 							}
 
@@ -941,7 +941,7 @@ namespace Automation4 {
 							kcount++;
 							ktag = tag->Name.Mid(1);
 							// check if it's a "set time" tag, special handling for that (depends on previous syllable duration)
-							if (ktag == _T("kt")) {
+							if (ktag == "kt") {
 								ktime = tag->Params[0]->Get<int>() * 10;
 								kdur = 0;
 							} else {
@@ -954,7 +954,7 @@ namespace Automation4 {
 						} else {
 							// not karaoke tag
 							if (!brackets_open) {
-								ktext += _T("{");
+								ktext += "{";
 								brackets_open = true;
 							}
 							ktext += *tag;
@@ -963,7 +963,7 @@ namespace Automation4 {
 					}
 
 					if (brackets_open) {
-						ktext += _T("}");
+						ktext += "}";
 						brackets_open = false;
 					}
 

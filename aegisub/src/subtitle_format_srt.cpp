@@ -58,7 +58,7 @@ DEFINE_SIMPLE_EXCEPTION(SRTParseError, SubtitleFormatParseError, "subtitle_io/pa
 /// @return 
 ///
 bool SRTSubtitleFormat::CanReadFile(wxString filename) {
-	return (filename.Right(4).Lower() == _T(".srt"));
+	return (filename.Right(4).Lower() == ".srt");
 }
 
 
@@ -68,7 +68,7 @@ bool SRTSubtitleFormat::CanReadFile(wxString filename) {
 /// @return 
 ///
 bool SRTSubtitleFormat::CanWriteFile(wxString filename) {
-	return (filename.Right(4).Lower() == _T(".srt"));
+	return (filename.Right(4).Lower() == ".srt");
 }
 
 
@@ -77,7 +77,7 @@ bool SRTSubtitleFormat::CanWriteFile(wxString filename) {
 /// @return 
 ///
 wxString SRTSubtitleFormat::GetName() {
-	return _T("SubRip");
+	return "SubRip";
 }
 
 
@@ -87,7 +87,7 @@ wxString SRTSubtitleFormat::GetName() {
 ///
 wxArrayString SRTSubtitleFormat::GetReadWildcards() {
 	wxArrayString formats;
-	formats.Add(_T("srt"));
+	formats.Add("srt");
 	return formats;
 }
 
@@ -119,7 +119,7 @@ void SRTSubtitleFormat::ReadFile(wxString filename,wxString encoding) {
 
 	// "hh:mm:ss,fff --> hh:mm:ss,fff" (e.g. "00:00:04,070 --> 00:00:10,04")
 	/// @todo: move the full parsing of SRT timestamps here, instead of having it in AssTime
-	wxRegEx timestamp_regex(L"^([0-9]{2}:[0-9]{2}:[0-9]{2},[0-9]{3}) --> ([0-9]{2}:[0-9]{2}:[0-9]{2},[0-9]{3})");
+	wxRegEx timestamp_regex("^([0-9]{2}:[0-9]{2}:[0-9]{2},[0-9]{3}) --> ([0-9]{2}:[0-9]{2}:[0-9]{2},[0-9]{3})");
 	if (!timestamp_regex.IsValid())
 		throw agi::InternalError("Parsing SRT: Failed compiling regex", 0);
 
@@ -166,8 +166,8 @@ found_timestamps:
 				}
 				// create new subtitle
 				line = new AssDialogue();
-				line->group = L"[Events]";
-				line->Style = _T("Default");
+				line->group = "[Events]";
+				line->Style = "Default";
 				line->Comment = false;
 				// this parsing should best be moved out of AssTime
 				line->Start.ParseSRT(timestamp_regex.GetMatch(text_line, 1));
@@ -202,7 +202,7 @@ found_timestamps:
 					linebreak_debt = 1;
 					break;
 				}
-				line->Text.Append(L"\\N").Append(text_line);
+				line->Text.Append("\\N").Append(text_line);
 				break;
 			}
 			case 5:
@@ -225,7 +225,7 @@ found_timestamps:
 				// assume it's a continuation of the subtitle text
 				// resolve our line break debt and append the line text
 				while (linebreak_debt-- > 0)
-					line->Text.Append(L"\\N");
+					line->Text.Append("\\N");
 				line->Text.Append(text_line);
 				state = 4;
 				break;
@@ -264,12 +264,12 @@ void SRTSubtitleFormat::WriteFile(wxString _filename,wxString encoding) {
 	StripComments();
 	// Tags must be converted in two passes
 	// First ASS style overrides are converted to SRT but linebreaks are kept
-	ConvertTags(2,_T("\\N"),false);
+	ConvertTags(2,"\\N",false);
 	// Then we can recombine overlaps, this requires ASS style linebreaks
 	RecombineOverlaps();
 	MergeIdentical();
 	// And finally convert linebreaks
-	ConvertTags(0,_T("\r\n"),false);
+	ConvertTags(0,"\r\n",false);
 	// Otherwise unclosed overrides might affect lines they shouldn't, see bug #809 for example
 
 	// Write lines
@@ -279,10 +279,10 @@ void SRTSubtitleFormat::WriteFile(wxString _filename,wxString encoding) {
 		AssDialogue *current = dynamic_cast<AssDialogue*>(*cur);
 		if (current && !current->Comment) {
 			// Write line
-			file.WriteLineToFile(wxString::Format(_T("%i"),i));
-			file.WriteLineToFile(current->Start.GetSRTFormated() + _T(" --> ") + current->End.GetSRTFormated());
+			file.WriteLineToFile(wxString::Format("%i",i));
+			file.WriteLineToFile(current->Start.GetSRTFormated() + " --> " + current->End.GetSRTFormated());
 			file.WriteLineToFile(current->Text);
-			file.WriteLineToFile(_T(""));
+			file.WriteLineToFile("");
 
 			i++;
 		}

@@ -67,7 +67,7 @@ void AssTransformCleanInfoFilter::ProcessSubs(AssFile *subs, wxWindow *) {
 			continue;
 		}
 
-		wxString field = curEntry->GetEntryData().Left(curEntry->GetEntryData().Find(_T(':'))).Lower();
+		wxString field = curEntry->GetEntryData().Left(curEntry->GetEntryData().Find(':')).Lower();
 		if (field != "scripttype" &&
 			field != "collisions" &&
 			field != "playresx" &&

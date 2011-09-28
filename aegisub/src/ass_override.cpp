@@ -74,21 +74,21 @@ AssDialogueBlockOverride::~AssDialogueBlockOverride() {
 void AssDialogueBlockOverride::ParseTags() {
 	delete_clear(Tags);
 
-	wxStringTokenizer tkn(text, L"\\", wxTOKEN_STRTOK);
+	wxStringTokenizer tkn(text, "\\", wxTOKEN_STRTOK);
 	wxString curTag;
-	if (text.StartsWith(L"\\")) curTag = L"\\";
+	if (text.StartsWith("\\")) curTag = "\\";
 
 	while (tkn.HasMoreTokens()) {
 		curTag += tkn.GetNextToken();
 
 		// Check for parenthesis matching for \t
-		while (curTag.Freq(L'(') > curTag.Freq(L')') && tkn.HasMoreTokens()) {
-			curTag << L"\\" << tkn.GetNextToken();
+		while (curTag.Freq('(') > curTag.Freq(')') && tkn.HasMoreTokens()) {
+			curTag << "\\" << tkn.GetNextToken();
 		}
 
 		Tags.push_back(new AssOverrideTag(curTag));
 
-		curTag = L"\\";
+		curTag = "\\";
 	}
 }
 void AssDialogueBlockOverride::AddTag(wxString const& tag) {
@@ -149,17 +149,17 @@ static void load_protos() {
 
 	// Longer tag names must appear before shorter tag names
 
-	proto[0].Set(L"\\alpha", VARDATA_TEXT); // \alpha
-	proto[++i].Set(L"\\bord", VARDATA_FLOAT,PARCLASS_ABSOLUTE_SIZE); // \bord<depth>
-	proto[++i].Set(L"\\xbord", VARDATA_FLOAT,PARCLASS_ABSOLUTE_SIZE); // \xbord<depth>
-	proto[++i].Set(L"\\ybord", VARDATA_FLOAT,PARCLASS_ABSOLUTE_SIZE); // \ybord<depth>
-	proto[++i].Set(L"\\shad", VARDATA_FLOAT,PARCLASS_ABSOLUTE_SIZE); // \shad<depth>
-	proto[++i].Set(L"\\xshad", VARDATA_FLOAT,PARCLASS_ABSOLUTE_SIZE); // \xshad<depth>
-	proto[++i].Set(L"\\yshad", VARDATA_FLOAT,PARCLASS_ABSOLUTE_SIZE); // \yshad<depth>
+	proto[0].Set("\\alpha", VARDATA_TEXT); // \alpha
+	proto[++i].Set("\\bord", VARDATA_FLOAT,PARCLASS_ABSOLUTE_SIZE); // \bord<depth>
+	proto[++i].Set("\\xbord", VARDATA_FLOAT,PARCLASS_ABSOLUTE_SIZE); // \xbord<depth>
+	proto[++i].Set("\\ybord", VARDATA_FLOAT,PARCLASS_ABSOLUTE_SIZE); // \ybord<depth>
+	proto[++i].Set("\\shad", VARDATA_FLOAT,PARCLASS_ABSOLUTE_SIZE); // \shad<depth>
+	proto[++i].Set("\\xshad", VARDATA_FLOAT,PARCLASS_ABSOLUTE_SIZE); // \xshad<depth>
+	proto[++i].Set("\\yshad", VARDATA_FLOAT,PARCLASS_ABSOLUTE_SIZE); // \yshad<depth>
 	
 	// \fade(<a1>,<a2>,<a3>,<t1>,<t2>,<t3>,<t4>)
 	i++;
-	proto[i].name = L"\\fade";
+	proto[i].name = "\\fade";
 	proto[i].AddParam(VARDATA_INT);
 	proto[i].AddParam(VARDATA_INT);
 	proto[i].AddParam(VARDATA_INT);
@@ -170,7 +170,7 @@ static void load_protos() {
 
 	// \move(<x1>,<y1>,<x2>,<y2>[,<t1>,<t2>])
 	i++;
-	proto[i].name = L"\\move";
+	proto[i].name = "\\move";
 	proto[i].AddParam(VARDATA_FLOAT,PARCLASS_ABSOLUTE_POS_X);
 	proto[i].AddParam(VARDATA_FLOAT,PARCLASS_ABSOLUTE_POS_Y);
 	proto[i].AddParam(VARDATA_FLOAT,PARCLASS_ABSOLUTE_POS_X);
@@ -181,7 +181,7 @@ static void load_protos() {
 	// If these are rearranged, keep rect clip and vector clip adjacent in this order
 	// \clip(<x1>,<y1>,<x2>,<y2>)
 	i++;
-	proto[i].name = L"\\clip";
+	proto[i].name = "\\clip";
 	proto[i].AddParam(VARDATA_INT,PARCLASS_ABSOLUTE_POS_X);
 	proto[i].AddParam(VARDATA_INT,PARCLASS_ABSOLUTE_POS_Y);
 	proto[i].AddParam(VARDATA_INT,PARCLASS_ABSOLUTE_POS_X);
@@ -189,13 +189,13 @@ static void load_protos() {
 
 	// \clip([<scale>,]<some drawings>)
 	i++;
-	proto[i].name = L"\\clip";
+	proto[i].name = "\\clip";
 	proto[i].AddParam(VARDATA_INT,PARCLASS_NORMAL,OPTIONAL_2);
 	proto[i].AddParam(VARDATA_TEXT,PARCLASS_DRAWING);
 
 	// \iclip(<x1>,<y1>,<x2>,<y2>)
 	i++;
-	proto[i].name = L"\\iclip";
+	proto[i].name = "\\iclip";
 	proto[i].AddParam(VARDATA_INT,PARCLASS_ABSOLUTE_POS_X);
 	proto[i].AddParam(VARDATA_INT,PARCLASS_ABSOLUTE_POS_Y);
 	proto[i].AddParam(VARDATA_INT,PARCLASS_ABSOLUTE_POS_X);
@@ -203,71 +203,71 @@ static void load_protos() {
 
 	// \iclip([<scale>,]<some drawings>)
 	i++;
-	proto[i].name = L"\\iclip";
+	proto[i].name = "\\iclip";
 	proto[i].AddParam(VARDATA_INT,PARCLASS_NORMAL,OPTIONAL_2);
 	proto[i].AddParam(VARDATA_TEXT,PARCLASS_DRAWING);
 
-	proto[++i].Set(L"\\fscx", VARDATA_FLOAT,PARCLASS_RELATIVE_SIZE_X); // \fscx<percent>
-	proto[++i].Set(L"\\fscy", VARDATA_FLOAT,PARCLASS_RELATIVE_SIZE_Y); // \fscy<percent>
+	proto[++i].Set("\\fscx", VARDATA_FLOAT,PARCLASS_RELATIVE_SIZE_X); // \fscx<percent>
+	proto[++i].Set("\\fscy", VARDATA_FLOAT,PARCLASS_RELATIVE_SIZE_Y); // \fscy<percent>
 	// \pos(<x>,<y>)
 	i++;
-	proto[i].name = L"\\pos";
+	proto[i].name = "\\pos";
 	proto[i].AddParam(VARDATA_FLOAT,PARCLASS_ABSOLUTE_POS_X);
 	proto[i].AddParam(VARDATA_FLOAT,PARCLASS_ABSOLUTE_POS_Y);
 
 	// \org(<x>,<y>)
 	i++;
-	proto[i].name = L"\\org";
+	proto[i].name = "\\org";
 	proto[i].AddParam(VARDATA_INT,PARCLASS_ABSOLUTE_POS_X);
 	proto[i].AddParam(VARDATA_INT,PARCLASS_ABSOLUTE_POS_Y);
 
-	proto[++i].Set(L"\\pbo", VARDATA_INT,PARCLASS_ABSOLUTE_POS_Y); // \pbo<y>
+	proto[++i].Set("\\pbo", VARDATA_INT,PARCLASS_ABSOLUTE_POS_Y); // \pbo<y>
 	// \fad(<t1>,<t2>)
 	i++;
-	proto[i].name = L"\\fad";
+	proto[i].name = "\\fad";
 	proto[i].AddParam(VARDATA_INT,PARCLASS_RELATIVE_TIME_START);
 	proto[i].AddParam(VARDATA_INT,PARCLASS_RELATIVE_TIME_END);
 
-	proto[++i].Set(L"\\fsp", VARDATA_FLOAT,PARCLASS_ABSOLUTE_SIZE); // \fsp<pixels>
-	proto[++i].Set(L"\\frx", VARDATA_FLOAT); // \frx<degrees>
-	proto[++i].Set(L"\\fry", VARDATA_FLOAT); // \fry<degrees>
-	proto[++i].Set(L"\\frz", VARDATA_FLOAT); // \frz<degrees>
-	proto[++i].Set(L"\\fr", VARDATA_FLOAT); // \fr<degrees>
-	proto[++i].Set(L"\\fax", VARDATA_FLOAT); // \fax<factor>
-	proto[++i].Set(L"\\fay", VARDATA_FLOAT); // \fay<factor>
-	proto[++i].Set(L"\\1c", VARDATA_TEXT); // \1c&H<bbggrr>&
-	proto[++i].Set(L"\\2c", VARDATA_TEXT); // \2c&H<bbggrr>&
-	proto[++i].Set(L"\\3c", VARDATA_TEXT); // \3c&H<bbggrr>&
-	proto[++i].Set(L"\\4c", VARDATA_TEXT); // \4c&H<bbggrr>&
-	proto[++i].Set(L"\\1a", VARDATA_TEXT); // \1a&H<aa>&
-	proto[++i].Set(L"\\2a", VARDATA_TEXT); // \2a&H<aa>&
-	proto[++i].Set(L"\\3a", VARDATA_TEXT); // \3a&H<aa>&
-	proto[++i].Set(L"\\4a", VARDATA_TEXT); // \4a&H<aa>&
-	proto[++i].Set(L"\\fe", VARDATA_TEXT); // \fe<charset>
-	proto[++i].Set(L"\\ko", VARDATA_INT,PARCLASS_KARAOKE); // \ko<duration>
-	proto[++i].Set(L"\\kf", VARDATA_INT,PARCLASS_KARAOKE); // \kf<duration>
-	proto[++i].Set(L"\\be", VARDATA_INT); // \be<strength>
-	proto[++i].Set(L"\\blur", VARDATA_FLOAT); // \blur<strength>
-	proto[++i].Set(L"\\fn", VARDATA_TEXT); // \fn<name>
-	proto[++i].Set(L"\\fs+", VARDATA_FLOAT); // \fs+<size>
-	proto[++i].Set(L"\\fs-", VARDATA_FLOAT); // \fs-<size>
-	proto[++i].Set(L"\\fs", VARDATA_FLOAT,PARCLASS_ABSOLUTE_SIZE); // \fs<size>
-	proto[++i].Set(L"\\an", VARDATA_INT); // \an<alignment>
-	proto[++i].Set(L"\\c", VARDATA_TEXT); // \c&H<bbggrr>&
-	proto[++i].Set(L"\\b", VARDATA_INT); // \b<0/1/weight>
-	proto[++i].Set(L"\\i", VARDATA_BOOL); // \i<0/1>
-	proto[++i].Set(L"\\u", VARDATA_BOOL); // \u<0/1>
-	proto[++i].Set(L"\\s", VARDATA_BOOL); // \s<0/1>
-	proto[++i].Set(L"\\a", VARDATA_INT); // \a<alignment>
-	proto[++i].Set(L"\\k", VARDATA_INT,PARCLASS_KARAOKE); // \k<duration>
-	proto[++i].Set(L"\\K", VARDATA_INT,PARCLASS_KARAOKE); // \K<duration>
-	proto[++i].Set(L"\\q", VARDATA_INT); // \q<0-3>
-	proto[++i].Set(L"\\p", VARDATA_INT); // \p<n>
-	proto[++i].Set(L"\\r", VARDATA_TEXT); // \r[<name>]
+	proto[++i].Set("\\fsp", VARDATA_FLOAT,PARCLASS_ABSOLUTE_SIZE); // \fsp<pixels>
+	proto[++i].Set("\\frx", VARDATA_FLOAT); // \frx<degrees>
+	proto[++i].Set("\\fry", VARDATA_FLOAT); // \fry<degrees>
+	proto[++i].Set("\\frz", VARDATA_FLOAT); // \frz<degrees>
+	proto[++i].Set("\\fr", VARDATA_FLOAT); // \fr<degrees>
+	proto[++i].Set("\\fax", VARDATA_FLOAT); // \fax<factor>
+	proto[++i].Set("\\fay", VARDATA_FLOAT); // \fay<factor>
+	proto[++i].Set("\\1c", VARDATA_TEXT); // \1c&H<bbggrr>&
+	proto[++i].Set("\\2c", VARDATA_TEXT); // \2c&H<bbggrr>&
+	proto[++i].Set("\\3c", VARDATA_TEXT); // \3c&H<bbggrr>&
+	proto[++i].Set("\\4c", VARDATA_TEXT); // \4c&H<bbggrr>&
+	proto[++i].Set("\\1a", VARDATA_TEXT); // \1a&H<aa>&
+	proto[++i].Set("\\2a", VARDATA_TEXT); // \2a&H<aa>&
+	proto[++i].Set("\\3a", VARDATA_TEXT); // \3a&H<aa>&
+	proto[++i].Set("\\4a", VARDATA_TEXT); // \4a&H<aa>&
+	proto[++i].Set("\\fe", VARDATA_TEXT); // \fe<charset>
+	proto[++i].Set("\\ko", VARDATA_INT,PARCLASS_KARAOKE); // \ko<duration>
+	proto[++i].Set("\\kf", VARDATA_INT,PARCLASS_KARAOKE); // \kf<duration>
+	proto[++i].Set("\\be", VARDATA_INT); // \be<strength>
+	proto[++i].Set("\\blur", VARDATA_FLOAT); // \blur<strength>
+	proto[++i].Set("\\fn", VARDATA_TEXT); // \fn<name>
+	proto[++i].Set("\\fs+", VARDATA_FLOAT); // \fs+<size>
+	proto[++i].Set("\\fs-", VARDATA_FLOAT); // \fs-<size>
+	proto[++i].Set("\\fs", VARDATA_FLOAT,PARCLASS_ABSOLUTE_SIZE); // \fs<size>
+	proto[++i].Set("\\an", VARDATA_INT); // \an<alignment>
+	proto[++i].Set("\\c", VARDATA_TEXT); // \c&H<bbggrr>&
+	proto[++i].Set("\\b", VARDATA_INT); // \b<0/1/weight>
+	proto[++i].Set("\\i", VARDATA_BOOL); // \i<0/1>
+	proto[++i].Set("\\u", VARDATA_BOOL); // \u<0/1>
+	proto[++i].Set("\\s", VARDATA_BOOL); // \s<0/1>
+	proto[++i].Set("\\a", VARDATA_INT); // \a<alignment>
+	proto[++i].Set("\\k", VARDATA_INT,PARCLASS_KARAOKE); // \k<duration>
+	proto[++i].Set("\\K", VARDATA_INT,PARCLASS_KARAOKE); // \K<duration>
+	proto[++i].Set("\\q", VARDATA_INT); // \q<0-3>
+	proto[++i].Set("\\p", VARDATA_INT); // \p<n>
+	proto[++i].Set("\\r", VARDATA_TEXT); // \r[<name>]
 
 	// \t([<t1>,<t2>,][<accel>,]<style modifiers>)
 	i++;
-	proto[i].name = L"\\t";
+	proto[i].name = "\\t";
 	proto[i].AddParam(VARDATA_INT,PARCLASS_RELATIVE_TIME_START,OPTIONAL_3 | OPTIONAL_4);
 	proto[i].AddParam(VARDATA_INT,PARCLASS_RELATIVE_TIME_START,OPTIONAL_3 | OPTIONAL_4);
 	proto[i].AddParam(VARDATA_FLOAT,PARCLASS_NORMAL,OPTIONAL_2 | OPTIONAL_4);
@@ -315,7 +315,7 @@ std::vector<wxString> tokenize(const wxString &text) {
 	if (text.empty()) {
 		return paramList;
 	}
-	if (text[0] != L'(') {
+	if (text[0] != '(') {
 		// There's just one parameter (because there's no parentheses)
 		// This means text is all our parameters
 		wxString param(text);
@@ -335,12 +335,12 @@ std::vector<wxString> tokenize(const wxString &text) {
 		while (i < textlen && parDepth > 0) {
 			wxChar c = text[i];
 			// parDepth 1 is where we start, and the tag-level we're interested in parsing on
-			if (c == L',' && parDepth == 1) break;
-			if (c == _T('(')) parDepth++;
-			else if (c == _T(')')) {
+			if (c == ',' && parDepth == 1) break;
+			if (c == '(') parDepth++;
+			else if (c == ')') {
 				parDepth--;
 				if (parDepth < 0) {
-					wxLogWarning(L"Unmatched parenthesis near '%s'!\nTag-parsing incomplete.", text.SubString(i, 10).c_str());
+					wxLogWarning("Unmatched parenthesis near '%s'!\nTag-parsing incomplete.", text.SubString(i, 10).c_str());
 					return paramList;
 				}
 				else if (parDepth == 0) {
@@ -372,7 +372,7 @@ void AssOverrideTag::ParseParameters(const wxString &text, AssOverrideTagProto::
 
 	int parsFlag = 1 << (totalPars - 1); // Get optional parameters flag
 	// vector (i)clip is the second clip prototype in the list
-	if ((Name == L"\\clip" || Name == L"\\iclip") && totalPars != 4) {
+	if ((Name == "\\clip" || Name == "\\iclip") && totalPars != 4) {
 		++proto;
 	}
 
@@ -399,7 +399,7 @@ void AssOverrideTag::ParseParameters(const wxString &text, AssOverrideTagProto::
 		}
 
 		wxChar firstChar = curtok[0];
-		bool auto4 = (firstChar == _T('!') || firstChar == _T('$') || firstChar == _T('%')) && curproto->type != VARDATA_BLOCK;
+		bool auto4 = (firstChar == '!' || firstChar == '$' || firstChar == '%') && curproto->type != VARDATA_BLOCK;
 		if (auto4) {
 			newparam->Set(curtok);
 		}
@@ -445,27 +445,27 @@ AssOverrideTag::operator wxString() {
 
 	// Determine if it needs parentheses
 	bool parentheses =
-		Name == L"\\t" ||
-		Name == L"\\pos" ||
-		Name == L"\\fad" ||
-		Name == L"\\org" ||
-		Name == L"\\clip" ||
-		Name == L"\\iclip" ||
-		Name == L"\\move" ||
-		Name == L"\\fade";
-	if (parentheses) result += L"(";
+		Name == "\\t" ||
+		Name == "\\pos" ||
+		Name == "\\fad" ||
+		Name == "\\org" ||
+		Name == "\\clip" ||
+		Name == "\\iclip" ||
+		Name == "\\move" ||
+		Name == "\\fade";
+	if (parentheses) result += "(";
 
 	// Add parameters
 	bool any = false;
 	for (std::vector<AssOverrideParameter*>::iterator cur=Params.begin();cur!=Params.end();cur++) {
 		if ((*cur)->GetType() != VARDATA_NONE && !(*cur)->omitted) {
 			result += (*cur)->Get<wxString>();
-			result += L",";
+			result += ",";
 			any = true;
 		}
 	}
 	if (any) result = result.Left(result.Length()-1);
 
-	if (parentheses) result += L")";
+	if (parentheses) result += ")";
 	return result;
 }

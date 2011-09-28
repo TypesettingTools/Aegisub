@@ -396,9 +396,9 @@ enum TagFoundType {
 template<class T>
 static TagFoundType get_value(const AssDialogue *line, wxString tag, size_t n, ...) {
 	wxString alt;
-	if (tag == L"\\pos") alt = L"\\move";
-	else if (tag == L"\\an") alt = L"\\a";
-	else if (tag == L"\\clip") alt = L"\\iclip";
+	if (tag == "\\pos") alt = "\\move";
+	else if (tag == "\\an") alt = "\\a";
+	else if (tag == "\\clip") alt = "\\iclip";
 
 	for (size_t i = 0; i < line->Blocks.size(); i++) {
 		const AssDialogueBlockOverride *ovr = dynamic_cast<const AssDialogueBlockOverride*>(line->Blocks[i]);
@@ -520,9 +520,9 @@ void VisualTool<FeatureType>::GetLineRotation(AssDialogue *diag,float &rx,float 
 
 	diag->ParseASSTags();
 
-	get_value<float>(diag, L"\\frx", 1, &rx);
-	get_value<float>(diag, L"\\fry", 1, &ry);
-	get_value<float>(diag, L"\\frz", 1, &rz);
+	get_value<float>(diag, "\\frx", 1, &rx);
+	get_value<float>(diag, "\\fry", 1, &ry);
+	get_value<float>(diag, "\\frz", 1, &rz);
 
 	diag->ClearBlocks();
 }
@@ -539,8 +539,8 @@ void VisualTool<FeatureType>::GetLineScale(AssDialogue *diag,float &scalX,float 
 
 	diag->ParseASSTags();
 
-	get_value<float>(diag, L"\\fscx", 1, &scalX);
-	get_value<float>(diag, L"\\fscy", 1, &scalY);
+	get_value<float>(diag, "\\fscx", 1, &scalX);
+	get_value<float>(diag, "\\fscy", 1, &scalY);
 
 	diag->ClearBlocks();
 }
@@ -555,7 +555,7 @@ void VisualTool<FeatureType>::GetLineClip(AssDialogue *diag,int &x1,int &y1,int 
 	inverse = false;
 
 	diag->ParseASSTags();
-	inverse = get_value<int>(diag, L"\\clip", 4, &x1, &y1, &x2, &y2) == ALT_TAG_FOUND;
+	inverse = get_value<int>(diag, "\\clip", 4, &x1, &y1, &x2, &y2) == ALT_TAG_FOUND;
 	diag->ClearBlocks();
 
 	parent->FromScriptCoords(&x1, &y1);
@@ -569,15 +569,15 @@ wxString VisualTool<FeatureType>::GetLineVectorClip(AssDialogue *diag,int &scale
 	diag->ParseASSTags();
 
 	int x1, y1, x2, y2;
-	TagFoundType res = get_value<int>(diag, L"\\clip", 4, &x1, &y1, &x2, &y2);
+	TagFoundType res = get_value<int>(diag, "\\clip", 4, &x1, &y1, &x2, &y2);
 	if (res) {
 		inverse = res == ALT_TAG_FOUND;
 		diag->ClearBlocks();
-		return wxString::Format(L"m %d %d l %d %d %d %d %d %d", x1, y1, x2, y1, x2, y2, x1, y2);
+		return wxString::Format("m %d %d l %d %d %d %d %d %d", x1, y1, x2, y1, x2, y2, x1, y2);
 	}
 	wxString result;
 	wxString scaleStr;
-	res = get_value<wxString>(diag, L"\\clip", 2, &scaleStr, &result);
+	res = get_value<wxString>(diag, "\\clip", 2, &scaleStr, &result);
 	inverse = res == ALT_TAG_FOUND;
 	if (!scaleStr.empty()) {
 		long s;
@@ -596,12 +596,12 @@ void VisualTool<FeatureType>::SetOverride(AssDialogue* line, wxString tag, wxStr
 	if (!line) return;
 
 	wxString removeTag;
-	if (tag == L"\\1c") removeTag = L"\\c";
-	else if (tag == L"\\fr") removeTag = L"\\frz";
-	else if (tag == L"\\pos") removeTag = L"\\move";
-	else if (tag == L"\\move") removeTag = L"\\pos";
-	else if (tag == L"\\clip") removeTag = L"\\iclip";
-	else if (tag == L"\\iclip") removeTag = L"\\clip";
+	if (tag == "\\1c") removeTag = "\\c";
+	else if (tag == "\\fr") removeTag = "\\frz";
+	else if (tag == "\\pos") removeTag = "\\move";
+	else if (tag == "\\move") removeTag = "\\pos";
+	else if (tag == "\\clip") removeTag = "\\iclip";
+	else if (tag == "\\iclip") removeTag = "\\clip";
 
 	wxString insert = tag + value;
 
@@ -615,7 +615,7 @@ void VisualTool<FeatureType>::SetOverride(AssDialogue* line, wxString tag, wxStr
 	assert(dynamic_cast<AssDialogueBlockDrawing*>(block) == NULL);
 
 	if (plain) {
-		line->Text = L"{" + insert + L"}" + line->Text;
+		line->Text = "{" + insert + "}" + line->Text;
 	}
 	else if (ovr) {
 		// Remove old of same

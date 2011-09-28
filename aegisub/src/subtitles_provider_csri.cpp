@@ -78,7 +78,7 @@ void CSRISubtitlesProvider::LoadSubtitles(AssFile *subs) {
 	if (!renderer) {
 		renderer = csri_renderer_default();
 		if (!renderer) {
-			throw _T("No CSRI renderer available, cannot show subtitles. Try installing one or switch to another subtitle provider.");
+			throw "No CSRI renderer available, cannot show subtitles. Try installing one or switch to another subtitle provider.";
 		}
 	}
 
@@ -92,9 +92,9 @@ void CSRISubtitlesProvider::LoadSubtitles(AssFile *subs) {
 	// Open from disk
 	else {
 		if (tempfile.empty()) {
-			tempfile = wxFileName::CreateTempFileName(_T("aegisub"));
+			tempfile = wxFileName::CreateTempFileName("aegisub");
 			wxRemoveFile(tempfile);
-			tempfile += L".ass";
+			tempfile += ".ass";
 		}
 		subs->Save(tempfile,false,false,wxSTRING_ENCODING);
 		instance.reset(csri_open_file(renderer,tempfile.utf8_str(),NULL), &csri_close);

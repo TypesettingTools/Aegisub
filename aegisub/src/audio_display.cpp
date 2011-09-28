@@ -252,7 +252,7 @@ public:
 	int GetHeight() const
 	{
 		int width, height;
-		display->GetTextExtent(_T("0123456789:."), &width, &height);
+		display->GetTextExtent("0123456789:.", &width, &height);
 		return height + 4;
 	}
 
@@ -397,21 +397,21 @@ public:
 
 				if (changed_hour)
 				{
-					time_string = wxString::Format(_T("%d:%02d:"), mark_hour, mark_minute);
+					time_string = wxString::Format("%d:%02d:", mark_hour, mark_minute);
 					last_hour = mark_hour;
 					last_minute = mark_minute;
 				}
 				else if (changed_minute)
 				{
-					time_string = wxString::Format(_T("%d:"), mark_minute);
+					time_string = wxString::Format("%d:", mark_minute);
 					last_minute = mark_minute;
 				}
 				if (scale_minor >= Sc_Decisecond)
-					time_string += wxString::Format(_T("%02d"), (int)mark_second);
+					time_string += wxString::Format("%02d", (int)mark_second);
 				else if (scale_minor == Sc_Centisecond)
-					time_string += wxString::Format(_T("%02.1f"), mark_second);
+					time_string += wxString::Format("%02.1f", mark_second);
 				else
-					time_string += wxString::Format(_T("%02.2f"), mark_second);
+					time_string += wxString::Format("%02.2f", mark_second);
 
 				int tw, th;
 				dc.GetTextExtent(time_string, &tw, &th);

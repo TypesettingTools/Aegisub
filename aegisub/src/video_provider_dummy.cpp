@@ -121,11 +121,11 @@ void DummyVideoProvider::Create(double _fps, int frames, int _width, int _height
 DummyVideoProvider::DummyVideoProvider(wxString filename)
 {
 	wxString params;
-	if (!filename.StartsWith(_T("?dummy:"), &params)) {
+	if (!filename.StartsWith("?dummy:", &params)) {
 		throw agi::FileNotFoundError("Attempted creating dummy video provider with non-dummy filename");
 	}
 
-	wxStringTokenizer t(params, _T(":"));
+	wxStringTokenizer t(params, ":");
 	if (t.CountTokens() < 7) {
 		throw VideoOpenError("Too few fields in dummy video parameter list");
 	}
@@ -170,7 +170,7 @@ DummyVideoProvider::DummyVideoProvider(wxString filename)
 	}
 
 	field = t.GetNextToken();
-	if (field == _T("c")) {
+	if (field == "c") {
 		pattern = true;
 	}
 
@@ -205,7 +205,7 @@ DummyVideoProvider::~DummyVideoProvider() {
 /// @return 
 ///
 wxString DummyVideoProvider::MakeFilename(double fps, int frames, int _width, int _height, const wxColour &colour, bool pattern) {
-	return wxString::Format(_T("?dummy:%f:%d:%d:%d:%d:%d:%d:%s"), fps, frames, _width, _height, colour.Red(), colour.Green(), colour.Blue(), pattern?_T("c"):_T(""));
+	return wxString::Format("?dummy:%f:%d:%d:%d:%d:%d:%d:%s", fps, frames, _width, _height, colour.Red(), colour.Green(), colour.Blue(), pattern?"c":"");
 }
 
 /// @brief Get frame 

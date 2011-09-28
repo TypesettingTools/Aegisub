@@ -58,7 +58,7 @@
 void FFT::DoTransform (size_t n_samples,float *input,float *output_r,float *output_i,bool inverse) {
 	// Check if it's power of two
 	if (!IsPowerOfTwo(n_samples)) {
-		throw L"FFT requires power of two input.";
+		throw "FFT requires power of two input.";
 	}
 
 	// Inverse transform

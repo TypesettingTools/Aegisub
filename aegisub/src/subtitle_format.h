@@ -133,13 +133,13 @@ public:
 	/// @param filename      
 	/// @param forceEncoding 
 	///
-	virtual void ReadFile(wxString filename,wxString forceEncoding=_T("")) { };
+	virtual void ReadFile(wxString filename,wxString forceEncoding="") { };
 
 	/// @brief DOCME
 	/// @param filename 
 	/// @param encoding 
 	///
-	virtual void WriteFile(wxString filename,wxString encoding=_T("")) { };
+	virtual void WriteFile(wxString filename,wxString encoding="") { };
 
 	static SubtitleFormat *GetReader(wxString filename);
 	static SubtitleFormat *GetWriter(wxString filename);

@@ -57,8 +57,8 @@ AssAttachment::AssAttachment(wxString _name) {
 	wxFileName fname(GetFileName());
 	wxString ext = fname.GetExt().Lower();
 	wxString name;
-	if (ext == _T("ttf")) {
-		name = fname.GetName() + _T("_0.") + ext;
+	if (ext == "ttf") {
+		name = fname.GetName() + "_0." + ext;
 	}
 	else name = _name;
 
@@ -133,9 +133,9 @@ const wxString AssAttachment::GetEntryData() const {
 
 	// Write header
 	wxString entryData;
-	if (group == _T("[Fonts]")) entryData = _T("fontname: ");
-	else entryData = _T("filename: ");
-	entryData += filename + _T("\r\n");
+	if (group == "[Fonts]") entryData = "fontname: ";
+	else entryData = "filename: ";
+	entryData += filename + "\r\n";
 
 	// Read three bytes
 	while (pos < size) {
@@ -162,13 +162,13 @@ const wxString AssAttachment::GetEntryData() const {
 
 		// Convert to text
 		for (int i=0;i<toWrite;i++) {
-			entryData += wxChar(dst[i]+33);
+			entryData += dst[i]+33;
 			written++;
 
 			// Line break
 			if (written == 80 && pos < size) {
 				written = 0;
-				entryData += _T("\r\n");
+				entryData += "\r\n";
 			}
 		}
 	}
@@ -201,7 +201,7 @@ void AssAttachment::Import(wxString filename) {
 
 	// Open file and get size
 	wxFileInputStream fp(filename);
-	if (!fp.Ok()) throw _T("Failed opening file");
+	if (!fp.Ok()) throw "Failed opening file";
 	int size = fp.SeekI(0,wxFromEnd);
 	fp.SeekI(0,wxFromStart);
 
@@ -218,18 +218,18 @@ void AssAttachment::Import(wxString filename) {
 ///
 wxString AssAttachment::GetFileName(bool raw) {
 	// Raw
-	if (raw || filename.Right(4).Lower() != _T(".ttf")) return filename;
+	if (raw || filename.Right(4).Lower() != ".ttf") return filename;
 
 	// Remove stuff after last underscore if it's a font
 	int lastUnder = -1;
 	for (size_t i=0;i<filename.Length();i++) {
-		if (filename[i] == _T('_')) lastUnder = i;
+		if (filename[i] == '_') lastUnder = i;
 	}
 
 	// Underline found
 	wxString final = filename;
 	if (lastUnder != -1) {
-		final = filename.Left(lastUnder) + _T(".ttf");
+		final = filename.Left(lastUnder) + ".ttf";
 	}
 	return final;
 }

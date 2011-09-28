@@ -96,12 +96,12 @@ namespace config {
 // wxWidgets macro
 IMPLEMENT_APP(AegisubApp)
 
-static const wchar_t *LastStartupState = NULL;
+static const char *LastStartupState = NULL;
 
 #ifdef WITH_STARTUPLOG
 
 /// DOCME
-#define StartupLog(a) MessageBox(0, a, _T("Aegisub startup log"), 0)
+#define StartupLog(a) MessageBox(0, L ## a, L"Aegisub startup log", 0)
 #else
 #define StartupLog(a) LastStartupState = a
 #endif
@@ -165,13 +165,13 @@ static void wxAssertHandler(const wxString &file, int line, const wxString &func
 bool AegisubApp::OnInit() {
 	// App name (yeah, this is a little weird to get rid of an odd warning)
 #if defined(__WXMSW__) || defined(__WXMAC__)
-	SetAppName(_T("Aegisub"));
+	SetAppName("Aegisub");
 #else
-	SetAppName(_T("aegisub"));
+	SetAppName("aegisub");
 #endif
 
 	// logging.
-	const std::string path_log(StandardPaths::DecodePath(_T("?user/log/")));
+	const std::string path_log(StandardPaths::DecodePath("?user/log/"));
 	wxFileName::Mkdir(path_log, 0777, wxPATH_MKDIR_FULL);
 	agi::log::log = new agi::log::LogSink(path_log);
 
@@ -189,7 +189,7 @@ bool AegisubApp::OnInit() {
 	cmd::init_builtin_commands();
 
 	// Init hotkeys.
-	const std::string conf_user_hotkey(StandardPaths::DecodePath(_T("?user/hotkey.json")));
+	const std::string conf_user_hotkey(StandardPaths::DecodePath("?user/hotkey.json"));
 	agi::hotkey::hotkey = new agi::hotkey::Hotkey(conf_user_hotkey, GET_DEFAULT_CONFIG(default_hotkey));
 
 	// Init icons.
@@ -198,13 +198,13 @@ bool AegisubApp::OnInit() {
 	// Install assertion handler
 //	wxSetAssertHandler(wxAssertHandler);
 
-	const std::string conf_mru(StandardPaths::DecodePath(_T("?user/mru.json")));
+	const std::string conf_mru(StandardPaths::DecodePath("?user/mru.json"));
 	config::mru = new agi::MRUManager(conf_mru, GET_DEFAULT_CONFIG(default_mru));
 
 	// Set config file
-	StartupLog(_T("Load configuration"));
+	StartupLog("Load configuration");
 	try {
-		const std::string conf_user(StandardPaths::DecodePath(_T("?user/config.json")));
+		const std::string conf_user(StandardPaths::DecodePath("?user/config.json"));
 		config::opt = new agi::Options(conf_user, GET_DEFAULT_CONFIG(default_config));
 	} catch (agi::Exception& e) {
 		LOG_E("config/init") << "Caught exception: " << e.GetName() << " -> " << e.GetMessage();
@@ -213,14 +213,14 @@ bool AegisubApp::OnInit() {
 #ifdef __WXMSW__
 	// Try loading configuration from the install dir if one exists there
 	try {
-		const std::string conf_local(StandardPaths::DecodePath(_T("?data/config.json")));
+		const std::string conf_local(StandardPaths::DecodePath("?data/config.json"));
 		std::ifstream* localConfig = agi::io::Open(conf_local);
 		config::opt->ConfigNext(*localConfig);
 		delete localConfig;
 
 		if (OPT_GET("App/Local Config")->GetBool()) {
 			// Local config, make ?user mean ?data so all user settings are placed in install dir
-			StandardPaths::SetPathValue(_T("?user"), StandardPaths::DecodePath(_T("?data")));
+			StandardPaths::SetPathValue("?user", StandardPaths::DecodePath("?data"));
 		}
 	} catch (agi::acs::AcsError const&) {
 		// File doesn't exist or we can't read it
@@ -231,7 +231,7 @@ bool AegisubApp::OnInit() {
 		config::opt->ConfigUser();
 	}
 	catch (agi::Exception const& err) {
-		wxMessageBox(L"Configuration file is invalid. Error reported:\n" + lagi_wxString(err.GetMessage()), L"Error");
+		wxMessageBox("Configuration file is invalid. Error reported:\n" + lagi_wxString(err.GetMessage()), "Error");
 	}
 
 
@@ -239,29 +239,29 @@ bool AegisubApp::OnInit() {
 	SetThreadName((DWORD) -1,"AegiMain");
 #endif
 
-	StartupLog(_T("Inside OnInit"));
+	StartupLog("Inside OnInit");
 	frame = NULL;
 	try {
 		// Initialize randomizer
-		StartupLog(_T("Initialize random generator"));
+		StartupLog("Initialize random generator");
 		srand(time(NULL));
 
 		// locale for loading options
-		StartupLog(_T("Set initial locale"));
+		StartupLog("Set initial locale");
 		setlocale(LC_NUMERIC, "C");
 		setlocale(LC_CTYPE, "C");
 
 		// Crash handling
 #if !defined(_DEBUG) || defined(WITH_EXCEPTIONS)
-		StartupLog(_T("Install exception handler"));
+		StartupLog("Install exception handler");
 		wxHandleFatalExceptions(true);
 #endif
 
-		StartupLog(_T("Store options back"));
+		StartupLog("Store options back");
 		OPT_SET("Version/Last Version")->SetInt(GetSVNRevision());
 		AssTime::UseMSPrecision = OPT_GET("App/Nonstandard Milisecond Times")->GetBool();
 
-		StartupLog(_T("Initialize final locale"));
+		StartupLog("Initialize final locale");
 
 		// Set locale
 		int lang = OPT_GET("App/Locale")->GetInt();
@@ -277,46 +277,46 @@ bool AegisubApp::OnInit() {
 
 		// Load Automation scripts
 #ifdef WITH_AUTOMATION
-		StartupLog(_T("Load global Automation scripts"));
+		StartupLog("Load global Automation scripts");
 		global_scripts = new Automation4::AutoloadScriptManager(lagi_wxString(OPT_GET("Path/Automation/Autoload")->GetString()));
 #endif
 
 		// Load export filters
-		StartupLog(L"Register export filters");
+		StartupLog("Register export filters");
 		AssExportFilterChain::Register(new AssFixStylesFilter);
 		AssExportFilterChain::Register(new AssTransformCleanInfoFilter);
 		AssExportFilterChain::Register(new AssTransformFramerateFilter);
 
 		// Get parameter subs
-		StartupLog(_T("Parse command line"));
+		StartupLog("Parse command line");
 		wxArrayString subs;
 		for (int i=1;i<argc;i++) {
 			subs.Add(argv[i]);
 		}
 
 		// Open main frame
-		StartupLog(_T("Create main window"));
+		StartupLog("Create main window");
 		frame = new FrameMain(subs);
 		SetTopWindow(frame);
 	}
 
-	catch (const wchar_t *err) {
-		wxMessageBox(err,_T("Fatal error while initializing"));
+	catch (const char *err) {
+		wxMessageBox(err,"Fatal error while initializing");
 		return false;
 	}
 	catch (agi::Exception const& e) {
-		wxMessageBox(e.GetMessage(),_T("Fatal error while initializing"));
+		wxMessageBox(e.GetMessage(),"Fatal error while initializing");
 		return false;
 	}
 
 #ifndef _DEBUG
 	catch (...) {
-		wxMessageBox(_T("Unhandled exception"),_T("Fatal error while initializing"));
+		wxMessageBox("Unhandled exception","Fatal error while initializing");
 		return false;
 	}
 #endif
 
-	StartupLog(_T("Initialization complete"));
+	StartupLog("Initialization complete");
 	return true;
 }
 
@@ -360,10 +360,10 @@ static void UnhandledExeception(bool stackWalk) {
 	if (AssFile::top) {
 		// Current filename if any.
 		wxFileName file(AssFile::top->filename);
-		if (!file.HasName()) file.SetName(_T("untitled"));
+		if (!file.HasName()) file.SetName("untitled");
 
 		// Set path and create if it doesn't exist.
-		file.SetPath(StandardPaths::DecodePath(_T("?user/recovered")));
+		file.SetPath(StandardPaths::DecodePath("?user/recovered"));
 		if (!file.DirExists()) file.Mkdir();
 
 		// Save file
@@ -372,7 +372,7 @@ static void UnhandledExeception(bool stackWalk) {
 
 #if wxUSE_STACKWALKER == 1
 		if (stackWalk) {
-			StackWalker walker(_T("Fatal exception"));
+			StackWalker walker("Fatal exception");
 			walker.WalkFromException();
 		}
 #endif
@@ -383,7 +383,7 @@ static void UnhandledExeception(bool stackWalk) {
 	else if (LastStartupState) {
 #if wxUSE_STACKWALKER == 1
 		if (stackWalk) {
-			StackWalker walker(_T("Fatal exception"));
+			StackWalker walker("Fatal exception");
 			walker.WalkFromException();
 		}
 #endif
@@ -405,7 +405,7 @@ void AegisubApp::OnFatalException() {
 
 
 void AegisubApp::HandleEvent(wxEvtHandler *handler, wxEventFunction func, wxEvent& event) const {
-#define SHOW_EXCEPTION(str) wxMessageBox(str, L"Exception in event handler", wxOK|wxICON_ERROR|wxSTAY_ON_TOP)
+#define SHOW_EXCEPTION(str) wxMessageBox(str, "Exception in event handler", wxOK|wxICON_ERROR|wxSTAY_ON_TOP)
 	try {
 		wxApp::HandleEvent(handler, func, event);
 	}
@@ -414,9 +414,6 @@ void AegisubApp::HandleEvent(wxEvtHandler *handler, wxEventFunction func, wxEven
 	}
 	catch (const std::exception &e) {
 		SHOW_EXCEPTION(wxString(e.what(), wxConvUTF8));
-	}
-	catch (const wchar_t *e) {
-		SHOW_EXCEPTION(wxString(e));
 	}
 	catch (const char *e) {
 		SHOW_EXCEPTION(wxString(e, wxConvUTF8));
@@ -436,7 +433,7 @@ void AegisubApp::HandleEvent(wxEvtHandler *handler, wxEventFunction func, wxEven
 StackWalker::StackWalker(wxString cause) {
 
 	wxFileName report_dir("");
-	report_dir.SetPath(StandardPaths::DecodePath(_T("?user/reporter")));
+	report_dir.SetPath(StandardPaths::DecodePath("?user/reporter"));
 	if (!report_dir.DirExists()) report_dir.Mkdir();
 
 	crash_text = new wxFile(StandardPaths::DecodePath("?user/crashlog.txt"), wxFile::write_append);
@@ -516,18 +513,18 @@ int AegisubApp::OnRun() {
 
 	// Catch errors
 	catch (const wxString &err) { error = err; }
-	catch (const wxChar *err) { error = err; }
-	catch (const std::exception &e) { error = wxString(_T("std::exception: ")) + wxString(e.what(),wxConvUTF8); }
+	catch (const char *err) { error = err; }
+	catch (const std::exception &e) { error = wxString("std::exception: ") + wxString(e.what(),wxConvUTF8); }
 	catch (const agi::Exception &e) { error = "agi::exception: " + lagi_wxString(e.GetChainedMessage()); }
-	catch (...) { error = _T("Program terminated in error."); }
+	catch (...) { error = "Program terminated in error."; }
 
 	// Report errors
 	if (!error.IsEmpty()) {
 		std::ofstream file;
-		file.open(wxString(StandardPaths::DecodePath(_T("?user/crashlog.txt"))).mb_str(),std::ios::out | std::ios::app);
+		file.open(wxString(StandardPaths::DecodePath("?user/crashlog.txt")).mb_str(),std::ios::out | std::ios::app);
 		if (file.is_open()) {
 			wxDateTime time = wxDateTime::Now();
-			wxString timeStr = _T("---") + time.FormatISODate() + _T(" ") + time.FormatISOTime() + _T("------------------");
+			wxString timeStr = "---" + time.FormatISODate() + " " + time.FormatISOTime() + "------------------";
 			file << std::endl << timeStr.mb_str(csConvLocal);
 			file << "\nVER - " << GetAegisubLongVersionString();
 			file << "\nEXC - Aegisub has crashed with unhandled exception \"" << error.mb_str(csConvLocal) <<"\".\n";

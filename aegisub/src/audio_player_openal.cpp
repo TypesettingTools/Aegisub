@@ -80,19 +80,19 @@ void OpenALPlayer::OpenStream()
 	// Open device
 	device = alcOpenDevice(0);
 	if (!device) {
-		throw _T("Failed opening default OpenAL device");
+		throw "Failed opening default OpenAL device";
 	}
 
 	// Create context
 	context = alcCreateContext(device, 0);
 	if (!context) {
 		alcCloseDevice(device);
-		throw _T("Failed creating OpenAL context");
+		throw "Failed creating OpenAL context";
 	}
 	if (!alcMakeContextCurrent(context)) {
 		alcDestroyContext(context);
 		alcCloseDevice(device);
-		throw _T("Failed selecting OpenAL context");
+		throw "Failed selecting OpenAL context";
 	}
 	// Clear error code
 	alGetError();
@@ -102,7 +102,7 @@ void OpenALPlayer::OpenStream()
 	if (alGetError() != AL_NO_ERROR) {
 		alcDestroyContext(context);
 		alcCloseDevice(device);
-		throw _T("Error generating OpenAL buffers");
+		throw "Error generating OpenAL buffers";
 	}
 
 	// Generate source
@@ -111,7 +111,7 @@ void OpenALPlayer::OpenStream()
 		alDeleteBuffers(num_buffers, buffers);
 		alcDestroyContext(context);
 		alcCloseDevice(device);
-		throw _T("Error generating OpenAL source");
+		throw "Error generating OpenAL source";
 	}
 
 	// Determine buffer length

@@ -65,14 +65,14 @@ struct help_bugs : public Command {
 	void operator()(agi::Context *c) {
 		if (wxGetMouseState().CmdDown()) {
 			if (wxGetMouseState().ShiftDown()) {
-				 wxMessageBox(_T("Now crashing with an access violation..."));
+				 wxMessageBox("Now crashing with an access violation...");
 				for (char *foo = (char*)0;;) *foo++ = 42;
 			} else {
-				wxMessageBox(_T("Now crashing with an unhandled exception..."));
+				wxMessageBox("Now crashing with an unhandled exception...");
 				throw c->parent;
 			}
 		}
-		AegisubApp::OpenURL(_T("http://devel.aegisub.org/"));
+		AegisubApp::OpenURL("http://devel.aegisub.org/");
 	}
 };
 
@@ -85,7 +85,7 @@ struct help_contents : public Command {
 	STR_HELP("Help topics.")
 
 	void operator()(agi::Context *c) {
-		HelpButton::OpenPage(_T("Main"));
+		HelpButton::OpenPage("Main");
 	}
 };
 
@@ -100,7 +100,7 @@ struct help_files : public Command {
 	void operator()(agi::Context *c) {
 #ifdef __WXMAC__
 		char *shared_path = agi::util::OSX_GetBundleSharedSupportDirectory();
-		wxString help_path = wxString::Format(_T("%s/doc"), wxString(shared_path, wxConvUTF8).c_str());
+		wxString help_path = wxString::Format("%s/doc", wxString(shared_path, wxConvUTF8).c_str());
 		agi::util::OSX_OpenLocation(help_path.c_str());
 		free(shared_path);
 #endif
@@ -116,7 +116,7 @@ struct help_forums : public Command {
 	STR_HELP("Visit Aegisub's forums.")
 
 	void operator()(agi::Context *c) {
-		AegisubApp::OpenURL(_T("http://forum.aegisub.org/"));
+		AegisubApp::OpenURL("http://forum.aegisub.org/");
 	}
 };
 
@@ -129,7 +129,7 @@ struct help_irc : public Command {
 	STR_HELP("Visit Aegisub's official IRC channel.")
 
 	void operator()(agi::Context *c) {
-		AegisubApp::OpenURL(_T("irc://irc.rizon.net/aegisub"));
+		AegisubApp::OpenURL("irc://irc.rizon.net/aegisub");
 	}
 };
 
@@ -153,7 +153,7 @@ struct help_website : public Command {
 	STR_HELP("Visit Aegisub's official website.")
 
 	void operator()(agi::Context *c) {
-		AegisubApp::OpenURL(_T("http://www.aegisub.org/"));
+		AegisubApp::OpenURL("http://www.aegisub.org/");
 	}
 };
 }

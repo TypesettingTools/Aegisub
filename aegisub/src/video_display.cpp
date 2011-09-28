@@ -85,14 +85,14 @@ int attribList[] = { WX_GL_RGBA , WX_GL_DOUBLEBUFFER, WX_GL_STENCIL_SIZE, 8, 0 }
 /// @brief An OpenGL error occurred while uploading or displaying a frame
 class OpenGlException : public agi::Exception {
 public:
-	OpenGlException(const wxChar *func, int err)
+	OpenGlException(const char *func, int err)
 		: agi::Exception(STD_STR(wxString::Format("%s failed with error code %d", func, err)))
 	{ }
 	const char * GetName() const { return "video/opengl"; }
 	Exception * Copy() const { return new OpenGlException(*this); }
 };
 
-#define E(cmd) cmd; if (GLenum err = glGetError()) throw OpenGlException(L###cmd, err)
+#define E(cmd) cmd; if (GLenum err = glGetError()) throw OpenGlException(#cmd, err)
 
 VideoDisplay::VideoDisplay(
 	VideoBox *box,
@@ -188,16 +188,16 @@ void VideoDisplay::UploadFrameData(FrameReadyEvent &evt) {
 	}
 	catch (const VideoOutInitException& err) {
 		wxLogError(
-			L"Failed to initialize video display. Closing other running "
-			L"programs and updating your video card drivers may fix this.\n"
-			L"Error message reported: %s",
+			"Failed to initialize video display. Closing other running "
+			"programs and updating your video card drivers may fix this.\n"
+			"Error message reported: %s",
 			err.GetMessage().c_str());
 		con->videoController->Reset();
 	}
 	catch (const VideoOutRenderException& err) {
 		wxLogError(
-			L"Could not upload video frame to graphics card.\n"
-			L"Error message reported: %s",
+			"Could not upload video frame to graphics card.\n"
+			"Error message reported: %s",
 			err.GetMessage().c_str());
 	}
 	Render();
@@ -256,29 +256,29 @@ void VideoDisplay::Render() try {
 }
 catch (const VideoOutException &err) {
 	wxLogError(
-		L"An error occurred trying to render the video frame on the screen.\n"
-		L"Error message reported: %s",
+		"An error occurred trying to render the video frame on the screen.\n"
+		"Error message reported: %s",
 		err.GetMessage().c_str());
 	con->videoController->Reset();
 }
 catch (const OpenGlException &err) {
 	wxLogError(
-		L"An error occurred trying to render visual overlays on the screen.\n"
-		L"Error message reported: %s",
+		"An error occurred trying to render visual overlays on the screen.\n"
+		"Error message reported: %s",
 		err.GetMessage().c_str());
 	con->videoController->Reset();
 }
-catch (const wchar_t *err) {
+catch (const char *err) {
 	wxLogError(
-		L"An error occurred trying to render the video frame on the screen.\n"
-		L"Error message reported: %s",
+		"An error occurred trying to render the video frame on the screen.\n"
+		"Error message reported: %s",
 		err);
 	con->videoController->Reset();
 }
 catch (...) {
 	wxLogError(
-		L"An error occurred trying to render the video frame to screen.\n"
-		L"No further error message given.");
+		"An error occurred trying to render the video frame to screen.\n"
+		"No further error message given.");
 	con->videoController->Reset();
 }
 
@@ -454,7 +454,7 @@ void VideoDisplay::SetZoom(double value) {
 }
 void VideoDisplay::SetZoomFromBox(wxCommandEvent &) {
 	wxString strValue = zoomBox->GetValue();
-	strValue.EndsWith(L"%", &strValue);
+	strValue.EndsWith("%", &strValue);
 	double value;
 	if (strValue.ToDouble(&value)) {
 		zoomValue = value / 100.;

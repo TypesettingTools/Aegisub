@@ -257,7 +257,7 @@ OpenGLTextTexture::OpenGLTextTexture(OpenGLTextGlyph &glyph) {
 
 	// Allocate texture
 	glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA8,width,height,0,GL_ALPHA,GL_UNSIGNED_BYTE,NULL);
-	if (glGetError()) throw _T("Internal OpenGL text renderer error: Could not allocate Text Texture");
+	if (glGetError()) throw "Internal OpenGL text renderer error: Could not allocate Text Texture";
 
 	TryToInsert(glyph);
 }
@@ -337,7 +337,7 @@ void OpenGLTextTexture::Insert(OpenGLTextGlyph &glyph) {
 	// Upload image to video memory
 	glBindTexture(GL_TEXTURE_2D, tex);
 	glTexSubImage2D(GL_TEXTURE_2D,0,x,y,imgw,imgh,GL_LUMINANCE_ALPHA,GL_UNSIGNED_BYTE,&alpha[0]);
-	if (glGetError()) throw _T("Internal OpenGL text renderer error: Error uploading glyph data to video memory.");
+	if (glGetError()) throw "Internal OpenGL text renderer error: Error uploading glyph data to video memory.";
 }
 
 /// Draw a glyph at (x,y)

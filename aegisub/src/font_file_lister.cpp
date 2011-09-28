@@ -123,7 +123,7 @@ wxArrayString FontFileLister::CacheGetFilesWithFace(wxString facename) {
 	FontMap::iterator iter = fontTable.find(facename);
 	if (iter != fontTable.end()) return iter->second;
 	else {
-		iter = fontTable.find(_T("*")+facename);
+		iter = fontTable.find("*"+facename);
 		if (iter != fontTable.end()) return iter->second;
 		return wxArrayString();
 	}
@@ -149,7 +149,7 @@ void FontFileLister::AddFont(wxString filename,wxString facename) {
 	// See if it's a valid facename
 	facename.Trim(true).Trim(false);
 	if (facename.IsEmpty()) return;
-	if (facename.Lower().StartsWith(_T("copyright "))) return;
+	if (facename.Lower().StartsWith("copyright ")) return;
 
 	// Add filename to general list
 	if (fontFiles.Index(filename) == wxNOT_FOUND) {
@@ -178,18 +178,18 @@ bool FontFileLister::IsFilenameCached(wxString filename) {
 void FontFileLister::SaveCache() {
 	try {
 		// Open file
-		TextFileWriter file(StandardPaths::DecodePath(_T("?user/fontscache.dat")));
+		TextFileWriter file(StandardPaths::DecodePath("?user/fontscache.dat"));
 
 		// For each face...
 		for (FontMap::iterator iter = fontTable.begin();iter!=fontTable.end();iter++) {
 			// Write face name
-			wxString line = iter->first + _T("?");
+			wxString line = iter->first + "?";
 			size_t len = iter->second.Count();
 
 			// Write file names
 			for (size_t i=0;i<len;i++) {
 				line += iter->second[i];
-				if (i != len-1) line += _T("|");
+				if (i != len-1) line += "|";
 			}
 
 			// Write line
@@ -207,20 +207,20 @@ void FontFileLister::SaveCache() {
 void FontFileLister::LoadCache() {
 	try {
 		// Load cache
-		TextFileReader file(StandardPaths::DecodePath(_T("?user/fontscache.dat")));
+		TextFileReader file(StandardPaths::DecodePath("?user/fontscache.dat"));
 
 		// Read each line
 		while (file.HasMoreLines()) {
 			// Read line
 			wxString line = file.ReadLineFromFile();
-			int pos = line.Find(_T('?'));
+			int pos = line.Find('?');
 
 			// Get face name
 			wxString face = line.Left(pos);
 			if (face.IsEmpty()) continue;
 
 			// Get files
-			wxStringTokenizer tkn(line.Mid(pos+1),_T("|"));
+			wxStringTokenizer tkn(line.Mid(pos+1),"|");
 			while (tkn.HasMoreTokens()) {
 				wxString file = tkn.GetNextToken();
 				if (!file.IsEmpty()) {

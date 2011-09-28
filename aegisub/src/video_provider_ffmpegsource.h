@@ -80,7 +80,7 @@ public:
 	/// @brief Gets a list of keyframes
 	/// @return	Returns a wxArrayInt of keyframes.
 	std::vector<int> GetKeyFrames() const { return KeyFramesList; };
-	wxString GetDecoderName() const { return L"FFmpegSource"; }
+	wxString GetDecoderName() const { return "FFmpegSource"; }
 	/// @brief Gets the desired cache behavior.
 	/// @return Returns true.
 	bool WantsCaching() const { return true; }

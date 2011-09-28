@@ -88,7 +88,7 @@ void MatroskaWrapper::Open(wxString filename,bool parse) {
 		// Failed parsing
 		if (!file) {
 			delete input;
-			throw wxString(_T("MatroskaParser error: ") + wxString(err,wxConvUTF8)).c_str();
+			throw wxString("MatroskaParser error: " + wxString(err,wxConvUTF8)).c_str();
 		}
 
 		// Parse
@@ -98,7 +98,7 @@ void MatroskaWrapper::Open(wxString filename,bool parse) {
 	// Failed opening
 	else {
 		delete input;
-		throw _T("Unable to open Matroska file for parsing.");
+		throw "Unable to open Matroska file for parsing.";
 	}
 }
 
@@ -258,9 +258,9 @@ void MatroskaWrapper::GetSubtitles(AssFile *target) {
 			wxString TrackLanguage = wxString(trackInfo->Language,*wxConvCurrent);
 			
 			// Known subtitle format
-			if (CodecID == _T("S_TEXT/SSA") || CodecID == _T("S_TEXT/ASS") || CodecID == _T("S_TEXT/UTF8")) {
+			if (CodecID == "S_TEXT/SSA" || CodecID == "S_TEXT/ASS" || CodecID == "S_TEXT/UTF8") {
 				tracksFound.Add(track);
-				tracksNames.Add(wxString::Format(_T("%i ("),track) + CodecID + _T(" ") + TrackLanguage + _T("): ") + TrackName);
+				tracksNames.Add(wxString::Format("%i (",track) + CodecID + " " + TrackLanguage + "): " + TrackName);
 			}
 		}
 	}
@@ -269,7 +269,7 @@ void MatroskaWrapper::GetSubtitles(AssFile *target) {
 	if (tracksFound.Count() == 0) {
 		target->LoadDefault(true);
 		Close();
-		throw _T("File has no recognised subtitle tracks.");
+		throw "File has no recognised subtitle tracks.";
 	}
 
 	// Only one track found
@@ -279,7 +279,7 @@ void MatroskaWrapper::GetSubtitles(AssFile *target) {
 
 	// Pick a track
 	else {
-		int choice = wxGetSingleChoiceIndex(_T("Choose which track to read:"),_T("Multiple subtitle tracks found"),tracksNames);
+		int choice = wxGetSingleChoiceIndex("Choose which track to read:","Multiple subtitle tracks found",tracksNames);
 		if (choice == -1) {
 			target->LoadDefault(true);
 			Close();
@@ -294,7 +294,7 @@ void MatroskaWrapper::GetSubtitles(AssFile *target) {
 		trackInfo = mkv_GetTrackInfo(file,trackToRead);
 		wxString CodecID = wxString(trackInfo->CodecID,*wxConvCurrent);
 		int codecType = 0;
-		if (CodecID == _T("S_TEXT/UTF8")) codecType = 1;
+		if (CodecID == "S_TEXT/UTF8") codecType = 1;
 
 		// Read private data if it's ASS/SSA
 		if (codecType == 0) {
@@ -308,20 +308,20 @@ void MatroskaWrapper::GetSubtitles(AssFile *target) {
 			delete[] privData;
 
 			// Load into file
-			wxString group = _T("[Script Info]");
+			wxString group = "[Script Info]";
 			int version = 1;
-			if (CodecID == _T("S_TEXT/SSA")) version = 0;
-			wxStringTokenizer token(privString,_T("\r\n"),wxTOKEN_STRTOK);
+			if (CodecID == "S_TEXT/SSA") version = 0;
+			wxStringTokenizer token(privString,"\r\n",wxTOKEN_STRTOK);
 			while (token.HasMoreTokens()) {
 				wxString next = token.GetNextToken();
-				if (next[0] == _T('[')) group = next;
+				if (next[0] == '[') group = next;
 				target->AddLine(next,group,version,&group);
 			}
 
 			// Insert "[Events]"
-			//target->AddLine(_T(""),group,lasttime,version,&group);
-			//target->AddLine(_T("[Events]"),group,lasttime,version,&group);
-			//target->AddLine(_T("Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text"),group,lasttime,version,&group);
+			//target->AddLine("",group,lasttime,version,&group);
+			//target->AddLine("[Events]",group,lasttime,version,&group);
+			//target->AddLine("Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text",group,lasttime,version,&group);
 		}
 
 		// Load default if it's SRT
@@ -368,18 +368,18 @@ void MatroskaWrapper::GetSubtitles(AssFile *target) {
 			AssTime subStart,subEnd;
 			subStart.SetMS(startTime / timecodeScaleLow);
 			subEnd.SetMS(endTime / timecodeScaleLow);
-			//wxLogMessage(subStart.GetASSFormated() + _T("-") + subEnd.GetASSFormated() + _T(": ") + blockString);
+			//wxLogMessage(subStart.GetASSFormated() + "-" + subEnd.GetASSFormated() + ": " + blockString);
 
 			// Process SSA/ASS
 			if (codecType == 0) {
 				// Get order number
-				int pos = blockString.Find(_T(","));
+				int pos = blockString.Find(",");
 				wxString orderString = blockString.Left(pos);
 				orderString.ToLong(&order);
 				blockString = blockString.Mid(pos+1);
 
 				// Get layer number
-				pos = blockString.Find(_T(","));
+				pos = blockString.Find(",");
 				long int layer = 0;
 				if (pos) {
 					wxString layerString = blockString.Left(pos);
@@ -388,15 +388,15 @@ void MatroskaWrapper::GetSubtitles(AssFile *target) {
 				}
 
 				// Assemble final
-				blockString = wxString::Format(_T("Dialogue: %i,"),layer) + subStart.GetASSFormated() + _T(",") + subEnd.GetASSFormated() + _T(",") + blockString;
+				blockString = wxString::Format("Dialogue: %i,",layer) + subStart.GetASSFormated() + "," + subEnd.GetASSFormated() + "," + blockString;
 			}
 
 			// Process SRT
 			else {
-				blockString = wxString(_T("Dialogue: 0,")) + subStart.GetASSFormated() + _T(",") + subEnd.GetASSFormated() + _T(",Default,,0000,0000,0000,,") + blockString;
-				blockString.Replace(_T("\r\n"),_T("\\N"));
-				blockString.Replace(_T("\r"),_T("\\N"));
-				blockString.Replace(_T("\n"),_T("\\N"));
+				blockString = wxString("Dialogue: 0,") + subStart.GetASSFormated() + "," + subEnd.GetASSFormated() + ",Default,,0000,0000,0000,," + blockString;
+				blockString.Replace("\r\n","\\N");
+				blockString.Replace("\r","\\N");
+				blockString.Replace("\n","\\N");
 				order++;
 			}
 
@@ -412,8 +412,8 @@ void MatroskaWrapper::GetSubtitles(AssFile *target) {
 		}
 
 		// Insert into file
-		wxString group = _T("[Events]");
-		int version = (CodecID == _T("S_TEXT/SSA"));
+		wxString group = "[Events]";
+		int version = (CodecID == "S_TEXT/SSA");
 		for (unsigned int i=0;i<subList.size();i++) {
 			target->AddLine(subList[i],group,version,&group);
 		}
@@ -443,7 +443,7 @@ bool MatroskaWrapper::HasSubtitles(wxString const& filename) {
 
 		if (trackInfo->Type == 0x11) {
 			wxString CodecID = wxString(trackInfo->CodecID, *wxConvCurrent);
-			if (CodecID == _T("S_TEXT/SSA") || CodecID == _T("S_TEXT/ASS") || CodecID == _T("S_TEXT/UTF8")) {
+			if (CodecID == "S_TEXT/SSA" || CodecID == "S_TEXT/ASS" || CodecID == "S_TEXT/UTF8") {
 				mkv_Close(file);
 				return true;
 			}

@@ -51,16 +51,16 @@ wxMutex AviSynthWrapper::AviSynthMutex;
 ///
 AviSynthWrapper::AviSynthWrapper() {
 	if (!avs_refcount) {
-		hLib=LoadLibrary(_T("avisynth.dll"));
+		hLib=LoadLibrary(L"avisynth.dll");
 
 		if (hLib == NULL) {
-			throw wxString(_T("Could not load avisynth.dll"));
+			throw wxString("Could not load avisynth.dll");
 		}
 
 		FUNC *CreateScriptEnv = (FUNC*)GetProcAddress(hLib, "CreateScriptEnvironment");
 
 		if (CreateScriptEnv == NULL) {
-			throw wxString(_T("Failed to get address of CreateScriptEnv from avisynth.dll"));
+			throw wxString("Failed to get address of CreateScriptEnv from avisynth.dll");
 		}
 
 		// Require Avisynth 2.5.6+?
@@ -70,7 +70,7 @@ AviSynthWrapper::AviSynthWrapper() {
 			env = CreateScriptEnv(AVISYNTH_INTERFACE_VERSION);
 
 		if (env == NULL) {
-			throw wxString(_T("Failed to create a new avisynth script environment. Avisynth is too old?"));
+			throw wxString("Failed to create a new avisynth script environment. Avisynth is too old?");
 		}
 		// Set memory limit
 		const int memoryMax = OPT_GET("Provider/Avisynth/Memory Max")->GetInt();

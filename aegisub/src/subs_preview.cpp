@@ -93,7 +93,7 @@ void SubtitlesPreview::SetStyle(AssStyle const& newStyle) {
 }
 
 void SubtitlesPreview::SetText(wxString text) {
-	wxString newText = L"{\\q2}" + text;
+	wxString newText = "{\\q2}" + text;
 	if (newText != line->Text) {
 		line->Text = newText;
 		UpdateBitmap();

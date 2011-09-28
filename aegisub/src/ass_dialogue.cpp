@@ -53,12 +53,12 @@ AssDialogue::AssDialogue()
 , Layer(0)
 , Start(0)
 , End(5000)
-, Style(L"Default")
-, Actor(L"")
-, Effect(L"")
-, Text(L"")
+, Style("Default")
+, Actor("")
+, Effect("")
+, Text("")
 {
-	group = L"[Events]";
+	group = "[Events]";
 	Valid = true;
 	for (int i=0;i<4;i++) Margin[i] = 0;
 }
@@ -87,12 +87,12 @@ AssDialogue::AssDialogue(wxString _data,int version)
 , Layer(0)
 , Start(0)
 , End(5000)
-, Style(L"Default")
-, Actor(L"")
-, Effect(L"")
-, Text(L"")
+, Style("Default")
+, Actor("")
+, Effect("")
+, Text("")
 {
-	group = L"[Events]";
+	group = "[Events]";
 	Valid = false;
 	// Try parsing in different ways
 	int count = 0;
@@ -105,7 +105,7 @@ AssDialogue::AssDialogue(wxString _data,int version)
 
 	// Not valid
 	if (!Valid) {
-		throw _T("Failed parsing line.");
+		throw "Failed parsing line.";
 	}
 }
 
@@ -122,22 +122,22 @@ bool AssDialogue::Parse(wxString rawData, int version) {
 	wxString temp;
 
 	// Get type
-	if (rawData.StartsWith(_T("Dialogue:"))) {
+	if (rawData.StartsWith("Dialogue:")) {
 		Comment = false;
 		pos = 10;
 	}
-	else if (rawData.StartsWith(_T("Comment:"))) {
+	else if (rawData.StartsWith("Comment:")) {
 		Comment = true;
 		pos = 9;
 	}
 	else return false;
 
-	wxStringTokenizer tkn(rawData.Mid(pos),_T(","),wxTOKEN_RET_EMPTY_ALL);
+	wxStringTokenizer tkn(rawData.Mid(pos),",",wxTOKEN_RET_EMPTY_ALL);
 	if (!tkn.HasMoreTokens()) return false;
 
 	// Get first token and see if it has "Marked=" in it
 	temp = tkn.GetNextToken().Trim(false).Trim(true);
-	if (temp.Lower().StartsWith(_T("marked="))) version = 0;
+	if (temp.Lower().StartsWith("marked=")) version = 0;
 	else if (version == 0) version = 1;
 
 	// Get layer number
@@ -213,14 +213,14 @@ wxString AssDialogue::GetData(bool ssa) const {
 	wxString s = Style;
 	wxString a = Actor;
 	wxString e = Effect;
-	s.Replace(L",",L";");
-	a.Replace(L",",L";");
-	e.Replace(L",",L";");
+	s.Replace(",",";");
+	a.Replace(",",";");
+	e.Replace(",",";");
 
 	wxString str = wxString::Format(
-		L"%s: %s,%s,%s,%s,%s,%d,%d,%d,%s,%s",
-		Comment ? L"Comment" : L"Dialogue",
-		ssa ? L"Marked=0" : wxString::Format("%01d", Layer).c_str(),
+		"%s: %s,%s,%s,%s,%s,%d,%d,%d,%s,%s",
+		Comment ? "Comment" : "Dialogue",
+		ssa ? "Marked=0" : wxString::Format("%01d", Layer).c_str(),
 		Start.GetASSFormated().c_str(),
 		End.GetASSFormated().c_str(),
 		s.c_str(), a.c_str(),
@@ -229,8 +229,8 @@ wxString AssDialogue::GetData(bool ssa) const {
 		Text.c_str());
 
 	// Make sure that final has no line breaks
-	str.Replace(L"\n", "");
-	str.Replace(L"\r", "");
+	str.Replace("\n", "");
+	str.Replace("\r", "");
 
 	return str;
 }
@@ -246,14 +246,14 @@ wxString AssDialogue::GetSSAText () const {
 void AssDialogue::ParseSRTTags () {
 	// Search and replace
 	size_t total = 0;
-	total += Text.Replace(_T("<i>"),_T("{\\i1}"));
-	total += Text.Replace(_T("</i>"),_T("{\\i0}"));
-	total += Text.Replace(_T("<b>"),_T("{\\b1}"));
-	total += Text.Replace(_T("</b>"),_T("{\\b0}"));
-	total += Text.Replace(_T("<u>"),_T("{\\u1}"));
-	total += Text.Replace(_T("</u>"),_T("{\\u0}"));
-	total += Text.Replace(_T("<s>"),_T("{\\s1}"));
-	total += Text.Replace(_T("</s>"),_T("{\\s0}"));
+	total += Text.Replace("<i>","{\\i1}");
+	total += Text.Replace("</i>","{\\i0}");
+	total += Text.Replace("<b>","{\\b1}");
+	total += Text.Replace("</b>","{\\b0}");
+	total += Text.Replace("<u>","{\\u1}");
+	total += Text.Replace("</u>","{\\u0}");
+	total += Text.Replace("<s>","{\\s1}");
+	total += Text.Replace("</s>","{\\s0}");
 
 	// Process <font> tag
 	wxString work = Text;
@@ -266,8 +266,8 @@ void AssDialogue::ParseSRTTags () {
 	bool isOpen;
 
 	// Iterate
-	pos_open = work.find(_T("<FONT"),0);
-	pos_close = work.find(_T("</FONT"),0);
+	pos_open = work.find("<FONT",0);
+	pos_close = work.find("</FONT",0);
 	while (pos_open != wxString::npos || pos_close != wxString::npos) {
 		// Determine if it's an open or close tag
 		if (pos_open < pos_close) {
@@ -278,7 +278,7 @@ void AssDialogue::ParseSRTTags () {
 			start = pos_close;
 			isOpen = false;
 		}
-		end = work.find(_T(">"),start)+1;
+		end = work.find(">",start)+1;
 		//if (end == wxString::npos) continue;
 
 		// Open tag
@@ -286,17 +286,17 @@ void AssDialogue::ParseSRTTags () {
 			wxString replaced;
 
 			// Color tag
-			if ((pos = work.find(_T("COLOR=\""),start)) != wxString::npos) {
+			if ((pos = work.find("COLOR=\"",start)) != wxString::npos) {
 				if (pos < end) {
 					pos += 7;
-					size_t end_tag = Text.find(_T("\""),pos);
+					size_t end_tag = Text.find("\"",pos);
 					if (end_tag != wxString::npos) {
 						if (end_tag-pos == 7) {
-							replaced += _T("{\\c&H");
+							replaced += "{\\c&H";
 							replaced += work.substr(pos+5,2);
 							replaced += work.substr(pos+3,2);
 							replaced += work.substr(pos+1,2);
-							replaced += _T("&}");
+							replaced += "&}";
 							total++;
 						}
 					}
@@ -304,28 +304,28 @@ void AssDialogue::ParseSRTTags () {
 			}
 
 			// Face tag
-			if ((pos = work.find(_T("FACE=\""),start)) != wxString::npos) {
+			if ((pos = work.find("FACE=\"",start)) != wxString::npos) {
 				if (pos < end) {
 					pos += 6;
-					size_t end_tag = work.find(_T("\""),pos);
+					size_t end_tag = work.find("\"",pos);
 					if (end_tag != wxString::npos) {
-						replaced += _T("{\\fn");
+						replaced += "{\\fn";
 						replaced += work.substr(pos,end_tag-pos);
-						replaced += _T("}");
+						replaced += "}";
 						total++;
 					}
 				}
 			}
 
 			// Size tag
-			if ((pos = work.find(_T("SIZE=\""),start)) != wxString::npos) {
+			if ((pos = work.find("SIZE=\"",start)) != wxString::npos) {
 				if (pos < end) {
 					pos += 6;
-					size_t end_tag = Text.find(_T("\""),pos);
+					size_t end_tag = Text.find("\"",pos);
 					if (end_tag != wxString::npos) {
-						replaced += _T("{\\fs");
+						replaced += "{\\fs";
 						replaced += work.substr(pos,end_tag-pos);
-						replaced += _T("}");
+						replaced += "}";
 						total++;
 					}
 				}
@@ -343,18 +343,18 @@ void AssDialogue::ParseSRTTags () {
 			// Find if it's italic, bold, underline, and strikeout
 			wxString prev = Text.Left(start);
 			bool isItalic=false,isBold=false,isUnder=false,isStrike=false;
-			if (CountMatches(prev,_T("{\\i1}")) > CountMatches(prev,_T("{\\i0}"))) isItalic = true;
-			if (CountMatches(prev,_T("{\\b1}")) > CountMatches(prev,_T("{\\b0}"))) isBold = true;
-			if (CountMatches(prev,_T("{\\u1}")) > CountMatches(prev,_T("{\\u0}"))) isUnder = true;
-			if (CountMatches(prev,_T("{\\s1}")) > CountMatches(prev,_T("{\\s0}"))) isStrike = true;
+			if (CountMatches(prev,"{\\i1}") > CountMatches(prev,"{\\i0}")) isItalic = true;
+			if (CountMatches(prev,"{\\b1}") > CountMatches(prev,"{\\b0}")) isBold = true;
+			if (CountMatches(prev,"{\\u1}") > CountMatches(prev,"{\\u0}")) isUnder = true;
+			if (CountMatches(prev,"{\\s1}") > CountMatches(prev,"{\\s0}")) isStrike = true;
 
 			// Generate new tag, by reseting and then restoring flags
-			wxString replaced = _T("{\\r");
-			if (isItalic) replaced += _T("\\i1");
-			if (isBold) replaced += _T("\\b1");
-			if (isUnder) replaced += _T("\\u1");
-			if (isStrike) replaced += _T("\\s1");
-			replaced += _T("}");
+			wxString replaced = "{\\r";
+			if (isItalic) replaced += "\\i1";
+			if (isBold) replaced += "\\b1";
+			if (isUnder) replaced += "\\u1";
+			if (isStrike) replaced += "\\s1";
+			replaced += "}";
 
 			// Replace
 			//Text = Text.substr(0,start) + replaced + Text.substr(end);
@@ -366,12 +366,12 @@ void AssDialogue::ParseSRTTags () {
 		// Get next
 		work = Text;
 		work.UpperCase();
-		pos_open = work.find(_T("<FONT"),0);
-		pos_close = work.find(_T("</FONT"),0);
+		pos_open = work.find("<FONT",0);
+		pos_close = work.find("</FONT",0);
 	}
 
 	// Remove double tagging
-	Text.Replace(_T("}{"),_T(""));
+	Text.Replace("}{","");
 }
 
 void AssDialogue::ParseASSTags () {
@@ -387,14 +387,14 @@ void AssDialogue::ParseASSTags () {
 		if (Text[cur] == '{') {
 			// Get contents of block
 			wxString work;
-			end = Text.find(_T("}"),cur);
+			end = Text.find("}",cur);
 			if (end == wxString::npos) {
 				work = Text.substr(cur);
 				end = len;
 			}
 			else work = Text.substr(cur,end-cur+1);
 			
-			if (work.Find(_T("\\")) == wxNOT_FOUND) {
+			if (work.Find("\\") == wxNOT_FOUND) {
 				//We've found an override block with no backslashes
 				//We're going to assume it's a comment and not consider it an override block
 				//Currently we'll treat this as a plain text block, but feel free to create a new class
@@ -415,7 +415,7 @@ void AssDialogue::ParseASSTags () {
 				// Look for \p in block
 				std::vector<AssOverrideTag*>::iterator curTag;
 				for (curTag = block->Tags.begin();curTag != block->Tags.end();curTag++) {
-					if ((*curTag)->Name == L"\\p") {
+					if ((*curTag)->Name == "\\p") {
 						drawingLevel = (*curTag)->Params[0]->Get<int>(0);
 					}
 				}
@@ -428,7 +428,7 @@ void AssDialogue::ParseASSTags () {
 		// Plain-text/drawing block
 		else {
 			wxString work;
-			end = Text.find(_T("{"),cur);
+			end = Text.find("{",cur);
 			if (end == wxString::npos) {
 				work = Text.substr(cur);
 				end = len;
@@ -457,7 +457,7 @@ void AssDialogue::ParseASSTags () {
 	// Empty line, make an empty block
 	if (len == 0) {
 		AssDialogueBlockPlain *block = new AssDialogueBlockPlain;
-		block->text = _T("");
+		block->text = "";
 		Blocks.push_back(block);
 	}
 }
@@ -482,7 +482,7 @@ void AssDialogue::StripTag (wxString tagName) {
 			}
 
 			// Insert
-			if (!temp.IsEmpty()) final += _T("{") + temp + _T("}");
+			if (!temp.IsEmpty()) final += "{" + temp + "}";
 		}
 		else final += (*cur)->GetText();
 	}
@@ -497,7 +497,7 @@ void AssDialogue::ConvertTagsToSRT () {
 	AssDialogueBlockOverride* curBlock;
 	AssDialogueBlockPlain *curPlain;
 	AssOverrideTag* curTag;
-	wxString final = _T("");
+	wxString final = "";
 	bool isItalic=false,isBold=false,isUnder=false,isStrike=false;
 	bool temp;
 
@@ -511,54 +511,54 @@ void AssDialogue::ConvertTagsToSRT () {
 				curTag = curBlock->Tags.at(j);
 				if (curTag->IsValid()) {
 					// Italics
-					if (curTag->Name == _T("\\i")) {
+					if (curTag->Name == "\\i") {
 						temp = curTag->Params.at(0)->Get<bool>();
 						if (temp && !isItalic) {
 							isItalic = true;
-							final += _T("<i>");
+							final += "<i>";
 						}
 						if (!temp && isItalic) {
 							isItalic = false;
-							final += _T("</i>");
+							final += "</i>";
 						}
 					}
 
 					// Underline
-					if (curTag->Name == _T("\\u")) {
+					if (curTag->Name == "\\u") {
 						temp = curTag->Params.at(0)->Get<bool>();
 						if (temp && !isUnder) {
 							isUnder = true;
-							final += _T("<u>");
+							final += "<u>";
 						}
 						if (!temp && isUnder) {
 							isUnder = false;
-							final += _T("</u>");
+							final += "</u>";
 						}
 					}
 
 					// Strikeout
-					if (curTag->Name == _T("\\s")) {
+					if (curTag->Name == "\\s") {
 						temp = curTag->Params.at(0)->Get<bool>();
 						if (temp && !isStrike) {
 							isStrike = true;
-							final += _T("<s>");
+							final += "<s>";
 						}
 						if (!temp && isStrike) {
 							isStrike = false;
-							final += _T("</s>");
+							final += "</s>";
 						}
 					}
 
 					// Bold
-					if (curTag->Name == _T("\\b")) {
+					if (curTag->Name == "\\b") {
 						temp = curTag->Params.at(0)->Get<bool>();
 						if (temp && !isBold) {
 							isBold = true;
-							final += _T("<b>");
+							final += "<b>";
 						}
 						if (!temp && isBold) {
 							isBold = false;
-							final += _T("</b>");
+							final += "</b>";
 						}
 					}
 				}
@@ -576,13 +576,13 @@ void AssDialogue::ConvertTagsToSRT () {
 
 	// Ensure all tags are closed
 	if (isBold)
-		final += _T("</b>");
+		final += "</b>";
 	if (isItalic)
-		final += _T("</i>");
+		final += "</i>";
 	if (isUnder)
-		final += _T("</u>");
+		final += "</u>";
 	if (isStrike)
-		final += _T("</s>");
+		final += "</s>";
 
 	Text = final;
 	ClearBlocks();
@@ -593,9 +593,9 @@ void AssDialogue::UpdateText () {
 	Text.clear();
 	for (std::vector<AssDialogueBlock*>::iterator cur=Blocks.begin();cur!=Blocks.end();cur++) {
 		if ((*cur)->GetType() == BLOCK_OVERRIDE) {
-			Text += _T("{");
+			Text += "{";
 			Text += (*cur)->GetText();
-			Text += _T("}");
+			Text += "}";
 		}
 		else Text += (*cur)->GetText();
 	}
@@ -607,7 +607,7 @@ void AssDialogue::SetMarginString(const wxString origvalue,int which) {
 	// Make it numeric
 	wxString strvalue = origvalue;
 	if (!strvalue.IsNumber()) {
-		strvalue = _T("");
+		strvalue = "";
 		for (size_t i=0;i<origvalue.Length();i++) {
 			if (origvalue.Mid(i,1).IsNumber()) {
 				strvalue += origvalue.Mid(i,1);
@@ -630,8 +630,8 @@ void AssDialogue::SetMarginString(const wxString origvalue,int which) {
 wxString AssDialogue::GetMarginString(int which,bool pad) const {
 	if (which < 0 || which >= 4) throw Aegisub::InvalidMarginIdError();
 	int value = Margin[which];
-	if (pad) return wxString::Format(_T("%04i"),value);
-	else return wxString::Format(_T("%i"),value);
+	if (pad) return wxString::Format("%04i",value);
+	else return wxString::Format("%i",value);
 }
 
 void AssDialogue::ProcessParameters(AssDialogueBlockOverride::ProcessParametersCallback callback,void *userData) {
@@ -657,9 +657,9 @@ bool AssDialogue::CollidesWith(AssDialogue *target) {
 }
 
 wxString AssDialogue::GetStrippedText() const {
-	static wxRegEx reg(_T("\\{[^\\{]*\\}"),wxRE_ADVANCED);
+	static wxRegEx reg("\\{[^\\{]*\\}",wxRE_ADVANCED);
 	wxString txt(Text);
-	reg.Replace(&txt,_T(""));
+	reg.Replace(&txt,"");
 	return txt;
 }
 
@@ -670,7 +670,7 @@ AssEntry *AssDialogue::Clone() const {
 void AssDialogueBlockDrawing::TransformCoords(int mx,int my,double x,double y) {
 	// HACK: Implement a proper parser ffs!!
 	// Could use Spline but it'd be slower and this seems to work fine
-	wxStringTokenizer tkn(GetText(),_T(" "),wxTOKEN_DEFAULT);
+	wxStringTokenizer tkn(GetText()," ",wxTOKEN_DEFAULT);
 	wxString cur;
 	wxString final;
 	bool isX = true;
@@ -688,7 +688,7 @@ void AssDialogueBlockDrawing::TransformCoords(int mx,int my,double x,double y) {
 			else temp = (long int)((temp+my)*y + 0.5);
 
 			// Write back to list
-			final += wxString::Format(_T("%i "),temp);
+			final += wxString::Format("%i ",temp);
 
 			// Toggle X/Y
 			isX = !isX;
@@ -696,8 +696,8 @@ void AssDialogueBlockDrawing::TransformCoords(int mx,int my,double x,double y) {
 
 		// Text
 		else {
-			if (cur == _T("m") || cur == _T("n") || cur == _T("l") || cur == _T("b") || cur == _T("s") || cur == _T("p") || cur == _T("c")) isX = true;
-			final += cur + _T(" ");
+			if (cur == "m" || cur == "n" || cur == "l" || cur == "b" || cur == "s" || cur == "p" || cur == "c") isX = true;
+			final += cur + " ";
 		}
 	}
 

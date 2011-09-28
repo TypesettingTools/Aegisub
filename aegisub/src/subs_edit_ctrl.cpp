@@ -113,65 +113,65 @@ SubsTextEditCtrl::SubsTextEditCtrl(wxWindow* parent, wxSize wsize, long style, S
 
 	// Prototypes for call tips
 	tipProtoN = -1;
-	proto.Add(L"move(x1,y1,x2,y2)");
-	proto.Add(L"move(x1,y1,x2,y2,startTime,endTime)");
-	proto.Add(L"fn;FontName");
-	proto.Add(L"bord;Width");
-	proto.Add(L"xbord;Width");
-	proto.Add(L"ybord;Width");
-	proto.Add(L"shad;Depth");
-	proto.Add(L"xshad;Depth");
-	proto.Add(L"yshad;Depth");
-	proto.Add(L"be;Strength");
-	proto.Add(L"blur;Strength");
-	proto.Add(L"fscx;Scale");
-	proto.Add(L"fscy;Scale");
-	proto.Add(L"fsp;Spacing");
-	proto.Add(L"fs;FontSize");
-	proto.Add(L"fe;Encoding");
-	proto.Add(L"frx;Angle");
-	proto.Add(L"fry;Angle");
-	proto.Add(L"frz;Angle");
-	proto.Add(L"fr;Angle");
-	proto.Add(L"pbo;Offset");
-	proto.Add(L"clip(command)");
-	proto.Add(L"clip(scale,command)");
-	proto.Add(L"clip(x1,y1,x2,y2)");
-	proto.Add(L"iclip(command)");
-	proto.Add(L"iclip(scale,command)");
-	proto.Add(L"iclip(x1,y1,x2,y2)");
-	proto.Add(L"t(acceleration,tags)");
-	proto.Add(L"t(startTime,endTime,tags)");
-	proto.Add(L"t(startTime,endTime,acceleration,tags)");
-	proto.Add(L"pos(x,y)");
-	proto.Add(L"p;Exponent");
-	proto.Add(L"org(x,y)");
-	proto.Add(L"fade(startAlpha,middleAlpha,endAlpha,startIn,endIn,startOut,endOut)");
-	proto.Add(L"fad(startTime,endTime)");
-	proto.Add(L"c;Colour");
-	proto.Add(L"1c;Colour");
-	proto.Add(L"2c;Colour");
-	proto.Add(L"3c;Colour");
-	proto.Add(L"4c;Colour");
-	proto.Add(L"alpha;Alpha");
-	proto.Add(L"1a;Alpha");
-	proto.Add(L"2a;Alpha");
-	proto.Add(L"3a;Alpha");
-	proto.Add(L"4a;Alpha");
-	proto.Add(L"an;Alignment");
-	proto.Add(L"a;Alignment");
-	proto.Add(L"b;Weight");
-	proto.Add(L"i;1/0");
-	proto.Add(L"u;1/0");
-	proto.Add(L"s;1/0");
-	proto.Add(L"kf;Duration");
-	proto.Add(L"ko;Duration");
-	proto.Add(L"k;Duration");
-	proto.Add(L"K;Duration");
-	proto.Add(L"q;WrapStyle");
-	proto.Add(L"r;Style");
-	proto.Add(L"fax;Factor");
-	proto.Add(L"fay;Factor");
+	proto.Add("move(x1,y1,x2,y2)");
+	proto.Add("move(x1,y1,x2,y2,startTime,endTime)");
+	proto.Add("fn;FontName");
+	proto.Add("bord;Width");
+	proto.Add("xbord;Width");
+	proto.Add("ybord;Width");
+	proto.Add("shad;Depth");
+	proto.Add("xshad;Depth");
+	proto.Add("yshad;Depth");
+	proto.Add("be;Strength");
+	proto.Add("blur;Strength");
+	proto.Add("fscx;Scale");
+	proto.Add("fscy;Scale");
+	proto.Add("fsp;Spacing");
+	proto.Add("fs;FontSize");
+	proto.Add("fe;Encoding");
+	proto.Add("frx;Angle");
+	proto.Add("fry;Angle");
+	proto.Add("frz;Angle");
+	proto.Add("fr;Angle");
+	proto.Add("pbo;Offset");
+	proto.Add("clip(command)");
+	proto.Add("clip(scale,command)");
+	proto.Add("clip(x1,y1,x2,y2)");
+	proto.Add("iclip(command)");
+	proto.Add("iclip(scale,command)");
+	proto.Add("iclip(x1,y1,x2,y2)");
+	proto.Add("t(acceleration,tags)");
+	proto.Add("t(startTime,endTime,tags)");
+	proto.Add("t(startTime,endTime,acceleration,tags)");
+	proto.Add("pos(x,y)");
+	proto.Add("p;Exponent");
+	proto.Add("org(x,y)");
+	proto.Add("fade(startAlpha,middleAlpha,endAlpha,startIn,endIn,startOut,endOut)");
+	proto.Add("fad(startTime,endTime)");
+	proto.Add("c;Colour");
+	proto.Add("1c;Colour");
+	proto.Add("2c;Colour");
+	proto.Add("3c;Colour");
+	proto.Add("4c;Colour");
+	proto.Add("alpha;Alpha");
+	proto.Add("1a;Alpha");
+	proto.Add("2a;Alpha");
+	proto.Add("3a;Alpha");
+	proto.Add("4a;Alpha");
+	proto.Add("an;Alignment");
+	proto.Add("a;Alignment");
+	proto.Add("b;Weight");
+	proto.Add("i;1/0");
+	proto.Add("u;1/0");
+	proto.Add("s;1/0");
+	proto.Add("kf;Duration");
+	proto.Add("ko;Duration");
+	proto.Add("k;Duration");
+	proto.Add("K;Duration");
+	proto.Add("q;WrapStyle");
+	proto.Add("r;Style");
+	proto.Add("fax;Factor");
+	proto.Add("fay;Factor");
 
 	using namespace std::tr1;
 
@@ -289,8 +289,8 @@ void SubsTextEditCtrl::UpdateStyle(int start, int _length) {
 
 	// Check if it's a template line
 	AssDialogue *diag = grid->GetActiveLine();
-	bool templateLine = diag && diag->Comment && diag->Effect.Lower().StartsWith(_T("template"));
-	//bool templateCodeLine = diag && diag->Comment && diag->Effect.Lower().StartsWith(_T("code"));
+	bool templateLine = diag && diag->Comment && diag->Effect.Lower().StartsWith("template");
+	//bool templateCodeLine = diag && diag->Comment && diag->Effect.Lower().StartsWith("code");
 
 	// Template code lines get Lua highlighting instead of ASS highlighting
 	// This is broken and needs some extra work
@@ -400,7 +400,7 @@ void SubsTextEditCtrl::UpdateStyle(int start, int _length) {
 			numMode = false;
 
 			// Is \n, \N or \h?
-			if (curChar == L'\\' && (nextChar == 'n' || nextChar == 'N' || nextChar == 'h')) {
+			if (curChar == '\\' && (nextChar == 'n' || nextChar == 'N' || nextChar == 'h')) {
 				SetUnicodeStyling(curPos,ran,curStyle);
 				curPos += ran;
 				ran = 1;
@@ -421,7 +421,7 @@ void SubsTextEditCtrl::UpdateStyle(int start, int _length) {
 		// Inside
 		else if (depth == 1) {
 			// Special character
-			if (curChar == L'\\' || curChar == '(' || curChar == ')' || curChar == ',') {
+			if (curChar == '\\' || curChar == '(' || curChar == ')' || curChar == ',') {
 				if (curStyle != 2) {
 					SetUnicodeStyling(curPos,ran,curStyle);
 					curPos += ran;
@@ -433,7 +433,7 @@ void SubsTextEditCtrl::UpdateStyle(int start, int _length) {
 
 			else {
 				// Number
-				if (prevChar != L'\\' && (numMode || (curChar >= '0' && curChar <= '9') || curChar == '.' || curChar == '&' || curChar == '+' || curChar == '-' || (curChar == 'H' && prevChar == '&'))) {
+				if (prevChar != '\\' && (numMode || (curChar >= '0' && curChar <= '9') || curChar == '.' || curChar == '&' || curChar == '+' || curChar == '-' || (curChar == 'H' && prevChar == '&'))) {
 					if (curStyle != 5) {
 						SetUnicodeStyling(curPos,ran,curStyle);
 						curPos += ran;
@@ -452,8 +452,8 @@ void SubsTextEditCtrl::UpdateStyle(int start, int _length) {
 
 					// Set parameter if it's \fn or \r
 					int tagLen = 0;
-					if (text.Mid(curPos,2) == L"fn") tagLen = 2;
-					else if (text.Mid(curPos,1) == L"r") tagLen = 1;
+					if (text.Mid(curPos,2) == "fn") tagLen = 2;
+					else if (text.Mid(curPos,1) == "r") tagLen = 1;
 					if (tagLen) {
 						numMode = true;
 						ran = tagLen-1;
@@ -461,17 +461,17 @@ void SubsTextEditCtrl::UpdateStyle(int start, int _length) {
 					}
 
 					// Set drawing mode if it's \p
-					if (text.Mid(curPos,1) == L"p") {
+					if (text.Mid(curPos,1) == "p") {
 						if (curPos+2 < (signed) text.Length()) {
 							// Disable
 							wxChar nextNext = text[curPos+2];
-							if ((nextNext == L'\\' || nextNext == '}') && nextChar == '0') drawingMode = false;
+							if ((nextNext == '\\' || nextNext == '}') && nextChar == '0') drawingMode = false;
 
 							// Enable
 							if (nextChar >= '1' && nextChar <= '9') {
 								for(int testPos = curPos+2;testPos < (signed) text.Length();testPos++) {
 									nextNext = text[testPos];
-									if (nextNext == L'\\' || nextNext == '}') {
+									if (nextNext == '\\' || nextNext == '}') {
 										drawingMode = true;
 										break;
 									}
@@ -546,7 +546,7 @@ void SubsTextEditCtrl::UpdateCallTip(wxStyledTextEvent &) {
 
 			// Not inside parenthesis
 			if (inDepth == 0) {
-				if (prevChar == L'\\') {
+				if (prevChar == '\\') {
 					// Found start
 					if (i <= pos) tagStart = i;
 
@@ -652,7 +652,7 @@ void SubsTextEditCtrl::UpdateCallTip(wxStyledTextEvent &) {
 		semiProto = false;
 		cleanProto = proto[i];
 		if (cleanProto.Freq(';') > 0) {
-			cleanProto.Replace(L";","");
+			cleanProto.Replace(";","");
 			semiProto = true;
 		}
 
@@ -746,9 +746,9 @@ void SubsTextEditCtrl::SetTextTo(wxString text) {
 	SetEvtHandlerEnabled(false);
 	Freeze();
 
-	text.Replace(L"\r\n",L"\\N");
-	text.Replace(L"\r",L"\\N");
-	text.Replace(L"\n",L"\\N");
+	text.Replace("\r\n","\\N");
+	text.Replace("\r","\\N");
+	text.Replace("\n","\\N");
 
 	int from=0,to=0;
 	GetSelection(&from,&to);
@@ -808,7 +808,7 @@ void SubsTextEditCtrl::OnContextMenu(wxContextMenuEvent &event) {
 
 			// Append "add word"
 			wxString add_to_dict_text(_("Add \"%s\" to dictionary"));
-			add_to_dict_text.Replace(L"%s", currentWord);
+			add_to_dict_text.Replace("%s", currentWord);
 			menu.Append(EDIT_MENU_ADD_TO_DICT,add_to_dict_text)->Enable(spellchecker->CanAddWord(currentWord));
 		}
 		// Spelled right
@@ -897,7 +897,7 @@ void SubsTextEditCtrl::OnContextMenu(wxContextMenuEvent &event) {
 
 			// Thesaurus menu
 			wxString thes_suggestion_text(_("Thesaurus suggestions for \"%s\""));
-			thes_suggestion_text.Replace(L"%s", currentWord);
+			thes_suggestion_text.Replace("%s", currentWord);
 			menu.Append(-1,thes_suggestion_text,thesMenu);
 
 		}
@@ -977,7 +977,7 @@ void SubsTextEditCtrl::OnUseSuggestion(wxCommandEvent &event) {
 	}
 
 	// Stripe suggestion of parenthesis
-	int pos = suggestion.Find(L"(");
+	int pos = suggestion.Find("(");
 	if (pos != wxNOT_FOUND) {
 		suggestion = suggestion.Left(pos-1);
 	}

@@ -125,7 +125,7 @@ static void wait_for_cache_thread(FontConfigCacheThread const * const * const ca
 	if (!*cache_worker) return;
 
 	bool canceled;
-	DialogProgress *progress = new DialogProgress(AegisubApp::Get()->frame, L"", &canceled, L"Caching fonts", 0, 1);
+	DialogProgress *progress = new DialogProgress(AegisubApp::Get()->frame, "", &canceled, "Caching fonts", 0, 1);
 	progress->Show();
 	while (*cache_worker) {
 		if (canceled) throw agi::UserCancelException("Font caching cancelled");
@@ -144,7 +144,7 @@ LibassSubtitlesProvider::LibassSubtitlesProvider(std::string) {
 	// Initialize renderer
 	ass_track = NULL;
 	ass_renderer = ass_renderer_init(ass_library);
-	if (!ass_renderer) throw _T("ass_renderer_init failed");
+	if (!ass_renderer) throw "ass_renderer_init failed";
 	ass_set_font_scale(ass_renderer, 1.);
 	new FontConfigCacheThread(ass_renderer, &cache_worker);
 	wait_for_cache_thread(&cache_worker);
@@ -163,12 +163,12 @@ LibassSubtitlesProvider::~LibassSubtitlesProvider() {
 void LibassSubtitlesProvider::LoadSubtitles(AssFile *subs) {
 	// Prepare subtitles
 	std::vector<char> data;
-	subs->SaveMemory(data,_T("UTF-8"));
+	subs->SaveMemory(data,"UTF-8");
 
 	// Load file
 	if (ass_track) ass_free_track(ass_track);
 	ass_track = ass_read_memory(ass_library, &data[0], data.size(),(char *)"UTF-8");
-	if (!ass_track) throw _T("libass failed to load subtitles.");
+	if (!ass_track) throw "libass failed to load subtitles.";
 }
 
 /// DOCME

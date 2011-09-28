@@ -188,7 +188,7 @@ static void combine_karaoke(AssDialogue *first, AssDialogue *second) {
 }
 
 static void combine_concat(AssDialogue *first, AssDialogue *second) {
-	first->Text += L"\\N" + second->Text;
+	first->Text += "\\N" + second->Text;
 }
 
 static void combine_drop(AssDialogue *, AssDialogue *) { }

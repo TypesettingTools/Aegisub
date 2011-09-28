@@ -446,7 +446,7 @@ void hsl_to_hsv(int iH, int iS, int iL, unsigned char *oH, unsigned char *oS, un
 ///
 wxString color_to_html(wxColour color)
 {
-	return wxString::Format(_T("#%02X%02X%02X"), color.Red(), color.Green(), color.Blue());
+	return wxString::Format("#%02X%02X%02X", color.Red(), color.Green(), color.Blue());
 }
 
 
@@ -458,7 +458,7 @@ wxColour html_to_color(wxString html)
 {
 	html.Trim(true);
 	html.Trim(false);
-	if (html.StartsWith(_T("#"))) {
+	if (html.StartsWith("#")) {
 		html.Remove(0, 1);
 	}
 	if (html.size() == 6) {

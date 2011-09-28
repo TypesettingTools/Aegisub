@@ -76,11 +76,11 @@ DialogResample::DialogResample(agi::Context *c)
 	MarginSymmetrical = NULL;	// Do not remove this
 	wxSizer *MarginBoxSizer = new wxStaticBoxSizer(wxVERTICAL,this,_("Margin offset"));
 	wxSizer *MarginSizer = new wxGridSizer(3,3,5,5);
-	MarginTop = new wxTextCtrl(this,TEXT_MARGIN_T,_T("0"),wxDefaultPosition,wxSize(50,-1),0);
-	MarginLeft = new wxTextCtrl(this,TEXT_MARGIN_L,_T("0"),wxDefaultPosition,wxSize(50,-1),0);
+	MarginTop = new wxTextCtrl(this,TEXT_MARGIN_T,"0",wxDefaultPosition,wxSize(50,-1),0);
+	MarginLeft = new wxTextCtrl(this,TEXT_MARGIN_L,"0",wxDefaultPosition,wxSize(50,-1),0);
 	MarginSymmetrical = new wxCheckBox(this,CHECK_SYMMETRICAL,_("Symmetrical"));
-	MarginRight = new wxTextCtrl(this,TEXT_MARGIN_R,_T("0"),wxDefaultPosition,wxSize(50,-1),0);
-	MarginBottom = new wxTextCtrl(this,TEXT_MARGIN_B,_T("0"),wxDefaultPosition,wxSize(50,-1),0);
+	MarginRight = new wxTextCtrl(this,TEXT_MARGIN_R,"0",wxDefaultPosition,wxSize(50,-1),0);
+	MarginBottom = new wxTextCtrl(this,TEXT_MARGIN_B,"0",wxDefaultPosition,wxSize(50,-1),0);
 	MarginSizer->AddSpacer(1);
 	MarginSizer->Add(MarginTop,1,wxEXPAND);
 	MarginSizer->AddSpacer(1);
@@ -117,7 +117,7 @@ DialogResample::DialogResample(agi::Context *c)
 	wxStdDialogButtonSizer *ButtonSizer = new wxStdDialogButtonSizer();
 	ButtonSizer->AddButton(new wxButton(this,wxID_OK));
 	ButtonSizer->AddButton(new wxButton(this,wxID_CANCEL));
-	ButtonSizer->AddButton(new HelpButton(this,_T("Resample")));
+	ButtonSizer->AddButton(new HelpButton(this,"Resample"));
 	ButtonSizer->Realize();
 
 	// Main sizer
@@ -235,7 +235,7 @@ void DialogResample::OnResample (wxCommandEvent &event) {
 
 	// Sanity check
 	if (x1 == 0 || y1 == 0) {
-		wxMessageBox(_T("Invalid source resolution. This should not happen. Please contact the developers."),_("Error"),wxCENTRE|wxICON_ERROR);
+		wxMessageBox("Invalid source resolution. This should not happen. Please contact the developers.",_("Error"),wxCENTRE|wxICON_ERROR);
 		return;
 	}
 	if (x2 == 0 || y2 == 0) {
@@ -266,7 +266,7 @@ void DialogResample::OnResample (wxCommandEvent &event) {
 	for (entryIter cur=c->ass->Line.begin();cur!=c->ass->Line.end();cur++) {
 		// Apply to dialogues
 		curDiag = dynamic_cast<AssDialogue*>(*cur);
-		if (curDiag && !(curDiag->Comment && (curDiag->Effect.StartsWith(_T("template")) || curDiag->Effect.StartsWith(_T("code"))))) {
+		if (curDiag && !(curDiag->Comment && (curDiag->Effect.StartsWith("template") || curDiag->Effect.StartsWith("code")))) {
 			try {
 				// Override tags
 				curDiag->ParseASSTags();
@@ -293,7 +293,7 @@ void DialogResample::OnResample (wxCommandEvent &event) {
 				curDiag->ClearBlocks();
 				continue;
 			}
-			catch (const wchar_t *err) {
+			catch (const char *err) {
 				wxLogMessage(err);
 			}
 			catch (wxString err) {
@@ -318,8 +318,8 @@ void DialogResample::OnResample (wxCommandEvent &event) {
 	}
 
 	// Change script resolution
-	c->ass->SetScriptInfo(_T("PlayResX"),wxString::Format(_T("%i"),x2));
-	c->ass->SetScriptInfo(_T("PlayResY"),wxString::Format(_T("%i"),y2));
+	c->ass->SetScriptInfo("PlayResX",wxString::Format("%i",x2));
+	c->ass->SetScriptInfo("PlayResY",wxString::Format("%i",y2));
 
 	// Flag as modified
 	c->ass->Commit(_("resolution resampling"), AssFile::COMMIT_SCRIPTINFO | AssFile::COMMIT_DIAG_FULL);
@@ -332,8 +332,8 @@ void DialogResample::OnResample (wxCommandEvent &event) {
 /// @param event 
 ///
 void DialogResample::OnGetDestRes (wxCommandEvent &event) {
-	ResX->SetValue(wxString::Format(_T("%i"),c->videoController->GetWidth()));
-	ResY->SetValue(wxString::Format(_T("%i"),c->videoController->GetHeight()));
+	ResX->SetValue(wxString::Format("%i",c->videoController->GetWidth()));
+	ResY->SetValue(wxString::Format("%i",c->videoController->GetHeight()));
 }
 
 

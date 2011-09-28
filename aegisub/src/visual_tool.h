@@ -186,7 +186,7 @@ protected:
 	void DrawAllFeatures();
 	/// @brief Commit the current file state
 	/// @param message Description of changes for undo
-	void Commit(wxString message = L"");
+	void Commit(wxString message = "");
 
 	/// @brief Add a feature (and its line) to the selection
 	/// @param i Index in the feature list

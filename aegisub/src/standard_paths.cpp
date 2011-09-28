@@ -74,20 +74,20 @@ StandardPaths::StandardPaths() {
 	wxString userDir = paths.GetUserDataDir();
 #elif defined(__APPLE__)
 	wxString dataDir = paths.GetDataDir();
-	wxString userDir = paths.GetUserDataDir() + _T("-") + _T(AEGISUB_VERSION_DATA);
+	wxString userDir = paths.GetUserDataDir() + "-" + AEGISUB_VERSION_DATA;
 #else
-	wxString dataDir = paths.GetDataDir() + _T("/") + _T(AEGISUB_VERSION_DATA);
-	wxString userDir = paths.GetUserConfigDir() + _T("/.aegisub-") + _T(AEGISUB_VERSION_DATA);
+	wxString dataDir = paths.GetDataDir() + "/" + AEGISUB_VERSION_DATA;
+	wxString userDir = paths.GetUserConfigDir() + "/.aegisub-" + AEGISUB_VERSION_DATA;
 #endif
 	wxString tempDir = paths.GetTempDir();
 
 	// Set paths
-	DoSetPathValue(_T("?data"),dataDir);
-	DoSetPathValue(_T("?user"),userDir);
-	DoSetPathValue(_T("?temp"),tempDir);
+	DoSetPathValue("?data",dataDir);
+	DoSetPathValue("?user",userDir);
+	DoSetPathValue("?temp",tempDir);
 
 	// Create paths if they don't exist
-	wxFileName folder(userDir + _T("/"));
+	wxFileName folder(userDir + "/");
 	if (!folder.DirExists()) folder.Mkdir(0777,wxPATH_MKDIR_FULL);
 }
 
@@ -99,10 +99,10 @@ StandardPaths::StandardPaths() {
 ///
 wxString StandardPaths::DoDecodePath(wxString path) {
 	// Decode
-	if (path[0] == _T('?')) {
+	if (path[0] == '?') {
 		// Split ?part from rest
-		path.Replace(_T("\\"),_T("/"));
-		int pos = path.Find(_T("/"));
+		path.Replace("\\","/");
+		int pos = path.Find("/");
 		wxString path1,path2;
 		if (pos == wxNOT_FOUND) path1 = path;
 		else {
@@ -113,10 +113,10 @@ wxString StandardPaths::DoDecodePath(wxString path) {
 		// Replace ?part if valid
 		std::map<wxString,wxString>::iterator iter = paths.find(path1);
 		if (iter == paths.end()) return path;
-		wxString final = iter->second + _T("/") + path2;
-		final.Replace(_T("//"),_T("/"));
+		wxString final = iter->second + "/" + path2;
+		final.Replace("//","/");
 #ifdef WIN32
-		final.Replace(_T("/"),_T("\\"));
+		final.Replace("/","\\");
 #endif
 		return final;
 	}
@@ -156,7 +156,7 @@ void StandardPaths::DoSetPathValue(const wxString &path, const wxString &value) 
 wxString StandardPaths::DecodePathMaybeRelative(const wxString &path, const wxString &relativeTo) {
 	wxFileName res(DecodePath(path));
 	if (res.IsRelative())
-		res.Assign(DecodePath(relativeTo + _T("/") + path));
+		res.Assign(DecodePath(relativeTo + "/" + path));
 	return res.GetFullPath();
 }
 

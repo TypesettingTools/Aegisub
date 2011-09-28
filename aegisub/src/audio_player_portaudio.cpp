@@ -62,9 +62,9 @@ PortAudioPlayer::PortAudioPlayer() {
 		PaError err = Pa_Initialize();
 
 		if (err != paNoError) {
-			static wchar_t errormsg[2048];
-			swprintf(errormsg, 2048, L"Failed opening PortAudio: %s", Pa_GetErrorText(err));
-			throw (const wchar_t *)errormsg;
+			static char errormsg[2048];
+			sprintf(errormsg, 2048, "Failed opening PortAudio: %s", Pa_GetErrorText(err));
+			throw errormsg;
 		}
 		pa_refcount++;
 	}
@@ -112,7 +112,7 @@ void PortAudioPlayer::OpenStream() {
 		const PaHostErrorInfo *pa_err = Pa_GetLastHostErrorInfo();
 		LOG_D_IF(pa_err->errorCode != 0, "audio/player/portaudio") << "HostError: API: " << pa_err->hostApiType << ", " << pa_err->errorText << ", " << pa_err->errorCode;
 		LOG_D("audio/player/portaudio") << "Failed initializing PortAudio stream with error: " << Pa_GetErrorText(err);
-		throw wxString(_T("Failed initializing PortAudio stream with error: ") + wxString(Pa_GetErrorText(err),csConvLocal));
+		throw wxString("Failed initializing PortAudio stream with error: " + wxString(Pa_GetErrorText(err),csConvLocal));
 	}
 }
 

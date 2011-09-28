@@ -78,7 +78,7 @@ HDAudioProvider::HDAudioProvider(AudioProvider *src) {
 
 	// Start progress
 	volatile bool canceled = false;
-	DialogProgress *progress = new DialogProgress(AegisubApp::Get()->frame,_T("Load audio"),&canceled,_T("Reading to Hard Disk cache"),0,num_samples);
+	DialogProgress *progress = new DialogProgress(AegisubApp::Get()->frame,"Load audio",&canceled,"Reading to Hard Disk cache",0,num_samples);
 	progress->Show();
 
 	// Write to disk
@@ -149,10 +149,10 @@ void HDAudioProvider::GetAudio(void *buf, int64_t start, int64_t count) const {
 wxString HDAudioProvider::DiskCachePath() {
 	// Default
 	wxString path = lagi_wxString(OPT_GET("Audio/Cache/HD/Location")->GetString());
-	if (path == _T("default")) return StandardPaths::DecodePath(_T("?temp/"));
+	if (path == "default") return StandardPaths::DecodePath("?temp/");
 
 	// Specified
-	return DecodeRelativePath(path,StandardPaths::DecodePath(_T("?user/")));
+	return DecodeRelativePath(path,StandardPaths::DecodePath("?user/"));
 }
 
 /// @brief Get disk cache filename 
@@ -160,7 +160,7 @@ wxString HDAudioProvider::DiskCachePath() {
 wxString HDAudioProvider::DiskCacheName() {
 	// Get pattern
 	wxString pattern = lagi_wxString(OPT_GET("Audio/Cache/HD/Name")->GetString());
-	if (pattern.Find(_T("%02i")) == wxNOT_FOUND) pattern = _T("audio%02i.tmp");
+	if (pattern.Find("%02i") == wxNOT_FOUND) pattern = "audio%02i.tmp";
 	
 	// Try from 00 to 99
 	for (int i=0;i<100;i++) {
@@ -168,5 +168,5 @@ wxString HDAudioProvider::DiskCacheName() {
 		wxString curStringTry = DiskCachePath() + wxString::Format(pattern.c_str(),i);
 		if (!wxFile::Exists(curStringTry)) return curStringTry;
 	}
-	return L"";
+	return "";
 }

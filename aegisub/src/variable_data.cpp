@@ -126,7 +126,7 @@ void VariableData::ResetWith(wxString value) {
 			break;
 		}
 		case VARDATA_BOOL:
-			if (value == _T("1")) Set(true);
+			if (value == "1") Set(true);
 			else Set(false);
 			break;
 		case VARDATA_COLOUR: {
@@ -146,74 +146,74 @@ void VariableData::ResetWith(wxString value) {
 /// @brief Reads as an int 
 /// @return 
 template<> int VariableData::Get<int>() const {
-	if (!value) throw _T("Null parameter");
+	if (!value) throw "Null parameter";
 	if (type == VARDATA_BOOL) return !!(*value_bool);
 	if (type == VARDATA_INT) return *value_int;
 	if (type == VARDATA_FLOAT) return (int)(*value_float);
 	if (type == VARDATA_TEXT) return 0;
-	throw _T("Wrong parameter type, should be int");
+	throw "Wrong parameter type, should be int";
 }
 
 /// @brief Reads as a float 
 /// @return
 template<> float VariableData::Get<float>() const {
-	if (!value) throw _T("Null parameter");
+	if (!value) throw "Null parameter";
 	if (type == VARDATA_FLOAT) return (float)*value_float;
 	if (type == VARDATA_INT) return (float)(*value_int);
 	if (type == VARDATA_TEXT) return 0.0f;
-	throw _T("Wrong parameter type, should be float");
+	throw "Wrong parameter type, should be float";
 }
 template<> double VariableData::Get<double>() const {
-	if (!value) throw _T("Null parameter");
+	if (!value) throw "Null parameter";
 	if (type == VARDATA_FLOAT) return *value_float;
 	if (type == VARDATA_INT) return (float)(*value_int);
 	if (type == VARDATA_TEXT) return 0.0;
-	throw _T("Wrong parameter type, should be float");
+	throw "Wrong parameter type, should be float";
 }
 
 /// @brief Reads as a bool 
 /// @return 
 template<> bool VariableData::Get<bool>() const {
-	if (!value) throw _T("Null parameter");
+	if (!value) throw "Null parameter";
 	if (type == VARDATA_BOOL) return *value_bool;
 	if (type == VARDATA_INT) return ((*value_int)!=0);
 	if (type == VARDATA_FLOAT) return ((*value_float)!=0);
 	if (type == VARDATA_TEXT) return false;
-	throw _T("Wrong parameter type, should be bool");
+	throw "Wrong parameter type, should be bool";
 }
 
 /// @brief Reads as a colour 
 /// @return 
 template<> wxColour VariableData::Get<wxColour>() const {
-	if (!value) throw _T("Null parameter");
+	if (!value) throw "Null parameter";
 	if (type == VARDATA_COLOUR)	return *value_colour;
 	else if (type == VARDATA_TEXT) {
 		AssColor color;
 		color.Parse(*value_text);
 		return color.GetWXColor();
 	}
-	else throw _T("Wrong parameter type, should be colour");
+	else throw "Wrong parameter type, should be colour";
 }
 
 /// @brief Reads as a block 
 /// @return 
 template<> AssDialogueBlockOverride *VariableData::Get<AssDialogueBlockOverride *>() const {
-	if (!value) throw _T("Null parameter");
-	if (type != VARDATA_BLOCK) throw _T("Wrong parameter type, should be block");
+	if (!value) throw "Null parameter";
+	if (type != VARDATA_BLOCK) throw "Wrong parameter type, should be block";
 	return *value_block;
 }
 
 /// @brief Reads as a string 
 /// @return 
 template<> wxString VariableData::Get<wxString>() const {
-	if (!value) throw _T("Null parameter");
+	if (!value) throw "Null parameter";
 	if (type != VARDATA_TEXT) {
 		if (type == VARDATA_INT) return wxString::Format("%i",*value_int);
 		else if (type == VARDATA_FLOAT) return wxString::Format("%g",*value_float);
 		else if (type == VARDATA_COLOUR) return wxString::Format("#%02X%02X%02X",value_colour->Red(),value_colour->Green(),value_colour->Blue());
 		else if (type == VARDATA_BOOL) return *value_bool ? "1" : "0";
 		else if (type == VARDATA_BLOCK) return (*value_block)->GetText();
-		else throw _T("Wrong parameter type, should be text");
+		else throw "Wrong parameter type, should be text";
 	}
 	return *value_text;
 }

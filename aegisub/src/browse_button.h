@@ -77,7 +77,7 @@ private:
 	void OnPressed(wxCommandEvent &event);
 
 public:
-	BrowseButton(wxWindow *parent,int id=-1,wxString text=_T(""),BrowseType type=BROWSE_FILE,wxPoint position=wxDefaultPosition,wxSize size=wxDefaultSize);
+	BrowseButton(wxWindow *parent,int id=-1,wxString text="",BrowseType type=BROWSE_FILE,wxPoint position=wxDefaultPosition,wxSize size=wxDefaultSize);
 	void Bind(wxTextCtrl *control,int pos=0);
 };
 

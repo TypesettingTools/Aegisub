@@ -259,7 +259,7 @@ struct subtitle_open : public Command {
 
 	void operator()(agi::Context *c) {
 		wxString path = lagi_wxString(OPT_GET("Path/Last/Subtitles")->GetString()); 
-		wxString filename = wxFileSelector(_("Open subtitles file"),path,_T(""),_T(""),AssFile::GetWildcardList(0),wxFD_OPEN | wxFD_FILE_MUST_EXIST);
+		wxString filename = wxFileSelector(_("Open subtitles file"),path,"","",AssFile::GetWildcardList(0),wxFD_OPEN | wxFD_FILE_MUST_EXIST);
 		if (!filename.empty()) {
 			wxGetApp().frame->LoadSubtitles(filename);
 		}
@@ -279,7 +279,7 @@ struct subtitle_open_charset : public Command {
 		wxString path = lagi_wxString(OPT_GET("Path/Last/Subtitles")->GetString());
 
 		// Get options and load
-		wxString filename = wxFileSelector(_("Open subtitles file"),path,_T(""),_T(""),AssFile::GetWildcardList(0),wxFD_OPEN | wxFD_FILE_MUST_EXIST);
+		wxString filename = wxFileSelector(_("Open subtitles file"),path,"","",AssFile::GetWildcardList(0),wxFD_OPEN | wxFD_FILE_MUST_EXIST);
 		if (!filename.empty()) {
 			wxString charset = wxGetSingleChoice(_("Choose charset code:"), _("Charset"), agi::charset::GetEncodingsList<wxArrayString>(), c->parent, -1, -1, true, 250, 200);
 			if (!charset.empty()) {
@@ -336,7 +336,7 @@ static void save_subtitles(agi::Context *c, wxString filename) {
 	catch (const agi::Exception& err) {
 		wxMessageBox(lagi_wxString(err.GetMessage()), "Error", wxOK | wxICON_ERROR, NULL);
 	}
-	catch (const wchar_t *err) {
+	catch (const char *err) {
 		wxMessageBox(err, "Error", wxOK | wxICON_ERROR, NULL);
 	}
 	catch (...) {

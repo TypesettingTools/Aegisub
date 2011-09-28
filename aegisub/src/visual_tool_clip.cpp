@@ -125,8 +125,8 @@ void VisualToolClip::Draw() {
 bool VisualToolClip::InitializeHold() {
 	startX = video.x;
 	startY = video.y;
-	curDiag->StripTag(L"\\clip");
-	curDiag->StripTag(L"\\iclip");
+	curDiag->StripTag("\\clip");
+	curDiag->StripTag("\\iclip");
 	return true;
 }
 
@@ -156,12 +156,12 @@ void VisualToolClip::CommitHold() {
 	int y2 = curY2;
 	parent->ToScriptCoords(&x1, &y1);
 	parent->ToScriptCoords(&x2, &y2);
-	SetOverride(curDiag, inverse ? L"\\iclip" : L"\\clip",wxString::Format(L"(%i,%i,%i,%i)",x1,y1,x2,y2));
+	SetOverride(curDiag, inverse ? "\\iclip" : "\\clip",wxString::Format("(%i,%i,%i,%i)",x1,y1,x2,y2));
 }
 
 bool VisualToolClip::InitializeDrag(feature_iterator) {
-	curDiag->StripTag(L"\\clip");
-	curDiag->StripTag(L"\\iclip");
+	curDiag->StripTag("\\clip");
+	curDiag->StripTag("\\iclip");
 	return true;
 }
 

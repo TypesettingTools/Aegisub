@@ -108,7 +108,7 @@ DialogPasteOver::DialogPasteOver (wxWindow *parent, std::vector<bool>& options)
 	wxStdDialogButtonSizer *ButtonSizer = new wxStdDialogButtonSizer();
 	ButtonSizer->AddButton(new wxButton(this, wxID_OK));
 	ButtonSizer->AddButton(new wxButton(this, wxID_CANCEL));
-	ButtonSizer->AddButton(new HelpButton(this,_T("Paste Over")));
+	ButtonSizer->AddButton(new HelpButton(this,"Paste Over"));
 	ButtonSizer->Realize();
 
 	// Main sizer

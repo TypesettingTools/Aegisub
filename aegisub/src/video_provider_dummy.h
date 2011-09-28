@@ -82,5 +82,5 @@ public:
 	int GetHeight() const { return height; }
 	agi::vfr::Framerate GetFPS() const { return fps; }
 	std::vector<int> GetKeyFrames() const { return std::vector<int>(); };
-	wxString GetDecoderName() const { return L"Dummy Video Provider"; }
+	wxString GetDecoderName() const { return "Dummy Video Provider"; }
 };

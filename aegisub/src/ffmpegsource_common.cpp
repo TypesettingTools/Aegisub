@@ -112,7 +112,7 @@ FFMS_Index *FFmpegSourceProvider::DoIndexing(FFMS_Indexer *Indexer, const wxStri
 		throw agi::UserCancelException("indexing cancelled by user");
 	}
 	if (Index == NULL) {
-		MsgString.Append(_T("Failed to index: ")).Append(wxString(ErrInfo.Buffer, wxConvUTF8));
+		MsgString.Append("Failed to index: ").Append(wxString(ErrInfo.Buffer, wxConvUTF8));
 		throw MsgString;
 	}
 
@@ -121,7 +121,7 @@ FFMS_Index *FFmpegSourceProvider::DoIndexing(FFMS_Indexer *Indexer, const wxStri
 	FFMS_WriteIndex(CacheName.utf8_str(), Index, &ErrInfo);
 	/*if (FFMS_WriteIndex(CacheName.char_str(), Index, FFMSErrMsg, MsgSize)) {
 		wxString temp(FFMSErrMsg, wxConvUTF8);
-		MsgString << _T("Failed to write index: ") << temp;
+		MsgString << "Failed to write index: " << temp;
 		throw MsgString;
 	} */
 
@@ -152,7 +152,7 @@ std::map<int,wxString> FFmpegSourceProvider::GetTracksOfType(FFMS_Indexer *Index
 int FFmpegSourceProvider::AskForTrackSelection(const std::map<int,wxString> &TrackList, FFMS_TrackType Type) {
 	std::vector<int> TrackNumbers;
 	wxArrayString Choices;
-	wxString TypeName = _T("");
+	wxString TypeName = "";
 	if (Type == FFMS_TYPE_VIDEO)
 		TypeName = _("video");
 	else if (Type == FFMS_TYPE_AUDIO)
@@ -178,19 +178,19 @@ int FFmpegSourceProvider::AskForTrackSelection(const std::map<int,wxString> &Tra
 void FFmpegSourceProvider::SetLogLevel() {
 	wxString LogLevel = lagi_wxString(OPT_GET("Provider/FFmpegSource/Log Level")->GetString());
 
-	if (!LogLevel.CmpNoCase(_T("panic")))
+	if (!LogLevel.CmpNoCase("panic"))
 		FFMS_SetLogLevel(FFMS_LOG_PANIC);
-	else if (!LogLevel.CmpNoCase(_T("fatal")))
+	else if (!LogLevel.CmpNoCase("fatal"))
 		FFMS_SetLogLevel(FFMS_LOG_FATAL);
-	else if (!LogLevel.CmpNoCase(_T("error")))
+	else if (!LogLevel.CmpNoCase("error"))
 		FFMS_SetLogLevel(FFMS_LOG_ERROR);
-	else if (!LogLevel.CmpNoCase(_T("warning")))
+	else if (!LogLevel.CmpNoCase("warning"))
 		FFMS_SetLogLevel(FFMS_LOG_WARNING);
-	else if (!LogLevel.CmpNoCase(_T("info")))
+	else if (!LogLevel.CmpNoCase("info"))
 		FFMS_SetLogLevel(FFMS_LOG_INFO);
-	else if (!LogLevel.CmpNoCase(_T("verbose")))
+	else if (!LogLevel.CmpNoCase("verbose"))
 		FFMS_SetLogLevel(FFMS_LOG_VERBOSE);
-	else if (!LogLevel.CmpNoCase(_T("debug")))
+	else if (!LogLevel.CmpNoCase("debug"))
 		FFMS_SetLogLevel(FFMS_LOG_DEBUG);
 	else
 		FFMS_SetLogLevel(FFMS_LOG_QUIET);
@@ -200,13 +200,13 @@ void FFmpegSourceProvider::SetLogLevel() {
 FFMS_IndexErrorHandling FFmpegSourceProvider::GetErrorHandlingMode() {
 	wxString Mode = lagi_wxString(OPT_GET("Provider/Audio/FFmpegSource/Decode Error Handling")->GetString());
 
-	if (!Mode.CmpNoCase(_T("ignore")))
+	if (!Mode.CmpNoCase("ignore"))
 		return FFMS_IEH_IGNORE;
-	else if (!Mode.CmpNoCase(_T("clear")))
+	else if (!Mode.CmpNoCase("clear"))
 		return FFMS_IEH_CLEAR_TRACK;
-	else if (!Mode.CmpNoCase(_T("stop")))
+	else if (!Mode.CmpNoCase("stop"))
 		return FFMS_IEH_STOP_TRACK;
-	else if (!Mode.CmpNoCase(_T("abort")))
+	else if (!Mode.CmpNoCase("abort"))
 		return FFMS_IEH_ABORT;
 	else
 		return FFMS_IEH_STOP_TRACK; // questionable default?
@@ -241,7 +241,7 @@ wxString FFmpegSourceProvider::GetCacheFilename(const wxString& _filename)
 
 	// Generate the filename
 	unsigned int *md5 = (unsigned int*) digest;
-	wxString result = wxString::Format(_T("?user/ffms2cache/%08X%08X%08X%08X.ffindex"),md5[0],md5[1],md5[2],md5[3]);
+	wxString result = wxString::Format("?user/ffms2cache/%08X%08X%08X%08X.ffindex",md5[0],md5[1],md5[2],md5[3]);
 	result = StandardPaths::DecodePath(result);
 
 	// Ensure that folder exists
@@ -252,7 +252,7 @@ wxString FFmpegSourceProvider::GetCacheFilename(const wxString& _filename)
 	}
 
 	wxFileName dirfn(dir);
-	return dirfn.GetShortPath() + _T("/") + fn.GetFullName();
+	return dirfn.GetShortPath() + "/" + fn.GetFullName();
 }
 
 
@@ -298,7 +298,7 @@ wxThread::ExitCode FFmpegSourceCacheCleaner::Entry() {
 		return (wxThread::ExitCode)1;
 	}
 
-	wxString cachedirname = StandardPaths::DecodePath(_T("?user/ffms2cache/"));
+	wxString cachedirname = StandardPaths::DecodePath("?user/ffms2cache/");
 	wxDir cachedir;
 	if (!cachedir.Open(cachedirname)) {
 		LOG_D("provider/ffmpegsource/cache") << "couldn't open cache directory " << cachedirname.c_str();
@@ -314,7 +314,7 @@ wxThread::ExitCode FFmpegSourceCacheCleaner::Entry() {
 	int64_t cursize = wxDir::GetTotalSize(cachedirname).GetValue();
 	int maxfiles	= OPT_GET("Provider/FFmpegSource/Cache/Files")->GetInt();
 
-	if (!cachedir.HasFiles(_T("*.ffindex"))) {
+	if (!cachedir.HasFiles("*.ffindex")) {
 		LOG_D("provider/ffmpegsource/cache") << "no index files in cache folder, exiting";
 		return (wxThread::ExitCode)0;
 	}
@@ -328,7 +328,7 @@ wxThread::ExitCode FFmpegSourceCacheCleaner::Entry() {
 
 	// unusually paranoid sanity check
 	// (someone might have deleted the file(s) after we did HasFiles() above; does wxDir.Open() lock the dir?)
-	if (!cachedir.GetFirst(&curfn_str, _T("*.ffindex"), wxDIR_FILES)) {
+	if (!cachedir.GetFirst(&curfn_str, "*.ffindex", wxDIR_FILES)) {
 		LOG_D("provider/ffmpegsource/cache") << "undefined error";
 		return (wxThread::ExitCode)1;
 	}

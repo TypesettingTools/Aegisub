@@ -219,7 +219,7 @@ void AegisubVersionCheckerThread::PostErrorEvent(const wxString &error_text)
 }
 
 
-static const wxChar * GetOSShortName()
+static const char * GetOSShortName()
 {
 	int osver_maj, osver_min;
 	wxOperatingSystemId osid = wxGetOsVersion(&osver_maj, &osver_min);
@@ -227,22 +227,22 @@ static const wxChar * GetOSShortName()
 	if (osid & wxOS_WINDOWS_NT)
 	{
 		if (osver_maj == 5 && osver_min == 0)
-			return _T("win2k");
+			return "win2k";
 		else if (osver_maj == 5 && osver_min == 1)
-			return _T("winxp");
+			return "winxp";
 		else if (osver_maj == 5 && osver_min == 2)
-			return _T("win2k3"); // this is also xp64
+			return "win2k3"; // this is also xp64
 		else if (osver_maj == 6 && osver_min == 0)
-			return _T("win60"); // vista and server 2008
+			return "win60"; // vista and server 2008
 		else if (osver_maj == 6 && osver_min == 1)
-			return _T("win61"); // 7 and server 2008r2
+			return "win61"; // 7 and server 2008r2
 		else
-			return _T("windows"); // future proofing? I doubt we run on nt4
+			return "windows"; // future proofing? I doubt we run on nt4
 	}
 	else if (osid & wxOS_MAC_OSX_DARWIN && osver_maj == 0x10) // yes 0x10, not decimal 10, don't ask me
 	{
 		// ugliest hack in the world? nah.
-		static wxChar osxstring[] = _T("osx00");
+		static char osxstring[] = "osx00";
 		char minor = osver_min >> 4;
 		char patch = osver_min & 0x0F;
 		osxstring[3] = minor + ((minor<=9) ? '0' : ('a'-1));
@@ -250,27 +250,27 @@ static const wxChar * GetOSShortName()
 		return osxstring;
 	}
 	else if (osid & wxOS_UNIX_LINUX)
-		return _T("linux");
+		return "linux";
 	else if (osid & wxOS_UNIX_FREEBSD)
-		return _T("freebsd");
+		return "freebsd";
 	else if (osid & wxOS_UNIX_OPENBSD)
-		return _T("openbsd");
+		return "openbsd";
 	else if (osid & wxOS_UNIX_NETBSD)
-		return _T("netbsd");
+		return "netbsd";
 	else if (osid & wxOS_UNIX_SOLARIS)
-		return _T("solaris");
+		return "solaris";
 	else if (osid & wxOS_UNIX_AIX)
-		return _T("aix");
+		return "aix";
 	else if (osid & wxOS_UNIX_HPUX)
-		return _T("hpux");
+		return "hpux";
 	else if (osid & wxOS_UNIX)
-		return _T("unix");
+		return "unix";
 	else if (osid & wxOS_OS2)
-		return _T("os2");
+		return "os2";
 	else if (osid & wxOS_DOS)
-		return _T("dos");
+		return "dos";
 	else
-		return _T("unknown");
+		return "unknown";
 }
 
 
@@ -306,7 +306,7 @@ static wxString GetSystemLanguage()
 getsyslang_fallback:
 		// On an old version of Windows, let's just return the LANGID as a string
 		LANGID langid = GetUserDefaultUILanguage();
-		res = wxString::Format(_T("x-win%04x"), langid);
+		res = wxString::Format("x-win%04x", langid);
 
 	}
 	FreeModule(kernel32);
@@ -326,7 +326,7 @@ void AegisubVersionCheckerThread::DoCheck()
 	std::set<wxString> accept_tags;
 #ifdef UPDATE_CHECKER_ACCEPT_TAGS
 	{
-		wxStringTokenizer tk(wxString(UPDATE_CHECKER_ACCEPT_TAGS, wxConvUTF8), _T(" "));
+		wxStringTokenizer tk(wxString(UPDATE_CHECKER_ACCEPT_TAGS, wxConvUTF8), " ");
 		while (tk.HasMoreTokens())
 		{
 			accept_tags.insert(tk.GetNextToken());
@@ -334,11 +334,11 @@ void AegisubVersionCheckerThread::DoCheck()
 	}
 #endif
 
-	const wxString servername = _T("updates.aegisub.org");
-	const wxString base_updates_path = _T("/trunk");
+	const wxString servername = "updates.aegisub.org";
+	const wxString base_updates_path = "/trunk";
 
 	wxString querystring = wxString::Format(
-		_T("?rev=%d&rel=%d&os=%s&lang=%s"),
+		"?rev=%d&rel=%d&os=%s&lang=%s",
 		GetSVNRevision(),
 		GetIsOfficialRelease()?1:0,
 		GetOSShortName(),
@@ -347,7 +347,7 @@ void AegisubVersionCheckerThread::DoCheck()
 	wxString path = base_updates_path + querystring;
 
 	wxHTTP http;
-	http.SetHeader(_T("Connection"), _T("Close"));
+	http.SetHeader("Connection", "Close");
 	http.SetFlags(wxSOCKET_WAITALL|wxSOCKET_BLOCK);
 
 	if (!http.Connect(servername))
@@ -369,7 +369,7 @@ void AegisubVersionCheckerThread::DoCheck()
 	while (!stream->Eof() && stream->GetSize() > 0)
 	{
 		wxString line = text.ReadLine();
-		wxStringTokenizer tkn(line, _T("|"), wxTOKEN_RET_EMPTY_ALL);
+		wxStringTokenizer tkn(line, "|", wxTOKEN_RET_EMPTY_ALL);
 		wxArrayString parsed;
 		while (tkn.HasMoreTokens()) {
 			parsed.Add(tkn.GetNextToken());
@@ -383,21 +383,21 @@ void AegisubVersionCheckerThread::DoCheck()
 		wxString line_friendlyname = inline_string_decode(parsed[4]);
 		wxString line_description = inline_string_decode(parsed[5]);
 
-		if ((line_type == _T("branch") || line_type == _T("dev")) && GetIsOfficialRelease())
+		if ((line_type == "branch" || line_type == "dev") && GetIsOfficialRelease())
 		{
 			// stable runners don't want unstable, not interesting, skip
 			continue;
 		}
 
 		// check if the tags match
-		if (line_tags_str.IsEmpty() || line_tags_str == _T("all"))
+		if (line_tags_str.IsEmpty() || line_tags_str == "all")
 		{
 			// looking good
 		}
 		else
 		{
 			bool accepts_all_tags = true;
-			wxStringTokenizer tk(line_tags_str, _T(" "));
+			wxStringTokenizer tk(line_tags_str, " ");
 			while (tk.HasMoreTokens())
 			{
 				if (accept_tags.find(tk.GetNextToken()) == accept_tags.end())
@@ -410,7 +410,7 @@ void AegisubVersionCheckerThread::DoCheck()
 				continue;
 		}
 
-		if (line_type == _T("upgrade") || line_type == _T("bugfix"))
+		if (line_type == "upgrade" || line_type == "bugfix")
 		{
 			// de facto interesting
 		}

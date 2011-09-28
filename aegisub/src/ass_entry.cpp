@@ -68,11 +68,11 @@ AssEntry::~AssEntry() {
 ///
 wxString AssEntry::GetSSAText() const {
 	// Special cases
-	if (data.Lower() == _T("[v4+ styles]")) return wxString(_T("[V4 Styles]"));
-	if (data.Lower() == _T("scripttype: v4.00+")) return wxString(_T("ScriptType: v4.00"));
-	if (data.Lower().Left(7) == _T("format:")) {
-		if (group.Lower() == _T("[events]")) return wxString(_T("Format: Marked, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text"));
-		if (group.Lower() == _T("[v4+ styles]")) return wxString(_T("Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, TertiaryColour, BackColour, Bold, Italic, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, AlphaLevel, Encoding"));
+	if (data.Lower() == "[v4+ styles]") return wxString("[V4 Styles]");
+	if (data.Lower() == "scripttype: v4.00+") return wxString("ScriptType: v4.00");
+	if (data.Lower().Left(7) == "format:") {
+		if (group.Lower() == "[events]") return wxString("Format: Marked, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text");
+		if (group.Lower() == "[v4+ styles]") return wxString("Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, TertiaryColour, BackColour, Bold, Italic, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, AlphaLevel, Encoding");
 	}
 	return GetEntryData();
 }

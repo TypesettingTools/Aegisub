@@ -82,13 +82,13 @@ void AegisubLocale::Init(int language) {
 	locale = new wxLocale(language);
 
 #ifdef __WINDOWS__
-	locale->AddCatalogLookupPathPrefix(StandardPaths::DecodePath(_T("?data/locale/")));
-	locale->AddCatalog(_T("aegisub"));
+	locale->AddCatalogLookupPathPrefix(StandardPaths::DecodePath("?data/locale/"));
+	locale->AddCatalog("aegisub");
 #else
-	locale->AddCatalog(_T(GETTEXT_PACKAGE));
+	locale->AddCatalog(GETTEXT_PACKAGE);
 #endif
 
-	locale->AddCatalog(_T("wxstd"));
+	locale->AddCatalog("wxstd");
 	setlocale(LC_NUMERIC, "C");
 	setlocale(LC_CTYPE, "C");
 }
@@ -124,7 +124,7 @@ int AegisubLocale::PickLanguage() {
 	if (langs.Count() == 0) return -1;
 
 	// Popup
-	int picked = wxGetSingleChoiceIndex(_T("Please choose a language:"),_T("Language"),langNames,NULL,-1,-1,true,300,400);
+	int picked = wxGetSingleChoiceIndex("Please choose a language:","Language",langNames,NULL,-1,-1,true,300,400);
 	if (picked == -1) return -1;
 	return langs[picked];
 }
@@ -140,15 +140,15 @@ wxArrayInt AegisubLocale::GetAvailableLanguages() {
 	wxString temp1;
 
 	// Open directory
-	wxString folder = StandardPaths::DecodePath(_T("?data/locale/"));
+	wxString folder = StandardPaths::DecodePath("?data/locale/");
 	wxDir dir;
 	if (!dir.Exists(folder)) return final;
 	if (!dir.Open(folder)) return final;
 
 	// Enumerate folders
-	for (bool cont = dir.GetFirst(&temp1,_T(""),wxDIR_DIRS);cont;cont = dir.GetNext(&temp1)) {
+	for (bool cont = dir.GetFirst(&temp1,"",wxDIR_DIRS);cont;cont = dir.GetNext(&temp1)) {
 		// Check if .so exists inside folder
-		wxFileName file(folder + temp1 + _T("/aegisub.mo"));
+		wxFileName file(folder + temp1 + "/aegisub.mo");
 		if (file.FileExists()) {
 			const wxLanguageInfo *lang = wxLocale::FindLanguageInfo(temp1);
 			if (lang) {
@@ -159,33 +159,33 @@ wxArrayInt AegisubLocale::GetAvailableLanguages() {
 
 #else
 
-	const wchar_t* langs[] = {
-		_T("ca"),
-		_T("cs"),
-		_T("da"),
-		_T("de"),
-		_T("el"),
-		_T("es"),
-		_T("fi"),
-		_T("fr_FR"),
-		_T("hu"),
-		_T("it"),
-		_T("ja"),
-		_T("ko"),
-		_T("pt_BR"),
-		_T("ru"),
-		_T("vi"),
-		_T("zh_CN"),
-		_T("zh_TW")
+	const char* langs[] = {
+		"ca",
+		"cs",
+		"da",
+		"de",
+		"el",
+		"es",
+		"fi",
+		"fr_FR",
+		"hu",
+		"it",
+		"ja",
+		"ko",
+		"pt_BR",
+		"ru",
+		"vi",
+		"zh_CN",
+		"zh_TW"
 	};
 
-	size_t len = sizeof(langs)/sizeof(wchar_t*);
+	size_t len = sizeof(langs)/sizeof(char*);
 	for (size_t i=0; i<len; i++) {
 		const wxLanguageInfo *lang = wxLocale::FindLanguageInfo(langs[i]);
 
 		// If the locale file doesn't exist then don't list it as an option. 
 		wxString locDir = wxStandardPaths::Get().GetLocalizedResourcesDir(langs[i], wxStandardPathsBase::ResourceCat_Messages);
-		wxFileName file(wxString::Format(_T("%s/%s.mo"), locDir.c_str(), _T(GETTEXT_PACKAGE)));
+		wxFileName file(wxString::Format("%s/%s.mo", locDir.c_str(), GETTEXT_PACKAGE));
 		if (lang && file.FileExists()) final.Add(lang->Language);
 	}
 #endif

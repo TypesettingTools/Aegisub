@@ -270,12 +270,12 @@ int DrawBoxedText(wxDC &dc, const wxString &txt, int x, int y)
 	// Assume the pen, brush and font properties have already been set in the DC.
 	// Return the advance width, including box margins, borders etc
 
-	if (txt == _T(""))
+	if (txt == "")
 	{
 		// Empty string gets special handling:
 		// The box is drawn in shorter width, to emphasize it's empty
 		// GetTextExtent has to be called with a non-empty string, otherwise it returns the wrong height
-		dc.GetTextExtent(_T(" "), &tw, &th);
+		dc.GetTextExtent(" ", &tw, &th);
 		dc.DrawRectangle(x, y-2, 4, th+4);
 		return 3;
 	}
@@ -426,14 +426,14 @@ void KaraokeLineMatchDisplay::OnPaint(wxPaintEvent &event)
 	dc.SetTextForeground(sel_text);
 	dc.SetBrush(wxBrush(sel_back));
 	wxString txt = unmatched_destination.Left(destination_sel_length);
-	if (txt != _T(""))
+	if (txt != "")
 		next_x += DrawBoxedText(dc, txt, next_x, y_line2);
 
 	dc.SetTextBackground(inner_back);
 	dc.SetTextForeground(inner_text);
 	dc.SetBrush(wxBrush(inner_back));
 	txt = unmatched_destination.Mid(destination_sel_length);
-	if (txt != _T(""))
+	if (txt != "")
 		DrawBoxedText(dc, txt, next_x, y_line2);
 }
 
@@ -510,7 +510,7 @@ wxString KaraokeLineMatchDisplay::GetOutputLine()
 	for (size_t i = 0; i < matched_groups.size(); ++i)
 	{
 		MatchGroup &match = matched_groups[i];
-		res = wxString::Format(_T("%s{\\k%d}%s"), res.c_str(), match.duration, match.dst.c_str());
+		res = wxString::Format("%s{\\k%d}%s", res.c_str(), match.duration, match.dst.c_str());
 	}
 
 	return res;
@@ -857,9 +857,9 @@ DialogKanjiTimer::DialogKanjiTimer(agi::Context *c)
 	Interpolate = new wxCheckBox(this,-1,_("Attempt to interpolate kanji."),wxDefaultPosition,wxDefaultSize,wxALIGN_LEFT);
 	Interpolate->SetValue(OPT_GET("Tool/Kanji Timer/Interpolation")->GetBool());
 
-	SourceStyle=new wxComboBox(this,-1,_T(""),wxDefaultPosition,wxSize(160,-1),
+	SourceStyle=new wxComboBox(this,-1,"",wxDefaultPosition,wxSize(160,-1),
 								 subs->GetStyles(),wxCB_READONLY,wxDefaultValidator,_("Source Style"));
-	DestStyle = new wxComboBox(this,-1,_T(""),wxDefaultPosition,wxSize(160,-1),
+	DestStyle = new wxComboBox(this,-1,"",wxDefaultPosition,wxSize(160,-1),
 								 subs->GetStyles(),wxCB_READONLY,wxDefaultValidator,_("Dest Style"));
 
 	wxStaticText *ShortcutKeys = new wxStaticText(this,-1,_("When the destination textbox has focus, use the following keys:\n\nRight Arrow: Increase dest. selection length\nLeft Arrow: Decrease dest. selection length\nUp Arrow: Increase source selection length\nDown Arrow: Decrease source selection length\nEnter: Link, accept line when done\nBackspace: Unlink last"));
@@ -898,7 +898,7 @@ DialogKanjiTimer::DialogKanjiTimer(agi::Context *c)
 
 	// Button sizer
 	wxStdDialogButtonSizer *buttonSizer = new wxStdDialogButtonSizer();
-	buttonSizer->AddButton(new HelpButton(this,_T("Kanji Timer")));
+	buttonSizer->AddButton(new HelpButton(this,"Kanji Timer"));
 	buttonSizer->SetAffirmativeButton(CloseKT);
 	buttonSizer->Realize();
 

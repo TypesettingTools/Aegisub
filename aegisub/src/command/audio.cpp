@@ -89,10 +89,10 @@ struct audio_open : public Command {
 
 	void operator()(agi::Context *c) {
 		wxString path = lagi_wxString(OPT_GET("Path/Last/Audio")->GetString());  
-		wxString str = wxString(_("Audio Formats")) + _T(" (*.wav,*.mp3,*.ogg,*.flac,*.mp4,*.ac3,*.aac,*.mka,*.m4a,*.w64)|*.wav;*.mp3;*.ogg;*.flac;*.mp4;*.ac3;*.aac;*.mka;*.m4a;*.w64|")
-					+ _("Video Formats") + _T(" (*.avi,*.mkv,*.ogm,*.mpg,*.mpeg)|*.avi;*.mkv;*.ogm;*.mp4;*.mpeg;*.mpg|")
-					+ _("All files") + _T(" (*.*)|*.*");
-		wxString filename = wxFileSelector(_("Open audio file"),path,_T(""),_T(""),str,wxFD_OPEN | wxFD_FILE_MUST_EXIST);
+		wxString str = wxString(_("Audio Formats")) + " (*.wav,*.mp3,*.ogg,*.flac,*.mp4,*.ac3,*.aac,*.mka,*.m4a,*.w64)|*.wav;*.mp3;*.ogg;*.flac;*.mp4;*.ac3;*.aac;*.mka;*.m4a;*.w64|"
+					+ _("Video Formats") + " (*.avi,*.mkv,*.ogm,*.mpg,*.mpeg)|*.avi;*.mkv;*.ogm;*.mp4;*.mpeg;*.mpg|"
+					+ _("All files") + " (*.*)|*.*";
+		wxString filename = wxFileSelector(_("Open audio file"),path,"","",str,wxFD_OPEN | wxFD_FILE_MUST_EXIST);
 		if (!filename.empty()) {
 			c->audioController->OpenAudio(filename);
 			OPT_SET("Path/Last/Audio")->SetString(STD_STR(filename));
@@ -109,7 +109,7 @@ struct audio_open_blank : public Command {
 	STR_HELP("Open a 150 minutes blank audio clip, for debugging.")
 
 	void operator()(agi::Context *c) {
-		c->audioController->OpenAudio(_T("dummy-audio:silence?sr=44100&bd=16&ch=1&ln=396900000"));
+		c->audioController->OpenAudio("dummy-audio:silence?sr=44100&bd=16&ch=1&ln=396900000");
 	}
 };
 
@@ -122,7 +122,7 @@ struct audio_open_noise : public Command {
 	STR_HELP("Open a 150 minutes noise-filled audio clip, for debugging.")
 
 	void operator()(agi::Context *c) {
-		c->audioController->OpenAudio(_T("dummy-audio:noise?sr=44100&bd=16&ch=1&ln=396900000"));
+		c->audioController->OpenAudio("dummy-audio:noise?sr=44100&bd=16&ch=1&ln=396900000");
 	}
 };
 

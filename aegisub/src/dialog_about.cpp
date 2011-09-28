@@ -61,91 +61,91 @@ AboutScreen::AboutScreen(wxWindow *parent)
 : wxDialog (parent, -1, _("About Aegisub"), wxDefaultPosition, wxDefaultSize, wxCAPTION | wxCLOSE_BOX , _("About Aegisub"))
 {
 	// Generate library string
-	wxString libString = _T("Aegisub includes portions from the following other projects:\n");
-	libString += _T("    wxWidgets - Copyright (c) Julian Smart, Robert Roebling et al;\n");
-	libString += _T("    wxStyledTextCtrl - Copyright (c) Robin Dunn, Neil Hodgson;\n");
-	libString += _T("    Scintilla - Copyright (c) Neil Hodgson;\n");
-	libString += _T("    UniversalCharDet - Copyright (c) Netscape Communications Corp.;\n");
+	wxString libString = "Aegisub includes portions from the following other projects:\n";
+	libString += "    wxWidgets - Copyright (c) Julian Smart, Robert Roebling et al;\n";
+	libString += "    wxStyledTextCtrl - Copyright (c) Robin Dunn, Neil Hodgson;\n";
+	libString += "    Scintilla - Copyright (c) Neil Hodgson;\n";
+	libString += "    UniversalCharDet - Copyright (c) Netscape Communications Corp.;\n";
 #ifdef WITH_AUTO4_LUA
-	libString += _T("    Lua - Copyright (c) Lua.org, PUC-Rio;\n");
+	libString += "    Lua - Copyright (c) Lua.org, PUC-Rio;\n";
 #endif
 #ifdef WITH_HUNSPELL
-	libString += _T("    Hunspell - Copyright (c) Kevin Hendricks;\n");
+	libString += "    Hunspell - Copyright (c) Kevin Hendricks;\n";
 #endif
 #ifdef WITH_PORTAUDIO
-	libString += _T("    PortAudio - Copyright (c) Ross Bencina, Phil Burk;\n");
+	libString += "    PortAudio - Copyright (c) Ross Bencina, Phil Burk;\n";
 #endif
 #ifdef WITH_FFMPEGSOURCE
-	libString += _T("    FFmpeg - Copyright (c) Fabrice Bellard;\n");
-	libString += _T("    FFmpegSource - Copyright (c) Fredrik Mellbin;\n");
+	libString += "    FFmpeg - Copyright (c) Fabrice Bellard;\n";
+	libString += "    FFmpegSource - Copyright (c) Fredrik Mellbin;\n";
 #endif
 #ifdef WITH_AVISYNTH
-	libString += _T("    Avisynth 2.5 - Copyright (c) Ben Rudiak-Gould et al;\n");
+	libString += "    Avisynth 2.5 - Copyright (c) Ben Rudiak-Gould et al;\n";
 #endif
 #ifdef WITH_CSRI
-	libString += _T("    csri - Copyright (c) David Lamparter;\n");
+	libString += "    csri - Copyright (c) David Lamparter;\n";
 # ifdef __WINDOWS__
-	libString += _T("    vsfilter - Copyright (c) Gabest;\n");
+	libString += "    vsfilter - Copyright (c) Gabest;\n";
 # endif
 #endif
 #ifdef WITH_LIBASS
-	libString += _T("    libass - Copyright (c) Evgeniy Stepanov, Grigori Goronzy;\n");
+	libString += "    libass - Copyright (c) Evgeniy Stepanov, Grigori Goronzy;\n";
 #endif
 #ifdef __WINDOWS__
-	libString += _T("    Matroska Parser - Copyright (c) Mike Matsnev;\n");
+	libString += "    Matroska Parser - Copyright (c) Mike Matsnev;\n";
 #endif
 #ifdef WITH_FREETYPE2
-	libString += _T("    Freetype - Copyright (c) David Turner, Robert Wilhelm, Werner Lemberg;\n");
+	libString += "    Freetype - Copyright (c) David Turner, Robert Wilhelm, Werner Lemberg;\n";
 #endif
-	libString += _T("    MyThes - Copyright (c) Kevin B. Hendricks, Stratford, Ontario, Canada.\n");
+	libString += "    MyThes - Copyright (c) Kevin B. Hendricks, Stratford, Ontario, Canada.\n";
 
 	wxString translatorCredit = _("Translated into LANGUAGE by PERSON\n");
-	if (translatorCredit == _T("Translated into LANGUAGE by PERSON\n")) translatorCredit.Clear();
+	if (translatorCredit == "Translated into LANGUAGE by PERSON\n") translatorCredit.Clear();
 
 	// Generate about string
 	wxString aboutString;
-	aboutString += wxString(_T("Aegisub ")) + GetAegisubShortVersionString() + _T(".\n");
-	aboutString += _T("Copyright (c) 2005-2010 Rodrigo Braz Monteiro, Niels Martin Hansen et al.\n\n");
-	aboutString += _T("Programmers:\n");
-	aboutString += _T("    Alysson Souza e Silva\n");
-	aboutString += _T("    Amar Takhar\n");
-	aboutString += _T("    Dan Donovan\n");
-	aboutString += _T("    Daniel Moscoviter\n");
-	aboutString += _T("    David Conrad\n");
-	aboutString += _T("    David Lamparter\n");
-	aboutString += _T("    Eric Batalitzky\n");
-	aboutString += _T("    Evgeniy Stepanov\n");
-	aboutString += _T("    Fredrik Mellbin\n");
-	aboutString += _T("    Grigori Goronzy\n");
-	aboutString += _T("    Karl Blomster\n");
-	aboutString += _T("    Mike Matsnev\n");
-	aboutString += _T("    Moritz Brunner\n");
-	aboutString += _T("    Muhammad Lukman Nasaruddin\n");
-	aboutString += _T("    Niels Martin Hansen\n");
-	aboutString += _T("    Patryk Pomykalski\n");
-	aboutString += _T("    Ravi Pinjala\n");
-	aboutString += _T("    Rodrigo Braz Monteiro\n");
-	aboutString += _T("    Simone Cociancich\n");
-	aboutString += _T("    Thomas Goyne\n");
-	aboutString += _T("User manual written by:\n");
-	aboutString += _T("    Karl Blomster\n");
-	aboutString += _T("    Niels Martin Hansen\n");
-	aboutString += _T("    Rodrigo Braz Monteiro\n");
-	aboutString += _T("Icons by:\n");
-	aboutString += _T("    Philip Cash\n");
-	aboutString += _T("Additional thanks to:\n");
-	aboutString += _T("    Mentar\n");
-	aboutString += _T("    Sigurd Tao Lyngse\n");
-	aboutString += _T("    Everyone in the Aegisub IRC channel\n");
-	aboutString += _T("    Everyone who ever reported a bug\n");
+	aboutString += wxString("Aegisub ") + GetAegisubShortVersionString() + ".\n";
+	aboutString += "Copyright (c) 2005-2010 Rodrigo Braz Monteiro, Niels Martin Hansen et al.\n\n";
+	aboutString += "Programmers:\n";
+	aboutString += "    Alysson Souza e Silva\n";
+	aboutString += "    Amar Takhar\n";
+	aboutString += "    Dan Donovan\n";
+	aboutString += "    Daniel Moscoviter\n";
+	aboutString += "    David Conrad\n";
+	aboutString += "    David Lamparter\n";
+	aboutString += "    Eric Batalitzky\n";
+	aboutString += "    Evgeniy Stepanov\n";
+	aboutString += "    Fredrik Mellbin\n";
+	aboutString += "    Grigori Goronzy\n";
+	aboutString += "    Karl Blomster\n";
+	aboutString += "    Mike Matsnev\n";
+	aboutString += "    Moritz Brunner\n";
+	aboutString += "    Muhammad Lukman Nasaruddin\n";
+	aboutString += "    Niels Martin Hansen\n";
+	aboutString += "    Patryk Pomykalski\n";
+	aboutString += "    Ravi Pinjala\n";
+	aboutString += "    Rodrigo Braz Monteiro\n";
+	aboutString += "    Simone Cociancich\n";
+	aboutString += "    Thomas Goyne\n";
+	aboutString += "User manual written by:\n";
+	aboutString += "    Karl Blomster\n";
+	aboutString += "    Niels Martin Hansen\n";
+	aboutString += "    Rodrigo Braz Monteiro\n";
+	aboutString += "Icons by:\n";
+	aboutString += "    Philip Cash\n";
+	aboutString += "Additional thanks to:\n";
+	aboutString += "    Mentar\n";
+	aboutString += "    Sigurd Tao Lyngse\n";
+	aboutString += "    Everyone in the Aegisub IRC channel\n";
+	aboutString += "    Everyone who ever reported a bug\n";
 	aboutString += translatorCredit;
-	aboutString += _T("\n") + libString;
+	aboutString += "\n" + libString;
 	aboutString += _("\nSee the help file for full credits.\n");
 	aboutString += wxString::Format(_("Built by %s on %s."), GetAegisubBuildCredit(), GetAegisubBuildTime());
 
 	// Replace copyright symbol
 	wxChar copySymbol = 0xA9;
-	aboutString.Replace(_T("(c)"),wxString(copySymbol));
+	aboutString.Replace("(c)",wxString(copySymbol));
 
 	wxTextCtrl *textctrl = new wxTextCtrl(this, -1, aboutString, wxDefaultPosition, wxSize(-1,200), wxTE_MULTILINE|wxTE_READONLY|wxBORDER_NONE);
 

@@ -85,7 +85,7 @@ void PulseAudioPlayer::OpenStream()
 	//printf("Initialising threaded main loop\n");
 	mainloop = pa_threaded_mainloop_new();
 	if (!mainloop) {
-		throw _T("Failed to initialise PulseAudio threaded mainloop object");
+		throw "Failed to initialise PulseAudio threaded mainloop object";
 	}
 	//printf("Starting main loop\n");
 	pa_threaded_mainloop_start(mainloop);
@@ -95,7 +95,7 @@ void PulseAudioPlayer::OpenStream()
 	context = pa_context_new(pa_threaded_mainloop_get_api(mainloop), "Aegisub");
 	if (!context) {
 		pa_threaded_mainloop_free(mainloop);
-		throw _T("Failed to create PulseAudio context");
+		throw "Failed to create PulseAudio context";
 	}
 	pa_context_set_state_callback(context, (pa_context_notify_cb_t)pa_context_notify, this);
 
@@ -114,7 +114,7 @@ void PulseAudioPlayer::OpenStream()
 			pa_threaded_mainloop_stop(mainloop);
 			pa_threaded_mainloop_free(mainloop);
 			wxString s(pa_strerror(paerror), wxConvUTF8);
-			s.Prepend(_T("PulseAudio reported error: "));
+			s.Prepend("PulseAudio reported error: ");
 			throw s.c_str();
 		}
 		// otherwise loop once more
@@ -137,7 +137,7 @@ void PulseAudioPlayer::OpenStream()
 		pa_context_unref(context);
 		pa_threaded_mainloop_stop(mainloop);
 		pa_threaded_mainloop_free(mainloop);
-		throw _T("PulseAudio could not create stream");
+		throw "PulseAudio could not create stream";
 	}
 	pa_stream_set_state_callback(stream, (pa_stream_notify_cb_t)pa_stream_notify, this);
 	pa_stream_set_write_callback(stream, (pa_stream_request_cb_t)pa_stream_write, this);
@@ -148,7 +148,7 @@ void PulseAudioPlayer::OpenStream()
 	if (paerror) {
 		printf("PulseAudio reported error: %s (%d)\n", pa_strerror(paerror), paerror);
 		wxString s(pa_strerror(paerror), wxConvUTF8);
-		s.Prepend(_T("PulseAudio reported error: "));
+		s.Prepend("PulseAudio reported error: ");
 		throw s.c_str();
 	}
 	while (true) {
@@ -158,7 +158,7 @@ void PulseAudioPlayer::OpenStream()
 		} else if (sstate == PA_STREAM_FAILED) {
 			paerror = pa_context_errno(context);
 			printf("PulseAudio player: Stream connection failed: %s (%d)\n", pa_strerror(paerror), paerror);
-			throw _T("PulseAudio player: Something went wrong connecting the stream");
+			throw "PulseAudio player: Something went wrong connecting the stream";
 		}
 	}
 	//printf("Connected playback stream, now playing\n\n");

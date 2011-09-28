@@ -286,3 +286,4 @@ void DialogSpellChecker::SetWord(wxString const& word) {
 
 	add_button->Enable(spellchecker->CanAddWord(word));
 }
+

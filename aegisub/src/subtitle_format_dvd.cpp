@@ -64,7 +64,7 @@
 /// @return 
 ///
 wxString DVDSubtitleFormat::GetName() {
-	return _T("DVD Subpictures");
+	return "DVD Subpictures";
 }
 
 
@@ -74,7 +74,7 @@ wxString DVDSubtitleFormat::GetName() {
 ///
 wxArrayString DVDSubtitleFormat::GetWriteWildcards() {
 	wxArrayString results;
-	results.Add(_T("sup"));
+	results.Add("sup");
 	return results;
 }
 
@@ -85,7 +85,7 @@ wxArrayString DVDSubtitleFormat::GetWriteWildcards() {
 /// @return 
 ///
 bool DVDSubtitleFormat::CanWriteFile(wxString filename) {
-	return (filename.Lower().EndsWith(_T(".sup")));
+	return (filename.Lower().EndsWith(".sup"));
 }
 
 
@@ -139,7 +139,7 @@ void DVDSubtitleFormat::GetSubPictureList(std::vector<SubPicture> &pics) {
 			provider->DrawSubtitles(dst,time);
 		}
 		wxImage img = dst.GetImage();
-		img.SaveFile(_T("test.bmp"));
+		img.SaveFile("test.bmp");
 		dst.Clear();
 
 		// Tesseract test
@@ -152,7 +152,7 @@ void DVDSubtitleFormat::GetSubPictureList(std::vector<SubPicture> &pics) {
 			const EANYCODE_CHAR* ch = &output->text[cur];
 			unsigned char unistr[8];
 
-			for (int b = 0; b < ch->blanks; ++b) blah += _T(" ");
+			for (int b = 0; b < ch->blanks; ++b) blah += " ";
 
 			for (j = cur; j < output->count; j++)	{
 				const EANYCODE_CHAR* unich = &output->text[j];
@@ -164,7 +164,7 @@ void DVDSubtitleFormat::GetSubPictureList(std::vector<SubPicture> &pics) {
 			}
 			unistr[j - cur] = '\0';
 			blah += wxString((char*)unistr,wxConvUTF8);
-			if (ch->formatting & 64) blah += _T("\n");
+			if (ch->formatting & 64) blah += "\n";
 		}
 		wxLogMessage(blah);
 		*/
@@ -375,7 +375,7 @@ void DVDSubtitleFormat::WriteFile(wxString filename,wxString encoding) {
 
 	// Open file for writing
 	wxFile fp(filename,wxFile::write);
-	if (!fp.IsOpened()) throw _T("Could not open file for writing.");
+	if (!fp.IsOpened()) throw "Could not open file for writing.";
 
 	// Write each subpicture
 	size_t pos = 0;

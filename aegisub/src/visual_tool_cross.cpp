@@ -66,7 +66,7 @@ bool VisualToolCross::Update() {
 		int x1, y1;
 		GetLinePosition(*cur, x1, y1);
 		parent->ToScriptCoords(&x1, &y1);
-		SetOverride(*cur, L"\\pos", wxString::Format(L"(%i,%i)", x1 - dx, y1 - dy));
+		SetOverride(*cur, "\\pos", wxString::Format("(%i,%i)", x1 - dx, y1 - dy));
 	}
 
 	Commit(_("positioning"));
@@ -98,10 +98,10 @@ void VisualToolCross::Draw() {
 		ty = video.h - video.y;
 	}
 	parent->ToScriptCoords(&tx, &ty);
-	wxString mouseText = wxString::Format(L"%i,%i", tx, ty);
+	wxString mouseText = wxString::Format("%i,%i", tx, ty);
 
 	int tw,th;
-	glText->SetFont(L"Verdana", 12, true, false);
+	glText->SetFont("Verdana", 12, true, false);
 	glText->SetColour(wxColour(255, 255, 255), 1.f);
 	glText->GetExtent(mouseText, tw, th);
 

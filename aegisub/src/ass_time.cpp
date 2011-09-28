@@ -71,13 +71,13 @@ void AssTime::ParseASS (const wxString text) {
 	// Count the number of colons
 	size_t len = text.Length();
 	int colons = 0;
-	for (pos=0;pos<len;pos++) if (text[pos] == _T(':')) colons++;
+	for (pos=0;pos<len;pos++) if (text[pos] == ':') colons++;
 	pos = 0;
 	
 	// Set start so that there are only two colons at most
 	if (colons > 2) {
 		for (pos=0;pos<len;pos++) {
-			if (text[pos] == _T(':')) {
+			if (text[pos] == ':') {
 				colons--;
 				if (colons == 2) break;
 			}
@@ -89,14 +89,14 @@ void AssTime::ParseASS (const wxString text) {
 	try {
 		// Hours
 		if (colons == 2) {
-			while (text[end++] != _T(':')) {};
+			while (text[end++] != ':') {};
 			th = AegiStringToInt(text,pos,end);
 			pos = end;
 		}
 
 		// Minutes
 		if (colons >= 1) {
-			while (text[end++] != _T(':')) {};
+			while (text[end++] != ':') {};
 			tm = AegiStringToInt(text,pos,end);
 			pos = end;
 		}
@@ -183,8 +183,8 @@ wxString AssTime::GetASSFormated (bool msPrecision) const {
 	int s = (ms / 1000) % 60;
 	ms = ms % 1000;
 
-	if (msPrecision) return wxString::Format(_T("%01i:%02i:%02i.%03i"),h,m,s,ms);
-	else return wxString::Format(_T("%01i:%02i:%02i.%02i"),h,m,s,ms/10);
+	if (msPrecision) return wxString::Format("%01i:%02i:%02i.%03i",h,m,s,ms);
+	else return wxString::Format("%01i:%02i:%02i.%02i",h,m,s,ms/10);
 }
 
 
@@ -230,7 +230,7 @@ wxString AssTime::GetSRTFormated () {
 	}
 	ms = _ms;
 
-	wxString result = wxString::Format(_T("%02i:%02i:%02i,%03i"),h,m,s,ms);
+	wxString result = wxString::Format("%02i:%02i:%02i,%03i",h,m,s,ms);
 	return result;
 }
 
@@ -358,9 +358,9 @@ FractionalTime::FractionalTime (wxString separator, int numerator, int denominat
 
 	// fractions < 1 are not welcome here
 	if ((num <= 0 || den <= 0) || (num < den))
-		throw _T("FractionalTime: nonsensical enumerator or denominator");
+		throw "FractionalTime: nonsensical enumerator or denominator";
 	if (sep.IsEmpty())
-		throw _T("FractionalTime: no separator specified");
+		throw "FractionalTime: no separator specified";
 }
 
 
@@ -377,17 +377,17 @@ FractionalTime::~FractionalTime () {
 ///
 int FractionalTime::ToMillisecs (wxString _text) {
 	wxString text = _text;
-	wxString re_str = _T("");
+	wxString re_str = "";
 	text.Trim(false);
 	text.Trim(true);
 	long h=0,m=0,s=0,f=0;
 
 	//           hour                   minute                 second                 fraction
-	re_str << _T("(\\d+)") << sep << _T("(\\d+)") << sep << _T("(\\d+)") << sep << _T("(\\d+)");
+	re_str << "(\\d+)" << sep << "(\\d+)" << sep << "(\\d+)" << sep << "(\\d+)";
 
 	wxRegEx re(re_str, wxRE_ADVANCED);
 	if (!re.IsValid())
-		throw _T("FractionalTime: regex failure");
+		throw "FractionalTime: regex failure";
 	if (!re.Matches(text))
 		return 0; // FIXME: throw here too?
 	
@@ -505,7 +505,7 @@ wxString FractionalTime::FromMillisecs(int64_t msec) {
 	}
 
 RETURN:
-	return wxString::Format(_T("%02i") + sep + _T("%02i") + sep + _T("%02i") + sep + _T("%02i"),h,m,s,f);
+	return wxString::Format("%02i" + sep + "%02i" + sep + "%02i" + sep + "%02i",h,m,s,f);
 }
 
 

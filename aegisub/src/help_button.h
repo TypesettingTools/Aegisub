@@ -64,7 +64,7 @@ private:
 	static void InitStatic();
 
 public:
-	HelpButton(wxWindow *parent,wxString page=_T(""),wxPoint position=wxDefaultPosition,wxSize size=wxDefaultSize);
+	HelpButton(wxWindow *parent,wxString page="",wxPoint position=wxDefaultPosition,wxSize size=wxDefaultSize);
 
 	static void OpenPage(const wxString page);
 	static void ClearPages();

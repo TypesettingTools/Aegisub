@@ -50,7 +50,7 @@
 /// @return 
 ///
 bool ASSSubtitleFormat::CanReadFile(wxString filename) {
-	return (filename.Right(4).Lower() == _T(".ass") || filename.Right(4).Lower() == _T(".ssa"));
+	return (filename.Right(4).Lower() == ".ass" || filename.Right(4).Lower() == ".ssa");
 }
 
 
@@ -59,7 +59,7 @@ bool ASSSubtitleFormat::CanReadFile(wxString filename) {
 /// @return 
 ///
 wxString ASSSubtitleFormat::GetName() {
-	return _T("Advanced Substation Alpha");
+	return "Advanced Substation Alpha";
 }
 
 
@@ -69,8 +69,8 @@ wxString ASSSubtitleFormat::GetName() {
 ///
 wxArrayString ASSSubtitleFormat::GetReadWildcards() {
 	wxArrayString formats;
-	formats.Add(_T("ass"));
-	formats.Add(_T("ssa"));
+	formats.Add("ass");
+	formats.Add("ssa");
 	return formats;
 }
 
@@ -81,8 +81,8 @@ wxArrayString ASSSubtitleFormat::GetReadWildcards() {
 ///
 wxArrayString ASSSubtitleFormat::GetWriteWildcards() {
 	wxArrayString formats;
-	formats.Add(_T("ass"));
-	formats.Add(_T("ssa"));
+	formats.Add("ass");
+	formats.Add("ssa");
 	return formats;
 }
 
@@ -98,7 +98,7 @@ void ASSSubtitleFormat::ReadFile(wxString filename,wxString encoding) {
 	// Reader
 	TextFileReader file(filename,encoding);
 	int version = 1;
-	if (filename.Right(4).Lower() == _T(".ssa")) version = 0;
+	if (filename.Right(4).Lower() == ".ssa") version = 0;
 
 	// Parse file
 	wxString curgroup;
@@ -109,27 +109,27 @@ void ASSSubtitleFormat::ReadFile(wxString filename,wxString encoding) {
 
 		// Make sure that the first non-blank non-comment non-group-header line
 		// is really [Script Info]
-		if (curgroup.IsEmpty() && !wxbuffer.IsEmpty() && wxbuffer[0] != _T(';') && wxbuffer[0] != _T('[')) {
-			curgroup = _T("[Script Info]");
+		if (curgroup.IsEmpty() && !wxbuffer.IsEmpty() && wxbuffer[0] != ';' && wxbuffer[0] != '[') {
+			curgroup = "[Script Info]";
 			AddLine(curgroup,curgroup,version,&curgroup);
 		}
 
 		// Convert v4 styles to v4+ styles
-		if (!wxbuffer.IsEmpty() && wxbuffer[0] == _T('[')) {
+		if (!wxbuffer.IsEmpty() && wxbuffer[0] == '[') {
 			// Ugly hacks to allow intermixed v4 and v4+ style sections
 			wxString low = wxbuffer.Lower();
-			if (low == _T("[v4 styles]")) {
-				wxbuffer = _T("[V4+ Styles]");
+			if (low == "[v4 styles]") {
+				wxbuffer = "[V4+ Styles]";
 				curgroup = wxbuffer;
 				version = 0;
 			}
-			else if (low == _T("[v4+ styles]")) {
-				wxbuffer = _T("[V4+ Styles]");
+			else if (low == "[v4+ styles]") {
+				wxbuffer = "[V4+ Styles]";
 				curgroup = wxbuffer;
 				version = 1;
 			}
-			else if (low == _T("[v4++ styles]")) {
-				wxbuffer = _T("[V4+ Styles]");
+			else if (low == "[v4++ styles]") {
+				wxbuffer = "[V4+ Styles]";
 				curgroup = wxbuffer;
 				version = 2;
 			}
@@ -143,13 +143,13 @@ void ASSSubtitleFormat::ReadFile(wxString filename,wxString encoding) {
 		try {
 			AddLine(wxbuffer,curgroup,version,&curgroup);
 		}
-		catch (const wchar_t *err) {
+		catch (const char *err) {
 			Clear();
-			throw wxString(_T("Error processing line: ")) + wxbuffer + _T(": ") + wxString(err);
+			throw wxString("Error processing line: ") + wxbuffer + ": " + wxString(err);
 		}
 		catch (...) {
 			Clear();
-			throw wxString(_T("Error processing line: ")) + wxbuffer;
+			throw wxString("Error processing line: ") + wxbuffer;
 		}
 	}
 }
@@ -161,7 +161,7 @@ void ASSSubtitleFormat::ReadFile(wxString filename,wxString encoding) {
 /// @return 
 ///
 bool ASSSubtitleFormat::CanWriteFile(wxString filename) {
-	return (filename.Right(4).Lower() == _T(".ass") || filename.Right(4).Lower() == _T(".ssa"));
+	return (filename.Right(4).Lower() == ".ass" || filename.Right(4).Lower() == ".ssa");
 }
 
 
@@ -173,7 +173,7 @@ bool ASSSubtitleFormat::CanWriteFile(wxString filename) {
 void ASSSubtitleFormat::WriteFile(wxString filename,wxString encoding) {
 	// Open file
 	TextFileWriter file(filename,encoding);
-	bool ssa = filename.Right(4).Lower() == _T(".ssa");
+	bool ssa = filename.Right(4).Lower() == ".ssa";
 
 	// Write lines
 	std::list<AssEntry*>::iterator last = Line->end(); --last;

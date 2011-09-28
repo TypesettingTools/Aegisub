@@ -64,7 +64,7 @@ AvisynthAudioProvider::AvisynthAudioProvider(wxString filename) try : filename(f
 		throw agi::FileNotFoundError(STD_STR(filename));
 
 	// Include
-	if (filename.EndsWith(_T(".avs"))) {
+	if (filename.EndsWith(".avs")) {
 		char *fname = env->SaveString(fn.GetShortPath().mb_str(csConvLocal));
 		script = env->Invoke("Import", fname);
 	}
@@ -75,7 +75,7 @@ AvisynthAudioProvider::AvisynthAudioProvider(wxString filename) try : filename(f
 		AVSValue args[3] = { env->SaveString(fn.GetShortPath().mb_str(csConvLocal)), false, true };
 
 		// Load DirectShowSource.dll from app dir if it exists
-		wxFileName dsspath(StandardPaths::DecodePath(_T("?data/DirectShowSource.dll")));
+		wxFileName dsspath(StandardPaths::DecodePath("?data/DirectShowSource.dll"));
 		if (dsspath.FileExists()) {
 			env->Invoke("LoadPlugin",env->SaveString(dsspath.GetShortPath().mb_str(csConvLocal)));
 		}

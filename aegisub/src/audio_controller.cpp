@@ -204,7 +204,7 @@ void AudioController::OpenAudio(const wxString &url)
 
 	wxString path_part;
 
-	if (url.StartsWith(_T("dummy-audio:"), &path_part))
+	if (url.StartsWith("dummy-audio:", &path_part))
 	{
 		/*
 		 * scheme            ::= "dummy-audio" ":" signal-specifier "?" signal-parameters
@@ -226,9 +226,9 @@ void AudioController::OpenAudio(const wxString &url)
 		 *       in every channel even if one would be LFE.
 		 * "ln", length of signal in samples. ln/sr gives signal length in seconds.
 		 */
-		 provider = new DummyAudioProvider(5*30*60*1000, path_part.StartsWith(L"noise"));
+		 provider = new DummyAudioProvider(5*30*60*1000, path_part.StartsWith("noise"));
 	}
-	else if (url.StartsWith(_T("video-audio:"), &path_part))
+	else if (url.StartsWith("video-audio:", &path_part))
 	{
 		/*
 		 * scheme      ::= "video-audio" ":" stream-type
@@ -244,7 +244,7 @@ void AudioController::OpenAudio(const wxString &url)
 		 * stream has to be decoded and stored.
 		 */
 	}
-	else if (url.StartsWith(_T("file:"), &path_part))
+	else if (url.StartsWith("file:", &path_part))
 	{
 		/*
 		 * scheme    ::= "file" ":" "//" file-system-path

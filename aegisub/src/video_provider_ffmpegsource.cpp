@@ -242,7 +242,7 @@ void FFmpegSourceVideoProvider::LoadVideo(wxString filename) {
 	for (int CurFrameNum = 0; CurFrameNum < VideoInfo->NumFrames; CurFrameNum++) {
 		CurFrameData = FFMS_GetFrameInfo(FrameData, CurFrameNum);
 		if (CurFrameData == NULL) {
-			throw VideoOpenError(STD_STR(wxString::Format(L"Couldn't get info about frame %d", CurFrameNum)));
+			throw VideoOpenError(STD_STR(wxString::Format("Couldn't get info about frame %d", CurFrameNum)));
 		}
 
 		// keyframe?

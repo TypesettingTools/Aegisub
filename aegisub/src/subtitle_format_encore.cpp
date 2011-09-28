@@ -48,7 +48,7 @@
 /// @return 
 ///
 wxString EncoreSubtitleFormat::GetName() {
-	return _T("Adobe Encore");
+	return "Adobe Encore";
 }
 
 
@@ -58,7 +58,7 @@ wxString EncoreSubtitleFormat::GetName() {
 ///
 wxArrayString EncoreSubtitleFormat::GetWriteWildcards() {
 	wxArrayString formats;
-	formats.Add(_T("encore.txt"));
+	formats.Add("encore.txt");
 	return formats;
 }
 
@@ -69,7 +69,7 @@ wxArrayString EncoreSubtitleFormat::GetWriteWildcards() {
 /// @return 
 ///
 bool EncoreSubtitleFormat::CanWriteFile(wxString filename) {
-	return (filename.Right(11).Lower() == _T(".encore.txt"));
+	return (filename.Right(11).Lower() == ".encore.txt");
 }
 
 
@@ -92,20 +92,20 @@ void EncoreSubtitleFormat::WriteFile(wxString _filename,wxString encoding) {
 	StripComments();
 	RecombineOverlaps();
 	MergeIdentical();
-	ConvertTags(1,_T("\r\n"));
+	ConvertTags(1,"\r\n");
 
 	// Write lines
 	using std::list;
 	int i = 0;
 
 	// Encore wants ; instead of : if we're dealing with NTSC dropframe stuff
-	FractionalTime ft(fps_rat.smpte_dropframe ? _T(";") : _T(":"), fps_rat.num, fps_rat.den, fps_rat.smpte_dropframe);
+	FractionalTime ft(fps_rat.smpte_dropframe ? ";" : ":", fps_rat.num, fps_rat.den, fps_rat.smpte_dropframe);
 
 	for (list<AssEntry*>::iterator cur=Line->begin();cur!=Line->end();cur++) {
 		AssDialogue *current = dynamic_cast<AssDialogue*>(*cur);
 		if (current && !current->Comment) {
 			++i;
-			file.WriteLineToFile(wxString::Format(_T("%i %s %s %s"), i, ft.FromAssTime(current->Start).c_str(), ft.FromAssTime(current->End).c_str(), current->Text.c_str()));
+			file.WriteLineToFile(wxString::Format("%i %s %s %s", i, ft.FromAssTime(current->Start).c_str(), ft.FromAssTime(current->End).c_str(), current->Text.c_str()));
 		}
 	}
 

@@ -128,7 +128,7 @@ Video::Video(wxTreebook *book, Preferences *parent): OptionPage(book, parent, _(
 	wxArrayString choice_res(3, cres_arr);
 	OptionChoice(general, _("Match video resolution on open"), choice_res, "Video/Check Script Res");
 
-	const wxString czoom_arr[24] = { _T("12.5%"), _T("25%"), _T("37.5%"), _T("50%"), _T("62.5%"), _T("75%"), _T("87.5%"), _T("100%"), _T("112.5%"), _T("125%"), _T("137.5%"), _T("150%"), _T("162.5%"), _T("175%"), _T("187.5%"), _T("200%"), _T("212.5%"), _T("225%"), _T("237.5%"), _T("250%"), _T("262.5%"), _T("275%"), _T("287.5%"), _T("300%") };
+	const wxString czoom_arr[24] = { "12.5%", "25%", "37.5%", "50%", "62.5%", "75%", "87.5%", "100%", "112.5%", "125%", "137.5%", "150%", "162.5%", "175%", "187.5%", "200%", "212.5%", "225%", "237.5%", "250%", "262.5%", "275%", "287.5%", "300%" };
 	wxArrayString choice_zoom(24, czoom_arr);
 	OptionChoice(general, _("Default Zoom"), choice_zoom, "Video/Default Zoom");
 
@@ -219,7 +219,7 @@ Interface_Hotkeys::Interface_Hotkeys(wxTreebook *book, Preferences *parent): Opt
 Paths::Paths(wxTreebook *book, Preferences *parent): OptionPage(book, parent, _("Paths")) {
 
 	wxFlexGridSizer *general = PageSizer(_("General"));
-	general->Add(new wxStaticText(this, wxID_ANY, _T("TBD..")), 0, wxALL, 5);
+	general->Add(new wxStaticText(this, wxID_ANY, "TBD.."), 0, wxALL, 5);
 
 	SetSizerAndFit(sizer);
 }
@@ -229,7 +229,7 @@ Paths::Paths(wxTreebook *book, Preferences *parent): OptionPage(book, parent, _(
 File_Associations::File_Associations(wxTreebook *book, Preferences *parent): OptionPage(book, parent, _("File Associations")) {
 
 	wxFlexGridSizer *assoc = PageSizer(_("General"));
-	assoc->Add(new wxStaticText(this, wxID_ANY, _T("TBD..")), 0, wxALL, 5);
+	assoc->Add(new wxStaticText(this, wxID_ANY, "TBD.."), 0, wxALL, 5);
 
 	SetSizerAndFit(sizer);
 }
@@ -295,7 +295,7 @@ Advanced::Advanced(wxTreebook *book, Preferences *parent): OptionPage(book, pare
 Advanced_Interface::Advanced_Interface(wxTreebook *book, Preferences *parent): OptionPage(book, parent, _("Backup"), PAGE_SUB) {
 	wxFlexGridSizer *interface_ = PageSizer(_("Interface"));
 
-	interface_->Add(new wxStaticText(this, wxID_ANY, _T("TBD..")), 0, wxALL, 5);
+	interface_->Add(new wxStaticText(this, wxID_ANY, "TBD.."), 0, wxALL, 5);
 
 	SetSizerAndFit(sizer);
 }
@@ -336,7 +336,7 @@ Advanced_Audio::Advanced_Audio(wxTreebook *book, Preferences *parent): OptionPag
 
 #if defined(WIN32) || defined(_DEBUG)
 	wxFlexGridSizer *windows = PageSizer(_("Windows Specific"));
-	const wxString adm_arr[3] = { _T("ConvertToMono"), _T("GetLeftChannel"), _T("GetRightChannel") };
+	const wxString adm_arr[3] = { "ConvertToMono", "GetLeftChannel", "GetRightChannel" };
 	wxArrayString adm_choice(3, adm_arr);
 	OptionChoice(windows, _("Avisynth down-mixer"), adm_choice, "Audio/Downmixer");
 #endif

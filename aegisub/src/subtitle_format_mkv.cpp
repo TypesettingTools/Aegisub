@@ -50,8 +50,8 @@
 /// @return 
 ///
 bool MKVSubtitleFormat::CanReadFile(wxString filename) {
-	if (filename.Right(4).Lower() == _T(".mkv") || filename.Right(4).Lower() == _T(".mks")
-			|| filename.Right(4).Lower() == _T(".mka"))
+	if (filename.Right(4).Lower() == ".mkv" || filename.Right(4).Lower() == ".mks"
+			|| filename.Right(4).Lower() == ".mka")
 		return true;
 	else
 		return false;
@@ -63,7 +63,7 @@ bool MKVSubtitleFormat::CanReadFile(wxString filename) {
 /// @return 
 ///
 wxString MKVSubtitleFormat::GetName() {
-	return _T("Matroska");
+	return "Matroska";
 }
 
 
@@ -73,9 +73,9 @@ wxString MKVSubtitleFormat::GetName() {
 ///
 wxArrayString MKVSubtitleFormat::GetReadWildcards() {
 	wxArrayString formats;
-	formats.Add(_T("mkv"));
-	formats.Add(_T("mka"));
-	formats.Add(_T("mks"));
+	formats.Add("mkv");
+	formats.Add("mka");
+	formats.Add("mks");
 	return formats;
 }
 

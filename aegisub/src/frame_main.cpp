@@ -324,7 +324,7 @@ void FrameMain::LoadSubtitles(wxString filename,wxString charset) {
 		config::mru->Remove("Subtitle", STD_STR(filename));
 		return;
 	}
-	catch (const wchar_t *err) {
+	catch (const char *err) {
 		wxMessageBox(wxString(err), "Error", wxOK | wxICON_ERROR, NULL);
 		return;
 	}
@@ -631,7 +631,7 @@ catch (const agi::Exception& err) {
 catch (wxString err) {
 	StatusTimeout("Exception when attempting to autosave file: " + err);
 }
-catch (const wchar_t *err) {
+catch (const char *err) {
 	StatusTimeout("Exception when attempting to autosave file: " + wxString(err));
 }
 catch (...) {

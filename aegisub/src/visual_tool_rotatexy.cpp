@@ -190,8 +190,8 @@ void VisualToolRotateXY::UpdateHold() {
 void VisualToolRotateXY::CommitHold() {
 	Selection sel = c->selectionController->GetSelectedSet();
 	for (Selection::const_iterator cur = sel.begin(); cur != sel.end(); ++cur) {
-		SetOverride(*cur, L"\\frx",wxString::Format(L"(%0.3g)",curAngleX));
-		SetOverride(*cur, L"\\fry",wxString::Format(L"(%0.3g)",curAngleY));
+		SetOverride(*cur, "\\frx",wxString::Format("(%0.3g)",curAngleX));
+		SetOverride(*cur, "\\fry",wxString::Format("(%0.3g)",curAngleY));
 	}
 }
 
@@ -199,7 +199,7 @@ void VisualToolRotateXY::CommitDrag(feature_iterator feature) {
 	int x = feature->x;
 	int y = feature->y;
 	parent->ToScriptCoords(&x, &y);
-	SetOverride(curDiag, L"\\org",wxString::Format(L"(%i,%i)",x,y));
+	SetOverride(curDiag, "\\org",wxString::Format("(%i,%i)",x,y));
 }
 
 void VisualToolRotateXY::DoRefresh() {

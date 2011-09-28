@@ -126,7 +126,7 @@ VideoContext *VideoContext::Get() {
 }
 
 void VideoContext::Reset() {
-	StandardPaths::SetPathValue(_T("?video"), "");
+	StandardPaths::SetPathValue("?video", "");
 
 	keyFrames.clear();
 	keyFramesFilename.clear();
@@ -186,17 +186,17 @@ void VideoContext::SetVideo(const wxString &filename) {
 		videoName = filename;
 		config::mru->Add("Video", STD_STR(filename));
 		wxFileName fn(filename);
-		StandardPaths::SetPathValue(_T("?video"),fn.GetPath());
+		StandardPaths::SetPathValue("?video",fn.GetPath());
 
 		// Get frame
 		frame_n = 0;
 
 		// Show warning
 		wxString warning = videoProvider->GetWarning();
-		if (!warning.empty()) wxMessageBox(warning,_T("Warning"),wxICON_WARNING | wxOK);
+		if (!warning.empty()) wxMessageBox(warning,"Warning",wxICON_WARNING | wxOK);
 
 		hasSubtitles = false;
-		if (filename.Right(4).Lower() == L".mkv") {
+		if (filename.Right(4).Lower() == ".mkv") {
 			hasSubtitles = MatroskaWrapper::HasSubtitles(filename);
 		}
 
@@ -208,10 +208,10 @@ void VideoContext::SetVideo(const wxString &filename) {
 	catch (agi::UserCancelException const&) { }
 	catch (agi::FileNotAccessibleError const& err) {
 		config::mru->Remove("Video", STD_STR(filename));
-		wxMessageBox(lagi_wxString(err.GetMessage()), L"Error setting video", wxICON_ERROR | wxOK);
+		wxMessageBox(lagi_wxString(err.GetMessage()), "Error setting video", wxICON_ERROR | wxOK);
 	}
 	catch (VideoProviderError const& err) {
-		wxMessageBox(lagi_wxString(err.GetMessage()), L"Error setting video", wxICON_ERROR | wxOK);
+		wxMessageBox(lagi_wxString(err.GetMessage()), "Error setting video", wxICON_ERROR | wxOK);
 	}
 }
 
@@ -295,29 +295,29 @@ void VideoContext::SaveSnapshot(bool raw) {
 	wxFileName videoFile(videoName);
 	wxString basepath;
 	// Is it a path specifier and not an actual fixed path?
-	if (option[0] == _T('?')) {
+	if (option[0] == '?') {
 		// If dummy video is loaded, we can't save to the video location
-		if (option.StartsWith(_T("?video")) && (videoName.Find(_T("?dummy")) != wxNOT_FOUND)) {
+		if (option.StartsWith("?video") && (videoName.Find("?dummy") != wxNOT_FOUND)) {
 			// So try the script location instead
-			option = _T("?script");
+			option = "?script";
 		}
 		// Find out where the ?specifier points to
 		basepath = StandardPaths::DecodePath(option);
 		// If where ever that is isn't defined, we can't save there
-		if ((basepath == _T("\\")) || (basepath == _T("/"))) {
+		if ((basepath == "\\") || (basepath == "/")) {
 			// So save to the current user's home dir instead
 			basepath = wxGetHomeDir();
 		}
 	}
 	// Actual fixed (possibly relative) path, decode it
-	else basepath = DecodeRelativePath(option,StandardPaths::DecodePath(_T("?user/")));
-	basepath += _T("/") + videoFile.GetName();
+	else basepath = DecodeRelativePath(option,StandardPaths::DecodePath("?user/"));
+	basepath += "/" + videoFile.GetName();
 
 	// Get full path
 	int session_shot_count = 1;
 	wxString path;
 	while (1) {
-		path = basepath + wxString::Format(_T("_%03i_%i.png"),session_shot_count,frame_n);
+		path = basepath + wxString::Format("_%03i_%i.png",session_shot_count,frame_n);
 		++session_shot_count;
 		wxFileName tryPath(path);
 		if (!tryPath.FileExists()) break;
@@ -500,7 +500,7 @@ void VideoContext::LoadKeyframes(wxString filename) {
 		config::mru->Remove("Keyframes", STD_STR(filename));
 	}
 	catch (agi::acs::AcsError const&) {
-		wxLogError(L"Could not open file " + filename);
+		wxLogError("Could not open file " + filename);
 		config::mru->Remove("Keyframes", STD_STR(filename));
 	}
 }
@@ -531,11 +531,11 @@ void VideoContext::LoadTimecodes(wxString filename) {
 		TimecodesOpen(ovrFPS);
 	}
 	catch (const agi::acs::AcsError&) {
-		wxLogError(L"Could not open file " + filename);
+		wxLogError("Could not open file " + filename);
 		config::mru->Remove("Timecodes", STD_STR(filename));
 	}
 	catch (const agi::vfr::Error& e) {
-		wxLogError(L"Timecode file parse error: %s", e.GetMessage().c_str());
+		wxLogError("Timecode file parse error: %s", e.GetMessage().c_str());
 	}
 }
 void VideoContext::SaveTimecodes(wxString filename) {
@@ -544,7 +544,7 @@ void VideoContext::SaveTimecodes(wxString filename) {
 		config::mru->Add("Timecodes", STD_STR(filename));
 	}
 	catch(const agi::acs::AcsError&) {
-		wxLogError(L"Could not write to " + filename);
+		wxLogError("Could not write to " + filename);
 	}
 }
 void VideoContext::CloseTimecodes() {
@@ -569,13 +569,13 @@ int VideoContext::FrameAtTime(int time, agi::vfr::Time type) const {
 
 void VideoContext::OnVideoError(VideoProviderErrorEvent const& err) {
 	wxLogError(
-		L"Failed seeking video. The video file may be corrupt or incomplete.\n"
-		L"Error message reported: %s",
+		"Failed seeking video. The video file may be corrupt or incomplete.\n"
+		"Error message reported: %s",
 		lagi_wxString(err.GetMessage()).c_str());
 }
 void VideoContext::OnSubtitlesError(SubtitlesProviderErrorEvent const& err) {
 	wxLogError(
-		L"Failed rendering subtitles. Error message reported: %s",
+		"Failed rendering subtitles. Error message reported: %s",
 		lagi_wxString(err.GetMessage()).c_str());
 }
 
