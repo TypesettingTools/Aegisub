@@ -53,6 +53,7 @@
 #include <wx/window.h>
 #endif
 
+#include <libaegisub/access.h>
 #include <libaegisub/log.h>
 #include <libaegisub/scoped_ptr.h>
 
@@ -379,6 +380,7 @@ namespace Automation4 {
 		wxString module(get_wxstring(L, -1));
 		module.Replace(".", LUA_DIRSEP);
 
+		// Get the lua package include path (which the user may have modified)
 		lua_getglobal(L, "package");
 		lua_pushstring(L, "path");
 		lua_gettable(L, -2);
@@ -389,13 +391,24 @@ namespace Automation4 {
 		while (toker.HasMoreTokens()) {
 			wxString filename = toker.GetNextToken();
 			filename.Replace("?", module);
-			if (wxFileName::FileExists(filename)) {
+			try {
 				LuaScriptReader script_reader(filename);
 				if (lua_load(L, script_reader.reader_func, &script_reader, filename.utf8_str())) {
 					return luaL_error(L, "Error loading Lua module \"%s\":\n\n%s", filename.utf8_str().data(), lua_tostring(L, -1));
 				}
+				break;
+			}
+			catch (agi::acs::AcsNotFound const&) {
+				// Not an error so swallow and continue on
+			}
+			catch (agi::acs::AcsNotAFile const&) {
+				// Not an error so swallow and continue on
+			}
+			catch (agi::Exception const& e) {
+				return luaL_error(L, "Error loading Lua module \"%s\":\n\n%s", filename.utf8_str().data(), e.GetChainedMessage().c_str());
 			}
 		}
+
 		return lua_gettop(L) - pretop;
 	}
 
