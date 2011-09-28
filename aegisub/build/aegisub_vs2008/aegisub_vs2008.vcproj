@@ -545,6 +545,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\src\auto4_lua_progresssink.cpp"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\auto4_lua_scriptreader.cpp"
 					>
 				</File>

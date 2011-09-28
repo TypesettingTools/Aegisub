@@ -920,6 +920,9 @@
     <ClCompile Include="$(SrcDir)auto4_lua_dialog.cpp">
       <Filter>Automation\Lua</Filter>
     </ClCompile>
+    <ClCompile Include="$(SrcDir)auto4_lua_progresssink.cpp">
+      <Filter>Automation\Lua</Filter>
+    </ClCompile>
     <ClCompile Include="$(SrcDir)auto4_lua_scriptreader.cpp">
       <Filter>Automation\Lua</Filter>
     </ClCompile>

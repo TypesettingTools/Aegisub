@@ -266,6 +266,7 @@
     <ClCompile Include="$(SrcDir)auto4_lua.cpp" />
     <ClCompile Include="$(SrcDir)auto4_lua_assfile.cpp" />
     <ClCompile Include="$(SrcDir)auto4_lua_dialog.cpp" />
+    <ClCompile Include="$(SrcDir)auto4_lua_progresssink.cpp" />
     <ClCompile Include="$(SrcDir)auto4_lua_scriptreader.cpp" />
     <ClCompile Include="$(SrcDir)avisynth_wrap.cpp" />
     <ClCompile Include="$(SrcDir)base_grid.cpp" />
