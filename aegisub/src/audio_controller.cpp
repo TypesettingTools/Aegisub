@@ -117,8 +117,8 @@ class AudioMarkerProviderKeyframes : public AudioMarkerProvider {
 	}
 
 public:
-	AudioMarkerProviderKeyframes(AudioController *controller)
-		: vc(VideoContext::Get())
+	AudioMarkerProviderKeyframes(AudioController *controller, agi::Context *c)
+		: vc(c->videoController)
 		, keyframe_slot(vc->AddKeyframesListener(&AudioMarkerProviderKeyframes::Update, this))
 		, audio_open_slot(controller->AddAudioOpenListener(&AudioMarkerProviderKeyframes::Update, this))
 		, timecode_slot(vc->AddTimecodesListener(&AudioMarkerProviderKeyframes::Update, this))
@@ -146,7 +146,6 @@ AudioController::AudioController(agi::Context *context)
 , subtitle_save_slot(context->ass->AddFileSaveListener(&AudioController::OnSubtitlesSave, this))
 , player(0)
 , provider(0)
-, keyframes_marker_provider(new AudioMarkerProviderKeyframes(this))
 , playback_mode(PM_NotPlaying)
 , playback_timer(this)
 {
@@ -156,8 +155,6 @@ AudioController::AudioController(agi::Context *context)
 	Bind(wxEVT_POWER_SUSPENDED, &AudioController::OnComputerSuspending, this);
 	Bind(wxEVT_POWER_RESUME, &AudioController::OnComputerResuming, this);
 #endif
-
-	keyframes_marker_provider->AddMarkerMovedListener(std::tr1::bind(std::tr1::ref(AnnounceMarkerMoved)));
 }
 
 
@@ -299,6 +296,15 @@ void AudioController::OpenAudio(const wxString &url)
 	audio_url = url;
 
 	config::mru->Add("Audio", STD_STR(url));
+
+	if (!keyframes_marker_provider.get())
+	{
+		// This is lazy-loaded as the video controller may not exist yet when
+		// the audio controller is created
+		keyframes_marker_provider.reset(new AudioMarkerProviderKeyframes(this, context));
+		keyframes_marker_provider->AddMarkerMovedListener(std::tr1::bind(std::tr1::ref(AnnounceMarkerMoved)));
+
+	}
 
 	// Tell listeners about this.
 	AnnounceAudioOpen(provider);
@@ -458,7 +464,7 @@ SampleRange AudioController::GetPrimaryPlaybackRange() const
 void AudioController::GetMarkers(const SampleRange &range, AudioMarkerVector &markers) const
 {
 	/// @todo Find all sources of markers
-	keyframes_marker_provider->GetMarkers(range, markers);
+	if (keyframes_marker_provider.get()) keyframes_marker_provider->GetMarkers(range, markers);
 	if (timing_controller.get()) timing_controller->GetMarkers(range, markers);
 }
 
