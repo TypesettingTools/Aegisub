@@ -51,6 +51,7 @@
 #include "compat.h"
 #include "include/aegisub/audio_player.h"
 #include "include/aegisub/audio_provider.h"
+#include "main.h"
 #include "selection_controller.h"
 #include "video_context.h"
 
@@ -264,6 +265,7 @@ void AudioController::OpenAudio(const wxString &url)
 		wxFileName fn(url);
 		if (!fn.FileExists())
 		{
+			config::mru->Remove("Audio", STD_STR(url));
 			agi::FileNotFoundError fnf(STD_STR(url));
 			throw agi::AudioOpenError(
 				"Failed opening audio file (parsing as plain filename)",
@@ -288,6 +290,8 @@ void AudioController::OpenAudio(const wxString &url)
 	}
 
 	audio_url = url;
+
+	config::mru->Add("Audio", STD_STR(url));
 
 	// Tell listeners about this.
 	AnnounceAudioOpen(provider);
