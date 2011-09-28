@@ -1214,7 +1214,8 @@ void AudioDisplay::OnSelectionChanged()
 	/// @todo Handle rendering style ranges from timing controller instead
 	SampleRange sel(controller->GetPrimaryPlaybackRange());
 	scrollbar->SetSelection(AbsoluteXFromSamples(sel.begin()), AbsoluteXFromSamples(sel.length()));
-
+	if (OPT_GET("Audio/Auto/Scroll")->GetBool())
+		ScrollSampleRangeInView(sel);
 
 	int s1 = RelativeXFromSamples(sel.begin());
 	int e1 = RelativeXFromSamples(sel.end());
