@@ -345,7 +345,8 @@ int BaseGrid::GetFirstSelRow() const {
 }
 
 wxArrayInt BaseGrid::GetSelection() const {
-	wxArrayInt res(selection.size());
+	wxArrayInt res;
+	res.reserve(selection.size());
 	transform(selection.begin(), selection.end(), std::back_inserter(res),
 		bind(&BaseGrid::GetDialogueIndex, this, std::tr1::placeholders::_1));
 	std::sort(res.begin(), res.end());
