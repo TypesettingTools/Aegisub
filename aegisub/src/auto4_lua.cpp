@@ -209,14 +209,10 @@ namespace Automation4 {
 			lua_pushstring(L, "path");
 			lua_gettable(L, -3);
 
-			wxStringTokenizer toker(lagi_wxString(OPT_GET("Path/Automation/Include")->GetString()), "|", wxTOKEN_STRTOK);
-			while (toker.HasMoreTokens()) {
-				wxFileName path(StandardPaths::DecodePath(toker.GetNextToken()));
-				if (path.IsOk() && !path.IsRelative() && path.DirExists()) {
-					wxCharBuffer p = path.GetLongPath().utf8_str();
-					lua_pushfstring(L, ";%s?.lua;%s?/init.lua", p.data(), p.data());
-					lua_concat(L, 2);
-				}
+			for (size_t i = 0; i < include_path.size(); ++i) {
+				wxCharBuffer p = include_path[i].utf8_str();
+				lua_pushfstring(L, ";%s/?.lua;%s/?/init.lua", p.data(), p.data());
+				lua_concat(L, 2);
 			}
 
 			lua_settable(L, -3);
