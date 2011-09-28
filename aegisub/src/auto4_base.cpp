@@ -293,7 +293,7 @@ namespace Automation4 {
 	FeatureFilter::FeatureFilter(const wxString &_name, const wxString &_description, int _priority)
 		: Feature(SCRIPTFEATURE_FILTER, _name)
 		, AssExportFilter(_name, _description, _priority)
-	, config_dialog(0)
+		, config_dialog(0)
 	{
 		AssExportFilterChain::Register(this);
 	}
@@ -735,22 +735,12 @@ namespace Automation4 {
 			bool more = dir.GetFirst(&fn, wxEmptyString, wxDIR_FILES);
 			while (more) {
 				script_path.SetName(fn);
-				try {
-				wxString fullpath = script_path.GetFullPath();
-				if (ScriptFactory::CanHandleScriptFormat(fullpath)) {
-					Script *s = ScriptFactory::CreateFromFile(fullpath, true);
-					Add(s);
-					if (!s->GetLoadedState()) error_count++;
-				}
-				}
-				catch (const char *e) {
-					error_count++;
-					wxLogError("Error loading Automation script: %s\n%s", fn, e);
-				}
-				catch (...) {
-					error_count++;
-					wxLogError("Error loading Automation script: %s\nUnknown error.", fn);
-				}
+					wxString fullpath = script_path.GetFullPath();
+					if (ScriptFactory::CanHandleScriptFormat(fullpath)) {
+						Script *s = ScriptFactory::CreateFromFile(fullpath, true);
+						Add(s);
+						if (!s->GetLoadedState()) error_count++;
+					}
 				more = dir.GetNext(&fn);
 			}
 		}
@@ -852,7 +842,7 @@ namespace Automation4 {
 		GetFactories();
 
 		if (find(factories->begin(), factories->end(), factory) != factories->end())
-			throw "Automation 4: Attempt to register the same script factory multiple times. This should never happen.";
+			throw agi::InternalError("Automation 4: Attempt to register the same script factory multiple times. This should never happen.", 0);
 
 		factories->push_back(factory);
 	}
@@ -939,7 +929,7 @@ namespace Automation4 {
 	/// @param filename 
 	///
 	UnknownScript::UnknownScript(const wxString &filename)
-	: Script(filename)
+		: Script(filename)
 	{
 		wxFileName fn(filename);
 		name = fn.GetName();

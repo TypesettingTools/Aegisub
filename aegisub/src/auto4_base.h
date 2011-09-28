@@ -77,6 +77,9 @@ DECLARE_EVENT_TYPE(wxEVT_AUTOMATION_SCRIPT_COMPLETED, -1)
 
 /// DOCME
 namespace Automation4 {
+	DEFINE_BASE_EXCEPTION_NOINNER(AutomationError, agi::Exception)
+	DEFINE_SIMPLE_EXCEPTION_NOINNER(ScriptLoadError, AutomationError, "automation/load/generic")
+	DEFINE_SIMPLE_EXCEPTION_NOINNER(MacroRunError, AutomationError, "automation/macro/generic")
 
 	// Calculate the extents of a text string given a style
 	bool CalculateTextExtents(AssStyle *style, wxString &text, double &width, double &height, double &descent, double &extlead);

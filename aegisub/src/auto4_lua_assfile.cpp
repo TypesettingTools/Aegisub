@@ -107,7 +107,7 @@ namespace {
 		lua_setfield(L, -2, name);
 	}
 
-	DEFINE_SIMPLE_EXCEPTION_NOINNER(BadField, agi::Exception, "automation/macro/bad_field")
+	DEFINE_SIMPLE_EXCEPTION_NOINNER(BadField, Automation4::MacroRunError, "automation/macro/bad_field")
 	BadField bad_field(const char *expected_type, const char *name, const char *line_clasee)
 	{
 		return BadField(std::string("Invalid ") + expected_type + " '" + name + "' field in '" + line_clasee + "' class subtitle line");

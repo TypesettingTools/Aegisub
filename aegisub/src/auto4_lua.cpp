@@ -257,7 +257,7 @@ namespace Automation4 {
 			if (lua_load(L, script_reader.reader_func, &script_reader, GetPrettyFilename().mb_str(wxConvUTF8))) {
 				wxString err(lua_tostring(L, -1), wxConvUTF8);
 				err.Prepend("Error loading Lua script \"" + GetPrettyFilename() + "\":\n\n");
-				throw err;
+				throw ScriptLoadError(STD_STR(err));
 			}
 			_stackcheck.check_stack(1);
 			// and execute it
@@ -267,16 +267,14 @@ namespace Automation4 {
 				// error occurred, assumed to be on top of Lua stack
 				wxString err(lua_tostring(L, -1), wxConvUTF8);
 				err.Prepend("Error initialising Lua script \"" + GetPrettyFilename() + "\":\n\n");
-				throw err;
+				throw ScriptLoadError(STD_STR(err));
 			}
 			_stackcheck.check_stack(0);
 			lua_getglobal(L, "version");
 			if (lua_isnumber(L, -1)) {
 				if (lua_tointeger(L, -1) == 3) {
 					lua_pop(L, 1); // just to avoid tripping the stackcheck in debug
-					// So this is an auto3 script...
-					// Throw it as an exception, the script factory manager will catch this and use the auto3 script instead of this script object
-					throw "Attempted to load an Automation 3 script as an Automation 4 Lua script. Automation 3 is no longer supported.";
+				throw ScriptLoadError("Attempted to load an Automation 3 script as an Automation 4 Lua script. Automation 3 is no longer supported.");
 				}
 			}
 			lua_getglobal(L, "script_name");
@@ -302,30 +300,13 @@ namespace Automation4 {
 			_stackcheck.check_stack(0);
 
 		}
-		catch (const char *e) {
+		catch (agi::Exception const& e) {
 			Destroy();
 			loaded = false;
 			name = GetPrettyFilename();
-			description = wxString(e, wxConvUTF8);
-		}
-		catch (const wxString& e) {
-			Destroy();
-			loaded = false;
-			name = GetPrettyFilename();
-			description = e;
-		}
-		catch (Script *s) {
-			// Be sure to properly propagate any scripts throw
-			throw s;
-		}
-		catch (...) {
-			Destroy();
-			loaded = false;
-			name = GetPrettyFilename();
-			description = "Unknown error initialising Lua script";
+			description = e.GetChainedMessage();
 		}
 		}
-
 
 	/// @brief DOCME
 	/// @return 
