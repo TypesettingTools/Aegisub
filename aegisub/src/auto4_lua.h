@@ -48,60 +48,78 @@
 #include <lua.hpp>
 #endif
 
+class AssEntry;
 class wxWindow;
 namespace agi { namespace vfr { class Framerate; } }
 
-/// DOCME
 namespace Automation4 {
 	/// @class LuaAssFile
 	/// @brief Object wrapping an AssFile object for modification through Lua
 	class LuaAssFile {
-	private:
-
 		/// Pointer to file being modified
 		AssFile *ass;
 
 		/// Lua state the object exists in
 		lua_State *L;
 
-
 		/// Is the feature this object is created for read-only?
 		bool can_modify;
-
-		/// Are we allowed to set undo points in the feature?
+		/// Is the feature allowed to set undo points?
 		bool can_set_undo;
-		void CheckAllowModify(); // throws an error if modification is disallowed
 
+		/// Has the ass file been modified by the script?
+		bool is_modified;
+		/// throws an error if modification is disallowed
+		void CheckAllowModify();
+
+		/// Reference count used to avoid deleting this until both lua and the
+		/// calling C++ code are done with it
+		int references;
 
 		/// Cursor for last access into file
 		std::list<AssEntry*>::iterator last_entry_ptr;
 		/// Index for last access into file
 		int last_entry_id;
-		/// Move last_entry_ptr to index n
-		void GetAssEntry(int n);
+		/// Move last_entry_ptr to 1-based index n
+		void SeekCursorTo(int n);
 
-		static int ObjectIndexRead(lua_State *L);
-		static int ObjectIndexWrite(lua_State *L);
-		static int ObjectGetLen(lua_State *L);
-		static int ObjectDelete(lua_State *L);
-		static int ObjectDeleteRange(lua_State *L);
-		static int ObjectAppend(lua_State *L);
-		static int ObjectInsert(lua_State *L);
-		static int ObjectGarbageCollect(lua_State *L);
+		int ObjectIndexRead(lua_State *L);
+		void ObjectIndexWrite(lua_State *L);
+		int ObjectGetLen(lua_State *L);
+		void ObjectDelete(lua_State *L);
+		void ObjectDeleteRange(lua_State *L);
+		void ObjectAppend(lua_State *L);
+		void ObjectInsert(lua_State *L);
+		void ObjectGarbageCollect(lua_State *L);
 
-		static int LuaParseTagData(lua_State *L);
-		static int LuaUnparseTagData(lua_State *L);
-		static int LuaParseKaraokeData(lua_State *L);
-		static int LuaSetUndoPoint(lua_State *L);
+		int LuaParseTagData(lua_State *L);
+		int LuaUnparseTagData(lua_State *L);
+		int LuaParseKaraokeData(lua_State *L);
 
+		void LuaSetUndoPoint(lua_State *L);
+
+		// LuaAssFile can only be deleted by the reference count hitting zero
+		~LuaAssFile() { }
+	public:
 		static LuaAssFile *GetObjPointer(lua_State *L, int idx);
 
-		~LuaAssFile();
-	public:
-		static void AssEntryToLua(lua_State *L, AssEntry *e); // makes a Lua representation of AssEntry and places on the top of the stack
-		static AssEntry *LuaToAssEntry(lua_State *L); // assumes a Lua representation of AssEntry on the top of the stack, and creates an AssEntry object of it
+		/// makes a Lua representation of AssEntry and places on the top of the stack
+		static void AssEntryToLua(lua_State *L, AssEntry *e);
+		/// assumes a Lua representation of AssEntry on the top of the stack, and creates an AssEntry object of it
+		static AssEntry *LuaToAssEntry(lua_State *L);
 
-		LuaAssFile(lua_State *_L, AssFile *_ass, bool _can_modify, bool _can_set_undo);
+		/// @brief Signal that the script using this file is now done running
+		/// @param set_undo If there's any uncommitted changes to the file,
+		///                 they will be automatically committed with this
+		///                 description
+		void ProcessingComplete(wxString const& undo_description = "");
+
+		/// Constructor
+		/// @param L lua state
+		/// @param ass File to wrap
+		/// @param can_modify Is modifying the file allowed?
+		/// @param can_set_undo Is setting undo points allowed?
+		LuaAssFile(lua_State *L, AssFile *ass, bool can_modify = false, bool can_set_undo = false);
 	};
 
 

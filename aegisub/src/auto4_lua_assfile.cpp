@@ -46,6 +46,7 @@
 #include <wx/log.h>
 #endif
 
+#include <libaegisub/exception.h>
 #include <libaegisub/log.h>
 #include <libaegisub/scoped_ptr.h>
 
@@ -66,703 +67,485 @@
 #include <lauxlib.h>
 #endif
 
-
-/// DOCME
-namespace Automation4 {
-
-	// LuaAssFile
-
-
-	/// @brief DOCME
-	/// @return 
-	///
-	void LuaAssFile::CheckAllowModify()
+namespace {
+	void set_field(lua_State *L, const char *name, wxString const& value)
 	{
-		if (can_modify)
-			return;
-		lua_pushstring(L, "Attempt to modify subtitles in read-only feature context.");
-		lua_error(L);
+		lua_pushstring(L, value.utf8_str());
+		lua_setfield(L, -2, name);
 	}
 
+	void set_field(lua_State *L, const char *name, const char *value)
+	{
+		lua_pushstring(L, value);
+		lua_setfield(L, -2, name);
+	}
 
-	/// @brief DOCME
-	/// @param L 
-	/// @param e 
-	///
+	// Userdata object must be just above the target table
+	void set_field(lua_State *L, const char *name, lua_CFunction value)
+	{
+		assert(lua_type(L, -2) == LUA_TUSERDATA);
+		lua_pushvalue(L, -2);
+		lua_pushcclosure(L, value, 1);
+		lua_setfield(L, -2, name);
+	}
+
+	void set_field(lua_State *L, const char *name, bool value)
+	{
+		lua_pushboolean(L, value);
+		lua_setfield(L, -2, name);
+	}
+
+	void set_field(lua_State *L, const char *name, double value)
+	{
+		lua_pushnumber(L, value);
+		lua_setfield(L, -2, name);
+	}
+
+	void set_field(lua_State *L, const char *name, int value)
+	{
+		lua_pushinteger(L, value);
+		lua_setfield(L, -2, name);
+	}
+
+	DEFINE_SIMPLE_EXCEPTION_NOINNER(BadField, Automation4::MacroRunError, "automation/macro/bad_field")
+	BadField bad_field(const char *expected_type, const char *name, const char *line_clasee)
+	{
+		return BadField(std::string("Invalid ") + expected_type + " '" + name + "' field in '" + line_clasee + "' class subtitle line");
+	}
+
+	wxString get_string_field(lua_State *L, const char *name, const char *line_class)
+	{
+		lua_getfield(L, -1, name);
+		if (!lua_isstring(L, -1))
+			throw bad_field("string", name, line_class);
+		wxString ret(lua_tostring(L, -1), wxConvUTF8);
+		lua_pop(L, 1);
+		return ret;
+	}
+
+	double get_double_field(lua_State *L, const char *name, const char *line_class)
+	{
+		lua_getfield(L, -1, name);
+		if (!lua_isnumber(L, -1))
+			throw bad_field("number", name, line_class);
+		double ret = lua_tonumber(L, -1);
+		lua_pop(L, 1);
+		return ret;
+	}
+
+	int get_int_field(lua_State *L, const char *name, const char *line_class)
+	{
+		lua_getfield(L, -1, name);
+		if (!lua_isnumber(L, -1))
+			throw bad_field("number", name, line_class);
+		int ret = lua_tointeger(L, -1);
+		lua_pop(L, 1);
+		return ret;
+	}
+
+	bool get_bool_field(lua_State *L, const char *name, const char *line_class)
+	{
+		lua_getfield(L, -1, name);
+		if (!lua_isboolean(L, -1))
+			throw bad_field("boolean", name, line_class);
+		bool ret = !!lua_toboolean(L, -1);
+		lua_pop(L, 1);
+		return ret;
+	}
+
+	using namespace Automation4;
+	template<int (LuaAssFile::*closure)(lua_State *)>
+	int closure_wrapper(lua_State *L)
+	{
+		return (LuaAssFile::GetObjPointer(L, lua_upvalueindex(1))->*closure)(L);
+	}
+
+	template<void (LuaAssFile::*closure)(lua_State *)>
+	int closure_wrapper_v(lua_State *L)
+	{
+		(LuaAssFile::GetObjPointer(L, lua_upvalueindex(1))->*closure)(L);
+		return 0;
+	}
+
+		}
+
+namespace Automation4 {
+	void LuaAssFile::CheckAllowModify()
+	{
+		if (!can_modify)
+			luaL_error(L, "Attempt to modify subtitles in read-only feature context.");
+	}
+
 	void LuaAssFile::AssEntryToLua(lua_State *L, AssEntry *e)
 	{
 		lua_newtable(L);
 
-		wxString section(e->group);
-		lua_pushstring(L, section.mb_str(wxConvUTF8));
-		lua_setfield(L, -2, "section");
-
 		wxString raw(e->GetEntryData());
-		lua_pushstring(L, raw.mb_str(wxConvUTF8));
-		lua_setfield(L, -2, "raw");
+
+		set_field(L, "section", e->group);
+		set_field(L, "raw", raw);
 
 		if (StringEmptyOrWhitespace(raw)) {
-			lua_pushstring(L, "clear");
-
-		} else if (raw[0] == ';') {
-			// "text" field, same as "raw" but with semicolon stripped
-			wxString text(raw, 1, raw.size()-1);
-			lua_pushstring(L, text.mb_str(wxConvUTF8));
-			lua_setfield(L, -2, "text");
-
-			lua_pushstring(L, "comment");
-
-		} else if (raw[0] == '[') {
-			lua_pushstring(L, "head");
-
-		} else if (section.Lower() == "[script info]") {
-			// assumed "info" class
-
-			// first "key"
-			wxString key = raw.BeforeFirst(':');
-			lua_pushstring(L, key.mb_str(wxConvUTF8));
-			lua_setfield(L, -2, "key");
-
-			// then "value"
-			wxString value = raw.AfterFirst(':');
-			lua_pushstring(L, value.mb_str(wxConvUTF8));
-			lua_setfield(L, -2, "value");
-
-			lua_pushstring(L, "info");
-
-		} else if (raw.Left(7).Lower() == "format:") {
-
-			// TODO: parse the format line; just use a tokenizer
-
-			lua_pushstring(L, "format");
-
-		} else if (e->GetType() == ENTRY_DIALOGUE) {
-			AssDialogue *dia = static_cast<AssDialogue*>(e);
-
-			lua_pushboolean(L, (int)dia->Comment);
-			lua_setfield(L, -2, "comment");
-
-			lua_pushnumber(L, dia->Layer);
-			lua_setfield(L, -2, "layer");
-
-			lua_pushnumber(L, dia->Start.GetMS());
-			lua_setfield(L, -2, "start_time");
-			lua_pushnumber(L, dia->End.GetMS());
-			lua_setfield(L, -2, "end_time");
-
-			lua_pushstring(L, dia->Style.mb_str(wxConvUTF8));
-			lua_setfield(L, -2, "style");
-			lua_pushstring(L, dia->Actor.mb_str(wxConvUTF8));
-			lua_setfield(L, -2, "actor");
-
-			lua_pushnumber(L, dia->Margin[0]);
-			lua_setfield(L, -2, "margin_l");
-			lua_pushnumber(L, dia->Margin[1]);
-			lua_setfield(L, -2, "margin_r");
-			lua_pushnumber(L, dia->Margin[2]);
-			lua_setfield(L, -2, "margin_t");
-			lua_pushnumber(L, dia->Margin[3]);
-			lua_setfield(L, -2, "margin_b");
-
-			lua_pushstring(L, dia->Effect.mb_str(wxConvUTF8));
-			lua_setfield(L, -2, "effect");
-
-			lua_pushstring(L, dia->Text.mb_str(wxConvUTF8));
-			lua_setfield(L, -2, "text");
-
-			lua_pushstring(L, "dialogue");
-
-		} else if (e->GetType() == ENTRY_STYLE) {
-			AssStyle *sty = static_cast<AssStyle*>(e);
-
-			lua_pushstring(L, sty->name.mb_str(wxConvUTF8));
-			lua_setfield(L, -2, "name");
-
-			lua_pushstring(L, sty->font.mb_str(wxConvUTF8));
-			lua_setfield(L, -2, "fontname");
-			lua_pushnumber(L, sty->fontsize);
-			lua_setfield(L, -2, "fontsize");
-
-			lua_pushstring(L, sty->primary.GetASSFormatted(true).mb_str(wxConvUTF8));
-			lua_setfield(L, -2, "color1");
-			lua_pushstring(L, sty->secondary.GetASSFormatted(true).mb_str(wxConvUTF8));
-			lua_setfield(L, -2, "color2");
-			lua_pushstring(L, sty->outline.GetASSFormatted(true).mb_str(wxConvUTF8));
-			lua_setfield(L, -2, "color3");
-			lua_pushstring(L, sty->shadow.GetASSFormatted(true).mb_str(wxConvUTF8));
-			lua_setfield(L, -2, "color4");
-
-			lua_pushboolean(L, (int)sty->bold);
-			lua_setfield(L, -2, "bold");
-			lua_pushboolean(L, (int)sty->italic);
-			lua_setfield(L, -2, "italic");
-			lua_pushboolean(L, (int)sty->underline);
-			lua_setfield(L, -2, "underline");
-			lua_pushboolean(L, (int)sty->strikeout);
-			lua_setfield(L, -2, "strikeout");
-
-			lua_pushnumber(L, sty->scalex);
-			lua_setfield(L, -2, "scale_x");
-			lua_pushnumber(L, sty->scaley);
-			lua_setfield(L, -2, "scale_y");
-
-			lua_pushnumber(L, sty->spacing);
-			lua_setfield(L, -2, "spacing");
-
-			lua_pushnumber(L, sty->angle);
-			lua_setfield(L, -2, "angle");
-
-			lua_pushnumber(L, sty->borderstyle);
-			lua_setfield(L, -2, "borderstyle");
-			lua_pushnumber(L, sty->outline_w);
-			lua_setfield(L, -2, "outline");
-			lua_pushnumber(L, sty->shadow_w);
-			lua_setfield(L, -2, "shadow");
-
-			lua_pushnumber(L, sty->alignment);
-			lua_setfield(L, -2, "align");
-
-			lua_pushnumber(L, sty->Margin[0]);
-			lua_setfield(L, -2, "margin_l");
-			lua_pushnumber(L, sty->Margin[1]);
-			lua_setfield(L, -2, "margin_r");
-			lua_pushnumber(L, sty->Margin[2]);
-			lua_setfield(L, -2, "margin_t");
-			lua_pushnumber(L, sty->Margin[3]);
-			lua_setfield(L, -2, "margin_b");
-
-			lua_pushnumber(L, sty->encoding);
-			lua_setfield(L, -2, "encoding");
-
-			lua_pushnumber(L, 2); // From STS.h: "0: window, 1: video, 2: undefined (~window)"
-			lua_setfield(L, -2, "relative_to");
-
-			lua_pushstring(L, "style");
-
-		} else {
-			lua_pushstring(L, "unknown");
+			set_field(L, "class", "clear");
 		}
-		// store class of item; last thing done for each class specific code must be pushing the class name
-		lua_setfield(L, -2, "class");
+		else if (raw[0] == ';') {
+			// "text" field, same as "raw" but with semicolon stripped
+			set_field(L, "text", raw.Mid(1));
+			set_field(L, "class", "comment");
+		}
+		else if (raw[0] == '[') {
+			set_field(L, "class", "head");
+		}
+		else if (e->group.Lower() == "[script info]") {
+			set_field(L, "key", raw.BeforeFirst(':'));
+			set_field(L, "value", raw.AfterFirst(':'));
+			set_field(L, "class", "info");
+		}
+		else if (raw.Left(7).Lower() == "format:") {
+			// TODO: parse the format line; just use a tokenizer
+			set_field(L, "class", "format");
+		}
+		else if (AssDialogue *dia = dynamic_cast<AssDialogue*>(e)) {
+			set_field(L, "comment", dia->Comment);
+
+			set_field(L, "layer", dia->Layer);
+
+			set_field(L, "start_time", dia->Start.GetMS());
+			set_field(L, "end_time", dia->End.GetMS());
+
+			set_field(L, "style", dia->Style);
+			set_field(L, "actor", dia->Actor);
+			set_field(L, "effect", dia->Effect);
+
+			set_field(L, "margin_l", dia->Margin[0]);
+			set_field(L, "margin_r", dia->Margin[1]);
+			set_field(L, "margin_t", dia->Margin[2]);
+			set_field(L, "margin_b", dia->Margin[3]);
+
+			set_field(L, "text", dia->Text);
+
+			set_field(L, "class", "dialogue");
+		}
+		else if (AssStyle *sty = dynamic_cast<AssStyle*>(e)) {
+			set_field(L, "name", sty->name);
+
+			set_field(L, "fontname", sty->font);
+			set_field(L, "fontsize", sty->fontsize);
+
+			set_field(L, "color1", sty->primary.GetASSFormatted(true));
+			set_field(L, "color2", sty->secondary.GetASSFormatted(true));
+			set_field(L, "color3", sty->outline.GetASSFormatted(true));
+			set_field(L, "color4", sty->shadow.GetASSFormatted(true));
+
+			set_field(L, "bold", sty->bold);
+			set_field(L, "italic", sty->italic);
+			set_field(L, "underline", sty->underline);
+			set_field(L, "strikeout", sty->strikeout);
+
+			set_field(L, "scale_x", sty->scalex);
+			set_field(L, "scale_y", sty->scaley);
+
+			set_field(L, "spacing", sty->spacing);
+
+			set_field(L, "angle", sty->angle);
+
+			set_field(L, "borderstyle", sty->borderstyle);
+			set_field(L, "outline", sty->outline_w);
+			set_field(L, "shadow", sty->shadow_w);
+
+			set_field(L, "align", sty->alignment);
+
+			set_field(L, "margin_l", sty->Margin[0]);
+			set_field(L, "margin_r", sty->Margin[1]);
+			set_field(L, "margin_t", sty->Margin[2]);
+			set_field(L, "margin_b", sty->Margin[3]);
+
+			set_field(L, "encoding", sty->encoding);
+
+			set_field(L, "relative_to", 2);// From STS.h: "0: window, 1: video, 2: undefined (~window)"
+
+			set_field(L, "class", "style");
+		}
+		else {
+			set_field(L, "class", "unknown");
+		}
 	}
 
-
-	/// @brief DOCME
-	/// @param L 
-	/// @return 
-	///
 	AssEntry *LuaAssFile::LuaToAssEntry(lua_State *L)
 	{
 		// assume an assentry table is on the top of the stack
 		// convert it to a real AssEntry object, and pop the table from the stack
 
-		if (!lua_istable(L, -1)) {
-			lua_pushstring(L, "Can't convert a non-table value to AssEntry");
-			lua_error(L);
-			return 0;
-		}
+		if (!lua_istable(L, -1))
+			luaL_error(L, "Can't convert a non-table value to AssEntry");
 
 		lua_getfield(L, -1, "class");
-		if (!lua_isstring(L, -1)) {
-			lua_pushstring(L, "Table lacks 'class' field, can't convert to AssEntry");
-			lua_error(L);
-			return 0;
-		}
+		if (!lua_isstring(L, -1))
+			luaL_error(L, "Table lacks 'class' field, can't convert to AssEntry");
+
 		wxString lclass(lua_tostring(L, -1), wxConvUTF8);
 		lclass.MakeLower();
 		lua_pop(L, 1);
 
-		AssEntry *result;
+		AssEntry *result = 0;
 
+		try {
+			wxString section = get_string_field(L, "section", "common");
 
-/// DOCME
-#define GETSTRING(varname, fieldname, lineclass)		\
-	lua_getfield(L, -1, fieldname);						\
-	if (!lua_isstring(L, -1)) {							\
-		lua_pushstring(L, "Invalid string '" fieldname "' field in '" lineclass "' class subtitle line"); \
-		lua_error(L);									\
-		return 0;										\
-	}													\
-	wxString varname (lua_tostring(L, -1), wxConvUTF8);	\
-	lua_pop(L, 1);
+			if (lclass == "clear")
+				result = new AssEntry("");
+			else if (lclass == "comment")
+				result = new AssEntry(";" + get_string_field(L, "text", "comment"));
+			else if (lclass == "head")
+				result = new AssEntry(section);
+			else if (lclass == "info") {
+				result = new AssEntry(wxString::Format("%s: %s", get_string_field(L, "key", "info"), get_string_field(L, "value", "info")));
+				result->group = "[Script Info]"; // just so it can be read correctly back
+			}
+			else if (lclass == "format") {
+				// ohshi- ...
+				// *FIXME* maybe ignore the actual data and just put some default stuff based on section?
+				result = new AssEntry("Format: Auto4,Is,Broken");
+			}
+			else if (lclass == "style") {
+				AssStyle *sty = new AssStyle;
+				result = sty;
+				sty->name = get_string_field(L, "name", "style");
+				sty->font = get_string_field(L, "fontname", "style");
+				sty->fontsize = get_double_field(L, "fontsize", "style");
+				sty->primary.Parse(get_string_field(L, "color1", "style"));
+				sty->secondary.Parse(get_string_field(L, "color2", "style"));
+				sty->outline.Parse(get_string_field(L, "color3", "style"));
+				sty->shadow.Parse(get_string_field(L, "color4", "style"));
+				sty->bold = get_bool_field(L, "bold", "style");
+				sty->italic = get_bool_field(L, "italic", "style");
+				sty->underline = get_bool_field(L, "underline", "style");
+				sty->strikeout = get_bool_field(L, "strikeout", "style");
+				sty->scalex = get_double_field(L, "scale_x", "style");
+				sty->scaley = get_double_field(L, "scale_y", "style");
+				sty->spacing = get_double_field(L, "spacing", "style");
+				sty->angle = get_double_field(L, "angle", "style");
+				sty->borderstyle = get_int_field(L, "borderstyle", "style");
+				sty->outline_w = get_double_field(L, "outline", "style");
+				sty->shadow_w = get_double_field(L, "shadow", "style");
+				sty->alignment = get_int_field(L, "align", "style");
+				sty->Margin[0] = get_int_field(L, "margin_l", "style");
+				sty->Margin[1] = get_int_field(L, "margin_r", "style");
+				sty->Margin[2] = get_int_field(L, "margin_t", "style");
+				sty->Margin[3] = get_int_field(L, "margin_b", "style");
+				sty->encoding = get_int_field(L, "encoding", "style");
+				sty->UpdateData();
+			}
+			else if (lclass == "dialogue") {
+				AssDialogue *dia = new AssDialogue;
+				result = dia;
 
-/// DOCME
-#define GETFLOAT(varname, fieldname, lineclass)			\
-	lua_getfield(L, -1, fieldname);						\
-	if (!lua_isnumber(L, -1)) {							\
-		lua_pushstring(L, "Invalid number '" fieldname "' field in '" lineclass "' class subtitle line"); \
-		lua_error(L);									\
-		return 0;										\
-	}													\
-	float varname = lua_tonumber(L, -1);				\
-	lua_pop(L, 1);
+				dia->Comment = get_bool_field(L, "comment", "dialogue");
+				dia->Layer = get_int_field(L, "layer", "dialogue");
+				dia->Start.SetMS(get_int_field(L, "start_time", "dialogue"));
+				dia->End.SetMS(get_int_field(L, "end_time", "dialogue"));
+				dia->Style = get_string_field(L, "style", "dialogue");
+				dia->Actor = get_string_field(L, "actor", "dialogue");
+				dia->Margin[0] = get_int_field(L, "margin_l", "dialogue");
+				dia->Margin[1] = get_int_field(L, "margin_r", "dialogue");
+				dia->Margin[2] = get_int_field(L, "margin_t", "dialogue");
+				dia->Margin[3] = get_int_field(L, "margin_b", "dialogue");
+				dia->Effect = get_string_field(L, "effect", "dialogue");
+				dia->Text = get_string_field(L, "text", "dialogue");
+			}
+			else
+				luaL_error(L, "Found line with unknown class: %s", lclass.utf8_str().data());
 
-/// DOCME
-#define GETINT(varname, fieldname, lineclass)			\
-	lua_getfield(L, -1, fieldname);						\
-	if (!lua_isnumber(L, -1)) {							\
-		lua_pushstring(L, "Invalid number '" fieldname "' field in '" lineclass "' class subtitle line"); \
-		lua_error(L);									\
-		return 0;										\
-	}													\
-	int varname = lua_tointeger(L, -1);					\
-	lua_pop(L, 1);
+			if (result->group.empty())
+				result->group = section;
 
-/// DOCME
-#define GETBOOL(varname, fieldname, lineclass)			\
-	lua_getfield(L, -1, fieldname);						\
-	if (!lua_isboolean(L, -1)) {						\
-		lua_pushstring(L, "Invalid boolean '" fieldname "' field in '" lineclass "' class subtitle line"); \
-		lua_error(L);									\
-		return 0;										\
-	}													\
-	bool varname = !!lua_toboolean(L, -1);				\
-	lua_pop(L, 1);
-
-		GETSTRING(section, "section", "common")
-
-		if (lclass == "clear") {
-			result = new AssEntry("");
-			result->group = section;
-
-		} else if (lclass == "comment") {
-			GETSTRING(raw, "text", "comment")
-			raw.Prepend(";");
-			result = new AssEntry(raw);
-			result->group = section;
-
-		} else if (lclass == "head") {
-			result = new AssEntry(section);
-			result->group = section;
-
-		} else if (lclass == "info") {
-			GETSTRING(key, "key", "info")
-			GETSTRING(value, "value", "info")
-			result = new AssEntry(wxString::Format("%s: %s", key, value));
-			result->group = "[Script Info]"; // just so it can be read correctly back
-
-		} else if (lclass == "format") {
-			// ohshi- ...
-			// *FIXME* maybe ignore the actual data and just put some default stuff based on section?
-			result = new AssEntry("Format: Auto4,Is,Broken");
-			result->group = section;
-
-		} else if (lclass == "style") {
-			GETSTRING(name, "name", "style")
-			GETSTRING(fontname, "fontname", "style")
-			GETFLOAT(fontsize, "fontsize", "style")
-			GETSTRING(color1, "color1", "style")
-			GETSTRING(color2, "color2", "style")
-			GETSTRING(color3, "color3", "style")
-			GETSTRING(color4, "color4", "style")
-			GETBOOL(bold, "bold", "style")
-			GETBOOL(italic, "italic", "style")
-			GETBOOL(underline, "underline", "style")
-			GETBOOL(strikeout, "strikeout", "style")
-			GETFLOAT(scale_x, "scale_x", "style")
-			GETFLOAT(scale_y, "scale_y", "style")
-			GETFLOAT(spacing, "spacing", "style")
-			GETFLOAT(angle, "angle", "style")
-			GETINT(borderstyle, "borderstyle", "style")
-			GETFLOAT(outline, "outline", "style")
-			GETFLOAT(shadow, "shadow", "style")
-			GETINT(align, "align", "style")
-			GETINT(margin_l, "margin_l", "style")
-			GETINT(margin_r, "margin_r", "style")
-			GETINT(margin_t, "margin_t", "style")
-			GETINT(margin_b, "margin_b", "style")
-			GETINT(encoding, "encoding", "style")
-			// leaving out relative_to and vertical
-
-			AssStyle *sty = new AssStyle();
-			sty->name = name;
-			sty->font = fontname;
-			sty->fontsize = fontsize;
-			sty->primary.Parse(color1);
-			sty->secondary.Parse(color2);
-			sty->outline.Parse(color3);
-			sty->shadow.Parse(color4);
-			sty->bold = bold;
-			sty->italic = italic;
-			sty->underline = underline;
-			sty->strikeout = strikeout;
-			sty->scalex = scale_x;
-			sty->scaley = scale_y;
-			sty->spacing = spacing;
-			sty->angle = angle;
-			sty->borderstyle = borderstyle;
-			sty->outline_w = outline;
-			sty->shadow_w = shadow;
-			sty->alignment = align;
-			sty->Margin[0] = margin_l;
-			sty->Margin[1] = margin_r;
-			sty->Margin[2] = margin_t;
-			sty->Margin[3] = margin_b;
-			sty->encoding = encoding;
-			sty->UpdateData();
-
-			result = sty;
-
-		} else if (lclass == "dialogue") {
-			GETBOOL(comment, "comment", "dialogue")
-			GETINT(layer, "layer", "dialogue")
-			GETINT(start_time, "start_time", "dialogue")
-			GETINT(end_time, "end_time", "dialogue")
-			GETSTRING(style, "style", "dialogue")
-			GETSTRING(actor, "actor", "dialogue")
-			GETINT(margin_l, "margin_l", "dialogue")
-			GETINT(margin_r, "margin_r", "dialogue")
-			GETINT(margin_t, "margin_t", "dialogue")
-			GETINT(margin_b, "margin_b", "dialogue")
-			GETSTRING(effect, "effect", "dialogue")
-			//GETSTRING(userdata, "userdata", "dialogue")
-			GETSTRING(text, "text", "dialogue")
-
-			AssDialogue *dia = new AssDialogue();
-			dia->Comment = comment;
-			dia->Layer = layer;
-			dia->Start.SetMS(start_time);
-			dia->End.SetMS(end_time);
-			dia->Style = style;
-			dia->Actor = actor;
-			dia->Margin[0] = margin_l;
-			dia->Margin[1] = margin_r;
-			dia->Margin[2] = margin_t;
-			dia->Margin[3] = margin_b;
-			dia->Effect = effect;
-			dia->Text = text;
-
-			result = dia;
-
-		} else {
-			lua_pushfstring(L, "Found line with unknown class: %s", lclass.mb_str(wxConvUTF8).data());
-			lua_error(L);
+			return result;
+		}
+		catch (agi::Exception const& e) {
+			delete result;
+			luaL_error(L, e.GetMessage().c_str());
 			return 0;
 		}
-
-
-/// DOCME
-#undef GETSTRING
-
-/// DOCME
-#undef GETFLOAT
-
-/// DOCME
-#undef GETINT
-
-/// DOCME
-#undef GETBOOL
-
-		//lua_pop(L, 1); // the function shouldn't eat the table it converted
-		return result;
 	}
 
-
-	/// @brief DOCME
-	/// @param n 
-	///
-	void LuaAssFile::GetAssEntry(int n)
+	void LuaAssFile::SeekCursorTo(int n)
 	{
-		entryIter e;
-		if (n < last_entry_id/2) {
+		if (n < last_entry_id - n) {
 			// fastest to search from start
-			e = ass->Line.begin();
-			last_entry_id = n;
-			while (n-- > 0) e++;
-			last_entry_ptr = e;
-
-		} else if (last_entry_id + n > last_entry_id + ((int)ass->Line.size() - last_entry_id)/2) {
-			// fastest to search from end
-			int i = (int)ass->Line.size();
-			e = ass->Line.end();
-			last_entry_id = n;
-			while (i-- > n) e--;
-			last_entry_ptr = e;
-
-		} else if (last_entry_id > n) {
-			// search backwards from last_entry_id
-			e = last_entry_ptr;
-			while (n < last_entry_id) e--, last_entry_id--;
-			last_entry_ptr = e;
-			
-		} else {
-			// search forwards from last_entry_id
-			e = last_entry_ptr;
-			// reqid and last_entry_id might be equal here, make sure the loop will still work
-			while (n > last_entry_id) e++, last_entry_id++;
-			last_entry_ptr = e;
+			last_entry_ptr = ass->Line.begin();
+			last_entry_id = 1;
 		}
+		else if ((int)ass->Line.size() - last_entry_id < abs(last_entry_id - n)) {
+			// fastest to search from end
+			last_entry_ptr = ass->Line.end();
+			last_entry_id = ass->Line.size() + 1;
+		}
+		// otherwise fastest to search from cursor
+
+		advance(last_entry_ptr, n - last_entry_id);
+		last_entry_id = n;
 	}
 
-
-	/// @brief DOCME
-	/// @param L 
-	/// @return 
-	///
 	int LuaAssFile::ObjectIndexRead(lua_State *L)
 	{
-		LuaAssFile *laf = GetObjPointer(L, 1);
-
 		switch (lua_type(L, 2)) {
-
 			case LUA_TNUMBER:
-				{
-					// read an indexed AssEntry
+			{
+				// read an indexed AssEntry
 
-					// get requested index
-					int reqid = lua_tointeger(L, 2);
-					if (reqid <= 0 || reqid > (int)laf->ass->Line.size()) {
-						lua_pushfstring(L, "Requested out-of-range line from subtitle file: %d", reqid);
-						lua_error(L);
-						return 0;
-					}
+				// get requested index
+				int reqid = lua_tointeger(L, 2);
+				if (reqid <= 0 || reqid > (int)ass->Line.size())
+					return luaL_error(L, "Requested out-of-range line from subtitle file: %d", reqid);
 
-					laf->GetAssEntry(reqid-1);
-					laf->AssEntryToLua(L, *laf->last_entry_ptr);
+				SeekCursorTo(reqid);
+				AssEntryToLua(L, *last_entry_ptr);
+				return 1;
+			}
+
+			case LUA_TSTRING:
+			{
+				// either return n or a function doing further stuff
+				const char *idx = lua_tostring(L, 2);
+
+				if (strcmp(idx, "n") == 0) {
+					// get number of items
+					lua_pushnumber(L, ass->Line.size());
 					return 1;
 				}
 
-			case LUA_TSTRING:
-				{
-					// either return n or a function doing further stuff
-					const char *idx = lua_tostring(L, 2);
-
-					if (strcmp(idx, "n") == 0) {
-						// get number of items
-						lua_pushnumber(L, laf->ass->Line.size());
-						return 1;
-
-					} else if (strcmp(idx, "delete") == 0) {
-						// make a "delete" function
-						lua_pushvalue(L, 1);
-						lua_pushcclosure(L, ObjectDelete, 1);
-						return 1;
-
-					} else if (strcmp(idx, "deleterange") == 0) {
-						// make a "deleterange" function
-						lua_pushvalue(L, 1);
-						lua_pushcclosure(L, ObjectDeleteRange, 1);
-						return 1;
-
-					} else if (strcmp(idx, "insert") == 0) {
-						// make an "insert" function
-						lua_pushvalue(L, 1);
-						lua_pushcclosure(L, ObjectInsert, 1);
-						return 1;
-
-					} else if (strcmp(idx, "append") == 0) {
-						// make an "append" function
-						lua_pushvalue(L, 1);
-						lua_pushcclosure(L, ObjectAppend, 1);
-						return 1;
-
-					} else {
-						// idiot
-						lua_pushfstring(L, "Invalid indexing in Subtitle File object: '%s'", idx);
-						lua_error(L);
-						// should never return
-					}
-					assert(false);
+				lua_pushvalue(L, 1);
+				if (strcmp(idx, "delete") == 0)
+					lua_pushcclosure(L, closure_wrapper_v<&LuaAssFile::ObjectDelete>, 1);
+				else if (strcmp(idx, "deleterange") == 0)
+					lua_pushcclosure(L, closure_wrapper_v<&LuaAssFile::ObjectDeleteRange>, 1);
+				else if (strcmp(idx, "insert") == 0)
+					lua_pushcclosure(L, closure_wrapper_v<&LuaAssFile::ObjectInsert>, 1);
+				else if (strcmp(idx, "append") == 0)
+					lua_pushcclosure(L, closure_wrapper_v<&LuaAssFile::ObjectAppend>, 1);
+				else {
+					// idiot
+					lua_pop(L, 1);
+					return luaL_error(L, "Invalid indexing in Subtitle File object: '%s'", idx);
 				}
+
+				return 1;
+			}
 
 			default:
-				{
-					// crap, user is stupid!
-					lua_pushfstring(L, "Attempt to index a Subtitle File object with value of type '%s'.", lua_typename(L, lua_type(L, 2)));
-					lua_error(L);
-				}
+				// crap, user is stupid!
+				return luaL_error(L, "Attempt to index a Subtitle File object with value of type '%s'.", lua_typename(L, lua_type(L, 2)));
 		}
 
 		assert(false);
 		return 0;
 	}
 
-
-	/// @brief DOCME
-	/// @param L 
-	/// @return 
-	///
-	int LuaAssFile::ObjectIndexWrite(lua_State *L)
+	void LuaAssFile::ObjectIndexWrite(lua_State *L)
 	{
 		// instead of implementing everything twice, just call the other modification-functions from here
 		// after modifying the stack to match their expectations
 
-		if (!lua_isnumber(L, 2)) {
-			lua_pushstring(L, "Attempt to write to non-numeric index in subtitle index");
-			lua_error(L);
-			return 0;
-		}
+		CheckAllowModify();
+		is_modified = true;
 
-		LuaAssFile *laf = GetObjPointer(L, 1);
-		laf->CheckAllowModify();
-
-		int n = lua_tointeger(L, 2);
-
+		int n = luaL_checkint(L, 2);
 		if (n < 0) {
 			// insert line so new index is n
-			lua_pushvalue(L, 1);
-			lua_pushcclosure(L, ObjectInsert, 1);
+			lua_remove(L, 1);
 			lua_pushinteger(L, -n);
-			lua_pushvalue(L, 3);
-			lua_call(L, 2, 0);
-			return 0;
-
-		} else if (n == 0) {
+			lua_replace(L, 1);
+			ObjectInsert(L);
+		}
+		else if (n == 0) {
 			// append line to list
-			lua_pushvalue(L, 1);
-			lua_pushcclosure(L, ObjectAppend, 1);
-			lua_pushvalue(L, 3);
-			lua_call(L, 1, 0);
-			return 0;
-
-		} else {
+			lua_remove(L, 1);
+			lua_remove(L, 2);
+			ObjectAppend(L);
+		}
+		else {
 			// replace line at index n or delete
 			if (!lua_isnil(L, 3)) {
 				// insert
 				AssEntry *e = LuaToAssEntry(L);
-				laf->GetAssEntry(n-1);
-				delete *laf->last_entry_ptr;
-				*laf->last_entry_ptr = e;
-				return 0;
-
-			} else {
+				SeekCursorTo(n);
+				delete *last_entry_ptr;
+				*last_entry_ptr = e;
+			}
+			else {
 				// delete
-				lua_pushvalue(L, 1);
-				lua_pushcclosure(L, ObjectDelete, 1);
-				lua_pushvalue(L, 2);
-				lua_call(L, 1, 0);
-				return 0;
-
+				lua_remove(L, 1);
+				lua_remove(L, 2);
+				ObjectDelete(L);
 			}
 		}
 	}
 
-
-	/// @brief DOCME
-	/// @param L 
-	/// @return 
-	///
 	int LuaAssFile::ObjectGetLen(lua_State *L)
 	{
-		LuaAssFile *laf = GetObjPointer(L, 1);
-		lua_pushnumber(L, laf->ass->Line.size());
+		lua_pushnumber(L, ass->Line.size());
 		return 1;
 	}
 
-
-	/// @brief DOCME
-	/// @param L 
-	/// @return 
-	///
-	int LuaAssFile::ObjectDelete(lua_State *L)
+	void LuaAssFile::ObjectDelete(lua_State *L)
 	{
-		LuaAssFile *laf = GetObjPointer(L, lua_upvalueindex(1));
-
-		laf->CheckAllowModify();
+		CheckAllowModify();
 
 		// get number of items to delete
 		int itemcount = lua_gettop(L);
 		std::vector<int> ids;
 		ids.reserve(itemcount);
 
-		// sort the item id's so we can delete from last to first to preserve original numbering
 		while (itemcount > 0) {
-			if (!lua_isnumber(L, itemcount)) {
-				lua_pushstring(L, "Attempt to delete non-numeric line id from Subtitle Object");
-				lua_error(L);
-				return 0;
-			}
-			int n = lua_tointeger(L, itemcount);
-			if (n > (int)laf->ass->Line.size() || n < 1) {
-				lua_pushstring(L, "Attempt to delete out of range line id from Subtitle Object");
-				lua_error(L);
-				return 0;
-			}
-			ids.push_back(n-1); // make C-style line ids
+			int n = luaL_checkint(L, itemcount);
+			luaL_argcheck(L, n > 0 && n <= (int)ass->Line.size(), itemcount, "Out of range line index");
+			ids.push_back(n);
 			--itemcount;
 		}
-		std::sort(ids.begin(), ids.end());
+		is_modified = true;
+
+		// sort the item id's so we can delete from last to first to preserve original numbering
+		sort(ids.begin(), ids.end());
 
 		// now delete the id's backwards
-		// start with the last one, to initialise things
-		laf->GetAssEntry(ids.back());
-		// get an iterator to it, and increase last_entry_ptr so it'll still be valid after deletion, and point to the right index
-		entryIter e = laf->last_entry_ptr++;
-		laf->ass->Line.erase(e);
-		int n = laf->last_entry_id;
-		for (int i = (int)ids.size()-2; i >= 0; --i) {
-			int id = ids[i];
-			while (id < n)
-				n--, laf->last_entry_ptr--;
-			e = laf->last_entry_ptr++;
-			delete *e;
-			laf->ass->Line.erase(e);
+		SeekCursorTo(ids.back());
+		for (size_t i = ids.size(); i > 0; --i) {
+			while (last_entry_id > ids[i - 1]) {
+				--last_entry_ptr;
+				--last_entry_id;
+			}
+			delete *last_entry_ptr;
+			ass->Line.erase(last_entry_ptr++);
 		}
-		laf->last_entry_id = n;
-
-		return 0;
 	}
 
-
-	/// @brief DOCME
-	/// @param L 
-	/// @return 
-	///
-	int LuaAssFile::ObjectDeleteRange(lua_State *L)
+	void LuaAssFile::ObjectDeleteRange(lua_State *L)
 	{
-		LuaAssFile *laf = GetObjPointer(L, lua_upvalueindex(1));
+		CheckAllowModify();
 
-		laf->CheckAllowModify();
-		
-		if (!lua_isnumber(L, 1) || !lua_isnumber(L, 2)) {
-			lua_pushstring(L, "Non-numeric argument given to deleterange");
-			lua_error(L);
-			return 0;
+		is_modified = true;
+
+		int a = std::max<int>(luaL_checkinteger(L, 1), 1);
+		int b = std::min<int>(luaL_checkinteger(L, 2), ass->Line.size());
+
+		SeekCursorTo(a);
+
+		while (a++ <= b) {
+			delete *last_entry_ptr;
+			ass->Line.erase(last_entry_ptr++);
 		}
-
-		int a = lua_tointeger(L, 1), b = lua_tointeger(L, 2);
-
-		if (a < 1) a = 1;
-		if (b > (int)laf->ass->Line.size()) b = (int)laf->ass->Line.size();
-
-		if (b < a) return 0;
-
-		if (a == b) {
-			laf->GetAssEntry(a-1);
-			entryIter e = laf->last_entry_ptr++;
-			delete *e;
-			laf->ass->Line.erase(e);
-			return 0;
-		}
-
-		entryIter ai, bi;
-		laf->GetAssEntry(a-1);
-		ai = laf->last_entry_ptr;
-		laf->GetAssEntry(b-1);
-		bi = laf->last_entry_ptr;
-		laf->last_entry_ptr++;
-
-		laf->ass->Line.erase(ai, bi);
-
-		return 0;
 	}
 
-
-	/// @brief DOCME
-	/// @param L 
-	/// @return 
-	///
-	int LuaAssFile::ObjectAppend(lua_State *L)
+	void LuaAssFile::ObjectAppend(lua_State *L)
 	{
-		LuaAssFile *laf = GetObjPointer(L, lua_upvalueindex(1));
-
-		laf->CheckAllowModify();
+		CheckAllowModify();
+		is_modified = true;
 
 		int n = lua_gettop(L);
 
-		if (laf->last_entry_ptr != laf->ass->Line.begin()) {
-			laf->last_entry_ptr--;
-			laf->last_entry_id--;
+		if (last_entry_ptr != ass->Line.begin()) {
+			last_entry_ptr--;
+			last_entry_id--;
 		}
 
 		for (int i = 1; i <= n; i++) {
@@ -770,70 +553,48 @@ namespace Automation4 {
 			AssEntry *e = LuaToAssEntry(L);
 			if (e->GetType() == ENTRY_DIALOGUE) {
 				// find insertion point, looking backwards
-				std::list<AssEntry*>::iterator it = laf->ass->Line.end();
+				std::list<AssEntry*>::iterator it = ass->Line.end();
 				do { --it; } while ((*it)->GetType() != ENTRY_DIALOGUE);
 				// found last dialogue entry in file, move one past
 				++it;
-				laf->ass->Line.insert(it, e);
+				ass->Line.insert(it, e);
 			}
 			else {
-				laf->ass->Line.push_back(e);
+				ass->Line.push_back(e);
 			}
 		}
-
-		return 0;
 	}
 
-
-	/// @brief DOCME
-	/// @param L 
-	/// @return 
-	///
-	int LuaAssFile::ObjectInsert(lua_State *L)
+	void LuaAssFile::ObjectInsert(lua_State *L)
 	{
-		LuaAssFile *laf = GetObjPointer(L, lua_upvalueindex(1));
+		CheckAllowModify();
 
-		laf->CheckAllowModify();
-		
-		if (!lua_isnumber(L, 1)) {
-			lua_pushstring(L, "Can't insert at non-numeric index");
-			lua_error(L);
-			return 0;
-		}
+		int before = luaL_checkinteger(L, 1);
 
+		// + 1 to allow appending at the end of the file
+		luaL_argcheck(L, before > 0 && before <= (int)ass->Line.size() + 1, 1,
+			"Out of range line index");
+
+		SeekCursorTo(before);
+
+		is_modified = true;
 		int n = lua_gettop(L);
-
-		laf->GetAssEntry(int(lua_tonumber(L, 1)-1));
-
 		for (int i = 2; i <= n; i++) {
 			lua_pushvalue(L, i);
-			AssEntry *e = LuaToAssEntry(L);
+			ass->Line.insert(last_entry_ptr, LuaToAssEntry(L));
 			lua_pop(L, 1);
-			laf->ass->Line.insert(laf->last_entry_ptr, e);
-			laf->last_entry_id++;
 		}
 
-		return 0;
+		last_entry_id += n - 1;
 	}
 
-
-	/// @brief DOCME
-	/// @param L 
-	/// @return 
-	///
-	int LuaAssFile::ObjectGarbageCollect(lua_State *L)
+	void LuaAssFile::ObjectGarbageCollect(lua_State *L)
 	{
-		LuaAssFile *laf = GetObjPointer(L, 1);
-		delete laf;
+		references--;
+		if (!references) delete this;
 		LOG_D("automation/lua") << "Garbage collected LuaAssFile";
-		return 0;
 	}
 
-
-	/// @brief DOCME
-	/// @param L 
-	/// @return 
-	///
 	int LuaAssFile::LuaParseTagData(lua_State *L)
 	{
 		lua_newtable(L);
@@ -841,11 +602,6 @@ namespace Automation4 {
 		return 1;
 	}
 
-
-	/// @brief DOCME
-	/// @param L 
-	/// @return 
-	///
 	int LuaAssFile::LuaUnparseTagData(lua_State *L)
 	{
 		lua_pushstring(L, "");
@@ -853,25 +609,15 @@ namespace Automation4 {
 		return 1;
 	}
 
-
-	/// @brief DOCME
-	/// @param L 
-	/// @return 
-	///
 	int LuaAssFile::LuaParseKaraokeData(lua_State *L)
 	{
 		agi::scoped_ptr<AssEntry> e(LuaToAssEntry(L));
 		AssDialogue *dia = dynamic_cast<AssDialogue*>(e.get());
-		if (!dia) {
-			lua_pushstring(L, "Attempt to create karaoke table from non-dialogue subtitle line");
-			lua_error(L);
-			return 0;
-		}
+		luaL_argcheck(L, dia, 1, "Subtitle line must be a dialogue line");
 
 		AssKaraoke kara(dia);
-
 		for (AssKaraoke::iterator it = kara.begin(); it != kara.end(); ++it) {
-		lua_newtable(L);
+			lua_newtable(L);
 			set_field(L, "duration", it->duration);
 			set_field(L, "start_time", it->start_time);
 			set_field(L, "end_time", it->start_time + it->duration);
@@ -879,41 +625,22 @@ namespace Automation4 {
 			set_field(L, "text", it->GetText(false));
 			set_field(L, "text_stripped", it->text);
 			lua_rawseti(L, -2, -1);
-							}
+		}
 
 		return 1;
 	}
 
-
-	/// @brief DOCME
-	/// @param L 
-	/// @return 
-	///
-	int LuaAssFile::LuaSetUndoPoint(lua_State *L)
+	void LuaAssFile::LuaSetUndoPoint(lua_State *L)
 	{
-		LuaAssFile *laf = GetObjPointer(L, lua_upvalueindex(1));
-		if (!laf->can_set_undo) {
-			lua_pushstring(L, "Attempt to set an undo point in a context without undo-support.");
-			lua_error(L);
-			return 0;
-		}
+		if (!can_set_undo)
+			luaL_error(L, "Attempt to set an undo point in a context where it makes no sense to do so.");
 
-		wxString description;
-		if (lua_isstring(L, 1)) {
-			description = wxString(lua_tostring(L, 1), wxConvUTF8);
-			lua_pop(L, 1);
+		if (is_modified) {
+			ass->Commit(wxString(luaL_checkstring(L, 1), wxConvUTF8), AssFile::COMMIT_NEW);
+			is_modified = false;
 		}
-		laf->ass->Commit(description, AssFile::COMMIT_NEW);
-
-		return 0;
 	}
 
-
-	/// @brief DOCME
-	/// @param L   
-	/// @param idx 
-	/// @return 
-	///
 	LuaAssFile *LuaAssFile::GetObjPointer(lua_State *L, int idx)
 	{
 		assert(lua_type(L, idx) == LUA_TUSERDATA);
@@ -921,71 +648,51 @@ namespace Automation4 {
 		return *((LuaAssFile**)ud);
 	}
 
-
-	/// @brief DOCME
-	///
-	LuaAssFile::~LuaAssFile()
+	void LuaAssFile::ProcessingComplete(wxString const& undo_description)
 	{
+		if (is_modified && can_set_undo && !undo_description.empty()) {
+			ass->Commit(undo_description, AssFile::COMMIT_NEW);
+			is_modified = false;
+		}
+		references--;
+		if (!references) delete this;
 	}
 
-
-	/// @brief DOCME
-	/// @param _L            
-	/// @param _ass          
-	/// @param _can_modify   
-	/// @param _can_set_undo 
-	///
-	LuaAssFile::LuaAssFile(lua_State *_L, AssFile *_ass, bool _can_modify, bool _can_set_undo)
-		: ass(_ass)
-		, L(_L)
-		, can_modify(_can_modify)
-		, can_set_undo(_can_set_undo)
+	LuaAssFile::LuaAssFile(lua_State *L, AssFile *ass, bool can_modify, bool can_set_undp)
+	: ass(ass)
+	, L(L)
+	, can_modify(can_modify)
+	, can_set_undo(can_set_undo)
+	, references(2)
 	{
 		// prepare cursor
 		last_entry_ptr = ass->Line.begin();
-		last_entry_id = 0;
+		last_entry_id = 1;
 
 		// prepare userdata object
-		void *ud = lua_newuserdata(L, sizeof(LuaAssFile*));
-		*((LuaAssFile**)ud) = this;
+		*static_cast<LuaAssFile**>(lua_newuserdata(L, sizeof(LuaAssFile**))) = this;
 
 		// make the metatable
 		lua_newtable(L);
-		lua_pushcfunction(L, ObjectIndexRead);
-		lua_setfield(L, -2, "__index");
-		lua_pushcfunction(L, ObjectIndexWrite);
-		lua_setfield(L, -2, "__newindex");
-		lua_pushcfunction(L, ObjectGetLen);
-		lua_setfield(L, -2, "__len");
-		lua_pushcfunction(L, ObjectGarbageCollect);
-		lua_setfield(L, -2, "__gc");
+		set_field(L, "__index", closure_wrapper<&LuaAssFile::ObjectIndexRead>);
+		set_field(L, "__newindex", closure_wrapper_v<&LuaAssFile::ObjectIndexWrite>);
+		set_field(L, "__len", closure_wrapper<&LuaAssFile::ObjectGetLen>);
+		set_field(L, "__gc", closure_wrapper_v<&LuaAssFile::ObjectGarbageCollect>);
 		lua_setmetatable(L, -2);
 
 		// register misc functions
 		// assume the "aegisub" global table exists
 		lua_getglobal(L, "aegisub");
-		assert(lua_type(L, -2) == LUA_TUSERDATA);
-		lua_pushvalue(L, -2); // the userdata object
-		lua_pushcclosure(L, LuaParseTagData, 1);
-		lua_setfield(L, -2, "parse_tag_data");
-		assert(lua_type(L, -2) == LUA_TUSERDATA);
-		lua_pushvalue(L, -2);
-		lua_pushcclosure(L, LuaUnparseTagData, 1);
-		lua_setfield(L, -2, "unparse_tag_data");
-		assert(lua_type(L, -2) == LUA_TUSERDATA);
-		lua_pushvalue(L, -2);
-		lua_pushcclosure(L, LuaParseKaraokeData, 1);
-		lua_setfield(L, -2, "parse_karaoke_data");
-		assert(lua_type(L, -2) == LUA_TUSERDATA);
-		lua_pushvalue(L, -2);
-		lua_pushcclosure(L, LuaSetUndoPoint, 1);
-		lua_setfield(L, -2, "set_undo_point");
-		lua_pop(L, 1);
-	}
 
+		set_field(L, "parse_tag_data", closure_wrapper<&LuaAssFile::LuaParseTagData>);
+		set_field(L, "unparse_tag_data", closure_wrapper<&LuaAssFile::LuaUnparseTagData>);
+		set_field(L, "parse_karaoke_data", closure_wrapper<&LuaAssFile::LuaParseKaraokeData>);
+		set_field(L, "set_undo_point", closure_wrapper_v<&LuaAssFile::LuaSetUndoPoint>);
+
+		lua_pop(L, 1); // pop "aegisub" table
+
+		// Leaves userdata object on stack
+	}
 };
 
 #endif // WITH_AUTO4_LUA
-
-
-
