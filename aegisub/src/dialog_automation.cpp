@@ -253,19 +253,17 @@ void DialogAutomation::OnInfo(wxCommandEvent &)
 			ei->script->GetFilename(),
 			ei->script->GetLoadedState() ? _("Correctly loaded") : _("Failed to load"));
 
-		for (std::vector<Automation4::Feature*>::iterator f = ei->script->GetFeatures().begin(); f != ei->script->GetFeatures().end(); ++f) {
-			switch ((*f)->GetClass()) {
-				case Automation4::SCRIPTFEATURE_MACRO:
-					info += _("    Macro: "); break;
-				case Automation4::SCRIPTFEATURE_FILTER:
-					info += _("    Export filter: "); break;
-				case Automation4::SCRIPTFEATURE_SUBFORMAT:
-					info += _("    Subtitle format handler: "); break;
-				default:
-					info += "    Unknown class: "; break;
-			}
-			info += (*f)->GetName() + "\n";
-		}
+		std::vector<cmd::Command*> macros = ei->script->GetMacros();
+		for (std::vector<cmd::Command*>::const_iterator f = macros.begin(); f != macros.end(); ++f)
+			info += _("    Macro: ") + (*f)->StrDisplay(context) + "\n";
+
+		std::vector<Automation4::ExportFilter*> filters = ei->script->GetFilters();
+		for (std::vector<Automation4::ExportFilter*>::const_iterator f = filters.begin(); f != filters.end(); ++f)
+			info += _("    Export filter: ") + (*f)->GetName() + "\n";
+
+		std::vector<SubtitleFormat*> formats = ei->script->GetFormats();
+		for (std::vector<SubtitleFormat*>::const_iterator f = formats.begin(); f != formats.end(); ++f)
+			info += _("    Subtitle format handler: ") + (*f)->GetName() + "\n";
 	}
 
 	wxMessageBox(info, _("Automation Script Info"));

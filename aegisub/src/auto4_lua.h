@@ -42,14 +42,11 @@
 #include "compat.h"
 #include "auto4_base.h"
 
-#ifdef __WINDOWS__
-#include "../../contrib/lua51/src/lua.h"
-#else
-#include <lua.hpp>
-#endif
+#include "command/command.h"
 
 class AssEntry;
 class wxWindow;
+struct lua_State;
 namespace agi { namespace vfr { class Framerate; } }
 
 namespace Automation4 {
@@ -246,83 +243,58 @@ namespace Automation4 {
 		void ReadBack(); // from auto4 base
 	};
 
-
-
-	/// DOCME
-	/// @class LuaFeature
-	/// @brief DOCME
-	///
-	/// DOCME
-	class LuaFeature : public virtual Feature {
+	class LuaFeature {
+		int myid;
 	protected:
-
-		/// DOCME
 		lua_State *L;
 
-		/// DOCME
-		int myid;
-
-		LuaFeature(lua_State *_L, ScriptFeatureClass _featureclass, const wxString &_name);
-
 		void RegisterFeature();
+		void UnregisterFeature();
 
-		void GetFeatureFunction(int functionid);
-		void CreateIntegerArray(const std::vector<int> &ints);
+		void GetFeatureFunction(const char *function);
 		void ThrowError();
+
+		LuaFeature(lua_State *L);
 	};
 
 	void LuaThreadedCall(lua_State *L, int nargs, int nresults, wxString const& title, wxWindow *parent, bool can_open_config);
 
-	/// DOCME
-	/// @class LuaFeatureMacro
-	/// @brief DOCME
-	///
-	/// DOCME
-	class LuaFeatureMacro : public FeatureMacro, LuaFeature {
-	private:
+	class LuaCommand : public cmd::Command, private LuaFeature {
+		std::string cmd_name;
+		wxString display;
+		wxString help;
+		int cmd_type;
 
-		/// DOCME
-		bool no_validate;
-	protected:
-		LuaFeatureMacro(const wxString &_name, const wxString &_description, lua_State *_L);
+		LuaCommand(lua_State *L);
 	public:
+		~LuaCommand();
+
+		const char* name() { return cmd_name.c_str(); }
+		wxString StrMenu(const agi::Context *) const { return display; }
+		wxString StrDisplay(const agi::Context *) const { return display; }
+		wxString StrHelp() const { return help; }
+
+		int Type() const { return cmd_type; }
+
+		void operator()(agi::Context *c);
+		bool Validate(const agi::Context *c);
+		virtual bool IsActive(const agi::Context *c);
+
 		static int LuaRegister(lua_State *L);
-
-		/// @brief DOCME
-		///
-		virtual ~LuaFeatureMacro() { }
-
-		virtual bool Validate(AssFile *subs, const std::vector<int> &selected, int active);
-		virtual void Process(AssFile *subs, std::vector<int> &selected, int active, wxWindow * const progress_parent);
 	};
 
-	/// DOCME
-	/// @class LuaFeatureFilter
-	/// @brief DOCME
-	///
-	/// DOCME
-	class LuaFeatureFilter : public FeatureFilter, LuaFeature {
-	private:
-
-		/// DOCME
+	class LuaExportFilter : public ExportFilter, private LuaFeature {
 		bool has_config;
-
-		/// DOCME
 		LuaConfigDialog *config_dialog;
 
 	protected:
-		LuaFeatureFilter(const wxString &_name, const wxString &_description, int merit, lua_State *_L);
+		LuaExportFilter(lua_State *L);
 
-		ScriptConfigDialog* GenerateConfigDialog(wxWindow *parent);
-
-		void Init();
+		ScriptConfigDialog* GenerateConfigDialog(wxWindow *parent, agi::Context *c);
 	public:
 		static int LuaRegister(lua_State *L);
 
-
-		/// @brief DOCME
-		///
-		virtual ~LuaFeatureFilter() { }
+		virtual ~LuaExportFilter() { }
 
 		void ProcessSubs(AssFile *subs, wxWindow *export_dialog);
 	};
@@ -335,7 +307,8 @@ namespace Automation4 {
 		wxString author;
 		wxString version;
 
-		std::vector<Feature*> features;
+		std::vector<cmd::Command*> macros;
+		std::vector<ExportFilter*> filters;
 
 		/// load script and create internal structures etc.
 		void Create();
@@ -353,9 +326,11 @@ namespace Automation4 {
 		LuaScript(const wxString &filename);
 		~LuaScript();
 
-		static LuaScript* GetScriptObject(lua_State *L);
+		void RegisterCommand(LuaCommand *command);
+		void UnregisterCommand(LuaCommand *command);
+		void RegisterFilter(LuaExportFilter *filter);
 
-		int RegisterFeature(Feature *feature);
+		static LuaScript* GetScriptObject(lua_State *L);
 
 		// Script implementation
 		void Reload();
@@ -366,6 +341,8 @@ namespace Automation4 {
 		wxString GetVersion() const { return version; }
 		bool GetLoadedState() const { return L != 0; }
 
-		std::vector<Feature*> GetFeatures() const { return features; }
+		std::vector<cmd::Command*> GetMacros() const { return macros; }
+		std::vector<ExportFilter*> GetFilters() const { return filters; }
+		std::vector<SubtitleFormat*> GetFormats() const { return std::vector<SubtitleFormat*>(); }
 	};
 };

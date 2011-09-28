@@ -57,8 +57,6 @@
 #include <libaegisub/signal.h>
 
 #include "ass_export_filter.h"
-#include "subtitle_format.h"
-
 
 class AssFile;
 class AssStyle;
@@ -70,11 +68,10 @@ class wxStopWatch;
 class wxPathList;
 
 namespace agi { struct Context; }
+namespace cmd { class Command; }
 
 
 DECLARE_EVENT_TYPE(wxEVT_AUTOMATION_SCRIPT_COMPLETED, -1)
-
-
 
 /// DOCME
 namespace Automation4 {
@@ -85,157 +82,26 @@ namespace Automation4 {
 	// Calculate the extents of a text string given a style
 	bool CalculateTextExtents(AssStyle *style, wxString &text, double &width, double &height, double &descent, double &extlead);
 
-
-
-	/// DOCME
-	enum ScriptFeatureClass {
-
-		/// DOCME
-		SCRIPTFEATURE_MACRO = 0,
-
-		/// DOCME
-		SCRIPTFEATURE_FILTER,
-
-		/// DOCME
-		SCRIPTFEATURE_SUBFORMAT,
-
-
-		/// DOCME
-		SCRIPTFEATURE_MAX // must be last
-	};
-
-
-	// A Feature describes a function provided by a Script.
-	// There are several distinct classes of features.
-	class FeatureMacro;
-	class FeatureFilter;
-	class FeatureSubtitleFormat;
-
-	/// DOCME
-	/// @class Feature
-	/// @brief DOCME
-	///
-	/// DOCME
-	class Feature {
-	private:
-
-		/// DOCME
-		ScriptFeatureClass featureclass;
-
-		/// DOCME
-		wxString name;
-
-	protected:
-		Feature(ScriptFeatureClass _featureclass, const wxString &_name);
-
-	public:
-
-		/// @brief DOCME
-		///
-		virtual ~Feature() { }
-
-		ScriptFeatureClass GetClass() const;
-		FeatureMacro* AsMacro();
-		FeatureFilter* AsFilter();
-		FeatureSubtitleFormat* AsSubFormat();
-
-		virtual const wxString& GetName() const;
-	};
-
-
-
-	/// DOCME
-	/// @class FeatureMacro
-	/// @brief DOCME
-	///
-	/// DOCME
-	class FeatureMacro : public virtual Feature {
-	private:
-
-		/// DOCME
-		wxString description;
-
-	protected:
-		FeatureMacro(const wxString &_name, const wxString &_description);
-
-	public:
-
-		/// @brief DOCME
-		///
-		virtual ~FeatureMacro() { }
-
-		const wxString& GetDescription() const;
-
-		virtual bool Validate(AssFile *subs, const std::vector<int> &selected, int active) = 0;
-		virtual void Process(AssFile *subs, std::vector<int> &selected, int active, wxWindow * const progress_parent) = 0;
-	};
-
-
 	class ScriptConfigDialog;
 
-	/// DOCME
-	/// @class FeatureFilter
-	/// @brief DOCME
-	///
-	/// DOCME
-	class FeatureFilter : public virtual Feature, public AssExportFilter {
-	private:
-
-		/// DOCME
+	class ExportFilter : public AssExportFilter {
 		ScriptConfigDialog *config_dialog;
 
+		/// subclasses should implement this, producing a new ScriptConfigDialog
+		virtual ScriptConfigDialog* GenerateConfigDialog(wxWindow *parent, agi::Context *c) = 0;
+
 	protected:
-		FeatureFilter(const wxString &_name, const wxString &_description, int _priority);
-
-		// Subclasses should probably implement AssExportFilter::Init
-
-		virtual ScriptConfigDialog* GenerateConfigDialog(wxWindow *parent) = 0; // subclasses should implement this, producing a new ScriptConfigDialog
-
 		wxString GetScriptSettingsIdentifier();
 
 	public:
-		virtual ~FeatureFilter();
+		ExportFilter(wxString const& name, wxString const& description, int priority);
+		virtual ~ExportFilter();
 
-		wxWindow* GetConfigDialogWindow(wxWindow *parent);
-		void LoadSettings(bool IsDefault);
+		wxWindow* GetConfigDialogWindow(wxWindow *parent, agi::Context *c);
+		void LoadSettings(bool is_default, agi::Context *c);
 
 		// Subclasses must implement ProcessSubs from AssExportFilter
 	};
-
-
-
-	/// DOCME
-	/// @class FeatureSubtitleFormat
-	/// @brief DOCME
-	///
-	/// DOCME
-	class FeatureSubtitleFormat : public virtual Feature, public SubtitleFormat {
-	private:
-
-		/// DOCME
-		wxString extension;
-
-	protected:
-		FeatureSubtitleFormat(const wxString &_name, const wxString &_extension);
-
-	public:
-
-		/// @brief DOCME
-		/// @return 
-		///
-		virtual ~FeatureSubtitleFormat() { }
-
-		const wxString& GetExtension() const;
-
-		// Default implementations of these are provided, that just checks extension,
-		// but subclasses can provide more elaborate implementations, or go back to
-		// the "return false" implementation, in case of reader-only or writer-only.
-		virtual bool CanWriteFile(wxString filename);
-		virtual bool CanReadFile(wxString filename);
-
-		// Subclasses should implement ReadFile and/or WriteFile here
-	};
-
 
 
 	/// DOCME
@@ -343,8 +209,12 @@ namespace Automation4 {
 		/// Did the script load correctly?
 		virtual bool GetLoadedState() const=0;
 
-		/// Get a list of features provided by this script
-		virtual std::vector<Feature*> GetFeatures() const=0;
+		/// Get a list of commands provided by this script
+		virtual std::vector<cmd::Command*> GetMacros() const=0;
+		/// Get a list of export filters provided by this script
+		virtual std::vector<ExportFilter*> GetFilters() const=0;
+		/// Get a list of subtitle formats provided by this script
+		virtual std::vector<SubtitleFormat*> GetFormats() const=0;
 	};
 
 	/// DOCME
@@ -360,7 +230,7 @@ namespace Automation4 {
 
 
 		/// DOCME
-		std::vector<FeatureMacro*> macros;
+		std::vector<cmd::Command*> macros;
 
 	public:
 		ScriptManager();
@@ -372,7 +242,7 @@ namespace Automation4 {
 
 		const std::vector<Script*>& GetScripts() const;
 
-		const std::vector<FeatureMacro*>& GetMacros();
+		const std::vector<cmd::Command*>& GetMacros();
 		// No need to have getters for the other kinds of features, I think.
 		// They automatically register themselves in the relevant places.
 	};
@@ -464,6 +334,8 @@ namespace Automation4 {
 		wxString GetVersion() const { return ""; }
 		bool GetLoadedState() const { return false; }
 
-		std::vector<Feature*> GetFeatures() const { return std::vector<Feature*>(); }
+		std::vector<cmd::Command*> GetMacros() const { return std::vector<cmd::Command*>(); }
+		std::vector<ExportFilter*> GetFilters() const { return std::vector<ExportFilter*>(); }
+		std::vector<SubtitleFormat*> GetFormats() const { return std::vector<SubtitleFormat*>(); }
 	};
 };

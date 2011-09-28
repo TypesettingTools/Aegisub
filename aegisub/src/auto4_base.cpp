@@ -191,210 +191,48 @@ namespace Automation4 {
 		return true;
 	}
 
-
-	// Feature
-
-
-	/// @brief DOCME
-	/// @param _featureclass 
-	/// @param _name         
-	///
-	Feature::Feature(ScriptFeatureClass _featureclass, const wxString &_name)
-		: featureclass(_featureclass)
-		, name(_name)
-	{
-		// nothing to do
-	}
-
-
-	/// @brief DOCME
-	/// @return 
-	///
-	ScriptFeatureClass Feature::GetClass() const
-	{
-		return featureclass;
-	}
-
-
-	/// @brief DOCME
-	/// @return 
-	///
-	FeatureMacro* Feature::AsMacro()
-	{
-		if (featureclass == SCRIPTFEATURE_MACRO)
-			// For VS, remember to enable building with RTTI, otherwise dynamic_cast<> won't work
-			return dynamic_cast<FeatureMacro*>(this);
-		return 0;
-	}
-
-
-	/// @brief DOCME
-	/// @return 
-	///
-	FeatureFilter* Feature::AsFilter()
-	{
-		if (featureclass == SCRIPTFEATURE_FILTER)
-			return dynamic_cast<FeatureFilter*>(this);
-		return 0;
-	}
-
-
-	/// @brief DOCME
-	/// @return 
-	///
-	FeatureSubtitleFormat* Feature::AsSubFormat()
-	{
-		if (featureclass == SCRIPTFEATURE_SUBFORMAT)
-			return dynamic_cast<FeatureSubtitleFormat*>(this);
-		return 0;
-	}
-
-
-	/// @brief DOCME
-	/// @return 
-	///
-	const wxString& Feature::GetName() const
-	{
-		return name;
-	}
-
-
-	// FeatureMacro
-
-
-	/// @brief DOCME
-	/// @param _name        
-	/// @param _description 
-	///
-	FeatureMacro::FeatureMacro(const wxString &_name, const wxString &_description)
-		: Feature(SCRIPTFEATURE_MACRO, _name)
-		, description(_description)
-	{
-		// nothing to do
-	}
-
-
-	/// @brief DOCME
-	/// @return 
-	///
-	const wxString& FeatureMacro::GetDescription() const
-	{
-		return description;
-	}
-
-
-	// FeatureFilter
-
-
-	/// @brief DOCME
-	/// @param _name        
-	/// @param _description 
-	/// @param _priority    
-	///
-	FeatureFilter::FeatureFilter(const wxString &_name, const wxString &_description, int _priority)
-		: Feature(SCRIPTFEATURE_FILTER, _name)
-		, AssExportFilter(_name, _description, _priority)
-		, config_dialog(0)
+	ExportFilter::ExportFilter(wxString const& name, wxString const& description, int priority)
+	: AssExportFilter(name, description, priority)
+	, config_dialog(0)
 	{
 		AssExportFilterChain::Register(this);
 	}
 
-
-	/// @brief DOCME
-	///
-	FeatureFilter::~FeatureFilter()
+	ExportFilter::~ExportFilter()
 	{
+		delete config_dialog;
 		AssExportFilterChain::Unregister(this);
 	}
 
-
-	/// @brief DOCME
-	/// @return 
-	///
-	wxString FeatureFilter::GetScriptSettingsIdentifier()
+	wxString ExportFilter::GetScriptSettingsIdentifier()
 	{
-		return inline_string_encode(wxString::Format("Automation Settings %s", AssExportFilter::GetName()));
+		return inline_string_encode(wxString::Format("Automation Settings %s", GetName()));
 	}
 
-
-	/// @brief DOCME
-	/// @param parent 
-	/// @return 
-	///
-	wxWindow* FeatureFilter::GetConfigDialogWindow(wxWindow *parent) {
+	wxWindow* ExportFilter::GetConfigDialogWindow(wxWindow *parent, agi::Context *c) {
 		if (config_dialog) {
 			delete config_dialog;
 			config_dialog = 0;
 		}
-		if ((config_dialog = GenerateConfigDialog(parent)) != NULL) {
-			wxString val = AssFile::top->GetScriptInfo(GetScriptSettingsIdentifier());
-			if (!val.IsEmpty()) {
+
+		if (config_dialog = GenerateConfigDialog(parent, c)) {
+			wxString val = c->ass->GetScriptInfo(GetScriptSettingsIdentifier());
+			if (!val.empty())
 				config_dialog->Unserialise(val);
-			}
 			return config_dialog->GetWindow(parent);
-		} else {
-			return 0;
 		}
+
+		return 0;
 	}
 
-
-	/// @brief DOCME
-	/// @param IsDefault 
-	///
-	void FeatureFilter::LoadSettings(bool IsDefault) {
+	void ExportFilter::LoadSettings(bool is_default, agi::Context *c) {
 		if (config_dialog) {
 			config_dialog->ReadBack();
 
 			wxString val = config_dialog->Serialise();
-			if (!val.IsEmpty()) {
-				AssFile::top->SetScriptInfo(GetScriptSettingsIdentifier(), val);
-			}
+			if (!val.empty())
+				c->ass->SetScriptInfo(GetScriptSettingsIdentifier(), val);
 		}
-	}
-
-
-	// FeatureSubtitleFormat
-
-
-	/// @brief DOCME
-	/// @param _name      
-	/// @param _extension 
-	///
-	FeatureSubtitleFormat::FeatureSubtitleFormat(const wxString &_name, const wxString &_extension)
-		: Feature(SCRIPTFEATURE_SUBFORMAT, _name)
-		, SubtitleFormat(_name)
-		, extension(_extension)
-	{
-		// nothing to do
-	}
-
-
-	/// @brief DOCME
-	/// @return 
-	///
-	const wxString& FeatureSubtitleFormat::GetExtension() const
-	{
-		return extension;
-	}
-
-
-	/// @brief DOCME
-	/// @param filename 
-	/// @return 
-	///
-	bool FeatureSubtitleFormat::CanWriteFile(wxString filename)
-	{
-		return !filename.Right(extension.Length()).CmpNoCase(extension);
-	}
-
-
-	/// @brief DOCME
-	/// @param filename 
-	/// @return 
-	///
-	bool FeatureSubtitleFormat::CanReadFile(wxString filename)
-	{
-		return !filename.Right(extension.Length()).CmpNoCase(extension);
 	}
 
 	// ScriptConfigDialog
@@ -587,16 +425,12 @@ namespace Automation4 {
 	/// @brief DOCME
 	/// @return 
 	///
-	const std::vector<FeatureMacro*>& ScriptManager::GetMacros()
+	const std::vector<cmd::Command*>& ScriptManager::GetMacros()
 	{
 		macros.clear();
 		for (std::vector<Script*>::iterator i = scripts.begin(); i != scripts.end(); ++i) {
-			std::vector<Feature*> &sfs = (*i)->GetFeatures();
-			for (std::vector<Feature*>::iterator j = sfs.begin(); j != sfs.end(); ++j) {
-				FeatureMacro *m = dynamic_cast<FeatureMacro*>(*j);
-				if (!m) continue;
-				macros.push_back(m);
-			}
+			std::vector<cmd::Command*> sfs = (*i)->GetMacros();
+			copy(sfs.begin(), sfs.end(), back_inserter(macros));
 		}
 		return macros;
 	}
@@ -641,12 +475,12 @@ namespace Automation4 {
 			bool more = dir.GetFirst(&fn, wxEmptyString, wxDIR_FILES);
 			while (more) {
 				script_path.SetName(fn);
-					wxString fullpath = script_path.GetFullPath();
-					if (ScriptFactory::CanHandleScriptFormat(fullpath)) {
-						Script *s = ScriptFactory::CreateFromFile(fullpath, true);
-						Add(s);
-						if (!s->GetLoadedState()) error_count++;
-					}
+				wxString fullpath = script_path.GetFullPath();
+				if (ScriptFactory::CanHandleScriptFormat(fullpath)) {
+					Script *s = ScriptFactory::CreateFromFile(fullpath, true);
+					Add(s);
+					if (!s->GetLoadedState()) error_count++;
+				}
 				more = dir.GetNext(&fn);
 			}
 		}
