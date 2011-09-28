@@ -47,9 +47,11 @@
 #endif
 
 #include <libaegisub/log.h>
+#include <libaegisub/scoped_ptr.h>
 
 #include "ass_dialogue.h"
 #include "ass_file.h"
+#include "ass_karaoke.h"
 #include "ass_override.h"
 #include "ass_style.h"
 #include "auto4_lua.h"
@@ -657,7 +659,7 @@ namespace Automation4 {
 		LuaAssFile *laf = GetObjPointer(L, lua_upvalueindex(1));
 
 		laf->CheckAllowModify();
-		
+
 		// get number of items to delete
 		int itemcount = lua_gettop(L);
 		std::vector<int> ids;
@@ -755,7 +757,7 @@ namespace Automation4 {
 		LuaAssFile *laf = GetObjPointer(L, lua_upvalueindex(1));
 
 		laf->CheckAllowModify();
-		
+
 		int n = lua_gettop(L);
 
 		if (laf->last_entry_ptr != laf->ass->Line.begin()) {
@@ -858,130 +860,27 @@ namespace Automation4 {
 	///
 	int LuaAssFile::LuaParseKaraokeData(lua_State *L)
 	{
-		AssEntry *e = LuaToAssEntry(L);
-		AssDialogue *dia = dynamic_cast<AssDialogue*>(e);
+		agi::scoped_ptr<AssEntry> e(LuaToAssEntry(L));
+		AssDialogue *dia = dynamic_cast<AssDialogue*>(e.get());
 		if (!dia) {
-			delete e;
 			lua_pushstring(L, "Attempt to create karaoke table from non-dialogue subtitle line");
 			lua_error(L);
 			return 0;
 		}
 
-		dia->ParseASSTags();
+		AssKaraoke kara(dia);
 
-		int kcount = 0;
-		int kdur = 0;
-		int ktime = 0;
-		wxString ktag = "";
-		wxString ktext = "";
-		wxString ktext_stripped = "";
-
+		for (AssKaraoke::iterator it = kara.begin(); it != kara.end(); ++it) {
 		lua_newtable(L);
-
-		for (int i = 0; i < (int)dia->Blocks.size(); i++) {
-			AssDialogueBlock *block = dia->Blocks[i];
-
-			switch (block->GetType()) {
-
-				case BLOCK_BASE:
-					break;
-
-				case BLOCK_PLAIN:
-					ktext += block->text;
-					ktext_stripped += block->text;
-					break;
-
-				case BLOCK_DRAWING:
-					// a drawing is regarded as a kind of control code here, so it's just stripped away
-					ktext += block->text;
-					break;
-
-				case BLOCK_OVERRIDE: {
-					bool brackets_open = false;
-					AssDialogueBlockOverride *ovr = dynamic_cast<AssDialogueBlockOverride*>(block);
-
-					for (int j = 0; j < (int)ovr->Tags.size(); j++) {
-						AssOverrideTag *tag = ovr->Tags[j];
-
-						if (tag->IsValid() && tag->Name.Mid(0,2).CmpNoCase("\\k") == 0) {
-							// karaoke tag
-							if (brackets_open) {
-								ktext += "}";
-								brackets_open = false;
+			set_field(L, "duration", it->duration);
+			set_field(L, "start_time", it->start_time);
+			set_field(L, "end_time", it->start_time + it->duration);
+			set_field(L, "tag", it->tag_type);
+			set_field(L, "text", it->GetText(false));
+			set_field(L, "text_stripped", it->text);
+			lua_rawseti(L, -2, -1);
 							}
 
-							// store to lua
-							lua_newtable(L);
-							lua_pushnumber(L, kdur);
-							lua_setfield(L, -2, "duration");
-							lua_pushnumber(L, ktime);
-							lua_setfield(L, -2, "start_time");
-							lua_pushnumber(L, ktime+kdur);
-							lua_setfield(L, -2, "end_time");
-							lua_pushstring(L, ktag.mb_str(wxConvUTF8));
-							lua_setfield(L, -2, "tag");
-							lua_pushstring(L, ktext.mb_str(wxConvUTF8));
-							lua_setfield(L, -2, "text");
-							lua_pushstring(L, ktext_stripped.mb_str(wxConvUTF8));
-							lua_setfield(L, -2, "text_stripped");
-							lua_rawseti(L, -2, kcount);
-
-							// prepare new syllable
-							kcount++;
-							ktag = tag->Name.Mid(1);
-							// check if it's a "set time" tag, special handling for that (depends on previous syllable duration)
-							if (ktag == "kt") {
-								ktime = tag->Params[0]->Get<int>() * 10;
-								kdur = 0;
-							} else {
-								ktime += kdur; // duration of previous syllable
-								kdur = tag->Params[0]->Get<int>() * 10;
-							}
-							ktext.clear();
-							ktext_stripped.clear();
-
-						} else {
-							// not karaoke tag
-							if (!brackets_open) {
-								ktext += "{";
-								brackets_open = true;
-							}
-							ktext += *tag;
-						}
-
-					}
-
-					if (brackets_open) {
-						ktext += "}";
-						brackets_open = false;
-					}
-
-					break;
-				}
-
-			}
-
-		}
-
-		dia->ClearBlocks();
-
-		// store final syllable/block to lua
-		lua_newtable(L);
-		lua_pushnumber(L, kdur);
-		lua_setfield(L, -2, "duration");
-		lua_pushnumber(L, ktime);
-		lua_setfield(L, -2, "start_time");
-		lua_pushnumber(L, ktime+kdur);
-		lua_setfield(L, -2, "end_time");
-		lua_pushstring(L, ktag.mb_str(wxConvUTF8));
-		lua_setfield(L, -2, "tag");
-		lua_pushstring(L, ktext.mb_str(wxConvUTF8));
-		lua_setfield(L, -2, "text");
-		lua_pushstring(L, ktext_stripped.mb_str(wxConvUTF8));
-		lua_setfield(L, -2, "text_stripped");
-		lua_rawseti(L, -2, kcount);
-
-		delete dia;
 		return 1;
 	}
 
