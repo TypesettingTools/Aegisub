@@ -53,8 +53,6 @@ wxArrayString MKVSubtitleFormat::GetReadWildcards() const {
 	return formats;
 }
 
-void MKVSubtitleFormat::ReadFile(wxString const& filename, wxString const& encoding) {
-	MatroskaWrapper wrap;
-	wrap.Open(filename, false);
-	wrap.GetSubtitles(GetAssFile());
+void MKVSubtitleFormat::ReadFile(wxString const& filename, wxString const&) {
+	MatroskaWrapper::GetSubtitles(filename, GetAssFile());
 }

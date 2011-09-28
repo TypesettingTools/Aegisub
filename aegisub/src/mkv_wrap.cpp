@@ -38,6 +38,8 @@
 
 #ifndef AGI_PRE
 #include <errno.h>
+#include <stdint.h>
+#include <stdio.h>
 
 #include <algorithm>
 #include <iterator>
@@ -47,249 +49,79 @@
 #include <wx/choicdlg.h> // Keep this last so wxUSE_CHOICEDLG is set.
 #endif
 
-#include "ass_file.h"
-#include "ass_time.h"
-#include "dialog_progress.h"
-#include <libaegisub/vfr.h>
 #include "mkv_wrap.h"
 
-/// DOCME
-MatroskaWrapper MatroskaWrapper::wrapper;
+#include "ass_file.h"
+#include "ass_time.h"
+#include "compat.h"
+#include "dialog_progress.h"
+#include "MatroskaParser.h"
 
-/// DOCME
-#define	CACHESIZE     65536
+class MkvStdIO : public InputStream {
+public:
+	MkvStdIO(wxString filename);
+	~MkvStdIO() { if (fp) fclose(fp); }
 
-/// @brief Constructor 
-///
-MatroskaWrapper::MatroskaWrapper() {
-	file = NULL;
-}
+	FILE *fp;
+	int error;
+};
 
-/// @brief Destructor 
-///
-MatroskaWrapper::~MatroskaWrapper() {
-	Close();
-}
+#define CACHESIZE     65536
 
-/// @brief Open file 
-/// @param filename 
-/// @param parse    
-///
-void MatroskaWrapper::Open(wxString filename,bool parse) {
-	// Make sure it's closed first
-	Close();
-
-	// Open
+void MatroskaWrapper::GetSubtitles(wxString const& filename, AssFile *target) {
+	MkvStdIO input(filename);
 	char err[2048];
-	input = new MkvStdIO(filename);
-	if (input->fp) {
-		file = mkv_Open(input,err,sizeof(err));
+	MatroskaFile *file = mkv_Open(&input, err, sizeof(err));
+	if (!file) throw MatroskaException(err);
 
-		// Failed parsing
-		if (!file) {
-			delete input;
-			throw wxString("MatroskaParser error: " + wxString(err,wxConvUTF8));
-		}
+	try {
+		// Get info
+		unsigned tracks = mkv_GetNumTracks(file);
+		TrackInfo *trackInfo;
+		std::vector<unsigned> tracksFound;
+		wxArrayString tracksNames;
+		unsigned trackToRead;
 
-		// Parse
-		if (parse) Parse();
-	}
+		// Haali's library variables
+		ulonglong startTime, endTime, filePos;
+		unsigned int rt, frameSize, frameFlags;
 
-	// Failed opening
-	else {
-		delete input;
-		throw "Unable to open Matroska file for parsing.";
-	}
-}
+		// Find tracks
+		for (unsigned track = 0; track < tracks; track++) {
+			trackInfo = mkv_GetTrackInfo(file,track);
 
-/// @brief Close file 
-/// @return 
-///
-void MatroskaWrapper::Close() {
-	if (file) {
-		mkv_Close(file);
-		file = NULL;
-		delete input;
-	}
-	keyFrames.clear();
-	timecodes.clear();
-}
-
-/// @brief Return keyframes 
-/// @return 
-///
-std::vector<int> MatroskaWrapper::GetKeyFrames() {
-	return keyFrames;
-}
-
-/// @brief Comparison operator 
-/// @param t1 
-/// @param t2 
-/// @return 
-///
-bool operator < (MkvFrame &t1, MkvFrame &t2) { 
-	return t1.time < t2.time;
-}
-
-/// @brief Actually parse 
-///
-void MatroskaWrapper::Parse() {
-	// Clear keyframes and timecodes
-	keyFrames.clear();
-	bytePos.Clear();
-	timecodes.clear();
-	frames.clear();
-	rawFrames.clear();
-	bytePos.Clear();
-
-	// Get info
-	int tracks = mkv_GetNumTracks(file);
-	TrackInfo *trackInfo;
-	SegmentInfo *segInfo = mkv_GetFileInfo(file);
-
-	// Parse tracks
-	for (int track=0;track<tracks;track++) {
-		trackInfo = mkv_GetTrackInfo(file,track);
-
-		// Video track
-		if (trackInfo->Type == 1) {
-			// Variables
-			ulonglong startTime, endTime, filePos;
-			unsigned int rt, frameSize, frameFlags;
-			//CompressedStream *cs = NULL;
-
-			// Timecode scale
-			longlong timecodeScale = mkv_TruncFloat(trackInfo->TimecodeScale) * segInfo->TimecodeScale;
-
-			// Mask other tracks away
-			mkv_SetTrackMask(file, ~(1 << track));
-
-			// Progress bar
-			int totalTime = int(double(segInfo->Duration) / timecodeScale);
-			volatile bool canceled = false;
-			DialogProgress *progress = new DialogProgress(NULL,_("Parsing Matroska"),&canceled,_("Reading keyframe and timecode data from Matroska file."),0,totalTime);
-			progress->Show();
-			progress->SetProgress(0,1);
-
-			// Read frames
-			register int frameN = 0;
-			while (mkv_ReadFrame(file,0,&rt,&startTime,&endTime,&filePos,&frameSize,&frameFlags) == 0) {
-				// Read value
-				double curTime = double(startTime) / 1000000.0;
-				frames.push_back(MkvFrame((frameFlags & FRAME_KF) != 0,curTime,filePos));
-				frameN++;
-
-				// Cancelled?
-				if (canceled) {
-					Close();
-					throw agi::UserCancelException("Canceled");
+			// Subtitle track
+			if (trackInfo->Type == 0x11) {
+				wxString CodecID = wxString(trackInfo->CodecID,*wxConvCurrent);
+				wxString TrackName = wxString(trackInfo->Name,*wxConvCurrent);
+				wxString TrackLanguage = wxString(trackInfo->Language,*wxConvCurrent);
+				
+				// Known subtitle format
+				if (CodecID == "S_TEXT/SSA" || CodecID == "S_TEXT/ASS" || CodecID == "S_TEXT/UTF8") {
+					tracksFound.push_back(track);
+					tracksNames.Add(wxString::Format("%d (%s %s): %s", track, CodecID, TrackLanguage, TrackName));
 				}
-
-				// Identical to (frameN % 2048) == 0,
-				// but much faster.
-				if ((frameN & (2048 - 1)) == 0)
-					// Update progress
-					progress->SetProgress(int(curTime),totalTime);
-			}
-
-			// Clean up progress
-			if (!canceled) progress->Destroy();
-
-			break;
-		}
-	}
-
-	rawFrames.reserve(frames.size());
-	std::copy(frames.begin(), frames.end(), std::back_inserter(rawFrames));
-
-	// Process timecodes and keyframes
-	frames.sort();
-	int i = 0;
-	for (std::list<MkvFrame>::iterator cur=frames.begin();cur!=frames.end();cur++) {
-		if (cur->isKey) keyFrames.push_back(i);
-		bytePos.Add(cur->filePos);
-		timecodes.push_back(cur->time);
-		i++;
-	}
-}
-
-static int mkv_round(double num) {
-	return (int)(num + .5);
-}
-
-/// @brief Set target to timecodes 
-/// @param target 
-/// @return 
-///
-void MatroskaWrapper::SetToTimecodes(agi::vfr::Framerate &target) {
-	if (timecodes.size() <= 1) return;
-
-	std::vector<int> times;
-	times.reserve(timecodes.size());
-	std::transform(timecodes.begin(), timecodes.end(), std::back_inserter(times), &mkv_round);
-	target = agi::vfr::Framerate(times);
-}
-
-/// @brief Get subtitles 
-/// @param target 
-///
-void MatroskaWrapper::GetSubtitles(AssFile *target) {
-	// Get info
-	int tracks = mkv_GetNumTracks(file);
-	TrackInfo *trackInfo;
-	//SegmentInfo *segInfo = mkv_GetFileInfo(file);
-	wxArrayInt tracksFound;
-	wxArrayString tracksNames;
-	int trackToRead = -1;
-
-	// Haali's library variables
-	ulonglong startTime, endTime, filePos;
-	unsigned int rt, frameSize, frameFlags;
-	//CompressedStream *cs = NULL;
-
-	// Find tracks
-	for (int track=0;track<tracks;track++) {
-		trackInfo = mkv_GetTrackInfo(file,track);
-
-		// Subtitle track
-		if (trackInfo->Type == 0x11) {
-			wxString CodecID = wxString(trackInfo->CodecID,*wxConvCurrent);
-			wxString TrackName = wxString(trackInfo->Name,*wxConvCurrent);
-			wxString TrackLanguage = wxString(trackInfo->Language,*wxConvCurrent);
-			
-			// Known subtitle format
-			if (CodecID == "S_TEXT/SSA" || CodecID == "S_TEXT/ASS" || CodecID == "S_TEXT/UTF8") {
-				tracksFound.Add(track);
-				tracksNames.Add(wxString::Format("%i (",track) + CodecID + " " + TrackLanguage + "): " + TrackName);
 			}
 		}
-	}
 
-	// No tracks found
-	if (tracksFound.Count() == 0) {
-		target->LoadDefault(true);
-		Close();
-		throw "File has no recognised subtitle tracks.";
-	}
+		// No tracks found
+		if (tracksFound.empty())
+			throw MatroskaException("File has no recognised subtitle tracks.");
 
-	// Only one track found
-	else if (tracksFound.Count() == 1) {
-		trackToRead = tracksFound[0];
-	}
-
-	// Pick a track
-	else {
-		int choice = wxGetSingleChoiceIndex("Choose which track to read:","Multiple subtitle tracks found",tracksNames);
-		if (choice == -1) {
-			target->LoadDefault(true);
-			Close();
-			throw agi::UserCancelException("cancelled");
+		// Only one track found
+		if (tracksFound.size() == 1) {
+			trackToRead = tracksFound[0];
 		}
-		trackToRead = tracksFound[choice];
-	}
+		// Pick a track
+		else {
+			int choice = wxGetSingleChoiceIndex(_("Choose which track to read:"), _("Multiple subtitle tracks found"), tracksNames);
+			if (choice == -1)
+				throw agi::UserCancelException("cancelled");
 
-	// Picked track
-	if (trackToRead != -1) {
+			trackToRead = tracksFound[choice];
+		}
+
+		// Picked track
 		// Get codec type (0 = ASS/SSA, 1 = SRT)
 		trackInfo = mkv_GetTrackInfo(file,trackToRead);
 		wxString CodecID = wxString(trackInfo->CodecID,*wxConvCurrent);
@@ -300,12 +132,7 @@ void MatroskaWrapper::GetSubtitles(AssFile *target) {
 		if (codecType == 0) {
 			// Read raw data
 			trackInfo = mkv_GetTrackInfo(file,trackToRead);
-			unsigned int privSize = trackInfo->CodecPrivateSize;
-			char *privData = new char[privSize+1];
-			memcpy(privData,trackInfo->CodecPrivate,privSize);
-			privData[privSize] = 0;
-			wxString privString(privData,wxConvUTF8);
-			delete[] privData;
+			wxString privString((const char *)trackInfo->CodecPrivate, wxConvUTF8, trackInfo->CodecPrivateSize);
 
 			// Load into file
 			wxString group = "[Script Info]";
@@ -317,13 +144,7 @@ void MatroskaWrapper::GetSubtitles(AssFile *target) {
 				if (next[0] == '[') group = next;
 				target->AddLine(next,group,version,&group);
 			}
-
-			// Insert "[Events]"
-			//target->AddLine("",group,lasttime,version,&group);
-			//target->AddLine("[Events]",group,lasttime,version,&group);
-			//target->AddLine("Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text",group,lasttime,version,&group);
 		}
-
 		// Load default if it's SRT
 		else {
 			target->LoadDefault(false);
@@ -333,10 +154,6 @@ void MatroskaWrapper::GetSubtitles(AssFile *target) {
 		SegmentInfo *segInfo = mkv_GetFileInfo(file);
 		longlong timecodeScale = mkv_TruncFloat(trackInfo->TimecodeScale) * segInfo->TimecodeScale;
 
-		// Prepare STD vector to get lines inserted
-		std::vector<wxString> subList;
-		long int order = -1;
-
 		// Progress bar
 		int totalTime = int(double(segInfo->Duration) / timecodeScale);
 		volatile bool canceled = false;
@@ -344,155 +161,120 @@ void MatroskaWrapper::GetSubtitles(AssFile *target) {
 		progress->Show();
 		progress->SetProgress(0,1);
 
+		std::map<int, wxString> subList;
+		char *readBuf = 0;
+		size_t readBufSize = 0;
+
 		// Load blocks
 		mkv_SetTrackMask(file, ~(1 << trackToRead));
 		while (mkv_ReadFrame(file,0,&rt,&startTime,&endTime,&filePos,&frameSize,&frameFlags) == 0) {
-			// Canceled			
 			if (canceled) {
-				target->LoadDefault(true);
-				Close();
+				delete readBuf;
 				throw agi::UserCancelException("cancelled");
 			}
 
 			// Read to temp
-			char *tmp = new char[frameSize+1];
-			fseek(input->fp, filePos, SEEK_SET);
-			fread(tmp,1,frameSize,input->fp);
-			tmp[frameSize] = 0;
-			wxString blockString(tmp,wxConvUTF8);
-			delete[] tmp;
+			if (frameSize > readBufSize) {
+				delete readBuf;
+				readBufSize = frameSize * 2;
+				readBuf = new char[readBufSize];
+			}
+
+			fseek(input.fp, filePos, SEEK_SET);
+			fread(readBuf, 1, frameSize, input.fp);
+			wxString blockString(readBuf, wxConvUTF8, frameSize);
 
 			// Get start and end times
-			//longlong timecodeScaleLow = timecodeScale / 100;
 			longlong timecodeScaleLow = 1000000;
 			AssTime subStart,subEnd;
 			subStart.SetMS(startTime / timecodeScaleLow);
 			subEnd.SetMS(endTime / timecodeScaleLow);
-			//wxLogMessage(subStart.GetASSFormated() + "-" + subEnd.GetASSFormated() + ": " + blockString);
 
 			// Process SSA/ASS
 			if (codecType == 0) {
-				// Get order number
-				int pos = blockString.Find(",");
-				wxString orderString = blockString.Left(pos);
-				orderString.ToLong(&order);
-				blockString = blockString.Mid(pos+1);
+				long order = 0, layer = 0;
+				blockString.BeforeFirst(',', &blockString).ToLong(&order);
+				blockString.BeforeFirst(',', &blockString).ToLong(&layer);
 
-				// Get layer number
-				pos = blockString.Find(",");
-				long int layer = 0;
-				if (pos) {
-					wxString layerString = blockString.Left(pos);
-					layerString.ToLong(&layer);
-					blockString = blockString.Mid(pos+1);
-				}
-
-				// Assemble final
-				blockString = wxString::Format("Dialogue: %i,",layer) + subStart.GetASSFormated() + "," + subEnd.GetASSFormated() + "," + blockString;
+				subList[order] = wxString::Format("Dialogue: %d,%s,%s,%s", layer, subStart.GetASSFormated(), subEnd.GetASSFormated(), blockString);
 			}
-
 			// Process SRT
 			else {
-				blockString = wxString("Dialogue: 0,") + subStart.GetASSFormated() + "," + subEnd.GetASSFormated() + ",Default,,0000,0000,0000,," + blockString;
+				blockString = wxString::Format("Dialogue: 0,%s,%s,%s", subStart.GetASSFormated(), subEnd.GetASSFormated(), blockString);
 				blockString.Replace("\r\n","\\N");
 				blockString.Replace("\r","\\N");
 				blockString.Replace("\n","\\N");
-				order++;
+
+				subList[subList.size()] = blockString;
 			}
 
-			// Insert into vector
-			if (subList.size() == (unsigned int)order) subList.push_back(blockString);
-			else {
-				if ((signed)(subList.size()) < order+1) subList.resize(order+1);
-				subList[order] = blockString;
-			}
-
-			// Update progress bar
 			progress->SetProgress(int(double(startTime) / 1000000.0),totalTime);
 		}
+
+		delete readBuf;
 
 		// Insert into file
 		wxString group = "[Events]";
 		int version = (CodecID == "S_TEXT/SSA");
-		for (unsigned int i=0;i<subList.size();i++) {
-			target->AddLine(subList[i],group,version,&group);
+		for (std::map<int, wxString>::iterator it = subList.begin(); it != subList.end(); ++it) {
+			target->AddLine(it->second,group,version,&group);
 		}
 
 		// Close progress bar
 		if (!canceled) progress->Destroy();
 	}
-
-	// No track to load
-	else {
-		target->LoadDefault(true);
+	catch (...) {
+		mkv_Close(file);
+		throw;
 	}
 }
 
 bool MatroskaWrapper::HasSubtitles(wxString const& filename) {
 	char err[2048];
-	MkvStdIO input(filename);
-	if (!input.fp) return false;
+	try {
+		MkvStdIO input(filename);
+		MatroskaFile* file = mkv_Open(&input, err, sizeof(err));
+		if (!file) return false;
 
-	MatroskaFile* file = mkv_Open(&input, err, sizeof(err));
-	if (!file) return false;
+		// Find tracks
+		int tracks = mkv_GetNumTracks(file);
+		for (int track = 0; track < tracks; track++) {
+			TrackInfo *trackInfo = mkv_GetTrackInfo(file, track);
 
-	// Find tracks
-	int tracks = mkv_GetNumTracks(file);
-	for (int track = 0; track < tracks; track++) {
-		TrackInfo *trackInfo = mkv_GetTrackInfo(file, track);
-
-		if (trackInfo->Type == 0x11) {
-			wxString CodecID = wxString(trackInfo->CodecID, *wxConvCurrent);
-			if (CodecID == "S_TEXT/SSA" || CodecID == "S_TEXT/ASS" || CodecID == "S_TEXT/UTF8") {
-				mkv_Close(file);
-				return true;
+			if (trackInfo->Type == 0x11) {
+				wxString CodecID = wxString(trackInfo->CodecID, *wxConvCurrent);
+				if (CodecID == "S_TEXT/SSA" || CodecID == "S_TEXT/ASS" || CodecID == "S_TEXT/UTF8") {
+					mkv_Close(file);
+					return true;
+				}
 			}
 		}
-	}
 
-	mkv_Close(file);
-	return false;
+		mkv_Close(file);
+		return false;
+	}
+	catch (...) {
+		// We don't care about why we couldn't read subtitles here
+		return false;
+	}
 }
 
-////////////////////////////// LOTS OF HAALI C CODE DOWN HERE ///////////////////////////////////////
-
 #ifdef __VISUALC__
-
-/// DOCME
-#define std_fread fread
-
-/// DOCME
 #define std_fseek _fseeki64
-
-/// DOCME
 #define std_ftell _ftelli64
 #else
-
-/// DOCME
-#define std_fread fread
-
-/// DOCME
 #define std_fseek fseeko
-
-/// DOCME
 #define std_ftell ftello
 #endif
 
-/// @brief STDIO class 
-/// @param _st    
-/// @param pos    
-/// @param buffer 
-/// @param count  
-/// @return 
-///
 int StdIoRead(InputStream *_st, ulonglong pos, void *buffer, int count) {
   MkvStdIO *st = (MkvStdIO *) _st;
   size_t  rd;
-  if (std_fseek(st->fp, pos, SEEK_SET)) {
+  if (fseek(st->fp, pos, SEEK_SET)) {
     st->error = errno;
     return -1;
   }
-  rd = std_fread(buffer, 1, count, st->fp);
+  rd = fread(buffer, 1, count, st->fp);
   if (rd == 0) {
     if (feof(st->fp))
       return 0;
@@ -502,15 +284,8 @@ int StdIoRead(InputStream *_st, ulonglong pos, void *buffer, int count) {
   return rd;
 }
 
-/* scan for a signature sig(big-endian) starting at file position pos
- * return position of the first byte of signature or -1 if error/not found
-
-/// @brief */
-/// @param _st       
-/// @param start     
-/// @param signature 
-/// @return 
-///
+/// @brief scan for a signature sig(big-endian) starting at file position pos
+/// @return position of the first byte of signature or -1 if error/not found
 longlong StdIoScan(InputStream *_st, ulonglong start, unsigned signature) {
   MkvStdIO *st = (MkvStdIO *) _st;
   int	      c;
@@ -530,63 +305,32 @@ longlong StdIoScan(InputStream *_st, ulonglong start, unsigned signature) {
 }
 
 /// @brief This is used to limit readahead.
-/// @param _st 
-/// @return Cache size
-///
-unsigned StdIoGetCacheSize(InputStream *_st) {
+unsigned StdIoGetCacheSize(InputStream *st) {
   return CACHESIZE;
 }
 
 /// @brief Get last error message
-/// @param _st 
-/// @return Last error message
-///
-const char *StdIoGetLastError(InputStream *_st) {
-  MkvStdIO *st = (MkvStdIO *) _st;
-  return strerror(st->error);
+const char *StdIoGetLastError(InputStream *st) {
+  return strerror(((MkvStdIO *)st)->error);
 }
 
 /// @brief Memory allocation, this is done via stdlib
-/// @param _st  
-/// @param size 
-/// @return 
-///
-void  *StdIoMalloc(InputStream *_st, size_t size) {
+void *StdIoMalloc(InputStream *, size_t size) {
   return malloc(size);
 }
 
-/// @brief DOCME
-/// @param _st  
-/// @param mem  
-/// @param size 
-/// @return 
-///
-void  *StdIoRealloc(InputStream *_st, void *mem, size_t size) {
-  return realloc(mem,size);
+void *StdIoRealloc(InputStream *, void *mem, size_t size) {
+  return realloc(mem, size);
 }
 
-/// @brief DOCME
-/// @param _st 
-/// @param mem 
-///
-void  StdIoFree(InputStream *_st, void *mem) {
+void StdIoFree(InputStream *, void *mem) {
   free(mem);
 }
 
-/// @brief DOCME
-/// @param _st 
-/// @param cur 
-/// @param max 
-/// @return 
-///
-int   StdIoProgress(InputStream *_st, ulonglong cur, ulonglong max) {
+int StdIoProgress(InputStream *, ulonglong cur, ulonglong max) {
   return 1;
 }
 
-/// @brief DOCME
-/// @param _st 
-/// @return 
-///
 longlong StdIoGetFileSize(InputStream *_st) {
 	MkvStdIO *st = (MkvStdIO *) _st;
 	longlong epos = 0;
@@ -597,9 +341,6 @@ longlong StdIoGetFileSize(InputStream *_st) {
 	return epos;
 }
 
-/// @brief DOCME
-/// @param filename 
-///
 MkvStdIO::MkvStdIO(wxString filename) {
 	read = StdIoRead;
 	scan = StdIoScan;
@@ -610,10 +351,17 @@ MkvStdIO::MkvStdIO(wxString filename) {
 	memfree = StdIoFree;
 	progress = StdIoProgress;
 	getfilesize = StdIoGetFileSize;
+
 	wxFileName fname(filename);
-	fp = fopen(fname.GetShortPath().mb_str(wxConvUTF8),"rb");
+#ifdef __VISUALC__
+	fp = _wfopen(fname.GetFullPath().wc_str(), L"rb");
+#else
+	fp = fopen(fname.GetFullPath().utf8_str(), "rb");
+#endif
 	if (fp) {
 		setvbuf(fp, NULL, _IOFBF, CACHESIZE);
 	}
+	else {
+		throw agi::FileNotFoundError(STD_STR(filename));
+	}
 }
-

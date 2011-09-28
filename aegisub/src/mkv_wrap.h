@@ -35,76 +35,14 @@
 ///
 
 #ifndef AGI_PRE
-#include <stdint.h>
-#include <stdio.h>
-
-#include <list>
-#include <vector>
-
-#include <wx/dynarray.h>
+#include <wx/string.h>
 #endif
 
-#include "MatroskaParser.h"
+#include <libaegisub/exception.h>
+
+DEFINE_SIMPLE_EXCEPTION_NOINNER(MatroskaException, agi::Exception, "matroksa_wrapper/generic")
 
 class AssFile;
-namespace agi { namespace vfr { class Framerate; } }
-
-/// DOCME
-/// @class MkvStdIO
-/// @brief DOCME
-///
-/// DOCME
-class MkvStdIO : public InputStream {
-public:
-	MkvStdIO(wxString filename);
-	~MkvStdIO() { if (fp) fclose(fp); }
-
-	/// DOCME
-	FILE *fp;
-
-	/// DOCME
-	int error;
-};
-
-/// DOCME
-/// @class MkvFrame
-/// @brief DOCME
-///
-/// DOCME
-class MkvFrame {
-public:
-
-	/// DOCME
-	double time;
-
-	/// DOCME
-	bool isKey;
-
-	/// DOCME
-	int64_t filePos;
-
-	/// @brief DOCME
-	///
-	MkvFrame() {
-		time = 0;
-		isKey = false;
-		filePos = -1;
-	}
-
-	/// @brief DOCME
-	/// @param keyframe 
-	/// @param timecode 
-	/// @param _filePos 
-	///
-	MkvFrame(bool keyframe,double timecode,int64_t _filePos) {
-		isKey = keyframe;
-		time = timecode;
-		filePos = _filePos;
-	}
-};
-
-bool operator < (MkvFrame &t1, MkvFrame &t2);
-
 
 /// DOCME
 /// @class MatroskaWrapper
@@ -112,57 +50,9 @@ bool operator < (MkvFrame &t1, MkvFrame &t2);
 ///
 /// DOCME
 class MatroskaWrapper {
-private:
-
-	/// DOCME
-	std::vector<int> keyFrames;
-
-	/// DOCME
-	std::vector<double> timecodes;
-
-	/// DOCME
-	wxArrayInt bytePos;
-
 public:
-
-	/// DOCME
-	MkvStdIO *input;
-
-	/// DOCME
-	MatroskaFile *file;
-
-	/// DOCME
-	std::list<MkvFrame> frames;
-
-	/// DOCME
-	std::vector<MkvFrame> rawFrames;
-
-	MatroskaWrapper();
-	~MatroskaWrapper();
-
-	/// @brief DOCME
-	/// @return 
-	///
-	bool IsOpen() { return file != NULL; }
-	void Open(wxString filename,bool parse=true);
-	void Close();
-	void Parse();
-
-	void SetToTimecodes(agi::vfr::Framerate &target);
-
-	/// @brief DOCME
-	/// @return 
-	///
-	wxArrayInt GetBytePositions() { return bytePos; }
-
-	/// @brief DOCME
-	/// @return 
-	///
-	unsigned int GetFrameCount() { return timecodes.size(); }
-	std::vector<int> GetKeyFrames();
-	void GetSubtitles(AssFile *target);
+	/// Check if the file is a matroska file with at least one subtitle track
 	static bool HasSubtitles(wxString const& filename);
-
-	/// DOCME
-	static MatroskaWrapper wrapper;
+	/// Load subtitles from a matroska file
+	static void GetSubtitles(wxString const& filename, AssFile *target);
 };
