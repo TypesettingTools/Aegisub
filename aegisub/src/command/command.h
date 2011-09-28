@@ -137,8 +137,12 @@ namespace cmd {
 	void init_builtin_commands();
 
 	/// Register a command.
-	/// @param cmd Command object.
+	/// @param cmd Command object to register. The command system takes ownership of this object.
 	void reg(Command *cmd);
+
+	/// Unregister a command.
+	/// @param cmd Command name to unregister. The associated command object is deleted.
+	void unreg(std::string const& name);
 
 	/// Call a command.
 	/// @param name Name of the command to call.
@@ -149,6 +153,6 @@ namespace cmd {
 	/// @param Command object.
 	Command* get(std::string const& name);
 
-	/// Unregister all commands
+	/// Unregister and deletes all commands
 	void clear();
 } // namespace cmd

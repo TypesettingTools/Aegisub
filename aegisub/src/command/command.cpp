@@ -34,7 +34,16 @@ namespace cmd {
 	}
 
 	void reg(Command *cmd) {
-		cmd_map[cmd->name()] = cmd;
+		std::string name = cmd->name();
+		if (cmd_map.count(name))
+			delete cmd_map[name];
+		cmd_map[name] = cmd;
+	}
+
+	void unreg(std::string const& name) {
+		iterator it = find_command(name);
+		delete it->second;
+		cmd_map.erase(it);
 	}
 
 	Command *get(std::string const& name) {
