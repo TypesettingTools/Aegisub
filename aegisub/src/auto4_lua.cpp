@@ -655,7 +655,25 @@ namespace Automation4 {
 
 	bool LuaCommand::IsActive(const agi::Context *c)
 	{
-		return false;
+		if (!(cmd_type & cmd::COMMAND_TOGGLE)) return false;
+
+		GetFeatureFunction("isactive");
+		LuaAssFile *subsobj = new LuaAssFile(L, c->ass);
+		lua_pushinteger(L, transform_selection(L, c));
+
+		int err = lua_pcall(L, 3, 1, 0);
+		subsobj->ProcessingComplete();
+
+		bool result = false;
+		if (err)
+			wxLogWarning("Runtime error in Lua macro IsActive function:\n%s", get_wxstring(L, -1));
+		else
+			result = !!lua_toboolean(L, -1);
+
+		// clean up stack (result or error message)
+		lua_pop(L, 1);
+
+		return result;
 	}
 
 	// LuaFeatureFilter
