@@ -640,10 +640,10 @@ void FrameMain::OnAudioBoxResize(wxSashEvent &event) {
 	if (event.GetDragStatus() == wxSASH_STATUS_OUT_OF_RANGE)
 		return;
 
-	wxRect rect = event.GetDragRect();
+	int new_height = std::min(event.GetDragRect().GetHeight(), Panel->GetSize().GetHeight() - 1);
 
-	OPT_SET("Audio/Display Height")->SetInt(rect.GetHeight());
-	audioSash->SetMinSize(wxSize(-1, rect.GetHeight()));
+	OPT_SET("Audio/Display Height")->SetInt(new_height);
+	audioSash->SetMinSize(wxSize(-1, new_height));
 	Panel->Layout();
 }
 
