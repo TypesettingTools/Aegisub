@@ -71,6 +71,8 @@ class AssFile {
 	int commitId;
 	/// Last saved version of this file
 	int savedCommitId;
+	/// Last autosaved version of this file
+	int autosavedCommitId;
 
 	/// A set of changes has been committed to the file (AssFile::CommitType)
 	agi::signal::Signal<int> AnnounceCommit;
@@ -123,12 +125,18 @@ public:
 	/// @param charset Character set of file or empty to autodetect
 	/// @param addToRecent Should the file be added to the MRU list?
 	void Load(const wxString &file,wxString charset="",bool addToRecent=true);
+
 	/// @brief Save to a file
 	/// @param file Path to save to
 	/// @param setfilename Should the filename be changed to the passed path?
 	/// @param addToRecent Should the file be added to the MRU list?
 	/// @param encoding Encoding to use, or empty to let the writer decide (which usually means "App/Save Charset")
 	void Save(wxString file,bool setfilename=false,bool addToRecent=true,const wxString encoding="");
+
+	/// @brief Autosave the file if there have been any chances since the last autosave
+	/// @return File name used or empty if no save was performed
+	wxString AutoSave();
+
 	/// @brief Save to a memory buffer. Used for subtitle providers which support it
 	/// @param[out] dst Destination vector
 	void SaveMemory(std::vector<char> &dst,const wxString encoding="");

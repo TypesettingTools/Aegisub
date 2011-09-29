@@ -585,27 +585,9 @@ void FrameMain::OnCloseWindow (wxCloseEvent &event) {
 }
 
 void FrameMain::OnAutoSave(wxTimerEvent &) try {
-	if (context->ass->loaded && context->ass->IsModified()) {
-		wxFileName origfile(context->ass->filename);
-		wxString path = lagi_wxString(OPT_GET("Path/Auto/Save")->GetString());
-		if (path.IsEmpty()) path = origfile.GetPath();
-		wxFileName dstpath(path);
-		if (!dstpath.IsAbsolute()) path = StandardPaths::DecodePathMaybeRelative(path, "?user/");
-		dstpath.AssignDir(path);
-		if (!dstpath.DirExists()) wxMkdir(path);
-
-		wxString name = origfile.GetName();
-		if (name.empty()) {
-			dstpath.SetFullName("Untitled.AUTOSAVE.ass");
-		}
-		else {
-			dstpath.SetFullName(name + ".AUTOSAVE.ass");
-		}
-
-		context->ass->Save(dstpath.GetFullPath(),false,false);
-
-		StatusTimeout(_("File backup saved as \"") + dstpath.GetFullPath() + "\".");
-	}
+	wxString fn = context->ass->AutoSave();
+	if (!fn.empty())
+		StatusTimeout(wxString::Format(_("File backup saved as \"%s\"."), fn));
 }
 catch (const agi::Exception& err) {
 	StatusTimeout(lagi_wxString("Exception when attempting to autosave file: " + err.GetMessage()));

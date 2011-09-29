@@ -69,7 +69,7 @@ namespace std {
 
 /// @brief AssFile constructor
 AssFile::AssFile ()
-: commitId(-1)
+: commitId(0)
 , loaded(false)
 {
 }
@@ -152,9 +152,8 @@ void AssFile::Load(const wxString &_filename,wxString charset,bool addToRecent) 
 	UndoStack.clear();
 	RedoStack.clear();
 	undoDescription.clear();
-	commitId = -1;
-	savedCommitId = 0;
 	Commit("", COMMIT_NEW);
+	savedCommitId = commitId;
 
 	// Add to recent
 	if (addToRecent) AddToRecent(filename);
@@ -179,6 +178,35 @@ void AssFile::Save(wxString filename, bool setfilename, bool addToRecent, wxStri
 	if (addToRecent) {
 		AddToRecent(filename);
 	}
+}
+
+wxString AssFile::AutoSave() {
+	if (!loaded || commitId == autosavedCommitId)
+		return "";
+
+	wxFileName origfile(filename);
+	wxString path = lagi_wxString(OPT_GET("Path/Auto/Save")->GetString());
+	if (!path)
+		path = origfile.GetPath();
+
+	wxFileName dstpath(path);
+	if (!dstpath.IsAbsolute())
+		path = StandardPaths::DecodePathMaybeRelative(path, "?user/");
+	dstpath.AssignDir(path);
+	if (!dstpath.DirExists())
+		wxMkdir(path);
+
+	wxString name = origfile.GetName();
+	if (name.empty())
+		dstpath.SetFullName("Untitled.AUTOSAVE.ass");
+	else
+		dstpath.SetFullName(name + ".AUTOSAVE.ass");
+
+	Save(dstpath.GetFullPath(), false, false);
+
+	autosavedCommitId = commitId;
+
+	return dstpath.GetFullPath();
 }
 
 void AssFile::SaveMemory(std::vector<char> &dst,const wxString encoding) {
@@ -420,8 +448,6 @@ void AssFile::Clear() {
 	UndoStack.clear();
 	RedoStack.clear();
 	undoDescription.clear();
-	commitId = -1;
-	savedCommitId = 0;
 }
 
 void AssFile::LoadDefault(bool defline) {
@@ -747,7 +773,7 @@ int AssFile::Commit(wxString desc, int type, int amendId, AssEntry *single_line)
 	++commitId;
 	// Allow coalescing only if it's the last change and the file has not been
 	// saved since the last change
-	if (commitId == amendId+1 && RedoStack.empty() && savedCommitId != commitId) {
+	if (commitId == amendId+1 && RedoStack.empty() && savedCommitId+1 != commitId && autosavedCommitId+1 != commitId) {
 		// If only one line changed just modify it instead of copying the file
 		if (single_line) {
 			entryIter this_it = Line.begin(), undo_it = UndoStack.back().Line.begin();
