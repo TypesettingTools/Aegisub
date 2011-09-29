@@ -45,7 +45,7 @@
 #include "dialog_colorpicker.h"
 
 ColourButton::ColourButton(wxWindow* parent, wxWindowID id, const wxSize& size, wxColour col)
-: wxBitmapButton(parent, id, wxBitmap(size))
+: wxBitmapButton(parent, id, wxBitmap(size), wxDefaultPosition, wxSize(size.GetWidth() + 6, size.GetHeight() + 6))
 , bmp(GetBitmapLabel())
 , colour(col)
 {
