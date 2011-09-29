@@ -264,10 +264,10 @@ void AudioKaraoke::SetDisplayText() {
 	dc.GetPartialTextExtents(spaced_text, p_char_x);
 
 	// Convert the partial sub to the the width of each character
-	adjacent_difference(p_char_x.begin(), p_char_x.end(), p_char_x.begin());
+	std::adjacent_difference(p_char_x.begin(), p_char_x.end(), p_char_x.begin());
 
 	// Get the maximum character width
-	char_width = *max_element(p_char_x.begin(), p_char_x.end());
+	char_width = *std::max_element(p_char_x.begin(), p_char_x.end());
 
 	// Center each character within the space available to it
 	char_x.resize(p_char_x.size());
