@@ -99,7 +99,7 @@
 				"Selection Modified" : "rgb(92, 0, 0)"
 			},
 			"Line Boundary Inactive Line" : "rgb(190,190,190)",
-			"Line boundary End" : "rgb(230, 125, 0)",
+			"Line boundary End" : "rgb(0, 0, 216)",
 			"Line boundary Start" : "rgb(216, 0, 0)",
 			"Play Cursor" : "rgb(255,255,255)",
 			"Seconds Boundaries" : "rgb(0, 100, 255)",
