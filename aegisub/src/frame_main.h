@@ -116,7 +116,6 @@ class FrameMain: public wxFrame {
 	void OnVideoDetach(agi::OptionValue const& opt);
 
 	void OnSubtitlesOpen();
-	void OnSubtitlesSave();
 
 	SubtitlesGrid *SubsGrid; ///< The subtitle editing area
 	SubsEditBox *EditBox;    ///< The subtitle editing textbox

@@ -705,10 +705,6 @@ void FrameMain::OnSubtitlesOpen() {
 	SetDisplayMode(1,1);
 }
 
-void FrameMain::OnSubtitlesSave() {
-	UpdateTitle();
-}
-
 void FrameMain::OnKeyDown(wxKeyEvent &event) {
 	if (!hotkey::check("Main Frame", context.get(), event.GetKeyCode(), event.GetUnicodeKey(), event.GetModifiers()))
 		event.Skip();
