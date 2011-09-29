@@ -684,7 +684,7 @@ namespace Automation4 {
 		if (!references) delete this;
 	}
 
-	LuaAssFile::LuaAssFile(lua_State *L, AssFile *ass, bool can_modify, bool can_set_undp)
+	LuaAssFile::LuaAssFile(lua_State *L, AssFile *ass, bool can_modify, bool can_set_undo)
 	: ass(ass)
 	, L(L)
 	, can_modify(can_modify)
