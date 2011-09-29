@@ -183,7 +183,7 @@ Interface_Colours::Interface_Colours(wxTreebook *book, Preferences *parent): Opt
 	OptionAdd(syntax, _("Normal"), "Colour/Subtitle/Syntax/Normal");
 	OptionAdd(syntax, _("Brackets"), "Colour/Subtitle/Syntax/Brackets");
 	OptionAdd(syntax, _("Slashes and Parentheses"), "Colour/Subtitle/Syntax/Slashes");
-	OptionAdd(syntax, _("Tags"), "Colour/Subtitle/Syntax/Highlight Tags");
+	OptionAdd(syntax, _("Tags"), "Colour/Subtitle/Syntax/Tags");
 	OptionAdd(syntax, _("Parameters"), "Colour/Subtitle/Syntax/Parameters");
 	OptionAdd(syntax, _("Error"), "Colour/Subtitle/Syntax/Error");
 	OptionAdd(syntax, _("Error Background"), "Colour/Subtitle/Syntax/Background/Error");
