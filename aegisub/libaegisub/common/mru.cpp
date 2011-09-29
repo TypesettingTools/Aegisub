@@ -120,7 +120,12 @@ static json::String cast_str(json::UnknownElement const& e) {
 /// @param key List name.
 /// @param array json::Array of values.
 void MRUManager::Load(const std::string &key, const json::Array& array) {
-	transform(array.Begin(), array.End(), back_inserter(mru[key]), cast_str);
+	try {
+		transform(array.Begin(), array.End(), back_inserter(mru[key]), cast_str);
+	}
+	catch (json::Exception const&) {
+		// Out of date MRU file; just discard the data and skip it
+	}
 	Prune(mru[key]);
 }
 
