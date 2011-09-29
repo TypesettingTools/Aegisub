@@ -40,6 +40,7 @@
 #include <math.h>
 
 #include <wx/bmpbuttn.h>
+#include <wx/slider.h>
 #include <wx/scrolbar.h>
 #include <wx/sizer.h>
 #include <wx/slider.h>
@@ -68,25 +69,29 @@
 #include "selection_controller.h"
 #include "utils.h"
 
-enum AudioBoxControlIDs {
+enum {
 	Audio_Horizontal_Zoom = 1600,
 	Audio_Vertical_Zoom,
 	Audio_Volume,
 };
 
 AudioBox::AudioBox(wxWindow *parent, agi::Context *context)
-: wxPanel(parent, -1, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL|wxBORDER_RAISED)
-, audioDisplay(new AudioDisplay(this, context->audioController, context))
+: wxSashWindow(parent, -1, wxDefaultPosition, wxDefaultSize, wxSW_3D | wxCLIP_CHILDREN)
 , controller(context->audioController)
 , context(context)
+, panel(new wxPanel(this, -1, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL | wxBORDER_RAISED))
+, audioDisplay(new AudioDisplay(panel, context->audioController, context))
+, HorizontalZoom(new wxSlider(panel, Audio_Horizontal_Zoom, 0, -50, 30, wxDefaultPosition, wxSize(-1, 20), wxSL_VERTICAL|wxSL_BOTH))
+, VerticalZoom(new wxSlider(panel, Audio_Vertical_Zoom, 50, 0, 100, wxDefaultPosition, wxSize(-1, 20), wxSL_VERTICAL|wxSL_BOTH|wxSL_INVERSE))
+, VolumeBar(new wxSlider(panel, Audio_Volume, 50, 0, 100, wxDefaultPosition, wxSize(-1, 20), wxSL_VERTICAL|wxSL_BOTH|wxSL_INVERSE))
 {
-	// Zoom
-	HorizontalZoom = new wxSlider(this,Audio_Horizontal_Zoom,0,-50,30,wxDefaultPosition,wxSize(-1,20),wxSL_VERTICAL|wxSL_BOTH);
+	SetSashVisible(wxSASH_BOTTOM, true);
+	Bind(wxEVT_SASH_DRAGGED, &AudioBox::OnSashDrag, this);
+
 	HorizontalZoom->SetToolTip(_("Horizontal zoom"));
-	VerticalZoom = new wxSlider(this,Audio_Vertical_Zoom,50,0,100,wxDefaultPosition,wxSize(-1,20),wxSL_VERTICAL|wxSL_BOTH|wxSL_INVERSE);
 	VerticalZoom->SetToolTip(_("Vertical zoom"));
-	VolumeBar = new wxSlider(this,Audio_Volume,50,0,100,wxDefaultPosition,wxSize(-1,20),wxSL_VERTICAL|wxSL_BOTH|wxSL_INVERSE);
 	VolumeBar->SetToolTip(_("Audio Volume"));
+
 	bool link = OPT_GET("Audio/Link")->GetBool();
 	if (link) {
 		VolumeBar->SetValue(VerticalZoom->GetValue());
@@ -100,7 +105,7 @@ AudioBox::AudioBox(wxWindow *parent, agi::Context *context)
 	wxSizer *VertVolArea = new wxBoxSizer(wxVERTICAL);
 	VertVolArea->Add(VertVol,1,wxEXPAND,0);
 
-	ToggleBitmap *link_btn = new ToggleBitmap(this, context, "audio/opt/vertical_link", 16, "Audio", wxSize(20, -1));
+	ToggleBitmap *link_btn = new ToggleBitmap(panel, context, "audio/opt/vertical_link", 16, "Audio", wxSize(20, -1));
 	VertVolArea->Add(link_btn, 0, wxRIGHT | wxALIGN_CENTER | wxEXPAND, 0);
 	OPT_SUB("Audio/Link", &AudioBox::OnVerticalLink, this);
 
@@ -110,24 +115,41 @@ AudioBox::AudioBox(wxWindow *parent, agi::Context *context)
 	TopSizer->Add(HorizontalZoom,0,wxEXPAND,0);
 	TopSizer->Add(VertVolArea,0,wxEXPAND,0);
 
-	context->karaoke = new AudioKaraoke(this, context);
+	context->karaoke = new AudioKaraoke(panel, context);
 
 	// Main sizer
 	wxBoxSizer *MainSizer = new wxBoxSizer(wxVERTICAL);
 	MainSizer->Add(TopSizer,1,wxEXPAND|wxALL,3);
-	MainSizer->Add(toolbar::GetToolbar(this, "audio", context, "Audio"),0,wxEXPAND|wxBOTTOM|wxLEFT|wxRIGHT,3);
+	MainSizer->Add(toolbar::GetToolbar(panel, "audio", context, "Audio"),0,wxEXPAND|wxBOTTOM|wxLEFT|wxRIGHT,3);
 	MainSizer->Add(context->karaoke,0,wxEXPAND|wxBOTTOM|wxLEFT|wxRIGHT,3);
 	MainSizer->AddSpacer(3);
-	SetSizer(MainSizer);
+	panel->SetSizer(MainSizer);
+
+	wxSizer *audioSashSizer = new wxBoxSizer(wxHORIZONTAL);
+	audioSashSizer->Add(panel, 1, wxEXPAND);
+	SetSizerAndFit(audioSashSizer);
+	SetMinSize(wxSize(-1, OPT_GET("Audio/Display Height")->GetInt()));
+	SetMinimumSizeY(panel->GetSize().GetHeight());
 }
 
 AudioBox::~AudioBox() { }
 
-BEGIN_EVENT_TABLE(AudioBox,wxPanel)
+BEGIN_EVENT_TABLE(AudioBox,wxSashWindow)
 	EVT_COMMAND_SCROLL(Audio_Horizontal_Zoom, AudioBox::OnHorizontalZoom)
 	EVT_COMMAND_SCROLL(Audio_Vertical_Zoom, AudioBox::OnVerticalZoom)
 	EVT_COMMAND_SCROLL(Audio_Volume, AudioBox::OnVolume)
 END_EVENT_TABLE()
+
+void AudioBox::OnSashDrag(wxSashEvent &event) {
+	if (event.GetDragStatus() == wxSASH_STATUS_OUT_OF_RANGE)
+		return;
+
+	int new_height = std::min(event.GetDragRect().GetHeight(), GetParent()->GetSize().GetHeight() - 1);
+
+	OPT_SET("Audio/Display Height")->SetInt(new_height);
+	SetMinSize(wxSize(-1, new_height));
+	GetParent()->Layout();
+}
 
 void AudioBox::OnHorizontalZoom(wxScrollEvent &event) {
 	// Negate the value, we want zoom out to be on bottom and zoom in on top,

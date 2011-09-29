@@ -35,7 +35,7 @@
 ///
 
 #ifndef AGI_PRE
-#include <wx/panel.h>
+#include <wx/sashwin.h>
 #endif
 
 namespace agi {
@@ -54,15 +54,19 @@ class wxSlider;
 
 /// @class AudioBox
 /// @brief Panel with audio playback and timing controls, also containing an AudioDisplay
-class AudioBox : public wxPanel {
-	/// The audio display in the box
-	AudioDisplay *audioDisplay;
-	
+class AudioBox : public wxSashWindow {
 	/// The controller controlling this audio box
 	AudioController *controller;
 
 	/// Project context this operates on
 	agi::Context *context;
+
+
+	/// Panel containing the children
+	wxPanel *panel;
+
+	/// The audio display in the box
+	AudioDisplay *audioDisplay;
 
 	/// DOCME
 	wxSlider *HorizontalZoom;
@@ -77,9 +81,9 @@ class AudioBox : public wxPanel {
 	void OnVerticalZoom(wxScrollEvent &event);
 	void OnVolume(wxScrollEvent &event);
 	void OnVerticalLink(agi::OptionValue const& opt);
+	void OnSashDrag(wxSashEvent &event);
 
 public:
-
 	AudioBox(wxWindow *parent, agi::Context *context);
 	~AudioBox();
 

@@ -43,7 +43,6 @@
 #include <wx/menu.h>
 #include <wx/panel.h>
 #include <wx/sizer.h>
-#include <wx/sashwin.h>
 #include <wx/timer.h>
 #endif
 
@@ -100,7 +99,6 @@ class FrameMain: public wxFrame {
 
 	void OnKeyDown(wxKeyEvent &event);
 
-	void OnAudioBoxResize(wxSashEvent &event);
 	/// @brief Autosave the currently open file, if any
 	void OnAutoSave(wxTimerEvent &event);
 	void OnStatusClear(wxTimerEvent &event);
@@ -122,7 +120,6 @@ class FrameMain: public wxFrame {
 
 	SubtitlesGrid *SubsGrid; ///< The subtitle editing area
 	SubsEditBox *EditBox;    ///< The subtitle editing textbox
-	wxSashWindow *audioSash; ///< Sash for resizing the audio area
 	AudioBox *audioBox;      ///< The audio area
 	VideoBox *videoBox;      ///< The video area
 

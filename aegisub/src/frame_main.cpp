@@ -254,18 +254,8 @@ void FrameMain::InitContents() {
 	context->selectionController = context->subsGrid;
 	Search.context = context.get();
 
-	StartupLog("Create tool area splitter window");
-	audioSash = new wxSashWindow(Panel, ID_SASH_MAIN_AUDIO, wxDefaultPosition, wxDefaultSize, wxSW_3D|wxCLIP_CHILDREN);
-	audioSash->SetSashVisible(wxSASH_BOTTOM, true);
-
 	StartupLog("Create audio box");
-	context->audioBox = audioBox = new AudioBox(audioSash, context.get());
-
-	wxSizer *audioSashSizer = new wxBoxSizer(wxHORIZONTAL);
-	audioSashSizer->Add(audioBox, 1, wxEXPAND);
-	audioSash->SetSizerAndFit(audioSashSizer);
-	audioSash->SetMinSize(wxSize(-1, OPT_GET("Audio/Display Height")->GetInt()));
-	audioSash->SetMinimumSizeY(audioBox->GetSize().GetHeight());
+	context->audioBox = audioBox = new AudioBox(Panel, context.get());
 
 	StartupLog("Create subtitle editing box");
 	EditBox = new SubsEditBox(Panel, context.get());
@@ -273,7 +263,7 @@ void FrameMain::InitContents() {
 
 	StartupLog("Arrange main sizers");
 	ToolsSizer = new wxBoxSizer(wxVERTICAL);
-	ToolsSizer->Add(audioSash, 0, wxEXPAND);
+	ToolsSizer->Add(audioBox, 0, wxEXPAND);
 	ToolsSizer->Add(EditBox, 1, wxEXPAND);
 	TopSizer = new wxBoxSizer(wxHORIZONTAL);
 	TopSizer->Add(videoSizer, 0, wxEXPAND, 0);
@@ -372,7 +362,7 @@ void FrameMain::SetDisplayMode(int video, int audio) {
 	context->videoController->Stop();
 
 	TopSizer->Show(videoBox, showVideo, true);
-	ToolsSizer->Show(audioSash, showAudio, true);
+	ToolsSizer->Show(audioBox, showAudio, true);
 
 	MainSizer->CalcMin();
 	MainSizer->RecalcSizes();
@@ -566,8 +556,6 @@ BEGIN_EVENT_TABLE(FrameMain, wxFrame)
 
 	EVT_CLOSE(FrameMain::OnCloseWindow)
 
-	EVT_SASH_DRAGGED(ID_SASH_MAIN_AUDIO, FrameMain::OnAudioBoxResize)
-
 	EVT_KEY_DOWN(FrameMain::OnKeyDown)
 
 #ifdef __WXMAC__
@@ -634,17 +622,6 @@ catch (...) {
 
 void FrameMain::OnStatusClear(wxTimerEvent &) {
 	SetStatusText("",1);
-}
-
-void FrameMain::OnAudioBoxResize(wxSashEvent &event) {
-	if (event.GetDragStatus() == wxSASH_STATUS_OUT_OF_RANGE)
-		return;
-
-	int new_height = std::min(event.GetDragRect().GetHeight(), Panel->GetSize().GetHeight() - 1);
-
-	OPT_SET("Audio/Display Height")->SetInt(new_height);
-	audioSash->SetMinSize(wxSize(-1, new_height));
-	Panel->Layout();
 }
 
 void FrameMain::OnAudioOpen(AudioProvider *provider) {
