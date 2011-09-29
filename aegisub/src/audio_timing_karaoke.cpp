@@ -145,7 +145,7 @@ AudioTimingControllerKaraoke::AudioTimingControllerKaraoke(agi::Context *c, AssK
 , kara(kara)
 , cur_syl(0)
 , start_marker(ToSamples(active_line->Start.GetMS()), &start_pen, AudioMarker::Feet_Right)
-, end_marker(ToSamples(active_line->End.GetMS()), &start_pen, AudioMarker::Feet_Left)
+, end_marker(ToSamples(active_line->End.GetMS()), &end_pen, AudioMarker::Feet_Left)
 , auto_commit(OPT_GET("Audio/Auto/Commit")->GetBool())
 , auto_next(OPT_GET("Audio/Next Line on Commit")->GetBool())
 , commit_id(-1)
