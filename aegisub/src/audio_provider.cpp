@@ -122,7 +122,7 @@ AudioProvider *AudioProviderFactory::GetProvider(wxString filename, int cache) {
 		}
 		catch (AudioOpenError const& err) {
 			found = true;
-			msg += err.GetMessage();
+			msg += err.GetMessage() + "\n";
 		}
 	}
 	if (!provider) {
@@ -139,7 +139,7 @@ AudioProvider *AudioProviderFactory::GetProvider(wxString filename, int cache) {
 			}
 			catch (AudioOpenError const& err) {
 				found = true;
-				msg += list[i] + ": " + err.GetMessage();
+				msg += list[i] + ": " + err.GetMessage() + "\n";
 			}
 		}
 	}
