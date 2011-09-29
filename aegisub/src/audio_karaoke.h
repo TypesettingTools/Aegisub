@@ -25,6 +25,7 @@
 #include <set>
 #include <vector>
 
+#include <wx/bitmap.h>
 #include <wx/window.h>
 #endif
 
@@ -82,6 +83,9 @@ class AudioKaraoke : public wxWindow, private SelectionListener<AssDialogue> {
 	/// Current line's stripped text with spaces added between each syllable
 	wxString spaced_text;
 
+	/// spaced_text + syl_lines rendered to a bitmap
+	wxBitmap rendered_line;
+
 	/// Indexes in spaced_text which are the beginning of syllables
 	std::vector<int> syl_start_points;
 
@@ -113,6 +117,9 @@ class AudioKaraoke : public wxWindow, private SelectionListener<AssDialogue> {
 	void AddMenuItem(wxMenu &menu, wxString const& tag, wxString const& help, wxString const& selected);
 	/// Set the karaoke tags for the selected syllables to the indicated one
 	void SetTagType(wxString new_type);
+
+	/// Prerender the current line along with syllable split lines
+	void RenderText();
 
 	/// Refresh the area of the display around a single character
 	/// @param pos Index in spaced_text

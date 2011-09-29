@@ -128,23 +128,19 @@ void AudioKaraoke::OnFileChanged(int type) {
 }
 
 void AudioKaraoke::SetEnabled(bool en) {
-	if (en) {
-		LoadFromLine();
-		enabled = true;
-		c->audioController->SetTimingController(CreateKaraokeTimingController(c, kara.get(), file_changed));
-	}
-	else {
-		accept_button->Enable(false);
-		cancel_button->Enable(false);
-		enabled = false;
-		c->audioController->SetTimingController(CreateDialogueTimingController(c));
-	}
+	enabled = en;
 
-	c->audioBox->ShowKaraokeBar(en);
+	c->audioBox->ShowKaraokeBar(enabled);
 	split_area->SetSize(GetSize().GetWidth(), -1);
 
-	if (en)
+	if (enabled) {
+		LoadFromLine();
+		c->audioController->SetTimingController(CreateKaraokeTimingController(c, kara.get(), file_changed));
 		Refresh(false);
+	}
+	else {
+		c->audioController->SetTimingController(CreateDialogueTimingController(c));
+	}
 }
 
 void AudioKaraoke::OnPaint(wxPaintEvent &evt) {
@@ -152,13 +148,30 @@ void AudioKaraoke::OnPaint(wxPaintEvent &evt) {
 	split_area->GetClientSize(&w, &h);
 
 	wxPaintDC dc(split_area);
+	wxMemoryDC bmp_dc(rendered_line);
+
+	// Draw the text and split lines
+	dc.Blit(0, 0, w, h, &bmp_dc, 0, 0);
+
+	// Draw the split line under the mouse
+	dc.SetPen(*wxRED);
+	dc.DrawLine(mouse_pos, 0, mouse_pos, h);
+}
+
+void AudioKaraoke::RenderText() {
+	int w, h;
+	split_area->GetClientSize(&w, &h);
+
+	if (split_area->GetClientSize() != rendered_line.GetSize()) {
+		rendered_line = wxBitmap(w, h);
+	}
+
+	wxMemoryDC dc(rendered_line);
 
 	// Draw background
-	dc.SetBrush(wxBrush(wxSystemSettings::GetColour(enabled ?  wxSYS_COLOUR_WINDOW : wxSYS_COLOUR_FRAMEBK)));
+	dc.SetBrush(wxBrush(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW)));
 	dc.SetPen(*wxTRANSPARENT_PEN);
 	dc.DrawRectangle(0, 0, w, h);
-
-	if (!enabled) return;
 
 	dc.SetFont(split_font);
 	dc.SetTextForeground(wxColour(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT)));
@@ -168,10 +181,6 @@ void AudioKaraoke::OnPaint(wxPaintEvent &evt) {
 	for (size_t i = 0; i < spaced_text.size(); ++i) {
 		dc.DrawText(spaced_text[i], char_x[i], y);
 	}
-
-	// Draw the split line under the mouse
-	dc.SetPen(*wxRED);
-	dc.DrawLine(mouse_pos, 0, mouse_pos, h);
 
 	// Draw the lines between each syllable
 	dc.SetPen(wxSystemSettings::GetColour(wxSYS_COLOUR_HIGHLIGHT));
@@ -202,7 +211,6 @@ void AudioKaraoke::OnContextMenu(wxContextMenuEvent&) {
 void AudioKaraoke::OnMouse(wxMouseEvent &event) {
 	if (!enabled) return;
 
-	int old_mouse_pos = mouse_pos;
 	mouse_pos = event.GetX();
 
 	if (event.Leaving())
@@ -210,10 +218,7 @@ void AudioKaraoke::OnMouse(wxMouseEvent &event) {
 
 	if (!event.LeftDown()) {
 		// Erase the old line and draw the new one
-		wxRect r1(mouse_pos - 1, 0, mouse_pos + 1, 100);
-		wxRect r2(old_mouse_pos - 1, 0, old_mouse_pos + 1, 100);
-		split_area->Refresh(false, &r1);
-		split_area->Refresh(false, &r2);
+		split_area->Refresh(false);
 		return;
 	}
 
@@ -282,6 +287,8 @@ void AudioKaraoke::SetDisplayText() {
 	// Get line height
 	wxSize extents = dc.GetTextExtent(spaced_text);
 	char_height = extents.GetHeight();
+
+	RenderText();
 }
 
 void AudioKaraoke::CancelSplit() {
