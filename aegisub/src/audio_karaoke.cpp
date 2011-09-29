@@ -42,11 +42,12 @@
 
 #include "include/aegisub/context.h"
 
-#include "audio_timing.h"
 #include "ass_dialogue.h"
 #include "ass_file.h"
 #include "ass_karaoke.h"
 #include "ass_override.h"
+#include "audio_box.h"
+#include "audio_timing.h"
 #include "libresrc/libresrc.h"
 #include "main.h"
 #include "selection_controller.h"
@@ -101,7 +102,10 @@ AudioKaraoke::AudioKaraoke(wxWindow *parent, agi::Context *c)
 
 	c->selectionController->AddSelectionListener(this);
 
-	SetEnabled(false);
+	accept_button->Enable(false);
+	cancel_button->Enable(false);
+	enabled = false;
+	c->audioController->SetTimingController(CreateDialogueTimingController(c));
 }
 
 AudioKaraoke::~AudioKaraoke() {
@@ -124,25 +128,19 @@ void AudioKaraoke::OnFileChanged(int type) {
 }
 
 void AudioKaraoke::SetEnabled(bool en) {
-	wxSize new_size;
 	if (en) {
 		LoadFromLine();
 		enabled = true;
 		c->audioController->SetTimingController(CreateKaraokeTimingController(c, kara.get(), file_changed));
-		new_size = wxSize(-1, accept_button->GetSize().GetHeight() + 4);
 	}
 	else {
 		accept_button->Enable(false);
 		cancel_button->Enable(false);
 		enabled = false;
 		c->audioController->SetTimingController(CreateDialogueTimingController(c));
-		new_size = wxSize(-1, 0);
 	}
 
-	SetMinSize(new_size);
-	SetMaxSize(new_size);
-	SetSize(new_size);
-	GetParent()->Layout();
+	c->audioBox->ShowKaraokeBar(en);
 	split_area->SetSize(GetSize().GetWidth(), -1);
 
 	if (en)

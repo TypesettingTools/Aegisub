@@ -122,6 +122,7 @@ AudioBox::AudioBox(wxWindow *parent, agi::Context *context)
 	MainSizer->Add(TopSizer,1,wxEXPAND|wxALL,3);
 	MainSizer->Add(toolbar::GetToolbar(panel, "audio", context, "Audio"),0,wxEXPAND|wxBOTTOM|wxLEFT|wxRIGHT,3);
 	MainSizer->Add(context->karaoke,0,wxEXPAND|wxBOTTOM|wxLEFT|wxRIGHT,3);
+	MainSizer->Show(context->karaoke, false);
 	MainSizer->AddSpacer(3);
 	panel->SetSizer(MainSizer);
 
@@ -138,7 +139,7 @@ BEGIN_EVENT_TABLE(AudioBox,wxSashWindow)
 	EVT_COMMAND_SCROLL(Audio_Horizontal_Zoom, AudioBox::OnHorizontalZoom)
 	EVT_COMMAND_SCROLL(Audio_Vertical_Zoom, AudioBox::OnVerticalZoom)
 	EVT_COMMAND_SCROLL(Audio_Volume, AudioBox::OnVolume)
-END_EVENT_TABLE()
+END_EVENT_TABLE();
 
 void AudioBox::OnSashDrag(wxSashEvent &event) {
 	if (event.GetDragStatus() == wxSASH_STATUS_OUT_OF_RANGE)
@@ -146,9 +147,15 @@ void AudioBox::OnSashDrag(wxSashEvent &event) {
 
 	int new_height = std::min(event.GetDragRect().GetHeight(), GetParent()->GetSize().GetHeight() - 1);
 
-	OPT_SET("Audio/Display Height")->SetInt(new_height);
 	SetMinSize(wxSize(-1, new_height));
 	GetParent()->Layout();
+
+	// Karaoke mode is always disabled when the audio box is first opened, so
+	// the initial height shouldn't include it
+	if (context->karaoke->IsEnabled())
+		new_height -= context->karaoke->GetSize().GetHeight() + 3;
+
+	OPT_SET("Audio/Display Height")->SetInt(new_height);
 }
 
 void AudioBox::OnHorizontalZoom(wxScrollEvent &event) {
@@ -180,4 +187,19 @@ void AudioBox::OnVerticalLink(agi::OptionValue const& opt) {
 		VolumeBar->SetValue(pos);
 	}
 	VolumeBar->Enable(!opt.GetBool());
+}
+
+void AudioBox::ShowKaraokeBar(bool show) {
+	wxSizer *panel_sizer = panel->GetSizer();
+	int new_height = GetSize().GetHeight();
+	int kara_height = context->karaoke->GetSize().GetHeight() + 3;
+
+	if (panel_sizer->IsShown(context->karaoke))
+		new_height -= kara_height;
+	else
+		new_height += kara_height;
+
+	panel_sizer->Show(context->karaoke, show);
+	SetMinSize(wxSize(-1, new_height));
+	GetParent()->Layout();
 }
