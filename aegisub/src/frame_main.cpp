@@ -256,14 +256,15 @@ void FrameMain::InitContents() {
 
 	StartupLog("Create tool area splitter window");
 	audioSash = new wxSashWindow(Panel, ID_SASH_MAIN_AUDIO, wxDefaultPosition, wxDefaultSize, wxSW_3D|wxCLIP_CHILDREN);
-	wxBoxSizer *audioSashSizer = new wxBoxSizer(wxHORIZONTAL);
 	audioSash->SetSashVisible(wxSASH_BOTTOM, true);
 
 	StartupLog("Create audio box");
 	context->audioBox = audioBox = new AudioBox(audioSash, context.get());
+
+	wxSizer *audioSashSizer = new wxBoxSizer(wxHORIZONTAL);
 	audioSashSizer->Add(audioBox, 1, wxEXPAND);
-	audioSash->SetSizer(audioSashSizer);
-	audioBox->Fit();
+	audioSash->SetSizerAndFit(audioSashSizer);
+	audioSash->SetMinSize(wxSize(-1, OPT_GET("Audio/Display Height")->GetInt()));
 	audioSash->SetMinimumSizeY(audioBox->GetSize().GetHeight());
 
 	StartupLog("Create subtitle editing box");
@@ -641,12 +642,9 @@ void FrameMain::OnAudioBoxResize(wxSashEvent &event) {
 
 	wxRect rect = event.GetDragRect();
 
-	if (rect.GetHeight() < audioSash->GetMinimumSizeY())
-		rect.SetHeight(audioSash->GetMinimumSizeY());
-
-	audioBox->SetMinSize(wxSize(-1, rect.GetHeight()));
+	OPT_SET("Audio/Display Height")->SetInt(rect.GetHeight());
+	audioSash->SetMinSize(wxSize(-1, rect.GetHeight()));
 	Panel->Layout();
-	Refresh();
 }
 
 void FrameMain::OnAudioOpen(AudioProvider *provider) {
