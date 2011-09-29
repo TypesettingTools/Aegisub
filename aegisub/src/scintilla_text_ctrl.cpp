@@ -39,8 +39,8 @@
 #include "scintilla_text_ctrl.h"
 #include "utils.h"
 
-ScintillaTextCtrl::ScintillaTextCtrl(wxWindow* parent, wxWindowID id, const wxString& value, const wxPoint& pos, const wxSize& size)
-: wxStyledTextCtrl(parent, id, pos, size, 0, value)
+ScintillaTextCtrl::ScintillaTextCtrl(wxWindow* parent, wxWindowID id, const wxString& value, const wxPoint& pos, const wxSize& size, long style)
+: wxStyledTextCtrl(parent, id, pos, size, style, value)
 {
 }
 

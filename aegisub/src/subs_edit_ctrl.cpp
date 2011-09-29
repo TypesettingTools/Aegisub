@@ -76,7 +76,7 @@ enum {
 };
 
 SubsTextEditCtrl::SubsTextEditCtrl(wxWindow* parent, wxSize wsize, long style, SubtitlesGrid *grid)
-: ScintillaTextCtrl(parent, wxID_ANY)
+: ScintillaTextCtrl(parent, -1, "", wxDefaultPosition, wsize, style)
 , spellchecker(SpellCheckerFactory::GetSpellChecker())
 , thesaurus(Thesaurus::GetThesaurus())
 , grid(grid)

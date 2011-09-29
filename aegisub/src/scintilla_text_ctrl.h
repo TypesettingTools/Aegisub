@@ -55,5 +55,5 @@ public:
 	void SetUnicodeStyling(int start,int length,int style);
 	void SetSelectionU(int start,int end);
 
-	ScintillaTextCtrl(wxWindow* parent, wxWindowID id, const wxString& value = "", const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize);
+	ScintillaTextCtrl(wxWindow* parent, wxWindowID id, const wxString& value = "", const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = 0);
 };
