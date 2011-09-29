@@ -69,16 +69,9 @@
 #include "utils.h"
 
 enum AudioBoxControlIDs {
-	Audio_Scrollbar = 1600,
-	Audio_Horizontal_Zoom,
+	Audio_Horizontal_Zoom = 1600,
 	Audio_Vertical_Zoom,
 	Audio_Volume,
-	Audio_Button_Karaoke,
-
-	Audio_Button_Join,		/// Karaoke -> Enter join mode.
-	Audio_Button_Split,		/// Karaoke -> Enter split mode.
-	Audio_Button_Accept,	/// Karaoke -> Split/Join mode -> Accept.
-	Audio_Button_Cancel		/// Karaoke -> Split/Join mode -> Cancel.
 };
 
 AudioBox::AudioBox(wxWindow *parent, agi::Context *context)
@@ -109,7 +102,7 @@ AudioBox::AudioBox(wxWindow *parent, agi::Context *context)
 
 	ToggleBitmap *link_btn = new ToggleBitmap(this, context, "audio/opt/vertical_link", 16, "Audio", wxSize(20, -1));
 	VertVolArea->Add(link_btn, 0, wxRIGHT | wxALIGN_CENTER | wxEXPAND, 0);
-	OPT_SUB("Audio/Link", bind(&AudioBox::OnVerticalLink, this, std::tr1::placeholders::_1));
+	OPT_SUB("Audio/Link", &AudioBox::OnVerticalLink, this);
 
 	// Top sizer
 	wxSizer *TopSizer = new wxBoxSizer(wxHORIZONTAL);
