@@ -253,7 +253,10 @@ void FFmpegSourceVideoProvider::LoadVideo(wxString filename) {
 		int Timestamp = (int)((CurFrameData->PTS * TimeBase->Num) / TimeBase->Den);
 		TimecodesVector.push_back(Timestamp);
 	}
-	Timecodes = agi::vfr::Framerate(TimecodesVector);
+	if (TimecodesVector.size() < 2)
+		Timecodes = 25.0;
+	else
+		Timecodes = agi::vfr::Framerate(TimecodesVector);
 
 	FrameNumber = 0;
 }
