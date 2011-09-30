@@ -195,6 +195,8 @@ Interface_Colours::Interface_Colours(wxTreebook *book, Preferences *parent): Opt
 	OptionAdd(grid, _("Standard background"), "Colour/Subtitle Grid/Background/Background");
 	OptionAdd(grid, _("Selection foreground"), "Colour/Subtitle Grid/Selection");
 	OptionAdd(grid, _("Selection background"), "Colour/Subtitle Grid/Background/Selection");
+	OptionAdd(grid, _("Collision foreground"), "Colour/Subtitle Grid/Collision");
+	OptionAdd(grid, _("In frame background"), "Colour/Subtitle Grid/Background/Inframe");
 	OptionAdd(grid, _("Comment background"), "Colour/Subtitle Grid/Background/Comment");
 	OptionAdd(grid, _("Selected comment background"), "Colour/Subtitle Grid/Background/Selected Comment");
 	OptionAdd(grid, _("Left Column"), "Colour/Subtitle Grid/Left Column");
