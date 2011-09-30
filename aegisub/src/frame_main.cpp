@@ -191,8 +191,9 @@ FrameMain::FrameMain (wxArrayString args)
 	StartupLog("Load default file");
 	context->ass->LoadDefault();
 
-	StartupLog("Load files specified on command line");
-	LoadList(args);
+	StartupLog("Display main window");
+	Show();
+	SetDisplayMode(1, 1);
 
 	// Version checker
 	StartupLog("Possibly perform automatic updates check");
@@ -204,9 +205,8 @@ FrameMain::FrameMain (wxArrayString args)
 
 	PerformVersionCheck(false);
 
-	StartupLog("Display main window");
-	Show();
-	SetDisplayMode(1, 1);
+	StartupLog("Load files specified on command line");
+	LoadList(args);
 
 	StartupLog("Leaving FrameMain constructor");
 }
