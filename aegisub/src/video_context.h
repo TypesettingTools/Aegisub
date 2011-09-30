@@ -53,15 +53,11 @@
 #include <libaegisub/vfr.h>
 
 class AegiVideoFrame;
-class SubtitlesGrid;
 class AudioProvider;
-class AudioDisplay;
-class AssDialogue;
 class SubtitlesProviderErrorEvent;
 class ThreadedFrameSource;
 class VideoProvider;
 class VideoProviderErrorEvent;
-class AudioController;
 
 namespace agi {
 	struct Context;
