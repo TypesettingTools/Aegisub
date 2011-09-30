@@ -53,7 +53,6 @@
 #include <libaegisub/vfr.h>
 
 class AegiVideoFrame;
-class AudioProvider;
 class SubtitlesProviderErrorEvent;
 class ThreadedFrameSource;
 class VideoProvider;
@@ -70,8 +69,6 @@ namespace agi {
 ///
 /// DOCME
 class VideoContext : public wxEvtHandler {
-	friend class AudioProvider;
-
 	/// Current frame number changed (new frame number)
 	agi::signal::Signal<int> Seek;
 	/// A new video was opened
