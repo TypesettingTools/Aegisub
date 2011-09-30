@@ -264,8 +264,7 @@ struct video_detach : public validator_video_loaded {
 			c->detachedVideo = new DialogDetachedVideo(c, c->videoBox->videoDisplay->GetClientSize());
 		}
 		else {
-			c->detachedVideo->Destroy();
-			c->detachedVideo = 0;
+			c->detachedVideo->Close();
 		}
 	}
 };
