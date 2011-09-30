@@ -232,7 +232,7 @@ void AudioTimingControllerKaraoke::DoCommit() {
 
 void AudioTimingControllerKaraoke::Commit() {
 	if (!auto_commit)
-		Commit();
+		DoCommit();
 	if (auto_next)
 		c->selectionController->NextLine();
 }
