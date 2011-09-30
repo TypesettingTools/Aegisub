@@ -198,9 +198,9 @@ void AudioMarkerDialogueTiming::SetPosition(int64_t new_position)
 
 	if (other)
 	{
-		/// @todo Make this depend on configuration
-		wxPen style_left = wxPen(*wxRED, 2);
-		wxPen style_right = wxPen(*wxBLUE, 2);
+		wxPen style_left(wxColour(OPT_GET("Colour/Audio Display/Line boundary Start")->GetColour()), 2);
+		wxPen style_right(wxColour(OPT_GET("Colour/Audio Display/Line boundary End")->GetColour()), 2);
+
 		if (position < other->position)
 		{
 			feet = Feet_Right;
