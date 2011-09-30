@@ -445,7 +445,7 @@ void FrameMain::OnVideoOpen() {
 
 	SetDisplayMode(1,-1);
 
-	if (OPT_GET("Video/Detached/Enabled")->GetBool())
+	if (OPT_GET("Video/Detached/Enabled")->GetBool() && !context->detachedVideo)
 		cmd::call("video/detach", context.get());
 	Thaw();
 }
