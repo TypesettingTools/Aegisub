@@ -82,7 +82,7 @@ struct validator_video_attached : public Command {
 };
 
 /// Forces video to 2.35 aspect ratio.
-struct video_aspect_cinematic : public validator_video_attached {
+struct video_aspect_cinematic : public validator_video_loaded {
 	CMD_NAME("video/aspect/cinematic")
 	STR_MENU("&Cinematic (2.35)")
 	STR_DISP("Cinematic (235)")
@@ -101,7 +101,7 @@ struct video_aspect_cinematic : public validator_video_attached {
 };
 
 /// Forces video to a custom aspect ratio.
-struct video_aspect_custom : public validator_video_attached {
+struct video_aspect_custom : public validator_video_loaded {
 	CMD_NAME("video/aspect/custom")
 	STR_MENU("Custom..")
 	STR_DISP("Custom")
@@ -161,7 +161,7 @@ struct video_aspect_custom : public validator_video_attached {
 };
 
 /// Leave video on original aspect ratio.
-struct video_aspect_default : public validator_video_attached {
+struct video_aspect_default : public validator_video_loaded {
 	CMD_NAME("video/aspect/default")
 	STR_MENU("&Default")
 	STR_DISP("Default")
@@ -180,7 +180,7 @@ struct video_aspect_default : public validator_video_attached {
 };
 
 /// Forces video to 4:3 aspect ratio.
-struct video_aspect_full : public validator_video_attached {
+struct video_aspect_full : public validator_video_loaded {
 	CMD_NAME("video/aspect/full")
 	STR_MENU("&Fullscreen (4:3)")
 	STR_DISP("Fullscreen (4:3)")
@@ -199,7 +199,7 @@ struct video_aspect_full : public validator_video_attached {
 };
 
 /// Forces video to 16:9 aspect ratio.
-struct video_aspect_wide : public validator_video_attached {
+struct video_aspect_wide : public validator_video_loaded {
 	CMD_NAME("video/aspect/wide")
 	STR_MENU("&Widescreen (16:9)")
 	STR_DISP("Widescreen (16:9)")
