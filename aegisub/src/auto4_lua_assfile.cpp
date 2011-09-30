@@ -620,6 +620,7 @@ namespace Automation4 {
 		AssDialogue *dia = dynamic_cast<AssDialogue*>(e.get());
 		luaL_argcheck(L, dia, 1, "Subtitle line must be a dialogue line");
 
+		int idx = 0;
 		AssKaraoke kara(dia);
 		for (AssKaraoke::iterator it = kara.begin(); it != kara.end(); ++it) {
 			lua_newtable(L);
@@ -629,7 +630,7 @@ namespace Automation4 {
 			set_field(L, "tag", it->tag_type);
 			set_field(L, "text", it->GetText(false));
 			set_field(L, "text_stripped", it->text);
-			lua_rawseti(L, -2, -1);
+			lua_rawseti(L, -2, idx++);
 		}
 
 		return 1;
