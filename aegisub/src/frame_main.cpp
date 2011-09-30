@@ -245,9 +245,6 @@ void FrameMain::InitContents() {
 
 	StartupLog("Create video box");
 	context->videoBox = videoBox = new VideoBox(Panel, false, context.get());
-	wxBoxSizer *videoSizer = new wxBoxSizer(wxVERTICAL);
-	videoSizer->Add(videoBox , 0, wxEXPAND);
-	videoSizer->AddStretchSpacer(1);
 
 	StartupLog("Create subtitles grid");
 	context->subsGrid = SubsGrid = new SubtitlesGrid(Panel,context.get(),wxSize(600,100),wxWANTS_CHARS | wxSUNKEN_BORDER,"Subs grid");
@@ -266,7 +263,7 @@ void FrameMain::InitContents() {
 	ToolsSizer->Add(audioBox, 0, wxEXPAND);
 	ToolsSizer->Add(EditBox, 1, wxEXPAND);
 	TopSizer = new wxBoxSizer(wxHORIZONTAL);
-	TopSizer->Add(videoSizer, 0, wxEXPAND, 0);
+	TopSizer->Add(videoBox, 0, wxEXPAND, 0);
 	TopSizer->Add(ToolsSizer, 1, wxEXPAND | wxLEFT | wxRIGHT | wxBOTTOM, 5);
 	MainSizer = new wxBoxSizer(wxVERTICAL);
 	MainSizer->Add(new wxStaticLine(Panel),0,wxEXPAND | wxALL,0);
