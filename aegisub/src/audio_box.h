@@ -89,5 +89,14 @@ public:
 
 	void ShowKaraokeBar(bool show);
 
+	/// @brief Scroll the audio display
+	/// @param pixel_amount Number of pixels to scroll the view
+	///
+	/// A positive amount moves the display to the right, making later parts of the audio visible.
+	void ScrollAudioBy(int pixel_amount);
+
+	/// Make the currently active line visible in the audio display
+	void ScrollToActiveLine();
+
 	DECLARE_EVENT_TABLE()
 };

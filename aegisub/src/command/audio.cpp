@@ -45,6 +45,7 @@
 #include "command.h"
 
 #include "../ass_dialogue.h"
+#include "../audio_box.h"
 #include "../audio_controller.h"
 #include "../audio_karaoke.h"
 #include "../audio_timing.h"
@@ -333,15 +334,39 @@ struct audio_commit : public Command {
 };
 
 /// Scroll the audio display to the current selection
-struct audio_go_to : public Command {
+struct audio_go_to : public validate_audio_open {
 	CMD_NAME("audio/go_to")
 	STR_MENU("Go to selection")
 	STR_DISP("Go to selection")
 	STR_HELP("Go to selection")
 
 	void operator()(agi::Context *c) {
-		//if (c->audioController->GetTimingController())
-			//audioDisplay->ScrollSampleRangeInView(c->audioController->GetTimingController()->GetIdealVisibleSampleRange());
+		c->audioBox->ScrollToActiveLine();
+	}
+};
+
+/// Scroll the audio display left
+struct audio_scroll_left : public validate_audio_open {
+	CMD_NAME("audio/scroll/left")
+		STR_MENU("Scroll left")
+		STR_DISP("Scroll left")
+		STR_HELP("Scroll the audio display left")
+
+		void operator()(agi::Context *c) {
+			c->audioBox->ScrollAudioBy(-128);
+	}
+};
+
+
+/// Scroll the audio display right
+struct audio_scroll_right : public validate_audio_open {
+	CMD_NAME("audio/scroll/right")
+		STR_MENU("Scroll right")
+		STR_DISP("Scroll right")
+		STR_HELP("Scroll the audio display right")
+
+		void operator()(agi::Context *c) {
+			c->audioBox->ScrollAudioBy(128);
 	}
 };
 
@@ -475,6 +500,8 @@ namespace cmd {
 		reg(new audio_play_selection);
 		reg(new audio_play_to_end);
 		reg(new audio_save_clip);
+		reg(new audio_scroll_left);
+		reg(new audio_scroll_right);
 		reg(new audio_stop);
 		reg(new audio_toggle_spectrum);
 		reg(new audio_vertical_link);

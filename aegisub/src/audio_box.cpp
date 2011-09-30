@@ -62,6 +62,7 @@
 #include "audio_controller.h"
 #include "audio_display.h"
 #include "audio_karaoke.h"
+#include "audio_timing.h"
 #include "command/command.h"
 #include "libresrc/libresrc.h"
 #include "main.h"
@@ -202,4 +203,13 @@ void AudioBox::ShowKaraokeBar(bool show) {
 	panel_sizer->Show(context->karaoke, show);
 	SetMinSize(wxSize(-1, new_height));
 	GetParent()->Layout();
+}
+
+void AudioBox::ScrollAudioBy(int pixel_amount) {
+	audioDisplay->ScrollBy(pixel_amount);
+}
+
+void AudioBox::ScrollToActiveLine() {
+	if (controller->GetTimingController())
+		audioDisplay->ScrollSampleRangeInView(controller->GetTimingController()->GetIdealVisibleSampleRange());
 }
