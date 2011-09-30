@@ -64,6 +64,7 @@
 
 class AudioDisplayScrollbar : public AudioDisplayInteractionObject {
 	static const int height = 10;
+	static const int min_width = 10;
 
 	wxRect bounds;
 	wxRect thumb;
@@ -82,7 +83,7 @@ class AudioDisplayScrollbar : public AudioDisplayInteractionObject {
 	// Recalculate thumb bounds from position and length data
 	void RecalculateThumb()
 	{
-		thumb.width = std::max((height+1)/2, bounds.width * page_length / data_length);
+		thumb.width = std::max(min_width, bounds.width * page_length / data_length);
 		thumb.height = height;
 		thumb.x = bounds.width * position / data_length;
 		thumb.y = bounds.y;
