@@ -74,6 +74,19 @@ struct validate_sel_multiple : public Command {
 	}
 };
 
+/// Find and replace words in subtitles.
+struct edit_find_replace : public Command {
+	CMD_NAME("edit/find_replace")
+		STR_MENU("Find and &Replace..")
+		STR_DISP("Find and Replace")
+		STR_HELP("Find and replace words in subtitles.")
+
+		void operator()(agi::Context *c) {
+			c->videoController->Stop();
+			Search.OpenDialog(true);
+	}
+};
+
 /// Copy subtitles.
 struct edit_line_copy : public validate_sel_nonempty {
 	CMD_NAME("edit/line/copy")
@@ -358,21 +371,6 @@ struct edit_redo : public Command {
 	}
 };
 
-
-/// Find and replace words in subtitles.
-struct edit_search_replace : public Command {
-	CMD_NAME("edit/search_replace")
-	STR_MENU("Search and &Replace..")
-	STR_DISP("Search and Replace")
-	STR_HELP("Find and replace words in subtitles.")
-
-	void operator()(agi::Context *c) {
-		c->videoController->Stop();
-		Search.OpenDialog(true);
-	}
-};
-
-
 /// Undoes last action.
 struct edit_undo : public Command {
 	CMD_NAME("edit/undo")
@@ -401,6 +399,7 @@ struct edit_undo : public Command {
 
 namespace cmd {
 	void init_edit() {
+		reg(new edit_find_replace);
 		reg(new edit_line_copy);
 		reg(new edit_line_cut);
 		reg(new edit_line_delete);
@@ -415,7 +414,6 @@ namespace cmd {
 		reg(new edit_line_split_by_karaoke);
 		reg(new edit_line_swap);
 		reg(new edit_redo);
-		reg(new edit_search_replace);
 		reg(new edit_undo);
 	}
 }
