@@ -1010,9 +1010,21 @@ void AudioDisplay::OnMouseEvent(wxMouseEvent& event)
 			wxWindow *targetwindow = wxFindWindowAtPoint(event.GetPosition());
 			if (targetwindow && targetwindow != this)
 			{
-				targetwindow->GetEventHandler()->ProcessEvent(event);
-				event.Skip(false);
-				return;
+				wxWindow *parent = GetParent();
+				while (parent && parent != targetwindow)
+				{
+					parent = parent->GetParent();
+				}
+
+				// Don't forward scroll wheel events to parents of this as the
+				// target is sometimes reported as a parent even when the mouse
+				// is over the audio display
+				if (!parent)
+				{
+					targetwindow->GetEventHandler()->ProcessEvent(event);
+					event.Skip(false);
+					return;
+				}
 			}
 		}
 
