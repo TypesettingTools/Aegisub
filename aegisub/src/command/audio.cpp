@@ -274,7 +274,7 @@ struct audio_play_after : public validate_audio_open {
 	}
 };
 
-/// Play from the beginning of the audio range to the end of the file
+/// Play the last 500 ms of the audio range
 struct audio_play_end : public validate_audio_open {
 	CMD_NAME("audio/play/selection/end")
 	STR_MENU("Play last 500 ms of selection")
@@ -284,10 +284,10 @@ struct audio_play_end : public validate_audio_open {
 	void operator()(agi::Context *c) {
 		SampleRange times(c->audioController->GetPrimaryPlaybackRange());
 		c->audioController->PlayRange(SampleRange(
-			times.begin(),
-			times.begin() + std::min(
+			times.end() - std::min(
 				c->audioController->SamplesFromMilliseconds(500),
-				times.length())));
+				times.length()),
+			times.end()));
 	}
 };
 
@@ -301,14 +301,14 @@ struct audio_play_begin : public validate_audio_open {
 	void operator()(agi::Context *c) {
 		SampleRange times(c->audioController->GetPrimaryPlaybackRange());
 		c->audioController->PlayRange(SampleRange(
-			times.end() - std::min(
+			times.begin(),
+			times.begin() + std::min(
 				c->audioController->SamplesFromMilliseconds(500),
-				times.length()),
-			times.end()));
+				times.length())));
 	}
 };
 
-/// Play the last 500 ms of the audio range
+/// Play from the beginning of the audio range to the end of the file
 struct audio_play_to_end : public validate_audio_open {
 	CMD_NAME("audio/play/to_end")
 	STR_MENU("Play from selection start to end of file")
