@@ -64,7 +64,7 @@
         {},
         { "command" : "subtitle/find" },
         { "command" : "subtitle/find/next" },
-        { "command" : "edit/search_replace" }
+        { "command" : "edit/find_replace" }
     ],
     "main/subtitle" : [
         { "command" : "tool/style/manager" },
