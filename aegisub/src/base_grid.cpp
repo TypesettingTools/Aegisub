@@ -40,6 +40,7 @@
 #include <algorithm>
 #include <cmath>
 #include <iterator>
+#include <numeric>
 
 #include <wx/dcclient.h>
 #include <wx/dcmemory.h>
@@ -765,26 +766,21 @@ void BaseGrid::SetColumnWidths() {
 	if (!IsShownOnScreen()) return;
 
 	// Width/height
-	int w = 0;
-	int h = 0;
+	int w, h;
 	GetClientSize(&w,&h);
 
 	// DC for text extents test
 	wxClientDC dc(this);
 	dc.SetFont(font);
-	int fw,fh;
 
 	// O(1) widths
-	dc.GetTextExtent("0000", &fw, &fh, NULL, NULL, &font);
-	int marginLen = fw + 10;
-	dc.GetTextExtent(wxString::Format("%i",GetRows()), &fw, &fh, NULL, NULL, &font);
-	int labelLen = fw + 10;
+	int marginLen = dc.GetTextExtent("0000").GetWidth();
+
+	int labelLen = dc.GetTextExtent(wxString::Format("%d", GetRows())).GetWidth();
 	int startLen = 0;
 	int endLen = 0;
-	if (!byFrame) {
-		dc.GetTextExtent(AssTime().GetASSFormated(), &fw, &fh, NULL, NULL, &font);
-		startLen = endLen = fw + 10;
-	}
+	if (!byFrame)
+		startLen = endLen = dc.GetTextExtent(AssTime().GetASSFormated()).GetWidth();
 
 	// O(n) widths
 	bool showMargin[3] = { false, false, false };
@@ -796,29 +792,16 @@ void BaseGrid::SetColumnWidths() {
 	int maxEnd = 0;
 	for (int i = 0; i < GetRows(); i++) {
 		AssDialogue *curDiag = GetDialogue(i);
+
 		maxLayer = std::max(maxLayer, curDiag->Layer);
-
-		// Actor
-		if (!curDiag->Actor.empty()) {
-			dc.GetTextExtent(curDiag->Actor, &fw, &fh, NULL, NULL, &font);
-			if (fw > actorLen) actorLen = fw;
-		}
-
-		// Style
-		if (!curDiag->Style.empty()) {
-			dc.GetTextExtent(curDiag->Style, &fw, &fh, NULL, NULL, &font);
-			if (fw > styleLen) styleLen = fw;
-		}
-
-		// Effect
-		if (!curDiag->Effect.empty()) {
-			dc.GetTextExtent(curDiag->Effect, &fw, &fh, NULL, NULL, &font);
-			if (fw > effectLen) effectLen = fw;
-		}
+		actorLen = std::max(actorLen, dc.GetTextExtent(curDiag->Actor).GetWidth());
+		styleLen = std::max(styleLen, dc.GetTextExtent(curDiag->Style).GetWidth());
+		effectLen = std::max(effectLen, dc.GetTextExtent(curDiag->Effect).GetWidth());
 
 		// Margins
-		for (int j=0;j<3;j++) {
-			if (curDiag->Margin[j]) showMargin[j] = true;
+		for (int j = 0; j < 3; j++) {
+			if (curDiag->Margin[j])
+				showMargin[j] = true;
 		}
 
 		// Times
@@ -829,24 +812,13 @@ void BaseGrid::SetColumnWidths() {
 	}
 
 	// Finish layer
-	int layerLen = 0;
-	if (maxLayer > 0) {
-		dc.GetTextExtent(wxString::Format("%i", maxLayer), &fw, &fh, NULL, NULL, &font);
-		layerLen = fw + 10;
-	}
+	int layerLen = maxLayer ? dc.GetTextExtent(wxString::Format("%d", maxLayer)).GetWidth() : 0;
 
 	// Finish times
 	if (byFrame) {
-		dc.GetTextExtent(wxString::Format("%i", maxStart), &fw, &fh, NULL, NULL, &font);
-		startLen = fw + 10;
-		dc.GetTextExtent(wxString::Format("%i", maxEnd), &fw, &fh, NULL, NULL, &font);
-		endLen = fw + 10;
+		startLen = dc.GetTextExtent(wxString::Format("%d", maxStart)).GetWidth();
+		endLen = dc.GetTextExtent(wxString::Format("%d", maxEnd)).GetWidth();
 	}
-
-	// Finish actor/effect/style
-	if (actorLen) actorLen += 10;
-	if (effectLen) effectLen += 10;
-	if (styleLen) styleLen += 10;
 
 	// Set column widths
 	colWidth[0] = labelLen;
@@ -856,17 +828,45 @@ void BaseGrid::SetColumnWidths() {
 	colWidth[4] = styleLen;
 	colWidth[5] = actorLen;
 	colWidth[6] = effectLen;
-	for (int i=0;i<3;i++) colWidth[i+7] = showMargin[i] ? marginLen : 0;
+	for (int i = 0; i < 3; i++)
+		colWidth[i + 7] = showMargin[i] ? marginLen : 0;
 
 	// Hide columns
 	for (int i = 0; i < columns; i++) {
-		if (!showCol[i]) colWidth[i] = 0;
+		if (!showCol[i])
+			colWidth[i] = 0;
 	}
 
+	wxString col_names[11] = {
+		_("#"),
+		_("L"),
+		_("Start"),
+		_("End"),
+		_("Style"),
+		_("Actor"),
+		_("Effect"),
+		_("Left"),
+		_("Right"),
+		_("Vert"),
+		_("Text")
+	};
+
+	// Ensure every visible column is at least as big as its header
+	for (size_t i = 0; i < 11; ++i) {
+		if (colWidth[i])
+			colWidth[i] = std::max(colWidth[i], dc.GetTextExtent(col_names[i]).GetWidth());
+	}
+
+	// Add padding to all non-empty columns
+	for (size_t i = 0; i < 10; ++i) {
+		if (colWidth[i])
+			colWidth[i] += 10;
+	}
+
+
 	// Set size of last
-	int total = 0;
-	for (int i=0;i<10;i++) total += colWidth[i];
-	colWidth[10] = w-total;
+	int total = std::accumulate(colWidth, colWidth + 10, 0);
+	colWidth[10] = w - total;
 
 	time_cols_x = labelLen + layerLen;
 	time_cols_w = startLen + endLen;
