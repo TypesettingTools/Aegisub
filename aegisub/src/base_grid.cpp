@@ -607,13 +607,9 @@ void BaseGrid::OnMouseEvent(wxMouseEvent &event) {
 	GetClientSize(&w,&h);
 
 	// Modifiers
-	bool shift = event.m_shiftDown;
-	bool alt = event.m_altDown;
-#ifdef __APPLE__
-	bool ctrl = event.m_metaDown;
-#else
-	bool ctrl = event.m_controlDown;
-#endif
+	bool shift = event.ShiftDown();
+	bool alt = event.AltDown();
+	bool ctrl = event.CmdDown();
 
 	// Row that mouse is over
 	bool click = event.LeftDown();
