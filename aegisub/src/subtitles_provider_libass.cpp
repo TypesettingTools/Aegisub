@@ -207,28 +207,36 @@ void LibassSubtitlesProvider::DrawSubtitles(AegiVideoFrame &frame,double time) {
 		// Prepare copy
 		int src_stride = img->stride;
 		int dst_stride = frame.pitch;
-		int dst_delta = dst_stride - img->w*4;
-		//int stride = std::min(src_stride,dst_stride);
 		const unsigned char *src = img->bitmap;
-		unsigned char *dst = frame.data + (img->dst_y * dst_stride + img->dst_x * 4);
-		unsigned int k,ck,t;
+
+		unsigned char *dst = frame.data;
+		if (frame.flipped) {
+			dst += dst_stride * (frame.h - 1);
+			dst_stride *= -1;
+		}
+		dst += (img->dst_y * dst_stride + img->dst_x * 4);
 
 		// Copy image to destination frame
-		for (int y=0;y<img->h;y++) {
-			//memcpy(dst,src,stride);
+		for (int y = 0; y < img->h; y++) {
+			unsigned char *dstp = dst;
+
 			for (int x = 0; x < img->w; ++x) {
-				k = ((unsigned)src[x]) * opacity / 255;
-				ck = 255 - k;
-				t = *dst;
-				*dst++ = (k*b + ck*t) / 255;
-				t = *dst;
-				*dst++ = (k*g + ck*t) / 255;
-				t = *dst;
-				*dst++ = (k*r + ck*t) / 255;
-				dst++;
+				unsigned int k = ((unsigned)src[x]) * opacity / 255;
+				unsigned int ck = 255 - k;
+
+				*dstp = (k * b + ck * *dstp) / 255;
+				++dstp;
+
+				*dstp = (k * g + ck * *dstp) / 255;
+				++dstp;
+
+				*dstp = (k * r + ck * *dstp) / 255;
+				++dstp;
+
+				++dstp;
 			}
 
-			dst += dst_delta;
+			dst += dst_stride;
 			src += src_stride;
 		}
 
