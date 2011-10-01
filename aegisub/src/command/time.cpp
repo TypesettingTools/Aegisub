@@ -155,7 +155,7 @@ struct time_frame_current : public validate_video_loaded {
 /// Shift subtitles by time or frames.
 struct time_shift : public Command {
 	CMD_NAME("time/shift")
-	STR_MENU("S&hift Times..")
+	STR_MENU("S&hift Times...")
 	STR_DISP("Shift Times")
 	STR_HELP("Shift subtitles by time or frames.")
 

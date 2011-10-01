@@ -76,7 +76,7 @@ struct keyframe_close : public Command {
 /// Opens a keyframe list file.
 struct keyframe_open : public Command {
 	CMD_NAME("keyframe/open")
-	STR_MENU("Open Keyframes..")
+	STR_MENU("Open Keyframes...")
 	STR_DISP("Open Keyframes")
 	STR_HELP("Opens a keyframe list file.")
 
@@ -100,7 +100,7 @@ struct keyframe_open : public Command {
 /// Saves the current keyframe list.
 struct keyframe_save : public Command {
 	CMD_NAME("keyframe/save")
-	STR_MENU("Save Keyframes..")
+	STR_MENU("Save Keyframes...")
 	STR_DISP("Save Keyframes")
 	STR_HELP("Saves the current keyframe list.")
 	CMD_TYPE(COMMAND_VALIDATE)

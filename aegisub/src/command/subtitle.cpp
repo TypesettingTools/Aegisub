@@ -84,7 +84,7 @@ struct validate_nonempty_selection_video_loaded : public Command {
 /// Open the attachment list.
 struct subtitle_attachment : public Command {
 	CMD_NAME("subtitle/attachment")
-	STR_MENU("&Attachments..")
+	STR_MENU("&Attachments...")
 	STR_DISP("Attachments")
 	STR_HELP("Open the attachment list.")
 
@@ -98,7 +98,7 @@ struct subtitle_attachment : public Command {
 /// Find words in subtitles.
 struct subtitle_find : public Command {
 	CMD_NAME("subtitle/find")
-	STR_MENU("&Find..")
+	STR_MENU("&Find...")
 	STR_DISP("Find")
 	STR_HELP("Find words in subtitles.")
 
@@ -253,7 +253,7 @@ struct subtitle_new : public Command {
 /// Opens a subtitles file.
 struct subtitle_open : public Command {
 	CMD_NAME("subtitle/open")
-	STR_MENU("&Open Subtitles..")
+	STR_MENU("&Open Subtitles...")
 	STR_DISP("Open Subtitles")
 	STR_HELP("Opens a subtitles file.")
 
@@ -270,7 +270,7 @@ struct subtitle_open : public Command {
 /// Opens a subtitles file with a specific charset.
 struct subtitle_open_charset : public Command {
 	CMD_NAME("subtitle/open/charset")
-	STR_MENU("&Open Subtitles with Charset..")
+	STR_MENU("&Open Subtitles with Charset...")
 	STR_DISP("Open Subtitles with Charset")
 	STR_HELP("Opens a subtitles file with a specific charset.")
 
@@ -311,7 +311,7 @@ struct subtitle_open_video : public Command {
 /// Open script properties window.
 struct subtitle_properties : public Command {
 	CMD_NAME("subtitle/properties")
-	STR_MENU("&Properties..")
+	STR_MENU("&Properties...")
 	STR_DISP("Properties")
 	STR_HELP("Open script properties window.")
 
@@ -360,7 +360,7 @@ struct subtitle_save : public Command {
 /// Saves subtitles with another name.
 struct subtitle_save_as : public Command {
 	CMD_NAME("subtitle/save/as")
-	STR_MENU("Save Subtitles as..")
+	STR_MENU("Save Subtitles as...")
 	STR_DISP("Save Subtitles as")
 	STR_HELP("Saves subtitles with another name.")
 
@@ -424,7 +424,7 @@ struct subtitle_select_visible : public Command {
 /// Open spell checker.
 struct subtitle_spellcheck : public Command {
 	CMD_NAME("subtitle/spellcheck")
-	STR_MENU("Spe&ll Checker..")
+	STR_MENU("Spe&ll Checker...")
 	STR_DISP("Spell Checker")
 	STR_HELP("Open spell checker.")
 

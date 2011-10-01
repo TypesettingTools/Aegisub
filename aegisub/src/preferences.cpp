@@ -221,7 +221,7 @@ Interface_Hotkeys::Interface_Hotkeys(wxTreebook *book, Preferences *parent): Opt
 Paths::Paths(wxTreebook *book, Preferences *parent): OptionPage(book, parent, _("Paths")) {
 
 	wxFlexGridSizer *general = PageSizer(_("General"));
-	general->Add(new wxStaticText(this, wxID_ANY, "TBD.."), 0, wxALL, 5);
+	general->Add(new wxStaticText(this, wxID_ANY, "TBD..."), 0, wxALL, 5);
 
 	SetSizerAndFit(sizer);
 }
@@ -231,7 +231,7 @@ Paths::Paths(wxTreebook *book, Preferences *parent): OptionPage(book, parent, _(
 File_Associations::File_Associations(wxTreebook *book, Preferences *parent): OptionPage(book, parent, _("File Associations")) {
 
 	wxFlexGridSizer *assoc = PageSizer(_("General"));
-	assoc->Add(new wxStaticText(this, wxID_ANY, "TBD.."), 0, wxALL, 5);
+	assoc->Add(new wxStaticText(this, wxID_ANY, "TBD..."), 0, wxALL, 5);
 
 	SetSizerAndFit(sizer);
 }
@@ -297,7 +297,7 @@ Advanced::Advanced(wxTreebook *book, Preferences *parent): OptionPage(book, pare
 Advanced_Interface::Advanced_Interface(wxTreebook *book, Preferences *parent): OptionPage(book, parent, _("Backup"), PAGE_SUB) {
 	wxFlexGridSizer *interface_ = PageSizer(_("Interface"));
 
-	interface_->Add(new wxStaticText(this, wxID_ANY, "TBD.."), 0, wxALL, 5);
+	interface_->Add(new wxStaticText(this, wxID_ANY, "TBD..."), 0, wxALL, 5);
 
 	SetSizerAndFit(sizer);
 }

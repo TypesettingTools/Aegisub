@@ -85,7 +85,7 @@ struct audio_close : public validate_audio_open {
 /// Opens an audio file.
 struct audio_open : public Command {
 	CMD_NAME("audio/open")
-	STR_MENU("&Open Audio File..")
+	STR_MENU("&Open Audio File...")
 	STR_DISP("Open Audio File")
 	STR_HELP("Opens an audio file.")
 

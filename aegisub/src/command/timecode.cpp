@@ -75,7 +75,7 @@ struct timecode_close : public Command {
 /// Opens a VFR timecodes v1 or v2 file.
 struct timecode_open : public Command {
 	CMD_NAME("timecode/open")
-	STR_MENU("Open Timecodes File..")
+	STR_MENU("Open Timecodes File...")
 	STR_DISP("Open Timecodes File")
 	STR_HELP("Opens a VFR timecodes v1 or v2 file.")
 
@@ -94,7 +94,7 @@ struct timecode_open : public Command {
 /// Saves a VFR timecodes v2 file.
 struct timecode_save : public Command {
 	CMD_NAME("timecode/save")
-	STR_MENU("Save Timecodes File..")
+	STR_MENU("Save Timecodes File...")
 	STR_DISP("Save Timecodes File")
 	STR_HELP("Saves a VFR timecodes v2 file.")
 	CMD_TYPE(COMMAND_VALIDATE)

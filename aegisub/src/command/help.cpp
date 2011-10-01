@@ -58,7 +58,7 @@ namespace {
 /// Visit Aegisub's bug tracker.
 struct help_bugs : public Command {
 	CMD_NAME("help/bugs")
-	STR_MENU("&Bug Tracker..")
+	STR_MENU("&Bug Tracker...")
 	STR_DISP("Bug Tracker")
 	STR_HELP("Visit Aegisub's bug tracker to report bugs and request new features.")
 
@@ -80,7 +80,7 @@ struct help_bugs : public Command {
 /// Help topics.
 struct help_contents : public Command {
 	CMD_NAME("help/contents")
-	STR_MENU("&Contents..")
+	STR_MENU("&Contents...")
 	STR_DISP("Contents")
 	STR_HELP("Help topics.")
 
@@ -111,7 +111,7 @@ struct help_files : public Command {
 /// Visit Aegisub's forums.
 struct help_forums : public Command {
 	CMD_NAME("help/forums")
-	STR_MENU("&Forums..")
+	STR_MENU("&Forums...")
 	STR_DISP("Forums")
 	STR_HELP("Visit Aegisub's forums.")
 
@@ -124,7 +124,7 @@ struct help_forums : public Command {
 /// Visit Aegisub's official IRC channel.
 struct help_irc : public Command {
 	CMD_NAME("help/irc")
-	STR_MENU("&IRC Channel..")
+	STR_MENU("&IRC Channel...")
 	STR_DISP("IRC Channel")
 	STR_HELP("Visit Aegisub's official IRC channel.")
 
@@ -136,7 +136,7 @@ struct help_irc : public Command {
 /// Open the manual page for Visual Typesetting.
 struct help_video : public Command {
 	CMD_NAME("help/video")
-	STR_MENU("&Visual Typesetting..")
+	STR_MENU("&Visual Typesetting...")
 	STR_DISP("Visual Typesetting")
 	STR_HELP("Open the manual page for Visual Typesetting.")
 
@@ -148,7 +148,7 @@ struct help_video : public Command {
 /// Visit Aegisub's official website.
 struct help_website : public Command {
 	CMD_NAME("help/website")
-	STR_MENU("&Website..")
+	STR_MENU("&Website...")
 	STR_DISP("Website")
 	STR_HELP("Visit Aegisub's official website.")
 

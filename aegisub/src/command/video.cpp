@@ -103,7 +103,7 @@ struct video_aspect_cinematic : public validator_video_loaded {
 /// Forces video to a custom aspect ratio.
 struct video_aspect_custom : public validator_video_loaded {
 	CMD_NAME("video/aspect/custom")
-	STR_MENU("Custom..")
+	STR_MENU("Custom...")
 	STR_DISP("Custom")
 	STR_HELP("Forces video to a custom aspect ratio.")
 	CMD_TYPE(COMMAND_VALIDATE | COMMAND_RADIO)
@@ -272,7 +272,7 @@ struct video_detach : public validator_video_loaded {
 /// Shows video details.
 struct video_details : public validator_video_loaded {
 	CMD_NAME("video/details")
-	STR_MENU("Show Video Details..")
+	STR_MENU("Show Video Details...")
 	STR_DISP("Show Video Details")
 	STR_HELP("Shows video details.")
 
@@ -505,7 +505,7 @@ struct video_frame_save_raw : public validator_video_loaded {
 /// Jump to frame or time.
 struct video_jump : public validator_video_loaded {
 	CMD_NAME("video/jump")
-	STR_MENU("&Jump to..")
+	STR_MENU("&Jump to...")
 	STR_DISP("Jump to")
 	STR_HELP("Jump to frame or time.")
 
@@ -549,7 +549,7 @@ struct video_jump_start : public validator_video_loaded {
 /// Opens a video file.
 struct video_open : public Command {
 	CMD_NAME("video/open")
-	STR_MENU("&Open Video..")
+	STR_MENU("&Open Video...")
 	STR_DISP("Open Video")
 	STR_HELP("Opens a video file.")
 
