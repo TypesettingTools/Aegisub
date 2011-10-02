@@ -126,7 +126,7 @@ FrameMain::FrameMain (wxArrayString args)
 	wxPNGHandler *png = new wxPNGHandler;
 	wxImage::AddHandler(png);
 
-#ifndef __APPLE
+#ifndef __APPLE__
 	wxSafeYield();
 #endif
 
