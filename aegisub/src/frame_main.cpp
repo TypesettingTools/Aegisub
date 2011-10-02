@@ -104,6 +104,10 @@ FrameMain::FrameMain (wxArrayString args)
 	// However LC_NUMERIC must be "C", otherwise some parsing fails.
 	setlocale(LC_NUMERIC, "C");
 #endif
+#ifdef __APPLE__
+  // Apple's wprintf() and family breaks with CTYPE set to "C"
+  setlocale(LC_CTYPE, "");
+#endif
 
 	// Set application's frame
 	AegisubApp::Get()->frame = this;
@@ -122,7 +126,9 @@ FrameMain::FrameMain (wxArrayString args)
 	wxPNGHandler *png = new wxPNGHandler;
 	wxImage::AddHandler(png);
 
+#ifndef __APPLE
 	wxSafeYield();
+#endif
 
 	// Storage for subs-file-local scripts
 #ifdef WITH_AUTOMATION
