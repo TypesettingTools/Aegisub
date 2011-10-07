@@ -283,6 +283,98 @@ public:
 };
 
 
+static AssTime ReadSRTTime(const wxString &ts)
+{
+	// For the sake of your sanity, please do not read this function.
+
+	int d, h, m, s, ms;
+	d = h = m = s = ms = 0;
+
+	size_t ci = 0;
+	int ms_chars = 0;
+
+	for (; ci < ts.length(); ++ci)
+	{
+		wxChar ch = ts[ci];
+		switch (ch)
+		{
+		case _T('0'):
+		case _T('1'):
+		case _T('2'):
+		case _T('3'):
+		case _T('4'):
+		case _T('5'):
+		case _T('6'):
+		case _T('7'):
+		case _T('8'):
+		case _T('9'):
+			s = s * 10 + (ch - _T('0'));
+			break;
+		case _T(':'):
+			d = h;
+			h = m;
+			m = s;
+			s = 0;
+			break;
+		case _T(','):
+			ci++;
+			goto milliseconds;
+		default:
+			goto allparsed;
+		}
+	}
+	goto allparsed;
+milliseconds:
+	for (; ci < ts.length(); ++ci)
+	{
+		wxChar ch = ts[ci];
+		switch (ch)
+		{
+		case _T('0'):
+		case _T('1'):
+		case _T('2'):
+		case _T('3'):
+		case _T('4'):
+		case _T('5'):
+		case _T('6'):
+		case _T('7'):
+		case _T('8'):
+		case _T('9'):
+			ms = ms * 10 + (ch - _T('0'));
+			ms_chars++;
+			break;
+		default:
+			goto allparsed;
+		}
+	}
+allparsed:
+	while (ms_chars < 3) ms *= 10, ms_chars++;
+	while (ms_chars > 3) ms /= 10, ms_chars--;
+
+	AssTime res;
+	res.SetMS(ms + 1000*(s + 60*(m + 60*(h + d*24))));
+	return res;
+}
+
+static wxString WriteSRTTime(const AssTime &ts)
+{
+	int time = ts.GetMS();
+
+	int ms_part = time % 1000;
+	time /= 1000; // now holds seconds
+
+	int s_part = time % 60;
+	time /= 60;   // now holds minutes
+
+	int m_part = time % 60;
+	time /= 60;   // now holds hours
+
+	int h_part = time;
+
+	return wxString::Format(_T("%02d:%02d:%02d,%03d"), h_part, m_part, s_part, ms_part);
+}
+
+
 /////////////
 // Can read?
 bool SRTSubtitleFormat::CanReadFile(wxString filename) {
@@ -335,7 +427,7 @@ void SRTSubtitleFormat::ReadFile(wxString filename,wxString encoding) {
 
 	// "hh:mm:ss,fff --> hh:mm:ss,fff" (e.g. "00:00:04,070 --> 00:00:10,04")
 	/// @todo: move the full parsing of SRT timestamps here, instead of having it in AssTime
-	wxRegEx timestamp_regex(L"^([0-9]{2}:[0-9]{2}:[0-9]{2},[0-9]{3}) --> ([0-9]{2}:[0-9]{2}:[0-9]{2},[0-9]{3})");
+	wxRegEx timestamp_regex(L"^([0-9]{2}:[0-9]{2}:[0-9]{2},[0-9]{1,}) --> ([0-9]{2}:[0-9]{2}:[0-9]{2},[0-9]{1,})");
 	if (!timestamp_regex.IsValid())
 		throw Aegisub::InternalError(L"Parsing SRT: Failed compiling regex", 0);
 
@@ -386,8 +478,8 @@ found_timestamps:
 				line->Style = _T("Default");
 				line->Comment = false;
 				// this parsing should best be moved out of AssTime
-				line->Start.ParseSRT(timestamp_regex.GetMatch(text_line, 1));
-				line->End.ParseSRT(timestamp_regex.GetMatch(text_line, 2));
+				line->Start = ReadSRTTime(timestamp_regex.GetMatch(text_line, 1));
+				line->End = ReadSRTTime(timestamp_regex.GetMatch(text_line, 2));
 				// store pointer to subtitle, we'll continue working on it
 				line->FixStartMS();
 				Line->push_back(line);
@@ -493,7 +585,7 @@ void SRTSubtitleFormat::WriteFile(wxString _filename,wxString encoding) {
 		if (current && !current->Comment) {
 			// Write line
 			file.WriteLineToFile(wxString::Format(_T("%i"),i));
-			file.WriteLineToFile(current->Start.GetSRTFormated() + _T(" --> ") + current->End.GetSRTFormated());
+			file.WriteLineToFile(WriteSRTTime(current->Start) + _T(" --> ") + WriteSRTTime(current->End));
 			file.WriteLineToFile(current->Text);
 			file.WriteLineToFile(_T(""));
 
