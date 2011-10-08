@@ -1179,6 +1179,7 @@ void FrameMain::LoadVFR(wxString filename) {
 	if (filename != _T("")) {
 		try {
 			VFR_Output.Load(filename);
+			VFR_Input = VFR_Output;
 			SubsBox->Refresh(false);
 		}
 
