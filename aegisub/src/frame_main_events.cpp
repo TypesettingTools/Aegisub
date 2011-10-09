@@ -667,7 +667,8 @@ void FrameMain::OnOpenVideo(wxCommandEvent& WXUNUSED(event)) {
 	wxString filename = wxFileSelector(_("Open video file"),path,_T(""),_T(""),str,wxFD_OPEN | wxFD_FILE_MUST_EXIST);
 	if (!filename.empty()) {
 		LoadVideo(filename);
-		Options.SetText(_T("Last open video path"), filename);
+		wxFileName filepath(filename);
+		Options.SetText(_T("Last open video path"), filepath.GetPath());
 		Options.Save();
 	}
 }
@@ -690,7 +691,8 @@ void FrameMain::OnOpenAudio (wxCommandEvent& WXUNUSED(event)) {
 	wxString filename = wxFileSelector(_("Open audio file"),path,_T(""),_T(""),str,wxFD_OPEN | wxFD_FILE_MUST_EXIST);
 	if (!filename.empty()) {
 		LoadAudio(filename);
-		Options.SetText(_T("Last open audio path"), filename);
+		wxFileName filepath(filename);
+		Options.SetText(_T("Last open audio path"), filepath.GetPath());
 		Options.Save();
 	}
 }
@@ -743,7 +745,8 @@ void FrameMain::OnOpenSubtitlesCharset(wxCommandEvent& WXUNUSED(event)) {
 		if (!charset.empty()) {
 			LoadSubtitles(filename,charset);
 		}
-		Options.SetText(_T("Last open subtitles path"), filename);
+		wxFileName filepath(filename);
+		Options.SetText(_T("Last open subtitles path"), filepath.GetPath());
 		Options.Save();
 	}
 }
@@ -817,7 +820,8 @@ void FrameMain::OnOpenVFR(wxCommandEvent &event) {
 	wxString filename = wxFileSelector(_("Open timecodes file"),path,_T(""),_T(""),str,wxFD_OPEN | wxFD_FILE_MUST_EXIST);
 	if (!filename.empty()) {
 		LoadVFR(filename);
-		Options.SetText(_T("Last open timecodes path"), filename);
+		wxFileName filepath(filename);
+		Options.SetText(_T("Last open timecodes path"), filepath.GetPath());
 		Options.Save();
 	}
 }
@@ -832,7 +836,8 @@ void FrameMain::OnSaveVFR(wxCommandEvent &event) {
 	wxString filename = wxFileSelector(_("Save timecodes file"),path,_T(""),_T(""),str,wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
 	if (!filename.empty()) {
 		SaveVFR(filename);
-		Options.SetText(_T("Last open timecodes path"), filename);
+		wxFileName filepath(filename);
+		Options.SetText(_T("Last open timecodes path"), filepath.GetPath());
 		Options.Save();
 	}
 }
@@ -853,7 +858,8 @@ void FrameMain::OnOpenKeyframes (wxCommandEvent &event) {
 	wxString path = Options.AsText(_T("Last open keyframes path"));
 	wxString filename = wxFileSelector(_T("Select the keyframes file to open"),path,_T(""),_T(".txt"),_T("All supported formats (*.txt, *.pass, *.stats, *.log)|*.txt;*.pass;*.stats;*.log|All files (*.*)|*.*"),wxFD_FILE_MUST_EXIST | wxFD_OPEN);
 	if (filename.IsEmpty()) return;
-	Options.SetText(_T("Last open keyframes path"),filename);
+	wxFileName filepath(filename);
+	Options.SetText(_T("Last open keyframes path"),filepath.GetPath());
 	Options.Save();
 
 	// Load
@@ -881,7 +887,8 @@ void FrameMain::OnSaveKeyframes (wxCommandEvent &event) {
 	wxString path = Options.AsText(_T("Last open keyframes path"));
 	wxString filename = wxFileSelector(_T("Select the Keyframes file to open"),path,_T(""),_T("*.key.txt"),_T("Text files (*.txt)|*.txt"),wxFD_OVERWRITE_PROMPT | wxFD_SAVE);
 	if (filename.IsEmpty()) return;
-	Options.SetText(_T("Last open keyframes path"),filename);
+	wxFileName filepath(filename);
+	Options.SetText(_T("Last open keyframes path"),filepath.GetPath());
 	Options.Save();
 
 	// Save
