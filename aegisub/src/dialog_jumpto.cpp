@@ -172,8 +172,6 @@ void DialogJumpTo::OnEditFrame (wxCommandEvent &event) {
 		// Update frame
 		JumpFrame->GetValue().ToLong(&jumpframe);
 
-		JumpFrame->SetValue(wxString::Format(_T("%i"),jumpframe));
-
 		// Update time
 		int newtime = VFR_Output.GetTimeAtFrame(jumpframe,true,true);
 		if (jumptime.GetMS() != newtime) {
