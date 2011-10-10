@@ -48,6 +48,7 @@ class AudioDisplay;
 class wxBitmapToggleButton;
 class wxButton;
 class wxCommandEvent;
+class wxPanel;
 class wxScrollEvent;
 class wxSizer;
 class wxSlider;

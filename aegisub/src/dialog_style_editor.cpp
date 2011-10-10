@@ -37,8 +37,9 @@
 #include "config.h"
 
 #ifndef AGI_PRE
-#include <tr1/algorithm>
+#include <algorithm>
 
+#include <wx/bmpbuttn.h>
 #include <wx/colordlg.h>
 #include <wx/fontdlg.h>
 #include <wx/fontenum.h>

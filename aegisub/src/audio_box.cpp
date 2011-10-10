@@ -40,6 +40,7 @@
 #include <math.h>
 
 #include <wx/bmpbuttn.h>
+#include <wx/panel.h>
 #include <wx/slider.h>
 #include <wx/scrolbar.h>
 #include <wx/sizer.h>

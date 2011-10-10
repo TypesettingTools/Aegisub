@@ -36,6 +36,7 @@
 #include "config.h"
 
 #ifndef AGI_PRE
+#include <wx/bmpbuttn.h>
 #include <wx/clipbrd.h>
 #include <wx/filedlg.h>
 #include <wx/filename.h>
