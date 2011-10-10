@@ -480,7 +480,6 @@ void AssFile::LoadDefault(bool defline) {
 
 void AssFile::swap(AssFile &that) throw() {
 	// Intentionally does not swap undo stack related things
-	std::swap(filename, that.filename);
 	std::swap(loaded, that.loaded);
 	std::swap(commitId, that.commitId);
 	std::swap(undoDescription, that.undoDescription);
