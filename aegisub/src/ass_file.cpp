@@ -263,15 +263,10 @@ bool AssFile::CanSave() {
 	SubtitleFormat *writer = SubtitleFormat::GetWriter(filename);
 	if (!writer) return false;
 
-	// Check if format supports timing
-	bool canTime = true;
-	//if (filename.Lower().Right(4) == ".txt") canTime = false;
-
 	// Scan through the lines
 	AssStyle defstyle;
 	AssStyle *curstyle;
 	AssDialogue *curdiag;
-	AssAttachment *attach;
 	for (entryIter cur=Line.begin();cur!=Line.end();cur++) {
 		// Check style, if anything non-default is found, return false
 		curstyle = dynamic_cast<AssStyle*>(*cur);
@@ -280,14 +275,13 @@ bool AssFile::CanSave() {
 		}
 
 		// Check for attachments, if any is found, return false
-		attach = dynamic_cast<AssAttachment*>(*cur);
-		if (attach) return false;
+		if (dynamic_cast<AssAttachment*>(*cur)) return false;
 
 		// Check dialog
 		curdiag = dynamic_cast<AssDialogue*>(*cur);
 		if (curdiag) {
 			// Timed?
-			if (!canTime && (curdiag->Start.GetMS() != 0 || curdiag->End.GetMS() != 0)) return false;
+			if (curdiag->Start.GetMS() != 0 || curdiag->End.GetMS() != 0) return false;
 
 			// Overrides?
 			curdiag->ParseASSTags();
