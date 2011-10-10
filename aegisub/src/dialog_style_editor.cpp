@@ -254,6 +254,7 @@ DialogStyleEditor::DialogStyleEditor (wxWindow *parent, AssStyle *style, agi::Co
 	// Preview
 	SubsPreview = NULL;
 	PreviewText = NULL;
+	ColourButton *previewButton = 0;
 	if (!SubtitlesProviderFactory::GetClasses().empty()) {
 		PreviewText = new wxTextCtrl(this, -1, lagi_wxString(OPT_GET("Tool/Style Editor/Preview Text")->GetString()));
 		previewButton = new ColourButton(this, -1, wxSize(45, 16), lagi_wxColour(OPT_GET("Colour/Style Editor/Background/Preview")->GetColour()));
@@ -300,7 +301,7 @@ DialogStyleEditor::DialogStyleEditor (wxWindow *parent, AssStyle *style, agi::Co
 	ControlSizer->Add(RightSizer, 1, wxLEFT | wxEXPAND, 5);
 
 	// General Layout
-	MainSizer = new wxBoxSizer(wxVERTICAL);
+	wxSizer *MainSizer = new wxBoxSizer(wxVERTICAL);
 	MainSizer->Add(ControlSizer, 1, wxALL | wxALIGN_CENTER | wxEXPAND, 5);
 	MainSizer->Add(ButtonSizer, 0, wxBOTTOM | wxEXPAND, 5);
 
@@ -326,7 +327,7 @@ DialogStyleEditor::DialogStyleEditor (wxWindow *parent, AssStyle *style, agi::Co
 	Bind(wxEVT_COMMAND_BUTTON_CLICKED, std::tr1::bind(&HelpButton::OpenPage, "Style Editor"), wxID_HELP);
 
 	for (int i = 0; i < 4; ++i)
-		colorButton[i]->Bind(wxEVT_COMMAND_BUTTON_CLICKED, std::tr1::bind(&DialogStyleEditor::OnSetColor, this, i + 1));
+		colorButton[i]->Bind(wxEVT_COMMAND_BUTTON_CLICKED, bind(&DialogStyleEditor::OnSetColor, this, i + 1, std::tr1::placeholders::_1));
 }
 
 DialogStyleEditor::~DialogStyleEditor () {
@@ -472,7 +473,13 @@ void DialogStyleEditor::OnChooseFont (wxCommandEvent &event) {
 
 /// @brief Sets color for one of the four color buttons 
 /// @param n Colour to set
-void DialogStyleEditor::OnSetColor (int n) {
+void DialogStyleEditor::OnSetColor (int n, wxCommandEvent& evt) {
+	ColourButton *btn = static_cast<ColourButton*>(evt.GetClientData());
+	if (!btn) {
+		evt.Skip();
+		return;
+	}
+
 	AssColor *modify;
 	switch (n) {
 		case 1: modify = &work->primary; break;
@@ -481,8 +488,9 @@ void DialogStyleEditor::OnSetColor (int n) {
 		case 4: modify = &work->shadow; break;
 		default: throw agi::InternalError("attempted setting colour id outside range", 0);
 	}
-	modify->SetWXColor(colorButton[n-1]->GetColour());
-	if (SubsPreview) SubsPreview->SetStyle(*work);
+	modify->SetWXColor(btn->GetColour());
+	if (SubsPreview)
+		SubsPreview->SetStyle(*work);
 }
 
 void DialogStyleEditor::OnChildFocus (wxChildFocusEvent &event) {
@@ -498,9 +506,14 @@ void DialogStyleEditor::OnPreviewTextChange (wxCommandEvent &event) {
 }
 
 /// @brief Change colour of preview's background 
-void DialogStyleEditor::OnPreviewColourChange (wxCommandEvent &event) {
-	SubsPreview->SetColour(previewButton->GetColour());
-	OPT_SET("Colour/Style Editor/Background/Preview")->SetColour(STD_STR(previewButton->GetColour().GetAsString(wxC2S_CSS_SYNTAX)));
+void DialogStyleEditor::OnPreviewColourChange (wxCommandEvent &evt) {
+	ColourButton *btn = static_cast<ColourButton*>(evt.GetClientData());
+	if (!btn)
+		evt.Skip();
+	else {
+		SubsPreview->SetColour(btn->GetColour());
+		OPT_SET("Colour/Style Editor/Background/Preview")->SetColour(STD_STR(btn->GetColour().GetAsString(wxC2S_CSS_SYNTAX)));
+	}
 }
 
 /// @brief Command event to update preview 

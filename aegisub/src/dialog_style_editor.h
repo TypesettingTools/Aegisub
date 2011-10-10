@@ -140,12 +140,6 @@ class DialogStyleEditor : public wxDialog {
 	/// DOCME
 	SubtitlesPreview *SubsPreview;
 
-	/// DOCME
-	ColourButton *previewButton;
-
-	/// DOCME
-	wxSizer *MainSizer;
-
 	void SetBitmapColor (int n,wxColour color);
 	int AlignToControl (int n);
 	int ControlToAlign (int n);
@@ -158,11 +152,10 @@ class DialogStyleEditor : public wxDialog {
 	void OnPreviewTextChange (wxCommandEvent &event);
 	void OnPreviewColourChange (wxCommandEvent &event);
 
+	void Apply (bool apply,bool close);
+	void OnSetColor (int n, wxCommandEvent& evt);
+
 public:
 	DialogStyleEditor(wxWindow *parent,AssStyle *style, agi::Context *c,bool local,AssStyleStorage *store,bool newStyle=false);
-
 	~DialogStyleEditor();
-
-	void Apply (bool apply,bool close);
-	void OnSetColor (int n);
 };
