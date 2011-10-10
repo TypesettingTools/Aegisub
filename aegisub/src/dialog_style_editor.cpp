@@ -50,16 +50,18 @@
 #include "ass_override.h"
 #include "ass_style.h"
 #include "ass_style_storage.h"
+#include "colour_button.h"
 #include "compat.h"
 #include "dialog_style_editor.h"
-#include "include/aegisub/context.h"
 #include "help_button.h"
+#include "include/aegisub/context.h"
+#include "include/aegisub/subtitles_provider.h"
 #include "libresrc/libresrc.h"
 #include "main.h"
+#include "persist_location.h"
 #include "selection_controller.h"
 #include "subs_grid.h"
 #include "subs_preview.h"
-#include "include/aegisub/subtitles_provider.h"
 #include "utils.h"
 #include "validators.h"
 
@@ -352,7 +354,8 @@ DialogStyleEditor::DialogStyleEditor (wxWindow *parent, AssStyle *style, agi::Co
 	// Set sizer
 	MainSizer->SetSizeHints(this);
 	SetSizer(MainSizer);
-	LoadPosition();
+
+	persist.reset(new PersistLocation(this, "Tool/Style Editor"));
 }
 
 /// @brief Destructor 
@@ -361,8 +364,6 @@ DialogStyleEditor::~DialogStyleEditor () {
 	delete work;
 }
 
-///////////////
-// Event table
 BEGIN_EVENT_TABLE(DialogStyleEditor, wxDialog)
 	EVT_BUTTON(wxID_APPLY, DialogStyleEditor::OnApply)
 	EVT_BUTTON(wxID_OK, DialogStyleEditor::OnOK)
@@ -389,41 +390,12 @@ BEGIN_EVENT_TABLE(DialogStyleEditor, wxDialog)
 	EVT_SPINCTRL(TEXT_ALPHA_4, DialogStyleEditor::OnSpinPreviewUpdate)
 END_EVENT_TABLE()
 
-
-
-/// @brief Event redirectors 
-/// @param event 
-///
-void DialogStyleEditor::OnApply (wxCommandEvent &event) { Apply(true,false); }
-
-/// @brief DOCME
-/// @param event 
-///
-void DialogStyleEditor::OnOK (wxCommandEvent &event) { SavePosition(); Apply(true,true); }
-
-/// @brief DOCME
-/// @param event 
-///
-void DialogStyleEditor::OnCancel (wxCommandEvent &event) { SavePosition(); Apply(false,true); }
-
-/// @brief DOCME
-/// @param event 
-///
+void DialogStyleEditor::OnApply (wxCommandEvent &event) { Apply(true, false); }
+void DialogStyleEditor::OnOK (wxCommandEvent &event) { Apply(true, true); }
+void DialogStyleEditor::OnCancel (wxCommandEvent &event) { Apply(false, true); }
 void DialogStyleEditor::OnSetColor1 (wxCommandEvent &event) { OnSetColor(1); }
-
-/// @brief DOCME
-/// @param event 
-///
 void DialogStyleEditor::OnSetColor2 (wxCommandEvent &event) { OnSetColor(2); }
-
-/// @brief DOCME
-/// @param event 
-///
 void DialogStyleEditor::OnSetColor3 (wxCommandEvent &event) { OnSetColor(3); }
-
-/// @brief DOCME
-/// @param event 
-///
 void DialogStyleEditor::OnSetColor4 (wxCommandEvent &event) { OnSetColor(4); }
 
 /// @brief Replace Style 
@@ -698,25 +670,3 @@ int DialogStyleEditor::AlignToControl (int n) {
 		default: return 7;
 	}
 }
-
-/// @brief Load and save window position for the session 
-///
-void DialogStyleEditor::SavePosition() {
-	use_saved_position = true;
-	saved_position = GetRect();
-}
-
-/// @brief DOCME
-///
-void DialogStyleEditor::LoadPosition() {
-	if (use_saved_position)
-		SetSize(saved_position);
-	else
-		CentreOnParent();
-}
-
-/// DOCME
-wxRect DialogStyleEditor::saved_position;
-
-/// DOCME
-bool DialogStyleEditor::use_saved_position = false;

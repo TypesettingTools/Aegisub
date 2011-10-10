@@ -375,6 +375,11 @@
 			"Language" : "en_US"
 		},
 		"Style Editor" : {
+			"Last" : {
+				"X" : -1,
+				"Y" : -1
+			},
+			"Maximized" : false,
 			"Preview Text" : "Aegisub\\N0123 月語"
 		},
 		"Style Manager" : {

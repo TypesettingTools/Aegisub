@@ -42,12 +42,14 @@
 #include <wx/textctrl.h>
 #endif
 
-#include "colour_button.h"
+#include <libaegisub/scoped_ptr.h>
 
 namespace agi { struct Context; }
 class AssStyle;
-class SubtitlesPreview;
 class AssStyleStorage;
+class ColourButton;
+class PersistLocation;
+class SubtitlesPreview;
 
 /// DOCME
 /// @class DialogStyleEditor
@@ -56,6 +58,7 @@ class AssStyleStorage;
 /// DOCME
 class DialogStyleEditor : public wxDialog {
 	agi::Context *c;
+	agi::scoped_ptr<PersistLocation> persist;
 
 	/// DOCME
 	bool isLocal;
@@ -142,15 +145,6 @@ class DialogStyleEditor : public wxDialog {
 
 	/// DOCME
 	wxSizer *MainSizer;
-
-
-	/// DOCME
-	static wxRect saved_position;
-
-	/// DOCME
-	static bool use_saved_position;
-	void SavePosition();
-	void LoadPosition();
 
 	void SetBitmapColor (int n,wxColour color);
 	int AlignToControl (int n);
