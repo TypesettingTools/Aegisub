@@ -72,7 +72,7 @@ class DialogStyleEditor : public wxDialog {
 	AssStyle *style;
 
 	/// DOCME
-	AssStyle *work;
+	agi::scoped_ptr<AssStyle> work;
 
 	/// DOCME
 	AssStyleStorage *store;
@@ -151,30 +151,18 @@ class DialogStyleEditor : public wxDialog {
 	int ControlToAlign (int n);
 	void UpdateWorkStyle ();
 
-	void OnApply (wxCommandEvent &event);
-	void OnCancel (wxCommandEvent &event);
-	void OnOK (wxCommandEvent &event);
 	void OnChooseFont (wxCommandEvent &event);
-	void OnSetColor1 (wxCommandEvent &event);
-	void OnSetColor2 (wxCommandEvent &event);
-	void OnSetColor3 (wxCommandEvent &event);
-	void OnSetColor4 (wxCommandEvent &event);
 	void OnChildFocus (wxChildFocusEvent &event);
 	void OnCommandPreviewUpdate (wxCommandEvent &event);
 
-	/// @brief DOCME
-	/// @param event 
-	///
-	void OnSpinPreviewUpdate (wxSpinEvent &event) { OnCommandPreviewUpdate(event); }
 	void OnPreviewTextChange (wxCommandEvent &event);
 	void OnPreviewColourChange (wxCommandEvent &event);
 
 public:
 	DialogStyleEditor(wxWindow *parent,AssStyle *style, agi::Context *c,bool local,AssStyleStorage *store,bool newStyle=false);
+
 	~DialogStyleEditor();
 
 	void Apply (bool apply,bool close);
 	void OnSetColor (int n);
-
-	DECLARE_EVENT_TABLE()
 };

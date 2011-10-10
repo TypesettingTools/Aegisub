@@ -101,7 +101,7 @@ void SubtitlesPreview::SetText(wxString text) {
 }
 
 void SubtitlesPreview::UpdateBitmap() {
-	if (!IsShownOnScreen()) return;
+	if (!vid.get()) return;
 
 	AegiVideoFrame frame;
 	frame.CopyFrom(vid->GetFrame(0));
