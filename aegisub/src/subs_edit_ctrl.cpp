@@ -421,6 +421,8 @@ void SubsTextEditCtrl::UpdateStyle() {
 
 /// @brief Update call tip 
 void SubsTextEditCtrl::UpdateCallTip(wxStyledTextEvent &) {
+	UpdateStyle();
+
 	if (!OPT_GET("App/Call Tips")->GetBool()) return;
 
 	// Get position and text
@@ -666,10 +668,6 @@ void SubsTextEditCtrl::SetTextTo(wxString text) {
 	SetEvtHandlerEnabled(false);
 	Freeze();
 
-	text.Replace("\r\n","\\N");
-	text.Replace("\r","\\N");
-	text.Replace("\n","\\N");
-
 	int from=0,to=0;
 	GetSelection(&from,&to);
 
@@ -677,10 +675,38 @@ void SubsTextEditCtrl::SetTextTo(wxString text) {
 	UpdateStyle();
 
 	// Restore selection
-	SetSelectionU(GetReverseUnicodePosition(from),GetReverseUnicodePosition(to));
+	SetSelectionU(GetReverseUnicodePosition(from), GetReverseUnicodePosition(to));
 
 	SetEvtHandlerEnabled(true);
 	Thaw();
+}
+
+
+void SubsTextEditCtrl::Paste() {
+	wxString data;
+	if (wxTheClipboard->Open()) {
+		if (wxTheClipboard->IsSupported(wxDF_TEXT)) {
+			wxTextDataObject rawdata;
+			wxTheClipboard->GetData(rawdata);
+			data = rawdata.GetText();
+		}
+		wxTheClipboard->Close();
+	}
+
+	data.Replace("\r\n", "\\N");
+	data.Replace("\n", "\\N");
+	data.Replace("\r", "\\N");
+
+	int from = GetReverseUnicodePosition(GetSelectionStart());
+	int to = GetReverseUnicodePosition(GetSelectionEnd());
+
+	wxString old = GetText();
+	SetText(old.Left(from) + data + old.Mid(to));
+
+	int sel_start = GetUnicodePosition(from + data.size());
+	SetSelectionStart(sel_start);
+	SetSelectionEnd(sel_start);
+	UpdateStyle();
 }
 
 void SubsTextEditCtrl::OnContextMenu(wxContextMenuEvent &event) {

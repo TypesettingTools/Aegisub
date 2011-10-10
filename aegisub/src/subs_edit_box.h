@@ -131,7 +131,6 @@ class SubsEditBox : public wxPanel, protected SelectionListener<AssDialogue> {
 	int commitId;
 	wxString lastCommitType;
 
-	void OnNeedStyle(wxStyledTextEvent &event);
 	void OnChange(wxStyledTextEvent &event);
 	void OnKeyDown(wxKeyEvent &event);
 

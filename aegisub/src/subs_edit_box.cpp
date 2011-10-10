@@ -292,7 +292,6 @@ SubsEditBox::SubsEditBox(wxWindow *parent, agi::Context *context)
 	bind_focus_handler(ActorBox, wxEVT_KILL_FOCUS, "Actor", "", grey);
 	ActorBox->SetForegroundColour(grey);
 
-	TextEdit->Bind(wxEVT_STC_STYLENEEDED, &SubsEditBox::OnNeedStyle, this);
 	TextEdit->Bind(wxEVT_STC_MODIFIED, &SubsEditBox::OnChange, this);
 	TextEdit->SetModEventMask(wxSTC_MOD_INSERTTEXT | wxSTC_MOD_DELETETEXT);
 
@@ -543,16 +542,6 @@ void SubsEditBox::OnSize(wxSizeEvent &evt) {
 	}
 
 	evt.Skip();
-}
-
-void SubsEditBox::OnNeedStyle(wxStyledTextEvent &event) {
-	// Check if it needs to fix text
-	wxString text = TextEdit->GetText();
-	if (text.Contains("\n") || text.Contains("\r")) {
-		TextEdit->SetTextTo(text);
-	}
-	// Just update style
-	else TextEdit->UpdateStyle();
 }
 
 void SubsEditBox::OnFrameTimeRadio(wxCommandEvent &event) {

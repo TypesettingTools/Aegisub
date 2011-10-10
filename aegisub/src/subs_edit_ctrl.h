@@ -95,12 +95,14 @@ class SubsTextEditCtrl : public ScintillaTextCtrl {
 	void UpdateCallTip(wxStyledTextEvent &);
 	void SetStyles();
 
+	void UpdateStyle();
+
 public:
 	SubsTextEditCtrl(wxWindow* parent, wxSize size, long style, SubtitlesGrid *grid);
 	~SubsTextEditCtrl();
 
 	void SetTextTo(wxString text);
-	void UpdateStyle();
+	void Paste();
 
 	DECLARE_EVENT_TABLE()
 };
