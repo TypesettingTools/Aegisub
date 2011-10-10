@@ -82,6 +82,7 @@ DialogStyleEditor::DialogStyleEditor (wxWindow *parent, AssStyle *style, agi::Co
 , c(c)
 , isLocal(local)
 , isNew(newStyle)
+, style(style)
 , work(new AssStyle(*style))
 , store(store)
 {
