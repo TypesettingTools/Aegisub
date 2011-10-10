@@ -1,5 +1,6 @@
 [Config]
 local config=1
+locale code=56
 show associations=0
 automation base path=?data/automation/
 automation include path=?data/automation/include/
