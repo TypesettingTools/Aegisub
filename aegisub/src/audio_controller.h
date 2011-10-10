@@ -213,6 +213,9 @@ class AudioController : public wxEvtHandler, public AudioMarkerProvider, public 
 	/// Provide keyframe data for audio displays
 	agi::scoped_ptr<AudioMarkerProvider> keyframes_marker_provider;
 
+	/// Provider current video position data for audio display
+	agi::scoped_ptr<AudioMarkerProvider> video_position_marker_provider;
+
 	/// The URL of the currently open audio, if any
 	wxString audio_url;
 
