@@ -145,7 +145,6 @@ class DialogStyleEditor : public wxDialog {
 	int ControlToAlign (int n);
 	void UpdateWorkStyle ();
 
-	void OnChooseFont (wxCommandEvent &event);
 	void OnChildFocus (wxChildFocusEvent &event);
 	void OnCommandPreviewUpdate (wxCommandEvent &event);
 
