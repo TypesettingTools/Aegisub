@@ -40,15 +40,14 @@
 
 namespace agi {
 
-Options::Options(const std::string &file, const std::string& default_config, const OptionSetting setting):
-							config_file(file), config_default(default_config), config_loaded(false), setting(setting) {
+Options::Options(const std::string &file, const std::string& default_config, const OptionSetting setting)
+: config_file(file), config_default(default_config), config_loaded(false), setting(setting) {
 	LOG_D("agi/options") << "New Options object";
 	std::istringstream stream(default_config);
 	LoadConfig(stream);
 }
 
 Options::~Options() {
-
 	if ((setting & FLUSH_SKIP) != FLUSH_SKIP) {
 		Flush();
 	}
@@ -114,8 +113,6 @@ void Options::Flush() {
 	json::Object obj_out;
 
 	for (OptionValueMap::const_iterator i = values.begin(); i != values.end(); ++i) {
-		std::string key = i->first.substr(i->first.rfind("/")+1, i->first.size());
-
 		switch (i->second->GetType()) {
 			case OptionValue::Type_String:
 				PutOption(obj_out, i->first, (json::String)i->second->GetString());

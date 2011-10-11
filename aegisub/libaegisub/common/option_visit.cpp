@@ -32,12 +32,15 @@ namespace agi {
 
 ConfigVisitor::ConfigVisitor(OptionValueMap &val, const std::string &member_name)
 : values(val)
-, name(member_name + "/")
+, name(member_name)
 {
 }
 
 void ConfigVisitor::Visit(const json::Object& object) {
 	json::Object::const_iterator index(object.Begin()), index_end(object.End());
+
+	if (!name.empty())
+		name += "/";
 
 	for (; index != index_end; ++index) {
 		const json::Object::Member& member = *index;
@@ -50,16 +53,12 @@ void ConfigVisitor::Visit(const json::Object& object) {
 	}
 }
 
-
 void ConfigVisitor::Visit(const json::Array& array) {
-	bool init = false;
-
 	OptionValueList *array_list = NULL;
 
 	json::Array::const_iterator index(array.Begin()), indexEnd(array.End());
 
 	for (; index != indexEnd; ++index) {
-
 		const json::Object& index_array = *index;
 
 		json::Object::const_iterator index_object(index_array.Begin()), index_objectEnd(index_array.End());
@@ -68,10 +67,9 @@ void ConfigVisitor::Visit(const json::Array& array) {
 			const json::Object::Member& member = *index_object;
 			const std::string& member_name = member.name;
 
-
 			// This can only happen once since a list must always be of the same
 			// type, if we try inserting another type into it we want it to fail.
-			if (!init) {
+			if (!array_list) {
 				if (member_name == "string") {
 					array_list = new OptionValueListString(name);
 				} else if (member_name == "int") {
@@ -85,7 +83,6 @@ void ConfigVisitor::Visit(const json::Array& array) {
 				} else {
 					throw OptionJsonValueArray("Array type not handled");
 				}
-				init = true;
 			}
 
 			try {
@@ -114,13 +111,10 @@ void ConfigVisitor::Visit(const json::Array& array) {
 				delete array_list;
 				throw OptionJsonValueArray("Attempt to insert value into array of wrong type");
 			}
-
 		} // for index_object
-
 	} // for index
 
 	if (array_list) AddOptionValue(array_list);
-
 }
 
 
@@ -134,9 +128,7 @@ void ConfigVisitor::Visit(const json::Number& number) {
 		OptionValue *opt = new OptionValueDouble(name, val);
 		AddOptionValue(opt);
 	}
-
 }
-
 
 void ConfigVisitor::Visit(const json::String& string) {
 	OptionValue *opt;
@@ -148,29 +140,24 @@ void ConfigVisitor::Visit(const json::String& string) {
 	AddOptionValue(opt);
 }
 
-
 void ConfigVisitor::Visit(const json::Boolean& boolean) {
 	OptionValue *opt = new OptionValueBool(name, boolean.Value());
 	AddOptionValue(opt);
 }
 
-
 void ConfigVisitor::Visit(const json::Null& null) {
 	throw OptionJsonValueNull("Attempt to read null value");
 }
 
-
 void ConfigVisitor::AddOptionValue(OptionValue* opt) {
-	// Corresponding code is in the constuctor.
-	std::string stripped = name.substr(1, name.rfind("/")-1);
 	OptionValue *opt_cur;
 
 	OptionValueMap::iterator index;
 
-	if ((index = values.find(stripped)) != values.end()) {
+	if ((index = values.find(name)) != values.end()) {
 		opt_cur = index->second;
 	} else {
-		values.insert(OptionValuePair(stripped, opt));
+		values.insert(OptionValuePair(name, opt));
 		return;
 	}
 
@@ -228,7 +215,6 @@ void ConfigVisitor::AddOptionValue(OptionValue* opt) {
 			break;
 		}
 
-
 		case OptionValue::Type_List_Bool: {
 			std::vector<bool> array;
  			opt->GetListBool(array);
@@ -236,7 +222,5 @@ void ConfigVisitor::AddOptionValue(OptionValue* opt) {
 			break;
 		}
 	}
-
 }
-
 } // namespace agi
