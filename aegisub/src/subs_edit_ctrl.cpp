@@ -415,8 +415,6 @@ void SubsTextEditCtrl::UpdateStyle() {
 	}
 	SetStyling(range_len, style);
 	StyleSpellCheck();
-	wxStyledTextEvent evt;
-	UpdateCallTip(evt);
 }
 
 /// @brief Update call tip 
