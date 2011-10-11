@@ -22,12 +22,12 @@
 #ifndef AGI_PRE
 #include <map>
 
-#include <wx/any.h>
 #include <wx/dialog.h>
-#include <wx/event.h>
-#include <wx/treebook.h>
-#include <wx/listctrl.h>
 #endif
+
+class wxAny;
+class wxButton;
+class wxTreebook;
 
 class Preferences: public wxDialog {
 	wxTreebook *book;
@@ -43,7 +43,5 @@ public:
 	Preferences(wxWindow *parent);
 	~Preferences();
 
-	void SetOption(const char *name, wxAny value);
-
-	DECLARE_EVENT_TABLE()
+	void SetOption(std::string const& name, wxAny value);
 };

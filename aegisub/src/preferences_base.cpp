@@ -20,31 +20,34 @@
 
 
 #ifndef AGI_PRE
+#include <wx/any.h>
 #include <wx/checkbox.h>
 #include <wx/combobox.h>
+#include <wx/event.h>
 #include <wx/filefn.h>
+#include <wx/fontdlg.h>
+#include <wx/listctrl.h>
 #include <wx/sizer.h>
 #include <wx/spinctrl.h>
 #include <wx/stattext.h>
 #include <wx/stdpaths.h>
 #include <wx/treebook.h>
+#include <wx/treebook.h>
 #endif
 
 #include <libaegisub/exception.h>
 
-#include "colour_button.h"
-#include "compat.h"
-#include "libresrc/libresrc.h"
-#include "preferences.h"
-#include "main.h"
-#include "include/aegisub/audio_player.h"
-#include "include/aegisub/audio_provider.h"
-#include "video_provider_manager.h"
-
 #include "preferences_base.h"
 
-/// Define make all platform-specific options visible in a single view.
-#define SHOW_ALL 1
+#include "colour_button.h"
+#include "compat.h"
+#include "include/aegisub/audio_player.h"
+#include "include/aegisub/audio_provider.h"
+#include "libresrc/libresrc.h"
+#include "main.h"
+#include "preferences.h"
+#include "standard_paths.h"
+#include "video_provider_manager.h"
 
 DEFINE_BASE_EXCEPTION_NOINNER(PreferencesError, agi::Exception)
 DEFINE_SIMPLE_EXCEPTION_NOINNER(PreferenceIncorrectType, PreferencesError, "preferences/incorrect_type")
@@ -52,10 +55,10 @@ DEFINE_SIMPLE_EXCEPTION_NOINNER(PreferenceNotSupported, PreferencesError, "prefe
 
 #define OPTION_UPDATER(type, evttype, body)                               \
 	class type {                                                          \
-		const char *name;                                                 \
+		std::string name;                                                 \
 		Preferences *parent;                                              \
 	public:                                                               \
-		type(const char *n="",Preferences *p=NULL) : name(n),parent(p) {} \
+		type(std::string const& n, Preferences *p) : name(n),parent(p) {} \
 		void operator()(evttype& evt) { parent->SetOption(name, body); }  \
 	}
 
@@ -80,42 +83,60 @@ public:
 	}
 };
 
+static void browse_button(wxTextCtrl *ctrl) {
+	wxString def = StandardPaths::DecodePathMaybeRelative(ctrl->GetValue(), "?user/");
+	wxDirDialog dlg(0, _("Please choose the folder:"), def);
+	if (dlg.ShowModal() == wxID_OK) {
+		wxString dir = StandardPaths::EncodePath(dlg.GetPath());
+		if (!dir.empty())
+			ctrl->SetValue(dir);
+	}
+}
+
+static void font_button(Preferences *parent, wxTextCtrl *name, wxSpinCtrl *size) {
+	wxFont font;
+	font.SetFaceName(name->GetValue());
+	font.SetPointSize(size->GetValue());
+	font = wxGetFontFromUser(parent, font);
+	if (font.IsOk()) {
+		name->SetValue(font.GetFaceName());
+		size->SetValue(wxString::Format("%d", font.GetPointSize()));
+	}
+}
+
 OptionPage::OptionPage(wxTreebook *book, Preferences *parent, wxString name, int style)
-: wxScrolled<wxPanel>(book, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxVSCROLL)
+: wxScrolled<wxPanel>(book, -1, wxDefaultPosition, wxDefaultSize, wxVSCROLL)
 , parent(parent)
 {
-
-	if (style & PAGE_SUB) {
+	if (style & PAGE_SUB)
 		book->AddSubPage(this, name, true);
-	} else {
+	else
 		book->AddPage(this, name, true);
-	}
 
-	if (style & PAGE_SCROLL) {
+	if (style & PAGE_SCROLL)
 		SetScrollbars(0, 20, 0, 50);
-	} else {
+	else
 		SetScrollbars(0, 0, 0, 0);
-	}
 
 	sizer = new wxBoxSizer(wxVERTICAL);
 }
 
-OptionPage::~OptionPage() {}
-
-void OptionPage::CellSkip(wxFlexGridSizer *&flex) {
-	flex->Add(new wxStaticText(this, wxID_ANY , wxEmptyString), 0, wxALL, 5);
+template<class T>
+void OptionPage::Add(wxSizer *sizer, wxString const& label, T *control) {
+	sizer->Add(new wxStaticText(this, -1, label), 1, wxEXPAND | wxALIGN_CENTRE_VERTICAL);
+	sizer->Add(control);
 }
 
-void OptionPage::OptionAdd(wxFlexGridSizer *&flex, const wxString &name, const char *opt_name, double min, double max, double inc) {
+void OptionPage::CellSkip(wxFlexGridSizer *flex) {
+	flex->Add(new wxStaticText(this, -1, ""), wxSizerFlags().Border());
+}
 
+void OptionPage::OptionAdd(wxFlexGridSizer *flex, const wxString &name, const char *opt_name, double min, double max, double inc) {
 	const agi::OptionValue *opt = OPT_GET(opt_name);
 
-	int type = opt->GetType();
-
-	switch (type) {
-
+	switch (opt->GetType()) {
 		case agi::OptionValue::Type_Bool: {
-			wxCheckBox *cb = new wxCheckBox(this, wxID_ANY, name);
+			wxCheckBox *cb = new wxCheckBox(this, -1, name);
 			flex->Add(cb, 1, wxEXPAND, 0);
 			cb->SetValue(opt->GetBool());
 			cb->Bind(wxEVT_COMMAND_CHECKBOX_CLICKED, BoolUpdater(opt_name, parent));
@@ -123,35 +144,30 @@ void OptionPage::OptionAdd(wxFlexGridSizer *&flex, const wxString &name, const c
 		}
 
 		case agi::OptionValue::Type_Int: {
-			flex->Add(new wxStaticText(this, wxID_ANY, name), 1, wxALIGN_CENTRE_VERTICAL);
-			wxSpinCtrl *sc = new wxSpinCtrl(this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, min, max, opt->GetInt());
+			wxSpinCtrl *sc = new wxSpinCtrl(this, -1, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, min, max, opt->GetInt());
 			sc->Bind(wxEVT_COMMAND_SPINCTRL_UPDATED, IntUpdater(opt_name, parent));
-			flex->Add(sc);
-
+			Add(flex, name, sc);
 			break;
 		}
-		case agi::OptionValue::Type_Double: {
-			flex->Add(new wxStaticText(this, wxID_ANY, name), 1, wxALIGN_CENTRE_VERTICAL);
-			wxSpinCtrlDouble *scd = new wxSpinCtrlDouble(this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, min, max, opt->GetDouble(), inc);
-			scd->Bind(wxEVT_COMMAND_SPINCTRL_UPDATED, DoubleUpdater(opt_name, parent));
-			flex->Add(scd);
 
+		case agi::OptionValue::Type_Double: {
+			wxSpinCtrlDouble *scd = new wxSpinCtrlDouble(this, -1, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, min, max, opt->GetDouble(), inc);
+			scd->Bind(wxEVT_COMMAND_SPINCTRL_UPDATED, DoubleUpdater(opt_name, parent));
+			Add(flex, name, scd);
 			break;
 		}
 
 		case agi::OptionValue::Type_String: {
-			flex->Add(new wxStaticText(this, wxID_ANY, name), 1, wxALIGN_CENTRE_VERTICAL);
-			wxTextCtrl *text = new wxTextCtrl(this, wxID_ANY , lagi_wxString(opt->GetString()), wxDefaultPosition, wxDefaultSize);
-			flex->Add(text, 1, wxEXPAND);
+			wxTextCtrl *text = new wxTextCtrl(this, -1 , lagi_wxString(opt->GetString()));
 			text->Bind(wxEVT_COMMAND_TEXT_UPDATED, StringUpdater(opt_name, parent));
+			Add(flex, name, text);
 			break;
 		}
 
 		case agi::OptionValue::Type_Colour: {
-			flex->Add(new wxStaticText(this, wxID_ANY, name), 1, wxALIGN_CENTRE_VERTICAL);
-			ColourButton *cb = new ColourButton(this, wxID_ANY, wxSize(40,10), lagi_wxColour(opt->GetColour()));
-			flex->Add(cb);
+			ColourButton *cb = new ColourButton(this, -1, wxSize(40,10), lagi_wxColour(opt->GetColour()));
 			cb->Bind(wxEVT_COMMAND_BUTTON_CLICKED, ColourUpdater(opt_name, parent));
+			Add(flex, name, cb);
 			break;
 		}
 
@@ -160,13 +176,11 @@ void OptionPage::OptionAdd(wxFlexGridSizer *&flex, const wxString &name, const c
 	}
 }
 
-
-void OptionPage::OptionChoice(wxFlexGridSizer *&flex, const wxString &name, const wxArrayString &choices, const char *opt_name) {
+void OptionPage::OptionChoice(wxFlexGridSizer *flex, const wxString &name, const wxArrayString &choices, const char *opt_name) {
 	const agi::OptionValue *opt = OPT_GET(opt_name);
 
-	flex->Add(new wxStaticText(this, wxID_ANY, name), 1, wxALIGN_CENTRE_VERTICAL);
-	wxComboBox *cb = new wxComboBox(this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, choices, wxCB_READONLY | wxCB_DROPDOWN);
-	flex->Add(cb, 1, wxEXPAND, 0);
+	wxComboBox *cb = new wxComboBox(this, -1, wxEmptyString, wxDefaultPosition, wxDefaultSize, choices, wxCB_READONLY | wxCB_DROPDOWN);
+	Add(flex, name, cb);
 
 	switch (opt->GetType()) {
 		case agi::OptionValue::Type_Int: {
@@ -175,16 +189,15 @@ void OptionPage::OptionChoice(wxFlexGridSizer *&flex, const wxString &name, cons
 			cb->Bind(wxEVT_COMMAND_COMBOBOX_SELECTED, IntCBUpdater(opt_name, parent));
 			break;
 		}
-		case agi::OptionValue::Type_String: {
+		case agi::OptionValue::Type_String:
 			cb->SetValue(lagi_wxString(opt->GetString()));
 			cb->Bind(wxEVT_COMMAND_COMBOBOX_SELECTED, StringUpdater(opt_name, parent));
 			break;
-		}
+
 		default:
 			throw PreferenceNotSupported("Unsupported type");
 	}
 }
-
 
 wxFlexGridSizer* OptionPage::PageSizer(wxString name) {
 	wxSizer *tmp_sizer = new wxStaticBoxSizer(wxHORIZONTAL, this, name);
@@ -196,37 +209,56 @@ wxFlexGridSizer* OptionPage::PageSizer(wxString name) {
 	return flex;
 }
 
-
-void OptionPage::OptionBrowse(wxFlexGridSizer *&flex, const wxString &name, BrowseType browse_type, const char *opt_name) {
+void OptionPage::OptionBrowse(wxFlexGridSizer *flex, const wxString &name, const char *opt_name) {
 	const agi::OptionValue *opt = OPT_GET(opt_name);
 
 	if (opt->GetType() != agi::OptionValue::Type_String)
 		throw PreferenceIncorrectType("Option must be agi::OptionValue::Type_String for BrowseButton.");
 
-	flex->Add(new wxStaticText(this, wxID_ANY, name), 1, wxALIGN_CENTRE_VERTICAL);
-
-	wxFlexGridSizer *button_flex = new wxFlexGridSizer(2,5,5);
-	button_flex->AddGrowableCol(0,1);
-	flex->Add(button_flex, 1, wxEXPAND, 5);
-
-	wxTextCtrl *text = new wxTextCtrl(this, wxID_ANY , opt->GetString(), wxDefaultPosition, wxDefaultSize);
-	button_flex->Add(text, 1, wxEXPAND);
-	BrowseButton *browse = new BrowseButton(this, wxID_ANY, wxEmptyString, browse_type);
-	browse->Bind(text);
-	button_flex->Add(browse, 1, wxEXPAND);
+	wxTextCtrl *text = new wxTextCtrl(this, -1 , opt->GetString());
 	text->Bind(wxEVT_COMMAND_TEXT_UPDATED, StringUpdater(opt_name, parent));
+
+	wxButton *browse = new wxButton(this, -1, _("Browse..."));
+	browse->Bind(wxEVT_COMMAND_BUTTON_CLICKED, std::tr1::bind(browse_button, text));
+
+	wxSizer *button_sizer = new wxBoxSizer(wxHORIZONTAL);
+	button_sizer->Add(text, wxSizerFlags(1).Expand());
+	button_sizer->Add(browse, wxSizerFlags().Expand());
+
+	Add(flex, name, button_sizer);
 }
 
-void Preferences::SetOption(const char *name, wxAny value) {
+void OptionPage::OptionFont(wxSizer *sizer, std::string opt_prefix) {
+	const agi::OptionValue *face_opt = OPT_GET(opt_prefix + "Font Face");
+	const agi::OptionValue *size_opt = OPT_GET(opt_prefix + "Font Size");
+
+	wxTextCtrl *font_name = new wxTextCtrl(this, -1, face_opt->GetString());
+	font_name->Bind(wxEVT_COMMAND_TEXT_UPDATED, StringUpdater(face_opt->GetName().c_str(), parent));
+
+	wxSpinCtrl *font_size = new wxSpinCtrl(this, -1, "", wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 3, 42, size_opt->GetInt());
+	font_size->Bind(wxEVT_COMMAND_SPINCTRL_UPDATED, IntUpdater(size_opt->GetName().c_str(), parent));
+
+	wxButton *pick_btn = new wxButton(this, -1, "Chose...");
+	pick_btn->Bind(wxEVT_COMMAND_BUTTON_CLICKED, std::tr1::bind(font_button, parent, font_name, font_size));
+
+	wxSizer *button_sizer = new wxBoxSizer(wxHORIZONTAL);
+	button_sizer->Add(font_name, wxSizerFlags(1).Expand());
+	button_sizer->Add(pick_btn, wxSizerFlags().Expand());
+
+	Add(sizer, _("Font Face"), button_sizer);
+	Add(sizer, _("Font Size"), font_size);
+}
+
+void Preferences::SetOption(std::string const& name, wxAny value) {
 	pending_changes[name] = value;
-	if (IsEnabled()) applyButton->Enable(true);
+	if (IsEnabled())
+		applyButton->Enable(true);
 }
 
 void Preferences::OnOK(wxCommandEvent &event) {
 	OnApply(event);
 	EndModal(0);
 }
-
 
 void Preferences::OnApply(wxCommandEvent &event) {
 	for (std::map<std::string, wxAny>::iterator cur = pending_changes.begin(); cur != pending_changes.end(); ++cur) {
@@ -254,11 +286,6 @@ void Preferences::OnApply(wxCommandEvent &event) {
 	pending_changes.clear();
 	applyButton->Enable(false);
 	config::opt->Flush();
-}
-
-
-void Preferences::OnCancel(wxCommandEvent &event) {
-	EndModal(0);
 }
 
 static void PageChanged(wxBookCtrlEvent& evt) {
@@ -291,35 +318,29 @@ Preferences::Preferences(wxWindow *parent): wxDialog(parent, -1, _("Preferences"
 	book->Bind(wxEVT_COMMAND_TREEBOOK_PAGE_CHANGED, &PageChanged);
 
 	// Bottom Buttons
-	wxStdDialogButtonSizer *stdButtonSizer = new wxStdDialogButtonSizer();
-	stdButtonSizer->AddButton(new wxButton(this,wxID_OK));
-	stdButtonSizer->AddButton(new wxButton(this,wxID_CANCEL));
-	stdButtonSizer->AddButton(applyButton = new wxButton(this,wxID_APPLY));
-	stdButtonSizer->Realize();
+	wxStdDialogButtonSizer *stdButtonSizer = CreateStdDialogButtonSizer(wxOK | wxCANCEL | wxAPPLY);
+	applyButton = stdButtonSizer->GetApplyButton();
 	wxSizer *buttonSizer = new wxBoxSizer(wxHORIZONTAL);
-	wxButton *defaultButton = new wxButton(this,2342,_("Restore Defaults"));
-	buttonSizer->Add(defaultButton,0,wxEXPAND);
+	wxButton *defaultButton = new wxButton(this, -1, _("Restore Defaults"));
+	buttonSizer->Add(defaultButton, wxSizerFlags(0).Expand());
 	buttonSizer->AddStretchSpacer(1);
-	buttonSizer->Add(stdButtonSizer,0,wxEXPAND);
-
+	buttonSizer->Add(stdButtonSizer, wxSizerFlags(0).Expand());
 
 	// Main Sizer
 	wxSizer *mainSizer = new wxBoxSizer(wxVERTICAL);
-	mainSizer->Add(book, 1 ,wxEXPAND | wxALL, 5);
-	mainSizer->Add(buttonSizer,0,wxEXPAND | wxLEFT | wxRIGHT | wxBOTTOM,5);
+	mainSizer->Add(book, wxSizerFlags(1).Expand().Border());
+	mainSizer->Add(buttonSizer, wxSizerFlags(0).Expand().Border(wxALL & ~wxTOP));
+
 	SetSizerAndFit(mainSizer);
-	this->SetMinSize(wxSize(-1, 500));
-	this->SetMaxSize(wxSize(-1, 500));
+	SetMinSize(wxSize(-1, 500));
+	SetMaxSize(wxSize(-1, 500));
 	CenterOnParent();
 
 	applyButton->Enable(false);
+
+	Bind(wxEVT_COMMAND_BUTTON_CLICKED, &Preferences::OnOK, this, wxID_OK);
+	Bind(wxEVT_COMMAND_BUTTON_CLICKED, &Preferences::OnApply, this, wxID_APPLY);
 }
 
 Preferences::~Preferences() {
 }
-
-BEGIN_EVENT_TABLE(Preferences, wxDialog)
-	EVT_BUTTON(wxID_OK, Preferences::OnOK)
-	EVT_BUTTON(wxID_CANCEL, Preferences::OnCancel)
-	EVT_BUTTON(wxID_APPLY, Preferences::OnApply)
-END_EVENT_TABLE()

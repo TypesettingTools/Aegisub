@@ -228,9 +228,6 @@
     <ClInclude Include="$(SrcDir)command\command.h">
       <Filter>Commands</Filter>
     </ClInclude>
-    <ClInclude Include="$(SrcDir)browse_button.h">
-      <Filter>Controls</Filter>
-    </ClInclude>
     <ClInclude Include="$(SrcDir)config.h">
       <Filter>Config</Filter>
     </ClInclude>
@@ -736,9 +733,6 @@
     </ClCompile>
     <ClCompile Include="$(SrcDir)auto4_base.cpp">
       <Filter>Automation</Filter>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)browse_button.cpp">
-      <Filter>Controls</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)command\command.cpp">
       <Filter>Commands</Filter>

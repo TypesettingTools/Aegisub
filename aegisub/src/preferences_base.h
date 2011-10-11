@@ -19,11 +19,11 @@
 /// @see preferences_base.cpp
 /// @ingroup configuration_ui
 
-#include "browse_button.h"
-
 class Preferences;
 
 class OptionPage: public wxScrolled<wxPanel> {
+	template<class T>
+	void Add(wxSizer *sizer, wxString const& label, T *control);
 public:
 	enum Style {
 		PAGE_DEFAULT    =   0x00000000,
@@ -35,13 +35,13 @@ public:
 	Preferences *parent;
 
 	OptionPage(wxTreebook *book, Preferences *parent, wxString name, int style = PAGE_DEFAULT);
-	~OptionPage();
 
 	wxFlexGridSizer* PageSizer(wxString name);
-	void CellSkip(wxFlexGridSizer *&flex);
-	void OptionAdd(wxFlexGridSizer *&flex, const wxString &name, const char *opt_name, double min=0, double max=100, double inc=1);
-	void OptionChoice(wxFlexGridSizer *&flex, const wxString &name, const wxArrayString &choices, const char *opt_name);
-	void OptionBrowse(wxFlexGridSizer *&flex, const wxString &name, BrowseType browse_type, const char *opt_name);
+	void CellSkip(wxFlexGridSizer *flex);
+	void OptionAdd(wxFlexGridSizer *flex, const wxString &name, const char *opt_name, double min=0, double max=100, double inc=1);
+	void OptionChoice(wxFlexGridSizer *flex, const wxString &name, const wxArrayString &choices, const char *opt_name);
+	void OptionBrowse(wxFlexGridSizer *flex, const wxString &name, const char *opt_name);
+	void OptionFont(wxSizer *sizer, std::string opt_prefix);
 };
 
 #define CLASS_PAGE(name)                             \

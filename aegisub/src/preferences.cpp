@@ -22,29 +22,33 @@
 #ifndef AGI_PRE
 #include <iterator>
 
+#include <wx/any.h>
 #include <wx/checkbox.h>
 #include <wx/combobox.h>
+#include <wx/event.h>
 #include <wx/filefn.h>
+#include <wx/listctrl.h>
 #include <wx/sizer.h>
 #include <wx/spinctrl.h>
 #include <wx/stattext.h>
 #include <wx/stdpaths.h>
 #include <wx/treebook.h>
+#include <wx/treebook.h>
 #endif
 
 #include <libaegisub/exception.h>
 
+#include "preferences.h"
+
 #include "colour_button.h"
 #include "compat.h"
-#include "libresrc/libresrc.h"
-#include "preferences.h"
-#include "main.h"
 #include "include/aegisub/audio_player.h"
 #include "include/aegisub/audio_provider.h"
 #include "include/aegisub/subtitles_provider.h"
-#include "video_provider_manager.h"
-
+#include "libresrc/libresrc.h"
+#include "main.h"
 #include "preferences_base.h"
+#include "video_provider_manager.h"
 
 /// General preferences page
 General::General(wxTreebook *book, Preferences *parent): OptionPage(book, parent, _("General")) {
@@ -145,14 +149,12 @@ Video::Video(wxTreebook *book, Preferences *parent): OptionPage(book, parent, _(
 /// Interface preferences page
 Interface::Interface(wxTreebook *book, Preferences *parent): OptionPage(book, parent, _("Interface")) {
 	wxFlexGridSizer *grid = PageSizer(_("Subtitle Grid"));
-	OptionBrowse(grid, _("Font face"), BROWSE_FONT, "Subtitle/Grid/Font Face");
-	OptionAdd(grid, _("Font size"), "Subtitle/Grid/Font Size", 3, 42);
+	OptionFont(grid, "Subtitle/Grid/");
 
 	OptionAdd(grid, _("Hide overrides symbol"), "Subtitle/Grid/Hide Overrides Char");
 
 	wxFlexGridSizer *edit_box = PageSizer(_("Edit Box"));
-	OptionBrowse(edit_box, _("Font face"), BROWSE_FONT, "Subtitle/Edit Box/Font Face");
-	OptionAdd(edit_box, _("Font size"), "Subtitle/Edit Box/Font Size", 3, 42);
+	OptionFont(edit_box, "Subtitle/Edit Box/");
 
 	SetSizerAndFit(sizer);
 }
@@ -245,13 +247,13 @@ Backup::Backup(wxTreebook *book, Preferences *parent): OptionPage(book, parent, 
 	wxFlexGridSizer *save = PageSizer(_("Automatic Save"));
 	OptionAdd(save, _("Enable"), "App/Auto/Backup");
 	CellSkip(save);
-	OptionAdd(save, _("Interval in seconds."), "App/Auto/Save Every Seconds");
-	OptionBrowse(save, _("Path"), BROWSE_FOLDER, "Path/Auto/Save");
+	OptionAdd(save, _("Interval in seconds"), "App/Auto/Save Every Seconds");
+	OptionBrowse(save, _("Path"), "Path/Auto/Save");
 
 	wxFlexGridSizer *backup = PageSizer(_("Automatic Backup"));
-	CellSkip(backup);
 	OptionAdd(backup, _("Enable"), "App/Auto/Backup");
-	OptionBrowse(backup, _("Path"), BROWSE_FOLDER, "Path/Auto/Backup");
+	CellSkip(backup);
+	OptionBrowse(backup, _("Path"), "Path/Auto/Backup");
 
 	SetSizerAndFit(sizer);
 }
@@ -326,7 +328,7 @@ Advanced_Audio::Advanced_Audio(wxTreebook *book, Preferences *parent): OptionPag
 	wxArrayString ct_choice(3, ct_arr);
 	OptionChoice(cache, _("Cache type"), ct_choice, "Audio/Cache/Type");
 
-	OptionBrowse(cache, _("Path"), BROWSE_FOLDER, "Audio/Cache/HD/Location");
+	OptionBrowse(cache, _("Path"), "Audio/Cache/HD/Location");
 	OptionAdd(cache, _("File name"), "Audio/Cache/HD/Name");
 
 	wxFlexGridSizer *spectrum = PageSizer(_("Spectrum"));
