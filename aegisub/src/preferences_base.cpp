@@ -238,7 +238,7 @@ void OptionPage::OptionFont(wxSizer *sizer, std::string opt_prefix) {
 	wxSpinCtrl *font_size = new wxSpinCtrl(this, -1, "", wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 3, 42, size_opt->GetInt());
 	font_size->Bind(wxEVT_COMMAND_SPINCTRL_UPDATED, IntUpdater(size_opt->GetName().c_str(), parent));
 
-	wxButton *pick_btn = new wxButton(this, -1, "Chose...");
+	wxButton *pick_btn = new wxButton(this, -1, _("Choose..."));
 	pick_btn->Bind(wxEVT_COMMAND_BUTTON_CLICKED, std::tr1::bind(font_button, parent, font_name, font_size));
 
 	wxSizer *button_sizer = new wxBoxSizer(wxHORIZONTAL);
