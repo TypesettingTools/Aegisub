@@ -868,8 +868,8 @@ void BaseGrid::SetColumnWidths() {
 	int total = std::accumulate(colWidth, colWidth + 10, 0);
 	colWidth[10] = w - total;
 
-	time_cols_x = labelLen + layerLen;
-	time_cols_w = startLen + endLen;
+	time_cols_x = colWidth[0] + colWidth[1];
+	time_cols_w = colWidth[2] + colWidth[3];
 	text_col_x = total;
 	text_col_w = colWidth[10];
 }
