@@ -224,6 +224,7 @@ struct audio_play_selection : public validate_audio_open {
 	STR_HELP("Play selection")
 
 	void operator()(agi::Context *c) {
+		c->videoController->Stop();
 		c->audioController->PlayPrimaryRange();
 	}
 };
@@ -253,6 +254,7 @@ struct audio_play_before : public validate_audio_open {
 	STR_HELP("Play 500 ms before selection")
 
 	void operator()(agi::Context *c) {
+		c->videoController->Stop();
 		SampleRange times(c->audioController->GetPrimaryPlaybackRange());
 		c->audioController->PlayRange(SampleRange(
 			times.begin() - c->audioController->SamplesFromMilliseconds(500),
@@ -268,6 +270,7 @@ struct audio_play_after : public validate_audio_open {
 	STR_HELP("Play 500 ms after selection")
 
 	void operator()(agi::Context *c) {
+		c->videoController->Stop();
 		SampleRange times(c->audioController->GetPrimaryPlaybackRange());
 		c->audioController->PlayRange(SampleRange(
 			times.end(),
@@ -283,6 +286,7 @@ struct audio_play_end : public validate_audio_open {
 	STR_HELP("Play last 500 ms of selection")
 
 	void operator()(agi::Context *c) {
+		c->videoController->Stop();
 		SampleRange times(c->audioController->GetPrimaryPlaybackRange());
 		c->audioController->PlayRange(SampleRange(
 			times.end() - std::min(
@@ -300,6 +304,7 @@ struct audio_play_begin : public validate_audio_open {
 	STR_HELP("Play first 500 ms of selection")
 
 	void operator()(agi::Context *c) {
+		c->videoController->Stop();
 		SampleRange times(c->audioController->GetPrimaryPlaybackRange());
 		c->audioController->PlayRange(SampleRange(
 			times.begin(),
@@ -317,6 +322,7 @@ struct audio_play_to_end : public validate_audio_open {
 	STR_HELP("Play from selection start to end of file")
 
 	void operator()(agi::Context *c) {
+		c->videoController->Stop();
 		c->audioController->PlayToEnd(c->audioController->GetPrimaryPlaybackRange().begin());
 	}
 };
