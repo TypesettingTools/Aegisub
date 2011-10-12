@@ -189,10 +189,15 @@ void OptionPage::OptionChoice(wxFlexGridSizer *flex, const wxString &name, const
 			cb->Bind(wxEVT_COMMAND_COMBOBOX_SELECTED, IntCBUpdater(opt_name, parent));
 			break;
 		}
-		case agi::OptionValue::Type_String:
-			cb->SetValue(lagi_wxString(opt->GetString()));
+		case agi::OptionValue::Type_String: {
+			wxString val(lagi_wxString(opt->GetString()));
+			if (cb->FindString(val) != wxNOT_FOUND)
+				cb->SetStringSelection(val);
+			else
+				cb->SetSelection(0);
 			cb->Bind(wxEVT_COMMAND_COMBOBOX_SELECTED, StringUpdater(opt_name, parent));
 			break;
+		}
 
 		default:
 			throw PreferenceNotSupported("Unsupported type");

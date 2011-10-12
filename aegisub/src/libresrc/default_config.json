@@ -68,7 +68,7 @@
 		"OSS" : {
 			"Device" : "/dev/dsp"
 		},
-		"Player" : "portaudio",
+		"Player" : "",
 		"Plays When Stepping Video" : false,
 		"Provider" : "ffmpegsource",
 		"Renderer" : {

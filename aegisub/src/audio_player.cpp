@@ -58,15 +58,11 @@
 #include "compat.h"
 #include "main.h"
 
-/// @brief Constructor 
-///
 AudioPlayer::AudioPlayer() {
 	provider = NULL;
 	displayTimer = NULL;
 }
 
-/// @brief Destructor 
-///
 AudioPlayer::~AudioPlayer() {
 	if (displayTimer) {
 		displayTimer->Stop();
@@ -75,7 +71,6 @@ AudioPlayer::~AudioPlayer() {
 }
 
 /// @brief Ask to stop later 
-///
 void AudioPlayer::RequestStop() {
 	wxCommandEvent event(wxEVT_STOP_AUDIO, 1000);
 	event.SetEventObject(this);
@@ -88,16 +83,10 @@ BEGIN_EVENT_TABLE(AudioPlayer, wxEvtHandler)
 	EVT_COMMAND (1000, wxEVT_STOP_AUDIO, AudioPlayer::OnStopAudio)
 END_EVENT_TABLE()
 
-/// @brief DOCME
-/// @param event 
-///
 void AudioPlayer::OnStopAudio(wxCommandEvent &event) {
 	Stop(false);
 }
 
-/// @brief Get player 
-/// @return 
-///
 AudioPlayer* AudioPlayerFactory::GetAudioPlayer() {
 	std::vector<std::string> list = GetClasses(OPT_GET("Audio/Player")->GetString());
 	if (list.empty()) throw "No audio players are available.";
@@ -115,10 +104,6 @@ AudioPlayer* AudioPlayerFactory::GetAudioPlayer() {
 	throw error;
 }
 
-
-
-/// @brief Register all factories 
-///
 void AudioPlayerFactory::RegisterProviders() {
 #ifdef WITH_ALSA
 	Register<AlsaPlayer>("ALSA");
@@ -138,6 +123,17 @@ void AudioPlayerFactory::RegisterProviders() {
 #endif
 #ifdef WITH_OSS
 	Register<OSSPlayer>("OSS");
+#endif
+}
+
+std::string AudioPlayerFactory::GetDefault() {
+	std::string def = OPT_GET("Audio/Player")->GetString();
+	if (!def.empty())
+		return def;
+#ifdef DEFAULT_PLAYER_AUDIO
+	return DEFAULT_PLAYER_AUDIO;
+#else
+	return "DirectSound";
 #endif
 }
 
