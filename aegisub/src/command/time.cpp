@@ -128,25 +128,18 @@ struct time_frame_current : public validate_video_loaded {
 	void operator()(agi::Context *c) {
 		if (!c->videoController->IsLoaded()) return;
 
-		wxArrayInt sels = c->subsGrid->GetSelection();
-		size_t n=sels.Count();
-		if (n == 0) return;
+		std::set<AssDialogue*> sel = c->selectionController->GetSelectedSet();
+		AssDialogue *active_line = c->selectionController->GetActiveLine();
 
-		// Get shifting in ms
-		AssDialogue *cur = c->subsGrid->GetDialogue(sels[0]);
-		if (!cur) return;
-		int shiftBy = c->videoController->TimeAtFrame(c->videoController->GetFrameN(),agi::vfr::START) - cur->Start.GetMS();
+		if (sel.empty() || !active_line) return;
 
-		// Update
-		for (size_t i=0;i<n;i++) {
-			cur = c->subsGrid->GetDialogue(sels[i]);
-			if (cur) {
-				cur->Start.SetMS(cur->Start.GetMS()+shiftBy);
-				cur->End.SetMS(cur->End.GetMS()+shiftBy);
-			}
+		int shift_by = c->videoController->TimeAtFrame(c->videoController->GetFrameN(), agi::vfr::START) - active_line->Start.GetMS();
+
+		for (std::set<AssDialogue*>::iterator it = sel.begin(); it != sel.end(); ++it) {
+			(*it)->Start.SetMS((*it)->Start.GetMS() + shift_by);
+			(*it)->End.SetMS((*it)->End.GetMS() + shift_by);
 		}
 
-		// Commit
 		c->ass->Commit(_("shift to frame"), AssFile::COMMIT_DIAG_TIME);
 	}
 };
@@ -193,36 +186,6 @@ struct time_snap_end_video : public validate_video_loaded {
 		snap_subs_video(c, false);
 	}
 };
-
-
-/// Shift selected subtitles so first selected starts at this frame.
-struct time_snap_frame : public validate_video_loaded {
-	CMD_NAME("time/snap/frame")
-	STR_MENU("Shift Subtitles to Frame")
-	STR_DISP("Shift Subtitles to Frame")
-	STR_HELP("Shift selected subtitles so first selected starts at this frame.")
-
-	void operator()(agi::Context *c) {
-		if (c->videoController->IsLoaded()) return;
-
-		wxArrayInt sels = c->subsGrid->GetSelection();
-		if (sels.empty()) return;
-
-		AssDialogue *cur = c->subsGrid->GetDialogue(sels[0]);
-		if (!cur) return;
-		int shiftBy = c->videoController->TimeAtFrame(c->videoController->GetFrameN(),agi::vfr::START) - cur->Start.GetMS();
-
-		for (size_t i = 0; i < sels.size(); ++i) {
-			if ((cur = c->subsGrid->GetDialogue(sels[i]))) {
-				cur->Start.SetMS(cur->Start.GetMS() + shiftBy);
-				cur->End.SetMS(cur->End.GetMS() + shiftBy);
-			}
-		}
-
-		c->ass->Commit(_("shift to frame"), AssFile::COMMIT_DIAG_TIME);
-	}
-};
-
 
 /// Set start and end of subtitles to the keyframes around current video frame.
 struct time_snap_scene : public validate_video_loaded {
@@ -401,7 +364,6 @@ namespace cmd {
 		reg(new time_prev);
 		reg(new time_shift);
 		reg(new time_snap_end_video);
-		reg(new time_snap_frame);
 		reg(new time_snap_scene);
 		reg(new time_snap_start_video);
 		reg(new time_sort_end);

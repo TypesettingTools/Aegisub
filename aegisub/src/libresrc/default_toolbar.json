@@ -40,7 +40,7 @@
         "time/snap/end_video",
         "subtitle/select/visible",
         "time/snap/scene",
-        "time/snap/frame",
+        "time/frame/current",
         "",
         "tool/style/manager",
         "subtitle/properties",
