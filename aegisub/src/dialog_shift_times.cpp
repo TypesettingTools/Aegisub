@@ -103,11 +103,16 @@ DialogShiftTimes::DialogShiftTimes(agi::Context *context)
 
 	shift_time->SetTime(OPT_GET("Tool/Shift Times/Time")->GetInt());
 	*shift_frames << (int)OPT_GET("Tool/Shift Times/Frames")->GetInt();
-	shift_frames->Disable();
 	shift_by_frames->SetValue(!OPT_GET("Tool/Shift Times/ByTime")->GetBool() && shift_by_frames->IsEnabled());
 	time_fields->SetSelection(OPT_GET("Tool/Shift Times/Type")->GetInt());
 	selection_mode->SetSelection(OPT_GET("Tool/Shift Times/Affect")->GetInt());
 	shift_backward->SetValue(OPT_GET("Tool/Shift Times/Direction")->GetBool());
+
+	if (shift_by_frames->GetValue())
+		shift_time->Disable();
+	else
+		shift_frames->Disable();
+
 
 	// Position controls
 	wxSizer *shift_amount_sizer = new wxFlexGridSizer(2, 2, 5, 5);
