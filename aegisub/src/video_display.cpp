@@ -109,7 +109,16 @@ END_EVENT_TABLE()
 
 //////////////
 // Parameters
-int attribList[] = { WX_GL_RGBA , WX_GL_DOUBLEBUFFER, WX_GL_STENCIL_SIZE, 8, 0 };
+int attribList[] = {
+	WX_GL_RGBA,
+	WX_GL_DOUBLEBUFFER,
+	WX_GL_STENCIL_SIZE, 8,  // stencil buffer is needed for the shape overlay drawing stuff
+	WX_GL_MIN_RED,      8,  // wx implementation thing:
+	WX_GL_MIN_GREEN,    8,  // wxMSW sets pfd.cColorBits to 0 if given an attribList
+	WX_GL_MIN_BLUE,     8,  // where none of WX_GL_MIN_(RED|GREEN|BLUE) or WX_GL_BUFFER_SIZE are set.
+	WX_GL_BUFFER_SIZE, 24,  // WX_GL_BUFFER_SIZE must be set last or it will get a nonsense value.
+	0
+};
 
 ///////////////
 // Constructor
