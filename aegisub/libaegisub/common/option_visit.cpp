@@ -106,29 +106,27 @@ void ConfigVisitor::Visit(const json::Array& array) {
 
 
 void ConfigVisitor::Visit(const json::Number& number) {
-	double val = number.Value();
-
-	if (int64_t(val) == ceil(val)) {
-		OptionValue *opt = new OptionValueInt(name, int64_t(val));
+	if (int64_t(number) == ceil(number)) {
+		OptionValue *opt = new OptionValueInt(name, int64_t(number));
 		AddOptionValue(opt);
 	} else {
-		OptionValue *opt = new OptionValueDouble(name, val);
+		OptionValue *opt = new OptionValueDouble(name, number);
 		AddOptionValue(opt);
 	}
 }
 
 void ConfigVisitor::Visit(const json::String& string) {
 	OptionValue *opt;
-	if (string.Value().find("rgb(") == 0) {
-		opt = new OptionValueColour(name, string.Value());
+	if (string.find("rgb(") == 0) {
+		opt = new OptionValueColour(name, string);
 	} else {
-		opt = new OptionValueString(name, string.Value());
+		opt = new OptionValueString(name, string);
 	}
 	AddOptionValue(opt);
 }
 
 void ConfigVisitor::Visit(const json::Boolean& boolean) {
-	OptionValue *opt = new OptionValueBool(name, boolean.Value());
+	OptionValue *opt = new OptionValueBool(name, boolean);
 	AddOptionValue(opt);
 }
 

@@ -95,9 +95,9 @@ void Hotkey::BuildHotkey(std::string const& context, const json::Object& object)
 
 			for (json::Array::const_iterator arr_mod_index(arr_mod.begin()); arr_mod_index != arr_mod.end(); arr_mod_index++) {
 				const json::String& key_mod = *arr_mod_index;
-				combo.KeyInsert(key_mod.Value());
+				combo.KeyInsert(key_mod);
 			}
-			combo.KeyInsert(static_cast<const json::String&>(obj["key"]).Value());
+			combo.KeyInsert(static_cast<const json::String&>(obj["key"]));
 			ComboInsert(combo);
 		} // for arr_index
 	} // for index

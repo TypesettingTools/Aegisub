@@ -80,26 +80,26 @@ LogSink::~LogSink() {
 
 	for (unsigned int i=0; i < sink.size(); i++) {
 		json::Object entry;
-		entry["sec"]		= json::Number(sink[i]->tv.tv_sec);
-		entry["usec"]		= json::Number(sink[i]->tv.tv_usec);
-		entry["severity"]	= json::Number(sink[i]->severity),
-		entry["section"]	= json::String(sink[i]->section);
-		entry["file"]		= json::String(sink[i]->file);
-		entry["func"]		= json::String(sink[i]->func);
-		entry["line"]		= json::Number(sink[i]->line);
-		entry["message"]	= json::String(std::string(sink[i]->message, sink[i]->len));
+		entry["sec"]      = (double)sink[i]->tv.tv_sec;
+		entry["usec"]     = (double)sink[i]->tv.tv_usec;
+		entry["severity"] = (double)sink[i]->severity,
+		entry["section"]  = (std::string)sink[i]->section;
+		entry["file"]     = (std::string)sink[i]->file;
+		entry["func"]     = (std::string)sink[i]->func;
+		entry["line"]     = (double)sink[i]->line;
+		entry["message"]  = std::string(sink[i]->message, sink[i]->len);
 
 		array.push_back(entry);
 	}
 
 	json::Array timeval_open;
-	timeval_open.push_back(json::Number(time_start.tv_sec));
-	timeval_open.push_back(json::Number(time_start.tv_usec));
+	timeval_open.push_back((double)time_start.tv_sec);
+	timeval_open.push_back((double)time_start.tv_usec);
 	root["timeval"]["open"] = timeval_open;
 
 	json::Array timeval_close;
-	timeval_close.push_back(json::Number(time_close.tv_sec));
-	timeval_close.push_back(json::Number(time_close.tv_usec));
+	timeval_close.push_back((double)time_close.tv_sec);
+	timeval_close.push_back((double)time_close.tv_usec);
 	root["timeval"]["close"] = timeval_close;
 
 

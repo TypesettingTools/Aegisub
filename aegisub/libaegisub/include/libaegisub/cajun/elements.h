@@ -13,18 +13,8 @@ Author: Terry Caton
 #include <string>
 #include <stdexcept>
 
-/*
-
-TODO:
-* better documentation (doxygen?)
-* Unicode support
-* parent element accessors
-
-*/
-
 namespace json
 {
-
 
 /////////////////////////////////////////////////
 // forward declarations (more info further below)
@@ -34,9 +24,9 @@ class ConstVisitor;
 template <typename ValueTypeT>
 class TrivialType_T;
 
-typedef TrivialType_T<double> Number;
-typedef TrivialType_T<bool> Boolean;
-typedef TrivialType_T<std::string> String;
+typedef double Number;
+typedef bool Boolean;
+typedef std::string String;
 
 class Object;
 class Array;
@@ -100,6 +90,8 @@ public:
    operator Null& ();
 
    // provides quick access to children when real element type is object
+   UnknownElement& operator[] (const char *key) { return operator[](std::string(key)); }
+   const UnknownElement& operator[] (const char *key) const { return operator[](std::string(key)); }
    UnknownElement& operator[] (const std::string& key);
    const UnknownElement& operator[] (const std::string& key) const;
 
@@ -213,43 +205,14 @@ private:
    Members m_Members;
 };
 
-
-/////////////////////////////////////////////////////////////////////////////////
-// TrivialType_T - class template for encapsulates a simple data type, such as
-//  a string, number, or boolean. Provides implicit const & noncost cast operators
-//  for that type, allowing "DataTypeT type = trivialType;"
-
-
-template <typename DataTypeT>
-class TrivialType_T
-{
-public:
-   TrivialType_T(const DataTypeT& t = DataTypeT());
-
-   operator DataTypeT&();
-   operator const DataTypeT&() const;
-
-   DataTypeT& Value();
-   const DataTypeT& Value() const;
-
-   bool operator == (const TrivialType_T<DataTypeT>& trivial) const;
-
-private:
-   DataTypeT m_tValue;
-};
-
-
-
 /////////////////////////////////////////////////////////////////////////////////
 // Null - doesn't do much of anything but satisfy the JSON spec. It is the default
 //  element type of UnknownElement
-
 class Null
 {
 public:
-   bool operator == (const Null& trivial) const;
+   bool operator == (const Null& trivial) const { return true; }
 };
-
 
 } // end namespace
 

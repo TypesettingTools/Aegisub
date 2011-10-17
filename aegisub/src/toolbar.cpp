@@ -107,16 +107,16 @@ namespace {
 			for (json::Array::const_iterator it = arr.begin(); it != arr.end(); ++it) {
 				json::String const& command_name = *it;
 
-				if (command_name.Value().empty()) {
+				if (command_name.empty()) {
 					AddSeparator();
 				}
 				else {
 					cmd::Command *command;
 					try {
-						command = cmd::get(command_name.Value());
+						command = cmd::get(command_name);
 					}
 					catch (CommandNotFound const&) {
-						LOG_W("toolbar/command/not_found") << "Command '" << command_name.Value() << "' not found; skipping";
+						LOG_W("toolbar/command/not_found") << "Command '" << command_name << "' not found; skipping";
 						continue;
 					}
 

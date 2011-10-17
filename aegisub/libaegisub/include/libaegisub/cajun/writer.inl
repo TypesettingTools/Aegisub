@@ -97,21 +97,20 @@ inline void Writer::Write_i(const Object& object)
 
 inline void Writer::Write_i(const Number& numberElement)
 {
-   m_ostr << std::setprecision(20) << numberElement.Value();
+   m_ostr << std::setprecision(20) << numberElement;
 }
 
 inline void Writer::Write_i(const Boolean& booleanElement)
 {
-   m_ostr << (booleanElement.Value() ? "true" : "false");
+   m_ostr << (booleanElement ? "true" : "false");
 }
 
 inline void Writer::Write_i(const String& stringElement)
 {
    m_ostr << '"';
 
-   const std::string& s = stringElement.Value();
-   std::string::const_iterator it(s.begin()),
-                               itend(s.end());
+   const std::string& s = stringElement;
+   std::string::const_iterator it(s.begin()), itend(s.end());
    for (; it != itend; ++it)
    {
       switch (*it)
