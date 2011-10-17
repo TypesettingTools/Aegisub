@@ -99,26 +99,28 @@ inline UnknownElement::UnknownElement() :                               m_pImp( 
 inline UnknownElement::UnknownElement(const UnknownElement& unknown) :  m_pImp( unknown.m_pImp->Clone()) {}
 inline UnknownElement::UnknownElement(const Object& object) :           m_pImp( new Imp_T<Object>(object) ) {}
 inline UnknownElement::UnknownElement(const Array& array) :             m_pImp( new Imp_T<Array>(array) ) {}
-inline UnknownElement::UnknownElement(const Number& number) :           m_pImp( new Imp_T<Number>(number) ) {}
-inline UnknownElement::UnknownElement(const Boolean& boolean) :         m_pImp( new Imp_T<Boolean>(boolean) ) {}
+inline UnknownElement::UnknownElement(double number) :                  m_pImp( new Imp_T<Number>(number) ) {}
+inline UnknownElement::UnknownElement(int number) :                     m_pImp( new Imp_T<Number>(number) ) {}
+inline UnknownElement::UnknownElement(bool boolean) :                   m_pImp( new Imp_T<Boolean>(boolean) ) {}
+inline UnknownElement::UnknownElement(const char *string) :             m_pImp( new Imp_T<String>(string) ) {}
 inline UnknownElement::UnknownElement(const String& string) :           m_pImp( new Imp_T<String>(string) ) {}
 inline UnknownElement::UnknownElement(const Null& null) :               m_pImp( new Imp_T<Null>(null) ) {}
 
 inline UnknownElement::~UnknownElement()   { delete m_pImp; }
 
-inline UnknownElement::operator const Object& () const    { return CastTo<Object>(); }
-inline UnknownElement::operator const Array& () const     { return CastTo<Array>(); }
-inline UnknownElement::operator const Number& () const    { return CastTo<Number>(); }
-inline UnknownElement::operator const Boolean& () const   { return CastTo<Boolean>(); }
-inline UnknownElement::operator const String& () const    { return CastTo<String>(); }
-inline UnknownElement::operator const Null& () const      { return CastTo<Null>(); }
+inline UnknownElement::operator const Object& () const  { return CastTo<Object>(); }
+inline UnknownElement::operator const Array& () const   { return CastTo<Array>(); }
+inline UnknownElement::operator const Number& () const  { return CastTo<Number>(); }
+inline UnknownElement::operator const Boolean& () const { return CastTo<Boolean>(); }
+inline UnknownElement::operator const String& () const  { return CastTo<String>(); }
+inline UnknownElement::operator const Null& () const    { return CastTo<Null>(); }
 
-inline UnknownElement::operator Object& ()    { return ConvertTo<Object>(); }
-inline UnknownElement::operator Array& ()     { return ConvertTo<Array>(); }
-inline UnknownElement::operator Number& ()    { return ConvertTo<Number>(); }
-inline UnknownElement::operator Boolean& ()   { return ConvertTo<Boolean>(); }
-inline UnknownElement::operator String& ()    { return ConvertTo<String>(); }
-inline UnknownElement::operator Null& ()      { return ConvertTo<Null>(); }
+inline UnknownElement::operator Object& ()  { return ConvertTo<Object>(); }
+inline UnknownElement::operator Array& ()   { return ConvertTo<Array>(); }
+inline UnknownElement::operator Number& ()  { return ConvertTo<Number>(); }
+inline UnknownElement::operator Boolean& () { return ConvertTo<Boolean>(); }
+inline UnknownElement::operator String& ()  { return ConvertTo<String>(); }
+inline UnknownElement::operator Null& ()    { return ConvertTo<Null>(); }
 
 inline UnknownElement& UnknownElement::operator = (const UnknownElement& unknown)
 {

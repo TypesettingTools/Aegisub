@@ -64,8 +64,10 @@ public:
    UnknownElement(const UnknownElement& unknown);
    UnknownElement(const Object& object);
    UnknownElement(const Array& array);
-   UnknownElement(const Number& number);
-   UnknownElement(const Boolean& boolean);
+   UnknownElement(double number);
+   UnknownElement(int number);
+   UnknownElement(bool boolean);
+   UnknownElement(const char *string);
    UnknownElement(const String& string);
    UnknownElement(const Null& null);
 
