@@ -17,27 +17,18 @@ namespace json
 class Writer : private ConstVisitor
 {
 public:
-   static void Write(const Object& object, std::ostream& ostr);
-   static void Write(const Array& array, std::ostream& ostr);
-   static void Write(const String& string, std::ostream& ostr);
-   static void Write(const Number& number, std::ostream& ostr);
-   static void Write(const Boolean& boolean, std::ostream& ostr);
-   static void Write(const Null& null, std::ostream& ostr);
-   static void Write(const UnknownElement& elementRoot, std::ostream& ostr);
+   template <typename ElementTypeT>
+   static void Write(const ElementTypeT& element, std::ostream& ostr);
 
 private:
    Writer(std::ostream& ostr);
-
-   template <typename ElementTypeT>
-   static void Write_i(const ElementTypeT& element, std::ostream& ostr);
-
-   void Write_i(const Object& object);
-   void Write_i(const Array& array);
-   void Write_i(const String& string);
-   void Write_i(const Number& number);
-   void Write_i(const Boolean& boolean);
-   void Write_i(const Null& null);
-   void Write_i(const UnknownElement& unknown);
+   void Write(const Object& object);
+   void Write(const Array& array);
+   void Write(const String& string);
+   void Write(const Number& number);
+   void Write(const Boolean& boolean);
+   void Write(const Null& null);
+   void Write(const UnknownElement& unknown);
 
    virtual void Visit(const Array& array);
    virtual void Visit(const Object& object);
@@ -52,6 +43,5 @@ private:
 
 
 } // End namespace
-
 
 #include "writer.inl"
