@@ -502,6 +502,38 @@
 				>
 			</File>
 		</Filter>
+		<Filter
+			Name="Cajun"
+			>
+			<File
+				RelativePath="..\..\libaegisub\include\libaegisub\cajun\elements.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\libaegisub\include\libaegisub\cajun\elements.inl"
+				>
+			</File>
+			<File
+				RelativePath="..\..\libaegisub\include\libaegisub\cajun\reader.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\libaegisub\include\libaegisub\cajun\reader.inl"
+				>
+			</File>
+			<File
+				RelativePath="..\..\libaegisub\include\libaegisub\cajun\visitor.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\libaegisub\include\libaegisub\cajun\writer.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\libaegisub\include\libaegisub\cajun\writer.inl"
+				>
+			</File>
+		</Filter>
 		<File
 			RelativePath="..\..\libaegisub\lagi_pre.h"
 			>
