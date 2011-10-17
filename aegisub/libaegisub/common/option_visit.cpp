@@ -43,12 +43,8 @@ void ConfigVisitor::Visit(const json::Object& object) {
 		name += "/";
 
 	for (; index != index_end; ++index) {
-		const std::string &member_name = index->first;
-		const json::UnknownElement& element = index->second;
-
-		ConfigVisitor config_visitor(values, name + member_name);
-
-		element.Accept(config_visitor);
+		ConfigVisitor config_visitor(values, name + index->first);
+		index->second.Accept(config_visitor);
 	}
 }
 
@@ -68,32 +64,31 @@ void ConfigVisitor::Visit(const json::Array& array) {
 			// This can only happen once since a list must always be of the same
 			// type, if we try inserting another type into it we want it to fail.
 			if (!array_list) {
-				if (member_name == "string") {
+				if (member_name == "string")
 					array_list = new OptionValueListString(name);
-				} else if (member_name == "int") {
+				else if (member_name == "int")
 					array_list = new OptionValueListInt(name);
-				} else if (member_name == "double") {
+				else if (member_name == "double")
 					array_list = new OptionValueListDouble(name);
-				} else if (member_name == "bool") {
+				else if (member_name == "bool")
 					array_list = new OptionValueListBool(name);
-				} else if (member_name == "colour") {
+				else if (member_name == "colour")
 					array_list = new OptionValueListColour(name);
-				} else {
+				else
 					throw OptionJsonValueArray("Array type not handled");
-				}
 			}
 
 			try {
 				if (member_name == "string")
-					array_list->InsertString((json::String)it->second);
+					array_list->InsertString(it->second);
 				else if (member_name == "int")
-					array_list->InsertInt((int64_t)(json::Number)it->second);
+					array_list->InsertInt((int64_t)(double)it->second);
 				else if (member_name == "double")
-					array_list->InsertDouble((json::Number)it->second);
+					array_list->InsertDouble(it->second);
 				else if (member_name == "bool")
-					array_list->InsertBool((json::Boolean)it->second);
+					array_list->InsertBool(it->second);
 				else if (member_name == "colour")
-					array_list->InsertColour((std::string)(json::String)it->second);
+					array_list->InsertColour(it->second);
 			} catch (agi::Exception&) {
 				delete array_list;
 				throw OptionJsonValueArray("Attempt to insert value into array of wrong type");
@@ -107,27 +102,22 @@ void ConfigVisitor::Visit(const json::Array& array) {
 
 void ConfigVisitor::Visit(const json::Number& number) {
 	if (int64_t(number) == ceil(number)) {
-		OptionValue *opt = new OptionValueInt(name, int64_t(number));
-		AddOptionValue(opt);
+		AddOptionValue(new OptionValueInt(name, int64_t(number)));
 	} else {
-		OptionValue *opt = new OptionValueDouble(name, number);
-		AddOptionValue(opt);
+		AddOptionValue(new OptionValueDouble(name, number));
 	}
 }
 
 void ConfigVisitor::Visit(const json::String& string) {
-	OptionValue *opt;
 	if (string.find("rgb(") == 0) {
-		opt = new OptionValueColour(name, string);
+		AddOptionValue(new OptionValueColour(name, string));
 	} else {
-		opt = new OptionValueString(name, string);
+		AddOptionValue(new OptionValueString(name, string));
 	}
-	AddOptionValue(opt);
 }
 
 void ConfigVisitor::Visit(const json::Boolean& boolean) {
-	OptionValue *opt = new OptionValueBool(name, boolean);
-	AddOptionValue(opt);
+	AddOptionValue(new OptionValueBool(name, boolean));
 }
 
 void ConfigVisitor::Visit(const json::Null& null) {

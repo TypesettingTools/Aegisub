@@ -75,7 +75,6 @@ void Options::ConfigUser() {
 	config_loaded = true;
 }
 
-
 void Options::LoadConfig(std::istream& stream) {
 	/// @todo Store all previously loaded configs in an array for bug report purposes,
 	///       this is just a temp stub.
@@ -94,9 +93,6 @@ void Options::LoadConfig(std::istream& stream) {
 	config_root.Accept(config_visitor);
 }
 
-
-
-
 OptionValue* Options::Get(const std::string &name) {
 	OptionValueMap::iterator index;
 
@@ -107,31 +103,29 @@ OptionValue* Options::Get(const std::string &name) {
 	throw OptionErrorNotFound("Option value not found: " + name);
 }
 
-
-
 void Options::Flush() {
 	json::Object obj_out;
 
 	for (OptionValueMap::const_iterator i = values.begin(); i != values.end(); ++i) {
 		switch (i->second->GetType()) {
 			case OptionValue::Type_String:
-				PutOption(obj_out, i->first, (json::String)i->second->GetString());
+				PutOption(obj_out, i->first, i->second->GetString());
 				break;
 
 			case OptionValue::Type_Int:
-				PutOption(obj_out, i->first, (json::Number)(const double)i->second->GetInt());
+				PutOption(obj_out, i->first, (double)i->second->GetInt());
 				break;
 
 			case OptionValue::Type_Double:
-				PutOption(obj_out, i->first, (json::Number)i->second->GetDouble());
+				PutOption(obj_out, i->first, i->second->GetDouble());
 				break;
 
 			case OptionValue::Type_Colour:
-				PutOption(obj_out, i->first, (json::String)i->second->GetColour());
+				PutOption(obj_out, i->first, i->second->GetColour());
 				break;
 
 			case OptionValue::Type_Bool:
-				PutOption(obj_out, i->first, (json::Boolean)i->second->GetBool());
+				PutOption(obj_out, i->first, i->second->GetBool());
 				break;
 
 			case OptionValue::Type_List_String: {
@@ -142,11 +136,11 @@ void Options::Flush() {
 
 				for (std::vector<std::string>::const_iterator i_str = array_string.begin(); i_str != array_string.end(); ++i_str) {
 					json::Object obj;
-					obj["string"] = json::String(*i_str);
+					obj["string"] = *i_str;
 					array.push_back(obj);
 				}
 
-				PutOption(obj_out, i->first, (json::Array)array);
+				PutOption(obj_out, i->first, array);
 			}
 			break;
 
@@ -158,10 +152,10 @@ void Options::Flush() {
 
 				for (std::vector<int64_t>::const_iterator i_int = array_int.begin(); i_int != array_int.end(); ++i_int) {
 					json::Object obj;
-					obj["int"] = json::Number((const double)*i_int);
+					obj["int"] = (double)*i_int;
 					array.push_back(obj);
 				}
-				PutOption(obj_out, i->first, (json::Array)array);
+				PutOption(obj_out, i->first, array);
 			}
 			break;
 
@@ -173,10 +167,10 @@ void Options::Flush() {
 
 				for (std::vector<double>::const_iterator i_double = array_double.begin(); i_double != array_double.end(); ++i_double) {
 					json::Object obj;
-					obj["double"] = json::Number(*i_double);
+					obj["double"] = *i_double;
 					array.push_back(obj);
 				}
-				PutOption(obj_out, i->first, (json::Array)array);
+				PutOption(obj_out, i->first, array);
 			}
 			break;
 
@@ -187,15 +181,10 @@ void Options::Flush() {
 				json::Array array;
 				for (std::vector<Colour>::const_iterator i_colour = array_colour.begin(); i_colour != array_colour.end(); ++i_colour) {
 					json::Object obj;
-
-					Colour col = *i_colour;
-					std::string str = std::string(col);
-
-					obj["colour"] = json::String(str);
-
+					obj["colour"] = *i_colour;
 					array.push_back(obj);
 				}
-				PutOption(obj_out, i->first, (json::Array)array);
+				PutOption(obj_out, i->first, array);
 			}
 			break;
 
@@ -207,10 +196,10 @@ void Options::Flush() {
 				i->second->GetListBool(array_bool);
 				for (std::vector<bool>::const_iterator i_bool = array_bool.begin(); i_bool != array_bool.end(); ++i_bool) {
 					json::Object obj;
-					obj["bool"] = json::Boolean(*i_bool);
+					obj["bool"] = *i_bool;
 					array.push_back(obj);
 				}
-				PutOption(obj_out, i->first, (json::Array)array);
+				PutOption(obj_out, i->first, array);
 			}
 			break;
 		}

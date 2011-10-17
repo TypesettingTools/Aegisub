@@ -36,10 +36,8 @@ MRUManager::MRUManager(const std::string &config, const std::string &default_con
 
 	json::Object::const_iterator index_object(root_new.begin()), index_objectEnd(root_new.end());
 
-	for (; index_object != index_objectEnd; ++index_object) {
-		const std::string &member_name = index_object->first;
-		Load(member_name, (json::Array)index_object->second);
-	}
+	for (; index_object != index_objectEnd; ++index_object)
+		Load(index_object->first, index_object->second);
 }
 
 
@@ -92,11 +90,7 @@ void MRUManager::Flush() {
 
 	for (MRUMap::const_iterator i = mru.begin(); i != mru.end(); ++i) {
 		json::Array &array = out[i->first];
-		const MRUListMap &map_list = i->second;
-
-		for (MRUListMap::const_iterator i_lst = map_list.begin(); i_lst != map_list.end(); ++i_lst) {
-			array.push_back(json::String(*i_lst));
-		}
+		copy(i->second.begin(), i->second.end(), std::back_inserter(array));
 	}
 
 	json::Writer::Write(out, io::Save(config_name).Get());
@@ -109,16 +103,12 @@ inline void MRUManager::Prune(MRUListMap& map) {
 	map.resize(std::min<size_t>(16, map.size()));
 }
 
-static json::String cast_str(json::UnknownElement const& e) {
-	return static_cast<json::String>(e);
-}
-
 /// @brief Load MRU Lists.
 /// @param key List name.
 /// @param array json::Array of values.
 void MRUManager::Load(const std::string &key, const json::Array& array) {
 	try {
-		transform(array.begin(), array.end(), back_inserter(mru[key]), cast_str);
+		copy(array.begin(), array.end(), back_inserter(mru[key]));
 	}
 	catch (json::Exception const&) {
 		// Out of date MRU file; just discard the data and skip it

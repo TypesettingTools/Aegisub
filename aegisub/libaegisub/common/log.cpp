@@ -102,7 +102,6 @@ LogSink::~LogSink() {
 	timeval_close.push_back(time_close.tv_usec);
 	root["timeval"]["close"] = timeval_close;
 
-
 	root["log"] = array;
 
 	json::Writer::Write(root, file.Get());
