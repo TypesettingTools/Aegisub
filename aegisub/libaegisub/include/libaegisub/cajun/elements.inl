@@ -138,7 +138,11 @@ inline UnknownElement& UnknownElement::operator[] (const std::string& key)
 inline const UnknownElement& UnknownElement::operator[] (const std::string& key) const
 {
    // throws if we aren't an object
-   return CastTo<Object>()[key];
+   Object const& obj = CastTo<Object>();
+   Object::const_iterator it = obj.find(key);
+   if (it == obj.end())
+      throw Exception("Object member not found: " + key);
+   return it->second;
 }
 
 inline UnknownElement& UnknownElement::operator[] (size_t index)
@@ -189,53 +193,6 @@ inline void UnknownElement::Accept(Visitor& visitor)            { m_pImp->Accept
 inline bool UnknownElement::operator == (const UnknownElement& element) const
 {
    return m_pImp->Compare(*element.m_pImp);
-}
-
-//////////////////
-// Object members
-inline Object::iterator Object::insert(std::pair<std::string, UnknownElement> const& ele)
-{
-   iterator it = find(ele.first);
-   if (it != m_Members.end())
-      throw Exception("Object member already exists: " + ele.first);
-
-   return m_Members.insert(ele).first;
-}
-
-inline UnknownElement& Object::operator [](const std::string& name)
-{
-   iterator it = find(name);
-   if (it == m_Members.end())
-   {
-      it = insert(make_pair(name, UnknownElement()));
-   }
-   return it->second;
-}
-
-inline const UnknownElement& Object::operator [](const std::string& name) const
-{
-   const_iterator it = find(name);
-   if (it == end())
-      throw Exception("Object member not found: " + name);
-   return it->second;
-}
-
-/////////////////
-// Array members
-inline UnknownElement& Array::operator[](size_t idx) {
-	if (idx >= size())
-		resize(idx + 1);
-	return std::deque<UnknownElement>::operator[](idx);
-}
-
-inline const UnknownElement& Array::operator[](size_t idx) const {
-	if (idx >= size())
-		throw Exception("Array out of bounds");
-	return std::deque<UnknownElement>::operator[](idx);
-}
-
-inline bool Array::operator==(Array const& rgt) const {
-	return *static_cast<const std::deque<UnknownElement> *>(this) == rgt;
 }
 
 } // end namespace

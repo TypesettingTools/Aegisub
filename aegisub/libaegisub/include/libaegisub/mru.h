@@ -27,7 +27,8 @@
 #include <libaegisub/exception.h>
 
 namespace json {
-	class Array;
+	class UnknownElement;
+	typedef std::deque<UnknownElement> Array;
 }
 
 namespace agi {

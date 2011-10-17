@@ -28,8 +28,8 @@
 #include <libaegisub/exception.h>
 
 namespace json {
-	class Object;
 	class UnknownElement;
+	typedef std::map<std::string, UnknownElement> Object;
 }
 
 namespace agi {

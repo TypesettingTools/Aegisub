@@ -26,7 +26,10 @@
 #include <vector>
 #endif
 
-namespace json { class Object; }
+namespace json {
+	class UnknownElement;
+	typedef std::map<std::string, UnknownElement> Object;
+}
 
 namespace agi {
 	namespace hotkey {

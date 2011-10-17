@@ -20,6 +20,7 @@ namespace json
 // forward declarations (more info further below)
 class Visitor;
 class ConstVisitor;
+class UnknownElement;
 
 template <typename ValueTypeT>
 class TrivialType_T;
@@ -27,9 +28,9 @@ class TrivialType_T;
 typedef double Number;
 typedef bool Boolean;
 typedef std::string String;
+typedef std::deque<UnknownElement> Array;
+typedef std::map<std::string, UnknownElement> Object;
 
-class Object;
-class Array;
 class Null;
 
 
@@ -128,75 +129,6 @@ private:
    ElementTypeT& ConvertTo();
 
    Imp* m_pImp;
-};
-
-class Array : private std::deque<UnknownElement>
-{
-public:
-   using std::deque<UnknownElement>::back;
-   using std::deque<UnknownElement>::begin;
-   using std::deque<UnknownElement>::clear;
-   using std::deque<UnknownElement>::const_iterator;
-   using std::deque<UnknownElement>::const_reference;
-   using std::deque<UnknownElement>::const_reverse_iterator;
-   using std::deque<UnknownElement>::difference_type;
-   using std::deque<UnknownElement>::empty;
-   using std::deque<UnknownElement>::end;
-   using std::deque<UnknownElement>::front;
-   using std::deque<UnknownElement>::iterator;
-   using std::deque<UnknownElement>::max_size;
-   using std::deque<UnknownElement>::pointer;
-   using std::deque<UnknownElement>::pop_back;
-   using std::deque<UnknownElement>::pop_front;
-   using std::deque<UnknownElement>::push_back;
-   using std::deque<UnknownElement>::push_front;
-   using std::deque<UnknownElement>::rbegin;
-   using std::deque<UnknownElement>::reference;
-   using std::deque<UnknownElement>::rend;
-   using std::deque<UnknownElement>::reverse_iterator;
-   using std::deque<UnknownElement>::size;
-   using std::deque<UnknownElement>::size_type;
-   using std::deque<UnknownElement>::swap;
-   using std::deque<UnknownElement>::value_type;
-
-   UnknownElement& operator[](size_t idx);
-   const UnknownElement& operator[](size_t idx) const;
-   bool operator==(Array const& rgt) const;
-};
-
-/////////////////////////////////////////////////////////////////////////////////
-// Object - mimics std::map<std::string, UnknownElement>. The member value
-//  contents are effectively heterogeneous thanks to the UnknownElement class
-
-class Object
-{
-public:
-   typedef std::map<std::string, UnknownElement> Members;
-   typedef Members::iterator iterator;
-   typedef Members::const_iterator const_iterator;
-
-   bool operator == (const Object& object) const { return m_Members == object.m_Members; }
-
-   iterator begin() { return m_Members.begin(); }
-   iterator end() { return m_Members.end(); }
-   const_iterator begin() const { return m_Members.begin(); }
-   const_iterator end() const { return m_Members.end(); }
-
-   size_t size() const { return m_Members.size(); }
-   bool empty() const { return m_Members.empty(); }
-
-   iterator find(const std::string& name) { return m_Members.find(name); }
-   const_iterator find(const std::string& name) const { return m_Members.find(name); }
-
-   iterator insert(std::pair<std::string, UnknownElement> const& ele);
-   iterator erase(iterator it) { return m_Members.erase(it); }
-   void clear() { m_Members.clear(); }
-
-   UnknownElement& operator [](const std::string& name);
-   const UnknownElement& operator [](const std::string& name) const;
-
-private:
-   Members m_Members;
 };
 
 /////////////////////////////////////////////////////////////////////////////////
