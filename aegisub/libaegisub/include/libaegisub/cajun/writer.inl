@@ -46,21 +46,21 @@ void Writer::Write_i(const ElementTypeT& element, std::ostream& ostr)
 
 inline void Writer::Write_i(const Array& array)
 {
-   if (array.Empty())
+   if (array.empty())
       m_ostr << "[]";
    else
    {
       m_ostr << '[' << std::endl;
       ++m_nTabDepth;
 
-      Array::const_iterator it(array.Begin()),
-                            itEnd(array.End());
-      while (it != itEnd) {
+      Array::const_iterator it(array.begin()),
+                            itend(array.end());
+      while (it != itend) {
          m_ostr << std::string(m_nTabDepth, '\t');
          
          Write_i(*it);
 
-         if (++it != itEnd)
+         if (++it != itend)
             m_ostr << ',';
          m_ostr << std::endl;
       }
@@ -72,20 +72,20 @@ inline void Writer::Write_i(const Array& array)
 
 inline void Writer::Write_i(const Object& object)
 {
-   if (object.Empty())
+   if (object.empty())
       m_ostr << "{}";
    else
    {
       m_ostr << '{' << std::endl;
       ++m_nTabDepth;
 
-      Object::const_iterator it(object.Begin()),
-                             itEnd(object.End());
-      while (it != itEnd) {
+      Object::const_iterator it(object.begin()),
+                             itend(object.end());
+      while (it != itend) {
          m_ostr << std::string(m_nTabDepth, '\t') << '"' << it->name << "\" : ";
          Write_i(it->element); 
 
-         if (++it != itEnd)
+         if (++it != itend)
             m_ostr << ',';
          m_ostr << std::endl;
       }
@@ -111,8 +111,8 @@ inline void Writer::Write_i(const String& stringElement)
 
    const std::string& s = stringElement.Value();
    std::string::const_iterator it(s.begin()),
-                               itEnd(s.end());
-   for (; it != itEnd; ++it)
+                               itend(s.end());
+   for (; it != itend; ++it)
    {
       switch (*it)
       {
@@ -150,4 +150,4 @@ inline void Writer::Visit(const Null& null)         { Write_i(null); }
 
 
 
-} // End namespace
+} // end namespace

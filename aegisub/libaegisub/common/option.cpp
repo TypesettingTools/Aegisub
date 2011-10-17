@@ -143,7 +143,7 @@ void Options::Flush() {
 				for (std::vector<std::string>::const_iterator i_str = array_string.begin(); i_str != array_string.end(); ++i_str) {
 					json::Object obj;
 					obj["string"] = json::String(*i_str);
-					array.Insert(obj);
+					array.push_back(obj);
 				}
 
 				PutOption(obj_out, i->first, (json::Array)array);
@@ -159,7 +159,7 @@ void Options::Flush() {
 				for (std::vector<int64_t>::const_iterator i_int = array_int.begin(); i_int != array_int.end(); ++i_int) {
 					json::Object obj;
 					obj["int"] = json::Number((const double)*i_int);
-					array.Insert(obj);
+					array.push_back(obj);
 				}
 				PutOption(obj_out, i->first, (json::Array)array);
 			}
@@ -174,7 +174,7 @@ void Options::Flush() {
 				for (std::vector<double>::const_iterator i_double = array_double.begin(); i_double != array_double.end(); ++i_double) {
 					json::Object obj;
 					obj["double"] = json::Number(*i_double);
-					array.Insert(obj);
+					array.push_back(obj);
 				}
 				PutOption(obj_out, i->first, (json::Array)array);
 			}
@@ -193,7 +193,7 @@ void Options::Flush() {
 
 					obj["colour"] = json::String(str);
 
-					array.Insert(obj);
+					array.push_back(obj);
 				}
 				PutOption(obj_out, i->first, (json::Array)array);
 			}
@@ -208,7 +208,7 @@ void Options::Flush() {
 				for (std::vector<bool>::const_iterator i_bool = array_bool.begin(); i_bool != array_bool.end(); ++i_bool) {
 					json::Object obj;
 					obj["bool"] = json::Boolean(*i_bool);
-					array.Insert(obj);
+					array.push_back(obj);
 				}
 				PutOption(obj_out, i->first, (json::Array)array);
 			}
@@ -224,10 +224,10 @@ void Options::Flush() {
 bool Options::PutOption(json::Object &obj, const std::string &path, const json::UnknownElement &value) {
 	// Having a '/' denotes it is a leaf.
 	if (path.find('/') == std::string::npos) {
-		json::Object::iterator pos = obj.Find(path);
+		json::Object::iterator pos = obj.find(path);
 
 		// Fail if a key of the same name already exists.
-		if (pos != obj.End())
+		if (pos != obj.end())
 			throw OptionErrorDuplicateKey("Key already exists");
 
 		obj[path] = value;
@@ -235,11 +235,11 @@ bool Options::PutOption(json::Object &obj, const std::string &path, const json::
 	} else {
 		std::string thispart = path.substr(0, path.find("/"));
 		std::string restpart = path.substr(path.find("/")+1, path.size());
-		json::Object::iterator pos = obj.Find(thispart);
+		json::Object::iterator pos = obj.find(thispart);
 
 		// New key, make object.
-		if (pos == obj.End())
-			pos = obj.Insert(json::Object::Member(thispart, json::Object()));
+		if (pos == obj.end())
+			pos = obj.insert(json::Object::Member(thispart, json::Object()));
 
 		PutOptionVisitor visitor(restpart, value);
 		pos->element.Accept(visitor);

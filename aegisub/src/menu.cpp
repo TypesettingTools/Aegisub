@@ -229,8 +229,8 @@ struct CommandMenuBar : public wxMenuBar {
 /// @param[out] value Output value to write to
 /// @return Was the requested index found
 bool read_entry(json::Object const& obj, const char *name, std::string *value) {
-	json::Object::const_iterator it = obj.Find(name);
-	if (it == obj.End()) return false;
+	json::Object::const_iterator it = obj.find(name);
+	if (it == obj.end()) return false;
 	*value = static_cast<json::String const&>(it->element);
 	return true;
 }
@@ -241,7 +241,7 @@ typedef json::Object menu_map;
 /// Get the root object of the menu configuration
 menu_map const& get_menus_root() {
 	static menu_map root;
-	if (!root.Empty()) return root;
+	if (!root.empty()) return root;
 
 	try {
 		root = agi::json_util::file(StandardPaths::DecodePath("?user/menu.json").utf8_str().data(), GET_DEFAULT_CONFIG(default_menu));
@@ -263,8 +263,8 @@ menu_map const& get_menus_root() {
 menu_items const& get_menu(std::string const& name) {
 	menu_map const& root = get_menus_root();
 
-	menu_map::const_iterator it = root.Find(name);
-	if (it == root.End()) throw menu::UnknownMenu("Menu named " + name + " not found");
+	menu_map::const_iterator it = root.find(name);
+	if (it == root.end()) throw menu::UnknownMenu("Menu named " + name + " not found");
 	return it->element;
 }
 
@@ -276,7 +276,7 @@ wxMenu *build_menu(std::string const& name, agi::Context *c, CommandManager *cm,
 /// @param ele json object to process
 /// @param cm Command manager for this menu
 void process_menu_item(wxMenu *parent, agi::Context *c, json::Object const& ele, CommandManager *cm) {
-	if (ele.Empty()) {
+	if (ele.empty()) {
 		parent->AppendSeparator();
 		return;
 	}
@@ -333,7 +333,7 @@ wxMenu *build_menu(std::string const& name, agi::Context *c, CommandManager *cm,
 	menu_items const& items = get_menu(name);
 
 	if (!menu) menu = new wxMenu;
-	for_each(items.Begin(), items.End(), bind(process_menu_item, menu, c, _1, cm));
+	for_each(items.begin(), items.end(), bind(process_menu_item, menu, c, _1, cm));
 	return menu;
 }
 
@@ -389,7 +389,7 @@ namespace menu {
 		menu_items const& items = get_menu(name);
 
 		CommandMenuBar *menu = new CommandMenuBar(c);
-		for (menu_items::const_iterator it = items.Begin(); it != items.End(); ++it) {
+		for (menu_items::const_iterator it = items.begin(); it != items.end(); ++it) {
 			std::string submenu, disp;
 			read_entry(*it, "submenu", &submenu);
 			read_entry(*it, "text", &disp);

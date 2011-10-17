@@ -13,7 +13,7 @@ Author: Terry Caton
 #include <string>
 #include <stdexcept>
 
-/*  
+/*
 
 TODO:
 * better documentation (doxygen?)
@@ -28,8 +28,6 @@ namespace json
 
 /////////////////////////////////////////////////
 // forward declarations (more info further below)
-
-
 class Visitor;
 class ConstVisitor;
 
@@ -48,15 +46,11 @@ class Null;
 
 /////////////////////////////////////////////////////////////////////////
 // Exception - base class for all JSON-related runtime errors
-
 class Exception : public std::runtime_error
 {
 public:
-   Exception(const std::string& sMessage);
+	Exception(const std::string& sMessage) : std::runtime_error(sMessage) { }
 };
-
-
-
 
 /////////////////////////////////////////////////////////////////////////
 // UnknownElement - provides a typesafe surrogate for any of the JSON-
@@ -64,7 +58,7 @@ public:
 //  class to effectively contain a heterogeneous set of child elements.
 // The cast operators provide convenient implicit downcasting, while
 //  preserving dynamic type safety by throwing an exception during a
-//  a bad cast. 
+//  a bad cast.
 // The object & array element index operators (operators [std::string]
 //  and [size_t]) provide convenient, quick access to child elements.
 //  They are a logical extension of the cast operators. These child
@@ -128,7 +122,7 @@ private:
 
    class CastVisitor;
    class ConstCastVisitor;
-   
+
    template <typename ElementTypeT>
    class CastVisitor_T;
 
@@ -146,50 +140,54 @@ private:
 
 
 /////////////////////////////////////////////////////////////////////////////////
-// Array - mimics std::deque<UnknownElement>. The array contents are effectively 
-//  heterogeneous thanks to the ElementUnknown class. push_back has been replaced 
-//  by more generic insert functions.
-
+// Array - mimics std::deque<UnknownElement>. The array contents are effectively
+//  heterogeneous thanks to the ElementUnknown class.
 class Array
 {
 public:
-   typedef std::deque<UnknownElement> Elements;
-   typedef Elements::iterator iterator;
-   typedef Elements::const_iterator const_iterator;
+   typedef std::deque<UnknownElement> elements;
+   typedef elements::iterator iterator;
+   typedef elements::const_iterator const_iterator;
 
-   iterator Begin();
-   iterator End();
-   const_iterator Begin() const;
-   const_iterator End() const;
-   
-   iterator Insert(const UnknownElement& element, iterator itWhere);
-   iterator Insert(const UnknownElement& element);
-   iterator Erase(iterator itWhere);
-   void Resize(size_t newSize);
-   void Clear();
+   iterator begin() { return m_Elements.begin(); }
+   iterator end() { return m_Elements.end(); }
+   const_iterator begin() const { return m_Elements.begin(); }
+   const_iterator end() const { return m_Elements.end(); }
 
-   size_t Size() const;
-   bool Empty() const;
+   iterator insert(iterator it, const UnknownElement& element) { m_Elements.insert(it, element); }
+   void push_back(const UnknownElement& element) { m_Elements.push_back(element); }
+   iterator erase(iterator it) { return m_Elements.erase(it); }
+   void resize(size_t newsize) { m_Elements.resize(newsize); }
+   void clear() { m_Elements.clear(); }
+
+   size_t size() const { return m_Elements.size(); }
+   bool empty() const { return m_Elements.empty(); }
+
+   UnknownElement& front() { return m_Elements.front(); }
+   const UnknownElement& front() const { return m_Elements.front(); }
+   UnknownElement& back() { return m_Elements.back(); }
+   const UnknownElement& back() const { return m_Elements.back(); }
 
    UnknownElement& operator[] (size_t index);
    const UnknownElement& operator[] (size_t index) const;
 
-   bool operator == (const Array& array) const;
+   bool operator == (const Array& array) const { return m_Elements == array.m_Elements; }
 
 private:
-   Elements m_Elements;
+   elements m_Elements;
 };
 
 
 /////////////////////////////////////////////////////////////////////////////////
-// Object - mimics std::map<std::string, UnknownElement>. The member value 
+// Object - mimics std::map<std::string, UnknownElement>. The member value
 //  contents are effectively heterogeneous thanks to the UnknownElement class
 
 class Object
 {
 public:
    struct Member {
-      Member(const std::string& nameIn = std::string(), const UnknownElement& elementIn = UnknownElement());
+      Member(const std::string& nameIn = std::string(), const UnknownElement& elementIn = UnknownElement())
+      : name(nameIn), element(elementIn) { }
 
       bool operator == (const Member& member) const;
 
@@ -201,23 +199,22 @@ public:
    typedef Members::iterator iterator;
    typedef Members::const_iterator const_iterator;
 
-   bool operator == (const Object& object) const;
+   bool operator == (const Object& object) const { return m_Members == object.m_Members; }
 
-   iterator Begin();
-   iterator End();
-   const_iterator Begin() const;
-   const_iterator End() const;
+   iterator begin() { return m_Members.begin(); }
+   iterator end() { return m_Members.end(); }
+   const_iterator begin() const { return m_Members.begin(); }
+   const_iterator end() const { return m_Members.end(); }
 
-   size_t Size() const;
-   bool Empty() const;
+   size_t size() const { return m_Members.size(); }
+   bool empty() const { return m_Members.empty(); }
 
-   iterator Find(const std::string& name);
-   const_iterator Find(const std::string& name) const;
+   iterator find(const std::string& name);
+   const_iterator find(const std::string& name) const;
 
-   iterator Insert(const Member& member);
-   iterator Insert(const Member& member, iterator itWhere);
-   iterator Erase(iterator itWhere);
-   void Clear();
+   iterator insert(const Member& member);
+   iterator erase(iterator it) { return m_Members.erase(it); }
+   void clear() { m_Members.clear(); }
 
    UnknownElement& operator [](const std::string& name);
    const UnknownElement& operator [](const std::string& name) const;
@@ -266,7 +263,7 @@ public:
 };
 
 
-} // End namespace
+} // end namespace
 
 
 #include "elements.inl"

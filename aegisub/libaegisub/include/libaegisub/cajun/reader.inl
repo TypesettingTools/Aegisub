@@ -417,13 +417,12 @@ inline void Reader::Parse(Object& object, Reader::TokenStream& tokenStream)
       // try adding it to the object (this could throw)
       try
       {
-         object.Insert(member);
+         object.insert(member);
       }
       catch (Exception&)
       {
          // must be a duplicate name
-         std::string sMessage = "Duplicate object member token: " + member.name; 
-         throw ParseException(sMessage, tokenName.locBegin, tokenName.locEnd);
+         throw ParseException("Duplicate object member token: " + member.name, tokenName.locBegin, tokenName.locEnd);
       }
 
       bContinue = (tokenStream.EOS() == false &&
@@ -445,8 +444,8 @@ inline void Reader::Parse(Array& array, Reader::TokenStream& tokenStream)
    while (bContinue)
    {
       // ...what's next? could be anything
-      Array::iterator itElement = array.Insert(UnknownElement());
-      UnknownElement& element = *itElement;
+      array.push_back(UnknownElement());
+      UnknownElement& element = array.back();
       Parse(element, tokenStream);
 
       bContinue = (tokenStream.EOS() == false &&

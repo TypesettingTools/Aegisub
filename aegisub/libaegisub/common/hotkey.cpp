@@ -75,7 +75,7 @@ Hotkey::Hotkey(const std::string &file, const std::string &default_config)
 	json::UnknownElement hotkey_root = agi::json_util::file(config_file, default_config);
 	json::Object object = hotkey_root;
 
-	for (json::Object::const_iterator index(object.Begin()); index != object.End(); index++) {
+	for (json::Object::const_iterator index(object.begin()); index != object.end(); index++) {
 		const json::Object::Member& member = *index;
 		const json::Object& obj = member.element;
 		BuildHotkey(member.name, obj);
@@ -84,22 +84,20 @@ Hotkey::Hotkey(const std::string &file, const std::string &default_config)
 
 
 void Hotkey::BuildHotkey(std::string const& context, const json::Object& object) {
-	for (json::Object::const_iterator index(object.Begin()); index != object.End(); index++) {
+	for (json::Object::const_iterator index(object.begin()); index != object.end(); index++) {
 		const json::Object::Member& member = *index;
 		const json::Array& array = member.element;
 
-		for (json::Array::const_iterator arr_index(array.Begin()); arr_index != array.End(); arr_index++) {
+		for (json::Array::const_iterator arr_index(array.begin()); arr_index != array.end(); arr_index++) {
 			Combo combo(context, member.name);
 
 			const json::Object& obj = *arr_index;
 
 			const json::Array& arr_mod = obj["modifiers"];
 
-			if (arr_mod.Size() > 0) {
-				for (json::Array::const_iterator arr_mod_index(arr_mod.Begin()); arr_mod_index != arr_mod.End(); arr_mod_index++) {
-					const json::String& key_mod = *arr_mod_index;
-					combo.KeyInsert(key_mod.Value());
-				} // for arr_mod_index
+			for (json::Array::const_iterator arr_mod_index(arr_mod.begin()); arr_mod_index != arr_mod.end(); arr_mod_index++) {
+				const json::String& key_mod = *arr_mod_index;
+				combo.KeyInsert(key_mod.Value());
 			}
 			combo.KeyInsert(static_cast<const json::String&>(obj["key"]).Value());
 			ComboInsert(combo);
@@ -178,7 +176,7 @@ void Hotkey::Flush() {
 
 		json::Array modifiers;
 		for (int i = 0; i != combo_map.size()-1; i++) {
-			modifiers.Insert(json::String(combo_map[i]));
+			modifiers.push_back(json::String(combo_map[i]));
 		}
 
 		json::Object hotkey;
@@ -188,7 +186,7 @@ void Hotkey::Flush() {
 		json::Object& context_obj = root[index->second.Context()];
 		json::Array& combo_array = context_obj[index->second.CmdName()];
 
-		combo_array.Insert(hotkey);
+		combo_array.push_back(hotkey);
 	}
 
 	io::Save file(config_file);

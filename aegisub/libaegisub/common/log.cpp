@@ -89,17 +89,17 @@ LogSink::~LogSink() {
 		entry["line"]		= json::Number(sink[i]->line);
 		entry["message"]	= json::String(std::string(sink[i]->message, sink[i]->len));
 
-		array.Insert(entry);
+		array.push_back(entry);
 	}
 
 	json::Array timeval_open;
-	timeval_open.Insert(json::Number(time_start.tv_sec));
-	timeval_open.Insert(json::Number(time_start.tv_usec));
+	timeval_open.push_back(json::Number(time_start.tv_sec));
+	timeval_open.push_back(json::Number(time_start.tv_usec));
 	root["timeval"]["open"] = timeval_open;
 
 	json::Array timeval_close;
-	timeval_close.Insert(json::Number(time_close.tv_sec));
-	timeval_close.Insert(json::Number(time_close.tv_usec));
+	timeval_close.push_back(json::Number(time_close.tv_sec));
+	timeval_close.push_back(json::Number(time_close.tv_usec));
 	root["timeval"]["close"] = timeval_close;
 
 

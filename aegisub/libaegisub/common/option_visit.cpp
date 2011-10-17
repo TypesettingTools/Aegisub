@@ -37,7 +37,7 @@ ConfigVisitor::ConfigVisitor(OptionValueMap &val, const std::string &member_name
 }
 
 void ConfigVisitor::Visit(const json::Object& object) {
-	json::Object::const_iterator index(object.Begin()), index_end(object.End());
+	json::Object::const_iterator index(object.begin()), index_end(object.end());
 
 	if (!name.empty())
 		name += "/";
@@ -56,12 +56,12 @@ void ConfigVisitor::Visit(const json::Object& object) {
 void ConfigVisitor::Visit(const json::Array& array) {
 	OptionValueList *array_list = NULL;
 
-	json::Array::const_iterator index(array.Begin()), indexEnd(array.End());
+	json::Array::const_iterator index(array.begin()), indexEnd(array.end());
 
 	for (; index != indexEnd; ++index) {
 		const json::Object& index_array = *index;
 
-		json::Object::const_iterator index_object(index_array.Begin()), index_objectEnd(index_array.End());
+		json::Object::const_iterator index_object(index_array.begin()), index_objectEnd(index_array.end());
 
 		for (; index_object != index_objectEnd; ++index_object) {
 			const json::Object::Member& member = *index_object;

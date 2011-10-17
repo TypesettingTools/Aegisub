@@ -34,7 +34,7 @@ MRUManager::MRUManager(const std::string &config, const std::string &default_con
 	json::UnknownElement root = json_util::file(config, default_config);
 	const json::Object& root_new = (json::Object)root;
 
-	json::Object::const_iterator index_object(root_new.Begin()), index_objectEnd(root_new.End());
+	json::Object::const_iterator index_object(root_new.begin()), index_objectEnd(root_new.end());
 
 	for (; index_object != index_objectEnd; ++index_object) {
 		const json::Object::Member& member = *index_object;
@@ -98,7 +98,7 @@ void MRUManager::Flush() {
 		const MRUListMap &map_list = i->second;
 
 		for (MRUListMap::const_iterator i_lst = map_list.begin(); i_lst != map_list.end(); ++i_lst) {
-			array.Insert(json::String(*i_lst));
+			array.push_back(json::String(*i_lst));
 		}
 	}
 
@@ -121,7 +121,7 @@ static json::String cast_str(json::UnknownElement const& e) {
 /// @param array json::Array of values.
 void MRUManager::Load(const std::string &key, const json::Array& array) {
 	try {
-		transform(array.Begin(), array.End(), back_inserter(mru[key]), cast_str);
+		transform(array.begin(), array.end(), back_inserter(mru[key]), cast_str);
 	}
 	catch (json::Exception const&) {
 		// Out of date MRU file; just discard the data and skip it

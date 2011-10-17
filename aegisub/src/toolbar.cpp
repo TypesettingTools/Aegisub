@@ -42,7 +42,7 @@
 namespace {
 	json::Object const& get_root() {
 		static json::Object root;
-		if (root.Empty()) {
+		if (root.empty()) {
 			root = agi::json_util::parse(new std::istringstream(GET_DEFAULT_CONFIG(default_toolbar)));
 		}
 		return root;
@@ -92,8 +92,8 @@ namespace {
 		/// Populate the toolbar with buttons
 		void Populate() {
 			json::Object const& root = get_root();
-			json::Object::const_iterator it = root.Find(name);
-			if (it == root.End()) {
+			json::Object::const_iterator it = root.find(name);
+			if (it == root.end()) {
 				// Toolbar names are all hardcoded so this should never happen
 				throw agi::InternalError("Toolbar named " + name + " not found.", 0);
 			}
@@ -101,10 +101,10 @@ namespace {
 			int icon_size = OPT_GET("App/Toolbar Icon Size")->GetInt();
 
 			json::Array arr = it->element;
-			commands.reserve(arr.Size());
+			commands.reserve(arr.size());
 			bool needs_onidle = false;
 
-			for (json::Array::const_iterator it = arr.Begin(); it != arr.End(); ++it) {
+			for (json::Array::const_iterator it = arr.begin(); it != arr.end(); ++it) {
 				json::String const& command_name = *it;
 
 				if (command_name.Value().empty()) {
