@@ -100,7 +100,7 @@ namespace {
 
 			int icon_size = OPT_GET("App/Toolbar Icon Size")->GetInt();
 
-			json::Array arr = it->element;
+			json::Array arr = it->second;
 			commands.reserve(arr.size());
 			bool needs_onidle = false;
 

@@ -402,17 +402,17 @@ inline void Reader::Parse(Object& object, Reader::TokenStream& tokenStream)
                      tokenStream.Peek().nType != Token::TOKEN_OBJECT_END);
    while (bContinue)
    {
-      Object::Member member;
+      std::pair<std::string, UnknownElement> member;
 
       // first the member name. save the token in case we have to throw an exception
       const Token& tokenName = tokenStream.Peek();
-      member.name = MatchExpectedToken(Token::TOKEN_STRING, tokenStream);
+      member.first = MatchExpectedToken(Token::TOKEN_STRING, tokenStream);
 
       // ...then the key/value separator...
       MatchExpectedToken(Token::TOKEN_MEMBER_ASSIGN, tokenStream);
 
       // ...then the value itself (can be anything).
-      Parse(member.element, tokenStream);
+      Parse(member.second, tokenStream);
 
       // try adding it to the object (this could throw)
       try
@@ -422,7 +422,7 @@ inline void Reader::Parse(Object& object, Reader::TokenStream& tokenStream)
       catch (Exception&)
       {
          // must be a duplicate name
-         throw ParseException("Duplicate object member token: " + member.name, tokenName.locBegin, tokenName.locEnd);
+         throw ParseException("Duplicate object member token: " + member.first, tokenName.locBegin, tokenName.locEnd);
       }
 
       bContinue = (tokenStream.EOS() == false &&

@@ -239,10 +239,10 @@ bool Options::PutOption(json::Object &obj, const std::string &path, const json::
 
 		// New key, make object.
 		if (pos == obj.end())
-			pos = obj.insert(json::Object::Member(thispart, json::Object()));
+			pos = obj.insert(make_pair(thispart, json::Object()));
 
 		PutOptionVisitor visitor(restpart, value);
-		pos->element.Accept(visitor);
+		pos->second.Accept(visitor);
 		return visitor.result;
 	}
 }

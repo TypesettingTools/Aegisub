@@ -7,17 +7,9 @@ Author: Terry Caton
 ***********************************************/
 
 #include "visitor.h"
-#include "reader.h"
 #include <cassert>
 #include <algorithm>
 #include <map>
-
-/*
-
-TODO:
-* better documentation
-
-*/
 
 namespace json
 {
@@ -199,40 +191,13 @@ inline bool UnknownElement::operator == (const UnknownElement& element) const
 
 //////////////////
 // Object members
-
-inline bool Object::Member::operator == (const Member& member) const
+inline Object::iterator Object::insert(std::pair<std::string, UnknownElement> const& ele)
 {
-   return name == member.name && element == member.element;
-}
-
-class Object::Finder : public std::unary_function<Object::Member, bool>
-{
-   std::string m_name;
-public:
-   Finder(const std::string& name) : m_name(name) {}
-   bool operator () (const Object::Member& member) {
-      return member.name == m_name;
-   }
-};
-
-inline Object::iterator Object::find(const std::string& name)
-{
-   return std::find_if(m_Members.begin(), m_Members.end(), Finder(name));
-}
-
-inline Object::const_iterator Object::find(const std::string& name) const
-{
-   return std::find_if(m_Members.begin(), m_Members.end(), Finder(name));
-}
-
-inline Object::iterator Object::insert(const Member& member)
-{
-   iterator it = find(member.name);
+   iterator it = find(ele.first);
    if (it != m_Members.end())
-      throw Exception("Object member already exists: " + member.name);
+      throw Exception("Object member already exists: " + ele.first);
 
-   m_Members.push_back(member);
-   return --it;
+   return m_Members.insert(ele).first;
 }
 
 inline UnknownElement& Object::operator [](const std::string& name)
@@ -240,9 +205,9 @@ inline UnknownElement& Object::operator [](const std::string& name)
    iterator it = find(name);
    if (it == m_Members.end())
    {
-      it = insert(Member(name));
+      it = insert(make_pair(name, UnknownElement()));
    }
-   return it->element;
+   return it->second;
 }
 
 inline const UnknownElement& Object::operator [](const std::string& name) const
@@ -250,7 +215,7 @@ inline const UnknownElement& Object::operator [](const std::string& name) const
    const_iterator it = find(name);
    if (it == end())
       throw Exception("Object member not found: " + name);
-   return it->element;
+   return it->second;
 }
 
 /////////////////

@@ -76,20 +76,18 @@ Hotkey::Hotkey(const std::string &file, const std::string &default_config)
 	json::Object object = hotkey_root;
 
 	for (json::Object::const_iterator index(object.begin()); index != object.end(); index++) {
-		const json::Object::Member& member = *index;
-		const json::Object& obj = member.element;
-		BuildHotkey(member.name, obj);
+		const json::Object& obj = index->second;
+		BuildHotkey(index->first, obj);
 	}
 }
 
 
 void Hotkey::BuildHotkey(std::string const& context, const json::Object& object) {
 	for (json::Object::const_iterator index(object.begin()); index != object.end(); index++) {
-		const json::Object::Member& member = *index;
-		const json::Array& array = member.element;
+		const json::Array& array = index->second;
 
 		for (json::Array::const_iterator arr_index(array.begin()); arr_index != array.end(); arr_index++) {
-			Combo combo(context, member.name);
+			Combo combo(context, index->first);
 
 			const json::Object& obj = *arr_index;
 

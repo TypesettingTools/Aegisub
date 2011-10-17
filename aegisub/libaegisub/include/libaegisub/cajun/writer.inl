@@ -82,8 +82,8 @@ inline void Writer::Write_i(const Object& object)
       Object::const_iterator it(object.begin()),
                              itend(object.end());
       while (it != itend) {
-         m_ostr << std::string(m_nTabDepth, '\t') << '"' << it->name << "\" : ";
-         Write_i(it->element); 
+         m_ostr << std::string(m_nTabDepth, '\t') << '"' << it->first << "\" : ";
+         Write_i(it->second); 
 
          if (++it != itend)
             m_ostr << ',';

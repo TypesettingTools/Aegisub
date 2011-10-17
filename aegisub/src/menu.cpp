@@ -231,7 +231,7 @@ struct CommandMenuBar : public wxMenuBar {
 bool read_entry(json::Object const& obj, const char *name, std::string *value) {
 	json::Object::const_iterator it = obj.find(name);
 	if (it == obj.end()) return false;
-	*value = static_cast<json::String const&>(it->element);
+	*value = static_cast<json::String const&>(it->second);
 	return true;
 }
 
@@ -265,7 +265,7 @@ menu_items const& get_menu(std::string const& name) {
 
 	menu_map::const_iterator it = root.find(name);
 	if (it == root.end()) throw menu::UnknownMenu("Menu named " + name + " not found");
-	return it->element;
+	return it->second;
 }
 
 wxMenu *build_menu(std::string const& name, agi::Context *c, CommandManager *cm, wxMenu *menu = 0);

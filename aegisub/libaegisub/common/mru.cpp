@@ -37,11 +37,8 @@ MRUManager::MRUManager(const std::string &config, const std::string &default_con
 	json::Object::const_iterator index_object(root_new.begin()), index_objectEnd(root_new.end());
 
 	for (; index_object != index_objectEnd; ++index_object) {
-		const json::Object::Member& member = *index_object;
-		const std::string &member_name = member.name;
-		const json::UnknownElement& element = member.element;
-
-		Load(member_name, (json::Array)element);
+		const std::string &member_name = index_object->first;
+		Load(member_name, (json::Array)index_object->second);
 	}
 }
 

@@ -185,17 +185,7 @@ private:
 class Object
 {
 public:
-   struct Member {
-      Member(const std::string& nameIn = std::string(), const UnknownElement& elementIn = UnknownElement())
-      : name(nameIn), element(elementIn) { }
-
-      bool operator == (const Member& member) const;
-
-      std::string name;
-      UnknownElement element;
-   };
-
-   typedef std::list<Member> Members; // map faster, but does not preserve order
+   typedef std::map<std::string, UnknownElement> Members;
    typedef Members::iterator iterator;
    typedef Members::const_iterator const_iterator;
 
@@ -209,10 +199,10 @@ public:
    size_t size() const { return m_Members.size(); }
    bool empty() const { return m_Members.empty(); }
 
-   iterator find(const std::string& name);
-   const_iterator find(const std::string& name) const;
+   iterator find(const std::string& name) { return m_Members.find(name); }
+   const_iterator find(const std::string& name) const { return m_Members.find(name); }
 
-   iterator insert(const Member& member);
+   iterator insert(std::pair<std::string, UnknownElement> const& ele);
    iterator erase(iterator it) { return m_Members.erase(it); }
    void clear() { m_Members.clear(); }
 
@@ -220,8 +210,6 @@ public:
    const UnknownElement& operator [](const std::string& name) const;
 
 private:
-   class Finder;
-
    Members m_Members;
 };
 
