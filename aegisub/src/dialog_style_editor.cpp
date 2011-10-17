@@ -78,15 +78,25 @@ static wxTextCtrl *num_text_ctrl(wxWindow *parent, double value, wxSize size = w
 	return new wxTextCtrl(parent, -1, "", wxDefaultPosition, size, 0, NumValidator(wxString::Format("%0.3g", value), true, false));
 }
 
-DialogStyleEditor::DialogStyleEditor (wxWindow *parent, AssStyle *style, agi::Context *c, bool local, AssStyleStorage *store, bool newStyle)
+DialogStyleEditor::DialogStyleEditor(wxWindow *parent, AssStyle *style, agi::Context *c, AssStyleStorage *store, bool copy_style)
 : wxDialog (parent, -1, _("Style Editor"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER, "DialogStyleEditor")
 , c(c)
-, isLocal(local)
-, isNew(newStyle)
+, is_new(false)
 , style(style)
-, work(new AssStyle(*style))
 , store(store)
 {
+	if (copy_style) {
+		is_new = true;
+		style = this->style = new AssStyle(*style);
+		style->name += _(" - Copy");
+	}
+	else if (!style) {
+		is_new = true;
+		style = this->style = new AssStyle;
+	}
+
+	work.reset(new AssStyle(*style));
+
 	SetIcon(BitmapToIcon(GETIMAGE(style_toolbutton_24)));
 
 	// Prepare control values
@@ -331,31 +341,30 @@ DialogStyleEditor::DialogStyleEditor (wxWindow *parent, AssStyle *style, agi::Co
 		colorButton[i]->Bind(wxEVT_COMMAND_BUTTON_CLICKED, bind(&DialogStyleEditor::OnSetColor, this, i + 1, std::tr1::placeholders::_1));
 }
 
-DialogStyleEditor::~DialogStyleEditor () {
+DialogStyleEditor::~DialogStyleEditor() {
+	if (is_new)
+		delete style;
 }
 
 /// @brief Update appearances of a renamed style in \r tags
-void ReplaceStyle(wxString tag, int, AssOverrideParameter* param, void *userData) {
+static void ReplaceStyle(wxString tag, int, AssOverrideParameter* param, void *userData) {
 	wxArrayString strings = *((wxArrayString*)userData);
 	if (tag == "\\r" && param->GetType() == VARDATA_TEXT && param->Get<wxString>() == strings[0]) {
 		param->Set(strings[1]);
 	}
 }
 
-/// @brief Maybe apply changs and maybe close the dialog
-/// @param apply Should changes be applied?
-/// @param close Should the dialog be closed?
-void DialogStyleEditor::Apply (bool apply, bool close) {
+void DialogStyleEditor::Apply(bool apply, bool close) {
 	if (apply) {
 		wxString newStyleName = StyleName->GetValue();
 
 		// Get list of existing styles
-		wxArrayString styles = isLocal ? c->ass->GetStyles() : store->GetNames();
+		wxArrayString styles = store ? store->GetNames() : c->ass->GetStyles();
 
 		// Check if style name is unique
 		for (unsigned int i=0;i<styles.Count();i++) {
 			if (newStyleName.CmpNoCase(styles[i]) == 0) {
-				if ((isLocal && (c->ass->GetStyle(styles[i]) != style)) || (!isLocal && (store->GetStyle(styles[i]) != style))) {
+				if ((store && store->GetStyle(styles[i]) != style) || c->ass->GetStyle(styles[i]) != style) {
 					wxMessageBox("There is already a style with this name. Please choose another name.", "Style name conflict.", wxICON_ERROR|wxOK);
 					return;
 				}
@@ -365,11 +374,9 @@ void DialogStyleEditor::Apply (bool apply, bool close) {
 		// Style name change
 		bool did_rename = false;
 		if (work->name != newStyleName) {
-			if (!isNew && isLocal) {
+			if (!store && !is_new && work->name != "Default") {
 				// See if user wants to update style name through script
-				int answer = wxNO;
-				if (work->name != "Default")
-					answer = wxMessageBox(_("Do you want to change all instances of this style in the script to this new name?"), _("Update script?"), wxYES_NO | wxCANCEL);
+				int answer = wxMessageBox(_("Do you want to change all instances of this style in the script to this new name?"), _("Update script?"), wxYES_NO | wxCANCEL);
 
 				if (answer == wxCANCEL) return;
 
@@ -397,7 +404,14 @@ void DialogStyleEditor::Apply (bool apply, bool close) {
 
 		*style = *work;
 		style->UpdateData();
-		if (isLocal)
+		if (is_new) {
+			if (store)
+				store->style.push_back(style);
+			else
+				c->ass->InsertStyle(style);
+			is_new = false;
+		}
+		if (!store)
 			c->ass->Commit(_("style change"), AssFile::COMMIT_STYLES | (did_rename ? AssFile::COMMIT_DIAG_FULL : 0));
 
 		// Update preview

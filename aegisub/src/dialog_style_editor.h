@@ -1,4 +1,4 @@
-// Copyright (c) 2005, Rodrigo Braz Monteiro
+// Copyright(c) 2005, Rodrigo Braz Monteiro
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -18,10 +18,10 @@
 // IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
 // ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
 // LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
-// CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+// CONSEQUENTIAL DAMAGES(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
 // SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 // INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-// CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+// CONTRACT, STRICT LIABILITY, OR TORT(INCLUDING NEGLIGENCE OR OTHERWISE)
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 //
@@ -60,13 +60,10 @@ class DialogStyleEditor : public wxDialog {
 	agi::Context *c;
 	agi::scoped_ptr<PersistLocation> persist;
 
-	/// DOCME
-	bool isLocal;
-
 	/// If true, the style was just created and so the user should not be
 	/// asked if they want to change any existing lines should they rename
 	/// the style
-	bool isNew;
+	bool is_new;
 
 	/// DOCME
 	AssStyle *style;
@@ -140,21 +137,24 @@ class DialogStyleEditor : public wxDialog {
 	/// DOCME
 	SubtitlesPreview *SubsPreview;
 
-	void SetBitmapColor (int n,wxColour color);
-	int AlignToControl (int n);
-	int ControlToAlign (int n);
-	void UpdateWorkStyle ();
+	void SetBitmapColor(int n,wxColour color);
+	int AlignToControl(int n);
+	int ControlToAlign(int n);
+	void UpdateWorkStyle();
 
-	void OnChildFocus (wxChildFocusEvent &event);
-	void OnCommandPreviewUpdate (wxCommandEvent &event);
+	void OnChildFocus(wxChildFocusEvent &event);
+	void OnCommandPreviewUpdate(wxCommandEvent &event);
 
-	void OnPreviewTextChange (wxCommandEvent &event);
-	void OnPreviewColourChange (wxCommandEvent &event);
+	void OnPreviewTextChange(wxCommandEvent &event);
+	void OnPreviewColourChange(wxCommandEvent &event);
 
-	void Apply (bool apply,bool close);
-	void OnSetColor (int n, wxCommandEvent& evt);
+	/// @brief Maybe apply changes and maybe close the dialog
+	/// @param apply Should changes be applied?
+	/// @param close Should the dialog be closed?
+	void Apply(bool apply,bool close);
+	void OnSetColor(int n, wxCommandEvent& evt);
 
 public:
-	DialogStyleEditor(wxWindow *parent,AssStyle *style, agi::Context *c,bool local,AssStyleStorage *store,bool newStyle=false);
+	DialogStyleEditor(wxWindow *parent, AssStyle *style, agi::Context *c, AssStyleStorage *store, bool copy_style);
 	~DialogStyleEditor();
 };

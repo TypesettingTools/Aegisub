@@ -481,11 +481,9 @@ void DialogStyleManager::OnStorageEdit (wxCommandEvent &) {
 	int n = StorageList->GetSelections(selections);
 	if (n == 1) {
 		AssStyle *selStyle = styleStorageMap[selections[0]];
-		DialogStyleEditor editor(this,selStyle,c,false,&Store);
-		if (editor.ShowModal()) {
-			StorageList->SetString(selections[0],selStyle->name);
-			Store.Save(CatalogList->GetString(CatalogList->GetSelection()));
-		}
+		DialogStyleEditor(this, selStyle, c, &Store, false).ShowModal();
+		StorageList->SetString(selections[0],selStyle->name);
+		Store.Save(CatalogList->GetString(CatalogList->GetSelection()));
 	}
 	UpdateMoveButtons();
 }
@@ -496,10 +494,8 @@ void DialogStyleManager::OnCurrentEdit (wxCommandEvent &) {
 	int n = CurrentList->GetSelections(selections);
 	if (n == 1) {
 		AssStyle *selStyle = styleMap[selections[0]];
-		DialogStyleEditor editor(this,selStyle,c,true,&Store);
-		if (editor.ShowModal()) {
-			CurrentList->SetString(selections[0],selStyle->name);
-		}
+		DialogStyleEditor(this, selStyle, c, 0, false).ShowModal();
+		CurrentList->SetString(selections[0],selStyle->name);
 	}
 	UpdateMoveButtons();
 }
@@ -606,21 +602,10 @@ void DialogStyleManager::OnStorageCopy (wxCommandEvent &) {
 	wxArrayInt selections;
 	StorageList->GetSelections(selections);
 	if (selections.size() == 0) return;
-	AssStyle *temp = new AssStyle(*(styleStorageMap.at(selections[0])));
 
-	wxString newName = _("Copy of ");
-	newName += temp->name;
-	temp->name = newName;
-
-	DialogStyleEditor editor(this,temp,c,false,&Store,true);
-	int modified = editor.ShowModal();
-	if (modified) {
-		Store.style.push_back(temp);
-		Store.Save(CatalogList->GetString(CatalogList->GetSelection()));
-		LoadStorageStyles();
-		StorageList->SetStringSelection(temp->name); // the copy/delete/copy-to-local buttons stay disabled after this?
-	}
-	else delete temp;
+	DialogStyleEditor(this, styleStorageMap[selections[0]], c, &Store, true).ShowModal();
+	Store.Save(CatalogList->GetString(CatalogList->GetSelection()));
+	LoadStorageStyles();
 	UpdateMoveButtons();
 }
 
@@ -630,21 +615,8 @@ void DialogStyleManager::OnCurrentCopy (wxCommandEvent &) {
 	CurrentList->GetSelections(selections);
 	if (selections.size() == 0) return;
 
-	AssStyle *temp = new AssStyle(styleMap.at(selections[0])->GetEntryData());
-	wxString newName = _("Copy of ");
-	newName += temp->name;
-	temp->name = newName;
-
-	DialogStyleEditor editor(this,temp,c,true,&Store,true);
-	int modified = editor.ShowModal();
-	if (modified) {
-		c->ass->InsertStyle(temp);
-		LoadCurrentStyles(c->ass);
-		CurrentList->SetStringSelection(temp->name); // but even without this, the copy/delete/copy-to-storage buttons stay enabled?
-	}
-	else delete temp;
-
-	c->ass->Commit(_("style copy"), AssFile::COMMIT_STYLES);
+	DialogStyleEditor(this, styleMap[selections[0]], c, 0, true).ShowModal();
+	LoadCurrentStyles(c->ass);
 	UpdateMoveButtons();
 }
 
@@ -750,32 +722,16 @@ void DialogStyleManager::PasteToStorage() {
 
 /// @brief Storage new 
 void DialogStyleManager::OnStorageNew (wxCommandEvent &) {
-	AssStyle *temp = new AssStyle;
-
-	DialogStyleEditor editor(this,temp,c,false,&Store,true);
-	int modified = editor.ShowModal();
-	if (modified) {
-		Store.style.push_back(temp);
-		Store.Save(CatalogList->GetString(CatalogList->GetSelection()));
-		LoadStorageStyles();
-		StorageList->SetStringSelection(temp->name);
-	}
-	else delete temp;
+	DialogStyleEditor(this, 0, c, &Store, false).ShowModal();
+	Store.Save(CatalogList->GetString(CatalogList->GetSelection()));
+	LoadStorageStyles();
 	UpdateMoveButtons();
 }
 
 /// @brief Current new 
 void DialogStyleManager::OnCurrentNew (wxCommandEvent &) {
-	AssStyle *temp = new AssStyle;
-
-	DialogStyleEditor editor(this,temp,c,true,&Store,true);
-	int modified = editor.ShowModal();
-	if (modified) {
-		c->ass->InsertStyle(temp);
-		LoadCurrentStyles(c->ass);
-		CurrentList->SetStringSelection(temp->name);
-	}
-	else delete temp;
+	DialogStyleEditor(this,0, c, 0, false).ShowModal();
+	LoadCurrentStyles(c->ass);
 	UpdateMoveButtons();
 }
 
