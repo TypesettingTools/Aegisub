@@ -71,16 +71,18 @@ namespace {
 			SelectionController<AssDialogue>::Selection sel = c->selectionController->GetSelectedSet();
 			if (sel.size() < 2) return false;
 
-			bool found = false;
+			size_t found = 0;
 			for (entryIter it = c->ass->Line.begin(); it != c->ass->Line.end(); ++it) {
 				AssDialogue *diag = dynamic_cast<AssDialogue*>(*it);
 				if (!diag) continue;
+
 				if (sel.count(diag)) {
-					found = true;
+					++found;
+					if (found == sel.size())
+						return true;
 				}
-				else if (found) {
+				else if (found)
 					return false;
-				}
 			}
 			return true;
 		}
