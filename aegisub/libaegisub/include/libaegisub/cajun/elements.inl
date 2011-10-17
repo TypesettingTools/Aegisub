@@ -222,20 +222,20 @@ inline const UnknownElement& Object::operator [](const std::string& name) const
 
 /////////////////
 // Array members
-
-inline UnknownElement& Array::operator[] (size_t index)
-{
-   size_t nMinsize = index + 1; // zero indexed
-   if (m_Elements.size() < nMinsize)
-      m_Elements.resize(nMinsize);
-   return m_Elements[index];
+inline UnknownElement& Array::operator[](size_t idx) {
+	if (idx >= size())
+		resize(idx + 1);
+	return std::deque<UnknownElement>::operator[](idx);
 }
 
-inline const UnknownElement& Array::operator[] (size_t index) const
-{
-   if (index >= m_Elements.size())
-      throw Exception("Array out of bounds");
-   return m_Elements[index];
+inline const UnknownElement& Array::operator[](size_t idx) const {
+	if (idx >= size())
+		throw Exception("Array out of bounds");
+	return std::deque<UnknownElement>::operator[](idx);
+}
+
+inline bool Array::operator==(Array const& rgt) const {
+	return *static_cast<const std::deque<UnknownElement> *>(this) == rgt;
 }
 
 } // end namespace

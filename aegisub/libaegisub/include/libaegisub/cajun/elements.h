@@ -55,8 +55,6 @@ public:
 //  element accesses can be chained together, allowing the following
 //  (when document structure is well-known):
 //  String str = objInvoices[1]["Customer"]["Company"];
-
-
 class UnknownElement
 {
 public:
@@ -132,45 +130,39 @@ private:
    Imp* m_pImp;
 };
 
-
-/////////////////////////////////////////////////////////////////////////////////
-// Array - mimics std::deque<UnknownElement>. The array contents are effectively
-//  heterogeneous thanks to the ElementUnknown class.
-class Array
+class Array : private std::deque<UnknownElement>
 {
 public:
-   typedef std::deque<UnknownElement> elements;
-   typedef elements::iterator iterator;
-   typedef elements::const_iterator const_iterator;
+   using std::deque<UnknownElement>::back;
+   using std::deque<UnknownElement>::begin;
+   using std::deque<UnknownElement>::clear;
+   using std::deque<UnknownElement>::const_iterator;
+   using std::deque<UnknownElement>::const_reference;
+   using std::deque<UnknownElement>::const_reverse_iterator;
+   using std::deque<UnknownElement>::difference_type;
+   using std::deque<UnknownElement>::empty;
+   using std::deque<UnknownElement>::end;
+   using std::deque<UnknownElement>::front;
+   using std::deque<UnknownElement>::iterator;
+   using std::deque<UnknownElement>::max_size;
+   using std::deque<UnknownElement>::pointer;
+   using std::deque<UnknownElement>::pop_back;
+   using std::deque<UnknownElement>::pop_front;
+   using std::deque<UnknownElement>::push_back;
+   using std::deque<UnknownElement>::push_front;
+   using std::deque<UnknownElement>::rbegin;
+   using std::deque<UnknownElement>::reference;
+   using std::deque<UnknownElement>::rend;
+   using std::deque<UnknownElement>::reverse_iterator;
+   using std::deque<UnknownElement>::size;
+   using std::deque<UnknownElement>::size_type;
+   using std::deque<UnknownElement>::swap;
+   using std::deque<UnknownElement>::value_type;
 
-   iterator begin() { return m_Elements.begin(); }
-   iterator end() { return m_Elements.end(); }
-   const_iterator begin() const { return m_Elements.begin(); }
-   const_iterator end() const { return m_Elements.end(); }
-
-   iterator insert(iterator it, const UnknownElement& element) { m_Elements.insert(it, element); }
-   void push_back(const UnknownElement& element) { m_Elements.push_back(element); }
-   iterator erase(iterator it) { return m_Elements.erase(it); }
-   void resize(size_t newsize) { m_Elements.resize(newsize); }
-   void clear() { m_Elements.clear(); }
-
-   size_t size() const { return m_Elements.size(); }
-   bool empty() const { return m_Elements.empty(); }
-
-   UnknownElement& front() { return m_Elements.front(); }
-   const UnknownElement& front() const { return m_Elements.front(); }
-   UnknownElement& back() { return m_Elements.back(); }
-   const UnknownElement& back() const { return m_Elements.back(); }
-
-   UnknownElement& operator[] (size_t index);
-   const UnknownElement& operator[] (size_t index) const;
-
-   bool operator == (const Array& array) const { return m_Elements == array.m_Elements; }
-
-private:
-   elements m_Elements;
+   UnknownElement& operator[](size_t idx);
+   const UnknownElement& operator[](size_t idx) const;
+   bool operator==(Array const& rgt) const;
 };
-
 
 /////////////////////////////////////////////////////////////////////////////////
 // Object - mimics std::map<std::string, UnknownElement>. The member value
