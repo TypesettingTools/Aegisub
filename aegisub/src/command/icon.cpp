@@ -43,20 +43,17 @@ wxBitmap const& get(std::string const& name, const int size) {
 	//      concerned about it.
 	if (size != 24) {
 		iconMap::iterator index;
-
-		if ((index = icon16.find(name)) != icon16.end()) {
+		if ((index = icon16.find(name)) != icon16.end())
 			return index->second;
-		}
-		printf("icon::get NOT FOUND (%s)\n", name.c_str());
 	}
 	else {
 		iconMap::iterator index;
-
-		if ((index = icon24.find(name)) != icon24.end()) {
+		if ((index = icon24.find(name)) != icon24.end())
 			return index->second;
-		}
-		printf("icon::get NOT FOUND (%s)\n", name.c_str());
 	}
+
+	LOG_W("icon/get") << "Icon not found: " << name << " " << size;
+
 	static wxBitmap empty;
 	return empty;
 }
