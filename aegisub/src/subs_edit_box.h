@@ -122,7 +122,7 @@ class SubsEditBox : public wxPanel, protected SelectionListener<AssDialogue> {
 	void CommitText(wxString desc);
 
 	/// Get block number at text position
-	int BlockAtPos(int pos) const;
+	int BlockAtPos(wxString const& text, int pos) const;
 
 	/// @brief Move to the next line, creating it if needed
 	void NextLine();

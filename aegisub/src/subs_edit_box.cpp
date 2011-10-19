@@ -662,14 +662,14 @@ void SubsEditBox::OnCommentChange(wxCommandEvent &event) {
 	SetSelectedRows(&AssDialogue::Comment, CommentBox->GetValue(), _("comment change"), AssFile::COMMIT_DIAG_META);
 }
 
-int SubsEditBox::BlockAtPos(int pos) const {
-	int n=0;
-	wxString text = TextEdit->GetText();;
-	int max = text.Length()-1;
-
-	for (int i=0;i<=pos && i<=max;i++) {
-		if (i > 0 && text[i] == '{') n++;
-		if (text[i] == '}' && i != max && i != pos && i != pos -1 && (i+1 == max || text[i+1] != '{')) n++;
+int SubsEditBox::BlockAtPos(wxString const& text, int pos) const {
+	int n = 0;
+	int max = text.size() - 1;
+	for (int i = 0; i <= pos && i <= max; ++i) {
+		if (i > 0 && text[i] == '{')
+			n++;
+		if (text[i] == '}' && i != max && i != pos && i != pos -1 && (i+1 == max || text[i+1] != '{'))
+			n++;
 	}
 
 	return n;
@@ -684,27 +684,43 @@ void SubsEditBox::SetTag(wxString tag, wxString value, bool atEnd) {
 	int selstart, selend;
 	get_selection(TextEdit, selstart, selend);
 	int start = atEnd ? selend : selstart;
-	int blockn = BlockAtPos(start);
+	int blockn = BlockAtPos(line->Text, start);
 
-	AssDialogueBlock *block = line->Blocks[blockn];
-	AssDialogueBlockPlain *plain = dynamic_cast<AssDialogueBlockPlain*>(block);
-	AssDialogueBlockOverride *ovr = dynamic_cast<AssDialogueBlockOverride*>(block);
-
-	// Drawings should always be preceded by an override block (with the \pX)
-	if (dynamic_cast<AssDialogueBlockDrawing*>(block)) {
-		assert(blockn > 0);
-		ovr = dynamic_cast<AssDialogueBlockOverride*>(line->Blocks[blockn - 1]);
-		assert(ovr);
+	AssDialogueBlockPlain *plain;
+	AssDialogueBlockOverride *ovr;
+	while (blockn >= 0) {
+		AssDialogueBlock *block = line->Blocks[blockn];
+		if (dynamic_cast<AssDialogueBlockDrawing*>(block))
+			--blockn;
+		else if (plain = dynamic_cast<AssDialogueBlockPlain*>(block)) {
+			// Cursor is in a comment block, so try the previous block instead
+			if (plain->GetText().StartsWith("{")) {
+				--blockn;
+				start = line->Text.rfind('{', start);
+			}
+			else
+				break;
+		}
+		else {
+			ovr = dynamic_cast<AssDialogueBlockOverride*>(block);
+			assert(ovr);
+			break;
+		}
 	}
+
+	// If we didn't hit a suitable block for inserting the override just put
+	// it at the beginning of the line
+	if (blockn < 0)
+		start = 0;
 
 	wxString insert = tag + value;
 	int shift = insert.size();
-	if (plain) {
+	if (plain || blockn < 0) {
 		line->Text = line->Text.Left(start) + "{" + insert + "}" + line->Text.Mid(start);
 		shift += 2;
 		line->ParseASSTags();
 	}
-	else if (ovr) {
+	else {
 		wxString alt;
 		if (tag == "\\c") alt = "\\1c";
 		// Remove old of same
@@ -772,7 +788,7 @@ void SubsEditBox::OnFlagButton(wxCommandEvent &evt) {
 	line->ParseASSTags();
 	int selstart, selend;
 	get_selection(TextEdit, selstart, selend);
-	int blockn = BlockAtPos(selstart);
+	int blockn = BlockAtPos(line->Text, selstart);
 
 	state = get_value(*line, blockn, state, tagname);
 
@@ -790,7 +806,7 @@ void SubsEditBox::OnFontButton(wxCommandEvent &) {
 	get_selection(TextEdit, selstart, selend);
 
 	line->ParseASSTags();
-	int blockn = BlockAtPos(selstart);
+	int blockn = BlockAtPos(line->Text, selstart);
 
 	wxFont startfont;
 	AssStyle *style = c->ass->GetStyle(line->Style);
@@ -863,7 +879,7 @@ void SubsEditBox::OnColorButton(wxCommandEvent &evt) {
 	line->ParseASSTags();
 	int selstart, selend;
 	get_selection(TextEdit, selstart, selend);
-	int blockn = BlockAtPos(selstart);
+	int blockn = BlockAtPos(line->Text, selstart);
 
 	color = get_value(*line, blockn, color, colorTag, alt);
 	wxString initialText = line->Text;
