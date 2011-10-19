@@ -888,6 +888,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\pen.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\pen.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\persist_location.cpp"
 				>
 			</File>

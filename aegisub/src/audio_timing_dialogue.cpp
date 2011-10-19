@@ -46,6 +46,7 @@
 #include "audio_timing.h"
 #include "include/aegisub/context.h"
 #include "main.h"
+#include "pen.h"
 #include "selection_controller.h"
 #include "utils.h"
 
@@ -65,6 +66,12 @@ class AudioMarkerDialogueTiming : public AudioMarker {
 	wxPen style;
 	/// Foot style for the marker
 	FeetStyle feet;
+
+	/// Draw style for the left marker
+	Pen style_left;
+	/// Draw style for the right marker
+	Pen style_right;
+
 
 public:
 	// AudioMarker interface
@@ -198,9 +205,6 @@ void AudioMarkerDialogueTiming::SetPosition(int64_t new_position)
 
 	if (other)
 	{
-		wxPen style_left(wxColour(OPT_GET("Colour/Audio Display/Line boundary Start")->GetColour()), 2);
-		wxPen style_right(wxColour(OPT_GET("Colour/Audio Display/Line boundary End")->GetColour()), 2);
-
 		if (position < other->position)
 		{
 			feet = Feet_Right;
@@ -224,6 +228,8 @@ AudioMarkerDialogueTiming::AudioMarkerDialogueTiming()
 , position(0)
 , style(*wxTRANSPARENT_PEN)
 , feet(Feet_None)
+, style_left("Colour/Audio Display/Line boundary Start", "Audio/Line Boundaries Thickness")
+, style_right("Colour/Audio Display/Line boundary End", "Audio/Line Boundaries Thickness")
 {
 	// Nothing more to do
 }

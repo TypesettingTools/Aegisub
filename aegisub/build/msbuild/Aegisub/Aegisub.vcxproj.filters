@@ -645,6 +645,9 @@
     <ClInclude Include="$(SrcDir)preferences.h">
       <Filter>Preferences</Filter>
     </ClInclude>
+    <ClInclude Include="$(SrcDir)pen.h">
+      <Filter>Utilities\UI utilities</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(SrcDir)ass_dialogue.cpp">
@@ -1192,6 +1195,9 @@
     </ClCompile>
     <ClCompile Include="$(SrcDir)command\video.cpp">
       <Filter>Commands</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SrcDir)pen.cpp">
+      <Filter>Utilities\UI utilities</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -53,6 +53,7 @@
 #include "include/aegisub/audio_player.h"
 #include "include/aegisub/audio_provider.h"
 #include "include/aegisub/context.h"
+#include "pen.h"
 #include "main.h"
 #include "selection_controller.h"
 #include "standard_paths.h"
@@ -60,25 +61,18 @@
 
 class AudioMarkerKeyframe : public AudioMarker {
 	int64_t position;
-	static wxPen style;
+	Pen *style;
 public:
-	AudioMarkerKeyframe(int64_t position) : position(position) { }
+	AudioMarkerKeyframe(Pen *style, int64_t position) : style(style), position(position) { }
 	int64_t GetPosition() const { return position; }
 	FeetStyle GetFeet() const { return Feet_None; }
 	bool CanSnap() const { return true; }
-	wxPen GetStyle() const
-	{
-		if (!style.IsOk())
-			/// @todo Make this colour configurable
-			style = wxPen(wxColour(255,0,255), 1);
-		return style;
-	}
+	wxPen GetStyle() const { return *style; }
 	bool operator < (const AudioMarkerKeyframe &other) const { return position < other.position; }
 	operator int64_t() const { return position; }
 };
 bool operator < (int64_t a, const AudioMarkerKeyframe &b) { return a < b.GetPosition(); }
 bool operator < (const AudioMarkerKeyframe &a, int64_t b) { return a.GetPosition() < b; }
-wxPen AudioMarkerKeyframe::style;
 
 class AudioMarkerProviderKeyframes : public AudioMarkerProvider {
 	VideoContext *vc;
@@ -89,6 +83,8 @@ class AudioMarkerProviderKeyframes : public AudioMarkerProvider {
 
 	std::vector<AudioMarkerKeyframe> keyframe_samples;
 	AudioController *controller;
+
+	Pen style;
 
 	void Update()
 	{
@@ -110,7 +106,7 @@ class AudioMarkerProviderKeyframes : public AudioMarkerProvider {
 		keyframe_samples.reserve(keyframes.size());
 		for (size_t i = 0; i < keyframes.size(); ++i)
 		{
-			keyframe_samples.push_back(AudioMarkerKeyframe(
+			keyframe_samples.push_back(AudioMarkerKeyframe(&style,
 				controller->SamplesFromMilliseconds(timecodes.TimeAtFrame(keyframes[i]))));
 		}
 		AnnounceMarkerMoved();
@@ -118,11 +114,12 @@ class AudioMarkerProviderKeyframes : public AudioMarkerProvider {
 
 public:
 	AudioMarkerProviderKeyframes(AudioController *controller, agi::Context *c)
-		: vc(c->videoController)
-		, keyframe_slot(vc->AddKeyframesListener(&AudioMarkerProviderKeyframes::Update, this))
-		, audio_open_slot(controller->AddAudioOpenListener(&AudioMarkerProviderKeyframes::Update, this))
-		, timecode_slot(vc->AddTimecodesListener(&AudioMarkerProviderKeyframes::Update, this))
-		, controller(controller)
+	: vc(c->videoController)
+	, keyframe_slot(vc->AddKeyframesListener(&AudioMarkerProviderKeyframes::Update, this))
+	, audio_open_slot(controller->AddAudioOpenListener(&AudioMarkerProviderKeyframes::Update, this))
+	, timecode_slot(vc->AddTimecodesListener(&AudioMarkerProviderKeyframes::Update, this))
+	, controller(controller)
+	, style("Colour/Audio Display/Keyframe")
 	{
 		Update();
 	}
@@ -142,21 +139,14 @@ public:
 };
 
 class VideoPositionMarker : public AudioMarker {
-	agi::signal::Connection colour_changed;
-
 	int64_t position;
-	wxPen style;
+	Pen style;
 
-	void OnColourChanged(agi::OptionValue const& opt)
-	{
-		style = wxPen(lagi_wxColour(opt.GetColour()), 1);
-	}
 public:
 	VideoPositionMarker()
-	: colour_changed(OPT_SUB("Colour/Audio Display/Play Cursor", &VideoPositionMarker::OnColourChanged, this))
+	: style("Colour/Audio Display/Play Cursor")
 	, position(-1)
 	{
-		OnColourChanged(*OPT_GET("Colour/Audio Display/Play Cursor"));
 	}
 
 	void SetPosition(int64_t new_pos)

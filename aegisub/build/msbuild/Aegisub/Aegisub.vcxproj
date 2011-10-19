@@ -153,6 +153,7 @@
     <ClInclude Include="$(SrcDir)mkv_wrap.h" />
     <ClInclude Include="$(SrcDir)mythes.hxx" />
     <ClInclude Include="$(SrcDir)persist_location.h" />
+    <ClInclude Include="$(SrcDir)pen.h" />
     <ClInclude Include="$(SrcDir)plugin_manager.h" />
     <ClInclude Include="$(SrcDir)preferences.h" />
     <ClInclude Include="$(SrcDir)preferences_base.h" />
@@ -344,6 +345,7 @@
     <ClCompile Include="$(SrcDir)menu.cpp" />
     <ClCompile Include="$(SrcDir)mkv_wrap.cpp" />
     <ClCompile Include="$(SrcDir)mythes.cxx" />
+    <ClCompile Include="$(SrcDir)pen.cpp" />
     <ClCompile Include="$(SrcDir)persist_location.cpp" />
     <ClCompile Include="$(SrcDir)plugin_manager.cpp" />
     <ClCompile Include="$(SrcDir)preferences.cpp" />

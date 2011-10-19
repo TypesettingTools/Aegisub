@@ -31,6 +31,7 @@
 #include "audio_timing.h"
 #include "include/aegisub/context.h"
 #include "main.h"
+#include "pen.h"
 #include "utils.h"
 
 #ifndef AGI_PRE
@@ -41,7 +42,7 @@
 /// @brief AudioMarker implementation for AudioTimingControllerKaraoke
 class KaraokeMarker : public AudioMarker {
 	int64_t position;
-	wxPen *pen;
+	Pen *pen;
 	FeetStyle style;
 public:
 
@@ -52,7 +53,7 @@ public:
 
 	void Move(int64_t new_pos) { position = new_pos; }
 
-	KaraokeMarker(int64_t position, wxPen *pen, FeetStyle style)
+	KaraokeMarker(int64_t position, Pen *pen, FeetStyle style)
 	: position(position)
 	, pen(pen)
 	, style(style)
@@ -82,11 +83,11 @@ class AudioTimingControllerKaraoke : public AudioTimingController {
 	size_t cur_syl; ///< Index of currently selected syllable in the line
 
 	/// Pen used for the mid-syllable markers
-	wxPen separator_pen;
+	Pen separator_pen;
 	/// Pen used for the start-of-line marker
-	wxPen start_pen;
+	Pen start_pen;
 	/// Pen used for the end-of-line marker
-	wxPen end_pen;
+	Pen end_pen;
 
 	/// Immobile marker for the beginning of the line
 	KaraokeMarker start_marker;
@@ -104,9 +105,6 @@ class AudioTimingControllerKaraoke : public AudioTimingController {
 
 	void OnAutoCommitChange(agi::OptionValue const& opt);
 	void OnAutoNextChange(agi::OptionValue const& opt);
-
-	/// Reload all style options from the user preferences
-	void RegenStyles();
 
 	int64_t ToMS(int64_t samples) const { return c->audioController->MillisecondsFromSamples(samples); }
 	int64_t ToSamples(int64_t ms) const { return c->audioController->SamplesFromMilliseconds(ms); }
@@ -144,6 +142,9 @@ AudioTimingControllerKaraoke::AudioTimingControllerKaraoke(agi::Context *c, AssK
 , active_line(c->selectionController->GetActiveLine())
 , kara(kara)
 , cur_syl(0)
+, separator_pen("Colour/Audio Display/Syllable Boundaries", "Audio/Line Boundaries Thickness", wxPENSTYLE_DOT)
+, start_pen("Colour/Audio Display/Line boundary Start", "Audio/Line Boundaries Thickness")
+, end_pen("Colour/Audio Display/Line boundary End", "Audio/Line Boundaries Thickness")
 , start_marker(ToSamples(active_line->Start.GetMS()), &start_pen, AudioMarker::Feet_Right)
 , end_marker(ToSamples(active_line->End.GetMS()), &end_pen, AudioMarker::Feet_Left)
 , auto_commit(OPT_GET("Audio/Auto/Commit")->GetBool())
@@ -153,21 +154,9 @@ AudioTimingControllerKaraoke::AudioTimingControllerKaraoke(agi::Context *c, AssK
 	slots.push_back(kara->AddSyllablesChangedListener(&AudioTimingControllerKaraoke::Revert, this));
 	slots.push_back(OPT_SUB("Audio/Auto/Commit", &AudioTimingControllerKaraoke::OnAutoCommitChange, this));
 	slots.push_back(OPT_SUB("Audio/Next Line on Commit", &AudioTimingControllerKaraoke::OnAutoNextChange, this));
-	slots.push_back(OPT_SUB("Audio/Line Boundaries Thickness", &AudioTimingControllerKaraoke::RegenStyles, this));
-	slots.push_back(OPT_SUB("Colour/Audio Display/Syllable Boundaries", &AudioTimingControllerKaraoke::RegenStyles, this));
-	slots.push_back(OPT_SUB("Colour/Audio Display/Line boundary Start", &AudioTimingControllerKaraoke::RegenStyles, this));
-	slots.push_back(OPT_SUB("Colour/Audio Display/Line boundary End", &AudioTimingControllerKaraoke::RegenStyles, this));
 
-	RegenStyles();
 	Revert();
 	
-}
-
-void AudioTimingControllerKaraoke::RegenStyles() {
-	int width = OPT_GET("Audio/Line Boundaries Thickness")->GetInt();
-	separator_pen = wxPen(wxColour(OPT_GET("Colour/Audio Display/Syllable Boundaries")->GetColour()), 1, wxPENSTYLE_DOT);
-	start_pen = wxPen(wxColour(OPT_GET("Colour/Audio Display/Line boundary Start")->GetColour()), width);
-	end_pen = wxPen(wxColour(OPT_GET("Colour/Audio Display/Line boundary End")->GetColour()), width);
 }
 
 void AudioTimingControllerKaraoke::OnAutoCommitChange(agi::OptionValue const& opt) {

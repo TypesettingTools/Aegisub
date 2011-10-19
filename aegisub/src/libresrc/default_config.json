@@ -98,6 +98,7 @@
 				"Selection" : "rgb(64, 64, 64)",
 				"Selection Modified" : "rgb(92, 0, 0)"
 			},
+			"Keyframe" : "rgb(255,0,255)",
 			"Line Boundary Inactive Line" : "rgb(190,190,190)",
 			"Line boundary End" : "rgb(0, 0, 216)",
 			"Line boundary Start" : "rgb(216, 0, 0)",
