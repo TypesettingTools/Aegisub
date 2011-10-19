@@ -192,6 +192,9 @@ class SubsEditBox : public wxPanel, protected SelectionListener<AssDialogue> {
 	/// @param type AssFile::CommitType
 	void Update(int type);
 
+	/// Regenerate the contents of the actor dropdown list
+	void PopulateActorList();
+
 	/// @brief Enable or disable frame timing mode
 	void UpdateFrameTiming(agi::vfr::Framerate const& fps);
 public:

@@ -345,19 +345,7 @@ void SubsEditBox::Update(int type) {
 
 	if (type == AssFile::COMMIT_NEW) {
 		/// @todo maybe preserve selection over undo?
-		ActorBox->Freeze();
-		ActorBox->Clear();
-		for (entryIter it = c->ass->Line.begin(); it != c->ass->Line.end(); ++it) {
-			if (AssDialogue *diag = dynamic_cast<AssDialogue*>(*it)) {
-				wxString actor = diag->Actor;
-				// OSX doesn't like combo boxes that are empty.
-				if (actor.empty()) actor = "Actor";
-				if (ActorBox->FindString(actor) == wxNOT_FOUND) {
-					ActorBox->Append(actor);
-				}
-			}
-		}
-		ActorBox->Thaw();
+		PopulateActorList();
 
 		TextEdit->SetSelection(0,0);
 		SetEvtHandlerEnabled(true);
@@ -386,14 +374,48 @@ void SubsEditBox::Update(int type) {
 		MarginL->ChangeValue(line->GetMarginString(0,false));
 		MarginR->ChangeValue(line->GetMarginString(1,false));
 		MarginV->ChangeValue(line->GetMarginString(2,false));
-		Effect->ChangeValue(line->Effect.empty() ?  "Effect" : line->Effect);
+		Effect->ChangeValue(line->Effect.empty() ? "Effect" : line->Effect);
 		CommentBox->SetValue(line->Comment);
 		StyleBox->Select(StyleBox->FindString(line->Style));
-		ActorBox->ChangeValue(line->Actor.empty() ?  "Actor" : line->Actor);
+
+		PopulateActorList();
+		ActorBox->ChangeValue(line->Actor.empty() ? "Actor" : line->Actor);
 		ActorBox->SetStringSelection(line->Actor);
 	}
 
 	SetEvtHandlerEnabled(true);
+}
+
+void SubsEditBox::PopulateActorList() {
+	std::set<wxString> actors;
+	for (entryIter it = c->ass->Line.begin(); it != c->ass->Line.end(); ++it) {
+		if (AssDialogue *diag = dynamic_cast<AssDialogue*>(*it))
+			actors.insert(diag->Actor);
+	}
+#ifdef __APPLE__
+	// OSX doesn't like combo boxes that are empty.
+	actors.insert("Actor");
+#endif
+	actors.erase("");
+	wxArrayString arrstr;
+	arrstr.reserve(actors.size());
+	copy(actors.begin(), actors.end(), std::back_inserter(arrstr));
+
+	ActorBox->Freeze();
+	bool evt_handler_was_enabled = GetEvtHandlerEnabled();
+	SetEvtHandlerEnabled(false);
+	long pos = ActorBox->GetInsertionPoint();
+	wxString value = ActorBox->GetValue();
+
+	ActorBox->Clear();
+	ActorBox->Append(arrstr);
+	ActorBox->ChangeValue(value);
+	ActorBox->SetStringSelection(value);
+	ActorBox->SetInsertionPoint(pos);
+
+	if (evt_handler_was_enabled)
+		SetEvtHandlerEnabled(true);
+	ActorBox->Thaw();
 }
 
 void SubsEditBox::OnActiveLineChanged(AssDialogue *new_line) {
@@ -468,24 +490,22 @@ void SubsEditBox::NextLine() {
 
 void SubsEditBox::OnChange(wxStyledTextEvent &event) {
 	if (line && TextEdit->GetText() != line->Text) {
-		file_changed_slot.Block();
 		if (event.GetModificationType() & wxSTC_MOD_INSERTTEXT) {
 			CommitText(_("insert text"));
 		}
 		else {
 			CommitText(_("delete text"));
 		}
-		file_changed_slot.Unblock();
 	}
 }
 
 template<class T, class setter>
 void SubsEditBox::SetSelectedRows(setter set, T value, wxString desc, int type, bool amend) {
-	using namespace std::tr1::placeholders;
+	for_each(sel.begin(), sel.end(), bind(set, std::tr1::placeholders::_1, value));
 
-	for_each(sel.begin(), sel.end(), std::tr1::bind(set, _1, value));
-
+	file_changed_slot.Block();
 	commitId = c->ass->Commit(desc, type, (amend && desc == lastCommitType) ? commitId : -1, sel.size() == 1 ? *sel.begin() : 0);
+	file_changed_slot.Unblock();
 	lastCommitType = desc;
 }
 
@@ -600,16 +620,8 @@ void SubsEditBox::OnStyleChange(wxCommandEvent &) {
 }
 
 void SubsEditBox::OnActorChange(wxCommandEvent &) {
-	wxString actor = ActorBox->GetValue();
-	SetSelectedRows(&AssDialogue::Actor, actor, _("actor change"), AssFile::COMMIT_DIAG_META);
-
-	// Add actor to list
-	if (!actor.empty() && ActorBox->GetCount() && ActorBox->GetString(0).empty()) {
-		ActorBox->Delete(0);
-	}
-	if (ActorBox->FindString(actor) == wxNOT_FOUND) {
-		ActorBox->Append(actor);
-	}
+	SetSelectedRows(&AssDialogue::Actor, ActorBox->GetValue(), _("actor change"), AssFile::COMMIT_DIAG_META);
+	PopulateActorList();
 }
 
 void SubsEditBox::OnLayerChange(wxSpinEvent &event) {
