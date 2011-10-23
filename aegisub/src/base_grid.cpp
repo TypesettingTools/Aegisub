@@ -248,8 +248,7 @@ void BaseGrid::UpdateMaps(bool preserve_selected_rows) {
 
 	EndBatch();
 
-	if ((int)log10((double)old_diag_count) != (int)log10((double)index_line_map.size()))
-		SetColumnWidths();
+	SetColumnWidths();
 
 	Refresh(false);
 }
