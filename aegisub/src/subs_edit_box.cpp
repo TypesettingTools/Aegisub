@@ -341,6 +341,7 @@ void SubsEditBox::Update(int type) {
 	if (type == AssFile::COMMIT_NEW || type & AssFile::COMMIT_STYLES) {
 		StyleBox->Clear();
 		StyleBox->Append(c->ass->GetStyles());
+		StyleBox->Select(StyleBox->FindString(line->Style));
 	}
 
 	if (type == AssFile::COMMIT_NEW) {
