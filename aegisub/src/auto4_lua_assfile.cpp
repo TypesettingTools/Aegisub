@@ -579,6 +579,12 @@ namespace Automation4 {
 		luaL_argcheck(L, before > 0 && before <= (int)lines.size() + 1, 1,
 			"Out of range line index");
 
+		if (before == (int)lines.size() + 1) {
+			lua_remove(L, 1);
+			ObjectAppend(L);
+			return;
+		}
+
 		SeekCursorTo(before);
 
 		int n = lua_gettop(L);
