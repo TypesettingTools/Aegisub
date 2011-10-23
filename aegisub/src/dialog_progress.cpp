@@ -160,7 +160,7 @@ void DialogProgress::Run(std::tr1::function<void(agi::ProgressSink*)> task, int 
 	DialogProgressSink ps(this);
 	this->ps = &ps;
 	new TaskRunner(task, &ps, this, priority);
-	if (ShowModal())
+	if (!ShowModal())
 		throw agi::UserCancelException("Cancelled by user");
 }
 
@@ -208,7 +208,7 @@ void DialogProgress::OnComplete(wxThreadEvent &evt) {
 	// close button
 	bool cancelled = ps->IsCancelled();
 	if (cancelled || log_output->IsEmpty())
-		EndModal(cancelled);
+		EndModal(!cancelled);
 	else
 		cancel_button->SetLabelText(_("Close"));
 }
