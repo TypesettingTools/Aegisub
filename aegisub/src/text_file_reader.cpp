@@ -307,6 +307,21 @@ void TextFileReader::Open() {
 	}
 #endif
 	open = true;
+
+	// Check if file seems binary
+	size_t binaryFactor = 0;
+	const size_t bufsize = 512;
+	char buf[bufsize];
+	file.get(buf, bufsize);
+	size_t bytes_read = file.gcount();
+	file.seekg(0, std::ios_base::beg);
+	for (size_t i = 0; i < bytes_read; ++i) {
+		if (((unsigned char)buf[i]) < 32) {
+			if (buf[i] != '\r' && buf[i] != '\n' && buf[i] != '\t')
+				binaryFactor++;
+		}
+	}
+	isBinary = (binaryFactor > 8) || (binaryFactor > bytes_read/8);
 }
 
 
@@ -352,3 +367,4 @@ void TextFileReader::EnsureValid(wxString enc) {
 wxString TextFileReader::GetCurrentEncoding() {
 	return encoding;
 }
+

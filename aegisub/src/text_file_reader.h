@@ -66,6 +66,7 @@ private:
 	bool open;
 	bool customConv;
 	bool trim;
+	bool isBinary;
 
 	void Open();
 	void Close();
@@ -81,6 +82,7 @@ public:
 	static void EnsureValid(const wxString encoding);
 	wxString GetCurrentEncoding();
 	static wxString GetEncoding(const wxString filename);
+	bool SmellsBinary() { return !Is16 && isBinary; }
 };
 
 

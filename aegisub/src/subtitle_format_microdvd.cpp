@@ -78,7 +78,7 @@ bool MicroDVDSubtitleFormat::CanReadFile(wxString filename) {
 
 	// Since there is an infinity of .sub formats, load first line and check if it's valid
 	TextFileReader file(filename);
-	if (file.HasMoreLines()) {
+	if (file.HasMoreLines() && !file.SmellsBinary()) {
 		wxRegEx exp(_T("^[\\{\\[]([0-9]+)[\\}\\]][\\{\\[]([0-9]+)[\\}\\]](.*)$"),wxRE_ADVANCED);
 		return exp.Matches(file.ReadLineFromFile());
 	}
@@ -94,12 +94,17 @@ bool MicroDVDSubtitleFormat::CanWriteFile(wxString filename) {
 }
 
 
+DEFINE_SIMPLE_EXCEPTION(MicrodvdFormatParseError, SubtitleFormatParseError, "subtitle_io/parse/microdvd")
+
 ///////////////
 // Read a file
 void MicroDVDSubtitleFormat::ReadFile(wxString filename,wxString forceEncoding) {
 	// Load and prepare regexp
-	TextFileReader file(filename);
+	TextFileReader file(filename, forceEncoding);
 	wxRegEx exp(_T("^[\\{\\[]([0-9]+)[\\}\\]][\\{\\[]([0-9]+)[\\}\\]](.*)$"),wxRE_ADVANCED);
+
+	if (file.SmellsBinary())
+		throw new MicrodvdFormatParseError(_T("File seems to be binary. Maybe it's a VobSub format file? (Aegisub does not support VobSub format.)"), 0);
 
 	// Load default
 	LoadDefault(false);
