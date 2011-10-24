@@ -80,6 +80,7 @@ void ColourButton::SetColour(wxColour col) {
 	// when the color has changed
 	wxCommandEvent evt(wxEVT_COMMAND_BUTTON_CLICKED, GetId());
 	evt.SetClientData(this);
+	evt.SetEventObject(this);
 	AddPendingEvent(evt);
 }
 
