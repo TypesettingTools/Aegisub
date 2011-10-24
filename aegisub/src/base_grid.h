@@ -57,7 +57,7 @@ typedef std::list<AssEntry*>::iterator entryIter;
 ///////////////////
 // Base grid class
 class BaseGrid : public wxWindow {
-private:
+protected:
 	int lineHeight;
 	int colWidth[16];
 	int lastRow;
