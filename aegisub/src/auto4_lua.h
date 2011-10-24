@@ -257,7 +257,7 @@ namespace Automation4 {
 	public:
 		~LuaCommand();
 
-		const char* name() { return cmd_name.c_str(); }
+		const char* name() const { return cmd_name.c_str(); }
 		wxString StrMenu(const agi::Context *) const { return display; }
 		wxString StrDisplay(const agi::Context *) const { return display; }
 		wxString StrHelp() const { return help; }

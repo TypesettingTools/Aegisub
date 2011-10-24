@@ -124,7 +124,7 @@ class mru_wrapper : public T {
 	int id;
 	std::string full_name;
 public:
-	const char *name() { return full_name.c_str(); }
+	const char *name() const { return full_name.c_str(); }
 	void operator()(agi::Context *c) {
 		T::operator()(c, id);
 	}

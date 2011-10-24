@@ -36,7 +36,7 @@ DEFINE_SIMPLE_EXCEPTION_NOINNER(CommandNotFound, CommandError, "command/notfound
 DEFINE_SIMPLE_EXCEPTION_NOINNER(CommandIconNone, CommandError, "command/icon")
 DEFINE_SIMPLE_EXCEPTION_NOINNER(CommandIconInvalid, CommandError, "command/icon/invalid")
 
-#define CMD_NAME(a) const char* name() { return a; }
+#define CMD_NAME(a) const char* name() const { return a; }
 #define STR_MENU(a) wxString StrMenu(const agi::Context *) const { return a; }
 #define STR_DISP(a) wxString StrDisplay(const agi::Context *) const { return a; }
 #define STR_HELP(a) wxString StrHelp() const { return a; }
@@ -86,7 +86,7 @@ namespace cmd {
 	class Command {
 	public:
 		/// Command name
-		virtual const char* name()=0;
+		virtual const char* name() const=0;
 		/// String for menu purposes including accelerators, but not hotkeys
 		virtual wxString StrMenu(const agi::Context *) const=0;
 		/// Plain string for display purposes; should normally be the same as StrMenu
