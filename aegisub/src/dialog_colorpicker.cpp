@@ -662,26 +662,22 @@ DialogColorPicker::DialogColorPicker(wxWindow *parent, wxColour initial_color, C
 	rgb_slider[2] = make_rgb_image(slider_width, 2);
 
 	// luminance
-	unsigned char *oslid = (unsigned char *)malloc(slider_width*256*3);
-	unsigned char *slid = oslid;
+	unsigned char *slid = (unsigned char *)malloc(slider_width*256*3);
 	for (int y = 0; y < 256; y++) {
-		for (int x = 0; x < slider_width; x++) {
-			*slid++ = clip_colorval(y);
-			*slid++ = clip_colorval(y);
-			*slid++ = clip_colorval(y);
-		}
+		memset(slid + y * slider_width * 3, y, slider_width * 3);
 	}
-	wxImage sliderimg(slider_width, 256, oslid);
+	wxImage sliderimg(slider_width, 256, slid);
 	hsl_slider = new wxBitmap(sliderimg);
 
-	oslid = slid = (unsigned char *)malloc(slider_width*256*3);
+	slid = (unsigned char *)malloc(slider_width*256*3);
 	for (int y = 0; y < 256; y++) {
+		unsigned char rgb[3];
+		hsv_to_rgb(y, 255, 255, rgb, rgb + 1, rgb + 2);
 		for (int x = 0; x < slider_width; x++) {
-			hsv_to_rgb(y, 255, 255, slid, slid+1, slid+2);
-			slid += 3;
+			memcpy(slid + y * slider_width * 3 + x * 3, rgb, 3);
 		}
 	}
-	sliderimg.SetData(oslid);
+	sliderimg.SetData(slid);
 	hsv_slider = new wxBitmap(sliderimg);
 
 	// Create the controls for the dialog
