@@ -181,27 +181,31 @@ static bool has_file(Container const& c, wxFileName const& fn)
 
 void DialogAutomation::OnAdd(wxCommandEvent &)
 {
-	wxString fname = wxFileSelector(
+	wxFileDialog diag(this,
 		_("Add Automation script"),
 		lagi_wxString(OPT_GET("Path/Last/Automation")->GetString()),
-		"", "",
+		"",
 		Automation4::ScriptFactory::GetWildcardStr(),
-		wxFD_OPEN | wxFD_FILE_MUST_EXIST,
-		this);
+		wxFD_OPEN | wxFD_FILE_MUST_EXIST | wxFD_MULTIPLE);
 
-	if (fname.empty()) return;
+	if (diag.ShowModal() == wxID_CANCEL) return;
 
-	wxFileName fnpath(fname);
-	OPT_SET("Path/Last/Automation")->SetString(STD_STR(fnpath.GetPath()));
+	wxArrayString fnames;
+	diag.GetPaths(fnames);
 
-	if (has_file(local_manager->GetScripts(), fnpath) || has_file(global_manager->GetScripts(), fnpath)) {
-		wxLogError("Script '%s' is already loaded", fname);
-		return;
+	for (size_t i = 0; i < fnames.size(); ++i) {
+		wxFileName fnpath(fnames[i]);
+		OPT_SET("Path/Last/Automation")->SetString(STD_STR(fnpath.GetPath()));
+
+		if (has_file(local_manager->GetScripts(), fnpath) || has_file(global_manager->GetScripts(), fnpath)) {
+			wxLogError("Script '%s' is already loaded", fnames[i]);
+			continue;
+		}
+
+		Automation4::Script *script = Automation4::ScriptFactory::CreateFromFile(fnames[i], true);
+		local_manager->Add(script);
+		AddScript(script, false);
 	}
-
-	Automation4::Script *script = Automation4::ScriptFactory::CreateFromFile(fname, true);
-	local_manager->Add(script);
-	AddScript(script, false);
 }
 
 void DialogAutomation::OnRemove(wxCommandEvent &)
