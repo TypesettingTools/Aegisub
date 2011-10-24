@@ -645,26 +645,24 @@ void FrameMain::OnSubtitlesOpen() {
 		if (!blockVideoLoad && curSubsVideo != context->videoController->videoName) {
 			context->videoController->SetVideo(curSubsVideo);
 			if (context->videoController->IsLoaded()) {
-					long videoPos = 0;
-					long videoAr = 0;
-					double videoArValue = 0.0;
-					double videoZoom = 0.;
+				context->videoController->JumpToFrame(context->ass->GetScriptInfoAsInt("Video Position"));
 
-					context->ass->GetScriptInfo("Video Position").ToLong(&videoPos);
-					context->ass->GetScriptInfo("Video Zoom Percent").ToDouble(&videoZoom);
-					wxString arString = context->ass->GetScriptInfo("Video Aspect Ratio");
-					if (arString.Left(1) == "c") {
-						videoAr = 4;
-						arString = arString.Mid(1);
-						arString.ToDouble(&videoArValue);
-					}
-					else if (arString.IsNumber()) {
-						arString.ToLong(&videoAr);
-					}
-
+				long videoAr = 0;
+				double videoArValue = 0.;
+				wxString arString = context->ass->GetScriptInfo("Video Aspect Ratio");
+				if (arString.Left(1) == "c") {
+					videoAr = 4;
+					arString = arString.Mid(1);
+					arString.ToDouble(&videoArValue);
+				}
+				else if (arString.IsNumber()) {
+					arString.ToLong(&videoAr);
+				}
 				context->videoController->SetAspectRatio(videoAr,videoArValue);
-				videoBox->videoDisplay->SetZoom(videoZoom);
-				context->videoController->JumpToFrame(videoPos);
+
+				double videoZoom = 0.;
+				if (context->ass->GetScriptInfo("Video Zoom Percent").ToDouble(&videoZoom))
+					videoBox->videoDisplay->SetZoom(videoZoom);
 			}
 		}
 
