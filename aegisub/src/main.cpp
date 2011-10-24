@@ -566,28 +566,3 @@ void AegisubApp::MacOpenFile(const wxString &filename) {
 	}
 }
 #endif
-
-
-///////////////
-// Event table
-BEGIN_EVENT_TABLE(AegisubApp,wxApp)
-	EVT_MOUSEWHEEL(AegisubApp::OnMouseWheel)
-END_EVENT_TABLE()
-
-
-
-/// @brief Mouse wheel moved 
-/// @param event 
-///
-void AegisubApp::OnMouseWheel(wxMouseEvent &event) {
-	if (event.WasProcessed()) return;
-	wxPoint pt;
-	wxWindow *target = wxFindWindowAtPointer(pt);
-	/*if (frame && (target == frame->audioBox->audioDisplay || target == frame->SubsGrid)) {
-		if (target->IsShownOnScreen()) target->GetEventHandler()->ProcessEvent(event);
-		else event.Skip();
-	}
-	else event.Skip();*/
-}
-
-

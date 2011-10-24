@@ -96,12 +96,8 @@ namespace Automation4 { class AutoloadScriptManager; }
 ///
 /// DOCME
 class AegisubApp: public wxApp {
-private:
-
 	/// DOCME
 	PluginManager *plugins;
-
-	void OnMouseWheel(wxMouseEvent &event);
 
 #ifdef _DEBUG
 	/// stdout log emitter
@@ -149,9 +145,6 @@ public:
 #else
 # error wxWidgets is compiled without exceptions support, Aegisub requires exceptions support in wxWidgets to run safely
 #endif
-
-	//int OnRun();
-	DECLARE_EVENT_TABLE()
 };
 
 DECLARE_APP(AegisubApp)
