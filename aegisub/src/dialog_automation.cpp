@@ -124,9 +124,15 @@ DialogAutomation::DialogAutomation(agi::Context *c)
 }
 
 template<class Container, class Pred>
-static void for_each(Container const& c, Pred p)
+static inline void for_each(Container const& c, Pred p)
 {
 	std::for_each(c.begin(), c.end(), p);
+}
+
+template<class Container, class Out, class Func>
+static inline void transform(Container const& c, Out o, Func f)
+{
+	std::transform(c.begin(), c.end(), o, f);
 }
 
 void DialogAutomation::RebuildList()
@@ -229,7 +235,22 @@ void DialogAutomation::OnReload(wxCommandEvent &)
 	script->Reload();
 
 	SetScriptInfo(i, script);
+}
 
+static wxString fac_to_str(const Automation4::ScriptFactory* f) {
+	return wxString::Format("- %s (%s)", f->GetEngineName(), f->GetFilenamePattern());
+}
+
+static wxString cmd_to_str(const cmd::Command *f, agi::Context *c) {
+	return wxString::Format(_("    Macro: %s (%s)"), f->StrDisplay(c), f->name());
+}
+
+static wxString filt_to_str(const Automation4::ExportFilter* f) {
+	return wxString::Format(_("    Export filter: %s"), f->GetName());
+}
+
+static wxString form_to_str(const SubtitleFormat* f) {
+	return wxString::Format(_("    Subtitle format handler: %s"), f->GetName());
 }
 
 void DialogAutomation::OnInfo(wxCommandEvent &)
@@ -237,40 +258,33 @@ void DialogAutomation::OnInfo(wxCommandEvent &)
 	int i = list->GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
 	ExtraScriptInfo *ei = i >= 0 ? &script_info[list->GetItemData(i)] : 0;
 
-	wxString info = wxString::Format(
-		_("Total scripts loaded: %d\nGlobal scripts loaded: %d\nLocal scripts loaded: %d\n\n"),
+	wxArrayString info;
+	std::back_insert_iterator<wxArrayString> append_info(info);
+
+	info.push_back(wxString::Format(
+		_("Total scripts loaded: %d\nGlobal scripts loaded: %d\nLocal scripts loaded: %d\n"),
 		local_manager->GetScripts().size() + global_manager->GetScripts().size(),
 		global_manager->GetScripts().size(),
-		local_manager->GetScripts().size());
+		local_manager->GetScripts().size()));
 
-	info += _("Scripting engines installed:\n");
-	const std::vector<Automation4::ScriptFactory*> &factories = Automation4::ScriptFactory::GetFactories();
-	for (std::vector<Automation4::ScriptFactory*>::const_iterator c = factories.begin(); c != factories.end(); ++c)
-		info += wxString::Format("- %s (%s)\n", (*c)->GetEngineName(), (*c)->GetFilenamePattern());
+	info.push_back(_("Scripting engines installed:"));
+	transform(Automation4::ScriptFactory::GetFactories(), append_info, fac_to_str);
 
 	if (ei) {
-		info += wxString::Format(_("\nScript info:\nName: %s\nDescription: %s\nAuthor: %s\nVersion: %s\nFull path: %s\nState: %s\n\nFeatures provided by script:\n"),
+		info.push_back(wxString::Format(_("\nScript info:\nName: %s\nDescription: %s\nAuthor: %s\nVersion: %s\nFull path: %s\nState: %s\n\nFeatures provided by script:"),
 			ei->script->GetName(),
 			ei->script->GetDescription(),
 			ei->script->GetAuthor(),
 			ei->script->GetVersion(),
 			ei->script->GetFilename(),
-			ei->script->GetLoadedState() ? _("Correctly loaded") : _("Failed to load"));
+			ei->script->GetLoadedState() ? _("Correctly loaded") : _("Failed to load")));
 
-		std::vector<cmd::Command*> macros = ei->script->GetMacros();
-		for (std::vector<cmd::Command*>::const_iterator f = macros.begin(); f != macros.end(); ++f)
-			info += wxString::Format(_("    Macro: %s (%s)\n"),  (*f)->StrDisplay(context), (*f)->name());
-
-		std::vector<Automation4::ExportFilter*> filters = ei->script->GetFilters();
-		for (std::vector<Automation4::ExportFilter*>::const_iterator f = filters.begin(); f != filters.end(); ++f)
-			info += _("    Export filter: ") + (*f)->GetName() + "\n";
-
-		std::vector<SubtitleFormat*> formats = ei->script->GetFormats();
-		for (std::vector<SubtitleFormat*>::const_iterator f = formats.begin(); f != formats.end(); ++f)
-			info += _("    Subtitle format handler: ") + (*f)->GetName() + "\n";
+		transform(ei->script->GetMacros(), append_info, bind(cmd_to_str, _1, context));
+		transform(ei->script->GetFilters(), append_info, filt_to_str);
+		transform(ei->script->GetFormats(), append_info, form_to_str);
 	}
 
-	wxMessageBox(info, _("Automation Script Info"));
+	wxMessageBox(wxJoin(info, '\n', 0), _("Automation Script Info"));
 }
 
 void DialogAutomation::OnReloadAutoload(wxCommandEvent &)
