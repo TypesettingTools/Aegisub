@@ -182,8 +182,9 @@ void BaseGrid::SelectRow(int row, bool addToSelected, bool select) {
 		if (select != cur) {
 			selMap.at(row) = select;
 			
-			if (!addToSelected) Refresh(false);
-
+			if (!addToSelected) {
+				Refresh(false);
+			}
 			else {
 				int w = 0;
 				int h = 0;
@@ -664,9 +665,6 @@ void BaseGrid::OnMouseEvent(wxMouseEvent &event) {
 		}
 	}
 
-	// Disable extending
-	extendRow = -1;
-
 	// Toggle selected
 	if (left_up && ctrl && !shift && !alt) {
 		SelectRow(row,true,!IsInSelection(row,0));
@@ -679,6 +677,7 @@ void BaseGrid::OnMouseEvent(wxMouseEvent &event) {
 		if (click || dclick) {
 			SelectRow(row,false);
 			parentFrame->UpdateToolbar();
+			extendRow = -1;
 		}
 		if (left_up || dclick) {
 			int old = editBox->linen;
@@ -703,6 +702,9 @@ void BaseGrid::OnMouseEvent(wxMouseEvent &event) {
 	// Block select
 	if ((left_up && shift && !alt) || (holding && !ctrl && !alt && !shift)) {
 		if (lastRow != -1) {
+			// Keyboard selection continues from where the mouse was last used
+			extendRow = lastRow;
+
 			// Set boundaries
 			int i1 = row;
 			int i2 = lastRow;
