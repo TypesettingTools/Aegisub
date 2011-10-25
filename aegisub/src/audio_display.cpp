@@ -1003,30 +1003,8 @@ void AudioDisplay::OnMouseEvent(wxMouseEvent& event)
 	// Check for mouse wheel scrolling
 	if (event.GetWheelRotation() != 0)
 	{
-		// First check if the cursor is inside or outside the display.
-		// If it's outside, we want to send the event to the control it's over instead.
-		/// @todo Factor this into a reusable function
-		{
-			wxWindow *targetwindow = wxFindWindowAtPoint(event.GetPosition());
-			if (targetwindow && targetwindow != this)
-			{
-				wxWindow *parent = GetParent();
-				while (parent && parent != targetwindow)
-				{
-					parent = parent->GetParent();
-				}
-
-				// Don't forward scroll wheel events to parents of this as the
-				// target is sometimes reported as a parent even when the mouse
-				// is over the audio display
-				if (!parent)
-				{
-					targetwindow->GetEventHandler()->ProcessEvent(event);
-					event.Skip(false);
-					return;
-				}
-			}
-		}
+		if (!ForwardMouseWheelEvent(this, event))
+			return;
 
 		bool zoom = event.CmdDown();
 		if (OPT_GET("Audio/Wheel Default to Zoom")->GetBool()) zoom = !zoom;

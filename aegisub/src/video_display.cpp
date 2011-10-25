@@ -65,6 +65,7 @@
 #include "ass_file.h"
 #include "main.h"
 #include "threaded_frame_source.h"
+#include "utils.h"
 #include "video_out_gl.h"
 #include "video_box.h"
 #include "video_context.h"
@@ -420,8 +421,10 @@ void VideoDisplay::OnMouseLeave(wxMouseEvent& event) {
 }
 
 void VideoDisplay::OnMouseWheel(wxMouseEvent& event) {
-	if (int wheel = event.GetWheelRotation())
-		SetZoom (zoomValue + .125 * (wheel / event.GetWheelDelta()));
+	if (int wheel = event.GetWheelRotation()) {
+		if (ForwardMouseWheelEvent(this, event))
+			SetZoom (zoomValue + .125 * (wheel / event.GetWheelDelta()));
+	}
 }
 
 void VideoDisplay::OnContextMenu(wxContextMenuEvent&) {

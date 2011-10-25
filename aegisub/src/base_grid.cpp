@@ -714,8 +714,10 @@ void BaseGrid::OnMouseEvent(wxMouseEvent &event) {
 
 	// Mouse wheel
 	if (event.GetWheelRotation() != 0) {
-		int step = 3 * event.GetWheelRotation() / event.GetWheelDelta();
-		ScrollTo(yPos - step);
+		if (ForwardMouseWheelEvent(this, event)) {
+			int step = 3 * event.GetWheelRotation() / event.GetWheelDelta();
+			ScrollTo(yPos - step);
+		}
 		return;
 	}
 

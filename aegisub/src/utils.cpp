@@ -448,4 +448,18 @@ void RestartAegisub() {
 #endif
 }
 
+bool ForwardMouseWheelEvent(wxWindow *source, wxMouseEvent &evt) {
+	wxWindow *target = wxFindWindowAtPoint(wxGetMousePosition());
+	if (!target || target == source) return true;
 
+	// If the mouse is over a parent of the source window just pretend it's
+	// over the source window, so that the mouse wheel works on borders and such
+	wxWindow *parent = source->GetParent();
+	while (parent && parent != target) parent = parent->GetParent();
+	if (parent == target) return true;
+
+	// Otherwise send it to the new target
+	target->GetEventHandler()->ProcessEvent(evt);
+	evt.Skip(false);
+	return false;
+}
