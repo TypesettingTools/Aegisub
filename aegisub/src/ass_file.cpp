@@ -659,25 +659,8 @@ void AssFile::SetScriptInfo(wxString const& key, wxString const& value) {
 }
 
 void AssFile::GetResolution(int &sw,int &sh) {
-	wxString temp = GetScriptInfo("PlayResY");
-	if (temp.IsEmpty() || !temp.IsNumber()) {
-		sh = 0;
-	}
-	else {
-		long templ;
-		temp.ToLong(&templ);
-		sh = templ;
-	}
-
-	temp = GetScriptInfo("PlayResX");
-	if (temp.IsEmpty() || !temp.IsNumber()) {
-		sw = 0;
-	}
-	else {
-		long templ;
-		temp.ToLong(&templ);
-		sw = templ;
-	}
+	sw = GetScriptInfoAsInt("PlayResX");
+	sh = GetScriptInfoAsInt("PlayResY");
 
 	// Gabest logic?
 	if (sw == 0 && sh == 0) {
