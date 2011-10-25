@@ -155,7 +155,7 @@ public:
 	/// Get the value in a [Script Info] key as int.
 	int GetScriptInfoAsInt(const wxString key);
 	/// Get the value in a [Script Info] key as string.
-	wxString GetScriptInfo(const wxString key);
+	wxString GetScriptInfo(wxString key);
 	/// Set the value of a [Script Info] key. Adds it if it doesn't exist.
 	void SetScriptInfo(wxString const& key, wxString const& value);
 	// Add a ";" comment in the [Script Info] section

@@ -597,27 +597,22 @@ void AssFile::InsertAttachment (wxString filename) {
 	InsertAttachment(newAttach);
 }
 
-wxString AssFile::GetScriptInfo(const wxString _key) {
-	wxString key = _key;;
+wxString AssFile::GetScriptInfo(wxString key) {
 	key.Lower();
 	key += ":";
-	std::list<AssEntry*>::iterator cur;
 	bool GotIn = false;
 
-	for (cur=Line.begin();cur!=Line.end();cur++) {
+	for (std::list<AssEntry*>::iterator cur = Line.begin(); cur != Line.end(); ++cur) {
 		if ((*cur)->group == "[Script Info]") {
 			GotIn = true;
 			wxString curText = (*cur)->GetEntryData();
 			curText.Lower();
 
-			if (curText.StartsWith(key)) {
-				wxString result = curText.Mid(key.length());
-				result.Trim(false);
-				result.Trim(true);
-				return result;
-			}
+			wxString value;
+			if (curText.StartsWith(key, &value))
+				return value.Trim(true).Trim(false);
 		}
-		else if (GotIn) break;
+		else if (GotIn) return "";
 	}
 
 	return "";
