@@ -620,12 +620,7 @@ wxString AssFile::GetScriptInfo(wxString key) {
 
 int AssFile::GetScriptInfoAsInt(const wxString key) {
 	long temp = 0;
-	try {
-		GetScriptInfo(key).ToLong(&temp);
-	}
-	catch (...) {
-		temp = 0;
-	}
+	GetScriptInfo(key).ToLong(&temp);
 	return temp;
 }
 
