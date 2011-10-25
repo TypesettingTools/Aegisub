@@ -45,6 +45,8 @@
 /// DOCME
 class ScintillaTextCtrl : public wxStyledTextCtrl {
 	wxString text;
+
+	void OnMouseWheel(wxMouseEvent& evt);
 public:
 	wxString GetWordAtPosition(int pos);
 	void GetBoundsOfWordAtPosition(int pos,int &start,int &end);

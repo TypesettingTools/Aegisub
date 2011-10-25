@@ -42,6 +42,7 @@
 ScintillaTextCtrl::ScintillaTextCtrl(wxWindow* parent, wxWindowID id, const wxString& value, const wxPoint& pos, const wxSize& size, long style)
 : wxStyledTextCtrl(parent, id, pos, size, style, value)
 {
+	Bind(wxEVT_MOUSEWHEEL, &ScintillaTextCtrl::OnMouseWheel, this);
 }
 
 /// @brief Get unicode-compatible position 
@@ -110,4 +111,11 @@ wxString ScintillaTextCtrl::GetWordAtPosition(int pos) {
 /// @brief Set selection, unicode-aware 
 void ScintillaTextCtrl::SetSelectionU(int start, int end) {
 	SetSelection(GetUnicodePosition(start),GetUnicodePosition(end));
+}
+
+void ScintillaTextCtrl::OnMouseWheel(wxMouseEvent& evt) {
+	if (ForwardMouseWheelEvent(this, evt)) {
+		// Skip the event so that wxSTC's default mouse wheel handler is hit
+		evt.Skip();
+	}
 }
