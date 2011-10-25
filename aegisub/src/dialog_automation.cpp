@@ -231,10 +231,13 @@ void DialogAutomation::OnReload(wxCommandEvent &)
 	int i = list->GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
 	if (i < 0) return;
 
-	Automation4::Script *script = script_info[list->GetItemData(i)].script;
-	script->Reload();
+	ExtraScriptInfo const& ei = script_info[list->GetItemData(i)];
+	if (ei.is_global)
+		global_manager->Reload(ei.script);
+	else
+		local_manager->Reload(ei.script);
 
-	SetScriptInfo(i, script);
+	SetScriptInfo(i, ei.script);
 }
 
 static wxString fac_to_str(const Automation4::ScriptFactory* f) {

@@ -346,6 +346,15 @@ namespace Automation4 {
 		ScriptsChanged();
 	}
 
+	void ScriptManager::Reload(Script *script)
+	{
+		if (find(scripts.begin(), scripts.end(), script) != scripts.end())
+		{
+			script->Reload();
+			ScriptsChanged();
+		}
+	}
+
 	const std::vector<cmd::Command*>& ScriptManager::GetMacros()
 	{
 		macros.clear();

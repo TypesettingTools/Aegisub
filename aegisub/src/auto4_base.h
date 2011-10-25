@@ -223,6 +223,8 @@ namespace Automation4 {
 		void RemoveAll();
 		/// Reload all scripts mananaged
 		virtual void Reload() = 0;
+		/// Reload a single managed script
+		virtual void Reload(Script *script);
 
 		/// Get all managed scripts (both loaded and invalid)
 		const std::vector<Script*>& GetScripts() const { return scripts; }
