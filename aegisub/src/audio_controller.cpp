@@ -80,6 +80,7 @@ class AudioMarkerProviderKeyframes : public AudioMarkerProvider {
 	agi::signal::Connection keyframe_slot;
 	agi::signal::Connection audio_open_slot;
 	agi::signal::Connection timecode_slot;
+	agi::signal::Connection enabled_slot;
 
 	std::vector<AudioMarkerKeyframe> keyframe_samples;
 	AudioController *controller;
@@ -91,14 +92,13 @@ class AudioMarkerProviderKeyframes : public AudioMarkerProvider {
 		std::vector<int> const& keyframes = vc->GetKeyFrames();
 		agi::vfr::Framerate const& timecodes = vc->FPS();
 
-		if (keyframes.empty() || !timecodes.IsLoaded())
+		if (keyframes.empty() || !timecodes.IsLoaded() || !OPT_GET("Audio/Display/Draw/Keyframes")->GetBool())
 		{
-			if (keyframe_samples.empty())
+			if (!keyframe_samples.empty())
 			{
-				return;
+				keyframe_samples.clear();
+				AnnounceMarkerMoved();
 			}
-			keyframe_samples.clear();
-			AnnounceMarkerMoved();
 			return;
 		}
 
@@ -118,6 +118,7 @@ public:
 	, keyframe_slot(vc->AddKeyframesListener(&AudioMarkerProviderKeyframes::Update, this))
 	, audio_open_slot(controller->AddAudioOpenListener(&AudioMarkerProviderKeyframes::Update, this))
 	, timecode_slot(vc->AddTimecodesListener(&AudioMarkerProviderKeyframes::Update, this))
+	, enabled_slot(OPT_SUB("Audio/Display/Draw/Keyframes", &AudioMarkerProviderKeyframes::Update, this))
 	, controller(controller)
 	, style("Colour/Audio Display/Keyframe")
 	{
