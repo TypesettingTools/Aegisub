@@ -98,6 +98,7 @@ class FrameMain: public wxFrame {
 	void UpdateTitle();
 
 	void OnKeyDown(wxKeyEvent &event);
+	void OnMouseWheel(wxMouseEvent &evt);
 
 	/// @brief Autosave the currently open file, if any
 	void OnAutoSave(wxTimerEvent &event);

@@ -554,6 +554,7 @@ BEGIN_EVENT_TABLE(FrameMain, wxFrame)
 	EVT_CLOSE(FrameMain::OnCloseWindow)
 
 	EVT_KEY_DOWN(FrameMain::OnKeyDown)
+	EVT_MOUSEWHEEL(FrameMain::OnMouseWheel)
 
 #ifdef __WXMAC__
 //   EVT_MENU(wxID_ABOUT, FrameMain::OnAbout)
@@ -685,4 +686,8 @@ void FrameMain::OnSubtitlesOpen() {
 void FrameMain::OnKeyDown(wxKeyEvent &event) {
 	if (!hotkey::check("Main Frame", context.get(), event.GetKeyCode(), event.GetUnicodeKey(), event.GetModifiers()))
 		event.Skip();
+}
+
+void FrameMain::OnMouseWheel(wxMouseEvent &evt) {
+	ForwardMouseWheelEvent(this, evt);
 }
