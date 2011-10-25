@@ -532,6 +532,14 @@ AudioDisplay::AudioDisplay(wxWindow *parent, AudioController *controller, agi::C
 	SetMinClientSize(wxSize(-1, 70));
 	SetBackgroundStyle(wxBG_STYLE_PAINT);
 	SetThemeEnabled(false);
+
+	Bind(wxEVT_LEFT_DOWN, &AudioDisplay::OnMouseEvent, this);
+	Bind(wxEVT_MIDDLE_DOWN, &AudioDisplay::OnMouseEvent, this);
+	Bind(wxEVT_RIGHT_DOWN, &AudioDisplay::OnMouseEvent, this);
+	Bind(wxEVT_LEFT_UP, &AudioDisplay::OnMouseEvent, this);
+	Bind(wxEVT_MIDDLE_UP, &AudioDisplay::OnMouseEvent, this);
+	Bind(wxEVT_RIGHT_UP, &AudioDisplay::OnMouseEvent, this);
+	Bind(wxEVT_MOTION, &AudioDisplay::OnMouseEvent, this);
 }
 
 
@@ -751,7 +759,6 @@ void AudioDisplay::ReloadRenderingSettings()
 
 
 BEGIN_EVENT_TABLE(AudioDisplay, wxWindow)
-	EVT_MOUSE_EVENTS(AudioDisplay::OnMouseEvent)
 	EVT_PAINT(AudioDisplay::OnPaint)
 	EVT_SIZE(AudioDisplay::OnSize)
 	EVT_SET_FOCUS(AudioDisplay::OnFocus)
@@ -1000,41 +1007,6 @@ void AudioDisplay::RemoveTrackCursor()
 
 void AudioDisplay::OnMouseEvent(wxMouseEvent& event)
 {
-	// Check for mouse wheel scrolling
-	if (event.GetWheelRotation() != 0)
-	{
-		if (!ForwardMouseWheelEvent(this, event))
-			return;
-
-		bool zoom = event.CmdDown();
-		if (OPT_GET("Audio/Wheel Default to Zoom")->GetBool()) zoom = !zoom;
-
-		if (!zoom)
-		{
-			int amount = -event.GetWheelRotation();
-			// If the user did a horizontal scroll the amount should be inverted
-			// for it to be natural.
-			if (event.GetWheelAxis() == 1) amount = -amount;
-
-			// Reset any accumulated zoom
-			mouse_zoom_accum = 0;
-
-			ScrollBy(amount);
-		}
-		else if (event.GetWheelAxis() == 0)
-		{
-			mouse_zoom_accum += event.GetWheelRotation();
-			int zoom_delta = mouse_zoom_accum / event.GetWheelDelta();
-			mouse_zoom_accum %= event.GetWheelDelta();
-			SetZoomLevel(GetZoomLevel() + zoom_delta);
-			/// @todo This has to update the trackbar in the audio box... maybe move handling mouse zoom to
-			/// the audio box instead to avoid messing with friend classes?
-		}
-
-		// Scroll event processed
-		return;
-	}
-	
 	// If we have focus, we get mouse move events on Mac even when the mouse is
 	// outside our client rectangle, we don't want those.
 	if (event.Moving() && !GetClientRect().Contains(event.GetPosition()))

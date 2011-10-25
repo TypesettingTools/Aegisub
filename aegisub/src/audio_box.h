@@ -78,11 +78,15 @@ class AudioBox : public wxSashWindow {
 	/// DOCME
 	wxSlider *VolumeBar;
 
+	// Mouse wheel zoom accumulator
+	int mouse_zoom_accum;
+
 	void OnHorizontalZoom(wxScrollEvent &event);
 	void OnVerticalZoom(wxScrollEvent &event);
 	void OnVolume(wxScrollEvent &event);
 	void OnVerticalLink(agi::OptionValue const& opt);
 	void OnSashDrag(wxSashEvent &event);
+	void OnMouseWheel(wxMouseEvent &evt);
 
 public:
 	AudioBox(wxWindow *parent, agi::Context *context);

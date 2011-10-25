@@ -86,6 +86,7 @@ AudioBox::AudioBox(wxWindow *parent, agi::Context *context)
 , HorizontalZoom(new wxSlider(panel, Audio_Horizontal_Zoom, 0, -50, 30, wxDefaultPosition, wxSize(-1, 20), wxSL_VERTICAL|wxSL_BOTH))
 , VerticalZoom(new wxSlider(panel, Audio_Vertical_Zoom, 50, 0, 100, wxDefaultPosition, wxSize(-1, 20), wxSL_VERTICAL|wxSL_BOTH|wxSL_INVERSE))
 , VolumeBar(new wxSlider(panel, Audio_Volume, 50, 0, 100, wxDefaultPosition, wxSize(-1, 20), wxSL_VERTICAL|wxSL_BOTH|wxSL_INVERSE))
+, mouse_zoom_accum(0)
 {
 	SetSashVisible(wxSASH_BOTTOM, true);
 	Bind(wxEVT_SASH_DRAGGED, &AudioBox::OnSashDrag, this);
@@ -133,6 +134,8 @@ AudioBox::AudioBox(wxWindow *parent, agi::Context *context)
 	SetSizerAndFit(audioSashSizer);
 	SetMinSize(wxSize(-1, OPT_GET("Audio/Display Height")->GetInt()));
 	SetMinimumSizeY(panel->GetSize().GetHeight());
+
+	audioDisplay->Bind(wxEVT_MOUSEWHEEL, &AudioBox::OnMouseWheel, this);
 }
 
 AudioBox::~AudioBox() { }
@@ -142,6 +145,34 @@ BEGIN_EVENT_TABLE(AudioBox,wxSashWindow)
 	EVT_COMMAND_SCROLL(Audio_Vertical_Zoom, AudioBox::OnVerticalZoom)
 	EVT_COMMAND_SCROLL(Audio_Volume, AudioBox::OnVolume)
 END_EVENT_TABLE();
+
+void AudioBox::OnMouseWheel(wxMouseEvent &evt) {
+	if (!ForwardMouseWheelEvent(audioDisplay, evt))
+		return;
+
+	bool zoom = evt.CmdDown() != OPT_GET("Audio/Wheel Default to Zoom")->GetBool();
+	if (!zoom)
+	{
+		int amount = -evt.GetWheelRotation();
+		// If the user did a horizontal scroll the amount should be inverted
+		// for it to be natural.
+		if (evt.GetWheelAxis() == 1) amount = -amount;
+
+		// Reset any accumulated zoom
+		mouse_zoom_accum = 0;
+
+		audioDisplay->ScrollBy(amount);
+	}
+	else if (evt.GetWheelAxis() == 0)
+	{
+		mouse_zoom_accum += evt.GetWheelRotation();
+		int zoom_delta = mouse_zoom_accum / evt.GetWheelDelta();
+		mouse_zoom_accum %= evt.GetWheelDelta();
+		int new_zoom = audioDisplay->GetZoomLevel() + zoom_delta;
+		audioDisplay->SetZoomLevel(new_zoom);
+		HorizontalZoom->SetValue(-new_zoom);
+	}
+}
 
 void AudioBox::OnSashDrag(wxSashEvent &event) {
 	if (event.GetDragStatus() == wxSASH_STATUS_OUT_OF_RANGE)

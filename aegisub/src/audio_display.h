@@ -149,9 +149,6 @@ private:
 
 	/// Zoom level given as a number, see SetZoomLevel for details
 	int zoom_level;
-	// Mouse wheel zoom accumulator
-	int mouse_zoom_accum;
-
 
 	/// Absolute pixel position of the tracking cursor (mouse or playback)
 	int track_cursor_pos;
