@@ -400,7 +400,7 @@ void SubsTextEditCtrl::UpdateStyle() {
 			else if ((in_parens && style != STYLE_TAG) || in_unparened_arg || (style == STYLE_TAG && ((cur_char < 'A' || cur_char > 'z') || (cur_char > 'Z' && cur_char < 'a')))) {
 				new_style = STYLE_PARAMETER;
 			}
-			else if (style != STYLE_TAG && style != STYLE_PARAMETER) {
+			else if (style != STYLE_TAG && style != STYLE_PARAMETER && style != STYLE_ERROR) {
 				new_style = STYLE_COMMENT;
 			}
 		}
