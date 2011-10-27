@@ -60,7 +60,7 @@ private:
 	VideoProvider *vid;
 	wxColour backColour;
 
-	void UpdateBitmap(int w=-1,int h=-1);
+	void UpdateBitmap();
 	void OnSize(wxSizeEvent &event);
 	void OnPaint(wxPaintEvent &event);
 

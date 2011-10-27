@@ -114,15 +114,10 @@ void SubtitlesPreview::SetText(wxString text) {
 
 ////////////////
 // Update image
-void SubtitlesPreview::UpdateBitmap(int w,int h) {
-	// Visible?
+void SubtitlesPreview::UpdateBitmap() {
 	if (!IsShownOnScreen()) return;
-
-	// Get size
-	if (w == -1) {
-		w = GetClientSize().GetWidth();
-		h = GetClientSize().GetHeight();
-	}
+	int w, h;
+	GetClientSize(&w, &h);
 
 	// Delete old bmp if needed
 	if (bmp) {
@@ -173,11 +168,8 @@ void SubtitlesPreview::UpdateBitmap(int w,int h) {
 	}
 
 	// Convert frame to bitmap
-	wxMemoryDC dc(*bmp);
-	wxBitmap tempBmp(frame.GetImage());
-	frame.Clear();
-	dc.DrawBitmap(tempBmp,0,0);
-	Refresh();
+	*bmp = wxBitmap(frame.GetImage());
+	Refresh(false);
 }
 
 
@@ -203,7 +195,7 @@ void SubtitlesPreview::OnPaint(wxPaintEvent &event) {
 void SubtitlesPreview::OnSize(wxSizeEvent &event) {
 	delete vid;
 	vid = NULL;
-	UpdateBitmap(event.GetSize().GetWidth(),event.GetSize().GetHeight());
+	UpdateBitmap();
 }
 
 
