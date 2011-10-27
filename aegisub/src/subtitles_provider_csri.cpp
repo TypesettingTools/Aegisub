@@ -75,13 +75,11 @@ void CSRISubtitlesProvider::LoadSubtitles(AssFile *subs) {
 	csri_info *info;
 
 	// Select renderer
-	bool canOpenMem = true;
 	for (cur = csri_renderer_default();cur;cur=csri_renderer_next(cur)) {
 		info = csri_renderer_info(cur);
 		wxString name(info->name,wxConvUTF8);
 		if (name == subType) {
 			renderer = cur;
-			if (name.StartsWith(_T("vsfilter"))) canOpenMem = false;
 			break;
 		}
 	}
@@ -96,20 +94,10 @@ void CSRISubtitlesProvider::LoadSubtitles(AssFile *subs) {
 	}
 
 	// Open from memory
-	if (canOpenMem) {
-		std::vector<char> data;
-		subs->SaveMemory(data,_T("UTF-8"));
-		delete subs;
-		instance = csri_open_mem(renderer,&data[0],data.size(),NULL);
-	}
-
-	// Open from disk
-	else {
-		wxString subsFileName = VideoContext::Get()->GetTempWorkFile();
-		subs->Save(subsFileName,false,false,_T("UTF-8"));
-		delete subs;
-		instance = csri_open_file(renderer,subsFileName.mb_str(wxConvUTF8),NULL);
-	}
+	std::vector<char> data;
+	subs->SaveMemory(data,_T("UTF-8"));
+	delete subs;
+	instance = csri_open_mem(renderer,&data[0],data.size(),NULL);
 }
 
 
