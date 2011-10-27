@@ -201,12 +201,17 @@ void AssFile::SaveMemory(std::vector<char> &dst,const wxString encoding) {
 	dst.clear();
 	dst.reserve(0x4000);
 
-	// Write file
 	entryIter cur;
 	unsigned int lineSize = 0;
 	unsigned int targetSize = 0;
 	unsigned int pos = 0;
 	wxCharBuffer buffer;
+
+	// Put a BOM
+	dst.resize(3);
+	dst[0] = '\xef'; dst[1] = '\xbb'; dst[2] = '\xbf';
+	pos += 3;
+	// Write the rest
 	for (cur=Line.begin();cur!=Line.end();cur++) {
 		// Convert
 		wxString temp = (*cur)->GetEntryData() + _T("\r\n");
