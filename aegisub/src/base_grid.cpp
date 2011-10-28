@@ -176,8 +176,6 @@ void BaseGrid::UpdateMaps(bool preserve_selected_rows) {
 			bind1st(std::mem_fun(&BaseGrid::GetDialogueIndex), this));
 	}
 
-	size_t old_diag_count = index_line_map.size();
-
 	index_line_map.clear();
 	line_index_map.clear();
 
