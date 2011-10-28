@@ -64,6 +64,14 @@ namespace cmd {
 		}
 	}
 
+	std::vector<std::string> get_registered_commands() {
+		std::vector<std::string> ret;
+		ret.reserve(cmd_map.size());
+		for (iterator it = cmd_map.begin(); it != cmd_map.end(); ++it)
+			ret.push_back(it->first);
+		return ret;
+	}
+
 	// These forward declarations exist here since we don't want to expose
 	// them in a header, they're strictly internal-use.
 	void init_app();

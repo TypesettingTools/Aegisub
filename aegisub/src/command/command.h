@@ -153,6 +153,9 @@ namespace cmd {
 	/// @param Command object.
 	Command* get(std::string const& name);
 
+	/// Get a list of registered command names
+	std::vector<std::string> get_registered_commands();
+
 	/// Unregister and deletes all commands
 	void clear();
 } // namespace cmd
