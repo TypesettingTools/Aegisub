@@ -186,9 +186,8 @@ bool AegisubApp::OnInit() {
 	// Init commands.
 	cmd::init_builtin_commands();
 
-	// Init hotkeys.
-	const std::string conf_user_hotkey(StandardPaths::DecodePath("?user/hotkey.json"));
-	agi::hotkey::hotkey = new agi::hotkey::Hotkey(conf_user_hotkey, GET_DEFAULT_CONFIG(default_hotkey));
+	// Init hotkeys
+	hotkey::init();
 
 	// Init icons.
 	icon::icon_init();
@@ -327,7 +326,7 @@ int AegisubApp::OnExit() {
 	delete plugins;
 	delete config::opt;
 	delete config::mru;
-	delete agi::hotkey::hotkey;
+	hotkey::clear();
 	delete config::path;
 	cmd::clear();
 

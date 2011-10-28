@@ -40,6 +40,8 @@
 
 #include "include/aegisub/hotkey.h"
 
+#include <libaegisub/hotkey.h>
+
 struct ToolTipBinding {
 	wxWindow *window;
 	wxString toolTip;
@@ -54,10 +56,10 @@ ToolTipManager::~ToolTipManager() { }
 void ToolTipManager::Bind(wxWindow *window, wxString tooltip, const char *context, const char *command) {
 	ToolTipBinding tip = { window, tooltip, command, context };
 	tip.Update();
-	/// @todo bind to hotkey changed signal once such a thing exists
 
 	static ToolTipManager instance;
 	instance.tips.push_back(tip);
+	hotkey::inst->AddHotkeyChangeListener(&ToolTipBinding::Update, &instance.tips.back());
 }
 
 void ToolTipBinding::Update() {

@@ -43,9 +43,9 @@
 namespace agi {
 	namespace hotkey {
 
-Hotkey *hotkey;
-
 std::string Combo::Str() const {
+	if (key_map.empty()) return "";
+
 	std::string str(key_map[0]);
 	str.reserve(str.size() + (key_map.size() - 1) * 2);
 	for (unsigned int i=1; i < key_map.size(); i++) {
@@ -63,10 +63,6 @@ void Hotkey::ComboInsert(Combo const& combo) {
 	cmd_map.insert(std::make_pair(combo.CmdName(), combo));
 }
 
-Hotkey::~Hotkey() {
-	Flush();
-}
-
 Hotkey::Hotkey(const std::string &file, const std::string &default_config)
 : config_file(file)
 {
@@ -75,26 +71,23 @@ Hotkey::Hotkey(const std::string &file, const std::string &default_config)
 	json::UnknownElement hotkey_root = agi::json_util::file(config_file, default_config);
 	json::Object object = hotkey_root;
 
-	for (json::Object::const_iterator index(object.begin()); index != object.end(); index++) {
+	for (json::Object::const_iterator index(object.begin()); index != object.end(); ++index)
 		BuildHotkey(index->first, index->second);
-	}
 }
 
 
 void Hotkey::BuildHotkey(std::string const& context, const json::Object& object) {
-	for (json::Object::const_iterator index(object.begin()); index != object.end(); index++) {
+	for (json::Object::const_iterator index(object.begin()); index != object.end(); ++index) {
 		const json::Array& array = index->second;
 
-		for (json::Array::const_iterator arr_index(array.begin()); arr_index != array.end(); arr_index++) {
-			Combo combo(context, index->first);
-
+		for (json::Array::const_iterator arr_index(array.begin()); arr_index != array.end(); ++arr_index) {
 			const json::Array& arr_mod = (*arr_index)["modifiers"];
-			for (json::Array::const_iterator arr_mod_index(arr_mod.begin()); arr_mod_index != arr_mod.end(); arr_mod_index++) {
-				combo.KeyInsert(*arr_mod_index);
-			}
+			std::vector<std::string> keys;
+			keys.reserve(arr_mod.size() + 1);
+			copy(arr_mod.begin(), arr_mod.end(), back_inserter(keys));
+			keys.push_back((*arr_index)["key"]);
 
-			combo.KeyInsert((*arr_index)["key"]);
-			ComboInsert(combo);
+			ComboInsert(Combo(context, index->first, keys));
 		}
 	}
 }
@@ -111,12 +104,10 @@ bool Hotkey::Scan(const std::string &context, const std::string &str, bool alway
 			LOG_D("agi/hotkey/found") << "Found: " << str << "  Context (req/found): " << context << "/Always   Command: " << cmd;
 			return true;
 		}
-		if (ctext == "Default") {
+		if (ctext == "Default")
 			dfault = index->second.CmdName();
-		}
-		else if (ctext == context) {
+		else if (ctext == context)
 			local = index->second.CmdName();
-		}
 	}
 
 	if (!local.empty()) {
@@ -139,9 +130,8 @@ std::vector<std::string> Hotkey::GetHotkeys(const std::string &context, const st
 	HotkeyMap::const_iterator it, end;
 	for (std::tr1::tie(it, end) = cmd_map.equal_range(command); it != end; ++it) {
 		std::string ctext = it->second.Context();
-		if (ctext == "Always" || ctext == "Default" || ctext == context) {
+		if (ctext == "Always" || ctext == "Default" || ctext == context)
 			ret.push_back(it->second.StrMenu());
-		}
 	}
 
 	sort(ret.begin(), ret.end());
@@ -156,8 +146,10 @@ std::string Hotkey::GetHotkey(const std::string &context, const std::string &com
 	for (std::tr1::tie(it, end) = cmd_map.equal_range(command); it != end; ++it) {
 		std::string ctext = it->second.Context();
 		if (ctext == context) return it->second.StrMenu();
-		if (ctext == "Default") ret = it->second.StrMenu();
-		else if (ret.empty() && ctext == "Always") it->second.StrMenu();
+		if (ctext == "Default")
+			ret = it->second.StrMenu();
+		else if (ret.empty() && ctext == "Always")
+			it->second.StrMenu();
 	}
 	return ret;
 }
@@ -166,12 +158,10 @@ void Hotkey::Flush() {
 	json::Object root;
 
 	for (HotkeyMap::iterator index = str_map.begin(); index != str_map.end(); ++index) {
-		Combo::ComboMap combo_map(index->second.Get());
+		std::vector<std::string> const& combo_map(index->second.Get());
 
 		json::Array modifiers;
-		for (int i = 0; i != combo_map.size()-1; i++) {
-			modifiers.push_back(json::String(combo_map[i]));
-		}
+		copy(combo_map.begin(), combo_map.end() - 1, std::back_inserter(modifiers));
 
 		json::Object hotkey;
 		hotkey["modifiers"] = modifiers;
@@ -183,6 +173,16 @@ void Hotkey::Flush() {
 
 	io::Save file(config_file);
 	json::Writer::Write(root, file.Get());
+}
+
+void Hotkey::SetHotkeyMap(HotkeyMap const& new_map) {
+	cmd_map = new_map;
+
+	str_map.clear();
+	for (HotkeyMap::iterator it = cmd_map.begin(); it != cmd_map.end(); ++it)
+		str_map.insert(make_pair(it->second.Str(), it->second));
+
+	HotkeysChanged();
 }
 
 	} // namespace toolbar

@@ -35,6 +35,7 @@
 #include <wx/toolbar.h>
 #endif
 
+#include <libaegisub/hotkey.h>
 #include <libaegisub/json.h>
 #include <libaegisub/log.h>
 #include <libaegisub/signal.h>
@@ -64,6 +65,9 @@ namespace {
 		/// Listener for icon size change signal
 		agi::signal::Connection icon_size_slot;
 
+		/// Listener for hotkey change signal
+		agi::signal::Connection hotkeys_changed_slot;
+
 		/// Enable/disable the toolbar buttons
 		void OnIdle(wxIdleEvent &) {
 			for (size_t i = 0; i < commands.size(); ++i) {
@@ -81,8 +85,8 @@ namespace {
 			(*commands[evt.GetId() - TOOL_ID_BASE])(context);
 		}
 
-		/// Clear the toolbar and recreate it with the new icon size
-		void OnIconSizeChanged() {
+		/// Clear the toolbar and recreate it
+		void RegenerateToolbar() {
 			Unbind(wxEVT_IDLE, &Toolbar::OnIdle, this);
 			ClearTools();
 			commands.clear();
@@ -130,20 +134,7 @@ namespace {
 						flags & cmd::COMMAND_TOGGLE ? wxITEM_CHECK :
 						wxITEM_NORMAL;
 
-					wxString tooltip = command->StrHelp();
-
-					std::vector<std::string> hotkeys = hotkey::get_hotkey_strs(ht_context, command->name());
-
-					for (size_t i = 0; i < hotkeys.size(); ++i) {
-						if (i == 0)
-							tooltip += " (";
-						else
-							tooltip += "/";
-						tooltip += hotkeys[i];
-					}
-					if (hotkeys.size()) tooltip += ")";
-
-					AddTool(TOOL_ID_BASE + commands.size(), command->StrDisplay(context), icon, tooltip, kind);
+					AddTool(TOOL_ID_BASE + commands.size(), command->StrDisplay(context), icon, GetTooltip(command), kind);
 
 					commands.push_back(command);
 					needs_onidle = needs_onidle || flags != cmd::COMMAND_NORMAL;
@@ -157,14 +148,31 @@ namespace {
 
 			Realize();
 		}
+
+		wxString GetTooltip(cmd::Command *command) {
+			wxString ret = command->StrHelp();
+
+			std::vector<std::string> hotkeys = hotkey::get_hotkey_strs(ht_context, command->name());
+			for (size_t i = 0; i < hotkeys.size(); ++i) {
+				if (i == 0)
+					ret += " (";
+				else
+					ret += "/";
+				ret += hotkeys[i];
+			}
+			if (hotkeys.size()) ret += ")";
+
+			return ret;
+		}
+
 	public:
 		Toolbar(wxWindow *parent, std::string const& name, agi::Context *c, std::string const& ht_context)
 		: wxToolBar(parent, -1, wxDefaultPosition, wxDefaultSize, wxTB_FLAT | wxTB_HORIZONTAL)
 		, name(name)
 		, context(c)
 		, ht_context(ht_context)
-		, icon_size_slot(OPT_SUB("App/Toolbar Icon Size", &Toolbar::OnIconSizeChanged, this))
-		/// @todo bind to hotkey changed event when such a thing exists
+		, icon_size_slot(OPT_SUB("App/Toolbar Icon Size", &Toolbar::RegenerateToolbar, this))
+		, hotkeys_changed_slot(hotkey::inst->AddHotkeyChangeListener(&Toolbar::RegenerateToolbar, this))
 		{
 			Populate();
 			Bind(wxEVT_COMMAND_TOOL_CLICKED, &Toolbar::OnClick, this);

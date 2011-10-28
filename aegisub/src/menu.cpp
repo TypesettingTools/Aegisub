@@ -32,6 +32,7 @@
 #include "main.h"
 #include "standard_paths.h"
 
+#include <libaegisub/hotkey.h>
 #include <libaegisub/json.h>
 #include <libaegisub/log.h>
 
@@ -133,6 +134,8 @@ struct menu_item_cmp {
 class CommandManager {
 	/// Menu items which need to do something on menu open
 	std::deque<std::pair<cmd::Command*, wxMenuItem*> > dynamic_items;
+	/// Menu items which need to be updated only when hotkeys change
+	std::deque<std::pair<cmd::Command*, wxMenuItem*> > static_items;
 	/// window id -> command map
 	std::vector<cmd::Command*> items;
 	/// MRU menus which need to be updated on menu open
@@ -141,19 +144,30 @@ class CommandManager {
 	/// Project context
 	agi::Context *context;
 
+	/// Connection for hotkey change signal
+	agi::signal::Connection hotkeys_changed;
+
 	/// Update a single dynamic menu item
 	void UpdateItem(std::pair<cmd::Command*, wxMenuItem*> const& item) {
 		int flags = item.first->Type();
 		if (flags & cmd::COMMAND_DYNAMIC_NAME)
-			item.second->SetItemLabel(get_menu_text(item.first, context));
+			UpdateItemName(item);
 		if (flags & cmd::COMMAND_VALIDATE)
 			item.second->Enable(item.first->Validate(context));
 		if (flags & cmd::COMMAND_RADIO || flags & cmd::COMMAND_TOGGLE)
 			item.second->Check(item.first->IsActive(context));
 	}
 
+	void UpdateItemName(std::pair<cmd::Command*, wxMenuItem*> const& item) {
+		item.second->SetItemLabel(get_menu_text(item.first, context));
+	}
+
 public:
-	CommandManager(agi::Context *context) : context(context) { }
+	CommandManager(agi::Context *context)
+	: context(context)
+	, hotkeys_changed(hotkey::inst->AddHotkeyChangeListener(&CommandManager::OnHotkeysChanged, this))
+	{
+	}
 
 	/// Append a command to a menu and register the needed handlers
 	int AddCommand(cmd::Command *co, wxMenu *parent, std::string const& text) {
@@ -177,6 +191,8 @@ public:
 
 		if (flags != cmd::COMMAND_NORMAL)
 			dynamic_items.push_back(std::make_pair(co, item));
+		else
+			static_items.push_back(std::make_pair(co, item));
 
 		return item->GetId();
 	}
@@ -208,6 +224,12 @@ public:
 		size_t id = static_cast<size_t>(evt.GetId() - MENU_ID_BASE);
 		if (id < items.size())
 			(*items[id])(context);
+	}
+
+	/// Update the hotkeys for all menu items
+	void OnHotkeysChanged() {
+		for_each(dynamic_items.begin(), dynamic_items.end(), bind(&CommandManager::UpdateItemName, this, _1));
+		for_each(static_items.begin(), static_items.end(), bind(&CommandManager::UpdateItemName, this, _1));
 	}
 };
 

@@ -19,12 +19,13 @@
 /// @ingroup hotkey menu event window
 
 #ifndef LAGI_PRE
-#include <cmath>
 #include <map>
 #include <memory>
 #include <string>
 #include <vector>
 #endif
+
+#include <libaegisub/signal.h>
 
 namespace json {
 	class UnknownElement;
@@ -34,27 +35,23 @@ namespace json {
 namespace agi {
 	namespace hotkey {
 
-class Hotkey;
-/// Hotkey instance.
-extern Hotkey *hotkey;
-
 /// @class Combo
 /// A Combo represents a linear sequence of characters set in an std::vector.  This makes up
 /// a single combination, or "Hotkey".
 class Combo {
-friend class Hotkey;
-
+	std::vector<std::string> key_map;
+	std::string cmd_name;
+	std::string context;
 public:
-	/// Linear key sequence that forms a combination or "Combo"
-	typedef std::vector<std::string> ComboMap;
-
 	/// Constructor
 	/// @param ctx Context
 	/// @param cmd Command name
-	Combo(std::string const& ctx, std::string const& cmd): cmd_name(cmd), context(ctx) {}
-
-	/// Destructor
-	~Combo() {}
+	Combo(std::string const& ctx, std::string const& cmd, std::vector<std::string> const& keys)
+	: key_map(keys)
+	, cmd_name(cmd)
+	, context(ctx)
+	{
+	}
 
 	/// String representation of the Combo
 	std::string Str() const;
@@ -64,7 +61,7 @@ public:
 
 	/// Get the literal combo map.
 	/// @return ComboMap (std::vector) of linear key sequence.
-	const ComboMap& Get() const { return key_map; }
+	const std::vector<std::string>& Get() const { return key_map; }
 
 	/// Command name triggered by the combination.
 	/// @return Command name
@@ -72,15 +69,6 @@ public:
 
 	/// Context this Combo is triggered in.
 	const std::string& Context() const { return context; }
-
-private:
-	ComboMap key_map;				///< Map.
-	const std::string cmd_name;		///< Command name.
-	const std::string context;		///< Context
-
-	/// Insert a key into the ComboMap.
-	/// @param key Key to insert.
-	void KeyInsert(std::string key) { key_map.push_back(key); }
 };
 
 
@@ -88,13 +76,32 @@ private:
 /// Holds the map of Combo instances and handles searching for matching key sequences.
 class Hotkey {
 public:
+	/// Map to hold Combo instances
+	typedef std::multimap<std::string, Combo> HotkeyMap;
+private:
+	HotkeyMap str_map;             ///< String representation -> Combo
+	HotkeyMap cmd_map;             ///< Command name -> Combo
+	const std::string config_file; ///< Default user config location.
+
+	/// Build hotkey map.
+	/// @param context Context being parsed.
+	/// @param object  json::Object holding items for context being parsed.
+	void BuildHotkey(std::string const& context, const json::Object& object);
+
+	/// Insert Combo into HotkeyMap instance.
+	/// @param combo Combo to insert.
+	void ComboInsert(Combo const& combo);
+
+	/// Write active Hotkey configuration to disk.
+	void Flush();
+
+	/// Announce that the loaded hotkeys have been changed
+	agi::signal::Signal<> HotkeysChanged;
+public:
 	/// Constructor
 	/// @param file           Location of user config file.
 	/// @param default_config Default config.
 	Hotkey(const std::string &file, const std::string &default_config);
-
-	/// Destructor.
-	~Hotkey();
 
 	/// Scan for a matching key.
 	/// @param context  Context requested.
@@ -115,23 +122,13 @@ public:
 	/// @return A hotkey for the given command or "" if there are none
 	std::string GetHotkey(const std::string &context, const std::string &command) const;
 
-private:
-	typedef std::multimap<std::string, Combo> HotkeyMap;	///< Map to hold Combo instances.
-	HotkeyMap str_map;										///< String representation -> Combo
-	HotkeyMap cmd_map;										///< Command name -> Combo
-	const std::string config_file;							///< Default user config location.
+	/// Get the raw command name -> combo map for all registered hotkeys
+	HotkeyMap const& GetHotkeyMap() const { return cmd_map; }
 
-	/// Build hotkey map.
-	/// @param context Context being parsed.
-	/// @param object  json::Object holding items for context being parsed.
-	void BuildHotkey(std::string const& context, const json::Object& object);
+	/// Replace the loaded hotkeys with a new set
+	void SetHotkeyMap(HotkeyMap const& new_map);
 
-	/// Insert Combo into HotkeyMap instance.
-	/// @param combo Combo to insert.
-	void ComboInsert(Combo const& combo);
-
-	/// Write active Hotkey configuration to disk.
-	void Flush();
+	DEFINE_SIGNAL_ADDERS(HotkeysChanged, AddHotkeyChangeListener)
 };
 
 	} // namespace hotkey
