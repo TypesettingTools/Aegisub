@@ -48,6 +48,9 @@
 #include <wx/menuitem.h>
 #endif
 
+class wxMouseEvent;
+class wxWindow;
+
 /// DOCME
 typedef std::vector<std::pair<int,int> > IntPairVector;
 

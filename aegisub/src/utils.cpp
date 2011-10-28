@@ -48,6 +48,7 @@
 #include <wx/filename.h>
 #include <wx/log.h>
 #include <wx/stdpaths.h>
+#include <wx/window.h>
 #endif
 
 #include <libaegisub/log.h>

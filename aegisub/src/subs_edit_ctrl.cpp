@@ -42,6 +42,7 @@
 #else
 #include <tr1/functional>
 #endif
+#include <wx/clipbrd.h>
 #include <wx/intl.h>
 #endif
 

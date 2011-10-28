@@ -23,6 +23,7 @@
 #include <wx/any.h>
 #include <wx/checkbox.h>
 #include <wx/combobox.h>
+#include <wx/dirdlg.h>
 #include <wx/event.h>
 #include <wx/filefn.h>
 #include <wx/fontdlg.h>

@@ -24,6 +24,7 @@
 #include <cstring>
 #include <functional>
 #include <memory>
+#include <sstream>
 #endif
 
 #include "libaegisub/cajun/elements.h"

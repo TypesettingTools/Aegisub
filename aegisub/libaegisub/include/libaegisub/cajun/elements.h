@@ -10,6 +10,7 @@ Author: Terry Caton
 
 #include <deque>
 #include <list>
+#include <map>
 #include <string>
 #include <stdexcept>
 

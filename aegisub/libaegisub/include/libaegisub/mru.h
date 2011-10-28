@@ -19,6 +19,7 @@
 /// @ingroup libaegisub
 
 #ifndef LAGI_PRE
+#include <deque>
 #include <fstream>
 #include <list>
 #include <map>
