@@ -65,6 +65,7 @@ public:
    UnknownElement(const Array& array);
    UnknownElement(double number);
    UnknownElement(int number);
+   UnknownElement(long number);
    UnknownElement(bool boolean);
    UnknownElement(const char *string);
    UnknownElement(const String& string);

@@ -101,6 +101,7 @@ inline UnknownElement::UnknownElement(const Object& object) :           m_pImp( 
 inline UnknownElement::UnknownElement(const Array& array) :             m_pImp( new Imp_T<Array>(array) ) {}
 inline UnknownElement::UnknownElement(double number) :                  m_pImp( new Imp_T<Number>(number) ) {}
 inline UnknownElement::UnknownElement(int number) :                     m_pImp( new Imp_T<Number>(number) ) {}
+inline UnknownElement::UnknownElement(long number) :                    m_pImp( new Imp_T<Number>(number) ) {}
 inline UnknownElement::UnknownElement(bool boolean) :                   m_pImp( new Imp_T<Boolean>(boolean) ) {}
 inline UnknownElement::UnknownElement(const char *string) :             m_pImp( new Imp_T<String>(string) ) {}
 inline UnknownElement::UnknownElement(const String& string) :           m_pImp( new Imp_T<String>(string) ) {}
