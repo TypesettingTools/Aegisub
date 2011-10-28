@@ -28,6 +28,7 @@
 #include <wx/event.h>
 #include <wx/filefn.h>
 #include <wx/listctrl.h>
+#include <wx/srchctrl.h>
 #include <wx/sizer.h>
 #include <wx/spinctrl.h>
 #include <wx/stattext.h>
@@ -41,14 +42,52 @@
 #include "preferences.h"
 
 #include "colour_button.h"
+#include "command/command.h"
 #include "compat.h"
+#include "hotkey_data_view_model.h"
 #include "include/aegisub/audio_player.h"
 #include "include/aegisub/audio_provider.h"
+#include "include/aegisub/hotkey.h"
 #include "include/aegisub/subtitles_provider.h"
 #include "libresrc/libresrc.h"
 #include "main.h"
 #include "preferences_base.h"
 #include "video_provider_manager.h"
+
+#define CLASS_PAGE(name)                             \
+class name: public OptionPage {                  \
+public:                                          \
+	name(wxTreebook *book, Preferences *parent); \
+};
+
+CLASS_PAGE(General)
+CLASS_PAGE(Subtitles)
+CLASS_PAGE(Audio)
+CLASS_PAGE(Video)
+CLASS_PAGE(Interface)
+CLASS_PAGE(Interface_Colours)
+CLASS_PAGE(Paths)
+CLASS_PAGE(File_Associations)
+CLASS_PAGE(Backup)
+CLASS_PAGE(Automation)
+CLASS_PAGE(Advanced)
+CLASS_PAGE(Advanced_Interface)
+CLASS_PAGE(Advanced_Audio)
+CLASS_PAGE(Advanced_Video)
+
+class Interface_Hotkeys : public OptionPage {
+	wxDataViewCtrl *dvc;
+	wxObjectDataPtr<HotkeyDataViewModel> model;
+	wxSearchCtrl *quick_search;
+
+	void OnNewButton(wxCommandEvent&);
+	void OnEditButton(wxCommandEvent&);
+	void OnDeleteButton(wxCommandEvent&);
+	void OnUpdateFilter(wxCommandEvent&);
+	void OnClearFilter(wxCommandEvent&);
+public:
+	Interface_Hotkeys(wxTreebook *book, Preferences *parent);
+};
 
 /// General preferences page
 General::General(wxTreebook *book, Preferences *parent): OptionPage(book, parent, _("General")) {
@@ -213,28 +252,114 @@ Interface_Colours::Interface_Colours(wxTreebook *book, Preferences *parent): Opt
 	SetSizerAndFit(sizer);
 }
 
+/// wxDataViewIconTextRenderer with command name autocompletion
+class CommandRenderer : public wxDataViewIconTextRenderer {
+	wxArrayString autocomplete;
+public:
+	CommandRenderer()
+	: wxDataViewIconTextRenderer("wxDataViewIconText", wxDATAVIEW_CELL_EDITABLE)
+	{
+		std::vector<std::string> cmd_names = cmd::get_registered_commands();
+		autocomplete.reserve(cmd_names.size());
+		copy(cmd_names.begin(), cmd_names.end(), std::back_inserter(autocomplete));
+	}
+
+	wxWindow *CreateEditorCtrl(wxWindow *parent, wxRect label_rect, wxVariant const& value) {
+		wxTextCtrl *ctrl = static_cast<wxTextCtrl*>(wxDataViewIconTextRenderer::CreateEditorCtrl(parent, label_rect, value));
+		ctrl->AutoComplete(autocomplete);
+		return ctrl;
+	}
+};
+
+class HotkeyRenderer : public wxDataViewTextRenderer {
+	wxTextCtrl *ctrl;
+public:
+	HotkeyRenderer() : wxDataViewTextRenderer("string", wxDATAVIEW_CELL_EDITABLE) { }
+
+	wxWindow *CreateEditorCtrl(wxWindow *parent, wxRect label_rect, wxVariant const& value) {
+		ctrl = static_cast<wxTextCtrl*>(wxDataViewTextRenderer::CreateEditorCtrl(parent, label_rect, value));
+		ctrl->Bind(wxEVT_KEY_DOWN, &HotkeyRenderer::OnKeyDown, this);
+		return ctrl;
+	}
+
+	void OnKeyDown(wxKeyEvent &evt) {
+		ctrl->ChangeValue(lagi_wxString(hotkey::keypress_to_str(evt.GetKeyCode(), evt.GetUnicodeKey(), evt.GetModifiers())));
+	}
+};
 
 /// Interface Hotkeys preferences subpage
-Interface_Hotkeys::Interface_Hotkeys(wxTreebook *book, Preferences *parent): OptionPage(book, parent, _("Hotkeys"), PAGE_SUB) {
-	wxFlexGridSizer *hotkeys = PageSizer(_("Hotkeys"));
-	hotkeys->Add(new wxStaticText(this, wxID_ANY, _T("To be added after hotkey rewrite.")), 0, wxALL, 5);
+Interface_Hotkeys::Interface_Hotkeys(wxTreebook *book, Preferences *parent)
+: OptionPage(book, parent, _("Hotkeys"), PAGE_SUB)
+, model(new HotkeyDataViewModel(parent))
+{
+	quick_search = new wxSearchCtrl(this, -1);
+	wxButton *new_button = new wxButton(this, -1, _("New"));
+	wxButton *edit_button = new wxButton(this, -1, _("Edit"));
+	wxButton *delete_button = new wxButton(this, -1, _("Delete"));
+
+	new_button->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &Interface_Hotkeys::OnNewButton, this);
+	edit_button->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &Interface_Hotkeys::OnEditButton, this);
+	delete_button->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &Interface_Hotkeys::OnDeleteButton, this);
+
+	quick_search->Bind(wxEVT_COMMAND_TEXT_UPDATED, &Interface_Hotkeys::OnUpdateFilter, this);
+	quick_search->Bind(wxEVT_COMMAND_SEARCHCTRL_CANCEL_BTN, &Interface_Hotkeys::OnClearFilter, this);
+
+	dvc = new wxDataViewCtrl(this, -1);
+	dvc->AssociateModel(model.get());
+	dvc->AppendColumn(new wxDataViewColumn("Hotkey", new HotkeyRenderer, 0, 125, wxALIGN_LEFT, wxCOL_SORTABLE | wxCOL_RESIZABLE));
+	dvc->AppendColumn(new wxDataViewColumn("Command", new CommandRenderer, 1, 250, wxALIGN_LEFT, wxCOL_SORTABLE | wxCOL_RESIZABLE));
+	dvc->AppendTextColumn("Description", 2, wxDATAVIEW_CELL_INERT, 300, wxALIGN_LEFT, wxCOL_SORTABLE | wxCOL_RESIZABLE);
+
+	wxSizer *buttons = new wxBoxSizer(wxHORIZONTAL);
+	buttons->Add(quick_search, wxSizerFlags().Border());
+	buttons->AddStretchSpacer(1);
+	buttons->Add(new_button, wxSizerFlags().Border().Right());
+	buttons->Add(edit_button, wxSizerFlags().Border().Right());
+	buttons->Add(delete_button, wxSizerFlags().Border().Right());
+
+	sizer->Add(buttons, wxSizerFlags().Expand());
+	sizer->Add(dvc, wxSizerFlags(1).Expand().Border(wxLEFT | wxRIGHT));
+
 	SetSizerAndFit(sizer);
 }
 
+void Interface_Hotkeys::OnNewButton(wxCommandEvent&) {
+	model->New(dvc->GetSelection());
+}
 
-/// Paths preferences page class Paths: public OptionPage { public:
+void Interface_Hotkeys::OnEditButton(wxCommandEvent&) {
+	dvc->StartEditor(dvc->GetSelection(), 0);
+}
+
+void Interface_Hotkeys::OnDeleteButton(wxCommandEvent&) {
+	model->Delete(dvc->GetSelection());
+}
+
+void Interface_Hotkeys::OnUpdateFilter(wxCommandEvent&) {
+	model->SetFilter(quick_search->GetValue());
+
+	if (!quick_search->GetValue().empty()) {
+		wxDataViewItemArray contexts;
+		model->GetChildren(wxDataViewItem(0), contexts);
+		for (size_t i = 0; i < contexts.size(); ++i)
+			dvc->Expand(contexts[i]);
+	}
+}
+
+void Interface_Hotkeys::OnClearFilter(wxCommandEvent &evt) {
+	quick_search->SetValue("");
+}
+
+/// Paths preferences page
 Paths::Paths(wxTreebook *book, Preferences *parent): OptionPage(book, parent, _("Paths")) {
-
 	wxFlexGridSizer *general = PageSizer(_("General"));
 	general->Add(new wxStaticText(this, wxID_ANY, "TBD..."), 0, wxALL, 5);
 
 	SetSizerAndFit(sizer);
 }
 
-
 /// File Associations preferences page
 File_Associations::File_Associations(wxTreebook *book, Preferences *parent): OptionPage(book, parent, _("File Associations")) {
-
 	wxFlexGridSizer *assoc = PageSizer(_("General"));
 	assoc->Add(new wxStaticText(this, wxID_ANY, "TBD..."), 0, wxALL, 5);
 
@@ -257,8 +382,6 @@ Backup::Backup(wxTreebook *book, Preferences *parent): OptionPage(book, parent, 
 
 	SetSizerAndFit(sizer);
 }
-
-
 
 /// Automation preferences page
 Automation::Automation(wxTreebook *book, Preferences *parent): OptionPage(book, parent, _("Automation")) {
@@ -371,4 +494,111 @@ Advanced_Video::Advanced_Video(wxTreebook *book, Preferences *parent): OptionPag
 #endif
 
 	SetSizerAndFit(sizer);
+}
+
+void Preferences::SetOption(std::string const& name, wxAny value) {
+	pending_changes[name] = value;
+	if (IsEnabled())
+		applyButton->Enable(true);
+}
+
+void Preferences::AddPendingChange(Thunk const& callback) {
+	pending_callbacks.push_back(callback);
+	if (IsEnabled())
+		applyButton->Enable(true);
+}
+
+void Preferences::OnOK(wxCommandEvent &event) {
+	OnApply(event);
+	EndModal(0);
+}
+
+void Preferences::OnApply(wxCommandEvent &event) {
+	for (std::map<std::string, wxAny>::iterator cur = pending_changes.begin(); cur != pending_changes.end(); ++cur) {
+		agi::OptionValue *opt = OPT_SET(cur->first);
+		switch (opt->GetType()) {
+			case agi::OptionValue::Type_Bool:
+				opt->SetBool(cur->second.As<bool>());
+				break;
+			case agi::OptionValue::Type_Colour:
+				opt->SetColour(cur->second.As<agi::Colour>());
+				break;
+			case agi::OptionValue::Type_Double:
+				opt->SetDouble(cur->second.As<double>());
+				break;
+			case agi::OptionValue::Type_Int:
+				opt->SetInt(cur->second.As<int>());
+				break;
+			case agi::OptionValue::Type_String:
+				opt->SetString(cur->second.As<std::string>());
+				break;
+			default:
+				throw PreferenceNotSupported("Unsupported type");
+		}
+	}
+	pending_changes.clear();
+
+	for (std::deque<Thunk>::iterator it = pending_callbacks.begin(); it != pending_callbacks.end(); ++it)
+		(*it)();
+	pending_callbacks.clear();
+
+	applyButton->Enable(false);
+	config::opt->Flush();
+}
+
+static void PageChanged(wxBookCtrlEvent& evt) {
+	OPT_SET("Tool/Preferences/Page")->SetInt(evt.GetSelection());
+}
+
+Preferences::Preferences(wxWindow *parent): wxDialog(parent, -1, _("Preferences"), wxDefaultPosition, wxSize(-1, 500)) {
+	//	SetIcon(BitmapToIcon(GETIMAGE(options_button_24)));
+
+	book = new wxTreebook(this, -1, wxDefaultPosition, wxDefaultSize);
+	new General(book, this);
+	new Subtitles(book, this);
+	new Audio(book, this);
+	new Video(book, this);
+	new Interface(book, this);
+	new Interface_Colours(book, this);
+	new Interface_Hotkeys(book, this);
+	new Paths(book, this);
+	new File_Associations(book, this);
+	new Backup(book, this);
+	new Automation(book, this);
+	new Advanced(book, this);
+	new Advanced_Interface(book, this);
+	new Advanced_Audio(book, this);
+	new Advanced_Video(book, this);
+
+	book->Fit();
+
+	book->ChangeSelection(OPT_GET("Tool/Preferences/Page")->GetInt());
+	book->Bind(wxEVT_COMMAND_TREEBOOK_PAGE_CHANGED, &PageChanged);
+
+	// Bottom Buttons
+	wxStdDialogButtonSizer *stdButtonSizer = CreateStdDialogButtonSizer(wxOK | wxCANCEL | wxAPPLY);
+	applyButton = stdButtonSizer->GetApplyButton();
+	wxSizer *buttonSizer = new wxBoxSizer(wxHORIZONTAL);
+	wxButton *defaultButton = new wxButton(this, -1, _("Restore Defaults"));
+	buttonSizer->Add(defaultButton, wxSizerFlags(0).Expand());
+	buttonSizer->AddStretchSpacer(1);
+	buttonSizer->Add(stdButtonSizer, wxSizerFlags(0).Expand());
+
+	// Main Sizer
+	wxSizer *mainSizer = new wxBoxSizer(wxVERTICAL);
+	mainSizer->Add(book, wxSizerFlags(1).Expand().Border());
+	mainSizer->Add(buttonSizer, wxSizerFlags(0).Expand().Border(wxALL & ~wxTOP));
+
+	SetSizerAndFit(mainSizer);
+	SetMinSize(wxSize(-1, 500));
+	SetMaxSize(wxSize(-1, 500));
+	CenterOnParent();
+
+	applyButton->Enable(false);
+
+	Bind(wxEVT_COMMAND_BUTTON_CLICKED, &Preferences::OnOK, this, wxID_OK);
+	Bind(wxEVT_COMMAND_BUTTON_CLICKED, &Preferences::OnApply, this, wxID_APPLY);
+}
+
+Preferences::~Preferences() {
 }

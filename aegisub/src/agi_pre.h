@@ -115,6 +115,7 @@
 #include <wx/config.h>
 #include <wx/control.h>
 #include <wx/dataobj.h>
+#include <wx/dataview.h>
 #include <wx/datetime.h>
 #include <wx/dc.h>
 #include <wx/dcbuffer.h>
@@ -169,6 +170,7 @@
 #include <wx/regex.h>
 #include <wx/sashwin.h>
 #include <wx/scrolbar.h>
+#include <wx/srchctrl.h>
 #include <wx/settings.h>
 #include <wx/sizer.h>
 #include <wx/slider.h>

@@ -558,6 +558,9 @@
     <ClInclude Include="$(SrcDir)factory_manager.h">
       <Filter>Utilities</Filter>
     </ClInclude>
+    <ClInclude Include="$(SrcDir)hotkey_data_view_model.h">
+      <Filter>Preferences</Filter>
+    </ClInclude>
     <ClInclude Include="$(SrcDir)hotkeys.h">
       <Filter>Main UI</Filter>
     </ClInclude>
@@ -1072,6 +1075,9 @@
     </ClCompile>
     <ClCompile Include="$(SrcDir)compat.cpp">
       <Filter>Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SrcDir)hotkey_data_view_model.cpp">
+      <Filter>Preferences</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)hotkey.cpp">
       <Filter>Main UI</Filter>

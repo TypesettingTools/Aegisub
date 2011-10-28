@@ -20,20 +20,32 @@
 /// @ingroup configuration_ui
 
 #ifndef AGI_PRE
+#include <deque>
+#include <tr1/functional>
 #include <map>
 
 #include <wx/dialog.h>
 #endif
 
+#include <libaegisub/exception.h>
+
 class wxAny;
 class wxButton;
 class wxTreebook;
 
+DEFINE_BASE_EXCEPTION_NOINNER(PreferencesError, agi::Exception)
+DEFINE_SIMPLE_EXCEPTION_NOINNER(PreferenceIncorrectType, PreferencesError, "preferences/incorrect_type")
+DEFINE_SIMPLE_EXCEPTION_NOINNER(PreferenceNotSupported, PreferencesError, "preferences/not_supported")
+
 class Preferences: public wxDialog {
+public:
+	typedef std::tr1::function<void ()> Thunk;
+private:
 	wxTreebook *book;
 	wxButton *applyButton;
 
 	std::map<std::string, wxAny> pending_changes;
+	std::deque<Thunk> pending_callbacks;
 
 	void OnOK(wxCommandEvent &event);
 	void OnCancel(wxCommandEvent &event);
@@ -44,4 +56,5 @@ public:
 	~Preferences();
 
 	void SetOption(std::string const& name, wxAny value);
+	void AddPendingChange(Thunk const& callback);
 };

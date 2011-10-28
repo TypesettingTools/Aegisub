@@ -1219,22 +1219,6 @@
 				RelativePath="..\..\src\dialog_video_details.h"
 				>
 			</File>
-			<File
-				RelativePath="..\..\src\preferences.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\preferences.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\preferences_base.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\preferences_base.h"
-				>
-			</File>
 		</Filter>
 		<Filter
 			Name="Core"
@@ -1941,6 +1925,34 @@
 			</File>
 			<File
 				RelativePath="..\..\src\command\video.cpp"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="Preferences"
+			>
+			<File
+				RelativePath="..\..\src\hotkey_data_view_model.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\hotkey_data_view_model.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\preferences.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\preferences.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\preferences_base.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\preferences_base.h"
 				>
 			</File>
 		</Filter>

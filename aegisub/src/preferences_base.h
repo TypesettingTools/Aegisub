@@ -43,25 +43,3 @@ public:
 	void OptionBrowse(wxFlexGridSizer *flex, const wxString &name, const char *opt_name);
 	void OptionFont(wxSizer *sizer, std::string opt_prefix);
 };
-
-#define CLASS_PAGE(name)                             \
-	class name: public OptionPage {                  \
-	public:                                          \
-		name(wxTreebook *book, Preferences *parent); \
-	};
-
-CLASS_PAGE(General)
-CLASS_PAGE(Subtitles)
-CLASS_PAGE(Audio)
-CLASS_PAGE(Video)
-CLASS_PAGE(Interface)
-CLASS_PAGE(Interface_Colours)
-CLASS_PAGE(Interface_Hotkeys)
-CLASS_PAGE(Paths)
-CLASS_PAGE(File_Associations)
-CLASS_PAGE(Backup)
-CLASS_PAGE(Automation)
-CLASS_PAGE(Advanced)
-CLASS_PAGE(Advanced_Interface)
-CLASS_PAGE(Advanced_Audio)
-CLASS_PAGE(Advanced_Video)

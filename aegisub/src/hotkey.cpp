@@ -26,9 +26,22 @@
 
 #include "libresrc/libresrc.h"
 #include "command/command.h"
+#include "compat.h"
 #include "main.h"
+#include "standard_paths.h"
 
 namespace hotkey {
+
+agi::hotkey::Hotkey *inst = 0;
+void init() {
+	inst = new agi::hotkey::Hotkey(
+		STD_STR(StandardPaths::DecodePath("?user/hotkey.json")),
+		GET_DEFAULT_CONFIG(default_hotkey));
+}
+
+void clear() {
+	delete inst;
+}
 
 static std::vector<std::string> keycode_names;
 
@@ -47,7 +60,7 @@ static std::string const& keycode_name(int code) {
 	return keycode_names[code];
 }
 
-bool check(std::string const& context, agi::Context *c, int key_code, wchar_t key_char, int modifier) {
+std::string keypress_to_str(int key_code, wchar_t key_char, int modifier) {
 	std::string combo;
 	if ((modifier != wxMOD_NONE)) {
 		if ((modifier & wxMOD_CMD) != 0) combo.append("Ctrl-");
@@ -56,10 +69,16 @@ bool check(std::string const& context, agi::Context *c, int key_code, wchar_t ke
 	}
 
 	combo += keycode_name(key_code);
+
+	return combo;
+}
+
+bool check(std::string const& context, agi::Context *c, int key_code, wchar_t key_char, int modifier) {
+	std::string combo = keypress_to_str(key_code, key_char, modifier);
 	if (combo.empty()) return false;
 
 	std::string command;
-	if (agi::hotkey::hotkey->Scan(context, combo, OPT_GET("Audio/Medusa Timing Hotkeys")->GetBool(), command)) {
+	if (inst->Scan(context, combo, OPT_GET("Audio/Medusa Timing Hotkeys")->GetBool(), command)) {
 		/// The bottom line should be removed after all the hotkey commands are fixed.
 		/// This is to avoid pointless exceptions.
 		if (command.find("/") != std::string::npos) {
@@ -71,13 +90,12 @@ bool check(std::string const& context, agi::Context *c, int key_code, wchar_t ke
 }
 
 std::vector<std::string> get_hotkey_strs(std::string const& context, std::string const& command) {
-	return agi::hotkey::hotkey->GetHotkeys(context, command);
+	return inst->GetHotkeys(context, command);
 }
 
 std::string get_hotkey_str_first(std::string const& context, std::string const& command) {
-	return agi::hotkey::hotkey->GetHotkey(context, command);
+	return inst->GetHotkey(context, command);
 }
-
 
 static inline void set_kc(std::vector<std::string> &vec, int code, std::string const& str) {
 	if (static_cast<size_t>(code) >= vec.size()) vec.resize(code * 2, "");
@@ -176,6 +194,4 @@ static void init_keycode_names() {
 	set_kc(keycode_names, WXK_NUMPAD_DIVIDE, "KP_Divide");
 }
 
-
 } // namespace hotkey
-

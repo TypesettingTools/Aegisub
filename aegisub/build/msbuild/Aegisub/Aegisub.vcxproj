@@ -145,6 +145,7 @@
     <ClInclude Include="$(SrcDir)gl_wrap.h" />
     <ClInclude Include="$(SrcDir)help_button.h" />
     <ClInclude Include="$(SrcDir)hotkeys.h" />
+    <ClInclude Include="$(SrcDir)hotkey_data_view_model.h" />
     <ClInclude Include="$(SrcDir)kana_table.h" />
     <ClInclude Include="$(SrcDir)keyframe.h" />
     <ClInclude Include="$(SrcDir)main.h" />
@@ -332,6 +333,7 @@
     <ClCompile Include="$(SrcDir)gl_wrap.cpp" />
     <ClCompile Include="$(SrcDir)help_button.cpp" />
     <ClCompile Include="$(SrcDir)hotkey.cpp" />
+    <ClCompile Include="$(SrcDir)hotkey_data_view_model.cpp" />
     <ClCompile Include="$(SrcDir)kana_table.cpp" />
     <ClCompile Include="$(SrcDir)main.cpp" />
     <ClCompile Include="$(SrcDir)MatroskaParser.c">

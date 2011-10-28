@@ -192,6 +192,7 @@ SRC += \
 	gl_wrap.cpp \
 	help_button.cpp \
 	hotkey.cpp \
+	hotkey_data_view_model.cpp \
 	kana_table.cpp \
 	main.cpp \
 	menu.cpp \

@@ -36,8 +36,6 @@
 #include <wx/treebook.h>
 #endif
 
-#include <libaegisub/exception.h>
-
 #include "preferences_base.h"
 
 #include "colour_button.h"
@@ -49,10 +47,6 @@
 #include "preferences.h"
 #include "standard_paths.h"
 #include "video_provider_manager.h"
-
-DEFINE_BASE_EXCEPTION_NOINNER(PreferencesError, agi::Exception)
-DEFINE_SIMPLE_EXCEPTION_NOINNER(PreferenceIncorrectType, PreferencesError, "preferences/incorrect_type")
-DEFINE_SIMPLE_EXCEPTION_NOINNER(PreferenceNotSupported, PreferencesError, "preferences/not_supported")
 
 #define OPTION_UPDATER(type, evttype, body)                               \
 	class type {                                                          \
@@ -253,100 +247,4 @@ void OptionPage::OptionFont(wxSizer *sizer, std::string opt_prefix) {
 
 	Add(sizer, _("Font Face"), button_sizer);
 	Add(sizer, _("Font Size"), font_size);
-}
-
-void Preferences::SetOption(std::string const& name, wxAny value) {
-	pending_changes[name] = value;
-	if (IsEnabled())
-		applyButton->Enable(true);
-}
-
-void Preferences::OnOK(wxCommandEvent &event) {
-	OnApply(event);
-	EndModal(0);
-}
-
-void Preferences::OnApply(wxCommandEvent &event) {
-	for (std::map<std::string, wxAny>::iterator cur = pending_changes.begin(); cur != pending_changes.end(); ++cur) {
-		agi::OptionValue *opt = OPT_SET(cur->first);
-		switch (opt->GetType()) {
-			case agi::OptionValue::Type_Bool:
-				opt->SetBool(cur->second.As<bool>());
-				break;
-			case agi::OptionValue::Type_Colour:
-				opt->SetColour(cur->second.As<agi::Colour>());
-				break;
-			case agi::OptionValue::Type_Double:
-				opt->SetDouble(cur->second.As<double>());
-				break;
-			case agi::OptionValue::Type_Int:
-				opt->SetInt(cur->second.As<int>());
-				break;
-			case agi::OptionValue::Type_String:
-				opt->SetString(cur->second.As<std::string>());
-				break;
-			default:
-				throw PreferenceNotSupported("Unsupported type");
-		}
-	}
-	pending_changes.clear();
-	applyButton->Enable(false);
-	config::opt->Flush();
-}
-
-static void PageChanged(wxBookCtrlEvent& evt) {
-	OPT_SET("Tool/Preferences/Page")->SetInt(evt.GetSelection());
-}
-
-Preferences::Preferences(wxWindow *parent): wxDialog(parent, -1, _("Preferences"), wxDefaultPosition, wxSize(-1, 500)) {
-//	SetIcon(BitmapToIcon(GETIMAGE(options_button_24)));
-
-	book = new wxTreebook(this, -1, wxDefaultPosition, wxDefaultSize);
-	new General(book, this);
-	new Subtitles(book, this);
-	new Audio(book, this);
-	new Video(book, this);
-	new Interface(book, this);
-	new Interface_Colours(book, this);
-	new Interface_Hotkeys(book, this);
-	new Paths(book, this);
-	new File_Associations(book, this);
-	new Backup(book, this);
-	new Automation(book, this);
-	new Advanced(book, this);
-	new Advanced_Interface(book, this);
-	new Advanced_Audio(book, this);
-	new Advanced_Video(book, this);
-
-	book->Fit();
-
-	book->ChangeSelection(OPT_GET("Tool/Preferences/Page")->GetInt());
-	book->Bind(wxEVT_COMMAND_TREEBOOK_PAGE_CHANGED, &PageChanged);
-
-	// Bottom Buttons
-	wxStdDialogButtonSizer *stdButtonSizer = CreateStdDialogButtonSizer(wxOK | wxCANCEL | wxAPPLY);
-	applyButton = stdButtonSizer->GetApplyButton();
-	wxSizer *buttonSizer = new wxBoxSizer(wxHORIZONTAL);
-	wxButton *defaultButton = new wxButton(this, -1, _("Restore Defaults"));
-	buttonSizer->Add(defaultButton, wxSizerFlags(0).Expand());
-	buttonSizer->AddStretchSpacer(1);
-	buttonSizer->Add(stdButtonSizer, wxSizerFlags(0).Expand());
-
-	// Main Sizer
-	wxSizer *mainSizer = new wxBoxSizer(wxVERTICAL);
-	mainSizer->Add(book, wxSizerFlags(1).Expand().Border());
-	mainSizer->Add(buttonSizer, wxSizerFlags(0).Expand().Border(wxALL & ~wxTOP));
-
-	SetSizerAndFit(mainSizer);
-	SetMinSize(wxSize(-1, 500));
-	SetMaxSize(wxSize(-1, 500));
-	CenterOnParent();
-
-	applyButton->Enable(false);
-
-	Bind(wxEVT_COMMAND_BUTTON_CLICKED, &Preferences::OnOK, this, wxID_OK);
-	Bind(wxEVT_COMMAND_BUTTON_CLICKED, &Preferences::OnApply, this, wxID_APPLY);
-}
-
-Preferences::~Preferences() {
 }
