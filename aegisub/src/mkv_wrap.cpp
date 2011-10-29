@@ -103,10 +103,11 @@ static void read_subtitles(agi::ProgressSink *ps, MatroskaFile *file, MkvStdIO *
 		// Process SSA/ASS
 		if (!srt) {
 			long order = 0, layer = 0;
-			blockString.BeforeFirst(',', &blockString).ToLong(&order);
-			blockString.BeforeFirst(',', &blockString).ToLong(&layer);
+			wxString afterOrder, afterLayer;
+			blockString.BeforeFirst(',', &afterOrder).ToLong(&order);
+			afterOrder.BeforeFirst(',', &afterLayer).ToLong(&layer);
 
-			subList[order] = wxString::Format("Dialogue: %d,%s,%s,%s", layer, subStart.GetASSFormated(), subEnd.GetASSFormated(), blockString);
+			subList[order] = wxString::Format("Dialogue: %d,%s,%s,%s", layer, subStart.GetASSFormated(), subEnd.GetASSFormated(), afterLayer);
 		}
 		// Process SRT
 		else {
