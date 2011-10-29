@@ -362,6 +362,8 @@ void VideoContext::Play() {
 		return;
 	}
 
+	if (!IsLoaded()) return;
+
 	// Set variables
 	startFrame = frame_n;
 	endFrame = -1;
