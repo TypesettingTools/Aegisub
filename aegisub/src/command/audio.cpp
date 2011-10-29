@@ -102,6 +102,7 @@ struct audio_open : public Command {
 				OPT_SET("Path/Last/Audio")->SetString(STD_STR(filename));
 			}
 		}
+		catch (agi::UserCancelException const&) { }
 		catch (agi::Exception const& e) {
 			wxMessageBox(lagi_wxString(e.GetChainedMessage()), "Error loading file", wxICON_ERROR | wxOK);
 		}
