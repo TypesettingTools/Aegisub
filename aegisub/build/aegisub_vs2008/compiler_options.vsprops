@@ -6,7 +6,7 @@
 	>
 	<Tool
 		Name="VCCLCompilerTool"
-		AdditionalOptions="/Zm120"
+		AdditionalOptions="/Zm130"
 		EnableIntrinsicFunctions="true"
 		RuntimeLibrary="2"
 		OpenMP="true"
