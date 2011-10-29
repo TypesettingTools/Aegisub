@@ -76,7 +76,6 @@
     <ClInclude Include="$(SrcDir)audio_player_pulse.h" />
     <ClInclude Include="$(SrcDir)audio_provider_avs.h" />
     <ClInclude Include="$(SrcDir)audio_provider_convert.h" />
-    <ClInclude Include="$(SrcDir)audio_provider_downmix.h" />
     <ClInclude Include="$(SrcDir)audio_provider_dummy.h" />
     <ClInclude Include="$(SrcDir)audio_provider_ffmpegsource.h" />
     <ClInclude Include="$(SrcDir)audio_provider_hd.h" />
@@ -252,7 +251,6 @@
     <ClCompile Include="$(SrcDir)audio_provider.cpp" />
     <ClCompile Include="$(SrcDir)audio_provider_avs.cpp" />
     <ClCompile Include="$(SrcDir)audio_provider_convert.cpp" />
-    <ClCompile Include="$(SrcDir)audio_provider_downmix.cpp" />
     <ClCompile Include="$(SrcDir)audio_provider_dummy.cpp" />
     <ClCompile Include="$(SrcDir)audio_provider_ffmpegsource.cpp" />
     <ClCompile Include="$(SrcDir)audio_provider_hd.cpp" />

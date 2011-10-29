@@ -183,9 +183,6 @@
     <ClInclude Include="$(SrcDir)audio_provider_convert.h">
       <Filter>Audio\Providers</Filter>
     </ClInclude>
-    <ClInclude Include="$(SrcDir)audio_provider_downmix.h">
-      <Filter>Audio\Providers</Filter>
-    </ClInclude>
     <ClInclude Include="$(SrcDir)audio_provider_dummy.h">
       <Filter>Audio\Providers</Filter>
     </ClInclude>
@@ -690,9 +687,6 @@
       <Filter>Audio\Providers</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)audio_provider_convert.cpp">
-      <Filter>Audio\Providers</Filter>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)audio_provider_downmix.cpp">
       <Filter>Audio\Providers</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)audio_provider_dummy.cpp">

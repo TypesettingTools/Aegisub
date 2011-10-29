@@ -466,14 +466,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\audio_provider_downmix.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\audio_provider_downmix.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\audio_provider_dummy.cpp"
 				>
 			</File>

@@ -134,7 +134,6 @@ SRC += \
 	audio_player.cpp \
 	audio_provider.cpp \
 	audio_provider_convert.cpp \
-	audio_provider_downmix.cpp \
 	audio_provider_hd.cpp \
 	audio_provider_pcm.cpp \
 	audio_provider_ram.cpp \
