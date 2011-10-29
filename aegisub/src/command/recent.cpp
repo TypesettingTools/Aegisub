@@ -69,7 +69,13 @@ struct recent_audio_entry : public Command {
 	STR_HELP("Open recent audio.")
 
 	void operator()(agi::Context *c, int id) {
-		c->audioController->OpenAudio(lagi_wxString(config::mru->GetEntry("Audio", id)));
+		try {
+			c->audioController->OpenAudio(lagi_wxString(config::mru->GetEntry("Audio", id)));
+		}
+		catch (agi::UserCancelException const&) { }
+		catch (agi::Exception const& e) {
+			wxMessageBox(lagi_wxString(e.GetChainedMessage()), "Error loading file", wxICON_ERROR | wxOK);
+		}
 	}
 };
 
