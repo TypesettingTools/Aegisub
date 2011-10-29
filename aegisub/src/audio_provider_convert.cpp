@@ -87,6 +87,54 @@ public:
 	}
 };
 
+/// (16,64] bit signed -> 16 bit signed machine-endian audio converter
+class DownconvertAudioProvider : public AudioProviderConverter {
+	std::vector<char> src_buf;
+	int src_bytes_per_sample;
+	bool src_is_native_endian;
+public:
+	DownconvertAudioProvider(AudioProvider *src) : AudioProviderConverter(src) {
+		if (bytes_per_sample <= 2 || bytes_per_sample > 8)
+			throw agi::InternalError("DownconvertAudioProvider requires (16,64]-bit input", 0);
+
+		src_is_native_endian = src->AreSamplesNativeEndian();
+		src_bytes_per_sample = bytes_per_sample;
+		bytes_per_sample = 2;
+	}
+
+	void GetAudio(void *buf, int64_t start, int64_t count) const {
+		src_buf.resize(count * src_bytes_per_sample * channels);
+		source->GetAudio(&src_buf[0], start, count);
+
+		int16_t *dest = reinterpret_cast<int16_t*>(buf);
+
+		for (int64_t i = 0; i < count * channels; ++i) {
+			int64_t sample = 0;
+			char *sample_ptr = (char*)&sample;
+			char *src = &src_buf[i * src_bytes_per_sample];
+			if (src_is_native_endian) {
+#ifdef HAVE_LITTLE_ENDIAN
+				memcpy(sample_ptr, src, src_bytes_per_sample);
+#else
+				memcpy(sample_ptr + sizeof(int64_t) - src_bytes_per_sample, src, src_bytes_per_sample);
+#endif
+			}
+			else {
+				for (int byte_index = 0; i < src_bytes_per_sample; ++i) {
+#ifdef HAVE_LITTLE_ENDIAN
+					sample_ptr[byte_index] = src[src_bytes_per_sample - byte_index - 1];
+#else
+					sample_ptr[sizeof(int64_t) - byte_index - 1] = src[byte_index];
+#endif
+				}
+			}
+
+			sample >>= (src_bytes_per_sample - sizeof(int16_t)) * 8;
+			dest[i] = (int16_t)sample;
+		}
+	}
+};
+
 /// Non-mono 16-bit signed machine-endian -> mono 16-bit signed machine endian converter
 class DownmixAudioProvider : public AudioProviderConverter {
 	mutable std::vector<int16_t> src_buf;
@@ -162,17 +210,16 @@ AudioProvider *CreateConvertAudioProvider(AudioProvider *source_provider) {
 	AudioProvider *provider = source_provider;
 
 	// Ensure 16-bit audio with proper endianness
-	switch (provider->GetBytesPerSample()) {
-		case 1:
-			provider = new UpconvertAudioProvider(provider);
-			break;
-		case 2:
-			if (!provider->AreSamplesNativeEndian())
-				provider = new EndianSwapAudioProvider(provider);
-			break;
-		default:
-			throw AudioOpenError("Audio format converter: audio with bitdepths greater than 16 bits/sample is currently unsupported");
+	if (provider->GetBytesPerSample() == 1)
+		provider = new UpconvertAudioProvider(provider);
+	else if (provider->GetBytesPerSample() == 1) {
+		if (!provider->AreSamplesNativeEndian())
+			provider = new EndianSwapAudioProvider(provider);
 	}
+	else if (provider->GetBytesPerSample() <= 8)
+		provider = new DownconvertAudioProvider(provider);
+	else
+		throw AudioOpenError("Audio format converter: audio with bitdepths greater than 64 bits/sample is currently unsupported");
 
 	// We currently only support mono audio
 	if (provider->GetChannels() != 1)
