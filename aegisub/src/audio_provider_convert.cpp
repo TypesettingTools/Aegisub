@@ -49,7 +49,6 @@ public:
 /// Anything -> 16 bit signed machine-endian audio converter
 template<class Target>
 class BitdepthConvertAudioProvider : public AudioProviderConverter {
-	mutable std::vector<char> src_buf;
 	int src_bytes_per_sample;
 	bool src_is_native_endian;
 public:
@@ -63,7 +62,7 @@ public:
 	}
 
 	void GetAudio(void *buf, int64_t start, int64_t count) const {
-		src_buf.resize(count * src_bytes_per_sample * channels);
+		std::vector<char> src_buf(count * src_bytes_per_sample * channels);
 		source->GetAudio(&src_buf[0], start, count);
 
 		int16_t *dest = reinterpret_cast<int16_t*>(buf);
@@ -106,7 +105,6 @@ public:
 
 /// Non-mono 16-bit signed machine-endian -> mono 16-bit signed machine endian converter
 class DownmixAudioProvider : public AudioProviderConverter {
-	mutable std::vector<int16_t> src_buf;
 	int src_channels;
 public:
 	DownmixAudioProvider(AudioProvider *src) : AudioProviderConverter(src) {
@@ -121,7 +119,7 @@ public:
 	void GetAudio(void *buf, int64_t start, int64_t count) const {
 		if (count == 0) return;
 
-		src_buf.resize(count * src_channels);
+		std::vector<int16_t> src_buf(count * src_channels);
 		source->GetAudio(&src_buf[0], start, count);
 
 		int16_t *dst = reinterpret_cast<int16_t*>(buf);
