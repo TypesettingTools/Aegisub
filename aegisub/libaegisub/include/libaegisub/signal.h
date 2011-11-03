@@ -183,8 +183,11 @@ namespace detail {
 }
 
 #define SIGNALS_H_FOR_EACH_SIGNAL(...) \
-	for (typename super::SlotMap::iterator cur = slots.begin(); cur != slots.end(); ++cur) { \
-		if (!Blocked(cur->first)) cur->second(__VA_ARGS__); \
+	for (typename super::SlotMap::iterator cur = slots.begin(); cur != slots.end();) { \
+		if (Blocked(cur->first)) \
+			++cur; \
+		else \
+			(cur++)->second(__VA_ARGS__); \
 	}
 
 /// @class Signal
