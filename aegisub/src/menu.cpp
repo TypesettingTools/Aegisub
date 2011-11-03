@@ -184,7 +184,8 @@ public:
 		wxMenuItem *item = new wxMenuItem(parent, MENU_ID_BASE + items.size(), menu_text, co->StrHelp(), kind);
 #ifndef __WXMAC__
 		/// @todo Maybe make this a configuration option instead?
-		item->SetBitmap(co->Icon(16));
+		if (kind == wxITEM_NORMAL)
+			item->SetBitmap(co->Icon(16));
 #endif
 		parent->Append(item);
 		items.push_back(co);
