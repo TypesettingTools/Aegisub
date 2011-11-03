@@ -347,6 +347,7 @@ void AegisubVersionCheckerThread::DoCheck()
 	wxString path = base_updates_path + querystring;
 
 	wxHTTP http;
+	http.SetHeader("User-Agent", wxString("Aegisub ") + GetAegisubLongVersionString());
 	http.SetHeader("Connection", "Close");
 	http.SetFlags(wxSOCKET_WAITALL|wxSOCKET_BLOCK);
 
