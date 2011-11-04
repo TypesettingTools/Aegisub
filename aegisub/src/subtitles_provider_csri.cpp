@@ -38,28 +38,29 @@
 
 #ifdef WITH_CSRI
 
-#include "ass_file.h"
+#ifndef AGI_PRE
+#include <wx/thread.h>
+#endif
+
 #include "subtitles_provider_csri.h"
+
+#include "ass_file.h"
 #include "text_file_writer.h"
 #include "video_context.h"
 #include "video_frame.h"
 
-/// @brief Constructor 
-/// @param type 
-///
+static wxMutex csri_mutex;
+
 CSRISubtitlesProvider::CSRISubtitlesProvider(std::string type) : subType(type) {
 }
 
-/// @brief Destructor 
-///
 CSRISubtitlesProvider::~CSRISubtitlesProvider() {
 	if (!tempfile.empty()) wxRemoveFile(tempfile);
 }
 
-/// @brief Load subtitles 
-/// @param subs 
-///
 void CSRISubtitlesProvider::LoadSubtitles(AssFile *subs) {
+	wxMutexLocker lock(csri_mutex);
+
 	// CSRI variables
 	csri_rend *cur,*renderer=NULL;
 
@@ -101,14 +102,11 @@ void CSRISubtitlesProvider::LoadSubtitles(AssFile *subs) {
 	}
 }
 
-/// @brief Draw subtitles 
-/// @param dst  
-/// @param time 
-/// @return 
-///
 void CSRISubtitlesProvider::DrawSubtitles(AegiVideoFrame &dst,double time) {
 	// Check if CSRI loaded properly
 	if (!instance.get()) return;
+
+	wxMutexLocker lock(csri_mutex);
 
 	// Load data into frame
 	csri_frame frame;
@@ -134,8 +132,6 @@ void CSRISubtitlesProvider::DrawSubtitles(AegiVideoFrame &dst,double time) {
 	csri_render(instance.get(),&frame,time);
 }
 
-/// @brief Get CSRI subtypes 
-///
 std::vector<std::string> CSRISubtitlesProvider::GetSubTypes() {
 	std::vector<std::string> final;
 	for (csri_rend *cur = csri_renderer_default();cur;cur = csri_renderer_next(cur)) {
