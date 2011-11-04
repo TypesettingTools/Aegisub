@@ -40,6 +40,7 @@
 #include <sstream>
 
 #include <wx/event.h>
+#include <wx/msgdlg.h>
 #endif
 
 #include "command.h"
