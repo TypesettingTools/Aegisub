@@ -56,7 +56,6 @@ protected:
 	}
 
 public:
-	OptionValue() {};
 	virtual ~OptionValue() {};
 
 
@@ -148,9 +147,6 @@ CONFIG_OPTIONVALUE(Bool, bool)
 class OptionValueList: public OptionValue {
 	friend class ConfigVisitor;
 
-protected:
-	OptionValueList() {};
-	virtual ~OptionValueList() {};
 	virtual void InsertString(const std::string val) { throw ListTypeError("string", " insert "); }
 	virtual void InsertInt(const int64_t val) { throw ListTypeError("int", " insert "); }
 	virtual void InsertDouble(const double val) { throw ListTypeError("double", " insert "); }
@@ -169,7 +165,7 @@ protected:
 	virtual std::string GetString() const { return "";}                                       \
 		OptionValueList##type_name(std::string member_name): name(member_name) {}             \
 		void GetList##type_name(std::vector<type> &out) const { out = array; }                \
-		void SetList##type_name(const std::vector<type>& val) { array = val;  NotifyChanged(); } \
+		void SetList##type_name(const std::vector<type>& val) { array = val; NotifyChanged(); } \
 		void GetDefaultList##type_name(std::vector<type> &out) const { out = array_default; } \
 		OptionType GetType() const { return OptionValue::Type_List_##type_name; }             \
 		std::string GetName() const { return name; }                                          \
