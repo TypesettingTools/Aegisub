@@ -105,11 +105,11 @@ public:
 	virtual void GetListColour(std::vector<Colour> &out) const { throw ListTypeError("colour"); }
 	virtual void GetListBool(std::vector<bool> &out) const { throw ListTypeError("string"); }
 
-	virtual void SetListString(const std::vector<std::string> val) { throw ListTypeError("string", " set "); }
-	virtual void SetListInt(const std::vector<int64_t> val) { throw ListTypeError("int", " set "); }
-	virtual void SetListDouble(const std::vector<double> val) { throw ListTypeError("double", " set "); }
-	virtual void SetListColour(const std::vector<Colour> val) { throw ListTypeError("colour", " set "); }
-	virtual void SetListBool(const std::vector<bool> val) { throw ListTypeError("string", " set "); }
+	virtual void SetListString(const std::vector<std::string>& val) { throw ListTypeError("string", " set "); }
+	virtual void SetListInt(const std::vector<int64_t>& val) { throw ListTypeError("int", " set "); }
+	virtual void SetListDouble(const std::vector<double>& val) { throw ListTypeError("double", " set "); }
+	virtual void SetListColour(const std::vector<Colour>& val) { throw ListTypeError("colour", " set "); }
+	virtual void SetListBool(const std::vector<bool>& val) { throw ListTypeError("string", " set "); }
 
 	virtual void GetDefaultListString(std::vector<std::string> &out) const { throw ListTypeError("string"); }
 	virtual void GetDefaultListInt(std::vector<int64_t> &out) const { throw ListTypeError("int"); }
@@ -169,7 +169,7 @@ protected:
 	virtual std::string GetString() const { return "";}                                       \
 		OptionValueList##type_name(std::string member_name): name(member_name) {}             \
 		void GetList##type_name(std::vector<type> &out) const { out = array; }                \
-		void SetList##type_name(const std::vector<type> val) { array = val;  NotifyChanged(); } \
+		void SetList##type_name(const std::vector<type>& val) { array = val;  NotifyChanged(); } \
 		void GetDefaultList##type_name(std::vector<type> &out) const { out = array_default; } \
 		OptionType GetType() const { return OptionValue::Type_List_##type_name; }             \
 		std::string GetName() const { return name; }                                          \
