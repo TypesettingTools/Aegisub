@@ -238,7 +238,7 @@ void DialogTimingProcessor::UpdateControls() {
 	for (size_t i=0;i<len;i++) {
 		if (StyleList->IsChecked(i)) checked++;
 	}
-	ApplyButton->Enable(checked && (hasLeadIn->IsChecked() | hasLeadOut->IsChecked() | keysEnable->IsChecked() | adjsEnable->IsChecked()));
+	ApplyButton->Enable(checked && (hasLeadIn->IsChecked() || hasLeadOut->IsChecked() || keysEnable->IsChecked() || adjsEnable->IsChecked()));
 }
 
 BEGIN_EVENT_TABLE(DialogTimingProcessor,wxDialog)
