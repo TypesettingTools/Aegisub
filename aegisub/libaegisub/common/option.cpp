@@ -129,8 +129,7 @@ void Options::Flush() {
 				break;
 
 			case OptionValue::Type_List_String: {
-				std::vector<std::string> array_string;
-				i->second->GetListString(array_string);
+				std::vector<std::string> const& array_string(i->second->GetListString());
 
 				json::Array array;
 
@@ -145,8 +144,7 @@ void Options::Flush() {
 			break;
 
 			case OptionValue::Type_List_Int: {
-				std::vector<int64_t> array_int;
-				i->second->GetListInt(array_int);
+				std::vector<int64_t> const& array_int(i->second->GetListInt());
 
 				json::Array array;
 
@@ -160,8 +158,7 @@ void Options::Flush() {
 			break;
 
 			case OptionValue::Type_List_Double: {
-				std::vector<double> array_double;
-				i->second->GetListDouble(array_double);
+				std::vector<double> const& array_double(i->second->GetListDouble());
 
 				json::Array array;
 
@@ -175,8 +172,7 @@ void Options::Flush() {
 			break;
 
 			case OptionValue::Type_List_Colour: {
-				std::vector<Colour> array_colour;
-				i->second->GetListColour(array_colour);
+				std::vector<Colour> const& array_colour(i->second->GetListColour());
 
 				json::Array array;
 				for (std::vector<Colour>::const_iterator i_colour = array_colour.begin(); i_colour != array_colour.end(); ++i_colour) {
@@ -189,11 +185,9 @@ void Options::Flush() {
 			break;
 
 			case OptionValue::Type_List_Bool: {
-				std::vector<bool> array_bool;
+				std::vector<bool> const& array_bool(i->second->GetListBool());
 
 				json::Array array;
-
-				i->second->GetListBool(array_bool);
 				for (std::vector<bool>::const_iterator i_bool = array_bool.begin(); i_bool != array_bool.end(); ++i_bool) {
 					json::Object obj;
 					obj["bool"] = *i_bool;

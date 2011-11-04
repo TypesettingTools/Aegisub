@@ -78,7 +78,7 @@ void Path::Set(const char *name, const std::string &path) {
 
 
 void Path::ListGet(const char *name, std::vector<std::string> &out) {
-	opt->Get(name)->GetListString(out);
+	out = opt->Get(name)->GetListString();
 }
 
 

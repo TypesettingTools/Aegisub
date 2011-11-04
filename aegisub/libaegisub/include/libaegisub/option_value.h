@@ -98,11 +98,11 @@ public:
 	virtual bool GetDefaultBool() const { throw TypeError("bool"); }
 
 
-	virtual void GetListString(std::vector<std::string> &out) const { throw ListTypeError("string"); }
-	virtual void GetListInt(std::vector<int64_t> &out) const { throw ListTypeError("int"); }
-	virtual void GetListDouble(std::vector<double> &out) const { throw ListTypeError("double"); }
-	virtual void GetListColour(std::vector<Colour> &out) const { throw ListTypeError("colour"); }
-	virtual void GetListBool(std::vector<bool> &out) const { throw ListTypeError("string"); }
+	virtual std::vector<std::string> const& GetListString() const { throw ListTypeError("string"); }
+	virtual std::vector<int64_t> const& GetListInt() const { throw ListTypeError("int"); }
+	virtual std::vector<double> const& GetListDouble() const { throw ListTypeError("double"); }
+	virtual std::vector<Colour> const& GetListColour() const { throw ListTypeError("colour"); }
+	virtual std::vector<bool> const& GetListBool() const { throw ListTypeError("string"); }
 
 	virtual void SetListString(const std::vector<std::string>& val) { throw ListTypeError("string", " set "); }
 	virtual void SetListInt(const std::vector<int64_t>& val) { throw ListTypeError("int", " set "); }
@@ -110,11 +110,11 @@ public:
 	virtual void SetListColour(const std::vector<Colour>& val) { throw ListTypeError("colour", " set "); }
 	virtual void SetListBool(const std::vector<bool>& val) { throw ListTypeError("string", " set "); }
 
-	virtual void GetDefaultListString(std::vector<std::string> &out) const { throw ListTypeError("string"); }
-	virtual void GetDefaultListInt(std::vector<int64_t> &out) const { throw ListTypeError("int"); }
-	virtual void GetDefaultListDouble(std::vector<double> &out) const { throw ListTypeError("double"); }
-	virtual void GetDefaultListColour(std::vector<Colour> &out) const { throw ListTypeError("colour"); }
-	virtual void GetDefaultListBool(std::vector<bool> &out) const { throw ListTypeError("string"); }
+	virtual std::vector<std::string> const& GetDefaultListString() const { throw ListTypeError("string"); }
+	virtual std::vector<int64_t> const& GetDefaultListInt() const { throw ListTypeError("int"); }
+	virtual std::vector<double> const& GetDefaultListDouble() const { throw ListTypeError("double"); }
+	virtual std::vector<Colour> const& GetDefaultListColour() const { throw ListTypeError("colour"); }
+	virtual std::vector<bool> const& GetDefaultListBool() const { throw ListTypeError("string"); }
 
 
 	DEFINE_SIGNAL_ADDERS(ValueChanged, Subscribe);
@@ -134,7 +134,7 @@ public:
 		OptionType GetType() const { return OptionValue::Type_##type_name; }                  \
 		std::string GetName() const { return name; }                                          \
 		void Reset() { value = value_default; NotifyChanged(); }                              \
-		bool IsDefault() const { return (value == value_default) ? 1 : 0; }                   \
+		bool IsDefault() const { return value == value_default; }                             \
 	};
 
 CONFIG_OPTIONVALUE(String, std::string)
@@ -164,13 +164,13 @@ class OptionValueList: public OptionValue {
 	public:                                                                                   \
 	virtual std::string GetString() const { return "";}                                       \
 		OptionValueList##type_name(std::string member_name): name(member_name) {}             \
-		void GetList##type_name(std::vector<type> &out) const { out = array; }                \
+		std::vector<type> const& GetList##type_name() const { return array; }                 \
 		void SetList##type_name(const std::vector<type>& val) { array = val; NotifyChanged(); } \
-		void GetDefaultList##type_name(std::vector<type> &out) const { out = array_default; } \
+		std::vector<type> const& GetDefaultList##type_name() const { return array_default; }  \
 		OptionType GetType() const { return OptionValue::Type_List_##type_name; }             \
 		std::string GetName() const { return name; }                                          \
 		void Reset() { array = array_default; NotifyChanged(); }                              \
-		bool IsDefault() const { return (array == array_default) ? 1 : 0; }                   \
+		bool IsDefault() const { return array == array_default; }                             \
 	};
 
 

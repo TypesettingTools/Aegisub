@@ -162,40 +162,25 @@ void ConfigVisitor::AddOptionValue(OptionValue* opt) {
 			opt_cur->SetBool(opt->GetBool());
 			break;
 
-		case OptionValue::Type_List_String: {
-			std::vector<std::string> array;
- 			opt->GetListString(array);
-			opt_cur->SetListString(array);
+		case OptionValue::Type_List_String:
+			opt_cur->SetListString(opt->GetListString());
 			break;
-		}
 
-		case OptionValue::Type_List_Int: {
-			std::vector<int64_t> array;
- 			opt->GetListInt(array);
-			opt_cur->SetListInt(array);
+		case OptionValue::Type_List_Int:
+			opt_cur->SetListInt(opt->GetListInt());
 			break;
-		}
 
-		case OptionValue::Type_List_Double: {
-			std::vector<double> array;
- 			opt->GetListDouble(array);
-			opt_cur->SetListDouble(array);
+		case OptionValue::Type_List_Double:
+			opt_cur->SetListDouble(opt->GetListDouble());
 			break;
-		}
 
-		case OptionValue::Type_List_Colour: {
-			std::vector<Colour> array;
- 			opt->GetListColour(array);
-			opt_cur->SetListColour(array);
+		case OptionValue::Type_List_Colour:
+			opt_cur->SetListColour(opt->GetListColour());
 			break;
-		}
 
-		case OptionValue::Type_List_Bool: {
-			std::vector<bool> array;
- 			opt->GetListBool(array);
-			opt_cur->SetListBool(array);
+		case OptionValue::Type_List_Bool:
+			opt_cur->SetListBool(opt->GetListBool());
 			break;
-		}
 	}
 }
 } // namespace agi

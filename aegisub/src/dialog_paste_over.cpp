@@ -94,7 +94,7 @@ DialogPasteOver::DialogPasteOver (wxWindow *parent, std::vector<bool>& options)
 
 	// Load checked items
 	/// @todo This assumes a static set of fields.
-	OPT_GET("Tool/Paste Lines Over/Fields")->GetListBool(options);
+	options = OPT_GET("Tool/Paste Lines Over/Fields")->GetListBool();
 	for (unsigned int i=0;i<choices.Count();i++) ListBox->Check(i,options[i]);
 
 	// Top buttons

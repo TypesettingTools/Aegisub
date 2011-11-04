@@ -142,8 +142,7 @@ void BaseGrid::UpdateStyle() {
 	}
 
 	// Set column widths
-	std::vector<bool> column_array;
-	OPT_GET("Subtitle/Grid/Column")->GetListBool(column_array);
+	std::vector<bool> column_array(OPT_GET("Subtitle/Grid/Column")->GetListBool());
 	assert(column_array.size() == columns);
 	for (int i = 0; i < columns; ++i) showCol[i] = column_array[i];
 	SetColumnWidths();
