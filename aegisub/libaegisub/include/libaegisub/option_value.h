@@ -38,9 +38,6 @@ DEFINE_SIMPLE_EXCEPTION_NOINNER(OptionValueErrorNotFound, OptionValueError, "opt
 DEFINE_SIMPLE_EXCEPTION_NOINNER(OptionValueErrorInvalidType, OptionValueError, "options/invalid_type")
 DEFINE_SIMPLE_EXCEPTION_NOINNER(OptionValueErrorInvalidListType, OptionValueError, "options/array/invalid_type")
 
-
-class ConfigVisitor;
-
 /// @class OptionValue
 /// Holds an actual option.
 class OptionValue {
@@ -143,24 +140,11 @@ CONFIG_OPTIONVALUE(Double, double)
 CONFIG_OPTIONVALUE(Colour, Colour)
 CONFIG_OPTIONVALUE(Bool, bool)
 
-
-class OptionValueList: public OptionValue {
-	friend class ConfigVisitor;
-
-	virtual void InsertString(const std::string val) { throw ListTypeError("string", " insert "); }
-	virtual void InsertInt(const int64_t val) { throw ListTypeError("int", " insert "); }
-	virtual void InsertDouble(const double val) { throw ListTypeError("double", " insert "); }
-	virtual void InsertColour(const Colour val) { throw ListTypeError("colour", " insert "); }
-	virtual void InsertBool(const bool val) { throw ListTypeError("bool", " insert "); }
-};
-
-
 #define CONFIG_OPTIONVALUE_LIST(type_name, type)                                              \
-	class OptionValueList##type_name : public OptionValueList {                               \
+	class OptionValueList##type_name : public OptionValue {                                   \
 		std::vector<type> array;                                                              \
 		std::vector<type> array_default;                                                      \
 		std::string name;                                                                     \
-		void Insert##type_name(const type val) { array.push_back(val); }                      \
 	public:                                                                                   \
 	virtual std::string GetString() const { return "";}                                       \
 		OptionValueList##type_name(std::string member_name): name(member_name) {}             \

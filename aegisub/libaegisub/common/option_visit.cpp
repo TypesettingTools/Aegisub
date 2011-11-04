@@ -48,55 +48,59 @@ void ConfigVisitor::Visit(const json::Object& object) {
 	}
 }
 
+template<class T>
+static inline T convert_unknown(json::UnknownElement const& ue) {
+	return ue;
+}
+
+template<>
+inline int64_t convert_unknown(json::UnknownElement const& ue) {
+	return (int64_t)(double)ue;
+}
+
+template<class OptionValueType, class ValueType>
+static OptionValue *read_array(json::Array const& src, std::string const& array_type, std::string const& name, void (OptionValueType::*set_list)(const std::vector<ValueType>&)) {
+	std::vector<ValueType> arr;
+	arr.reserve(src.size());
+
+	for (json::Array::const_iterator it = src.begin(); it != src.end(); ++it) {
+		json::Object const& obj = *it;
+
+		if (obj.size() != 1)
+			throw OptionJsonValueArray("Invalid array member");
+		if (obj.begin()->first != array_type)
+			throw OptionJsonValueArray("Attempt to insert value into array of wrong type");
+
+		arr.push_back(convert_unknown<ValueType>(obj.begin()->second));
+	}
+
+	OptionValueType *ret = new OptionValueType(name);
+	(ret->*set_list)(arr);
+	return ret;
+}
+
 void ConfigVisitor::Visit(const json::Array& array) {
-	OptionValueList *array_list = NULL;
+	if (array.empty())
+		throw OptionJsonValueArray("Cannot infer the type of an empty array");
 
-	json::Array::const_iterator index(array.begin()), indexEnd(array.end());
+	json::Object const& front = array.front();
+	if (front.size() != 1)
+		throw OptionJsonValueArray("Invalid array member");
 
-	for (; index != indexEnd; ++index) {
-		const json::Object& index_array = *index;
+	const std::string& array_type = front.begin()->first;
 
-		json::Object::const_iterator it(index_array.begin()), index_objectEnd(index_array.end());
-
-		for (; it != index_objectEnd; ++it) {
-			const std::string& member_name = it->first;
-
-			// This can only happen once since a list must always be of the same
-			// type, if we try inserting another type into it we want it to fail.
-			if (!array_list) {
-				if (member_name == "string")
-					array_list = new OptionValueListString(name);
-				else if (member_name == "int")
-					array_list = new OptionValueListInt(name);
-				else if (member_name == "double")
-					array_list = new OptionValueListDouble(name);
-				else if (member_name == "bool")
-					array_list = new OptionValueListBool(name);
-				else if (member_name == "colour")
-					array_list = new OptionValueListColour(name);
-				else
-					throw OptionJsonValueArray("Array type not handled");
-			}
-
-			try {
-				if (member_name == "string")
-					array_list->InsertString(it->second);
-				else if (member_name == "int")
-					array_list->InsertInt((int64_t)(double)it->second);
-				else if (member_name == "double")
-					array_list->InsertDouble(it->second);
-				else if (member_name == "bool")
-					array_list->InsertBool(it->second);
-				else if (member_name == "colour")
-					array_list->InsertColour(it->second);
-			} catch (agi::Exception&) {
-				delete array_list;
-				throw OptionJsonValueArray("Attempt to insert value into array of wrong type");
-			}
-		} // for index_object
-	} // for index
-
-	if (array_list) AddOptionValue(array_list);
+	if (array_type == "string")
+		AddOptionValue(read_array(array, array_type, name, &OptionValueListString::SetListString));
+	else if (array_type == "int")
+		AddOptionValue(read_array(array, array_type, name, &OptionValueListInt::SetListInt));
+	else if (array_type == "double")
+		AddOptionValue(read_array(array, array_type, name, &OptionValueListDouble::SetListDouble));
+	else if (array_type == "bool")
+		AddOptionValue(read_array(array, array_type, name, &OptionValueListBool::SetListBool));
+	else if (array_type == "colour")
+		AddOptionValue(read_array(array, array_type, name, &OptionValueListColour::SetListColour));
+	else
+		throw OptionJsonValueArray("Array type not handled");
 }
 
 
