@@ -129,14 +129,8 @@ void ConfigVisitor::Visit(const json::Null& null) {
 }
 
 void ConfigVisitor::AddOptionValue(OptionValue* opt) {
-	OptionValue *opt_cur;
-
-	OptionValueMap::iterator index;
-
-	if ((index = values.find(name)) != values.end()) {
-		opt_cur = index->second;
-	} else {
-		values.insert(OptionValuePair(name, opt));
+	if (!values.count(name)) {
+		values[name] = opt;
 		return;
 	}
 
@@ -144,46 +138,45 @@ void ConfigVisitor::AddOptionValue(OptionValue* opt) {
 	// method throws
 	std::auto_ptr<OptionValue> auto_opt(opt);
 
-	int type = opt_cur->GetType();
-	switch (type) {
+	switch (opt->GetType()) {
 		case OptionValue::Type_String:
-			opt_cur->SetString(opt->GetString());
+			values[name]->SetString(opt->GetString());
 			break;
 
 		case OptionValue::Type_Int:
-			opt_cur->SetInt(opt->GetInt());
+			values[name]->SetInt(opt->GetInt());
 			break;
 
 		case OptionValue::Type_Double:
-			opt_cur->SetDouble(opt->GetDouble());
+			values[name]->SetDouble(opt->GetDouble());
 			break;
 
 		case OptionValue::Type_Colour:
-			opt_cur->SetColour(opt->GetColour());
+			values[name]->SetColour(opt->GetColour());
 			break;
 
 		case OptionValue::Type_Bool:
-			opt_cur->SetBool(opt->GetBool());
+			values[name]->SetBool(opt->GetBool());
 			break;
 
 		case OptionValue::Type_List_String:
-			opt_cur->SetListString(opt->GetListString());
+			values[name]->SetListString(opt->GetListString());
 			break;
 
 		case OptionValue::Type_List_Int:
-			opt_cur->SetListInt(opt->GetListInt());
+			values[name]->SetListInt(opt->GetListInt());
 			break;
 
 		case OptionValue::Type_List_Double:
-			opt_cur->SetListDouble(opt->GetListDouble());
+			values[name]->SetListDouble(opt->GetListDouble());
 			break;
 
 		case OptionValue::Type_List_Colour:
-			opt_cur->SetListColour(opt->GetListColour());
+			values[name]->SetListColour(opt->GetListColour());
 			break;
 
 		case OptionValue::Type_List_Bool:
-			opt_cur->SetListBool(opt->GetListBool());
+			values[name]->SetListBool(opt->GetListBool());
 			break;
 	}
 }
