@@ -63,7 +63,7 @@ SinkMessage::~SinkMessage() {
 }
 
 
-LogSink::LogSink(const std::string dir_log): dir_log(dir_log) {
+LogSink::LogSink(const std::string& dir_log): dir_log(dir_log) {
 	util::time_log(time_start);
 }
 

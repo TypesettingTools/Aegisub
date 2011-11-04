@@ -120,7 +120,7 @@ class LogSink {
 public:
 	/// Constructor
 	/// @param dir_log Directory to place log files.
-	LogSink(const std::string dir_log);
+	LogSink(const std::string &dir_log);
 
 	/// Destructor
 	~LogSink();

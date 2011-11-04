@@ -36,10 +36,10 @@ DEFINE_SIMPLE_EXCEPTION_NOINNER(UnknownCharset, CharsetError, "charset/unknown")
 /// List of detected encodings.
 typedef std::map<float, std::string, std::greater_equal<float> > CharsetListDetected;
 
-/// @brief Return a complete list of detected character sets ordered by precidence.
+/// @brief Return a complete list of detected character sets ordered by precedence.
 /// @param file File to check
 /// @param[out] list Map to load detected list into.
-void DetectAll(const std::string file, CharsetListDetected &list);
+void DetectAll(const std::string &file, CharsetListDetected &list);
 
 /// @brief Returns the character set with the highest confidence
 /// @param file File to check
