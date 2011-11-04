@@ -598,7 +598,7 @@ void AssFile::InsertAttachment (wxString filename) {
 }
 
 wxString AssFile::GetScriptInfo(wxString key) {
-	key.Lower();
+	key.MakeLower();
 	key += ":";
 	bool GotIn = false;
 
@@ -606,7 +606,7 @@ wxString AssFile::GetScriptInfo(wxString key) {
 		if ((*cur)->group == "[Script Info]") {
 			GotIn = true;
 			wxString curText = (*cur)->GetEntryData();
-			curText.Lower();
+			curText.MakeLower();
 
 			wxString value;
 			if (curText.StartsWith(key, &value))
