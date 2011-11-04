@@ -243,13 +243,13 @@ void FrameMain::InitContents() {
 	StartupLog("Create background panel");
 	Panel = new wxPanel(this,-1,wxDefaultPosition,wxDefaultSize,wxTAB_TRAVERSAL | wxCLIP_CHILDREN);
 
-	StartupLog("Create video box");
-	context->videoBox = videoBox = new VideoBox(Panel, false, context.get());
-
 	StartupLog("Create subtitles grid");
 	context->subsGrid = SubsGrid = new SubtitlesGrid(Panel,context.get(),wxSize(600,100),wxWANTS_CHARS | wxSUNKEN_BORDER,"Subs grid");
 	context->selectionController = context->subsGrid;
 	Search.context = context.get();
+
+	StartupLog("Create video box");
+	context->videoBox = videoBox = new VideoBox(Panel, false, context.get());
 
 	StartupLog("Create audio box");
 	context->audioBox = audioBox = new AudioBox(Panel, context.get());
