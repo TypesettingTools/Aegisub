@@ -111,7 +111,7 @@ public:
 		if (col == 0) {
 			wxArrayString toks = wxSplit(variant.GetString(), '-');
 			std::vector<std::string> keys;
-			keys.reserve(toks.size());
+			keys.resize(toks.size());
 			for (size_t i = 0; i < toks.size(); ++i)
 				keys[i] = STD_STR(toks[i]);
 			combo = Combo(combo.Context(), combo.CmdName(), keys);
