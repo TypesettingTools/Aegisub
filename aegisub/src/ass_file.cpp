@@ -168,6 +168,7 @@ void AssFile::Save(wxString filename, bool setfilename, bool addToRecent, wxStri
 	if (setfilename) {
 		savedCommitId = commitId;
 		this->filename = filename;
+		StandardPaths::SetPathValue("?script", wxFileName(filename).GetPath());
 	}
 
 	FileSave();
