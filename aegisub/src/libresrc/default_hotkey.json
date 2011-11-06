@@ -474,43 +474,43 @@
 				"key" : "Left"
 			}
 		],
-		"visual typesetting set tool crosshair" : [
+		"video/tool/cross" : [
 			{
 				"modifiers" : [],
 				"key" : "A"
 			}
 		],
-		"visual typesetting set tool drag" : [
+		"video/tool/drag" : [
 			{
 				"modifiers" : [],
 				"key" : "S"
 			}
 		],
-		"visual typesetting set tool rectangle clip" : [
+		"video/tool/clip" : [
 			{
 				"modifiers" : [],
 				"key" : "H"
 			}
 		],
-		"visual typesetting set tool rotate xy" : [
+		"video/tool/rotate/xy" : [
 			{
 				"modifiers" : [],
 				"key" : "F"
 			}
 		],
-		"visual typesetting set tool rotate z" : [
+		"video/tool/rotate/z" : [
 			{
 				"modifiers" : [],
 				"key" : "D"
 			}
 		],
-		"visual typesetting set tool scale" : [
+		"video/tool/scale" : [
 			{
 				"modifiers" : [],
 				"key" : "G"
 			}
 		],
-		"visual typesetting set tool vector clip" : [
+		"video/tool/vector_clip" : [
 			{
 				"modifiers" : [],
 				"key" : "J"

@@ -288,6 +288,7 @@
     <ClCompile Include="$(SrcDir)command\timecode.cpp" />
     <ClCompile Include="$(SrcDir)command\tool.cpp" />
     <ClCompile Include="$(SrcDir)command\video.cpp" />
+    <ClCompile Include="$(SrcDir)command\vis_tool.cpp" />
     <ClCompile Include="$(SrcDir)compat.cpp" />
     <ClCompile Include="$(SrcDir)dialog_about.cpp" />
     <ClCompile Include="$(SrcDir)dialog_attachments.cpp" />

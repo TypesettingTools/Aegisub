@@ -52,7 +52,6 @@
 #include "selection_controller.h"
 #include "subs_edit_ctrl.h"
 #include "subs_grid.h"
-#include "video_display.h"
 
 // IDs
 enum {

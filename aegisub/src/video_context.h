@@ -232,13 +232,6 @@ public:
 	/// @param end Type of time
 	void JumpToTime(int ms, agi::vfr::Time end = agi::vfr::START);
 
-	/// @brief Get the height and width of the current script
-	/// @param[out] w Width
-	/// @param[out] h Height
-	///
-	/// This probably shouldn't be in VideoContext
-	void GetScriptSize(int &w,int &h);
-
 	/// Starting playing the video
 	void Play();
 	/// Play the next frame then stop

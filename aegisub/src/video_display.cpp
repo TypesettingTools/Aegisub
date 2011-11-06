@@ -56,13 +56,13 @@
 #include <GL/glu.h>
 #endif
 
-#include "include/aegisub/context.h"
-#include "include/aegisub/hotkey.h"
-#include "include/aegisub/menu.h"
-
 #include "video_display.h"
 
 #include "ass_file.h"
+#include "command/command.h"
+#include "include/aegisub/context.h"
+#include "include/aegisub/hotkey.h"
+#include "include/aegisub/menu.h"
 #include "main.h"
 #include "threaded_frame_source.h"
 #include "utils.h"
@@ -70,13 +70,6 @@
 #include "video_box.h"
 #include "video_context.h"
 #include "visual_tool.h"
-#include "visual_tool_clip.h"
-#include "visual_tool_cross.h"
-#include "visual_tool_drag.h"
-#include "visual_tool_rotatexy.h"
-#include "visual_tool_rotatez.h"
-#include "visual_tool_scale.h"
-#include "visual_tool_vector_clip.h"
 
 /// Attribute list for gl canvases; set the canvases to doublebuffered rgba with an 8 bit stencil buffer
 int attribList[] = { WX_GL_RGBA , WX_GL_DOUBLEBUFFER, WX_GL_STENCIL_SIZE, 8, 0 };
@@ -104,14 +97,17 @@ VideoDisplay::VideoDisplay(
 : wxGLCanvas (parent, -1, attribList, wxDefaultPosition, wxDefaultSize, 0, wxPanelNameStr)
 , alwaysShowTools(OPT_GET("Tool/Visual/Always Show"))
 , con(c)
-, currentFrame(-1)
-, w(8), h(8), viewport_x(0), viewport_width(0), viewport_bottom(0), viewport_top(0), viewport_height(0)
+, w(8)
+, h(8)
+, mouse_pos(Vector2D::Bad())
+, viewport_left(0)
+, viewport_width(0)
+, viewport_bottom(0)
+, viewport_top(0)
+, viewport_height(0)
 , zoomValue(OPT_GET("Video/Default Zoom")->GetInt() * .125 + .125)
 , videoOut(new VideoOutGL())
-, activeMode(Video_Mode_Standard)
 , toolBar(box->visualSubToolBar)
-, scriptW(INT_MIN)
-, scriptH(INT_MIN)
 , zoomBox(zoomBox)
 , box(box)
 , freeSize(freeSize)
@@ -120,34 +116,29 @@ VideoDisplay::VideoDisplay(
 
 	zoomBox->SetValue(wxString::Format("%g%%", zoomValue * 100.));
 	zoomBox->Bind(wxEVT_COMMAND_COMBOBOX_SELECTED, &VideoDisplay::SetZoomFromBox, this);
-	box->Bind(wxEVT_COMMAND_TOOL_CLICKED, &VideoDisplay::OnMode, this, Video_Mode_Standard, Video_Mode_Vector_Clip);
 
 	con->videoController->Bind(EVT_FRAME_READY, &VideoDisplay::UploadFrameData, this);
-	slots.push_back(con->videoController->AddSeekListener(&VideoDisplay::SetFrame, this));
 	slots.push_back(con->videoController->AddVideoOpenListener(&VideoDisplay::OnVideoOpen, this));
 	slots.push_back(con->videoController->AddARChangeListener(&VideoDisplay::UpdateSize, this));
-	slots.push_back(con->ass->AddCommitListener(&VideoDisplay::OnCommit, this));
 
 	Bind(wxEVT_PAINT, std::tr1::bind(&VideoDisplay::Render, this));
 	if (freeSize) {
 		Bind(wxEVT_SIZE, &VideoDisplay::OnSizeEvent, this);
 	}
 	Bind(wxEVT_CONTEXT_MENU, &VideoDisplay::OnContextMenu, this);
+	Bind(wxEVT_ENTER_WINDOW, &VideoDisplay::OnMouseEvent, this);
 	Bind(wxEVT_KEY_DOWN, &VideoDisplay::OnKeyDown, this);
+	Bind(wxEVT_LEAVE_WINDOW, &VideoDisplay::OnMouseLeave, this);
 	Bind(wxEVT_LEFT_DCLICK, &VideoDisplay::OnMouseEvent, this);
 	Bind(wxEVT_LEFT_DOWN, &VideoDisplay::OnMouseEvent, this);
 	Bind(wxEVT_LEFT_UP, &VideoDisplay::OnMouseEvent, this);
 	Bind(wxEVT_MOTION, &VideoDisplay::OnMouseEvent, this);
-	Bind(wxEVT_ENTER_WINDOW, &VideoDisplay::OnMouseEnter, this);
-	Bind(wxEVT_LEAVE_WINDOW, &VideoDisplay::OnMouseLeave, this);
 	Bind(wxEVT_MOUSEWHEEL, &VideoDisplay::OnMouseWheel, this);
 
 	SetCursor(wxNullCursor);
 
-	if (con->videoController->IsLoaded()) {
-		con->videoController->GetScriptSize(scriptW, scriptH);
+	if (con->videoController->IsLoaded())
 		OnVideoOpen();
-	}
 }
 
 VideoDisplay::~VideoDisplay () {
@@ -161,25 +152,6 @@ bool VideoDisplay::InitContext() {
 	}
 	SetCurrent(*glContext.get());
 	return true;
-}
-
-void VideoDisplay::ShowCursor(bool show) {
-	if (show) {
-		SetCursor(wxNullCursor);
-	}
-	else {
-		SetCursor(wxCursor(wxCURSOR_BLANK));
-	}
-}
-
-void VideoDisplay::SetFrame(int frameNumber) {
-	currentFrame = frameNumber;
-
-	// Render the new frame
-	if (con->videoController->IsLoaded()) {
-		tool->SetFrame(frameNumber);
-		con->videoController->GetFrameAsync(currentFrame);
-	}
 }
 
 void VideoDisplay::UploadFrameData(FrameReadyEvent &evt) {
@@ -207,16 +179,10 @@ void VideoDisplay::UploadFrameData(FrameReadyEvent &evt) {
 
 void VideoDisplay::OnVideoOpen() {
 	if (!con->videoController->IsLoaded()) return;
+	if (!tool.get())
+		cmd::call("video/tool/cross", con);
 	UpdateSize();
-	if (!tool.get()) tool.reset(new VisualToolCross(this, con, video, toolBar));
-	SetFrame(0);
-	tool->Refresh();
-}
-
-void VideoDisplay::OnCommit(int type) {
-	if (type == AssFile::COMMIT_NEW || type & AssFile::COMMIT_SCRIPTINFO)
-		con->videoController->GetScriptSize(scriptW, scriptH);
-	if (tool.get()) tool->Refresh();
+	con->videoController->JumpToFrame(0);
 }
 
 void VideoDisplay::Render() try {
@@ -225,7 +191,7 @@ void VideoDisplay::Render() try {
 	assert(wxIsMainThread());
 	if (!viewport_height || !viewport_width) UpdateSize();
 
-	videoOut->Render(viewport_x, viewport_bottom, viewport_width, viewport_height);
+	videoOut->Render(viewport_left, viewport_bottom, viewport_width, viewport_height);
 	E(glViewport(0, std::min(viewport_bottom, 0), w, h));
 
 	E(glMatrixMode(GL_PROJECTION));
@@ -238,73 +204,55 @@ void VideoDisplay::Render() try {
 		// Based on BBC's guidelines: http://www.bbc.co.uk/guidelines/dq/pdf/tv/tv_standards_london.pdf
 		// 16:9 or wider
 		if (ar > 1.75) {
-			DrawOverscanMask(w * 0.1, h * 0.05, wxColor(30,70,200),0.5);
-			DrawOverscanMask(w * 0.035, h * 0.035, wxColor(30,70,200),0.5);
+			DrawOverscanMask(.1f, .05f);
+			DrawOverscanMask(0.035f, 0.035f);
 		}
-
 		// Less wide than 16:9 (use 4:3 standard)
 		else {
-			DrawOverscanMask(w * 0.067, h * 0.05, wxColor(30,70,200),0.5);
-			DrawOverscanMask(w * 0.033, h * 0.035, wxColor(30,70,200),0.5);
+			DrawOverscanMask(.067f, .05f);
+			DrawOverscanMask(0.033f, 0.035f);
 		}
 	}
 
-	if (video.x > INT_MIN || video.y > INT_MIN || alwaysShowTools->GetBool()) {
+	if (mouse_pos || alwaysShowTools->GetBool()) {
 		if (!con->videoController->IsPlaying())
 			tool->Draw();
 	}
 
 	SwapBuffers();
 }
-catch (const VideoOutException &err) {
+catch (const agi::Exception &err) {
 	wxLogError(
 		"An error occurred trying to render the video frame on the screen.\n"
 		"Error message reported: %s",
-		err.GetMessage());
-	con->videoController->Reset();
-}
-catch (const OpenGlException &err) {
-	wxLogError(
-		"An error occurred trying to render visual overlays on the screen.\n"
-		"Error message reported: %s",
-		err.GetMessage());
-	con->videoController->Reset();
-}
-catch (const char *err) {
-	wxLogError(
-		"An error occurred trying to render the video frame on the screen.\n"
-		"Error message reported: %s",
-		err);
-	con->videoController->Reset();
-}
-catch (...) {
-	wxLogError(
-		"An error occurred trying to render the video frame to screen.\n"
-		"No further error message given.");
+		err.GetChainedMessage());
 	con->videoController->Reset();
 }
 
-void VideoDisplay::DrawOverscanMask(int sizeH, int sizeV, wxColor color, double alpha) const {
+void VideoDisplay::DrawOverscanMask(float horizontal_percent, float vertical_percent) const {
+	Vector2D size(w * horizontal_percent / 2, h * vertical_percent / 2);
 	int rad1 = h * 0.05;
-	int gapH = sizeH+rad1;
-	int gapV = sizeV+rad1;
-	int rad2 = sqrt(double(gapH*gapH + gapV*gapV)) + 1;
+	Vector2D gap = size + rad1;
+	int rad2 = gap.Len() + 1;
+	Vector2D v(w, h);
+	Vector2D igap = v - gap;
+	Vector2D isize = v - size;
 
 	OpenGLWrapper gl;
-	E(gl.SetFillColour(color, alpha));
-	gl.SetLineColour(wxColor(0, 0, 0), 0.0, 1);
+	gl.SetFillColour(wxColor(30, 70, 200), .5f);
+	gl.SetLineColour(*wxBLACK, 0, 1);
 
 	// Draw sides
-	E(gl.DrawRectangle(gapH, 0, w-gapH, sizeV));   // Top
-	E(gl.DrawRectangle(w-sizeH, gapV, w, h-gapV)); // Right
-	E(gl.DrawRectangle(gapH, h-sizeV, w-gapH, h)); // Bottom
-	E(gl.DrawRectangle(0, gapV, sizeH, h-gapV));   // Left
+	gl.DrawRectangle(Vector2D(gap, 0),     Vector2D(igap, size)); // Top
+	gl.DrawRectangle(Vector2D(isize, gap), Vector2D(v, igap));    // Right
+	gl.DrawRectangle(Vector2D(gap, isize), Vector2D(igap, v));    // Bottom
+	gl.DrawRectangle(Vector2D(0, gap),     Vector2D(size, igap)); // Left
 
 	// Draw rounded corners
-	E(gl.DrawRing(gapH, gapV, rad1, rad2, 1.0, 180.0, 270.0));  // Top-left
-	E(gl.DrawRing(w-gapH, gapV, rad1, rad2, 1.0, 90.0, 180.0)); // Top-right
-	E(gl.DrawRing(w-gapH, h-gapV, rad1, rad2, 1.0, 0.0, 90.0)); // Bottom-right
-	E(gl.DrawRing(gapH, h-gapV, rad1, rad2, 1.0,270.0,360.0));  // Bottom-left
+	gl.DrawRing(gap,                 rad1, rad2, 1.f,  90.f, 180.f); // Top-left
+	gl.DrawRing(Vector2D(igap, gap), rad1, rad2, 1.f,   0.f, 90.f);  // Top-right
+	gl.DrawRing(v - gap,             rad1, rad2, 1.f, 270.f, 360.f); // Bottom-right
+	gl.DrawRing(Vector2D(gap, igap), rad1, rad2, 1.f, 180.f, 270.f); // Bottom-left
 
 	E(glDisable(GL_BLEND));
 }
@@ -323,7 +271,7 @@ void VideoDisplay::UpdateSize(int arType, double arValue) {
 
 	if (freeSize) {
 		GetClientSize(&w,&h);
-		viewport_x = 0;
+		viewport_left = 0;
 		viewport_bottom = 0;
 		viewport_top = 0;
 		viewport_width = w;
@@ -336,7 +284,7 @@ void VideoDisplay::UpdateSize(int arType, double arValue) {
 		// Window is wider than video, blackbox left/right
 		if (displayAr - videoAr > 0.01f) {
 			int delta = w - videoAr * h;
-			viewport_x = delta / 2;
+			viewport_left = delta / 2;
 			viewport_width = w - delta;
 		}
 
@@ -359,7 +307,7 @@ void VideoDisplay::UpdateSize(int arType, double arValue) {
 		// Cap the canvas size to the window size
 		int cw = std::min(w, maxW), ch = std::min(h, maxH);
 
-		viewport_x = 0;
+		viewport_left = 0;
 		viewport_bottom = ch - h;
 		viewport_top = 0;
 		viewport_width = w;
@@ -380,11 +328,8 @@ void VideoDisplay::UpdateSize(int arType, double arValue) {
 		SetEvtHandlerEnabled(true);
 	}
 
-	con->videoController->GetScriptSize(scriptW, scriptH);
-	video.w = w;
-	video.h = h;
-
-	if (tool.get()) tool->Refresh();
+	if (tool.get())
+		tool->SetDisplayArea(viewport_left, viewport_top, viewport_width, viewport_height);
 
 	Refresh(false);
 }
@@ -403,20 +348,13 @@ void VideoDisplay::OnMouseEvent(wxMouseEvent& event) {
 	if (event.ButtonDown())
 		SetFocus();
 
-	video.x = event.GetX();
-	video.y = event.GetY();
+	mouse_pos = event.GetPosition();
 
-	tool->OnMouseEvent(event);
-}
-
-void VideoDisplay::OnMouseEnter(wxMouseEvent& event) {
-	ShowCursor(activeMode != Video_Mode_Standard);
 	tool->OnMouseEvent(event);
 }
 
 void VideoDisplay::OnMouseLeave(wxMouseEvent& event) {
-	video.x = INT_MIN;
-	video.y = INT_MIN;
+	mouse_pos = Vector2D::Bad();
 	tool->OnMouseEvent(event);
 }
 
@@ -429,33 +367,22 @@ void VideoDisplay::OnMouseWheel(wxMouseEvent& event) {
 
 void VideoDisplay::OnContextMenu(wxContextMenuEvent&) {
 	if (!context_menu.get()) context_menu.reset(menu::GetMenu("video_context", con));
-	ShowCursor(true);
+	SetCursor(wxNullCursor);
 	menu::OpenPopupMenu(context_menu.get(), this);
 }
 
 void VideoDisplay::OnKeyDown(wxKeyEvent &event) {
-	/// @todo
-	int kc = event.GetKeyCode();
-	if      (kc == 'A') SetMode(Video_Mode_Standard);
-	else if (kc == 'S') SetMode(Video_Mode_Drag);
-	else if (kc == 'D') SetMode(Video_Mode_Rotate_Z);
-	else if (kc == 'F') SetMode(Video_Mode_Rotate_XY);
-	else if (kc == 'G') SetMode(Video_Mode_Scale);
-	else if (kc == 'H') SetMode(Video_Mode_Clip);
-	else if (kc == 'J') SetMode(Video_Mode_Vector_Clip);
-	else {
-		event.StopPropagation();
-		if (hotkey::check("Video Display", con, event.GetKeyCode(), event.GetUnicodeKey(), event.GetModifiers()))
-			return;
-	}
+	event.StopPropagation();
+	if (hotkey::check("Video", con, event.GetKeyCode(), event.GetUnicodeKey(), event.GetModifiers()))
+		return;
 }
-
 
 void VideoDisplay::SetZoom(double value) {
 	zoomValue = std::max(value, .125);
 	zoomBox->SetValue(wxString::Format("%g%%", zoomValue * 100.));
 	UpdateSize();
 }
+
 void VideoDisplay::SetZoomFromBox(wxCommandEvent &) {
 	wxString strValue = zoomBox->GetValue();
 	strValue.EndsWith("%", &strValue);
@@ -466,57 +393,19 @@ void VideoDisplay::SetZoomFromBox(wxCommandEvent &) {
 	}
 }
 
-template<class T>
-void VideoDisplay::SetTool() {
-	tool.reset();
-	tool.reset(new T(this, con, video, toolBar));
-	box->Bind(wxEVT_COMMAND_TOOL_CLICKED, &T::OnSubTool, static_cast<T*>(tool.get()), VISUAL_SUB_TOOL_START, VISUAL_SUB_TOOL_END);
-}
-void VideoDisplay::OnMode(const wxCommandEvent &event) {
-	SetMode(event.GetId());
-}
-void VideoDisplay::SetMode(int mode) {
-	if (activeMode == mode) return;
-
+void VideoDisplay::SetTool(VisualToolBase *new_tool) {
 	toolBar->ClearTools();
 	toolBar->Realize();
 	toolBar->Show(false);
 
-	if (!box->visualToolBar->GetToolState(mode)) {
-		box->visualToolBar->ToggleTool(mode, true);
-	}
-
-	activeMode = mode;
-	switch (mode) {
-		case Video_Mode_Standard:    SetTool<VisualToolCross>();      break;
-		case Video_Mode_Drag:        SetTool<VisualToolDrag>();       break;
-		case Video_Mode_Rotate_Z:    SetTool<VisualToolRotateZ>();    break;
-		case Video_Mode_Rotate_XY:   SetTool<VisualToolRotateXY>();   break;
-		case Video_Mode_Scale:       SetTool<VisualToolScale>();      break;
-		case Video_Mode_Clip:        SetTool<VisualToolClip>();       break;
-		case Video_Mode_Vector_Clip: SetTool<VisualToolVectorClip>(); break;
-		default: assert(false); break;
-	}
+	tool.reset(new_tool);
+	tool->SetToolbar(toolBar);
+	tool->SetDisplayArea(viewport_left, viewport_top, viewport_width, viewport_height);
 
 	// Update size as the new typesetting tool may have changed the subtoolbar size
 	UpdateSize();
-	ShowCursor(activeMode != Video_Mode_Standard);
 }
 
-void VideoDisplay::ToScriptCoords(int *x, int *y) const {
-	int sx = *x - viewport_x > 0 ? viewport_width : -viewport_width;
-	int sy = *y - viewport_top > 0 ? viewport_height : -viewport_height;
-	*x = ((*x - viewport_x) * scriptW + sx / 2) / viewport_width;
-	*y = ((*y - viewport_top) * scriptH + sy / 2) / viewport_height;
-}
-void VideoDisplay::FromScriptCoords(int *x, int *y) const {
-	int sx = *x > 0 ? scriptW : -scriptW;
-	int sy = *y > 0 ? scriptH : -scriptH;
-	*x = (*x * viewport_width + sx / 2) / scriptW + viewport_x;
-	*y = (*y * viewport_height + sy / 2) / scriptH + viewport_top;
-}
-
-void VideoDisplay::GetMousePosition(int *x, int *y) const {
-	*x = video.x;
-	*y = video.y;
+Vector2D VideoDisplay::GetMousePosition() const {
+	return mouse_pos ? tool->ToScriptCoords(mouse_pos) : mouse_pos;
 }

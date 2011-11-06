@@ -1,29 +1,16 @@
-// Copyright (c) 2007, Rodrigo Braz Monteiro
-// All rights reserved.
+// Copyright (c) 2011, Thomas Goyne <plorkyeran@aegisub.org>
 //
-// Redistribution and use in source and binary forms, with or without
-// modification, are permitted provided that the following conditions are met:
+// Permission to use, copy, modify, and distribute this software for any
+// purpose with or without fee is hereby granted, provided that the above
+// copyright notice and this permission notice appear in all copies.
 //
-//   * Redistributions of source code must retain the above copyright notice,
-//     this list of conditions and the following disclaimer.
-//   * Redistributions in binary form must reproduce the above copyright notice,
-//     this list of conditions and the following disclaimer in the documentation
-//     and/or other materials provided with the distribution.
-//   * Neither the name of the Aegisub Group nor the names of its contributors
-//     may be used to endorse or promote products derived from this software
-//     without specific prior written permission.
-//
-// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-// AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-// IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
-// ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
-// LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
-// CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-// SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-// INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-// CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-// ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-// POSSIBILITY OF SUCH DAMAGE.
+// THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+// WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+// MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+// ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+// WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+// ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+// OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 //
 // Aegisub Project http://www.aegisub.org/
 //
@@ -35,83 +22,79 @@
 
 #include "config.h"
 
+#include "visual_tool_drag.h"
+
+#ifndef AGI_PRE
+#include <wx/bmpbuttn.h>
+#include <wx/toolbar.h>
+#endif
+
 #include "ass_dialogue.h"
 #include "ass_file.h"
 #include "include/aegisub/context.h"
 #include "libresrc/libresrc.h"
-#include "subs_grid.h"
 #include "utils.h"
 #include "video_context.h"
-#include "video_display.h"
-#include "visual_tool_drag.h"
 
-enum {
-	BUTTON_TOGGLE_MOVE = VISUAL_SUB_TOOL_START
-};
 static const DraggableFeatureType DRAG_ORIGIN = DRAG_BIG_TRIANGLE;
 static const DraggableFeatureType DRAG_START = DRAG_BIG_SQUARE;
 static const DraggableFeatureType DRAG_END = DRAG_BIG_CIRCLE;
 
-/// @brief Constructor 
-/// @param _parent 
-/// @param toolBar 
-VisualToolDrag::VisualToolDrag(VideoDisplay *parent, agi::Context *context, VideoState const& video, wxToolBar * toolBar)
-: VisualTool<VisualToolDragDraggableFeature>(parent, context, video)
-, toolBar(toolBar)
-, primary(NULL)
-, toggleMoveOnMove(true)
+VisualToolDrag::VisualToolDrag(VideoDisplay *parent, agi::Context *context)
+: VisualTool<VisualToolDragDraggableFeature>(parent, context)
+, primary(0)
+, button_is_move(true)
 {
-	toolBar->AddTool(BUTTON_TOGGLE_MOVE, _("Toggle between \\move and \\pos"), GETIMAGE(visual_move_conv_move_24));
-	toolBar->Realize();
-	toolBar->Show(true);
-
 	c->selectionController->GetSelectedSet(selection);
-	OnFileChanged();
+}
+
+void VisualToolDrag::SetToolbar(wxToolBar *tb) {
+	toolbar = tb;
+	toolbar->AddTool(-1, _("Toggle between \\move and \\pos"), GETIMAGE(visual_move_conv_move_24));
+	toolbar->Realize();
+	toolbar->Show(true);
+
+	toolbar->Bind(wxEVT_COMMAND_TOOL_CLICKED, &VisualToolDrag::OnSubTool, this);
 }
 
 void VisualToolDrag::UpdateToggleButtons() {
-	// Check which bitmap to use
-	bool toMove = true;
-	if (curDiag) {
-		int x1,y1,x2,y2,t1,t2;
-		bool hasMove;
-		GetLineMove(curDiag,hasMove,x1,y1,x2,y2,t1,t2);
-		toMove = !hasMove;
+	bool to_move = true;
+	if (active_line) {
+		Vector2D p1, p2;
+		int t1, t2;
+		to_move = !GetLineMove(active_line, p1, p2, t1, t2);
 	}
 
-	// No change needed
-	if (toMove == toggleMoveOnMove) return;
+	if (to_move == button_is_move) return;
 
-	// Change bitmap
-	if (toMove) {
-		toolBar->SetToolNormalBitmap(BUTTON_TOGGLE_MOVE, GETIMAGE(visual_move_conv_move_24));
-	}
-	else {
-		toolBar->SetToolNormalBitmap(BUTTON_TOGGLE_MOVE, GETIMAGE(visual_move_conv_pos_24));
-	}
-	toggleMoveOnMove = toMove;
+	toolbar->SetToolNormalBitmap(toolbar->GetToolByPos(0)->GetId(),
+		to_move ? GETIMAGE(visual_move_conv_move_24) : GETIMAGE(visual_move_conv_pos_24));
+	button_is_move = to_move;
 }
 
-/// @brief Toggle button pressed 
-/// @param event 
 void VisualToolDrag::OnSubTool(wxCommandEvent &) {
 	// Toggle \move <-> \pos
+	VideoContext *vc = c->videoController;
 	for (Selection::const_iterator cur = selection.begin(); cur != selection.end(); ++cur) {
 		AssDialogue *line = *cur;
-		int x1,y1,x2,y2,t1,t2;
-		bool hasMove;
+		Vector2D p1, p2;
+		int t1, t2;
 
-		GetLinePosition(line,x1,y1);
-		GetLineMove(line,hasMove,x1,y1,x2,y2,t1,t2);
-		parent->ToScriptCoords(&x1, &y1);
-		parent->ToScriptCoords(&x2, &y2);
+		bool has_move = GetLineMove(line, p1, p2, t1, t2);
 
-		if (hasMove) SetOverride(line, "\\pos",wxString::Format("(%i,%i)",x1,y1));
-		else SetOverride(line, "\\move",wxString::Format("(%i,%i,%i,%i,%i,%i)",x1,y1,x1,y1,0,line->End.GetMS() - line->Start.GetMS()));
+		if (has_move)
+			SetOverride(line, "\\pos", p1.PStr());
+		else {
+			p1 = GetLinePosition(line);
+			// Round the start and end times to exact frames
+			int start = vc->TimeAtFrame(vc->FrameAtTime(line->Start.GetMS(), agi::vfr::START)) - line->Start.GetMS();
+			int end = vc->TimeAtFrame(vc->FrameAtTime(line->Start.GetMS(), agi::vfr::END)) - line->Start.GetMS();
+			SetOverride(line, "\\move", wxString::Format("(%s,%s,%d,%d)", p1.Str(), p1.Str(), start, end));
+		}
 	}
 
 	Commit();
-	Refresh();
+	OnFileChanged();
 	UpdateToggleButtons();
 }
 
@@ -122,161 +105,142 @@ void VisualToolDrag::OnLineChanged() {
 void VisualToolDrag::OnFileChanged() {
 	/// @todo it should be possible to preserve the selection in some cases
 	features.clear();
-	ClearSelection();
-	primary = NULL;
+	sel_features.clear();
+	primary = 0;
+	active_feature = features.end();
 
-	for (int i = c->subsGrid->GetRows() - 1; i >=0; i--) {
-		AssDialogue *diag = c->subsGrid->GetDialogue(i);
-		if (c->subsGrid->IsDisplayed(diag)) {
-			MakeFeatures(diag);
-		}
+	for (entryIter it = c->ass->Line.begin(); it != c->ass->Line.end(); ++it) {
+		AssDialogue *diag = dynamic_cast<AssDialogue*>(*it);
+		if (diag && IsDisplayed(diag))
+				MakeFeatures(diag);
 	}
+
 	UpdateToggleButtons();
 }
 
 void VisualToolDrag::OnFrameChanged() {
-	if (primary && !c->subsGrid->IsDisplayed(primary->line)) primary = NULL;
+	if (primary && !IsDisplayed(primary->line))
+		primary = 0;
 
 	feature_iterator feat = features.begin();
 	feature_iterator end = features.end();
 
-	for (int i = c->subsGrid->GetRows() - 1; i >=0; i--) {
-		AssDialogue *diag = c->subsGrid->GetDialogue(i);
-		if (c->subsGrid->IsDisplayed(diag)) {
+	for (entryIter it = c->ass->Line.begin(); it != c->ass->Line.end(); ++it) {
+		AssDialogue *diag = dynamic_cast<AssDialogue*>(*it);
+		if (!diag) continue;
+
+		if (IsDisplayed(diag)) {
 			// Features don't exist and should
-			if (feat == end || feat->line != diag) {
+			if (feat == end || feat->line != diag)
 				MakeFeatures(diag, feat);
-			}
 			// Move past already existing features for the line
-			else {
+			else
 				while (feat != end && feat->line == diag) ++feat;
-			}
 		}
 		else {
 			// Remove all features for this line (if any)
 			while (feat != end && feat->line == diag) {
-				feat->line = NULL;
+				feat->line = 0;
 				RemoveSelection(feat);
 				feat = features.erase(feat);
 			}
 		}
 	}
+
+	active_feature = features.end();
 }
 
 void VisualToolDrag::OnSelectedSetChanged(const Selection &added, const Selection &removed) {
 	c->selectionController->GetSelectedSet(selection);
-	if (!externalChange) return;
-	externalChange = false;
-	c->subsGrid->BeginBatch();
 
-	for (feature_iterator cur = features.begin(); cur != features.end(); ++cur) {
-		// Remove all deselected lines
-		if (removed.find(cur->line) != removed.end()) {
-			RemoveSelection(cur);
-		}
-		// And add all newly selected lines
-		else if (added.find(cur->line) != added.end() && cur->type == DRAG_START) {
-			AddSelection(cur);
-		}
+	for (feature_iterator it = features.begin(); it != features.end(); ++it) {
+		if (removed.count(it->line))
+			sel_features.erase(it);
+		else if (added.count(it->line) && it->type == DRAG_START)
+			sel_features.insert(it);
 	}
-
-	c->subsGrid->EndBatch();
-	externalChange = true;
 }
 
 void VisualToolDrag::Draw() {
 	DrawAllFeatures();
 
-	// Draw arrows
+	// Draw connecting lines
 	for (feature_iterator cur = features.begin(); cur != features.end(); ++cur) {
 		if (cur->type == DRAG_START) continue;
+
 		feature_iterator p2 = cur;
 		feature_iterator p1 = cur->parent;
 
-		// Has arrow?
-		bool hasArrow = p2->type == DRAG_END;
-		int arrowLen = hasArrow ? 10 : 0;
+		// Move end marker has an arrow; origin doesn't
+		bool has_arrow = p2->type == DRAG_END;
+		int arrow_len = has_arrow ? 10 : 0;
 
-		// See if the distance between them is enough
-		int dx = p2->x - p1->x;
-		int dy = p2->y - p1->y;
-		int dist = (int)sqrt(double(dx*dx + dy*dy));
-		if (dist < 20+arrowLen) continue;
+		// Don't show the connecting line if the features are very close
+		Vector2D direction = p2->pos - p1->pos;
+		if (direction.SquareLen() < (20 + arrow_len) * (20 + arrow_len)) continue;
 
-		// Get end points
-		int x1 = p1->x + dx*10/dist;
-		int x2 = p2->x - dx*(10+arrowLen)/dist;
-		int y1 = p1->y + dy*10/dist;
-		int y2 = p2->y - dy*(10+arrowLen)/dist;
+		direction = direction.Unit();
+		// Get the start and end points of the line
+		Vector2D start = p1->pos + direction * 10;
+		Vector2D end = p2->pos - direction * (10 + arrow_len);
 
-		// Draw arrow
-		if (hasArrow) {
-			// Calculate angle
-			double angle = atan2(double(y2-y1),double(x2-x1))+1.570796;
-			int sx = int(cos(angle)*4);
-			int sy = int(-sin(angle)*4);
+		if (has_arrow) {
+			gl.SetLineColour(colour[3], 0.8f, 2);
 
 			// Arrow line
-			SetLineColour(colour[3],0.8f,2);
-			DrawLine(x1,y1,x2,y2);
+			gl.DrawLine(start, end);
 
 			// Arrow head
-			DrawLine(x2+sx,y2-sy,x2-sx,y2+sy);
-			DrawLine(x2+sx,y2-sy,x2+dx*10/dist,y2+dy*10/dist);
-			DrawLine(x2-sx,y2+sy,x2+dx*10/dist,y2+dy*10/dist);
+			Vector2D t_half_base_w = Vector2D(-direction.Y(), direction.X()) * 4;
+			gl.DrawTriangle(end + direction * arrow_len, end + t_half_base_w, end - t_half_base_w);
 		}
-
 		// Draw dashed line
 		else {
-			SetLineColour(colour[3],0.5f,2);
-			DrawDashedLine(x1,y1,x2,y2,6);
+			gl.SetLineColour(colour[3], 0.5f, 2);
+			gl.DrawDashedLine(start, end, 6);
 		}
 	}
 }
+
 void VisualToolDrag::MakeFeatures(AssDialogue *diag) {
 	MakeFeatures(diag, features.end());
 }
+
 void VisualToolDrag::MakeFeatures(AssDialogue *diag, feature_iterator pos) {
-	// Get position
-	int x1,x2,y1,y2;
-	int t1=0;
-	int t2=diag->End.GetMS()-diag->Start.GetMS();
-	int torgx,torgy;
-	bool hasMove;
-	GetLinePosition(diag,x1,y1,torgx,torgy);
-	GetLineMove(diag,hasMove,x1,y1,x2,y2,t1,t2);
+	Vector2D p1 = FromScriptCoords(GetLinePosition(diag));
 
 	// Create \pos feature
 	Feature feat;
-	feat.x = x1;
-	feat.y = y1;
+	feat.pos = p1;
 	feat.layer = 0;
 	feat.type = DRAG_START;
-	feat.time = t1;
+	feat.time = 0;
 	feat.line = diag;
 	feat.parent = features.end();
 	features.insert(pos, feat);
 	feature_iterator cur = pos; --cur;
 	feat.parent = cur;
-	if (selection.find(diag) != selection.end()) {
-		AddSelection(cur);
-	}
+	if (selection.count(diag))
+		sel_features.insert(cur);
+
+	Vector2D p2;
+	int t1, t2;
 
 	// Create move destination feature
-	if (hasMove) {
-		feat.x = x2;
-		feat.y = y2;
+	if (GetLineMove(diag, p1, p2, t1, t2)) {
+		feat.pos = FromScriptCoords(p2);
 		feat.layer = 1;
 		feat.type = DRAG_END;
+		feat.parent->time = t1;
 		feat.time = t2;
 		feat.line = diag;
 		features.insert(pos, feat);
 		feat.parent->parent = --pos; ++pos;
 	}
+
 	// Create org feature
-	if (torgx != x1 || torgy != y1) {
-		feat.x = torgx;
-		feat.y = torgy;
+	if (Vector2D org = GetLineOrigin(diag)) {
+		feat.pos = FromScriptCoords(org);
 		feat.layer = -1;
 		feat.type = DRAG_ORIGIN;
 		feat.time = 0;
@@ -291,94 +255,57 @@ bool VisualToolDrag::InitializeDrag(feature_iterator feature) {
 	// Set time of clicked feature to the current frame and shift all other
 	// selected features by the same amount
 	if (feature->type != DRAG_ORIGIN) {
-		int time = c->videoController->TimeAtFrame(frameNumber) - feature->line->Start.GetMS();
+		int time = c->videoController->TimeAtFrame(frame_number) - feature->line->Start.GetMS();
 		int change = time - feature->time;
 
-		for (sel_iterator cur = selectedFeatures.begin(); cur != selectedFeatures.end(); ++cur) {
-			if ((*cur)->type != DRAG_ORIGIN) {
-				(*cur)->time += change;
-			}
+		for (sel_iterator cur = sel_features.begin(); cur != sel_features.end(); ++cur) {
+			(*cur)->time += change;
 		}
 	}
 	return true;
 }
 
-void VisualToolDrag::CommitDrag(feature_iterator feature) {
+void VisualToolDrag::UpdateDrag(feature_iterator feature) {
 	if (feature->type == DRAG_ORIGIN) {
-		int x = feature->x;
-		int y = feature->y;
-		parent->ToScriptCoords(&x, &y);
-		SetOverride(feature->line, "\\org",wxString::Format("(%i,%i)",x,y));
+		SetOverride(feature->line, "\\org", ToScriptCoords(feature->pos).PStr());
 		return;
 	}
 
-	feature_iterator p = feature->parent;
-	if (feature->type == DRAG_END) {
-		std::swap(feature, p);
-	}
+	feature_iterator end_feature = feature->parent;
+	if (feature->type == DRAG_END)
+		std::swap(feature, end_feature);
 
-	int x1 = feature->x;
-	int y1 = feature->y;
-	parent->ToScriptCoords(&x1, &y1);
-
-	// Position
-	if (feature->parent == features.end()) {
-		SetOverride(feature->line, "\\pos", wxString::Format("(%i,%i)", x1, y1));
-	}
-	// Move
-	else {
-		int x2 = p->x;
-		int y2 = p->y;
-		parent->ToScriptCoords(&x2, &y2);
-
-		SetOverride(feature->line, "\\move", wxString::Format("(%i,%i,%i,%i,%i,%i)", x1, y1, x2, y2, feature->time, p->time));
-	}
+	if (feature->parent == features.end())
+		SetOverride(feature->line, "\\pos", ToScriptCoords(feature->pos).PStr());
+	else
+		SetOverride(feature->line, "\\move",
+			wxString::Format("(%s,%s,%d,%d)",
+				ToScriptCoords(feature->pos).Str(),
+				ToScriptCoords(end_feature->pos).Str(),
+				feature->time, end_feature->time));
 }
-bool VisualToolDrag::Update() {
-	if (!leftDClick) return false;
 
-	int dx, dy;
-	int vx = video.x;
-	int vy = video.y;
-	parent->ToScriptCoords(&vx, &vy);
-	if (primary) {
-		dx = primary->x;
-		dy = primary->y;
-	}
-	else {
-		if (!curDiag) return false;
-		GetLinePosition(curDiag, dx, dy);
-	}
-	parent->ToScriptCoords(&dx, &dy);
-	dx -= vx;
-	dy -= vy;
+void VisualToolDrag::OnDoubleClick() {
+	Vector2D d = ToScriptCoords(mouse_pos) - (primary ? ToScriptCoords(primary->pos) : GetLinePosition(active_line));
 
-	for (Selection::const_iterator cur = selection.begin(); cur != selection.end(); ++cur) {
-		int x1 = 0, y1 = 0, x2 = 0, y2 = 0, t1 = INT_MIN, t2 = INT_MIN, orgx, orgy;
-		bool isMove;
-
-		GetLinePosition(*cur, x1, y1, orgx, orgy);
-		GetLineMove(*cur, isMove, x1, y1, x2, y2, t1, t2);
-		parent->ToScriptCoords(&x1, &y1);
-		parent->ToScriptCoords(&x2, &y2);
-		parent->ToScriptCoords(&orgx, &orgy);
-
-		if (isMove) {
-			if (t1 > INT_MIN && t2 > INT_MIN)
-				SetOverride(*cur, "\\move", wxString::Format("(%i,%i,%i,%i,%i,%i)", x1 - dx, y1 - dy, x2 - dx, y2 - dy, t1, t2));
+	Selection sel = c->selectionController->GetSelectedSet();
+	for (Selection::const_iterator it = sel.begin(); it != sel.end(); ++it) {
+		Vector2D p1, p2;
+		int t1, t2;
+		if (GetLineMove(*it, p1, p2, t1, t2)) {
+			if (t1 > 0 || t2 > 0)
+				SetOverride(*it, "\\move", wxString::Format("(%s,%s,%d,%d)", (p1 + d).Str(), (p2 + d).Str(), t1, t2));
 			else
-				SetOverride(*cur, "\\move", wxString::Format("(%i,%i,%i,%i)", x1, y1, x2, y2));
+				SetOverride(*it, "\\move", wxString::Format("(%s,%s)", (p1 + d).Str(), (p2 + d).Str()));
 		}
-		else {
-			SetOverride(*cur, "\\pos", wxString::Format("(%i,%i)", x1 - dx, y1 - dy));
-		}
-		if (orgx != x1 || orgy != y1) {
-			SetOverride(*cur, "\\org", wxString::Format("(%i,%i)", orgx - dx, orgy - dy));
-		}
+		else
+			SetOverride(*it, "\\pos", (GetLinePosition(*it) + d).PStr());
+
+		if (Vector2D org = GetLineOrigin(*it))
+			SetOverride(*it, "\\org", (org + d).PStr());
 	}
 
 	Commit(_("positioning"));
 
 	OnFileChanged();
-	return false;
 }

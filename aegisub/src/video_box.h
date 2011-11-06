@@ -92,14 +92,3 @@ public:
 	VideoBox(wxWindow *parent, bool isDetached, agi::Context *context);
 	~VideoBox();
 };
-
-// IDs
-enum {
-	Video_Mode_Standard = 5000,
-	Video_Mode_Drag,
-	Video_Mode_Rotate_Z,
-	Video_Mode_Rotate_XY,
-	Video_Mode_Scale,
-	Video_Mode_Clip,
-	Video_Mode_Vector_Clip,
-};

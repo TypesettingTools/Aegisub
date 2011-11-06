@@ -238,10 +238,7 @@ struct video_copy_coordinates : public validator_video_loaded {
 
 	void operator()(agi::Context *c) {
 		if (wxTheClipboard->Open()) {
-			int x, y;
-			c->videoBox->videoDisplay->GetMousePosition(&x, &y);
-			c->videoBox->videoDisplay->ToScriptCoords(&x, &y);
-			wxTheClipboard->SetData(new wxTextDataObject(wxString::Format("%d,%d", x, y)));
+			wxTheClipboard->SetData(new wxTextDataObject(c->videoBox->videoDisplay->GetMousePosition().Str()));
 			wxTheClipboard->Close();
 		}
 	}

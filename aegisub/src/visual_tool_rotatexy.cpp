@@ -1,29 +1,16 @@
-// Copyright (c) 2007, Rodrigo Braz Monteiro
-// All rights reserved.
+// Copyright (c) 2011, Thomas Goyne <plorkyeran@aegisub.org>
 //
-// Redistribution and use in source and binary forms, with or without
-// modification, are permitted provided that the following conditions are met:
+// Permission to use, copy, modify, and distribute this software for any
+// purpose with or without fee is hereby granted, provided that the above
+// copyright notice and this permission notice appear in all copies.
 //
-//   * Redistributions of source code must retain the above copyright notice,
-//     this list of conditions and the following disclaimer.
-//   * Redistributions in binary form must reproduce the above copyright notice,
-//     this list of conditions and the following disclaimer in the documentation
-//     and/or other materials provided with the distribution.
-//   * Neither the name of the Aegisub Group nor the names of its contributors
-//     may be used to endorse or promote products derived from this software
-//     without specific prior written permission.
-//
-// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-// AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-// IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
-// ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
-// LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
-// CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-// SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-// INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-// CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-// ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-// POSSIBILITY OF SUCH DAMAGE.
+// THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+// WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+// MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+// ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+// WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+// ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+// OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 //
 // Aegisub Project http://www.aegisub.org/
 //
@@ -36,175 +23,152 @@
 #include "config.h"
 
 #ifndef AGI_PRE
-#include <math.h>
+#include <cmath>
 #endif
 
-#include "ass_dialogue.h"
-#include "ass_file.h"
-#include "include/aegisub/context.h"
-#include "utils.h"
-#include "video_context.h"
-#include "video_display.h"
 #include "visual_tool_rotatexy.h"
 
-VisualToolRotateXY::VisualToolRotateXY(VideoDisplay *parent, agi::Context *context, VideoState const& video, wxToolBar *)
-: VisualTool<VisualDraggableFeature>(parent, context, video)
+VisualToolRotateXY::VisualToolRotateXY(VideoDisplay *parent, agi::Context *context)
+: VisualTool<VisualDraggableFeature>(parent, context)
 {
 	features.resize(1);
 	org = &features.back();
 	org->type = DRAG_BIG_TRIANGLE;
-	DoRefresh();
 }
 
 void VisualToolRotateXY::Draw() {
-	if (!curDiag) return;
+	if (!active_line) return;
 
-	// Pivot coordinates
-	int dx=0,dy=0;
-	if (dragging) GetLinePosition(curDiag,dx,dy);
-	else GetLinePosition(curDiag,dx,dy,org->x,org->y);
-	dx = org->x;
-	dy = org->y;
-
-	SetLineColour(colour[0]);
-	SetFillColour(colour[1],0.3f);
-
-	// Draw pivot
 	DrawAllFeatures();
 
 	// Transform grid
-	glMatrixMode(GL_MODELVIEW);
-	glPushMatrix();
-	glLoadIdentity();
-	glTranslatef(dx,dy,0.f);
-	float matrix[16] = { 2500, 0, 0, 0, 0, 2500, 0, 0, 0, 0, 1, 1, 0, 0, 2500, 2500 };
-	glMultMatrixf(matrix);
-	glScalef(1.f,1.f,8.f);
-	if (curAngleY != 0.f) glRotatef(curAngleY,0.f,-1.f,0.f);
-	if (curAngleX != 0.f) glRotatef(curAngleX,-1.f,0.f,0.f);
-	if (curAngleZ != 0.f) glRotatef(curAngleZ,0.f,0.f,-1.f);
+	gl.SetOrigin(org->pos);
+	gl.SetRotation(angle_x, angle_y, angle_z);
 
 	// Draw grid
-	glShadeModel(GL_SMOOTH);
-	SetLineColour(colour[0],0.5f,2);
-	SetModeLine();
-	float r = colour[0].Red()/255.f;
-	float g = colour[0].Green()/255.f;
-	float b = colour[0].Blue()/255.f;
-	glBegin(GL_LINES);
-	for (int i=0;i<11;i++) {
-		float a = 1.f - abs(i-5)*0.18f;
-		int pos = 20*(i-5);
-		glColor4f(r,g,b,0.f);
-		glVertex2i(pos,120);
-		glColor4f(r,g,b,a);
-		glVertex2i(pos,0);
-		glVertex2i(pos,0);
-		glColor4f(r,g,b,0.f);
-		glVertex2i(pos,-120);
-		glVertex2i(120,pos);
-		glColor4f(r,g,b,a);
-		glVertex2i(0,pos);
-		glVertex2i(0,pos);
-		glColor4f(r,g,b,0.f);
-		glVertex2i(-120,pos);
+	gl.SetLineColour(colour[0], 0.5f, 2);
+	gl.SetModeLine();
+	float r = colour[0].Red() / 255.f;
+	float g = colour[0].Green() / 255.f;
+	float b = colour[0].Blue() / 255.f;
+
+	std::vector<float> colors(11 * 8 * 4);
+	for (int i = 0; i < 88; ++i) {
+		colors[i * 4 + 0] = r;
+		colors[i * 4 + 1] = g;
+		colors[i * 4 + 2] = b;
+		colors[i * 4 + 3] = (i + 3) % 4 > 1 ? 0 : (1.f - abs(i / 8 - 5) * 0.18f);
 	}
-	glEnd();
+
+	std::vector<float> points(11 * 8 * 2);
+	for (int i = 0; i < 11; ++i) {
+		int pos = 20 * (i - 5);
+
+		points[i * 16 + 0] = pos;
+		points[i * 16 + 1] = 120;
+
+		points[i * 16 + 2] = pos;
+		points[i * 16 + 3] = 0;
+
+		points[i * 16 + 4] = pos;
+		points[i * 16 + 5] = 0;
+
+		points[i * 16 + 6] = pos;
+		points[i * 16 + 7] = -120;
+
+		points[i * 16 + 8] = 120;
+		points[i * 16 + 9] = pos;
+
+		points[i * 16 + 10] = 0;
+		points[i * 16 + 11] = pos;
+
+		points[i * 16 + 12] = 0;
+		points[i * 16 + 13] = pos;
+
+		points[i * 16 + 14] = -120;
+		points[i * 16 + 15] = pos;
+	}
+
+	gl.DrawLines(2, points, 4, colors);
 
 	// Draw vectors
-	SetLineColour(colour[3],1.f,2);
-	SetModeLine();
-	glBegin(GL_LINES);
-		glVertex3f(0.f,0.f,0.f);
-		glVertex3f(50.f,0.f,0.f);
-		glVertex3f(0.f,0.f,0.f);
-		glVertex3f(0.f,50.f,0.f);
-		glVertex3f(0.f,0.f,0.f);
-		glVertex3f(0.f,0.f,50.f);
-	glEnd();
+	gl.SetLineColour(colour[3], 1.f, 2);
+	float vectors[] = {
+		0.f, 0.f, 0.f,
+		50.f, 0.f, 0.f,
+		0.f, 0.f, 0.f,
+		0.f, 50.f, 0.f,
+		0.f, 0.f, 0.f,
+		0.f, 0.f, 50.f,
+	};
+	gl.DrawLines(3, vectors, 6);
 
 	// Draw arrow tops
-	glBegin(GL_TRIANGLE_FAN);
-		glVertex3f(60.f,0.f,0.f);
-		glVertex3f(50.f,-3.f,-3.f);
-		glVertex3f(50.f,3.f,-3.f);
-		glVertex3f(50.f,3.f,3.f);
-		glVertex3f(50.f,-3.f,3.f);
-		glVertex3f(50.f,-3.f,-3.f);
-	glEnd();
-	glBegin(GL_TRIANGLE_FAN);
-		glVertex3f(0.f,60.f,0.f);
-		glVertex3f(-3.f,50.f,-3.f);
-		glVertex3f(3.f,50.f,-3.f);
-		glVertex3f(3.f,50.f,3.f);
-		glVertex3f(-3.f,50.f,3.f);
-		glVertex3f(-3.f,50.f,-3.f);
-	glEnd();
-	glBegin(GL_TRIANGLE_FAN);
-		glVertex3f(0.f,0.f,60.f);
-		glVertex3f(-3.f,-3.f,50.f);
-		glVertex3f(3.f,-3.f,50.f);
-		glVertex3f(3.f,3.f,50.f);
-		glVertex3f(-3.f,3.f,50.f);
-		glVertex3f(-3.f,-3.f,50.f);
-	glEnd();
+	float arrows[] = {
+		60.f,  0.f,  0.f,
+		50.f, -3.f, -3.f,
+		50.f,  3.f, -3.f,
+		50.f,  3.f,  3.f,
+		50.f, -3.f,  3.f,
+		50.f, -3.f, -3.f,
 
-	glPopMatrix();
-	glShadeModel(GL_FLAT);
+		 0.f, 60.f,  0.f,
+		-3.f, 50.f, -3.f,
+		 3.f, 50.f, -3.f,
+		 3.f, 50.f,  3.f,
+		-3.f, 50.f,  3.f,
+		-3.f, 50.f, -3.f,
+
+		 0.f,  0.f, 60.f,
+		-3.f, -3.f, 50.f,
+		 3.f, -3.f, 50.f,
+		 3.f,  3.f, 50.f,
+		-3.f,  3.f, 50.f,
+		-3.f, -3.f, 50.f,
+	};
+
+	gl.DrawLines(3, arrows, 18);
+
+	gl.ResetTransform();
 }
 
 bool VisualToolRotateXY::InitializeHold() {
-	startAngleX = (org->y-video.y)*2.f;
-	startAngleY = (video.x-org->x)*2.f;
-	origAngleX = curAngleX;
-	origAngleY = curAngleY;
+	orig_x = angle_x;
+	orig_y = angle_y;
 
 	return true;
 }
 
 void VisualToolRotateXY::UpdateHold() {
-	float screenAngleX = (org->y-video.y)*2.f;
-	float screenAngleY = (video.x-org->x)*2.f;
+	Vector2D delta = (mouse_pos - drag_start) * 2;
+	if (shift_down)
+		delta = delta.SingleAxis();
 
-	// Deltas
-	float deltaX = screenAngleX - startAngleX;
-	float deltaY = screenAngleY - startAngleY;
-	if (shiftDown) {
-		if (fabs(deltaX) >= fabs(deltaY)) deltaY = 0.f;
-		else deltaX = 0.f;
+	angle_x = orig_x - delta.Y();
+	angle_y = orig_y + delta.X();
+
+	if (ctrl_down) {
+		angle_x = floorf(angle_x / 30.f + .5f) * 30.f;
+		angle_y = floorf(angle_y / 30.f + .5f) * 30.f;
 	}
 
-	// Calculate
-	curAngleX = fmodf(deltaX + origAngleX + 360.f, 360.f);
-	curAngleY = fmodf(deltaY + origAngleY + 360.f, 360.f);
+	angle_x = fmodf(angle_x + 360.f, 360.f);
+	angle_y = fmodf(angle_y + 360.f, 360.f);
 
-	// Oh Snap
-	if (ctrlDown) {
-		curAngleX = floorf(curAngleX/30.f+.5f)*30.f;
-		curAngleY = floorf(curAngleY/30.f+.5f)*30.f;
-		if (curAngleX > 359.f) curAngleX = 0.f;
-		if (curAngleY > 359.f) curAngleY = 0.f;
-	}
+	SetSelectedOverride("\\frx", wxString::Format("(%0.3g)", angle_x));
+	SetSelectedOverride("\\fry", wxString::Format("(%0.3g)", angle_y));
 }
 
-void VisualToolRotateXY::CommitHold() {
-	Selection sel = c->selectionController->GetSelectedSet();
-	for (Selection::const_iterator cur = sel.begin(); cur != sel.end(); ++cur) {
-		SetOverride(*cur, "\\frx",wxString::Format("(%0.3g)",curAngleX));
-		SetOverride(*cur, "\\fry",wxString::Format("(%0.3g)",curAngleY));
-	}
-}
-
-void VisualToolRotateXY::CommitDrag(feature_iterator feature) {
-	int x = feature->x;
-	int y = feature->y;
-	parent->ToScriptCoords(&x, &y);
-	SetOverride(curDiag, "\\org",wxString::Format("(%i,%i)",x,y));
+void VisualToolRotateXY::UpdateDrag(feature_iterator feature) {
+	SetOverride(active_line, "\\org", ToScriptCoords(feature->pos).PStr());
 }
 
 void VisualToolRotateXY::DoRefresh() {
-	if (!curDiag) return;
-	int posx, posy;
-	GetLinePosition(curDiag,posx,posy,org->x,org->y);
-	GetLineRotation(curDiag,curAngleX,curAngleY,curAngleZ);
+	if (!active_line) return;
+
+	if (!(org->pos = GetLineOrigin(active_line)))
+		org->pos = GetLinePosition(active_line);
+	org->pos = FromScriptCoords(org->pos);
+
+	GetLineRotation(active_line, angle_x, angle_y, angle_z);
 }

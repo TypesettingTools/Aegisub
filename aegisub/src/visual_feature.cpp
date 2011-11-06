@@ -40,69 +40,89 @@
 #include "visual_feature.h"
 
 VisualDraggableFeature::VisualDraggableFeature()
-: type(DRAG_NONE)
-, x(INT_MIN)
-, y(INT_MIN)
-, origX(INT_MIN)
-, origY(INT_MIN)
+: start(Vector2D::Bad())
+, type(DRAG_NONE)
+, pos(Vector2D::Bad())
 , layer(0)
-, line(NULL)
+, line(0)
 {
 }
 
-bool VisualDraggableFeature::IsMouseOver(int mx,int my) const {
+bool VisualDraggableFeature::IsMouseOver(Vector2D mouse_pos) const {
+	if (!pos) return false;
+
+	Vector2D delta = mouse_pos - pos;
+
 	switch (type) {
 		case DRAG_BIG_SQUARE:
-			return !(mx < x-8 || mx > x+8 || my < y-8 || my > y+8);
-		case DRAG_BIG_CIRCLE: {
-			int dx = mx-x;
-			int dy = my-y;
-			return dx*dx + dy*dy <= 64;
-		}
+			return fabs(delta.X()) < 8 && fabs(delta.Y()) < 8;
+
+		case DRAG_BIG_CIRCLE:
+			return delta.SquareLen() < 64;
+
 		case DRAG_BIG_TRIANGLE: {
-			int _my = my+2;
-			if (_my < y-8 || _my > y+8) return false;
-			int dx = mx-x;
-			int dy = _my-y-8;
-			return (16*dx+9*dy < 0 && 16*dx-9*dy > 0);
+			if (delta.Y() < -10 || delta.Y() > 6) return false;
+			float dy = delta.Y() - 6;
+			return 16 * delta.X() + 9 * dy < 0 && 16 * delta.X() - 9 * dy > 0;
 		}
+
 		case DRAG_SMALL_SQUARE:
-			return !(mx < x-4 || mx > x+4 || my < y-4 || my > y+4);
-		case DRAG_SMALL_CIRCLE: {
-			int dx = mx-x;
-			int dy = my-y;
-			return dx*dx + dy*dy <= 16;
-		}
+			return fabs(delta.X()) < 4 && fabs(delta.Y()) < 4;
+
+		case DRAG_SMALL_CIRCLE:
+			return delta.SquareLen() < 16;
+
 		default:
 			return false;
 	}
 }
 
 void VisualDraggableFeature::Draw(OpenGLWrapper const& gl) const {
+	if (!pos) return;
+
 	switch (type) {
 		case DRAG_BIG_SQUARE:
-			gl.DrawRectangle(x-8,y-8,x+8,y+8);
-			gl.DrawLine(x,y-16,x,y+16);
-			gl.DrawLine(x-16,y,x+16,y);
+			gl.DrawRectangle(pos - 8, pos + 8);
+			gl.DrawLine(pos - Vector2D(0, 16), pos + Vector2D(0, 16));
+			gl.DrawLine(pos - Vector2D(16, 0), pos + Vector2D(16, 0));
 			break;
+
 		case DRAG_BIG_CIRCLE:
-			gl.DrawCircle(x,y,8);
-			gl.DrawLine(x,y-16,x,y+16);
-			gl.DrawLine(x-16,y,x+16,y);
+			gl.DrawCircle(pos, 8);
+			gl.DrawLine(pos - Vector2D(0, 16), pos + Vector2D(0, 16));
+			gl.DrawLine(pos - Vector2D(16, 0), pos + Vector2D(16, 0));
 			break;
+
 		case DRAG_BIG_TRIANGLE:
-			gl.DrawTriangle(x-9,y-6,x+9,y-6,x,y+10);
-			gl.DrawLine(x,y,x,y-16);
-			gl.DrawLine(x,y,x-14,y+8);
-			gl.DrawLine(x,y,x+14,y+8);
+			gl.DrawTriangle(pos - Vector2D(9, 6), pos + Vector2D(9, -6), pos + Vector2D(0, 10));
+			gl.DrawLine(pos, pos + Vector2D(0, -16));
+			gl.DrawLine(pos, pos + Vector2D(-14, 8));
+			gl.DrawLine(pos, pos + Vector2D(14, 8));
 			break;
+
 		case DRAG_SMALL_SQUARE:
-			gl.DrawRectangle(x-4,y-4,x+4,y+4);
+			gl.DrawRectangle(pos - 4, pos + 4);
 			break;
+
 		case DRAG_SMALL_CIRCLE:
-			gl.DrawCircle(x,y,4);
+			gl.DrawCircle(pos, 4);
 			break;
 		default:
 			break;
 	}
+}
+
+void VisualDraggableFeature::StartDrag() {
+	start = pos;
+}
+
+void VisualDraggableFeature::UpdateDrag(Vector2D d, bool single_axis) {
+	if (single_axis)
+		d = d.SingleAxis();
+
+	pos = start + d;
+}
+
+bool VisualDraggableFeature::HasMoved() const {
+	return pos != start;
 }

@@ -44,6 +44,7 @@
 #endif
 
 #include "include/aegisub/context.h"
+#include "include/aegisub/toolbar.h"
 
 #include "ass_dialogue.h"
 #include "ass_file.h"
@@ -104,22 +105,11 @@ VideoBox::VideoBox(wxWindow *parent, bool isDetached, agi::Context *context)
 	zoomBox = new wxComboBox(this, -1, "75%", wxDefaultPosition, wxDefaultSize, choices, wxCB_DROPDOWN);
 
 	// Typesetting buttons
-	visualToolBar = new wxToolBar(this,-1,wxDefaultPosition,wxDefaultSize,wxTB_VERTICAL|wxTB_FLAT|wxTB_NODIVIDER);
-	visualToolBar->AddTool(Video_Mode_Standard,_("Standard"),GETIMAGE(visual_standard_24),_("Standard mode, double click sets position."),wxITEM_RADIO);
-	visualToolBar->AddTool(Video_Mode_Drag,_("Drag"),GETIMAGE(visual_move_24),_("Drag subtitles."),wxITEM_RADIO);
-	visualToolBar->AddTool(Video_Mode_Rotate_Z,_("Rotate Z"),GETIMAGE(visual_rotatez_24),_("Rotate subtitles on their Z axis."),wxITEM_RADIO);
-	visualToolBar->AddTool(Video_Mode_Rotate_XY,_("Rotate XY"),GETIMAGE(visual_rotatexy_24),_("Rotate subtitles on their X and Y axes."),wxITEM_RADIO);
-	visualToolBar->AddTool(Video_Mode_Scale,_("Scale"),GETIMAGE(visual_scale_24),_("Scale subtitles on X and Y axes."),wxITEM_RADIO);
-	visualToolBar->AddTool(Video_Mode_Clip,_("Clip"),GETIMAGE(visual_clip_24),_("Clip subtitles to a rectangle."),wxITEM_RADIO);
-	visualToolBar->AddTool(Video_Mode_Vector_Clip,_("Vector Clip"),GETIMAGE(visual_vector_clip_24),_("Clip subtitles to a vectorial area."),wxITEM_RADIO);
-	visualToolBar->AddSeparator();
-	visualToolBar->AddTool(wxID_HELP,_("Help"),cmd::get("help/video")->Icon(24),_("Open the manual page for Visual Typesetting."));
-	visualToolBar->Realize();
+	visualToolBar = toolbar::GetToolbar(this, "visual_tools", context, "Video", true);
 	// Avoid ugly themed background on Vista and possibly also Win7
 	visualToolBar->SetBackgroundStyle(wxBG_STYLE_COLOUR);
 	visualToolBar->SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNFACE));
 
-	// Display
 	videoDisplay = new VideoDisplay(this,isDetached,zoomBox,this,context);
 
 	// Top sizer

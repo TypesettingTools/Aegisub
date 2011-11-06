@@ -160,6 +160,7 @@
 #include <wx/msgdlg.h>
 #include <wx/mstream.h>
 #include <wx/notebook.h>
+#include <wx/numformatter.h>
 #include <wx/panel.h>
 #include <wx/power.h>
 #include <wx/protocol/http.h>
@@ -170,11 +171,11 @@
 #include <wx/regex.h>
 #include <wx/sashwin.h>
 #include <wx/scrolbar.h>
-#include <wx/srchctrl.h>
 #include <wx/settings.h>
 #include <wx/sizer.h>
 #include <wx/slider.h>
 #include <wx/spinctrl.h>
+#include <wx/srchctrl.h>
 #include <wx/stackwalk.h>
 #include <wx/statbmp.h>
 #include <wx/statbox.h>

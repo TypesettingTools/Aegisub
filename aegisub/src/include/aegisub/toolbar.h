@@ -34,5 +34,5 @@ namespace toolbar {
 	/// @param context Project context
 	/// @param hotkey Hotkey context for the tooltip
 	void AttachToolbar(wxFrame *frame, std::string const& name, agi::Context *context, std::string const& hotkey);
-	wxToolBar *GetToolbar(wxWindow *parent, std::string const& name, agi::Context *context, std::string const& hotkey);
+	wxToolBar *GetToolbar(wxWindow *parent, std::string const& name, agi::Context *context, std::string const& hotkey, bool vertical = false);
 }

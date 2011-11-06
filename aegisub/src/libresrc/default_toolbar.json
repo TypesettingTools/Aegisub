@@ -61,5 +61,16 @@
         "",
         "app/options",
         "grid/tag/cycle_hiding"
+    ],
+    "visual_tools" : [
+        "video/tool/cross",
+        "video/tool/drag",
+        "video/tool/rotate/z",
+        "video/tool/rotate/xy",
+        "video/tool/scale",
+        "video/tool/clip",
+        "video/tool/vector_clip",
+        "",
+        "help/video"
     ]
 }

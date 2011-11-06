@@ -43,29 +43,41 @@
 
 #include "spline_curve.h"
 
-class VideoDisplay;
+class VisualToolBase;
 
 /// DOCME
 /// @class Spline
 /// @brief DOCME
 class Spline : private std::list<SplineCurve> {
-private:
-	const VideoDisplay &scale;
+	const VisualToolBase &scale;
 public:
-	Spline(const VideoDisplay &scale);
+	Spline(const VisualToolBase &scale);
 
+	/// Encode to an ASS vector drawing
 	wxString EncodeToASS();
+
+	/// Decode an ASS vector drawing
 	void DecodeFromASS(wxString str);
 
-	void MovePoint(iterator curve,int point,Vector2D const& pos);
+	/// @brief Moves a specific point in the spline
+	/// @param curve Curve which the point is in
+	/// @param point Index in the curve
+	/// @param pos New position
+	void MovePoint(iterator curve, int point, Vector2D pos);
+
+	/// Smooth the spline
 	void Smooth(float smooth=1.0f);
 
+	/// Gets a list of points in the curve
 	void GetPointList(std::vector<float>& points, std::vector<int>& first, std::vector<int>& count);
+	/// Gets a list of points in the curve
 	void GetPointList(std::vector<float> &points, iterator curve);
 
-	void GetClosestParametricPoint(Vector2D const& reference, iterator& curve, float &t, Vector2D &point);
-	Vector2D GetClosestPoint(Vector2D const& reference);
-	Vector2D GetClosestControlPoint(Vector2D const& reference);
+	/// Get t value and curve of the point closest to reference
+	void GetClosestParametricPoint(Vector2D reference, iterator& curve, float &t, Vector2D &point);
+	/// Get closest point on the curve to reference
+	Vector2D GetClosestPoint(Vector2D reference);
+	Vector2D GetClosestControlPoint(Vector2D reference);
 
 	// This list intentionally excludes things specific to std::list
 	using std::list<SplineCurve>::value_type;

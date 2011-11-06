@@ -1919,6 +1919,10 @@
 				RelativePath="..\..\src\command\video.cpp"
 				>
 			</File>
+			<File
+				RelativePath="..\..\src\command\vis_tool.cpp"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Preferences"

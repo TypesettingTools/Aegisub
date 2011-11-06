@@ -52,7 +52,6 @@
 #include "utils.h"
 #include "validators.h"
 #include "video_context.h"
-#include "video_display.h"
 #include "video_provider_manager.h"
 
 DialogProperties::DialogProperties(agi::Context *c)

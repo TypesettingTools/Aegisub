@@ -21,7 +21,8 @@ SRC = \
 	time.cpp \
 	timecode.cpp \
 	tool.cpp \
-	video.cpp
+	video.cpp \
+	vis_tool.cpp
 
 SRC += \
 	icon.cpp \

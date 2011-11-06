@@ -34,145 +34,103 @@
 /// @ingroup visual_ts
 ///
 
-///////////
-// Headers
 #include "config.h"
 
 #include "spline_curve.h"
 #include "utils.h"
 
-/// @brief Curve constructor 
-///
-SplineCurve::SplineCurve() {
-	type = CURVE_INVALID;
+#ifndef AGI_PRE
+#include <limits>
+#include <numeric>
+#endif
+
+SplineCurve::SplineCurve(Vector2D p1) : p1(p1), type(POINT) { }
+SplineCurve::SplineCurve(Vector2D p1, Vector2D p2) : p1(p1), p2(p2), type(LINE) { }
+SplineCurve::SplineCurve(Vector2D p1, Vector2D p2, Vector2D p3, Vector2D p4)
+: p1(p1), p2(p2), p3(p3), p4(p4), type(BICUBIC)
+{
 }
 
-/// @brief Split a curve in two using the de Casteljau algorithm 
-/// @param c1 
-/// @param c2 
-/// @param t  
-///
-void SplineCurve::Split(SplineCurve &c1,SplineCurve &c2,float t) {
-	// Split a line
-	if (type == CURVE_LINE) {
-		c1.type = CURVE_LINE;
-		c2.type = CURVE_LINE;
-		c1.p1 = p1;
-		c2.p2 = p2;
-		c1.p2 = p1*(1-t)+p2*t;
-		c2.p1 = c1.p2;
+void SplineCurve::Split(SplineCurve &c1, SplineCurve &c2, float t) {
+	if (type == LINE) {
+		c1 = SplineCurve(p1, p1 * (1 - t) + p2 * t);
+		c2 = SplineCurve(c1.p2, p2);
 	}
+	else if (type == BICUBIC) {
+		float u = 1 - t;
+		Vector2D p12   = p1   * u + p2   * t;
+		Vector2D p23   = p2   * u + p3   * t;
+		Vector2D p34   = p3   * u + p4   * t;
+		Vector2D p123  = p12  * u + p23  * t;
+		Vector2D p234  = p23  * u + p34  * t;
+		Vector2D p1234 = p123 * u + p234 * t;
 
-	// Split a bicubic
-	else if (type == CURVE_BICUBIC) {
-		c1.type = CURVE_BICUBIC;
-		c2.type = CURVE_BICUBIC;
-
-		// Sub-divisions
-		float u = 1-t;
-		Vector2D p12 = p1*u+p2*t;
-		Vector2D p23 = p2*u+p3*t;
-		Vector2D p34 = p3*u+p4*t;
-		Vector2D p123 = p12*u+p23*t;
-		Vector2D p234 = p23*u+p34*t;
-		Vector2D p1234 = p123*u+p234*t;
-
-		// Set points
-		c1.p1 = p1;
-		c2.p4 = p4;
-		c1.p2 = p12;
-		c1.p3 = p123;
-		c1.p4 = p1234;
-		c2.p1 = p1234;
-		c2.p2 = p234;
-		c2.p3 = p34;
+		c1 = SplineCurve(p1, p12, p123, p1234);
+		c2 = SplineCurve(p1234, p234, p34, p4);
 	}
 }
 
-/// @brief Based on http://antigrain.com/research/bezier_interpolation/index.html Smoothes the curve 
-/// @param P0     
-/// @param P3     
-/// @param smooth 
-/// @return 
-///
-void SplineCurve::Smooth(Vector2D const& P0,Vector2D const& P3,float smooth) {
-	// Validate
-	if (type != CURVE_LINE) return;
-	if (p1 == p2) return;
-	smooth = mid(0.f,smooth,1.f);
-
-	// Get points
-	Vector2D P1 = p1;
-	Vector2D P2 = p2;
+void SplineCurve::Smooth(Vector2D p0, Vector2D p3, float smooth) {
+	if (type != LINE || p1 == p2) return;
+	smooth = mid(0.f, smooth, 1.f);
 
 	// Calculate intermediate points
-	Vector2D c1 = (P0+P1)/2.f;
-	Vector2D c2 = (P1+P2)/2.f;
-	Vector2D c3 = (P2+P3)/2.f;
-	float len1 = (P1-P0).Len();
-	float len2 = (P2-P1).Len();
-	float len3 = (P3-P2).Len();
-	float k1 = len1/(len1+len2);
-	float k2 = len2/(len2+len3);
-	Vector2D m1 = c1+(c2-c1)*k1;
-	Vector2D m2 = c2+(c3-c2)*k2;
+	Vector2D c1 = (p0 + p1) / 2.f;
+	Vector2D c2 = (p1 + p2) / 2.f;
+	Vector2D c3 = (p2 + p3) / 2.f;
+
+	float len1 = (p1 - p0).Len();
+	float len2 = (p2 - p1).Len();
+	float len3 = (p3 - p2).Len();
+
+	float k1 = len1 / (len1 + len2);
+	float k2 = len2 / (len2 + len3);
+
+	Vector2D m1 = c1 + (c2 - c1) * k1;
+	Vector2D m2 = c2 + (c3 - c2) * k2;
 
 	// Set curve points
 	p4 = p2;
-	p2 = m1+(c2-m1)*smooth + P1 - m1;
-	p3 = m2+(c2-m2)*smooth + P2 - m2;
-	type = CURVE_BICUBIC;
+	p3 = m2 + (c2 - m2) * smooth + p2 - m2;
+	p2 = m1 + (c2 - m1) * smooth + p1 - m1;
+	type = BICUBIC;
 }
 
-/// @brief Get a point 
-/// @param t 
-/// @return 
-///
 Vector2D SplineCurve::GetPoint(float t) const {
-	if (type == CURVE_POINT) return p1;
-	if (type == CURVE_LINE) {
-		return p1*(1.f-t) + p2*t;
-	}
-	if (type == CURVE_BICUBIC) {
-		float u = 1.f-t;
-		return p1*u*u*u + 3*p2*t*u*u + 3*p3*t*t*u + p4*t*t*t;
-	}
+	float u = 1.f - t;
 
-	return Vector2D(0,0);
+	if (type == POINT)
+		return p1;
+	if (type == LINE)
+		return p1 * u + p2 * t;
+
+	return p1*u*u*u + 3*p2*t*u*u + 3*p3*t*t*u + p4*t*t*t;
 }
 
 Vector2D& SplineCurve::EndPoint() {
 	switch (type) {
-		case CURVE_POINT: return p1;
-		case CURVE_LINE: return p2;
-		case CURVE_BICUBIC: return p4;
-		default: return p1;
+		case POINT:   return p1;
+		case LINE:    return p2;
+		case BICUBIC: return p4;
+		default:      return p1;
 	}
 }
 
-/// @brief Get point closest to reference 
-/// @param ref 
-/// @return 
-///
-Vector2D SplineCurve::GetClosestPoint(Vector2D const& ref) const {
+Vector2D SplineCurve::GetClosestPoint(Vector2D ref) const {
 	return GetPoint(GetClosestParam(ref));
 }
 
-/// @brief Get value of parameter closest to point 
-/// @param ref 
-/// @return 
-///
-float SplineCurve::GetClosestParam(Vector2D const& ref) const {
-	if (type == CURVE_LINE) {
-		return GetClosestSegmentPart(p1,p2,ref);
-	}
-	if (type == CURVE_BICUBIC) {
+float SplineCurve::GetClosestParam(Vector2D ref) const {
+	if (type == LINE)
+		return GetClosestSegmentPart(p1, p2, ref);
+
+	if (type == BICUBIC) {
 		int steps = 100;
-		float bestDist = 80000000.f;
+		float bestDist = std::numeric_limits<float>::max();
 		float bestT = 0.f;
-		for (int i=0;i<=steps;i++) {
-			float t = float(i)/float(steps);
-			float dist = (GetPoint(t)-ref).Len();
+		for (int i = 0; i <= steps; ++i) {
+			float t = i / float(steps);
+			float dist = (GetPoint(t) - ref).SquareLen();
 			if (dist < bestDist) {
 				bestDist = dist;
 				bestT = t;
@@ -180,45 +138,30 @@ float SplineCurve::GetClosestParam(Vector2D const& ref) const {
 		}
 		return bestT;
 	}
+
 	return 0.f;
 }
 
-/// @brief Quick distance 
-/// @param ref 
-/// @return 
-///
-float SplineCurve::GetQuickDistance(Vector2D const& ref) const {
-	using std::min;
-	if (type == CURVE_BICUBIC) {
-		float len1 = GetClosestSegmentDistance(p1,p2,ref);
-		float len2 = GetClosestSegmentDistance(p2,p3,ref);
-		float len3 = GetClosestSegmentDistance(p3,p4,ref);
-		float len4 = GetClosestSegmentDistance(p4,p1,ref);
-		float len5 = GetClosestSegmentDistance(p1,p3,ref);
-		float len6 = GetClosestSegmentDistance(p2,p4,ref);
-		return min(min(min(len1,len2),min(len3,len4)),min(len5,len6));
+float SplineCurve::GetQuickDistance(Vector2D ref) const {
+	if (type == BICUBIC) {
+		float lens[] = {
+			GetClosestSegmentDistance(p1, p2, ref),
+			GetClosestSegmentDistance(p2, p3, ref),
+			GetClosestSegmentDistance(p3, p4, ref),
+			GetClosestSegmentDistance(p4, p1, ref),
+			GetClosestSegmentDistance(p1, p3, ref),
+			GetClosestSegmentDistance(p2, p4, ref)
+		};
+		return *std::min_element(lens, lens + 6);
 	}
-
-	// Something else
-	else return (GetClosestPoint(ref)-ref).Len();
+	return (GetClosestPoint(ref) - ref).Len();
 }
 
-/// @brief Closest t in segment p1-p2 to point p3 
-/// @param pt1 
-/// @param pt2 
-/// @param pt3 
-/// @return 
-///
-float SplineCurve::GetClosestSegmentPart(Vector2D const& pt1,Vector2D const& pt2,Vector2D const& pt3) const {
-	return mid(0.f,(pt3-pt1).Dot(pt2-pt1)/(pt2-pt1).SquareLen(),1.f);
+float SplineCurve::GetClosestSegmentPart(Vector2D pt1, Vector2D pt2, Vector2D pt3) const {
+	return mid(0.f, (pt3 - pt1).Dot(pt2 - pt1) / (pt2 - pt1).SquareLen(), 1.f);
 }
 
-/// @brief Closest distance between p3 and segment p1-p2 
-/// @param pt1 
-/// @param pt2 
-/// @param pt3 
-///
-float SplineCurve::GetClosestSegmentDistance(Vector2D const& pt1,Vector2D const& pt2,Vector2D const& pt3) const {
-	float t = GetClosestSegmentPart(pt1,pt2,pt3);
-	return (pt1*(1.f-t)+pt2*t-pt3).Len();
+float SplineCurve::GetClosestSegmentDistance(Vector2D pt1, Vector2D pt2, Vector2D pt3) const {
+	float t = GetClosestSegmentPart(pt1, pt2, pt3);
+	return (pt1 * (1.f - t) + pt2 * t - pt3).Len();
 }

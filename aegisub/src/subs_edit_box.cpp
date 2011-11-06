@@ -74,7 +74,6 @@
 #include "utils.h"
 #include "validators.h"
 #include "video_context.h"
-#include "video_display.h"
 
 enum {
 	BUTTON_BOLD = 1300,

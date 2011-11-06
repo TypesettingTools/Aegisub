@@ -1,29 +1,16 @@
-// Copyright (c) 2007, Rodrigo Braz Monteiro
-// All rights reserved.
+// Copyright (c) 2011, Thomas Goyne <plorkyeran@aegisub.org>
 //
-// Redistribution and use in source and binary forms, with or without
-// modification, are permitted provided that the following conditions are met:
+// Permission to use, copy, modify, and distribute this software for any
+// purpose with or without fee is hereby granted, provided that the above
+// copyright notice and this permission notice appear in all copies.
 //
-//   * Redistributions of source code must retain the above copyright notice,
-//     this list of conditions and the following disclaimer.
-//   * Redistributions in binary form must reproduce the above copyright notice,
-//     this list of conditions and the following disclaimer in the documentation
-//     and/or other materials provided with the distribution.
-//   * Neither the name of the Aegisub Group nor the names of its contributors
-//     may be used to endorse or promote products derived from this software
-//     without specific prior written permission.
-//
-// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-// AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-// IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
-// ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
-// LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
-// CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-// SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-// INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-// CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-// ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-// POSSIBILITY OF SUCH DAMAGE.
+// THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+// WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+// MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+// ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+// WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+// ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+// OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 //
 // Aegisub Project http://www.aegisub.org/
 //
@@ -40,6 +27,8 @@
 #include <wx/glcanvas.h>
 #endif
 
+#include "visual_tool.h"
+
 #include "ass_dialogue.h"
 #include "ass_file.h"
 #include "ass_override.h"
@@ -47,133 +36,219 @@
 #include "ass_time.h"
 #include "include/aegisub/context.h"
 #include "main.h"
-#include "subs_grid.h"
 #include "utils.h"
 #include "video_context.h"
 #include "video_display.h"
 #include "video_provider_manager.h"
 #include "visual_feature.h"
-#include "visual_tool.h"
 #include "visual_tool_clip.h"
 #include "visual_tool_drag.h"
 #include "visual_tool_vector_clip.h"
 
-const wxColour IVisualTool::colour[4] = {wxColour(106,32,19), wxColour(255,169,40), wxColour(255,253,185), wxColour(187,0,0)};
+template<class C, class F>
+static void for_each(C &range, F func) {
+	std::for_each(range.begin(), range.end(), func);
+}
 
-template<class FeatureType>
-VisualTool<FeatureType>::VisualTool(VideoDisplay *parent, agi::Context *context, VideoState const& video)
-: dragStartX(0)
-, dragStartY(0)
-, commitId(-1)
-, selChanged(false)
-, selectedFeatures(selFeatures)
-, c(context)
+using std::tr1::placeholders::_1;
+
+const wxColour VisualToolBase::colour[4] = {wxColour(106,32,19), wxColour(255,169,40), wxColour(255,253,185), wxColour(187,0,0)};
+
+VisualToolBase::VisualToolBase(VideoDisplay *parent, agi::Context *context)
+: c(context)
 , parent(parent)
 , holding(false)
+, active_line(0)
 , dragging(false)
-, externalChange(true)
-, video(video)
-, leftClick(false)
-, leftDClick(false)
-, shiftDown(false)
-, ctrlDown(false)
-, altDown(false)
+, frame_number(c->videoController->GetFrameN())
+, left_click(false)
+, left_double(false)
+, shift_down(false)
+, ctrl_down(false)
+, alt_down(false)
+, file_changed_connection(c->ass->AddCommitListener(&VisualToolBase::OnCommit, this))
+, commit_id(-1)
 {
-	frameNumber = c->videoController->GetFrameN();
-	curDiag = GetActiveDialogueLine();
+	int script_w, script_h;
+	c->ass->GetResolution(script_w, script_h);
+	script_res = Vector2D(script_w, script_h);
+	active_line = GetActiveDialogueLine();
 	c->selectionController->AddSelectionListener(this);
-	curFeature = features.begin();
+	connections.push_back(c->videoController->AddSeekListener(&VisualToolBase::OnSeek, this));
+	parent->Bind(wxEVT_MOUSE_CAPTURE_LOST, &VisualToolBase::OnMouseCaptureLost, this);
+}
+
+VisualToolBase::~VisualToolBase() {
+	c->selectionController->RemoveSelectionListener(this);
+}
+
+void VisualToolBase::OnCommit(int type) {
+	holding = false;
+	dragging = false;
+
+	if (type & AssFile::COMMIT_NEW || type & AssFile::COMMIT_SCRIPTINFO) {
+		int script_w, script_h;
+		c->ass->GetResolution(script_w, script_h);
+		script_res = Vector2D(script_w, script_h);
+		OnCoordinateSystemsChanged();
+	}
+
+	if (type & AssFile::COMMIT_DIAG_FULL || type & AssFile::COMMIT_DIAG_ADDREM) {
+		active_line = GetActiveDialogueLine();
+		OnFileChanged();
+	}
+}
+
+void VisualToolBase::OnSeek(int new_frame) {
+	if (frame_number == new_frame) return;
+
+	frame_number = new_frame;
+	dragging = false;
+	OnFrameChanged();
+
+	AssDialogue *new_line = GetActiveDialogueLine();
+	if (new_line != active_line) {
+		active_line = new_line;
+		OnLineChanged();
+	}
+}
+
+void VisualToolBase::OnMouseCaptureLost(wxMouseCaptureLostEvent &) {
+	holding = false;
+	dragging = false;
+	left_click = false;
+}
+
+void VisualToolBase::OnActiveLineChanged(AssDialogue *new_line) {
+	if (!IsDisplayed(new_line))
+		new_line = 0;
+
+	holding = false;
+	dragging = false;
+	if (new_line != active_line) {
+		active_line = new_line;
+		OnLineChanged();
+	}
+}
+
+bool VisualToolBase::IsDisplayed(AssDialogue *line) const {
+	int frame = c->videoController->GetFrameN();
+	return
+		line &&
+		c->videoController->FrameAtTime(line->Start.GetMS(), agi::vfr::START) <= frame &&
+		c->videoController->FrameAtTime(line->End.GetMS(), agi::vfr::END) >= frame;
+}
+
+void VisualToolBase::Commit(wxString message) {
+	file_changed_connection.Block();
+	if (message.empty())
+		message = _("visual typesetting");
+
+	commit_id = c->ass->Commit(message, AssFile::COMMIT_DIAG_TEXT, commit_id);
+	file_changed_connection.Unblock();
+}
+
+AssDialogue* VisualToolBase::GetActiveDialogueLine() {
+	AssDialogue *diag = c->selectionController->GetActiveLine();
+	if (IsDisplayed(diag))
+		return diag;
+	return 0;
+}
+
+void VisualToolBase::SetDisplayArea(int x, int y, int w, int h) {
+	video_pos = Vector2D(x, y);
+	video_res = Vector2D(w, h);
+
+	holding = false;
+	dragging = false;
+	OnCoordinateSystemsChanged();
+}
+
+Vector2D VisualToolBase::ToScriptCoords(Vector2D point) const {
+	return (point - video_pos) * script_res / video_res;
+}
+
+Vector2D VisualToolBase::FromScriptCoords(Vector2D point) const {
+	return (point * video_res / script_res) + video_pos;
 }
 
 template<class FeatureType>
-VisualTool<FeatureType>::~VisualTool() {
-	c->selectionController->RemoveSelectionListener(this);
+VisualTool<FeatureType>::VisualTool(VideoDisplay *parent, agi::Context *context)
+: VisualToolBase(parent, context)
+, sel_changed(false)
+{
+	active_feature = features.begin();
 }
 
 template<class FeatureType>
 void VisualTool<FeatureType>::OnMouseEvent(wxMouseEvent &event) {
-	bool needRender = false;
+	left_click = event.LeftDown();
+	left_double = event.LeftDClick();
+	shift_down = event.ShiftDown();
+	ctrl_down = event.CmdDown();
+	alt_down = event.AltDown();
+
+	mouse_pos = event.GetPosition();
+
+	bool need_render = false;
 
 	if (event.Leaving()) {
-		Update();
+		mouse_pos = Vector2D::Bad();
 		parent->Render();
 		return;
 	}
-	else if (event.Entering() && !OPT_GET("Tool/Visual/Always Show")->GetBool()) {
-		needRender = true;
-	}
-	externalChange = false;
 
-	leftClick = event.ButtonDown(wxMOUSE_BTN_LEFT);
-	leftDClick = event.LeftDClick();
-	shiftDown = event.m_shiftDown;
-#ifdef __APPLE__
-	ctrlDown = event.m_metaDown; // Cmd key
-#else
-	ctrlDown = event.m_controlDown;
-#endif
-	altDown = event.m_altDown;
+	if (event.Entering() && !OPT_GET("Tool/Visual/Always Show")->GetBool())
+		need_render = true;
 
 	if (!dragging) {
-		feature_iterator oldHigh = curFeature;
-		GetHighlightedFeature();
-		if (curFeature != oldHigh) needRender = true;
+		feature_iterator prev_feature = active_feature;
+
+		int max_layer = INT_MIN;
+		active_feature = features.end();
+		for (feature_iterator cur = features.begin(); cur != features.end(); ++cur) {
+			if (cur->IsMouseOver(mouse_pos) && cur->layer >= max_layer) {
+				active_feature = cur;
+				max_layer = cur->layer;
+			}
+		}
+
+		need_render |= active_feature != prev_feature;
 	}
 
 	if (dragging) {
 		// continue drag
 		if (event.LeftIsDown()) {
-			for (selection_iterator cur = selFeatures.begin(); cur != selFeatures.end(); ++cur) {
-				(*cur)->x = (video.x - dragStartX + (*cur)->origX);
-				(*cur)->y = (video.y - dragStartY + (*cur)->origY);
-				if (shiftDown) {
-					if (abs(video.x - dragStartX) > abs(video.y - dragStartY)) {
-						(*cur)->y = (*cur)->origY;
-					}
-					else {
-						(*cur)->x = (*cur)->origX;
-					}
-				}
-				UpdateDrag(*cur);
-				CommitDrag(*cur);
-			}
+			for_each(sel_features, bind(&FeatureType::UpdateDrag, _1,
+				mouse_pos - drag_start, shift_down));
+			for_each(sel_features, bind(&VisualTool<FeatureType>::UpdateDrag, this, _1));
 			Commit();
-			needRender = true;
+			need_render = true;
 		}
 		// end drag
 		else {
 			dragging = false;
 
 			// mouse didn't move, fiddle with selection
-			if (curFeature->x == curFeature->origX && curFeature->y == curFeature->origY) {
+			if (active_feature != features.end() && !active_feature->HasMoved()) {
 				// Don't deselect stuff that was selected in this click's mousedown event
-				if (!selChanged) {
-					if (ctrlDown) {
-						// deselect this feature
-						RemoveSelection(curFeature);
-					}
-					else {
-						SetSelection(curFeature);
-					}
+				if (!sel_changed) {
+					if (ctrl_down)
+						RemoveSelection(active_feature);
+					else
+						SetSelection(active_feature, true);
 				}
-			}
-			else {
-				for (selection_iterator cur = selFeatures.begin(); cur != selFeatures.end(); ++cur) {
-					CommitDrag(*cur);
-				}
-				Commit();
 			}
 
-			curFeature = features.end();
+			active_feature = features.end();
 			parent->ReleaseMouse();
 			parent->SetFocus();
 		}
 	}
 	else if (holding) {
-		// continue hold
 		if (event.LeftIsDown()) {
 			UpdateHold();
-			needRender = true;
+			need_render = true;
 		}
 		// end hold
 		else {
@@ -182,422 +257,318 @@ void VisualTool<FeatureType>::OnMouseEvent(wxMouseEvent &event) {
 			parent->ReleaseMouse();
 			parent->SetFocus();
 		}
-		CommitHold();
 		Commit();
 
 	}
-	else if (leftClick) {
+	else if (left_click) {
+		drag_start = mouse_pos;
+
 		// start drag
-		if (curFeature != features.end()) {
-			if (selFeatures.find(curFeature) == selFeatures.end()) {
-				selChanged = true;
-				if (ctrlDown) {
-					AddSelection(curFeature);
-				}
-				else {
-					SetSelection(curFeature);
-				}
+		if (active_feature != features.end()) {
+			if (!sel_features.count(active_feature)) {
+				sel_changed = true;
+				SetSelection(active_feature, !ctrl_down);
 			}
-			else {
-				selChanged = false;
-			}
-			if (curFeature->line) c->selectionController->SetActiveLine(curFeature->line);
+			else
+				sel_changed = false;
 
-			if (InitializeDrag(curFeature)) {
-				dragStartX = video.x;
-				dragStartY = video.y;
-				for (selection_iterator cur = selFeatures.begin(); cur != selFeatures.end(); ++cur) {
-					(*cur)->origX = (*cur)->x;
-					(*cur)->origY = (*cur)->y;
-				}
+			if (active_feature->line)
+				c->selectionController->SetActiveLine(active_feature->line);
 
+			if (InitializeDrag(active_feature)) {
+				for_each(sel_features, bind(&VisualDraggableFeature::StartDrag, _1));
 				dragging = true;
 				parent->CaptureMouse();
 			}
 		}
 		// start hold
 		else {
-			if (!altDown) {
-				ClearSelection();
+			if (!alt_down) {
+				sel_features.clear();
 				Selection sel;
 				sel.insert(c->selectionController->GetActiveLine());
 				c->selectionController->SetSelectedSet(sel);
-				needRender = true;
+				need_render = true;
 			}
-			if (curDiag && InitializeHold()) {
+			if (active_line && InitializeHold()) {
 				holding = true;
 				parent->CaptureMouse();
 			}
 		}
 	}
 
-	if (Update() || needRender) parent->Render();
-	externalChange = true;
+	if (active_line && left_double)
+		OnDoubleClick();
 
-	if (!event.LeftIsDown()) {
-		// Only coalesce the changes made in a single drag
-		commitId = -1;
-	}
-}
+	//if (need_render)
+		parent->Render();
 
-template<class FeatureType>
-void VisualTool<FeatureType>::Commit(wxString message) {
-	externalChange = false;
-	if (message.empty()) {
-		message = _("visual typesetting");
-	}
-	commitId = c->ass->Commit(message, AssFile::COMMIT_DIAG_TEXT, commitId);
-	externalChange = true;
-}
-
-template<class FeatureType>
-AssDialogue* VisualTool<FeatureType>::GetActiveDialogueLine() {
-	AssDialogue *diag = c->selectionController->GetActiveLine();
-	if (diag && c->subsGrid->IsDisplayed(diag))
-		return diag;
-	return NULL;
-}
-
-template<class FeatureType>
-void VisualTool<FeatureType>::GetHighlightedFeature() {
-	int highestLayerFound = INT_MIN;
-	curFeature = features.end();
-	for (feature_iterator cur = features.begin(); cur != features.end(); ++cur) {
-		if (cur->IsMouseOver(video.x, video.y) && cur->layer > highestLayerFound) {
-			curFeature = cur;
-			highestLayerFound = cur->layer;
-		}
-	}
+	// Only coalesce the changes made in a single drag
+	if (!event.LeftIsDown())
+		commit_id = -1;
 }
 
 template<class FeatureType>
 void VisualTool<FeatureType>::DrawAllFeatures() {
-	SetLineColour(colour[0],1.0f,2);
+	gl.SetLineColour(colour[0], 1.0f, 2);
 	for (feature_iterator cur = features.begin(); cur != features.end(); ++cur) {
-		int fill;
-		if (cur == curFeature)
+		int fill = 1;
+		if (cur == active_feature)
 			fill = 2;
-		else if (selFeatures.find(cur) != selFeatures.end())
+		else if (sel_features.count(cur))
 			fill = 3;
-		else
-			fill = 1;
-		SetFillColour(colour[fill],0.6f);
-		cur->Draw(*this);
+		gl.SetFillColour(colour[fill], 0.6f);
+		cur->Draw(gl);
 	}
 }
 
 template<class FeatureType>
-void VisualTool<FeatureType>::Refresh() {
-	if (externalChange) {
-		curDiag = GetActiveDialogueLine();
-		curFeature = features.end();
-		OnFileChanged();
-	}
-}
+void VisualTool<FeatureType>::SetSelection(feature_iterator feat, bool clear) {
+	if (clear)
+		sel_features.clear();
 
-template<class FeatureType>
-void VisualTool<FeatureType>::SetFrame(int newFrameNumber) {
-	if (frameNumber == newFrameNumber) return;
-	frameNumber = newFrameNumber;
-	curFeature = features.end();
-	OnFrameChanged();
-	AssDialogue *newCurDiag = GetActiveDialogueLine();
-	if (newCurDiag != curDiag) {
-		curDiag = newCurDiag;
-		OnLineChanged();
-	}
-}
-
-template<class FeatureType>
-void VisualTool<FeatureType>::OnActiveLineChanged(AssDialogue *new_line) {
-	if (new_line && !c->subsGrid->IsDisplayed(new_line)) {
-		new_line = NULL;
-	}
-	if (new_line != curDiag) {
-		curDiag = new_line;
-		OnLineChanged();
-	}
-}
-
-
-template<class FeatureType>
-void VisualTool<FeatureType>::SetSelection(feature_iterator feat) {
-	selFeatures.clear();
-	lineSelCount.clear();
-
-	selFeatures.insert(feat);
-
-	AssDialogue *line = feat->line;
-	if (line) {
-		lineSelCount[line] = 1;
-
+	if (sel_features.insert(feat).second && feat->line) {
 		Selection sel;
-		sel.insert(line);
-		c->selectionController->SetSelectedSet(sel);
-	}
-}
-
-
-template<class FeatureType>
-void VisualTool<FeatureType>::AddSelection(feature_iterator feat) {
-	if (selFeatures.insert(feat).second && feat->line) {
-		lineSelCount[feat->line] += 1;
-		Selection sel = c->selectionController->GetSelectedSet();
-		if (sel.insert(feat->line).second) {
+		if (!clear)
+			sel = c->selectionController->GetSelectedSet();
+		if (sel.insert(feat->line).second)
 			c->selectionController->SetSelectedSet(sel);
-		}
 	}
 }
 
 template<class FeatureType>
 void VisualTool<FeatureType>::RemoveSelection(feature_iterator feat) {
-	if (selFeatures.erase(feat) > 0 && feat->line) {
-		// Deselect a line only if all features for that line have been
-		// deselected
-		AssDialogue* line = feat->line;
-		lineSelCount[line] -= 1;
-		assert(lineSelCount[line] >= 0);
-		if (lineSelCount[line] <= 0) {
-			Selection sel = c->selectionController->GetSelectedSet();
+	if (!sel_features.erase(feat) || !feat->line) return;
 
-			// Don't deselect the only selected line
-			if (sel.size() <= 1) return;
-
-			sel.erase(line);
-
-			// Set the active line to an arbitrary selected line if we just
-			// deselected the active line
-			if (line == c->selectionController->GetActiveLine()) {
-				c->selectionController->SetActiveLine(*sel.begin());
-			}
-
-			c->selectionController->SetSelectedSet(sel);
-		}
+	for (selection_iterator it = sel_features.begin(); it != sel_features.end(); ++it) {
+		if ((*it)->line == feat->line) return;
 	}
+
+	Selection sel = c->selectionController->GetSelectedSet();
+
+	// Don't deselect the only selected line
+	if (sel.size() <= 1) return;
+
+	sel.erase(feat->line);
+
+	// Set the active line to an arbitrary selected line if we just
+	// deselected the active line
+	if (feat->line == c->selectionController->GetActiveLine()) {
+		c->selectionController->SetActiveLine(*sel.begin());
+	}
+
+	c->selectionController->SetSelectedSet(sel);
 }
 
-template<class FeatureType>
-void VisualTool<FeatureType>::ClearSelection() {
-	selFeatures.clear();
-	lineSelCount.clear();
-}
+//////// PARSERS
 
-enum TagFoundType {
-	TAG_NOT_FOUND = 0,
-	PRIMARY_TAG_FOUND,
-	ALT_TAG_FOUND
+typedef const std::vector<AssOverrideParameter*> * param_vec;
+
+// Parse line on creation and unparse at the end of scope
+struct scoped_tag_parse {
+	AssDialogue *diag;
+	scoped_tag_parse(AssDialogue *diag) : diag(diag) { diag->ParseASSTags(); }
+	~scoped_tag_parse() { diag->ClearBlocks(); }
 };
 
-/// @brief Get the first value set for a tag
-/// @param line Line to get the value from
-/// @param tag  Tag to get the value of
-/// @param n    Number of parameters passed
-/// @return     Which tag (if any) was found
-template<class T>
-static TagFoundType get_value(const AssDialogue *line, wxString tag, size_t n, ...) {
-	wxString alt;
-	if (tag == "\\pos") alt = "\\move";
-	else if (tag == "\\an") alt = "\\a";
-	else if (tag == "\\clip") alt = "\\iclip";
-
-	for (size_t i = 0; i < line->Blocks.size(); i++) {
+// Find a tag's parameters in a line or return NULL if it's not found
+static param_vec find_tag(const AssDialogue *line, wxString tag_name) {
+	for (size_t i = 0; i < line->Blocks.size(); ++i) {
 		const AssDialogueBlockOverride *ovr = dynamic_cast<const AssDialogueBlockOverride*>(line->Blocks[i]);
 		if (!ovr) continue;
 
-		for (size_t j=0; j < ovr->Tags.size(); j++) {
-			const AssOverrideTag *cur = ovr->Tags[j];
-			if ((cur->Name == tag || cur->Name == alt) && cur->Params.size() >= n) {
-				va_list argp;
-				va_start(argp, n);
-				for (size_t j = 0; j < n; j++) {
-					T *val = va_arg(argp, T *);
-					*val = cur->Params[j]->Get<T>(*val);
-				}
-				va_end(argp);
-				return cur->Name == alt ? ALT_TAG_FOUND : PRIMARY_TAG_FOUND;
-			}
+		for (size_t j = 0; j < ovr->Tags.size(); ++j) {
+			if (ovr->Tags[j]->Name == tag_name)
+				return &ovr->Tags[j]->Params;
 		}
 	}
-	return TAG_NOT_FOUND;
+
+	return 0;
 }
 
-template<class FeatureType>
-void VisualTool<FeatureType>::GetLinePosition(AssDialogue *diag,int &x, int &y) {
-	int orgx,orgy;
-	GetLinePosition(diag,x,y,orgx,orgy);
+// Get a Vector2D from the given tag parameters, or Vector2D::Bad() if they are not valid
+static Vector2D vec_or_bad(param_vec tag, size_t x_idx, size_t y_idx) {
+	if (!tag ||
+		tag->size() <= x_idx || tag->size() <= y_idx ||
+		(*tag)[x_idx]->omitted || (*tag)[y_idx]->omitted ||
+		(*tag)[x_idx]->GetType() == VARDATA_NONE || (*tag)[y_idx]->GetType() == VARDATA_NONE)
+	{
+		return Vector2D::Bad();
+	}
+	return Vector2D((*tag)[x_idx]->Get<float>(), (*tag)[y_idx]->Get<float>());
 }
 
-template<class FeatureType>
-void VisualTool<FeatureType>::GetLinePosition(AssDialogue *diag,int &x, int &y, int &orgx, int &orgy) {
+Vector2D VisualToolBase::GetLinePosition(AssDialogue *diag) {
+	scoped_tag_parse parse(diag);
+
+	if (Vector2D ret = vec_or_bad(find_tag(diag, "\\pos"), 0, 1)) return ret;
+	if (Vector2D ret = vec_or_bad(find_tag(diag, "\\move"), 0, 1)) return ret;
+
+	// Get default position
 	int margin[4];
-	for (int i=0;i<4;i++) margin[i] = diag->Margin[i];
+	std::copy(diag->Margin, diag->Margin + 4, margin);
 	int align = 2;
 
-	AssStyle *style = c->ass->GetStyle(diag->Style);
-	if (style) {
+	if (AssStyle *style = c->ass->GetStyle(diag->Style)) {
 		align = style->alignment;
-		for (int i=0;i<4;i++) {
-			if (margin[i] == 0) margin[i] = style->Margin[i];
+		for (int i = 0; i < 4; i++) {
+			if (margin[i] == 0)
+				margin[i] = style->Margin[i];
 		}
 	}
 
-	int sw,sh;
-	c->videoController->GetScriptSize(sw,sh);
+	param_vec align_tag;
+	if ((align_tag = find_tag(diag, "\\an")) && !(*align_tag)[0]->omitted)
+		align = (*align_tag)[0]->Get<int>();
+	else if ((align_tag = find_tag(diag, "\\a"))) {
+		align = (*align_tag)[0]->Get<int>(2);
 
-	// Process margins
-	margin[1] = sw - margin[1];
-	margin[3] = sh - margin[2];
-
-	// Overrides processing
-	diag->ParseASSTags();
-
-	if (!get_value<int>(diag, "\\pos", 2, &x, &y)) {
-		if (get_value<int>(diag, "\\an", 1, &align) == ALT_TAG_FOUND) {
-			switch(align) {
-				case 1: case 2: case 3:
-					break;
-				case 5: case 6: case 7:
-					align += 2;
-					break;
-				case 9: case 10: case 11:
-					align -= 5;
-					break;
-				default:
-					align = 2;
-					break;
-			}
-		}
-		// Alignment type
-		int hor = (align - 1) % 3;
-		int vert = (align - 1) / 3;
-
-		// Calculate positions
-		if (hor == 0) x = margin[0];
-		else if (hor == 1) x = (margin[0] + margin[1])/2;
-		else if (hor == 2) x = margin[1];
-		if (vert == 0) y = margin[3];
-		else if (vert == 1) y = (margin[2] + margin[3])/2;
-		else if (vert == 2) y = margin[2];
+		// \a -> \an values mapping
+		static int align_mapping[] = { 2, 1, 2, 3, 7, 7, 8, 9, 7, 4, 5, 6 };
+		if (static_cast<size_t>(align) < sizeof(align_mapping) / sizeof(int))
+			align = align_mapping[align];
+		else
+			align = 2;
 	}
 
-	parent->FromScriptCoords(&x, &y);
+	// Alignment type
+	int hor = (align - 1) % 3;
+	int vert = (align - 1) / 3;
 
-	if (!get_value<int>(diag, "\\org", 2, &orgx, &orgy)) {
-		orgx = x;
-		orgy = y;
-	}
-	else {
-		parent->FromScriptCoords(&orgx, &orgy);
-	}
+	// Calculate positions
+	int x, y;
+	if (hor == 0)
+		x = margin[0];
+	else if (hor == 1)
+		x = (script_res.X() + margin[0] - margin[1]) / 2;
+	else if (hor == 2)
+		x = margin[1];
 
-	diag->ClearBlocks();
+	if (vert == 0)
+		y = script_res.Y() - margin[2];
+	else if (vert == 1)
+		y = script_res.Y() / 2;
+	else if (vert == 2)
+		y = margin[2];
+
+	return Vector2D(x, y);
 }
 
-template<class FeatureType>
-void VisualTool<FeatureType>::GetLineMove(AssDialogue *diag,bool &hasMove,int &x1,int &y1,int &x2,int &y2,int &t1,int &t2) {
-	diag->ParseASSTags();
-
-	hasMove =
-		get_value<int>(diag, "\\move", 6, &x1, &y1, &x2, &y2, &t1, &t2) ||
-		get_value<int>(diag, "\\move", 4, &x1, &y1, &x2, &y2);
-
-	if (hasMove) {
-		parent->FromScriptCoords(&x1, &y1);
-		parent->FromScriptCoords(&x2, &y2);
-	}
-
-	diag->ClearBlocks();
+Vector2D VisualToolBase::GetLineOrigin(AssDialogue *diag) {
+	scoped_tag_parse parse(diag);
+	return vec_or_bad(find_tag(diag, "\\org"), 0, 1);
 }
 
-template<class FeatureType>
-void VisualTool<FeatureType>::GetLineRotation(AssDialogue *diag,float &rx,float &ry,float &rz) {
+bool VisualToolBase::GetLineMove(AssDialogue *diag, Vector2D &p1, Vector2D &p2, int &t1, int &t2) {
+	scoped_tag_parse parse(diag);
+
+	param_vec tag = find_tag(diag, "\\move");
+	if (!tag)
+		return false;
+
+	p1 = vec_or_bad(tag, 0, 1);
+	p2 = vec_or_bad(tag, 2, 3);
+	// VSFilter actually defaults to -1, but it uses <= 0 to check for default and 0 seems less bug-prone
+	t1 = (*tag)[4]->Get<int>(0);
+	t2 = (*tag)[5]->Get<int>(0);
+
+	return p1 && p2;
+}
+
+void VisualToolBase::GetLineRotation(AssDialogue *diag, float &rx, float &ry, float &rz) {
 	rx = ry = rz = 0.f;
 
-	AssStyle *style = c->ass->GetStyle(diag->Style);
-	if (style) {
+	if (AssStyle *style = c->ass->GetStyle(diag->Style))
 		rz = style->angle;
-	}
 
-	diag->ParseASSTags();
+	scoped_tag_parse parse(diag);
 
-	get_value<float>(diag, "\\frx", 1, &rx);
-	get_value<float>(diag, "\\fry", 1, &ry);
-	get_value<float>(diag, "\\frz", 1, &rz);
-
-	diag->ClearBlocks();
+	if (param_vec tag = find_tag(diag, "\\frx"))
+		rx = tag->front()->Get<float>(rx);
+	if (param_vec tag = find_tag(diag, "\\fry"))
+		ry = tag->front()->Get<float>(ry);
+	if (param_vec tag = find_tag(diag, "\\frz"))
+		rz = tag->front()->Get<float>(rz);
+	else if (param_vec tag = find_tag(diag, "\\fr"))
+		rz = tag->front()->Get<float>(rz);
 }
 
-template<class FeatureType>
-void VisualTool<FeatureType>::GetLineScale(AssDialogue *diag,float &scalX,float &scalY) {
-	scalX = scalY = 100.f;
+void VisualToolBase::GetLineScale(AssDialogue *diag, Vector2D &scale) {
+	float x = 100.f, y = 100.f;
 
-	AssStyle *style = c->ass->GetStyle(diag->Style);
-	if (style) {
-		scalX = style->scalex;
-		scalY = style->scaley;
+	if (AssStyle *style = c->ass->GetStyle(diag->Style)) {
+		x = style->scalex;
+		y = style->scaley;
 	}
 
-	diag->ParseASSTags();
+	scoped_tag_parse parse(diag);
 
-	get_value<float>(diag, "\\fscx", 1, &scalX);
-	get_value<float>(diag, "\\fscy", 1, &scalY);
+	if (param_vec tag = find_tag(diag, "\\fscx"))
+		x = tag->front()->Get<float>(x);
+	if (param_vec tag = find_tag(diag, "\\fscy"))
+		y = tag->front()->Get<float>(y);
 
-	diag->ClearBlocks();
+	scale = Vector2D(x, y);
 }
 
-template<class FeatureType>
-void VisualTool<FeatureType>::GetLineClip(AssDialogue *diag,int &x1,int &y1,int &x2,int &y2,bool &inverse) {
-	x1 = y1 = 0;
-	int sw,sh;
-	c->videoController->GetScriptSize(sw,sh);
-	x2 = sw-1;
-	y2 = sh-1;
+void VisualToolBase::GetLineClip(AssDialogue *diag, Vector2D &p1, Vector2D &p2, bool &inverse) {
 	inverse = false;
 
-	diag->ParseASSTags();
-	inverse = get_value<int>(diag, "\\clip", 4, &x1, &y1, &x2, &y2) == ALT_TAG_FOUND;
-	diag->ClearBlocks();
+	scoped_tag_parse parse(diag);
+	param_vec tag = find_tag(diag, "\\iclip");
+	if (tag)
+		inverse = true;
+	else
+		tag = find_tag(diag, "\\clip");
 
-	parent->FromScriptCoords(&x1, &y1);
-	parent->FromScriptCoords(&x2, &y2);
+	if (tag && tag->size() == 4) {
+		p1 = vec_or_bad(tag, 0, 1);
+		p2 = vec_or_bad(tag, 2, 3);
+	}
+	else {
+		p1 = Vector2D();
+		p2 = script_res - 1;
+	}
 }
 
-template<class FeatureType>
-wxString VisualTool<FeatureType>::GetLineVectorClip(AssDialogue *diag,int &scale,bool &inverse) {
+wxString VisualToolBase::GetLineVectorClip(AssDialogue *diag, int &scale, bool &inverse) {
+	scoped_tag_parse parse(diag);
+
 	scale = 1;
 	inverse = false;
-	diag->ParseASSTags();
 
-	int x1, y1, x2, y2;
-	TagFoundType res = get_value<int>(diag, "\\clip", 4, &x1, &y1, &x2, &y2);
-	if (res) {
-		inverse = res == ALT_TAG_FOUND;
-		diag->ClearBlocks();
-		return wxString::Format("m %d %d l %d %d %d %d %d %d", x1, y1, x2, y1, x2, y2, x1, y2);
+	param_vec tag = find_tag(diag, "\\iclip");
+	if (tag)
+		inverse = true;
+	else
+		tag = find_tag(diag, "\\clip");
+
+	if (tag && tag->size() == 4) {
+		return wxString::Format("m %d %d l %d %d %d %d %d %d",
+			(*tag)[0]->Get<int>(), (*tag)[1]->Get<int>(),
+			(*tag)[2]->Get<int>(), (*tag)[1]->Get<int>(),
+			(*tag)[2]->Get<int>(), (*tag)[3]->Get<int>(),
+			(*tag)[0]->Get<int>(), (*tag)[3]->Get<int>());
 	}
-	wxString result;
-	wxString scaleStr;
-	res = get_value<wxString>(diag, "\\clip", 2, &scaleStr, &result);
-	inverse = res == ALT_TAG_FOUND;
-	if (!scaleStr.empty()) {
-		long s;
-		scaleStr.ToLong(&s);
-		scale = s;
+	if (tag) {
+		scale = (*tag)[0]->Get<int>(scale);
+		return (*tag)[1]->Get<wxString>("");
 	}
-	diag->ClearBlocks();
-	return result;
+
+	return "";
 }
 
-/// @brief Set override 
-/// @param tag   
-/// @param value 
-template<class FeatureType>
-void VisualTool<FeatureType>::SetOverride(AssDialogue* line, wxString tag, wxString value) {
+void VisualToolBase::SetSelectedOverride(wxString const& tag, wxString const& value) {
+	for_each(c->selectionController->GetSelectedSet(),
+		bind(&VisualToolBase::SetOverride, this, _1, tag, value));
+}
+
+void VisualToolBase::SetOverride(AssDialogue* line, wxString const& tag, wxString const& value) {
 	if (!line) return;
 
 	wxString removeTag;
 	if (tag == "\\1c") removeTag = "\\c";
-	else if (tag == "\\fr") removeTag = "\\frz";
+	else if (tag == "\\frz") removeTag = "\\fr";
 	else if (tag == "\\pos") removeTag = "\\move";
 	else if (tag == "\\move") removeTag = "\\pos";
 	else if (tag == "\\clip") removeTag = "\\iclip";
@@ -607,17 +578,14 @@ void VisualTool<FeatureType>::SetOverride(AssDialogue* line, wxString tag, wxStr
 
 	// Get block at start
 	line->ParseASSTags();
-	AssDialogueBlock *block = line->Blocks.at(0);
+	AssDialogueBlock *block = line->Blocks.front();
 
 	// Get current block as plain or override
-	AssDialogueBlockPlain *plain = dynamic_cast<AssDialogueBlockPlain*>(block);
-	AssDialogueBlockOverride *ovr = dynamic_cast<AssDialogueBlockOverride*>(block);
 	assert(dynamic_cast<AssDialogueBlockDrawing*>(block) == NULL);
 
-	if (plain) {
+	if (dynamic_cast<AssDialogueBlockPlain*>(block))
 		line->Text = "{" + insert + "}" + line->Text;
-	}
-	else if (ovr) {
+	else if (AssDialogueBlockOverride *ovr = dynamic_cast<AssDialogueBlockOverride*>(block)) {
 		// Remove old of same
 		for (size_t i = 0; i < ovr->Tags.size(); i++) {
 			wxString name = ovr->Tags[i]->Name;
@@ -631,8 +599,6 @@ void VisualTool<FeatureType>::SetOverride(AssDialogue* line, wxString tag, wxStr
 
 		line->UpdateText();
 	}
-
-	parent->SetFocus();
 }
 
 // If only export worked

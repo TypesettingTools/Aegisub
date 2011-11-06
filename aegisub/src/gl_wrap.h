@@ -1,29 +1,16 @@
-// Copyright (c) 2007, Rodrigo Braz Monteiro
-// All rights reserved.
+// Copyright (c) 2011, Thomas Goyne <plorkyeran@aegisub.org>
 //
-// Redistribution and use in source and binary forms, with or without
-// modification, are permitted provided that the following conditions are met:
+// Permission to use, copy, modify, and distribute this software for any
+// purpose with or without fee is hereby granted, provided that the above
+// copyright notice and this permission notice appear in all copies.
 //
-//   * Redistributions of source code must retain the above copyright notice,
-//     this list of conditions and the following disclaimer.
-//   * Redistributions in binary form must reproduce the above copyright notice,
-//     this list of conditions and the following disclaimer in the documentation
-//     and/or other materials provided with the distribution.
-//   * Neither the name of the Aegisub Group nor the names of its contributors
-//     may be used to endorse or promote products derived from this software
-//     without specific prior written permission.
-//
-// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-// AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-// IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
-// ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
-// LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
-// CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-// SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-// INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-// CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-// ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-// POSSIBILITY OF SUCH DAMAGE.
+// THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+// WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+// MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+// ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+// WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+// ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+// OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 //
 // Aegisub Project http://www.aegisub.org/
 //
@@ -34,41 +21,13 @@
 /// @ingroup video_output
 ///
 
-
-#ifdef __APPLE__
-#include <OpenGL/gl.h>
-#include <OpenGL/glu.h>
-#else
-#include <GL/gl.h>
-#include <GL/glu.h>
-
-/// DOCME
-typedef GLuint GLhandleARB;
-#endif
+#include "vector2d.h"
 
 #ifndef AGI_PRE
-#include <wx/thread.h>
-#include <wx/colour.h>
+#include <vector>
 #endif
 
-#ifdef __WIN32__
-#define glGetProc(a) wglGetProcAddress(a)
-#else
-#define glGetProc(a) glXGetProcAddress((const GLubyte *)(a))
-#endif
-
-#if defined(__APPLE__)
-// Not required on OS X.
-#define GL_EXT(type, name)
-#else
-
-#define GL_EXT(type, name) \
-	static type name = reinterpret_cast<type>(glGetProc(#name)); \
-	if (!name) { \
-		name = reinterpret_cast<type>(& name ## Fallback); \
-	}
-#endif
-
+class wxColour;
 
 /// DOCME
 /// @class OpenGLWrapper
@@ -76,55 +35,51 @@ typedef GLuint GLhandleARB;
 ///
 /// DOCME
 class OpenGLWrapper {
-private:
+	float line_r, line_g, line_b, line_a;
+	float fill_r, fill_g, fill_b, fill_a;
 
-	/// DOCME
+	int line_width;
+	bool smooth;
 
-	/// DOCME
-
-	/// DOCME
-
-	/// DOCME
-	float r1,g1,b1,a1;
-
-	/// DOCME
-
-	/// DOCME
-
-	/// DOCME
-
-	/// DOCME
-	float r2,g2,b2,a2;
-
-	/// DOCME
-	int lw;
+	bool transform_pushed;
+	void PrepareTransform();
 
 public:
 	OpenGLWrapper();
 
-
-	/// DOCME
-	static wxMutex glMutex;
-
-	void SetLineColour(wxColour col,float alpha=1.0f,int width=1);
-	void SetFillColour(wxColour col,float alpha=1.0f);
+	void SetLineColour(wxColour col, float alpha = 1.0f, int width = 1);
+	void SetFillColour(wxColour col, float alpha = 1.0f);
 	void SetModeLine() const;
 	void SetModeFill() const;
-	void DrawLine(float x1,float y1,float x2,float y2) const;
-	void DrawDashedLine(float x1,float y1,float x2,float y2,float dashLen) const;
-	void DrawEllipse(float x,float y,float radiusX,float radiusY) const;
 
-	/// @brief DOCME
-	/// @param x      
-	/// @param y      
-	/// @param radius 
-	///
-	void DrawCircle(float x,float y,float radius) const { DrawEllipse(x,y,radius,radius); }
-	void DrawRectangle(float x1,float y1,float x2,float y2) const;
-	void DrawRing(float x,float y,float r1,float r2,float ar=1.0f,float arcStart=0.0f,float arcEnd=0.0f) const;
-	void DrawTriangle(float x1,float y1,float x2,float y2,float x3,float y3) const;
+	void SetInvert();
+	void ClearInvert();
+
+	void SetScale(Vector2D scale);
+	void SetOrigin(Vector2D origin);
+	void SetRotation(float x, float y, float z);
+	void ResetTransform();
+
+	void DrawLine(Vector2D p1, Vector2D p2) const;
+	void DrawDashedLine(Vector2D p1, Vector2D p2, float dashLen) const;
+	void DrawEllipse(Vector2D center, Vector2D radius) const;
+	void DrawCircle(Vector2D center, float radius) const { DrawEllipse(center, Vector2D(radius, radius)); }
+	void DrawRectangle(Vector2D p1, Vector2D p2) const;
+	void DrawRing(Vector2D center, float r1, float r2, float ar = 1.0f, float arcStart = 0.0f, float arcEnd = 0.0f) const;
+	void DrawTriangle(Vector2D p1, Vector2D p2, Vector2D p3) const;
+
+	void DrawLines(size_t dim, std::vector<float> const& lines);
+	void DrawLines(size_t dim, std::vector<float> const& lines, size_t c_dim, std::vector<float> const& colors);
+	void DrawLines(size_t dim, const float *lines, size_t n);
+	void DrawLineStrip(size_t dim, std::vector<float> const& lines);
+
+	/// Draw a multipolygon serialized into a single array
+	/// @param points List of coordinates
+	/// @param start Indices in points which are the start of a new polygon
+	/// @param count Number of points in each polygon
+	/// @param video_size Bottom-right corner of the visible area
+	/// @param invert Draw the area outside the polygons instead
+	void DrawMultiPolygon(std::vector<float> const& points, std::vector<int> &start, std::vector<int> &count, Vector2D video_size, bool invert);
 
 	static bool IsExtensionSupported(const char *ext);
 };
-
-

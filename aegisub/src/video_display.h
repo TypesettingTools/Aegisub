@@ -44,12 +44,14 @@
 #include <libaegisub/scoped_ptr.h>
 #include <libaegisub/signal.h>
 
+#include "vector2d.h"
+
 // Prototypes
 class FrameReadyEvent;
 class VideoBox;
 class VideoContext;
 class VideoOutGL;
-class IVisualTool;
+class VisualToolBase;
 class wxComboBox;
 class wxTextCtrl;
 class wxToolBar;
@@ -58,14 +60,6 @@ namespace agi {
 	struct Context;
 	class OptionValue;
 }
-
-struct VideoState {
-	int x;
-	int y;
-	int w;
-	int h;
-	VideoState() : x(INT_MIN), y(INT_MIN), w(INT_MIN), h(INT_MIN) { }
-};
 
 /// @class VideoDisplay
 /// @brief DOCME
@@ -87,8 +81,10 @@ class VideoDisplay : public wxGLCanvas {
 	/// The height of the canvas in screen pixels
 	int h;
 
+	Vector2D mouse_pos;
+
 	/// Screen pixels between the left of the canvas and the left of the video
-	int viewport_x;
+	int viewport_left;
 	/// The width of the video in screen pixels
 	int viewport_width;
 	/// Screen pixels between the bottom of the canvas and the bottom of the video; used for glViewport
@@ -105,21 +101,12 @@ class VideoDisplay : public wxGLCanvas {
 	agi::scoped_ptr<VideoOutGL> videoOut;
 
 	/// The active visual typesetting tool
-	agi::scoped_ptr<IVisualTool> tool;
-	/// The current tool's ID
-	int activeMode;
+	agi::scoped_ptr<VisualToolBase> tool;
 	/// The toolbar used by individual typesetting tools
 	wxToolBar* toolBar;
 
 	/// The OpenGL context for this display
 	agi::scoped_ptr<wxGLContext> glContext;
-
-	/// The current script width
-	int scriptW;
-	/// The current script height
-	int scriptH;
-
-	VideoState video;
 
 	/// The dropdown box for selecting zoom levels
 	wxComboBox *zoomBox;
@@ -131,11 +118,9 @@ class VideoDisplay : public wxGLCanvas {
 	bool freeSize;
 
 	/// @brief Draw an overscan mask
-	/// @param sizeH  The amount of horizontal overscan on one side
-	/// @param sizeV  The amount of vertical overscan on one side
-	/// @param colour The color of the mask
-	/// @param alpha  The alpha of the mask
-	void DrawOverscanMask(int sizeH, int sizeV, wxColor color, double alpha) const;
+	/// @param horizontal_percent The percent of the video reserved horizontally
+	/// @param vertical_percent The percent of the video reserved vertically
+	void DrawOverscanMask(float horizontal_percent, float vertical_percent) const;
 
 	/// Upload the image for the current frame to the video card
 	void UploadFrameData(FrameReadyEvent&);
@@ -144,21 +129,8 @@ class VideoDisplay : public wxGLCanvas {
 	/// @return Could the context be set?
 	bool InitContext();
 
-	/// @brief Set this video display to the given frame
-	/// @frameNumber The desired frame number
-	void SetFrame(int frameNumber);
-
 	void OnVideoOpen();
-	void OnCommit(int type);
 
-	void SetMode(int mode);
-	/// @brief Switch the active tool to a new object of the specified class
-	/// @param T The class of the new visual typesetting tool
-	template <class T> void SetTool();
-
-	/// @brief Set the cursor to either default or blank
-	/// @param show Whether or not the cursor should be visible
-	void ShowCursor(bool show);
 	/// @brief Set the size of the display based on the current zoom and video resolution
 	void UpdateSize(int arType = -1, double arValue = -1.);
 	/// @brief Set the zoom level to that indicated by the dropdown
@@ -169,11 +141,9 @@ class VideoDisplay : public wxGLCanvas {
 	/// @brief Mouse event handler
 	void OnMouseEvent(wxMouseEvent& event);
 	void OnMouseWheel(wxMouseEvent& event);
-	void OnMouseEnter(wxMouseEvent& event);
 	void OnMouseLeave(wxMouseEvent& event);
 	/// @brief Recalculate video positioning and scaling when the available area or zoom changes
 	void OnSizeEvent(wxSizeEvent &event);
-	void OnMode(const wxCommandEvent &event);
 	void OnContextMenu(wxContextMenuEvent&);
 
 public:
@@ -195,17 +165,8 @@ public:
 	/// @brief Get the current zoom level
 	double GetZoom() const { return zoomValue; }
 
-	/// @brief Convert a point from screen to script coordinate frame
-	/// @param x x coordinate; in/out
-	/// @param y y coordinate; in/out
-	void ToScriptCoords(int *x, int *y) const;
-	/// @brief Convert a point from script to screen coordinate frame
-	/// @param x x coordinate; in/out
-	/// @param y y coordinate; in/out
-	void FromScriptCoords(int *x, int *y) const;
+	/// Get the last seen position of the mouse in script coordinates
+	Vector2D GetMousePosition() const;
 
-	/// Get the last seen position of the mouse in screen coordinates
-	/// @param[out] x x coordinate
-	/// @param[out] y y coordinate
-	void GetMousePosition(int *x, int *y) const;
+	void SetTool(VisualToolBase *new_tool);
 };

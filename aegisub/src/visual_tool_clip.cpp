@@ -1,29 +1,16 @@
-// Copyright (c) 2007, Rodrigo Braz Monteiro
-// All rights reserved.
+// Copyright (c) 2011, Thomas Goyne <plorkyeran@aegisub.org>
 //
-// Redistribution and use in source and binary forms, with or without
-// modification, are permitted provided that the following conditions are met:
+// Permission to use, copy, modify, and distribute this software for any
+// purpose with or without fee is hereby granted, provided that the above
+// copyright notice and this permission notice appear in all copies.
 //
-//   * Redistributions of source code must retain the above copyright notice,
-//     this list of conditions and the following disclaimer.
-//   * Redistributions in binary form must reproduce the above copyright notice,
-//     this list of conditions and the following disclaimer in the documentation
-//     and/or other materials provided with the distribution.
-//   * Neither the name of the Aegisub Group nor the names of its contributors
-//     may be used to endorse or promote products derived from this software
-//     without specific prior written permission.
-//
-// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-// AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-// IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
-// ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
-// LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
-// CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-// SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-// INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-// CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-// ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-// POSSIBILITY OF SUCH DAMAGE.
+// THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+// WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+// MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+// ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+// WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+// ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+// OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 //
 // Aegisub Project http://www.aegisub.org/
 //
@@ -39,35 +26,30 @@
 #include <utility>
 #endif
 
-#include "ass_dialogue.h"
-#include "ass_file.h"
-#include "utils.h"
-#include "video_display.h"
 #include "visual_tool_clip.h"
 
-VisualToolClip::VisualToolClip(VideoDisplay *parent, agi::Context *context, VideoState const& video, wxToolBar *)
-: VisualTool<ClipCorner>(parent, context, video)
-, curX1(0)
-, curY1(0)
-, curX2(video.w)
-, curY2(video.h)
+#include "utils.h"
+
+VisualToolClip::VisualToolClip(VideoDisplay *parent, agi::Context *context)
+: VisualTool<ClipCorner>(parent, context)
+, cur_1(0, 0)
+, cur_2(video_res)
 , inverse(false)
 {
-	if (curDiag) {
-		GetLineClip(curDiag,curX1,curY1,curX2,curY2,inverse);
-	}
-
 	Feature feat;
 	feat.type = DRAG_SMALL_CIRCLE;
 	features.resize(4, feat);
 
+	// This is really awkward without being able to just index the list of
+	// features, so copy them into a temporary array
+	ClipCorner *feats[4];
 	feature_iterator cur = features.begin();
 	feats[0] = &*(cur++);
 	feats[1] = &*(cur++);
 	feats[2] = &*(cur++);
 	feats[3] = &*(cur++);
 
-
+	// Attach each feature to the two features it shares edges with
 	// Top-left
 	int i = 0;
 	feats[i]->horiz = feats[1];
@@ -87,129 +69,81 @@ VisualToolClip::VisualToolClip(VideoDisplay *parent, agi::Context *context, Vide
 	// Bottom-right
 	feats[i]->horiz = feats[2];
 	feats[i]->vert = feats[1];
-	i++;
 }
 
 void VisualToolClip::Draw() {
-	if (!curDiag) return;
+	if (!active_line) return;
 
-	int dx1 = curX1;
-	int dy1 = curY1;
-	int dx2 = curX2;
-	int dy2 = curY2;
+	DrawAllFeatures();
 
 	// Draw rectangle
-	SetLineColour(colour[3],1.0f,2);
-	SetFillColour(colour[3],0.0f);
-	DrawRectangle(dx1,dy1,dx2,dy2);
+	gl.SetLineColour(colour[3], 1.0f, 2);
+	gl.SetFillColour(colour[3], 0.0f);
+	gl.DrawRectangle(cur_1, cur_2);
 
 	// Draw outside area
-	SetLineColour(colour[3],0.0f);
-	SetFillColour(wxColour(0,0,0),0.5f);
+	gl.SetLineColour(colour[3], 0.0f);
+	gl.SetFillColour(*wxBLACK, 0.5f);
 	if (inverse) {
-		DrawRectangle(dx1,dy1,dx2,dy2);
+		gl.DrawRectangle(cur_1, cur_2);
 	}
 	else {
-		DrawRectangle(0,0,video.w,dy1);
-		DrawRectangle(0,dy2,video.w,video.h);
-		DrawRectangle(0,dy1,dx1,dy2);
-		DrawRectangle(dx2,dy1,video.w,dy2);
+		Vector2D p1 = cur_1.Min(cur_2);
+		Vector2D p2 = cur_1.Max(cur_2);
+		gl.DrawRectangle(Vector2D(0, 0),   Vector2D(video_res, p1));
+		gl.DrawRectangle(Vector2D(0, p2),  video_res);
+		gl.DrawRectangle(Vector2D(0, p1),  Vector2D(p1, p2));
+		gl.DrawRectangle(Vector2D(p2, p1), Vector2D(video_res, p2));
 	}
-
-	// Draw circles
-	SetLineColour(colour[0]);
-	SetFillColour(colour[1],0.5);
-	DrawAllFeatures();
 }
 
 bool VisualToolClip::InitializeHold() {
-	startX = video.x;
-	startY = video.y;
-	curDiag->StripTag("\\clip");
-	curDiag->StripTag("\\iclip");
 	return true;
 }
 
 void VisualToolClip::UpdateHold() {
-	curX1 = startX;
-	curY1 = startY;
-	curX2 = video.x;
-	curY2 = video.y;
-
-	// Make sure 1 is smaller than 2
-	if (curX1 > curX2) std::swap(curX1,curX2);
-	if (curY1 > curY2) std::swap(curY1,curY2);
-
 	// Limit to video area
-	curX1 = mid(0,curX1,video.w);
-	curX2 = mid(0,curX2,video.w);
-	curY1 = mid(0,curY1,video.h);
-	curY2 = mid(0,curY2,video.h);
+	Vector2D zero(0, 0);
+	cur_1 = zero.Max(video_res.Min(drag_start));
+	cur_2 = zero.Max(video_res.Min(mouse_pos));
 
 	SetFeaturePositions();
+	CommitHold();
 }
 
 void VisualToolClip::CommitHold() {
-	int x1 = curX1;
-	int x2 = curX2;
-	int y1 = curY1;
-	int y2 = curY2;
-	parent->ToScriptCoords(&x1, &y1);
-	parent->ToScriptCoords(&x2, &y2);
-	SetOverride(curDiag, inverse ? "\\iclip" : "\\clip",wxString::Format("(%i,%i,%i,%i)",x1,y1,x2,y2));
+	SetOverride(active_line, inverse ? "\\iclip" : "\\clip",
+		wxString::Format("(%s,%s)", ToScriptCoords(cur_1.Min(cur_2)).Str(), ToScriptCoords(cur_1.Max(cur_2)).Str()));
 }
 
 bool VisualToolClip::InitializeDrag(feature_iterator) {
-	curDiag->StripTag("\\clip");
-	curDiag->StripTag("\\iclip");
 	return true;
 }
 
 void VisualToolClip::UpdateDrag(feature_iterator feature) {
-	// Update brothers
-	feature->horiz->y = feature->y;
-	feature->vert->x = feature->x;
+	// Update features which share an edge with the dragged one
+	feature->horiz->pos = Vector2D(feature->horiz->pos, feature->pos);
+	feature->vert->pos = Vector2D(feature->pos, feature->vert->pos);
 
-	// Get "cur" from features
-	curX1 = feats[0]->x;
-	curX2 = feats[3]->x;
-	curY1 = feats[0]->y;
-	curY2 = feats[3]->y;
+	cur_1 = features.front().pos;
+	cur_2 = features.back().pos;
 
-	// Make sure p1 < p2
-	if (curX1 > curX2) std::swap(curX1,curX2);
-	if (curY1 > curY2) std::swap(curY1,curY2);
-}
-
-void VisualToolClip::CommitDrag(feature_iterator) {
 	CommitHold();
 }
 
 void VisualToolClip::SetFeaturePositions() {
-	// Top-left
-	int i = 0;
-	feats[i]->x = curX1;
-	feats[i]->y = curY1;
-	i++;
-
-	// Top-right
-	feats[i]->x = curX2;
-	feats[i]->y = curY1;
-	i++;
-
-	// Bottom-left
-	feats[i]->x = curX1;
-	feats[i]->y = curY2;
-	i++;
-
-	// Bottom-right
-	feats[i]->x = curX2;
-	feats[i]->y = curY2;
+	feature_iterator it = features.begin();
+	(it++)->pos = cur_1; // Top-left
+	(it++)->pos = Vector2D(cur_2, cur_1); // Top-right
+	(it++)->pos = Vector2D(cur_1, cur_2); // Bottom-left
+	it->pos = cur_2; // Bottom-right
 }
 
 void VisualToolClip::DoRefresh() {
-	if (curDiag) {
-		GetLineClip(curDiag,curX1,curY1,curX2,curY2,inverse);
+	if (active_line) {
+		GetLineClip(active_line, cur_1, cur_2, inverse);
+		cur_1 = FromScriptCoords(cur_1);
+		cur_2 = FromScriptCoords(cur_2);
 		SetFeaturePositions();
 	}
 }

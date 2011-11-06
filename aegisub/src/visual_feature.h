@@ -36,6 +36,8 @@
 
 #pragma once
 
+#include "vector2d.h"
+
 class OpenGLWrapper;
 class AssDialogue;
 
@@ -65,6 +67,8 @@ enum DraggableFeatureType {
 /// @class VisualDraggableFeature
 /// @brief Onscreen control used by many visual tools which doesn't do much
 class VisualDraggableFeature {
+	Vector2D start; ///< position before the last operation began
+
 public:
 	/// @brief Constructor
 	VisualDraggableFeature();
@@ -72,21 +76,23 @@ public:
 	/// Shape of feature
 	DraggableFeatureType type;
 
-	int x; /// x coordinate
-	int y; /// y coordinate
-
-	int origX; /// x coordindate before the last operation began
-	int origY; /// y coordindate before the last operation began
+	Vector2D pos;
 
 	int layer; /// Layer; Higher = above
 
 	AssDialogue* line; /// The dialogue line this feature is for
 
 	/// @brief Is the given point over this feature?
-	/// @param mx x coordinate to test
-	/// @param my y coordinate to test
-	bool IsMouseOver(int x,int y) const;
+	/// @param mouse_pos Position of the mouse
+	bool IsMouseOver(Vector2D mouse_pos) const;
+
 	/// @brief Draw this feature
 	/// @param gl OpenGLWrapper to use
 	void Draw(OpenGLWrapper const& gl) const;
+
+	void StartDrag();
+
+	void UpdateDrag(Vector2D d, bool single_axis);
+
+	bool HasMoved() const;
 };

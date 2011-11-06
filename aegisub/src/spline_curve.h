@@ -34,25 +34,7 @@
 /// @ingroup visual_ts
 ///
 
-///////////
-// Headers
 #include "vector2d.h"
-
-/// DOCME
-enum CurveType {
-
-	/// DOCME
-	CURVE_INVALID,
-
-	/// DOCME
-	CURVE_POINT,
-
-	/// DOCME
-	CURVE_LINE,
-
-	/// DOCME
-	CURVE_BICUBIC
-};
 
 /// DOCME
 /// @class SplineCurve
@@ -60,31 +42,46 @@ enum CurveType {
 ///
 /// DOCME
 class SplineCurve {
-private:
-	float GetClosestSegmentPart(Vector2D const& p1,Vector2D const& p2,Vector2D const& p3) const;
-	float GetClosestSegmentDistance(Vector2D const& p1,Vector2D const& p2,Vector2D const& p3) const;
+	/// Closest t in segment p1-p2 to point p3 
+	float GetClosestSegmentPart(Vector2D p1, Vector2D p2, Vector2D p3) const;
 
+	/// Closest distance between p3 and segment p1-p2
+	float GetClosestSegmentDistance(Vector2D p1, Vector2D p2, Vector2D p3) const;
 public:
+	enum CurveType {
+		POINT,
+		LINE,
+		BICUBIC
+	};
 
-	/// DOCME
-
-	/// DOCME
-
-	/// DOCME
-
-	/// DOCME
-	Vector2D p1,p2,p3,p4;
+	Vector2D p1;
+	Vector2D p2;
+	Vector2D p3;
+	Vector2D p4;
 
 	/// DOCME
 	CurveType type;
 
-	SplineCurve();
-	void Split(SplineCurve &c1,SplineCurve &c2,float t=0.5);
-	void Smooth(Vector2D const& prev,Vector2D const& next,float smooth=1.0f);
+	SplineCurve(Vector2D p1 = Vector2D());
+	SplineCurve(Vector2D p1, Vector2D p2);
+	SplineCurve(Vector2D p1, Vector2D p2, Vector2D p3, Vector2D p4);
+
+	/// @brief Split a curve in two using the de Casteljau algorithm
+	/// @param[out] c1 Curve before split point
+	/// @param[out] c2 Curve after split point
+	/// @param t Split point
+	void Split(SplineCurve &c1, SplineCurve &c2, float t = 0.5f);
+
+	/// @brief Smooths the curve
+	/// @note Based on http://antigrain.com/research/bezier_interpolation/index.html
+	void Smooth(Vector2D prev, Vector2D next, float smooth = 1.0f);
 
 	Vector2D GetPoint(float t) const;
 	Vector2D& EndPoint();
-	Vector2D GetClosestPoint(Vector2D const& ref) const;
-	float GetClosestParam(Vector2D const& ref) const;
-	float GetQuickDistance(Vector2D const& ref) const;
+	/// Get point on the curve closest to reference
+	Vector2D GetClosestPoint(Vector2D ref) const;
+	/// Get t value for the closest point to reference
+	float GetClosestParam(Vector2D ref) const;
+	/// Get distance from ref to the closest point on the curve
+	float GetQuickDistance(Vector2D ref) const;
 };

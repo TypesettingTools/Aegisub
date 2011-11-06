@@ -266,7 +266,8 @@ void VideoContext::JumpToFrame(int n) {
 
 	frame_n = mid(0, n, GetLength() - 1);
 
-	Seek(n);
+	GetFrameAsync(frame_n);
+	Seek(frame_n);
 }
 
 void VideoContext::JumpToTime(int ms, agi::vfr::Time end) {
@@ -274,11 +275,11 @@ void VideoContext::JumpToTime(int ms, agi::vfr::Time end) {
 }
 
 void VideoContext::GetFrameAsync(int n) {
-	provider->RequestFrame(n,videoFPS.TimeAtFrame(n)/1000.0);
+	provider->RequestFrame(n, videoFPS.TimeAtFrame(n) / 1000.0);
 }
 
 std::tr1::shared_ptr<AegiVideoFrame> VideoContext::GetFrame(int n, bool raw) {
-	return provider->GetFrame(n, videoFPS.TimeAtFrame(n)/1000.0, raw);
+	return provider->GetFrame(n, videoFPS.TimeAtFrame(n) / 1000.0, raw);
 }
 
 int VideoContext::GetWidth() const {
@@ -324,10 +325,6 @@ void VideoContext::SaveSnapshot(bool raw) {
 	}
 
 	GetFrame(frame_n,raw)->GetImage().SaveFile(path,wxBITMAP_TYPE_PNG);
-}
-
-void VideoContext::GetScriptSize(int &sw,int &sh) {
-	context->ass->GetResolution(sw,sh);
 }
 
 void VideoContext::NextFrame() {

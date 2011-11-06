@@ -166,8 +166,8 @@ namespace {
 		}
 
 	public:
-		Toolbar(wxWindow *parent, std::string const& name, agi::Context *c, std::string const& ht_context)
-		: wxToolBar(parent, -1, wxDefaultPosition, wxDefaultSize, wxTB_FLAT | wxTB_HORIZONTAL)
+		Toolbar(wxWindow *parent, std::string const& name, agi::Context *c, std::string const& ht_context, bool vertical)
+		: wxToolBar(parent, -1, wxDefaultPosition, wxDefaultSize, wxTB_FLAT | (vertical ? wxTB_VERTICAL :  wxTB_HORIZONTAL))
 		, name(name)
 		, context(c)
 		, ht_context(ht_context)
@@ -182,10 +182,10 @@ namespace {
 
 namespace toolbar {
 	void AttachToolbar(wxFrame *frame, std::string const& name, agi::Context *c, std::string const& hotkey) {
-		frame->SetToolBar(new Toolbar(frame, name, c, hotkey));
+		frame->SetToolBar(new Toolbar(frame, name, c, hotkey, false));
 	}
 
-	wxToolBar *GetToolbar(wxWindow *parent, std::string const& name, agi::Context *c, std::string const& hotkey) {
-		return new Toolbar(parent, name, c, hotkey);
+	wxToolBar *GetToolbar(wxWindow *parent, std::string const& name, agi::Context *c, std::string const& hotkey, bool vertical) {
+		return new Toolbar(parent, name, c, hotkey, vertical);
 	}
 }

@@ -342,20 +342,30 @@ void OpenGLTextTexture::Insert(OpenGLTextGlyph &glyph) {
 
 /// Draw a glyph at (x,y)
 void OpenGLTextGlyph::Draw(int x,int y) const {
-	// Store matrix and translate
-	glPushMatrix();
-	glTranslatef((float)x,(float)y,0.0f);
-
 	glBindTexture(GL_TEXTURE_2D, tex);
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 
-	glBegin(GL_QUADS);
-		glTexCoord2f(x1,y1); glVertex2f(0,0); // Top-left
-		glTexCoord2f(x1,y2); glVertex2f(0,h); // Bottom-left
-		glTexCoord2f(x2,y2); glVertex2f(w,h); // Bottom-right
-		glTexCoord2f(x2,y1); glVertex2f(w,0); // Top-right
-	glEnd();
+	float tex_coords[] = {
+		x1, y1,
+		x1, y2,
+		x2, y2,
+		x2, y1
+	};
 
-	glPopMatrix();
+	float vert_coords[] = {
+		x, y,
+		x, y + h,
+		x + w, y + h,
+		x + w, y
+	};
+
+	glVertexPointer(2, GL_FLOAT, 0, vert_coords);
+	glTexCoordPointer(2, GL_FLOAT, 0, tex_coords);
+	glDrawArrays(GL_QUADS, 0, 4);
+
+	glDisableClientState(GL_VERTEX_ARRAY);
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 }
 
 /// @brief DOCME

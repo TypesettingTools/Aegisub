@@ -1,29 +1,16 @@
-// Copyright (c) 2007, Rodrigo Braz Monteiro
-// All rights reserved.
+// Copyright (c) 2011, Thomas Goyne <plorkyeran@aegisub.org>
 //
-// Redistribution and use in source and binary forms, with or without
-// modification, are permitted provided that the following conditions are met:
+// Permission to use, copy, modify, and distribute this software for any
+// purpose with or without fee is hereby granted, provided that the above
+// copyright notice and this permission notice appear in all copies.
 //
-//   * Redistributions of source code must retain the above copyright notice,
-//     this list of conditions and the following disclaimer.
-//   * Redistributions in binary form must reproduce the above copyright notice,
-//     this list of conditions and the following disclaimer in the documentation
-//     and/or other materials provided with the distribution.
-//   * Neither the name of the Aegisub Group nor the names of its contributors
-//     may be used to endorse or promote products derived from this software
-//     without specific prior written permission.
-//
-// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-// AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-// IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
-// ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
-// LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
-// CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-// SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-// INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-// CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-// ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-// POSSIBILITY OF SUCH DAMAGE.
+// THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+// WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+// MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+// ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+// WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+// ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+// OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 //
 // Aegisub Project http://www.aegisub.org/
 //
@@ -33,11 +20,6 @@
 /// @see visual_tool_drag.cpp
 /// @ingroup visual_ts
 ///
-
-#ifndef AGI_PRE
-#include <wx/bmpbuttn.h>
-#include <wx/toolbar.h>
-#endif
 
 #include "visual_feature.h"
 #include "visual_tool.h"
@@ -51,27 +33,26 @@ public:
 	VisualToolDragDraggableFeature() : VisualDraggableFeature(), time(0) { }
 };
 
+class wxBitmapButton;
+class wxToolBar;
 
 /// DOCME
 /// @class VisualToolDrag
-/// @brief DOCME
-///
-/// DOCME
+/// @brief Moveable features for the positions of each visible line
 class VisualToolDrag : public VisualTool<VisualToolDragDraggableFeature> {
 	/// The subtoolbar for the move/pos conversion button
-	wxToolBar *toolBar;
+	wxToolBar *toolbar;
 	/// The feature last clicked on for the double-click handler
 	/// Equal to curFeature during drags; possibly different at all other times
-	/// Null if no features have been clicked on or the last clicked on one no
+	/// NNULL if no features have been clicked on or the last clicked on one no
 	/// longer exists
 	Feature *primary;
 	/// The last announced selection set
 	Selection selection;
-	int change;
 
 	/// When the button is pressed, will it convert the line to a move (vs. from
 	/// move to pos)? Used to avoid changing the button's icon unnecessarily
-	bool toggleMoveOnMove;
+	bool button_is_move;
 
 	/// @brief Create the features for a line
 	/// @param diag Line to create the features for
@@ -79,23 +60,23 @@ class VisualToolDrag : public VisualTool<VisualToolDragDraggableFeature> {
 	void MakeFeatures(AssDialogue *diag, feature_iterator pos);
 	void MakeFeatures(AssDialogue *diag);
 
-	bool InitializeDrag(feature_iterator feature);
-	void CommitDrag(feature_iterator feature);
-
-	/// Set the pos/move button to the correct icon based on the active line
-	void UpdateToggleButtons();
-
 	// Overriding SubtitleSelectionListener inherited from base VisualTool<>
 	void OnSelectedSetChanged(const Selection &lines_added, const Selection &lines_removed);
 
 	void OnFrameChanged();
 	void OnFileChanged();
 	void OnLineChanged();
+	void OnCoordinateSystemsChanged() { OnFileChanged(); }
 
+	bool InitializeDrag(feature_iterator feature);
+	void UpdateDrag(feature_iterator feature);
 	void Draw();
-	bool Update();
-public:
-	VisualToolDrag(VideoDisplay *parent, agi::Context *context, VideoState const& video, wxToolBar *toolbar);
+	void OnDoubleClick();
 
+	/// Set the pos/move button to the correct icon based on the active line
+	void UpdateToggleButtons();
 	void OnSubTool(wxCommandEvent &event);
+public:
+	VisualToolDrag(VideoDisplay *parent, agi::Context *context);
+	void SetToolbar(wxToolBar *tb);
 };

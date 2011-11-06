@@ -1,29 +1,16 @@
-// Copyright (c) 2007, Rodrigo Braz Monteiro
-// All rights reserved.
+// Copyright (c) 2011, Thomas Goyne <plorkyeran@aegisub.org>
 //
-// Redistribution and use in source and binary forms, with or without
-// modification, are permitted provided that the following conditions are met:
+// Permission to use, copy, modify, and distribute this software for any
+// purpose with or without fee is hereby granted, provided that the above
+// copyright notice and this permission notice appear in all copies.
 //
-//   * Redistributions of source code must retain the above copyright notice,
-//     this list of conditions and the following disclaimer.
-//   * Redistributions in binary form must reproduce the above copyright notice,
-//     this list of conditions and the following disclaimer in the documentation
-//     and/or other materials provided with the distribution.
-//   * Neither the name of the Aegisub Group nor the names of its contributors
-//     may be used to endorse or promote products derived from this software
-//     without specific prior written permission.
-//
-// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-// AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-// IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
-// ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
-// LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
-// CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-// SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-// INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-// CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-// ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-// POSSIBILITY OF SUCH DAMAGE.
+// THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+// WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+// MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+// ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+// WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+// ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+// OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 //
 // Aegisub Project http://www.aegisub.org/
 //
@@ -36,6 +23,7 @@
 #pragma once
 
 #ifndef AGI_PRE
+#include <deque>
 #include <map>
 #include <set>
 #include <vector>
@@ -45,83 +33,158 @@
 #include <wx/button.h>
 #endif
 
-#include "base_grid.h"
+#include <libaegisub/signal.h>
+
 #include "gl_wrap.h"
+#include "selection_controller.h"
+#include "vector2d.h"
 
 class AssDialogue;
 class SubtitlesGrid;
 class VideoDisplay;
-struct VideoState;
+class wxToolBar;
 namespace agi {
 	struct Context;
 	class OptionValue;
 }
 
-/// First window id for visualsubtoolbar items
-#define VISUAL_SUB_TOOL_START 1300
+/// @class VisualToolBase
+/// @brief Base class for visual tools containing all functionality that doesn't interact with features
+///
+/// This is required so that visual tools can be used polymorphically, as
+/// different VisualTool<T>s are unrelated types otherwise. In addition, as much
+/// functionality as possible is implemented here to avoid having four copies
+/// of each method for no good reason (and four times as many error messages)
+class VisualToolBase : protected SelectionListener<AssDialogue> {
+	std::deque<agi::signal::Connection> connections;
 
-/// Last window id for visualsubtoolbar items
-#define VISUAL_SUB_TOOL_END (VISUAL_SUB_TOOL_START+100)
+	void OnCommit(int type);
+	void OnSeek(int new_frame);
 
-class IVisualTool : public OpenGLWrapper {
-protected:
-	/// DOCME
-	static const wxColour colour[4];
-public:
-	virtual void OnMouseEvent(wxMouseEvent &event)=0;
-	virtual void OnSubTool(wxCommandEvent &)=0;
-	virtual bool Update()=0;
-	virtual void Draw()=0;
-	virtual void Refresh()=0;
-	virtual void SetFrame(int frame)=0;
-	virtual ~IVisualTool() { };
-};
-
-struct ltaddr {
-	template<class T>
-	bool operator()(T lft, T rgt) const {
-		return &*lft < &*rgt;
-	}
-};
-
-/// DOCME
-/// @class VisualTool
-/// @brief DOCME
-/// DOCME
-template<class FeatureType>
-class VisualTool : public IVisualTool, protected SubtitleSelectionListener {
-protected:
-	typedef FeatureType Feature;
-	typedef typename std::list<FeatureType>::iterator feature_iterator;
-	typedef typename std::list<FeatureType>::const_iterator feature_const_iterator;
-private:
-	int dragStartX; /// Starting x coordinate of the current drag, if any
-	int dragStartY; /// Starting y coordinate of the current drag, if any
-
-	int commitId;
-
-	/// Set curFeature to the topmost feature under the mouse, or end() if there
-	/// are none
-	void GetHighlightedFeature();
+	void OnMouseCaptureLost(wxMouseCaptureLostEvent &);
 
 	/// @brief Get the dialogue line currently in the edit box
 	/// @return NULL if the line is not active on the current frame
 	AssDialogue *GetActiveDialogueLine();
 
+	// SubtitleSelectionListener implementation
+	void OnActiveLineChanged(AssDialogue *new_line);
+	void OnSelectedSetChanged(const Selection &lines_added, const Selection &lines_removed) { }
+
+	// Below here are the virtuals that must be implemented
+
+	/// Called when the script, video or screen resolutions change
+	virtual void OnCoordinateSystemsChanged() { DoRefresh(); }
+
+	/// Called when the file is changed by something other than a visual tool
+	virtual void OnFileChanged() { DoRefresh(); }
+
+	/// Called when the frame number changes
+	virtual void OnFrameChanged() { }
+
+	/// Called when the active line changes
+	virtual void OnLineChanged() { DoRefresh(); }
+
+	/// Generic refresh to simplify tools which have no interesting state and
+	/// can simply do do the same thing for any external change (i.e. most of
+	/// them). Called only by the above virtual methods.
+	virtual void DoRefresh() { }
+
+protected:
+	OpenGLWrapper gl;
+
+	/// Called when the user double-clicks
+	virtual void OnDoubleClick() { }
+
+	static const wxColour colour[4];
+
+	agi::Context *c;
+	VideoDisplay *parent;
+
+	bool holding; ///< Is a hold currently in progress?
+	AssDialogue *active_line; ///< Active dialogue line; NULL if it is not visible on the current frame
+	bool dragging; ///< Is a drag currently in progress?
+
+	int frame_number; ///< Current frame number
+
+	bool left_click; ///< Is a left click event currently being processed?
+	bool left_double; ///< Is a left double click event currently being processed?
+	bool shift_down; ///< Is shift down?
+	bool ctrl_down; ///< Is ctrl down?
+	bool alt_down; ///< Is alt down?
+
+	Vector2D mouse_pos; ///< Last seen mouse position
+	Vector2D drag_start; ///< Mouse position at the beginning of the last drag
+	Vector2D script_res; ///< Script resolution
+	Vector2D video_pos; ///< Top-left corner of the video in the display area
+	Vector2D video_res; ///< Video resolution
+
+	agi::signal::Connection file_changed_connection;
+	int commit_id; ///< Last used commit id for coalescing
+
+	/// @brief Commit the current file state
+	/// @param message Description of changes for undo
+	void Commit(wxString message = "");
+	bool IsDisplayed(AssDialogue *line) const;
+
+	/// Get the line's position if it's set, or it's default based on style if not
+	Vector2D GetLinePosition(AssDialogue *diag);
+	/// Get the line's origin if it's set, or Vector2D::Bad() if not
+	Vector2D GetLineOrigin(AssDialogue *diag);
+	bool GetLineMove(AssDialogue *diag, Vector2D &p1, Vector2D &p2, int &t1, int &t2);
+	void GetLineRotation(AssDialogue *diag, float &rx, float &ry, float &rz);
+	void GetLineScale(AssDialogue *diag, Vector2D &scale);
+	void GetLineClip(AssDialogue *diag, Vector2D &p1, Vector2D &p2, bool &inverse);
+	wxString GetLineVectorClip(AssDialogue *diag, int &scale, bool &inverse);
+
+	void SetOverride(AssDialogue* line, wxString const& tag, wxString const& value);
+	void SetSelectedOverride(wxString const& tag, wxString const& value);
+
+	VisualToolBase(VideoDisplay *parent, agi::Context *context);
+
+public:
+	/// Convert a point from video to script coordinates
+	Vector2D ToScriptCoords(Vector2D point) const;
+	/// Convert a point from script to video coordinates
+	Vector2D FromScriptCoords(Vector2D point) const;
+
+	// Stuff called by VideoDisplay
+	virtual void OnMouseEvent(wxMouseEvent &event)=0;
+	virtual void Draw()=0;
+	virtual void SetDisplayArea(int x, int y, int w, int h);
+	virtual void SetToolbar(wxToolBar *tb) { }
+	virtual ~VisualToolBase();
+};
+
+/// @class VisualTool
+/// @brief Visual tool base class containing all common feature-related functionality
+/// DOCME
+template<class FeatureType>
+class VisualTool : public VisualToolBase {
+protected:
+	typedef FeatureType Feature;
+	typedef typename std::list<FeatureType>::iterator feature_iterator;
+	typedef typename std::list<FeatureType>::const_iterator feature_const_iterator;
+
+private:
+	struct ltaddr {
+		template<class T>
+		bool operator()(T lft, T rgt) const {
+			return &*lft < &*rgt;
+		}
+	};
+
+	std::list<agi::signal::Connection> slots;
+
 	typedef typename std::set<feature_iterator, ltaddr>::iterator selection_iterator;
 
-	std::set<feature_iterator, ltaddr> selFeatures; /// Currently selected visual features
-	std::map<AssDialogue*, int> lineSelCount; /// Number of selected features for each line
-
-	bool selChanged; /// Has the selection already been changed in the current click?
+	bool sel_changed; /// Has the selection already been changed in the current click?
 
 	/// @brief Called when a hold is begun
 	/// @return Should the hold actually happen?
 	virtual bool InitializeHold() { return false; }
 	/// @brief Called on every mouse event during a hold
 	virtual void UpdateHold() { }
-	/// @brief Called at the end of a hold
-	virtual void CommitHold() { }
 
 	/// @brief Called at the beginning of a drag
 	/// @param feature The visual feature clicked on
@@ -130,67 +193,22 @@ private:
 	/// @brief Called on every mouse event during a drag
 	/// @param feature The current feature to process; not necessarily the one clicked on
 	virtual void UpdateDrag(feature_iterator feature) { }
-	/// @brief Called at the end of a drag
-	virtual void CommitDrag(feature_iterator feature) { }
 
-	/// Called when the file is changed by something other than a visual tool
-	virtual void OnFileChanged() { DoRefresh(); }
-	/// Called when the frame number changes
-	virtual void OnFrameChanged() { }
-	/// Called when curDiag changes
-	virtual void OnLineChanged() { DoRefresh(); }
-	/// Generic refresh to simplify tools which do the same thing for any
-	/// external change (i.e. almost all of them). Called only by the above
-	/// methods.
-	virtual void DoRefresh() { }
-
-	/// @brief Called when there's stuff
-	/// @return Should the display rerender?
-	virtual bool Update() { return false; };
 	/// @brief Draw stuff
 	virtual void Draw()=0;
 
 protected:
-	/// Read-only reference to the set of selected features for subclasses
-	const std::set<feature_iterator, ltaddr> &selectedFeatures;
+	std::set<feature_iterator, ltaddr> sel_features; ///< Currently selected visual features
 	typedef typename std::set<feature_iterator, ltaddr>::const_iterator sel_iterator;
-	agi::Context *c;
-	VideoDisplay *parent; /// VideoDisplay which this belongs to, used to frame conversion
-	bool holding; /// Is a hold currently in progress?
-	AssDialogue *curDiag; /// Active dialogue line; NULL if it is not visible on the current frame
-	bool dragging; /// Is a drag currently in progress?
-	bool externalChange; /// Only invalid drag lists when refreshing due to external changes
 
-	feature_iterator curFeature; /// Topmost feature under the mouse; generally only valid during a drag
-	std::list<FeatureType> features; /// List of features which are drawn and can be clicked on
-
-	int frameNumber; /// Current frame number
-	VideoState const& video; /// Mouse and video information
-
-	bool leftClick; /// Is a left click event currently being processed?
-	bool leftDClick; /// Is a left double click event currently being processed?
-	bool shiftDown; /// Is shift down?
-	bool ctrlDown; /// Is ctrl down?
-	bool altDown; /// Is alt down?
-
-	void GetLinePosition(AssDialogue *diag,int &x,int &y);
-	void GetLinePosition(AssDialogue *diag,int &x,int &y,int &orgx,int &orgy);
-	void GetLineMove(AssDialogue *diag,bool &hasMove,int &x1,int &y1,int &x2,int &y2,int &t1,int &t2);
-	void GetLineRotation(AssDialogue *diag,float &rx,float &ry,float &rz);
-	void GetLineScale(AssDialogue *diag,float &scalX,float &scalY);
-	void GetLineClip(AssDialogue *diag,int &x1,int &y1,int &x2,int &y2,bool &inverse);
-	wxString GetLineVectorClip(AssDialogue *diag,int &scale,bool &inverse);
-	void SetOverride(AssDialogue* line, wxString tag, wxString value);
+	/// Topmost feature under the mouse; generally only valid during a drag
+	feature_iterator active_feature;
+	/// List of features which are drawn and can be clicked on
+	/// List is used here for the iterator invalidation properties
+	std::list<FeatureType> features;
 
 	/// Draw all of the features in the list
 	void DrawAllFeatures();
-	/// @brief Commit the current file state
-	/// @param message Description of changes for undo
-	void Commit(wxString message = "");
-
-	/// @brief Add a feature (and its line) to the selection
-	/// @param i Index in the feature list
-	void AddSelection(feature_iterator feat);
 
 	/// @brief Remove a feature from the selection
 	/// @param i Index in the feature list
@@ -199,35 +217,15 @@ protected:
 
 	/// @brief Set the selection to a single feature, deselecting everything else
 	/// @param i Index in the feature list
-	void SetSelection(feature_iterator feat);
-
-	/// @brief Clear the selection
-	void ClearSelection();
-
-	// SubtitleSelectionListener implementation
-	void OnActiveLineChanged(AssDialogue *new_line);
-	virtual void OnSelectedSetChanged(const Selection &lines_added, const Selection &lines_removed) { }
+	void SetSelection(feature_iterator feat, bool clear);
 
 public:
 	/// @brief Handler for all mouse events
 	/// @param event Shockingly enough, the mouse event
 	void OnMouseEvent(wxMouseEvent &event);
 
-	/// @brief Event handler for the subtoolbar
-	virtual void OnSubTool(wxCommandEvent &) { }
-
-	/// @brief Signal that the file has changed
-	void Refresh();
-	/// @brief Signal that the current frame number has changed
-	/// @param newFrameNumber The new frame number
-	void SetFrame(int newFrameNumber);
-
-
 	/// @brief Constructor
 	/// @param parent The VideoDisplay to use for coordinate conversion
 	/// @param video Video and mouse information passing blob
-	VisualTool(VideoDisplay *parent, agi::Context *context, VideoState const& video);
-
-	/// @brief Destructor
-	virtual ~VisualTool();
+	VisualTool(VideoDisplay *parent, agi::Context *context);
 };

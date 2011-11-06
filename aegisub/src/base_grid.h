@@ -121,6 +121,8 @@ protected:
 	void AdjustScrollbar();
 	void SetColumnWidths();
 
+	bool IsDisplayed(const AssDialogue *line) const;
+
 	// Re-implement functions from BaseSelectionController to add batching
 	void AnnounceActiveLineChanged(AssDialogue *new_line);
 	void AnnounceSelectedSetChanged(const Selection &lines_added, const Selection &lines_removed);
@@ -139,7 +141,6 @@ public:
 	void EndBatch();
 	void SetByFrame(bool state);
 
-	bool IsDisplayed(const AssDialogue *line) const;
 	void SelectRow(int row, bool addToSelected = false, bool select=true);
 	int GetFirstSelRow() const;
 	wxArrayInt GetSelection() const;

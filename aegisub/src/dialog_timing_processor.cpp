@@ -55,7 +55,6 @@
 #include "utils.h"
 #include "validators.h"
 #include "video_context.h"
-#include "video_display.h"
 
 /// Window IDs
 enum {
