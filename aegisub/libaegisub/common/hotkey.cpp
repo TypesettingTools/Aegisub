@@ -182,6 +182,7 @@ void Hotkey::SetHotkeyMap(HotkeyMap const& new_map) {
 	for (HotkeyMap::iterator it = cmd_map.begin(); it != cmd_map.end(); ++it)
 		str_map.insert(make_pair(it->second.Str(), it->second));
 
+	Flush();
 	HotkeysChanged();
 }
 
