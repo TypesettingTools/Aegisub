@@ -526,7 +526,7 @@ fi
 if test "$with_alsa" != "no"; then
   aegisub_save_LDFLAGS="$LDFLAGS"
   LDFLAGS="$ALSA_LDFLAGS"
-  AC_CHECK_LIB([asound], [snd_pcm_open], [ALSA_LDFLAGS="-lasound"; with_alsa="yes"], [with_alsa="no"])
+  AC_CHECK_LIB([asound], [snd_pcm_open], [ALSA_LDFLAGS="-lasound -lrt"; with_alsa="yes"], [with_alsa="no"])
   LDFLAGS="$aegisub_save_LDFLAGS"
 fi
 
