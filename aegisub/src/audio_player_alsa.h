@@ -40,9 +40,34 @@
 
 #include "include/aegisub/audio_player.h"
 
-class AlsaPlayerFactory : public AudioPlayerFactory {
+#include <libaegisub/scoped_ptr.h>
+
+struct PlaybackState;
+
+class AlsaPlayer : public AudioPlayer {
+	agi::scoped_ptr<PlaybackState> ps;
+	pthread_t thread;
+	bool open;
+
 public:
-	AudioPlayer *CreatePlayer();
+	AlsaPlayer();
+	~AlsaPlayer();
+
+	void OpenStream();
+	void CloseStream();
+
+	void Play(int64_t start, int64_t count);
+	void Stop(bool timerToo=true);
+	bool IsPlaying();
+
+	int64_t GetStartPosition();
+	int64_t GetEndPosition();
+	int64_t GetCurrentPosition();
+	void SetEndPosition(int64_t pos);
+	void SetCurrentPosition(int64_t pos);
+
+	void SetVolume(double vol);
+	double GetVolume();
 };
 
 #endif

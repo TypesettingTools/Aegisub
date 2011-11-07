@@ -41,10 +41,14 @@
 #include <libaegisub/log.h>
 
 #include "audio_player_alsa.h"
+#include "include/aegisub/audio_provider.h"
 #include "compat.h"
 #include "frame_main.h"
-#include "options.h"
+#include "main.h"
+
+#ifndef AGI_PRE
 #include <algorithm>
+#endif
 
 class PthreadMutexLocker {
 	pthread_mutex_t &mutex;
@@ -142,36 +146,6 @@ struct PlaybackState {
 	}
 };
 
-
-class AlsaPlayer : public AudioPlayer {
-private:
-	PlaybackState ps;
-	pthread_t thread;
-	bool open;
-
-public:
-	AlsaPlayer();
-	~AlsaPlayer();
-
-	void OpenStream();
-	void CloseStream();
-
-	void Play(int64_t start, int64_t count);
-	void Stop(bool timerToo=true);
-	bool IsPlaying();
-
-	int64_t GetStartPosition();
-	int64_t GetEndPosition();
-	int64_t GetCurrentPosition();
-	void SetEndPosition(int64_t pos);
-	void SetCurrentPosition(int64_t pos);
-
-	void SetVolume(double vol);
-	double GetVolume();
-};
-
-
-
 void *playback_thread(void *arg)
 {
 	// This is exception-free territory!
@@ -183,7 +157,7 @@ void *playback_thread(void *arg)
 
 	snd_pcm_t *pcm = 0;
 	if (snd_pcm_open(&pcm, ps.device_name.c_str(), SND_PCM_STREAM_PLAYBACK, 0) != 0)
-		return "snd_pcm_open";
+		return (void*)"snd_pcm_open";
 	printf("alsa_player: opened pcm\n");
 
 do_setup:
@@ -200,7 +174,7 @@ do_setup:
 		break;
 	default:
 		snd_pcm_close(pcm);
-		return "snd_pcm_format_t";
+		return (void*)"snd_pcm_format_t";
 	}
 	if (snd_pcm_set_params(pcm,
 	                       pcm_format,
@@ -210,7 +184,7 @@ do_setup:
 	                       1, // allow resample
 	                       100*1000 // 100 milliseconds latency
 	                      ) != 0)
-		return "snd_pcm_set_params";
+		return (void*)"snd_pcm_set_params";
 	printf("alsa_player: set pcm params\n");
 
 	size_t framesize = ps.provider->GetChannels() * ps.provider->GetBytesPerSample();
@@ -252,7 +226,7 @@ do_setup:
 				delete[] buf;
 				snd_pcm_close(pcm);
 				printf("alsa_player: error filling buffer\n");
-				return "snd_pcm_writei";
+				return (void*)"snd_pcm_writei";
 			}
 		}
 		delete[] buf;
@@ -309,8 +283,8 @@ do_setup:
 				{
 					delete[] buf;
 					snd_pcm_close(pcm);
-					printf("alsa_player: error filling buffer, written=%d\n", written);
-					return "snd_pcm_writei";
+					printf("alsa_player: error filling buffer, written=%d\n", (int)written);
+					return (void*)"snd_pcm_writei";
 				}
 			}
 			delete[] buf;
@@ -344,7 +318,7 @@ do_setup:
 		case SND_PCM_STATE_DISCONNECTED:
 			// lost device, close the handle and return error
 			snd_pcm_close(pcm);
-			return "SND_PCM_STATE_DISCONNECTED";
+			return (void*)"SND_PCM_STATE_DISCONNECTED";
 
 		default:
 			// everything else should either be fine or impossible (here)
@@ -361,8 +335,8 @@ do_setup:
 
 
 AlsaPlayer::AlsaPlayer()
+: ps(new PlaybackState)
 {
-	ps.Reset();
 	open = false;
 }
 
@@ -379,13 +353,13 @@ void AlsaPlayer::OpenStream()
 
 	CloseStream();
 
-	ps.Reset();
-	ps.provider = GetProvider();
+	ps->Reset();
+	ps->provider = GetProvider();
 
 	wxString device_name = lagi_wxString(OPT_GET("Player/Audio/ALSA/Device")->GetString());
-	ps.device_name = std::string(device_name.utf8_str());
+	ps->device_name = std::string(device_name.utf8_str());
 
-	if (pthread_create(&thread, 0, &playback_thread, &ps) == 0)
+	if (pthread_create(&thread, 0, &playback_thread, ps.get()) == 0)
 	{
 		open = true;
 	}
@@ -401,11 +375,11 @@ void AlsaPlayer::CloseStream()
 	if (!open) return;
 
 	{
-		PthreadMutexLocker ml(ps.mutex);
-		ps.signal_stop = true;
-		ps.signal_close = true;
+		PthreadMutexLocker ml(ps->mutex);
+		ps->signal_stop = true;
+		ps->signal_close = true;
 		printf("AlsaPlayer: close stream, stop+close signal\n");
-		pthread_cond_signal(&ps.cond);
+		pthread_cond_signal(&ps->cond);
 	}
 
 	pthread_join(thread, 0); // FIXME: check for errors
@@ -419,12 +393,12 @@ void AlsaPlayer::Play(int64_t start, int64_t count)
 	OpenStream();
 
 	{
-		PthreadMutexLocker ml(ps.mutex);
-		ps.signal_start = true;
-		ps.signal_stop = true; // make sure to stop any ongoing playback first
-		ps.start_position = start;
-		ps.end_position = start + count;
-		pthread_cond_signal(&ps.cond);
+		PthreadMutexLocker ml(ps->mutex);
+		ps->signal_start = true;
+		ps->signal_stop = true; // make sure to stop any ongoing playback first
+		ps->start_position = start;
+		ps->end_position = start + count;
+		pthread_cond_signal(&ps->cond);
 	}
 
 	if (displayTimer && !displayTimer->IsRunning()) displayTimer->Start(15);
@@ -436,10 +410,10 @@ void AlsaPlayer::Stop(bool timerToo)
 	if (!open) return;
 
 	{
-		PthreadMutexLocker ml(ps.mutex);
-		ps.signal_stop = true;
+		PthreadMutexLocker ml(ps->mutex);
+		ps->signal_stop = true;
 		printf("AlsaPlayer: stop stream, stop signal\n");
-		pthread_cond_signal(&ps.cond);
+		pthread_cond_signal(&ps->cond);
 	}
 
 	if (timerToo && displayTimer) {
@@ -449,15 +423,15 @@ void AlsaPlayer::Stop(bool timerToo)
 
 bool AlsaPlayer::IsPlaying()
 {
-	return open && ps.playing;
+	return open && ps->playing;
 }
 
 
 void AlsaPlayer::SetEndPosition(int64_t pos)
 {
 	if (!open) return;
-	PthreadMutexLocker ml(ps.mutex);
-	ps.end_position = pos;
+	PthreadMutexLocker ml(ps->mutex);
+	ps->end_position = pos;
 }
 
 
@@ -465,27 +439,27 @@ void AlsaPlayer::SetCurrentPosition(int64_t pos)
 {
 	if (!open) return;
 
-	PthreadMutexLocker ml(ps.mutex);
+	PthreadMutexLocker ml(ps->mutex);
 
-	if (!ps.playing) return;
+	if (!ps->playing) return;
 
-	ps.start_position = pos;
-	ps.signal_start = true;
-	ps.signal_stop = true;
+	ps->start_position = pos;
+	ps->signal_start = true;
+	ps->signal_stop = true;
 	printf("AlsaPlayer: set position, stop+start signal\n");
-	pthread_cond_signal(&ps.cond);
+	pthread_cond_signal(&ps->cond);
 }
 
 int64_t AlsaPlayer::GetStartPosition()
 {
 	if (!open) return 0;
-	return ps.start_position;
+	return ps->start_position;
 }
 
 int64_t AlsaPlayer::GetEndPosition()
 {
 	if (!open) return 0;
-	return ps.end_position;
+	return ps->end_position;
 }
 
 
@@ -498,10 +472,10 @@ int64_t AlsaPlayer::GetCurrentPosition()
 	int64_t samplerate;
 
 	{
-		//PthreadMutexLocker ml(ps.mutex);
-		lastpos = ps.last_position;
-		lasttime = ps.last_position_time;
-		samplerate = ps.provider->GetSampleRate();
+		//PthreadMutexLocker ml(ps->mutex);
+		lastpos = ps->last_position;
+		lasttime = ps->last_position_time;
+		samplerate = ps->provider->GetSampleRate();
 	}
 
 	timespec now;
@@ -522,26 +496,18 @@ int64_t AlsaPlayer::GetCurrentPosition()
 void AlsaPlayer::SetVolume(double vol)
 {
 	if (!open) return;
-	PthreadMutexLocker ml(ps.mutex);
-	ps.volume = vol;
-	ps.signal_volume = true;
-	pthread_cond_signal(&ps.cond);
+	PthreadMutexLocker ml(ps->mutex);
+	ps->volume = vol;
+	ps->signal_volume = true;
+	pthread_cond_signal(&ps->cond);
 }
 
 
 double AlsaPlayer::GetVolume()
 {
 	if (!open) return 1.0;
-	PthreadMutexLocker ml(ps.mutex);
-	return ps.volume;
-}
-
-
-// The factory method
-AudioPlayer * AlsaPlayerFactory::CreatePlayer()
-{
-	return new AlsaPlayer();
+	PthreadMutexLocker ml(ps->mutex);
+	return ps->volume;
 }
 
 #endif // WITH_ALSA
-

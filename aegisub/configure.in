@@ -513,10 +513,10 @@ fi
 AC_ARG_WITH(alsa, [  --without-alsa          build without ALSA audio provider. (default: auto)], alsa_disabled="(disabled)")
 
 AC_ARG_VAR([ALSA_CFLAGS], [CFLAGS to use for ALSA (default: CPPFLAGS)])
-AC_ARG_VAR([ALSA_LDFLAGS], [LDFLAGS to use for ALSA (default: -lasound)])
+AC_ARG_VAR([ALSA_LDFLAGS], [LDFLAGS to use for ALSA (default: -lasound -lrt)])
 
 if test -z "$ALSA_LDFLAGS"; then
-  ALSA_LDFLAGS="-lasound";
+  ALSA_LDFLAGS="-lasound -lrt";
 fi
 
 if test -z "$ALSA_CFLAGS"; then
