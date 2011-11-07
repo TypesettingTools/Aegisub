@@ -88,7 +88,7 @@ namespace {
 	inline void get_if_right_type(lua_State *L, int &def)
 	{
 		if (lua_isnumber(L, -1))
-			def = std::max(lua_tointeger(L, -1), def);
+			def = std::max<int>(lua_tointeger(L, -1), def);
 	}
 
 	inline void get_if_right_type(lua_State *L, bool &def)

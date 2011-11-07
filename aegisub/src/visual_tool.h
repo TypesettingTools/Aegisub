@@ -24,6 +24,7 @@
 
 #ifndef AGI_PRE
 #include <deque>
+#include <list>
 #include <map>
 #include <set>
 #include <vector>

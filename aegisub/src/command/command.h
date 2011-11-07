@@ -22,6 +22,7 @@
 #ifndef AGI_PRE
 #include <map>
 #include <string>
+#include <vector>
 
 #include <wx/bitmap.h>
 #include <wx/string.h>

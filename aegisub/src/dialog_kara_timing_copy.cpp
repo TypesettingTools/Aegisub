@@ -397,7 +397,7 @@ void KaraokeLineMatchDisplay::IncreaseSourceMatch()
 
 void KaraokeLineMatchDisplay::DecreaseSourceMatch()
 {
-	source_sel_length = std::max(source_sel_length, 1u) - 1;
+	source_sel_length = std::max<size_t>(source_sel_length, 1) - 1;
 	Refresh(true);
 }
 
@@ -409,7 +409,7 @@ void KaraokeLineMatchDisplay::IncreseDestinationMatch()
 
 void KaraokeLineMatchDisplay::DecreaseDestinationMatch()
 {
-	destination_sel_length = std::max(destination_sel_length, 1u) - 1;
+	destination_sel_length = std::max<size_t>(destination_sel_length, 1) - 1;
 	Refresh(true);
 }
 

@@ -41,6 +41,10 @@
 #include "ass_file.h"
 #include "include/aegisub/context.h"
 
+#ifndef AGI_PRE
+#include <algorithm>
+#endif
+
 static inline std::list<AssExportFilter*>::const_iterator filter_list_begin() {
 	return AssExportFilterChain::GetFilterList()->begin();
 }

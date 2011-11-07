@@ -441,14 +441,14 @@ Vector2D VisualToolBase::GetLinePosition(AssDialogue *diag) {
 		x = margin[0];
 	else if (hor == 1)
 		x = (script_res.X() + margin[0] - margin[1]) / 2;
-	else if (hor == 2)
+	else
 		x = margin[1];
 
 	if (vert == 0)
 		y = script_res.Y() - margin[2];
 	else if (vert == 1)
 		y = script_res.Y() / 2;
-	else if (vert == 2)
+	else
 		y = margin[2];
 
 	return Vector2D(x, y);

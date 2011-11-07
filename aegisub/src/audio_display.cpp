@@ -734,7 +734,7 @@ void AudioDisplay::ReloadRenderingSettings()
 		// FFTW is so fast we can afford to upgrade quality by two levels
 		spectrum_quality += 2;
 #endif
-		spectrum_quality = mid(0LL, spectrum_quality, 5LL);
+		spectrum_quality = mid<int64_t>(0, spectrum_quality, 5);
 
 		// Quality indexes:        0  1  2  3   4   5
 		int spectrum_width[]    = {8, 9, 9, 9, 10, 11};
