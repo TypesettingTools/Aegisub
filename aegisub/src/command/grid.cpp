@@ -183,7 +183,7 @@ struct grid_swap_up : public Command {
 	STR_HELP("Move the selected line up one row")
 	CMD_TYPE(COMMAND_VALIDATE)
 
-	bool Validate(agi::Context *c) {
+	bool Validate(const agi::Context *c) {
 		return c->selectionController->GetActiveLine() != 0;
 	}
 
@@ -203,15 +203,15 @@ struct grid_swap_down : public Command {
 	STR_HELP("Move the selected line down one row")
 	CMD_TYPE(COMMAND_VALIDATE)
 
-	bool Validate(agi::Context *c) {
+	bool Validate(const agi::Context *c) {
 		return c->selectionController->GetActiveLine() != 0;
 	}
 
-		void operator()(agi::Context *c) {
-			if (AssDialogue *line = c->selectionController->GetActiveLine()) {
-				if (move_one(c->ass->Line.begin(), c->ass->Line.end(), line))
-					c->ass->Commit(_("swap lines"), AssFile::COMMIT_ORDER);
-			}
+	void operator()(agi::Context *c) {
+		if (AssDialogue *line = c->selectionController->GetActiveLine()) {
+			if (move_one(c->ass->Line.begin(), c->ass->Line.end(), line))
+				c->ass->Commit(_("swap lines"), AssFile::COMMIT_ORDER);
+		}
 	}
 };
 }

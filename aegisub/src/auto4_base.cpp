@@ -208,7 +208,7 @@ namespace Automation4 {
 			config_dialog = 0;
 		}
 
-		if (config_dialog = GenerateConfigDialog(parent, c)) {
+		if ((config_dialog = GenerateConfigDialog(parent, c))) {
 			wxString val = c->ass->GetScriptInfo(GetScriptSettingsIdentifier());
 			if (!val.empty())
 				config_dialog->Unserialise(val);

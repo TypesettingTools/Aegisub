@@ -60,8 +60,8 @@
 #include "video_context.h"
 
 class AudioMarkerKeyframe : public AudioMarker {
-	int64_t position;
 	Pen *style;
+	int64_t position;
 public:
 	AudioMarkerKeyframe(Pen *style, int64_t position) : style(style), position(position) { }
 	int64_t GetPosition() const { return position; }
@@ -140,8 +140,8 @@ public:
 };
 
 class VideoPositionMarker : public AudioMarker {
-	int64_t position;
 	Pen style;
+	int64_t position;
 
 public:
 	VideoPositionMarker()

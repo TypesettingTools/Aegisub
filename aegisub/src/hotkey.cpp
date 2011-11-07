@@ -45,7 +45,6 @@ void clear() {
 
 static std::vector<std::string> keycode_names;
 
-static std::string const& get_keycode_name(int code);
 static void init_keycode_names();
 
 static std::string const& keycode_name(int code) {

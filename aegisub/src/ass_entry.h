@@ -91,7 +91,7 @@ namespace Aegisub {
 		/// @brief DOCME
 		/// @return 
 		///
-		const char *GetName() { return "internal_error/invalid_margin_id"; }
+		const char *GetName() const { return "internal_error/invalid_margin_id"; }
 	};
 }
 

@@ -93,9 +93,9 @@ public:
 				}
 			}
 
-			if (src_bytes_per_sample > sizeof(Target))
+			if (static_cast<size_t>(src_bytes_per_sample) > sizeof(Target))
 				sample >>= (src_bytes_per_sample - sizeof(Target)) * 8;
-			else if (src_bytes_per_sample < sizeof(Target))
+			else if (static_cast<size_t>(src_bytes_per_sample) < sizeof(Target))
 				sample <<= (sizeof(Target) - src_bytes_per_sample ) * 8;
 
 			dest[i] = (Target)sample;

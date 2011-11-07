@@ -34,7 +34,7 @@
 #include "libaegisub/line_iterator.h"
 
 namespace std {
-	template<> void swap(agi::vfr::Framerate &lft, agi::vfr::Framerate &rgt) throw() {
+	template<> void swap(agi::vfr::Framerate &lft, agi::vfr::Framerate &rgt) {
 		lft.swap(rgt);
 	}
 }

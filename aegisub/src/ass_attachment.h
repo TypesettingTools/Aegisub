@@ -95,7 +95,7 @@ public:
 
 	/// @brief DOCME
 	///
-	ASS_EntryType GetType() { return ENTRY_ATTACHMENT; }
+	ASS_EntryType GetType() const { return ENTRY_ATTACHMENT; }
 	AssEntry *Clone() const;
 
 	AssAttachment(wxString name);

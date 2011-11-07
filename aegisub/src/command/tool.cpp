@@ -149,7 +149,7 @@ struct tool_style_assistant : public Command {
 struct tool_styling_assistant_validator : public Command {
 	CMD_TYPE(COMMAND_VALIDATE)
 
-	bool Validate(agi::Context *c) {
+	bool Validate(const agi::Context *c) {
 		return !!c->stylingAssistant;
 	}
 };
@@ -237,7 +237,7 @@ struct tool_translation_assistant : public Command {
 struct tool_translation_assistant_validator : public Command {
 	CMD_TYPE(COMMAND_VALIDATE)
 
-	bool Validate(agi::Context *c) {
+	bool Validate(const agi::Context *c) {
 		return !!c->translationAssistant;
 	}
 };

@@ -704,7 +704,7 @@ void SubsEditBox::SetTag(wxString tag, wxString value, bool atEnd) {
 		AssDialogueBlock *block = line->Blocks[blockn];
 		if (dynamic_cast<AssDialogueBlockDrawing*>(block))
 			--blockn;
-		else if (plain = dynamic_cast<AssDialogueBlockPlain*>(block)) {
+		else if ((plain = dynamic_cast<AssDialogueBlockPlain*>(block))) {
 			// Cursor is in a comment block, so try the previous block instead
 			if (plain->GetText().StartsWith("{")) {
 				--blockn;

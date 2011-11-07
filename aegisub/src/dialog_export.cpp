@@ -180,7 +180,7 @@ void DialogExport::OnChange(wxCommandEvent &) {
 
 // Swap the items at idx and idx + 1
 static void swap(wxCheckListBox *list, int idx, int sel_dir) {
-	if (idx < 0 || idx + 1 == list->GetCount()) return;
+	if (idx < 0 || idx + 1 == (int)list->GetCount()) return;
 
 	list->Freeze();
 	wxString tempname = list->GetString(idx);
