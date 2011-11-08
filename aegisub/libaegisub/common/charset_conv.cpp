@@ -127,7 +127,6 @@ class Converter {
 public:
 	// subst is not used here because POSIX doesn't let you disable substitution
 	Converter(bool, const char* sourceEncoding, const char* destEncoding)
-		: cd(cd)
 	{
 		const char *dstEnc = GetRealEncodingName(destEncoding);
 		cd = iconv_open(dstEnc, "UTF-8");
