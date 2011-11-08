@@ -5,7 +5,7 @@ AC_DEFUN([AC_AGI_COMPILE],[
   LDFLAGS="$4"
       AC_CACHE_CHECK(
         [whether $1 works], [agi_cv_with_$2],
-        [AC_RUN_IFELSE([$5],
+        [AC_RUN_IFELSE([AC_LANG_SOURCE([$5])],
         [eval agi_cv_with_$2="yes"],
         [eval agi_cv_with_$2="no"],
 		[if test $? -ne 0; then
@@ -30,7 +30,7 @@ AC_DEFUN([AC_AGI_LINK],[
     LDFLAGS="$5"
     AC_CACHE_CHECK(
       [whether $1 works], [agi_cv_with_$2],
-      [AC_LINK_IFELSE([$6],
+      [AC_LINK_IFELSE([AC_LANG_SOURCE([$6])],
       [eval agi_cv_with_$2="yes"],
       [eval agi_cv_with_$2="no"])
     ])
