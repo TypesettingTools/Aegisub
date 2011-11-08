@@ -624,7 +624,10 @@ void BaseGrid::GetRowStrings(int row, AssDialogue *line, bool *paint_columns, wx
 
 		// Hidden overrides
 		if (mode == 1 || mode == 2) {
-			wxString replaceWith = lagi_wxString(OPT_GET("Subtitle/Grid/Hide Overrides Char")->GetString());
+			wxString replaceWith;
+			if (mode == 1)
+				replaceWith = lagi_wxString(OPT_GET("Subtitle/Grid/Hide Overrides Char")->GetString());
+
 			strings[10].reserve(line->Text.size());
 			size_t start = 0, pos;
 			while ((pos = line->Text.find('{', start)) != wxString::npos) {
