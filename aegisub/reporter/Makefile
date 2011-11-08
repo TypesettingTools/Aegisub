@@ -12,7 +12,7 @@ PRECOMPILED_HEADER_NAME=r_pre.h
 #endif
 
 CXXFLAGS += -Iinclude $(CFLAGS_WX) -I../libaegisub/include
-LDFLAGS += $(LDFLAGS_WX) $(LDFLAGS_LIBCURL) -L../libaegisub -laegisub-3.0 $(LDFLAGS_UCHARDET) -Wl,-rpath ../libaegisub
+LDFLAGS += $(LDFLAGS_WX) $(LDFLAGS_LIBCURL) -L../libaegisub -laegisub-3.0 $(LDFLAGS_UCHARDET) -Wl,-rpath ../libaegisub $(LDFLAGS_GL)
 
 ifeq (yes, $(HAVE_PROVIDER_FFMPEGSOURCE))
 LDFLAGS += $(LDFLAGS_LIBAVFORMAT) $(LDFLAGS_LIBAVCODEC) $(LDFLAGS_LIBSWSCALE) $(LDFLAGS_LIBAVUTIL) $(LDFLAGS_LIBPOSTPROC)
