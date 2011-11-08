@@ -60,8 +60,8 @@ SRC_OPT += audio_provider_ffmpegsource.cpp video_provider_ffmpegsource.cpp ffmpe
 audio_provider_ffmpegsource.o video_provider_ffmpegsource.o ffmpegsource_common.o: \
 	CXXFLAGS += $(CFLAGS_FFMS)
 ffmpegsource_common.o: CXXFLAGS += -D__STDC_FORMAT_MACROS
-LDFLAGS += $(LDFLAGS_FFMPEGSOURCE)
-LDFLAGS_POST += $(LDFLAGS_FFMPEGSOURCE)
+LDFLAGS += $(LDFLAGS_FFMS)
+LDFLAGS_POST += $(LDFLAGS_FFMS)
 endif
 
 

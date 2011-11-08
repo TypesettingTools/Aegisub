@@ -681,6 +681,9 @@ AC_ARG_WITH(ffms,[  --without-ffms          build without ffms2 A/V provider. (d
 if test "$with_ffms" != "no"; then
   PKG_CHECK_MODULES(FFMS, ffms2 >= ffms_required_version, [with_ffms="yes"], [with_ffms="no"])
 fi
+if test "$with_ffms" != "no"; then
+  AC_DEFINE(WITH_FFMPEGSOURCE, 1, [Enable FFMS2 support])
+fi
 
 AC_SUBST(with_ffms)
 
@@ -691,6 +694,9 @@ AC_ARG_WITH(libass,[  --without-libass        build without libass support (defa
 
 if test "$with_libass" != "no"; then
   PKG_CHECK_MODULES(LIBASS, libass >= libass_required_version, [with_libass="yes"], [with_libass="no"])
+fi
+if test "$with_libass" != "no"; then
+  AC_DEFINE(WITH_LIBASS, 1, [Enable libass support])
 fi
 
 AC_SUBST(with_libass)
