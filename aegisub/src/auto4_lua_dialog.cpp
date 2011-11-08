@@ -68,8 +68,7 @@
 #include "../../contrib/lua51/src/lualib.h"
 #include "../../contrib/lua51/src/lauxlib.h"
 #else
-#include <lualib.h>
-#include <lauxlib.h>
+#include <lua.hpp>
 #endif
 
 namespace {
