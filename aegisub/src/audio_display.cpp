@@ -206,7 +206,7 @@ public:
 		dc.DrawRectangle(thumb);
 	}
 };
-
+const int AudioDisplayScrollbar::min_width;
 
 
 class AudioDisplayTimeline : public AudioDisplayInteractionObject {
