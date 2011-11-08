@@ -46,114 +46,19 @@
 #include <wx/tokenzr.h>
 #endif
 
-#include "command/command.h"
+#include "subs_grid.h"
+
 #include "include/aegisub/context.h"
-#include "include/aegisub/audio_provider.h"
-#include "include/aegisub/menu.h"
 
 #include "ass_dialogue.h"
 #include "ass_file.h"
-#include "ass_override.h"
-#include "ass_style.h"
-#include "audio_controller.h"
-#include "charset_conv.h"
 #include "dialog_paste_over.h"
-#include "frame_main.h"
-#include "main.h"
-#include "subs_grid.h"
 #include "utils.h"
 #include "video_context.h"
 
-BEGIN_EVENT_TABLE(SubtitlesGrid, BaseGrid)
-	EVT_MENU_RANGE(MENU_SHOW_COL,MENU_SHOW_COL+15,SubtitlesGrid::OnShowColMenu)
-END_EVENT_TABLE()
-
 SubtitlesGrid::SubtitlesGrid(wxWindow *parent, agi::Context *context,  const wxSize& size, long style, const wxString& name)
 : BaseGrid(parent,context,size,style,name)
-, seekListener(context->videoController->AddSeekListener(&SubtitlesGrid::Refresh, this, false, (const wxRect *)NULL))
-, context_menu(0)
 {
-	OnHighlightVisibleChange(*OPT_GET("Subtitle/Grid/Highlight Subtitles in Frame"));
-	OPT_SUB("Subtitle/Grid/Highlight Subtitles in Frame", &SubtitlesGrid::OnHighlightVisibleChange, this);
-	OPT_SUB("Subtitle/Grid/Hide Overrides", std::tr1::bind(&SubtitlesGrid::Refresh, this, false, (const wxRect*)0));
-	context->ass->AddCommitListener(&SubtitlesGrid::OnSubtitlesCommit, this);
-	context->ass->AddFileOpenListener(&SubtitlesGrid::OnSubtitlesOpen, this);
-}
-
-/// @brief Destructor 
-SubtitlesGrid::~SubtitlesGrid() {
-	delete context_menu;
-}
-
-void SubtitlesGrid::OnSubtitlesCommit(int type) {
-	if (type == AssFile::COMMIT_NEW)
-		UpdateMaps(true);
-	else if (type & AssFile::COMMIT_ORDER || type & AssFile::COMMIT_DIAG_ADDREM)
-		UpdateMaps(false);
-
-	if (type & AssFile::COMMIT_DIAG_META) {
-		SetColumnWidths();
-		Refresh(false);
-		return;
-	}
-	if (type & AssFile::COMMIT_DIAG_TIME)
-		RefreshRect(wxRect(time_cols_x, 0, time_cols_w, GetClientSize().GetHeight()), false);
-	if (type & AssFile::COMMIT_DIAG_TEXT)
-		RefreshRect(wxRect(text_col_x, 0, text_col_w, GetClientSize().GetHeight()), false);
-}
-
-void SubtitlesGrid::OnSubtitlesOpen() {
-	BeginBatch();
-	ClearMaps();
-	UpdateMaps();
-
-	if (GetRows()) {
-		SetActiveLine(GetDialogue(0));
-		SelectRow(0);
-	}
-	EndBatch();
-	SetColumnWidths();
-}
-
-void SubtitlesGrid::OpenHeaderContextMenu() {
-	const wxString strings[] = {
-		_("Line Number"),
-		_("Layer"),
-		_("Start"),
-		_("End"),
-		_("Style"),
-		_("Actor"),
-		_("Effect"),
-		_("Left"),
-		_("Right"),
-		_("Vert"),
-	};
-
-	// Create Menu
-	wxMenu menu;
-	for (size_t i=0;i<columns;i++) {
-		menu.Append(MENU_SHOW_COL + i,strings[i],"",wxITEM_CHECK)->Check(showCol[i]);
-	}
-	PopupMenu(&menu);
-}
-
-void SubtitlesGrid::OpenBodyContextMenu() {
-	if (!context_menu) context_menu = menu::GetMenu("grid_context", context);
-	menu::OpenPopupMenu(context_menu, this);
-}
-
-/// @brief Process a show/hide column event 
-/// @param event 
-void SubtitlesGrid::OnShowColMenu(wxCommandEvent &event) {
-	int item = event.GetId()-MENU_SHOW_COL;
-	showCol[item] = !showCol[item];
-
-	std::vector<bool> map(showCol, showCol + columns);
-	OPT_SET("Subtitle/Grid/Column")->SetListBool(map);
-
-	// Update
-	SetColumnWidths();
-	Refresh(false);
 }
 
 static void trim_text(AssDialogue *diag) {
@@ -162,6 +67,7 @@ static void trim_text(AssDialogue *diag) {
 	start.ReplaceFirst(&diag->Text, "");
 	end.ReplaceFirst(&diag->Text, "");
 }
+
 static void expand_times(AssDialogue *src, AssDialogue *dst) {
 	dst->Start.SetMS(std::min(dst->Start.GetMS(), src->Start.GetMS()));
 	dst->End.SetMS(std::max(dst->End.GetMS(), src->End.GetMS()));
@@ -551,13 +457,4 @@ void SubtitlesGrid::SetSelectionFromAbsolute(std::vector<int> &selection) {
 	}
 
 	SetSelectedSet(newsel);
-}
-
-void SubtitlesGrid::OnHighlightVisibleChange(agi::OptionValue const& opt) {
-	if (opt.GetBool()) {
-		seekListener.Unblock();
-	}
-	else {
-		seekListener.Block();
-	}
 }

@@ -35,9 +35,6 @@
 ///
 
 #ifndef AGI_PRE
-#include <fstream>
-#include <iostream>
-#include <list>
 #include <vector>
 
 #include <wx/grid.h>
@@ -46,35 +43,14 @@
 
 #include "base_grid.h"
 
-#include <libaegisub/signal.h>
-
-namespace agi { class OptionValue; }
-
-class AssEntry;
-class wxMenu;
-
 /// DOCME
 /// @class SubtitlesGrid
 /// @brief DOCME
 ///
 /// DOCME
 class SubtitlesGrid: public BaseGrid {
-	agi::signal::Connection seekListener;
-	wxMenu *context_menu;
-
-	void OpenHeaderContextMenu();
-	void OpenBodyContextMenu();
-
-	void OnShowColMenu(wxCommandEvent &event);
-
-	void OnHighlightVisibleChange(agi::OptionValue const& opt);
-
-	void OnSubtitlesCommit(int type);
-	void OnSubtitlesOpen();
-
 public:
 	SubtitlesGrid(wxWindow *parent, agi::Context *context, const wxSize& size = wxDefaultSize, long style = wxWANTS_CHARS, const wxString& name = wxPanelNameStr);
-	~SubtitlesGrid();
 
 	/// @brief Adjoins selected lines, setting each line's start time to the previous line's end time
 	/// @param n1       First line to adjoin
@@ -113,11 +89,4 @@ public:
 	/// @brief Update list of selected lines from absolute selection
 	/// @param selection Sorted list of selections
 	void SetSelectionFromAbsolute(std::vector<int> &selection);
-
-	DECLARE_EVENT_TABLE()
-};
-
-/// Menu event IDs
-enum {
-	MENU_SHOW_COL = 1250 // Don't put anything after this
 };

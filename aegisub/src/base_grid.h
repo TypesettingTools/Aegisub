@@ -38,7 +38,6 @@
 #pragma once
 
 #ifndef AGI_PRE
-#include <list>
 #include <map>
 #include <vector>
 
@@ -46,12 +45,15 @@
 #include <wx/scrolbar.h>
 #endif
 
+#include <libaegisub/signal.h>
+
 #include "selection_controller.h"
 
-namespace agi { struct Context; }
-class AssEntry;
+namespace agi {
+	struct Context;
+	class OptionValue;
+}
 class AssDialogue;
-class SubsEditBox;
 
 typedef SelectionController<AssDialogue> SubtitleSelectionController;
 typedef SelectionListener<AssDialogue> SubtitleSelectionListener;
@@ -91,22 +93,28 @@ class BaseGrid : public wxWindow, public BaseSelectionController<AssDialogue> {
 	/// is completed; should be a subset of selection
 	Selection batch_selection_removed;
 
+	/// Connection for video seek event. Stored explicitly so that it can be
+	/// blocked if the relevant option is disabled
+	agi::signal::Connection seek_listener;
+
+	/// Cached grid body context menu
+	wxMenu *context_menu;
+
 	void OnContextMenu(wxContextMenuEvent &evt);
-	void OnPaint(wxPaintEvent &event);
-	void OnSize(wxSizeEvent &event);
-	void OnScroll(wxScrollEvent &event);
-	void OnMouseEvent(wxMouseEvent &event);
+	void OnHighlightVisibleChange(agi::OptionValue const& opt);
 	void OnKeyDown(wxKeyEvent &event);
+	void OnMouseEvent(wxMouseEvent &event);
+	void OnPaint(wxPaintEvent &event);
+	void OnScroll(wxScrollEvent &event);
+	void OnShowColMenu(wxCommandEvent &event);
+	void OnSize(wxSizeEvent &event);
+	void OnSubtitlesCommit(int type);
+	void OnSubtitlesOpen();
 
 	void DrawImage(wxDC &dc, bool paint_columns[]);
 	void ScrollTo(int y);
 
-	virtual void OpenHeaderContextMenu() { }
-	virtual void OpenBodyContextMenu() { }
-
-protected:
 	int colWidth[16];      ///< Width in pixels of each column
-	agi::Context *context; ///< Current project context
 
 	int time_cols_x; ///< Left edge of the times columns
 	int time_cols_w; ///< Width of the two times columns
@@ -126,6 +134,9 @@ protected:
 	// Re-implement functions from BaseSelectionController to add batching
 	void AnnounceActiveLineChanged(AssDialogue *new_line);
 	void AnnounceSelectedSetChanged(const Selection &lines_added, const Selection &lines_removed);
+
+protected:
+	agi::Context *context; ///< Current project context
 
 public:
 	// SelectionController implementation
@@ -155,7 +166,14 @@ public:
 	int GetRows() const { return index_line_map.size(); }
 	void MakeCellVisible(int row, int col,bool center=true);
 
+	/// @brief Get dialogue by index
+	/// @param n Index to look up
+	/// @return Subtitle dialogue line for index, or 0 if invalid index
 	AssDialogue *GetDialogue(int n) const;
+
+	/// @brief Get index by dialogue line
+	/// @param diag Dialogue line to look up
+	/// @return Subtitle index for object, or -1 if unknown subtitle
 	int GetDialogueIndex(AssDialogue *diag) const;
 
 	BaseGrid(wxWindow* parent, agi::Context *context, const wxSize& size = wxDefaultSize, long style = wxWANTS_CHARS, const wxString& name = wxPanelNameStr);

@@ -45,6 +45,7 @@
 #include <wx/dcclient.h>
 #include <wx/dcmemory.h>
 #include <wx/kbdstate.h>
+#include <wx/menu.h>
 #include <wx/sizer.h>
 #endif
 
@@ -52,6 +53,7 @@
 
 #include "include/aegisub/context.h"
 #include "include/aegisub/hotkey.h"
+#include "include/aegisub/menu.h"
 
 #include "ass_dialogue.h"
 #include "ass_file.h"
@@ -64,7 +66,8 @@
 #include "video_slider.h"
 
 enum {
-	GRID_SCROLLBAR = 1730
+	GRID_SCROLLBAR = 1730,
+	MENU_SHOW_COL = 1250 // Needs 15 IDs after this
 };
 
 template<class S1, class S2, class D>
@@ -86,6 +89,8 @@ BaseGrid::BaseGrid(wxWindow* parent, agi::Context *context, const wxSize& size, 
 , active_line(0)
 , batch_level(0)
 , batch_active_line_changed(false)
+, seek_listener(context->videoController->AddSeekListener(std::tr1::bind(&BaseGrid::Refresh, this, false, (wxRect*)NULL)))
+, context_menu(0)
 , context(context)
 , yPos(0)
 {
@@ -98,9 +103,13 @@ BaseGrid::BaseGrid(wxWindow* parent, agi::Context *context, const wxSize& size, 
 	SetSizerAndFit(scrollbarpositioner);
 
 	UpdateStyle();
+	OnHighlightVisibleChange(*OPT_GET("Subtitle/Grid/Highlight Subtitles in Frame"));
 
 	OPT_SUB("Subtitle/Grid/Font Face", &BaseGrid::UpdateStyle, this);
 	OPT_SUB("Subtitle/Grid/Font Size", &BaseGrid::UpdateStyle, this);
+	OPT_SUB("Subtitle/Grid/Highlight Subtitles in Frame", &BaseGrid::OnHighlightVisibleChange, this);
+	context->ass->AddCommitListener(&BaseGrid::OnSubtitlesCommit, this);
+	context->ass->AddFileOpenListener(&BaseGrid::OnSubtitlesOpen, this);
 
 	std::tr1::function<void (agi::OptionValue const&)> Refresh(std::tr1::bind(&BaseGrid::Refresh, this, false, (wxRect*)NULL));
 	OPT_SUB("Colour/Subtitle Grid/Active Border", Refresh);
@@ -115,7 +124,7 @@ BaseGrid::BaseGrid(wxWindow* parent, agi::Context *context, const wxSize& size, 
 	OPT_SUB("Colour/Subtitle Grid/Lines", Refresh);
 	OPT_SUB("Colour/Subtitle Grid/Selection", Refresh);
 	OPT_SUB("Colour/Subtitle Grid/Standard", Refresh);
-	OPT_SUB("Subtitle/Grid/Highlight Subtitles in Frame", Refresh);
+	OPT_SUB("Subtitle/Grid/Hide Overrides", Refresh);
 
 	Bind(wxEVT_CONTEXT_MENU, &BaseGrid::OnContextMenu, this);
 }
@@ -123,6 +132,66 @@ BaseGrid::BaseGrid(wxWindow* parent, agi::Context *context, const wxSize& size, 
 BaseGrid::~BaseGrid() {
 	ClearMaps();
 	delete bmp;
+	delete context_menu;
+}
+
+BEGIN_EVENT_TABLE(BaseGrid,wxWindow)
+	EVT_PAINT(BaseGrid::OnPaint)
+	EVT_SIZE(BaseGrid::OnSize)
+	EVT_COMMAND_SCROLL(GRID_SCROLLBAR,BaseGrid::OnScroll)
+	EVT_MOUSE_EVENTS(BaseGrid::OnMouseEvent)
+	EVT_KEY_DOWN(BaseGrid::OnKeyDown)
+	EVT_MENU_RANGE(MENU_SHOW_COL,MENU_SHOW_COL+15,BaseGrid::OnShowColMenu)
+END_EVENT_TABLE();
+
+void BaseGrid::OnSubtitlesCommit(int type) {
+	if (type == AssFile::COMMIT_NEW)
+		UpdateMaps(true);
+	else if (type & AssFile::COMMIT_ORDER || type & AssFile::COMMIT_DIAG_ADDREM)
+		UpdateMaps(false);
+
+	if (type & AssFile::COMMIT_DIAG_META) {
+		SetColumnWidths();
+		Refresh(false);
+		return;
+	}
+	if (type & AssFile::COMMIT_DIAG_TIME)
+		RefreshRect(wxRect(time_cols_x, 0, time_cols_w, GetClientSize().GetHeight()), false);
+	if (type & AssFile::COMMIT_DIAG_TEXT)
+		RefreshRect(wxRect(text_col_x, 0, text_col_w, GetClientSize().GetHeight()), false);
+}
+
+void BaseGrid::OnSubtitlesOpen() {
+	BeginBatch();
+	ClearMaps();
+	UpdateMaps();
+
+	if (GetRows()) {
+		SetActiveLine(GetDialogue(0));
+		SelectRow(0);
+	}
+	EndBatch();
+	SetColumnWidths();
+}
+
+void BaseGrid::OnShowColMenu(wxCommandEvent &event) {
+	int item = event.GetId() - MENU_SHOW_COL;
+	showCol[item] = !showCol[item];
+
+	std::vector<bool> map(showCol, showCol + columns);
+	OPT_SET("Subtitle/Grid/Column")->SetListBool(map);
+
+	SetColumnWidths();
+	Refresh(false);
+}
+
+void BaseGrid::OnHighlightVisibleChange(agi::OptionValue const& opt) {
+	if (opt.GetBool()) {
+		seek_listener.Unblock();
+	}
+	else {
+		seek_listener.Block();
+	}
 }
 
 void BaseGrid::UpdateStyle() {
@@ -350,13 +419,6 @@ wxArrayInt BaseGrid::GetSelection() const {
 	return res;
 }
 
-BEGIN_EVENT_TABLE(BaseGrid,wxWindow)
-	EVT_PAINT(BaseGrid::OnPaint)
-	EVT_SIZE(BaseGrid::OnSize)
-	EVT_COMMAND_SCROLL(GRID_SCROLLBAR,BaseGrid::OnScroll)
-	EVT_MOUSE_EVENTS(BaseGrid::OnMouseEvent)
-	EVT_KEY_DOWN(BaseGrid::OnKeyDown)
-END_EVENT_TABLE()
 
 void BaseGrid::OnPaint(wxPaintEvent &event) {
 	// Get size and pos
@@ -723,10 +785,29 @@ void BaseGrid::OnMouseEvent(wxMouseEvent &event) {
 
 void BaseGrid::OnContextMenu(wxContextMenuEvent &evt) {
 	wxPoint pos = evt.GetPosition();
-	if (pos == wxDefaultPosition || ScreenToClient(pos).y > lineHeight)
-		OpenBodyContextMenu();
-	else
-		OpenHeaderContextMenu();
+	if (pos == wxDefaultPosition || ScreenToClient(pos).y > lineHeight) {
+		if (!context_menu) context_menu = menu::GetMenu("grid_context", context);
+		menu::OpenPopupMenu(context_menu, this);
+	}
+	else {
+		const wxString strings[] = {
+			_("Line Number"),
+			_("Layer"),
+			_("Start"),
+			_("End"),
+			_("Style"),
+			_("Actor"),
+			_("Effect"),
+			_("Left"),
+			_("Right"),
+			_("Vert"),
+		};
+
+		wxMenu menu;
+		for (size_t i = 0; i < columns; ++i)
+			menu.Append(MENU_SHOW_COL + i, strings[i], "", wxITEM_CHECK)->Check(showCol[i]);
+		PopupMenu(&menu);
+	}
 }
 
 void BaseGrid::ScrollTo(int y) {
@@ -872,17 +953,11 @@ void BaseGrid::SetColumnWidths() {
 	text_col_w = colWidth[10];
 }
 
-/// @brief Get dialogue by index
-/// @param n Index to look up
-/// @return Subtitle dialogue line for index, or 0 if invalid index
 AssDialogue *BaseGrid::GetDialogue(int n) const {
 	if (static_cast<size_t>(n) >= index_line_map.size()) return 0;
 	return index_line_map[n];
 }
 
-/// @brief Get index by dialogue line
-/// @param diag Dialogue line to look up
-/// @return Subtitle index for object, or -1 if unknown subtitle
 int BaseGrid::GetDialogueIndex(AssDialogue *diag) const {
 	std::map<AssDialogue*,int>::const_iterator it = line_index_map.find(diag);
 	if (it != line_index_map.end()) return it->second;
