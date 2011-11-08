@@ -994,8 +994,6 @@ AC_SUBST(enable_ccache)
 ##############################
 # Internationalisation support
 ##############################
-# Avoid checking for config.rpath, we're not using automake.
-define([AC_LIB_RPATH], [:])
 AM_GNU_GETTEXT([external])
 
 if test "$build_darwin" = "yes"; then
