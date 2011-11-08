@@ -70,6 +70,15 @@ enum {
 	MENU_SHOW_COL = 1250 // Needs 15 IDs after this
 };
 
+enum RowColor {
+	COLOR_DEFAULT = 0,
+	COLOR_HEADER,
+	COLOR_SELECTION,
+	COLOR_COMMENT,
+	COLOR_VISIBLE,
+	COLOR_SELECTED_COMMENT
+};
+
 template<class S1, class S2, class D>
 static inline void set_difference(const S1 &src1, const S2 &src2, D &dst) {
 	std::set_difference(
@@ -422,19 +431,15 @@ wxArrayInt BaseGrid::GetSelection() const {
 
 void BaseGrid::OnPaint(wxPaintEvent &event) {
 	// Get size and pos
-	int w = 0;
-	int h = 0;
-	GetClientSize(&w,&h);
-	w -= scrollBar->GetSize().GetWidth();
+	wxSize cs = GetClientSize();
+	cs.SetWidth(cs.GetWidth() - scrollBar->GetSize().GetWidth());
 
 	// Prepare bitmap
-	if (bmp) {
-		if (bmp->GetWidth() < w || bmp->GetHeight() < h) {
-			delete bmp;
-			bmp = 0;
-		}
+	if (bmp && (bmp->GetWidth() < cs.GetWidth() || bmp->GetHeight() < cs.GetHeight())) {
+		delete bmp;
+		bmp = 0;
 	}
-	if (!bmp) bmp = new wxBitmap(w,h);
+	if (!bmp) bmp = new wxBitmap(cs);
 
 	// Find which columns need to be repainted
 	bool paint_columns[11];
@@ -456,7 +461,7 @@ void BaseGrid::OnPaint(wxPaintEvent &event) {
 	DrawImage(bmpDC, paint_columns);
 
 	wxPaintDC dc(this);
-	dc.Blit(0,0,w,h,&bmpDC,0,0);
+	dc.Blit(wxPoint(0, 0), cs, &bmpDC, wxPoint(0, 0));
 }
 
 void BaseGrid::DrawImage(wxDC &dc, bool paint_columns[]) {
@@ -500,94 +505,42 @@ void BaseGrid::DrawImage(wxDC &dc, bool paint_columns[]) {
 	dc.DrawLine(0, 0, w, 0);
 	dc.SetPen(*wxTRANSPARENT_PEN);
 
-	// Draw rows
-	wxString strings[11] = {
-		_("#"),
-		_("L"),
-		_("Start"),
-		_("End"),
-		_("Style"),
-		_("Actor"),
-		_("Effect"),
-		_("Left"),
-		_("Right"),
-		_("Vert"),
-		_("Text")
+	wxString strings[] = {
+		_("#"), _("L"), _("Start"), _("End"), _("Style"), _("Actor"),
+		_("Effect"), _("Left"), _("Right"), _("Vert"), _("Text")
 	};
 
 	for (int i = 0; i < nDraw + 1; i++) {
 		int curRow = i + yPos - 1;
-		int curColor = 0;
+		RowColor curColor = COLOR_DEFAULT;
 
 		// Header
 		if (i == 0) {
-			curColor = 1;
+			curColor = COLOR_HEADER;
 			dc.SetTextForeground(text_standard);
 		}
-
 		// Lines
 		else if (AssDialogue *curDiag = GetDialogue(curRow)) {
-			// Set fields
-			if (paint_columns[0]) strings[0] = wxString::Format("%i", curRow + 1);
-			if (paint_columns[1]) strings[1] = wxString::Format("%i", curDiag->Layer);
-			if (byFrame) {
-				if (paint_columns[2]) strings[2] = wxString::Format("%i", context->videoController->FrameAtTime(curDiag->Start.GetMS(), agi::vfr::START));
-				if (paint_columns[3]) strings[3] = wxString::Format("%i", context->videoController->FrameAtTime(curDiag->End.GetMS(), agi::vfr::END));
-			}
-			else {
-				if (paint_columns[2]) strings[2] = curDiag->Start.GetASSFormated();
-				if (paint_columns[3]) strings[3] = curDiag->End.GetASSFormated();
-			}
-			if (paint_columns[4]) strings[4] = curDiag->Style;
-			if (paint_columns[5]) strings[5] = curDiag->Actor;
-			if (paint_columns[6]) strings[6] = curDiag->Effect;
-			if (paint_columns[7]) strings[7] = curDiag->GetMarginString(0);
-			if (paint_columns[8]) strings[8] = curDiag->GetMarginString(1);
-			if (paint_columns[9]) strings[9] = curDiag->GetMarginString(2);
+			GetRowStrings(curRow, curDiag, paint_columns, strings);
 
-			// Set text
-			if (paint_columns[10]) {
-				strings[10].clear();
-				int mode = OPT_GET("Subtitle/Grid/Hide Overrides")->GetInt();
-
-				// Hidden overrides
-				if (mode == 1 || mode == 2) {
-					wxString replaceWith = lagi_wxString(OPT_GET("Subtitle/Grid/Hide Overrides Char")->GetString());
-					strings[10].reserve(curDiag->Text.size());
-					size_t start = 0, pos;
-					while ((pos = curDiag->Text.find('{', start)) != wxString::npos) {
-						strings[10] += curDiag->Text.Mid(start, pos - start);
-						strings[10] += replaceWith;
-						start = curDiag->Text.find('}', pos);
-						if (start != wxString::npos) ++start;
-					}
-					strings[10] += curDiag->Text.Mid(start);
-				}
-
-				// Show overrides
-				else strings[10] = curDiag->Text;
-
-				// Cap length and set text
-				if (strings[10].size() > 512) strings[10] = strings[10].Left(512) + "...";
-			}
-
-			// Set color
-			curColor = 0;
 			bool inSel = !!selection.count(curDiag);
-			if (inSel && curDiag->Comment) curColor = 5;
-			else if (inSel) curColor = 2;
-			else if (curDiag->Comment) curColor = 3;
-			else if (OPT_GET("Subtitle/Grid/Highlight Subtitles in Frame")->GetBool() && IsDisplayed(curDiag)) curColor = 4;
+			if (inSel && curDiag->Comment)
+				curColor = COLOR_SELECTED_COMMENT;
+			else if (inSel)
+				curColor = COLOR_SELECTION;
+			else if (curDiag->Comment)
+				curColor = COLOR_COMMENT;
+			else if (OPT_GET("Subtitle/Grid/Highlight Subtitles in Frame")->GetBool() && IsDisplayed(curDiag))
+				curColor = COLOR_VISIBLE;
+			else
+				curColor = COLOR_DEFAULT;
 
-			if (active_line != curDiag && curDiag->CollidesWith(active_line)) {
+			if (active_line != curDiag && curDiag->CollidesWith(active_line))
 				dc.SetTextForeground(text_collision);
-			}
-			else if (inSel) {
+			else if (inSel)
 				dc.SetTextForeground(text_selection);
-			}
-			else {
+			else
 				dc.SetTextForeground(text_standard);
-			}
 		}
 		else {
 			assert(false);
@@ -644,6 +597,52 @@ void BaseGrid::DrawImage(wxDC &dc, bool paint_columns[]) {
 		dc.SetBrush(*wxTRANSPARENT_BRUSH);
 		int dy = (line_index_map[GetActiveLine()]+1-yPos) * lineHeight;
 		dc.DrawRectangle(0,dy,w,lineHeight+1);
+	}
+}
+
+void BaseGrid::GetRowStrings(int row, AssDialogue *line, bool *paint_columns, wxString *strings) const {
+	if (paint_columns[0]) strings[0] = wxString::Format("%d", row + 1);
+	if (paint_columns[1]) strings[1] = wxString::Format("%d", line->Layer);
+	if (byFrame) {
+		if (paint_columns[2]) strings[2] = wxString::Format("%d", context->videoController->FrameAtTime(line->Start.GetMS(), agi::vfr::START));
+		if (paint_columns[3]) strings[3] = wxString::Format("%d", context->videoController->FrameAtTime(line->End.GetMS(), agi::vfr::END));
+	}
+	else {
+		if (paint_columns[2]) strings[2] = line->Start.GetASSFormated();
+		if (paint_columns[3]) strings[3] = line->End.GetASSFormated();
+	}
+	if (paint_columns[4]) strings[4] = line->Style;
+	if (paint_columns[5]) strings[5] = line->Actor;
+	if (paint_columns[6]) strings[6] = line->Effect;
+	if (paint_columns[7]) strings[7] = line->GetMarginString(0);
+	if (paint_columns[8]) strings[8] = line->GetMarginString(1);
+	if (paint_columns[9]) strings[9] = line->GetMarginString(2);
+
+	if (paint_columns[10]) {
+		strings[10].clear();
+		int mode = OPT_GET("Subtitle/Grid/Hide Overrides")->GetInt();
+
+		// Hidden overrides
+		if (mode == 1 || mode == 2) {
+			wxString replaceWith = lagi_wxString(OPT_GET("Subtitle/Grid/Hide Overrides Char")->GetString());
+			strings[10].reserve(line->Text.size());
+			size_t start = 0, pos;
+			while ((pos = line->Text.find('{', start)) != wxString::npos) {
+				strings[10] += line->Text.Mid(start, pos - start);
+				strings[10] += replaceWith;
+				start = line->Text.find('}', pos);
+				if (start != wxString::npos) ++start;
+			}
+			strings[10] += line->Text.Mid(start);
+		}
+
+		// Show overrides
+		else
+			strings[10] = line->Text;
+
+		// Cap length and set text
+		if (strings[10].size() > 512)
+			strings[10] = strings[10].Left(512) + "...";
 	}
 }
 

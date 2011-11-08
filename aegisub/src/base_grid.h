@@ -112,6 +112,8 @@ class BaseGrid : public wxWindow, public BaseSelectionController<AssDialogue> {
 	void OnSubtitlesOpen();
 
 	void DrawImage(wxDC &dc, bool paint_columns[]);
+	void GetRowStrings(int row, AssDialogue *line, bool *paint_columns, wxString *strings) const;
+
 	void ScrollTo(int y);
 
 	int colWidth[16];      ///< Width in pixels of each column
