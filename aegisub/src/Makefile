@@ -99,14 +99,15 @@ endif
 #####################
 # SOURCE-LEVEL CFLAGS
 #####################
-audio_player.o:					CXXFLAGS += $(CFLAGS_ALSA) $(CFLAGS_PORTAUDIO) $(CFLAGS_LIBPULSE) $(CFLAGS_OPENAL)
-audio_provider.o:				CXXFLAGS += $(CFLAGS_FFMPEGSOURCE)
-auto4_base.o:					CXXFLAGS += $(CFLAGS_FREETYPE)
-charset_detect.o:				CXXFLAGS += -D_X86_
-font_file_lister_fontconfig.o:	CXXFLAGS += $(CFLAGS_FONTCONFIG) $(CFLAGS_FREETYPE)
-font_file_lister.o:				CXXFLAGS += $(CFLAGS_FREETYPE)
-text_file_reader.o:				CXXFLAGS += -D_X86_
-video_provider_manager.o:		CXXFLAGS += $(CFLAGS_FFMS)
+audio_player.o:                CXXFLAGS += $(CFLAGS_ALSA) $(CFLAGS_PORTAUDIO) $(CFLAGS_LIBPULSE) $(CFLAGS_OPENAL)
+audio_provider.o:              CXXFLAGS += $(CFLAGS_FFMPEGSOURCE)
+auto4_base.o:                  CXXFLAGS += $(CFLAGS_FREETYPE)
+charset_detect.o:              CXXFLAGS += -D_X86_
+dialog_timing_processor.o:     CXXFLAGS += -D__STDC_FORMAT_MACROS
+font_file_lister_fontconfig.o: CXXFLAGS += $(CFLAGS_FONTCONFIG) $(CFLAGS_FREETYPE)
+font_file_lister.o:            CXXFLAGS += $(CFLAGS_FREETYPE)
+text_file_reader.o:            CXXFLAGS += -D_X86_
+video_provider_manager.o:      CXXFLAGS += $(CFLAGS_FFMS)
 
 
 # Ensure any optional source files above are added for compilation.

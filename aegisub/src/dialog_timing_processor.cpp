@@ -38,6 +38,7 @@
 
 #ifndef AGI_PRE
 #include <algorithm>
+#include <inttypes.h>
 
 #include <wx/msgdlg.h>
 #include <wx/stattext.h>
@@ -74,13 +75,13 @@ DialogTimingProcessor::DialogTimingProcessor(agi::Context *c)
 	SetIcon(BitmapToIcon(GETIMAGE(timing_processor_toolbutton_24)));
 
 	// Set variables
-	wxString leadInTime(wxString::Format("%d", OPT_GET("Audio/Lead/IN")->GetInt()));
-	wxString leadOutTime(wxString::Format("%d", OPT_GET("Audio/Lead/OUT")->GetInt()));
-	wxString thresStartBefore(wxString::Format("%d", OPT_GET("Tool/Timing Post Processor/Threshold/Key Start Before")->GetInt()));
-	wxString thresStartAfter(wxString::Format("%d", OPT_GET("Tool/Timing Post Processor/Threshold/Key Start After")->GetInt()));
-	wxString thresEndBefore(wxString::Format("%d", OPT_GET("Tool/Timing Post Processor/Threshold/Key End Before")->GetInt()));
-	wxString thresEndAfter(wxString::Format("%d", OPT_GET("Tool/Timing Post Processor/Threshold/Key End After")->GetInt()));
-	wxString adjsThresTime(wxString::Format("%d", OPT_GET("Tool/Timing Post Processor/Threshold/Adjacent")->GetInt()));
+	wxString leadInTime(wxString::Format("%" PRId64, OPT_GET("Audio/Lead/IN")->GetInt()));
+	wxString leadOutTime(wxString::Format("%" PRId64, OPT_GET("Audio/Lead/OUT")->GetInt()));
+	wxString thresStartBefore(wxString::Format("%" PRId64, OPT_GET("Tool/Timing Post Processor/Threshold/Key Start Before")->GetInt()));
+	wxString thresStartAfter(wxString::Format("%" PRId64, OPT_GET("Tool/Timing Post Processor/Threshold/Key Start After")->GetInt()));
+	wxString thresEndBefore(wxString::Format("%" PRId64, OPT_GET("Tool/Timing Post Processor/Threshold/Key End Before")->GetInt()));
+	wxString thresEndAfter(wxString::Format("%" PRId64, OPT_GET("Tool/Timing Post Processor/Threshold/Key End After")->GetInt()));
+	wxString adjsThresTime(wxString::Format("%" PRId64, OPT_GET("Tool/Timing Post Processor/Threshold/Adjacent")->GetInt()));
 
 // Styles box
 	wxSizer *LeftSizer = new wxStaticBoxSizer(wxVERTICAL,this,_("Apply to styles"));
