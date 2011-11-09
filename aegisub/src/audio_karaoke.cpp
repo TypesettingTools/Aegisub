@@ -162,7 +162,7 @@ void AudioKaraoke::RenderText() {
 	int w, h;
 	split_area->GetClientSize(&w, &h);
 
-	if (split_area->GetClientSize() != rendered_line.GetSize()) {
+	if (!rendered_line.IsOk() || split_area->GetClientSize() != rendered_line.GetSize()) {
 		rendered_line = wxBitmap(w, h);
 	}
 
