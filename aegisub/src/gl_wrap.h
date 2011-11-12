@@ -77,9 +77,10 @@ public:
 	/// @param points List of coordinates
 	/// @param start Indices in points which are the start of a new polygon
 	/// @param count Number of points in each polygon
+	/// @param video_pos Top-left corner of the visible area
 	/// @param video_size Bottom-right corner of the visible area
 	/// @param invert Draw the area outside the polygons instead
-	void DrawMultiPolygon(std::vector<float> const& points, std::vector<int> &start, std::vector<int> &count, Vector2D video_size, bool invert);
+	void DrawMultiPolygon(std::vector<float> const& points, std::vector<int> &start, std::vector<int> &count, Vector2D video_pos, Vector2D video_size, bool invert);
 
 	static bool IsExtensionSupported(const char *ext);
 };

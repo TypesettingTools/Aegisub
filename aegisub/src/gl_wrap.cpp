@@ -348,8 +348,11 @@ static void APIENTRY glMultiDrawArraysFallback(GLenum mode, const GLint *first, 
 }
 #endif
 
-void OpenGLWrapper::DrawMultiPolygon(std::vector<float> const& points, std::vector<int> &start, std::vector<int> &count, Vector2D video_size, bool invert) {
+void OpenGLWrapper::DrawMultiPolygon(std::vector<float> const& points, std::vector<int> &start, std::vector<int> &count, Vector2D video_pos, Vector2D video_size, bool invert) {
 	GL_EXT(PFNGLMULTIDRAWARRAYSPROC, glMultiDrawArrays);
+
+	float real_line_a = line_a;
+	line_a = 0;
 
 	// The following is nonzero winding-number PIP based on stencils
 
@@ -362,14 +365,8 @@ void OpenGLWrapper::DrawMultiPolygon(std::vector<float> const& points, std::vect
 	glStencilFunc(GL_NEVER, 128, 0xFF);
 	glStencilOp(GL_REPLACE, GL_REPLACE, GL_REPLACE);
 
-	VertexArray buf(2, 4);
-	buf.Set(0, Vector2D());
-	buf.Set(1, Vector2D(video_size, 0));
-	buf.Set(2, video_size);
-	buf.Set(3, Vector2D(0, video_size));
-	glColor4f(0, 0, 0, 1);
-	glDisable(GL_BLEND);
-	buf.Draw(GL_QUADS, false);
+	Vector2D video_max = video_pos + video_size;
+	DrawRectangle(video_pos, video_max);
 
 	// Increment the winding number for each forward facing triangle
 	glStencilOp(GL_INCR, GL_INCR, GL_INCR);
@@ -388,14 +385,12 @@ void OpenGLWrapper::DrawMultiPolygon(std::vector<float> const& points, std::vect
 
 	// Draw the actual rectangle
 	glColorMask(1, 1, 1, 1);
-	float real_line_a = line_a;
-	line_a = 0;
 
 	// VSFilter draws when the winding number is nonzero, so we want to draw the
 	// mask when the winding number is zero (where 128 is zero due to the lack of
 	// wrapping combined with unsigned numbers)
 	glStencilFunc(invert ? GL_EQUAL : GL_NOTEQUAL, 128, 0xFF);
-	DrawRectangle(Vector2D(), video_size);
+	DrawRectangle(video_pos, video_max);
 	glDisable(GL_STENCIL_TEST);
 
 	// Draw lines

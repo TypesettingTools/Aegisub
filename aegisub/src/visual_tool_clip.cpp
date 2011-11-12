@@ -88,12 +88,14 @@ void VisualToolClip::Draw() {
 		gl.DrawRectangle(cur_1, cur_2);
 	}
 	else {
-		Vector2D p1 = cur_1.Min(cur_2);
-		Vector2D p2 = cur_1.Max(cur_2);
-		gl.DrawRectangle(Vector2D(0, 0),   Vector2D(video_res, p1));
-		gl.DrawRectangle(Vector2D(0, p2),  video_res);
-		gl.DrawRectangle(Vector2D(0, p1),  Vector2D(p1, p2));
-		gl.DrawRectangle(Vector2D(p2, p1), Vector2D(video_res, p2));
+		Vector2D v_min = video_pos;
+		Vector2D v_max = video_pos + video_res;
+		Vector2D c_min = cur_1.Min(cur_2);
+		Vector2D c_max = cur_1.Max(cur_2);
+		gl.DrawRectangle(v_min,                  Vector2D(v_max, c_min));
+		gl.DrawRectangle(Vector2D(v_min, c_max), v_max);
+		gl.DrawRectangle(Vector2D(v_min, c_min), Vector2D(c_min, c_max));
+		gl.DrawRectangle(Vector2D(c_max, c_min), Vector2D(v_max, c_max));
 	}
 }
 

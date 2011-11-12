@@ -105,7 +105,7 @@ void VisualToolVectorClip::Draw() {
 	gl.SetLineColour(colour[3], 1.f, 2);
 	gl.SetFillColour(wxColour(0, 0, 0), 0.5f);
 
-	gl.DrawMultiPolygon(points, start, count, video_res, !inverse);
+	gl.DrawMultiPolygon(points, start, count, video_pos, video_res, !inverse);
 
 	Vector2D pt;
 	float t;

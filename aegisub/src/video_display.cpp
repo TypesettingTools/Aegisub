@@ -228,11 +228,11 @@ catch (const agi::Exception &err) {
 }
 
 void VideoDisplay::DrawOverscanMask(float horizontal_percent, float vertical_percent) const {
-	Vector2D size(w * horizontal_percent / 2, h * vertical_percent / 2);
-	int rad1 = h * 0.05;
+	Vector2D v(viewport_width, viewport_height);
+	Vector2D size = Vector2D(horizontal_percent, vertical_percent) / 2 * v;
+	int rad1 = viewport_height * 0.05;
 	Vector2D gap = size + rad1;
 	int rad2 = gap.Len() + 1;
-	Vector2D v(w, h);
 	Vector2D igap = v - gap;
 	Vector2D isize = v - size;
 
