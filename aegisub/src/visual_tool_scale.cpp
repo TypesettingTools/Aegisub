@@ -96,7 +96,7 @@ bool VisualToolScale::InitializeHold() {
 }
 
 void VisualToolScale::UpdateHold() {
-	Vector2D delta = mouse_pos - drag_start;
+	Vector2D delta = (mouse_pos - drag_start) * Vector2D(1, -1);
 	if (shift_down)
 		delta = delta.SingleAxis();
 
