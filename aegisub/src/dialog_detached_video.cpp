@@ -69,7 +69,7 @@ DialogDetachedVideo::DialogDetachedVideo(agi::Context *context, const wxSize &in
 	
 	// Video area;
 	VideoBox *videoBox = new VideoBox(panel, true, context);
-	videoBox->videoDisplay->SetMinClientSize(initialDisplaySize);
+	context->videoDisplay->SetMinClientSize(initialDisplaySize);
 	videoBox->Layout();
 
 	// Set sizer
@@ -79,7 +79,7 @@ DialogDetachedVideo::DialogDetachedVideo(agi::Context *context, const wxSize &in
 	mainSizer->SetSizeHints(this);
 
 	// Ensure we can grow smaller, without these the window is locked to at least the initial size
-	videoBox->videoDisplay->SetMinSize(wxSize(1,1));
+	context->videoDisplay->SetMinSize(wxSize(1,1));
 	videoBox->SetMinSize(wxSize(1,1));
 	SetMinSize(wxSize(1,1));
 

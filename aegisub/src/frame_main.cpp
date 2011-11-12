@@ -410,12 +410,12 @@ void FrameMain::OnVideoOpen() {
 		vidy = context->videoController->GetHeight();
 
 	// Set zoom level based on video resolution and window size
-	double zoom = videoBox->videoDisplay->GetZoom();
+	double zoom = context->videoDisplay->GetZoom();
 	wxSize windowSize = GetSize();
 	if (vidx*3*zoom > windowSize.GetX()*4 || vidy*4*zoom > windowSize.GetY()*6)
-		videoBox->videoDisplay->SetZoom(zoom * .25);
+		context->videoDisplay->SetZoom(zoom * .25);
 	else if (vidx*3*zoom > windowSize.GetX()*2 || vidy*4*zoom > windowSize.GetY()*3)
-		videoBox->videoDisplay->SetZoom(zoom * .5);
+		context->videoDisplay->SetZoom(zoom * .5);
 
 	// Check that the video size matches the script video size specified
 	int scriptx = context->ass->GetScriptInfoAsInt("PlayResX");
@@ -663,7 +663,7 @@ void FrameMain::OnSubtitlesOpen() {
 
 				double videoZoom = 0.;
 				if (context->ass->GetScriptInfo("Video Zoom Percent").ToDouble(&videoZoom))
-					videoBox->videoDisplay->SetZoom(videoZoom);
+					context->videoDisplay->SetZoom(videoZoom);
 			}
 		}
 

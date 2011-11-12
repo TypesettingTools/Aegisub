@@ -75,7 +75,6 @@ class VideoBox : public wxPanel, private SelectionListener<AssDialogue> {
 
 	void OnSelectedSetChanged(Selection const&, Selection const&) { }
 	void OnActiveLineChanged(AssDialogue*) { UpdateTimeBoxes(); }
-public:
 
 	/// DOCME
 	wxToolBar *visualToolBar;
@@ -89,6 +88,7 @@ public:
 	/// DOCME
 	VideoSlider *videoSlider;
 
+public:
 	VideoBox(wxWindow *parent, bool isDetached, agi::Context *context);
 	~VideoBox();
 };

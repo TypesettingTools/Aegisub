@@ -48,7 +48,6 @@
 
 // Prototypes
 class FrameReadyEvent;
-class VideoBox;
 class VideoContext;
 class VideoOutGL;
 class VisualToolBase;
@@ -111,9 +110,6 @@ class VideoDisplay : public wxGLCanvas {
 	/// The dropdown box for selecting zoom levels
 	wxComboBox *zoomBox;
 
-	/// The VideoBox this display is contained in
-	VideoBox *box;
-
 	/// Whether the display can be freely resized by the user
 	bool freeSize;
 
@@ -149,7 +145,7 @@ class VideoDisplay : public wxGLCanvas {
 public:
 	/// @brief Constructor
 	VideoDisplay(
-		VideoBox *box,
+		wxToolBar *visualSubToolBar,
 		bool isDetached,
 		wxComboBox *zoomBox,
 		wxWindow* parent,

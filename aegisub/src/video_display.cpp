@@ -67,7 +67,6 @@
 #include "threaded_frame_source.h"
 #include "utils.h"
 #include "video_out_gl.h"
-#include "video_box.h"
 #include "video_context.h"
 #include "visual_tool.h"
 
@@ -89,7 +88,7 @@ public:
 #define E(cmd) cmd; if (GLenum err = glGetError()) throw OpenGlException(#cmd, err)
 
 VideoDisplay::VideoDisplay(
-	VideoBox *box,
+	wxToolBar *visualSubToolBar,
 	bool freeSize,
 	wxComboBox *zoomBox,
 	wxWindow* parent,
@@ -107,13 +106,10 @@ VideoDisplay::VideoDisplay(
 , viewport_height(0)
 , zoomValue(OPT_GET("Video/Default Zoom")->GetInt() * .125 + .125)
 , videoOut(new VideoOutGL())
-, toolBar(box->visualSubToolBar)
+, toolBar(visualSubToolBar)
 , zoomBox(zoomBox)
-, box(box)
 , freeSize(freeSize)
 {
-	assert(box);
-
 	zoomBox->SetValue(wxString::Format("%g%%", zoomValue * 100.));
 	zoomBox->Bind(wxEVT_COMMAND_COMBOBOX_SELECTED, &VideoDisplay::SetZoomFromBox, this);
 
@@ -320,7 +316,7 @@ void VideoDisplay::UpdateSize(int arType, double arValue) {
 		SetMaxClientSize(size);
 
 		SetEvtHandlerEnabled(false);
-		box->GetParent()->Layout();
+		GetGrandParent()->Layout();
 
 		// The sizer makes us use the full width, which at very low zoom levels
 		// results in stretched video, so after using the sizer to update the 

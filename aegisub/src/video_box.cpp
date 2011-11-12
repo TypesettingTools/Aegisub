@@ -110,7 +110,7 @@ VideoBox::VideoBox(wxWindow *parent, bool isDetached, agi::Context *context)
 	visualToolBar->SetBackgroundStyle(wxBG_STYLE_COLOUR);
 	visualToolBar->SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNFACE));
 
-	videoDisplay = new VideoDisplay(this,isDetached,zoomBox,this,context);
+	videoDisplay = new VideoDisplay(visualSubToolBar,isDetached,zoomBox,this,context);
 
 	// Top sizer
 	// Detached and attached video needs different flags, see bugs #742 and #853
