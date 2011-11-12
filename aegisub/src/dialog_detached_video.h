@@ -44,6 +44,7 @@
 namespace agi { struct Context; }
 class PersistLocation;
 class VideoBox;
+class VideoDisplay;
 
 /// DOCME
 /// @class DialogDetachedVideo
@@ -52,6 +53,8 @@ class VideoBox;
 /// DOCME
 class DialogDetachedVideo : public wxDialog {
 	agi::Context *context;
+	VideoDisplay *old_display;
+	wxWindow *old_slider;
 	agi::signal::Connection video_open;
 	agi::scoped_ptr<PersistLocation> persist;
 

@@ -143,7 +143,7 @@ struct video_aspect_custom : public validator_video_loaded {
 				wxString denum = value.Mid(pos+1);
 				if (num.ToDouble(&a) && denum.ToDouble(&b) && b!=0) {
 					numval = a/b;
-					if (scale) c->videoBox->videoDisplay->SetZoom(b / c->videoController->GetHeight());
+					if (scale) c->videoDisplay->SetZoom(b / c->videoController->GetHeight());
 				}
 			}
 			else numval = 0.0;
@@ -238,7 +238,7 @@ struct video_copy_coordinates : public validator_video_loaded {
 
 	void operator()(agi::Context *c) {
 		if (wxTheClipboard->Open()) {
-			wxTheClipboard->SetData(new wxTextDataObject(c->videoBox->videoDisplay->GetMousePosition().Str()));
+			wxTheClipboard->SetData(new wxTextDataObject(c->videoDisplay->GetMousePosition().Str()));
 			wxTheClipboard->Close();
 		}
 	}
@@ -258,7 +258,7 @@ struct video_detach : public validator_video_loaded {
 
 	void operator()(agi::Context *c) {
 		if (!c->detachedVideo) {
-			c->detachedVideo = new DialogDetachedVideo(c, c->videoBox->videoDisplay->GetClientSize());
+			c->detachedVideo = new DialogDetachedVideo(c, c->videoDisplay->GetClientSize());
 		}
 		else {
 			c->detachedVideo->Close();
@@ -288,12 +288,12 @@ struct video_focus_seek : public validator_video_loaded {
 
 	void operator()(agi::Context *c) {
 		wxWindow *curFocus = wxWindow::FindFocus();
-		if (curFocus == c->videoBox->videoSlider) {
+		if (curFocus == c->videoSlider) {
 			if (c->previousFocus) c->previousFocus->SetFocus();
 		}
 		else {
 			c->previousFocus = curFocus;
-			c->videoBox->videoSlider->SetFocus();
+			c->videoSlider->SetFocus();
 		}
 	}
 };
@@ -510,7 +510,7 @@ struct video_jump : public validator_video_loaded {
 		c->videoController->Stop();
 		if (c->videoController->IsLoaded()) {
 			DialogJumpTo(c).ShowModal();
-			c->videoBox->videoSlider->SetFocus();
+			c->videoSlider->SetFocus();
 		}
 	}
 };
@@ -632,7 +632,7 @@ struct video_show_overscan : public validator_video_loaded {
 
 	void operator()(agi::Context *c) {
 		OPT_SET("Video/Overscan Mask")->SetBool(!OPT_GET("Video/Overscan Mask")->GetBool());
-		c->videoBox->videoDisplay->Render();
+		c->videoDisplay->Render();
 	}
 };
 
@@ -646,12 +646,12 @@ public:
 	CMD_TYPE(COMMAND_VALIDATE | COMMAND_RADIO)
 
 	bool IsActive(const agi::Context *c) {
-		return c->videoBox->videoDisplay->GetZoom() == 1.;
+		return c->videoDisplay->GetZoom() == 1.;
 	}
 
 	void operator()(agi::Context *c) {
 		c->videoController->Stop();
-		c->videoBox->videoDisplay->SetZoom(1.);
+		c->videoDisplay->SetZoom(1.);
 	}
 };
 
@@ -678,12 +678,12 @@ public:
 	CMD_TYPE(COMMAND_VALIDATE | COMMAND_RADIO)
 
 	bool IsActive(const agi::Context *c) {
-		return c->videoBox->videoDisplay->GetZoom() == 2.;
+		return c->videoDisplay->GetZoom() == 2.;
 	}
 
 	void operator()(agi::Context *c) {
 		c->videoController->Stop();
-		c->videoBox->videoDisplay->SetZoom(2.);
+		c->videoDisplay->SetZoom(2.);
 	}
 };
 
@@ -697,12 +697,12 @@ public:
 	CMD_TYPE(COMMAND_VALIDATE | COMMAND_RADIO)
 
 	bool IsActive(const agi::Context *c) {
-		return c->videoBox->videoDisplay->GetZoom() == .5;
+		return c->videoDisplay->GetZoom() == .5;
 	}
 
 	void operator()(agi::Context *c) {
 		c->videoController->Stop();
-		c->videoBox->videoDisplay->SetZoom(.5);
+		c->videoDisplay->SetZoom(.5);
 	}
 };
 
@@ -714,7 +714,7 @@ struct video_zoom_in : public validator_video_attached {
 	STR_HELP("Zoom video in.")
 
 	void operator()(agi::Context *c) {
-		c->videoBox->videoDisplay->SetZoom(c->videoBox->videoDisplay->GetZoom() + .125);
+		c->videoDisplay->SetZoom(c->videoDisplay->GetZoom() + .125);
 	}
 };
 
@@ -726,7 +726,7 @@ struct video_zoom_out : public validator_video_attached {
 	STR_HELP("Zoom video out.")
 
 	void operator()(agi::Context *c) {
-		c->videoBox->videoDisplay->SetZoom(c->videoBox->videoDisplay->GetZoom() - .125);
+		c->videoDisplay->SetZoom(c->videoDisplay->GetZoom() - .125);
 	}
 };
 }

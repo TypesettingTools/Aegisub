@@ -56,7 +56,7 @@ namespace {
 		STR_HELP("Standard mode, double click sets position.")
 
 		void operator()(agi::Context *c) {
-			c->videoBox->videoDisplay->SetTool(new VisualToolCross(c->videoBox->videoDisplay, c));
+			c->videoDisplay->SetTool(new VisualToolCross(c->videoDisplay, c));
 		}
 	};
 
@@ -67,7 +67,7 @@ namespace {
 		STR_HELP("Drag subtitles.")
 
 		void operator()(agi::Context *c) {
-			c->videoBox->videoDisplay->SetTool(new VisualToolDrag(c->videoBox->videoDisplay, c));
+			c->videoDisplay->SetTool(new VisualToolDrag(c->videoDisplay, c));
 		}
 	};
 
@@ -78,7 +78,7 @@ namespace {
 		STR_HELP("Rotate subtitles on their Z axis.")
 
 		void operator()(agi::Context *c) {
-			c->videoBox->videoDisplay->SetTool(new VisualToolRotateZ(c->videoBox->videoDisplay, c));
+			c->videoDisplay->SetTool(new VisualToolRotateZ(c->videoDisplay, c));
 		}
 	};
 
@@ -89,7 +89,7 @@ namespace {
 		STR_HELP("Rotate subtitles on their X and Y axes.")
 
 		void operator()(agi::Context *c) {
-			c->videoBox->videoDisplay->SetTool(new VisualToolRotateXY(c->videoBox->videoDisplay, c));
+			c->videoDisplay->SetTool(new VisualToolRotateXY(c->videoDisplay, c));
 		}
 	};
 
@@ -100,7 +100,7 @@ namespace {
 		STR_HELP("Scale subtitles on X and Y axes.")
 
 		void operator()(agi::Context *c) {
-			c->videoBox->videoDisplay->SetTool(new VisualToolScale(c->videoBox->videoDisplay, c));
+			c->videoDisplay->SetTool(new VisualToolScale(c->videoDisplay, c));
 		}
 	};
 
@@ -111,7 +111,7 @@ namespace {
 		STR_HELP("Clip subtitles to a rectangle.")
 
 		void operator()(agi::Context *c) {
-			c->videoBox->videoDisplay->SetTool(new VisualToolClip(c->videoBox->videoDisplay, c));
+			c->videoDisplay->SetTool(new VisualToolClip(c->videoDisplay, c));
 		}
 	};
 
@@ -122,7 +122,7 @@ namespace {
 		STR_HELP("Clip subtitles to a vectorial arean.")
 
 		void operator()(agi::Context *c) {
-			c->videoBox->videoDisplay->SetTool(new VisualToolVectorClip(c->videoBox->videoDisplay, c));
+			c->videoDisplay->SetTool(new VisualToolVectorClip(c->videoDisplay, c));
 		}
 	};
 }

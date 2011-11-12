@@ -55,6 +55,8 @@
 DialogDetachedVideo::DialogDetachedVideo(agi::Context *context, const wxSize &initialDisplaySize)
 : wxDialog(context->parent, -1, "Detached Video", wxDefaultPosition, wxSize(400,300), wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER | wxMAXIMIZE_BOX | wxMINIMIZE_BOX | wxWANTS_CHARS)
 , context(context)
+, old_display(context->videoDisplay)
+, old_slider(context->videoSlider)
 , video_open(context->videoController->AddVideoOpenListener(&DialogDetachedVideo::OnVideoOpen, this))
 {
 	// Set obscure stuff
@@ -104,6 +106,8 @@ DialogDetachedVideo::~DialogDetachedVideo() { }
 
 void DialogDetachedVideo::OnClose(wxCloseEvent&) {
 	context->detachedVideo = 0;
+	context->videoDisplay = old_display;
+	context->videoSlider = old_slider;
 	OPT_SET("Video/Detached/Enabled")->SetBool(false);
 	Destroy();
 }
@@ -125,6 +129,8 @@ void DialogDetachedVideo::OnKeyDown(wxKeyEvent &evt) {
 void DialogDetachedVideo::OnVideoOpen() {
 	if (!context->videoController->IsLoaded()) {
 		context->detachedVideo = 0;
+		context->videoDisplay = old_display;
+		context->videoSlider = old_slider;
 		Destroy();
 	}
 }

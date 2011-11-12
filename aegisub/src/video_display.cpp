@@ -137,6 +137,8 @@ VideoDisplay::VideoDisplay(
 
 	SetCursor(wxNullCursor);
 
+	c->videoDisplay = this;
+
 	if (con->videoController->IsLoaded())
 		OnVideoOpen();
 }

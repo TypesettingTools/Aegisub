@@ -9,8 +9,8 @@ class DialogTranslation;
 template<class T> class SelectionController;
 class SubsTextEditCtrl;
 class SubtitlesGrid;
-class VideoBox;
 class VideoContext;
+class VideoDisplay;
 class wxWindow;
 namespace Automation4 { class ScriptManager; }
 
@@ -29,6 +29,7 @@ struct Context {
 	// Things that should probably be in some sort of UI-context-model
 	wxWindow *parent;
 	wxWindow *previousFocus;
+	wxWindow *videoSlider;
 
 	// Views (i.e. things that should eventually not be here at all)
 	AudioBox *audioBox;
@@ -38,7 +39,7 @@ struct Context {
 	DialogTranslation *translationAssistant;
 	SubsTextEditCtrl *editBox;
 	SubtitlesGrid *subsGrid;
-	VideoBox *videoBox;
+	VideoDisplay *videoDisplay;
 };
 
 }

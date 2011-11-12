@@ -249,7 +249,7 @@ void FrameMain::InitContents() {
 	Search.context = context.get();
 
 	StartupLog("Create video box");
-	context->videoBox = videoBox = new VideoBox(Panel, false, context.get());
+	videoBox = new VideoBox(Panel, false, context.get());
 
 	StartupLog("Create audio box");
 	context->audioBox = audioBox = new AudioBox(Panel, context.get());
