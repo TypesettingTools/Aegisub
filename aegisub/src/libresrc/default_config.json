@@ -14,7 +14,6 @@
 		"Maximized" : false,
 		"Nonstandard Milisecond Times" : false,
 		"Save Charset" : "UTF-8",
-		"Tips" : false,
 		"Toolbar Icon Size" : 16
 	},
 
@@ -34,7 +33,6 @@
 		},
 		"Display Height" : 200,
 		"Display" : {
-			"Dragging Times" : false,
 			"Draw" : {
 				"Cursor Time" : true,
 				"Keyframes in Dialogue Mode" : true,
@@ -61,7 +59,6 @@
 			"OUT" : 300
 		},
 		"Line Boundaries Thickness" : 2,
-		"Line Boundary Inactive Line" : "grey",
 		"Link" : true,
 		"Lock Scroll on Cursor" : false,
 		"Medusa Timing Hotkeys" : false,
@@ -263,7 +260,6 @@
 		}
 	},
 
-
 	"Subtitle" : {
 		"Edit Box" : {
 			"Font Face" : "",
@@ -299,11 +295,9 @@
 		}
 	},
 
-
 	"Timing" : {
 		"Default Duration" : 2000
 	},
-
 
 	"Tool" : {
 		"Colour Picker" : {
@@ -431,13 +425,11 @@
 		}
 	},
 
-
 	"Version" : {
 		"Id" : "$Id$",
 		"Last Version" : 4040,
 		"Next Check" : 0
 	},
-
 
 	"Video" : {
 		"Check Script Res" : 0,
