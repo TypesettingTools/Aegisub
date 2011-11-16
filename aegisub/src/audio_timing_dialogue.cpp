@@ -43,6 +43,7 @@
 #include "ass_file.h"
 #include "ass_time.h"
 #include "audio_controller.h"
+#include "audio_marker_provider_keyframes.h"
 #include "audio_timing.h"
 #include "include/aegisub/context.h"
 #include "main.h"
@@ -124,6 +125,9 @@ public:
 class AudioTimingControllerDialogue : public AudioTimingController, private SelectionListener<AssDialogue> {
 	/// Start and end markers for the active line
 	AudioMarkerDialogueTiming markers[2];
+
+	/// Marker provider for video keyframes
+	AudioMarkerProviderKeyframes keyframes_provider;
 
 	/// Has the timing been modified by the user?
 	/// If auto commit is enabled this will only be true very briefly following
@@ -249,7 +253,8 @@ void AudioMarkerDialogueTiming::InitPair(AudioMarkerDialogueTiming *marker1, Aud
 // AudioTimingControllerDialogue
 
 AudioTimingControllerDialogue::AudioTimingControllerDialogue(agi::Context *c)
-: timing_modified(false)
+: keyframes_provider(c)
+, timing_modified(false)
 , commit_id(-1)
 , context(c)
 , auto_commit(OPT_GET("Audio/Auto/Commit"))
@@ -264,6 +269,8 @@ AudioTimingControllerDialogue::AudioTimingControllerDialogue(agi::Context *c)
 	c->selectionController->AddSelectionListener(this);
 	commit_slot = c->ass->AddCommitListener(&AudioTimingControllerDialogue::OnFileChanged, this);
 	audio_open_slot = c->audioController->AddAudioOpenListener(&AudioTimingControllerDialogue::Revert, this);
+
+	keyframes_provider.AddMarkerMovedListener(std::tr1::bind(std::tr1::ref(AnnounceMarkerMoved)));
 }
 
 
@@ -302,6 +309,8 @@ void AudioTimingControllerDialogue::GetMarkers(const SampleRange &range, AudioMa
 		out_markers.push_back(&markers[0]);
 	if (range.contains(markers[1].GetPosition()))
 		out_markers.push_back(&markers[1]);
+
+	keyframes_provider.GetMarkers(range, out_markers);
 }
 
 void AudioTimingControllerDialogue::OnActiveLineChanged(AssDialogue *new_line)

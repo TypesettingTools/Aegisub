@@ -47,7 +47,6 @@
 
 #include "ass_file.h"
 #include "audio_controller.h"
-#include "audio_marker_provider_keyframes.h"
 #include "audio_provider_dummy.h"
 #include "audio_timing.h"
 #include "compat.h"
@@ -293,14 +292,6 @@ void AudioController::OpenAudio(const wxString &url)
 	audio_url = url;
 
 	config::mru->Add("Audio", STD_STR(url));
-
-	if (!keyframes_marker_provider.get())
-	{
-		// This is lazy-loaded as the video controller may not exist yet when
-		// the audio controller is created
-		keyframes_marker_provider.reset(new AudioMarkerProviderKeyframes(context));
-		keyframes_marker_provider->AddMarkerMovedListener(std::tr1::bind(std::tr1::ref(AnnounceMarkerMoved)));
-	}
 
 	if (!video_position_marker_provider.get())
 	{

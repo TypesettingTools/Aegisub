@@ -61,11 +61,6 @@ protected:
 	/// One or more rendering style ranges have changed in the timing controller.
 	agi::signal::Signal<> AnnounceUpdatedStyleRanges;
 
-	/// A marker has been updated in some way.
-	agi::signal::Signal<AudioMarker*> AnnounceMarkerMoved;
-
-	/// A label has been updated in some way.
-	agi::signal::Signal<AudioLabel*> AnnounceLabelChanged;
 public:
 	/// @brief Get any warning message to show in the audio display
 	/// @return The warning message to show, may be empty if there is none
@@ -148,8 +143,6 @@ public:
 
 	DEFINE_SIGNAL_ADDERS(AnnounceUpdatedPrimaryRange, AddUpdatedPrimaryRangeListener)
 	DEFINE_SIGNAL_ADDERS(AnnounceUpdatedStyleRanges, AddUpdatedStyleRangesListener)
-	DEFINE_SIGNAL_ADDERS(AnnounceMarkerMoved, AddMarkerMovedListener)
-	DEFINE_SIGNAL_ADDERS(AnnounceLabelChanged, AddLabelChangedListener)
 };
 
 
