@@ -101,7 +101,7 @@ General::General(wxTreebook *book, Preferences *parent): OptionPage(book, parent
 	sizer->AddSpacer(15);
 
 	wxFlexGridSizer *undo = PageSizer(_("Undo / Redo Settings"));
-	OptionAdd(undo, _("Undo Levels"), "Limits/MRU");
+	OptionAdd(undo, _("Undo Levels"), "Limits/Undo Levels");
 
 	wxFlexGridSizer *toolbar = PageSizer(_("Toolbar Settings"));
 	OptionAdd(toolbar, _("Toolbar Icon Size"), "App/Toolbar Icon Size");
