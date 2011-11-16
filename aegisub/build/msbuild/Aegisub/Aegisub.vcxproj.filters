@@ -207,6 +207,9 @@
     <ClInclude Include="$(SrcDir)audio_karaoke.h">
       <Filter>Audio\UI</Filter>
     </ClInclude>
+    <ClInclude Include="$(SrcDir)audio_marker_provider_keyframes.h">
+      <Filter>Audio\UI</Filter>
+    </ClInclude>
     <ClInclude Include="$(SrcDir)audio_renderer.h">
       <Filter>Audio\UI</Filter>
     </ClInclude>
@@ -711,6 +714,9 @@
       <Filter>Audio\UI</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)audio_karaoke.cpp">
+      <Filter>Audio\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SrcDir)audio_marker_provider_keyframes.cpp">
       <Filter>Audio\UI</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)audio_renderer.cpp">

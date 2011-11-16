@@ -47,6 +47,7 @@
 
 #include "ass_file.h"
 #include "audio_controller.h"
+#include "audio_marker_provider_keyframes.h"
 #include "audio_provider_dummy.h"
 #include "audio_timing.h"
 #include "compat.h"
@@ -58,83 +59,6 @@
 #include "selection_controller.h"
 #include "standard_paths.h"
 #include "video_context.h"
-
-class AudioMarkerKeyframe : public AudioMarker {
-	Pen *style;
-	int64_t position;
-public:
-	AudioMarkerKeyframe(Pen *style, int64_t position) : style(style), position(position) { }
-	int64_t GetPosition() const { return position; }
-	FeetStyle GetFeet() const { return Feet_None; }
-	bool CanSnap() const { return true; }
-	wxPen GetStyle() const { return *style; }
-	operator int64_t() const { return position; }
-};
-
-class AudioMarkerProviderKeyframes : public AudioMarkerProvider {
-	VideoContext *vc;
-
-	agi::signal::Connection keyframe_slot;
-	agi::signal::Connection audio_open_slot;
-	agi::signal::Connection timecode_slot;
-	agi::signal::Connection enabled_slot;
-
-	std::vector<AudioMarkerKeyframe> keyframe_samples;
-	AudioController *controller;
-
-	Pen style;
-
-	void Update()
-	{
-		std::vector<int> const& keyframes = vc->GetKeyFrames();
-		agi::vfr::Framerate const& timecodes = vc->FPS();
-
-		if (keyframes.empty() || !timecodes.IsLoaded() || !OPT_GET("Audio/Display/Draw/Keyframes")->GetBool())
-		{
-			if (!keyframe_samples.empty())
-			{
-				keyframe_samples.clear();
-				AnnounceMarkerMoved();
-			}
-			return;
-		}
-
-		keyframe_samples.clear();
-		keyframe_samples.reserve(keyframes.size());
-		for (size_t i = 0; i < keyframes.size(); ++i)
-		{
-			keyframe_samples.push_back(AudioMarkerKeyframe(&style,
-				controller->SamplesFromMilliseconds(timecodes.TimeAtFrame(keyframes[i]))));
-		}
-		AnnounceMarkerMoved();
-	}
-
-public:
-	AudioMarkerProviderKeyframes(AudioController *controller, agi::Context *c)
-	: vc(c->videoController)
-	, keyframe_slot(vc->AddKeyframesListener(&AudioMarkerProviderKeyframes::Update, this))
-	, audio_open_slot(controller->AddAudioOpenListener(&AudioMarkerProviderKeyframes::Update, this))
-	, timecode_slot(vc->AddTimecodesListener(&AudioMarkerProviderKeyframes::Update, this))
-	, enabled_slot(OPT_SUB("Audio/Display/Draw/Keyframes", &AudioMarkerProviderKeyframes::Update, this))
-	, controller(controller)
-	, style("Colour/Audio Display/Keyframe")
-	{
-		Update();
-	}
-
-	void GetMarkers(const SampleRange &range, AudioMarkerVector &out) const
-	{
-		// Find first and last keyframes inside the range
-		std::vector<AudioMarkerKeyframe>::const_iterator a = std::lower_bound(
-			keyframe_samples.begin(), keyframe_samples.end(), range.begin());
-		std::vector<AudioMarkerKeyframe>::const_iterator b = std::upper_bound(
-			keyframe_samples.begin(), keyframe_samples.end(), range.end());
-
-		// Place pointers to the markers in the output vector
-		for (; a != b; ++a)
-			out.push_back(&*a);
-	}
-};
 
 class VideoPositionMarker : public AudioMarker {
 	Pen style;
@@ -374,7 +298,7 @@ void AudioController::OpenAudio(const wxString &url)
 	{
 		// This is lazy-loaded as the video controller may not exist yet when
 		// the audio controller is created
-		keyframes_marker_provider.reset(new AudioMarkerProviderKeyframes(this, context));
+		keyframes_marker_provider.reset(new AudioMarkerProviderKeyframes(context));
 		keyframes_marker_provider->AddMarkerMovedListener(std::tr1::bind(std::tr1::ref(AnnounceMarkerMoved)));
 	}
 

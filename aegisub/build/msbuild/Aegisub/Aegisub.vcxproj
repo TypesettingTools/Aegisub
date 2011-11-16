@@ -67,6 +67,7 @@
     <ClInclude Include="$(SrcDir)audio_controller.h" />
     <ClInclude Include="$(SrcDir)audio_display.h" />
     <ClInclude Include="$(SrcDir)audio_karaoke.h" />
+    <ClInclude Include="$(SrcDir)audio_marker_provider_keyframes.h" />
     <ClInclude Include="$(SrcDir)audio_player_alsa.h" />
     <ClInclude Include="$(SrcDir)audio_player_dsound.h" />
     <ClInclude Include="$(SrcDir)audio_player_dsound2.h" />
@@ -240,6 +241,7 @@
     <ClCompile Include="$(SrcDir)audio_controller.cpp" />
     <ClCompile Include="$(SrcDir)audio_display.cpp" />
     <ClCompile Include="$(SrcDir)audio_karaoke.cpp" />
+    <ClCompile Include="$(SrcDir)audio_marker_provider_keyframes.cpp" />
     <ClCompile Include="$(SrcDir)audio_player.cpp" />
     <ClCompile Include="$(SrcDir)audio_player_alsa.cpp" />
     <ClCompile Include="$(SrcDir)audio_player_dsound.cpp" />

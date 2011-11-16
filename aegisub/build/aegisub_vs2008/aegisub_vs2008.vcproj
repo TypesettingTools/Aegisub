@@ -1732,6 +1732,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\audio_marker_provider_keyframes.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\audio_marker_provider_keyframes.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\audio_renderer.cpp"
 				>
 			</File>

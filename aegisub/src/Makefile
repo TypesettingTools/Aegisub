@@ -132,6 +132,7 @@ SRC += \
 	audio_colorscheme.cpp \
 	audio_display.cpp \
 	audio_karaoke.cpp \
+	audio_marker_provider_keyframes.cpp \
 	audio_player.cpp \
 	audio_provider.cpp \
 	audio_provider_convert.cpp \
