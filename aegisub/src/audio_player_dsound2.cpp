@@ -859,14 +859,7 @@ void DirectSoundPlayer2::CloseStream()
 {
 	if (!IsThreadAlive()) return;
 
-	try
-	{
-		delete thread;
-	}
-	catch (const char *msg)
-	{
-		LOG_E("audio/player/dsound") << msg;
-	}
+	delete thread;
 	thread = 0;
 }
 
