@@ -58,28 +58,75 @@ protected:
 	/// Multiplier for WantedLatency to get total buffer length
 	int BufferLength;
 
+	/// @brief Tell whether playback thread is alive
+	/// @return True if there is a playback thread and it's ready
 	bool IsThreadAlive();
 
 public:
+	/// @brief Constructor
 	DirectSoundPlayer2();
+	/// @brief Destructor
 	~DirectSoundPlayer2();
 
+	/// @brief Prepare for playback
+	///
+	/// This means creating the playback thread
 	void OpenStream();
+	/// @brief Shutdown playback
 	void CloseStream();
 
+	/// @brief Change audio provider used
+	/// @param provider New audio provider to use
+	///
+	/// Will re-create the playback thread if the provider changed and playback was open
 	void SetProvider(AudioProvider *provider);
 
+	/// @brief Start playback
+	/// @param start First audio frame to play
+	/// @param count Number of audio frames to play
 	void Play(int64_t start,int64_t count);
+
+	/// @brief Stop audio playback
+	/// @param timerToo Whether to also stop the playback update timer
 	void Stop(bool timerToo=true);
+
+	/// @brief Tell whether playback is active
+	/// @return True if audio is playing back
 	bool IsPlaying();
 
+	/// @brief Get first audio frame in playback range
+	/// @return Audio frame index
+	///
+	/// Returns 0 if playback is stopped or there is no playback thread
 	int64_t GetStartPosition();
+
+	/// @brief Get playback end position
+	/// @return Audio frame index
+	///
+	/// Returns 0 if playback is stopped or there is no playback thread
 	int64_t GetEndPosition();
+	/// @brief Get approximate playback position
+	/// @return Index of audio frame user is currently hearing
+	///
+	/// Returns 0 if playback is stopped or there is no playback thread
 	int64_t GetCurrentPosition();
+
+	/// @brief Change playback end position
+	/// @param pos New end position
 	void SetEndPosition(int64_t pos);
+
+	/// @brief Seek playback to new position
+	/// @param pos New position to seek to
+	///
+	/// This is done by simply restarting playback
 	void SetCurrentPosition(int64_t pos);
 
+	/// @brief Change playback volume
+	/// @param vol Amplification factor
 	void SetVolume(double vol);
+
+	/// @brief Get playback volume
+	/// @return Amplification factor
 	double GetVolume();
 };
 #endif
