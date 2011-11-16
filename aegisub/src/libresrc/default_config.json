@@ -432,7 +432,7 @@
 	},
 
 	"Video" : {
-		"Check Script Res" : 0,
+		"Check Script Res" : 1,
 		"Default Zoom" : 7,
 		"Detached" : {
 			"Enabled" : false,
