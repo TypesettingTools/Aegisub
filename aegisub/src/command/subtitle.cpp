@@ -350,9 +350,14 @@ struct subtitle_save : public Command {
 	STR_MENU("&Save Subtitles")
 	STR_DISP("Save Subtitles")
 	STR_HELP("Saves subtitles.")
+	CMD_TYPE(COMMAND_VALIDATE)
 
 	void operator()(agi::Context *c) {
 		save_subtitles(c, c->ass->CanSave() ? c->ass->filename : "");
+	}
+
+	bool Validate(const agi::Context *c) {
+		return c->ass->IsModified();
 	}
 };
 
