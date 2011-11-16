@@ -50,8 +50,6 @@ class DirectSoundPlayer2 : public AudioPlayer {
 	/// The playback thread
 	DirectSoundPlayer2Thread *thread;
 
-protected:
-
 	/// Desired length in milliseconds to write ahead of the playback cursor
 	int WantedLatency;
 
