@@ -96,6 +96,7 @@ class FrameMain: public wxFrame {
 
 	bool LoadList(wxArrayString list);
 	void UpdateTitle();
+	wxString GetScriptFileName() const;
 
 	void OnKeyDown(wxKeyEvent &event);
 	void OnMouseWheel(wxMouseEvent &evt);

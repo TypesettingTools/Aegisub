@@ -323,7 +323,7 @@ int FrameMain::TryToCloseSubs(bool enableCancel) {
 	if (context->ass->IsModified()) {
 		int flags = wxYES_NO;
 		if (enableCancel) flags |= wxCANCEL;
-		int result = wxMessageBox(_("Save before continuing?"), _("Unsaved changes"), flags,this);
+		int result = wxMessageBox(wxString::Format(_("Do you want to save changes to %s?"), GetScriptFileName()), _("Unsaved changes"), flags, this);
 		if (result == wxYES) {
 			(*cmd::get("subtitle/save"))(context.get());
 			// If it fails saving, return cancel anyway
@@ -372,20 +372,7 @@ void FrameMain::SetDisplayMode(int video, int audio) {
 void FrameMain::UpdateTitle() {
 	wxString newTitle;
 	if (context->ass->IsModified()) newTitle << "* ";
-	if (context->ass->filename.empty()) {
-		// Apple HIG says "untitled" should not be capitalised
-		// and the window is a document window, it shouldn't contain the app name
-		// (The app name is already present in the menu bar)
-#ifndef __WXMAC__
-		newTitle << _("Untitled");
-#else
-		newTitle << _("untitled");
-#endif
-	}
-	else {
-		wxFileName file (context->ass->filename);
-		newTitle << file.GetFullName();
-	}
+	newTitle << GetScriptFileName();
 
 #ifndef __WXMAC__
 	newTitle << " - Aegisub " << GetAegisubLongVersionString();
@@ -690,4 +677,21 @@ void FrameMain::OnKeyDown(wxKeyEvent &event) {
 
 void FrameMain::OnMouseWheel(wxMouseEvent &evt) {
 	ForwardMouseWheelEvent(this, evt);
+}
+
+wxString FrameMain::GetScriptFileName() const {
+	if (context->ass->filename.empty()) {
+		// Apple HIG says "untitled" should not be capitalised
+		// and the window is a document window, it shouldn't contain the app name
+		// (The app name is already present in the menu bar)
+#ifndef __WXMAC__
+		return _("Untitled");
+#else
+		return _("untitled");
+#endif
+	}
+	else {
+		wxFileName file (context->ass->filename);
+		return file.GetFullName();
+	}
 }
