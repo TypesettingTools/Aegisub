@@ -147,6 +147,7 @@ Audio::Audio(wxTreebook *book, Preferences *parent): OptionPage(book, parent, _(
 	wxArrayString choice_dtl(3, dtl_arr);
 	OptionChoice(general, _("Show inactive lines"), choice_dtl, "Audio/Inactive Lines Display Mode");
 	OptionAdd(general, _("Start-marker drag sensitivity"), "Audio/Start Drag Sensitivity", 1, 15);
+	OptionAdd(general, _("Line boundry thickness"), "Audio/Line Boundaries Thickness", 1, 5);
 
 	wxFlexGridSizer *display = PageSizer(_("Display Visual Options"));
 	OptionAdd(display, _("Secondary lines"), "Audio/Display/Draw/Secondary Lines");
@@ -167,6 +168,8 @@ Video::Video(wxTreebook *book, Preferences *parent): OptionPage(book, parent, _(
 	wxFlexGridSizer *general = PageSizer(_("Options"));
 	OptionAdd(general, _("Show keyframes in slider"), "Video/Slider/Show Keyframes");
 	OptionAdd(general, _("Always show visual tools"), "Tool/Visual/Always Show");
+	OptionAdd(general, _("Seek video to line start on selection change"), "Video/Subtitle Sync");
+	CellSkip(general);
 
 	const wxString cres_arr[3] = { _("Never"), _("Ask"), _("Always") };
 	wxArrayString choice_res(3, cres_arr);
@@ -375,6 +378,7 @@ Backup::Backup(wxTreebook *book, Preferences *parent): OptionPage(book, parent, 
 	CellSkip(save);
 	OptionAdd(save, _("Interval in seconds"), "App/Auto/Save Every Seconds");
 	OptionBrowse(save, _("Path"), "Path/Auto/Save");
+	OptionAdd(save, _("Autosave after every change"), "App/Auto/Save on Every Change");
 
 	wxFlexGridSizer *backup = PageSizer(_("Automatic Backup"));
 	OptionAdd(backup, _("Enable"), "App/Auto/Backup");
