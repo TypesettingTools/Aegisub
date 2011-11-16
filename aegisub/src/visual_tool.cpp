@@ -86,7 +86,7 @@ void VisualToolBase::OnCommit(int type) {
 	holding = false;
 	dragging = false;
 
-	if (type & AssFile::COMMIT_NEW || type & AssFile::COMMIT_SCRIPTINFO) {
+	if (type == AssFile::COMMIT_NEW || type & AssFile::COMMIT_SCRIPTINFO) {
 		int script_w, script_h;
 		c->ass->GetResolution(script_w, script_h);
 		script_res = Vector2D(script_w, script_h);
