@@ -104,8 +104,8 @@ void VisualToolScale::UpdateHold() {
 	if (ctrl_down)
 		scale = scale.Round(25.f);
 
-	SetSelectedOverride("\\fscx", wxString::Format("(%0.3g)", scale.X()));
-	SetSelectedOverride("\\fscy", wxString::Format("(%0.3g)", scale.Y()));
+	SetSelectedOverride("\\fscx", wxString::Format("%d", (int)scale.X()));
+	SetSelectedOverride("\\fscy", wxString::Format("%d", (int)scale.Y()));
 }
 
 void VisualToolScale::DoRefresh() {
