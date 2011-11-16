@@ -68,11 +68,8 @@ public:
 	FeetStyle GetFeet() const { return Feet_None; }
 	bool CanSnap() const { return true; }
 	wxPen GetStyle() const { return *style; }
-	bool operator < (const AudioMarkerKeyframe &other) const { return position < other.position; }
 	operator int64_t() const { return position; }
 };
-bool operator < (int64_t a, const AudioMarkerKeyframe &b) { return a < b.GetPosition(); }
-bool operator < (const AudioMarkerKeyframe &a, int64_t b) { return a.GetPosition() < b; }
 
 class AudioMarkerProviderKeyframes : public AudioMarkerProvider {
 	VideoContext *vc;
