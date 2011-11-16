@@ -415,7 +415,7 @@ struct subtitle_select_visible : public Command {
 		c->selectionController->SetSelectedSet(new_selection);
 	}
 
-	bool Validate(agi::Context *c) {
+	bool Validate(const agi::Context *c) {
 		return c->videoController->IsLoaded();
 	}
 };
