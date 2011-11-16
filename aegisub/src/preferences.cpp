@@ -153,7 +153,8 @@ Audio::Audio(wxTreebook *book, Preferences *parent): OptionPage(book, parent, _(
 	OptionAdd(display, _("Selection background"), "Audio/Display/Draw/Selection Background");
 	OptionAdd(display, _("Timeline"), "Audio/Display/Draw/Timeline");
 	OptionAdd(display, _("Cursor time"), "Audio/Display/Draw/Cursor Time");
-	OptionAdd(display, _("Keyframes"), "Audio/Display/Draw/Keyframes");
+	OptionAdd(display, _("Keyframes"), "Audio/Display/Draw/Keyframes in Dialogue Mode");
+	OptionAdd(display, _("Karaoke keyframes"), "Audio/Display/Draw/Keyframes in Karaoke Mode");
 	OptionAdd(display, _("Video position"), "Audio/Display/Draw/Video Position");
 
 	SetSizerAndFit(sizer);

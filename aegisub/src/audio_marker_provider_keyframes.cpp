@@ -46,14 +46,14 @@ public:
 	operator int64_t() const { return position; }
 };
 
-AudioMarkerProviderKeyframes::AudioMarkerProviderKeyframes(agi::Context *c)
+AudioMarkerProviderKeyframes::AudioMarkerProviderKeyframes(agi::Context *c, const char *opt_name)
 : controller(c->audioController)
 , vc(c->videoController)
 , keyframe_slot(vc->AddKeyframesListener(&AudioMarkerProviderKeyframes::Update, this))
 , audio_open_slot(controller->AddAudioOpenListener(&AudioMarkerProviderKeyframes::Update, this))
 , timecode_slot(vc->AddTimecodesListener(&AudioMarkerProviderKeyframes::Update, this))
-, enabled_slot(OPT_SUB("Audio/Display/Draw/Keyframes", &AudioMarkerProviderKeyframes::Update, this))
-, enabled_opt(OPT_GET("Audio/Display/Draw/Keyframes"))
+, enabled_slot(OPT_SUB(opt_name, &AudioMarkerProviderKeyframes::Update, this))
+, enabled_opt(OPT_GET(opt_name))
 , style(new Pen("Colour/Audio Display/Keyframe"))
 {
 	Update();

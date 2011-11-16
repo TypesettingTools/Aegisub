@@ -253,7 +253,7 @@ void AudioMarkerDialogueTiming::InitPair(AudioMarkerDialogueTiming *marker1, Aud
 // AudioTimingControllerDialogue
 
 AudioTimingControllerDialogue::AudioTimingControllerDialogue(agi::Context *c)
-: keyframes_provider(c)
+: keyframes_provider(c, "Audio/Display/Draw/Keyframes in Dialogue Mode")
 , timing_modified(false)
 , commit_id(-1)
 , context(c)

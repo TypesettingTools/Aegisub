@@ -63,7 +63,8 @@ class AudioMarkerProviderKeyframes : public AudioMarkerProvider {
 public:
 	/// Constructor
 	/// @param c Project context; must have audio and video controllers initialized
-	AudioMarkerProviderKeyframes(agi::Context *c);
+	/// @param opt_name Name of the option to use to decide whether or not this provider is enabled
+	AudioMarkerProviderKeyframes(agi::Context *c, const char *opt_name);
 	/// Explicit destructor needed due to members with incomplete types
 	~AudioMarkerProviderKeyframes();
 

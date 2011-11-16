@@ -151,7 +151,7 @@ AudioTimingControllerKaraoke::AudioTimingControllerKaraoke(agi::Context *c, AssK
 , end_pen("Colour/Audio Display/Line boundary End", "Audio/Line Boundaries Thickness")
 , start_marker(ToSamples(active_line->Start.GetMS()), &start_pen, AudioMarker::Feet_Right)
 , end_marker(ToSamples(active_line->End.GetMS()), &end_pen, AudioMarker::Feet_Left)
-, keyframes_provider(c)
+, keyframes_provider(c, "Audio/Display/Draw/Keyframes in Karaoke Mode")
 , auto_commit(OPT_GET("Audio/Auto/Commit")->GetBool())
 , auto_next(OPT_GET("Audio/Next Line on Commit")->GetBool())
 , commit_id(-1)

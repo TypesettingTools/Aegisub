@@ -37,7 +37,8 @@
 			"Dragging Times" : false,
 			"Draw" : {
 				"Cursor Time" : true,
-				"Keyframes" : true,
+				"Keyframes in Dialogue Mode" : true,
+				"Keyframes in Karaoke Mode" : true,
 				"Secondary Lines" : true,
 				"Selection Background" : true,
 				"Timeline" : true,
