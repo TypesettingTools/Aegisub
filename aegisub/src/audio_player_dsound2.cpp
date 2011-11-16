@@ -46,8 +46,8 @@
 
 #include <libaegisub/log.h>
 
-#include "audio_controller.h"
 #include "audio_player_dsound2.h"
+
 #include "include/aegisub/audio_provider.h"
 #include "frame_main.h"
 #include "main.h"
@@ -279,7 +279,13 @@ unsigned int __stdcall DirectSoundPlayer2Thread::ThreadProc(void *parameter)
 }
 
 /// Macro used to set error_message, error_happened and end the thread
-#define REPORT_ERROR(msg) { error_message = "DirectSoundPlayer2Thread: " msg; SetEvent(error_happened); return; }
+#define REPORT_ERROR(msg) \
+{ \
+	ResetEvent(is_playing); \
+	error_message = "DirectSoundPlayer2Thread: " msg; \
+	SetEvent(error_happened); \
+	return; \
+}
 
 void DirectSoundPlayer2Thread::Run()
 {
@@ -364,7 +370,6 @@ void DirectSoundPlayer2Thread::Run()
 			{
 				// Start or restart playback
 				bfr->Stop();
-				ResetEvent(is_playing);
 
 				next_input_frame = start_frame;
 
@@ -425,57 +430,41 @@ void DirectSoundPlayer2Thread::Run()
 			}
 
 		case WAIT_OBJECT_0+1:
-			{
-				// Stop playing
-				bfr->Stop();
-				ResetEvent(is_playing);
-				playback_should_be_running = false;
-				break;
-			}
+stop_playback:
+			// Stop playing
+			bfr->Stop();
+			ResetEvent(is_playing);
+			playback_should_be_running = false;
+			break;
 
 		case WAIT_OBJECT_0+2:
+			// Set end frame
+			if (end_frame <= next_input_frame)
 			{
-				// Set end frame
-				if (end_frame <= next_input_frame)
-				{
-					bfr->Stop();
-					ResetEvent(is_playing);
-					playback_should_be_running = false;
-				}
-				else
-				{
-					// If the user is dragging the start or end point in the audio display
-					// the set end frame events might come in faster than the timeouts happen
-					// and then new data never get filled into the buffer. See bug #915.
-					goto do_fill_buffer;
-				}
-				break;
+				goto stop_playback;
 			}
+
+			// If the user is dragging the start or end point in the audio display
+			// the set end frame events might come in faster than the timeouts happen
+			// and then new data never get filled into the buffer. See bug #915.
+			goto do_fill_buffer;
 
 		case WAIT_OBJECT_0+3:
-			{
-				// Change volume
-				// We aren't thread safe right now, filling the buffers grabs volume directly
-				// from the field set by the controlling thread, but it shouldn't be a major
-				// problem if race conditions do occur, just some momentary distortion.
-				goto do_fill_buffer;
-			}
+			// Change volume
+			// We aren't thread safe right now, filling the buffers grabs volume directly
+			// from the field set by the controlling thread, but it shouldn't be a major
+			// problem if race conditions do occur, just some momentary distortion.
+			goto do_fill_buffer;
 
 		case WAIT_OBJECT_0+4:
-			{
-				// Perform suicide
-				bfr->Stop();
-				ResetEvent(is_playing);
-				playback_should_be_running = false;
-				running = false;
-				break;
-			}
+			// Perform suicide
+			running = false;
+			goto stop_playback;
 
 		case WAIT_TIMEOUT:
 do_fill_buffer:
 			{
 				// Time to fill more into buffer
-
 				if (!playback_should_be_running)
 					break;
 
@@ -487,10 +476,7 @@ do_fill_buffer:
 				{
 					// Not looping playback...
 					// hopefully we only triggered timeout after being done with the buffer
-					bfr->Stop();
-					ResetEvent(is_playing);
-					playback_should_be_running = false;
-					break;
+					goto stop_playback;
 				}
 
 				DWORD play_cursor;
@@ -716,6 +702,20 @@ void DirectSoundPlayer2Thread::Play(int64_t start, int64_t count)
 	SetEvent(event_start_playback);
 
 	last_playback_restart = GetTickCount();
+
+	// Block until playback actually begins to avoid race conditions with
+	// checking if playback is in progress
+	HANDLE events_to_wait[] = { is_playing, error_happened };
+	switch (WaitForMultipleObjects(2, events_to_wait, FALSE, INFINITE))
+	{
+	case WAIT_OBJECT_0+0: // Playing
+		LOG_D("audio/player/dsound") << "Playback begun";
+		break;
+	case WAIT_OBJECT_0+1: // Error
+		throw error_message;
+	default:
+		throw "Unexpected result from WaitForMultipleObjects in DirectSoundPlayer2Thread::Play";
+	}
 }
 
 void DirectSoundPlayer2Thread::Stop()
