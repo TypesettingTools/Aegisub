@@ -78,7 +78,7 @@ void VisualToolCross::Draw() {
 	gl.ClearInvert();
 
 	Vector2D t = ToScriptCoords(shift_down ? video_res - mouse_pos : mouse_pos);
-	wxString mouse_text = t.Str();
+	wxString mouse_text = video_res.X() > script_res.X() ? t.Str() : t.DStr();
 
 	int tw, th;
 	gl_text->SetFont("Verdana", 12, true, false);
