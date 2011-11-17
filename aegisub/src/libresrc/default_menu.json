@@ -85,7 +85,8 @@
         {},
         { "submenu" : "main/subtitle/sort lines", "text" : "Sort Lines" },
         { "command" : "edit/line/swap" },
-        { "command" : "tool/line/select" }
+        { "command" : "tool/line/select" },
+        { "command" : "subtitle/select/all" }
     ],
     "main/subtitle/insert lines" : [
         { "command" : "subtitle/insert/before" },
