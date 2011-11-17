@@ -76,7 +76,7 @@ wxWindow *AssTransformFramerateFilter::GetConfigDialogWindow(wxWindow *parent, a
 	// Input sizer
 	wxSizer *InputSizer = new wxBoxSizer(wxHORIZONTAL);
 	wxString initialInput;
-	wxButton *FromVideo = new wxButton(base,-1,_("From Video"));
+	wxButton *FromVideo = new wxButton(base,-1,_("From video"));
 	if (Input->IsLoaded()) {
 		initialInput = wxString::Format("%2.3f",Input->FPS());
 		FromVideo->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &AssTransformFramerateFilter::OnFpsFromVideo, this);

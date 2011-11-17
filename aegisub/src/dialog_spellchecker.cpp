@@ -121,7 +121,7 @@ DialogSpellChecker::DialogSpellChecker(agi::Context *context)
 		actions_sizer->Add(button = new wxButton(this, -1, _("Replace")), button_flags);
 		button->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DialogSpellChecker::OnReplace, this);
 
-		actions_sizer->Add(button = new wxButton(this, -1, _("Replace All")), button_flags);
+		actions_sizer->Add(button = new wxButton(this, -1, _("Replace all")), button_flags);
 		button->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DialogSpellChecker::OnReplaceAll, this);
 
 		actions_sizer->Add(button = new wxButton(this, -1, _("Ignore")), button_flags);

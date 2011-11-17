@@ -199,7 +199,7 @@ SubsEditBox::SubsEditBox(wxWindow *parent, agi::Context *context)
 	MAKE_BUTTON(button_italics_16, _("Italics"));
 	MAKE_BUTTON(button_underline_16, _("Underline"));
 	MAKE_BUTTON(button_strikeout_16, _("Strikeout"));
-	MAKE_BUTTON(button_fontname_16, _("Font Face Name"));
+	MAKE_BUTTON(button_fontname_16, _("Font Face"));
 	MAKE_BUTTON(button_color_one_16, _("Primary color"));
 	MAKE_BUTTON(button_color_two_16, _("Secondary color"));
 	MAKE_BUTTON(button_color_three_16, _("Outline color"));

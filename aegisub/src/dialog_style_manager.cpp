@@ -774,12 +774,10 @@ void DialogStyleManager::OnCurrentDelete (wxCommandEvent &) {
 	int n = CurrentList->GetSelections(selections);
 
 	wxString message;
-	if (n!=1) {
-		message = _("Are you sure you want to delete these ");
-		message += wxString::Format("%i",n);
-		message += _(" styles?");
-	}
-	else message = _("Are you sure you want to delete this style?");
+	if (n != 1)
+		message = wxString::Format(_("Are you sure you want to delete these %d styles?"), n);
+	else
+		message = _("Are you sure you want to delete this style?");
 	int option = wxMessageBox(message, _("Confirm delete from current"), wxYES_NO | wxICON_EXCLAMATION , this);
 
 	if (option == wxYES) {
