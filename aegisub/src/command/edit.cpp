@@ -355,10 +355,14 @@ struct edit_redo : public Command {
 	CMD_TYPE(COMMAND_VALIDATE | COMMAND_DYNAMIC_NAME)
 
 	wxString StrMenu(const agi::Context *c) const {
-		return wxString::Format(_("&Redo %s"), c->ass->GetRedoDescription());
+		return c->ass->IsRedoStackEmpty() ?
+			_("Nothing to &redo") :
+		wxString::Format(_("&Redo %s"), c->ass->GetRedoDescription());
 	}
 	wxString StrDisplay(const agi::Context *c) const {
-		return wxString::Format(_("Redo %s"), c->ass->GetRedoDescription());
+		return c->ass->IsRedoStackEmpty() ?
+			_("Nothing to redo") :
+		wxString::Format(_("Redo %s"), c->ass->GetRedoDescription());
 	}
 
 	bool Validate(const agi::Context *c) {
@@ -378,10 +382,14 @@ struct edit_undo : public Command {
 	CMD_TYPE(COMMAND_VALIDATE | COMMAND_DYNAMIC_NAME)
 
 	wxString StrMenu(const agi::Context *c) const {
-		return wxString::Format(_("&Undo %s"), c->ass->GetUndoDescription());
+		return c->ass->IsUndoStackEmpty() ?
+			_("Nothing to &undo") :
+			wxString::Format(_("&Undo %s"), c->ass->GetUndoDescription());
 	}
 	wxString StrDisplay(const agi::Context *c) const {
-		return wxString::Format(_("Undo %s"), c->ass->GetUndoDescription());
+		return c->ass->IsUndoStackEmpty() ?
+			_("Nothing to undo") :
+			wxString::Format(_("Undo %s"), c->ass->GetUndoDescription());
 	}
 
 	bool Validate(const agi::Context *c) {
