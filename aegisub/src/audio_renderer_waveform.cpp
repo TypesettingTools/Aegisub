@@ -49,11 +49,6 @@
 #include "audio_renderer_waveform.h"
 #include "colorspace.h"
 
-#undef min
-#undef max
-
-
-
 AudioWaveformRenderer::AudioWaveformRenderer()
 : AudioRendererBitmapProvider()
 , colors_normal(6)

@@ -43,12 +43,6 @@
 #include "audio_colorscheme.h"
 #include "colorspace.h"
 
-// Something is defining "min" and "max" macros, and they interfere with using std::min and std::max
-#undef min
-#undef max
-
-
-
 void AudioColorScheme::InitIcyBlue_Normal()
 {
 	unsigned char *palptr = palette;
