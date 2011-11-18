@@ -53,32 +53,26 @@ template<class C, class F> static void for_each(C &container, F const& func)
 
 using std::tr1::placeholders::_1;
 
-AudioRendererBitmapCacheBitmapFactory::AudioRendererBitmapCacheBitmapFactory(AudioRenderer *_renderer)
+AudioRendererBitmapCacheBitmapFactory::AudioRendererBitmapCacheBitmapFactory(AudioRenderer *renderer)
+: renderer(renderer)
 {
-	assert(_renderer != 0);
-	renderer = _renderer;
+	assert(renderer);
 }
 
-
-wxBitmap *AudioRendererBitmapCacheBitmapFactory::ProduceBlock(int i)
+wxBitmap *AudioRendererBitmapCacheBitmapFactory::ProduceBlock(int /* i */)
 {
-	(void)i;
 	return new wxBitmap(renderer->cache_bitmap_width, renderer->pixel_height, 24);
 }
-
 
 void AudioRendererBitmapCacheBitmapFactory::DisposeBlock(wxBitmap *bmp)
 {
 	delete bmp;
 }
 
-
 size_t AudioRendererBitmapCacheBitmapFactory::GetBlockSize() const
 {
 	return sizeof(wxBitmap) + renderer->cache_bitmap_width * renderer->pixel_height * 3;
 }
-
-
 
 
 AudioRenderer::AudioRenderer()
@@ -97,9 +91,7 @@ AudioRenderer::AudioRenderer()
 
 AudioRenderer::~AudioRenderer()
 {
-	// Nothing to do, everything is auto-allocated
 }
-
 
 void AudioRenderer::SetSamplesPerPixel(int _pixel_samples)
 {
@@ -173,7 +165,7 @@ void AudioRenderer::SetCacheMaxSize(size_t max_size)
 	// Limit the bitmap cache sizes to 16 MB hard, to avoid the risk of exhausting
 	// system bitmap object resources and similar. Experimenting shows that 16 MB
 	// bitmap cache should be plenty even if working with a one hour audio clip.
-	cache_bitmap_maxsize = std::min(max_size/8, (size_t)0x1000000);
+	cache_bitmap_maxsize = std::min<size_t>(max_size/8, 0x1000000);
 	// The renderer gets whatever is left.
 	cache_renderer_maxsize = max_size - 2*cache_bitmap_maxsize;
 }
