@@ -99,10 +99,10 @@ DialogPasteOver::DialogPasteOver (wxWindow *parent, std::vector<bool>& options)
 
 	// Top buttons
 	wxSizer *TopButtonSizer = new wxBoxSizer(wxHORIZONTAL);
-	TopButtonSizer->Add(new wxButton(this, Paste_Over_All, _("All")),1,0,0);
-	TopButtonSizer->Add(new wxButton(this, Paste_Over_None, _("None")),1,0,0);
-	TopButtonSizer->Add(new wxButton(this, Paste_Over_Times, _("Times")),1,0,0);
-	TopButtonSizer->Add(new wxButton(this, Paste_Over_Text, _("Text")),1,0,0);
+	TopButtonSizer->Add(new wxButton(this, Paste_Over_All, _("&All")),1,0,0);
+	TopButtonSizer->Add(new wxButton(this, Paste_Over_None, _("&None")),1,0,0);
+	TopButtonSizer->Add(new wxButton(this, Paste_Over_Times, _("&Times")),1,0,0);
+	TopButtonSizer->Add(new wxButton(this, Paste_Over_Text, _("T&ext")),1,0,0);
 
 	// Buttons
 	wxStdDialogButtonSizer *ButtonSizer = new wxStdDialogButtonSizer();

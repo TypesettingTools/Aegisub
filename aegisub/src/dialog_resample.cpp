@@ -78,7 +78,7 @@ DialogResample::DialogResample(agi::Context *c)
 	wxSizer *MarginSizer = new wxGridSizer(3,3,5,5);
 	MarginTop = new wxTextCtrl(this,TEXT_MARGIN_T,"0",wxDefaultPosition,wxSize(50,-1),0);
 	MarginLeft = new wxTextCtrl(this,TEXT_MARGIN_L,"0",wxDefaultPosition,wxSize(50,-1),0);
-	MarginSymmetrical = new wxCheckBox(this,CHECK_SYMMETRICAL,_("Symmetrical"));
+	MarginSymmetrical = new wxCheckBox(this,CHECK_SYMMETRICAL,_("&Symmetrical"));
 	MarginRight = new wxTextCtrl(this,TEXT_MARGIN_R,"0",wxDefaultPosition,wxSize(50,-1),0);
 	MarginBottom = new wxTextCtrl(this,TEXT_MARGIN_B,"0",wxDefaultPosition,wxSize(50,-1),0);
 	MarginSizer->AddSpacer(1);
@@ -103,13 +103,13 @@ DialogResample::DialogResample(agi::Context *c)
 	ResX = new wxTextCtrl(this,-1,"",wxDefaultPosition,wxSize(50,-1),0,NumValidator(wxString::Format("%i",sw)));
 	ResY = new wxTextCtrl(this,-1,"",wxDefaultPosition,wxSize(50,-1),0,NumValidator(wxString::Format("%i",sh)));
 	wxStaticText *ResText = new wxStaticText(this,-1,_("x"));
-	wxButton *FromVideo = new wxButton(this,BUTTON_DEST_FROM_VIDEO,_("From video"));
+	wxButton *FromVideo = new wxButton(this,BUTTON_DEST_FROM_VIDEO,_("From &video"));
 	if (!c->videoController->IsLoaded()) FromVideo->Enable(false);
 	ResSizer->Add(ResX,1,wxRIGHT,5);
 	ResSizer->Add(ResText,0,wxALIGN_CENTER | wxRIGHT,5);
 	ResSizer->Add(ResY,1,wxRIGHT,5);
 	ResSizer->Add(FromVideo,1,0,0);
-	Anamorphic = new wxCheckBox(this,CHECK_ANAMORPHIC,_("Change aspect ratio"));
+	Anamorphic = new wxCheckBox(this,CHECK_ANAMORPHIC,_("&Change aspect ratio"));
 	ResBoxSizer->Add(ResSizer,1,wxEXPAND|wxBOTTOM,5);
 	ResBoxSizer->Add(Anamorphic,0,0,0);
 

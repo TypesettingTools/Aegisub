@@ -653,7 +653,7 @@ DialogKanjiTimer::DialogKanjiTimer(agi::Context *c)
 	display = new KaraokeLineMatchDisplay(this);
 
 	//Checkbox
-	Interpolate = new wxCheckBox(this,-1,_("Attempt to interpolate kanji."),wxDefaultPosition,wxDefaultSize,wxALIGN_LEFT);
+	Interpolate = new wxCheckBox(this,-1,_("Attempt to &interpolate kanji."),wxDefaultPosition,wxDefaultSize,wxALIGN_LEFT);
 	Interpolate->SetValue(OPT_GET("Tool/Kanji Timer/Interpolation")->GetBool());
 
 	wxArrayString styles = subs->GetStyles();
@@ -665,14 +665,14 @@ DialogKanjiTimer::DialogKanjiTimer(agi::Context *c)
 	wxStaticText *ShortcutKeys = new wxStaticText(this,-1,_("When the destination textbox has focus, use the following keys:\n\nRight Arrow: Increase dest. selection length\nLeft Arrow: Decrease dest. selection length\nUp Arrow: Increase source selection length\nDown Arrow: Decrease source selection length\nEnter: Link, accept line when done\nBackspace: Unlink last"));
 
 	//Buttons
-	wxButton *Start = new wxButton(this,BUTTON_KTSTART,_("Start!"));
-	wxButton *Link = new wxButton(this,BUTTON_KTLINK,_("Link"));
-	wxButton *Unlink = new wxButton(this,BUTTON_KTUNLINK,_("Unlink"));
-	wxButton *SkipSourceLine = new wxButton(this,BUTTON_KTSKIPSOURCE,_("Skip Source Line"));
-	wxButton *SkipDestLine = new wxButton(this,BUTTON_KTSKIPDEST,_("Skip Dest Line"));
-	wxButton *GoBackLine = new wxButton(this,BUTTON_KTGOBACK,_("Go Back a Line"));
-	wxButton *AcceptLine = new wxButton(this,BUTTON_KTACCEPT,_("Accept Line"));
-	wxButton *CloseKT = new wxButton(this,wxID_CLOSE,_("Close"));
+	wxButton *Start = new wxButton(this,BUTTON_KTSTART,_("S&tart!"));
+	wxButton *Link = new wxButton(this,BUTTON_KTLINK,_("&Link"));
+	wxButton *Unlink = new wxButton(this,BUTTON_KTUNLINK,_("&Unlink"));
+	wxButton *SkipSourceLine = new wxButton(this,BUTTON_KTSKIPSOURCE,_("Skip &Source Line"));
+	wxButton *SkipDestLine = new wxButton(this,BUTTON_KTSKIPDEST,_("Skip &Dest Line"));
+	wxButton *GoBackLine = new wxButton(this,BUTTON_KTGOBACK,_("&Go Back a Line"));
+	wxButton *AcceptLine = new wxButton(this,BUTTON_KTACCEPT,_("&Accept Line"));
+	wxButton *CloseKT = new wxButton(this,wxID_CLOSE,_("&Close"));
 
 	//Frame: Text
 	DisplayBoxSizer->Add(display, 0, wxEXPAND|wxALL, 6);

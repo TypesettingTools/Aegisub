@@ -92,9 +92,9 @@ DialogSearchReplace::DialogSearchReplace (wxWindow *parent,bool _hasReplace,wxSt
 
 	// Options sizer
 	wxSizer *OptionsSizer = new wxBoxSizer(wxVERTICAL);
-	CheckMatchCase = new wxCheckBox(this,CHECK_MATCH_CASE,_("Match case"));
-	CheckRegExp = new wxCheckBox(this,CHECK_MATCH_CASE,_("Use regular expressions"));
-	CheckUpdateVideo = new wxCheckBox(this,CHECK_UPDATE_VIDEO,_("Update Video (slow)"));
+	CheckMatchCase = new wxCheckBox(this,CHECK_MATCH_CASE,_("&Match case"));
+	CheckRegExp = new wxCheckBox(this,CHECK_MATCH_CASE,_("&Use regular expressions"));
+	CheckUpdateVideo = new wxCheckBox(this,CHECK_UPDATE_VIDEO,_("Update &Video"));
 	CheckMatchCase->SetValue(OPT_GET("Tool/Search Replace/Match Case")->GetBool());
 	CheckRegExp->SetValue(OPT_GET("Tool/Search Replace/RegExp")->GetBool());
 	//CheckRegExp->Enable(false);
@@ -129,12 +129,12 @@ DialogSearchReplace::DialogSearchReplace (wxWindow *parent,bool _hasReplace,wxSt
 
 	// Buttons
 	wxSizer *ButtonSizer = new wxBoxSizer(wxVERTICAL);
-	wxButton *FindNext = new wxButton(this,BUTTON_FIND_NEXT,_("Find next"));
+	wxButton *FindNext = new wxButton(this,BUTTON_FIND_NEXT,_("&Find next"));
 	FindNext->SetDefault();
 	ButtonSizer->Add(FindNext,0,wxEXPAND | wxBOTTOM,3);
 	if (hasReplace) {
-		ButtonSizer->Add(new wxButton(this,BUTTON_REPLACE_NEXT,_("Replace next")),0,wxEXPAND | wxBOTTOM,3);
-		ButtonSizer->Add(new wxButton(this,BUTTON_REPLACE_ALL,_("Replace all")),0,wxEXPAND | wxBOTTOM,3);
+		ButtonSizer->Add(new wxButton(this,BUTTON_REPLACE_NEXT,_("Replace &next")),0,wxEXPAND | wxBOTTOM,3);
+		ButtonSizer->Add(new wxButton(this,BUTTON_REPLACE_ALL,_("Replace &all")),0,wxEXPAND | wxBOTTOM,3);
 	}
 	ButtonSizer->Add(new wxButton(this,wxID_CANCEL),0,wxEXPAND | wxBOTTOM,20);
 	//ButtonSizer->Add(new wxButton(this,wxID_HELP),0,wxEXPAND | wxBOTTOM,0);

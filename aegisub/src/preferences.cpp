@@ -297,9 +297,9 @@ Interface_Hotkeys::Interface_Hotkeys(wxTreebook *book, Preferences *parent)
 , model(new HotkeyDataViewModel(parent))
 {
 	quick_search = new wxSearchCtrl(this, -1);
-	wxButton *new_button = new wxButton(this, -1, _("New"));
-	wxButton *edit_button = new wxButton(this, -1, _("Edit"));
-	wxButton *delete_button = new wxButton(this, -1, _("Delete"));
+	wxButton *new_button = new wxButton(this, -1, _("&New"));
+	wxButton *edit_button = new wxButton(this, -1, _("&Edit"));
+	wxButton *delete_button = new wxButton(this, -1, _("&Delete"));
 
 	new_button->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &Interface_Hotkeys::OnNewButton, this);
 	edit_button->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &Interface_Hotkeys::OnEditButton, this);
@@ -584,7 +584,7 @@ Preferences::Preferences(wxWindow *parent): wxDialog(parent, -1, _("Preferences"
 	wxStdDialogButtonSizer *stdButtonSizer = CreateStdDialogButtonSizer(wxOK | wxCANCEL | wxAPPLY);
 	applyButton = stdButtonSizer->GetApplyButton();
 	wxSizer *buttonSizer = new wxBoxSizer(wxHORIZONTAL);
-	wxButton *defaultButton = new wxButton(this, -1, _("Restore Defaults"));
+	wxButton *defaultButton = new wxButton(this, -1, _("&Restore Defaults"));
 	buttonSizer->Add(defaultButton, wxSizerFlags(0).Expand());
 	buttonSizer->AddStretchSpacer(1);
 	buttonSizer->Add(stdButtonSizer, wxSizerFlags(0).Expand());

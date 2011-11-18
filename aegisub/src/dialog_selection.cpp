@@ -138,9 +138,9 @@ wxDialog (c->parent, -1, _("Select"), wxDefaultPosition, wxDefaultSize, wxCAPTIO
 		{
 			wxSizerFlags radio_flags = wxSizerFlags().Border(wxLEFT | wxRIGHT);
 			wxSizer *match_radio_line = new wxBoxSizer(wxHORIZONTAL);
-			match_radio_line->Add(new wxRadioButton(this, -1, _("Matches"), wxDefaultPosition, wxDefaultSize, wxRB_GROUP), radio_flags);
-			match_radio_line->Add(select_unmatching_lines = new wxRadioButton(this, -1, _("Doesn't Match")), radio_flags);
-			match_radio_line->Add(case_sensitive = new wxCheckBox(this, -1, _("Match case")), radio_flags);
+			match_radio_line->Add(new wxRadioButton(this, -1, _("&Matches"), wxDefaultPosition, wxDefaultSize, wxRB_GROUP), radio_flags);
+			match_radio_line->Add(select_unmatching_lines = new wxRadioButton(this, -1, _("&Doesn't Match")), radio_flags);
+			match_radio_line->Add(case_sensitive = new wxCheckBox(this, -1, _("Match c&ase")), radio_flags);
 			match_sizer->Add(match_radio_line);
 		}
 		match_sizer->Add(match_text = new wxTextCtrl(this, -1, lagi_wxString(OPT_GET("Tool/Select Lines/Text")->GetString())), main_flags);
@@ -149,24 +149,24 @@ wxDialog (c->parent, -1, _("Select"), wxDefaultPosition, wxDefaultSize, wxCAPTIO
 	}
 
 	{
-		wxString modes[] = { _("Exact match"), _("Contains"), _("Regular Expression match") };
+		wxString modes[] = { _("&Exact match"), _("&Contains"), _("&Regular Expression match") };
 		main_sizer->Add(match_mode = new wxRadioBox(this, -1, _("Mode"), wxDefaultPosition, wxDefaultSize, 3, modes, 1), main_flags);
 	}
 
 	{
-		wxString fields[] = { _("Text"), _("Style"), _("Actor"), _("Effect") };
+		wxString fields[] = { _("&Text"), _("&Style"), _("Act&or"), _("E&ffect") };
 		main_sizer->Add(dialogue_field = new wxRadioBox(this, -1, _("In Field"), wxDefaultPosition, wxDefaultSize, 4, fields), main_flags);
 	}
 
 	{
 		wxSizer *comment_sizer = new wxStaticBoxSizer(wxHORIZONTAL, this, _("Match dialogues/comments"));
-		comment_sizer->Add(apply_to_dialogue = new wxCheckBox(this, -1, _("Dialogues")), wxSizerFlags().Border());
-		comment_sizer->Add(apply_to_comments = new wxCheckBox(this, -1, _("Comments")), wxSizerFlags().Border());
+		comment_sizer->Add(apply_to_dialogue = new wxCheckBox(this, -1, _("D&ialogues")), wxSizerFlags().Border());
+		comment_sizer->Add(apply_to_comments = new wxCheckBox(this, -1, _("Comme&nts")), wxSizerFlags().Border());
 		main_sizer->Add(comment_sizer, main_flags);
 	}
 
 	{
-		wxString actions[] = { _("Set selection"), _("Add to selection"), _("Subtract from selection"), _("Intersect with selection") };
+		wxString actions[] = { _("Set se&lection"), _("&Add to selection"), _("S&ubtract from selection"), _("Intersect &with selection") };
 		main_sizer->Add(selection_change_type = new wxRadioBox(this, -1, _("Action"), wxDefaultPosition, wxDefaultSize, 4, actions, 1), main_flags);
 	}
 

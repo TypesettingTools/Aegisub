@@ -170,7 +170,7 @@ SubsEditBox::SubsEditBox(wxWindow *parent, agi::Context *context)
 	// Top controls
 	wxArrayString styles;
 	styles.Add("Default");
-	CommentBox = new wxCheckBox(this,wxID_ANY,_("Comment"));
+	CommentBox = new wxCheckBox(this,wxID_ANY,_("&Comment"));
 	StyleBox = new wxComboBox(this,wxID_ANY,"Default",wxDefaultPosition,wxSize(110,-1),styles,wxCB_READONLY | wxTE_PROCESS_ENTER);
 	ActorBox = new wxComboBox(this,wxID_ANY,"Actor",wxDefaultPosition,wxSize(110,-1),styles,wxCB_DROPDOWN | wxTE_PROCESS_ENTER);
 	Effect = new wxTextCtrl(this,wxID_ANY,"",wxDefaultPosition,wxSize(80,-1),wxTE_PROCESS_ENTER);
@@ -204,11 +204,11 @@ SubsEditBox::SubsEditBox(wxWindow *parent, agi::Context *context)
 	MAKE_BUTTON(button_color_two_16, _("Secondary color"));
 	MAKE_BUTTON(button_color_three_16, _("Outline color"));
 	MAKE_BUTTON(button_color_four_16, _("Shadow color"));
-	MAKE_BUTTON(button_audio_commit_16, _("Commits the text (Enter). Hold Ctrl to stay in line (%KEY%)."));
+	MAKE_BUTTON(button_audio_commit_16, _("Commits the text (Enter)"));
 #undef MAKE_BUTTON
 
-	ByTime = new wxRadioButton(this,wxID_ANY,_("Time"),wxDefaultPosition,wxDefaultSize,wxRB_GROUP);
-	ByFrame = new wxRadioButton(this,wxID_ANY,_("Frame"));
+	ByTime = new wxRadioButton(this,wxID_ANY,_("&Time"),wxDefaultPosition,wxDefaultSize,wxRB_GROUP);
+	ByFrame = new wxRadioButton(this,wxID_ANY,_("F&rame"));
 	ByFrame->Enable(false);
 
 	// Tooltips

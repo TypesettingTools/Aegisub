@@ -88,25 +88,25 @@ DialogTimingProcessor::DialogTimingProcessor(agi::Context *c)
 	wxArrayString styles = c->ass->GetStyles();
 	StyleList = new wxCheckListBox(this,TIMING_STYLE_LIST,wxDefaultPosition,wxSize(150,150),styles);
 	StyleList->SetToolTip(_("Select styles to process. Unchecked ones will be ignored."));
-	wxButton *all = new wxButton(this,BUTTON_SELECT_ALL,_("All"));
+	wxButton *all = new wxButton(this,BUTTON_SELECT_ALL,_("&All"));
 	all->SetToolTip(_("Select all styles."));
-	wxButton *none = new wxButton(this,BUTTON_SELECT_NONE,_("None"));
+	wxButton *none = new wxButton(this,BUTTON_SELECT_NONE,_("&None"));
 	none->SetToolTip(_("Deselect all styles."));
 
 	// Options box
 	wxSizer *optionsSizer = new wxStaticBoxSizer(wxHORIZONTAL,this,_("Options"));
-	onlySelection = new wxCheckBox(this,-1,_("Affect selection only"));
+	onlySelection = new wxCheckBox(this,-1,_("Affect &selection only"));
 	onlySelection->SetValue(OPT_GET("Tool/Timing Post Processor/Only Selection")->GetBool());
 	optionsSizer->Add(onlySelection,1,wxALL,0);
 
 	// Lead-in/out box
 	wxSizer *LeadSizer = new wxStaticBoxSizer(wxHORIZONTAL,this,_("Lead-in/Lead-out"));
-	hasLeadIn = new wxCheckBox(this,CHECK_ENABLE_LEADIN,_("Add lead in:"));
+	hasLeadIn = new wxCheckBox(this,CHECK_ENABLE_LEADIN,_("Add lead &in:"));
 	hasLeadIn->SetToolTip(_("Enable adding of lead-ins to lines."));
 	hasLeadIn->SetValue(OPT_GET("Tool/Timing Post Processor/Enable/Lead/IN")->GetBool());
 	leadIn = new wxTextCtrl(this,-1,"",wxDefaultPosition,wxSize(80,-1),0,NumValidator(leadInTime));
 	leadIn->SetToolTip(_("Lead in to be added, in milliseconds."));
-	hasLeadOut = new wxCheckBox(this,CHECK_ENABLE_LEADOUT,_("Add lead out:"));
+	hasLeadOut = new wxCheckBox(this,CHECK_ENABLE_LEADOUT,_("Add lead &out:"));
 	hasLeadOut->SetToolTip(_("Enable adding of lead-outs to lines."));
 	hasLeadOut->SetValue(OPT_GET("Tool/Timing Post Processor/Enable/Lead/OUT")->GetBool());
 	leadOut = new wxTextCtrl(this,-1,"",wxDefaultPosition,wxSize(80,-1),0,NumValidator(leadOutTime));
@@ -119,7 +119,7 @@ DialogTimingProcessor::DialogTimingProcessor(agi::Context *c)
 
 	// Adjacent subs sizer
 	wxSizer *AdjacentSizer = new wxStaticBoxSizer(wxHORIZONTAL,this,_("Make adjacent subtitles continuous"));
-	adjsEnable = new wxCheckBox(this,CHECK_ENABLE_ADJASCENT,_("Enable"));
+	adjsEnable = new wxCheckBox(this,CHECK_ENABLE_ADJASCENT,_("&Enable"));
 	adjsEnable->SetToolTip(_("Enable snapping of subtitles together if they are within a certain distance of each other."));
 	adjsEnable->SetValue(OPT_GET("Tool/Timing Post Processor/Enable/Adjacent")->GetBool());
 	wxStaticText *adjsThresText = new wxStaticText(this,-1,_("Threshold:"),wxDefaultPosition,wxDefaultSize,wxALIGN_CENTRE);
@@ -137,7 +137,7 @@ DialogTimingProcessor::DialogTimingProcessor(agi::Context *c)
 	// Keyframes sizer
 	KeyframesSizer = new wxStaticBoxSizer(wxHORIZONTAL,this,_("Keyframe snapping"));
 	wxSizer *KeyframesFlexSizer = new wxFlexGridSizer(2,5,5,0);
-	keysEnable = new wxCheckBox(this,CHECK_ENABLE_KEYFRAME,_("Enable"));
+	keysEnable = new wxCheckBox(this,CHECK_ENABLE_KEYFRAME,_("E&nable"));
 	keysEnable->SetToolTip(_("Enable snapping of subtitles to nearest keyframe, if distance is within threshold."));
 	keysEnable->SetValue(OPT_GET("Tool/Timing Post Processor/Enable/Keyframe")->GetBool());
 	wxStaticText *textStartBefore = new wxStaticText(this,-1,_("Starts before thres.:"),wxDefaultPosition,wxDefaultSize,wxALIGN_CENTRE);

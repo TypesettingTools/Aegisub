@@ -103,7 +103,7 @@ DialogProperties::DialogProperties(agi::Context *c)
 	ResX = new wxTextCtrl(this,-1,"",wxDefaultPosition,wxSize(50,20),0,NumValidator(c->ass->GetScriptInfo("PlayResX")));
 	ResY = new wxTextCtrl(this,-1,"",wxDefaultPosition,wxSize(50,20),0,NumValidator(c->ass->GetScriptInfo("PlayResY")));
 	wxStaticText *ResText = new wxStaticText(this,-1,"x");
-	wxButton *FromVideo = new wxButton(this,-1,_("From video"));
+	wxButton *FromVideo = new wxButton(this,-1,_("From &video"));
 	if (!c->videoController->IsLoaded()) {
 		FromVideo->Enable(false);
 	}

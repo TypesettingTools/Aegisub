@@ -118,19 +118,19 @@ DialogSpellChecker::DialogSpellChecker(agi::Context *context)
 		wxButton *button;
 		wxSizerFlags button_flags = wxSizerFlags().Expand().Bottom().Border(wxBOTTOM, 5);
 
-		actions_sizer->Add(button = new wxButton(this, -1, _("Replace")), button_flags);
+		actions_sizer->Add(button = new wxButton(this, -1, _("&Replace")), button_flags);
 		button->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DialogSpellChecker::OnReplace, this);
 
-		actions_sizer->Add(button = new wxButton(this, -1, _("Replace all")), button_flags);
+		actions_sizer->Add(button = new wxButton(this, -1, _("Replace &all")), button_flags);
 		button->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DialogSpellChecker::OnReplaceAll, this);
 
-		actions_sizer->Add(button = new wxButton(this, -1, _("Ignore")), button_flags);
+		actions_sizer->Add(button = new wxButton(this, -1, _("&Ignore")), button_flags);
 		button->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DialogSpellChecker::OnIgnore, this);
 
-		actions_sizer->Add(button = new wxButton(this, -1, _("Ignore all")), button_flags);
+		actions_sizer->Add(button = new wxButton(this, -1, _("Ignore a&ll")), button_flags);
 		button->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DialogSpellChecker::OnIgnoreAll, this);
 
-		actions_sizer->Add(add_button = new wxButton(this, -1, _("Add to dictionary")), button_flags);
+		actions_sizer->Add(add_button = new wxButton(this, -1, _("Add to &dictionary")), button_flags);
 		button->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DialogSpellChecker::OnAdd, this);
 
 		actions_sizer->Add(new HelpButton(this, "Spell Checker"), button_flags);

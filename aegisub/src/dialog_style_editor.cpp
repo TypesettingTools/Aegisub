@@ -122,10 +122,10 @@ DialogStyleEditor::DialogStyleEditor(wxWindow *parent, AssStyle *style, agi::Con
 	StyleName = new wxTextCtrl(this, -1, style->name);
 	FontName = new wxComboBox(this, -1, style->font, wxDefaultPosition, wxSize(150, -1), 0, 0, wxCB_DROPDOWN);
 	FontSize =  num_text_ctrl(this, style->fontsize, wxSize(50, -1));
-	BoxBold = new wxCheckBox(this, -1, _("Bold"));
-	BoxItalic = new wxCheckBox(this, -1, _("Italic"));
-	BoxUnderline = new wxCheckBox(this, -1, _("Underline"));
-	BoxStrikeout = new wxCheckBox(this, -1, _("Strikeout"));
+	BoxBold = new wxCheckBox(this, -1, _("&Bold"));
+	BoxItalic = new wxCheckBox(this, -1, _("&Italic"));
+	BoxUnderline = new wxCheckBox(this, -1, _("&Underline"));
+	BoxStrikeout = new wxCheckBox(this, -1, _("&Strikeout"));
 	colorButton[0] = new ColourButton(this, -1, wxSize(55, 16), style->primary.GetWXColor());
 	colorButton[1] = new ColourButton(this, -1, wxSize(55, 16), style->secondary.GetWXColor());
 	colorButton[2] = new ColourButton(this, -1, wxSize(55, 16), style->outline.GetWXColor());
@@ -140,7 +140,7 @@ DialogStyleEditor::DialogStyleEditor(wxWindow *parent, AssStyle *style, agi::Con
 	Alignment = new wxRadioBox(this, -1, _("Alignment"), wxDefaultPosition, wxDefaultSize, 9, alignValues, 3, wxRA_SPECIFY_COLS);
 	Outline = num_text_ctrl(this, style->outline_w, wxSize(50, -1));
 	Shadow = num_text_ctrl(this, style->shadow_w, wxSize(50, -1));
-	OutlineType = new wxCheckBox(this, -1, _("Opaque box"));
+	OutlineType = new wxCheckBox(this, -1, _("&Opaque box"));
 	ScaleX = num_text_ctrl(this, style->scalex);
 	ScaleY = num_text_ctrl(this, style->scaley);
 	Angle = num_text_ctrl(this, style->angle);

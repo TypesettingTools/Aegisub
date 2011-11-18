@@ -74,10 +74,10 @@ DialogExport::DialogExport(agi::Context *c)
 		}
 	}
 
-	wxButton *btn_up = new wxButton(this, -1, _("Move up"), wxDefaultPosition, wxSize(90, -1));
-	wxButton *btn_down = new wxButton(this, -1, _("Move down"), wxDefaultPosition, wxSize(90, -1));
-	wxButton *btn_all = new wxButton(this, -1, _("Select all"), wxDefaultPosition, wxSize(80, -1));
-	wxButton *btn_none = new wxButton(this, -1, _("Select none"), wxDefaultPosition, wxSize(80, -1));
+	wxButton *btn_up = new wxButton(this, -1, _("Move &up"), wxDefaultPosition, wxSize(90, -1));
+	wxButton *btn_down = new wxButton(this, -1, _("Move &down"), wxDefaultPosition, wxSize(90, -1));
+	wxButton *btn_all = new wxButton(this, -1, _("Select &all"), wxDefaultPosition, wxSize(80, -1));
+	wxButton *btn_none = new wxButton(this, -1, _("Select &none"), wxDefaultPosition, wxSize(80, -1));
 
 	btn_up->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DialogExport::OnMoveUp, this);
 	btn_down->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DialogExport::OnMoveDown, this);

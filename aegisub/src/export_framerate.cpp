@@ -76,7 +76,7 @@ wxWindow *AssTransformFramerateFilter::GetConfigDialogWindow(wxWindow *parent, a
 	// Input sizer
 	wxSizer *InputSizer = new wxBoxSizer(wxHORIZONTAL);
 	wxString initialInput;
-	wxButton *FromVideo = new wxButton(base,-1,_("From video"));
+	wxButton *FromVideo = new wxButton(base,-1,_("From &video"));
 	if (Input->IsLoaded()) {
 		initialInput = wxString::Format("%2.3f",Input->FPS());
 		FromVideo->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &AssTransformFramerateFilter::OnFpsFromVideo, this);
@@ -96,11 +96,11 @@ wxWindow *AssTransformFramerateFilter::GetConfigDialogWindow(wxWindow *parent, a
 	wxSizer *OutputSizer = new wxBoxSizer(wxVERTICAL);
 
 	// Output top line
-	RadioOutputVFR = new wxRadioButton(base,-1,_("Variable"),wxDefaultPosition,wxDefaultSize,wxRB_GROUP);
+	RadioOutputVFR = new wxRadioButton(base,-1,_("V&ariable"),wxDefaultPosition,wxDefaultSize,wxRB_GROUP);
 	OutputSizerTop->Add(RadioOutputVFR,0,wxEXPAND,0);
 
 	// Output bottom line
-	RadioOutputCFR = new wxRadioButton(base,-1,_("Constant: "));
+	RadioOutputCFR = new wxRadioButton(base,-1,_("&Constant: "));
 	wxString initialOutput = initialInput;
 	if (!Output->IsVFR()) {
 		RadioOutputVFR->Enable(false);
@@ -112,7 +112,7 @@ wxWindow *AssTransformFramerateFilter::GetConfigDialogWindow(wxWindow *parent, a
 	OutputSizerBottom->AddStretchSpacer(1);
 
 	// Reverse checkbox
-	Reverse = new wxCheckBox(base,-1,_("Reverse transformation"));
+	Reverse = new wxCheckBox(base,-1,_("&Reverse transformation"));
 
 	// Output final
 	OutputSizer->Add(OutputSizerTop,0,wxLEFT,5);

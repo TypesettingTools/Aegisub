@@ -109,7 +109,7 @@ DialogTranslation::DialogTranslation(agi::Context *c)
 		add_hotkey(hotkey_grid, this, "audio/play/selection", "Play Audio");
 		hotkey_box->Add(hotkey_grid, 0, wxEXPAND, 0);
 
-		seek_video = new wxCheckBox(this, -1, _("Enable preview"));
+		seek_video = new wxCheckBox(this, -1, _("Enable &preview"));
 		seek_video->SetValue(true);
 		hotkey_box->Add(seek_video, 0, wxTOP, 5);
 
@@ -119,12 +119,12 @@ DialogTranslation::DialogTranslation(agi::Context *c)
 	{
 		wxStaticBoxSizer *actions_box = new wxStaticBoxSizer(wxVERTICAL, this, _("Actions"));
 
-		wxButton *play_audio = new wxButton(this, -1, _("Play Audio"));
+		wxButton *play_audio = new wxButton(this, -1, _("Play &Audio"));
 		play_audio->Enable(c->audioController->IsAudioOpen());
 		play_audio->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DialogTranslation::OnPlayAudioButton, this);
 		actions_box->Add(play_audio, 0, wxALL, 5);
 
-		wxButton *play_video = new wxButton(this, -1, _("Play Video"));
+		wxButton *play_video = new wxButton(this, -1, _("Play &Video"));
 		play_video->Enable(c->videoController->IsLoaded());
 		play_video->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DialogTranslation::OnPlayVideoButton, this);
 		actions_box->Add(play_video, 0, wxLEFT | wxRIGHT | wxBOTTOM, 5);

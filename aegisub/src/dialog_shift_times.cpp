@@ -65,11 +65,11 @@ DialogShiftTimes::DialogShiftTimes(agi::Context *context)
 	SetIcon(BitmapToIcon(GETIMAGE(shift_times_toolbutton_24)));
 
 	// Create controls
-	shift_by_time = new wxRadioButton(this, -1, _("Time: "), wxDefaultPosition, wxDefaultSize, wxRB_GROUP);
+	shift_by_time = new wxRadioButton(this, -1, _("&Time: "), wxDefaultPosition, wxDefaultSize, wxRB_GROUP);
 	shift_by_time->SetToolTip(_("Shift by time"));
 	shift_by_time->Bind(wxEVT_COMMAND_RADIOBUTTON_SELECTED, &DialogShiftTimes::OnByTime, this);
 
-	shift_by_frames = new wxRadioButton(this, -1 , _("Frames: "));
+	shift_by_frames = new wxRadioButton(this, -1 , _("&Frames: "));
 	shift_by_frames->SetToolTip(_("Shift by frames"));
 	shift_by_frames->Bind(wxEVT_COMMAND_RADIOBUTTON_SELECTED, &DialogShiftTimes::OnByFrames, this);
 
@@ -79,21 +79,21 @@ DialogShiftTimes::DialogShiftTimes(agi::Context *context)
 	shift_frames = new wxTextCtrl(this, -1);
 	shift_frames->SetToolTip(_("Enter number of frames to shift by"));
 
-	shift_forward = new wxRadioButton(this, -1, _("Forward"), wxDefaultPosition, wxDefaultSize, wxRB_GROUP);
+	shift_forward = new wxRadioButton(this, -1, _("For&ward"), wxDefaultPosition, wxDefaultSize, wxRB_GROUP);
 	shift_forward->SetToolTip(_("Shifts subs forward, making them appear later. Use if they are appearing too soon."));
 
-	shift_backward = new wxRadioButton(this, -1, _("Backward"));
+	shift_backward = new wxRadioButton(this, -1, _("&Backward"));
 	shift_backward->SetToolTip(_("Shifts subs backward, making them appear earlier. Use if they are appearing too late."));
 
-	wxString selection_mode_vals[] = { _("All rows"), _("Selected rows"), _("Selection onward") };
+	wxString selection_mode_vals[] = { _("&All rows"), _("Selected &rows"), _("Selection &onward") };
 	selection_mode = new wxRadioBox(this, -1, _("Affect"), wxDefaultPosition, wxDefaultSize, 3, selection_mode_vals, 1);
 
-	wxString time_field_vals[] = { _("Start and End times"), _("Start times only"), _("End times only") };
+	wxString time_field_vals[] = { _("Start a&nd End times"), _("&Start times only"), _("&End times only") };
 	time_fields = new wxRadioBox(this, -1, _("Times"), wxDefaultPosition, wxDefaultSize, 3, time_field_vals, 1);
 
 	history = new wxListBox(this, -1, wxDefaultPosition, wxSize(350, 100), 0, NULL, wxLB_HSCROLL);
 
-	wxButton *clear_button = new wxButton(this, -1, _("Clear"));
+	wxButton *clear_button = new wxButton(this, -1, _("&Clear"));
 	clear_button->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DialogShiftTimes::OnClear, this);
 
 	// Set initial control states

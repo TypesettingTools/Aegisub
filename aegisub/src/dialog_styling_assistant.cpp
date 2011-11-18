@@ -102,7 +102,7 @@ DialogStyling::DialogStyling(agi::Context *context)
 
 		hotkey_box->Add(hotkey_grid, 0, wxEXPAND | wxBOTTOM, 5);
 
-		auto_seek = new wxCheckBox(this, -1, _("Seek video to line start time"));
+		auto_seek = new wxCheckBox(this, -1, _("&Seek video to line start time"));
 		auto_seek->SetValue(true);
 		hotkey_box->Add(auto_seek, 0, 0, 0);
 		hotkey_box->AddStretchSpacer(1);
@@ -114,11 +114,11 @@ DialogStyling::DialogStyling(agi::Context *context)
 		wxSizer *actions_box = new wxStaticBoxSizer(wxHORIZONTAL, this, _("Actions"));
 		actions_box->AddStretchSpacer(1);
 
-		play_audio = new wxButton(this, -1, _("Play Audio"));
+		play_audio = new wxButton(this, -1, _("Play &Audio"));
 		play_audio->Enable(c->audioController->IsAudioOpen());
 		actions_box->Add(play_audio, 0, wxLEFT | wxRIGHT | wxBOTTOM, 5);
 
-		play_video = new wxButton(this, -1, _("Play Video"));
+		play_video = new wxButton(this, -1, _("Play &Video"));
 		play_video->Enable(c->videoController->IsLoaded());
 		actions_box->Add(play_video, 0, wxBOTTOM | wxRIGHT, 5);
 

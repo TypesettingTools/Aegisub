@@ -503,7 +503,7 @@ VersionCheckerResultDialog::VersionCheckerResultDialog(const wxString &main_text
 		main_sizer->Add(new wxHyperlinkCtrl(this, -1, upd_iterator->url, upd_iterator->url), 0, wxALIGN_LEFT|wxBOTTOM, 6);
 	}
 
-	automatic_check_checkbox = new wxCheckBox(this, -1, _("Auto Check for Updates"));
+	automatic_check_checkbox = new wxCheckBox(this, -1, _("&Auto Check for Updates"));
 	automatic_check_checkbox->SetValue(OPT_GET("App/Auto/Check For Updates")->GetBool());
 
 	wxButton *remind_later_button = 0;
