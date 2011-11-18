@@ -74,6 +74,8 @@ namespace agi { struct Context; }
 class AudioKaraoke : public wxWindow, private SelectionListener<AssDialogue> {
 	agi::Context *c; ///< Project context
 	agi::signal::Connection file_changed; ///< File changed slot
+	agi::signal::Connection audio_opened; ///< Audio opened connection
+	agi::signal::Connection audio_closed; ///< Audio closed connection
 
 	/// Currently active dialogue line
 	AssDialogue *active_line;
@@ -137,6 +139,8 @@ class AudioKaraoke : public wxWindow, private SelectionListener<AssDialogue> {
 	void OnMouse(wxMouseEvent &event);
 	void OnPaint(wxPaintEvent &event);
 	void OnSelectedSetChanged(Selection const&, Selection const&) { }
+	void OnAudioOpened();
+	void OnAudioClosed();
 
 public:
 	/// Constructor

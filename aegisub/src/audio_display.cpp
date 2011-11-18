@@ -1193,7 +1193,7 @@ void AudioDisplay::OnAudioOpen(AudioProvider *_provider)
 			connections.push_back(controller->AddAudioCloseListener(&AudioDisplay::OnAudioOpen, this, (AudioProvider*)0));
 			connections.push_back(controller->AddPlaybackPositionListener(&AudioDisplay::OnPlaybackPosition, this));
 			connections.push_back(controller->AddPlaybackStopListener(&AudioDisplay::RemoveTrackCursor, this));
-			connections.push_back(controller->AddTimingControllerListener(&AudioDisplay::Refresh, this, true, (const wxRect*)0));
+			connections.push_back(controller->AddTimingControllerListener(&AudioDisplay::OnStyleRangesChanged, this));
 			connections.push_back(controller->AddMarkerMovedListener(&AudioDisplay::OnMarkerMoved, this));
 			connections.push_back(controller->AddSelectionChangedListener(&AudioDisplay::OnSelectionChanged, this));
 			connections.push_back(controller->AddStyleRangesChangedListener(&AudioDisplay::OnStyleRangesChanged, this));
@@ -1226,6 +1226,8 @@ void AudioDisplay::OnSelectionChanged()
 
 void AudioDisplay::OnStyleRangesChanged()
 {
+	if (!controller->GetTimingController()) return;
+
 	AudioStyleRangeMerger asrm;
 	controller->GetTimingController()->GetRenderingStyles(asrm);
 

@@ -336,10 +336,13 @@ void AudioController::SetTimingController(AudioTimingController *new_controller)
 {
 	if (timing_controller.get() != new_controller) {
 		timing_controller.reset(new_controller);
-		timing_controller->AddMarkerMovedListener(bind(std::tr1::ref(AnnounceMarkerMoved)));
-		timing_controller->AddLabelChangedListener(bind(std::tr1::ref(AnnounceLabelChanged)));
-		timing_controller->AddUpdatedPrimaryRangeListener(&AudioController::OnTimingControllerUpdatedPrimaryRange, this);
-		timing_controller->AddUpdatedStyleRangesListener(bind(std::tr1::ref(AnnounceStyleRangesChanged)));
+		if (timing_controller)
+		{
+			timing_controller->AddMarkerMovedListener(bind(std::tr1::ref(AnnounceMarkerMoved)));
+			timing_controller->AddLabelChangedListener(bind(std::tr1::ref(AnnounceLabelChanged)));
+			timing_controller->AddUpdatedPrimaryRangeListener(&AudioController::OnTimingControllerUpdatedPrimaryRange, this);
+			timing_controller->AddUpdatedStyleRangesListener(bind(std::tr1::ref(AnnounceStyleRangesChanged)));
+		}
 	}
 
 	AnnounceTimingControllerChanged();
@@ -435,7 +438,7 @@ void AudioController::ResyncPlaybackPosition(int64_t new_position)
 
 SampleRange AudioController::GetPrimaryPlaybackRange() const
 {
-	if (timing_controller.get())
+	if (timing_controller)
 	{
 		return timing_controller->GetPrimaryPlaybackRange();
 	}
@@ -451,12 +454,12 @@ void AudioController::GetMarkers(const SampleRange &range, AudioMarkerVector &ma
 	/// @todo Find all sources of markers
 	if (keyframes_marker_provider.get()) keyframes_marker_provider->GetMarkers(range, markers);
 	if (video_position_marker_provider.get()) video_position_marker_provider->GetMarkers(range, markers);
-	if (timing_controller.get()) timing_controller->GetMarkers(range, markers);
+	if (timing_controller) timing_controller->GetMarkers(range, markers);
 }
 
 void AudioController::GetLabels(const SampleRange &range, std::vector<AudioLabel> &labels) const
 {
-	if (timing_controller.get()) timing_controller->GetLabels(range, labels);
+	if (timing_controller) timing_controller->GetLabels(range, labels);
 }
 
 double AudioController::GetVolume() const

@@ -298,11 +298,11 @@ AudioTimingControllerDialogue::AudioTimingControllerDialogue(agi::Context *c)
 
 	AudioMarkerDialogueTiming::InitPair(&active_markers[0], &active_markers[1]);
 
-	if (c->audioController->IsAudioOpen())
-		Revert();
-
 	c->selectionController->AddSelectionListener(this);
 	keyframes_provider.AddMarkerMovedListener(std::tr1::bind(std::tr1::ref(AnnounceMarkerMoved)));
+
+	Revert();
+	RegenerateInactiveLines();
 }
 
 

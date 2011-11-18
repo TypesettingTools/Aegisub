@@ -182,8 +182,10 @@ void AudioTimingControllerKaraoke::Next() {
 		--cur_syl;
 		c->selectionController->NextLine();
 	}
-	else
+	else {
 		AnnounceUpdatedPrimaryRange();
+		AnnounceUpdatedStyleRanges();
+	}
 }
 
 void AudioTimingControllerKaraoke::Prev() {
@@ -193,11 +195,13 @@ void AudioTimingControllerKaraoke::Prev() {
 		if (old_line != active_line) {
 			cur_syl = markers.size();
 			AnnounceUpdatedPrimaryRange();
+			AnnounceUpdatedStyleRanges();
 		}
 	}
 	else {
 		--cur_syl;
 		AnnounceUpdatedPrimaryRange();
+		AnnounceUpdatedStyleRanges();
 	}
 }
 
@@ -266,6 +270,7 @@ void AudioTimingControllerKaraoke::Revert() {
 	}
 
 	AnnounceUpdatedPrimaryRange();
+	AnnounceUpdatedStyleRanges();
 	AnnounceMarkerMoved();
 }
 
@@ -291,6 +296,7 @@ AudioMarker *AudioTimingControllerKaraoke::OnLeftClick(int64_t sample, int sensi
 	cur_syl = syl;
 
 	AnnounceUpdatedPrimaryRange();
+	AnnounceUpdatedStyleRanges();
 
 	return 0;
 }
@@ -308,8 +314,10 @@ void AudioTimingControllerKaraoke::OnMarkerDrag(AudioMarker *m, int64_t new_posi
 	size_t syl = marker - &markers.front() + 1;
 	kara->SetStartTime(syl, ToMS(new_position));
 
-	if (syl == cur_syl || syl + 1 == cur_syl)
+	if (syl == cur_syl || syl + 1 == cur_syl) {
 		AnnounceUpdatedPrimaryRange();
+		AnnounceUpdatedStyleRanges();
+	}
 
 	AnnounceMarkerMoved();
 

@@ -65,6 +65,8 @@ AudioKaraoke::AudioKaraoke(wxWindow *parent, agi::Context *c)
 : wxWindow(parent, -1, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL | wxBORDER_SUNKEN)
 , c(c)
 , file_changed(c->ass->AddCommitListener(&AudioKaraoke::OnFileChanged, this))
+, audio_opened(c->audioController->AddAudioOpenListener(&AudioKaraoke::OnAudioOpened, this))
+, audio_closed(c->audioController->AddAudioCloseListener(&AudioKaraoke::OnAudioClosed, this))
 , active_line(0)
 , kara(new AssKaraoke)
 , enabled(false)
@@ -105,7 +107,6 @@ AudioKaraoke::AudioKaraoke(wxWindow *parent, agi::Context *c)
 	accept_button->Enable(false);
 	cancel_button->Enable(false);
 	enabled = false;
-	c->audioController->SetTimingController(CreateDialogueTimingController(c));
 }
 
 AudioKaraoke::~AudioKaraoke() {
@@ -125,6 +126,14 @@ void AudioKaraoke::OnFileChanged(int type) {
 		LoadFromLine();
 		split_area->Refresh(false);
 	}
+}
+
+void AudioKaraoke::OnAudioOpened() {
+	SetEnabled(enabled);
+}
+
+void AudioKaraoke::OnAudioClosed() {
+	c->audioController->SetTimingController(0);
 }
 
 void AudioKaraoke::SetEnabled(bool en) {
