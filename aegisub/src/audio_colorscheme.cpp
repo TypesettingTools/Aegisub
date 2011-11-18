@@ -41,32 +41,41 @@
 #endif
 
 #include "audio_colorscheme.h"
+
+#include "audio_renderer.h"
 #include "colorspace.h"
 
-void AudioColorScheme::InitIcyBlue_Normal()
+#include <libaegisub/exception.h>
+
+static int lum_icy_normal(float t)
 {
-	unsigned char *palptr = palette;
-	for (size_t i = 0; i <= factor; ++i)
-	{
-		float t = (float)i / factor;
-		int H = (int)(255 * (1.5 - t) / 2);
-		int S = (int)(255 * (0.5 + t/2));
-		int L = std::min(255, (int)(128 * 2 * t));
-		hsl_to_rgb(H, S, L, palptr + 0, palptr + 1, palptr + 2);
-		palptr += 4;
-	}
+	return std::min(255, (int)(128 * 2 * t));
 }
 
-
-void AudioColorScheme::InitIcyBlue_Selected()
+static int lum_icy_selected(float t)
 {
+	return std::min(255, (int)(128 * (3 * t/2 + 0.5)));
+}
+
+void AudioColorScheme::InitIcyBlue(int audio_rendering_style)
+{
+	int (*lum_func)(float);
+	switch (static_cast<AudioRenderingStyle>(audio_rendering_style))
+	{
+		case AudioStyle_Normal:   lum_func = lum_icy_normal; break;
+		case AudioStyle_Inactive: lum_func = lum_icy_normal; break;
+		case AudioStyle_Active:   lum_func = lum_icy_normal; break;
+		case AudioStyle_Selected: lum_func = lum_icy_selected; break;
+		default: throw agi::InternalError("Unknown audio rendering styling", 0);
+	}
+
 	unsigned char *palptr = palette;
 	for (size_t i = 0; i <= factor; ++i)
 	{
 		float t = (float)i / factor;
 		int H = (int)(255 * (1.5 - t) / 2);
 		int S = (int)(255 * (0.5 + t/2));
-		int L = std::min(255, (int)(128 * (3 * t/2 + 0.5)));
+		int L = lum_func(t);
 		hsl_to_rgb(H, S, L, palptr + 0, palptr + 1, palptr + 2);
 		palptr += 4;
 	}

@@ -127,10 +127,9 @@ AudioSpectrumRenderer::AudioSpectrumRenderer()
 #endif
 , audio_scratch(0)
 {
-	colors_normal.InitIcyBlue_Normal();
-	colors_selected.InitIcyBlue_Selected();
+	colors_normal.InitIcyBlue(AudioStyle_Normal);
+	colors_selected.InitIcyBlue(AudioStyle_Selected);
 }
-
 
 AudioSpectrumRenderer::~AudioSpectrumRenderer()
 {

@@ -85,10 +85,9 @@ public:
 		delete[] palette;
 	}
 
-	/// @brief Initialise the palette to the Aegisub 2.1 "Icy Blue" scheme (unselected)
-	void InitIcyBlue_Normal();
-	/// @brief Initialise the palette to the Aegisub 2.1 "Icy Blue" scheme (selected)
-	void InitIcyBlue_Selected();
+	/// @brief Initialise the palette to the Aegisub 2.1 "Icy Blue" scheme
+	/// @param audio_rendering_style AudioRenderingStyle to init this colorscheme for
+	void InitIcyBlue(int audio_rendering_style);
 
 	/// @brief Map a floating point value to RGB
 	/// @param val   [in] The value to map from
