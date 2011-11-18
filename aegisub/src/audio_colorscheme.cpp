@@ -54,7 +54,12 @@ static int lum_icy_normal(float t)
 
 static int lum_icy_selected(float t)
 {
-	return std::min(255, (int)(128 * (3 * t/2 + 0.5)));
+	return std::min(255, (int)(128 * (3 * t/2 + 0.5f)));
+}
+
+static int lum_icy_inactive(float t)
+{
+	return 32 + (int)(192 * t);
 }
 
 void AudioColorScheme::InitIcyBlue(int audio_rendering_style)
@@ -63,7 +68,7 @@ void AudioColorScheme::InitIcyBlue(int audio_rendering_style)
 	switch (static_cast<AudioRenderingStyle>(audio_rendering_style))
 	{
 		case AudioStyle_Normal:   lum_func = lum_icy_normal; break;
-		case AudioStyle_Inactive: lum_func = lum_icy_normal; break;
+		case AudioStyle_Inactive: lum_func = lum_icy_inactive; break;
 		case AudioStyle_Active:   lum_func = lum_icy_normal; break;
 		case AudioStyle_Selected: lum_func = lum_icy_selected; break;
 		default: throw agi::InternalError("Unknown audio rendering styling", 0);
