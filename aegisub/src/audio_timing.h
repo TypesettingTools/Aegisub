@@ -36,6 +36,7 @@
 class AssDialogue;
 class AssFile;
 class AssKaraoke;
+class AudioRenderingStyleRanges;
 namespace agi { struct Context; }
 
 #include "audio_controller.h"
@@ -78,6 +79,10 @@ public:
 	/// Get the sample range the user is most likely to want to play back
 	/// currently.
 	virtual SampleRange GetPrimaryPlaybackRange() const = 0;
+
+	/// @brief Get all rendering style ranges
+	/// @param[out] swpts Rendering ranges will be added to this
+	virtual void GetRenderingStyles(AudioRenderingStyleRanges &ranges) const = 0;
 
 	/// @brief Does this timing mode have labels on the audio display?
 	/// @return True if this timing mode needs labels on the audio display.

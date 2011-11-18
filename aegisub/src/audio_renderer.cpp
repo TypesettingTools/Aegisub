@@ -46,9 +46,12 @@
 #include "audio_renderer.h"
 #include "include/aegisub/audio_provider.h"
 
-#undef min
-#undef max
+template<class C, class F> static void for_each(C &container, F const& func)
+{
+	std::for_each(container.begin(), container.end(), func);
+}
 
+using std::tr1::placeholders::_1;
 
 AudioRendererBitmapCacheBitmapFactory::AudioRendererBitmapCacheBitmapFactory(AudioRenderer *_renderer)
 {
@@ -80,18 +83,17 @@ size_t AudioRendererBitmapCacheBitmapFactory::GetBlockSize() const
 
 AudioRenderer::AudioRenderer()
 : cache_bitmap_width(32) // arbitrary value for now
-, bitmaps_normal(256, AudioRendererBitmapCacheBitmapFactory(this))
-, bitmaps_selected(256, AudioRendererBitmapCacheBitmapFactory(this))
 , cache_bitmap_maxsize(0)
 , cache_renderer_maxsize(0)
 , renderer(0)
 , provider(0)
 {
+	bitmaps.resize(AudioStyle_MAX, AudioRendererBitmapCache(256, AudioRendererBitmapCacheBitmapFactory(this)));
+
 	// Make sure there's *some* values for those fields, and in the caches
 	SetSamplesPerPixel(1);
 	SetHeight(1);
 }
-
 
 AudioRenderer::~AudioRenderer()
 {
@@ -183,26 +185,22 @@ void AudioRenderer::ResetBlockCount()
 	{
 		size_t rendered_width = (size_t)((provider->GetNumSamples() + pixel_samples - 1) / pixel_samples);
 		cache_numblocks = rendered_width / cache_bitmap_width;
-		bitmaps_normal.SetBlockCount(cache_numblocks);
-		bitmaps_selected.SetBlockCount(cache_numblocks);
+		for_each(bitmaps, bind(&AudioRendererBitmapCache::SetBlockCount, _1, cache_numblocks));
 	}
 }
 
 
-wxBitmap AudioRenderer::GetCachedBitmap(int i, bool selected)
+wxBitmap AudioRenderer::GetCachedBitmap(int i, AudioRenderingStyle style)
 {
 	assert(provider);
 	assert(renderer);
 
-	// Pick the cache to use
-	AudioRendererBitmapCache *cache = selected ? &bitmaps_selected : &bitmaps_normal;
-
 	bool created = false;
-	wxBitmap *bmp = cache->Get(i, &created);
+	wxBitmap *bmp = bitmaps[style].Get(i, &created);
 	assert(bmp);
 	if (created)
 	{
-		renderer->Render(*bmp, i*cache_bitmap_width, selected);
+		renderer->Render(*bmp, i*cache_bitmap_width, style);
 	}
 
 	assert(bmp->IsOk());
@@ -210,7 +208,7 @@ wxBitmap AudioRenderer::GetCachedBitmap(int i, bool selected)
 }
 
 
-void AudioRenderer::Render(wxDC &dc, wxPoint origin, int start, int length, bool selected)
+void AudioRenderer::Render(wxDC &dc, wxPoint origin, int start, int length, AudioRenderingStyle style)
 {
 	assert(start >= 0);
 
@@ -257,7 +255,7 @@ void AudioRenderer::Render(wxDC &dc, wxPoint origin, int start, int length, bool
 	else if (firstbitmap == lastbitmap)
 	{
 		const int renderwidth = lastbitmapoffset - firstbitmapoffset;
-		wxBitmap bmp = GetCachedBitmap(firstbitmap, selected);
+		wxBitmap bmp = GetCachedBitmap(firstbitmap, style);
 		wxMemoryDC bmpdc(bmp);
 		dc.Blit(origin, wxSize(renderwidth, pixel_height), &bmpdc, wxPoint(firstbitmapoffset, 0));
 		origin.x += renderwidth;
@@ -267,7 +265,7 @@ void AudioRenderer::Render(wxDC &dc, wxPoint origin, int start, int length, bool
 		wxBitmap bmp;
 
 		{
-			bmp = GetCachedBitmap(firstbitmap, selected);
+			bmp = GetCachedBitmap(firstbitmap, style);
 			// Can't use dc.DrawBitmap here because we need to clip the bitmap
 			wxMemoryDC bmpdc(bmp);
 			dc.Blit(origin, wxSize(cache_bitmap_width-firstbitmapoffset, pixel_height),
@@ -277,13 +275,13 @@ void AudioRenderer::Render(wxDC &dc, wxPoint origin, int start, int length, bool
 
 		for (int i = firstbitmap+1; i < lastbitmap; ++i)
 		{
-			bmp = GetCachedBitmap(i, selected);
+			bmp = GetCachedBitmap(i, style);
 			dc.DrawBitmap(bmp, origin);
 			origin.x += cache_bitmap_width;
 		}
 
 		{
-			bmp = GetCachedBitmap(lastbitmap, selected);
+			bmp = GetCachedBitmap(lastbitmap, style);
 			// We also need clipping here
 			wxMemoryDC bmpdc(bmp);
 			dc.Blit(origin, wxSize(lastbitmapoffset+1, pixel_height), &bmpdc, wxPoint(0, 0));
@@ -294,24 +292,18 @@ void AudioRenderer::Render(wxDC &dc, wxPoint origin, int start, int length, bool
 	// Now render blank audio from origin to end
 	if (origin.x < lastx)
 	{
-		renderer->RenderBlank(dc, wxRect(origin.x-1, origin.y, lastx-origin.x+1, pixel_height), selected);
+		renderer->RenderBlank(dc, wxRect(origin.x-1, origin.y, lastx-origin.x+1, pixel_height), style);
 	}
 
-	if (selected)
-		bitmaps_selected.Age(cache_bitmap_maxsize);
-	else
-		bitmaps_normal.Age(cache_bitmap_maxsize);
+	bitmaps[style].Age(cache_bitmap_maxsize);
 	renderer->AgeCache(cache_renderer_maxsize);
 }
 
 
 void AudioRenderer::Invalidate()
 {
-	bitmaps_normal.Age(0);
-	bitmaps_selected.Age(0);
+	for_each(bitmaps, bind(&AudioRendererBitmapCache::Age, _1, 0));
 }
-
-
 
 
 void AudioRendererBitmapProvider::SetProvider(AudioProvider *_provider)
@@ -342,4 +334,3 @@ void AudioRendererBitmapProvider::SetAmplitudeScale(float _amplitude_scale)
 
 	OnSetAmplitudeScale();
 }
-

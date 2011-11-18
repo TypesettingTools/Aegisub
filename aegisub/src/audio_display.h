@@ -98,7 +98,7 @@ public:
 /// timing controller. The audio display also renders audio according to the audio controller
 /// and the timing controller, using an audio renderer instance.
 class AudioDisplay: public wxWindow {
-private:
+
 	std::list<agi::signal::Connection> slots;
 	agi::Context *context;
 
@@ -146,6 +146,8 @@ private:
 	/// Height of main audio area in pixels
 	int audio_height;
 
+	/// Width of the audio marker feet in pixels
+	static const int foot_size = 6;
 
 	/// Zoom level given as a number, see SetZoomLevel for details
 	int zoom_level;
@@ -163,14 +165,19 @@ private:
 	/// @brief Remove the tracking cursor from the display
 	void RemoveTrackCursor();
 
-	/// Previous audio selection for optimizing redraw when selection changes
-	SampleRange old_selection;
+	/// Previous style ranges for optimizing redraw when ranges change
+	std::map<int64_t, int> style_ranges;
 
 	/// @brief Reload all rendering settings from Options and reset caches
 	///
 	/// This can be called if some rendering quality settings have been changed
 	/// in Options and need to be reloaded to take effect.
 	void ReloadRenderingSettings();
+
+	/// @brief Repaint a range of samples
+	/// @param sample_start First sample to repaint
+	/// @param sample_end Last sample to repaint
+	void Redraw(int64_t sample_start, int64_t sample_end);
 
 	/// wxWidgets paint event
 	void OnPaint(wxPaintEvent &event);
@@ -187,10 +194,10 @@ private:
 	void OnAudioOpen(AudioProvider *provider);
 	void OnPlaybackPosition(int64_t sample_position);
 	void OnSelectionChanged();
+	void OnStyleRangesChanged();
 	void OnMarkerMoved();
 
 public:
-
 	AudioDisplay(wxWindow *parent, AudioController *controller, agi::Context *context);
 	~AudioDisplay();
 

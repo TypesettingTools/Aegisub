@@ -71,13 +71,13 @@ AudioWaveformRenderer::~AudioWaveformRenderer()
 }
 
 
-void AudioWaveformRenderer::Render(wxBitmap &bmp, int start, bool selected)
+void AudioWaveformRenderer::Render(wxBitmap &bmp, int start, AudioRenderingStyle style)
 {
 	wxMemoryDC dc(bmp);
 	wxRect rect(wxPoint(0, 0), bmp.GetSize());
 	int midpoint = rect.height / 2;
 
-	AudioColorScheme *pal = selected ? &colors_selected : &colors_normal;
+	AudioColorScheme *pal = style == AudioStyle_Selected ? &colors_selected : &colors_normal;
 
 	// Fill the background
 	dc.SetBrush(wxBrush(pal->get(0.0f)));
@@ -140,9 +140,9 @@ void AudioWaveformRenderer::Render(wxBitmap &bmp, int start, bool selected)
 }
 
 
-void AudioWaveformRenderer::RenderBlank(wxDC &dc, const wxRect &rect, bool selected)
+void AudioWaveformRenderer::RenderBlank(wxDC &dc, const wxRect &rect, AudioRenderingStyle style)
 {
-	AudioColorScheme *pal = selected ? &colors_selected : &colors_normal;
+	AudioColorScheme *pal = style == AudioStyle_Selected ? &colors_selected : &colors_normal;
 
 	wxColor line(pal->get(1.0));
 	wxColor bg(pal->get(0.0));

@@ -115,13 +115,13 @@ public:
 	virtual ~AudioSpectrumRenderer();
 
 	/// @brief Render a range of audio spectrum
-	/// @param bmp      [in,out] Bitmap to render into, also carries lenght information
-	/// @param start    First column of pixel data in display to render
-	/// @param selected Whether to use the alternate colour scheme
-	void Render(wxBitmap &bmp, int start, bool selected);
+	/// @param bmp   [in,out] Bitmap to render into, also carries lenght information
+	/// @param start First column of pixel data in display to render
+	/// @param style Style to render audio in
+	void Render(wxBitmap &bmp, int start, AudioRenderingStyle style);
 
 	/// @brief Render blank area
-	void RenderBlank(wxDC &dc, const wxRect &rect, bool selected);
+	void RenderBlank(wxDC &dc, const wxRect &rect, AudioRenderingStyle style);
 
 	/// @brief Set the derivation resolution
 	/// @param derivation_size Binary logarithm of number of samples to use in deriving frequency-power data

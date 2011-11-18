@@ -38,6 +38,7 @@
 
 #ifndef AGI_PRE
 #include <memory>
+#include <vector>
 
 #include <wx/dc.h>
 #include <wx/gdicmn.h>
@@ -51,6 +52,41 @@ class AudioProvider;
 // Forwards declarations for internal stuff
 class AudioRendererBitmapProvider;
 class AudioRenderer;
+
+/// @brief Styles audio may be rendered in
+///
+/// The constants are ordered by priority:
+/// Selected has highest priority and should overlap active, which should
+/// overlap inactive, which should overlap normal regions.
+enum AudioRenderingStyle {
+	/// Regular audio with no special properties
+	AudioStyle_Normal,
+	/// Audio belonging to objects that can not be manipulated currently
+	AudioStyle_Inactive,
+	/// Audio that may be manipulated indirectly, usually part of selected lines
+	AudioStyle_Active,
+	/// Primary selection for work, usually coinciding with the primary playback range
+	AudioStyle_Selected,
+	/// Number of audio styles
+	AudioStyle_MAX
+};
+
+
+/// @class AudioRenderingStyleRanges
+/// @brief Abstract container for ranges of audio rendering styles
+///
+/// Interface for producers of audio rendering ranges, consumers should implement
+/// this interface for objects to pass to producers.
+class AudioRenderingStyleRanges {
+public:
+	/// @brief Add a range to the line
+	/// @param start First sample index in range
+	/// @param end   One past last sample index in range
+	/// @param style Style of the range added
+	virtual void AddRange(int64_t start, int64_t end, AudioRenderingStyle style) = 0;
+};
+
+
 
 /// @class AudioRendererBitmapCacheBitmapFactory
 /// @brief Produces wxBitmap objects for DataBlockCache storage for the audio renderer
@@ -104,10 +140,8 @@ class AudioRenderer {
 	/// Width of bitmaps to store in cache
 	const int cache_bitmap_width;
 
-	/// Cached bitmaps for normal audio ranges
-	AudioRendererBitmapCache bitmaps_normal;
-	/// Cached bitmaps for marked (selected) audio ranges
-	AudioRendererBitmapCache bitmaps_selected;
+	/// Cached bitmaps for audio ranges
+	std::vector<AudioRendererBitmapCache> bitmaps;
 	/// Number of blocks in the bitmap caches
 	size_t cache_numblocks;
 	/// The maximum allowed size of each bitmap cache, in bytes
@@ -122,13 +156,13 @@ class AudioRenderer {
 	AudioProvider *provider;
 
 	/// @brief Make sure bitmap index i is in cache
-	/// @param i        Index of bitmap to get into cache
-	/// @param selected Whether to get a "selected" state bitmap or not
+	/// @param i     Index of bitmap to get into cache
+	/// @param style Rendering style required for bitmap
 	/// @return The requested bitmap
 	///
 	/// Will attempt retrieving the requested bitmap from the cache, creating it
 	/// if the cache doesn't have it.
-	wxBitmap GetCachedBitmap(int i, bool selected);
+	wxBitmap GetCachedBitmap(int i, AudioRenderingStyle style);
 
 	/// @brief Update the block count in the bitmap caches
 	///
@@ -230,11 +264,11 @@ public:
 	/// @param origin   Top left corner to render at, in the DC's coordinates
 	/// @param start    First pixel from beginning of the audio stream to render
 	/// @param length   Number of pixels of audio to render
-	/// @param selected Whether to render the audio as being selected or not
+	/// @param style    Style to render audio in
 	///
 	/// The first audio sample rendered is start*pixel_samples, and the number
 	/// of audio samples rendered is length*pixel_samples.
-	void Render(wxDC &dc, wxPoint origin, int start, int length, bool selected);
+	void Render(wxDC &dc, wxPoint origin, int start, int length, AudioRenderingStyle style);
 
 	/// @brief Invalidate all cached data
 	///
@@ -284,22 +318,22 @@ public:
 	virtual ~AudioRendererBitmapProvider() { }
 
 	/// @brief Rendering function
-	/// @param bmp      Bitmap to render to
-	/// @param start    First pixel from beginning of the audio stream to render
-	/// @param selected Whether to render the audio as being selected or not
+	/// @param bmp   Bitmap to render to
+	/// @param start First pixel from beginning of the audio stream to render
+	/// @param style Style to render audio in
 	///
 	/// Deriving classes must implement this method. The bitmap in bmp holds
 	/// the width and height to render.
-	virtual void Render(wxBitmap &bmp, int start, bool selected) = 0;
+	virtual void Render(wxBitmap &bmp, int start, AudioRenderingStyle style) = 0;
 
 	/// @brief Blank audio rendering function
-	/// @param dc       The device context to render to
-	/// @param rect     The rectangle to fill with the image of blank audio
-	/// @param selected Whether to render as being selected or not
+	/// @param dc    The device context to render to
+	/// @param rect  The rectangle to fill with the image of blank audio
+	/// @param style Style to render audio in
 	///
 	/// Deriving classes must implement this method. The rectangle has the height
 	/// of the entire canvas the audio is being rendered in.
-	virtual void RenderBlank(wxDC &dc, const wxRect &rect, bool selected) = 0;
+	virtual void RenderBlank(wxDC &dc, const wxRect &rect, AudioRenderingStyle style) = 0;
 
 	/// @brief Change audio provider
 	/// @param provider Audio provider to change to

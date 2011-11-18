@@ -201,6 +201,9 @@ class AudioController : public wxEvtHandler, public AudioMarkerProvider, public 
 	/// The selected time range changed
 	agi::signal::Signal<> AnnounceSelectionChanged;
 
+	/// The styling ranges have been updated by the timing controller
+	agi::signal::Signal<> AnnounceStyleRangesChanged;
+
 	/// The audio output object
 	AudioPlayer *player;
 
@@ -390,6 +393,7 @@ public:
 	DEFINE_SIGNAL_ADDERS(AnnouncePlaybackStop,            AddPlaybackStopListener)
 	DEFINE_SIGNAL_ADDERS(AnnounceTimingControllerChanged, AddTimingControllerListener)
 	DEFINE_SIGNAL_ADDERS(AnnounceSelectionChanged,        AddSelectionChangedListener)
+	DEFINE_SIGNAL_ADDERS(AnnounceStyleRangesChanged,      AddStyleRangesChangedListener)
 };
 
 /// @class AudioMarker

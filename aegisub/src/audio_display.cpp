@@ -494,8 +494,54 @@ public:
 	}
 };
 
+class AudioStyleRangeMerger : public AudioRenderingStyleRanges {
+	typedef std::map<int64_t, AudioRenderingStyle> style_map;
+public:
+	typedef style_map::iterator iterator;
 
+private:
+	style_map points;
 
+	void Split(int64_t point)
+	{
+		iterator it = points.lower_bound(point);
+		if (it == points.end() || it->first != point)
+		{
+			assert(it != points.begin());
+			points[point] = (--it)->second;
+		}
+	}
+
+	void Restyle(int64_t start, int64_t end, AudioRenderingStyle style)
+	{
+		assert(points.lower_bound(end) != points.end());
+		for (iterator pt = points.lower_bound(start); pt->first < end; ++pt)
+		{
+			if (style > pt->second)
+				pt->second = style;
+		}
+	}
+
+public:
+	AudioStyleRangeMerger()
+	{
+		points[0] = AudioStyle_Normal;
+	}
+
+	void AddRange(int64_t start, int64_t end, AudioRenderingStyle style)
+	{
+
+		if (start < 0) start = 0;
+		if (end < start) return;
+
+		Split(start);
+		Split(end);
+		Restyle(start, end, style);
+	}
+
+	iterator begin() { return points.begin(); }
+	iterator end() { return points.end(); }
+};
 
 AudioDisplay::AudioDisplay(wxWindow *parent, AudioController *controller, agi::Context *context)
 : wxWindow(parent, -1, wxDefaultPosition, wxDefaultSize, wxWANTS_CHARS|wxBORDER_SIMPLE)
@@ -506,8 +552,9 @@ AudioDisplay::AudioDisplay(wxWindow *parent, AudioController *controller, agi::C
 , scrollbar(new AudioDisplayScrollbar(this))
 , timeline(new AudioDisplayTimeline(this))
 , dragged_object(0)
-, old_selection(0, 0)
 {
+	style_ranges[0] = AudioStyle_Normal;
+
 	scroll_left = 0;
 	pixel_audio_width = 0;
 	scale_amplitude = 1.0;
@@ -521,6 +568,7 @@ AudioDisplay::AudioDisplay(wxWindow *parent, AudioController *controller, agi::C
 	slots.push_back(controller->AddTimingControllerListener(&AudioDisplay::Refresh, this, true, (const wxRect*)0));
 	slots.push_back(controller->AddMarkerMovedListener(&AudioDisplay::OnMarkerMoved, this));
 	slots.push_back(controller->AddSelectionChangedListener(&AudioDisplay::OnSelectionChanged, this));
+	slots.push_back(controller->AddStyleRangesChangedListener(&AudioDisplay::OnStyleRangesChanged, this));
 
 	OPT_SUB("Audio/Spectrum", &AudioDisplay::ReloadRenderingSettings, this);
 
@@ -764,14 +812,8 @@ BEGIN_EVENT_TABLE(AudioDisplay, wxWindow)
 	EVT_SET_FOCUS(AudioDisplay::OnFocus)
 	EVT_KILL_FOCUS(AudioDisplay::OnFocus)
 	EVT_KEY_DOWN(AudioDisplay::OnKeyDown)
-END_EVENT_TABLE()
+END_EVENT_TABLE();
 
-
-struct RedrawSubregion {
-	int x1, x2;
-	bool selected;
-	RedrawSubregion(int x1, int x2, bool selected) : x1(x1), x2(x2), selected(selected) { }
-};
 
 void AudioDisplay::OnPaint(wxPaintEvent& event)
 {
@@ -793,11 +835,6 @@ void AudioDisplay::OnPaint(wxPaintEvent& event)
 	bool redraw_scrollbar = false;
 	bool redraw_timeline = false;
 
-	/// @todo Get rendering style ranges from timing controller instead
-	SampleRange sel_samples(controller->GetPrimaryPlaybackRange());
-	int selection_start = AbsoluteXFromSamples(sel_samples.begin());
-	int selection_end = AbsoluteXFromSamples(sel_samples.end());
-
 	wxPoint client_org = GetClientAreaOrigin();
 	for (wxRegionIterator region(GetUpdateRegion()); region; ++region)
 	{
@@ -816,38 +853,31 @@ void AudioDisplay::OnPaint(wxPaintEvent& event)
 			continue;
 		}
 
-		// p1 -> p2 = before selection
-		// p2 -> p3 = in selection
-		// p3 -> p4 = after selection
-		int p1 = scroll_left + updrect.x;
-		int p2 = selection_start;
-		int p3 = selection_end;
-		int p4 = p1 + updrect.width;
-
-		std::vector<RedrawSubregion> subregions;
-
-		if (p1 < p2)
-			subregions.push_back(RedrawSubregion(p1, std::min(p2, p4), false));
-		if (p4 > p2 && p1 < p3)
-			subregions.push_back(RedrawSubregion(std::max(p1, p2), std::min(p3, p4), true));
-		if (p4 > p3)
-			subregions.push_back(RedrawSubregion(std::max(p1, p3), p4, false));
-
-		int x = updrect.x;
-		for (std::vector<RedrawSubregion>::iterator sr = subregions.begin(); sr != subregions.end(); ++sr)
-		{
-			audio_renderer->Render(dc, wxPoint(x, audio_top), sr->x1, sr->x2 - sr->x1, sr->selected);
-			x += sr->x2 - sr->x1;
-		}
-
-		const int foot_size = 6;
-		SampleRange updrectsamples(
+		SampleRange updsamples(
 			SamplesFromRelativeX(updrect.x - foot_size),
 			SamplesFromRelativeX(updrect.x + updrect.width + foot_size));
 
+		std::map<int64_t, int>::iterator pt = style_ranges.upper_bound(updsamples.begin());
+		std::map<int64_t, int>::iterator pe = style_ranges.upper_bound(updsamples.end());
+
+		if (pt != style_ranges.begin())
+			--pt;
+
+		while (pt != pe)
+		{
+			AudioRenderingStyle range_style = static_cast<AudioRenderingStyle>(pt->second);
+			int range_x1 = std::max(updrect.x, RelativeXFromSamples(pt->first));
+			int range_x2 = (++pt == pe) ? updrect.x + updrect.width : RelativeXFromSamples(pt->first);
+
+			if (range_x2 > range_x1)
+			{
+				audio_renderer->Render(dc, wxPoint(range_x1, audio_top), range_x1, range_x2 - range_x1, range_style);
+			}
+		}
+
 		// Draw markers on top of it all
 		AudioMarkerVector markers;
-		controller->GetMarkers(updrectsamples, markers);
+		controller->GetMarkers(updsamples, markers);
 		wxDCPenChanger pen_retainer(dc, wxPen());
 		wxDCBrushChanger brush_retainer(dc, wxBrush());
 		for (AudioMarkerVector::iterator marker_i = markers.begin(); marker_i != markers.end(); ++marker_i)
@@ -876,7 +906,7 @@ void AudioDisplay::OnPaint(wxPaintEvent& event)
 
 		// Draw labels
 		std::vector<AudioLabelProvider::AudioLabel> labels;
-		controller->GetLabels(updrectsamples, labels);
+		controller->GetLabels(updsamples, labels);
 		if (!labels.empty())
 		{
 			wxDCFontChanger fc(dc);
@@ -943,7 +973,7 @@ void AudioDisplay::OnPaint(wxPaintEvent& event)
 			track_cursor_label_rect.SetPosition(label_pos);
 			track_cursor_label_rect.SetSize(label_size);
 			if (need_extra_redraw)
-				RefreshRect(track_cursor_label_rect);
+				RefreshRect(track_cursor_label_rect, false);
 		}
 	}
 
@@ -976,11 +1006,11 @@ void AudioDisplay::SetTrackCursor(int new_pos, bool show_time)
 		int old_pos = track_cursor_pos;
 		track_cursor_pos = new_pos;
 
-		RefreshRect(wxRect(old_pos - scroll_left - 0, audio_top, 1, audio_height));
-		RefreshRect(wxRect(new_pos - scroll_left - 0, audio_top, 1, audio_height));
+		RefreshRect(wxRect(old_pos - scroll_left - 0, audio_top, 1, audio_height), false);
+		RefreshRect(wxRect(new_pos - scroll_left - 0, audio_top, 1, audio_height), false);
 
 		// Make sure the old label gets cleared away
-		RefreshRect(track_cursor_label_rect);
+		RefreshRect(track_cursor_label_rect, false);
 
 		if (show_time)
 		{
@@ -988,7 +1018,7 @@ void AudioDisplay::SetTrackCursor(int new_pos, bool show_time)
 			new_label_time.SetMS(controller->MillisecondsFromSamples(SamplesFromAbsoluteX(track_cursor_pos)));
 			track_cursor_label = new_label_time.GetASSFormated();
 			track_cursor_label_rect.x += new_pos - old_pos;
-			RefreshRect(track_cursor_label_rect);
+			RefreshRect(track_cursor_label_rect, false);
 		}
 		else
 		{
@@ -1148,7 +1178,7 @@ void AudioDisplay::OnSize(wxSizeEvent &event)
 void AudioDisplay::OnFocus(wxFocusEvent &event)
 {
 	// The scrollbar indicates focus so repaint that
-	RefreshRect(scrollbar->GetBounds());
+	RefreshRect(scrollbar->GetBounds(), false);
 }
 
 
@@ -1174,42 +1204,76 @@ void AudioDisplay::OnPlaybackPosition(int64_t sample_position)
 
 void AudioDisplay::OnSelectionChanged()
 {
-	/// @todo Handle rendering style ranges from timing controller instead
 	SampleRange sel(controller->GetPrimaryPlaybackRange());
 	scrollbar->SetSelection(AbsoluteXFromSamples(sel.begin()), AbsoluteXFromSamples(sel.length()));
+
 	if (OPT_GET("Audio/Auto/Scroll")->GetBool())
+	{
 		ScrollSampleRangeInView(sel);
-
-	int s1 = RelativeXFromSamples(sel.begin());
-	int e1 = RelativeXFromSamples(sel.end());
-	int s2 = RelativeXFromSamples(old_selection.begin());
-	int e2 = RelativeXFromSamples(old_selection.end());
-
-	if (sel.overlaps(old_selection))
-	{
-		// Only redraw the parts of the selection that changed, to avoid flicker
-		if (s1 != s2)
-		{
-			RefreshRect(wxRect(std::min(s1, s2)-10, audio_top, abs(s1-s2)+20, audio_height));
-		}
-		if (e1 != e2)
-		{
-			RefreshRect(wxRect(std::min(e1, e2)-10, audio_top, abs(e1-e2)+20, audio_height));
-		}
-	}
-	else
-	{
-		RefreshRect(wxRect(s1 - 10, audio_top, e1 + 20, audio_height));
-		RefreshRect(wxRect(s2 - 10, audio_top, e2 + 20, audio_height));
 	}
 
-	RefreshRect(scrollbar->GetBounds());
+	RefreshRect(scrollbar->GetBounds(), false);
+}
 
-	old_selection = sel;
+void AudioDisplay::OnStyleRangesChanged()
+{
+	AudioStyleRangeMerger asrm;
+	controller->GetTimingController()->GetRenderingStyles(asrm);
+
+	std::map<int64_t, int> old_style_ranges;
+	swap(old_style_ranges, style_ranges);
+	style_ranges.insert(asrm.begin(), asrm.end());
+
+	std::map<int64_t, int>::iterator old_style_it = old_style_ranges.begin();
+	std::map<int64_t, int>::iterator new_style_it = style_ranges.begin();
+
+	int old_style = old_style_it->second;
+	int new_style = new_style_it->second;
+	int64_t range_start = 0;
+
+	// Repaint each range which has changed
+	while (old_style_it != old_style_ranges.end() || new_style_it != style_ranges.end())
+	{
+		if (new_style_it == style_ranges.end() || (old_style_it != old_style_ranges.end() && old_style_it->first <= new_style_it->first))
+		{
+			if (old_style != new_style)
+				Redraw(range_start, old_style_it->first);
+			old_style = old_style_it->second;
+			range_start = old_style_it->first;
+			++old_style_it;
+		}
+		else
+		{
+			if (old_style != new_style)
+				Redraw(range_start, new_style_it->first);
+			new_style = new_style_it->second;
+			range_start = new_style_it->first;
+			++new_style_it;
+		}
+	}
+
+	// Fill in the last style range
+	if (old_style != new_style)
+	{
+		Redraw(range_start, SamplesFromRelativeX(GetClientSize().GetWidth()));
+	}
+}
+
+void AudioDisplay::Redraw(int64_t sample_start, int64_t sample_end)
+{
+	if (sample_start == sample_end) return;
+
+	sample_start = RelativeXFromSamples(sample_start) - foot_size;
+	sample_end = RelativeXFromSamples(sample_end) + foot_size;
+
+	if (sample_end >= 0 && sample_start <= GetClientSize().GetWidth())
+	{
+		RefreshRect(wxRect(sample_start, audio_top, sample_end, audio_height), false);
+	}
 }
 
 void AudioDisplay::OnMarkerMoved()
 {
 	/// @todo investigate if it's worth refreshing only the changed spots
-	RefreshRect(wxRect(0, audio_top, GetClientSize().GetWidth(), audio_height));
+	RefreshRect(wxRect(0, audio_top, GetClientSize().GetWidth(), audio_height), false);
 }

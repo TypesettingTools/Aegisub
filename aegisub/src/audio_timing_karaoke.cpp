@@ -29,6 +29,7 @@
 #include "ass_file.h"
 #include "ass_karaoke.h"
 #include "audio_marker_provider_keyframes.h"
+#include "audio_renderer.h"
 #include "audio_timing.h"
 #include "include/aegisub/context.h"
 #include "main.h"
@@ -120,6 +121,7 @@ public:
 	void GetMarkers(const SampleRange &range, AudioMarkerVector &out_markers) const;
 	wxString GetWarningMessage() const { return ""; }
 	SampleRange GetIdealVisibleSampleRange() const;
+	void GetRenderingStyles(AudioRenderingStyleRanges &ranges) const;
 	SampleRange GetPrimaryPlaybackRange() const;
 	bool HasLabels() const { return true; }
 	void GetLabels(const SampleRange &range, std::vector<AudioLabel> &out_labels) const;
@@ -197,6 +199,12 @@ void AudioTimingControllerKaraoke::Prev() {
 		--cur_syl;
 		AnnounceUpdatedPrimaryRange();
 	}
+}
+
+void AudioTimingControllerKaraoke::GetRenderingStyles(AudioRenderingStyleRanges &ranges) const
+{
+	SampleRange sr = GetPrimaryPlaybackRange();
+	ranges.AddRange(sr.begin(), sr.end(), AudioStyle_Selected);
 }
 
 SampleRange AudioTimingControllerKaraoke::GetPrimaryPlaybackRange() const {

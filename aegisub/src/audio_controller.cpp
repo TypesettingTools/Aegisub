@@ -336,16 +336,14 @@ void AudioController::SetTimingController(AudioTimingController *new_controller)
 {
 	if (timing_controller.get() != new_controller) {
 		timing_controller.reset(new_controller);
-		timing_controller->AddMarkerMovedListener(std::tr1::bind(std::tr1::ref(AnnounceMarkerMoved)));
-		timing_controller->AddLabelChangedListener(std::tr1::bind(std::tr1::ref(AnnounceLabelChanged)));
+		timing_controller->AddMarkerMovedListener(bind(std::tr1::ref(AnnounceMarkerMoved)));
+		timing_controller->AddLabelChangedListener(bind(std::tr1::ref(AnnounceLabelChanged)));
 		timing_controller->AddUpdatedPrimaryRangeListener(&AudioController::OnTimingControllerUpdatedPrimaryRange, this);
-		timing_controller->AddUpdatedStyleRangesListener(&AudioController::OnTimingControllerUpdatedStyleRanges, this);
+		timing_controller->AddUpdatedStyleRangesListener(bind(std::tr1::ref(AnnounceStyleRangesChanged)));
 	}
 
 	AnnounceTimingControllerChanged();
 }
-
-
 
 void AudioController::OnTimingControllerUpdatedPrimaryRange()
 {
@@ -355,12 +353,6 @@ void AudioController::OnTimingControllerUpdatedPrimaryRange()
 	}
 
 	AnnounceSelectionChanged();
-}
-
-
-void AudioController::OnTimingControllerUpdatedStyleRanges()
-{
-	/// @todo redraw and stuff, probably
 }
 
 void AudioController::OnSubtitlesSave()

@@ -61,13 +61,13 @@ public:
 	virtual ~AudioWaveformRenderer();
 
 	/// @brief Render a range of audio waveform
-	/// @param bmp      [in,out] Bitmap to render into, also carries lenght information
-	/// @param start    First column of pixel data in display to render
-	/// @param selected Whether to use the alternate colour scheme
-	void Render(wxBitmap &bmp, int start, bool selected);
+	/// @param bmp   [in,out] Bitmap to render into, also carries lenght information
+	/// @param start First column of pixel data in display to render
+	/// @param style Style to render audio in
+	void Render(wxBitmap &bmp, int start, AudioRenderingStyle style);
 
 	/// @brief Render blank area
-	void RenderBlank(wxDC &dc, const wxRect &rect, bool selected);
+	void RenderBlank(wxDC &dc, const wxRect &rect, AudioRenderingStyle style);
 
 	/// @brief Cleans up the cache
 	/// @param max_size Maximum size in bytes for the cache

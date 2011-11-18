@@ -44,6 +44,7 @@
 #include "ass_time.h"
 #include "audio_controller.h"
 #include "audio_marker_provider_keyframes.h"
+#include "audio_renderer.h"
 #include "audio_timing.h"
 #include "include/aegisub/context.h"
 #include "main.h"
@@ -106,8 +107,10 @@ public:
 	/// This checks that the markers aren't already part of a pair, and then
 	/// sets their "other" field. Positions and styles aren't affected.
 	static void InitPair(AudioMarkerDialogueTiming *marker1, AudioMarkerDialogueTiming *marker2);
-};
 
+	/// Implicit decay to the position of the marker
+	operator int64_t() const { return position; }
+};
 
 
 /// @class AudioTimingControllerDialogue
@@ -176,6 +179,7 @@ public:
 	wxString GetWarningMessage() const;
 	SampleRange GetIdealVisibleSampleRange() const;
 	SampleRange GetPrimaryPlaybackRange() const;
+	void GetRenderingStyles(AudioRenderingStyleRanges &ranges) const;
 	bool HasLabels() const { return false; }
 	void GetLabels(SampleRange const& range, std::vector<AudioLabel> &out) const { }
 	void Next();
@@ -194,8 +198,6 @@ public:
 	AudioTimingControllerDialogue(agi::Context *c);
 	~AudioTimingControllerDialogue();
 };
-
-
 
 AudioTimingController *CreateDialogueTimingController(agi::Context *c)
 {
@@ -226,7 +228,6 @@ void AudioMarkerDialogueTiming::SetPosition(int64_t new_position)
 	}
 }
 
-
 AudioMarkerDialogueTiming::AudioMarkerDialogueTiming()
 : other(0)
 , position(0)
@@ -238,7 +239,6 @@ AudioMarkerDialogueTiming::AudioMarkerDialogueTiming()
 	// Nothing more to do
 }
 
-
 void AudioMarkerDialogueTiming::InitPair(AudioMarkerDialogueTiming *marker1, AudioMarkerDialogueTiming *marker2)
 {
 	assert(marker1->other == 0);
@@ -247,8 +247,6 @@ void AudioMarkerDialogueTiming::InitPair(AudioMarkerDialogueTiming *marker1, Aud
 	marker1->other = marker2;
 	marker2->other = marker1;
 }
-
-
 
 // AudioTimingControllerDialogue
 
@@ -279,35 +277,31 @@ AudioTimingControllerDialogue::~AudioTimingControllerDialogue()
 	context->selectionController->RemoveSelectionListener(this);
 }
 
-
-
 AudioMarkerDialogueTiming *AudioTimingControllerDialogue::GetLeftMarker()
 {
-	return markers[0].GetPosition() < markers[1].GetPosition() ? &markers[0] : &markers[1];
+	return markers[0] < markers[1] ? &markers[0] : &markers[1];
 }
 
 const AudioMarkerDialogueTiming *AudioTimingControllerDialogue::GetLeftMarker() const
 {
-	return markers[0].GetPosition() < markers[1].GetPosition() ? &markers[0] : &markers[1];
+	return &std::min(markers[0], markers[1]);
 }
 
 AudioMarkerDialogueTiming *AudioTimingControllerDialogue::GetRightMarker()
 {
-	return markers[0].GetPosition() < markers[1].GetPosition() ? &markers[1] : &markers[0];
+	return markers[0] < markers[1] ? &markers[1] : &markers[0];
 }
 
 const AudioMarkerDialogueTiming *AudioTimingControllerDialogue::GetRightMarker() const
 {
-	return markers[0].GetPosition() < markers[1].GetPosition() ? &markers[1] : &markers[0];
+	return &std::max(markers[0], markers[1]);
 }
-
-
 
 void AudioTimingControllerDialogue::GetMarkers(const SampleRange &range, AudioMarkerVector &out_markers) const
 {
-	if (range.contains(markers[0].GetPosition()))
+	if (range.contains(markers[0]))
 		out_markers.push_back(&markers[0]);
-	if (range.contains(markers[1].GetPosition()))
+	if (range.contains(markers[1]))
 		out_markers.push_back(&markers[1]);
 
 	keyframes_provider.GetMarkers(range, out_markers);
@@ -331,49 +325,42 @@ void AudioTimingControllerDialogue::OnFileChanged(int type) {
 	}
 }
 
-
 wxString AudioTimingControllerDialogue::GetWarningMessage() const
 {
 	// We have no warning messages currently, maybe add the old "Modified" message back later?
 	return wxString();
 }
 
-
-
 SampleRange AudioTimingControllerDialogue::GetIdealVisibleSampleRange() const
 {
 	return GetPrimaryPlaybackRange();
 }
 
-
-
 SampleRange AudioTimingControllerDialogue::GetPrimaryPlaybackRange() const
 {
-	return SampleRange(
-		GetLeftMarker()->GetPosition(),
-		GetRightMarker()->GetPosition());
+	return SampleRange(*GetLeftMarker(), *GetRightMarker());
 }
 
-
+void AudioTimingControllerDialogue::GetRenderingStyles(AudioRenderingStyleRanges &ranges) const
+{
+	ranges.AddRange(*GetLeftMarker(), *GetRightMarker(), AudioStyle_Selected);
+	/// @todo Find inactive and non-selected lines to add to styles
+}
 
 void AudioTimingControllerDialogue::Next()
 {
 	context->selectionController->NextLine();
 }
 
-
-
 void AudioTimingControllerDialogue::Prev()
 {
 	context->selectionController->PrevLine();
 }
 
-
-
 void AudioTimingControllerDialogue::Commit()
 {
-	int new_start_ms = context->audioController->MillisecondsFromSamples(GetLeftMarker()->GetPosition());
-	int new_end_ms = context->audioController->MillisecondsFromSamples(GetRightMarker()->GetPosition());
+	int new_start_ms = context->audioController->MillisecondsFromSamples(*GetLeftMarker());
+	int new_end_ms = context->audioController->MillisecondsFromSamples(*GetRightMarker());
 
 	// If auto committing is enabled, timing_modified will be true iif it is an
 	// auto commit, as there is never pending changes to commit when the button
@@ -420,8 +407,6 @@ void AudioTimingControllerDialogue::Commit()
 	}
 }
 
-
-
 void AudioTimingControllerDialogue::Revert()
 {
 	if (AssDialogue *line = context->selectionController->GetActiveLine())
@@ -439,15 +424,12 @@ void AudioTimingControllerDialogue::Revert()
 	}
 }
 
-
-
 bool AudioTimingControllerDialogue::IsNearbyMarker(int64_t sample, int sensitivity) const
 {
 	SampleRange range(sample-sensitivity, sample+sensitivity);
 
-	return range.contains(markers[0].GetPosition()) || range.contains(markers[1].GetPosition());
+	return range.contains(markers[0]) || range.contains(markers[1]);
 }
-
 
 AudioMarker * AudioTimingControllerDialogue::OnLeftClick(int64_t sample, int sensitivity)
 {
@@ -458,8 +440,8 @@ AudioMarker * AudioTimingControllerDialogue::OnLeftClick(int64_t sample, int sen
 	AudioMarkerDialogueTiming *left = GetLeftMarker();
 	AudioMarkerDialogueTiming *right = GetRightMarker();
 
-	dist_l = tabs(left->GetPosition() - sample);
-	dist_r = tabs(right->GetPosition() - sample);
+	dist_l = tabs(*left - sample);
+	dist_r = tabs(*right - sample);
 
 	if (dist_l < dist_r && dist_l <= sensitivity)
 	{
@@ -483,8 +465,6 @@ AudioMarker * AudioTimingControllerDialogue::OnLeftClick(int64_t sample, int sen
 	return right;
 }
 
-
-
 AudioMarker * AudioTimingControllerDialogue::OnRightClick(int64_t sample, int sensitivity)
 {
 	AudioMarkerDialogueTiming *right = GetRightMarker();
@@ -492,20 +472,16 @@ AudioMarker * AudioTimingControllerDialogue::OnRightClick(int64_t sample, int se
 	return right;
 }
 
-
-
 void AudioTimingControllerDialogue::OnMarkerDrag(AudioMarker *marker, int64_t new_position)
 {
 	assert(marker == &markers[0] || marker == &markers[1]);
-
 	SetMarker(static_cast<AudioMarkerDialogueTiming*>(marker), new_position);
 }
-
-
 
 void AudioTimingControllerDialogue::UpdateSelection()
 {
 	AnnounceUpdatedPrimaryRange();
+	AnnounceUpdatedStyleRanges();
 }
 
 void AudioTimingControllerDialogue::SetMarker(AudioMarkerDialogueTiming *marker, int64_t sample)
