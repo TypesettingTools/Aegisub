@@ -210,14 +210,7 @@ Interface_Colours::Interface_Colours(wxTreebook *book, Preferences *parent): Opt
 
 	wxFlexGridSizer *audio = PageSizer(_("Audio Display"));
 	OptionAdd(audio, _("Play cursor"), "Colour/Audio Display/Play Cursor");
-	OptionAdd(audio, _("Background"), "Colour/Audio Display/Background/Background");
-	OptionAdd(audio, _("Selection background"), "Colour/Audio Display/Background/Selection");
-	OptionAdd(audio, _("Selection background modified"), "Colour/Audio Display/Background/Selection Modified");
 	OptionAdd(audio, _("Seconds boundaries"), "Colour/Audio Display/Seconds Boundaries");
-	OptionAdd(audio, _("Waveform"), "Colour/Audio Display/Waveform");
-	OptionAdd(audio, _("Waveform selected"), "Colour/Audio Display/Waveform Selected");
-	OptionAdd(audio, _("Waveform Modified"), "Colour/Audio Display/Waveform Modified");
-	OptionAdd(audio, _("Waveform Inactive"), "Colour/Audio Display/Waveform Inactive");
 	OptionAdd(audio, _("Line boundary start"), "Colour/Audio Display/Line boundary Start");
 	OptionAdd(audio, _("Line boundary end"), "Colour/Audio Display/Line boundary End");
 	OptionAdd(audio, _("Line boundary inactive line"), "Colour/Audio Display/Line Boundary Inactive Line");

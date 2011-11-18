@@ -91,11 +91,6 @@
 
 	"Colour" : {
 		"Audio Display" : {
-			"Background" : {
-				"Background" : "rgb(0,0,0)",
-				"Selection" : "rgb(64, 64, 64)",
-				"Selection Modified" : "rgb(92, 0, 0)"
-			},
 			"Keyframe" : "rgb(255,0,255)",
 			"Line Boundary Inactive Line" : "rgb(190,190,190)",
 			"Line boundary End" : "rgb(0, 0, 216)",
@@ -103,11 +98,7 @@
 			"Play Cursor" : "rgb(255,255,255)",
 			"Seconds Boundaries" : "rgb(0, 100, 255)",
 			"Syllable Boundaries" : "rgb(255,255,0)",
-			"Syllable Text" : "rgb(255,0,0)",
-			"Waveform" : "rgb(0, 200, 0)",
-			"Waveform Inactive" : "rgb(0, 80, 0)",
-			"Waveform Modified" : "rgb(255, 230, 230)",
-			"Waveform Selected" : "rgb(255,255,255)"
+			"Syllable Text" : "rgb(255,0,0)"
 		},
 		"Style Editor" : {
 			"Background" : {
