@@ -118,9 +118,7 @@ VideoDisplay::VideoDisplay(
 	slots.push_back(con->videoController->AddARChangeListener(&VideoDisplay::UpdateSize, this));
 
 	Bind(wxEVT_PAINT, std::tr1::bind(&VideoDisplay::Render, this));
-	if (freeSize) {
-		Bind(wxEVT_SIZE, &VideoDisplay::OnSizeEvent, this);
-	}
+	Bind(wxEVT_SIZE, &VideoDisplay::OnSizeEvent, this);
 	Bind(wxEVT_CONTEXT_MENU, &VideoDisplay::OnContextMenu, this);
 	Bind(wxEVT_ENTER_WINDOW, &VideoDisplay::OnMouseEvent, this);
 	Bind(wxEVT_KEY_DOWN, &VideoDisplay::OnKeyDown, this);
