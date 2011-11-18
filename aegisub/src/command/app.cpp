@@ -78,7 +78,7 @@ struct app_about : public Command {
 /// Display audio and subtitles.
 struct app_display_audio_subs : public Command {
 	CMD_NAME("app/display/audio_subs")
-	STR_MENU("Audio+Subs View")
+	STR_MENU("&Audio+Subs View")
 	STR_DISP("Audio+Subs View")
 	STR_HELP("Display audio and subtitles only.")
 	CMD_TYPE(COMMAND_VALIDATE | COMMAND_RADIO)
@@ -96,7 +96,7 @@ struct app_display_audio_subs : public Command {
 /// Display audio, video and subtitles.
 struct app_display_full : public Command {
 	CMD_NAME("app/display/full")
-	STR_MENU("Full view")
+	STR_MENU("&Full view")
 	STR_DISP("Full view")
 	STR_HELP("Display audio, video and subtitles.")
 	CMD_TYPE(COMMAND_VALIDATE | COMMAND_RADIO)
@@ -114,7 +114,7 @@ struct app_display_full : public Command {
 /// Display subtitles only.
 struct app_display_subs : public Command {
 	CMD_NAME("app/display/subs")
-	STR_MENU("Subs Only View")
+	STR_MENU("S&ubs Only View")
 	STR_DISP("Subs Only View")
 	STR_HELP("Display subtitles only.")
 	CMD_TYPE(COMMAND_VALIDATE | COMMAND_RADIO)
@@ -128,7 +128,7 @@ struct app_display_subs : public Command {
 /// Display video and subtitles only.
 struct app_display_video_subs : public Command {
 	CMD_NAME("app/display/video_subs")
-	STR_MENU("Video+Subs View")
+	STR_MENU("&Video+Subs View")
 	STR_DISP("Video+Subs View")
 	STR_HELP("Display video and subtitles only.")
 	CMD_TYPE(COMMAND_VALIDATE | COMMAND_RADIO)
@@ -201,7 +201,7 @@ struct app_log : public Command {
 /// Open a new application window.
 struct app_new_window : public Command {
 	CMD_NAME("app/new_window")
-	STR_MENU("New Window")
+	STR_MENU("New &Window")
 	STR_DISP("New Window")
 	STR_HELP("Open a new application window.")
 

@@ -90,7 +90,7 @@ struct edit_find_replace : public Command {
 /// Copy subtitles.
 struct edit_line_copy : public validate_sel_nonempty {
 	CMD_NAME("edit/line/copy")
-	STR_MENU("Copy Lines")
+	STR_MENU("&Copy Lines")
 	STR_DISP("Copy Lines")
 	STR_HELP("Copy subtitles.")
 
@@ -107,7 +107,7 @@ struct edit_line_copy : public validate_sel_nonempty {
 /// Cut subtitles.
 struct edit_line_cut: public validate_sel_nonempty {
 	CMD_NAME("edit/line/cut")
-	STR_MENU("Cut Lines")
+	STR_MENU("Cu&t Lines")
 	STR_DISP("Cut Lines")
 	STR_HELP("Cut subtitles.")
 
@@ -124,7 +124,7 @@ struct edit_line_cut: public validate_sel_nonempty {
 /// Delete currently selected lines.
 struct edit_line_delete : public validate_sel_nonempty {
 	CMD_NAME("edit/line/delete")
-	STR_MENU("Delete Lines")
+	STR_MENU("De&lete Lines")
 	STR_DISP("Delete Lines")
 	STR_HELP("Delete currently selected lines.")
 
@@ -151,7 +151,7 @@ struct edit_line_duplicate : public validate_sel_nonempty {
 /// Duplicate lines and shift by one frame.
 struct edit_line_duplicate_shift : public Command {
 	CMD_NAME("edit/line/duplicate/shift")
-	STR_MENU("&Duplicate and Shift by 1 Frame")
+	STR_MENU("D&uplicate and Shift by 1 Frame")
 	STR_DISP("Duplicate and Shift by 1 Frame")
 	STR_HELP("Duplicate lines and shift by one frame.")
 	CMD_TYPE(COMMAND_VALIDATE)
@@ -249,7 +249,7 @@ struct edit_line_join_keep_first : public validate_sel_multiple {
 /// Paste subtitles.
 struct edit_line_paste : public Command {
 	CMD_NAME("edit/line/paste")
-	STR_MENU("Paste Lines")
+	STR_MENU("&Paste Lines")
 	STR_DISP("Paste Lines")
 	STR_HELP("Paste subtitles.")
 	CMD_TYPE(COMMAND_VALIDATE)
@@ -276,7 +276,7 @@ struct edit_line_paste : public Command {
 /// Paste subtitles over others.
 struct edit_line_paste_over : public Command {
 	CMD_NAME("edit/line/paste/over")
-	STR_MENU("Paste Lines Over...")
+	STR_MENU("Paste Lines &Over...")
 	STR_DISP("Paste Lines Over")
 	STR_HELP("Paste subtitles over others.")
 	CMD_TYPE(COMMAND_VALIDATE)

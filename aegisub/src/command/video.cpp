@@ -247,7 +247,7 @@ struct video_copy_coordinates : public validator_video_loaded {
 /// Detach video, displaying it in a separate Window.
 struct video_detach : public validator_video_loaded {
 	CMD_NAME("video/detach")
-	STR_MENU("Detach Video")
+	STR_MENU("&Detach Video")
 	STR_DISP("Detach Video")
 	STR_HELP("Detach video, displaying it in a separate Window.")
 	CMD_TYPE(COMMAND_VALIDATE | COMMAND_TOGGLE)
@@ -269,7 +269,7 @@ struct video_detach : public validator_video_loaded {
 /// Shows video details.
 struct video_details : public validator_video_loaded {
 	CMD_NAME("video/details")
-	STR_MENU("Show Video Details...")
+	STR_MENU("Show &Video Details...")
 	STR_DISP("Show Video Details")
 	STR_HELP("Shows video details.")
 
@@ -518,7 +518,7 @@ struct video_jump : public validator_video_loaded {
 /// Jumps the video to the end frame of current subtitle.
 struct video_jump_end : public validator_video_loaded {
 	CMD_NAME("video/jump/end")
-	STR_MENU("Jump Video to End")
+	STR_MENU("Jump Video to &End")
 	STR_DISP("Jump Video to End")
 	STR_HELP("Jumps the video to the end frame of current subtitle.")
 
@@ -532,7 +532,7 @@ struct video_jump_end : public validator_video_loaded {
 /// Jumps the video to the start frame of current subtitle.
 struct video_jump_start : public validator_video_loaded {
 	CMD_NAME("video/jump/start")
-	STR_MENU("Jump Video to Start")
+	STR_MENU("Jump Video to &Start")
 	STR_DISP("Jump Video to Start")
 	STR_HELP("Jumps the video to the start frame of current subtitle.")
 
@@ -565,7 +565,7 @@ struct video_open : public Command {
 /// Opens a video clip with solid colour.
 struct video_open_dummy : public Command {
 	CMD_NAME("video/open/dummy")
-	STR_MENU("Use Dummy Video...")
+	STR_MENU("&Use Dummy Video...")
 	STR_DISP("Use Dummy Video")
 	STR_HELP("Opens a video clip with solid colour.")
 
@@ -621,7 +621,7 @@ struct video_play_line : public validator_video_loaded {
 /// Show a mask over the video.
 struct video_show_overscan : public validator_video_loaded {
 	CMD_NAME("video/show_overscan")
-	STR_MENU("Show Overscan Mask")
+	STR_MENU("Show &Overscan Mask")
 	STR_DISP("Show Overscan Mask")
 	STR_HELP("Show a mask over the video, indicating areas that might get cropped off by overscan on televisions.")
 	CMD_TYPE(COMMAND_VALIDATE | COMMAND_TOGGLE)

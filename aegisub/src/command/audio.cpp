@@ -162,7 +162,7 @@ struct audio_open_video : public Command {
 /// Display audio as a frequency-power spectrograph.
 struct audio_view_spectrum : public Command {
 	CMD_NAME("audio/view/spectrum")
-	STR_MENU("Spectrum Display")
+	STR_MENU("&Spectrum Display")
 	STR_DISP("Spectrum Display")
 	STR_HELP("Display audio as a frequency-power spectrograph.")
 	CMD_TYPE(COMMAND_RADIO)
@@ -180,7 +180,7 @@ struct audio_view_spectrum : public Command {
 /// Display audio as a linear amplitude graph.
 struct audio_view_waveform : public Command {
 	CMD_NAME("audio/view/waveform")
-	STR_MENU("Waveform Display")
+	STR_MENU("&Waveform Display")
 	STR_DISP("Waveform Display")
 	STR_HELP("Display audio as a linear amplitude graph.")
 	CMD_TYPE(COMMAND_RADIO)

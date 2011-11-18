@@ -80,7 +80,7 @@ struct tool_assdraw : public Command {
 /// Saves a copy of subtitles with processing applied to it.
 struct tool_export : public Command {
 	CMD_NAME("tool/export")
-	STR_MENU("Export Subtitles...")
+	STR_MENU("&Export Subtitles...")
 	STR_DISP("Export Subtitles")
 	STR_HELP("Saves a copy of subtitles with processing applied to it.")
 
@@ -108,7 +108,7 @@ struct tool_font_collector : public Command {
 /// Selects lines based on defined criteria.
 struct tool_line_select : public Command {
 	CMD_NAME("tool/line/select")
-	STR_MENU("Select Lines...")
+	STR_MENU("S&elect Lines...")
 	STR_DISP("Select Lines")
 	STR_HELP("Selects lines based on defined criteria.")
 
@@ -121,7 +121,7 @@ struct tool_line_select : public Command {
 /// Changes resolution and modifies subtitles to conform to change.
 struct tool_resampleres : public Command {
 	CMD_NAME("tool/resampleres")
-	STR_MENU("Resample Resolution...")
+	STR_MENU("&Resample Resolution...")
 	STR_DISP("Resample Resolution")
 	STR_HELP("Changes resolution and modifies subtitles to conform to change.")
 
@@ -195,7 +195,7 @@ struct tool_style_manager : public Command {
 /// Open Kanji timer.
 struct tool_time_kanji : public Command {
 	CMD_NAME("tool/time/kanji")
-	STR_MENU("Kanji Timer...")
+	STR_MENU("&Kanji Timer...")
 	STR_DISP("Kanji Timer")
 	STR_HELP("Open Kanji timer.")
 
@@ -208,7 +208,7 @@ struct tool_time_kanji : public Command {
 /// Launch timing post-processor.
 struct tool_time_postprocess : public Command {
 	CMD_NAME("tool/time/postprocess")
-	STR_MENU("Timing Post-Processor...")
+	STR_MENU("&Timing Post-Processor...")
 	STR_DISP("Timing Post-Processor")
 	STR_HELP("Runs a post-processor for timing to deal with lead-ins, lead-outs, scene timing and etc.")
 

@@ -89,24 +89,22 @@ struct help_contents : public Command {
 	}
 };
 
-
+#ifdef __WXMAC__
 /// Resource files.
 struct help_files : public Command {
 	CMD_NAME("help/files")
-	STR_MENU("&All Files")
+	STR_MENU("All Fil&es")
 	STR_DISP("All Files")
 	STR_HELP("Resource files.")
 
 	void operator()(agi::Context *c) {
-#ifdef __WXMAC__
 		char *shared_path = agi::util::OSX_GetBundleSharedSupportDirectory();
 		wxString help_path = wxString::Format("%s/doc", wxString(shared_path, wxConvUTF8));
 		agi::util::OSX_OpenLocation(help_path.c_str());
 		free(shared_path);
-#endif
 	}
 };
-
+#endif
 
 /// Visit Aegisub's forums.
 struct help_forums : public Command {
@@ -163,7 +161,9 @@ namespace cmd {
 	void init_help() {
 		reg(new help_bugs);
 		reg(new help_contents);
+#ifdef __WXMAC__
 		reg(new help_files);
+#endif
 		reg(new help_forums);
 		reg(new help_irc);
 		reg(new help_video);

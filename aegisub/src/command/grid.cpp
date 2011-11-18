@@ -108,7 +108,7 @@ struct grid_tag_cycle_hiding : public Command {
 /// Hide override tags in the subtitle grid.
 struct grid_tags_hide : public Command {
 	CMD_NAME("grid/tags/hide")
-	STR_MENU("Hide Tags")
+	STR_MENU("&Hide Tags")
 	STR_DISP("Hide Tags")
 	STR_HELP("Hide override tags in the subtitle grid.")
 	CMD_TYPE(COMMAND_RADIO)
@@ -126,7 +126,7 @@ struct grid_tags_hide : public Command {
 /// Show full override tags in the subtitle grid.
 struct grid_tags_show : public Command {
 	CMD_NAME("grid/tags/show")
-	STR_MENU("Show Tags")
+	STR_MENU("Sh&ow Tags")
 	STR_DISP("Show Tags")
 	STR_HELP("Show full override tags in the subtitle grid.")
 	CMD_TYPE(COMMAND_RADIO)
@@ -144,7 +144,7 @@ struct grid_tags_show : public Command {
 /// Replace override tags in the subtitle grid with a simplified placeholder.
 struct grid_tags_simplify : public Command {
 	CMD_NAME("grid/tags/simplify")
-	STR_MENU("Simplify Tags")
+	STR_MENU("S&implify Tags")
 	STR_DISP("Simplify Tags")
 	STR_HELP("Replace override tags in the subtitle grid with a simplified placeholder.")
 	CMD_TYPE(COMMAND_RADIO)

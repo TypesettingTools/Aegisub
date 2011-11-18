@@ -123,7 +123,7 @@ struct time_continuous_start : public validate_adjoinable {
 /// Shift selection so first selected line starts at current frame.
 struct time_frame_current : public validate_video_loaded {
 	CMD_NAME("time/frame/current")
-	STR_MENU("Shift to Current Frame")
+	STR_MENU("Shift to &Current Frame")
 	STR_DISP("Shift to Current Frame")
 	STR_HELP("Shift selection so first selected line starts at current frame.")
 
@@ -181,7 +181,7 @@ static void snap_subs_video(agi::Context *c, bool set_start) {
 /// Set end of selected subtitles to current video frame.
 struct time_snap_end_video : public validate_video_loaded {
 	CMD_NAME("time/snap/end_video")
-	STR_MENU("Snap End to Video")
+	STR_MENU("Snap &End to Video")
 	STR_DISP("Snap End to Video")
 	STR_HELP("Set end of selected subtitles to current video frame.")
 
@@ -193,7 +193,7 @@ struct time_snap_end_video : public validate_video_loaded {
 /// Set start and end of subtitles to the keyframes around current video frame.
 struct time_snap_scene : public validate_video_loaded {
 	CMD_NAME("time/snap/scene")
-	STR_MENU("Snap to Scene")
+	STR_MENU("Snap to S&cene")
 	STR_DISP("Snap to Scene")
 	STR_HELP("Set start and end of subtitles to the keyframes around current video frame.")
 
@@ -274,7 +274,7 @@ struct time_add_lead_out : public Command {
 /// Set start of selected subtitles to current video frame.
 struct time_snap_start_video : public validate_video_loaded {
 	CMD_NAME("time/snap/start_video")
-	STR_MENU("Snap Start to Video")
+	STR_MENU("Snap &Start to Video")
 	STR_DISP("Snap Start to Video")
 	STR_HELP("Set start of selected subtitles to current video frame.")
 
