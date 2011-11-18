@@ -700,8 +700,8 @@ void SubsEditBox::SetTag(wxString tag, wxString value, bool atEnd) {
 	int start = atEnd ? selend : selstart;
 	int blockn = BlockAtPos(line->Text, start);
 
-	AssDialogueBlockPlain *plain;
-	AssDialogueBlockOverride *ovr;
+	AssDialogueBlockPlain *plain = 0;
+	AssDialogueBlockOverride *ovr = 0;
 	while (blockn >= 0) {
 		AssDialogueBlock *block = line->Blocks[blockn];
 		if (dynamic_cast<AssDialogueBlockDrawing*>(block))
