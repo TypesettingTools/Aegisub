@@ -87,7 +87,7 @@ public:
 	///
 	/// Writes into the XRGB pixel (assumed 32 bit without alpha) passed.
 	/// The pixel format is assumed to be the same as that in the palette.
-	inline void map(float val, unsigned char *pixel)
+	void map(float val, unsigned char *pixel)
 	{
 		if (val < 0.0) val = 0.0;
 		if (val > 1.0) val = 1.0;
@@ -115,4 +115,3 @@ public:
 		return wxColour(color[0], color[1], color[2]);
 	}
 };
-
