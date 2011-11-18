@@ -98,8 +98,9 @@ public:
 /// timing controller. The audio display also renders audio according to the audio controller
 /// and the timing controller, using an audio renderer instance.
 class AudioDisplay: public wxWindow {
+	agi::signal::Connection audio_open_connection;
 
-	std::list<agi::signal::Connection> slots;
+	std::list<agi::signal::Connection> connections;
 	agi::Context *context;
 
 	/// The audio renderer manager

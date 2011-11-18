@@ -545,6 +545,7 @@ public:
 
 AudioDisplay::AudioDisplay(wxWindow *parent, AudioController *controller, agi::Context *context)
 : wxWindow(parent, -1, wxDefaultPosition, wxDefaultSize, wxWANTS_CHARS|wxBORDER_SIMPLE)
+, audio_open_connection(controller->AddAudioOpenListener(&AudioDisplay::OnAudioOpen, this))
 , context(context)
 , audio_renderer(new AudioRenderer)
 , provider(0)
@@ -560,17 +561,6 @@ AudioDisplay::AudioDisplay(wxWindow *parent, AudioController *controller, agi::C
 	scale_amplitude = 1.0;
 
 	track_cursor_pos = -1;
-
-	slots.push_back(controller->AddAudioOpenListener(&AudioDisplay::OnAudioOpen, this));
-	slots.push_back(controller->AddAudioCloseListener(&AudioDisplay::OnAudioOpen, this, (AudioProvider*)0));
-	slots.push_back(controller->AddPlaybackPositionListener(&AudioDisplay::OnPlaybackPosition, this));
-	slots.push_back(controller->AddPlaybackStopListener(&AudioDisplay::RemoveTrackCursor, this));
-	slots.push_back(controller->AddTimingControllerListener(&AudioDisplay::Refresh, this, true, (const wxRect*)0));
-	slots.push_back(controller->AddMarkerMovedListener(&AudioDisplay::OnMarkerMoved, this));
-	slots.push_back(controller->AddSelectionChangedListener(&AudioDisplay::OnSelectionChanged, this));
-	slots.push_back(controller->AddStyleRangesChangedListener(&AudioDisplay::OnStyleRangesChanged, this));
-
-	OPT_SUB("Audio/Spectrum", &AudioDisplay::ReloadRenderingSettings, this);
 
 	audio_renderer->SetAmplitudeScale(scale_amplitude);
 	SetZoomLevel(0);
@@ -1195,6 +1185,25 @@ void AudioDisplay::OnAudioOpen(AudioProvider *_provider)
 	SetZoomLevel(zoom_level);
 
 	Refresh();
+
+	if (provider)
+	{
+		if (connections.empty())
+		{
+			connections.push_back(controller->AddAudioCloseListener(&AudioDisplay::OnAudioOpen, this, (AudioProvider*)0));
+			connections.push_back(controller->AddPlaybackPositionListener(&AudioDisplay::OnPlaybackPosition, this));
+			connections.push_back(controller->AddPlaybackStopListener(&AudioDisplay::RemoveTrackCursor, this));
+			connections.push_back(controller->AddTimingControllerListener(&AudioDisplay::Refresh, this, true, (const wxRect*)0));
+			connections.push_back(controller->AddMarkerMovedListener(&AudioDisplay::OnMarkerMoved, this));
+			connections.push_back(controller->AddSelectionChangedListener(&AudioDisplay::OnSelectionChanged, this));
+			connections.push_back(controller->AddStyleRangesChangedListener(&AudioDisplay::OnStyleRangesChanged, this));
+			connections.push_back(OPT_SUB("Audio/Spectrum", &AudioDisplay::ReloadRenderingSettings, this));
+		}
+	}
+	else
+	{
+		connections.clear();
+	}
 }
 
 void AudioDisplay::OnPlaybackPosition(int64_t sample_position)
