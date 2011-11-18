@@ -1764,6 +1764,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\audio_rendering_style.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\audio_timing_dialogue.cpp"
 				>
 			</File>

@@ -53,10 +53,12 @@ AudioWaveformRenderer::AudioWaveformRenderer()
 : AudioRendererBitmapProvider()
 , colors_normal(6)
 , colors_selected(6)
+, colors_inactive(6)
 , audio_buffer(0)
 {
-	colors_normal.InitIcyBlue_Normal();
-	colors_selected.InitIcyBlue_Selected();
+	colors_normal.InitIcyBlue(AudioStyle_Normal);
+	colors_selected.InitIcyBlue(AudioStyle_Selected);
+	colors_inactive.InitIcyBlue(AudioStyle_Inactive);
 }
 
 
@@ -72,7 +74,7 @@ void AudioWaveformRenderer::Render(wxBitmap &bmp, int start, AudioRenderingStyle
 	wxRect rect(wxPoint(0, 0), bmp.GetSize());
 	int midpoint = rect.height / 2;
 
-	AudioColorScheme *pal = style == AudioStyle_Selected ? &colors_selected : &colors_normal;
+	const AudioColorScheme *pal = GetColorScheme(style);
 
 	// Fill the background
 	dc.SetBrush(wxBrush(pal->get(0.0f)));
@@ -137,8 +139,7 @@ void AudioWaveformRenderer::Render(wxBitmap &bmp, int start, AudioRenderingStyle
 
 void AudioWaveformRenderer::RenderBlank(wxDC &dc, const wxRect &rect, AudioRenderingStyle style)
 {
-	AudioColorScheme *pal = style == AudioStyle_Selected ? &colors_selected : &colors_normal;
-
+	const AudioColorScheme *pal = GetColorScheme(style);
 	wxColor line(pal->get(1.0));
 	wxColor bg(pal->get(0.0));
 
@@ -155,14 +156,11 @@ void AudioWaveformRenderer::RenderBlank(wxDC &dc, const wxRect &rect, AudioRende
 	dc.DrawLine(rect.x, rect.y+halfheight, rect.x+rect.width, rect.y+halfheight);
 }
 
-
-
 void AudioWaveformRenderer::OnSetProvider()
 {
 	delete[] audio_buffer;
 	audio_buffer = 0;
 }
-
 
 void AudioWaveformRenderer::OnSetSamplesPerPixel()
 {
@@ -170,4 +168,12 @@ void AudioWaveformRenderer::OnSetSamplesPerPixel()
 	audio_buffer = 0;
 }
 
-
+const AudioColorScheme *AudioWaveformRenderer::GetColorScheme(AudioRenderingStyle style) const
+{
+	switch (style)
+	{
+		case AudioStyle_Selected: return &colors_selected;
+		case AudioStyle_Inactive: return &colors_inactive;
+		default: return &colors_normal;
+	}
+}

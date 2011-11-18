@@ -35,6 +35,7 @@
 ///
 /// Base classes for audio renderers (spectrum, waveform, ...)
 
+#pragma once
 
 #ifndef AGI_PRE
 #include <memory>
@@ -44,6 +45,7 @@
 #include <wx/gdicmn.h>
 #endif
 
+#include "audio_rendering_style.h"
 #include "block_cache.h"
 
 // Some forward declarations for outside stuff
@@ -52,41 +54,6 @@ class AudioProvider;
 // Forwards declarations for internal stuff
 class AudioRendererBitmapProvider;
 class AudioRenderer;
-
-/// @brief Styles audio may be rendered in
-///
-/// The constants are ordered by priority:
-/// Selected has highest priority and should overlap active, which should
-/// overlap inactive, which should overlap normal regions.
-enum AudioRenderingStyle {
-	/// Regular audio with no special properties
-	AudioStyle_Normal,
-	/// Audio belonging to objects that can not be manipulated currently
-	AudioStyle_Inactive,
-	/// Audio that may be manipulated indirectly, usually part of selected lines
-	AudioStyle_Active,
-	/// Primary selection for work, usually coinciding with the primary playback range
-	AudioStyle_Selected,
-	/// Number of audio styles
-	AudioStyle_MAX
-};
-
-
-/// @class AudioRenderingStyleRanges
-/// @brief Abstract container for ranges of audio rendering styles
-///
-/// Interface for producers of audio rendering ranges, consumers should implement
-/// this interface for objects to pass to producers.
-class AudioRenderingStyleRanges {
-public:
-	/// @brief Add a range to the line
-	/// @param start First sample index in range
-	/// @param end   One past last sample index in range
-	/// @param style Style of the range added
-	virtual void AddRange(int64_t start, int64_t end, AudioRenderingStyle style) = 0;
-};
-
-
 
 /// @class AudioRendererBitmapCacheBitmapFactory
 /// @brief Produces wxBitmap objects for DataBlockCache storage for the audio renderer

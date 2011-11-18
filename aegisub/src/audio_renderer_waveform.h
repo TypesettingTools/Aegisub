@@ -35,9 +35,9 @@
 ///
 /// Render a waveform display of PCM audio data
 
+#ifndef AGI_PRE
 #include <stdint.h>
-
-
+#endif
 
 class AudioWaveformRenderer : public AudioRendererBitmapProvider {
 	/// Colour table used for regular rendering
@@ -46,22 +46,27 @@ class AudioWaveformRenderer : public AudioRendererBitmapProvider {
 	/// Colour table used for rendering the audio selection
 	AudioColorScheme colors_selected;
 
+	/// Colour table used for rendering inactive lines
+	AudioColorScheme colors_inactive;
+
 	/// Pre-allocated buffer for audio fetched from provider
 	char *audio_buffer;
 
-protected:
-	virtual void OnSetProvider();
-	virtual void OnSetSamplesPerPixel();
+	/// Get the color scheme for a rendering style
+	const AudioColorScheme *GetColorScheme(AudioRenderingStyle style) const;
+
+	void OnSetProvider();
+	void OnSetSamplesPerPixel();
 
 public:
 	/// @brief Constructor
 	AudioWaveformRenderer();
 
 	/// @brief Destructor
-	virtual ~AudioWaveformRenderer();
+	~AudioWaveformRenderer();
 
 	/// @brief Render a range of audio waveform
-	/// @param bmp   [in,out] Bitmap to render into, also carries lenght information
+	/// @param bmp   [in,out] Bitmap to render into, also carries length information
 	/// @param start First column of pixel data in display to render
 	/// @param style Style to render audio in
 	void Render(wxBitmap &bmp, int start, AudioRenderingStyle style);

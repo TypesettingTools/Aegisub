@@ -36,6 +36,18 @@
 
 #include "config.h"
 
+#include "audio_renderer_spectrum.h"
+
+#include "audio_colorscheme.h"
+#ifndef WITH_FFTW
+#include "fft.h"
+#endif
+#include "include/aegisub/audio_provider.h"
+#include "main.h"
+#include "utils.h"
+
+#include <libaegisub/log.h>
+
 #ifndef AGI_PRE
 #include <algorithm>
 
@@ -43,22 +55,6 @@
 #include <wx/rawbmp.h>
 #include <wx/dcmemory.h>
 #endif
-
-#include <libaegisub/log.h>
-
-#include "block_cache.h"
-#include "include/aegisub/audio_provider.h"
-#include "audio_colorscheme.h"
-#include "audio_renderer.h"
-#include "audio_renderer_spectrum.h"
-
-#ifdef WITH_FFTW
-#include <fftw3.h>
-#else
-#include "fft.h"
-#endif
-#include "main.h"
-#include "utils.h"
 
 /// Allocates blocks of derived data for the audio spectrum
 struct AudioSpectrumCacheBlockFactory {
@@ -99,36 +95,31 @@ struct AudioSpectrumCacheBlockFactory {
 
 /// @brief Cache for audio spectrum frequency-power data
 class AudioSpectrumCache
-	: public DataBlockCache<float, 10, AudioSpectrumCacheBlockFactory> {
+: public DataBlockCache<float, 10, AudioSpectrumCacheBlockFactory> {
 public:
 	AudioSpectrumCache(size_t block_count, AudioSpectrumRenderer *renderer)
-		: DataBlockCache<float, 10, AudioSpectrumCacheBlockFactory>(
+	: DataBlockCache<float, 10, AudioSpectrumCacheBlockFactory>(
 			block_count, AudioSpectrumCacheBlockFactory(renderer))
 	{
 	}
 };
 
 
-
-
 AudioSpectrumRenderer::AudioSpectrumRenderer()
-: AudioRendererBitmapProvider()
-, cache(0)
-, colors_normal(12)
-, colors_selected(12)
+: colors_normal(new AudioColorScheme(12))
+, colors_selected(new AudioColorScheme(12))
+, colors_inactive(new AudioColorScheme(12))
 , derivation_size(8)
 , derivation_dist(8)
 #ifdef WITH_FFTW
 , dft_plan(0)
 , dft_input(0)
 , dft_output(0)
-#else
-, fft_scratch(0)
 #endif
-, audio_scratch(0)
 {
-	colors_normal.InitIcyBlue(AudioStyle_Normal);
-	colors_selected.InitIcyBlue(AudioStyle_Selected);
+	colors_normal->InitIcyBlue(AudioStyle_Normal);
+	colors_selected->InitIcyBlue(AudioStyle_Selected);
+	colors_inactive->InitIcyBlue(AudioStyle_Inactive);
 }
 
 AudioSpectrumRenderer::~AudioSpectrumRenderer()
@@ -138,14 +129,8 @@ AudioSpectrumRenderer::~AudioSpectrumRenderer()
 	RecreateCache();
 }
 
-
 void AudioSpectrumRenderer::RecreateCache()
 {
-	delete cache;
-	delete[] audio_scratch;
-	cache = 0;
-	audio_scratch = 0;
-
 #ifdef WITH_FFTW
 	if (dft_plan)
 	{
@@ -156,15 +141,12 @@ void AudioSpectrumRenderer::RecreateCache()
 		dft_input = 0;
 		dft_output = 0;
 	}
-#else
-	delete[] fft_scratch;
-	fft_scratch = 0;
 #endif
 
 	if (provider)
 	{
 		size_t block_count = (size_t)((provider->GetNumSamples() + (size_t)(1<<derivation_dist) - 1) >> derivation_dist);
-		cache = new AudioSpectrumCache(block_count, this);
+		cache.reset(new AudioSpectrumCache(block_count, this));
 
 #ifdef WITH_FFTW
 		dft_input = (double*)fftw_malloc(sizeof(double) * (2<<derivation_size));
@@ -179,18 +161,16 @@ void AudioSpectrumRenderer::RecreateCache()
 		// 2x for the input sample data
 		// 2x for the real part of the output
 		// 2x for the imaginary part of the output
-		fft_scratch = new float[6<<derivation_size];
+		fft_scratch.resize(6 << derivation_size);
 #endif
-		audio_scratch = new int16_t[2<<derivation_size];
+		audio_scratch.resize(2 << derivation_size);
 	}
 }
-
 
 void AudioSpectrumRenderer::OnSetProvider()
 {
 	RecreateCache();
 }
-
 
 void AudioSpectrumRenderer::SetResolution(size_t _derivation_size, size_t _derivation_dist)
 {
@@ -208,6 +188,13 @@ void AudioSpectrumRenderer::SetResolution(size_t _derivation_size, size_t _deriv
 	}
 }
 
+template<class T>
+void AudioSpectrumRenderer::ConvertToFloat(size_t count, T &dest) {
+	for (size_t si = 0; si < count; ++si)
+	{
+		dest[si] = (float)(audio_scratch[si]) / 32768.f;
+	}
+}
 
 void AudioSpectrumRenderer::FillBlock(size_t block_index, float *block)
 {
@@ -215,14 +202,10 @@ void AudioSpectrumRenderer::FillBlock(size_t block_index, float *block)
 	assert(block);
 
 	int64_t first_sample = ((int64_t)block_index) << derivation_dist;
-	provider->GetAudio(audio_scratch, first_sample, 2 << derivation_size);
+	provider->GetAudio(&audio_scratch[0], first_sample, 2 << derivation_size);
 
 #ifdef WITH_FFTW
-	// Convert audio data to float range [-1;+1)
-	for (size_t si = 0; si < (size_t)(2<<derivation_size); ++si)
-	{
-		dft_input[si] = (float)(audio_scratch[si]) / 32768.f;
-	}
+	ConvertToFloat(2 << derivation_size, dft_input);
 
 	fftw_execute(dft_plan);
 
@@ -235,16 +218,11 @@ void AudioSpectrumRenderer::FillBlock(size_t block_index, float *block)
 		o++;
 	}
 #else
-	float *fft_input = fft_scratch;
-	float *fft_real = fft_scratch + (2 << derivation_size);
-	float *fft_imag = fft_scratch + (4 << derivation_size);
+	ConvertToFloat(2 << derivation_size, fft_scratch);
 
-	// Convert audio data to float range [-1;+1)
-	for (size_t si = 0; si < (size_t)(2<<derivation_size); ++si)
-	{
-		fft_input[si] = (float)(audio_scratch[si]) / 32768.f;
-	}
-	fft_input = fft_scratch;
+	float *fft_input = &fft_scratch[0];
+	float *fft_real = &fft_scratch[0] + (2 << derivation_size);
+	float *fft_imag = &fft_scratch[0] + (4 << derivation_size);
 
 	FFT fft;
 	fft.Transform(2<<derivation_size, fft_input, fft_real, fft_imag);
@@ -261,7 +239,6 @@ void AudioSpectrumRenderer::FillBlock(size_t block_index, float *block)
 	}
 #endif
 }
-
 
 void AudioSpectrumRenderer::Render(wxBitmap &bmp, int start, AudioRenderingStyle style)
 {
@@ -283,7 +260,7 @@ void AudioSpectrumRenderer::Render(wxBitmap &bmp, int start, AudioRenderingStyle
 	ptrdiff_t stride = img.GetWidth()*3;
 	int imgheight = img.GetHeight();
 
-	AudioColorScheme *pal = style == AudioStyle_Selected ? &colors_selected : &colors_normal;
+	const AudioColorScheme *pal = GetColorScheme(style);
 
 	/// @todo Make minband and maxband configurable
 	int minband = 0;
@@ -339,24 +316,26 @@ void AudioSpectrumRenderer::Render(wxBitmap &bmp, int start, AudioRenderingStyle
 	targetdc.DrawBitmap(tmpbmp, 0, 0);
 }
 
-
 void AudioSpectrumRenderer::RenderBlank(wxDC &dc, const wxRect &rect, AudioRenderingStyle style)
 {
 	// Get the colour of silence
-	AudioColorScheme *pal = style == AudioStyle_Selected ? &colors_selected : &colors_normal;
-	unsigned char color_raw[4];
-	pal->map(0.0, color_raw);
-	wxColour col(color_raw[0], color_raw[1], color_raw[2]);
-
+	wxColour col = GetColorScheme(style)->get(0.0f);
 	dc.SetBrush(wxBrush(col));
 	dc.SetPen(wxPen(col));
 	dc.DrawRectangle(rect);
 }
-
 
 void AudioSpectrumRenderer::AgeCache(size_t max_size)
 {
 	if (cache)
 		cache->Age(max_size);
 }
-
+const AudioColorScheme *AudioSpectrumRenderer::GetColorScheme(AudioRenderingStyle style) const
+{
+	switch (style)
+	{
+		case AudioStyle_Selected: return colors_selected.get();
+		case AudioStyle_Inactive: return colors_inactive.get();
+		default: return colors_normal.get();
+	}
+}

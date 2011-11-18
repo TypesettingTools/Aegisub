@@ -37,20 +37,20 @@
 
 #ifndef AGI_PRE
 #include <stdint.h>
+#include <vector>
 #endif
+
+#include "audio_renderer.h"
+
+#include <libaegisub/scoped_ptr.h>
 
 #ifdef WITH_FFTW
 #include <fftw3.h>
 #endif
 
-
-
-// Specified and implemented in cpp file, to avoid pulling in too much
-// complex template code in this header.
+class AudioColorScheme;
 class AudioSpectrumCache;
 struct AudioSpectrumCacheBlockFactory;
-
-
 
 /// @class AudioSpectrumRenderer
 /// @brief Render frequency-power spectrum graphs for audio data.
@@ -61,13 +61,16 @@ class AudioSpectrumRenderer : public AudioRendererBitmapProvider {
 	friend struct AudioSpectrumCacheBlockFactory;
 
 	/// Internal cache management for the spectrum
-	AudioSpectrumCache *cache;
+	agi::scoped_ptr<AudioSpectrumCache> cache;
 
 	/// Colour table used for regular rendering
-	AudioColorScheme colors_normal;
+	agi::scoped_ptr<AudioColorScheme> colors_normal;
 
 	/// Colour table used for rendering the audio selection
-	AudioColorScheme colors_selected;
+	agi::scoped_ptr<AudioColorScheme> colors_selected;
+
+	/// Colour table used for rendering inactive lines
+	agi::scoped_ptr<AudioColorScheme> colors_inactive;
 
 	/// Binary logarithm of number of samples to use in deriving frequency-power data
 	size_t derivation_size;
@@ -84,13 +87,19 @@ class AudioSpectrumRenderer : public AudioRendererBitmapProvider {
 	/// @brief Recreates the cache
 	///
 	/// To be called when the number of blocks in cache might have changed,
-	// eg. new audio provider or new resolution.
+	/// e.g. new audio provider or new resolution.
 	void RecreateCache();
 
 	/// @brief Fill a block with frequency-power data for a time range
 	/// @param      block_index Index of the block to fill data for
 	/// @param[out] block       Address to write the data to
 	void FillBlock(size_t block_index, float *block);
+
+	/// @brief Convert audio data to float range [-1;+1)
+	/// @param count Samples to convert
+	/// @param dest Buffer to fill
+	template<class T>
+	void ConvertToFloat(size_t count, T &dest);
 
 #ifdef WITH_FFTW
 	/// FFTW plan data
@@ -101,21 +110,24 @@ class AudioSpectrumRenderer : public AudioRendererBitmapProvider {
 	fftw_complex *dft_output;
 #else
 	/// Pre-allocated scratch area for doing FFT derivations
-	float *fft_scratch;
+	std::vector<float> fft_scratch;
 #endif
 
 	/// Pre-allocated scratch area for storing raw audio data
-	int16_t *audio_scratch;
+	std::vector<int16_t> audio_scratch;
+
+	/// Get the color scheme for a rendering style
+	const AudioColorScheme *GetColorScheme(AudioRenderingStyle style) const;
 
 public:
 	/// @brief Constructor
 	AudioSpectrumRenderer();
 
 	/// @brief Destructor
-	virtual ~AudioSpectrumRenderer();
+	~AudioSpectrumRenderer();
 
 	/// @brief Render a range of audio spectrum
-	/// @param bmp   [in,out] Bitmap to render into, also carries lenght information
+	/// @param bmp   [in,out] Bitmap to render into, also carries length information
 	/// @param start First column of pixel data in display to render
 	/// @param style Style to render audio in
 	void Render(wxBitmap &bmp, int start, AudioRenderingStyle style);
