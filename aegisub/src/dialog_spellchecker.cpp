@@ -84,14 +84,14 @@ DialogSpellChecker::DialogSpellChecker(agi::Context *context)
 	// List of supported spellchecker languages
 	{
 		if (!spellchecker.get()) {
-			wxMessageBox("No spellchecker available.", "Error", wxICON_ERROR);
+			wxMessageBox("No spellchecker available.", "Error", wxICON_ERROR | wxOK);
 			Destroy();
 			return;
 		}
 
 		dictionary_lang_codes = spellchecker->GetLanguageList();
 		if (dictionary_lang_codes.empty()) {
-			wxMessageBox("No spellchecker dictionaries available.", "Error", wxICON_ERROR);
+			wxMessageBox("No spellchecker dictionaries available.", "Error", wxICON_ERROR | wxOK);
 			Destroy();
 			return;
 		}
