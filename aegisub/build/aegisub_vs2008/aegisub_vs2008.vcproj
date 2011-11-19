@@ -418,10 +418,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\audio_player_manager.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\audio_player_openal.cpp"
 				>
 			</File>
