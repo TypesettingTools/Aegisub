@@ -151,6 +151,9 @@ AudioController::AudioController(agi::Context *context)
 	Bind(wxEVT_POWER_SUSPENDED, &AudioController::OnComputerSuspending, this);
 	Bind(wxEVT_POWER_RESUME, &AudioController::OnComputerResuming, this);
 #endif
+
+	OPT_SUB("Audio/Player", &AudioController::OnAudioPlayerChanged, this);
+	OPT_SUB("Audio/Provider", &AudioController::OnAudioProviderChanged, this);
 }
 
 
@@ -192,6 +195,34 @@ void AudioController::OnComputerResuming(wxPowerEvent &event)
 		player->OpenStream();
 }
 #endif
+
+void AudioController::OnAudioPlayerChanged()
+{
+	if (!IsAudioOpen()) return;
+
+	Stop();
+
+	delete player;
+
+	try
+	{
+		player = AudioPlayerFactory::GetAudioPlayer();
+		player->SetProvider(provider);
+		player->OpenStream();
+	}
+	catch (...)
+	{
+		CloseAudio();
+		throw;
+	}
+}
+
+void AudioController::OnAudioProviderChanged()
+{
+	if (IsAudioOpen())
+		// url is cloned because CloseAudio clears it and OpenAudio takes a const reference
+		OpenAudio(audio_url.Clone());
+}
 
 
 void AudioController::OpenAudio(const wxString &url)

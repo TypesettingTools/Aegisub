@@ -248,6 +248,12 @@ class AudioController : public wxEvtHandler, public AudioMarkerProvider, public 
 	/// Subtitles save slot which adds the audio uri to the subtitles
 	void OnSubtitlesSave();
 
+	/// Handler for the current audio player changing
+	void OnAudioPlayerChanged();
+
+	/// Handler for the current audio provider changing
+	void OnAudioProviderChanged();
+
 #ifdef wxHAS_POWER_EVENTS
 	/// Handle computer going into suspend mode by stopping audio and closing device
 	void OnComputerSuspending(wxPowerEvent &event);
