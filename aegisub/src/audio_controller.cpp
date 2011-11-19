@@ -154,6 +154,7 @@ AudioController::AudioController(agi::Context *context)
 
 	OPT_SUB("Audio/Player", &AudioController::OnAudioPlayerChanged, this);
 	OPT_SUB("Audio/Provider", &AudioController::OnAudioProviderChanged, this);
+	OPT_SUB("Audio/Cache/Type", &AudioController::OnAudioProviderChanged, this);
 }
 
 
