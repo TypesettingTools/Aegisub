@@ -41,7 +41,7 @@
 #include <libaegisub/log.h>
 
 #include "audio_player_openal.h"
-#include "frame_main.h"
+
 #include "utils.h"
 
 // Auto-link to OpenAL lib for MSVC
@@ -49,82 +49,71 @@
 #pragma comment(lib, "openal32.lib")
 #endif
 
-/// @brief Constructor 
-///
 OpenALPlayer::OpenALPlayer()
+: open(false)
+, playing(false)
+, volume(1.f)
+, samplerate(0)
+, bpf(0)
+, start_frame(0)
+, cur_frame(0)
+, end_frame(0)
+, device(0)
+, context(0)
 {
-	volume = 1.0f;
-	open = false;
-	playing = false;
-	start_frame = cur_frame = end_frame = bpf = 0;
-	provider = 0;
 }
 
-/// @brief Destructor 
-///
 OpenALPlayer::~OpenALPlayer()
 {
 	CloseStream();
 }
 
-/// @brief Open stream 
-///
 void OpenALPlayer::OpenStream()
 {
 	CloseStream();
 
-	// Get provider
-	provider = GetProvider();
 	bpf = provider->GetChannels() * provider->GetBytesPerSample();
+	try {
+		// Open device
+		device = alcOpenDevice(0);
+		if (!device) throw OpenALException("Failed opening default OpenAL device");
 
-	// Open device
-	device = alcOpenDevice(0);
-	if (!device) {
-		throw "Failed opening default OpenAL device";
-	}
+		// Create context
+		context = alcCreateContext(device, 0);
+		if (!context) throw OpenALException("Failed creating OpenAL context");
+		if (!alcMakeContextCurrent(context)) throw OpenALException("Failed selecting OpenAL context");
 
-	// Create context
-	context = alcCreateContext(device, 0);
-	if (!context) {
-		alcCloseDevice(device);
-		throw "Failed creating OpenAL context";
+		// Clear error code
+		alGetError();
+
+		// Generate buffers
+		alGenBuffers(num_buffers, buffers);
+		if (alGetError() != AL_NO_ERROR) throw OpenALException("Error generating OpenAL buffers");
+
+		// Generate source
+		alGenSources(1, &source);
+		if (alGetError() != AL_NO_ERROR) {
+			alDeleteBuffers(num_buffers, buffers);
+			throw OpenALException("Error generating OpenAL source");
+		}
 	}
-	if (!alcMakeContextCurrent(context)) {
+	catch (...)
+	{
 		alcDestroyContext(context);
 		alcCloseDevice(device);
-		throw "Failed selecting OpenAL context";
-	}
-	// Clear error code
-	alGetError();
-
-	// Generate buffers
-	alGenBuffers(num_buffers, buffers);
-	if (alGetError() != AL_NO_ERROR) {
-		alcDestroyContext(context);
-		alcCloseDevice(device);
-		throw "Error generating OpenAL buffers";
-	}
-
-	// Generate source
-	alGenSources(1, &source);
-	if (alGetError() != AL_NO_ERROR) {
-		alDeleteBuffers(num_buffers, buffers);
-		alcDestroyContext(context);
-		alcCloseDevice(device);
-		throw "Error generating OpenAL source";
+		context = 0;
+		device = 0;
+		throw;
 	}
 
 	// Determine buffer length
 	samplerate = provider->GetSampleRate();
-	buffer_length = samplerate / num_buffers / 2; // buffers for half a second of audio
+	decode_buffer.resize(samplerate * bpf / num_buffers / 2); // buffers for half a second of audio
 
 	// Now ready
 	open = true;
 }
 
-/// @brief Close stream 
-/// @return 
-///
 void OpenALPlayer::CloseStream()
 {
 	if (!open) return;
@@ -136,15 +125,14 @@ void OpenALPlayer::CloseStream()
 	alcDestroyContext(context);
 	alcCloseDevice(device);
 
+	context = 0;
+	device = 0;
+
 	// No longer working
 	open = false;
 }
 
-/// @brief Play 
-/// @param start 
-/// @param count 
-///
-void OpenALPlayer::Play(int64_t start,int64_t count)
+void OpenALPlayer::Play(int64_t start, int64_t count)
 {
 	if (playing) {
 		// Quick reset
@@ -175,10 +163,6 @@ void OpenALPlayer::Play(int64_t start,int64_t count)
 	if (displayTimer && !displayTimer->IsRunning()) displayTimer->Start(15);
 }
 
-/// @brief Stop 
-/// @param timerToo 
-/// @return 
-///
 void OpenALPlayer::Stop(bool timerToo)
 {
 	if (!open) return;
@@ -195,53 +179,34 @@ void OpenALPlayer::Stop(bool timerToo)
 	alSourceStop(source);
 	alSourcei(source, AL_BUFFER, 0);
 
-        if (timerToo && displayTimer) {
-                displayTimer->Stop();
-        }
+	if (timerToo && displayTimer) {
+		displayTimer->Stop();
+	}
 }
 
-/// @brief DOCME
-/// @param count 
-///
 void OpenALPlayer::FillBuffers(ALsizei count)
 {
-	LOG_D("player/audio/openal") << "count=" << count << " " << "buffers_free=" << buffers_free;
-	if (count > buffers_free) count = buffers_free;
-	if (count < 1) count = 1;
-
-	// Get memory to hold sound buffers
-	void *data = malloc(buffer_length * bpf);
-
 	// Do the actual filling/queueing
 	ALuint bufid = buf_first_free;
-	while (count > 0) {
-		ALsizei fill_len = buffer_length;
-		if (fill_len > (ALsizei)(end_frame - cur_frame)) fill_len = (ALsizei)(end_frame - cur_frame);
-		if (fill_len < 0) fill_len = 0;
-		LOG_D("player/audio/openal") << "buffer_length=" << buffer_length << " fill_len=" << fill_len << " end_frame-cur-frame=" << end_frame-cur_frame;
+	for (count = mid(1, count, buffers_free); count > 0; --count) {
+		ALsizei fill_len = mid<ALsizei>(0, decode_buffer.size() / bpf, end_frame - cur_frame);
 
 		if (fill_len > 0)
 			// Get fill_len frames of audio
-			provider->GetAudioWithVolume(data, cur_frame, fill_len, volume);
-		if (fill_len < buffer_length)
+			provider->GetAudioWithVolume(&decode_buffer[0], cur_frame, fill_len, volume);
+		if ((size_t)fill_len * bpf < decode_buffer.size())
 			// And zerofill the rest
-			memset((char*)data+(fill_len*bpf), 0, (buffer_length-fill_len)*bpf);
+			memset(&decode_buffer[fill_len * bpf], 0, decode_buffer.size() - fill_len * bpf);
 
 		cur_frame += fill_len;
 
-		alBufferData(buffers[bufid], AL_FORMAT_MONO16, data, buffer_length*bpf, samplerate);
-		alSourceQueueBuffers(source, 1, &buffers[bufid]); // FIXME: collect buffer handles and queue all at once instead of one at a time?
-		if (++bufid >= num_buffers) bufid = 0;
-		count--; buffers_free--;
+		alBufferData(buffers[buf_first_free], AL_FORMAT_MONO16, &decode_buffer[0], decode_buffer.size(), samplerate);
+		alSourceQueueBuffers(source, 1, &buffers[buf_first_free]); // FIXME: collect buffer handles and queue all at once instead of one at a time?
+		buf_first_free = (buf_first_free + 1) % num_buffers;
+		--buffers_free;
 	}
-	buf_first_free = bufid;
-
-	// Free buffer memory again
-	free(data);
 }
 
-/// @brief DOCME
-///
 void OpenALPlayer::Notify()
 {
 	ALsizei newplayed;
@@ -251,14 +216,12 @@ void OpenALPlayer::Notify()
 
 	if (newplayed > 0) {
 		// Reclaim buffers
-		ALuint *bufs = new ALuint[newplayed];
-		ALsizei i = 0;
-		while (i < newplayed) {
-			bufs[i++] = buffers[buf_first_queued];
-			if (++buf_first_queued >= num_buffers) buf_first_queued = 0;
+		ALuint bufs[num_buffers];
+		for (ALsizei i = 0; i < newplayed; ++i) {
+			bufs[i] = buffers[buf_first_queued];
+			buf_first_queued = (buf_first_queued + 1) % num_buffers;
 		}
 		alSourceUnqueueBuffers(source, newplayed, bufs);
-		delete[] bufs;
 		buffers_free += newplayed;
 
 		// Update
@@ -269,62 +232,29 @@ void OpenALPlayer::Notify()
 		FillBuffers(newplayed);
 	}
 
-	LOG_D("player/audio/openal") << "frames played=" << (buffers_played - num_buffers) * buffer_length << " num frames=" << end_frame - start_frame;
+	LOG_D("player/audio/openal") << "frames played=" << (buffers_played - num_buffers) * decode_buffer.size() / bpf << " num frames=" << end_frame - start_frame;
 	// Check that all of the selected audio plus one full set of buffers has been queued
-	if ((buffers_played - num_buffers) * buffer_length > (ALsizei)(end_frame - start_frame)) {
-		// Then stop
+	if ((int64_t)(buffers_played - num_buffers) * decode_buffer.size() > (end_frame - start_frame) * bpf) {
 		Stop(true);
 	}
 }
 
-/// @brief DOCME
-/// @return 
-///
-bool OpenALPlayer::IsPlaying()
-{
-	return playing;
-}
-
-/// @brief Set end 
-/// @param pos 
-///
 void OpenALPlayer::SetEndPosition(int64_t pos)
 {
 	end_frame = pos;
 }
 
-/// @brief Set current position 
-/// @param pos 
-///
 void OpenALPlayer::SetCurrentPosition(int64_t pos)
 {
 	cur_frame = pos;
 }
 
-/// @brief DOCME
-/// @return 
-///
-int64_t OpenALPlayer::GetStartPosition()
-{
-	return start_frame;
-}
-
-/// @brief DOCME
-/// @return 
-///
-int64_t OpenALPlayer::GetEndPosition()
-{
-	return end_frame;
-}
-
-/// @brief Get current position 
-///
 int64_t OpenALPlayer::GetCurrentPosition()
 {
 	// FIXME: this should be based on not duration played but actual sample being heard
 	// (during video playback, cur_frame might get changed to resync)
 	long extra = playback_segment_timer.Time();
-	return buffers_played * buffer_length + start_frame + extra * samplerate / 1000;
+	return buffers_played * decode_buffer.size() / bpf + start_frame + extra * samplerate / 1000;
 }
 
 #endif // WITH_OPENAL

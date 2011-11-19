@@ -49,78 +49,63 @@
 #include <AL/alc.h>
 #endif
 
+#ifndef AGI_PRE
+#include <vector>
+#endif
+
+#include <libaegisub/exception.h>
+
+DEFINE_SIMPLE_EXCEPTION_NOINNER(OpenALException, agi::Exception, "audio/player/openal/generic")
+
 /// DOCME
 /// @class OpenALPlayer
 /// @brief DOCME
 ///
 /// DOCME
 class OpenALPlayer : public AudioPlayer, wxTimer {
-private:
-
-	/// DOCME
-	bool open;
-
-	/// DOCME
-	volatile bool playing;
-
-	/// DOCME
-	volatile float volume;
-
-	/// DOCME
+	/// Number of OpenAL buffers to use
 	static const ALsizei num_buffers = 8;
 
-	/// DOCME
-	ALsizei buffer_length;
+	bool open; ///< Is the player ready to play?
+	bool playing; ///< Is audio currently playing?
 
-	/// DOCME
-	ALsizei samplerate;
+	float volume; ///< Current audio volume
+	ALsizei samplerate; ///< Sample rate of the audio
+	int bpf; ///< Bytes per frame
 
-	/// DOCME
-	volatile unsigned long start_frame; // first frame of playback
+	int64_t start_frame; ///< First frame of playbacka
+	int64_t cur_frame; ///< Next frame to write to playback buffers
+	int64_t end_frame; ///< Last frame to play
 
-	/// DOCME
-	volatile unsigned long cur_frame; // last written frame + 1
+	ALCdevice *device; ///< OpenAL device handle
+	ALCcontext *context; ///< OpenAL sound context
+	ALuint buffers[num_buffers]; ///< OpenAL sound buffers
+	ALuint source; ///< OpenAL playback source
 
-	/// DOCME
-	volatile unsigned long end_frame; // last frame to play
+	/// Index into buffers, first free (unqueued) buffer to be filled
+	ALsizei buf_first_free;
 
-	/// DOCME
-	unsigned long bpf; // bytes per frame
+	/// Index into buffers, first queued (non-free) buffer
+	ALsizei buf_first_queued;
 
-	/// DOCME
-	AudioProvider *provider;
+	/// Number of free buffers
+	ALsizei buffers_free;
 
-	/// DOCME
-	ALCdevice *device; // device handle
-
-	/// DOCME
-	ALCcontext *context; // sound context
-
-	/// DOCME
-	ALuint buffers[num_buffers]; // sound buffers
-
-	/// DOCME
-	ALuint source; // playback source
-
-	/// DOCME
-	ALsizei buf_first_free; // index into buffers, first free (unqueued) buffer
-
-	/// DOCME
-	ALsizei buf_first_queued; // index into buffers, first queued (non-free) buffer
-
-	/// DOCME
-	ALsizei buffers_free; // number of free buffers
-
-	/// DOCME
+	/// Number of buffers which have been fully played since playback was last started
 	ALsizei buffers_played;
 
 	/// DOCME
 	wxStopWatch playback_segment_timer;
 
+	/// Buffer to decode audio into
+	std::vector<char> decode_buffer;
+
+	/// Fill count OpenAL buffers
 	void FillBuffers(ALsizei count);
 
 protected:
-	void Notify(); // from wxTimer
+	/// wxTimer override to periodically fill available buffers
+	void Notify();
 
 public:
 	OpenALPlayer();
@@ -131,23 +116,15 @@ public:
 
 	void Play(int64_t start,int64_t count);
 	void Stop(bool timerToo=true);
-	bool IsPlaying();
+	bool IsPlaying() { return playing; }
 
-	int64_t GetStartPosition();
-	int64_t GetEndPosition();
+	int64_t GetStartPosition() { return start_frame; }
+	int64_t GetEndPosition() { return end_frame; }
 	int64_t GetCurrentPosition();
 	void SetEndPosition(int64_t pos);
 	void SetCurrentPosition(int64_t pos);
 
-	/// @brief DOCME
-	/// @param vol 
-	/// @return 
-	///
 	void SetVolume(double vol) { volume = vol; }
-
-	/// @brief DOCME
-	/// @return 
-	///
 	double GetVolume() { return volume; }
 };
 #endif
