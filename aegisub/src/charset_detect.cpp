@@ -54,20 +54,16 @@
 namespace CharSetDetect {
 
 wxString GetEncoding(wxString const& filename) {
-	bool unknown = 0;
-
 	agi::charset::CharsetListDetected list;
 	agi::charset::CharsetListDetected::const_iterator i_lst;
 
 	try {
 		agi::charset::DetectAll(STD_STR(filename), list);
 	} catch (const agi::charset::UnknownCharset&) {
-		unknown = 1;
+		/// @todo If the charset is unknown we need to display a complete list of character sets.
 	}
 
-	/// @todo If the charset is unknown we need to display a complete list of character sets.
 	if (list.size() > 1) {
-
 		// Get choice from user
 		wxArrayString choices;
 

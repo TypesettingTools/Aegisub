@@ -187,7 +187,6 @@ void OpenALPlayer::Stop(bool timerToo)
 void OpenALPlayer::FillBuffers(ALsizei count)
 {
 	// Do the actual filling/queueing
-	ALuint bufid = buf_first_free;
 	for (count = mid(1, count, buffers_free); count > 0; --count) {
 		ALsizei fill_len = mid<ALsizei>(0, decode_buffer.size() / bpf, end_frame - cur_frame);
 

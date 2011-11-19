@@ -167,7 +167,7 @@ void SubtitlesGrid::InsertLine(AssDialogue *line,int n,bool after,bool update) {
 	entryIter pos = std::find(context->ass->Line.begin(), context->ass->Line.end(), rel_line);
 	if (after) ++pos;
 
-	entryIter newIter = context->ass->Line.insert(pos,line);
+	context->ass->Line.insert(pos,line);
 
 	// Update
 	if (update) {
@@ -305,7 +305,6 @@ void SubtitlesGrid::PasteLines(int n,bool pasteOver) {
 
 void SubtitlesGrid::DeleteLines(wxArrayInt target, bool flagModified) {
 	entryIter before_first = std::find_if(context->ass->Line.begin(), context->ass->Line.end(), cast<AssDialogue*>()); --before_first;
-	int old_active_line_index = GetDialogueIndex(GetActiveLine());
 
 	int row = -1;
 	int deleted = 0;
@@ -325,7 +324,6 @@ void SubtitlesGrid::DeleteLines(wxArrayInt target, bool flagModified) {
 		AssDialogue *def = new AssDialogue;
 		++before_first;
 		context->ass->Line.insert(before_first, def);
-		old_active_line_index = 0;
 	}
 
 	if (flagModified) {
