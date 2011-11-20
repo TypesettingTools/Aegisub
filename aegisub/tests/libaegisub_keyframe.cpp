@@ -20,7 +20,6 @@
 
 #include <libaegisub/access.h>
 #include <libaegisub/keyframe.h>
-#include <libaegisub/vfr.h>
 
 #include <fstream>
 #include <iterator>
@@ -33,15 +32,13 @@ using namespace util;
 
 TEST(lagi_keyframe, save) {
 	std::vector<int> kf = make_vector<int>(5, 0, 5, 70, 180, 300);
-	agi::vfr::Framerate fps(80.);
 
-	ASSERT_NO_THROW(Save("data/keyframe/out.txt", kf, fps));
+	ASSERT_NO_THROW(Save("data/keyframe/out.txt", kf));
 
-	std::pair<std::vector<int>, double> res;
+	std::vector<int> res;
 	ASSERT_NO_THROW(res = Load("data/keyframe/out.txt"));
 
-	EXPECT_TRUE(kf == res.first);
-	EXPECT_EQ(80., res.second);
+	EXPECT_TRUE(kf == res);
 }
 
 TEST(lagi_keyframe, bad_files) {
@@ -118,11 +115,10 @@ TEST(lagi_keyframe, xvid) {
 		33880, 33923, 33969, 33982, 33991, 34010, 34025, 34043, 34055, 34065,
 		34082, 34102, 34112, 34122, 34142, 34158, 34170, 34187, 34211);
 
-	std::pair<std::vector<int>, double> res;
+	std::vector<int> res;
 	ASSERT_NO_THROW(res = Load("data/keyframe/xvid.txt"));
 
-	EXPECT_TRUE(expected == res.first);
-	EXPECT_EQ(0., res.second);
+	EXPECT_TRUE(expected == res);
 
 }
 
@@ -130,20 +126,18 @@ TEST(lagi_keyframe, x264) {
 	std::vector<int> expected(41);
 	for (size_t i = 0; i < 41; ++i) expected[i] = i * 250;
 
-	std::pair<std::vector<int>, double> res;
+	std::vector<int> res;
 	ASSERT_NO_THROW(res = Load("data/keyframe/x264.log"));
 
-	EXPECT_TRUE(expected == res.first);
-	EXPECT_EQ(0., res.second);
+	EXPECT_TRUE(expected == res);
 }
 
 TEST(lagi_keyframe, aegi) {
 	std::vector<int> expected(135);
 	for (size_t i = 0; i < 135; ++i) expected[i] = i * 250;
 
-	std::pair<std::vector<int>, double> res;
+	std::vector<int> res;
 	ASSERT_NO_THROW(res = Load("data/keyframe/aegi.txt"));
 
-	EXPECT_TRUE(expected == res.first);
-	EXPECT_EQ(25., res.second);
+	EXPECT_TRUE(expected == res);
 }

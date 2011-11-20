@@ -482,16 +482,9 @@ void VideoContext::SetAspectRatio(int type, double value) {
 void VideoContext::LoadKeyframes(wxString filename) {
 	if (filename == keyFramesFilename || filename.empty()) return;
 	try {
-		std::pair<std::vector<int>, double> kf = agi::keyframe::Load(STD_STR(filename));
-		keyFrames = kf.first;
+		keyFrames = agi::keyframe::Load(STD_STR(filename));
 		keyFramesFilename = filename;
 		KeyframesOpen(keyFrames);
-		if (kf.second != 0.) {
-			ovrFPS = agi::vfr::Framerate(kf.second);
-			ovrTimecodeFile.clear();
-			OnSubtitlesCommit();
-			TimecodesOpen(ovrFPS);
-		}
 		config::mru->Add("Keyframes", STD_STR(filename));
 	}
 	catch (agi::keyframe::Error const& err) {
@@ -505,18 +498,16 @@ void VideoContext::LoadKeyframes(wxString filename) {
 }
 
 void VideoContext::SaveKeyframes(wxString filename) {
-	agi::keyframe::Save(STD_STR(filename), GetKeyFrames(), FPS());
+	agi::keyframe::Save(STD_STR(filename), GetKeyFrames());
 	config::mru->Add("Keyframes", STD_STR(filename));
 }
 
 void VideoContext::CloseKeyframes() {
 	keyFramesFilename.clear();
-	if (videoProvider.get()) {
+	if (videoProvider)
 		keyFrames = videoProvider->GetKeyFrames();
-	}
-	else {
+	else
 		keyFrames.clear();
-	}
 	KeyframesOpen(keyFrames);
 }
 

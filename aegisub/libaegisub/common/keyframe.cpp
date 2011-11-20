@@ -32,21 +32,19 @@
 #include "libaegisub/keyframe.h"
 #include "libaegisub/vfr.h"
 
-static std::pair<std::vector<int>, double> agi_keyframes(std::istream &file) {
+namespace {
+std::vector<int> agi_keyframes(std::istream &file) {
 	double fps;
 	std::string fps_str;
 	file >> fps_str;
 	file >> fps;
 
-	if (!file.good() || fps_str != "fps")
-		throw agi::keyframe::Error("FPS not found");
-
 	std::vector<int> ret;
-	std::copy(std::istream_iterator<int>(file), std::istream_iterator<int>(), std::back_inserter(ret));
-	return make_pair(ret, fps);
+	copy(std::istream_iterator<int>(file), std::istream_iterator<int>(), back_inserter(ret));
+	return ret;
 }
 
-static std::pair<std::vector<int>, double> other_keyframes(std::istream &file, char (*func)(std::string const&)) {
+std::vector<int> other_keyframes(std::istream &file, char (*func)(std::string const&)) {
 	int count = 0;
 	std::vector<int> ret;
 	agi::line_iterator<std::string> end;
@@ -59,7 +57,7 @@ static std::pair<std::vector<int>, double> other_keyframes(std::istream &file, c
 			++count;
 		}
 	}
-	return std::make_pair(ret, 0);
+	return ret;
 }
 
 char xvid(std::string const& line) {
@@ -83,23 +81,22 @@ char x264(std::string const& line) {
 }
 
 template<int N>
-static bool starts_with(std::string const& str, const char (&test)[N]) {
+bool starts_with(std::string const& str, const char (&test)[N]) {
 	if (str.size() < N) return false;
 	return std::mismatch(str.begin(), str.begin() + N - 1, test).first == str.begin() + N - 1;
 }
-
+}
 
 namespace agi { namespace keyframe {
-
-	void Save(std::string const& filename, std::vector<int> const& keyframes, vfr::Framerate const& fps) {
+	void Save(std::string const& filename, std::vector<int> const& keyframes) {
 	io::Save file(filename);
 	std::ofstream& of = file.Get();
 	of << "# keyframe format v1" << std::endl;
-	of << "fps " << fps.FPS() << std::endl;
-	std::copy(keyframes.begin(), keyframes.end(), std::ostream_iterator<int>(of, "\n"));
+	of << "fps " << 0 << std::endl;
+	copy(keyframes.begin(), keyframes.end(), std::ostream_iterator<int>(of, "\n"));
 }
 
-std::pair<std::vector<int>, double> Load(std::string const& filename) {
+std::vector<int> Load(std::string const& filename) {
 	std::auto_ptr<std::ifstream> file(io::Open(filename));
 	std::istream &is(*file.get());
 

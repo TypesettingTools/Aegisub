@@ -30,13 +30,12 @@ namespace agi {
 	namespace keyframe {
 		/// @brief Load a keyframe file
 		/// @param filename File to load
-		/// @return Pair of frame numbers which are keyframes and fps
-		std::pair<std::vector<int>, double> Load(std::string const& filename);
+		/// @return List of frame numbers which are keyframes
+		std::vector<int> Load(std::string const& filename);
 		/// @brief Save keyframes to a file
 		/// @param filename File to save to
 		/// @param keyframes List of keyframes to save
-		/// @param fps Current fps that goes with the keyframes
-		void Save(std::string const& filename, std::vector<int> const& keyframes, vfr::Framerate const& fps);
+		void Save(std::string const& filename, std::vector<int> const& keyframes);
 
 		DEFINE_SIMPLE_EXCEPTION_NOINNER(Error, Exception, "keyframe/error")
 	}
