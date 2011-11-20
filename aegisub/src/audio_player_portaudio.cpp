@@ -63,7 +63,7 @@ PortAudioPlayer::PortAudioPlayer() {
 
 		if (err != paNoError) {
 			static char errormsg[2048];
-			sprintf(errormsg, 2048, "Failed opening PortAudio: %s", Pa_GetErrorText(err));
+			snprintf(errormsg, 2048, "Failed opening PortAudio: %s", Pa_GetErrorText(err));
 			throw errormsg;
 		}
 		pa_refcount++;
