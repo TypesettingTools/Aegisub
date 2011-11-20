@@ -861,7 +861,7 @@ void AudioDisplay::OnPaint(wxPaintEvent& event)
 
 			if (range_x2 > range_x1)
 			{
-				audio_renderer->Render(dc, wxPoint(range_x1, audio_top), range_x1, range_x2 - range_x1, range_style);
+				audio_renderer->Render(dc, wxPoint(range_x1, audio_top), range_x1 + scroll_left, range_x2 - range_x1, range_style);
 			}
 		}
 
