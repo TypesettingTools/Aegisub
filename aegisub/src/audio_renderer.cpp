@@ -37,13 +37,16 @@
 // Headers
 #include "config.h"
 
+#include "audio_renderer.h"
+
 #ifndef AGI_PRE
+#include <algorithm>
+#include <tr1/functional>
+
 #include <wx/bitmap.h>
 #include <wx/dcmemory.h>
 #endif
 
-#include "block_cache.h"
-#include "audio_renderer.h"
 #include "include/aegisub/audio_provider.h"
 
 template<class C, class F> static void for_each(C &container, F const& func)
