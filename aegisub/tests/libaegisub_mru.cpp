@@ -91,7 +91,7 @@ TEST_F(lagi_mru, MRUAddSeveral) {
 	EXPECT_STREQ("/file/3", (*entry++).c_str());
 	EXPECT_STREQ("/file/1", (*entry++).c_str());
 	EXPECT_STREQ("/file/2", (*entry++).c_str());
-	EXPECT_EQ(mru.Get("Valid")->end(), entry);
+	EXPECT_TRUE(mru.Get("Valid")->end() == entry);
 }
 
 
