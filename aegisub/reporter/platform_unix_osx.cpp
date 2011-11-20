@@ -36,47 +36,46 @@ std::string PlatformUnixOSX::CPUId() {
 	char id[300];
 	size_t len = sizeof(id);
 	sysctlbyname("machdep.cpu.brand_string", &id, &len, NULL, 0);
-	return wxString::Format("%s", id);
+	return wxString::Format("%s", id).ToStdString();
 };
 
 std::string PlatformUnixOSX::CPUSpeed() {
 	uint64_t speed;
 	size_t len = sizeof(speed);
 	sysctlbyname("hw.cpufrequency_max", &speed, &len, NULL, 0);
-	return wxString::Format("%d", speed / (1000*1000));
+	return wxString::Format("%d", speed / (1000*1000)).ToStdString();
 };
 
-std::string PlatformUnixOSX::CPUCores() {
-	return "";
+int PlatformUnixOSX::CPUCores() {
+	return 0;
 };
 
-std::string PlatformUnixOSX::CPUCount() {
+int PlatformUnixOSX::CPUCount() {
 	int proc;
 	size_t len = sizeof(proc);
 	sysctlbyname("hw.ncpu", &proc, &len, NULL, 0);
-	return wxString::Format("%d", proc);
+	return proc;
 };
 
 std::string PlatformUnixOSX::CPUFeatures() {
 	char feat[300];
 	size_t len = sizeof(feat);
 	sysctlbyname("machdep.cpu.features", &feat, &len, NULL, 0);
-	return wxString::Format("%s", feat);
+	return wxString::Format("%s", feat).ToStdString();
 };
 
 std::string PlatformUnixOSX::CPUFeatures2() {
 	char feat[128];
 	size_t len = sizeof(feat);
 	sysctlbyname("machdep.cpu.extfeatures", &feat, &len, NULL, 0);
-	return wxString::Format("%s", feat);
-	return "";
+	return wxString::Format("%s", feat).ToStdString();
 };
 
-std::string PlatformUnixOSX::Memory() {
+uint64_t PlatformUnixOSX::Memory() {
 	uint64_t memory;
 	size_t len = sizeof(memory);
 	sysctlbyname("hw.memsize", &memory, &len, NULL, 0);
-	return wxString::Format("%llu", memory);
+	return memory;
 };
 
 std::string PlatformUnixOSX::UnixLibraries() {
@@ -95,6 +94,6 @@ std::string PlatformUnixOSX::HardwareModel() {
 	char model[300];
 	size_t len = sizeof(model);
 	sysctlbyname("hw.model", &model, &len, NULL, 0);
-	return wxString::Format("%s", model);
+	return wxString::Format("%s", model).ToStdString();
 }
 

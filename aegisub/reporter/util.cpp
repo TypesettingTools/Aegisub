@@ -34,7 +34,7 @@ std::string config_path() {
 	wxStandardPathsBase &paths = wxStandardPaths::Get();
 
 #if defined(__APPLE__)
-	return std::string((wxString::Format("%s-%s/", paths.GetUserDataDir(), _T(AEGISUB_VERSION_DATA)));
+	return std::string((wxString::Format("%s-%s/", paths.GetUserDataDir(), _T(AEGISUB_VERSION_DATA))));
 #elif defined(__UNIX__)
     return std::string(wxString::Format("%s/.aegisub-%s/", paths.GetUserConfigDir(), _T(AEGISUB_VERSION_DATA)));
 #else
