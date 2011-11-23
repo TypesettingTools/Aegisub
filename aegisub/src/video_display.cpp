@@ -105,7 +105,6 @@ VideoDisplay::VideoDisplay(
 , viewport_top(0)
 , viewport_height(0)
 , zoomValue(OPT_GET("Video/Default Zoom")->GetInt() * .125 + .125)
-, videoOut(new VideoOutGL())
 , toolBar(visualSubToolBar)
 , zoomBox(zoomBox)
 , freeSize(freeSize)
@@ -153,6 +152,9 @@ bool VideoDisplay::InitContext() {
 void VideoDisplay::UploadFrameData(FrameReadyEvent &evt) {
 	if (!InitContext()) return;
 
+	if (!videoOut)
+		videoOut.reset(new VideoOutGL);
+
 	try {
 		videoOut->UploadFrameData(*evt.frame);
 	}
@@ -175,17 +177,17 @@ void VideoDisplay::UploadFrameData(FrameReadyEvent &evt) {
 
 void VideoDisplay::OnVideoOpen() {
 	if (!con->videoController->IsLoaded()) return;
-	if (!tool.get())
+	if (!tool)
 		cmd::call("video/tool/cross", con);
 	UpdateSize();
 	con->videoController->JumpToFrame(0);
 }
 
 void VideoDisplay::Render() try {
-	if (!InitContext()) return;
-	if (!con->videoController->IsLoaded()) return;
-	assert(wxIsMainThread());
-	if (!viewport_height || !viewport_width) UpdateSize();
+	if (!InitContext() || !con->videoController->IsLoaded() || !videoOut) return;
+
+	if (!viewport_height || !viewport_width)
+		UpdateSize();
 
 	videoOut->Render(viewport_left, viewport_bottom, viewport_width, viewport_height);
 	E(glViewport(0, std::min(viewport_bottom, 0), w, h));
