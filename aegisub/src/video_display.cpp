@@ -164,7 +164,7 @@ void VideoDisplay::UploadFrameData(FrameReadyEvent &evt) {
 			"programs and updating your video card drivers may fix this.\n"
 			"Error message reported: %s",
 			err.GetMessage());
-		con->videoController->Reset();
+		con->videoController->SetVideo("");
 	}
 	catch (const VideoOutRenderException& err) {
 		wxLogError(
@@ -224,7 +224,7 @@ catch (const agi::Exception &err) {
 		"An error occurred trying to render the video frame on the screen.\n"
 		"Error message reported: %s",
 		err.GetChainedMessage());
-	con->videoController->Reset();
+	con->videoController->SetVideo("");
 }
 
 void VideoDisplay::DrawOverscanMask(float horizontal_percent, float vertical_percent) const {

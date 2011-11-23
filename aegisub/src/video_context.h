@@ -153,6 +153,9 @@ class VideoContext : public wxEvtHandler {
 	void OnSubtitlesCommit();
 	void OnSubtitlesSave();
 
+	/// @brief Close the video, keyframes and timecodes
+	void Reset();
+
 public:
 	/// File name of currently open video, if any
 	wxString videoName;
@@ -219,8 +222,6 @@ public:
 	/// @brief Open a new video
 	/// @param filename Video to open, or empty to close the current video
 	void SetVideo(const wxString &filename);
-	/// @brief Close the video, keyframes and timecodes
-	void Reset();
 	/// @brief Close and reopen the current video
 	void Reload();
 
