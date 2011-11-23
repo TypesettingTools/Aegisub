@@ -47,6 +47,12 @@
 #include "gl_text.h"
 #include "utils.h"
 
+#ifdef __APPLE__
+#include <OpenGL/gl.h>
+#else
+#include <GL/gl.h>
+#endif
+
 /// @class OpenGLTextGlyph
 /// @brief Struct storing the information needed to draw a glyph
 struct OpenGLTextGlyph {
