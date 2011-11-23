@@ -56,8 +56,16 @@
 #include "utils.h"
 #include "video_frame.h"
 
-#define CHECK_INIT_ERROR(cmd) cmd; if (GLenum err = glGetError()) throw VideoOutInitException(#cmd, err)
-#define CHECK_ERROR(cmd) cmd; if (GLenum err = glGetError()) throw VideoOutRenderException(#cmd, err)
+#define DO_CHECK_ERROR(cmd, Exception, msg) \
+	do { \
+		cmd; \
+		if (GLenum err = glGetError()) { \
+			LOG_E("video/out/gl") << msg << " failed with error code " << err; \
+			throw Exception(msg, err); \
+		} \
+	} while(0);
+#define CHECK_INIT_ERROR(cmd) DO_CHECK_ERROR(cmd, VideoOutInitException, #cmd)
+#define CHECK_ERROR(cmd) DO_CHECK_ERROR(cmd, VideoOutRenderException, #cmd)
 
 /// @brief Structure tracking all precomputable information about a subtexture
 struct VideoOutGL::TextureInfo {
@@ -180,8 +188,8 @@ void VideoOutGL::InitTextures(int width, int height, GLenum format, int bpp, boo
 	 */
 
 	// Set up the display list
-	dl = glGenLists(1);
-	glNewList(dl, GL_COMPILE);
+	CHECK_ERROR(dl = glGenLists(1));
+	CHECK_ERROR(glNewList(dl, GL_COMPILE));
 
 	CHECK_ERROR(glClearColor(0,0,0,0));
 	CHECK_ERROR(glClearStencil(0));
@@ -265,9 +273,9 @@ void VideoOutGL::InitTextures(int width, int height, GLenum format, int bpp, boo
 	// Create the textures outside of the display list as there's no need to
 	// remake them on every frame
 	for (int i = 0; i < textureCount; ++i) {
-		CHECK_ERROR(glBindTexture(GL_TEXTURE_2D, textureIdList[i]));
-		CHECK_INIT_ERROR(glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, textureSizes[i].first, textureSizes[i].second, 0, format, GL_UNSIGNED_BYTE, NULL));
 		LOG_I("video/out/gl") << "Using texture size: " << textureSizes[i].first << "x" << textureSizes[i].second;
+		CHECK_INIT_ERROR(glBindTexture(GL_TEXTURE_2D, textureIdList[i]));
+		CHECK_INIT_ERROR(glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, textureSizes[i].first, textureSizes[i].second, 0, format, GL_UNSIGNED_BYTE, NULL));
 		CHECK_INIT_ERROR(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR));
 		CHECK_INIT_ERROR(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
 		CHECK_INIT_ERROR(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP));
@@ -297,7 +305,7 @@ void VideoOutGL::UploadFrameData(const AegiVideoFrame& frame) {
 
 void VideoOutGL::Render(int dx1, int dy1, int dx2, int dy2) {
 	CHECK_ERROR(glViewport(dx1, dy1, dx2, dy2));
-	glCallList(dl);
+	CHECK_ERROR(glCallList(dl));
 	CHECK_ERROR(glMatrixMode(GL_MODELVIEW));
 	CHECK_ERROR(glLoadIdentity());
 
