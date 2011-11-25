@@ -282,7 +282,8 @@ void TTXTSubtitleFormat::ConvertToTTXT () {
 	StripComments();
 	RecombineOverlaps();
 	MergeIdentical();
-	ConvertTags(1, "\r\n");
+	StripTags();
+	ConvertNewlines("\r\n");
 
 	// Find last line
 	AssTime lastTime;

@@ -42,6 +42,7 @@
 ///
 /// DOCME
 class SRTSubtitleFormat : public SubtitleFormat {
+	wxString ConvertTags(AssDialogue *diag);
 public:
 	SRTSubtitleFormat();
 	wxArrayString GetReadWildcards() const;

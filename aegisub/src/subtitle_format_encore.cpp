@@ -64,7 +64,8 @@ void EncoreSubtitleFormat::WriteFile(wxString const& filename, wxString const& e
 	StripComments();
 	RecombineOverlaps();
 	MergeIdentical();
-	ConvertTags(1, "\r\n");
+	StripTags();
+	ConvertNewlines("\r\n");
 
 	// Write lines
 	int i = 0;

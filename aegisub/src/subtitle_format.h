@@ -82,11 +82,12 @@ protected:
 	void ClearCopy();
 	/// Sort the lines by start time
 	void SortLines();
-	/// Strip tags or convert them to SRT
-	/// @param format 1: strip tags 2: SRT
-	/// @param lineEnd Newline character(s)
+	/// Strip override tags
+	void StripTags();
+	/// Convert newlines to the specified character(s)
+	/// @param lineEnd newline character(s)
 	/// @param mergeLineBreaks Should multiple consecutive line breaks be merged into one?
-	void ConvertTags(int format, const wxString &lineEnd, bool mergeLineBreaks=true);
+	void ConvertNewlines(wxString const& newline, bool mergeLineBreaks = true);
 	/// Remove All commented and empty lines
 	void StripComments();
 	/// Remove everything but the dialogue lines

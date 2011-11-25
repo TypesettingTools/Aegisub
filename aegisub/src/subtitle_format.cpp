@@ -199,19 +199,22 @@ void SubtitleFormat::SortLines() {
 	AssFile::Sort(*Line);
 }
 
-void SubtitleFormat::ConvertTags(int format, const wxString &lineEnd, bool mergeLineBreaks) {
+void SubtitleFormat::StripTags() {
 	for (std::list<AssEntry*>::iterator cur = Line->begin(); cur != Line->end(); ++cur) {
 		if (AssDialogue *current = dynamic_cast<AssDialogue*>(*cur)) {
-			// Strip tags
-			if (format == 1) current->StripTags();
-			else if (format == 2) current->ConvertTagsToSRT();
+			current->StripTags();
+		}
+	}
+}
 
-			// Replace line breaks
+void SubtitleFormat::ConvertNewlines(wxString const& newline, bool mergeLineBreaks) {
+	for (std::list<AssEntry*>::iterator cur = Line->begin(); cur != Line->end(); ++cur) {
+		if (AssDialogue *current = dynamic_cast<AssDialogue*>(*cur)) {
 			current->Text.Replace("\\h", " ");
-			current->Text.Replace("\\n", lineEnd);
-			current->Text.Replace("\\N", lineEnd);
+			current->Text.Replace("\\n", newline);
+			current->Text.Replace("\\N", newline);
 			if (mergeLineBreaks) {
-				while (current->Text.Replace(lineEnd+lineEnd, lineEnd));
+				while (current->Text.Replace(newline+newline, newline));
 			}
 		}
 	}

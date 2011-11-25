@@ -42,6 +42,7 @@
 
 #include "ass_dialogue.h"
 #include "ass_file.h"
+#include "ass_override.h"
 #include "ass_style.h"
 #include "colorspace.h"
 #include "compat.h"
@@ -519,26 +520,66 @@ void SRTSubtitleFormat::WriteFile(wxString const& filename, wxString const& enco
 	CreateCopy();
 	SortLines();
 	StripComments();
-	// Tags must be converted in two passes
-	// First ASS style overrides are converted to SRT but linebreaks are kept
-	ConvertTags(2,"\\N",false);
-	// Then we can recombine overlaps, this requires ASS style linebreaks
 	RecombineOverlaps();
 	MergeIdentical();
-	// And finally convert linebreaks
-	ConvertTags(0,"\r\n",false);
-	// Otherwise unclosed overrides might affect lines they shouldn't, see bug #809 for example
+	ConvertNewlines("\r\n", false);
 
 	// Write lines
 	int i=1;
-	for (std::list<AssEntry*>::iterator cur=Line->begin();cur!=Line->end();cur++) {
+	for (std::list<AssEntry*>::iterator cur = Line->begin(); cur != Line->end(); ++cur) {
 		if (AssDialogue *current = dynamic_cast<AssDialogue*>(*cur)) {
 			file.WriteLineToFile(wxString::Format("%d", i++));
 			file.WriteLineToFile(WriteSRTTime(current->Start) + " --> " + WriteSRTTime(current->End));
-			file.WriteLineToFile(current->Text);
+			file.WriteLineToFile(ConvertTags(current));
 			file.WriteLineToFile("");
 		}
 	}
 
 	ClearCopy();
+}
+
+wxString SRTSubtitleFormat::ConvertTags(AssDialogue *diag) {
+	wxString final;
+	std::map<char, bool> tag_states;
+	tag_states['i'] = false;
+	tag_states['b'] = false;
+	tag_states['u'] = false;
+	tag_states['s'] = false;
+
+	diag->ParseASSTags();
+
+	for (size_t i = 0; i < diag->Blocks.size(); ++i) {
+		if (AssDialogueBlockOverride* block = dynamic_cast<AssDialogueBlockOverride*>(diag->Blocks[i])) {
+			// Iterate through overrides
+			for (size_t j = 0; j < block->Tags.size(); j++) {
+				AssOverrideTag *tag = block->Tags[j];
+				if (tag->IsValid()) {
+					std::map<char, bool>::iterator it = tag_states.find(tag->Name[1]);
+					if (it != tag_states.end()) {
+						bool temp = tag->Params[0]->Get<bool>();
+						if (temp && !it->second)
+							final += wxString::Format("<%c>", it->first);
+						if (!temp && it->second)
+							final += wxString::Format("</%c>", it->first);
+						it->second = temp;
+					}
+				}
+			}
+		}
+		// Plain text
+		else if (AssDialogueBlockPlain *plain = dynamic_cast<AssDialogueBlockPlain*>(diag->Blocks[i])) {
+			final += plain->GetText();
+		}
+	}
+
+	// Ensure all tags are closed
+	// Otherwise unclosed overrides might affect lines they shouldn't, see bug #809 for example
+	for (std::map<char, bool>::iterator it = tag_states.begin(); it != tag_states.end(); ++it) {
+		if (it->second)
+			final += wxString::Format("</%c>", it->first);
+	}
+
+	diag->ClearBlocks();
+
+	return final;
 }
