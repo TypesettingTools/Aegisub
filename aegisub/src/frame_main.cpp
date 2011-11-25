@@ -111,6 +111,10 @@ FrameMain::FrameMain (wxArrayString args)
 	// However LC_NUMERIC must be "C", otherwise some parsing fails.
 	setlocale(LC_NUMERIC, "C");
 #endif
+#ifdef __APPLE__
+	// Apple's wprintf() and family breaks with CTYPE set to "C"
+	setlocale(LC_CTYPE, "");
+#endif
 
 	StartupLog("Initializing context models");
 	AssFile::top = context->ass = new AssFile;
@@ -142,7 +146,9 @@ FrameMain::FrameMain (wxArrayString args)
 
 	StartupLog("Install PNG handler");
 	wxImage::AddHandler(new wxPNGHandler);
+#ifndef __APPLE__
 	wxSafeYield();
+#endif
 
 	StartupLog("Apply saved Maximized state");
 	if (OPT_GET("App/Maximized")->GetBool()) Maximize(true);
