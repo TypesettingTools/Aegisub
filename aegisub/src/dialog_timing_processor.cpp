@@ -420,7 +420,7 @@ void DialogTimingProcessor::Process() {
 			int curStart = cur->Start.GetMS();
 			int prevEnd = prev->End.GetMS();
 			int dist = curStart-prevEnd;
-			if (dist > 0 && dist < adjsThres) {
+			if (dist > 0 && dist <= adjsThres) {
 				int setPos = prevEnd+int(dist*bias);
 				cur->Start.SetMS(setPos);
 				prev->End.SetMS(setPos);
