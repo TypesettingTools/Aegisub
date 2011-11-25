@@ -104,15 +104,12 @@ FrameMain::FrameMain (wxArrayString args)
 	StartupLog("Entering FrameMain constructor");
 
 #ifdef __WXGTK__
-/* XXX HACK XXX
- * Gtk just got initialized. And if we're using the SCIM IME,
- * it just did a setlocale(LC_ALL, ""). so, BOOM.
- */
-	StartupLog("Setting locale");
- 	setlocale(LC_ALL, "");
-	setlocale(LC_CTYPE, "C");
+	// XXX HACK XXX
+	// We need to set LC_ALL to "" here for input methods to work reliably.
+	setlocale(LC_ALL, "");
+
+	// However LC_NUMERIC must be "C", otherwise some parsing fails.
 	setlocale(LC_NUMERIC, "C");
-/* XXX HACK XXX */
 #endif
 
 	StartupLog("Initializing context models");
