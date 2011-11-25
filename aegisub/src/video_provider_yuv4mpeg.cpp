@@ -291,7 +291,7 @@ void YUV4MPEGVideoProvider::ParseFileHeader(const std::vector<wxString>& tags) {
 /// @return	The flags set, as a binary mask
 ///	This function is currently unimplemented (it will always return Y4M_FFLAG_NONE).
 YUV4MPEGVideoProvider::Y4M_FrameFlags YUV4MPEGVideoProvider::ParseFrameHeader(const std::vector<wxString>& tags) {
-	if (tags.front().Cmp(_("FRAME")))
+	if (tags.front().Cmp("FRAME"))
 		throw VideoOpenError("ParseFrameHeader: malformed frame header (bad magic)");
 
 	/// @todo implement parsing of frame flags
