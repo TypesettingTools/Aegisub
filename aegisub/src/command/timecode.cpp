@@ -85,7 +85,7 @@ struct timecode_open : public Command {
 		wxString filename = wxFileSelector(_("Open timecodes file"),path,"","",str,wxFD_OPEN | wxFD_FILE_MUST_EXIST);
 		if (!filename.empty()) {
 			c->videoController->LoadTimecodes(filename);
-			OPT_SET("Path/Last/Timecodes")->SetString(STD_STR(filename));
+			OPT_SET("Path/Last/Timecodes")->SetString(STD_STR(wxFileName(filename).GetPath()));
 		}
 	}
 };
@@ -109,7 +109,7 @@ struct timecode_save : public Command {
 		wxString filename = wxFileSelector(_("Save timecodes file"),path,"","",str,wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
 		if (!filename.empty()) {
 			c->videoController->SaveTimecodes(filename);
-			OPT_SET("Path/Last/Timecodes")->SetString(STD_STR(filename));
+			OPT_SET("Path/Last/Timecodes")->SetString(STD_STR(wxFileName(filename).GetPath()));
 		}
 	}
 };

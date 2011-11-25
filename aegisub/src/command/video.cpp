@@ -557,7 +557,7 @@ struct video_open : public Command {
 		wxString filename = wxFileSelector(_("Open video file"),path,"","",str,wxFD_OPEN | wxFD_FILE_MUST_EXIST);
 		if (!filename.empty()) {
 			c->videoController->SetVideo(filename);
-			OPT_SET("Path/Last/Video")->SetString(STD_STR(filename));
+			OPT_SET("Path/Last/Video")->SetString(STD_STR(wxFileName(filename).GetPath()));
 		}
 	}
 };

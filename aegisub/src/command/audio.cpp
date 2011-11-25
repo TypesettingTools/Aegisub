@@ -99,7 +99,7 @@ struct audio_open : public Command {
 			wxString filename = wxFileSelector(_("Open audio file"),path,"","",str,wxFD_OPEN | wxFD_FILE_MUST_EXIST);
 			if (!filename.empty()) {
 				c->audioController->OpenAudio(filename);
-				OPT_SET("Path/Last/Audio")->SetString(STD_STR(filename));
+				OPT_SET("Path/Last/Audio")->SetString(STD_STR(wxFileName(filename).GetPath()));
 			}
 		}
 		catch (agi::UserCancelException const&) { }

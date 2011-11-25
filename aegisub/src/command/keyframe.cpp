@@ -91,7 +91,7 @@ struct keyframe_open : public Command {
 			wxFD_FILE_MUST_EXIST | wxFD_OPEN);
 
 		if (filename.empty()) return;
-		OPT_SET("Path/Last/Keyframes")->SetString(STD_STR(filename));
+		OPT_SET("Path/Last/Keyframes")->SetString(STD_STR(wxFileName(filename).GetPath()));
 		c->videoController->LoadKeyframes(filename);
 	}
 };
@@ -113,7 +113,7 @@ struct keyframe_save : public Command {
 		wxString path = lagi_wxString(OPT_GET("Path/Last/Keyframes")->GetString());
 		wxString filename = wxFileSelector("Select the Keyframes file to open",path,"","*.key.txt","Text files (*.txt)|*.txt",wxFD_OVERWRITE_PROMPT | wxFD_SAVE);
 		if (filename.empty()) return;
-		OPT_SET("Path/Last/Keyframes")->SetString(STD_STR(filename));
+		OPT_SET("Path/Last/Keyframes")->SetString(STD_STR(wxFileName(filename).GetPath()));
 		c->videoController->SaveKeyframes(filename);
 	}
 };
