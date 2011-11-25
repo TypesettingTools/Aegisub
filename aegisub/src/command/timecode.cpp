@@ -40,6 +40,7 @@
 
 #ifndef AGI_PRE
 #include <wx/filedlg.h>
+#include <wx/filename.h>
 #endif
 
 #include "command.h"

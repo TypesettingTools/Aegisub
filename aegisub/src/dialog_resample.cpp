@@ -37,6 +37,7 @@
 #include "config.h"
 
 #ifndef AGI_PRE
+#include <wx/log.h>
 #include <wx/msgdlg.h>
 #include <wx/sizer.h>
 #include <wx/stattext.h>
