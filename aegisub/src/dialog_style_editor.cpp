@@ -88,7 +88,7 @@ DialogStyleEditor::DialogStyleEditor(wxWindow *parent, AssStyle *style, agi::Con
 	if (copy_style) {
 		is_new = true;
 		style = this->style = new AssStyle(*style);
-		style->name += _(" - Copy");
+		style->name = wxString::Format(_("%s - Copy"), style->name);
 	}
 	else if (!style) {
 		is_new = true;

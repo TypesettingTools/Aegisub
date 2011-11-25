@@ -740,19 +740,14 @@ void DialogStyleManager::OnStorageDelete (wxCommandEvent &) {
 	wxArrayInt selections;
 	int n = StorageList->GetSelections(selections);
 
-	wxString message;
-	if (n!=1) {
-		message = _("Are you sure you want to delete these ");
-		message += wxString::Format("%i",n);
-		message += _(" styles?");
-	}
-	else message = _("Are you sure you want to delete this style?");
+	wxString message = n == 1 ?
+		_("Are you sure you want to delete this style?") :
+		wxString::Format(_("Are you sure you want to delete these %d styles?"), n);
 	int option = wxMessageBox(message, _("Confirm delete from storage"), wxYES_NO | wxICON_EXCLAMATION , this);
 
 	if (option == wxYES) {
-		AssStyle *temp;
 		for (int i=0;i<n;i++) {
-			temp = styleStorageMap.at(selections[i]);
+			AssStyle *temp = styleStorageMap.at(selections[i]);
 			Store.style.remove(temp);
 			delete temp;
 		}
@@ -773,17 +768,14 @@ void DialogStyleManager::OnCurrentDelete (wxCommandEvent &) {
 	wxArrayInt selections;
 	int n = CurrentList->GetSelections(selections);
 
-	wxString message;
-	if (n != 1)
-		message = wxString::Format(_("Are you sure you want to delete these %d styles?"), n);
-	else
-		message = _("Are you sure you want to delete this style?");
+	wxString message = n == 1 ?
+		_("Are you sure you want to delete this style?") :
+		wxString::Format(_("Are you sure you want to delete these %d styles?"), n);
 	int option = wxMessageBox(message, _("Confirm delete from current"), wxYES_NO | wxICON_EXCLAMATION , this);
 
 	if (option == wxYES) {
-		AssStyle *temp;
 		for (int i=0;i<n;i++) {
-			temp = styleMap.at(selections[i]);
+			AssStyle *temp = styleMap.at(selections[i]);
 			c->ass->Line.remove(temp);
 			delete temp;
 		}

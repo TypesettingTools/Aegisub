@@ -86,7 +86,7 @@ DialogVideoDetails::DialogVideoDetails(agi::Context *c)
 	make_field(this, fg, _("File name:"), c->videoController->videoName);
 	make_field(this, fg, _("FPS:"), wxString::Format("%.3f", fps));
 	make_field(this, fg, _("Resolution:"), wxString::Format("%dx%d (%s)", width, height, pretty_ar(width, height)));
-	make_field(this, fg, _("Length:"), wxString::Format("%d frames (%s)", framecount, pretty_time_stamp(framecount, fps)));
+	make_field(this, fg, _("Length:"), wxString::Format(_("%d frames (%s)"), framecount, pretty_time_stamp(framecount, fps)));
 	make_field(this, fg, _("Decoder:"), c->videoController->GetProvider()->GetDecoderName());
 
 	wxStaticBoxSizer *video_sizer = new wxStaticBoxSizer(wxVERTICAL,this,_("Video"));
