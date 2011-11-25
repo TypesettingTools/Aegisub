@@ -115,40 +115,6 @@ void AssTime::ParseASS (const wxString text) {
 	SetMS(tms + tm*60000 + th*3600000);
 }
 
-
-
-/// @brief Parses from SRT 
-/// @param _text 
-///
-void AssTime::ParseSRT (const wxString _text) {
-	// Prepare
-	wxString text = _text;
-	text.Trim(false);
-	text.Trim(true);
-	long tempv;
-	wxString temp;
-	int ms,s,m,h;
-
-	// Parse
-	temp = text.Mid(0,2);
-	temp.ToLong(&tempv);
-	h = tempv;
-	temp = text.Mid(3,2);
-	temp.ToLong(&tempv);
-	m = tempv;
-	temp = text.Mid(6,2);
-	temp.ToLong(&tempv);
-	s = tempv;
-	temp = text.Mid(9,3);
-	temp.ToLong(&tempv);
-	ms = tempv;
-
-	// Set value
-	SetMS(ms + s*1000 + m*60000 + h*3600000);
-}
-
-
-
 /// @brief AssTime conversion to/from miliseconds 
 /// @return 
 ///
@@ -186,55 +152,6 @@ wxString AssTime::GetASSFormated (bool msPrecision) const {
 	if (msPrecision) return wxString::Format("%01i:%02i:%02i.%03i",h,m,s,ms);
 	else return wxString::Format("%01i:%02i:%02i.%02i",h,m,s,ms/10);
 }
-
-
-
-/// @brief SRT Formated 
-/// @return 
-///
-wxString AssTime::GetSRTFormated () {
-	int h,m,s,ms;
-	int _ms = time;
-
-	// Centisecond precision
-	if (!UseMSPrecision) _ms = _ms/10*10;
-
-	// Reset
-	h = m = s = ms = 0;
-	if (_ms < 0) _ms = 0;
-
-	// Hours
-	while (_ms >= 3600000) {
-		_ms -= 3600000;
-		h++;
-	}
-
-	// Ass overflow
-	if (h > 9) {
-		h = 9;
-		m = 59;
-		s = 59;
-		ms = 999;
-	}
-
-	// Minutes
-	while (_ms >= 60000) {
-		_ms -= 60000;
-		m++;
-	}
-
-	// Seconds
-	while (_ms >= 1000) {
-		_ms -= 1000;
-		s++;
-	}
-	ms = _ms;
-
-	wxString result = wxString::Format("%02i:%02i:%02i,%03i",h,m,s,ms);
-	return result;
-}
-
-
 
 /// @brief AssTime comparison 
 /// @param t1 

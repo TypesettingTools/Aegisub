@@ -75,9 +75,7 @@ public:
 	int GetMS() const;					// Returns milliseconds
 	void SetMS(int ms);					// Sets values to milliseconds
 	void ParseASS(const wxString text);	// Sets value to text-form time, in ASS format
-	void ParseSRT(const wxString text);	// Sets value to text-form time, in SRT format
 	wxString GetASSFormated(bool ms=false) const; // Returns the ASS representation of time
-	wxString GetSRTFormated();			// Returns the SRT representation of time
 };
 
 // Comparison operators

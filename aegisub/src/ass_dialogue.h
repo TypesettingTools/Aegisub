@@ -197,8 +197,6 @@ public:
 	bool Parse(wxString data,int version=1);
 	/// Parse text as ASS to generate block information
 	void ParseASSTags();
-	/// Parse text as SRT to generate block information
-	void ParseSRTTags();
 	/// Clear all blocks, ALWAYS call this after you're done processing tags
 	void ClearBlocks();
 
