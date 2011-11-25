@@ -81,7 +81,7 @@ void OSSPlayer::OpenStream()
     wxString device = lagi_wxString(OPT_GET("Audio/OSS/Device")->GetString());
     dspdev = ::open(device.mb_str(wxConvUTF8), O_WRONLY, 0);
     if (dspdev < 0) {
-        throw "OSS player: opening device failed";
+        throw OSSError("OSS player: opening device failed");
     }
 
     // Use a reasonable buffer policy for low latency (OSS4)
@@ -93,7 +93,7 @@ void OSSPlayer::OpenStream()
     // Set number of channels
     int channels = provider->GetChannels();
     if (ioctl(dspdev, SNDCTL_DSP_CHANNELS, &channels) < 0) {
-        throw "OSS player: setting channels failed";
+        throw OSSError("OSS player: setting channels failed");
     }
 
     // Set sample format
@@ -106,17 +106,17 @@ void OSSPlayer::OpenStream()
             sample_format = AFMT_S16_LE;
             break;
         default:
-            throw "OSS player: can only handle 8 and 16 bit sound";
+            throw OSSError("OSS player: can only handle 8 and 16 bit sound");
     }
 
     if (ioctl(dspdev, SNDCTL_DSP_SETFMT, &sample_format) < 0) {
-        throw "OSS player: setting sample format failed";
+        throw OSSError("OSS player: setting sample format failed");
     }
 
     // Set sample rate
     rate = provider->GetSampleRate();
     if (ioctl(dspdev, SNDCTL_DSP_SPEED, &rate) < 0) {
-        throw("OSS player: setting samplerate failed");
+        throw OSSError("OSS player: setting samplerate failed");
     }
 
     // Now ready

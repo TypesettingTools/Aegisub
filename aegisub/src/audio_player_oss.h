@@ -51,6 +51,10 @@
 #include "include/aegisub/audio_player.h"
 #include "include/aegisub/audio_provider.h"
 
+#include <libaegisub/exception.h>
+
+DEFINE_SIMPLE_EXCEPTION_NOINNER(OSSError, agi::Exception, "audio/player/oss")
+
 class OSSPlayer;
 
 /// DOCME
