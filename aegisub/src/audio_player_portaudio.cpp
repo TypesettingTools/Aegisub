@@ -60,8 +60,8 @@ PortAudioPlayer::PortAudioPlayer() {
 
 		if (err != paNoError)
 			throw PortAudioError(std::string("Failed opening PortAudio:") + Pa_GetErrorText(err));
-		pa_refcount++;
 	}
+	pa_refcount++;
 
 	volume = 1.0f;
 	pa_start = 0.0;
