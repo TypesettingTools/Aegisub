@@ -20,6 +20,9 @@
 	<Tool
 		Name="VCLinkerTool"
 		LinkIncremental="2"
+		OptimizeReferences="1"
+		EnableCOMDATFolding="1"
+		LinkTimeCodeGeneration="0"
 		RandomizedBaseAddress="1"
 	/>
 </VisualStudioPropertySheet>
