@@ -159,6 +159,37 @@ void VideoContext::SetVideo(const wxString &filename) {
 		videoProvider = provider->GetVideoProvider();
 		videoFile = filename;
 
+		// Check that the script resolution matches the video resolution
+		int sx = context->ass->GetScriptInfoAsInt("PlayResX");
+		int sy = context->ass->GetScriptInfoAsInt("PlayResY");
+		int vx = GetWidth();
+		int vy = GetHeight();
+
+		// If the script resolution hasn't been set at all just force it to the
+		// video resolution
+		if (sx == 0 && sy == 0) {
+			context->ass->SetScriptInfo("PlayResX", wxString::Format("%d", vx));
+			context->ass->SetScriptInfo("PlayResY", wxString::Format("%d", vy));
+			context->ass->Commit(_("Change script resolution"), AssFile::COMMIT_SCRIPTINFO);
+		}
+		// If it has been set to something other than a multiple of the video
+		// resolution, ask the user if they want it to be fixed
+		else if (sx % vx != 0 || sy % vy != 0) {
+			switch (OPT_GET("Video/Check Script Res")->GetInt()) {
+			case 1: // Ask to change on mismatch
+				if (wxMessageBox(wxString::Format(_("The resolution of the loaded video and the resolution specified for the subtitles don't match.\n\nVideo resolution:\t%d x %d\nScript resolution:\t%d x %d\n\nChange subtitles resolution to match video?"), vx, vy, sx, sy), _("Resolution mismatch"), wxYES_NO, context->parent) != wxYES)
+					break;
+				// Fallthrough to case 2
+			case 2: // Always change script res
+				context->ass->SetScriptInfo("PlayResX", wxString::Format("%d", vx));
+				context->ass->SetScriptInfo("PlayResY", wxString::Format("%d", vy));
+				context->ass->Commit(_("change script resolution"), AssFile::COMMIT_SCRIPTINFO);
+				break;
+			default: // Never change
+				break;
+			}
+		}
+
 		keyFrames = videoProvider->GetKeyFrames();
 
 		// Set frame rate

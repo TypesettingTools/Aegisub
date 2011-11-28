@@ -407,29 +407,6 @@ void FrameMain::OnVideoOpen() {
 	else if (vidx*3*zoom > windowSize.GetX()*2 || vidy*4*zoom > windowSize.GetY()*3)
 		context->videoDisplay->SetZoom(zoom * .5);
 
-	// Check that the video size matches the script video size specified
-	int scriptx = context->ass->GetScriptInfoAsInt("PlayResX");
-	int scripty = context->ass->GetScriptInfoAsInt("PlayResY");
-	if (scriptx != vidx || scripty != vidy) {
-		switch (OPT_GET("Video/Check Script Res")->GetInt()) {
-			case 1:
-				// Ask to change on mismatch
-				if (wxMessageBox(wxString::Format(_("The resolution of the loaded video and the resolution specified for the subtitles don't match.\n\nVideo resolution:\t%d x %d\nScript resolution:\t%d x %d\n\nChange subtitles resolution to match video?"), vidx, vidy, scriptx, scripty), _("Resolution mismatch"), wxYES_NO, this) != wxYES)
-					break;
-				// Fallthrough to case 2
-			case 2:
-				// Always change script res
-				context->ass->SetScriptInfo("PlayResX", wxString::Format("%d", vidx));
-				context->ass->SetScriptInfo("PlayResY", wxString::Format("%d", vidy));
-				context->ass->Commit(_("Change script resolution"), AssFile::COMMIT_SCRIPTINFO);
-				break;
-			case 0:
-			default:
-				// Never change
-				break;
-		}
-	}
-
 	SetDisplayMode(1,-1);
 
 	if (OPT_GET("Video/Detached/Enabled")->GetBool() && !context->detachedVideo)

@@ -455,8 +455,6 @@ void AssFile::LoadDefault(bool defline) {
 	AddLine("Title: Default Aegisub file","[Script Info]",version);
 	AddLine("ScriptType: v4.00+","[Script Info]",version);
 	AddLine("WrapStyle: 0", "[Script Info]",version);
-	AddLine("PlayResX: 640","[Script Info]",version);
-	AddLine("PlayResY: 480","[Script Info]",version);
 	AddLine("ScaledBorderAndShadow: yes","[Script Info]",version);
 	AddLine("Collisions: Normal","[Script Info]",version);
 	AddLine("","[Script Info]",version);
