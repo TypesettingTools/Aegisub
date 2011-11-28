@@ -20,6 +20,7 @@
 	<ImportGroup Label="PropertySheets">
 		<Import Project="$(MSBuildThisFileDirectory)userconfig\*.props" />
 		<Import Project="$(MSBuildThisFileDirectory)paths.props" />
+		<Import Project="$(MSBuildThisFileDirectory)Aegisub\standard-libraries.props" />
 		<Import Project="$(MSBuildThisFileDirectory)standard-settings.props" />
 		<Import Project="$(MSBuildThisFileDirectory)standard-outdirs.props" />
 		<Import Project="$(MSBuildThisFileDirectory)wx.props" Condition="'$(AegisubUseWxWidgets)' == 'true'" />

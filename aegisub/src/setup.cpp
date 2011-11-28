@@ -34,27 +34,7 @@
 /// @ingroup main
 ///
 
-
-///////////
-// Headers
 #include "config.h"
-
-
-//////////////////////////////////
-///////// MSVC Libraries /////////
-//////////////////////////////////
-#if __VISUALC__ >= 1200
-
-////////////////////////////
-// Standard Win32 Libraries
-#pragma comment(lib, "Vfw32.lib")
-#pragma comment(lib, "comctl32.lib")
-#pragma comment(lib, "rpcrt4.lib")
-#pragma comment(lib, "winmm.lib")
-#pragma comment(lib, "advapi32.lib")
-#pragma comment(lib, "wsock32.lib")
-#pragma comment(lib, "opengl32.lib")
-
 
 ////////////////
 // FFMpegSource
@@ -99,5 +79,3 @@
 #ifdef WITH_LIBASS
 #pragma comment(lib, "libass.lib")
 #endif
-
-#endif // VisualC

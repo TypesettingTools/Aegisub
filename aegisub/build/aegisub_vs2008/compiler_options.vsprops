@@ -20,6 +20,7 @@
 	/>
 	<Tool
 		Name="VCLinkerTool"
+		AdditionalDependencies="Vfw32.lib comctl32.lib rpcrt4.lib winmm.lib advapi32.lib wsock32.lib opengl32.lib"
 		LinkIncremental="1"
 		GenerateManifest="true"
 		GenerateDebugInformation="true"
