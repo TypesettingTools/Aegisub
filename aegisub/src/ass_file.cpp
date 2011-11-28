@@ -605,11 +605,8 @@ wxString AssFile::GetScriptInfo(wxString key) {
 		if ((*cur)->group == "[Script Info]") {
 			GotIn = true;
 			wxString curText = (*cur)->GetEntryData();
-			curText.MakeLower();
-
-			wxString value;
-			if (curText.StartsWith(key, &value))
-				return value.Trim(true).Trim(false);
+			if (curText.Lower().StartsWith(key))
+				return curText.Mid(key.size()).Trim(true).Trim(false);
 		}
 		else if (GotIn) return "";
 	}
