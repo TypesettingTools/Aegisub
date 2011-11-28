@@ -35,6 +35,8 @@
 ///
 
 #ifndef AGI_PRE
+#include <vector>
+
 #include <wx/checkbox.h>
 #include <wx/combobox.h>
 #include <wx/textctrl.h>
@@ -51,15 +53,8 @@ namespace agi { struct Context; }
 class DialogProperties : public wxDialog {
 	agi::Context *c; ///< Project this dialog is adjusting the properties of
 
-	// metadata no one actually uses
-	wxTextCtrl *TitleEdit;         ///< Project title
-	wxTextCtrl *OrigScriptEdit;    ///< Original script credit
-	wxTextCtrl *TranslationEdit;   ///< Translation credit
-	wxTextCtrl *EditingEdit;       ///< Script editor credit
-	wxTextCtrl *TimingEdit;        ///< Script timing credit
-	wxTextCtrl *SyncEdit;          ///< Script sync credit
-	wxTextCtrl *UpdatedEdit;       ///< Name of last person to update the script
-	wxTextCtrl *UpdateDetailsEdit; ///< Description of last changes made
+	/// Pairs of a script property and a text control for that property
+	std::vector<std::pair<wxString, wxTextCtrl*> > properties;
 
 	// Things that effect rendering
 	wxComboBox *WrapStyle;   ///< Wrapping style for long lines
@@ -75,8 +70,14 @@ class DialogProperties : public wxDialog {
 	/// Set a script info field
 	/// @param key Name of field
 	/// @param value New value
-	/// @return Did the valud actually need to be changed?
+	/// @return Did the value actually need to be changed?
 	int SetInfoIfDifferent(wxString key, wxString value);
+
+	/// Add a property with label and text box for updating the property
+	/// @param sizer Sizer to add the label and control to
+	/// @param label Label text to use
+	/// @param property Script info property name
+	void AddProperty(wxSizer *sizer, wxString const& label, wxString const& property);
 
 public:
 	/// Constructor

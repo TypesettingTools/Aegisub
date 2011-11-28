@@ -37,6 +37,8 @@
 #include "config.h"
 
 #ifndef AGI_PRE
+#include <algorithm>
+
 #include <wx/button.h>
 #include <wx/dialog.h>
 #include <wx/sizer.h>
@@ -52,49 +54,26 @@
 #include "utils.h"
 #include "validators.h"
 #include "video_context.h"
-#include "video_provider_manager.h"
 
 DialogProperties::DialogProperties(agi::Context *c)
-: wxDialog(c->parent, -1, _("Script Properties"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE)
+: wxDialog(c->parent, -1, _("Script Properties"))
 , c(c)
 {
 	SetIcon(BitmapToIcon(GETIMAGE(properties_toolbutton_24)));
 
 	// Script details crap
 	wxSizer *TopSizer = new wxStaticBoxSizer(wxHORIZONTAL,this,_("Script"));
-	wxStaticText *TitleLabel = new wxStaticText(this,-1,_("Title:"));
-	TitleEdit = new wxTextCtrl(this,-1,c->ass->GetScriptInfo("Title"),wxDefaultPosition,wxSize(200,20));
-	wxStaticText *OrigScriptLabel = new wxStaticText(this,-1,_("Original script:"));
-	OrigScriptEdit = new wxTextCtrl(this,-1,c->ass->GetScriptInfo("Original Script"),wxDefaultPosition,wxSize(200,20));
-	wxStaticText *TranslationLabel = new wxStaticText(this,-1,_("Translation:"));
-	TranslationEdit = new wxTextCtrl(this,-1,c->ass->GetScriptInfo("Original Translation"),wxDefaultPosition,wxSize(200,20));
-	wxStaticText *EditingLabel = new wxStaticText(this,-1,_("Editing:"));
-	EditingEdit = new wxTextCtrl(this,-1,c->ass->GetScriptInfo("Original Editing"),wxDefaultPosition,wxSize(200,20));
-	wxStaticText *TimingLabel = new wxStaticText(this,-1,_("Timing:"));
-	TimingEdit = new wxTextCtrl(this,-1,c->ass->GetScriptInfo("Original Timing"),wxDefaultPosition,wxSize(200,20));
-	wxStaticText *SyncLabel = new wxStaticText(this,-1,_("Synch point:"));
-	SyncEdit = new wxTextCtrl(this,-1,c->ass->GetScriptInfo("Synch Point"),wxDefaultPosition,wxSize(200,20));
-	wxStaticText *UpdatedLabel = new wxStaticText(this,-1,_("Updated by:"));
-	UpdatedEdit = new wxTextCtrl(this,-1,c->ass->GetScriptInfo("Script Updated By"),wxDefaultPosition,wxSize(200,20));
-	wxStaticText *UpdateDetailsLabel = new wxStaticText(this,-1,_("Update details:"));
-	UpdateDetailsEdit = new wxTextCtrl(this,-1,c->ass->GetScriptInfo("Update Details"),wxDefaultPosition,wxSize(200,20));
 	wxFlexGridSizer *TopSizerGrid = new wxFlexGridSizer(0,2,5,5);
-	TopSizerGrid->Add(TitleLabel,0,wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL,0);
-	TopSizerGrid->Add(TitleEdit,1,wxEXPAND,0);
-	TopSizerGrid->Add(OrigScriptLabel,0,wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL,0);
-	TopSizerGrid->Add(OrigScriptEdit,1,wxEXPAND,0);
-	TopSizerGrid->Add(TranslationLabel,0,wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL,0);
-	TopSizerGrid->Add(TranslationEdit,1,wxEXPAND,0);
-	TopSizerGrid->Add(EditingLabel,0,wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL,0);
-	TopSizerGrid->Add(EditingEdit,1,wxEXPAND,0);
-	TopSizerGrid->Add(TimingLabel,0,wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL,0);
-	TopSizerGrid->Add(TimingEdit,1,wxEXPAND,0);
-	TopSizerGrid->Add(SyncLabel,0,wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL,0);
-	TopSizerGrid->Add(SyncEdit,1,wxEXPAND,0);
-	TopSizerGrid->Add(UpdatedLabel,0,wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL,0);
-	TopSizerGrid->Add(UpdatedEdit,1,wxEXPAND,0);
-	TopSizerGrid->Add(UpdateDetailsLabel,0,wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL,0);
-	TopSizerGrid->Add(UpdateDetailsEdit,1,wxEXPAND,0);
+
+	AddProperty(TopSizerGrid, _("Title:"), "Title");
+	AddProperty(TopSizerGrid, _("Original script:"), "Original Script");
+	AddProperty(TopSizerGrid, _("Translation:"), "Original Translation");
+	AddProperty(TopSizerGrid, _("Editing:"), "Original Editing");
+	AddProperty(TopSizerGrid, _("Timing:"), "Original Timing");
+	AddProperty(TopSizerGrid, _("Synch point:"), "Synch Point");
+	AddProperty(TopSizerGrid, _("Updated by:"), "Script Updated By");
+	AddProperty(TopSizerGrid, _("Update details:"), "Update Details");
+
 	TopSizerGrid->AddGrowableCol(1,1);
 	TopSizer->Add(TopSizerGrid,1,wxALL | wxEXPAND,0);
 
@@ -103,13 +82,13 @@ DialogProperties::DialogProperties(agi::Context *c)
 	ResX = new wxTextCtrl(this,-1,"",wxDefaultPosition,wxSize(50,20),0,NumValidator(c->ass->GetScriptInfo("PlayResX")));
 	ResY = new wxTextCtrl(this,-1,"",wxDefaultPosition,wxSize(50,20),0,NumValidator(c->ass->GetScriptInfo("PlayResY")));
 	wxStaticText *ResText = new wxStaticText(this,-1,"x");
+
 	wxButton *FromVideo = new wxButton(this,-1,_("From &video"));
-	if (!c->videoController->IsLoaded()) {
+	if (!c->videoController->IsLoaded())
 		FromVideo->Enable(false);
-	}
-	else {
+	else
 		FromVideo->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DialogProperties::OnSetFromVideo, this);
-	}
+
 	ResSizer->Add(ResX,1,wxRIGHT,5);
 	ResSizer->Add(ResText,0,wxALIGN_CENTER | wxRIGHT,5);
 	ResSizer->Add(ResY,1,wxRIGHT,5);
@@ -118,41 +97,35 @@ DialogProperties::DialogProperties(agi::Context *c)
 	// Options
 	wxSizer *optionsBox = new wxStaticBoxSizer(wxHORIZONTAL,this,_("Options"));
 	wxFlexGridSizer *optionsGrid = new wxFlexGridSizer(3,2,5,5);
-	wxArrayString options;
-	options.Add(_("0: Smart wrapping, top line is wider"));
-	options.Add(_("1: End-of-line word wrapping, only \\N breaks"));
-	options.Add(_("2: No word wrapping, both \\n and \\N break"));
-	options.Add(_("3: Smart wrapping, bottom line is wider"));
-	WrapStyle = new wxComboBox(this,-1,"",wxDefaultPosition,wxDefaultSize,options,wxCB_READONLY);
-	long n;
-	c->ass->GetScriptInfo("WrapStyle").ToLong(&n);
-	WrapStyle->SetSelection(n);
+	wxString wrap_opts[] = {
+		_("0: Smart wrapping, top line is wider"),
+		_("1: End-of-line word wrapping, only \\N breaks"),
+		_("2: No word wrapping, both \\n and \\N break"),
+		_("3: Smart wrapping, bottom line is wider")
+	};
+	WrapStyle = new wxComboBox(this, -1, "", wxDefaultPosition, wxDefaultSize, 4, wrap_opts, wxCB_READONLY);
+	WrapStyle->SetSelection(c->ass->GetScriptInfoAsInt("WrapStyle"));
 	optionsGrid->Add(new wxStaticText(this,-1,_("Wrap Style: ")),0,wxALIGN_CENTER_VERTICAL,0);
 	optionsGrid->Add(WrapStyle,1,wxEXPAND,0);
-	options.Clear();
-	options.Add(_("Normal"));
-	options.Add(_("Reverse"));
-	collision = new wxComboBox(this,-1,"",wxDefaultPosition,wxDefaultSize,options,wxCB_READONLY);
-	wxString col = c->ass->GetScriptInfo("Collisions");
-	if (col.Lower() == "reverse") collision->SetSelection(1);
-	else collision->SetSelection(0);
+
+	wxString coll_opts[] = { _("Normal"), _("Reverse") };
+	collision = new wxComboBox(this, -1, "", wxDefaultPosition, wxDefaultSize, 2, coll_opts, wxCB_READONLY);
+	collision->SetSelection(c->ass->GetScriptInfo("Collisions").Lower() == "reverse");
 	optionsGrid->Add(new wxStaticText(this,-1,_("Collision: ")),0,wxALIGN_CENTER_VERTICAL,0);
 	optionsGrid->Add(collision,1,wxEXPAND,0);
+
 	ScaleBorder = new wxCheckBox(this,-1,_("Scale Border and Shadow"));
 	ScaleBorder->SetToolTip(_("Scale border and shadow together with script/render resolution. If this is unchecked, relative border and shadow size will depend on renderer."));
-	ScaleBorder->SetValue(c->ass->GetScriptInfo("ScaledBorderAndShadow").Lower() == "yes" ? 1 : 0);
+	ScaleBorder->SetValue(c->ass->GetScriptInfo("ScaledBorderAndShadow").Lower() == "yes");
 	optionsGrid->AddSpacer(0);
 	optionsGrid->Add(ScaleBorder,1,wxEXPAND,0);
 	optionsGrid->AddGrowableCol(1,1);
 	optionsBox->Add(optionsGrid,1,wxEXPAND,0);
 
 	// Button sizer
-	wxStdDialogButtonSizer *ButtonSizer = new wxStdDialogButtonSizer();
-	ButtonSizer->AddButton(new wxButton(this,wxID_OK));
-	ButtonSizer->AddButton(new wxButton(this,wxID_CANCEL));
-	ButtonSizer->AddButton(new HelpButton(this,"Properties"));
-	ButtonSizer->Realize();
+	wxStdDialogButtonSizer *ButtonSizer = CreateStdDialogButtonSizer(wxOK | wxCANCEL | wxHELP);
 	Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DialogProperties::OnOK, this, wxID_OK);
+	Bind(wxEVT_COMMAND_BUTTON_CLICKED, std::tr1::bind(&HelpButton::OpenPage, "Properties"), wxID_HELP);
 
 	// MainSizer
 	wxSizer *MainSizer = new wxBoxSizer(wxVERTICAL);
@@ -161,28 +134,28 @@ DialogProperties::DialogProperties(agi::Context *c)
 	MainSizer->Add(optionsBox,0,wxLEFT | wxRIGHT | wxBOTTOM | wxEXPAND,5);
 	MainSizer->Add(ButtonSizer,0,wxLEFT | wxRIGHT | wxBOTTOM | wxEXPAND,5);
 
-	// Set sizer
-	SetSizer(MainSizer);
-	MainSizer->SetSizeHints(this);
+	SetSizerAndFit(MainSizer);
 	CenterOnParent();
+}
+
+void DialogProperties::AddProperty(wxSizer *sizer, wxString const& label, wxString const& property) {
+	wxTextCtrl *ctrl = new wxTextCtrl(this, -1, c->ass->GetScriptInfo(property), wxDefaultPosition, wxSize(200, 20));
+	sizer->Add(new wxStaticText(this, -1, label), wxSizerFlags().Center().Left());
+	sizer->Add(ctrl, wxSizerFlags(1).Expand());
+	properties.push_back(std::make_pair(property, ctrl));
 }
 
 void DialogProperties::OnOK(wxCommandEvent &event) {
 	int count = 0;
-	count += SetInfoIfDifferent("Title",TitleEdit->GetValue());
-	count += SetInfoIfDifferent("Original Script",OrigScriptEdit->GetValue());
-	count += SetInfoIfDifferent("Original Translation",TranslationEdit->GetValue());
-	count += SetInfoIfDifferent("Original Editing",EditingEdit->GetValue());
-	count += SetInfoIfDifferent("Original Timing",TimingEdit->GetValue());
-	count += SetInfoIfDifferent("Synch Point",SyncEdit->GetValue());
-	count += SetInfoIfDifferent("Script Updated By",UpdatedEdit->GetValue());
-	count += SetInfoIfDifferent("Update Details",UpdateDetailsEdit->GetValue());
-	count += SetInfoIfDifferent("PlayResX",ResX->GetValue());
-	count += SetInfoIfDifferent("PlayResY",ResY->GetValue());
-	count += SetInfoIfDifferent("WrapStyle",wxString::Format("%i",WrapStyle->GetSelection()));
-	wxString col[2] = { "Normal", "Reverse"};
-	count += SetInfoIfDifferent("Collisions",col[collision->GetSelection()]);
-	count += SetInfoIfDifferent("ScaledBorderAndShadow",ScaleBorder->GetValue()? "yes" : "no");
+	for (size_t i = 0; i < properties.size(); ++i)
+		count += SetInfoIfDifferent(properties[i].first, properties[i].second->GetValue());
+
+	count += SetInfoIfDifferent("PlayResX", ResX->GetValue());
+	count += SetInfoIfDifferent("PlayResY", ResY->GetValue());
+	count += SetInfoIfDifferent("WrapStyle", wxString::Format("%d", WrapStyle->GetSelection()));
+	wxString col[2] = { "Normal", "Reverse" };
+	count += SetInfoIfDifferent("Collisions", col[collision->GetSelection()]);
+	count += SetInfoIfDifferent("ScaledBorderAndShadow", ScaleBorder->GetValue()? "yes" : "no");
 
 	if (count) c->ass->Commit(_("property changes"), AssFile::COMMIT_SCRIPTINFO);
 
@@ -191,14 +164,13 @@ void DialogProperties::OnOK(wxCommandEvent &event) {
 
 int DialogProperties::SetInfoIfDifferent(wxString key,wxString value) {
 	if (c->ass->GetScriptInfo(key) != value) {
-		c->ass->SetScriptInfo(key,value);
+		c->ass->SetScriptInfo(key, value);
 		return 1;
 	}
 	return 0;
 }
 
 void DialogProperties::OnSetFromVideo(wxCommandEvent &event) {
-	ResX->SetValue(wxString::Format("%i",c->videoController->GetWidth()));
-	ResY->SetValue(wxString::Format("%i",c->videoController->GetHeight()));
-	event.Skip();
+	ResX->SetValue(wxString::Format("%d", c->videoController->GetWidth()));
+	ResY->SetValue(wxString::Format("%d", c->videoController->GetHeight()));
 }
