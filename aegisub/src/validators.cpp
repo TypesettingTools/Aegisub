@@ -48,10 +48,11 @@ NumValidator::NumValidator(wxString val, bool isfloat, bool issigned)
 , isSigned(issigned)
 {
 	if (isFloat) {
-		val.ToDouble(&fValue);
+		if (!val.ToDouble(&fValue))
+			fValue = 0;
 	}
 	else {
-		long tLong;
+		long tLong = 0;
 		val.ToLong(&tLong);
 		iValue = tLong;
 	}
