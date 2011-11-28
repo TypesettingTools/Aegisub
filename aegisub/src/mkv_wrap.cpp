@@ -119,7 +119,7 @@ static void read_subtitles(agi::ProgressSink *ps, MatroskaFile *file, MkvStdIO *
 			subList[subList.size()] = blockString;
 		}
 
-		ps->SetProgress(startTime, totalTime);
+		ps->SetProgress(startTime / timecodeScaleLow, totalTime);
 	}
 
 	delete readBuf;
@@ -215,7 +215,7 @@ void MatroskaWrapper::GetSubtitles(wxString const& filename, AssFile *target) {
 		longlong timecodeScale = mkv_TruncFloat(trackInfo->TimecodeScale) * segInfo->TimecodeScale;
 
 		// Progress bar
-		double totalTime = double(segInfo->Duration) / timecodeScale * 1000000.0;
+		double totalTime = double(segInfo->Duration) / timecodeScale;
 		DialogProgress progress(NULL, _("Parsing Matroska"), _("Reading subtitles from Matroska file."));
 		progress.Run(bind(read_subtitles, std::tr1::placeholders::_1, file, &input, srt, ssa, totalTime, target));
 	}
