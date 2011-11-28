@@ -180,7 +180,7 @@ void OptionPage::OptionChoice(wxFlexGridSizer *flex, const wxString &name, const
 	switch (opt->GetType()) {
 		case agi::OptionValue::Type_Int: {
 			int val = opt->GetInt();
-			cb->SetValue(choices[val < (int)choices.size() ? val : opt->GetDefaultInt()]);
+			cb->Select(val < (int)choices.size() ? val : opt->GetDefaultInt());
 			cb->Bind(wxEVT_COMMAND_COMBOBOX_SELECTED, IntCBUpdater(opt_name, parent));
 			break;
 		}

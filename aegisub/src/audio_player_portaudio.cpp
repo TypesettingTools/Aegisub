@@ -39,13 +39,11 @@
 
 #ifdef WITH_PORTAUDIO
 
-
-// Headers
 #include <libaegisub/log.h>
 
 #include "audio_player_portaudio.h"
-#include "include/aegisub/audio_provider.h"
 #include "charset_conv.h"
+#include "include/aegisub/audio_provider.h"
 #include "main.h"
 #include "utils.h"
 
@@ -75,14 +73,31 @@ PortAudioPlayer::~PortAudioPlayer() {
 }
 
 void PortAudioPlayer::OpenStream() {
-	PaDeviceIndex pa_device = OPT_GET("Player/Audio/PortAudio/Device")->GetInt();
+	PaDeviceIndex pa_device = paNoDevice;
 
-	if (pa_device < 0) {
+	std::string device_name = OPT_GET("Player/Audio/PortAudio/Device Name")->GetString();
+
+	if (device_name.size() && device_name != "Default") {
+		int devices = Pa_GetDeviceCount();
+		for (int i = 0; i < devices; i++) {
+			const PaDeviceInfo *info = Pa_GetDeviceInfo(i);
+			if (info->maxOutputChannels > 0 && info->name == device_name) {
+				pa_device = i;
+				LOG_D("audio/player/portaudio") << "using config device: " << device_name << ": " << pa_device;
+				break;
+			}
+		}
+
+		if (pa_device == paNoDevice)
+			LOG_D("audio/player/portaudio") << "config device " << device_name << " not found, using default";
+	}
+
+	if (pa_device == paNoDevice) {
 		pa_device = Pa_GetDefaultOutputDevice();
+		if (pa_device == paNoDevice)
+			throw PortAudioError("No PortAudio output devices found");
 		LOG_D("audio/player/portaudio") << "using default output device:" << pa_device;
 	}
-	else
-		LOG_D("audio/player/portaudio") << "using config device: " << pa_device;
 
 	PaStreamParameters pa_output_p;
 	pa_output_p.device = pa_device;
@@ -215,9 +230,14 @@ wxArrayString PortAudioPlayer::GetOutputDevices() {
 	PortAudioPlayer player; // temp player to ensure PA is initialized
 
 	int devices = Pa_GetDeviceCount();
+
 	wxArrayString list;
+	list.push_back("Default");
+
 	for (int i = 0; i < devices; i++) {
-		list.push_back(wxString(Pa_GetDeviceInfo(i)->name, wxConvUTF8));
+		const PaDeviceInfo *info = Pa_GetDeviceInfo(i);
+		if (info->maxOutputChannels > 0)
+			list.push_back(wxString(info->name, wxConvUTF8));
 	}
 
 	return list;

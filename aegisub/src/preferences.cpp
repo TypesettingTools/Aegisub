@@ -54,6 +54,10 @@
 #include "preferences_base.h"
 #include "video_provider_manager.h"
 
+#ifdef WITH_PORTAUDIO
+#include "audio_player_portaudio.h"
+#endif
+
 #define CLASS_PAGE(name)                             \
 class name: public OptionPage {                  \
 public:                                          \
@@ -467,6 +471,11 @@ Advanced_Audio::Advanced_Audio(wxTreebook *book, Preferences *parent): OptionPag
 	const wxString adm_arr[3] = { "ConvertToMono", "GetLeftChannel", "GetRightChannel" };
 	wxArrayString adm_choice(3, adm_arr);
 	OptionChoice(windows, _("Avisynth down-mixer"), adm_choice, "Audio/Downmixer");
+#endif
+
+#ifdef WITH_PORTAUDIO
+	wxFlexGridSizer *portaudio = PageSizer(_("Portaudio"));
+	OptionChoice(portaudio, _("Portaudio device"), PortAudioPlayer::GetOutputDevices(), "Player/Audio/PortAudio/Device Name");
 #endif
 
 	SetSizerAndFit(sizer);
