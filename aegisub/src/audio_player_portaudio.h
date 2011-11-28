@@ -27,7 +27,7 @@
 //
 // Aegisub Project http://www.aegisub.org/
 //
-// $Id$
+// $Id: audio_player_portaudio.h 4719 2010-08-02 08:03:58Z plorkyeran $
 
 /// @file audio_player_portaudio.h
 /// @see audio_player_portaudio.cpp
@@ -39,35 +39,37 @@
 #include "include/aegisub/audio_player.h"
 #include "include/aegisub/audio_provider.h"
 
+#include <libaegisub/exception.h>
 
 extern "C" {
 #include <portaudio.h>
 }
 
+DEFINE_SIMPLE_EXCEPTION_NOINNER(PortAudioError, agi::Exception, "audio/player/portaudio")
+
 /// @class PortAudioPlayer
 /// @brief PortAudio Player
 ///
 class PortAudioPlayer : public AudioPlayer {
-private:
-
-	/// PortAudio initilisation reference counter.
+	/// PortAudio initilisation reference counter
 	static int pa_refcount;
 
-	/// Current volume level.
-	float volume;
+	float volume;    ///< Current volume level
+	int64_t current; ///< Current position
+	int64_t start;   ///< Start position
+	int64_t end;     ///< End position
+	PaTime pa_start; ///< PortAudio internal start position
 
-	/// @brief Stream playback position info.
-	struct PositionInfo {
-		volatile int64_t current;	/// Current position.
-		volatile int64_t start;		/// Start position.
-		volatile int64_t end;		/// End position.
-		PaTime pa_start;			/// PortAudio internal start position.
-	};
-    PositionInfo pos;
+	PaStream *stream; ///< PortAudio stream
 
-	/// PortAudio stream.
-	void *stream;
-
+	/// @brief PortAudio callback, used to fill buffer for playback, and prime the playback buffer.
+	/// @param inputBuffer     Input buffer.
+	/// @param outputBuffer    Output buffer.
+	/// @param framesPerBuffer Frames per buffer.
+	/// @param timeInfo        PortAudio time information.
+	/// @param statusFlags     Status flags
+	/// @param userData        Local data to hand callback
+	/// @return Whether to stop playback.
 	static int paCallback(
 		const void *inputBuffer,
 		void *outputBuffer,
@@ -78,16 +80,27 @@ private:
 		statusFlags,
 		void *userData);
 
+	/// @brief Called when the callback has finished.
+	/// @param userData Local data to be handed to the callback.
 	static void paStreamFinishedCallback(void *userData);
 
 public:
+	/// @brief Constructor
 	PortAudioPlayer();
+	/// @brief Destructor
 	~PortAudioPlayer();
 
+	/// @brief Open stream
 	void OpenStream();
+	/// @brief Close stream
 	void CloseStream();
 
+	/// @brief Play audio.
+	/// @param start Start position.
+	/// @param count Frame count
 	void Play(int64_t start,int64_t count);
+	/// @brief Stop Playback
+	/// @param timerToo Stop display timer?
 	void Stop(bool timerToo=true);
 
 	/// @brief Whether audio is currently being played.
@@ -96,20 +109,22 @@ public:
 
 	/// @brief Position audio will be played from.
 	/// @return Start position.
-	int64_t GetStartPosition() { return pos.start; }
+	int64_t GetStartPosition() { return start; }
 
 	/// @brief End position playback will stop at.
 	/// @return End position.
-	int64_t GetEndPosition() { return pos.end; }
+	int64_t GetEndPosition() { return end; }
+	/// @brief Get current stream position.
+	/// @return Stream position
 	int64_t GetCurrentPosition();
 
 	/// @brief Set end position of playback
 	/// @param pos End position
-	void SetEndPosition(int64_t position) { pos.end = position; }
+	void SetEndPosition(int64_t position) { end = position; }
 
 	/// @brief Set current position of playback.
 	/// @param pos Current position
-	void SetCurrentPosition(int64_t position) { pos.current = position; }
+	void SetCurrentPosition(int64_t position) { current = position; }
 
 
 	/// @brief Set volume level
@@ -120,6 +135,7 @@ public:
 	/// @return Volume level
 	double GetVolume() { return volume; }
 
-	wxArrayString GetOutputDevices(wxString favorite);
+	/// Get list of available output devices
+	static wxArrayString GetOutputDevices();
 };
 #endif //ifdef WITH_PORTAUDIO

@@ -27,7 +27,7 @@
 //
 // Aegisub Project http://www.aegisub.org/
 //
-// $Id$
+// $Id: audio_player_portaudio.cpp 5897 2011-11-20 03:43:52Z plorkyeran $
 
 /// @file audio_player_portaudio.cpp
 /// @brief PortAudio v18-based audio output
@@ -48,179 +48,137 @@
 #include "charset_conv.h"
 #include "main.h"
 #include "utils.h"
-#include <wx/log.h>
 
+// Uncomment to enable extremely spammy debug logging
 //#define PORTAUDIO_DEBUG
 
 // Init reference counter
 int PortAudioPlayer::pa_refcount = 0;
 
-/// @brief Constructor
 PortAudioPlayer::PortAudioPlayer() {
 	// Initialize portaudio
 	if (!pa_refcount) {
 		PaError err = Pa_Initialize();
 
-		if (err != paNoError) {
-			static char errormsg[2048];
-			snprintf(errormsg, 2048, "Failed opening PortAudio: %s", Pa_GetErrorText(err));
-			throw errormsg;
-		}
+		if (err != paNoError)
+			throw PortAudioError(std::string("Failed opening PortAudio:") + Pa_GetErrorText(err));
 		pa_refcount++;
 	}
 
 	volume = 1.0f;
-	pos.pa_start = 0.0;
+	pa_start = 0.0;
 }
 
-
-/// @brief Destructor
 PortAudioPlayer::~PortAudioPlayer() {
 	// Deinit portaudio
 	if (!--pa_refcount) Pa_Terminate();
 }
 
-
-/// @brief Open stream
 void PortAudioPlayer::OpenStream() {
-	// Open stream
-	PaStreamParameters pa_output_p;
+	PaDeviceIndex pa_device = OPT_GET("Player/Audio/PortAudio/Device")->GetInt();
 
-	int pa_config_default = OPT_GET("Player/Audio/PortAudio/Device")->GetInt();
-	PaDeviceIndex pa_device;
-
-	if (pa_config_default < 0) {
+	if (pa_device < 0) {
 		pa_device = Pa_GetDefaultOutputDevice();
 		LOG_D("audio/player/portaudio") << "using default output device:" << pa_device;
-	} else {
-		pa_device = pa_config_default;
-		LOG_D("audio/player/portaudio") << "using config device: " << pa_device;
 	}
+	else
+		LOG_D("audio/player/portaudio") << "using config device: " << pa_device;
 
+	PaStreamParameters pa_output_p;
 	pa_output_p.device = pa_device;
 	pa_output_p.channelCount = provider->GetChannels();
 	pa_output_p.sampleFormat = paInt16;
 	pa_output_p.suggestedLatency = Pa_GetDeviceInfo(pa_device)->defaultLowOutputLatency;
 	pa_output_p.hostApiSpecificStreamInfo = NULL;
 
-	LOG_D("audio/player/portaudio") << "output channels: " << pa_output_p.channelCount << ", latency: " << pa_output_p.suggestedLatency << "  sample rate: " << pa_output_p.sampleFormat;
+	LOG_D("audio/player/portaudio") << "OpenStream:"
+		<< " output channels: " << pa_output_p.channelCount
+		<< " latency: " << pa_output_p.suggestedLatency
+		<< " sample rate: " << pa_output_p.sampleFormat;
 
-	PaError err = Pa_OpenStream(&stream, NULL, &pa_output_p, provider->GetSampleRate(), 256, paPrimeOutputBuffersUsingStreamCallback, paCallback, this);
+	PaError err = Pa_OpenStream(&stream, NULL, &pa_output_p, provider->GetSampleRate(), 0, paPrimeOutputBuffersUsingStreamCallback, paCallback, this);
 
 	if (err != paNoError) {
-
 		const PaHostErrorInfo *pa_err = Pa_GetLastHostErrorInfo();
 		LOG_D_IF(pa_err->errorCode != 0, "audio/player/portaudio") << "HostError: API: " << pa_err->hostApiType << ", " << pa_err->errorText << ", " << pa_err->errorCode;
 		LOG_D("audio/player/portaudio") << "Failed initializing PortAudio stream with error: " << Pa_GetErrorText(err);
-		throw wxString("Failed initializing PortAudio stream with error: " + wxString(Pa_GetErrorText(err),csConvLocal));
+		throw PortAudioError("Failed initializing PortAudio stream with error: " + std::string(Pa_GetErrorText(err)));
 	}
 }
 
-
-/// @brief Close stream
 void PortAudioPlayer::CloseStream() {
 	Stop(false);
 	Pa_CloseStream(stream);
 }
 
-
-/// @brief Called when the callback has finished.
-/// @param userData Local data to be handed to the callback.
 void PortAudioPlayer::paStreamFinishedCallback(void *userData) {
-    PortAudioPlayer *player = (PortAudioPlayer *) userData;
+	PortAudioPlayer *player = (PortAudioPlayer *) userData;
 
-	if (player->displayTimer) {
+	if (player->displayTimer)
 		player->displayTimer->Stop();
-	}
 	LOG_D("audio/player/portaudio") << "stopping stream";
 }
 
-
-/// @brief Play audio.
-/// @param start Start position.
-/// @param count Frame count
-void PortAudioPlayer::Play(int64_t start,int64_t count) {
-	PaError err;
-
-	// Set values
-	pos.end = start + count;
-	pos.current = start;
-	pos.start = start;
+void PortAudioPlayer::Play(int64_t start_sample, int64_t count) {
+	current = start_sample;
+	start = start_sample;
+	end = start_sample + count;
 
 	// Start playing
 	if (!IsPlaying()) {
-
-		err = Pa_SetStreamFinishedCallback(stream, paStreamFinishedCallback);
-
+		PaError err = Pa_SetStreamFinishedCallback(stream, paStreamFinishedCallback);
 		if (err != paNoError) {
 			LOG_D("audio/player/portaudio") << "could not set FinishedCallback";
 			return;
 		}
 
 		err = Pa_StartStream(stream);
-
 		if (err != paNoError) {
 			LOG_D("audio/player/portaudio") << "error playing stream";
 			return;
 		}
 	}
-	pos.pa_start = Pa_GetStreamTime(stream);
+	pa_start = Pa_GetStreamTime(stream);
 
 	// Update timer
-	if (displayTimer && !displayTimer->IsRunning()) displayTimer->Start(15);
+	if (displayTimer && !displayTimer->IsRunning())
+		displayTimer->Start(15);
 }
 
-
-/// @brief Stop Playback
-/// @param timerToo Stop display timer?
-///
 void PortAudioPlayer::Stop(bool timerToo) {
-	// Stop stream
-	Pa_StopStream (stream);
+	Pa_StopStream(stream);
 
-	// Stop timer
-	if (timerToo && displayTimer) {
+	if (timerToo && displayTimer)
 		displayTimer->Stop();
-	}
 }
 
-
-/// @brief PortAudio callback, used to fill buffer for playback, and prime the playback buffer.
-/// @param inputBuffer     Input buffer.
-/// @param outputBuffer    Output buffer.
-/// @param framesPerBuffer Frames per buffer.
-/// @param timeInfo        PortAudio time information.
-/// @param statusFlags     Status flags
-/// @param userData        Local data to hand callback
-/// @return Whether to stop playback.
-///
-int PortAudioPlayer::paCallback(
-	const void *inputBuffer,
-	void *outputBuffer,
-	unsigned long framesPerBuffer,
-	const PaStreamCallbackTimeInfo* timeInfo,
-	PaStreamCallbackFlags statusFlags,
-	void *userData) {
-
-	// Get provider
-	PortAudioPlayer *player = (PortAudioPlayer *) userData;
-	AudioProvider *provider = player->GetProvider();
+int PortAudioPlayer::paCallback(const void *inputBuffer, void *outputBuffer,
+	unsigned long framesPerBuffer, const PaStreamCallbackTimeInfo* timeInfo,
+	PaStreamCallbackFlags statusFlags, void *userData)
+{
+	PortAudioPlayer *player = (PortAudioPlayer *)userData;
 
 #ifdef PORTAUDIO_DEBUG
-	printf("paCallBack: pos.current: %lld  pos.start: %lld  paStart: %f Pa_GetStreamTime: %f  AdcTime: %f  DacTime: %f  framesPerBuffer: %lu  CPU: %f\n", 
-	player->pos.current, player->pos.start, player->paStart, Pa_GetStreamTime(player->stream),
-	timeInfo->inputBufferAdcTime, timeInfo->outputBufferDacTime,  framesPerBuffer, Pa_GetStreamCpuLoad(player->stream));
+	LOG_D("audio/player/portaudio") << "psCallback:"
+		<< " current: " << player->current
+		<< " start: " << player->start
+		<< " pa_start: " << player->pa_start
+		<< " currentTime: " << timeInfo->currentTime
+		<< " AdcTime: " << timeInfo->inputBufferAdcTime
+		<< " DacTime: " << timeInfo->outputBufferDacTime
+		<< " framesPerBuffer: " << framesPerBuffer
+		<< " CPU: " << Pa_GetStreamCpuLoad(player->stream);
 #endif
 
 	// Calculate how much left
-	int64_t lenAvailable = (player->pos.end - player->pos.current) > 0 ? framesPerBuffer : 0;
+	int64_t lenAvailable = std::min<int64_t>(player->end - player->current, framesPerBuffer);
 
 	// Play something
 	if (lenAvailable > 0) {
-		provider->GetAudioWithVolume(outputBuffer, player->pos.current, lenAvailable, player->GetVolume());
+		player->GetProvider()->GetAudioWithVolume(outputBuffer, player->current, lenAvailable, player->GetVolume());
 
 		// Set play position
-		player->pos.current += framesPerBuffer;
+		player->current += lenAvailable;
 
 		// Continue as normal
 		return 0;
@@ -230,54 +188,43 @@ int PortAudioPlayer::paCallback(
 	return paAbort;
 }
 
-
-
-/// @brief Get current stream position.
-/// @return Stream position
-int64_t PortAudioPlayer::GetCurrentPosition()
-{
-
+int64_t PortAudioPlayer::GetCurrentPosition() {
 	if (!IsPlaying()) return 0;
 
-	const PaStreamInfo* streamInfo = Pa_GetStreamInfo(stream);
+	PaTime pa_time = Pa_GetStreamTime(stream);
+	int64_t real = (pa_time - pa_start) * provider->GetSampleRate() + start;
+
+	// If portaudio isn't giving us time info then estimate based on buffer fill and current latency
+	if (pa_time == 0 && pa_start == 0)
+		real = current - Pa_GetStreamInfo(stream)->outputLatency * provider->GetSampleRate();
 
 #ifdef PORTAUDIO_DEBUG
-	PaTime pa_getstream = Pa_GetStreamTime(stream);
-	int64_t real = ((pa_getstream - paStart) * streamInfo->sampleRate) + pos.start;
-	printf("GetCurrentPosition: Pa_GetStreamTime: %f  pos.start: %lld  pos.current: %lld  paStart: %f  real: %lld  diff: %f\n",
-	pa_getstream, pos.start, pos.current, paStart, real, pa_getstream-paStart);
-
-	return real;
+	LOG_D("audio/player/portaudio") << "GetCurrentPosition:"
+		<< " pa_time: " << pa_time
+		<< " start: " << start
+		<< " current: " << current
+		<< " pa_start: " << pa_start
+		<< " real: " << real
+		<< " diff: " << pa_time - pa_start;
 #endif
 
-	return ((Pa_GetStreamTime(stream) - pos.pa_start) * streamInfo->sampleRate) + pos.start;
-
+	return real;
 }
 
+wxArrayString PortAudioPlayer::GetOutputDevices() {
+	PortAudioPlayer player; // temp player to ensure PA is initialized
 
-/// @brief Get list of available output devices
-/// @param favorite Favorite output device
-/// @return List of available output devices with the 'favorite' being first in the list.
-wxArrayString PortAudioPlayer::GetOutputDevices(wxString favorite) {
-	wxArrayString list;
 	int devices = Pa_GetDeviceCount();
-	int i;
-
-	if (devices < 0) {
-		// some error here
-	}
-
-	for (i=0; i<devices; i++) {
-		const PaDeviceInfo *dev_info = Pa_GetDeviceInfo(i);
-		wxString name(dev_info->name, wxConvUTF8);
-		list.Insert(name, i);
+	wxArrayString list;
+	for (int i = 0; i < devices; i++) {
+		list.push_back(wxString(Pa_GetDeviceInfo(i)->name, wxConvUTF8));
 	}
 
 	return list;
 }
 
 bool PortAudioPlayer::IsPlaying() {
-	return Pa_IsStreamActive(stream) ? true : false;
+	return !!Pa_IsStreamActive(stream);
 }
 
 #endif // WITH_PORTAUDIO
