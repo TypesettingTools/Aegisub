@@ -45,46 +45,6 @@
 //////////////////////////////////
 #if __VISUALC__ >= 1200
 
-/////////////
-// wxWidgets
-#if wxCHECK_VERSION(2, 9, 0)
-#ifdef _DEBUG
-#pragma comment(lib, "wxzlibd.lib")
-#pragma comment(lib, "wxpngd.lib")
-#pragma comment(lib, "wxregexud.lib")
-#pragma comment(lib, "wxbase29ud.lib")
-#pragma comment(lib, "wxbase29ud_net.lib")
-#pragma comment(lib, "wxmsw29ud_media.lib")
-#pragma comment(lib, "wxmsw29ud_core.lib")
-#pragma comment(lib, "wxmsw29ud_adv.lib")
-#pragma comment(lib, "wxmsw29ud_gl.lib")
-#pragma comment(lib, "wxmsw29ud_stc.lib")
-#pragma comment(lib, "wxscintillad.lib")
-#pragma comment(lib, "wxbase29ud_xml.lib")
-#pragma comment(lib, "wxexpatd.lib")
-#else
-#pragma comment(lib, "wxzlib.lib")
-#pragma comment(lib, "wxpng.lib")
-#pragma comment(lib, "wxregexu.lib")
-#pragma comment(lib, "wxbase29u.lib")
-#pragma comment(lib, "wxbase29u_net.lib")
-#pragma comment(lib, "wxmsw29u_media.lib")
-#pragma comment(lib, "wxmsw29u_core.lib")
-#pragma comment(lib, "wxmsw29u_adv.lib")
-#pragma comment(lib, "wxmsw29u_gl.lib")
-#pragma comment(lib, "wxmsw29u_stc.lib")
-#pragma comment(lib, "wxscintilla.lib")
-#pragma comment(lib, "wxbase29u_xml.lib")
-#pragma comment(lib, "wxexpat.lib")
-#endif
-
-#else 
-
-#error "Aegisub requires wxWidgets 2.9"
-
-#endif // wxWidgets
-
-
 ////////////////////////////
 // Standard Win32 Libraries
 #pragma comment(lib, "Vfw32.lib")
