@@ -1071,9 +1071,9 @@ if test -z "$found_audio_player"; then
 * these libraries:
 *  - PulseAudio
 *    * http://pulseaudio.org/
-*  - ALSA (Linux only) (Currently broken)
+*  - ALSA (Linux only)
 *    * http://www.alsa-project.org/
-*  - PortAudio (version 18 only, version 19 is not compatible)
+*  - PortAudio (version 19 only)
 *    * http://www.portaudio.com/
 ***********************************************************************
   ])
