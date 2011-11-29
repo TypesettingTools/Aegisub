@@ -187,12 +187,6 @@ SubtitleFormat::FPSRational SubtitleFormat::AskForFPS(bool showSMPTE) {
 		}
 		return fps_rat;
 	}
-
-	// fubar
-	fps_rat.num = 0;
-	fps_rat.den = 0;
-
-	return fps_rat;
 }
 
 void SubtitleFormat::SortLines() {
