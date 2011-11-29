@@ -192,25 +192,9 @@ END_EVENT_TABLE()
 /// @brief Close 
 /// @param event 
 ///
-void DialogSearchReplace::OnClose (wxCommandEvent &event) {
+void DialogSearchReplace::OnClose (wxCommandEvent &) {
 	Show(false);
 }
-
-
-
-/// @brief Key 
-/// @param event 
-///
-void DialogSearchReplace::OnKeyDown (wxKeyEvent &event) {
-	//if (event.GetKeyCode() == WXK_ESCAPE) {
-	//	Search.OnDialogClose();
-	//	// Just hide
-	//	Show(false);
-	//}
-	event.Skip();
-}
-
-
 
 /// @brief Find or replace 
 /// @param mode 

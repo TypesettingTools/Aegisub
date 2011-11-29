@@ -165,7 +165,6 @@ private:
 	void OnReplaceAll (wxCommandEvent &event);
 	void OnSetFocus (wxFocusEvent &event);
 	void OnKillFocus (wxFocusEvent &event);
-	void OnKeyDown (wxKeyEvent &event);
 
 public:
 	DialogSearchReplace(wxWindow *parent,bool hasReplace,wxString name);
