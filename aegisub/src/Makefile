@@ -7,7 +7,7 @@ PRECOMPILED_HEADER_NAME=agi_pre.h
 
 SUBDIRS = command libresrc
 
-CXXFLAGS += -DAEGISUB -I. -I..  -Iinclude -I../libaegisub/include $(CFLAGS_PTHREAD) $(CPPFLAGS_WX)
+CXXFLAGS += -DAEGISUB -D__STDC_FORMAT_MACROS -I. -I..  -Iinclude -I../libaegisub/include $(CFLAGS_PTHREAD) $(CPPFLAGS_WX)
 
 LDFLAGS += -L../libaegisub -laegisub-3.0
 LDFLAGS += $(CFLAGS_DEBUG) $(CFLAGS_PROFILE) $(LDFLAGS_CCMALLOC) $(LDFLAGS_EFENCE)
@@ -59,7 +59,6 @@ ifeq (yes, $(HAVE_FFMS))
 SRC_OPT += audio_provider_ffmpegsource.cpp video_provider_ffmpegsource.cpp ffmpegsource_common.cpp
 audio_provider_ffmpegsource.o video_provider_ffmpegsource.o ffmpegsource_common.o: \
 	CXXFLAGS += $(CFLAGS_FFMS)
-ffmpegsource_common.o: CXXFLAGS += -D__STDC_FORMAT_MACROS
 LDFLAGS += $(LDFLAGS_FFMS)
 LDFLAGS_POST += $(LDFLAGS_FFMS)
 endif
@@ -103,7 +102,6 @@ audio_player.o:                CXXFLAGS += $(CFLAGS_ALSA) $(CFLAGS_PORTAUDIO) $(
 audio_provider.o:              CXXFLAGS += $(CFLAGS_FFMPEGSOURCE)
 auto4_base.o:                  CXXFLAGS += $(CFLAGS_FREETYPE)
 charset_detect.o:              CXXFLAGS += -D_X86_
-dialog_timing_processor.o:     CXXFLAGS += -D__STDC_FORMAT_MACROS
 font_file_lister_fontconfig.o: CXXFLAGS += $(CFLAGS_FONTCONFIG) $(CFLAGS_FREETYPE)
 font_file_lister.o:            CXXFLAGS += $(CFLAGS_FREETYPE)
 text_file_reader.o:            CXXFLAGS += -D_X86_

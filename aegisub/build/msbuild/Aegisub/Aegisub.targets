@@ -202,7 +202,6 @@
   <ItemDefinitionGroup Condition="'$(AegisubUseFfms)'=='true'">
     <ClCompile>
       <PreprocessorDefinitions Condition="'$(AegisubUseConfigWindowsH)'=='false'">WITH_FFMPEGSOURCE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <PreprocessorDefinitions>__STDC_FORMAT_MACROS;%(PreprocessorDefinitions)</PreprocessorDefinitions> <!-- this one is needed regardless -->
       <AdditionalIncludeDirectories>$(FFmpegSourceIncludePath);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
@@ -266,7 +265,7 @@
   <!-- General configuration, always required libraries -->
   <ItemDefinitionGroup>
     <ClCompile>
-      <PreprocessorDefinitions>HAVE_LITTLE_ENDIAN;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>HAVE_LITTLE_ENDIAN;__STDC_FORMAT_MACROS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>
         $(SrcDir)include\;
         $(SrcDir)msvc\;
