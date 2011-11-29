@@ -210,7 +210,6 @@ SRC += \
 	spline.cpp \
 	spline_curve.cpp \
 	standard_paths.cpp \
-	static_bmp.cpp \
 	string_codec.cpp \
 	subs_edit_box.cpp \
 	subs_edit_ctrl.cpp \

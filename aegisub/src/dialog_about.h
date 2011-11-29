@@ -34,17 +34,9 @@
 /// @ingroup configuration_ui
 ///
 
-
-
-
-////////////
-// Includes
 #ifndef AGI_PRE
 #include <wx/dialog.h>
 #endif
-
-#include "static_bmp.h"
-
 
 /// @class AboutScreen
 /// @brief About dialogue.
@@ -53,5 +45,3 @@ public:
 	AboutScreen(wxWindow *parent);
 	~AboutScreen();
 };
-
-

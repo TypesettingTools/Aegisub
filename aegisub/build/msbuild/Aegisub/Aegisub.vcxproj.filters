@@ -636,9 +636,6 @@
     <ClInclude Include="$(SrcDir)toggle_bitmap.h">
       <Filter>Controls</Filter>
     </ClInclude>
-    <ClInclude Include="$(SrcDir)static_bmp.h">
-      <Filter>Controls</Filter>
-    </ClInclude>
     <ClInclude Include="$(SrcDir)vector2d.h">
       <Filter>Video\Visual tools</Filter>
     </ClInclude>
@@ -1176,9 +1173,6 @@
       <Filter>Utilities</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)toggle_bitmap.cpp">
-      <Filter>Controls</Filter>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)static_bmp.cpp">
       <Filter>Controls</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)vector2d.cpp">

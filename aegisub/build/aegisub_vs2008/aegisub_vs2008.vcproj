@@ -634,14 +634,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\static_bmp.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\static_bmp.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\subs_edit_ctrl.cpp"
 				>
 			</File>
