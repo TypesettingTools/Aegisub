@@ -809,7 +809,7 @@ namespace Automation4 {
 
 		set_context(L, c);
 
-		GetFeatureFunction("config"); // 2 = config dialog function
+		GetFeatureFunction("config");
 
 		// prepare function call
 		LuaAssFile *subsobj = new LuaAssFile(L, c->ass);
