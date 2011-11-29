@@ -254,7 +254,7 @@ void FrameMain::InitToolbar () {
 
 void FrameMain::InitContents() {
 	StartupLog("Create background panel");
-	Panel = new wxPanel(this,-1,wxDefaultPosition,wxDefaultSize,wxTAB_TRAVERSAL | wxCLIP_CHILDREN);
+	wxPanel *Panel = new wxPanel(this,-1,wxDefaultPosition,wxDefaultSize,wxTAB_TRAVERSAL | wxCLIP_CHILDREN);
 
 	StartupLog("Create subtitles grid");
 	context->subsGrid = SubsGrid = new SubtitlesGrid(Panel,context.get(),wxSize(600,100),wxWANTS_CHARS | wxSUNKEN_BORDER,"Subs grid");
@@ -268,7 +268,7 @@ void FrameMain::InitContents() {
 	context->audioBox = audioBox = new AudioBox(Panel, context.get());
 
 	StartupLog("Create subtitle editing box");
-	EditBox = new SubsEditBox(Panel, context.get());
+	SubsEditBox *EditBox = new SubsEditBox(Panel, context.get());
 	context->editBox = EditBox->TextEdit;
 
 	StartupLog("Arrange main sizers");

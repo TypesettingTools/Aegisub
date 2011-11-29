@@ -89,8 +89,6 @@ class FrameMain: public wxFrame {
 	/// isn't loaded
 	bool blockVideoLoad;
 
-	wxPanel *Panel;
-
 	void InitToolbar();
 	void InitContents();
 
@@ -120,7 +118,6 @@ class FrameMain: public wxFrame {
 	void OnSubtitlesOpen();
 
 	SubtitlesGrid *SubsGrid; ///< The subtitle editing area
-	SubsEditBox *EditBox;    ///< The subtitle editing textbox
 	AudioBox *audioBox;      ///< The audio area
 	VideoBox *videoBox;      ///< The video area
 
