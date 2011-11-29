@@ -105,7 +105,7 @@ void ConfigVisitor::Visit(const json::Array& array) {
 
 
 void ConfigVisitor::Visit(const json::Number& number) {
-	if (int64_t(number) == ceil(number)) {
+	if (int64_t(number) == number) {
 		AddOptionValue(new OptionValueInt(name, int64_t(number)));
 	} else {
 		AddOptionValue(new OptionValueDouble(name, number));
