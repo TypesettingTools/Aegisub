@@ -39,6 +39,7 @@
 
 #ifndef AGI_PRE
 #include <wx/clipbrd.h>
+#include <wx/dnd.h>
 #include <wx/filename.h>
 #include <wx/image.h>
 #include <wx/mimetype.h>
@@ -63,7 +64,6 @@
 #include "command/command.h"
 #include "dialog_search_replace.h"
 #include "dialog_version_check.h"
-#include "drop.h"
 #include "help_button.h"
 #include "libresrc/libresrc.h"
 #include "main.h"
@@ -93,6 +93,16 @@ enum {
 #endif
 
 static void autosave_timer_changed(wxTimer *timer, const agi::OptionValue &opt);
+
+/// Handle files drag and dropped onto Aegisub
+class AegisubFileDropTarget : public wxFileDropTarget {
+	FrameMain *parent;
+public:
+	AegisubFileDropTarget(FrameMain *parent) : parent(parent) { }
+	bool OnDropFiles(wxCoord, wxCoord, const wxArrayString& filenames) {
+		return parent->LoadList(filenames);
+	}
+};
 
 FrameMain::FrameMain (wxArrayString args)
 : wxFrame(0,-1,"",wxDefaultPosition,wxSize(920,700),wxDEFAULT_FRAME_STYLE | wxCLIP_CHILDREN)

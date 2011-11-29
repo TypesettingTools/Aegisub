@@ -546,9 +546,6 @@
     <ClInclude Include="$(SrcDir)colour_button.h">
       <Filter>Features\Colour picker</Filter>
     </ClInclude>
-    <ClInclude Include="$(SrcDir)drop.h">
-      <Filter>Main UI</Filter>
-    </ClInclude>
     <ClInclude Include="$(SrcDir)aegisublocale.h">
       <Filter>Utilities</Filter>
     </ClInclude>
@@ -1063,9 +1060,6 @@
     </ClCompile>
     <ClCompile Include="$(SrcDir)colour_button.cpp">
       <Filter>Features\Colour picker</Filter>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)drop.cpp">
-      <Filter>Main UI</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)aegisublocale.cpp">
       <Filter>Utilities</Filter>

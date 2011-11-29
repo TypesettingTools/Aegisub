@@ -722,14 +722,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\drop.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\drop.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\factory_manager.h"
 				>
 			</File>
