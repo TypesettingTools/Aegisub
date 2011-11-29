@@ -34,88 +34,29 @@
 /// @ingroup custom_control
 ///
 
-
-///////////
-// Headers
 #include "config.h"
 
+#include "help_button.h"
+
 #ifndef AGI_PRE
+#include <algorithm>
+#include <map>
+
 #include <wx/filename.h>
-#include <wx/log.h>
 #include <wx/mimetype.h>
 #endif
 
-#include "help_button.h"
+#include <libaegisub/exception.h>
+
 #include "standard_paths.h"
 #include "utils.h"
 
+static std::map<wxString,wxString> *pages = 0;
 
-/// @brief Constructor 
-/// @param parent   
-/// @param _page    
-/// @param position 
-/// @param size     
-///
-HelpButton::HelpButton(wxWindow *parent,wxString _page,wxPoint position,wxSize size)
-: wxButton (parent,wxID_HELP,"",position,size)
-{
-	id = _page;
-	Connect(GetId(),wxEVT_COMMAND_BUTTON_CLICKED,wxCommandEventHandler(HelpButton::OnPressed));
-}
-
-
-
-/// @brief Pressed 
-/// @param event 
-/// @return 
-///
-void HelpButton::OnPressed(wxCommandEvent &event) {
-	// Verify if the page is valid
-	if (id.IsEmpty()) {
-		wxLogMessage("TODO");
-		return;
-	}
-
-	// Open
-	OpenPage(id);
-}
-
-
-
-/// @brief Open a page 
-/// @param pageID 
-///
-void HelpButton::OpenPage(const wxString pageID) {
-	// Transcode
-	InitStatic();
-	wxString page = (*pages)[pageID];
-
-	// Get the file type
-	wxFileType *type = wxTheMimeTypesManager->GetFileTypeFromExtension("html");
-	if (type) {
-		//wxString path = StandardPaths::DecodePath(wxString::Format("http://docs.aegisub.net/%s",page.c_str()));
-		wxString docsPath = StandardPaths::DecodePath("?data/docs");
-#ifdef __WINDOWS__
-		docsPath.Replace("\\","/");
-		docsPath = "/" + docsPath;
-#endif
-		wxString path = wxString::Format("file://%s/%s.html",docsPath,page);
-		wxLaunchDefaultBrowser(path);
-	}
-}
-
-
-
-/// DOCME
-std::map<wxString,wxString> *HelpButton::pages = NULL;
-
-
-/// @brief DOCME
-///
-void HelpButton::InitStatic() {
+static void init_static() {
 	if (!pages) {
-		pages = new std::map<wxString,wxString>;
-		std::map<wxString,wxString> &page = *pages;
+		pages = new std::map<wxString, wxString>;
+		std::map<wxString, wxString> &page = *pages;
 		page["Attachment Manager"] = "Attachment_Manager";
 		page["Automation Manager"] = "Automation_Manager";
 		page["Colour Picker"] = "Colour_Picker";
@@ -140,11 +81,33 @@ void HelpButton::InitStatic() {
 	}
 }
 
-
-/// @brief DOCME
-///
-void HelpButton::ClearPages() {
-	if (pages) delete pages;
+HelpButton::HelpButton(wxWindow *parent, wxString const& page, wxPoint position, wxSize size)
+: wxButton(parent, wxID_HELP, "", position, size)
+{
+	Bind(wxEVT_COMMAND_BUTTON_CLICKED, std::tr1::bind(&HelpButton::OpenPage, page));
+	init_static();
+	if (pages->find(page) == pages->end())
+		throw agi::InternalError("Invalid help page", 0);
 }
 
+void HelpButton::OpenPage(wxString const& pageID) {
+	init_static();
+	wxString page = (*pages)[pageID];
 
+	// Get the file type
+	wxFileType *type = wxTheMimeTypesManager->GetFileTypeFromExtension("html");
+	if (type) {
+		wxString docsPath = StandardPaths::DecodePath("?data/docs");
+#ifdef __WINDOWS__
+		docsPath.Replace("\\","/");
+		docsPath = "/" + docsPath;
+#endif
+		wxString path = wxString::Format("file://%s/%s.html",docsPath,page);
+		if (!wxLaunchDefaultBrowser(path))
+			wxMessageBox("Documentation files not found.", "Error", wxOK | wxICON_ERROR);
+	}
+}
+
+void HelpButton::ClearPages() {
+	delete pages;
+}

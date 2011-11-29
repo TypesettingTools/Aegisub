@@ -34,17 +34,10 @@
 /// @ingroup custom_control
 ///
 
-
-
-
-////////////
-// Includes
 #ifndef AGI_PRE
-#include <map>
 
 #include <wx/button.h>
 #endif
-
 
 /// DOCME
 /// @class HelpButton
@@ -52,22 +45,9 @@
 ///
 /// DOCME
 class HelpButton : public wxButton {
-private:
-
-	/// DOCME
-	wxString id;
-	void OnPressed(wxCommandEvent &event);
-
-
-	/// DOCME
-	static std::map<wxString,wxString> *pages;
-	static void InitStatic();
-
 public:
-	HelpButton(wxWindow *parent,wxString page="",wxPoint position=wxDefaultPosition,wxSize size=wxDefaultSize);
+	HelpButton(wxWindow *parent, wxString const& page="", wxPoint position=wxDefaultPosition, wxSize size=wxDefaultSize);
 
-	static void OpenPage(const wxString page);
+	static void OpenPage(wxString const& page);
 	static void ClearPages();
 };
-
-
