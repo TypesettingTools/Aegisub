@@ -118,7 +118,7 @@ DialogResample::DialogResample(agi::Context *c)
 	wxStdDialogButtonSizer *ButtonSizer = new wxStdDialogButtonSizer();
 	ButtonSizer->AddButton(new wxButton(this,wxID_OK));
 	ButtonSizer->AddButton(new wxButton(this,wxID_CANCEL));
-	ButtonSizer->AddButton(new HelpButton(this,"Resample"));
+	ButtonSizer->AddButton(new HelpButton(this,"Resample resolution"));
 	ButtonSizer->Realize();
 
 	// Main sizer
