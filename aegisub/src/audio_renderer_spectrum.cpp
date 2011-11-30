@@ -106,9 +106,9 @@ public:
 
 
 AudioSpectrumRenderer::AudioSpectrumRenderer()
-: colors_normal(new AudioColorScheme(12))
-, colors_selected(new AudioColorScheme(12))
-, colors_inactive(new AudioColorScheme(12))
+: colors_normal(new AudioColorScheme(12, "Icy Blue", AudioStyle_Normal))
+, colors_selected(new AudioColorScheme(12, "Icy Blue", AudioStyle_Selected))
+, colors_inactive(new AudioColorScheme(12, "Icy Blue", AudioStyle_Inactive))
 , derivation_size(8)
 , derivation_dist(8)
 #ifdef WITH_FFTW
@@ -117,9 +117,6 @@ AudioSpectrumRenderer::AudioSpectrumRenderer()
 , dft_output(0)
 #endif
 {
-	colors_normal->InitIcyBlue(AudioStyle_Normal);
-	colors_selected->InitIcyBlue(AudioStyle_Selected);
-	colors_inactive->InitIcyBlue(AudioStyle_Inactive);
 }
 
 AudioSpectrumRenderer::~AudioSpectrumRenderer()

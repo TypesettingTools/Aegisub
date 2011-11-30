@@ -51,14 +51,11 @@
 
 AudioWaveformRenderer::AudioWaveformRenderer()
 : AudioRendererBitmapProvider()
-, colors_normal(6)
-, colors_selected(6)
-, colors_inactive(6)
+, colors_normal(6, "Icy Blue", AudioStyle_Normal)
+, colors_selected(6, "Icy Blue", AudioStyle_Selected)
+, colors_inactive(6, "Icy Blue", AudioStyle_Inactive)
 , audio_buffer(0)
 {
-	colors_normal.InitIcyBlue(AudioStyle_Normal);
-	colors_selected.InitIcyBlue(AudioStyle_Selected);
-	colors_inactive.InitIcyBlue(AudioStyle_Inactive);
 }
 
 

@@ -97,8 +97,46 @@
 			"Line boundary Start" : "rgb(216, 0, 0)",
 			"Play Cursor" : "rgb(255,255,255)",
 			"Seconds Boundaries" : "rgb(0, 100, 255)",
+			"Spectrum" : "Icy Blue",
 			"Syllable Boundaries" : "rgb(255,255,0)",
-			"Syllable Text" : "rgb(255,0,0)"
+			"Syllable Text" : "rgb(255,0,0)",
+			"Waveform" : "Icy Blue"
+		},
+		"Schemes" : {
+			"Icy Blue" : {
+				"Normal" : {
+					"Hue Offset" : 191.01,
+					"Hue Scale" : -128.01,
+					"Saturation Offset" : 127.01,
+					"Saturation Scale" : 128.01,
+					"Lightness Offset" : 0.01,
+					"Lightness Scale" : 255.01
+				},
+				"Inactive" : {
+					"Hue Offset" : 191.01,
+					"Hue Scale" : -128.01,
+					"Saturation Offset" : 127.01,
+					"Saturation Scale" : 128.01,
+					"Lightness Offset" : 32.01,
+					"Lightness Scale" : 192.01
+				},
+				"Active" : {
+					"Hue Offset" : 191.01,
+					"Hue Scale" : -128.01,
+					"Saturation Offset" : 127.01,
+					"Saturation Scale" : 128.01,
+					"Lightness Offset" : 0.01,
+					"Lightness Scale" : 0.01
+				},
+				"Selected" : {
+					"Hue Offset" : 191.01,
+					"Hue Scale" : -128.01,
+					"Saturation Offset" : 127.01,
+					"Saturation Scale" : 128.01,
+					"Lightness Offset" : 64.01,
+					"Lightness Scale" : 192.01
+				}
+			}
 		},
 		"Style Editor" : {
 			"Background" : {

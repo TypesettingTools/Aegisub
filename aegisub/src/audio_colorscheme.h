@@ -37,6 +37,8 @@
 
 
 #ifndef AGI_PRE
+#include <vector>
+
 #include <wx/colour.h>
 #endif
 
@@ -50,44 +52,28 @@
 ///
 /// First create an instance of this class, then call an initialisation function
 /// in it to fill the palette with a colour map.
-///
-/// @todo Let consumers of this class specify their own palette generation function.
 class AudioColorScheme {
 	/// The palette data for the map
-	unsigned char *palette;
+	std::vector<unsigned char> palette;
 
 	/// Factor to multiply 0..1 values by to map them into the palette range
 	size_t factor;
 
 	/// @brief Get a floating point value's colour as a 24-bit RGB pixel
 	/// @param val The value to map from
-	unsigned char *get_color(float val) const
+	const unsigned char *get_color(float val) const
 	{
-		return palette + mid<size_t>(0, val * factor, factor) * 4;
+		return &palette[mid<size_t>(0, val * factor, factor) * 3];
 	}
 
 public:
 	/// @brief Constructor
 	/// @param prec Bit precision to create the colour map with
+	/// @param scheme_name Name of the colour scheme to use
+	/// @param audio_rendering_style AudioRenderingStyle to init this colorscheme for
 	///
 	/// Allocates the palette array to 2^prec entries
-	AudioColorScheme(int prec)
-		: palette(new unsigned char[(4<<prec) + 4])
-		, factor(1<<prec)
-	{
-	}
-
-	/// @brief Destructor
-	///
-	/// De-allocates the palette array
-	~AudioColorScheme()
-	{
-		delete[] palette;
-	}
-
-	/// @brief Initialise the palette to the Aegisub 2.1 "Icy Blue" scheme
-	/// @param audio_rendering_style AudioRenderingStyle to init this colorscheme for
-	void InitIcyBlue(int audio_rendering_style);
+	AudioColorScheme(int prec, std::string const& scheme_name, int audio_rendering_style);
 
 	/// @brief Map a floating point value to RGB
 	/// @param val   [in] The value to map from
@@ -98,7 +84,7 @@ public:
 	void map(float val, unsigned char *pixel) const
 	{
 		// Find the colour in the palette
-		unsigned char *color = get_color(val);
+		const unsigned char *color = get_color(val);
 		// Copy to the destination.
 		// Has to be done one byte at a time since we're writing RGB and not RGBX or RGBA
 		// data, and we otherwise write past the end of the pixel we're writing, possibly
@@ -115,7 +101,7 @@ public:
 	/// @return The corresponding wxColour
 	wxColour get(float val) const
 	{
-		unsigned char *color = get_color(val);
+		const unsigned char *color = get_color(val);
 		return wxColour(color[0], color[1], color[2]);
 	}
 };

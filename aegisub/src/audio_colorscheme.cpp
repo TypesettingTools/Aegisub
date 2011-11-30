@@ -42,46 +42,42 @@
 
 #include "audio_colorscheme.h"
 
-#include "audio_renderer.h"
+#include "audio_rendering_style.h"
 #include "colorspace.h"
+#include "main.h"
 
 #include <libaegisub/exception.h>
 
-static int lum_icy_normal(float t)
+AudioColorScheme::AudioColorScheme(int prec, std::string const& scheme_name, int audio_rendering_style)
+: palette((3<<prec) + 3)
+, factor(1<<prec)
 {
-	return std::min(255, (int)(128 * 2 * t));
-}
-
-static int lum_icy_selected(float t)
-{
-	return std::min(255, (int)(128 * (3 * t/2 + 0.5f)));
-}
-
-static int lum_icy_inactive(float t)
-{
-	return 32 + (int)(192 * t);
-}
-
-void AudioColorScheme::InitIcyBlue(int audio_rendering_style)
-{
-	int (*lum_func)(float);
+	std::string opt_base = "Colour/Schemes/" + scheme_name + "/";
 	switch (static_cast<AudioRenderingStyle>(audio_rendering_style))
 	{
-		case AudioStyle_Normal:   lum_func = lum_icy_normal; break;
-		case AudioStyle_Inactive: lum_func = lum_icy_inactive; break;
-		case AudioStyle_Active:   lum_func = lum_icy_normal; break;
-		case AudioStyle_Selected: lum_func = lum_icy_selected; break;
+		case AudioStyle_Normal:   opt_base += "Normal/"; break;
+		case AudioStyle_Inactive: opt_base += "Inactive/"; break;
+		case AudioStyle_Active:   opt_base += "Active/"; break;
+		case AudioStyle_Selected: opt_base += "Selected/"; break;
 		default: throw agi::InternalError("Unknown audio rendering styling", 0);
 	}
 
-	unsigned char *palptr = palette;
+	double h_base  = OPT_GET(opt_base + "Hue Offset")->GetDouble();
+	double h_scale = OPT_GET(opt_base + "Hue Scale")->GetDouble();
+	double s_base  = OPT_GET(opt_base + "Saturation Offset")->GetDouble();
+	double s_scale = OPT_GET(opt_base + "Saturation Scale")->GetDouble();
+	double l_base  = OPT_GET(opt_base + "Lightness Offset")->GetDouble();
+	double l_scale = OPT_GET(opt_base + "Lightness Scale")->GetDouble();
+
 	for (size_t i = 0; i <= factor; ++i)
 	{
 		float t = (float)i / factor;
-		int H = (int)(255 * (1.5 - t) / 2);
-		int S = (int)(255 * (0.5 + t/2));
-		int L = lum_func(t);
-		hsl_to_rgb(H, S, L, palptr + 0, palptr + 1, palptr + 2);
-		palptr += 4;
+		hsl_to_rgb(
+			mid<int>(0, h_base + t * h_scale, 255),
+			mid<int>(0, s_base + t * s_scale, 255),
+			mid<int>(0, l_base + t * l_scale, 255),
+			&palette[i * 3 + 0],
+			&palette[i * 3 + 1],
+			&palette[i * 3 + 2]);
 	}
 }
