@@ -38,7 +38,6 @@
 
 #ifndef AGI_PRE
 #include <deque>
-#include <inttypes.h>
 #include <sstream>
 #include <vector>
 
@@ -74,7 +73,7 @@ class MruMenu : public wxMenu {
 		for (size_t i = GetMenuItemCount(); i < new_size; ++i) {
 			if (i >= items.size()) {
 				items.push_back(new wxMenuItem(this, MENU_ID_BASE + cmds->size(), "_"));
-				cmds->push_back(cmd::get(STD_STR(wxString::Format("recent/%s/%" PRIu64, lagi_wxString(type).Lower(), i))));
+				cmds->push_back(cmd::get(STD_STR(wxString::Format("recent/%s/%d", lagi_wxString(type).Lower(), (int)i))));
 			}
 			Append(items[i]);
 		}

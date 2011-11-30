@@ -41,8 +41,6 @@
 #include "video_context.h"
 
 #ifndef AGI_PRE
-#include <inttypes.h>
-
 #include <wx/checkbox.h>
 #include <wx/msgdlg.h>
 #include <wx/sizer.h>
@@ -207,7 +205,7 @@ bool DialogTranslation::PrevBlock() {
 }
 
 void DialogTranslation::UpdateDisplay() {
-	line_number_display->SetLabel(wxString::Format(_("Current line: %" PRIu64 "/%" PRIu64), line_number, line_count));
+	line_number_display->SetLabel(wxString::Format(_("Current line: %d/%d"), (int)line_number, (int)line_count));
 
 	original_text->SetReadOnly(false);
 	original_text->ClearAll();
