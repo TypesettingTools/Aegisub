@@ -58,6 +58,12 @@
 #include "audio_player_portaudio.h"
 #endif
 
+static wxArrayString vec_to_arrstr(std::vector<std::string> const& vec) {
+	wxArrayString arrstr;
+	std::copy(vec.begin(), vec.end(), std::back_inserter(arrstr));
+	return arrstr;
+}
+
 #define CLASS_PAGE(name)                             \
 class name: public OptionPage {                  \
 public:                                          \
@@ -161,6 +167,11 @@ Audio::Audio(wxTreebook *book, Preferences *parent): OptionPage(book, parent, _(
 	OptionAdd(display, _("Keyframes"), "Audio/Display/Draw/Keyframes in Dialogue Mode");
 	OptionAdd(display, _("Karaoke keyframes"), "Audio/Display/Draw/Keyframes in Karaoke Mode");
 	OptionAdd(display, _("Video position"), "Audio/Display/Draw/Video Position");
+
+	wxFlexGridSizer *color = PageSizer(_("Color Schemes"));
+	wxArrayString schemes = vec_to_arrstr(OPT_GET("Audio/Colour Schemes")->GetListString());
+	OptionChoice(color, _("Spectrum"), schemes, "Colour/Audio Display/Spectrum");
+	OptionChoice(color, _("Waveform"), schemes, "Colour/Audio Display/Waveform");
 
 	SetSizerAndFit(sizer);
 }
@@ -430,12 +441,6 @@ Advanced_Interface::Advanced_Interface(wxTreebook *book, Preferences *parent): O
 	interface_->Add(new wxStaticText(this, wxID_ANY, "TBD..."), 0, wxALL, 5);
 
 	SetSizerAndFit(sizer);
-}
-
-static wxArrayString vec_to_arrstr(std::vector<std::string> const& vec) {
-	wxArrayString arrstr;
-	std::copy(vec.begin(), vec.end(), std::back_inserter(arrstr));
-	return arrstr;
 }
 
 /// Advanced Audio preferences subpage

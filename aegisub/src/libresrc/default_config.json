@@ -31,6 +31,10 @@
 			},
 			"Type" : 1
 		},
+		"Colour Schemes" : [
+			{ "string" : "Green" },
+			{ "string" : "Icy Blue" }
+		],
 		"Display Height" : 200,
 		"Display" : {
 			"Draw" : {
