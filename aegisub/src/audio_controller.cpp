@@ -331,8 +331,16 @@ void AudioController::OpenAudio(const wxString &url)
 		video_position_marker_provider->AddMarkerMovedListener(std::tr1::bind(std::tr1::ref(AnnounceMarkerMoved)));
 	}
 
-	// Tell listeners about this.
-	AnnounceAudioOpen(provider);
+	try
+	{
+		// Tell listeners about this.
+		AnnounceAudioOpen(provider);
+	}
+	catch (...)
+	{
+		CloseAudio();
+		throw;
+	}
 }
 
 
