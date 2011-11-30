@@ -100,9 +100,43 @@
 			"Spectrum" : "Icy Blue",
 			"Syllable Boundaries" : "rgb(255,255,0)",
 			"Syllable Text" : "rgb(255,0,0)",
-			"Waveform" : "Icy Blue"
+			"Waveform" : "Green"
 		},
 		"Schemes" : {
+			"Green" : {
+				"Normal" : {
+					"Hue Offset" : 85.01,
+					"Hue Scale" : 0.01,
+					"Saturation Offset" : 254.99,
+					"Saturation Scale" : 0.01,
+					"Lightness Offset" : 0.01,
+					"Lightness Scale" : 200.01
+				},
+				"Inactive" : {
+					"Hue Offset" : 85.01,
+					"Hue Scale" : 0.01,
+					"Saturation Offset" : 254.99,
+					"Saturation Scale" : 0.01,
+					"Lightness Offset" : 0.01,
+					"Lightness Scale" : 100.01
+				},
+				"Active" : {
+					"Hue Offset" : 85.01,
+					"Hue Scale" : 0.01,
+					"Saturation Offset" : 254.99,
+					"Saturation Scale" : 0.01,
+					"Lightness Offset" : 0.01,
+					"Lightness Scale" : 0.01
+				},
+				"Selected" : {
+					"Hue Offset" : 85.01,
+					"Hue Scale" : 0.01,
+					"Saturation Offset" : 127.99,
+					"Saturation Scale" : 0.01,
+					"Lightness Offset" : 25.01,
+					"Lightness Scale" : 300.01
+				}
+			},
 			"Icy Blue" : {
 				"Normal" : {
 					"Hue Offset" : 191.01,
