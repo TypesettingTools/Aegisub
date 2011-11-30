@@ -1,6 +1,6 @@
 include ../../Makefile.inc
 
-CXXFLAGS += -I../../ -I.. -I. -I../../libaegisub/include -I../include -DAEGISUB
+CXXFLAGS += -I../../ -I.. -I. -I../../libaegisub/include -I../include -DAEGISUB -D__STDC_FORMAT_MACROS 
 
 CXXFLAGS += $(CFLAGS_WX)
 PRECOMPILED_HEADER_NAME=../agi_pre.h
