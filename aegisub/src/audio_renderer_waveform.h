@@ -39,15 +39,21 @@
 #include <stdint.h>
 #endif
 
+#include <libaegisub/scoped_ptr.h>
+
+class AudioColorScheme;
+
+#include "audio_renderer.h"
+
 class AudioWaveformRenderer : public AudioRendererBitmapProvider {
 	/// Colour table used for regular rendering
-	AudioColorScheme colors_normal;
+	agi::scoped_ptr<AudioColorScheme> colors_normal;
 
 	/// Colour table used for rendering the audio selection
-	AudioColorScheme colors_selected;
+	agi::scoped_ptr<AudioColorScheme> colors_selected;
 
 	/// Colour table used for rendering inactive lines
-	AudioColorScheme colors_inactive;
+	agi::scoped_ptr<AudioColorScheme> colors_inactive;
 
 	/// Pre-allocated buffer for audio fetched from provider
 	char *audio_buffer;
@@ -60,7 +66,8 @@ class AudioWaveformRenderer : public AudioRendererBitmapProvider {
 
 public:
 	/// @brief Constructor
-	AudioWaveformRenderer();
+	/// @param color_scheme_name Name of the color scheme to use
+	AudioWaveformRenderer(std::string const& color_scheme_name);
 
 	/// @brief Destructor
 	~AudioWaveformRenderer();

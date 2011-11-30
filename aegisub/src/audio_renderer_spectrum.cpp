@@ -43,7 +43,6 @@
 #include "fft.h"
 #endif
 #include "include/aegisub/audio_provider.h"
-#include "main.h"
 #include "utils.h"
 
 #include <libaegisub/log.h>
@@ -105,10 +104,10 @@ public:
 };
 
 
-AudioSpectrumRenderer::AudioSpectrumRenderer()
-: colors_normal(new AudioColorScheme(12, "Icy Blue", AudioStyle_Normal))
-, colors_selected(new AudioColorScheme(12, "Icy Blue", AudioStyle_Selected))
-, colors_inactive(new AudioColorScheme(12, "Icy Blue", AudioStyle_Inactive))
+AudioSpectrumRenderer::AudioSpectrumRenderer(std::string const& color_scheme_name)
+: colors_normal(new AudioColorScheme(12, color_scheme_name, AudioStyle_Normal))
+, colors_selected(new AudioColorScheme(12, color_scheme_name, AudioStyle_Selected))
+, colors_inactive(new AudioColorScheme(12, color_scheme_name, AudioStyle_Inactive))
 , derivation_size(8)
 , derivation_dist(8)
 #ifdef WITH_FFTW

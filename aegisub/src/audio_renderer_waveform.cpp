@@ -36,24 +36,23 @@
 
 #include "config.h"
 
+#include "audio_renderer_waveform.h"
+
 #ifndef AGI_PRE
 #include <algorithm>
 
 #include <wx/dcmemory.h>
 #endif
 
-#include "block_cache.h"
-#include "include/aegisub/audio_provider.h"
 #include "audio_colorscheme.h"
-#include "audio_renderer.h"
-#include "audio_renderer_waveform.h"
+#include "block_cache.h"
 #include "colorspace.h"
+#include "include/aegisub/audio_provider.h"
 
-AudioWaveformRenderer::AudioWaveformRenderer()
-: AudioRendererBitmapProvider()
-, colors_normal(6, "Icy Blue", AudioStyle_Normal)
-, colors_selected(6, "Icy Blue", AudioStyle_Selected)
-, colors_inactive(6, "Icy Blue", AudioStyle_Inactive)
+AudioWaveformRenderer::AudioWaveformRenderer(std::string const& color_scheme_name)
+: colors_normal(new AudioColorScheme(6, color_scheme_name, AudioStyle_Normal))
+, colors_selected(new AudioColorScheme(6, color_scheme_name, AudioStyle_Selected))
+, colors_inactive(new AudioColorScheme(6, color_scheme_name, AudioStyle_Inactive))
 , audio_buffer(0)
 {
 }
@@ -169,8 +168,8 @@ const AudioColorScheme *AudioWaveformRenderer::GetColorScheme(AudioRenderingStyl
 {
 	switch (style)
 	{
-		case AudioStyle_Selected: return &colors_selected;
-		case AudioStyle_Inactive: return &colors_inactive;
-		default: return &colors_normal;
+		case AudioStyle_Selected: return colors_selected.get();
+		case AudioStyle_Inactive: return colors_inactive.get();
+		default: return colors_normal.get();
 	}
 }

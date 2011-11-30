@@ -121,7 +121,8 @@ class AudioSpectrumRenderer : public AudioRendererBitmapProvider {
 
 public:
 	/// @brief Constructor
-	AudioSpectrumRenderer();
+	/// @param color_scheme_name Name of the color scheme to use
+	AudioSpectrumRenderer(std::string const& color_scheme_name);
 
 	/// @brief Destructor
 	~AudioSpectrumRenderer();

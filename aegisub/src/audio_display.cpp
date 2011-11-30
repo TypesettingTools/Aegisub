@@ -763,7 +763,7 @@ void AudioDisplay::ReloadRenderingSettings()
 {
 	if (OPT_GET("Audio/Spectrum")->GetBool())
 	{
-		AudioSpectrumRenderer *audio_spectrum_renderer = new AudioSpectrumRenderer;
+		AudioSpectrumRenderer *audio_spectrum_renderer = new AudioSpectrumRenderer(OPT_GET("Colour/Audio Display/Spectrum")->GetString());
 
 		int64_t spectrum_quality = OPT_GET("Audio/Renderer/Spectrum/Quality")->GetInt();
 #ifdef WITH_FFTW
@@ -784,7 +784,7 @@ void AudioDisplay::ReloadRenderingSettings()
 	}
 	else
 	{
-		audio_renderer_provider.reset(new AudioWaveformRenderer);
+		audio_renderer_provider.reset(new AudioWaveformRenderer(OPT_GET("Colour/Audio Display/Waveform")->GetString()));
 	}
 
 	audio_renderer->SetRenderer(audio_renderer_provider.get());
@@ -1199,6 +1199,9 @@ void AudioDisplay::OnAudioOpen(AudioProvider *provider)
 			connections.push_back(controller->AddSelectionChangedListener(&AudioDisplay::OnSelectionChanged, this));
 			connections.push_back(controller->AddStyleRangesChangedListener(&AudioDisplay::OnStyleRangesChanged, this));
 			connections.push_back(OPT_SUB("Audio/Spectrum", &AudioDisplay::ReloadRenderingSettings, this));
+			connections.push_back(OPT_SUB("Colour/Audio Display/Spectrum", &AudioDisplay::ReloadRenderingSettings, this));
+			connections.push_back(OPT_SUB("Colour/Audio Display/Waveform", &AudioDisplay::ReloadRenderingSettings, this));
+			connections.push_back(OPT_SUB("Audio/Renderer/Spectrum/Quality", &AudioDisplay::ReloadRenderingSettings, this));
 		}
 	}
 	else
