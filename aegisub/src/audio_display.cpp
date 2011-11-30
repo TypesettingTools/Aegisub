@@ -565,8 +565,6 @@ AudioDisplay::AudioDisplay(wxWindow *parent, AudioController *controller, agi::C
 	audio_renderer->SetAmplitudeScale(scale_amplitude);
 	SetZoomLevel(0);
 
-	ReloadRenderingSettings();
-
 	SetMinClientSize(wxSize(-1, 70));
 	SetBackgroundStyle(wxBG_STYLE_PAINT);
 	SetThemeEnabled(false);
@@ -1172,9 +1170,12 @@ void AudioDisplay::OnFocus(wxFocusEvent &event)
 }
 
 
-void AudioDisplay::OnAudioOpen(AudioProvider *_provider)
+void AudioDisplay::OnAudioOpen(AudioProvider *provider)
 {
-	provider = _provider;
+	this->provider = provider;
+
+	if (!audio_renderer_provider)
+		ReloadRenderingSettings();
 
 	audio_renderer->SetAudioProvider(provider);
 	audio_renderer->SetCacheMaxSize(OPT_GET("Audio/Renderer/Spectrum/Memory Max")->GetInt() * 1024 * 1024);
