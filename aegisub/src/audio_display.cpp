@@ -279,20 +279,22 @@ class AudioDisplayTimeline : public AudioDisplayInteractionObject {
 		Sc_MAX = Sc_Decahour
 	};
 	Scale scale_minor;
-	int scale_major_modulo; // If minor_scale_mark_index % scale_major_modulo == 0 the mark is a major mark
-	double scale_minor_divisor; // Absolute scale-mark index multiplied by this number gives sample index for scale mark
+	int scale_major_modulo; ///< If minor_scale_mark_index % scale_major_modulo == 0 the mark is a major mark
+	double scale_minor_divisor; ///< Absolute scale-mark index multiplied by this number gives sample index for scale mark
 
 	AudioDisplay *display;
 
+	UIColours colours; ///< Colour provider
+
 public:
 
-	AudioDisplayTimeline(AudioDisplay *_display)
-		: num_samples(0)
-		, samplerate(44100)
-		, samples_per_pixel(1)
-		, pixel_left(0)
-		, dragging(false)
-		, display(_display)
+	AudioDisplayTimeline(AudioDisplay *display)
+	: num_samples(0)
+	, samplerate(44100)
+	, samples_per_pixel(1)
+	, pixel_left(0)
+	, dragging(false)
+	, display(display)
 	{
 	}
 
@@ -301,6 +303,11 @@ public:
 		int width, height;
 		display->GetTextExtent("0123456789:.", &width, &height);
 		return height + 4;
+	}
+
+	void SetColourScheme(std::string const& name)
+	{
+		colours.SetColourScheme(name);
 	}
 
 	void SetDisplaySize(const wxSize &display_size)
@@ -391,23 +398,20 @@ public:
 
 	void Paint(wxDC &dc)
 	{
-		wxColour light(89, 145, 220);
-		wxColour dark(8, 4, 13);
-
 		int bottom = bounds.y + bounds.height;
 
 		// Background
-		dc.SetPen(wxPen(dark));
-		dc.SetBrush(wxBrush(dark));
+		dc.SetPen(wxPen(colours.Dark()));
+		dc.SetBrush(wxBrush(colours.Dark()));
 		dc.DrawRectangle(bounds);
 
 		// Top line
-		dc.SetPen(wxPen(light));
+		dc.SetPen(wxPen(colours.Light()));
 		dc.DrawLine(bounds.x, bottom-1, bounds.x+bounds.width, bottom-1);
 
 		// Prepare for writing text
-		dc.SetTextBackground(dark);
-		dc.SetTextForeground(light);
+		dc.SetTextBackground(colours.Dark());
+		dc.SetTextForeground(colours.Light());
 
 		// Figure out the first scale mark to show
 		int64_t sample_left = pixel_left * samples_per_pixel;
@@ -839,6 +843,7 @@ void AudioDisplay::ReloadRenderingSettings()
 
 	audio_renderer->SetRenderer(audio_renderer_provider.get());
 	scrollbar->SetColourScheme(colour_scheme_name);
+	timeline->SetColourScheme(colour_scheme_name);
 
 	Refresh();
 }
