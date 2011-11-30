@@ -139,6 +139,16 @@
 					"Saturation Scale" : 0.01,
 					"Lightness Offset" : 25.01,
 					"Lightness Scale" : 300.01
+				},
+				"UI" : {
+					"Light" : "rgb(0, 200, 0)",
+					"Dark" : "rgb(0, 10, 0)",
+					"Selection" : "rgb(0, 80, 0)"
+				},
+				"UI Focused" : {
+					"Light" : "rgb(50, 255, 50)",
+					"Dark" : "rgb(0, 10, 0)",
+					"Selection" : "rgb(0, 80, 0)"
 				}
 			},
 			"Icy Blue" : {
@@ -173,6 +183,16 @@
 					"Saturation Scale" : 128.01,
 					"Lightness Offset" : 64.01,
 					"Lightness Scale" : 192.01
+				},
+				"UI" : {
+					"Light" : "rgb(89, 145, 220)",
+					"Dark" : "rgb(8, 4, 13)",
+					"Selection" : "rgb(65, 34, 103)"
+				},
+				"UI Focused" : {
+					"Light" : "rgb(205, 240, 226)",
+					"Dark" : "rgb(8, 4, 13)",
+					"Selection" : "rgb(82, 107, 213)"
 				}
 			}
 		},

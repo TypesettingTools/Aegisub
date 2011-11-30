@@ -54,6 +54,7 @@
 #include "audio_renderer_waveform.h"
 #include "audio_timing.h"
 #include "block_cache.h"
+#include "compat.h"
 #include "include/aegisub/audio_provider.h"
 #include "include/aegisub/context.h"
 #include "include/aegisub/hotkey.h"
@@ -62,6 +63,53 @@
 #include "utils.h"
 #include "video_context.h"
 
+/// @brief Colourscheme-based UI colour provider
+///
+/// This class provides UI colours corresponding to the supplied audio colour
+/// scheme.
+///
+/// SetColourScheme must be called to set the active colour scheme before
+/// colours can be retrieved
+class UIColours {
+	wxColour light_colour;         ///< Light unfocused colour from the colour scheme
+	wxColour dark_colour;          ///< Dark unfocused colour from the colour scheme
+	wxColour sel_colour;           ///< Selection unfocused colour from the colour scheme
+	wxColour light_focused_colour; ///< Light focused colour from the colour scheme
+	wxColour dark_focused_colour;  ///< Dark focused colour from the colour scheme
+	wxColour sel_focused_colour;   ///< Selection focused colour from the colour scheme
+
+	bool focused; ///< Use the focused colours?
+public:
+	/// Constructor
+	UIColours() : focused(false) { }
+
+	/// Set the colour scheme to load colours from
+	/// @param name Name of the colour scheme
+	void SetColourScheme(std::string const& name)
+	{
+		std::string opt_prefix = "Colour/Schemes/" + name + "/UI/";
+		light_colour = lagi_wxColour(OPT_GET(opt_prefix + "Light")->GetColour());
+		dark_colour = lagi_wxColour(OPT_GET(opt_prefix + "Dark")->GetColour());
+		sel_colour = lagi_wxColour(OPT_GET(opt_prefix + "Selection")->GetColour());
+
+		opt_prefix = "Colour/Schemes/" + name + "/UI Focused/";
+		light_focused_colour = lagi_wxColour(OPT_GET(opt_prefix + "Light")->GetColour());
+		dark_focused_colour = lagi_wxColour(OPT_GET(opt_prefix + "Dark")->GetColour());
+		sel_focused_colour = lagi_wxColour(OPT_GET(opt_prefix + "Selection")->GetColour());
+	}
+
+	/// Set whether to use the focused or unfocused colours
+	/// @param focused If true, focused colours will be returned
+	void SetFocused(bool focused) { this->focused = focused; }
+
+	/// Get the current Light colour
+	wxColour Light() const { return focused ? light_focused_colour : light_colour; }
+	/// Get the current Dark colour
+	wxColour Dark() const { return focused ? dark_focused_colour : dark_colour; }
+	/// Get the current Selection colour
+	wxColour Selection() const { return focused ? sel_focused_colour : sel_colour; }
+};
+
 class AudioDisplayScrollbar : public AudioDisplayInteractionObject {
 	static const int height = 10;
 	static const int min_width = 10;
@@ -69,15 +117,18 @@ class AudioDisplayScrollbar : public AudioDisplayInteractionObject {
 	wxRect bounds;
 	wxRect thumb;
 
-	bool dragging;   // user is dragging with the primary mouse button
+	bool dragging;   ///< user is dragging with the primary mouse button
 
-	int data_length; // total amount of data in control
-	int page_length; // amount of data in one page
-	int position;    // first item displayed
+	int data_length; ///< total amount of data in control
+	int page_length; ///< amount of data in one page
+	int position;    ///< first item displayed
 
-	int sel_start;   // first data item in selection
-	int sel_length;  // number of data items in selection
+	int sel_start;   ///< first data item in selection
+	int sel_length;  ///< number of data items in selection
 
+	UIColours colours; ///< Colour provider
+
+	/// Containing display to send scroll events to
 	AudioDisplay *display;
 
 	// Recalculate thumb bounds from position and length data
@@ -90,19 +141,18 @@ class AudioDisplayScrollbar : public AudioDisplayInteractionObject {
 	}
 
 public:
-
 	AudioDisplayScrollbar(AudioDisplay *display)
-		: dragging(false)
-		, data_length(1)
-		, page_length(1)
-		, position(0)
-		, sel_start(-1)
-		, sel_length(0)
-		, display(display)
+	: dragging(false)
+	, data_length(1)
+	, page_length(1)
+	, position(0)
+	, sel_start(-1)
+	, sel_length(0)
+	, display(display)
 	{
 	}
 
-	// The audio display has changed size
+	/// The audio display has changed size
 	void SetDisplaySize(const wxSize &display_size)
 	{
 		bounds.x = 0;
@@ -114,9 +164,12 @@ public:
 		RecalculateThumb();
 	}
 
+	void SetColourScheme(std::string const& name)
+	{
+		colours.SetColourScheme(name);
+	}
 
 	const wxRect & GetBounds() const { return bounds; }
-
 	int GetPosition() const { return position; }
 
 	int SetPosition(int new_position)
@@ -170,18 +223,10 @@ public:
 
 	void Paint(wxDC &dc, bool has_focus)
 	{
-		wxColour light(89, 145, 220);
-		wxColour dark(8, 4, 13);
-		wxColour sel(65, 34, 103);
+		colours.SetFocused(has_focus);
 
-		if (has_focus)
-		{
-			light.Set(205, 240, 226);
-			sel.Set(82, 107, 213);
-		}
-
-		dc.SetPen(wxPen(light));
-		dc.SetBrush(wxBrush(dark));
+		dc.SetPen(wxPen(colours.Light()));
+		dc.SetBrush(wxBrush(colours.Dark()));
 		dc.DrawRectangle(bounds);
 
 		if (sel_length > 0 && sel_start >= 0)
@@ -192,20 +237,21 @@ public:
 			r.width = sel_length * bounds.width / data_length;
 			r.height = bounds.height;
 
-			dc.SetPen(wxPen(sel));
-			dc.SetBrush(wxBrush(sel));
+			dc.SetPen(wxPen(colours.Selection()));
+			dc.SetBrush(wxBrush(colours.Selection()));
 			dc.DrawRectangle(r);
 		}
 
-		dc.SetPen(wxPen(light));
+		dc.SetPen(wxPen(colours.Light()));
 		dc.SetBrush(*wxTRANSPARENT_BRUSH);
 		dc.DrawRectangle(bounds);
 
-		dc.SetPen(wxPen(light));
-		dc.SetBrush(wxBrush(light));
+		dc.SetPen(wxPen(colours.Light()));
+		dc.SetBrush(wxBrush(colours.Light()));
 		dc.DrawRectangle(thumb);
 	}
 };
+
 const int AudioDisplayScrollbar::min_width;
 
 
@@ -761,9 +807,12 @@ float AudioDisplay::GetAmplitudeScale() const
 
 void AudioDisplay::ReloadRenderingSettings()
 {
+	std::string colour_scheme_name;
+
 	if (OPT_GET("Audio/Spectrum")->GetBool())
 	{
-		AudioSpectrumRenderer *audio_spectrum_renderer = new AudioSpectrumRenderer(OPT_GET("Colour/Audio Display/Spectrum")->GetString());
+		colour_scheme_name = OPT_GET("Colour/Audio Display/Spectrum")->GetString();
+		AudioSpectrumRenderer *audio_spectrum_renderer = new AudioSpectrumRenderer(colour_scheme_name);
 
 		int64_t spectrum_quality = OPT_GET("Audio/Renderer/Spectrum/Quality")->GetInt();
 #ifdef WITH_FFTW
@@ -784,10 +833,12 @@ void AudioDisplay::ReloadRenderingSettings()
 	}
 	else
 	{
-		audio_renderer_provider.reset(new AudioWaveformRenderer(OPT_GET("Colour/Audio Display/Waveform")->GetString()));
+		colour_scheme_name = OPT_GET("Colour/Audio Display/Waveform")->GetString();
+		audio_renderer_provider.reset(new AudioWaveformRenderer(colour_scheme_name));
 	}
 
 	audio_renderer->SetRenderer(audio_renderer_provider.get());
+	scrollbar->SetColourScheme(colour_scheme_name);
 
 	Refresh();
 }
