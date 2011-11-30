@@ -1209,7 +1209,22 @@ void AudioDisplay::OnAudioOpen(AudioProvider *provider)
 
 void AudioDisplay::OnPlaybackPosition(int64_t sample_position)
 {
-	SetTrackCursor(AbsoluteXFromSamples(sample_position), false);
+	int pixel_position = AbsoluteXFromSamples(sample_position);
+	SetTrackCursor(pixel_position, false);
+
+	if (OPT_GET("Audio/Lock Scroll on Cursor")->GetBool())
+	{
+		int client_width = GetClientSize().GetWidth();
+		int edge_size = client_width / 20;
+		if (scroll_left > 0 && pixel_position < scroll_left + edge_size)
+		{
+			ScrollBy(-std::min(edge_size, scroll_left));
+		}
+		else if (scroll_left + client_width < std::min(pixel_audio_width - 1, pixel_position + edge_size))
+		{
+			ScrollBy(std::min(edge_size, pixel_audio_width - client_width - scroll_left - 1));
+		}
+	}
 }
 
 void AudioDisplay::OnSelectionChanged()
