@@ -51,6 +51,7 @@
 #include "libresrc/libresrc.h"
 #include "timeedit_ctrl.h"
 #include "utils.h"
+#include "validators.h"
 #include "video_context.h"
 
 DialogJumpTo::DialogJumpTo(agi::Context *c)
@@ -68,7 +69,7 @@ DialogJumpTo::DialogJumpTo(agi::Context *c)
 	// Times
 	wxStaticText *LabelFrame = new wxStaticText(this,-1,_("Frame: "),wxDefaultPosition,wxSize(60,20));
 	wxStaticText *LabelTime = new wxStaticText(this,-1,_("Time: "),wxDefaultPosition,wxSize(60,20));
-	JumpFrame = new wxTextCtrl(this,-1,wxString::Format("%i",jumpframe),wxDefaultPosition,wxSize(60,20),wxTE_PROCESS_ENTER);
+	JumpFrame = new wxTextCtrl(this,-1,wxString::Format("%i",jumpframe),wxDefaultPosition,wxSize(60,20),wxTE_PROCESS_ENTER, NumValidator());
 	JumpFrame->SetMaxLength(maxLength.size());
 	JumpTime = new TimeEdit(this,-1,jumptime.GetASSFormated(),wxDefaultPosition,wxSize(60,20),wxTE_PROCESS_ENTER);
 	wxSizer *FrameSizer = new wxBoxSizer(wxHORIZONTAL);
@@ -120,8 +121,6 @@ void DialogJumpTo::OnEditTime (wxCommandEvent &) {
 
 void DialogJumpTo::OnEditFrame (wxCommandEvent &event) {
 	JumpFrame->GetValue().ToLong(&jumpframe);
-	JumpFrame->ChangeValue(wxString::Format("%i", jumpframe));
-
 	int newtime = c->videoController->TimeAtFrame(jumpframe);
 	if (JumpTime->time.GetMS() != newtime) {
 		JumpTime->time.SetMS(newtime);
