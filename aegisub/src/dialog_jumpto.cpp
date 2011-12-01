@@ -69,7 +69,7 @@ DialogJumpTo::DialogJumpTo(agi::Context *c)
 	// Times
 	wxStaticText *LabelFrame = new wxStaticText(this,-1,_("Frame: "),wxDefaultPosition,wxSize(60,20));
 	wxStaticText *LabelTime = new wxStaticText(this,-1,_("Time: "),wxDefaultPosition,wxSize(60,20));
-	JumpFrame = new wxTextCtrl(this,-1,wxString::Format("%i",jumpframe),wxDefaultPosition,wxSize(60,20),wxTE_PROCESS_ENTER, NumValidator());
+	JumpFrame = new wxTextCtrl(this,-1,wxString::Format("%ld",jumpframe),wxDefaultPosition,wxSize(60,20),wxTE_PROCESS_ENTER, NumValidator());
 	JumpFrame->SetMaxLength(maxLength.size());
 	JumpTime = new TimeEdit(this,-1,jumptime.GetASSFormated(),wxDefaultPosition,wxSize(60,20),wxTE_PROCESS_ENTER);
 	wxSizer *FrameSizer = new wxBoxSizer(wxHORIZONTAL);
