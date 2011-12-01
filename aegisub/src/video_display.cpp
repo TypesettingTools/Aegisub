@@ -312,18 +312,21 @@ void VideoDisplay::UpdateSize(int arType, double arValue) {
 		viewport_height = h;
 
 		wxSize size(cw, ch);
-		SetMinClientSize(size);
-		SetMaxClientSize(size);
+		if (size != GetClientSize()) {
+			SetMinClientSize(size);
+			SetMaxClientSize(size);
 
-		SetEvtHandlerEnabled(false);
-		GetGrandParent()->Layout();
+			SetEvtHandlerEnabled(false);
+			GetGrandParent()->Layout();
 
-		// The sizer makes us use the full width, which at very low zoom levels
-		// results in stretched video, so after using the sizer to update the 
-		// parent window sizes, reset our size to the correct value
-		SetSize(cw, ch);
+			// The sizer makes us use the full width, which at very low zoom
+			// levels results in stretched video, so after using the sizer to
+			// update the parent window sizes, reset our size to the correct
+			// value
+			SetSize(cw, ch);
 
-		SetEvtHandlerEnabled(true);
+			SetEvtHandlerEnabled(true);
+		}
 	}
 
 	if (tool.get())
