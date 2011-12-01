@@ -200,6 +200,12 @@
 				"key" : "F2"
 			}
 		],
+		"subtitle/save/as" : [
+			{
+				"modifiers" : [ "Ctrl", "Shift" ],
+				"key" : "S"
+			}
+		],
 		"time/frame/current" : [
 			{
 				"modifiers" : [ "Ctrl" ],
