@@ -34,108 +34,73 @@
 /// @ingroup libaegisub
 ///
 
-
-////////////
-// Includes
 #include "config.h"
 
+#include "dialog_log.h"
+
 #ifndef AGI_PRE
+#include <ctime>
+#include <functional>
 #include <string>
 
 #include <wx/button.h>
-#include <wx/panel.h>
 #include <wx/sizer.h>
-#include <wx/statline.h>
 #include <wx/stattext.h>
+#include <wx/textctrl.h>
 #endif
 
-#include <time.h>
-#include "dialog_log.h"
+class EmitLog : public agi::log::Emitter {
+	wxTextCtrl *text_ctrl;
+public:
+	EmitLog(wxTextCtrl *t)
+	: text_ctrl(t)
+	{
+		const agi::log::Sink *sink = agi::log::log->GetSink();
+		for_each(sink->begin(), sink->end(), bind(&EmitLog::log, this, std::tr1::placeholders::_1));
+	}
 
-/// @brief Constructor
-/// @param parent Parent frame.
+	void log(agi::log::SinkMessage *sm) {
+#ifndef _WIN32
+		tm tmtime;
+		localtime_r(&sm->tv.tv_sec, &tmtime);
+		wxString log = wxString::Format("%c %02d:%02d:%02d %-6ld <%-25s> [%s:%s:%d]  %s\n",
+			agi::log::Severity_ID[sm->severity],
+			tmtime.tm_hour,
+			tmtime.tm_min,
+			tmtime.tm_sec,
+			sm->tv.tv_usec,
+			sm->section,
+			sm->file,
+			sm->func,
+			sm->line,
+			std::string(sm->message, sm->len));
+#else
+		wxString log = wxString::Format("%c %-6ld <%-25s> [%s:%s:%d]  %s\n",
+			agi::log::Severity_ID[sm->severity],
+			sm->tv.tv_usec,
+			sm->section,
+			sm->file,
+			sm->func,
+			sm->line,
+			std::string(sm->message, sm->len));
+#endif
+		text_ctrl->AppendText(log);
+	}
+};
+
 LogWindow::LogWindow(wxWindow *parent)
-: wxDialog (parent, -1, _("Log window"), wxDefaultPosition, wxSize(700,300), wxCAPTION | wxCLOSE_BOX | wxRESIZE_BORDER, _("Log window"))
+: wxDialog (parent, -1, _("Log window"), wxDefaultPosition, wxDefaultSize, wxCAPTION | wxCLOSE_BOX | wxRESIZE_BORDER)
 {
-	// Text sizer
-	wxSizer *sizer_text = new wxBoxSizer(wxVERTICAL);
-
-	wxTextCtrl *text_ctrl = new wxTextCtrl(this, wxID_ANY, wxEmptyString ,wxDefaultPosition, wxSize(700,300), wxTE_MULTILINE|wxTE_READONLY);
-	wxTextAttr attr;
-	attr.SetFont(wxFont(8, wxFONTFAMILY_TELETYPE, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL));
-	text_ctrl->SetDefaultStyle(attr);
-	sizer_text->Add(text_ctrl, 1, wxEXPAND);
-
-	wxSizer *sizer_button = new wxBoxSizer(wxHORIZONTAL);
-	sizer_button->Add(new wxButton(this, wxID_OK), 0, wxALIGN_RIGHT | wxALL, 2);
-
+	wxTextCtrl *text_ctrl = new wxTextCtrl(this, -1, "", wxDefaultPosition, wxSize(700,300), wxTE_MULTILINE|wxTE_READONLY);
+	text_ctrl->SetDefaultStyle(wxTextAttr(wxNullColour, wxNullColour, wxFont(8, wxMODERN, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL)));
 
 	wxSizer *sizer = new wxBoxSizer(wxVERTICAL);
-	sizer->Add(sizer_text, 1 ,wxEXPAND|wxALL, 0);
-	sizer->Add(sizer_button, 0 ,wxEXPAND|wxALL, 0);
-	sizer->SetSizeHints(this);
-	SetSizer(sizer);
+	sizer->Add(text_ctrl, wxSizerFlags(1).Expand().Border());
+	sizer->Add(new wxButton(this, wxID_OK), wxSizerFlags(0).Border().Right());
+	SetSizerAndFit(sizer);
 
-	emit_log = new EmitLog(text_ctrl);
+	emit_log.reset(new EmitLog(text_ctrl));
 	emit_log->Enable();
+
+	Bind(wxEVT_CLOSE_WINDOW, std::tr1::bind(&wxDialog::Destroy, this));
 }
-
-
-/// @brief Destructor
-LogWindow::~LogWindow() {
-	delete emit_log;
-}
-
-
-LogWindow::EmitLog::EmitLog(wxTextCtrl *t): text_ctrl(t) {
-	const agi::log::Sink *sink = agi::log::log->GetSink();
-
-	for (unsigned int i=0; i < sink->size(); i++) {
-		Write((*sink)[i]);
-	}
-}
-
-
-void LogWindow::EmitLog::Write(agi::log::SinkMessage *sm) {
-#ifndef _WIN32
-	tm tmtime;
-	localtime_r(&sm->tv.tv_sec, &tmtime);
-	wxString log = wxString::Format("%c %02d:%02d:%02d %-6ld <%-25s> [%s:%s:%d]  %s\n",
-		agi::log::Severity_ID[sm->severity],
-		tmtime.tm_hour,
-		tmtime.tm_min,
-		tmtime.tm_sec,
-		sm->tv.tv_usec,
-		sm->section,
-		sm->file,
-		sm->func,
-		sm->line,
-		std::string(sm->message, sm->len));
-#else
-	wxString log = wxString::Format("%c %-6ld <%-25s> [%s:%s:%d]  %s\n",
-		agi::log::Severity_ID[sm->severity],
-		sm->tv.tv_usec,
-		sm->section,
-		sm->file,
-		sm->func,
-		sm->line,
-		std::string(sm->message, sm->len));
-#endif
-	text_ctrl->AppendText(log);
-}
-
-
-void LogWindow::EmitLog::log(agi::log::SinkMessage *sm) {
-	delete text_ctrl;
-	Write(sm);
-}
-
-
-void LogWindow::OnClose(wxCloseEvent &WXUNUSED(event)) {
-	Destroy();
-}
-
-
-BEGIN_EVENT_TABLE(LogWindow, wxDialog)
-    EVT_CLOSE(LogWindow::OnClose)
-END_EVENT_TABLE()

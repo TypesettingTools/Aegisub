@@ -34,40 +34,18 @@
 /// @ingroup libaegisub
 ///
 
-
-
-
-////////////
-// Includes
 #ifndef AGI_PRE
 #include <wx/dialog.h>
-#include <wx/textctrl.h>
 #endif
 
 #include <libaegisub/log.h>
-
-/// @class AboutScreen
-/// @brief About dialogue.
+#include <libaegisub/scoped_ptr.h>
 
 class LogWindow: public wxDialog {
+	agi::scoped_ptr<agi::log::Emitter> emit_log;
+
 public:
-
-	class EmitLog: public agi::log::Emitter {
-		wxTextCtrl *text_ctrl;
-		void Write(agi::log::SinkMessage *sm);
-	public:
-		EmitLog(wxTextCtrl *t);
-		void Prime();
-		void Set(wxTextCtrl *text_ctrl_p) { text_ctrl = text_ctrl_p; }
-    	void log(agi::log::SinkMessage *sm);
-	};
-
-
+	/// @brief Constructor
+	/// @param parent Parent frame.
 	LogWindow(wxWindow *parent);
-	~LogWindow();
-	DECLARE_EVENT_TABLE()
-private:
-	void OnClose(wxCloseEvent &event);
-	EmitLog *emit_log;
 };
-
