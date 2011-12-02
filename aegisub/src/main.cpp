@@ -40,6 +40,7 @@
 #include "config.h"
 
 #ifndef AGI_PRE
+#include <wx/clipbrd.h>
 #include <wx/config.h>
 #include <wx/datetime.h>
 #include <wx/filefn.h>
@@ -321,6 +322,11 @@ bool AegisubApp::OnInit() {
 /// @return 
 ///
 int AegisubApp::OnExit() {
+	if (wxTheClipboard->Open()) {
+		wxTheClipboard->Flush();
+		wxTheClipboard->Close();
+	}
+
 	SubtitleFormat::DestroyFormats();
 	VideoContext::OnExit();
 	delete plugins;
