@@ -434,13 +434,7 @@ void VideoContext::Stop() {
 	}
 }
 
-void VideoContext::OnPlayTimer(wxTimerEvent &event) {
-	// Lock
-	wxMutexError res = playMutex.TryLock();
-	if (res == wxMUTEX_BUSY) return;
-	playMutex.Unlock();
-	wxMutexLocker lock(playMutex);
-
+void VideoContext::OnPlayTimer(wxTimerEvent &) {
 	// Get time difference
 	int dif = playTime.Time();
 

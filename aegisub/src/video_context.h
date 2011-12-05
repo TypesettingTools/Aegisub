@@ -93,9 +93,6 @@ class VideoContext : public wxEvtHandler {
 	wxString keyFramesFilename;
 
 	/// DOCME
-	wxMutex playMutex;
-
-	/// DOCME
 	wxTimer playback;
 
 	/// DOCME
