@@ -164,19 +164,14 @@ void VideoSlider::OnMouse(wxMouseEvent &event) {
 }
 
 void VideoSlider::OnKeyDown(wxKeyEvent &event) {
-	if (c->videoController->IsPlaying()) return;
-
 	if (hotkey::check("Video", c, event.GetKeyCode(), event.GetUnicodeKey(), event.GetModifiers()))
 		return;
 
-	// Forward up/down to grid
+	// Forward up/down to grid as those aren't yet handled by commands
 	if (event.GetKeyCode() == WXK_UP || event.GetKeyCode() == WXK_DOWN) {
 		c->subsGrid->GetEventHandler()->ProcessEvent(event);
 		c->subsGrid->SetFocus();
-		return;
 	}
-
-	event.Skip();
 }
 
 void VideoSlider::OnPaint(wxPaintEvent &event) {
