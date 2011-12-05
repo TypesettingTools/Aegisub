@@ -75,7 +75,6 @@ VideoContext::VideoContext()
 , startMS(0)
 , endFrame(0)
 , nextFrame(-1)
-, keepAudioSync(true)
 , frame_n(0)
 , arValue(1.)
 , arType(0)
@@ -431,26 +430,10 @@ void VideoContext::OnPlayTimer(wxTimerEvent &) {
 		return;
 	}
 
-
-	// Next frame is before or over 2 frames ahead, so force audio resync
-	if (context->audioController->IsPlaying() && keepAudioSync && (nextFrame < frame_n || nextFrame > frame_n + 2)) {
-		context->audioController->ResyncPlaybackPosition(context->audioController->SamplesFromMilliseconds(TimeAtFrame(nextFrame)));
-	}
-
 	// Jump to next frame
 	frame_n = nextFrame;
 	GetFrameAsync(frame_n);
 	Seek(frame_n);
-
-	// Sync audio
-	if (keepAudioSync && nextFrame % 10 == 0 && context->audioController->IsPlaying()) {
-		int64_t audPos = context->audioController->SamplesFromMilliseconds(TimeAtFrame(nextFrame));
-		int64_t curPos = context->audioController->GetPlaybackPosition();
-		int delta = int(audPos-curPos);
-		if (delta < 0) delta = -delta;
-		int maxDelta = context->audioController->SamplesFromMilliseconds(1000);
-		if (delta > maxDelta) context->audioController->ResyncPlaybackPosition(audPos);
-	}
 }
 
 double VideoContext::GetARFromType(int type) const {

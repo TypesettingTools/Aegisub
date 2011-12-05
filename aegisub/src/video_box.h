@@ -67,9 +67,6 @@ class VideoBox : public wxPanel, private SelectionListener<AssDialogue> {
 	wxTextCtrl *VideoSubsPos;  ///< Time relative to the active subtitle line
 	wxComboBox *zoomBox;
 
-	/// Handle a click on the play/pause buttons
-	void OnButton(wxCommandEvent &evt);
-
 	/// Update VideoPosition and VideoSubsPos
 	void UpdateTimeBoxes();
 

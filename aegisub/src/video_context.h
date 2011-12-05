@@ -108,9 +108,6 @@ class VideoContext : public wxEvtHandler {
 	int nextFrame;
 
 	/// DOCME
-	bool keepAudioSync;
-
-	/// DOCME
 	int frame_n;
 
 	/// DOCME
@@ -173,11 +170,6 @@ public:
 
 	/// @brief Does the video file loaded have muxed subtitles that we can load?
 	bool HasSubtitles() const { return hasSubtitles; }
-
-	/// @brief DOCME
-	/// @param sync 
-	/// @return 
-	void EnableAudioSync(bool sync = true) { keepAudioSync = sync; }
 
 	/// @brief Get the width of the currently open video
 	int GetWidth() const;

@@ -143,9 +143,6 @@ VideoBox::VideoBox(wxWindow *parent, bool isDetached, agi::Context *context)
 
 	UpdateTimeBoxes();
 
-	Bind(wxEVT_COMMAND_BUTTON_CLICKED, &VideoBox::OnButton, this);
-	Bind(wxEVT_COMMAND_TOGGLEBUTTON_CLICKED, &VideoBox::OnButton, this);
-
 	slots.push_back(context->videoController->AddSeekListener(&VideoBox::UpdateTimeBoxes, this));
 	slots.push_back(context->videoController->AddKeyframesListener(&VideoBox::UpdateTimeBoxes, this));
 	slots.push_back(context->videoController->AddTimecodesListener(&VideoBox::UpdateTimeBoxes, this));
@@ -157,11 +154,6 @@ VideoBox::VideoBox(wxWindow *parent, bool isDetached, agi::Context *context)
 
 VideoBox::~VideoBox() {
 	context->selectionController->RemoveSelectionListener(this);
-}
-
-void VideoBox::OnButton(wxCommandEvent &evt) {
-	context->videoController->EnableAudioSync(!wxGetMouseState().CmdDown());
-	evt.Skip();
 }
 
 void VideoBox::UpdateTimeBoxes() {
