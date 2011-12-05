@@ -95,11 +95,11 @@ class VideoContext : public wxEvtHandler {
 	/// DOCME
 	wxTimer playback;
 
-	/// DOCME
+	/// Time since playback was last started
 	wxStopWatch playTime;
 
 	/// DOCME
-	int startFrame;
+	int startMS;
 
 	/// DOCME
 	int endFrame;
@@ -111,16 +111,10 @@ class VideoContext : public wxEvtHandler {
 	int nextFrame;
 
 	/// DOCME
-	bool isPlaying;
-
-	/// DOCME
 	bool keepAudioSync;
 
 	/// DOCME
 	int frame_n;
-
-	/// DOCME
-	int length;
 
 	/// DOCME
 	double arValue;
@@ -175,10 +169,10 @@ public:
 	void SaveSnapshot(bool raw);
 
 	/// @brief Is there a video loaded?
-	bool IsLoaded() const { return !!videoProvider.get(); }
+	bool IsLoaded() const { return !!videoProvider; }
 
 	/// @brief Is the video currently playing?
-	bool IsPlaying() const { return isPlaying; }
+	bool IsPlaying() const { return playback.IsRunning(); }
 
 	/// @brief Does the video file loaded have muxed subtitles that we can load?
 	bool HasSubtitles() const { return hasSubtitles; }
@@ -195,7 +189,7 @@ public:
 	int GetHeight() const;
 
 	/// @brief Get the length in frames of the currently open video
-	int GetLength() const { return length; }
+	int GetLength() const;
 
 	/// @brief Get the current frame number
 	int GetFrameN() const { return frame_n; }
@@ -264,6 +258,4 @@ public:
 
 	static VideoContext *Get();
 	static void OnExit();
-
-	DECLARE_EVENT_TABLE()
 };

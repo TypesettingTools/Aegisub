@@ -68,26 +68,16 @@
 #include "video_context.h"
 #include "video_frame.h"
 
-/// IDs
-enum {
-	VIDEO_PLAY_TIMER = 1300
-};
-
-BEGIN_EVENT_TABLE(VideoContext, wxEvtHandler)
-	EVT_TIMER(VIDEO_PLAY_TIMER,VideoContext::OnPlayTimer)
-END_EVENT_TABLE()
-
 /// @brief Constructor 
 ///
 VideoContext::VideoContext()
-: startFrame(-1)
-, endFrame(-1)
+: playback(this)
+, startMS(0)
+, endFrame(0)
 , playNextFrame(-1)
 , nextFrame(-1)
-, isPlaying(false)
 , keepAudioSync(true)
 , frame_n(0)
-, length(0)
 , arValue(1.)
 , arType(0)
 , hasSubtitles(false)
@@ -97,6 +87,7 @@ VideoContext::VideoContext()
 {
 	Bind(EVT_VIDEO_ERROR, &VideoContext::OnVideoError, this);
 	Bind(EVT_SUBTITLES_ERROR, &VideoContext::OnSubtitlesError, this);
+	Bind(wxEVT_TIMER, &VideoContext::OnPlayTimer, this);
 
 	OPT_SUB("Subtitle/Provider", &VideoContext::Reload, this);
 	OPT_SUB("Video/Provider", &VideoContext::Reload, this);
@@ -127,9 +118,8 @@ void VideoContext::Reset() {
 	if (!ovrFPS.IsLoaded()) TimecodesOpen(videoFPS);
 
 	// Remove video data
+	Stop();
 	frame_n = 0;
-	length = 0;
-	isPlaying = false;
 	nextFrame = -1;
 
 	// Clean up video data
@@ -202,9 +192,6 @@ void VideoContext::SetVideo(const wxString &filename) {
 			}
 		}
 
-		// Gather video parameters
-		length = videoProvider->GetFrameCount();
-
 		// Set filename
 		videoName = filename;
 		config::mru->Add("Video", STD_STR(filename));
@@ -249,7 +236,7 @@ void VideoContext::Reload() {
 void VideoContext::OnSubtitlesCommit() {
 	if (!IsLoaded()) return;
 
-	bool wasPlaying = isPlaying;
+	bool wasPlaying = IsPlaying();
 	Stop();
 
 	provider->LoadSubtitles(context->ass);
@@ -285,7 +272,7 @@ void VideoContext::JumpToFrame(int n) {
 	if (!IsLoaded()) return;
 
 	// Prevent intervention during playback
-	if (isPlaying && n != playNextFrame) return;
+	if (IsPlaying() && n != playNextFrame) return;
 
 	frame_n = mid(0, n, GetLength() - 1);
 
@@ -310,6 +297,10 @@ int VideoContext::GetWidth() const {
 }
 int VideoContext::GetHeight() const {
 	return videoProvider->GetHeight();
+}
+
+int VideoContext::GetLength() const {
+	return videoProvider->GetFrameCount();
 }
 
 void VideoContext::SaveSnapshot(bool raw) {
@@ -351,7 +342,7 @@ void VideoContext::SaveSnapshot(bool raw) {
 }
 
 void VideoContext::NextFrame() {
-	if (!videoProvider.get() || isPlaying || frame_n == videoProvider->GetFrameCount())
+	if (!videoProvider || IsPlaying() || frame_n == videoProvider->GetFrameCount())
 		return;
 
 	JumpToFrame(frame_n + 1);
@@ -364,7 +355,7 @@ void VideoContext::NextFrame() {
 }
 
 void VideoContext::PrevFrame() {
-	if (!videoProvider.get() || isPlaying || frame_n == 0)
+	if (!videoProvider || IsPlaying() || frame_n == 0)
 		return;
 
 	JumpToFrame(frame_n - 1);
@@ -377,7 +368,7 @@ void VideoContext::PrevFrame() {
 }
 
 void VideoContext::Play() {
-	if (isPlaying) {
+	if (IsPlaying()) {
 		Stop();
 		return;
 	}
@@ -385,18 +376,14 @@ void VideoContext::Play() {
 	if (!IsLoaded()) return;
 
 	// Set variables
-	startFrame = frame_n;
-	endFrame = -1;
+	startMS = TimeAtFrame(frame_n);
+	endFrame = GetLength() - 1;
 
 	// Start playing audio
-	context->audioController->PlayToEnd(context->audioController->SamplesFromMilliseconds(TimeAtFrame(startFrame)));
-
-	//audio->Play will override this if we put it before, so put it after.
-	isPlaying = true;
+	context->audioController->PlayToEnd(context->audioController->SamplesFromMilliseconds(startMS));
 
 	// Start timer
 	playTime.Start();
-	playback.SetOwner(this,VIDEO_PLAY_TIMER);
 	playback.Start(10);
 }
 
@@ -409,55 +396,39 @@ void VideoContext::PlayLine() {
 		context->audioController->SamplesFromMilliseconds(curline->Start.GetMS()),
 		context->audioController->SamplesFromMilliseconds(curline->End.GetMS())));
 
-	// Set variables
-	isPlaying = true;
-	startFrame = FrameAtTime(context->selectionController->GetActiveLine()->Start.GetMS(),agi::vfr::START);
-	endFrame = FrameAtTime(context->selectionController->GetActiveLine()->End.GetMS(),agi::vfr::END);
+	// Round-trip conversion to convert start to exact
+	int startFrame = FrameAtTime(context->selectionController->GetActiveLine()->Start.GetMS(),agi::vfr::START);
+	startMS = TimeAtFrame(startFrame);
+	endFrame = FrameAtTime(context->selectionController->GetActiveLine()->End.GetMS(),agi::vfr::END) + 1;
 
 	// Jump to start
 	playNextFrame = startFrame;
 	JumpToFrame(startFrame);
 
-	// Set other variables
-	playTime.Start();
-
 	// Start timer
-	playback.SetOwner(this,VIDEO_PLAY_TIMER);
+	playTime.Start();
 	playback.Start(10);
 }
 
 void VideoContext::Stop() {
-	if (isPlaying) {
+	if (IsPlaying()) {
 		playback.Stop();
-		isPlaying = false;
 		context->audioController->Stop();
 	}
 }
 
 void VideoContext::OnPlayTimer(wxTimerEvent &) {
-	// Get time difference
-	int dif = playTime.Time();
+	int nextFrame = FrameAtTime(startMS + playTime.Time());
 
-	// Find next frame
-	int startMs = TimeAtFrame(startFrame);
-	int nextFrame = frame_n;
-	int i=0;
-	for (i=0;i<10;i++) {
-		if (nextFrame >= length) break;
-		if (dif < TimeAtFrame(nextFrame) - startMs) {
-			break;
-		}
-		nextFrame++;
-	}
+	// Same frame
+	if (nextFrame == frame_n) return;
 
 	// End
-	if (nextFrame >= length || (endFrame != -1 && nextFrame > endFrame)) {
+	if (nextFrame >= endFrame) {
 		Stop();
 		return;
 	}
 
-	// Same frame
-	if (nextFrame == frame_n) return;
 
 	// Next frame is before or over 2 frames ahead, so force audio resync
 	if (context->audioController->IsPlaying() && keepAudioSync && (nextFrame < frame_n || nextFrame > frame_n + 2)) {
@@ -547,7 +518,7 @@ void VideoContext::LoadTimecodes(wxString filename) {
 }
 void VideoContext::SaveTimecodes(wxString filename) {
 	try {
-		FPS().Save(STD_STR(filename), IsLoaded() ? length : -1);
+		FPS().Save(STD_STR(filename), IsLoaded() ? GetLength() : -1);
 		config::mru->Add("Timecodes", STD_STR(filename));
 	}
 	catch(const agi::acs::AcsError&) {

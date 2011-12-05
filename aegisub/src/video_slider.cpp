@@ -63,9 +63,7 @@ VideoSlider::VideoSlider (wxWindow* parent, agi::Context *c)
 
 	c->videoSlider = this;
 
-	if (c->videoController->IsLoaded()) {
-		VideoOpened();
-	}
+	VideoOpened();
 }
 
 void VideoSlider::SetValue(int value) {
@@ -75,9 +73,11 @@ void VideoSlider::SetValue(int value) {
 }
 
 void VideoSlider::VideoOpened() {
-	max = c->videoController->GetLength() - 1;
-	keyframes = c->videoController->GetKeyFrames();
-	Refresh(false);
+	if (c->videoController->IsLoaded()) {
+		max = c->videoController->GetLength() - 1;
+		keyframes = c->videoController->GetKeyFrames();
+		Refresh(false);
+	}
 }
 
 void VideoSlider::KeyframesChanged(std::vector<int> const& newKeyframes) {

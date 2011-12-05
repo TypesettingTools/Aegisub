@@ -433,7 +433,8 @@ void DialogTimingProcessor::Process() {
 	// Keyframe snapping
 	if (keysEnable->IsChecked()) {
 		KeyFrames = c->videoController->GetKeyFrames();
-		KeyFrames.push_back(c->videoController->GetLength() - 1);
+		if (c->videoController->IsLoaded())
+			KeyFrames.push_back(c->videoController->GetLength() - 1);
 
 		long beforeStart = 0;
 		long afterStart = 0;
