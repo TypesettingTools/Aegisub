@@ -105,9 +105,8 @@ bool VisualToolClip::InitializeHold() {
 
 void VisualToolClip::UpdateHold() {
 	// Limit to video area
-	Vector2D zero(0, 0);
-	cur_1 = zero.Max(video_res.Min(drag_start));
-	cur_2 = zero.Max(video_res.Min(mouse_pos));
+	cur_1 = video_pos.Max((video_pos + video_res).Min(drag_start));
+	cur_2 = video_pos.Max((video_pos + video_res).Min(mouse_pos));
 
 	SetFeaturePositions();
 	CommitHold();
