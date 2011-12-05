@@ -74,7 +74,6 @@ VideoContext::VideoContext()
 : playback(this)
 , startMS(0)
 , endFrame(0)
-, playNextFrame(-1)
 , nextFrame(-1)
 , keepAudioSync(true)
 , frame_n(0)
@@ -271,13 +270,17 @@ void VideoContext::OnSubtitlesSave() {
 void VideoContext::JumpToFrame(int n) {
 	if (!IsLoaded()) return;
 
-	// Prevent intervention during playback
-	if (IsPlaying() && n != playNextFrame) return;
+	bool was_playing = IsPlaying();
+	if (was_playing)
+		Stop();
 
 	frame_n = mid(0, n, GetLength() - 1);
 
 	GetFrameAsync(frame_n);
 	Seek(frame_n);
+
+	if (was_playing)
+		Play();
 }
 
 void VideoContext::JumpToTime(int ms, agi::vfr::Time end) {
@@ -402,7 +405,6 @@ void VideoContext::PlayLine() {
 	endFrame = FrameAtTime(context->selectionController->GetActiveLine()->End.GetMS(),agi::vfr::END) + 1;
 
 	// Jump to start
-	playNextFrame = startFrame;
 	JumpToFrame(startFrame);
 
 	// Start timer
@@ -436,9 +438,9 @@ void VideoContext::OnPlayTimer(wxTimerEvent &) {
 	}
 
 	// Jump to next frame
-	playNextFrame = nextFrame;
 	frame_n = nextFrame;
-	JumpToFrame(nextFrame);
+	GetFrameAsync(frame_n);
+	Seek(frame_n);
 
 	// Sync audio
 	if (keepAudioSync && nextFrame % 10 == 0 && context->audioController->IsPlaying()) {

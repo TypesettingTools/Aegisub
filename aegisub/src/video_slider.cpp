@@ -113,9 +113,9 @@ BEGIN_EVENT_TABLE(VideoSlider, wxWindow)
 END_EVENT_TABLE()
 
 void VideoSlider::OnMouse(wxMouseEvent &event) {
-	int x = event.GetX();
+	if (event.LeftIsDown()) {
+		int x = event.GetX();
 
-	if (event.ButtonIsDown(wxMOUSE_BTN_LEFT)) {
 		// If the slider didn't already have focus, don't seek if the user
 		// clicked very close to the current location as they were probably
 		// just trying to focus the slider
@@ -125,7 +125,7 @@ void VideoSlider::OnMouse(wxMouseEvent &event) {
 		}
 
 		// Shift click to snap to keyframe
-		if (event.m_shiftDown) {
+		if (event.ShiftDown()) {
 			int clickedFrame = GetValueAtX(x);
 			std::vector<int>::const_iterator pos = lower_bound(keyframes.begin(), keyframes.end(), clickedFrame);
 			if (pos == keyframes.end())
@@ -144,23 +144,11 @@ void VideoSlider::OnMouse(wxMouseEvent &event) {
 			SetValue(go);
 		}
 
-		if (c->videoController->IsPlaying()) {
-			c->videoController->Stop();
-			c->videoController->JumpToFrame(val);
-			c->videoController->Play();
-		}
-		else
-			c->videoController->JumpToFrame(val);
-		SetFocus();
-		return;
-	}
-
-	if (event.ButtonDown(wxMOUSE_BTN_RIGHT) || event.ButtonDown(wxMOUSE_BTN_MIDDLE)) {
+		c->videoController->JumpToFrame(val);
 		SetFocus();
 	}
-
-	else if (!c->videoController->IsPlaying())
-		event.Skip();
+	else if (event.ButtonDown())
+		SetFocus();
 }
 
 void VideoSlider::OnKeyDown(wxKeyEvent &event) {

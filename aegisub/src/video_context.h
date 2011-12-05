@@ -105,9 +105,6 @@ class VideoContext : public wxEvtHandler {
 	int endFrame;
 
 	/// DOCME
-	int playNextFrame;
-
-	/// DOCME
 	int nextFrame;
 
 	/// DOCME
