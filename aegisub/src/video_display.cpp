@@ -404,6 +404,7 @@ void VideoDisplay::SetTool(VisualToolBase *new_tool) {
 	tool->SetDisplayArea(viewport_left, viewport_top, viewport_width, viewport_height);
 
 	// Update size as the new typesetting tool may have changed the subtoolbar size
+	GetGrandParent()->Layout();
 	UpdateSize();
 }
 
