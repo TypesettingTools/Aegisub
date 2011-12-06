@@ -48,6 +48,7 @@
 #include "ass_exporter.h"
 #include "frame_main.h"
 #include "help_button.h"
+#include "include/aegisub/exception.h"
 
 
 ///////////////
@@ -205,6 +206,9 @@ void DialogExport::OnProcess(wxCommandEvent &event) {
 		wxBusyCursor busy;
 		Export->GetOriginalSubs()->SetScriptInfo(_T("Export Encoding"), CharsetList->GetStringSelection());
 		Export->Export(filename, CharsetList->GetStringSelection(), this);
+	}
+	catch (Aegisub::UserCancelException *) {
+		// ignore
 	}
 	catch (const wchar_t *error) {
 		wxString err(error);

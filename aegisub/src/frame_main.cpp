@@ -775,6 +775,10 @@ bool FrameMain::SaveSubtitles(bool saveas,bool withCharset) {
 			wxMessageBox(wxString(err), _T("Error"), wxOK | wxICON_ERROR, NULL);
 			return false;
 		}
+		catch (Aegisub::UserCancelException *) {
+			// didn't want to save anyway
+			return false;
+		}
 		catch (...) {
 			wxMessageBox(_T("Unknown error"), _T("Error"), wxOK | wxICON_ERROR, NULL);
 			return false;
