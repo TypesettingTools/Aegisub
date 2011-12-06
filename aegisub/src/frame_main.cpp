@@ -180,8 +180,6 @@ FrameMain::FrameMain (wxArrayString args)
 	// Parse arguments
 	StartupLog(_T("Initialize empty file"));
 	LoadSubtitles(_T(""));
-	StartupLog(_T("Load files specified on command line"));
-	LoadList(args);
 
 	// Version checker
 	// Fails on non-Windows platforms with a crash
@@ -200,6 +198,11 @@ FrameMain::FrameMain (wxArrayString args)
 	Freeze();
 	SetDisplayMode(-1, -1);
 	Thaw();
+
+	// do this after creating and showing the window to ensure layout is done properly
+	// see bug #1357
+	StartupLog(_T("Load files specified on command line"));
+	LoadList(args);
 
 	//ShowFullScreen(true,wxFULLSCREEN_NOBORDER | wxFULLSCREEN_NOCAPTION);
 	StartupLog(_T("Leaving FrameMain constructor"));
