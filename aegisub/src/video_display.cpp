@@ -255,17 +255,15 @@ void VideoDisplay::DrawOverscanMask(float horizontal_percent, float vertical_per
 	E(glDisable(GL_BLEND));
 }
 
-void VideoDisplay::UpdateSize(int arType, double arValue) {
+void VideoDisplay::UpdateSize() {
 	if (!con->videoController->IsLoaded()) return;
 	if (!IsShownOnScreen()) return;
 
 	int vidW = con->videoController->GetWidth();
 	int vidH = con->videoController->GetHeight();
 
-	if (arType == -1) {
-		arType = con->videoController->GetAspectRatioType();
-		arValue = con->videoController->GetAspectRatioValue();
-	}
+	int arType = con->videoController->GetAspectRatioType();
+	double arValue = con->videoController->GetAspectRatioValue();
 
 	if (freeSize) {
 		GetClientSize(&w,&h);
