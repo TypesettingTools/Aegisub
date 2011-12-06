@@ -79,8 +79,8 @@ wxString Spline::EncodeToASS() {
 					result += "b ";
 					last = 'b';
 				}
-				result += scale.ToScriptCoords(cur->p2).DStr(' ');
-				result += scale.ToScriptCoords(cur->p3).DStr(' ');
+				result += scale.ToScriptCoords(cur->p2).DStr(' ') + " ";
+				result += scale.ToScriptCoords(cur->p3).DStr(' ') + " ";
 				result += scale.ToScriptCoords(cur->p4).DStr(' ');
 				break;
 
