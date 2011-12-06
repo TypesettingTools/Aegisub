@@ -134,9 +134,6 @@ class VideoContext : public wxEvtHandler {
 	void Reset();
 
 public:
-	/// File name of currently open video, if any
-	wxString videoName;
-
 	const agi::vfr::Framerate &VFR_Input;
 	const agi::vfr::Framerate &VFR_Output;
 
@@ -157,6 +154,9 @@ public:
 
 	/// @brief Is there a video loaded?
 	bool IsLoaded() const { return !!videoProvider; }
+
+	/// Get the file name of the currently open video, if any
+	wxString GetVideoName() const { return videoFile; }
 
 	/// @brief Is the video currently playing?
 	bool IsPlaying() const { return playback.IsRunning(); }

@@ -83,7 +83,7 @@ DialogVideoDetails::DialogVideoDetails(agi::Context *c)
 	double fps = c->videoController->FPS().FPS();
 
 	wxFlexGridSizer *fg = new wxFlexGridSizer(2, 5, 10);
-	make_field(this, fg, _("File name:"), c->videoController->videoName);
+	make_field(this, fg, _("File name:"), c->videoController->GetVideoName());
 	make_field(this, fg, _("FPS:"), wxString::Format("%.3f", fps));
 	make_field(this, fg, _("Resolution:"), wxString::Format("%dx%d (%s)", width, height, pretty_ar(width, height)));
 	make_field(this, fg, _("Length:"), wxString::Format(_("%d frames (%s)"), framecount, pretty_time_stamp(framecount, fps)));

@@ -119,7 +119,7 @@ void VideoContext::Reset() {
 	frame_n = 0;
 
 	// Clean up video data
-	videoName.clear();
+	videoFile.clear();
 
 	// Remove provider
 	provider.reset();
@@ -188,10 +188,8 @@ void VideoContext::SetVideo(const wxString &filename) {
 		}
 
 		// Set filename
-		videoName = filename;
 		config::mru->Add("Video", STD_STR(filename));
-		wxFileName fn(filename);
-		StandardPaths::SetPathValue("?video",fn.GetPath());
+		StandardPaths::SetPathValue("?video", wxFileName(filename).GetPath());
 
 		// Get frame
 		frame_n = 0;
@@ -256,7 +254,7 @@ void VideoContext::OnSubtitlesSave() {
 	else
 		ar = wxString::Format("%d", arType);
 
-	context->ass->SetScriptInfo("Video File", MakeRelativePath(videoName, context->ass->filename));
+	context->ass->SetScriptInfo("Video File", MakeRelativePath(videoFile, context->ass->filename));
 	context->ass->SetScriptInfo("Video Aspect Ratio", ar);
 	context->ass->SetScriptInfo("Video Position", wxString::Format("%d", frame_n));
 	context->ass->SetScriptInfo("VFR File", MakeRelativePath(GetTimecodesName(), context->ass->filename));

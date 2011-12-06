@@ -151,7 +151,7 @@ struct audio_open_video : public Command {
 
 	void operator()(agi::Context *c) {
 		try {
-			c->audioController->OpenAudio(c->videoController->videoName);
+			c->audioController->OpenAudio(c->videoController->GetVideoName());
 		}
 		catch (agi::Exception const& e) {
 			wxMessageBox(lagi_wxString(e.GetChainedMessage()), "Error loading file", wxICON_ERROR | wxOK);

@@ -480,13 +480,13 @@ struct video_frame_prev_large : public validator_video_loaded {
 static void save_snapshot(agi::Context *c, bool raw) {
 	static const agi::OptionValue* ssPath = OPT_GET("Path/Screenshot");
 	wxString option = lagi_wxString(ssPath->GetString());
-	wxFileName videoFile(c->videoController->videoName);
+	wxFileName videoFile(c->videoController->GetVideoName());
 	wxString basepath;
 
 	// Is it a path specifier and not an actual fixed path?
 	if (option[0] == '?') {
 		// If dummy video is loaded, we can't save to the video location
-		if (option.StartsWith("?video") && (c->videoController->videoName.Find("?dummy") != wxNOT_FOUND)) {
+		if (option.StartsWith("?video") && (c->videoController->GetVideoName().Find("?dummy") != wxNOT_FOUND)) {
 			// So try the script location instead
 			option = "?script";
 		}

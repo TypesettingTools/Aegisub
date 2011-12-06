@@ -299,7 +299,7 @@ struct subtitle_open_video : public Command {
 	CMD_TYPE(COMMAND_VALIDATE)
 
 	void operator()(agi::Context *c) {
-		wxGetApp().frame->LoadSubtitles(c->videoController->videoName, "binary");
+		wxGetApp().frame->LoadSubtitles(c->videoController->GetVideoName(), "binary");
 	}
 
 	bool Validate(const agi::Context *c) {

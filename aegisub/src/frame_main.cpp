@@ -606,7 +606,7 @@ void FrameMain::OnSubtitlesOpen() {
 	bool doLoad = false;
 	if (curSubsAudio != context->audioController->GetAudioURL() ||
 		curSubsVFR != context->videoController->GetTimecodesName() ||
-		curSubsVideo != context->videoController->videoName ||
+		curSubsVideo != context->videoController->GetVideoName() ||
 		curSubsKeyframes != context->videoController->GetKeyFramesName()
 		)
 	{
@@ -620,7 +620,7 @@ void FrameMain::OnSubtitlesOpen() {
 
 	if (doLoad) {
 		// Video
-		if (!blockVideoLoad && curSubsVideo != context->videoController->videoName) {
+		if (!blockVideoLoad && curSubsVideo != context->videoController->GetVideoName()) {
 			context->videoController->SetVideo(curSubsVideo);
 			if (context->videoController->IsLoaded()) {
 				context->videoController->JumpToFrame(context->ass->GetScriptInfoAsInt("Video Position"));

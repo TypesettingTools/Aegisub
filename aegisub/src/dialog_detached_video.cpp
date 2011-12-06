@@ -62,7 +62,7 @@ DialogDetachedVideo::DialogDetachedVideo(agi::Context *context, const wxSize &in
 	// Set obscure stuff
 	SetExtraStyle((GetExtraStyle() & ~wxWS_EX_BLOCK_EVENTS) | wxWS_EX_PROCESS_UI_UPDATES);
 
-	SetTitle(wxString::Format(_("Video: %s"), wxFileName(context->videoController->videoName).GetFullName()));
+	SetTitle(wxString::Format(_("Video: %s"), wxFileName(context->videoController->GetVideoName()).GetFullName()));
 
 	// Set a background panel
 	wxPanel *panel = new wxPanel(this,-1,wxDefaultPosition,wxDefaultSize,wxTAB_TRAVERSAL | wxCLIP_CHILDREN);
