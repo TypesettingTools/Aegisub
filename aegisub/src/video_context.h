@@ -77,19 +77,20 @@ class VideoContext : public wxEvtHandler {
 
 	agi::Context *context;
 
-	/// DOCME
+	/// The video provider owned by the threaded frame source, or NULL if no
+	/// video is open
 	VideoProvider *videoProvider;
 
-	/// DOCME
+	/// Asynchronous provider of video frames
 	std::auto_ptr<ThreadedFrameSource> provider;
 
 	/// Filename of currently open video
 	wxString videoFile;
 
-	/// DOCME
+	/// List of frame numbers which are keyframes
 	std::vector<int> keyFrames;
 
-	/// DOCME
+	/// File name of the currently open keyframes or empty if keyframes are not overridden
 	wxString keyFramesFilename;
 
 	/// DOCME
@@ -98,30 +99,38 @@ class VideoContext : public wxEvtHandler {
 	/// Time since playback was last started
 	wxStopWatch playTime;
 
-	/// DOCME
+	/// The start time of the first frame of the current playback; undefined if
+	/// video is not currently playing
 	int startMS;
 
-	/// DOCME
+	/// The last frame to play if video is currently playing
 	int endFrame;
 
-	/// DOCME
+	/// The frame number which was last requested from the video provider,
+	/// which may not be the same thing as the currently displayed frame
 	int frame_n;
 
-	/// DOCME
+	/// The picture aspect ratio of the video if the aspect ratio has been
+	/// overridden by the user
 	double arValue;
 
 	/// DOCME
 	int arType;
 
+	/// Does the currently loaded video file have subtitles muxed into it?
 	bool hasSubtitles;
 
+	/// Filename of the currently loaded timecodes file, or empty if timecodes
+	/// have not been overriden
 	wxString ovrTimecodeFile;
 
 	const agi::OptionValue* playAudioOnStep;
 
 	void OnPlayTimer(wxTimerEvent &event);
 
+	/// The timecodes from the video file
 	agi::vfr::Framerate videoFPS;
+	/// External timecode which have been loaded, if any
 	agi::vfr::Framerate ovrFPS;
 
 	void OnVideoError(VideoProviderErrorEvent const& err);
@@ -130,7 +139,7 @@ class VideoContext : public wxEvtHandler {
 	void OnSubtitlesCommit();
 	void OnSubtitlesSave();
 
-	/// @brief Close the video, keyframes and timecodes
+	/// Close the video, keyframes and timecodes
 	void Reset();
 
 public:
@@ -149,42 +158,53 @@ public:
 
 	/// @brief Get the video provider used for the currently open video
 	VideoProvider *GetProvider() const { return videoProvider; }
+
+	/// Synchronously get a video frame
+	/// @param n Frame number to get
+	/// @param raw If true, subtitles are not rendered on the frame
+	/// @return The requested frame
 	std::tr1::shared_ptr<AegiVideoFrame> GetFrame(int n, bool raw = false);
+
+	/// Asynchronously get a video frame, triggering a EVT_FRAME_READY event when it's ready
+	/// @param n Frame number to get
 	void GetFrameAsync(int n);
 
-	/// @brief Is there a video loaded?
+	/// Is there a video loaded?
 	bool IsLoaded() const { return !!videoProvider; }
 
 	/// Get the file name of the currently open video, if any
 	wxString GetVideoName() const { return videoFile; }
 
-	/// @brief Is the video currently playing?
+	/// Is the video currently playing?
 	bool IsPlaying() const { return playback.IsRunning(); }
 
-	/// @brief Does the video file loaded have muxed subtitles that we can load?
+	/// Does the video file loaded have muxed subtitles that we can load?
 	bool HasSubtitles() const { return hasSubtitles; }
 
-	/// @brief Get the width of the currently open video
+	/// Get the width of the currently open video
 	int GetWidth() const;
 
-	/// @brief Get the height of the currently open video
+	/// Get the height of the currently open video
 	int GetHeight() const;
 
-	/// @brief Get the length in frames of the currently open video
+	/// Get the length in frames of the currently open video
 	int GetLength() const;
 
-	/// @brief Get the current frame number
+	/// Get the current frame number
 	int GetFrameN() const { return frame_n; }
 
 	double GetARFromType(int type) const;
-	void SetAspectRatio(int type,double value=1.0);
+
+	/// Override the aspect ratio of the currently loaded video
+	/// @param type Aspect ratio type from 0-4
+	/// @param value If type is 4 (custom), the aspect ratio to use
+	void SetAspectRatio(int type, double value=1.0);
 
 	/// @brief DOCME
 	/// @return 
 	int GetAspectRatioType() const { return arType; }
 
-	/// @brief DOCME
-	/// @return 
+	/// Get the current aspect ratio of the video
 	double GetAspectRatioValue() const { return arValue; }
 
 	/// @brief Open a new video
