@@ -185,10 +185,10 @@ void AudioSpectrumRenderer::SetResolution(size_t _derivation_size, size_t _deriv
 }
 
 template<class T>
-void AudioSpectrumRenderer::ConvertToFloat(size_t count, T &dest) {
+void AudioSpectrumRenderer::ConvertToFloat(size_t count, T *dest) {
 	for (size_t si = 0; si < count; ++si)
 	{
-		dest[si] = (float)(audio_scratch[si]) / 32768.f;
+		dest[si] = (T)(audio_scratch[si]) / 32768.0;
 	}
 }
 
@@ -214,7 +214,7 @@ void AudioSpectrumRenderer::FillBlock(size_t block_index, float *block)
 		o++;
 	}
 #else
-	ConvertToFloat(2 << derivation_size, fft_scratch);
+	ConvertToFloat(2 << derivation_size, &fft_scratch[0]);
 
 	float *fft_input = &fft_scratch[0];
 	float *fft_real = &fft_scratch[0] + (2 << derivation_size);

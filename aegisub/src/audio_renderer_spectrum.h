@@ -99,7 +99,7 @@ class AudioSpectrumRenderer : public AudioRendererBitmapProvider {
 	/// @param count Samples to convert
 	/// @param dest Buffer to fill
 	template<class T>
-	void ConvertToFloat(size_t count, T &dest);
+	void ConvertToFloat(size_t count, T *dest);
 
 #ifdef WITH_FFTW
 	/// FFTW plan data
