@@ -55,7 +55,7 @@ class ThreadedFrameSource : public wxThread {
 	/// Subtitles provider
 	std::auto_ptr<SubtitlesProvider> provider;
 	/// Video provider
-	std::tr1::shared_ptr<VideoProvider> videoProvider;
+	std::auto_ptr<VideoProvider> videoProvider;
 	/// Event handler to send FrameReady events to
 	wxEvtHandler *parent;
 
@@ -102,7 +102,8 @@ public:
 	/// @brief raw   Get raw frame without subtitles
 	std::tr1::shared_ptr<AegiVideoFrame> GetFrame(int frame, double time, bool raw = false);
 
-	std::tr1::shared_ptr<VideoProvider> GetVideoProvider() const { return videoProvider; }
+	/// Get a reference to the video provider this is using
+	VideoProvider *GetVideoProvider() const { return videoProvider.get(); }
 
 	/// @brief Constructor
 	/// @param videoFileName File to open

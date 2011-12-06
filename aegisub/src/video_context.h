@@ -78,7 +78,7 @@ class VideoContext : public wxEvtHandler {
 	agi::Context *context;
 
 	/// DOCME
-	std::tr1::shared_ptr<VideoProvider> videoProvider;
+	VideoProvider *videoProvider;
 
 	/// DOCME
 	std::auto_ptr<ThreadedFrameSource> provider;
@@ -151,7 +151,7 @@ public:
 	void SetContext(agi::Context *context);
 
 	/// @brief Get the video provider used for the currently open video
-	VideoProvider *GetProvider() const { return videoProvider.get(); }
+	VideoProvider *GetProvider() const { return videoProvider; }
 	std::tr1::shared_ptr<AegiVideoFrame> GetFrame(int n, bool raw = false);
 	void GetFrameAsync(int n);
 

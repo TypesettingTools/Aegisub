@@ -122,8 +122,8 @@ void VideoContext::Reset() {
 	videoName.clear();
 
 	// Remove provider
-	videoProvider.reset();
 	provider.reset();
+	videoProvider = 0;
 }
 
 void VideoContext::SetContext(agi::Context *context) {
