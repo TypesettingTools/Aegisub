@@ -192,7 +192,7 @@ static int render_bicubic(Spline::iterator cur, std::vector<float> &points) {
 		points.push_back(p.Y());
 	}
 
-	return steps;
+	return steps + 1;
 }
 
 void Spline::GetPointList(std::vector<float>& points, std::vector<int>& first, std::vector<int>& count) {
