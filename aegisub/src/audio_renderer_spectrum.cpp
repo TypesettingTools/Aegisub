@@ -145,8 +145,8 @@ void AudioSpectrumRenderer::RecreateCache()
 		cache.reset(new AudioSpectrumCache(block_count, this));
 
 #ifdef WITH_FFTW
-		dft_input = (double*)fftw_malloc(sizeof(double) * (2<<derivation_size));
-		dft_output = (fftw_complex*)fftw_malloc(sizeof(fftw_complex) * (2<<derivation_size));
+		dft_input = fftw_alloc_real(2<<derivation_size);
+		dft_output = fftw_alloc_complex(2<<derivation_size);
 		dft_plan = fftw_plan_dft_r2c_1d(
 			2<<derivation_size,
 			dft_input,
