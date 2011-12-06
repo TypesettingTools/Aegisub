@@ -74,7 +74,6 @@ VideoContext::VideoContext()
 : playback(this)
 , startMS(0)
 , endFrame(0)
-, nextFrame(-1)
 , frame_n(0)
 , arValue(1.)
 , arType(0)
@@ -118,7 +117,6 @@ void VideoContext::Reset() {
 	// Remove video data
 	Stop();
 	frame_n = 0;
-	nextFrame = -1;
 
 	// Clean up video data
 	videoName.clear();
