@@ -98,7 +98,6 @@ VideoDisplay::VideoDisplay(
 , con(c)
 , w(8)
 , h(8)
-, mouse_pos(Vector2D::Bad())
 , viewport_left(0)
 , viewport_width(0)
 , viewport_bottom(0)
@@ -353,7 +352,7 @@ void VideoDisplay::OnMouseEvent(wxMouseEvent& event) {
 }
 
 void VideoDisplay::OnMouseLeave(wxMouseEvent& event) {
-	mouse_pos = Vector2D::Bad();
+	mouse_pos = Vector2D();
 	tool->OnMouseEvent(event);
 }
 

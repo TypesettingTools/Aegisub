@@ -59,7 +59,7 @@ void VisualToolRotateZ::Draw() {
 	// Draw the circle
 	gl.SetLineColour(colour[0]);
 	gl.SetFillColour(colour[1], 0.3f);
-	gl.DrawRing(Vector2D(), radius + 4, radius - 4);
+	gl.DrawRing(Vector2D(0, 0), radius + 4, radius - 4);
 
 	// Draw markers around circle
 	int markers = 6;
@@ -67,7 +67,7 @@ void VisualToolRotateZ::Draw() {
 	float markEnd = markStart + (180.f / markers);
 	for (int i = 0; i < markers; ++i) {
 		float angle = i * (360.f / markers);
-		gl.DrawRing(Vector2D(), radius+30, radius+12, 1.0, angle+markStart, angle+markEnd);
+		gl.DrawRing(Vector2D(0, 0), radius+30, radius+12, 1.0, angle+markStart, angle+markEnd);
 	}
 
 	// Draw the baseline through the origin showing current rotation

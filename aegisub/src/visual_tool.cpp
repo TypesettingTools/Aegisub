@@ -192,7 +192,7 @@ void VisualTool<FeatureType>::OnMouseEvent(wxMouseEvent &event) {
 	bool need_render = false;
 
 	if (event.Leaving()) {
-		mouse_pos = Vector2D::Bad();
+		mouse_pos = Vector2D();
 		parent->Render();
 		return;
 	}
@@ -392,7 +392,7 @@ static Vector2D vec_or_bad(param_vec tag, size_t x_idx, size_t y_idx) {
 		(*tag)[x_idx]->omitted || (*tag)[y_idx]->omitted ||
 		(*tag)[x_idx]->GetType() == VARDATA_NONE || (*tag)[y_idx]->GetType() == VARDATA_NONE)
 	{
-		return Vector2D::Bad();
+		return Vector2D();
 	}
 	return Vector2D((*tag)[x_idx]->Get<float>(), (*tag)[y_idx]->Get<float>());
 }
@@ -525,7 +525,7 @@ void VisualToolBase::GetLineClip(AssDialogue *diag, Vector2D &p1, Vector2D &p2, 
 		p2 = vec_or_bad(tag, 2, 3);
 	}
 	else {
-		p1 = Vector2D();
+		p1 = Vector2D(0, 0);
 		p2 = script_res - 1;
 	}
 }

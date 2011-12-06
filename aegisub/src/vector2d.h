@@ -42,7 +42,7 @@ public:
 	float X() const { return x; }
 	float Y() const { return y; }
 
-	Vector2D() : x(0), y(0) { }
+	Vector2D();
 	Vector2D(float x, float y) : x(x), y(y) { }
 	Vector2D(wxPoint pt) : x(pt.x), y(pt.y) { }
 	Vector2D(Vector2D x, Vector2D y) : x(x.x), y(y.y) { }
@@ -87,7 +87,6 @@ public:
 	wxString DStr(char sep = ',') const;
 
 	static Vector2D FromAngle(float angle) { return Vector2D(cos(-angle), sin(-angle)); }
-	static Vector2D Bad();
 };
 
 Vector2D operator * (float f, Vector2D v);

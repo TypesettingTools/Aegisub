@@ -62,7 +62,7 @@ public:
 	/// DOCME
 	CurveType type;
 
-	SplineCurve(Vector2D p1 = Vector2D());
+	SplineCurve(Vector2D p1 = Vector2D(0, 0));
 	SplineCurve(Vector2D p1, Vector2D p2);
 	SplineCurve(Vector2D p1, Vector2D p2, Vector2D p3, Vector2D p4);
 

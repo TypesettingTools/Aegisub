@@ -40,9 +40,7 @@
 #include "visual_feature.h"
 
 VisualDraggableFeature::VisualDraggableFeature()
-: start(Vector2D::Bad())
-, type(DRAG_NONE)
-, pos(Vector2D::Bad())
+: type(DRAG_NONE)
 , layer(0)
 , line(0)
 {

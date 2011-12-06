@@ -100,7 +100,7 @@ void VisualToolScale::UpdateHold() {
 	if (shift_down)
 		delta = delta.SingleAxis();
 
-	scale = Vector2D().Max(delta * 1.25f + initial_scale);
+	scale = Vector2D(0, 0).Max(delta * 1.25f + initial_scale);
 	if (ctrl_down)
 		scale = scale.Round(25.f);
 

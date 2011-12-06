@@ -31,6 +31,12 @@
 #include <wx/numformatter.h>
 #endif
 
+Vector2D::Vector2D()
+: x(std::numeric_limits<float>::min())
+, y(std::numeric_limits<float>::min())
+{
+}
+
 Vector2D operator *(float f, Vector2D v) {
 	return Vector2D(v.X() * f, v.Y() * f);
 }
@@ -74,11 +80,7 @@ Vector2D Vector2D::Round(float step) const {
 }
 
 Vector2D::operator unspecified_bool_type() const {
-	return *this == Bad() ? 0 : &Vector2D::x;
-}
-
-Vector2D Vector2D::Bad() {
-	return Vector2D(std::numeric_limits<float>::min(), std::numeric_limits<float>::min());
+	return *this == Vector2D() ? 0 : &Vector2D::x;
 }
 
 wxString Vector2D::PStr(char sep) const {

@@ -98,7 +98,7 @@ void Spline::DecodeFromASS(wxString str) {
 
 	// Prepare
 	char command = 'm';
-	Vector2D pt;
+	Vector2D pt(0, 0);
 
 	// Tokenize the string
 	wxStringTokenizer tkn(str, " ");
