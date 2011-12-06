@@ -706,9 +706,18 @@ namespace Automation4 {
 			if (e->GetType() == ENTRY_DIALOGUE) {
 				// find insertion point, looking backwards
 				std::list<AssEntry*>::iterator it = laf->ass->Line.end();
-				do { --it; } while ((*it)->GetType() != ENTRY_DIALOGUE);
-				// found last dialogue entry in file, move one past
-				++it;
+				do {
+					--it;
+				} while (it != laf->ass->Line.begin() && (*it)->GetType() != ENTRY_DIALOGUE);
+				if (it != laf->ass->Line.begin()) {
+					// found last dialogue entry in file, move one past
+					++it;
+				}
+				else {
+					// no dialogue entries in the file, insert at the end
+					// (see bug #1363)
+					it = laf->ass->Line.end();
+				}
 				laf->ass->Line.insert(it, e);
 			}
 			else {
