@@ -67,20 +67,21 @@ private:
 	static std::list<SubtitleFormat*> formats;
 	static bool loaded;
 
-protected:
+public:
 	struct FPSRational {
 		int num;
 		int den;
 		bool smpte_dropframe;
+		FPSRational(int n=1, int d=1, bool dropframe=false) : num(n), den(d), smpte_dropframe(dropframe) { }
 	};
 
+protected:
 	std::list<AssEntry*> *Line;
 
 	void CreateCopy();
 	void ClearCopy();
 	void SortLines();
 	void ConvertTags(int format,const wxString &lineEnd,bool mergeLineBreaks=true);
-	//void Merge(bool identical,bool overlaps,bool stripComments,bool stripNonDialogue);
 	void StripComments();
 	void StripNonDialogue();
 	void RecombineOverlaps();
