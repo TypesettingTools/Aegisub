@@ -1591,6 +1591,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\subtitle_format_ebu3264.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\subtitle_format_ebu3264.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\subtitle_format_encore.cpp"
 				>
 			</File>
