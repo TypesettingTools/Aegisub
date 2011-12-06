@@ -214,6 +214,15 @@ int AssTime::GetTimeMiliseconds() { return (time % 1000); }
 int AssTime::GetTimeCentiseconds() { return (time % 1000)/10; }
 
 
+////////////////////////////////
+// Integer division rounding up
+// -----------------------------
+// Converting between frame numbers and timestamps requires rounding up
+// to get proper inclusive frame numbers.
+template<typename T>
+static inline T ceildiv(T num, T den) {
+	return (num+den-1)/den;
+}
 
 
 ///////
@@ -243,6 +252,41 @@ FractionalTime::~FractionalTime () {
 	sep.Clear();
 }
 
+int FractionalTime::FramenumberFromFields(int h, int m, int s, int f) {
+	int fn = 0;
+	// dropframe? do silly things
+	if (drop) {
+		fn += h * frames_per_period * 6;
+		fn += (m % 10) * frames_per_period;
+		
+		if (m > 0) {
+			fn += 1800;
+			m--;
+
+			fn += m * 1798; // two timestamps dropped per minute after the first
+			fn += s * 30 + f - 2;
+		}
+		else {				// minute is evenly divisible by 10, keep first two timestamps
+			fn += s * 30;
+			fn += f;
+		}
+	}
+	// no dropframe, may or may not sync with wallclock time
+	// (see comment in FromMillisecs for an explanation of why it's done like this)
+	else {
+		int fps_approx = floor((double(num)/double(den))+0.5);
+		fn += h * 3600 * fps_approx;
+		fn += m * 60 * fps_approx;
+		fn += s * fps_approx;
+		fn += f;
+	}
+	return fn;
+}
+
+int64_t FractionalTime::MillisecsFromFramenumber(int fn) {
+	return (fn * num) / den;
+}
+
 ///////
 // SMPTE text string to milliseconds conversion
 int FractionalTime::ToMillisecs (wxString _text) {
@@ -266,40 +310,7 @@ int FractionalTime::ToMillisecs (wxString _text) {
 	re.GetMatch(text,3).ToLong(&s);
 	re.GetMatch(text,4).ToLong(&f);
 
-	int msecs_f = 0;
-	int fn = 0;
-	// dropframe? do silly things
-	if (drop) {
-		fn += h * frames_per_period * 6;
-		fn += (m % 10) * frames_per_period;
-		
-		if (m > 0) {
-			fn += 1800;
-			m--;
-
-			fn += m * 1798; // two timestamps dropped per minute after the first
-			fn += s * 30 + f - 2;
-		}
-		else {				// minute is evenly divisible by 10, keep first two timestamps
-			fn += s * 30;
-			fn += f;
-		}
-
-		msecs_f = (fn * num) / den;
-	}
-	// no dropframe, may or may not sync with wallclock time
-	// (see comment in FromMillisecs for an explanation of why it's done like this)
-	else {
-		int fps_approx = floor((double(num)/double(den))+0.5);
-		fn += h * 3600 * fps_approx;
-		fn += m * 60 * fps_approx;
-		fn += s * fps_approx;
-		fn += f;
-
-		msecs_f = (fn * num) / den;
-	}
-
-	return msecs_f;
+	return MillisecsFromFramenumber(FramenumberFromFields(h, m, s, f));
 }
 
 ///////
@@ -310,22 +321,24 @@ AssTime FractionalTime::ToAssTime (wxString _text) {
 	return time;
 }
 
+
 ///////
 // AssTime to SMPTE text string conversion
 wxString FractionalTime::FromAssTime(AssTime time) {
 	return FromMillisecs(time.GetMS());
 }
 
-///////
-// Milliseconds to SMPTE text string conversion
-wxString FractionalTime::FromMillisecs(int64_t msec) {
-	int h=0, m=0, s=0, f=0; // hours, minutes, seconds, fractions
-	int fn = (msec*(int64_t)num) / (1000*den); // frame number
 
-	// return 00:00:00:00
-	if (msec <= 0)
-		goto RETURN;
+//////////
+// Get frame number from time in milliseconds
+int FractionalTime::FramenumberFromMillisecs(int64_t msec) {
+	return ceildiv<int64_t>(msec*num, 1000*den);
+}
 
+
+////////////
+// Fill in h, m, s, f fields from a frame number
+void FractionalTime::FieldsFromFramenumber(int fn, int &h, int &m, int &s, int &f) {
 	// dropframe?
 	if (drop) {
 		fn += 2 * (fn / (30 * 60)) - 2 * (fn / (30 * 60 * 10));
@@ -354,6 +367,7 @@ wxString FractionalTime::FromMillisecs(int64_t msec) {
 		int frames_per_h = 3600*fps_approx;
 		int frames_per_m = 60*fps_approx;
 		int frames_per_s = fps_approx;
+		h = m = s = f = 0;
 		while (fn >= frames_per_h) {
 			h++; fn -= frames_per_h;
 		}
@@ -365,7 +379,17 @@ wxString FractionalTime::FromMillisecs(int64_t msec) {
 		}
 		f = fn;
 	}
+}
 
-RETURN:
+
+///////
+// Milliseconds to SMPTE text string conversion
+wxString FractionalTime::FromMillisecs(int64_t msec) {
+	int h=0, m=0, s=0, f=0; // hours, minutes, seconds, fractions
+	int fn = FramenumberFromMillisecs(msec);
+
+	if (msec > 0)
+		FieldsFromFramenumber(fn, h, m, s, f);
+
 	return wxString::Format(_T("%02i") + sep + _T("%02i") + sep + _T("%02i") + sep + _T("%02i"),h,m,s,f);
 }

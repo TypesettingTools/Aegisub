@@ -101,4 +101,10 @@ public:
 
 	wxString FromAssTime(AssTime time);
 	wxString FromMillisecs(int64_t msec);
+
+	int64_t MillisecsFromFramenumber(int fn);
+	int FramenumberFromFields(int h, int m, int s, int f);
+
+	int FramenumberFromMillisecs(int64_t msec);
+	void FieldsFromFramenumber(int fn, int &h, int &m, int &s, int &f);
 };
