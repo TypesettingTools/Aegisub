@@ -789,10 +789,10 @@ if test "$have_wxconfig" = "no"; then
   AC_MSG_FAILURE([wxWidgets detection failed, please set --with-wx* or add the libraries to your LDFLAGS, CXX/CFLAGS.])
 fi
 
-AC_ARG_ENABLE(check-wx-opengl, [  --disable-check-wx-opengl
-                          Force wxwidgets OpenGL support. ])
+AC_ARG_ENABLE(slow-wx-checks, [  --disable-slow-wx-checks
+                          Disable slow-running checks for wx components.])
 
-if test "$enable_check_wx_opengl" != "no"; then
+if test "$enable_slow_wx_checks" != "no"; then
   AC_AGI_LINK([wxWidgets OpenGL support], [wxopengl], [wx/glcanvas.h], [$GL_CFLAGS $WX_CFLAGS], [$GL_LIBS $WX_LIBS],[
 #include <wx/glcanvas.h>
 int main(void) {
@@ -800,16 +800,6 @@ int main(void) {
   wxGLContext *context;
   return 0;
 } ])
-fi
-
-if test "$with_agi_cv_wxopengl" = "no" || test "$enable_check_wx_opengl" = "yes"; then
-  AC_MSG_FAILURE([wxWidgets OpenGL support missing])
-fi
-
-
-AC_ARG_ENABLE(check-wx-stc, [  --disable-check-wx-stc  Force wxwidgets StyledTextCtrl support.])
-
-if test "$enable_check_wx_stc" != "no"; then
   AC_AGI_LINK([wxWidgets StyledTextCtrl support], [wxstc], [wx/stc/stc.h], [$WX_CFLAGS], [$WX_LIBS],[
 #include <wx/stc/stc.h>
 int main(void) {
@@ -818,7 +808,11 @@ int main(void) {
 } ])
 fi
 
-if test "$with_agi_cv_wxstc" = "no" || test "$enable_check_wx_stc:" = "yes"; then
+if test "$with_agi_cv_wxopengl" = "no"; then
+  AC_MSG_FAILURE([wxWidgets OpenGL support missing])
+fi
+
+if test "$with_agi_cv_wxstc" = "no"; then
   AC_MSG_FAILURE([wxWidgets StyledTextCtrl support missing])
 fi
 
