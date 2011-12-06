@@ -26,6 +26,7 @@ m4_define([pkgconfig_required_version], [0.20])
 m4_define([wx_required_version], [2.9.2])
 m4_define([libass_required_version], [0.9.7])
 m4_define([ffms_required_version], [2.15])
+m4_define([fftw_required_version], [3.2])
 
 
 #######
@@ -672,6 +673,19 @@ fi
 
 AC_SUBST(with_oss)
 
+###################
+# FFTW
+###################
+AC_ARG_WITH(fftw,[  --without-fftw         build without fftw support (default: auto)], fftw_disabled="(disabled)")
+
+if test "$with_fftw" != "no"; then
+  PKG_CHECK_MODULES(FFTW3, fftw3 >= fftw_required_version, [with_fftw="yes"], [with_fftw="no"])
+fi
+if test "$with_fftw" != "no"; then
+  AC_DEFINE(WITH_FFTW, 1, [Enable fftw support])
+fi
+
+AC_SUBST(with_fftw)
 
 #########################
 # Video / Audio Providers
@@ -1121,5 +1135,6 @@ Subtitle Providers:
 
 Misc Packages
   Hunspell:              $with_hunspell $with_hunspell_version $hunspell_disabled
+  FFTW3:                 $with_fftw $fftw_disabled
 ]);
 
