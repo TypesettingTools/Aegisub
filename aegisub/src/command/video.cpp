@@ -56,6 +56,7 @@
 #include "../dialog_jumpto.h"
 #include "../dialog_video_details.h"
 #include "../selection_controller.h"
+#include "../standard_paths.h"
 #include "../subs_grid.h"
 #include "../utils.h"
 #include "../video_box.h"
@@ -476,6 +477,41 @@ struct video_frame_prev_large : public validator_video_loaded {
 	}
 };
 
+static void save_snapshot(agi::Context *c, bool raw) {
+	static const agi::OptionValue* ssPath = OPT_GET("Path/Screenshot");
+	wxString option = lagi_wxString(ssPath->GetString());
+	wxFileName videoFile(c->videoController->videoName);
+	wxString basepath;
+
+	// Is it a path specifier and not an actual fixed path?
+	if (option[0] == '?') {
+		// If dummy video is loaded, we can't save to the video location
+		if (option.StartsWith("?video") && (c->videoController->videoName.Find("?dummy") != wxNOT_FOUND)) {
+			// So try the script location instead
+			option = "?script";
+		}
+		// Find out where the ?specifier points to
+		basepath = StandardPaths::DecodePath(option);
+		// If where ever that is isn't defined, we can't save there
+		if ((basepath == "\\") || (basepath == "/")) {
+			// So save to the current user's home dir instead
+			basepath = wxGetHomeDir();
+		}
+	}
+	// Actual fixed (possibly relative) path, decode it
+	else basepath = DecodeRelativePath(option,StandardPaths::DecodePath("?user/"));
+	basepath += "/" + videoFile.GetName();
+
+	// Get full path
+	int session_shot_count = 1;
+	wxString path;
+	do {
+		path = wxString::Format("%s_%03d_%d.png", basepath, session_shot_count++, c->videoController->GetFrameN());
+	} while (wxFileName::FileExists(path));
+
+	c->videoController->GetFrame(c->videoController->GetFrameN(), raw)->GetImage().SaveFile(path,wxBITMAP_TYPE_PNG);
+}
+
 /// Save the current video frame, with subtitles (if any)
 struct video_frame_save : public validator_video_loaded {
 	CMD_NAME("video/frame/save")
@@ -484,7 +520,7 @@ struct video_frame_save : public validator_video_loaded {
 	STR_HELP("Save the currently displayed frame to a PNG file in the video's directory.")
 
 	void operator()(agi::Context *c) {
-		c->videoController->SaveSnapshot(false);
+		save_snapshot(c, false);
 	}
 };
 
@@ -496,7 +532,7 @@ struct video_frame_save_raw : public validator_video_loaded {
 	STR_HELP("Save the currently displayed frame without the subtitles to a PNG file in the video's directory.")
 
 	void operator()(agi::Context *c) {
-		c->videoController->SaveSnapshot(true);
+		save_snapshot(c, true);
 	}
 };
 

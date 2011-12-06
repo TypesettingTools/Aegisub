@@ -155,10 +155,6 @@ public:
 	std::tr1::shared_ptr<AegiVideoFrame> GetFrame(int n, bool raw = false);
 	void GetFrameAsync(int n);
 
-	/// @brief Save the currently displayed frame as an image
-	/// @param raw Should the frame have subtitles?
-	void SaveSnapshot(bool raw);
-
 	/// @brief Is there a video loaded?
 	bool IsLoaded() const { return !!videoProvider; }
 

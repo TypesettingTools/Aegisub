@@ -133,7 +133,6 @@ void VideoContext::SetContext(agi::Context *context) {
 }
 
 void VideoContext::SetVideo(const wxString &filename) {
-	Stop();
 	Reset();
 	if (filename.empty()) {
 		VideoOpen();
@@ -301,44 +300,6 @@ int VideoContext::GetHeight() const {
 
 int VideoContext::GetLength() const {
 	return videoProvider->GetFrameCount();
-}
-
-void VideoContext::SaveSnapshot(bool raw) {
-	// Get folder
-	static const agi::OptionValue* ssPath = OPT_GET("Path/Screenshot");
-	wxString option = lagi_wxString(ssPath->GetString());
-	wxFileName videoFile(videoName);
-	wxString basepath;
-	// Is it a path specifier and not an actual fixed path?
-	if (option[0] == '?') {
-		// If dummy video is loaded, we can't save to the video location
-		if (option.StartsWith("?video") && (videoName.Find("?dummy") != wxNOT_FOUND)) {
-			// So try the script location instead
-			option = "?script";
-		}
-		// Find out where the ?specifier points to
-		basepath = StandardPaths::DecodePath(option);
-		// If where ever that is isn't defined, we can't save there
-		if ((basepath == "\\") || (basepath == "/")) {
-			// So save to the current user's home dir instead
-			basepath = wxGetHomeDir();
-		}
-	}
-	// Actual fixed (possibly relative) path, decode it
-	else basepath = DecodeRelativePath(option,StandardPaths::DecodePath("?user/"));
-	basepath += "/" + videoFile.GetName();
-
-	// Get full path
-	int session_shot_count = 1;
-	wxString path;
-	while (1) {
-		path = basepath + wxString::Format("_%03i_%i.png",session_shot_count,frame_n);
-		++session_shot_count;
-		wxFileName tryPath(path);
-		if (!tryPath.FileExists()) break;
-	}
-
-	GetFrame(frame_n,raw)->GetImage().SaveFile(path,wxBITMAP_TYPE_PNG);
 }
 
 void VideoContext::NextFrame() {
