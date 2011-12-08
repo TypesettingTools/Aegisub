@@ -138,6 +138,8 @@ public:
 	void Apply (bool apply,bool close);
 	void OnSetColor (int n);
 
+	virtual bool TransferDataToWindow();
+
 	DECLARE_EVENT_TABLE()
 };
 

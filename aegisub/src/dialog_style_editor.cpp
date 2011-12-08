@@ -690,6 +690,19 @@ void DialogStyleEditor::LoadPosition() {
 		CentreOnParent();
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////////
+// Make sure the preview is updated whenever data are transferred into the window by validators
+bool DialogStyleEditor::TransferDataToWindow()
+{
+	bool res = wxDialog::TransferDataToWindow();
+	if (res && SubsPreview) {
+		UpdateWorkStyle();
+		SubsPreview->SetStyle(work);
+	}
+	return res;
+}
+
+
 
 /////////////////////////////////////
 // Static class data saving position
