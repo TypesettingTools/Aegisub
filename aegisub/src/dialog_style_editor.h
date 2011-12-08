@@ -120,7 +120,6 @@ private:
 	void OnApply (wxCommandEvent &event);
 	void OnCancel (wxCommandEvent &event);
 	void OnOK (wxCommandEvent &event);
-	void OnChooseFont (wxCommandEvent &event);
 	void OnSetColor1 (wxCommandEvent &event);
 	void OnSetColor2 (wxCommandEvent &event);
 	void OnSetColor3 (wxCommandEvent &event);

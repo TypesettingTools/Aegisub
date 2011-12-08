@@ -480,6 +480,11 @@ void DialogStyleEditor::Apply (bool apply,bool close) {
 		// Update work style
 		UpdateWorkStyle();
 
+		// Comic sans warning
+		if (work->font == _T("Comic Sans MS") && style->font != work->font) {
+			wxMessageBox(_("You have chosen to use the \"Comic Sans\" font. As the programmer and a typesetter,\nI must urge you to reconsider. Comic Sans is the most abused font in the history\nof computing, so please avoid using it unless it's REALLY suitable. Thanks."), _("Warning"), wxICON_EXCLAMATION | wxOK);
+		}
+
 		// Copy
 		*style = *work;
 		style->UpdateData();
@@ -557,33 +562,6 @@ void DialogStyleEditor::UpdateWorkStyle() {
 	work->italic = BoxItalic->IsChecked();
 	work->underline = BoxUnderline->IsChecked();
 	work->strikeout = BoxStrikeout->IsChecked();
-}
-
-
-///////////////////
-// Choose font box
-void DialogStyleEditor::OnChooseFont (wxCommandEvent &event) {
-	wxFont oldfont (int(work->fontsize), wxFONTFAMILY_DEFAULT, (work->italic?wxFONTSTYLE_ITALIC:wxFONTSTYLE_NORMAL), (work->bold?wxFONTWEIGHT_BOLD:wxFONTWEIGHT_NORMAL), work->underline, work->font, wxFONTENCODING_DEFAULT);
-	wxFont newfont = wxGetFontFromUser(this,oldfont);
-	if (newfont.Ok()) {
-		FontName->SetValue(newfont.GetFaceName());
-		FontSize->SetValue(wxString::Format(_T("%i"),newfont.GetPointSize()));
-		BoxBold->SetValue(newfont.GetWeight() == wxFONTWEIGHT_BOLD);
-		BoxItalic->SetValue(newfont.GetStyle() == wxFONTSTYLE_ITALIC);
-		BoxUnderline->SetValue(newfont.GetUnderlined());
-		work->font = newfont.GetFaceName();
-		work->fontsize = newfont.GetPointSize();
-		work->bold = (newfont.GetWeight() == wxFONTWEIGHT_BOLD);
-		work->italic = (newfont.GetStyle() == wxFONTSTYLE_ITALIC);
-		work->underline = newfont.GetUnderlined();
-		UpdateWorkStyle();
-		if (SubsPreview) SubsPreview->SetStyle(work);
-
-		// Comic sans warning
-		if (newfont.GetFaceName() == _T("Comic Sans MS")) {
-			wxMessageBox(_("You have chosen to use the \"Comic Sans\" font. As the programmer and a typesetter,\nI must urge you to reconsider. Comic Sans is the most abused font in the history\nof computing, so please avoid using it unless it's REALLY suitable. Thanks."), _("Warning"), wxICON_EXCLAMATION | wxOK);
-		}
-	}
 }
 
 
