@@ -299,6 +299,7 @@ aegisub_2_1_SOURCES = \
 	subtitle_format.cpp \
 	subtitle_format_ass.cpp \
 	subtitle_format_dvd.cpp \
+	subtitle_format_ebu3264.cpp \
 	subtitle_format_encore.cpp \
 	subtitle_format_microdvd.cpp \
 	subtitle_format_mkv.cpp \
