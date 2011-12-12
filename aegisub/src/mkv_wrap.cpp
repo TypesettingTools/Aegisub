@@ -443,7 +443,7 @@ void MatroskaWrapper::GetSubtitles(AssFile *target) {
 				}
 
 				// Assemble final
-				blockString = wxString::Format(_T("Dialogue: %i,"),layer) + subStart.GetASSFormated() + _T(",") + subEnd.GetASSFormated() + _T(",") + blockString;
+				blockString = wxString::Format(_T("Dialogue: %li,"),layer) + subStart.GetASSFormated() + _T(",") + subEnd.GetASSFormated() + _T(",") + blockString;
 			}
 
 			// Process SRT
