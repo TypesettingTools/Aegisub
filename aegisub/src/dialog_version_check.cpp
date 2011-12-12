@@ -48,6 +48,12 @@
 #include <winsock2.h>
 #endif
 
+#ifdef __WXMAC__
+// We use a CFHTTP based implementation on Mac
+#include <Carbon/Carbon.h>
+#include <wx/sstream.h>
+#endif
+
 #include <wx/string.h>
 #include <wx/event.h>
 #include <wx/thread.h>
@@ -227,7 +233,7 @@ static const wxChar * GetOSShortName()
 		else
 			return _T("windows"); // future proofing? I doubt we run on nt4
 	}
-	else if (osid & wxOS_MAC_OSX_DARWIN && osver_maj == 0x10) // yes 0x10, not decimal 10, don't ask me
+	else if (osid & wxOS_MAC_OSX_DARWIN && osver_maj == 10) // 10 decimal, previously 0x10... sigh
 	{
 		// ugliest hack in the world? nah.
 		static wxChar osxstring[] = _T("osx00");
@@ -313,6 +319,71 @@ static wxString GetSystemLanguage()
 #endif
 
 
+static void ProcessUpdateFileLine(const std::set<wxString> &accept_tags, AegisubVersionCheckResultEvent &result_event, const wxString &line)
+{
+	wxStringTokenizer tkn(line, _T("|"), wxTOKEN_RET_EMPTY_ALL);
+	wxArrayString parsed;
+	while (tkn.HasMoreTokens()) {
+		parsed.Add(tkn.GetNextToken());
+	}
+	if (parsed.Count() != 6) return;
+
+	wxString line_type = parsed[0];
+	wxString line_revision = parsed[1];
+	wxString line_tags_str = parsed[2];
+	wxString line_url = inline_string_decode(parsed[3]);
+	wxString line_friendlyname = inline_string_decode(parsed[4]);
+	wxString line_description = inline_string_decode(parsed[5]);
+
+	if ((line_type == _T("branch") || line_type == _T("dev")) && GetIsOfficialRelease())
+	{
+		// stable runners don't want unstable, not interesting, skip
+		return;
+	}
+
+	// check if the tags match
+	if (line_tags_str.IsEmpty() || line_tags_str == _T("all"))
+	{
+		// looking good
+	}
+	else
+	{
+		bool accepts_all_tags = true;
+		wxStringTokenizer tk(line_tags_str, _T(" "));
+		while (tk.HasMoreTokens())
+		{
+			if (accept_tags.find(tk.GetNextToken()) == accept_tags.end())
+			{
+				accepts_all_tags = false;
+				break;
+			}
+		}
+		if (!accepts_all_tags)
+			return;
+	}
+
+	if (line_type == _T("upgrade") || line_type == _T("bugfix"))
+	{
+		// de facto interesting
+	}
+	else
+	{
+		// maybe interesting, check revision
+		
+		long new_revision = 0;
+		if (!line_revision.ToLong(&new_revision)) return;
+		if (new_revision <= GetSVNRevision()) 
+		{
+			// too old, not interesting, skip
+			return;
+		}
+	}
+
+	// it's interesting!
+	result_event.AddUpdate(line_url, line_friendlyname, line_description);
+}
+
+
 void AegisubVersionCheckerThread::DoCheck()
 {
 	std::set<wxString> accept_tags;
@@ -338,6 +409,7 @@ void AegisubVersionCheckerThread::DoCheck()
 
 	wxString path = base_updates_path + querystring;
 
+#ifndef __WXMAC__
 	wxHTTP http;
 	http.SetHeader(_T("Connection"), _T("Close"));
 	http.SetFlags(wxSOCKET_WAITALL|wxSOCKET_BLOCK);
@@ -359,67 +431,58 @@ void AegisubVersionCheckerThread::DoCheck()
 	while (!stream->Eof() && stream->GetSize() > 0)
 	{
 		wxString line = text.ReadLine();
-		wxStringTokenizer tkn(line, _T("|"), wxTOKEN_RET_EMPTY_ALL);
-		wxArrayString parsed;
-		while (tkn.HasMoreTokens()) {
-			parsed.Add(tkn.GetNextToken());
-		}
-		if (parsed.Count() != 6) continue;
-
-		wxString line_type = parsed[0];
-		wxString line_revision = parsed[1];
-		wxString line_tags_str = parsed[2];
-		wxString line_url = inline_string_decode(parsed[3]);
-		wxString line_friendlyname = inline_string_decode(parsed[4]);
-		wxString line_description = inline_string_decode(parsed[5]);
-
-		if ((line_type == _T("branch") || line_type == _T("dev")) && GetIsOfficialRelease())
-		{
-			// stable runners don't want unstable, not interesting, skip
-			continue;
-		}
-
-		// check if the tags match
-		if (line_tags_str.IsEmpty() || line_tags_str == _T("all"))
-		{
-			// looking good
-		}
-		else
-		{
-			bool accepts_all_tags = true;
-			wxStringTokenizer tk(line_tags_str, _T(" "));
-			while (tk.HasMoreTokens())
-			{
-				if (accept_tags.find(tk.GetNextToken()) == accept_tags.end())
-				{
-					accepts_all_tags = false;
-					break;
-				}
-			}
-			if (!accepts_all_tags)
-				continue;
-		}
-
-		if (line_type == _T("upgrade") || line_type == _T("bugfix"))
-		{
-			// de facto interesting
-		}
-		else
-		{
-			// maybe interesting, check revision
-			
-			long new_revision = 0;
-			if (!line_revision.ToLong(&new_revision)) continue;
-			if (new_revision <= GetSVNRevision()) 
-			{
-				// too old, not interesting, skip
-				continue;
-			}
-		}
-
-		// it's interesting!
-		result_event.AddUpdate(line_url, line_friendlyname, line_description);
+		ProcessUpdateFileLine(accept_tags, result_event, line);
 	}
+#else // is __WXMAC__
+	CFReadStreamRef stream;
+	{
+		wxString url = wxString("http://") + servername + path;
+		CFStringRef cfurlstr = CFStringCreateWithCString(kCFAllocatorDefault, url.utf8_str(), kCFStringEncodingUTF8);
+		CFURLRef urlobj = CFURLCreateWithString(kCFAllocatorDefault, cfurlstr, 0);
+		CFDataRef bodyData = CFStringCreateExternalRepresentation(kCFAllocatorDefault, CFSTR(""), kCFStringEncodingUTF8, 0);
+		CFHTTPMessageRef httpmsg = CFHTTPMessageCreateRequest(kCFAllocatorDefault, CFSTR("GET"), urlobj, kCFHTTPVersion1_1);
+		CFHTTPMessageSetHeaderFieldValue(httpmsg, CFSTR("User-Agent"), CFSTR("Aegisub"));
+		CFHTTPMessageSetHeaderFieldValue(httpmsg, CFSTR("Connection"), CFSTR("Close"));
+		CFHTTPMessageSetBody(httpmsg, bodyData);
+		stream = CFReadStreamCreateForHTTPRequest(kCFAllocatorDefault, httpmsg);
+		CFRelease(httpmsg);
+		CFRelease(bodyData);
+		CFRelease(urlobj);
+	}
+	CFReadStreamSetProperty(stream, kCFStreamPropertyHTTPShouldAutoredirect, kCFBooleanTrue);
+
+	CFReadStreamOpen(stream);
+	wxString result_body;
+	do {
+		const CFIndex buffer_len = 512;
+		UInt8 buf[buffer_len];
+		CFIndex read_len = CFReadStreamRead(stream, buf, buffer_len);
+		if (read_len <= 0) break;
+		result_body += wxString(buf, wxConvUTF8, read_len);
+	} while (true);
+	
+	CFHTTPMessageRef httpresp = (CFHTTPMessageRef)CFReadStreamCopyProperty(stream, kCFStreamPropertyHTTPResponseHeader);
+	
+	AegisubVersionCheckResultEvent result_event;
+	
+	int http_code = CFHTTPMessageGetResponseStatusCode(httpresp);
+	if (http_code >= 200 && http_code < 300)
+	{
+		wxStringInputStream strstream(result_body);
+		wxTextInputStream text(strstream);
+		while (!strstream.Eof() && strstream.GetSize() > 0)
+		{
+			wxString line = text.ReadLine();
+			ProcessUpdateFileLine(accept_tags, result_event, line);
+		}
+	}
+	else
+	{
+		throw VersionCheckError(wxString::Format(_("HTTP request failed, got HTTP response %d."), http_code));
+	}
+
+	CFRelease(stream);
+#endif
 
 	if (result_event.GetUpdates().size() == 1)
 	{
