@@ -89,7 +89,7 @@ void HelpButton::OpenPage(const wxString pageID) {
 		// is safe with everything everyone uses. Blame Microsoft.
 		url = wxString(_T("file://")) + docFile.GetFullPath(wxPATH_NATIVE);
 	else
-		url = wxString::Format(_T("http://docs.aegisub.net/%s"),page.c_str());
+		url = wxString::Format(_T("http://docs.aegisub.org/manual/%s"),page.c_str());
 
 	wxLaunchDefaultBrowser(url);
 }
