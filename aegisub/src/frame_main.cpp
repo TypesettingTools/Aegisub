@@ -46,6 +46,7 @@
 #include <wx/image.h>
 #include <wx/statline.h>
 
+#include <aegisub/exception.h>
 #include "subs_grid.h"
 #include "frame_main.h"
 #ifdef WITH_AVISYNTH
