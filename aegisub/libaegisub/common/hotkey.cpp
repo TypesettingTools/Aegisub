@@ -120,6 +120,7 @@ bool Hotkey::Scan(const std::string &context, const std::string &str, bool alway
 		return true;
 	}
 
+	cmd.clear();
 	return false;
 }
 
