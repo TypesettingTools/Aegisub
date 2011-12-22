@@ -429,7 +429,7 @@ void SubsEditBox::OnActiveLineChanged(AssDialogue *new_line) {
 	/// @todo VideoContext should be doing this
 	if (c->videoController->IsLoaded()) {
 		bool sync;
-		if (Search.hasFocus) sync = OPT_GET("Tool/Search Replace/Video Update")->GetBool();
+		if (Search.HasFocus()) sync = OPT_GET("Tool/Search Replace/Video Update")->GetBool();
 		else sync = OPT_GET("Video/Subtitle Sync")->GetBool();
 
 		if (sync) {

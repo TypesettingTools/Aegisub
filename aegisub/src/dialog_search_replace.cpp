@@ -37,6 +37,8 @@
 #include "config.h"
 
 #ifndef AGI_PRE
+#include <functional>
+
 #include <wx/regex.h>
 #include <wx/string.h>
 #endif
@@ -47,13 +49,11 @@
 #include "compat.h"
 #include "dialog_search_replace.h"
 #include "include/aegisub/context.h"
-#include "frame_main.h"
 #include "main.h"
 #include "selection_controller.h"
 #include "subs_edit_ctrl.h"
 #include "subs_grid.h"
 
-// IDs
 enum {
 	BUTTON_FIND_NEXT,
 	BUTTON_REPLACE_NEXT,
@@ -63,22 +63,13 @@ enum {
 	CHECK_UPDATE_VIDEO
 };
 
-/// @brief Constructor 
-/// @param parent      
-/// @param _hasReplace 
-/// @param name        
-///
-DialogSearchReplace::DialogSearchReplace (wxWindow *parent,bool _hasReplace,wxString name)
-: wxDialog(parent, -1, name, wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE, "SearchReplace")
+DialogSearchReplace::DialogSearchReplace(wxWindow *parent, bool withReplace, wxString const& name)
+: wxDialog(parent, -1, name)
+, hasReplace(hasReplace)
 {
-	// Setup
-	hasReplace = _hasReplace;
-
-	// Find sizer
 	wxSizer *FindSizer = new wxFlexGridSizer(2,2,5,15);
 	wxArrayString FindHistory = lagi_MRU_wxAS("Find");
 	FindEdit = new wxComboBox(this,-1,"",wxDefaultPosition,wxSize(300,-1),FindHistory,wxCB_DROPDOWN);
-	//if (FindHistory.Count()) FindEdit->SetStringSelection(FindHistory[0]);
 	FindEdit->SetSelection(0);
 	FindSizer->Add(new wxStaticText(this,-1,_("Find what:")),0,wxRIGHT | wxALIGN_CENTER_VERTICAL,0);
 	FindSizer->Add(FindEdit,0,wxRIGHT,0);
@@ -90,14 +81,12 @@ DialogSearchReplace::DialogSearchReplace (wxWindow *parent,bool _hasReplace,wxSt
 		ReplaceEdit->SetSelection(0);
 	}
 
-	// Options sizer
 	wxSizer *OptionsSizer = new wxBoxSizer(wxVERTICAL);
 	CheckMatchCase = new wxCheckBox(this,CHECK_MATCH_CASE,_("&Match case"));
 	CheckRegExp = new wxCheckBox(this,CHECK_MATCH_CASE,_("&Use regular expressions"));
 	CheckUpdateVideo = new wxCheckBox(this,CHECK_UPDATE_VIDEO,_("Update &Video"));
 	CheckMatchCase->SetValue(OPT_GET("Tool/Search Replace/Match Case")->GetBool());
 	CheckRegExp->SetValue(OPT_GET("Tool/Search Replace/RegExp")->GetBool());
-	//CheckRegExp->Enable(false);
 	CheckUpdateVideo->SetValue(OPT_GET("Tool/Search Replace/Video Update")->GetBool());
 //	CheckUpdateVideo->Enable(Search.grid->video->loaded);
 	OptionsSizer->Add(CheckMatchCase,0,wxBOTTOM,5);
@@ -143,27 +132,22 @@ DialogSearchReplace::DialogSearchReplace (wxWindow *parent,bool _hasReplace,wxSt
 	wxSizer *MainSizer = new wxBoxSizer(wxHORIZONTAL);
 	MainSizer->Add(LeftSizer,0,wxEXPAND | wxALL,5);
 	MainSizer->Add(ButtonSizer,0,wxEXPAND | wxALL,5);
-	MainSizer->SetSizeHints(this);
-	SetSizer(MainSizer);
+	SetSizerAndFit(MainSizer);
 	CenterOnParent();
 
-	// Open
 	Search.OnDialogOpen();
+
+	Bind(wxEVT_COMMAND_BUTTON_CLICKED, std::tr1::bind(&DialogSearchReplace::FindReplace, this, 0), BUTTON_FIND_NEXT);
+	Bind(wxEVT_COMMAND_BUTTON_CLICKED, std::tr1::bind(&DialogSearchReplace::FindReplace, this, 1), BUTTON_REPLACE_NEXT);
+	Bind(wxEVT_COMMAND_BUTTON_CLICKED, std::tr1::bind(&DialogSearchReplace::FindReplace, this, 2), BUTTON_REPLACE_ALL);
+	Bind(wxEVT_SET_FOCUS, std::tr1::bind(&SearchReplaceEngine::SetFocus, &Search, true));
+	Bind(wxEVT_KILL_FOCUS, std::tr1::bind(&SearchReplaceEngine::SetFocus, &Search, false));
 }
 
-
-
-/// @brief Destructor 
-///
 DialogSearchReplace::~DialogSearchReplace() {
-	// Save options
 	UpdateSettings();
 }
 
-
-
-/// @brief Update search 
-///
 void DialogSearchReplace::UpdateSettings() {
 	Search.isReg = CheckRegExp->IsChecked() && CheckRegExp->IsEnabled();
 	Search.matchCase = CheckMatchCase->IsChecked();
@@ -173,40 +157,14 @@ void DialogSearchReplace::UpdateSettings() {
 	OPT_SET("Tool/Search Replace/Video Update")->SetBool(CheckUpdateVideo->IsChecked());
 	OPT_SET("Tool/Search Replace/Field")->SetInt(Field->GetSelection());
 	OPT_SET("Tool/Search Replace/Affect")->SetInt(Affect->GetSelection());
-}	
-
-
-///////////////
-// Event table
-BEGIN_EVENT_TABLE(DialogSearchReplace,wxDialog)
-	EVT_BUTTON(wxID_CANCEL,DialogSearchReplace::OnClose)
-	EVT_BUTTON(BUTTON_FIND_NEXT,DialogSearchReplace::OnFindNext)
-	EVT_BUTTON(BUTTON_REPLACE_NEXT,DialogSearchReplace::OnReplaceNext)
-	EVT_BUTTON(BUTTON_REPLACE_ALL,DialogSearchReplace::OnReplaceAll)
-	EVT_SET_FOCUS(DialogSearchReplace::OnSetFocus)
-	EVT_KILL_FOCUS(DialogSearchReplace::OnKillFocus)
-END_EVENT_TABLE()
-
-	
-
-/// @brief Close 
-/// @param event 
-///
-void DialogSearchReplace::OnClose (wxCommandEvent &) {
-	Show(false);
 }
 
-/// @brief Find or replace 
-/// @param mode 
-/// @return 
-///
 void DialogSearchReplace::FindReplace(int mode) {
-	// Check mode
 	if (mode < 0 || mode > 2) return;
 
 	// Variables
 	wxString LookFor = FindEdit->GetValue();
-	if (LookFor.IsEmpty()) return;
+	if (!LookFor) return;
 
 	// Setup
 	Search.isReg = CheckRegExp->IsChecked() && CheckRegExp->IsEnabled();
@@ -241,46 +199,13 @@ void DialogSearchReplace::FindReplace(int mode) {
 	UpdateDropDowns();
 }
 
-
-
-/// @brief Find next 
-/// @param event 
-///
-void DialogSearchReplace::OnFindNext (wxCommandEvent &) {
-	FindReplace(0);
-}
-
-
-
-/// @brief Replace next 
-/// @param event 
-///
-void DialogSearchReplace::OnReplaceNext (wxCommandEvent &) {
-	FindReplace(1);
-}
-
-
-
-/// @brief Replace all 
-/// @param event 
-///
-void DialogSearchReplace::OnReplaceAll (wxCommandEvent &) {
-	FindReplace(2);
-}
-
-
-
-/// @brief Update drop down boxes 
-///
 void DialogSearchReplace::UpdateDropDowns() {
-	// Find
 	FindEdit->Freeze();
 	FindEdit->Clear();
 	FindEdit->Append(lagi_MRU_wxAS("Find"));
 	FindEdit->SetSelection(0);
 	FindEdit->Thaw();
 
-	// Replace
 	if (hasReplace) {
 		ReplaceEdit->Freeze();
 		ReplaceEdit->Clear();
@@ -290,47 +215,18 @@ void DialogSearchReplace::UpdateDropDowns() {
 	}
 }
 
-
-
-/// @brief DOCME
-/// @param event 
-///
-void DialogSearchReplace::OnSetFocus (wxFocusEvent &) {
-	Search.hasFocus = true;
-}
-
-
-/// @brief DOCME
-/// @param event 
-///
-void DialogSearchReplace::OnKillFocus (wxFocusEvent &) {
-	Search.hasFocus = false;
-}
-
-
-
 /// @brief Constructor  SearchReplaceEngine ///////////////////////
-///
 SearchReplaceEngine::SearchReplaceEngine () {
 	CanContinue = false;
 }
 
-
-
-/// @brief Find next instance 
-///
 void SearchReplaceEngine::FindNext() {
 	ReplaceNext(false);
 }
 
 
-
 /// @brief Find & Replace next instance 
-/// @param DoReplace 
-/// @return 
-///
 void SearchReplaceEngine::ReplaceNext(bool DoReplace) {
-	// Check if it's OK to go on
 	if (!CanContinue) {
 		OpenDialog(DoReplace);
 		return;
@@ -451,12 +347,8 @@ void SearchReplaceEngine::ReplaceNext(bool DoReplace) {
 	LastWasFind = !DoReplace;
 }
 
-
-
-/// @brief Replace all instances 
-///
+/// @brief Replace all instances
 void SearchReplaceEngine::ReplaceAll() {
-	// Setup
 	wxString *Text;
 	int nrows = context->subsGrid->GetRows();
 	size_t count = 0;
@@ -526,13 +418,10 @@ void SearchReplaceEngine::ReplaceAll() {
 		}
 	}
 
-	// Commit
 	if (count > 0) {
 		context->ass->Commit(_("replace"), AssFile::COMMIT_DIAG_TEXT);
 		wxMessageBox(wxString::Format(_("%i matches were replaced."),count));
 	}
-
-	// None found
 	else {
 		wxMessageBox(_("No matches found."));
 	}
@@ -540,12 +429,7 @@ void SearchReplaceEngine::ReplaceAll() {
 	LastWasFind = false;
 }
 
-
-
-/// @brief Search dialog opened 
-///
 void SearchReplaceEngine::OnDialogOpen() {
-	// Set curline
 	wxArrayInt sels = context->subsGrid->GetSelection();
 	curLine = 0;
 	if (sels.Count() > 0) curLine = sels[0];
@@ -558,10 +442,6 @@ void SearchReplaceEngine::OnDialogOpen() {
 	replaceLen = 0;
 }
 
-/// @brief Open dialog 
-/// @param replace 
-/// @return 
-///
 void SearchReplaceEngine::OpenDialog (bool replace) {
 	static DialogSearchReplace *diag = NULL;
 	wxString title = replace? _("Replace") : _("Find");
@@ -579,19 +459,12 @@ void SearchReplaceEngine::OpenDialog (bool replace) {
 		diag->Destroy();
 	}
 	// create new one
-	diag = new DialogSearchReplace(((AegisubApp*)wxTheApp)->frame,replace,title);
+	diag = new DialogSearchReplace(context->parent,replace,title);
 	diag->FindEdit->SetFocus();
 	diag->Show();
 	hasReplace = replace;
 }
 
-
-
-/// @brief Get text pointer 
-/// @param n     
-/// @param field 
-/// @return 
-///
 wxString *SearchReplaceEngine::GetText(int n,int field) {
 	AssDialogue *cur = context->subsGrid->GetDialogue(n);
 	if (field == 0) return &cur->Text;
@@ -601,9 +474,4 @@ wxString *SearchReplaceEngine::GetText(int n,int field) {
 	else throw wxString("Invalid field");
 }
 
-
-
-/// DOCME
 SearchReplaceEngine Search;
-
-

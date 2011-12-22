@@ -73,12 +73,6 @@ class SearchReplaceEngine {
 	/// DOCME
 	bool hasReplace;
 
-	wxString *GetText(int n,int field);
-
-public:
-	/// DOCME
-	agi::Context *context;
-
 	/// DOCME
 	bool isReg;
 
@@ -106,11 +100,21 @@ public:
 	/// DOCME
 	wxString ReplaceWith;
 
+
+	wxString *GetText(int n,int field);
+
+public:
+	/// DOCME
+	agi::Context *context;
+
 	void FindNext();
 	void ReplaceNext(bool DoReplace=true);
 	void ReplaceAll();
 	void OpenDialog(bool HasReplace);
 	void OnDialogOpen();
+
+	void SetFocus(bool focus) { hasFocus = focus; }
+	bool HasFocus() const { return hasFocus; }
 
 	SearchReplaceEngine();
 	friend class DialogSearchReplace;
@@ -119,8 +123,6 @@ public:
 // Instance
 extern SearchReplaceEngine Search;
 
-
-
 /// DOCME
 /// @class DialogSearchReplace
 /// @brief DOCME
@@ -128,8 +130,6 @@ extern SearchReplaceEngine Search;
 /// DOCME
 class DialogSearchReplace : public wxDialog {
 	friend class SearchReplaceEngine;
-
-private:
 
 	/// DOCME
 	bool hasReplace;
@@ -159,17 +159,8 @@ private:
 	void UpdateDropDowns();
 	void FindReplace(int mode);	// 0 = find, 1 = replace next, 2 = replace all
 
-	void OnClose (wxCommandEvent &event);
-	void OnFindNext (wxCommandEvent &event);
-	void OnReplaceNext (wxCommandEvent &event);
-	void OnReplaceAll (wxCommandEvent &event);
-	void OnSetFocus (wxFocusEvent &event);
-	void OnKillFocus (wxFocusEvent &event);
-
 public:
-	DialogSearchReplace(wxWindow *parent,bool hasReplace,wxString name);
+	DialogSearchReplace(wxWindow *parent, bool withReplace, wxString const& name);
 	~DialogSearchReplace();
 	void UpdateSettings();
-
-	DECLARE_EVENT_TABLE()
 };
