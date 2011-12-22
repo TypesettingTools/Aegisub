@@ -38,6 +38,7 @@
 #include <vector>
 
 #include <wx/panel.h>
+#include <wx/timer.h>
 #endif
 
 #include <libaegisub/signal.h>
@@ -130,6 +131,7 @@ class SubsEditBox : public wxPanel, protected SelectionListener<AssDialogue> {
 	int timeCommitId[3];
 	int commitId;
 	wxString lastCommitType;
+	wxTimer undoTimer;
 
 	void OnChange(wxStyledTextEvent &event);
 	void OnKeyDown(wxKeyEvent &event);
@@ -151,6 +153,7 @@ class SubsEditBox : public wxPanel, protected SelectionListener<AssDialogue> {
 	void OnCommentChange(wxCommandEvent &);
 	void OnEffectChange(wxCommandEvent &);
 	void OnSize(wxSizeEvent &event);
+	void OnUndoTimer(wxTimerEvent&);
 
 	void OnFlagButton(wxCommandEvent &event);
 	void OnColorButton(wxCommandEvent &event);

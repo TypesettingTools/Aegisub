@@ -166,6 +166,8 @@ SubsEditBox::SubsEditBox(wxWindow *parent, agi::Context *context)
 , splitLineMode(false)
 , controlState(true)
 , c(context)
+, commitId(-1)
+, undoTimer(GetEventHandler())
 {
 	// Top controls
 	wxArrayString styles;
@@ -270,8 +272,7 @@ SubsEditBox::SubsEditBox(wxWindow *parent, agi::Context *context)
 	MainSizer->Add(BottomSizer,1,wxEXPAND | wxLEFT | wxRIGHT | wxBOTTOM,3);
 
 	// Set sizer
-	SetSizer(MainSizer);
-	MainSizer->SetSizeHints(this);
+	SetSizerAndFit(MainSizer);
 
 	origBgColour = TextEdit->GetBackgroundColour();
 	disabledBgColour = GetBackgroundColour();
@@ -312,6 +313,7 @@ SubsEditBox::SubsEditBox(wxWindow *parent, agi::Context *context)
 	Bind(wxEVT_COMMAND_CHECKBOX_CLICKED, &SubsEditBox::OnCommentChange, this, CommentBox->GetId());
 
 	Bind(wxEVT_SIZE, &SubsEditBox::OnSize, this);
+	Bind(wxEVT_TIMER, &SubsEditBox::OnUndoTimer, this);
 
 	for (int i = 0; i < 4; i++) {
 		Bind(wxEVT_COMMAND_BUTTON_CLICKED, &SubsEditBox::OnFlagButton, this, BUTTON_FIRST + i);
@@ -490,6 +492,10 @@ void SubsEditBox::OnChange(wxStyledTextEvent &event) {
 	}
 }
 
+void SubsEditBox::OnUndoTimer(wxTimerEvent&) {
+	commitId = -1;
+}
+
 template<class T, class setter>
 void SubsEditBox::SetSelectedRows(setter set, T value, wxString desc, int type, bool amend) {
 	for_each(sel.begin(), sel.end(), bind(set, std::tr1::placeholders::_1, value));
@@ -498,6 +504,7 @@ void SubsEditBox::SetSelectedRows(setter set, T value, wxString desc, int type, 
 	commitId = c->ass->Commit(desc, type, (amend && desc == lastCommitType) ? commitId : -1, sel.size() == 1 ? *sel.begin() : 0);
 	file_changed_slot.Unblock();
 	lastCommitType = desc;
+	undoTimer.Start(10000, wxTIMER_ONE_SHOT);
 }
 
 template<class T>
