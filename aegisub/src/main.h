@@ -35,8 +35,6 @@
 ///
 
 
-///////////////////
-// Include headers
 #ifndef AGI_PRE
 #include <wx/app.h>
 #include <wx/file.h>
@@ -49,8 +47,11 @@
 #include <libaegisub/option_value.h>
 #include <libaegisub/path.h>
 
-//////////////
-// Prototypes
+#ifndef wxUSE_EXCEPTIONS
+#error wxWidgets is compiled without exceptions support. Aegisub requires exceptions support in wxWidgets to run safely.
+#endif
+
+
 class FrameMain;
 class PluginManager;
 #ifdef _DEBUG
@@ -136,15 +137,10 @@ public:
 	void OnFatalException();
 #endif
 
-#if defined(wxUSE_EXCEPTIONS)
+
 	// This function wraps all event handler calls anywhere in the application and is
-	// our ticket to catch exeptions happening in event handlers.
-    virtual void HandleEvent(wxEvtHandler *handler,
-                             wxEventFunction func,
-                             wxEvent& event) const;
-#else
-# error wxWidgets is compiled without exceptions support, Aegisub requires exceptions support in wxWidgets to run safely
-#endif
+	// our ticket to catch exceptions happening in event handlers.
+	void HandleEvent(wxEvtHandler *handler, wxEventFunction func, wxEvent& event) const;
 };
 
 DECLARE_APP(AegisubApp)
