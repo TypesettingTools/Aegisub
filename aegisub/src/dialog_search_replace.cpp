@@ -257,9 +257,11 @@ void SearchReplaceEngine::ReplaceNext(bool DoReplace) {
 
 	// Search for it
 	while (!found) {
-		Text = GetText(curLine,field);
-		if (DoReplace && LastWasFind) tempPos = pos;
-		else tempPos = pos+replaceLen;
+		Text = GetText(context->subsGrid->GetDialogue(curLine), field);
+		if (DoReplace && LastWasFind)
+			tempPos = pos;
+		else
+			tempPos = pos+replaceLen;
 
 		// RegExp
 		if (isReg) {
@@ -347,55 +349,55 @@ void SearchReplaceEngine::ReplaceNext(bool DoReplace) {
 
 /// @brief Replace all instances
 void SearchReplaceEngine::ReplaceAll() {
-	wxString *Text;
-	int nrows = context->subsGrid->GetRows();
 	size_t count = 0;
+
 	int regFlags = wxRE_ADVANCED;
-	if (!matchCase) {
-		if (isReg) regFlags |= wxRE_ICASE;
-		//else LookFor.MakeLower();
-	}
-	bool replaced;
-	context->subsGrid->BeginBatch();
+	if (!matchCase)
+		regFlags |= wxRE_ICASE;
+	wxRegEx reg;
+	if (isReg)
+		reg.Compile(LookFor, regFlags);
 
 	// Selection
-	bool hasSelection = false;
-	wxArrayInt sels = context->subsGrid->GetSelection();
-	if (sels.Count() > 0) hasSelection = true;
-	bool inSel = false;
-	if (affect == 1) inSel = true;
+	std::set<AssDialogue*> sel = context->selectionController->GetSelectedSet();
+	bool hasSelection = !sel.empty();
+	bool inSel = affect == 1;
 
 	// Scan
-	for (int i=0;i<nrows;i++) {
-		// Check if row is selected
-		if (inSel && hasSelection && sels.Index(i) == wxNOT_FOUND) {
-			continue;
-		}
+	for (std::list<AssEntry*>::iterator it = context->ass->Line.begin(); it != context->ass->Line.end(); ++it) {
+		AssDialogue *diag = dynamic_cast<AssDialogue*>(*it);
+		if (!diag) continue;
 
-		// Prepare
-		replaced = false;
-		Text = GetText(i,field);
+		// Check if row is selected
+		if (inSel && hasSelection && !sel.count(diag))
+			continue;
+
+		wxString *Text = GetText(diag, field);
 
 		// Regular expressions
 		if (isReg) {
-			wxRegEx reg(LookFor,regFlags);
-			if (reg.IsValid()) {
-				size_t reps = reg.Replace(Text,ReplaceWith,1000);
-				if (reps > 0) replaced = true;
-				count += reps;
+			if (reg.Matches(*Text)) {
+				size_t start, len;
+				reg.GetMatch(&start, &len);
+
+				// A zero length match (such as '$') will always be replaced
+				// maxMatches times, which is almost certainly not what the user
+				// wanted, so limit it to one replacement in that situation
+				count += reg.Replace(Text, ReplaceWith, len > 0 ? 1000 : 1);
 			}
 		}
 		// Normal replace
 		else {
 			if (!Search.matchCase) {
-				wxString Left = "", Right = *Text;
-				int pos = 0;
-				Left.Alloc(Right.Len());
-				while (pos <= (int)(Right.Len() - LookFor.Len())) {
-					if (Right.Mid(pos, LookFor.Len()).CmpNoCase(LookFor) == 0) {
-						Left.Append(Right.Mid(0,pos)).Append(ReplaceWith);
-						Right = Right.Mid(pos+LookFor.Len());
-						count++;
+				bool replaced = false;
+				wxString Left, Right = *Text;
+				size_t pos = 0;
+				Left.reserve(Right.size());
+				while (pos + LookFor.size() <= Right.size()) {
+					if (Right.Mid(pos, LookFor.size()).CmpNoCase(LookFor) == 0) {
+						Left.Append(Right.Left(pos)).Append(ReplaceWith);
+						Right = Right.Mid(pos + LookFor.Len());
+						++count;
 						replaced = true;
 						pos = 0;
 					}
@@ -407,11 +409,8 @@ void SearchReplaceEngine::ReplaceAll() {
 					*Text = Left + Right;
 				}
 			}
-			else {
-				if(Text->Contains(LookFor)) {
-					count += Text->Replace(LookFor, ReplaceWith);
-					replaced = true;
-				}
+			else if(Text->Contains(LookFor)) {
+				count += Text->Replace(LookFor, ReplaceWith);
 			}
 		}
 	}
@@ -423,7 +422,6 @@ void SearchReplaceEngine::ReplaceAll() {
 	else {
 		wxMessageBox(_("No matches found."));
 	}
-	context->subsGrid->EndBatch();
 	LastWasFind = false;
 }
 
@@ -462,8 +460,7 @@ void SearchReplaceEngine::OpenDialog (bool replace) {
 	hasReplace = replace;
 }
 
-wxString *SearchReplaceEngine::GetText(int n,int field) {
-	AssDialogue *cur = context->subsGrid->GetDialogue(n);
+wxString *SearchReplaceEngine::GetText(AssDialogue *cur, int field) {
 	if (field == 0) return &cur->Text;
 	else if (field == 1) return &cur->Style;
 	else if (field == 2) return &cur->Actor;

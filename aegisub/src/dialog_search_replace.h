@@ -101,7 +101,7 @@ class SearchReplaceEngine {
 	wxString ReplaceWith;
 
 
-	wxString *GetText(int n,int field);
+	wxString *GetText(AssDialogue *cur, int field);
 
 public:
 	/// DOCME
