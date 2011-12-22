@@ -133,10 +133,15 @@ public:
 	/// @param text New status bar text
 	/// @param ms Time in milliseconds that the message should be visible
 	void StatusTimeout(wxString text,int ms=10000);
+
 	/// @brief Set the video and audio display visibility
 	/// @param video -1: leave unchanged; 0: hide; 1: show
 	/// @param audio -1: leave unchanged; 0: hide; 1: show
 	void SetDisplayMode(int showVid,int showAudio);
+
+	bool IsVideoShown() const { return showVideo; }
+	bool IsAudioShown() const { return showAudio; }
+
 	void LoadSubtitles(wxString filename,wxString charset="");
 
 	DECLARE_EVENT_TABLE()

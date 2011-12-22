@@ -83,12 +83,16 @@ struct app_display_audio_subs : public Command {
 	STR_HELP("Display audio and subtitles only.")
 	CMD_TYPE(COMMAND_VALIDATE | COMMAND_RADIO)
 
-	void operator()(agi::Context *c) {
+	void operator()(agi::Context *) {
 		wxGetApp().frame->SetDisplayMode(0,1);
 	}
 
 	bool Validate(const agi::Context *c) {
 		return c->audioController->IsAudioOpen();
+	}
+
+	bool IsActive(const agi::Context *) {
+		return wxGetApp().frame->IsAudioShown() && !wxGetApp().frame->IsVideoShown();
 	}
 };
 
@@ -108,6 +112,10 @@ struct app_display_full : public Command {
 	bool Validate(const agi::Context *c) {
 		return c->audioController->IsAudioOpen() && c->videoController->IsLoaded() && !c->detachedVideo;
 	}
+
+	bool IsActive(const agi::Context *) {
+		return wxGetApp().frame->IsAudioShown() && wxGetApp().frame->IsVideoShown();
+	}
 };
 
 
@@ -121,6 +129,10 @@ struct app_display_subs : public Command {
 
 	void operator()(agi::Context *c) {
 		wxGetApp().frame->SetDisplayMode(0,0);
+	}
+
+	bool IsActive(const agi::Context *) {
+		return !wxGetApp().frame->IsAudioShown() && !wxGetApp().frame->IsVideoShown();
 	}
 };
 
@@ -139,6 +151,10 @@ struct app_display_video_subs : public Command {
 
 	bool Validate(const agi::Context *c) {
 		return c->videoController->IsLoaded() && !c->detachedVideo;
+	}
+
+	bool IsActive(const agi::Context *) {
+		return !wxGetApp().frame->IsAudioShown() && wxGetApp().frame->IsVideoShown();
 	}
 };
 
