@@ -109,7 +109,7 @@ namespace {
 	DEFINE_SIMPLE_EXCEPTION_NOINNER(BadField, Automation4::MacroRunError, "automation/macro/bad_field")
 	BadField bad_field(const char *expected_type, const char *name, const char *line_clasee)
 	{
-		return BadField(std::string("Invalid ") + expected_type + " '" + name + "' field in '" + line_clasee + "' class subtitle line");
+		return BadField(std::string("Invalid or missing field '") + name + "' in '" + line_clasee + "' class subtitle line (expected " + expected_type + ")");
 	}
 
 	wxString get_string_field(lua_State *L, const char *name, const char *line_class)
