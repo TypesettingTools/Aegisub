@@ -85,17 +85,7 @@ public:
 	bool EOS() const { return m_itCurrent == m_Tokens.end(); }
 };
 
-void Reader::Read(Object& object, std::istream& istr)          { Read_i(object, istr); }
-void Reader::Read(Array& array, std::istream& istr)            { Read_i(array, istr); }
-void Reader::Read(String& string, std::istream& istr)          { Read_i(string, istr); }
-void Reader::Read(Integer& number, std::istream& istr)         { Read_i(number, istr); }
-void Reader::Read(Double& number, std::istream& istr)          { Read_i(number, istr); }
-void Reader::Read(Boolean& boolean, std::istream& istr)        { Read_i(boolean, istr); }
-void Reader::Read(Null& null, std::istream& istr)              { Read_i(null, istr); }
-void Reader::Read(UnknownElement& unknown, std::istream& istr) { Read_i(unknown, istr); }
-
-template <typename ElementTypeT>
-void Reader::Read_i(ElementTypeT& element, std::istream& istr) {
+void Reader::Read(UnknownElement& unknown, std::istream& istr) {
 	Reader reader;
 
 	Tokens tokens;
@@ -103,7 +93,7 @@ void Reader::Read_i(ElementTypeT& element, std::istream& istr) {
 	reader.Scan(tokens, inputStream);
 
 	TokenStream tokenStream(tokens);
-	element = reader.Parse(tokenStream);
+	unknown = reader.Parse(tokenStream);
 
 	if (!tokenStream.EOS()) {
 		Token const& token = tokenStream.Peek();

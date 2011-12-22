@@ -280,7 +280,7 @@ TEST_F(lagi_cajun, ObjectEquality) {
 }
 
 TEST_F(lagi_cajun, Read) {
-	json::Object obj;
+	json::UnknownElement obj;
 	std::istringstream doc("{\"String\" : \"This is a test\", \"Boolean\" : false, \"Null\" : null }");
 	EXPECT_NO_THROW(json::Reader::Read(obj, doc));
 	EXPECT_NO_THROW(obj["String"]);
@@ -321,52 +321,47 @@ TEST_F(lagi_cajun, Write) {
 }
 
 TEST_F(lagi_cajun, ReaderParserErrors) {
-	json::Array arr;
+	json::UnknownElement ue;
+
 	std::istringstream missing_comma("[1 2]");
-	EXPECT_THROW(json::Reader::Read(arr, missing_comma), json::Exception);
+	EXPECT_THROW(json::Reader::Read(ue, missing_comma), json::Exception);
 
-	json::Double num;
 	std::istringstream garbage_after_number("123eee");
-	EXPECT_THROW(json::Reader::Read(num, garbage_after_number), json::Exception);
+	EXPECT_THROW(json::Reader::Read(ue, garbage_after_number), json::Exception);
 
-	json::String str;
 	std::istringstream unexpected_eof("[");
-	EXPECT_THROW(json::Reader::Read(str, unexpected_eof), json::Exception);
+	EXPECT_THROW(json::Reader::Read(ue, unexpected_eof), json::Exception);
 
 	std::istringstream bad_initial_token("]");
-	EXPECT_THROW(json::Reader::Read(str, bad_initial_token), json::Exception);
+	EXPECT_THROW(json::Reader::Read(ue, bad_initial_token), json::Exception);
 
 	std::istringstream garbage_after_end("[]a");
-	EXPECT_THROW(json::Reader::Read(str, garbage_after_end), json::Exception);
+	EXPECT_THROW(json::Reader::Read(ue, garbage_after_end), json::Exception);
 
-	json::Null null;
 	std::istringstream empty_str("");
-	EXPECT_THROW(json::Reader::Read(null, empty_str), json::Exception);
+	EXPECT_THROW(json::Reader::Read(ue, empty_str), json::Exception);
 
-	json::Object obj;
 	std::istringstream dupe_keys("{\"a\": [], \"a\": 0}");
-	EXPECT_THROW(json::Reader::Read(obj, dupe_keys), json::Exception);
+	EXPECT_THROW(json::Reader::Read(ue, dupe_keys), json::Exception);
 
 	std::istringstream unique_keys("{\"a\": [], \"b\": 0}");
-	EXPECT_NO_THROW(json::Reader::Read(obj, unique_keys));
+	EXPECT_NO_THROW(json::Reader::Read(ue, unique_keys));
 }
 
 TEST_F(lagi_cajun, ReaderScanErrors) {
-	json::Object obj;
+	json::UnknownElement ue;
+
 	std::istringstream doc("[true, false, thiswontwork]");
+	EXPECT_THROW(json::Reader::Read(ue, doc), json::Exception);
 
-	EXPECT_THROW(json::Reader::Read(obj, doc), json::Exception);
-
-	json::Double num;
 	std::istringstream garbage_after_number("123abc");
-	EXPECT_THROW(json::Reader::Read(num, garbage_after_number), json::Exception);
+	EXPECT_THROW(json::Reader::Read(ue, garbage_after_number), json::Exception);
 
-	json::String str;
 	std::istringstream bad_escape("\"\\j\"");
-	EXPECT_THROW(json::Reader::Read(str, bad_escape), json::Exception);
+	EXPECT_THROW(json::Reader::Read(ue, bad_escape), json::Exception);
 
 	std::istringstream unexpected_eof("\"abc");
-	EXPECT_THROW(json::Reader::Read(str, unexpected_eof), json::Exception);
+	EXPECT_THROW(json::Reader::Read(ue, unexpected_eof), json::Exception);
 }
 
 std::string roundtrip_test(const char *in) {
