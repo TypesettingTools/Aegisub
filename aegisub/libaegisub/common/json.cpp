@@ -18,6 +18,7 @@
 /// @brief Parse JSON files and return json::UnknownElement
 /// @ingroup libaegisub io
 
+#include "../config.h"
 
 #ifndef LAGI_PRE
 #include <fstream>

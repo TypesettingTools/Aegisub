@@ -18,6 +18,8 @@
 /// @brief Most Recently Used (MRU) Lists
 /// @ingroup libaegisub
 
+#include "../config.h"
+
 #include "libaegisub/cajun/writer.h"
 
 #include "libaegisub/access.h"

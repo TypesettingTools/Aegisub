@@ -5,6 +5,8 @@ Project Webpage: http://cajun-jsonapi.sourceforge.net/
 Author: Terry Caton
 ***********************************************/
 
+#include "../../config.h"
+
 #include "libaegisub/cajun/elements.h"
 
 #include "libaegisub/cajun/visitor.h"

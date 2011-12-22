@@ -18,6 +18,8 @@
 /// @brief Option interface.
 /// @ingroup libaegisub
 
+#include "../config.h"
+
 #include "libaegisub/option.h"
 
 #ifndef LAGI_PRE

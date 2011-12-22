@@ -18,6 +18,8 @@
 /// @brief Logging
 /// @ingroup libaegisub
 
+#include "../config.h"
+
 #ifndef LAGI_PRE
 #include <algorithm>
 #include <cstdio>
