@@ -114,7 +114,7 @@ void VisualToolRotateZ::UpdateHold() {
 
 	angle = fmodf(angle + 360.f, 360.f);
 
-	SetSelectedOverride("\\frz", wxString::Format("(%0.3g)", angle));
+	SetSelectedOverride("\\frz", wxString::Format("%.4g", angle));
 }
 
 void VisualToolRotateZ::UpdateDrag(feature_iterator feature) {
