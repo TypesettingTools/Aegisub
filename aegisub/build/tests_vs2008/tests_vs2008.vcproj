@@ -307,6 +307,10 @@
 			>
 		</File>
 		<File
+			RelativePath="..\..\tests\libaegisub_hotkey.cpp"
+			>
+		</File>
+		<File
 			RelativePath="..\..\tests\libaegisub_iconv.cpp"
 			>
 		</File>
