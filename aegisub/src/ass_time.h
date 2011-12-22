@@ -102,11 +102,6 @@ public:
 	int Denominator() const { return den; }
 	bool IsDrop() const { return drop; }
 
-	/// Parse a SMPTE timecode, returning an AssTime
-	AssTime ToAssTime(wxString fractime, char sep=':');
-	/// Parse a SMPTE timecode, returning milliseconds
-	int ToMillisecs(wxString fractime, char sep=':');
-
 	/// Convert an AssTime to a SMPTE timecode
 	wxString FromAssTime(AssTime time, char sep=':');
 	/// Convert milliseconds to a SMPTE timecode

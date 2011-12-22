@@ -267,60 +267,6 @@ FractionalTime::FractionalTime(int numerator, int denominator, bool dropframe)
 		throw "FractionalTime: nonsensical enumerator or denominator";
 }
 
-int FractionalTime::ToMillisecs(wxString text, char sep) {
-	text.Trim(false);
-	text.Trim(true);
-
-	wxRegEx re(wxString::Format("(\\d+)%c(\\d+)%c(\\d+)%c(\\d+)", sep, sep, sep, sep), wxRE_ADVANCED);
-	if (!re.Matches(text))
-		return 0; // FIXME: throw here too?
-
-	long h=0, m=0, s=0, f=0;
-	re.GetMatch(text,1).ToLong(&h);
-	re.GetMatch(text,2).ToLong(&m);
-	re.GetMatch(text,3).ToLong(&s);
-	re.GetMatch(text,4).ToLong(&f);
-
-	int msecs_f = 0;
-	int fn = 0;
-	// dropframe? do silly things
-	if (drop) {
-		fn += h * frames_per_period * 6;
-		fn += (m % 10) * frames_per_period;
-		
-		if (m > 0) {
-			fn += 1800;
-			m--;
-
-			fn += m * 1798; // two timestamps dropped per minute after the first
-			fn += s * 30 + f - 2;
-		}
-		else { // minute is evenly divisible by 10, keep first two timestamps
-			fn += s * 30;
-			fn += f;
-		}
-
-		msecs_f = (fn * num) / den;
-	}
-	// no dropframe, may or may not sync with wallclock time
-	// (see comment in FromMillisecs for an explanation of why it's done like this)
-	else {
-		int fps_approx = floor((double(num)/double(den))+0.5);
-		fn += h * 3600 * fps_approx;
-		fn += m * 60 * fps_approx;
-		fn += s * fps_approx;
-		fn += f;
-
-		msecs_f = (fn * num) / den;
-	}
-
-	return msecs_f;
-}
-
-AssTime FractionalTime::ToAssTime(wxString text, char sep) {
-	return AssTime(ToMillisecs(text, sep));
-}
-
 wxString FractionalTime::FromAssTime(AssTime time, char sep) {
 	return FromMillisecs(time.GetMS(), sep);
 }
