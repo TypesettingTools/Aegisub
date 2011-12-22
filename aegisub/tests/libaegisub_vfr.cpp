@@ -20,6 +20,7 @@
 
 #include <libaegisub/vfr.h>
 
+#include <climits>
 #include <fstream>
 #include <iterator>
 
@@ -334,7 +335,7 @@ TEST(lagi_vfr, save_vfr_len) {
 TEST(lagi_vfr, load_v2) {
 	Framerate fps;
 	ASSERT_NO_THROW(fps = Framerate("data/vfr/in/v2_1fps.txt"));
-	for (int i = 0; i < 9; i++) {
+	for (int i = 0; i < 30; i++) {
 		EXPECT_EQ(i * 1000, fps.TimeAtFrame(i));
 	}
 }
@@ -342,7 +343,7 @@ TEST(lagi_vfr, load_v2) {
 TEST(lagi_vfr, load_v2_comments) {
 	Framerate fps;
 	ASSERT_NO_THROW(fps = Framerate("data/vfr/in/v2_comments.txt"));
-	for (int i = 0; i < 9; i++) {
+	for (int i = 0; i < 30; i++) {
 		EXPECT_EQ(i * 1000, fps.TimeAtFrame(i));
 	}
 }
@@ -350,7 +351,7 @@ TEST(lagi_vfr, load_v2_comments) {
 TEST(lagi_vfr, load_v2_number_in_comment) {
 	Framerate fps;
 	ASSERT_NO_THROW(fps = Framerate("data/vfr/in/v2_number_in_comment.txt"));
-	for (int i = 0; i < 9; i++) {
+	for (int i = 0; i < 30; i++) {
 		EXPECT_EQ(i * 1000, fps.TimeAtFrame(i));
 	}
 }
@@ -393,4 +394,29 @@ TEST(lagi_vfr, nonzero_start_time) {
 	EXPECT_EQ(40, fps.TimeAtFrame(2, EXACT));
 	EXPECT_EQ(50, fps.TimeAtFrame(3, EXACT));
 	EXPECT_EQ(60, fps.TimeAtFrame(4, EXACT));
+}
+
+TEST(lagi_vfr, rational_timebase) {
+	Framerate fps;
+
+	ASSERT_NO_THROW(fps = Framerate(30000, 1001));
+	for (int i = 0; i < 100000; ++i) {
+		EXPECT_EQ(i * 1001, fps.TimeAtFrame(i * 30, EXACT));
+		EXPECT_EQ(i * 30, fps.FrameAtTime(i * 1001, EXACT));
+	}
+
+	ASSERT_NO_THROW(fps = Framerate(24000, 1001));
+	for (int i = 0; i < 100000; ++i) {
+		EXPECT_EQ(i * 1001, fps.TimeAtFrame(i * 24, EXACT));
+		EXPECT_EQ(i * 24, fps.FrameAtTime(i * 1001, EXACT));
+	}
+}
+
+TEST(lagi_vfr, no_intermediate_overflow) {
+	Framerate fps;
+
+	ASSERT_NO_THROW(fps = Framerate(1.0));
+	int last_frame = INT_MAX / 1000;
+	EXPECT_EQ(last_frame * 1000, fps.TimeAtFrame(last_frame, EXACT));
+	EXPECT_EQ(last_frame, fps.FrameAtTime(last_frame * 1000, EXACT));
 }

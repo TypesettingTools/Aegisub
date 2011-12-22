@@ -32,12 +32,15 @@
 #include "libaegisub/charset.h"
 #include "libaegisub/io.h"
 #include "libaegisub/line_iterator.h"
+#include "libaegisub/scoped_ptr.h"
 
 namespace std {
 	template<> void swap(agi::vfr::Framerate &lft, agi::vfr::Framerate &rgt) {
 		lft.swap(rgt);
 	}
 }
+
+static const int64_t default_denominator = 1000000000;
 
 namespace agi {
 namespace vfr {
@@ -148,9 +151,9 @@ static void v1_fill_range_gaps(std::list<TimecodeRange> &ranges, double fps) {
 /// @param      file      Iterator of lines in the file
 /// @param      line      Header of file with assumed fps
 /// @param[out] timecodes Vector filled with frame start times
-/// @param[out] time      Unrounded time of the last frame
-/// @return Assumed fps
-static double v1_parse(line_iterator<std::string> file, std::string line, std::vector<int> &timecodes, double &time) {
+/// @param[out] last      Unrounded time of the last frame
+/// @return Assumed fps times one million
+static int64_t v1_parse(line_iterator<std::string> file, std::string line, std::vector<int> &timecodes, int64_t &last) {
 	using namespace std;
 	double fps = atof(line.substr(7).c_str());
 	if (fps <= 0.) throw BadFPS("Assumed FPS must be greater than zero");
@@ -164,7 +167,7 @@ static double v1_parse(line_iterator<std::string> file, std::string line, std::v
 	v1_fill_range_gaps(ranges, fps);
 	timecodes.reserve(ranges.back().end);
 
-	time = 0.;
+	double time = 0.;
 	for (list<TimecodeRange>::iterator cur = ranges.begin(); cur != ranges.end(); ++cur) {
 		for (int frame = cur->start; frame <= cur->end; frame++) {
 			timecodes.push_back(int(time + .5));
@@ -172,35 +175,59 @@ static double v1_parse(line_iterator<std::string> file, std::string line, std::v
 		}
 	}
 	timecodes.push_back(int(time + .5));
-	return fps;
+	last = int64_t(time * fps * default_denominator);
+	return int64_t(fps * default_denominator);
 }
 
 Framerate::Framerate(Framerate const& that)
-: fps(that.fps)
+: numerator(that.numerator)
+, denominator(that.denominator)
 , last(that.last)
 , timecodes(that.timecodes)
 {
 }
 
-Framerate::Framerate(double fps) : fps(fps), last(0.) {
+Framerate::Framerate(double fps)
+: denominator(default_denominator)
+, numerator(int64_t(fps * denominator))
+, last(0)
+{
 	if (fps < 0.) throw BadFPS("FPS must be greater than zero");
 	if (fps > 1000.) throw BadFPS("FPS must not be greater than 1000");
+	timecodes.push_back(0);
+}
+
+Framerate::Framerate(int64_t numerator, int64_t denominator)
+: denominator(denominator)
+, numerator(numerator)
+, last(0)
+{
+	if (numerator <= 0 || denominator <= 0)
+		throw BadFPS("Numerator and denominator must both be greater than zero");
+	if (numerator / denominator > 1000) throw BadFPS("FPS must not be greater than 1000");
+	timecodes.push_back(0);
+}
+
+void Framerate::SetFromTimecodes() {
+	validate_timecodes(timecodes);
+	normalize_timecodes(timecodes);
+	denominator = default_denominator;
+	numerator = (timecodes.size() - 1) * denominator * 1000 / timecodes.back();
+	last = (timecodes.size() - 1) * denominator * 1000;
 }
 
 Framerate::Framerate(std::vector<int> const& timecodes)
 : timecodes(timecodes)
 {
-	validate_timecodes(timecodes);
-	normalize_timecodes(this->timecodes);
-	fps = (timecodes.size() - 1) * 1000. / timecodes.back();
-	last = timecodes.back();
+	SetFromTimecodes();
 }
 
 Framerate::~Framerate() {
 }
 
 void Framerate::swap(Framerate &right) throw() {
-	std::swap(fps, right.fps);
+	std::swap(numerator, right.numerator);
+	std::swap(denominator, right.denominator);
 	std::swap(last, right.last);
 	std::swap(timecodes, right.timecodes);
 }
@@ -213,24 +240,24 @@ Framerate &Framerate::operator=(double fps) {
 	return *this = Framerate(fps);
 }
 
-Framerate::Framerate(std::string const& filename) : fps(0.) {
+Framerate::Framerate(std::string const& filename)
+: denominator(default_denominator)
+, numerator(0)
+{
 	using namespace std;
-	auto_ptr<ifstream> file(agi::io::Open(filename));
+	scoped_ptr<ifstream> file(agi::io::Open(filename));
 	string encoding = agi::charset::Detect(filename);
 	string line = *line_iterator<string>(*file, encoding);
 	if (line == "# timecode format v2") {
 		copy(line_iterator<int>(*file, encoding), line_iterator<int>(), back_inserter(timecodes));
-		validate_timecodes(timecodes);
-		normalize_timecodes(timecodes);
-		fps = (timecodes.size() - 1) * 1000. / timecodes.back();
-		last = timecodes.back();
+		SetFromTimecodes();
 		return;
 	}
 	if (line == "# timecode format v1" || line.substr(0, 7) == "Assume ") {
 		if (line[0] == '#') {
 			line = *line_iterator<string>(*file, encoding);
 		}
-		fps = v1_parse(line_iterator<string>(*file, encoding), line, timecodes, last);
+		numerator = v1_parse(line_iterator<string>(*file, encoding), line, timecodes, last);
 		return;
 	}
 
@@ -246,10 +273,6 @@ void Framerate::Save(std::string const& filename, int length) const {
 	for (int written = (int)timecodes.size(); written < length; ++written) {
 		out << TimeAtFrame(written) << std::endl;
 	}
-}
-
-static int round(double value) {
-	return int(value + .5);
 }
 
 int Framerate::FrameAtTime(int ms, Time type) const {
@@ -273,17 +296,13 @@ int Framerate::FrameAtTime(int ms, Time type) const {
 		return FrameAtTime(ms - 1);
 	}
 
-	if (timecodes.empty()) {
-		return (int)floor(ms * fps / 1000.);
-	}
-	if (ms < 0) {
-		return (int)floor(ms * fps / 1000.);
-	}
-	if (ms > timecodes.back()) {
-		return round((ms - timecodes.back()) * fps / 1000.) + (int)timecodes.size() - 1;
-	}
+	if (ms < 0)
+		return int((ms * numerator / denominator - 999) / 1000);
 
-	return (int)std::distance(std::lower_bound(timecodes.rbegin(), timecodes.rend(), ms, std::greater<int>()), timecodes.rend()) - 1;
+	if (ms > timecodes.back())
+		return int((ms * numerator - last + denominator - 1) / denominator / 1000) + (int)timecodes.size() - 1;
+
+	return (int)distance(lower_bound(timecodes.rbegin(), timecodes.rend(), ms, std::greater<int>()), timecodes.rend()) - 1;
 }
 
 int Framerate::TimeAtFrame(int frame, Time type) const {
@@ -293,22 +312,21 @@ int Framerate::TimeAtFrame(int frame, Time type) const {
 		// + 1 as these need to round up for the case of two frames 1 ms apart
 		return prev + (cur - prev + 1) / 2;
 	}
+
 	if (type == END) {
 		int cur = TimeAtFrame(frame);
 		int next = TimeAtFrame(frame + 1);
 		return cur + (next - cur + 1) / 2;
 	}
 
-	if (timecodes.empty()) {
-		return (int)ceil(frame / fps * 1000.);
+	if (frame < 0)
+		return (int)(frame * denominator * 1000 / numerator);
+
+	if (frame >= (signed)timecodes.size()) {
+		int64_t frames_past_end = frame - (int)timecodes.size() + 1;
+		return int((frames_past_end * 1000 * denominator + last + numerator / 2) / numerator);
 	}
 
-	if (frame < 0) {
-		return (int)ceil(frame / fps * 1000.);
-	}
-	if (frame >= (signed)timecodes.size()) {
-		return round((frame - timecodes.size() + 1) * 1000. / fps + last);
-	}
 	return timecodes[frame];
 }
 

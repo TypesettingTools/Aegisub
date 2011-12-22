@@ -23,6 +23,8 @@
 #ifndef LAGI_PRE
 #include <string>
 #include <vector>
+
+#include <stdint.h>
 #endif
 
 #include <libaegisub/exception.h>
@@ -62,16 +64,31 @@ DEFINE_SIMPLE_EXCEPTION_NOINNER(UnorderedTimecodes, Error, "vfr/timecodes/order"
 /// @brief Class for managing everything related to converting frames to times
 ///        or vice versa
 class Framerate {
-	/// Average FPS for v2, assumed FPS for v1, fps for CFR
-	double fps;
-	/// Unrounded time of the last frame in a v1 override range. Needed to
-	/// match mkvmerge's rounding
-	double last;
+	/// Denominator of the FPS
+	///
+	/// For v1 VFR, the assumed FPS is used, for v2 the average FPS
+	int64_t denominator;
+	/// Numerator of the FPS
+	///
+	/// For v1 VFR, the assumed FPS is used, for v2 the average FPS
+	int64_t numerator;
+
+	/// Unrounded frame-seconds of the final frame in timecodes. For CFR and v2,
+	/// this is simply frame count * denominator, but for v1 it's the
+	/// "unrounded" frame count, since override ranges generally don't exactly
+	/// cover timebase-unit ranges of time. This is needed to match mkvmerge's
+	/// rounding past the end of the final override range.
+	int64_t last;
+
 	/// Start time in milliseconds of each frame
 	std::vector<int> timecodes;
+
+	/// Set FPS properties from the timecodes vector
+	void SetFromTimecodes();
 public:
 	/// Copy constructor
 	Framerate(Framerate const&);
+
 	/// @brief VFR from timecodes file
 	/// @param filename File with v1 or v2 timecodes
 	///
@@ -80,13 +97,23 @@ public:
 	/// mkvmerge-style rounding is applied, while setting a constant frame rate
 	/// uses truncation.
 	Framerate(std::string const& filename);
+
 	/// @brief CFR constructor
 	/// @param fps Frames per second or 0 for unloaded
 	Framerate(double fps = 0.);
+
+	/// @brief CFR constructor with rational timebase
+	/// @param numerator Timebase numerator
+	/// @param denominator Timebase denominator
+	Framerate(int64_t numerator, int64_t denominator);
+
 	/// @brief VFR from frame times
 	/// @param timecodes Vector of frame start times in milliseconds
 	Framerate(std::vector<int> const& timecodes);
+
+	/// Destructor
 	~Framerate();
+
 	/// Atomic assignment operator
 	Framerate &operator=(Framerate);
 	/// Atomic CFR assignment operator
@@ -130,9 +157,9 @@ public:
 	/// be otherwise sensible.
 	void Save(std::string const& file, int length = -1) const;
 
-	bool IsVFR() const {return !timecodes.empty(); }
-	bool IsLoaded() const { return !timecodes.empty() || fps; };
-	double FPS() const { return fps; }
+	bool IsVFR() const {return timecodes.size() > 1; }
+	bool IsLoaded() const { return numerator > 0; };
+	double FPS() const { return double(numerator) / denominator; }
 };
 
 	} // namespace vfr
