@@ -109,36 +109,36 @@
 		"Schemes" : {
 			"Green" : {
 				"Normal" : {
-					"Hue Offset" : 85.01,
-					"Hue Scale" : 0.01,
-					"Saturation Offset" : 254.99,
-					"Saturation Scale" : 0.01,
-					"Lightness Offset" : 0.01,
-					"Lightness Scale" : 200.01
+					"Hue Offset" : 85.0,
+					"Hue Scale" : 0.0,
+					"Saturation Offset" : 255.0,
+					"Saturation Scale" : 0.0,
+					"Lightness Offset" : 0.0,
+					"Lightness Scale" : 200.0
 				},
 				"Inactive" : {
-					"Hue Offset" : 85.01,
-					"Hue Scale" : 0.01,
-					"Saturation Offset" : 254.99,
-					"Saturation Scale" : 0.01,
-					"Lightness Offset" : 0.01,
-					"Lightness Scale" : 100.01
+					"Hue Offset" : 85.0,
+					"Hue Scale" : 0.0,
+					"Saturation Offset" : 255.0,
+					"Saturation Scale" : 0.0,
+					"Lightness Offset" : 0.0,
+					"Lightness Scale" : 100.0
 				},
 				"Active" : {
-					"Hue Offset" : 85.01,
-					"Hue Scale" : 0.01,
-					"Saturation Offset" : 254.99,
-					"Saturation Scale" : 0.01,
-					"Lightness Offset" : 0.01,
-					"Lightness Scale" : 0.01
+					"Hue Offset" : 85.0,
+					"Hue Scale" : 0.0,
+					"Saturation Offset" : 255.0,
+					"Saturation Scale" : 0.0,
+					"Lightness Offset" : 0.0,
+					"Lightness Scale" : 0.0
 				},
 				"Selected" : {
-					"Hue Offset" : 85.01,
-					"Hue Scale" : 0.01,
-					"Saturation Offset" : 127.99,
-					"Saturation Scale" : 0.01,
-					"Lightness Offset" : 25.01,
-					"Lightness Scale" : 300.01
+					"Hue Offset" : 85.0,
+					"Hue Scale" : 0.0,
+					"Saturation Offset" : 128.0,
+					"Saturation Scale" : 0.0,
+					"Lightness Offset" : 25.0,
+					"Lightness Scale" : 300.0
 				},
 				"UI" : {
 					"Light" : "rgb(0, 200, 0)",
@@ -153,36 +153,36 @@
 			},
 			"Icy Blue" : {
 				"Normal" : {
-					"Hue Offset" : 191.01,
-					"Hue Scale" : -128.01,
-					"Saturation Offset" : 127.01,
-					"Saturation Scale" : 128.01,
-					"Lightness Offset" : 0.01,
-					"Lightness Scale" : 255.01
+					"Hue Offset" : 191.0,
+					"Hue Scale" : -128.0,
+					"Saturation Offset" : 127.0,
+					"Saturation Scale" : 128.0,
+					"Lightness Offset" : 0.0,
+					"Lightness Scale" : 255.0
 				},
 				"Inactive" : {
-					"Hue Offset" : 191.01,
-					"Hue Scale" : -128.01,
-					"Saturation Offset" : 127.01,
-					"Saturation Scale" : 128.01,
-					"Lightness Offset" : 32.01,
-					"Lightness Scale" : 192.01
+					"Hue Offset" : 191.0,
+					"Hue Scale" : -128.0,
+					"Saturation Offset" : 127.0,
+					"Saturation Scale" : 128.0,
+					"Lightness Offset" : 32.0,
+					"Lightness Scale" : 192.0
 				},
 				"Active" : {
-					"Hue Offset" : 191.01,
-					"Hue Scale" : -128.01,
-					"Saturation Offset" : 127.01,
-					"Saturation Scale" : 128.01,
-					"Lightness Offset" : 0.01,
-					"Lightness Scale" : 0.01
+					"Hue Offset" : 191.0,
+					"Hue Scale" : -128.0,
+					"Saturation Offset" : 127.0,
+					"Saturation Scale" : 128.0,
+					"Lightness Offset" : 0.0,
+					"Lightness Scale" : 0.0
 				},
 				"Selected" : {
-					"Hue Offset" : 191.01,
-					"Hue Scale" : -128.01,
-					"Saturation Offset" : 127.01,
-					"Saturation Scale" : 128.01,
-					"Lightness Offset" : 64.01,
-					"Lightness Scale" : 192.01
+					"Hue Offset" : 191.0,
+					"Hue Scale" : -128.0,
+					"Saturation Offset" : 127.0,
+					"Saturation Scale" : 128.0,
+					"Lightness Offset" : 64.0,
+					"Lightness Scale" : 192.0
 				},
 				"UI" : {
 					"Light" : "rgb(89, 145, 220)",
