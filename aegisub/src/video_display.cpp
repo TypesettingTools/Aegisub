@@ -113,7 +113,7 @@ VideoDisplay::VideoDisplay(
 
 	con->videoController->Bind(EVT_FRAME_READY, &VideoDisplay::UploadFrameData, this);
 	slots.push_back(con->videoController->AddVideoOpenListener(&VideoDisplay::OnVideoOpen, this));
-	slots.push_back(con->videoController->AddARChangeListener(&VideoDisplay::UpdateSize, this));
+	slots.push_back(con->videoController->AddARChangeListener(&VideoDisplay::UpdateSize, this, true));
 
 	Bind(wxEVT_PAINT, std::tr1::bind(&VideoDisplay::Render, this));
 	Bind(wxEVT_SIZE, &VideoDisplay::OnSizeEvent, this);
@@ -254,7 +254,7 @@ void VideoDisplay::DrawOverscanMask(float horizontal_percent, float vertical_per
 	E(glDisable(GL_BLEND));
 }
 
-void VideoDisplay::UpdateSize() {
+void VideoDisplay::UpdateSize(bool force) {
 	if (!con->videoController->IsLoaded()) return;
 	if (!IsShownOnScreen()) return;
 
@@ -264,7 +264,7 @@ void VideoDisplay::UpdateSize() {
 	int arType = con->videoController->GetAspectRatioType();
 	double arValue = con->videoController->GetAspectRatioValue();
 
-	if (freeSize) {
+	if (freeSize && !force) {
 		GetClientSize(&w,&h);
 		viewport_left = 0;
 		viewport_bottom = 0;
@@ -291,16 +291,25 @@ void VideoDisplay::UpdateSize() {
 		}
 	}
 	else {
-		wxWindow* parent = GetParent();
-		while (!parent->IsTopLevel()) parent = parent->GetParent();
-		int maxH, maxW;
-		parent->GetClientSize(&maxW, &maxH);
-
+		wxEventBlocker blocker(this);
 		h = vidH * zoomValue;
 		w = arType == 0 ? vidW * zoomValue : vidH * zoomValue * arValue;
 
-		// Cap the canvas size to the window size
-		int cw = std::min(w, maxW), ch = std::min(h, maxH);
+		wxWindow *top = GetParent();
+		while (!top->IsTopLevel()) top = top->GetParent();
+
+		int cw, ch;
+		if (freeSize) {
+			cw = w;
+			ch = h;
+		}
+		else {
+			// Cap the canvas size to the window size
+			int maxH, maxW;
+			top->GetClientSize(&maxW, &maxH);
+			cw = std::min(w, maxW);
+			ch = std::min(h, maxH);
+		}
 
 		viewport_left = 0;
 		viewport_bottom = ch - h;
@@ -310,19 +319,22 @@ void VideoDisplay::UpdateSize() {
 
 		wxSize size(cw, ch);
 		if (size != GetClientSize()) {
-			SetMinClientSize(size);
-			SetMaxClientSize(size);
+			if (freeSize) {
+				top->SetSize(top->GetSize() + size - GetClientSize());
+				SetClientSize(size);
+			}
+			else {
+				SetMinClientSize(size);
+				SetMaxClientSize(size);
 
-			SetEvtHandlerEnabled(false);
-			GetGrandParent()->Layout();
+				GetGrandParent()->Layout();
 
-			// The sizer makes us use the full width, which at very low zoom
-			// levels results in stretched video, so after using the sizer to
-			// update the parent window sizes, reset our size to the correct
-			// value
-			SetSize(cw, ch);
-
-			SetEvtHandlerEnabled(true);
+				// The sizer makes us use the full width, which at very low zoom
+				// levels results in stretched video, so after using the sizer to
+				// update the parent window sizes, reset our size to the correct
+				// value
+				SetSize(cw, ch);
+			}
 		}
 	}
 
@@ -376,7 +388,7 @@ void VideoDisplay::OnKeyDown(wxKeyEvent &event) {
 void VideoDisplay::SetZoom(double value) {
 	zoomValue = std::max(value, .125);
 	zoomBox->SetValue(wxString::Format("%g%%", zoomValue * 100.));
-	UpdateSize();
+	UpdateSize(true);
 }
 
 void VideoDisplay::SetZoomFromBox(wxCommandEvent &) {
@@ -385,7 +397,7 @@ void VideoDisplay::SetZoomFromBox(wxCommandEvent &) {
 	double value;
 	if (strValue.ToDouble(&value)) {
 		zoomValue = value / 100.;
-		UpdateSize();
+		UpdateSize(true);
 	}
 }
 

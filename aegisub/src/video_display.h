@@ -128,7 +128,8 @@ class VideoDisplay : public wxGLCanvas {
 	void OnVideoOpen();
 
 	/// @brief Set the size of the display based on the current zoom and video resolution
-	void UpdateSize();
+	/// @param force Force the size to be set based on zoom even in detached mode
+	void UpdateSize(bool force = false);
 	/// @brief Set the zoom level to that indicated by the dropdown
 	void SetZoomFromBox(wxCommandEvent&);
 

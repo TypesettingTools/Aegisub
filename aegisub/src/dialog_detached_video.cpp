@@ -64,19 +64,15 @@ DialogDetachedVideo::DialogDetachedVideo(agi::Context *context, const wxSize &in
 
 	SetTitle(wxString::Format(_("Video: %s"), wxFileName(context->videoController->GetVideoName()).GetFullName()));
 
-	// Set a background panel
-	wxPanel *panel = new wxPanel(this,-1,wxDefaultPosition,wxDefaultSize,wxTAB_TRAVERSAL | wxCLIP_CHILDREN);
-	
 	// Video area;
-	VideoBox *videoBox = new VideoBox(panel, true, context);
+	VideoBox *videoBox = new VideoBox(this, true, context);
 	context->videoDisplay->SetMinClientSize(initialDisplaySize);
 	videoBox->Layout();
 
 	// Set sizer
 	wxSizer *mainSizer = new wxBoxSizer(wxVERTICAL);
 	mainSizer->Add(videoBox,1,wxEXPAND | wxALL,5);
-	panel->SetSizer(mainSizer);
-	mainSizer->SetSizeHints(this);
+	SetSizerAndFit(mainSizer);
 
 	// Ensure we can grow smaller, without these the window is locked to at least the initial size
 	context->videoDisplay->SetMinSize(wxSize(1,1));
