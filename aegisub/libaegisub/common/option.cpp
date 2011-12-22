@@ -207,12 +207,7 @@ void Options::Flush() {
 bool Options::PutOption(json::Object &obj, const std::string &path, const json::UnknownElement &value) {
 	// Having a '/' denotes it is a leaf.
 	if (path.find('/') == std::string::npos) {
-		json::Object::iterator pos = obj.find(path);
-
-		// Fail if a key of the same name already exists.
-		if (pos != obj.end())
-			throw OptionErrorDuplicateKey("Key already exists");
-
+		assert(obj.find(path) == obj.end());
 		obj[path] = value;
 		return true;
 	} else {
