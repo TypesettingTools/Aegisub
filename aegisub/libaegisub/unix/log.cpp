@@ -34,10 +34,6 @@ void EmitSTDOUT::log(SinkMessage *sm) {
 	tm tmtime;
 	localtime_r(&sm->tv.tv_sec, &tmtime);
 
-//		tmtime.tm_year+1900,
-//		tmtime.tm_mon,
-//		tmtime.tm_mday,
-
 	printf("%c %02d:%02d:%02d %-6ld <%-25s> [%s:%s:%d]  %.*s\n",
 		Severity_ID[sm->severity],
 		tmtime.tm_hour,
@@ -48,7 +44,7 @@ void EmitSTDOUT::log(SinkMessage *sm) {
 		sm->file,
 		sm->func,
 		sm->line,
-		sm->len,
+		(int)sm->len,
 		sm->message);
 }
 
