@@ -76,7 +76,7 @@ std::tr1::shared_ptr<AegiVideoFrame> ThreadedFrameSource::ProcFrame(int frameNum
 
 	// This deliberately results in a call to LoadSubtitles while a render
 	// is pending making the queued render use the new file
-	if (!raw) {
+	if (!raw && provider) {
 		try {
 			wxMutexLocker locker(fileMutex);
 			if (subs.get() && singleFrame != frameNum) {
@@ -167,9 +167,19 @@ void *ThreadedFrameSource::Entry() {
 	return EXIT_SUCCESS;
 }
 
+static SubtitlesProvider *get_subs_provider(wxEvtHandler *parent) {
+	try {
+		return SubtitlesProviderFactory::GetProvider();
+	}
+	catch (wxString const& err) {
+		parent->AddPendingEvent(SubtitlesProviderErrorEvent(err));
+		return 0;
+	}
+}
+
 ThreadedFrameSource::ThreadedFrameSource(wxString videoFileName, wxEvtHandler *parent)
 : wxThread(wxTHREAD_JOINABLE)
-, provider(SubtitlesProviderFactory::GetProvider())
+, provider(get_subs_provider(parent))
 , videoProvider(VideoProviderFactory::GetProvider(videoFileName))
 , parent(parent)
 , nextTime(-1.)

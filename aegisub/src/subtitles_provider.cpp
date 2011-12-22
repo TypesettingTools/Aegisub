@@ -53,7 +53,7 @@
 ///
 SubtitlesProvider* SubtitlesProviderFactory::GetProvider() {
 	std::vector<std::string> list = GetClasses(OPT_GET("Subtitle/Provider")->GetString());
-	if (list.empty()) throw "No subtitle providers are available.";
+	if (list.empty()) throw wxString("No subtitle providers are available.");
 
 	// Get provider
 	wxString error;

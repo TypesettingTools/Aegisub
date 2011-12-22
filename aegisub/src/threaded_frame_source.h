@@ -42,6 +42,8 @@
 #endif
 
 #include <libaegisub/exception.h>
+#include <libaegisub/scoped_ptr.h>
+
 #include "video_frame.h"
 
 class AssFile;
@@ -53,9 +55,9 @@ class VideoProviderError;
 /// @brief An asynchronous video decoding and subtitle rendering wrapper
 class ThreadedFrameSource : public wxThread {
 	/// Subtitles provider
-	std::auto_ptr<SubtitlesProvider> provider;
+	agi::scoped_ptr<SubtitlesProvider> provider;
 	/// Video provider
-	std::auto_ptr<VideoProvider> videoProvider;
+	agi::scoped_ptr<VideoProvider> videoProvider;
 	/// Event handler to send FrameReady events to
 	wxEvtHandler *parent;
 
