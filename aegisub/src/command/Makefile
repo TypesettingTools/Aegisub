@@ -5,6 +5,7 @@ CXXFLAGS += -I../../ -I.. -I. -I../../libaegisub/include -I../include -DAEGISUB 
 CXXFLAGS += $(CFLAGS_WX)
 PRECOMPILED_HEADER_NAME=../agi_pre.h
 
+icon.o: CXXFLAGS += -fno-var-tracking
 
 LIB = aegisub_command.a
 
