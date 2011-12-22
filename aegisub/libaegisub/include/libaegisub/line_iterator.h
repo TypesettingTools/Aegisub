@@ -194,6 +194,8 @@ void line_iterator<OutputType>::next() {
 	std::string str, cstr, *target;
 	if (width == 1) {
 		std::getline(*stream, str);
+		if (str.size() && *str.rbegin() == '\r')
+			str.resize(str.size() - 1);
 	}
 	else {
 		getline(str);
