@@ -431,5 +431,13 @@ size_t IconvWrapper::SrcStrLen(const char* str) {
 size_t IconvWrapper::DstStrLen(const char* str) {
 	return mbstrlen(str, toNulLen);
 }
+
+bool IsConversionSupported(const char *src, const char *dst) {
+	iconv_t cd = iconv_open(dst, src);
+	bool supported = cd != iconv_invalid;
+	iconv_close(cd);
+	return supported;
+}
+
 	}
 }

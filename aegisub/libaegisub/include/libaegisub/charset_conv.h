@@ -22,12 +22,12 @@
 
 #ifndef LAGI_PRE
 #include <cstring>
-#include <memory>
 #include <string>
 #include <vector>
 #endif
 
 #include <libaegisub/exception.h>
+#include <libaegisub/scoped_ptr.h>
 
 namespace agi {
 	namespace charset {
@@ -39,21 +39,9 @@ DEFINE_SIMPLE_EXCEPTION_NOINNER(BufferTooSmall, ConversionFailure, "iconv/failed
 DEFINE_SIMPLE_EXCEPTION_NOINNER(BadInput, ConversionFailure, "iconv/failed/EILSEQ")
 DEFINE_SIMPLE_EXCEPTION_NOINNER(BadOutput, ConversionFailure, "iconv/failed/EINVAL")
 
-/// @brief Get a list of support encodings with user-friendly names
-template<class T>
-T const& GetEncodingsList() {
-	static T nameList;
-	if (nameList.empty()) {
-#		define ADD(pretty, real) nameList.push_back(pretty)
-#		include <libaegisub/charsets.def>
-#		undef ADD
-	}
-	return nameList;
-}
-
 typedef void* iconv_t;
 
-// Helper class that abstracts away the differences betwen libiconv and
+// Helper class that abstracts away the differences between libiconv and
 // POSIX iconv implementations
 class Converter;
 
@@ -61,7 +49,7 @@ class Converter;
 class IconvWrapper {
 	size_t toNulLen;
 	size_t fromNulLen;
-	std::auto_ptr<Converter> conv;
+	agi::scoped_ptr<Converter> conv;
 
 public:
 	/// @brief Create a converter
@@ -102,6 +90,24 @@ public:
 	/// Encoding-aware strlen for strings encoding in the destination charset
 	size_t DstStrLen(const char* str);
 };
+
+/// Is the conversion from src to dst supported by the linked iconv library?
+/// @param src Source encoding name
+/// @param dst Destination encoding name
+/// @return false if either charset is not supported or the conversion cannot be done directly, true otherwise
+bool IsConversionSupported(const char *src, const char *dst);
+
+/// Get a list of supported encodings with user-friendly names
+template<class T>
+T const& GetEncodingsList() {
+	static T name_list;
+	if (name_list.empty()) {
+#		define ADD(pretty, real) if (IsConversionSupported(real, "utf-8")) name_list.push_back(pretty)
+#		include <libaegisub/charsets.def>
+#		undef ADD
+	}
+	return name_list;
+}
 
 	}
 }
