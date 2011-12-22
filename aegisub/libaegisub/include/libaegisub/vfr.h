@@ -86,9 +86,6 @@ class Framerate {
 	/// Set FPS properties from the timecodes vector
 	void SetFromTimecodes();
 public:
-	/// Copy constructor
-	Framerate(Framerate const&);
-
 	/// @brief VFR from timecodes file
 	/// @param filename File with v1 or v2 timecodes
 	///
@@ -111,11 +108,6 @@ public:
 	/// @param timecodes Vector of frame start times in milliseconds
 	Framerate(std::vector<int> const& timecodes);
 
-	/// Destructor
-	~Framerate();
-
-	/// Atomic assignment operator
-	Framerate &operator=(Framerate);
 	/// Atomic CFR assignment operator
 	Framerate &operator=(double);
 	/// Helper function for the std::swap specialization

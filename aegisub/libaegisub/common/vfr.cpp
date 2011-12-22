@@ -179,14 +179,6 @@ static int64_t v1_parse(line_iterator<std::string> file, std::string line, std::
 	return int64_t(fps * default_denominator);
 }
 
-Framerate::Framerate(Framerate const& that)
-: numerator(that.numerator)
-, denominator(that.denominator)
-, last(that.last)
-, timecodes(that.timecodes)
-{
-}
-
 Framerate::Framerate(double fps)
 : denominator(default_denominator)
 , numerator(int64_t(fps * denominator))
@@ -222,20 +214,14 @@ Framerate::Framerate(std::vector<int> const& timecodes)
 	SetFromTimecodes();
 }
 
-Framerate::~Framerate() {
-}
-
 void Framerate::swap(Framerate &right) throw() {
-	std::swap(numerator, right.numerator);
-	std::swap(denominator, right.denominator);
-	std::swap(last, right.last);
-	std::swap(timecodes, right.timecodes);
+	using std::swap;
+	swap(numerator, right.numerator);
+	swap(denominator, right.denominator);
+	swap(last, right.last);
+	swap(timecodes, right.timecodes);
 }
 
-Framerate &Framerate::operator=(Framerate right) {
-	std::swap(*this, right);
-	return *this;
-}
 Framerate &Framerate::operator=(double fps) {
 	return *this = Framerate(fps);
 }
