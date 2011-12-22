@@ -789,7 +789,7 @@ void DialogStyleManager::OnCurrentImport(wxCommandEvent &) {
 
 			// Get styles
 			wxArrayString styles = temp.GetStyles();
-			if (styles.Count() == 0 || (styles.Count() == 1 && styles[0] == "Default")) {
+			if (styles.empty()) {
 				wxMessageBox(_("The selected file has no available styles."),_("Error Importing Styles"),wxOK);
 				return;
 			}
