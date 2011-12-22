@@ -34,9 +34,6 @@
 /// @ingroup subs_storage
 ///
 
-
-///////////
-// Headers
 #ifndef AGI_PRE
 #include <tr1/memory>
 #include <vector>
@@ -44,60 +41,43 @@
 
 #include "ass_entry.h"
 
-/// DOCME
-typedef std::vector<unsigned char> DataVec;
-
-
-/// @class AttachData
-/// @brief DOCME
-class AttachData {
-private:
-
-	/// DOCME
-	DataVec data;
-
-	/// DOCME
-	wxString buffer;
-
-public:
-	AttachData();
-	~AttachData();
-
-	DataVec &GetData();
-	void AddData(wxString data);
-	void Finish();
-};
-
-
-
 /// @class AssAttachment
 /// @brief DOCME
 class AssAttachment : public AssEntry {
-private:
+	/// Decoded file data
+	std::tr1::shared_ptr<std::vector<unsigned char> > data;
 
-	/// DOCME
-	std::tr1::shared_ptr<AttachData> data;
+	/// Encoded data which has been read from the script but not yet decoded
+	wxString buffer;
 
-	/// DOCME
+	/// Name of the attached file, with SSA font mangling if it is a ttf
 	wxString filename;
 
 public:
-	const DataVec &GetData();
+	/// Get the size of the attached file in bytes
+	size_t GetSize() const { return data->size(); }
 
-	void AddData(wxString data);
+	/// Add a line of data (without newline) read from a subtitle file to the
+	/// buffer waiting to be decoded
+	void AddData(wxString data) { buffer += data; }
+	/// Decode all data passed with AddData
 	void Finish();
 
+	/// Extract the contents of this attachment to a file
+	/// @param filename Path to save the attachment to
 	void Extract(wxString filename);
+
+	/// Import the contents of a file as an attachment
+	/// @param filename Path to import
 	void Import(wxString filename);
+
+	/// Get the name of the attached file
+	/// @param raw If false, remove the SSA filename mangling
 	wxString GetFileName(bool raw=false);
 
 	const wxString GetEntryData() const;
-
-	/// @brief DOCME
-	///
 	ASS_EntryType GetType() const { return ENTRY_ATTACHMENT; }
 	AssEntry *Clone() const;
 
 	AssAttachment(wxString name);
-	~AssAttachment();
 };

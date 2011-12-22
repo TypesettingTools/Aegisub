@@ -34,9 +34,6 @@
 /// @ingroup subs_storage
 ///
 
-
-////////////
-// Includes
 #include "config.h"
 
 #ifndef AGI_PRE
@@ -46,87 +43,26 @@
 
 #include "ass_attachment.h"
 
-
-
-/// @brief Constructor 
-/// @param _name 
-///
-AssAttachment::AssAttachment(wxString _name) {
-	// Parse name
-	filename = _name;
-	wxFileName fname(GetFileName());
+AssAttachment::AssAttachment(wxString name)
+: data(new std::vector<unsigned char>)
+, filename(name)
+{
+	wxFileName fname(filename);
 	wxString ext = fname.GetExt().Lower();
-	wxString name;
-	if (ext == "ttf") {
-		name = fname.GetName() + "_0." + ext;
-	}
-	else name = _name;
-
-	// Set data
-	filename = name;
-	data = std::tr1::shared_ptr<AttachData> (new AttachData);
+	if (ext == "ttf")
+		filename = fname.GetName() + "_0." + ext;
 }
 
-
-
-/// @brief Destructor 
-///
-AssAttachment::~AssAttachment() {
-}
-
-
-
-/// @brief Clone 
-/// @return 
-///
 AssEntry *AssAttachment::Clone() const {
-	// New object
 	AssAttachment *clone = new AssAttachment(filename);
-
-	// Copy fields
 	clone->data = data;
 	clone->group = group;
-
-	// Return
 	return clone;
 }
 
-
-
-/// @brief Get data 
-/// @return 
-///
-const DataVec &AssAttachment::GetData() {
-	return data->GetData();
-}
-
-
-
-/// @brief Add more data 
-/// @param _data 
-///
-void AssAttachment::AddData(wxString _data) {
-	data->AddData(_data);
-}
-
-
-
-/// @brief Finish adding data 
-///
-void AssAttachment::Finish() {
-	data->Finish();
-}
-
-
-
-/// @brief Get encoded data to write on file 
-/// @return 
-///
 const wxString AssAttachment::GetEntryData() const {
-	// Get data
-	const DataVec &dat = data->GetData();
 	int pos = 0;
-	int size = dat.size();
+	int size = data->size();
 	int written = 0;
 	unsigned char src[3];
 	unsigned char dst[4];
@@ -144,10 +80,10 @@ const wxString AssAttachment::GetEntryData() const {
 		if (read > 3) read = 3;
 
 		// Read source
-		src[0] = dat[pos];
-		if (read >= 2) src[1] = dat[pos+1];
+		src[0] = (*data)[pos];
+		if (read >= 2) src[1] = (*data)[pos+1];
 		else src[1] = 0;
-		if (read == 3) src[2] = dat[pos+2];
+		if (read == 3) src[2] = (*data)[pos+2];
 		else src[2] = 0;
 		pos += read;
 
@@ -173,32 +109,16 @@ const wxString AssAttachment::GetEntryData() const {
 		}
 	}
 
-	// Return
 	return entryData;
 }
 
-
-
-/// @brief Extract as a file 
-/// @param filename 
-/// @return 
-///
 void AssAttachment::Extract(wxString filename) {
-	// Open file
 	wxFileOutputStream fp(filename);
 	if (!fp.Ok()) return;
-	fp.Write(&data->GetData()[0],data->GetData().size());
+	fp.Write(&(*data)[0], data->size());
 }
 
-
-
-/// @brief Read a file as attachment 
-/// @param filename 
-///
 void AssAttachment::Import(wxString filename) {
-	// Data
-	DataVec &datavec = data->GetData();
-
 	// Open file and get size
 	wxFileInputStream fp(filename);
 	if (!fp.Ok()) throw "Failed opening file";
@@ -206,102 +126,38 @@ void AssAttachment::Import(wxString filename) {
 	fp.SeekI(0,wxFromStart);
 
 	// Set size and read
-	datavec.resize(size);
-	fp.Read(&datavec[0],size);
+	data->resize(size);
+	fp.Read(&(*data)[0],size);
 }
 
-
-
-/// @brief Get filename 
-/// @param raw 
-/// @return 
-///
 wxString AssAttachment::GetFileName(bool raw) {
-	// Raw
 	if (raw || filename.Right(4).Lower() != ".ttf") return filename;
 
 	// Remove stuff after last underscore if it's a font
-	int lastUnder = -1;
-	for (size_t i=0;i<filename.Length();i++) {
-		if (filename[i] == '_') lastUnder = i;
-	}
+	wxString::size_type last_under = filename.rfind('_');
+	if (last_under == wxString::npos)
+		return filename;
 
-	// Underline found
-	wxString final = filename;
-	if (lastUnder != -1) {
-		final = filename.Left(lastUnder) + ".ttf";
-	}
-	return final;
+	return filename.Left(last_under) + ".ttf";
 }
 
-
-
-
-/// @brief Constructor  Attachment //////////////////
-///
-AttachData::AttachData() {
-}
-
-
-
-/// @brief Destructor 
-///
-AttachData::~AttachData() {
-}
-
-
-
-/// @brief Get data 
-/// @return 
-///
-DataVec &AttachData::GetData() {
-	return data;
-}
-
-
-
-/// @brief Add data 
-/// @param data 
-///
-void AttachData::AddData(wxString data) {
-	buffer += data;
-}
-
-
-
-/// @brief Finish 
-///
-void AttachData::Finish() {
+void AssAttachment::Finish() {
 	// Source and dest buffers
 	unsigned char src[4];
 	unsigned char dst[3];
-	int bufPos = 0;
-	bool ok = true;
+
+	data->reserve(buffer.size() * 3 / 4);
 
 	// Read buffer
-	while (ok) {
+	for(size_t pos = 0; pos + 1 < buffer.size(); ) {
 		// Find characters left
-		int read = buffer.Length() - bufPos;
-		if (read > 4) read = 4;
-		int nbytes;
+		size_t read = std::min<size_t>(buffer.size() - pos, 4);
 
-		// At least four, proceed normally
-		if (read >= 2) {
-			// Move 4 bytes from buffer to src
-			for (int i=0;i<read;i++) {
-				src[i] = (unsigned char) buffer[bufPos] - 33;
-				bufPos++;
-			}
-			for (int i=read;i<4;i++) src[i] = 0;
-			ok = true;
-			nbytes = read-1;
-		}
-
-		// Zero, end
-		else {
-			ok = false;
-			break;
-		}
+		// Move 4 bytes from buffer to src
+		for (size_t i = 0; i < read; ++i)
+			src[i] = (unsigned char)buffer[pos++] - 33;
+		for (size_t i = read; i < 4; ++i)
+			src[i] = 0;
 
 		// Convert the 4 bytes from source to 3 in dst
 		dst[0] = (src[0] << 2) | (src[1] >> 4);
@@ -309,14 +165,10 @@ void AttachData::Finish() {
 		dst[2] = ((src[2] & 0x3) << 6) | (src[3]);
 
 		// Push into vector
-		size_t size = data.size(); 
-		data.resize(size+nbytes);
-		for (int i=0;i<nbytes;i++) data[size+i] = dst[i];
+		copy(dst, dst + read - 1, back_inserter(*data));
 	}
 
 	// Clear buffer
-	buffer.Clear();
+	buffer.clear();
 	buffer.Shrink();
 }
-
-

@@ -117,7 +117,7 @@ void DialogAttachments::UpdateList() {
 			// Add item
 			int row = listView->GetItemCount();
 			listView->InsertItem(row,attach->GetFileName(true));
-			listView->SetItem(row,1,PrettySize(attach->GetData().size()));
+			listView->SetItem(row,1,PrettySize(attach->GetSize()));
 			listView->SetItem(row,2,attach->group);
 			listView->SetItemPtrData(row,wxPtrToUInt(attach));
 		}
