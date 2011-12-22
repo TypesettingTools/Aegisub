@@ -88,7 +88,7 @@ enum {
 #ifdef WITH_STARTUPLOG
 #define StartupLog(a) MessageBox(0, a, "Aegisub startup log", 0)
 #else
-#define StartupLog(a)
+#define StartupLog(a) LOG_I("frame_main/init") << a
 #endif
 
 static void autosave_timer_changed(wxTimer *timer, const agi::OptionValue &opt);
