@@ -52,8 +52,6 @@ public:
 };
 
 class Options {
-	friend class PutOptionVisitor;
-
 public:
 	/// Options class settings.
 	enum OptionSetting {
@@ -89,7 +87,7 @@ private:
 	/// @param[out] obj  Parent object
 	/// @param[in] path  Path option should be stored in.
 	/// @param[in] value Value to write.
-	static bool PutOption(::json::Object &obj, const std::string &path, const ::json::UnknownElement &value);
+	static void PutOption(::json::Object &obj, const std::string &path, const ::json::UnknownElement &value);
 
 public:
 	/// @brief Constructor

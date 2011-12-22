@@ -48,28 +48,4 @@ public:
 	void Visit(const json::Null& null);
 };
 
-
-class PutOptionVisitor : public json::Visitor {
-public:
-	bool result;
-	const std::string &path;
-	const json::UnknownElement &value;
-
-	PutOptionVisitor(const std::string &path, const json::UnknownElement &value)
-	: result(false), path(path), value(value)
-	{}
-
-	// all of these are a fail
-	virtual void Visit(json::Array& array) { }
-	virtual void Visit(json::Number& number) { }
-	virtual void Visit(json::String& string) { }
-	virtual void Visit(json::Boolean& boolean) { }
-	virtual void Visit(json::Null& null) { }
-
-	// this one is the win
-	virtual void Visit(json::Object& object) {
-		result = Options::PutOption(object, path, value);
-	}
-};
-
 } // namespace agi

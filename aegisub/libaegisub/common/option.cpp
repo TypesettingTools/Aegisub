@@ -203,25 +203,18 @@ void Options::Flush() {
 	json::Writer::Write(obj_out, file.Get());
 }
 
-
-bool Options::PutOption(json::Object &obj, const std::string &path, const json::UnknownElement &value) {
-	// Having a '/' denotes it is a leaf.
-	if (path.find('/') == std::string::npos) {
+void Options::PutOption(json::Object &obj, const std::string &path, const json::UnknownElement &value) {
+	std::string::size_type pos = path.find('/');
+	// Not having a '/' denotes it is a leaf.
+	if (pos == std::string::npos) {
 		assert(obj.find(path) == obj.end());
 		obj[path] = value;
-		return true;
-	} else {
-		std::string thispart = path.substr(0, path.find("/"));
-		std::string restpart = path.substr(path.find("/")+1, path.size());
-		json::Object::iterator pos = obj.find(thispart);
-
-		// New key, make object.
-		if (pos == obj.end())
-			pos = obj.insert(make_pair(thispart, json::Object())).first;
-
-		PutOptionVisitor visitor(restpart, value);
-		pos->second.Accept(visitor);
-		return visitor.result;
+	}
+	else {
+		PutOption(
+			obj[path.substr(0, pos)],
+			path.substr(pos + 1),
+			value);
 	}
 }
 
