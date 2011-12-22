@@ -107,8 +107,8 @@ public:
 	/// @param context  Context requested.
 	/// @param str      Hyphen separated key sequence.
 	/// @param always   Enable the "Always" override context
-	/// @param[out] cmd Command found.
-	bool Scan(const std::string &context, const std::string &str, bool always, std::string &cmd) const;
+	/// @return Name of command or "" if none match
+	std::string Scan(const std::string &context, const std::string &str, bool always) const;
 
 	/// Get the string representation of the hotkeys for the given command
 	/// @param context Context requested

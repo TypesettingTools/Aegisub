@@ -91,7 +91,7 @@ void Hotkey::BuildHotkey(std::string const& context, const json::Object& object)
 	}
 }
 
-bool Hotkey::Scan(const std::string &context, const std::string &str, bool always, std::string &cmd) const {
+std::string Hotkey::Scan(const std::string &context, const std::string &str, bool always) const {
 	std::string local, dfault;
 
 	HotkeyMap::const_iterator index, end;
@@ -99,9 +99,8 @@ bool Hotkey::Scan(const std::string &context, const std::string &str, bool alway
 		std::string const& ctext = index->second.Context();
 
 		if (always && ctext == "Always") {
-			cmd = index->second.CmdName();
-			LOG_D("agi/hotkey/found") << "Found: " << str << "  Context (req/found): " << context << "/Always   Command: " << cmd;
-			return true;
+			LOG_D("agi/hotkey/found") << "Found: " << str << "  Context (req/found): " << context << "/Always   Command: " << index->second.CmdName();
+			return index->second.CmdName();
 		}
 		if (ctext == "Default")
 			dfault = index->second.CmdName();
@@ -110,18 +109,15 @@ bool Hotkey::Scan(const std::string &context, const std::string &str, bool alway
 	}
 
 	if (!local.empty()) {
-		cmd = local;
 		LOG_D("agi/hotkey/found") << "Found: " << str << "  Context: " << context << "  Command: " << local;
-		return true;
+		return local;
 	}
 	if (!dfault.empty()) {
-		cmd = dfault;
 		LOG_D("agi/hotkey/found") << "Found: " << str << "  Context (req/found): " << context << "/Default   Command: " << dfault;
-		return true;
+		return dfault;
 	}
 
-	cmd.clear();
-	return false;
+	return "";
 }
 
 std::vector<std::string> Hotkey::GetHotkeys(const std::string &context, const std::string &command) const {
