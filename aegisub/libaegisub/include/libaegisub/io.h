@@ -40,7 +40,7 @@ DEFINE_SIMPLE_EXCEPTION_NOINNER(IOAccessRead, IOError, "io/read")
 DEFINE_SIMPLE_EXCEPTION_NOINNER(IOAccessWrite, IOError, "io/write")
 */
 
-std::ifstream* Open(const std::string &file);
+std::ifstream* Open(const std::string &file, bool binary = false);
 
 class Save {
 	std::ofstream *fp;

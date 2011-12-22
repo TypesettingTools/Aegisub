@@ -45,7 +45,7 @@
 /// @brief DOCME
 class AssAttachment : public AssEntry {
 	/// Decoded file data
-	std::tr1::shared_ptr<std::vector<unsigned char> > data;
+	std::tr1::shared_ptr<std::vector<char> > data;
 
 	/// Encoded data which has been read from the script but not yet decoded
 	wxString buffer;

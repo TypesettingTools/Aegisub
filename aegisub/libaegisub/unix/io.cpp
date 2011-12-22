@@ -36,7 +36,7 @@
 namespace agi {
 	namespace io {
 
-std::ifstream* Open(const std::string &file) {
+std::ifstream* Open(const std::string &file, bool) {
     LOG_D("agi/io/open/file") << file;
 	acs::CheckFileRead(file);
 

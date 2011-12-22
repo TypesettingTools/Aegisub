@@ -38,13 +38,19 @@
 
 #ifndef AGI_PRE
 #include <wx/filename.h>
-#include <wx/wfstream.h>
+
+#include <istream>
 #endif
 
 #include "ass_attachment.h"
 
+#include "compat.h"
+
+#include <libaegisub/io.h>
+#include <libaegisub/scoped_ptr.h>
+
 AssAttachment::AssAttachment(wxString name)
-: data(new std::vector<unsigned char>)
+: data(new std::vector<char>)
 , filename(name)
 {
 	wxFileName fname(filename);
@@ -113,21 +119,15 @@ const wxString AssAttachment::GetEntryData() const {
 }
 
 void AssAttachment::Extract(wxString filename) {
-	wxFileOutputStream fp(filename);
-	if (!fp.Ok()) return;
-	fp.Write(&(*data)[0], data->size());
+	agi::io::Save(STD_STR(filename)).Get().write(&(*data)[0], data->size());
 }
 
 void AssAttachment::Import(wxString filename) {
-	// Open file and get size
-	wxFileInputStream fp(filename);
-	if (!fp.Ok()) throw "Failed opening file";
-	int size = fp.SeekI(0,wxFromEnd);
-	fp.SeekI(0,wxFromStart);
-
-	// Set size and read
-	data->resize(size);
-	fp.Read(&(*data)[0],size);
+	agi::scoped_ptr<std::istream> file(agi::io::Open(STD_STR(filename)));
+	file->seekg(0, std::ios::end);
+	data->resize(file->tellg());
+	file->seekg(0, std::ios::beg);
+	file->read(&(*data)[0], data->size());
 }
 
 wxString AssAttachment::GetFileName(bool raw) {

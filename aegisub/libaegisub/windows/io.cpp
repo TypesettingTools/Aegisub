@@ -37,11 +37,11 @@ namespace agi {
 
 using agi::charset::ConvertW;
 
-std::ifstream* Open(const std::string &file) {
+std::ifstream* Open(const std::string &file, bool binary) {
 	LOG_D("agi/io/open/file") << file;
 	acs::CheckFileRead(file);
 
-	std::ifstream *stream = new std::ifstream(ConvertW(file).c_str());
+	std::ifstream *stream = new std::ifstream(ConvertW(file).c_str(), std::ios::in | (binary ? std::ios::binary : 0));
 
 	if (stream->fail()) {
 		delete stream;
