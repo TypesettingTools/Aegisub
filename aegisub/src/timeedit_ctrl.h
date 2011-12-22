@@ -67,6 +67,7 @@ class TimeEdit : public wxTextCtrl {
 	void UpdateText();
 
 	void OnContextMenu(wxContextMenuEvent &event);
+	void OnFocusLost(wxFocusEvent &evt);
 	void OnInsertChanged(agi::OptionValue const& opt);
 	void OnKeyDown(wxKeyEvent &event);
 	void OnModified(wxCommandEvent &event);

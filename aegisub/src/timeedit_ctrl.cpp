@@ -94,6 +94,7 @@ TimeEdit::TimeEdit(wxWindow* parent, wxWindowID id, agi::Context *c, const wxStr
 	Bind(wxEVT_KEY_DOWN, &TimeEdit::OnKeyDown, this);
 	Bind(wxEVT_COMMAND_MENU_SELECTED, std::tr1::bind(&TimeEdit::CopyTime, this), Time_Edit_Copy);
 	Bind(wxEVT_COMMAND_MENU_SELECTED, std::tr1::bind(&TimeEdit::PasteTime, this), Time_Edit_Paste);
+	Bind(wxEVT_KILL_FOCUS, &TimeEdit::OnFocusLost, this);
 }
 
 void TimeEdit::SetTime(AssTime new_time) {
@@ -199,6 +200,12 @@ void TimeEdit::OnContextMenu(wxContextMenuEvent &evt) {
 	menu.Append(Time_Edit_Copy, _("&Copy"));
 	menu.Append(Time_Edit_Paste, _("&Paste"));
 	PopupMenu(&menu);
+}
+
+void TimeEdit::OnFocusLost(wxFocusEvent &evt) {
+	if (insert || byFrame)
+		UpdateText();
+	evt.Skip();
 }
 
 void TimeEdit::CopyTime() {
