@@ -208,9 +208,6 @@ AssStyle::AssStyle(wxString _data,int version) {
 	UpdateData();
 }
 
-AssStyle::~AssStyle() {
-}
-
 /// @brief Parses value from ASS data 
 /// @param rawData 
 /// @param version 
