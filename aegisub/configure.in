@@ -314,6 +314,9 @@ fi
 # Check for X include/lib.
 ##########################
 AC_PATH_XTRA
+if test "$no_x" = "yes" && test "$build_darwin" != "yes"; then
+    AC_MSG_FAILURE([You must have a working copy of X installed.])
+fi
 
 
 ######################################
