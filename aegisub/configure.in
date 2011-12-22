@@ -370,10 +370,7 @@ AS_IF([test x$with_alsa = xno],
       [alsa_disabled="(disabled)"],
       [AC_CHECK_LIB([asound], [snd_pcm_open], [with_alsa="yes"], [with_alsa="no"], $ALSA_LDFLAGS)])
 
-AS_IF([test x$with_alsa = xyes], [
-  AC_DEFINE(WITH_ALSA, 1, [Enable ALSA Support])
-  found_audio_player="yes"
-])
+AS_IF([test x$with_alsa = xyes], AC_DEFINE(WITH_ALSA, 1, [Enable ALSA Support]))
 
 AC_SUBST(ALSA_CFLAGS)
 AC_SUBST(ALSA_LDFLAGS)
@@ -390,10 +387,7 @@ AS_IF([test x$with_portaudio = xno],
       [portaudio_disabled="(disabled)"],
       [PKG_CHECK_MODULES(PORTAUDIO, portaudio-2.0 >= portaudio_required_version, [with_portaudio="yes"], [with_portaudio="no"])])
 
-AS_IF([test x$with_portaudio = xyes], [
-  AC_DEFINE(WITH_PORTAUDIO, 1, [Enable PortAudio v19 support])
-  found_audio_player="yes"
-])
+AS_IF([test x$with_portaudio = xyes], AC_DEFINE(WITH_PORTAUDIO, 1, [Enable PortAudio v19 support]))
 
 AC_SUBST(with_portaudio)
 
@@ -408,10 +402,7 @@ AS_IF([test x$with_pulseaudio = xno],
       [pulseaudio_disabled="(disabled)"],
       [PKG_CHECK_MODULES(LIBPULSE, libpulse >= pulseaudio_required_version, [with_pulseaudio="yes"], [with_pulseaudio="no"])])
 
-AS_IF([test x$with_pulseaudio = xyes], [
-  AC_DEFINE(WITH_PULSEAUDIO, 1, [Enable PulseAudio support])
-  found_audio_player="yes"
-])
+AS_IF([test x$with_pulseaudio = xyes], AC_DEFINE(WITH_PULSEAUDIO, 1, [Enable PulseAudio support]))
 
 AC_SUBST(with_pulseaudio)
 
@@ -455,10 +446,8 @@ AS_IF([test x$agi_cv_with_openal = xno && test x$with_openal = xyes], [
   with_openal="no"
 ])
 
-AS_IF([test x$agi_cv_with_openal = xyes && test x$with_openal = xyes], [
-  found_audio_player="yes"
-  AC_DEFINE(WITH_OPENAL, 1, [Enable OpenAL support])
-])
+AS_IF([test x$agi_cv_with_openal = xyes && test x$with_openal = xyes],
+      AC_DEFINE(WITH_OPENAL, 1, [Enable OpenAL support]))
 
 AC_SUBST(with_openal)
 
@@ -478,10 +467,7 @@ AS_IF([test x$with_oss = xno], [oss_disabled="(disabled)"], [
   # XXX: maybe check if OSS works
 ])
 
-AS_IF([test x$with_oss = xyes], [
-  found_audio_player="yes"
-  AC_DEFINE(WITH_OSS, 1, [Enable OSS support])
-])
+AS_IF([test x$with_oss = xyes], AC_DEFINE(WITH_OSS, 1, [Enable OSS support]))
 
 AC_SUBST(with_oss)
 
@@ -774,6 +760,8 @@ AS_IF([test -z "$with_player_audio"], [
         [test x$build_darwin = xyes && test x$with_openal = xyes], [default_player_audio="openal"],
         [test x$with_portaudio = xyes],                            [default_player_audio="portaudio"],
         [test x$with_oss = xyes],                                  [default_player_audio="oss"],
+        [test x$with_alsa = xyes],                                 [default_player_audio="alsa"],
+        [test x$with_openal = xyes],                               [default_player_audio="openal"],
         [test x$with_pulseaudio = xyes],                           [default_player_audio="pulseaudio"])],
   [default_player_audio="$with_player_audio"])
 AC_DEFINE_UNQUOTED([DEFAULT_PLAYER_AUDIO], ["$default_player_audio"], [Default audio player.])
@@ -784,8 +772,6 @@ default_player_audio=${default_player_audio:-NONE}
 ###############
 # Misc settings
 ###############
-AC_SUBST(found_audio_player)
-
 # Files that need substitution.
 AC_CONFIG_FILES([
 desktop/aegisub.desktop
@@ -795,7 +781,7 @@ Makefile.inc
 
 AC_OUTPUT
 
-AS_IF([test -z "$found_audio_player"], AC_MSG_NOTICE([
+AS_IF([test x"$default_player_audio" = xNONE], AC_MSG_NOTICE([
 
 ***********************************************************************
 * No supported audio player interface was found on your system.

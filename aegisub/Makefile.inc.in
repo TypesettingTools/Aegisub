@@ -10,7 +10,6 @@ HAVE_PORTAUDIO				= @with_portaudio@
 HAVE_FFMS					= @with_ffms@
 HAVE_PULSEAUDIO				= @with_pulseaudio@
 HAVE_LIBASS					= @with_libass@
-FOUND_AUDIO_PLAYER			= @found_audio_player@
 
 
 ###################
