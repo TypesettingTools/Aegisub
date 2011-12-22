@@ -31,8 +31,7 @@ namespace agi {
 MRUManager::MRUManager(const std::string &config, const std::string &default_config): config_name(config) {
 	LOG_D("agi/mru") << "Loading MRU List";
 
-	json::UnknownElement root = json_util::file(config, default_config);
-	const json::Object& root_new = (json::Object)root;
+	json::Object root_new = json_util::file(config, default_config);
 
 	json::Object::const_iterator index_object(root_new.begin()), index_objectEnd(root_new.end());
 
