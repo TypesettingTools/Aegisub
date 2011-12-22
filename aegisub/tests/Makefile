@@ -3,7 +3,7 @@ include ../Makefile.inc
 
 PROGRAM = run
 
-LDFLAGS		+= -L../libaegisub -laegisub-3.0 -rpath $(CURDIR)/../libaegisub -lgtest -L../universalchardet -luniversalchardet
+LDFLAGS		+= -L../libaegisub -laegisub-3.0 -Wl,-rpath $(CURDIR)/../libaegisub -lgtest -L../universalchardet -luniversalchardet
 LDFLAGS		+= $(LDFLAGS_ICONV)
 
 CPPFLAGS	+= -I../src/include -I../libaegisub/include $(CFLAGS_ICONV)
