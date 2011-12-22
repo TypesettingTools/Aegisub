@@ -72,7 +72,7 @@ struct help_bugs : public Command {
 				throw c->parent;
 			}
 		}
-		AegisubApp::OpenURL("http://devel.aegisub.org/");
+		wxLaunchDefaultBrowser("http://devel.aegisub.org/", wxBROWSER_NEW_WINDOW);
 	}
 };
 
@@ -114,7 +114,7 @@ struct help_forums : public Command {
 	STR_HELP("Visit Aegisub's forums.")
 
 	void operator()(agi::Context *) {
-		AegisubApp::OpenURL("http://forum.aegisub.org/");
+		wxLaunchDefaultBrowser("http://forum.aegisub.org/", wxBROWSER_NEW_WINDOW);
 	}
 };
 
@@ -127,7 +127,7 @@ struct help_irc : public Command {
 	STR_HELP("Visit Aegisub's official IRC channel.")
 
 	void operator()(agi::Context *) {
-		AegisubApp::OpenURL("irc://irc.rizon.net/aegisub");
+		wxLaunchDefaultBrowser("irc://irc.rizon.net/aegisub", wxBROWSER_NEW_WINDOW);
 	}
 };
 
@@ -151,7 +151,7 @@ struct help_website : public Command {
 	STR_HELP("Visit Aegisub's official website.")
 
 	void operator()(agi::Context *) {
-		AegisubApp::OpenURL("http://www.aegisub.org/");
+		wxLaunchDefaultBrowser("http://www.aegisub.org/", wxBROWSER_NEW_WINDOW);
 	}
 };
 }

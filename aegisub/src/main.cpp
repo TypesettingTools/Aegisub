@@ -546,16 +546,6 @@ int AegisubApp::OnRun() {
 	return 1;
 }
 
-
-
-/// @brief Open URL 
-/// @param url 
-///
-void AegisubApp::OpenURL(wxString url) {
-	wxLaunchDefaultBrowser(url, wxBROWSER_NEW_WINDOW);
-}
-
-
 ////////////////
 // Apple events
 #ifdef __WXMAC__

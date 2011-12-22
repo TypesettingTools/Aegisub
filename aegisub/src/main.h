@@ -121,7 +121,6 @@ public:
 	/// @return 
 	///
 	static AegisubApp* Get() { return (AegisubApp*) wxTheApp; }
-	static void OpenURL(wxString url);
 
 	bool OnInit();
 	int OnExit();
