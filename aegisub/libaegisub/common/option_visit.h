@@ -33,12 +33,17 @@ DEFINE_SIMPLE_EXCEPTION_NOINNER(OptionJsonValueNull, OptionJsonValueError, "opti
 class ConfigVisitor : public json::ConstVisitor {
 	OptionValueMap &values;
 	std::string name;
-	typedef std::pair<std::string, OptionValue*> OptionValuePair;
+	bool ignore_errors;
+
+	template<class ErrorType>
+	void Error(const char *message);
+
+	template<class OptionValueType, class ValueType>
+	OptionValue *ReadArray(json::Array const& src, std::string const& array_type, void (OptionValueType::*set_list)(const std::vector<ValueType>&));
 
 	void AddOptionValue(OptionValue* opt);
-
 public:
-	ConfigVisitor(OptionValueMap &val, const std::string &member_name);
+	ConfigVisitor(OptionValueMap &val, const std::string &member_name, bool ignore_errors = false);
 
 	void Visit(const json::Array& array);
 	void Visit(const json::Object& object);

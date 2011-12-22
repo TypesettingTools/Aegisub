@@ -75,7 +75,8 @@ private:
 
 	/// @brief Load a config file into the Options object.
 	/// @param config Config to load.
-	void LoadConfig(std::istream& stream);
+	/// @param ignore_errors Log invalid entires in the option file and continue rather than throwing an exception
+	void LoadConfig(std::istream& stream, bool ignore_errors = false);
 
 	/// @brief Write an option to file.
 	/// @param[out] obj  Parent object

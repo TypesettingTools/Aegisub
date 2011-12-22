@@ -71,10 +71,10 @@ void Options::ConfigUser() {
 	}
 
 	/// @todo Handle other errors such as parsing and notifying the user.
-	LoadConfig(*stream);
+	LoadConfig(*stream, true);
 }
 
-void Options::LoadConfig(std::istream& stream) {
+void Options::LoadConfig(std::istream& stream, bool ignore_errors) {
 	/// @todo Store all previously loaded configs in an array for bug report purposes,
 	///       this is just a temp stub.
 	json::UnknownElement config_root;
@@ -88,7 +88,7 @@ void Options::LoadConfig(std::istream& stream) {
 		LOG_E("option/load") << "json::Exception: " << e.what();
 	}
 
-	ConfigVisitor config_visitor(values, "");
+	ConfigVisitor config_visitor(values, "", ignore_errors);
 	config_root.Accept(config_visitor);
 }
 
