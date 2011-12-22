@@ -379,46 +379,15 @@ fi
 ## Freetype
 ###########
 PKG_CHECK_MODULES(FREETYPE, freetype2 >= freetype_required_version,
-  AC_DEFINE(WITH_FREETYPE2, 1, [Enable FreeType 2 support.]),
-  [AC_MSG_FAILURE([aegisub requires >= FreeType2 freetype_required_version])])
-
-AC_AGI_COMPILE([Freetype], [freetype], [$FREETYPE_CFLAGS], [$FREETYPE_LIBS],[
-#include <ft2build.h>
-#include FT_FREETYPE_H
-int main(void) {
-  FT_Library ft;
-  if (FT_Init_FreeType(&ft)) { return 1; }
-  return 0;
-}])
-
-if test "$agi_cv_with_freetype" = "no"; then
-    AC_MSG_FAILURE([Please install a working Freetype library.])
-fi
-
+                  AC_DEFINE(WITH_FREETYPE2, 1, [Enable FreeType 2 support.]),
+                  [AC_MSG_FAILURE([Aegisub requires >= FreeType2 freetype_required_version])])
 
 #############
 ## Fontconfig
 #############
-PKG_CHECK_MODULES(FONTCONFIG, fontconfig >= fontconfig_required_version)
-
-AC_AGI_COMPILE([FontConfig], [fontconfig], [$FONTCONFIG_CFLAGS], [$FONTCONFIG_LIBS],[
-#include <fontconfig/fontconfig.h>
-int main(void) {
-  int fc = FcInit();
-  FcConfig* config;
-  config = FcConfigGetCurrent();
-  if ((!config) || (!fc)) { return 1;}
-  return 0;
-}])
-
-if test "$agi_cv_with_fontconfig" = "no"; then
-    AC_MSG_FAILURE([Please install a working Fontconfig library.])
-fi
-
-AC_DEFINE(WITH_FONTCONFIG, 1, [Enable FontConfig support.])
-AC_SUBST(FONTCONFIG_CFLAGS)
-AC_SUBST(FONTCONFIG_LIBS)
-
+PKG_CHECK_MODULES(FONTCONFIG, fontconfig >= fontconfig_required_version,
+                  [AC_DEFINE(WITH_FONTCONFIG, 1, [Enable FontConfig support.])],
+                  [AC_MSG_FAILURE([Aegisub requires fontconfig >= fontconfig_required_version])])
 
 ########
 ## iconv
@@ -518,22 +487,7 @@ if test "$with_portaudio" != "no"; then
   PKG_CHECK_MODULES(PORTAUDIO, portaudio-2.0 >= portaudio_required_version, [with_portaudio="yes"], [with_portaudio="no"])
 fi
 
-if test "$with_portaudio" != "no"; then
-  AC_AGI_COMPILE([PortAudio], [portaudio], [$PORTAUDIO_CFLAGS], [$PORTAUDIO_LIBS],[
-#include <portaudio.h>
-int main(void) {
-  PaError err = Pa_Initialize();
-  if (err != paNoError) return 1;
-  return 0;
-} ])
-fi
-
-if test "$agi_cv_with_portaudio" = "no" && test "$with_portaudio" = "yes"; then
-  AC_MSG_WARN([PortAudio detected, but it doesn't work...])
-  with_portaudio="no"
-fi
-
-if test "$agi_cv_with_portaudio" = "yes" && test "$with_portaudio" = "yes"; then
+if test "$with_portaudio" = "yes"; then
   AC_DEFINE(WITH_PORTAUDIO, 1, [Enable PortAudio v19 support])
   found_audio_player="yes"
 fi
@@ -551,22 +505,7 @@ if test "$with_pulseaudio" != "no"; then
   PKG_CHECK_MODULES(LIBPULSE, libpulse >= pulseaudio_required_version, [with_pulseaudio="yes"], [with_pulseaudio="no"])
 fi
 
-if test "$with_pulseaudio" != "no"; then
-  AC_AGI_COMPILE([PuleseAudio], [pulseaudio], [$LIBPULSE_CFLAGS], [$LIBPULSE_LIBS],[
-#include <pulse/pulseaudio.h>
-int main(void) {
-pa_threaded_mainloop *mainloop = pa_threaded_mainloop_new();
-if (!mainloop) return 1;
-return 0;
-} ])
-fi
-
-if test "$agi_cv_with_pulseaudio" = "no" && test "$with_pulseaudio" = "yes"; then
-  AC_MSG_WARN([PulseAudio detected, but it doesn't work...])
-  with_pulseaudio="no"
-fi
-
-if test "$agi_cv_with_pulseaudio" = "yes" && test "$with_pulseaudio" = "yes"; then
+if test "$with_pulseaudio" = "yes"; then
   AC_DEFINE(WITH_PULSEAUDIO, 1, [Enable PulseAudio support])
   found_audio_player="yes"
 fi
@@ -692,26 +631,13 @@ AC_ARG_WITH(hunspell, [  --without-hunspell      build without hunspell support 
 
 if test "$with_hunspell" != "no"; then
   PKG_CHECK_MODULES(HUNSPELL, hunspell >= 1.2.0, [with_hunspell="yes"], [with_hunspell="no"])
-  AC_AGI_COMPILE([Hunspell], [hunspell], [$HUNSPELL_CFLAGS], [$HUNSPELL_LIBS],[
-#include <hunspell.hxx>
-int main(void) {
-  return !(new Hunspell(".", "."));
-}  ])
 fi
 
-if test "$agi_cv_with_hunspell" = "no" && test "$with_hunspell" = "yes"; then
-  AC_MSG_WARN([Hunspell detected, but it doesn't work...])
-  with_hunspell="no"
-fi
-
-if test "$agi_cv_with_hunspell" = "yes" && test "$with_hunspell" = "yes"; then
+if test "$with_hunspell" = "yes"; then
   AC_DEFINE(WITH_HUNSPELL, 1, [Enable Hunspell support.])
 fi
 
 AC_SUBST(with_hunspell)
-
-
-
 
 ############
 # Automation
