@@ -48,58 +48,25 @@ build_linux="no"
 build_bsd="no"
 build_default="no"
 
-case "$host" in
-  *-*-darwin*)
-    build_darwin="yes"
-  ;;
+AS_CASE([$host],
+        [ppc-*-* | powerpc-*], [arch_ppc="yes"; arch_bundle="ppc";   DARWIN_ARCH="ppc"],
+        [i*86-*-*],            [arch_x86="yes"; arch_bundle="intel"; DARWIN_ARCH="intel"],
+        [x86_64-*-*],          [arch_x86="yes"; arch_x86_64="yes";   DARWIN_ARCH="intel"],
+        [])
 
-  *-*-linux*)
-    build_linux="yes"
-  ;;
+AS_CASE([$host],
+        [*-*-darwin*], [build_darwin="yes"; AC_SUBST(DARWIN_ARCH)],
+        [*-*-linux*],  [build_linux="yes"],
+        [*-*-bsd*],    [build_bsd="yes"],
+        [build_default="yes"])
 
-  *-*-*bsd*)
-    build_bsd="yes"
-    ICONV_CFLAGS="-I/usr/local/include"
-    ICONV_LDFLAGS="-L/usr/local/lib -liconv"
-  ;;
-
-  *)
-    build_default="yes"
-    ;;
-esac
-
-case "$host" in
-  ppc-*-* | powerpc-*)
-    arch_ppc="yes"
-    arch_bundle="ppc"
-  ;;
-
-  i*86-*-*)
-    arch_x86="yes"
-    arch_bundle="intel"
-  ;;
-
-  x86_64-*-*)
-    arch_x86="yes"
-    arch_x86_64="yes"
-  ;;
-
-  *)
-  ;;
-esac
-
-if test "$build_darwin" = "yes"; then
-  if test "$arch_x86" = "yes"; then
-    DARWIN_ARCH="intel"
-  elif test "$arch_ppc" = "yes"; then
-    DARWIN_ARCH="ppc"
-  fi
-  AC_SUBST(DARWIN_ARCH)
-fi
+AS_IF([test "$build_bsd" = "yes"], [
+  ICONV_CFLAGS="-I/usr/local/include"
+  ICONV_LDFLAGS="-L/usr/local/lib -liconv"
+])
 
 # Used for universalchardet.
 AC_AGI_MDCPUCFG($host)
-
 
 AC_SUBST(build_bsd)
 AC_SUBST(build_linux)
@@ -128,11 +95,9 @@ AEGISUB_VERSION_DATA=aegisub_version_data
 AC_DEFINE_UNQUOTED(AEGISUB_VERSION_DATA, ["$AEGISUB_VERSION_DATA"], [Data path suffix.])
 AC_SUBST(AEGISUB_VERSION_DATA)
 
-
 # Name of aegisub binary.
 AEGISUB_COMMAND="aegisub-$AEGISUB_VERSION_MAJOR.$AEGISUB_VERSION_MINOR"
 AC_SUBST(AEGISUB_COMMAND)
-
 
 # Handle location of desktop files: http://freedesktop.org/wiki/Specifications/desktop-entry-spec
 AC_ARG_WITH(desktop-dir,
@@ -152,9 +117,7 @@ AC_SUBST(P_ICON)
 # Install prefix
 # If a user doesn't supply --prefix then it is set to NONE so we
 # set it to $ac_default_prefix if it hasn't been supplied.
-if test "$prefix" = "NONE"; then
-  prefix="$ac_default_prefix"
-fi
+AS_CASE([x$prefix], [xNONE | x], [prefix="$ac_default_prefix"], [])
 
 # Install prefix used by wxStandardPaths::SetInstallPrefix.
 AC_DEFINE_UNQUOTED([INSTALL_PREFIX], ["$prefix"], [Default install prefix, or --prefix.])
@@ -165,16 +128,14 @@ AC_ARG_WITH(build-credit,
             [use_build_credit="yes"])
 
 AC_MSG_CHECKING([whether BUILD_CREDIT has been set])
-if test "$use_build_credit" = "yes"; then
-  if test "$with_build_credit" = "yes" || test -z "$with_build_credit"; then
+AS_IF([test x$use_build_credit = xyes],
+  AS_IF([test x$with_build_credit = xyes || test -z "$with_build_credit"], [
     AC_MSG_FAILURE([You must set a value eg --with-build-credit=<username>])
-  else
+  ], [
     AC_MSG_RESULT([yes ($with_build_credit)])
     AC_DEFINE_UNQUOTED([BUILD_CREDIT], ["$with_build_credit"], [Build credit supplied in application title using --with-build-credit=])
-  fi
-else
-  AC_MSG_RESULT([no])
-fi
+  ]),
+  [AC_MSG_RESULT([no])])
 
 ####################
 # Check for programs
@@ -199,36 +160,35 @@ AM_MAINTAINER_MODE
 # XXX: This needs to be fixed to handle mixed revisions properly
 #      There is probably a better way to handle it as well...
 AC_MSG_CHECKING([for svn version])
-if test -d "$srcdir/.svn"; then
+AS_IF([test -d "$srcdir/.svn"], [
   SVN_REVISION=`svnversion $srcdir | sed "s/\(^@<:@0-9@:>@*\).*/\1/"`
   `echo $SVN_REVISION > $srcdir/svn_revision`
   AC_MSG_RESULT([$SVN_REVISION from "svnversion $srcdir"])
-elif test -f "$srcdir/svn_revision"; then
+], [test -f "$srcdir/svn_revision"], [
   SVN_REVISION=`cat $srcdir/svn_revision`
   AC_MSG_RESULT([$SVN_REVISION from "$srcdir/svn_revision"])
-else
+], [
   AC_MSG_RESULT([not found])
   AC_MSG_FAILURE([unable to get SVN Revision from $srcdir/svn_revision or 'svnversion $srcdir'])
-fi
+])
 
 # This is required in order for the config file to work correctly.
 AC_DEFINE_UNQUOTED([BUILD_SVN_REVISION], [$SVN_REVISION], [SVN Revision number, used for config.dat and version.cpp])
 
 
 # Release information.
-if test "aegisub_FINAL_RELEASE" = "1"; then
+AS_IF([test "aegisub_FINAL_RELEASE" = "1"], [
   AC_DEFINE([FINAL_RELEASE], [aegisub_FINAL_RELEASE], [This is only set to 1 for a RELEASE VERSION.])
   BUNDLE_STRING="Aegisub"
   DMG_STRING="Aegisub-${PACKAGE_VERSION}-${arch_bundle}"
-else
+], [
   PACKAGE_STRING="${PACKAGE_STRING}-dev-r${SVN_REVISION}"
   PACKAGE_VERSION="${PACKAGE_VERSION}-dev-r${SVN_REVISION}"
   VERSION="${VERSION}-dev-r${SVN_REVISION}"
 
   BUNDLE_STRING="Aegisub-${PACKAGE_VERSION}"
   DMG_STRING="Aegisub-${PACKAGE_VERSION}-${arch_bundle}"
-fi
-
+])
 
 # Used in version.cpp
 AC_MSG_CHECKING([for build date])
@@ -240,12 +200,11 @@ AC_SUBST(BUILD_DATE)
 AC_SUBST(BUNDLE_STRING)
 AC_SUBST(DMG_STRING)
 
-
 ###################################################
 # Check for pthreads and setup variables / compiler
 ###################################################
 ACX_PTHREAD([], [AC_MSG_FAILURE([You must have working pthreads.])])
-CC="$PTHREAD_CC";
+CC="$PTHREAD_CC"
 
 AC_AGI_COMPILE([pthread_rwlock_*], [pthread_rwlock], [$PTHREAD_CFLAGS], [$PTHREAD_LIBS],[
 #include <pthread.h>
@@ -256,17 +215,15 @@ int main(void) {
   return 0;
 }])
 
-if test "$agi_cv_with_pthread_rwlock" = "yes"; then
-  AC_DEFINE(HAVE_RWLOCK,1,[define if the compiler implements pthread_rwlock_*])
-fi
+AS_IF([test x$agi_cv_with_pthread_rwlock = xyes],
+      [AC_DEFINE(HAVE_RWLOCK,1,[define if the compiler implements pthread_rwlock_*])])
 
 ######################
 # Check compiler flags
 ######################
-AC_ARG_ENABLE(compiler-flags, [  --disable-compiler-flags
-                          Disable *all* additional compiler flags. [no]])
+AC_ARG_ENABLE(compiler-flags, AS_HELP_STRING([--disable-compiler-flags],[Disable *all* additional compiler flags. [no]]))
 
-if test "$enable_compiler_flags" != "no"; then
+AS_IF([test x$enable_compiler_flags != xno], [
   AC_C_FLAG([-Wall])
   AC_C_FLAG([-Wextra],[AC_C_FLAG([-W])])
   AC_C_FLAG([-Wno-unused-parameter])
@@ -280,15 +237,14 @@ if test "$enable_compiler_flags" != "no"; then
   AC_CXX_FLAG([-pipe])
 
   # -O* messes with debugging.
-  if test "$enable_debug" = "yes"; then
-    opt_flag="-O0"
-  else
-    opt_flag="-O2"
-  fi
-
-  AC_C_FLAG([$opt_flag])
-  AC_CXX_FLAG([$opt_flag])
-fi
+  AS_IF([test x$enable_debug = xyes], [
+    AC_C_FLAG([-O0])
+    AC_CXX_FLAG([-O0])
+  ], [
+    AC_C_FLAG([-O2])
+    AC_CXX_FLAG([-O2])
+  ])
+])
 
 ######################################
 # Check Headers / Features / Libraries
@@ -305,9 +261,8 @@ AC_AGI_COMPILE([pragma once], [pragma_once], [], [],[
 int main(void) {}
 ])
 
-if test "$agi_cv_pragma_once" = "no"; then
-    AC_MSG_FAILURE([Aegisub requires #pragma once to work correctly.])
-fi
+AS_IF([test x$agi_cv_pragma_once = xno],
+      [AC_MSG_FAILURE([Aegisub requires #pragma once to work correctly.])])
 
 AC_CHECK_HEADER([wchar.h],,[AC_MSG_FAILURE([aegisub requires wide character support])])
 
@@ -321,18 +276,15 @@ AC_CHECK_SIZEOF([time_t])
 # X
 ##########################
 AC_PATH_XTRA
-if test "$no_x" = "yes" && test "$build_darwin" != "yes"; then
-    AC_MSG_FAILURE([You must have a working copy of X installed.])
-fi
+AS_IF([test x$no_x = xyes && test x$build_darwin != xyes],
+      [AC_MSG_FAILURE([You must have a working copy of X installed.])])
 
 #########
 ## OpenGL
 #########
 AX_CHECK_GL
 
-if test "$no_gl" = "yes"; then
-    AC_MSG_FAILURE([Aegisub requires GL support.])
-fi
+AS_IF([test x$no_gl = xyes], [AC_MSG_FAILURE([Aegisub requires GL support.])])
 
 AC_SUBST(GL_CFLAGS)
 AC_SUBST(GL_LIBS)
@@ -342,17 +294,6 @@ AC_SUBST(GL_LIBS)
 #######
 PKG_CHECK_MODULES(LIBCURL, libcurl >= curl_required_version,,
   [AC_MSG_FAILURE([aegisub requires >= cURL curl_required_version])])
-
-AC_AGI_COMPILE([cURL], [curl], [$LIBCURL_CFLAGS], [$LIBCURL_LIBS],[
-#include <curl/curl.h>
-int main(void) {
-  CURL *handle = curl_easy_init();
-}])
-
-if test "$agi_cv_with_curl" = "no"; then
-    AC_MSG_FAILURE([Please install a working cURL library.])
-fi
-
 
 ###########
 ## Freetype
@@ -374,13 +315,13 @@ PKG_CHECK_MODULES(FONTCONFIG, fontconfig >= fontconfig_required_version,
 AC_ARG_VAR([ICONV_CFLAGS], [CFLAGS to use for iconv []])
 AC_ARG_VAR([ICONV_LDFLAGS], [LDFLAGS to use for iconv [-liconv]])
 
-if test -z "$ICONV_LDFLAGS"; then
+AS_IF([test -z "$ICONV_LDFLAGS"], [
   OLD_LIBS="$LIBS"
   LIBS=""
   AC_SEARCH_LIBS([iconv_open], [iconv])
   ICONV_LDFLAGS="$LIBS"
   LIBS="$OLD_LIBS"
-fi
+])
 
 AC_AGI_COMPILE([iconv], [iconv], [$ICONV_CFLAGS], [$ICONV_LDFLAGS],[
 #include <iconv.h>
@@ -394,9 +335,7 @@ int main(void) {
 AC_SUBST(ICONV_LDFLAGS)
 AC_SUBST(ICONV_CFLAGS)
 
-if test "$agi_cv_with_iconv" = "no" ; then
-  AC_MSG_FAILURE([Please install a working iconv library.])
-fi
+AS_IF([test x$agi_cv_with_iconv = xno], [AC_MSG_FAILURE([Please install a working iconv library.])])
 
 AC_AGI_COMPILE([iconv (const)], [iconv_const], [$ICONV_CFLAGS], [$ICONV_LDFLAGS],[
 #include <iconv.h>
@@ -409,9 +348,8 @@ int main(void) {
   return 0;
 } ])
 
-if test "$agi_cv_with_iconv_const" = "yes"; then
-  AC_DEFINE(AGI_ICONV_CONST, 1, [Enable if iconv expects the in argument to be const])
-fi
+AS_IF([test x$agi_cv_with_iconv_const = xyes],
+      [AC_DEFINE(AGI_ICONV_CONST, 1, [Enable if iconv expects the in argument to be const])])
 
 ###############
 # Audio Players
@@ -428,16 +366,14 @@ AC_ARG_VAR([ALSA_LDFLAGS], [LDFLAGS to use for ALSA [-lasound -lrt]])
 
 ALSA_LDFLAGS=${ALSA_LDFLAGS:--lasound -lrt}
 
-if test "$with_alsa" == "no"; then
-  alsa_disabled="(disabled)"
-else
-  AC_CHECK_LIB([asound], [snd_pcm_open], [with_alsa="yes"], [with_alsa="no"], $ALSA_LDFLAGS)
-fi
+AS_IF([test x$with_alsa = xno],
+      [alsa_disabled="(disabled)"],
+      [AC_CHECK_LIB([asound], [snd_pcm_open], [with_alsa="yes"], [with_alsa="no"], $ALSA_LDFLAGS)])
 
-if test "$with_alsa" != "no"; then
+AS_IF([test x$with_alsa = xyes], [
   AC_DEFINE(WITH_ALSA, 1, [Enable ALSA Support])
   found_audio_player="yes"
-fi
+])
 
 AC_SUBST(ALSA_CFLAGS)
 AC_SUBST(ALSA_LDFLAGS)
@@ -450,16 +386,14 @@ AC_ARG_WITH(portaudio,
             AS_HELP_STRING([--without-portaudio],
                            [build without PortAudio v19 audio provider [auto]]))
 
-if test "$with_portaudio" == "no"; then
-  portaudio_disabled="(disabled)"
-else
-  PKG_CHECK_MODULES(PORTAUDIO, portaudio-2.0 >= portaudio_required_version, [with_portaudio="yes"], [with_portaudio="no"])
-fi
+AS_IF([test x$with_portaudio = xno],
+      [portaudio_disabled="(disabled)"],
+      [PKG_CHECK_MODULES(PORTAUDIO, portaudio-2.0 >= portaudio_required_version, [with_portaudio="yes"], [with_portaudio="no"])])
 
-if test "$with_portaudio" = "yes"; then
+AS_IF([test x$with_portaudio = xyes], [
   AC_DEFINE(WITH_PORTAUDIO, 1, [Enable PortAudio v19 support])
   found_audio_player="yes"
-fi
+])
 
 AC_SUBST(with_portaudio)
 
@@ -470,16 +404,14 @@ AC_ARG_WITH(pulseaudio,
             AS_HELP_STRING([--without-pulseaudio],
                            [build without PulseAudio audio provider [auto]]))
 
-if test "$with_pulseaudio" == "no"; then
-  pulseaudio_disabled="(disabled)"
-else
-  PKG_CHECK_MODULES(LIBPULSE, libpulse >= pulseaudio_required_version, [with_pulseaudio="yes"], [with_pulseaudio="no"])
-fi
+AS_IF([test x$with_pulseaudio = xno],
+      [pulseaudio_disabled="(disabled)"],
+      [PKG_CHECK_MODULES(LIBPULSE, libpulse >= pulseaudio_required_version, [with_pulseaudio="yes"], [with_pulseaudio="no"])])
 
-if test "$with_pulseaudio" = "yes"; then
+AS_IF([test x$with_pulseaudio = xyes], [
   AC_DEFINE(WITH_PULSEAUDIO, 1, [Enable PulseAudio support])
   found_audio_player="yes"
-fi
+])
 
 AC_SUBST(with_pulseaudio)
 
@@ -490,19 +422,17 @@ AC_ARG_WITH(openal,
             AS_HELP_STRING([--without-openal],
                            [build without OpenAL audio provider [auto]]))
 
-if test "$build_darwin" = "yes"; then
+AS_IF([test x$build_darwin = xyes], [
   OPENAL_LIBS="-framework OpenAL"
   OPENAL_CFLAGS=""
   AC_SUBST(OPENAL_LIBS)
   AC_SUBST(OPENAL_CFLAGS)
   with_openal="yes"
-elif test "$with_openal" == "no"; then
-  openal_disabled="(disabled)"
-else
-  PKG_CHECK_MODULES(OPENAL, openal >= 0.0.8, [with_openal=yes], [with_openal=no])
-fi
+],
+  [test x$with_openal = xno], [openal_disabled="(disabled)"],
+  [PKG_CHECK_MODULES(OPENAL, openal >= 0.0.8, [with_openal=yes], [with_openal=no])])
 
-if test "$with_openal" != "no"; then
+AS_IF([test x$with_openal != xno], [
   AC_AGI_COMPILE([OpenAL], [openal], [$OPENAL_CFLAGS], [$OPENAL_LIBS],[
 #if defined(__APPLE__)
 #include <OpenAL/AL.h>
@@ -518,17 +448,17 @@ int main(void) {
   if (!context) return 1;
   return 0;
 } ])
-fi
+])
 
-if test "$agi_cv_with_openal" = "no" && test "$with_openal" = "yes"; then
-  AC_MSG_WARN([OpenAL detected, but it doesn't work...])
+AS_IF([test x$agi_cv_with_openal = xno && test x$with_openal = xyes], [
+  AC_MSG_WARN([OpenAL detected, but it doesn''t work...])
   with_openal="no"
-fi
+])
 
-if test "$agi_cv_with_openal" = "yes" && test "$with_openal" = "yes"; then
+AS_IF([test x$agi_cv_with_openal = xyes && test x$with_openal = xyes], [
   found_audio_player="yes"
   AC_DEFINE(WITH_OPENAL, 1, [Enable OpenAL support])
-fi
+])
 
 AC_SUBST(with_openal)
 
@@ -539,21 +469,19 @@ AC_ARG_WITH(oss,
             AS_HELP_STRING([--without-oss],
                            [build without OSS audio provider [auto]]))
 
-if test "$with_oss" == "no"; then
-  oss_disabled="(disabled)"
-else
-  if test -f "/etc/oss.conf"; then
+AS_IF([test x$with_oss = xno], [oss_disabled="(disabled)"], [
+  AS_IF([test -f "/etc/oss.conf"], [
     . /etc/oss.conf
     CPPFLAGS="$CPPFLAGS -I${OSSLIBDIR}/include/sys"
-  fi
+  ])
   AC_CHECK_HEADERS([soundcard.h sys/soundcard.h], [with_oss="yes"], [with_oss="no"])
   # XXX: maybe check if OSS works
-fi
+])
 
-if test "$with_oss" != "no"; then
+AS_IF([test x$with_oss = xyes], [
   found_audio_player="yes"
   AC_DEFINE(WITH_OSS, 1, [Enable OSS support])
-fi
+])
 
 AC_SUBST(with_oss)
 
@@ -564,15 +492,11 @@ AC_ARG_WITH(fftw,
             AS_HELP_STRING([--without-fftw],
                            [build without fftw support [auto]]))
 
-if test "$with_fftw" == "no"; then
-  fftw_disabled="(disabled)"
-else
-  PKG_CHECK_MODULES(FFTW3, fftw3 >= fftw_required_version, [with_fftw="yes"], [with_fftw="no"])
-fi
-if test "$with_fftw" != "no"; then
-  AC_DEFINE(WITH_FFTW, 1, [Enable fftw support])
-fi
+AS_IF([test x$with_fftw = xno],
+      [fftw_disabled="(disabled)"],
+      [PKG_CHECK_MODULES(FFTW3, fftw3 >= fftw_required_version, [with_fftw="yes"], [with_fftw="no"])])
 
+AS_IF([test x$with_fftw = xyes], [AC_DEFINE(WITH_FFTW, 1, [Enable fftw support])])
 AC_SUBST(with_fftw)
 
 #########################
@@ -582,15 +506,11 @@ AC_ARG_WITH(ffms,
             AS_HELP_STRING([--without-ffms],
                            [build without ffms2 A/V provider [auto]]))
 
-if test "$with_ffms" == "no"; then
-  ffms_disabled="(disabled)"
-else
-  PKG_CHECK_MODULES(FFMS, ffms2 >= ffms_required_version, [with_ffms="yes"], [with_ffms="no"])
-fi
-if test "$with_ffms" != "no"; then
-  AC_DEFINE(WITH_FFMPEGSOURCE, 1, [Enable FFMS2 support])
-fi
+AS_IF([test x$with_ffms = xno],
+      [ffms_disabled="(disabled)"],
+      [PKG_CHECK_MODULES(FFMS, ffms2 >= ffms_required_version, [with_ffms="yes"], [with_ffms="no"])])
 
+AS_IF([test x$with_ffms = xyes], AC_DEFINE(WITH_FFMPEGSOURCE, 1, [Enable FFMS2 support]))
 AC_SUBST(with_ffms)
 
 ###################
@@ -600,15 +520,11 @@ AC_ARG_WITH(libass,
             AS_HELP_STRING([--without-libass],
                            [build without libass support [auto]]))
 
-if test "$with_libass" == "no"; then
-  libass_disabled="(disabled)"
-else
-  PKG_CHECK_MODULES(LIBASS, libass >= libass_required_version, [with_libass="yes"], [with_libass="no"])
-fi
-if test "$with_libass" != "no"; then
-  AC_DEFINE(WITH_LIBASS, 1, [Enable libass support])
-fi
+AS_IF([test x$with_libass = xno],
+      [libass_disabled="(disabled)"],
+      [PKG_CHECK_MODULES(LIBASS, libass >= libass_required_version, [with_libass="yes"], [with_libass="no"])])
 
+AS_IF([test x$with_libass = xyes], AC_DEFINE(WITH_LIBASS, 1, [Enable libass support]))
 AC_SUBST(with_libass)
 
 ###########
@@ -618,16 +534,11 @@ AC_ARG_WITH(hunspell,
             AS_HELP_STRING([--without-hunspell],
                            [build without hunspell support [auto]]))
 
-if test "$with_hunspell" == "no"; then
-  hunspell_disabled="(disabled)"
-else
-  PKG_CHECK_MODULES(HUNSPELL, hunspell >= 1.2.0, [with_hunspell="yes"], [with_hunspell="no"])
-fi
+AS_IF([test x$with_hunspell = xno],
+      [hunspell_disabled="(disabled)"],
+      [PKG_CHECK_MODULES(HUNSPELL, hunspell >= 1.2.0, [with_hunspell="yes"], [with_hunspell="no"])])
 
-if test "$with_hunspell" = "yes"; then
-  AC_DEFINE(WITH_HUNSPELL, 1, [Enable Hunspell support.])
-fi
-
+AS_IF([test x$with_hunspell = xyes], AC_DEFINE(WITH_HUNSPELL, 1, [Enable Hunspell support.]))
 AC_SUBST(with_hunspell)
 
 ############
@@ -641,19 +552,15 @@ AC_ARG_VAR([LUA_CFLAGS], [CFLAGS to use for LUA 5.1 [autodetect]])
 AC_ARG_VAR([LUA_LDFLAGS], [LDFLAGS to use for LUA 5.1 [autodetect]])
 AC_ARG_VAR([LUA_LIBDIR], [Location of LUA 5.1 library. [none]])
 
-if test -z "$LUA_CFLAGS"; then
-  AGI_FIND_HEADER([LUA], [lua.hpp], [/usr/include/lua5.1 /usr/include/lua51 /usr/local/include/lua51 /usr/local/include/lua5.1 /usr/include /usr/local/include])
-fi
+AS_IF([test -z "$LUA_CFLAGS"],
+  AGI_FIND_HEADER([LUA], [lua.hpp], [/usr/include/lua5.1 /usr/include/lua51 /usr/local/include/lua51 /usr/local/include/lua5.1 /usr/include /usr/local/include]))
 
-if test -z "$LUA_LDFLAGS"; then
-  AGI_FIND_LIB([LUA], [lua51 lua-5.1 lua5.1 lua], [$LUA_LIBDIR])
-fi
+AS_IF([test -z "$LUA_LDFLAGS"],
+  AGI_FIND_LIB([LUA], [lua51 lua-5.1 lua5.1 lua], [$LUA_LIBDIR]))
 
 aegisub_save_LIBS="$LIBS"
 LIBS="$LUA_LDFLAGS"
-if test "$with_lua" == "no"; then
-  lua_disabled="(disabled)"
-else
+AS_IF([test x$with_lua = xno], [lua_disabled="(disabled)"], [
   AC_AGI_COMPILE([Lua 5.1 (auto4)], [lua], [$LUA_CFLAGS], [],[
 #include <lua.hpp>
 
@@ -663,16 +570,11 @@ int main () {
   int res = lua_objlen(L, -1) == 4;
   lua_close(L);
   return !res;
-}])
-fi
+}])])
 LIBS="$aegisub_save_LIBS"
 
-if test "$agi_cv_with_lua" = "yes"; then
-  with_auto4_lua="yes"
-  AC_DEFINE(WITH_AUTO4_LUA, 1, [Enable Automation (auto4), requires lua])
-else
-  with_auto4_lua="no"
-fi
+with_auto4_lua=${agi_cv_with_lua:-no}
+AS_IF([test x$with_auto4_lua = xyes], AC_DEFINE(WITH_AUTO4_LUA, 1, [Enable Automation (auto4), requires lua]))
 
 AC_SUBST(with_auto4_lua)
 AC_SUBST(LUA_CFLAGS)
@@ -687,14 +589,13 @@ WX_DEBUG=$DEBUG
 WX_UNICODE=$UNICODE
 WX_CONFIG_CHECK([wx_required_version],,,[std,gl,stc],[$WXCONFIG_FLAGS])
 
-if test "$have_wxconfig" = "no"; then
-  AC_MSG_FAILURE([wxWidgets detection failed, please set --with-wx* or add the libraries to your LDFLAGS, CXX/CFLAGS.])
-fi
+AS_IF([test x$have_wxconfig = xno],
+  AC_MSG_FAILURE([wxWidgets detection failed, please set --with-wx* or add the libraries to your LDFLAGS, CXX/CFLAGS.]))
 
 AC_ARG_ENABLE(slow-wx-checks,
               AS_HELP_STRING([--disable-slow-wx-checks],[Disable slow-running checks for wx components.]))
 
-if test "$enable_slow_wx_checks" != "no"; then
+AS_IF([test x$enable_slow_wx_checks != xno], [
   AC_AGI_LINK([wxWidgets OpenGL support], [wxopengl], [wx/glcanvas.h], [$GL_CFLAGS $WX_CFLAGS], [$GL_LIBS $WX_LIBS],[
 #include <wx/glcanvas.h>
 int main(void) {
@@ -708,29 +609,19 @@ int main(void) {
   wxStyledTextCtrl *canvas;
   return 0;
 } ])
-fi
+])
 
-if test "$with_agi_cv_wxopengl" = "no"; then
-  AC_MSG_FAILURE([wxWidgets OpenGL support missing])
-fi
-
-if test "$with_agi_cv_wxstc" = "no"; then
-  AC_MSG_FAILURE([wxWidgets StyledTextCtrl support missing])
-fi
+AS_IF([test x$with_agi_cv_wxopengl = xno], AC_MSG_FAILURE([wxWidgets OpenGL support missing]))
+AS_IF([test x$with_agi_cv_wxstc = xno], AC_MSG_FAILURE([wxWidgets StyledTextCtrl support missing]))
 
 
 ############################
 # Precompiled Header Support
-# Only works with gcc!
+# Only works with gcc! (and clang)
 ############################
 AC_MSG_CHECKING([whether to use precompiled headers])
 AC_ARG_ENABLE(gcc-prec, AS_HELP_STRING([--disable-gcc-prec],[disable GCC precompiled headers]))
-if test "$enable_gcc_prec" != "no"; then
-  enable_gcc_prec="yes"
-  AC_MSG_RESULT([yes])
-else
-  AC_MSG_RESULT([no])
-fi
+AC_MSG_RESULT([${enable_gcc_prec:=no}])
 AC_SUBST(enable_gcc_prec)
 
 
@@ -739,13 +630,12 @@ AC_SUBST(enable_gcc_prec)
 # This is added last so it doesn't slow down configure
 # If you want it earlier add it to your CXXFLAGS.
 ######################################################
-
 AC_ARG_VAR([DEBUG_FLAGS], [Debug flag to use with --enable-debug [-g]])
 
 AC_MSG_CHECKING([whether to turn on debugging])
 AC_ARG_ENABLE(debug, AS_HELP_STRING([--enable-debug],[enable debugging [no]]))
 
-if test "$enable_debug" = "yes"; then
+AS_IF([test x$enable_debug = xyes], [
   DEBUG_FLAGS=${DEBUG_FLAGS:--g}
 
   AC_MSG_RESULT([yes ($DEBUG_FLAGS)])
@@ -753,30 +643,24 @@ if test "$enable_debug" = "yes"; then
 
   # This turns on some internal (to aegisub) debugging features.
   # A debug version of wxWidgets is required.
-  if $WX_CONFIG_PATH --debug; then
-    AC_CXX_FLAG([-D_DEBUG])
-  fi
-else
+  AS_IF([$WX_CONFIG_PATH --debug], AC_CXX_FLAG([-D_DEBUG]))
+], [
   DEBUG_FLAGS=""
   enable_debug="no"
   AC_MSG_RESULT([no])
-fi
+])
 AC_SUBST(DEBUG_FLAGS)
 
-if test "$enable_debug" = "yes"; then
-  PACKAGE_DEBUG="-debug"
-fi
+AS_IF([test x$enable_debug = xyes], [PACKAGE_DEBUG="-debug"])
 AC_SUBST(PACKAGE_DEBUG)
 
 AC_MSG_CHECKING([whether to use exception handling in debug mode])
 AC_ARG_ENABLE(debug-exceptions, AS_HELP_STRING([--enable-debug-exceptions],[enable exception handling in debug mode [no]]))
+AC_MSG_RESULT([${enabled_debug_exceptions:=no}])
 
-if test "$enable_debug_exceptions" = "yes"; then
-  AC_DEFINE(WITH_EXCEPTIONS, 1, [Enable exception handling in debug mode. (--enable-debug)  This is always enabled when debug mode is off.])
-  AC_MSG_RESULT([yes])
-else
-  AC_MSG_RESULT([no])
-fi
+AS_IF([test x$enable_debug_exceptions = xyes],
+      [AC_DEFINE(WITH_EXCEPTIONS, 1,
+       [Enable exception handling in debug mode. (--enable-debug)  This is always enabled when debug mode is off.])])
 
 ###########
 # Profiling
@@ -785,14 +669,14 @@ AC_ARG_VAR([PROFILE_FLAGS], [Profile flag(s) to use with --enable-profile [-pg]]
 
 AC_MSG_CHECKING([whether to turn on profiling])
 AC_ARG_ENABLE(profile, AS_HELP_STRING([--enable-profile],[enable profiling [no]]))
-if test "$enable_profile" = "yes"; then
+AS_IF([test x$enable_profile = xyes], [
   PROFILE_FLAGS=${PROFILE_FLAGS:--pg}
   AC_MSG_RESULT([yes ($PROFILE_FLAGS)])
   CFLAGS="$PROFILE_FLAGS $CFLAGS"
-else
+], [
   enable_profile="no"
   AC_MSG_RESULT([no])
-fi
+])
 
 
 ######
@@ -804,17 +688,17 @@ AC_ARG_VAR([GCOV_LDFLAGS], [gcov ldflag(s) to use with --enable-gcov [-lgcov]])
 AC_MSG_CHECKING([whether to turn on gcov])
 AC_ARG_ENABLE(gcov, AS_HELP_STRING([--enable-gcov],[enable gcov [no]]))
 
-if test "$enable_gcov" = "yes"; then
+AS_IF([test x$enable_gcov = xyes], [
   GCOV_CFLAGS=${GCOV_CLFAGS:--fprofile-arcs -ftest-coverage}
   GCOV_LDFLAGS=${GCOV_LDFLAGS:--lgcov}
 
-  AC_MSG_RESULT([yes ($GCOV_FLAGS)])
+  AC_MSG_RESULT([yes ($GCOV_CFLAGS) ($GCOV_LDFLAGS)])
   CFLAGS="$CFLAGS $GCOV_CFLAGS"
   LDFLAGS="$LDFLAGS $GCOV_LDFLAGS"
-else
+], [
   enable_gcov="no"
   AC_MSG_RESULT([no])
-fi
+])
 
 ################
 # Electric Fence
@@ -823,13 +707,13 @@ AC_ARG_VAR([EFENCE_LDFLAGS], [Electric Fence ldflag(s) to use with --enable-prof
 
 AC_MSG_CHECKING([whether to turn on Electric Fence])
 AC_ARG_ENABLE(efence, AS_HELP_STRING([--enable-efence],[enable Electric Fence [no]]))
-if test "$enable_efence" = "yes"; then
+AS_IF([test x$enable_efence = xyes], [
   EFENCE_LDFLAGS=${EFENCE_LDFLAGS:--lefence}
   AC_MSG_RESULT([yes ($EFENCE_LDFLAGS)])
-else
+], [
   enable_efence="no"
   AC_MSG_RESULT([no])
-fi
+])
 AC_SUBST(EFENCE_LDFLAGS)
 
 ##########
@@ -840,32 +724,26 @@ AC_ARG_VAR([CCMALLOC_LDFLAGS], [ccmalloc ldflag(s) to use with --enable-ccmalloc
 
 AC_MSG_CHECKING([whether to turn on ccmalloc])
 AC_ARG_ENABLE(ccmalloc, AS_HELP_STRING([--enable-ccmalloc],[enable ccmalloc [no]]))
-if test "$enable_ccmalloc" = "yes"; then
+AS_IF([test x$enable_ccmalloc = xyes], [
   CCMALLOC_LIBS=${CCMALLOC_LIBS:-$prefix/lib/ccmalloc-c++.o}
   CCMALLOC_LDFLAGS=${CCMALLOC_LDFLAGS:--lccmalloc}
   AC_MSG_RESULT([yes ($CCMALLOC_LIBS $CCMALLOC_LDFLAGS)])
-else
+], [
   enable_ccmalloc="no"
   AC_MSG_RESULT([no])
-fi
+])
 AC_SUBST(CCMALLOC_LDFLAGS)
 AC_SUBST(CCMALLOC_LIBS)
 
-if test "$enable_efence" = "yes" && test "$enable_ccmalloc" = "yes"; then
-  AC_MSG_FAILURE([Please enable Electric Fence _or_ ccmalloc otherwise strange things will happen.])
-fi
+AS_IF([test x$enable_efence = xyes && test x$enable_ccmalloc = xyes],
+      [AC_MSG_FAILURE([Please enable Electric Fence _or_ ccmalloc otherwise strange things will happen.])])
 
 ########
 # ccache
 ########
 AC_MSG_CHECKING([whether to enable ccache])
 AC_ARG_ENABLE(ccache, AS_HELP_STRING([--enable-ccache],[enable ccache [no]]))
-if test "$enable_ccache" = "yes"; then
-  AC_MSG_RESULT([yes])
-else
-  enable_ccache="no"
-  AC_MSG_RESULT([no])
-fi
+AC_MSG_RESULT(${enable_ccache:=no})
 AC_SUBST(enable_ccache)
 
 ##############################
@@ -873,16 +751,13 @@ AC_SUBST(enable_ccache)
 ##############################
 AM_GNU_GETTEXT([external])
 
-if test "$build_darwin" = "yes"; then
-  GETTEXT_PACKAGE="aegisub"
-else
-  GETTEXT_PACKAGE="aegisub${AEGISUB_VERSION_MAJOR}${AEGISUB_VERSION_MINOR}"
-fi
+AS_IF([test x$build_darwin = xyes],
+      [GETTEXT_PACKAGE="aegisub"],
+      [GETTEXT_PACKAGE="aegisub${AEGISUB_VERSION_MAJOR}${AEGISUB_VERSION_MINOR}"])
 
 AC_SUBST(GETTEXT_PACKAGE)
 AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE, "$GETTEXT_PACKAGE",
                    [The basename for our gettext translation domains.])
-
 
 ####################################################################
 # Default settings for Providers/Players
@@ -894,23 +769,14 @@ AC_ARG_WITH(player-audio,
                            [Default Audio Player [Linux/ALSA, Darwin/OpenAL, 1:*/OSS, 2:*/PortAudio]]))
 
 # Default audio player.
-if ! test -z "$with_player_audio"; then
-  default_player_audio="$with_player_audio"
-else
-  if test "$build_linux" = "yes" && test "$with_alsa" = "yes"; then
-    default_player_audio="alsa"
-  elif test "$build_darwin" = "yes" && test "$with_openal" = "yes"; then
-    default_player_audio="openal"
-  elif test "$with_portaudio" = "yes"; then
-    default_player_audio="portaudio"
-  elif test "$with_oss" = "yes"; then
-    default_player_audio="oss"
-  elif test "$with_pulseaudio" = "yes"; then
-    default_player_audio="pulseaudio"
-  fi
-fi
+AS_IF([test -z "$with_player_audio"], [
+  AS_IF([test x$build_linux = xyes && test x$with_alsa = xyes],    [default_player_audio="alsa"],
+        [test x$build_darwin = xyes && test x$with_openal = xyes], [default_player_audio="openal"],
+        [test x$with_portaudio = xyes],                            [default_player_audio="portaudio"],
+        [test x$with_oss = xyes],                                  [default_player_audio="oss"],
+        [test x$with_pulseaudio = xyes],                           [default_player_audio="pulseaudio"])],
+  [default_player_audio="$with_player_audio"])
 AC_DEFINE_UNQUOTED([DEFAULT_PLAYER_AUDIO], ["$default_player_audio"], [Default audio player.])
-
 
 # Set some friendly strings if some of the above aren't detected.
 default_player_audio=${default_player_audio:-NONE}
@@ -929,8 +795,7 @@ Makefile.inc
 
 AC_OUTPUT
 
-if test -z "$found_audio_player"; then
-  AC_MSG_NOTICE([
+AS_IF([test -z "$found_audio_player"], AC_MSG_NOTICE([
 
 ***********************************************************************
 * No supported audio player interface was found on your system.
@@ -943,11 +808,9 @@ if test -z "$found_audio_player"; then
 *  - PortAudio (version 19 only)
 *    * http://www.portaudio.com/
 ***********************************************************************
-  ])
-fi
+]))
 
-if test "$with_ffms" != "yes"; then
-  AC_MSG_NOTICE([
+AS_IF([test x$with_ffms != xyes], [AC_MSG_NOTICE([
 
 ***********************************************************************
 * No supported video/audio reader interface was found on your system.
@@ -960,8 +823,7 @@ if test "$with_ffms" != "yes"; then
 *  - FFMS2
 *    * http://code.google.com/p/ffmpegsource/
 ***********************************************************************
-  ])
-fi
+])])
 
 AC_MSG_RESULT([
 Configure settings
@@ -995,5 +857,4 @@ Subtitle Providers:
 Misc Packages
   Hunspell:              $with_hunspell $hunspell_disabled
   FFTW3:                 $with_fftw $fftw_disabled
-]);
-
+])
