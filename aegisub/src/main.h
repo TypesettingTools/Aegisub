@@ -126,6 +126,10 @@ class AegisubApp: public wxApp {
 	// our ticket to catch exceptions happening in event handlers.
 	void HandleEvent(wxEvtHandler *handler, wxEventFunction func, wxEvent& event) const;
 
+	/// Top-level event filter to enable propagation of key events, which we
+	/// need for our hotkeys to work correctly
+	int FilterEvent(wxEvent& event);
+
 public:
 	/// DOCME
 	AegisubLocale locale;
