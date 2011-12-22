@@ -221,7 +221,7 @@ else
 fi
 
 # This is required in order for the config file to work correctly.
-AC_DEFINE_UNQUOTED([BUILD_SVN_REVISION], [$SVN_REVISION], [SVN Revision number, used for config.dat and verison.cpp])
+AC_DEFINE_UNQUOTED([BUILD_SVN_REVISION], [$SVN_REVISION], [SVN Revision number, used for config.dat and version.cpp])
 
 
 # Release information.
