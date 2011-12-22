@@ -71,7 +71,6 @@ class DialogAttachments : public wxDialog {
 
 public:
 	DialogAttachments(wxWindow *parent, AssFile *ass);
-	~DialogAttachments();
 
 	DECLARE_EVENT_TABLE()
 };

@@ -119,55 +119,6 @@ void DialogAttachments::UpdateList() {
 	}
 }
 
-DialogAttachments::~DialogAttachments() {
-	// Remove empty attachments sections from the file
-
-	std::list<AssEntry*>::iterator cur = ass->Line.end();
-	--cur;
-
-	bool found_attachments = false;
-	bool removed_any = false;
-	wxString last_section_name;
-
-	while (cur != ass->Line.begin()) {
-		if (!((*cur)->group == "[Fonts]" || (*cur)->group == "[Graphics]"))
-			break;
-
-		if ((*cur)->GetEntryData() == "[Fonts]" || (*cur)->GetEntryData() == "[Graphics]") {
-			if (found_attachments) {
-				--cur;
-				continue;
-			}
-			// found section heading with no attachments in, remove it
-			wxString delgroup = (*cur)->group;
-			std::list<AssEntry*>::iterator di = cur;
-			while (++di != ass->Line.end() && (*di)->group == delgroup) {
-				delete *di;
-				ass->Line.erase(di);
-				di = cur;
-			}
-			di = cur;
-			--cur;
-			delete *di;
-			ass->Line.erase(di);
-			removed_any = true;
-			continue;
-		}
-
-		if (last_section_name != (*cur)->group)
-			found_attachments = false;
-		if (dynamic_cast<AssAttachment*>(*cur) != 0)
-			found_attachments = true;
-		last_section_name = (*cur)->group;
-
-		--cur;
-	}
-
-	if (removed_any) {
-		ass->Commit(_("remove empty attachments sections"), AssFile::COMMIT_ATTACHMENT);
-	}
-}
-
 BEGIN_EVENT_TABLE(DialogAttachments,wxDialog)
 	EVT_BUTTON(BUTTON_ATTACH_FONT,DialogAttachments::OnAttachFont)
 	EVT_BUTTON(BUTTON_ATTACH_GRAPHICS,DialogAttachments::OnAttachGraphics)
@@ -252,11 +203,52 @@ void DialogAttachments::OnExtract(wxCommandEvent &) {
 }
 
 void DialogAttachments::OnDelete(wxCommandEvent &) {
-	// Loop through items in list
 	int i = listView->GetFirstSelected();
+	if (i == -1) return;
+
 	while (i != -1) {
 		ass->Line.remove((AssEntry*)wxUIntToPtr(listView->GetItemData(i)));
 		i = listView->GetNextSelected(i);
+	}
+
+	// Remove empty attachment sections at the end of the file
+	std::list<AssEntry*>::iterator cur = ass->Line.end();
+	--cur;
+
+	bool found_attachments = false;
+	wxString last_section_name;
+
+	while (cur != ass->Line.begin()) {
+		if (!((*cur)->group == "[Fonts]" || (*cur)->group == "[Graphics]"))
+			break;
+
+		if ((*cur)->GetEntryData() == "[Fonts]" || (*cur)->GetEntryData() == "[Graphics]") {
+			if (found_attachments) {
+				--cur;
+				continue;
+			}
+			// found section heading with no attachments in, remove it
+			wxString delgroup = (*cur)->group;
+			std::list<AssEntry*>::iterator di = cur;
+			while (++di != ass->Line.end() && (*di)->group == delgroup) {
+				delete *di;
+				ass->Line.erase(di);
+				di = cur;
+			}
+			di = cur;
+			--cur;
+			delete *di;
+			ass->Line.erase(di);
+			continue;
+		}
+
+		if (last_section_name != (*cur)->group)
+			found_attachments = false;
+		if (dynamic_cast<AssAttachment*>(*cur) != 0)
+			found_attachments = true;
+		last_section_name = (*cur)->group;
+
+		--cur;
 	}
 
 	ass->Commit(_("remove attachment"), AssFile::COMMIT_ATTACHMENT);
