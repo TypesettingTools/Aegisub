@@ -160,7 +160,7 @@ class DialogSearchReplace : public wxDialog {
 	void FindReplace(int mode);	// 0 = find, 1 = replace next, 2 = replace all
 
 public:
-	DialogSearchReplace(wxWindow *parent, bool withReplace, wxString const& name);
+	DialogSearchReplace(agi::Context* c, bool withReplace);
 	~DialogSearchReplace();
 	void UpdateSettings();
 };

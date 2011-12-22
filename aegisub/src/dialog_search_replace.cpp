@@ -53,6 +53,7 @@
 #include "selection_controller.h"
 #include "subs_edit_ctrl.h"
 #include "subs_grid.h"
+#include "video_context.h"
 
 enum {
 	BUTTON_FIND_NEXT,
@@ -63,19 +64,17 @@ enum {
 	CHECK_UPDATE_VIDEO
 };
 
-DialogSearchReplace::DialogSearchReplace(wxWindow *parent, bool withReplace, wxString const& name)
-: wxDialog(parent, -1, name)
+DialogSearchReplace::DialogSearchReplace(agi::Context* c, bool withReplace)
+: wxDialog(c->parent, -1, withReplace ? _("Replace") : _("Find"))
 , hasReplace(hasReplace)
 {
 	wxSizer *FindSizer = new wxFlexGridSizer(2,2,5,15);
-	wxArrayString FindHistory = lagi_MRU_wxAS("Find");
-	FindEdit = new wxComboBox(this,-1,"",wxDefaultPosition,wxSize(300,-1),FindHistory,wxCB_DROPDOWN);
+	FindEdit = new wxComboBox(this,-1,"",wxDefaultPosition,wxSize(300,-1),lagi_MRU_wxAS("Find"),wxCB_DROPDOWN);
 	FindEdit->SetSelection(0);
 	FindSizer->Add(new wxStaticText(this,-1,_("Find what:")),0,wxRIGHT | wxALIGN_CENTER_VERTICAL,0);
 	FindSizer->Add(FindEdit,0,wxRIGHT,0);
 	if (hasReplace) {
-		wxArrayString ReplaceHistory = lagi_MRU_wxAS("Replace");
-		ReplaceEdit = new wxComboBox(this,-1,"",wxDefaultPosition,wxSize(300,-1),ReplaceHistory,wxCB_DROPDOWN);
+		ReplaceEdit = new wxComboBox(this,-1,"",wxDefaultPosition,wxSize(300,-1),lagi_MRU_wxAS("Replace"),wxCB_DROPDOWN);
 		FindSizer->Add(new wxStaticText(this,-1,_("Replace with:")),0,wxRIGHT | wxALIGN_CENTER_VERTICAL,0);
 		FindSizer->Add(ReplaceEdit,0,wxRIGHT,0);
 		ReplaceEdit->SetSelection(0);
@@ -88,7 +87,7 @@ DialogSearchReplace::DialogSearchReplace(wxWindow *parent, bool withReplace, wxS
 	CheckMatchCase->SetValue(OPT_GET("Tool/Search Replace/Match Case")->GetBool());
 	CheckRegExp->SetValue(OPT_GET("Tool/Search Replace/RegExp")->GetBool());
 	CheckUpdateVideo->SetValue(OPT_GET("Tool/Search Replace/Video Update")->GetBool());
-//	CheckUpdateVideo->Enable(Search.grid->video->loaded);
+	CheckUpdateVideo->Enable(c->videoController->IsLoaded());
 	OptionsSizer->Add(CheckMatchCase,0,wxBOTTOM,5);
 	OptionsSizer->Add(CheckRegExp,0,wxBOTTOM,5);
 	OptionsSizer->Add(CheckUpdateVideo,0,wxBOTTOM,0);
@@ -126,7 +125,6 @@ DialogSearchReplace::DialogSearchReplace(wxWindow *parent, bool withReplace, wxS
 		ButtonSizer->Add(new wxButton(this,BUTTON_REPLACE_ALL,_("Replace &all")),0,wxEXPAND | wxBOTTOM,3);
 	}
 	ButtonSizer->Add(new wxButton(this,wxID_CANCEL),0,wxEXPAND | wxBOTTOM,20);
-	//ButtonSizer->Add(new wxButton(this,wxID_HELP),0,wxEXPAND | wxBOTTOM,0);
 
 	// Main sizer
 	wxSizer *MainSizer = new wxBoxSizer(wxHORIZONTAL);
@@ -444,7 +442,6 @@ void SearchReplaceEngine::OnDialogOpen() {
 
 void SearchReplaceEngine::OpenDialog (bool replace) {
 	static DialogSearchReplace *diag = NULL;
-	wxString title = replace? _("Replace") : _("Find");
 
 	// already opened
 	if (diag) {
@@ -459,7 +456,7 @@ void SearchReplaceEngine::OpenDialog (bool replace) {
 		diag->Destroy();
 	}
 	// create new one
-	diag = new DialogSearchReplace(context->parent,replace,title);
+	diag = new DialogSearchReplace(context, replace);
 	diag->FindEdit->SetFocus();
 	diag->Show();
 	hasReplace = replace;
