@@ -554,18 +554,39 @@ namespace Automation4 {
 			lua_pushvalue(L, i);
 			AssEntry *e = LuaToAssEntry(L);
 			modification_type |= modification_mask(*last_entry_ptr);
-			if (e->GetType() == ENTRY_DIALOGUE) {
-				// find insertion point, looking backwards
-				std::list<AssEntry*>::iterator it = lines.end();
-				do { --it; } while ((*it)->GetType() != ENTRY_DIALOGUE);
-				// found last dialogue entry in file, move one past
+
+			// Find the appropriate place to put it
+			std::list<AssEntry*>::iterator it = lines.end();
+			if (!lines.empty()) {
+				do {
+					--it;
+				}
+				while (it != lines.begin() && (*it)->group != e->group);
+			}
+
+			if (it == lines.end() || (*it)->group != e->group) {
+				// The new entry belongs to a group that doesn't exist yet, so
+				// create it at the end of the file
+				if (e->GetEntryData() != e->group) {
+					// Add the header if the entry being added isn't a header
+					AssEntry *header = new AssEntry(e->group);
+					header->group = e->group;
+					lines.push_back(header);
+				}
+
+				lines.push_back(e);
+			}
+			else {
+				// Append the entry to the end of the existing group
 				++it;
 				lines.insert(it, e);
 			}
-			else {
-				lines.push_back(e);
-			}
 		}
+
+		// If last_entry_ptr is end, the file was empty but no longer is, so
+		// last_entry_id is wrong
+		if (last_entry_ptr == lines.end())
+			last_entry_id = lines.size() + 1;
 	}
 
 	void LuaAssFile::ObjectInsert(lua_State *L)
