@@ -33,6 +33,8 @@ m4_define([fftw_required_version], [3.3])
 # Setup
 #######
 AC_INIT([Aegisub], [aegisub_version],, [aegisub])
+: ${CFLAGS=""}
+: ${CXXFLAGS=""}
 AC_CONFIG_SRCDIR([src/main.cpp])
 AC_CONFIG_HEADER([acconf.h])
 AC_GNU_SOURCE
@@ -42,7 +44,6 @@ AC_CANONICAL_HOST
 ###########################
 # Check target architecture
 ###########################
-
 AC_MSG_CHECKING([for target architecture])
 case x"$target" in
   xNONE | x)
@@ -123,11 +124,9 @@ AC_C_BIGENDIAN(
   AC_DEFINE([HAVE_UNIVERSAL_ENDIAN], [1], [Universal Endian (MAC Universal PPC/Intel Binaries, uses HAVE_DYNAMIC_ENDIAN)])
 )
 
-
 ########################
 # Configurable variables
 ########################
-
 # These cannot be set before AC_INIT()
 AEGISUB_VERSION_MAJOR=aegisub_version_major
 AEGISUB_VERSION_MINOR=aegisub_version_minor
@@ -149,23 +148,14 @@ AC_SUBST(AEGISUB_COMMAND)
 AC_ARG_WITH(desktop-dir,
             AS_HELP_STRING([--with-desktop-dir=PATH],[desktop file locations [PREFIX/share/applications]]))
 
-if test -z "$with_desktop_dir"; then
-  P_DESKTOP="$datarootdir/applications"
-else
-  P_DESKTOP=$with_desktop_dir
-fi
+P_DESKTOP=${with_desktop_dir:-$datarootdir/applications}
 AC_SUBST(P_DESKTOP)
-
 
 # Handle location of icons: http://standards.freedesktop.org/icon-theme-spec/icon-theme-spec-latest.html
 AC_ARG_WITH(icon-dir,
             AS_HELP_STRING([--with-icon-dir=PATH],[icon locations [PREFIX/share/icons]]))
 
-if test -z "$with_icon_dir"; then
-  P_ICON="$datarootdir/icons"
-else
-  P_ICON=$with_icon_dir
-fi
+P_ICON=${with_icon_dir:-$datarootdir/icons}
 AC_SUBST(P_ICON)
 
 
@@ -195,7 +185,6 @@ if test "$use_build_credit" = "yes"; then
 else
   AC_MSG_RESULT([no])
 fi
-
 
 ####################
 # Check for programs
@@ -280,7 +269,6 @@ int main(void) {
 if test "$agi_cv_with_pthread_rwlock" = "yes"; then
   AC_DEFINE(HAVE_RWLOCK,1,[define if the compiler implements pthread_rwlock_*])
 fi
-
 
 ######################
 # Check compiler flags
@@ -393,19 +381,15 @@ PKG_CHECK_MODULES(FONTCONFIG, fontconfig >= fontconfig_required_version,
 ########
 ## iconv
 ########
-AC_ARG_VAR([ICONV_CFLAGS], [CFLAGS to use for iconv [CPPFLAGS]])
-AC_ARG_VAR([ICONV_LDFLAGS], [LDFLAGS to use for iconv [LDFLAGS -liconv]])
+AC_ARG_VAR([ICONV_CFLAGS], [CFLAGS to use for iconv []])
+AC_ARG_VAR([ICONV_LDFLAGS], [LDFLAGS to use for iconv [-liconv]])
 
 if test -z "$ICONV_LDFLAGS"; then
-  if test "$build_linux" = "yes"; then
-    ICONV_LDFLAGS="$LDFLAGS"
-  else
-    ICONV_LDFLAGS="$LDFLAGS -liconv";
-  fi
-fi
-
-if test -z "$ICONV_CFLAGS"; then
-  ICONV_CFLAGS="$CPPFLAGS";
+  OLD_LIBS="$LIBS"
+  LIBS=""
+  AC_SEARCH_LIBS([iconv_open], [iconv])
+  ICONV_LDFLAGS="$LIBS"
+  LIBS="$OLD_LIBS"
 fi
 
 AC_AGI_COMPILE([iconv], [iconv], [$ICONV_CFLAGS], [$ICONV_LDFLAGS],[
@@ -439,8 +423,6 @@ if test "$agi_cv_with_iconv_const" = "yes"; then
   AC_DEFINE(AGI_ICONV_CONST, 1, [Enable if iconv expects the in argument to be const])
 fi
 
-
-
 ###############
 # Audio Players
 ###############
@@ -451,31 +433,23 @@ AC_ARG_WITH(alsa,
             AS_HELP_STRING([--without-alsa],[build without ALSA audio provider [auto]]),
             alsa_disabled="(disabled)")
 
-AC_ARG_VAR([ALSA_CFLAGS], [CFLAGS to use for ALSA [CPPFLAGS]])
+AC_ARG_VAR([ALSA_CFLAGS], [CFLAGS to use for ALSA []])
 AC_ARG_VAR([ALSA_LDFLAGS], [LDFLAGS to use for ALSA [-lasound -lrt]])
 
-if test -z "$ALSA_LDFLAGS"; then
-  ALSA_LDFLAGS="-lasound -lrt";
-fi
-
-if test -z "$ALSA_CFLAGS"; then
-  ALSA_CFLAGS="$CPPFLAGS";
-fi
+ALSA_LDFLAGS=${ALSA_LDFLAGS:--lasound -lrt}
 
 if test "$with_alsa" != "no"; then
-  aegisub_save_LDFLAGS="$LDFLAGS"
-  LDFLAGS="$ALSA_LDFLAGS"
-  AC_CHECK_LIB([asound], [snd_pcm_open], [ALSA_LDFLAGS="-lasound -lrt"; with_alsa="yes"], [with_alsa="no"])
-  LDFLAGS="$aegisub_save_LDFLAGS"
+  AC_CHECK_LIB([asound], [snd_pcm_open], [with_alsa="yes"], [with_alsa="no"], $ALSA_LDFLAGS)
 fi
 
 if test "$with_alsa" != "no"; then
   AC_DEFINE(WITH_ALSA, 1, [Enable ALSA Support])
   found_audio_player="yes"
 fi
-AC_SUBST(with_alsa)
-AC_SUBST(ALSA_LDFLAGS)
 
+AC_SUBST(ALSA_CFLAGS)
+AC_SUBST(ALSA_LDFLAGS)
+AC_SUBST(with_alsa)
 
 ############
 ## PortAudio
@@ -495,7 +469,6 @@ fi
 
 AC_SUBST(with_portaudio)
 
-
 #############
 ## PulseAudio
 #############
@@ -513,7 +486,6 @@ if test "$with_pulseaudio" = "yes"; then
 fi
 
 AC_SUBST(with_pulseaudio)
-
 
 #########
 ## OpenAL
@@ -561,7 +533,6 @@ if test "$agi_cv_with_openal" = "yes" && test "$with_openal" = "yes"; then
 fi
 
 AC_SUBST(with_openal)
-
 
 ######
 ## OSS
@@ -764,13 +735,11 @@ AC_ARG_VAR([DEBUG_FLAGS], [Debug flag to use with --enable-debug [-g]])
 
 AC_MSG_CHECKING([whether to turn on debugging])
 AC_ARG_ENABLE(debug, AS_HELP_STRING([--enable-debug],[enable debugging [no]]))
+
 if test "$enable_debug" = "yes"; then
-  if test -z "$DEBUG_FLAGS"; then
-    DEBUG_FLAGS="-g";
-  fi
+  DEBUG_FLAGS=${DEBUG_FLAGS:--g}
 
   AC_MSG_RESULT([yes ($DEBUG_FLAGS)])
-  CPPFLAGS="$DEBUG_FLAGS $CPPFLAGS"
   msg_debug="($DEBUG_FLAGS)"
 
   # This turns on some internal (to aegisub) debugging features.
@@ -779,6 +748,7 @@ if test "$enable_debug" = "yes"; then
     AC_CXX_FLAG([-D_DEBUG])
   fi
 else
+  DEBUG_FLAGS=""
   enable_debug="no"
   AC_MSG_RESULT([no])
 fi
@@ -807,11 +777,9 @@ AC_ARG_VAR([PROFILE_FLAGS], [Profile flag(s) to use with --enable-profile [-pg]]
 AC_MSG_CHECKING([whether to turn on profiling])
 AC_ARG_ENABLE(profile, AS_HELP_STRING([--enable-profile],[enable profiling [no]]))
 if test "$enable_profile" = "yes"; then
-  if test -z "$PROFILE_FLAGS"; then
-    PROFILE_FLAGS="-pg";
-  fi
+  PROFILE_FLAGS=${PROFILE_FLAGS:--pg}
   AC_MSG_RESULT([yes ($PROFILE_FLAGS)])
-  CPPFLAGS="$PROFILE_FLAGS $CPPFLAGS"
+  CFLAGS="$PROFILE_FLAGS $CFLAGS"
 else
   enable_profile="no"
   AC_MSG_RESULT([no])
@@ -828,23 +796,16 @@ AC_MSG_CHECKING([whether to turn on gcov])
 AC_ARG_ENABLE(gcov, AS_HELP_STRING([--enable-gcov],[enable gcov [no]]))
 
 if test "$enable_gcov" = "yes"; then
-  if test -z "$GCOV_CFLAGS"; then
-    GCOV_CFLAGS="-fprofile-arcs -ftest-coverage";
-  fi
-
-  if test -z "$GCOV_LDFLAGS"; then
-    GCOV_LDFLAGS="-lgcov";
-  fi
+  GCOV_CFLAGS=${GCOV_CLFAGS:--fprofile-arcs -ftest-coverage}
+  GCOV_LDFLAGS=${GCOV_LDFLAGS:--lgcov}
 
   AC_MSG_RESULT([yes ($GCOV_FLAGS)])
   CFLAGS="$CFLAGS $GCOV_CFLAGS"
   LDFLAGS="$LDFLAGS $GCOV_LDFLAGS"
-  CPPFLAGS="$CPPFLAGS $GCOV_CFLAGS"
 else
   enable_gcov="no"
   AC_MSG_RESULT([no])
 fi
-
 
 ################
 # Electric Fence
@@ -854,9 +815,7 @@ AC_ARG_VAR([EFENCE_LDFLAGS], [Electric Fence ldflag(s) to use with --enable-prof
 AC_MSG_CHECKING([whether to turn on Electric Fence])
 AC_ARG_ENABLE(efence, AS_HELP_STRING([--enable-efence],[enable Electric Fence [no]]))
 if test "$enable_efence" = "yes"; then
-  if test -z "$EFENCE_LDFLAGS"; then
-    EFENCE_LDFLAGS="-lefence";
-  fi
+  EFENCE_LDFLAGS=${EFENCE_LDFLAGS:--lefence}
   AC_MSG_RESULT([yes ($EFENCE_LDFLAGS)])
 else
   enable_efence="no"
@@ -873,13 +832,8 @@ AC_ARG_VAR([CCMALLOC_LDFLAGS], [ccmalloc ldflag(s) to use with --enable-ccmalloc
 AC_MSG_CHECKING([whether to turn on ccmalloc])
 AC_ARG_ENABLE(ccmalloc, AS_HELP_STRING([--enable-ccmalloc],[enable ccmalloc [no]]))
 if test "$enable_ccmalloc" = "yes"; then
-  if test -z "$CCMALLOC_LIBS"; then
-    CCMALLOC_LIBS="$prefix/lib/ccmalloc-c++.o";
-  fi
-
-  if test -z "$CCMALLOC_LDFLAGS"; then
-    CCMALLOC_LDFLAGS="-lccmalloc";
-  fi
+  CCMALLOC_LIBS=${CCMALLOC_LIBS:-$prefix/lib/ccmalloc-c++.o}
+  CCMALLOC_LDFLAGS=${CCMALLOC_LDFLAGS:--lccmalloc}
   AC_MSG_RESULT([yes ($CCMALLOC_LIBS $CCMALLOC_LDFLAGS)])
 else
   enable_ccmalloc="no"
@@ -890,8 +844,7 @@ AC_SUBST(CCMALLOC_LIBS)
 
 if test "$enable_efence" = "yes" && test "$enable_ccmalloc" = "yes"; then
   AC_MSG_FAILURE([Please enable Electric Fence _or_ ccmalloc otherwise strange things will happen.])
-fi  
-
+fi
 
 ########
 # ccache
@@ -905,7 +858,6 @@ else
   AC_MSG_RESULT([no])
 fi
 AC_SUBST(enable_ccache)
-
 
 ##############################
 # Internationalisation support
@@ -952,12 +904,10 @@ AC_DEFINE_UNQUOTED([DEFAULT_PLAYER_AUDIO], ["$default_player_audio"], [Default a
 
 
 # Set some friendly strings if some of the above aren't detected.
-if test -z "$default_player_audio"; then
-  default_player_audio="NONE"
-fi
+default_player_audio=${default_player_audio:-NONE}
 
 ###############
-# Misc settings 
+# Misc settings
 ###############
 AC_SUBST(found_audio_player)
 
@@ -1009,6 +959,7 @@ Configure settings
   Install prefix:        $prefix
   SVN Revision:          $SVN_REVISION
   Debug                  $enable_debug $msg_debug
+  CFLAGS                 $CFLAGS
   CXXFLAGS               $CXXFLAGS
   CPPFLAGS               $CPPFLAGS
   LDFLAGS                $LDFLAGS

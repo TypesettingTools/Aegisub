@@ -5,23 +5,24 @@ PROGRAM_INSTALL = yes
 
 PRECOMPILED_HEADER_NAME=agi_pre.h
 
-CXXFLAGS += -DAEGISUB -D__STDC_FORMAT_MACROS -I. -I..  -Iinclude -I../libaegisub/include $(CFLAGS_PTHREAD) $(CPPFLAGS_WX) $(CFLAGS_FFTW3)
+AEGISUB_CFLAGS = -I. -I..  -Iinclude -I../libaegisub/include -DAEGISUB $(CFLAGS_PTHREAD) $(CFLAGS_FFTW3) $(DEBUG_FLAGS) $(CFLAGS_PROFILE)
+
+CFLAGS += $(AEGISUB_CFLAGS)
+CXXFLAGS += $(AEGISUB_CFLAGS) -D__STDC_FORMAT_MACROS $(CXXFLAGS_WX)
 
 LDFLAGS += -L../libaegisub -laegisub-3.0
-LDFLAGS += $(CFLAGS_DEBUG) $(CFLAGS_PROFILE) $(LDFLAGS_CCMALLOC)
-LDFLAGS += $(LDFLAGS_EFENCE) $(LDFLAGS_GL) $(LDFLAGS_PTHREAD) $(LDFLAGS_WX)
-LDFLAGS += $(LDFLAGS_FREETYPE) $(LDFLAGS_FONTCONFIG) $(LDFLAGS_FFTW3)
+LDFLAGS += $(LDFLAGS_CCMALLOC) $(LDFLAGS_EFENCE) $(LDFLAGS_GL)
+LDFLAGS += $(LDFLAGS_PTHREAD) $(LDFLAGS_WX) $(LDFLAGS_FREETYPE)
+LDFLAGS += $(LDFLAGS_FONTCONFIG) $(LDFLAGS_FFTW3)
 LDFLAGS_POST += $(LDFLAGS_UCHARDET)
 
 ifdef BUILD_DARWIN
 LDFLAGS += -lz
 endif
 
-
 ###############
 # AUDIO PLAYERS
 ###############
-
 ifeq (yes, $(HAVE_ALSA))
 SRC_OPT += audio_player_alsa.cpp
 audio_player_alsa.o: CXXFLAGS += $(CFLAGS_ALSA)
@@ -50,7 +51,6 @@ ifeq (yes, $(HAVE_OSS))
 SRC_OPT += audio_player_oss.cpp
 endif
 
-
 #######################
 # AUDIO / VIDEO SUPPORT
 #######################
@@ -62,7 +62,6 @@ LDFLAGS += $(LDFLAGS_FFMS)
 LDFLAGS_POST += $(LDFLAGS_FFMS)
 endif
 
-
 ###########
 # SUBTITLES
 ###########
@@ -73,7 +72,6 @@ LDFLAGS += $(LDFLAGS_LIBASS)
 LDFLAGS_POST += $(LDFLAGS_LIBASS)
 endif
 
-
 ############
 # AUTOMATION
 ############
@@ -83,7 +81,6 @@ auto4_lua.o auto4_lua_assfile.o auto4_lua_dialog.o  auto4_lua_progresssink.o aut
 LDFLAGS += $(LDFLAGS_LUA)
 endif
 
-
 ##############
 # MISCELLANOUS
 ##############
@@ -92,7 +89,6 @@ SRC_OPT += spellchecker_hunspell.cpp
 spellchecker_hunspell.o: CXXFLAGS += $(CFLAGS_HUNSPELL)
 LDFLAGS += $(LDFLAGS_HUNSPELL)
 endif
-
 
 #####################
 # SOURCE-LEVEL CFLAGS
