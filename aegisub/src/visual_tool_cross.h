@@ -32,9 +32,11 @@ class OpenGLText;
 /// @brief A crosshair which shows the current mouse position and on double-click
 ///        shifts the selected lines to the clicked point
 class VisualToolCross : public VisualTool<VisualDraggableFeature> {
+	agi::scoped_ptr<OpenGLText> gl_text;
+
 	void OnDoubleClick();
 	void Draw();
-	agi::scoped_ptr<OpenGLText> gl_text;
+	wxString Text(Vector2D v);
 public:
 	VisualToolCross(VideoDisplay *parent, agi::Context *context);
 	~VisualToolCross();

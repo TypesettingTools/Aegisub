@@ -48,15 +48,15 @@ void VisualToolCross::OnDoubleClick() {
 		int t1, t2;
 		if (GetLineMove(*it, p1, p2, t1, t2)) {
 			if (t1 > 0 || t2 > 0)
-				SetOverride(*it, "\\move", wxString::Format("(%s,%s,%d,%d)", (p1 + d).Str(), (p2 + d).Str(), t1, t2));
+				SetOverride(*it, "\\move", wxString::Format("(%s,%s,%d,%d)", Text(p1 + d), Text(p2 + d), t1, t2));
 			else
-				SetOverride(*it, "\\move", wxString::Format("(%s,%s)", (p1 + d).Str(), (p2 + d).Str()));
+				SetOverride(*it, "\\move", wxString::Format("(%s,%s)", Text(p1 + d), Text(p2 + d)));
 		}
 		else
-			SetOverride(*it, "\\pos", (GetLinePosition(*it) + d).PStr());
+			SetOverride(*it, "\\pos", "(" + Text(GetLinePosition(*it) + d) + ")");
 
 		if (Vector2D org = GetLineOrigin(*it))
-			SetOverride(*it, "\\org", (org + d).PStr());
+			SetOverride(*it, "\\org", "(" + Text(org + d) + ")");
 	}
 
 	Commit(_("positioning"));
@@ -77,8 +77,7 @@ void VisualToolCross::Draw() {
 	gl.DrawLines(2, lines, 4);
 	gl.ClearInvert();
 
-	Vector2D t = ToScriptCoords(shift_down ? video_res - mouse_pos : mouse_pos);
-	wxString mouse_text = video_res.X() > script_res.X() ? t.Str() : t.DStr();
+	wxString mouse_text = Text(ToScriptCoords(shift_down ? video_res - mouse_pos : mouse_pos));
 
 	int tw, th;
 	gl_text->SetFont("Verdana", 12, true, false);
@@ -99,4 +98,8 @@ void VisualToolCross::Draw() {
 		dy -= th + 3;
 
 	gl_text->Print(mouse_text, dx, dy);
+}
+
+wxString VisualToolCross::Text(Vector2D v) {
+	return video_res.X() > script_res.X() ? v.Str() : v.DStr();
 }
