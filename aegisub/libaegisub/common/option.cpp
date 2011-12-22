@@ -41,7 +41,7 @@
 namespace agi {
 
 Options::Options(const std::string &file, const std::string& default_config, const OptionSetting setting)
-: config_file(file), config_default(default_config), config_loaded(false), setting(setting) {
+: config_file(file), setting(setting) {
 	LOG_D("agi/options") << "New Options object";
 	std::istringstream stream(default_config);
 	LoadConfig(stream);
@@ -72,7 +72,6 @@ void Options::ConfigUser() {
 
 	/// @todo Handle other errors such as parsing and notifying the user.
 	LoadConfig(*stream);
-	config_loaded = true;
 }
 
 void Options::LoadConfig(std::istream& stream) {

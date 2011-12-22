@@ -70,12 +70,6 @@ private:
 	/// User config (file that will be written to disk)
 	const std::string config_file;
 
-	/// Default config (for use when config file is/gets corrupted)
-	const std::string config_default;
-
-	/// Whether the user (final) config has been loaded
-	bool config_loaded;
-
 	/// Settings.
 	const OptionSetting setting;
 
