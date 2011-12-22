@@ -309,6 +309,7 @@ namespace Automation4 {
 		static int LuaFrameFromMs(lua_State *L);
 		static int LuaMsFromFrame(lua_State *L);
 		static int LuaVideoSize(lua_State *L);
+		static int LuaGetKeyframes(lua_State *L);
 
 	public:
 		LuaScript(const wxString &filename);

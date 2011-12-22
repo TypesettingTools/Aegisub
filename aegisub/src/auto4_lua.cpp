@@ -261,6 +261,7 @@ namespace Automation4 {
 			set_field(L, "frame_from_ms", LuaFrameFromMs);
 			set_field(L, "ms_from_frame", LuaMsFromFrame);
 			set_field(L, "video_size", LuaVideoSize);
+			set_field(L, "keyframes", LuaGetKeyframes);
 			set_field(L, "lua_automation_version", 4);
 
 			// store aegisub table to globals
@@ -494,6 +495,20 @@ namespace Automation4 {
 			lua_pushnil(L);
 			return 1;
 		}
+	}
+
+	int LuaScript::LuaGetKeyframes(lua_State *L)
+	{
+		const agi::Context *c = get_context(L);
+		std::vector<int> const& kf = c->videoController->GetKeyFrames();
+
+		lua_newtable(L);
+		for (size_t i = 0; i < kf.size(); ++i) {
+			lua_pushinteger(L, kf[i]);
+			lua_rawseti(L, -2, i);
+		}
+
+		return 1;
 	}
 
 	static void lua_threaded_call(ProgressSink *ps, lua_State *L, int nargs, int nresults, bool can_open_config, bool *failed)
