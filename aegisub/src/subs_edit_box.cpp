@@ -363,7 +363,7 @@ void SubsEditBox::Update(int type) {
 	if (type & AssFile::COMMIT_DIAG_TIME) {
 		StartTime->SetTime(line->Start);
 		EndTime->SetTime(line->End);
-		Duration->SetTime(line->End-line->Start);
+		Duration->SetTime(line->End - line->Start);
 	}
 
 	if (type & AssFile::COMMIT_DIAG_TEXT) {
@@ -519,21 +519,30 @@ void SubsEditBox::CommitText(wxString desc) {
 }
 
 void SubsEditBox::CommitTimes(TimeField field) {
-	Duration->SetTime(EndTime->GetTime() - StartTime->GetTime());
+	if (ByFrame->GetValue())
+		Duration->SetFrame(EndTime->GetFrame() - StartTime->GetFrame() + 1);
+	else
+		Duration->SetTime(EndTime->GetTime() - StartTime->GetTime());
 
 	// Update lines
 	for (Selection::iterator cur = sel.begin(); cur != sel.end(); ++cur) {
+		AssDialogue *d = *cur;
 		switch (field) {
 			case TIME_START:
-				(*cur)->Start = StartTime->GetTime();
-				if ((*cur)->Start > (*cur)->End) (*cur)->End = (*cur)->Start;
+				d->Start = StartTime->GetTime();
+				if (d->Start > d->End)
+					d->End = d->Start;
 				break;
 			case TIME_END:
-				(*cur)->End = EndTime->GetTime();
-				if ((*cur)->Start > (*cur)->End) (*cur)->Start = (*cur)->End;
+				d->End = EndTime->GetTime();
+				if (d->Start > d->End)
+					d->Start = d->End;
 				break;
 			case TIME_DURATION:
-				(*cur)->End = (*cur)->Start + Duration->GetTime();
+				if (ByFrame->GetValue())
+					d->End = c->videoController->TimeAtFrame(c->videoController->FrameAtTime(d->Start, agi::vfr::START) + Duration->GetFrame(), agi::vfr::END);
+				else
+					d->End = d->Start + Duration->GetTime();
 				break;
 		}
 	}
@@ -643,7 +652,10 @@ void SubsEditBox::OnEndTimeChange(wxCommandEvent &) {
 }
 
 void SubsEditBox::OnDurationChange(wxCommandEvent &) {
-	EndTime->SetTime(StartTime->GetTime() + Duration->GetTime());
+	if (ByFrame->GetValue())
+		EndTime->SetFrame(StartTime->GetFrame() + Duration->GetFrame() - 1);
+	else
+		EndTime->SetTime(StartTime->GetTime() + Duration->GetTime());
 	CommitTimes(TIME_DURATION);
 }
 void SubsEditBox::OnMarginLChange(wxCommandEvent &) {

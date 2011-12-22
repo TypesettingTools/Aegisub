@@ -104,6 +104,14 @@ void TimeEdit::SetTime(AssTime new_time) {
 	}
 }
 
+int TimeEdit::GetFrame() const {
+	return c->videoController->FrameAtTime(time, isEnd ? agi::vfr::END : agi::vfr::START);
+}
+
+void TimeEdit::SetFrame(int fn) {
+	SetTime(c->videoController->TimeAtFrame(fn, isEnd ? agi::vfr::END : agi::vfr::START));
+}
+
 void TimeEdit::SetByFrame(bool enableByFrame) {
 	if (enableByFrame == byFrame) return;
 

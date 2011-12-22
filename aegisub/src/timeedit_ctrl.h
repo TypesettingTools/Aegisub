@@ -78,6 +78,11 @@ public:
 	/// Set the time
 	void SetTime(AssTime time);
 
+	/// Get the current time as a frame number, or 0 if timecodes are unavailable
+	int GetFrame() const;
+	/// Set the time to a frame number. Does nothing if timecodes are unavailable
+	void SetFrame(int fn);
+
 	/// Set whether the time is displayed as a time or the corresponding frame number
 	/// @param enableByFrame If true, frame numbers are displayed
 	void SetByFrame(bool enableByFrame);
