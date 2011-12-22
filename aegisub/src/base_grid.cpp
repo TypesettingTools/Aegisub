@@ -487,7 +487,7 @@ void BaseGrid::DrawImage(wxDC &dc, bool paint_columns[]) {
 
 	// Row colors
 	wxColour text_standard(lagi_wxColour(OPT_GET("Colour/Subtitle Grid/Standard")->GetColour()));
-	wxColour text_selection(lagi_wxColour(OPT_GET("Colour/Subtitle Grid/Standard")->GetColour()));
+	wxColour text_selection(lagi_wxColour(OPT_GET("Colour/Subtitle Grid/Selection")->GetColour()));
 	wxColour text_collision(lagi_wxColour(OPT_GET("Colour/Subtitle Grid/Collision")->GetColour()));
 
 	wxBrush rowColors[] = {
