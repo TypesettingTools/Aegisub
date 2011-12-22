@@ -463,7 +463,7 @@ namespace Automation4 {
 		else if (n == 0) {
 			// append line to list
 			lua_remove(L, 1);
-			lua_remove(L, 2);
+			lua_remove(L, 1);
 			ObjectAppend(L);
 		}
 		else {
@@ -479,7 +479,7 @@ namespace Automation4 {
 			else {
 				// delete
 				lua_remove(L, 1);
-				lua_remove(L, 2);
+				lua_remove(L, 1);
 				ObjectDelete(L);
 			}
 		}
