@@ -119,8 +119,7 @@ void AssTime::ParseASS (const wxString text) {
 /// @return 
 ///
 int AssTime::GetMS () const {
-	if (!UseMSPrecision) return time/10*10;
-	else return time;
+	return time / 10 * 10;
 }
 
 
@@ -138,19 +137,17 @@ void AssTime::SetMS (int ms) {
 /// @return 
 ///
 wxString AssTime::GetASSFormated (bool msPrecision) const {
-	int ms = time;
-
-	// Centisecond precision
-	msPrecision = msPrecision || UseMSPrecision;
-	if (!msPrecision) ms = ms/10*10;
+	int ms = msPrecision ? time : GetMS();
 
 	int h = ms / (1000 * 60 * 60);
 	int m = (ms / (1000 * 60)) % 60;
 	int s = (ms / 1000) % 60;
 	ms = ms % 1000;
 
-	if (msPrecision) return wxString::Format("%01i:%02i:%02i.%03i",h,m,s,ms);
-	else return wxString::Format("%01i:%02i:%02i.%02i",h,m,s,ms/10);
+	if (msPrecision)
+		return wxString::Format("%01i:%02i:%02i.%03i",h,m,s,ms);
+	else
+		return wxString::Format("%01i:%02i:%02i.%02i",h,m,s,ms/10);
 }
 
 /// @brief AssTime comparison 
@@ -219,12 +216,6 @@ AssTime operator + (const AssTime &t1, const AssTime &t2) {
 AssTime operator - (const AssTime &t1, const AssTime &t2) {
 	return AssTime(t1.GetMS() - t2.GetMS());
 }
-
-
-/// DOCME
-bool AssTime::UseMSPrecision = false;
-
-
 
 /// @brief Get 
 /// @return 

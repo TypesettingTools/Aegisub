@@ -54,9 +54,6 @@ class AssTime {
 	int time;
 
 public:
-	/// DOCME
-	static bool UseMSPrecision;
-
 	AssTime();
 	AssTime(int ms);
 

@@ -61,7 +61,6 @@
 #include "ass_dialogue.h"
 #include "ass_export_filter.h"
 #include "ass_file.h"
-#include "ass_time.h"
 #include "audio_box.h"
 #include "auto4_base.h"
 #include "charset_conv.h"
@@ -248,7 +247,6 @@ bool AegisubApp::OnInit() {
 
 		StartupLog("Store options back");
 		OPT_SET("Version/Last Version")->SetInt(GetSVNRevision());
-		AssTime::UseMSPrecision = OPT_GET("App/Nonstandard Milisecond Times")->GetBool();
 
 		StartupLog("Initialize final locale");
 
