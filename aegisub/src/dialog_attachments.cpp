@@ -34,10 +34,9 @@
 /// @ingroup tools_ui
 ///
 
-
-///////////
-// Headers
 #include "config.h"
+
+#include "dialog_attachments.h"
 
 #ifndef AGI_PRE
 #include <wx/button.h>
@@ -51,24 +50,25 @@
 #include "ass_attachment.h"
 #include "ass_file.h"
 #include "compat.h"
-#include "dialog_attachments.h"
 #include "help_button.h"
 #include "libresrc/libresrc.h"
 #include "main.h"
 #include "utils.h"
 
+enum {
+	BUTTON_ATTACH_FONT = 1300,
+	BUTTON_ATTACH_GRAPHICS,
+	BUTTON_EXTRACT,
+	BUTTON_DELETE,
+	ATTACHMENT_LIST
+};
 
-/// @brief Constructor 
-/// @param parent 
-///
 DialogAttachments::DialogAttachments(wxWindow *parent, AssFile *ass)
 : wxDialog(parent,-1,_("Attachment List"),wxDefaultPosition,wxDefaultSize,wxDEFAULT_DIALOG_STYLE)
 , ass(ass)
 {
-	// Set icon
 	SetIcon(BitmapToIcon(GETIMAGE(attach_button_24)));
 
-	// List view
 	listView = new wxListView(this,ATTACHMENT_LIST,wxDefaultPosition,wxSize(500,200));
 	UpdateList();
 
@@ -96,12 +96,7 @@ DialogAttachments::DialogAttachments(wxWindow *parent, AssFile *ass)
 	CenterOnParent();
 }
 
-
-
-/// @brief Update list 
-///
 void DialogAttachments::UpdateList() {
-	// Clear list
 	listView->ClearAll();
 
 	// Insert list columns
@@ -124,12 +119,7 @@ void DialogAttachments::UpdateList() {
 	}
 }
 
-
-
-/// @brief Destructor 
-///
 DialogAttachments::~DialogAttachments() {
-
 	// Remove empty attachments sections from the file
 
 	std::list<AssEntry*>::iterator cur = ass->Line.end();
@@ -178,9 +168,6 @@ DialogAttachments::~DialogAttachments() {
 	}
 }
 
-
-///////////////
-// Event table
 BEGIN_EVENT_TABLE(DialogAttachments,wxDialog)
 	EVT_BUTTON(BUTTON_ATTACH_FONT,DialogAttachments::OnAttachFont)
 	EVT_BUTTON(BUTTON_ATTACH_GRAPHICS,DialogAttachments::OnAttachGraphics)
@@ -189,90 +176,55 @@ BEGIN_EVENT_TABLE(DialogAttachments,wxDialog)
 	EVT_LIST_ITEM_SELECTED(ATTACHMENT_LIST,DialogAttachments::OnListClick)
 	EVT_LIST_ITEM_DESELECTED(ATTACHMENT_LIST,DialogAttachments::OnListClick)
 	EVT_LIST_ITEM_FOCUSED(ATTACHMENT_LIST,DialogAttachments::OnListClick)
-END_EVENT_TABLE()
+END_EVENT_TABLE();
 
+void DialogAttachments::AttachFile(wxFileDialog &diag, wxString const& group, wxString const& commit_msg) {
+	if (diag.ShowModal() == wxID_CANCEL) return;
 
+	wxArrayString filenames;
+	diag.GetFilenames(filenames);
 
-/// @brief Attach font 
-/// @param event 
-/// @return 
-///
+	wxArrayString paths;
+	diag.GetPaths(paths);
+
+	// Create attachments
+	for (size_t i = 0; i < filenames.size(); ++i) {
+		AssAttachment *newAttach = new AssAttachment(filenames[i]);
+		try {
+			newAttach->Import(paths[i]);
+		}
+		catch (...) {
+			delete newAttach;
+			return;
+		}
+		newAttach->group = group;
+		ass->InsertAttachment(newAttach);
+	}
+
+	ass->Commit(commit_msg, AssFile::COMMIT_ATTACHMENT);
+
+	UpdateList();
+}
+
 void DialogAttachments::OnAttachFont(wxCommandEvent &) {
-	// Pick files
-	wxArrayString filenames;
-	wxArrayString paths;
-	{
-		wxFileDialog diag (this,_("Choose file to be attached"), lagi_wxString(OPT_GET("Path/Fonts Collector Destination")->GetString()), "", "Font Files (*.ttf)|*.ttf", wxFD_OPEN | wxFD_FILE_MUST_EXIST | wxFD_MULTIPLE);
-		if (diag.ShowModal() == wxID_CANCEL) return;
-		diag.GetFilenames(filenames);
-		diag.GetPaths(paths);
-	}
+	wxFileDialog diag(this,
+		_("Choose file to be attached"),
+		lagi_wxString(OPT_GET("Path/Fonts Collector Destination")->GetString()), "", "Font Files (*.ttf)|*.ttf",
+		wxFD_OPEN | wxFD_FILE_MUST_EXIST | wxFD_MULTIPLE);
 
-	// Create attachments
-	for (size_t i=0;i<filenames.Count();i++) {
-		//wxFileName file(filenames[i]);
-		AssAttachment *newAttach = new AssAttachment(filenames[i]);
-		try {
-			newAttach->Import(paths[i]);
-		}
-		catch (...) {
-			delete newAttach;
-			return;
-		}
-		newAttach->group = "[Fonts]";
-		ass->InsertAttachment(newAttach);
-	}
-
-	ass->Commit(_("attach font file"), AssFile::COMMIT_ATTACHMENT);
-
-	// Update
-	UpdateList();
+	AttachFile(diag, "[Fonts]", _("attach font file"));
 }
 
-
-
-/// @brief Attach graphics 
-/// @param event 
-/// @return 
-///
 void DialogAttachments::OnAttachGraphics(wxCommandEvent &) {
-	// Pick files
-	wxArrayString filenames;
-	wxArrayString paths;
-	{
-		wxFileDialog diag (this,_("Choose file to be attached"), "", "", "Graphic Files (*.bmp,*.gif,*.jpg,*.ico,*.wmf)|*.bmp;*.gif;*.jpg;*.ico;*.wmf", wxFD_OPEN | wxFD_FILE_MUST_EXIST | wxFD_MULTIPLE);
-		if (diag.ShowModal() == wxID_CANCEL) return;
-		diag.GetFilenames(filenames);
-		diag.GetPaths(paths);
-	}
+	wxFileDialog diag(this,
+		_("Choose file to be attached"),
+		"", "",
+		"Graphic Files (*.bmp,*.gif,*.jpg,*.ico,*.wmf)|*.bmp;*.gif;*.jpg;*.ico;*.wmf",
+		wxFD_OPEN | wxFD_FILE_MUST_EXIST | wxFD_MULTIPLE);
 
-	// Create attachments
-	for (size_t i=0;i<filenames.Count();i++) {
-		//wxFileName file(filenames[i]);
-		AssAttachment *newAttach = new AssAttachment(filenames[i]);
-		try {
-			newAttach->Import(paths[i]);
-		}
-		catch (...) {
-			delete newAttach;
-			return;
-		}
-		newAttach->group = "[Graphics]";
-		ass->InsertAttachment(newAttach);
-	}
-
-	ass->Commit(_("attach graphics file"), AssFile::COMMIT_ATTACHMENT);
-
-	// Update
-	UpdateList();
+	AttachFile(diag, "[Graphics]", _("attach graphics file"));
 }
 
-
-
-/// @brief Extract 
-/// @param event 
-/// @return 
-///
 void DialogAttachments::OnExtract(wxCommandEvent &) {
 	// Check if there's a selection
 	int i = listView->GetFirstSelected();
@@ -303,11 +255,6 @@ void DialogAttachments::OnExtract(wxCommandEvent &) {
 	}
 }
 
-
-
-/// @brief Delete 
-/// @param event 
-///
 void DialogAttachments::OnDelete(wxCommandEvent &) {
 	// Loop through items in list
 	int i = listView->GetFirstSelected();
@@ -318,22 +265,11 @@ void DialogAttachments::OnDelete(wxCommandEvent &) {
 
 	ass->Commit(_("remove attachment"), AssFile::COMMIT_ATTACHMENT);
 
-	// Update list
 	UpdateList();
 }
 
-
-
-/// @brief List selection changed 
-/// @param event 
-///
 void DialogAttachments::OnListClick(wxListEvent &) {
-	// Check if any is selected
 	bool hasSel = listView->GetFirstSelected() != -1;
-
-	// Set status
 	extractButton->Enable(hasSel);
 	deleteButton->Enable(hasSel);
 }
-
-

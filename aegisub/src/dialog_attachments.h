@@ -35,8 +35,13 @@
 ///
 
 class AssFile;
+class wxFileDialog;
 class wxListView;
 class wxListEvent;
+
+#ifndef AGI_PRE
+#include <wx/dialog.h>
+#endif
 
 /// DOCME
 /// @class DialogAttachments
@@ -62,19 +67,11 @@ class DialogAttachments : public wxDialog {
 	void OnListClick(wxListEvent &event);
 
 	void UpdateList();
+	void AttachFile(wxFileDialog &diag, wxString const& group, wxString const& commit_msg);
 
 public:
 	DialogAttachments(wxWindow *parent, AssFile *ass);
 	~DialogAttachments();
 
 	DECLARE_EVENT_TABLE()
-};
-
-/// Event IDs
-enum {
-	BUTTON_ATTACH_FONT = 1300,
-	BUTTON_ATTACH_GRAPHICS,
-	BUTTON_EXTRACT,
-	BUTTON_DELETE,
-	ATTACHMENT_LIST
 };
