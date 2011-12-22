@@ -334,7 +334,7 @@ SubsEditBox::~SubsEditBox() {
 }
 
 void SubsEditBox::Update(int type) {
-	SetEvtHandlerEnabled(false);
+	wxEventBlocker blocker(this);
 
 	if (type == AssFile::COMMIT_NEW || type & AssFile::COMMIT_STYLES) {
 		StyleBox->Clear();
@@ -346,7 +346,6 @@ void SubsEditBox::Update(int type) {
 		PopulateActorList();
 
 		TextEdit->SetSelection(0,0);
-		SetEvtHandlerEnabled(true);
 		return;
 	}
 	else if (type & AssFile::COMMIT_STYLES)
@@ -355,10 +354,7 @@ void SubsEditBox::Update(int type) {
 	if (!(type ^ AssFile::COMMIT_ORDER)) return;
 
 	SetControlsState(!!line);
-	if (!line) {
-		SetEvtHandlerEnabled(true);
-		return;
-	}
+	if (!line) return;
 
 	if (type & AssFile::COMMIT_DIAG_TIME) {
 		StartTime->SetTime(line->Start);
@@ -383,11 +379,11 @@ void SubsEditBox::Update(int type) {
 		ActorBox->ChangeValue(line->Actor.empty() ? "Actor" : line->Actor);
 		ActorBox->SetStringSelection(line->Actor);
 	}
-
-	SetEvtHandlerEnabled(true);
 }
 
 void SubsEditBox::PopulateActorList() {
+	wxEventBlocker blocker(this);
+
 	std::set<wxString> actors;
 	for (entryIter it = c->ass->Line.begin(); it != c->ass->Line.end(); ++it) {
 		if (AssDialogue *diag = dynamic_cast<AssDialogue*>(*it))
@@ -403,8 +399,6 @@ void SubsEditBox::PopulateActorList() {
 	copy(actors.begin(), actors.end(), std::back_inserter(arrstr));
 
 	ActorBox->Freeze();
-	bool evt_handler_was_enabled = GetEvtHandlerEnabled();
-	SetEvtHandlerEnabled(false);
 	long pos = ActorBox->GetInsertionPoint();
 	wxString value = ActorBox->GetValue();
 
@@ -413,14 +407,11 @@ void SubsEditBox::PopulateActorList() {
 	ActorBox->ChangeValue(value);
 	ActorBox->SetStringSelection(value);
 	ActorBox->SetInsertionPoint(pos);
-
-	if (evt_handler_was_enabled)
-		SetEvtHandlerEnabled(true);
 	ActorBox->Thaw();
 }
 
 void SubsEditBox::OnActiveLineChanged(AssDialogue *new_line) {
-	SetEvtHandlerEnabled(false);
+	wxEventBlocker blocker(this);
 	line = new_line;
 
 	Update(AssFile::COMMIT_DIAG_FULL);
@@ -436,7 +427,6 @@ void SubsEditBox::OnActiveLineChanged(AssDialogue *new_line) {
 			c->videoController->JumpToTime(line->Start);
 		}
 	}
-	SetEvtHandlerEnabled(true);
 }
 void SubsEditBox::OnSelectedSetChanged(const Selection &, const Selection &) {
 	sel = c->selectionController->GetSelectedSet();
@@ -608,7 +598,7 @@ void SubsEditBox::SetControlsState(bool state) {
 		ToggableButtons[i]->Enable(state);
 
 	if (!state) {
-		SetEvtHandlerEnabled(false);
+		wxEventBlocker blocker(this);
 		TextEdit->SetTextTo("");
 		StartTime->SetTime(0);
 		EndTime->SetTime(0);
@@ -619,7 +609,6 @@ void SubsEditBox::SetControlsState(bool state) {
 		MarginV->ChangeValue("");
 		Effect->ChangeValue("");
 		CommentBox->SetValue(false);
-		SetEvtHandlerEnabled(true);
 	}
 }
 
