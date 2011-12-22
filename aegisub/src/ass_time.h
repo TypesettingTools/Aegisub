@@ -34,18 +34,13 @@
 /// @ingroup subs_storage
 ///
 
-
 #pragma once
 
-
-///////////
-// Headers
 #ifndef AGI_PRE
 #include <stdint.h>
 
 #include <wx/string.h>
 #endif
-
 
 /// DOCME
 /// @class AssTime
@@ -53,13 +48,10 @@
 ///
 /// DOCME
 class AssTime {
-private:
-
-	/// DOCME
-	int time;		// Miliseconds
+	/// Time in miliseconds
+	int time;
 
 public:
-
 	/// DOCME
 	static bool UseMSPrecision;
 
@@ -72,10 +64,10 @@ public:
 	int GetTimeMiliseconds();
 	int GetTimeCentiseconds();
 
-	int GetMS() const;					// Returns milliseconds
-	void SetMS(int ms);					// Sets values to milliseconds
-	void ParseASS(const wxString text);	// Sets value to text-form time, in ASS format
-	wxString GetASSFormated(bool ms=false) const; // Returns the ASS representation of time
+	int GetMS() const;  ///< Returns milliseconds
+	void SetMS(int ms); ///< Sets values to milliseconds with bounds-checking
+	void ParseASS(const wxString text); ///< Sets value to text-form time, in ASS format
+	wxString GetASSFormated(bool ms=false) const; ///< Returns the ASS representation of time
 };
 
 // Comparison operators
@@ -89,38 +81,26 @@ bool operator >= (const AssTime &t1, const AssTime &t2);
 AssTime operator + (const AssTime &t1, const AssTime &t2);
 AssTime operator - (const AssTime &t1, const AssTime &t2);
 
-
-
-
 /// DOCME
 /// @class FractionalTime
 /// @brief DOCME
 ///
 /// DOCME
 class FractionalTime {
-private:
+	int time; ///< Time in miliseconds
+	int num;  ///< Numerator
+	int den;  ///< Denominator
+	bool drop; ///< Enable SMPTE dropframe handling
 
-	/// DOCME
-	int time;		// milliseconds, like in AssTime
+	/// separator; someone might have separators of more than one character :V
+	wxString sep;
 
-	/// DOCME
-
-	/// DOCME
-	int num, den;	// numerator/denominator
-
-	/// DOCME
-	bool drop;		// EVIL
-
-	/// DOCME
-	wxString sep;	// separator; someone might have separators of more than one character :V
-
-
-	/// DOCME
+	/// How often to drop frames when enabled
 	static const int frames_per_period = 17982;
 
 public:
-	// dumb assumption? I give no fuck
-	// NOTE: separator can be a regex! at least if you only plan on doing SMPTE->somethingelse.
+	/// dumb assumption? I give no fuck
+	/// NOTE: separator can be a regex! at least if you only plan on doing SMPTE->somethingelse.
 	FractionalTime(wxString separator, int numerator=30, int denominator=1, bool dropframe=false);
 	~FractionalTime();
 
@@ -130,5 +110,3 @@ public:
 	wxString FromAssTime(AssTime time);
 	wxString FromMillisecs(int64_t msec);
 };
-
-
