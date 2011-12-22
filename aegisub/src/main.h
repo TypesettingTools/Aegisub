@@ -114,6 +114,14 @@ class AegisubApp: public wxApp {
 	void OnFatalException();
 #endif
 
+	/// @brief Handle wx assertions and redirect to the logging system.
+	/// @param file File name
+	/// @param line Line number
+	/// @param func Function name
+	/// @param cond Condition
+	/// @param msg  Message
+	void OnAssertFailure(const wxChar *file, int line, const wxChar *func, const wxChar *cond, const wxChar *msg);
+
 	// This function wraps all event handler calls anywhere in the application and is
 	// our ticket to catch exceptions happening in event handlers.
 	void HandleEvent(wxEvtHandler *handler, wxEventFunction func, wxEvent& event) const;

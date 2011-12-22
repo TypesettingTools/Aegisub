@@ -154,10 +154,10 @@ void SetThreadName(DWORD dwThreadID, LPCSTR szThreadName) {
 /// @param func Function name
 /// @param cond Condition
 /// @param msg  Message
-static void wxAssertHandler(const wxString &file, int line, const wxString &func, const wxString &cond, const wxString &msg) {
+void AegisubApp::OnAssertFailure(const wxChar *file, int line, const wxChar *func, const wxChar *cond, const wxChar *msg) {
 	LOG_A("wx/assert") << file << ":" << line << ":" << func << "() " << cond << ": " << msg;
+	wxApp::OnAssertFailure(file, line, func, cond, msg);
 }
-
 
 /// @brief Gets called when application starts.
 /// @return bool
