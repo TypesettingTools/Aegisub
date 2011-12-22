@@ -20,13 +20,15 @@ namespace {
 	class CastVisitorBase : public Visitor, public ConstVisitor {
 		void Visit(Array&) { }
 		void Visit(Object&) { }
-		void Visit(Number&) { }
+		void Visit(Integer&) { }
+		void Visit(Double&) { }
 		void Visit(String&) { }
 		void Visit(Boolean&) { }
 		void Visit(Null&) { is_null = true; }
 		void Visit(Array const&) { }
 		void Visit(Object const&) { }
-		void Visit(Number const&) { }
+		void Visit(Integer const&) { }
+		void Visit(Double const&) { }
 		void Visit(String const&) { }
 		void Visit(Boolean const&) { }
 		void Visit(Null const&) { is_null = true; }
@@ -86,9 +88,10 @@ UnknownElement::UnknownElement() :                               m_pImp( new Imp
 UnknownElement::UnknownElement(const UnknownElement& unknown) :  m_pImp( unknown.m_pImp->Clone()) {}
 UnknownElement::UnknownElement(const Object& object) :           m_pImp( new Imp_T<Object>(object) ) {}
 UnknownElement::UnknownElement(const Array& array) :             m_pImp( new Imp_T<Array>(array) ) {}
-UnknownElement::UnknownElement(double number) :                  m_pImp( new Imp_T<Number>(number) ) {}
-UnknownElement::UnknownElement(int number) :                     m_pImp( new Imp_T<Number>(number) ) {}
-UnknownElement::UnknownElement(long number) :                    m_pImp( new Imp_T<Number>(number) ) {}
+UnknownElement::UnknownElement(double number) :                  m_pImp( new Imp_T<Double>(number) ) {}
+UnknownElement::UnknownElement(int number) :                     m_pImp( new Imp_T<Integer>(number) ) {}
+UnknownElement::UnknownElement(int64_t number) :                 m_pImp( new Imp_T<Integer>(number) ) {}
+UnknownElement::UnknownElement(long number) :                    m_pImp( new Imp_T<Integer>(number) ) {}
 UnknownElement::UnknownElement(bool boolean) :                   m_pImp( new Imp_T<Boolean>(boolean) ) {}
 UnknownElement::UnknownElement(const char *string) :             m_pImp( new Imp_T<String>(string) ) {}
 UnknownElement::UnknownElement(const String& string) :           m_pImp( new Imp_T<String>(string) ) {}
@@ -98,14 +101,16 @@ UnknownElement::~UnknownElement()   { delete m_pImp; }
 
 UnknownElement::operator Object const&()  const { return CastTo<Object>(); }
 UnknownElement::operator Array const&()   const { return CastTo<Array>(); }
-UnknownElement::operator Number const&()  const { return CastTo<Number>(); }
+UnknownElement::operator Integer const&() const { return CastTo<Integer>(); }
+UnknownElement::operator Double const&()  const { return CastTo<Double>(); }
 UnknownElement::operator Boolean const&() const { return CastTo<Boolean>(); }
 UnknownElement::operator String const&()  const { return CastTo<String>(); }
 UnknownElement::operator Null const&()    const { return CastTo<Null>(); }
 
 UnknownElement::operator Object&()  { return CastTo<Object>(); }
 UnknownElement::operator Array&()   { return CastTo<Array>(); }
-UnknownElement::operator Number&()  { return CastTo<Number>(); }
+UnknownElement::operator Integer&() { return CastTo<Integer>(); }
+UnknownElement::operator Double&()  { return CastTo<Double>(); }
 UnknownElement::operator Boolean&() { return CastTo<Boolean>(); }
 UnknownElement::operator String&()  { return CastTo<String>(); }
 UnknownElement::operator Null&()    { return CastTo<Null>(); }

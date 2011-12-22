@@ -21,10 +21,11 @@
 #include "libaegisub/option.h"
 
 #ifndef LAGI_PRE
+#include <cassert>
 #include <fstream>
-#include <sstream>
 #include <map>
 #include <memory>
+#include <sstream>
 #endif
 
 #include "libaegisub/cajun/reader.h"
@@ -37,6 +38,39 @@
 #include "libaegisub/option_value.h"
 
 #include "option_visit.h"
+
+namespace {
+	/// @brief Write an option to a json object
+	/// @param[out] obj  Parent object
+	/// @param[in] path  Path option should be stored in.
+	/// @param[in] value Value to write.
+	void put_option(json::Object &obj, const std::string &path, const json::UnknownElement &value) {
+		std::string::size_type pos = path.find('/');
+		// Not having a '/' denotes it is a leaf.
+		if (pos == std::string::npos) {
+			assert(obj.find(path) == obj.end());
+			obj[path] = value;
+		}
+		else {
+			put_option(
+				obj[path.substr(0, pos)],
+				path.substr(pos + 1),
+				value);
+		}
+	}
+
+	template<class T>
+	void put_array(json::Object &obj, const std::string &path, const char *element_key, std::vector<T> const& value) {
+		json::Array array;
+		for (typename std::vector<T>::const_iterator it = value.begin(); it != value.end(); ++it) {
+			json::Object obj;
+			obj[element_key] = *it;
+			array.push_back(obj);
+		}
+
+		put_option(obj, path, array);
+	}
+}
 
 namespace agi {
 
@@ -108,113 +142,49 @@ void Options::Flush() {
 	for (OptionValueMap::const_iterator i = values.begin(); i != values.end(); ++i) {
 		switch (i->second->GetType()) {
 			case OptionValue::Type_String:
-				PutOption(obj_out, i->first, i->second->GetString());
+				put_option(obj_out, i->first, i->second->GetString());
 				break;
 
 			case OptionValue::Type_Int:
-				PutOption(obj_out, i->first, (double)i->second->GetInt());
+				put_option(obj_out, i->first, i->second->GetInt());
 				break;
 
 			case OptionValue::Type_Double:
-				PutOption(obj_out, i->first, i->second->GetDouble());
+				put_option(obj_out, i->first, i->second->GetDouble());
 				break;
 
 			case OptionValue::Type_Colour:
-				PutOption(obj_out, i->first, i->second->GetColour());
+				put_option(obj_out, i->first, i->second->GetColour());
 				break;
 
 			case OptionValue::Type_Bool:
-				PutOption(obj_out, i->first, i->second->GetBool());
+				put_option(obj_out, i->first, i->second->GetBool());
 				break;
 
-			case OptionValue::Type_List_String: {
-				std::vector<std::string> const& array_string(i->second->GetListString());
+			case OptionValue::Type_List_String:
+				put_array(obj_out, i->first, "string", i->second->GetListString());
+				break;
 
-				json::Array array;
+			case OptionValue::Type_List_Int:
+				put_array(obj_out, i->first, "int", i->second->GetListInt());
+				break;
 
-				for (std::vector<std::string>::const_iterator i_str = array_string.begin(); i_str != array_string.end(); ++i_str) {
-					json::Object obj;
-					obj["string"] = *i_str;
-					array.push_back(obj);
-				}
+			case OptionValue::Type_List_Double:
+				put_array(obj_out, i->first, "double", i->second->GetListDouble());
+				break;
 
-				PutOption(obj_out, i->first, array);
-			}
-			break;
+			case OptionValue::Type_List_Colour:
+				put_array(obj_out, i->first, "colour", i->second->GetListColour());
+				break;
 
-			case OptionValue::Type_List_Int: {
-				std::vector<int64_t> const& array_int(i->second->GetListInt());
-
-				json::Array array;
-
-				for (std::vector<int64_t>::const_iterator i_int = array_int.begin(); i_int != array_int.end(); ++i_int) {
-					json::Object obj;
-					obj["int"] = (double)*i_int;
-					array.push_back(obj);
-				}
-				PutOption(obj_out, i->first, array);
-			}
-			break;
-
-			case OptionValue::Type_List_Double: {
-				std::vector<double> const& array_double(i->second->GetListDouble());
-
-				json::Array array;
-
-				for (std::vector<double>::const_iterator i_double = array_double.begin(); i_double != array_double.end(); ++i_double) {
-					json::Object obj;
-					obj["double"] = *i_double;
-					array.push_back(obj);
-				}
-				PutOption(obj_out, i->first, array);
-			}
-			break;
-
-			case OptionValue::Type_List_Colour: {
-				std::vector<Colour> const& array_colour(i->second->GetListColour());
-
-				json::Array array;
-				for (std::vector<Colour>::const_iterator i_colour = array_colour.begin(); i_colour != array_colour.end(); ++i_colour) {
-					json::Object obj;
-					obj["colour"] = *i_colour;
-					array.push_back(obj);
-				}
-				PutOption(obj_out, i->first, array);
-			}
-			break;
-
-			case OptionValue::Type_List_Bool: {
-				std::vector<bool> const& array_bool(i->second->GetListBool());
-
-				json::Array array;
-				for (std::vector<bool>::const_iterator i_bool = array_bool.begin(); i_bool != array_bool.end(); ++i_bool) {
-					json::Object obj;
-					obj["bool"] = *i_bool;
-					array.push_back(obj);
-				}
-				PutOption(obj_out, i->first, array);
-			}
-			break;
+			case OptionValue::Type_List_Bool:
+				put_array(obj_out, i->first, "bool", i->second->GetListBool());
+				break;
 		}
 	}
 
 	io::Save file(config_file);
 	json::Writer::Write(obj_out, file.Get());
-}
-
-void Options::PutOption(json::Object &obj, const std::string &path, const json::UnknownElement &value) {
-	std::string::size_type pos = path.find('/');
-	// Not having a '/' denotes it is a leaf.
-	if (pos == std::string::npos) {
-		assert(obj.find(path) == obj.end());
-		obj[path] = value;
-	}
-	else {
-		PutOption(
-			obj[path.substr(0, pos)],
-			path.substr(pos + 1),
-			value);
-	}
 }
 
 } // namespace agi

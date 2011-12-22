@@ -78,12 +78,6 @@ private:
 	/// @param ignore_errors Log invalid entires in the option file and continue rather than throwing an exception
 	void LoadConfig(std::istream& stream, bool ignore_errors = false);
 
-	/// @brief Write an option to file.
-	/// @param[out] obj  Parent object
-	/// @param[in] path  Path option should be stored in.
-	/// @param[in] value Value to write.
-	static void PutOption(::json::Object &obj, const std::string &path, const ::json::UnknownElement &value);
-
 public:
 	/// @brief Constructor
 	/// @param file User config that will be loaded from and written back to.

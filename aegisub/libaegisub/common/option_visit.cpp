@@ -22,6 +22,7 @@
 #include "option_visit.h"
 
 #ifndef LAGI_PRE
+#include <cassert>
 #include <cmath>
 #include <memory>
 #endif
@@ -59,16 +60,6 @@ void ConfigVisitor::Visit(const json::Object& object) {
 	}
 }
 
-template<class T>
-static inline T convert_unknown(json::UnknownElement const& ue) {
-	return ue;
-}
-
-template<>
-inline int64_t convert_unknown(json::UnknownElement const& ue) {
-	return (int64_t)(double)ue;
-}
-
 template<class OptionValueType, class ValueType>
 OptionValue *ConfigVisitor::ReadArray(json::Array const& src, std::string const& array_type, void (OptionValueType::*set_list)(const std::vector<ValueType>&)) {
 	std::vector<ValueType> arr;
@@ -86,7 +77,7 @@ OptionValue *ConfigVisitor::ReadArray(json::Array const& src, std::string const&
 			return 0;
 		}
 
-		arr.push_back(convert_unknown<ValueType>(obj.begin()->second));
+		arr.push_back(obj.begin()->second);
 	}
 
 	OptionValueType *ret = new OptionValueType(name);
@@ -122,13 +113,12 @@ void ConfigVisitor::Visit(const json::Array& array) {
 		Error<OptionJsonValueArray>("Array type not handled");
 }
 
+void ConfigVisitor::Visit(const json::Integer& number) {
+	AddOptionValue(new OptionValueInt(name, number));
+}
 
-void ConfigVisitor::Visit(const json::Number& number) {
-	if (int64_t(number) == number) {
-		AddOptionValue(new OptionValueInt(name, int64_t(number)));
-	} else {
-		AddOptionValue(new OptionValueDouble(name, number));
-	}
+void ConfigVisitor::Visit(const json::Double& number) {
+	AddOptionValue(new OptionValueDouble(name, number));
 }
 
 void ConfigVisitor::Visit(const json::String& string) {

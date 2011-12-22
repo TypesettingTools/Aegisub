@@ -23,6 +23,10 @@
 #include "libaegisub/cajun/elements.h"
 #include "libaegisub/cajun/visitor.h"
 
+#ifndef LAGI_PRE
+#include <vector>
+#endif
+
 namespace agi {
 
 DEFINE_BASE_EXCEPTION_NOINNER(OptionJsonValueError, Exception)
@@ -47,7 +51,8 @@ public:
 
 	void Visit(const json::Array& array);
 	void Visit(const json::Object& object);
-	void Visit(const json::Number& number);
+	void Visit(const json::Integer& number);
+	void Visit(const json::Double& number);
 	void Visit(const json::String& string);
 	void Visit(const json::Boolean& boolean);
 	void Visit(const json::Null& null);

@@ -14,6 +14,8 @@ Author: Terry Caton
 #include <map>
 #include <string>
 #include <stdexcept>
+
+#include "stdint.h"
 #endif
 
 namespace json
@@ -21,14 +23,15 @@ namespace json
 
 /////////////////////////////////////////////////
 // forward declarations (more info further below)
-class Visitor;
-class ConstVisitor;
+struct Visitor;
+struct ConstVisitor;
 class UnknownElement;
 
 template <typename ValueTypeT>
 class TrivialType_T;
 
-typedef double Number;
+typedef int64_t Integer;
+typedef double Double;
 typedef bool Boolean;
 typedef std::string String;
 typedef std::deque<UnknownElement> Array;
@@ -69,6 +72,7 @@ public:
    UnknownElement(double number);
    UnknownElement(int number);
    UnknownElement(long number);
+   UnknownElement(int64_t number);
    UnknownElement(bool boolean);
    UnknownElement(const char *string);
    UnknownElement(const String& string);
@@ -81,13 +85,15 @@ public:
    // implicit cast to actual element type. throws on failure
    operator Object const&() const;
    operator Array const&() const;
-   operator Number const&() const;
+   operator Integer const&() const;
+   operator Double const&() const;
    operator Boolean const&() const;
    operator String const&() const;
    operator Null const&() const;
    operator Object&();
    operator Array&();
-   operator Number&();
+   operator Integer&();
+   operator Double&();
    operator Boolean&();
    operator String&();
    operator Null&();

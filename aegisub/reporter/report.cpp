@@ -40,100 +40,83 @@ Report::Report() {
 	Platform *p = Platform::GetPlatform();
 	Aegisub a;
 
-	json::Object general;
-	general["Signature"] = json::String(p->Signature());
-	general["Date"] = json::String(p->Date());
-	general["Architecture"] = json::String(p->ArchName());
-	general["OS Family"] = json::String(p->OSFamily());
-	general["OS Name"] = json::String(p->OSName());
-	general["Endian"] = json::String(p->Endian());
-	general["OS Version"] = json::String(p->OSVersion());
-	general["wx Version"] = json::String(p->wxVersion());
-	general["Locale"] = json::String(p->Locale());
-	general["Language"] = json::String(p->Language());
-	general["System Language"] = json::String(p->SystemLanguage());
-	root["General"] = general;
-
-
-
+	json::Object& general = root["General"];
+	general["Signature"] = p->Signature();
+	general["Date"] = p->Date();
+	general["Architecture"] = p->ArchName();
+	general["OS Family"] = p->OSFamily();
+	general["OS Name"] = p->OSName();
+	general["Endian"] = p->Endian();
+	general["OS Version"] = p->OSVersion();
+	general["wx Version"] = p->wxVersion();
+	general["Locale"] = p->Locale();
+	general["Language"] = p->Language();
+	general["System Language"] = p->SystemLanguage();
 
 	try {
-		json::Object aegisub;
-		aegisub["Last Version"] = json::String(a.GetString("Version/Last Version"));
-		aegisub["Spelling Language"] = json::String(a.GetString("Tool/Spell Checker/Language"));
-		aegisub["Thesaurus Language"] = json::String(a.GetString("Tool/Thesaurus/Language"));
-		aegisub["Audio Player"] = json::String(a.GetString("Audio/Player"));
-		aegisub["Audio Provider"] = json::String(a.GetString("Audio/Provider"));
-		aegisub["Video Provider"] = json::String(a.GetString("Video/Provider"));
-		aegisub["Subtitles Provider"] = json::String(a.GetString("Subtitle/Provider"));
-		aegisub["Save Charset"] = json::String(a.GetString("App/Save Charset"));
-		aegisub["Grid Font Size"] = json::Number(a.GetInt("Grid/Font Size"));
-		aegisub["Edit Font Size"] = json::Number(a.GetInt("Subtitle/Edit Box/Font Size"));
-		aegisub["Spectrum Enabled"] = json::Boolean(a.GetBool("Audio/Spectrum"));
-		aegisub["Spectrum Quality"] = json::Number(a.GetInt("Audio/Renderer/Spectrum/Quality"));
-		aegisub["Call Tips Enabled"] = json::Boolean(a.GetBool("App/Call Tips"));
-		aegisub["Medusa Hotkeys Enabled"] = json::Boolean(a.GetBool("Audio/Medusa Timing Hotkeys"));
-
-		root["Aegisub"] = aegisub;
+		json::Object& aegisub = root["Aegisub"];
+		aegisub["Last Version"] = a.GetString("Version/Last Version");
+		aegisub["Spelling Language"] = a.GetString("Tool/Spell Checker/Language");
+		aegisub["Thesaurus Language"] = a.GetString("Tool/Thesaurus/Language");
+		aegisub["Audio Player"] = a.GetString("Audio/Player");
+		aegisub["Audio Provider"] = a.GetString("Audio/Provider");
+		aegisub["Video Provider"] = a.GetString("Video/Provider");
+		aegisub["Subtitles Provider"] = a.GetString("Subtitle/Provider");
+		aegisub["Save Charset"] = a.GetString("App/Save Charset");
+		aegisub["Grid Font Size"] = a.GetInt("Grid/Font Size");
+		aegisub["Edit Font Size"] = a.GetInt("Subtitle/Edit Box/Font Size");
+		aegisub["Spectrum Enabled"] = a.GetBool("Audio/Spectrum");
+		aegisub["Spectrum Quality"] = a.GetInt("Audio/Renderer/Spectrum/Quality");
+		aegisub["Call Tips Enabled"] = a.GetBool("App/Call Tips");
+		aegisub["Medusa Hotkeys Enabled"] = a.GetBool("Audio/Medusa Timing Hotkeys");
 	} catch(...) {
 		root["Aegisub"]["Error"] = json::String("Config file is corrupted");
 	}
 
+	json::Object& hardware = root["Hardware"];
+	hardware["Memory Size"] = 0;
 
+	json::Object& cpu = root["CPU"];
+	cpu["Id"] = p->CPUId();
+	cpu["Speed"] = p->CPUSpeed();
+	cpu["Count"] = p->CPUCount();
+	cpu["Cores"] = p->CPUCores();
+	cpu["Features"] = p->CPUFeatures();
+	cpu["Features2"] = p->CPUFeatures2();
 
-	json::Object hardware;
-	hardware["Memory Size"] = json::Number();
-	root["Hardware"] = hardware;
+	json::Object& display = root["Display"];
+	display["Depth"] = p->DisplayDepth();
+	display["Size"] = p->DisplaySize();
+	display["Pixels Per Inch"] = p->DisplayPPI();
 
-	json::Object cpu;
-	cpu["Id"] = json::String(p->CPUId());
-	cpu["Speed"] = json::String(p->CPUSpeed());
-	cpu["Count"] = json::Number(p->CPUCount());
-	cpu["Cores"] = json::Number(p->CPUCores());
-	cpu["Features"] = json::String(p->CPUFeatures());
-	cpu["Features2"] = json::String(p->CPUFeatures2());
-	root["CPU"] = cpu;
-
-	json::Object display;
-	display["Depth"] = json::Number(p->DisplayDepth());
-	display["Size"] = json::String(p->DisplaySize());
-	display["Pixels Per Inch"] = json::String(p->DisplayPPI());
-
-		json::Object gl;
-		gl["Vendor"] = json::String(p->OpenGLVendor());
-		gl["Renderer"] = json::String(p->OpenGLRenderer());
-		gl["Version"] = json::String(p->OpenGLVersion());
-		gl["Extensions"] = json::String(p->OpenGLExt());
-		display["OpenGL"] = gl;
-
-	root["Display"] = display;
-
+	json::Object& gl = display["OpenGL"];
+	gl["Vendor"] = p->OpenGLVendor();
+	gl["Renderer"] = p->OpenGLRenderer();
+	gl["Version"] = p->OpenGLVersion();
+	gl["Extensions"] = p->OpenGLExt();
+	display["OpenGL"] = gl;
 
 #ifdef __WINDOWS__
-	json::Object windows;
+	json::Object& windows = root["Windows"];
 	windows["Service Pack"] = json::String();
 	windows["Graphics Driver Version"] = json::String();
 	windows["DirectShow Filters"] = json::String();
 	windows["AntiVirus Installed"] = json::Boolean();
 	windows["Firewall Installed"] = json::Boolean();
 	windows["DLL"] = json::String();
-	root["Windows"] = windows;
-
 #endif
 
 #ifdef __UNIX__
-	json::Object u_nix;
-	u_nix["Desktop Environment"] = json::String(p->DesktopEnvironment());
-	u_nix["Libraries"] = json::String(p->UnixLibraries());
-	root["Unix"] = u_nix;
+	json::Object& u_nix = root["Unix"];
+	u_nix["Desktop Environment"] = p->DesktopEnvironment();
+	u_nix["Libraries"] = p->UnixLibraries();
 #endif
 
 #ifdef __APPLE__
-	json::Object osx;
-	osx["Patch"] = json::String(p->PatchLevel());
-	osx["QuickTime Extensions"] = json::String(p->QuickTimeExt());
-	osx["Model"] = json::String(p->HardwareModel());
-	root["OS X"] = osx;
+	json::Object& osx = root["OS X"];
+	osx["Patch"] = p->PatchLevel();
+	osx["QuickTime Extensions"] = p->QuickTimeExt();
+	osx["Model"] = p->HardwareModel();
 #endif
 
 	agi::io::Save file("./t.json");

@@ -13,32 +13,28 @@ Author: Terry Caton
 namespace json
 {
 
+struct Visitor {
+	virtual ~Visitor() { }
 
-class Visitor
-{
-public:
-   virtual ~Visitor() {}
-
-   virtual void Visit(Array& array) = 0;
-   virtual void Visit(Object& object) = 0;
-   virtual void Visit(Number& number) = 0;
-   virtual void Visit(String& string) = 0;
-   virtual void Visit(Boolean& boolean) = 0;
-   virtual void Visit(Null& null) = 0;
+	virtual void Visit(Array& array) = 0;
+	virtual void Visit(Object& object) = 0;
+	virtual void Visit(Integer& number) = 0;
+	virtual void Visit(Double& number) = 0;
+	virtual void Visit(String& string) = 0;
+	virtual void Visit(Boolean& boolean) = 0;
+	virtual void Visit(Null& null) = 0;
 };
 
-class ConstVisitor
-{
-public:
-   virtual ~ConstVisitor() {}
+struct ConstVisitor {
+	virtual ~ConstVisitor() { }
 
-   virtual void Visit(const Array& array) = 0;
-   virtual void Visit(const Object& object) = 0;
-   virtual void Visit(const Number& number) = 0;
-   virtual void Visit(const String& string) = 0;
-   virtual void Visit(const Boolean& boolean) = 0;
-   virtual void Visit(const Null& null) = 0;
+	virtual void Visit(const Array& array) = 0;
+	virtual void Visit(const Object& object) = 0;
+	virtual void Visit(const Integer& number) = 0;
+	virtual void Visit(const Double& number) = 0;
+	virtual void Visit(const String& string) = 0;
+	virtual void Visit(const Boolean& boolean) = 0;
+	virtual void Visit(const Null& null) = 0;
 };
-
 
 } // End namespace
