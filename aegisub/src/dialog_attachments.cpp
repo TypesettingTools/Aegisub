@@ -91,8 +91,7 @@ DialogAttachments::DialogAttachments(wxWindow *parent, AssFile *ass)
 	wxSizer *mainSizer = new wxBoxSizer(wxVERTICAL);
 	mainSizer->Add(listView,1,wxTOP | wxLEFT | wxRIGHT | wxEXPAND,5);
 	mainSizer->Add(buttonSizer,0,wxALL | wxEXPAND,5);
-	mainSizer->SetSizeHints(this);
-	SetSizer(mainSizer);
+	SetSizerAndFit(mainSizer);
 	CenterOnParent();
 }
 
@@ -211,44 +210,30 @@ void DialogAttachments::OnDelete(wxCommandEvent &) {
 		i = listView->GetNextSelected(i);
 	}
 
-	// Remove empty attachment sections at the end of the file
-	std::list<AssEntry*>::iterator cur = ass->Line.end();
-	--cur;
+	// Remove empty attachment sections in the file
+	for (std::list<AssEntry*>::iterator it = ass->Line.begin(); it != ass->Line.end(); ) {
+		if ((*it)->GetType() == ENTRY_BASE && ((*it)->group == "[Fonts]" || (*it)->group == "[Graphics]")) {
+			wxString group = (*it)->group;
+			std::list<AssEntry*>::iterator header = it;
 
-	bool found_attachments = false;
-	wxString last_section_name;
-
-	while (cur != ass->Line.begin()) {
-		if (!((*cur)->group == "[Fonts]" || (*cur)->group == "[Graphics]"))
-			break;
-
-		if ((*cur)->GetEntryData() == "[Fonts]" || (*cur)->GetEntryData() == "[Graphics]") {
-			if (found_attachments) {
-				--cur;
-				continue;
+			bool has_attachments = false;
+			for (++it; it != ass->Line.end() && (*it)->group == group; ++it) {
+				if ((*it)->GetType() == ENTRY_ATTACHMENT) {
+					has_attachments = true;
+					break;
+				}
 			}
-			// found section heading with no attachments in, remove it
-			wxString delgroup = (*cur)->group;
-			std::list<AssEntry*>::iterator di = cur;
-			while (++di != ass->Line.end() && (*di)->group == delgroup) {
-				delete *di;
-				ass->Line.erase(di);
-				di = cur;
+
+			// Empty group found, delete it
+			if (!has_attachments) {
+				while (header != it) {
+					delete *header;
+					ass->Line.erase(header++);
+				}
 			}
-			di = cur;
-			--cur;
-			delete *di;
-			ass->Line.erase(di);
-			continue;
 		}
-
-		if (last_section_name != (*cur)->group)
-			found_attachments = false;
-		if (dynamic_cast<AssAttachment*>(*cur) != 0)
-			found_attachments = true;
-		last_section_name = (*cur)->group;
-
-		--cur;
+		else
+			++it;
 	}
 
 	ass->Commit(_("remove attachment"), AssFile::COMMIT_ATTACHMENT);
