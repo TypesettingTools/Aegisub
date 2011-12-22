@@ -73,7 +73,7 @@ DialogShiftTimes::DialogShiftTimes(agi::Context *context)
 	shift_by_frames->SetToolTip(_("Shift by frames"));
 	shift_by_frames->Bind(wxEVT_COMMAND_RADIOBUTTON_SELECTED, &DialogShiftTimes::OnByFrames, this);
 
-	shift_time = new TimeEdit(this, -1);
+	shift_time = new TimeEdit(this, -1, context);
 	shift_time->SetToolTip(_("Enter time in h:mm:ss.cs notation"));
 
 	shift_frames = new wxTextCtrl(this, -1);
@@ -193,7 +193,7 @@ void DialogShiftTimes::OnClose(wxCommandEvent &) {
 	long shift;
 	shift_frames->GetValue().ToLong(&shift);
 
-	OPT_SET("Tool/Shift Times/Time")->SetInt(shift_time->time.GetMS());
+	OPT_SET("Tool/Shift Times/Time")->SetInt(shift_time->GetMS());
 	OPT_SET("Tool/Shift Times/Frames")->SetInt(shift);
 	OPT_SET("Tool/Shift Times/ByTime")->SetBool(shift_by_time->GetValue());
 	OPT_SET("Tool/Shift Times/Type")->SetInt(time_fields->GetSelection());
@@ -289,7 +289,7 @@ void DialogShiftTimes::Process(wxCommandEvent &) {
 
 	long shift;
 	if (by_time) {
-		shift = shift_time->time.GetMS();
+		shift = shift_time->GetMS();
 		if (shift == 0) {
 			Close();
 			return;

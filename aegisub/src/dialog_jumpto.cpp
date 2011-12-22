@@ -71,7 +71,7 @@ DialogJumpTo::DialogJumpTo(agi::Context *c)
 	wxStaticText *LabelTime = new wxStaticText(this,-1,_("Time: "),wxDefaultPosition,wxSize(60,20));
 	JumpFrame = new wxTextCtrl(this,-1,wxString::Format("%ld",jumpframe),wxDefaultPosition,wxSize(60,20),wxTE_PROCESS_ENTER, NumValidator());
 	JumpFrame->SetMaxLength(maxLength.size());
-	JumpTime = new TimeEdit(this,-1,jumptime.GetASSFormated(),wxDefaultPosition,wxSize(60,20),wxTE_PROCESS_ENTER);
+	JumpTime = new TimeEdit(this, -1, c, jumptime.GetASSFormated(), wxSize(60,20));
 	wxSizer *FrameSizer = new wxBoxSizer(wxHORIZONTAL);
 	wxSizer *TimeSizer = new wxBoxSizer(wxHORIZONTAL);
 	FrameSizer->Add(LabelFrame,0,wxALIGN_CENTER_VERTICAL,0);
@@ -112,7 +112,7 @@ void DialogJumpTo::OnOK(wxCommandEvent &) {
 }
 
 void DialogJumpTo::OnEditTime (wxCommandEvent &) {
-	long newframe = c->videoController->FrameAtTime(JumpTime->time.GetMS());
+	long newframe = c->videoController->FrameAtTime(JumpTime->GetMS());
 	if (jumpframe != newframe) {
 		jumpframe = newframe;
 		JumpFrame->ChangeValue(wxString::Format("%i", jumpframe));
@@ -121,9 +121,5 @@ void DialogJumpTo::OnEditTime (wxCommandEvent &) {
 
 void DialogJumpTo::OnEditFrame (wxCommandEvent &event) {
 	JumpFrame->GetValue().ToLong(&jumpframe);
-	int newtime = c->videoController->TimeAtFrame(jumpframe);
-	if (JumpTime->time.GetMS() != newtime) {
-		JumpTime->time.SetMS(newtime);
-		JumpTime->ChangeValue(JumpTime->time.GetASSFormated());
-	}
+	JumpTime->SetMS(c->videoController->TimeAtFrame(jumpframe));
 }

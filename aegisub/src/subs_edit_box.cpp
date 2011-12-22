@@ -177,10 +177,9 @@ SubsEditBox::SubsEditBox(wxWindow *parent, agi::Context *context)
 
 	// Middle controls
 	Layer = new wxSpinCtrl(this,wxID_ANY,"",wxDefaultPosition,wxSize(50,-1),wxSP_ARROW_KEYS,0,0x7FFFFFFF,0);
-	StartTime = new TimeEdit(this,wxID_ANY,"",wxDefaultPosition,wxSize(75,-1),wxTE_PROCESS_ENTER);
-	EndTime = new TimeEdit(this,wxID_ANY,"",wxDefaultPosition,wxSize(75,-1),wxTE_PROCESS_ENTER);
-	EndTime->isEnd = true;
-	Duration = new TimeEdit(this,wxID_ANY,"",wxDefaultPosition,wxSize(75,-1),wxTE_PROCESS_ENTER);
+	StartTime = new TimeEdit(this, wxID_ANY, context, "", wxSize(75,-1));
+	EndTime = new TimeEdit(this, wxID_ANY, context, "", wxSize(75,-1), true);
+	Duration = new TimeEdit(this,wxID_ANY, context,"",wxSize(75,-1));
 	MarginL = new wxTextCtrl(this,wxID_ANY,"",wxDefaultPosition,wxSize(40,-1),wxTE_CENTRE | wxTE_PROCESS_ENTER,NumValidator());
 	MarginL->SetMaxLength(4);
 	MarginR = new wxTextCtrl(this,wxID_ANY,"",wxDefaultPosition,wxSize(40,-1),wxTE_CENTRE | wxTE_PROCESS_ENTER,NumValidator());
@@ -520,21 +519,21 @@ void SubsEditBox::CommitText(wxString desc) {
 }
 
 void SubsEditBox::CommitTimes(TimeField field) {
-	Duration->SetTime(EndTime->time - StartTime->time);
+	Duration->SetTime(EndTime->GetTime() - StartTime->GetTime());
 
 	// Update lines
 	for (Selection::iterator cur = sel.begin(); cur != sel.end(); ++cur) {
 		switch (field) {
 			case TIME_START:
-				(*cur)->Start = StartTime->time;
+				(*cur)->Start = StartTime->GetTime();
 				if ((*cur)->Start > (*cur)->End) (*cur)->End = (*cur)->Start;
 				break;
 			case TIME_END:
-				(*cur)->End = EndTime->time;
+				(*cur)->End = EndTime->GetTime();
 				if ((*cur)->Start > (*cur)->End) (*cur)->Start = (*cur)->End;
 				break;
 			case TIME_DURATION:
-				(*cur)->End = (*cur)->Start + Duration->time;
+				(*cur)->End = (*cur)->Start + Duration->GetTime();
 				break;
 		}
 	}
@@ -634,17 +633,17 @@ void SubsEditBox::OnLayerEnter(wxCommandEvent &) {
 }
 
 void SubsEditBox::OnStartTimeChange(wxCommandEvent &) {
-	if (StartTime->time > EndTime->time) EndTime->SetTime(StartTime->time);
+	if (StartTime->GetTime() > EndTime->GetTime()) EndTime->SetTime(StartTime->GetTime());
 	CommitTimes(TIME_START);
 }
 
 void SubsEditBox::OnEndTimeChange(wxCommandEvent &) {
-	if (StartTime->time > EndTime->time) StartTime->SetTime(EndTime->time);
+	if (StartTime->GetTime() > EndTime->GetTime()) StartTime->SetTime(EndTime->GetTime());
 	CommitTimes(TIME_END);
 }
 
 void SubsEditBox::OnDurationChange(wxCommandEvent &) {
-	EndTime->SetTime(StartTime->time + Duration->time);
+	EndTime->SetTime(StartTime->GetTime() + Duration->GetTime());
 	CommitTimes(TIME_DURATION);
 }
 void SubsEditBox::OnMarginLChange(wxCommandEvent &) {

@@ -34,65 +34,64 @@
 /// @ingroup custom_control
 ///
 
-
-#pragma once
-
-
-////////////
-// Includes
 #ifndef AGI_PRE
 #include <wx/textctrl.h>
 #endif
 
 #include "ass_time.h"
 
+#include <libaegisub/signal.h>
 
-/// @class TimeEdit
-/// @brief DOCME
+namespace agi {
+	class OptionValue;
+	struct Context;
+}
+
+/// @brief A text edit control for editing AssTime objects
 ///
+/// This control constrains values to valid times, and can display the time
+/// being edited as either a h:mm:ss.cc formatted time, or a frame number
 class TimeEdit : public wxTextCtrl {
-private:
-	/// DOCME
-	bool byFrame;
+	agi::Context *c; ///< Project context
+	bool byFrame;    ///< Is the time displayed as a frame number?
+	bool isEnd;      ///< Should the time be treated as an end time for time <-> frame conversions?
+	AssTime time;    ///< The time, which may be displayed as either a frame number or time
+	bool insert;     ///< If true, disable overwriting behavior in time mode
 
-	/// DOCME
-	bool ready;
+	agi::signal::Connection insert_opt;
 
-	void UpdateText();
 	void CopyTime();
 	void PasteTime();
 
-	/// DOCME
-	void UpdateTime(bool byUser=true);
+	/// Set the value of the text box from the current time and byFrame setting
+	void UpdateText();
 
-	/// DOCME
-	void OnModified(wxCommandEvent &event);
 	void OnContextMenu(wxContextMenuEvent &event);
+	void OnInsertChanged(agi::OptionValue const& opt);
 	void OnKeyDown(wxKeyEvent &event);
-	void OnCopy(wxCommandEvent &event);
-	void OnPaste(wxCommandEvent &event);
+	void OnModified(wxCommandEvent &event);
 
-	void Modified();
 public:
+	/// Get the current time as an AssTime object
+	AssTime GetTime() const { return time; }
+	/// Set the time
+	void SetTime(AssTime time) { SetMS(time.GetMS()); }
 
-	/// DOCME
-	AssTime time;
+	/// Get the current time as milliseconds
+	int GetMS() const { return time.GetMS(); }
+	/// Set the time to the specified milliseconds
+	void SetMS(int ms);
 
-	/// DOCME
-	bool isEnd;
+	/// Set whether the time is displayed as a time or the corresponding frame number
+	/// @param enableByFrame If true, frame numbers are displayed
+	void SetByFrame(bool enableByFrame);
 
-
-	/// DOCME
-	TimeEdit(wxWindow* parent, wxWindowID id, const wxString& value = "", const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = 0, const wxValidator& validator = wxDefaultValidator, const wxString& name = wxTextCtrlNameStr);
-
-	void SetByFrame(bool enable);
-	void SetTime(AssTime time);
-	void Update();
-
-	DECLARE_EVENT_TABLE()
-};
-
-enum {
-	Time_Edit_Copy = 1320,
-	Time_Edit_Paste
+	/// Constructor
+	/// @param parent Parent window
+	/// @param id Window id
+	/// @param c Project context
+	/// @param value Initial value. Must be a valid time string or empty
+	/// @param size Initial control size
+	/// @param asEnd Treat the time as a line end time (rather than start) for time <-> frame number conversions
+	TimeEdit(wxWindow* parent, wxWindowID id, agi::Context *c, const wxString& value = "", const wxSize& size = wxDefaultSize, bool asEnd = false);
 };

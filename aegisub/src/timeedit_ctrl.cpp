@@ -36,7 +36,11 @@
 
 #include "config.h"
 
+#include "timeedit_ctrl.h"
+
 #ifndef AGI_PRE
+#include <tr1/functional>
+
 #include <wx/clipbrd.h>
 #include <wx/dataobj.h>
 #include <wx/menu.h>
@@ -45,31 +49,30 @@
 
 #include "ass_time.h"
 #include "compat.h"
+#include "include/aegisub/context.h"
 #include "main.h"
-#include "timeedit_ctrl.h"
 #include "video_context.h"
 
 #ifdef __WXGTK__
 /// Use the multiline style only on wxGTK to workaround some wxGTK bugs with the default singleline style.
 #define TimeEditWindowStyle wxTE_MULTILINE | wxTE_CENTRE
 #else
-
 /// All other platforms than wxGTK.
 #define TimeEditWindowStyle wxTE_CENTRE
 #endif
 
-/// @brief Constructor 
-/// @param parent    
-/// @param id        
-/// @param value     
-/// @param pos       
-/// @param size      
-/// @param style     
-/// @param validator 
-/// @param name      
-///
-TimeEdit::TimeEdit(wxWindow* parent, wxWindowID id, const wxString& value, const wxPoint& pos, const wxSize& size, long style, const wxValidator& validator, const wxString& name) :
-wxTextCtrl(parent,id,value,pos,size,TimeEditWindowStyle | style,validator,name)
+enum {
+	Time_Edit_Copy = 1320,
+	Time_Edit_Paste
+};
+
+TimeEdit::TimeEdit(wxWindow* parent, wxWindowID id, agi::Context *c, const wxString& value, const wxSize& size, bool asEnd)
+: wxTextCtrl(parent, id, value, wxDefaultPosition, size,TimeEditWindowStyle | wxTE_PROCESS_ENTER)
+, c(c)
+, byFrame(false)
+, isEnd(asEnd)
+, insert(!OPT_GET("Subtitle/Time Edit/Insert Mode")->GetBool())
+, insert_opt(OPT_SUB("Subtitle/Time Edit/Insert Mode", &TimeEdit::OnInsertChanged, this))
 {
 	// Set validator
 	wxTextValidator val(wxFILTER_INCLUDE_CHAR_LIST);
@@ -99,227 +102,146 @@ wxTextCtrl(parent,id,value,pos,size,TimeEditWindowStyle | style,validator,name)
 	h += 8;
 	SetSizeHints(w,h,w,h);
 #endif
-	ready = true;
-	byFrame = false;
-	isEnd = false;
 
 	Bind(wxEVT_COMMAND_TEXT_UPDATED, &TimeEdit::OnModified, this);
 	Bind(wxEVT_CONTEXT_MENU, &TimeEdit::OnContextMenu, this);
+	Bind(wxEVT_KEY_DOWN, &TimeEdit::OnKeyDown, this);
+	Bind(wxEVT_COMMAND_MENU_SELECTED, std::tr1::bind(&TimeEdit::CopyTime, this), Time_Edit_Copy);
+	Bind(wxEVT_COMMAND_MENU_SELECTED, std::tr1::bind(&TimeEdit::PasteTime, this), Time_Edit_Paste);
 }
 
-BEGIN_EVENT_TABLE(TimeEdit, wxTextCtrl)
-	EVT_KEY_DOWN(TimeEdit::OnKeyDown)
-	EVT_MENU(Time_Edit_Copy,TimeEdit::OnCopy)
-	EVT_MENU(Time_Edit_Paste,TimeEdit::OnPaste)
-END_EVENT_TABLE()
-
-/// @brief Modified event 
-/// @param event 
-void TimeEdit::OnModified(wxCommandEvent &event) {
-	event.Skip();
-	Modified();
-}
-
-/// @brief Modified function 
-void TimeEdit::Modified() {
-	if (!ready) return;
-	ready = false;
-	
-	if (byFrame) Update();
-	else UpdateTime(true);
-
-	ready = true;
-}
-
-/// @brief Set time and update stuff 
-/// @param ms          
-/// @param setModified 
-void TimeEdit::SetTime(AssTime newTime) {
-	if (newTime != time) {
-		time = newTime;
+void TimeEdit::SetMS(int ms) {
+	if (ms != time.GetMS()) {
+		time.SetMS(ms);
 		UpdateText();
 	}
 }
 
-/// @brief Toggles between set by frame and time 
-/// @param enable 
 void TimeEdit::SetByFrame(bool enableByFrame) {
 	if (enableByFrame == byFrame) return;
 
-	if (enableByFrame) {
-		if (VideoContext::Get()->IsLoaded()) {
-			byFrame = true;
-			UpdateText();
-		}
-	}
-	else {
-		byFrame = false;
-		UpdateText();
-	}
+	byFrame = enableByFrame && c->videoController->TimecodesLoaded();
+	UpdateText();
 }
 
-/// @brief Update text to reflect time value 
-void TimeEdit::UpdateText() {
-	ready = false;
-	if (byFrame) {
-		int frame_n = VideoContext::Get()->FrameAtTime(time.GetMS(),isEnd ? agi::vfr::END : agi::vfr::START);
-		ChangeValue(wxString::Format("%i", frame_n));
-	}
-	else ChangeValue(time.GetASSFormated());
-	ready = true;
-}
 
-/// @brief Update 
-void TimeEdit::Update() {
+void TimeEdit::OnModified(wxCommandEvent &event) {
+	event.Skip();
 	if (byFrame) {
 		long temp;
 		GetValue().ToLong(&temp);
-		SetTime(VideoContext::Get()->TimeAtFrame(temp,isEnd ? agi::vfr::END : agi::vfr::START));
+		SetTime(c->videoController->TimeAtFrame(temp, isEnd ? agi::vfr::END : agi::vfr::START));
 	}
-
-	// Update time if not on insertion mode
-	else if (!OPT_GET("Subtitle/Time Edit/Insert Mode")->GetBool()) {
-		UpdateTime();
-	}
+	else if (insert)
+		time.ParseASS(GetValue());
 }
 
-/// @brief Reads value from a text control and update it 
-/// @param byUser 
-void TimeEdit::UpdateTime(bool byUser) {
-	bool insertion = OPT_GET("Subtitle/Time Edit/Insert Mode")->GetBool();
-	wxString text = GetValue();
-	long start=0,end=0;
-	if (insertion && byUser) {
-		GetSelection(&start,&end);
-		if (start == end) {
-			wxString nextChar = text.Mid(start,1);
-			if (nextChar == ":" || nextChar == ".") {
-				wxString temp = text;
-				text = temp.Left(start-1);
-				text += nextChar;
-				text += temp.Mid(start-1,1);
-				text += temp.Mid(start+2);
-				start++;
-				end++;
-			}
-			else if (nextChar.IsEmpty()) text.Remove(start-1,1);
-			else text.Remove(start,1);
-		}
-	}
 
-	// Update time
-	time.ParseASS(text);
-	if (insertion) {
+void TimeEdit::UpdateText() {
+	if (byFrame)
+		ChangeValue(wxString::Format("%d", c->videoController->FrameAtTime(time.GetMS(), isEnd ? agi::vfr::END : agi::vfr::START)));
+	else
 		ChangeValue(time.GetASSFormated());
-		SetSelection(start,end);
-	}
 }
 
-/// @brief Key pressed 
-/// @param event 
 void TimeEdit::OnKeyDown(wxKeyEvent &event) {
-	// Get key ID
 	int key = event.GetKeyCode();
-	bool insertMode = OPT_GET("Subtitle/Time Edit/Insert Mode")->GetBool();
-	Refresh();
-
-	// Check if it's an acceptable key
-	if (!event.CmdDown()) {
-		if (byFrame || !insertMode || (key != WXK_BACK && key != WXK_DELETE)) {
-			// Reset selection first, if necessary
-			if (!byFrame && insertMode) {
-				long from=0,to=0;
-				GetSelection(&from,&to);
-				if (to != from) SetSelection(from,from);
-			}
-
-			// Allow it through
+	if (event.CmdDown()) {
+		if (key == 'C' || key == 'X')
+			CopyTime();
+		else if (key == 'V')
+			PasteTime();
+		else
 			event.Skip();
-		}
 	}
 	else {
-		if (key == 'C' || key == 'X') {
-			CopyTime();
+		// Translate numpad presses to normal numbers
+		if (key >= WXK_NUMPAD0 && key <= WXK_NUMPAD9)
+			key += '0' - WXK_NUMPAD0;
+
+		// If overwriting is disabled, we're in frame mode, or it's a key we
+		// don't care about just let the standard processing happen
+		event.Skip();
+		if (byFrame) return;
+		if (insert) return;
+		if ((key < '0' || key > '9') && key != WXK_BACK && key != WXK_DELETE && key != ';' && key != '.') return;
+
+		event.Skip(false);
+
+		long start = GetInsertionPoint();
+		wxString text = GetValue();
+
+		// Delete does nothing
+		if (key == WXK_DELETE) return;
+		// Back just moves cursor back one without deleting
+		if (key == WXK_BACK) {
+			if (start > 0)
+				SetInsertionPoint(start - 1);
+			return;
 		}
-		else if (key == 'V') {
-			PasteTime();
+		// Cursor is at the end so do nothing
+		if (start >= (long)text.size()) return;
+
+		// If the cursor is at punctuation, move it forward to the next digit
+		if (text[start] == ':' || text[start] == '.')
+			++start;
+
+		// : and . hop over punctuation but never insert anything
+		if (key == ';' || key == '.') {
+			SetInsertionPoint(start);
+			return;
 		}
-		else {
-			event.Skip();
-		}
+
+		// Overwrite the digit
+		time.ParseASS(text.Left(start) + (char)key + text.Mid(start + 1));
+		SetValue(time.GetASSFormated());
+		SetInsertionPoint(start + 1);
 	}
 }
 
-///// Mouse/copy/paste events down here /////
-
-/// @brief Mouse event 
-/// @param event 
-void TimeEdit::OnContextMenu(wxContextMenuEvent &) {
-	if (!byFrame && OPT_GET("Subtitle/Time Edit/Insert Mode")->GetBool()) {
-		wxMenu menu;
-		menu.Append(Time_Edit_Copy,_("&Copy"));
-		menu.Append(Time_Edit_Paste,_("&Paste"));
-		PopupMenu(&menu);
-	}
+void TimeEdit::OnInsertChanged(agi::OptionValue const& opt) {
+	insert = !opt.GetBool();
 }
 
-/// @brief Menu Copy 
-void TimeEdit::OnCopy(wxCommandEvent &) {
-	SetFocus();
-	SetSelection(0,GetValue().Length());
-	CopyTime();
-	Refresh();
-}
-
-/// @brief Menu Paste 
-void TimeEdit::OnPaste(wxCommandEvent &) {
-	SetFocus();
-	PasteTime();
-	Refresh();
-}
-
-/// @brief Copy to clipboard 
-void TimeEdit::CopyTime() {
-	if (byFrame) {
-		Copy();
+void TimeEdit::OnContextMenu(wxContextMenuEvent &evt) {
+	if (byFrame || insert) {
+		evt.Skip();
 		return;
 	}
 
-	// Time
+	wxMenu menu;
+	menu.Append(Time_Edit_Copy, _("&Copy"));
+	menu.Append(Time_Edit_Paste, _("&Paste"));
+	PopupMenu(&menu);
+}
+
+void TimeEdit::CopyTime() {
 	if (wxTheClipboard->Open()) {
-		wxTheClipboard->SetData(new wxTextDataObject(GetStringSelection()));
+		wxTheClipboard->SetData(new wxTextDataObject(GetValue()));
 		wxTheClipboard->Close();
 	}
 }
 
-/// @brief Paste from clipboard 
 void TimeEdit::PasteTime() {
 	if (byFrame) {
 		Paste();
 		return;
 	}
 
-	// Time
 	if (wxTheClipboard->Open()) {
-		// Read text
 		wxString text;
 		if (wxTheClipboard->IsSupported(wxDF_TEXT)) {
 			wxTextDataObject data;
 			wxTheClipboard->GetData(data);
-			text = data.GetText();
-			text.Trim(false).Trim(true);
+			text = data.GetText().Trim(false).Trim(true);
 		}
 		wxTheClipboard->Close();
 
-		// Paste time
 		AssTime tempTime;
 		tempTime.ParseASS(text);
 		if (tempTime.GetASSFormated() == text) {
-			ready = false;
-			SetValue(text);
-			SetSelection(0,GetValue().Length());
-			ready = true;
-			Modified();
+			SetTime(tempTime);
+			SetSelection(0, GetValue().size());
 		}
 	}
 }
