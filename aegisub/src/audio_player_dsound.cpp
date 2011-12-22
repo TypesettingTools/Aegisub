@@ -78,8 +78,7 @@ void DirectSoundPlayer::OpenStream() {
 	if (FAILED(res)) throw "Failed initializing DirectSound";
 
 	// Set DirectSound parameters
-	AegisubApp *app = (AegisubApp*) wxTheApp;
-	directSound->SetCooperativeLevel((HWND)app->frame->GetHandle(),DSSCL_PRIORITY);
+	directSound->SetCooperativeLevel((HWND)wxGetApp().frame->GetHandle(),DSSCL_PRIORITY);
 
 	// Create the wave format structure
 	WAVEFORMATEX waveFormat;

@@ -165,9 +165,8 @@ struct app_language : public Command {
 
 	void operator()(agi::Context *c) {
 		// Get language
-		AegisubApp *app = (AegisubApp*) wxTheApp;
-		int old = app->locale.curCode;
-		int newCode = app->locale.PickLanguage();
+		int old = wxGetApp().locale.curCode;
+		int newCode = wxGetApp().locale.PickLanguage();
 		// Is OK?
 		if (newCode != -1 && newCode != old) {
 			// Set code
