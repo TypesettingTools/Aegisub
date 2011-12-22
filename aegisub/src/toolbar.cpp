@@ -29,6 +29,7 @@
 #include "main.h"
 
 #ifndef AGI_PRE
+#include <sstream>
 #include <vector>
 
 #include <wx/frame.h>
@@ -104,7 +105,7 @@ namespace {
 
 			int icon_size = OPT_GET("App/Toolbar Icon Size")->GetInt();
 
-			json::Array arr = it->second;
+			json::Array const& arr = it->second;
 			commands.reserve(arr.size());
 			bool needs_onidle = false;
 

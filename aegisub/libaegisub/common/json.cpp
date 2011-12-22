@@ -19,37 +19,35 @@
 /// @ingroup libaegisub io
 
 
-#ifdef LAGI_PRE
+#ifndef LAGI_PRE
 #include <fstream>
-#include <strstream>
+#include <sstream>
 #endif
 
 #include "libaegisub/access.h"
 #include "libaegisub/io.h"
 #include "libaegisub/json.h"
 #include "libaegisub/log.h"
+#include "libaegisub/scoped_ptr.h"
 
 
 namespace agi {
 	namespace json_util {
 
 json::UnknownElement parse(std::istream *stream) {
-	json::UnknownElement root;
-
 	try {
+		agi::scoped_ptr<std::istream> stream_deleter(stream);
+
+		json::UnknownElement root;
 		json::Reader::Read(root, *stream);
+		return root;
 	} catch (json::Reader::ParseException& e) {
 		LOG_E("json/parse") << "json::ParseException: " << e.what() << ", Line/offset: " << e.m_locTokenBegin.m_nLine + 1 << '/' << e.m_locTokenBegin.m_nLineOffset + 1;
-		delete stream;
 		throw;
 	} catch (json::Exception& e) {
 		LOG_E("json/parse") << "json::Exception: " << e.what();
-		delete stream;
 		throw;
 	}
-
-	delete stream;
-	return root;
 }
 
 json::UnknownElement file(const std::string &file) {

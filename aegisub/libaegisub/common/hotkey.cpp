@@ -21,6 +21,7 @@
 #include "../config.h"
 
 #ifndef LAGI_PRE
+#include <algorithm>
 #include <cmath>
 #include <memory>
 #endif
@@ -68,9 +69,7 @@ Hotkey::Hotkey(const std::string &file, const std::string &default_config)
 {
 	LOG_D("hotkey/init") << "Generating hotkeys.";
 
-	json::UnknownElement hotkey_root = agi::json_util::file(config_file, default_config);
-	json::Object const& object = hotkey_root;
-
+	json::Object object(agi::json_util::file(config_file, default_config));
 	for (json::Object::const_iterator index(object.begin()); index != object.end(); ++index)
 		BuildHotkey(index->first, index->second);
 }
@@ -160,12 +159,11 @@ void Hotkey::Flush() {
 	for (HotkeyMap::iterator index = str_map.begin(); index != str_map.end(); ++index) {
 		std::vector<std::string> const& combo_map(index->second.Get());
 
-		json::Array modifiers;
-		copy(combo_map.begin(), combo_map.end() - 1, std::back_inserter(modifiers));
-
 		json::Object hotkey;
-		hotkey["modifiers"] = modifiers;
 		hotkey["key"] = combo_map.back();
+		json::Array& modifiers = hotkey["modifiers"];
+
+		copy(combo_map.begin(), combo_map.end() - 1, std::back_inserter(modifiers));
 
 		json::Array& combo_array = root[index->second.Context()][index->second.CmdName()];
 		combo_array.push_back(hotkey);

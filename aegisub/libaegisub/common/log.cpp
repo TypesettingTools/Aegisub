@@ -67,17 +67,13 @@ LogSink::LogSink(const std::string& dir_log): dir_log(dir_log) {
 	util::time_log(time_start);
 }
 
-/// @todo The log files need to be trimed after N amount.
+/// @todo The log files need to be trimmed after N amount.
 LogSink::~LogSink() {
 	json::Object root;
-	json::Array array;
+	json::Array &array = root["log"];
 
 	agi_timeval time_close;
 	util::time_log(time_close);
-
-	std::stringstream str;
-	str << dir_log << time_start.tv_sec << ".json";
-	io::Save file(str.str());
 
 	for (unsigned int i=0; i < sink.size(); i++) {
 		json::Object entry;
@@ -93,21 +89,17 @@ LogSink::~LogSink() {
 		array.push_back(entry);
 	}
 
-	root["timeval"] = json::Object();
-
-	json::Array timeval_open;
+	json::Array &timeval_open = root["timeval"]["open"];
 	timeval_open.push_back(time_start.tv_sec);
 	timeval_open.push_back(time_start.tv_usec);
-	root["timeval"]["open"] = timeval_open;
 
-	json::Array timeval_close;
+	json::Array &timeval_close = root["timeval"]["close"];
 	timeval_close.push_back(time_close.tv_sec);
 	timeval_close.push_back(time_close.tv_usec);
-	root["timeval"]["close"] = timeval_close;
 
-	root["log"] = array;
-
-	json::Writer::Write(root, file.Get());
+	std::stringstream str;
+	str << dir_log << time_start.tv_sec << ".json";
+	json::Writer::Write(root, io::Save(str.str()).Get());
 
 	agi::util::delete_clear(sink);
 }

@@ -27,34 +27,38 @@ protected:
 	std::string default_mru;
 	std::string conf_ok;
 
-	virtual void SetUp() {
-		default_mru = "{\"Valid_Int\" : []}";
+	void SetUp() {
+		default_mru = "{\"Valid\" : []}";
 		conf_ok = "./data/mru_ok.json";
 	}
 };
 
 
 TEST_F(lagi_mru, MRUConstructFromFile) {
-	EXPECT_NO_THROW(agi::MRUManager mru(conf_ok, default_mru));
+	ASSERT_NO_THROW(agi::MRUManager mru(conf_ok, default_mru));
+	agi::MRUManager mru(conf_ok, default_mru);
+	agi::MRUManager::MRUListMap::const_iterator entry = mru.Get("Valid")->begin();
+	EXPECT_STREQ("Entry One", (*entry++).c_str());
+	EXPECT_STREQ("Entry Two", (*entry++).c_str());
+	EXPECT_TRUE(mru.Get("Valid")->end() == entry);
 }
 
 TEST_F(lagi_mru, MRUConstructFromString) {
 	util::remove("data/mru_tmp");
-
-	const std::string nonexistent("data/mru_tmp");
-	agi::MRUManager mru(nonexistent, default_mru);
+	agi::MRUManager mru("data/mru_tmp", default_mru);
 }
-
 
 TEST_F(lagi_mru, MRUConstructInvalid) {
 	util::copy("data/mru_invalid.json", "data/mru_tmp");
-	EXPECT_ANY_THROW(agi::MRUManager("data/mru_tmp", default_mru));
+	agi::MRUManager mru("data/mru_tmp", default_mru);
+	EXPECT_TRUE(mru.Get("Invalid")->empty());
 }
 
 TEST_F(lagi_mru, MRUEntryAdd) {
 	util::copy("data/mru_ok.json", "data/mru_tmp");
 	agi::MRUManager mru("data/mru_tmp", default_mru);
 	EXPECT_NO_THROW(mru.Add("Valid", "/path/to/file"));
+	EXPECT_STREQ("/path/to/file", mru.Get("Valid")->front().c_str());
 }
 
 TEST_F(lagi_mru, MRUEntryRemove) {
@@ -62,12 +66,14 @@ TEST_F(lagi_mru, MRUEntryRemove) {
 	agi::MRUManager mru("data/mru_tmp", default_mru);
 	EXPECT_NO_THROW(mru.Add("Valid", "/path/to/file"));
 	EXPECT_NO_THROW(mru.Remove("Valid", "/path/to/file"));
+	EXPECT_STRNE("/path/to/file", mru.Get("Valid")->front().c_str());
 }
 
 TEST_F(lagi_mru, MRUKeyInvalid) {
 	util::copy("data/mru_ok.json", "data/mru_tmp");
 	agi::MRUManager mru("data/mru_tmp", default_mru);
 	EXPECT_THROW(mru.Add("Invalid", "/path/to/file"), agi::MRUErrorInvalidKey);
+	EXPECT_THROW(mru.Get("Invalid"), agi::MRUErrorInvalidKey);
 }
 
 TEST_F(lagi_mru, MRUKeyValid) {
@@ -77,7 +83,7 @@ TEST_F(lagi_mru, MRUKeyValid) {
 }
 
 TEST_F(lagi_mru, MRUAddSeveral) {
-	util::copy("data/mru_ok.json", "data/mru_tmp");
+	util::remove("data/mru_tmp");
 	agi::MRUManager mru("data/mru_tmp", default_mru);
 
 	EXPECT_NO_THROW(mru.Add("Valid", "/file/1"));
@@ -87,14 +93,11 @@ TEST_F(lagi_mru, MRUAddSeveral) {
 	EXPECT_NO_THROW(mru.Add("Valid", "/file/1"));
 	EXPECT_NO_THROW(mru.Add("Valid", "/file/3"));
 
-	agi::MRUManager::MRUListMap::const_iterator entry = mru.Get("Valid")->begin();
-	EXPECT_STREQ("/file/3", (*entry++).c_str());
-	EXPECT_STREQ("/file/1", (*entry++).c_str());
-	EXPECT_STREQ("/file/2", (*entry++).c_str());
-	EXPECT_TRUE(mru.Get("Valid")->end() == entry);
+	EXPECT_STREQ("/file/3", mru.GetEntry("Valid", 0).c_str());
+	EXPECT_STREQ("/file/1", mru.GetEntry("Valid", 1).c_str());
+	EXPECT_STREQ("/file/2", mru.GetEntry("Valid", 2).c_str());
+	EXPECT_THROW(mru.GetEntry("Valid", 3), agi::MRUErrorIndexOutOfRange);
 }
-
-
 
 // Check to make sure an entry is really removed.  This was fixed in
 // r4347, the entry was being removed from a copy of the map internally.
