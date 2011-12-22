@@ -3,11 +3,11 @@ include ../Makefile.inc
 
 PROGRAM = run
 
-LDFLAGS		+= -L../libaegisub -laegisub-3.0 -Wl,-rpath $(CURDIR)/../libaegisub -lgtest -L../universalchardet -luniversalchardet
-LDFLAGS		+= $(LDFLAGS_ICONV)
+LIBS += -L../libaegisub -laegisub-3.0  -lgtest -L../universalchardet -luniversalchardet
+LDFLAGS += -Wl,-rpath $(CURDIR)/../libaegisub $(LDFLAGS_ICONV)
 
-CPPFLAGS	+= -I../src/include -I../libaegisub/include $(CFLAGS_ICONV)
-CXXFLAGS	+= -Wno-unused-value
+CPPFLAGS += -I../src/include -I../libaegisub/include $(CFLAGS_ICONV)
+CXXFLAGS += -Wno-unused-value
 
 
 ifdef $(BUILD_DARWIN)

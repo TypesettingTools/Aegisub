@@ -62,7 +62,7 @@ AS_CASE([$host],
 
 AS_IF([test "$build_bsd" = "yes"], [
   ICONV_CFLAGS="-I/usr/local/include"
-  ICONV_LDFLAGS="-L/usr/local/lib -liconv"
+  ICONV_LIBS="-L/usr/local/lib -liconv"
 ])
 
 # Used for universalchardet.
@@ -260,39 +260,26 @@ AC_CHECK_SIZEOF([time_t])
 ##############################
 # Program Support and Features
 ##############################
-##########################
-# X
-##########################
+#########################
+### Required Dependencies
+#########################
+
 AC_PATH_XTRA
 AS_IF([test x$no_x = xyes && test x$build_darwin != xyes],
       [AC_MSG_FAILURE([You must have a working copy of X installed.])])
 
-#########
-## OpenGL
-#########
 AX_CHECK_GL
-
 AS_IF([test x$no_gl = xyes], [AC_MSG_FAILURE([Aegisub requires GL support.])])
-
 AC_SUBST(GL_CFLAGS)
 AC_SUBST(GL_LIBS)
 
-#######
-## cURL
-#######
 PKG_CHECK_MODULES(LIBCURL, libcurl >= curl_required_version,,
   [AC_MSG_FAILURE([aegisub requires >= cURL curl_required_version])])
 
-###########
-## Freetype
-###########
 PKG_CHECK_MODULES(FREETYPE, freetype2 >= freetype_required_version,
                   AC_DEFINE(WITH_FREETYPE2, 1, [Enable FreeType 2 support.]),
                   [AC_MSG_FAILURE([Aegisub requires >= FreeType2 freetype_required_version])])
 
-#############
-## Fontconfig
-#############
 PKG_CHECK_MODULES(FONTCONFIG, fontconfig >= fontconfig_required_version,
                   [AC_DEFINE(WITH_FONTCONFIG, 1, [Enable FontConfig support.])],
                   [AC_MSG_FAILURE([Aegisub requires fontconfig >= fontconfig_required_version])])
@@ -301,17 +288,11 @@ PKG_CHECK_MODULES(FONTCONFIG, fontconfig >= fontconfig_required_version,
 ## iconv
 ########
 AC_ARG_VAR([ICONV_CFLAGS], [CFLAGS to use for iconv []])
-AC_ARG_VAR([ICONV_LDFLAGS], [LDFLAGS to use for iconv [-liconv]])
+AC_ARG_VAR([ICONV_LIBS], [LIBS to use for iconv [-liconv]])
 
-AS_IF([test -z "$ICONV_LDFLAGS"], [
-  OLD_LIBS="$LIBS"
-  LIBS=""
-  AC_SEARCH_LIBS([iconv_open], [iconv])
-  ICONV_LDFLAGS="$LIBS"
-  LIBS="$OLD_LIBS"
-])
+AS_IF([test -z "$ICONV_LIBS"], AC_SEARCH_LIBS([iconv_open], [iconv]))
 
-AC_AGI_COMPILE([iconv], [iconv], [$ICONV_CFLAGS], [$ICONV_LDFLAGS],[
+AC_AGI_COMPILE([iconv], [iconv], [$ICONV_CFLAGS], [$ICONV_LIBS],[
 #include <iconv.h>
 int main(void) {
   iconv_t ic;
@@ -320,12 +301,12 @@ int main(void) {
   return 0;
 } ])
 
-AC_SUBST(ICONV_LDFLAGS)
+AC_SUBST(ICONV_LIBS)
 AC_SUBST(ICONV_CFLAGS)
 
 AS_IF([test x$agi_cv_with_iconv = xno], [AC_MSG_FAILURE([Please install a working iconv library.])])
 
-AC_AGI_COMPILE([iconv (const)], [iconv_const], [$ICONV_CFLAGS], [$ICONV_LDFLAGS],[
+AC_AGI_COMPILE([iconv (const)], [iconv_const], [$ICONV_CFLAGS], [$ICONV_LIBS],[
 #include <iconv.h>
 int main(void) {
   iconv_t cd = iconv_open("UTF-16", "UTF-8");
@@ -350,18 +331,18 @@ AC_ARG_WITH(alsa,
                            [build without ALSA audio provider [auto]]))
 
 AC_ARG_VAR([ALSA_CFLAGS], [CFLAGS to use for ALSA []])
-AC_ARG_VAR([ALSA_LDFLAGS], [LDFLAGS to use for ALSA [-lasound -lrt]])
+AC_ARG_VAR([ALSA_LIBS], [LIBS to use for ALSA [-lasound -lrt]])
 
-ALSA_LDFLAGS=${ALSA_LDFLAGS:--lasound -lrt}
+ALSA_LIBS=${ALSA_LIBS:--lasound -lrt}
 
 AS_IF([test x$with_alsa = xno],
       [alsa_disabled="(disabled)"],
-      [AC_CHECK_LIB([asound], [snd_pcm_open], [with_alsa="yes"], [with_alsa="no"], $ALSA_LDFLAGS)])
+      [AC_CHECK_LIB([asound], [snd_pcm_open], [with_alsa="yes"], [with_alsa="no"], $ALSA_LIBS)])
 
 AS_IF([test x$with_alsa = xyes], AC_DEFINE(WITH_ALSA, 1, [Enable ALSA Support]))
 
 AC_SUBST(ALSA_CFLAGS)
-AC_SUBST(ALSA_LDFLAGS)
+AC_SUBST(ALSA_LIBS)
 AC_SUBST(with_alsa)
 
 ############
@@ -564,7 +545,7 @@ WX_UNICODE=$UNICODE
 WX_CONFIG_CHECK([wx_required_version],,,[std,gl,stc],[$WXCONFIG_FLAGS])
 
 AS_IF([test x$have_wxconfig = xno],
-  AC_MSG_FAILURE([wxWidgets detection failed, please set --with-wx* or add the libraries to your LDFLAGS, CXX/CFLAGS.]))
+  AC_MSG_FAILURE([wxWidgets detection failed, please set --with-wx* or add the libraries to your LIBS, CXX/CFLAGS.]))
 
 AC_ARG_ENABLE(slow-wx-checks,
               AS_HELP_STRING([--disable-slow-wx-checks],[Disable slow-running checks for wx components.]))
@@ -657,18 +638,18 @@ AS_IF([test x$enable_profile = xyes], [
 # gcov
 ######
 AC_ARG_VAR([GCOV_CFLAGS], [gcov cflag(s) to use with --enable-gcov [-ftest-coverage -fprofile-arcs]])
-AC_ARG_VAR([GCOV_LDFLAGS], [gcov ldflag(s) to use with --enable-gcov [-lgcov]])
+AC_ARG_VAR([GCOV_LIBS], [gcov ldflag(s) to use with --enable-gcov [-lgcov]])
 
 AC_MSG_CHECKING([whether to turn on gcov])
 AC_ARG_ENABLE(gcov, AS_HELP_STRING([--enable-gcov],[enable gcov [no]]))
 
 AS_IF([test x$enable_gcov = xyes], [
   GCOV_CFLAGS=${GCOV_CLFAGS:--fprofile-arcs -ftest-coverage}
-  GCOV_LDFLAGS=${GCOV_LDFLAGS:--lgcov}
+  GCOV_LIBS=${GCOV_LIBS:--lgcov}
 
-  AC_MSG_RESULT([yes ($GCOV_CFLAGS) ($GCOV_LDFLAGS)])
+  AC_MSG_RESULT([yes ($GCOV_CFLAGS) ($GCOV_LIBS)])
   CFLAGS="$CFLAGS $GCOV_CFLAGS"
-  LDFLAGS="$LDFLAGS $GCOV_LDFLAGS"
+  LIBS="$LIBS $GCOV_LIBS"
 ], [
   enable_gcov="no"
   AC_MSG_RESULT([no])
@@ -677,18 +658,18 @@ AS_IF([test x$enable_gcov = xyes], [
 ################
 # Electric Fence
 ################
-AC_ARG_VAR([EFENCE_LDFLAGS], [Electric Fence ldflag(s) to use with --enable-profile [-lefence]])
+AC_ARG_VAR([EFENCE_LIBS], [Electric Fence ldflag(s) to use with --enable-profile [-lefence]])
 
 AC_MSG_CHECKING([whether to turn on Electric Fence])
 AC_ARG_ENABLE(efence, AS_HELP_STRING([--enable-efence],[enable Electric Fence [no]]))
 AS_IF([test x$enable_efence = xyes], [
-  EFENCE_LDFLAGS=${EFENCE_LDFLAGS:--lefence}
-  AC_MSG_RESULT([yes ($EFENCE_LDFLAGS)])
+  EFENCE_LIBS=${EFENCE_LIBS:--lefence}
+  AC_MSG_RESULT([yes ($EFENCE_LIBS)])
 ], [
   enable_efence="no"
   AC_MSG_RESULT([no])
 ])
-AC_SUBST(EFENCE_LDFLAGS)
+AC_SUBST(EFENCE_LIBS)
 
 ##########
 # ccmalloc
@@ -808,6 +789,7 @@ Configure settings
   CXXFLAGS               $CXXFLAGS
   CPPFLAGS               $CPPFLAGS
   LDFLAGS                $LDFLAGS
+  LIBS                   $LIBS
 
 Default Settings
   Audio Player:          $default_player_audio

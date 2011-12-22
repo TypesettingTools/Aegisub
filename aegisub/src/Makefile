@@ -10,14 +10,16 @@ AEGISUB_CFLAGS = -I. -I..  -Iinclude -I../libaegisub/include -DAEGISUB $(CFLAGS_
 CFLAGS += $(AEGISUB_CFLAGS)
 CXXFLAGS += $(AEGISUB_CFLAGS) -D__STDC_FORMAT_MACROS $(CXXFLAGS_WX)
 
-LDFLAGS += -L../libaegisub -laegisub-3.0
-LDFLAGS += $(LDFLAGS_CCMALLOC) $(LDFLAGS_EFENCE) $(LDFLAGS_GL)
-LDFLAGS += $(LDFLAGS_PTHREAD) $(LDFLAGS_WX) $(LDFLAGS_FREETYPE)
-LDFLAGS += $(LDFLAGS_FONTCONFIG) $(LDFLAGS_FFTW3)
-LDFLAGS_POST += $(LDFLAGS_UCHARDET)
+LIBS += -L../libaegisub -laegisub-3.0
+LIBS += $(LIBS_CCMALLOC) $(LIBS_EFENCE) $(LIBS_GL)
+LIBS += $(LIBS_PTHREAD) $(LIBS_WX) $(LIBS_FREETYPE)
+LIBS += $(LIBS_FONTCONFIG) $(LIBS_FFTW3)
+LIBS += $(LIBS_UCHARDET)
+
+LDFLAGS += $(LDFLAGS_CCMALLOC)
 
 ifdef BUILD_DARWIN
-LDFLAGS += -lz
+LIBS += -lz
 endif
 
 ###############
@@ -26,25 +28,25 @@ endif
 ifeq (yes, $(HAVE_ALSA))
 SRC_OPT += audio_player_alsa.cpp
 audio_player_alsa.o: CXXFLAGS += $(CFLAGS_ALSA)
-LDFLAGS += $(LDFLAGS_ALSA)
+LIBS += $(LIBS_ALSA)
 endif
 
 ifeq (yes, $(HAVE_PORTAUDIO))
 SRC_OPT += audio_player_portaudio.cpp
 audio_player_portaudio.o: CXXFLAGS += $(CFLAGS_PORTAUDIO)
-LDFLAGS += $(LDFLAGS_PORTAUDIO)
+LIBS += $(LIBS_PORTAUDIO)
 endif
 
 ifeq (yes, $(HAVE_PULSEAUDIO))
 SRC_OPT += audio_player_pulse.cpp
 audio_player_pulse.o: CXXFLAGS += $(CFLAGS_LIBPULSE)
-LDFLAGS += $(LDFLAGS_LIBPULSE)
+LIBS += $(LIBS_LIBPULSE)
 endif
 
 ifeq (yes, $(HAVE_OPENAL))
 SRC_OPT += audio_player_openal.cpp
 audio_player_openal.o: CXXFLAGS += $(CFLAGS_OPENAL)
-LDFLAGS += $(LDFLAGS_OPENAL)
+LIBS += $(LIBS_OPENAL)
 endif
 
 ifeq (yes, $(HAVE_OSS))
@@ -58,8 +60,7 @@ ifeq (yes, $(HAVE_FFMS))
 SRC_OPT += audio_provider_ffmpegsource.cpp video_provider_ffmpegsource.cpp ffmpegsource_common.cpp
 audio_provider_ffmpegsource.o video_provider_ffmpegsource.o ffmpegsource_common.o: \
 	CXXFLAGS += $(CFLAGS_FFMS)
-LDFLAGS += $(LDFLAGS_FFMS)
-LDFLAGS_POST += $(LDFLAGS_FFMS)
+LIBS += $(LIBS_FFMS)
 endif
 
 ###########
@@ -68,8 +69,7 @@ endif
 ifeq (yes, $(HAVE_LIBASS))
 SRC_OPT += subtitles_provider_libass.cpp
 subtitles_provider_libass.o: CXXFLAGS += $(CFLAGS_LIBASS)
-LDFLAGS += $(LDFLAGS_LIBASS)
-LDFLAGS_POST += $(LDFLAGS_LIBASS)
+LIBS += $(LIBS_LIBASS)
 endif
 
 ############
@@ -87,7 +87,7 @@ endif
 ifeq (yes, $(HAVE_HUNSPELL))
 SRC_OPT += spellchecker_hunspell.cpp
 spellchecker_hunspell.o: CXXFLAGS += $(CFLAGS_HUNSPELL)
-LDFLAGS += $(LDFLAGS_HUNSPELL)
+LIBS += $(LIBS_HUNSPELL)
 endif
 
 #####################

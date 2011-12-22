@@ -13,7 +13,7 @@ lagi_pre.h.gch: CXXFLAGS := $(CXXFLAGS)
 
 ifeq (yes, $(BUILD_DARWIN))
 CXXFLAGS += -I/Developer/SDKs/MacOSX10.5.sdk/System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/LaunchServices.framework/Versions/A/Headers/
-LDFLAGS += -L../universalchardet -luniversalchardet
+LIBS += -L../universalchardet -luniversalchardet
 endif
 
 common/charset_conv.o: CXXFLAGS += $(CFLAGS_ICONV)
