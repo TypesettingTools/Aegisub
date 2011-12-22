@@ -115,9 +115,9 @@ void TimeEdit::SetByFrame(bool enableByFrame) {
 void TimeEdit::OnModified(wxCommandEvent &event) {
 	event.Skip();
 	if (byFrame) {
-		long temp;
+		long temp = 0;
 		GetValue().ToLong(&temp);
-		SetTime(c->videoController->TimeAtFrame(temp, isEnd ? agi::vfr::END : agi::vfr::START));
+		time = c->videoController->TimeAtFrame(temp, isEnd ? agi::vfr::END : agi::vfr::START);
 	}
 	else if (insert)
 		time.ParseASS(GetValue());
