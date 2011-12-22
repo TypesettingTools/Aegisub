@@ -6,9 +6,12 @@ Author: Terry Caton
 
 ***********************************************/
 
-#include "writer.h"
+#include "libaegisub/cajun/writer.h"
+
+#ifndef LAGI_PRE
 #include <iostream>
 #include <iomanip>
+#endif
 
 /*
 
@@ -21,20 +24,12 @@ TODO:
 namespace json
 {
 
-inline Writer::Writer(std::ostream& ostr) :
+Writer::Writer(std::ostream& ostr) :
    m_ostr(ostr),
    m_nTabDepth(0)
 {}
 
-template <typename ElementTypeT>
-void Writer::Write(const ElementTypeT& element, std::ostream& ostr)
-{
-   Writer writer(ostr);
-   writer.Write(element);
-   ostr.flush(); // all done
-}
-
-inline void Writer::Write(const Array& array)
+void Writer::Write(const Array& array)
 {
    if (array.empty())
       m_ostr << "[]";
@@ -59,7 +54,7 @@ inline void Writer::Write(const Array& array)
    }
 }
 
-inline void Writer::Write(const Object& object)
+void Writer::Write(const Object& object)
 {
    if (object.empty())
       m_ostr << "{}";
@@ -83,17 +78,17 @@ inline void Writer::Write(const Object& object)
    }
 }
 
-inline void Writer::Write(const Number& numberElement)
+void Writer::Write(const Number& numberElement)
 {
    m_ostr << std::setprecision(20) << numberElement;
 }
 
-inline void Writer::Write(const Boolean& booleanElement)
+void Writer::Write(const Boolean& booleanElement)
 {
    m_ostr << (booleanElement ? "true" : "false");
 }
 
-inline void Writer::Write(const String& stringElement)
+void Writer::Write(const String& stringElement)
 {
    m_ostr << '"';
 
@@ -118,21 +113,21 @@ inline void Writer::Write(const String& stringElement)
    m_ostr << '"';
 }
 
-inline void Writer::Write(const Null& )
+void Writer::Write(const Null& )
 {
    m_ostr << "null";
 }
 
-inline void Writer::Write(const UnknownElement& unknown)
+void Writer::Write(const UnknownElement& unknown)
 {
    unknown.Accept(*this);
 }
 
-inline void Writer::Visit(const Array& array)       { Write(array); }
-inline void Writer::Visit(const Object& object)     { Write(object); }
-inline void Writer::Visit(const Number& number)     { Write(number); }
-inline void Writer::Visit(const String& string)     { Write(string); }
-inline void Writer::Visit(const Boolean& boolean)   { Write(boolean); }
-inline void Writer::Visit(const Null& null)         { Write(null); }
+void Writer::Visit(const Array& array)       { Write(array); }
+void Writer::Visit(const Object& object)     { Write(object); }
+void Writer::Visit(const Number& number)     { Write(number); }
+void Writer::Visit(const String& string)     { Write(string); }
+void Writer::Visit(const Boolean& boolean)   { Write(boolean); }
+void Writer::Visit(const Null& null)         { Write(null); }
 
 } // end namespace

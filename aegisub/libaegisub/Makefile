@@ -20,6 +20,9 @@ common/charset_conv.o: CXXFLAGS += $(CFLAGS_ICONV)
 unix/path.o: CXXFLAGS += -DP_DATA=\"$(P_DATA)\" -DP_DOC=\"$(P_DOC)\" -DP_LOCALE=\"$(P_LOCALE)\"
 
 SRC = \
+	common/cajun/elements.cpp \
+	common/cajun/reader.cpp \
+	common/cajun/writer.cpp \
 	common/charset.cpp \
 	common/charset_conv.cpp \
 	common/charset_ucd.cpp \

@@ -506,11 +506,15 @@
 			Name="Cajun"
 			>
 			<File
+				RelativePath="..\..\libaegisub\common\cajun\elements.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\libaegisub\include\libaegisub\cajun\elements.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\libaegisub\include\libaegisub\cajun\elements.inl"
+				RelativePath="..\..\libaegisub\common\cajun\reader.cpp"
 				>
 			</File>
 			<File
@@ -518,19 +522,15 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\libaegisub\include\libaegisub\cajun\reader.inl"
-				>
-			</File>
-			<File
 				RelativePath="..\..\libaegisub\include\libaegisub\cajun\visitor.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\libaegisub\include\libaegisub\cajun\writer.h"
+				RelativePath="..\..\libaegisub\common\cajun\writer.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\libaegisub\include\libaegisub\cajun\writer.inl"
+				RelativePath="..\..\libaegisub\include\libaegisub\cajun\writer.h"
 				>
 			</File>
 		</Filter>

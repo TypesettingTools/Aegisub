@@ -9,8 +9,11 @@ Author: Terry Caton
 #pragma once
 
 #include "elements.h"
+
+#ifndef LAGI_PRE
 #include <iostream>
 #include <vector>
+#endif
 
 namespace json
 {
@@ -95,7 +98,7 @@ private:
    class TokenStream;
    typedef std::vector<Token> Tokens;
 
-   template <typename ElementTypeT>   
+   template <typename ElementTypeT>
    static void Read_i(ElementTypeT& element, std::istream& istr);
 
    // scanning istream into token sequence
@@ -118,8 +121,4 @@ private:
    const std::string& MatchExpectedToken(Token::Type nExpected, TokenStream& tokenStream);
 };
 
-
 } // End namespace
-
-
-#include "reader.inl"

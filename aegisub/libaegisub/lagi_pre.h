@@ -38,13 +38,16 @@
 #include <algorithm>
 #include <deque>
 #include <fstream>
+#include <iomanip>
 #include <iostream>
 #include <iterator>
 #include <list>
 #include <locale>
 #include <map>
 #include <numeric>
+#include <set>
 #include <sstream>
+#include <stdexcept>
 #include <string>
 #include <vector>
 

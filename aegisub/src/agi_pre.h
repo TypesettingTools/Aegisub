@@ -56,9 +56,6 @@
 // Setup
 #define AGI_PRE
 
-// Common C++
-#include <set>
-
 // General headers
 #include <ctype.h>
 #include <fcntl.h>

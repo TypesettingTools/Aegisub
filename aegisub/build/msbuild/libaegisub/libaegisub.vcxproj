@@ -83,6 +83,9 @@
       <PrecompiledHeader>Create</PrecompiledHeader>
       <PrecompiledHeaderFile>lagi_pre.h</PrecompiledHeaderFile>
     </ClCompile>
+    <ClCompile Include="$(SrcDir)common\cajun\elements.cpp" />
+    <ClCompile Include="$(SrcDir)common\cajun\reader.cpp" />
+    <ClCompile Include="$(SrcDir)common\cajun\writer.cpp" />
     <ClCompile Include="$(SrcDir)common\charset.cpp" />
     <ClCompile Include="$(SrcDir)common\charset_conv.cpp" />
     <ClCompile Include="$(SrcDir)common\charset_ucd.cpp" />
@@ -107,8 +110,5 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="$(SrcDir)include\libaegisub\charsets.def" />
-    <None Include="$(SrcDir)include\libaegisub\cajun\elements.inl" />
-    <None Include="$(SrcDir)include\libaegisub\cajun\reader.inl" />
-    <None Include="$(SrcDir)include\libaegisub\cajun\writer.inl" />
   </ItemGroup>
 </Project>

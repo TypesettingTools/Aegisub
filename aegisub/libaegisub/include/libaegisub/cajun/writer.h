@@ -18,7 +18,12 @@ class Writer : private ConstVisitor
 {
 public:
    template <typename ElementTypeT>
-   static void Write(const ElementTypeT& element, std::ostream& ostr);
+   static void Write(const ElementTypeT& element, std::ostream& ostr)
+   {
+      Writer writer(ostr);
+      writer.Write(element);
+      ostr.flush(); // all done
+   }
 
 private:
    Writer(std::ostream& ostr);
@@ -30,12 +35,12 @@ private:
    void Write(const Null& null);
    void Write(const UnknownElement& unknown);
 
-   virtual void Visit(const Array& array);
-   virtual void Visit(const Object& object);
-   virtual void Visit(const Number& number);
-   virtual void Visit(const String& string);
-   virtual void Visit(const Boolean& boolean);
-   virtual void Visit(const Null& null);
+   void Visit(const Array& array);
+   void Visit(const Object& object);
+   void Visit(const Number& number);
+   void Visit(const String& string);
+   void Visit(const Boolean& boolean);
+   void Visit(const Null& null);
 
    std::ostream& m_ostr;
    int m_nTabDepth;
@@ -43,5 +48,3 @@ private:
 
 
 } // End namespace
-
-#include "writer.inl"

@@ -8,11 +8,13 @@ Author: Terry Caton
 
 #pragma once
 
+#ifndef LAGI_PRE
 #include <deque>
 #include <list>
 #include <map>
 #include <string>
 #include <stdexcept>
+#endif
 
 namespace json
 {
@@ -115,11 +117,6 @@ private:
    template <typename ElementTypeT>
    class Imp_T;
 
-   class CastVisitor;
-
-   template <typename ElementTypeT>
-   class CastVisitor_T;
-
    template <typename ElementTypeT>
    const ElementTypeT& CastTo() const;
 
@@ -139,6 +136,3 @@ public:
 };
 
 } // end namespace
-
-
-#include "elements.inl"
