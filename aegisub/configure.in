@@ -1040,7 +1040,7 @@ Subtitle Providers:
   libass                 $with_libass $libass_disabled
 
 Misc Packages
-  Hunspell:              $with_hunspell $with_hunspell_version $hunspell_disabled
+  Hunspell:              $with_hunspell $hunspell_disabled
   FFTW3:                 $with_fftw $fftw_disabled
 ]);
 
