@@ -117,9 +117,6 @@ public:
 
 	/// Write the user configuration to disk, throws an exception if something goes wrong.
 	void Flush();
-
-	/// Print internal option type, name and values.
-	void DumpAll();
 };
 
 } // namespace agi
