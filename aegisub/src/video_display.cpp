@@ -289,6 +289,9 @@ void VideoDisplay::UpdateSize(bool force) {
 			viewport_top = viewport_bottom = delta / 2;
 			viewport_height = h - delta;
 		}
+
+		zoomValue = double(h) / vidH;
+		zoomBox->ChangeValue(wxString::Format("%g%%", zoomValue * 100.));
 	}
 	else {
 		wxEventBlocker blocker(this);
