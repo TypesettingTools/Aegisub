@@ -53,8 +53,8 @@
 
 
 /// @brief AssTime constructors
-AssTime::AssTime () : time(0) { }
-AssTime::AssTime (int time) : time(time) { }
+AssTime::AssTime() : time(0) { }
+AssTime::AssTime(int time) { SetMS(time); }
 
 
 
