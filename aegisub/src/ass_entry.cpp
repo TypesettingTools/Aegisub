@@ -34,60 +34,25 @@
 /// @ingroup subs_storage
 ///
 
-
-///////////
-// Headers
 #include "config.h"
 
-#include "ass_attachment.h"
-#include "ass_dialogue.h"
 #include "ass_entry.h"
-#include "ass_style.h"
 
-
-/// @brief Constructs AssEntry
-AssEntry::AssEntry() {
-	Valid = true;
-}
-
-/// @brief DOCME
-/// @param _data 
-///
-AssEntry::AssEntry(wxString _data) {
-	data = _data;
-	Valid = true;
-}
-
-/// @brief Destructor for AssEntry 
-///
-AssEntry::~AssEntry() {
-}
-
-/// @brief Get SSA conversion 
-/// @return 
-///
 wxString AssEntry::GetSSAText() const {
+	wxString lower = data.Lower();
+
 	// Special cases
-	if (data.Lower() == "[v4+ styles]") return wxString("[V4 Styles]");
-	if (data.Lower() == "scripttype: v4.00+") return wxString("ScriptType: v4.00");
-	if (data.Lower().Left(7) == "format:") {
-		if (group.Lower() == "[events]") return wxString("Format: Marked, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text");
-		if (group.Lower() == "[v4+ styles]") return wxString("Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, TertiaryColour, BackColour, Bold, Italic, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, AlphaLevel, Encoding");
+	if (lower == "[v4+ styles]") return "[V4 Styles]";
+	if (lower == "scripttype: v4.00+") return "ScriptType: v4.00";
+	if (lower.Left(7) == "format:") {
+		if (group.Lower() == "[events]") return "Format: Marked, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text";
+		if (group.Lower() == "[v4+ styles]") return "Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, TertiaryColour, BackColour, Bold, Italic, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, AlphaLevel, Encoding";
 	}
 	return GetEntryData();
 }
 
-/// @brief Clone 
-///
 AssEntry *AssEntry::Clone() const {
-	// Create clone
-	AssEntry *final = new AssEntry();
-
-	// Copy data
-	final->data = data;
+	AssEntry *final = new AssEntry(data);
 	final->group = group;
-	final->Valid = Valid;
-
-	// Return
 	return final;
 }

@@ -203,10 +203,8 @@ AssStyle::AssStyle(const AssStyle& s)
 }
 
 AssStyle::AssStyle(wxString _data,int version) {
-	Valid = Parse(_data,version);
-	if (!Valid) {
+	if (!Parse(_data,version))
 		throw "[Error] Failed parsing line.";
-	}
 	UpdateData();
 }
 

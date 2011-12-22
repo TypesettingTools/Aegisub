@@ -37,40 +37,22 @@
 
 #pragma once
 
-
-///////////
-// Headers
 #ifndef AGI_PRE
 #include <wx/string.h>
 #endif
 
 #include <libaegisub/exception.h>
 
-//////////////
-// Prototypes
 class AssDialogue;
 class AssStyle;
 class AssAttachment;
 
-
-
-/// DOCME
 enum ASS_EntryType {
-
-	/// DOCME
 	ENTRY_BASE,
-
-	/// DOCME
 	ENTRY_DIALOGUE,
-
-	/// DOCME
 	ENTRY_STYLE,
-
-	/// DOCME
 	ENTRY_ATTACHMENT
 };
-
-
 
 /// @see aegisub.h
 namespace Aegisub {
@@ -82,20 +64,10 @@ namespace Aegisub {
 	/// DOCME
 	class InvalidMarginIdError : public agi::InternalError {
 	public:
-
-		/// @brief DOCME
-		/// @return 
-		///
 		InvalidMarginIdError() : InternalError("Invalid margin id", 0) { }
-
-		/// @brief DOCME
-		/// @return 
-		///
 		const char *GetName() const { return "internal_error/invalid_margin_id"; }
 	};
 }
-
-
 
 /// DOCME
 /// @class AssEntry
@@ -103,39 +75,29 @@ namespace Aegisub {
 ///
 /// DOCME
 class AssEntry {
-private:
-
-	/// DOCME
-	wxString data;		// Raw data, exactly the same line that appears on the .ass (note that this will be in ass even if source wasn't)
+	/// Raw data, exactly the same line that appears on the .ass (note that this will be in ass even if source wasn't)
+	wxString data;
 
 public:
+	/// Group it belongs to, e.g. "[Events]"
+	wxString group;
 
-	/// DOCME
-	bool Valid;			// Flags as valid or not
+	AssEntry(wxString const& data = "") : data(data) { }
+	virtual ~AssEntry() { }
 
-	/// DOCME
-	wxString group;		// Group it belongs to, e.g. "[Events]"
-
-	AssEntry();
-	AssEntry(wxString data);
-	virtual ~AssEntry();
-
+	/// Create a copy of this entry
 	virtual AssEntry *Clone() const;
 
-	/// @brief DOCME
-	/// @return 
-	///
+	/// Get this entry's fully-derived type
 	virtual ASS_EntryType GetType() const { return ENTRY_BASE; }
 
-	/// @brief DOCME
-	/// @return 
-	///
+	/// @brief Get this line's raw entry data in ASS format
 	virtual const wxString GetEntryData() const { return data; }
 
-	/// @brief DOCME
-	/// @param newData 
-	///
-	virtual void SetEntryData(wxString newData) { data = newData; }
+	/// @brief Set this line's raw entry data
+	/// @param newData New raw entry data
+	virtual void SetEntryData(wxString const& newData) { data = newData; }
 
+	/// Get this line in SSA format
 	virtual wxString GetSSAText() const;
 };

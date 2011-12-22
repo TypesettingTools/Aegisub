@@ -59,7 +59,6 @@ AssDialogue::AssDialogue()
 , Text("")
 {
 	group = "[Events]";
-	Valid = true;
 	for (int i=0;i<4;i++) Margin[i] = 0;
 }
 
@@ -75,7 +74,6 @@ AssDialogue::AssDialogue(AssDialogue const& that)
 , Text(that.Text)
 {
 	group = that.group;
-	Valid = that.Valid;
 	for (int i=0;i<4;i++) Margin[i] = that.Margin[i];
 }
 
@@ -93,20 +91,19 @@ AssDialogue::AssDialogue(wxString _data,int version)
 , Text("")
 {
 	group = "[Events]";
-	Valid = false;
+	bool valid = false;
 	// Try parsing in different ways
 	int count = 0;
-	while (!Valid && count < 3) {
-		Valid = Parse(_data,version);
+	while (!valid && count < 3) {
+		valid = Parse(_data,version);
 		count++;
 		version++;
 		if (version > 2) version = 0;
 	}
 
 	// Not valid
-	if (!Valid) {
+	if (!valid)
 		throw "Failed parsing line.";
-	}
 }
 
 AssDialogue::~AssDialogue () {

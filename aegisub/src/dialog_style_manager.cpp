@@ -301,15 +301,11 @@ void DialogStyleManager::LoadCatalog () {
 
 /// @brief Load the list of styles from a subtitle file
 void DialogStyleManager::LoadCurrentStyles (AssFile *subs) {
-	using std::list;
-	AssStyle *style;
-
 	CurrentList->Clear();
 	styleMap.clear();
 
-	for (list<AssEntry*>::iterator cur=subs->Line.begin();cur!=subs->Line.end();cur++) {
-		style = dynamic_cast<AssStyle*>(*cur);
-		if (style && style->Valid) {
+	for (std::list<AssEntry*>::iterator cur=subs->Line.begin();cur!=subs->Line.end();cur++) {
+		if (AssStyle *style = dynamic_cast<AssStyle*>(*cur)) {
 			CurrentList->Append(style->name);
 			styleMap.push_back(style);
 		}
@@ -319,14 +315,11 @@ void DialogStyleManager::LoadCurrentStyles (AssFile *subs) {
 
 /// @brief Load the list of styles from the currently active storage
 void DialogStyleManager::LoadStorageStyles () {
-	using std::list;
-
 	StorageList->Clear();
 	styleStorageMap.clear();
 
-	for (list<AssStyle*>::iterator cur=Store.style.begin();cur!=Store.style.end();cur++) {
-		AssStyle *style = *cur;
-		if (style && style->Valid) {
+	for (std::list<AssStyle*>::iterator cur=Store.style.begin();cur!=Store.style.end();cur++) {
+		if (AssStyle *style = *cur) {
 			StorageList->Append(style->name);
 			styleStorageMap.push_back(style);
 		}
@@ -657,24 +650,17 @@ void DialogStyleManager::PasteToCurrent() {
 
 	wxStringTokenizer st(data,'\n');
 	while (st.HasMoreTokens()) {
-		AssStyle *s = NULL;
 		try {
-			s = new AssStyle(st.GetNextToken().Trim(true));
-			if (s->Valid) {
-				while (c->ass->GetStyle(s->name) != NULL)
-					s->name = "Copy of " + s->name;
+			AssStyle *s = new AssStyle(st.GetNextToken().Trim(true));
+			while (c->ass->GetStyle(s->name) != NULL)
+				s->name = "Copy of " + s->name;
 
-				s->UpdateData();
-				c->ass->InsertStyle(s);
-				LoadCurrentStyles(c->ass);
+			c->ass->InsertStyle(s);
+			LoadCurrentStyles(c->ass);
 
-				c->ass->Commit(_("style paste"), AssFile::COMMIT_STYLES);
-			}
-			else
-				wxMessageBox(_("Could not parse style"), _("Could not parse style"), wxOK | wxICON_EXCLAMATION , this);
+			c->ass->Commit(_("style paste"), AssFile::COMMIT_STYLES);
 		}
 		catch (...) {
-			delete s;
 			wxMessageBox(_("Could not parse style"), _("Could not parse style"), wxOK | wxICON_EXCLAMATION , this);
 		}
 
@@ -696,25 +682,18 @@ void DialogStyleManager::PasteToStorage() {
 
 	wxStringTokenizer st(data,'\n');
 	while (st.HasMoreTokens()) {
-		AssStyle *s = NULL;
 		try {
-			s = new AssStyle(st.GetNextToken().Trim(true));
-			if (s->Valid) {
-				while (Store.GetStyle(s->name) != NULL)
-					s->name = "Copy of " + s->name;
+			AssStyle *s = new AssStyle(st.GetNextToken().Trim(true));
+			while (Store.GetStyle(s->name) != NULL)
+				s->name = "Copy of " + s->name;
 
-				s->UpdateData();
-				Store.style.push_back(s);
-				Store.Save(CatalogList->GetString(CatalogList->GetSelection()));
+			Store.style.push_back(s);
+			Store.Save(CatalogList->GetString(CatalogList->GetSelection()));
 
-				LoadStorageStyles();
-				StorageList->SetStringSelection(s->name);
-			}
-			else
-				wxMessageBox(_("Could not parse style"), _("Could not parse style"), wxOK | wxICON_EXCLAMATION , this);
+			LoadStorageStyles();
+			StorageList->SetStringSelection(s->name);
 		}
 		catch(...) {
-			delete s;
 			wxMessageBox(_("Could not parse style"), _("Could not parse style"), wxOK | wxICON_EXCLAMATION , this);
 		}
 	}

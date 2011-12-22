@@ -691,7 +691,6 @@ int SubsEditBox::BlockAtPos(wxString const& text, int pos) const {
 
 void SubsEditBox::SetTag(wxString tag, wxString value, bool atEnd) {
 	assert(line);
-	assert(line->Valid);
 	if (line->Blocks.empty())
 		line->ParseASSTags();
 
