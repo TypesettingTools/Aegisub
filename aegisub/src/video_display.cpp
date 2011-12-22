@@ -370,9 +370,7 @@ void VideoDisplay::OnContextMenu(wxContextMenuEvent&) {
 }
 
 void VideoDisplay::OnKeyDown(wxKeyEvent &event) {
-	event.StopPropagation();
-	if (hotkey::check("Video", con, event.GetKeyCode(), event.GetUnicodeKey(), event.GetModifiers()))
-		return;
+	hotkey::check("Video", con, event.GetKeyCode(), event.GetUnicodeKey(), event.GetModifiers());
 }
 
 void VideoDisplay::SetZoom(double value) {

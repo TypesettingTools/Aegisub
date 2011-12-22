@@ -267,5 +267,4 @@ void DialogStyling::OnKeyDown(wxKeyEvent &evt) {
 		}
 		evt.Skip();
 	}
-	evt.StopPropagation();
 }

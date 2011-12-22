@@ -975,7 +975,6 @@ bool BaseGrid::IsDisplayed(const AssDialogue *line) const {
 }
 
 void BaseGrid::OnKeyDown(wxKeyEvent &event) {
-	event.StopPropagation();
 	if (hotkey::check("Subtitle Grid", context, event.GetKeyCode(), event.GetUnicodeKey(), event.GetModifiers()))
 		return;
 
