@@ -10,7 +10,7 @@ Author: Terry Caton
 #include <set>
 #include <sstream>
 
-/*  
+/*
 
 TODO:
 * better documentation
@@ -37,16 +37,31 @@ inline Reader::Location::Location() :
 //////////////////////
 // Reader::InputStream
 
-class Reader::InputStream // would be cool if we could inherit from std::istream & override "get"
+// wrapper around istream to keep track of document/line offsets
+class Reader::InputStream
 {
+   std::istream& m_iStr;
+   Location m_Location;
 public:
-   InputStream(std::istream& iStr) :
-      m_iStr(iStr) {}
+   InputStream(std::istream& iStr) : m_iStr(iStr) { }
 
-   // protect access to the input stream, so we can keeep track of document/line offsets
-   char Get(); // big, define outside
-   char Peek() {
-      assert(m_iStr.eof() == false); // enforce reading of only valid stream data 
+   int Get() {
+      assert(!m_iStr.eof());
+      int c = m_iStr.get();
+
+      ++m_Location.m_nDocOffset;
+      if (c == '\n') {
+         ++m_Location.m_nLine;
+         m_Location.m_nLineOffset = 0;
+      }
+      else {
+         ++m_Location.m_nLineOffset;
+      }
+
+      return c;
+   }
+   int Peek() {
+      assert(!m_iStr.eof());
       return m_iStr.peek();
    }
 
@@ -56,31 +71,7 @@ public:
    }
 
    const Location& GetLocation() const { return m_Location; }
-
-private:
-   std::istream& m_iStr;
-   Location m_Location;
 };
-
-
-inline char Reader::InputStream::Get()
-{
-   assert(m_iStr.eof() == false); // enforce reading of only valid stream data 
-   char c = m_iStr.get();
-   
-   ++m_Location.m_nDocOffset;
-   if (c == '\n') {
-      ++m_Location.m_nLine;
-      m_Location.m_nLineOffset = 0;
-   }
-   else {
-      ++m_Location.m_nLineOffset;
-   }
-
-   return c;
-}
-
-
 
 //////////////////////
 // Reader::TokenStream
@@ -96,23 +87,21 @@ public:
    { }
 
    const Token& Peek() {
-      assert(m_itCurrent != m_Tokens.end());
-      return *(m_itCurrent); 
+      assert(!EOS());
+      return *m_itCurrent;
    }
    const Token& Get() {
-      assert(m_itCurrent != m_Tokens.end());
-      return *(m_itCurrent++); 
+      assert(!EOS());
+      return *m_itCurrent++;
    }
 
    bool EOS() const {
-      return m_itCurrent == m_Tokens.end(); 
+      return m_itCurrent == m_Tokens.end();
    }
 };
 
 ///////////////////
 // Reader (finally)
-
-
 inline void Reader::Read(Object& object, std::istream& istr)                { Read_i(object, istr); }
 inline void Reader::Read(Array& array, std::istream& istr)                  { Read_i(array, istr); }
 inline void Reader::Read(String& string, std::istream& istr)                { Read_i(string, istr); }
@@ -121,8 +110,7 @@ inline void Reader::Read(Boolean& boolean, std::istream& istr)              { Re
 inline void Reader::Read(Null& null, std::istream& istr)                    { Read_i(null, istr); }
 inline void Reader::Read(UnknownElement& unknown, std::istream& istr)       { Read_i(unknown, istr); }
 
-
-template <typename ElementTypeT>   
+template <typename ElementTypeT>
 void Reader::Read_i(ElementTypeT& element, std::istream& istr)
 {
    Reader reader;
@@ -134,18 +122,16 @@ void Reader::Read_i(ElementTypeT& element, std::istream& istr)
    TokenStream tokenStream(tokens);
    reader.Parse(element, tokenStream);
 
-   if (tokenStream.EOS() == false)
+   if (!tokenStream.EOS())
    {
       const Token& token = tokenStream.Peek();
       throw ParseException("Expected End of token stream; found " + token.sValue, token.locBegin, token.locEnd);
    }
 }
 
-
 inline void Reader::Scan(Tokens& tokens, InputStream& inputStream)
 {
-   while (EatWhiteSpace(inputStream),              // ignore any leading white space...
-          inputStream.EOS() == false) // ...before checking for EOS
+   while (EatWhiteSpace(inputStream), !inputStream.EOS())
    {
       // if all goes well, we'll create a token each pass
       Token token;
@@ -231,9 +217,8 @@ inline void Reader::Scan(Tokens& tokens, InputStream& inputStream)
             token.nType = Token::TOKEN_NULL;
             break;
 
-         default: {
+         default:
             throw ScanException("Unexpected character in stream: " + sChar, inputStream.GetLocation());
-         }
       }
 
       token.locEnd = inputStream.GetLocation();
@@ -244,8 +229,7 @@ inline void Reader::Scan(Tokens& tokens, InputStream& inputStream)
 
 inline void Reader::EatWhiteSpace(InputStream& inputStream)
 {
-   while (inputStream.EOS() == false && 
-          ::isspace(inputStream.Peek()))
+   while (!inputStream.EOS() && ::isspace(inputStream.Peek()))
       inputStream.Get();
 }
 
@@ -268,7 +252,7 @@ inline void Reader::MatchExpectedString(const std::string& sExpected, InputStrea
 inline void Reader::MatchString(std::string& string, InputStream& inputStream)
 {
    MatchExpectedString("\"", inputStream);
-   
+
    while (inputStream.EOS() == false &&
           inputStream.Peek() != '"')
    {
@@ -317,7 +301,7 @@ inline void Reader::MatchNumber(std::string& sNumber, InputStream& inputStream)
 }
 
 
-inline void Reader::Parse(UnknownElement& element, Reader::TokenStream& tokenStream) 
+inline void Reader::Parse(UnknownElement& element, Reader::TokenStream& tokenStream)
 {
    if (tokenStream.EOS()) {
       throw ParseException("Unexpected end of token stream", Location(), Location()); // nowhere to point to

@@ -116,13 +116,9 @@ private:
    class Imp_T;
 
    class CastVisitor;
-   class ConstCastVisitor;
 
    template <typename ElementTypeT>
    class CastVisitor_T;
-
-   template <typename ElementTypeT>
-   class ConstCastVisitor_T;
 
    template <typename ElementTypeT>
    const ElementTypeT& CastTo() const;

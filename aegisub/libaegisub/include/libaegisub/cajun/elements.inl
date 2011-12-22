@@ -42,18 +42,16 @@ public:
 
    virtual bool Compare(const Imp& imp) const
    {
-      ConstCastVisitor_T<ElementTypeT> castVisitor;
+      CastVisitor_T<ElementTypeT> castVisitor;
       imp.Accept(castVisitor);
-      return castVisitor.m_pElement &&
-             m_Element == *castVisitor.m_pElement;
+      return castVisitor.element && m_Element == *castVisitor.element;
    }
 
 private:
    ElementTypeT m_Element;
 };
 
-
-class UnknownElement::ConstCastVisitor : public ConstVisitor
+class UnknownElement::CastVisitor : public ConstVisitor
 {
    virtual void Visit(const Array&) {}
    virtual void Visit(const Object&) {}
@@ -64,36 +62,15 @@ class UnknownElement::ConstCastVisitor : public ConstVisitor
 };
 
 template <typename ElementTypeT>
-class UnknownElement::ConstCastVisitor_T : public ConstCastVisitor
-{
-public:
-   ConstCastVisitor_T() : m_pElement(0) {}
-   virtual void Visit(const ElementTypeT& element) { m_pElement = &element; } // we don't know what this is, but it overrides one of the base's no-op functions
-   const ElementTypeT* m_pElement;
-};
-
-
-class UnknownElement::CastVisitor : public Visitor
-{
-   virtual void Visit(Array&) {}
-   virtual void Visit(Object&) {}
-   virtual void Visit(Number&) {}
-   virtual void Visit(String&) {}
-   virtual void Visit(Boolean&) {}
-   virtual void Visit(Null&) {}
-};
-
-template <typename ElementTypeT>
 class UnknownElement::CastVisitor_T : public CastVisitor
 {
 public:
-   CastVisitor_T() : m_pElement(0) {}
-   virtual void Visit(ElementTypeT& element) { m_pElement = &element; } // we don't know what this is, but it overrides one of the base's no-op functions
-   ElementTypeT* m_pElement;
+   const ElementTypeT *element;
+   CastVisitor_T() : element(0) { }
+
+   // we don't know what this is, but it overrides one of the base's no-op functions
+   void Visit(const ElementTypeT& element) { this->element = &element; }
 };
-
-
-
 
 inline UnknownElement::UnknownElement() :                               m_pImp( new Imp_T<Null>( Null() ) ) {}
 inline UnknownElement::UnknownElement(const UnknownElement& unknown) :  m_pImp( unknown.m_pImp->Clone()) {}
@@ -162,30 +139,26 @@ inline const UnknownElement& UnknownElement::operator[] (size_t index) const
 template <typename ElementTypeT>
 const ElementTypeT& UnknownElement::CastTo() const
 {
-   ConstCastVisitor_T<ElementTypeT> castVisitor;
+   CastVisitor_T<ElementTypeT> castVisitor;
    m_pImp->Accept(castVisitor);
-   if (castVisitor.m_pElement == 0)
+   if (!castVisitor.element)
       throw Exception("Bad cast");
-   return *castVisitor.m_pElement;
+   return *castVisitor.element;
 }
-
-
 
 template <typename ElementTypeT>
 ElementTypeT& UnknownElement::ConvertTo()
 {
    CastVisitor_T<ElementTypeT> castVisitor;
-   m_pImp->Accept(castVisitor);
-   if (castVisitor.m_pElement == 0)
+   Accept(castVisitor);
+   if (!castVisitor.element)
    {
       // we're not the right type. fix it & try again
       *this = ElementTypeT();
-      m_pImp->Accept(castVisitor);
    }
 
-   return *castVisitor.m_pElement;
+   return *this;
 }
-
 
 inline void UnknownElement::Accept(ConstVisitor& visitor) const { m_pImp->Accept(visitor); }
 inline void UnknownElement::Accept(Visitor& visitor)            { m_pImp->Accept(visitor); }
