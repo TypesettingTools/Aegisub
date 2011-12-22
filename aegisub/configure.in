@@ -430,15 +430,17 @@ fi
 ## ALSA
 #######
 AC_ARG_WITH(alsa,
-            AS_HELP_STRING([--without-alsa],[build without ALSA audio provider [auto]]),
-            alsa_disabled="(disabled)")
+            AS_HELP_STRING([--without-alsa],
+                           [build without ALSA audio provider [auto]]))
 
 AC_ARG_VAR([ALSA_CFLAGS], [CFLAGS to use for ALSA []])
 AC_ARG_VAR([ALSA_LDFLAGS], [LDFLAGS to use for ALSA [-lasound -lrt]])
 
 ALSA_LDFLAGS=${ALSA_LDFLAGS:--lasound -lrt}
 
-if test "$with_alsa" != "no"; then
+if test "$with_alsa" == "no"; then
+  alsa_disabled="(disabled)"
+else
   AC_CHECK_LIB([asound], [snd_pcm_open], [with_alsa="yes"], [with_alsa="no"], $ALSA_LDFLAGS)
 fi
 
@@ -455,10 +457,12 @@ AC_SUBST(with_alsa)
 ## PortAudio
 ############
 AC_ARG_WITH(portaudio,
-            AS_HELP_STRING([--without-portaudio],[build without PortAudio v19 audio provider [auto]]),
-            portaudio_disabled="(disabled)")
+            AS_HELP_STRING([--without-portaudio],
+                           [build without PortAudio v19 audio provider [auto]]))
 
-if test "$with_portaudio" != "no"; then
+if test "$with_portaudio" == "no"; then
+  portaudio_disabled="(disabled)"
+else
   PKG_CHECK_MODULES(PORTAUDIO, portaudio-2.0 >= portaudio_required_version, [with_portaudio="yes"], [with_portaudio="no"])
 fi
 
@@ -473,10 +477,12 @@ AC_SUBST(with_portaudio)
 ## PulseAudio
 #############
 AC_ARG_WITH(pulseaudio,
-            AS_HELP_STRING([--without-pulseaudio],[build without PulseAudio audio provider [auto]]),
-            pulseaudio_disabled="(disabled)")
+            AS_HELP_STRING([--without-pulseaudio],
+                           [build without PulseAudio audio provider [auto]]))
 
-if test "$with_pulseaudio" != "no"; then
+if test "$with_pulseaudio" == "no"; then
+  pulseaudio_disabled="(disabled)"
+else
   PKG_CHECK_MODULES(LIBPULSE, libpulse >= pulseaudio_required_version, [with_pulseaudio="yes"], [with_pulseaudio="no"])
 fi
 
@@ -491,8 +497,8 @@ AC_SUBST(with_pulseaudio)
 ## OpenAL
 #########
 AC_ARG_WITH(openal,
-            AS_HELP_STRING([--without-openal],[build without OpenAL audio provider [auto]]),
-            openal_disabled="(disabled)")
+            AS_HELP_STRING([--without-openal],
+                           [build without OpenAL audio provider [auto]]))
 
 if test "$build_darwin" = "yes"; then
   OPENAL_LIBS="-framework OpenAL"
@@ -500,7 +506,9 @@ if test "$build_darwin" = "yes"; then
   AC_SUBST(OPENAL_LIBS)
   AC_SUBST(OPENAL_CFLAGS)
   with_openal="yes"
-elif test "$with_openal" != "no"; then
+elif test "$with_openal" == "no"; then
+  openal_disabled="(disabled)"
+else
   PKG_CHECK_MODULES(OPENAL, openal >= 0.0.8, [with_openal=yes], [with_openal=no])
 fi
 
@@ -538,10 +546,12 @@ AC_SUBST(with_openal)
 ## OSS
 ######
 AC_ARG_WITH(oss,
-            AS_HELP_STRING([--without-oss],[build without OSS audio provider [auto]]),
-            oss_disabled="(disabled)")
+            AS_HELP_STRING([--without-oss],
+                           [build without OSS audio provider [auto]]))
 
-if test "$with_oss" != "no"; then
+if test "$with_oss" == "no"; then
+  oss_disabled="(disabled)"
+else
   if test -f "/etc/oss.conf"; then
     . /etc/oss.conf
     CPPFLAGS="$CPPFLAGS -I${OSSLIBDIR}/include/sys"
@@ -561,10 +571,12 @@ AC_SUBST(with_oss)
 # FFTW
 ###################
 AC_ARG_WITH(fftw,
-            AS_HELP_STRING([--without-fftw],[build without fftw support [auto]]),
-            fftw_disabled="(disabled)")
+            AS_HELP_STRING([--without-fftw],
+                           [build without fftw support [auto]]))
 
-if test "$with_fftw" != "no"; then
+if test "$with_fftw" == "no"; then
+  fftw_disabled="(disabled)"
+else
   PKG_CHECK_MODULES(FFTW3, fftw3 >= fftw_required_version, [with_fftw="yes"], [with_fftw="no"])
 fi
 if test "$with_fftw" != "no"; then
@@ -577,10 +589,12 @@ AC_SUBST(with_fftw)
 # Video / Audio Providers
 #########################
 AC_ARG_WITH(ffms,
-            AS_HELP_STRING([--without-ffms],[build without ffms2 A/V provider [auto]]),
-            ffms_disabled="(disabled)")
+            AS_HELP_STRING([--without-ffms],
+                           [build without ffms2 A/V provider [auto]]))
 
-if test "$with_ffms" != "no"; then
+if test "$with_ffms" == "no"; then
+  ffms_disabled="(disabled)"
+else
   PKG_CHECK_MODULES(FFMS, ffms2 >= ffms_required_version, [with_ffms="yes"], [with_ffms="no"])
 fi
 if test "$with_ffms" != "no"; then
@@ -593,10 +607,12 @@ AC_SUBST(with_ffms)
 # Subtitle Provider
 ###################
 AC_ARG_WITH(libass,
-            AS_HELP_STRING([--without-libass],[build without libass support [auto]]),
-            libass_disabled="(disabled)")
+            AS_HELP_STRING([--without-libass],
+                           [build without libass support [auto]]))
 
-if test "$with_libass" != "no"; then
+if test "$with_libass" == "no"; then
+  libass_disabled="(disabled)"
+else
   PKG_CHECK_MODULES(LIBASS, libass >= libass_required_version, [with_libass="yes"], [with_libass="no"])
 fi
 if test "$with_libass" != "no"; then
@@ -605,15 +621,16 @@ fi
 
 AC_SUBST(with_libass)
 
-
 ###########
 ## Hunspell
 ###########
 AC_ARG_WITH(hunspell,
-            AS_HELP_STRING([--without-hunspell],[build without hunspell support [auto]]),
-            hunspell_disabled="(disabled)")
+            AS_HELP_STRING([--without-hunspell],
+                           [build without hunspell support [auto]]))
 
-if test "$with_hunspell" != "no"; then
+if test "$with_hunspell" == "no"; then
+  hunspell_disabled="(disabled)"
+else
   PKG_CHECK_MODULES(HUNSPELL, hunspell >= 1.2.0, [with_hunspell="yes"], [with_hunspell="no"])
 fi
 
@@ -627,8 +644,8 @@ AC_SUBST(with_hunspell)
 # Automation
 ############
 AC_ARG_WITH(lua,
-            AS_HELP_STRING([--without-lua],[build without lua 5.1 (auto4)]),
-            [lua51_disabled="(disabled)"])
+            AS_HELP_STRING([--without-lua],
+                           [build without lua 5.1 (auto4)]))
 
 AC_ARG_VAR([LUA_CFLAGS], [CFLAGS to use for LUA 5.1 [autodetect]])
 AC_ARG_VAR([LUA_LDFLAGS], [LDFLAGS to use for LUA 5.1 [autodetect]])
@@ -644,7 +661,9 @@ fi
 
 aegisub_save_LIBS="$LIBS"
 LIBS="$LUA_LDFLAGS"
-if test "$with_lua" != no; then
+if test "$with_lua" == "no"; then
+  lua_disabled="(disabled)"
+else
   AC_AGI_COMPILE([Lua 5.1 (auto4)], [lua], [$LUA_CFLAGS], [],[
 #include <lua.hpp>
 
