@@ -1452,14 +1452,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\subtitle_format_dvd.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\subtitle_format_dvd.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\subtitle_format_encore.cpp"
 				>
 			</File>

@@ -172,7 +172,6 @@
     <ClInclude Include="$(SrcDir)subtitles_provider_libass.h" />
     <ClInclude Include="$(SrcDir)subtitle_format.h" />
     <ClInclude Include="$(SrcDir)subtitle_format_ass.h" />
-    <ClInclude Include="$(SrcDir)subtitle_format_dvd.h" />
     <ClInclude Include="$(SrcDir)subtitle_format_encore.h" />
     <ClInclude Include="$(SrcDir)subtitle_format_microdvd.h" />
     <ClInclude Include="$(SrcDir)subtitle_format_mkv.h" />
@@ -367,7 +366,6 @@
     <ClCompile Include="$(SrcDir)subtitles_provider_libass.cpp" />
     <ClCompile Include="$(SrcDir)subtitle_format.cpp" />
     <ClCompile Include="$(SrcDir)subtitle_format_ass.cpp" />
-    <ClCompile Include="$(SrcDir)subtitle_format_dvd.cpp" />
     <ClCompile Include="$(SrcDir)subtitle_format_encore.cpp" />
     <ClCompile Include="$(SrcDir)subtitle_format_microdvd.cpp" />
     <ClCompile Include="$(SrcDir)subtitle_format_mkv.cpp" />

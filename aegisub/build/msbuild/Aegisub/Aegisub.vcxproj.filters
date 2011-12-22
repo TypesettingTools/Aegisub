@@ -354,9 +354,6 @@
     <ClInclude Include="$(SrcDir)subtitle_format_ass.h">
       <Filter>Subtitle formats</Filter>
     </ClInclude>
-    <ClInclude Include="$(SrcDir)subtitle_format_dvd.h">
-      <Filter>Subtitle formats</Filter>
-    </ClInclude>
     <ClInclude Include="$(SrcDir)subtitle_format_encore.h">
       <Filter>Subtitle formats</Filter>
     </ClInclude>
@@ -798,9 +795,6 @@
       <Filter>Subtitle formats</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)subtitle_format_ass.cpp">
-      <Filter>Subtitle formats</Filter>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)subtitle_format_dvd.cpp">
       <Filter>Subtitle formats</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)subtitle_format_encore.cpp">

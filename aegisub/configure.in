@@ -341,13 +341,8 @@ if test "$agi_cv_pragma_once" = "no"; then
     AC_MSG_FAILURE([Aegisub requires #pragma once to work correctly.])
 fi
 
-AX_OPENMP([with_openmp="yes"], [with_openmp="no"])
-AC_SUBST(with_openmp)
-AC_SUBST(OPENMP_CXXFLAGS)
-
 AC_CHECK_HEADERS([sys/time.h])
 AC_CHECK_SIZEOF([time_t])
-
 
 ##############################
 # Program Support and Features

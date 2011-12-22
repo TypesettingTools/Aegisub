@@ -62,10 +62,6 @@
 #include <iconv.h>
 #include <inttypes.h>
 #include <locale.h>
-#ifdef _OPENMP
-// Not all compilers have <omp.h> (example: MSVC Express)
-#include <omp.h>
-#endif
 #include <stdlib.h>
 #include <wchar.h>
 

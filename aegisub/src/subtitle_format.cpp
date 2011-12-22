@@ -45,7 +45,6 @@
 #include "ass_file.h"
 #include "subtitle_format.h"
 #include "subtitle_format_ass.h"
-#include "subtitle_format_dvd.h"
 #include "subtitle_format_encore.h"
 #include "subtitle_format_microdvd.h"
 #include "subtitle_format_mkv.h"
@@ -349,9 +348,6 @@ void SubtitleFormat::LoadFormats() {
 		new TTXTSubtitleFormat();
 		new TXTSubtitleFormat();
 		new TranStationSubtitleFormat();
-#ifdef _DEBUG
-		new DVDSubtitleFormat();
-#endif
 	}
 }
 
