@@ -69,7 +69,7 @@ Hotkey::Hotkey(const std::string &file, const std::string &default_config)
 	LOG_D("hotkey/init") << "Generating hotkeys.";
 
 	json::UnknownElement hotkey_root = agi::json_util::file(config_file, default_config);
-	json::Object object = hotkey_root;
+	json::Object const& object = hotkey_root;
 
 	for (json::Object::const_iterator index(object.begin()); index != object.end(); ++index)
 		BuildHotkey(index->first, index->second);

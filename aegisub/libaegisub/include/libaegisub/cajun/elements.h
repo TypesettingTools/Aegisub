@@ -79,24 +79,24 @@ public:
    UnknownElement& operator = (const UnknownElement& unknown);
 
    // implicit cast to actual element type. throws on failure
-   operator const Object& () const;
-   operator const Array& () const;
-   operator const Number& () const;
-   operator const Boolean& () const;
-   operator const String& () const;
-   operator const Null& () const;
-
-   // implicit cast to actual element type. *converts* on failure, and always returns success
-   operator Object& ();
-   operator Array& ();
-   operator Number& ();
-   operator Boolean& ();
-   operator String& ();
-   operator Null& ();
+   operator Object const&() const;
+   operator Array const&() const;
+   operator Number const&() const;
+   operator Boolean const&() const;
+   operator String const&() const;
+   operator Null const&() const;
+   operator Object&();
+   operator Array&();
+   operator Number&();
+   operator Boolean&();
+   operator String&();
+   operator Null&();
 
    // provides quick access to children when real element type is object
-   UnknownElement& operator[] (const char *key) { return operator[](std::string(key)); }
-   const UnknownElement& operator[] (const char *key) const { return operator[](std::string(key)); }
+   template<int N>
+   UnknownElement& operator[] (const char (&key)[N]) { return operator[](std::string(key)); }
+   template<int N>
+   const UnknownElement& operator[] (const char (&key)[N]) const { return operator[](std::string(key)); }
    UnknownElement& operator[] (const std::string& key);
    const UnknownElement& operator[] (const std::string& key) const;
 
@@ -109,7 +109,8 @@ public:
    void Accept(Visitor& visitor);
 
    // tests equality. first checks type, then value if possible
-   bool operator == (const UnknownElement& element) const;
+   bool operator ==(const UnknownElement& element) const;
+   bool operator !=(const UnknownElement& element) const { return !(*this == element); }
 
 private:
    class Imp;
@@ -118,10 +119,10 @@ private:
    class Imp_T;
 
    template <typename ElementTypeT>
-   const ElementTypeT& CastTo() const;
+   ElementTypeT const& CastTo() const;
 
    template <typename ElementTypeT>
-   ElementTypeT& ConvertTo();
+   ElementTypeT& CastTo();
 
    Imp* m_pImp;
 };

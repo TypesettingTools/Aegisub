@@ -123,7 +123,7 @@ void Reader::Read_i(ElementTypeT& element, std::istream& istr)
    reader.Scan(tokens, inputStream);
 
    TokenStream tokenStream(tokens);
-   reader.Parse(element, tokenStream);
+   element = reader.Parse(tokenStream);
 
    if (!tokenStream.EOS())
    {
@@ -304,131 +304,79 @@ void Reader::MatchNumber(std::string& sNumber, InputStream& inputStream)
 }
 
 
-void Reader::Parse(UnknownElement& element, Reader::TokenStream& tokenStream)
+UnknownElement Reader::Parse(Reader::TokenStream& tokenStream)
 {
-   if (tokenStream.EOS()) {
+   if (tokenStream.EOS())
       throw ParseException("Unexpected end of token stream", Location(), Location()); // nowhere to point to
-   }
 
-   const Token& token = tokenStream.Peek();
+   Token const& token = tokenStream.Peek();
    switch (token.nType) {
-      case Token::TOKEN_OBJECT_BEGIN:
-      {
-         // implicit non-const cast will perform conversion for us (if necessary)
-         Object& object = element;
-         Parse(object, tokenStream);
-         break;
-      }
-
-      case Token::TOKEN_ARRAY_BEGIN:
-      {
-         Array& array = element;
-         Parse(array, tokenStream);
-         break;
-      }
-
-      case Token::TOKEN_STRING:
-      {
-         String& string = element;
-         Parse(string, tokenStream);
-         break;
-      }
-
-      case Token::TOKEN_NUMBER:
-      {
-         Number& number = element;
-         Parse(number, tokenStream);
-         break;
-      }
-
-      case Token::TOKEN_BOOLEAN:
-      {
-         Boolean& boolean = element;
-         Parse(boolean, tokenStream);
-         break;
-      }
-
-      case Token::TOKEN_NULL:
-      {
-         Null& null = element;
-         Parse(null, tokenStream);
-         break;
-      }
-
+      case Token::TOKEN_OBJECT_BEGIN: return ParseObject(tokenStream);
+      case Token::TOKEN_ARRAY_BEGIN:  return ParseArray(tokenStream);
+      case Token::TOKEN_STRING:       return ParseString(tokenStream);
+      case Token::TOKEN_NUMBER:       return ParseNumber(tokenStream);
+      case Token::TOKEN_BOOLEAN:      return ParseBoolean(tokenStream);
+      case Token::TOKEN_NULL:         return ParseNull(tokenStream);
       default:
-      {
          throw ParseException("Unexpected token: " + token.sValue, token.locBegin, token.locEnd);
-      }
    }
 }
 
-
-void Reader::Parse(Object& object, Reader::TokenStream& tokenStream)
+Object Reader::ParseObject(Reader::TokenStream& tokenStream)
 {
    MatchExpectedToken(Token::TOKEN_OBJECT_BEGIN, tokenStream);
 
-   bool bContinue = (tokenStream.EOS() == false &&
-                     tokenStream.Peek().nType != Token::TOKEN_OBJECT_END);
-   while (bContinue)
+   Object object;
+
+   while (!tokenStream.EOS() && tokenStream.Peek().nType != Token::TOKEN_OBJECT_END)
    {
       // first the member name. save the token in case we have to throw an exception
       const Token& tokenName = tokenStream.Peek();
       std::string const& name = MatchExpectedToken(Token::TOKEN_STRING, tokenStream);
 
       if (object.count(name))
-      {
          throw ParseException("Duplicate object member token: " + name, tokenName.locBegin, tokenName.locEnd);
-      }
 
       // ...then the key/value separator...
       MatchExpectedToken(Token::TOKEN_MEMBER_ASSIGN, tokenStream);
 
       // ...then the value itself (can be anything).
-      UnknownElement value;
-      Parse(value, tokenStream);
+     object[name] = Parse(tokenStream);
 
-     object[name] = value;
-
-      bContinue = (tokenStream.EOS() == false &&
-                   tokenStream.Peek().nType == Token::TOKEN_NEXT_ELEMENT);
-      if (bContinue)
+      if (!tokenStream.EOS() && tokenStream.Peek().nType != Token::TOKEN_OBJECT_END)
          MatchExpectedToken(Token::TOKEN_NEXT_ELEMENT, tokenStream);
    }
 
    MatchExpectedToken(Token::TOKEN_OBJECT_END, tokenStream);
+
+   return object;
 }
 
-
-void Reader::Parse(Array& array, Reader::TokenStream& tokenStream)
+Array Reader::ParseArray(Reader::TokenStream& tokenStream)
 {
    MatchExpectedToken(Token::TOKEN_ARRAY_BEGIN, tokenStream);
 
-   bool bContinue = (tokenStream.EOS() == false &&
-                     tokenStream.Peek().nType != Token::TOKEN_ARRAY_END);
-   while (bContinue)
-   {
-      // ...what's next? could be anything
-      array.push_back(UnknownElement());
-      UnknownElement& element = array.back();
-      Parse(element, tokenStream);
+   Array array;
 
-      bContinue = (tokenStream.EOS() == false &&
-                   tokenStream.Peek().nType == Token::TOKEN_NEXT_ELEMENT);
-      if (bContinue)
+   while (!tokenStream.EOS() && tokenStream.Peek().nType != Token::TOKEN_ARRAY_END)
+   {
+      array.push_back(Parse(tokenStream));
+
+      if (!tokenStream.EOS() && tokenStream.Peek().nType != Token::TOKEN_ARRAY_END)
          MatchExpectedToken(Token::TOKEN_NEXT_ELEMENT, tokenStream);
    }
 
    MatchExpectedToken(Token::TOKEN_ARRAY_END, tokenStream);
+
+   return array;
 }
 
-
-void Reader::Parse(String& string, Reader::TokenStream& tokenStream)
+String Reader::ParseString(Reader::TokenStream& tokenStream)
 {
-   string = MatchExpectedToken(Token::TOKEN_STRING, tokenStream);
+   return MatchExpectedToken(Token::TOKEN_STRING, tokenStream);
 }
 
-
-void Reader::Parse(Number& number, Reader::TokenStream& tokenStream)
+Number Reader::ParseNumber(Reader::TokenStream& tokenStream)
 {
    const Token& currentToken = tokenStream.Peek(); // might need this later for throwing exception
    const std::string& sValue = MatchExpectedToken(Token::TOKEN_NUMBER, tokenStream);
@@ -438,25 +386,21 @@ void Reader::Parse(Number& number, Reader::TokenStream& tokenStream)
    iStr >> dValue;
 
    // did we consume all characters in the token?
-   if (iStr.eof() == false)
-   {
+   if (!iStr.eof())
       throw ParseException("Unexpected character in NUMBER token: " + iStr.peek(), currentToken.locBegin, currentToken.locEnd);
-   }
 
-   number = dValue;
+   return dValue;
 }
 
-
-void Reader::Parse(Boolean& boolean, Reader::TokenStream& tokenStream)
+Boolean Reader::ParseBoolean(Reader::TokenStream& tokenStream)
 {
-   const std::string& sValue = MatchExpectedToken(Token::TOKEN_BOOLEAN, tokenStream);
-   boolean = (sValue == "true");
+   return MatchExpectedToken(Token::TOKEN_BOOLEAN, tokenStream) == "true";
 }
 
-
-void Reader::Parse(Null&, Reader::TokenStream& tokenStream)
+Null Reader::ParseNull(Reader::TokenStream& tokenStream)
 {
    MatchExpectedToken(Token::TOKEN_NULL, tokenStream);
+   return Null();
 }
 
 

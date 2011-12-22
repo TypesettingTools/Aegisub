@@ -110,13 +110,13 @@ private:
    void MatchExpectedString(const std::string& sExpected, InputStream& inputStream);
 
    // parsing token sequence into element structure
-   void Parse(UnknownElement& element, TokenStream& tokenStream);
-   void Parse(Object& object, TokenStream& tokenStream);
-   void Parse(Array& array, TokenStream& tokenStream);
-   void Parse(String& string, TokenStream& tokenStream);
-   void Parse(Number& number, TokenStream& tokenStream);
-   void Parse(Boolean& boolean, TokenStream& tokenStream);
-   void Parse(Null& null, TokenStream& tokenStream);
+   UnknownElement Parse(TokenStream& tokenStream);
+   Object ParseObject(TokenStream& tokenStream);
+   Array ParseArray(TokenStream& tokenStream);
+   String ParseString(TokenStream& tokenStream);
+   Number ParseNumber(TokenStream& tokenStream);
+   Boolean ParseBoolean(TokenStream& tokenStream);
+   Null ParseNull(TokenStream& tokenStream);
 
    const std::string& MatchExpectedToken(Token::Type nExpected, TokenStream& tokenStream);
 };

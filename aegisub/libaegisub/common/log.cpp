@@ -93,6 +93,8 @@ LogSink::~LogSink() {
 		array.push_back(entry);
 	}
 
+	root["timeval"] = json::Object();
+
 	json::Array timeval_open;
 	timeval_open.push_back(time_start.tv_sec);
 	timeval_open.push_back(time_start.tv_usec);
