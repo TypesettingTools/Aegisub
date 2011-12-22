@@ -288,8 +288,7 @@ void TTXTSubtitleFormat::ConvertToTTXT () {
 	// Find last line
 	AssTime lastTime;
 	for (std::list<AssEntry*>::reverse_iterator cur=Line->rbegin();cur!=Line->rend();cur++) {
-		AssDialogue *prev = dynamic_cast<AssDialogue*>(*cur);
-		if (prev) {
+		if (AssDialogue *prev = dynamic_cast<AssDialogue*>(*cur)) {
 			lastTime = prev->End;
 			break;
 		}

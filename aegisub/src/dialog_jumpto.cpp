@@ -62,7 +62,6 @@ DialogJumpTo::DialogJumpTo(agi::Context *c)
 	SetIcon(BitmapToIcon(GETIMAGE(jumpto_button_24)));
 
 	// Set initial values
-	AssTime jumptime = c->videoController->TimeAtFrame(jumpframe);
 	wxString maxLength = wxString::Format("%i",c->videoController->GetLength() - 1);
 
 	// Times
@@ -70,7 +69,7 @@ DialogJumpTo::DialogJumpTo(agi::Context *c)
 	wxStaticText *LabelTime = new wxStaticText(this,-1,_("Time: "),wxDefaultPosition,wxSize(60,20));
 	JumpFrame = new wxTextCtrl(this,-1,"",wxDefaultPosition,wxSize(60,20),wxTE_PROCESS_ENTER, NumValidator((int)jumpframe));
 	JumpFrame->SetMaxLength(maxLength.size());
-	JumpTime = new TimeEdit(this, -1, c, jumptime.GetASSFormated(), wxSize(60,20));
+	JumpTime = new TimeEdit(this, -1, c, AssTime(c->videoController->TimeAtFrame(jumpframe)).GetASSFormated(), wxSize(60,20));
 	wxSizer *FrameSizer = new wxBoxSizer(wxHORIZONTAL);
 	wxSizer *TimeSizer = new wxBoxSizer(wxHORIZONTAL);
 	FrameSizer->Add(LabelFrame,0,wxALIGN_CENTER_VERTICAL,0);

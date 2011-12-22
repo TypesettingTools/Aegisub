@@ -355,20 +355,7 @@ allparsed:
 
 wxString WriteSRTTime(AssTime const& ts)
 {
-	int time = ts;
-
-	int ms_part = time % 1000;
-	time /= 1000; // now holds seconds
-
-	int s_part = time % 60;
-	time /= 60;   // now holds minutes
-
-	int m_part = time % 60;
-	time /= 60;   // now holds hours
-
-	int h_part = time;
-
-	return wxString::Format("%02d:%02d:%02d,%03d", h_part, m_part, s_part, ms_part);
+	return wxString::Format("%02d:%02d:%02d,%03d", ts.GetTimeHours(), ts.GetTimeMinutes(), ts.GetTimeSeconds(), ts.GetTimeMiliseconds());
 }
 
 }
@@ -397,7 +384,6 @@ void SRTSubtitleFormat::ReadFile(wxString const& filename, wxString const& encod
 	// See parsing algorithm at <http://devel.aegisub.org/wiki/SubtitleFormats/SRT>
 
 	// "hh:mm:ss,fff --> hh:mm:ss,fff" (e.g. "00:00:04,070 --> 00:00:10,04")
-	/// @todo: move the full parsing of SRT timestamps here, instead of having it in AssTime
 	wxRegEx timestamp_regex("^([0-9]{2}:[0-9]{2}:[0-9]{2},[0-9]{1,}) --> ([0-9]{2}:[0-9]{2}:[0-9]{2},[0-9]{1,})");
 	if (!timestamp_regex.IsValid())
 		throw agi::InternalError("Parsing SRT: Failed compiling regex", 0);
@@ -444,7 +430,6 @@ found_timestamps:
 				line->group = "[Events]";
 				line->Style = "Default";
 				line->Comment = false;
-				// this parsing should best be moved out of AssTime
 				line->Start = ReadSRTTime(timestamp_regex.GetMatch(text_line, 1));
 				line->End = ReadSRTTime(timestamp_regex.GetMatch(text_line, 2));
 				// store pointer to subtitle, we'll continue working on it

@@ -112,7 +112,6 @@ wxString TranStationSubtitleFormat::ConvertLine(AssDialogue *current, Fractional
 	if (current->Text.Find("\\i1") != wxNOT_FOUND) type = "I";
 
 	// Write header
-	AssTime start = current->Start;
 	AssTime end = current->End;
 
 	// Subtract one frame if the end time of the current line is equal to the
@@ -121,7 +120,7 @@ wxString TranStationSubtitleFormat::ConvertLine(AssDialogue *current, Fractional
 	if (nextl_start > 0 && end == nextl_start)
 		end = ft->FPS().TimeAtFrame(ft->FPS().FrameAtTime(end, agi::vfr::END) - 1, agi::vfr::END);
 
-	wxString header = wxString::Format("SUB[%i%s%s ", valign, halign, type) + ft->ToSMPTE(start) + ">" + ft->ToSMPTE(end) + "]\r\n";
+	wxString header = wxString::Format("SUB[%i%s%s ", valign, halign, type) + ft->ToSMPTE(current->Start) + ">" + ft->ToSMPTE(end) + "]\r\n";
 
 	// Process text
 	wxString lineEnd = "\r\n";

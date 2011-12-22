@@ -464,13 +464,10 @@ void AudioTimingControllerDialogue::Revert()
 {
 	if (AssDialogue *line = context->selectionController->GetActiveLine())
 	{
-		AssTime new_start = line->Start;
-		AssTime new_end = line->End;
-
-		if (new_start != 0 || new_end != 0)
+		if (line->Start != 0 || line->End != 0)
 		{
-			active_markers[0].SetPosition(context->audioController->SamplesFromMilliseconds(new_start));
-			active_markers[1].SetPosition(context->audioController->SamplesFromMilliseconds(new_end));
+			active_markers[0].SetPosition(context->audioController->SamplesFromMilliseconds(line->Start));
+			active_markers[1].SetPosition(context->audioController->SamplesFromMilliseconds(line->End));
 			timing_modified = false;
 			UpdateSelection();
 		}
