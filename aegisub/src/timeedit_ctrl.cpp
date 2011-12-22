@@ -53,13 +53,7 @@
 #include "main.h"
 #include "video_context.h"
 
-#ifdef __WXGTK__
-/// Use the multiline style only on wxGTK to workaround some wxGTK bugs with the default singleline style.
-#define TimeEditWindowStyle wxTE_MULTILINE | wxTE_CENTRE
-#else
-/// All other platforms than wxGTK.
-#define TimeEditWindowStyle wxTE_CENTRE
-#endif
+#define TimeEditWindowStyle 
 
 enum {
 	Time_Edit_Copy = 1320,
@@ -67,7 +61,7 @@ enum {
 };
 
 TimeEdit::TimeEdit(wxWindow* parent, wxWindowID id, agi::Context *c, const wxString& value, const wxSize& size, bool asEnd)
-: wxTextCtrl(parent, id, value, wxDefaultPosition, size,TimeEditWindowStyle | wxTE_PROCESS_ENTER)
+: wxTextCtrl(parent, id, value, wxDefaultPosition, size, wxTE_CENTRE | wxTE_PROCESS_ENTER)
 , c(c)
 , byFrame(false)
 , isEnd(asEnd)
@@ -94,14 +88,6 @@ TimeEdit::TimeEdit(wxWindow* parent, wxWindowID id, agi::Context *c, const wxStr
 
 	// Other stuff
 	if (!value) SetValue(time.GetASSFormated());
-	// This is a multiline control on wxGTK so we need to size it manually there
-#ifdef __WXGTK__ 
-	int w, h;
-	GetTextExtent(GetValue(),&w,&h);
-	w += 30;
-	h += 8;
-	SetSizeHints(w,h,w,h);
-#endif
 
 	Bind(wxEVT_COMMAND_TEXT_UPDATED, &TimeEdit::OnModified, this);
 	Bind(wxEVT_CONTEXT_MENU, &TimeEdit::OnContextMenu, this);
