@@ -85,14 +85,11 @@ private:
 	/// @param config Config to load.
 	void LoadConfig(std::istream& stream);
 
-
-protected:
 	/// @brief Write an option to file.
 	/// @param[out] obj  Parent object
 	/// @param[in] path  Path option should be stored in.
 	/// @param[in] value Value to write.
 	static bool PutOption(::json::Object &obj, const std::string &path, const ::json::UnknownElement &value);
-
 
 public:
 	/// @brief Constructor
