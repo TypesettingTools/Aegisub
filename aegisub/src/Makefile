@@ -5,15 +5,13 @@ PROGRAM_INSTALL = yes
 
 PRECOMPILED_HEADER_NAME=agi_pre.h
 
-SUBDIRS = command libresrc
-
 CXXFLAGS += -DAEGISUB -D__STDC_FORMAT_MACROS -I. -I..  -Iinclude -I../libaegisub/include $(CFLAGS_PTHREAD) $(CPPFLAGS_WX) $(CFLAGS_FFTW3)
 
 LDFLAGS += -L../libaegisub -laegisub-3.0
 LDFLAGS += $(CFLAGS_DEBUG) $(CFLAGS_PROFILE) $(LDFLAGS_CCMALLOC)
 LDFLAGS += $(LDFLAGS_EFENCE) $(LDFLAGS_GL) $(LDFLAGS_PTHREAD) $(LDFLAGS_WX)
 LDFLAGS += $(LDFLAGS_FREETYPE) $(LDFLAGS_FONTCONFIG) $(LDFLAGS_FFTW3)
-LDFLAGS_POST += libresrc/libresrc.a $(LDFLAGS_UCHARDET) command/aegisub_command.a
+LDFLAGS_POST += $(LDFLAGS_UCHARDET)
 
 ifdef BUILD_DARWIN
 LDFLAGS += -lz
@@ -274,6 +272,9 @@ EXTRA_DIST= \
 	bitmaps/misc/*.png \
 	bitmaps/windows/eyedropper.cur \
 	bitmaps/windows/icon.ico
+
+include command/Makefile.inc
+include libresrc/Makefile.inc
 
 include ../Makefile.target
 -include *.d

@@ -6,6 +6,7 @@
 
 .PHONY: all install clean subdirs $(SUBDIRS)
 all: subdirs $(LIB) $(LIB_SHARED) $(PROGRAM)
+.DEFAULT_GOAL := all
 
 OBJ		= $(addsuffix .o, $(basename $(SRC)))
 DEP		= $(addsuffix .d, $(basename $(SRC)))
@@ -124,9 +125,8 @@ $(SUBDIRS):
 src: universalchardet tools libaegisub
 tests: libaegisub
 reporter: src
-command: libresrc
 
-
+$(OBJ): $(GLOBAL_DEPS)
 
 ####################
 # PRECOMPILED HEADER
