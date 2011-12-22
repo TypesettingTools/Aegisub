@@ -152,7 +152,7 @@ void AudioKaraoke::SetEnabled(bool en) {
 	}
 }
 
-void AudioKaraoke::OnPaint(wxPaintEvent &evt) {
+void AudioKaraoke::OnPaint(wxPaintEvent &) {
 	int w, h;
 	split_area->GetClientSize(&w, &h);
 

@@ -672,7 +672,7 @@ void SubsEditBox::OnEffectChange(wxCommandEvent &) {
 	SetSelectedRows(&AssDialogue::Effect, Effect->GetValue(), _("effect change"), AssFile::COMMIT_DIAG_META);
 }
 
-void SubsEditBox::OnCommentChange(wxCommandEvent &event) {
+void SubsEditBox::OnCommentChange(wxCommandEvent &) {
 	SetSelectedRows(&AssDialogue::Comment, CommentBox->GetValue(), _("comment change"), AssFile::COMMIT_DIAG_META);
 }
 

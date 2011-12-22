@@ -84,7 +84,7 @@ struct help_contents : public Command {
 	STR_DISP("Contents")
 	STR_HELP("Help topics.")
 
-	void operator()(agi::Context *c) {
+	void operator()(agi::Context *) {
 		HelpButton::OpenPage("Main");
 	}
 };
@@ -97,7 +97,7 @@ struct help_files : public Command {
 	STR_DISP("All Files")
 	STR_HELP("Resource files.")
 
-	void operator()(agi::Context *c) {
+	void operator()(agi::Context *) {
 		char *shared_path = agi::util::OSX_GetBundleSharedSupportDirectory();
 		wxString help_path = wxString::Format("%s/doc", wxString(shared_path, wxConvUTF8));
 		agi::util::OSX_OpenLocation(help_path.c_str());
@@ -113,7 +113,7 @@ struct help_forums : public Command {
 	STR_DISP("Forums")
 	STR_HELP("Visit Aegisub's forums.")
 
-	void operator()(agi::Context *c) {
+	void operator()(agi::Context *) {
 		AegisubApp::OpenURL("http://forum.aegisub.org/");
 	}
 };
@@ -126,7 +126,7 @@ struct help_irc : public Command {
 	STR_DISP("IRC Channel")
 	STR_HELP("Visit Aegisub's official IRC channel.")
 
-	void operator()(agi::Context *c) {
+	void operator()(agi::Context *) {
 		AegisubApp::OpenURL("irc://irc.rizon.net/aegisub");
 	}
 };
@@ -138,7 +138,7 @@ struct help_video : public Command {
 	STR_DISP("Visual Typesetting")
 	STR_HELP("Open the manual page for Visual Typesetting.")
 
-	void operator()(agi::Context *c) {
+	void operator()(agi::Context *) {
 		HelpButton::OpenPage("Visual Typesetting");
 	}
 };
@@ -150,7 +150,7 @@ struct help_website : public Command {
 	STR_DISP("Website")
 	STR_HELP("Visit Aegisub's official website.")
 
-	void operator()(agi::Context *c) {
+	void operator()(agi::Context *) {
 		AegisubApp::OpenURL("http://www.aegisub.org/");
 	}
 };

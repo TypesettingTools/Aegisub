@@ -83,7 +83,7 @@ BEGIN_EVENT_TABLE(AudioPlayer, wxEvtHandler)
 	EVT_COMMAND (1000, wxEVT_STOP_AUDIO, AudioPlayer::OnStopAudio)
 END_EVENT_TABLE()
 
-void AudioPlayer::OnStopAudio(wxCommandEvent &event) {
+void AudioPlayer::OnStopAudio(wxCommandEvent &) {
 	Stop(false);
 }
 

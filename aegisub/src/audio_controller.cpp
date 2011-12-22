@@ -164,7 +164,7 @@ AudioController::~AudioController()
 }
 
 
-void AudioController::OnPlaybackTimer(wxTimerEvent &event)
+void AudioController::OnPlaybackTimer(wxTimerEvent &)
 {
 	int64_t pos = player->GetCurrentPosition();
 
@@ -183,14 +183,14 @@ void AudioController::OnPlaybackTimer(wxTimerEvent &event)
 
 
 #ifdef wxHAS_POWER_EVENTS
-void AudioController::OnComputerSuspending(wxPowerEvent &event)
+void AudioController::OnComputerSuspending(wxPowerEvent &)
 {
 	Stop();
 	player->CloseStream();
 }
 
 
-void AudioController::OnComputerResuming(wxPowerEvent &event)
+void AudioController::OnComputerResuming(wxPowerEvent &)
 {
 	if (provider)
 		player->OpenStream();

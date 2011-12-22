@@ -51,7 +51,6 @@
 class AssStyle;
 
 
-
 /// DOCME
 /// @class AssStyleStorage
 /// @brief DOCME

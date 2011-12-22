@@ -622,11 +622,11 @@ struct video_opt_autoscroll : public Command {
 	STR_HELP("Toggle autoscroll of video")
 	CMD_TYPE(COMMAND_TOGGLE)
 
-	bool IsActive(const agi::Context *c) {
+	bool IsActive(const agi::Context *) {
 		return OPT_GET("Video/Subtitle Sync")->GetBool();
 	}
 
-	void operator()(agi::Context *c) {
+	void operator()(agi::Context *) {
 		OPT_SET("Video/Subtitle Sync")->SetBool(!OPT_GET("Video/Subtitle Sync")->GetBool());
 	}
 };
@@ -663,7 +663,7 @@ struct video_show_overscan : public validator_video_loaded {
 	STR_HELP("Show a mask over the video, indicating areas that might get cropped off by overscan on televisions.")
 	CMD_TYPE(COMMAND_VALIDATE | COMMAND_TOGGLE)
 
-	bool IsActive(const agi::Context *c) {
+	bool IsActive(const agi::Context *) {
 		return OPT_GET("Video/Overscan Mask")->GetBool();
 	}
 

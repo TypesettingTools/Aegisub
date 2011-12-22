@@ -358,7 +358,7 @@ void Interface_Hotkeys::OnUpdateFilter(wxCommandEvent&) {
 	}
 }
 
-void Interface_Hotkeys::OnClearFilter(wxCommandEvent &evt) {
+void Interface_Hotkeys::OnClearFilter(wxCommandEvent &) {
 	quick_search->SetValue("");
 }
 
@@ -525,7 +525,7 @@ void Preferences::OnOK(wxCommandEvent &event) {
 	EndModal(0);
 }
 
-void Preferences::OnApply(wxCommandEvent &event) {
+void Preferences::OnApply(wxCommandEvent &) {
 	for (std::map<std::string, wxAny>::iterator cur = pending_changes.begin(); cur != pending_changes.end(); ++cur) {
 		agi::OptionValue *opt = OPT_SET(cur->first);
 		switch (opt->GetType()) {

@@ -84,7 +84,7 @@ public:
 		hk_map->insert(make_pair(combo.CmdName(), combo));
 	}
 
-	unsigned int GetChildren(wxDataViewItemArray &children) const { return 0; }
+	unsigned int GetChildren(wxDataViewItemArray &) const { return 0; }
 	wxDataViewItem GetParent() const { return wxDataViewItem(parent); }
 	bool IsContainer() const { return false; }
 
@@ -195,7 +195,7 @@ public:
 
 	wxDataViewItem GetParent() const { return wxDataViewItem(0); }
 	bool IsContainer() const { return true; }
-	bool SetValue(wxVariant const& variant, unsigned int col) { return false; }
+	bool SetValue(wxVariant const&, unsigned int) { return false; }
 	void GetValue(wxVariant &variant, unsigned int col) const {
 		if (col == 1)
 			variant << wxDataViewIconText(name);
@@ -250,8 +250,8 @@ public:
 
 	wxDataViewItem GetParent() const { return wxDataViewItem(0); }
 	bool IsContainer() const { return true; }
-	bool SetValue(wxVariant const& variant, unsigned int col) { return false; }
-	void GetValue(wxVariant &variant, unsigned int col) const { }
+	bool SetValue(wxVariant const&, unsigned int) { return false; }
+	void GetValue(wxVariant &, unsigned int) const { }
 
 	unsigned int GetChildren(wxDataViewItemArray &out) const {
 		out.reserve(categories.size());

@@ -100,8 +100,8 @@ BaseGrid::BaseGrid(wxWindow* parent, agi::Context *context, const wxSize& size, 
 , batch_active_line_changed(false)
 , seek_listener(context->videoController->AddSeekListener(std::tr1::bind(&BaseGrid::Refresh, this, false, (wxRect*)NULL)))
 , context_menu(0)
-, context(context)
 , yPos(0)
+, context(context)
 {
 	scrollBar->SetScrollbar(0,10,100,10);
 
@@ -429,7 +429,7 @@ wxArrayInt BaseGrid::GetSelection() const {
 }
 
 
-void BaseGrid::OnPaint(wxPaintEvent &event) {
+void BaseGrid::OnPaint(wxPaintEvent &) {
 	// Get size and pos
 	wxSize cs = GetClientSize();
 	cs.SetWidth(cs.GetWidth() - scrollBar->GetSize().GetWidth());
@@ -649,7 +649,7 @@ void BaseGrid::GetRowStrings(int row, AssDialogue *line, bool *paint_columns, wx
 	}
 }
 
-void BaseGrid::OnSize(wxSizeEvent &event) {
+void BaseGrid::OnSize(wxSizeEvent &) {
 	AdjustScrollbar();
 	SetColumnWidths();
 	Refresh(false);

@@ -206,7 +206,7 @@ void DialogStyling::OnActivate(wxActivateEvent &) {
 	style_name->SetFocus();
 }
 
-void DialogStyling::OnStyleBoxModified(wxCommandEvent &event) {
+void DialogStyling::OnStyleBoxModified(wxCommandEvent &) {
 	long from, to;
 	style_name->GetSelection(&from, &to);
 	wxString prefix = style_name->GetValue().Left(from).Lower();

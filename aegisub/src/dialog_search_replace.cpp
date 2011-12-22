@@ -246,7 +246,7 @@ void DialogSearchReplace::FindReplace(int mode) {
 /// @brief Find next 
 /// @param event 
 ///
-void DialogSearchReplace::OnFindNext (wxCommandEvent &event) {
+void DialogSearchReplace::OnFindNext (wxCommandEvent &) {
 	FindReplace(0);
 }
 
@@ -255,7 +255,7 @@ void DialogSearchReplace::OnFindNext (wxCommandEvent &event) {
 /// @brief Replace next 
 /// @param event 
 ///
-void DialogSearchReplace::OnReplaceNext (wxCommandEvent &event) {
+void DialogSearchReplace::OnReplaceNext (wxCommandEvent &) {
 	FindReplace(1);
 }
 
@@ -264,7 +264,7 @@ void DialogSearchReplace::OnReplaceNext (wxCommandEvent &event) {
 /// @brief Replace all 
 /// @param event 
 ///
-void DialogSearchReplace::OnReplaceAll (wxCommandEvent &event) {
+void DialogSearchReplace::OnReplaceAll (wxCommandEvent &) {
 	FindReplace(2);
 }
 
@@ -295,7 +295,7 @@ void DialogSearchReplace::UpdateDropDowns() {
 /// @brief DOCME
 /// @param event 
 ///
-void DialogSearchReplace::OnSetFocus (wxFocusEvent &event) {
+void DialogSearchReplace::OnSetFocus (wxFocusEvent &) {
 	Search.hasFocus = true;
 }
 
@@ -303,7 +303,7 @@ void DialogSearchReplace::OnSetFocus (wxFocusEvent &event) {
 /// @brief DOCME
 /// @param event 
 ///
-void DialogSearchReplace::OnKillFocus (wxFocusEvent &event) {
+void DialogSearchReplace::OnKillFocus (wxFocusEvent &) {
 	Search.hasFocus = false;
 }
 

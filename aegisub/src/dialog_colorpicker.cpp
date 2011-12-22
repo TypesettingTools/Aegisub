@@ -314,7 +314,7 @@ void ColorPickerSpectrum::SetBackground(wxBitmap *new_background, bool force)
 
 wxDEFINE_EVENT(EVT_SPECTRUM_CHANGE, wxCommandEvent);
 
-void ColorPickerSpectrum::OnPaint(wxPaintEvent &evt)
+void ColorPickerSpectrum::OnPaint(wxPaintEvent &)
 {
 	if (!background) return;
 
@@ -494,7 +494,7 @@ void ColorPickerRecent::OnClick(wxMouseEvent &evt)
 	}
 }
 
-void ColorPickerRecent::OnPaint(wxPaintEvent &evt)
+void ColorPickerRecent::OnPaint(wxPaintEvent &)
 {
 	wxPaintDC pdc(this);
 	PrepareDC(pdc);
@@ -523,7 +523,7 @@ void ColorPickerRecent::OnPaint(wxPaintEvent &evt)
 	pdc.DrawBitmap(background, 0, 0, false);
 }
 
-void ColorPickerRecent::OnSize(wxSizeEvent &evt)
+void ColorPickerRecent::OnSize(wxSizeEvent &)
 {
 	background_valid = false;
 	Refresh();
@@ -578,7 +578,7 @@ void ColorPickerScreenDropper::OnMouse(wxMouseEvent &evt)
 	}
 }
 
-void ColorPickerScreenDropper::OnPaint(wxPaintEvent &evt)
+void ColorPickerScreenDropper::OnPaint(wxPaintEvent &)
 {
 	wxPaintDC pdc(this);
 
@@ -1129,14 +1129,14 @@ wxBitmap *DialogColorPicker::MakeSVSpectrum()
 	return hsv_spectrum = new wxBitmap(spectrum_image);
 }
 
-void DialogColorPicker::OnChangeMode(wxCommandEvent &evt)
+void DialogColorPicker::OnChangeMode(wxCommandEvent &)
 {
 	spectrum_dirty = true;
 	OPT_SET("Tool/Colour Picker/Mode")->SetInt(colorspace_choice->GetSelection());
 	UpdateSpectrumDisplay();
 }
 
-void DialogColorPicker::OnSpectrumChange(wxCommandEvent &evt)
+void DialogColorPicker::OnSpectrumChange(wxCommandEvent &)
 {
 	int i = colorspace_choice->GetSelection();
 	switch (i) {

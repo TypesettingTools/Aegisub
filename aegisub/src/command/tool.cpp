@@ -72,7 +72,7 @@ struct tool_assdraw : public Command {
 	STR_DISP("ASSDraw3")
 	STR_HELP("Launch ASSDraw3 tool for vector drawing.")
 
-	void operator()(agi::Context *c) {
+	void operator()(agi::Context *) {
 		wxExecute("\"" + StandardPaths::DecodePath("?data/ASSDraw3.exe") + "\"");
 	}
 };

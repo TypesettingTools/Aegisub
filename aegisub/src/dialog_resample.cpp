@@ -164,7 +164,7 @@ void DialogResample::ResampleTags (wxString name,int n,AssOverrideParameter *cur
 /// @param _curDiag 
 /// @return 
 ///
-void DialogResample::DoResampleTags (wxString name,int n,AssOverrideParameter *curParam,void *_curDiag) {
+void DialogResample::DoResampleTags (wxString name,int n,AssOverrideParameter *curParam,void *) {
 	double resizer = 1.0;
 	bool isX = false;
 	bool isY = false;
@@ -226,7 +226,7 @@ void DialogResample::DoResampleTags (wxString name,int n,AssOverrideParameter *c
 /// @param event 
 /// @return 
 ///
-void DialogResample::OnResample (wxCommandEvent &event) {
+void DialogResample::OnResample (wxCommandEvent &) {
 	int x1,y1;
 	c->ass->GetResolution(x1,y1);
 	long x2 = 0;
@@ -332,7 +332,7 @@ void DialogResample::OnResample (wxCommandEvent &event) {
 /// @brief Get destination resolution from video 
 /// @param event 
 ///
-void DialogResample::OnGetDestRes (wxCommandEvent &event) {
+void DialogResample::OnGetDestRes (wxCommandEvent &) {
 	ResX->SetValue(wxString::Format("%i",c->videoController->GetWidth()));
 	ResY->SetValue(wxString::Format("%i",c->videoController->GetHeight()));
 }
@@ -342,7 +342,7 @@ void DialogResample::OnGetDestRes (wxCommandEvent &event) {
 /// @brief Symmetrical checkbox clicked 
 /// @param event 
 ///
-void DialogResample::OnSymmetrical (wxCommandEvent &event) {
+void DialogResample::OnSymmetrical (wxCommandEvent &) {
 	bool state = !MarginSymmetrical->IsChecked();
 	MarginRight->Enable(state);
 	MarginBottom->Enable(state);

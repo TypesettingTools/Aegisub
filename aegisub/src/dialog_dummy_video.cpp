@@ -216,8 +216,7 @@ DialogDummyVideo::DialogDummyVideo(wxWindow *parent)
 	UpdateLengthDisplay();
 
 	// Layout
-	main_sizer->SetSizeHints(this);
-	SetSizer(main_sizer);
+	SetSizerAndFit(main_sizer);
 	CenterOnParent();
 }
 
@@ -242,7 +241,7 @@ END_EVENT_TABLE()
 /// @brief DOCME
 /// @param evt 
 ///
-void DialogDummyVideo::OnResolutionShortcut(wxCommandEvent &evt)
+void DialogDummyVideo::OnResolutionShortcut(wxCommandEvent &)
 {
 	int rs = resolution_shortcuts->GetSelection();
 	width->ChangeValue(wxString::Format("%d", resolutions[rs].width));
@@ -254,7 +253,7 @@ void DialogDummyVideo::OnResolutionShortcut(wxCommandEvent &evt)
 /// @brief DOCME
 /// @param evt 
 ///
-void DialogDummyVideo::OnFpsChange(wxCommandEvent &evt)
+void DialogDummyVideo::OnFpsChange(wxCommandEvent &)
 {
 	UpdateLengthDisplay();
 }
@@ -264,7 +263,7 @@ void DialogDummyVideo::OnFpsChange(wxCommandEvent &evt)
 /// @brief DOCME
 /// @param evt 
 ///
-void DialogDummyVideo::OnLengthSpin(wxSpinEvent &evt)
+void DialogDummyVideo::OnLengthSpin(wxSpinEvent &)
 {
 	UpdateLengthDisplay();
 }
@@ -274,7 +273,7 @@ void DialogDummyVideo::OnLengthSpin(wxSpinEvent &evt)
 /// @brief DOCME
 /// @param evt 
 ///
-void DialogDummyVideo::OnLengthChange(wxCommandEvent &evt)
+void DialogDummyVideo::OnLengthChange(wxCommandEvent &)
 {
 	UpdateLengthDisplay();
 }

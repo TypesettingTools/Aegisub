@@ -168,11 +168,11 @@ struct audio_view_spectrum : public Command {
 	STR_HELP("Display audio as a frequency-power spectrograph.")
 	CMD_TYPE(COMMAND_RADIO)
 
-	bool IsActive(const agi::Context *c) {
+	bool IsActive(const agi::Context *) {
 		return OPT_GET("Audio/Spectrum")->GetBool();
 	}
 
-	void operator()(agi::Context *c) {
+	void operator()(agi::Context *) {
 		OPT_SET("Audio/Spectrum")->SetBool(true);
 	}
 };
@@ -186,11 +186,11 @@ struct audio_view_waveform : public Command {
 	STR_HELP("Display audio as a linear amplitude graph.")
 	CMD_TYPE(COMMAND_RADIO)
 
-	bool IsActive(const agi::Context *c) {
+	bool IsActive(const agi::Context *) {
 		return !OPT_GET("Audio/Spectrum")->GetBool();
 	}
 
-	void operator()(agi::Context *c) {
+	void operator()(agi::Context *) {
 		OPT_SET("Audio/Spectrum")->SetBool(false);
 	}
 };
@@ -391,11 +391,11 @@ struct audio_autoscroll : public Command {
 	STR_HELP("Auto scrolls audio display to selected line")
 	CMD_TYPE(COMMAND_TOGGLE)
 
-	bool IsActive(const agi::Context *c) {
+	bool IsActive(const agi::Context *) {
 		return OPT_GET("Audio/Auto/Scroll")->GetBool();
 	}
 
-	void operator()(agi::Context *c) {
+	void operator()(agi::Context *) {
 		toggle("Audio/Auto/Scroll");
 	}
 };
@@ -408,11 +408,11 @@ struct audio_autocommit : public Command {
 	STR_HELP("Automatically commit all changes")
 	CMD_TYPE(COMMAND_TOGGLE)
 
-	bool IsActive(const agi::Context *c) {
+	bool IsActive(const agi::Context *) {
 		return OPT_GET("Audio/Auto/Commit")->GetBool();
 	}
 
-	void operator()(agi::Context *c) {
+	void operator()(agi::Context *) {
 		toggle("Audio/Auto/Commit");
 	}
 };
@@ -425,11 +425,11 @@ struct audio_autonext : public Command {
 	STR_HELP("Auto goes to next line on commit")
 	CMD_TYPE(COMMAND_TOGGLE)
 
-	bool IsActive(const agi::Context *c) {
+	bool IsActive(const agi::Context *) {
 		return OPT_GET("Audio/Next Line on Commit")->GetBool();
 	}
 
-	void operator()(agi::Context *c) {
+	void operator()(agi::Context *) {
 		toggle("Audio/Next Line on Commit");
 	}
 };
@@ -442,11 +442,11 @@ struct audio_toggle_spectrum : public Command {
 	STR_HELP("Spectrum analyzer mode")
 	CMD_TYPE(COMMAND_TOGGLE)
 
-	bool IsActive(const agi::Context *c) {
+	bool IsActive(const agi::Context *) {
 		return OPT_GET("Audio/Spectrum")->GetBool();
 	}
 
-	void operator()(agi::Context *c) {
+	void operator()(agi::Context *) {
 		toggle("Audio/Spectrum");
 	}
 };
@@ -459,11 +459,11 @@ struct audio_vertical_link : public Command {
 	STR_HELP("Link vertical zoom and volume sliders")
 	CMD_TYPE(COMMAND_TOGGLE)
 
-	bool IsActive(const agi::Context *c) {
+	bool IsActive(const agi::Context *) {
 		return OPT_GET("Audio/Link")->GetBool();
 	}
 
-	void operator()(agi::Context *c) {
+	void operator()(agi::Context *) {
 		toggle("Audio/Link");
 	}
 };

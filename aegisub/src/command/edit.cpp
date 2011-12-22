@@ -254,7 +254,7 @@ struct edit_line_paste : public Command {
 	STR_HELP("Paste subtitles.")
 	CMD_TYPE(COMMAND_VALIDATE)
 
-	bool Validate(const agi::Context *c) {
+	bool Validate(const agi::Context *) {
 		if (wxTheClipboard->Open()) {
 			bool can_paste = wxTheClipboard->IsSupported(wxDF_TEXT);
 			wxTheClipboard->Close();

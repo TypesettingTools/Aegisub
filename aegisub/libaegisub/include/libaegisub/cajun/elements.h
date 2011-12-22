@@ -139,7 +139,7 @@ private:
 class Null
 {
 public:
-   bool operator == (const Null& trivial) const { return true; }
+   bool operator == (const Null&) const { return true; }
 };
 
 } // end namespace

@@ -83,7 +83,7 @@ DialogTextImport::~DialogTextImport()
 /// @brief DOCME
 /// @param event 
 ///
-void DialogTextImport::OnOK(wxCommandEvent &event)
+void DialogTextImport::OnOK(wxCommandEvent &)
 {
 	// Set options
 	OPT_SET("Tool/Import/Text/Actor Separator")->SetString(STD_STR(edit_separator->GetValue()));
@@ -92,20 +92,8 @@ void DialogTextImport::OnOK(wxCommandEvent &event)
 	EndModal(wxID_OK);
 }
 
-
-/// @brief DOCME
-/// @param event 
-///
-void DialogTextImport::OnCancel(wxCommandEvent &event)
-{
-	EndModal(wxID_CANCEL);
-}
-
 ///////////////
 // Event table
 BEGIN_EVENT_TABLE(DialogTextImport,wxDialog)
 	EVT_BUTTON(wxID_OK,DialogTextImport::OnOK)
-	EVT_BUTTON(wxID_CANCEL,DialogTextImport::OnCancel)
 END_EVENT_TABLE()
-
-

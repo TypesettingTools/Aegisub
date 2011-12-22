@@ -70,7 +70,7 @@ class VisualToolBase : protected SelectionListener<AssDialogue> {
 
 	// SubtitleSelectionListener implementation
 	void OnActiveLineChanged(AssDialogue *new_line);
-	void OnSelectedSetChanged(const Selection &lines_added, const Selection &lines_removed) { }
+	void OnSelectedSetChanged(const Selection &, const Selection &) { }
 
 	// Below here are the virtuals that must be implemented
 
@@ -153,7 +153,7 @@ public:
 	virtual void OnMouseEvent(wxMouseEvent &event)=0;
 	virtual void Draw()=0;
 	virtual void SetDisplayArea(int x, int y, int w, int h);
-	virtual void SetToolbar(wxToolBar *tb) { }
+	virtual void SetToolbar(wxToolBar *) { }
 	virtual ~VisualToolBase();
 };
 

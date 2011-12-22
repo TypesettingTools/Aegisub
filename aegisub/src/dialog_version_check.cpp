@@ -532,13 +532,13 @@ VersionCheckerResultDialog::VersionCheckerResultDialog(const wxString &main_text
 }
 
 
-void VersionCheckerResultDialog::OnCloseButton(wxCommandEvent &evt)
+void VersionCheckerResultDialog::OnCloseButton(wxCommandEvent &)
 {
 	Close();
 }
 
 
-void VersionCheckerResultDialog::OnRemindMeLater(wxCommandEvent &evt)
+void VersionCheckerResultDialog::OnRemindMeLater(wxCommandEvent &)
 {
 	// In one week
 	time_t new_next_check_time = wxDateTime::Today().GetTicks() + 7*24*60*60;
@@ -548,7 +548,7 @@ void VersionCheckerResultDialog::OnRemindMeLater(wxCommandEvent &evt)
 }
 
 
-void VersionCheckerResultDialog::OnClose(wxCloseEvent &evt)
+void VersionCheckerResultDialog::OnClose(wxCloseEvent &)
 {
 	OPT_SET("App/Auto/Check For Updates")->SetBool(automatic_check_checkbox->GetValue());
 	Destroy();

@@ -55,12 +55,12 @@ private:
 
 class UnknownElement::ConstCastVisitor : public ConstVisitor
 {
-   virtual void Visit(const Array& array) {}
-   virtual void Visit(const Object& object) {}
-   virtual void Visit(const Number& number) {}
-   virtual void Visit(const String& string) {}
-   virtual void Visit(const Boolean& boolean) {}
-   virtual void Visit(const Null& null) {}
+   virtual void Visit(const Array&) {}
+   virtual void Visit(const Object&) {}
+   virtual void Visit(const Number&) {}
+   virtual void Visit(const String&) {}
+   virtual void Visit(const Boolean&) {}
+   virtual void Visit(const Null&) {}
 };
 
 template <typename ElementTypeT>
@@ -75,12 +75,12 @@ public:
 
 class UnknownElement::CastVisitor : public Visitor
 {
-   virtual void Visit(Array& array) {}
-   virtual void Visit(Object& object) {}
-   virtual void Visit(Number& number) {}
-   virtual void Visit(String& string) {}
-   virtual void Visit(Boolean& boolean) {}
-   virtual void Visit(Null& null) {}
+   virtual void Visit(Array&) {}
+   virtual void Visit(Object&) {}
+   virtual void Visit(Number&) {}
+   virtual void Visit(String&) {}
+   virtual void Visit(Boolean&) {}
+   virtual void Visit(Null&) {}
 };
 
 template <typename ElementTypeT>

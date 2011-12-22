@@ -145,7 +145,7 @@ void DialogProperties::AddProperty(wxSizer *sizer, wxString const& label, wxStri
 	properties.push_back(std::make_pair(property, ctrl));
 }
 
-void DialogProperties::OnOK(wxCommandEvent &event) {
+void DialogProperties::OnOK(wxCommandEvent &) {
 	int count = 0;
 	for (size_t i = 0; i < properties.size(); ++i)
 		count += SetInfoIfDifferent(properties[i].first, properties[i].second->GetValue());
@@ -170,7 +170,7 @@ int DialogProperties::SetInfoIfDifferent(wxString key,wxString value) {
 	return 0;
 }
 
-void DialogProperties::OnSetFromVideo(wxCommandEvent &event) {
+void DialogProperties::OnSetFromVideo(wxCommandEvent &) {
 	ResX->SetValue(wxString::Format("%d", c->videoController->GetWidth()));
 	ResY->SetValue(wxString::Format("%d", c->videoController->GetHeight()));
 }

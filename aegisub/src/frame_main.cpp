@@ -581,7 +581,7 @@ void FrameMain::OnStatusClear(wxTimerEvent &) {
 	SetStatusText("",1);
 }
 
-void FrameMain::OnAudioOpen(AudioProvider *provider) {
+void FrameMain::OnAudioOpen(AudioProvider *) {
 	SetDisplayMode(-1, 1);
 }
 

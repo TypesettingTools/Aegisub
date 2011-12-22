@@ -86,7 +86,7 @@ struct grid_tag_cycle_hiding : public Command {
 	STR_DISP("Cycle Tag Hiding")
 	STR_HELP("Cycle through tag hiding modes.")
 
-	void operator()(agi::Context *c) {
+	void operator()(agi::Context *) {
 		int tagMode = OPT_GET("Subtitle/Grid/Hide Overrides")->GetInt();
 
 		// Cycle to next
@@ -113,11 +113,11 @@ struct grid_tags_hide : public Command {
 	STR_HELP("Hide override tags in the subtitle grid.")
 	CMD_TYPE(COMMAND_RADIO)
 
-	bool IsActive(const agi::Context *c) {
+	bool IsActive(const agi::Context *) {
 		return OPT_GET("Subtitle/Grid/Hide Overrides")->GetInt() == 2;
 	}
 
-	void operator()(agi::Context *c) {
+	void operator()(agi::Context *) {
 		OPT_SET("Subtitle/Grid/Hide Overrides")->SetInt(2);
 	}
 };
@@ -131,11 +131,11 @@ struct grid_tags_show : public Command {
 	STR_HELP("Show full override tags in the subtitle grid.")
 	CMD_TYPE(COMMAND_RADIO)
 
-	bool IsActive(const agi::Context *c) {
+	bool IsActive(const agi::Context *) {
 		return OPT_GET("Subtitle/Grid/Hide Overrides")->GetInt() == 0;
 	}
 
-	void operator()(agi::Context *c) {
+	void operator()(agi::Context *) {
 		OPT_SET("Subtitle/Grid/Hide Overrides")->SetInt(0);
 	}
 };
@@ -149,11 +149,11 @@ struct grid_tags_simplify : public Command {
 	STR_HELP("Replace override tags in the subtitle grid with a simplified placeholder.")
 	CMD_TYPE(COMMAND_RADIO)
 
-	bool IsActive(const agi::Context *c) {
+	bool IsActive(const agi::Context *) {
 		return OPT_GET("Subtitle/Grid/Hide Overrides")->GetInt() == 1;
 	}
 
-	void operator()(agi::Context *c) {
+	void operator()(agi::Context *) {
 		OPT_SET("Subtitle/Grid/Hide Overrides")->SetInt(1);
 	}
 };

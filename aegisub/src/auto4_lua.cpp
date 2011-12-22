@@ -171,7 +171,7 @@ namespace {
 	};
 #else
 	struct LuaStackcheck {
-		void check_stack(int additional) { }
+		void check_stack(int) { }
 		void dump() { }
 		LuaStackcheck(lua_State*) { }
 	};

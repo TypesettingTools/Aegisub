@@ -76,7 +76,7 @@ wxObject* NumValidator::Clone() const {
 	return new NumValidator(*this);
 }
 
-bool NumValidator::Validate(wxWindow* parent) {
+bool NumValidator::Validate(wxWindow*) {
 	wxTextCtrl *ctrl = (wxTextCtrl*) GetWindow();
 	wxString value = ctrl->GetValue();
 

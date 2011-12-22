@@ -78,7 +78,7 @@ class VideoSlider: public wxWindow {
 	void OnKeyDown(wxKeyEvent &event);
 	void OnPaint(wxPaintEvent &event);
 	void OnFocus(wxFocusEvent &event);
-	void OnEraseBackground(wxEraseEvent &event) {}
+	void OnEraseBackground(wxEraseEvent &) {}
 
 public:
 	VideoSlider(wxWindow* parent, agi::Context *c);

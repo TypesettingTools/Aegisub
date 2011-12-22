@@ -307,7 +307,7 @@ void SubtitlesGrid::DeleteLines(wxArrayInt target, bool flagModified) {
 	entryIter before_first = std::find_if(context->ass->Line.begin(), context->ass->Line.end(), cast<AssDialogue*>()); --before_first;
 
 	int row = -1;
-	int deleted = 0;
+	size_t deleted = 0;
 	for (entryIter cur = context->ass->Line.begin(); cur != context->ass->Line.end();) {
 		if (dynamic_cast<AssDialogue*>(*cur) && ++row == target[deleted]) {
 			cur = context->ass->Line.erase(cur);

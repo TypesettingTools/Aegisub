@@ -162,7 +162,7 @@ void VideoSlider::OnKeyDown(wxKeyEvent &event) {
 	}
 }
 
-void VideoSlider::OnPaint(wxPaintEvent &event) {
+void VideoSlider::OnPaint(wxPaintEvent &) {
 	wxPaintDC dc(this);
 	DrawImage(dc);
 }
@@ -259,6 +259,6 @@ void VideoSlider::DrawImage(wxDC &destdc) {
 	destdc.Blit(0,0,w,h,&dc,0,0);
 }
 
-void VideoSlider::OnFocus(wxFocusEvent &event) {
+void VideoSlider::OnFocus(wxFocusEvent &) {
 	Refresh(false);
 }

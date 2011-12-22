@@ -197,7 +197,7 @@ END_EVENT_TABLE()
 /// @param event 
 /// @return 
 ///
-void DialogAttachments::OnAttachFont(wxCommandEvent &event) {
+void DialogAttachments::OnAttachFont(wxCommandEvent &) {
 	// Pick files
 	wxArrayString filenames;
 	wxArrayString paths;
@@ -235,7 +235,7 @@ void DialogAttachments::OnAttachFont(wxCommandEvent &event) {
 /// @param event 
 /// @return 
 ///
-void DialogAttachments::OnAttachGraphics(wxCommandEvent &event) {
+void DialogAttachments::OnAttachGraphics(wxCommandEvent &) {
 	// Pick files
 	wxArrayString filenames;
 	wxArrayString paths;
@@ -273,7 +273,7 @@ void DialogAttachments::OnAttachGraphics(wxCommandEvent &event) {
 /// @param event 
 /// @return 
 ///
-void DialogAttachments::OnExtract(wxCommandEvent &event) {
+void DialogAttachments::OnExtract(wxCommandEvent &) {
 	// Check if there's a selection
 	int i = listView->GetFirstSelected();
 
@@ -308,7 +308,7 @@ void DialogAttachments::OnExtract(wxCommandEvent &event) {
 /// @brief Delete 
 /// @param event 
 ///
-void DialogAttachments::OnDelete(wxCommandEvent &event) {
+void DialogAttachments::OnDelete(wxCommandEvent &) {
 	// Loop through items in list
 	int i = listView->GetFirstSelected();
 	while (i != -1) {
@@ -327,7 +327,7 @@ void DialogAttachments::OnDelete(wxCommandEvent &event) {
 /// @brief List selection changed 
 /// @param event 
 ///
-void DialogAttachments::OnListClick(wxListEvent &event) {
+void DialogAttachments::OnListClick(wxListEvent &) {
 	// Check if any is selected
 	bool hasSel = listView->GetFirstSelected() != -1;
 

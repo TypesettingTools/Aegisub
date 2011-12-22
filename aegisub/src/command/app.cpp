@@ -205,7 +205,7 @@ struct app_new_window : public Command {
 	STR_DISP("New Window")
 	STR_HELP("Open a new application window.")
 
-	void operator()(agi::Context *c) {
+	void operator()(agi::Context *) {
 		RestartAegisub();
 	}
 };
@@ -235,11 +235,11 @@ struct app_toggle_global_hotkeys : public Command {
 	STR_HELP("Toggle global hotkey overrides.")
 	CMD_TYPE(COMMAND_TOGGLE)
 
-	bool IsActive(const agi::Context *c) {
+	bool IsActive(const agi::Context *) {
 		return OPT_GET("Audio/Medusa Timing Hotkeys")->GetBool();
 	}
 
-	void operator()(agi::Context *c) {
+	void operator()(agi::Context *) {
 		agi::OptionValue *opt = OPT_SET("Audio/Medusa Timing Hotkeys");
 		opt->SetBool(!opt->GetBool());
 	}
@@ -252,7 +252,7 @@ struct app_updates : public Command {
 	STR_DISP("Check for Updates")
 	STR_HELP("Check to see if there is a new version of Aegisub available.")
 
-	void operator()(agi::Context *c) {
+	void operator()(agi::Context *) {
 		PerformVersionCheck(true);
 	}
 };

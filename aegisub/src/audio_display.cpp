@@ -859,7 +859,7 @@ BEGIN_EVENT_TABLE(AudioDisplay, wxWindow)
 END_EVENT_TABLE();
 
 
-void AudioDisplay::OnPaint(wxPaintEvent& event)
+void AudioDisplay::OnPaint(wxPaintEvent&)
 {
 	wxAutoBufferedPaintDC dc(this);
 
@@ -1200,7 +1200,7 @@ void AudioDisplay::OnKeyDown(wxKeyEvent& event)
 }
 
 
-void AudioDisplay::OnSize(wxSizeEvent &event)
+void AudioDisplay::OnSize(wxSizeEvent &)
 {
 	// We changed size, update the sub-controls' internal data and redraw
 	wxSize size = GetClientSize();
@@ -1219,7 +1219,7 @@ void AudioDisplay::OnSize(wxSizeEvent &event)
 }
 
 
-void AudioDisplay::OnFocus(wxFocusEvent &event)
+void AudioDisplay::OnFocus(wxFocusEvent &)
 {
 	// The scrollbar indicates focus so repaint that
 	RefreshRect(scrollbar->GetBounds(), false);

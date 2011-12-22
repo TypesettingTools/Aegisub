@@ -62,7 +62,7 @@ DummyAudioProvider::~DummyAudioProvider() {
 /// @param start 
 /// @param count 
 ///
-void DummyAudioProvider::GetAudio(void *buf, int64_t start, int64_t count) const {
+void DummyAudioProvider::GetAudio(void *buf, int64_t, int64_t count) const {
 	short *workbuf = (short*)buf;
 
 	if (noise) {

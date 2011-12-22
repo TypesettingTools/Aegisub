@@ -192,11 +192,11 @@ void DialogProgress::OnSetProgress(wxThreadEvent &evt) {
 	gauge->SetValue(mid(0, evt.GetPayload<int>(), 100));
 }
 
-void DialogProgress::OnSetIndeterminate(wxThreadEvent &evt) {
+void DialogProgress::OnSetIndeterminate(wxThreadEvent &) {
 	pulse_timer.Start(1000);
 }
 
-void DialogProgress::OnComplete(wxThreadEvent &evt) {
+void DialogProgress::OnComplete(wxThreadEvent &) {
 	pulse_timer.Stop();
 
 	// Unbind the cancel handler so that the default behavior happens (i.e. the
@@ -225,7 +225,7 @@ void DialogProgress::OnLog(wxThreadEvent &evt) {
 	log_output->SetInsertionPointEnd();
 }
 
-void DialogProgress::OnCancel(wxCommandEvent &evt) {
+void DialogProgress::OnCancel(wxCommandEvent &) {
 	ps->Cancel();
 	cancel_button->Enable(false);
 	cancel_button->SetLabelText(_("Cancelling..."));

@@ -259,7 +259,7 @@ void TimeEdit::OnKeyDown(wxKeyEvent &event) {
 
 /// @brief Mouse event 
 /// @param event 
-void TimeEdit::OnContextMenu(wxContextMenuEvent &event) {
+void TimeEdit::OnContextMenu(wxContextMenuEvent &) {
 	if (!byFrame && OPT_GET("Subtitle/Time Edit/Insert Mode")->GetBool()) {
 		wxMenu menu;
 		menu.Append(Time_Edit_Copy,_("&Copy"));

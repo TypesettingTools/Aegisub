@@ -193,7 +193,7 @@ int DrawBoxedText(wxDC &dc, const wxString &txt, int x, int y)
 	}
 }
 
-void KaraokeLineMatchDisplay::OnPaint(wxPaintEvent &event)
+void KaraokeLineMatchDisplay::OnPaint(wxPaintEvent &)
 {
 	wxPaintDC dc(this);
 
@@ -731,7 +731,7 @@ BEGIN_EVENT_TABLE(DialogKanjiTimer,wxDialog)
 	EVT_TEXT_ENTER(TEXT_DEST,DialogKanjiTimer::OnKeyEnter)
 END_EVENT_TABLE()
 
-void DialogKanjiTimer::OnClose(wxCommandEvent &event) {
+void DialogKanjiTimer::OnClose(wxCommandEvent &) {
 	OPT_SET("Tool/Kanji Timer/Interpolation")->SetBool(Interpolate->IsChecked());
 
 	for (size_t i = 0; i < LinesToChange.size(); ++i) {
@@ -745,7 +745,7 @@ void DialogKanjiTimer::OnClose(wxCommandEvent &event) {
 	Close();
 }
 
-void DialogKanjiTimer::OnStart(wxCommandEvent &event) {
+void DialogKanjiTimer::OnStart(wxCommandEvent &) {
 	if (SourceStyle->GetValue().empty() || DestStyle->GetValue().empty())
 		wxMessageBox(_("Select source and destination styles first."),_("Error"),wxICON_EXCLAMATION | wxOK);
 	else if (SourceStyle->GetValue() == DestStyle->GetValue())
@@ -758,30 +758,30 @@ void DialogKanjiTimer::OnStart(wxCommandEvent &event) {
 	LinesToChange.clear();
 }
 
-void DialogKanjiTimer::OnLink(wxCommandEvent &event) {
+void DialogKanjiTimer::OnLink(wxCommandEvent &) {
 	if (display->AcceptMatch())
 		TryAutoMatch();
 	else
 		wxBell();
 }
 
-void DialogKanjiTimer::OnUnlink(wxCommandEvent &event) {
+void DialogKanjiTimer::OnUnlink(wxCommandEvent &) {
 	if (!display->UndoMatch())
 		wxBell();
 	// Don't auto-match here, undoing sets the selection to the undone match
 }
 
-void DialogKanjiTimer::OnSkipSource(wxCommandEvent &event) {
+void DialogKanjiTimer::OnSkipSource(wxCommandEvent &) {
 	currentSourceLine = FindNextStyleMatch(currentSourceLine, SourceStyle->GetValue());
 	ResetForNewLine();
 }
 
-void DialogKanjiTimer::OnSkipDest(wxCommandEvent &event) {
+void DialogKanjiTimer::OnSkipDest(wxCommandEvent &) {
 	currentDestinationLine = FindNextStyleMatch(currentDestinationLine, DestStyle->GetValue());
 	ResetForNewLine();
 }
 
-void DialogKanjiTimer::OnGoBack(wxCommandEvent &event) {
+void DialogKanjiTimer::OnGoBack(wxCommandEvent &) {
 	if (LinesToChange.size())
 		LinesToChange.pop_back(); //If we go back, then take out the modified line we saved.
 
@@ -790,7 +790,7 @@ void DialogKanjiTimer::OnGoBack(wxCommandEvent &event) {
 	ResetForNewLine();
 }
 
-void DialogKanjiTimer::OnAccept(wxCommandEvent &event) {
+void DialogKanjiTimer::OnAccept(wxCommandEvent &) {
 	if (display->GetRemainingSource() > 0)
 		wxMessageBox(_("Group all of the source text."),_("Error"),wxICON_EXCLAMATION | wxOK);
 	else {
@@ -831,7 +831,7 @@ void DialogKanjiTimer::OnKeyDown(wxKeyEvent &event) {
 	}
 }
 
-void DialogKanjiTimer::OnKeyEnter(wxCommandEvent &event) {
+void DialogKanjiTimer::OnKeyEnter(wxCommandEvent &) {
 	wxCommandEvent evt;
 
 	if (display->GetRemainingSource() == 0 && display->GetRemainingDestination() == 0)
