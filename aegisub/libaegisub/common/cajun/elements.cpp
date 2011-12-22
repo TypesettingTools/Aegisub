@@ -84,36 +84,28 @@ private:
    ElementTypeT m_Element;
 };
 
-UnknownElement::UnknownElement() :                               m_pImp( new Imp_T<Null>( Null() ) ) {}
-UnknownElement::UnknownElement(const UnknownElement& unknown) :  m_pImp( unknown.m_pImp->Clone()) {}
-UnknownElement::UnknownElement(const Object& object) :           m_pImp( new Imp_T<Object>(object) ) {}
-UnknownElement::UnknownElement(const Array& array) :             m_pImp( new Imp_T<Array>(array) ) {}
-UnknownElement::UnknownElement(double number) :                  m_pImp( new Imp_T<Double>(number) ) {}
-UnknownElement::UnknownElement(int number) :                     m_pImp( new Imp_T<Integer>(number) ) {}
-UnknownElement::UnknownElement(int64_t number) :                 m_pImp( new Imp_T<Integer>(number) ) {}
-UnknownElement::UnknownElement(long number) :                    m_pImp( new Imp_T<Integer>(number) ) {}
-UnknownElement::UnknownElement(bool boolean) :                   m_pImp( new Imp_T<Boolean>(boolean) ) {}
-UnknownElement::UnknownElement(const char *string) :             m_pImp( new Imp_T<String>(string) ) {}
-UnknownElement::UnknownElement(const String& string) :           m_pImp( new Imp_T<String>(string) ) {}
-UnknownElement::UnknownElement(const Null& null) :               m_pImp( new Imp_T<Null>(null) ) {}
+UnknownElement::UnknownElement() :                              m_pImp(new Imp_T<Null>(Null())) {}
+UnknownElement::UnknownElement(const UnknownElement& unknown) : m_pImp(unknown.m_pImp->Clone()) {}
+UnknownElement::UnknownElement(int number) :                    m_pImp(new Imp_T<Integer>(number)) {}
+UnknownElement::UnknownElement(const char *string) :            m_pImp(new Imp_T<String>(string)) {}
+#if SIZEOF_TIME_T+0 == 4
+UnknownElement::UnknownElement(time_t number) :                 m_pImp(new Imp_T<Integer>(number)) {}
+#endif
 
-UnknownElement::~UnknownElement()   { delete m_pImp; }
+UnknownElement::~UnknownElement() { delete m_pImp; }
 
-UnknownElement::operator Object const&()  const { return CastTo<Object>(); }
-UnknownElement::operator Array const&()   const { return CastTo<Array>(); }
-UnknownElement::operator Integer const&() const { return CastTo<Integer>(); }
-UnknownElement::operator Double const&()  const { return CastTo<Double>(); }
-UnknownElement::operator Boolean const&() const { return CastTo<Boolean>(); }
-UnknownElement::operator String const&()  const { return CastTo<String>(); }
-UnknownElement::operator Null const&()    const { return CastTo<Null>(); }
+#define DEFINE_UE_TYPE(Type) \
+	UnknownElement::UnknownElement(Type const& val) : m_pImp(new Imp_T<Type>(val)) { } \
+	UnknownElement::operator Type const&() const { return CastTo<Type>(); } \
+	UnknownElement::operator Type&() { return CastTo<Type>(); }
 
-UnknownElement::operator Object&()  { return CastTo<Object>(); }
-UnknownElement::operator Array&()   { return CastTo<Array>(); }
-UnknownElement::operator Integer&() { return CastTo<Integer>(); }
-UnknownElement::operator Double&()  { return CastTo<Double>(); }
-UnknownElement::operator Boolean&() { return CastTo<Boolean>(); }
-UnknownElement::operator String&()  { return CastTo<String>(); }
-UnknownElement::operator Null&()    { return CastTo<Null>(); }
+DEFINE_UE_TYPE(Object);
+DEFINE_UE_TYPE(Array);
+DEFINE_UE_TYPE(Integer);
+DEFINE_UE_TYPE(Double);
+DEFINE_UE_TYPE(Boolean);
+DEFINE_UE_TYPE(String);
+DEFINE_UE_TYPE(Null);
 
 UnknownElement& UnknownElement::operator =(const UnknownElement& unknown)
 {

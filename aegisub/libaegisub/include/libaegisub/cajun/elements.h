@@ -69,14 +69,17 @@ public:
    UnknownElement(const UnknownElement& unknown);
    UnknownElement(const Object& object);
    UnknownElement(const Array& array);
-   UnknownElement(double number);
+   UnknownElement(double const& number);
    UnknownElement(int number);
-   UnknownElement(long number);
-   UnknownElement(int64_t number);
-   UnknownElement(bool boolean);
+   UnknownElement(int64_t const& number);
+   UnknownElement(bool const& boolean);
    UnknownElement(const char *string);
    UnknownElement(const String& string);
    UnknownElement(const Null& null);
+
+#if SIZEOF_TIME_T+0 == 4
+      UnknownElement(time_t number);
+#endif
 
    ~UnknownElement();
 

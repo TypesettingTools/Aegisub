@@ -346,6 +346,7 @@ AC_SUBST(with_openmp)
 AC_SUBST(OPENMP_CXXFLAGS)
 
 AC_CHECK_HEADERS([sys/time.h])
+AC_CHECK_SIZEOF([time_t])
 
 
 ##############################
