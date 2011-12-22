@@ -82,12 +82,9 @@ void MicroDVDSubtitleFormat::ReadFile(wxString const& filename, wxString const& 
 
 	LoadDefault(false);
 
-	agi::vfr::Framerate cfr;
-	const agi::vfr::Framerate *rate = &cfr;
+	agi::vfr::Framerate fps;
 
 	bool isFirst = true;
-	FPSRational fps_rat;
-	double fps = 0.0;
 	while (file.HasMoreLines()) {
 		wxString line = file.ReadLineFromFile();
 		if (exp.Matches(line)) {
@@ -98,26 +95,24 @@ void MicroDVDSubtitleFormat::ReadFile(wxString const& filename, wxString const& 
 
 			// If it's the first, check if it contains fps information
 			if (isFirst) {
-				if (f1 == 1 && f2 == 1) {
-					// Convert fps
-					try {
-						text.ToDouble(&fps);
-					}
-					catch (...) { }
-				}
 				isFirst = false;
 
+				if (f1 == 1 && f2 == 1) {
+					// Convert fps
+					double cfr;
+					if (text.ToDouble(&cfr)) {
+						fps = cfr;
+						continue;
+					}
+				}
+
 				// If it wasn't an fps line, ask the user for it
-				if (fps <= 0.0) {
-					fps_rat = AskForFPS();
-					if (fps_rat.num == 0) return;
-					else if (fps_rat.num > 0) cfr = double(fps_rat.num)/fps_rat.den;
-					else rate = &VideoContext::Get()->FPS();
-				}
-				else {
-					cfr = fps;
-					continue;
-				}
+				FPSRational fps_rat = AskForFPS();
+				if (fps_rat.num == 0) return;
+				else if (fps_rat.num > 0)
+					fps = agi::vfr::Framerate(fps_rat.num, fps_rat.den);
+				else
+					fps = VideoContext::Get()->FPS();
 			}
 
 			text.Replace("|", "\\N");
@@ -125,8 +120,8 @@ void MicroDVDSubtitleFormat::ReadFile(wxString const& filename, wxString const& 
 			AssDialogue *line = new AssDialogue;
 			line->group = "[Events]";
 			line->Style = "Default";
-			line->Start.SetMS(rate->TimeAtFrame(f1, agi::vfr::START));
-			line->End.SetMS(rate->TimeAtFrame(f2, agi::vfr::END));
+			line->Start.SetMS(fps.TimeAtFrame(f1, agi::vfr::START));
+			line->End.SetMS(fps.TimeAtFrame(f2, agi::vfr::END));
 			line->Text = text;
 			Line->push_back(line);
 		}
@@ -134,14 +129,14 @@ void MicroDVDSubtitleFormat::ReadFile(wxString const& filename, wxString const& 
 }
 
 void MicroDVDSubtitleFormat::WriteFile(wxString const& filename, wxString const& encoding) {
-	agi::vfr::Framerate cfr;
-	const agi::vfr::Framerate *rate = &cfr;
+	agi::vfr::Framerate fps;
 
 	FPSRational fps_rat = AskForFPS();
 	if (fps_rat.num == 0 || fps_rat.den == 0) return;
-	double fps = double(fps_rat.num) / fps_rat.den;
-	if (fps > 0.0) cfr = fps;
-	else rate = &VideoContext::Get()->FPS();
+	if (fps_rat.num < 0 || fps_rat.den < 0)
+		fps = VideoContext::Get()->FPS();
+	else
+		fps = agi::vfr::Framerate(fps_rat.num, fps_rat.den);
 
 	// Convert file
 	CreateCopy();
@@ -155,15 +150,15 @@ void MicroDVDSubtitleFormat::WriteFile(wxString const& filename, wxString const&
 	TextFileWriter file(filename, encoding);
 
 	// Write FPS line
-	if (!rate->IsVFR()) {
-		file.WriteLineToFile(wxString::Format("{1}{1}%.6f", rate->FPS()));
+	if (!fps.IsVFR()) {
+		file.WriteLineToFile(wxString::Format("{1}{1}%.6f", fps.FPS()));
 	}
 
 	// Write lines
 	for (std::list<AssEntry*>::iterator cur=Line->begin();cur!=Line->end();cur++) {
 		if (AssDialogue *current = dynamic_cast<AssDialogue*>(*cur)) {
-			int start = rate->FrameAtTime(current->Start.GetMS(), agi::vfr::START);
-			int end = rate->FrameAtTime(current->End.GetMS(), agi::vfr::END);
+			int start = fps.FrameAtTime(current->Start.GetMS(), agi::vfr::START);
+			int end = fps.FrameAtTime(current->End.GetMS(), agi::vfr::END);
 
 			file.WriteLineToFile(wxString::Format("{%i}{%i}%s", start, end, current->Text));
 		}
