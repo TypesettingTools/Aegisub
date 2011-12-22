@@ -130,7 +130,7 @@ static void do_wait(agi::ProgressSink *ps, FontConfigCacheThread const * const *
 static void wait_for_cache_thread(FontConfigCacheThread const * const * const cache_worker) {
 	if (!*cache_worker) return;
 
-	DialogProgress progress(AegisubApp::Get()->frame, "Updating font index", "This may take several minutes");
+	DialogProgress progress(wxGetApp().frame, "Updating font index", "This may take several minutes");
 	progress.Run(bind(do_wait, std::tr1::placeholders::_1, cache_worker));
 }
 

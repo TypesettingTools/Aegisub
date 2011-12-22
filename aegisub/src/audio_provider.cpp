@@ -163,7 +163,7 @@ AudioProvider *AudioProviderFactory::GetProvider(wxString filename, int cache) {
 		return provider;
 	}
 
-	DialogProgress progress(AegisubApp::Get()->frame, _("Load audio"));
+	DialogProgress progress(wxGetApp().frame, _("Load audio"));
 
 	// Convert to RAM
 	if (cache == 1) return new RAMAudioProvider(provider, &progress);

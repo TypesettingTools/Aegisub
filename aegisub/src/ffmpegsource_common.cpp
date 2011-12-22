@@ -94,7 +94,7 @@ FFMS_Index *FFmpegSourceProvider::DoIndexing(FFMS_Indexer *Indexer, const wxStri
 	wxString MsgString;
 
 	// set up progress dialog callback
-	DialogProgress Progress(AegisubApp::Get()->frame, _("Indexing"), _("Reading timecodes and frame/sample data"));
+	DialogProgress Progress(wxGetApp().frame, _("Indexing"), _("Reading timecodes and frame/sample data"));
 
 	// index all audio tracks
 	FFMS_Index *Index;

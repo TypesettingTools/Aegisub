@@ -128,8 +128,6 @@ public:
 	/// DOCME
 	Automation4::AutoloadScriptManager *global_scripts;
 
-	static AegisubApp* Get() { return (AegisubApp*)wxTheApp; }
-
 #ifdef __WXMAC__
 	// Apple events
 	virtual void MacOpenFile(const wxString &filename);

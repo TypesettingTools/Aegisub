@@ -148,7 +148,7 @@ FrameMain::FrameMain (wxArrayString args)
 	StartupLog("Initializing context frames");
 	context->parent = this;
 	context->previousFocus = 0;
-	AegisubApp::Get()->frame = this;
+	wxGetApp().frame = this;
 
 #ifdef __WXMAC__
 //	Bind(FrameMain::OnAbout, &FrameMain::cmd_call, this, cmd::id("app/about"));
