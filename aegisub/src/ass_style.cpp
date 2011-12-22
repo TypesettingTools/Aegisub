@@ -202,123 +202,64 @@ AssStyle::AssStyle(const AssStyle& s)
 	SetEntryData(s.GetEntryData());
 }
 
-AssStyle::AssStyle(wxString _data,int version) {
-	if (!Parse(_data,version))
-		throw "[Error] Failed parsing line.";
-	UpdateData();
+static wxString get_next_string(wxStringTokenizer &tok) {
+	if (!tok.HasMoreTokens()) throw "Malformed style: not enough fields";
+	return tok.GetNextToken();
 }
 
-bool AssStyle::Parse(wxString rawData,int version) {
-	// Tokenize
-	wxString temp;
-	long templ;
-	wxStringTokenizer tkn(rawData.Trim(false).Mid(6),",",wxTOKEN_RET_EMPTY_ALL);
+static int get_next_int(wxStringTokenizer &tok) {
+	long temp;
+	if (!get_next_string(tok).ToLong(&temp))
+		throw "Malformed style: could not parse int field";
+	return temp;
+}
 
-	// Read name
-	if (!tkn.HasMoreTokens()) return false;
-	name = tkn.GetNextToken();
-	name.Trim(true);
-	name.Trim(false);
+static int get_next_double(wxStringTokenizer &tok) {
+	double temp;
+	if (!get_next_string(tok).ToDouble(&temp))
+		throw "Malformed style: could not parse double field";
+	return temp;
+}
 
-	// Read font name
-	if (!tkn.HasMoreTokens()) return false;
-	font = tkn.GetNextToken();
-	font.Trim(true);
-	font.Trim(false);
+AssStyle::AssStyle(wxString rawData,int version) {
+	wxStringTokenizer tkn(rawData.Trim(false).Mid(6), ",", wxTOKEN_RET_EMPTY_ALL);
 
-	// Read font size
-	if (!tkn.HasMoreTokens()) return false;
-	temp = tkn.GetNextToken();
-	temp.ToLong(&templ);
-	fontsize = templ;
+	name = get_next_string(tkn).Trim(true).Trim(false);
+	font = get_next_string(tkn).Trim(true).Trim(false);
+	fontsize = get_next_int(tkn);
 
 	if (version != 0) {
-		// Read primary color
-		if (!tkn.HasMoreTokens()) return false;
-		primary.Parse(tkn.GetNextToken());
-
-		// Read secondary color
-		if (!tkn.HasMoreTokens()) return false;
-		secondary.Parse(tkn.GetNextToken());
-
-		// Read outline color
-		if (!tkn.HasMoreTokens()) return false;
-		outline.Parse(tkn.GetNextToken());
-
-		// Read shadow color
-		if (!tkn.HasMoreTokens()) return false;
-		shadow.Parse(tkn.GetNextToken());
+		primary.Parse(get_next_string(tkn));
+		secondary.Parse(get_next_string(tkn));
+		outline.Parse(get_next_string(tkn));
+		shadow.Parse(get_next_string(tkn));
 	}
-
 	else {
-		// Read primary color
-		if (!tkn.HasMoreTokens()) return false;
-		primary.Parse(tkn.GetNextToken());
-
-		// Read secondary color
-		if (!tkn.HasMoreTokens()) return false;
-		secondary.Parse(tkn.GetNextToken());
+		primary.Parse(get_next_string(tkn));
+		secondary.Parse(get_next_string(tkn));
 
 		// Read and discard tertiary color
-		if (!tkn.HasMoreTokens()) return false;
-		tkn.GetNextToken();
+		get_next_string(tkn);
 
 		// Read shadow/outline color
-		if (!tkn.HasMoreTokens()) return false;
-		outline.Parse(tkn.GetNextToken());
+		outline.Parse(get_next_string(tkn));
 		shadow = outline;
 	}
 
-	// Read bold
-	if (!tkn.HasMoreTokens()) return false;
-	temp = tkn.GetNextToken();
-	temp.ToLong(&templ);
-	bold = (templ==0)?false:true;
-
-	// Read italics
-	if (!tkn.HasMoreTokens()) return false;
-	temp = tkn.GetNextToken();	temp.ToLong(&templ);
-	italic = (templ==0)?false:true;
+	bold = !!get_next_int(tkn);
+	italic = !!get_next_int(tkn);
 
 	if (version != 0) {
-		// Read underline
-		if (!tkn.HasMoreTokens()) return false;
-		temp = tkn.GetNextToken();
-		temp.ToLong(&templ);
-		underline = (templ==0)?false:true;
+		underline = !!get_next_int(tkn);
+		strikeout = !!get_next_int(tkn);
 
-		// Read strikeout
-		if (!tkn.HasMoreTokens()) return false;
-		temp = tkn.GetNextToken();
-		temp.ToLong(&templ);
-		strikeout = (templ==0)?false:true;
-		// Read scale x
-		if (!tkn.HasMoreTokens()) return false;
-		temp = tkn.GetNextToken();
-		temp.ToDouble(&scalex);
-		//scalex = templ;
-
-		// Read scale y
-		if (!tkn.HasMoreTokens()) return false;
-		temp = tkn.GetNextToken();
-		temp.ToDouble(&scaley);
-		//scaley = templ;
-
-		// Read spacing
-		if (!tkn.HasMoreTokens()) return false;
-		temp = tkn.GetNextToken();
-		temp.ToDouble(&spacing);
-		//spacing = templ;
-
-		// Read angle
-		if (!tkn.HasMoreTokens()) return false;
-		temp = tkn.GetNextToken();
-		temp.ToDouble(&angle);
+		scalex = get_next_double(tkn);
+		scaley = get_next_double(tkn);
+		spacing = get_next_double(tkn);
+		angle = get_next_double(tkn);
 	}
-	
 	else {
 		// SSA defaults
-		//shadow.a = 128; //Parsed
 		underline = false;
 		strikeout = false;
 
@@ -328,85 +269,56 @@ bool AssStyle::Parse(wxString rawData,int version) {
 		angle = 0.0;
 	}
 
-	// Read border style
-	if (!tkn.HasMoreTokens()) return false;
-	temp = tkn.GetNextToken();
-	temp.ToLong(&templ);
-	borderstyle = templ;
+	borderstyle = get_next_int(tkn);
+	outline_w = get_next_double(tkn);
+	shadow_w = get_next_double(tkn);
+	alignment = get_next_int(tkn);
 
-	// Read outline width
-	if (!tkn.HasMoreTokens()) return false;
-	temp = tkn.GetNextToken();
-	temp.ToDouble(&outline_w);
-
-	// Read shadow width
-	if (!tkn.HasMoreTokens()) return false;
-	temp = tkn.GetNextToken();
-	temp.ToDouble(&shadow_w);
-
-	// Read alignment
-	if (!tkn.HasMoreTokens()) return false;
-	temp = tkn.GetNextToken();
-	temp.ToLong(&templ);
 	if (version == 0) {
-		switch(templ) {
-			case 1: alignment = 1; break;
-			case 2: alignment = 2; break;
-			case 3: alignment = 3; break;
-			case 5: alignment = 7; break;
-			case 6: alignment = 8; break;
-			case 7: alignment = 9; break;
-			case 9: alignment = 4; break;
+		switch(alignment) {
+			case 1:  alignment = 1; break;
+			case 2:  alignment = 2; break;
+			case 3:  alignment = 3; break;
+			case 5:  alignment = 7; break;
+			case 6:  alignment = 8; break;
+			case 7:  alignment = 9; break;
+			case 9:  alignment = 4; break;
 			case 10: alignment = 5; break;
 			case 11: alignment = 6; break;
 			default: alignment = 2; break;
 		}
 	}
-	else alignment = templ;
 
 	// Read left margin
-	if (!tkn.HasMoreTokens()) return false;
-	SetMarginString(tkn.GetNextToken(),0);
+	SetMarginString(get_next_string(tkn), 0);
 
 	// Read right margin
-	if (!tkn.HasMoreTokens()) return false;
-	SetMarginString(tkn.GetNextToken(),1);
+	SetMarginString(get_next_string(tkn), 1);
 
 	// Read top margin
-	if (!tkn.HasMoreTokens()) return false;
-	temp = tkn.GetNextToken();
-	SetMarginString(temp,2);
+	SetMarginString(get_next_string(tkn), 2);
 
 	// Read bottom margin
-	if (version == 2) {
-		if (!tkn.HasMoreTokens()) return false;
-		SetMarginString(tkn.GetNextToken(),3);
-	}
-	else SetMarginString(temp,3);
+	if (version == 2)
+		SetMarginString(get_next_string(tkn),3);
+	else
+		SetMarginString(GetMarginString(2), 3);
 
-	// Read alpha level
-	if (version == 0) {
-		if (!tkn.HasMoreTokens()) return false;
-		temp = tkn.GetNextToken();
-	}
+	// Skip alpha level
+	if (version == 0)
+		get_next_string(tkn);
 
 	// Read encoding
-	if (!tkn.HasMoreTokens()) return false;
-	temp = tkn.GetNextToken();
-	temp.ToLong(&templ);
-	encoding = templ;
+	encoding = get_next_int(tkn);
 
 	// Read relative to
-	if (version == 2) {
-		if (!tkn.HasMoreTokens()) return false;
-		temp = tkn.GetNextToken();
-		temp.ToLong(&templ);
-		relativeTo = templ;
-	}
+	if (version == 2)
+		relativeTo = get_next_int(tkn);
 
-	// End
-	if (tkn.HasMoreTokens()) return false;
-	return true;
+	if (tkn.HasMoreTokens())
+		throw "Malformed style: too many fields";
+
+	UpdateData();
 }
 
 void AssStyle::UpdateData() {
