@@ -7,6 +7,7 @@ LDFLAGS		+= -L../libaegisub -laegisub-3.0 -Wl,-rpath $(CURDIR)/../libaegisub -lg
 LDFLAGS		+= $(LDFLAGS_ICONV)
 
 CPPFLAGS	+= -I../src/include -I../libaegisub/include $(CFLAGS_ICONV)
+CXXFLAGS	+= -Wno-unused-value
 
 
 ifdef $(BUILD_DARWIN)
