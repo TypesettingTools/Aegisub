@@ -145,7 +145,7 @@ std::string Hotkey::GetHotkey(const std::string &context, const std::string &com
 		if (ctext == "Default")
 			ret = it->second.StrMenu();
 		else if (ret.empty() && ctext == "Always")
-			it->second.StrMenu();
+			ret = it->second.StrMenu();
 	}
 	return ret;
 }
