@@ -208,11 +208,6 @@ AssStyle::AssStyle(wxString _data,int version) {
 	UpdateData();
 }
 
-/// @brief Parses value from ASS data 
-/// @param rawData 
-/// @param version 
-/// @return 
-///
 bool AssStyle::Parse(wxString rawData,int version) {
 	// Tokenize
 	wxString temp;
@@ -414,8 +409,6 @@ bool AssStyle::Parse(wxString rawData,int version) {
 	return true;
 }
 
-/// @brief Writes data back to ASS (v4+) format 
-///
 void AssStyle::UpdateData() {
 	wxString final;
 
@@ -438,10 +431,6 @@ void AssStyle::UpdateData() {
 	SetEntryData(final);
 }
 
-/// @brief Sets margin from a string 
-/// @param str   
-/// @param which 
-///
 void AssStyle::SetMarginString(const wxString str,int which) {
 	if (which < 0 || which >= 4) throw Aegisub::InvalidMarginIdError();
 	if (!str.IsNumber()) throw "Invalid margin value";
@@ -453,19 +442,12 @@ void AssStyle::SetMarginString(const wxString str,int which) {
 	Margin[which] = value;
 }
 
-/// @brief Gets string for margin 
-/// @param which 
-/// @return 
-///
 wxString AssStyle::GetMarginString(int which) const {
 	if (which < 0 || which >= 4) throw Aegisub::InvalidMarginIdError();
 	wxString result = wxString::Format("%04i",Margin[which]);
 	return result;
 }
 
-/// @brief Convert style to SSA string 
-/// @return 
-///
 wxString AssStyle::GetSSAText() const {
 	wxString output;
 	int align = 0;
@@ -497,56 +479,10 @@ wxString AssStyle::GetSSAText() const {
 	return output;
 }
 
-/// @brief Clone 
-/// @return 
-///
 AssEntry *AssStyle::Clone() const {
 	return new AssStyle(*this);
 }
 
-
-
-/// @brief Equal to another style? 
-/// @param style 
-/// @return 
-///
-bool AssStyle::IsEqualTo(AssStyle *style) const {
-	// memcmp won't work because strings won't match
-	if (style->alignment != alignment || 
-		style->angle != angle ||
-		style->bold != bold ||
-		style->borderstyle != borderstyle ||
-		style->encoding != encoding ||
-		style->font != font ||
-		style->fontsize != fontsize ||
-		style->italic != italic ||
-		style->Margin[0] != Margin[0] ||
-		style->Margin[1] != Margin[1] ||
-		style->Margin[2] != Margin[2] ||
-		style->Margin[3] != Margin[3] ||
-		style->name != name ||
-		style->outline != outline ||
-		style->outline_w != outline_w ||
-		style->primary != primary ||
-		style->scalex != scalex ||
-		style->scaley != scaley ||
-		style->secondary != secondary ||
-		style->shadow != shadow ||
-		style->shadow_w != shadow_w ||
-		style->spacing != spacing ||
-		style->strikeout != strikeout ||
-		style->underline != underline ||
-		style->relativeTo != relativeTo)
-		return false;
-
-	else return true;
-}
-
-
-
-/// @brief Get a list of valid ASS encodings 
-/// @param encodingStrings 
-///
 void AssStyle::GetEncodings(wxArrayString &encodingStrings) {
 	encodingStrings.Clear();
 	encodingStrings.Add(wxString("0 - ") + _("ANSI"));
@@ -569,5 +505,3 @@ void AssStyle::GetEncodings(wxArrayString &encodingStrings) {
 	encodingStrings.Add(wxString("238 - ") + _("East European"));
 	encodingStrings.Add(wxString("255 - ") + _("OEM"));
 }
-
-

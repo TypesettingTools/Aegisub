@@ -71,96 +71,55 @@ struct AssColor {
 ///
 /// DOCME
 class AssStyle : public AssEntry {
+	// Parses raw ASS/SSA data into everything else
+	bool Parse(wxString data,int version=1);
 public:
-	/// DOCME
-	wxString name;
+	wxString name;   ///< Name of the style; must be case-insensitively unique within a file despite being case-sensitive
+	wxString font;   ///< Font face name
+	double fontsize; ///< Font size
 
-	/// DOCME
-	wxString font;
+	AssColor primary;   ///< Default text color
+	AssColor secondary; ///< Text color for not-yet-reached karaoke syllables
+	AssColor outline;   ///< Outline color
+	AssColor shadow;    ///< Shadow color
 
-	/// DOCME
-	double fontsize;
-
-
-	/// DOCME
-	AssColor primary;
-
-	/// DOCME
-	AssColor secondary;
-
-	/// DOCME
-	AssColor outline;
-
-	/// DOCME
-	AssColor shadow;
-
-
-	/// DOCME
 	bool bold;
-
-	/// DOCME
 	bool italic;
-
-	/// DOCME
 	bool underline;
-
-	/// DOCME
 	bool strikeout;
 
+	double scalex;    ///< Font x scale with 100 = 100%
+	double scaley;    ///< Font y scale with 100 = 100%
+	double spacing;   ///< Additional spacing between characters in pixels
+	double angle;     ///< Counterclockwise z rotation in degrees
+	int borderstyle;  ///< 1: Normal; 3: Opaque box; others are unused in Aegisub
+	double outline_w; ///< Outline width in pixels
+	double shadow_w;  ///< Shadow distance in pixels
+	int alignment;    ///< \an-style line alignment
+	int Margin[4];    ///< Left/Right/Vertical/Unused margins in pixels
+	int encoding;     ///< ASS font encoding needed for some non-unicode fonts
+	int relativeTo;   ///< ASS2 extension; do not use
 
-	/// DOCME
-	double scalex;
+	/// Update the raw line data after one or more of the public members have been changed
+	void UpdateData();
 
-	/// DOCME
-	double scaley;
+	/// Returns the margin value as a string
+	/// @param which 0: left; 1: right; 2: vertical/top; 3: bottom
+	wxString GetMarginString(int which) const;
 
-	/// DOCME
-	double spacing;
+	/// Sets margin value from a string
+	/// @param value New value for the margin; must contain a number
+	/// @param which 0: left; 1: right; 2: vertical/top; 3: bottom
+	void SetMarginString(const wxString value, int which);
 
-	/// DOCME
-	double angle;
-
-	/// DOCME
-	int borderstyle;
-
-	/// DOCME
-	double outline_w;
-
-	/// DOCME
-	double shadow_w;
-
-	/// DOCME
-	int alignment;
-
-	/// DOCME
-	int Margin[4];
-
-	/// DOCME
-	int encoding;
-
-	/// DOCME
-	int relativeTo;
-
-
-	/// @brief DOCME
-	///
-	ASS_EntryType GetType() const { return ENTRY_STYLE; }
-
-	bool Parse(wxString data,int version=1);	// Parses raw ASS/SSA data into everything else
-	void UpdateData();				// Updates raw data
-	wxString GetSSAText() const;			// Retrieves SSA-formatted style
-
-	wxString GetMarginString(int which) const;					// Returns the margin value as a string (0 = left, 1 = right, 2 = vertical/top, 3 = bottom)
-	void SetMarginString(const wxString value,int which);	// Sets margin value from a string (0 = left, 1 = right, 2 = vertical/top, 3 = bottom)
+	/// @brief Get a list of valid ASS font encodings
 	static void GetEncodings(wxArrayString &encodingStrings);
-
-	AssEntry *Clone() const;
-	bool IsEqualTo(AssStyle *style) const;
 
 	AssStyle();
 	AssStyle(AssStyle const&);
 	AssStyle(wxString data,int version=1);
-	~AssStyle();
+
+	wxString GetSSAText() const;
+	ASS_EntryType GetType() const { return ENTRY_STYLE; }
+	AssEntry *Clone() const;
 };
-
-
