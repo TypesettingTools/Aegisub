@@ -148,7 +148,7 @@ void SetThreadName(DWORD dwThreadID, LPCSTR szThreadName) {
 #endif
 
 
-/// @brief Handle wx assertions and redirct to the logging system.
+/// @brief Handle wx assertions and redirect to the logging system.
 /// @param file File name
 /// @param line Line number
 /// @param func Function name
@@ -192,9 +192,6 @@ bool AegisubApp::OnInit() {
 
 	// Init icons.
 	icon::icon_init();
-
-	// Install assertion handler
-//	wxSetAssertHandler(wxAssertHandler);
 
 	const std::string conf_mru(StandardPaths::DecodePath("?user/mru.json"));
 	config::mru = new agi::MRUManager(conf_mru, GET_DEFAULT_CONFIG(default_mru));

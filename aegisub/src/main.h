@@ -81,7 +81,7 @@ namespace Automation4 { class AutoloadScriptManager; }
 /// Macro to subscribe to OptionValue changes
 #define OPT_SUB(x, ...) config::opt->Get(x)->Subscribe(__VA_ARGS__)
 
-/// Macro to unsubscribe to OptionValue changes
+/// Macro to unsubscribe from OptionValue changes
 #define OPT_UNSUB(x, ...) config::opt->Get(x)->Unsubscribe(__VA_ARGS__)
 
 /// Macro to get a path.
@@ -105,8 +105,20 @@ class AegisubApp: public wxApp {
 	agi::log::EmitSTDOUT *emit_stdout;
 #endif
 
-public:
+	bool OnInit();
+	int OnExit();
+	int OnRun();
 
+#if !defined(_DEBUG) || defined(WITH_EXCEPTIONS)
+	void OnUnhandledException();
+	void OnFatalException();
+#endif
+
+	// This function wraps all event handler calls anywhere in the application and is
+	// our ticket to catch exceptions happening in event handlers.
+	void HandleEvent(wxEvtHandler *handler, wxEventFunction func, wxEvent& event) const;
+
+public:
 	/// DOCME
 	AegisubLocale locale;
 
@@ -116,30 +128,12 @@ public:
 	/// DOCME
 	Automation4::AutoloadScriptManager *global_scripts;
 
-
-	/// @brief DOCME
-	/// @return 
-	///
-	static AegisubApp* Get() { return (AegisubApp*) wxTheApp; }
-
-	bool OnInit();
-	int OnExit();
-	int OnRun();
+	static AegisubApp* Get() { return (AegisubApp*)wxTheApp; }
 
 #ifdef __WXMAC__
 	// Apple events
 	virtual void MacOpenFile(const wxString &filename);
 #endif
-
-#if !defined(_DEBUG) || defined(WITH_EXCEPTIONS)
-	void OnUnhandledException();
-	void OnFatalException();
-#endif
-
-
-	// This function wraps all event handler calls anywhere in the application and is
-	// our ticket to catch exceptions happening in event handlers.
-	void HandleEvent(wxEvtHandler *handler, wxEventFunction func, wxEvent& event) const;
 };
 
 DECLARE_APP(AegisubApp)
