@@ -79,7 +79,7 @@ endif
 ifeq (yes, $(HAVE_AUTO4_LUA))
 SRC_OPT += auto4_lua.cpp auto4_lua_assfile.cpp auto4_lua_dialog.cpp auto4_lua_progresssink.cpp auto4_lua_scriptreader.cpp
 auto4_lua.o auto4_lua_assfile.o auto4_lua_dialog.o  auto4_lua_progresssink.o auto4_lua_scriptreader.o: CXXFLAGS += $(CFLAGS_LUA)
-LDFLAGS += $(LDFLAGS_LUA)
+LIBS += $(LIBS_LUA)
 endif
 
 ##############

@@ -28,7 +28,7 @@ AC_DEFUN([AGI_FIND_HEADER],[
 
 
 AC_DEFUN([AGI_FIND_LIB],[
-  aegisub_save_LDFLAGS="$LDFLAGS"
+  aegisub_save_LIBS="$LIBS"
 
   if test -n "$3"; then
     LDDIR="-L$3"
@@ -36,7 +36,7 @@ AC_DEFUN([AGI_FIND_LIB],[
 
   for lib in $2; do
     vlib=`echo $lib | $as_tr_sh`
-    LDFLAGS="$LDDIR -l$lib"
+    LIBS="$LDDIR -l$lib"
     AC_CACHE_CHECK(
       [for -l${lib}],
       [agi_cv_lib_${vlib}],
@@ -52,7 +52,7 @@ AC_DEFUN([AGI_FIND_LIB],[
   done
 
   if test -n "$found"; then
-    $1_LDFLAGS="$LDDIR -l$found"
+    $1_LIBS="$LDDIR -l$found"
   fi
-  LDFLAGS="$aegisub_save_LDFLAGS"
+  LIBS="$aegisub_save_LIBS"
 ])
