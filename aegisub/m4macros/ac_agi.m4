@@ -33,10 +33,17 @@ AC_DEFUN([AC_AGI_LINK],[
 AC_DEFUN([AGI_OPT_PKG], [
   m4_define([varname], m4_bpatsubst([$1], [-.*], []))dnl
   m4_define([upper], m4_translit(varname, [a-z], [A-Z]))dnl
+
   AC_ARG_WITH(varname, AS_HELP_STRING([--without-][varname], [$2]))
   AS_IF([test x$with_]varname[ = xno],
         varname[_disabled="(disabled)"],
-        [PKG_CHECK_MODULES(upper, $1 >= varname[]_required_version, [with_]varname[="yes"], [with_]varname[="no"])])
-  AS_IF([test x$with_]varname[ = xyes], AC_DEFINE([WITH_]upper, 1, $3))
+        [PKG_CHECK_MODULES(upper, $1 >= varname[]_required_version, [
+          AC_DEFINE([WITH_]upper, 1, $3)
+          with_[]varname="yes"
+        ], [
+            AS_IF([test x$with_]varname[ = xyes],
+                  [AC_MSG_FAILURE([--with-]varname[ was specified, but ]varname[ could not be found])])
+            with_[]varname="no"
+        ])])
   AC_SUBST([with_]varname)
 ])
