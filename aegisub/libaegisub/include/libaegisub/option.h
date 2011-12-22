@@ -107,17 +107,17 @@ public:
 
 	/// @brief Next configuration file to load.
 	/// @param[in] src Stream to load from.
-	/// Load next config which will superceed any values from previous configs
+	/// Load next config which will supersede any values from previous configs
 	/// can be called as many times as required, but only after ConfigDefault() and
 	/// before ConfigUser()
 	void ConfigNext(std::istream &stream);
 
 	/// @brief Set user config file.
-	/// Set the user configuration file and read options from it, closes all possible
-	/// config file loading and sets the file to write to.
+	/// Set the user configuration file and read options from it, closes all
+	/// possible config file loading and sets the file to write to.
 	void ConfigUser();
 
-	/// Write the user configuration to disk, throws an exeption if something goes wrong.
+	/// Write the user configuration to disk, throws an exception if something goes wrong.
 	void Flush();
 
 	/// Print internal option type, name and values.
