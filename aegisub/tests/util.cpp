@@ -19,15 +19,24 @@
 /// @ingroup util common
 
 #include <fstream>
+#include <sstream>
 #include "util.h"
 
 namespace util {
 
-void copy(const std::string from, const std::string to) {
+void copy(const std::string &from, const std::string &to) {
 	std::ifstream ifs(from.c_str(), std::ios::binary);
 	std::ofstream ofs(to.c_str(), std::ios::binary);
 
 	ofs << ifs.rdbuf();
+}
+
+bool compare(const std::string &file1, const std::string &file2) {
+	std::stringstream ss1, ss2;
+	std::ifstream if1(file1.c_str(), std::ios::binary), if2(file2.c_str(), std::ios::binary);
+	ss1 << if1.rdbuf();
+	ss2 << if2.rdbuf();
+	return ss1.str() == ss2.str();
 }
 
 } // namespace util

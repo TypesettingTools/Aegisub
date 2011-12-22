@@ -25,7 +25,8 @@
 
 namespace util {
 
-void copy(const std::string from, const std::string to);
+void copy(const std::string &from, const std::string &to);
+bool compare(const std::string &file1, const std::string &file2);
 void remove(const std::string& file);
 
 template<typename T>

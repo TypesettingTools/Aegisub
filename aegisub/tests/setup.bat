@@ -27,17 +27,8 @@ echo > data/rename_me
 echo > data/rename_me_overwrite
 echo > data/rename_me_overwrite_renamed
 
-
-echo {"String" : "This is a test"} > data/option_string.json
-echo {"Integer" : 1} > data/option_integer.json
-echo {"Double" : 2.1} > data/option_double.json
-echo {"Bool" : true} > data/option_bool.json
-echo {"Null" : null} > data/option_null.json
-
-echo {"String" : [{"string" : "This is a test"}, {"string" : "This is a test"}]} > data/option_array_string
-echo {"Integer" : [{"int" : 1}, {"int" : 1}]} > data/option_array_integer
-echo {"Double" : [{"double" : 2.1}, {"double" : 2.1}]} > data/option_array_double
-echo {"Bool" : [{"bool" : true}, {"bool" : true}]} > data/option_array_bool
+mkdir data\options
+xcopy "%~dp0\options" data\options
 
 mkdir data\vfr
 mkdir data\vfr\in
