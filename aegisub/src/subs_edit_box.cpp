@@ -413,6 +413,7 @@ void SubsEditBox::PopulateActorList() {
 void SubsEditBox::OnActiveLineChanged(AssDialogue *new_line) {
 	wxEventBlocker blocker(this);
 	line = new_line;
+	commitId = -1;
 
 	Update(AssFile::COMMIT_DIAG_FULL);
 
