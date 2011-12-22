@@ -523,7 +523,7 @@ public:
 				controller->GetMarkers(snap_sample_range, potential_snaps);
 				for (AudioMarkerVector::iterator mi = potential_snaps.begin(); mi != potential_snaps.end(); ++mi)
 				{
-					if ((*mi)->CanSnap())
+					if (*mi != marker && (*mi)->CanSnap())
 					{
 						if (!snap_marker)
 							snap_marker = *mi;
