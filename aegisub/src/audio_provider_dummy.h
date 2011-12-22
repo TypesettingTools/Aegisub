@@ -47,7 +47,6 @@ class DummyAudioProvider : public AudioProvider {
 
 public:
 	DummyAudioProvider(unsigned long dur_ms, bool _noise);
-	~DummyAudioProvider();
 
 	bool AreSamplesNativeEndian() const { return true; }
 	void GetAudio(void *buf, int64_t start, int64_t count) const;

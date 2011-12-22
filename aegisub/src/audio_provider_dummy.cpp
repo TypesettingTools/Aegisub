@@ -39,11 +39,6 @@
 #include "audio_provider_dummy.h"
 #include "utils.h"
 
-
-/// @brief Constructor 
-/// @param dur_ms 
-/// @param _noise 
-///
 DummyAudioProvider::DummyAudioProvider(unsigned long dur_ms, bool _noise) {
 	noise = _noise;
 	channels = 1;
@@ -52,16 +47,6 @@ DummyAudioProvider::DummyAudioProvider(unsigned long dur_ms, bool _noise) {
 	num_samples = (int64_t)dur_ms * sample_rate / 1000;
 }
 
-/// @brief Destructor 
-///
-DummyAudioProvider::~DummyAudioProvider() {
-}
-
-/// @brief Get audio 
-/// @param buf   
-/// @param start 
-/// @param count 
-///
 void DummyAudioProvider::GetAudio(void *buf, int64_t, int64_t count) const {
 	short *workbuf = (short*)buf;
 
