@@ -75,7 +75,7 @@ static wxSpinCtrl *spin_ctrl(wxWindow *parent, float value, int max_value) {
 }
 
 static wxTextCtrl *num_text_ctrl(wxWindow *parent, double value, wxSize size = wxSize(70, 20)) {
-	return new wxTextCtrl(parent, -1, "", wxDefaultPosition, size, 0, NumValidator(wxString::Format("%0.3g", value), true, false));
+	return new wxTextCtrl(parent, -1, "", wxDefaultPosition, size, 0, NumValidator(value));
 }
 
 DialogStyleEditor::DialogStyleEditor(wxWindow *parent, AssStyle *style, agi::Context *c, AssStyleStorage *store, bool copy_style)

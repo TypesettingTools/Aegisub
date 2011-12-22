@@ -101,8 +101,8 @@ DialogResample::DialogResample(agi::Context *c)
 	wxSizer *ResSizer = new wxBoxSizer(wxHORIZONTAL);
 	int sw,sh;
 	c->ass->GetResolution(sw,sh);
-	ResX = new wxTextCtrl(this,-1,"",wxDefaultPosition,wxSize(50,-1),0,NumValidator(wxString::Format("%i",sw)));
-	ResY = new wxTextCtrl(this,-1,"",wxDefaultPosition,wxSize(50,-1),0,NumValidator(wxString::Format("%i",sh)));
+	ResX = new wxTextCtrl(this,-1,"",wxDefaultPosition,wxSize(50,-1),0,NumValidator(sw));
+	ResY = new wxTextCtrl(this,-1,"",wxDefaultPosition,wxSize(50,-1),0,NumValidator(sh));
 	wxStaticText *ResText = new wxStaticText(this,-1,_("x"));
 	wxButton *FromVideo = new wxButton(this,BUTTON_DEST_FROM_VIDEO,_("From &video"));
 	if (!c->videoController->IsLoaded()) FromVideo->Enable(false);

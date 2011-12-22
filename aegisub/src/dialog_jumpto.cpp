@@ -55,7 +55,7 @@
 #include "video_context.h"
 
 DialogJumpTo::DialogJumpTo(agi::Context *c)
-: wxDialog(c->parent, -1, _("Jump to"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE | wxWANTS_CHARS , "JumpTo")
+: wxDialog(c->parent, -1, _("Jump to"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE | wxWANTS_CHARS)
 , c(c)
 , jumpframe(c->videoController->GetFrameN())
 {
@@ -69,7 +69,7 @@ DialogJumpTo::DialogJumpTo(agi::Context *c)
 	// Times
 	wxStaticText *LabelFrame = new wxStaticText(this,-1,_("Frame: "),wxDefaultPosition,wxSize(60,20));
 	wxStaticText *LabelTime = new wxStaticText(this,-1,_("Time: "),wxDefaultPosition,wxSize(60,20));
-	JumpFrame = new wxTextCtrl(this,-1,wxString::Format("%ld",jumpframe),wxDefaultPosition,wxSize(60,20),wxTE_PROCESS_ENTER, NumValidator());
+	JumpFrame = new wxTextCtrl(this,-1,"",wxDefaultPosition,wxSize(60,20),wxTE_PROCESS_ENTER, NumValidator((int)jumpframe));
 	JumpFrame->SetMaxLength(maxLength.size());
 	JumpTime = new TimeEdit(this, -1, c, jumptime.GetASSFormated(), wxSize(60,20));
 	wxSizer *FrameSizer = new wxBoxSizer(wxHORIZONTAL);
@@ -95,8 +95,7 @@ DialogJumpTo::DialogJumpTo(agi::Context *c)
 	MainSizer->Add(ButtonSizer,0,wxEXPAND | wxLEFT | wxBOTTOM | wxRIGHT,5);
 
 	// Set sizer
-	SetSizer(MainSizer);
-	MainSizer->SetSizeHints(this);
+	SetSizerAndFit(MainSizer);
 	CenterOnParent();
 
 	Bind(wxEVT_COMMAND_TEXT_ENTER, &DialogJumpTo::OnOK, this);

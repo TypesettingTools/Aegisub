@@ -58,6 +58,20 @@ NumValidator::NumValidator(wxString val, bool isfloat, bool issigned)
 	}
 }
 
+NumValidator::NumValidator(int val, bool issigned)
+: iValue(val)
+, isFloat(false)
+, isSigned(issigned)
+{
+}
+
+NumValidator::NumValidator(double val, bool issigned)
+: fValue(val)
+, isFloat(true)
+, isSigned(issigned)
+{
+}
+
 NumValidator::NumValidator(const NumValidator &from)
 : wxValidator()
 , fValue(from.fValue)
