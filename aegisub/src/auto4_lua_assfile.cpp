@@ -626,20 +626,6 @@ namespace Automation4 {
 		LOG_D("automation/lua") << "Garbage collected LuaAssFile";
 	}
 
-	int LuaAssFile::LuaParseTagData(lua_State *L)
-	{
-		lua_newtable(L);
-		// TODO
-		return 1;
-	}
-
-	int LuaAssFile::LuaUnparseTagData(lua_State *L)
-	{
-		lua_pushstring(L, "");
-		// TODO
-		return 1;
-	}
-
 	int LuaAssFile::LuaParseKaraokeData(lua_State *L)
 	{
 		agi::scoped_ptr<AssEntry> e(LuaToAssEntry(L));
@@ -737,8 +723,6 @@ namespace Automation4 {
 		// assume the "aegisub" global table exists
 		lua_getglobal(L, "aegisub");
 
-		set_field(L, "parse_tag_data", closure_wrapper<&LuaAssFile::LuaParseTagData>);
-		set_field(L, "unparse_tag_data", closure_wrapper<&LuaAssFile::LuaUnparseTagData>);
 		set_field(L, "parse_karaoke_data", closure_wrapper<&LuaAssFile::LuaParseKaraokeData>);
 		set_field(L, "set_undo_point", closure_wrapper_v<&LuaAssFile::LuaSetUndoPoint>);
 
