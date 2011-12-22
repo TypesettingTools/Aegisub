@@ -32,7 +32,6 @@ SRC = \
 	common/option.cpp \
 	common/option_visit.cpp \
 	common/path.cpp \
-	common/progress.cpp \
 	common/keyframe.cpp \
 	common/util.cpp \
 	common/log.cpp \

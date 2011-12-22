@@ -60,11 +60,9 @@
     <ClInclude Include="$(SrcDir)include\libaegisub\line_iterator.h" />
     <ClInclude Include="$(SrcDir)include\libaegisub\log.h" />
     <ClInclude Include="$(SrcDir)include\libaegisub\mru.h" />
-    <ClInclude Include="$(SrcDir)include\libaegisub\mutex.h" />
     <ClInclude Include="$(SrcDir)include\libaegisub\option.h" />
     <ClInclude Include="$(SrcDir)include\libaegisub\option_value.h" />
     <ClInclude Include="$(SrcDir)include\libaegisub\path.h" />
-    <ClInclude Include="$(SrcDir)include\libaegisub\progress.h" />
     <ClInclude Include="$(SrcDir)include\libaegisub\scoped_ptr.h" />
     <ClInclude Include="$(SrcDir)include\libaegisub\signal.h" />
     <ClInclude Include="$(SrcDir)include\libaegisub\types.h" />
@@ -97,7 +95,6 @@
     <ClCompile Include="$(SrcDir)common\option.cpp" />
     <ClCompile Include="$(SrcDir)common\option_visit.cpp" />
     <ClCompile Include="$(SrcDir)common\path.cpp" />
-    <ClCompile Include="$(SrcDir)common\progress.cpp" />
     <ClCompile Include="$(SrcDir)common\util.cpp" />
     <ClCompile Include="$(SrcDir)common\validator.cpp" />
     <ClCompile Include="$(SrcDir)common\vfr.cpp" />

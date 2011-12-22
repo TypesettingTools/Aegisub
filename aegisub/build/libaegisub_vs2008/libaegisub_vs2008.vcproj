@@ -458,10 +458,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\libaegisub\include\libaegisub\mutex.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\libaegisub\include\libaegisub\option.h"
 				>
 			</File>

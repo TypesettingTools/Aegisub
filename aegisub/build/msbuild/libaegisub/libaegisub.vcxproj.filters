@@ -59,9 +59,6 @@
     <ClInclude Include="$(SrcDir)include\libaegisub\mru.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="$(SrcDir)include\libaegisub\mutex.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="$(SrcDir)include\libaegisub\option.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -114,9 +111,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="$(SrcDir)include\libaegisub\keyframe.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="$(SrcDir)include\libaegisub\progress.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="$(SrcDir)include\libaegisub\signal.h">
@@ -186,9 +180,6 @@
     </ClCompile>
     <ClCompile Include="$(SrcDir)windows\path_win.cpp">
       <Filter>Source Files\Windows</Filter>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)common\progress.cpp">
-      <Filter>Source Files\Common</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)common\util.cpp">
       <Filter>Source Files\Common</Filter>
