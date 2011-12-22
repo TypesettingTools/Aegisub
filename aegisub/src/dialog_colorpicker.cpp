@@ -255,6 +255,7 @@ class DialogColorPicker : public wxDialog {
 	void OnRecentSelect(wxCommandEvent &evt); // also handles dropper pick
 	void OnDropperMouse(wxMouseEvent &evt);
 	void OnMouse(wxMouseEvent &evt);
+	void OnCaptureLost(wxMouseCaptureLostEvent&);
 
 	ColorCallback callback;
 	void *callbackUserdata;
@@ -786,6 +787,7 @@ DialogColorPicker::DialogColorPicker(wxWindow *parent, wxColour initial_color, C
 	screen_dropper_icon->Bind(wxEVT_MOTION, &DialogColorPicker::OnDropperMouse, this);
 	screen_dropper_icon->Bind(wxEVT_LEFT_DOWN, &DialogColorPicker::OnDropperMouse, this);
 	screen_dropper_icon->Bind(wxEVT_LEFT_UP, &DialogColorPicker::OnDropperMouse, this);
+	screen_dropper_icon->Bind(wxEVT_MOUSE_CAPTURE_LOST, &DialogColorPicker::OnCaptureLost, this);
 	Bind(wxEVT_MOTION, &DialogColorPicker::OnMouse, this);
 	Bind(wxEVT_LEFT_DOWN, &DialogColorPicker::OnMouse, this);
 	Bind(wxEVT_LEFT_UP, &DialogColorPicker::OnMouse, this);
@@ -1249,4 +1251,10 @@ void DialogColorPicker::OnMouse(wxMouseEvent &evt)
 	}
 	else
 		evt.Skip();
+}
+
+void DialogColorPicker::OnCaptureLost(wxMouseCaptureLostEvent&) {
+	eyedropper_is_grabbed = false;
+	screen_dropper_icon->SetCursor(wxNullCursor);
+	screen_dropper_icon->SetBitmap(eyedropper_bitmap);
 }
