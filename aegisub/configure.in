@@ -350,9 +350,11 @@ AC_CHECK_SIZEOF([time_t])
 ## OpenGL
 #########
 AX_CHECK_GL
-if test -z "$GL_LIBS"; then
-	AC_MSG_FAILURE([aegisub requires GL support.])
+
+if test "$no_gl" = "yes"; then
+    AC_MSG_FAILURE([Aegisub requires GL support.])
 fi
+
 AC_SUBST(GL_CFLAGS)
 AC_SUBST(GL_LIBS)
 
