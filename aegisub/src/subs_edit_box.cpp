@@ -339,8 +339,10 @@ void SubsEditBox::Update(int type) {
 	wxEventBlocker blocker(this);
 
 	if (type == AssFile::COMMIT_NEW || type & AssFile::COMMIT_STYLES) {
+		wxString style = StyleBox->GetValue();
 		StyleBox->Clear();
 		StyleBox->Append(c->ass->GetStyles());
+		StyleBox->Select(StyleBox->FindString(style));
 	}
 
 	if (type == AssFile::COMMIT_NEW) {
