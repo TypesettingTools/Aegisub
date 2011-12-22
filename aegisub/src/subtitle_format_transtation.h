@@ -44,7 +44,7 @@ class AssDialogue;
 ///
 /// DOCME
 class TranStationSubtitleFormat : public SubtitleFormat {
-	wxString ConvertLine(AssDialogue *line, FPSRational *fps_rat, int nextl_start);
+	wxString ConvertLine(AssDialogue *line, FractionalTime *ft, int nextl_start);
 
 public:
 	TranStationSubtitleFormat();

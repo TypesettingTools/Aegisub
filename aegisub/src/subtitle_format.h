@@ -47,6 +47,7 @@
 
 class AssFile;
 class AssEntry;
+class FractionalTime;
 
 /// DOCME
 /// @class SubtitleFormat
@@ -67,12 +68,6 @@ class SubtitleFormat {
 	static std::list<SubtitleFormat*> formats;
 
 protected:
-	struct FPSRational {
-		int num;
-		int den;
-		bool smpte_dropframe;
-	};
-
 	std::list<AssEntry*> *Line;
 
 	/// Copy the input subtitles file; must be called before making any changes
@@ -112,7 +107,7 @@ protected:
 	void AddLine(wxString data,wxString group,int &version,wxString *outgroup=NULL);
 	/// Prompt the user for a framerate to use
 	/// @param showSMPTE Include SMPTE as an option?
-	FPSRational AskForFPS(bool showSMPTE=false);
+	FractionalTime AskForFPS(bool showSMPTE=false);
 
 public:
 	/// Constructor

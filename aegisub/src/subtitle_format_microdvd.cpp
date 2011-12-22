@@ -107,10 +107,10 @@ void MicroDVDSubtitleFormat::ReadFile(wxString const& filename, wxString const& 
 				}
 
 				// If it wasn't an fps line, ask the user for it
-				FPSRational fps_rat = AskForFPS();
-				if (fps_rat.num == 0) return;
-				else if (fps_rat.num > 0)
-					fps = agi::vfr::Framerate(fps_rat.num, fps_rat.den);
+				FractionalTime fps_rat = AskForFPS();
+				if (fps_rat.Numerator() == 0) return;
+				else if (fps_rat.Numerator() > 0)
+					fps = agi::vfr::Framerate(fps_rat.Numerator(), fps_rat.Denominator());
 				else
 					fps = VideoContext::Get()->FPS();
 			}
@@ -131,12 +131,12 @@ void MicroDVDSubtitleFormat::ReadFile(wxString const& filename, wxString const& 
 void MicroDVDSubtitleFormat::WriteFile(wxString const& filename, wxString const& encoding) {
 	agi::vfr::Framerate fps;
 
-	FPSRational fps_rat = AskForFPS();
-	if (fps_rat.num == 0 || fps_rat.den == 0) return;
-	if (fps_rat.num < 0 || fps_rat.den < 0)
+	FractionalTime fps_rat = AskForFPS();
+	if (fps_rat.Numerator() == 0 || fps_rat.Denominator() == 0) return;
+	if (fps_rat.Numerator() < 0 || fps_rat.Denominator() < 0)
 		fps = VideoContext::Get()->FPS();
 	else
-		fps = agi::vfr::Framerate(fps_rat.num, fps_rat.den);
+		fps = agi::vfr::Framerate(fps_rat.Numerator(), fps_rat.Denominator());
 
 	// Convert file
 	CreateCopy();

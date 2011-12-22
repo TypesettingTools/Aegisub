@@ -53,8 +53,8 @@ wxArrayString EncoreSubtitleFormat::GetWriteWildcards() const {
 }
 
 void EncoreSubtitleFormat::WriteFile(wxString const& filename, wxString const& encoding) {
-	FPSRational fps_rat = AskForFPS(true);
-	if (fps_rat.num <= 0 || fps_rat.den <= 0) return;
+	FractionalTime ft = AskForFPS(true);
+	if (ft.Numerator() <= 0 || ft.Denominator() <= 0) return;
 
 	TextFileWriter file(filename, encoding);
 
@@ -71,12 +71,12 @@ void EncoreSubtitleFormat::WriteFile(wxString const& filename, wxString const& e
 	int i = 0;
 
 	// Encore wants ; instead of : if we're dealing with NTSC dropframe stuff
-	FractionalTime ft(fps_rat.num, fps_rat.den, fps_rat.smpte_dropframe, fps_rat.smpte_dropframe ? ';' : ':');
+	char sep = ft.IsDrop() ? ';' : ':';
 
 	for (std::list<AssEntry*>::iterator cur=Line->begin();cur!=Line->end();cur++) {
 		if (AssDialogue *current = dynamic_cast<AssDialogue*>(*cur)) {
 			++i;
-			file.WriteLineToFile(wxString::Format("%i %s %s %s", i, ft.FromAssTime(current->Start), ft.FromAssTime(current->End), current->Text));
+			file.WriteLineToFile(wxString::Format("%i %s %s %s", i, ft.FromAssTime(current->Start, sep), ft.FromAssTime(current->End, sep), current->Text));
 		}
 	}
 

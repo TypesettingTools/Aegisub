@@ -109,19 +109,22 @@ void SubtitleFormat::AddLine(wxString data, wxString group, int &version, wxStri
 }
 
 /// @brief Ask the user to enter the FPS 
-SubtitleFormat::FPSRational SubtitleFormat::AskForFPS(bool showSMPTE) {
+FractionalTime SubtitleFormat::AskForFPS(bool showSMPTE) {
 	wxArrayString choices;
-	FPSRational fps_rat;
-	fps_rat.smpte_dropframe = false; // ensure it's false by default
+	bool drop = false;
+	int num;
+	int den;
 	
 	// Video FPS
 	VideoContext *context = VideoContext::Get();
 	bool vidLoaded = context->TimecodesLoaded();
 	if (vidLoaded) {
 		wxString vidFPS;
-		if (context->FPS().IsVFR()) vidFPS = "VFR";
-		else vidFPS = wxString::Format("%.3f", context->FPS().FPS());
-		choices.Add(wxString::Format("From video (%s)", vidFPS));
+		if (context->FPS().IsVFR())
+			vidFPS = "VFR";
+		else
+			vidFPS = wxString::Format("%.3f", context->FPS().FPS());
+		choices.Add(wxString::Format(_("From video (%s)"), vidFPS));
 	}
 	
 	// Standard FPS values
@@ -141,51 +144,31 @@ SubtitleFormat::FPSRational SubtitleFormat::AskForFPS(bool showSMPTE) {
 
 	// Ask
 	int choice = wxGetSingleChoiceIndex(_("Please choose the appropriate FPS for the subtitles:"), _("FPS"), choices);
-	if (choice == -1) {
-		fps_rat.num = 0;
-		fps_rat.den = 0;
-
-		return fps_rat;
-	}
+	if (choice == -1)
+		return FractionalTime(0, 0);
 
 	// Get FPS from choice
 	if (vidLoaded) choice--;
 	// dropframe was displayed, that means all choices >4 are bumped up by 1
-	if (showSMPTE) {
-		switch (choice) {
-			case -1: fps_rat.num = -1;		fps_rat.den = 1;	break; // VIDEO
-			case 0: fps_rat.num = 15;		fps_rat.den = 1;	break;
-			case 1: fps_rat.num = 24000;	fps_rat.den = 1001;	break;
-			case 2: fps_rat.num = 24;		fps_rat.den = 1;	break;
-			case 3: fps_rat.num = 25;		fps_rat.den = 1;	break;
-			case 4: fps_rat.num = 30000;    fps_rat.den = 1001;	break;
-			case 5: fps_rat.num = 30000;    fps_rat.den = 1001; fps_rat.smpte_dropframe = true;	break;
-			case 6: fps_rat.num = 30;		fps_rat.den = 1;	break;
-			case 7: fps_rat.num = 50;		fps_rat.den = 1;	break;
-			case 8: fps_rat.num = 60000;	fps_rat.den = 1001;	break;
-			case 9: fps_rat.num = 60;		fps_rat.den = 1;	break;
-			case 10: fps_rat.num = 120000;	fps_rat.den = 1001;	break;
-			case 11: fps_rat.num = 120;		fps_rat.den = 1;	break;
-		}
-		return fps_rat;
-	} else {
-		// dropframe wasn't displayed
-		switch (choice) {
-			case -1: fps_rat.num = -1;		fps_rat.den = 1;	break; // VIDEO
-			case 0: fps_rat.num = 15;		fps_rat.den = 1;	break;
-			case 1: fps_rat.num = 24000;	fps_rat.den = 1001;	break;
-			case 2: fps_rat.num = 24;		fps_rat.den = 1;	break;
-			case 3: fps_rat.num = 25;		fps_rat.den = 1;	break;
-			case 4: fps_rat.num = 30000;    fps_rat.den = 1001;	break;
-			case 5: fps_rat.num = 30;		fps_rat.den = 1;	break;
-			case 6: fps_rat.num = 50;		fps_rat.den = 1;	break;
-			case 7: fps_rat.num = 60000;	fps_rat.den = 1001;	break;
-			case 8: fps_rat.num = 60;		fps_rat.den = 1;	break;
-			case 9: fps_rat.num = 120000;	fps_rat.den = 1001;	break;
-			case 10: fps_rat.num = 120;		fps_rat.den = 1;	break;
-		}
-		return fps_rat;
+	if (!showSMPTE && choice > 4) ++choice;
+
+	switch (choice) {
+		case -1: num = -1;     den = 1;                 break; // VIDEO
+		case 0:  num = 15;     den = 1;                 break;
+		case 1:  num = 24000;  den = 1001;              break;
+		case 2:  num = 24;     den = 1;                 break;
+		case 3:  num = 25;     den = 1;                 break;
+		case 4:  num = 30000;  den = 1001;              break;
+		case 5:  num = 30000;  den = 1001; drop = true; break;
+		case 6:  num = 30;     den = 1;                 break;
+		case 7:  num = 50;     den = 1;                 break;
+		case 8:  num = 60000;  den = 1001;              break;
+		case 9:  num = 60;     den = 1;                 break;
+		case 10: num = 120000; den = 1001;              break;
+		case 11: num = 120;    den = 1;                 break;
 	}
+
+	return FractionalTime(num, den, drop);
 }
 
 void SubtitleFormat::SortLines() {

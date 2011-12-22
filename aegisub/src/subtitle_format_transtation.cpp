@@ -60,8 +60,8 @@ wxArrayString TranStationSubtitleFormat::GetWriteWildcards() const {
 }
 
 void TranStationSubtitleFormat::WriteFile(wxString const& filename, wxString const& encoding) {
-	FPSRational fps_rat = AskForFPS(true);
-	if (fps_rat.num <= 0 || fps_rat.den <= 0) return;
+	FractionalTime ft = AskForFPS(true);
+	if (ft.Numerator() <= 0 || ft.Denominator() <= 0) return;
 
 	TextFileWriter file(filename, encoding);
 
@@ -77,7 +77,7 @@ void TranStationSubtitleFormat::WriteFile(wxString const& filename, wxString con
 		AssDialogue *cur = dynamic_cast<AssDialogue*>(*it);
 
 		if (prev && cur) {
-			file.WriteLineToFile(ConvertLine(prev, &fps_rat, cur->Start.GetMS()));
+			file.WriteLineToFile(ConvertLine(prev, &ft, cur->Start.GetMS()));
 			file.WriteLineToFile("");
 		}
 
@@ -87,7 +87,7 @@ void TranStationSubtitleFormat::WriteFile(wxString const& filename, wxString con
 
 	// flush last line
 	if (prev)
-		file.WriteLineToFile(ConvertLine(prev, &fps_rat, -1));
+		file.WriteLineToFile(ConvertLine(prev, &ft, -1));
 
 	// Every file must end with this line
 	file.WriteLineToFile("SUB[");
@@ -95,7 +95,7 @@ void TranStationSubtitleFormat::WriteFile(wxString const& filename, wxString con
 	ClearCopy();
 }
 
-wxString TranStationSubtitleFormat::ConvertLine(AssDialogue *current, FPSRational *fps_rat, int nextl_start) {
+wxString TranStationSubtitleFormat::ConvertLine(AssDialogue *current, FractionalTime *ft, int nextl_start) {
 	int valign = 0;
 	const char *halign = " "; // default is centered
 	const char *type = "N"; // no special style
@@ -119,10 +119,9 @@ wxString TranStationSubtitleFormat::ConvertLine(AssDialogue *current, FPSRationa
 	// start of next one, since the end timestamp is inclusive and the lines
 	// would overlap if left as is.
 	if (nextl_start > 0 && end.GetMS() == nextl_start)
-		end.SetMS(end.GetMS() - ((1000*fps_rat->den)/fps_rat->num));
+		end.SetMS(end.GetMS() - ((1000*ft->Denominator())/ft->Numerator()));
 
-	FractionalTime ft(fps_rat->num, fps_rat->den, fps_rat->smpte_dropframe);
-	wxString header = wxString::Format("SUB[%i%s%s ", valign, halign, type) + ft.FromAssTime(start) + ">" + ft.FromAssTime(end) + "]\r\n";
+	wxString header = wxString::Format("SUB[%i%s%s ", valign, halign, type) + ft->FromAssTime(start) + ">" + ft->FromAssTime(end) + "]\r\n";
 
 	// Process text
 	wxString lineEnd = "\r\n";

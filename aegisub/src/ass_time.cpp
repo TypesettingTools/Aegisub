@@ -251,11 +251,10 @@ int AssTime::GetTimeMiliseconds() { return (time % 1000); }
 ///
 int AssTime::GetTimeCentiseconds() { return (time % 1000)/10; }
 
-FractionalTime::FractionalTime(int numerator, int denominator, bool dropframe, char sep)
+FractionalTime::FractionalTime(int numerator, int denominator, bool dropframe)
 : num(numerator)
 , den(denominator)
 , drop(dropframe)
-, sep(sep)
 {
 	if (drop) {
 		// no dropframe for any other framerates
@@ -268,7 +267,7 @@ FractionalTime::FractionalTime(int numerator, int denominator, bool dropframe, c
 		throw "FractionalTime: nonsensical enumerator or denominator";
 }
 
-int FractionalTime::ToMillisecs(wxString text) {
+int FractionalTime::ToMillisecs(wxString text, char sep) {
 	text.Trim(false);
 	text.Trim(true);
 
@@ -318,15 +317,15 @@ int FractionalTime::ToMillisecs(wxString text) {
 	return msecs_f;
 }
 
-AssTime FractionalTime::ToAssTime(wxString text) {
-	return AssTime(ToMillisecs(text));
+AssTime FractionalTime::ToAssTime(wxString text, char sep) {
+	return AssTime(ToMillisecs(text, sep));
 }
 
-wxString FractionalTime::FromAssTime(AssTime time) {
-	return FromMillisecs(time.GetMS());
+wxString FractionalTime::FromAssTime(AssTime time, char sep) {
+	return FromMillisecs(time.GetMS(), sep);
 }
 
-wxString FractionalTime::FromMillisecs(int64_t msec) {
+wxString FractionalTime::FromMillisecs(int64_t msec, char sep) {
 	int h=0, m=0, s=0, f=0; // hours, minutes, seconds, fractions
 	int fn = (msec*(int64_t)num) / (1000*den); // frame number
 

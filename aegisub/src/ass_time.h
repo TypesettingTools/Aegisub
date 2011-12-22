@@ -91,21 +91,24 @@ class FractionalTime {
 	int num;  ///< Numerator
 	int den;  ///< Denominator
 	bool drop; ///< Enable SMPTE dropframe handling
-	char sep;  ///< Timecode component separator
 
 	/// How often to drop frames when enabled
 	static const int frames_per_period = 17982;
 
 public:
-	FractionalTime(int numerator=30, int denominator=1, bool dropframe=false, char sep=':');
+	FractionalTime(int numerator=30, int denominator=1, bool dropframe=false);
+
+	int Numerator() const { return num; }
+	int Denominator() const { return den; }
+	bool IsDrop() const { return drop; }
 
 	/// Parse a SMPTE timecode, returning an AssTime
-	AssTime ToAssTime(wxString fractime);
+	AssTime ToAssTime(wxString fractime, char sep=':');
 	/// Parse a SMPTE timecode, returning milliseconds
-	int ToMillisecs(wxString fractime);
+	int ToMillisecs(wxString fractime, char sep=':');
 
 	/// Convert an AssTime to a SMPTE timecode
-	wxString FromAssTime(AssTime time);
+	wxString FromAssTime(AssTime time, char sep=':');
 	/// Convert milliseconds to a SMPTE timecode
-	wxString FromMillisecs(int64_t msec);
+	wxString FromMillisecs(int64_t msec, char sep=':');
 };
