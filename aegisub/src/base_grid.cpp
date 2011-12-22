@@ -682,8 +682,7 @@ void BaseGrid::OnMouseEvent(wxMouseEvent &event) {
 		if (left_up || dclick) {
 			int old = editBox->linen;
 			editBox->SetToLine(row);
-			RefreshRect(wxRect(0,(row+1-yPos)*lineHeight,w,lineHeight+2),false);
-			RefreshRect(wxRect(0,(old+1-yPos)*lineHeight,w,lineHeight+2),false);
+			Refresh(false); // always redraw the entire grid, to ensure colliding lines are shown properly (#1371)
 		}
 
 		if (dclick)
