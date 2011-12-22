@@ -381,8 +381,7 @@ struct video_frame_next_keyframe : public validator_video_loaded {
 
 	void operator()(agi::Context *c) {
 		std::vector<int> const& kf = c->videoController->GetKeyFrames();
-		std::vector<int>::const_iterator pos = lower_bound(kf.begin(), kf.end(), c->videoController->GetFrameN());
-		if (pos != kf.end()) ++pos;
+		std::vector<int>::const_iterator pos = lower_bound(kf.begin(), kf.end(), c->videoController->GetFrameN() + 1);
 
 		c->videoController->JumpToFrame(pos == kf.end() ? c->videoController->GetFrameN() - 1 : *pos);
 	}
