@@ -62,8 +62,7 @@ DialogJumpTo::DialogJumpTo(agi::Context *c)
 	SetIcon(BitmapToIcon(GETIMAGE(jumpto_button_24)));
 
 	// Set initial values
-	AssTime jumptime;
-	jumptime.SetMS(c->videoController->TimeAtFrame(jumpframe));
+	AssTime jumptime = c->videoController->TimeAtFrame(jumpframe);
 	wxString maxLength = wxString::Format("%i",c->videoController->GetLength() - 1);
 
 	// Times
@@ -111,7 +110,7 @@ void DialogJumpTo::OnOK(wxCommandEvent &) {
 }
 
 void DialogJumpTo::OnEditTime (wxCommandEvent &) {
-	long newframe = c->videoController->FrameAtTime(JumpTime->GetMS());
+	long newframe = c->videoController->FrameAtTime(JumpTime->GetTime());
 	if (jumpframe != newframe) {
 		jumpframe = newframe;
 		JumpFrame->ChangeValue(wxString::Format("%i", jumpframe));
@@ -120,5 +119,5 @@ void DialogJumpTo::OnEditTime (wxCommandEvent &) {
 
 void DialogJumpTo::OnEditFrame (wxCommandEvent &event) {
 	JumpFrame->GetValue().ToLong(&jumpframe);
-	JumpTime->SetMS(c->videoController->TimeAtFrame(jumpframe));
+	JumpTime->SetTime(c->videoController->TimeAtFrame(jumpframe));
 }

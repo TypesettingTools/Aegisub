@@ -350,14 +350,12 @@ allparsed:
 	while (ms_chars < 3) ms *= 10, ms_chars++;
 	while (ms_chars > 3) ms /= 10, ms_chars--;
 
-	AssTime res;
-	res.SetMS(ms + 1000*(s + 60*(m + 60*(h + d*24))));
-	return res;
+	return ms + 1000*(s + 60*(m + 60*(h + d*24)));
 }
 
 wxString WriteSRTTime(AssTime const& ts)
 {
-	int time = ts.GetMS();
+	int time = ts;
 
 	int ms_part = time % 1000;
 	time /= 1000; // now holds seconds

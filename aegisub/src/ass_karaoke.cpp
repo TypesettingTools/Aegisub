@@ -65,7 +65,7 @@ void AssKaraoke::SetLine(AssDialogue *line, bool auto_split) {
 
 	syls.clear();
 	Syllable syl;
-	syl.start_time = line->Start.GetMS();
+	syl.start_time = line->Start;
 	syl.duration = 0;
 	syl.tag_type = "\\k";
 
@@ -133,7 +133,7 @@ void AssKaraoke::SetLine(AssDialogue *line, bool auto_split) {
 	line->ClearBlocks();
 
 	// Normalize the syllables so that the total duration is equal to the line length
-	int end_time = active_line->End.GetMS();
+	int end_time = active_line->End;
 	int last_end = syl.start_time + syl.duration;
 
 	// Total duration is shorter than the line length so just extend the last
@@ -142,7 +142,7 @@ void AssKaraoke::SetLine(AssDialogue *line, bool auto_split) {
 		syls.back().duration += end_time - last_end;
 	else if (last_end > end_time) {
 		// Shrink each syllable proportionately
-		int start_time = active_line->Start.GetMS();
+		int start_time = active_line->Start;
 		double scale_factor = double(end_time - start_time) / (last_end - start_time);
 
 		for (size_t i = 0; i < size(); ++i) {
@@ -285,8 +285,8 @@ void AssKaraoke::SplitLines(std::set<AssDialogue*> const& lines, agi::Context *c
 		for (iterator kit = kara.begin(); kit != kara.end(); ++kit) {
 			AssDialogue *new_line = new AssDialogue(*diag);
 
-			new_line->Start.SetMS(kit->start_time);
-			new_line->End.SetMS(kit->start_time + kit->duration);
+			new_line->Start = kit->start_time;
+			new_line->End = kit->start_time + kit->duration;
 			new_line->Text = kit->GetText(false);
 
 			c->ass->Line.insert(it, new_line);

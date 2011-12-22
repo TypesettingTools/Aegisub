@@ -604,8 +604,8 @@ void BaseGrid::GetRowStrings(int row, AssDialogue *line, bool *paint_columns, wx
 	if (paint_columns[0]) strings[0] = wxString::Format("%d", row + 1);
 	if (paint_columns[1]) strings[1] = wxString::Format("%d", line->Layer);
 	if (byFrame) {
-		if (paint_columns[2]) strings[2] = wxString::Format("%d", context->videoController->FrameAtTime(line->Start.GetMS(), agi::vfr::START));
-		if (paint_columns[3]) strings[3] = wxString::Format("%d", context->videoController->FrameAtTime(line->End.GetMS(), agi::vfr::END));
+		if (paint_columns[2]) strings[2] = wxString::Format("%d", context->videoController->FrameAtTime(line->Start, agi::vfr::START));
+		if (paint_columns[3]) strings[3] = wxString::Format("%d", context->videoController->FrameAtTime(line->End, agi::vfr::END));
 	}
 	else {
 		if (paint_columns[2]) strings[2] = line->Start.GetASSFormated();
@@ -737,7 +737,7 @@ void BaseGrid::OnMouseEvent(wxMouseEvent &event) {
 		// Normal click
 		if ((click || dclick) && !shift && !ctrl && !alt) {
 			SetActiveLine(dlg);
-			if (dclick) context->videoController->JumpToTime(dlg->Start.GetMS());
+			if (dclick) context->videoController->JumpToTime(dlg->Start);
 			SelectRow(row,false);
 			lastRow = row;
 			return;
@@ -887,8 +887,8 @@ void BaseGrid::SetColumnWidths() {
 
 		// Times
 		if (byFrame) {
-			maxStart = std::max(maxStart, context->videoController->FrameAtTime(curDiag->Start.GetMS(), agi::vfr::START));
-			maxEnd = std::max(maxEnd, context->videoController->FrameAtTime(curDiag->End.GetMS(), agi::vfr::END));
+			maxStart = std::max(maxStart, context->videoController->FrameAtTime(curDiag->Start, agi::vfr::START));
+			maxEnd = std::max(maxEnd, context->videoController->FrameAtTime(curDiag->End, agi::vfr::END));
 		}
 	}
 
@@ -970,8 +970,8 @@ bool BaseGrid::IsDisplayed(const AssDialogue *line) const {
 	if (!context->videoController->IsLoaded()) return false;
 	int frame = context->videoController->GetFrameN();
 	return
-		context->videoController->FrameAtTime(line->Start.GetMS(),agi::vfr::START) <= frame &&
-		context->videoController->FrameAtTime(line->End.GetMS(),agi::vfr::END) >= frame;
+		context->videoController->FrameAtTime(line->Start,agi::vfr::START) <= frame &&
+		context->videoController->FrameAtTime(line->End,agi::vfr::END) >= frame;
 }
 
 void BaseGrid::OnKeyDown(wxKeyEvent &event) {

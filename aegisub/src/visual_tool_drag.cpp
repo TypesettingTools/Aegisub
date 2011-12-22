@@ -87,8 +87,8 @@ void VisualToolDrag::OnSubTool(wxCommandEvent &) {
 		else {
 			p1 = GetLinePosition(line);
 			// Round the start and end times to exact frames
-			int start = vc->TimeAtFrame(vc->FrameAtTime(line->Start.GetMS(), agi::vfr::START)) - line->Start.GetMS();
-			int end = vc->TimeAtFrame(vc->FrameAtTime(line->Start.GetMS(), agi::vfr::END)) - line->Start.GetMS();
+			int start = vc->TimeAtFrame(vc->FrameAtTime(line->Start, agi::vfr::START)) - line->Start;
+			int end = vc->TimeAtFrame(vc->FrameAtTime(line->Start, agi::vfr::END)) - line->Start;
 			SetOverride(line, "\\move", wxString::Format("(%s,%s,%d,%d)", p1.Str(), p1.Str(), start, end));
 		}
 	}
@@ -255,7 +255,7 @@ bool VisualToolDrag::InitializeDrag(feature_iterator feature) {
 	// Set time of clicked feature to the current frame and shift all other
 	// selected features by the same amount
 	if (feature->type != DRAG_ORIGIN) {
-		int time = c->videoController->TimeAtFrame(frame_number) - feature->line->Start.GetMS();
+		int time = c->videoController->TimeAtFrame(frame_number) - feature->line->Start;
 		int change = time - feature->time;
 
 		for (sel_iterator cur = sel_features.begin(); cur != sel_features.end(); ++cur) {

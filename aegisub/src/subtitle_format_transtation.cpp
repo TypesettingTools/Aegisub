@@ -77,7 +77,7 @@ void TranStationSubtitleFormat::WriteFile(wxString const& filename, wxString con
 		AssDialogue *cur = dynamic_cast<AssDialogue*>(*it);
 
 		if (prev && cur) {
-			file.WriteLineToFile(ConvertLine(prev, &ft, cur->Start.GetMS()));
+			file.WriteLineToFile(ConvertLine(prev, &ft, cur->Start));
 			file.WriteLineToFile("");
 		}
 
@@ -118,10 +118,10 @@ wxString TranStationSubtitleFormat::ConvertLine(AssDialogue *current, Fractional
 	// Subtract one frame if the end time of the current line is equal to the
 	// start of next one, since the end timestamp is inclusive and the lines
 	// would overlap if left as is.
-	if (nextl_start > 0 && end.GetMS() == nextl_start)
-		end.SetMS(ft->FPS().TimeAtFrame(ft->FPS().FrameAtTime(end.GetMS(), agi::vfr::END) - 1, agi::vfr::END));
+	if (nextl_start > 0 && end == nextl_start)
+		end = ft->FPS().TimeAtFrame(ft->FPS().FrameAtTime(end, agi::vfr::END) - 1, agi::vfr::END);
 
-	wxString header = wxString::Format("SUB[%i%s%s ", valign, halign, type) + ft->FromAssTime(start) + ">" + ft->FromAssTime(end) + "]\r\n";
+	wxString header = wxString::Format("SUB[%i%s%s ", valign, halign, type) + ft->ToSMPTE(start) + ">" + ft->ToSMPTE(end) + "]\r\n";
 
 	// Process text
 	wxString lineEnd = "\r\n";

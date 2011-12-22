@@ -151,8 +151,8 @@ AudioTimingControllerKaraoke::AudioTimingControllerKaraoke(agi::Context *c, AssK
 , separator_pen("Colour/Audio Display/Syllable Boundaries", "Audio/Line Boundaries Thickness", wxPENSTYLE_DOT)
 , start_pen("Colour/Audio Display/Line boundary Start", "Audio/Line Boundaries Thickness")
 , end_pen("Colour/Audio Display/Line boundary End", "Audio/Line Boundaries Thickness")
-, start_marker(ToSamples(active_line->Start.GetMS()), &start_pen, AudioMarker::Feet_Right)
-, end_marker(ToSamples(active_line->End.GetMS()), &end_pen, AudioMarker::Feet_Left)
+, start_marker(ToSamples(active_line->Start), &start_pen, AudioMarker::Feet_Right)
+, end_marker(ToSamples(active_line->End), &end_pen, AudioMarker::Feet_Left)
 , keyframes_provider(c, "Audio/Display/Draw/Keyframes in Karaoke Mode")
 , auto_commit(OPT_GET("Audio/Auto/Commit")->GetBool())
 , auto_next(OPT_GET("Audio/Next Line on Commit")->GetBool())
@@ -253,8 +253,8 @@ void AudioTimingControllerKaraoke::Revert() {
 	cur_syl = 0;
 	commit_id = -1;
 
-	start_marker.Move(ToSamples(active_line->Start.GetMS()));
-	end_marker.Move(ToSamples(active_line->End.GetMS()));
+	start_marker.Move(ToSamples(active_line->Start));
+	end_marker.Move(ToSamples(active_line->End));
 
 	markers.clear();
 	labels.clear();

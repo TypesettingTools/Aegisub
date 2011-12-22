@@ -427,8 +427,8 @@ void AudioTimingControllerDialogue::Commit()
 		context->selectionController->GetSelectedSet(sel);
 		for (Selection::iterator sub = sel.begin(); sub != sel.end(); ++sub)
 		{
-			(*sub)->Start.SetMS(new_start_ms);
-			(*sub)->End.SetMS(new_end_ms);
+			(*sub)->Start = new_start_ms;
+			(*sub)->End = new_end_ms;
 		}
 
 		commit_connection.Block();
@@ -450,7 +450,7 @@ void AudioTimingControllerDialogue::Commit()
 		///       like the edit box, so maybe add a way to do that which both
 		///       this and the edit box can use
 		Next();
-		if (context->selectionController->GetActiveLine()->End.GetMS() == 0) {
+		if (context->selectionController->GetActiveLine()->End == 0) {
 			const int default_duration = OPT_GET("Timing/Default Duration")->GetInt();
 			active_markers[0].SetPosition(context->audioController->SamplesFromMilliseconds(new_end_ms));
 			active_markers[1].SetPosition(context->audioController->SamplesFromMilliseconds(new_end_ms + default_duration));
@@ -467,10 +467,10 @@ void AudioTimingControllerDialogue::Revert()
 		AssTime new_start = line->Start;
 		AssTime new_end = line->End;
 
-		if (new_start.GetMS() != 0 || new_end.GetMS() != 0)
+		if (new_start != 0 || new_end != 0)
 		{
-			active_markers[0].SetPosition(context->audioController->SamplesFromMilliseconds(new_start.GetMS()));
-			active_markers[1].SetPosition(context->audioController->SamplesFromMilliseconds(new_end.GetMS()));
+			active_markers[0].SetPosition(context->audioController->SamplesFromMilliseconds(new_start));
+			active_markers[1].SetPosition(context->audioController->SamplesFromMilliseconds(new_end));
 			timing_modified = false;
 			UpdateSelection();
 		}
@@ -558,9 +558,9 @@ void AudioTimingControllerDialogue::RegenerateInactiveLines()
 			if (AssDialogue *prev = dynamic_cast<AssDialogue*>(*it))
 			{
 				inactive_markers.push_back(InactiveLineMarker(
-					context->audioController->SamplesFromMilliseconds(prev->Start.GetMS()), true));
+					context->audioController->SamplesFromMilliseconds(prev->Start), true));
 				inactive_markers.push_back(InactiveLineMarker(
-					context->audioController->SamplesFromMilliseconds(prev->End.GetMS()), false));
+					context->audioController->SamplesFromMilliseconds(prev->End), false));
 			}
 		}
 		break;
@@ -574,9 +574,9 @@ void AudioTimingControllerDialogue::RegenerateInactiveLines()
 			if (line && line != active_line)
 			{
 				inactive_markers.push_back(InactiveLineMarker(
-					context->audioController->SamplesFromMilliseconds(line->Start.GetMS()), true));
+					context->audioController->SamplesFromMilliseconds(line->Start), true));
 				inactive_markers.push_back(InactiveLineMarker(
-					context->audioController->SamplesFromMilliseconds(line->End.GetMS()), false));
+					context->audioController->SamplesFromMilliseconds(line->End), false));
 			}
 		}
 		break;

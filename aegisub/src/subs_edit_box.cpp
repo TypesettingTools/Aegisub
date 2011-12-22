@@ -433,7 +433,7 @@ void SubsEditBox::OnActiveLineChanged(AssDialogue *new_line) {
 
 		if (sync) {
 			c->videoController->Stop();
-			c->videoController->JumpToTime(line->Start.GetMS());
+			c->videoController->JumpToTime(line->Start);
 		}
 	}
 	SetEvtHandlerEnabled(true);

@@ -352,13 +352,13 @@ void VideoContext::PlayLine() {
 
 	// Start playing audio
 	context->audioController->PlayRange(SampleRange(
-		context->audioController->SamplesFromMilliseconds(curline->Start.GetMS()),
-		context->audioController->SamplesFromMilliseconds(curline->End.GetMS())));
+		context->audioController->SamplesFromMilliseconds(curline->Start),
+		context->audioController->SamplesFromMilliseconds(curline->End)));
 
 	// Round-trip conversion to convert start to exact
-	int startFrame = FrameAtTime(context->selectionController->GetActiveLine()->Start.GetMS(),agi::vfr::START);
+	int startFrame = FrameAtTime(context->selectionController->GetActiveLine()->Start,agi::vfr::START);
 	startMS = TimeAtFrame(startFrame);
-	endFrame = FrameAtTime(context->selectionController->GetActiveLine()->End.GetMS(),agi::vfr::END) + 1;
+	endFrame = FrameAtTime(context->selectionController->GetActiveLine()->End,agi::vfr::END) + 1;
 
 	// Jump to start
 	JumpToFrame(startFrame);

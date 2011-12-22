@@ -116,8 +116,8 @@ void MicroDVDSubtitleFormat::ReadFile(wxString const& filename, wxString const& 
 			AssDialogue *line = new AssDialogue;
 			line->group = "[Events]";
 			line->Style = "Default";
-			line->Start.SetMS(fps.TimeAtFrame(f1, agi::vfr::START));
-			line->End.SetMS(fps.TimeAtFrame(f2, agi::vfr::END));
+			line->Start = fps.TimeAtFrame(f1, agi::vfr::START);
+			line->End = fps.TimeAtFrame(f2, agi::vfr::END);
 			line->Text = text;
 			Line->push_back(line);
 		}
@@ -146,8 +146,8 @@ void MicroDVDSubtitleFormat::WriteFile(wxString const& filename, wxString const&
 	// Write lines
 	for (std::list<AssEntry*>::iterator cur=Line->begin();cur!=Line->end();cur++) {
 		if (AssDialogue *current = dynamic_cast<AssDialogue*>(*cur)) {
-			int start = fps.FrameAtTime(current->Start.GetMS(), agi::vfr::START);
-			int end = fps.FrameAtTime(current->End.GetMS(), agi::vfr::END);
+			int start = fps.FrameAtTime(current->Start, agi::vfr::START);
+			int end = fps.FrameAtTime(current->End, agi::vfr::END);
 
 			file.WriteLineToFile(wxString::Format("{%i}{%i}%s", start, end, current->Text));
 		}

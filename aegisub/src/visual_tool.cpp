@@ -134,8 +134,8 @@ bool VisualToolBase::IsDisplayed(AssDialogue *line) const {
 	int frame = c->videoController->GetFrameN();
 	return
 		line &&
-		c->videoController->FrameAtTime(line->Start.GetMS(), agi::vfr::START) <= frame &&
-		c->videoController->FrameAtTime(line->End.GetMS(), agi::vfr::END) >= frame;
+		c->videoController->FrameAtTime(line->Start, agi::vfr::START) <= frame &&
+		c->videoController->FrameAtTime(line->End, agi::vfr::END) >= frame;
 }
 
 void VisualToolBase::Commit(wxString message) {

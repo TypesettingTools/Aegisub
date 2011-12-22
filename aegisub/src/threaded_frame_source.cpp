@@ -55,7 +55,7 @@ struct invisible_line : public std::unary_function<const AssEntry*, bool> {
 	invisible_line(double time) : time(time * 1000.) { }
 	bool operator()(const AssEntry *entry) const {
 		const AssDialogue *diag = dynamic_cast<const AssDialogue*>(entry);
-		return diag && (diag->Start.GetMS() > time || diag->End.GetMS() <= time);
+		return diag && (diag->Start > time || diag->End <= time);
 	}
 };
 

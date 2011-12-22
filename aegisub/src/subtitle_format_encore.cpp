@@ -76,7 +76,7 @@ void EncoreSubtitleFormat::WriteFile(wxString const& filename, wxString const& e
 	for (std::list<AssEntry*>::iterator cur=Line->begin();cur!=Line->end();cur++) {
 		if (AssDialogue *current = dynamic_cast<AssDialogue*>(*cur)) {
 			++i;
-			file.WriteLineToFile(wxString::Format("%i %s %s %s", i, ft.FromAssTime(current->Start, sep), ft.FromAssTime(current->End, sep), current->Text));
+			file.WriteLineToFile(wxString::Format("%i %s %s %s", i, ft.ToSMPTE(current->Start, sep), ft.ToSMPTE(current->End, sep), current->Text));
 		}
 	}
 

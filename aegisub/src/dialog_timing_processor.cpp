@@ -299,7 +299,7 @@ void DialogTimingProcessor::OnApply(wxCommandEvent &) {
 	// Check if rows are valid
 	for (entryIter cur = c->ass->Line.begin(); cur != c->ass->Line.end(); ++cur) {
 		if (AssDialogue *tempDiag = dynamic_cast<AssDialogue*>(*cur)) {
-			if (tempDiag->Start.GetMS() > tempDiag->End.GetMS()) {
+			if (tempDiag->Start > tempDiag->End) {
 				wxMessageBox(
 					wxString::Format(
 						_("One of the lines in the file (%i) has negative duration. Aborting."),
@@ -371,7 +371,7 @@ void DialogTimingProcessor::Process() {
 
 			// Compare to every previous line (yay for O(n^2)!) to see if it's OK to add lead-in
 			if (inVal) {
-				int startLead = cur->Start.GetMS() - inVal;
+				int startLead = cur->Start - inVal;
 				for (int j=0;j<i;j++) {
 					AssDialogue *comp = Sorted[j];
 
@@ -379,14 +379,14 @@ void DialogTimingProcessor::Process() {
 					if (cur->CollidesWith(comp)) continue;
 
 					// Get comparison times
-					startLead = std::max(startLead, comp->End.GetMS());
+					startLead = std::max<int>(startLead, comp->End);
 				}
-				cur->Start.SetMS(startLead);
+				cur->Start = startLead;
 			}
 
 			// Compare to every line to see how far can lead-out be extended
 			if (outVal) {
-				int endLead = cur->End.GetMS() + outVal;
+				int endLead = cur->End + outVal;
 				for (int j=i+1;j<rows;j++) {
 					AssDialogue *comp = Sorted[j];
 
@@ -394,9 +394,9 @@ void DialogTimingProcessor::Process() {
 					if (cur->CollidesWith(comp)) continue;
 
 					// Get comparison times
-					endLead = std::min(endLead, comp->Start.GetMS());
+					endLead = std::min<int>(endLead, comp->Start);
 				}
-				cur->End.SetMS(endLead);
+				cur->End = endLead;
 			}
 		}
 	}
@@ -417,13 +417,11 @@ void DialogTimingProcessor::Process() {
 			if (cur->CollidesWith(prev)) continue;
 
 			// Compare distance
-			int curStart = cur->Start.GetMS();
-			int prevEnd = prev->End.GetMS();
-			int dist = curStart-prevEnd;
+			int dist = cur->Start - prev->End;
 			if (dist > 0 && dist <= adjsThres) {
-				int setPos = prevEnd+int(dist*bias);
-				cur->Start.SetMS(setPos);
-				prev->End.SetMS(setPos);
+				int setPos = prev->End + int(dist*bias);
+				cur->Start = setPos;
+				prev->End = setPos;
 			}
 
 			prev = cur;
@@ -449,19 +447,19 @@ void DialogTimingProcessor::Process() {
 			AssDialogue *cur = Sorted[i];
 
 			// Get start/end frames
-			int startF = c->videoController->FrameAtTime(cur->Start.GetMS(),agi::vfr::START);
-			int endF = c->videoController->FrameAtTime(cur->End.GetMS(),agi::vfr::END);
+			int startF = c->videoController->FrameAtTime(cur->Start,agi::vfr::START);
+			int endF = c->videoController->FrameAtTime(cur->End,agi::vfr::END);
 
 			// Get closest for start
 			int closest = GetClosestKeyFrame(startF);
 			if ((closest > startF && closest-startF <= beforeStart) || (closest < startF && startF-closest <= afterStart)) {
-				cur->Start.SetMS(c->videoController->TimeAtFrame(closest,agi::vfr::START));
+				cur->Start = c->videoController->TimeAtFrame(closest,agi::vfr::START);
 			}
 
 			// Get closest for end
 			closest = GetClosestKeyFrame(endF)-1;
 			if ((closest > endF && closest-endF <= beforeEnd) || (closest < endF && endF-closest <= afterEnd)) {
-				cur->End.SetMS(c->videoController->TimeAtFrame(closest,agi::vfr::END));
+				cur->End = c->videoController->TimeAtFrame(closest,agi::vfr::END);
 			}
 		}
 	}

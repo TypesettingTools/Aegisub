@@ -135,11 +135,11 @@ struct time_frame_current : public validate_video_loaded {
 
 		if (sel.empty() || !active_line) return;
 
-		int shift_by = c->videoController->TimeAtFrame(c->videoController->GetFrameN(), agi::vfr::START) - active_line->Start.GetMS();
+		int shift_by = c->videoController->TimeAtFrame(c->videoController->GetFrameN(), agi::vfr::START) - active_line->Start;
 
 		for (std::set<AssDialogue*>::iterator it = sel.begin(); it != sel.end(); ++it) {
-			(*it)->Start.SetMS((*it)->Start.GetMS() + shift_by);
-			(*it)->End.SetMS((*it)->End.GetMS() + shift_by);
+			(*it)->Start = (*it)->Start + shift_by;
+			(*it)->End = (*it)->End + shift_by;
 		}
 
 		c->ass->Commit(_("shift to frame"), AssFile::COMMIT_DIAG_TIME);
@@ -169,10 +169,10 @@ static void snap_subs_video(agi::Context *c, bool set_start) {
 	int end = c->videoController->TimeAtFrame(c->videoController->GetFrameN(), agi::vfr::END);
 
 	for (std::set<AssDialogue*>::iterator it = sel.begin(); it != sel.end(); ++it) {
-		if (set_start || (*it)->Start.GetMS() > start)
-			(*it)->Start.SetMS(start);
-		if (!set_start || (*it)->End.GetMS() < end)
-			(*it)->End.SetMS(end);
+		if (set_start || (*it)->Start > start)
+			(*it)->Start = start;
+		if (!set_start || (*it)->End < end)
+			(*it)->End = end;
 	}
 
 	c->ass->Commit(_("timing"), AssFile::COMMIT_DIAG_TIME);
@@ -235,8 +235,8 @@ struct time_snap_scene : public validate_video_loaded {
 		// Update rows
 		for (size_t i=0;i<sel.Count();i++) {
 			cur = c->subsGrid->GetDialogue(sel[i]);
-			cur->Start.SetMS(start_ms);
-			cur->End.SetMS(end_ms);
+			cur->Start = start_ms;
+			cur->End = end_ms;
 		}
 
 		// Commit
@@ -251,7 +251,7 @@ struct time_add_lead_in : public Command {
 	STR_HELP("Add lead in")
 	void operator()(agi::Context *c) {
 		if (AssDialogue *line = c->selectionController->GetActiveLine()) {
-			line->Start.SetMS(line->Start.GetMS() - OPT_GET("Audio/Lead/IN")->GetInt());
+			line->Start = line->Start - OPT_GET("Audio/Lead/IN")->GetInt();
 			c->ass->Commit(_("add lead in"), AssFile::COMMIT_DIAG_TIME);
 		}
 	}
@@ -264,7 +264,7 @@ struct time_add_lead_out : public Command {
 	STR_HELP("Add lead out")
 	void operator()(agi::Context *c) {
 		if (AssDialogue *line = c->selectionController->GetActiveLine()) {
-			line->End.SetMS(line->End.GetMS() + OPT_GET("Audio/Lead/OUT")->GetInt());
+			line->End = line->End + OPT_GET("Audio/Lead/OUT")->GetInt();
 			c->ass->Commit(_("add lead out"), AssFile::COMMIT_DIAG_TIME);
 		}
 	}

@@ -96,9 +96,9 @@ TimeEdit::TimeEdit(wxWindow* parent, wxWindowID id, agi::Context *c, const wxStr
 	Bind(wxEVT_COMMAND_MENU_SELECTED, std::tr1::bind(&TimeEdit::PasteTime, this), Time_Edit_Paste);
 }
 
-void TimeEdit::SetMS(int ms) {
-	if (ms != time.GetMS()) {
-		time.SetMS(ms);
+void TimeEdit::SetTime(AssTime new_time) {
+	if (time != new_time) {
+		time = new_time;
 		UpdateText();
 	}
 }
@@ -125,7 +125,7 @@ void TimeEdit::OnModified(wxCommandEvent &event) {
 
 void TimeEdit::UpdateText() {
 	if (byFrame)
-		ChangeValue(wxString::Format("%d", c->videoController->FrameAtTime(time.GetMS(), isEnd ? agi::vfr::END : agi::vfr::START)));
+		ChangeValue(wxString::Format("%d", c->videoController->FrameAtTime(time, isEnd ? agi::vfr::END : agi::vfr::START)));
 	else
 		ChangeValue(time.GetASSFormated());
 }

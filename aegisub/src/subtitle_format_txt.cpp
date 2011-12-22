@@ -117,13 +117,10 @@ void TXTSubtitleFormat::ReadFile(wxString const& filename, wxString const& encod
 
 		// Sets line up
 		AssDialogue *line = new AssDialogue;
-		line->group = "[Events]";
-		line->Style = "Default";
 		line->Actor = isComment ? "" : line->Actor;
 		line->Comment = isComment;
 		line->Text = value;
-		line->Start.SetMS(0);
-		line->End.SetMS(0);
+		line->End = 0;
 
 		// Adds line
 		Line->push_back(line);
@@ -133,10 +130,7 @@ void TXTSubtitleFormat::ReadFile(wxString const& filename, wxString const& encod
 	// No lines?
 	if (lines == 0) {
 		AssDialogue *line = new AssDialogue;
-		line->group = "[Events]";
-		line->Style = "Default";
-		line->Start.SetMS(0);
-		line->End.SetMS(OPT_GET("Timing/Default Duration")->GetInt());
+		line->End = OPT_GET("Timing/Default Duration")->GetInt();
 		Line->push_back(line);
 	}
 }

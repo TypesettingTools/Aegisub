@@ -54,33 +54,21 @@ class AssTime {
 public:
 	AssTime(int ms = 0);
 
+	/// Get millisecond, rounded to centisecond precision
+	operator int() const { return time / 10 * 10; }
+
 	int GetTimeHours() const;        ///< Get the hours portion of this time
 	int GetTimeMinutes() const;      ///< Get the minutes portion of this time
 	int GetTimeSeconds() const;      ///< Get the seconds portion of this time
 	int GetTimeMiliseconds() const;  ///< Get the miliseconds portion of this time
 	int GetTimeCentiseconds() const; ///< Get the centiseconds portion of this time
 
-	/// Get millisecond, rounded to centisecond precision
-	int GetMS() const;
-	/// Sets values to milliseconds with bounds-checking
-	void SetMS(int ms);
 	/// Parse an ASS time string, leaving the time unchanged if the string is malformed
 	void ParseASS(wxString const& text);
 	/// Return the time as a string
 	/// @param ms Use milliseconds precision, for non-ASS formats
 	wxString GetASSFormated(bool ms=false) const;
 };
-
-// Comparison operators
-bool operator == (AssTime t1, AssTime t2);
-bool operator != (AssTime t1, AssTime t2);
-bool operator <  (AssTime t1, AssTime t2);
-bool operator >  (AssTime t1, AssTime t2);
-bool operator <= (AssTime t1, AssTime t2);
-bool operator >= (AssTime t1, AssTime t2);
-// Arithmetic operators
-AssTime operator + (AssTime t1, AssTime t2);
-AssTime operator - (AssTime t1, AssTime t2);
 
 /// DOCME
 /// @class FractionalTime
@@ -101,7 +89,5 @@ public:
 	agi::vfr::Framerate const& FPS() const { return fps; }
 
 	/// Convert an AssTime to a SMPTE timecode
-	wxString FromAssTime(AssTime time, char sep=':');
-	/// Convert milliseconds to a SMPTE timecode
-	wxString FromMillisecs(int64_t msec, char sep=':');
+	wxString ToSMPTE(AssTime time, char sep=':');
 };

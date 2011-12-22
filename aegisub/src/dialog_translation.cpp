@@ -226,7 +226,7 @@ void DialogTranslation::UpdateDisplay() {
 
 	original_text->SetReadOnly(true);
 
-	if (seek_video->IsChecked()) c->videoController->JumpToTime(active_line->Start.GetMS());
+	if (seek_video->IsChecked()) c->videoController->JumpToTime(active_line->Start);
 
 	translated_text->ClearAll();
 	translated_text->SetFocus();

@@ -128,8 +128,8 @@ static void insert_subtitle_at_video(agi::Context *c, bool after) {
 	// Create line to add
 	AssDialogue *def = new AssDialogue;
 	int video_ms = c->videoController->TimeAtFrame(c->videoController->GetFrameN(), agi::vfr::START);
-	def->Start.SetMS(video_ms);
-	def->End.SetMS(video_ms + OPT_GET("Timing/Default Duration")->GetInt());
+	def->Start = video_ms;
+	def->End = video_ms + OPT_GET("Timing/Default Duration")->GetInt();
 	def->Style = c->subsGrid->GetDialogue(n)->Style;
 
 	// Insert it
@@ -156,13 +156,13 @@ struct subtitle_insert_after : public validate_nonempty_selection {
 		if (n == nrows-1) {
 			def->Start = c->subsGrid->GetDialogue(n)->End;
 			def->End = c->subsGrid->GetDialogue(n)->End;
-			def->End.SetMS(def->End.GetMS()+OPT_GET("Timing/Default Duration")->GetInt());
+			def->End = def->End + OPT_GET("Timing/Default Duration")->GetInt();
 		}
 		else {
 			def->Start = c->subsGrid->GetDialogue(n)->End;
 			def->End = c->subsGrid->GetDialogue(n+1)->Start;
 		}
-		if (def->End.GetMS() < def->Start.GetMS()) def->End.SetMS(def->Start.GetMS()+OPT_GET("Timing/Default Duration")->GetInt());
+		if (def->End < def->Start) def->End = def->Start + OPT_GET("Timing/Default Duration")->GetInt();
 		def->Style = c->subsGrid->GetDialogue(n)->Style;
 
 		// Insert it
@@ -200,18 +200,18 @@ struct subtitle_insert_before : public validate_nonempty_selection {
 		// Create line to add
 		AssDialogue *def = new AssDialogue;
 		if (n == 0) {
-			def->Start.SetMS(0);
+			def->Start = 0;
 			def->End = c->subsGrid->GetDialogue(n)->Start;
 		}
-		else if (c->subsGrid->GetDialogue(n-1)->End.GetMS() > c->subsGrid->GetDialogue(n)->Start.GetMS()) {
-			def->Start.SetMS(c->subsGrid->GetDialogue(n)->Start.GetMS()-OPT_GET("Timing/Default Duration")->GetInt());
+		else if (c->subsGrid->GetDialogue(n-1)->End > c->subsGrid->GetDialogue(n)->Start) {
+			def->Start = c->subsGrid->GetDialogue(n)->Start-OPT_GET("Timing/Default Duration")->GetInt();
 			def->End = c->subsGrid->GetDialogue(n)->Start;
 		}
 		else {
 			def->Start = c->subsGrid->GetDialogue(n-1)->End;
 			def->End = c->subsGrid->GetDialogue(n)->Start;
 		}
-		if (def->End.GetMS() < def->Start.GetMS()) def->End.SetMS(def->Start.GetMS()+OPT_GET("Timing/Default Duration")->GetInt());
+		if (def->End < def->Start) def->End = def->Start+OPT_GET("Timing/Default Duration")->GetInt();
 		def->Style = c->subsGrid->GetDialogue(n)->Style;
 
 		// Insert it
@@ -408,8 +408,8 @@ struct subtitle_select_visible : public Command {
 		for (entryIter it = c->ass->Line.begin(); it != c->ass->Line.end(); ++it) {
 			AssDialogue *diag = dynamic_cast<AssDialogue*>(*it);
 			if (diag &&
-				c->videoController->FrameAtTime(diag->Start.GetMS(), agi::vfr::START) <= frame &&
-				c->videoController->FrameAtTime(diag->End.GetMS(), agi::vfr::END) >= frame)
+				c->videoController->FrameAtTime(diag->Start, agi::vfr::START) <= frame &&
+				c->videoController->FrameAtTime(diag->End, agi::vfr::END) >= frame)
 			{
 				if (new_selection.empty())
 					c->selectionController->SetActiveLine(diag);

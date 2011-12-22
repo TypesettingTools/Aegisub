@@ -212,8 +212,8 @@ struct audio_save_clip : public Command {
 		for (Selection::iterator it = sel.begin(); it != sel.end(); ++it) {
 			c->audioController->SaveClip(
 				wxFileSelector(_("Save audio clip"), "", "", "wav", "", wxFD_SAVE|wxFD_OVERWRITE_PROMPT, c->parent),
-				SampleRange(c->audioController->SamplesFromMilliseconds((*it)->Start.GetMS()),
-							c->audioController->SamplesFromMilliseconds((*it)->End.GetMS())));
+				SampleRange(c->audioController->SamplesFromMilliseconds((*it)->Start),
+							c->audioController->SamplesFromMilliseconds((*it)->End)));
 		}
 	}
 };

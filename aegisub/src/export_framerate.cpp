@@ -176,7 +176,7 @@ void AssTransformFramerateFilter::TransformTimeTags(wxString name,int n,AssOverr
 
 	switch (curParam->classification) {
 		case PARCLASS_RELATIVE_TIME_START: {
-			int value = instance->ConvertTime(trunc_cs(curDiag->Start.GetMS()) + parVal) - instance->newStart;
+			int value = instance->ConvertTime(trunc_cs(curDiag->Start) + parVal) - instance->newStart;
 
 			// An end time of 0 is actually the end time of the line, so ensure
 			// nonzero is never converted to 0
@@ -188,10 +188,10 @@ void AssTransformFramerateFilter::TransformTimeTags(wxString name,int n,AssOverr
 			break;
 		}
 		case PARCLASS_RELATIVE_TIME_END:
-			curParam->Set(instance->newEnd - instance->ConvertTime(trunc_cs(curDiag->End.GetMS()) - parVal));
+			curParam->Set(instance->newEnd - instance->ConvertTime(trunc_cs(curDiag->End) - parVal));
 			break;
 		case PARCLASS_KARAOKE: {
-			int start = curDiag->Start.GetMS() / 10 + instance->oldK + parVal;
+			int start = curDiag->Start / 10 + instance->oldK + parVal;
 			int value = (instance->ConvertTime(start * 10) - instance->newStart) / 10 - instance->newK;
 			instance->oldK += parVal;
 			instance->newK += value;
@@ -212,14 +212,14 @@ void AssTransformFramerateFilter::TransformFrameRate(AssFile *subs) {
 			line = curDialogue;
 			newK = 0;
 			oldK = 0;
-			newStart = trunc_cs(ConvertTime(curDialogue->Start.GetMS()));
-			newEnd = trunc_cs(ConvertTime(curDialogue->End.GetMS()) + 9);
+			newStart = trunc_cs(ConvertTime(curDialogue->Start));
+			newEnd = trunc_cs(ConvertTime(curDialogue->End) + 9);
 
 			// Process stuff
 			curDialogue->ParseASSTags();
 			curDialogue->ProcessParameters(TransformTimeTags, this);
-			curDialogue->Start.SetMS(newStart);
-			curDialogue->End.SetMS(newEnd);
+			curDialogue->Start = newStart;
+			curDialogue->End = newEnd;
 			curDialogue->UpdateText();
 			curDialogue->ClearBlocks();
 		}

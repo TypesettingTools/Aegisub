@@ -193,7 +193,7 @@ void DialogShiftTimes::OnClose(wxCommandEvent &) {
 	long shift;
 	shift_frames->GetValue().ToLong(&shift);
 
-	OPT_SET("Tool/Shift Times/Time")->SetInt(shift_time->GetMS());
+	OPT_SET("Tool/Shift Times/Time")->SetInt(shift_time->GetTime());
 	OPT_SET("Tool/Shift Times/Frames")->SetInt(shift);
 	OPT_SET("Tool/Shift Times/ByTime")->SetBool(shift_by_time->GetValue());
 	OPT_SET("Tool/Shift Times/Type")->SetInt(time_fields->GetSelection());
@@ -289,7 +289,7 @@ void DialogShiftTimes::Process(wxCommandEvent &) {
 
 	long shift;
 	if (by_time) {
-		shift = shift_time->GetMS();
+		shift = shift_time->GetTime();
 		if (shift == 0) {
 			Close();
 			return;
@@ -323,9 +323,9 @@ void DialogShiftTimes::Process(wxCommandEvent &) {
 			block_start = row_number;
 
 		if (start)
-			line->Start.SetMS(Shift(line->Start.GetMS(), shift, by_time, agi::vfr::START));
+			line->Start = Shift(line->Start, shift, by_time, agi::vfr::START);
 		if (end)
-			line->End.SetMS(Shift(line->End.GetMS(), shift, by_time, agi::vfr::END));
+			line->End = Shift(line->End, shift, by_time, agi::vfr::END);
 	}
 
 	context->ass->Commit(_("shifting"), AssFile::COMMIT_DIAG_TIME);

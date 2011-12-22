@@ -69,8 +69,8 @@ static void trim_text(AssDialogue *diag) {
 }
 
 static void expand_times(AssDialogue *src, AssDialogue *dst) {
-	dst->Start.SetMS(std::min(dst->Start.GetMS(), src->Start.GetMS()));
-	dst->End.SetMS(std::max(dst->End.GetMS(), src->End.GetMS()));
+	dst->Start = std::min(dst->Start, src->Start);
+	dst->End = std::max(dst->End, src->End);
 }
 
 /// @brief Recombine 
@@ -246,8 +246,8 @@ void SubtitlesGrid::PasteLines(int n,bool pasteOver) {
 				curdiag = new AssDialogue();
 				curdiag->Text = curdata;
 				// Make sure pasted plain-text lines always are blank-timed
-				curdiag->Start.SetMS(0);
-				curdiag->End.SetMS(0);
+				curdiag->Start = 0;
+				curdiag->End = 0;
 			}
 
 			// Paste over
@@ -382,9 +382,9 @@ void SubtitlesGrid::DuplicateLines(int n1,int n2,bool nextFrame) {
 
 		// Shift to next frame
 		if (nextFrame) {
-			int posFrame = context->videoController->FrameAtTime(cur->End.GetMS(),agi::vfr::END) + 1;
-			cur->Start.SetMS(context->videoController->TimeAtFrame(posFrame,agi::vfr::START));
-			cur->End.SetMS(context->videoController->TimeAtFrame(posFrame,agi::vfr::END));
+			int posFrame = context->videoController->FrameAtTime(cur->End,agi::vfr::END) + 1;
+			cur->Start = context->videoController->TimeAtFrame(posFrame,agi::vfr::START);
+			cur->End = context->videoController->TimeAtFrame(posFrame,agi::vfr::END);
 		}
 
 		// Insert
@@ -411,9 +411,9 @@ void SubtitlesGrid::SplitLine(AssDialogue *n1,int pos,bool estimateTimes) {
 
 	if (estimateTimes) {
 		double splitPos = double(pos)/orig.Length();
-		int splitTime = (int)((n1->End.GetMS() - n1->Start.GetMS())*splitPos) + n1->Start.GetMS();
-		n1->End.SetMS(splitTime);
-		n2->Start.SetMS(splitTime);
+		int splitTime = (int)((n1->End - n1->Start)*splitPos) + n1->Start;
+		n1->End = splitTime;
+		n2->Start = splitTime;
 	}
 
 	context->ass->Commit(_("split"), AssFile::COMMIT_DIAG_ADDREM | AssFile::COMMIT_DIAG_FULL);

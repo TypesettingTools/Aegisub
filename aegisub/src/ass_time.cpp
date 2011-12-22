@@ -45,7 +45,7 @@
 
 #include "utils.h"
 
-AssTime::AssTime(int time) { SetMS(time); }
+AssTime::AssTime(int time) : time(mid(0, time, 10 * 60 * 60 * 1000 - 1)) { }
 
 void AssTime::ParseASS(wxString const& text) {
 	int ms = 0;
@@ -72,15 +72,7 @@ void AssTime::ParseASS(wxString const& text) {
 	// Milliseconds (includes seconds)
 	ms += AegiStringToFix(text, 3, end, text.size());
 
-	SetMS(ms);
-}
-
-int AssTime::GetMS() const {
-	return time / 10 * 10;
-}
-
-void AssTime::SetMS(int ms) {
-	time = mid(0, ms, 10 * 60 * 60 * 1000 - 1);
+	*this = AssTime(ms);
 }
 
 wxString AssTime::GetASSFormated (bool msPrecision) const {
@@ -88,38 +80,6 @@ wxString AssTime::GetASSFormated (bool msPrecision) const {
 		return wxString::Format("%d:%02d:%02d.%03d", GetTimeHours(), GetTimeMinutes(), GetTimeSeconds(), GetTimeMiliseconds());
 	else
 		return wxString::Format("%d:%02d:%02d.%02d", GetTimeHours(), GetTimeMinutes(), GetTimeSeconds(), GetTimeCentiseconds());
-}
-
-bool operator < (AssTime t1, AssTime t2) {
-	return t1.GetMS() < t2.GetMS();
-}
-
-bool operator > (AssTime t1, AssTime t2) {
-	return t1.GetMS() > t2.GetMS();
-}
-
-bool operator <= (AssTime t1, AssTime t2) {
-	return t1.GetMS() <= t2.GetMS();
-}
-
-bool operator >= (AssTime t1, AssTime t2) {
-	return t1.GetMS() >= t2.GetMS();
-}
-
-bool operator == (AssTime t1, AssTime t2) {
-	return t1.GetMS() == t2.GetMS();
-}
-
-bool operator != (AssTime t1, AssTime t2) {
-	return t1.GetMS() != t2.GetMS();
-}
-
-AssTime operator + (AssTime t1, AssTime t2) {
-	return AssTime(t1.GetMS() + t2.GetMS());
-}
-
-AssTime operator - (AssTime t1, AssTime t2) {
-	return AssTime(t1.GetMS() - t2.GetMS());
 }
 
 int AssTime::GetTimeHours() const { return time / 3600000; }
@@ -134,16 +94,12 @@ FractionalTime::FractionalTime(agi::vfr::Framerate fps, bool dropframe)
 {
 }
 
-wxString FractionalTime::FromAssTime(AssTime time, char sep) {
-	return FromMillisecs(time.GetMS(), sep);
-}
-
-wxString FractionalTime::FromMillisecs(int64_t msec, char sep) {
+wxString FractionalTime::ToSMPTE(AssTime time, char sep) {
 	int h=0, m=0, s=0, f=0; // hours, minutes, seconds, fractions
-	int fn = fps.FrameAtTime(msec);
+	int fn = fps.FrameAtTime(time);
 
 	// return 00:00:00:00
-	if (msec <= 0) {
+	if (time <= 0) {
 	}
 	// dropframe?
 	else if (drop) {

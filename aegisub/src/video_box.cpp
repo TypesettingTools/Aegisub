@@ -185,8 +185,8 @@ void VideoBox::UpdateTimeBoxes() {
 	else {
 		VideoSubsPos->SetValue(wxString::Format(
 			"%+dms; %+dms",
-			time - active_line->Start.GetMS(),
-			time - active_line->End.GetMS()));
+			time - active_line->Start,
+			time - active_line->End));
 	}
 
 }

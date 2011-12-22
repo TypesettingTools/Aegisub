@@ -185,7 +185,7 @@ static void combine_lines(agi::Context *c, void (*combiner)(AssDialogue *, AssDi
 
 		combiner(first, diag);
 
-		first->End.SetMS(diag->End.GetMS());
+		first->End = diag->End;
 		delete diag;
 	}
 
@@ -198,7 +198,7 @@ static void combine_lines(agi::Context *c, void (*combiner)(AssDialogue *, AssDi
 }
 
 static void combine_karaoke(AssDialogue *first, AssDialogue *second) {
-	first->Text += wxString::Format("{\\k%d}%s", (second->Start.GetMS() - first->End.GetMS()) / 10, second->Text);
+	first->Text += wxString::Format("{\\k%d}%s", (second->Start - first->End) / 10, second->Text);
 }
 
 static void combine_concat(AssDialogue *first, AssDialogue *second) {

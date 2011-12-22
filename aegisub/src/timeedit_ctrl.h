@@ -75,12 +75,7 @@ public:
 	/// Get the current time as an AssTime object
 	AssTime GetTime() const { return time; }
 	/// Set the time
-	void SetTime(AssTime time) { SetMS(time.GetMS()); }
-
-	/// Get the current time as milliseconds
-	int GetMS() const { return time.GetMS(); }
-	/// Set the time to the specified milliseconds
-	void SetMS(int ms);
+	void SetTime(AssTime time);
 
 	/// Set whether the time is displayed as a time or the corresponding frame number
 	/// @param enableByFrame If true, frame numbers are displayed

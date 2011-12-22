@@ -180,7 +180,7 @@ void DialogStyling::OnActiveLineChanged(AssDialogue *new_line) {
 	style_list->SetStringSelection(active_line->Style);
 
 	if (auto_seek->IsChecked() && IsActive())
-		c->videoController->JumpToTime(active_line->Start.GetMS());
+		c->videoController->JumpToTime(active_line->Start);
 }
 
 void DialogStyling::Commit(bool next) {
@@ -201,7 +201,7 @@ void DialogStyling::OnActivate(wxActivateEvent &) {
 	style_list->Set(c->ass->GetStyles());
 
 	if (auto_seek->IsChecked())
-		c->videoController->JumpToTime(active_line->Start.GetMS());
+		c->videoController->JumpToTime(active_line->Start);
 
 	style_name->SetFocus();
 }

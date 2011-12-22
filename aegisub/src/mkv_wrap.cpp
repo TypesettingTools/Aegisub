@@ -96,9 +96,8 @@ static void read_subtitles(agi::ProgressSink *ps, MatroskaFile *file, MkvStdIO *
 
 		// Get start and end times
 		longlong timecodeScaleLow = 1000000;
-		AssTime subStart,subEnd;
-		subStart.SetMS(startTime / timecodeScaleLow);
-		subEnd.SetMS(endTime / timecodeScaleLow);
+		AssTime subStart = startTime / timecodeScaleLow;
+		AssTime subEnd = endTime / timecodeScaleLow;
 
 		// Process SSA/ASS
 		if (!srt) {

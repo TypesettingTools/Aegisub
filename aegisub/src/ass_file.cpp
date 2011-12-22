@@ -282,7 +282,7 @@ bool AssFile::CanSave() {
 		curdiag = dynamic_cast<AssDialogue*>(*cur);
 		if (curdiag) {
 			// Timed?
-			if (curdiag->Start.GetMS() != 0 || curdiag->End.GetMS() != 0) return false;
+			if (curdiag->Start != 0 || curdiag->End != 0) return false;
 
 			// Overrides?
 			curdiag->ParseASSTags();

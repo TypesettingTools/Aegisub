@@ -102,8 +102,8 @@ void TTXTSubtitleFormat::ReadFile(wxString const& filename, wxString const& forc
 		AssDialogue *line = new AssDialogue();
 		line->group = "[Events]";
 		line->Style = "Default";
-		line->Start.SetMS(0);
-		line->End.SetMS(5000);
+		line->Start = 0;
+		line->End = 5000;
 		Line->push_back(line);
 	}
 }
@@ -127,8 +127,8 @@ bool TTXTSubtitleFormat::ProcessLine(wxXmlNode *node) {
 	if (!text.IsEmpty()) {
 		// Create dialogue
 		diag = new AssDialogue();
-		diag->Start.SetMS(time.GetMS());
-		diag->End.SetMS(36000000-10);
+		diag->Start = time;
+		diag->End = 36000000-10;
 		diag->group = "[Events]";
 		diag->Style = "Default";
 		diag->Comment = false;
@@ -297,8 +297,8 @@ void TTXTSubtitleFormat::ConvertToTTXT () {
 
 	// Insert blank line at the end
 	AssDialogue *diag = new AssDialogue();
-	diag->Start.SetMS(lastTime.GetMS());
-	diag->End.SetMS(lastTime.GetMS()+OPT_GET("Timing/Default Duration")->GetInt());
+	diag->Start = lastTime;
+	diag->End = lastTime+OPT_GET("Timing/Default Duration")->GetInt();
 	diag->group = "[Events]";
 	diag->Style = "Default";
 	diag->Comment = false;

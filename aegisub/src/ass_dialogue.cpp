@@ -418,11 +418,7 @@ void AssDialogue::ProcessParameters(AssDialogueBlockOverride::ProcessParametersC
 
 bool AssDialogue::CollidesWith(AssDialogue *target) {
 	if (!target) return false;
-	int a = Start.GetMS();
-	int b = End.GetMS();
-	int c = target->Start.GetMS();
-	int d = target->End.GetMS();
-	return ((a < c) ? (c < b) : (a < d));
+	return ((Start < target->Start) ? (target->Start < End) : (Start < target->End));
 }
 
 wxString AssDialogue::GetStrippedText() const {

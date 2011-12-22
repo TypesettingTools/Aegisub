@@ -1058,8 +1058,7 @@ void AudioDisplay::SetTrackCursor(int new_pos, bool show_time)
 
 		if (show_time)
 		{
-			AssTime new_label_time;
-			new_label_time.SetMS(controller->MillisecondsFromSamples(SamplesFromAbsoluteX(track_cursor_pos)));
+			AssTime new_label_time = controller->MillisecondsFromSamples(SamplesFromAbsoluteX(track_cursor_pos));
 			track_cursor_label = new_label_time.GetASSFormated();
 			track_cursor_label_rect.x += new_pos - old_pos;
 			RefreshRect(track_cursor_label_rect, false);

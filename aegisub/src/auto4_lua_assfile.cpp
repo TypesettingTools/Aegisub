@@ -219,8 +219,8 @@ namespace Automation4 {
 
 			set_field(L, "layer", dia->Layer);
 
-			set_field(L, "start_time", dia->Start.GetMS());
-			set_field(L, "end_time", dia->End.GetMS());
+			set_field(L, "start_time", dia->Start);
+			set_field(L, "end_time", dia->End);
 
 			set_field(L, "style", dia->Style);
 			set_field(L, "actor", dia->Actor);
@@ -351,8 +351,8 @@ namespace Automation4 {
 
 				dia->Comment = get_bool_field(L, "comment", "dialogue");
 				dia->Layer = get_int_field(L, "layer", "dialogue");
-				dia->Start.SetMS(get_int_field(L, "start_time", "dialogue"));
-				dia->End.SetMS(get_int_field(L, "end_time", "dialogue"));
+				dia->Start = get_int_field(L, "start_time", "dialogue");
+				dia->End = get_int_field(L, "end_time", "dialogue");
 				dia->Style = get_string_field(L, "style", "dialogue");
 				dia->Actor = get_string_field(L, "actor", "dialogue");
 				dia->Margin[0] = get_int_field(L, "margin_l", "dialogue");

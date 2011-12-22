@@ -353,13 +353,13 @@ struct video_frame_next_boundary : public validator_video_loaded {
 		AssDialogue *active_line = c->selectionController->GetActiveLine();
 		if (!active_line) return;
 
-		int target = c->videoController->FrameAtTime(active_line->Start.GetMS(), agi::vfr::START);
+		int target = c->videoController->FrameAtTime(active_line->Start, agi::vfr::START);
 		if (target > c->videoController->GetFrameN()) {
 			c->videoController->JumpToFrame(target);
 			return;
 		}
 
-		target = c->videoController->FrameAtTime(active_line->End.GetMS(), agi::vfr::END);
+		target = c->videoController->FrameAtTime(active_line->End, agi::vfr::END);
 		if (target > c->videoController->GetFrameN()) {
 			c->videoController->JumpToFrame(target);
 			return;
@@ -368,7 +368,7 @@ struct video_frame_next_boundary : public validator_video_loaded {
 		c->selectionController->NextLine();
 		AssDialogue *new_line = c->selectionController->GetActiveLine();
 		if (new_line != active_line)
-		c->videoController->JumpToTime(new_line->Start.GetMS());
+		c->videoController->JumpToTime(new_line->Start);
 	}
 };
 
@@ -424,13 +424,13 @@ struct video_frame_prev_boundary : public validator_video_loaded {
 		AssDialogue *active_line = c->selectionController->GetActiveLine();
 		if (!active_line) return;
 
-		int target = c->videoController->FrameAtTime(active_line->End.GetMS(), agi::vfr::END);
+		int target = c->videoController->FrameAtTime(active_line->End, agi::vfr::END);
 		if (target < c->videoController->GetFrameN()) {
 			c->videoController->JumpToFrame(target);
 			return;
 		}
 
-		target = c->videoController->FrameAtTime(active_line->Start.GetMS(), agi::vfr::START);
+		target = c->videoController->FrameAtTime(active_line->Start, agi::vfr::START);
 		if (target < c->videoController->GetFrameN()) {
 			c->videoController->JumpToFrame(target);
 			return;
@@ -439,7 +439,7 @@ struct video_frame_prev_boundary : public validator_video_loaded {
 		c->selectionController->PrevLine();
 		AssDialogue *new_line = c->selectionController->GetActiveLine();
 		if (new_line != active_line)
-			c->videoController->JumpToTime(new_line->End.GetMS(), agi::vfr::END);
+			c->videoController->JumpToTime(new_line->End, agi::vfr::END);
 	}
 };
 
@@ -560,7 +560,7 @@ struct video_jump_end : public validator_video_loaded {
 
 	void operator()(agi::Context *c) {
 		if (AssDialogue *active_line = c->selectionController->GetActiveLine()) {
-			c->videoController->JumpToTime(active_line->End.GetMS(), agi::vfr::END);
+			c->videoController->JumpToTime(active_line->End, agi::vfr::END);
 		}
 	}
 };
@@ -574,7 +574,7 @@ struct video_jump_start : public validator_video_loaded {
 
 	void operator()(agi::Context *c) {
 		if (AssDialogue *active_line = c->selectionController->GetActiveLine()) {
-			c->videoController->JumpToTime(active_line->Start.GetMS());
+			c->videoController->JumpToTime(active_line->Start);
 		}
 	}
 };
