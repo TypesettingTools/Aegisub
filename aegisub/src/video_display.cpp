@@ -225,6 +225,12 @@ void VideoDisplay::SetFrame(int frameNumber) {
 				_T("Error message reported: %s"),
 				err);
 		}
+		catch (wxString err) {
+			wxLogError(
+				_T("Failed seeking video. The video file may be corrupt or incomplete.\n")
+				_T("Error message reported: %s"),
+				err.c_str());
+		}
 		catch (...) {
 			wxLogError(
 				_T("Failed seeking video. The video file may be corrupt or incomplete.\n")
