@@ -155,6 +155,8 @@ AssDialogue* VisualToolBase::GetActiveDialogueLine() {
 }
 
 void VisualToolBase::SetDisplayArea(int x, int y, int w, int h) {
+	if (x == video_pos.X() && y == video_pos.Y() && w == video_res.X() && h == video_res.Y()) return;
+
 	video_pos = Vector2D(x, y);
 	video_res = Vector2D(w, h);
 
