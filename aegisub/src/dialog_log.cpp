@@ -40,7 +40,7 @@
 
 #ifndef AGI_PRE
 #include <ctime>
-#include <functional>
+#include <tr1/functional>
 #include <string>
 
 #include <wx/button.h>

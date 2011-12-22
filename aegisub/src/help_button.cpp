@@ -41,9 +41,11 @@
 #ifndef AGI_PRE
 #include <algorithm>
 #include <map>
+#include <tr1/functional>
 
 #include <wx/filename.h>
 #include <wx/mimetype.h>
+#include <wx/msgdlg.h>
 #endif
 
 #include <libaegisub/exception.h>
