@@ -37,8 +37,6 @@
 #pragma once
 
 #ifndef AGI_PRE
-#include <stdint.h>
-
 #include <wx/string.h>
 #endif
 
@@ -50,35 +48,39 @@
 ///
 /// DOCME
 class AssTime {
-	/// Time in miliseconds
+	/// Time in milliseconds
 	int time;
 
 public:
-	AssTime();
-	AssTime(int ms);
+	AssTime(int ms = 0);
 
-	int GetTimeHours();
-	int GetTimeMinutes();
-	int GetTimeSeconds();
-	int GetTimeMiliseconds();
-	int GetTimeCentiseconds();
+	int GetTimeHours() const;        ///< Get the hours portion of this time
+	int GetTimeMinutes() const;      ///< Get the minutes portion of this time
+	int GetTimeSeconds() const;      ///< Get the seconds portion of this time
+	int GetTimeMiliseconds() const;  ///< Get the miliseconds portion of this time
+	int GetTimeCentiseconds() const; ///< Get the centiseconds portion of this time
 
-	int GetMS() const;  ///< Returns milliseconds
-	void SetMS(int ms); ///< Sets values to milliseconds with bounds-checking
-	void ParseASS(const wxString text); ///< Sets value to text-form time, in ASS format
-	wxString GetASSFormated(bool ms=false) const; ///< Returns the ASS representation of time
+	/// Get millisecond, rounded to centisecond precision
+	int GetMS() const;
+	/// Sets values to milliseconds with bounds-checking
+	void SetMS(int ms);
+	/// Parse an ASS time string, leaving the time unchanged if the string is malformed
+	void ParseASS(wxString const& text);
+	/// Return the time as a string
+	/// @param ms Use milliseconds precision, for non-ASS formats
+	wxString GetASSFormated(bool ms=false) const;
 };
 
 // Comparison operators
-bool operator == (const AssTime &t1, const AssTime &t2);
-bool operator != (const AssTime &t1, const AssTime &t2);
-bool operator <  (const AssTime &t1, const AssTime &t2);
-bool operator >  (const AssTime &t1, const AssTime &t2);
-bool operator <= (const AssTime &t1, const AssTime &t2);
-bool operator >= (const AssTime &t1, const AssTime &t2);
+bool operator == (AssTime t1, AssTime t2);
+bool operator != (AssTime t1, AssTime t2);
+bool operator <  (AssTime t1, AssTime t2);
+bool operator >  (AssTime t1, AssTime t2);
+bool operator <= (AssTime t1, AssTime t2);
+bool operator >= (AssTime t1, AssTime t2);
 // Arithmetic operators
-AssTime operator + (const AssTime &t1, const AssTime &t2);
-AssTime operator - (const AssTime &t1, const AssTime &t2);
+AssTime operator + (AssTime t1, AssTime t2);
+AssTime operator - (AssTime t1, AssTime t2);
 
 /// DOCME
 /// @class FractionalTime

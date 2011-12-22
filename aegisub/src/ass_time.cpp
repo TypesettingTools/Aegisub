@@ -34,213 +34,99 @@
 /// @ingroup subs_storage
 ///
 
-
-////////////
-// Includes
 #include "config.h"
 
+#include "ass_time.h"
+
 #ifndef AGI_PRE
-#include <math.h>
-
 #include <algorithm>
-#include <fstream>
-
-#include <wx/regex.h>
+#include <cmath>
 #endif
 
-#include "ass_time.h"
 #include "utils.h"
 
-
-/// @brief AssTime constructors
-AssTime::AssTime() : time(0) { }
 AssTime::AssTime(int time) { SetMS(time); }
 
+void AssTime::ParseASS(wxString const& text) {
+	int ms = 0;
+	size_t pos = 0, end = 0;
 
-
-/// @brief Note that this function is atomic, it won't touch the values if it's invalid. --------------- Parses from ASS 
-/// @param text 
-/// @return 
-///
-void AssTime::ParseASS (const wxString text) {
-	// Prepare
-	size_t pos = 0;
-	size_t end = 0;
-	long th=0,tm=0,tms=0;
-
-	// Count the number of colons
-	size_t len = text.Length();
-	int colons = 0;
-	for (pos=0;pos<len;pos++) if (text[pos] == ':') colons++;
-	pos = 0;
+	int colons = text.Freq(':');
 	
 	// Set start so that there are only two colons at most
-	if (colons > 2) {
-		for (pos=0;pos<len;pos++) {
-			if (text[pos] == ':') {
-				colons--;
-				if (colons == 2) break;
-			}
-		}
-		pos++;
-		end = pos;
+	for (; colons > 2; --colons) pos = text.find(':', pos) + 1;
+
+	// Hours
+	if (colons == 2) {
+		while (text[end++] != ':') { }
+		ms += AegiStringToInt(text, pos, end) * 60 * 60 * 1000;
+		pos = end;
 	}
 
-	try {
-		// Hours
-		if (colons == 2) {
-			while (text[end++] != ':') {};
-			th = AegiStringToInt(text,pos,end);
-			pos = end;
-		}
-
-		// Minutes
-		if (colons >= 1) {
-			while (text[end++] != ':') {};
-			tm = AegiStringToInt(text,pos,end);
-			pos = end;
-		}
-
-		// Miliseconds (includes seconds)
-		end = text.Length();
-		tms = AegiStringToFix(text,3,pos,end);
+	// Minutes
+	if (colons >= 1) {
+		while (text[end++] != ':') { }
+		ms += AegiStringToInt(text, pos, end) * 60 * 1000;
 	}
 
-	// Something went wrong, don't change anything
-	catch (...) {
-		return;
-	}
+	// Milliseconds (includes seconds)
+	ms += AegiStringToFix(text, 3, end, text.size());
 
-	// OK, set values
-	SetMS(tms + tm*60000 + th*3600000);
+	SetMS(ms);
 }
 
-/// @brief AssTime conversion to/from miliseconds 
-/// @return 
-///
-int AssTime::GetMS () const {
+int AssTime::GetMS() const {
 	return time / 10 * 10;
 }
 
-
-/// @brief DOCME
-/// @param _ms 
-///
-void AssTime::SetMS (int ms) {
+void AssTime::SetMS(int ms) {
 	time = mid(0, ms, 10 * 60 * 60 * 1000 - 1);
 }
 
-
-
-/// @brief ASS Formated 
-/// @param msPrecision 
-/// @return 
-///
 wxString AssTime::GetASSFormated (bool msPrecision) const {
-	int ms = msPrecision ? time : GetMS();
-
-	int h = ms / (1000 * 60 * 60);
-	int m = (ms / (1000 * 60)) % 60;
-	int s = (ms / 1000) % 60;
-	ms = ms % 1000;
-
 	if (msPrecision)
-		return wxString::Format("%01i:%02i:%02i.%03i",h,m,s,ms);
+		return wxString::Format("%d:%02d:%02d.%03d", GetTimeHours(), GetTimeMinutes(), GetTimeSeconds(), GetTimeMiliseconds());
 	else
-		return wxString::Format("%01i:%02i:%02i.%02i",h,m,s,ms/10);
+		return wxString::Format("%d:%02d:%02d.%02d", GetTimeHours(), GetTimeMinutes(), GetTimeSeconds(), GetTimeCentiseconds());
 }
 
-/// @brief AssTime comparison 
-/// @param t1 
-/// @param t2 
-/// @return 
-///
-bool operator < (const AssTime &t1, const AssTime &t2) {
-	return (t1.GetMS() < t2.GetMS());
+bool operator < (AssTime t1, AssTime t2) {
+	return t1.GetMS() < t2.GetMS();
 }
 
-
-/// @brief DOCME
-/// @param t1 
-/// @param t2 
-/// @return 
-///
-bool operator > (const AssTime &t1, const AssTime &t2) {
-	return (t1.GetMS() > t2.GetMS());
+bool operator > (AssTime t1, AssTime t2) {
+	return t1.GetMS() > t2.GetMS();
 }
 
-
-/// @brief DOCME
-/// @param t1 
-/// @param t2 
-/// @return 
-///
-bool operator <= (const AssTime &t1, const AssTime &t2) {
-	return (t1.GetMS() <= t2.GetMS());
+bool operator <= (AssTime t1, AssTime t2) {
+	return t1.GetMS() <= t2.GetMS();
 }
 
-
-/// @brief DOCME
-/// @param t1 
-/// @param t2 
-/// @return 
-///
-bool operator >= (const AssTime &t1, const AssTime &t2) {
-	return (t1.GetMS() >= t2.GetMS());
+bool operator >= (AssTime t1, AssTime t2) {
+	return t1.GetMS() >= t2.GetMS();
 }
 
-
-/// @brief DOCME
-/// @param t1 
-/// @param t2 
-/// @return 
-///
-bool operator == (const AssTime &t1, const AssTime &t2) {
-	return (t1.GetMS() == t2.GetMS());
+bool operator == (AssTime t1, AssTime t2) {
+	return t1.GetMS() == t2.GetMS();
 }
 
-
-/// @brief DOCME
-/// @param t1 
-/// @param t2 
-/// @return 
-///
-bool operator != (const AssTime &t1, const AssTime &t2) {
-	return (t1.GetMS() != t2.GetMS());
+bool operator != (AssTime t1, AssTime t2) {
+	return t1.GetMS() != t2.GetMS();
 }
 
-AssTime operator + (const AssTime &t1, const AssTime &t2) {
+AssTime operator + (AssTime t1, AssTime t2) {
 	return AssTime(t1.GetMS() + t2.GetMS());
 }
 
-AssTime operator - (const AssTime &t1, const AssTime &t2) {
+AssTime operator - (AssTime t1, AssTime t2) {
 	return AssTime(t1.GetMS() - t2.GetMS());
 }
 
-/// @brief Get 
-/// @return 
-///
-int AssTime::GetTimeHours() { return time / 3600000; }
-
-/// @brief DOCME
-/// @return 
-///
-int AssTime::GetTimeMinutes() { return (time % 3600000)/60000; }
-
-/// @brief DOCME
-/// @return 
-///
-int AssTime::GetTimeSeconds() { return (time % 60000)/1000; }
-
-/// @brief DOCME
-/// @return 
-///
-int AssTime::GetTimeMiliseconds() { return (time % 1000); }
-
-/// @brief DOCME
-/// @return 
-///
-int AssTime::GetTimeCentiseconds() { return (time % 1000)/10; }
+int AssTime::GetTimeHours() const { return time / 3600000; }
+int AssTime::GetTimeMinutes() const { return (time % 3600000) / 60000; }
+int AssTime::GetTimeSeconds() const { return (time % 60000) / 1000; }
+int AssTime::GetTimeMiliseconds() const { return (time % 1000); }
+int AssTime::GetTimeCentiseconds() const { return (time % 1000) / 10; }
 
 FractionalTime::FractionalTime(agi::vfr::Framerate fps, bool dropframe)
 : fps(fps)
