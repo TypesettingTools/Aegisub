@@ -289,9 +289,9 @@ bool VisualToolVectorClip::InitializeHold() {
 				spline.push_back(ct);
 			}
 			else {
-				SplineCurve c2;
-				curve->Split(*curve, c2, t);
-				spline.insert(++curve, c2);
+				std::pair<SplineCurve, SplineCurve> split = curve->Split(t);
+				*curve = split.first;
+				spline.insert(++curve, split.second);
 			}
 		}
 

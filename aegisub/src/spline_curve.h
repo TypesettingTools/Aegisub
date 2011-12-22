@@ -67,10 +67,9 @@ public:
 	SplineCurve(Vector2D p1, Vector2D p2, Vector2D p3, Vector2D p4);
 
 	/// @brief Split a curve in two using the de Casteljau algorithm
-	/// @param[out] c1 Curve before split point
-	/// @param[out] c2 Curve after split point
-	/// @param t Split point
-	void Split(SplineCurve &c1, SplineCurve &c2, float t = 0.5f);
+	/// @param t Split point from 0-1
+	/// @return Curve before and after the split point
+	std::pair<SplineCurve, SplineCurve> Split(float t = 0.5f);
 
 	/// @brief Smooths the curve
 	/// @note Based on http://antigrain.com/research/bezier_interpolation/index.html
