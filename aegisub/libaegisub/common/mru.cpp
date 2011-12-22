@@ -72,7 +72,7 @@ const MRUManager::MRUListMap* MRUManager::Get(const std::string &key) {
 std::string const& MRUManager::GetEntry(const std::string &key, size_t entry) {
 	const MRUManager::MRUListMap *map = Get(key);
 
-	if (entry > map->size())
+	if (entry >= map->size())
 		throw MRUErrorIndexOutOfRange("Requested element index is out of range.");
 
 	MRUListMap::const_iterator index = map->begin();
