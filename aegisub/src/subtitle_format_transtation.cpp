@@ -121,7 +121,7 @@ wxString TranStationSubtitleFormat::ConvertLine(AssDialogue *current, FPSRationa
 	if (nextl_start > 0 && end.GetMS() == nextl_start)
 		end.SetMS(end.GetMS() - ((1000*fps_rat->den)/fps_rat->num));
 
-	FractionalTime ft(":", fps_rat->num, fps_rat->den, fps_rat->smpte_dropframe);
+	FractionalTime ft(fps_rat->num, fps_rat->den, fps_rat->smpte_dropframe);
 	wxString header = wxString::Format("SUB[%i%s%s ", valign, halign, type) + ft.FromAssTime(start) + ">" + ft.FromAssTime(end) + "]\r\n";
 
 	// Process text

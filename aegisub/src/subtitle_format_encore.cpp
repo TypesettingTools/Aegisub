@@ -71,7 +71,7 @@ void EncoreSubtitleFormat::WriteFile(wxString const& filename, wxString const& e
 	int i = 0;
 
 	// Encore wants ; instead of : if we're dealing with NTSC dropframe stuff
-	FractionalTime ft(fps_rat.smpte_dropframe ? ";" : ":", fps_rat.num, fps_rat.den, fps_rat.smpte_dropframe);
+	FractionalTime ft(fps_rat.num, fps_rat.den, fps_rat.smpte_dropframe, fps_rat.smpte_dropframe ? ';' : ':');
 
 	for (std::list<AssEntry*>::iterator cur=Line->begin();cur!=Line->end();cur++) {
 		if (AssDialogue *current = dynamic_cast<AssDialogue*>(*cur)) {

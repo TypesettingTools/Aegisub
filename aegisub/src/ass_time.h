@@ -91,22 +91,21 @@ class FractionalTime {
 	int num;  ///< Numerator
 	int den;  ///< Denominator
 	bool drop; ///< Enable SMPTE dropframe handling
-
-	/// separator; someone might have separators of more than one character :V
-	wxString sep;
+	char sep;  ///< Timecode component separator
 
 	/// How often to drop frames when enabled
 	static const int frames_per_period = 17982;
 
 public:
-	/// dumb assumption? I give no fuck
-	/// NOTE: separator can be a regex! at least if you only plan on doing SMPTE->somethingelse.
-	FractionalTime(wxString separator, int numerator=30, int denominator=1, bool dropframe=false);
-	~FractionalTime();
+	FractionalTime(int numerator=30, int denominator=1, bool dropframe=false, char sep=':');
 
+	/// Parse a SMPTE timecode, returning an AssTime
 	AssTime ToAssTime(wxString fractime);
+	/// Parse a SMPTE timecode, returning milliseconds
 	int ToMillisecs(wxString fractime);
 
+	/// Convert an AssTime to a SMPTE timecode
 	wxString FromAssTime(AssTime time);
+	/// Convert milliseconds to a SMPTE timecode
 	wxString FromMillisecs(int64_t msec);
 };

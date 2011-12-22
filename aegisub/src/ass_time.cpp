@@ -251,63 +251,32 @@ int AssTime::GetTimeMiliseconds() { return (time % 1000); }
 ///
 int AssTime::GetTimeCentiseconds() { return (time % 1000)/10; }
 
-
-
-
-
-/// @brief Constructor 
-/// @param separator   
-/// @param numerator   
-/// @param denominator 
-/// @param dropframe   
-///
-FractionalTime::FractionalTime (wxString separator, int numerator, int denominator, bool dropframe) {
-	drop = dropframe;
+FractionalTime::FractionalTime(int numerator, int denominator, bool dropframe, char sep)
+: num(numerator)
+, den(denominator)
+, drop(dropframe)
+, sep(sep)
+{
 	if (drop) {
 		// no dropframe for any other framerates
 		num = 30000;
 		den = 1001;
-	} else {
-		num = numerator;
-		den = denominator;
 	}
-	sep = separator;
 
 	// fractions < 1 are not welcome here
 	if ((num <= 0 || den <= 0) || (num < den))
 		throw "FractionalTime: nonsensical enumerator or denominator";
-	if (sep.IsEmpty())
-		throw "FractionalTime: no separator specified";
 }
 
-
-/// @brief Destructor 
-///
-FractionalTime::~FractionalTime () {
-	sep.Clear();
-}
-
-
-/// @brief SMPTE text string to milliseconds conversion 
-/// @param _text 
-/// @return 
-///
-int FractionalTime::ToMillisecs (wxString _text) {
-	wxString text = _text;
-	wxString re_str = "";
+int FractionalTime::ToMillisecs(wxString text) {
 	text.Trim(false);
 	text.Trim(true);
-	long h=0,m=0,s=0,f=0;
 
-	//           hour                   minute                 second                 fraction
-	re_str << "(\\d+)" << sep << "(\\d+)" << sep << "(\\d+)" << sep << "(\\d+)";
-
-	wxRegEx re(re_str, wxRE_ADVANCED);
-	if (!re.IsValid())
-		throw "FractionalTime: regex failure";
+	wxRegEx re(wxString::Format("(\\d+)%c(\\d+)%c(\\d+)%c(\\d+)", sep, sep, sep, sep), wxRE_ADVANCED);
 	if (!re.Matches(text))
 		return 0; // FIXME: throw here too?
-	
+
+	long h=0, m=0, s=0, f=0;
 	re.GetMatch(text,1).ToLong(&h);
 	re.GetMatch(text,2).ToLong(&m);
 	re.GetMatch(text,3).ToLong(&s);
@@ -327,7 +296,7 @@ int FractionalTime::ToMillisecs (wxString _text) {
 			fn += m * 1798; // two timestamps dropped per minute after the first
 			fn += s * 30 + f - 2;
 		}
-		else {				// minute is evenly divisible by 10, keep first two timestamps
+		else { // minute is evenly divisible by 10, keep first two timestamps
 			fn += s * 30;
 			fn += f;
 		}
@@ -349,40 +318,23 @@ int FractionalTime::ToMillisecs (wxString _text) {
 	return msecs_f;
 }
 
-
-/// @brief SMPTE text string to AssTime conversion 
-/// @param _text 
-/// @return 
-///
-AssTime FractionalTime::ToAssTime (wxString _text) {
-	AssTime time;
-	time.SetMS((int)ToMillisecs(_text));
-	return time;
+AssTime FractionalTime::ToAssTime(wxString text) {
+	return AssTime(ToMillisecs(text));
 }
 
-
-/// @brief AssTime to SMPTE text string conversion 
-/// @param time 
-/// @return 
-///
 wxString FractionalTime::FromAssTime(AssTime time) {
 	return FromMillisecs(time.GetMS());
 }
 
-
-/// @brief Milliseconds to SMPTE text string conversion 
-/// @param msec 
-///
 wxString FractionalTime::FromMillisecs(int64_t msec) {
 	int h=0, m=0, s=0, f=0; // hours, minutes, seconds, fractions
 	int fn = (msec*(int64_t)num) / (1000*den); // frame number
 
 	// return 00:00:00:00
-	if (msec <= 0)
-		goto RETURN;
-
+	if (msec <= 0) {
+	}
 	// dropframe?
-	if (drop) {
+	else if (drop) {
 		fn += 2 * (fn / (30 * 60)) - 2 * (fn / (30 * 60 * 10));
 		h = fn / (30 * 60 * 60);
 		m = (fn / (30 * 60)) % 60;
@@ -409,20 +361,18 @@ wxString FractionalTime::FromMillisecs(int64_t msec) {
 		int frames_per_h = 3600*fps_approx;
 		int frames_per_m = 60*fps_approx;
 		int frames_per_s = fps_approx;
-		while (fn >= frames_per_h) {
-			h++; fn -= frames_per_h;
-		}
-		while (fn >= frames_per_m) {
-			m++; fn -= frames_per_m;
-		}
-		while (fn >= frames_per_s) {
-			s++; fn -= frames_per_s;
-		}
+
+		h = fn / frames_per_h;
+		fn = fn % frames_per_h;
+
+		m = fn / frames_per_m;
+		fn = fn % frames_per_m;
+
+		s = fn / frames_per_s;
+		fn = fn % frames_per_s;
+
 		f = fn;
 	}
 
-RETURN:
-	return wxString::Format("%02i" + sep + "%02i" + sep + "%02i" + sep + "%02i",h,m,s,f);
+	return wxString::Format("%02i%c%02%c%02i%c%02i", h, sep, m, sep, s, sep, f);
 }
-
-
