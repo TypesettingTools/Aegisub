@@ -108,12 +108,6 @@ VideoContext *VideoContext::Get() {
 void VideoContext::Reset() {
 	StandardPaths::SetPathValue("?video", "");
 
-	keyFrames.clear();
-	keyFramesFilename.clear();
-	videoFPS = agi::vfr::Framerate();
-	KeyframesOpen(keyFrames);
-	if (!ovrFPS.IsLoaded()) TimecodesOpen(videoFPS);
-
 	// Remove video data
 	Stop();
 	frame_n = 0;
@@ -124,6 +118,12 @@ void VideoContext::Reset() {
 	// Remove provider
 	provider.reset();
 	videoProvider = 0;
+
+	keyFrames.clear();
+	keyFramesFilename.clear();
+	videoFPS = agi::vfr::Framerate();
+	KeyframesOpen(keyFrames);
+	if (!ovrFPS.IsLoaded()) TimecodesOpen(videoFPS);
 }
 
 void VideoContext::SetContext(agi::Context *context) {
