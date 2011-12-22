@@ -310,6 +310,7 @@ void SubtitlesGrid::DeleteLines(wxArrayInt target, bool flagModified) {
 	size_t deleted = 0;
 	for (entryIter cur = context->ass->Line.begin(); cur != context->ass->Line.end();) {
 		if (dynamic_cast<AssDialogue*>(*cur) && ++row == target[deleted]) {
+			delete *cur;
 			cur = context->ass->Line.erase(cur);
 			++deleted;
 			if (deleted == target.size()) break;
