@@ -16,18 +16,17 @@ m4_define([aegisub_version_data], [aegisub_version_major.aegisub_version_minor])
 ###################
 # Required packages
 ###################
-m4_define([lua_auto4_required_version], [5.1])
-m4_define([portaudio_required_version], [19])
-m4_define([pulseaudio_required_version], [0.5])
 m4_define([curl_required_version], [7.18.2])
-m4_define([fontconfig_required_version], [2.4])
-m4_define([freetype_required_version], [9.7.0])
-m4_define([pkgconfig_required_version], [0.20])
-m4_define([wx_required_version], [2.9.2])
-m4_define([libass_required_version], [0.9.7])
 m4_define([ffms_required_version], [2.15])
 m4_define([fftw_required_version], [3.3])
-
+m4_define([fontconfig_required_version], [2.4])
+m4_define([freetype_required_version], [9.7.0])
+m4_define([libass_required_version], [0.9.7])
+m4_define([lua_auto4_required_version], [5.1])
+m4_define([pkgconfig_required_version], [0.20])
+m4_define([portaudio_required_version], [19])
+m4_define([pulseaudio_required_version], [0.5])
+m4_define([wx_required_version], [2.9.2])
 
 #######
 # Setup
