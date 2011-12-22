@@ -38,7 +38,6 @@
 
 #ifndef AGI_PRE
 #include <wx/filename.h>
-#include <wx/mimetype.h>
 #include <wx/rawbmp.h>
 #include <wx/statline.h>
 #endif

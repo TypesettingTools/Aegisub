@@ -44,7 +44,6 @@
 #include <tr1/functional>
 
 #include <wx/filename.h>
-#include <wx/mimetype.h>
 #include <wx/msgdlg.h>
 #endif
 
@@ -94,20 +93,22 @@ HelpButton::HelpButton(wxWindow *parent, wxString const& page, wxPoint position,
 
 void HelpButton::OpenPage(wxString const& pageID) {
 	init_static();
+
 	wxString page = (*pages)[pageID];
 
-	// Get the file type
-	wxFileType *type = wxTheMimeTypesManager->GetFileTypeFromExtension("html");
-	if (type) {
-		wxString docsPath = StandardPaths::DecodePath("?data/docs");
-#ifdef __WINDOWS__
-		docsPath.Replace("\\","/");
-		docsPath = "/" + docsPath;
-#endif
-		wxString path = wxString::Format("file://%s/%s.html",docsPath,page);
-		if (!wxLaunchDefaultBrowser(path))
-			wxMessageBox("Documentation files not found.", "Error", wxOK | wxICON_ERROR);
-	}
+	wxFileName docFile(StandardPaths::DecodePath("?data/docs/"), page, "html", wxPATH_NATIVE);
+
+	wxString url;
+	// If we can read a file by the constructed name, assume we have a local copy of the manual
+	if (docFile.IsFileReadable())
+		// Tested IE8, Firefox 3.5, Safari 4, Chrome 4 and Opera 10 on Windows, they all handle
+		// various variations of slashes, missing one at the start and using backslashes throughout
+		// is safe with everything everyone uses. Blame Microsoft.
+		url = wxString("file://") + docFile.GetFullPath(wxPATH_NATIVE);
+	else
+		url = wxString::Format("http://docs.aegisub.org/manual/%s", page);
+
+	wxLaunchDefaultBrowser(url);
 }
 
 void HelpButton::ClearPages() {

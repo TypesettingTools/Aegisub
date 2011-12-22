@@ -149,7 +149,6 @@
 #include <wx/log.h>
 #include <wx/menu.h>
 #include <wx/menuitem.h>
-#include <wx/mimetype.h>
 #include <wx/msgdlg.h>
 #include <wx/mstream.h>
 #include <wx/notebook.h>

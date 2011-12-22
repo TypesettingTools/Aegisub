@@ -42,7 +42,6 @@
 #include <wx/dnd.h>
 #include <wx/filename.h>
 #include <wx/image.h>
-#include <wx/mimetype.h>
 #include <wx/statline.h>
 #include <wx/sysopt.h>
 #include <wx/tokenzr.h>
