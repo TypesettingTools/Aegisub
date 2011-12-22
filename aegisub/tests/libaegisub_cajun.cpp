@@ -146,9 +146,9 @@ TEST_F(lagi_cajun, CastConst) {
 	EXPECT_EQ(10, static_cast<json::Integer const&>(Integer));
 	EXPECT_EQ(10, static_cast<json::Double const&>(Double));
 	EXPECT_STREQ("1", static_cast<json::String const&>(String).c_str());
-	EXPECT_EQ(false, static_cast<json::Boolean const&>(Boolean));
-	EXPECT_EQ(true, static_cast<json::Array const&>(Array).empty());
-	EXPECT_EQ(true, static_cast<json::Object const&>(Object).empty());
+	EXPECT_FALSE(static_cast<json::Boolean const&>(Boolean));
+	EXPECT_TRUE(static_cast<json::Array const&>(Array).empty());
+	EXPECT_TRUE(static_cast<json::Object const&>(Object).empty());
 }
 
 TEST_F(lagi_cajun, UnknownIsIndexable) {
@@ -219,7 +219,7 @@ TEST_F(lagi_cajun, ObjectStoreString) {
 TEST_F(lagi_cajun, ObjectStoreBoolean) {
 	json::Object obj;
 	obj["Boolean"] = true;
-	EXPECT_EQ(true, static_cast<json::Boolean>(obj["Boolean"]));
+	EXPECT_TRUE(static_cast<json::Boolean>(obj["Boolean"]));
 
 	EXPECT_THROW(static_cast<json::String const&>(obj["Boolean"]), json::Exception);
 	EXPECT_THROW(static_cast<json::Integer>(obj["Boolean"]), json::Exception);
@@ -285,7 +285,7 @@ TEST_F(lagi_cajun, Read) {
 	EXPECT_NO_THROW(json::Reader::Read(obj, doc));
 	EXPECT_NO_THROW(obj["String"]);
 	EXPECT_STREQ("This is a test", static_cast<std::string>(obj["String"]).c_str());
-	EXPECT_EQ(false, static_cast<json::Boolean>(obj["Boolean"]));
+	EXPECT_FALSE(static_cast<json::Boolean>(obj["Boolean"]));
 	EXPECT_NO_THROW(static_cast<json::Null>(obj["Null"]));
 }
 
