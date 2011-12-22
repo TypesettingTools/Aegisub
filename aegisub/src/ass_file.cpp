@@ -743,7 +743,8 @@ int AssFile::Commit(wxString desc, int type, int amendId, AssEntry *single_line)
 				++this_it;
 				++undo_it;
 			}
-			**undo_it = *single_line;
+			delete *undo_it;
+			*undo_it = single_line->Clone();
 		}
 		else {
 			UndoStack.back() = *this;
