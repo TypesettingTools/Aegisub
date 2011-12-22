@@ -51,6 +51,7 @@ endif
 
 ifeq (yes, $(HAVE_OSS))
 SRC_OPT += audio_player_oss.cpp
+audio_player_oss.o: CXXFLAGS += $(CFLAGS_OSS)
 endif
 
 #######################

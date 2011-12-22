@@ -423,17 +423,17 @@ AC_SUBST(with_openal)
 ######
 ## OSS
 ######
+AC_ARG_VAR([OSS_CFLAGS], [CFLAGS to use for OSS [auto]])
 AC_ARG_WITH(oss,
             AS_HELP_STRING([--without-oss],
                            [build without OSS audio provider [auto]]))
 
 AS_IF([test x$with_oss = xno], [oss_disabled="(disabled)"], [
-  AS_IF([test -f "/etc/oss.conf"], [
+  AS_IF([test -z "$OSS_CFLAGS" && test -f "/etc/oss.conf"], [
     . /etc/oss.conf
-    CPPFLAGS="$CPPFLAGS -I${OSSLIBDIR}/include/sys"
+    OSS_CFLAGS="-I${OSSLIBDIR}/include/sys"
   ])
   AC_CHECK_HEADERS([soundcard.h sys/soundcard.h], [with_oss="yes"], [with_oss="no"])
-  # XXX: maybe check if OSS works
 ])
 
 AS_IF([test x$with_oss = xyes], AC_DEFINE(WITH_OSS, 1, [Enable OSS support]))
