@@ -17,15 +17,16 @@ m4_define([aegisub_version_data], [aegisub_version_major.aegisub_version_minor])
 # Required packages
 ###################
 m4_define([curl_required_version], [7.18.2])
-m4_define([ffms_required_version], [2.15])
-m4_define([fftw_required_version], [3.3])
+m4_define([ffms2_required_version], [2.15])
+m4_define([fftw3_required_version], [3.3])
 m4_define([fontconfig_required_version], [2.4])
 m4_define([freetype_required_version], [9.7.0])
+m4_define([hunspell_required_version], [1.2.0])
 m4_define([libass_required_version], [0.9.7])
+m4_define([libpulse_required_version], [0.5])
 m4_define([lua_auto4_required_version], [5.1])
 m4_define([pkgconfig_required_version], [0.20])
 m4_define([portaudio_required_version], [19])
-m4_define([pulseaudio_required_version], [0.5])
 m4_define([wx_required_version], [2.9.2])
 
 #######
@@ -328,7 +329,7 @@ AS_IF([test x$agi_cv_with_iconv_const = xyes],
 #######
 AC_ARG_WITH(alsa,
             AS_HELP_STRING([--without-alsa],
-                           [build without ALSA audio provider [auto]]))
+                           [build without ALSA audio player [auto]]))
 
 AC_ARG_VAR([ALSA_CFLAGS], [CFLAGS to use for ALSA []])
 AC_ARG_VAR([ALSA_LIBS], [LIBS to use for ALSA [-lasound -lrt]])
@@ -345,42 +346,12 @@ AC_SUBST(ALSA_CFLAGS)
 AC_SUBST(ALSA_LIBS)
 AC_SUBST(with_alsa)
 
-############
-## PortAudio
-############
-AC_ARG_WITH(portaudio,
-            AS_HELP_STRING([--without-portaudio],
-                           [build without PortAudio v19 audio provider [auto]]))
-
-AS_IF([test x$with_portaudio = xno],
-      [portaudio_disabled="(disabled)"],
-      [PKG_CHECK_MODULES(PORTAUDIO, portaudio-2.0 >= portaudio_required_version, [with_portaudio="yes"], [with_portaudio="no"])])
-
-AS_IF([test x$with_portaudio = xyes], AC_DEFINE(WITH_PORTAUDIO, 1, [Enable PortAudio v19 support]))
-
-AC_SUBST(with_portaudio)
-
-#############
-## PulseAudio
-#############
-AC_ARG_WITH(pulseaudio,
-            AS_HELP_STRING([--without-pulseaudio],
-                           [build without PulseAudio audio provider [auto]]))
-
-AS_IF([test x$with_pulseaudio = xno],
-      [pulseaudio_disabled="(disabled)"],
-      [PKG_CHECK_MODULES(LIBPULSE, libpulse >= pulseaudio_required_version, [with_pulseaudio="yes"], [with_pulseaudio="no"])])
-
-AS_IF([test x$with_pulseaudio = xyes], AC_DEFINE(WITH_PULSEAUDIO, 1, [Enable PulseAudio support]))
-
-AC_SUBST(with_pulseaudio)
-
 #########
 ## OpenAL
 #########
 AC_ARG_WITH(openal,
             AS_HELP_STRING([--without-openal],
-                           [build without OpenAL audio provider [auto]]))
+                           [build without OpenAL audio player [auto]]))
 
 AS_IF([test x$build_darwin = xyes], [
   OPENAL_LIBS="-framework OpenAL"
@@ -426,7 +397,7 @@ AC_SUBST(with_openal)
 AC_ARG_VAR([OSS_CFLAGS], [CFLAGS to use for OSS [auto]])
 AC_ARG_WITH(oss,
             AS_HELP_STRING([--without-oss],
-                           [build without OSS audio provider [auto]]))
+                           [build without OSS audio player [auto]]))
 
 AS_IF([test x$with_oss = xno], [oss_disabled="(disabled)"], [
   AS_IF([test -z "$OSS_CFLAGS" && test -f "/etc/oss.conf"], [
@@ -441,60 +412,17 @@ AS_IF([test x$with_oss = xyes], AC_DEFINE(WITH_OSS, 1, [Enable OSS support]))
 AC_SUBST(with_oss)
 
 ###################
-# FFTW
+# Simple pkg-config stuff
 ###################
-AC_ARG_WITH(fftw,
-            AS_HELP_STRING([--without-fftw],
-                           [build without fftw support [auto]]))
+AGI_OPT_PKG(libpulse, [build without PulseAudio audio player [auto]], [Enable PulseAudio support])
+AGI_OPT_PKG(portaudio-2.0, [build without PortAudio v19 audio player [auto]], [Enable PortAudio v19 support])
 
-AS_IF([test x$with_fftw = xno],
-      [fftw_disabled="(disabled)"],
-      [PKG_CHECK_MODULES(FFTW3, fftw3 >= fftw_required_version, [with_fftw="yes"], [with_fftw="no"])])
+AGI_OPT_PKG(ffms2, [build without ffms2 A/V provider [auto]], [Enable FFMS2 support])
 
-AS_IF([test x$with_fftw = xyes], [AC_DEFINE(WITH_FFTW, 1, [Enable fftw support])])
-AC_SUBST(with_fftw)
+AGI_OPT_PKG(libass, [build without libass subtitle provider [auto]], [Enable libass support])
 
-#########################
-# Video / Audio Providers
-#########################
-AC_ARG_WITH(ffms,
-            AS_HELP_STRING([--without-ffms],
-                           [build without ffms2 A/V provider [auto]]))
-
-AS_IF([test x$with_ffms = xno],
-      [ffms_disabled="(disabled)"],
-      [PKG_CHECK_MODULES(FFMS, ffms2 >= ffms_required_version, [with_ffms="yes"], [with_ffms="no"])])
-
-AS_IF([test x$with_ffms = xyes], AC_DEFINE(WITH_FFMPEGSOURCE, 1, [Enable FFMS2 support]))
-AC_SUBST(with_ffms)
-
-###################
-# Subtitle Provider
-###################
-AC_ARG_WITH(libass,
-            AS_HELP_STRING([--without-libass],
-                           [build without libass support [auto]]))
-
-AS_IF([test x$with_libass = xno],
-      [libass_disabled="(disabled)"],
-      [PKG_CHECK_MODULES(LIBASS, libass >= libass_required_version, [with_libass="yes"], [with_libass="no"])])
-
-AS_IF([test x$with_libass = xyes], AC_DEFINE(WITH_LIBASS, 1, [Enable libass support]))
-AC_SUBST(with_libass)
-
-###########
-## Hunspell
-###########
-AC_ARG_WITH(hunspell,
-            AS_HELP_STRING([--without-hunspell],
-                           [build without hunspell support [auto]]))
-
-AS_IF([test x$with_hunspell = xno],
-      [hunspell_disabled="(disabled)"],
-      [PKG_CHECK_MODULES(HUNSPELL, hunspell >= 1.2.0, [with_hunspell="yes"], [with_hunspell="no"])])
-
-AS_IF([test x$with_hunspell = xyes], AC_DEFINE(WITH_HUNSPELL, 1, [Enable Hunspell support.]))
-AC_SUBST(with_hunspell)
+AGI_OPT_PKG(fftw3, [build without fftw support [auto]], [Enable fftw support])
+AGI_OPT_PKG(hunspell, [build without hunspell spell-checking [auto]], [Enable Hunspell support])
 
 ############
 # Automation
@@ -731,7 +659,7 @@ AS_IF([test -z "$with_player_audio"], [
         [test x$with_oss = xyes],                                  [default_player_audio="oss"],
         [test x$with_alsa = xyes],                                 [default_player_audio="alsa"],
         [test x$with_openal = xyes],                               [default_player_audio="openal"],
-        [test x$with_pulseaudio = xyes],                           [default_player_audio="pulseaudio"])],
+        [test x$with_libpulse = xyes],                             [default_player_audio="pulseaudio"])],
   [default_player_audio="$with_player_audio"])
 AC_DEFINE_UNQUOTED([DEFAULT_PLAYER_AUDIO], ["$default_player_audio"], [Default audio player.])
 
@@ -765,7 +693,7 @@ AS_IF([test x"$default_player_audio" = xNONE], AC_MSG_NOTICE([
 ***********************************************************************
 ]))
 
-AS_IF([test x$with_ffms != xyes], [AC_MSG_NOTICE([
+AS_IF([test x$with_ffms2 != xyes], [AC_MSG_NOTICE([
 
 ***********************************************************************
 * No supported video/audio reader interface was found on your system.
@@ -802,15 +730,15 @@ Audio Players
   OpenAL:                $with_openal $openal_disabled
   OSS:                   $with_oss $oss_disabled
   PortAudio:             $with_portaudio $portaudio_disabled
-  PulseAudio:            $with_pulseaudio $pulseaudio_disabled
+  PulseAudio:            $with_libpulse $libpulse_disabled
 
 A/V Providers
-  FFMS2:                 $with_ffms $ffms_disabled
+  FFMS2:                 $with_ffms2 $ffms2_disabled
 
 Subtitle Providers:
   libass                 $with_libass $libass_disabled
 
 Misc Packages
   Hunspell:              $with_hunspell $hunspell_disabled
-  FFTW3:                 $with_fftw $fftw_disabled
+  FFTW3:                 $with_fftw3 $fftw3_disabled
 ])

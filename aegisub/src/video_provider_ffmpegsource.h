@@ -34,7 +34,7 @@
 /// @ingroup video_input ffms
 ///
 
-#ifdef WITH_FFMPEGSOURCE
+#ifdef WITH_FFMS2
 #ifndef AGI_PRE
 #include <vector>
 #endif
@@ -85,4 +85,4 @@ public:
 	/// @return Returns true.
 	bool WantsCaching() const { return true; }
 };
-#endif /* WITH_FFMPEGSOURCE */
+#endif /* WITH_FFMS2 */

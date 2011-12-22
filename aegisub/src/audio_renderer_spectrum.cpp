@@ -39,7 +39,7 @@
 #include "audio_renderer_spectrum.h"
 
 #include "audio_colorscheme.h"
-#ifndef WITH_FFTW
+#ifndef WITH_FFTW3
 #include "fft.h"
 #endif
 #include "include/aegisub/audio_provider.h"
@@ -110,7 +110,7 @@ AudioSpectrumRenderer::AudioSpectrumRenderer(std::string const& color_scheme_nam
 , colors_inactive(new AudioColorScheme(12, color_scheme_name, AudioStyle_Inactive))
 , derivation_size(8)
 , derivation_dist(8)
-#ifdef WITH_FFTW
+#ifdef WITH_FFTW3
 , dft_plan(0)
 , dft_input(0)
 , dft_output(0)
@@ -127,7 +127,7 @@ AudioSpectrumRenderer::~AudioSpectrumRenderer()
 
 void AudioSpectrumRenderer::RecreateCache()
 {
-#ifdef WITH_FFTW
+#ifdef WITH_FFTW3
 	if (dft_plan)
 	{
 		fftw_destroy_plan(dft_plan);
@@ -144,7 +144,7 @@ void AudioSpectrumRenderer::RecreateCache()
 		size_t block_count = (size_t)((provider->GetNumSamples() + (size_t)(1<<derivation_dist) - 1) >> derivation_dist);
 		cache.reset(new AudioSpectrumCache(block_count, this));
 
-#ifdef WITH_FFTW
+#ifdef WITH_FFTW3
 		dft_input = fftw_alloc_real(2<<derivation_size);
 		dft_output = fftw_alloc_complex(2<<derivation_size);
 		dft_plan = fftw_plan_dft_r2c_1d(
@@ -200,7 +200,7 @@ void AudioSpectrumRenderer::FillBlock(size_t block_index, float *block)
 	int64_t first_sample = ((int64_t)block_index) << derivation_dist;
 	provider->GetAudio(&audio_scratch[0], first_sample, 2 << derivation_size);
 
-#ifdef WITH_FFTW
+#ifdef WITH_FFTW3
 	ConvertToFloat(2 << derivation_size, dft_input);
 
 	fftw_execute(dft_plan);

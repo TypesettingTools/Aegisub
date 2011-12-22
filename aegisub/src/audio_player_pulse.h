@@ -34,7 +34,7 @@
 /// @ingroup audio_output
 ///
 
-#ifdef WITH_PULSEAUDIO
+#ifdef WITH_LIBPULSE
 #include <pulse/pulseaudio.h>
 
 #include "include/aegisub/audio_player.h"

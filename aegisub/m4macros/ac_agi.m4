@@ -27,3 +27,16 @@ AC_DEFUN([AC_AGI_LINK],[
   CPPFLAGS="$aegisub_save_CPPFLAGS"
   LIBS="$aegisub_save_LIBS"
 ])
+
+# An optional dependency which requires pkg-config
+# Args: Name, AC_ARG_WITH help string, AC_DEFINE help string
+AC_DEFUN([AGI_OPT_PKG], [
+  m4_define([varname], m4_bpatsubst([$1], [-.*], []))dnl
+  m4_define([upper], m4_translit(varname, [a-z], [A-Z]))dnl
+  AC_ARG_WITH(varname, AS_HELP_STRING([--without-][varname], [$2]))
+  AS_IF([test x$with_]varname[ = xno],
+        varname[_disabled="(disabled)"],
+        [PKG_CHECK_MODULES(upper, $1 >= varname[]_required_version, [with_]varname[="yes"], [with_]varname[="no"])])
+  AS_IF([test x$with_]varname[ = xyes], AC_DEFINE([WITH_]upper, 1, $3))
+  AC_SUBST([with_]varname)
+])

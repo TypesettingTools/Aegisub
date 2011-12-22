@@ -64,7 +64,7 @@
 
 #if !defined(_M_X64) && !defined(_M_IA64)
 # define WITH_AVISYNTH
-# define WITH_FFMPEGSOURCE
+# define WITH_FFMS2
 #endif
 //#define WITH_DIRECTSHOW
 //#define WITH_FFMPEG

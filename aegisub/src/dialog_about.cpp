@@ -75,7 +75,7 @@ AboutScreen::AboutScreen(wxWindow *parent)
 #ifdef WITH_PORTAUDIO
 	libString += "    PortAudio - Copyright (c) Ross Bencina, Phil Burk;\n";
 #endif
-#ifdef WITH_FFMPEGSOURCE
+#ifdef WITH_FFMS2
 	libString += "    FFmpeg - Copyright (c) Fabrice Bellard;\n";
 	libString += "    FFmpegSource - Copyright (c) Fredrik Mellbin;\n";
 #endif

@@ -34,7 +34,7 @@
 /// @ingroup audio_input ffms
 ///
 
-#ifdef WITH_FFMPEGSOURCE
+#ifdef WITH_FFMS2
 #include "include/aegisub/audio_provider.h"
 #include "ffmpegsource_common.h"
 

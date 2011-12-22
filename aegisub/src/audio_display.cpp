@@ -819,7 +819,7 @@ void AudioDisplay::ReloadRenderingSettings()
 		AudioSpectrumRenderer *audio_spectrum_renderer = new AudioSpectrumRenderer(colour_scheme_name);
 
 		int64_t spectrum_quality = OPT_GET("Audio/Renderer/Spectrum/Quality")->GetInt();
-#ifdef WITH_FFTW
+#ifdef WITH_FFTW3
 		// FFTW is so fast we can afford to upgrade quality by two levels
 		spectrum_quality += 2;
 #endif

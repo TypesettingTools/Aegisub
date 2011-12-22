@@ -37,7 +37,7 @@ audio_player_portaudio.o: CXXFLAGS += $(CFLAGS_PORTAUDIO)
 LIBS += $(LIBS_PORTAUDIO)
 endif
 
-ifeq (yes, $(HAVE_PULSEAUDIO))
+ifeq (yes, $(HAVE_LIBPULSE))
 SRC_OPT += audio_player_pulse.cpp
 audio_player_pulse.o: CXXFLAGS += $(CFLAGS_LIBPULSE)
 LIBS += $(LIBS_LIBPULSE)
@@ -57,11 +57,11 @@ endif
 #######################
 # AUDIO / VIDEO SUPPORT
 #######################
-ifeq (yes, $(HAVE_FFMS))
+ifeq (yes, $(HAVE_FFMS2))
 SRC_OPT += audio_provider_ffmpegsource.cpp video_provider_ffmpegsource.cpp ffmpegsource_common.cpp
 audio_provider_ffmpegsource.o video_provider_ffmpegsource.o ffmpegsource_common.o: \
-	CXXFLAGS += $(CFLAGS_FFMS)
-LIBS += $(LIBS_FFMS)
+	CXXFLAGS += $(CFLAGS_FFMS2)
+LIBS += $(LIBS_FFMS2)
 endif
 
 ###########
@@ -95,13 +95,13 @@ endif
 # SOURCE-LEVEL CFLAGS
 #####################
 audio_player.o:                CXXFLAGS += $(CFLAGS_ALSA) $(CFLAGS_PORTAUDIO) $(CFLAGS_LIBPULSE) $(CFLAGS_OPENAL)
-audio_provider.o:              CXXFLAGS += $(CFLAGS_FFMPEGSOURCE)
+audio_provider.o:              CXXFLAGS += $(CFLAGS_FFMS2)
 auto4_base.o:                  CXXFLAGS += $(CFLAGS_FREETYPE)
 charset_detect.o:              CXXFLAGS += -D_X86_
 font_file_lister_fontconfig.o: CXXFLAGS += $(CFLAGS_FONTCONFIG) $(CFLAGS_FREETYPE)
 font_file_lister.o:            CXXFLAGS += $(CFLAGS_FREETYPE)
 text_file_reader.o:            CXXFLAGS += -D_X86_
-video_provider_manager.o:      CXXFLAGS += $(CFLAGS_FFMS)
+video_provider_manager.o:      CXXFLAGS += $(CFLAGS_FFMS2)
 
 
 # Ensure any optional source files above are added for compilation.

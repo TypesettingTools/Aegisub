@@ -36,7 +36,7 @@
 
 #include "config.h"
 
-#ifdef WITH_PULSEAUDIO
+#ifdef WITH_LIBPULSE
 
 #ifndef AGI_PRE
 #include <stdio.h>
@@ -446,4 +446,4 @@ void PulseAudioPlayer::pa_stream_notify(pa_stream *p, PulseAudioPlayer *thread)
 	thread->stream_notify.Post();
 }
 
-#endif // WITH_PULSEAUDIO
+#endif // WITH_LIBPULSE

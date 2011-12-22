@@ -52,7 +52,7 @@
 #ifdef WITH_PORTAUDIO
 #include "audio_player_portaudio.h"
 #endif
-#ifdef WITH_PULSEAUDIO
+#ifdef WITH_LIBPULSE
 #include "audio_player_pulse.h"
 #endif
 #include "compat.h"
@@ -118,7 +118,7 @@ void AudioPlayerFactory::RegisterProviders() {
 #ifdef WITH_PORTAUDIO
 	Register<PortAudioPlayer>("PortAudio");
 #endif
-#ifdef WITH_PULSEAUDIO
+#ifdef WITH_LIBPULSE
 	Register<PulseAudioPlayer>("PulseAudio");
 #endif
 #ifdef WITH_OSS

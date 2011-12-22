@@ -201,7 +201,7 @@
   <!-- FFmpegSource support -->
   <ItemDefinitionGroup Condition="'$(AegisubUseFfms)'=='true'">
     <ClCompile>
-      <PreprocessorDefinitions Condition="'$(AegisubUseConfigWindowsH)'=='false'">WITH_FFMPEGSOURCE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions Condition="'$(AegisubUseConfigWindowsH)'=='false'">WITH_FFMS2;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(FFmpegSourceIncludePath);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
@@ -220,7 +220,7 @@
   <!-- FFTW support -->
 	<ItemDefinitionGroup Condition="'$(AegisubUseFftw)'=='true'">
     <ClCompile>
-      <PreprocessorDefinitions Condition="'$(AegisubUseConfigWindowsH)'=='false'">WITH_FFTW;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions Condition="'$(AegisubUseConfigWindowsH)'=='false'">WITH_FFTW3;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(FftwIncludePath);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
 		<Link>

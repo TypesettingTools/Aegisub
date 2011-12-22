@@ -36,7 +36,7 @@
 
 #include "config.h"
 
-#ifdef WITH_FFMPEGSOURCE
+#ifdef WITH_FFMS2
 
 #ifndef AGI_PRE
 #include <inttypes.h>
@@ -365,6 +365,6 @@ wxThread::ExitCode FFmpegSourceCacheCleaner::Entry() {
 }
 
 
-#endif // WITH_FFMPEGSOURCE
+#endif // WITH_FFMS2
 
 

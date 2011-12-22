@@ -46,7 +46,7 @@
 #endif
 #include "video_provider_cache.h"
 #include "video_provider_dummy.h"
-#ifdef WITH_FFMPEGSOURCE
+#ifdef WITH_FFMS2
 #include "video_provider_ffmpegsource.h"
 #endif
 #include "video_provider_manager.h"
@@ -113,7 +113,7 @@ void VideoProviderFactory::RegisterProviders() {
 #ifdef WITH_AVISYNTH
 	Register<AvisynthVideoProvider>("Avisynth");
 #endif
-#ifdef WITH_FFMPEGSOURCE
+#ifdef WITH_FFMS2
 	Register<FFmpegSourceVideoProvider>("FFmpegSource");
 #endif
 	Register<DummyVideoProvider>("Dummy", true);

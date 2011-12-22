@@ -36,7 +36,7 @@
 
 #include "config.h"
 
-#ifdef WITH_FFMPEGSOURCE
+#ifdef WITH_FFMS2
 
 #ifndef AGI_PRE
 #ifdef WIN32
@@ -236,4 +236,4 @@ void FFmpegSourceAudioProvider::GetAudio(void *Buf, int64_t Start, int64_t Count
 		throw AudioDecodeError(std::string("Failed to get audio samples: ") + ErrInfo.Buffer);
 	}
 }
-#endif /* WITH_FFMPEGSOURCE */
+#endif /* WITH_FFMS2 */

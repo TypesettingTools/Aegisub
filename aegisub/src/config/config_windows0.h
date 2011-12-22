@@ -68,7 +68,7 @@
 
 // Enable ffmpegsource video and audio providers
 // Requires: FFmpegSource2 headers (in repository), loader library and DLL
-//#define WITH_FFMPEGSOURCE
+//#define WITH_FFMS2
 
 
 
@@ -103,7 +103,7 @@
 // FFTW <http://fftw.org/> is a very fast library for computing the discrete fourier transform, but is a bit
 // tricky to get working on Windows, and has the additional problem of being GPL licensed.
 // Enable this option to use FFTW to get faster rendering of the audio spectrogram
-//#define WITH_FFTW
+//#define WITH_FFTW3
 //#pragma comment(lib,libfftw.lib)
 // Specify tags the update checker accepts
 // See <http://devel.aegisub.org/wiki/Technical/UpdateChecker> for details on tags.
@@ -147,7 +147,7 @@
 
 // Enable Pulse Audio audio player
 // Requires libpulse (and a *NIX compatible system and a running sound server to actually use)
-//#define WITH_PULSEAUDIO
+//#define WITH_LIBPULSE
 
 
 // Display trace-level diagnostic messages during startup

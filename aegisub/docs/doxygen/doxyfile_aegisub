@@ -16,7 +16,7 @@ PREDEFINED             +=	\
 							WITH_AVISYNTH \
 							WITH_CSRI \
 							WITH_DIRECTSOUND \
-							WITH_FFMPEGSOURCE \
+							WITH_FFMS2 \
 							WITH_FONTCONFIG \
 							WITH_FREETYPE2 \
 							WITH_HUNSPELL \

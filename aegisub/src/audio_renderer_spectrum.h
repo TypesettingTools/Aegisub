@@ -44,7 +44,7 @@
 
 #include <libaegisub/scoped_ptr.h>
 
-#ifdef WITH_FFTW
+#ifdef WITH_FFTW3
 #include <fftw3.h>
 #endif
 
@@ -101,7 +101,7 @@ class AudioSpectrumRenderer : public AudioRendererBitmapProvider {
 	template<class T>
 	void ConvertToFloat(size_t count, T *dest);
 
-#ifdef WITH_FFTW
+#ifdef WITH_FFTW3
 	/// FFTW plan data
 	fftw_plan dft_plan;
 	/// Pre-allocated input array for FFTW

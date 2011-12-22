@@ -93,11 +93,11 @@ def configure(conf):
     
     wants_ffmpeg = False
     if Options.options.with_provider_video == 'ffmpegsource':
-        conf.define('WITH_FFMPEGSOURCE', 1)
+        conf.define('WITH_FFMS2', 1)
         wants_ffmpeg = True
         
     if Options.options.with_provider_audio == 'ffmpegsource':
-        conf.define('WITH_FFMPEGSOURCE', 1)
+        conf.define('WITH_FFMS2', 1)
         wants_ffmpeg = True
         
     if Options.options.with_provider_subtitle == 'libass':

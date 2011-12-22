@@ -34,7 +34,7 @@
 /// @ingroup video_input audio_input ffms
 ///
 
-#ifdef WITH_FFMPEGSOURCE
+#ifdef WITH_FFMS2
 
 #ifndef AGI_PRE
 #include <map>
@@ -95,5 +95,5 @@ public:
 	wxThread::ExitCode Entry();
 };
 
-#endif /* WITH_FFMPEGSOURCE */
+#endif /* WITH_FFMS2 */
 

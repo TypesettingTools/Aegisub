@@ -36,7 +36,7 @@
 
 #include "config.h"
 
-#ifdef WITH_FFMPEGSOURCE
+#ifdef WITH_FFMS2
 
 #ifndef AGI_PRE
 #ifdef __WINDOWS__
@@ -292,4 +292,4 @@ const AegiVideoFrame FFmpegSourceVideoProvider::GetFrame(int n) {
 	CurFrame.SetTo(SrcFrame->Data[0], Width, Height, SrcFrame->Linesize[0]);
 	return CurFrame;
 }
-#endif /* WITH_FFMPEGSOURCE */
+#endif /* WITH_FFMS2 */

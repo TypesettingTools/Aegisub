@@ -45,7 +45,7 @@
 #include "audio_provider_avs.h"
 #endif
 #include "audio_provider_convert.h"
-#ifdef WITH_FFMPEGSOURCE
+#ifdef WITH_FFMS2
 #include "audio_provider_ffmpegsource.h"
 #endif
 #include "audio_provider_hd.h"
@@ -180,7 +180,7 @@ void AudioProviderFactory::RegisterProviders() {
 #ifdef WITH_AVISYNTH
 	Register<AvisynthAudioProvider>("Avisynth");
 #endif
-#ifdef WITH_FFMPEGSOURCE
+#ifdef WITH_FFMS2
 	Register<FFmpegSourceAudioProvider>("FFmpegSource");
 #endif
 }
