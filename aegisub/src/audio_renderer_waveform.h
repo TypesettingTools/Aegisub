@@ -58,6 +58,9 @@ class AudioWaveformRenderer : public AudioRendererBitmapProvider {
 	/// Pre-allocated buffer for audio fetched from provider
 	char *audio_buffer;
 
+	/// Whether to render max+avg or just max
+	bool render_averages;
+
 	/// Get the color scheme for a rendering style
 	const AudioColorScheme *GetColorScheme(AudioRenderingStyle style) const;
 
@@ -86,4 +89,7 @@ public:
 	///
 	/// Does nothing for waveform renderer, since it does not have a backend cache
 	void AgeCache(size_t max_size) { }
+
+	/// Get a list of waveform rendering modes
+	static wxArrayString GetWaveformStyles();
 };

@@ -48,12 +48,22 @@
 #include "block_cache.h"
 #include "colorspace.h"
 #include "include/aegisub/audio_provider.h"
+#include "main.h"
+
+enum {
+	/// Only render the peaks
+	Waveform_MaxOnly = 0,
+	/// Render the peaks and averages
+	Waveform_MaxAvg,
+	Waveform_Continuous
+};
 
 AudioWaveformRenderer::AudioWaveformRenderer(std::string const& color_scheme_name)
 : colors_normal(new AudioColorScheme(6, color_scheme_name, AudioStyle_Normal))
 , colors_selected(new AudioColorScheme(6, color_scheme_name, AudioStyle_Selected))
 , colors_inactive(new AudioColorScheme(6, color_scheme_name, AudioStyle_Inactive))
 , audio_buffer(0)
+, render_averages(OPT_GET("Audio/Display/Waveform Style")->GetInt() == Waveform_MaxAvg)
 {
 }
 
@@ -123,12 +133,18 @@ void AudioWaveformRenderer::Render(wxBitmap &bmp, int start, AudioRenderingStyle
 
 		dc.SetPen(pen_peaks);
 		dc.DrawLine(x, midpoint - peak_max, x, midpoint - peak_min);
-		dc.SetPen(pen_avgs);
-		dc.DrawLine(x, midpoint - avg_max, x, midpoint - avg_min);
+		if (render_averages) {
+			dc.SetPen(pen_avgs);
+			dc.DrawLine(x, midpoint - avg_max, x, midpoint - avg_min);
+		}
 	}
 
 	// Horizontal zero-point line
-	dc.SetPen(wxPen(pal->get(1.0f)));
+	if (render_averages)
+		dc.SetPen(wxPen(pal->get(1.0f)));
+	else
+		dc.SetPen(pen_peaks);
+
 	dc.DrawLine(0, midpoint, rect.width, midpoint);
 }
 
@@ -172,4 +188,11 @@ const AudioColorScheme *AudioWaveformRenderer::GetColorScheme(AudioRenderingStyl
 		case AudioStyle_Inactive: return colors_inactive.get();
 		default: return colors_normal.get();
 	}
+}
+
+wxArrayString AudioWaveformRenderer::GetWaveformStyles() {
+	wxArrayString ret;
+	ret.push_back(_("Maximum"));
+	ret.push_back(_("Maximum + Average"));
+	return ret;
 }

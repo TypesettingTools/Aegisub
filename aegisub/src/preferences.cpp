@@ -41,6 +41,7 @@
 
 #include "preferences.h"
 
+#include "audio_renderer_waveform.h"
 #include "colour_button.h"
 #include "command/command.h"
 #include "compat.h"
@@ -167,6 +168,8 @@ Audio::Audio(wxTreebook *book, Preferences *parent): OptionPage(book, parent, _(
 	OptionAdd(display, _("Keyframes"), "Audio/Display/Draw/Keyframes in Dialogue Mode");
 	OptionAdd(display, _("Karaoke keyframes"), "Audio/Display/Draw/Keyframes in Karaoke Mode");
 	OptionAdd(display, _("Video position"), "Audio/Display/Draw/Video Position");
+	CellSkip(display);
+	OptionChoice(display, _("Waveform Style"), AudioWaveformRenderer::GetWaveformStyles(), "Audio/Display/Waveform Style");
 
 	wxFlexGridSizer *color = PageSizer(_("Color Schemes"));
 	wxArrayString schemes = vec_to_arrstr(OPT_GET("Audio/Colour Schemes")->GetListString());
