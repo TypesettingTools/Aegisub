@@ -42,6 +42,8 @@
 #include <wx/string.h>
 #endif
 
+#include <libaegisub/vfr.h>
+
 /// DOCME
 /// @class AssTime
 /// @brief DOCME
@@ -87,20 +89,17 @@ AssTime operator - (const AssTime &t1, const AssTime &t2);
 ///
 /// DOCME
 class FractionalTime {
-	int time; ///< Time in miliseconds
-	int num;  ///< Numerator
-	int den;  ///< Denominator
+	agi::vfr::Framerate fps;
 	bool drop; ///< Enable SMPTE dropframe handling
 
 	/// How often to drop frames when enabled
 	static const int frames_per_period = 17982;
 
 public:
-	FractionalTime(int numerator=30, int denominator=1, bool dropframe=false);
+	FractionalTime(agi::vfr::Framerate fps, bool dropframe = false);
 
-	int Numerator() const { return num; }
-	int Denominator() const { return den; }
 	bool IsDrop() const { return drop; }
+	agi::vfr::Framerate const& FPS() const { return fps; }
 
 	/// Convert an AssTime to a SMPTE timecode
 	wxString FromAssTime(AssTime time, char sep=':');

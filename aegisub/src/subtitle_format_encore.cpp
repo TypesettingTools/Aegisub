@@ -54,7 +54,7 @@ wxArrayString EncoreSubtitleFormat::GetWriteWildcards() const {
 
 void EncoreSubtitleFormat::WriteFile(wxString const& filename, wxString const& encoding) {
 	FractionalTime ft = AskForFPS(true);
-	if (ft.Numerator() <= 0 || ft.Denominator() <= 0) return;
+	if (!ft.FPS().IsLoaded()) return;
 
 	TextFileWriter file(filename, encoding);
 

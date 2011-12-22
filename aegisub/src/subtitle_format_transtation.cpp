@@ -61,7 +61,7 @@ wxArrayString TranStationSubtitleFormat::GetWriteWildcards() const {
 
 void TranStationSubtitleFormat::WriteFile(wxString const& filename, wxString const& encoding) {
 	FractionalTime ft = AskForFPS(true);
-	if (ft.Numerator() <= 0 || ft.Denominator() <= 0) return;
+	if (!ft.FPS().IsLoaded()) return;
 
 	TextFileWriter file(filename, encoding);
 
@@ -119,7 +119,7 @@ wxString TranStationSubtitleFormat::ConvertLine(AssDialogue *current, Fractional
 	// start of next one, since the end timestamp is inclusive and the lines
 	// would overlap if left as is.
 	if (nextl_start > 0 && end.GetMS() == nextl_start)
-		end.SetMS(end.GetMS() - ((1000*ft->Denominator())/ft->Numerator()));
+		end.SetMS(ft->FPS().TimeAtFrame(ft->FPS().FrameAtTime(end.GetMS(), agi::vfr::END) - 1, agi::vfr::END));
 
 	wxString header = wxString::Format("SUB[%i%s%s ", valign, halign, type) + ft->FromAssTime(start) + ">" + ft->FromAssTime(end) + "]\r\n";
 

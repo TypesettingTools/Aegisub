@@ -251,20 +251,10 @@ int AssTime::GetTimeMiliseconds() { return (time % 1000); }
 ///
 int AssTime::GetTimeCentiseconds() { return (time % 1000)/10; }
 
-FractionalTime::FractionalTime(int numerator, int denominator, bool dropframe)
-: num(numerator)
-, den(denominator)
+FractionalTime::FractionalTime(agi::vfr::Framerate fps, bool dropframe)
+: fps(fps)
 , drop(dropframe)
 {
-	if (drop) {
-		// no dropframe for any other framerates
-		num = 30000;
-		den = 1001;
-	}
-
-	// fractions < 1 are not welcome here
-	if ((num <= 0 || den <= 0) || (num < den))
-		throw "FractionalTime: nonsensical enumerator or denominator";
 }
 
 wxString FractionalTime::FromAssTime(AssTime time, char sep) {
@@ -273,7 +263,7 @@ wxString FractionalTime::FromAssTime(AssTime time, char sep) {
 
 wxString FractionalTime::FromMillisecs(int64_t msec, char sep) {
 	int h=0, m=0, s=0, f=0; // hours, minutes, seconds, fractions
-	int fn = (msec*(int64_t)num) / (1000*den); // frame number
+	int fn = fps.FrameAtTime(msec);
 
 	// return 00:00:00:00
 	if (msec <= 0) {
@@ -302,7 +292,7 @@ wxString FractionalTime::FromMillisecs(int64_t msec, char sep) {
 
 		DEATH TO SMPTE
 		*/ 
-		int fps_approx = floor((double(num)/double(den))+0.5);
+		int fps_approx = floor(fps.FPS() + 0.5);
 		int frames_per_h = 3600*fps_approx;
 		int frames_per_m = 60*fps_approx;
 		int frames_per_s = fps_approx;

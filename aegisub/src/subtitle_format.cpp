@@ -112,8 +112,6 @@ void SubtitleFormat::AddLine(wxString data, wxString group, int &version, wxStri
 FractionalTime SubtitleFormat::AskForFPS(bool showSMPTE) {
 	wxArrayString choices;
 	bool drop = false;
-	int num;
-	int den;
 	
 	// Video FPS
 	VideoContext *context = VideoContext::Get();
@@ -142,10 +140,12 @@ FractionalTime SubtitleFormat::AskForFPS(bool showSMPTE) {
 	choices.Add(_("119.880 FPS (NTSC x4)"));
 	choices.Add(_("120.000 FPS"));
 
+	using agi::vfr::Framerate;
+	Framerate fps;
 	// Ask
 	int choice = wxGetSingleChoiceIndex(_("Please choose the appropriate FPS for the subtitles:"), _("FPS"), choices);
 	if (choice == -1)
-		return FractionalTime(0, 0);
+		return FractionalTime(fps);
 
 	// Get FPS from choice
 	if (vidLoaded) choice--;
@@ -153,22 +153,22 @@ FractionalTime SubtitleFormat::AskForFPS(bool showSMPTE) {
 	if (!showSMPTE && choice > 4) ++choice;
 
 	switch (choice) {
-		case -1: num = -1;     den = 1;                 break; // VIDEO
-		case 0:  num = 15;     den = 1;                 break;
-		case 1:  num = 24000;  den = 1001;              break;
-		case 2:  num = 24;     den = 1;                 break;
-		case 3:  num = 25;     den = 1;                 break;
-		case 4:  num = 30000;  den = 1001;              break;
-		case 5:  num = 30000;  den = 1001; drop = true; break;
-		case 6:  num = 30;     den = 1;                 break;
-		case 7:  num = 50;     den = 1;                 break;
-		case 8:  num = 60000;  den = 1001;              break;
-		case 9:  num = 60;     den = 1;                 break;
-		case 10: num = 120000; den = 1001;              break;
-		case 11: num = 120;    den = 1;                 break;
+		case -1: fps = context->FPS();                      break; // VIDEO
+		case 0:  fps = Framerate(15, 1);                    break;
+		case 1:  fps = Framerate(24000, 1001);              break;
+		case 2:  fps = Framerate(24, 1);                    break;
+		case 3:  fps = Framerate(25, 1);                    break;
+		case 4:  fps = Framerate(30000, 1001);              break;
+		case 5:  fps = Framerate(30000, 1001); drop = true; break;
+		case 6:  fps = Framerate(30, 1);                    break;
+		case 7:  fps = Framerate(50, 1);                    break;
+		case 8:  fps = Framerate(60000, 1001);              break;
+		case 9:  fps = Framerate(60, 1);                    break;
+		case 10: fps = Framerate(120000, 1001);             break;
+		case 11: fps = Framerate(120, 1);                   break;
 	}
 
-	return FractionalTime(num, den, drop);
+	return FractionalTime(fps, drop);
 }
 
 void SubtitleFormat::SortLines() {
