@@ -226,32 +226,28 @@ void DialogAttachments::OnAttachGraphics(wxCommandEvent &) {
 }
 
 void DialogAttachments::OnExtract(wxCommandEvent &) {
-	// Check if there's a selection
 	int i = listView->GetFirstSelected();
+	if (i == -1) return;
 
-	// Get path
-	if (i != -1) {
-		wxString path;
-		bool fullPath = false;
+	wxString path;
+	bool fullPath = false;
 
-		// Multiple or single?
-		if (listView->GetNextSelected(i) != -1) path = wxDirSelector(_("Select the path to save the files to:"),lagi_wxString(OPT_GET("Path/Fonts Collector Destination")->GetString())) + "/";
-		else {
-			// Default path
-			wxString defPath = ((AssAttachment*) wxUIntToPtr(listView->GetItemData(i)))->GetFileName();
-			path = wxFileSelector(_("Select the path to save the file to:"),lagi_wxString(OPT_GET("Path/Fonts Collector Destination")->GetString()),defPath);
-			fullPath = true;
-		}
-		if (path.IsEmpty()) return;
+	// Multiple or single?
+	if (listView->GetNextSelected(i) != -1)
+		path = wxDirSelector(_("Select the path to save the files to:"),lagi_wxString(OPT_GET("Path/Fonts Collector Destination")->GetString())) + "/";
+	else {
+		// Default path
+		wxString defPath = ((AssAttachment*)wxUIntToPtr(listView->GetItemData(i)))->GetFileName();
+		path = wxFileSelector(_("Select the path to save the file to:"),lagi_wxString(OPT_GET("Path/Fonts Collector Destination")->GetString()),defPath);
+		fullPath = true;
+	}
+	if (!path) return;
 
-		// Loop through items in list
-		while (i != -1) {
-			AssAttachment *attach = (AssAttachment*) wxUIntToPtr(listView->GetItemData(i));
-			wxString filename = path;
-			if (!fullPath) filename += attach->GetFileName();
-			attach->Extract(filename);
-			i = listView->GetNextSelected(i);
-		}
+	// Loop through items in list
+	while (i != -1) {
+		AssAttachment *attach = (AssAttachment*)wxUIntToPtr(listView->GetItemData(i));
+		attach->Extract(fullPath ? path : path + attach->GetFileName());
+		i = listView->GetNextSelected(i);
 	}
 }
 
@@ -266,6 +262,8 @@ void DialogAttachments::OnDelete(wxCommandEvent &) {
 	ass->Commit(_("remove attachment"), AssFile::COMMIT_ATTACHMENT);
 
 	UpdateList();
+	extractButton->Enable(false);
+	deleteButton->Enable(false);
 }
 
 void DialogAttachments::OnListClick(wxListEvent &) {
