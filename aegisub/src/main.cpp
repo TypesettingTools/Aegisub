@@ -443,7 +443,7 @@ StackWalker::StackWalker(wxString cause) {
 
 		crash_text->Write(wxString::Format("--- %s ------------------\n", time.FormatISOCombined()));
 		crash_text->Write(wxString::Format("VER - %s\n", GetAegisubLongVersionString()));
-		crash_text->Write(wxString::Format("FTL - Begining stack dump for \"%s\":\n", cause));
+		crash_text->Write(wxString::Format("FTL - Beginning stack dump for \"%s\":\n", cause));
 
 		crash_xml->Write(                 "<crash>\n");
 		crash_xml->Write(                 "  <info>\n");
@@ -472,7 +472,7 @@ void StackWalker::OnStackFrame(const wxStackFrame &frame) {
 		crash_xml->Write(wxString::Format("    <frame id='%i' loc='%X'>\n", frame.GetLevel(), frame.GetAddress()));
 		crash_xml->Write(wxString::Format("      <name>%s</name>\n", frame.GetName()));
 		if (frame.HasSourceLocation())
-		crash_xml->Write(wxString::Format("      <file line='%d'>%s</file>>%s</name>\n", frame.GetLine(), frame.GetFileName()));
+		crash_xml->Write(wxString::Format("      <file line='%d'>%s</file>%s</name>\n", frame.GetLine(), frame.GetFileName()));
 		crash_xml->Write(wxString::Format("      <module><![CDATA[%s]]></module>\n", frame.GetModule()));
 		crash_xml->Write(                 "    </frame>\n");
 	}
