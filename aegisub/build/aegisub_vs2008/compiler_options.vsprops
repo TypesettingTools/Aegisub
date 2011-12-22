@@ -9,6 +9,7 @@
 		Optimization="1"
 		EnableIntrinsicFunctions="true"
 		FavorSizeOrSpeed="2"
+		AdditionalIncludeDirectories="&quot;$(ProjectDir)../../src/include/&quot;"
 		RuntimeLibrary="2"
 		OpenMP="true"
 		WarningLevel="3"
