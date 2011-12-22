@@ -65,6 +65,7 @@
 #include "include/aegisub/context.h"
 #include "main.h"
 #include "selection_controller.h"
+#include "standard_paths.h"
 #include "video_context.h"
 #include "utils.h"
 
@@ -262,6 +263,7 @@ namespace Automation4 {
 			set_field(L, "ms_from_frame", LuaMsFromFrame);
 			set_field(L, "video_size", LuaVideoSize);
 			set_field(L, "keyframes", LuaGetKeyframes);
+			set_field(L, "decode_path", LuaDecodePath);
 			set_field(L, "lua_automation_version", 4);
 
 			// store aegisub table to globals
@@ -508,6 +510,15 @@ namespace Automation4 {
 			lua_rawseti(L, -2, i);
 		}
 
+		return 1;
+	}
+
+	int LuaScript::LuaDecodePath(lua_State *L)
+	{
+		const agi::Context *c = get_context(L);
+		wxString path = check_wxstring(L, 1);
+		lua_pop(L, 1);
+		lua_pushstring(L, StandardPaths::DecodePath(path).utf8_str());
 		return 1;
 	}
 
