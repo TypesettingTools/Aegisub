@@ -11,8 +11,11 @@ Author: Terry Caton
 #include "elements.h"
 #include "visitor.h"
 
-namespace json
-{
+#ifndef LAGI_PRE
+#include <ostream>
+#endif
+
+namespace json {
 
 class Writer : private ConstVisitor {
 	Writer(std::ostream& ostr);
@@ -44,6 +47,11 @@ public:
 		ostr.flush(); // all done
 	}
 };
+
+inline std::ostream& operator <<(std::ostream& ostr, UnknownElement const& elementRoot) {
+    Writer::Write(elementRoot, ostr);
+    return ostr;
+}
 
 
 } // End namespace
