@@ -42,120 +42,113 @@
 #endif
 
 #include <libaegisub/background_runner.h>
+#include <libaegisub/io.h>
 
 #include "audio_provider_hd.h"
 
+#include "audio_provider_pcm.h"
 #include "compat.h"
 #include "main.h"
 #include "standard_paths.h"
 #include "utils.h"
 
-HDAudioProvider::HDAudioProvider(AudioProvider *src, agi::BackgroundRunner *br) {
-	std::auto_ptr<AudioProvider> source(src);
-	// Copy parameters
-	bytes_per_sample = source->GetBytesPerSample();
-	num_samples = source->GetNumSamples();
-	channels = source->GetChannels();
-	sample_rate = source->GetSampleRate();
-	filename = source->GetFilename();
-	samples_native_endian = source->AreSamplesNativeEndian();
-
-	// Check free space
-	wxLongLong freespace;
-	if (wxGetDiskSpace(DiskCachePath(), NULL, &freespace)) {
-		if (num_samples * channels * bytes_per_sample > freespace) {
-			throw AudioOpenError("Not enough free disk space in " + STD_STR(DiskCachePath()) + " to cache the audio");
-		}
-	}
-
-	// Open output file
-	diskCacheFilename = DiskCacheName();
-	file_cache.Create(diskCacheFilename,true,wxS_DEFAULT);
-	file_cache.Open(diskCacheFilename,wxFile::read_write);
-	if (!file_cache.IsOpened()) throw AudioOpenError("Unable to write to audio disk cache.");
-
-	br->Run(bind(&HDAudioProvider::FillCache, this, src, std::tr1::placeholders::_1));
-}
-
-HDAudioProvider::~HDAudioProvider() {
-	file_cache.Close();
-	wxRemoveFile(diskCacheFilename);
-	delete[] data;
-}
-
-void HDAudioProvider::FillCache(AudioProvider *src, agi::ProgressSink *ps) {
-	ps->SetMessage(STD_STR(_("Reading to Hard Disk cache")));
-
-	int64_t block = 4096;
-	data = new char[block * channels * bytes_per_sample];
-	for (int64_t i = 0; i < num_samples; i += block) {
-		block = std::min(block, num_samples - i);
-		src->GetAudio(data, i, block);
-		file_cache.Write(data, block * channels * bytes_per_sample);
-		ps->SetProgress(i, num_samples);
-
-		if (ps->IsCancelled()) {
-			file_cache.Close();
-			wxRemoveFile(diskCacheFilename);
-			delete[] data;
-		}
-	}
-	file_cache.Seek(0);
-}
-
-void HDAudioProvider::GetAudio(void *buf, int64_t start, int64_t count) const {
-	// Requested beyond the length of audio
-	if (start+count > num_samples) {
-		int64_t oldcount = count;
-		count = num_samples-start;
-		if (count < 0) count = 0;
-
-		// Fill beyond with zero
-		if (bytes_per_sample == 1) {
-			char *temp = (char *) buf;
-			for (int i=count;i<oldcount;i++) {
-				temp[i] = 0;
-			}
-		}
-		if (bytes_per_sample == 2) {
-			short *temp = (short *) buf;
-			for (int i=count;i<oldcount;i++) {
-				temp[i] = 0;
-			}
-		}
-	}
-
-	if (count) {
-		wxMutexLocker disklock(diskmutex);
-		file_cache.Seek(start*bytes_per_sample);
-		file_cache.Read((char*)buf,count*bytes_per_sample*channels);
-	}
-}
-
-/// @brief Get disk cache path 
-/// @return 
-///
-wxString HDAudioProvider::DiskCachePath() {
-	// Default
+namespace {
+wxString cache_dir() {
 	wxString path = lagi_wxString(OPT_GET("Audio/Cache/HD/Location")->GetString());
-	if (path == "default") return StandardPaths::DecodePath("?temp/");
-
-	// Specified
-	return DecodeRelativePath(path,StandardPaths::DecodePath("?user/"));
+	if (path == "default")
+		return StandardPaths::DecodePath("?temp/");
+	return DecodeRelativePath(path, StandardPaths::DecodePath("?user/"));
 }
 
-/// @brief Get disk cache filename 
-///
-wxString HDAudioProvider::DiskCacheName() {
-	// Get pattern
+wxString cache_path() {
 	wxString pattern = lagi_wxString(OPT_GET("Audio/Cache/HD/Name")->GetString());
 	if (pattern.Find("%02i") == wxNOT_FOUND) pattern = "audio%02i.tmp";
-	
+
 	// Try from 00 to 99
 	for (int i=0;i<100;i++) {
 		// File exists?
-		wxString curStringTry = DiskCachePath() + wxString::Format(pattern,i);
-		if (!wxFile::Exists(curStringTry)) return curStringTry;
+		wxString curStringTry = cache_dir() + wxString::Format(pattern,i);
+		if (!wxFile::Exists(curStringTry))
+			return curStringTry;
 	}
 	return "";
+}
+
+/// A PCM audio provider for raw dumps with no header
+class RawAudioProvider : public PCMAudioProvider {
+public:
+	RawAudioProvider(wxString const& cache_filename, AudioProvider *src)
+	: PCMAudioProvider(cache_filename)
+	{
+		bytes_per_sample = src->GetBytesPerSample();
+		num_samples      = src->GetNumSamples();
+		channels         = src->GetChannels();
+		sample_rate      = src->GetSampleRate();
+		filename         = src->GetFilename();
+
+		IndexPoint p = { 0, 0, num_samples };
+		index_points.push_back(p);
+	}
+
+	bool AreSamplesNativeEndian() const { return true; }
+};
+
+}
+
+HDAudioProvider::HDAudioProvider(AudioProvider *src, agi::BackgroundRunner *br) {
+	agi::scoped_ptr<AudioProvider> source(src);
+	assert(src->AreSamplesNativeEndian()); // Byteswapping should be done before caching
+
+	// Check free space
+	wxDiskspaceSize_t freespace;
+	if (wxGetDiskSpace(cache_dir(), 0, &freespace)) {
+		if (num_samples * channels * bytes_per_sample > freespace)
+			throw AudioOpenError("Not enough free disk space in " + STD_STR(cache_dir()) + " to cache the audio");
+	}
+
+	bytes_per_sample = source->GetBytesPerSample();
+	num_samples      = source->GetNumSamples();
+	channels         = source->GetChannels();
+	sample_rate      = source->GetSampleRate();
+	filename         = source->GetFilename();
+
+	diskCacheFilename = cache_path();
+
+	try {
+		{
+			agi::io::Save out(STD_STR(diskCacheFilename), true);
+			br->Run(bind(&HDAudioProvider::FillCache, this, src, &out.Get(), std::tr1::placeholders::_1));
+		}
+		cache_provider.reset(new RawAudioProvider(diskCacheFilename, src));
+	}
+	catch (...) {
+		wxRemoveFile(diskCacheFilename);
+		throw;
+	}
+}
+
+HDAudioProvider::~HDAudioProvider() {
+	cache_provider.reset(); // explicitly close the file so we can delete it
+	wxRemoveFile(diskCacheFilename);
+}
+
+void HDAudioProvider::GetAudio(void *buf, int64_t start, int64_t count) const {
+	cache_provider->GetAudio(buf, start, count);
+}
+
+void HDAudioProvider::FillCache(AudioProvider *src, std::ofstream *out, agi::ProgressSink *ps) {
+	ps->SetMessage(STD_STR(_("Reading to Hard Disk cache")));
+
+	int64_t block = 65536;
+	std::vector<char> read_buf;
+	read_buf.resize(block * channels * bytes_per_sample);
+
+	for (int64_t i = 0; i < num_samples; i += block) {
+		block = std::min(block, num_samples - i);
+		src->GetAudio(&read_buf[0], i, block);
+		out->write(&read_buf[0], block * channels * bytes_per_sample);
+		ps->SetProgress(i, num_samples);
+
+		if (ps->IsCancelled()) return;
+	}
 }

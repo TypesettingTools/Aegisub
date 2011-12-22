@@ -35,11 +35,12 @@
 ///
 
 #ifndef AGI_PRE
-#include <wx/file.h>
-#include <wx/thread.h>
+#include <iosfwd>
 #endif
 
 #include "include/aegisub/audio_provider.h"
+
+#include <libaegisub/scoped_ptr.h>
 
 namespace agi {
 	class BackgroundRunner;
@@ -52,31 +53,22 @@ namespace agi {
 ///
 /// DOCME
 class HDAudioProvider : public AudioProvider {
-	/// DOCME
-	mutable wxMutex diskmutex;
-
-	/// DOCME
-	mutable wxFile file_cache;
-
-	/// DOCME
+	/// Name of the file which the decoded audio is written to
 	wxString diskCacheFilename;
+	/// Audio provider which reads from the decoded cache
+	agi::scoped_ptr<AudioProvider> cache_provider;
 
-	/// DOCME
-	bool samples_native_endian;
-
-	/// DOCME
-	char *data;
-
-	static wxString DiskCachePath();
-	static wxString DiskCacheName();
-
-	void FillCache(AudioProvider *src, agi::ProgressSink *ps);
+	/// Fill the cache with all of the data from the source audio provider
+	/// @param src Audio data to cache
+	/// @param file File to write to
+	/// @param ps Sink for progress reporting
+	void FillCache(AudioProvider *src, std::ofstream *file, agi::ProgressSink *ps);
 
 public:
 	HDAudioProvider(AudioProvider *source, agi::BackgroundRunner *br);
 	~HDAudioProvider();
 
-	bool AreSamplesNativeEndian() const { return samples_native_endian; }
+	bool AreSamplesNativeEndian() const { return true; }
 
 	void GetAudio(void *buf, int64_t start, int64_t count) const;
 };
