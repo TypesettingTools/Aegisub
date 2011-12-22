@@ -66,11 +66,11 @@ void DummyAudioProvider::GetAudio(void *buf, int64_t, int64_t count) const {
 	short *workbuf = (short*)buf;
 
 	if (noise) {
-		while (--count > 0)
+		while (count-- > 0)
 			*workbuf++ = (rand() - RAND_MAX/2) * 10000 / RAND_MAX;
 	}
 	else {
-		while (--count > 0)
+		while (count-- > 0)
 			*workbuf++ = 0;
 	}
 }
