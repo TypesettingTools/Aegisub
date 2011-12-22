@@ -140,7 +140,7 @@ template <typename ElementTypeT>
 ElementTypeT const& UnknownElement::CastTo() const
 {
    CastVisitor<const ElementTypeT> castVisitor;
-   m_pImp->Accept(castVisitor);
+   Accept(castVisitor);
    if (!castVisitor.element)
       throw Exception("Bad cast");
    return *castVisitor.element;
