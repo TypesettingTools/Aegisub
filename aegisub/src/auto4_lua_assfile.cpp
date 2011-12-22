@@ -553,7 +553,7 @@ namespace Automation4 {
 		for (int i = 1; i <= n; i++) {
 			lua_pushvalue(L, i);
 			AssEntry *e = LuaToAssEntry(L);
-			modification_type |= modification_mask(*last_entry_ptr);
+			modification_type |= modification_mask(e);
 
 			// Find the appropriate place to put it
 			std::list<AssEntry*>::iterator it = lines.end();
