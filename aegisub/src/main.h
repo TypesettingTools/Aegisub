@@ -136,7 +136,7 @@ public:
 #endif
 };
 
-DECLARE_APP(AegisubApp)
+wxDECLARE_APP(AegisubApp);
 
 
 #if wxUSE_STACKWALKER == 1
