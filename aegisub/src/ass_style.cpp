@@ -226,7 +226,7 @@ AssStyle::AssStyle(wxString rawData,int version) {
 
 	name = get_next_string(tkn).Trim(true).Trim(false);
 	font = get_next_string(tkn).Trim(true).Trim(false);
-	fontsize = get_next_int(tkn);
+	fontsize = get_next_double(tkn);
 
 	if (version != 0) {
 		primary.Parse(get_next_string(tkn));
