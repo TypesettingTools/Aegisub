@@ -61,11 +61,6 @@ AS_CASE([$host],
         [*-*-bsd*],    [build_bsd="yes"],
         [build_default="yes"])
 
-AS_IF([test "$build_bsd" = "yes"], [
-  ICONV_CFLAGS="-I/usr/local/include"
-  ICONV_LIBS="-L/usr/local/lib -liconv"
-])
-
 # Used for universalchardet.
 AC_AGI_MDCPUCFG($host)
 
