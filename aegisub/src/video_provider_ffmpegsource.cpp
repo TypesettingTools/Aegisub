@@ -309,7 +309,9 @@ const AegiVideoFrame FFmpegSourceVideoProvider::GetFrame(int _n) {
 	// decode frame
 	const FFMS_Frame *SrcFrame = FFMS_GetFrame(VideoSource, n, &ErrInfo);
 	if (SrcFrame == NULL) {
-		ErrorMsg.Append(wxString::Format(_T("Failed to retrieve frame: %s"), ErrInfo.Buffer));
+		wxString reason_str(ErrInfo.Buffer, wxConvUTF8, ErrInfo.BufferSize);
+		if (ErrInfo.BufferSize > 0) reason_str.Prepend(_T(": "));
+		ErrorMsg.Append(wxString::Format(_T("Failed to retrieve frame, error %d.%d%s"), ErrInfo.ErrorType, ErrInfo.SubType, reason_str.c_str()));
 		throw ErrorMsg;
 	}
 
