@@ -199,6 +199,9 @@ void FFmpegSourceVideoProvider::LoadVideo(wxString filename) {
 
 	//number of threads automatically determined by ffms2 if given a value < 1
 	int Threads = Options.AsInt(_T("FFmpegSource threads"));
+	// hack: multithreading tends to fail on avi files, to force those to use a single thread
+	if (filename.EndsWith(_T(".avi")))
+		Threads = 1;
 
 	// set seekmode
 	// TODO: give this its own option?
