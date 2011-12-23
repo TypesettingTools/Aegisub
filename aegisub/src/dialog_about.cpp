@@ -99,7 +99,7 @@ AboutScreen::AboutScreen(wxWindow *parent)
 #endif
 	libString += "    MyThes - Copyright (c) Kevin B. Hendricks, Stratford, Ontario, Canada.\n";
 #ifdef WITH_FFTW3
-	libString += "    FFTW - Copyright (c) Matteo Frigo, Massachusetts Institute of Technology;\n"
+	libString += "    FFTW - Copyright (c) Matteo Frigo, Massachusetts Institute of Technology;\n";
 #endif
 
 	wxString translatorCredit = _("Translated into LANGUAGE by PERSON\n");
