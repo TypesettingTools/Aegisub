@@ -590,22 +590,23 @@ AM_CONDITIONAL([HAVE_OPENAL], [test "$with_openal" != "no"])
 AC_ARG_WITH(oss,[  --without-oss           build without OSS audio provider.
                           (default: auto)],[],[with_oss="auto";oss_disabled="(autodetected)"])
 
+found_oss="no"
 AS_IF([test "x$with_oss" != "xno"],[
   AS_IF([test -f "/etc/oss.conf"],[
     . /etc/oss.conf
     CPPFLAGS="$CPPFLAGS -I${OSSLIBDIR}/include/sys"
   ],[])
   AC_CHECK_HEADERS([soundcard.h sys/soundcard.h], [
-    with_oss="yes"
-  ], [
-    AS_IF([test "x$with_oss" != "xauto"],[
-      AC_MSG_FAILURE([OSS support was specified as required, but was not detected.])
-    ],[])
-    with_oss="no"
+    found_oss="yes"
   ])
 ],[
   oss_disabled="(disabled)"
 ])
+
+AS_IF([test "x$found_oss" != "xyes" && test "x$with_oss" = "xyes"],[
+  AC_MSG_FAILURE([OSS support was specified as required, but was not detected.])
+],[])
+with_oss="$found_oss"
 
 AS_IF([test "x$with_oss" != "xno"],[
   AC_DEFINE(WITH_OSS, 1, [Enable OSS support])
@@ -816,7 +817,7 @@ int main() {
   AS_IF([test "x$agi_cv_with_lua50" = "xyes"],[
     with_auto3="yes"
     with_automation="yes"
-    AC_DEFINE(WITH_AUTO3, 1, [Enable Automation (auto3, DEPRECIATED!), requires lua 5.0])
+    AC_DEFINE(WITH_AUTO3, 1, [Enable Automation (auto3, DEPRECATED!), requires lua 5.0])
   ],[
     AS_IF([test "x$with_lua50" != "xauto"],[
       AC_MSG_FAILURE([Lua 5.0 support was specified as required, but was not detected.])
@@ -1033,7 +1034,7 @@ fi
 
 AC_MSG_CHECKING([whether to use precompiled headers])
 AC_ARG_ENABLE(gcc-prec, [  --enable-gcc-prec       enable GCC precompiled headers (default=auto)],[],[enable_gcc_prec="auto"])
-if test "x$enable_gcc_prec" != "no"; then
+if test "x$enable_gcc_prec" != "xno"; then
   enable_gcc_prec="yes"
   AC_MSG_RESULT([yes])
 else
