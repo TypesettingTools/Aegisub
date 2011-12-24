@@ -241,8 +241,6 @@ void DirectSoundPlayer2Thread::Run()
 	bfr7->Release();
 	bfr7 = 0;
 
-	//wxLogDebug(_T("DirectSoundPlayer2: Created buffer of %d bytes, supposed to be %d milliseconds or %d frames"), bufSize, WANTED_LATENCY*BUFFER_LENGTH, bufSize/provider->GetBytesPerSample());
-
 
 	// Now we're ready to roll!
 	SetEvent(thread_running);
@@ -292,7 +290,6 @@ void DirectSoundPlayer2Thread::Run()
 						if (SUCCEEDED(bfr->Restore()) &&
 							SUCCEEDED(bfr->Lock(buffer_offset, 0, &buf, &buf_size, 0, 0, DSBLOCK_ENTIREBUFFER)))
 						{
-							//wxLogDebug(_T("DirectSoundPlayer2: Lost and restored buffer"));
 							break;
 						}
 

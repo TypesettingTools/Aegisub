@@ -759,7 +759,6 @@ namespace Automation4 {
 	{
 		LuaAssFile *laf = GetObjPointer(L, 1);
 		delete laf;
-		wxLogDebug(_T(">>gc<< Garbage collected LuaAssFile"));
 		return 0;
 	}
 

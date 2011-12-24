@@ -70,7 +70,6 @@ namespace Automation4 {
 
 	// LuaStackcheck
 
-//#ifdef _DEBUG
 #if 0
 	struct LuaStackcheck {
 		lua_State *L;

@@ -339,7 +339,6 @@ public:
 
 	void Age()
 	{
-		wxLogDebug(_T("AudioSpectrumCacheManager stats: hits=%u, misses=%u, misses%%=%f, managed lines=%u (max=%u)"), cache_hits, cache_misses, cache_misses/float(cache_hits+cache_misses)*100, cache_root->GetManagedLineCount(), max_lines_cached);
 
 		// 0 means no limit
 		if (max_lines_cached == 0)
@@ -363,7 +362,6 @@ public:
 		// Find the point where we have too many lines cached
 		while (cumulative_lines < max_lines_cached) {
 			if (it == ages.rend()) {
-				wxLogDebug(_T("AudioSpectrumCacheManager done aging did not exceed max_lines_cached"));
 				return;
 			}
 			cumulative_lines += it->num_lines;
@@ -378,7 +376,6 @@ public:
 			cache_root->KillLine(it->first_line);
 		}
 
-		wxLogDebug(_T("AudioSpectrumCacheManager done aging, managed lines now=%u (max=%u)"), cache_root->GetManagedLineCount(), max_lines_cached);
 		assert(cache_root->GetManagedLineCount() < max_lines_cached);
 	}
 

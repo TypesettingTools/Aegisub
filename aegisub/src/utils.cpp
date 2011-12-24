@@ -442,7 +442,6 @@ void RestartAegisub() {
 	char *support_path = OSX_GetBundleSupportFilesDirectory();
 	if (!bundle_path || !support_path) return; // oops
 	wxString exec = wxString::Format(_T("\"%s/MacOS/restart-helper\" /usr/bin/open -n \"%s\"'"), wxString(support_path, wxConvUTF8).c_str(), wxString(bundle_path, wxConvUTF8).c_str());
-	wxLogDebug("RestartAegisub: (%s)", exec);
 	wxExecute(exec);
 	free(bundle_path);
 	free(support_path);

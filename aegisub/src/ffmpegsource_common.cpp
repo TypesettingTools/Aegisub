@@ -232,24 +232,19 @@ wxString FFmpegSourceProvider::GetCacheFilename(const wxString& filename)
 /////////////////////
 // fire and forget cleaning thread (well, almost)
 bool FFmpegSourceProvider::CleanCache() {
-	wxLogDebug(_T("FFmpegSourceCacheCleaner: attempting to start thread"));
-
 	FFmpegSourceCacheCleaner *CleaningThread = new FFmpegSourceCacheCleaner(this);
 
 	if (CleaningThread->Create() != wxTHREAD_NO_ERROR) {
-		wxLogDebug(_T("FFmpegSourceCacheCleaner: thread creation failed"));
 		delete CleaningThread;
 		CleaningThread = NULL;
 		return false;
 	}
 	if (CleaningThread->Run() != wxTHREAD_NO_ERROR) {
-		wxLogDebug(_T("FFmpegSourceCacheCleaner: failed to start thread"));
 		delete CleaningThread;
 		CleaningThread = NULL;
 		return false;
 	}
 
-	wxLogDebug(_T("FFmpegSourceCacheCleaner: thread started successfully"));
 	return true;
 }
 
@@ -265,14 +260,12 @@ FFmpegSourceCacheCleaner::FFmpegSourceCacheCleaner(FFmpegSourceProvider *par) : 
 wxThread::ExitCode FFmpegSourceCacheCleaner::Entry() {
 	wxMutexLocker lock(FFmpegSourceProvider::CleaningInProgress);
 	if (!lock.IsOk()) {
-		wxLogDebug(_T("FFmpegSourceCacheCleaner: cleaning already in progress, thread exiting"));
 		return (wxThread::ExitCode)1;
 	}
 
 	wxString cachedirname = StandardPaths::DecodePath(_T("?user/ffms2cache/"));
 	wxDir cachedir;
 	if (!cachedir.Open(cachedirname)) {
-		wxLogDebug(_T("FFmpegSourceCacheCleaner: couldn't open cache directory %s"), cachedirname.c_str());
 		return (wxThread::ExitCode)1;
 	}
 
@@ -286,7 +279,6 @@ wxThread::ExitCode FFmpegSourceCacheCleaner::Entry() {
 	int maxfiles	= Options.AsInt(_T("FFmpegSource max cache files"));
 
 	if (!cachedir.HasFiles(_T("*.ffindex"))) {
-		wxLogDebug(_T("FFmpegSourceCacheCleaner: no index files in cache folder, exiting"));
 		return (wxThread::ExitCode)0;
 	}
 	
@@ -300,7 +292,6 @@ wxThread::ExitCode FFmpegSourceCacheCleaner::Entry() {
 	// unusually paranoid sanity check
 	// (someone might have deleted the file(s) after we did HasFiles() above; does wxDir.Open() lock the dir?)
 	if (!cachedir.GetFirst(&curfn_str, _T("*.ffindex"), wxDIR_FILES)) {
-		wxLogDebug(_T("FFmpegSourceCacheCleaner: insanity/race condition/index dir fuckery detected, exiting"));
 		return (wxThread::ExitCode)1;
 	}
 
@@ -320,8 +311,6 @@ wxThread::ExitCode FFmpegSourceCacheCleaner::Entry() {
 	}
 
 	if (numfiles <= maxfiles && cursize <= maxsize) {
-		wxLogDebug(_T("FFmpegSourceCacheCleaner: cache does not need cleaning (maxsize=%d, cursize=%d; maxfiles=%d, numfiles=%d), exiting"),
-			(int)maxsize, (int)cursize, maxfiles, numfiles);
 		return (wxThread::ExitCode)0;
 	}
 
@@ -332,7 +321,6 @@ wxThread::ExitCode FFmpegSourceCacheCleaner::Entry() {
 		
 		int64_t fsize = i->second.GetSize().GetValue();
 		if (!wxRemoveFile(i->second.GetFullPath())) {
-			wxLogDebug(_T("FFmpegSourceCacheCleaner: failed to remove file %s"),i->second.GetFullPath().c_str());
 			continue;
 		}
 		cursize -= fsize;
@@ -341,9 +329,6 @@ wxThread::ExitCode FFmpegSourceCacheCleaner::Entry() {
 
 		wxThread::This()->Sleep(250);
 	}
-
-	wxLogDebug(_T("FFmpegSourceCacheCleaner: deleted %d files"), deleted);
-	wxLogDebug(_T("FFmpegSourceCacheCleaner: done, exiting"));
 
 	return (wxThread::ExitCode)0;
 }

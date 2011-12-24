@@ -120,8 +120,6 @@ namespace Automation4 {
 			hint = _T("");
 		}
 		lua_pop(L, 1);
-
-		wxLogDebug(_T("created control: '%s', (%d,%d)(%d,%d), '%s'"), name.c_str(), x, y, width, height, hint.c_str());
 	}
 
 	namespace LuaControl {
@@ -570,7 +568,6 @@ nospin:
 	LuaConfigDialog::LuaConfigDialog(lua_State *L, bool include_buttons)
 		: use_buttons(include_buttons)
 	{
-		wxLogDebug(_T("creating LuaConfigDialog, this addr is %p"), this);
 		button_pushed = 0;
 		if (include_buttons) {
 
@@ -676,13 +673,10 @@ badcontrol:
 		if (use_buttons) {
 			wxStdDialogButtonSizer *bs = new wxStdDialogButtonSizer();
 			if (buttons.size() > 0) {
-				wxLogDebug(_T("creating user buttons"));
 				for (size_t i = 0; i < buttons.size(); ++i) {
-					wxLogDebug(_T("button '%s' gets id %d"), buttons[i].c_str(), 1001+(wxWindowID)i);
 					bs->Add(new wxButton(w, 1001+(wxWindowID)i, buttons[i]));
 				}
 			} else {
-				wxLogDebug(_T("creating default buttons"));
 				bs->Add(new wxButton(w, wxID_OK));
 				bs->Add(new wxButton(w, wxID_CANCEL));
 			}
@@ -692,7 +686,6 @@ badcontrol:
 			button_event->button_pushed = &button_pushed;
 			// passing button_event as userdata because wx will then delete it
 			w->Connect(wxID_ANY, wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(LuaConfigDialog::ButtonEventHandler::OnButtonPush), button_event, button_event);
-			wxLogDebug(_T("set event handler, this addr is %p"), this);
 
 			wxBoxSizer *ms = new wxBoxSizer(wxVERTICAL);
 			ms->Add(s, 0, wxBOTTOM, 5);
@@ -709,17 +702,13 @@ badcontrol:
 	{
 		// First read back which button was pressed, if any
 		if (use_buttons) {
-			wxLogDebug(_T("reading back button_pushed"));
 			int btn = button_pushed;
 			if (btn == 0) {
-				wxLogDebug(_T("was zero, cancelled"));
 				// Always cancel/closed
 				lua_pushboolean(L, 0);
 			} else if (buttons.size() == 0 && btn == 1) {
-				wxLogDebug(_T("default buttons, button 1 pushed, Ok button"));
 				lua_pushboolean(L, 1);
 			} else {
-				wxLogDebug(_T("user button: %s"), buttons.at(btn-1).c_str());
 				// button_pushed is index+1 to reserve 0 for Cancel
 				lua_pushstring(L, buttons.at(btn-1).mb_str(wxConvUTF8));
 			}
@@ -793,13 +782,10 @@ badcontrol:
 		// Let button_pushed == 0 mean "cancelled", such that pushing Cancel or closing the dialog
 		// will both result in button_pushed == 0
 		if (evt.GetId() == wxID_OK) {
-			wxLogDebug(_T("was wxID_OK"));
 			*button_pushed = 1;
 		} else if (evt.GetId() == wxID_CANCEL) {
-			wxLogDebug(_T("was wxID_CANCEL"));
 			*button_pushed = 0;
 		} else {
-			wxLogDebug(_T("was user button"));
 			// Therefore, when buttons are numbered from 1001 to 1000+n, make sure to set it to i+1
 			*button_pushed = evt.GetId() - 1000;
 
@@ -809,7 +795,6 @@ badcontrol:
 			if (button) return;
 			evt.SetId(wxID_OK);
 		}
-		wxLogDebug(_T("button_pushed set to %d"), *button_pushed);
 		evt.Skip();
 	}
 

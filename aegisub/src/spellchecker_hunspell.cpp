@@ -248,8 +248,6 @@ void HunspellSpellChecker::SetLanguage(wxString language) {
 	dicpath = path + language + _T(".dic");
 	usrdicpath = userPath + language + _T(".dic");
 
-	wxLogDebug(_T("Using dictionary %ls for spellchecking"), dicpath.c_str());
-
 	// Check if language is available
 	if (!wxFileExists(affpath) || !wxFileExists(dicpath)) return;
 

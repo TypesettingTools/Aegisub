@@ -543,7 +543,6 @@ AudioProvider *CreatePCMAudioProvider(const wxString &filename)
 	}
 	catch (const wxChar *msg) {
 		provider = 0;
-		wxLogDebug(_T("Creating PCM WAV reader failed with message: %s\nProceeding to try other providers."), msg);
 	}
 
 	// Try Sony Wave64
@@ -553,7 +552,6 @@ AudioProvider *CreatePCMAudioProvider(const wxString &filename)
 	}
 	catch (const wxChar *msg) {
 		provider = 0;
-		wxLogDebug(_T("Creating Wave64 reader failed with message: %s\nProceeding to try other providers."), msg);
 	}
 
 	// no providers could be created

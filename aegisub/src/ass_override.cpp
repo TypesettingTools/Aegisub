@@ -648,7 +648,6 @@ void AssOverrideTag::ParseParameters(const wxString &text) {
 			work = text.SubString(start, i-1);
 			work.Trim(true).Trim(false);
 			paramList.Add(work);
-			//wxLogDebug(_T("Got parameter: %s"), work.c_str());
 		}
 
 		if (i+1 < textlen) {
