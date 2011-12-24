@@ -66,7 +66,7 @@ enum {
 
 DialogSearchReplace::DialogSearchReplace(agi::Context* c, bool withReplace)
 : wxDialog(c->parent, -1, withReplace ? _("Replace") : _("Find"))
-, hasReplace(hasReplace)
+, hasReplace(withReplace)
 {
 	wxSizer *FindSizer = new wxFlexGridSizer(2,2,5,15);
 	FindEdit = new wxComboBox(this,-1,"",wxDefaultPosition,wxSize(300,-1),lagi_MRU_wxAS("Find"),wxCB_DROPDOWN);
