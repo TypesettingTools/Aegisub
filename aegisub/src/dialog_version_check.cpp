@@ -152,8 +152,10 @@ AegisubVersionCheckerThread::AegisubVersionCheckerThread(bool interactive)
 {
 	AegisubVersionCheckEventHandler::EnsureHandlerIsRegistered();
 
+#ifndef __WXMAC__
 	if (!wxSocketBase::IsInitialized())
 		wxSocketBase::Initialize();
+#endif
 
 	Create();
 	Run();
@@ -465,7 +467,12 @@ void AegisubVersionCheckerThread::DoCheck()
 	
 	AegisubVersionCheckResultEvent result_event;
 	
-	int http_code = CFHTTPMessageGetResponseStatusCode(httpresp);
+	int http_code = 0;
+	if (httpresp != 0)
+	{
+		CFHTTPMessageGetResponseStatusCode(httpresp);
+	}
+	
 	if (http_code >= 200 && http_code < 300)
 	{
 		wxStringInputStream strstream(result_body);
@@ -475,6 +482,10 @@ void AegisubVersionCheckerThread::DoCheck()
 			wxString line = text.ReadLine();
 			ProcessUpdateFileLine(accept_tags, result_event, line);
 		}
+	}
+	else if (http_code == 0)
+	{
+		throw VersionCheckError(_("Could not connect to updates server."));
 	}
 	else
 	{
