@@ -215,7 +215,7 @@ public:
 	void UpdateText();
 	const wxString GetEntryData() const;
 	/// Do nothing
-	void SetEntryData(wxString) { }
+	void SetEntryData(wxString const&) { }
 
 	template<int which>
 	void SetMarginString(const wxString value) { SetMarginString(value, which);}
