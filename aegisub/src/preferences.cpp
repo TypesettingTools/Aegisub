@@ -22,7 +22,6 @@
 #ifndef AGI_PRE
 #include <iterator>
 
-#include <wx/any.h>
 #include <wx/checkbox.h>
 #include <wx/combobox.h>
 #include <wx/event.h>
@@ -511,8 +510,11 @@ Advanced_Video::Advanced_Video(wxTreebook *book, Preferences *parent): OptionPag
 	SetSizerAndFit(sizer);
 }
 
-void Preferences::SetOption(std::string const& name, wxAny value) {
-	pending_changes[name] = value;
+void Preferences::SetOption(agi::OptionValue *new_value) {
+	std::string name = new_value->GetName();
+	if (pending_changes.count(name))
+		delete pending_changes[name];
+	pending_changes[name] = new_value;
 	if (IsEnabled())
 		applyButton->Enable(true);
 }
@@ -529,27 +531,28 @@ void Preferences::OnOK(wxCommandEvent &event) {
 }
 
 void Preferences::OnApply(wxCommandEvent &) {
-	for (std::map<std::string, wxAny>::iterator cur = pending_changes.begin(); cur != pending_changes.end(); ++cur) {
+	for (std::map<std::string, agi::OptionValue*>::iterator cur = pending_changes.begin(); cur != pending_changes.end(); ++cur) {
 		agi::OptionValue *opt = OPT_SET(cur->first);
 		switch (opt->GetType()) {
 			case agi::OptionValue::Type_Bool:
-				opt->SetBool(cur->second.As<bool>());
+				opt->SetBool(cur->second->GetBool());
 				break;
 			case agi::OptionValue::Type_Colour:
-				opt->SetColour(cur->second.As<agi::Colour>());
+				opt->SetColour(cur->second->GetColour());
 				break;
 			case agi::OptionValue::Type_Double:
-				opt->SetDouble(cur->second.As<double>());
+				opt->SetDouble(cur->second->GetDouble());
 				break;
 			case agi::OptionValue::Type_Int:
-				opt->SetInt(cur->second.As<int>());
+				opt->SetInt(cur->second->GetInt());
 				break;
 			case agi::OptionValue::Type_String:
-				opt->SetString(cur->second.As<std::string>());
+				opt->SetString(cur->second->GetString());
 				break;
 			default:
 				throw PreferenceNotSupported("Unsupported type");
 		}
+		delete cur->second;
 	}
 	pending_changes.clear();
 
@@ -616,4 +619,7 @@ Preferences::Preferences(wxWindow *parent): wxDialog(parent, -1, _("Preferences"
 }
 
 Preferences::~Preferences() {
+	for (std::map<std::string, agi::OptionValue*>::iterator cur = pending_changes.begin(); cur != pending_changes.end(); ++cur) {
+		delete cur->second;
+	}
 }

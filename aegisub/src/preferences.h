@@ -29,9 +29,9 @@
 
 #include <libaegisub/exception.h>
 
-class wxAny;
 class wxButton;
 class wxTreebook;
+namespace agi { class OptionValue; }
 
 DEFINE_BASE_EXCEPTION_NOINNER(PreferencesError, agi::Exception)
 DEFINE_SIMPLE_EXCEPTION_NOINNER(PreferenceIncorrectType, PreferencesError, "preferences/incorrect_type")
@@ -44,7 +44,7 @@ private:
 	wxTreebook *book;
 	wxButton *applyButton;
 
-	std::map<std::string, wxAny> pending_changes;
+	std::map<std::string, agi::OptionValue*> pending_changes;
 	std::deque<Thunk> pending_callbacks;
 
 	void OnOK(wxCommandEvent &event);
@@ -55,6 +55,6 @@ public:
 	Preferences(wxWindow *parent);
 	~Preferences();
 
-	void SetOption(std::string const& name, wxAny value);
+	void SetOption(agi::OptionValue *new_value);
 	void AddPendingChange(Thunk const& callback);
 };

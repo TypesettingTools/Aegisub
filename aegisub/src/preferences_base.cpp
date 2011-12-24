@@ -48,20 +48,20 @@
 #include "standard_paths.h"
 #include "video_provider_manager.h"
 
-#define OPTION_UPDATER(type, evttype, body)                               \
-	class type {                                                          \
-		std::string name;                                                 \
-		Preferences *parent;                                              \
-	public:                                                               \
-		type(std::string const& n, Preferences *p) : name(n),parent(p) {} \
-		void operator()(evttype& evt) { parent->SetOption(name, body); }  \
+#define OPTION_UPDATER(type, evttype, opt, body)                                       \
+	class type {                                                                       \
+		std::string name;                                                              \
+		Preferences *parent;                                                           \
+	public:                                                                            \
+		type(std::string const& n, Preferences *p) : name(n), parent(p) {}             \
+		void operator()(evttype& evt) { parent->SetOption(new agi::opt(name, body)); } \
 	}
 
-OPTION_UPDATER(StringUpdater, wxCommandEvent, STD_STR(evt.GetString()));
-OPTION_UPDATER(IntUpdater, wxSpinEvent, evt.GetInt());
-OPTION_UPDATER(IntCBUpdater, wxCommandEvent, evt.GetInt());
-OPTION_UPDATER(DoubleUpdater, wxSpinEvent, evt.GetInt());
-OPTION_UPDATER(BoolUpdater, wxCommandEvent, !!evt.GetInt());
+OPTION_UPDATER(StringUpdater, wxCommandEvent, OptionValueString, STD_STR(evt.GetString()));
+OPTION_UPDATER(IntUpdater, wxSpinEvent, OptionValueInt, evt.GetInt());
+OPTION_UPDATER(IntCBUpdater, wxCommandEvent, OptionValueInt, evt.GetInt());
+OPTION_UPDATER(DoubleUpdater, wxSpinEvent, OptionValueDouble, evt.GetInt());
+OPTION_UPDATER(BoolUpdater, wxCommandEvent, OptionValueBool, !!evt.GetInt());
 class ColourUpdater {
 	const char *name;
 	Preferences *parent;
@@ -70,7 +70,7 @@ public:
 	void operator()(wxCommandEvent& evt) {
 		ColourButton *btn = static_cast<ColourButton*>(evt.GetClientData());
 		if (btn) {
-			parent->SetOption(name, STD_STR(btn->GetColour().GetAsString(wxC2S_CSS_SYNTAX)));
+			parent->SetOption(new agi::OptionValueColour(name, STD_STR(btn->GetColour().GetAsString(wxC2S_CSS_SYNTAX))));
 		}
 		else {
 			evt.Skip();
