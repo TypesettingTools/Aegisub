@@ -455,7 +455,7 @@ struct video_frame_prev_keyframe : public validator_video_loaded {
 		std::vector<int> const& kf = c->videoController->GetKeyFrames();
 		std::vector<int>::const_iterator pos = lower_bound(kf.begin(), kf.end(), frame);
 
-		if (frame != 0 && (pos == kf.end() || *pos == frame))
+		if (pos != kf.begin())
 			--pos;
 
 		c->videoController->JumpToFrame(*pos);
