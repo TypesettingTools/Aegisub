@@ -32,6 +32,7 @@
 #include "ass_file.h"
 #include "audio_controller.h"
 #include "command/command.h"
+#include "compat.h"
 #include "help_button.h"
 #include "libresrc/libresrc.h"
 #include "persist_location.h"
@@ -157,8 +158,10 @@ DialogTranslation::DialogTranslation(agi::Context *c)
 	Bind(wxEVT_KEY_DOWN, &DialogTranslation::OnKeyDown, this);
 
 	active_line->ParseASSTags();
-	if (bad_block(active_line->Blocks[0]))
-		NextBlock();
+	if (bad_block(active_line->Blocks[0])) {
+		if (!NextBlock())
+			throw NothingToTranslate(STD_STR(_("There is nothing to translate in the file.")));
+	}
 	else
 		UpdateDisplay();
 }

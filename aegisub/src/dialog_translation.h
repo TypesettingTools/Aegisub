@@ -24,6 +24,7 @@
 #include <wx/dialog.h>
 #endif
 
+#include <libaegisub/exception.h>
 #include <libaegisub/scoped_ptr.h>
 
 namespace agi { struct Context; }
@@ -71,4 +72,6 @@ public:
 	bool PrevBlock();
 	void Commit(bool next);
 	void InsertOriginal();
+
+	DEFINE_SIMPLE_EXCEPTION_NOINNER(NothingToTranslate, agi::Exception, "dialog/translation/nothing_to_translate");
 };

@@ -49,6 +49,7 @@
 #include "../dialog_fonts_collector.h"
 #include "../standard_paths.h" // tool_assdraw
 #include "../video_context.h" // tool_font_collector
+#include "../compat.h"
 #include "../dialog_export.h"
 #include "../dialog_resample.h"
 #include "../dialog_selection.h"
@@ -227,10 +228,16 @@ struct tool_translation_assistant : public Command {
 
 	void operator()(agi::Context *c) {
 		c->videoController->Stop();
-		DialogTranslation d(c);
-		c->translationAssistant = &d;
-		d.ShowModal();
-		c->translationAssistant = 0;
+		try {
+			DialogTranslation d(c);
+			c->translationAssistant = &d;
+			d.ShowModal();
+			c->translationAssistant = 0;
+		}
+		catch (agi::Exception const& e) {
+			c->translationAssistant = 0;
+			wxMessageBox(lagi_wxString(e.GetChainedMessage()));
+		}
 	}
 };
 
