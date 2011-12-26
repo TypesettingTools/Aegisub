@@ -101,6 +101,7 @@ static void font_button(Preferences *parent, wxTextCtrl *name, wxSpinCtrl *size)
 
 OptionPage::OptionPage(wxTreebook *book, Preferences *parent, wxString name, int style)
 : wxScrolled<wxPanel>(book, -1, wxDefaultPosition, wxDefaultSize, wxVSCROLL)
+, sizer(new wxBoxSizer(wxVERTICAL))
 , parent(parent)
 {
 	if (style & PAGE_SUB)
@@ -112,8 +113,6 @@ OptionPage::OptionPage(wxTreebook *book, Preferences *parent, wxString name, int
 		SetScrollbars(0, 20, 0, 50);
 	else
 		SetScrollbars(0, 0, 0, 0);
-
-	sizer = new wxBoxSizer(wxVERTICAL);
 }
 
 template<class T>

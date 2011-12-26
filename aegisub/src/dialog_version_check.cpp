@@ -282,6 +282,8 @@ static wxString GetSystemLanguage()
 
 	// Try using Win 6+ functions if available
 	HMODULE kernel32 = LoadLibraryW(L"kernel32.dll");
+	if (!kernel32)
+		goto getsyslang_fallback;
 	PGetUserPreferredUILanguages gupuil = (PGetUserPreferredUILanguages)GetProcAddress(kernel32, "GetUserPreferredUILanguages");
 	if (gupuil)
 	{
@@ -309,7 +311,8 @@ getsyslang_fallback:
 		res = wxString::Format("x-win%04x", langid);
 
 	}
-	FreeModule(kernel32);
+	if (kernel32)
+		FreeModule(kernel32);
 
 	return res;
 }

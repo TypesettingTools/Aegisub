@@ -150,7 +150,7 @@ public:
 	void GetAudio(void *buf, int64_t start, int64_t count) const {
 		if (count == 0) return;
 
-		bool not_end = start + count < num_samples;
+		int not_end = start + count < num_samples;
 		int64_t src_count = count / 2;
 		source->GetAudio(buf, start / 2, src_count + not_end);
 

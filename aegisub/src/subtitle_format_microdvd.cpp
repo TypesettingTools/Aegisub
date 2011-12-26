@@ -113,13 +113,11 @@ void MicroDVDSubtitleFormat::ReadFile(wxString const& filename, wxString const& 
 
 			text.Replace("|", "\\N");
 
-			AssDialogue *line = new AssDialogue;
-			line->group = "[Events]";
-			line->Style = "Default";
-			line->Start = fps.TimeAtFrame(f1, agi::vfr::START);
-			line->End = fps.TimeAtFrame(f2, agi::vfr::END);
-			line->Text = text;
-			Line->push_back(line);
+			AssDialogue *diag = new AssDialogue;
+			diag->Start = fps.TimeAtFrame(f1, agi::vfr::START);
+			diag->End = fps.TimeAtFrame(f2, agi::vfr::END);
+			diag->Text = text;
+			Line->push_back(diag);
 		}
 	}
 }

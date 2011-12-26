@@ -65,9 +65,8 @@ namespace {
 	void put_array(json::Object &obj, const std::string &path, const char *element_key, std::vector<T> const& value) {
 		json::Array array;
 		for (typename std::vector<T>::const_iterator it = value.begin(); it != value.end(); ++it) {
-			json::Object obj;
-			obj[element_key] = *it;
-			array.push_back(obj);
+			array.push_back(json::Object());
+			static_cast<json::Object&>(array.back())[element_key] = *it;
 		}
 
 		put_option(obj, path, array);

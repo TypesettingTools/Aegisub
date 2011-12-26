@@ -362,8 +362,10 @@ namespace Automation4 {
 				dia->Effect = get_string_field(L, "effect", "dialogue");
 				dia->Text = get_string_field(L, "text", "dialogue");
 			}
-			else
+			else {
 				luaL_error(L, "Found line with unknown class: %s", lclass.utf8_str().data());
+				return 0;
+			}
 
 			if (result->group.empty())
 				result->group = section;

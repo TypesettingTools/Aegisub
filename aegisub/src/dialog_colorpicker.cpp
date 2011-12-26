@@ -1034,6 +1034,8 @@ wxBitmap *DialogColorPicker::MakeGBSpectrum()
 	unsigned char *ospec, *spec;
 
 	ospec = spec = (unsigned char *)malloc(256*256*3);
+	if (!spec) throw std::bad_alloc();
+
 	for (int g = 0; g < 256; g++) {
 		for (int b = 0; b < 256; b++) {
 			*spec++ = cur_color.Red();
@@ -1052,6 +1054,8 @@ wxBitmap *DialogColorPicker::MakeRBSpectrum()
 
 	unsigned char *ospec, *spec;
 	ospec = spec = (unsigned char *)malloc(256*256*3);
+	if (!spec) throw std::bad_alloc();
+
 	for (int r = 0; r < 256; r++) {
 		for (int b = 0; b < 256; b++) {
 			*spec++ = r;
@@ -1070,6 +1074,8 @@ wxBitmap *DialogColorPicker::MakeRGSpectrum()
 
 	unsigned char *ospec, *spec;
 	ospec = spec = (unsigned char *)malloc(256*256*3);
+	if (!spec) throw std::bad_alloc();
+
 	for (int r = 0; r < 256; r++) {
 		for (int g = 0; g < 256; g++) {
 			*spec++ = r;
@@ -1088,6 +1094,8 @@ wxBitmap *DialogColorPicker::MakeHSSpectrum()
 
 	unsigned char *ospec, *spec;
 	ospec = spec = (unsigned char *)malloc(256*256*3);
+	if (!spec) throw std::bad_alloc();
+
 	int l = hsl_input[2]->GetValue();
 
 	for (int h = 0; h < 256; h++) {
@@ -1111,6 +1119,7 @@ wxBitmap *DialogColorPicker::MakeSVSpectrum()
 
 	unsigned char *ospec, *spec;
 	ospec = spec = (unsigned char *)malloc(256*256*3);
+	if (!spec) throw std::bad_alloc();
 
 	int h = hsv_input[0]->GetValue();
 	unsigned char maxr, maxg, maxb;

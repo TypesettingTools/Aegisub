@@ -303,10 +303,9 @@ void AssFile::AddLine(wxString data,wxString group,int &version,wxString *outGro
 	if (data.empty()) return;
 
 	// Group
-	AssEntry *entry = NULL;
 	wxString origGroup = group;
 	static wxString keepGroup;
-	if (!keepGroup.IsEmpty()) group = keepGroup;
+	if (!keepGroup.empty()) group = keepGroup;
 	if (outGroup) *outGroup = group;
 	wxString lowGroup = group.Lower();
 
@@ -355,7 +354,7 @@ void AssFile::AddLine(wxString data,wxString group,int &version,wxString *outGro
 				keepGroup.Clear();
 				group = origGroup;
 				lowGroup = group.Lower();
-				entry = attach;
+				Line.push_back(attach);
 				attach = NULL;
 			}
 
@@ -365,34 +364,24 @@ void AssFile::AddLine(wxString data,wxString group,int &version,wxString *outGro
 			}
 		}
 	}
-
 	// Dialogue
 	else if (lowGroup == "[events]") {
-		if (data.StartsWith("Dialogue:") || data.StartsWith("Comment:")) {
-			AssDialogue *diag = new AssDialogue(data,version);
-			//diag->ParseASSTags();
-			entry = diag;
-			entry->group = group;
-		}
-		else if (data.StartsWith("Format:")) {
-			entry = new AssEntry("Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text");
-			entry->group = group;
-		}
+		if (data.StartsWith("Dialogue:") || data.StartsWith("Comment:"))
+			Line.push_back(new AssDialogue(data,version));
+		else if (data.StartsWith("Format:"))
+			Line.push_back(new AssEntry("Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text", group));
+		else
+			Line.push_back(new AssEntry(data, group));
 	}
-
 	// Style
 	else if (lowGroup == "[v4+ styles]") {
-		if (data.StartsWith("Style:")) {
-			AssStyle *style = new AssStyle(data,version);
-			entry = style;
-			entry->group = group;
-		}
-		if (data.StartsWith("Format:")) {
-			entry = new AssEntry("Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding");
-			entry->group = group;
-		}
+		if (data.StartsWith("Style:"))
+			Line.push_back(new AssStyle(data,version));
+		else if (data.StartsWith("Format:"))
+			Line.push_back(new AssEntry("Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding", group));
+		else
+			Line.push_back(new AssEntry(data, group));
 	}
-
 	// Script info
 	else if (lowGroup == "[script info]") {
 		// Comment
@@ -420,19 +409,12 @@ void AssFile::AddLine(wxString data,wxString group,int &version,wxString *outGro
 		}
 
 		// Everything
-		entry = new AssEntry(data);
-		entry->group = group;
+		Line.push_back(new AssEntry(data, group));
 	}
-
-	// Common entry
-	if (entry == NULL) {
-		entry = new AssEntry(data);
-		entry->group = group;
+	// Unrecognized group
+	else {
+		Line.push_back(new AssEntry(data, group));
 	}
-
-	// Insert the line
-	Line.push_back(entry);
-	return;
 }
 
 void AssFile::Clear() {

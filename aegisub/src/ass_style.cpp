@@ -66,36 +66,36 @@ AssColor::AssColor (const wxColour &color) {
 
 /// @brief Parse from SSA/ASS 
 /// @param value 
-void AssColor::Parse(const wxString value) {
-	if (value.Len() > 0 && value[0] == '#') {
+void AssColor::Parse(wxString const& value) {
+	if (value.size() > 0 && value[0] == '#') {
 		// HTML colour
 		SetWXColor(wxColor(value));
 		return;
 	}
 
 	// Prepare
-	char c,ostr[12];
-	unsigned long outval;
-	int oindex=11;
-	bool ishex=false;
+	char ostr[12];
+	int oindex = 11;
+	bool ishex = false;
 
-	ostr[11]=0;
+	ostr[11] = 0;
 
-	for(unsigned char i = value.Len(); i > 0 && oindex >= 0; i--) {
-		c=value[i - 1];
-		if (isxdigit(c) || c=='-') {
+	for(size_t i = value.size(); i > 0 && oindex >= 0; i--) {
+		unsigned char c = value[i - 1];
+		if (isxdigit(c) || c == '-') {
 			ostr[--oindex] = c;
-			if (c>='A') ishex = true;
+			if (c >= 'A')
+				ishex = true;
 		}
-		else if (c == 'H' || c == 'h') ishex = true;
+		else if (c == 'H' || c == 'h')
+			ishex = true;
 	}
-	
-	outval=strtoul(ostr+oindex,0,ishex?16:10);
 
-	r = outval		& 0xFF;
-	g = (outval>>8)	& 0xFF;
-	b = (outval>>16)& 0xFF;
-	a = (outval>>24)& 0xFF;
+	unsigned long outval = strtoul(ostr + oindex, 0, ishex ? 16 : 10);
+	r =  outval      & 0xFF;
+	g = (outval>>8)  & 0xFF;
+	b = (outval>>16) & 0xFF;
+	a = (outval>>24) & 0xFF;
 }
 
 /// @brief Gets a wxColour 

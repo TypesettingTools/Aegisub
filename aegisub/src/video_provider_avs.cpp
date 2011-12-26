@@ -119,7 +119,7 @@ AvisynthVideoProvider::AvisynthVideoProvider(wxString filename) try
 		}
 
 		AVISTREAMINFO avis;
-		if (AVIStreamInfo(ppavi,&avis,sizeof(avis))) {
+		if (FAILED(AVIStreamInfo(ppavi,&avis,sizeof(avis)))) {
 			warning = "Unable to read keyframes from AVI file:\nCould not get stream information.";
 			goto stream_release;
 		}

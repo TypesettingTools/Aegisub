@@ -85,10 +85,12 @@ static void read_subtitles(agi::ProgressSink *ps, MatroskaFile *file, MkvStdIO *
 
 		// Read to temp
 		if (frameSize > readBufSize) {
-			delete readBuf;
+			delete[] readBuf;
 			readBufSize = frameSize * 2;
 			readBuf = new char[readBufSize];
 		}
+		else if (frameSize == 0)
+			continue;
 
 		fseek(input->fp, filePos, SEEK_SET);
 		fread(readBuf, 1, frameSize, input->fp);
@@ -121,7 +123,7 @@ static void read_subtitles(agi::ProgressSink *ps, MatroskaFile *file, MkvStdIO *
 		ps->SetProgress(startTime / timecodeScaleLow, totalTime);
 	}
 
-	delete readBuf;
+	delete[] readBuf;
 
 	// Insert into file
 	wxString group = "[Events]";

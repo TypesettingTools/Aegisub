@@ -278,12 +278,11 @@ void SearchReplaceEngine::ReplaceNext(bool DoReplace) {
 
 		// Normal
 		else {
-			int textPos = tempPos;
 			wxString src = Text->Mid(tempPos);
 			if (!matchCase) src.MakeLower();
-			int tempPos = src.Find(LookFor);
-			if (tempPos != -1) {
-				pos = textPos+tempPos;
+			int textPos = src.Find(LookFor);
+			if (textPos != -1) {
+				pos = tempPos+textPos;
 				found = true;
 				matchLen = LookFor.Length();
 			}

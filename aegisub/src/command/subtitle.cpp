@@ -135,7 +135,7 @@ static void insert_subtitle_at_video(agi::Context *c, bool after) {
 	// Insert it
 	c->subsGrid->BeginBatch();
 	c->subsGrid->InsertLine(def, n, after);
-	c->subsGrid->SelectRow(n + after);
+	c->subsGrid->SelectRow(n + (int)after);
 	c->subsGrid->SetActiveLine(def);
 	c->subsGrid->EndBatch();
 }

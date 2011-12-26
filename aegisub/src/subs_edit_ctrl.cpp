@@ -429,16 +429,13 @@ void SubsTextEditCtrl::UpdateCallTip(wxStyledTextEvent &) {
 	wxString text = GetText();
 
 	// Find the start and end of current tag
-	wxChar curChar = 0;
 	wxChar prevChar = 0;
 	int depth = 0;
 	int inDepth = 0;
 	int tagStart = -1;
 	int tagEnd = -1;
 	for (unsigned int i=0;i<text.Length()+1;i++) {
-		// Get character
-		if (i<text.Length()) curChar = text[i];
-		else curChar = 0;
+		wxChar curChar = i < text.size() ? text[i] : 0;
 
 		// Change depth
 		if (curChar == '{') {

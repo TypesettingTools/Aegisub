@@ -229,13 +229,15 @@ void TTXTSubtitleFormat::WriteHeader(wxXmlNode *root) {
 	root = node;
 
 	// Write font table
+
 	node = new wxXmlNode(wxXML_ELEMENT_NODE, "FontTable");
+	root->AddChild(node);
+
 	wxXmlNode *subNode = new wxXmlNode(wxXML_ELEMENT_NODE, "FontTableEntry");
 	subNode->AddAttribute("fontName", "Sans");
 	subNode->AddAttribute("fontID", "1");
 	node->AddChild(subNode);
-	root->AddChild(node);
-	
+
 	// Write text box
 	node = new wxXmlNode(wxXML_ELEMENT_NODE, "TextBox");
 	node->AddAttribute("top", "0");
@@ -255,23 +257,20 @@ void TTXTSubtitleFormat::WriteHeader(wxXmlNode *root) {
 
 void TTXTSubtitleFormat::WriteLine(wxXmlNode *root, AssDialogue *line) {
 	// If it doesn't start at the end of previous, add blank
-	wxXmlNode *node, *subNode;
 	if (prev && prev->End != line->Start) {
-		node = new wxXmlNode(wxXML_ELEMENT_NODE, "TextSample");
+		wxXmlNode *node = new wxXmlNode(wxXML_ELEMENT_NODE, "TextSample");
 		node->AddAttribute("sampleTime", "0" + prev->End.GetASSFormated(true));
 		node->AddAttribute("xml:space", "preserve");
-		subNode = new wxXmlNode(wxXML_TEXT_NODE, "", "");
-		node->AddChild(subNode);
 		root->AddChild(node);
+		node->AddChild(new wxXmlNode(wxXML_TEXT_NODE, "", ""));
 	}
 
 	// Generate and insert node
-	node = new wxXmlNode(wxXML_ELEMENT_NODE, "TextSample");
+	wxXmlNode *node = new wxXmlNode(wxXML_ELEMENT_NODE, "TextSample");
 	node->AddAttribute("sampleTime", "0" + line->Start.GetASSFormated(true));
 	node->AddAttribute("xml:space", "preserve");
-	subNode = new wxXmlNode(wxXML_TEXT_NODE, "", line->Text);
-	node->AddChild(subNode);
 	root->AddChild(node);
+	node->AddChild(new wxXmlNode(wxXML_TEXT_NODE, "", line->Text));
 
 	// Set as previous
 	prev = line;

@@ -60,7 +60,7 @@ struct AssColor {
 
 	wxColor GetWXColor();					// Return as a wxColor
 	void SetWXColor(const wxColor &color);	// Sets from a wxColor
-	void Parse(const wxString value);		// Parse SSA or ASS-style color
+	void Parse(wxString  const& value);		// Parse SSA or ASS-style color
 	wxString GetASSFormatted(bool alpha,bool stripped=false,bool isStyle=false) const;	// Gets color formated in ASS format
 	wxString GetSSAFormatted() const;
 };

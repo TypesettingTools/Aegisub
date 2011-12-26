@@ -411,7 +411,7 @@ namespace menu {
 	void GetMenuBar(std::string const& name, wxFrame *window, agi::Context *c) {
 		menu_items const& items = get_menu(name);
 
-		CommandMenuBar *menu = new CommandMenuBar(c);
+		std::auto_ptr<CommandMenuBar> menu(new CommandMenuBar(c));
 		for (menu_items::const_iterator it = items.begin(); it != items.end(); ++it) {
 			std::string submenu, disp;
 			read_entry(*it, "submenu", &submenu);
@@ -426,9 +426,9 @@ namespace menu {
 			}
 		}
 
-		window->SetMenuBar(menu);
 		window->Bind(wxEVT_MENU_OPEN, &CommandManager::OnMenuOpen, &menu->cm);
 		window->Bind(wxEVT_COMMAND_MENU_SELECTED, &CommandManager::OnMenuClick, &menu->cm);
+		window->SetMenuBar(menu.release());
 	}
 
 	wxMenu *GetMenu(std::string const& name, agi::Context *c) {

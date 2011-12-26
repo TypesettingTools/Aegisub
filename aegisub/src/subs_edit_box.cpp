@@ -742,7 +742,7 @@ void SubsEditBox::SetTag(wxString tag, wxString value, bool atEnd) {
 		shift += 2;
 		line->ParseASSTags();
 	}
-	else {
+	else if(ovr) {
 		wxString alt;
 		if (tag == "\\c") alt = "\\1c";
 		// Remove old of same
@@ -769,6 +769,9 @@ void SubsEditBox::SetTag(wxString tag, wxString value, bool atEnd) {
 
 		line->UpdateText();
 	}
+	else
+		assert(false);
+
 	TextEdit->SetTextTo(line->Text);
 	if (!atEnd) TextEdit->SetSelectionU(selstart+shift,selend+shift);
 	TextEdit->SetFocus();

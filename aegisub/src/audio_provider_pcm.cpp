@@ -306,16 +306,8 @@ class  RiffWavPCMAudioProvider : public PCMAudioProvider {
 		// either way, as the fields can depend on the compression.
 	};
 
-
-	/// @brief DOCME
-	/// @param str1[] 
-	/// @param str2[] 
-	/// @return 
-	///
-	static bool CheckFourcc(const char str1[], const char str2[])
+	static bool CheckFourcc(const char (&str1)[4], const char (&str2)[5])
 	{
-		assert(str1);
-		assert(str2);
 		return
 			(str1[0] == str2[0]) &&
 			(str1[1] == str2[1]) &&
@@ -519,7 +511,7 @@ public:
 	/// @param _filename 
 	///
 	Wave64AudioProvider(const wxString &_filename)
-		: PCMAudioProvider(_filename)
+	: PCMAudioProvider(_filename)
 	{
 		filename = _filename;
 

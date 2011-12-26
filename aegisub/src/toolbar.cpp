@@ -97,15 +97,15 @@ namespace {
 		/// Populate the toolbar with buttons
 		void Populate() {
 			json::Object const& root = get_root();
-			json::Object::const_iterator it = root.find(name);
-			if (it == root.end()) {
+			json::Object::const_iterator root_it = root.find(name);
+			if (root_it == root.end()) {
 				// Toolbar names are all hardcoded so this should never happen
 				throw agi::InternalError("Toolbar named " + name + " not found.", 0);
 			}
 
 			int icon_size = OPT_GET("App/Toolbar Icon Size")->GetInt();
 
-			json::Array const& arr = it->second;
+			json::Array const& arr = root_it->second;
 			commands.reserve(arr.size());
 			bool needs_onidle = false;
 

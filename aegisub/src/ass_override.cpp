@@ -363,7 +363,7 @@ std::vector<wxString> tokenize(const wxString &text) {
 	return paramList;
 }
 
-void AssOverrideTag::ParseParameters(const wxString &text, AssOverrideTagProto::iterator proto) {
+void AssOverrideTag::ParseParameters(const wxString &text, AssOverrideTagProto::iterator proto_it) {
 	Clear();
 
 	// Tokenize text, attempting to find all parameters
@@ -371,14 +371,14 @@ void AssOverrideTag::ParseParameters(const wxString &text, AssOverrideTagProto::
 	size_t totalPars = paramList.size();
 
 	int parsFlag = 1 << (totalPars - 1); // Get optional parameters flag
-	// vector (i)clip is the second clip prototype in the list
+	// vector (i)clip is the second clip proto_ittype in the list
 	if ((Name == "\\clip" || Name == "\\iclip") && totalPars != 4) {
-		++proto;
+		++proto_it;
 	}
 
 	unsigned curPar = 0;
-	for (size_t n = 0; n < proto->params.size(); n++) {
-		AssOverrideParamProto *curproto = &proto->params[n];
+	for (size_t n = 0; n < proto_it->params.size(); n++) {
+		AssOverrideParamProto *curproto = &proto_it->params[n];
 
 		// Create parameter
 		AssOverrideParameter *newparam = new AssOverrideParameter;
