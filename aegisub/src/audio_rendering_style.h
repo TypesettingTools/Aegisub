@@ -54,6 +54,8 @@ enum AudioRenderingStyle {
 /// Interface for producers of audio rendering ranges, consumers should
 /// implement this interface for objects to pass to producers.
 class AudioRenderingStyleRanges {
+protected:
+	~AudioRenderingStyleRanges() { }
 public:
 	/// @brief Add a range to the line
 	/// @param start First sample index in range
