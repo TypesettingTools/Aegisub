@@ -68,20 +68,17 @@ class AssOverrideTag;
 ///  " here."  (Plain)
 ///
 /// Also note how {}s are discarded.
-/// Override blocks are further divided in AssOverrideTag's.
+/// Override blocks are further divided in AssOverrideTags.
 ///
 /// The GetText() method generates a new value for the "text" field from
 /// the other fields in the specific class, and returns the new value.
 /// @endverbatim
 class AssDialogueBlock {
-public:
-	/// DOCME
+protected:
+	/// Text of this block
 	wxString text;
-
-	/// DOCME
-	AssDialogue *parent;
-
-	AssDialogueBlock() { }
+public:
+	AssDialogueBlock(wxString const& text) : text(text) { }
 	virtual ~AssDialogueBlock() { }
 
 	virtual ASS_BlockType GetType() = 0;
@@ -92,23 +89,16 @@ public:
 	virtual wxString GetText() { return text; }
 };
 
-
-
-/// DOCME
 /// @class AssDialogueBlockPlain
-
 /// @brief DOCME
 ///
 /// DOCME
 class AssDialogueBlockPlain : public AssDialogueBlock {
 public:
 	ASS_BlockType GetType() { return BLOCK_PLAIN; }
-	AssDialogueBlockPlain() { }
+	AssDialogueBlockPlain(wxString const& text = "") : AssDialogueBlock(text) { }
 };
 
-
-
-/// DOCME
 /// @class AssDialogueBlockDrawing
 /// @brief DOCME
 ///
@@ -119,20 +109,17 @@ public:
 	int Scale;
 
 	ASS_BlockType GetType() { return BLOCK_DRAWING; }
-	AssDialogueBlockDrawing() { }
+	AssDialogueBlockDrawing(wxString const& text = "") : AssDialogueBlock(text) { }
 	void TransformCoords(int trans_x,int trans_y,double mult_x,double mult_y);
 };
 
-
-
-/// DOCME
 /// @class AssDialogueBlockOverride
 /// @brief DOCME
 ///
 /// DOCME
 class AssDialogueBlockOverride : public AssDialogueBlock {
 public:
-	AssDialogueBlockOverride() { }
+	AssDialogueBlockOverride(wxString const& text = "") : AssDialogueBlock(text) { }
 	~AssDialogueBlockOverride();
 
 	/// DOCME

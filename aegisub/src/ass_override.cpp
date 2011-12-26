@@ -427,8 +427,7 @@ void AssOverrideTag::ParseParameters(const wxString &text, AssOverrideTagProto::
 					break;
 				}
 				case VARDATA_BLOCK: {
-					AssDialogueBlockOverride *temp = new AssDialogueBlockOverride;
-					temp->text = curtok;
+					AssDialogueBlockOverride *temp = new AssDialogueBlockOverride(curtok);
 					temp->ParseTags();
 					newparam->Set(temp);
 					break;

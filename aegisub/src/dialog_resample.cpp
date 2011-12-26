@@ -194,8 +194,7 @@ void DialogResample::DoResampleTags (wxString name,int n,AssOverrideParameter *c
 
 		case PARCLASS_DRAWING:
 			{
-				AssDialogueBlockDrawing block;
-				block.text = curParam->Get<wxString>();
+				AssDialogueBlockDrawing block(curParam->Get<wxString>());
 				block.TransformCoords(m[0],m[2],rx,ry);
 				curParam->Set(block.GetText());
 			}

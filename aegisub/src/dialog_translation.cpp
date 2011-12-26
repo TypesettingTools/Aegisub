@@ -214,14 +214,14 @@ void DialogTranslation::UpdateDisplay() {
 		AssDialogueBlock *block = active_line->Blocks[i];
 		if (block->GetType() == BLOCK_PLAIN) {
 			int cur_size = original_text->GetReverseUnicodePosition(original_text->GetLength());
-			original_text->AppendText(block->text);
+			original_text->AppendText(block->GetText());
 			if (i == cur_block) {
 				original_text->StartUnicodeStyling(cur_size);
-				original_text->SetUnicodeStyling(cur_size, block->text.size(), 1);
+				original_text->SetUnicodeStyling(cur_size, block->GetText().size(), 1);
 			}
 		}
 		else if (block->GetType() == BLOCK_OVERRIDE)
-			original_text->AppendText("{" + block->text + "}");
+			original_text->AppendText("{" + block->GetText() + "}");
 	}
 
 	original_text->SetReadOnly(true);
@@ -233,7 +233,7 @@ void DialogTranslation::UpdateDisplay() {
 }
 
 void DialogTranslation::Commit(bool next) {
-	active_line->Blocks[cur_block]->text = translated_text->GetValue();
+	*active_line->Blocks[cur_block] = translated_text->GetValue();
 	active_line->UpdateText();
 	c->ass->Commit(_("translation assistant"), AssFile::COMMIT_DIAG_TEXT);
 

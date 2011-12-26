@@ -271,15 +271,11 @@ void AssDialogue::ParseASSTags() {
 				//We've found an override block with no backslashes
 				//We're going to assume it's a comment and not consider it an override block
 				//Currently we'll treat this as a plain text block, but feel free to create a new class
-				AssDialogueBlockPlain *block = new AssDialogueBlockPlain;
-				block->text = "{" + work + "}";
-				Blocks.push_back(block);
+				Blocks.push_back(new AssDialogueBlockPlain("{" + work + "}"));
 			}
 			else {
 				// Create block
-				AssDialogueBlockOverride *block = new AssDialogueBlockOverride;
-				block->parent = this;
-				block->text = work;
+				AssDialogueBlockOverride *block = new AssDialogueBlockOverride(work);
 				block->ParseTags();
 				Blocks.push_back(block);
 
@@ -307,14 +303,11 @@ void AssDialogue::ParseASSTags() {
 
 			// Plain-text
 			if (drawingLevel == 0) {
-				AssDialogueBlockPlain *block = new AssDialogueBlockPlain;
-				block->text = work;
-				Blocks.push_back(block);
+				Blocks.push_back(new AssDialogueBlockPlain(work));
 			}
 			// Drawing
 			else {
-				AssDialogueBlockDrawing *block = new AssDialogueBlockDrawing;
-				block->text = work;
+				AssDialogueBlockDrawing *block = new AssDialogueBlockDrawing(work);
 				block->Scale = drawingLevel;
 				Blocks.push_back(block);
 			}
