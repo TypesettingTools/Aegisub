@@ -53,6 +53,15 @@ static void add_hotkey(wxSizer *sizer, wxWindow *parent, const char *command, co
 	sizer->Add(new wxStaticText(parent, -1, hotkey::get_hotkey_str_first("Translation Assistant", command)));
 }
 
+// Skip over override blocks, comments, and whitespace between blocks
+static bool bad_block(AssDialogueBlock *block) {
+	if (block->GetType() != BLOCK_PLAIN) return true;
+	wxString text = block->GetText();
+	if (text.Trim().Trim(false).empty()) return true;
+	if (text[0] == '{' && text.Last() == '}') return true;
+	return false;
+}
+
 DialogTranslation::DialogTranslation(agi::Context *c)
 : wxDialog(c->parent, -1, _("Translation Assistant"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER | wxMINIMIZE_BOX, "TranslationAssistant")
 , c(c)
@@ -141,26 +150,20 @@ DialogTranslation::DialogTranslation(agi::Context *c)
 		main_sizer->Add(standard_buttons, 0, wxALIGN_RIGHT | wxLEFT | wxBOTTOM | wxRIGHT, 5);
 	}
 
-	SetSizer(main_sizer);
-	main_sizer->SetSizeHints(this);
+	SetSizerAndFit(main_sizer);
 
 	persist.reset(new PersistLocation(this, "Tool/Translation Assistant"));
 
 	Bind(wxEVT_KEY_DOWN, &DialogTranslation::OnKeyDown, this);
+
 	active_line->ParseASSTags();
-	UpdateDisplay();
+	if (bad_block(active_line->Blocks[0]))
+		NextBlock();
+	else
+		UpdateDisplay();
 }
 
 DialogTranslation::~DialogTranslation() { }
-
-// Skip over override blocks, comments, and whitespace between blocks
-static bool bad_block(AssDialogueBlock *block) {
-	if (block->GetType() != BLOCK_PLAIN) return true;
-	wxString text = block->GetText();
-	if (text.Trim().Trim(false).empty()) return true;
-	if (text[0] == '{' && text.Last() == '}') return true;
-	return false;
-}
 
 bool DialogTranslation::NextBlock() {
 	do {
