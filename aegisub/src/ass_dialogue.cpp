@@ -240,37 +240,42 @@ wxString AssDialogue::GetSSAText () const {
 	return GetData(true);
 }
 
-void AssDialogue::ParseASSTags () {
+void AssDialogue::ParseASSTags() {
 	ClearBlocks();
+
+	// Empty line, make an empty block
+	if (Text.empty()) {
+		Blocks.push_back(new AssDialogueBlockPlain);
+		return;
+	}
 
 	int drawingLevel = 0;
 
-	const size_t len = Text.size();
-	size_t cur = 0;
-	size_t end = 0;
-	while (cur < len) {
+	for (size_t len = Text.size(), cur = 0; cur < len; ) {
 		// Overrides block
 		if (Text[cur] == '{') {
+			++cur;
 			// Get contents of block
 			wxString work;
-			end = Text.find("}",cur);
+			size_t end = Text.find("}", cur);
 			if (end == wxString::npos) {
 				work = Text.substr(cur);
-				end = len;
+				cur = len;
 			}
-			else work = Text.substr(cur,end-cur+1);
+			else {
+				work = Text.substr(cur, end - cur);
+				cur = end + 1;
+			}
 			
-			if (work.Find("\\") == wxNOT_FOUND) {
+			if (work.size() && work.Find("\\") == wxNOT_FOUND) {
 				//We've found an override block with no backslashes
 				//We're going to assume it's a comment and not consider it an override block
 				//Currently we'll treat this as a plain text block, but feel free to create a new class
 				AssDialogueBlockPlain *block = new AssDialogueBlockPlain;
-				block->text = work;
+				block->text = "{" + work + "}";
 				Blocks.push_back(block);
 			}
-
 			else {
-				work = work.substr(1,work.Len()-2); // trim { and }
 				// Create block
 				AssDialogueBlockOverride *block = new AssDialogueBlockOverride;
 				block->parent = this;
@@ -286,20 +291,19 @@ void AssDialogue::ParseASSTags () {
 					}
 				}
 			}
-
-			// Increase
-			cur = end+1;
 		}
-
 		// Plain-text/drawing block
 		else {
 			wxString work;
-			end = Text.find("{",cur);
+			size_t end = Text.find("{",cur);
 			if (end == wxString::npos) {
 				work = Text.substr(cur);
-				end = len;
+				cur = len;
 			}
-			else work = Text.substr(cur,end-cur);
+			else {
+				work = Text.substr(cur, end - cur);
+				cur = end;
+			}
 
 			// Plain-text
 			if (drawingLevel == 0) {
@@ -307,7 +311,6 @@ void AssDialogue::ParseASSTags () {
 				block->text = work;
 				Blocks.push_back(block);
 			}
-
 			// Drawing
 			else {
 				AssDialogueBlockDrawing *block = new AssDialogueBlockDrawing;
@@ -315,16 +318,7 @@ void AssDialogue::ParseASSTags () {
 				block->Scale = drawingLevel;
 				Blocks.push_back(block);
 			}
-
-			cur = end;
 		}
-	}
-
-	// Empty line, make an empty block
-	if (len == 0) {
-		AssDialogueBlockPlain *block = new AssDialogueBlockPlain;
-		block->text = "";
-		Blocks.push_back(block);
 	}
 }
 
