@@ -229,13 +229,9 @@ void VideoContext::Reload() {
 void VideoContext::OnSubtitlesCommit() {
 	if (!IsLoaded()) return;
 
-	bool wasPlaying = IsPlaying();
-	Stop();
-
 	provider->LoadSubtitles(context->ass);
-	GetFrameAsync(frame_n);
-
-	if (wasPlaying) Play();
+	if (!IsPlaying())
+		GetFrameAsync(frame_n);
 }
 
 void VideoContext::OnSubtitlesSave() {

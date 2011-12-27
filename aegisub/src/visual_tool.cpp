@@ -102,11 +102,11 @@ void VisualToolBase::OnSeek(int new_frame) {
 	if (frame_number == new_frame) return;
 
 	frame_number = new_frame;
-	dragging = false;
 	OnFrameChanged();
 
 	AssDialogue *new_line = GetActiveDialogueLine();
 	if (new_line != active_line) {
+		dragging = false;
 		active_line = new_line;
 		OnLineChanged();
 	}

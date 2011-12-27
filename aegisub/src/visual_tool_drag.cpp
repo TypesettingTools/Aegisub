@@ -112,7 +112,7 @@ void VisualToolDrag::OnFileChanged() {
 	for (entryIter it = c->ass->Line.begin(); it != c->ass->Line.end(); ++it) {
 		AssDialogue *diag = dynamic_cast<AssDialogue*>(*it);
 		if (diag && IsDisplayed(diag))
-				MakeFeatures(diag);
+			MakeFeatures(diag);
 	}
 
 	UpdateToggleButtons();
@@ -140,14 +140,13 @@ void VisualToolDrag::OnFrameChanged() {
 		else {
 			// Remove all features for this line (if any)
 			while (feat != end && feat->line == diag) {
+				if (feat == active_feature) active_feature = features.end();
 				feat->line = 0;
 				RemoveSelection(feat);
 				feat = features.erase(feat);
 			}
 		}
 	}
-
-	active_feature = features.end();
 }
 
 void VisualToolDrag::OnSelectedSetChanged(const Selection &added, const Selection &removed) {

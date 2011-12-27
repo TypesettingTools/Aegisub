@@ -211,10 +211,8 @@ void VideoDisplay::Render() try {
 		}
 	}
 
-	if (mouse_pos || alwaysShowTools->GetBool()) {
-		if (!con->videoController->IsPlaying())
-			tool->Draw();
-	}
+	if (mouse_pos || alwaysShowTools->GetBool())
+		tool->Draw();
 
 	SwapBuffers();
 }
@@ -355,9 +353,6 @@ void VideoDisplay::OnSizeEvent(wxSizeEvent &event) {
 void VideoDisplay::OnMouseEvent(wxMouseEvent& event) {
 	assert(w > 0);
 
-	// Disable when playing
-	if (con->videoController->IsPlaying()) return;
-
 	if (event.ButtonDown())
 		SetFocus();
 
@@ -374,7 +369,7 @@ void VideoDisplay::OnMouseLeave(wxMouseEvent& event) {
 void VideoDisplay::OnMouseWheel(wxMouseEvent& event) {
 	if (int wheel = event.GetWheelRotation()) {
 		if (ForwardMouseWheelEvent(this, event))
-			SetZoom (zoomValue + .125 * (wheel / event.GetWheelDelta()));
+			SetZoom(zoomValue + .125 * (wheel / event.GetWheelDelta()));
 	}
 }
 
