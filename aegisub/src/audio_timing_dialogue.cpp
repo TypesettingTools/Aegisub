@@ -123,7 +123,7 @@ public:
 	int64_t GetPosition() const { return position; }
 	wxPen GetStyle() const { return style; }
 	FeetStyle GetFeet() const { return feet; }
-	bool CanSnap() const { return false; }
+	bool CanSnap() const { return true; }
 
 	InactiveLineMarker(int64_t position, bool start)
 	: position(position)
