@@ -775,7 +775,7 @@ int64_t DirectSoundPlayer2Thread::GetCurrentFrame()
 
 	if (!IsPlaying()) return 0;
 
-	DWORD milliseconds_elapsed = GetTickCount() - last_playback_restart;
+	int64_t milliseconds_elapsed = GetTickCount() - last_playback_restart;
 
 	return start_frame + milliseconds_elapsed * provider->GetSampleRate() / 1000;
 }
