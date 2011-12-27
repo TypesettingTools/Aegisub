@@ -429,6 +429,16 @@ void AudioController::PlayPrimaryRange()
 		playback_mode = PM_PrimaryRange;
 }
 
+void AudioController::PlayToEndOfPrimary(int64_t start_sample)
+{
+	if (!IsAudioOpen()) return;
+
+	player->Play(start_sample, GetPrimaryPlaybackRange().end() - start_sample);
+	playback_mode = PM_PrimaryRange;
+	playback_timer.Start(20);
+
+	AnnouncePlaybackPosition(start_sample);
+}
 
 void AudioController::PlayToEnd(int64_t start_sample)
 {

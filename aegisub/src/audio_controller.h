@@ -306,6 +306,13 @@ public:
 	/// The playback end can not be changed in any other way.
 	void PlayPrimaryRange();
 
+	/// @brief Start or restart audio playback, playing from a point to the end of of the primary playback range
+	/// @param start_sample Index of the sample to start playback at
+	///
+	/// This behaves like PlayPrimaryRange, but the start point can differ from
+	/// the beginning of the primary range.
+	void PlayToEndOfPrimary(int64_t start_sample);
+
 	/// @brief Start or restart audio playback, playing from a point to the end of stream
 	/// @param start_sample Index of the sample to start playback at
 	///

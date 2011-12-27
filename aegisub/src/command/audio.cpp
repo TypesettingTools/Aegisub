@@ -290,11 +290,10 @@ struct audio_play_end : public validate_audio_open {
 	void operator()(agi::Context *c) {
 		c->videoController->Stop();
 		SampleRange times(c->audioController->GetPrimaryPlaybackRange());
-		c->audioController->PlayRange(SampleRange(
+		c->audioController->PlayToEndOfPrimary(
 			times.end() - std::min(
 				c->audioController->SamplesFromMilliseconds(500),
-				times.length()),
-			times.end()));
+				times.length()));
 	}
 };
 
