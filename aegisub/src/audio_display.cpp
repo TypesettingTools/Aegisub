@@ -1274,11 +1274,11 @@ void AudioDisplay::OnPlaybackPosition(int64_t sample_position)
 		int edge_size = client_width / 20;
 		if (scroll_left > 0 && pixel_position < scroll_left + edge_size)
 		{
-			ScrollBy(-std::min(edge_size, scroll_left));
+			ScrollPixelToLeft(std::max(pixel_position - edge_size, 0));
 		}
 		else if (scroll_left + client_width < std::min(pixel_audio_width - 1, pixel_position + edge_size))
 		{
-			ScrollBy(std::min(edge_size, pixel_audio_width - client_width - scroll_left - 1));
+			ScrollPixelToLeft(std::min(pixel_position - client_width + edge_size, pixel_audio_width - client_width - 1));
 		}
 	}
 }
