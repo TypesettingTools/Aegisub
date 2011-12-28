@@ -9,14 +9,20 @@ PO = \
 	de.po \
 	el.po \
 	es.po \
+	fa.po \
 	fi.po \
 	fr_FR.po \
 	hu.po \
+	id.po \
 	it.po \
 	ja.po \
 	ko.po \
+	pl.po \
 	pt_BR.po \
+	pt_PT.po \
 	ru.po \
+	sr_RS.po \
+	sr_RS@latin.po \
 	vi.po \
 	zh_CN.po \
 	zh_TW.po
