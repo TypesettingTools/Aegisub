@@ -239,7 +239,7 @@ void DialogTranslation::UpdateDisplay() {
 }
 
 void DialogTranslation::Commit(bool next) {
-	*active_line->Blocks[cur_block] = translated_text->GetValue();
+	*active_line->Blocks[cur_block] = AssDialogueBlockPlain(translated_text->GetValue());
 	active_line->UpdateText();
 	c->ass->Commit(_("translation assistant"), AssFile::COMMIT_DIAG_TEXT);
 
