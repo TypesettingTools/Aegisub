@@ -515,7 +515,6 @@ namespace Automation4 {
 
 	int LuaScript::LuaDecodePath(lua_State *L)
 	{
-		const agi::Context *c = get_context(L);
 		wxString path = check_wxstring(L, 1);
 		lua_pop(L, 1);
 		lua_pushstring(L, StandardPaths::DecodePath(path).utf8_str());

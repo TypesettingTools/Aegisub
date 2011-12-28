@@ -42,4 +42,4 @@ namespace Automation4 {
 
 		static const char* reader_func(lua_State *, void *data, size_t *size);
 	};
-};
+}

@@ -151,7 +151,7 @@ BEGIN_EVENT_TABLE(BaseGrid,wxWindow)
 	EVT_MOUSE_EVENTS(BaseGrid::OnMouseEvent)
 	EVT_KEY_DOWN(BaseGrid::OnKeyDown)
 	EVT_MENU_RANGE(MENU_SHOW_COL,MENU_SHOW_COL+15,BaseGrid::OnShowColMenu)
-END_EVENT_TABLE();
+END_EVENT_TABLE()
 
 void BaseGrid::OnSubtitlesCommit(int type) {
 	if (type == AssFile::COMMIT_NEW)
@@ -221,7 +221,7 @@ void BaseGrid::UpdateStyle() {
 
 	// Set column widths
 	std::vector<bool> column_array(OPT_GET("Subtitle/Grid/Column")->GetListBool());
-	assert(column_array.size() == columns);
+	assert(column_array.size() == (size_t)columns);
 	for (int i = 0; i < columns; ++i) showCol[i] = column_array[i];
 	SetColumnWidths();
 
@@ -806,7 +806,7 @@ void BaseGrid::OnContextMenu(wxContextMenuEvent &evt) {
 		};
 
 		wxMenu menu;
-		for (size_t i = 0; i < columns; ++i)
+		for (int i = 0; i < columns; ++i)
 			menu.Append(MENU_SHOW_COL + i, strings[i], "", wxITEM_CHECK)->Check(showCol[i]);
 		PopupMenu(&menu);
 	}

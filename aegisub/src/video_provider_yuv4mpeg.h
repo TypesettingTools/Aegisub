@@ -66,7 +66,7 @@ class YUV4MPEGVideoProvider : public VideoProvider {
 		Y4M_PIXFMT_444,			/// 4:4:4, i.e. no chroma subsampling
 		Y4M_PIXFMT_444ALPHA,	/// 4:4:4 plus alpha channel
 
-		Y4M_PIXFMT_MONO,		/// luma only (grayscale)
+		Y4M_PIXFMT_MONO		/// luma only (grayscale)
 	};
 
 
@@ -79,7 +79,7 @@ class YUV4MPEGVideoProvider : public VideoProvider {
 		Y4M_ILACE_BFF,			/// interlaced, bottom field first
 
 		Y4M_ILACE_MIXED,		/// mixed interlaced/progressive, possibly with RFF flags
-		Y4M_ILACE_UNKNOWN,		/// unknown interlacing mode (not the same as undefined)
+		Y4M_ILACE_UNKNOWN		/// unknown interlacing mode (not the same as undefined)
 	};
 
 
@@ -104,7 +104,7 @@ class YUV4MPEGVideoProvider : public VideoProvider {
 		/// chroma subsampling flags
 		Y4M_FFLAG_C_P		= 0x0200,	/// progressive (whole frame subsampled)
 		Y4M_FFLAG_C_I		= 0x0400,	/// interlaced (fields subsampled independently)
-		Y4M_FFLAG_C_UNKNOWN = 0x0800,	/// unknown (only allowed for non-4:2:0 sampling)
+		Y4M_FFLAG_C_UNKNOWN = 0x0800	/// unknown (only allowed for non-4:2:0 sampling)
 	};
 
 

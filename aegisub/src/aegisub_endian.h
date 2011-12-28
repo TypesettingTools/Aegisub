@@ -444,4 +444,4 @@ namespace Endian {
 	}
 
 #endif
-};
+}

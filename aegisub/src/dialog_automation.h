@@ -48,7 +48,7 @@ namespace Automation4 {
 	class ScriptManager;
 	class AutoloadScriptManager;
 	class Script;
-};
+}
 
 namespace agi { struct Context; }
 

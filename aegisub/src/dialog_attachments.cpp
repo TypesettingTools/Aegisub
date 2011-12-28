@@ -126,7 +126,7 @@ BEGIN_EVENT_TABLE(DialogAttachments,wxDialog)
 	EVT_LIST_ITEM_SELECTED(ATTACHMENT_LIST,DialogAttachments::OnListClick)
 	EVT_LIST_ITEM_DESELECTED(ATTACHMENT_LIST,DialogAttachments::OnListClick)
 	EVT_LIST_ITEM_FOCUSED(ATTACHMENT_LIST,DialogAttachments::OnListClick)
-END_EVENT_TABLE();
+END_EVENT_TABLE()
 
 void DialogAttachments::AttachFile(wxFileDialog &diag, wxString const& group, wxString const& commit_msg) {
 	if (diag.ShowModal() == wxID_CANCEL) return;

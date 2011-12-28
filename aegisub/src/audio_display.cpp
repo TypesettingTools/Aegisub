@@ -853,7 +853,7 @@ BEGIN_EVENT_TABLE(AudioDisplay, wxWindow)
 	EVT_SET_FOCUS(AudioDisplay::OnFocus)
 	EVT_KILL_FOCUS(AudioDisplay::OnFocus)
 	EVT_KEY_DOWN(AudioDisplay::OnKeyDown)
-END_EVENT_TABLE();
+END_EVENT_TABLE()
 
 
 void AudioDisplay::OnPaint(wxPaintEvent&)

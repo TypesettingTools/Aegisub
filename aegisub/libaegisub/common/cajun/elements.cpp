@@ -101,13 +101,13 @@ UnknownElement::~UnknownElement() { delete m_pImp; }
 	UnknownElement::operator Type const&() const { return CastTo<Type>(); } \
 	UnknownElement::operator Type&() { return CastTo<Type>(); }
 
-DEFINE_UE_TYPE(Object);
-DEFINE_UE_TYPE(Array);
-DEFINE_UE_TYPE(Integer);
-DEFINE_UE_TYPE(Double);
-DEFINE_UE_TYPE(Boolean);
-DEFINE_UE_TYPE(String);
-DEFINE_UE_TYPE(Null);
+DEFINE_UE_TYPE(Object)
+DEFINE_UE_TYPE(Array)
+DEFINE_UE_TYPE(Integer)
+DEFINE_UE_TYPE(Double)
+DEFINE_UE_TYPE(Boolean)
+DEFINE_UE_TYPE(String)
+DEFINE_UE_TYPE(Null)
 
 UnknownElement& UnknownElement::operator =(const UnknownElement& unknown)
 {

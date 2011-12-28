@@ -47,4 +47,4 @@ namespace Automation4 {
 	public:
 		LuaScriptFactory();
 	};
-};
+}

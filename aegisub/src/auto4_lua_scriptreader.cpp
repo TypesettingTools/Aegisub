@@ -63,6 +63,6 @@ namespace Automation4 {
 	const char* LuaScriptReader::reader_func(lua_State *, void *data, size_t *size) {
 		return static_cast<LuaScriptReader*>(data)->Read(size);
 	}
-};
+}
 
 #endif // WITH_AUTO4_LUA

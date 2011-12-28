@@ -194,7 +194,7 @@ public:
 		COMMIT_DIAG_TIME   = 0x40,
 		/// The text of existing dialogue lines have changed
 		COMMIT_DIAG_TEXT   = 0x80,
-		COMMIT_DIAG_FULL   = COMMIT_DIAG_META | COMMIT_DIAG_TIME | COMMIT_DIAG_TEXT,
+		COMMIT_DIAG_FULL   = COMMIT_DIAG_META | COMMIT_DIAG_TIME | COMMIT_DIAG_TEXT
 	};
 
 	DEFINE_SIGNAL_ADDERS(AnnounceCommit, AddCommitListener)

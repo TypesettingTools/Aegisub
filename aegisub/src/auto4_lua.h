@@ -335,4 +335,4 @@ namespace Automation4 {
 		std::vector<ExportFilter*> GetFilters() const { return filters; }
 		std::vector<SubtitleFormat*> GetFormats() const { return std::vector<SubtitleFormat*>(); }
 	};
-};
+}

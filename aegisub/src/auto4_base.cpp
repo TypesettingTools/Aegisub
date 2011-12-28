@@ -595,4 +595,4 @@ namespace Automation4 {
 	: Script(filename)
 	{
 	}
-};
+}

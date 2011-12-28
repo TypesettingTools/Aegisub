@@ -47,6 +47,8 @@ using namespace agi::hotkey;
 /// @class HotkeyModelItem
 /// @brief A base class for things exposed by HotkeyDataViewModel
 class HotkeyModelItem {
+	protected:
+		~HotkeyModelItem() { }
 public:
 	virtual unsigned int GetChildren(wxDataViewItemArray &children) const=0;
 	virtual wxDataViewItem GetParent() const=0;

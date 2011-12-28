@@ -114,5 +114,5 @@ enum {
 	Dummy_Video_FPS,
 
 	/// DOCME
-	Dummy_Video_Length,
+	Dummy_Video_Length
 };

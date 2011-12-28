@@ -732,6 +732,6 @@ namespace Automation4 {
 
 		// Leaves userdata object on stack
 	}
-};
+}
 
 #endif // WITH_AUTO4_LUA

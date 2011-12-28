@@ -37,38 +37,38 @@ std::string PlatformUnixBSD::CPUId() {
 	size_t len = sizeof(id);
 	sysctlbyname("hw.model", &id, &len, NULL, 0);
 	return id;
-};
+}
 
 std::string PlatformUnixBSD::CPUSpeed() {
 	return "";
-};
+}
 
 int PlatformUnixBSD::CPUCores() {
 	return 0;
-};
+}
 
 int PlatformUnixBSD::CPUCount() {
 	int proc;
 	size_t len = sizeof(proc);
 	sysctlbyname("hw.ncpu", &proc, &len, NULL, 0);
 	return proc;
-};
+}
 
 std::string PlatformUnixBSD::CPUFeatures() {
 	return "";
-};
+}
 
 std::string PlatformUnixBSD::CPUFeatures2() {
 	return "";
-};
+}
 
 uint64_t PlatformUnixBSD::Memory() {
 	uint64_t memory;
 	size_t len = sizeof(memory);
 	sysctlbyname("hw.physmem", &memory, &len, NULL, 0);
 	return memory;
-};
+}
 
 std::string PlatformUnixBSD::UnixLibraries() {
 	return "";
-};
+}

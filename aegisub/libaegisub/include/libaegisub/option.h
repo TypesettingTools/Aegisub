@@ -56,7 +56,7 @@ public:
 	/// Options class settings.
 	enum OptionSetting {
 		NONE       = 0x000,		///< Do nothing (default)
-		FLUSH_SKIP = 0x001,		///< Skip writing the config file to disk
+		FLUSH_SKIP = 0x001		///< Skip writing the config file to disk
 	};
 
 private:

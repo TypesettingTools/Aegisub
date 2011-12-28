@@ -90,5 +90,5 @@ public:
 	/// Copy constructor
 	NumValidator(const NumValidator& from);
 
-	DECLARE_EVENT_TABLE();
+	DECLARE_EVENT_TABLE()
 };

@@ -59,7 +59,7 @@ static inline size_t last_lt_or_eq(Container const& c, Value const& v) {
 	if (it == c.end() || *it > v)
 		--it;
 	return distance(c.begin(), it);
-};
+}
 
 AudioKaraoke::AudioKaraoke(wxWindow *parent, agi::Context *c)
 : wxWindow(parent, -1, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL | wxBORDER_SUNKEN)

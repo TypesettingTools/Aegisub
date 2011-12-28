@@ -205,7 +205,7 @@ void OSSPlayer::SetEndPosition(int64_t pos)
 {
     end_frame = pos;
 
-    if (end_frame <= GetCurrentPosition()) {
+    if (pos <= GetCurrentPosition()) {
         ioctl(dspdev, SNDCTL_DSP_RESET, NULL);
         if (thread && thread->IsAlive())
             thread->Delete();

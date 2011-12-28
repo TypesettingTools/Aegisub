@@ -74,7 +74,7 @@
 enum {
 	Audio_Horizontal_Zoom = 1600,
 	Audio_Vertical_Zoom,
-	Audio_Volume,
+	Audio_Volume
 };
 
 AudioBox::AudioBox(wxWindow *parent, agi::Context *context)
@@ -144,7 +144,7 @@ BEGIN_EVENT_TABLE(AudioBox,wxSashWindow)
 	EVT_COMMAND_SCROLL(Audio_Horizontal_Zoom, AudioBox::OnHorizontalZoom)
 	EVT_COMMAND_SCROLL(Audio_Vertical_Zoom, AudioBox::OnVerticalZoom)
 	EVT_COMMAND_SCROLL(Audio_Volume, AudioBox::OnVolume)
-END_EVENT_TABLE();
+END_EVENT_TABLE()
 
 void AudioBox::OnMouseWheel(wxMouseEvent &evt) {
 	if (!ForwardMouseWheelEvent(audioDisplay, evt))

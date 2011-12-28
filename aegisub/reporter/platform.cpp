@@ -113,19 +113,19 @@ std::string Platform::GetVideoInfo(enum Platform::VideoInfo which) {
 
 std::string Platform::ArchName() {
 	return std::string(plat.GetArchName());
-};
+}
 
 std::string Platform::OSFamily() {
 	return std::string(plat.GetOperatingSystemFamilyName());
-};
+}
 
 std::string Platform::OSName() {
 	return std::string(plat.GetOperatingSystemIdName());
-};
+}
 
 std::string Platform::Endian() {
 	return std::string(plat.GetEndiannessName());
-};
+}
 
 
 int Platform::DisplayDepth() {

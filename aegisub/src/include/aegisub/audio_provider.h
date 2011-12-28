@@ -103,8 +103,8 @@ public:
 	static AudioProvider *GetProvider(wxString filename, int cache=-1);
 };
 
-DEFINE_BASE_EXCEPTION_NOINNER(AudioProviderError, agi::Exception);
-DEFINE_SIMPLE_EXCEPTION_NOINNER(AudioOpenError, AudioProviderError, "audio/open/failed");
+DEFINE_BASE_EXCEPTION_NOINNER(AudioProviderError, agi::Exception)
+DEFINE_SIMPLE_EXCEPTION_NOINNER(AudioOpenError, AudioProviderError, "audio/open/failed")
 
 /// Error of some sort occurred while decoding a frame
-DEFINE_SIMPLE_EXCEPTION_NOINNER(AudioDecodeError, AudioProviderError, "audio/error");
+DEFINE_SIMPLE_EXCEPTION_NOINNER(AudioDecodeError, AudioProviderError, "audio/error")

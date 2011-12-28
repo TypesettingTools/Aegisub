@@ -90,7 +90,8 @@ std::tr1::shared_ptr<AegiVideoFrame> ThreadedFrameSource::ProcFrame(int frameNum
 					// This will crash if any of the export filters try to use
 					// anything but the subtitles, but that wouldn't be safe to
 					// do anyway
-					agi::Context c = { 0 };
+					agi::Context c;
+					memset(&c, 0, sizeof c);
 					c.ass = subs.get();
 
 					AssExporter exporter(&c);

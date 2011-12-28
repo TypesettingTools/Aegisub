@@ -460,7 +460,7 @@ namespace Automation4 {
 				lua_pushboolean(L, value);
 			}
 		};
-	};
+	}
 
 	// LuaDialog
 	LuaDialog::LuaDialog(lua_State *L, bool include_buttons)
@@ -670,6 +670,6 @@ namespace Automation4 {
 		LOG_D("automation/lua/dialog") << "button_pushed set to: " << button_pushed;
 		evt.Skip();
 	}
-};
+}
 
 #endif // WITH_AUTO4_LUA

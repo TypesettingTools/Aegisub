@@ -445,6 +445,6 @@ public:
 };
 
 namespace agi {
-	DEFINE_BASE_EXCEPTION(AudioControllerError, Exception);
-	DEFINE_SIMPLE_EXCEPTION(AudioOpenError, AudioControllerError, "audio_controller/open_failed");
-};
+	DEFINE_BASE_EXCEPTION(AudioControllerError, Exception)
+	DEFINE_SIMPLE_EXCEPTION(AudioOpenError, AudioControllerError, "audio_controller/open_failed")
+}

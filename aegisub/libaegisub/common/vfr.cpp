@@ -74,7 +74,6 @@ struct TimecodeRange {
 	int start;
 	int end;
 	double fps;
-	double time;
 	bool operator<(TimecodeRange cmp) {
 		return start < cmp.start;
 	}

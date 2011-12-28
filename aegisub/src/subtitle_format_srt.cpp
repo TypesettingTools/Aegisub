@@ -71,7 +71,7 @@ class SrtTagParser {
 		TAG_STRIKEOUT_OPEN,
 		TAG_STRIKEOUT_CLOSE,
 		TAG_FONT_OPEN,
-		TAG_FONT_CLOSE,
+		TAG_FONT_CLOSE
 	};
 
 	wxRegEx tag_matcher;

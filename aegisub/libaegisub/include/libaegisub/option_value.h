@@ -114,7 +114,7 @@ public:
 	virtual std::vector<bool> const& GetDefaultListBool() const { throw ListTypeError("string"); }
 
 
-	DEFINE_SIGNAL_ADDERS(ValueChanged, Subscribe);
+	DEFINE_SIGNAL_ADDERS(ValueChanged, Subscribe)
 };
 
 #define CONFIG_OPTIONVALUE(type_name, type)                                                   \
