@@ -1104,78 +1104,33 @@ void AudioDisplay::OnMouseEvent(wxMouseEvent& event)
 
 	wxPoint mousepos = event.GetPosition();
 
+	AudioDisplayInteractionObject *new_obj = 0;
 	// Check for scrollbar action
 	if (scrollbar->GetBounds().Contains(mousepos))
 	{
-		if (!controller->IsPlaying())
-			RemoveTrackCursor();
-		if (scrollbar->OnMouseEvent(event))
-			SetDraggedObject(scrollbar.get());
-		return;
+		new_obj = scrollbar.get();
 	}
-
 	// Check for timeline action
-	if (timeline->GetBounds().Contains(mousepos))
+	else if (timeline->GetBounds().Contains(mousepos))
 	{
 		SetCursor(wxCursor(wxCURSOR_SIZEWE));
-		if (!controller->IsPlaying())
-			RemoveTrackCursor();
-		if (timeline->OnMouseEvent(event))
-			SetDraggedObject(timeline.get());
-		return;
+		new_obj = timeline.get();
+		
 	}
 
-	AudioTimingController *timing = controller->GetTimingController();
-	int drag_sensitivity = pixel_samples*3; /// @todo Make this depend on configuration
-
-	// Not scrollbar, not timeline, no button action
-	if (event.Moving())
+	if (new_obj)
 	{
-		if (timing)
-		{
-			int64_t samplepos = SamplesFromRelativeX(mousepos.x);
-
-			if (timing->IsNearbyMarker(samplepos, drag_sensitivity))
-				SetCursor(wxCursor(wxCURSOR_SIZEWE));
-			else
-				SetCursor(wxNullCursor);
-		}
-
 		if (!controller->IsPlaying())
-			SetTrackCursor(scroll_left + mousepos.x, OPT_GET("Audio/Display/Draw/Cursor Time")->GetBool());
+			RemoveTrackCursor();
+		if (new_obj->OnMouseEvent(event))
+			SetDraggedObject(new_obj);
+		return;
 	}
 
 	if (event.Leaving() && !controller->IsPlaying())
 	{
 		RemoveTrackCursor();
-	}
-
-	if (event.LeftDown() && timing)
-	{
-		int64_t samplepos = SamplesFromRelativeX(mousepos.x);
-		AudioMarker *marker = timing->OnLeftClick(samplepos, drag_sensitivity);
-
-		if (marker)
-		{
-			RemoveTrackCursor();
-			audio_marker.reset(new AudioMarkerInteractionObject(marker, timing, this, controller, wxMOUSE_BTN_LEFT));
-			SetDraggedObject(audio_marker.get());
-			return;
-		}
-	}
-
-	if (event.RightDown() && timing)
-	{
-		int64_t samplepos = SamplesFromRelativeX(mousepos.x);
-		AudioMarker *marker = timing->OnRightClick(samplepos, drag_sensitivity);
-
-		if (marker)
-		{
-			RemoveTrackCursor();
-			audio_marker.reset(new AudioMarkerInteractionObject(marker, timing, this, controller, wxMOUSE_BTN_RIGHT));
-			SetDraggedObject(audio_marker.get());
-			return;
-		}
+		return;
 	}
 
 	if (event.MiddleIsDown())
@@ -1183,6 +1138,43 @@ void AudioDisplay::OnMouseEvent(wxMouseEvent& event)
 		context->videoController->JumpToTime(
 			controller->MillisecondsFromSamples(SamplesFromRelativeX(mousepos.x)),
 			agi::vfr::EXACT);
+		return;
+	}
+
+	if (event.Moving() && !controller->IsPlaying())
+	{
+		SetTrackCursor(scroll_left + mousepos.x, OPT_GET("Audio/Display/Draw/Cursor Time")->GetBool());
+	}
+
+	AudioTimingController *timing = controller->GetTimingController();
+	if (!timing) return;
+	int drag_sensitivity = pixel_samples*3; /// @todo Make this depend on configuration
+
+	// Not scrollbar, not timeline, no button action
+	if (event.Moving())
+	{
+		int64_t samplepos = SamplesFromRelativeX(mousepos.x);
+
+		if (timing->IsNearbyMarker(samplepos, drag_sensitivity))
+			SetCursor(wxCursor(wxCURSOR_SIZEWE));
+		else
+			SetCursor(wxNullCursor);
+	}
+
+	if (event.ButtonDown(wxMOUSE_BTN_LEFT | wxMOUSE_BTN_RIGHT))
+	{
+		int64_t samplepos = SamplesFromRelativeX(mousepos.x);
+		AudioMarker *marker = event.LeftDown() ?
+			timing->OnLeftClick(samplepos, drag_sensitivity) :
+			timing->OnRightClick(samplepos, drag_sensitivity);
+
+		if (marker)
+		{
+			RemoveTrackCursor();
+			audio_marker.reset(new AudioMarkerInteractionObject(marker, timing, this, controller, (wxMouseButton)event.GetButton()));
+			SetDraggedObject(audio_marker.get());
+			return;
+		}
 	}
 }
 
