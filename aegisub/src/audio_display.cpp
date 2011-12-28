@@ -1180,7 +1180,7 @@ void AudioDisplay::OnMouseEvent(wxMouseEvent& event)
 		}
 	}
 
-	if (event.MiddleDown())
+	if (event.MiddleIsDown())
 	{
 		context->videoController->JumpToTime(
 			controller->MillisecondsFromSamples(SamplesFromRelativeX(mousepos.x)),
