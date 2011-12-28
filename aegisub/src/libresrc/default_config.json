@@ -79,7 +79,7 @@
 			"Enable" : false
 		},
 		"Spectrum" : true,
-		"Start Drag Sensitivity" : 2,
+		"Start Drag Sensitivity" : 3,
 		"Wheel Default to Zoom" : false
 	},
 

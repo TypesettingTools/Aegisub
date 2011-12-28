@@ -1148,7 +1148,7 @@ void AudioDisplay::OnMouseEvent(wxMouseEvent& event)
 
 	AudioTimingController *timing = controller->GetTimingController();
 	if (!timing) return;
-	int drag_sensitivity = pixel_samples*3; /// @todo Make this depend on configuration
+	int drag_sensitivity = pixel_samples * OPT_GET("Audio/Start Drag Sensitivity")->GetInt();
 
 	// Not scrollbar, not timeline, no button action
 	if (event.Moving())
