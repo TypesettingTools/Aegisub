@@ -40,14 +40,8 @@
 				"Cursor Time" : true,
 				"Keyframes in Dialogue Mode" : true,
 				"Keyframes in Karaoke Mode" : true,
-				"Secondary Lines" : true,
 				"Selection Background" : true,
-				"Timeline" : true,
 				"Video Position" : false
-			},
-			"Snap" : {
-				"Keyframes" : false,
-				"Other Lines" : false
 			},
 			"Waveform Style" : 1
 		},
@@ -79,6 +73,10 @@
 				"Memory Max" : 128,
 				"Quality" : 1
 			}
+		},
+		"Snap" : {
+			"Distance" : 5,
+			"Enable" : false
 		},
 		"Spectrum" : true,
 		"Start Drag Sensitivity" : 2,

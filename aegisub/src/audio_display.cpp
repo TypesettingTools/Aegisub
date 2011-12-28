@@ -477,8 +477,6 @@ public:
 	}
 };
 
-
-
 class AudioMarkerInteractionObject : public AudioDisplayInteractionObject {
 	// Object-pair being interacted with
 	AudioMarker *marker;
@@ -496,18 +494,17 @@ class AudioMarkerInteractionObject : public AudioDisplayInteractionObject {
 
 public:
 	AudioMarkerInteractionObject(AudioMarker *marker, AudioTimingController *timing_controller, AudioDisplay *display, AudioController *controller, wxMouseButton button_used)
-		: marker(marker)
-		, timing_controller(timing_controller)
-		, display(display)
-		, controller(controller)
-		, button_used(button_used)
+	: marker(marker)
+	, timing_controller(timing_controller)
+	, display(display)
+	, controller(controller)
+	, button_used(button_used)
+	, default_snap(OPT_GET("Audio/Snap/Enable")->GetBool())
+	, snap_range(OPT_GET("Audio/Snap/Distance")->GetInt())
 	{
-		/// @todo Make these configurable
-		snap_range = 5;
-		default_snap = false;
 	}
 
-	virtual bool OnMouseEvent(wxMouseEvent &event)
+	bool OnMouseEvent(wxMouseEvent &event)
 	{
 		if (event.Dragging())
 		{

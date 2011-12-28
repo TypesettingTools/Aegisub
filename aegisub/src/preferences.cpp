@@ -144,11 +144,9 @@ Audio::Audio(wxTreebook *book, Preferences *parent): OptionPage(book, parent, _(
 	OptionAdd(general, _("Grab times from line upon selection"), "Audio/Grab Times on Select");
 	OptionAdd(general, _("Default mouse wheel to zoom"), "Audio/Wheel Default to Zoom");
 	OptionAdd(general, _("Lock scroll on cursor"), "Audio/Lock Scroll on Cursor");
-	OptionAdd(general, _("Snap to keyframes"), "Audio/Display/Snap/Keyframes");
-	OptionAdd(general, _("Snap to adjacent lines"), "Audio/Display/Snap/Other Lines");
+	OptionAdd(general, _("Snap markers by default"), "Audio/Snap/Enable");
 	OptionAdd(general, _("Auto-focus on mouse over"), "Audio/Auto/Focus");
 	OptionAdd(general, _("Play audio when stepping in video"), "Audio/Plays When Stepping Video");
-	CellSkip(general);
 	OptionAdd(general, _("Default timing length"), "Timing/Default Duration", 0, 36000);
 	OptionAdd(general, _("Default lead-in length"), "Audio/Lead/IN", 0, 36000);
 	OptionAdd(general, _("Default lead-out length"), "Audio/Lead/OUT", 0, 36000);
@@ -158,11 +156,10 @@ Audio::Audio(wxTreebook *book, Preferences *parent): OptionPage(book, parent, _(
 	OptionChoice(general, _("Show inactive lines"), choice_dtl, "Audio/Inactive Lines Display Mode");
 	OptionAdd(general, _("Start-marker drag sensitivity"), "Audio/Start Drag Sensitivity", 1, 15);
 	OptionAdd(general, _("Line boundry thickness"), "Audio/Line Boundaries Thickness", 1, 5);
+	OptionAdd(general, _("Maximum snap distance"), "Audio/Snap/Distance", 0, 25);
 
 	wxFlexGridSizer *display = PageSizer(_("Display Visual Options"));
-	OptionAdd(display, _("Secondary lines"), "Audio/Display/Draw/Secondary Lines");
 	OptionAdd(display, _("Selection background"), "Audio/Display/Draw/Selection Background");
-	OptionAdd(display, _("Timeline"), "Audio/Display/Draw/Timeline");
 	OptionAdd(display, _("Cursor time"), "Audio/Display/Draw/Cursor Time");
 	OptionAdd(display, _("Keyframes"), "Audio/Display/Draw/Keyframes in Dialogue Mode");
 	OptionAdd(display, _("Karaoke keyframes"), "Audio/Display/Draw/Keyframes in Karaoke Mode");
