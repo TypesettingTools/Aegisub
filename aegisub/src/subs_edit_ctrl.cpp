@@ -233,7 +233,7 @@ enum {
 	STYLE_KARAOKE_VARIABLE
 };
 
-void SubsTextEditCtrl::SetStyle(int id, wxFont &font, std::string const& name) {
+void SubsTextEditCtrl::SetSyntaxStyle(int id, wxFont &font, std::string const& name) {
 	StyleSetFont(id, font);
 	StyleSetBold(id, OPT_GET("Colour/Subtitle/Syntax/Bold/" + name)->GetBool());
 	StyleSetForeground(id, lagi_wxColour(OPT_GET("Colour/Subtitle/Syntax/" + name)->GetColour()));
@@ -249,17 +249,17 @@ void SubsTextEditCtrl::SetStyles() {
 	if (!fontname.empty()) font.SetFaceName(fontname);
 	font.SetPointSize(OPT_GET("Subtitle/Edit Box/Font Size")->GetInt());
 
-	SetStyle(STYLE_NORMAL, font, "Normal");
-	SetStyle(STYLE_COMMENT, font, "Comment");
-	SetStyle(STYLE_DRAWING, font, "Drawing");
-	SetStyle(STYLE_OVERRIDE, font, "Brackets");
-	SetStyle(STYLE_PUNCTUATION, font, "Slashes");
-	SetStyle(STYLE_TAG, font, "Tags");
-	SetStyle(STYLE_ERROR, font, "Error");
-	SetStyle(STYLE_PARAMETER, font, "Parameters");
-	SetStyle(STYLE_LINE_BREAK, font, "Line Break");
-	SetStyle(STYLE_KARAOKE_TEMPLATE, font, "Karaoke Template");
-	SetStyle(STYLE_KARAOKE_VARIABLE, font, "Karaoke Variable");
+	SetSyntaxStyle(STYLE_NORMAL, font, "Normal");
+	SetSyntaxStyle(STYLE_COMMENT, font, "Comment");
+	SetSyntaxStyle(STYLE_DRAWING, font, "Drawing");
+	SetSyntaxStyle(STYLE_OVERRIDE, font, "Brackets");
+	SetSyntaxStyle(STYLE_PUNCTUATION, font, "Slashes");
+	SetSyntaxStyle(STYLE_TAG, font, "Tags");
+	SetSyntaxStyle(STYLE_ERROR, font, "Error");
+	SetSyntaxStyle(STYLE_PARAMETER, font, "Parameters");
+	SetSyntaxStyle(STYLE_LINE_BREAK, font, "Line Break");
+	SetSyntaxStyle(STYLE_KARAOKE_TEMPLATE, font, "Karaoke Template");
+	SetSyntaxStyle(STYLE_KARAOKE_VARIABLE, font, "Karaoke Variable");
 
 	// Misspelling indicator
 	IndicatorSetStyle(0,wxSTC_INDIC_SQUIGGLE);

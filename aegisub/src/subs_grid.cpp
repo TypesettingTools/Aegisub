@@ -321,7 +321,7 @@ void SubtitlesGrid::DeleteLines(wxArrayInt target, bool flagModified) {
 	}
 
 	// Add default line if file was wiped
-	if (GetRows() == deleted) {
+	if ((size_t)GetRows() == deleted) {
 		AssDialogue *def = new AssDialogue;
 		++before_first;
 		context->ass->Line.insert(before_first, def);

@@ -193,7 +193,7 @@ class SubsEditBox : public wxPanel, protected SelectionListener<AssDialogue> {
 
 	/// @brief Reload the current line from the file
 	/// @param type AssFile::CommitType
-	void Update(int type);
+	void OnCommit(int type);
 
 	/// Regenerate the contents of the actor dropdown list
 	void PopulateActorList();

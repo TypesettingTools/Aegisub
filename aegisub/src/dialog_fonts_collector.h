@@ -138,7 +138,6 @@ class DialogFontsCollector : public wxDialog {
 	void OnBrowse(wxCommandEvent &event);
 	void OnRadio(wxCommandEvent &event);
 	void OnAddText(wxCommandEvent &event);
-	void Update(int value=-1);
 
 public:
 	DialogFontsCollector(wxWindow *parent, AssFile *subs);

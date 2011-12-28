@@ -333,7 +333,7 @@ namespace Automation4 {
 
 			FloatEdit(lua_State *L)
 			: Edit(L)
-			, value(get_field(L, "value", 0))
+			, value(get_field(L, "value", 0.0))
 			{
 				// TODO: spin button support
 			}

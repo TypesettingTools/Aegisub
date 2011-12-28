@@ -490,7 +490,7 @@ void VisualToolBase::GetLineRotation(AssDialogue *diag, float &rx, float &ry, fl
 		ry = tag->front()->Get<float>(ry);
 	if (param_vec tag = find_tag(diag, "\\frz"))
 		rz = tag->front()->Get<float>(rz);
-	else if (tag = find_tag(diag, "\\fr"))
+	else if ((tag = find_tag(diag, "\\fr")))
 		rz = tag->front()->Get<float>(rz);
 }
 

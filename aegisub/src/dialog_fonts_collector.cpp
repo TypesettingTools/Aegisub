@@ -163,7 +163,9 @@ DialogFontsCollector::DialogFontsCollector(wxWindow *parent, AssFile *ass)
 	CenterOnParent();
 
 	// Run dummy event to update label
-	Update();
+	wxCommandEvent evt;
+	evt.SetInt(-1);
+	OnRadio(evt);
 }
 
 
@@ -296,15 +298,8 @@ void DialogFontsCollector::OnBrowse(wxCommandEvent &event) {
 /// @param event 
 ///
 void DialogFontsCollector::OnRadio(wxCommandEvent &event) {
-	Update(event.GetInt());
-}
+	int value = event.GetInt();
 
-
-
-/// @brief Update controls 
-/// @param value 
-///
-void DialogFontsCollector::Update(int value) {
 	// Enable buttons
 	CloseButton->Enable(true);
 	StartButton->Enable(true);

@@ -88,11 +88,6 @@ namespace {
 		lua_pushinteger(L, n);
 	}
 
-	inline void push_value(lua_State *L, double n)
-	{
-		lua_pushnumber(L, n);
-	}
-
 	template<class T>
 	inline void set_field(lua_State *L, const char *name, T value)
 	{

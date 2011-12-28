@@ -328,14 +328,14 @@ SubsEditBox::SubsEditBox(wxWindow *parent, agi::Context *context)
 	OnSize(evt);
 
 	c->selectionController->AddSelectionListener(this);
-	file_changed_slot = c->ass->AddCommitListener(&SubsEditBox::Update, this);
+	file_changed_slot = c->ass->AddCommitListener(&SubsEditBox::OnCommit, this);
 	context->videoController->AddTimecodesListener(&SubsEditBox::UpdateFrameTiming, this);
 }
 SubsEditBox::~SubsEditBox() {
 	c->selectionController->RemoveSelectionListener(this);
 }
 
-void SubsEditBox::Update(int type) {
+void SubsEditBox::OnCommit(int type) {
 	wxEventBlocker blocker(this);
 
 	if (type == AssFile::COMMIT_NEW || type & AssFile::COMMIT_STYLES) {
@@ -419,7 +419,7 @@ void SubsEditBox::OnActiveLineChanged(AssDialogue *new_line) {
 	line = new_line;
 	commitId = -1;
 
-	Update(AssFile::COMMIT_DIAG_FULL);
+	OnCommit(AssFile::COMMIT_DIAG_FULL);
 
 	/// @todo VideoContext should be doing this
 	if (c->videoController->IsLoaded()) {
