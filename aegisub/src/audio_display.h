@@ -58,6 +58,7 @@ class AudioProvider;
 class AudioDisplayScrollbar;
 class AudioDisplayTimeline;
 class AudioDisplaySelection;
+class AudioMarkerInteractionObject;
 
 /// @class AudioDisplayInteractionObject
 /// @brief Interface for objects on the audio display that can respond to mouse events
@@ -121,6 +122,9 @@ class AudioDisplay: public wxWindow {
 
 	/// Timeline helper object
 	agi::scoped_ptr<AudioDisplayTimeline> timeline;
+
+	/// The interaction object for the last-dragged audio marker
+	agi::scoped_ptr<AudioMarkerInteractionObject> audio_marker;
 
 
 	/// Current object on display being dragged, if any

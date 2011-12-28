@@ -1027,10 +1027,6 @@ void AudioDisplay::OnPaint(wxPaintEvent&)
 
 void AudioDisplay::SetDraggedObject(AudioDisplayInteractionObject *new_obj)
 {
-	// Special case for audio markers being dragged: they use a temporary wrapper object
-	// which must be deleted when it is no longer used.
-	delete dynamic_cast<AudioMarkerInteractionObject*>(dragged_object);
-
 	dragged_object = new_obj;
 
 	if (dragged_object && !HasCapture())
@@ -1162,7 +1158,8 @@ void AudioDisplay::OnMouseEvent(wxMouseEvent& event)
 		if (marker)
 		{
 			RemoveTrackCursor();
-			SetDraggedObject(new AudioMarkerInteractionObject(marker, timing, this, controller, wxMOUSE_BTN_LEFT));
+			audio_marker.reset(new AudioMarkerInteractionObject(marker, timing, this, controller, wxMOUSE_BTN_LEFT));
+			SetDraggedObject(audio_marker.get());
 			return;
 		}
 	}
@@ -1175,7 +1172,8 @@ void AudioDisplay::OnMouseEvent(wxMouseEvent& event)
 		if (marker)
 		{
 			RemoveTrackCursor();
-			SetDraggedObject(new AudioMarkerInteractionObject(marker, timing, this, controller, wxMOUSE_BTN_RIGHT));
+			audio_marker.reset(new AudioMarkerInteractionObject(marker, timing, this, controller, wxMOUSE_BTN_RIGHT));
+			SetDraggedObject(audio_marker.get());
 			return;
 		}
 	}
