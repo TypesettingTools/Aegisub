@@ -330,14 +330,15 @@ struct audio_play_to_end : public validate_audio_open {
 
 /// Commit any pending audio timing changes
 /// @todo maybe move to time?
-struct audio_commit : public Command {
+struct audio_commit : public validate_audio_open {
 	CMD_NAME("audio/commit")
 	STR_MENU("Commit")
 	STR_DISP("Commit")
 	STR_HELP("Commit")
 
 	void operator()(agi::Context *c) {
-		c->audioController->GetTimingController()->Commit();
+		AudioTimingController *tc = c->audioController->GetTimingController();
+		if (tc) tc->Commit();
 	}
 };
 
