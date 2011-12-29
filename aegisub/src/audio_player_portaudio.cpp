@@ -107,8 +107,6 @@ void PortAudioPlayer::OpenStream() {
 	pa_output_p.suggestedLatency = Pa_GetDeviceInfo(pa_device)->defaultLowOutputLatency;
 	pa_output_p.hostApiSpecificStreamInfo = NULL;
 
-	pa_output_p.channelCount, pa_output_p.suggestedLatency, pa_output_p.sampleFormat);
-
 	PaError err = Pa_OpenStream(&stream, NULL, &pa_output_p, provider->GetSampleRate(), 256, paPrimeOutputBuffersUsingStreamCallback, paCallback, this);
 
 	if (err != paNoError) {
