@@ -1161,7 +1161,7 @@ void AudioDisplay::OnMouseEvent(wxMouseEvent& event)
 			SetCursor(wxNullCursor);
 	}
 
-	if (event.ButtonDown(wxMOUSE_BTN_LEFT | wxMOUSE_BTN_RIGHT))
+	if (event.LeftDown() || event.RightDown())
 	{
 		int64_t samplepos = SamplesFromRelativeX(mousepos.x);
 		AudioMarker *marker = event.LeftDown() ?
