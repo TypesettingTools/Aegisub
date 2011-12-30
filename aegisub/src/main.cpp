@@ -34,9 +34,6 @@
 /// @ingroup main
 ///
 
-
-////////////
-// Includes
 #include "config.h"
 
 #ifndef AGI_PRE
@@ -49,8 +46,6 @@
 #include <wx/stdpaths.h>
 #include <wx/utils.h>
 #endif
-
-#include <wx/eventfilter.h>
 
 #include "include/aegisub/menu.h"
 #include "command/command.h"
@@ -537,7 +532,7 @@ int AegisubApp::OnRun() {
 int AegisubApp::FilterEvent(wxEvent& event) {
 	if (event.GetEventType() == wxEVT_KEY_DOWN)
 		event.ResumePropagation(wxEVENT_PROPAGATE_MAX);
-	return wxEventFilter::Event_Skip;
+	return -1 /* wxEventFilter::Event_Skip */;
 }
 
 ////////////////
