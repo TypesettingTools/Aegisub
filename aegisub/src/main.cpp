@@ -81,8 +81,7 @@
 #include <libaegisub/access.h>
 #include <libaegisub/log.h>
 #include <libaegisub/hotkey.h>
-
-
+#include <libaegisub/scoped_ptr.h>
 
 namespace config {
 	agi::Options *opt;
@@ -186,9 +185,6 @@ bool AegisubApp::OnInit() {
 	// Init icons.
 	icon::icon_init();
 
-	const std::string conf_mru(StandardPaths::DecodePath("?user/mru.json"));
-	config::mru = new agi::MRUManager(conf_mru, GET_DEFAULT_CONFIG(default_mru));
-
 	// Set config file
 	StartupLog("Load configuration");
 	try {
@@ -202,13 +198,13 @@ bool AegisubApp::OnInit() {
 	// Try loading configuration from the install dir if one exists there
 	try {
 		const std::string conf_local(StandardPaths::DecodePath("?data/config.json"));
-		std::ifstream* localConfig = agi::io::Open(conf_local);
+		agi::scoped_ptr<std::istream> localConfig(agi::io::Open(conf_local));
 		config::opt->ConfigNext(*localConfig);
-		delete localConfig;
 
 		if (OPT_GET("App/Local Config")->GetBool()) {
 			// Local config, make ?user mean ?data so all user settings are placed in install dir
 			StandardPaths::SetPathValue("?user", StandardPaths::DecodePath("?data"));
+			config::opt->SetConfigPath(conf_local);
 		}
 	} catch (agi::acs::AcsError const&) {
 		// File doesn't exist or we can't read it
@@ -222,6 +218,9 @@ bool AegisubApp::OnInit() {
 		wxMessageBox("Configuration file is invalid. Error reported:\n" + lagi_wxString(err.GetMessage()), "Error");
 	}
 
+	StartupLog("Load MRU");
+	const std::string conf_mru(StandardPaths::DecodePath("?user/mru.json"));
+	config::mru = new agi::MRUManager(conf_mru, GET_DEFAULT_CONFIG(default_mru));
 
 #ifdef __VISUALC__
 	SetThreadName((DWORD) -1,"AegiMain");

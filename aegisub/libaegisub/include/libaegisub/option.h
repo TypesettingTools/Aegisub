@@ -68,7 +68,7 @@ private:
 	::json::Object CreateObject(std::string path);
 
 	/// User config (file that will be written to disk)
-	const std::string config_file;
+	std::string config_file;
 
 	/// Settings.
 	const OptionSetting setting;
@@ -106,6 +106,10 @@ public:
 
 	/// Write the user configuration to disk, throws an exception if something goes wrong.
 	void Flush();
+
+	/// Change where the configuration file should be saved to
+	/// @param new_path New location of the configuration file
+	void SetConfigPath(std::string const& new_path);
 };
 
 } // namespace agi

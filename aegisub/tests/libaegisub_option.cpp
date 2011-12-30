@@ -261,3 +261,19 @@ TEST_F(lagi_option, empty_array_decays_to_first_used_type) {
 		EXPECT_THROW(opt.Get("arr")->GetListInt(),    agi::OptionValueErrorInvalidListType);
 	}
 }
+
+TEST_F(lagi_option, change_out_path) {
+	util::remove("data/options/tmp");
+	util::remove("data/options/tmp2");
+
+	agi::Options opt("data/options/tmp", default_opt, agi::Options::FLUSH_SKIP);
+	ASSERT_NO_THROW(opt.SetConfigPath("data/options/tmp2"));
+
+	std::ifstream flushed_opts("data/options/tmp2");
+	ASSERT_TRUE(flushed_opts.good());
+
+	flushed_opts.seekg(0, std::ios::end);
+	EXPECT_GT(flushed_opts.tellg(), 0);
+
+	EXPECT_FALSE(std::ifstream("data/options/tmp").good());
+}
